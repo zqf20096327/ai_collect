@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  📖 <a href="docs/README.md"><strong>Documentation</strong></a> · 🌐 <a href="https://aipbx.bid"><strong>Website: aipbx.bid</strong></a>
+  📖 <a href="docs/README.md"><strong>Documentation</strong></a> · 🌐 <a href="https://aipbx.bid"><strong>Website: aipbx.bid</strong></a> · 📺 <a href="https://www.youtube.com/@aipbx"><strong>YouTube</strong></a>
 </p>
 
 <p align="center">
@@ -70,6 +70,14 @@ The installer:
 
 After installing, open `https://<your-server>` and log in with the admin credentials shown.
 
+### 📺 Video guide
+
+The whole installation, step by step, narrated and with subtitles — on the [AiPBX YouTube channel](https://www.youtube.com/@aipbx):
+
+| English | Türkçe | Deutsch |
+|:---:|:---:|:---:|
+| [![Install AiPBX (English)](https://img.youtube.com/vi/lH1-k_z5jFE/mqdefault.jpg)](https://www.youtube.com/watch?v=lH1-k_z5jFE) | [![AiPBX kurulumu (Türkçe)](https://img.youtube.com/vi/eDHHHW6ZcvQ/mqdefault.jpg)](https://www.youtube.com/watch?v=eDHHHW6ZcvQ) | [![AiPBX installieren (Deutsch)](https://img.youtube.com/vi/1QuOM6Rtcbg/mqdefault.jpg)](https://www.youtube.com/watch?v=1QuOM6Rtcbg) |
+
 ---
 
 ## 🔄 Updating
@@ -85,7 +93,10 @@ Or from the portal: **System → System Update** (admin only) shows the installe
 release notes and an **Update** button with live progress. A new release is also checked for every night.
 
 Every update:
-- 🛡️ refuses to start during active calls (Asterisk is restarted) or over hand-edited code;
+- 📞 restarts Asterisk only when the release needs it (new Asterisk configuration or package); otherwise
+  Asterisk is reloaded and calls stay up. The update page says which beforehand, and an update that
+  restarts Asterisk waits for an idle PBX;
+- 🛡️ refuses to run over hand-edited code;
 - 💾 backs up the database, `/etc/ai-pbx.env` and `/etc/asterisk` to `/var/backups/aipbx/`;
 - 🔄 applies database migrations, new packages and system settings **without touching passwords,
   certificates, the admin password or your firewall choices**;
@@ -256,7 +267,7 @@ AiPBX/
 │   ├── lang/               # 23 interface languages (100% key parity)
 │   ├── db/migrations/      # Phinx migrations (the database schema)
 │   └── tests/              # PHPUnit
-├── plugins/                # 🔌 Official first-class plugins (auto-dialer, ms-teams, web-widgets, ai-*, …)
+├── plugins/                # 🔌 Bundled plugins: official (auto-dialer, ms-teams, web-widgets, ai-*, …) and community
 ├── ai/                     # 🤖 Local & cloud AI service (aipbx-ai, Python)
 ├── chat/                   # 💬 Go WebSocket chat service (aipbx-chat)
 ├── android/                # 📱 Kotlin Android app

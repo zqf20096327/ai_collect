@@ -7,13 +7,13 @@
 ### The AI workbench that gets things done, for office work, research and code
 
 An agent that edits your files, runs commands and checks its own work,<br>
-with an editor, Office previews and SSH remote development, in one 180 MB Windows app.
+with an editor, Office previews and SSH remote development, in one 67 MB Windows app.
 
 <br>
 
 [![Download for Windows](https://img.shields.io/github/v/release/RainyMarks/Rainy?style=for-the-badge&label=Download%20for%20Windows&color=2563eb)](https://github.com/RainyMarks/Rainy/releases/latest)
 &nbsp;
-[![Changelog](https://img.shields.io/badge/Changelog-3.9-0f172a?style=for-the-badge)](CHANGELOG.md)
+[![Changelog](https://img.shields.io/badge/Changelog-4.1-0f172a?style=for-the-badge)](CHANGELOG.md)
 
 [![Downloads](https://img.shields.io/github/downloads/RainyMarks/Rainy/total?style=flat-square&color=10b981)](https://github.com/RainyMarks/Rainy/releases)
 ![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11%20x64-0078d4?style=flat-square)
@@ -82,7 +82,7 @@ Word, Excel, PowerPoint, PDF, Markdown, images and media open in place, so paper
 - Pick a host from `~/.ssh/config`, or enter `user@host`.
 - The agent, terminals, run and debug, and language services work on the server's files; the interface stays on your PC.
 - It uses the OpenSSH client built into Windows, so your keys, ssh-agent and ProxyJump just work.
-- The first connection installs a runtime of about 53 MB in `~/.rainy-agent` on the server; later connections reach the workbench in seconds.
+- The first connection installs a runtime of about 27 MB in `~/.rainy-agent` on the server; later connections reach the workbench in seconds.
 
 ![The SSH remote development card in Settings, listing hosts from ~/.ssh/config](assets/ssh.png)
 
@@ -133,7 +133,7 @@ See what a project is made of, how its parts import each other and which stack i
 | **Three execution environments** | Native Windows by default; switch to WSL2 or an SSH server when a project needs Linux. |
 | **Project memory** | When turned on, collects a project's key facts while idle and brings them into new chats. |
 | **Context management** | Shows how full the context is and compacts it automatically before it runs out; Claude's prompt cache lasts an hour. |
-| **Light** | A 180 MB installer; the Strata engine, PHP and the Linux runtime download only when needed. |
+| **Light** | A 67 MB installer; PHP and the Linux runtime download only when needed. |
 | **Any screen** | Fits high scaling (such as 225%) and small screens, and adjusts when you change displays or scaling. |
 | **Details** | A light rain falls behind empty views and ripples where you click; turn it off in **Settings → Appearance**. |
 
@@ -141,10 +141,10 @@ See what a project is made of, how its parts import each other and which stack i
 ## Quick start
 
 1. Download and install [the latest Windows x64 installer](https://github.com/RainyMarks/Rainy/releases/latest). No activation code is required.
-2. Open Rainy and choose **File → Open folder**.
-3. Connect a model in **Settings → Models** (see [Connect a model](#connect-a-model)), then open **AI assistant** on the right.
+2. Open Rainy and select **Open folder** in the title bar (once a project is open, that button shows its name and opens the project menu).
+3. Connect a model in **Settings → Models** (see [Connect a model](#connect-a-model)), then ask in the AI pane on the right.
 
-To work on a Linux server, make sure `ssh` logs in from a terminal, pick the host under **Settings → Runtime → SSH remote development**, select **Switch to this host**, then open a project with **File → Browse folders on current host**. See the [desktop guide](docs/desktop.md#ssh-remote-development).
+To work on a Linux server, make sure `ssh` logs in from a terminal, pick the host under **Settings → Runtime → SSH remote development**, select **Switch to this host**, then open a project with **Browse folders on current host** in the project menu of the title bar. See the [desktop guide](docs/desktop.md#ssh-remote-development).
 
 Rainy downloads stable updates in the background and then offers **Later** or **Restart and install**.
 
@@ -153,19 +153,19 @@ Rainy downloads stable updates in the background and then offers **Later** or **
 | Item | Requirement |
 |---|---|
 | Operating system | Windows 10 / 11 x64 |
-| Disk space | About 570 MB installed |
+| Disk space | About 165 MB installed |
 | WSL (optional) | WSL2; the bundled Ubuntu development tools wizard supports Ubuntu 26.04 |
-| SSH server (optional) | x86_64 Linux with `python3`; the runtime takes about 250 MB |
-| Local inference (optional) | NVIDIA GPU, CUDA 13, driver 580 or newer |
+| SSH server (optional) | x86_64 Linux with `python3` and glibc 2.17 or later; the runtime takes about 110 MB |
+| WebView2 | For PDF, Office and Markdown previews; Windows 11 includes it, Windows 10 installs it when asked |
 
 ### Components downloaded on demand
 
 | Component | Size | When |
 |---|---|---|
-| Linux runtime | about 53 MB | Automatically, the first time you use WSL or an SSH host |
+| Linux runtime | about 27 MB | Automatically, the first time you use WSL or an SSH host |
+| Strata engine | about 533 MB | **Settings → Models → Strata local model**, for local models on an NVIDIA GPU |
 | Ubuntu development packages | about 165 MB | When you install the development tools; deleted once installed |
 | PHP | about 38 MB | **Settings → Runtime → Optional components** |
-| Strata engine | about 560 MB | **Settings → Runtime → Optional components** |
 
 <a id="connect-a-model"></a>
 ## Connect a model
@@ -178,13 +178,12 @@ Bring your own model; Rainy never switches to another one behind your back.
 | **Claude** | Claude Opus 5.5 and Claude Haiku 5.5 presets, adaptive thinking, an hour of prompt cache |
 | **Compatible APIs** | Any OpenAI- or Anthropic-compatible Base URL, with model discovery; relays work too |
 | **Local servers** | Ollama and other OpenAI-compatible servers on your machine |
-| **Strata** | Local inference on an NVIDIA GPU; you supply the Qwen3.8 Flash Next weights |
 
 1. Open **Settings → Models** and select **Load** on a preset, or enter a provider ID, Base URL, protocol and key.
 2. Select **Discover models**, or enter the model ID.
 3. Set the service's actual context window and output limit, save, then run the streaming and tool-call check.
 
-The selected Windows, WSL or SSH environment must reach the model service. Through a relay, keep the `anthropic-messages` protocol and the Claude model ID (for example `claude-opus-5-5`). See the [desktop guide](docs/desktop.md#strata-local-inference) for preparing Strata and its resource controls.
+The selected Windows, WSL or SSH environment must reach the model service. Through a relay, keep the `anthropic-messages` protocol and the Claude model ID (for example `claude-opus-5-5`). To run a model on your own NVIDIA GPU, **Settings → Models → Strata local model** downloads the Strata engine, loads your Qwen3.8 Flash Next GGUF and sets it as the default model.
 
 <a id="privacy"></a>
 ## Privacy and security
@@ -197,16 +196,16 @@ The selected Windows, WSL or SSH environment must reach the model service. Throu
 - **Verifiable releases**: on first start the installed files are checked one by one against a signed manifest.
 
 <a id="whats-new"></a>
-## What's new in 3.9
+## What's new in 4.1
 
-**Write Markdown as in Typora, and open files from Explorer.** An outline in the side pane, find and replace in the document, pasted images saved for you, Mermaid diagrams, focus and typewriter modes, and export to PDF or HTML; turn on "Open with Rainy" in Settings if you want it. 3.9.2 imports MCP servers from JSON and opens folders on mounted disk images. [Read the full changelog →](CHANGELOG.md)
+**No Node.js anywhere.** The backend that runs your chats, tools, files and terminals is now a Rust program on Windows, in WSL and on SSH servers, and the editor's language services are native too (ty for Python, TypeScript 7's native compiler for JavaScript and TypeScript). **Strata local inference is back** in Settings → Models, and every MCP server lists its tools with a switch per tool. Your chats, settings and keys carry over. [Read the full changelog →](CHANGELOG.md)
 
 <a id="docs"></a>
 ## Documentation
 
 | Document | Covers |
 |---|---|
-| [Desktop guide](docs/desktop.md) | Optional components, updates, SSH, Strata, models, project memory and known limits |
+| [Desktop guide](docs/desktop.md) | Optional components, updates, SSH, models, project memory and known limits |
 | [Setup and build guide (Chinese)](docs/desktop-setup.zh-CN.md) | Offline installation, editing and debugging, permissions and undo, building from source |
 | [Changelog](CHANGELOG.md) | Highlights of each release |
 | [Validation](docs/validation.md) | The build, installation and runtime checks completed for each release (Chinese) |
@@ -254,7 +253,7 @@ Every file it changed is listed above the message box: undo single changes in th
 <details>
 <summary><b>Does it work offline?</b></summary>
 <br>
-Yes, with a model server on your machine (such as Ollama) or Strata on an NVIDIA GPU. The full offline release and its installation are described in the <a href="docs/desktop-setup.zh-CN.md">setup guide</a>.
+Yes, with a model server on your machine (such as Ollama). The full offline release and its installation are described in the <a href="docs/desktop-setup.zh-CN.md">setup guide</a>.
 </details>
 
 <a id="run-from-source"></a>
@@ -271,12 +270,12 @@ git clone https://github.com/RainyMarks/Rainy.git
 cd Rainy
 pnpm install --frozen-lockfile
 node scripts/bootstrap-release-inputs.mjs --manifest toolpacks/build-inputs.v1.json
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/package.ps1 -Distribution Ubuntu -ComponentSource release/offline-3.9.2/environment-components
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/package.ps1 -Distribution Ubuntu -ComponentSource release/offline-4.1.1/environment-components
 ```
 
-Replace `Ubuntu` only when your WSL build distribution has another name, and `3.9.2` with the version in `package.json`. Building from source is for your own noncommercial use: the installer you build may not be distributed, and changing the code needs written permission from RainyMarks.
+Replace `Ubuntu` only when your WSL build distribution has another name, and `4.1.1` with the version in `package.json`. The native interface and the Host also need Rust's GNU toolchain (`x86_64-pc-windows-gnu`), MSYS2 UCRT64, `cargo-zigbuild` and Zig. Building from source is for your own noncommercial use: the installer you build may not be distributed, and changing the code needs written permission from RainyMarks.
 
-For development, `pnpm run dev` builds the app and starts a Host without Electron, then prints a URL to open in a browser; `pnpm run start` runs Electron on the built files. Developers can start with the [architecture](docs/architecture.md) and [AGENTS.md](AGENTS.md).
+For development, `pnpm run dev` builds the app and starts a Host on its own, then prints a URL to open in a browser; the interface lives in `native/`: `cargo build -p rainy --offline` builds it and `bash native/scripts/run-ui.sh` starts it with a scratch data folder. Developers can start with the [architecture](docs/architecture.md) and [AGENTS.md](AGENTS.md).
 
 </details>
 

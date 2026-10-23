@@ -24,7 +24,8 @@
 
 ***
 
-# Must-have MIDI datasets:
+<details>
+<summary><h1>Must-have MIDI dataset</h1></summary>
 
 This list contains a wide variety of MIDI datasets, from massive, processed corpora designed for machine learning to smaller, thematic collections for specific research or hobbies. The descriptions below are based on the content of each provided link. You'll notice a few different "types" of datasets:
 
@@ -272,9 +273,13 @@ A comprehensive, community-driven collection of MIDI files from the **TouHou Pro
 ## [The Nuker Series Black MIDIs](https://archive.org/details/the-nuker-series-including-tn3)
 This Internet Archive page hosts "The Nuker Series," a collection of **Black MIDI** files. Black MIDIs are characterized by an extremely high number of notes, often pushing the limits of the MIDI format.
 
+</details>
+
 ***
 
-# Hugging Face Miscellaneous MIDI Datasets
+<details>
+
+<summary><h1>Hugging Face Miscellaneous MIDI Datasets</h1></summary>
 
 ## [experiment_dataset](https://huggingface.co/datasets/rasta3050/experiment_dataset)
 ## [midi](https://huggingface.co/datasets/foldl/midi)
@@ -298,17 +303,25 @@ This Internet Archive page hosts "The Nuker Series," a collection of **Black MID
 ## [for_elise](https://huggingface.co/datasets/rcwang/for_elise)
 ## [harmony-whiz-synthetic-midi-corpus](https://huggingface.co/datasets/squamt/harmony-whiz-synthetic-midi-corpus)
 
+</details>
+
 ***
 
-# Zenodo Miscellaneous MIDI Datasets
+<details>
+
+<summary><h1>Zenodo Miscellaneous MIDI Datasets</h1></summary>
 
 ## [CP-WTC](https://zenodo.org/records/21693024)
 ## [PawChorale](https://zenodo.org/records/21777039)
 ## [Capriccio-MIDI](https://zenodo.org/records/21670078)
 
+</details>
+
 ***
 
-# Must-have Audio-MIDI datasets
+<details>
+
+<summary><h1>Must-have Audio-MIDI datasets</h1></summary>
 
 The datasets below are a crucial complement to the previous MIDI-only datasets. They provide **paired audio and MIDI data**, which is essential for tasks like automatic music transcription (AMT), source separation, and performance analysis. They range from solo piano to multi-instrument ensembles.
 
@@ -326,6 +339,41 @@ The University of Rochester Multi-Modal Music Performance (URMP) dataset focuses
 
 ## [Slakh2100](https://doi.org/10.5281/zenodo.4599666)
 The Synthesized Lakh (Slakh) Dataset is a large-scale dataset for **music source separation and multi-instrument automatic transcription**. It contains **2100 automatically mixed multi-track audio pieces**, synthesized from the Lakh MIDI Dataset using professional, sample-based virtual instruments. The result is **145 hours of mixture data** with perfectly aligned, ground-truth MIDI files for each individual instrument track (e.g., Piano, Guitar, Drums, Bass). All audio is provided in FLAC format, and the dataset includes detailed metadata for each source track.
+
+## [Internet Archive Music Dataset](https://huggingface.co/datasets/Telecom-Paris/iamd_v0)
+4.25 million captioned music segments from Creative-Commons audio on the Internet Archive — openly licensed audio paired with natural-language descriptions, at a scale hand-annotation cannot reach. Code is available [on GitHub](https://github.com/bvm810/IAMD)
+
+## [KRAISLER](https://zenodo.org/records/21082251)
+KRAISLER (KAIST Realistic Annotated Instrument-Specific Live Ensemble Recordings) dataset is a multi-track dataset of piano and violin duet recordings for music information retrieval (MIR) research. The dataset contains 20 excerpts from Western classical pieces spanning a wide range of historical periods and genres, performed by a professional violinist and pianist. Each excerpt was recorded live in two acoustically isolated rooms, yielding clean, bleed-free piano and violin stems together with their mixture.
+
+## [RWC Music Database](https://zenodo.org/records/18656623)
+The RWC-Classic dataset is the classical music subset of the Real World Computing (RWC) Music Database — a large, copyright‑cleared corpus originally built for music information retrieval research and now available under an open license for academic use
+
+## [TRIOS](https://zenodo.org/records/6797837)
+The TRIOS dataset is a score-aligned multitrack recordings dataset which can be used for various research problems, such as Score-Informed Source Separation, Automatic Music Transcription, etc. This dataset consists of the separated tracks from five recordings of chamber music trio pieces, with their aligned MIDI scores.
+
+## [Bach Violin](https://github.com/salu133445/bach-violin-dataset)
+The Bach Violin Dataset is a collection of high-quality public recordings of Bach's sonatas and partitas for solo violin (BWV 1001–1006). The dataset consists of 6.5 hours of professional recordings from 17 violinists recorded in various recording setups. It also provides the reference scores and estimated alignments between the recordings and scores. The dataset can be downloaded from Zenodo or GitHub.
+
+## [Medley-solos-DB](https://zenodo.org/records/3464194)
+Medley-solos-DB is a cross-collection dataset for automatic musical instrument recognition in solo recordings. It consists of a training set of 3-second audio clips, which are extracted from the MedleyDB dataset of Bittner et al. (ISMIR 2014) as well as a test set set of 3-second clips, which are extracted from the solosDB dataset of Essid et al. (IEEE TASLP 2009). Each of these clips contains a single instrument among a taxonomy of eight: clarinet, distorted electric guitar, female singer, flute, piano, tenor saxophone, trumpet, and violin.
+
+## [Good Sounds](https://zenodo.org/records/4588740)
+The dataset contains monophonic recordings of different instruments of two kind of exercises: single notes and scales
+
+## [EnsembleSet](https://zenodo.org/records/6519024)
+A novel multitrack dataset generated using the Spitfire BBC Symphony Orchestra library and ensemble scores from RWC Classical Music Database and Mutopia. Our data generation method introduces automated articulation mapping for different playing styles based on the input MIDI/MusicXML data.
+
+## [Bach10 Sibelius](https://zenodo.org/records/321361)
+The Bach10 Sibelius dataset is derived from the Bach10 dataset, which contains ten pieces of Bach chorales along the scores. We resynthesize the original scores at various tempos with the software Sibelius.
+
+## [PCD-K](https://zenodo.org/records/21528883)
+The PCD-K dataset is a dataset for piano transcription in ensemble settings and piano source separation. It was constructed by re-performing and re-recording the piano parts of piano concerto excerpts from the [Piano Concerto Dataset](https://audiolabs-erlangen.de/resources/MIR/PCD) using a Yamaha Disklavier, and includes aligned piano audio and accurate MIDI performance data.
+
+## [IDMT-PIANO-MM](https://zenodo.org/records/7544248)
+IDMT-PIANO-MM includes a total of 432 piano recordings (around four hours), which cover nine music pieces recorded in eight different rooms using six different recording devices. The pieces cover classical music (B. Bartók, W. A. Mozart, J. Pachelbel, and L. v. Beethoven) as well as jazz (S. Joplin as well as own compositions) and range from simple to medium difficulty. All music pieces are in the public domain.
+
+</details>
 
 ***
 
@@ -380,6 +428,7 @@ A curated list of online demos, colab notebooks, and software for audio processi
 - **[Online] [SOTA Kyutai and Mirelo MuScriptor Multi_Instrumental Audio-to-MIDI Transcription](https://huggingface.co/spaces/hugging-apps/muscriptor-music-transcription)** - MuScriptor Hugging Face Space Mirror
 - **[Model] [Multimodal Art Projection SheetSage2 Audio-to-MIDI Score Transcription](https://huggingface.co/m-a-p/SheetSage2)** - SheetSage2 turns music recordings into lead sheets and timed musical annotations. Transcribe a complete song, edit its ABC or MIDI, render a piano preview, or extract embeddings and token predictions for your own tools.
 - **[Online] [Multimodal Art Projection SheetSage2 Audio-to-MIDI Score Transcription](https://huggingface.co/spaces/Reubencf/Audio-to-Score)** - SheetSage2 Hugging Face Space Mirror
+- **[GitHub] [Transkun](https://github.com/Yujia-Yan/Transkun)** - Piano Transcription with Neural Semi-CRF. Of particular interest is Transkun_Aug which outperforms ByteDance/Kong model according to benchmarks.
 - **[Colab] [ByteDance Solo Piano with Pedals Audio-to-MIDI Transcription](https://colab.research.google.com/github/asigalov61/tegridy-tools/blob/main/tegridy-tools/notebooks/ByteDance_Piano_Transcription.ipynb)** - A Google Colab notebook for transcribing solo piano performances, including pedal information, into MIDI format.
 - **[Online] [ByteDance Solo Piano with Pedals Audio-to-MIDI Transcription](https://huggingface.co/spaces/asigalov61/ByteDance-Solo-Piano-Audio-to-MIDI-Transcription)** - An online Hugging Face demo of the ByteDance model for transcribing solo piano audio to MIDI with pedal data.
 - **[Online] [YourMT3 Multi-Instrumental Audio-to-MIDI Transcription](https://huggingface.co/spaces/mimbres/YourMT3)** - A demo for transcribing polyphonic, multi-instrumental music from audio to MIDI using a custom implementation of the MT3 architecture.
@@ -398,6 +447,7 @@ A curated list of online demos, colab notebooks, and software for audio processi
 
 - **[Online] [DuET](https://huggingface.co/spaces/Wayne42/DuET-demo)** - Solo Piano Audio/MIDI performance to MIDI score conversion model.
 - **[Github] [DuET](https://github.com/wei-zeng98/DuET)** - Same as above but CLI/programmatic.
+- **[Github] [PianistTransformer](https://github.com/yhj137/PianistTransformer)** - Brand new Solo Piano MIDI score to expressive MIDI performance conversion model.
 - **[Github] [SyMuPe/PianoFlow](https://github.com/ilya16/SyMuPe)** - Solo Piano MIDI score to MIDI performance conversion model.
 
 ## MIDI captioning

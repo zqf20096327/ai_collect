@@ -8,7 +8,9 @@
 ![Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-![kvleak audit, whatif and tune on the maintainer's history](docs/assets/demo.gif)
+[![kvleak audit card: 95.2% hit rate, $638 leaked to misses, 66% of it idle gaps that outlived the cache TTL](docs/assets/card.png)](https://github.com/shangliy/kvleak/issues/1)
+
+<sub>The maintainer's last 30 days, from `kvleak --card`. Yours will differ; that is the point. Post yours in [#1](https://github.com/shangliy/kvleak/issues/1), as the card or the four redacted lines of `kvleak --share`.</sub>
 
 <sub>▶ [Two-minute video](https://github.com/shangliy/kvleak/releases/download/v0.9.1/kvleak-demo.mp4): why the hit rate lies, the leak, the fix, before/after, the benchmark.</sub>
 
@@ -20,28 +22,30 @@ Also a Claude Code skill, so Claude runs the audit when you ask why the bill is 
 `npx skills add shangliy/kvleak` or `/plugin marketplace add shangliy/kvleak` then `/plugin install kvleak@kvleak`.
 
 No API key, no config, no network calls, no dependencies. It reads the session
-files **Claude Code, Codex CLI, Gemini CLI and OpenCode** already keep on disk
-and is done in seconds. On a subscription the dollars are list-price
+files **Claude Code, Codex CLI, Gemini CLI and OpenCode** already keep on disk,
+and the `claude -p --output-format json` results of a batch harness, and is
+done in seconds. On a subscription the dollars are list-price
 equivalents; the percentages are your rate-limit headroom.
 
 ```text
  kvleak · prompt-cache leak report
- 101 sessions + 276 subagents + 22,100 one-shot runs (Claude Code 81, Codex CLI 20) · 58,208 model calls
+ 100 sessions + 311 subagents + 25,421 one-shot runs (Claude Code 83, Codex CLI 17) · 56,195 model calls · 10.0k min miss size
 
-  Cache hit rate    95.4%  ██████████████████████▉
-  Input spend        $2,602   caching already saved you $21,281
-  Output spend      $452.39   replies + thinking at the output price · whole bill $3,054: 43.8% cache writes, 38.8% cache reads, 14.8% output
-  Leaked to misses  $537.72   20.7% of input spend went to cache rebuilds and cold starts · 17.6% of the whole bill
-  Dead writes       $215.71   write premium on tokens never read back (mostly one-shot `claude -p` runs)
+  Cache hit rate    94.6%  ██████████████████████▋
+  Input spend        $2,641   caching already saved you $21,594
+  Output spend      $641.66   replies + thinking at the output price · whole bill $3,283: 48.4% cache writes, 30.9% cache reads, 19.5% output
+  Leaked to misses  $632.74   24.0% of input spend went to cache rebuilds and cold starts · 19.3% of the whole bill
+  Recoverable       $121.10   with keep-alive pings (idle ≤ 2h, capped at break-even; `kvleak keepalive` sizes the budget from when you come back)
+  Dead writes       $262.91   write premium on tokens never read back (mostly one-shot `claude -p` runs)
 
  Where the leak comes from
-  cause                            misses  uncached     leak  share
-  Idle gap outlived the cache TTL     164     41.3M  $371.92  69.2%  ███████████
-  New session cold start            1,378     36.3M   $81.67  15.2%  ██▍
-  Subagent cold start                 145      4.1M   $29.44   5.5%  ▉
+  cause                            misses  uncached  per miss     leak  share
+  Idle gap outlived the cache TTL     215     45.9M      135k  $419.73  66.3%  ██████████▌
+  New session cold start            1,981     51.0M     14.2k  $123.44  19.5%  ███
+  Subagent cold start                 160      4.5M     28.5k   $31.58   5.0%  ▊
 ```
 
-<sub>The maintainer's last 30 days. Yours will differ; that is the point. `kvleak --card card.png` turns yours into [one image](docs/assets/card.png) and `kvleak --share` into four lines of text with no paths or session IDs; post either in [#1](https://github.com/shangliy/kvleak/issues/1).</sub>
+<sub>The same audit as text. Not convinced by one person's history? On [kenseii1's public 945-run benchmark](docs/launch/kensei-945-analysis.md), priced by the `costUSD` in its own logs, `/compact` cut raw tokens 40–72% and **raised the bill 14–37%**; a subagent cut tokens 3% and raised it 30%.</sub>
 
 ## Turn it on
 
@@ -97,6 +101,8 @@ levers are three times the best compressor, on a history where 44% of the
 bill is cache *writes*.
 
 ## Three commands
+
+![kvleak audit, whatif and tune on the maintainer's history](docs/assets/demo.gif)
 
 **1. See the leak.** `kvleak` (above). `--since 7d`, `--html report.html` for
 a shareable report, `kvleak session <id>` for one session call by call.

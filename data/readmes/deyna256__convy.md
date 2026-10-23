@@ -93,13 +93,13 @@ attempt, next to the dialogue. More in
 An agent with a JSON API needs only settings. Put this in `agents/support_bot.py`:
 
 ```python
-from convy import JsonAgent, JsonEndpoint
+from convy import JsonAgent, JsonEndpoint, TokenPaths
 
 agent = JsonAgent(
     JsonEndpoint("https://bot.example.com/api/chat"),
     body={"session_id": "{session}", "message": "{text}"},
     reply="data.answer",
-    tokens=("data.usage.input_tokens", "data.usage.output_tokens"),
+    tokens=TokenPaths(input="data.usage.input_tokens", output="data.usage.output_tokens"),
 )
 ```
 
@@ -160,6 +160,7 @@ trust. See the [security policy](https://github.com/deyna256/convy/blob/main/SEC
 | [The judge](https://github.com/deyna256/convy/blob/main/docs/judge.md) | how sure it is, `--trust`, your own judge |
 | [Runs](https://github.com/deyna256/convy/blob/main/docs/runs.md) | the run folder, stop and resume, exit codes |
 | [The report](https://github.com/deyna256/convy/blob/main/docs/report.md) | tiles, statuses, the scenario window, comparing runs |
+| [Results as data](https://github.com/deyna256/convy/blob/main/docs/results.md) | a run as tables, convy export, pandas |
 | [Run from Python](https://github.com/deyna256/convy/blob/main/docs/python.md) | the library behind the command |
 | [The shop demo](https://github.com/deyna256/convy/tree/main/examples/shop) | the bot behind the live report |
 | [Architecture](https://github.com/deyna256/convy/blob/main/ARCHITECTURE.md) | for people who change convy's code |

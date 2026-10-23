@@ -281,7 +281,17 @@ feed, err := db.OpenChangeReader(ctx, isledb.ChangeReaderOptions{
 
 ## Run it as services
 
-One binary runs each service:
+One binary, `isledb`, runs each service. Get it from the
+[latest release](https://github.com/ankur-anand/isledb/releases/latest),
+for Linux (amd64, arm64) and macOS (arm64), or run the container image:
+
+```bash
+docker run ghcr.io/ankur-anand/isledb:0.19.0 help
+```
+
+The image is tagged with each release's exact version, such as `0.19.0`, and
+with its minor version, such as `0.19`; there is no `latest` tag. With Go
+installed, you can also build it:
 
 ```bash
 go install github.com/ankur-anand/isledb/cmd/isledb@latest
@@ -340,6 +350,9 @@ curl -H "Authorization: Bearer $TOKEN" 'http://isledb-reader:8080/v1/kv?prefix=u
 # {"items":[{"key":"user/42","value":"{\"name\":\"a\"}"}]}
 ```
 
+If the database has a change feed, readers also serve it at
+`/v1/changes?from=…`, so consumers in any language can follow it.
+
 The paths match the writer's, so one gateway can route `GET` to readers and
 writes to the writer. A read is usually within a second of the writer (about
 two on Google Cloud Storage), and its `Isledb-Revision` header says which
@@ -391,6 +404,16 @@ See [Running `isledb cache`](docs/isledb-cache.md) and the
 
 An `isledb reader` uses it through `read_cache.url`; a Go program, through
 [`ReadCacheOptions`](#reading-through-the-shared-cache).
+
+## Versions and support
+
+IsleDB is before 1.0. A minor release, such as 0.19 to 0.20, may change the
+Go API, the services' flags and configuration, the HTTP API, or metrics; its
+release notes say what changed and how to move to it. A patch release, such
+as 0.19.0 to 0.19.1, only fixes problems.
+
+Fixes go into the next release; earlier releases are not patched. Run a
+recent release, and name its exact version wherever you deploy it.
 
 ## Documentation
 

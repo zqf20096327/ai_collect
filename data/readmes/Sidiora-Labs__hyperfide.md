@@ -25,6 +25,10 @@ The local CLI is pure C11: one binary, one SQLite database, no telemetry.
 
 ## Overview
 
+Run `hyperfide platform --help` for the Hyperfide platform runtime commands.
+The front door preserves arguments, streams and exit codes; see the
+[platform CLI guide](docs/hyperfide/cli.md) for executable lookup and environment.
+
 Hyperfide is an agent workflow engine in a single binary, `hyperfide`. It maintains the four things a project needs beyond the code itself — what the code **is**, how it got **here**, what happens **next**, and what was **learned** along the way — and serves all four to humans and AI agents alike.
 
 This tree is Hyperfide 2.0 in development: `hyperfide version` prints `2.0.0-dev`, and nothing in it is a production release. Hyperfide grew out of Codify, whose 1.x releases, feature IDs (such as `codify-v15` and `codify-v16`) and commit history keep their original names. 2.0 adds a [distributed control plane](#the-hyperfide-control-plane) — a leader and feature managers on a supervisory server, remote sandboxes for builds and agents, PostgreSQL as the authority — around the same local CLI.
@@ -484,8 +488,8 @@ approve = ["land"]           # opt-in: wait for `hyperfide fleet approve`
 | `hyperfide fleet sync [--base B]` | In a task worktree, merge its base branch in after a land was merged forward: refused while an uncommitted file is also changed on the base (named), a conflict aborted and named, otherwise the commits and files that came in, then a projection build |
 | `hyperfide fleet plan [-f F]` | Which manager owns each wave and which worker owns each task, planned branches beside live agents |
 | `hyperfide fleet tree [-f F]` | The live tree — main, managers, workers — with each branch's progress, whether it is ahead of its base or already merged, and every worker's attempt and heartbeat. Refused in a repo that runs flat |
-| `hyperfide fleet begin <id> [-f F] [--agent A]` | Create or reuse the task branch and worktree, cut from its wave branch, and claim the task for its worker. Idempotent; `--agent` names a replacement; `--ahead` claims a task whose `requires` are still open; `--sparse` (or `[hierarchy] sparse = "slice"`) checks out only the task's slice, `--full-tree REASON` records why it gets the whole tree |
-| `hyperfide slice <id> [-f F] [--manifest FILE]` | The slice manifest a task's worker tree is cut from: its touches, the build files on their directories and the feature's spec, or the service's manifest with `--manifest`; stored for `fleet begin --sparse`. No touches or a glob gives `FULL_TREE` with the reason recorded |
+| `hyperfide fleet begin <id> [-f F] [--agent A]` | Create or reuse the task branch and worktree, cut from its wave branch, and claim the task for its worker. Idempotent; `--agent` names a replacement; `--ahead` claims a task whose `requires` are still open; the worktree holds only the task's slice by default (`[hierarchy] sparse = "full"` opts out), `--full-tree REASON` records why it gets the whole tree; manager and wave worktrees are always the full tree |
+| `hyperfide slice <id> [-f F] [--manifest FILE \| --widen PATH --reason CODE]` | The slice manifest a task's worker tree is cut from: its touches, the build files on their directories and the feature's spec, or the service's manifest with `--manifest`; stored for `fleet begin`. No touches or a glob gives `FULL_TREE` with the reason recorded. `--widen` adds a path to the worker's sparse checkout and records it in the task's `touches` and `widened` |
 | `hyperfide fleet merge-up <id> [--keep]` | Merge a **qualified** task branch into its wave branch, after printing the projection's known findings for it. Refused while the branch tip says the task is not `done` (`--force` overrides); conflicts are listed by path and the merge aborted, or left in place with `--keep` |
 | `hyperfide fleet land <wave\|id>` | Merge a wave branch into local main and run the test and lint gates. Refused while a task of the wave is open; red resets main to where it was; green opens the PR when the policy says `auto` and merges main forward into the live wave branches. `--no-pr` skips the PR |
 | `hyperfide fleet pr <wave\|feature>` | Push and open the pull request against `<remote>/<main>` through `gh`, or print the exact commands when `gh` is absent. `--dry-run` calls nothing; an already-open PR is reported, not duplicated |
@@ -496,6 +500,11 @@ approve = ["land"]           # opt-in: wait for `hyperfide fleet approve`
 | `hyperfide fleet approvals [--all] \| approve <id> [--reject] [-m note]` | What waits at an opt-in gate (`land`, `pr`, `drift`, `coverage`), and the decision that releases it |
 | `hyperfide fleet steer <agent> <message>` | A message for a running agent: its next edit (Claude Code, through the post-edit hook) or its next prompt |
 | `hyperfide fleet brief [feature]` | The manager's briefing for a feature: subtree state, live workers, failed attempts, conflicts, approvals |
+| `hyperfide console needs\|issues\|sandboxes\|leaders [--json] [--watch] [--interval S] [--limit N]` | The operator console over the control service's `23.1-console` read model: Needs (open Asks, pending human intents, admission escalations), Issues (leader queue, external intake, escalated repairs), Sandboxes (sandboxes joined with slots, runners, identity status and attempts), Leaders (leader and feature-manager sessions), each with `as_of`. `--json` prints the view's object (one line per snapshot under `--watch`). Distributed mode only; local and offline refuse it |
+| `hyperfide human submit\|escalate\|read\|complete\|status\|autonomous\|describe\|bootstrap\|adopt` | Distributed: human intents at the control service (component `1.2`). Like every routed command it takes a JSON `--input-file` plus explicit run, operation, idempotency and correlation identities |
+| `hyperfide task claim\|dispatch\|renew\|cancel\|eligible` | Distributed: scheduler claims, dispatch, lease renewal and cancellation, and resource eligibility |
+| `hyperfide hierarchy describe\|inspect\|view\|acquire\|configure\|assign` | Distributed: the leader hierarchy, leadership acquisition, and package configuration and assignment |
+| `hyperfide supervisor describe\|launch\|inspect\|input\|stop` | Distributed: supervised agent sessions, launched, inspected, sent input and stopped |
 
 An agent's place in the tree lives in its environment — `HYPERFIDE_AGENT`, `HYPERFIDE_ROLE`, `HYPERFIDE_PARENT`, `HYPERFIDE_FEATURE`, `HYPERFIDE_WAVE` (and `HYPERFIDE_GH` to name the `gh` binary) — and `hyperfide fleet begin` prints the exact line to export (it spells the variables with their `CG_*` aliases, which are equivalent). With no role set nothing is registered, so a solo session is unchanged. With it, `hyperfide brief` names the role and parent, claims carry the branch, and the attempt ledger records branch, worktree, and parent for good.
 
@@ -721,7 +730,7 @@ $ node services/hyperfide/dist/control.js --policy /nonexistent --spec-revision 
 
 What this changes for a reader of the rest of this page:
 
-- The local `hyperfide` CLI is not a control-service client and grants no distributed authority. `hyperfide fleet down --drain` stops a CLI-supervised run; it does not stop remote sandboxes.
+- In local mode the `hyperfide` CLI works on the local store and grants no distributed authority. In distributed mode it is a control-service client: about 63 commands (spec, task, submission, graph, fleet, docs, supervisor, work, hierarchy, human, ask and the decision verbs) route to component actions with explicit run and operation identities, and `hyperfide mcp` serves those routes plus the same four Ask tools (`ask_raise`, `ask_status`, `ask_list`, `approvals_list`) as local mode, so a sandboxed worker's Ask lands in the control service. The service, not the CLI, decides authority. `hyperfide fleet down --drain` stops a CLI-supervised run; it does not stop remote sandboxes.
 - Database settings for the services are `HYPERFIDE_<ROLE>_PRIMARY_DATABASE_URL` (falling back to `DATABASE_URL`), an optional `HYPERFIDE_<ROLE>_REPLICA_DATABASE_URL`, and `HYPERFIDE_MIGRATION_DATABASE_URL` for the migration operator; the bounded pool settings are in the operations guide.
 - Migration components import historical SQLite state with its provenance, plan the rename of `codify.kvx` to `hyperfide.kvx` and of `.codify/agent-context.md` to `.hyperfide/context/agent-context.md` with backups, and treat legacy `CG_*`/`CODIFY_*` variables as aliases. An old `done` flag is imported as history, not as current qualification.
 
@@ -786,39 +795,4 @@ make hyperfide-services  # build the TypeScript control services (after make hyp
 make hyperfide-check     # type-check them
 ```
 
-`make release` runs `scripts/release.sh`, which constructs a checksummed release on a remote executor and never publishes it. It needs `scripts/release.sh --output DIR` and `HYPERFIDE_BUILD_PLACEMENT=remote`, plus the pinned Node, npm and Python toolchain it checks for; plain `make release` passes no `--output` and stops with `hyperfide release: --output is required`.
-
-Repository layout:
-
-```
-src/                 C modules and focused headers; src/cg.h is the shared core header
-src/hyperfide/       native Hyperfide components: branding, sandbox supervisor,
-                     launch, readiness, preparation, transport, control client
-src/govern.c         brief, review, guard, check, handoff, resume — the governance layer
-src/orchestrate.c    hyperfide spec run and the fleet supervisor (hyperfide fleet up):
-                     durable runs, three levels at once, stalls, budgets, retries, escalation
-src/syncgate.c       the single-writer index gate and machine-wide parse slots
-src/fleet.c          roles and capabilities, the branch lifecycle, merge lock,
-                     approval gates, fleet tree
-src/events.c         the append-only event log and hyperfide events
-src/serve.c          hyperfide serve — one JSON-RPC connection with pushed events
-src/drivers.c        agent launch argv, structured output read into events, steering
-src/drift.c          spec drift, collision prediction, interface drift, coverage
-src/changelog.c      release notes from git history, optional model highlights
-src/recap.c          resume brief from agent transcripts: System One picks, chat model writes
-src/jev.c            typed decisions over curl
-src/skills.c         memories classed as skills, rendered as .agents/skills
-src/lsp.c            language server over the graph
-src/gitint.c         git history ingestion, churn, branch identity, commit mirroring
-services/hyperfide/  TypeScript control, provisioner and dispatch services
-tests/unit/          kvx grammar, SHA-256 vectors, JSON scanner, StrBuf/IO
-tests/integration/   graph, vcs, agentic, MCP protocol, spec engine, watcher,
-                     sync gate, fleet, branches, jev, changelog, events, serve,
-                     supervisor, drift, briefings, fleet end to end, recap,
-                     explore
-tests/hyperfide/     the qualification runner (qualify.py), the independent
-                     evidence checker (check-evidence.py), cases and manifests
-tests/fixtures/      sample polyglot project, a spec repo with golden outputs,
-                     an explore project with gold queries,
-                     stand-ins for curl, gh, and an OpenAI endpoint, and a
-           
+`make release` runs `scripts/release.sh`, which constructs a checksummed release on a remote executor and never publishes it. It needs `scripts/release.sh --output DIR` and `HYPERFIDE_BUILD_PLACEMENT=remote`, plus the pinned Node, npm and Python toolchain it checks for; plain `make release` passes no `--output` and stops with `hyperfide release: --output is required

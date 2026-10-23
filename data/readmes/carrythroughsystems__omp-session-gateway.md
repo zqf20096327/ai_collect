@@ -115,6 +115,7 @@ Open your configured HTTPS address from your allowlisted Tailscale device and ad
 - **[Open request vs View transcript](docs/USAGE.md#view-and-control)** — **Open request** opens OMP's encrypted client in Control mode; **View transcript** (or **View** on any row) opens it read-only, and answers show `Sending…` until OMP acknowledges them.
 - **[Hold for desk and Hide](docs/USAGE.md#hold-and-hide)** — **Hold for desk** defers the current ask on this device and advances to the next one; **Hide** removes a non-waiting row on this device with **Undo** and **Show all**.
 - **[Background alerts](docs/USAGE.md#background-alerts)** — Opt in from the Settings sheet and choose **Private**, **Session**, or **Preview** detail; when a host that publishes `busy` goes idle, tapping its stop alert opens **View**.
+- **[Multiple hosts, dictation, and Tern](docs/USAGE.md#multiple-hosts-all-hosts-and-host-picker)** — Poll up to 7 additional gateways from one PWA with reciprocal `fleet.targets` and `http.trustedDashboardOrigins` ([Multi-host setup](docs/OPERATIONS.md#multi-host-setup)), use OS keyboard dictation or opt-in `speech.browserRecognition` in **Control** where **Use text** never auto-sends ([Dictation and speech input](docs/USAGE.md#dictation-and-speech-input)), and run stock OMP inside Tern panes with `collab.autoStart` ([Running OMP inside Tern](docs/OMP_INTEGRATION.md#running-omp-inside-tern)).
 
 <div align="center">
 <img
@@ -146,7 +147,7 @@ Read the full [threat model](docs/SECURITY.md) or [report a vulnerability privat
 | Android | A physical Pixel (Chrome on Android), including background alerts; a cloud Samsung Galaxy |
 | iPhone & iPad | A cloud iPhone and iPad on Safari; iPhone background alerts in the Home Screen app (not the lock screen) |
 | Desktop Chrome, Edge, Firefox, Safari | CI only (Chromium, Firefox, and WebKit engines) |
-| Exact qualified OMP | `v18.10.2` ([`c8913466dd`](https://github.com/can1357/oh-my-pi/commit/c8913466dd7bf92040de911f8e00e30b8f4e48a2)); Bun `1.4.0` |
+| Exact qualified OMP | `v18.12.5` ([`d5cd750e41`](https://github.com/can1357/oh-my-pi/commit/d5cd750e41fede277f9eb933455da92a0738915e)); Bun `1.4.0` |
 
 Every row is **supported**: tested in CI on each change, bug reports accepted. **Qualified** names the exact hardware, OS, and browser versions verified for the latest release — see [Platforms and browsers](docs/COMPATIBILITY.md#platforms-and-browsers) and [Current claim](docs/COMPATIBILITY.md#current-claim).
 

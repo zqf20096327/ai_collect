@@ -138,9 +138,58 @@ The screenshots show the real data of one PC (RTX 5070 Ti 16 GB, Ryzen 7 5800X3D
 
 ![Tune](docs/screenshots/tune.png)
 
+The Tune view has two panes. The switch at the top moves between them: **Standard test** (`#tune`) and **This PC**
+(`#tune/pc`). The old `#workload` address opens the Standard test. Compare stays a view of its own, for any two or more runs.
+
+**This PC** (calibration):
+
 - **Tune this PC**: a profile, Strata's calibration, a second profile, and the comparison (see below).
 - What the calibration measured, round by round, and which value it kept.
 - Whether the tune helped the requests that you send, not only the calibration's own test.
+
+### Tune: Standard test
+
+The first pane of the Tune view. It holds the tune with the standard test, and under it a read-only look at your requests.
+
+**Tune with the standard test.** A tune that measures whole requests (a read of many tokens, then a reply), not one
+short prompt, and keeps a change only when it beats the noise of this PC.
+
+1. **Quiet check.** It waits until the engine log shows no request for 90 s. If another client keeps using Strata, it
+   stops and says so.
+2. **The standard test.** One conversation of 6 turns, built like a coding agent's session. The first turn reads 24,000
+   tokens. Each later turn adds 800 to 3,000 new tokens on top of the conversation that Strata already holds (the
+   engine reuses the turn before), and the replies have 128 to 512 tokens (1,728 in all). Some replies copy text, like a
+   diff, and some are free text, like an explanation. The turns are the same on every PC and in every run, so two tunes
+   can be compared. They are a benchmark, not a claim about your traffic: the Studio does not guess your workload, and it
+   has no scenario presets. The prompts are plain filler text and the history holds fixed text for the replies, so every
+   setting gets the same prompts. **The text is not yours.** The Studio never sends your prompts. How well drafts work on
+   your own text is not measured. The score is the time that the engine spends for each generated token, because the
+   settings under test act on the reply, not on the prompt read, and the length of a reply varies a little from run to run. If Strata does not reuse the conversation between turns,
+   the pass is dropped and the tune stops with that reason. The test fills the conversation cache of Strata with its own
+   conversations, so the next request of your own session may have to read its prompt again.
+3. **Only settings that do not change the answer.** The per-request keys `pcie_frac` and `spec_min_p`. The engine
+   verifies every draft and expert placement does not choose the token. The Studio still compares the reply text of
+   each try with the reply text of the current settings. A try with another text is never applied. Settings that
+   change the answers (thinking budget, route tail skip) are **not** tuned. They are in Settings, for you to set.
+4. **Statistics.** Rounds in turns: the current settings twice (A/A: the noise of this PC) and each candidate once, in
+   a random order each round. At least 5 rounds. A candidate wins when the 95% interval of its paired median change
+   is wholly on the better side, and the change is larger than the noise (the median difference between the two copies of the current settings) and larger than 2%.
+   The copy replies and the free replies are scored and compared apart (a copy reply is much faster, so a pass with more
+   copy tokens would look faster); a candidate wins when it is better in one kind and worse in none, and its gain is the
+   mean of the two. The result keeps the score of every round (`per_round` in `/api/mytune`). A round where another
+   request reached Strata, or where the engine reused a prompt, is dropped and replaced.
+5. **Closed loop (optional).** With "Write the result": a dated copy of the config (`<config>.bak-pre-mytune-<time>`),
+   the write, a restart (`--restart-cmd "systemctl --user restart strata"`, split into words, no shell), a wait for
+   `/health`, then the same rounds again (new config against the old values). If the old values are faster, the copy
+   goes back and Strata restarts. Without `--restart-cmd` the Studio writes the config and says "Restart Strata".
+
+A tune sends requests to Strata for some minutes. The card shows the estimate before you start. `POST /api/mytune`
+needs `"confirm": true`; `GET /api/mytune/plan` and `GET /api/mytune` read.
+
+**Your requests** (read only, under the tune card): the prompt length, the reused share of the prompt, the reply length,
+the speeds, and how the time splits between the prompt read and the reply, counted from the engine log. The Studio reads
+no prompt text. A short list of ideas follows. Each idea says what it is based on. None of them is a measured gain.
+`GET /api/workload?last=N&min_prompt=N` gives the same counts. The time estimate of the tune uses the speeds in this log.
 
 ### Settings
 

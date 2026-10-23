@@ -11,7 +11,7 @@
 
 Generate images and video across two DGX Sparks from one ComfyUI window. Split a render between the GPUs, run separate prompts at once, or shard supported model weights to fit larger checkpoints.
 
-DGX Monarch provides model loaders, samplers, memory controls, and 66 example workflows. Text encoding, VAE decode, saving, and the rest of your graph stay in ComfyUI.
+DGX Monarch provides model loaders, samplers, memory controls, and 71 example workflows. Text encoding, VAE decode, saving, and the rest of your graph stay in ComfyUI.
 
 [Get started](docs/QUICKSTART.md) · [Installation](docs/INSTALL.md) · [Model support](docs/MODELS.md) · [Benchmarks](docs/BENCHMARKS.md)
 
@@ -25,6 +25,41 @@ DGX Monarch provides model loaders, samplers, memory controls, and 66 example wo
 - **Avoid unnecessary model copies.** Slab residency and low-RSS LoRA handling reduce duplicate weights in shared memory. Built-in checks compare these paths with stock residency before reuse.
 - **Start with a model workflow.** Choose a template, select your files, and queue it. Automatic selection chooses a supported GPU layout for the model; the model guide explains the manual options.
 - **See what the pair is doing.** The ComfyUI sidebar and `dgxm top` show memory use, render progress, connection state, and errors.
+
+## Studio
+
+Studio is an optional browser workspace for the pair. Pick a bundled
+workflow, write the prompt, queue renders on the driver and follow them on
+one page, with Gallery, Queue, Grids, Fleet and Library views beside it.
+Studio listens only on this computer. It signs your browser in with a link
+that holds its access token; treat that link like a password. Install the
+`studio` extra ([INSTALL](docs/INSTALL.md#optional-studio-companion)), tell
+Studio once where ComfyUI listens, in `cluster.toml`
+([CLUSTER](docs/CLUSTER.md#studio-optional)):
+
+```toml
+[studio]
+driver = "http://127.0.0.1:8188"
+```
+
+Use the address your ComfyUI listens on; Studio keeps its records for the
+first driver address it uses. Then start it on the computer that runs
+ComfyUI:
+
+```bash
+dgxm studio
+```
+
+`dgxm studio` reads your `cluster.toml`, starts Studio and opens it in your
+browser, or prints the link when there is no display. `dgxm studio up` keeps
+it running as a user service, and `dgxm studio tunnel <host>` prints the SSH
+line that reaches it from a laptop.
+
+[![DGX Monarch Studio with test fixture data](docs/media/dgxm-studio.png)](docs/STUDIO.md)
+
+Shown with the CPU test fixture, so no model ran. Studio is a draft; the
+[Studio guide](docs/STUDIO.md) covers setup, remote access and what is not
+finished yet.
 
 ## Featured workflows
 
@@ -56,7 +91,7 @@ Image generation and editing with up to ten references, including alpha-masked i
 </table>
 
 The pack also includes [Kroma BF16, INT8 and 2x upscale workflows](docs/MODELS.md#model-kroma),
-Flux, FLUX.3 Klein, Chroma, LTX, Hunyuan, Wan, and other families. Kroma uses the Krea2 runtime;
+Flux, FLUX.3 Klein, MOSS-Image and its Kromoss fine-tune, Chroma, LTX, Hunyuan, Wan, and other families. Kroma uses the Krea2 runtime;
 its resident BF16, local INT8 and BF16 2x refinement graphs matched their
 [listed stock references](docs/VALIDATION.md#evidence-kroma). Manual
 `uly2+fsdp` also matched these three workflows at batch 1; batch-2 `dp2+fsdp`
@@ -140,7 +175,9 @@ Native latent RDMA is **off by default**. [Selected-rail return checks](docs/VAL
 ## Updating
 
 Read the [changelog](CHANGELOG.md) before you update. Before the first update
-from 1.1.0, follow [Upgrading from 1.1.0](docs/INSTALL.md#upgrading-from-110).
+from 1.2.0, follow [Upgrading from 1.2.0](docs/INSTALL.md#upgrading-from-120);
+from 1.1.0, follow [Upgrading from 1.1.0](docs/INSTALL.md#upgrading-from-110)
+as well.
 
 1. Stop ComfyUI. Both update modes refuse while a driver answers.
 2. Check where each host's Workers run. A path under `releases/` means a
@@ -169,6 +206,10 @@ your own way. [INSTALL](docs/INSTALL.md#updating) covers every flag, recovery
 and rollback.
 
 ## Documentation
+
+[Studio draft](docs/STUDIO.md) describes the optional browser companion and its
+current acceptance gaps. Existing CLI, TUI and ComfyUI workflows remain the
+supported interfaces while Studio's complete specification is under development.
 
 [Documentation index](docs/README.md) · [Model guide](docs/MODELS.md) · [Troubleshooting](docs/TROUBLESHOOTING.md) · [FAQ](docs/FAQ.md) · [Contributing](CONTRIBUTING.md)
 

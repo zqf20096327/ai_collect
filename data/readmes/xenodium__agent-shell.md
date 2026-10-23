@@ -807,6 +807,23 @@ Huge thanks for /gdindi/ for finding and and describing this in https://github.c
 
 By default, =agent-shell= includes configurations for all supported agents (Claude Agent, Gemini CLI, Codex, Goose, Grok Build, Cursor, CodeBuddy, Qwen Code, and Auggie). You can customize which agents are available through the =agent-shell-agent-configs= variable.
 
+*** Handling provider notifications
+
+Provider implementations can set =:notification-handler= in =agent-shell-make-agent-config= to handle custom ACP notifications. The callback runs after =:notification-adapter= and receives an event alist containing =:state= and the adapted =:acp-notification=. Return non-nil when handled, or nil to continue with core notification handling.
+
+#+begin_src emacs-lisp
+  (agent-shell-make-agent-config
+   :identifier 'example
+   :notification-handler
+   (lambda (event)
+     (when (equal (map-nested-elt event '(:acp-notification method))
+                  "_example/status")
+       (message "%s" (map-nested-elt event '(:acp-notification params text)))
+       t)))
+#+end_src
+
+Return nil for standard notifications such as =session/update= so core keeps rendering them. See =C-h f agent-shell-make-agent-config= for the configuration options.
+
 ** Usage
 
 *** Quick Start
@@ -1480,8 +1497,4 @@ always go to Evil modes if you need to with ~C-z~).
 |                                                       | agent-shell-viewport-reply                              | Reply as a follow-up and compose another prompt/query.                        |
 |                                                       | agent-shell-viewport-reply-1                            | Reply with "1" and send immediately.                                          |
 |                                                       | agent-shell-viewport-reply-2                            | Reply with "2" and send immediately.                                          |
-|                                                       | agent-shell-viewport-reply-3                            | Reply with "3" and send immediately.                                          |
-|                                                       | agent-shell-viewport-reply-4                            | Reply with "4" and send immediately.                                          |
-|                                                       | agent-shell-viewport-reply-5                            | Reply with "5" and send immediately.                                          |
-|                                                       | agent-shell-viewport-reply-6                            | Reply with "6" and send immediately.                                          |
-|                                                       | agent-shell-viewport-reply-7                            | Reply with "7" and 
+|                                        

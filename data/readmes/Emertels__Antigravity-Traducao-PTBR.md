@@ -2,11 +2,10 @@
 ### Versão de tradução 1.4.0 — Antigravity 2.24.0 — 18/10/2026
 Localizados os textos das capturas e das descrições de plugins: visualizador biomolecular, Google Workspace, Firebase, Android CLI, Google Developer Knowledge, Google Cloud Developer, Google Maps Platform, Dart e Flutter, Data Agent Kit e Modern Web Guidance, além de limites, histórico, projetos, seletor de ambiente e ajuda jurídica. A revisão do texto copiado de Modern Web Guidance abrangeu 441 linhas e 5.016 palavras; 382 entradas de mapeamento foram acrescentadas ou ampliadas no catálogo desta revisão. Esse número conta mapeamentos, não palavras traduzidas. A compatibilidade estrutural do patch foi conferida no `app.asar` local 2.24.0; o frontend embarcado no pacote segue baseado em 2.23.0.
 
-### Revisão do console — 13/10/2026
+### Revisão do console — 14/10/2026
 Lançadores CMD e scripts PowerShell exibem corretamente acentos e cedilhas. O bundle atualizado para o frontend do Antigravity 2.23.0 preserva o seletor e o modo Turbo durante a tradução.
 
 
-![Versão](https://img.shields.io/badge/Versão-v1.4.0-blue?style=for-the-badge)
 ![Idioma](https://img.shields.io/badge/Idioma-Português%20(Brasil)-green?style=for-the-badge)
 
 Pacote portátil de localização PT-BR do **Google Antigravity Desktop** para Português do Brasil (pt-BR). Tradução profunda cobrindo tanto o núcleo do aplicativo Electron (modular ASAR de 4.5 MB) quanto a interface web gráfica (`web-bundle`), diálogos de permissão, configurações, comandos de agentes, bandeja do sistema e painel de conversas.
@@ -17,7 +16,7 @@ Pacote portátil de localização PT-BR do **Google Antigravity Desktop** para P
 - Em 14/10/2026, o usuário confirmou o teste da tradução no Antigravity 2.23.0 e informou que está funcionando.
 - Atualização de 14/10/2026: traduzidos Hide Whitespace Changes, Good Response, Bad Response, 6h ago e rótulos dinâmicos de linhas/itens adicionais; a proteção de editores foi restringida a seletores conhecidos para não ocultar rótulos de diff.
 - Ajuste de desempenho do tradutor DOM (14/10/2026): a leitura inicial e as alterações dinâmicas agora são processadas em pequenos blocos por quadro, reduzindo picos que podiam congelar a interface; editores permanecem excluídos.
-## Estado da atualização — 13/10/2026 · Antigravity 2.23.0
+## Estado da atualização — 14/10/2026 · Antigravity 2.23.0
 
 - O frontend correspondente ao Antigravity 2.23.0 foi incorporado ao pacote a partir do cache local do aplicativo. O seletor exibe Solicitar revisão, Padrão, Verificado (prévia), Automático (prévia) e Turbo. Já haviam sido acrescentadas 4 traduções para Vetted/Auto (prévia) e suas descrições. Nesta revisão, foram aplicadas diretamente no frontend mais 4 strings: Solicitar revisão, Padrão, o placeholder de pesquisa (“Pesquisar abas, arquivos, plugins, subagentes, artefatos e tarefas...”) e seu nome acessível. As descrições e a visibilidade do Turbo permanecem preservadas.
 - A instalação oficial 2.23.0 não inclui `resources/web-bundle`; o instalador fornece essa pasta. O pacote agora usa o frontend carregado pela própria instalação 2.23.0, com a tabela de modos atual e Turbo preservado.

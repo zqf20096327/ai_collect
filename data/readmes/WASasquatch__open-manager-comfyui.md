@@ -2,14 +2,14 @@
 
 <img src="https://raw.githubusercontent.com/WASasquatch/open-manager-comfyui/main/open-manager-banner.png" alt="Open Manager for ComfyUI">
 
+<a href="https://youtu.be/swET9-F8gXs"><img src="https://raw.githubusercontent.com/WASasquatch/open-manager-comfyui/main/docs/video-tour.jpg" width="800" alt="Open Manager for ComfyUI: a quick tour, on YouTube"></a>
+
 | | |
 | --- | --- |
 | <a href="https://raw.githubusercontent.com/WASasquatch/open-manager-comfyui/main/docs/download-manager.png"><img src="https://raw.githubusercontent.com/WASasquatch/open-manager-comfyui/main/docs/download-manager.png" width="400" alt="Download Manager"></a><br>**[Download Manager](docs/DOWNLOADS.md)** | <a href="https://raw.githubusercontent.com/WASasquatch/open-manager-comfyui/main/docs/model-library.png"><img src="https://raw.githubusercontent.com/WASasquatch/open-manager-comfyui/main/docs/model-library.png" width="400" alt="Model Library"></a><br>**[Model Library](docs/MODELS.md)** |
 | <a href="https://raw.githubusercontent.com/WASasquatch/open-manager-comfyui/main/docs/monitor-panel.png"><img src="https://raw.githubusercontent.com/WASasquatch/open-manager-comfyui/main/docs/monitor-panel.png" width="400" alt="Resource Monitor"></a><br>**[Resource Monitor](docs/MONITOR.md)** | <a href="https://raw.githubusercontent.com/WASasquatch/open-manager-comfyui/main/docs/desktop.png"><img src="https://raw.githubusercontent.com/WASasquatch/open-manager-comfyui/main/docs/desktop.png" width="400" alt="Desktop Mode"></a><br>**[Desktop Mode](docs/DESKTOP.md)** |
 
 The whole workspace at once: [one screenshot](https://raw.githubusercontent.com/WASasquatch/open-manager-comfyui/main/open-manager-screenshot.png).
-
-https://github.com/user-attachments/assets/5f264d2f-b11b-4ca9-9f69-73a553213e85
 
 ## A manager for the whole ComfyUI workspace, not just its nodes.
 
@@ -116,6 +116,8 @@ and macOS, in the file that starts ComfyUI. See [Launch files](#launch-files).
 
 ## Packs
 
+<a href="https://youtu.be/W7xUrkimnPs"><img src="https://raw.githubusercontent.com/WASasquatch/open-manager-comfyui/main/docs/video-install.jpg" width="800" alt="Installing packs tutorial, on YouTube"></a>
+
 | | |
 | --- | --- |
 | Every version | Flagged, withheld and banned included |
@@ -125,6 +127,7 @@ and macOS, in the file that starts ComfyUI. See [Launch files](#launch-files).
 | Your own repos | By URL or `owner/repo`, kept in `user/` |
 | Any ref | Branch, tag or commit |
 | Workflow gaps | Missing nodes, and which pack won a duplicate name |
+| Workflow packs | Each pack the open workflow uses, with node ids to copy |
 | Themes | Gradients, icons, backdrops |
 | Fast sync | Whole registry in seconds |
 
@@ -252,6 +255,8 @@ already fixed, stands down and says so in the browser console.
 | Subgraph nodes keep their saved values | On | A subgraph node whose promoted widgets ComfyUI migrated loads with its saved values instead of the values they had at migration |
 | Custom widgets follow their node's width | On | Custom and DOM widgets keep following their node once it has been shown in the properties panel |
 | Nodes 2.0 widgets on the classic canvas | On | Curves, image compare and crop, video trim and crop, bounding boxes, colour palettes, the resolution preview and LoRA stacks work on the classic canvas, also when promoted to a subgraph. The painter, the compositor and light info show ComfyUI's own editors there. Stands down when [ComfyUI-Nodes2Classic](https://github.com/Nynxz/ComfyUI-Nodes2Classic) is installed |
+| Self-drawn widgets keep their size when zoomed | On | On Nodes 2.0, a widget that draws itself, such as a section header, draws at its node's width when it appears while zoomed in or out |
+| Panels fit their node and scroll | On | On Nodes 2.0, a panel widget that sets its own height, such as a value readout, opens at that height, grows and shrinks with its node, and scrolls |
 | Hide Partner nodes | Off | Paid Partner (API) nodes, their templates and the Login button are hidden |
 | Looping animations hold still while a job runs | On | Running spinners and pulses stop redrawing until the queue is empty |
 | Go to Node by ID | On | Opens and frames a node by ID, or by a path such as `12:5` for node 5 inside subgraph node 12. In the canvas menu, and bindable under ComfyUI's keybindings |

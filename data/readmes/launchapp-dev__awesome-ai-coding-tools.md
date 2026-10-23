@@ -101,6 +101,7 @@ Lower-level CLI tooling that pairs with agents or runs solo.
 - [mods](https://github.com/charmbracelet/mods) 🟢 — Charm's AI for the command line. Pipes-friendly.
 - [OrcaReplay](https://github.com/Continuum-AI-Corp/OrcaReplay) 🟢 — Records a coding-agent run below the harness, then replays it offline against the recorded bytes with no model called.
 - [shell-gpt (sgpt)](https://github.com/TheR1D/shell_gpt) 🟢 — Shell command generation and chat.
+- [Talavine Code](https://github.com/scrossen/talavine-code) 🟢 🏠 — C# desktop and CLI coding harness with API models, coding CLI backends, local Ollama models, and cross-model review.
 - [unsent](https://github.com/GeiserX/unsent) 🟢 — Go CLI that saves the prompt you are still typing in Claude Code, Codex, pi and agy every 0.4 seconds and recovers it after a crash, a closed window or a reboot.
 
 ## Agent Orchestrators & Multi-Agent
@@ -127,6 +128,7 @@ Frameworks for running multiple agents, coordinating workflows, or building your
 - [Tale](https://github.com/tale-project/tale) 🟢 🏠 — Self-hosted project workspace that delegates tasks to coding agents such as Claude Code and Codex in persistent sandboxes and supports shared review of their reports and deliverables.
 - [Wayari](https://wayari.com/) 💰 - Local coding-agent orchestrator that runs Claude Code and Codex in isolated worktrees, checks changes, and hands reviewed pull requests to the user.
 - [YYLO CLI](https://github.com/yylo-dev/yylo) 🟢 — Command-line orchestrator for coding agents with typed task, validation, merge, and release-readiness boundaries; each task runs in a dedicated branch/worktree and a merge queue owns risk-based review over receipt-backed runs.
+- [Zozo](https://zozohq.com/) 💰 🆓 🏠 — Coding-agent orchestrator for Claude Code and Codex that dispatches dependency-ready GitHub issues into isolated worktrees, pauses for human clarification, and opens pull requests, with a free Local Stack and paid hosting.
 
 ## Code Review & PR Automation
 

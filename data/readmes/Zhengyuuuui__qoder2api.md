@@ -9,6 +9,21 @@
 [![Go](https://img.shields.io/badge/Go-1.22+-00ADD8?logo=go)](https://go.dev)
 [![License](https://img.shields.io/badge/License-见原项目-blue)](https://github.com/wangtufly/QCCG/blob/main/LICENSE)
 
+> ## 🆕 2026-10-23 · 本轮新增模型：Sonus / Cantus / Fast
+>
+> 通过**新版推理协议**（`cosy-clienttype=10` / `cosy-version=1.1.69` + **真实设备指纹**），
+> 国际版账号模型清单由 13 → **15** 个，新增三档：
+>
+> | Key | 模型 | 定位 | 上下文 | 最大输出 | 倍率 | 推理 |
+> |-----|------|------|--------|----------|------|:----:|
+> | `smodel` | **Sonus** | 顶级旗舰 · 最贵 · 热门时段常排队 | 200,000 | 32,768 | **8** | ✅ |
+> | `cmodel` | **Cantus** | 高能力主力档 | 200,000 | 32,768 | **4** | ✅ |
+> | `fast` | **Fast** | 低延迟快速档 | 200,000 | 16,384 | 0.8 | — |
+>
+> - 三档均需账号在 `accounts/*.json` 配置 `checkin_fingerprint`（真实设备指纹）后走新版协议才会出现并可推理；未配置的账号仍是旧版 13 模型清单，行为不变。
+> - **Sonus 倍率 8 为全表最高**，用的人多，上游高频返回 `10605 isQueued`（排队中）——属容量问题，稍后重试或换模型即可。
+> - 详见下方「更新记录 · 新版推理协议解锁 Sonus / Cantus / Fast」。
+
 ---
 
 ## 📖 [2026-10-20 更新] Qoder 注册链路逆向研究 · 阶段性成果
@@ -257,6 +272,107 @@ access token 并回传新的 refresh_token）在过期前**主动续期**。
 
 ## 更新记录
 
+### 🎚️ 新增：Context 多档位支持（200K / 400K / 1M）
+
+**2026-10-23**
+
+上游 `model/list` 的 `context_config` 按模型提供多档 context，但 bridge 此前只取
+`is_default` 那一档（通常 200K），导致 400K / 1M 档位在 `/v1/models` 中不可见，
+App 端能选到的大 context 在 bridge 侧完全丢失。
+
+**改动**：
+
+| 文件 | 内容 |
+|------|------|
+| `internal/bridge/bridge.go` | `QoderModel` 新增 `ContextTiers`；`parseQoderModels` 保留全部档位；新增 `resolveContextTokens` / `contextTierTokens` / `modelCatalog`（5 分钟缓存）|
+| `internal/bridge/context_tier_test.go` (新增) | 档位解析、排序、默认档回退、大小写不敏感等用例 |
+| `account/model.go` | `Settings` 新增 `context_tier_default` 与 `context_tier_overrides` |
+| `service.go` | `ListQoderModels` 透出 `context_tiers` |
+| `main.go` | settings 保存支持档位字段 |
+| `webconsole/index.html` | 模型表格新增「可用档位」列；模型区新增档位下拉与保存按钮 |
+
+**使用**：控制台「模型」区域顶部选择档位（如 `400K`），保存后对该实例所有模型生效；
+留空 = 用上游默认档。请求时把所选 token 数写入 `model_config.max_input_tokens`。
+
+> ⚠️ **未证实**：上游 `context_config` 的结构已从抓包确认，但「App 端用哪个请求字段
+> 传递所选档位」尚未抓到真实模型请求验证。当前按最可能的 `model_config.max_input_tokens`
+> 实现（该字段已存在于请求模板）。若实测不生效，需抓一次 App 的
+> `agent_chat_generation` 请求确认字段名。
+
+**实测档位分布**（`scripts/capture/` 抓包，15 个模型中 12 个有三档）：
+
+| 模型 | 档位 |
+|------|------|
+| `qmodel_38max` / `qfmodel` / `dmodel` / `dfmodel` / `gfmodel` 等 | 200K / 400K / 1M |
+| `ultimate` / `fast` / `smodel` / `cmodel` 等 | 200K / 400K / 1M |
+| `auto` / `efficient` | 仅 200K |
+
+
+### 🔁 改进：模型排队改为「同账号等待重试 + 友好提示」（2026-10-23）
+
+**2026-10-23 CST**
+
+热门模型（如 Sonus，倍率 8）被大量占用时，上游返回 `10605 isQueued`（带 `queueCount` /
+`retryAfterSeconds`）。此前桥接把它误判为「无权限」（RESOURCE_LIMIT），于是**换号 + 冷却全部账号**，
+最终回 `no_available_account` 直接报错断开——而换号对同模型同队列毫无帮助。
+
+**改动**：
+
+| 文件 | 内容 |
+|------|------|
+| `internal/bridge/errors.go` | `isQueued`/`retryAfterSeconds` 一律判为**可重试拥塞**（`upstream_queued`）；消息含「前方排队人数 + 预计等待秒数」；新增 `isUpstreamQueue` / `queueRetryAfter` |
+| `internal/bridge/pool.go` | `ShouldFailover` 对队列错误返回 **false**（不换号、不冷却） |
+| `internal/bridge/bridge.go` | `streamWithSlot` 外层新增**同账号排队重试**：等待 `retryAfterSeconds`（夹在 1s~30s）后重试，最多 2 次 |
+
+**新行为**：
+
+- 命中排队 → **在原账号上等待 ~30s 重试**（最多 2 次，共 ~60s），撑到队列疏通常能成功；
+  期间不切换、不冷却账号，其他模型不受影响。
+- 仍未疏解 → 返回友好错误（HTTP 503）：`模型 X 当前使用人数较多，正在排队（前方约 N 人），
+  预计还需等待约 M 秒…`，客户端稍后重试或改用其他模型即可。
+
+> 排队重试参数**控制台可配、热更新生效**（`NewAPI / 中转站接入` 卡片 → 「模型排队重试」）：
+> **最多重试次数**（默认 2，范围 1~10）、**单次等待上限**（默认 30s，范围 1~300）、
+> **默认等待**（上游未给 retryAfter 时，默认 15s）。实际单次等待 = `min(上游 retryAfterSeconds, 等待上限)`。
+> 保存后即时生效，无需重启。
+
+### 🆕 新增：新版推理协议解锁 Sonus / Cantus / Fast（2026-10-23）
+
+**2026-10-23 CST**
+
+上游按 `(cosy-clienttype, cosy-version)` 决定下发哪套模型清单。桥接此前固定用旧协议
+（`clienttype=5` / `version=1.0.10` + 派生指纹），只能拿到 13 个模型，官方桌面端首选的
+**Sonus / Cantus / Fast** 三档不可见、无法转发。
+
+**改动**：为账号引入「真实设备指纹 → 新版推理协议」开关。
+
+| 文件 | 内容 |
+|------|------|
+| `account/model.go` | `CheckinFingerprint` 扩展 `client_ip` / `client_type` / `version` / `scene` / `product` / `data_policy` 字段 |
+| `internal/bridge/client.go` | `BearerClient` 新增 `fp`；`buildHeaders` 按是否配置真实指纹切换新旧协议头 |
+| `internal/bridge/bridge.go` | 新增 `NewBridgeWithFP`，指纹非空时启用新版协议 |
+| `internal/bridge/bridge_pool.go` | 新增 `NewSlotFromSecretWithFP` |
+| `service.go` | `buildRegionPool` 读取账号 JSON 的 `checkin_fingerprint` 并下传 |
+
+**机制**：账号 `accounts/*.json` 配置 `checkin_fingerprint`（`machine_id` = `machine_token` = `client_ip`，取自官方客户端抓包）后，该账号请求头切换为：
+
+- `cosy-clienttype: 10` / `cosy-version: 1.1.69` / `user-agent: undici`
+- `cosy-business-product: app` / `cosy-scene: app` / `cosy-data-policy: agree`
+- 真实 `cosy-machineid` / `cosy-machinetoken` / `cosy-clientip`
+
+`model/list` 随即从 13 → **15** 个，新增下列三档；**未配置指纹的账号行为完全不变**（旧协议、旧清单、零回归）。
+
+| Key | 模型 | 上下文 | 最大输出 | 倍率 | 推理 |
+|-----|------|--------|----------|------|:----:|
+| `smodel` | **Sonus** | 200,000 | 32,768 | **8** | ✅ |
+| `cmodel` | **Cantus** | 200,000 | 32,768 | **4** | ✅ |
+| `fast` | **Fast** | 200,000 | 16,384 | 0.8 | — |
+
+> ⚠️ **Sonus 倍率 8 为全表最高，热门时段上游返回 `10605 isQueued`（排队中）**——这是容量/占用
+> 问题，非鉴权或协议问题；稍后重试或改用其他模型即可。Cantus / Fast 为同批下发的通用档。
+>
+> ✅ **回归验证**：新版协议不影响普通模型（`qfmodel` 等）推理；以纯 HEAD 基线对照确认无回归。
+
 ### 🔐 新增：Token 自动续期（15 天）
 
 **2026-10-21**
@@ -311,12 +427,13 @@ access token 并回传新的 refresh_token）在过期前**主动续期**。
 
 ![qoder2api 控制台账号额度列表](docs/img/console-account-packages.jpg)
 
-### 📋 模型总表（2026-10-22 实拉）
+### 📋 模型总表（国际版 2026-10-23 实拉 · 国内版 2026-10-22 实拉）
 
 模型清单由上游 `GET /algo/api/v2/model/list` 在运行时动态拉取，下方为当时快照，仅供对照；
 实际以 `/v1/models` 返回为准。`price_factor` 为相对倍率，`0` 表示限免。
 
 > ⚠️ 同一 key 在**两区的推理支持与最大输出可能不同**（上游按区配置），故分表列出。
+> 国际版下表为**新版推理协议账号**（配置真实指纹）快照；旧协议账号仍为 13 模型清单。
 
 #### 国内版 · 11 个（Bridge `8963`）
 
@@ -334,43 +451,53 @@ access token 并回传新的 refresh_token）在过期前**主动续期**。
 | `kmodel` | Kimi-K2.8-Preview | 200,000 | 32,768 | **0.8** | ✅ |
 | `mmodel` | **MiniMax-M3.1-Flash** | 200,000 | 16,384 | 0.1 | — |
 
-#### 国际版 · 13 个（Bridge `8964`）
+#### 国际版 · 15 个（Bridge `8964` · 新版推理协议账号）
 
 | Key | 显示名 | 上下文 | 最大输出 | 倍率 | 推理 |
 |-----|--------|--------|----------|------|:----:|
 | `auto` | Auto | 200,000 | 16,384 | 0.5 | — |
-| `ultimate` | Ultimate | 200,000 | 32,768 | 0.4 | ✅ |
+| `ultimate` | Ultimate | 200,000 | 32,768 | 2 | ✅ |
 | `efficient` | Efficient | 200,000 | 16,384 | 0.3 | — |
-| `qmodel_38max` | Qwen3.8-Max | 200,000 | 32,768 | **0.2** | ✅ |
+| `qmodel_38max` | Qwen3.8-Max | 200,000 | 32,768 | 0.5 | ✅ |
 | `qfmodel` | Qwen3.8-Flash | 200,000 | 32,768 | **0** 🆓 | ✅ |
-| `qmodel` | Qwen3.7-Plus | 200,000 | 16,384 | 0.1 | — |
-| `dmodel` | DeepSeek-V4-Pro | 200,000 | 32,768 | **0.5** | ✅ |
+| `dmodel` | DeepSeek-V4-Pro | 200,000 | 32,768 | 0.5 | ✅ |
 | `dfmodel` | DeepSeek-Flash | 200,000 | 32,768 | **0** 🆓 | ✅ |
-| `gmodel` | GLM-5.3 | 200,000 | 32,768 | **0.8** | ✅ |
-| `gfmodel` | GLM-5.3-Flash | 200,000 | 32,768 | 0.1 | ✅ |
-| `kmodel_latest` | Kimi-K3 | 200,000 | 16,384 | **1.4** | — |
-| `kmodel` | Kimi-K2.8-Preview | 200,000 | 16,384 | **0.8** | — |
-| `mmodel` | **MiniMax-M3.1-Flash** | 200,000 | 16,384 | 0.1 | — |
+| `gmodel` | GLM-5.3 | 200,000 | 32,768 | 0.8 | ✅ |
+| `gfmodel` | GLM-5.3-Flash | 200,000 | 16,384 | 0.1 | ✅ |
+| `kmodel_latest` | Kimi-K3 | 200,000 | 16,384 | 1.4 | — |
+| `kmodel` | Kimi-K2.8-Preview | 200,000 | 16,384 | 0.8 | — |
+| `mmodel` | MiniMax-M3.1-Flash | 200,000 | 16,384 | 0.1 | — |
+| `smodel` | **Sonus** 🆕 | 200,000 | 32,768 | **8** | ✅ |
+| `cmodel` | **Cantus** 🆕 | 200,000 | 32,768 | **4** | ✅ |
+| `fast` | **Fast** 🆕 | 200,000 | 16,384 | 0.8 | — |
+
+> 🆕 = 本轮（2026-10-23）新增；倍率为该快照账号实测，可能随账号档位/活动浮动。
 
 **区域差异速览**
 
 | 差异 | 详情 |
 |------|------|
-| 国际独占 | `ultimate` / `efficient` |
-| 推理标记不同 | `auto` / `kmodel` / `qmodel` 国内支持、国际不支持；`dfmodel` 反之 |
+| 国际独占 | `ultimate` / `efficient`；新版协议账号额外独占 `smodel`(Sonus) / `cmodel`(Cantus) / `fast` |
+| 推理标记不同 | `auto` / `kmodel` 国内支持、国际不支持；`dfmodel` 反之 |
 | 最大输出不同 | 多数模型国内 32,768、国际 16,384；`dfmodel` 相反 |
 
-> 加粗为相对上一版的价格变动。
+> 🆓 = 限免（倍率 0）；🆕 = 本轮（2026-10-23）新增。倍率可能随账号档位/活动浮动。
 
-#### ⚠️ SOTA「Sonus」模型不在公开清单内
+#### ✅ SOTA「Sonus」模型已可通过新版推理协议访问（2026-10-23 更正）
+
+> 本节此前的结论「Sonus 不通过 `model/list` 下发、API 侧不可见」**已过时**，特此更正。
 
 持有 **SOTA 专属积分**的账号，官方 App 的模型选择器里会多出一个 **Sonus** 模型
-（积分说明：选择 Sonus 时优先抵扣该积分）。但它**不通过 `/algo/api/v2/model/list` 下发**：
+（积分说明：选择 Sonus 时优先抵扣该积分）。此前实测它不走默认协议的下发，是因为桥接用的是
+旧协议（`clienttype=5` / `version=1.0.10`）。
 
-- 实测持有该积分的账号（`tmpreg gep`）直接调 `model/list` 仍只返回上表 13 个，无 Sonus
-- 客户端包内检索 `sonus` 仅有无关的 `sonus.multitrack`；`/sash/api/v1/me/achievements` 返回空
+**2026-10-23 复测**：同一账号（`tmpreg gep`）改用**新版推理协议**
+（`clienttype=10` / `version=1.1.69` + 真实设备指纹）后，`model/list` 直接下发
+**Sonus(`smodel`)**，并连同 **Cantus(`cmodel`)** / **Fast(`fast`)** 一起进入清单（13 → 15 个）。
+配置方法见上方[更新记录 · 新版推理协议](#-新增新版推理协议解锁-sonus--cantus--fast2026-10-23)。
 
-即 **Sonus 是官方 App 侧按账号特殊展示的模型，API 侧不可见**，因此 qoder2api 无法转发该模型。
+> ⚠️ Sonus 倍率 8 为全表最高、占用高，热门时段上游返回 `10605 isQueued`（排队中）——
+> 属容量问题，稍后重试或改用其他模型即可，并非鉴权或协议失败。
 
 ### 🔄 上游模型清单更新
 

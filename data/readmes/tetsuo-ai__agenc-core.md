@@ -1,7 +1,7 @@
 # AgenC Core
 
 ![status](https://img.shields.io/badge/status-stable-brightgreen)
-![version](https://img.shields.io/badge/version-0.19.14-blue)
+![version](https://img.shields.io/badge/version-0.19.17-blue)
 ![node](https://img.shields.io/badge/node-26.x-339933?logo=node.js&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict%20%E2%80%A2%200%20%40ts--nocheck-3178C6?logo=typescript&logoColor=white)
 
@@ -39,8 +39,8 @@ agents, channel gateway, and remote phone bridge are all clients of that daemon.
 
 | Package | Path | Role |
 | --- | --- | --- |
-| `@tetsuo-ai/agenc` `0.19.14` | `packages/agenc/` | Public launcher binary |
-| `@tetsuo-ai/runtime` `0.19.14` | `runtime/` | Daemon, TUI, tools, providers, tests |
+| `@tetsuo-ai/agenc` `0.19.17` | `packages/agenc/` | Public launcher binary |
+| `@tetsuo-ai/runtime` `0.19.17` | `runtime/` | Daemon, TUI, tools, providers, tests |
 | `@tetsuo-ai/agenc-sdk` `0.3.0` | `packages/agenc-sdk/` | Typed embedding SDK (daemon protocol) |
 
 Documentation map: [`docs/INDEX.md`](docs/INDEX.md). Architecture:
@@ -78,8 +78,8 @@ Documentation map: [`docs/INDEX.md`](docs/INDEX.md). Architecture:
 - **Durable scheduled prompts** — require Linux directory descriptors and a
   local OS-account home for protected locks. Stop older scheduler/gateway
   processes before upgrading; see [storage and platform requirements](docs/durable-cron-storage.md).
-- **Guided onboarding** — `agenc onboard` includes AgenC account sign-in,
-  X / xAI sign-in for Grok, provider API keys, and local providers without
+- **Guided onboarding**: `agenc onboard` includes X / xAI sign-in for Grok,
+  provider API keys, and local providers without
   requiring slash commands; follow-on acts: `identity`, `channel`, `autonomy`,
   `recap` (personas, channels, budget/heartbeat/webhooks).
 - **Remote control** — pair iOS or Android with `agenc remote on|off|status`;
@@ -127,8 +127,8 @@ Documentation map: [`docs/INDEX.md`](docs/INDEX.md). Architecture:
 
 ## Project status
 
-**Current version in tree: 0.19.14.** Runtime and launcher are versioned
-`0.19.14`; the embedding SDK package is `0.3.0`. The public launcher is
+**Current version in tree: 0.19.17.** Runtime and launcher are versioned
+`0.19.17`; the embedding SDK package is `0.3.0`. The public launcher is
 [`@tetsuo-ai/agenc`](https://www.npmjs.com/package/@tetsuo-ai/agenc). The root
 workspace is non-publishable (`"private": true`); the GitHub source repository
 is public so npm can issue verifiable provenance. Type-clean: **0**
@@ -290,7 +290,7 @@ AGENC_AUTH_BACKEND=remote agenc login
 agenc remote on
 ```
 
-Managed OpenRouter models: [`docs/managed-openrouter.md`](docs/managed-openrouter.md).
+OpenRouter setup: [`docs/managed-openrouter.md`](docs/managed-openrouter.md).
 VPS deploy: [`docs/deploy/vps.md`](docs/deploy/vps.md).
 
 ## Configuration

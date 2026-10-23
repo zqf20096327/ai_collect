@@ -50,39 +50,32 @@ Every other KAN library stops at research. `kanx` goes the full distance:
 Most of the other KAN implementations are strictly academic. `KANX` bridges the gap between theory and reality by providing:
 1. **Multi-Backend Support:** Native TensorFlow and PyTorch (`MatrixKAN`) implementations.
 2. **Real Deployment:** True ONNX export, FastAPI (`/api/predict`), Docker, and Kubernetes configs out-of-the-box.
-3. **High-Throughput Options:** Vectorized `MatrixKAN` to replace recursive B-splines with batched GEMMs for GPU acceleration.
-4. **Grid Calibration:** Native adaptive and static grid fitting to prevent out-of-bounds input collapse.
+3. **MatrixKAN:** Experimental. The forward pass is the same Cox–de Boor recursion as `KAN`, written as a Python loop over each basis index. It does not run a batched GEMM. On a Tesla T4 that loop stays slower from width 32 to 512.
+4. **Grid calibration:** `fit_grid_to_data` places the stored knots on the training inputs. The basis is exactly zero only past the outermost extended knot.
 
 
 ---
 
 ## 📊 Benchmarks (reproducible, fair, multi-baseline)
 
-<div align="center">
-  
 Synthetic 2-D regression target `y = sin(π·x₁) + cos(2π·x₂)`,
-100 epochs, Adam(lr=1e-2), batch=128, CPU.
+100 epochs, Adam(lr=1e-2), batch=128.
+Intel Core i9-9900 at 3.10 GHz, Windows, Python 3.11.17, TensorFlow 2.21.0.
+Init seeds 0, 1, and 2 share one dataset. Inference is ten warmup forwards of 4,096 rows, then the median of twenty. The ± is the population standard deviation across seeds.
 
-
-| Model              | Params | Train (s) | Infer 4k (ms) | **Test MSE** |
-|--------------------|------:|---------:|-------------:|-------------:|
-| **KAN[2,16,1]**    |   432 |    12.50 |        68.64 | **2.14 × 10⁻⁵** |
-| KAN[2,32,1]        |   864 |    16.62 |        25.52 | 4.44 × 10⁻⁴ |
-| MLP[2,32,1]        |   129 |     5.07 |         6.17 | 4.61 × 10⁻¹ (undersized) |
-| MLP[2,16,16,1]     |   337 |     5.46 |         4.08 | 1.60 × 10⁻³ |
-| MLP[2,64,64,1]     | 4 417 |     6.00 |         5.74 | 5.51 × 10⁻⁴ |
-
-</div>
+| Model | Params | Train (s) | Infer 4k (ms) | **Test MSE** |
+|---|---:|---:|---:|---:|
+| KAN[2,16,1] | 432 | 9.42 ± 0.12 | 26.72 ± 0.31 | 2.58×10⁻⁴ ± 1.71×10⁻⁴ |
+| KAN[2,32,1] | 864 | 11.12 ± 0.18 | 29.15 ± 0.46 | **1.09×10⁻⁴ ± 6.34×10⁻⁵** |
+| MLP[2,32,1] | 129 | 6.09 ± 0.07 | 2.06 ± 0.03 | 4.62×10⁻¹ ± 1.40×10⁻³ |
+| MLP[2,16,16,1] | 337 | 6.78 ± 0.23 | 2.90 ± 0.05 | 1.44×10⁻³ ± 3.83×10⁻⁴ |
+| MLP[2,64,64,1] | 4417 | 7.00 ± 0.07 | 3.53 ± 0.05 | 6.43×10⁻⁴ ± 4.02×10⁻⁴ |
 
 <p align="center">
   <img src="docs/assets/benchmark.png" alt="Test MSE for the published KAN and MLP runs" width="720"/>
 </p>
 
-**Honest read.** The smallest KAN (432 params) wins on this smooth separable
-target. The same KAN is ~10–15× *slower at inference* than a same-MSE MLP
-because each edge does a B-spline evaluation. On non-smooth or
-high-dimensional targets, this picture often reverses. We do not claim KANs
-are universally better than MLPs.
+**Honest read.** The wider KAN has the lower mean test MSE. The smaller KAN's test MSE moves by about as much as its mean across the three seeds. Inference increases with width, 26.7 ms then 29.2 ms. Both are several times the MLPs on this CPU: KAN[2,16,1] is 7.57× MLP[2,64,64,1]. The 0.2.0 tables each timed one unwarmed forward and are not averaged into these cells. On non-smooth or high-dimensional targets, this accuracy picture often reverses. We do not claim KANs are universally better than MLPs.
 
 Reproduce with `python benchmarks/compare_mlp.py` (quick, 100 epochs) or
 `python benchmarks/compare_mlp.py --long` (1000 epochs + early-stopping).
@@ -110,12 +103,13 @@ model.predict([[0.5, 0.2]])                     # → array([[1.04…]])
 
 > **⚠️ Grid calibration — two methods**
 > 
-> KANs use B-splines on a fixed input range (default `[-1, 1]`). If your inputs fall outside that range, the spline path **silently returns zero** and you only get the SiLU residual. Fix it one of two ways:
+> The stored knots default to `[-1, 1]` (`grid_size=5` is six knots, spacing 0.4). `extend_grid` adds `spline_order` knots of that spacing on each side, so the default cubic basis runs out to about ±2.2. The basis sums to 1 on the stored interval, is still nonzero at 1.7 (the sum is about 0.32), and is exactly zero at and beyond the outermost knot. Past that knot the layer is only the SiLU residual. Put the stored interval on the data one of two ways:
 > 
 > **Static approach** (pre-training):
 > ```python
 > from kanx import KAN, fit_grid_to_data
 > model = KAN([n_features, 64, 1])
+> model.build((None, n_features))               # weights exist only after build
 > fit_grid_to_data(model, X_train)              # one-time grid fit
 > model.fit(X_train, y_train, epochs=30)
 > ```
@@ -128,13 +122,13 @@ model.predict([[0.5, 0.2]])                     # → array([[1.04…]])
 > model.fit(X_train, y_train, epochs=15)        # continue training
 > ```
 > 
-> `kanx.check_input_range(model, X)` will log a warning at inference if input exceeds the grid.
+> `kanx.check_input_range(model, X)` logs a warning when a row leaves the stored grid. That boundary is the interval you fit, which is stricter than the hard zero at the outermost knot.
 
-Drop edges that barely contribute. `threshold` is an absolute cutoff on the edge score. `relative` drops edges at or below that fraction of the strongest edge in the same layer. Pass `samples` to score each edge by its RMS on real inputs. The same method is on the PyTorch `KAN` and on `MatrixKAN`.
+Zero out edges that barely contribute. `prune` sets the spline coefficients and the base weight to zero. It does not remove the slot, and the contraction still visits it. `threshold` is an absolute cutoff on the edge score. `relative` zeros edges at or below that fraction of the strongest edge in the same layer. Pass `samples` to score each edge by its RMS on real inputs. The same method is on the PyTorch `KAN` and on `MatrixKAN`.
 
 ```python
-model.prune(relative=0.01)                  # keep edges above 1% of the peak
-model.prune(threshold=1e-3, samples=X_train)
+model.prune(relative=0.01)                    # zero edges at or below 1% of the peak
+model.prune(threshold=1e-3, samples=X_train)  # coefficients become zero; shapes stay
 ```
 
 Plot what is left. Each edge is a learned 1-D function (SiLU residual plus B-spline). `plot_edges` needs matplotlib (`pip install "kanx[viz]"`). `write_edge_viewer` writes a single HTML file with a layer picker and a hover readout.
@@ -150,9 +144,9 @@ write_edge_viewer(model, "edges.html")
   <img src="docs/assets/edge_functions.png" alt="Learned edge functions on a two-input KAN" width="640"/>
 </p>
 
-Layer 0 of a `KAN([2, 1])` fit to `sin(π x₁) + 0.6 x₂²`. The first edge carries the sine. The second carries the quadratic.
+Layer 0 of a `KAN([2, 1])` fit to `sin(π x₁) + 0.6 x₂²`. The left edge follows the sine. The right edge follows a bowl. That is a reading of this plot. It is not a proof that each edge owns one term, and a shorter fit of the same target can leave the right side of the bowl unfinished.
 
-The TensorFlow spline contraction can run in reduced precision, and the forward pass can be XLA-compiled. Weights and the returned tensor stay float32. The Cox-de Boor basis stays float32 as well: knot differences underflow in float16.
+The TensorFlow spline contraction can run in reduced precision, and the forward pass can be XLA-compiled. Weights and the returned tensor stay float32. The Cox–de Boor basis stays float32 because `(x − tᵢ)` cancels near a knot and the divided differences amplify the error. bfloat16 has fewer mantissa bits than float16 (8 versus 11), so it is the worse choice for the basis. Float16's largest finite value is 65504. That is a property of the format, not an overflow measured in this contraction: on these knots the cubic basis peaks at 2/3, and the coefficients start small. bfloat16 is the practical training dtype because float16 gradients underflow when training does not use loss scaling. Knot spacing does not underflow in float16 at grid size 5 (spacing 0.4) or at grid size 1000 (spacing 0.002). Against a float64 `b_spline_basis` on the same extended knots, the max absolute error is 1.9×10⁻⁷ in float32 and 1.5×10⁻³ in float16 at grid size 5 (1.2×10⁻² in bfloat16). At grid size 1000 it is 2.5×10⁻⁵, 0.16, and 0.67. The grid-size-1000 gap is mostly the input rounding onto a step comparable to the 0.002 knot spacing.
 
 ```python
 model = KAN([8, 16, 1], precision="bfloat16", jit_compile=True)
@@ -193,16 +187,27 @@ model.predict([[0.5, 0.2]])
 ---
 
 
-### ⚡ GPU-optimized MatrixKAN
+### ⚡ MatrixKAN
 
-For higher throughput on accelerators, use the vectorized `MatrixKAN` (replaces recursion with batched GEMM):
+`MatrixKAN` is experimental. It evaluates the same Cox–de Boor basis as `KAN`, with a Python loop over each basis index. `build_recurrence_matrix_batch` is not used, and a constant matrix cannot represent the recursion because the weights depend on `x`. The 0.2.0 docstring called this a batched GEMM. That description was wrong.
 
 ```python
 from kanx.torch import MatrixKAN
 
-model = MatrixKAN([4, 32, 1])  # same interface as KAN
-model.fit(X, y, epochs=30)      # ~1.5–2× faster on GPU vs standard KAN
+model = MatrixKAN([2, 32, 1], grid_size=5, spline_order=3)
 ```
+
+The table below times that loop, not a matrix algorithm. Tesla T4, torch 2.11.0+cu130, kanx 0.2.0, float32, grid size 5, spline order 3, shape `[2, width, 1]`. Ten warmup calls, then the mean of 50, with `torch.cuda.synchronize` around the loop. Cells are MatrixKAN milliseconds divided by KAN milliseconds. The JSON is `benchmarks/results/matrixkan_t4_0.2.0.json`.
+
+| width \ batch | 1,024 | 4,096 | 8,192 | 16,384 |
+|---:|---:|---:|---:|---:|
+| 32 | 6.41 | 6.37 | 5.53 | 3.24 |
+| 64 | 6.58 | 5.88 | 3.59 | 3.32 |
+| 128 | 6.72 | 3.32 | 3.35 | 3.30 |
+| 256 | 5.74 | 3.37 | 3.32 | 3.29 |
+| 512 | 3.33 | 3.32 | 3.29 | 3.27 |
+
+At width 32 and batch 4,096 the calls are 2.10 ms and 13.37 ms. At width 512 and batch 16,384 they are 67.0 ms and 219 ms. The ratio falls from 6.4× to 3.3× and stays there. At the small end the extra cost is kernel launches: on CPU, one `MatrixKANLinear(32, 1)` forward at batch 1,024 recorded 1,394 ATen ops against 205 for `KANLinear` (torch 2.14.1+cpu). The ~2 ms KAN floor at width 32 is mostly launch overhead as well. A uniform-grid cubic basis can be one small multiply on `[1, u, u², u³]`. That path is not this class, and grids from `update_grid_from_samples` are not uniform.
 
 TensorBoard logging and symbolic edge fitting are included:
 

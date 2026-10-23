@@ -204,6 +204,36 @@ Recent news of this GitHub repo are listed as follows.
     - ***ScImage:*** How good are multimodal large language models at scientific text-to-image generation? [[Paper]](https://openreview.net/forum?id=ugyqNEOjoU)
     - Guided Score identity Distillation for Data-Free One-Step Text-to-Image Generation [[Paper]](https://openreview.net/forum?id=HMVDiaWMwM)
     - Evaluating Semantic Variation in Text-to-Image Synthesis: A Causal Perspective [[Paper]](https://openreview.net/forum?id=NWb128pSCb)
+    - Test-time Alignment of Diffusion Models without Reward Over-optimization [[Paper]](https://openreview.net/forum?id=vi3DjUhFVm)
+    - ***JetFormer:*** An autoregressive generative model of raw images and text [[Paper]](https://openreview.net/forum?id=sgAp2qG86e)
+    - ***Lumina-T2X:*** Scalable Flow-based Large Diffusion Transformer for Flexible Resolution Generation [[Paper]](https://openreview.net/forum?id=EbWf36quzd)
+    - ***Visually Guided Decoding:*** Gradient-Free Hard Prompt Inversion with Language Models [[Paper]](https://openreview.net/forum?id=mQ55y4s5hj)
+    - ***VILA-U:*** a Unified Foundation Model Integrating Visual Understanding and Generation [[Paper]](https://openreview.net/forum?id=02haSpO453)
+    - ***HART:*** Efficient Visual Generation with Hybrid Autoregressive Transformer [[Paper]](https://openreview.net/forum?id=q5sOv4xQe4)
+    - ***A-Bench:*** Are LMMs Masters at Evaluating AI-generated Images? [[Paper]](https://openreview.net/forum?id=4muXQ5r8Ol)
+    - Halton Scheduler for Masked Generative Image Transformer [[Paper]](https://openreview.net/forum?id=RDVrlWAb7K)
+    - ***EC-DIT:*** Scaling Diffusion Transformers with Adaptive Expert-Choice Routing [[Paper]](https://openreview.net/forum?id=PxlfzEePC0)
+    - Fantastic Copyrighted Beasts and How (Not) to Generate Them [[Paper]](https://openreview.net/forum?id=ftHNJmogT1)
+    - ***Score Forgetting Distillation:*** A Swift, Data-Free Method for Machine Unlearning in Diffusion Models [[Paper]](https://openreview.net/forum?id=gjwhDHeAsz)
+    - Fantastic Targets for Concept Erasure in Diffusion Models and Where To Find Them [[Paper]](https://openreview.net/forum?id=tZdqL5FH7w)
+    - ***ViDiT-Q:*** Efficient and Accurate Quantization of Diffusion Transformers for Image and Video Generation [[Paper]](https://openreview.net/forum?id=E1N1oxd63b)
+    - Training-Free Diffusion Model Alignment with Sampling Demons [[Paper]](https://openreview.net/forum?id=tfemquulED)
+    - ***OASIS Uncovers:*** High-Quality T2I Models, Same Old Stereotypes [[Paper]](https://openreview.net/forum?id=L6IgkJvcgV)
+    - Accelerating Diffusion Transformers with Token-wise Feature Caching [[Paper]](https://openreview.net/forum?id=yYZbZGo4ei)
+    - ***SVDQuant:*** Absorbing Outliers by Low-Rank Component for 4-Bit Diffusion Models [[Paper]](https://openreview.net/forum?id=vWR3KuiQur)
+    - ***Rare-to-Frequent:*** Unlocking Compositional Generation Power of Diffusion Models on Rare Concepts with LLM Guidance [[Paper]](https://openreview.net/forum?id=BgxsmpVoOX)
+    - ***FreCaS:*** Efficient Higher-Resolution Image Generation via Frequency-aware Cascaded Sampling [[Paper]](https://openreview.net/forum?id=TsBDfe8Ra5)
+    - ***HERO:*** Human-Feedback Efficient Reinforcement Learning for Online Diffusion Model Finetuning [[Paper]](https://openreview.net/forum?id=yMHe9SRvxk)
+    - ***Show-o:*** One Single Transformer to Unify Multimodal Understanding and Generation [[Paper]](https://openreview.net/forum?id=o6Ynz6OIQ6)
+    - Efficient Diversity-Preserving Diffusion Alignment via Gradient-Informed GFlowNets [[Paper]](https://openreview.net/forum?id=Aye5wL6TCn)
+    - Exploring Local Memorization in Diffusion Models via Bright Ending Attention [[Paper]](https://openreview.net/forum?id=p4cLtzk4oe)
+    - ***Zigzag Diffusion Sampling:*** Diffusion Models Can Self-Improve via Self-Reflection [[Paper]](https://openreview.net/forum?id=MKvQH1ekeY)
+    - Growth Inhibitors for Suppressing Inappropriate Image Concepts in Diffusion Models [[Paper]](https://openreview.net/forum?id=w4C4z80w59)
+    - The Crystal Ball Hypothesis in diffusion models: Anticipating object positions from initial noise [[Paper]](https://openreview.net/forum?id=GpdO9r73xT)
+    - ***DSPO:*** Direct Score Preference Optimization for Diffusion Model Alignment [[Paper]](https://openreview.net/forum?id=xyfb9HHvMe)
+    - Long-horizon Visual Instruction Generation with Logic and Attribute Self-reflection [[Paper]](https://openreview.net/forum?id=EdMb9TqqDY)
+    - Tuning Timestep-Distilled Diffusion Model Using Pairwise Sample Optimization [[Paper]](https://openreview.net/forum?id=fXnE4gB64o)
+    - ***ConceptPrune:*** Concept Editing in Diffusion Models via Skilled Neuron Pruning [[Paper]](https://openreview.net/forum?id=kSdWcw5mkp)
   - **AAAI**
     - ***AGFSync:*** Leveraging AI-Generated Feedback for Preference Optimization in Text-to-Image Generation [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/32168)
     - ***Adaptive Guidance:*** Training-free Acceleration of Conditional Diffusion Models [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/32192)
@@ -418,6 +448,15 @@ Recent news of this GitHub repo are listed as follows.
     - ***CharaConsist:*** Fine‑Grained Consistent Character Generation [[Paper]](https://arxiv.org/abs/2507.11533) [[Project]](https://murray-wang.github.io/CharaConsist) [[Code]](https://github.com/Murray-Wang/CharaConsist)
     - ***Shadow Director:*** Parametric Shadow Control for Portrait Generation in Text‑to‑Image Diffusion Models [[Paper]](https://arxiv.org/abs/2503.21943) [[Project]](https://hm-cai.com/ShadowDirector)
     - ***ImageGen‑CoT:*** Enhancing Text‑to‑Image In‑Context Learning with Chain‑of‑Thought Reasoning [[Paper]](https://arxiv.org/abs/2503.19312) [[Project]](https://imagegen-cot.github.io)
+  - **ICLR**
+    - ***3DIS:*** Depth-Driven Decoupled Image Synthesis for Universal Multi-Instance Generation [[Paper]](https://openreview.net/forum?id=MagmwodCAB)
+    - ***ControlAR:*** Controllable Image Generation with Autoregressive Models [[Paper]](https://openreview.net/forum?id=BWuBDdXVnH)
+    - ***Ctrl-Adapter:*** An Efficient and Versatile Framework for Adapting Diverse Controls to Any Diffusion Model [[Paper]](https://openreview.net/forum?id=ny8T8OuNHe)
+    - ***Build-A-Scene:*** Interactive 3D Layout Control for Diffusion-Based Image Generation [[Paper]](https://openreview.net/forum?id=gg6dPtdC1C)
+    - ***ToddlerDiffusion:*** Interactive Structured Image Generation with Cascaded Schrödinger Bridge [[Paper]](https://openreview.net/forum?id=Jszf4et48m)
+    - ***Hummingbird:*** High Fidelity Image Generation via Multimodal Context Alignment [[Paper]](https://openreview.net/forum?id=6kPBThI6ZJ)
+    - ***UniCon:*** Unidirectional Information Flow for Effective Control of Large-Scale Diffusion Models [[Paper]](https://openreview.net/forum?id=uJqKf24HGN)
+    - ***Less is More:*** Masking Elements in Image Condition Features Avoids Content Leakages in Style Transfer Diffusion Models [[Paper]](https://openreview.net/forum?id=88JJjsLtqr)
   - **AAAI**
     - ***VersaGen:*** Unleashing Versatile Visual Control for Text-to-Image Synthesis [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/32240)
     - ***Muses:*** 3D-Controllable Image Generation via Multi-Modal Agent Collaboration [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/32280)
@@ -532,6 +571,11 @@ Recent news of this GitHub repo are listed as follows.
     - ***ClassDiffusion:*** More Aligned Personalization Tuning with Explicit Class Guidance [[Paper]](https://openreview.net/pdf?id=iTm4H6N4aG) [[Project]](https://classdiffusion.github.io/) [[Code]](https://github.com/Rbrq03/ClassDiffusion)
     - ***DreamBench++:*** A Human-Aligned Benchmark for Personalized Image Generation [[Paper]](https://arxiv.org/pdf/2406.16855) [[Project]](https://dreambenchplus.github.io/)
     - ***TweedieMix:*** Improving Multi-Concept Fusion for Diffusion-based Image/Video Generation [[Paper]](https://arxiv.org/pdf/2410.05591) [[Code]](https://github.com/KwonGihyun/TweedieMix)
+  - **ICLR**
+    - Cached Multi-Lora Composition for Multi-Concept Image Generation [[Paper]](https://openreview.net/forum?id=4iFSBgxvIO)
+    - ***DreamDistribution:*** Learning Prompt Distribution for Diverse In-distribution Generation [[Paper]](https://openreview.net/forum?id=oQoQ4u6MQC)
+    - ***Storybooth:*** Training-Free Multi-Subject Consistency for Improved Visual Storytelling [[Paper]](https://openreview.net/forum?id=JZLon6cvx8)
+    - ***DisEnvisioner:*** Disentangled and Enriched Visual Prompt for Customized Image Generation [[Paper]](https://openreview.net/forum?id=vQxqcVGrhR)
   - **AAAI**
     - ***CustomContrast:*** A Multilevel Contrastive Perspective for Subject-Driven Text-to-Image Customization [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/32210)
     - ***DynASyn:*** Multi-Subject Personalization Enabling Dynamic Action Synthesis [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/32259)
@@ -622,6 +666,11 @@ Recent news of this GitHub repo are listed as follows.
     - Semantic Image Inversion and Editing using Rectified Stochastic Differential Equations [[Paper]](https://openreview.net/forum?id=Hu0FSOSEyS) [[Project]](https://rf-inversion.github.io/) [[Code]](https://github.com/LituRout/RF-Inversion)
     - ***PostEdit:*** Posterior Sampling for Efficient Zero-Shot Image Editing [[Paper]](https://openreview.net/forum?id=J8YWCBPgx7) [[Code]](https://github.com/TFNTF/PostEdit)
     - ***OmniEdit:*** Building Image Editing Generalist Models Through Specialist Supervision [[Paper]](https://openreview.net/forum?id=Hlm0cga0sv) [[Project]](https://tiger-ai-lab.github.io/OmniEdit/) [[Code]](https://github.com/TIGER-AI-Lab/OmniEdit) [[Dataset]](https://huggingface.co/datasets/TIGER-Lab/OmniEdit-Filtered-1.2M)
+    - ***InstantPortrait:*** One-Step Portrait Editing via Diffusion Multi-Objective Distillation [[Paper]](https://openreview.net/forum?id=ZkFMe3OPfw)
+    - Scaling In-the-Wild Training for Diffusion-based Illumination Harmonization and Editing by Imposing Consistent Light Transport [[Paper]](https://openreview.net/forum?id=u1cQYxRI1H)
+    - ***InstantSwap:*** Fast Customized Concept Swapping across Sharp Shape Differences [[Paper]](https://openreview.net/forum?id=UFrHWzZENz)
+    - ***Add-it:*** Training-Free Object Insertion in Images With Pretrained Diffusion Models [[Paper]](https://openreview.net/forum?id=ZeaTvXw080)
+    - ***PixWizard:*** Versatile Image-to-Image Visual Assistant with Open-Language Instructions [[Paper]](https://openreview.net/forum?id=xuQSp75HmP)
   - **AAAI**
     - ***Text2Relight:*** Creative Portrait Relighting with Text Guidance [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/32194)
     - ***DiT4Edit:*** Diffusion Transformer for Image Editing [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/32304)
@@ -692,88 +741,4 @@ Recent news of this GitHub repo are listed as follows.
   - **CVPR**
     - Uncovering the Disentanglement Capability in Text-to-Image Diffusion Models [[Paper]](https://openaccess.thecvf.com/content/CVPR2023/papers/Wu_Uncovering_the_Disentanglement_Capability_in_Text-to-Image_Diffusion_Models_CVPR_2023_paper.pdf) [[Code]](https://github.com/UCSB-NLP-Chang/DiffusionDisentanglement)
     - ***SINE:*** SINgle Image Editing with Text-to-Image Diffusion Models [[Paper]](https://openaccess.thecvf.com/content/CVPR2023/papers/Zhang_SINE_SINgle_Image_Editing_With_Text-to-Image_Diffusion_Models_CVPR_2023_paper.pdf) [[Code]](https://github.com/zhang-zx/SINE)
-    - ***Imagic:*** Text-Based Real Image Editing with Diffusion Models [[Paper]](https://openaccess.thecvf.com/content/CVPR2023/papers/Kawar_Imagic_Text-Based_Real_Image_Editing_With_Diffusion_Models_CVPR_2023_paper.pdf)
-    - ***InstructPix2Pix:*** Learning to Follow Image Editing Instructions [[Paper]](https://openaccess.thecvf.com/content/CVPR2023/papers/Brooks_InstructPix2Pix_Learning_To_Follow_Image_Editing_Instructions_CVPR_2023_paper.pdf) [[Code]](https://github.com/timothybrooks/instruct-pix2pix) [[Dataset]](https://instruct-pix2pix.eecs.berkeley.edu/) [[Project]](https://www.timothybrooks.com/instruct-pix2pix/) [[Demo]](https://huggingface.co/spaces/timbrooks/instruct-pix2pix)
-    - ***Null-text Inversion*** for Editing Real Images using Guided Diffusion Models [[Paper]](https://openaccess.thecvf.com/content/CVPR2023/papers/Mokady_NULL-Text_Inversion_for_Editing_Real_Images_Using_Guided_Diffusion_Models_CVPR_2023_paper.pdf) [[Code]](https://github.com/google/prompt-to-prompt/#null-text-inversion-for-editing-real-images)
-  - **ICCV**
-    - ***MasaCtrl:*** Tuning-Free Mutual Self-Attention Control for Consistent Image Synthesis and Editing [[Paper]](https://openaccess.thecvf.com/content/ICCV2023/papers/Cao_MasaCtrl_Tuning-Free_Mutual_Self-Attention_Control_for_Consistent_Image_Synthesis_and_ICCV_2023_paper.pdf) [[Code]](https://github.com/TencentARC/MasaCtrl) [[Project]](https://ljzycmd.github.io/projects/MasaCtrl/) [[Demo]](https://colab.research.google.com/drive/1DZeQn2WvRBsNg4feS1bJrwWnIzw1zLJq?usp=sharing)
-    - Localizing Object-level Shape Variations with Text-to-Image Diffusion Models [[Paper]](https://openaccess.thecvf.com/content/ICCV2023/papers/Patashnik_Localizing_Object-Level_Shape_Variations_with_Text-to-Image_Diffusion_Models_ICCV_2023_paper.pdf) [[Code]](https://github.com/orpatashnik/local-prompt-mixing) [[Project]](https://orpatashnik.github.io/local-prompt-mixing/) [[Demo]](https://huggingface.co/spaces/orpatashnik/local-prompt-mixing)
-  - **ICLR**
-    - ***SDEdit:*** Guided Image Synthesis and Editing with Stochastic Differential Equations [[Paper]](https://arxiv.org/pdf/2108.01073.pdf) [[Code]](https://github.com/ermongroup/SDEdit) [[Project]](https://sde-image-editing.github.io/)
-- <span id="editing-year-2022">**Year 2022**</span>
-  - **CVPR**
-    - ***DiffusionCLIP:*** Text-Guided Diffusion Models for Robust Image Manipulation [[Paper]](https://openaccess.thecvf.com/content/CVPR2022/papers/Kim_DiffusionCLIP_Text-Guided_Diffusion_Models_for_Robust_Image_Manipulation_CVPR_2022_paper.pdf) [[Code]](https://github.com/gwang-kim/DiffusionCLIP)
-
-[<u><small><🎯Back to Top></small></u>](#contents)
-
-<!-- omit in toc -->
-## Text Image Generation
-- <span id="gentext-year-2025">**Year 2025**</span>
-  - **AAAI**
-    - ***HDLayout:*** Hierarchical and Directional Layout Planning for Arbitrary Shaped Visual Text Generation [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/32307)
-    - ***GlyphDraw2:*** Automatic Generation of Complex Glyph Posters with Diffusion Models and Large Language Models [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/32636)
-- <span id="gentext-year-2024">**Year 2024**</span>
-  - **arXiv**
-    - ***AnyText:*** Multilingual Visual Text Generation And Editing [[Paper]](https://arxiv.org/pdf/2311.03054.pdf) [[Code]](https://github.com/tyxsspa/AnyText) [[Project]](https://anytext.pics/)
-  - **CVPR**
-    - ***SceneTextGen:*** Layout-Agnostic Scene Text Image Synthesis with Integrated Character-Level Diffusion and Contextual Consistency [[Paper]](https://arxiv.org/pdf/2406.01062v2)
-
-[<u><small><🎯Back to Top></small></u>](#contents)
-
-
-<!-- omit in toc -->
-# Datasets
-- ***Microsoft COCO:*** Common Objects in Context [[Paper]](https://arxiv.org/pdf/1405.0312.pdf) [[Dataset]](https://cocodataset.org/#home)
-- ***Conceptual Captions:*** A Cleaned, Hypernymed, Image Alt-text Dataset For Automatic Image Captioning [[Paper]](https://aclanthology.org/P18-1238.pdf) [[Dataset]](https://ai.google.com/research/ConceptualCaptions/)
-- ***LAION-5B:*** An Open Large-Scale Dataset for Training Next Generation Image-Text Models [[Paper]](https://openreview.net/pdf?id=M3Y74vmsMcY) [[Dataset]](https://laion.ai/)
-- ***PartiPrompts:*** Scaling Autoregressive Models for Content-Rich Text-to-Image Generation [[Paper]](https://arxiv.org/pdf/2206.10789) [[Dataset]](https://github.com/google-research/parti?tab=readme-ov-file) [[Project]](https://sites.research.google/parti/)
-
-
-[<u><small><🎯Back to Top></small></u>](#contents)
-
-
-<!-- omit in toc -->
-# Toolkits
-|Name|Website|Description|
-|-|-|-|
-|Stable Diffusion WebUI|[link](https://github.com/AUTOMATIC1111/stable-diffusion-webui)|Built based on Gradio, deployed locally to run Stable Diffusion checkpoints, LoRA weights, ControlNet weights, etc.|
-|Stable Diffusion WebUI-forge|[link](https://github.com/lllyasviel/stable-diffusion-webui-forge)|Built based on Gradio, deployed locally to run Stable Diffusion checkpoints, LoRA weights, ControlNet weights, etc.|
-|Fooocus|[link](https://github.com/lllyasviel/Fooocus)|Built based on Gradio, offline, open source, and free.  <br />The manual tweaking is not needed, and users only need to focus on the prompts and images.|
-|ComfyUI|[link](https://github.com/comfyanonymous/ComfyUI)|Deployed locally to enable customized workflows with Stable Diffusion|
-|Civitai|[link](https://civitai.com/)|Websites for community Stable Diffusion and LoRA checkpoints|
-
-[<u><small><🎯Back to Top></small></u>](#contents)
-
-<!-- omit in toc -->
-# Q&A
-- **Q: The conference sequence of this paper list?**
-  - This paper list is organized according to the following sequence:
-    - CVPR
-    - ICCV
-    - ECCV
-    - WACV
-    - NeurIPS
-    - ICLR
-    - ICML
-    - ACM MM
-    - SIGGRAPH
-    - AAAI
-    - arXiv
-    - Others
-- **Q: What does `Others` refers to?**
-  - Some of the following studies (e.g., `Stable Casacade`) does not publish their technical report on arXiv. Instead, they tend to write a blog in their official websites. The `Others` category refers to such kind of studies.
-
-[<u><small><🎯Back to Top></small></u>](#contents)
-
-<!-- omit in toc -->
-# References
-
-The `reference.bib` file summarizes bibtex references of up-to-date image inpainting papers, widely used datasets, and toolkits.
-Based on the original references, I have made the following modifications to make their results look nice in the `LaTeX` manuscripts:
-- Refereces are normally constructed in the form of `author-etal-year-nickname`. Particularly, references of datasets and toolkits are directly constructed as `nickname`, e.g., `imagenet`.
-- In each reference, all names of conferences/journals are converted into abbreviations, e.g., `Computer Vision and Pattern Recognition -> CVPR`.
-- The `url`, `doi`, `publisher`, `organization`, `editor`, `series` in all references are removed.
-- The `pages` of all references are added if they are missing.
-- All paper names are in title case. Besides, I have added an additional `{}` to make sure that the title case would also work well in some particular templates. 
-
-If you have other demands of reference formats, you may refer to the or
+    - ***Imagic:*** Text-Based Real Image Editing with Diffusion Models [[Paper]](https://openaccess.thecvf.com/content/CVPR2023/papers/Kawar_Imagic_Text-Based_Real_Image_Editing_With_Diffusion_Models_CVPR_2023_paper.p

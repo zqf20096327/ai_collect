@@ -67,7 +67,7 @@ Reading ahead is exact. Thinking ahead is not, because the model reasons on vers
 
 ## Quick start
 
-**On Windows, with a double-click.** Download MAFDET (on GitHub, *Code → Download ZIP*, and unzip it; or `git clone https://github.com/TheLastOxygen/mafdet.git`) and double-click **`start_mafdet.bat`**. The first time it creates a Python environment in `.venv` and installs MAFDET in it, which takes about a minute and needs [Python](https://www.python.org/downloads/) 3.10 or later. After that, a double-click opens MAFDET in under a second, and after an update it installs the new libraries by itself.
+**On Windows, with a double-click.** Download MAFDET (on GitHub, *Code → Download ZIP*, and unzip it; or `git clone https://github.com/TheLastOxygen/mafdet.git`) and double-click **`start_mafdet.bat`**. The first time it creates a Python environment in `.venv` and installs MAFDET in it, which takes about a minute and needs [Python](https://www.python.org/downloads/) 3.10 or later. After that, a double-click opens MAFDET in under a second, and after an update it installs the new libraries by itself. The terminal shows what is being downloaded as it goes: each library, and later llama.cpp and the models you pick in the app, with size, a progress bar, speed and time left.
 
 **From a terminal:**
 
@@ -94,7 +94,7 @@ The same app comes in two forms, on the same engine:
 | | Command | What it is |
 |---|---|---|
 | <img src="assets/icons/watch.svg" width="22" alt=""> | `mafdet gui` | **The window**: chat, models, hardware and settings, in English, Italian, French or German |
-| <img src="assets/icons/strike.svg" width="22" alt=""> | `mafdet tui` | **The terminal app**: the same views in the terminal, keyboard first (F1 to F4) |
+| <img src="assets/icons/strike.svg" width="22" alt=""> | `mafdet tui` | **The terminal app**: the same views in the terminal, keyboard first (F1 to F4), on an amber phosphor screen with a boot sequence (Settings, *Cinematic effects*, turns the animations off) |
 | <img src="assets/icons/race.svg" width="22" alt=""> | `mafdet models` | the model catalog for this machine (`--family`, `--download`) |
 | <img src="assets/icons/awaken.svg" width="22" alt=""> | `mafdet doctor` | checks the GPU, memory, llama.cpp and the models; `--install` installs llama.cpp (`--cuda 12`, `13` or `cpu` to pick the build) |
 
@@ -141,6 +141,7 @@ Reasoning ahead is **not exact**: the model reasons on intermediate versions of 
 | `--no-think` | no reasoning: answer right away, and write ahead only the exact answer |
 | `--think-ahead N` | longest reasoning kept across edits (default 1024 tokens) |
 | `--ahead N` | answer tokens written ahead when the text does not change (default 512) |
+| `--branches N` | experimental: the model also guesses how you will finish the message and, on a slot of its own, reasons on the guess; if it guessed the exact message, that reasoning (and the answer, if it got that far) is ready on Enter. 1 is the measured setting, see below |
 | `--recycle` | reuse the answers written for earlier versions of the message as n-gram drafts for speculative decoding (+4% decode speed measured with natural typing, +20% on code) |
 | `--draft repo:file` | a small model of the same family drafts tokens for speculative decoding (no gain measured on the RTX 2060, see below) |
 
@@ -171,7 +172,7 @@ The typing is not replayed in real time. Each prefill really runs on the model, 
 
 All on an RTX 2060 (6 GB), llama.cpp, Q4_K_M models, real-time typing (5 to 8 characters per second, a few natural pauses, Enter right after the last character, no rereading).
 
-**Reasoning ahead, Qwen3-4B** (fits in VRAM, 83 tok/s): 24 word problems with a known numeric answer, typed in Italian.
+**Reasoning ahead, Qwen3-4B** (fits in VRAM, 83 tok/s): 24 word problems with a known numeric answer, typed in Italian (script and data: `research/thinking_ahead.py`).
 
 | | Without reasoning ahead | `mafdet strike` |
 |---|---|---|
@@ -214,10 +215,25 @@ Even so, on the 14B (6 word problems typed in real time, 6/6 correct both ways) 
 
 Even perfect material only matches reasoning ahead: the 14B reads it, then redoes and double-checks the calculations, except on the easiest problems (17-24 s instead of 37-63 s). How the material is presented matters more than its quality (62 s → 49 s). Open questions for anyone who wants to take this further: combining both (the large model reasons ahead *and* reads the material as its own), teaching the large model to trust partial results, or a gatherer where the large model cannot reason ahead at all (CPU only).
 
+**Guessing the ending (`--branches`, experimental).** The reasoning left after Enter is mostly about the end of the message, which arrives last: in a word problem, the question. Qwen3-4B often guesses it before you type it: in one run, with the text at *"…e una penna da 2"*, one of its guesses was already the exact rest of the message, *"euro. Quanti euro gli restano?"*. So with `--branches 1` the model also guesses how you will finish the message (only when few words are left, and only when two guesses in a row agree), and on a llama-server slot of its own reasons on the guessed message as if you had sent it, while its main reasoning waits. If you then send exactly that message, its reasoning and answer were written for that very prompt and are taken as they are. Same 24 problems, two runs each (48 messages; script and data in `research/`):
+
+| | Reasoning ahead | `--branches 1` |
+|---|---|---|
+| Correct answers | 48/48 | 48/48 |
+| Mean wait for the first word of the answer | 4.17 s | **3.51 s** |
+| Median wait | 2.98 s | 2.85 s |
+| Slowest tenth | 7.9 s | **5.3 s** |
+| Messages guessed exactly | | 14 of 48 |
+
+The reasoning-ahead column was measured again for this comparison, the same day and on the same code: 4.17 s against the 3.2 s of the table above, two runs of the same 24 problems differ that much. A modest gain, mostly on the slowest answers, and on 24 problems not yet a significant one (faster on 16 of 24, sign test p = 0.15). What did not work: adopting a guess that was only close (*"ha rimasto"* for *"gli restano"*), with a line asking the model to check its reasoning against the real message, gave 2 wrong answers out of 4: the guess had another number (32 for 41), or a word that changed the problem (*"current age"*). Two branches at once are slower than none (median 4.50 s against 2.94 s on half the problems): on the RTX 2060 two sequences write 1.7 times as many tokens as one, four 2.2 times, so each branch slows the others down.
+
+**Larger than the VRAM.** On Qwen3-14B (partly on the CPU, 4.5 tok/s through llama-server) a second sequence is not free either: two run at 77% of the speed of one each, three at 55%. And each guess takes seconds: 1 or 2 per message instead of 10 to 20 on the 4B, so on 4 problems no branch ever started reasoning before Enter (mean wait 44.7 s with the option, 43.9 s without: noise, single problems vary from 24 s to 73 s). The arithmetic does not leave much room anyway: between the moment the question can be guessed and Enter there are a few seconds, about 20 tokens of the 14B, against about 200 left after Enter. So in the app *Guess the ending* gives a branch only to models that fit in VRAM, and none to the others.
+
 **Tried, and why they are not on by default:**
 
 - `--recycle` (answers to earlier versions of the message as n-gram drafts): +4% decode speed with natural typing, +20% on code, slightly later first token.
 - `--draft` (Qwen3-0.6B drafting for the 14B): on the GPU it takes VRAM from the 14B, which then runs more of its layers on the CPU (4.8 → 3.5 tok/s); on the CPU it gains 8% with 4-token drafts and halves the reading speed.
+- The reasoning ahead as the draft for speculative decoding after Enter (`--spec-type ngram-simple`: the notes are in the prompt, and after Enter the model works the same steps out again). Replayed offline, prompt lookup would write 1.5 to 1.7 tokens per decoding step on Qwen3-4B, against 1.3 to 1.5 without notes. For real it is no faster on the 4B (73 tok/s either way) and slower on the 14B (5.0 → 3.1 tok/s): checking a 9-token draft costs the 14B 2.4 decoding steps, because its layers on the CPU compute every token of the draft, and only 11% of the drafted tokens were right. Script and data: `research/notes_as_draft.py`.
 
 ## Roadmap
 

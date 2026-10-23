@@ -1,6 +1,6 @@
 <!-- HackPilot document -->
 <div align="center">
-  <p><strong>CA:</strong> <code>5QE6sNaF3CkAYBqZr4r795isvjFe2qAR9t5zbu1Lpump</code></p>
+  <p><strong>CA:</strong> Soon Available</p>
 
   <img src="public/hackpilot-logo.png" alt="HackPilot Enterprise Logo" width="400" height="auto">
   
@@ -16,7 +16,7 @@
   <p>
     <img src="https://img.shields.io/badge/Architecture-Microservices-red.svg" alt="Microservices">
     <img src="https://img.shields.io/badge/Cloud-Docker%20%7C%20Kubernetes-lightblue.svg" alt="Cloud Native">
-    <img src="https://img.shields.io/badge/Version-2026.10.22.1-success.svg" alt="Version 2026.10.22.1">
+    <img src="https://img.shields.io/badge/Version-2026.10.23-success.svg" alt="Version 2026.10.23">
     <img src="https://img.shields.io/badge/Status-Production%20Ready-brightgreen.svg" alt="Production Ready">
     <a href="https://discord.gg/eXPjM3Hxwb"><img src="https://img.shields.io/badge/Discord-Join%20Server-5865F2?style=flat&logo=discord&logoColor=white" alt="Discord Server"></a>
   </p>
@@ -54,6 +54,14 @@
 - **OWASP API Security Top 10 (2023-2026)**: Deep contract and schema inspection covering BOLA/IDOR (API1), Broken Authentication (API2), Mass Assignment/BOPLA (API3), Unrestricted Resource Consumption (API4), BFLA (API5), Sensitive Business Flows (API6), SSRF (API7), Misconfigurations (API8), and Shadow/Deprecated APIs (API9)
 - **OpenAPI & Swagger Support**: Seamless ingestion and analysis of OpenAPI v2, v3, and v3.1 definitions in JSON and YAML
 - **API Risk Scorecard & Remediation**: Detailed vulnerability findings with CVSS scores, remediation code snippets, and DTO whitelist recommendations
+
+### ☁️ Cloud Security Posture Management (CSPM) & Kubernetes Auditor (KSPM)
+- **Multi-Cloud Infrastructure Auditing**: Deep inspection of AWS (S3, IAM, Security Groups, CloudTrail), Azure (Storage Accounts, Key Vaults, NSGs), GCP (Cloud Storage, IAM, Compute), and Kubernetes clusters
+- **CIS Benchmarks Compliance**: Pre-configured compliance checks mapped to CIS AWS Foundations Benchmark v3.0, CIS Kubernetes Benchmark v1.8, and NIST SP 800-53
+- **Kubernetes Pod Security Standards (PSS) & RBAC**: Automated auditing of container privileged mode, sensitive hostPath mounts (`/var/run/docker.sock`), runAsRoot execution, hostNetwork/hostPID namespace sharing, and excessive ClusterRoleBindings
+- **Infrastructure-as-Code (IaC) Scanning**: Static evaluation of Terraform (`.tf`) and Kubernetes manifests (`.yaml`) to eliminate vulnerabilities before production deployment
+- **Automated Remediation Generation**: One-click generation of executable Bash CLI scripts (AWS CLI, Azure CLI, gcloud, kubectl) and Terraform HCL remediation patches
+- **AI Threat Modeling & Blast Radius**: Automatic correlation of cloud misconfigurations into full-tenant takeover attack paths and blast radius predictions
 
 ### 🛡️ Advanced SOC Analysis & SIEM Integration
 - **Advanced SOC Engine**: Multi-format log parser/normalizer, IOC extraction, MITRE ATT&CK technique mapping
@@ -456,6 +464,21 @@ python3 advance_hackpilot.py --api-scan
 
 # Audit custom OpenAPI / Swagger spec file (JSON or YAML)
 python3 advance_hackpilot.py --api-scan path/to/openapi.yaml
+```
+
+### 8. Cloud & Kubernetes Security Posture Management (CSPM / KSPM / IaC Audit)
+```bash
+# Execute benchmark multi-cloud CSPM & KSPM assessment (AWS, Azure, GCP, Kubernetes)
+python3 advance_hackpilot.py --cspm-scan
+
+# Audit specific Terraform IaC directory or Kubernetes manifest path
+python3 advance_hackpilot.py --cspm-scan path/to/terraform/
+
+# Execute dedicated Kubernetes Security Posture Management (KSPM) audit
+python3 advance_hackpilot.py --k8s-audit
+
+# Export automated CLI and IaC hardening remediation script
+python3 advance_hackpilot.py --cspm-scan --export-cloud-fix cloud_hardening.sh
 ```
 
 ## 🔐 Enterprise Security

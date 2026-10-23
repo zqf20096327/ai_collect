@@ -3,55 +3,204 @@
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://fluxml.github.io/Metalhead.jl/dev)
 [![CI](https://github.com/FluxML/Metalhead.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/FluxML/Metalhead.jl/actions/workflows/CI.yml)
 [![Coverage](https://codecov.io/gh/FluxML/Metalhead.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/FluxML/Metalhead.jl)
-[![HuggingFace](https://img.shields.io/badge/Hugging%20Face-Repo-yellow?logo=huggingface&logoColor=yellow)](https://huggingface.co/FluxML)
 
-[Metalhead.jl](https://github.com/FluxML/Metalhead.jl) provides standard machine learning vision models for use with [Flux.jl](https://fluxml.ai). The architectures in this package make use of pure Flux layers, and they represent the best-practices for creating modules like residual blocks, inception blocks, etc. in Flux. Metalhead also provides some building blocks for more complex models in the Layers module.
+Metalhead.jl provides [Flux.jl](https://fluxml.ai) ports of models from the
+[Hugging Face Hub](https://huggingface.co/models): the vision models of
+[timm](https://github.com/huggingface/pytorch-image-models), and language models of
+[transformers](https://github.com/huggingface/transformers), starting with Llama and Qwen. Each port mirrors the module
+structure of the PyTorch original, loads the original weights directly from the Hub, and is
+checked numerically against PyTorch.
 
 ## Installation
+
+Metalhead.jl requires Julia 1.10 or later. Install it from the Julia package manager:
 
 ```julia
 julia> ]add Metalhead
 ```
 
-## Getting Started
+## Usage
 
-You can find the Metalhead.jl getting started guide [here](https://fluxml.ai/Metalhead.jl/dev/tutorials/quickstart/).
+```julia
+using Metalhead
 
-## Available models
+# Download the configuration and weights of a Hub repository
+model = create_model("timm/convnext_tiny.fb_in1k"; pretrained = true)
 
-To contribute new models, see our [contributing docs](https://fluxml.ai/Metalhead.jl/dev/contributing/).
+x = rand(Float32, 224, 224, 3, 1)   # width × height × channels × batch
+logits = model(x)                   # 1000 × 1
+```
 
-### Image Classification
+### Creating a model
 
-| Model Name                                       | Constructor                                                                                       | Pre-trained? |
-|:-------------------------------------------------|:-----------------------------------------------------------------------------------------------|:------------:|
-| [AlexNet](https://papers.nips.cc/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf)    | [`AlexNet`](https://fluxml.ai/Metalhead.jl/dev/api/others/#Metalhead.AlexNet)       | N            |
-| [ConvMixer](https://arxiv.org/abs/2201.09792)    | [`ConvMixer`](https://fluxml.ai/Metalhead.jl/dev/api/hybrid/#Metalhead.ConvMixer)       | N            |
-| [ConvNeXt](https://arxiv.org/abs/2201.03545)     | [`ConvNeXt`](https://fluxml.ai/Metalhead.jl/dev/api/hybrid/#Metalhead.ConvNeXt)         | N            |
-| [DenseNet](https://arxiv.org/abs/1608.06993)     | [`DenseNet`](https://fluxml.ai/Metalhead.jl/dev/api/densenet/#Metalhead.DenseNet)         | N            |
-| [EfficientNet](https://arxiv.org/abs/1905.11946) | [`EfficientNet`](https://fluxml.ai/Metalhead.jl/dev/api/efficientnet/#Metalhead.EfficientNet) | N            |
-| [EfficientNetv2](https://arxiv.org/abs/2104.00298) | [`EfficientNetv2`](https://fluxml.ai/Metalhead.jl/dev/api/efficientnet/#Metalhead.EfficientNetv2) | N            |
-| [gMLP](https://arxiv.org/abs/2105.08050)         | [`gMLP`](https://fluxml.ai/Metalhead.jl/dev/api/mixers/#Metalhead.gMLP)                 | N            |
-| [GoogLeNet](https://arxiv.org/abs/1409.4842)     | [`GoogLeNet`](https://fluxml.ai/Metalhead.jl/dev/api/inception/#Metalhead.GoogLeNet)       | N            |
-| [Inception-v3](https://arxiv.org/abs/1512.00567) | [`Inceptionv3`](https://fluxml.ai/Metalhead.jl/dev/api/inception/#Metalhead.Inceptionv3)   | N            |
-| [Inception-v4](https://arxiv.org/abs/1602.07261) | [`Inceptionv4`](https://fluxml.ai/Metalhead.jl/dev/api/inception/#Metalhead.Inceptionv4)   | N            |
-| [InceptionResNet-v2](https://arxiv.org/abs/1602.07261) | [`InceptionResNetv2`](https://fluxml.ai/Metalhead.jl/dev/api/inception/#Metalhead.InceptionResNetv2) | N            |
-| [MLPMixer](https://arxiv.org/pdf/2105.01601)     | [`MLPMixer`](https://fluxml.ai/Metalhead.jl/dev/api/mixers/#Metalhead.MLPMixer)         | N            |
-| [MobileNetv1](https://arxiv.org/abs/1704.04861)  | [`MobileNetv1`](https://fluxml.ai/Metalhead.jl/dev/api/mobilenet/#Metalhead.MobileNetv1)   | N            |
-| [MobileNetv2](https://arxiv.org/abs/1801.04381)  | [`MobileNetv2`](https://fluxml.ai/Metalhead.jl/dev/api/mobilenet/#Metalhead.MobileNetv2)   | N            |
-| [MobileNetv3](https://arxiv.org/abs/1905.02244)  | [`MobileNetv3`](https://fluxml.ai/Metalhead.jl/dev/api/mobilenet/#Metalhead.MobileNetv3)   | N            |
-| [MNASNet](https://arxiv.org/abs/1807.11626)       | [`MNASNet`](https://fluxml.ai/Metalhead.jl/dev/api/efficientnet/#Metalhead.MNASNet)   | N            |
-| [ResMLP](https://arxiv.org/abs/2105.03404)       | [`ResMLP`](https://fluxml.ai/Metalhead.jl/dev/api/mixers/#Metalhead.ResMLP)                    | N            |
-| [ResNet](https://arxiv.org/abs/1512.03385)       | [`ResNet`](https://fluxml.ai/Metalhead.jl/dev/api/resnet/#Metalhead.ResNet)             | Y            |
-| [ResNeXt](https://arxiv.org/abs/1611.05431)      | [`ResNeXt`](https://fluxml.ai/Metalhead.jl/dev/api/resnet/#Metalhead.ResNeXt)           | Y            |
-| [SqueezeNet](https://arxiv.org/abs/1602.07360)   | [`SqueezeNet`](https://fluxml.ai/Metalhead.jl/dev/api/others/#Metalhead.SqueezeNet)     | Y            |
-| [Xception](https://arxiv.org/abs/1610.02357) | [`Xception`](https://fluxml.ai/Metalhead.jl/dev/api/inception/#Metalhead.Xception)                 | N            |
-| [WideResNet](https://arxiv.org/abs/1605.07146)   | [`WideResNet`](https://fluxml.ai/Metalhead.jl/dev/api/resnet/#Metalhead.WideResNet)     | Y            |
-| [VGG](https://arxiv.org/abs/1409.1556)           | [`VGG`](https://fluxml.ai/Metalhead.jl/dev/api/others/#Metalhead.VGG)                   | Y            |
-| [Vision Transformer](https://arxiv.org/abs/2010.11929) | [`ViT`](https://fluxml.ai/Metalhead.jl/dev/api/vit/#Metalhead.ViT)             | Y            |
+`create_model` takes the name of a model in one of three forms:
 
-### Other Models
+| Argument | Example | Meaning |
+|:--|:--|:--|
+| Hub repository | `"timm/resnet50.a1_in1k"` | the architecture and weights of that repository |
+| architecture | `"resnet50"` | the bare architecture; with `pretrained = true`, its default checkpoint |
+| local directory | `"path/to/dir"` | a `config.json` and `model.safetensors` laid out like a Hub repository |
 
-| Model Name                                       | Constructor                                                                                       | Pre-trained? |
-|:-------------------------------------------------|:-----------------------------------------------------------------------------------------------|:------------:|
-| [UNet](https://arxiv.org/abs/1505.04597)         | [`UNet`](https://fluxml.ai/Metalhead.jl/dev/api/others/#Metalhead.UNet)                         | N            |
+```julia
+model = create_model("resnet50")                                  # random weights, no download
+model = create_model("timm/resnet50.a1_in1k")                     # that repository's architecture, random weights
+model = create_model("timm/resnet50.a1_in1k"; pretrained = true)  # weights from the Hub
+model = create_model("resnet50"; drop_path_rate = 0.1)            # timm's model arguments
+
+list_models()                     # the ported architectures
+list_models(; pretrained = true)  # the checkpoints validated against PyTorch
+list_models(; byfamily = true)    # a dictionary of architectures by family
+list_models(; byfamily = true)["resnet"]
+```
+
+Any Hub repository whose architecture has been ported can be loaded, not only the validated
+checkpoints. With `pretrained = true`, the repository's `config.json` and safetensors weights
+are downloaded once and cached in the cache of Python's `huggingface_hub`
+(`~/.cache/huggingface/hub`, or `HF_HUB_CACHE`). `HF_TOKEN` gives access to private or gated
+repositories, and `HF_HUB_OFFLINE=1` uses only cached files. The keyword `revision` picks a
+branch, tag or commit, and `eltype` builds the model in `Float16`, `Flux.BFloat16`, `Float32`
+(the default) or `Float64`. Other keywords are the model arguments of the original library
+(timm's `num_classes`, `drop_rate`, ...), and override the repository's configuration.
+
+### Inputs and outputs
+
+Image models take Flux's layout, width × height × channels × batch. PyTorch's `(N, C, H, W)` is the same memory layout with the dimensions
+reversed, and sizes in timm configurations, such as `input_size = (3, 224, 224)`, are in
+PyTorch order. Classifiers return logits, of size classes × batch.
+
+Models are returned in test mode: dropout is off and batch normalisation uses its running
+statistics. Call `Flux.trainmode!(model)` before training.
+
+### Preprocessing
+
+The preprocessing a checkpoint was trained with is in its configuration:
+
+```julia
+cfg = Metalhead.Timm.pretrained_cfg("timm/convnext_tiny.fb_in1k")
+cfg.input_size     # (3, 224, 224)
+cfg.crop_pct       # 0.875
+cfg.mean, cfg.std  # ((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
+```
+
+Resize the shorter side of the image to `input_size / crop_pct`, crop the centre, and normalise
+each channel with `mean` and `std`. The
+[getting started guide](https://fluxml.ai/Metalhead.jl/dev/tutorials/quickstart/) does this
+with Images.jl to classify a photo.
+
+### Features and the classifier
+
+Image models follow timm's split into a feature extractor and a head:
+
+```julia
+model = create_model("timm/convnext_tiny.fb_in1k"; pretrained = true)
+x = rand(Float32, 224, 224, 3, 2)
+
+features = forward_features(model, x)                      # last feature map, 7 × 7 × 768 × 2
+pooled = forward_head(model, features; pre_logits = true)  # pooled features, 768 × 2
+logits = forward_head(model, features)                     # same as model(x), 1000 × 2
+```
+
+### Multi-scale features
+
+Segmentation and depth heads take the feature maps of several stages. `forward_intermediates`
+returns them, as timm's does, and `feature_info` gives their channels and strides:
+
+```julia
+maps = forward_intermediates(model, x; intermediates_only = true)  # 56 × 56 × 96 × 2, ...
+feature_info(model)  # (num_chs = 96, reduction = 4, module_name = "stages.0"), ...
+```
+
+### Fine-tuning
+
+A new `num_classes` loads the pretrained weights with a freshly initialised classifier, and
+`num_classes = 0` removes the classifier, so that the model returns the pooled features:
+
+```julia
+using Flux
+
+model = create_model("timm/convnext_tiny.fb_in1k"; pretrained = true, num_classes = 10)
+Flux.trainmode!(model)
+
+loss(m, x, y) = Flux.logitcrossentropy(m(x), y)
+data = [(rand(Float32, 224, 224, 3, 4), Flux.onehotbatch(rand(1:10, 4), 1:10))]
+opt_state = Flux.setup(AdamW(1e-4), model)
+Flux.train!(loss, model, data, opt_state)
+```
+
+### Model structure
+
+A ported model mirrors the PyTorch module tree. Its fields have the names of the PyTorch
+submodules, and an `nn.Sequential` is a `Chain`, with Julia index `i` for PyTorch index `i - 1`:
+PyTorch's `model.layer1[0].conv1` is `model.layer1[1].conv1`.
+
+```julia
+model = create_model("resnet50")
+model.layer1[1].conv1  # Conv((1, 1), 64 => 64, bias=false)
+model.fc               # Dense(2048 => 1000)
+```
+
+The layers are ordinary Flux layers, so `Flux.freeze!`, `Flux.state` and `Flux.loadmodel!` work
+as usual, and models move to a GPU with Flux's `gpu_device()`.
+
+### Language models
+
+Language models take token indices, which start at 1, and return logits, of size
+vocabulary × sequence length (× batch). Metalhead has no tokenizers:
+[HuggingFaceTokenizers.jl](https://github.com/MurrellGroup/HuggingFaceTokenizers.jl) loads
+them from the Hub.
+
+```julia
+using HuggingFaceTokenizers
+
+model = create_model("HuggingFaceTB/SmolLM2-135M"; pretrained = true)
+tokenizer = from_pretrained(Tokenizer, "HuggingFaceTB/SmolLM2-135M")
+
+ids = encode(tokenizer, "The capital of France is the city of").ids .+ 1   # ids start at 0
+logits = model(ids)                                      # vocabulary × sequence length
+decode(tokenizer, [argmax(logits[:, end]) - 1])          # " Paris"
+```
+
+See the [getting started guide](https://fluxml.ai/Metalhead.jl/dev/tutorials/quickstart/) for
+more, the [language models guide](https://fluxml.ai/Metalhead.jl/dev/tutorials/language_models/)
+for generating text, and the [list of models](https://fluxml.ai/Metalhead.jl/dev/models/) for
+the ported architectures and their validated checkpoints.
+
+The [vision models tutorial](https://fluxml.ai/Metalhead.jl/dev/tutorials/vision/) walks through
+classifying a photograph, training a classifier on your images and fine-tuning a backbone.
+
+## Validated against PyTorch
+
+A model is added to Metalhead only after it [reproduces PyTorch](https://fluxml.ai/Metalhead.jl/dev/validation/):
+
+- A small, randomly initialised version of each architecture matches PyTorch's float64 outputs
+  to a relative error of 1e-8. These checks run in CI without Python or network access.
+- With real pretrained weights, outputs match PyTorch to 1e-4 in float32.
+- Weights load by name, strictly: every tensor in the checkpoint must be used, and every
+  parameter of the model must be found, with the right shape.
+
+## Contributing
+
+New models are ported with the tools in
+[`porting/`](https://github.com/FluxML/Metalhead.jl/tree/master/porting) and a
+[Claude Code](https://claude.com/claude-code) skill that takes an agent through a port and its
+validation. See [Porting a model](https://fluxml.ai/Metalhead.jl/dev/contributing/).
+
+## Upgrading from Metalhead 0.9
+
+Metalhead 0.10 deprecates the hand-written models (`ResNet(50)`, `ViT(:base)`, ...), the
+`Metalhead.Layers` module and `pretrain = true`. They will be removed in 0.11. The
+[migration guide](https://fluxml.ai/Metalhead.jl/dev/migration/) gives the `create_model`
+equivalent of each model.
+
+## Acknowledgements
+
+The architectures, pretrained weights and their configurations come from
+[timm](https://github.com/huggingface/pytorch-image-models) (PyTorch Image Models), by Ross
+Wightman and the Hugging Face team, and from
+[transformers](https://github.com/huggingface/transformers), by the Hugging Face team.
+Metalhead's ports translate their code, and its tests compare against their outputs.
+Pretrained weights keep the license of their Hub repository.
+
+Porting timm with AI agents, loading the Hub weights by name and checking the result against
+PyTorch, follows [Luximm.jl](https://github.com/csvance/Luximm.jl) by Carroll Vance, which
+does the same for [Lux.jl](https://lux.csail.mit.edu).

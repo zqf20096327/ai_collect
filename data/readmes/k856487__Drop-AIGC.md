@@ -66,3 +66,9 @@ python app/server.py
 ```bash
 llama-server -m models/Dailv1.5-f16.gguf --host 127.0.0.1 --port 8080 -c 1024
 ```
+
+# 更新一代：Dailv
+
+改写质量更好、速度更快。工具已开源；模型需在 Hugging Face 申请访问后下载。
+
+https://github.com/k856487/Dailv

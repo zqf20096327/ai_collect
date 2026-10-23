@@ -298,6 +298,9 @@
 - [agentclientprotocol/agent-client-protocol](https://github.com/agentclientprotocol/agent-client-protocol) - Protocol connecting editors to coding agents.
 - [unstablebuild/rune](https://github.com/unstablebuild/rune) - the development environment for pros.
 - [wangmiaozero/pi-harness](https://github.com/wangmiaozero/pi-harness) - Superset of the Pi coding agent with a visual workspace, run controls and agent teams.
+- [michael-denyer/pstack-claude](https://github.com/michael-denyer/pstack-claude) - Multi-agent workflow configs ported across Claude Code, Codex, Copilot, OpenCode and more.
+- [davila7/claude-code-templates](https://github.com/davila7/claude-code-templates) - CLI tool and template collection for configuring and monitoring Claude Code.
+- [maddada/Ghostex](https://github.com/maddada/Ghostex) - Native agents workspace built in Rust with 20+ agents and mobile apps.
 
 ## Skills, Plugins & Context Engineering
 
@@ -547,6 +550,18 @@
 - [first-fluke/oh-my-agent](https://github.com/first-fluke/oh-my-agent) - A specialist team for the coding agent you already use: 12 roles, 21 workflows and 33 skills that plan, build in parallel, review and debug.
 - [Appllama/appllama-skills](https://github.com/Appllama/appllama-skills) - Agent skills for building mobile apps, checked in simulators.
 - [soumatheusgomes/vibe-coding-toolkit](https://github.com/soumatheusgomes/vibe-coding-toolkit) - Docs, prompts and templates for coding with Claude Code and Codex subagents.
+- [ruc-datalab/EvoOntology](https://github.com/ruc-datalab/EvoOntology) - Self-evolving ontology layer for data agents: builds and refines domain semantics from data, exposed as MCP tools and Claude Code/Codex plugins.
+- [android/skills](https://github.com/android/skills) - Google's official skills collection for Android development with AI agents.
+- [cathrynlavery/diagram-design](https://github.com/cathrynlavery/diagram-design) - Editorial diagram design skill for Claude Code, Codex, Copilot, Cursor and other coding agents.
+- [ScrapeCreators/social-media-research-skills](https://github.com/ScrapeCreators/social-media-research-skills) - AI agent skills for social media research: outlier posts, comment mining and competitor teardowns.
+- [AgriciDaniel/claude-seo](https://github.com/AgriciDaniel/claude-seo) - Universal SEO skill for Claude Code: 26 sub-skills and 19 sub-agents.
+- [samber/cc-skills-golang](https://github.com/samber/cc-skills-golang) - Collection of Golang agentic skills.
+- [wheresryan22/anatomy](https://github.com/wheresryan22/anatomy) - Agent skill for creating detailed, interactive isometric illustrations of real-world machines.
+- [bowenliang123/dsh-context](https://github.com/bowenliang123/dsh-context) - DeepSeek Harness plugin for context insight and management, with a context dashboard.
+- [vercel-labs/skills](https://github.com/vercel-labs/skills) - Vercel's open agent skills tool: npx skills.
+- [Nutlope/hallmark](https://github.com/Nutlope/hallmark) - Anti-AI-slop design skill for Claude Code, Cursor and Codex.
+- [Jakeschincariol/replica-skill](https://github.com/Jakeschincariol/replica-skill) - Agent skill for replicating interfaces and designs.
+- [zarazhangrui/frontend-slides](https://github.com/zarazhangrui/frontend-slides) - Agent skill for building frontend slide decks.
 
 ## Agent Frameworks & Orchestration
 
@@ -765,6 +780,9 @@
 - [google-research/harness2](https://github.com/google-research/harness2) - Framework that optimizes the prompts, tools, memory and orchestration around a model.
 - [open-gitagent/opengap](https://github.com/open-gitagent/opengap) - Git-native standard for portable AI agent definitions that export to major frameworks.
 - [Ryder-Sun/Meldwork](https://github.com/Ryder-Sun/Meldwork) - Local-first desktop app that orchestrates Codex, Claude Code, Gemini CLI and other agents.
+- [apache/maka](https://github.com/apache/maka) - Apache Maka (incubating): high-performance agent workspace with a complete record of every interaction.
+- [docker/docker-agent](https://github.com/docker/docker-agent) - AI agent builder and runtime by Docker Engineering.
+- [Alpha-Dojo/DojoAgents](https://github.com/Alpha-Dojo/DojoAgents) - Framework for training and testing agents.
 
 ## Memory & Persistent Context
 
@@ -856,34 +874,4 @@
 - [colbymchenry/codegraph](https://github.com/colbymchenry/codegraph) - Pre-indexed code knowledge graph, auto syncs on code changes, for Claude Code, Codex, Gemini.
 - [andrewyng/context-hub](https://github.com/andrewyng/context-hub) - Shared context hub for agents.
 - [garrytan/gbrain](https://github.com/garrytan/gbrain) - Self-wiring knowledge graph brain for AI agents with hybrid search.
-- [2aronS/agent-git](https://github.com/2aronS/agent-git) - Git-based knowledge management system for AI agents.
-- [neo4j-labs/meta-knowledge-graph](https://github.com/neo4j-labs/meta-knowledge-graph) - Self-improving, harness-agnostic memory layer for AI agents on Neo4j.
-- [memgraph/memgraph](https://github.com/memgraph/memgraph) - Real-time graph database with Cypher.
-- [DeusData/codebase-memory-mcp](https://github.com/DeusData/codebase-memory-mcp) - Code intelligence MCP server that indexes codebases into a persistent graph.
-- [Ar9av/obsidian-wiki](https://github.com/Ar9av/obsidian-wiki) - Framework for agents to build and maintain an Obsidian wiki as a digital brain.
-
-**Benchmarks & papers**
-
-- [TeleAI-UAGI/Awesome-Agent-Memory](https://github.com/TeleAI-UAGI/Awesome-Agent-Memory) - Systems, benchmarks and papers on agent memory.
-- [AutoTrustAI/PaperGuru-Benchmark](https://github.com/AutoTrustAI/PaperGuru-Benchmark) - Lifecycle-aware memory benchmark for long-horizon LLM agents.
-- [InternLM/EMemBench](https://github.com/InternLM/EMemBench) - [EMNLP 2026] EMemBench: interactive episodic memory benchmark.
-
-**Graph databases**
-
-- [neo4j/neo4j](https://github.com/neo4j/neo4j) - Graph database for connected data.
-- [arangodb/arangodb](https://github.com/arangodb/arangodb) - Multi-model NoSQL database for graphs and documents.
-- [dgraph-io/dgraph](https://github.com/dgraph-io/dgraph) - Distributed GraphQL-native graph database.
-- [JanusGraph/janusgraph](https://github.com/JanusGraph/janusgraph) - Distributed graph database on Cassandra and HBase.
-- [vesoft-inc/nebula](https://github.com/vesoft-inc/nebula) - Distributed graph database for large graphs.
-- [FalkorDB/FalkorDB](https://github.com/FalkorDB/FalkorDB) - Super-fast graph database built on GraphBLAS for sparse graph operations.
-- [HelixDB/helix-db](https://github.com/HelixDB/helix-db) - HelixDB: OLTP graph database with native vector and full-text search.
-- [orneryd/NornicDB](https://github.com/orneryd/NornicDB) - Distributed low-latency Graph+Vector database with temporal MVCC.
-- [jeffhajewski/latticedb](https://github.com/jeffhajewski/latticedb) - Embedded single-file knowledge graph database with vector search.
-- [arun1729/cog](https://github.com/arun1729/cog) - Embedded graph database for Python living inside your process.
-
-**Storage backends**
-
-- [surrealdb/surrealdb](https://github.com/surrealdb/surrealdb) - Multi-model cloud database in Rust.
-- [redis/redis](https://github.com/redis/redis) - In-memory data store for cache and state.
-- [valkey-io/valkey](https://github.com/valkey-io/valkey) - Open-source Redis fork for in-memory data.
-- [dragonflydb/dragonfly](https://github.com/dragonflydb/dragonfly) 
+- [2aronS/agent-git](https://githu

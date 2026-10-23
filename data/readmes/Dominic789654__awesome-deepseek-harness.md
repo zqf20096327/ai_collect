@@ -352,6 +352,12 @@ _DSH's core composition mechanism: a **profile** stacks bundle patch layers, the
 - [lirenjie95/IamChinese](https://github.com/lirenjie95/IamChinese) — Treats the session as a mainland-China user: locale, time zone, date and currency conventions, plus a self-consistent test persona. DSH plugin + Claude Code plugin.
 - [M1r0er/dsh-workspace-gate](https://github.com/M1r0er/dsh-workspace-gate) — Workspace-scoped plugin gate for DeepSeek Harness: plugins still load, but their prompt prefixes are stripped per workspace so tool schemas and prompt sections no longer reach the model context.
 - [rvaim/dsh-plugin-bridge](https://github.com/rvaim/dsh-plugin-bridge) — Legacy plugin compatibility layer for DeepSeek Harness (dsh-compat): runs plugins written for Claude Code and Codex with their original directory layout and semantics instead of porting each one to a DSH-native plugin.
+- [Tests4gptplay/dsh-kujira-persona](https://github.com/Tests4gptplay/dsh-kujira-persona) — Global persona plugin for DeepSeek Harness: the whale-girl persona is written to a file you can edit or delete, and the agent can check and extend it.
+- [raktim-mondol/academic-harness](https://github.com/raktim-mondol/academic-harness) — Academic Harness as a DSH profile plugin: research persona, scientific skills catalogue, a living lab notebook and specialist sub-agents.
+- [elfmingh/dsh-prompt-manager](https://github.com/elfmingh/dsh-prompt-manager) — Layered prompt manager for DeepSeek Harness: reusable entries per workspace or session, built-in section overrides with line-level diff, and real assembly snapshots.
+- [1497105876/dsh-text-inject](https://github.com/1497105876/dsh-text-inject) — DSH plugin: inject text into the system prompt or session context from the Settings page, with standalone file storage, hot reload and history backups.
+- [ft54482/chengzipro-dsh-plugin](https://github.com/ft54482/chengzipro-dsh-plugin) — Chengzi PRO relay-station provider plugin for DSH: adds a New API–compatible relay channel as a model provider, with account login, a model catalogue, image input and image / video generation tools.
+- [zenVibeCoding/dsh-newapi-provider](https://github.com/zenVibeCoding/dsh-newapi-provider) — New API gateway provider for DeepSeek Harness: multi-channel models, quota, image and video generation.
 
 ## Harnesses & Runtimes
 
@@ -544,12 +550,4 @@ _DeepSeek-native or DeepSeek-first agent harnesses / coding agents, plus runtime
 - [Owen718/FlashCoder](https://github.com/Owen718/FlashCoder) — Simple harness for DeepSeek models.
 - [ArtificialNotImbecile/dsh-context-taxonomy](https://github.com/ArtificialNotImbecile/dsh-context-taxonomy) — Logical-call context taxonomy plugin for DeepSeek Harness.
 - [BaronCyrus/dsh-kimi-subscription](https://github.com/BaronCyrus/dsh-kimi-subscription) — Use a Kimi Code subscription in DeepSeek Harness with OAuth, quota display, and composer usage.
-- [d86e/dsh-doctor](https://github.com/d86e/dsh-doctor) — dsh-doctor: self-healing watchdog for the DeepSeek Harness web profile. Recovers from plugin-induced boot failures within 60s, runs an unbounded CLI doctor, captures every tool error, and watches all live sessions for stuck turns.
-- [QinpanWan/dsh-harmonyos-pc](https://github.com/QinpanWan/dsh-harmonyos-pc) — Get DeepSeek Harness (dsh) fully running on HarmonyOS: cache-optimized agent presets, launch patches, and tooling.
-- [Drifter-yh/dsh-tool-policy](https://github.com/Drifter-yh/dsh-tool-policy) — Declarative deny-by-default tool policy plugin.
-- [LingLambda/dsh-undo](https://github.com/LingLambda/dsh-undo) — Context undo/redo: roll the model context back to the last completed step and restore it again.
-- [omdsh-dev/omdsh](https://github.com/omdsh-dev/omdsh) — Community experiment for organizing versioned DSH component sets and defaults in a reviewable, reproducible form.
-- [omdsh-dev/omdsh-runtime](https://github.com/omdsh-dev/omdsh-runtime) — Headless execution layer reusing official Profile/Bundle/Cordis operations, adding deterministic plan/apply, candidate generations, and previous-generation recovery.
-- [wangshunnn/oh-my-dsh](https://github.com/wangshunnn/oh-my-dsh) — A collection of DeepSeek Harness plugins.
-- [yjh051108/dsh-super-injector](https://github.com/yjh051108/dsh-super-injector) — BepInEx-style mod injector: hot-injects local plugin packages into a running DSH web instance without patches or restarts.
-- [yoke233/dsh-openai-codex-auth](https://github.com/yoke233/dsh-openai-codex-auth) — OpenAI Codex OAuth login and usage
+- [d86e/dsh-doctor](https://github.com/d86e/dsh-doctor) — dsh-doctor: self-healing watchdog for the DeepSeek Harness web profile. Recovers from plugin-induced boot failures within 60s, runs a

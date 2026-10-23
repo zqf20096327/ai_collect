@@ -22,11 +22,17 @@ MoonWave（月波康复）是一个全栈的「AI 运动康复指导」Web 应�
 
 ## 截图
 
-主页：选择遇到的问题 → 该问题的「前期 / 中期 / 后期」三套方案 + 单独动作。
+**主页**：选择遇到的问题（肩周炎 / 关节炎 / 颈椎不适 / 腰肌劳损 / 膝关节炎 / 术后康复）。
 
-![主页：选择问题与推荐方案](docs/screenshots/home.png)
+![主页：选择遇到的问题](docs/screenshots/home.jpg)
 
-> 更多截图（实时评估、动作库管理、个人中心等）欢迎补充到 `docs/screenshots/`。
+**推荐方案**：按症状给出前期 / 中期 / 后期三套方案，每套标注适用人群与动作数量。
+
+![推荐方案：前期 / 中期 / 后期](docs/screenshots/plans.jpg)
+
+**动作库**：动作按部位组织，可展开查看动作要点、禁忌人群与标准角度区间。
+
+![动作库：动作列表](docs/screenshots/action-library.jpg)
 
 ## 技术栈
 
@@ -136,6 +142,19 @@ python zitaishibie.py
 > 请在项目根目录运行：`index.html` / `login.html` / `logo1.jpg` 是按当前工作目录查找的。
 
 生产部署（nginx 反代 + systemd）参见 [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)。
+
+## 开发与测试
+
+接口测试不需要 MySQL，也不需要摄像头：`tests/conftest.py` 用替身替换了数据库连接与 CV 依赖，
+所以不装 mediapipe / opencv 也能跑。
+
+```bash
+pip install -r requirements-dev.txt
+python -m pytest       # 接口测试：注册登录 / 姿态判定 / 动作库 / 静态白名单
+ruff check .           # 静态检查（配置见 pyproject.toml）
+```
+
+`python test_alps_lite.py` 仍是 ALPS / DTW 算法的独立自测（纯标准库、零依赖），CI 里两者都会跑。
 
 ## 使用说明
 

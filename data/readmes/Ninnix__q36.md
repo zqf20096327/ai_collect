@@ -209,28 +209,18 @@ The 2 bit quants use a very asymmetrical quantization: only the routed MoE
 experts are quantized, up/gate at `IQ2_XXS`, down at `Q2_K`. They are the
 majority of all the model space: the other components (shared experts,
 projections, routing) are left untouched to guarantee quality. The resulting
-weight footprint is roughly 10-11 GB, which fits the BC-250 with room left
-for KV cache and OS.
-
-The higher-quality mixed model keeps that layout for layers 0..33 and uses
-`Q4_K` routed gate, up, and down tensors in layers 34..39. Its roughly 13 GB
-weight file is intended for SSD streaming on 16 GB machines.
+weight file is about 12.1 GB including the embedded MTP head, which fits
+the BC-250 with room left for KV cache and OS.
 
 Download one main model.
 
 ```sh
-./download_model.sh q2-imatrix   # 16 GB unified memory machines
-./download_model.sh q2-q4-imatrix # higher quality; stream on 16 GB machines
-./download_model.sh 27b           # Dense Qwen3.8-27B IQ3_S
+./download_model.sh q2  # Qwen3.6 MoE with an embedded 333 MB MTP head
+./download_model.sh 27b # Dense Qwen3.8-27B IQ3_S
 ```
 
-Choose one. The first target matches the compiled default path. Select the
-second explicitly:
-
-```sh
-./q36 -m gguf/Qwen3.6-35B-A3B-Layers34-39Q4KExperts-OtherExpertLayersIQ2XXSGateUp-Q2KDown-Q8Rest-imatrix.gguf \
-  --ssd-streaming -p "Hello"
-```
+The `q2` target matches the compiled default path. Pass `--token TOKEN`
+if authentication is needed, and `--mtp` to enable its embedded head at runtime.
 
 The script downloads Qwen3.6 models from
 `https://huggingface.co/Ninnix96/Qwen3.6-35B-A3B-gguf` and dense Qwen3.8-27B
@@ -254,7 +244,7 @@ reference targets under `make test-llama` and `make test-vectors-local`.
 The vendored JPEG/PNG decoder in `third_party/iris` is Copyright (c) 2026
 Salvatore Sanfilippo and distributed under its included MIT license.
 
-`gguf/Qwen3.6-35B-A3B-AntirezExperts-IQ2XXS-gateup-Q2K-down-Q8rest.gguf` is
+`gguf/Qwen3.6-35B-A3B-IQ2XXS-Q2K-Q8.gguf` is
 the default model path used by all runtime binaries. Pass `-m` to select another
 supported GGUF from `./gguf/`. Run `./q36 --help` and
 `./q36-server --help` for the full flag list.
@@ -265,9 +255,8 @@ If you want to regenerate GGUF files, quantize community fine-tunes / abliterate
 Qwen3.6 model-building work. The native quantizer accepts Q8, F16, or BF16
 inputs; imatrix collection still uses the optional llama.cpp tooling.
 
-`./download_model.sh mtp` fetches the optional speculative decoding support
-GGUF for Qwen 3.6 MoE. It can be used with the `q2-imatrix` and
-`q2-q4-imatrix` main models, but must be enabled explicitly with `--mtp`.
+The Qwen3.6 `q2` download includes its MTP support in the main GGUF;
+enable it explicitly with `--mtp`.
 Embedded heads are supported in 41-block MoE GGUFs and in both supported
 65-block Qwen3.8-27B GGUFs. Use `--mtp` without a filename to select the
 embedded head, or `--mtp FILE` for a separate support GGUF. In `q36`,
@@ -277,6 +266,45 @@ opportunistic sampling. Explicit depth, margin, and sampling options override
 these defaults regardless of argument order. The embedding and output weights
 remain shared. With `--mtp` omitted, the runtime excludes the extra block from
 the resident GPU weight cache.
+
+The MoE build `gguf/Qwen3.6-35B-A3B-IQ2XXS-Q2K-Q8.gguf` retains the
+Antirez target tensors and embeds a 332.78 MB MTP block quantized from
+Unsloth's original BF16 weights. Its draft gate/up experts use IQ2_XXS,
+down experts use Q4_K, projections and shared experts use Q8_0, and
+routers/norms remain F32. Enable it with:
+
+```sh
+./q36 -m gguf/Qwen3.6-35B-A3B-IQ2XXS-Q2K-Q8.gguf --mtp --temp 0 --nothink \
+  -p "Write a C function that reverses a linked list."
+```
+
+BC-250 resident Vulkan measurements with this head and Q8_0 K / Q4_0 V
+cover prose, code, reasoning with thinking enabled, and structured output.
+The table gives MTP speedups over ordinary decode in the same build:
+
+| Workload | Greedy speedup | Sampled speedup |
+| --- | ---: | ---: |
+| Prose | 1.17–1.28× | 1.20–1.24× |
+| Code | 1.21–1.99× | 1.48–1.58× |
+| Reasoning | 1.40–1.50× | 1.51–1.60× |
+| JSON | 1.39–1.50× | 1.52–1.62× |
+
+These are serialized, warmed sweeps at 128, 2K, and 4K context with 192
+generated tokens, draft ceiling eight, and margin zero. All 24 greedy cases
+produce identical token sequences with MTP enabled or disabled. The 12
+sampled cases use temperature 0.6 and seed 42; opportunistic MTP samples each
+block boundary and uses a verified greedy tail, so its sampling distribution
+differs from ordinary per-token sampling.
+
+The current kernels improve MTP throughput by 19% geometrically over
+`d5b4e4b`, with 12–27% gains across the greedy cases. Q8 verification shares
+activation loads across output rows, shared experts verify multiple tokens
+together, and eight-head attention reuses K/V loads. The MoE normalization
+scratch adds 16 KiB; the model and head weights are unchanged. Measurements,
+temperatures, dense-optimization audit, and validation are in
+[the local speedup report](tests/test-vectors/local/q36-moe-speed-20261023/README.md).
+The [head-selection report](tests/test-vectors/local/q36-moe-mtp-20261023/README.md)
+records the earlier quantization comparisons.
 
 For greedy Vulkan generation with the dense embedded head:
 
@@ -293,14 +321,16 @@ Verification shares quantized weights across rows and keeps token selection
 on the GPU. The draft output head uses a small mask of recent target
 alternatives; target verification always scores the full vocabulary.
 
-Dense Vulkan chooses recursive MTP lengths between two and four rows from
+Resident Vulkan chooses recursive MTP lengths between two and four rows from
 the current draft's confidence. With `--mtp-draft 8`,
 a matching 12–16-token suffix can supply a longer copied tail after MTP
 confirms its first proposal. Positive `--mtp-margin` values use MTP alone.
 The regression tests compare committed tokens and every target logit with
 ordinary decode, including quantized KV, checkpoint restore and verifier
 widths up to eight. MTP also matches a separate ordinary engine with MTP disabled.
-Other recurrent paths use scalar verification to preserve ordinary decode.
+The IQ2_XXS/Q2_K MoE target also verifies rows together, retaining ordinary
+decode routing, shared-expert and recurrent arithmetic. Other MoE tensor
+mixes and SSD streaming retain scalar verification.
 
 Opportunistic sampling is the default with `--mtp` at a positive temperature:
 

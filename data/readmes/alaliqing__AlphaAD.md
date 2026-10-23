@@ -3,8 +3,8 @@
 # 🚗 AlphaAD · Autonomous Driving Research
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Last Update](https://img.shields.io/badge/Last%20Updated-2026--10--22-blue)
-![Total Papers](https://img.shields.io/badge/Papers-1419-green)
+![Last Update](https://img.shields.io/badge/Last%20Updated-2026--10--23-blue)
+![Total Papers](https://img.shields.io/badge/Papers-1421-green)
 ![Auto Update](https://img.shields.io/badge/Auto--Update-Daily-brightgreen)
 
 **A daily, explainable research signal for autonomous driving.**<br>
@@ -20,20 +20,20 @@ Browse one primary topic per paper, then refine the signal with method and resou
 
 ## Browse by topic
 
-All 1419 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
+All 1421 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
 
 | Topic | Papers | Latest | Jump |
 |:--|--:|:--|:--|
-| Perception & Sensor Fusion | 222 | 2026-10-21 | [View papers](#category-perception-sensor-fusion) |
+| Perception & Sensor Fusion | 220 | 2026-10-22 | [View papers](#category-perception-sensor-fusion) |
 | Prediction & World Models | 107 | 2026-10-19 | [View papers](#category-prediction-world-models) |
-| Planning & Decision-Making | 94 | 2026-10-21 | [View papers](#category-planning-decision-making) |
-| Control & Vehicle Dynamics | 56 | 2026-10-17 | [View papers](#category-control-vehicle-dynamics) |
+| Planning & Decision-Making | 95 | 2026-10-21 | [View papers](#category-planning-decision-making) |
+| Control & Vehicle Dynamics | 57 | 2026-10-21 | [View papers](#category-control-vehicle-dynamics) |
 | Mapping & Localization | 54 | 2026-10-18 | [View papers](#category-mapping-localization) |
-| End-to-End & VLA | 159 | 2026-10-18 | [View papers](#category-end-to-end-vla) |
-| Safety, Security & Verification | 226 | 2026-10-19 | [View papers](#category-safety-security-verification) |
-| Systems, Deployment & Connectivity | 163 | 2026-10-21 | [View papers](#category-systems-deployment-connectivity) |
+| End-to-End & VLA | 161 | 2026-10-22 | [View papers](#category-end-to-end-vla) |
+| Safety, Security & Verification | 226 | 2026-10-22 | [View papers](#category-safety-security-verification) |
+| Systems, Deployment & Connectivity | 164 | 2026-10-21 | [View papers](#category-systems-deployment-connectivity) |
 | Human Factors & Policy | 32 | 2026-10-17 | [View papers](#category-human-factors-policy) |
-| Cross-cutting / Other | 306 | 2026-10-21 | [View papers](#category-cross-cutting-other) |
+| Cross-cutting / Other | 305 | 2026-10-21 | [View papers](#category-cross-cutting-other) |
 
 ---
 
@@ -45,15 +45,15 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 | Tag | Papers | Filter |
 |:--|--:|:--|
-| Dataset | 106 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
+| Dataset | 104 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
 | Benchmark | 97 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
-| Simulation | 189 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
+| Simulation | 192 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
 | Synthetic Data | 37 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
-| Cooperative / V2X | 116 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
-| VLA | 90 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
+| Cooperative / V2X | 117 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
+| VLA | 91 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
 | World Model | 115 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
-| Reinforcement Learning | 139 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
-| Imitation Learning | 30 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Imitation+Learning) |
+| Reinforcement Learning | 140 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
+| Imitation Learning | 31 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Imitation+Learning) |
 | Hardware / Real-Time | 101 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
 | Survey | 27 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Survey) |
 | Explainability | 118 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
@@ -63,7 +63,17 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="category-perception-sensor-fusion"></a>
 
-## Perception & Sensor Fusion · 222 papers
+## Perception & Sensor Fusion · 220 papers
+
+<a id="paper-2610-31186"></a>
+
+### RaSFNet: Ray-aligned and Scan-aware Fusion Network for LiDAR Semantic Segmentation ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Chuang Chen<br>
+**Published:** 2026-10-22<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2610.31186) | [PDF](https://arxiv.org/pdf/2610.31186.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** LiDAR point cloud semantic segmentation is a fundamental component of 3D perception for autonomous driving and robotics. Projection-based methods map 3D point clouds into 2D representations for...
 
 <a id="paper-2610-29618"></a>
 
@@ -75,6 +85,17 @@ Each paper has one primary topic and may carry several method or resource tags. 
 **Links:** [arXiv abstract](https://arxiv.org/abs/2610.29618) | [PDF](https://arxiv.org/pdf/2610.29618.pdf) | [↑ BackToTop](#browse-by-topic)
 
 **Abstract:** Object detection models for autonomous driving commonly experience substantial performance drops when deployed under adverse weather due to the domain shift between training data and real-world...
+
+<a id="paper-2610-30340"></a>
+
+### Foundation4D: Towards a unified perception and reconstruction model for autonomous vehicles ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** NVIDIA, :, Sérgio Agostinho, Maximilian Apodaca, Emmanuel Attia, et al.<br>
+**Published:** 2026-10-21<br>
+**Research tags:** Benchmark<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2610.30340) | [PDF](https://arxiv.org/pdf/2610.30340.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** We introduce Foundation4D, a unified feed-forward model for geometry estimation, 3D detection, semantic occupancy, and Gaussian reconstruction from multi-camera driving video. A shared backbone uses...
 
 <a id="paper-2610-28508"></a>
 
@@ -132,7 +153,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-21207"></a>
 
-### SpaceCache: Intermediate Feature Reuse for Efficient Semantic Segmentation on Point Cloud Streams ![New](https://img.shields.io/badge/New-red)
+### SpaceCache: Intermediate Feature Reuse for Efficient Semantic Segmentation on Point Cloud Streams ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Dongheon Yang, Beomseok Kang, Jae-Joon Kim<br>
 **Published:** 2026-10-15<br>
@@ -404,7 +425,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2609-26919"></a>
 
-### Bend the Clock: Predicting Ahead to Beat Latency in Event-Based Object Detection ![Recent](https://img.shields.io/badge/Recent-orange)
+### Bend the Clock: Predicting Ahead to Beat Latency in Event-Based Object Detection ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Biswadeep Sen, Benoit R. Cottereau, Nicolas Cuperlier, Terence Sim<br>
 **Published:** 2026-09-22<br>
@@ -415,7 +436,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2609-26325"></a>
 
-### Leveraging Vision-Based Point Cloud Map Priors for Camera-Based 3D Object Detection and Online Vectorized HD Mapping ![Recent](https://img.shields.io/badge/Recent-orange)
+### Leveraging Vision-Based Point Cloud Map Priors for Camera-Based 3D Object Detection and Online Vectorized HD Mapping ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Markus Käppeler, Rohit Mohan, Abhinav Valada<br>
 **Published:** 2026-09-22<br>
@@ -425,7 +446,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2609-25860"></a>
 
-### MatchFusion: Explicit-Implicit Instance Matching for Spatio-Temporal Multimodal Autonomous Driving ![Recent](https://img.shields.io/badge/Recent-orange)
+### MatchFusion: Explicit-Implicit Instance Matching for Spatio-Temporal Multimodal Autonomous Driving ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Xiaoyu Li, Jiajia Fu, Long Shi, Tianyu Du, Ruihang Li, et al.<br>
 **Published:** 2026-09-22<br>
@@ -1651,25 +1672,4 @@ Each paper has one primary topic and may carry several method or resource tags. 
 **Published:** 2026-06-10<br>
 **Links:** [arXiv abstract](https://arxiv.org/abs/2606.12826) | [PDF](https://arxiv.org/pdf/2606.12826.pdf) | [↑ BackToTop](#browse-by-topic)
 
-**Abstract:** Moving instance segmentation (MIS) attracts increasing attention due to its broad applications in traffic surveillance, autonomous driving, and animal tracking. Event cameras record asynchronous...
-
-<a id="paper-2606-12628"></a>
-
-### Context-Aware Feature-Fusion for Co-occurring Object Detection in Autonomous Driving
-
-**Authors:** Binay Kumar Singh, Niels Da Vitoria Lobo<br>
-**Published:** 2026-06-10<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2606.12628) | [PDF](https://arxiv.org/pdf/2606.12628.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** Object detection in autonomous driving requires precise localization and an inherent understanding of the relational context between co-occurring objects. In extremely complex heterogeneous...
-
-<a id="paper-2606-12066"></a>
-
-### Performance Analysis of YOLOv11 and YOLOv8 for Mixed Traffic Object Detection under Adverse Weather Conditions in Developing Countries
-
-**Authors:** Quoc Thuan Nguyen, Ha Anh Vu, Ngo Dang Thanh Ngan, Minh Phuc Hoang Ngoc<br>
-**Published:** 2026-06-10<br>
-**Research tags:** Hardware / Real-Time<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2606.12066) | [PDF](https://arxiv.org/pdf/2606.12066.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** In modern vehicular systems, robust performance under harsh conditions has become a criti
+**Abstract:** Moving instance segmentation (MIS) attracts increasing attention due to i

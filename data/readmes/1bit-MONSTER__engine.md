@@ -29,6 +29,22 @@ census, with 0 nodes on the CPU ([#476](https://github.com/1bit-MONSTER/engine/p
 speculative decoding decodes at 36.0 / 26.8 / 29.9 tok/s on code / prose / short chats
 ([#487](https://github.com/1bit-MONSTER/engine/pull/487)).
 
+**Where it stands on 23 October 2026** (candidate `v2026.43`; numbers carry their standard and their
+power state — *lemonade bench standard* is Lemonade's own CI benchmark, *ours* is our sampler/batched
+standard, and everything measured after the 23 Oct 01:38 rebuild is *90 W cap, PCM pad (23 Oct)*):
+
+| what | number | standard |
+|---|---|---|
+| Qwen3.8-27B UD-Q4_K_XL with MTP, code / prose / short chat | **36.0 / 26.8 / 29.9 tok/s** | lemonade bench standard |
+| Qwen3-Coder-30B-A3B, single stream | **84.2 tok/s** (85.9 in the lemonade-bench cells) | ours / lemonade standard |
+| batched, aggregate at 8 concurrent 256-token chats: 27B / Coder-30B / Qwen3.5-4B | **50.7 / 138.1 / 194.3 tok/s** | ours, 90 W cap, PCM pad (23 Oct) |
+| NPU, 0.6B gate phase | **90.33 tok/s** | ours (gate) |
+| census on HRX: configurations with 0 nodes off the GPU | **43 of 43** | ours (gate) |
+| Lemonade catalog: HRX entries proven on the box | **22 of 22** (43.4–330.7 tok/s chat-short) | lemonade bench standard |
+
+The engine is in the release candidate now; the tag and the packages are the owner's
+([docs/releases.md](docs/releases.md#v202643-candidate-23-oct)).
+
 Lemonade stays the server you talk to (its catalog, downloads, router and UI). For the models it
 hands to 1bit, it runs the engine as one of its backends, behind an OpenAI-compatible API:
 
@@ -43,9 +59,9 @@ hands to 1bit, it runs the engine as one of its backends, behind an OpenAI-compa
   same build on the CPU.
 - **The NPU engine** on the XDNA 2 NPU, in progress: correctness first, speed next
   ([docs/npu.md](docs/npu.md)).
-- **ONNX Runtime GenAI** (Lemonade's ONNX format) on the CPU, and on the NPU through the user's
-  own install of AMD's Ryzen AI Software, on Linux
-  ([#386](https://github.com/1bit-MONSTER/engine/pull/386), [docs/onnx.md](docs/onnx.md)).
+- **Hybrid**: the prompt on the NPU engine, the tokens on HRX. `1bit serve --device hybrid` hands
+  the prompt's KV cache from a prefill provider to the HRX llama-server
+  ([docs/hybrid.md](docs/hybrid.md)).
 - **DwarfStar**, for DeepSeek V4 Flash, GLM 5.x and Qwen3.8-Flash-Next in its own GGUFs, with SSD
   expert streaming ([docs/dwarfstar.md](docs/dwarfstar.md)).
 - **Laya**, opt-in, which picks where each request runs ([docs/laya.md](docs/laya.md)), and
@@ -67,6 +83,10 @@ runtime keeps one memory budget for every buffer, and after a GPU fault the serv
 and exits cleanly, so Lemonade can restart the model
 ([#486](https://github.com/1bit-MONSTER/engine/pull/486)). Serve numbers in these docs come from
 `tools/bench.py`, which A/B-measures configurations in the same run ([docs/bench.md](docs/bench.md)).
+
+The box's kernel is ours too: Linux `v7.3-rc4` plus the IOMMU PerfOpt backports, built from our
+config, MOK-signed for Secure Boot, and gated like a pin bump. Moving it to the next upstream tag is
+a written step list ([docs/kernel.md](docs/kernel.md)).
 
 **Install:** through Lemonade. The packages are Lemonade with the `onebit` recipe and the engine
 (unpack it and run `lemond-onebit`), and 1bit OS, a Lemonade appliance on a bootable USB image.

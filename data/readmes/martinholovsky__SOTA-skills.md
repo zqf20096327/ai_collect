@@ -377,7 +377,10 @@ because the same change added three more classes below):
   Blast radius is not only disk, either: an unbounded backgrounded loop, or **a wrapper that
   invokes a command its own directory shadows**, fills the per-user process table, and every
   tool fails at once *including the ones you would use to diagnose it*. Two unrelated causes
-  produce that one signature and only **parentage** separates them.
+  produce that one signature and only **parentage** separates them. Nor is it only processes: a
+  one-off analyzer run reached a **28 GB** resident set and swapped the host, and on macOS no memory
+  rlimit can be set at all (`RLIMIT_DATA` in a `preexec_fn` aborts the spawn), so the cap there is a
+  container or an RSS supervisor.
   Two more shapes where the command is *correct*: an extraction or fetch into a blob you have
   never opened cannot be positive-controlled at all, because nothing is yet known to be in it —
   so it must print a **denominator** (bytes, members, total files) beside the zero, or `0`
@@ -393,7 +396,8 @@ because the same change added three more classes below):
   tracked symlinks. And a guard tested in zsh can pass what bash rejects: zsh leaves
   `BASH_REMATCH` unset, so empty `-eq` empty accepted `43/44` as "N/N checks passed".
   ([rules/06](skills/sota-shell-scripting/rules/06-ad-hoc-commands.md),
-  [rules/03 §3a](skills/sota-shell-scripting/rules/03-security.md))
+  [rules/03 §3a](skills/sota-shell-scripting/rules/03-security.md),
+  [rules/08 §3a](skills/sota-shell-scripting/rules/08-ad-hoc-side-effects.md))
 - **Controls that block everything** — the mirror image, and the one every other pass
   here looks past. An *enforcement* control (cap, quota, filter, allowlist, sandbox
   policy) can be tightened until it refuses the legitimate case too, and it passes the
@@ -569,8 +573,11 @@ because the same change added three more classes below):
   credentials, and the target is the attacker. Four legs, usually owned by four people:
   staging that dereferences symlinks out of the tree, "static" analysis that evaluates
   target-controlled build metadata, an LLM step spawned with tools live and the parent's
-  `cwd`, and egress left on by default.
-  ([sandboxing rules/05 §7](skills/sota-sandboxing/rules/05-ai-agent-sandboxing.md))
+  `cwd`, and egress left on by default. "Buildless" is no defence: measured on CodeQL
+  2.27.3, Rust `--build-mode=none` ran a target's `rustc-wrapper`, `build.rs` and proc
+  macro, and `cargo metadata`, `tree` and `fetch` each ran a repository's `rustc-wrapper`.
+  ([sandboxing rules/05 §7](skills/sota-sandboxing/rules/05-ai-agent-sandboxing.md),
+  [rust rules/07 §4a](skills/sota-rust/rules/07-tooling-ci.md))
 - **Absence claims** — "no hardcoded secrets remain" is the one finding nobody can
   falsify: a narrow search and a true absence produce identical output. Any absence
   claim needs a widened search **plus a second independent method**, with the search
@@ -830,7 +837,12 @@ without Developer Mode) is stamped with its release, and once `git pull` moves t
 it, the hook names the stale copy and the re-install command. A second local fact, said **once**: a default-on
 hook script that a `git pull` brought to a clone install and nothing registered (the code-rules
 hook, or the zsh `EQUALS` hook when the agent's shell is zsh), since only `install.sh --routing`
-writes `settings.json`. A fresh install stays silent: it was just offered every hook.
+writes `settings.json`. A fresh install stays silent: it was just offered every hook. A third, said
+every session while true: a **symlink** install whose checkout is on a feature branch, or carries
+uncommitted changes, so the session is loading unreleased text (the cue for a maintainer to work in a
+`git worktree`, AGENTS.md step 1). It runs when the hook does: at session start and, since the hook is
+registered with no matcher, again on resume, `/clear` and compaction (Claude Code's hooks reference
+lists those as SessionStart sources). It does not re-check between compactions in a long session.
 
 **Which version am I on?** `scripts/install.sh --version` reports the release, the
 checkout (`git describe`), whether your remote is ahead as of the last fetch, and
@@ -1229,24 +1241,4 @@ cd /path/to/your/project
 ```
 
 It detects Python / Go / Rust / JS-TS / shell by manifest and extension, then
-writes the exact tools each skill prescribes — ruff·mypy·pytest·pip-audit,
-gofumpt·golangci-lint·govulncheck, clippy·cargo-audit, eslint·tsc·`<pm> audit`,
-shellcheck·shfmt, plus gitleaks everywhere. Fast checks (lint, format, secrets)
-run on **commit**; heavy ones (type-check, tests, vuln scans) run on **push** —
-the split `sota-python` rules/01 §6 and `sota-devsecops` rules/05 require, so
-commits stay quick.
-
-It is **idempotent**: re-run it after adding a language and it rewrites only the
-block between its `# >>> sota-gates >>>` markers, leaving any hooks you added
-yourself in place. The hooks call your project's own toolchain, so install the
-per-language tools it lists on exit (and `pre-commit install` if the script
-couldn't).
-
-**Then check it actually took.** `init-gates.sh` sets things up; nothing
-verifies the result, and "configured" and "working" render identically — a
-config file with no installed hook is not a control, and a CI job whose every
-run is *skipped* is a gate on paper.
-
-```sh
-/path/to/SOTA-skills/scripts/verify-setup.sh     # read-only; --runs N widens the CI sample
-/path/to/SOTA-skills/scripts/verify-setup.sh --reach-only   # section A only: is the library reachi
+writes the exact tools each skill prescribes — ruff·myp

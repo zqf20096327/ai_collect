@@ -300,6 +300,11 @@ All optional; the defaults are right for normal use.
   slot in one thread, `sp` gives each slot its own simdgroup pair, `dd` is the dedupe row-pair
   kernel. By default `sp` serves launches under 2048 threadgroups and `dd` serves wider ones at 2
   to 8 rows. Read per call. `loop` and `sp` give identical bytes. A/B lever.
+- `KQ_MOE_SX_SPLIT=<n>` - on Metal, run each shared row of `gather_qmv_mix_kq` as n pieces of
+  whole blocks, at most the row's block count and 16 simdgroup pairs in all. By default a one-row
+  call runs two pieces when the shared expert is in another codec than the routed experts, and
+  wider calls run one. `1` restores one piece. Read per call. Every kernel form gives the same
+  bits at a given count. A/B lever.
 - `KQ_MOE_SHEXP_MULTI=0` - on Metal, decline a shared expert wider than one routed expert in the
   fused shared-expert MoE gathers: `kq.shexp_glu_combo_has_kernel` and
   `kq.shexp_mix_combo_has_kernel` return False for `shared_slots` above 1, and the ops raise an
@@ -326,10 +331,13 @@ All optional; the defaults are right for normal use.
 - `KQ_SDPA_IDX_NAX=0` - run `sdpa_fa_indexed` on its simdgroup kernel even where the NAX tile
   kernel is available. Read once per process. The simdgroup kernel matches `sdpa_fa_verify` over
   the gathered rows bit for bit; the NAX kernel differs at output rounding level. A/B lever.
-- `KQ_GQA_NAX=0` - run the one-query head-dim-512 pass of `sdpa_decode_gqa` on its simdgroup kernel
-  even where the NAX kernel is available. Read per call. The two kernels differ at rounding level,
-  and in fp16 the NAX kernel's error against a float32 reference is about twice the simdgroup
-  kernel's. A/B lever.
+- `KQ_GQA_NAX=0` - run the one-query head-dim-128 and head-dim-512 pass of `sdpa_decode_gqa` on its
+  simdgroup kernel even where the NAX kernel is available. Read per call. The two kernels differ at
+  rounding level, and in fp16 the NAX kernel's error against a float32 reference is about twice the
+  simdgroup kernel's. A/B lever.
+- `KQ_GQA_NAX_SPLIT_P=1` - at head dim 128, run the NAX pass's `P @ V` on P split in two parts, which
+  brings its error back to the simdgroup kernel's at up to 10% more time below 4096 keys. Read per
+  call. Off by default.
 
 The model-specific kernels carry their own tuning levers, documented alongside each kernel in
 [docs/kernels.md](https://github.com/asher/mlx-kquant/blob/main/docs/kernels.md).

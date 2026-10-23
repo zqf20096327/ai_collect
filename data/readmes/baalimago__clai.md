@@ -3,7 +3,7 @@
 ![Wakatime](https://wakatime.com/badge/user/018cc8d2-3fd9-47ef-81dc-e4ad645d5f34/project/018e07e1-bd22-4077-a213-c16290d3db52.svg)
 [![Go Reference](https://pkg.go.dev/badge/github.com/baalimago/clai.svg)](https://pkg.go.dev/github.com/baalimago/clai/pkg/agent)
 
-Test coverage: 91.1% 😍👌
+Test coverage: 91.9% 😍👌
 
 <hr>
 <div align="center">
@@ -68,7 +68,9 @@ The agent runs silent and returns typed errors. See [pkg/agent](https://pkg.go.d
 - **[Seamless conversation import](./architecture/continue-from-claudex.md)** - Ran out of session? Continue in clai!
 - **[Agent Skills](./architecture/skills.md)** - Import skills from custom global directories, or project-level `.agents/skills`.
 - **[Profiles](./examples.md#profiles-workflow-presets)** - Pre-prompted profiles enabling customized workflows and agents.
+- **[Loop until verified](./examples.md#loop-until-the-goal-is-verified)** - Add `-l` to a query and clai iterates toward the goal, accepting completion only when `-check` passes.
 - **[MCP client support](./examples.md#mcp-tools-external-tool-servers)** - Add any MCP server you'd like by pasting their configuration.
+- **[Images, both ways](./architecture/images.md)** - Attach images with `-img`, a glob or stdin to any model, and get images back through the `generate_image` tool, or from an image-output model.
 - **Unix-like** - Clai follows the [unix philosophy](https://en.wikipedia.org/wiki/Unix_philosophy) and works with data piped in and out.
 
 All of these features are easily combined and tweaked, empowering users to accomplish very diverse use cases.
@@ -79,7 +81,7 @@ See [examples](./examples.md) for additional info.
 | Vendor      | Environment Variable | Models                                                                                                                                                             |
 | ----------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Jev         | `TYPESAFE_API_KEY`   | [System One](https://docs.typesafe.ai/api) evaluation, model `jev-latest`, questions from `-rf`                                                                    |
-| OpenRouter  | `OPENROUTER_API_KEY` | [Text models](https://openrouter.ai/models), use prefix `or:`                                                                                                      |
+| OpenRouter  | `OPENROUTER_API_KEY` | [Text models](https://openrouter.ai/models), [image models](https://openrouter.ai/models?output_modalities=image), use prefix `or:`                              |
 | Ollama      | `OLLAMA_API_KEY`     | Use format `ollama:` (defaults to llama3), server defaults to localhost:11434                                                                                      |
 | HuggingFace | `HF_API_KEY`         | [Text models](https://huggingface.co/docs/inference-endpoints/chat-completions), use prefix `hf:`                                                                  |
 | Mistral     | `MISTRAL_API_KEY`    | [Text models](https://docs.mistral.ai/getting-started/models/)                                                                                                     |

@@ -1,6 +1,5 @@
-![babyseat](docs/logo/logo-1280x640.png)
-
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23550667.svg)](https://doi.org/10.5281/zenodo.23550667)
+![babyseat](docs/logo/logo-1280x640.png)
 
 **Talk to it. It remembers.**
 
@@ -196,6 +195,17 @@ the things it names. On later turns it sees only what changed since the last
 message: which entities moved, and whether the change came from the
 conversation, the code, another seat or a script.
 
+**The conversation block** (the default since #429's measurement;
+`MEMBRANE_INJECTION=banner` restores the WHERE WE ARE banner) replaces that state with one small block about *this*
+chat, built from records only (no model call), at most 900 chars, sent every
+turn while it has content: `NOW`, `WORKING ON` (the person's latest earlier
+ask), `ABOUT` (the chat's focus entities), `DECIDED` (the ledger, goals
+fulfilled and coproc decisions made in this chat), `OPEN` (goals planted in
+it), `STABLE` (facts seen in 3 chats over 2 days, never contradicted),
+`SINCE YOUR LAST MESSAGE` (focus entities moved from outside the chat),
+alerts and a pointer to `state(section=...)`. Each record line says its
+source and age, e.g. `(person · 2h ago)` ([details](docs/entity-field.md#this-conversation)).
+
 **With tools,** the model gets membrane's MCP surface: `query` and `state` to
 read the field (`state(section=...)` pulls one part of the seat's WHERE WE ARE:
 tracks, commands, interfaces, classes, loops, timelines, frame, digest, or
@@ -296,7 +306,10 @@ tool parts and their history live in membrane's stores beside the field — the
 TUI is a thin client. Every turn is captured into the field (discourse and
 observations as events), entities move as the conversation names them, and the
 model is grounded by what those entities hold —
-[docs/entity-field.md](docs/entity-field.md) is the design doc.
+[docs/entity-field.md](docs/entity-field.md) is the design doc. The project's
+decisions are entities too: [docs/decision-map.md](docs/decision-map.md) is the
+decision cockpit: what is still open above the chat's input bar, what is in
+flight on its line, what was decided below it.
 
 The proxy speaks both APIs through the same memory turn: OpenAI's
 `/v1/chat/completions` and Ollama's native `/api/chat` and `/api/generate`
@@ -549,7 +562,7 @@ lift "who 1,500 never-seen mentions were about" from MRR **0.210 → 0.539**
 | [docs/multi-dev-field.md](docs/multi-dev-field.md) | **Team field: the substrate.** The opt-in merged field: the origin axis, disjoint writers / merged reads, divergence conflicts, the commons |
 | [docs/global-field.md](docs/global-field.md) | The global commons: facts true beyond one repo; operator promotion and consensus (shared only on the merged field) |
 | [docs/background-mind.md](docs/background-mind.md) | **The background mind:** thinker + dreamer, the NightClock, entity scripts and tracks, the intent steering wheel, **the pause**, kill switches |
-| [docs/selfgrowth.md](docs/selfgrowth.md) | **Growing self (#161)**, named Blurp (#277; each seat names its own, #283). Waking it (💤/🌱) and accepting what it earns (#299: an earned achievement opens its children only once the operator accepts it), reading its exp bar, the 👶 panel as a character sheet (attributes: measured traits; the skills it is learning now; growth curve, working hours, toys, relationships, live activity) and the toy dock, the amoeba and the brain on the screen (what it looks at, its trail of looks, shift pulses, the caption; ◎ self framing and 👁 self's eyes), the skill tree (#295: achievements with real prerequisites, earned out of order) and their real pass tests, the nudge (#333: Blurp's one act on the things of its world, aimed mostly at things it can look at, tilted toward those whose nudge outcomes it is learning fastest; it speaks by nudging chat:out, a draft whose line is the NNLS fit over sentences heard in its private chat; meet, time its turn, expect a reply and recognize itself voided as the old wiring until rebuilt on it), how to help it climb, troubleshooting |
+| [docs/selfgrowth.md](docs/selfgrowth.md) | **Growing self (#161)**, named Blurp (#277; each seat names its own, #283). Waking it (💤/🌱) and accepting what it earns (#299: an earned achievement opens its children only once the operator accepts it), reading its exp bar, the 👶 panel as a character sheet (attributes: measured traits; the skills it is learning now; growth curve, working hours, toys, relationships, live activity) and the toy dock, the amoeba and the brain on the screen (what it looks at, its trail of looks, shift pulses, the caption; ◎ self framing and 👁 self's eyes), the skill tree (#295: achievements with real prerequisites, earned out of order) and their real pass tests, the nudge (#333: Blurp's one act on the things of its world, aimed mostly at things it can look at, tilted toward those whose nudge outcomes it is learning fastest; first reach (rung 13) passes when its nudges at one thing beat that thing's tempo and the changes were its own; it speaks by nudging chat:out, a draft whose line is the NNLS fit over sentences heard in its private chat; recognize itself rebuilt on its looks at the mirror (rows only at a look; opens with feel and first reach, no person needed); meet an other rebuilt on delayed contingency (the look 30 s after a nudge's check finds a change its tempo does not predict, and not its own; opens with look and first reach); toys unlock by skill in #337's order; time its turn and expect a reply rebuilt on meet's other (its nudges timed by a bandit over the other's age, and its own prediction of each follow-up; the model advisor out)), how to help it climb, troubleshooting |
 | [docs/patient-hm.md](docs/patient-hm.md) | Patient H.M., viewed from membrane: epilepsy as a loop that excites itself (the seat's brakes, a seizure's signature in the field, running out of energy as its end), and cutting sleep's consolidation as H.M.'s surgery, with the experiment that tests it |
 | [docs/sleep.md](docs/sleep.md) | Sleep, viewed from Blurp: its energy, sleep and wake (#345: the reserves, the sleep pull, what wakes it), consolidation (the day's raw record to dated archives, a summary of the windows its tests read, restart-safe), and the viewpoint from before it slept (one store, no open loops, windowed beliefs, per-thing models; its cycle pace against its record's growth) |
 | [docs/vsa-token-lane.md](docs/vsa-token-lane.md) | **Entity keys + relations (the VSA lane).** Canonical ids, key binding, the relations composites, structure-awareness numbers |

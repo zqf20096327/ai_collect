@@ -2,7 +2,7 @@
 
 [![Open In Colab](https://img.shields.io/badge/Open_In_Colab-F9AB00?logo=googlecolab&logoColor=white)](https://colab.research.google.com/drive/1kOYURy8TVGIryGueFkyb3NKfmZQbl2bw#scrollTo=X0bdVfpHhSpK)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?logo=open-source-initiative&logoColor=white)](LICENSE)
-[![Status](https://img.shields.io/badge/Status-Active--Development-239120?logo=github&logoColor=white)]()
+[![Status](https://img.shields.io/badge/Status-Public%20Template-239120?logo=github&logoColor=white)]()
 [![Domain](https://img.shields.io/badge/Domain-Reinforcement--Learning-8A2BE2)]()
 [![Algorithms](https://img.shields.io/badge/Algorithms-20%2B-0052CC?logo=thealgorithms&logoColor=white)](#implemented-algorithms)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)

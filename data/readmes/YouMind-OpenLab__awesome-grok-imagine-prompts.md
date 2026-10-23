@@ -68,9 +68,9 @@ Why use our gallery?
 
 | Metric | Count |
 |--------|-------|
-| 📝 Total Prompts | **3192** |
+| 📝 Total Prompts | **3198** |
 | ⭐ Featured Prompts | **3** |
-| 🔄 Last Updated | **2026-10-22** |
+| 🔄 Last Updated | **2026-10-23** |
 
 ---
 
@@ -189,11 +189,131 @@ A mystical and noble celestial Valkyrie, a dignified and beautiful woman with lo
 
 > 📝 Sorted by publish date (newest first)
 
-### Grok Imagine Video Prompt - Halloween Parade
+### Gnome Teaching Wrestling Strategy
 
 ![English](https://img.shields.io/badge/lang-English-blue)
 
-> A video generation prompt for Grok Imagine featuring characters dancing and singing in a Halloween parade setting.
+> Creative video prompt featuring a gnome teaching a day trading strategy to a professional wrestler.
+
+#### 📝 Prompt
+
+```
+Make up a day trading strategy and have a gnome teach it to a professional wrestler
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2113472198841188352/img/Y8RUguYmhFMnWWdl.jpg" width="600" alt="Gnome Teaching Wrestling Strategy">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12956)**
+
+**Author:** [Síle Máire Róisín Ní Mathghamhna](https://x.com/blarneytrades) | **Source:** [Link](https://x.com/blarneytrades/status/2113472220819542249) | **Published:** Oct 23, 2026
+
+---
+### Grok Imagine Video Prompt: Scarlett O'Hara Trading
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A variant of the previous prompt replacing the generic queen with Scarlett O'Hara.
+
+#### 📝 Prompt
+
+```
+Make up a day trading strategy and have a gnome teach it to 25 year old Scarlett o’Hara with red hair
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2113467945389084672/img/YZVtANzlJ56--xT7.jpg" width="600" alt="Grok Imagine Video Prompt: Scarlett O'Hara Trading">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12959)**
+
+**Author:** [Síle Máire Róisín Ní Mathghamhna](https://x.com/blarneytrades) | **Source:** [Link](https://x.com/blarneytrades/status/2113467965798842614) | **Published:** Oct 23, 2026
+
+---
+### Grok Imagine Video Prompt: Gnome Teaching Trading
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A surreal video prompt featuring a gnome teaching day trading strategies to a red-haired Caucasian Egyptian queen.
+
+#### 📝 Prompt
+
+```
+Make up a day trading strategy and have a gnome teach it to 25 year old Caucasian Egyptian queen with red hair
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2113466829406339072/img/cviZqEw214MzQkDA.jpg" width="600" alt="Grok Imagine Video Prompt: Gnome Teaching Trading">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12957)**
+
+**Author:** [Síle Máire Róisín Ní Mathghamhna](https://x.com/blarneytrades) | **Source:** [Link](https://x.com/blarneytrades/status/2113466855172042931) | **Published:** Oct 23, 2026
+
+---
+### Grok Imagine Gnome Day Trading
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A surreal video prompt where a gnome teaches a day trading strategy to a red-haired queen wearing Crown Jewels.
+
+#### 📝 Prompt
+
+```
+Make up a day trading strategy and have a gnome teach it to his 25 year old gorgeous red haired queen wearing the Crown Jewels.
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2113465581189967872/img/xFyY8CU2uixgOoGF.jpg" width="600" alt="Grok Imagine Gnome Day Trading">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12961)**
+
+**Author:** [Síle Máire Róisín Ní Mathghamhna](https://x.com/blarneytrades) | **Source:** [Link](https://x.com/blarneytrades/status/2113465601888854093) | **Published:** Oct 23, 2026
+
+---
+### Precise Lip-Sync Video Generation
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A detailed prompt for creating a lip-sync video using an identity reference image and audio source, with specific instructions on mouth movement and consonant clarity.
+
+#### 📝 Prompt
+
+```
+Use the attached image as the exact identity reference.
+Use the attached audio as the exact lip-sync source.
+
+Lip-sync:
+- Precise syllable timing
+- Keep mouth opening subtle and narrow throughout; never open wide
+- Crisp consonants via lip shaping
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2113216625063419904/img/TLjNUGrkce2fBVDT.jpg" width="600" alt="Precise Lip-Sync Video Generation">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12958)**
+
+**Author:** [レイヴ](https://x.com/raves9361) | **Source:** [Link](https://x.com/raves9361/status/2113216645950775792) | **Published:** Oct 22, 2026
+
+---
+### Dragon and Nepali Lady Illustration
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A video/image prompt for a pointillism illustration featuring a golden dragon and a Nepali lady in traditional attire.
+
+#### 📝 Prompt
+
+```
+Picture book style, pointillism illustration of a golden patterned ornamental, friendly, powerful, sweet dragon with red scale outlines and a wholesome lady from Nepal in traditional outfit relating lovingly.
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2113190635746537472/img/QdkqV2UFMD-JSL7L.jpg" width="600" alt="Dragon and Nepali Lady Illustration">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12960)**
+
+**Author:** [Carina](https://x.com/Freehere8) | **Source:** [Link](https://x.com/Freehere8/status/2113190653870125111) | **Published:** Oct 22, 2026
+
+---
+### Halloween Parade Dance Video
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> Video prompt to generate a scene of characters dancing and singing in a Halloween parade.
 
 #### 📝 Prompt
 
@@ -201,18 +321,18 @@ A mystical and noble celestial Valkyrie, a dignified and beautiful woman with lo
 Design them dancing and singing the welcome to Halloween song in the Halloween parade
 ```
 
-<img src="https://pbs.twimg.com/amplify_video_thumb/2113149705920172032/img/iP16iU7191e21OjE.jpg" width="600" alt="Grok Imagine Video Prompt - Halloween Parade">
+<img src="https://pbs.twimg.com/amplify_video_thumb/2113149705920172032/img/iP16iU7191e21OjE.jpg" width="600" alt="Halloween Parade Dance Video">
 
 **[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12898)**
 
 **Author:** [Tim](https://x.com/timmmy335) | **Source:** [Link](https://x.com/timmmy335/status/2113149726820601962) | **Published:** Oct 22, 2026
 
 ---
-### Cyber Armor Motorcycle Transformation
+### Grok Imagine Cyber Armor Transformation
 
 ![English](https://img.shields.io/badge/lang-English-blue)
 
-> A detailed cinematic video prompt showing a woman transforming into cyber armor on a custom motorcycle.
+> Cinematic video prompt featuring a woman transforming into cyber armor on a motorcycle, shared as a Grok Imagine prompt.
 
 #### 📝 Prompt
 
@@ -224,7 +344,7 @@ As she touches it, a smooth, glowing transformation begins: her arms morph into 
 Style: highly polished cinematic AI video, realistic lighting mixed with sci-fi neon glows, smooth morphing transitions, dramatic camera movement from close-up to wide tracking shot.
 ```
 
-<img src="https://pbs.twimg.com/amplify_video_thumb/2113086829318504449/img/uTfo8qn2898X8YVw.jpg" width="600" alt="Cyber Armor Motorcycle Transformation">
+<img src="https://pbs.twimg.com/amplify_video_thumb/2113086829318504449/img/uTfo8qn2898X8YVw.jpg" width="600" alt="Grok Imagine Cyber Armor Transformation">
 
 **[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12900)**
 
@@ -1006,11 +1126,11 @@ Include a bright orange sunny sky, where is this. white Tesla car seen  to turn 
 **Author:** [Ember Art](https://x.com/Ember8184Art) | **Source:** [Link](https://x.com/Ember8184Art/status/2112251138145951830) | **Published:** Oct 19, 2026
 
 ---
-### Supercar Transforms into Robot
+### Supercar Robot Transformation
 
 ![English](https://img.shields.io/badge/lang-English-blue)
 
-> A detailed video prompt for a futuristic black supercar transforming into a robotic warrior in a neon city.
+> A detailed prompt for Grok Imagine describing a futuristic black supercar transforming into a robotic warrior in a neon city.
 
 #### 📝 Prompt
 
@@ -1018,7 +1138,7 @@ Include a bright orange sunny sky, where is this. white Tesla car seen  to turn 
 A futuristic black supercar races through a neon-lit megacity at night before braking violently on a wet highway. The hood splits into armored chest plates, wheels rotate into the shoulders, and hundreds of hydraulic components unfold in precise mechanical sequences. The car rises into a towering robotic warrior with glowing blue eyes as steam bursts from its armor. The robot takes one powerful step forward while the camera circles it in a dramatic 360-degree shot.
 ```
 
-<img src="https://pbs.twimg.com/amplify_video_thumb/2112218406913282051/img/p2l0BCI_PrQVlPrl.jpg" width="600" alt="Supercar Transforms into Robot">
+<img src="https://pbs.twimg.com/amplify_video_thumb/2112218406913282051/img/p2l0BCI_PrQVlPrl.jpg" width="600" alt="Supercar Robot Transformation">
 
 **[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12801)**
 
@@ -1473,11 +1593,11 @@ Starship @Image1 takes off from the surface of the moon using cold gas thrusters
 **Author:** [Owen](https://x.com/owenxplore) | **Source:** [Link](https://x.com/owenxplore/status/2111182254646886773) | **Published:** Oct 16, 2026
 
 ---
-### Grok Imagine Kizomba Dance Prompt
+### Grok Imagine Prompt: Intimate Kizomba Dance
 
 ![English](https://img.shields.io/badge/lang-English-blue)
 
-> A prompt for generating a 15-second intimate kizomba dance video with close embrace and forehead touching.
+> A detailed prompt for generating a 15-second intimate kizomba dance video using Grok Imagine, focusing on close embrace and forehead touching.
 
 #### 📝 Prompt
 
@@ -1487,7 +1607,7 @@ Starship @Image1 takes off from the surface of the moon using cold gas thrusters
 Pure Intimacy, notice near constant forehead touching. The intimate energy transfer.
 ```
 
-<img src="https://pbs.twimg.com/amplify_video_thumb/2111180572626190336/img/xZM6qVfCumNMN63F.jpg" width="600" alt="Grok Imagine Kizomba Dance Prompt">
+<img src="https://pbs.twimg.com/amplify_video_thumb/2111180572626190336/img/xZM6qVfCumNMN63F.jpg" width="600" alt="Grok Imagine Prompt: Intimate Kizomba Dance">
 
 **[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12862)**
 
@@ -2063,83 +2183,3 @@ Create a video with ultra futuristic roadster with aerodynamic design and multi 
 
 **Author:** [Viswanath M. Aluru](https://x.com/vmaluru) | **Source:** [Link](https://x.com/vmaluru/status/2110747222333857995) | **Published:** Oct 15, 2026
 
----
-### Elon Musk Pirate Parody
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A humorous video prompt depicting Elon Musk as a pirate holding a sabre with his teeth and a Jeff Bezos parrot.
-
-#### 📝 Prompt
-
-```
-Elon Musk as a swashbuckling pirate holding a Sabre with his teeth and a parrot that looks like Jeff Bezos standing on a map labeled X marks the spot
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2110722991394787328/img/q2n5f55li3qSyr_i.jpg" width="600" alt="Elon Musk Pirate Parody">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12609)**
-
-**Author:** [Phillip Oyler](https://x.com/NdnCwby) | **Source:** [Link](https://x.com/NdnCwby/status/2110723009313136790) | **Published:** Oct 15, 2026
-
----
-### Tranquil Nature Layers Prompt
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A prompt for generating a high-resolution tranquil nature scene involving sunlight and tree branches.
-
-#### 📝 Prompt
-
-```
-A high-resolution, tranquil scene. Something with "layers"—perhaps sunlight filtering through ancient tree branches…
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2110711965127421952/img/Xs3vyc54482vJr2-.jpg" width="600" alt="Tranquil Nature Layers Prompt">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12863)**
-
-**Author:** [Matt Wilson](https://x.com/MattWilson8178) | **Source:** [Link](https://x.com/MattWilson8178/status/2110711998111748354) | **Published:** Oct 15, 2026
-
----
-### Cinematic Fashion Walk Prompt
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A highly detailed prompt for generating an ultra-realistic cinematic video of a woman walking through a luxury hotel ballroom.
-
-#### 📝 Prompt
-
-```
-Ultra-realistic cinematic live-action video of a beautiful adult woman in her mid-20s walking gracefully through an elegant luxury hotel ballroom. She wears a stunning champagne-beige, floor-length evening gown with delicate lace embroidery, intricate floral patterns, and a fitted silhouette. Her long, dark brown hair flows naturally as she smiles confidently and looks toward the camera. She walks slowly and elegantly past luxurious floral arrangements, white flower displays, polished marble flooring, and beautifully decorated tables. The background features warm golden chandeliers, rich wooden interiors, soft amber lighting, and elegantly dressed guests moving naturally in the distance. The camera smoothly tracks her movement from a three-quarter angle, capturing the flowing fabric of her gown, realistic walking motion, natural facial expressions, and subtle hair movement. Professional fashion photography aesthetic, warm cinematic color grading, realistic skin texture, detailed fabric, shallow depth of field, natural shadows, smooth camera movement, 4K visual quality, photorealistic details, sophisticated luxury atmosphere. Vertical 9:16 composition, 6–10 seconds, 24 FPS. Maintain consistent facial features, body proportions, dress design, and lighting throughout the entire clip. No sudden cuts, no distorted hands, no extra limbs, no flickering, no artificial movements, no text, no logos, no watermark.
-```
-
-<img src="https://pbs.twimg.com/media/HUq1C0vaMAA1vBH.jpg" width="600" alt="Cinematic Fashion Walk Prompt">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12611)**
-
-**Author:** [Rizi](https://x.com/Rizi_ru) | **Source:** [Link](https://x.com/Rizi_ru/status/2110698497037279584) | **Published:** Oct 15, 2026
-
----
-### Miniature World Inside Outlet Video Prompt
-
-![日本語](https://img.shields.io/badge/lang-日本語-green)
-
-> A detailed prompt for Google Flow and Grok Imagine to generate a seamless 10-second video revealing a miniature character's room inside an electrical outlet.
-
-#### 📝 Prompt
-
-```
-[Basic Settings]
-Thoroughly analyze the attached reference image and SNS profile, design a 'small room where the character would actually live' completely originally, and generate a video.
-- Aspect Ratio: 9:16 (Vertical)
-- Duration: Approx. 10 seconds (Continuous seamless one-cut video without cuts or teleportation)
-- Style: Photorealistic macro cinematography combined with handcrafted miniature diorama aesthetics.
-
-[Profile Analysis and Interior Conversion Rules] (*Design instructions for AI*)
-Extract the following elements from the reference materials and reflect them directly in the room's interior design.
-1. Color Design (Color Palette):
-Extract the character's hair color, eye color, main and sub colors of their costume, and the tone of the profile picture, and reflect them in the shades of wallpaper, rugs, curtains, bedding, and lighting.
-2. Architectural/Interior Style:
-Translate the character's atmosphere and costume taste (Modern, Retro, Fantasy, Japanese, Cyber, Natural, Gothic, etc.) into furniture shapes and wall/floor materials.
-3. Symbolic I

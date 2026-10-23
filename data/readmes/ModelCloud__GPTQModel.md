@@ -26,9 +26,14 @@
 
 ## Latest News 🗞️🚀
 
-* 10/22/2026 7.7.0-dev `main`: ✨ Added `llava` quantization support.
-* 10/14/2026 7.7.0-dev `main`: ✨ Added `qwen2_audio` quantization support.
-* 10/13/2026 7.7.0-dev `main`: ✨ Added `openvla` quantization support.
+* **7.7.0**:
+  * **CPU inference:** Added the shared AVX512-BF16 `int4_qzero_group_scaled_cpu` kernel for GPTQ/AWQ group sizes 16/32/64/128/256/512 and prioritized it ahead of ATen when supported. Added packed/low-precision CPU decode paths for QQQ, VPTQ, EXL3, FP8, NVFP4, and BitsAndBytes, plus oneDNN BF16x3 accumulation and shape-aware BitsAndBytes INT8 dispatch. GPTQ/AWQ measured up to 2.02x faster than ATen; BitsAndBytes INT8 reached 1.28x at M=64.
+  * **GGUF:** Added fused CPU Q4_0/Q8_0/Q4_K/Q5_K/Q6_K forward with FP32 accumulation under oneDNN BF16x3, fused bias, per-shape autotuning, and no retained dense weights. K-quant fused paths measured up to 1.92x faster than dense at M=7.
+  * **Quantized storage:** Removed persistent dense, dequantized, expanded, and INT4-to-INT8 inference caches across GPTQ/AWQ, QQQ, EXL3, VPTQ, FP8, FP4, GGUF, BitsAndBytes, and INT8. Only packed weights, scales, zero points, and metadata persist; temporary dequantization uses bounded tiles.
+  * **Quantization quality:** Added token-normalized GPTQ loss reporting, on-device embedding diagonal flooring and VPTQ Hessian damping, and QQQ vLLM compatibility/CUDA saturation fixes.
+  * **Models and runtimes:** Added LLaVA quantization support, fused VPTQ CUDA inference, and hardened remote LoRA adapter loading.
+  * **Docs and tooling:** Added the GPTQ FSDP/PEFT LoRA example, multi-GPU MoE quantization guide, and independent Torch-oracle accuracy and CPU speed benchmarks.
+  * **Dependencies:** Refreshed runtime and optional dependency floors to current stable releases, including PyTorch 2.14.1, Transformers 5.20.2, Datasets 5.1.0, and Optimum 2.3.0. vLLM/SGLang extras retain their upstream framework pins and should be installed in dedicated environments.
 
 * **7.6.0**:
   * **Model support:** Added Jamba/Jamba2, SmolVLM, Granite MoE, InternVL, EXAONE 4.5, Qwen3-VL MoE, Qwen4-Exp text, OLMoE, ZDTaichu 5.0, Agnes 3.0 Flash, and Xing4.0 quantization support, plus MiMo V2.6 Flash-RL and Pro-RL checkpoint support.
@@ -52,7 +57,28 @@ GPT-QModel provides a consistent API for calibration, quantization, quality eval
 
 Its method, format, backend, and kernel layers are modular: method-specific controls remain available where needed, while implementations share the same model lifecycle. This architecture supports mixed and model-specific quantization workflows today and provides a clear integration path for additional methods, formats, kernels, and accelerators.
 
+`TorchLinear` never retains dense/dequantized weights between inference calls.
+The legacy `GPTQ_TORCH_CACHE_WEIGHTS` / `GPTQ_TORCH_LOOKAHEAD` flags and
+`enable_weight_cache(True)` / `enable_lookahead(True)` APIs now warn and leave
+these features disabled. CUDA streaming uses per-forward tiles, not persistent
+dequantized workspaces. Only zero-point and group-index metadata is cached;
+call `clear_weight_cache()` after manually mutating inference-mode tensors
+without version counters. Normal tensor mutations, checkpoint loads, and
+device/dtype moves invalidate this metadata automatically.
+
+`BACKEND.GPTQ_TORCH_INT8` (including its `TORCH_INT8` alias) accepts only
+8-bit GPTQ sources. Converting 2/4-bit weights into a persistent 8-bit runtime
+representation is no longer supported. `AWQ_TORCH_INT8` / `TORCH_INT8_AWQ`
+are retired and fail with migration guidance. Use `BACKEND.AUTO` to select a
+compatible packed kernel or `BACKEND.TORCH` for a portable fallback. Native
+8-bit GPTQ still uses the existing per-channel INT8 requantizer; it is not a
+lossless repacking of arbitrary grouped/asymmetric GPTQ weights.
+
 ## Quantization Support 🛠️
+
+Start with the **[quantization guide and end-to-end recipes](docs/quantization-guide.md)**
+to choose weight and activation precision, prepare calibration data, quantize,
+save, reload, and validate a model. It also maps advanced features to their guides.
 
 Every quantization method shares a common lifecycle—calibrate, quantize, validate, save, load, and serve—while retaining method-specific controls where they matter. New methods and kernels plug into that lifecycle instead of creating another disconnected toolchain.
 
@@ -85,7 +111,7 @@ Canonical backend names are shown below. Method-specific aliases are only accept
 | `METHOD.GPTQ` CPU | `FORMAT.GPTQ`, `FORMAT.GPTQ_V2` | `BACKEND.GPTQ_TORCH_CPU_AVX512` |
 | `METHOD.AWQ` CPU | `FORMAT.GEMM` | `BACKEND.AWQ_TORCH_CPU_AVX512` |
 | `METHOD.GPTQ` | `FORMAT.GPTQ`, `FORMAT.GPTQ_V2`, `FORMAT.MARLIN`, `FORMAT.BITBLAS` | `FORMAT.GPTQ`: `BACKEND.GPTQ_TORCH_ATEN`, `BACKEND.GPTQ_MACHETE`, `BACKEND.GPTQ_MARLIN`, `BACKEND.GPTQ_EXLLAMA_V2`, `BACKEND.GPTQ_TORCH_FUSED`, `BACKEND.GPTQ_TRITON`, `BACKEND.GPTQ_BITBLAS`, `BACKEND.GPTQ_TORCH`, `BACKEND.GPTQ_TORCH_INT8`<br>`FORMAT.GPTQ_V2`: `BACKEND.GPTQ_TORCH_ATEN`, `BACKEND.GPTQ_EXLLAMA_V2`, `BACKEND.GPTQ_TORCH_FUSED`, `BACKEND.GPTQ_TRITON`, `BACKEND.GPTQ_BITBLAS`, `BACKEND.GPTQ_TORCH`, `BACKEND.GPTQ_TORCH_INT8`<br>`FORMAT.MARLIN`: `BACKEND.GPTQ_MARLIN`<br>`FORMAT.BITBLAS`: `BACKEND.GPTQ_BITBLAS` |
-| `METHOD.AWQ` | `FORMAT.GEMM`, `FORMAT.GEMV`, `FORMAT.GEMV_FAST`, `FORMAT.LLM_AWQ`, `FORMAT.MARLIN`, `FORMAT.BITBLAS` | `FORMAT.GEMM`: `BACKEND.AWQ_TORCH_ATEN`, `BACKEND.AWQ_MACHETE`, `BACKEND.AWQ_MARLIN`, `BACKEND.AWQ_EXLLAMA_V2`, `BACKEND.AWQ_GEMM`, `BACKEND.AWQ_GEMM_TRITON`, `BACKEND.AWQ_TORCH_FUSED`, `BACKEND.AWQ_TORCH`, `BACKEND.AWQ_TORCH_INT8`, `BACKEND.AWQ_BITBLAS`<br>`FORMAT.GEMV`: `BACKEND.AWQ_GEMV`<br>`FORMAT.GEMV_FAST`: `BACKEND.AWQ_GEMV_FAST`<br>`FORMAT.LLM_AWQ`: `BACKEND.AWQ_GEMV_FAST`<br>`FORMAT.MARLIN`: `BACKEND.AWQ_MACHETE`, `BACKEND.AWQ_MARLIN`<br>`FORMAT.BITBLAS`: `BACKEND.AWQ_BITBLAS` |
+| `METHOD.AWQ` | `FORMAT.GEMM`, `FORMAT.GEMV`, `FORMAT.GEMV_FAST`, `FORMAT.LLM_AWQ`, `FORMAT.MARLIN`, `FORMAT.BITBLAS` | `FORMAT.GEMM`: `BACKEND.AWQ_TORCH_ATEN`, `BACKEND.AWQ_MACHETE`, `BACKEND.AWQ_MARLIN`, `BACKEND.AWQ_EXLLAMA_V2`, `BACKEND.AWQ_GEMM`, `BACKEND.AWQ_GEMM_TRITON`, `BACKEND.AWQ_TORCH_FUSED`, `BACKEND.AWQ_TORCH`, `BACKEND.AWQ_BITBLAS`<br>`FORMAT.GEMV`: `BACKEND.AWQ_GEMV`<br>`FORMAT.GEMV_FAST`: `BACKEND.AWQ_GEMV_FAST`<br>`FORMAT.LLM_AWQ`: `BACKEND.AWQ_GEMV_FAST`<br>`FORMAT.MARLIN`: `BACKEND.AWQ_MACHETE`, `BACKEND.AWQ_MARLIN`<br>`FORMAT.BITBLAS`: `BACKEND.AWQ_BITBLAS` |
 | `METHOD.PARO` | `FORMAT.PAROQUANT` | `BACKEND.PAROQUANT_CUDA`, `BACKEND.PAROQUANT_TRITON` |
 | `METHOD.QQQ` | `FORMAT.QQQ` | `BACKEND.QQQ`, `BACKEND.QQQ_TORCH` |
 | `METHOD.VPTQ` | `FORMAT.VPTQ` | `BACKEND.VPTQ_CUDA`, `BACKEND.VPTQ_TORCH` |
@@ -102,9 +128,20 @@ the AVX512 path ahead of the ATen int4pack fallback when the layer shape
 satisfies the kernel's 32-row and group-size alignment requirements. Supported
 group sizes are 16, 32, 64, 128, 256, and 512.
 
+`BACKEND.QQQ_TORCH` uses the same packed INT4 CPU layout with a QQQ-specific
+integer GEMM that preserves round-to-nearest-even and INT8 saturation for
+group size 128, plus the signed per-channel layout for group size -1.
+Small batches use AVX512 integer dot products; larger batches use oneDNN
+integer GEMM with temporary 128-by-32 weight tiles when available. Runtime
+caches retain only packed INT4 codes and scales. Unsupported hosts use the
+Torch fallback without retaining dequantized weights. Both FP16 and BF16
+activations keep their output dtype.
+
 `BACKEND.EXL3_TORCH` uses oneDNN BF16x3 FP32 matmul on AVX512-BF16 hosts for
-GEMMs large enough to amortize dispatch. Set `GPTQMODEL_EXL3_CPU_BF16X3=0` to
-disable this path.
+GEMMs large enough to amortize dispatch. Forward decodes at most 512 output
+columns at a time and never retains a dense dequantized weight;
+`get_weight_tensor()` materializes one on demand for export and tests. Set
+`GPTQMODEL_EXL3_CPU_BF16X3=0` to disable the BF16x3 path.
 
 `BACKEND.VLLM`, `BACKEND.SGLANG`, and `BACKEND.MLX` are external runtime backends and are not part of the native kernel matrix above.
 
@@ -251,6 +288,24 @@ The table mirrors every explicit registration in `gptqmodel.models.auto.MODEL_MA
 | ZDTaichu 5.0 | `zdtaichu5_0` |
 <!-- model-types:end -->
 
+Qwen2.5-Omni supports quantizing its text output head with `lm_head=True`.
+The head is `thinker.lm_head`; GPTQ defaults it to 8-bit, group size 32.
+To use a 4-bit head, configure an explicit dynamic override:
+
+```python
+from gptqmodel import QuantizeConfig
+
+quantize_config = QuantizeConfig(
+    bits=4,
+    group_size=128,
+    lm_head=True,
+    dynamic={r"thinker\.lm_head$": {"bits": 4, "group_size": 32, "desc_act": False}},
+)
+```
+
+This option quantizes the thinker's text head; the talker and audio decoder
+retain their original weights. Tied output-head weights must be untied first.
+
 ## Platform and HW Support 🖥️
 
 GPT-QModel is validated on Linux, macOS, and Windows 11:
@@ -308,8 +363,9 @@ Pass an MLX token array as `calibration_data` to use your own calibration set.
 ### PIP/UV 💿
 
 ```bash
-# You can install optional modules like autoround, ipex, vllm, sglang, bitblas.
-# Example: pip install -v gptqmodel[vllm,sglang,bitblas]
+# vLLM and SGLang publish their own Torch/Transformers pins. Install one engine
+# in a dedicated environment aligned to that engine's release.
+# Example optional module: pip install -v "gptqmodel[bitblas]"
 pip install -v gptqmodel
 uv pip install -v gptqmodel
 ```
@@ -326,8 +382,7 @@ git clone https://github.com/ModelCloud/GPTQModel.git && cd GPTQModel
 apt install python3-dev
 
 # pip: install from source
-# You can install optional modules like  vllm, sglang, bitblas.
-# Example: pip install -v .[vllm,sglang,bitblas]
+# Example optional module: pip install -v ".[bitblas]"
 pip install -v .
 ```
 
@@ -788,7 +843,7 @@ containing folder at the supplied revision.
 
 ### PEFT LoRA Training and Adapter Loading 🤗
 
-GPT-QModel GPTQ/AWQ checkpoints can be fine-tuned with PEFT LoRA and loaded through `PeftModel`. Use a current PEFT release with `optimum>=1.24.0`; older combinations may warn that the quantized layer type is unsupported. For training, select the method-specific trainable backend (`gptq_torch` for GPTQ, `torch_awq` for AWQ); default inference kernels do not propagate gradients.
+GPT-QModel GPTQ/AWQ checkpoints can be fine-tuned with PEFT LoRA and loaded through `PeftModel`. Use a current PEFT release with `optimum>=2.3.0`; older combinations may warn that the quantized layer type is unsupported. For training, select the method-specific trainable backend (`gptq_torch` for GPTQ, `torch_awq` for AWQ); default inference kernels do not propagate gradients.
 
 PEFT cannot merge LoRA deltas into packed GPTQ/AWQ weights. Keep the adapter separate for quantized inference, or merge it into the original full-precision model and then quantize the merged model. See [docs/peft.md](docs/peft.md) for tested training, loading, and merge examples.
 

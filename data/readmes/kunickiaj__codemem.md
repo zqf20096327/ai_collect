@@ -24,7 +24,7 @@ codemem is persistent coding memory across sessions, machines, and teammates for
 - **Automatic injection for OpenCode 1 and 2** — the plugin injects context into every prompt, no manual steps; the OpenCode 2 integration is beta
 - **Claude Code plugin support** — install from the codemem marketplace source
 - **Multi-agent** — OpenCode, Claude Code, Codex, and pi share one project-scoped store
-- **Pi coding agent** — session capture, automatic recall, and 14 native memory tools; no MCP required
+- **Pi coding agent** — session capture, automatic recall, and 15 native memory tools including `memory_session_search`; no MCP required
 - **Built-in viewer** — browse memories, sessions, and observer output in a local web UI
 - **Remote MCP access** — advanced single-user self-hosting can expose an OAuth-protected Streamable HTTP MCP endpoint to configured remote clients; keep the localhost viewer private ([guide](docs/remote-mcp-oauth.md))
 
@@ -205,6 +205,8 @@ The plugin bundles its MCP configuration and capture/context-injection hooks, an
 <details>
 <summary>Claude and Codex adapter transport details</summary>
 
+Claude hook ingestion accepts both queued HTTP `202` acknowledgements and legacy synchronous responses without starting a `codemem` or `npx` fallback process. A queued acknowledgement confirms durable acceptance, not completed extraction.
+
 Claude and Codex plugins normalize native hooks at the plugin edge and send the resulting envelope to the canonical `POST /api/raw-events` endpoint. New ingestion requests include the intended database path and runtime identity target; Viewer rejects a mismatch before writing, and the client uses its existing identity-correct command fallback. On a retryable Viewer failure, Codex persists that exact envelope before attempting command fallbacks and removes the spool only after a fallback succeeds; Claude uses the command fallbacks without a file spool. Claude `SessionEnd` asks Viewer to finish boundary extraction best-effort inside the host's 1.5-second default exit budget, reserving command-fallback time after preprocessing and across both HTTP attempts. `Stop` flushing remains opt-in and uses a 130-second host timeout for its 125-second internal extraction budget. Transcript fallback reads at most the final 16 MiB: it preserves the first record when the tail starts immediately after a newline, but discards the first fragment when the tail starts in the middle of a record. The checked-in dependency-free normalizers are generated from the TypeScript implementations in `packages/core/src/claude-hooks.ts` and `packages/core/src/codex-hooks.ts`. Named Viewer hook routes remain compatibility aliases for older packaged and plugin-free CLI paths; they now use the same durable queue when available, while ordinary CLI transport failures spool locally without opening SQLite. Claude terminal boundary failures retain direct ingest and flush as a final safeguard. Requests that omit targeting fields remain accepted for 0.41 compatibility.
 
 Claude and Codex `UserPromptSubmit` hooks are dependency-free direct Viewer clients. They perform a
@@ -265,7 +267,7 @@ codemem stats
 codemem db raw-events-status
 ```
 
-The extension captures Pi activity, recalls into the latest user message of the request copy, attaches context after a successful built-in `read`, and registers 14 native `memory_*` tools by default. MCP is not required. Observer setup can fill unset settings from Pi API-key providers only. Pi OAuth-only credentials cannot be auto-derived for the observer; configure an observer connection separately ([observer auth](docs/user-guide.md#observer-auth-configuration)).
+The extension captures Pi activity, recalls into the latest user message of the request copy, attaches context after a successful built-in `read`, and registers 15 native `memory_*` tools by default, including `memory_session_search` over stored Pi conversation text, scoped to the current project unless explicitly overridden. MCP is not required. Observer setup can fill unset settings from Pi API-key providers only. Pi OAuth-only credentials cannot be auto-derived for the observer; configure an observer connection separately ([observer auth](docs/user-guide.md#observer-auth-configuration)).
 
 Pre-install Pi session history is not imported automatically. Backfill it with `codemem pi-import-sessions`, then search stored user/assistant text with `codemem pi-session-search <query>`.
 
@@ -306,6 +308,10 @@ PL->>OC: inject codemem context
 Raw-event degradation logs identify the Viewer stage and safe cause without exposing endpoints, paths, payloads, or subprocess output. Successfully spooled events do not show a user-facing warning; persistence failures and capacity exhaustion still do.
 If the same raw event is captured again with only delivery-time timestamps changed, OpenCode reuses its existing durable spool entry; a genuinely different event with the same ID still fails rather than overwriting saved data. Keep OpenCode running after a memory-only warning until the event is delivered or saved for retry.
 When a retry spool write fails, the local plugin log also records a safe failure stage and category (for example, an existing-entry conflict versus a filesystem error) without recording the event ID or content. This diagnostic does not change retry behavior; keep OpenCode running if it warns an event remains only in memory.
+
+OpenCode pack and ledger HTTP failures also write structured `inject.transport` diagnostics to `~/.codemem/plugin.log`, even when debug logging is off. They distinguish disabled transport, backoff, profile mismatches, confirmed local deadlines, response failures, and malformed data, with elapsed milliseconds and the selected fallback runner category. Logs omit request content, errors, addresses, paths, identifiers, and tokens; fixed-size counters saturate, and each runtime writes at most one entry per 30 seconds without queuing log writes. Runner selection and fallback behavior are unchanged.
+
+Without explicit runner overrides, OpenCode resolves a verified same-channel CLI once and reuses its Node entrypoint for command fallbacks and Viewer startup. A compatible `codemem` command that cannot be resolved to a direct Node entrypoint, such as a version-manager shim, keeps its existing invocation without npm bootstrap. Only the default npx runner may bootstrap the pinned CLI and embeddings through npm's supported executable PATH; later requests skip npm resolution. File replacement/removal and successful backend updates invalidate the cached command, while failed resolution waits 30 seconds before retrying. Explicit `CODEMEM_RUNNER` or `CODEMEM_RUNNER_FROM` settings retain their existing execution behavior. See [runner reuse details](docs/opencode-retained-recall.md#default-cli-runner-reuse).
 
 OpenCode defaults to an approximate 800-token injection budget and reserves room for its `[codemem context]` prefix before requesting the pack. The estimate is `ceil(characters / 4)`, not the provider's tokenizer. Set `CODEMEM_INJECT_TOKEN_BUDGET` to a positive override; unset, zero, negative, and invalid values use the default. A positive override too small to leave pack capacity injects nothing instead of forwarding `0`, which means unlimited to the generic pack CLI.
 
@@ -435,6 +441,8 @@ Config resolution precedence for runtime commands is:
 
 Environment variables still override file values once a config file has been selected.
 
+Claude `Read` hooks look up file context through the local Viewer after checking the file path and size. Healthy and empty HTTP results start no CLI child; unavailable transport uses a capability-checked CLI or an exact plugin-version-pinned fallback within one deadline. See [Claude integration](docs/plugin-reference.md#claude-marketplace-install) for delivery tracking and timeout details.
+
 Pi prompt recall, file context, and the native tool surface are documented in [Pi extension](docs/plugin-reference.md#pi-extension).
 
 Codemem config mutations use a same-directory lock and atomic replacement. Concurrent Codemem writers fail with a retryable conflict instead of silently losing an update; malformed or unreadable existing config is left unchanged. External editors do not participate in the lock, so Codemem checks that the file has not changed again immediately before replacement. Existing mode, owner, and group metadata is retained on POSIX systems. Atomic replacement also retains ACLs and extended attributes on macOS and on GNU/Linux systems whose `/bin/cp` supports explicit metadata preservation; a metadata-copy failure on those systems aborts the save before rename. Windows, non-GNU Linux, and other platforms retain the existing mode behavior, but Node does not provide a portable API for preserving their extended ACL metadata.
@@ -459,6 +467,7 @@ Viewer note:
 
 - The plugin manages one explicit viewer target per runtime. If you run multiple viewers, give each one its own DB/runtime folder instead of sharing `viewer.pid` state next to the same SQLite file.
 - The OpenCode plugin monitors viewer liveness through `GET /api/health`. When an older viewer returns `404`, it makes one compatibility probe to the legacy raw-event status endpoint; raw-event ingest preflight remains separate and is bounded by a 5-second timeout.
+- Manual **Sync now** shows persistent device-sync status in the header while its request is pending, including when you change tabs. Only Sync now is disabled. The result stays until dismissed or replaced by another manual sync; reloading the page clears this client-side status. If the response cannot be confirmed, check device sync status before retrying.
 
 The viewer includes a grouped Settings modal (`Connection`, `Processing`, `Device Sync`) with shell-agnostic labels and an advanced-controls toggle for technical fields.
 - Settings show effective values (configured or default) and only persist changed fields on save.

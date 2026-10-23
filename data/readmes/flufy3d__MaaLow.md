@@ -457,8 +457,8 @@ if (r && r.score >= 0.4 && r.score - r.second >= 0.1) pos = [r.x, r.y]; // 可�
 工作区 `model/` 下的任意 ONNX 模型（`maalow sync --push` 推上去，下次调用就用新文件），用 MaaFramework 自带的 onnxruntime（1.19.2，`android/app/src/main/cpp/nn_jni.cpp` 只用它的 C API，不加包体）。会话按模型文件和线程等选项缓存，文件变了才重开。
 
 ```js
-// 独夫“还有几帧打中”：固定区域缩到 96×96，第 n−4、n−2、n 帧的灰度图叠成 3 通道
-const r = infer("ttc/ttc.onnx", { image: screenshot(), roi: [240, 30, 600, 600], size: 96, color: "gray",
+// 例：“还有几帧打中”分类器，固定区域缩到 96×96，第 n−4、n−2、n 帧的灰度图叠成 3 通道
+const r = infer("my/ttc.onnx", { image: screenshot(), roi: [240, 30, 600, 600], size: 96, color: "gray",
                                   frames: [-4, -2, 0], frame_ms: 1000 / 30, mean: 0.45, std: 0.25, post: "softmax" });
 if (r.ready && r.index === 1) parry();   // r.probs、r.score、r.output（原始输出）、r.frames（实际用的帧）、r.ms
 ```
@@ -468,7 +468,6 @@ if (r.ready && r.index === 1) parry();   // r.probs、r.score、r.output（原�
 * 输出：第一个输出的 `shape` / `output`（最多 4096 个值，`raw: true` 给全部输出）；向量输出带 `index` / `score` / `label`（最大的那个），`post: "softmax" | "sigmoid"` 另给 `probs`；`post: "yolo"` 解码 YOLOv8 / YOLO11 检测头（`[1, 4 + 类数, n]` 或转置），`threshold` / `iou` / `max_det` 过滤和 NMS，`detections` 的框换算回屏幕坐标，`hit` / `box` 是最好的那个（可以直接 `click(r)`）。`labels` 不给时用模型的 `names` 元数据
 * `modelInfo(model)`：输入输出的名字、类型、形状。`threads`（onnxruntime 线程数，默认 1）、`provider`（cpu / nnapi）、`input: true`（返回预处理后的字节，和离线流程对拍）
 * MaaFramework 自己的 `NeuralNetworkClassify` / `NeuralNetworkDetect`（Pipeline 节点，或技能里的 `classify()` / `detect()`）照常可用：工作区有 `model/` 时整个工作区按 bundle 加载，模型放 `model/classify/`、`model/detect/`，`model` 写其下的路径。它们只吃当前一张图、预处理固定
-* 计时：`skills/infer_bench.js`（燕云工作区，只截图不点击）
 
 ## 目标
 

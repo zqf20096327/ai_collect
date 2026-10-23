@@ -4,6 +4,8 @@ One self-hosted dashboard to monitor, control, benchmark and tune every machine 
 
 **Works with** llama.cpp, vLLM, LM Studio and stable-diffusion.cpp · **GPUs:** NVIDIA, AMD (ROCm and Vulkan) and Apple Silicon · **Hosts:** Linux and macOS
 
+Try the demo: https://demo.llmsyscore.com
+
 <img alt="LLM Systems Manager: Overall, llama.cpp, Energy, Forecast, Tower, Report Card and Autotune" src="docs/screenshots/tour.gif" width="100%" />
 
 ## Install
@@ -95,7 +97,7 @@ Full list: [Features](docs/FEATURES.md).
 
 **Updating.** `sudo bash /opt/llm-systems-manager/tools/installer/install.sh --update`, or `brew upgrade` / your package manager. See [Updating](docs/DEPLOYMENT.md#updating).
 
-**Anonymous reports.** The installer asks once whether to send an anonymous install report (version, operating system, hardware). Turn it off any time in **Settings › Telemetry & analytics**. What each report contains: [Anonymous reports](docs/DEPLOYMENT.md#anonymous-reports).
+**Anonymous reports.** The installer asks once whether to send an anonymous install report (version, where the code came from, operating system, hardware). Turn it off any time in **Settings › Telemetry & analytics**. What each report contains: [Anonymous reports](docs/DEPLOYMENT.md#anonymous-reports).
 
 ## Contributing and donations
 

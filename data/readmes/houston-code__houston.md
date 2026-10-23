@@ -8,6 +8,8 @@ Gemini, any OpenAI-compatible API, or a local model (Ollama / LM Studio), give i
 a project folder, and let it read, edit, search, and run code, with every action gated
 by an approval flow and, where the OS supports it, confined to a sandbox.
 
+**Website and downloads: [houstoncode.ai](https://houstoncode.ai)**
+
 > **Beta.** Houston is pre-1.0: expect rough edges, and settings or behavior may change
 > between releases. Please [report problems](https://github.com/houston-code/houston/issues)
 > you run into.
@@ -108,6 +110,17 @@ Open source under the [Apache License 2.0](LICENSE).
   started, so switching chats switches the pages. The pages render in isolated, sandboxed,
   loopback-pinned views with the same network guards as `view_localhost`, so
   untrusted dev-server output can't reach your network.
+- **Chat status at a glance.** Every chat in the sidebar carries a status dot: amber
+  when it is waiting on you (an approval, a question, a plan, a server asking for input,
+  with the reason under the title), a grey pulse while it works, red when its last run
+  failed, and blue when it finished while you were elsewhere. Mark any chat unread or
+  read from its ⋯ menu or with ⌥U (Alt+U), or from a specific reply with **Mark unread
+  from here**. Reopening an unread chat lands on a "New" divider above what you missed.
+  Mark everything read from the filter menu, or sort the chats that want attention to
+  the top. Collapsed groups, the collapsed sidebar, and the app icon (Dock badge, or a
+  taskbar dot on Windows) count what is waiting; a title-bar pill jumps to the next
+  chat that needs you, and clicking a notification opens its chat. `/resume` in the
+  terminal marks chats the desktop app has unread or failed.
 - **Background tasks.** The tasks button in the titlebar shows a pulsing count while
   terminals or commands the agent backgrounded in the open chat are running, and opens
   a **Tasks** tab in the same right-hand dock as Preview. Another chat's backgrounded
@@ -177,7 +190,7 @@ Open source under the [Apache License 2.0](LICENSE).
   `spawn_session` spins off a *separate* chat: the agent hands it a task, optionally
   on its own git branch and worktree, and sets it running autonomously in the
   background. It appears in the sidebar nested under the chat that started it, with a
-  live running indicator, seeded with
+  live status dot, seeded with
   the handed-off context as its first message (open it to watch, answer an
   approval, or take over), or with a copy of the current chat when the agent
   forks it. The spawned session inherits your current approval policy, so it is
@@ -739,8 +752,9 @@ new optional fields and new event types can appear in the same version, so ignor
 what you don't recognize.
 
 `status` is `success`, `limit`, `stalled`, `approval_denied`, `error`,
-`schema_invalid` (the answer never matched `--output-schema`), or `input_error` (a
-bad `--input-format stream-json` line).
+`schema_invalid` (the answer never matched `--output-schema`), `input_error` (a
+bad `--input-format stream-json` line), or `verify_failed` (the last `--verify`
+check still failed).
 `limitReason` (`max-steps`, `max-output`, or `stalled`) is present when the loop
 stopped short. `turns` counts the agent's model steps (the unit `--max-turns`
 caps); `costUsd` and the token totals include subagent and review rounds.
@@ -760,10 +774,11 @@ matching value) or `schemaErrors` (why it didn't match).
 | 2 | Usage error: a bad flag value, an unreadable flag file, or an empty prompt on stdin (nothing ran); or a bad `--input-format stream-json` line. | (no result line), `input_error` |
 | 3 | The run hit a budget before finishing: its step cap (`--max-turns`, or your saved limit) or the model's output limit. | `limit` |
 | 4 | The final answer still didn't match `--output-schema` after one corrective round. | `schema_invalid` |
+| 5 | The agent finished, but the last `--verify` check it ran still failed once its fix-up passes ran out. | `verify_failed` |
 
-When several apply, a failure wins over a budget stop. The outcome of a
-`--verify` check doesn't change the code; in `--json` mode each check is a
-`verification` event.
+When several apply, a failure wins over a budget stop, and both win over a failed
+check. Only the last `--verify` check counts: a failure the agent then fixed is a
+success. In `--json` mode each check is a `verification` event.
 
 **Nobody to ask.** A headless run doesn't offer the agent `ask_user`. Its system
 prompt says no user is available, so it makes judgment calls itself and states
@@ -891,13 +906,30 @@ script with no Electron inside: no Chromium is ever loaded, no display server is
 needed, and a full run peaks around **60 MB of RAM**, so it works on headless
 Linux servers and small VPSes where the desktop app cannot even start.
 
+Install it with any of these; each puts a `houston` command on your PATH:
+
 ```bash
-# grab houston-cli.cjs from the latest release (optionally verify it first, see
-# "Verifying downloads": sha256sum -c --ignore-missing SHA256SUMS), then:
-node houston-cli.cjs --help          # or: chmod +x houston-cli.cjs && ./houston-cli.cjs
-ANTHROPIC_API_KEY=sk-... node houston-cli.cjs -p "Summarize the architecture" --cwd ~/code/myproj
-ANTHROPIC_API_KEY=sk-... node houston-cli.cjs -i
+brew install houston-code/tap/houston                # Homebrew (macOS, Linux)
+npm install -g @houston-code/cli                     # npm
+bun add -g @houston-code/cli                         # bun
+curl -fsSL https://houstoncode.ai/install.sh | sh    # install script (macOS, Linux)
 ```
+
+The install script downloads the latest release's `houston-cli.cjs`, checks it against
+the release's `SHA256SUMS`, and installs it to `~/.local/bin/houston`
+(`HOUSTON_INSTALL_DIR` changes where, `HOUSTON_VERSION` pins a version). When a newer
+release is out, `houston` tells you the command that updates it for the way you
+installed it.
+
+```bash
+houston --help
+ANTHROPIC_API_KEY=sk-... houston -p "Summarize the architecture" --cwd ~/code/myproj
+ANTHROPIC_API_KEY=sk-... houston -i
+```
+
+Or skip installing: grab `houston-cli.cjs` from the latest release (optionally verify
+it first, see "Verifying downloads": `sha256sum -c --ignore-missing SHA256SUMS`) and run
+it with `node houston-cli.cjs`.
 
 Runs on **macOS, Windows, and Linux**, on x64 or Arm, and requires **Node ≥ 22**:
 that's the only dependency. All the flags, slash commands, approvals, and session

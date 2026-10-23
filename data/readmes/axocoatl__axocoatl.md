@@ -13,7 +13,7 @@ host enforced. One open-source Rust executable; no Axocoatl account or telemetry
 
 ```bash
 curl -fsSL https://axocoatl.ai/install.sh | sh   # macOS, Linux, or inside WSL2 on Windows (not PowerShell; WSL2 not yet verified)
-axocoatl onboard   # set up Podman, a writer and a reviewer for this OS user; it asks before each change
+axocoatl onboard   # set up a writer and a reviewer for this OS user, and Podman where it can install it (else it says what to do); it asks before each change
 axocoatl doctor    # check the sandbox, the models, the writers and the daemon
 axocoatl dev       # start the daemon and leave it running
 
@@ -23,6 +23,13 @@ axocoatl run fix --task "Paging skips the last item when the total is a multiple
   --junit axocoatl-junit.xml --record run.axorecord.jsonl --receipt run.receipt.json
 axocoatl receipt verify run.receipt.json --key "$(axocoatl receipt key)" --repo .
 ```
+
+Onboarding installs Podman after asking where it can: with Homebrew on an Apple-silicon
+Mac, and with apt, dnf, pacman or zypper (using `sudo`) on Linux. On an Apple-silicon Mac
+without Homebrew it points to the podman.io installer, on an Intel Mac to the Podman 5.8
+package, and on another Linux distribution it names what to install; Ubuntu 22.04 and
+older are refused, since their Podman is too old. On a Mac it then creates and starts
+the Podman machine, after asking.
 
 Run the loadout that matches the writer you chose in onboarding: `axocoatl run fix` for a
 local or OpenRouter writer, `axocoatl run fix-claude-code` or `axocoatl run fix-codex`,
@@ -36,19 +43,20 @@ check, such as `npm test`, `pytest` or `go test ./...`
 ([repository toolchains](https://docs.axocoatl.ai/configure/toolchains/)).
 
 On a Mac with 48 GB of memory, onboarding offers `qwen3-coder:30b` (19 GB) to write and
-`gpt-oss:20b` (14 GB) to review, on Ollama 0.40.6 or a later 0.x release. That pair has run end to end on
-a 48 GB Mac; `gpt-oss:20b` as reviewer has not been measured. The reviewer in the
+`gpt-oss:20b` (14 GB) to review, on Ollama 0.40.6 or a later 0.x release (models you
+already have come first when they fit and make a pair); `gpt-oss:20b` as reviewer has
+not been measured. The reviewer in the
 measurements below, `gpt-oss:120b` (65 GB), needs about 96 GB of memory or more. With less
 memory, use OpenRouter for the reviewer (or for both), or Claude Code or Codex as the
 writer. What each path needs and downloads is on
-[the install page](https://axocoatl.ai/install#what-it-needs).
+[the install page](https://axocoatl.ai/install#what-it-needs). The local pair
+(`qwen3-coder:30b` and `gpt-oss:20b`) ran end to end on a 48 GB Mac in the 1.5.0
+release gate.
 
-The summary one real run printed on standard output (progress goes to standard error):
-`axocoatl run fix` on the 1.5.0 release candidate, on a small Go repository with the
-paging bug above whose check is `go test ./...`, with `qwen3-coder:30b` writing and
-`gpt-oss:20b` reviewing on Ollama 0.40.6, on a 48 GB Mac set up from a clean install by
-`axocoatl onboard`. Its receipt verified with `axocoatl receipt verify … --repo .`. It
-shows the format, not a measurement.
+An example of the summary `axocoatl run fix` prints on standard output (progress goes to
+standard error), here for a small Go repository with the paging bug above whose check is
+`go test ./...`, with `qwen3-coder:30b` writing and `gpt-oss:20b` reviewing. It shows
+the format, not a measurement.
 
 ```text
 Verdict: pass (exit 0)
@@ -252,17 +260,38 @@ axocoatl dev       # start the daemon and the one app
 ```
 
 Prebuilt releases support macOS 11 or newer and GNU/Linux with glibc 2.35 or
-newer on x86_64 and ARM64; on Windows, Axocoatl runs inside WSL2, and there is no native
-Windows binary. What has been tested, end to end: macOS 26 on Apple silicon (48 GB) with
-rootless Podman 6.1.4 and 5.8 and Ollama 0.40.6, where the 1.5.0 release candidate was
-installed and onboarded on a Mac wiped of Podman, Ollama and Axocoatl; and Ubuntu 24.04
-with rootless Podman 4.9.3 (arm64, in a VM, with the models served from the Mac's
-Ollama). CI also runs on Ubuntu 24.04 on x86_64 against a stub model server. On macOS,
-`axocoatl run fix` with local models, `fix-claude-code` and `fix-codex` each passed on
-Node.js (with `npm ci`), Python (pytest), Go and Rust repositories, every receipt
-verified; on Ubuntu, `fix` passed on Node.js, Python, Go and Rust. Not yet verified: Intel
-Macs, Macs with less than 48 GB for local models, Ubuntu 22.04, Debian 12, Fedora with
-SELinux, and WSL2 on Windows. Docker is not supported; Podman can run alongside it. The first daemon start downloads an 87 MB embedding model from
+newer on x86_64 and ARM64; on Windows, Axocoatl runs inside WSL2 (not yet verified), and
+there is no native Windows binary.
+
+What the 1.5.0 release gate verified on the release commit, from the published install
+command to passing runs:
+
+- **macOS 26.6 on Apple silicon (48 GB)**, with Axocoatl, Podman and Ollama uninstalled
+  first (the downloaded models kept). `axocoatl onboard` installed Podman and Ollama with
+  Homebrew and set up local models, Claude Code, Codex and OpenRouter in turn (OpenRouter
+  through onboarding's browser sign-in).
+  `axocoatl run fix` with local models passed on Node.js (with and without
+  dependencies), Python (pytest), Rust and Go repositories, and `fix-claude-code`,
+  `fix-codex` and `fix` with OpenRouter models on Node.js and Python, each receipt
+  verified. `fix-claude-code` with `--keep pr` also opened a pull request, on which the
+  docs' verify-receipt Action passed, and the workbench in Safari went from the sign-in
+  link to a commit.
+- **Ubuntu 24.04 on arm64**, in a VM, as a new user: onboarding installed Podman with apt
+  and added a range of subordinate ids if the user had none, each with `sudo` after
+  asking, and connected OpenRouter through its own browser sign-in. With those OpenRouter
+  models, `axocoatl run fix` passed on the same Node.js, Python, Rust and Go
+  repositories, each receipt verified.
+- **CI**, on Ubuntu 24.04 on x86_64 and arm64: the same install command, then
+  onboarding with no terminal against a scripted model server (Podman already on the
+  runner, no first-run sample), and `axocoatl run fix` on the same repositories, each
+  receipt verified.
+
+Each path's transcript, times, downloads and the Podman, Ollama, Claude Code and Codex
+versions it ran are in the signed evidence bundle under `release-evidence/1.5.0/`.
+
+Not yet verified: Intel Macs, Macs with less than 48 GB for local models, Ubuntu 22.04,
+Debian 12, Fedora with SELinux, and WSL2 on Windows. Docker is not supported; Podman can
+run alongside it. The first daemon start downloads an 87 MB embedding model from
 huggingface.co. To remove Axocoatl, see
 [Uninstall](https://docs.axocoatl.ai/operate/uninstall/).
 

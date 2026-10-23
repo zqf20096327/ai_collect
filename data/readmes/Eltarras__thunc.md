@@ -32,9 +32,10 @@ type; if it doesn't fit, the model is asked again, and after that `thunc.ThuncEr
 dependencies, Python 3.10+.
 
 It also runs [agents](#agents): typed functions that can read, edit and test your code before they
-answer. New in 0.7: [recordings](#recording-and-replaying) survive a thunc upgrade. In 0.6: the
-agent API is frozen, and the run record, the events and durable fingerprints have a compatibility
-promise. In 0.5: [thunc.testing](#testing-with-a-fake-model-thunctesting), a fake model and
+answer. New in 0.8: Pydantic models as return types, and `agent.conversation()` (experimental) for
+several tasks in one conversation. In 0.7: [recordings](#recording-and-replaying) survive a thunc
+upgrade. In 0.6: the agent API is frozen, and the run record, the events and durable fingerprints
+have a compatibility promise. In 0.5: [thunc.testing](#testing-with-a-fake-model-thunctesting), a fake model and
 pytest fixtures for your tests, `thunc.register_backend` for your own backends, and Ollama. In 0.4:
 [record and replay](#recording-and-replaying) runs your tests and CI with no model, `Enum` return
 types, and `thunc.acall` / `thunc.amap` for async code. `thunc watch` shows a
@@ -67,7 +68,7 @@ With an API key set, thunc picks that backend on its own, so `THUNC_BACKEND` isn
 `thunc.configure(backend=...)` does the same. Durable agents on Temporal add
 `pip install "thunc[temporal]"`.
 
-> **Beta (v0.7).** The API may still change. Bug reports and feedback are welcome in
+> **Beta (v0.8).** The API may still change. Bug reports and feedback are welcome in
 > [issues](https://github.com/Eltarras/thunc/issues).
 
 **More examples.** Clone the repo and run them from its root, with no install, through your
@@ -576,6 +577,21 @@ or calling a backend. Use `@thunc.function` or `thunc.call` for Jev questions.
   run.notes, run.followed, run.steps, run.seconds, run.session
   ```
 
+- **Several tasks in one conversation** (experimental: it may change or be removed). With
+  `agent.conversation(returns=...)`, each `send()` is a run of its own, but the next task is a new
+  message after the last one's result, so the model keeps what it read and did instead of exploring
+  again. On `claude-code` the same `claude` process takes the next task, so nothing starts up again;
+  on `codex` it's the next turn of the same session:
+
+  ```python
+  with repo.conversation(returns=str) as chat:
+      chat.send("Find where the retry delay is set, and explain it.")
+      run = chat.send("Double it, and update its test.")  # a thunc.Run, as agent.run() gives
+  ```
+
+  Every task returns the same type. The system prompt, memory and followed files are the first
+  task's. A task that fails ends the conversation (the next `send()` starts a new one), and it
+  doesn't work with recordings or Temporal yet.
 - **Failures are loud.** A run that hits `max_steps`, never gives a valid value, or loses its
   backend raises `thunc.AgentError` (a `ThuncError`), whose `.run` is the record up to that point.
   A step that fails for a reason asking again may fix (a timeout, a lost connection, a rate limit,

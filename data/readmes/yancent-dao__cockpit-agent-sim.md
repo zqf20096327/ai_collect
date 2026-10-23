@@ -6,8 +6,8 @@
   <img alt="tests" src="https://img.shields.io/badge/tests-1646%20passing-brightgreen" />
   <img alt="runtime deps" src="https://img.shields.io/badge/runtime%20deps-0-blue" />
   <img alt="backend" src="https://img.shields.io/badge/backend-none-blue" />
-  <img alt="signals" src="https://img.shields.io/badge/VSS%20signals-113-informational" />
-  <img alt="tools" src="https://img.shields.io/badge/tools-94-informational" />
+  <img alt="signals" src="https://img.shields.io/badge/VSS%20signals-114-informational" />
+  <img alt="tools" src="https://img.shields.io/badge/tools-95-informational" />
   <img alt="license" src="https://img.shields.io/badge/license-MIT-black" />
 </p>
 
@@ -48,6 +48,9 @@ npm run dev                        # → http://localhost:5173
 
 > [!TIP]
 > Key 的门槛很低：一个 [OpenRouter](https://openrouter.ai) 的 Key 就能启动。导航和地图要高德的 Key；天气、音乐、电台、歌词、汇率、股价用的都是免注册服务，什么都不用配。
+
+> [!NOTE]
+> **模型有能力下限**：架构假设模型会正常调用 tools 字段里的工具、能遵守约 30 行的技能章法。gemini-2.5-flash 档及以上实测可用；GPT-4.1-mini 这类轻量档会出现"假装执行"（不调工具空口报成），不建议用于演示。
 
 ```bash
 npm test               # 批量测试
@@ -114,7 +117,7 @@ flowchart TB
         state["src/state/ 记忆四级<br/>瞬时 · 会话 · 领域 · 长期"]
     end
     subgraph DATA["src/config/ 数据（越多越好）+ agents/ 实例"]
-        config["113 信号(VSS) · 94 Tool · 约束 · 卡片规则/模板契约"]
+        config["114 信号(VSS) · 95 Tool · 约束 · 卡片规则/模板契约"]
         manifest["manifest + 人设 + 快层微人设 + 技能包"]
     end
     integrations["src/integrations/ 三方适配<br/>高德 · Open-Meteo · iTunes/播客 · Radio Browser · NewsAPI · Pexels · 腾讯行情 · frankfurter · lrclib · 豆包 TTS · OpenRouter 图像/视频/音乐"]
@@ -232,7 +235,7 @@ flowchart LR
 
 关键决策都有记录：[需求规格说明书](docs/需求规格说明书_v1.0.md) · [工程约束](docs/工程约束_v1.1.md) · [Agent 开发流程](docs/Agent开发流程_v1.0.md)（从旅行助手完整开发提炼，每条注意事项背后都有一次实拍事故）· [市场调研与对标](docs/市场调研与对标_2026.08.md)，以及 [docs/superpowers/specs/](docs/superpowers/specs/) 下的专题设计（卡片编排、尺寸自适应、媒体域、快慢双层、等位区、自动化、语音链路、融合旅行卡等十余篇）。
 
-## 能力清单（94 Tools）
+## 能力清单（95 Tools）
 
 下面是全部工具，按域分组。⚡ 表示挂在快层，能先斩后奏。
 
@@ -337,13 +340,14 @@ flowchart LR
 </details>
 
 <details>
-<summary><b>生活资讯（零 Key）</b>（3 个）</summary>
+<summary><b>生活资讯（零 Key）</b>（4 个）</summary>
 
 | Tool | 说明 | 权限 | 快层 |
 |---|---|:-:|:-:|
 | `stock.query` | 查股价指数汇率 | 彩 | ⚡ |
 | `holiday.query` | 查节假日调休 | 彩 |  |
 | `poem.today` | 来一句今日诗词 | 彩 |  |
+| `time.now` | 查现在的日期时间星期（模型没有内置时钟） | 彩 | ⚡ |
 
 </details>
 

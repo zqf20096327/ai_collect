@@ -20,7 +20,8 @@
 </picture>
 
 **Paste a link:** any web page · arXiv · PubMed Central · bioRxiv · medRxiv · Wikipedia · GitHub<br>
-**Drop files, one or several:** PDF · Word · PowerPoint · Excel · EPUB · HTML · CSV · pictures · Markdown · text
+**Drop files, one or several:** PDF · Word · PowerPoint · Excel · EPUB · HTML · CSV · pictures · Markdown · text<br>
+**Works with:** [Claude Code](#in-claude-code-and-pi) · [Pi](#in-claude-code-and-pi) · [Zotero](#works-on-your-zotero) · [Obsidian](#works-with-your-obsidian)
 
 **[Try the demo →](https://chenxiachan.github.io/textfold/gallery/)** or **[download the app ↓](#get-started)** · [What's new ↓](#whats-new)
 
@@ -87,6 +88,22 @@ Click **Zotero library**, under the drop zone, and your library is there as Zote
 - **It stays on your computer.** TextFold asks the Zotero app you already run, the way citation plugins do: no account, no key, nothing sent to Zotero's servers, and nothing in your library changed.
 
 To turn it on, in Zotero 7: **Settings › Advanced › Allow other applications on this computer to communicate with Zotero**.
+
+## Works with your Obsidian
+
+[TextFold Bridge](https://github.com/adalach/obsidian-textfold-bridge), an Obsidian plugin by [@adalach](https://github.com/adalach), links your notes to what you read in TextFold, the way Zotero and its citation plugins work together: TextFold keeps the documents and what you wrote on them, and your notes keep links into them.
+
+- **Your own notes, folded.** Read a note at TextFold's five levels inside Obsidian, its words travelling as in the reader. After an edit, **Refold** asks the model only for the sections that changed, and your highlights find their passages again.
+- **Drag from the reader into a note.** A paragraph, a whole section, a selection, a card of the Topic map or one of your notes goes in as a callout, with its title, its section and a link back.
+- **Links that open at the place.** A `textfold://` link opens the document at its paragraph, note or level. Hover it in Obsidian to read the passage.
+- **Your TextFold notes beside the note.** A sidebar lists the passages the note cites, and your highlights and questions on the documents it refers to. Import them as a note of their own, and update it later without losing what you wrote in it.
+
+**Set it up:**
+
+1. **Install TextFold:** [download the app](https://chenxiachan.github.io/textfold/#download) for macOS or Windows, or install the Python package ([Get started ↓](#get-started)).
+2. **Open TextFold** (the app, or `python3 -m textfold serve`), and keep it open while you use the plugin. It needs TextFold 0.10.18 or later, and the plugin talks to it on 127.0.0.1 only.
+3. **In Obsidian:** **Settings › Community plugins › Turn on community plugins › Browse**, search for **TextFold Bridge**, then **Install** and **Enable**.
+4. **With the desktop app,** set **Settings › TextFold Bridge › Links › Open links in** to **TextFold app**. By default, links open in your browser.
 
 ## Get started
 
@@ -246,7 +263,9 @@ More in [plugins/pi-textfold](https://github.com/chenxiachan/textfold/blob/main/
 
 ## What's new
 
-- **October 22, 2026: an accurate conversion keeps your languages, and phones read better.** A PDF converted again accurately is read again in every language it had. A translation of the fast conversion's text no longer lands on the new one, outdated and on the wrong paragraphs. An outdated translation has **Update** at the top of the language menu. On a phone, the button that opens the sidebar no longer covers the logo, and a wide formula scrolls in its own box. A long formula in a Markdown document or a converted PDF keeps its box on every screen, and in a list it is shown. A `textfold://` link to a later part of a split paragraph opens it. Thanks to [@LumenYoung](https://github.com/LumenYoung) and [@adalach](https://github.com/adalach).
+- **October 23, 2026: links that keep landing, and WorkBuddy on Windows.** A paragraph and a section keep their ids for the life of their document: after an edit, a new conversion of a PDF, or a later TextFold. So a link to one, from Obsidian or from a note, still opens it. A link to a paragraph that is no longer in the text opens the section it was in, and says so. On Windows, WorkBuddy 5.8 is found again, wherever it was installed. Thanks to [@adalach](https://github.com/adalach) and [@LyotoDS](https://github.com/LyotoDS).
+- **October 23, 2026: a highlight lights what you selected.** A highlight made at Key or Takeaway lights every word you selected, the model's too. Before, only the words that came from the author's text lit up, and none when you had selected only the model's. Each level has its own colour: yellow for Full and Brief, violet for Key, blue for Takeaway. The levels no longer light each other's highlights, and **Keep my highlights** still brings the author's passages up to Key and Takeaway. In a note, Enter keeps it and closes it, and Shift+Enter starts a new line (on a phone, Enter starts a new line). Opening another document no longer downloads the app's scripts and styles again, which helps most when you read from a server, on a phone. Thanks to [@adalach](https://github.com/adalach) and [@LumenYoung](https://github.com/LumenYoung).
+- **October 22, 2026: an accurate conversion keeps your languages and notes, and phones read better.** A PDF converted again accurately is read again in every language it had, and your notes on it find their passages in the new text. A translation of the fast conversion's text no longer lands on the new one, outdated and on the wrong paragraphs. An outdated translation has **Update** at the top of the language menu. On a phone, the button that opens the sidebar no longer covers the logo, and a wide formula scrolls in its own box. A long formula in a Markdown document or a converted PDF keeps its box on every screen, and in a list it is shown. A `textfold://` link to a later part of a split paragraph opens it. Thanks to [@LumenYoung](https://github.com/LumenYoung) and [@adalach](https://github.com/adalach).
 - **October 22, 2026: figures as TeX drew them, and full screen.** In an arXiv paper, a drawing whose words the browser sets itself (a TikZ picture) can have them run out of its boxes, on arXiv's own page too. A button under such a drawing takes the paper's figures of that kind from its PDF, as TeX set them, and another puts them back; nothing is downloaded until you press it. **Full screen** in **Aa** fills the screen, and the Topic map opens beside the original pages too. At Brief, the words that go on to Key stand out by a step, not a jump, and the paper style keeps the default's text colours.
 - **October 22, 2026: lighter on your disk.** Pictures are kept as WebP as they come in: an arXiv paper's figures take a fifth of the space or less, and download four at a time, so a new paper opens sooner. Pictures already in your library stay as they are. The app's copy of the pictures and PDFs it showed stays under 32 MB, and a downloaded update is removed once it is installed. A deleted document stays in papers/.trash for 30 days, then it is erased. At Key and Takeaway, a figure of several panels shows them side by side, no longer one under another and cut off.
 - **October 21, 2026: a reader to stay in.** **Aa** has light or dark (or your system's) and a paper style, quieter than white, for either; and the line spacing. A text opens where you left it. `F` leaves the text alone on the screen. The sidebar can be pinned beside the text.
@@ -297,6 +316,7 @@ More in [plugins/pi-textfold](https://github.com/chenxiachan/textfold/blob/main/
 <a href="https://github.com/momoko-sketch" title="@momoko-sketch"><img src="https://github.com/momoko-sketch.png?size=80" width="40" height="40" alt="@momoko-sketch" /></a>
 <a href="https://github.com/Knoety" title="@Knoety"><img src="https://github.com/Knoety.png?size=80" width="40" height="40" alt="@Knoety" /></a>
 <a href="https://github.com/LumenYoung" title="@LumenYoung"><img src="https://github.com/LumenYoung.png?size=80" width="40" height="40" alt="@LumenYoung" /></a>
+<a href="https://github.com/LyotoDS" title="@LyotoDS"><img src="https://github.com/LyotoDS.png?size=80" width="40" height="40" alt="@LyotoDS" /></a>
 
 Contributions are welcome: start with [CONTRIBUTING.md](https://github.com/chenxiachan/textfold/blob/main/CONTRIBUTING.md).
 

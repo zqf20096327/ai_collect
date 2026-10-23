@@ -39,7 +39,7 @@ and it downloads on first use; the app shows which ones your phone can run.
 - **Hires fix**: one switch on the Image node: render, enlarge ×2, then UltraFix, in one Run (SD 1.5 / SDXL).
   Every other model has **Enlarge ×2** instead, so its picture can be enlarged and passed on to an inpaint that fixes faces.
 - **Fix faces / Fix hands** (ADetailer): switches on the Image node. After the render the phone finds each face and
-  hand (Bingsu's YOLOv8 detectors, a 25 MB Tools download) and redraws it enlarged, close up, with the same prompt, model and LoRAs (the Swap models too), its tone matched to the picture along the edge. **Detection settings** shows what is found on your last picture and sets the confidence, padding, mask blur and strength, for faces and hands apart.
+  hand (Bingsu's YOLOv8 detectors, a 25 MB Tools download) and redraws it enlarged, close up, with the same prompt, model and LoRAs (the Swap models too), its tone matched to the picture along the edge. **Detection settings** shows what is found on your last picture and sets the confidence, padding, mask blur and strength, for faces and hands apart. Switching a fix on keeps the picture you already made and redraws only its faces; a **Fix seed** with its own padlock tries another face on the same picture.
 - **Edit a face** (LivePortrait): sliders for smile, eyes, gaze, mouth and a head turn, nod or tilt on the faces in any
   picture, previewed live in their own window (about a quarter of a second an edit on an 8 Elite). A **Face edit** node to wire
   after any picture, the **Edit a face** flow, and **Edit face** on a picture in Results. A 180 MB download in Models, Faces.
@@ -47,10 +47,10 @@ and it downloads on first use; the app shows which ones your phone can run.
   30 seconds at 25 fps. The photo keeps its own pose and follows the video's changes. About 0.2 s a frame on an 8 Elite,
   no checkpoint involved; the same Faces download.
 - **Colour**: **Match colours** on the Image node keeps an image to image, inpaint or Fix faces result in the colours of
-  the picture going in; **Auto colour** and **Adjust colours** (brightness, contrast, saturation, warmth) on the Output node.
+  the picture going in; **Colour correction** and **Adjust colours** (brightness, contrast, saturation, warmth) on the Output node, after every Run or on the last picture at a tap, without rendering it again.
 - **LoRA library**: sort LoRAs by name, newest, most used or size, filter by base model, star favourites, set a LoRA's model by hand when its file is not recognised, and sort them into your own folders.
 - **Draw on a picture**: doodle shapes and colours over the image node's photo (or a blank page) and let image to image make them real; pinch to zoom, pick a colour from the picture or any colour from a picker.
-- **Recipes**: text to image, image to image, inpaint, upscale, edit a face, image edit, text / image to video, motion transfer and two Advanced flows, listed from least to most demanding; one your phone can't run says so.
+- **Recipes**: text to image, image to image, inpaint, upscale, edit a face, image edit, text / image to video, motion transfer and two Advanced flows, grouped as Pictures, Faces, Advanced, Edit and Video, each from least to most demanding; one your phone can't run says so. Import someone's flow from the **+** beside Models and Flows.
 - **Several checkpoints in one graph**: each generate node has its own model; the run loads each once and tells you the cost first.
 - **Variation seed**: a second seed and a strength on SD 1.5, SDXL and Anima: small changes around a picture you like, keeping its composition.
 - **Batching**: sweep seed, steps, CFG, denoise or scheduler; two at once makes a grid. Every result keeps the graph that made it.
@@ -67,12 +67,14 @@ and it downloads on first use; the app shows which ones your phone can run.
   installed it is a 3.3 GB download. Text to image.
 - **Ideogram 4** (8 steps): Ideogram's 9.3B model, the best open model at readable text in a picture (signs, posters, labels), with ostris' TurboTime speed-up applied every time. About 5.5 min at 768x768 on an 8 Elite. About 11.6 GB, 12 GB phones and up. Text to image. Non-commercial use only (Ideogram's licence).
 - **Iris 3B Turbo**: draws pixels directly, so there is no VAE and no decode step to run out of memory in. Only the sizes it was trained at, about 1 MP each (1024x1024, 896x1200, 896x1344, 752x1344 and the turned versions); smaller ones come out in blocks. About 2.5 min at 1024x1024 on an 8 Elite. Text to image.
-- **Bring your own**: one **+** on the Models page takes any of them and works out what the file is: a converted checkpoint zip, a FLUX.2 / Z-Image / Krea 2 / Anima / MOSS-Image `.safetensors` or `.gguf` fine-tune used as it is (a self-made GGUF that quantized the few tensors the engine cannot read that way is fixed on import), or an upscaler. Rename any import from its card. Or convert one on the phone with [npuforge](https://github.com/AbrahamPaulJ/npuforge).
-- **Upscalers**: RealESRGAN anime and 4x UltraSharp V2 Lite, or your own; a checkbox on the output node.
+- **Bring your own**: one **+** on the Models page takes any of them and works out what the file is: a converted checkpoint zip, a FLUX.2 / Z-Image / Krea 2 / Anima / MOSS-Image `.safetensors` or `.gguf` fine-tune used as it is (a 16-bit MOSS-Image `.safetensors` is made 8-bit on import, so it fits in memory; a self-made GGUF that quantized the few tensors the engine cannot read that way is fixed on import), or an upscaler. Rename any import from its card. Or convert one on the phone with [npuforge](https://github.com/AbrahamPaulJ/npuforge).
+- **Upscalers**: RealESRGAN anime and 4x UltraSharp V2 Lite, or your own; the Upscale card on the output node.
 - **A real inpainting model**: AbsoluteReality Inpaint sees the hole it fills.
 
 ### Editing
-- **Inpaint and outpaint**: paint a mask, or zoom the frame out past the photo and the padding is generated.
+- **Inpaint and outpaint**: paint a mask, or zoom the frame out past the photo and the padding is generated. FLUX.2
+  Klein inpaints as an edit: it edits around the mask and only the masked part is pasted back. **Draw** in the
+  same window paints colours and rough shapes for the repaint to follow.
 - **Tap to select**: tap an object and the mask follows its outline (Segment Anything 2.1).
 - **Auto mask by name**: Clothes, Face, Hair, Shoes or Bag, found in every new photo.
 - **Add Objects**: paste an object from another photo; only its edges are repainted.
@@ -91,7 +93,7 @@ and it downloads on first use; the app shows which ones your phone can run.
 - **A tag toolbar**: while you type: make the tag under the cursor heavier or lighter, delete it, add one after it, undo, redo.
 - **Tag autocomplete**: matching Danbooru tags under the prompt box as you type, most used first; one tap downloads the list, or import your own CSV, plus an optional translation CSV to search in your own language.
 - **`<lora:name:0.8>` in a prompt**: a prompt pasted from CivitAI applies the LoRAs it names (when you have them) and the tags never reach the text encoder. Type `<lora:` and your LoRAs are offered as chips, the strength left selected to type over.
-- **Samplers**: DPM++ 2M, 2M SDE, 3M and 3M SDE, Euler, Euler A and LCM with a Normal, Karras or Exponential schedule on SD 1.5 and SDXL; Euler, Heun, DPM++ 2M, ER-SDE, Res Multistep and more on the DiT models, with the same three schedules (not on Wan or Iris), so a checkpoint runs the way its author intended.
+- **Samplers**: DPM++ 2M, 2M SDE, 3M and 3M SDE, Euler, Euler A and LCM with a Normal, Karras or Exponential schedule on SD 1.5 and SDXL; Euler, Heun, DPM++ 2M, ER-SDE, Res Multistep and more on the DiT models, with those three schedules plus SGM Uniform, Bong Tangent, Simple and Beta (not on Wan or Iris), so a checkpoint runs the way its author intended.
 - **Translate**: a Russian or Chinese prompt to English, offline (Firefox Translations), keeping weights like `(long hair:1.2)`.
 
 ### Your phone, your files

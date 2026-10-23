@@ -75,7 +75,7 @@ For development, copy `.env.example` to `.env`, fill `DISCORD_BOT_TOKEN`, `DISCO
 
 Configure one or more LLM backends with `nevinho setup` or the in-session `/config` picker.
 
-To use an eligible ChatGPT Plus or Pro plan, run `nevinho login` on the machine where Nevinho runs. Open the printed link and sign in. You can also run `/login` from the terminal UI when already inside Nevinho; it pauses the UI for browser sign-in and then switches to the connected plan's model. On a remote VM, the browser's loopback redirect may fail to load; copy its full final URL from the address bar and paste it into Nevinho's waiting terminal. Login discovers the models available to your account, selects the first one, and adds `chatgpt:` models to `/model`. Run `nevinho login --new` or `/login --new` to register a different ChatGPT account. `nevinho login chatgpt` also works. This uses [OpenAI's Sign in with ChatGPT flow](https://developers.openai.com/siwc/token-sharing-open-source), so plan usage and limits apply; it does not use an API key. Nevinho stores renewable credentials in `~/.nevinho/chatgpt-auth.json` with owner-only permissions. Use [ChatGPT Settings](https://chatgpt.com/#settings) to manage connected app access and usage.
+To use an eligible ChatGPT Plus or Pro plan, run `nevinho login` on the machine where Nevinho runs. Open the printed link and sign in. You can also run `/login` from the terminal UI when already inside Nevinho. It pauses the UI for browser sign-in and then switches to the connected plan's model. On a remote VM, the browser's loopback redirect may fail to load. Copy its full final URL from the address bar and paste it into Nevinho's waiting terminal. Login discovers the models available to your account, selects the first one, and adds `chatgpt:` models to `/model`. Run `nevinho login --new` or `/login --new` to register a different ChatGPT account. `nevinho login chatgpt` also works. This uses [OpenAI's Sign in with ChatGPT flow](https://developers.openai.com/siwc/token-sharing-open-source), so plan usage and limits apply. It does not use an API key. Nevinho stores renewable credentials in `~/.nevinho/chatgpt-auth.json` with owner-only permissions. Use [ChatGPT Settings](https://chatgpt.com/#settings) to manage connected app access and usage.
 
 | Provider   | Env var               | Default model                                     | Get a key                              |
 | ---------- | --------------------- | ------------------------------------------------- | -------------------------------------- |
@@ -94,6 +94,12 @@ ChatGPT plan models are prefixed with `chatgpt:` and come from the signed-in acc
 
 Switch models with `/model` (picker) or `/model <name>`.
 The terminal picker and Discord model menus show whether a model uses the ChatGPT plan, an API key, or OpenRouter. The saved model ID remains unchanged when you switch.
+
+## Discord conversations
+
+In a DM with the bot, `/new` starts a separate conversation and keeps the current one saved. `/resume` opens a private, paged picker of saved conversations. Each one restores its model and recent text context; images must be attached again. You can also select a conversation with `/resume <id>` in a plain-text DM or the command's `id` option. `/forget` deletes only the current conversation and starts a fresh one. Existing Discord conversation history is imported on first launch after upgrading.
+
+Conversation switching waits for the current response to finish and for any pending tool approval to be answered. With `ELEPHANT=off`, `/new` still starts a fresh in-memory conversation, while `/resume` is unavailable.
 
 ## Tools
 
@@ -159,17 +165,43 @@ Slash commands inside the terminal:
 | `/login`       | Sign in with ChatGPT                        |
 | `/config`      | Set provider keys, toggle CAVEMAN, ELEPHANT |
 | `/memory`      | Show what nevinho remembers about you       |
-| `/session`     | Show this project's checkpoint and summary  |
+| `/new`         | Start fresh; keep the previous conversation |
+| `/resume`      | Search saved sessions for this directory    |
+| `/session`     | Show current session details and summary    |
 | `/status`      | Model, usage, cost, turn cap, limit hits    |
 | `/paths`       | List approved paths, enter to revoke one    |
 | `/paths clear` | Revoke all path permissions                 |
-| `/forget`      | Wipe this project's saved conversation      |
+| `/forget`      | Delete current session, with confirmation   |
 | `/help`        | Show the command list                       |
 | `/quit`        | Leave (or ctrl+c)                           |
 
+### Terminal sessions
+
+Launch `nevinho` to continue the active session for the current working directory. A short notice identifies the restored conversation; previous transcript blocks are not replayed into scrollback.
+
+- `/new` starts a separate conversation without deleting the old one.
+- `/resume` opens a searchable picker, newest activity first. Type to filter, Enter to restore, Esc to cancel. The current session is saved before switching. Titles come from the first user message, without an extra model call.
+- Resuming restores the saved model; if its provider is unavailable, an error leaves the checkpoint untouched. Tools and pending approvals are never replayed. Original images must be reattached when needed.
+- `/forget` defaults to Cancel. Confirming deletion removes only the current session and starts a fresh one; other sessions remain resumable. Terminal scrollback is not erased.
+- `ELEPHANT=off` disables saving and `/resume`; `/new` still works in memory. Existing saved sessions are not deleted.
+
+Session IDs are scoped to the same canonical working-directory identity as before, not the Git root. Existing per-directory checkpoints or fallback summaries migrate automatically on first launch. Concurrent terminal processes sharing one session are not coordinated; use `/new` for separate work.
+
+### Terminal hooks
+
+`nevinho chat` can run your commands when a turn starts, needs approval, finishes, uses a tool, or exits. Add `~/.nevinho/hooks.json`:
+
+```json
+{
+  "turn_finished": [["/usr/bin/logger", "nevinho finished a turn"]]
+}
+```
+
+Restart Nevinho after editing the file. See [Terminal hooks](docs/hooks.md) for events, payloads, and a Farol setup example.
+
 ## Config
 
-Configuration is encrypted and stored in `~/.nevinho/`:
+Provider configuration is encrypted and stored in `~/.nevinho/`. Terminal hooks use a separate editable JSON file in the same directory:
 
 ```
 config.enc          encrypted configuration (AES-256-GCM)
@@ -180,6 +212,7 @@ memory.md           learned user preferences
 summaries/          encrypted turn checkpoints and shutdown summaries (ELEPHANT)
 whisper/            local Whisper model and binary (if voice enabled)
 chat.log            terminal client runtime log (8 MiB, 3 rotated backups)
+hooks.json          optional terminal lifecycle commands
 last_alive.json     daemon heartbeat and clean-shutdown marker
 ```
 
@@ -191,7 +224,7 @@ Set `ELEPHANT=off` via `/config` to stop persisting conversations across restart
 
 The Discord daemon updates `last_alive.json` every minute. If it restarts after an unclean stop, it sends the owner one DM with the last recorded heartbeat time.
 
-Terminal conversations are scoped to the directory where you launch `nevinho`. `/forget` clears that project's saved state. Older terminal summaries under the former shared `terminal` ID remain on disk but are not loaded into a project automatically.
+Terminal sessions are scoped to the directory where you launch `nevinho`. Each session has an encrypted checkpoint containing its title, model, last activity, and recent history. An owner-only `.active` file stores only the opaque active session ID. `/forget` deletes the current session plus the old per-directory migration fallback, leaving other sessions intact. Older terminal summaries under the former shared `terminal` ID remain on disk but are not loaded into a project automatically.
 
 ## Project structure
 
@@ -202,6 +235,7 @@ agent/       agent loop, history, persistence, run mode
 llm/         provider interface and implementations
 tools/       bash, file_read/write/edit, find, grep, web, schedule
 tui/         terminal client, blocks, selector
+hooks/       optional terminal lifecycle command runner
 discord/     bot, message handling, slash commands, indicator
 config/      encrypted config, model catalog, setup wizard
 crypto/      AES-256-GCM

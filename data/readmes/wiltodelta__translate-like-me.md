@@ -12,7 +12,7 @@ and press a shortcut to improve or translate it in place. The app lives in the
 menu bar, ready when you need it.
 
 [Download for macOS](https://github.com/wiltodelta/translate-like-me/releases/latest)
-· [Website](https://translatelikeme.com)
+· [Website](https://wiltodelta.com/projects/translate-like-me/)
 · [User guide](docs/user-guide.md)
 
 [![Build](https://github.com/wiltodelta/translate-like-me/actions/workflows/build.yml/badge.svg)](https://github.com/wiltodelta/translate-like-me/actions/workflows/build.yml)
@@ -93,7 +93,8 @@ for a plain translation, useful when reading someone else's words. You can keep
 up to three pairs, each with its own style and shortcut.
 
 Use translation on its own, or after Rewrite to send a polished message in
-another language.
+another language. During translation and Rewrite, a small panel at the bottom
+of the screen shows the operation in progress and lets you cancel it.
 
 <p align="center">
   <picture>
@@ -126,7 +127,7 @@ You can keep the CLI's default model and effort settings.
 | Local translation | MLX, inside the app |
 
 Fresh profiles select **Gemma 4 E2B** on Macs with **8-16 GB** of memory and
-**TranslateGemma 12B** above **16 GB**. Dictation selects **Whisper Turbo**
+**TranslateGemma 12B** above **16 GB**. Dictation selects **Whisper large-v3-turbo**
 through **16 GB** and **Qwen3-ASR** above that. Existing model choices are
 preserved. TranslateGemma can also be selected manually on a 16 GB Mac.
 The lighter model has more limitations in translation and Rewrite. See the

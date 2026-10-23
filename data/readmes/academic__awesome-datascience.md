@@ -184,6 +184,7 @@ How do you learn data science? By doing data science, of course! Okay, okay - th
 - [Realtime deployment](https://www.microprediction.com/python-1) Tutorial on Python time-series model deployment.
 - [Python for Data Science: A Beginner’s Guide](https://learntocodewith.me/posts/python-for-data-science/)
 - [Minimum Viable Study Plan for Machine Learning Interviews](https://github.com/khangich/machine-learning-interview)
+- [AI Engineer Interview Prep](https://github.com/landedjobs/awesome-ai-engineer-interview) - 267 AI engineer interview questions with answers, 10 worked system designs, and 12 company loop guides.
 - [Understand and Know Machine Learning Engineering by Building Solid Projects](https://mlzoomcamp.com/)
 - [12 free Data Science projects to practice Python and Pandas](https://www.datawars.io/articles/12-free-data-science-projects-to-practice-python-and-pandas)
 - [Best CV/Resume for Data Science Freshers](https://enhancv.com/resume-examples/data-scientist/)
@@ -1031,6 +1032,4 @@ Below are some Social Media links. Connect with other data scientists!
 - [Data Science - Closed Group](https://www.facebook.com/groups/1394010454157077/?ref=br_rs)
 - [Center for Data Science](https://www.facebook.com/centerdatasciences?ref=br_rs)
 - [Big data hadoop NOSQL Hive Hbase](https://www.facebook.com/groups/bigdatahadoop/)
-- [Analytics, Data Mining, Predictive Modeling, Artificial Intelligence](https://www.facebook.com/groups/data.analytics/)
-- [Big Data Analytics using R](https://www.facebook.com/groups/434352233255448/)
-- [Big Data Analytics with R and Had
+- [Analytics, Data Mining, Predictive Mod

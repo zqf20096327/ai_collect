@@ -8,8 +8,10 @@ Run speech-to-text and text-to-speech on your Mac for Home Assistant voice
 control or any app that speaks the OpenAI audio API. Models stay loaded on
 the Apple Silicon GPU, so with the default voice the first audio of a reply
 arrives about 100 ms after the request. voiced runs as two services, one for
-each direction, under launchd plus a watchdog: they start at boot without
-anyone logging in and restart themselves after a crash or a hang. Home
+each direction, under launchd plus a watchdog: they run as you while you
+are logged in, start again when you log in, and restart themselves after a
+crash or a hang. Nothing needs an administrator password, except once
+when moving from 0.4.0 or earlier. Home
 Assistant talks to it over Wyoming, the protocol its Assist pipelines use
 for local speech services.
 
@@ -17,7 +19,7 @@ for local speech services.
 
 The recording's timings are curl fetching a WAV, slower than the streamed benchmark (94 ms median first audio on the same Apple M1 Max, 64 GB; see [Benchmarks](#benchmarks)).
 
-voiced 0.3.0 is the current release. It transcribes with Parakeet TDT 0.6B
+voiced 0.5.0 is the current release. It transcribes with Parakeet TDT 0.6B
 v3 and speaks with Kokoro-82M. Other models are a download away, from the
 menu bar app or `voiced models download`: Qwen3-ASR for files and languages
 beyond Parakeet's, the streaming Nemotron ASR, Moonshine on the CPU, and
@@ -34,7 +36,8 @@ listed in [CHANGELOG.md](CHANGELOG.md).
 
 You need an Apple Silicon Mac with macOS 14 or newer. The first install
 downloads about 4.5 GB, mostly the two default models, and takes several
-minutes. Any other model is downloaded only when you choose it
+minutes; less with one service or smaller models. Any other model is
+downloaded only when you choose it
 ([Models and licenses](#models-and-licenses)).
 
 Most people want the menu bar app, from [Homebrew](https://brew.sh):
@@ -43,12 +46,39 @@ Most people want the menu bar app, from [Homebrew](https://brew.sh):
 brew install --cask julianbeaulieu/voiced/voiced
 ```
 
-Open voiced.app. It asks for an administrator password once and installs
-the services. The menu bar icon then shows whether both services are up.
-The app also restarts them, opens the logs and changes the common settings;
-see [menubar/README.md](menubar/README.md). Moving
-the app to the Trash leaves the services running: to remove voiced, use
-Settings > About > Uninstall voiced in the app.
+Open voiced.app. Its first screen asks what to install: speech to text, text
+to speech or both, each with its model, the recommended ones already chosen,
+and shows what that downloads. A service you switch off downloads nothing;
+you can turn it on later in Settings. Install then does the rest without
+asking for a password, and Homebrew asks for none either. The menu bar icon
+then shows whether the services are up. The app also restarts them, opens
+the logs and changes the common settings; see
+[menubar/README.md](menubar/README.md).
+
+The app updates itself: it checks for a new version when it opens and once
+a day, and **Install and Relaunch** on the card in its menu installs it,
+opens it again and then brings the services to the same version, without a
+password ([docs/operations.md](docs/operations.md#the-menu-bar-app)). With
+Homebrew, `brew update` and `brew upgrade --cask voiced` work too: from
+0.5.0 on the services keep running and Homebrew asks for no password; on
+its next launch the app offers **Update voiced**, which asks for none
+either. 0.5.0 is the first version that updates itself: install it by hand
+once, with Homebrew or the DMG; later versions arrive in the app.
+
+Updating from 0.4.0 or earlier asks for a password once more, the last
+time: those releases installed the services as system-wide LaunchDaemons,
+which only an administrator can remove. With the DMG, the app asks to
+"remove the old background services (the last time a password is
+needed)", and if you cancel, the services keep running the old way until
+you accept. With `brew upgrade --cask voiced`, Homebrew asks instead, since
+it runs the old version's uninstall step, which removes the old services;
+voiced is then down until you open the app, which installs the new
+services without asking.
+
+Moving the app to the Trash, or `brew uninstall --cask voiced`, leaves the
+services running: to remove voiced, use Settings > About > Uninstall
+voiced in the app, or `brew uninstall --zap --cask voiced` to remove the
+services but keep the models and config.
 
 Using Home Assistant? Continue with
 [docs/home-assistant.md](docs/home-assistant.md).
@@ -66,8 +96,8 @@ brew install julianbeaulieu/voiced/voiced
 voiced install
 ```
 
-`voiced install` downloads the default models and prints one command to
-run with `sudo`, the only step that needs root;
+`voiced install` downloads the configured models and starts the services
+as your LaunchAgents, with no `sudo`;
 [docs/operations.md](docs/operations.md#commands) says what it does. Both
 the cask and the formula come from the
 [tap](https://github.com/JulianBeaulieu/homebrew-voiced).
@@ -93,11 +123,29 @@ curl -s http://127.0.0.1:8881/v1/audio/transcriptions \
   -F file=@hello.wav -F model=parakeet
 ```
 
-To remove a formula install, run `voiced uninstall`
+To remove a formula install, run `voiced uninstall --yes`
 ([docs/operations.md](docs/operations.md#commands)). All three ways of
 installing set up the same `~/.voiced` and the same launchd services
 ([ADR 0017](docs/decisions/0017-homebrew-packaging.md)), so you can switch
 between them.
+
+### voiced runs while you are logged in
+
+The services are LaunchAgents of the user who installed them: they start
+when that user logs in and stop when they log out. Locking the screen,
+letting the display sleep or switching to another user keeps them running.
+After a reboot:
+
+- with FileVault on, voiced starts when you unlock the disk at boot: the
+  unlock logs in the account that unlocked it, so on a Mac with several
+  accounts, unlock as the one that installed voiced;
+- with FileVault off and automatic login on (System Settings > Users &
+  Groups), voiced starts at the automatic login;
+- otherwise voiced waits at the login window until you log in.
+
+A Mac that serves Home Assistant unattended keeps its user logged in, or
+has automatic login on. `voiced doctor` says which case applies
+([ADR 0035](docs/decisions/0035-launch-agents.md)).
 
 ## What you get
 
@@ -200,6 +248,49 @@ VOICED_CONFIG=/path/to/other.toml # use a different config file
 `voiced config` prints the effective configuration as JSON. Unknown keys are
 errors, so a typo stops the service with a message instead of being ignored.
 
+### Voice and speed
+
+`[tts] default_voice` and `speed` are what a request that names no voice or
+speed gets, Home Assistant's included. In the app, Settings > Text to Speech
+has the voice, with a play button that speaks a short line in it ("Hi, I'm
+Heart.", in the voice's language) at the current speed, and the speed, from
+0.5x to 2x. A new speed applies at once; a new voice when the service
+restarts. From the command line:
+
+```sh
+voiced settings set tts.speed=1.2           # no restart needed
+voiced settings set tts.voice=bf_emma
+voiced restart tts
+```
+
+### Memory: unload when idle, or switch a service off
+
+Each service keeps its model loaded, about 1.5 GB for Parakeet and 0.5 to
+0.7 GB for Kokoro. Two settings per service, under `[stt]` and `[tts]`,
+change that, from the app's Speech to Text and Text to Speech settings
+(Service section) or the command line:
+
+```sh
+voiced settings set tts.idle_unload_s=300   # unload after 5 minutes unused
+voiced settings set stt.enabled=false       # another app does the listening
+voiced restart all
+```
+
+- `idle_unload_s` unloads the model after that many seconds without a
+  request, which frees nearly all of it (Parakeet's service drops from
+  1.5 GB to 0.12 GB). The next request waits while it loads again, about
+  0.4 s for Parakeet and 0.25 s for Kokoro, and is then answered as usual.
+  `0`, the default, keeps the model loaded.
+- `enabled = false` switches the service off: it loads no model, opens no
+  port and is not announced to Home Assistant. Its LaunchAgent still
+  starts it at login, so turning it back on is one restart, and the
+  process waits, holding about 30 MB. `voiced status`
+  and the app say "off".
+
+Both take effect when the service restarts. For Home Assistant, leave
+`idle_unload_s` at 0: the first command after a quiet spell would wait for
+the reload. See [ADR 0033](docs/decisions/0033-model-residency.md).
+
 ### Security note on `bind`
 
 Both services bind to `127.0.0.1` by default and are reachable only from the
@@ -220,6 +311,21 @@ exposes the services to your whole network:
 - The config file is created readable only by you (0600), because the API
   key goes there. Other accounts on the Mac can read files in your home
   directory that are not, so keep it that way if you edit it by hand.
+- With the macOS firewall on (System Settings > Network > Firewall),
+  macOS asks on the Mac, when the services start listening on the network,
+  whether voiced's Python (`python3.12`) may accept incoming connections,
+  and asks again after an update that changes that Python. Until someone
+  answers at the Mac, devices on the network are blocked, so on a Mac
+  nobody sits at, allow the Python in System Settings > Network > Firewall
+  > Options after an update. `voiced install` and `voiced doctor` remind
+  you while the firewall is on.
+- Home Assistant finds voiced through Bonjour (`zeroconf`). macOS's Local
+  Network privacy applies to the services, and on macOS 15 it blocked
+  their Bonjour announcements on the network when measured, so Home
+  Assistant may not discover voiced by itself. `voiced doctor` checks; if
+  it warns, add the Wyoming integrations by the Mac's address and port
+  ([docs/home-assistant.md](docs/home-assistant.md)). Connections to voiced
+  are not affected.
 - voiced does no TLS. Put a reverse proxy in front if you need HTTPS.
 - Settings and restarts go through a Unix socket that only your user can
   open (`voiced settings`, `voiced restart`). The status page's settings
@@ -706,14 +812,17 @@ trailing silence and 105 ms median at the last word
 ## Troubleshooting
 
 Start with `voiced doctor`. It checks Apple Silicon, the macOS version,
-Python, espeak-ng, ffmpeg, memory, port conflicts, FileVault, the installed
-daemons and Metal access, including from a real daemon context with
-`voiced doctor --metal-probe`.
+Python, espeak-ng, ffmpeg, memory, port conflicts, whether voiced starts
+after a reboot, the installed LaunchAgents, the firewall when voiced is on
+the network, and Metal access, including from a LaunchAgent as the services
+run it with `voiced doctor --metal-probe`.
 
 | Symptom | Likely cause and fix |
 |---|---|
 | `/health` returns 503 with `"status": "starting"`, `/v1` returns 503 `server_busy` | The model is still loading, which takes seconds; watch `voiced logs`. |
 | `/health` returns 503 with `"status": "missing_model"`, `/v1` returns 503 `model_not_downloaded` | The configured model is not in the Hugging Face cache (a hand-edited config, a cache another tool cleared). `last_error` and `voiced doctor` name the command: `voiced models download <model>`, then `voiced restart`. The watchdog leaves the service alone meanwhile. |
+| `/health` says `"idle"` or `"loading"` | Not a problem: `idle_unload_s` unloaded the model, and the next request loads it again (`loading`) before it is answered. |
+| `voiced status` says a service is `off` | `enabled = false` for it. Turn it on with `voiced settings set stt.enabled=true` (or `tts`) and `voiced restart stt`. |
 | `/health` says `"degraded"` | The last inference failed. The error is in `last_error` and on the status page; the watchdog restarts the service if it stays degraded for two minutes. |
 | HTTP 503 `server_busy` while the model is loaded | The inference queue is full. Raise `queue_depth` or send fewer concurrent requests. |
 | HTTP 401 `auth_error` | `api_key` is set; send `Authorization: Bearer <key>`. |
@@ -725,9 +834,11 @@ daemons and Metal access, including from a real daemon context with
 | Streamed transcript repeats a short word after a pause | A known limit of streaming with Parakeet around one-second pauses; batch transcription of the same audio is not affected. |
 | A service exits at startup with `unknown stt engine` or `unknown tts engine` | `engine` in the config names an engine that is not installed; the message lists the installed ones. |
 | ERROR log line `ASGI callable returned without completing response` | Expected; see [Logs](docs/operations.md#logs). |
-| `voiced stop` prints a `sudo` command | Unloading a LaunchDaemon needs root; run the printed command. |
-| Home Assistant does not discover voiced | `bind` is still `127.0.0.1`, or mDNS does not cross your VLAN. See [docs/home-assistant.md](docs/home-assistant.md). |
-| Services do not come up after a reboot | FileVault waits for a disk unlock; see [docs/operations.md](docs/operations.md#filevault). |
+| `voiced install`, `status` or `doctor` prints a `sudo /bin/sh -c '/bin/launchctl bootout system/...'` line | voiced 0.4.0 or earlier installed the services as LaunchDaemons, which only an administrator can remove. Run that line once (the last time voiced needs a password), then `voiced install`. |
+| `voiced install`, `stop`, `start` or `uninstall` refuses to run under `sudo` | The services are your LaunchAgents, and under `sudo` the command would address root's. Run it as yourself, without `sudo`. |
+| Home Assistant does not discover voiced | `bind` is still `127.0.0.1`, mDNS does not cross your VLAN, or macOS keeps the services' Bonjour announcements on the Mac (`voiced doctor`: Discovery). Add the integrations by the Mac's address and port; see [docs/home-assistant.md](docs/home-assistant.md). |
+| Services do not come up after a reboot | They start when you log in; without FileVault or automatic login the Mac waits at the login window. See [voiced runs while you are logged in](#voiced-runs-while-you-are-logged-in). |
+| Home Assistant cannot reach voiced on the network, with the firewall on | The firewall's question for `python3.12` was answered Deny, or not at all. Allow it in System Settings > Network > Firewall > Options; `voiced doctor` names the file. |
 | Port already in use | Another program owns 8880, 8881, 10200 or 10300. `voiced doctor` names it; change the port in the config. |
 | Services stopped after `brew uninstall voiced` | `~/.voiced/bin/voiced` points at the removed formula, so launchd no longer starts them. Reinstall it, or finish removing voiced: [docs/operations.md](docs/operations.md#homebrew). |
 | `voiced settings set` says `is not downloaded` | voiced refuses to switch to a model that is not in the cache; run the `voiced models download` it names first. |
@@ -772,9 +883,9 @@ Report vulnerabilities privately, not in a public issue.
 | [docs/api.md](docs/api.md) | HTTP, WebSocket and Wyoming reference with curl and Python examples |
 | [docs/home-assistant.md](docs/home-assistant.md) | Wyoming setup, Assist pipeline, optional Ollama conversation agent |
 | [docs/architecture.md](docs/architecture.md) | Services, inference path, queue, engine registry, audio conventions, adding an engine |
-| [docs/operations.md](docs/operations.md) | Commands, installing from a checkout, launchd, watchdog, control channel, logs, FileVault, memory, updating |
+| [docs/operations.md](docs/operations.md) | Commands, installing from a checkout, launchd and the move from LaunchDaemons, watchdog, control channel, logs, after a reboot, memory, updating |
 | [docs/decisions/](docs/decisions/README.md) | Architecture decision records |
-| [menubar/README.md](menubar/README.md) | The macOS menu bar app: building, running it against the fake control server |
+| [menubar/README.md](menubar/README.md) | The macOS menu bar app: the voice and speed controls, models, the installer, its own updates, building it, running it against the fake control server, snapshots for pull requests |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | How to contribute, development setup, tests, conventions |
 | [SECURITY.md](SECURITY.md) | Supported versions, reporting a vulnerability, threat model |
 | [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) | The Contributor Covenant, and how to report a problem |

@@ -26,7 +26,7 @@ macOS / Linux 一条命令装好，不需要 Node/Python。Windows 从 [Releases
 - **轻量 agent + 真正的安全边界**：和 pi 同一量级的单二进制，但多了逐调用审批门与 OS 沙箱（`sandbox-exec` / `bubblewrap`）——读限工作区、写限项目与临时目录、网络默认关闭；密钥和凭据路径读不到。
 - **比 codex-cli 更容易定制**：纯 Go，单语言、单二进制，没有 Node/Python 运行时；加一个工具、一个 provider 或一条审批规则，都在同一个 `go build` 里完成。
 - **常驻内存约 50–100 MB**：同类里的第一梯队，长时间挂着跑也不占机器。
-- **规划中：tuios + kitty-browse**：窗口与浏览器的自由 agent 操作；前后端同时 debug 时，模型能同时看到终端、编辑器、浏览器，上下文最充分。
+- **终端 / 浏览器 / 工作区在一个面板里**：`tuios` 管终端 pane，`browser` 通过 kitty-browse 的控制 socket 操作页面（snapshot/click/fill/wait/console/network），`workspace` 用预设（`debug-fullstack`、`data-analysis`、`review`）一次起好后端、前端和浏览器，再用 `snapshot` 把所有 pane 的上下文一次交给模型——前后端同时 debug 时最充分。`visual`（图表 / Mermaid / TML 面板）已下架，原因见 CHANGELOG 的 Removed 一节。
 - **规划中：MCP 与插件生态**：把外部工具和数据源接进来，扩展不必改核心。
 
 <p align="center">
@@ -184,7 +184,7 @@ golder --provider openai
 ```toml
 provider = "opencode-go"
 model = "deepseek-v4.1-flash"
-thinking_level = "max"            # off | minimal | low | medium | high | xhigh | max
+thinking_level = "max"            # 全局回退；按 provider+model 的默认见 [thinking_defaults]
 # base_url = "https://..."        # 覆盖 Provider 默认端点
 # api_key = "..."                 # 建议改用环境变量或 credential 引用
 # credential = "my-key"           # 引用 ~/.golder/.credentials.yaml 中的条目
@@ -253,6 +253,16 @@ golder -m ollama/qwen2.5-coder -u http://localhost:11434/v1 -p "..."   # 本地 
 ### 模型与推理档位
 
 交互式里 `/model` 列出当前网关的模型并标注每个模型支持的推理档位；TUI 中选中模型后会接着让你选档位（Esc 取消整次切换），也可用 `/model <序号|id> <档位>` 一步切换。只调当前档位用 `/model think <档位>`（不带参数则显示当前档位），因为档位属于模型，入口统一在 `/model` 下。
+
+**默认档位按 provider + model 保存**：`/model default <id|n> [档位]`（以及 TUI 选择器里在档位行按 `d`）把它写进 `config.toml` 的 `[thinking_defaults]`，键是 `provider/model`。给一个网关的某个模型设默认档位，不会改变同网关的其他模型，也不会影响其他 provider；`/provider` 切换只采用新网关默认模型自己的档位（没有保存过就保持当前会话档位），选择器里的 `(default)` 也只标记当前 provider+model 的这一项。
+
+```toml
+[thinking_defaults]
+"opencode-go/deepseek-v4.1-flash" = "max"
+"commandcode/deepseek/deepseek-v4.1-flash" = "high"
+```
+
+顶层的 `thinking_level` 仍作为未保存 per-model 档位时的全局回退；第一次保存 per-model 档位时，旧的全局值会迁移到 `[model_defaults]` 里每个已保存的 provider/model，然后删除顶层键。`--thinking-level` / `GOLDER_THINKING_LEVEL` 仍然优先于配置里的默认值。
 
 `/provider` 列出全部内置网关：每个网关需要哪些环境变量、当前有没有配好（已配好的排在最前），`/provider <名称>` 直接切换网关（自动用该网关的默认模型）。审查器的决策模型（`typesafe`）单独列在最后一节，并拒绝切换：它回答的是审查器的类型化提问，不是聊天模型，给它路由请用 `/proxy`。TUI 里 `/provider` 是方向键选择器，同样不包括决策模型。
 

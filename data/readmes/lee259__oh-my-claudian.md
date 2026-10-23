@@ -86,6 +86,9 @@ The built-in provider integrations are:
 - [Oh My Pi (OMP)](https://github.com/can1357/oh-my-pi)
 - [OpenCode](https://github.com/anomalyco/opencode)
 - [Pi](https://github.com/earendil-works/pi)
+- [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)
+
+For DeepSeek Harness, configure `dsh web` or open DeepSeek Harness Desktop once before enabling it in **Providers → DeepSeek Harness**. Discover the native model catalog, then explicitly select the models to show in chat. Auto prefers `dsh`; set the Desktop `.app` path or Windows installation folder to use its bundled runtime. The integration reuses your native profile, credentials and MCP servers. It supports native history/resume, images, permissions and Stop, with optional code mode and additional preset plugins. Planning and Obsidian-native vault tools are not exposed by this integration.
 
 Provider capabilities are intentionally different. The plugin exposes controls only when the selected provider supports them; model discovery, permissions, history, planning, MCP, and runtime behavior remain provider-specific. The Obsidian-native vault actions below are currently available in Claude, Codex, OpenCode, and Pi.
 
@@ -96,6 +99,12 @@ Provider capabilities are intentionally different. The plugin exposes controls o
 Type `@` to choose vault files or provider resources, or drag files and folders into the composer. Attachments appear as clickable context chips. Files from outside the vault must be attached explicitly; see [Safety and privacy](#safety-and-privacy) for access boundaries.
 
 Type `/` to discover commands and skills supported by the selected provider. Instruction mode and Mermaid rendering are also available; provider-specific resources and controls depend on that provider's capabilities.
+
+### Keep chat available while reading
+
+On desktop, collapse the sidebar containing Oh My Claudian to move its existing chat into a floating panel over your notes. Click the activity preview to expand or collapse the conversation; reopen the sidebar to restore the full view. Drafts, running responses and pending approvals stay in the same session.
+
+Drag the handle below the panel to move it, or focus the handle and use arrow keys (Shift for larger steps). Press Home or double-click the handle to return to the bottom-center dock. The position is remembered. Disable **Enable zen mode** in the plugin's general settings to keep the sidebar-only behavior. Main-area chat tabs and popout windows do not float.
 
 ### Read a conversation and inspect changes
 

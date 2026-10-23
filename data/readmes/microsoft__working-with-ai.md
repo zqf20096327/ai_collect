@@ -1,12 +1,12 @@
 # "Working with AI" results files
 These files contain results from the paper:
 
-> Kiran Tomlinson, Sonia Jaffe, Will Wang, Scott Counts, and Siddharth Suri. Working with AI: Measuring the Applicability of Generative AI to Occupations. arXiv, 2025. https://arxiv.org/abs/2507.07935
+> Kiran Tomlinson, Sonia Jaffe, Will Wang, Scott Counts, and Siddharth Suri. Working with AI: Measuring the Applicability of Generative AI to Occupations. NeurIPS 2026. https://arxiv.org/abs/2507.07935
 
  In particular, they include our metrics aggregated at the O*NET intermediate work activity (IWA) and occupation (detailed 2018 SOC code) level. These describe how often Bing Copilot was used for different work activities, how successfully, and what this usage indicates about which occupations AI may be applicable to. The goal of these metrics is to measure how AI may be useful in different occupations. Refer to the paper for a detailed discussion of the metrics and results.
 
 ## Updates
-- (current) v1.1: referenced by the arXiv paper revision v6. Adds physical task classification, nonphysical IWA weights, and nonphysical AI applicability score.
+- (current) v1.1: referenced by the NeurIPS '26 version and by arXiv paper revisions v6 and v7. Adds physical task classification, nonphysical IWA weights, and nonphysical AI applicability score.
 - [v1.0](https://github.com/microsoft/working-with-ai/tree/v1.0): referenced by the arXiv paper revisions up to v5.
 
 ## File descriptions
@@ -79,17 +79,16 @@ This repository is licensed under CC BY 4.0. To view a copy of this license, vis
 
 ## Citation
 ```
-@misc{tomlinson2025working,
-      title={Working with AI: Measuring the Applicability of Generative AI to Occupations}, 
+@inproceedings{tomlinson2026working,
+      title={Working with {AI}: Measuring the Applicability of Generative {AI} to Occupations}, 
       author={Kiran Tomlinson and Sonia Jaffe and Will Wang and Scott Counts and Siddharth Suri},
-      year={2025},
-      eprint={2507.07935},
-      archivePrefix={arXiv},
-      primaryClass={cs.AI},
-      url={https://arxiv.org/abs/2507.07935}, 
+      year={2026},
+      booktitle={Advances in Neural Information Processing Systems},
+      volume={39},
+      url={https://arxiv.org/abs/2507.07935},
+      note={In press}
 }
 ```
-
 
 ## Transparency 
 ### Intended uses 

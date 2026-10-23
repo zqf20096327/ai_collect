@@ -60,8 +60,8 @@ Kumi opens once it's installed and walks you through signing in and connecting t
 
 ## Status
 
-- Kumi 1.21.1 is currently supported for Ableton Live 12.4.15b4 (beta) and above on macOS and Windows. You may run into issues on lower versions. If you do, **please file an issue!**
-- 1.21.1 is tested with Live on macOS. On Windows, installing and updating are tested; using it with Live there is still new. Please send a `kumi report` when something breaks.
+- Kumi 1.21.2 is currently supported for Ableton Live 12.4.15b4 (beta) and above on macOS and Windows. You may run into issues on lower versions. If you do, **please file an issue!**
+- 1.21.2 is tested with Live on macOS. On Windows, installing and updating are tested; using it with Live there is still new. Please send a `kumi report` when something breaks.
 - REAPER 7.82 and Renoise 3.5.4 are tested on macOS. On Windows and Linux, CI tests putting Kumi's extension and tool in place and loading the extension; using them with REAPER and Renoise there is new.
 
 ## Development
@@ -71,7 +71,7 @@ Build this checkout with Rust and Cargo:
 ```sh
 cargo build --release --locked --workspace --bins
 cargo run --release -p kumi --                     # add bridge, doctor, or other arguments after --
-npm ci --prefix crates/kumi-runtime/tests/support  # once: the official SDKs some tests run
+npm ci --prefix crates/kumi-agent/tests/support  # once: the official SDKs some tests run
 sh scripts/test-isolated.sh                        # no Live or sign-in needed
 ```
 
@@ -83,13 +83,15 @@ After that handoff, `kumi` runs the native application directly.
 | Folder | What's in it |
 | --- | --- |
 | `crates/kumi` | The native terminal app and `kumi` command |
-| `crates/kumi-runtime` | Model providers, memory, audio analysis, video, the web, and the integrations with Live, REAPER and Renoise |
-| `crates/ableton-mcp-server` | The native bridge, also usable by other MCP clients ([bridge guide](crates/ableton-mcp-server/README.md)) |
-| `remote-script` | The bridge's Remote Script, which runs inside Live |
-| `apps/live-extension` | Kumi's Live extension (Live 12.4 and later) |
-| `protocol` | The list of operations the bridge and the Remote Script share |
-| `crates/daw-mcp-server` | Kumi's host for REAPER and Renoise, which Kumi starts; also usable by other MCP clients |
-| `crates/reaper-kumi` | Kumi's REAPER extension |
+| `crates/kumi-agent` | The agent: its loop, sessions, memory, HISTORY and the MCP client |
+| `crates/kumi-ai`, `kumi-media`, `kumi-web`, `kumi-library`, `kumi-listening` | Model providers, audio analysis and voice, the web and video, the producer's library, and listening |
+| `daws/<daw>/kumi-daw-<daw>` | The integrations with Live, REAPER and Renoise |
+| `daws/ableton/ableton-mcp-server` | The native bridge, also usable by other MCP clients ([bridge guide](daws/ableton/ableton-mcp-server/README.md)) |
+| `daws/ableton/remote-script` | The bridge's Remote Script, which runs inside Live |
+| `daws/ableton/live-extension` | Kumi's Live extension (Live 12.4 and later) |
+| `daws/ableton/protocol` | The list of operations the bridge and the Remote Script share |
+| `daws/own/daw-mcp-server` | Kumi's host for REAPER and Renoise, which Kumi starts; also usable by other MCP clients |
+| `daws/reaper/reaper-kumi` | Kumi's REAPER extension |
 | `daws/renoise` | Kumi's Renoise tool |
 
 The [developer guide](docs/en/DEVELOPER_GUIDE.md) covers building, testing and releasing.

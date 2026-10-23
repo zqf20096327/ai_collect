@@ -127,14 +127,18 @@ No comparison declares a universal winner. See the [transparent cost page](https
 | Background workflows   | Durable jobs with pause, resume, cancellation, restart recovery, and guarded autonomous execution                                                          |
 | Hybrid risk model      | Deterministic policy plus structured transitions, learned risk, executor-callback history, verified outcome adaptation, and optional shadow UI-JEPA; learned output can only add caution |
 | Assistance co-adaptation | Opt-in, consented selection study inside Heliox's window: a world model of the person, the interface and Heliox predicts which help (larger targets, a confirm step, a clarifying question, another input) suits this person today, within rules the person sets; it changes presentation only and never approves or runs anything |
-| Per-task undo          | Before a file write, move, copy or delete or a clipboard change, Heliox keeps what it needs to reverse it. After the task, **Review undo** shows what will be put back, what you changed since (left alone) and what can never be undone (messages, web actions, commands); the approval dialog marks each action "Can undo" or "Can't undo" |
+| Per-task undo          | Before a file write, move, copy or delete, a clipboard change, an environment variable, or a volume or brightness change, Heliox keeps what it needs to reverse it. Each finished task's message in chat has **Undo** and **Verify receipt**. After the task, **Review undo** shows what will be put back, what you changed since (left alone) and what can never be undone (messages, web actions, commands); the approval dialog marks each action "Can undo" or "Can't undo" |
 | Bounded learning       | Provenance-aware temporal memory, repeated-evidence promotion, replay, drift detection, and reset controls                                                 |
 | Plugin ecosystem       | Reviewed GitHub marketplace, signed local plugins, per-file hashes, capability manifests, and constrained native/WASM brokers                              |
 | Neural research        | BrainFlow synthetic, recorded EEG playback, public EEGBCI benchmarking, calibrated SSVEP selection, replay-safe Tier 0/1 goals, and explicit staged autonomous task launch |
 | MCP interfaces         | Public read-only documentation MCP plus a local, separately authenticated stdio bridge whose tasks use visible Heliox approvals                           |
 | Air Handoff            | Opt-in same-LAN phone pairing and one-target encrypted transfer of a held screenshot, text value, or immutable file snapshot. Optionally, a paired phone can send a request that waits for **Run** on the computer; status checks can start at once and answer back to the phone. The phone never approves anything |
 | Signed task receipts   | After each task that ran actions, an Ed25519-signed, hash-chained receipt of what ran, what you approved and what happened; contents appear only as hashes, and `python -m pilot.workflows.task_receipts verify` checks one anywhere |
-| Activity timeline      | Opt-in local record of which app and window title were in front, so "what was I working on yesterday afternoon?" gets an answer by voice or chat; never pixels or screen text, password managers and private windows skipped |
+| Today view and brief   | A Today tab shows what Heliox ran, where your time went and what can still be undone, with Undo on each task; an opt-in daily brief arrives at the time you choose, as a notification and in chat, optionally read aloud. "Undo the last two tasks" opens each task's undo preview in turn |
+| Focus and reports      | "Focus for 45 minutes" holds reminders and the brief and keeps Heliox quiet (approvals still come through), then gives one summary of where the time went; the Today tab adds **This week** and **Export report** (Markdown with every task and its receipt id) |
+| Reminders and recall   | "Remind me in 20 minutes to stretch" or "tomorrow at 9 to send the report" (kept across restarts, spoken when due); "where did you put my report?" from what Heliox moved or saved; **Show what changed** in the undo preview gives a line-by-line diff of each file Heliox wrote |
+| Routines and shortcuts | "Do that every day at 9" turns the last task into a routine that may use only the actions that task used (you confirm on screen); "when I say start work, open VS Code and Slack" creates a voice shortcut; "do that again" repeats the last task with fresh approvals |
+| Activity timeline      | Opt-in local record of which app and window title were in front, so "what was I working on yesterday afternoon?" gets an answer by voice or chat (and "what did you do today?" is answered from receipts); never pixels or screen text, password managers and private windows skipped |
 | Secure integrations    | Settings-managed CalDAV, IMAP/SMTP, and allowlisted SSH connections with secrets kept in the operating-system credential store                            |
 
 While a task runs, choose **Ask without stopping** to ask a question, **Correct task** to interrupt the current step and replan, or **Queue next task** to submit another task for execution afterward. Spoken “quick question …”, status questions, and “next task …” use the corresponding paths. Queued interactive tasks are serialized through the normal approval and verification gates; they are not parallel desktop controllers. The passive screen monitor tracks the active window and visual changes; it does not continuously understand every pixel. “Read my screen” invokes local OCR on demand. Screen context never grants an action or bypasses approval.
@@ -352,6 +356,11 @@ retention_days = 90
 [timeline]
 enabled = false              # app and window-title history for "what was I working on?"
 retention_days = 7
+
+[brief]
+enabled = false              # one summary of the day at `time`
+time = "18:00"
+speak = false
 
 [co_adaptation]
 enabled = false              # the selection study; also needs a consent record per participant

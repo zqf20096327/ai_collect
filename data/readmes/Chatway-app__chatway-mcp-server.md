@@ -73,6 +73,7 @@ automation, knowledge base, and mobile apps for iOS and Android.
 | Cline | [Add the server](#cline) |
 | goose | [Add the extension](#goose) |
 | Grok Build | [Install the plugin](#grok-build) |
+| Replit | [Add to Replit](#replit) |
 
 **Works with any client that supports remote MCP servers with OAuth**
 
@@ -355,6 +356,18 @@ grok mcp add --transport http chatway https://mcp.chatway.app/mcp
 
 Grok opens the Chatway sign-in the first time it uses the server and stores the token in
 `~/.grok/mcp_credentials.json`. Then try: "List my 5 most recent unresolved Chatway conversations."
+
+### Replit
+
+[![Add to Replit](https://replit.com/badge?caption=Add%20to%20Replit)](https://replit.com/integrations?mcp=eyJkaXNwbGF5TmFtZSI6IkNoYXR3YXkiLCJiYXNlVXJsIjoiaHR0cHM6Ly9tY3AuY2hhdHdheS5hcHAvbWNwIn0=)
+
+Click **Add to Replit** above, then **Test & save** and sign in to Chatway. To add it manually,
+open [replit.com/integrations](https://replit.com/integrations), choose **MCP → + Add MCP server**,
+enter `Chatway` as the display name and `https://mcp.chatway.app/mcp` as the server URL.
+
+The connection is saved to your Replit account, so Replit Agent can use it in any app. Try:
+"Use Chatway to list my 5 most recent unresolved conversations." To react to new messages in an
+app you build on Replit, pair it with [Chatway webhooks](#real-time-events-with-webhooks).
 
 ### Other clients
 

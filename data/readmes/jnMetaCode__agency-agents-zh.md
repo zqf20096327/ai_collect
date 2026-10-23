@@ -251,6 +251,20 @@ cp -r marketing/*.md ~/.claude/agents/
 
 ---
 
+### 方式四：通过 npm 获取角色库
+
+```bash
+npm install agency-agents-zh
+```
+
+角色文件位于 `node_modules/agency-agents-zh/`，可直接读取或复制对应 Markdown。安装 Agency Orchestrator 后，也可指定这个目录：
+
+```bash
+ao roles --agents-dir ./node_modules/agency-agents-zh
+```
+
+npm 包提供角色内容，不会自动修改你的 AI 工具配置。上面的 `install.sh` / `convert.sh` 安装流程需要克隆 GitHub 仓库后执行。
+
 ## 智能体阵容
 
 ### 🏢 公司经营部

@@ -1,7 +1,7 @@
 # hf-to-litertlm
 
 Convert open-weight Hugging Face LLMs and VLMs into `.litertlm` bundles for Google's LiteRT-LM
-runtime (Android, iOS, macOS, Windows, Linux): 86 published conversions below, each with
+runtime (Android, iOS, macOS, Windows, Linux): 87 published conversions below, each with
 measured speeds and a one-command reproduction.
 
 LiteRT-LM is Google's recommended replacement for the MediaPipe LLM Inference API
@@ -140,6 +140,7 @@ manifest. A range is the spread across runs. A dash means no measured row for th
 | [Ornith-1.0-9B](https://huggingface.co/litert-community/Ornith-1.0-9B) | 8.95B | agentic coding | — | M4 Max GPU 44.9 | [recipe](REPRODUCE.md#2026-10-16--ornith-10-9b-a-qwen35-9b-finetune-on-the-9b-hybrid-recipe-with-thinking-off-in-the-template) |
 | [Ornith-1.5-9B](https://huggingface.co/litert-community/Ornith-1.5-9B) | 8.95B | agentic coding | — | M4 Max GPU 45.6 | [recipe](REPRODUCE.md#2026-10-16--ornith-15-9b-the-same-9b-hybrid-recipe-plus-one-step-that-puts-the-model-repos-tokenizerjson-in-the-bundle) |
 | [Qwen3.5-9B](https://huggingface.co/litert-community/Qwen3.5-9B) | 8.95B | chat | — | M4 Max GPU 46.1 | [recipe](REPRODUCE.md#2026-10-16--qwen35-9b-the-9b-hybrid-recipe-the-repos-tokenizerjson-in-the-tokenizer-section-the-qwen35-4b-thinking-switch-in-the-metadata) |
+| [Qwen3.8-27B](https://huggingface.co/litert-community/Qwen3.8-27B) | 26.9B | chat | — | M4 Max GPU 18.2 | [recipe](REPRODUCE.md#2026-10-22--qwen38-27b-the-9b-hybrid-recipe-at-27b-exported-from-an-f32-copy-of-the-checkpoint-and-quantized-from-the-float-tflite-without-a-float-litertlm) |
 | [Falcon-H1-Tiny-R-0.6B](https://huggingface.co/litert-community/Falcon-H1-Tiny-R-0.6B) | 0.62B | reasoning | iPhone 17 Pro CPU 29.4 | M4 Max GPU 97.8 | [recipe](REPRODUCE.md#2026-09-01--falcon-h1-tiny-r-06b-the-familys-first-reasoning-ship-and-the-size-where-two-family-assumptions-break) |
 | [LFM2.5-1.2B-Thinking](https://huggingface.co/litert-community/LFM2.5-1.2B-Thinking) | 1.2B | reasoning | iPhone 17 Pro GPU 69.7 | M4 Max GPU 317.9 | [recipe](REPRODUCE.md#lfm25-family-hybrid-shortconv--attention) |
 | [Spark-X2.5-1.7B](https://huggingface.co/litert-community/Spark-X2.5-1.7B) | 1.71B | reasoning | Galaxy S26 GPU 17.4–17.8 | M4 Max GPU 103.6 | [recipe](REPRODUCE.md#spark-x25-17b--4b-sparkllm-team-thinking--a-remote-code-architecture-exported-by-patching-the-vendor-file-not-re-implementing-it) |
@@ -154,7 +155,7 @@ manifest. A range is the spread across runs. A dash means no measured row for th
 | [granite-4.2-3b](https://huggingface.co/litert-community/granite-4.2-3b) | 3.66B | reasoning | Galaxy S26 GPU 12.3–15.6 | M4 Max GPU 85.5 | [card](cards/granite-4.2-3b-litert.md) |
 | [Phi-4-mini-reasoning](https://huggingface.co/litert-community/Phi-4-mini-reasoning) | 3.8B | math reasoning | Galaxy S26 GPU 12.8–19.1 | M4 Max GPU 114.9 | [card](cards/phi4-mini-reasoning-litert.md) |
 | [Nemotron-3-Nano-4B](https://huggingface.co/litert-community/Nemotron-3-Nano-4B) | 3.97B | reasoning | Galaxy S26 CPU 11.8–12.9 | M4 Max GPU 83.3 | [recipe](REPRODUCE.md#nemotron-h-mamba2--mlp--attention-three-layer-kinds--and-the-registry-trap) |
-| [NVIDIA-Nemotron-Labs-Dory1.0-4B](https://huggingface.co/litert-community/NVIDIA-Nemotron-Labs-Dory1.0-4B) | 3.98B | reasoning | Galaxy S26 GPU 12.1 | M4 Max GPU 57.7 | [recipe](REPRODUCE.md#nvidia-nemotron-labs-dory10-4b--a-looped-ngpt-model-the-loop-unrolled-with-a-kv-cache-per-pass-gptq-int4-on-the-data-free-scales-an-mlp-normalization-that-fits-fp16-and-gpu-composites-in-the-int4-graph) |
+| [NVIDIA-Nemotron-Labs-Dory1.0-4B](https://huggingface.co/litert-community/NVIDIA-Nemotron-Labs-Dory1.0-4B) | 3.98B | reasoning | Galaxy S26 GPU 17.3 | M4 Max GPU 88.2 | [recipe](REPRODUCE.md#nvidia-nemotron-labs-dory10-4b--a-looped-ngpt-model-the-loop-unrolled-with-a-kv-cache-per-pass-gptq-int4-on-the-data-free-scales-an-mlp-normalization-that-fits-fp16-and-gpu-composites-in-the-int4-graph) |
 | [Jan-nano](https://huggingface.co/litert-community/Jan-nano) | 4B | tool-use agent (MCP) | iPhone 17 Pro GPU 14.0 | M4 Max GPU 69.0 | [card](cards/jan-nano-litert.md) |
 | [Polaris-4B-Preview](https://huggingface.co/litert-community/Polaris-4B-Preview) | 4B | reasoning | Galaxy S26 GPU 9.2 | M4 Max GPU 69.1 | [card](cards/polaris-4b-litert.md) |
 | [Qwen3-4B-Thinking-2507](https://huggingface.co/litert-community/Qwen3-4B-Thinking-2507) | 4B | reasoning | Galaxy S26 GPU 15.3 | M4 Max GPU 92.1 | [card](cards/qwen3-4b-thinking-litert.md) |

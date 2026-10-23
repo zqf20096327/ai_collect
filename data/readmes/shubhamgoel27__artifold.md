@@ -2,22 +2,21 @@
 
 [![PyPI](https://img.shields.io/pypi/v/artifold?color=c1452a&label=pypi&style=flat-square)](https://pypi.org/project/artifold/)
 [![Python](https://img.shields.io/pypi/pyversions/artifold?style=flat-square&color=666)](https://pypi.org/project/artifold/)
-[![License](https://img.shields.io/badge/license-MIT-666?style=flat-square)](LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-666?style=flat-square)](https://github.com/shubhamgoel27/artifold/blob/main/LICENSE)
 
-Artifold is two tools for people who use Claude Code or Codex to write
-HTML pages: reports, slide decks, trackers, explainers.
+Ask Claude Code for a coffee tier list and you get a tidy page with
+sliders, cards and score bars, built from the same parts it uses for
+everything. Ask with `/craft` and it designs for the subject: the one on
+the right reads like the menu board in a café.
 
-- **`craft`** is a skill for your agent. It edits the content first, then
-  chooses a layout, fonts and tone for the subject, checks the result in a
-  headless browser, and fixes what looks wrong.
-- **The library** is a local dashboard (`artifold serve`). It finds every
-  HTML file in the folders you choose, groups the versions of each page,
-  and shares any of them to your GitHub Pages in one click.
+![An SF coffee tier list: plain Claude on the left, Claude with craft on the right](https://raw.githubusercontent.com/shubhamgoel27/artifold/main/docs/gallery/composite-pair-coffee.jpg)
+<sub>Same prompt, same model (Claude Opus 5.5). Ten more pairs are below.</sub>
 
-![Same prompt, plain Claude vs craft](docs/gallery/composite-2x2.jpg)
-<sub>Same prompt and model. Left: Claude with no skill. Right: with
-`craft`. All eleven pairs are in the
-[gallery](https://shubhamgoel27.github.io/artifold/).</sub>
+Then Artifold keeps it. Every HTML page your agent has ever written lives
+in one local dashboard, where you can search it, see every version, and
+share it with one click.
+
+Works with Claude Code and Codex.
 
 A designer at Figma, engineers at OpenAI and Meta, and a data engineer at
 DoorDash have praised pages made with `craft`.
@@ -66,11 +65,13 @@ Type `/craft a 30-day strength tracker for a beginner` in Claude Code, or
 You can also point it at something you made before: `/craft a poker odds
 explainer, like dobble` starts from that page's actual CSS.
 
-![The SF coffee tier list, plain Claude vs craft](docs/gallery/composite-pair-coffee.jpg)
+[![Eleven prompts, plain Claude vs craft](https://raw.githubusercontent.com/shubhamgoel27/artifold/main/docs/gallery/composite-11x.jpg)](https://shubhamgoel27.github.io/artifold/)
+<sub>Eleven prompts, each run through Claude twice. Click through to the
+[gallery](https://shubhamgoel27.github.io/artifold/) to open any of them.</sub>
 
 ## Keeping pages: the library
 
-![Artifold demo](docs/demo.gif)
+![Artifold demo](https://raw.githubusercontent.com/shubhamgoel27/artifold/main/docs/demo.gif)
 
 ### Finds everything
 
@@ -92,7 +93,7 @@ how many times you have revised or opened it. "Most used" sorts by that,
 so the trackers you open every day stay near the top instead of sinking
 under last week's one-offs.
 
-![Command palette](docs/cmdk.png)
+![Command palette](https://raw.githubusercontent.com/shubhamgoel27/artifold/main/docs/cmdk.png)
 
 ### Shares in one click
 
@@ -103,7 +104,12 @@ the person you send it to needs nothing installed. It uses the
 [`gh` CLI](https://cli.github.com/), so you need to be logged in to GitHub
 there. You can also export any artifact to PDF.
 
-![Share flow in detail pane](docs/share-detail.png)
+The shared copy gets one small line at the bottom, "Made with craft" or
+"Shared with Artifold", linking here. Your own file is not changed. Turn
+it off with `artifold share --no-credit`, or for good with
+`artifold config share_credit off`.
+
+![Version picker and preview in the detail pane](https://raw.githubusercontent.com/shubhamgoel27/artifold/main/docs/share-detail.png)
 
 ### Works with other design skills too
 
@@ -120,9 +126,9 @@ learn about each page.
 The last row needs nothing from the page and covers most of what the
 library does. The first two rows exist because a page can say what it is
 in a few lines of `<head>`. If you build a design skill, that format is
-documented in [docs/ARTIFACT-METADATA.md](docs/ARTIFACT-METADATA.md), and
+documented in [docs/ARTIFACT-METADATA.md](https://github.com/shubhamgoel27/artifold/blob/main/docs/ARTIFACT-METADATA.md), and
 nothing in it is specific to Artifold. Skills with their own format are
-read through [adapters](artifold/adapters.py); pull requests for new ones
+read through [adapters](https://github.com/shubhamgoel27/artifold/blob/main/artifold/adapters.py); pull requests for new ones
 are welcome.
 
 Run `artifold skills` to see which of these you have installed.
@@ -152,27 +158,29 @@ Paste this into Claude Code or Codex:
 
 ### Just the skill
 
-If you only want better-looking pages and no library, paste this instead:
+If you only want better-looking pages and no library, install `craft` as a
+Claude Code plugin. Type this inside Claude Code:
 
-> [!TIP]
-> ```
-> Install only the craft skill from https://github.com/shubhamgoel27/artifold.
-> Copy the folder artifold/skills/craft (SKILL.md and references/) into
-> ~/.claude/skills/craft for Claude Code, or ~/.agents/skills/craft for
-> Codex. Don't install the Python package. Then tell me how to use it.
-> ```
+```
+/plugin install craft --marketplace shubhamgoel27/artifold
+```
 
-Or run it yourself. For Codex, change `~/.claude/skills` to
-`~/.agents/skills`:
+That needs Claude Code 2.1.275 or later. On older versions, run
+`/plugin marketplace add shubhamgoel27/artifold`, then
+`/plugin install craft@artifold`. Updates come through `/plugin` as well.
+
+For Codex, copy the skill into `~/.agents/skills/` with one command:
 
 ```bash
-mkdir -p ~/.claude/skills && curl -sL https://github.com/shubhamgoel27/artifold/archive/main.tar.gz \
-  | tar -xz -C ~/.claude/skills --strip-components=3 artifold-main/artifold/skills/craft
+mkdir -p ~/.agents/skills && curl -sL https://github.com/shubhamgoel27/artifold/archive/main.tar.gz \
+  | tar -xz -C ~/.agents/skills --strip-components=3 artifold-main/artifold/skills/craft
 ```
 
 The skill works without the library. It just can't look at your past
 pages, so it has less to go on when it avoids repeating itself. If you
-install the library later, the skill starts using it on the next run.
+install the library later, the skill starts using it on the next run. In
+that case, skip `artifold install-skill` in Claude Code, or you will have
+two copies of `/craft`.
 
 ### Everything, by hand
 
@@ -205,7 +213,7 @@ artifold open                # open the dashboard
 artifold search <words>      # search from the terminal
 artifold doctor              # check the setup and say what to fix
 
-artifold share <file>        # publish to your GitHub Pages
+artifold share <file>        # publish to your GitHub Pages (--no-credit: no footer line)
 artifold share --list        # everything you have shared
 artifold share --revoke <id> # take a share down
 artifold share --reconcile   # rebuild share records from what is published
@@ -285,7 +293,7 @@ Version 0.14, alpha. I use it every day on macOS; Linux should work;
 Windows is untested. There are 178 tests and CI on Python 3.10 to 3.13.
 It is a one-person project, so I build what I need first, but issues and
 pull requests are welcome. If something is confusing, [open an
-issue](../../issues/new); one line is enough.
+issue](https://github.com/shubhamgoel27/artifold/issues/new); one line is enough.
 
 ## Roadmap
 

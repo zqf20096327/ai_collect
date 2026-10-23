@@ -31,9 +31,6 @@ brew install chatmock
 pipx install chatmock
 ```
 
-#### GUI
-Download from [releases](https://github.com/RayBytes/ChatMock/releases) (macOS & Windows)
-
 #### Docker
 See [DOCKER.md](DOCKER.md)
 
@@ -90,6 +87,9 @@ The server runs at `http://127.0.0.1:8000` by default. Use `http://127.0.0.1:800
 ChatMock automatically discovers the models available to the signed-in ChatGPT
 account. The current catalog commonly includes:
 
+- `gpt-6-astra`
+- `gpt-6-sol`
+- `gpt-6-luna`
 - `gpt-5.6-sol`
 - `gpt-5.6-terra`
 - `gpt-5.6-luna`
@@ -103,6 +103,7 @@ account. The current catalog commonly includes:
 ## Features
 
 - Tool / function calling
+- Structured outputs via JSON schema (`response_format`, or `format` on the Ollama routes)
 - Vision / image input
 - Thinking summaries (via think tags)
 - Configurable thinking effort
@@ -158,9 +159,9 @@ All flags go after `chatmock serve`. These can also be set as environment variab
 
 <br>
 
-## Important notice
+## Note
 
-Use responsibly and at your own risk. This project is not affiliated with OpenAI.
+This project is not affiliated with OpenAI.
 
 <br>
 

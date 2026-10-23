@@ -196,18 +196,19 @@ dsh plugin --profile web remove dsh-prompt   # 卸载
 
 ---
 
-<div align="center">
-
-**👇 飞书扫码，加入 DSH 插件交流群。**
-
-<img src="assets/readme/09-feishu-group.png" width="280" alt="DSH插件交流群飞书二维码" style="border:1px solid #30363d;border-radius:6px">
-
-</div>
-
----
+<h2 align="center"><sub>CONNECT</sub><br>反馈与联系</h2>
 
 <div align="center">
 
-![星标增长曲线（双轴）：左轴累计星标，右轴每日新增](https://raw.githubusercontent.com/FeatherHunter/dsh-prompt/main/docs/star-history.svg?v=20261022)
+👏欢迎提交PR、ISSUE。星星之火可以燎原🔥有任何建议、意见、想法、吐槽、idea都可以进群交流。
+
+<table align="center"><tr><td align="center"><b>QQ群</b></td><td align="center"><b>微信群</b></td><td align="center"><b>飞书群</b></td></tr><tr><td><img src="assets/readme/contact-qq-permanent.jpg" width="260" alt="DSH 插件交流群 QQ 群二维码" style="border:1px solid #30363d;border-radius:6px" /></td><td><img src="assets/readme/contact-wechat-weekly.png" width="260" alt="DSH 插件交流群微信群二维码" style="border:1px solid #30363d;border-radius:6px" /></td><td><img src="assets/readme/contact-feishu-permanent.png" width="260" alt="DSH 插件交流群飞书群二维码" style="border:1px solid #30363d;border-radius:6px" /></td></tr></table>
 
 </div>
+
+<div align="center">
+
+![星标增长曲线（双轴）：左轴累计星标，右轴每日新增](https://raw.githubusercontent.com/FeatherHunter/dsh-prompt/main/docs/star-history.svg?v=202610232043)
+
+</div>
+

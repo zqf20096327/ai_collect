@@ -4,9 +4,9 @@
 
 ## 许可证
 
-本项目采用 [MIT License](LICENSE)，版权归 © 2026 EthanPeng-2048 所有。你可以自由使用、修改、分发和商用本项目的代码，只需保留版权声明。
+本项目采用 [GNU Lesser General Public License v3.0](LICENSE)（LGPL-3.0，全文包含 GPL-3.0 条款），版权归 © 2026 EthanPeng-2048 所有。你可以自由使用、修改、分发本项目，闭源应用也可以链接本库；但对**本库本身**的修改必须以本许可证继续开源，分发时需保留版权声明并附带许可证文本。
 
-> **数据集说明**：`scripts/` 下的下载脚本仅负责从第三方来源拉取数据（如 TinyStories、OpenWebText、中文 wiki 等），这些数据集各自拥有独立的许可证，不随本项目代码的 MIT 许可分发。使用时请自行遵守相应数据集的许可条款。
+> **数据集说明**：`scripts/` 下的下载脚本仅负责从第三方来源拉取数据（如 TinyStories、OpenWebText、中文 wiki 等），这些数据集各自拥有独立的许可证，不随本项目代码的 LGPL 许可分发。使用时请自行遵守相应数据集的许可条款。
 
 ## 🤖 AI 工具致谢
 
@@ -20,7 +20,7 @@
 - **VS Code Copilot**
 - **ChatGPT Codex**
 
-> AI 仅作为辅助工具，所有代码的所有权与最终版权归本项目作者（EthanPeng-2048）所有，不影响上述 MIT 许可证的效力。
+> AI 仅作为辅助工具，所有代码的所有权与最终版权归本项目作者（EthanPeng-2048）所有，不影响上述 LGPL 许可证的效力。
 
 ## 📚 文档
 
@@ -42,6 +42,7 @@
 | [计算引擎使用](docs/usage/03-compute-engine-usage.md) | 张量操作、矩阵运算、表达式融合 |
 | [训练包](docs/usage/04-train-package.md) | 用 `.nnpkg` 打包超参+训练集，跨设备一键复现训练 |
 | [作为库嵌入](docs/usage/05-consume-as-library.md) | 把本库嵌进自己的工程（`neuralnet::nn` 门面 / FetchContent） |
+| [强化学习与可组合训练](docs/usage/06-reinforcement-learning.md) | 具名多输出、GAE、REINFORCE/PPO/GRPO、多模型 Session 与 rollout pipeline |
 | [实测结论索引](research/README.md) | **可引用的实验结论**（MNIST 准确率 / f16 回弹根因 / 三值 STE / 三值尺度规则）：结论 + 证据 + 重跑命令 + 边界 |
 | [参与本项目](CONTRIBUTING.md) | 给非作者的入口：构建、测试、代码规范、提 PR、CI 口径 |
 
@@ -78,7 +79,8 @@ neuralnet.cpp/
 │       ├── 02-quickstart-train-infer.md  ← 训练推理教程
 │       ├── 03-compute-engine-usage.md    ← 引擎使用指南
 │       ├── 04-train-package.md           ← .nnpkg 训练包
-│       └── 05-consume-as-library.md      ← 作为库嵌入自己的工程
+│       ├── 05-consume-as-library.md      ← 作为库嵌入自己的工程
+│       └── 06-reinforcement-learning.md  ← RL 与可组合训练基础设施
 │   └── todo/                  ← 内部工作区（**项目开发者**：设计/路线图/盘点/规范/踩坑/故障/整改）
 ├── gui.py                       ← 图形化操作界面 (CustomTkinter)
 ├── include/neuralnet.cpp/

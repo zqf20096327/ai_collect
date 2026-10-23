@@ -576,3 +576,7 @@ Run before release:
 Afu Brain is a public reference stack draft for the Alfred / Lobster Brain /
 OpenClaw ecosystem. It is ready for technical review, early adopters, and
 open-source collaborators who care about memory-aware agent safety.
+
+---
+
+Author: Norika Oda (織田紀香) · https://norika.tw

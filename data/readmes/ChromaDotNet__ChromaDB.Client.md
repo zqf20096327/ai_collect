@@ -1,0 +1,133 @@
+[![ChromaDotNet](https://raw.githubusercontent.com/ChromaDotNet/.github/main/assets/logo-64.png)](https://chromadotnet.org)
+
+# ChromaDB.Client
+
+[![NuGet](https://img.shields.io/nuget/v/ChromaDotNet.Client)](https://www.nuget.org/packages/ChromaDotNet.Client/)
+[![CI](https://img.shields.io/github/actions/workflow/status/ChromaDotNet/ChromaDB.Client/ci.yml?branch=main)](https://github.com/ChromaDotNet/ChromaDB.Client/actions/workflows/ci.yml)
+[![License](https://img.shields.io/github/license/ChromaDotNet/ChromaDB.Client)](https://github.com/ChromaDotNet/ChromaDB.Client/blob/main/LICENSE)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/ChromaDotNet/ChromaDB.Client/badge)](https://scorecard.dev/viewer/?uri=github.com/ChromaDotNet/ChromaDB.Client)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/15264/badge)](https://www.bestpractices.dev/projects/15264)
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/ChromaDotNet/ChromaDB.Client?quickstart=1)
+
+_ChromaDB.Client_, published on NuGet as `ChromaDotNet.Client`, is a .NET client for Chroma and Chroma Cloud. It covers:
+
+- collections, tenants and databases;
+- writing and reading records, and nearest neighbor queries with filters;
+- the Search API of Chroma Cloud, with hybrid BM25 search;
+- OpenTelemetry traces and metrics.
+
+> This is a community project, the continuation of [ssone95/ChromaDB.Client](https://github.com/ssone95/ChromaDB.Client), kept up to date with current Chroma versions. It is not affiliated with or endorsed by Chroma. The original [ChromaDB.Client](https://www.nuget.org/packages/ChromaDB.Client) package is deprecated on NuGet in favor of ChromaDotNet.Client. See [About this fork](https://github.com/ChromaDotNet/ChromaDB.Client/blob/main/docs/about-this-fork.md).
+
+Website: [chromadotnet.org](https://chromadotnet.org)
+
+## Used by
+
+- [CommunityToolkit.VectorData.Chroma](https://www.nuget.org/packages/CommunityToolkit.VectorData.Chroma): the Chroma provider for Microsoft.Extensions.VectorData, in the [AI Community Toolkit](https://github.com/CommunityToolkit/AI/blob/546aa1b8e306e7518b0225341ea62cd86c916297/MEVD/src/Chroma/Chroma.csproj#L18) of the .NET Foundation. It works with Semantic Kernel and Agent Framework.
+  - Used by:
+    - [Generative AI for Beginners .NET](https://github.com/microsoft/Generative-AI-for-beginners-dotnet/blob/359ffe5adf0cb74a397fd99af8786e14d0930ca3/samples/CoreSamples/RAGSimple-05MEAIVectorsChroma/RAGSimple-05MEAIVectorsChroma.csproj#L12): a RAG sample in the Microsoft course.
+    - [LangChain .NET](https://github.com/tryAGI/LangChain/blob/4d8062616101cced1c6737aac7bc76535f6efc86/examples/LangChain.Samples.Chroma/LangChain.Samples.Chroma.csproj#L16): a RAG sample with Chroma.
+    - [LangChain.Databases](https://github.com/tryAGI/LangChain.Databases/blob/17c118f863ef1437b4ecaa0222081eb045b38a87/src/IntegrationTests/LangChain.Databases.IntegrationTests.csproj#L19): the integration tests.
+  - Cited in:
+    - [Semantic Kernel](https://github.com/microsoft/semantic-kernel/blob/7e68276a4a85022dd4da255beae3263ab5cbf059/dotnet/src/VectorData/Chroma/README.md#L1): recommended for Chroma in .NET.
+    - [LangChain.Databases](https://github.com/tryAGI/LangChain.Databases/blob/17c118f863ef1437b4ecaa0222081eb045b38a87/README.md#L36): recommended for Chroma in its README.
+    - [Microsoft Agent Framework](https://github.com/microsoft/agent-framework/blob/deecbcb062198f926516f89b65e5b1676e4514c2/dotnet/samples/community-projects.md#L26): listed among the .NET community projects.
+- CommunityToolkit.Aspire.Chroma: the Chroma client integration, in the [Aspire Community Toolkit](https://github.com/CommunityToolkit/Aspire/blob/523b84b27c5d019d242d95c2252046ba3619303c/src/CommunityToolkit.Aspire.Chroma/CommunityToolkit.Aspire.Chroma.csproj#L12) of the .NET Foundation.
+- [BotSharp.Plugin.Chroma](https://github.com/SciSharp/BotSharp/blob/c8f632bf13bb22aed53c8ba63d41ee9e0e0fb75b/src/Plugins/BotSharp.Plugin.Chroma/BotSharp.Plugin.Chroma.csproj#L14): the Chroma vector database plugin of BotSharp, by SciSharp.
+- [LlmTornado.VectorDatabases.ChromaDB](https://github.com/lofcz/LLMTornado/blob/d619b5d4c6558094cc2fcb663a5d6b55e6871233/src/LlmTornado.VectorDatabases.ChromaDB/LlmTornado.VectorDatabases.ChromaDB.csproj#L17): the Chroma connector of LLM Tornado.
+
+## Try it in your browser
+
+Click **Open in GitHub Codespaces** above. The Codespace has .NET 10 and Chroma on port 8000. When the terminal is ready, run:
+
+```
+dotnet run Samples/quickstart.cs
+```
+
+The [quickstart](https://github.com/ChromaDotNet/ChromaDB.Client/blob/main/Samples/quickstart.cs) takes `ChromaDotNet.Client` from NuGet, creates a collection, adds records with documents and metadata, queries them by similarity and by metadata, and deletes the collection. The embeddings are written by hand, so no model or key is needed.
+
+You need a GitHub account. The Codespace uses the free Codespaces hours of your account.
+
+## Installation
+
+```
+dotnet add package ChromaDotNet.Client
+```
+
+`ChromaDotNet.Client.DependencyInjection` for `Microsoft.Extensions.DependencyInjection`: [Dependency injection](https://github.com/ChromaDotNet/ChromaDB.Client/blob/main/docs/dependency-injection.md).
+
+To run Chroma on your machine without Docker: [ChromaDotNet.Local](https://www.nuget.org/packages/ChromaDotNet.Local).
+
+To compute the embeddings as the Python client does: [ChromaDotNet.Embeddings](https://www.nuget.org/packages/ChromaDotNet.Embeddings), see [Embeddings](https://github.com/ChromaDotNet/ChromaDB.Client/blob/main/docs/embeddings.md).
+
+## Example
+
+The models, like `ChromaRecords`, `ChromaQuery` and `ChromaCollectionDefinition`, are in `ChromaDB.Client.Models`. `AddChromaClient` is in `ChromaDB.Client.DependencyInjection`.
+
+```csharp
+using ChromaDB.Client;
+using ChromaDB.Client.Models;
+
+var configOptions = new ChromaConfigurationOptions(uri: "http://localhost:8000/api/v2/");
+using var httpClient = new HttpClient();
+var client = new ChromaClient(configOptions, httpClient);
+
+Console.WriteLine(await client.GetVersionAsync());
+
+var string5Collection = await client.GetOrCreateCollectionAsync("string5");
+var string5Client = new ChromaCollectionClient(string5Collection, configOptions, httpClient);
+
+await string5Client.AddAsync(["340a36ad-c38a-406c-be38-250174aee5a4"], embeddings: [new([1f, 0.5f, 0f, -0.5f, -1f])]);
+
+var getResult = await string5Client.GetAsync("340a36ad-c38a-406c-be38-250174aee5a4", include: ChromaGetInclude.Metadatas | ChromaGetInclude.Documents | ChromaGetInclude.Embeddings);
+Console.WriteLine($"ID: {getResult!.Id}");
+
+var queryData = await string5Client.QueryAsync([new([1f, 0.5f, 0f, -0.5f, -1f]), new([1.5f, 0f, 2f, -1f, -1.5f])], include: ChromaQueryInclude.Metadatas | ChromaQueryInclude.Distances);
+foreach (var item in queryData)
+{
+	foreach (var entry in item)
+	{
+		Console.WriteLine($"ID: {entry.Id} | Distance: {entry.Distance}");
+	}
+}
+```
+
+The URI, the `HttpClient` and the use from more threads: [Connecting](https://github.com/ChromaDotNet/ChromaDB.Client/blob/main/docs/connecting.md).
+
+## Compatibility
+
+[docs/COMPATIBILITY.md](https://github.com/ChromaDotNet/ChromaDB.Client/blob/main/docs/COMPATIBILITY.md) lists every tested release, the differences between them and the versions the CI runs.
+
+The [compatibility table](https://chromadotnet.org/compatibility/) shows every check of the latest release on Chroma 1.5.9 and on Chroma Cloud, on each .NET runtime and platform.
+
+## Documentation
+
+- [Connecting](https://github.com/ChromaDotNet/ChromaDB.Client/blob/main/docs/connecting.md): the URI, the `HttpClient`, threads, the API version, authentication and connection strings.
+- [Dependency injection](https://github.com/ChromaDotNet/ChromaDB.Client/blob/main/docs/dependency-injection.md): `AddChromaClient` and `AddKeyedChromaClient`.
+- [Collections](https://github.com/ChromaDotNet/ChromaDB.Client/blob/main/docs/collections.md): collections, tenants and databases, collections by id.
+- [Records](https://github.com/ChromaDotNet/ChromaDB.Client/blob/main/docs/records.md): URIs, large writes, deletes and base64 embeddings.
+- [Embeddings](https://github.com/ChromaDotNet/ChromaDB.Client/blob/main/docs/embeddings.md): embeddings from an `IEmbeddingGenerator`, query texts and the default embedding function of Chroma.
+- [Metadata values](https://github.com/ChromaDotNet/ChromaDB.Client/blob/main/docs/metadata.md): values, lists, deletions in updates and upserts, document copies, conversions.
+- [Queries and filters](https://github.com/ChromaDotNet/ChromaDB.Client/blob/main/docs/queries-and-filters.md): queries, `GetAsync` in pages, where and document filters.
+- [Upsert strategies](https://github.com/ChromaDotNet/ChromaDB.Client/blob/main/docs/upsert-strategies.md): `Server` and `SkipUnchangedEmbeddings`.
+- [Index settings](https://github.com/ChromaDotNet/ChromaDB.Client/blob/main/docs/index-settings.md): the distance, the HNSW and SPANN settings, `ModifyConfigurationAsync`.
+- [Errors](https://github.com/ChromaDotNet/ChromaDB.Client/blob/main/docs/errors.md): `ChromaException` and `CollectionExistsAsync`.
+- [Mocks in tests](https://github.com/ChromaDotNet/ChromaDB.Client/blob/main/docs/mocking.md): mocking `ChromaClient` and `ChromaCollectionClient`.
+- [Health, traces and metrics](https://github.com/ChromaDotNet/ChromaDB.Client/blob/main/docs/observability.md): `HealthcheckAsync` and OpenTelemetry.
+- [Chroma Cloud](https://github.com/ChromaDotNet/ChromaDB.Client/blob/main/docs/chroma-cloud.md): options, identity, batches, quotas and the operations of Chroma Cloud.
+- [Search](https://github.com/ChromaDotNet/ChromaDB.Client/blob/main/docs/search.md): the Search API and hybrid search with BM25.
+- [Sparse vectors and schema](https://github.com/ChromaDotNet/ChromaDB.Client/blob/main/docs/sparse-vectors-and-schema.md): sparse vectors, BM25 indexes and the indexes of a schema.
+- [Platforms](https://github.com/ChromaDotNet/ChromaDB.Client/blob/main/docs/platforms.md): the builds, trimming and NativeAOT.
+- [About this fork](https://github.com/ChromaDotNet/ChromaDB.Client/blob/main/docs/about-this-fork.md): the original project and what this fork does.
+
+## Migrating from ChromaDB.Client 1.x
+
+The [migration guide](https://github.com/ChromaDotNet/ChromaDB.Client/blob/main/v2-migration/MIGRATION_GUIDE_V2.md) has the details, and the [release notes](https://github.com/ChromaDotNet/ChromaDB.Client/releases) list the changes of every version.
+
+## Contributing
+
+[CONTRIBUTING.md](https://github.com/ChromaDotNet/ChromaDB.Client/blob/main/CONTRIBUTING.md) and [SECURITY.md](https://github.com/ChromaDotNet/ChromaDB.Client/blob/main/SECURITY.md).
+
+## License
+
+The project is released under the MIT License, keeping the original copyright notice.

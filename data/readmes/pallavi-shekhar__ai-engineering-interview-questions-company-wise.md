@@ -374,6 +374,7 @@
   - Asked at: [Sarvam AI](#sarvam-ai), [Abridge](#abridge)
 - Explain streaming TTS chunking and jitter-buffer sizing.
   - Asked at: [ElevenLabs](#elevenlabs)
+  - Answer: [How does sentence chunking feed LLM output into TTS faster?](https://outcomeschool.com/blog/sentence-chunking-for-tts) and [How does a TTS model start speaking before the full sentence arrives?](https://outcomeschool.com/blog/streaming-tts)
 - Design a diarisation system and explain how you attribute roles, not just clusters.
   - Asked at: [Abridge](#abridge)
 - How would you build multimodal retrieval over images, video and text in one index?
@@ -1342,5 +1343,4 @@
 
 - Implement a thread-safe batching logger: many producer threads call log(msg); a background thread flushes batches of up to 100 messages every second or when full.
 - You have a stream of billions of events and need the top-K most frequent keys with bounded memory. Exact is impossible: what do you do?
-- Given allowed IP ranges as CIDR blocks plus explicit deny ranges, implement is_allowed(ip) efficiently for millions of checks per second.
-- A Spark job joining a 2 TB fact table to a 50 GB dimension table has one straggler task running 100x longer than the rest
+- Given a

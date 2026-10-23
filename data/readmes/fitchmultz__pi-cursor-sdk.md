@@ -56,7 +56,9 @@ The footer shows status such as `cursor:local · fast:off`, with `plan` or `http
 
 Cursor controls file tools, shell commands, edits, and configured MCP servers. The local MCP bridge exposes active Pi extension tools as `pi__*` names. The bridge is on by default. Pi hides matching built-ins from the bridge by default.
 
-**Pi's `--no-tools`, `--tools`, and `--exclude-tools` do not disable Cursor tools or Cursor MCP servers.** For local ordinary turns, opt in to `PI_CURSOR_NATIVE_TOOLS=0` to allow only MCP through the public SDK tool surface (including disabling native task/subagents). It leaves configured Cursor MCP available unless you also disable ambient setting sources. Cloud rejects this opt-out for both ordinary and selected-Cloud summary requests; only existing isolated LOCAL summary agents remain unaffected with `tools: []`.
+**Availability:** `PI_CURSOR_NATIVE_TOOLS` and `/cursor-abort` require **0.5.4 or later**, beginning with the implementation from [#372](https://github.com/fitchmultz/pi-cursor-sdk/pull/372). Source checkouts preparing 0.5.4 remain candidates until exact publication records exist; the version change alone is not a publication record. Verify the exact npm version and GitHub release before relying on its availability. Published **0.5.3 ignores this flag and does not provide the command**; do not rely on them for native-tool restriction or pending-run recovery there. Development version labels alone do not establish which controls are installed.
+
+**Pi's `--no-tools`, `--tools`, and `--exclude-tools` do not disable Cursor tools or Cursor MCP servers.** For local ordinary turns on a supporting revision, opt in to `PI_CURSOR_NATIVE_TOOLS=0` to allow only MCP through the public SDK tool surface (including disabling native task/subagents). It leaves configured Cursor MCP available unless you also disable ambient setting sources. Cloud rejects this opt-out for both ordinary and selected-Cloud summary requests; only existing isolated LOCAL summary agents remain unaffected with `tools: []`.
 
 `PI_CURSOR_NATIVE_TOOLS` accepts `0`, `false`, `off`, `none`, `no`, and `disabled` as off (trimmed, case-insensitive); unset, blank, or unrecognized values keep native tools **on**.
 
@@ -65,6 +67,7 @@ A policy mismatch preserves the pending local run: restore its prior policy to f
 Local runs leave Cursor auto-review and sandboxing off by default. Read the [safety controls and hook limits](docs/reference.md#cursor-local-agent-config-and-safety-controls) before you depend on those controls or Cursor hooks.
 
 ```bash
+# Requires 0.5.4+ containing #372; verify publication/installation (0.5.3 ignores the flag).
 # MCP-only local agent; explicitly expose Pi builtins through the Pi execution path.
 PI_CURSOR_NATIVE_TOOLS=0 PI_CURSOR_EXPOSE_BUILTIN_TOOLS=1 PI_CURSOR_SETTING_SOURCES=none pi --model cursor/grok-4.6
 

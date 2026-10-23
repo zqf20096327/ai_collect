@@ -10,7 +10,7 @@
 
 ![Awesome DSH Plugin](https://awesome-dsh-plugin.com/badge.svg)![DSH 适配](https://img.shields.io/badge/DSH-0.2.1--rc.2%20%E5%B7%B2%E9%AA%8C%E8%AF%81-4E9BF1)![downloads](https://badgen.net/npm/dt/@furongjun1999/dsh-memory?label=downloads&color=4E9BF1)![Protocol](https://img.shields.io/badge/Protocol-MCP-blue)![Node](https://img.shields.io/badge/Node-%3E%3D22.19-brightgreen)![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
-**高性能 · 无幻觉 · 多智能体适用的长期记忆系统（v0.9.9）**
+**高性能 · 无幻觉 · 多智能体适用的长期记忆系统（v0.9.12）**
 
 📖 **[第三方上手教程](https://znsvdekx.vibedrop.site/)** —— 《灵枢 dsh-memory 初学者上手研究报告》（由第三方独立编写，非本项目官方文档）
 
@@ -49,6 +49,20 @@
 开 ① 后注入的是独立块【灵枢身份锚点】：最多 3 条、单条 160 字符、整块 640 字符，
 不占「最近记忆」块的预算，且与其它注入面一样过不可信边界标记与脱敏。
 
+## ⏱️ 长会话提醒（每 10 个真实用户回合）
+
+插件会在长会话里提醒做间歇归档（工作纪律第 16 条）。计轮单位是**真实用户回合**（用户消息条数），
+不是模型请求次数——一次请求内部会触发多次 system-prompt 组装，按组装次数计会把"每 10 轮"退化成"每一步"。
+
+| 配置 | 行为 |
+|---|---|
+| memory.turnReminder: 10（默认） | 每 10 个用户回合提醒一次，**只出现一步** |
+| memory.turnReminder: N | 自定义间隔（1~100） |
+| memory.turnReminder: false | 整条关闭 |
+
+提醒只在命中那一步注入、下一步即消失（接受两份快照的代价），不会常驻上下文，
+也不会因并行会话共用一个计数器而放大频率（无会话标识时不提醒）。
+
 ## ⚡ 三条命令上手
 
 ```bash
@@ -82,7 +96,7 @@ python -m md_cg.mcp_server             # 直连自检：收到 initialize 应答
 ## ✨ 核心亮点
 
 - **🧠 不失忆**——落盘即长期留存，遗忘只能显式发起、不做静默淘汰；检索索引只是派生物，**原文即真源**
-- **⚡ 高性能**——Rust 检索内核（零第三方依赖）＋ `--serve` 进程实例支撑多智能体并发。公开基准 [hive-memory-bench](https://github.com/FuRongJun-1999/hive-memory-bench) 六家同口径：**逐字保真 100% · 保地基 68.4% · 证据链 97.7–99.2% · 写入 0.011–0.019 秒（零 LLM，同表其余 75.7–658.5 秒）**
+- **⚡ 高性能**——Rust 检索内核（零第三方依赖）＋ `--serve` 进程实例支撑多智能体并发。公开基准 [hive-memory-bench](https://github.com/FuRongJun-1999/hive-memory-bench) 六家同口径：**逐字保真 100% · 保地基 68.4%/65.0% · 证据链 97–100% · 写入 0.013–0.020 秒（零 LLM，同表其余 75.7–658.5 秒）**
 - **🛡️ 无幻觉**——记什么、取什么、能不能写入全部由确定性规则裁决，不依赖 LLM 黑箱；写没写成功只看 `committed`，绝不假装通过
 - **🔌 多智能体适用**——同一份大脑 + 同一份纪律，接入 DSH · CodeBuddy · ZCode · Codex CLI · Claude Code，任何 MCP 宿主可直接挂载
 - **📊 可复现评测**——权威对照在独立公开基准 hive-memory-bench；另公开两个自建题池；**已有两份第三方独立验证**（七轮复评 + LoCoMo 独立复现，自报数字逐位一致）

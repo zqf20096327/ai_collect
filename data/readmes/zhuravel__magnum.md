@@ -86,9 +86,13 @@ re-decides the thread and answers there (an acknowledgement, one sentence with i
 to a question), or posts a new review when its verdict changes; after two rebuttals in one thread it
 stops arguing and leaves the call to the operator. A P1 or P2 problem the judge proved next to the PR's changes that the
 PR did not bring is not a finding: up to three go into a collapsed "Found nearby, not this PR's" block
-before Checks, one line each, never counted in the verdict (a security one only into `magnum debt`).
+before Checks, one line each, never counted in the verdict (a security one only into `magnum debt`,
+unless the repository is private).
 A false claim of the description that bears on risk (a ticked "Can be reverted easily" the previous
-release cannot keep) is a finding, or one `Description: ✗ <claim>: <why>` line when it harms nothing,
+release cannot keep) is a finding, or one `Description: ✗ <claim>: <why>` line when it harms nothing;
+a change the base does not need (the failure it names does not happen there, or code, configuration
+or a validation every writer passes already meets its goal) is one finding that names what does it and
+leaves closing the PR, or keeping it with the true reason, to the author;
 and with `[jira]` on a requirement of the PR's Jira issue it does not meet is one `Ticket: ✗ <what>: <why>`
 line, or a finding when it has impact. [The judge skill](#the-judge-skill) has the full format.
 
@@ -173,8 +177,9 @@ magnum completion zsh > "${fpath[1]}/_magnum"
 ```
 
 To upgrade: `brew upgrade magnum && magnum daemon-restart --when-idle` (the daemon keeps running the old
-binary until it restarts; `--when-idle` restarts at the first moment nothing is in flight, no round and no
-notes curation or retro, `--drain` also stops new rounds meanwhile). `magnum status` and every reply to a
+binary until it restarts; `--when-idle` restarts at the first moment nothing is in flight, no round, no
+notes curation or retro, no slot job and no approval being posted or withdrawn as you, `--drain` also stops new
+rounds meanwhile). `magnum status` and every reply to a
 command the daemon answers say when the daemon runs an older build than the CLI or the binary on disk; with
 `[daemon] restart_on_new_build = true` the daemon restarts on a new build by itself, at the first tick
 nothing is in flight.
@@ -975,6 +980,23 @@ recorded, stays, and a workspace left with no pane at all is closed. A
 CLI printed before it died (`last_lines`, by role; a line that starts at column 0 with error, fatal or panic,
 redacted), read before the pane closes; a reconcile with nothing to close records nothing.
 A parked or lost conversation is kept: the role's next start resumes it in a new pane.
+herdr numbers its workspaces and panes from the start again after it restarts, so old sessions' ids can
+name the new panes of another PR. Magnum never closes, reuses or parks away a pane or a workspace that a
+starting or live session of another PR records (of two live sessions with one pane, the newer owns it): an
+old parked, closed or lost session of the PR that records one has its herdr ids dropped, which one
+`agents.herdr_ids_reused` event says, and nothing of it is closed; its conversation still resumes, in a new
+pane. What no registry row records, an eval replay's panes (a replay keeps its sessions in a registry of its
+own) or your own, can take an old id too, so magnum closes, parks or reuses a pane by the id a session
+recorded, or sends it a key there (a park's or a quit's ctrl+c, a hard park's exit keys), only while herdr
+shows it is still that session's: the agent there carries the session's agent name, or, with no agent, the
+pane works in the PR's checkout (the slot the session ran in). A quit that finds its pane someone else's
+sends nothing and logs it: it counts as done when herdr lists the session's agent nowhere, and waits for
+the next try (busy) when herdr shows that agent in another pane, where magnum moves the session. A workspace is
+closed or reused only while every pane in it is the PR's that way (a pane no session records must carry one
+of the PR's agents or work in its checkout, so a shell you `cd` elsewhere in a PR's workspace makes the next
+round lay out a workspace of its own). A pane or a workspace that fails is left alone, and the old
+session that recorded it has its herdr ids dropped, one `agents.herdr_ids_reused` event per reason
+(`other_pr`, `another_agent`, `outside_checkout`) naming the ids, never a pane's text or directory.
 
 An agent CLI that dies as it starts can leave herdr listing the launch under the role's agent name
 (`launch_pending`, status unknown) on a pane that shows only a shell prompt, and herdr refuses that name to
@@ -1040,7 +1062,10 @@ the same head runs with a fresh judge at its `rereview_effort` too. A judge stil
 first, which parks its conversation (history kept), and the fresh one starts once herdr no longer lists it.
 A continue finishes its paused turn in the old conversation. Each such start is a `round.judge_fresh_cold`
 event with the idle time. A session that has served its role's `max_session_rounds` (the judge's 6) starts
-fresh the same way, however recent its last turn (see Roles and kinds).
+fresh the same way, however recent its last turn (see Roles and kinds). So does a live Codex judge that never
+took a prompt, whatever its idle time and `judge_fresh_after`: one with no session id and no rollout (Codex
+writes it at the first prompt) more than a minute after its last prompt went out, whose prompts would stall
+the same way again; its `round.judge_fresh_cold` event says so (`reason` `no_rollout`).
 
 ### Review status comment
 
@@ -1192,38 +1217,4 @@ after the PR was merged are never dismissed, and a dismissal that fails (a missi
 verified, there for the PR's author (the judge never writes it, and a dry run gets none). Without the key it
 is Magnum's: the reviewed commit, then, collapsed under "About Magnum", that the review is automated, that a
 P0-P2 thread is answered with `fixed`, `not a bug: <why>` or `won't fix: <why>` (the words the reply
-classifier knows; a P3's title says it needs no reply), that simplifications are optional (only when the
-watch runs a role aliased `simplify`), that new pushes are re-reviewed automatically (when
-`[daemon] quiet_hours` is set, during it only small ones by a short check, the window named with the
-daemon's offset from UTC, "03:00-12:00 UTC+3"; drafts only on request when the watch has
-`include_drafts = false`, the default), that a thread reply gets an answer without a push,
-and whose review request starts a round (your login, as for review requests: the watch's poll login when
-that is a `gh` identity, else its `auto_approve_as` or the first `gh` identity; the posting login when no `gh`
-identity is declared); `config.defaults.toml` shows it word for word. It is a Go
-`text/template` of at most 2,000 characters, line breaks allowed, with `.SHA` and `.Short` (10 characters)
-of the reviewed commit, `.Repo`, `.Number`, `.Login` (the posting login), `.Simplify`, `.Clean` (no
-findings and no simplifications), `.Event` (`APPROVE`, `COMMENT` or `REQUEST_CHANGES`), `.PostMerge`,
-`.DeltaCheck`, `.QuietHours` (`""` when unset), `.DraftsSkipped` and `.RequestLogin`; `""` turns it off. A template that does not render fails validation and the start check,
-like a broken prompt. Magnum starts the footer with `<!-- magnum:footer -->` after a blank line, puts its
-own notes ("_Reviewed d4e5f6a; 1 commit arrived during the review …_") above it, and replaces it rather than
-adding a second one when it edits the review again; a review whose judge wrote the old footer itself is left
-as it is.
-
-### Watches, pools and repos: what to review and where
-
-```toml
-[[watch]]
-owner = "talkable"
-include = ["talkable"]             # repository globs; ["*"] for the whole organization
-identity = "reviewer-app"          # who posts
-poll_identity = "me"               # who polls: a gh identity (your account) or an App (below)
-include_drafts = false             # the default: a draft waits until ready for review, or a review request for you (one round per request); true: drafts too
-skip_bot_authors = true
-allow_bot_authors = ["helper[bot]"]
-skip_departed_authors = true       # default: a branch PR by someone (not a bot) no longer a member or collaborator is not reviewed
-roles = ["claude-review", "codex-review", "claude-simplify", "codex-judge"]
-stakes = "A SaaS on the public internet: merchants' money and shoppers' personal data."   # what its repositories put at risk
-
-[[repo]]                           # an internal tool of the same owner states its own
-repo = "talkable/example"
-stakes = "Internal
+classifier knows; a P3's title says it needs no reply), that simplifications are optional (only when t

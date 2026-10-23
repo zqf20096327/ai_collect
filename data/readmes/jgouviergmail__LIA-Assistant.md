@@ -28,7 +28,7 @@
   <a href="https://langchain-ai.github.io/langgraph/"><img src="https://img.shields.io/badge/LangGraph-1.2.14-FF6F00?style=flat-square" alt="LangGraph"></a>
   <a href="https://python.langchain.com/"><img src="https://img.shields.io/badge/LangChain-1.3.15-4B8BBE?style=flat-square" alt="LangChain"></a>
   <a href="#talk-to-it"><img src="https://img.shields.io/badge/i18n-6%20languages-E040FB?style=flat-square" alt="6 languages"></a>
-  <a href="docs/audit/README.md"><img src="https://img.shields.io/badge/360%C2%B0%20audit-8.0%2F10-2E7D5B?style=flat-square" alt="360° technical audit: 8.0/10 on the normalized 24-area grid — full public report"></a>
+  <a href="docs/audit/README.md"><img src="https://img.shields.io/badge/360%C2%B0%20audit-7.8%2F10-2E7D5B?style=flat-square" alt="360° technical audit: 7.8/10 on the normalized 24-area grid — full public report"></a>
   <a href="#license"><img src="https://img.shields.io/badge/License-AGPL--3.0-blue?style=flat-square" alt="License"></a>
   <a href="https://deepwiki.com/jgouviergmail/LIA-Assistant"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
 </p>
@@ -44,7 +44,7 @@
 </p>
 
 <p align="center">
-  <strong>Version 3.4.0</strong> — <strong>LIA speaks first, your texts join in, places show the way.</strong> Personal discussions LIA may open when you allow it, a private archive of the SMS your phone relays, place details and a priced route on the Position card, and scan protection shared by every API worker — 22 October 2026.
+  <strong>Version 3.5.1</strong> — <strong>Notifications that no longer repeat themselves.</strong> An SMS is now treated like an email: before writing to you, LIA again reads every notification it already sent, so a birthday is announced once rather than at every check — 23 October 2026.
 </p>
 
 ---
@@ -505,7 +505,7 @@ the supported surfaces and secure continuation contract.
 - The loop binds its tools by relevance — the detected domains' tools, the best-ranked doors of every other family, the top of the turn's global ranking, a large catalogue such as the settings reached through its own domain — so no family falls off a blind cap and the schemas stop being most of the prompt, and it reads the same knowledge spaces the pipeline reads ([ADR-293](docs/architecture/ADR-293-React-Tools-Bound-By-Relevance.md)).
 - A ReAct turn is judged on its result: every fact the loop set out to obtain ends obtained or declared with the rungs tried. A declared gap buys one bounded recovery pass through a node that calls no model ([ADR-310](docs/architecture/ADR-310-ReAct-Turn-Judged-On-Its-Result.md)).
 - Requested outcomes are checked against canonical structured observations, including the value, operation, account and completeness expected. A draft, opaque result or delegated announcement does not prove completion. Independent eligible reads return checkpointed segments; exact fresh reads may be reused within the same turn, with mutation invalidation and bounded budgets ([ADR-336](docs/architecture/ADR-336-Requested-Outcomes-Checked-Against-Canonical-Observations.md), [ADR-337](docs/architecture/ADR-337-Checkpointed-ReAct-Read-Segments-And-Turn-Local-Reuse.md)).
-- Each person picks an exchange rhythm. Frequent binds every tool, moves the turn's context after the question and drops the history by blocks anchored on the turn counter, so the provider's prompt cache is read from one turn to the next. Occasional keeps the relevance selection at a steady cost ([ADR-308](docs/architecture/ADR-308-ReAct-Cross-Turn-Prompt-Cache.md), [ADR-311](docs/architecture/ADR-311-Exchange-Rhythm-Is-The-Persons-Choice.md)).
+- Each person picks an exchange rhythm. Frequent binds every tool, moves the turn's context after the question and drops the history by blocks anchored on the turn counter, so the provider's prompt cache is read from one turn to the next — on Claude the history's end becomes a read point too, kept for an hour when a person is waiting, each write billed at its own rate, and an earlier turn's thinking goes back to the model that wrote it. Occasional keeps the relevance selection at a steady cost, and a new account starts there ([ADR-308](docs/architecture/ADR-308-ReAct-Cross-Turn-Prompt-Cache.md), [ADR-311](docs/architecture/ADR-311-Exchange-Rhythm-Is-The-Persons-Choice.md), [ADR-362](docs/architecture/ADR-362-Claude-Cross-Turn-Cache-History-Read-Point-Hour-Lifetime-And-Prior-Thinking.md)).
 
 #### Human-in-the-Loop
 
@@ -545,7 +545,7 @@ the supported surfaces and secure continuation contract.
 
 A ticket has a lifecycle, a holder and a result ([ADR-276](docs/architecture/ADR-276-Workboard.md), [WORKBOARD](docs/technical/WORKBOARD.md)):
 
-- One row per ticket, shared by its owner and its holder, across seven columns with sub-tickets, comments and a history; the holder can be you, a connected peer, or LIA.
+- One row per ticket, shared by its owner and its holder, across seven columns with sub-tickets, comments and a history that names both ends of every hand-over; the holder can be you, a connected peer, or LIA.
 - When LIA holds it, a sweep claims one ticket at a time, runs it in the execution mode the ticket declares, and settles from an explicit result — a quota ceiling or a busy conversation postpones the run, never fails it.
 - A run that needs a decision asks instead of refusing: the ticket lands in « To confirm » carrying the exact card the chat would show, and your comment _is_ the answer.
 
@@ -559,7 +559,7 @@ A ticket has a lifecycle, a holder and a result ([ADR-276](docs/architecture/ADR
 #### Discussions it opens
 
 - Beyond telling you something, LIA may start a personal conversation when you allow it — off until you switch it on: your hours and daily maximum, each source and sensitive topic chosen, topics to avoid, and four reactions on every opening.
-- What LIA understood stays visible: every element of its context can be excluded, deleted, purged or rebuilt, and the last run says why it ended, what it read and what it cost. Each opening is filed as LIA's own act, every call counts under your quotas and three budgets, and an opening informed by an SMS or a sensitive topic stays private — a masked push, never an external channel ([ADR-358](docs/architecture/ADR-358-Independent-Proactive-Discussions-And-Native-Delivery.md), [ADR-359](docs/architecture/ADR-359-Longitudinal-Discussion-Context-And-User-Control.md), [ADR-360](docs/architecture/ADR-360-Bounded-Discussion-Research-And-Accounted-Abstention.md), [PROACTIVE_DISCUSSIONS](docs/technical/PROACTIVE_DISCUSSIONS.md)).
+- What LIA understood stays visible: every element of its context can be excluded, deleted, purged or rebuilt, and the last run says why it ended, what it read and what it cost. Each opening is filed as LIA's own act, every call counts under your quotas and three budgets, and an opening touching a sensitive topic stays private — a masked push, never an external channel ([ADR-358](docs/architecture/ADR-358-Independent-Proactive-Discussions-And-Native-Delivery.md), [ADR-359](docs/architecture/ADR-359-Longitudinal-Discussion-Context-And-User-Control.md), [ADR-360](docs/architecture/ADR-360-Bounded-Discussion-Research-And-Accounted-Abstention.md), [PROACTIVE_DISCUSSIONS](docs/technical/PROACTIVE_DISCUSSIONS.md)).
 
 #### Moments served to the minute
 
@@ -580,7 +580,7 @@ A ticket has a lifecycle, a holder and a result ([ADR-276](docs/architecture/ADR
 
 #### A daily briefing
 
-The home page opens on the date and LIA's living face, then aggregates your sources in parallel with a per-section cache and an LLM synthesis — an agenda on a timeline, an illustrated weather, a Workboard card with exact counts of what waits on you, what LIA holds, what your connections hold and what is overdue — served by a read-only domain outside the agent graph ([BRIEFING_DOMAIN](docs/technical/BRIEFING_DOMAIN.md)). Meetings and calls read as timelines by day and part of day, and a list that cannot load says so instead of looking empty.
+The home page opens on the date and LIA's living face, then aggregates your sources in parallel with a per-section cache and an LLM synthesis — an agenda on a timeline, an illustrated weather, a Workboard card with exact counts of what waits on you, what LIA holds, what your connections hold and what is overdue — served by a read-only domain outside the agent graph ([BRIEFING_DOMAIN](docs/technical/BRIEFING_DOMAIN.md)). A new account starts small: where the instance provides the weather, the dashboard opens on that card alone and a starter checklist asks for the home address first, the other cards one switch away ([ADR-307](docs/architecture/ADR-307-Keyless-Connectors-Belong-To-The-Instance.md)). Meetings and calls read as timelines by day and part of day, and a list that cannot load says so instead of looking empty.
 
 ### Remember
 
@@ -721,7 +721,7 @@ A 24-section panel embedded in the chat, organised into six groups; an empty sec
 
 ### Observability
 
-- **Prometheus**: 627 custom metrics (agents, LLM, infrastructure), labelled by route template — a name or a search in an address never becomes a series. A metric nobody can see is a metric nobody acts on: every one must be wired to a Grafana panel, a recording rule or an alert, and a shrink-only ratchet fails the build on a newly blind metric.
+- **Prometheus**: 630 custom metrics (agents, LLM, infrastructure), labelled by route template — a name or a search in an address never becomes a series. A metric nobody can see is a metric nobody acts on: every one must be wired to a Grafana panel, a recording rule or an alert, and a shrink-only ratchet fails the build on a newly blind metric.
 - **Grafana**: 32 dashboards, including product-value and radio cockpits · **Loki**: structured JSON logs that keep facts, never people's words, shipped by Grafana Alloy ([ADR-317](docs/architecture/ADR-317-A-Log-Line-Carries-Facts-Never-The-Words.md)) · **Tempo**: distributed tracing, spans named by the route template · **Langfuse**: LLM tracing with prompt versions. The whole stack runs on supported versions, pinned by digest.
 - **Linked signals, a pipeline that watches itself**: a log line opens its trace, a trace its logs and metrics, a latency point its exemplar; Loki, Alloy, Tempo and Grafana are scraped on closed keep-lists and `LogsNotDelivered` fires when lines go missing; every dashboard opens on seven days (logs and traces on four hours) behind one shared menu — [ADR-333](docs/architecture/ADR-333-Linked-Signals-And-A-Pipeline-That-Watches-Itself.md).
 - **Probes**: liveness (`GET /health`) split from readiness (`GET /ready`, 503 unless PostgreSQL **and** Redis answer) — [ADR-115](docs/architecture/ADR-115-Liveness-Readiness-Probes.md).
@@ -762,8 +762,8 @@ The result is measured, not proclaimed:
 
 |                           |                                           |                                         |                                                                         |
 | ------------------------- | ----------------------------------------- | --------------------------------------- | ----------------------------------------------------------------------- |
-| **58** functional domains | **1,003,000+** source lines (excl. tests) | **66,000+** inventoried automated tests | **359** ADRs                                                            |
-| **285** versions shipped  | **6 languages**, parity enforced in CI    | **627** Prometheus metrics              | [**8.0/10** technical audit, 24 normalized areas](docs/audit/README.md) |
+| **58** functional domains | **1,003,000+** source lines (excl. tests) | **66,000+** inventoried automated tests | **360** ADRs                                                            |
+| **287** versions shipped  | **6 languages**, parity enforced in CI    | **630** Prometheus metrics              | [**7.8/10** technical audit, 24 normalized areas](docs/audit/README.md) |
 
 Source-line figure: 1,003,000+ physical lines in Python, TypeScript, JavaScript and CSS under `apps/api/src` and `apps/web/src`, excluding test directories and `*.test.*`/`*.spec.*` files (measured 2026-10-22). Test inventory combines backend collection and the frontend suite; release qualification executes the repository's required gates. The published technical audit does not score security.
 
@@ -982,4 +982,4 @@ The UI is responsive by design — desktop, tablet and phone — with touch-frie
 
 ### Supported LLM Providers
 
-The model catalogue lives in the database, curated from vendored public registries and editable from the admin panel; every row states where its capabilities came from, and a slot's output budget is held to the cap a vouched row declares, flagged on the configuration screen when it exceeds it ([ADR-244](docs/architecture/ADR-244-LLM-Catalogue-Truth.md)). Reasoning depth has one stored shape for every provider ([ADR-245](docs/architecture/ADR-245-Reasoning-Unification.md)); a model family is declared once, and a caller that needs two sentences asks for no reasoning rather than a small budget — a reasoning model bills its thinking inside `max_tokens` ([ADR-285](docs/architecture/ADR-285-Short-Answer-Without-Reasoning-And-One-Family-Declaration.md)). What a prompt says is what the code enforces, and nothing else: every placeholder has a producer, every published bound is the applied bound, prose never lives in a `.py` ([ADR-284](docs/architecture/ADR-284-Prompt-States-What-The-Code-Enforces.md)). Every prompt follows one layout — stable before volat
+The model catalogue lives in the database, curated from vendored public registries and editable from the admin panel; every row states where its capabilities came from, and a slot's output budget is held to the cap a vouched row declares, flagged on the configuration screen when it exceeds it ([ADR-244](docs/architecture/ADR-244-LLM-Catalogue-Truth.md)). Reasoning depth has one stored shape for every provider ([ADR-245](docs/architecture/ADR

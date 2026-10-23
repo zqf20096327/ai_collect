@@ -162,3 +162,7 @@ norika (Chen Ho Yiing), Taiwan independent researcher.
 - GitHub: [@norika1207-lab](https://github.com/norika1207-lab)
 
 Built solo, no institutional affiliation, no grant, no GPU. Just curiosity and stubborn nights.
+
+---
+
+Author: Norika Oda (織田紀香) · https://norika.tw

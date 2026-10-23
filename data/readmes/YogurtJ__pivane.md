@@ -17,16 +17,16 @@ Subagents, scheduled tasks, MCP, long-term memory, rich file previews and a buil
 
 **English** · [简体中文](README.zh-CN.md)
 
-[Download](https://github.com/YogurtJ/pivane/releases/latest) · [Install](docs/en/INSTALL.md) · [User guide](docs/en/USER_GUIDE.md) · [Changelog](CHANGELOG.md) · [Report an issue](https://github.com/YogurtJ/pivane/issues)
+[Download](https://github.com/YogurtJ/pivane/releases/latest) · [Install](docs/en/INSTALL.md) · [User guide](docs/en/USER_GUIDE.md) · [Changelog](CHANGELOG.md) · [Report an issue](https://github.com/YogurtJ/pivane/issues/new/choose) · [Discussions](https://github.com/YogurtJ/pivane/discussions)
 
-<img src="https://raw.githubusercontent.com/YogurtJ/pivane/main/docs/assets/readme/hero-en.webp" alt="Pivane on the desktop: projects and threads, a finished coding task and its diff" width="100%">
+<img src="https://raw.githubusercontent.com/YogurtJ/pivane/main/docs/assets/readme/hero-en.webp" alt="Pivane on the desktop: projects and threads, a just-finished coding task (budget alerts, 7 tests passing) and its diff" width="100%">
 
 </div>
 
 ## Why Pivane
 
 - **Uses Pi's own runtime.** Pivane runs Pi's native runtime and reads and writes Pi's own session files. You get streaming replies, tool calls, file diffs, shell commands, steering and context compaction in a UI that is easy to read on any screen.
-- **Start on your desktop and check in from your phone.** Sessions are stored on your server. When you open a thread on another device, the same agent process serves it. You can add Pivane to your home screen and get notified when a reply finishes.
+- **Start on your desktop and check in from your phone.** Sessions are stored on your server. When you open a thread on another device, the same agent process serves it. You can add Pivane to your home screen and get notified when a reply finishes. With the optional WeChat connector, you can also hand tasks to the agent from a WeChat chat and get the files back there.
 - **Run many agents from one workspace.** You can use subagents, task threads that agents create for themselves, messages between threads, side chats and cron-scheduled tasks. A live view shows what each one is doing.
 - **Your models, your keys, your machine.** You can use any provider Pi supports, including Anthropic, OpenAI, Google Gemini, GitHub Copilot, OpenRouter, DeepSeek, Qwen, Kimi, MiniMax, xAI and Mistral. Sign in with an API key or OAuth, or add your own OpenAI-compatible endpoint. Credentials and history stay on your machine.
 - **Extends the same way Pi does.** Pi packages, skills, prompt templates and MCP servers can be installed from the browser. You can also ask the built-in extension assistant to find and set them up for you.
@@ -34,11 +34,11 @@ Subagents, scheduled tasks, MCP, long-term memory, rich file previews and a buil
 
 ### See it in action
 
-After a task finishes, its tool trace folds into one line. Review the changed files and the result without leaving the conversation.
+Describe a task once: the agent reads the code, edits it, adds tests and runs them while the progress card updates. When it finishes, the tool trace folds into one line, and the changed files open as a diff.
 
-<p align="center"><img src="https://raw.githubusercontent.com/YogurtJ/pivane/main/docs/assets/readme/demo-en.gif" alt="Reviewing a completed CSV export task in Pivane: file changes, test results and the task plan" width="100%"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/YogurtJ/pivane/main/docs/assets/readme/demo-en.gif" alt="Adding budget alerts to a budgeting app in Pivane: the agent reads the code, edits it, adds and runs tests, then the diff opens" width="100%"></p>
 
-<sub>Screenshots and recordings use a synthetic demo project.</sub>
+<sub>Screenshots and recordings use a synthetic demo project and conversations; the code edits and tests in the recording actually ran.</sub>
 
 ## Features
 
@@ -61,7 +61,7 @@ After a task finishes, its tool trace folds into one line. Review the changed fi
 
 ### Multi-agent and automation
 
-<img src="https://raw.githubusercontent.com/YogurtJ/pivane/main/docs/assets/readme/agents-en.webp" alt="Three subagents running in parallel while a side chat answers a quick question" width="100%">
+<img src="https://raw.githubusercontent.com/YogurtJ/pivane/main/docs/assets/readme/agents-en.webp" alt="Three subagents checking boundaries, test gaps and docs in parallel while a side chat answers a quick question" width="100%">
 
 - Subagents are built in through [pi-subagents](https://pi.dev/packages/pi-subagents). A live panel shows each run's status and models, lets you steer, stop or continue it, and reports token usage and cost.
 - An agent can start a new task thread or message another thread in the same project.
@@ -97,7 +97,9 @@ After a task finishes, its tool trace folds into one line. Review the changed fi
 
 ### Media lab and voice
 
-<img src="https://raw.githubusercontent.com/YogurtJ/pivane/main/docs/assets/readme/media-en.webp" alt="A media generation card in Pivane chat, with editable parameters and a completed synthetic image" width="100%">
+<img src="https://raw.githubusercontent.com/YogurtJ/pivane/main/docs/assets/readme/media-en.webp" alt="A media card in chat with an autumn drink poster generated by GPT Image 2.5, next to a product photo, a reference edit, an illustration and an app icon from the same model" width="100%">
+
+<sub>Example images were generated by GPT Image 2.5.</sub>
 
 - You can add image, video, text-to-speech and speech-to-text services. Presets cover OpenAI, Google Gemini, Volcengine Ark (Seedream and Seedance) and Alibaba Cloud Model Studio, and any compatible HTTP API can be added manually.
 - An agent drafts editable parameters from a plain-language request in chat or the lab. Per-type chat preferences decide whether a card executes automatically or asks for confirmation; video requires confirmation by default. Busy requests queue, and the same status returns after a refresh. Reference images or videos can be attached when the model supports them.
@@ -106,7 +108,7 @@ After a task finishes, its tool trace folds into one line. Review the changed fi
 
 ### Everyday use
 
-<img src="https://raw.githubusercontent.com/YogurtJ/pivane/main/docs/assets/readme/mobile-en.webp" alt="Pivane on phones: task results, dark mode with math, and the model picker" width="100%">
+<img src="https://raw.githubusercontent.com/YogurtJ/pivane/main/docs/assets/readme/mobile-en.webp" alt="Pivane on phones: a task result, dark mode with math, and favorite models including Claude, GPT, Gemini, DeepSeek, Kimi and MiniMax" width="100%">
 
 - Layouts adapt to desktop, tablet and phone screens, and Pivane can be installed to your home screen.
 - In-page notifications and sounds are available, with optional Web Push for background alerts.
@@ -190,7 +192,13 @@ flowchart LR
 
 ## Contributing
 
-Bug reports, ideas and pull requests are welcome in [Issues](https://github.com/YogurtJ/pivane/issues). When reporting a problem, include your Pivane version and the shortest steps that reproduce it. Remove credentials and private content from logs and screenshots first.
+Feedback of any kind is welcome. Start with the [welcome post](https://github.com/YogurtJ/pivane/discussions/5).
+
+- **Bugs and feature requests:** [open an issue](https://github.com/YogurtJ/pivane/issues/new/choose). For bugs, include your Pivane version and the shortest steps that reproduce it.
+- **Questions, chat and sharing:** post in [Discussions](https://github.com/YogurtJ/pivane/discussions) or reply to the welcome post. Not sure where something belongs? Post it anywhere and I'll see it.
+- **Pull requests:** welcome. Issues labeled [`good first issue`](https://github.com/YogurtJ/pivane/labels/good%20first%20issue) are a good place to start.
+
+Remove credentials and private content from logs and screenshots first.
 
 To set up a development environment, run `node scripts/install.cjs`, then check your changes with `npm test` and `npm run check`. Read [CONTRIBUTING.md](CONTRIBUTING.md) and the [development docs](docs/development/README.md) first. Coding agents should also read [AGENTS.md](AGENTS.md).
 

@@ -348,7 +348,7 @@ This section is about the MCP server, `python -m sunglasses.mcp`, the process an
 
 The server reads only the text you pass to `scan_text` and the file you name in `scan_file`. The scan runs on your machine. The server opens no network connection, sends nothing anywhere and keeps no copy of what it scans. It collects no data, so there is nothing to store, share or retain.
 
-Audio and video are the one exception, and only with an optional extra. If you install `sunglasses[audio]`, `sunglasses[video]` or `sunglasses[all]` and ask for a DEEP scan, the Whisper library downloads its speech model the first time. A video scan also writes the sound track or subtitle track to a temporary file on your machine and deletes it once the track is read. What you scan still stays on your machine. Without those extras nothing is downloaded.
+Audio and video are the one exception, and only with an optional extra. If you install `sunglasses[audio]`, `sunglasses[video]` or `sunglasses[all]` and ask for a DEEP scan, the Whisper library downloads its speech model when the model file is not in Whisper's cache folder (about 145 MB for the default `base` model, from `openaipublic.azureedge.net`). Before that download starts, Sunglasses prints `fetching whisper model base from openaipublic.azureedge.net` to stderr. An intact model file in the cache folder is reused with no download and no notice. A cached file that is damaged or incomplete is downloaded again by Whisper, without that notice. The notice is made by Sunglasses when it loads the model. Code of your own that calls Whisper directly is not coordinated with it: during a Sunglasses model load, such a call can be announced under Sunglasses's model name. A video scan also writes the sound track or subtitle track to a temporary file on your machine and deletes it once the track is read. What you scan still stays on your machine. Without those extras nothing is downloaded.
 
 What the server sends back goes to your MCP client. A response can quote the matched part of your input. That quote can include a string that looks like a credential. Treat scan results as sensitive content.
 
@@ -595,6 +595,8 @@ sunglasses scan --file podcast.mp3 --deep      # scan audio
 sunglasses scan --file meeting.mp4 --deep      # scan video
 ```
 
+A deep scan of audio or video downloads the Whisper speech model (about 145 MB for the default `base` model) when the model file is not in Whisper's cache folder, and prints `fetching whisper model base from openaipublic.azureedge.net` to stderr first. Later scans reuse an intact cached file. To get the model before you need it offline, run one deep scan while you are online. If stderr is not available, or writing the notice fails with an OSError or ValueError, the model still loads and the notice is not printed anywhere else.
+
 SUNGLASSES auto-detects file types. If you try to scan audio/video without `--deep`, it tells you what to do instead of crashing.
 
 **Input size cap.** `engine.scan()` reads at most **1 MB** by default. On ordinary prose scan cost is roughly linear in input length (~50 µs/byte), but **not on every input shape**: the matcher is quadratic on a single unbroken token, so a long token can cost far more than its length suggests (measured curve and consequences in [KNOWN_VERSION_GAPS.md](KNOWN_VERSION_GAPS.md)). Even at the linear rate, an uncapped filter handed a 10 MB page stalls an agent for minutes, a denial of service an attacker triggers with a large *benign* document. A scan that hit the cap says so: `result.truncated` is `True` and `result.bytes_scanned` reports what was actually read, in the human output and in `--json`. Change it with `SunglassesEngine(max_scan_bytes=N)`, or pass `0` to disable it.
@@ -696,7 +698,7 @@ Both runs print which engine they measured. `--installed` refuses to run when th
 
 Labeled dataset shipped in this repo: 38 real agent-input attacks (positives) + 77 famous open-source READMEs (react, kubernetes, numpy, ollama…) that must stay clean (negatives). No randomness, no network, no LLM judge (same clone + same command → byte-identical results, sealed by a SHA-256 of the metrics block).
 
-| Metric (v0.6.11) | Value |
+| Metric (v0.6.12) | Value |
 |--------|-------|
 | Precision | 86.1% |
 | Recall | 97.4% (37/38) |

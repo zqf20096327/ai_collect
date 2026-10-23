@@ -35,7 +35,7 @@ installs everything — all [19 attacks](#what-you-get), not just the council. T
 run locally in [Ollama](https://ollama.com), no API key needed.
 
 Copy-paste the block for your OS into a terminal. It installs uv and Ollama, waits for Ollama
-to start, pulls the demo models (`qwen2.5:3b` attacks and judges, `gemma3:1b` is the target), then clones Myrtia and opens it at http://127.0.0.1:8000/.
+to start, pulls the demo models (`qwen2.5:7b` attacks and judges, `gemma3:1b` is the target), then clones Myrtia and opens it at http://127.0.0.1:8000/.
 
 <details open>
 <summary><b>macOS</b> (needs <a href="https://brew.sh">Homebrew</a>)</summary>
@@ -44,7 +44,7 @@ to start, pulls the demo models (`qwen2.5:3b` attacks and judges, `gemma3:1b` is
 curl -LsSf https://astral.sh/uv/install.sh | sh && source "$HOME/.local/bin/env"
 brew install ollama && brew services start ollama
 until curl -s http://127.0.0.1:11434 >/dev/null; do sleep 1; done
-ollama pull qwen2.5:3b && ollama pull gemma3:1b
+ollama pull qwen2.5:7b && ollama pull gemma3:1b
 git clone https://github.com/francordel/myrtia.git && cd myrtia
 uv run myrtia
 ```
@@ -57,7 +57,7 @@ uv run myrtia
 curl -LsSf https://astral.sh/uv/install.sh | sh && source "$HOME/.local/bin/env"
 curl -fsSL https://ollama.com/install.sh | sh
 until curl -s http://127.0.0.1:11434 >/dev/null; do sleep 1; done
-ollama pull qwen2.5:3b && ollama pull gemma3:1b
+ollama pull qwen2.5:7b && ollama pull gemma3:1b
 git clone https://github.com/francordel/myrtia.git && cd myrtia
 uv run myrtia
 ```
@@ -65,6 +65,12 @@ uv run myrtia
 
 <details>
 <summary><b>Windows · PowerShell</b></summary>
+
+> **First check you have `winget`:** run `winget --version`. It comes with *App Installer*,
+> which Windows 11 and recent Windows 10 have, but some machines don't. If the command isn't
+> recognised, install **App Installer** from the Microsoft Store and reopen PowerShell — or
+> skip `winget` and run the Ollama installer from
+> [ollama.com/download](https://ollama.com/download) instead, since it's only used to fetch Ollama.
 
 Install uv and Ollama:
 
@@ -76,7 +82,7 @@ winget install Ollama.Ollama
 Close and reopen PowerShell so `uv` and `ollama` are on your PATH, then:
 
 ```powershell
-ollama pull qwen2.5:3b && ollama pull gemma3:1b
+ollama pull qwen2.5:7b && ollama pull gemma3:1b
 git clone https://github.com/francordel/myrtia.git; cd myrtia
 uv run myrtia
 ```
@@ -87,6 +93,12 @@ uv run myrtia
 
 A prebuilt image (`ghcr.io/francordel/myrtia`) runs the console. Pick how it reaches the
 models:
+
+> **Give Docker at least 8 GB of RAM.** In option A the models run inside the VM, and the
+> demo council loads three at once; with less memory the model process is killed
+> (`llama-server ... signal: killed`). Docker Desktop defaults to 8 GB. With
+> [Colima](https://github.com/abiosoft/colima): `colima start --cpu 4 --memory 8`. Option B
+> (your own Ollama) avoids this, since the models run outside the container.
 
 **A · All in one — Myrtia + its own Ollama.** Nothing else needed: the compose file starts an
 Ollama container and pulls the two demo models into it (`qwen2.5:3b` attacks and judges,
@@ -185,10 +197,12 @@ point at its own endpoint — a local Ollama, or a GPU server elsewhere on your 
   (not Myrtia's) and serve on a port other than Myrtia's 8000:
   ```bash
   uv tool install vllm
-  vllm serve Qwen/Qwen3-14B --host 0.0.0.0 --port 8001
+  vllm serve Qwen/Qwen2.5-14B-Instruct --host 0.0.0.0 --port 8001 --max-model-len 16384
   ```
   Then set the role's endpoint to `http://<gpu-host>:8001/v1` and the model to
-  `Qwen/Qwen3-14B` — vLLM uses Hugging Face model IDs, not Ollama tags.
+  `Qwen/Qwen2.5-14B-Instruct` — vLLM uses Hugging Face model IDs, not Ollama tags.
+  *Tip*: For multi-turn attacks (Crescendo or Council with multiple turns), accumulated conversation history
+  exceeds small context windows; always serve with `--max-model-len 16384` (or at least `8192`) to prevent HTTP 400 context length errors.
 - One Linux GPU box can serve the models for every Mac and Windows laptop on the network.
 </details>
 
@@ -288,8 +302,11 @@ public descriptions.)
 
 ### The name and the mark
 
-The name Myrtia (Latin *Myrtea*, "place of myrtles"; the Roman goddess *Murcia*) is the ancient
-root of the name of the city of Murcia. It is a tool from the *huerta*, aimed at the frontier.
+The name Myrtia comes from *Myrtea* / *Murtea*, "place of myrtles" — one of the leading
+hypotheses for the origin of the name of the city of Murcia ([Fernández Nieto & Molina Gómez,
+2006](https://revistas.um.es/ayc/article/view/49431)); the same myrtle that Varro, in Rome, linked
+to the goddess later known as *Venus Murcia*. The city was founded as *Madinat Mursiya* in 825,
+and its name may carry that older heritage. It is a tool from the *huerta*, aimed at the frontier.
 
 The logo carries the same idea in one image. It is a **myrtle leaf** — the plant that gives
 Myrtia and Murcia their name, our roots in the *huerta* — and, at the same time, a **shield
@@ -304,7 +321,8 @@ Red teaming in Myrtia is organised around four components:
 
 - **Attacks** define how adversarial prompts are generated: a deliberating council, a crescendo
   escalation, or a direct baseline.
-- **Targets** are the model or agent under test, reached through any OpenAI-compatible endpoint.
+- **Targets** are the model or agent under test, reached over HTTP: OpenAI-compatible endpoints
+  (Ollama, vLLM, OpenAI, any proxy), Anthropic's native Messages API, or any JSON agent endpoint.
 - **Judge and scoring** grade each response on a graded 0–5 scale and aggregate it into ASR.
 - **Behaviours** are what you attack: a built-in HarmBench library selectable by theme, or your
   own goals.
@@ -455,8 +473,10 @@ See [`docs/architecture.md`](docs/architecture.md) for the full design.
 | `requires a different Python: 3.9.6 not in '>=3.11'` | The venv was made with an old system Python (macOS ships 3.9) | Use `uv run myrtia` from the repo root — uv downloads Python 3.12 itself. With pip, create the venv with Python 3.11+. |
 | `Connection refused` / `WinError 10061` / `Max retries exceeded` on port **11434** | Ollama isn't running or isn't reachable | Start Ollama (`brew services start ollama` on macOS, the tray app on Windows, `ollama serve` otherwise) and confirm **http://127.0.0.1:11434/** says *"Ollama is running"*. If it runs elsewhere, set the base URL in the UI. |
 | Myrtia in Docker can't reach your Ollama (`Connection refused` on `host.docker.internal:11434` or `127.0.0.1:11434`) | Inside a container, `127.0.0.1` is the container itself | Use `compose.own-ollama.yaml` (Docker option B), which points Myrtia at this machine for you; for a server, set `MYRTIA_OLLAMA_URL=http://<server>:11434`. On Linux, start Ollama with `OLLAMA_HOST=0.0.0.0`. |
-| `could not connect to ollama server` right after installing | The Ollama service is still starting | Wait a few seconds and re-run `ollama pull qwen2.5:3b && ollama pull gemma3:1b`. |
+| In Docker, `llama-server process has terminated: signal: killed` (HTTP 500) | The Docker VM ran out of memory and the kernel killed the model | Give Docker ≥8 GB. Docker Desktop: Settings → Resources. Colima: `colima stop && colima start --cpu 4 --memory 8`. Or use Docker option B so models run outside the container. |
+| `could not connect to ollama server` right after installing | The Ollama service is still starting | Wait a few seconds and re-run `ollama pull qwen2.5:7b && ollama pull gemma3:1b`. |
 | `model "…" not found` / `try pulling it first` | The model isn't downloaded | `ollama pull <model>` (e.g. `ollama pull qwen2.5:3b`), then check `ollama list`. |
+| Windows: `winget` is not recognized as a command | *App Installer*, which provides `winget`, is missing | Install **App Installer** from the Microsoft Store and reopen PowerShell, or install Ollama from [ollama.com/download](https://ollama.com/download) instead — `winget` is only used to fetch Ollama. |
 | PowerShell: *"running scripts is disabled on this system"* | Script execution policy blocks the venv activation | `Set-ExecutionPolicy -Scope Process RemoteSigned`, then re-run `.\.venv\Scripts\Activate.ps1`. |
 | `401 Unauthorized` / `invalid api key` | Missing or wrong API key for a frontier provider | Set the key for that provider in the UI (per-run), or use a local Ollama endpoint. |
 | `[Errno 48] Address already in use` / port **8000** busy | Another process holds the port (e.g. a vLLM server) | Run on another port: `uv run myrtia --port 8010`. |

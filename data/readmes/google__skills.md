@@ -123,6 +123,7 @@ This command gives you an option to also remove obsolete skills.
   - [**BigFrames (BigQuery DataFrame) basics**](./skills/cloud/bigquery-bigframes)
   - [**BigQuery Asset Impact Analysis**](./skills/cloud/datalineage-bigquery-asset-impact-analysis)
   - [**BigQuery Basics**](./skills/cloud/bigquery-basics)
+  - [**BigQuery Migration Service (BQMS) SQL Translator**](./skills/cloud/bigquery-migration-sql-translator)
   - [**BigQuery Observability**](./skills/cloud/bigquery-observability)
   - [**BigQuery Optimization Workflow**](./skills/cloud/bigquery-optimization)
   - [**BigQuery Troubleshooting**](./skills/cloud/bigquery-troubleshooting)
@@ -144,8 +145,10 @@ This command gives you an option to also remove obsolete skills.
   - [**Google Agents CLI Onboarding**](./skills/cloud/google-agents-cli-onboarding)
   - [**Google Developer Knowledge**](./skills/developers/retrieving-developer-knowledge)
 - **Application development**
+  - [**Application Integration Troubleshooting**](./skills/cloud/application-integration-troubleshooting)
   - [**Migrate Legacy Codebases to Safe Rust**](./skills/developers/migrate-to-rust)
 - **Management tools**
+  - [**Cloud Logging Finops**](./skills/cloud/cloud-logging-finops)
   - [**Cloud Monitoring Chart Generation Skill (`cloud-monitoring-chart-generation`)**](./skills/cloud/cloud-monitoring-chart-generation)
   - [**Cloud Monitoring ListTimeSeries Request Generator**](./skills/cloud/cloud-monitoring-list-time-series-request)
   - [**Cloud Monitoring Notification Channels Configuration**](./skills/cloud/cloud-monitoring-notification-channels-configuration)

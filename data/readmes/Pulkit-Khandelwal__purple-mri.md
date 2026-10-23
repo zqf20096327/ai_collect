@@ -9,7 +9,21 @@ postmortem human brain MRI.
 [Documentation](https://purple-mri.readthedocs.io/en/latest/) ·
 [PyPI 1.1.0](https://pypi.org/project/purple-mri/1.1.0/) ·
 [Docker image](https://hub.docker.com/r/pulks/docker_purple_mri) ·
+[Singularity SIF](https://purple-mri.readthedocs.io/en/latest/singularity.html) ·
 [Release notes](https://purple-mri.readthedocs.io/en/latest/release_notes.html)
+
+## Workflow overview
+
+![purple-mri workflows: segmentation, topology correction, cortical reconstruction, atlas parcellation and morphometry; registration across modalities; and group studies in template space.](docs/source/_static/purple_flowchart_UPDATED.png)
+
+The figure summarizes the broader research workflows. For the adult segmentation
+and surface pipeline, follow the processing instructions below; see
+[other workflows](#documentation-and-other-workflows) for registration, templates,
+and group analysis.
+
+## Software ecosystem
+
+![purple-mri software ecosystem showing interfaces, container and package distribution, ITK-SNAP, documentation, core dependencies, and research applications.](docs/source/_static/purple_ecosystem.png)
 
 ## Choose how to run adult processing
 
@@ -18,14 +32,18 @@ postmortem human brain MRI.
 | ITK-SNAP / remote DSS | ITK-SNAP, internet access, and an available provider; no local Docker or GPU | [Illustrated ITK-SNAP guide](https://purple-mri.readthedocs.io/en/latest/itksnap.html) |
 | Python CLI with Docker | Python 3.9+, Docker, and GPU access for DL | [Installation](https://purple-mri.readthedocs.io/en/latest/installation.html) and [quick start](https://purple-mri.readthedocs.io/en/latest/quickstart.html) |
 | Docker directly | Docker and GPU access for DL | [Direct Docker examples](https://purple-mri.readthedocs.io/en/latest/docker.html) |
+| Singularity / Apptainer | Compatible Linux runtime and GPU access for DL | [SIF download and usage](https://purple-mri.readthedocs.io/en/latest/singularity.html) |
 
 The two local Docker routes use **`pulks/docker_purple_mri:v1.1.0`**. The image contains the
 trained models, FreeSurfer, Convert3D, atlas resources, and custom pial binary.
 Provide a FreeSurfer license for surfaces. Installing the pip package installs
 the launcher; `purple-mri pull` downloads the scientific environment separately.
 
-The CLI is Docker-only; the SIF is separate. Final SIF validation is tracked
-separately in the [container guide](docker/exvivo_docker.md#singularity--apptainer-linux-amd64).
+The Python CLI launches Docker. The separately published **`purple_mri_v1.1.0.sif`**
+runs the same `exvivo_dl exvivo_surface` stage sequence in one Singularity invocation.
+The fixed SIF passed a complete DL + LH surface run and registry download comparison
+on 2026-10-22. Follow the [SIF guide](https://purple-mri.readthedocs.io/en/latest/singularity.html)
+for the checksum and full, DL-only, surface-only, and individual-model examples.
 
 ### Submit through ITK-SNAP
 
@@ -71,6 +89,23 @@ Add `--dry-run` to inspect the command before starting. `doctor` checks Docker
 access and image metadata; it does not run GPU or model checks. See
 [inputs](https://purple-mri.readthedocs.io/en/latest/inputs.html) for naming,
 geometry, and acquisition requirements.
+
+### Run with Singularity
+
+Download the prebuilt SIF into a directory without an existing copy:
+
+```bash
+singularity pull purple_mri_v1.1.0.sif \
+  oras://registry-1.docker.io/pulks/singularity_purple_mri:v1.1.0
+```
+
+Verify the [published checksum](docs/source/_static/releases/purple_mri_v1.1.0.sif.sha256)
+and follow the [complete command](https://purple-mri.readthedocs.io/en/latest/singularity.html#complete-adult-dl-and-surfaces).
+It binds inputs, outputs, and your license, then runs
+`/bin/bash /src/commands_nnunet_inference.sh exvivo_dl exvivo_surface` with `--nv`.
+No per-model mounts or writable overlay are required. Docker and pip are not
+required for this route. Apptainer uses the equivalent interface but has not
+been live-tested for this release.
 
 ### Run stages separately
 
@@ -118,7 +153,8 @@ CLI 1.1.0 treats **Ctrl+C as cancellation**. Check the exit status, timing repor
 and output files, then perform [anatomical QC](https://purple-mri.readthedocs.io/en/latest/qc.html).
 
 Docker full DL and LH surfaces completed successfully; the published 1.1.0 wheel
-also passed Task2732 GPU inference. See the
+also passed Task2732 GPU inference. The published native SIF completed full DL
+and LH surfaces in 2:37:13, and its registry download matched the tested file. See the
 [validation record](https://purple-mri.readthedocs.io/en/latest/release_notes.html)
 for scope and observed runtimes.
 
@@ -187,14 +223,22 @@ https://purple-mri.readthedocs.io/en/latest/
 </div>
 
 
-## Citation
+## Citations
 
-If you use `purple-mri` in academic work, please cite the relevant publications
-listed here:
+If you use **purple-mri** in academic work, please cite the relevant publications below.
 
-https://purple-mri.readthedocs.io/en/latest/citations.html
+- Khandelwal, P. (2025). *Postmortem Image Analysis of the Human Brain to Characterize Alzheimer’s Disease and Related Dementias*. Doctoral dissertation, University of Pennsylvania.
+
+- Khandelwal, P., et al. (2024). Automated deep learning segmentation of high-resolution 7 Tesla postmortem MRI for quantitative analysis of structure-pathology correlations in neurodegenerative diseases. *Imaging Neuroscience*, 2, 1–30.
+
+- Khandelwal, P., et al. (2026). Postmortem brain MRI reveals differential associations of subcortical and limbic volumes with cortical thinning and neurodegenerative pathologies. *Alzheimer’s & Dementia*, 22(7), e71649.
+
+- Khandelwal, P., et al. (2024). Surface-Based Parcellation and Vertex-wise Analysis of Ultra High-resolution ex vivo 7 Tesla MRI in Alzheimer’s disease and related dementias. In *International Workshop on Machine Learning in Clinical Neuroimaging (MLCN), MICCAI 2024*. Springer, Cham.
+
+- Khandelwal, P., et al. (2025). VIOLET: Volumetric Image Registration via Optimization and Learning for Efficient Image Translation. In *International Workshop on Simulation and Synthesis in Medical Imaging (SASHIMI), MICCAI 2025*. Springer Nature Switzerland, Cham.
+
+- Khandelwal, P., et al. (2026). Cortical reconstruction and anatomical parcellation of high-resolution multi-modal postmortem ex vivo MRI of the human infant brain. In *Preterm, Perinatal and Paediatric Image Analysis (PIPPI) Workshop, MICCAI 2026*.
 
 
 ## License
-
 Please see the repository license for terms of use.

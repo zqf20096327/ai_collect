@@ -3,7 +3,7 @@
 > **Source code available; free to use.** Ordinary use, free integration and free provision require no application, prior contact or permission from FURU. You may sell and monetize your own works. External API costs and third-party terms are separate. See Terms & Output Rights below. / **ソースコード公開・利用無料。** 通常利用と無料の組み込み・無料提供に、申請・事前連絡・FURUの許可は不要です。自分の作品は販売・収益化できます。外部API料金と第三者の条件は別です。詳しくは「利用条件・作品の権利」をご確認ください。
 
 
-> Current source version: **v7.1.8** / 現在のソース版: **v7.1.8**
+> Current source version: **v7.1.9** / 現在のソース版: **v7.1.9**
 
 
 An experimental web application in which AI handles topic research, story structure, direction, prompt construction, image generation, and quality review for manga. OpenAI starts in 5–8-panel mode and also supports four panels. Gemini supports four-panel color and monochrome pages only. / AIが話題調査、構成、演出、プロンプト構築、画像生成、品質確認まで担当する漫画制作Webアプリです。OpenAIの初期選択「5～8コマ生成」では、最初から5～8コマのシナリオを作り、漫画にします。「4コマ生成」にも切り替えられます。Geminiはカラー・白黒とも4コマ固定です。

@@ -1,12 +1,12 @@
-<p align="center"><img src="docs/assets/pinkcollab-logo.png" width="96" alt="PinkCollab logo" /></p>
+<p align="center"><img src="docs/assets/pinkcollab-logo.png" width="96" alt="PinkCollab robot logo on a light-grey and white diagonal background" /></p>
 
 <h1 align="center">PinkCollab</h1>
 
 <p align="center">
-  <a href="https://developer.android.com/"><img src="https://img.shields.io/badge/Android-3DDC84?style=flat&amp;logo=android&amp;logoColor=white" alt="Android" /></a>
-  <a href="https://kotlinlang.org/"><img src="https://img.shields.io/badge/Kotlin-7F52FF?style=flat&amp;logo=kotlin&amp;logoColor=white" alt="Kotlin" /></a>
-  <a href="https://developer.android.com/compose"><img src="https://img.shields.io/badge/Jetpack_Compose-4285F4?style=flat&amp;logo=jetpackcompose&amp;logoColor=white" alt="Jetpack Compose" /></a>
-  <a href="https://www.rust-lang.org/"><img src="https://img.shields.io/badge/Rust-000000?style=flat&amp;logo=rust&amp;logoColor=white" alt="Rust" /></a>
+  <a href="https://developer.android.com/"><img src="https://img.shields.io/badge/Android-343433?style=flat&amp;logo=android&amp;logoColor=white" alt="Android" /></a>
+  <a href="https://kotlinlang.org/"><img src="https://img.shields.io/badge/Kotlin-343433?style=flat&amp;logo=kotlin&amp;logoColor=white" alt="Kotlin" /></a>
+  <a href="https://developer.android.com/compose"><img src="https://img.shields.io/badge/Jetpack_Compose-343433?style=flat&amp;logo=jetpackcompose&amp;logoColor=white" alt="Jetpack Compose" /></a>
+  <a href="https://www.rust-lang.org/"><img src="https://img.shields.io/badge/Rust-343433?style=flat&amp;logo=rust&amp;logoColor=white" alt="Rust" /></a>
 </p>
 
 [PinkCollab](https://3xian.github.io/PinkCollab/) is an **Android client for [Oh My Pi (OMP)](https://omp.sh/)**. Use OMP on your own computer from your phone.
@@ -15,7 +15,9 @@
 - Start sessions in your projects and switch between them.
 - Keep OMP and its model-provider configuration on your computer.
 
-<p align="center"><img src="docs/assets/pinkcollab-readme.webp" width="720" alt="PinkCollab promotional illustration with the robot mascot and a phone showing AI sessions, task progress, and agent replies" /></p>
+<p align="center"><a href="docs/assets/pinkcollab-demo.webp"><img src="docs/assets/pinkcollab-demo.webp" width="960" alt="PinkCollab — Your OMP. Anywhere. A promotional poster with the robot mascot and a large real app screen showing a completed session. Click to view at full resolution." /></a></p>
+
+<p align="center"><a href="https://3xian.github.io/PinkCollab/#demo">Watch the 30-second app demo</a> · <a href="https://3xian.github.io/PinkCollab/media/pinkcollab-demo.mp4">Open MP4</a></p>
 
 ## Quick start
 
@@ -61,10 +63,11 @@ On Windows, use a normal terminal as your OMP user. The Gateway starts automatic
 
 - **Continue a conversation:** open an **On host** entry in **Tasks**. Its project must be inside your configured workspace roots.
 - **Start a new session:** open **Workspaces**, choose a directory, and create a session.
+- **Reuse a prompt:** tap the **Quick inputs** icon beside the model and **Fast** pill button. Save the current draft or enter new text, then tap a saved entry to append it to the input box. Entries can be edited or deleted and stay on this Android device across conversations and app restarts.
 
 **Close the corresponding OMP instance on your computer before continuing a conversation from the phone.** This is not a takeover of a running terminal session; do not use the same conversation elsewhere while PinkCollab owns its runtime.
 
-Send a prompt and check that OMP responds. Swipe to switch sessions; use **Stop** to interrupt a turn and **Exit** to end its runtime.
+Send a prompt and check that OMP responds. Swipe to switch sessions; use **Stop** to interrupt a turn and **Exit** to end its runtime. Tap the selected task card to open its information dialog, then choose **Delete** to permanently remove the task, its OMP history, session artifacts, and uploaded attachments. Exit its runtime and close any external OMP terminal using the session first. Deletion requires confirmation and leaves project files unchanged.
 
 If connection or prompts fail, run `pinkcollab doctor` and see [setup troubleshooting](docs/deployment.md#troubleshooting-setup). For missing conversations, see [history discovery](docs/deployment.md#discovering-host-omp-conversations).
 

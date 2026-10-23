@@ -42,6 +42,7 @@ python -m outreach.cli check-replies      # who answered?
 python -m outreach.cli stats              # funnel: drafted / sent / replied / skipped (and why)
 python -m outreach.cli replies            # read each thread, draft follow-ups -> output/reply_queue.json
 python -m outreach.cli replies --send --live   # send the ones marked "approved": true
+python -m outreach.cli replies --send --approve-all   # approve every unsent draft, then dry-run send
 ```
 
 `stats` reads the workbook (even while it's open in Excel) and every `send` appends each attempt to `output/send_log.csv`, so history survives later edits to the sheet.
@@ -151,6 +152,18 @@ Builds a large, ranked list of professors without you naming a single university
 | `--exclude XLSX` | Skip anyone already in this workbook (repeatable; a missing path prints a warning) |
 | `--resume PATH` | Resume used to derive default topics when `--query` is omitted |
 | `--fresh` | Discard saved batch progress |
+| `--top-universities N` | Only consider people at the region's N best universities, and favour higher-ranked ones (default `DISCOVER_TOP_UNIVERSITIES`, `0` = off) |
+| `--prestige-weight W` | With `--top-universities`: `0` = topic fit only, `1` = balanced (default), `3` = mostly prestige |
+| `--list-universities` | Print the region's top universities and exit |
+
+**Aiming for the best universities.** `--top-universities N` ranks the universities in `--countries` by how many highly-cited papers (50+ citations) they've published since `--since`. That proxy tracks the usual league tables closely (for `dach`: ETH Zurich, TUM, LMU, Zurich, Heidelberg, Bern, EPFL...) and needs no hardcoded list. Discovery then only searches papers from those universities and ranks people by topic fit plus a prestige bonus for their university's rank. Check the list first:
+
+```bash
+python -m outreach.cli discover --list-universities --countries europe --top-universities 30
+python -m outreach.cli discover --count 200 --countries europe --top-universities 30 --prestige-weight 2
+```
+
+Changing `--top-universities` starts a new batch plan; changing `--prestige-weight` doesn't.
 
 Progress is saved in `<output>.batches.json` after each batch, so re-running the same command resumes. Changing the topics, count, batches, countries, `--since`, `--min-h-index` or `--min-works` starts a new plan; `--max-pages` and `--exclude` can be changed without losing progress. If the output workbook is open in Excel when a batch finishes, the tool waits for you to close it rather than dropping the batch.
 
@@ -272,6 +285,25 @@ python -m outreach.cli check-replies --dry-run  # report only
 
 Logs into your mailbox over IMAP (read-only, nothing is marked read), looks in `IMAP_FOLDERS` for mail from each `sent` professor or threaded to the stored Message ID, and classifies it as `replied`, `auto-reply` (out-of-office) or `bounced`. Results go to **Reply Status** (e.g. `replied 2026-10-16 14:02`) and a `[reply] subject | first lines` note in **Follow-up Notes** — notes you typed yourself are never overwritten. `IMAP_HOST` defaults to `SMTP_HOST` with `smtp.` → `imap.`, and the login reuses `SMTP_USER`/`SMTP_PASSWORD`.
 
+### `replies` — draft and send follow-ups
+
+```bash
+python -m outreach.cli replies                              # draft follow-ups -> output/reply_queue.json
+python -m outreach.cli replies --approve-all                # approve every unsent reply/thank draft
+python -m outreach.cli replies --send                       # dry run of approved drafts
+python -m outreach.cli replies --send --live                 # really send approved drafts
+python -m outreach.cli replies --send --live --approve-all  # approve everything and send in one go
+python -m outreach.cli replies --send --live --local-window 9-17 --wait  # send in each professor's working hours
+```
+
+`--local-window`, `--wait` and `--weekends` work like they do for `send`. Each reply's timezone comes from the workbook's Country column (falling back to the email's country TLD, e.g. `.es`); `SEND_LOCAL_WINDOW` in `.env` is the default, `--local-window off` disables it. Sent replies are saved to the queue immediately, so stopping a `--wait` run never resends.
+
+Review or edit bodies in `output/reply_queue.json` before sending; set `"approved": true` per item to approve selectively. `--approve-all` approves every queued draft that has a body, isn't already sent and whose action isn't `none` — including drafts queued by earlier runs. `--redraft` regenerates drafts already in the queue.
+
+If a reply says something is attached (e.g. "I've attached my CV"), the files in `ATTACHMENTS` are attached to it automatically and the send log shows `[attached: ...]`. If that file is missing the reply fails instead of going out without the promised CV. Replies that don't mention an attachment are sent without one.
+
+If drafting fails with `403 ... model is not currently available upstream`, your provider no longer serves that model: run `python -m outreach.cli models` and set `DRAFT_MODEL` / `SCORE_MODEL` in `.env` to one that's listed.
+
 ---
 
 ## The pipeline
@@ -384,6 +416,8 @@ Every setting lives in `.env` (see `.env.example`, which is split into a require
 | `OPENAI_BASE_URL` | — | Optional: Azure/OpenRouter/proxy endpoint |
 | `DRAFT_MODEL` | provider default | Leave blank unless you have a preference |
 | `SCORE_MODEL` | provider default | |
+| `CAN_SELF_FUND` | blank | `yes`/`no`: whether you can cover your own travel/living costs. Shapes `replies` drafts when a professor mentions funding (blank = draft leaves a `[FILL]`) |
+| `SELF_FUND_NOTE` | — | Optional detail for the above, e.g. "family covers travel and 3 months' rent" |
 | `BUDGET_USD` | `5.0` | Hard ceiling per run; ignored on free tiers |
 | `MAX_PROFESSORS` | `50` | LLM call cap |
 | `MIN_LOCAL_SCORE` | `0.25` | Local filter threshold |
@@ -395,6 +429,8 @@ Every setting lives in `.env` (see `.env.example`, which is split into a require
 | `DISCOVER_QUERIES` | — | `;`-separated topics (default: resume interests) |
 | `DISCOVER_COUNTRIES` / `DISCOVER_SINCE` | `europe` / `2021` | Region and paper recency |
 | `DISCOVER_MAX_PAGES` | `40` | Page cap per batch |
+| `DISCOVER_TOP_UNIVERSITIES` | `0` | Restrict `discover` to the region's N best universities (0 = off) |
+| `DISCOVER_PRESTIGE_WEIGHT` | `1.0` | How much university rank counts against topic fit |
 | `VERIFY_WORKERS` | `4` | Parallel email lookups |
 | `SEND_DELAY_MIN/MAX` | `90`/`240` | Seconds between emails |
 | `DAILY_SEND_CAP` | `25` | Stay under provider limits |

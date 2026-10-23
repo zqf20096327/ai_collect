@@ -3,6 +3,10 @@
   <a href="https://github.com/MAIF/eurybia/workflows/Build%20%26%20Test/badge.svg">
     <img src="https://github.com/MAIF/eurybia/workflows/Build%20%26%20Test/badge.svg" alt="tests">
   </a>
+  <!-- Codecov -->
+  <a href="https://codecov.io/gh/MAIF/eurybia">
+    <img src="https://codecov.io/gh/MAIF/eurybia/branch/master/graph/badge.svg" alt="codecov">
+  </a>
   <!-- PyPi -->
   <a href="https://img.shields.io/pypi/v/eurybia">
     <img src="https://img.shields.io/pypi/v/eurybia" alt="pypi">
@@ -107,7 +111,7 @@ sd.generate_report(
 
 ## 🛠 Installation
 
-Eurybia is intended to work with Python versions 3.9 to 3.12. Installation can be done with pip:
+Eurybia is intended to work with Python versions 3.10 to 3.14 and Shapash versions below 2.10. Installation can be done with pip:
 
 ```
 pip install eurybia

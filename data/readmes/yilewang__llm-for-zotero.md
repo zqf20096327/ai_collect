@@ -82,8 +82,14 @@ How to do a library chat literature review with llm-for-zotero agent
   It runs through the local `codex app-server` runtime and is configured from
   the **Agent** tab.
 - **Claude Code Mode** runs Claude Code as a separate conversation system inside
-  Zotero through a companion local bridge. It is experimental and does not yet
-  support native Zotero API operations.
+  Zotero, using your own Claude Code login. The plugin starts and stops the
+  small bridge it needs for you. It is experimental and does not yet support
+  native Zotero API operations.
+- **One history** lists Agent, Codex and Claude chats together. Click the
+  runtime badge in the message box to switch runtimes, and attach an earlier
+  conversation from the slash menu or by asking for it in plain words.
+- **Side panel** in the standalone window opens read-only past chats or a
+  temporary side chat next to the main chat.
 - **Skills** let you customize how Agent Mode handles research workflows. The
   plugin ships with 8 built-in skills and a portal for creating your own.
 - **General Web Search** lets the in-plugin Agent search the current public web with Tavily, read relevant pages, and attach source links to its answers.
@@ -258,10 +264,25 @@ plugins, and many Markdown readers.
 > Note templates and figure-embedding rules live in the `write-note` skill.
 > Open the **Standalone Window** -> **Skills** portal to edit them.
 
+### Editing Zotero Notes With the Agent
+
+- **Citations, PDF highlights, and images stay intact.** The agent sees each
+  one as a placeholder such as `{{citation:3fa9c1 ("Smith", 2020, p. 42)}}`
+  and every edit puts the original item back, so a rewrite can move a
+  citation but never break it. An edit that would drop one is refused unless
+  you asked for it to be deleted.
+- **Clickable citations.** Ask for page citations and the agent writes
+  `{{cite item=123 page=42}}`, which becomes the same citation Zotero's
+  **Insert Citation** makes: clicking it opens the PDF at that page.
+- **Study-note blanks.** A line of underscores inside a quote (`> ___`) becomes
+  a divider, and a checklist item made only of underscores (`- [ ] ____`)
+  keeps its checkbox as a fill-in blank.
+
 ## Agent Mode (beta)
 
-Agent Mode is disabled by default. Enable it in `Preferences`, then toggle
-`Agent (beta)` in the context bar.
+Agent Mode is disabled by default. Turn on **Original Agent** in `Preferences`
+-> **Agent** tab. While it is on, new chats use the Agent. If you also turn on Codex or
+Claude Code, click the runtime badge in the message box to switch between them.
 
 It can read and search your library, draft notes, update metadata or tags with
 confirmation, and undo recent write actions from the conversation.
@@ -276,18 +297,18 @@ turns when the model context fills up. This lets follow-up questions reuse
 grounded evidence when it is still relevant, while still asking the agent to read
 again when the needed source or coverage layer is missing.
 
-| Tool area                | Tools                                                                                                                                              | What they do                                                                                                                                                                      |
-| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Library and PDF reading  | `library_search`, `library_read`, `library_retrieve`, `paper_read`, `read_attachment`, `context_read`                                              | Search items and collections, read metadata, read papers, search paper passages, render PDF pages, inspect attachments and the chat context                                       |
-| Scholarly discovery      | `literature_search`, `literature_review`                                                                                                           | Search OpenAlex, arXiv, and Europe PMC for papers, recommendations, references, and citations (metadata lookup via CrossRef and Semantic Scholar), then present ranked candidates |
-| General web research     | `web_search`, `web_read`                                                                                                                           | Search the current public web with Tavily, read relevant pages, and show source links with the answer (only when a Tavily key is set)                                             |
-| Library writes           | `library_update`, `library_import`, `library_delete`, `annotate_pdf`                                                                               | Apply tags, update metadata, move items, manage collections and attachments, merge duplicates, trash items, import identifiers or local files, highlight PDF passages             |
-| Citations and settings   | `library_cite`, `library_settings`                                                                                                                 | Format citations and bibliographies with Zotero's citation engine, and read or change the Zotero preferences the agent may touch                                                  |
-| Notes and documents      | `note_write`, `note_write_batch`, `submit_document`                                                                                                | Create, append to, or edit Zotero notes, write one note on each of many items, and finalize longer documents                                                                      |
-| Filesystem and scripting | `file_io`, `run_command`, `zotero_script`                                                                                                          | Read/write local files, run analysis commands, or execute Zotero JavaScript with write confirmations                                                                              |
-| Skills and questions     | `load_skill`, `request_user_input`                                                                                                                 | Load a skill's instructions when the task needs them, and ask you a question when a choice is ambiguous                                                                           |
-| Plans                    | `update_plan`, `amend_plan`, `prepare_plan_execution`, `task_update`, `research_update`, `approve_research_expansion`, `approve_research_mutation` | Draft a plan for your approval, then track and report its execution                                                                                                               |
-| Safety                   | `undo`                                                                                                                                             | Undo recorded write actions from the conversation's durable change history, one at a time or several newest-first                                                                 |
+| Tool area                | Tools                                                                                                 | What they do                                                                                                                                                                      |
+| ------------------------ | ----------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Library and PDF reading  | `library_search`, `library_read`, `library_retrieve`, `paper_read`, `read_attachment`, `context_read` | Search items and collections, read metadata, read papers, search paper passages, render PDF pages, inspect attachments and the chat context                                       |
+| Scholarly discovery      | `literature_search`, `literature_review`                                                              | Search OpenAlex, arXiv, and Europe PMC for papers, recommendations, references, and citations (metadata lookup via CrossRef and Semantic Scholar), then present ranked candidates |
+| General web research     | `web_search`, `web_read`                                                                              | Search the current public web with Tavily, read relevant pages, and show source links with the answer (only when a Tavily key is set)                                             |
+| Library writes           | `library_update`, `library_import`, `library_delete`, `annotate_pdf`                                  | Apply tags, update metadata, move items, manage collections and attachments, merge duplicates, trash items, import identifiers or local files, highlight PDF passages             |
+| Citations and settings   | `library_cite`, `library_settings`                                                                    | Format citations and bibliographies with Zotero's citation engine, and read or change the Zotero preferences the agent may touch                                                  |
+| Notes and documents      | `note_write`, `note_write_batch`, `submit_document`                                                   | Create, append to, or edit Zotero notes, write one note on each of many items, and finalize longer documents                                                                      |
+| Filesystem and scripting | `file_io`, `run_command`, `zotero_script`                                                             | Read/write local files, run analysis commands, or execute Zotero JavaScript with write confirmations                                                                              |
+| Skills and questions     | `load_skill`, `request_user_input`, `past_chat_attach`                                                | Load a skill's instructions when the task needs them, ask you a question when a choice is ambiguous, and add an earlier conversation to the chat                                  |
+| Task tracking            | `task_update`, `workflow_script`                                                                      | Split a compound request into parts the plugin tracks, and run several tool calls in one script with loops and conditions                                                         |
+| Safety                   | `undo`                                                                                                | Undo recorded write actions from the conversation's durable change history, one at a time or several newest-first                                                                 |
 
 The design philosophy is simple: read tools are unrestricted; write tools stay
 reviewable and undoable.
@@ -371,19 +392,21 @@ as Markdown files in `{ZoteroDataDir}/llm-for-zotero/skills/`.
 
 ## General Web Search
 
-Agent Mode can search the current public web with Tavily or AnySearch and read returned pages when search-result snippets are not enough.
+Agent Mode can search the current public web with Tavily, AnySearch, or DeepSeek and read returned pages when search-result snippets are not enough.
 Use it for current facts, official documentation, news, finance, product information, and other general-web evidence.
 Scholarly discovery remains separate: the agent searches OpenAlex, arXiv, and Europe PMC (with CrossRef and Semantic Scholar for metadata lookup), and it can combine both kinds of search when a question needs academic and general-web sources.
 
-To enable general web search with Tavily (the default):
+To enable general web search with Tavily:
 
 1. Get a Tavily API key from [app.tavily.com](https://app.tavily.com/).
 2. Open `Preferences` -> `llm-for-zotero` -> **Agent**.
-3. In **Web search**, select **Tavily**, paste the API key and click **Test connection**.
+3. In **Web search**, keep **Tavily** (the default), paste the API key and click **Test connection**.
 4. Enable Agent Mode and ask it to search or verify something online.
 
 There is no separate enable switch.
-The `web_search` and `web_read` tools become available to compatible in-plugin Agent conversations when Tavily has a key or AnySearch is selected.
+The `web_search` and `web_read` tools become available to compatible in-plugin Agent conversations when the selected provider can run: Tavily has a key, AnySearch is selected, or DeepSeek finds an official DeepSeek model profile.
+Tavily is the default.
+**DeepSeek** is an optional choice that uses the key of an official DeepSeek model profile, and DeepSeek bills that account.
 They are not added to WebChat, Codex App Server, or Claude Code conversations, which use their own runtimes and tool sets.
 
 With Tavily, the agent chooses basic or advanced search and page-reading depth from the request, or follows an explicit request such as _"use advanced web search."_
@@ -417,6 +440,12 @@ credentials or private library content.
 Anonymous quotas and permissions are server-controlled. An exhausted quota
 produces an error; the integration does not adopt credentials from responses,
 automatically retry, switch providers, or report fictional credit usage.
+
+### DeepSeek
+
+DeepSeek search uses the key of your first model profile whose API address is the official `https://api.deepseek.com`; keys of relays and other hosts are never sent to DeepSeek.
+It costs $0.75 per 1,000 successful searches or page fetches, billed to that DeepSeek account, and failed or empty calls are not billed.
+Queries are limited to 128 characters, including the site and date filters, and search queries and requested URLs are sent to DeepSeek.
 
 ## Codex Setup (ChatGPT Plus Subscribers)
 
@@ -486,9 +515,16 @@ Legacy notes:
 ## Claude Code Setup (Experimental)
 
 Claude Code mode runs Claude Code as a separate conversation system inside
-Zotero. It reuses the sidebar and standalone-window UI, but has separate
-conversation history, scope state, model settings, permission semantics, slash
-commands, and project skills.
+Zotero. It reuses the sidebar and standalone-window UI, but has its own scope
+state, model settings, permission semantics, slash commands, and project
+skills. Claude chats appear in the same history list as your other chats, with
+a small **Claude** label.
+
+_Special thanks to [@jianghao-zhang](https://github.com/jianghao-zhang), who
+built the Claude Code integration and its bridge
+([`cc-llm4zotero-adapter`](https://github.com/jianghao-zhang/cc-llm4zotero-adapter)).
+The bridge now ships inside the plugin, with the author's permission, under
+[`packages/claude-bridge`](./packages/claude-bridge)._
 
 > Claude Code mode currently does **not** support native Zotero API operations.
 > Use built-in [Agent Mode](#agent-mode-beta) for native library tools such as
@@ -496,81 +532,55 @@ commands, and project skills.
 > importing items.
 
 <details>
-<summary>Claude Code prerequisites, bridge setup, and project assets</summary>
+<summary>Claude Code setup, troubleshooting, and project assets</summary>
 
-Prerequisites:
+You need two things on your computer. The plugin takes care of the rest.
 
-- A working Claude Code CLI installation. Follow Anthropic's official
-  [Claude Code installation](https://code.claude.com/docs/en/installation.md),
-  [quickstart](https://code.claude.com/docs/en/quickstart.md), and
-  [authentication](https://code.claude.com/docs/en/authentication.md) docs.
-- The `claude` command must be on `PATH` and authenticated.
-- Node.js and npm for the companion bridge adapter.
+- **Node.js 18 or newer.** Download it from [nodejs.org](https://nodejs.org)
+  (the LTS version is fine), or use a version manager such as NVM, Volta or
+  Homebrew. Check it in a terminal with `node --version`.
+- **Claude Code, installed and logged in.** Follow Anthropic's
+  [installation](https://code.claude.com/docs/en/installation.md) and
+  [authentication](https://code.claude.com/docs/en/authentication.md) guides.
+  You can use your Claude subscription or an API key.
 
-### 1. Install and verify Claude Code
+### 1. Install and log in to Claude Code
 
-Run:
+In a terminal, run:
 
 ```bash
 claude
 ```
 
-Complete any login or authentication prompts before continuing.
+Finish the login steps it shows, then close it. You only need to do this once.
 
-### 2. Start the Zotero Claude bridge
+### 2. Turn on Claude Code inside Zotero
 
-Claude Code mode depends on the companion bridge repo
-[`cc-llm4zotero-adapter`](https://github.com/jianghao-zhang/cc-llm4zotero-adapter).
+Open `Preferences` -> `llm-for-zotero` -> **Agent** tab, and switch on
+**Claude Code**. Recommended settings:
 
-```bash
-git clone https://github.com/jianghao-zhang/cc-llm4zotero-adapter.git
-cd cc-llm4zotero-adapter
-npm install
-npm run build
-npm run serve:bridge
-```
+| Setting               | Recommended value                  |
+| --------------------- | ---------------------------------- |
+| **Claude Code**       | `On`                               |
+| **Config source**     | `default - user + project + local` |
+| **Permission mode**   | `safe`                             |
+| **Default model**     | `sonnet`                           |
+| **Default reasoning** | `auto`                             |
 
-Check that the bridge is alive:
+Then click the **Claude Code** button in the chat header, or click the runtime
+badge in the message box and pick **Claude**, to enter Claude Code mode.
 
-```bash
-curl -fsS http://127.0.0.1:19787/healthz
-```
+That is all. You do **not** need to download or start a bridge yourself. While
+Claude Code mode is on, Zotero starts a small helper program (the "bridge")
+that connects Zotero to your Claude Code. It runs only on your computer, only
+answers Zotero, and stops when you quit Zotero or turn Claude Code off. If you
+never turn on Claude Code, nothing extra runs.
 
-For macOS background use, install the LaunchAgent from the adapter repo:
+The **Bridge** section at the top of the Claude Code settings shows whether the
+bridge is running. Use **Restart bridge** if something seems stuck, and
+**Open log** to see what the bridge reported.
 
-```bash
-./scripts/install-macos-daemon.sh
-```
-
-Useful bridge daemon commands:
-
-```bash
-npm run daemon:status
-npm run daemon:start
-npm run daemon:stop
-npm run daemon:restart
-npm run daemon:uninstall
-```
-
-If Claude Code mode stops responding, restart the bridge and re-check
-`/healthz`. A passing `/healthz` check only proves that the adapter is running;
-it does not prove that the underlying `claude` CLI is installed, authenticated,
-or correctly configured.
-
-### 3. Enable Claude Code inside Zotero
-
-Open `Preferences` -> `llm-for-zotero` -> **Agent** tab.
-
-| Setting                            | Recommended value                  |
-| ---------------------------------- | ---------------------------------- |
-| **Enable Claude Code integration** | `On`                               |
-| **Bridge URL**                     | `http://127.0.0.1:19787`           |
-| **Claude Config Source**           | `default - user + project + local` |
-| **Permission Mode**                | `safe`                             |
-| **Default Model**                  | `sonnet`                           |
-| **Default Reasoning**              | `auto`                             |
-
-Keep **Claude Config Source** on `default` unless you already understand Claude
+Keep **Config source** on `default` unless you already understand Claude
 Code settings layers. In `default`, Claude Code can use your normal user
 settings plus Zotero-managed project and per-conversation local settings.
 The other options are:
@@ -578,10 +588,61 @@ The other options are:
 - `user-only`: only your machine-wide Claude settings.
 - `zotero-only`: only Zotero-managed project and local settings.
 
-After enabling the integration, click the **Claude Code** button in the chat
-header to enter Claude Code mode.
+### 3. If it does not work
 
-### 4. Prepare Claude project skills and commands
+The Bridge status line says what is wrong in plain words. The usual causes:
+
+| The status says                  | What to do                                                                                                                                                                                                     |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Node.js was not found**        | Install Node.js 18 or newer. If it is installed but Zotero cannot find it, run `which node` (macOS, Linux) or `where node` (Windows) in a terminal and paste the result into **Advanced** -> **Node.js path**. |
+| **needs Node.js 18 or newer**    | Install a newer Node.js from [nodejs.org](https://nodejs.org).                                                                                                                                                 |
+| **Claude Code was not found**    | Install Claude Code. If it is installed, run `which claude` (macOS, Linux) or `where claude` (Windows) and paste the result into **Advanced** -> **Claude Code path**.                                         |
+| Running, but Claude replies fail | Claude Code is probably not logged in. Run `claude` in a terminal and log in, then press **Restart bridge**.                                                                                                   |
+| **keeps stopping**               | Press **Open log** to see why, fix the cause, then press **Restart bridge**.                                                                                                                                   |
+
+Zotero opened from the Dock or Start menu does not always see the same programs
+as your terminal. The plugin looks in the usual places (NVM, Volta, Homebrew,
+`~/.local/bin` and the Claude Code installer's folder), but the two path
+settings are there if it still cannot find them.
+
+**Advanced options**
+
+- **Extra bridge options** passes command-line options to the bridge, for
+  example `--additional-directories ~/Papers` to let Claude read another
+  folder, or `--append-system-prompt-file ~/zotero-claude.md`. Press
+  **Restart bridge** after changing it.
+- **Use my own bridge** is for people who run the bridge themselves, for
+  example inside WSL while Zotero runs on Windows, or on another computer.
+  Zotero then sends Claude requests to the **Bridge URL** and does not start
+  its own bridge. The bridge's code lives in
+  [`packages/claude-bridge`](./packages/claude-bridge); see its README for how
+  to run it by hand.
+
+**Upgrading from the old `cc-llm4zotero-adapter`**
+
+Earlier versions needed the separate
+[`cc-llm4zotero-adapter`](https://github.com/jianghao-zhang/cc-llm4zotero-adapter)
+repository and `npm run serve:bridge` or `npm run daemon:*`. That is no longer
+needed. Your Claude Code conversations, skills and settings keep working,
+because the new bridge uses the same `~/Zotero/agent-runtime` and
+`~/Zotero/agent-state` folders.
+
+If you installed the old macOS background service, it can stay, since it does
+not get in the way, but it is no longer used. Zotero tells you once if it finds
+it. To remove it, run this in your old adapter folder:
+
+```bash
+npm run daemon:uninstall
+```
+
+If you already deleted that folder, run these two commands instead:
+
+```bash
+launchctl bootout gui/$(id -u)/com.toha.ccbridge
+rm ~/Library/LaunchAgents/com.toha.ccbridge.plist
+```
+
+### 4. Claude project skills and commands
 
 Zotero creates a Claude runtime root under your home directory, usually shaped
 like:
@@ -603,7 +664,7 @@ Each Claude conversation also gets its own local `.claude` folder under the
 runtime `scopes/` tree, so per-conversation overrides do not leak into other
 chats.
 
-The Zotero UI loads the model catalog advertised by the configured Claude Code bridge and preserves each model value exactly, including aliases, explicit model IDs, context-window variants, custom provider values, and future model families.
+The Zotero UI loads the model catalog advertised by the Claude Code bridge and preserves each model value exactly, including aliases, explicit model IDs, context-window variants, custom provider values, and future model families.
 The chat model picker identifies the active conversation so discovery uses the same scoped `.claude/settings.local.json` stack as the turn.
 The model preference remains editable when discovery is unavailable.
 Claude Code is responsible for resolving or rejecting the selected value and for applying provider or proxy configuration.

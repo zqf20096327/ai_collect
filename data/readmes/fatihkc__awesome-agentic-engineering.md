@@ -38,7 +38,7 @@ A small set of the seminal work underneath agentic coding. Background, not the w
 - [Cursor](https://cursor.com/) - AI code editor and agent for building software across desktop, CLI, and mobile. By Anysphere.
 - [Aider](https://github.com/Aider-AI/aider) - Open-source terminal pair-programming agent that edits code in a local Git repository using an LLM of choice.
 - [Cline](https://github.com/cline/cline) - Open-source autonomous coding agent available as an IDE extension, CLI, and SDK.
-- [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) - Open-source, plugin-everything agent harness built on the Cordis framework, in developer preview. By DeepSeek AI.
+- [Pi](https://pi.dev) - Minimal, provider-agnostic coding agent harness designed to be extended and adapted to a team's own workflows rather than boxed into one UI, now powering other agents such as OpenClaw. By Mario Zechner and Armin Ronacher (Earendil).
 - [OpenHands](https://github.com/OpenHands/OpenHands) - Open-source, self-hostable platform for running coding agents and automations.
 - [Model Context Protocol](https://modelcontextprotocol.io/) - Open standard for connecting coding agents to external tools, data, and workflows. By Anthropic.
 
@@ -75,7 +75,7 @@ A small set of the seminal work underneath agentic coding. Background, not the w
 ## Essays and writing
 - [Agentic Coding Recommendations](https://lucumr.pocoo.org/2025/6/12/agentic-coding/) - Field-tested advice on language choice, tool speed, logging, and codebase structure that make coding agents effective. By Armin Ronacher.
 - [Revenge of the Junior Developer](https://sourcegraph.com/blog/revenge-of-the-junior-developer) - Six overlapping waves from completions to autonomous agents, agent clusters, and agent fleets. By Steve Yegge.
-- [My LLM Codegen Workflow](https://harper.blog/2025/02/16/my-llm-codegen-workflow-atm/) - A spec, then plan, then execute workflow for building software with LLMs on greenfield and existing code. By Harper Reed.
+- [How the Claude Code Team Does Code Review](https://claude.dev/blog/solving-code-review-at-anthropic/) - Layered automation, including Claude reviewing its own work and a merge queue, cut human diff-reading time while merged pull requests more than doubled and the revert rate fell over 40 percent. By Addy Osmani, Morgan Westlee Lunt, and Qing Wang.
 - [Ralph Wiggum as a Software Engineer](https://ghuntley.com/ralph/) - The Ralph technique: running a coding agent in a bash loop that repeatedly feeds one prompt, with progress persisted to files and git. By Geoffrey Huntley.
 - [Advanced Context Engineering for Coding Agents](https://github.com/humanlayer/advanced-context-engineering-for-coding-agents/blob/main/ace-fca.md) - Intentional compaction and a research, plan, implement workflow for coding agents in large legacy codebases. By Dex Horthy.
 - [Not All AI-Assisted Programming Is Vibe Coding](https://simonwillison.net/2025/Mar/19/vibe-coding/) - Distinguishes unreviewed vibe coding from professional AI-assisted engineering where you review, test, and can explain the code. By Simon Willison.
@@ -89,7 +89,7 @@ A small set of the seminal work underneath agentic coding. Background, not the w
 
 ## Case studies and in practice
 - [How Claude Code Is Used in Practice](https://www.anthropic.com/research/claude-code-expertise) - Analysis of roughly 400,000 real sessions: success rates, the human and agent split between planning and execution, and how outcomes vary by expertise. By Anthropic.
-- [AI-Driven Refactoring in Large-Scale Migrations](https://medium.com/qonto-way/ai-driven-refactoring-in-large-scale-migrations-strategies-and-techniques-fcdb9b5116c6) - Building an Aider-based agent to migrate roughly one million lines of Ember.js to React, with throughput rising from about 50 to sometimes over 1,000 lines per engineer per day. By Stefano Amorelli (Qonto).
+- [Case Study: Refactoring at Scale with Agents](https://codescene.com/blog/case-study-refactoring-at-scale-with-agents) - Coding agents refactoring a 300,000-line C codebase from a Code Health of 5.6 to 10.0 over three weeks for about $4,000 in tokens, using a deterministic quality signal and frame-exact replay verification. By Adam Tornhill (CodeScene).
 - [WhatsCode: Large-Scale GenAI Deployment at WhatsApp](https://arxiv.org/abs/2512.05314) - 25 months of agentic coding at WhatsApp: over 3,000 accepted code changes and privacy-verification coverage rising from 15 to 53 percent. Mao et al. (Meta).
 - [Razorpay Engineers Built Slash. Slash Builds the Rest.](https://razorpay.com/blog/razorpay-engineers-built-slash-slash-builds-the-rest/) - An internal coding agent that opens, reviews, and merges thousands of pull requests a month, with specialized sub-agents checking every change before a human does. By Razorpay Engineering.
 - [Harness Engineering: Leveraging Codex in an Agent-First World](https://openai.com/index/harness-engineering/) - A three-person team's five-month, roughly one-million-line, 1,500-pull-request internal product built entirely by Codex, with humans designing the harness instead of writing code. By Ryan Lopopolo (OpenAI).

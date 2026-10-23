@@ -1,4 +1,9 @@
-# ctxtual
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/banda-larga/ctxtual/dc6e4aef43f3b1e57bda109d145288b7f17c89bf/assets/logo-dark.svg">
+    <img alt="ctxtual" src="https://raw.githubusercontent.com/banda-larga/ctxtual/dc6e4aef43f3b1e57bda109d145288b7f17c89bf/assets/logo.svg" width="380">
+  </picture>
+</p>
 
 [![PyPI version](https://img.shields.io/pypi/v/ctxtual.svg)](https://pypi.org/project/ctxtual/)
 [![Python 3.11+](https://img.shields.io/pypi/pyversions/ctxtual.svg)](https://pypi.org/project/ctxtual/)
@@ -13,13 +18,13 @@ gives the model a short notice — a preview, the fields, the size — plus tool
 to search, filter, aggregate and page through the stored data. Small results
 pass through untouched.
 
-[![Benchmark results](benchmarks/results.svg)](benchmarks/RESULTS.md)
+[![Benchmark results](https://raw.githubusercontent.com/banda-larga/ctxtual/main/benchmarks/results.svg)](https://github.com/banda-larga/ctxtual/blob/main/benchmarks/RESULTS.md)
 
 Across five models, questions about large tool results were answered
 correctly every time through ctxtual, at about 8,000 prompt tokens each
 whether the result held 30k or 300k tokens. With the whole 300k-token result
 in context, models were right 39% of the time; with it truncated, 17%.
-[Full results and method →](benchmarks/RESULTS.md)
+[Full results and method →](https://github.com/banda-larga/ctxtual/blob/main/benchmarks/RESULTS.md)
 
 It works two ways:
 
@@ -85,11 +90,12 @@ starts:
 ```
 
 It then reads page 19, or searches, instead of taking in all 52 pages.
-Lists get their field types, a preview, and a query example built from
-their real fields, e.g. `[{"filter": {"state": "open"}}, {"sort": {"field":
-"comments", "order": "desc"}}, {"limit": 10}]`.
+Lists come with each field and its values (`"state": "string · open 135,
+closed 65"`, `"comments": "integer · 0 to 99"`), a preview, and a query built
+from them, e.g. `result_query(result_id, where={"state": "open"},
+sort="-comments", limit=10)`.
 
-Four tools are added, about 4,300 characters of definitions in total:
+Four tools are added, about 4,800 characters of definitions in total:
 `result_search` (items or passages), `result_read` (pages, single items, long
 fields), `result_query` (filter, sort, group, count in one call) and
 `result_list`. The wrapped server's own instructions are kept; a short

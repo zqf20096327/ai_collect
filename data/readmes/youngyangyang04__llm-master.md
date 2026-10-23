@@ -53,16 +53,17 @@
 | AI 编程 | Claude Code、Agent CLI、Skills、Hooks、MCP、工程工作流 | [AI 编程专题](docs/topics/ai-coding.md) |
 | 求职面试 | 高频题、回答框架、项目表达、真实大厂面经 | [面试路线](docs/roadmap/interview.md) |
 
+## 导师带学
+
+如果需要导师带学大模型应用开发，做硬核大模型项目，破局转行进入大模型应用开发领域，可以报名「卡码大模型应用开发训练营」
+
+[![卡码大模型应用开发训练营](docs/assets/images/llm-training-camp.jpg?v=20261005)](https://programmercarl.com/xunlian/damoxing.html)
+
+
+
 ## 学习路线
 
-```mermaid
-flowchart LR
-    A[0 · 全局认知] --> B[1 · 模型调用]
-    B --> C[2 · RAG]
-    C --> D[3 · Agent]
-    D --> E[4 · 生产工程]
-    E --> F[5 · 原理与面试]
-```
+![大模型应用开发六阶段学习路线与知识自测标准](docs/assets/diagrams/llm-learning-roadmap.png?v=20261005)
 
 ### 阶段 0：建立全局认知
 

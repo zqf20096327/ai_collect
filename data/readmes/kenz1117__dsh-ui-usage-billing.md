@@ -15,6 +15,7 @@
   <a href="https://github.com/kenz1117/dsh-ui-usage-billing"><img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/kenz1117/dsh-ui-usage-billing?logo=github"></a>
   <a href="https://github.com/kenz1117/dsh-ui-usage-billing/graphs/contributors"><img alt="GitHub contributors" src="https://img.shields.io/github/contributors/kenz1117/dsh-ui-usage-billing"></a>
   <a href="https://awesome-dsh-plugin.com"><img alt="Awesome DSH Plugin" src="https://awesome-dsh-plugin.com/badge.svg"></a>
+  <a href="https://dshfind.com/zh/plugins/kenz1117/dsh-ui-usage-billing"><img alt="dshfind" src="https://dshfind.com/api/badge/kenz1117/dsh-ui-usage-billing"></a>
 </p>
 
 [中文](README.md) · [English](README.en.md)
@@ -39,7 +40,7 @@
 用量从持久化会话日志实时聚合，绝不伪造样本（数据到达前显示空快照）；官方余额当日变动与本地账本交叉对账，偏差超阈值主动提示核对——账单经得起质疑。
 
 ### 价格是活的，历史不重算
-models.dev 实时目录 + 内置 25 厂商 110 款模型 + 设置面板自定义单价（可按中转站绑定同模型不同价），新模型无需等发版；DeepSeek 分时价按官方变更节点**分段计价**（8-17 前基础价、8-17~8-23 周末计峰、8-23 起周末全谷），价格调整永不回写旧账。
+models.dev 实时目录 + 内置 25 厂商 239 款模型 + 设置面板自定义单价（可按中转站绑定同模型不同价），新模型无需等发版；DeepSeek 分时价按官方变更节点**分段计价**（8-17 前基础价、8-17~8-23 周末计峰、8-23 起周末全谷），价格调整永不回写旧账。
 
 ### 峰谷全感知，提醒跟着模型走
 计费通道按当前会话使用的模型自动识别：DeepSeek 按量走分时价（工作日 9-12 / 14-18 高峰 ×2、周末全天低谷），智谱 Coding Plan 走积分峰谷（工作日 14-18 高峰全额、非高峰**积分 5 折**），通道层可扩展、更多厂商逐步接入；切档前弹窗 / 系统通知自动提醒，且只有当前模型真正涉及峰谷才会提醒、费用条才显示档位——不用你盯时间表。
@@ -54,13 +55,18 @@ DeepSeek / Kimi / 智谱 GLM / 腾讯云 TokenHub 等 7 家官方余额、Coding
 - 性能面板：各模型首字延时（TTFT）均值 / P50 / P90 与生成速度，同类少有。
 - 未收录模型显著标注「未收录」、绝不静默计 0；目录外模型配一条别名即完成识别与计价。
 - 可选的 `usage_stats` 工具让模型直接回答「今天花了多少」「哪个站点用得最多」。
-- 纯 UI surface：不注册工具、不注入系统提示、不写模型可见事件。
+- 默认零工具注入：**仅**当用户在设置里显式开启「注入用量查询」后，才向模型注册 `usage_stats` 这一个只读工具（默认关闭）；任何情况下都不注入系统提示、不写模型可见事件。
 - 中文 / English 语言切换，¥ / ≈$ / ≈€ 币种切换（二者独立）；无图表库、无外部 CDN、离线自包含。
+- **会话行可跳转**：面板里的会话标题点一下直接打开宿主对话（双代会话选择通道自动探测；宿主不支持时给出可读提示，不静默无反应）。
+- **上下文占用维度**：概览页显示当前会话的上下文占用率、窗口上限与构成拆解（系统 / 工具 / 消息）——数据取自宿主官方的 context 投影，**没有投影的会话整块不显示**（不拿 0 冒充）。
+- **对话内入口**：`/usage` 命令直接拉起计费仪表盘（宿主无该能力时静默降级，不影响面板）。
 
 ## 📊 仪表盘
 
 - **侧边栏触发卡**：设置按钮上方常驻单值主数字（今日 / 本周 / 本月统计范围在设置里选，可选涨跌徽章），配近 7 天 sparkline 迷你趋势与当日水位仪表指针；折叠栏自动切为图标钮，悬停浮现速览卡（更新时间 + 指标网格 + 主力消耗 / 额度提醒）。
-- **六区仪表盘**：概览 / 趋势 / 明细 / 统计 / 费率 / 设置——Hero 大数字 + 环比 + 本月预计 + KPI（悬停显示口径说明）+ 用量热力图，趋势 7/30 天可切费用 / Token，模型单价表、预算（全局 + 按模型）与峰谷提醒都在；设置页支持全文搜索（中英关键词过滤分区，全不命中显示空态）；克制冷调、深浅主题自适应。
+- **八区仪表盘**：概览 / 账单 / 用量 / 趋势 / 上下文 / 智能体 / 费率 / 设置——Hero 大数字 + 环比 + 本月预计 + KPI（悬停显示口径说明）+ 用量热力图，趋势 7/30 天可切费用 / Token，模型单价表、预算（全局 + 按模型）与峰谷提醒都在；设置页支持全文搜索（中英关键词过滤分区，全不命中显示空态）；克制冷调、深浅主题自适应。Tab 只保留名称，不再挂状态徽标（信息都在各自分区里）。
+- **上下文分区**：占用率进度条 + 下一次 / 最近一次请求占用 + 窗口上限 + 构成拆解（系统 / 工具 / 消息）。数据取自宿主官方 context 投影；**没有投影的会话整块不显示**，不拿 0 冒充。
+- **智能体分区**：按委派关系还原的智能体网络——父对话 → 子智能体的层级树，每行给调用数、自身费用与**链合计**（自身 + 全部后代），直接回答「哪次委派最贵」。
 
   ![概览：本月费用 Hero、预算进度、KPI 与用量热力图](screenshots/1.png)
 - **即时代费用条**：常驻「本轮 / 会话」费用，位置三档可选（输入框内部工具行 / 上方 / 下方，默认工具行）；峰谷档位与切换倒计时只在当前模型涉及峰谷时出现；订阅额度预警 chips 剩余 ≤20% 浮现、≤10% 标红；可在设置 Tab 整条隐藏（偏好本地持久化，统计与提醒不受影响）。
@@ -110,7 +116,7 @@ DeepSeek / Kimi / 智谱 GLM / 腾讯云 TokenHub 等 7 家官方余额、Coding
 - **多语种 + 三币种**：语言（EN / 中）与币种（¥ CNY / $ USD / € EUR）**各自独立切换**，均仅本插件生效、不影响宿主全局 UI；费率表、侧边栏卡片与输入框胶囊均按所选币种换算，两项选择均本地持久化。老用户首次升级时语言由已存币种播种一次（选 $ 即英文），界面语言不会静默改变。
 - **安全加固**：全部 HTTP 端点强制回环访问——peer socket 地址 + Host 头精确匹配双重校验，拒绝 `127.0.0.1.evil.com` 形式的 DNS rebinding（反向代理部署可用 `trustedHosts` 显式放行特定主机名，peer socket 校验仍为强制）；写操作额外校验 Origin 回环与 Content-Type 并限制 body 上限，杜绝跨站改写；余额 / 订阅 / 定价拉取带有限重试与按上游维度熔断（鉴权失败属配置问题、不计入熔断）。
 - **导出防注入**：CSV 对 `=` / `+` / `-` / `@` 开头单元格前置单引号并完整转义，防止在 Excel / WPS 中被当作公式执行。
-- **隐私底线**：纯 UI surface，不注册工具、不注入系统提示、不向会话日志写模型可见事件；仅从既有会话日志聚合，日志内容由其他包负责。
+- **隐私底线**：默认零工具注入——不注入系统提示、不向会话日志写模型可见事件；仅从既有会话日志聚合，日志内容由其他包负责。唯一的例外是用户显式开启后注册的 `usage_stats` 只读工具（见「Model Experience」），该工具只读本插件自己的聚合结果，不读会话正文、不写回日志。
 
 ## 🚀 快速开始
 
@@ -137,6 +143,20 @@ DeepSeek / Kimi / 智谱 GLM / 腾讯云 TokenHub 等 7 家官方余额、Coding
 ```
 
 启动宿主后，侧边栏设置上方即出现计费入口。无需额外配置；`sessionPersistence` 可用时自动聚合真实用量。
+
+### 🛒 从 DSH Community Market 安装
+
+本插件同时按 DSH Community Market 的 **Path A 标准来源**发布目录条目。在 DSH 的
+「设置 → 插件 → 插件商店 → 来源管理 → 添加来源」粘贴下面的 manifest URL，即可把本目录
+加为来源，随后在市场里浏览并一键安装：
+
+```
+https://kenz1117.github.io/dsh-ui-usage-billing/catalog-source.json
+```
+
+市场托管安装只走 npm registry 的精确稳定版本（安装目标由 Host 解析 npm `latest` 决定，
+目录里列出的版本仅用于展示）。目录文件在本仓 `catalog/` 下，改动由 CI 校验后随
+GitHub Pages 发布。
 
 ## ⚙️ 工作原理
 
@@ -173,34 +193,34 @@ cost（CNY）= (missInput × p_input + cacheHit × p_cacheHit + output × p_outp
 
 **自定义单价（设置 Tab，issue #16）**：结构化条目表（模型 + 可选来源 + 输入/缓存命中/输出 + 币种），不再手编 JSON。来源（中转站域名）留空 = 该模型默认价；填入中转站域名（如 `https://api.my-relay.com`）= 仅该来源的同名模型用此价（同名模型可同时存在默认价与多个来源价，互不覆盖）。显示层按「模型 × 来源」精确匹配重算，命中不到来源时回落该模型默认价，再无则用内置目录价。
 
-### 支持模型（2026-10 主流阵容，OpenAI 兼容系列，共 110 款）
+### 支持模型（2026-10 主流阵容，OpenAI 兼容系列，共 239 款）
 
-完整目录见费率 Tab 及源码 `src/builtin-catalog.ts` 的 `BUILTIN_MODEL_CATALOG`（109 款在售 + 1 款退役型号保留历史回算），此处每厂商仅列代表型号。
+完整目录见费率 Tab 及源码 `src/builtin-catalog.ts` 的 `BUILTIN_MODEL_CATALOG`（238 款在售 + 1 款退役型号保留历史回算），此处每厂商仅列代表型号。
 
 | 厂商       | 代表模型                                        |
 | -------- | -------------------------------------------- |
 | DeepSeek | V4.1 Flash、V4 Pro（等 3 款；按官方变更节点分段计价：基础价 → 峰谷 v1 → 周末全谷） |
-| 智谱 AI    | GLM-5.3、GLM-5.2（等 13 款）                     |
-| 阿里通义     | Qwen3.8 Max、Qwen3-Coder 480B（等 11 款）        |
-| 字节豆包     | Doubao Seed-2.1 Pro、Doubao Seed-2.0 Pro（等 9 款） |
-| 月之暗面     | Kimi K3、Kimi K2.7 Code（等 10 款）              |
-| 小米       | MiMo V2.6 Pro（等 5 款）                         |
-| MiniMax  | MiniMax-M3、MiniMax-M2.7（等 4 款）              |
+| 智谱 AI    | GLM-5.3、GLM-5.2（等 17 款）                     |
+| 阿里通义     | Qwen3.8 Max、Qwen3-Coder 480B（等 27 款）        |
+| 字节豆包     | Doubao Seed-2.1 Pro、Doubao Seed-2.0 Pro（等 13 款） |
+| 月之暗面     | Kimi K3、Kimi K2.7 Code（等 16 款）              |
+| 小米       | MiMo V2.6 Pro（等 6 款）                         |
+| MiniMax  | MiniMax-M3、MiniMax-M2.7（等 8 款）              |
 | 云知声      | U2 Flash、Unisound U2（等 3 款）                 |
 | 百度文心     | ERNIE-5.1、ERNIE-4.5 300B（等 2 款）             |
 | 腾讯混元     | 混元 Hy3、混元 T1（等 3 款）                       |
-| Anthropic | Claude Opus 4.6、Claude Sonnet 4.6（等 12 款）    |
-| Mistral AI | Mistral Large 3、Mistral Small 4（等 3 款）     |
-| Cohere    | Command A、Command R（等 2 款）                 |
-| OpenAI   | GPT-6 Astra、GPT-5.6 Sol / Terra / Luna（等 10 款） |
-| Google   | Gemini 3.1 Pro、Gemini 3.6 Flash（等 4 款）      |
-| xAI      | Grok 4.7、Grok 4.6（等 5 款）                     |
-| Meta     | Llama 4 Maverick（等 2 款）                     |
+| Anthropic | Claude Opus 5、Claude Sonnet 5（等 14 款）    |
+| Mistral AI | Mistral Large 3、Mistral Small 4（等 30 款）     |
+| Cohere    | Command A、Command R（等 7 款）                 |
+| OpenAI   | GPT-6 Astra、GPT-5.6 Sol / Terra / Luna（等 38 款） |
+| Google   | Gemini 3.1 Pro、Gemini 3.6 Flash（等 25 款）      |
+| xAI      | Grok 4.7、Grok 4.20（等 8 款）                     |
+| Meta     | Llama 4 Maverick、Muse Spark 1.3（等 8 款）                     |
 | 美团       | LongCat 2.0（估算价）                             |
 | 面壁智能     | MiniCPM-V 4.5（估算价）                           |
 | 小红书      | Dots3-Note Preview（估算价）                      |
 | 零一万物     | Yi-Lightning                                  |
-| 阶跃星辰     | Step 3.7 Flash                                |
+| 阶跃星辰     | Step 3.7 Flash、Step 5 Preview（等 3 款）                                |
 | 科大讯飞     | Spark 4.0 Ultra（套餐制）¹                       |
 | 商汤       | SenseNova 6.5（公测中）¹                         |
 | 百川智能     | Baichuan M3-Plus                              |
@@ -208,7 +228,7 @@ cost（CNY）= (missInput × p_input + cacheHit × p_cacheHit + output × p_outp
 
 > ¹ 讯飞、商汤及美团 / 面壁智能 / 小红书等未公布官方按量单价的模型，表内为估算价（`estimated`）；这些模型走订阅通道（coding / token plan / opencode）时费用记 0。订阅通道与 pi-ai 内置提供方对齐（kimi-coding、zai-coding-cn、opencode、opencode-go、qwen / xiaomi 的 token-plan 各区域变体），可按 `subscriptionProviders` 配置覆盖。
 
-新增模型：在 `src/builtin-catalog.ts` 的 `BUILTIN_MODEL_CATALOG` 追加条目（别名表 `BUILTIN_MODEL_KEY_ALIASES` 同文件维护；目录只随 node 半构建，经 `/api/billing/pricing` 由宿主下发注入客户端）。
+新增模型：在 `src/builtin-catalog.ts` 的 `BUILTIN_MODEL_CATALOG` 追加条目（别名表 `BUILTIN_MODEL_KEY_ALIASES` 同文件维护；目录只随 node 半构建，经 `/api/billing/pricing` 由宿主下发注入客户端）。**价源口径**：海外厂商取 models.dev 实时目录原生 USD；国内厂商优先取官方 CN 价（models.dev 的 `-cn` 目录），该目录缺项时按 USD 价 × 汇率折算并在条目注释标注。存量条目的价格更正走独立的调价节点，不与扩容混在一起。
 
 ## 🔌 HTTP API
 
@@ -269,7 +289,15 @@ npm dist-tag add @kenz1117/dsh-ui-usage-billing@<版本> alpha
 
 ## 🤖 Model Experience
 
-无。本插件是纯 UI surface：不注册工具、不注入系统提示、不向会话日志写入模型可见事件，也不触及会话 KV 缓存；用量统计由服务端从既有会话日志聚合，日志内容由其他包各自负责。
+**默认无**——插件默认不向模型暴露任何工具：设置里的「注入用量查询」默认关闭，关闭状态下模型既看不到工具、也读不到任何本插件数据。
+
+用户显式开启该开关后，注册**一个**只读工具：
+
+| 工具 | 参数 | 行为 |
+| --- | --- | --- |
+| `usage_stats` | `range`：`today` / `month` / `session` / `all` / `bySite` / `relay` | 查询本插件已聚合的用量与估算费用（人民币，按官方目录价估算，非账单）；`session` 需处于 agent 会话上下文 |
+
+边界声明：该工具只读本插件自己的聚合结果，**不读会话正文、不读提示词、不写回会话日志**；插件任何情况下都**不注入系统提示**、**不向会话日志写入模型可见事件**、不触及会话 KV 缓存。用量统计由服务端从既有会话日志聚合，日志内容由其他包各自负责。工具会占用每次请求的上下文，因此保持默认关闭。
 
 ## ⚠️ Known Limitations and Deferred Work
 

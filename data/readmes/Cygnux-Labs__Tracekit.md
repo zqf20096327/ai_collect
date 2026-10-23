@@ -137,9 +137,9 @@ own blocks, process events and policy changes into the same run. Setup:
 
 <br>
 
-Coding agents: `tracekit init --dev --v2` wires Claude Code's hooks to a dev signer; add `--agent codex`, `cursor` or
-`gemini` for the others (experimental). With Claude Code's sandbox on, Tracekit holds each unsandboxed retry for a
-person
+Coding agents: `tracekit init --dev --v2` wires Claude Code's hooks to a dev signer; add `--agent codex`, `cursor`,
+`gemini` or `opencode` for the others (experimental). With Claude Code's sandbox on, Tracekit holds each unsandboxed
+retry for a person
 ([Claude Code's sandbox](https://github.com/Cygnux-Labs/Tracekit/wiki/Integrations-Claude-Code-Sandbox));
 with Codex's, see what Tracekit sees and the settings to use
 ([Codex's sandbox](https://github.com/Cygnux-Labs/Tracekit/wiki/Integrations-Codex-Sandbox));
@@ -315,7 +315,7 @@ tracekit verify run.tkb --trust trust.json  # offline, against the keys you pinn
                                             # (tracekit signer trust -o trust.json, or the one tracekit last wrote)
 tracekit policy lint policy.yaml            # check a policy before the signer loads it
 tracekit doctor                             # check this setup
-tracekit init --dev --v2                    # wire Claude Code's hooks; add --agent codex, cursor or gemini
+tracekit init --dev --v2                    # wire Claude Code's hooks; add --agent codex, cursor, gemini or opencode
 ```
 
 Nothing to install for whoever checks a run: the
@@ -373,6 +373,7 @@ the [code of conduct](https://github.com/Cygnux-Labs/Tracekit/blob/main/CODE_OF_
 
 | To | Start here |
 |---|---|
+| Read your first verify report | [Tracekit for auditors](https://github.com/Cygnux-Labs/Tracekit/wiki/For-Auditors) |
 | See every step on a clean install | [walkthrough (recorded on 1.2.0)](https://github.com/Cygnux-Labs/Tracekit/wiki/Walkthrough) · [recorded demos](https://github.com/Cygnux-Labs/Tracekit/wiki/Demos) · [viewer tour](https://github.com/Cygnux-Labs/Tracekit/wiki/Viewer#tour) |
 | Wire up an agent | [v2 quickstart](https://github.com/Cygnux-Labs/Tracekit/wiki/Quickstart) · [coding agents](https://github.com/Cygnux-Labs/Tracekit/wiki/Coding-Agents) · [TypeScript SDK](https://github.com/Cygnux-Labs/Tracekit/blob/main/sdk/typescript/README.md) |
 | Put the signer out of reach | [deployment](https://github.com/Cygnux-Labs/Tracekit/wiki/Deploy) · [compose](https://github.com/Cygnux-Labs/Tracekit/wiki/Deploy-Compose) · [container](https://github.com/Cygnux-Labs/Tracekit/wiki/Deploy-Container) · [Kubernetes](https://github.com/Cygnux-Labs/Tracekit/wiki/Deploy-Kubernetes) · [agent-sandbox](https://github.com/Cygnux-Labs/Tracekit/wiki/Integrations-Agent-Sandbox) · [doctor](https://github.com/Cygnux-Labs/Tracekit/wiki/Doctor) |

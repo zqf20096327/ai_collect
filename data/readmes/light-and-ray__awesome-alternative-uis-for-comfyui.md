@@ -494,9 +494,9 @@ Link: https://github.com/jordenyt/stable_diffusion_sketch
 
 ## ● NodeTool
 
-![](https://nodetool.ai/_next/image?url=%2Fscreen_canvas.png&w=3840&q=75)
+![](https://github.com/nodetool-ai/nodetool/raw/main/marketing/public/hero-flow-readme.gif)
 
-Connect AI building blocks to generate content, analyze data, and automate tasks. Use models on your machine or in the cloud. Your workflows, your data—always under your control.
+Create images, video, audio, and text with agents that work alongside you. Describe what you want, let the agent build it, then take over whenever you like.
 
 Link: https://nodetool.ai/
 
@@ -644,6 +644,14 @@ Link: https://github.com/Gartyl/Gartys-Architect
 FlixML Studio is a media generation workbench. It runs image and video generation through ComfyUI workflows, trains LoRAs, and exposes everything through a clean React UI for browsing, organizing, and queuing work. Jobs are tracked from queue to completion, routed across GPU providers, and organized into projects, scenes, and shots with persistent characters.
 
 Link: https://github.com/ortegarod/flixml
+
+## ● Cubric Studio
+
+![](/assets/CubricStudio.jpg)
+
+A free, open-source desktop app for images, video and sound on your own graphics card, with no node graphs. It installs and runs a tested ComfyUI engine for you, installs each model in one click (Krea 2, FLUX.3, SDXL, Qwen, Wan, LTX, MiniMax H3 and more), and adds masks, edits, guided Flows and an agent built into the app. Claude, Codex or Antigravity can drive it over MCP. Windows, macOS and Linux.
+
+Link: https://github.com/MadPonyInteractive/Cubric-Studio
 
 
 

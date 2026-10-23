@@ -2,6 +2,8 @@
 
 <img src="https://raw.githubusercontent.com/shanjeevrajendran/cloakroom/main/assets/hero.svg" alt="Cloakroom, a privacy layer for Claude Code: names, emails, addresses and API keys are swapped for placeholders before the model sees them." width="880">
 
+**Cloakroom is a free, open-source Claude Code plugin that masks API keys, secrets and personal data (PII) on your machine before the model sees them.**
+
 <p>
   <a href="https://www.youtube.com/shorts/U9lN4emgeE0">▶ 40-second demo</a> ·
   <a href="#get-started">Get started</a> ·
@@ -116,15 +118,28 @@ the detection model and OCR), then add the plugin as above.
   reply.md on your disk: "Hi Nadia Petrov,"
 ```
 
+Details: [docs-HOW-IT-WORKS.md](https://github.com/shanjeevrajendran/cloakroom/blob/main/docs-HOW-IT-WORKS.md).
+
+## Extra protections
+
+Masking is the core. These come with it, on by default:
+
 - **Secrets don't leave through a command:** a command that would send a known secret off your machine (curl,
   wget, ssh, scp, rsync, nc, git push with credentials, a literal token in an `Authorization` header) is held, and
   the message names what it found by placeholder only. If you meant it, type `cr: allow`, then ask Claude to run
   the same command again: it passes once.
 - **Encoded copies count:** a secret Cloakroom has seen is also caught base64-encoded, URL-encoded or JSON-escaped.
+- **Web, MCP and subagent calls carry placeholders only:** a web fetch, an MCP tool call or a prompt to a subagent
+  that holds a real value is stopped before it runs.
+- **No key lands in a file git would commit:** when Claude writes a file with Write or Edit, a key or password that
+  would end up in a tracked file is refused, and Claude is told to use `.env` instead. Ignored files and `.env`
+  work as before.
 - **MCP images are read locally:** a screenshot or image returned by an MCP tool is read by local OCR and Claude
   gets the masked text instead of the picture; without OCR the image is held back, with a one-line reason.
-
-Details: [docs-HOW-IT-WORKS.md](https://github.com/shanjeevrajendran/cloakroom/blob/main/docs-HOW-IT-WORKS.md).
+- **PDFs, scans and photos become masked text:** Cloakroom pulls the text out on your machine and Claude never gets
+  the file or the picture.
+- **Claude can't turn Cloakroom off:** its settings change only from the dashboard or when you type `cr: pause` or
+  `cr: resume`.
 
 ## Dashboard
 
@@ -270,7 +285,9 @@ rest are mostly names and addresses Gretel leaves unlabelled.
 - **Dry run** (`CLOAKROOM_DRY_RUN=1`): lets everything through and logs what it would have done.
 - **Settings** in `~/.cloakroom/config.json`: `"allow"` for your own exceptions, `"mask_all_dates": true` to mask
   every date (by default only birth dates and dates in someone's record), `"mask_own_username": true` to mask your
-  own login name in paths too, `"allow_images": true` to let pictures through unchecked (with a warning).
+  own login name in paths too, `"allow_images": true` to let pictures through unchecked (with a warning),
+  `"allow_secret_paths": ["tests/fixtures/*"]` (globs, relative to the project folder) for files where sample keys
+  may be written even though git would commit them.
 
 Exceptions, backends, CI and troubleshooting: [the handbook](https://github.com/shanjeevrajendran/cloakroom/blob/main/docs-HANDBOOK.md).
 
@@ -290,7 +307,9 @@ suggests a rule, or add exceptions to `allow` in `~/.cloakroom/config.json`. `cl
 
 **What doesn't it protect?** It stops accidental exposure; it isn't a sandbox. Out of scope: a prompt injection
 (text in a file that steers Claude) set on smuggling data out piece by piece, what you type into a prompt (a prompt
-can be blocked but not rewritten, and names alone go through), and Claude Code's own local logs. Details:
+can be blocked but not rewritten, and names alone go through), and Claude Code's own local logs. Keys are kept
+out of files git would commit when Claude writes them with Write or Edit, but a file a shell command writes some other
+way (a script, `cp`, `sed -i`) is not checked yet, so a commit made from it can still carry a key. Details:
 [docs-LIMITS.md](https://github.com/shanjeevrajendran/cloakroom/blob/main/docs-LIMITS.md).
 
 **What about PDFs, scans and photos?** Cloakroom pulls the text out on your machine and masks it like any file;

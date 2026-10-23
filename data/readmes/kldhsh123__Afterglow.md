@@ -11,6 +11,8 @@
 
 **Let the warmth of past conversations continue into companionship.**
 
+通过真实聊天记录构建可检索的关系记忆、角色设定与表达风格。结合 RAG、角色上下文和兼容 OpenAI 的 API，让 AI 在新的对话中延续熟悉的交流方式。
+
 Build retrievable relationship memories, persona and expressive style from real chat history. RAG, persona context and an OpenAI-compatible API bring familiar conversational patterns into new exchanges.
 
 <p>
@@ -239,6 +241,18 @@ Chinese sources are in `docs/wiki/`; English sources are in `docs/en/`. GitHub A
 [Discord](https://discord.gg/CKrvgCyK4y) · [Discussions](https://github.com/kldhsh123/Afterglow/discussions) · [Issues](https://github.com/kldhsh123/Afterglow/issues) · QQ group `330316577` · [Acknowledgements](https://kldhsh123.github.io/Afterglow/en/acknowledgements.html)
 
 Issues and pull requests are welcome. Read the [contribution guide](CONTRIBUTING.md) before modifying the project; the English [development guide](https://kldhsh123.github.io/Afterglow/en/development.html) covers setup, plugins and checks.
+
+## Acknowledgements
+
+Thanks to the [LINUX DO](https://linux.do) community for suggestions that have shaped and refined many implementation details.
+
+Special thanks to [GuDong](https://github.com/GuDong2003), who has used Afterglow since its early versions and continually contributed bug reports and improvement suggestions.
+
+Thanks to everyone who has submitted issues, pull requests, usage feedback and redacted reproduction material.
+
+The issue templates were adapted from [AstrBot](https://github.com/AstrBotDevs/AstrBot/tree/master/.github/ISSUE_TEMPLATE) for Afterglow's reporting process. Both projects use [GNU AGPL v3.0](https://github.com/kldhsh123/Afterglow/blob/main/LICENSE).
+
+Thanks also to [ECYLT](https://www.ecylt.top/) and its anime API relay for past model-service support.
 
 ## License
 

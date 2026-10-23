@@ -53,8 +53,8 @@
 
 - **Çift LLM Desteği**: Hem Google Gemini hem de OpenAI ile tam uyumlu; `.env` üzerinden tek değişkenle geçiş (`LLM_PROVIDER=gemini` veya `openai`).
 - **Kademeli Model Mimarisi**:
-  - **Curator Agent**: Hızlı ve düşük maliyetli model (`gemini-2.0-flash` / `gpt-4o-mini`).
-  - **Analyst Agent**: Derinlikli mimari, matematik ve benchmark analiz modeli (`gemini-2.0-pro` / `gpt-4o`).
+  - **Curator Agent**: Hızlı ve düşük maliyetli model (`gemini-3.8-flash` / `gpt-4o-mini`).
+  - **Analyst Agent**: Derinlikli mimari, matematik ve benchmark analiz modeli (`gemini-3.8-flash` / `gpt-4o`).
 - **Sıfır Halüsinasyon Link Güvencesi**: Raporlardaki bağlantılar asla uydurulmaz; doğrudan Ingestion katmanından gelen gerçek doğrulanmış URL'lerdir.
 - **Fail-Safe Veri Toplama**: RSS veya arXiv kaynaklarından biri erişilemez olduğunda pipeline çökmez; hata loglanır ve kalan kaynaklarla devam edilir.
 - **Dinamik Web Kazıma (Trafilatura)**: Önemli haberlerin sayfalarına bizzat gidilip tam metin/kod/benchmark bilgisi çekilir.
@@ -132,8 +132,8 @@ cp .env.example .env
 ```ini
 LLM_PROVIDER=gemini
 GEMINI_API_KEY=AIzaSy...
-CURATOR_MODEL=gemini-2.0-flash
-ANALYST_MODEL=gemini-2.0-pro
+CURATOR_MODEL=gemini-3.8-flash
+ANALYST_MODEL=gemini-3.8-flash
 REPORT_LANGUAGE=tr
 ```
 
@@ -154,6 +154,7 @@ python main.py --date 2026-10-19 --lang tr
 <!-- RECENT_REPORTS_START -->
 | Tarih | Başlık / Odak Noktası | Rapor Linki |
 |:---:|:---|:---:|
+| 2026-10-23 | [ArXiv] Low-Bit N-Gram Embeddings for Language Models, [ArXi | [Raporu Oku](reports/2026/10/2026-10-23-daily-brief.md) |
 | 2026-10-22 | Günlük AI Bülteni | [Raporu Oku](reports/2026/10/2026-10-22-daily-brief.md) |
 | 2026-10-21 | Mistral AI Releases Voxtral 3, Google Cloud Ships llm-d 1.0  | [Raporu Oku](reports/2026/10/2026-10-21-daily-brief.md) |
 | 2026-10-20 | MiniMax Just Launched M3.1 Flash, [ArXiv] WeAct | [Raporu Oku](reports/2026/10/2026-10-20-daily-brief.md) |

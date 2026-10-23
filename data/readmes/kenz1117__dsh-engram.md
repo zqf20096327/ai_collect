@@ -1,0 +1,396 @@
+<div align="center">
+
+<img src="docs/screenshots/hero.jpg" width="100%" alt="dsh-engram · 记忆宫殿 — DeepSeek Harness 跨会话长期记忆插件（位置当索引 · 固定路线定顺序 · 骨架长期复用 · 标记独一无二）">
+
+# dsh-engram · 记忆宫殿
+
+<p align="center"><b>Local-first long-term memory for your coding agent.</b><br>
+纯本地 SQLite 的跨会话长期记忆：<b>零外部服务 · 零 API Key · 零 Docker</b>，一条命令装完即用。<br>
+22 个窄参数工具 · 混合检索（FTS5 + 本地向量 RRF）· 证据门 · 全链路审计 · SM-2 间隔重复复习 · 面板中英俄文。</p>
+
+<p align="center">
+  <a href="https://github.com/kenz1117/dsh-engram/blob/main/LICENSE"><img alt="GitHub license" src="https://img.shields.io/github/license/kenz1117/dsh-engram"></a>
+  <a href="https://github.com/kenz1117/dsh-engram"><img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/kenz1117/dsh-engram"></a>
+  <a href="https://github.com/kenz1117/dsh-engram/actions/workflows/checks.yml"><img alt="CI" src="https://github.com/kenz1117/dsh-engram/actions/workflows/checks.yml/badge.svg"></a>
+  <a href="https://www.npmjs.com/package/@kenz1117/dsh-engram"><img alt="npm version" src="https://img.shields.io/npm/v/@kenz1117/dsh-engram"></a>
+  <a href="https://www.npmjs.com/package/@kenz1117/dsh-engram"><img alt="npm downloads" src="https://img.shields.io/npm/dm/@kenz1117/dsh-engram"></a>
+  <a href="https://github.com/kenz1117/dsh-engram/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/kenz1117/dsh-engram"></a>
+  <a href="https://github.com/kenz1117/dsh-engram/graphs/contributors"><img alt="GitHub contributors" src="https://img.shields.io/github/contributors/kenz1117/dsh-engram"></a>
+  <a href="https://awesome-dsh-plugin.com"><img alt="Awesome DSH Plugin" src="https://awesome-dsh-plugin.com/badge.svg"></a>
+</p>
+
+中文 | [English](README.en.md)
+
+</div>
+
+<details>
+<summary><b>目录</b></summary>
+
+- [快速开始](#快速开始)
+- [为什么是它](#为什么是它)
+- [记忆怎么流动](#记忆怎么流动)
+- [界面速览](#界面速览)
+- [宫殿结构：目录即房间，路径即路线](#宫殿结构目录即房间路径即路线)
+- [特性](#特性)
+- [工具（22 个，窄参数）](#工具22-个窄参数)
+- [配置](#配置)
+- [工作原理](#工作原理)
+- [Web 管理面板](#web-管理面板)
+- [开发](#开发)
+- [Model Experience](#model-experience)
+- [Known Limitations and Deferred Work](#known-limitations-and-deferred-work)
+- [路线图](#路线图)
+- [致谢](#致谢)
+- [许可证](#许可证)
+
+</details>
+
+---
+
+## 快速开始
+
+```sh
+dsh plugin --profile web add @kenz1117/dsh-engram
+```
+
+安装后无需配置即可使用（默认分库与模型缓存在 `~/.dsh/engram`，画像注入开启，自动摄取关闭）。
+
+**让 agent 自己装**——把下面这段话贴给任意 agent：
+
+```text
+请执行这条命令安装 dsh-engram（DeepSeek Harness 的跨会话长期记忆插件）：
+  dsh plugin --profile web add @kenz1117/dsh-engram
+装完后确认插件中心出现「记忆宫殿」侧栏入口，并在新会话里用 engram_stats
+确认已注册 22 个 engram_* 工具。
+```
+
+## 为什么是它
+
+记忆插件不少，但多数要你先准备一整套基础设施。这里是三条主流路线与本插件的对照（对照对象为各项目公开 README 与 npm 依赖声明）：
+
+| | **dsh-engram** | 服务端型（Postgres/pgvector/Milvus/Python 服务） | 文件型（纯 Markdown 记忆） |
+|---|---|---|---|
+| 安装成本 | 一条 npm 命令，**装完即用** | Docker + 数据库 + 向量库 + 迁移 | 一条 npm 命令 |
+| 外部依赖 | **无**：嵌入模型离线推理，失败自动降级纯关键词并显式标记 | 必装，通常还要 LLM API Key | 无 |
+| agent 工具面 | **22 个窄参数工具**，覆盖保存/检索/事实链/时间线/审计/导出/蒸馏/信念/复习全生命周期 | 常见 1–3 个（只给检索） | 常见 0–1 个 |
+| 证据门 | **有**：`engram_assess` 由代码强制「声称充足 + 本批次有效证据 + nextStrategy=answer」三者齐备才判充足 | 一般无 | 一般无 |
+| 审计 | 来源会话/轮次/seq 三级溯源 + 取代链 + 矛盾边 + op_log 全量流水 | 通常只有日志 | 无 |
+| 复习 | **SM-2 间隔重复**：只给坐标与门牌线索，不给正文，先回忆后揭示 | 无 | 无 |
+| 注入防护 | 协议标签防提示注入 + 入库脱敏 + 召回占位防自强化回声 | 无 | 无 |
+| 可携带 | Markdown / JSON 导出 + Obsidian/Logseq 友好镜像 | 看实现 | 本来就是文件 |
+| 界面语言 | zh / en / ru | 看实现 | 一般单语 |
+
+一句话：**我们把「记忆」做成一个装完就能用的本地库，而不是一个需要你运维的服务。**
+
+## 记忆怎么流动
+
+```
+  会话日志 --+
+            +--> 摄取 / 保存 --> 写入四态: accept · merge · defer · drop
+  agent 调用+
+                                            |
+                                            SQLite 双库: user.db（跟人走）+ project-<hash>.db（跟仓库走）
+                                            |
+      +----------------------+----------------------+----------------------+
+      v                          v                        v
+      FTS5 关键词道              本地向量道 (RRF)         关系边一跳扩展
+      +----------------------+----------------------+----------------------+
+                                            v
+                                            engram_search --> 命中行带 id= / ref= 与批次 id
+                                            v
+                                            engram_assess（证据门）: 不足以回答就继续检索
+                                            v
+                                            每轮注入画像 <-- 信念 · 事实链 · 实体 <-- 蒸馏 · 巩固 · 衰减 · SM-2
+```
+
+## 界面速览
+
+**今日**——记忆宫殿的仪表盘：速览 KPI、半年活动热力、入殿导航、房间目录。
+
+<p align="center"><img src="docs/screenshots/today.png" width="820" alt="今日视图：速览 KPI、活动热力图、房间目录"></p>
+
+**满宽翻新清单**——每条建议完整展示决策理由与记忆原文，就地阅读、就地执行（降级 / 蒸馏合并），不再挤在小卡里靠弹窗补全。
+
+<p align="center"><img src="docs/screenshots/refurb-fullwidth.png" width="820" alt="翻新清单：满宽铺开，理由与原文完整展示，就地执行"></p>
+
+**陈展**——全量记忆库：房间 / 状态 / 内容过滤，行内铭牌展开与取代链编辑。
+
+<p align="center"><img src="docs/screenshots/library.png" width="820" alt="陈展视图：过滤、排序与行内详情"></p>
+
+
+## 宫殿结构：目录即房间，路径即路线
+
+DeepSeek Harness 跨会话长期记忆插件 —— 把记忆宫殿的**信息架构**（而不是它的神经科学隐喻）真正落进 agent：**位置当索引**（每条记忆钉在「房间#桩位」坐标上）、**固定路线定顺序**（巡游路线只增不改）、**骨架长期复用**（同主题永远同房同序）、**标记独一无二**（门牌纪律：唯一 · 差异化 · 带日期）。配套间隔重复的检索练习（只给线索、不给正文）与知识飞轮（摄取 → 强化 → 蒸馏 → 衰减）。
+
+记忆宫殿真正管用的是它的**信息架构**，不是那套生物学机制——前者机器完全能用，后者 AI 既没有也不需要。拆开看只有四件事：
+
+```
+主厅 · 常驻核心记忆   少而稳，每次都在场            每轮注入的画像（条数 + token 预算双限）
+  │
+走廊 · 路由索引       先决定进哪个房间，别一上来全库检索   房间目录 + engram_search room=
+  │
+  ├─ 事实厅   fact        用户说过的事实
+  ├─ 偏好阁   preference  偏好与口味
+  ├─ 决策堂   decision    决策与约定
+  ├─ 往事廊   episode     经历与时间线
+  └─ 技法坊   skill       方法与技法                 每房容量 9，满员开「房名-2」
+  │
+门牌 · 铭牌纪律       唯一 · 差异化 · 带日期         写入即评分，低分进翻新清单
+```
+
+| 宫殿原则 | 在插件里是什么 | 代码 |
+|---|---|---|
+| 位置当索引 | 写入即排桩 `房间#桩位`；房间容量 9（7±2），满员开新房，桩位只增不回收 | [src/palace/slots.ts](src/palace/slots.ts) |
+| 固定路线定顺序 | `tour_routes` 只增不改；`engram_tour mode=fixed` 按桩位顺序走全宫 | [src/store/sqlite.ts](src/store/sqlite.ts) |
+| 骨架长期复用 | 同主题永远落在同一房间同一序号，召回靠顺序提取而非重新检索 | [src/palace/slots.ts](src/palace/slots.ts) |
+| 标记独一无二 | 门牌 0-1 评分：全库唯一 +0.4 / 日期锚点 +0.3 / 同房前 6 字不重复 +0.3 | [src/imagery/score.ts](src/imagery/score.ts) |
+| 复习纪律 | SM-2 间隔重复；检索练习只给坐标与门牌、**不给正文** | [src/review/sm2.ts](src/review/sm2.ts) |
+
+感官与情绪维度（气味、温度、情绪权重）刻意不计分：那是给人脑先天限制打的补丁，AI 既没有也不需要。
+
+## 特性
+
+- **跨会话记忆**：会话开始注入用户画像摘要（条数 + token 预算双重上限，可配；`engram_profile_edit` 维护的 curated 画像优先于派生事实），Agent 天然"记得"你是谁、在做什么；工具检索跨会话召回历史事实。
+- **双层分库**：`user.db` 全局共享；`project-<hash>.db` 按 git origin 标识隔离（无 git 时回退 cwd 全量哈希，旧命名库自动迁移）——个人偏好跟人走，项目约定跟仓库走。**项目宫殿随工作区切换**：管理面板「项目」scope 默认跟随 GUI 当前选中的工作区（Header 显示工作区标题与路径），也可在下拉里固定到某个工作区；`engram_save/search` 等工具的 project 读写同样按当前会话 cwd 归属，与面板同一口径。
+- **混合检索**：FTS5（unicode61 + 中文 2-gram 预切词）与本地向量（默认 `Xenova/paraphrase-multilingual-MiniLM-L12-v2`，384 维，q8；模型与池化可配，见下）RRF 融合 + 关系边一跳扩展 + 新鲜度/命中次数乘性排序 boost；嵌入模型离线运行，下载失败自动降级纯关键词并显式标记。
+- **记忆宫殿信息架构**（v0.7.2+）：四原则全部落进核心路径，而非展示层皮肤——**位置当索引**（写入按 kind 分房并钉「房间#桩位」坐标，房间容量 9，满员开新房，桩位只增不回收）；**固定路线定顺序**（`tour_routes` append-only，`engram_tour mode=fixed` 按桩位顺序走全宫）；**骨架长期复用**（同一 topic 永远落在同一房间同一序号，顺序提取而非重新检索）；**标记独一无二**（门牌规则 0-1 评分：全库唯一 +0.4 / 带日期锚点 +0.3 / 同房前 6 字不重复 +0.3，低分进翻新清单；库内 active 记忆少于 8 条时不扫描，避免小库噪声）。
+- **走廊路由检索**：画像里附房间目录，`engram_search` 支持 `room` 参数——先决定进哪个房间，再在房内检索，而非一上来全库 RRF。检索命中 top5 附同房间相邻桩位 id 作为编码特异性线索。
+- **检索练习闭环**（间隔重复）：`engram_review_queue` 只给宫殿坐标与门牌线索、**不给正文**，迫使模型先主动回忆；`engram_review` 揭示核对，`engram_report grade`（0-5）自评推进 SM-2 调度（1 → 6 → round(prev × ease) 天，失败重置，ease 下限 1.3）。进入复习调度的条目**不再参与自动衰减**——命运由回忆结果决定。会话开始注入会提示今日待回忆条数。
+- **历史会话回填**（v0.7.3+）：把 dsh 已持久化的历史会话逐轮提炼进宫殿——默认按**每个会话自己的 cwd** 写进对应项目库（不串库），同样逐条判作用域（跨项目通用的个人偏好落私人库），复用实时摄取的节流/脱敏/防回声，靠 (会话, 轮次) 幂等键支持中断续跑（键固定在私人库，与实时路径共用）；回填条目不进今日复习队列（避免一次性回填淹没「今日待回忆」）。**导入规则由你选**（时间窗 / 单会话轮数 / 总轮数上限 / 辅助模型 / 是否含子代理·种子·无 cwd 会话），先估算（零成本、不调 LLM）再执行；设置页有独立的**「回填」tab**，可看进度（含**跳过原因分布**）与暂停续做。辅助调用默认**复用你当前在用的模型**（历史日志里记的是当年的 provider/model，在当前环境可能已不可用），也可在面板「辅助模型」下拉里从宿主已注册的 provider/model 中直接指定。
+- **知识飞轮**：摄取/保存 → 矛盾候选（写入时高相似近邻建 `contradicts` 边并报告，模型/用户裁决）→ 命中强化（confidence +0.05）→ 蒸馏（同主题簇合并为高层规律、supersedes 取代链、置信度继承）→ 衰减（低重要性且长期未访问归档，可恢复）。
+- **自动信念巩固**（v0.7.14+，默认关闭，yml `reflect: suggest|auto`）：会话结束后把「尚未成为任何信念证据」的原始记忆交辅助 LLM 巩固为一句话**信念（observation）**——与蒸馏的关键区别是原始记忆全部保留，信念是**叠加的抽象层**：每条信念带证据 id 列表与证据数（proof count），同主题经向量近邻（余弦 ≥0.9）自动归并、**持续细化同一条**而非反复新增。新证据与既有信念近邻（≥0.86）时信念先转 `stale`，下次巩固把原始证据一并喂给模型复核，结果四选一——`form` 新建、`refine` 细化、`still` 维持、`refute` 否定（保留证据链供审计）。`auto` 档会话结束后台巩固（5 秒超时、异常不影响对话）；`suggest` 档只登记待巩固任务，由 `engram_reflect` 工具一键执行（任何档位都可手动调）。active 信念按证据数取前 3 条随画像包注入会话，stale/refuted 不注入。schema 升级到 v12（observations 表，增量迁移、存量数据零搬运）。
+- **Jev 系统一裁决**（v0.7.12+，默认关闭，yml `jev` 子配置）：DEFER 模糊带的三路判定（并入 / 放行 / 搁置）与矛盾边确认可交外部 Jev 模型判决；Jev 不可用（网络失败 / 超时 / 未解析出提供商或模型）时静默回落纯规则四态，**不阻断写入**。每次裁决旁路留观测（判定结果、Jev 是否参与、耗时、回落原因，进程内最多 50 条、重启清空），面板「裁决」视图一眼排查「为什么这条被搁置」。yml 的开关 / 提供商 / 模型 / 端点 / 超时五项可在面板覆盖（存 `<dbDir>/jev-config.json`，0600 文件 + 0700 目录），保存即时生效无需重启；端点留空时按提供商推导为 `{baseURL}/systemone`；「测试连接」按钮用当前输入即时验证（未保存也按当前值测、不落覆盖文件）；令牌不是插件设置，调用时从所选提供商的密钥库解析，因此插件手里没有第二份可掩码、可同步、可轮换的副本。三阈值保持 yml 高级配置，面板只读展示。
+- **实体词典**（v0.7.10+）：自动摄取与 `engram_save` 的辅助 LLM 输出同时抽取实体提及（人物/项目/工具/概念，可带别名），按归一化名与既有实体的 name/aliases 精确匹配消解——命中复用并刷新「最近提及」，未命中新建；记忆与实体多对多关联，随来源记忆所在 scope 分库。`engram_search` 命中行附关联实体标签；实体消解故障只静默跳过关联，不影响记忆落库。面板「实体」视图按类别筛选、按名称/别名搜索，点开单实体看它牵出的所有记忆。
+- **自动摄取**（`ingest` 配置开启时）：新一轮第一步从会话日志提取上一轮的候选事实，会话结束时补摄取最后一轮（失败留 pending 键，下次会话自动补做，幂等不重复），低 confidence 写入，嵌入可用时按四态处置近邻（复述并入强化 / 疑似矛盾建边待裁决 / 全新写入）——不说"记住"也能攒记忆。**逐条判宫殿**：提炼时同步判定作用域，只跟当前项目/仓库有关的（技术选型、项目约定、架构决策）进当前会话 cwd 对应的项目库，跨项目通用的（个人偏好、习惯、本人经历）进私人库——偏好跟人走、约定跟仓库走。
+- **来源审计**：每条记忆记录来源会话、轮次与事件 seq，`engram_review` 完整回查来源链、取代链、矛盾与操作日志；全部写入/修改/遗忘/蒸馏/衰减入操作日志表。
+- **Web 管理面板**（v0.7.0+）：v0.8.0 起从「设置 → 记忆库 tab」升级为**顶层侧栏入口**（`sidebar.panellist` + `main` 双槽位，与「Hyreal FDE 工作台」平级），主列满宽渲染所有视图——一键直达、不再被设置弹窗 ~600px 限制、九视图横排展开；入口图标为 18px 宫殿剪影 SVG（屋顶 + 主体 + 门洞 + 两侧窗，Phosphor 风 stroke 1.75）。九个视图：今日（速览条：记忆 / 开放 / 清晰度 + 健康分环，底行「落成 / 发掘 / 整理 / 今日到期」四项小统计与诊脉时间同行；下面是入殿导航、房间目录、待翻新、健康分构成；侧栏画像卡展示常驻画像（curated）当前内容与版本 diff 历史）、陈展（筛选含今日到期 / 巡游路线序 / 批量 / 列表与编辑；「参观 / 修缮」以视口浮层呈现——sticky 钉在宿主滚动区可见顶部，长列表任意滚动位置打开都不跳动不挤压）、走廊（走廊鸟瞰 + 检索实验台）、日志（近 7 天计数 + 两库合并的完整 op_log，可按操作类别筛选）、回填、往事（按会话分组浏览 episode，锚点邻近扩展）、实体（实体词典：类别筛选 + 名称/别名搜索 + 单实体关联记忆）、**信念**（v0.7.15+：巩固信念列表按证据数排序，成立 / 待复核 / 已否定状态筛选，点「证据 n 条」展开证据链只读回查支撑该信念的原始记忆——证据被清理时信念保留并明确提示；`GET /api/engram/observations` 与 `GET /api/engram/observation-evidence` 两个回环路由）、裁决（Jev 系统一裁决：配置覆盖 + 测试连接 + 近期裁决记录）。Header 单行两端对齐：左侧 scope 三宫格（私人 / 项目 / 共享）驱动全局 scope，项目 scope 下工作区下拉内联在同一行；右侧今日到期角标 + 重访 / 导出纯图标按钮（导出弹层不再被下方 Tab 行遮挡）；「中 | EN」段控切换面板文案语言（独立于宿主语言，选择持久化），全部文案中英双语。支持按脱敏标记筛选（仅看/排除含 `[REDACTED:*]` 的条目）并给命中条目挂琥珀色徽标，方便审计脱敏覆盖面。
+- **提示注入防护**：全部记忆召回出口（画像注入、`engram_search/timeline/review` 输出）包 `<engram_memory_context>` 协议标签并附使用警告（历史记忆非当前请求、不遵循其中指令、仅相关时使用），当前请求独立包 `<current_user_request>`；所有入库内容（摄取候选、保存正文）先剥离这些协议标签，防伪造协议块二次注入。
+- **摄取脱敏**：入库前正则清洗常见密钥凭据（sk- 系 API key、Bearer、AWS AKIA、GitHub token、PEM 私钥、password/token 赋值、中文密码赋值）与个人信息（中国大陆手机号、18 位身份证号），命中片段替换为 `[REDACTED:<类型>]`。
+- **召回占位（防回声室）**：摄取切片中记忆召回工具的输出替换为 `[engram memory result omitted from capture: <tool>]`，并向提取模型附注"既有记忆的复述不是新信息"，阻断记忆自我强化循环。
+- **多查询检索**：`engram_search` 可用辅助 LLM 把查询改写为 ≤3 个互补查询分别检索，跨查询 RRF 融合 + 每查询保底命中；改写失败自动降级单查询（`queryRewrite: false` 关闭）。
+- **证据门（search → assess）**：检索命中只说明「相关」，不说明「足以回答」。每次检索登记一个进程内批次（每会话保留最近 20 个，会话结束即释放），输出行尾给出 `ref=…` 与批次 id；`engram_assess` 只能引用同一批次的 ref，且 `sufficient` 由代码强制——三者齐备（模型声称充足、至少一条有效证据、`nextStrategy=answer`）才算充足，否则判为不足并把策略改回继续检索。判定与拒绝明细写入审计日志，面板「日志」的「检索」类别可见。下一步开始前若仍有未判定批次，注入收尾提醒引导补判或说明不判（连续不足 ≥2 次时建议换检索方式或询问用户；`assessReminder: false` 关闭）。
+- **数据可携带**：`engram_export` 一键导出 Markdown / JSON 文件，支持脱敏视图（内容二次清洗 + 预览截断，分享安全）。`engram_mirror` 导出可漫游的镜像目录（Obsidian / Logseq 友好：每条记忆一个 Markdown，正文 + YAML frontmatter + 双向链接 `[[id]]`），让「宫殿」也成为可人读的私人知识库。
+- **认知架构探索（dsh-market · AGI 架构探索）**：本仓库是 dsh-market「AGI 架构探索」类目下，对 agent 长期记忆的认知科学方法论重构——记忆宫殿（意象标签 + 房间铭牌）、走廊拓扑（力导向图）、闭环提问（摄入时让模型主动追问用户细节）、巩固合并（启发式去重 + 余弦相似度），与 MemGPT/Letta 同层「agent 记忆架构」叙事。
+
+## 工具（22 个，窄参数）
+
+| 工具 | 作用 |
+|---|---|
+| `engram_save` | 保存（**写入四态回报**：复述并入强化既有条目（merge，不新建）、疑似矛盾落库建边待裁决（defer）、全新写入（accept），低熵内容丢弃（drop）；嵌入不可用时全部 accept）；支持 `items` 数组单次批量保存 ≤10 条，统一清洗/批量内去重，逐条回报处置（`disposition`/`mergedInto`），单条失败不影响其余（`count`/`items`/`failed` 汇总返回）；`placard` 挂门牌（按唯一·差异化·带日期评分，低分附改写建议）；`entities` 附实体提及（与记忆消解关联进实体词典）。`scope=project` 落当前会话 cwd 对应的项目宫殿 |
+| `engram_search` | 语义 + 关键词混合检索（命中强化置信度）；`room` 参数做走廊路由——只在指定房间内检索；命中 top5 附同房相邻桩位线索，命中行附关联实体标签；`asOf` 做时点回看——只认该时刻有效的实体事实，命中行尾附关联实体的时点事实。输出行尾给 `id=` 与 `ref=`，末尾给批次 id。`scope=project` 查当前会话 cwd 对应的项目宫殿 |
+| `engram_facts` | 实体事实链读写。写入模式传 `facts` 数组（≤50 条，每条 `entity`/`entityId` + `content`），`replaces` 声明取代旧事实（软失效，历史链保留），坏条目进 `failed` 不中断其余；查询模式传 `entity`（按名查询，未命中不新建、歧义列候选、近邻给建议）或 `entityId`（精确），`includeInvalid` 看全链含已失效，`asOf` 只看该时点有效的事实 |
+| `engram_assess` | 证据门：作答前判定「检索到的内容是否足以回答」。提交 `batchId` + ≤8 条 `evidenceRefs`（只能取该批次输出里的 `ref=`）+ `missing` + `nextStrategy`；代码强制 `sufficient` 需同时满足「声称充足」「至少一条属于本批次的有效证据」「nextStrategy=answer」，否则判为不足并把策略改回继续检索；非本批次的 ref 会被拒绝并列出，判定写入审计日志 |
+| `engram_timeline` | 时间线浏览：默认按创建时间倒序；`order: 'tour'` 改按固定巡游路线桩位顺序（输出附宫殿坐标，未上路线者排末尾），让 agent 也能沿固定路线复述 |
+| `engram_episode_timeline` | episode 情景独立时间线：按日期范围与来源会话浏览经历，输出按会话分组（组间新→旧、组内时间升序，`sessionId` 可精确回查单会话，组头附摄取期或会话结束时生成的一句话会话摘要）；`around` 传锚点记忆 id 时切换为时间邻近扩展——列出锚点时刻 ± 窗口（`windowMinutes`，默认 60）内的情景，回答「当时前后还发生了什么」 |
+| `engram_update` | 修正（supersedes 取代链）；可同时改挂 `placard` 门牌 |
+| `engram_forget` | 遗忘（软删可恢复） |
+| `engram_report` | 回报使用效果（skill 类首选）：success 提权 +0.05 / failure 降权 -0.1，持续无效的记忆被衰减自然淘汰。传 `grade`（0-5）则按 SM-2 推进复习调度，作为检索练习的自评入口 |
+| `engram_review_queue` | 今日待回忆队列：只给宫殿坐标（房间#桩位）、门牌与逾期天数，**不给正文**——先回忆、再揭示、后自评 |
+| `engram_review` | 审计单条：来源链、取代链、矛盾、操作日志 |
+| `engram_stats` | 全库统计与信噪比；附房间目录（各房占用桩位与最新门牌） |
+| `engram_examine` | 渐进式披露：按 id 批量拉完整铭牌（建议 ≤16 个，先检索拿 id 再取全文） |
+| `engram_neighbors` | 走廊漫步：从一间出发走 1-3 跳关系边，返回邻居简表 |
+| `engram_tour` | 巡游路由：`mode=fixed` 按固定桩位路线走全宫（路线恒定，顺序提取）；`mode=thematic` 按主题动态规划 3-7 站 |
+| `engram_audit_forgotten` | 闭馆考古：列最近已闭馆条目与墓志铭，复核过去的遗忘是否得当 |
+| `engram_ingest_history` | 历史会话回填：把 dsh 历史会话逐轮提炼进宫殿（按会话 cwd 分库、已摄取轮次自动跳过）。每会话轮次摄取完成后用辅助 LLM 生成一句话会话摘要落库（失败静默不阻断），实时会话结束时同样收尾生成，供时间线组头回看。`dryRun` 缺省 true 只估算；`dryRun=false` 才执行。大批量建议用设置页「回填」tab |
+| `engram_export` | 导出 Markdown / JSON 文件（数据可携带）；`redactedView: true` 输出脱敏视图（二次清洗 + 40 字预览截断，可安全分享） |
+| `engram_distill` | 蒸馏：同主题簇合并为高层规律（LLM） |
+| `engram_reflect` | 信念巩固：把尚未巩固的原始记忆经辅助 LLM 抽象为带证据数的高层信念（form/refine/still/refute 四动作，向量近邻自动归并，原始记忆保留不归档）；同时是 reflect=suggest 待巩固登记的执行出口 |
+| `engram_profile_edit` | 画像 curated block 编辑：`view` 看当前内容与版本历史；`edit` 写入新版本（乐观锁 `expectedVersion`，冲突 loud 失败）；`rollback` 回滚到历史版本（作为新版本追加，历史永不改写）。curated 画像优先于派生画像注入；编辑记录入操作日志，面板今日页画像卡可查版本 diff |
+
+## 配置
+
+可选配置（cordis.yml）：
+
+```yaml
+- id: dsh-engram
+  name: '@kenz1117/dsh-engram'
+  config:
+    dbDir: '~/.dsh/engram'          # 分库与模型缓存根目录
+    injectProfile: true             # 会话开始注入用户画像摘要
+    profileTopN: 8                  # 注入条数上限（1-64）
+    injectTokenBudget: 1024         # 注入 token 预算（128-8192，中文按 1.5 token/字、其余按 4 字符/token 估算，装不下的条目降级为索引行）
+    injectItemBudgetStart: 160      # 分级递减预算：首条正文字符数（40-2000，逐条按 decay 递减、装不下先截断）
+    injectItemBudgetDecay: 0.9      # 分级递减预算：逐条递减系数（0.5-1）
+    injectItemBudgetFloor: 24       # 分级递减预算：单条正文字符下限（8-200，不得超过 start）
+    assessReminder: true            # 证据门收尾提醒：存在未判定检索批次时在下一步开始前注入 engram_assess 提醒
+    modelCacheDir: '~/.dsh/engram/models'  # 嵌入模型缓存目录
+    hfEndpoint: 'https://huggingface.co'   # 模型下载端点，网络受限可配镜像
+    # 嵌入器：整段不写就是 local + 默认模型；kind 决定用本地模型还是远程端点
+    embedder:
+      kind: 'local'                   # local（transformers.js 离线推理）| remote（OpenAI 兼容 /embeddings）
+      localModel: 'Xenova/paraphrase-multilingual-MiniLM-L12-v2'  # 384 维；旧默认 Xenova/bge-small-zh-v1.5 为 512 维
+      localPooling: 'mean'            # mean（多数句向量模型）| cls（bge-m3 等 XLM-R 同族）
+      # kind: 'remote'
+      # model: 'text-embedding-3-small'      # remote：模型名，原样传给服务端
+      # baseUrl: 'https://api.example.com/v1' # remote：含版本号的根地址
+      # apiKeyEnv: 'EMBEDDING_API_KEY'        # remote：密钥从这个环境变量读（优先于写死在配置里的 apiKey）
+      # batchSize: 32                         # remote：每批条数
+      # timeoutMs: 30000                      # remote：单次请求超时（毫秒）
+    # 换模型要重建向量：维度与库中不同时写入和比较都直接拒绝（EMBEDDER_DIMENSION_MISMATCH），不截断后假装相似
+    ingest: 'off'                   # 自动摄取：off | light（仅用户消息，每轮≤2条）| eager（含助手消息，每轮≤5条）
+    reflect: 'off'                  # 自动信念巩固：off | suggest（会话结束只登记待巩固，engram_reflect 执行）| auto（会话结束后台巩固）；任何档位均可手动调 engram_reflect
+    # provider 与 model 必须成对提供：摄取/蒸馏的辅助 LLM 路由覆盖（缺省从会话日志解析）
+    # provider: 'deepseek'
+    # model: 'deepseek-v4-flash'
+    decayAfterDays: 30              # 衰减：最近访问超过该天数（同时是检索 recency boost 的衰减窗口）
+    decayImportanceBelow: 0.3       # 衰减：且 importance 低于该值 → 归档（可恢复）
+    rankRecencyWeight: 0.2          # 检索排序新鲜度因子权重（0-2，0 关闭）
+    rankProofWeight: 0.1            # 检索排序命中次数因子权重（0-2，0 关闭）
+    queryRewrite: true              # engram_search 用辅助 LLM 改写 ≤3 个查询做 RRF 融合（失败自动降级单查询）
+    autoSlot: true                  # 写入期自动排桩（按 kind 分房、钉「房间#桩位」坐标、登记巡游路线）
+    reviewScheduling: true          # 写入期自动排入复习调度（1 天后首次到期；关则新条目不进 SM-2 队列）
+    # 历史回填默认规则（面板/工具的初始值；总轮数上限是硬顶，按次只能调低）
+    historyBackfillDays: 7                  # 默认时间窗天数，0 = 不限
+    historyBackfillMaxTurnsPerSession: 20   # 单个会话默认最多摄取轮数
+    historyBackfillMaxTotalTurns: 200       # 单次运行的总轮数硬上限（1-5000）
+    historyBackfillIncludeSubagents: false  # 默认排除子代理会话
+    historyBackfillIncludeSeeded: false     # 默认排除种子会话
+    historyBackfillIncludeNoCwd: false      # 默认排除无 cwd 会话（这类只能进 user 库）
+    # Jev 系统一裁决（默认关闭；提供商与模型取自 DSH，插件不保存密钥；Jev 不可用时静默降级回纯规则四态）
+    # DEFER 模糊带三路裁决：概率≥deferMergeAbove 判同一条（merge），概率≤deferAcceptBelow 判不同条（accept），中间保持 defer；
+    # defer 落库前矛盾边先经 Jev 确认（概率≥contradictMinProbability 才建 contradicts 边）。
+    jev:
+      enabled: false                        # 开关
+      # provider: ''                        # Jev 取自哪个 DSH 提供商（用它的 baseURL 与密钥库）；留空 = 本会话正在用的那个
+      # model: 'jev-latest'                 # 判决模型名；留空 = 该提供商的第一个 Jev 模型
+      # endpoint: ''                        # System One 完整端点（POST /v1/systemone）；留空 = 按提供商推导 {baseURL}/systemone
+      # timeoutMs: 3000                     # 单次请求超时（毫秒，1000-60000）
+      # deferMergeAbove: 0.85               # 模糊带概率≥此值判同一条（merge）
+      # deferAcceptBelow: 0.15              # 模糊带概率≤此值判不同条（accept）
+      # contradictMinProbability: 0.8       # 矛盾确认概率≥此值才建 contradicts 边
+    # 以上 enabled/provider/model/endpoint/timeoutMs 五项可在管理面板「裁决」tab 覆盖（存 <dbDir>/jev-config.json，字段级覆盖，保存即时生效）；三阈值仅此处可配。令牌不是插件设置：调用时从所选提供商的密钥库解析，插件手里没有可掩码、可同步、可轮换的副本。此处或覆盖文件中遗留的 apiKey/baseUrl 会被忽略，并给出一次性告警，指明字段与密钥的去处
+```
+
+## 工作原理
+
+插件由宿主半（Node）与浏览器半（React）组成：
+
+```
+会话 Agent                                 宿主半（Node）
+  │                                          │
+  ├─ 每轮第一步 ◀─────────────────────────── ├─ 用户画像快照注入（plugin 来源 user 快照）
+  ├─ engram_save / search / review … ──────▶ ├─ SQLite 双库（user.db / project-<origin hash>.db）
+  │                                          ├─ FTS5 关键词道 + 本地向量道 RRF 融合 + 排序 boost
+  ├─ engram_distill ───────────────────────▶ ├─ 辅助 LLM 蒸馏（簇合并 → supersedes 链）
+  ├─ 会话结束（reflect 开启）──────────────▶ ├─ 信念巩固（未巩固证据 → observations：近邻归并 / stale 复核）
+  │                                          └─ 自动摄取：会话日志 → 候选事实（含会话结束的末轮，ingest 开启时）
+  └─ 设置页「记忆库」tab ◀────────────────── ─── 回环 API /api/engram/*（写操作校验回环 Origin）
+```
+
+- **双层分库**：`user.db` 全局共享；`project-<hash>.db` 按 git origin URL 归一化哈希命名（`git@github.com:a/b.git` 与 `https://github.com/a/b` 同库；worktree 沿指针解析到主仓库 origin）；无 git 或无 origin 时按 **cwd 全量 sha256** 命名（v0.7.6 起；旧的「cwd 前 12 字符」截断命名会同前缀撞库，启动时自动 rename 迁移，新旧并存则不动并告警）。
+- **项目宫殿路由**：`GET /api/engram/workspaces` 给出可选项目宫殿清单（来源 = 宿主 `workspaceRegistry` 工作区 → 会话 header 里出现过的 cwd → 插件进程目录兜底，按分库名去重；同仓库的多个 worktree 共用一个宫殿）；所有项目 scope 的接口与工具读写接受选择器（HTTP `?project=<dbName>` / POST body `project`，工具用当前会话 `session.header.cwd`），未知选择器 HTTP 回 404、工具回退进程目录。面板「项目」scope 默认跟随 GUI 当前工作区并可固定到某个工作区。
+- **宫殿结构（目录即房间，路径即路线）**：**主厅** = 每轮注入的常驻核心画像（少而稳，每次都在场）；**走廊** = 画像里附的房间目录 + `engram_search room` 参数（先定房间，再检索）；**房间** = 按 kind 分房（事实厅 / 偏好阁 / 决策堂 / 往事廊 / 技法坊），容量 9，满员开「房名-2」；**门牌** = 每条记忆的 `placard` 铭牌，受唯一·差异化·带日期纪律评分。存量库首次打开时自动补排桩（幂等，开新房会告警提醒人工命名）。
+- **自动摄取**（`ingest` 开启时）：新一轮第一步从会话日志提取上一轮的候选事实；会话结束（session/disposed）补摄取最后一轮，5 秒超时，失败/超时把 pending 键写入操作日志，下次会话首步自动重放补做；已摄取的 (会话, 轮次) 幂等去重（键固定在私人库，实时与历史回填共用一份，跨路径不重复）。读取源是会话日志；辅助调用的请求审计走插件自身操作日志，不向会话日志 append 未知事件。候选以低 confidence 写入并按**目标分库内**的嵌入近邻去重。**作用域逐条判**：提炼输出带 `scope`，`project` 落当前会话 cwd 的项目库、`user` 落私人库；无 cwd 的会话只能进私人库（此类会话不做逐条判定，避免标记与实际分库不符）。历史回填沿用同一判定，默认按各会话自己的 cwd 落项目库。
+- **来源链**：每条记忆记录来源会话、轮次与事件 seq，`engram_review` 可完整回查；操作日志表记录全部写入/修改/遗忘/蒸馏/衰减。
+- **嵌入离线**：模型首次使用需联网下载（q8 约 50MB，端点可配镜像），此后完全离线；失败时插件照常工作，检索降级纯关键词并显式标记。**维度是硬约束**：库中向量与当前模型的维度不一致时，写入与相似度比较都直接拒绝并报 `EMBEDDER_DIMENSION_MISMATCH`（说清两边各是多少维），而不是逐维截断后给出一个像样的相似度。
+- **界面本地化**：client 半经宿主 locale 服务注册 zh/en 词典，跟随宿主语言设置实时切换；状态/种类等数据枚举仅在显示层映射，存储值保持英文。
+
+## Web 管理面板
+
+安装后在宿主**侧栏**出现「记忆宫殿」入口（v0.8 起为独立面板应用，不再寄居设置页），9 个视图覆盖记忆库的全部日常操作：
+
+| 视图 | 内容 |
+|---|---|
+| **今日** | 速览 KPI（记忆 / 开放 / 清晰度 / 今日到期，各带 120 天 sparkline）+ 半年活动热力图 + 入殿导航 + **满宽翻新清单** + 房间目录 + 常驻画像 |
+| **陈展** | 全量记忆库：按房间 / 状态 / 内容过滤，时间与巡游路线双排序，行内铭牌展开、编辑走取代链，批量遗忘 / 恢复 |
+| **走廊** | 记忆关系图谱：平面图（建筑隐喻）/ 力导向关系图双模式，检索实验台支持 1-3 跳邻居漫游 |
+| **回忆螺旋** | 按时间窗的螺旋布局鸟瞰，远老近新 |
+| **往事** | episode 情景时间线：按会话分组、带 LLM 摘要组头，锚点邻近扩展回答「当时前后还发生了什么」 |
+| **实体** | 人物 / 项目 / 工具 / 概念词典，类别与别名搜索，单实体关联记忆全貌 |
+| **信念** | 蒸馏出的高层规律，六档证据强度 |
+| **日志** | 双库合并的 op_log 审计流水，按操作类别筛选 |
+| **运维** | 历史回填（估算 → 执行 → 续跑）、Jev 系统一裁决配置与近期裁决观测 |
+
+界面语言随面板切换（中文 / English / Русский），服务端理由文案跟随面板语言。数据经回环 API `/api/engram/*`（写操作校验回环 Origin + 环绕三重防线）；面板与后端进程版本不一致时顶部出现重启提醒横幅。headless 等无 webServer 的组合不挂载面板，其余能力不受影响。v0.7 时代逐版本的面板演进记录见 [docs/panel-history-v0.7.md](docs/panel-history-v0.7.md)。
+
+## 开发
+
+```sh
+pnpm install            # prepare 会把 @deepseek-ai/* peer 从 ../deepseek-harness symlink 进来（需先在 harness 仓库 pnpm install && pnpm run build）；lib/ 缺失时自动执行 pnpm bundle
+pnpm test               # 单测 + 组合测试；真实嵌入 e2e：ENGRAM_E2E=1（可配 HF_ENDPOINT）且网络可达时执行
+pnpm typecheck
+pnpm bundle
+```
+
+### 提 PR 前自检
+
+```sh
+node scripts/check-messages.mjs   # 代码请求的键都已声明、无孤立键、zh/en/ru 三语配平
+node scripts/check-patterns.mjs   # 密钥清洗与闲聊拒收在所有已声明语言下的行为
+pnpm typecheck
+pnpm test
+```
+
+前两项在干净的检出上即可运行，CI（`.github/workflows/checks.yml`）跑的正是这两项，另加 `pnpm install --frozen-lockfile --ignore-scripts`。后三项不行：`@deepseek-ai/*` peer 不在 npm 上（见 `.npmrc`），只在 `deepseek-harness` 工作区内才能解析。提 PR 前请在本地把四项都跑一遍——字典漏配会在本机大声报错，而依赖语言环境的断言（断言中文文本，而 `language: 'auto'` 落到开发者自己的语言环境）只在别人的机器上变红。
+
+安装与构建脚本的两点说明：
+
+- **GitHub 源码快捷安装**（`dsh plugin add github:kenz1117/dsh-engram`）拿的是源码，`prepare` 会在 `lib/` 缺失时自动执行 `pnpm bundle` 现场构建——失败时看 prepare 日志的 bundle 段，而不是宿主报的 "no entry point"。
+- **原生依赖构建许可**：`@huggingface/transformers` 传递的原生包（`onnxruntime-node`、`sharp`、`protobufjs`）需要 pnpm 允许运行构建脚本。pnpm 11 已忽略包内 `pnpm.onlyBuiltDependencies` 声明，许可必须写在**使用方**（profile / workspace）侧——pnpm 11 用 `pnpm-workspace.yaml` 的 `allowBuilds`，pnpm 10 用同文件的 `onlyBuiltDependencies`。未许可时 pnpm 会跳过这些构建并把跳过列为错误，嵌入功能不可用；许可后重装即可。
+
+## Model Experience
+
+### Request context and condition
+
+#### What the model sees
+
+会话每轮第一步追加一条 plugin 来源的 user 快照：`User memory profile (dsh-engram, cross-session) — Grand Hall (always present):` 加用户级记忆列表（默认至多 8 条且整段不超过 1024 token 预算，超预算条目降级为 `#id` 索引行，`injectProfile: false` 关闭），行内带宫殿坐标（`房间#桩位`）；有到期复习条目时末尾追加一行提示今日待回忆条数。工具调用结果为纯文本行列表（含 `id=`、scope/kind 标注、桩位坐标、矛盾候选提示与降级说明）。自动摄取与蒸馏各产生一次辅助 LLM 调用（独立于主对话计费路径，带 purpose 归因）。
+
+#### Token effect
+
+画像注入为条件性固定成本（受条数上限与 token 预算双重约束）；工具 schema 为常驻成本（22 个窄参数工具）。
+
+#### KV Cache effect
+
+画像文本随记忆库内容变化——变化只体现在新会话或记忆更新后的轮次边界；同一会话内注入内容不变时前缀保持稳定；工具 schema 恒定，不影响前缀。
+
+## Known Limitations and Deferred Work
+
+- **矛盾判定默认无 LLM** —— 写入时默认仅按向量相似度（≥0.88）报告候选并建边，语义矛盾的确认留给模型/用户裁决与蒸馏；可配 Jev 裁决（面板「裁决」tab 或 yml `jev`）让模糊带与矛盾边走外部判决，Jev 不可用时回落本默认。
+- **嵌入器降级期间的记忆无向量** —— 模型未就绪时写入的记忆不参与语义道；语义上线后跑一次 `pnpm backfill` 补算存量向量（`pnpm build` 的模型缓存就绪后执行，可经 `HF_ENDPOINT` 配镜像）。**换模型同理**：换了 `embedder.localModel`（或从 local 换到 remote）之后，库中旧向量与新模型维度不同，写入会被拒绝——要么把模型改回去，要么用新模型重建全部向量：`pnpm backfill -- --force --model <id>`（`--pooling mean|cls` 可选，`--cache-dir` 指向已有模型缓存可省一次下载）。脚本扫描 `<dbDir>` 下的全部分库（`user.db`、`shared.db`、`project-<hash>.db`）；不带 `--force` 时若模型维度与库中已有向量不符，它在写入前就报错退出，绝不会写出混合维度的库。远程嵌入器（`kind: remote`）不在脚本覆盖范围——它跑的是本地 transformers.js 推理，复现不了远程端点的向量。
+
+## 路线图
+
+宫殿 IA（位置当索引 / 固定路线 / 检索练习）是索引与审计骨架，按三阶段向 AI 原生的记忆分层与时序事实图谱演进；实际发版按 0.0.1 递增，阶段代号仅为规划标签：
+
+- **阶段一 · 飞轮闭环补强**（已完成，v0.7.8）：写入四态回报（ACCEPT 新增 / MERGE 并入强化 / DROP 低熵 / DEFER 矛盾待裁决，`engram_save` 与摄取逐条返回处置）；画像注入改分级递减预算（首条 160 字、逐条 ×0.9、下限 24，可配置）；脱敏扩充中文密码 / 身份证 / 手机号三类；证据门收尾提醒（轮次结束存在未判定 assess 批次时注入提醒）。
+- **阶段二 · 记忆分层**：画像可编辑（**已完成，v0.7.9**：`engram_profile_edit` 工具 + 版本链回滚 + 面板 diff 审计，Letta core-memory 路线）；episode 情景记忆独立时间线索引（**已完成，v0.7.9**：`engram_episode_timeline` 工具，日期范围、按会话分组、时间邻近扩展，episode 专用索引；面板「往事」视图 + 摄取期与实时会话摘要组头同批完成）；信念自动巩固（**已完成，v0.7.14**：observations 表（schema v12）带证据链与证据数，会话结束按 `reflect: suggest|auto` 触发，近邻归并持续细化、stale 新鲜度复核四动作 form/refine/still/refute，active 信念随画像注入；手动 `engram_distill` 蒸馏保留）；房间容量与门牌评分可配置化（默认与现状一致）。
+- **阶段三 · 时序事实图谱**：实体表与写入期实体抽取消歧（**已完成，v0.7.10**：entities + node_entities 两表，摄取/保存的辅助 LLM 输出带 entities 提及并消解落库，`engram_search` 命中附实体标签，面板「实体」视图 + 实体回环路由）；事实级三元组携带 `valid_at` / `invalid_at` 时间窗，冲突事实软失效不删除（**已完成，v0.7.11**：facts 表（实体 + 时间窗 + `replaced_by` + 来源记忆），摄取辅助 LLM 输出带 facts 并按实体归一化匹配落表，`replaces` 声明软失效链，`engram_search` 加 `asOf` 时点回看，`engram_facts` 工具读写事实链，面板实体页事实链详情）；supports / refines / related 自动建边；LoCoMo-zh 评测集进 CI 作检索质量回归门（确定性 Recall@k / MRR 指标）。
+
+## 致谢
+
+感谢社区贡献者让这个项目更好：
+
+- **[@dsv180](https://github.com/dsv180)** —— 最高产的社区贡献者。[PR #13](https://github.com/kenz1117/dsh-engram/pull/13)：宿主消息目录双语化（zh/en）+ 语言模式验收脚本（`check-patterns` 的骨架）。[PR #22](https://github.com/kenz1117/dsh-engram/pull/22)：CI 门禁，让两道不依赖私有 peer 的检查在托管 runner 上真实执行。[PR #23](https://github.com/kenz1117/dsh-engram/pull/23)：`peerDependenciesMeta` 全 peer optional——修复了 0.8.0–0.8.14 十五个版本在干净环境装不上的打包事故。另有 [PR #20](https://github.com/kenz1117/dsh-engram/pull/20)（Jev 凭据上收宿主、插件不再存密钥）与 [PR #21](https://github.com/kenz1117/dsh-engram/pull/21)（嵌入器成为部署属性 + 维度硬守卫）在评审中。每个 PR 都附双语说明、逐项验证证据与诚实的限制清单——协作范本。
+- **[@FeiLZX3Km](https://github.com/FeiLZX3Km)** —— [Issue #19](https://github.com/kenz1117/dsh-engram/issues/19)：三轮高质量 UI 反馈（侧栏图标回归单色、翻新清单满宽铺开 + 弹窗可读性），每轮都附自己的代码排查，v0.8.15 / v0.9.1 的界面修复直接源于此。
+- **[@lujfsd](https://github.com/lujfsd)（路杰锋）** —— [PR #2](https://github.com/kenz1117/dsh-engram/pull/2)：适配新版 dsh 的 `sessionPersistence` 只读句柄（新版已移除 `load()`）、摄取逐条判宫殿（提炼输出新增 `scope`）、项目宫殿随工作区切换（`GET /api/engram/workspaces` + 面板工作区选择器），并把无 git 时的分库命名从「cwd 前 12 字符」改为 cwd 全量 sha256（修掉同前缀目录撞库）。随 PR 附 17 条测试与两份设计文档。
+- **[@f0909172434](https://github.com/f0909172434)** —— [PR #4](https://github.com/kenz1117/dsh-engram/pull/4)：遗留项目库迁移的归属治理——eager 迁移改名时补写 JSON 墓碑 sidecar（`<旧库名>.migrated-to`，独占创建 + 0o600，记录 `migratedTo` / `claimedByCwd` / `claimedAt`），后续工作区撞上同一旧命名时收到指向先前归属的告警；新增 `legacyMigration` 配置（`eager` 默认自动迁移 / `conservative` 不动旧库只告警），迁移结果细化为 `renamed` / `kept-both` / `deferred` / `already-migrated` 等状态。随 PR 附测试。
+
+## 许可证
+
+[MIT](LICENSE) © 2026 KenZ (kenz1117)
+
+### 旧项目库迁移策略
+
+`legacyMigration: eager`（默认）保留现有自动改名行为：只有旧库存在时迁移，
+并写入私有 JSON 记录 `<旧文件名>.migrated-to`，包含 `migratedTo`、
+`claimedByCwd` 和 `claimedAt`（ISO 时间）。后续工作区碰到相同的旧命名时，
+会收到指出先前归属的告警。记录证明的是文件迁移，**不证明每条记忆的归属**。
+相同 origin 的 worktree 仍共用新库。
+
+若需保守升级，在升级／打开旧数据**之前**于插件 `cordis.yml` 配置中设置
+`legacyMigration: conservative`。旧库保持原状，告警列出旧名和拟用的新名，
+会话继续使用新建的空项目库。无论何种策略，新旧库并存时都不移动或合并。
+此选项不能撤销已经发生的迁移。
+
+人工处理前，停止使用该目录的所有宿主，备份数据库和 SQLite sidecar，
+通过 `engram_review` / `engram_export` 审核、导出相关记忆。
+**新库可能已有新记忆，不要直接用旧库覆盖它**；应审核两边后人工重新归属。
+不自动分类、拆分、合并或删除数据。
+
+记录包含本地工作区路径，请作为私有元数据保管。记录损坏或不可读时迁移会报错；
+恢复旧库备份后若旁边已有迁移记录，也需人工确认。改名与写记录不是原子事务，
+亦不提供跨进程锁；请先停止其他宿主。写记录失败会明确报出旧名和新名，
+此时数据库已改名，不自动回滚。若在两步之间崩溃，重试前应检查文件状态。
+本功能不会为历史迁移补造记录。

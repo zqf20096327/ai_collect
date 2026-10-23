@@ -14,7 +14,7 @@
     <a href="https://www.typescriptlang.org" target="_blank" rel="noreferrer"><img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" /></a>
     <a href="https://www.sqlite.org" target="_blank" rel="noreferrer"><img src="https://img.shields.io/badge/SQLite-3-003B57?style=flat-square&logo=sqlite&logoColor=white" alt="SQLite" /></a>
     <img src="https://img.shields.io/badge/Docker-Sandbox-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker Sandbox" />
-    <a href="LICENSE"><img src="https://img.shields.io/badge/License-AGPL_3.0-5C5C5C?style=flat-square" alt="AGPL-3.0" /></a>
+    <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-5C5C5C?style=flat-square" alt="MIT" /></a>
     <a href="https://discord.gg/rn3uEghsjh" target="_blank" rel="noreferrer"><img src="https://img.shields.io/badge/Discord-Join-5865F2?style=flat-square&logo=discord&logoColor=white" alt="Discord" /></a>
   </p>
 </div>
@@ -30,12 +30,11 @@ pipaya is an **AI agent chat tool that runs on your own server**. The server cal
 
 ## Features
 
-- **Agent with 10 built-in tools**: read, write, edit, ls, grep, bash, ask_user, delegate, peer_send, peer_read
-- **Approval policies**: `ask` (default), `auto`, `readonly`. You decide what may change things
+- **Agent with 9 built-in tools**: read, write, edit, ls, grep, bash, ask_user, peer_send, peer_read
 - **Any model**: built-in providers, local servers (Ollama, LM Studio, llama.cpp, vLLM) or your own endpoint
 - **Many devices, one conversation**: Windows, macOS, Android and web, with notifications and mobile push
 - **Teamwork and split view**: hand work to other sessions with `@name`; up to 8 conversations on one screen
-- **Extensible**: AGENTS.md, skills, templates, sub-agents, server and client extensions
+- **Extensible**: AGENTS.md, skills, templates, server and client extensions
 
 ## Quick install
 
@@ -71,7 +70,7 @@ docker compose up -d --build
 docker compose exec pipaya cat /data/token    # the auth token
 ```
 
-Set `PIPAYA_WORKSPACE_DIR` (a host folder the agent may work on), `PIPAYA_BIND`, `PIPAYA_PORT` and `PIPAYA_APPROVAL` in a `.env` file. See [`compose.yaml`](compose.yaml).
+Set `PIPAYA_WORKSPACE_DIR` (a host folder the agent may work on), `PIPAYA_BIND` and `PIPAYA_PORT` in a `.env` file. See [`compose.yaml`](compose.yaml).
 
 ## Security
 
@@ -99,4 +98,4 @@ Prerequisites are pinned in [`mise.toml`](mise.toml) (Bun 1.3, Rust stable). The
 
 ## License
 
-[AGPL-3.0](LICENSE)
+[MIT](LICENSE)

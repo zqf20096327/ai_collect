@@ -69,7 +69,7 @@ docker run -d -p 3223:3223 -p 13223:13223 \
   ppossanzini/jigendb-all-in-one
 ```
 
-Published images include `ppossanzini/jigendb` (server only), `ppossanzini/jigendb-all-in-one` (server + embeddings), `ppossanzini/jigen-embeddings` (CPU worker), and `ppossanzini/jigen-embeddings-gpu` (NVIDIA CUDA worker). See [Docker deployment](docs/server/docker.md).
+Three images are published: `ppossanzini/jigendb` (server only), `ppossanzini/jigendb-all-in-one` (server + embeddings) and `ppossanzini/jigen-embeddings` (embedding worker). See [Docker deployment](docs/server/docker.md).
 
 ## Quick taste
 
@@ -131,7 +131,7 @@ The server also ships a web administration UI (Jigen Insight) served on port 132
 ## Building from source
 
 ```bash
-dotnet build Jigen.slnx -m:1       # -m:1 required (StaticWebAssets breaks parallel builds)
+dotnet build Jigen.sln -m:1        # -m:1 required (StaticWebAssets breaks parallel builds)
 dotnet run --project src/Server/Jigen/Jigen.csproj
 ```
 

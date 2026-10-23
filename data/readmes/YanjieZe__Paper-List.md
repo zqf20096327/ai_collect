@@ -46,6 +46,7 @@ Papers:
 
 
 # Recent Random Papers
+- [arXiv 2026.10](https://arxiv.org/abs/2610.30814), DRILL: Training World Models to Improve Policies, Not Predict Pixels
 - [arXiv 2026.10](https://arxiv.org/abs/2610.30136), Agentic World Action Models
 - [arXiv 2026.10](https://arxiv.org/abs/2610.29716), SpatialDex: Learning Bimanual Dexterity from RGB-Only Human Videos with Spatial Context
 - [arXiv 2026.10](https://arxiv.org/abs/2610.28880), Real2Sem2Real: 3D Semantic Augmentations for Robot Learning from a Single Human RGB Demonstration
@@ -756,5 +757,4 @@ Papers:
 - arXiv 2023, VC-1: Where are we in the search for an Artificial Visual Cortex for Embodied Intelligence?, [Website](https://eai-vc.github.io/)
 - ICLR 2022, DroQ: Dropout Q-Functions for Doubly Efficient Reinforcement Learning, [arXiv](https://arxiv.org/abs/2110.02034)
 - arXiv 2023, RoboPianist: A Benchmark for High-Dimensional Robot Control, [Website](https://kzakka.com/robopianist/)
-- ICLR 2021, DDIM: Denoising Diffusion Implicit Models, [arXiv](https://arxiv.org/abs/2010.02502)
-- arXiv 2023, Your Diffusion Model is Secretly a Zero-Shot Classifier, [Website](https://diffusion-classifier.github.io/
+- ICLR 2021, DDIM: Denoising Diffusion Implicit Models, [arXiv](https://arxiv.org/abs/2010.02502

@@ -62,7 +62,8 @@ unclassified:
 
 Open the console of a failed build and click **Explain Error**. The explanation opens above the log, as in the picture
 at the top: a title that names the root cause, a summary, the steps to fix it, the log lines where it failed and, when
-there are any, practices that would have prevented it. It reads up to 200 lines of the step that failed.
+there are any, practices that would have prevented it. It reads up to 200 lines of the steps that failed, or the global
+**Max Log Lines** when that is higher, and only the lines the global **Log Pattern** matches when one is set.
 
 Once a build has an explanation, the button reads **Show explanation**, and the card says when the explanation was
 generated; the re-explain icon asks the provider again. If a request fails, the card stays open with what went wrong
@@ -74,8 +75,8 @@ page.
 
 ### On the Stages page
 
-With [Pipeline Graph View](https://plugins.jenkins.io/pipeline-graph-view/) 777 or newer (Jenkins 2.534 or newer), the
-same button is on the **Stages** page of a failed Pipeline build. It explains the stage, parallel branch or step selected
+With [Pipeline Graph View](https://plugins.jenkins.io/pipeline-graph-view/), the same button is on the **Stages** page
+of a failed Pipeline build, called **Pipeline Overview** before Pipeline Graph View 777. It explains the stage, parallel branch or step selected
 in the graph from that node's log only, and shows the explanation above the node's steps. A node that passed has no
 button.
 

@@ -4,15 +4,11 @@
 <a href=https://pypi.org/project/mansnip><img src=https://badge.fury.io/py/mansnip.svg/></a>  
 </p>
 
-When LLMs use the Internet instead of the local documentation on the computer its running on, they make all kinds of mistakes: compatibility and deprecated usage, missing obvious things. 
-
-context7 fixes this only for things in context7. What about everything else? 
+When LLMs use the Internet instead of local documentation on the computer it's running on, they make all kinds of mistakes: compatibility and deprecated usage, missing obvious things. 
 
 Get your models to use the right documentation, locally, for the software you actually have, effeciently.
 
-**Mansnip**, part of the [DAY50](https://day50.dev) suite of open-source tools for AI workflows, solves the problem of irrelevant documentation going to the context window.
-
-You can intelligently put only the parts of manpages you care about into your context window:
+Intelligently put only the parts of manpages you care about into your context window:
 
 ```bash
 $ uvx mansnip --llm bash bind
@@ -23,6 +19,8 @@ And your terminal window:
 ```bash
 $ uvx mansnip bash bind
 ```
+
+**Mansnip**, part of the [DAY50](https://day50.dev) suite of open-source tools for AI workflows, solves the problem of irrelevant documentation going to the context window.
 
 Compare the token cost of various approaches for finding the documentation for bash's complete command: 
 
@@ -36,13 +34,15 @@ $ mansnip bash complete | token-count               # mansnip without llm featur
 $ mansnip --llm bash complete | token-count         # with llm compaction!
 1624
 ```
-That's a 98% reduction! Sweet.
+That's a **98%** reduction! 
 
-There's also a ready-to-go MCP server for it in `mcp-server.py`. 
+There's also an MCP server in `mcp-server.py`. 
 
-Just `pip/pipx/uv tool install mansnip`
+Just `pip/pipx/uv tool install mansnip`.
 
-## My classic 2020 pitch below!
+This software has been in development for many years and has a classic pitch I made in 2020. It's too good to let go.
+
+### Original pitch
 
 <p align="center">
 

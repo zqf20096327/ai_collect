@@ -5,10 +5,10 @@
 <h1 align="center"><a href="https://xopc.ai">xopc</a></h1>
 
 <p align="center">
-  <strong>Keep what matters moving.</strong><br />
-  Open-source, local-first personal AI that remembers your context and helps you move work forward.<br />
-  Chat with Ada, delegate a task, or work directly with files and projects.<br />
-  Review the result and keep refining it.
+  <strong>A better life, with AI.</strong><br />
+  Your personal AI assistant for work and everyday life,<br />
+  with more time to create and enjoy life.<br />
+  Open-source. Local-first. Runs on a computer you choose.
 </p>
 
 <p align="center">
@@ -29,18 +29,25 @@
   </a>
 </p>
 
+## Our vision
+
+A future where everyone has their own AI assistant—helping across work and everyday life, making more time to create, be with the people who matter, and enjoy the world around them.
+
+We want AI to take on more tedious, repetitive, and time-consuming tasks. How you spend the time is up to you. [Read our philosophy](https://xopcai.github.io/xopc/product).
+
 ## Two ways to start in one xopc
 
 **Talk with Ada.** Ada is the personal Agent inside xopc; no separate installation is needed. Share your background, response preferences, and a goal. Delegate a task when you need a hand, keep talking, then return to the result. [Meet Ada](https://xopcai.github.io/xopc/personal-ai).
 
 **Open your workspace.** Bring files and a goal to organize material, analyze data, change code, or prepare a report. Keep conversations, deliverables, and project context together so you can continue later. [Workspace guide](https://xopcai.github.io/xopc/workspace-guide).
 
-Built for independent workers, creators, developers, and anyone who wants less repeated explanation and execution overhead.
+From organizing work material to planning a weekend outing, start in the same xopc. Available capabilities depend on the connected models, tools, and permissions.
 
 ## Finish something real
 
 | Your goal | Try this | Check the result |
 | --- | --- | --- |
+| Plan an easy weekend | “I want to take my camera out this weekend, but only have half an hour. Help me put together a one-page plan.” | Timing, details to verify, and an editable plan |
 | Resume a project | “Use this project's notes and tasks to explain what is blocked and suggest the next step.” | Sources, unresolved decisions, and next action |
 | Turn material into a report | “Combine these sales files into a summary. Keep sources, calculations, and exceptions.” | Saved file, totals, and exceptions |
 | Delegate and keep talking | “Turn this week's plan into a one-page file and tell me when it is ready. Let's keep discussing next week.” | Task card, actual file, and revisions |
@@ -54,7 +61,6 @@ File work requires the relevant access, tools, or skills. Voice, image generatio
 | **Context and memory** | Keep conversations, project background, and understanding you can review, correct, or delete |
 | **Delegation and delivery** | Delegate tasks, answer follow-up questions, receive artifacts, and check acceptance criteria |
 | **Files and projects** | Work with authorized material and retain files, notes, execution records, and next actions |
-| **Follow-ups** | Follow a topic, repeat a process with Workflows, or trigger work with Automations |
 | **Tools and connections** | Enable skills, MCP, connectors, browser automations, images, and voice as needed |
 | **Access across devices** | Desktop, web, terminal, mobile, Telegram, WeChat, and Feishu/Lark |
 

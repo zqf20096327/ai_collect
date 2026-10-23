@@ -37,6 +37,10 @@ The split is written down in [docs/architecture.md](docs/architecture.md), how
 the app reaches Hermes in [docs/transport.md](docs/transport.md), and the words
 we use for all of it in [docs/vocabulary.md](docs/vocabulary.md).
 
+There is also a phone: `mobile/` is an Expo app with the same conversations.
+It is paired with a small bridge on the Hermes host and reached over Tailscale;
+[docs/mobile.md](docs/mobile.md) says how.
+
 ## Install
 
 Grab the `.dmg` from the [releases](https://github.com/AZERDSQ131/Open-Hermes-Bot/releases),
@@ -171,6 +175,8 @@ src/updates.ts          What an update means, in words
 src/styles.css          Design system and layout
 build/                  App icon (.icns + .png) and icon source
 site/                   The project site (static, no build step)
+mobile/                 The phone: the same screens, as an Expo app
+bridge/                 The door the phone uses: loopback on the host, published on the tailnet
 e2e/update/             The update, tested for real: two builds, a feed, a button
 ```
 

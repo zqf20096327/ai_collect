@@ -1,0 +1,43 @@
+## Screen Operator
+### Operates the screen with AI
+This Android app operates the screen with commands from vision LLMs.
+
+
+### OpenClaw for Android
+It can now execute commands directly in Termux via API. After each update, click "Restore System Message" to access the new tools!
+
+
+<img src="https://github.com/Android-PowerUser/ScreenOperator/blob/main/Screenshot_20260923-125718_Screen%20Operator.png" alt="" width="141"/> <img src="https://github.com/Android-PowerUser/ScreenOperator/blob/main/Screenshot_20260923-125947_Screen%20Operator.png" alt="" width="141"/>
+
+
+## Download and install
+
+[Screen Operator v4.6.apk](https://github.com/Android-PowerUser/ScreenOperator/releases/download/v2026.10.22/ScreenOperator.v4.6.apk)
+
+Updates in Github are much faster than on the Play Store.
+</br>
+
+![](https://img.shields.io/github/downloads/Android-PowerUser/ScreenOperator/latest/total.svg?label=Screen%20Operator%20latest%20release%20Downloads&v=76) ![](https://img.shields.io/github/downloads/Android-PowerUser/ScreenOperator/total.svg?label=Screen%20Operator%20Downloads&v=69) from Github (without nightly builds)
+
+
+<br/>
+
+### Share your Skill Set from Screen Operator
+
+[Here](https://github.com/Android-PowerUser/ScreenOperator/discussions/87) you can share your own Skill Set
+
+<br/>
+
+### • The first Android agent app in the world (since June/2025)
+
+#### Video:
+
+[First attempt ever is recorded (YouTube)](https://m.youtube.com/watch?v=o095RSFXJuc)
+
+<br/> 
+
+#### Note
+
+
+
+If you in your Google account identified as under 18, Google is (unreasonably) denying you the API key. Use Freedom subscription as a workaround.

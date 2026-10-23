@@ -2,7 +2,7 @@
 
 > DeepSeek Harness（DSH）第三方插件精选目录与原生更新命令索引。
 
-[![Catalog Version](https://img.shields.io/badge/catalog-v1.53.0-blue.svg)](plugins.json)
+[![Catalog Version](https://img.shields.io/badge/catalog-v1.56.0-blue.svg)](plugins.json)
 [![Plugins Count](https://img.shields.io/badge/plugins-13%20curated-brightgreen.svg)](plugins.json)
 [![Target Profile](https://img.shields.io/badge/profile-web-orange.svg)](#)
 [![Single Source of Truth](https://img.shields.io/badge/SSOT-plugins.json-blueviolet.svg)](plugins.json)
@@ -20,16 +20,16 @@
 | 插件名称 | 版本 | 用途 | 来源 |
 |---|---:|---|---|
 | `dsh-better-reasoning-effort` | 0.5.4 | 在官方 Models 页内嵌配置第三方模型的推理强度（Effort）、输入模态、请求头与端点兼容项 | [HaoyueQin/dsh-better-reasoning-effort](https://github.com/HaoyueQin/dsh-better-reasoning-effort) |
-| `billion-context` | 0.1.204 | 动态压缩长会话上下文：小窗口跑数十亿 token 超长会话，token 节省约 5 倍 | [ranxianglei/billion-context](https://github.com/ranxianglei/billion-context) |
+| `billion-context` | 0.1.205 | 动态压缩长会话上下文：小窗口跑数十亿 token 超长会话，token 节省约 5 倍 | [ranxianglei/billion-context](https://github.com/ranxianglei/billion-context) |
 | `dsh-mnemon` | 0.5.34 | 可组合的视图化记忆系统：可插拔记忆源与策略，开箱即用分层记忆（Memory Spaces / Providers）；0.5.34 起内置实验性技能管理（Skills / 市场 / 评测） | [omdsh-dev/dsh-mnemon](https://github.com/omdsh-dev/dsh-mnemon) |
-| `dsh-our-free-model` | 2.5.7 | 免费模型接入：无需登录或 API Key 即可用 DeepSeek V4.1 Flash、Kimi K3 等前沿模型，另有十三个账号渠道、数据看板与本地网关 | [Ebony-Vinyl/dsh-our-free-model](https://github.com/Ebony-Vinyl/dsh-our-free-model) |
+| `dsh-our-free-model` | 2.5.9 | 免费模型接入：无需登录或 API Key 即可用 DeepSeek V4.1 Flash、Kimi K3 等前沿模型，另有十三个账号渠道、数据看板与本地网关 | [Ebony-Vinyl/dsh-our-free-model](https://github.com/Ebony-Vinyl/dsh-our-free-model) |
 
 ### 📊 计量与状态监控
 
 | 插件名称 | 版本 | 用途 | 来源 |
 |---|---:|---|---|
 | `dsh-watcher` | 0.7.0 | 会话工作路径观测面板 · 跨会话模型耗时与费用统计 | [daha1216/dsh-watcher](https://github.com/daha1216/dsh-watcher) |
-| `dsh-context` | 0.74.0 | 上下文洞察与管理：跨会话 Context Insights 页面、Context tab / 右侧上下文面板、Fleet 子 Agent 网络页与 `/context` 命令，查看上下文组成、用量与演变 | [bowenliang123/dsh-context](https://github.com/bowenliang123/dsh-context) |
+| `dsh-context` | 0.75.0 | 上下文洞察与管理：跨会话 Context Insights 页面、Context tab / 右侧上下文面板、Fleet 子 Agent 网络页与 `/context` 命令，查看上下文组成、用量与演变 | [bowenliang123/dsh-context](https://github.com/bowenliang123/dsh-context) |
 
 ### 🛠️ 会话管理与效率工具
 
@@ -40,13 +40,13 @@
 | `dsh-update-checker` | 0.3.5 | 一键检查已装插件的上游更新（只检查不更新），展示更新内容 | [daha1216/dsh-update-checker](https://github.com/daha1216/dsh-update-checker) |
 | `@local/skills-manager` | 0.3.2 | 在设置页新增「技能」管理页：列出 / 查看 / 新建 / 编辑 / 删除本地技能，切换调用策略，一键打开技能目录 | [daha1216/dsh-skills-manager](https://github.com/daha1216/dsh-skills-manager) |
 | `dsh-ops` | 0.4.1 | Rust 原生文件工具集（读 / 搜索 / 修改 / 文档读取 / 工具发现）与随包 MSYS bash；默认常量暴露、其余按需发现，替掉 Windows 下反复失败的原生 shell 调用，省 token 省时间 | [T-Auto/dsh-ops](https://github.com/T-Auto/dsh-ops) |
-| `dsh-client-auto-continue` | 0.15.0 | 请求因网络等非人为原因中断时，自动发送本地化的「继续」提示（Web UI 插件，中英双语） | [HsiangNianian/dsh-auto-continue](https://github.com/HsiangNianian/dsh-auto-continue) |
+| `dsh-client-auto-continue` | 0.17.0 | 请求因网络等非人为原因中断时，自动发送本地化的「继续」提示（Web UI 插件，中英双语） | [HsiangNianian/dsh-auto-continue](https://github.com/HsiangNianian/dsh-auto-continue) |
 
 ### 🎨 界面体验与多端协同
 
 | 插件名称 | 版本 | 用途 | 来源 |
 |---|---:|---|---|
-| `dsh-pocket` | 2.11.2 | 手机扫码同步电脑端 DSH，支持移动端操作 | [daha1216/dsh-pocket](https://github.com/daha1216/dsh-pocket) |
+| `dsh-pocket` | 3.0.0 | 手机扫码同步电脑端 DSH，支持移动端操作 | [daha1216/dsh-pocket](https://github.com/daha1216/dsh-pocket) |
 
 ---
 
@@ -112,7 +112,7 @@ bash install.sh --all
 | `@anysearch/anysearch-dsh` | `npx -y @deepseek-ai/dsh plugin --profile web update @anysearch/anysearch-dsh` |
 | `billion-context` | `bili update` |
 | `dsh-mnemon` | `dsh plugin --profile web add dsh-mnemon` |
-| `dsh-our-free-model` | `dsh plugin --profile web add https://github.com/Ebony-Vinyl/dsh-our-free-model/releases/download/v2.5.7/dsh-our-free-model-2.5.7.tgz` |
+| `dsh-our-free-model` | `dsh plugin --profile web add https://github.com/Ebony-Vinyl/dsh-our-free-model/releases/download/v2.5.9/dsh-our-free-model-2.5.9.tgz` |
 | `dsh-retrace` | `dsh plugin --profile web add dsh-retrace` |
 | `dsh-watcher` | `dsh plugin --profile web add github:daha1216/dsh-watcher` |
 | `dsh-update-checker` | `dsh plugin --profile web add github:daha1216/dsh-update-checker` |
@@ -148,6 +148,7 @@ bash install.sh --all
 - **`dsh-pocket`**：
   - 本条目指向安全加固版 Fork（`github:daha1216/dsh-pocket`），非上游原仓库。
   - 更新时必须保留 `-w` 参数（解决 pnpm workspace 根目录限制）；跨大版本升级时 `--latest` 必选。
+  - **3.0.0 起为破坏性变更**：移除随机域名（Quick Tunnel）公网，公网访问需要用户自行配置 Cloudflare 固定域名与 Tunnel Token（设置 → 手机访问 → 公网配置）；局域网扫码不受影响。2.x 升级后旧随机隧道的自动恢复标记会被安全清除。
 - **`dsh-retrace`**：
   - 上游原生命令为 npm 通道 `dsh plugin --profile web add dsh-retrace`。
   - 本机实装与本目录均跟随自建兼容 Fork `github:daha1216/dsh-retrace`。
@@ -159,7 +160,7 @@ bash install.sh --all
   - 装完后把 `distribution` 设为 `managed`（bundle config 或插件 `settings.json`）：包管理器拥有字节时，应用内升级、公告 feed 与热重载会停用，模型功能保留。
 - **`dsh-ops`**：
   - npm 通道，原生更新命令 `npx --yes dsh-ops@latest install --profile <desktop|web|tui>`，按 profile 用官方 CLI 重装到最新版并同时对齐随包 bash 载荷（0.4.0 起 npm 只随包 bash，PowerShell 交给宿主管理）；官方 CLI 的 `add dsh-ops@latest` 是等价替代。
-  - 桌面端必须用桌面应用自带的 CLI：默认探测 `%LOCALAPPDATA%\Programs\DeepSeek Harness\resources\runtime\cli\bin\dsh.cmd`，装在其它位置时加 `--dsh-cli "<安装目录>\resources\runtime\cli\bin\dsh.cmd"`。本机 profile `desktop` 的实际命令：`npx --yes dsh-ops@latest install --profile desktop --dsh-cli "D:\deepseek harness\resources\runtime\cli\bin\dsh.cmd"`。
+  - 桌面端必须用桌面应用自带的 CLI：默认探测 `%LOCALAPPDATA%\Programs\DeepSeek Harness\resources\runtime\cli\bin\dsh.cmd`，装在其它位置时加 `--dsh-cli "<安装目录>\resources\runtime\cli\bin\dsh.cmd"`（`<安装目录>` 替换成桌面端实际安装位置）。
   - 装/升时务必显式指定官方源 `--registry=https://registry.npmjs.org`：其 `@dsh-ops/bash-win32-x64` optionalDependency 在 npmmirror 上可能缺版本，pnpm 重解析会报 `ERR_PNPM_NO_MATCHING_VERSION`。
 
 ---

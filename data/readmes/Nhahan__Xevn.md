@@ -100,6 +100,11 @@ Latency of a single request over HTTP, bf16, Apple M4 Max, 3,000 requests.
 | 5-bit | 2.9 GB | 80 ms | [MLX](https://huggingface.co/quevirus/Xevn-4B-MLX-5bit) |
 | 4-bit | 2.4 GB | 78 ms | [MLX](https://huggingface.co/quevirus/Xevn-4B-MLX-4bit) |
 | 3-bit | 1.8 GB | 77 ms | [MLX](https://huggingface.co/quevirus/Xevn-4B-MLX-3bit) |
+| GGUF BF16 | 8.7 GB |  | [GGUF](https://huggingface.co/quevirus/Xevn-4B-GGUF/blob/main/Xevn-4B-BF16.gguf) |
+| GGUF Q8_0 | 4.6 GB |  | [GGUF](https://huggingface.co/quevirus/Xevn-4B-GGUF/blob/main/Xevn-4B-Q8_0.gguf) |
+| GGUF Q6_K | 3.6 GB |  | [GGUF](https://huggingface.co/quevirus/Xevn-4B-GGUF/blob/main/Xevn-4B-Q6_K.gguf) |
+| GGUF Q5_K_M | 3.2 GB |  | [GGUF](https://huggingface.co/quevirus/Xevn-4B-GGUF/blob/main/Xevn-4B-Q5_K_M.gguf) |
+| GGUF Q4_K_M | 2.8 GB |  | [GGUF](https://huggingface.co/quevirus/Xevn-4B-GGUF/blob/main/Xevn-4B-Q4_K_M.gguf) |
 
 16-bit is the bf16 format. Speed is the p50 over an equal mix of the three input lengths, measured in the same session as the Speed table. On every benchmark, 8-bit to 5-bit stay within 2 points of 16-bit accuracy and 4-bit within 3 points. 3-bit loses 7 to 21 points and is provided for experimentation.
 

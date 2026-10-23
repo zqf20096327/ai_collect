@@ -1,6 +1,6 @@
 <div align="center">
 
-<p><img src="docs/docs/assets/logo.png" alt="RaBitQ Library logo" width="800"></p>
+<p><img src="docs/docs/assets/logo.svg" alt="RaBitQ Library logo" width="800"></p>
 
 <p>
   <a href="https://pypi.org/project/rabitqlib/"><img alt="PyPI" src="https://img.shields.io/pypi/v/rabitqlib.svg?cacheSeconds=300"></a>
@@ -57,7 +57,7 @@ actual recall and storage budgets differ.
 ### Python
 
 ```bash
-python -m pip install --upgrade "rabitqlib>=0.7.0"
+python -m pip install --upgrade "rabitqlib>=0.7.1"
 ```
 
 Wheels support CPython 3.11–3.14 on Linux x86-64/ARM64, Windows x86-64,

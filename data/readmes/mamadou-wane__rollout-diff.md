@@ -26,10 +26,21 @@ print(analysis.sequential.screening)
 print(analysis.exemplars)
 print(analysis.events)
 print(analysis.event_members)
+print(analysis.event_ranking)
 ```
 
 `evidence` has one row per feature series and `scalar:reward`, including non-alerting and
 unscorable series.
+
+```sh
+.venv/bin/rolloutdiff analyze /path/to/completions --format trl --run experiment-1 \
+  --reward-column training_passed --output /path/to/report.json
+```
+
+Use `--format verl` for verl dumps and omit `--reward-column`. The versioned JSON report
+contains ranked events, member evidence, and canonical exemplar references, without raw
+rollout text or input paths. Existing output files are never overwritten. Python callers
+can use `build_report(analysis)`; identifiers shaped as absolute paths cannot be exported.
 
 | Loader | Accepted input | Schema mapping |
 | :--- | :--- | :--- |
@@ -118,6 +129,11 @@ to feature-level evidence and exemplars through `(run, feature)`.
 `group_events()` uses onset proximity (≤3 steps) and positive-rollout overlap (Jaccard ≥0.5).
 Unsupported or unavailable alerts remain singletons. Event IDs are analysis-local, and
 grouping does not establish a shared cause.
+
+`analysis.event_ranking` (also available through `rank_events`) orders events within each
+run using one representative member's evidence. Priority follows feature tier, replication,
+persistence, signed reward association, and prompt breadth. Contextual and unavailable
+events remain listed, with evidence statuses and numerical-floor warnings.
 
 ## Limitations
 

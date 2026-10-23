@@ -7,6 +7,7 @@
 <h1 align="center">Meeting Pilot</h1>
 <p align="center">
   <a href="https://meetingpilotapp.com">🌐 Website</a> ·
+  <a href="https://meetingpilotapp.com/support/">☕ Support</a> ·
   <a href="https://github.com/mard4/meeting-pilot/releases/latest/download/MeetingPilot.dmg">⬇ Download</a> ·
   <a href="mailto:support@meetingpilotapp.com">@ Email</a>
 </p>
@@ -182,6 +183,20 @@ curl -fsSL https://raw.githubusercontent.com/mard4/meeting-pilot/main/macos/Meet
 - **Notion**: connect your workspace and pick a parent page. Meeting Pilot reuses a matching table or page if one exists; otherwise it creates one page with one table. On first publish it adds the columns it needs (`Date`, `Project`, `Tema`, `Participants`, `Duration`, `Source`, `Status`, `Model`, `Language`, `Session ID`). Once you study, a `Type` column (Work / Study) is added too. Existing columns are never renamed or retyped. Lectures with slides get the PDF and one section per slide.
 - **Obsidian**: choose your vault; notes go into a `Meeting Pilot` folder named `{date} - {title}.md`; each part of a lecture links to its slide page.
 - **Summary model**: Apple Intelligence (default where available), a local model (oMLX, Ollama, LM Studio), or an OpenAI-compatible API key. Only the API option sends transcript text off the Mac.
+
+</details>
+
+<details>
+<summary><b>Browser extension (Chrome, Edge, Brave, Arc)</b></summary>
+
+Sends the YouTube video you're watching to Meeting Pilot with one click (toolbar button or right-click menu), which downloads, transcribes and summarizes it like any import, and shows how far it got.
+
+1. In Meeting Pilot open **Settings → Browser extension → Set up**. This connects the browsers you have.
+2. **[Add it from the Chrome Web Store](https://chromewebstore.google.com/detail/ipnadmfmihedhmlppdjoldfnjpmjghen)** (also for Edge, Brave and Arc). <sub>Waiting for Google's review: the link works once it is approved.</sub>
+
+Until then, load it by hand: in `chrome://extensions` (`edge://extensions`, `brave://extensions`…) turn on **Developer mode**, click **Load unpacked** and choose the folder Meeting Pilot opened after Set up (`~/Library/Application Support/Meeting Pilot/Browser Extension`); you can drag it into the dialog. Meeting Pilot updates that folder when the app updates.
+
+The extension can only talk to Meeting Pilot on your Mac and reads nothing but the tab you send.
 
 </details>
 

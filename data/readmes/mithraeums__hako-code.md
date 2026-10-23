@@ -5,11 +5,11 @@
 </p>
 
 <p align="center">
-  <em>A coding agent in one C file. 400 KB, no runtime, no package manager.<br/>Runs offline on a model you own — and on a phone.</em>
+  <em>A coding agent in one C file. ~650 KB, no runtime, no package manager.<br/>Runs offline on a model you own — and on a phone.</em>
 </p>
 
 <p align="center">
-  <a href="https://github.com/mithraeums/hako-code/releases"><img src="https://img.shields.io/badge/version-v0.2.4-e2402e?style=flat-square&labelColor=14130f" alt="v0.2.4"/></a>
+  <a href="https://github.com/mithraeums/hako-code/releases"><img src="https://img.shields.io/badge/version-v0.2.7-e2402e?style=flat-square&labelColor=14130f" alt="v0.2.7"/></a>
   <img src="https://img.shields.io/badge/license-GPL--3.0-2636c4?style=flat-square&labelColor=14130f" alt="GPL-3.0"/>
   <img src="https://img.shields.io/badge/C99-single%20file-2636c4?style=flat-square&labelColor=14130f" alt="C99 single file"/>
   <img src="https://img.shields.io/badge/providers-13-2636c4?style=flat-square&labelColor=14130f" alt="13 providers"/>
@@ -71,14 +71,14 @@ hako is the same idea built the other way. One C file. It compiles with
 gcc hako.c -o hako -lpthread
 ```
 
-and the result is a **400 KB binary that links libc and nothing else**. It talks to thirteen
+and the result is a **~650 KB binary (the browser UI inside) that links libc and nothing else**. It talks to thirteen
 cloud providers when you want them, and to a 3B model on your own disk when you do not.
 It runs on a laptop, on a FreeBSD box, on Windows, and in a 32-bit Linux emulator on an
 iPhone — the same source, the same behaviour.
 
 |                        | hako                                   | agents that ship a runtime          |
 |------------------------|----------------------------------------|-------------------------------------|
-| install                | one binary, 400 KB                     | interpreter + package tree          |
+| install                | one binary, ~650 KB                    | interpreter + package tree          |
 | runtime deps           | libc, pthread, `curl(1)`               | Python and/or Node, plus packages   |
 | build from source      | `gcc hako.c -o hako -lpthread`         | a package manager and a lockfile    |
 | works with no network  | yes, on local weights                  | usually only as a client            |
@@ -104,13 +104,14 @@ being small enough to live anywhere is the whole point.
   models speak their native Qwen `<tool_call>` dialect, and the harness repairs the
   shapes they get wrong. (ollama is also supported as a *separate* optional
   provider — `:login ollama` — for non-hako models.)
-- **13 cloud providers when you want them.** Anthropic native (SSE + OAuth via Claude Pro/Max), OpenAI function-calling, GitHub Copilot, GitHub Models (free), OpenRouter (PKCE), and OpenAI-compat aliases for Gemini, Groq, Cerebras, DeepSeek, Mistral, Together, Fireworks, xAI/Grok, custom. `:login <name>` walks you through OAuth or hands you to the provider's console for an API key.
+- **13 cloud providers when you want them.** Anthropic native (SSE + OAuth via Claude Pro/Max), ChatGPT sign-in (any ChatGPT plan, free included), OpenAI function-calling, GitHub Copilot, GitHub Models (free), OpenRouter (PKCE), and OpenAI-compat aliases for Gemini, Groq, Cerebras, DeepSeek, Mistral, Together, Fireworks, xAI/Grok, custom. Bare `:login` is a menu: sign-ins first, API keys one level down in `:login api`; `:login <name>` goes straight there.
 - **An input bar that stays out of the way.** Drawn in the normal flow of the terminal — no absolute cursor moves, no scroll region — so a resize or a phone keyboard reflows cleanly. Keep typing while the model works; lines queue and run in order. History, `^R` search, kill-word, bracketed paste, `ctrl+g` to finish the line in `$EDITOR`, `ctrl+o` for the whole transcript in a pager.
 - **The editor's 19 themes + arrow-key picker.** `:theme <name>` swaps the palette directly; bare `:theme` opens a picker and the whole screen recolours as you move through it — enter keeps it, esc puts the old one back. The same names as hake and hako studio. Same picker on bare `:provider` and `:model`. `:theme` saves to `~/.hako/state`; `theme=` in `~/.hakorc` sets it for both tools. Truecolor where supported, 256-colour fallback otherwise.
 - **HAKO.md project context.** Per-project `<cwd>/.hako/HAKO.md` is auto-loaded into the system prompt — the CLAUDE.md equivalent for hako-code. Binary-safe + size-capped (200KB).
 - **Trust-gated tools.** `read_file`, `list_dir`, `grep`, `glob`, `write_file`, `edit_file` (str_replace), `edit_lines` (line range), `run_shell` (120s, up to 600 per call), `web_fetch`, `read_skill`. Per-call `[y]/[n]/[a]` approval, and writes show a diff of what they are about to change before you answer. Untrusted dir = all tools refused; `:trust` once per project.
 - **Persistent sessions + [Agent Skills](https://agentskills.io).** Per-cwd session id, 7-day resume, append-only JSONL history. Skills follow the open standard — a folder, a `SKILL.md` with `name` and `description`, loaded by progressive disclosure — so a skill written for any compatible agent works here. Read from `./.hako/skills`, `./.claude/skills`, `~/.hako/skills` and `~/.claude/skills`, nearest first. Install a whole repository of them with `:skill install owner/repo`.
 - **Drop-in in a repo you already set up.** `AGENTS.md` or `CLAUDE.md` in the working directory is read as project context (after `.hako/HAKO.md`), and skills already sitting in `.claude/skills` are picked up as-is. Nothing to duplicate, nothing to migrate.
+- **Drive it from your phone.** `:remote on` shares the session you are in. Sign in at hako.mithraeum.studio on any device and ☰ → code lists your sessions, one per folder; open one and you are in the same chat as the terminal, end to end encrypted (Noise XXpsk3) through a relay that only routes ciphertext and keeps no chats. Tools still ask, and the phone gets less than the desk: no `:auto`, no `:trust`, nothing outside the folder. Invite beta: the first `:remote on` links this computer to your account.
 - **Scriptable.** `hako -p "task" --output-format json` prints one JSON object and exits 0 or 1; `-p -` takes the prompt on stdin. Enough for another tool to drive hako as a subprocess.
 - **Measurable.** `hako --bench tools/bench/tools-v1.jsonl` scores tool-call reliability against any provider and prints JSON — *well-formed* (exactly one parseable call) and *correct* (right tool, right argument), including restraint tasks where calling nothing is the right answer. It runs the real parser on a real turn with execution stubbed, so the number is about hako rather than about the benchmark.
 - **Asks when it should.** `ask_user` puts a real choice in front of you, rendered through the same arrow-key picker as `:model` and `:theme`. Tool approvals use it too.
@@ -229,7 +230,7 @@ hako --update           # check + atomic-replace if newer
 :tools on|off   :toolgate on|off   :toolmode native|prose   :auto on|off   :mode ask|auto|plan
 :mcp [reload]   :trust [revoke]
 :sessions [clear [all]]   :resume <id>     :session [new]     :name <chat>     :color <name|off>
-:e [<editor>]   :o   :mouse on|off   :remote
+:e [<editor>]   :o   :mouse on|off   :remote [on|off]
 ```
 
 Bare `:provider` / `:model` / `:theme` (no argument) open an arrow-key picker; give an argument to set directly. `:help` opens the same list in a filterable box.
@@ -293,6 +294,7 @@ First run in any directory asks for trust. Untrusted = no tool access at all.
 | Provider          | id (`:provider <id>`)            | Auth          | Cost     | Wire format       | Notes                                        |
 |---                |---                               |---            |---       |---                |---                                           |
 | Anthropic         | `anthropic` · `claude`           | OAuth         | sub      | native + SSE      | Claude Pro/Max subscription; live-tested     |
+| ChatGPT           | `chatgpt` · `codex`              | OAuth         | sub      | OpenAI Responses  | any ChatGPT plan, free too; device sign-in   |
 | Anthropic API     | `anthropic-api` · `claude-api`   | paste         | $/tok    | native + SSE      | regular API key, separate from sub           |
 | GitHub Copilot    | `copilot` · `github-copilot`    | OAuth         | sub      | OpenAI-compat     | Copilot Pro/Business; device flow            |
 | GitHub Models     | `github-models` · `ghmodels`    | OAuth         | free     | OpenAI-compat     | rate-limited; any GH account                 |
@@ -311,7 +313,7 @@ First run in any directory asks for trust. Untrusted = no tool access at all.
 | Ollama Cloud      | `ollamacloud` · `ocloud`         | paste         | $/tok    | native            | ollama.com hosted                            |
 | custom            | `custom`                         | paste         | depends  | OpenAI-compat     | set `ai_endpoint` in `.hakorc`              |
 
-*Three wire formats (native Anthropic, native Ollama, OpenAI-compat).  Quickest paths: (a) **Claude Pro/Max** → `:login anthropic`. (b) **Copilot Pro** → `:login copilot`. (c) **Free, no card** → `:login github-models`, `:login gemini`, `:login groq`, or `:login ollama`. (d) **Pay-as-you-go** → any paste row. ChatGPT Plus piggyback deferred — no public OAuth surface yet.*
+*Three wire formats (native Anthropic, native Ollama, OpenAI-compat).  Quickest paths: (a) **Claude Pro/Max** → `:login anthropic`. (b) **ChatGPT** (free or paid) → `:login chatgpt`. (c) **Copilot Pro** → `:login copilot`. (d) **Free, no card** → `:login github-models`, `:login gemini`, `:login groq`, or `:login ollama`. (e) **Pay-as-you-go** → any paste row.*
 
 ### Tool modes
 
@@ -353,14 +355,12 @@ Browse the catalog: [mithraeums/skills](https://github.com/mithraeums/skills).
 
 ## Change Log
 
-### Latest — v0.2.4
-- **It runs where nothing else does.** Three weeks of use on an iPhone and an iPad under iSh — where Claude Code, Hermes and Codex would not install — and on a desktop, inside itself, with Claude driving. The bugs that found were all silent, and they are all gone: text that vanished when a backslash landed on a network chunk boundary, lines cut at the read buffer, an Anthropic overload reported as an empty answer, a tool call with only a closing tag that ended the turn, a large file truncated at 100 KB without a word, a freeze after a successful edit, pastes that doubled every line break.
-- **The input bar is in flow.** No absolute cursor moves, no scroll region, no alternate screen for the chat — so a resize (or a phone keyboard appearing) reflows cleanly instead of duplicating the conversation. Type while the model works; it queues. **ctrl+o** opens the transcript in a pager.
-- **Local models stream**, token by token, and the engine's prefilled system prompt persists on disk: a cold first turn on a 3B model went from four minutes to two seconds.
-- **`grep` / `glob` / `web_fetch`**, context compaction, skills as summaries with the body on demand, `:use <skill>` as a persistent mode, a diff preview before every `[y/n/a]`, Anthropic prompt caching, and **`--bench`** to score whether a model calls the right tool.
-- **You can see what happened.** The session log carries system notices — errors, engine failures, why a turn came back empty; `--debug` writes a startup trace to `~/.hako/startup.log`; a dead engine reports its own last words and the signal that killed it.
-- **`make test`** (no model, no network) and **`make test-tty`** (a pty harness with a fake engine) are the gates; zero warnings under gcc and clang; ASan clean.
-- Ships with **hako-edit v0.1.7** and **hako engine v0.0.4**.
+### Latest — v0.2.7
+- **A patch:** the built-in studio page fills an iOS home-screen app (studio v0.0.6). The rest is v0.2.6:
+- **`:remote` is the relay only.** Tailscale is gone: `:remote on` always goes through your account (invite beta), and links this computer the first time.
+- **Signing in on iSh, or anywhere without a browser beside you, is less fiddly.** The sign-in link or device code goes on your clipboard, a pasted code loses any stray whitespace, and enter on an empty prompt takes the clipboard.
+- **Quieter.** A device reconnecting is said once, at the desk only; a theme picked in the studio says nothing in the chat.
+- Ships with **hako studio v0.0.6**.
 
 Every earlier release, and the full detail, is in **[CHANGELOG.md](CHANGELOG.md)**.
 
@@ -368,7 +368,7 @@ Every earlier release, and the full detail, is in **[CHANGELOG.md](CHANGELOG.md)
 
 ## Roadmap
 
-**Shipped through v0.2.4** — local models stream · in-flow input bar with type-ahead · transcript pager (ctrl+o) · `$EDITOR` on ctrl+g · `grep`/`glob`/`web_fetch` · context compaction · skills on demand + `:skill install` · diff before every approval · the editor's 19 themes · `--serve` (hako studio in a browser, UI embedded in the binary) ·
+**Shipped through v0.2.7** — `:remote on` from anywhere (end to end, through the relay) · ChatGPT sign-in · clipboard sign-in on iSh · local models stream · in-flow input bar with type-ahead · transcript pager (ctrl+o) · `$EDITOR` on ctrl+g · `grep`/`glob`/`web_fetch` · context compaction · skills on demand + `:skill install` · diff before every approval · the editor's 19 themes · `--serve` (hako studio in a browser, UI embedded in the binary) ·
 termios line editor · `--update` · directory skills + `read_skill` · PKCE without openssl ·
 universal2 / Linux arm64 / FreeBSD · 4 OAuth providers + Anthropic OAuth tool calls ·
 local `hako` models via the [hakm](https://github.com/mithraeums/hako) subprocess (no ollama, no in-process link) ·

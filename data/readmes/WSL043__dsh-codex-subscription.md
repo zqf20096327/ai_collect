@@ -47,7 +47,7 @@
 
 ## 准备 DSH
 
-已验证兼容 DSH `0.2.1-rc.2`（`latest` 与 `next` 通道），最低支持 `0.1.7-rc.2`；更早的 DSH 请先升级。
+已验证兼容 DSH `0.2.1-rc.3`（`next` 通道），继续支持 `0.2.1-rc.2`，最低支持 `0.1.7-rc.2`；更早的 DSH 请先升级。
 
 本插件支持软件包元数据中记录的最新版 DeepSeek Harness，并需要一个当前具有 Codex 使用资格的 ChatGPT 账户。
 
@@ -68,7 +68,7 @@
 2. 在 **包名或地址** 输入框中粘贴下面的包名（已带版本号）：
 
    ```text
-   dsh-codex-subscription@3.1.4
+   dsh-codex-subscription@3.1.6
    ```
 
 3. 点击 **安装**，等待安装完成；按页面提示操作，需要重启时先保存工作。
@@ -85,7 +85,7 @@
 <summary>终端安装（已能运行 dsh 命令）</summary>
 
 ```sh
-dsh plugin --profile web add dsh-codex-subscription@3.1.4
+dsh plugin --profile web add dsh-codex-subscription@3.1.6
 ```
 
 安装完成后按提示重启 DSH，再到 **设置 → Codex 订阅** 登录。插件页面和终端均由 DSH 管理安装。
@@ -98,7 +98,7 @@ dsh plugin --profile web add dsh-codex-subscription@3.1.4
 先在 Web 中完成登录并选择一次 Codex 模型，再把同一个插件安装到 Headless profile：
 
 ```sh
-dsh plugin --profile headless add dsh-codex-subscription@3.1.4
+dsh plugin --profile headless add dsh-codex-subscription@3.1.6
 dsh --profile headless "只回复：ok"
 ```
 
@@ -263,7 +263,7 @@ Agent 先在画板绘制可编辑草图，再以该草图为参考调用订阅�
 | **速度档位** | 在支持的模型上切换标准 / Fast；账号目录提供时还有 Ultrafast（Beta），输入框显示闪电标识 | 默认标准；Fast 和 Ultrafast 会增加用量消耗，Ultrafast 目前仅 Pro 500 |
 | **输出详略** | 选择简短、适中或详细的回答偏好 | 默认跟随模型 |
 | **输入图片精度** | 为发送给聊天模型的图片选择低、高、原图或自动精度 | 影响输入 token 用量；默认自动 |
-| **订阅联网搜索** | 使用 Codex 搜索，或选择 DSH 搜索 | 可选自动、DSH、Codex 来源；在搜索发生时分流，不改写 DSH 自己的搜索设置，所以官方设置页的开关保持你设的样子；DeepSeek 账号路线和填了 API Key 的路线（新版 Search API / 旧版）都兼容；一方未登录或没有 Key 时自动改用另一方 |
+| **订阅联网搜索** | 自动、DSH、Codex 三种来源 | 自动按会话模型优先选择来源，仅缺少凭据或服务不可用时尝试另一方；手动选择 DSH / Codex 则固定来源，失败直接报错。关闭“其他模型”后，非 Codex 会话只用 DSH 原生搜索。插件不改写 DSH 搜索设置，也不额外使用 DeepSeek 账号回退；原生搜索费用由所选服务决定 |
 | **其他模型总开关** | 一键让 DeepSeek 等非 Codex 模型的对话不再使用订阅的联网搜索、图片生成和 ChatGPT 连接器 | 设置 → Codex 订阅 → 联网与工具；默认开启，Codex 订阅模型不受影响；手机远程控制和语音由你主动开启或发起，不受它影响 |
 | **搜索范围** | 选择实时 / 缓存搜索、关闭搜索，或限定域名 | 在“联网与工具”的搜索来源下 |
 | **流无响应超时** | 设置连续没有收到流式数据时中断请求的时长 | 默认 10 分钟；不是整体回答时限 |
@@ -332,6 +332,21 @@ Agent 先在画板绘制可编辑草图，再以该草图为参考调用订阅�
 
 </details>
 
+### 切换推理强度时复用缓存
+
+**切换推理强度时复用缓存**位于**设置 → Codex 订阅 → 模型 → 高级**，默认开启，可随时关闭；已保存的关闭选择会保留。只对当前账号模型目录明确声明支持的标准、单智能体模型生效；不根据模型名称猜测支持情况。普通提示词缓存原本就是自动的，关闭这个开关仍有普通缓存。
+
+请求顶层 `reasoning.effort` 保持当前上下文窗口的初始值。在 DSH 调整强度后，插件在新增历史中记录 `configuration_update`，后续请求保留它的位置。这有助于减少切档导致的缓存失效，不保证每次命中、回复更快或额度节省；服务端响应的顶层 effort 仍可能显示初始值。
+
+- **云端自动压缩和无限重试模式会禁用此功能。** 界面会说明冲突；不会自动修改压缩、重试、鉴权、连接或 cache key 设置。
+- 成功响应在 DSH 原有 replay metadata 中保存少量不含正文的状态，重启、恢复和分支可据此续用。本地压缩成功后，旧前缀不再相同，插件核对 DSH 已提交的历史替换并以当前强度建立新基线；失败的压缩不会清掉原状态。
+- 开启已有会话或切回支持的模型时，只有能与 DSH 原生会话历史完整核对，才建立新基线，第一条不保证复用旧缓存。无法验证的历史、不支持的模型、账户变化及资源上限会使用所选强度的普通请求。
+- 同一进程中的 pending 状态会固定已发送输入，即使该请求失败或取消。对完全相同的输入重试时选择不同强度会明确报错；请保留原强度重试，或发送新消息。失败请求没有成功响应的持久化检查点，因此进程重启或插件重载后，不保证保留失败请求的缓存前缀。
+- 关闭后恢复普通请求，不给旧日志补写 update。不向 `/responses/compact` 发送 update 历史，不支持 pro、多智能体、自动截断或自动压缩。
+- 上限为 20,000 个 input item、16 MiB 输入与外层字段指纹数据、128 个 update，以及 256 个活动或 pending 会话。历史校验或边界校验失败时停止保缓存，不忽略用户所选强度。
+
+此机制使用 OpenAI [推理指南](https://developers.openai.com/api/docs/guides/reasoning)中的 configuration update；[提示词缓存文档](https://developers.openai.com/api/docs/guides/prompt-caching)解释缓存条件。支持情况以当前账号目录和实际响应为准；服务端拒绝参数时报告错误，不换成旧强度或 API key 重试。
+
 ## 更新与卸载
 
 在 DSH **插件** 页面找到本插件，使用更新或卸载操作，完成后按页面提示重启。卸载插件不会删除其他插件。
@@ -340,7 +355,7 @@ Agent 先在画板绘制可编辑草图，再以该草图为参考调用订阅�
 <summary>终端方式</summary>
 
 ```sh
-dsh plugin --profile web update dsh-codex-subscription@3.1.4
+dsh plugin --profile web update dsh-codex-subscription@3.1.6
 ```
 
 仅在需要卸载时运行：

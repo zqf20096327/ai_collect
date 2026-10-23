@@ -2,9 +2,9 @@
 
 An agent skill for Claude Code, Codex and OpenClaw that turns an arXiv paper into a translated, printable book. It reads the paper's **LaTeX source**, so equations, figures, tables and the paper's own numbering carry over. PDF, DOCX and EPUB books work too, through Calibre.
 
-[<img src="assets/demo/03-table.png" alt="Left: Table 1 on page 7 of arXiv:2609.11801. Right: the same table on page 12 of the Korean book built from its LaTeX source, every number and every plus-minus sign unchanged.">](assets/demo/03-table.png)
+[<img src="assets/demo/03-table.png" alt="Left: Table 1 on page 7 of arXiv:2609.11801. Right: the same table on page 13 of the Korean book built from its LaTeX source, every number and every plus-minus sign unchanged.">](assets/demo/03-table.png)
 
-<sub>Left: page 7 of arXiv:2609.11801, *Thinking with Looped Flows* (CC BY 4.0). Right: page 12 of the Korean book this skill built from its LaTeX source. Every number in Table 1, and every `±`, is the paper's. **The whole book, 29 pages: [`looped-flows_ko.pdf`](https://github.com/kcy4334-lgtm/translate-book-arxiv/releases/download/v0.4.2/looped-flows_ko.pdf).** More pages, with source and licence: [assets/demo](assets/demo/README.md).</sub>
+<sub>Left: page 7 of arXiv:2609.11801, *Thinking with Looped Flows* (CC BY 4.0). Right: page 13 of the Korean book this skill built from its LaTeX source. Every number in Table 1, and every `±`, is the paper's. **The whole book, 31 pages: [`looped-flows_ko.pdf`](https://github.com/kcy4334-lgtm/translate-book-arxiv/releases/download/v0.5.0/looped-flows_ko.pdf).** More pages, with source and licence: [assets/demo](assets/demo/README.md).</sub>
 
 ```bash
 npx skills add kcy4334-lgtm/translate-book-arxiv -a claude-code -g
@@ -38,7 +38,7 @@ Split into chunks (chunk0001.md, chunk0002.md, ...)
   │  manifest.json tracks chunk hashes
   │  the reference list becomes its own chunk and is copied, not translated
   ▼
-Parallel sub-agents (work queue, 8 in flight by default)
+Parallel sub-agents (batches of 8 by default)
   │  each sub-agent: read 1 chunk → translate → write output_chunk*.md
   │  each chunk is verified, recorded and merged as it lands
   ▼
@@ -70,13 +70,13 @@ This page was written for the repository, with made-up results, so it can be sho
 - **Numbers come from the paper**: equation, theorem, section, float and subfigure numbers are read from the LaTeX source and checked against the original PDF by `tests/source_probe.py`
 - **The paper's own macros are resolved**: a paper's `.sty` is never `\input`, so pandoc would print `\ie` or `\parhead` as they are. `scripts/paper_macros.py` expands the definitions the paper ships: 4,099 calls across 21 papers, with nothing lost but the macro names on the six papers diffed word by word. When it cannot expand one safely it refuses and names the macro and the reason
 - **The reference list is copied as is**: it becomes its own chunk, usually the largest, at 27–34% of a paper's characters
-- **Parallel sub-agents**: a work queue keeps 8 translators running, each with its own context; the next chunk starts as soon as a slot frees
+- **Parallel sub-agents**: 8 translators at a time, each with its own context, in foreground batches so the skill's pre-approved commands and writes hold for the whole run
 - **Every chunk is checked before it counts**: `scripts/verify_chunk.py` compares each output with its source, the glossary it was given and the chunk it quoted
 - **Consistent terms**: a glossary built before translation, a per-chunk term table, and short read-only excerpts from the neighbouring chunks for names and pronouns
 - **Resumable**: SHA-256 hashes in a manifest keep stale outputs out of the merge, and a changed glossary re-translates only the chunks that used the changed terms
 - **Print-ready PDF**: headless Chromium against a real `@page` box (A4, 18/18/22/18 mm, 11.5 pt), page numbers stamped afterwards because Chrome has no margin boxes. `scripts/layout.py` holds the page geometry and fonts
 - **Output**: HTML with a floating TOC, DOCX, EPUB and PDF, with an optional EPUB cover, working folder and export name
-- **Tests**: 2,290, standard library only, run in CI
+- **Tests**: 2,705, standard library only, run in CI
 
 ## Growing the skill
 
@@ -84,7 +84,7 @@ Each paper brings LaTeX constructs the last one did not have. Four stores ship w
 
 | | what it holds |
 |---|---|
-| `KNOWLEDGE.md` | What a tool actually did, with the measurement that proved it. 217 entries |
+| `KNOWLEDGE.md` | What a tool actually did, with the measurement that proved it. 248 entries |
 | `KNOWHOW.md` | What a way of working cost, so it is not paid twice. 44 entries |
 | `REFEREE.md` | Whether a repeated failure belongs to a tool, a briefing or a role. 6 entries |
 | `corpus/shapes.json` | Every LaTeX construct each paper carried, written by the build itself. 28 papers |
@@ -127,8 +127,10 @@ Run `python scripts/doctor.py --strict` first. It reports what is installed and 
 
 | target | install |
 |---|---|
-| Korean body and headings | Noto Serif KR, Noto Sans KR ([Google Fonts](https://fonts.google.com/noto)) |
-| formulas | a font with an OpenType MATH table: Cambria Math ships with Office; [STIX Two Math](https://www.stixfonts.org/) is free |
+| Korean body and headings | HCR Batang or Batang with Malgun Gothic on Windows; on Linux `sudo apt install fonts-nanum` (NanumMyeongjo, NanumGothic) |
+| formulas | a TrueType face with an OpenType MATH table: Cambria Math ships with Office; on Linux `sudo apt install fonts-dejavu-extra` (DejaVu Math TeX Gyre) |
+
+Chromium prints a CFF or variable font as Type3, so Noto Serif KR, Noto Serif CJK, STIX Two Math and Latin Modern Math do not count even when installed. `python scripts/doctor.py` checks the faces the build will actually use.
 
 To check that a machine produces the same output, build a real PDF and measure it:
 
@@ -149,7 +151,11 @@ Everything the skill does outside your agent's own conversation:
 - **Sends** nothing. There is no telemetry and no upload. The translation is
   done by your agent's own model, in its own sub-agents.
 - **Runs** its bundled Python scripts, Pandoc, Calibre's `ebook-convert`, and
-  a headless Chromium, Chrome or Edge to print the PDF.
+  a headless Chromium, Chrome or Edge to print the PDF. When an arXiv paper
+  has EPS figures and TeX Live or MiKTeX is installed, it also runs
+  `epstopdf` on them. An EPS file is a small PostScript program, so it runs
+  with Ghostscript's sandbox on (`--safer --restricted`): the figure cannot
+  write, rename or delete files.
 - **Writes** its working files and the finished book into `<book>_temp/`, in
   the current directory or under the `temp_root` you name. When a run teaches
   it something, it appends to its own logs inside the skill folder
@@ -270,7 +276,7 @@ An existing `glossary.json` is never overwritten; edit it between runs, or delet
 
 ### Step 2: Translate
 
-Sub-agents run as a work queue, 8 at a time by default. Each one reads one chunk (for example `chunk0042.md`), translates it with its term table and the short excerpts from the chunks around it, and writes `output_chunk0042.md` plus `output_chunk0042.meta.json`, its notes for the glossary.
+Sub-agents run in batches, 8 at a time by default. Each one reads one chunk (for example `chunk0042.md`), translates it with its term table and the short excerpts from the chunks around it, and writes `output_chunk0042.md` plus `output_chunk0042.meta.json`, its notes for the glossary.
 
 As each chunk lands it is verified (`verify_chunk.py`), recorded, and its notes merged, in that order. The reference-list chunk is written by `convert.py` and never sent to a sub-agent.
 
@@ -301,8 +307,10 @@ A temp dir belongs to one run. After changing the title, author, language, templ
 | `scripts/paper_macros.py` | Expands the paper's own macros from the `.sty` files it ships |
 | `scripts/pdf_text.py` | Reads a PDF in reading order and scores how many of the paper's sentences survived |
 | `scripts/algorithm_float.py` | Turns `algorithm` floats into Markdown lists |
+| `scripts/drawn_figures.py` | Crops figures drawn in TikZ or PGF from the original PDF |
+| `scripts/halign_tables.py` | Rewrites a plain TeX `\halign` table as a `tabular` |
 | `scripts/latex_rows.py` | Finds the `\\` that really ends a table row |
-| `scripts/grid_table.py` | Grid tables for layouts pandoc cannot write; not wired into the pipeline |
+| `scripts/math_tabulars.py` | Rewrites a `tabular` inside a formula as an `array` |
 | `scripts/math_guard.py` | Replaces formulas and citations with placeholders (`⟦M0042⟧`) during translation and restores them |
 | `scripts/sidecar_edit.py` | Reads and writes a chunk's formula sidecar file without breaking it |
 | `scripts/manifest.py` | Chunk hashes and merge validation |
@@ -315,6 +323,7 @@ A temp dir belongs to one run. After changing the title, author, language, templ
 | `scripts/verify_tables.py` | Checks that table numbers and structure survive translation |
 | `scripts/table_language.py` | The common table header words that must be translated |
 | `scripts/repair.py` | Repairs an already translated book in place |
+| `scripts/render_pages.py` | Renders PDF pages to PNG for the page-by-page reading in step 7.5 |
 | `scripts/merge_and_build.py` | Merge, then HTML, DOCX, EPUB and PDF |
 | `scripts/latex_cleanup.py` | For the build: drops LaTeX that would print as text, expands macros, fixes math, numbers sections |
 | `scripts/numbering.py` | For the build: figure captions, float and equation numbers, cross-references |
@@ -332,6 +341,9 @@ A temp dir belongs to one run. After changing the title, author, language, templ
 | `scripts/advisors.py` | Records which advisor was consulted, on what, and what it said |
 | `scripts/install_advisors.py` | Copies the advisor and translator definitions to `~/.claude/agents/` |
 | `corpus/shapes.json`, `referee/runs.json` | The census and the referee's run history |
+| `tools/build_plugin_branch.py` | Builds the `claude-plugin` branch from a release tag (see [Releases](#releases)) |
+| `tools/corpus_compare.py` | Runs every paper in a local corpus with one version of the skill and compares two runs, paper by paper |
+| `tools/demo_strip.py` | Renders the paper-and-book pages in `assets/demo` |
 | `tests/` | The test suite, the probes listed under [Verifying a build](#verifying-a-build), and baseline books in `tests/baselines/` |
 
 ## Development
@@ -354,17 +366,17 @@ Versions are git tags on `main`. The tag is the only version anchor; no file hol
 ```bash
 python -m unittest discover -s tests -p "test_*.py"    # green first
 git push origin main
-git tag vX.Y.Z && git push --tags
-python tools/build_plugin_branch.py && git push origin claude-plugin
+git tag vX.Y.Z && git push origin vX.Y.Z
+python tools/build_plugin_branch.py --ref vX.Y.Z && git push origin claude-plugin
 ```
 
-`/release` in `.claude/commands/release.md` runs the last three lines and stops at the first failure. A tag already on the remote is not moved without asking, because someone may have fetched it.
+`/release` in `.claude/commands/release.md` runs the last three lines and stops at the first failure. Only the new tag is pushed, so a local tag for a version that was never published stays local. A tag already on the remote is not moved without asking, because someone may have fetched it. If the demo book was rebuilt, it is attached to the release as `looped-flows_ko.pdf`, which the link at the top of this page points to.
 
-The last line refreshes the `claude-plugin` branch, which Anthropic's plugin directory follows instead of `main`. The directory refuses any file over 5 MiB and holds binaries for review, while `main` keeps the test books the suite needs, so the branch is built from the tag with only the files the skill runs on plus `.claude-plugin/plugin.json`. The directory also holds a plugin whose `allowed-tools` lets it run any Python, so the branch's `SKILL.md` allows only the scripts it names, by their `${CLAUDE_PLUGIN_ROOT}` path; `main` keeps `{baseDir}` and `Bash(python *)` for the runtimes that do not fill in that variable.
+The last line refreshes the `claude-plugin` branch, which Anthropic's plugin directory follows instead of `main`. The directory refuses any file over 5 MiB and holds binaries for review, while `main` keeps the test books the suite needs, so the branch is built from the tag with only the files the skill runs on plus `.claude-plugin/plugin.json`. The directory also holds a plugin whose `allowed-tools` lets it run any Python, so the branch's `SKILL.md` allows only the scripts it names, by their `${CLAUDE_PLUGIN_ROOT}` path; `main` keeps `{baseDir}` and `Bash(python *)` for the runtimes that do not fill in that variable. Both copies pre-approve file writes only under the folder the user works in (`Edit(./**)`, which Claude Code applies to Write as well), so writing anywhere else still asks.
 
 This fork is not published on ClawHub. The upstream project publishes there as `translate-book`, and that name is theirs.
 
-A translated book is attached to a release only when the paper's licence allows it. `looped-flows_ko.pdf` on v0.4.2 comes from a CC BY 4.0 paper. A paper under arXiv's default licence does not allow redistributing a translation, and arXiv states which licence applies in the `<license>` field of its OAI-PMH record (the Atom API has no licence field).
+A translated book is attached to a release only when the paper's licence allows it. `looped-flows_ko.pdf` on v0.5.0 comes from a CC BY 4.0 paper. A paper under arXiv's default licence does not allow redistributing a translation, and arXiv states which licence applies in the `<license>` field of its OAI-PMH record (the Atom API has no licence field).
 
 ### Contributing
 

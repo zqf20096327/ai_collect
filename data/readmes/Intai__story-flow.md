@@ -9,8 +9,9 @@ This workflow leverages Claude Code to automate and streamline software developm
   > 💡 **Stories not ready yet?** Use [design-flow](plugins/design-flow) to explore product design, establish a style guide, create UI designs, and break the feature into epics and stories collaboratively with Claude before grooming.
 
 - Team alignment: All scrum team members understand the feature, including edge cases, error handling, and expected outcomes.
-- If you use a story tracker, add its MCP server to your project's `.mcp.json`. Then run `/mcp` to login and verify the connection status.
-- If you use Figma, login to Figma MCP and run `/mcp` to verify the connection status.
+- Tool access: Every tool your project uses is installed and logged in before you start. Tools are critical for Claude to produce reliable results: they let it read the real story, design, data, and logs instead of guessing, and verify its work against the running app.
+  - MCP servers, e.g. Jira, Figma, Playwright, Sentry, Datadog, Grafana. Add to project's `.mcp.json`, then run `/mcp` to log in and verify connection status.
+  - CLIs, e.g. `gh`, `glab`, `az`, `aws`, `sqlcmd`, `psql`, `mongosh`, `terraform`, `kubectl`, `docker`. Confirm each is authenticated (e.g. `gh auth status`, `az account show`).
 
 ### Steps
 
@@ -53,12 +54,13 @@ This workflow leverages Claude Code to automate and streamline software developm
    Prompt: `/analyze-tasks @path/to/story.md` starting from **plan mode**. \
    This identifies tasks that can be executed in parallel and updates the story markdown accordingly.
 
-4. 🧠 **Create an initial pull request** \
+4. 🧠 **Create the technical design pull request** — the review that matters most \
    Open a PR with the story markdown and discuss requirements, planned tasks, and the execution plan with the team **before any code is written**.
 
    > 💡 **Why now?** Shift-left: a wrong approach caught here costs a review comment; caught after implementation it costs the implementation. Use [junior-flow](plugins/junior-flow) `/learn-story-flow technical-design` to explore why design PRs reduce rework.
 
    **Important:**
+   - Don't rush this review or take it lightly. Bounce ideas around and challenge the approach until the team agrees on the design.
    - Include alternatives considered and open questions for reviewers.
    - Designs evolve; update the story markdown when implementation diverges.
 

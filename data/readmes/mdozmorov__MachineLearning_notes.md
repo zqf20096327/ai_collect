@@ -407,6 +407,12 @@ JAX is a combination of Automatic Differentiation and XLA (Accelerated Linear AL
 
 ### DL Genomics
 
+
+- [CARBON](https://huggingface.co/collections/HuggingFaceBio/carbon) - generative DNA language model, decoder only, non-overlapping 6-mer  (empirical choice) tokenization, 3B and 8B parameters (393kbp and 786kbp windows). Differences from standard LLM approaches. Transformer architecture (Llama3 based) with normalization, positon embedding, grouped query attention (32 Query heads with 4 or 8 Key-Value groups), annotation-aware data curation to avoid low-complexity repetitive genome, cross-entropy and factorized nucleotide supervision objective function (probabilistic matching of 6-mer sequences), builds on GENERator-v2 ideas. [Training data](https://huggingface.co/datasets/HuggingFaceBio/carbon-pretraining-corpus) - GENERator (under 100kbp length, best performing) and OpenGenome2 (Evo2 data, transcript level, procaryotic). Evaluated on ClinVar coding and noncoding variants, BRCA2 mutagenesis, TrainGym Mendelian noncoding variants, sequence-level perturbation tasks. Genomic-NIAH (Needle In A Haystack) and RULER benchmark methodologies. CARBON-3B performs on par with Evo2-7B. [Carbon-A: Finding genes in known and unknown genomes. 1.2B parameter encoder with bidirectional attention, protein-coding regions.](https://huggingface.co/blog/HuggingFaceBio/carbon-annotator-genbank-genome-annotation) <details>
+  <summary>Paper</summary>
+  Carbon: Decoding the Language of Life. Loubna Ben Allal, Qiuyi Li, Maurizio Fiusco, Lewis Tunstall, Kashif Rasul, Ed Beeching, Dana Aubakirova, Carlos Patiño, Thibaud Frere, Anton Lozhkov, Georgia Channing, Thomas Wolf, Diego di Bernardo, Leandro von Werra. bioRxiv 2026.05.22.727119; doi: https://doi.org/10.64898/2026.05.22.727119
+</details>
+
 - [Biomni](https://biomni.stanford.edu/) - biomedical AI agent for research. 150 tools for  warious analyses, 59 databases, 105 software.  The environment component (E1) and the agent component (A1) to use the environment (built using [CodeAct](https://github.com/xingyaoww/code-act)). Benchmarked on Humanity's last exam (HLE), LAB-Bench, ourperforms 6 baselines (base LLM, coding agent, literature agent). Tested on 8 biomedical benchmarks (genetics, genomics, microbiology, pharmacology, clinical medicine), details of each. [GitHub](https://github.com/snap-stanford/biomni). <details>
   <summary>Paper</summary>
   Huang K, Zhang S, Wang H, Qu Y, Lu Y, Roohani Y, Li R, Qiu L, Li G, Zhang J, Yin D, Marwaha S, Carter JN, Zhou X, Wheeler M, Bernstein JA, Wang M, He P, Zhou J, Snyder M, Cong L, Regev A, Leskovec J. Biomni: A General-Purpose Biomedical AI Agent. bioRxiv [Preprint]. 2025 Jun 2:2025.05.30.656746. doi: 10.1101/2025.05.30.656746. PMID: 40501924; PMCID: PMC12157518.
@@ -870,19 +876,4 @@ https://doi.org/10.48550/arXiv.2204.14217)), [Example](https://github.com/THUDM/
 
 - [MLfromscratch](https://github.com/patrickloeber/MLfromscratch) - Machine Learning algorithm implementations from scratch. [Youtube videos](https://www.youtube.com/playlist?list=PLqnslRFeH2Upcrywf-u2etjdxxkL8nl7E)
 
-- [MTH594_MachineLearning](https://github.com/diefimov/MTH594_MachineLearning) - The materials for the course MTH 594 Advanced data mining: theory and applications (Dmitry Efimov, American University of Sharjah)
-
-- [pattern_classification](https://github.com/rasbt/pattern_classification) - A collection of tutorials and examples for solving and understanding machine learning and pattern classification tasks
-
-- [sklearn-classification](https://github.com/dformoso/sklearn-classification) - Data Science Notebook on a Classification Task, using sklearn and Tensorflow. Jupyter Notebook, the Census Income Dataset to predict whether an individual's income exceeds $50K/yr based on census data. Docker-wrapped
-
-- [supervised-ML-case-studies-course](https://github.com/juliasilge/supervised-ML-case-studies-course) - Supervised machine learning case studies in R. [Book](https://supervised-ml-course.netlify.com/)
-
-- [useR-machine-learning-tutorial](https://github.com/ledell/useR-machine-learning-tutorial) - useR! 2016 Tutorial: Machine Learning Algorithmic Deep Dive. IPython notebooks running R kernel
-
-
-## ML Videos
-
-- [Probabilistic Machine Learning — Philipp Hennig, 2021](https://www.youtube.com/playlist?list=PL05umP7R6ij1tHaOFY96m5uX3J21a6yNd), [Tweet](https://twitter.com/omarsar0/status/1383360564710174720?s=20)
-
-- [10 Powerful YouTube Channels for Data Science Aspirants](https://www.analyticsvidhya.com/blog/2020/08/10-powerful-youtube-channels-for-data-science-aspirants/) - Analytics Vidhya's post. [Sentdex](https://www.youtube.com/c/sentdex/playlists), [3Blue1Brown](https://www.youtube.com/c/3blue1brown/playlists), [freeCodeCamp.org](https://www.youtube.com/c/Freecodecamp/playlists), [StatQuest](https://www.youtube.com/c/joshstarmer/playlists), [Krish Naik](http
+- [MTH594_MachineLearning](https://github.com/diefimov/MTH594_MachineLearning) - The ma

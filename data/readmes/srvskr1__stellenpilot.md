@@ -11,6 +11,19 @@
 
 <sub>All names, companies and jobs in this demo are fictional.</sub>
 
+### What is new in 0.11.2
+
+* **Update notice.** Once a day Stellenpilot checks whether a newer version is out and shows a **Download** button on Home. Run the installer and it updates your app in place; your jobs, CVs and settings stay. You can switch the check off under Settings, Language.
+* **A new Home.** The agent office now sits at the top, and Insights moved from Applications to Home.
+* The Windows installer now tells you when it is updating an existing install.
+
+### What is new in 0.11.1
+
+* **A calmer Insights page.** Your applications, the skills that would open the most jobs and the hidden German share are now shown as circles in one blue theme. Tap a skill to see the jobs it would lift.
+* **Clearer reply rates.** Your overall reply rate comes first, then one grouping at a time (source, role type, place, CV layout) as sorted bars with a line for your average. Groups with fewer than 3 applications are greyed out, so a single reply never shows up as 100%.
+* **A new agent office.** A small robot now does the work. It sits at each desk and types while code runs on its screen, walks between desks, and rests on the sofa with a coffee between searches. Desks, chairs and the room were redrawn.
+* **Smoother motion.** Animations follow one set of easing curves, move only what the browser can animate cheaply, and stop when your system asks for reduced motion.
+
 ### What is new in 0.11.0
 
 * **What to learn next.** Insights ranks the skills and German levels that would lift the most of your recent jobs over your match line, and says whether the ads require them or call them nice to have. Job details show the score a job would get with each missing skill.
@@ -153,7 +166,7 @@ Full setup for Ollama, LM Studio, llama.cpp, vLLM and Docker, plus speed tips an
 
 Five calm pages, in your browser, on your computer:
 
-* **Home**: what is ready to apply, interviews coming up, the newest matches, and a small 3D office where you can watch the agent work.
+* **Home**: what is ready to apply, interviews coming up, the newest matches, and a small 3D office where a robot works through each step of the search.
 * **Jobs**: every job with its score, why it fits, honest gaps, your documents, notes and interview prep. Filter by word, source, type, place, day, match or status, and see which tools of the ad you have, which ones you are missing, and what the job would score with each of them.
 * **Applications**: a board you drag cards across (Applied, Interview, Offer, Rejected). Below it, Insights shows reply rates by source and CV layout, where your applications stop (CV, first check or interviews), a follow up email for interviews that went quiet, how many English ads still want good German, the skills that would open the most jobs for you, and a weekly summary.
 * **My CV**: your profile, with tips to improve your matches.
@@ -247,6 +260,7 @@ Other countries: set `country` in `config.toml`. Adzuna covers 19 countries, Job
 * **Local first.** Everything is stored in `jobhunt.db` and the `output` folder next to your config, on your computer. With the built-in AI or another local model, nothing about you leaves it.
 * With Claude or OpenAI, your profile and the job ads are sent to that provider.
 * The dashboard listens on 127.0.0.1 only, and write requests need a custom header, so other websites cannot change your data through your browser.
+* **Updates.** Once a day Stellenpilot asks GitHub whether a newer version exists. That request carries only the version number, never your data, and you can switch it off under Settings, Language. If there is one, Home shows a **Download** button for the installer from the Stellenpilot releases. Run it and it updates your app in place; your workspace is never touched. Stellenpilot itself never downloads or runs anything.
 * Read every document before you send it. The truth guard checks digits and the tools it knows (see `VOCAB` in `stellenpilot/score.py`). It cannot judge spelled out numbers or vague claims, so you are the final check.
 * Why the server, the guards, the link fetcher and the AI downloads are built the way they are: [docs/architecture.md](https://github.com/srvskr1/stellenpilot/blob/main/docs/architecture.md)
 

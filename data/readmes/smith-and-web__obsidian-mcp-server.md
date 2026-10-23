@@ -246,6 +246,7 @@ Or connect directly to the SSE endpoint at `http://localhost:3001/sse` if the cl
 | `similar-notes` | Notes nearest to a note by centroid embedding |
 | `index-status` | Model, counts, last indexer run and lag |
 | `reindex-note` | Re-index one note immediately |
+| `search-feedback` | Record a search rating and used or expected paths; available only with the learn log enabled |
 
 See [Semantic search](#semantic-search) for setup.
 
@@ -299,9 +300,14 @@ obsidian-mcp-server/
 │   │   ├── exclusions.ts     # What the indexer never reads
 │   │   ├── chunker.ts        # Heading-aware chunking
 │   │   ├── embedder.ts       # Ollama client (+ a fake for tests)
+│   │   ├── ranking.ts        # Fusion, weights, per-note cap and env validation
 │   │   ├── store.ts          # pgvector schema, upserts, hybrid search
 │   │   ├── scanner.ts        # Vault walk and change detection
 │   │   └── SearchService.ts  # What the MCP tools call
+│   ├── learn/                # Learn log, redaction, configuration and reports
+│   ├── learn-report.ts       # Read-only learn-report CLI
+│   ├── eval/                 # Golden validation, metrics and fixed ranking grid
+│   ├── eval.ts               # Read-only brain-eval CLI entry point
 │   ├── indexer.ts            # Indexer entry point (second container)
 │   └── types/
 │       └── index.ts          # TypeScript type definitions
@@ -327,12 +333,47 @@ obsidian-mcp-server/
 | `DATABASE_URL` | *(none)* | Postgres + pgvector connection string. **Enables semantic search**; unset = feature off |
 | `OLLAMA_URL` | `http://localhost:11434` | Ollama server for embeddings |
 | `EMBED_MODEL` | `nomic-embed-text` | Ollama embedding model; dimension is discovered from it |
+| `LEARN_LOG` | `false` | Enable the optional learn log; invalid configuration disables logging |
+| `LEARN_REDACT_PATTERNS_FILE` | unset | Required readable regex file when logging is enabled |
+| `LEARN_RETENTION_DAYS` | `30` | Days before query text, embeddings and feedback notes are cleared; integer 1–3650 |
 | `INDEX_COLLECTION` | `default` | Name of this vault's collection in the shared database |
+| `SEARCH_FUSION` | `rrf` | Fusion: `rrf` (weighted reciprocal rank) or `dbsf` (distribution-based score fusion) |
+| `SEARCH_RRF_K` | `60` | RRF rank constant, integer 1–1000; validated but unused under DBSF |
+| `SEARCH_W_VECTOR` | `1` | Vector-leg weight, finite number 0–10 |
+| `SEARCH_W_TEXT` | `1` | Full-text-leg weight, finite number 0–10; both weights cannot be zero |
+| `SEARCH_PER_NOTE_CAP` | `0` | Maximum chunks per note, integer 0–8; 0 means no cap |
 | `INDEX_INTERVAL_SECONDS` | `60` | Indexer only: seconds between vault scans |
 | `INDEX_VERBOSE` | `false` | Indexer only: log every file indexed or removed |
 | `EMBED_BATCH_SIZE` | `16` | Texts per Ollama request |
 | `EMBED_PROVIDER` | `ollama` | `ollama`, or `fake` (deterministic hash embeddings for tests and smoke runs; not for real search) |
 | `EMBED_DIM` | *(auto)* | Embedding dimension for the `fake` provider (default 64); ignored with Ollama, where it is discovered from the model |
+
+## Learn log
+
+The optional measurement layer requires semantic search and is off by default. It records the three search tools (`semantic-search`, `similar-notes`, `search-vault`), successful reads (`read-note`, `read-multiple-notes`, `read-section`), explicit feedback and SSE session connect/close with client names. Search ranking is unchanged; search never reads these logs.
+
+Set `LEARN_LOG=true` and `LEARN_REDACT_PATTERNS_FILE` to a readable UTF-8 file. Blank lines and comments are ignored, whitespace is trimmed, and each other line is a JavaScript regex source compiled case-insensitively. An example file is:
+
+```text
+# comment
+\bexample-term\b
+```
+
+Eight built-in patterns also detect private-key headers, access-key shapes, JWTs, hosted Git tokens, secret assignments, bearer credentials, URL token parameters and 64-character hex strings. Sensitive queries (including similar-note paths) and their embeddings are cleared before storage. Sensitive string parameters become `[redacted]`; sensitive feedback notes are cleared, sensitive feedback paths are dropped, and sensitive read paths are never logged. Site-specific patterns belong in the external file. An invalid configuration disables logging, never search, and is reported at startup.
+
+Logged searches return an additive `requestId`. Pass it to a read's optional `requestId` argument, then call `search-feedback` with `requestId`, `rating` (`positive`, `negative`, `neutral`) and `usedPaths`. `expectedPaths` and a short `note` are optional. `source` defaults to `agent`; use `user` only for explicit human feedback. Unknown ids return `{ recorded: false, reason: 'unknown requestId' }`. Reads with unknown ids are recorded without a link.
+
+Search, read and session writes are fire and forget: they never delay tool responses and failures are logged with `learn-log:`. Feedback is awaited. The indexer loop applies retention at most daily, excluding `--once`. After `LEARN_RETENTION_DAYS` (default 30), query text, query embeddings and feedback notes are cleared. Paths, ranks, timestamps, checked parameters, client names and feedback paths remain. `sql/002_learning.sql` creates the four learn tables even when logging is off; the embedding column is recreated after a dimension reset. Keep learn-table data out of database dumps and exclude raw database files from backups when query retention is required.
+
+Run the read-only report against an existing database:
+
+```bash
+node dist/learn-report.js --days 30 --out /existing-directory/learn-report.json
+```
+
+`--days` defaults to 30 (range 1–365); the output directory must already exist. It uses a read-only connection, ignores ranking and logging environment settings, and outputs counts and rates without query text. Stdout lists dotted keys in report order, followed by `VOLUME GATE: pass|fail`.
+
+The report covers the selected collection and time window. Sessions include counts by client and the median closed duration in minutes. Searches include counts by tool and redacted share. Linked semantic reads use the minimum rank of the read path: `usedAt1`, `usedAt3`, `usedAt8` are shares of linked reads, and `missRate` is the share absent from results. `linkedSearchRate` is the share of semantic searches with a linked read, and `linkedSemanticPerDay` is their daily count. Reformulation and fallback rates count session-linked semantic searches followed within 120 seconds by another semantic search or text search. Feedback coverage is the share of semantic searches with feedback; source counts and negative rates include all feedback. Zero-denominator rates and empty medians are `null`; numbers are rounded to four decimals. The volume gate passes at a rounded 30 linked semantic searches per day. Feedback from agents measures compliance; user corrections provide independent labels.
 
 ## Semantic search
 
@@ -342,11 +383,79 @@ Off by default. Setting `DATABASE_URL` turns it on in both the server (four extr
 
 - **The vault stays the source of truth.** The index is a derivative you can drop and rebuild (`--reindex`).
 - **Chunking is heading-aware.** Notes split on H1–H3; sections longer than ~800 tokens split further with overlap; each chunk carries its breadcrumb (`Title › H2 › H3`). Chunk 0 is the title plus the frontmatter `summary`, so a one-line summary is the strongest signal for "which note answers this".
-- **Retrieval is hybrid.** Cosine similarity over an HNSW index and Postgres full-text search run side by side and are fused with reciprocal rank fusion, so paraphrases and exact identifiers (hostnames, ticket numbers) both work.
+- **Retrieval is hybrid.** Cosine similarity over an HNSW index and Postgres full-text search run side by side and are fused with configurable weighted reciprocal rank fusion (the default) or distribution-based score fusion (DBSF), so paraphrases and exact identifiers (hostnames, ticket numbers) both work.
 - **Change detection is a poll**, not a watcher, because inotify does not propagate over NFS or SMB. The indexer stats every file each interval, hashes only files whose mtime or size moved, and re-embeds only files whose content changed.
 - **Exclusions are enforced by path before any read:** `.obsidian/`, `.trash/`, `.git/`, Synology `#recycle/` `@eaDir/` `@tmp/`, AppleDouble `._*`, dotfiles, non-`.md` files, any directory containing a `.noindex` file, and any note with frontmatter `index: false`.
 - **Links resolve like Obsidian does.** `[[Areas/note]]` resolves by path; `[[note]]` resolves if exactly one note in the vault has that basename, and stays unresolved (recorded, `NULL` target) when two do. Deleting one of two duplicates re-resolves the other the next time it is indexed.
 - **The model is a schema fact.** The embedding model and dimension are recorded in the database on first run; a different model refuses to index until `--reindex`.
+
+### Evaluating search quality (`brain-eval`)
+
+Build with `npm run build`, then run with the same database, collection and embedding
+configuration as the index:
+
+```bash
+node dist/eval.js --golden /private/golden.json --grid --out /private/runs/grid.json
+# Or evaluate one configuration alongside the baseline:
+node dist/eval.js --golden /private/golden.json --config '{"wText":1.5,"perNoteCap":2}' --out /private/runs/candidate.json
+# npm run eval -- <the same arguments> also works.
+```
+
+The output directory must already exist. The CLI opens the database read-only: it never
+applies schema changes, reindexes or writes to the index. The embedding model and dimension
+must match the stored metadata, and every expected note must already exist in the collection.
+Every query is embedded once and its vector reused across configurations. The fixed grid
+contains 40 configurations, starting with the v1.8.0 baseline `rrf-k60-v1-t1-cap0`.
+The CLI ignores ambient `SEARCH_*` ranking settings; `--config` merges only the supplied
+fields over the baseline. Invalid ranking environment settings fail server startup.
+
+Golden files are private evaluation data, with exactly these keys:
+
+```json
+{
+  "version": 1,
+  "created": "2026-01-01",
+  "notes": "Synthetic example only",
+  "queries": [
+    {
+      "id": "example-1",
+      "category": "exact-id",
+      "query": "synthetic search phrase",
+      "expected": ["Example.md"]
+    }
+  ]
+}
+```
+
+Query ids must be unique, query strings non-empty, and expected lists non-empty with
+unique `.md` paths. Categories are `exact-id`, `paraphrase`, `decision-why`, `multi-hop`,
+and `recent`, reported in that order. Unknown keys are rejected. Keep golden sets and
+evaluation reports outside a public code repository.
+
+Metrics use unique note paths in result order, after requesting eight chunks:
+
+- `mrr`: mean reciprocal rank of the first expected note, or zero for a miss.
+- `recall5`: a **hit rate at 5**, meaning any expected note in the first five notes.
+- `ndcg8`: binary-relevance normalised discounted cumulative gain at eight notes.
+- `distinctNotes`: mean number of distinct notes returned. Metrics are also broken down
+  by category, and the JSON report rounds them to four decimal places.
+
+A candidate must improve MRR by at least 0.0300, preserve every category's hit rate,
+and preserve every query whose baseline hit was within five. Comparisons round metrics
+to integer ten-thousandths. Passing candidates are ordered by higher MRR, hit rate, then
+NDCG; ties prefer fewer changed ranking fields, then the lexicographically smaller id.
+If none passes, the baseline wins with `changed: false`. The JSON includes the golden
+file's SHA-256, per-query note lists, gate reasons, and the winning environment variables;
+stdout prints the ranking table, category comparison and final `WINNER` line.
+
+Exit codes: `0` for a completed report (including no ranking change), `2` for input
+problems (arguments, golden validation, model mismatch or missing expected paths), and
+`1` for other runtime failures (database, embedding service or output writes).
+
+Searches require pgvector 0.8.0 or newer: each transaction uses strict-order iterative
+HNSW scans and filtered searches raise `hnsw.ef_search` to 100. Default RRF scores match
+v1.8.0, with exact ties ordered by chunk position then id. DBSF scores range from zero
+to the sum of the two leg weights.
 
 ### Frontmatter the index understands
 

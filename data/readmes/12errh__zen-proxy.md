@@ -21,6 +21,14 @@
   </a>
 </p>
 
+<p align="center">
+  <img src="assets/brag-demo.gif" alt="zen-proxy in 25 seconds: install → run the proxy → zen-claude → point any OpenAI-compatible agent at it" width="860" />
+  <br />
+  <sub>
+    <a href="assets/brag-demo.mp4">▶ full video with sound</a>
+  </sub>
+</p>
+
 ---
 
 ## Start here
@@ -231,6 +239,8 @@ echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc      # permanent
 
 <p align="center">
   <sub>💬 <a href="https://discord.gg/Dw5Ctrtuw">Join the Discord</a> — install help, troubleshooting, and which free model is fast right now.</sub>
+  <br />
+  <sub>The demo video up top was built using the brag skill.</sub>
 </p>
 
 <p align="center">

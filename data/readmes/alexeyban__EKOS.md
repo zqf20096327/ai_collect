@@ -107,7 +107,8 @@ Every semantic conclusion is supported by evidence. Every change is auditable.
 `simulation` (RFC 0047-0055's opt-in World Engine — see below), `clickhouse-query` (RFC 0056's
 opt-in live NL-to-SQL query engine — see below), `evals` (RFC 0138's answer-grading harness — see
 below), `session` (RFC 0151 agent session memory), `plpgsql` (RFC 0163's PL/pgSQL parser and
-procedural IR), and EKOS Migrate's `migrate`, `migrate-dq`, `migrate-logic`, `migrate-validate`, `migrate-approval`,
+procedural IR), `plsql` (RFC 0210's Oracle script scanner and PL/SQL front end), `ora-live` (RFC 0211's
+read-only Oracle catalog reader), and EKOS Migrate's `migrate`, `migrate-dq`, `migrate-logic`, `migrate-validate`, `migrate-approval`,
 `migrate-report`, `migrate-target-clickhouse` and `pg-live` (RFC 0154–0162 — see below). The same workspace also builds `ekos` with a generic extension seam (RFC 0149) that out-of-tree
 builds plug extra connectors and MCP tools into.
 
@@ -119,7 +120,12 @@ Transformation IR — RFC 0038/0040), Rust source (real AST parsing, real functi
 RFC 0041), Elixir and JavaScript/TypeScript source (real AST + `Calls` recovery — RFC 0081/0082),
 Perl source (`.pl`/`.pm`/`.t`/`.psgi`, plus `.cgi` with a real `perl` shebang — packages, subs,
 `use`/`require` dependencies, `use parent`/`use base`/`@ISA` inheritance, POD descriptions and
-source spans; RFC 0147), **compiled .NET and JVM binaries with no source available**
+source spans; RFC 0147), Java source (`.java` — types, methods and constructors with spans,
+signatures and Javadoc, imports and inheritance resolved inside the tree, SQL built in method
+bodies folded and linked to the tables it reads and writes, `IDEMPIERE-NNNN` ticket anchors; for the
+iDempiere/ADempiere family, the generated model classes become `ModelTable`s with every column's
+business name, list values, mandatory flag, default and code-declared foreign key — RFC 0209),
+**compiled .NET and JVM binaries with no source available**
 (`.dll`/`.exe`/`.class`/`.jar`/`.war`/`.ear` — types, methods, signatures, fields, the real call
 graph, branch structure, string/numeric constants and external I/O boundaries, read in-process
 from CLI metadata and bytecode with no .NET SDK or JRE required; for .NET, per-method statement
@@ -127,7 +133,9 @@ recovery — `if`/loop/`switch`/`try` with the IL offset of every line, labelled
 reached — plus a per-method migration spec, a Python-rewrite parity check and sandboxed characterization tests that
 run the original and check the rewrite against what it did, RFC 0150; RFC 0148 — shipped
 as a separately licensed extension build, not part of this open-source repository, RFC 0149), ClickHouse (real HTTP client, schema metadata plus an opt-in live query engine — RFC
-0056), plus scaffolded proof-of-concept clients for Salesforce, SAP, Oracle,
+0056), a live Oracle catalog connector (read-only sessions, catalog reconciled against the
+database's own object counts, behind the `oracle` build feature — RFC 0211), plus scaffolded
+proof-of-concept clients for Salesforce, SAP,
 Microsoft Fabric, and Snowflake (real API shapes, mock-tested — none yet exercised against a live
 account). SQL in the PostgreSQL, SQL Server (T-SQL), MySQL, Snowflake, Databricks and ClickHouse dialects is
 parsed from files (RFC 0031); live PostgreSQL / SQL Server database connectors and a Jira connector remain planned.
@@ -732,6 +740,81 @@ from a Pentaho `.ktr`/`.kjb` job can be diffed against a newly drafted SQL pipel
 reading required. `Unmapped` is deliberate, not a gap swept under the rug: anything that can't be
 parsed is still recorded as evidenced fact ("something is here, not yet understood"), never
 silently dropped.
+
+### Oracle scripts, PL/SQL and schema history (RFC 0210)
+
+An `oracle` SQL dialect reads Oracle schemas and SQL*Plus scripts: `SET`/`PROMPT`/`@file` lines and
+whole PL/SQL units are set aside, Oracle-only clauses (`ENABLE NOVALIDATE`, `ADD (…)` column lists,
+`MODIFY c DEFAULT x`, `VARCHAR2(10 BYTE)`, `FORCE` views, `(+)`, `MINUS`, physical attributes, …)
+are rewritten — always keeping the file's line numbers. `ekos init --detect` adds one dialect rule
+per engine-named directory, so a project shipping each migration for Oracle and for PostgreSQL reads
+each copy with its own grammar, and the two copies are no longer reported as conflicting:
+definitions are compared only within one dialect.
+
+PL/SQL functions, procedures, triggers and packages are read into the same procedural IR as
+PL/pgSQL and written as the same `Procedure` / `ProcedureStatement` objects, with a computed
+fidelity label; an Oracle trigger's inline body is a `Procedure`, classified like any trigger
+function. Migration scripts named `<yyyyMMddHHmm>_<description>.sql` become `SchemaChangeSet`s
+(time, release, engine, tickets) holding one `SchemaChange` per operation — `add_column`,
+`modify_column`, `add_constraint`, … — linked to their table at `ekos commit`.
+
+On iDempiere `release-13`: Oracle migration statements rejected 5,317 → 9 (of 62,251); `db/oracle`
+60 of 61 routines recovered completely (991 of 992 statements — the gap is a `GOTO`); 2,154 change
+sets with 26,060 changes, none unrecognized; no model calls.
+
+```bash
+ekos recover   # … PL/SQL routines: …   Schema history: 2154 migration script(s), 26060 change(s) …
+ekos ekl "FIND Object WHERE kind = 'SchemaChange' AND table = 'C_Invoice'"
+```
+
+### Live Oracle catalog and code ↔ database conflicts (RFC 0211)
+
+A project can name an Oracle database next to its sources. `ekos build` reads its catalog through a
+read-only session — `SET TRANSACTION READ ONLY`, a write probe that must be refused, settings pinned,
+a call timeout — and checks that every kind it read matches the database's own object count, so a
+user who cannot see some objects is an error, not a smaller answer. The password is never in the
+file, only the name of the variable holding it:
+
+```toml
+[[databases]]
+name = "erp-db"
+kind = "oracle"
+connect = "localhost:51521/XEPDB1"
+user = "ekos_ro"
+password-env = "EKOS_ORACLE_PASSWORD"
+owners = ["ADEMPIERE"]
+```
+
+`ekos recover` turns the catalog into ordinary `Table`, `View` and `Procedure` objects marked
+`origin: live` (routines go through the same PL/SQL reader as files); they never merge with tables
+from scripts. `ekos commit` then compares the code's claims with the database and records each
+disagreement as a conflict that cites both sides: a model table or column the database lacks, a
+table no model describes, a mandatory model column that is nullable, a routine file whose text
+differs from the installed one. When the source tree accounts for a difference — a migration newer
+than the database, a translation table — the conflict carries that explanation.
+
+`profile = "p0" | "p1" | "p2"` decides how much `ekos build` measures: optimizer statistics only
+(the default), exact row counts, or one aggregate scan per table for exact null counts, number and
+date bounds and text lengths. No tier stores a text value — a seeded marker row checks it — and
+number and date bounds are withheld for columns named like personal data. A mandatory model column
+that is nullable in the database then carries the count of rows that break the rule and the query
+that re-counts them. The catalog also records the archive-log and supplemental-logging state.
+
+On iDempiere (source `release-13`, the release 12 seed on Oracle XE): schema changes linked to their
+table 11,748 → 28,916 of 31,620; 444 conflicts, 239 explained, every pending-migration explanation
+confirmed against the database's own record of applied scripts. Among the rest: tables of modules
+removed from the code but not the seed, a model column no script ever created, and an installed
+procedure that builds `NVARCHAR2` columns where its file says `VARCHAR2`. At `profile = "p2"`
+(903 tables in 6 s), of 116 mandatory-but-nullable columns 11 hold nulls and 105 none, each count
+re-checked against the database. No model calls.
+
+```bash
+cargo build --release -p ekos --features oracle      # needs Oracle Instant Client at run time
+ekos commit    # … Code ↔ database: 754 table(s) and 22 routine(s) compared … 239 of 444 explained …
+ekos conflicts list --type model_column_missing
+```
+
+The testbed is `docker-compose.oracle.yml` + `deploy/fixtures/idempiere-oracle.sh`.
 
 ### PL/pgSQL stored procedures (RFC 0163)
 
@@ -1584,98 +1667,4 @@ printf '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion
 ```
 
 A one-line JSON-RPC response (`"serverInfo":{"name":"ekos", ...}`) confirms the server is up and
-speaking the protocol correctly.
-
-**Optional bearer-token auth (RFC 0128).** `--token-file <path>` (or, if that flag is absent,
-the `EKOS_MCP_TOKEN` env var; `--tcp-token-file` is a back-compat alias) requires every TCP
-connection's **first** message to be an `initialize` request carrying a matching
-`params._meta.token` — anything else gets a single `-32001 unauthorized` and the socket closes
-before any tool is reachable. The comparison is constant-time. Token-less `--tcp` is unchanged
-(RFC 0115 back-compat); stdio is never gated. This is a plaintext-socket bearer token — defence
-against a second local process connecting casually, **not** against a network attacker who can
-read the wire; use the SSH tunnel below for that.
-
-```bash
-ekos mcp serve --workspace /path/to/workspace --tcp 127.0.0.1:7331 \
-  --token-file /run/secrets/ekos-mcp-token
-```
-
-**Remote — a client on a different machine.** There is **no TLS** on this transport, and auth is
-only the optional plaintext bearer token above (RFC 0115/0128's explicit v1 scope) — binding an
-externally-reachable address exposes the same read surface stdio gives a spawning parent process,
-plus the two write-capable tools, to anyone who can reach it. Two safe ways to do this:
-
-- **Trusted private network only**, if the workspace machine and every client already sit on one
-  (e.g. a home LAN, a VPN, a locked-down VPC): bind the interface facing that network instead of
-  loopback, e.g. `ekos mcp serve --workspace /path/to/workspace --tcp 0.0.0.0:7331`, and firewall
-  the port to that network explicitly — never expose it to the open internet.
-- **SSH tunnel (recommended for anything crossing an untrusted network)**, keeping the server itself
-  bound to loopback on its own machine:
-  ```bash
-  # on the workspace machine
-  ekos mcp serve --workspace /path/to/workspace --tcp 127.0.0.1:7331
-
-  # on the client machine
-  ssh -N -L 7331:127.0.0.1:7331 user@workspace-host
-  ```
-  The client then connects to its own `127.0.0.1:7331`, tunneled over SSH's encrypted, authenticated
-  channel — the EKOS server itself never has to bind or trust anything beyond loopback.
-
-Both `EKOS_WORKSPACE`/`EKOS_CONFIG` env vars and `--config` still apply the same way they do for
-stdio mode; `--tcp` only changes how clients connect, not which workspace is served.
-
-**Limits, on every transport.** A message line is capped at 4 MB, and `--tcp` serves at most 64
-connections at once; the first line is read under that cap before any token is checked. A request
-that panics is answered with `-32603` and the server keeps serving, where before a panic killed a
-stdio server and permanently wedged `--http`'s single worker. `--http` queues at most 64 waiting
-requests and answers `503` with `Retry-After` past that. Traversal bounds (`depth`, `max_hops`,
-`max_objects`) are refused with the limit named when out of range, never silently clamped. An
-argument name a tool does not declare (e.g. `max_depth` for `ekos_impact`, whose parameter is
-`max_hops`) is refused with the accepted names listed, instead of being ignored. Token-less
-`--tcp` or `--http` on a non-loopback address logs a warning.
-
-#### HTTP transport — for clients that only take a URL (RFC 0143)
-
-Many MCP clients (VS Code / GitHub Copilot agent mode, Visual Studio 2022, ChatGPT Developer
-Mode, `mcp-remote`) only offer *stdio* (spawn a command) or *Streamable HTTP* (a URL) — they
-cannot speak the raw TCP socket above. `--http <addr>` serves MCP's HTTP transport at one
-endpoint, `POST /mcp`:
-
-```bash
-ekos mcp serve --workspace /path/to/workspace --http 127.0.0.1:7331
-```
-
-`--http` and `--tcp` are mutually exclusive (each *replaces* stdio). The `POST` response is
-`application/json`, or a single-shot `text/event-stream` when the client's `Accept` header asks
-for it (ChatGPT's connector requires the latter); either way the response bytes are the same
-JSON-RPC. There is **no server push** — `GET /mcp` returns `405`, no sessions. Auth is the same
-token (`--token-file` / `EKOS_MCP_TOKEN`), presented over HTTP as an `Authorization: Bearer
-<token>` header checked on every request. The `Origin` header, when present, must be loopback or
-an explicit `--http-allow-origin <origin>` (DNS-rebinding defence); a request with no `Origin`
-(the normal case for editors) is allowed. All HTTP requests are serialized through one worker
-thread — a slow `tools/call` blocks the next request, matching the stdio loop.
-
-VS Code (`.vscode/mcp.json`) or Visual Studio (`.mcp.json`):
-
-```json
-{
-  "servers": {
-    "ekos": { "type": "http", "url": "http://127.0.0.1:7331/mcp" }
-  }
-}
-```
-
-Verify it is answering:
-
-```bash
-curl -s http://127.0.0.1:7331/mcp -H 'content-type: application/json' \
-  -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18"}}'
-```
-
-For a remote client, tunnel it the same way as the TCP transport (`ssh -N -L 7331:127.0.0.1:7331 …`);
-there is no TLS on `--http` — terminate it at a reverse proxy if a deployment needs it.
-
-**ChatGPT** (Developer Mode connector, Plus/Pro) is cloud-hosted and cannot reach `127.0.0.1`, so
-it needs a public HTTPS URL — put a tunnel in front (`cloudflared tunnel --url
-http://127.0.0.1:7331`, then use `https://<name>.trycloudflare.com/mcp`). The tunnel URL is
-world-reachable and exposes the two write tools too, so protect it (Cloudflare Access / Tailscale
+speaking the protocol correctly

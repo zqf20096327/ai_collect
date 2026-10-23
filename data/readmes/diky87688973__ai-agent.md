@@ -52,7 +52,7 @@ backup_retention_days = 7    # 版本化备份保留天数；0 = 永久保留
 [context]
 summary_token_fallback   = 64000
 summary_output_max_chars = 5000
-full_user_rounds         = 1
+full_user_rounds         = 5
 ```
 
 `[context]` 的三个主要默认值：
@@ -61,7 +61,7 @@ full_user_rounds         = 1
 |---|---|---|
 | `summary_token_fallback` | `64000` | 模型没有声明上下文窗口时的回退压缩阈值；仅配置文件 |
 | `summary_output_max_chars` | `5000` | 摘要篇幅上限（字） |
-| `full_user_rounds` | `1` | 压缩时保留最近对话轮数，始终按原文发送 |
+| `full_user_rounds` | `5` | 压缩时保留最近对话轮数，始终按原文发送 |
 
 模型有 `context_window` 时，压缩阈值为该窗口 × 模型自己的 `compression_percent`；
 窗口缺失才使用 `summary_token_fallback`。模型条目见 [多模型](docs/subsystems/multi-model.md)。
@@ -75,11 +75,12 @@ full_user_rounds         = 1
 | 文档 | 内容 |
 |---|---|
 | [架构](docs/architecture.md) | 五层结构、模块链、端口、事件协议、状态生命周期 |
+| [工程标准](docs/engineering-standards.md) | 模块结构、单一职责、资产归属、扩展路径与门禁 |
 | [术语](docs/glossary.md) | 项目自定义词的定义 |
 | [内核](docs/subsystems/core.md) | 模块契约、链执行器、宿主循环 |
 | [上下文管理](docs/subsystems/context.md) | 三拼接装、分段统计、压缩与摘要 |
 | [模型调用](docs/subsystems/llm.md) | 请求体、流式解析、工具调用归并、错误映射 |
-| [工具](docs/subsystems/tools.md) | 注册、执行管道、写盘四步协议、41 个内置工具 |
+| [工具](docs/subsystems/tools.md) | 注册、执行管道、写盘四步协议、42 个内置工具 |
 | [插件](docs/subsystems/plugins.md) | 插件包形态、可贡献的能力、界面资产、生命周期与边界 |
 | [知识库](docs/subsystems/knowledge.md) | `knowledge` 的文件收录、勾选状态、注入与端点 |
 | [多模型](docs/subsystems/multi-model.md) | `multi_model` 的目录条目、设置页表单与模型下拉 |
@@ -91,6 +92,7 @@ full_user_rounds         = 1
 | [壳层](docs/subsystems/shell.md) | HTTP 路由、SSE、界面打包、适配层 |
 | [会话消息队列方案](docs/plan/conversation-queue.md) | 忙时入队、回合结束投递、安全插入、修改恢复与 Agent 来源 |
 | [标准对齐优化方案](docs/plan/standards-alignment.md) | 依赖环、门禁可信度、覆盖率口径、预算与登记表 |
+| [结构整改方案](docs/plan/structural-remediation.md) | Provider、上下文、壳层与门禁的职责拆分、依赖规则与实施顺序 |
 | [会话历史分页方案](docs/plan/history-paging.md) | 轮次分页、游标、前插与超长报文延迟渲染 |
 | [多模型配置方案](docs/plan/multi-model.md) | 模型目录、Provider 路由、Messages 协议适配、模型插件 |
 | [AI说话方案](docs/plan/ai-speak.md) | `ai_speak` 的文本、切段、SSE 与播放器设计 |
@@ -111,6 +113,7 @@ CI 工作流一致、配置一致性、生成文档一致、ruff、Python 下限
 python scripts/ci.py           # 全部检查
 python scripts/ci.py --fast    # 跳过验收
 python scripts/ci.py --list    # 列出检查项
+python scripts/scan_js_events.py  # 本地 JS 事件绑定审计
 ```
 
 导出某个会话的真实请求上下文（开发者只读工具）：
@@ -119,7 +122,7 @@ python scripts/ci.py --list    # 列出检查项
 python scripts/dump_context.py --cid <会话ID> --format json --out context.json
 ```
 
-单元测试（1698 个用例）：
+单元测试（1780 个用例）：
 
 ```bash
 python -m unittest discover -s tests -p "test_*.py" -t tests
@@ -132,6 +135,10 @@ python scripts/inspect_compact.py                 # 列出有日志的会话
 python scripts/inspect_compact.py <会话 id>        # 检视其中一个
 python scripts/inspect_compact.py <会话 id> --digest
 ```
+
+## 作者
+
+- 邮箱：diky87@qq.com
 
 ## 许可
 

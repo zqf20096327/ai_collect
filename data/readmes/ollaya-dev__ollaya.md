@@ -9,6 +9,8 @@
 
 <p align="center"><strong>Run open decision models locally, the way Ollama runs LLMs.</strong></p>
 
+<p align="center">System 1 for AI agents: fast, typed, calibrated decisions for routing, guardrails, triage and tool approval.</p>
+
 <p align="center">
   <a href="https://ollaya.dev">Website</a> ·
   <a href="https://ollaya.dev/search">Models</a> ·
@@ -22,9 +24,10 @@
 
 A decision model reads a *state* (a message, an email, a ticket, any JSON) plus typed questions
 (`choice`, `score`, `noul`) and returns calibrated probabilities in a single forward pass, in
-milliseconds. It never generates text. Ollaya pulls these models by name, serves them from a
-local daemon, and speaks TypeSafe's `/v1/systemone` wire format, so existing Jev clients work by
-changing one environment variable.
+milliseconds. It never generates text. Ollaya pulls these models by name and serves them from a
+local daemon behind a self-hosted, Jev-compatible API (TypeSafe's `/v1/systemone` wire format),
+so the TypeSafe SDK and existing Jev clients work unchanged once they point at Ollaya and name an
+open model.
 
 ```sh
 curl -fsSL https://ollaya.dev/install.sh | sh
@@ -45,6 +48,35 @@ Or ask your own questions: `ollaya run kev --ask "Is a refund requested?" --ask 
 `winnow:e4b` is the recommended model: 0.724 accuracy on typed decisions (TypeSafe reports 0.738 for its Jev) and 113 ms for five questions on an RTX 5090. It is a 4B-class language model, so without an NVIDIA GPU start with `laya`: `laya:multilingual` answers five questions in 516 ms on a CPU. All models and their numbers: [ollaya.dev/search](https://ollaya.dev/search).
 <!-- /results:recommended -->
 
+## A self-hosted, Jev-compatible API
+
+**What is a Jev-compatible API?** An HTTP API that takes the same requests as TypeSafe's hosted
+Jev (a `state` plus typed `questions` at `POST /v1/systemone`) and returns the same `answers`, so
+TypeSafe's SDK and any client written for Jev work against it unchanged. Ollaya's `/v1/systemone`,
+`/v1/decisions` and `/v1/models` are wire-identical to TypeSafe's (as `typesafe-sdk` 0.7.1 defines
+them), served from your own machine with open models.
+
+**Migrating from Jev.** Point the SDK at Ollaya and pick an open model:
+
+```sh
+export TYPESAFE_BASE_URL=http://localhost:11435
+export TYPESAFE_API_KEY=local              # any non-empty value
+export TYPESAFE_DEFAULT_MODEL=winnow:e4b   # instead of "jev-latest"
+```
+
+Details, including proxies and warm-up: [TypeSafe compatibility](https://ollaya.dev/docs/typesafe-compatibility).
+
+| | Ollaya | TypeSafe Jev | Ollama |
+|---|---|---|---|
+| Runs on | Your machine or server | TypeSafe's cloud | Your machine or server |
+| Jev API | `/v1/systemone`, `/v1/decisions`, `/v1/models` | The original | `/v1/systemone` |
+| Models | Open decision models from Perplexity, Cloudflare, PostHog, Bespoke Labs and others | Jev (closed) | Its own GGUF builds of nine decision models (0.40, October 2026) |
+| Probabilities | Each author's calibration | TypeSafe's | Raw softmax |
+| Your data leaves the machine | No | Yes | No |
+| License | Apache-2.0 | Proprietary, hosted | MIT |
+
+The [FAQ](https://ollaya.dev/docs/faq) compares Ollaya and Ollama in more detail, measured on the same GPU.
+
 ## Features
 
 - **One binary.** `ollaya serve` runs the daemon; `ollaya run`, `pull`, `list`, `ps`, `show`, `rm`,
@@ -61,7 +93,7 @@ Or ask your own questions: `ollaya run kev --ask "Is a refund requested?" --ask 
   Hugging Face repository, pinned to a commit and verified by sha256. Models whose authors publish
   GGUF files (`winnow`, `jevk5`, `jeb`) run that file itself on llama.cpp. Ollaya never re-hosts weights.
 - **For agents.** `ollaya mcp` serves the models to Claude Code, Claude Desktop, Cursor and other
-  MCP clients (`claude mcp add ollaya -- ollaya mcp`), and the
+  MCP clients (`claude mcp add ollaya -- ollaya mcp`, or [one click in Cursor](https://cursor.com/install-mcp?name=ollaya&config=eyJjb21tYW5kIjoib2xsYXlhIiwiYXJncyI6WyJtY3AiXX0%3D)), and the
   [`ollaya-decisions` skill](skills/ollaya-decisions/SKILL.md) teaches agents when and how to use
   them (`npx skills add ollaya-dev/ollaya --skill ollaya-decisions`).
 - **Routers.** `laya` detects the script and language of each request, then answers with
@@ -133,11 +165,11 @@ Every model in the library is measured on our own machines and published, with t
 memory on a GPU and a CPU.
 
 <!-- results:bench -->
-Edition 2026.10 ran Ollaya 0.13.0 on an RTX 5090 desktop, and 0.14.0 and 0.15.0 added what they changed:
+Edition 2026.10 ran Ollaya 0.13.0 on an RTX 5090 desktop, and 0.14.0, 0.15.0 and 0.17.0 added what they changed:
 
 - **Score.** Chance-corrected accuracy over 14 tasks, with 95 % intervals: `pplx-decider:flash` 73.7, `jeb:27b` 67.8 (scored without typed-decisions, which it was trained on), `winnow:12b` 65.7, `clef:flash` 65.1 and `jeb:9b` 64.9 (scored without typed-decisions, which it was trained on). The fastest of these, `jeb:9b`, answers five questions in 107 ms on the RTX 5090.
 - **Calibration.** The lowest calibration errors on the public benchmark are 0.016 (`pplx-decider:flash`), 0.022 (`laya:typed-decisions`, `nimble:9b`) and 0.024 (`jeb:27b`).
-- **Speed and memory.** Five-question requests through the HTTP API take 14 ms to 1.0 s on the RTX 5090 and 339 ms to 62.0 s on its Threadripper 3960X. Every model's VRAM and RAM are on its page.
+- **Speed and memory.** Five-question requests through the HTTP API take 14 ms to 1.0 s on the RTX 5090 and 323 ms to 62.0 s on its Threadripper 3960X. Every model's VRAM and RAM are on its page.
 - **Parity.** Before a model ships, its runtime is checked question by question against the authors' code (or llama.cpp's own server, for GGUF models) on each device it runs on.
 
 Earlier runs, the comparison with Ollama on the same GPU (on the same Nimble weights the calibration error is 0.022 on Ollaya and 0.115 on Ollama) and the Windows, CUDA and Vulkan measurements are at [ollaya.dev/results](https://ollaya.dev/results).
@@ -185,6 +217,22 @@ Configuration is through environment variables: `OLLAYA_HOST`, `OLLAYA_MODELS`,
 cargo test --workspace
 cargo build --release -p ollaya --features cuda   # CUDA build (x86-64 Linux and Windows)
 ```
+
+Tests come in three tiers, all with the same parity tolerances:
+
+- **K1, every change:** the tests, and smoke parity for the families the change touches. A parity
+  example run with `--smoke` checks only the cases listed in
+  [`crates/ollaya-runner/examples/smoke/cases.txt`](crates/ollaya-runner/examples/smoke/cases.txt),
+  about 40 questions per family: every question type, refused requests, a long state and many options.
+  ```sh
+  cargo run --release -p ollaya-runner --example parity -- <model-dir> <goldens.jsonl> cpu --smoke
+  ```
+- **K2, every release:** the full goldens on every GPU device a release ships, and on the CPU the full
+  set for models of 4B and under and `--smoke` for larger ones. CPU goldens count only on the machine
+  and build that made them.
+- **K3, major releases, a llama.cpp or ONNX Runtime update, a new device or a new model:** full CPU
+  parity of the large models and the quality benchmarks. The site, this README and the reports are
+  updated from those results.
 
 `convert/` rebuilds models. It exports them, checks parity against the PyTorch reference,
 generates golden fixtures, and packages the result into `registry/`. See the module docstrings.

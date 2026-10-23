@@ -65,7 +65,7 @@ class ReadFileTool < ActiveHarness::Tool
   include ActiveHarness::Tool::PathPolicy
 
   tool_scope :os          # full name: os::read_file
-  tool_name  "read_file"
+  tool_name  :read_file
 
   description   "Read the first lines of a text file inside the workspace"
   param :path,  "Absolute path of the file"
@@ -107,10 +107,11 @@ An agent — the loop that ties a request, tools and a goal together:
 ```ruby
 # app/ai/agents/files_agent.rb
 class FilesAgent < ActiveHarness::Agent
+  max_turns 8
+
   request FilesRequest          # owns the model chain, retries and fallback
   tools   LsTool, ReadFileTool  # the only tools the model may call
   goal    AnswerPresentGoal
-  max_turns 8
 end
 ```
 
@@ -206,6 +207,19 @@ app/
     ├── goals/        # goal checks (ActiveHarness::GoalCheck)
     └── concerns/     # shared tracing (request/tribunal/pipeline/agent/tool)
 ```
+
+## Core Terms
+
+- [Structure](docs/TERMS.md#1-structure)
+- [Prompt](docs/TERMS.md#2-prompt)
+- [Request](docs/TERMS.md#3-request)
+- [Pipeline](docs/TERMS.md#4-pipeline)
+- [Tribunal](docs/TERMS.md#5-tribunal)
+- [Memory](docs/TERMS.md#6-memory)
+- [Tool](docs/TERMS.md#7-tool)
+- [Agent](docs/TERMS.md#8-agent)
+- [Agent loop](docs/TERMS.md#9-agent-loop)
+- [Hooks, streaming, tracing](docs/TERMS.md#10-hooks-streaming-tracing)
 
 ## Prompt Documentation
 

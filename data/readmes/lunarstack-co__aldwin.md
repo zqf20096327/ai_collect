@@ -65,8 +65,10 @@ Type `/` at the prompt for autocomplete:
 | `/new` | Start a fresh conversation (previous session stays saved on disk) |
 | `/model [name\|all]` | List available OpenAI chat models and switch models mid-conversation |
 | `/persona` | Show the active persona and `~/.aldwin/persona.md` character count |
-| `/memory` | Show `~/.aldwin/memory/profile.md` status and notes from the last 7 days |
-| `/skills` | List installed skills in `~/.aldwin/skills/` and flag any invalid `SKILL.md` files |
+| `/memory` | Show profile, recent notes, and index status (`N notes · M conversations indexed · index <size>`) |
+| `/skills` | List catalogue skills (`name · source · description`); `/skills show <name>` prints the body |
+| `@` | Skill picker in the chat input (recent first, Tab to insert); picked skills apply to that message only |
+| `/todo` | Show the current multi-step task checklist for this session |
 | `/workspace` | Show the workspace folder, or switch it with `/workspace <path>` |
 | `/verbose` | Show or hide up to 12 preview lines under file-tool rows for this session |
 | `/tools` | List built-in tools and which ones require `y/n` approval |
@@ -88,21 +90,22 @@ Type `/` at the prompt for autocomplete:
 
 ## What it can do
 
-### Five built-in tools
-
-Aldwin `0.0.1` ships with five user-facing tools (and one internal `set_persona` tool):
+### Built-in tools (memory)
 
 | Tool | What it does | Needs `y/n` approval? |
 |---|---|---|
 | `web_search` | Searches the web via Tavily for current information | No |
 | `web_fetch` | Fetches and extracts readable text from an `http`/`https` page (≤ 20,000 chars) | No |
-| `run_command` | Runs a shell command in the directory where you launched `aldwin` | **Always** |
-| `remember` | Appends a single-line dated note to `~/.aldwin/memory/notes/YYYY-MM-DD.md` | No |
-| `recall` | Searches your daily notes by keyword | No |
+| `run_command` | Runs a shell command in the active workspace | **Always** |
+| `remember` | Appends a note, or updates one in place with `replace=<note_id>` | No for new; **Diff** for replace |
+| `recall` | Ranked search over notes and saved conversations (`scope`) | No |
+| `forget` | Deletes a matching memory note after showing it | **Diff** (never grantable) |
 
 ### Skills
 
-Drop a folder containing a `SKILL.md` with YAML frontmatter (`name` and `description`) into `~/.aldwin/skills/<skill-name>/SKILL.md`:
+Aldwin ships nine default skills (including `using-aldwin`, rendered with the current version and model). User skills live under `~/.aldwin/skills/<name>/SKILL.md` and override a default with the same name. Skills never declare `tools:`; the host strips that key if present. After a turn that writes a skill, the host rebuilds the catalogue before the next turn.
+
+Drop a folder with YAML frontmatter (`name` and `description`) into `~/.aldwin/skills/`:
 
 ```markdown
 ---
@@ -112,12 +115,12 @@ description: Draft concise release notes from git history.
 Write release notes grouped into Added, Fixed, and Known limitations.
 ```
 
-Aldwin lists available skill names and descriptions in the system prompt and loads the full `SKILL.md` on demand. Ships with a starter `using-aldwin` skill.
+List skills with `/skills` or `aldwin skills`; show one body with `/skills show <name>`. Type `@` in chat to pick a skill for the current message (up to three). Ask Aldwin to draft a new skill via `create_skill` (Diff approval, never session-grantable). Document conversion extras: `uv pip install 'aldwin[docs]'` (or `pip install 'aldwin[docs]'`).
 
 ### Memory and persona
 
 - **Profile (`~/.aldwin/memory/profile.md`):** durable facts about you (up to 4,000 characters), always included in the system prompt. Only you can edit this file; the agent cannot modify it.
-- **Daily notes (`~/.aldwin/memory/notes/YYYY-MM-DD.md`):** short one-line notes saved when Aldwin calls `remember`. Notes from the last 7 days (up to 4,000 characters, newest first) are included in the prompt and age out after a week.
+- **Daily notes (`~/.aldwin/memory/notes/YYYY-MM-DD.md`):** short one-line notes saved when Aldwin calls `remember` (up to 500 characters each). Notes from the last 7 days (up to 4,000 characters, newest first) are included in the prompt and age out after a week. A rebuildable SQLite FTS5 index at `~/.aldwin/memory/index.sqlite` powers ranked `recall` over notes and conversations; `/memory` shows how many are indexed.
 - **Persona (`~/.aldwin/persona.md`):** controls Aldwin's tone and style (up to 2,000 characters). You can edit the file directly or ask Aldwin to change how it talks (for example, *"Be more direct and concise"*), which shows the proposed `persona.md` in an approval box and asks `y/n` before saving.
 
 ---

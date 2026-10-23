@@ -21,6 +21,7 @@
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Code quality: golangci-lint A+](https://img.shields.io/badge/golangci--lint-A%2B-00ADD8?logo=go&logoColor=white)](https://dexaflow.dexadata.ai/project/adrs/0012-code-quality-standards/)
 [![CI](https://github.com/dexadata/dexaflow/actions/workflows/ci.yaml/badge.svg)](https://github.com/dexadata/dexaflow/actions/workflows/ci.yaml)
+[![Coverage](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fdexadata%2Fdexaflow%2Fbadges%2Fcoverage.json)](https://github.com/dexadata/dexaflow/actions/workflows/ci.yaml?query=branch%3Amain)
 [![Security](https://github.com/dexadata/dexaflow/actions/workflows/security.yaml/badge.svg)](https://github.com/dexadata/dexaflow/actions/workflows/security.yaml)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/dexadata/dexaflow/badge)](https://securityscorecards.dev/viewer/?uri=github.com/dexadata/dexaflow)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13068/badge)](https://www.bestpractices.dev/projects/13068)
@@ -89,11 +90,11 @@ coexist out of the box.
 ### Pro — Kubernetes cluster (Helm)
 
 ```bash
-kubectl create namespace leoflow
-helm install dexaflow oci://ghcr.io/dexadata/charts/dexaflow --version 0.5.4 -n leoflow \
-  --set image.tag=v0.5.4 \
-  --set migrations.image.tag=v0.5.4 \
-  --set database.url='postgres://USER:PASS@HOST:5432/leoflow?sslmode=verify-full' \
+kubectl create namespace dexaflow
+helm install dexaflow oci://ghcr.io/dexadata/charts/dexaflow --version 0.5.5 -n dexaflow \
+  --set image.tag=v0.5.5 \
+  --set migrations.image.tag=v0.5.5 \
+  --set database.url='postgres://USER:PASS@HOST:5432/dexaflow?sslmode=verify-full' \
   --set redis.url='rediss://HOST:6380/0' \
   --set auth.jwtSecret="$(openssl rand -base64 64)" \
   --set secretKey="$(openssl rand -hex 32)" \

@@ -125,9 +125,18 @@ keel is a small **core**. Everything else is a **plugin** that you turn on or of
 | `keel2 status` | is keel running? |
 | `keel2 update` | get the newest version |
 | `keel2 doctor` | find problems and say how to fix them |
+| `keel2 start --wifi` / `keel2 share tailscale` | use keel from your phone (pair it in Settings › Devices) |
 | `keel2 help` | all commands |
 
 **Something wrong?** Run `keel2 doctor`. It tells you what to do.
+
+## On your phone
+
+The Android app ([android/](android/README.md)) answers keel's questions, follows flows, reviews pull request threads and
+chats with KeelBot. Start keel with `keel2 start --wifi` (your Wi-Fi), or share it with `keel2 share tailscale` (https
+on your tailnet) or `keel2 share tunnel` (a public https address). Then pair the app in **Settings › Devices › Pair a
+phone**: scan the QR code. It talks to keel directly; nothing goes through a server of ours.
+[More](docs/GUIDE.md#use-keel-from-your-phone)
 
 ## More
 

@@ -94,6 +94,26 @@ action_far = actor(torch.cat((state, goal, default_discount_transform(0.999)), d
 action_near = actor(torch.cat((state, goal, default_discount_transform(0.85)), dim = -1)).argmax(dim = -1)
 ```
 
+## orthogonal transition (C-Slerp)
+
+`ContrastiveLearning(rotation_dim = d)` replaces the base critic with an orthogonal-transition critic. It learns a Cayley-parameterized orthogonal matrix that rotates the goal embedding, making the critic asymmetric. The matrix initializes to identity.
+
+Use it as `contrastive_learn`; `train_cartpole.py` exposes it as `--orthogonal_transition`.
+
+```python
+from contrastive_rl_pytorch import ContrastiveLearning, ContrastiveRLTrainer
+
+trainer = ContrastiveRLTrainer(
+    encoder,
+    goal_encoder,
+    contrastive_learn = ContrastiveLearning(rotation_dim = 128)
+)
+```
+
+## temporal distance regularization
+
+`SigmoidContrastiveLearning(time_weight = ..., sep_weight = ...)` adds ChronoSRL's `L_time` and `L_sep` to the sigmoid critic. Set `goal_discount` separately from `discount` to use a different horizon for goal sampling.
+
 ## quick test
 
 make sure `uv` is installed `pip install uv`
@@ -260,5 +280,17 @@ wait until 3-5k steps at least
     archivePrefix = {arXiv},
     primaryClass = {cs.LG},
     url     = {https://arxiv.org/abs/2610.20409}
+}
+```
+
+```bibtex
+@misc{bohlinger2026chronosrl,
+    title   = {ChronoSRL: Temporal Geometry for Self-Supervised Reinforcement Learning},
+    author  = {Nico Bohlinger and Jan Peters},
+    year    = {2026},
+    eprint  = {2609.36238},
+    archivePrefix = {arXiv},
+    primaryClass = {cs.LG},
+    url     = {https://arxiv.org/abs/2609.36238}
 }
 ```

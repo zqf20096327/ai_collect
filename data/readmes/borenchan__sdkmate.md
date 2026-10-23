@@ -38,7 +38,7 @@
   <h2>⚡ A cross-platform SDK version manager built for full-stack developers</h2>
   <p>
     <strong>English</strong> ·
-    <a href="./README-zh.md">中文</a>
+    <a href="./README-zh.md">简体中文</a>
   </p>
 
   <!-- Quick links -->

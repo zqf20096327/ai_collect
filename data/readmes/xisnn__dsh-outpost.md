@@ -1,0 +1,451 @@
+# DSH Outpost
+
+**DeepSeek Harness 的非官方客户端 —— 把电脑上的 AI 团队装进口袋。**
+
+两个部分：
+
+| | 说明 |
+|---|---|
+| **手机 App**（Android） | 原生 RN 应用，不是网页套壳。看会话、发消息带附件、切模型，还能**回答审批**、**收系统通知** |
+| **桌面助手**（Windows） | 托盘程序。扫码连接手机、管理隧道、IP 变了自动修复。**替代原来的网页插件** |
+
+核心玩法是**「管家模式」**：你只跟管家说话，它拆任务、派队员去干，
+你可以在手机上看着每个队员在干什么。
+
+> ⚠️ 本项目是第三方客户端，**不隶属于 DeepSeek**。它连的是你自己电脑上运行的 DSH 服务，
+> 不包含、也不分发 DSH 本体。
+
+---
+
+## 能做什么
+
+### 聊天
+
+- 流式输出、历史分页加载（长会话不会只剩「空调话」）
+- **完整 Markdown 渲染**：标题、加粗、斜体、列表、引用、表格、代码块
+- 「已思考」可展开看完整推理过程
+- 工具卡片实时显示 执行中 / 完成 / 失败
+- 附件上传：手机相册的图、拍照
+- 切模型、看上下文用量
+
+### 图片与文档查看（全在 App 内，不用跳出去）
+
+- **图片**：点开全屏查看，双指缩放、双击放大、拖动、下滑关闭
+- **Markdown**（`.md`）：标题 / 加粗 / 列表 / 引用 / 表格 / 代码块全渲染
+- **Word**（`.docx`）：标题层级、段落、列表、表格
+- **Excel**（`.xlsx` / `.xls` / `.csv`）：表格渲染、多 sheet 切换、双向滚动
+- `.pdf` / `.doc` / `.pptx` 交给系统应用打开
+
+### 管家模式
+
+- 首页变成跟管家对话，**活派给队员干**
+- 「闲聊 / 计划」双模式：闲聊不派活，计划会拆任务
+- 底部队员头像条，实时显示谁在干什么、谁完成了
+- 独立**任务看板**，按 进行中 / 待办 / 已完成 分组
+- 队员全干完后自动唤醒管家做汇总
+- 按项目复用队员，不重复创建
+
+### 会话管理
+
+- **搜索**：按标题实时过滤，支持中文、多关键词
+- **重命名**：长按会话改名，写回 DSH 原生标题
+- **删除 / 恢复**：删除 = 归档，内容还在电脑上
+- 长会话虚拟化渲染，100 轮以上也不卡
+
+### 审批（不用再去电脑上点）
+
+- 需要授权时手机弹出横幅，直接点「拒绝」/「允许一次」
+- 审批到达时推送通知 + 震动
+- 「我的 → 连接 → 审批通道」能看到连接状态和失败原因
+
+### 通知
+
+- **系统通知**：App 在后台也能收到，锁屏可见
+- 点通知直接跳回对应会话（含冷启动）
+- 管家同时跑多个任务时都会提醒
+- 应用内横幅：顶部滑入，3.5 秒自动消失
+
+### 操作手感
+
+- **边缘手势返回**：从左边缘往右滑，页面跟着手指走
+- 三套主题：纯白 / 暖白 / 深色，随时切换
+- 全原生交互，无 react-navigation 依赖
+
+### 连接方式
+
+| 场景 | 方式 | 手机要装什么 |
+|---|---|---|
+| 同一个 WiFi | 局域网直连 | 什么都不用装 |
+| 在外面也要用 | [Tailscale](https://tailscale.com/download) | Tailscale App |
+| 在外面用、手机不想装东西 | Cloudflare 隧道 | 什么都不用装 |
+
+扫码配对一次，**30 天内免登录**。
+
+---
+
+## 它长什么样
+
+| 配对页 | 连接帮助 | 管家首页 |
+|---|---|---|
+| ![配对页](docs/screenshots/25-pair-screen.png) | ![帮助](docs/screenshots/26-pair-help.png) | ![管家](docs/screenshots/12-butler-home.png) |
+| 扫码 / 粘贴 / 手填 | 三种网络方式都写清楚 | tab 变成「管家 / 我的」 |
+
+| 模型 + 思考强度 | 扫码配对 | 启动页 |
+|---|---|---|
+| ![模型](docs/screenshots/27-model-effort.png) | ![扫码](docs/screenshots/23-scan-qr.png) | ![启动页](docs/screenshots/21-splash.png) |
+
+---
+
+## 5 分钟上手
+
+### 1. 电脑上装 DSH
+
+去 [DeepSeek Harness 官网](https://www.deepseek.com/harness/) 下载安装桌面端。
+装好后终端里应该能用 `dsh` 命令。
+
+### 2. 启动 Web 服务
+
+**先跑一次自检**，确认依赖都就绪：
+
+```powershell
+cd <本仓库目录>
+.\doctor.ps1
+```
+
+它会把 `dsh` / `cloudflared` / `node` 的查找结果、端口占用、状态文件一次性列出来，
+哪里不对会直接告诉你怎么办。
+
+**然后启动**
+
+```powershell
+cd <本仓库目录>
+powershell -NoProfile -ExecutionPolicy Bypass -File .\start-dsh-web.ps1
+```
+
+脚本会自动挑一个手机能访问的地址（装了 Tailscale 就用 tailnet IP，否则用局域网 IP），
+启动服务，并打印一条带 token 的链接和二维码。
+
+**如果走局域网，脚本会检查 Windows 防火墙**：没放行时会打印提示和一条命令，
+照着在管理员 PowerShell 里执行一次即可（或加 `-AllowFirewall` 让脚本自己加）。
+不放行的话手机端会一直「连接失败」，这个坑很难自己想到。
+
+常用参数：
+
+```powershell
+.\start-dsh-web.ps1 -Bind lan         # 强制局域网（同一 WiFi）
+.\start-dsh-web.ps1 -Bind tailscale   # 强制 Tailscale（人在外面时）
+.\start-dsh-web.ps1 -Host 0.0.0.0     # 自己配了 frp / 隧道时
+.\start-dsh-web.ps1 -AllowFirewall    # 局域网模式下自动放行防火墙（需管理员）
+.\start-dsh-web.ps1 -Port 3095 -NoQr
+```
+
+> macOS / Linux 用户：直接用 `dsh --profile web --host <你的IP> --port 3095`，
+> 然后把终端打印的 URL 拿到手机上。一键脚本目前只有 Windows 版。
+
+### 3. 装客户端
+
+从 [Releases](../../releases) 下载最新版：
+
+| 平台 | 文件 | 说明 |
+|---|---|---|
+| **Android** | `dsh-outpost-v*.apk` | 允许「安装未知来源应用」后装上 |
+| **Windows** | `DSH-Outpost-Desktop-*-win-x64.zip` | 解压即用，双击 `DSH Outpost.exe` |
+
+> ⚠️ Windows 首次运行可能弹 SmartScreen「已保护你的电脑」——
+> 这是因为 exe 没有代码签名。点「更多信息 → 仍要运行」即可。
+> 详见 [桌面助手 README](dsh-outpost-desktop/README.md#-第一次运行会被-windows-拦)。
+
+### 4. 配对
+
+打开 App，三种方式任选：
+
+| 方式 | 说明 |
+|---|---|
+| **扫码**（推荐） | 点「扫码」，对准电脑终端里的二维码 |
+| **粘贴整行链接** | 复制终端打印的那一行贴到 Token 框，地址会自动识别 |
+| **只粘 token** | 地址手动填 |
+
+配对一次，**30 天内免登录**。服务重启换了 token 也不用重新配对。
+
+---
+
+## 网络怎么选
+
+App 只认一个 URL，所以局域网、Tailscale、Cloudflare 隧道都能用：
+
+| 场景 | 地址 | 前提 |
+|---|---|---|
+| **同一个 WiFi** | `http://192.168.x.x:3095` | 什么都不用装，最简单（**需要放行防火墙**） |
+| **在外面也要用** | `http://100.x.x.x:3095` | 电脑和手机都装 [Tailscale](https://tailscale.com/download)，登录同一账号 |
+| **在外面用、手机不想装东西** | `https://xxx.trycloudflare.com` | 电脑上跑 `start-tunnel.ps1`，**手机端零配置** |
+
+脚本默认优先 Tailscale（有就用），没有就用局域网。用 `-Bind` 可以强制指定。
+
+### Cloudflare 隧道（手机什么都不用装）
+
+Tailscale 要在手机上装 App，Cloudflare 隧道不用——就是一个普通 HTTPS 网址。
+
+```powershell
+.\start-tunnel.ps1          # 启动隧道（约 60-90 秒）
+.\start-tunnel.ps1 -Status  # 看当前隧道
+.\start-tunnel.ps1 -Stop    # 停止
+```
+
+脚本会自动：探测本机地址 → 起 cloudflared → 拿域名 → **用 `--trusted-host` 重启 DSH** → 抓新 token → 验证连通。
+
+两点注意：
+
+- **快速隧道的域名每次重启都会变**，变了手机要重新配对。想要固定域名得有自己的域名并配命名隧道。
+- **开启隧道会重启一次 DSH**，之前的配对 cookie 会失效（cookie 绑定了 authority）。
+
+> 为什么必须加 `--trusted-host`：DSH 的 Host/Origin 校验默认只接受绑定的那个 IP，
+> 通过隧道访问时 Host 是 `xxx.trycloudflare.com`，不在信任列表里就会 **403 forbidden**。
+> 它只做精确匹配、不支持通配符，所以必须拿到域名之后再重启服务。
+
+### 桌面助手（Windows）—— 推荐
+
+**[`dsh-outpost-desktop`](dsh-outpost-desktop/)** 是一个托盘程序，把「手机连接」从网页侧边栏里独立出来：
+
+- 托盘常驻，**点一下图标就出面板**（不用开浏览器找侧边栏）
+- 局域网 / 隧道两个二维码并排，扫哪个都行
+- 启动 / 停止隧道，不用记 PowerShell 命令
+- **IP 变了会弹黄条，点「一键修复」自动重启 DSH 和隧道**
+- 设备列表（哪些手机配过对、最后活跃时间）
+- 开机自启（静默，不弹窗）
+
+```
+启动方式：解压 zip → 双击 DSH Outpost.exe
+或者：  cd dsh-outpost-desktop && npm install && npm start
+```
+
+> ⚠️ **Windows 可能弹 SmartScreen「已保护你的电脑」** —— 这是因为 exe 没有
+> 代码签名（签名证书要钱，个人项目没买）。点「更多信息 → 仍要运行」即可。
+>
+> 不想每次都点的话：右键 exe → 属性 → 常规 → 勾选「解除锁定」。
+
+### 旧方案：网页插件
+
+装了 [`dsh-plugin-connect`](dsh-plugin-connect/) 之后，DSH 网页侧边栏底部会出现「📱 手机连接」：
+
+- 显示局域网 / Cloudflare 两个地址，各带二维码
+- 点「启动隧道」直接起 cloudflared（需要先跑一次 `start-tunnel-service.ps1`）
+- IP 变了会显眼提示并给「一键修复」
+
+**桌面助手和它功能重合**，二选一即可。桌面助手更好用（不用开浏览器），
+插件保留是为了兼容已经装了的用户。
+
+```
+http://192.168.x.x:3095  ─┐
+                          ├─→  📱 手机连接  →  两种方式 + 二维码 + [启动隧道]
+https://xxx.trycloudflare ─┘
+```
+
+### 开机自启
+
+```powershell
+.\setup-autostart.ps1          # 配置（DSH Web + 隧道服务）
+.\setup-autostart.ps1 -Show    # 查看
+.\setup-autostart.ps1 -Remove  # 取消
+```
+
+用启动文件夹实现，不需要管理员权限，登录即启动。
+
+### 手机端审批（强烈建议装）
+
+不装的话，手机上只能**看到**审批提示，点不了按钮。装了移动网关插件后，
+审批卡片上直接出现「拒绝 / 允许一次」，在手机上就能决定。
+
+```powershell
+.\setup-gateway.ps1
+```
+
+它做三件事：装 `dsh-plugin-mobile-gateway`、写配置、重启 DSH。
+
+装好之后：
+
+- 手机 App 自动申请配对，审批通道常驻连接（不用进聊天页才连）
+- 审批卡片上直接出现「允许一次 / 拒绝」按钮
+- 审批到达时手机推送通知 + 震动
+- 「我的 → 连接 → 审批通道」能看到 已连通 / 未连通 和具体原因
+
+> **为什么必须要插件**：DSH 的审批是 Host 侧 waterfall，结果靠 Remote Event
+> 监听器的**返回值**回传，没有 HTTP RPC 可调（12 个候选端点名全部 not found）。
+> 这个插件在 Host 内部接入 waterfall，再用独立 WebSocket 投影给手机。
+>
+> **真机排查**：如果「审批通道」显示未连通，把后面那行原因发出来。
+> 常见的是 `连接被关闭 1006 ... 401 Unauthorized`（凭据失效，App 会自动重新配对）
+> 或 `400`（请求头没发出去）。
+>
+> 详细协议和配置见 [docs/mobile-gateway.md](docs/mobile-gateway.md)。
+
+---
+
+## 安全提醒
+
+- **token 就是这台服务的钥匙**，拿到它就能操作你电脑上的 DSH。只发给自己的手机。
+- 服务绑定 `0.0.0.0` 或局域网 IP 时，**同一 WiFi 下的其他人也可能访问到**。
+  在不信任的网络里，建议用 Tailscale（端到端加密）而不是直接开局域网。
+- **局域网是明文 HTTP**。家里/办公室的可信 WiFi 没问题，
+  **公共 WiFi 下不要用局域网模式** —— 同网段的人能抓到 token。
+- 启动脚本的 `-PermissionMode` 默认是 `workspace-write`。
+  `danger-full-access` 会关闭审批，**不建议在开放网络上使用**。
+- **手机端审批等于把「授权」的按钮搬到手机上**。设备被他人拿到就能批准操作，
+  建议给手机设锁屏密码。
+- App 会**拒绝用明文 HTTP 连接公网地址**（只放行私有网段和 localhost）。
+  公网访问请用 https（Cloudflare 隧道）或 Tailscale。
+
+> 完整的威胁模型、明文 HTTP 的取舍、token 保护措施见
+> [docs/security.md](docs/security.md)。
+
+---
+
+## 已知限制
+
+| 项 | 说明 |
+|---|---|
+| **协议无版本协商** | 用的是逆向出来的 DSH 内部 RPC（见 [docs/protocol-notes.md](docs/protocol-notes.md)）。DSH 升级后某些功能可能失效 |
+| **只支持 Android** | iOS 需要 Mac + 签名，暂未提供 |
+| **管家模式依赖 Agent Teams** | 需要 DSH 装了 agent-team 相关 profile，且子代理工具是启用状态 |
+| **通知在 App 被杀后收不到** | 用的是本地通知（不是远程推送）。安卓会杀后台，杀掉后就收不到了。真要做到杀进程也能收，得接厂商推送通道（小米/华为/OPPO 各一套 SDK），工作量远超本项目 |
+| **Cloudflare 隧道域名会变** | 快速隧道每次重启换域名，手机要重新配对。固定域名需要自己的域名 + 命名隧道 |
+| **审批不支持「始终允许」** | 协议只有一次性决定（`allowed-once` / `rejected`）。要长期放行请调权限模式 |
+| **图片首次加载要 1-2 秒** | 完整下载到本地后再显示，还没做渐进式加载 |
+| **PPT / PDF / 老版 doc 不能内置看** | `.pptx` 是幻灯片布局，纯前端排版成本极高；`.pdf` 没有内置渲染器；`.doc` 是二进制老格式（mammoth 只吃 `.docx`）。这三种点开会交给系统应用 |
+| **docx 会丢掉复杂排版** | mammoth 只提取文字结构（标题/段落/列表/表格），浮动图片、分栏、精确字号会丢失。看内容够用，不是完整 Word 渲染 |
+| **Excel 只看值不看公式/样式** | SheetJS 读的是单元格显示值，公式结果对，但公式本身、条件格式、图表不显示 |
+
+---
+
+## 配置
+
+**不配置也能跑** —— 默认值从脚本位置和 `%LOCALAPPDATA%` 推导，代码里没有写死盘符。
+
+需要改的时候用环境变量：
+
+| 变量 | 默认 | 说明 |
+|---|---|---|
+| `DSH_POCKET_ROOT` | 脚本所在目录 | 仓库根 |
+| `DSH_STATE_DIR` | `%LOCALAPPDATA%\dsh-pocket` | 状态文件目录 |
+| `DSH_CLI` | 自动查找 | `dsh.cmd` 路径 |
+| `DSH_CLOUDFLARED` | 自动查找 | `cloudflared.exe` 路径 |
+| `DSH_WEB_PORT` | `3095` | DSH Web 端口 |
+| `DSH_TUNNEL_PORT` | `3199` | 隧道控制服务端口 |
+
+改完可以随时用 `.\doctor.ps1` 验证路径解析对不对。
+
+完整说明见 [docs/configuration.md](docs/configuration.md)。
+
+> **安全提醒**：状态目录里的 `tunnel.json` / `pairing.json` **含 token**，
+> 拿到就能操作你电脑上的 DSH。别提交、别外传。
+
+---
+
+## 开发
+
+```bash
+# 手机端
+cd dsh-mobile
+npm install
+npm test                  # 420 项静态检查 + 单测 + typecheck
+npm run test:integration  # 55 项集成测试（本地起模拟 DSH，不需要真服务）
+npm run android           # 需要 Android SDK + JDK 21
+
+# 桌面端
+cd dsh-outpost-desktop
+npm install
+npm test                  # 45 项（启动健壮性、打包配置、安全边界）
+npm start                 # 开发模式直接跑
+npm run pack              # 打包成 zip
+```
+
+### 测试分四层
+
+| 层 | 数量 | 依赖 | 测什么 |
+|---|---|---|---|
+| **静态检查 + 单测** | 420 | 无 | 纯函数行为、配置正确性、危险写法 |
+| **协议集成** | 39 | 本地端口 | 手搓请求，验证协议形状 |
+| **产品集成** | 16 | 本地端口 | **import 真实产品代码**，验证它能不能正确对接 |
+| **端到端** | 手工 | 真实 DSH | 完整链路 |
+
+桌面端另有 **45 项**，重点守「启动健壮性」—— 每一轮「双击没反应」
+的修复都固化成了一条测试（崩溃日志、窗口显示、单实例、完整性修复）。
+
+集成测试用一个**模拟 DSH 服务端**（`tests/support/fake-dsh.mjs`）：
+真 HTTP + 手写 RFC 6455 WebSocket，验证配对、重连、审批、长会话分页。
+
+> **为什么分「协议」和「产品」两层**：协议测试只能验证「服务端返回 401」，
+> 产品测试才能验证「我的代码收到 401 后有没有清 token 重连」。
+> 后者才是用户真正遇到的 —— 它抓到了两个真实缺陷，
+> 见 [docs/known-issues.md](docs/known-issues.md)。
+
+相关文档：
+
+- 测试体系说明 —— [dsh-mobile/tests/README.md](dsh-mobile/tests/README.md)
+- 已知问题 —— [docs/known-issues.md](docs/known-issues.md)
+- 协议依赖与兼容性 —— [docs/protocol-compat.md](docs/protocol-compat.md)
+- 运行环境（Node 版本）兼容性 —— [docs/runtime-compat.md](docs/runtime-compat.md)
+
+- 应用代码在 [`dsh-mobile/`](dsh-mobile/)，架构与实现细节见 [dsh-mobile/README.md](dsh-mobile/README.md)
+- DSH 内部协议（RPC 形状、投影字段、踩过的坑）见 [docs/protocol-notes.md](docs/protocol-notes.md)
+- **真机验证清单**（106 项 + 12 项快速回归）见 [docs/device-checklist.md](docs/device-checklist.md)
+
+### 目录
+
+```
+.
+├── dsh-mobile/              # 手机 App（React Native + TypeScript）
+│   ├── src/
+│   │   ├── core/            # 协议层：transport / rpc / fold / store（不依赖 UI）
+│   │   ├── nav/             # 手写导航栈 + 边缘手势
+│   │   ├── screens/         # 页面
+│   │   ├── components/      # 组件
+│   │   └── design/          # 主题 token
+│   └── tests/               # Node 单测（420 项）
+├── dsh-outpost-desktop/     # Windows 桌面助手（Electron 托盘程序）
+├── dsh-plugin-connect/      # 隧道服务 + 旧版网页插件
+├── docs/                    # 协议笔记、安全模型、真机验证清单、截图
+├── start-dsh-web.ps1        # Windows 一键启动脚本
+├── start-tunnel.ps1         # Cloudflare 隧道
+└── setup-gateway.ps1        # 安装移动网关（手机端审批）
+```
+
+---
+
+## 版本
+
+当前 **v0.15.8**。完整变更见 [Releases](../../releases)。
+
+最近的几个版本：
+
+| 版本 | 内容 |
+|---|---|
+| **v0.15.8** | **修复桌面助手无法启动** —— 根因是打包目录继承了 Windows「低完整性」标记 |
+| v0.15.7 | 桌面助手 bat 脚本改纯 ASCII（修 GBK 乱码）+ 自动清除 `ELECTRON_RUN_AS_NODE` |
+| v0.15.6 | 桌面助手启动诊断：崩溃日志多路径兜底、诊断脚本 |
+| v0.15.5 | 桌面助手包体积减半（260 → 112 MB）+ 分卷下载 |
+| v0.15.3 | 桌面助手重新打包、统一命名、SmartScreen 说明 |
+| v0.15.2 | 修复 CI：Node 20 不支持直接 import `.ts` |
+| v0.15.1 | 修复 CI：Node 20 没有全局 `WebSocket` |
+| v0.15.0 | **协议兼容性**：依赖清单、错误分类、能力探测 |
+| v0.14.0 | 产品级集成测试（驱动真实代码，发现两个网关缺陷） |
+| v0.13.0 | 三层测试体系 + 39 项真实协议集成测试 |
+| v0.12.0 | 修复管家模式指令冲突，统一分工规则，加重复杂项检测 |
+| v0.11.0 | **安全审计**：地址校验、token 脱敏、日志与凭据权限加固 |
+| v0.10.0 | 项目重命名 dsh-pocket → dsh-outpost |
+| v0.9.1 | Windows 桌面助手打包通了 |
+| v0.9.0 | **Windows 桌面助手**：托盘常驻，扫码连接手机、管理隧道 |
+| v0.8.2 | 过滤 DSH 的临时工作区（49 个目录 → 3 个，列表终于能看） |
+| v0.8.1 | 修复尖括号路径的图片不显示（会显示成「!标题」） |
+| v0.8.0 | 会话搜索、重命名、长会话虚拟化（100 轮以上的会话不再卡顿） |
+| v0.7.0 | 图片全屏查看 + Word/Excel/Markdown 内置查看；聊天里的 markdown 终于真渲染了 |
+| v0.6.3 | 手机端审批可用了（修了 WS 请求头、端点选择、凭据自愈三个问题）+ 手势真正生效 |
+| v0.6.2 | 图片终于能显示（`overflow:'hidden'` 在 Fabric 下会把 Image 裁成 0） |
+
+---
+
+## 许可
+
+[MIT](LICENSE)
+
+DeepSeek Harness 及其相关商标归杭州深度求索人工智能有限公司所有。
+本项目与该公司无隶属关系，也未获得其背书。

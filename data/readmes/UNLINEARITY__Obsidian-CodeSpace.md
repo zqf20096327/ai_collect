@@ -20,6 +20,9 @@
   <a href="https://obsidian.md/plugins?id=code-space">
     <img alt="Downloads" src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json&query=%24%5B%27code-space%27%5D.downloads&label=Downloads&style=for-the-badge&logo=obsidian&color=0891b2&labelColor=1c1917&cacheSeconds=21600">
   </a>
+  <a href="https://github.com/UNLINEARITY/Obsidian-CodeSpace/issues?q=is%3Aissue%20is%3Aclosed">
+    <img alt="Closed issues" src="https://img.shields.io/github/issues-closed/UNLINEARITY/Obsidian-CodeSpace?label=Issues&style=for-the-badge&logo=github&color=0891b2&labelColor=1c1917">
+  </a>
   <a href="https://github.com/UNLINEARITY/Obsidian-CodeSpace/blob/main/LICENSE">
     <img alt="License" src="https://img.shields.io/github/license/UNLINEARITY/Obsidian-CodeSpace?label=License&style=for-the-badge&logo=opensourceinitiative&color=0891b2&labelColor=1c1917">
   </a>
@@ -83,6 +86,7 @@ Embed and preview code in Markdown, including specific snippets from code files:
 - **Preview sync**: When a source code file changes, related embedded previews are re-rendered.
 - **Native PDF export**: Use Obsidian's official **Export to PDF** and code file references are exported as real code blocks instead of gray file cards.
 - **Broader host compatibility**: Embedded code previews behave more reliably in reading mode, pop-out windows, and other hosts that reuse Obsidian's Markdown render pipeline.
+- **Edit code blocks in Code Space**: Place the cursor inside a fenced code block in a note, then select the code button in the note header (left of the reading/editing toggle), or run **Edit code block in Code Space** from the command palette or the editor context menu. The block opens in a Code Space editor window with syntax highlighting. Saving or closing the window writes the code back into the note, where it can be undone. The fence line is kept as is, and code blocks inside callouts, quotes, and lists are supported.
 
 <p align='center'><img src='docs\img\pre3.png' width=95%></p> 
 
@@ -145,6 +149,7 @@ Run a real system shell inside Code Space, powered by xterm.js and node-pty.
 - **Follows your context**: New terminals start in the folder of the currently open file (external mounts resolve to their real on-disk location), falling back to the Vault root
 - **Theme aware**: Colors and the monospace font follow your Obsidian theme, including in pop-out windows
 - **Resizable panel**: Drag the grip above the embedded panel to adjust its height
+- **Drag files in as paths**: Drag files or folders from the Obsidian file list or the system file manager onto a terminal to paste their real absolute paths, quoted for the current shell (external mounts resolve to their on-disk location)
 
 **Usage:**
 1. Enable the terminal under **Settings > Code Space > Terminal** (disabled by default)
@@ -247,6 +252,7 @@ If you add the following extensions to the managed list, these files can also be
 | `Ctrl+P` → "Reload plugin" | Reload the plugin |
 | `Ctrl+P` → "Toggle code outline" | Toggle the code outline view |
 | `Ctrl+P` → "Search and replace" | Open the search and replace panel in the current Code Space editor |
+| `Ctrl+P` → "Edit code block in Code Space" | Edit the code block at the cursor in a Code Space editor window (available when the cursor is inside a code block) |
 | `Ctrl+P` → "Open terminal" | Open a new terminal tab (available after enabling the terminal and downloading support files) |
 | `Ctrl+P` → "Toggle terminal panel" | Toggle the embedded terminal panel in the current editor |
 | `Ctrl+P` → "Close all terminal sessions" | Stop every terminal |

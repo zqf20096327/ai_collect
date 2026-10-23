@@ -33,11 +33,17 @@ Reviewed time-budget variants, confirmed training experiences, recorded 1/5/20-m
 
 **Alpha.73 maintenance:** Admin → System & maintenance brings together updates, encrypted full backups and checked recovery for managed native LXC and Linux Docker Compose installations. The version indicator opens this area; other users receive read-only update information. Shell commands remain available. Normal native updates, including the first upgrade from Alpha.72, and ordinary Docker Compose startup configure the independent maintenance service automatically. Setup failures are visible to administrators. See [System maintenance](docs/SYSTEM_MAINTENANCE.md).
 
+**Alpha.76 showcase:** turn any activity into a shareable image – route, key figures, elevation, heart-rate zones and personal bests in three styles and three formats. Updates are now built while PenguCoach keeps running and switch over in moments, with an instant return to the previous release if anything fails. See [Activity showcase](docs/SHOWCASE.md).
+
+**Alpha.77 recap:** the Recap button in the activity journal plays an animated story of your day, week, month, year or whole history – distance, elevation, time and energy with playful comparisons, highlights, all routes on one map, streaks and a comparison with the previous period – and ends with a shareable card. See [Activity recap](docs/RECAP.md).
+
 **Alpha.74 session recovery:** brief API interruptions during backups preserve the browser session. Network/server errors are retried; expired sessions still require login.
+
+**Alpha.75 maintenance design:** updates install the newest published release (shown before you start) and apply versioned host steps from the repository. Backups contain the database, environment and application data only, are written in one encrypted streaming pass, and automatic safety copies are rotated after a free-space check. A maintenance mode pauses new changes and waits for running background tasks; Garmin workout transfers are never cut off. Restores no longer edit your environment files, and recovery can be started from the web interface. See [System maintenance](docs/SYSTEM_MAINTENANCE.md).
 
 ## Current alpha scope
 
-`v0.1.0-alpha.74` is the current end-to-end alpha baseline:
+`v0.1.0-alpha.78` is the current end-to-end alpha baseline:
 
 - **Sparky recording times and readings:** separate local clocks and recording zones, historical timestamp correction on sync, explicit time-unknown display, better minimum-HR/telemetry extraction and missing values shown as missing. See [SparkyFitness](docs/SPARKYFITNESS.md).
 
@@ -88,6 +94,7 @@ Reviewed time-budget variants, confirmed training experiences, recorded 1/5/20-m
 - multi-user local authentication
 - mandatory safety/development gate after every login
 - Garmin Connect login with MFA
+- alternatively the official Garmin **Personal API key** (read-only, with in-app guide and expiry reminder), optionally combined with a Garmin login used only for workout export – see [`docs/GARMIN_PERSONAL_API.md`](docs/GARMIN_PERSONAL_API.md)
 - encrypted Garmin token persistence; Garmin password is never stored
 - allow-list based **strict read-only** Garmin data-sync gateway plus a separate opt-in, narrow workout/calendar write gateway
 - configurable automatic sync with jitter, lock, 429 cooldown and reconnect state
@@ -97,7 +104,7 @@ Reviewed time-budget variants, confirmed training experiences, recorded 1/5/20-m
 - FIT parsing and Parquet time-series storage
 - deterministic FIT analytics: HR/pace/power/cadence drift, aerobic decoupling, pace consistency and data coverage
 - performance-oriented server-side activity journal: the first 25/50/100 rows load independently from source/status counters, PostgreSQL indexes accelerate the common user/date and source filters, summary counters are aggregated/cached separately, and responsive skeleton/loading states keep large 5,000+ activity histories visibly responsive; detail views retain FIT time series
-- manual activity import without Garmin: FIT, GPX, TCX and ZIP-contained FIT files are stored locally, normalized into the same activity history and analysed with the same deterministic pipeline
+- manual activity import without Garmin: FIT, GPX, TCX and ZIP-contained FIT files are stored locally, normalized into the same activity history and analysed with the same deterministic pipeline; GPS-only tracks get smoothed distance, windowed speed and moving time, and an import that matches an existing workout asks before creating a duplicate
 - health overview and professional historical charts with Today / Last 7 days / This week / This month / Last 3 months / Last 6 months / This year / All filters; top health cards show averages of the available measurements in the selected period while missing days are not treated as zero
 - Ollama, OpenAI, Anthropic, IONOS AI Model Hub, Google Gemini, xAI/Grok, OpenRouter and generic OpenAI-compatible provider management
 - optional per-model input/output token pricing plus system-wide AI usage/cost statistics for today, 7 days, 30 days, current year and all time; local models retain token statistics even without prices

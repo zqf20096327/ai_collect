@@ -118,7 +118,7 @@ Every kernel is open source in this repository; nothing is closed or downloaded 
 
 | | |
 |---|---|
-| **Download and run** | Download **`whirl-0.2.2.2-windows-x64.zip`** from [Releases](https://github.com/tsaipifong/whirl-llm/releases), unzip, run. **Only the AMD driver is needed**: no HIP SDK, no ROCm, no Visual C++ Redistributable to install (the few runtime DLLs the ROCm 10.1 driver needs are in the zip) |
+| **Download and run** | Download **`whirl-0.2.3-windows-x64.zip`** from [Releases](https://github.com/tsaipifong/whirl-llm/releases), unzip, run. **Only the AMD driver is needed**: no HIP SDK, no ROCm, no Visual C++ Redistributable to install (the few runtime DLLs the ROCm 10.1 driver needs are in the zip) |
 | Driver | **AMD Software: Adrenalin Edition 26.8.1 (driver 32.0.31041.1004) or newer**, for both GPUs. Older drivers are untested. With the Adrenalin Edition for ROCm 10.1 driver, keep the `rocm_kpack.dll` from the zip next to `whirl.exe` (that driver's GPU runtime needs it but does not install it), together with the Visual C++ runtime DLLs it uses (`msvcp140.dll`, `vcruntime140.dll`, `vcruntime140_1.dll`, also in the zip) |
 | GPU | **Radeon 8060S** (RDNA 3.5, gfx1151, the AMD Ryzen AI Max+ 395 iGPU) or **AMD Radeon AI PRO R9700** (RDNA 4, gfx1201, 32 GB); one GPU per process |
 | Radeon 8060S: GPU memory | **Set the GPU memory (UMA frame buffer size) in Armoury Crate or the BIOS first** (other laptops: *Variable Graphics Memory* in AMD Software), then restart. WHIRL keeps the model, its buffers and the KV cache in this dedicated memory; Windows' "shared GPU memory" is not used for them (the token-embedding table and the RAM cache tier sit in pinned system RAM, which Task Manager shows as shared GPU memory). Set **at least 40 GB for Swift-1.5 27B MXFP4** (48 GB for its precise mode with the default KV cache) and **32 GB for Ornith-1.5-35B-A3B MXFP4** (64 GB on a 128 GB machine runs either model in every mode). Measured with the server defaults (4 slots, 262,144-token KV cache): Swift uses 29.9 GiB in balance, 31.0 GiB in fast, 38.2 GiB in precise; Ornith 27.3 GiB in balance and precise, 23.4 GiB in fast. With less, the server shrinks the KV cache, or stops with a message naming the size to set. `whirl devices` shows the current size as "dedicated" |
@@ -133,13 +133,13 @@ Our R9700 is connected as a USB4 / Thunderbolt eGPU; that works. A card in a dir
 
 ## Quick start
 
-1. Download `whirl-0.2.2.2-windows-x64.zip` from [Releases](https://github.com/tsaipifong/whirl-llm/releases) and a model, for example [`Swift-1.5-Qwen3.8-27B-MXFP4-A-outQ6_K.gguf`](https://huggingface.co/tsaipifong/Swift-1.5-Qwen3.8-27b-MXFP4-GGUF) saved in `C:\models\`.
+1. Download `whirl-0.2.3-windows-x64.zip` from [Releases](https://github.com/tsaipifong/whirl-llm/releases) and a model, for example [`Swift-1.5-Qwen3.8-27B-MXFP4-A-outQ6_K.gguf`](https://huggingface.co/tsaipifong/Swift-1.5-Qwen3.8-27b-MXFP4-GGUF) saved in `C:\models\`.
 2. Unzip and run, in PowerShell:
 
 ```powershell
-Unblock-File .\whirl-0.2.2.2-windows-x64.zip
-Expand-Archive .\whirl-0.2.2.2-windows-x64.zip -DestinationPath C:\whirl
-cd C:\whirl\whirl-0.2.2.2-windows-x64
+Unblock-File .\whirl-0.2.3-windows-x64.zip
+Expand-Archive .\whirl-0.2.3-windows-x64.zip -DestinationPath C:\whirl
+cd C:\whirl\whirl-0.2.3-windows-x64
 .\whirl.exe devices                                    # lists the Radeon 8060S (gfx1151) and/or the R9700 (gfx1201)
 .\whirl.exe chat C:\models\Swift-1.5-Qwen3.8-27B-MXFP4-A-outQ6_K.gguf "Explain TCP slow start in two sentences." --max-tokens 400
 .\whirl-server.exe C:\models\Swift-1.5-Qwen3.8-27B-MXFP4-A-outQ6_K.gguf --port 8080      # default mode: balance
@@ -147,7 +147,22 @@ cd C:\whirl\whirl-0.2.2.2-windows-x64
 
 The server speaks the OpenAI API at `http://127.0.0.1:8080/v1` (`/v1/chat/completions`, `/v1/completions`, `/v1/models`, `/health`), so any OpenAI-compatible client works. Add `--precise` for bitwise-lossless output or `--fast` for maximum speed. Stop the server with Ctrl+C; reused sessions are written to the SSD tier first.
 
-With both GPUs present the R9700 is the default; `--device 8060s` (or `WHIRL_DEVICE=8060s`) selects the 8060S. For long documents give a slot a longer context, for example `--ctx-per-slot 262144`; see [recipes.md](docs/recipes.md#long-context).
+For long documents give a slot a longer context, for example `--ctx-per-slot 262144`; see [recipes.md](docs/recipes.md#long-context).
+
+### Choosing the GPU
+
+- Without `--device`, WHIRL uses the GPU with the most GPU memory (integrated GPUs count their dedicated memory; if
+  equal, the first one in `--list-devices`); the startup log shows which GPU it uses.
+- To use another GPU, add `--device pci:<bus>:<device>`; the numbers are in Task Manager > Performance > (select the
+  GPU) > Physical location.
+- Example: Task Manager shows Physical location "PCI bus 71, device 0, function 0" →
+  `whirl-server.exe <model.gguf> --device pci:71:0`
+
+`-dev` and `WHIRL_DEVICE` do the same as `--device`, for `whirl` and `whirl-server`.
+
+`whirl devices` (or `--list-devices`) prints the same `pci:` numbers for every GPU. An index, `r9700`, `8060s` or a
+part of the name also work when only one GPU matches. An external USB4 / Thunderbolt GPU gets its bus number when it
+is connected, so check Task Manager again after replugging it.
 
 The first run with a model tunes the GPU kernels once and caches the result in `%LOCALAPPDATA%\whirl` (a few seconds for our MXFP4 files on the R9700; longer on the 8060S). Full walkthrough: [quick start](docs/quickstart.md). Every option: [usage reference](docs/usage.md).
 

@@ -95,14 +95,14 @@
 1. Download the latest JAR from Releases
 2. Drop it into JMeter's lib/ext directory
 3. Paste jmeter-ai-quickstart.properties into JMeter's bin/user.properties
-4. Uncomment one provider (Claude, OpenAI, Gemini or Ollama), add its key (Ollama needs none), then restart JMeter
+4. Uncomment one provider (Claude, OpenAI, Gemini, Ollama or Apple on-device), add its key (Ollama and Apple on-device need none), then restart JMeter
 ```
 
 See [Releases](https://github.com/QAInsights/jmeter-ai/releases) for the latest JAR.
 
 ## ⚙️ Configuration
 
-**First time?** Paste [`jmeter-ai-quickstart.properties`](jmeter-ai-quickstart.properties) into JMeter's `bin/user.properties`, uncomment one provider and add its key (Ollama needs none):
+**First time?** Paste [`jmeter-ai-quickstart.properties`](jmeter-ai-quickstart.properties) into JMeter's `bin/user.properties`, uncomment one provider and add its key (Ollama and Apple on-device need none):
 
 ```properties
 jmeter.ai.service.type=anthropic
@@ -119,7 +119,7 @@ That is all Feather Wand needs; every other setting has a default. [`jmeter-ai-s
 | `jmeter.ai.response.chime` | Play a chime when AI finishes | `false` |
 | `jmeter.ai.refactoring.enabled` | Enable JSR223 editor AI refactoring | `true` |
 | `jmeter.ai.extract.enabled` | Add **Extract this** to the right-click menu of View Results Tree responses | `true` |
-| `jmeter.ai.service.type` | Default AI service for refactoring | `anthropic` |
+| `jmeter.ai.service.type` | Default AI service for refactoring (`anthropic`, `openai`, `ollama`, `deepseek`, `apple`, and others) | `anthropic` |
 | `jmeter.ai.cli.max.history.size` | Conversation entries replayed with each one-shot Codex/Claude Code chat request | `10` |
 | `jmeter.ai.dev.menu` | Show the [AI Dev tool items](#dev-menu-items) under the Run menu | `false` |
 
@@ -160,6 +160,27 @@ That is all Feather Wand needs; every other setting has a default. [`jmeter-ai-s
 | `openai.max.history.size` | Conversation history size | `10` |
 | `openai.system.prompt` | System prompt | See sample file |
 | `openai.log.level` | Logging (`INFO`/`DEBUG`) | *(empty)* |
+
+</details>
+
+<details>
+<summary><b>Apple on-device (macOS)</b></summary>
+
+Apple on-device is available in the chat model picker and for JSR223 Refactor. The Agent option is disabled while Apple on-device is selected, and Apple on-device is not available in Record Mode. It uses Apple's FoundationModels framework locally, so no API key or network inference service is required. The model has an approximately 4K-token context window.
+
+Requirements: macOS 26 or later, Apple silicon, and Apple Intelligence enabled in System Settings. The model appears in the picker only when the helper reports it is available.
+
+| Property | Description | Default |
+|----------|-------------|---------|
+| `apple.enabled` | Enable Apple on-device model discovery | `true` |
+| `apple.fm.helper.path` | Override the bundled native helper executable path | *(bundled helper)* |
+| `apple.max.history.size` | Conversation entries replayed with each request | `6` |
+| `apple.system.prompt` | Instructions sent separately from the conversation | JMeter default |
+| `apple.temperature` | Optional generation temperature | *(system default)* |
+| `apple.max.tokens` | Optional maximum response tokens | *(system default)* |
+| `jmeter.ai.service.type` | Select Apple on-device for JSR223 Refactor | Set to `apple` |
+
+The bundled helper is for macOS arm64. See [`native/apple-fm/README.md`](native/apple-fm/README.md) to rebuild it.
 
 </details>
 
@@ -1192,12 +1213,12 @@ Set `jmeter.ai.service.type=ollama` to switch to a local model. All other provid
 
 Feather Wand automatically hides non-chat models so you only see useful options:
 
-- **OpenAI**: hides audio, TTS, whisper, davinci, search, realtime, and instruct models.
+- **OpenAI**: shows `gpt-*`, o-series (`o<digit>*`, e.g. `o1`, `o3`, `o4-mini`) and `chat-latest` chat models; hides audio, TTS, whisper, davinci, search, realtime, instruct, embedding, moderation and image models, plus models that only work on `/v1/responses` (`*-pro`, `*codex*`, deep research, computer use).
 - **Claude**: shows only the latest available models.
 - **Gemini**: shows only `gemini-*` and `gemma-*` chat models.
 - **Grok**: shows only `grok-*` chat models.
 - **AWS Bedrock**: shows text-capable foundation models and active, account-authorized inference profiles matching `bedrock.model.providers`; unavailable profiles are hidden.
-- **Corporate gateways**: with `openai.base.url` or `anthropic.base.url` set, gateway-specific model names are kept (embedding models are still hidden), or listed verbatim from `openai.models` / `anthropic.models`.
+- **Corporate gateways**: with `openai.base.url` or `anthropic.base.url` set, gateway-specific model names are kept (audio, embedding, moderation, image and other non-chat models are still hidden), or listed verbatim from `openai.models` / `anthropic.models`.
 
 Default models: `claude-sonnet-4-6` · `gpt-4o` · `gemini-3.5-flash` · `deepseek-chat` · `deepseek-r1:1.5b` · `grok-4.5` · `anthropic.claude-3-5-sonnet-20241022-v2:0`
 
@@ -1212,7 +1233,7 @@ Starting with v3.8.6, Feather Wand sends one small, anonymous usage ping per day
 | Field | Example | Notes |
 | --- | --- | --- |
 | Install ID | `3f1c9a2e-7b4d-4e8a-9c1f-2d5e6a7b8c9d` | Random UUID created once and stored in `~/.jmeter-ai/telemetry.json`. It is not derived from your machine, user name, or account. |
-| Plugin version | `3.8.9` | |
+| Plugin version | `3.9.0` | |
 | JMeter version | `5.6.3` | |
 | Java version | `17.0.12` | |
 | OS and CPU architecture | `Mac OS X`, `aarch64` | |
@@ -1246,7 +1267,7 @@ A complete ping looks like this:
 {
   "installId": "3f1c9a2e-7b4d-4e8a-9c1f-2d5e6a7b8c9d",
   "event": "daily",
-  "pluginVersion": "3.8.9",
+  "pluginVersion": "3.9.0",
   "jmeterVersion": "5.6.3",
   "javaVersion": "17.0.12",
   "os": "Mac OS X",

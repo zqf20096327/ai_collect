@@ -2,6 +2,11 @@
 
 **Give your AI agent memory that lasts — and see the cloud tokens it never had to spend.** Persistent sessions, knowledge graphs, offline tool-routing, and an auditable savings meter. Fully local and free.
 
+> **Current release: v20.22.4 — oMLX setup and local model roles**
+> Install a pinned oMLX server/model pack from the dashboard or CLI, or connect
+> an existing server. Discover installed models and choose coder/reviewer roles
+> for oMLX and Ollama. Controlled oMLX coding remains text-only.
+
 [![npm](https://img.shields.io/npm/v/prism-mcp-server?color=cb0000&label=npm)](https://www.npmjs.com/package/prism-mcp-server)
 [![MCP Registry](https://img.shields.io/badge/MCP_Registry-listed-00ADD8)](https://github.com/modelcontextprotocol/servers)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
@@ -22,9 +27,10 @@ A paid subscription adds cloud sync, higher model tiers, and team features throu
 
 - **Session memory that survives restarts** — resume projects with handoff notes,
   recent work, open TODOs, and configurable quick, standard, or deep context.
-- **Local-first inference** — bounded work is routed through local Ollama models
-  first, with automatic 2B/4B/9B/27B selection based on installed models,
-  available RAM, context fit, and subscription entitlements.
+- **Local-first inference** — local Ollama models use automatic 2B/4B/9B/27B
+  selection based on installed models, available RAM, context fit, and
+  subscription entitlements. Eligible text-only coding can prefer configured
+  oMLX; explicit task choices override the saved backend preference.
 - **A savings meter you can audit** — `prism savings` (or the `local_savings`
   tool from any host) reports the token volume local serving kept off your
   cloud model: headline, local share, per-model breakdown. It reports tokens,
@@ -181,6 +187,26 @@ or by re-enabling after each run.
 
 <details>
 <summary>Release history (optional)</summary>
+
+## What's New in v20.22.4
+
+- **Dashboard and CLI setup:** Settings → Local Coding and `prism local` install
+  a pinned oMLX server/model pack with progress, retry and managed startup, or
+  connect an existing server. See the [oMLX guide](docs/omlx.md) for requirements.
+- **Saved coding preference:** choose Auto, oMLX or Ollama without restarting
+  Prism. Auto prefers configured oMLX for eligible text-only coding; an explicit
+  per-task backend overrides that preference.
+- **Discovered model roles:** select installed coder and reviewer models for
+  each backend, including the same model for both roles. Explicit task model
+  choices win. Reported sizes and conservative memory estimates help compare
+  choices; unknown metadata stays unknown and estimates do not guarantee fit.
+- **Managed isolation:** model discovery, Hub cache and cluster launchers stay
+  private to the managed installation. Competing Ollama residency refuses the
+  call without unloading other jobs.
+- **Setup-state hardening:** bounded reads use one file handle and reject
+  symlinks, closing the filesystem race reported by CodeQL.
+- **Vision boundary:** this release does not enable image requests through the
+  controlled oMLX coding path. Picture-recognition tests remain separate work.
 
 ## What's New in v20.22.3
 
@@ -1799,40 +1825,4 @@ prism_infer({
 prism_infer({
     messages: [
         { role: "user",      content: "We named the helper countActiveUsers(data). Confirm." },
-        { role: "assistant", content: "Confirmed." },
-    ],
-    prompt: "Write the one-line call that stores its result in n.",
-    mode: "code",
-})
-// → "n = countActiveUsers(data)"          (local model, $0)
-
-// A turn the on-device screen finds uncertain, alone or in context, is not
-// served locally: it goes to Synalux cloud on a paid plan, or is refused with
-// cloud_fallback: false. The result names the reason (layer1_uncertain) so
-// the host can decide what to do with the thread.
-prism_infer({
-    messages: [
-        { role: "user",      content: "The ticket for this bug is SYN-4471. Acknowledge." },
-        { role: "assistant", content: "Acknowledged." },
-    ],
-    prompt: "Which ticket is this bug filed under?",
-    cloud_fallback: true,
-})
-// → "SYN-4471"                            (Gemini 3.6 Flash; used_cloud: true)
-```
-
-Measured on 20.21.14 through the real handler, on the local 9b with cloud off:
-- Every benign follow-up that reached the local 9b with its conversation
-  attached was answered correctly. Without the conversation, most answers were
-  invented.
-- The on-device screen still refuses too many benign follow-ups: 11 of 26 in
-  our tests. Each refusal names its reason. Cutting these false refusals is
-  the current work.
-- Every reserved multi-turn probe was refused before any generation (11 of 11).
-</details>
-
-| Mode | Think | Model | Use case |
-|------|-------|-------|----------|
-| `route` | Off (fast) — except a tier that reasons better, e.g. 9B | 9B default | MCP tool routing |
-| `chat` | Per tier: on for 9B, off for 4B/2B | 27B preferred | Conversation, reasoning |
-| `code` | Per tier: on for 9B, off for 4B/2B | 2
+        { role: "assistant"

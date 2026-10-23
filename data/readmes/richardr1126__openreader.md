@@ -34,10 +34,10 @@ Want to self-host for several people instead? **Get started in the [docs](https:
   segment is ready while the worker continues generating ahead into one durable document timeline;
   cached audio is reused across seeks, reloads, and exports.
 - 🧱 **Layout-aware PDF parsing** with PP-DocLayoutV3 (ONNX) — structured block detection, cross-page stitching, and geometry-based highlighting for precise read-along sync.
-- ⏱️ **Word-by-word highlighting** via ONNX Whisper alignment through the compute worker control plane (NATS JetStream-backed).
+- ⏱️ **Word-by-word highlighting** from local Kokoro's own phoneme durations, or ONNX Whisper alignment for other providers, through the compute worker control plane (NATS JetStream-backed).
 - 📚 **Five readable formats** — synchronized EPUB, PDF, TXT, MD, and worker-converted DOCX,
   with generated PDF/EPUB library previews.
-- 🎯 **Multi-provider TTS** — Kokoro running locally with no API key, self-hosted OpenAI-compatible servers (Kokoro-FastAPI, KittenTTS-FastAPI, Orpheus-FastAPI, Supertonic), or cloud APIs (OpenAI, Replicate, DeepInfra, and ElevenLabs, Cartesia, Google, and more through Speech SDK).
+- 🎯 **Multi-provider TTS** — Kokoro running locally with no API key, self-hosted OpenAI-compatible servers (Kokoro-FastAPI, KittenTTS-FastAPI, Orpheus-FastAPI, Supertonic), or cloud APIs (OpenAI, Replicate, and DeepInfra).
 - 🌐 **Multilingual support** — choose a document language for language-aware narration and highlighting. Available languages depend on the configured TTS provider and voice.
 - 🎧 **Audiobook export** in M4B or MP3, assembled by the worker from the same playback cache.
 - 🗂️ **Flexible backend** — embedded SeaweedFS or S3-compatible storage, SQLite or Postgres, server library import, and device sync.

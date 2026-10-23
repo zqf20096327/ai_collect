@@ -33,7 +33,7 @@ pip install md-to-word-docx
 
 ## 30 秒
 
-**先跑一条命令**：`md-to-word init` 在当前目录放好 `format.txt` 与 `hello.md`，`hello.md` 能直接导出——
+**先运行一条命令**：`md-to-word init` 在当前目录生成 `format.txt` 与 `hello.md`，后者可直接导出——
 先看到成品，再改内容与格式。
 
 ```bash
@@ -95,13 +95,13 @@ md-to-word 稿件.md -r format.txt -o 稿件.docx
 - **页面与正文**：纸张、页边距、装订线、文档网格、中西文字体、字号、行距、缩进、段距、对齐、颜色
 - **标题与页眉页脚**：六级标题、奇偶页与首页不同、分节、页码格式与起始、`{页码}` `{总页数}` `{样式标题}` 域
 - **表格**：三线表、全网格线、顶底线、无边框，线宽、跨页重复表头、单元格对齐与内边距、列宽比例
-- **公式**：原生 OMML，居中、编号靠右，按章编号，编号外观可声明，`@eq-` 交叉引用
-- **图与题注**：图片宽度按版心钳制，题注与图同页绑定，图题在上一律由作者决定
+- **公式**：原生 OMML 对象（在 Word 里可继续编辑，不是图片、不是字面文本），居中、编号靠右，按章编号，编号外观可声明，`@eq-` 交叉引用
+- **图与题注**：图片宽度按版心钳制，题注与图同页绑定，图题在上一律由作者决定；图可以直接引用 PDF（导出时按 300 dpi 栅格化）
 - **文献**：`.bib` + CSL，内置 29 份常用样式（GB/T 7714、APA、Nature、IEEE、Vancouver 等），也可指向自己的 CSL 文件
 - **行内**：加粗、斜体、删除线、下划线、上下标、行内代码、行内公式、链接、脚注
 - **列表**：有序、无序、三级嵌套、引用块内的列表
 - **质量门禁**：导前预检（契约、样式、引文）、导后防丢数、逐条样式对账
-- **无外部程序**：不调用 Pandoc、Quarto 或 Word，导出不依赖任何外部二进制
+- **纯 Python 导出**：整条链路在 Python 进程内完成，不启动任何外部程序
 
 做不到什么、为什么，以及完整词表见[使用手册](https://github.com/ls-open/md-to-word/blob/main/src/md_to_word/resources/manual.md)——
 `md-to-word --contract` 会打印它的路径（中英各一份）；实现取舍见
@@ -109,10 +109,11 @@ md-to-word 稿件.md -r format.txt -o 稿件.docx
 
 ## 常用写法
 
-| 你要写的 | 写成 |
+| 要写的内容 | 写法 |
 |:--|:--|
 | 章节标题 | `# 引言`、`## 2.1 方法`；一个 `#` 一级，不跳级 |
 | 给某一段指定样式 | 行首写 `%% 摘要 本文提出……`（一行即一段，无闭合符号） |
+| 同一段内换行 | 行尾加 `\` 或两个空格（地址、诗句、长标题）；不写标记就各自成段 |
 | 带编号的公式 | `$$E=mc^2$$ {#eq-mass}`，正文用 `@eq-mass` 引用 |
 | 参考文献 | YAML 里 `bibliography: refs.bib`，正文写 `[@smith2024]` |
 | 图 | `![](figures/arch.png){width=13cm}`，下一行 `%% 图片题注 图 1 系统架构` |
@@ -148,19 +149,19 @@ if not result.ok:
 **当作 Agent 技能**——把活交给 AI 时，克隆本仓库，让 Agent 读根目录的 [`SKILL.md`](https://github.com/ls-open/md-to-word/blob/main/SKILL.md)，
 它依次完成：整理稿件 → 写 `format.txt` → 导出 → 读门禁、按行号改稿。
 
-**给脚本与 Agent**——加 `--json`，结果是一行 JSON，消息走 stderr：
+**给脚本与 Agent**——加 `--json`，结果是一行 JSON：用了哪份格式要求、每条提醒、结尾的核对提示都在 `messages` 里，失败原因在 `errors` 里；进度日志与报错文字走 stderr：
 
 ```bash
 md-to-word 稿件.md -o 稿件.docx --json
 ```
 
-键名固定（`ok`、`returncode`、`output`、`pdf`、`messages`、`errors`），不随版本变；
+键名固定（`ok`、`returncode`、`input`、`output`、`pdf`、`lang`、`messages`、`errors`），不随版本变；
 里面的句子跟着稿件语种走。读键，不读措辞。
 
 ## 环境
 
-- **依赖**：`python-docx`、`lxml`、`PyYAML`、`latex2mathml`、`citeproc-py` 五个包；除 `lxml`（C 扩展，各平台都有现成轮子）外都是纯 Python
-- **导出不需要任何外部二进制**：没有 Pandoc，没有 Quarto，不调用 Word
+- **依赖**：`python-docx`、`lxml`、`PyYAML`、`latex2mathml`、`citeproc-py`、`pypdfium2` 六个包；`lxml` 与 `pypdfium2` 是带各平台二进制轮子的扩展，其余是纯 Python
+- **导出不启动外部程序**：整条链路在 Python 进程内完成
 - **`--pdf` 核对版**才用到本机 Word（仅 macOS；不可用时自动跳过，不影响 `.docx`）
 - **中英双语**：运行时消息、门禁报错、使用手册各有两份，语言跟着**稿件语种**走——
   英文稿拿到英文报错与英文样式名举例，中文稿一字不变

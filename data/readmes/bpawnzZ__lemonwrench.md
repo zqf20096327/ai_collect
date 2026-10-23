@@ -7,19 +7,17 @@ You drop the folder in, and your agent gets a lookup procedure plus a stdlib scr
 Named for [lemon-manuals.la](https://lemon-manuals.la), the source it scrapes: ~10,000 US/Canada vehicles, 1960–2025, free, no login. Two databases per year — a 2025 capture (`LEMON`) for modern cars and 2013 DVD dumps (`CHARM`) for 90s/2000s, which still carry the finer detail.
 
 > ### 👉 [See the example output — a full job note](examples/2007-pontiac-g6-3.9l-valve-cover-gaskets.md)
-> **2007 Pontiac G6 GT 3.9L valve cover gaskets**: both sides step-by-step, a 20-fastener torque table, the blocking bracket identified from a parts catalog, 19 captioned manual figures, and a confidence column that separates what the manual says from what mechanics say.
->
-> ![Example note — right valve rocker arm cover](examples/figures/GM1557668.png)
-
+> **2007 Pontiac G6 GT 3.9L valve cover gaskets**: both sides step-by-step, a 20-fastener torque table, the blocking bracket identified from a parts catalog, 19 captioned manual figures, and a confidence column that separates what the manual says from what mechanics say — with all 19 of the manual's figures committed alongside it.
 
 ```
 $ python3 scripts/lemon.py index "Pontiac/2007/G6 V6-3.9L"
 indexed /Pontiac/2007/G6%20V6-3.9L/Repair%20and%20Diagnosis/ (2825 KB)
-7520 pages indexed -> ~/.cache/lemon/96e668ab9c3bc5f1.idx
+7520 pages indexed -> ~/.cache/lemon/e031f9347485c7e8.idx
 
-$ python3 scripts/lemon.py read "Pontiac/2007/G6 V6-3.9L" "rocker arm cover" "Right Side"
+$ python3 scripts/lemon.py torque "Pontiac/2007/G6 V6-3.9L" valve cover -p 1
+## Valve Rocker Arm Cover Replacement - Left Side
+https://lemon-manuals.la/Pontiac/2007/G6%20V6-3.9L/.../Valve%20Rocker%20Arm%20Cover%20Replacement%20-%20Left%20Side/
 Tighten the bolts to 10 N.m (89 lb in).
-[FIGURE https://lemon-manuals.la/images25/GM1557668/]
 ```
 
 ## Coverage — 1960 to 2025, 69 makes, ~10,000 vehicles
@@ -57,6 +55,7 @@ Generic web search gives you a forum thread from 2011 with a broken Photobucket 
 |---|---|
 | `SKILL.md` | The agent skill: workflow, answering rules, gotchas, deliverable format |
 | `scripts/lemon.py` | Stdlib-only navigator — indexes a vehicle's link tree once, then answers from a local grep |
+| `references/repair-writeup.md` | Turning the lookups into a durable note: manual vs field, section order, the confidence column |
 | `examples/` | A complete worked note (2007 G6 GT 3.9L valve cover gaskets) **with all 19 manual figures committed** |
 
 ## Install
@@ -76,9 +75,10 @@ python3 scripts/lemon.py cars Toyota 2015
 python3 scripts/lemon.py index "Toyota/2015/Camry LE"
 python3 scripts/lemon.py find "Toyota/2015/Camry LE" "fluid capacities"
 python3 scripts/lemon.py read "Toyota/2015/Camry LE" "capacity"
+python3 scripts/lemon.py torque "Toyota/2015/Camry LE" brake
 ```
 
-Stdlib only (Python 3.8+). No API key, no browser, no dependencies. Cache lives in `~/.cache/lemon/`, so the second question about the same car is instant.
+Stdlib only, **Python 3.9+**. No API key, no browser, no dependencies. Cache lives in `~/.cache/lemon/`, so the second question about the same car is instant — the link index and fetched pages both cache (7 days; `LEMON_TTL` seconds overrides, `LEMON_NOCACHE=1` skips, `index --refresh` rebuilds the tree).
 
 ## The trick
 
@@ -89,6 +89,8 @@ python3 scripts/lemon.py find "Chevrolet/2007/Impala V6-3.9L" generator bracket 
 python3 scripts/lemon.py sub  "https://lemon-manuals.la/.../Alternator/"          # reveal children
 python3 scripts/lemon.py get  "https://lemon-manuals.la/.../Service%20and%20Repair/"
 ```
+
+If the host is slow or down, fetches retry with a backoff and then fail over to a mirror on their own.
 
 ## Figures
 
@@ -115,8 +117,9 @@ cd examples && ./fetch-figures.sh    # re-pull or refresh the figure set
 
 ## Notes
 
-- Figures ship with the example (19 OEM scans) and can be re-pulled anytime with `examples/fetch-figures.sh`.
-- Mirrors, if the main host is down: `lemon-manuals.org.ua`, `lemon-manuals.gy`, `lemon.dogeware.me` — set `LEMON_BASE`.
+- Figures ship with the example (19 scans) and can be refreshed anytime with `examples/fetch-figures.sh`.
+- Mirrors, if the main host is down: `lemon-manuals.org.ua`, `lemon-manuals.gy`, `lemon.dogeware.me` — used automatically; set `LEMON_BASE` to pin one host instead.
 - The skill is source-agnostic in method: swap the manual site and the three-source rule still applies.
+- Be a good citizen: the cache exists so one session touches the site a handful of times, not hundreds. Don't disable it to crawl.
 
 MIT.

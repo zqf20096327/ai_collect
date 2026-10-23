@@ -59,8 +59,8 @@ Hostwarden session looks the same.
   [mise](https://mise.jdx.dev): `mise install` in the checkout
   brings a pinned one, which the hooks run in preference to the
   system's, and Ansible, its linters and ShellCheck besides
-- Key-based SSH access to the target, without a
-  password or passphrase prompt
+- Key-based SSH access to the target, with a key an
+  agent holds and confirms per use, or a hardware key
 - Linux, FreeBSD or macOS on the target, or Windows
   Server, where Hostwarden reports and, when asked,
   installs PowerShell 7 and sets it as the SSH shell
@@ -134,7 +134,7 @@ everything below: [the Features page](https://hostwarden.github.io/docs/features
 - **Asks, backs up, and can undo a lockout.**
   Destructive commands, firewall and network changes,
   reboots and service restarts need your approval; a
-  firewall or network change reverts itself if it locks
+  firewall, network, VPN or PAM change reverts itself if it locks
   remote access out. The absolute taboos — partition
   tables, disk erases, storage repair, sshd's
   configuration and keys, power-off — are hard-blocked
@@ -202,6 +202,9 @@ OpenCode also runs it on local models through Ollama.
 Claude Cowork is not supported: a session there reaches
 no server and points you to Claude Code.
 What differs per tool: [Supported AI tools](https://hostwarden.github.io/docs/getting-started/ai-tools).
+Auto mode trusts this checkout, not your servers, and refuses
+changes over SSH until you name them under `autoMode` in
+`~/.claude/settings.json`; it ignores that key in project settings.
 One-shot commands, auto mode and scheduled runs:
 [Automation and scripting](https://hostwarden.github.io/docs/running-it/unattended/automation).
 

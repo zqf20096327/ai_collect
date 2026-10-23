@@ -628,6 +628,29 @@ print(report["num_tets"], report["num_non_manifold_edges"])
 
 Every uncut lattice tet has a dihedral angle from a small, mesh-size-independent fixed set. `warp_fraction` (default `0.35`) moves lattice vertices near the surface onto it, trading a small, *measured* chance of non-manifold boundary edges (reported in `num_non_manifold_edges`) for substantially better boundary tet quality; `0` disables warping and gives an exactly watertight but lower-quality boundary. Implemented from the published description of Labelle & Shewchuk's isosurface stuffing (SIGGRAPH 2007) only — no predicate library needed, unlike literal Delaunay/CVD tetrahedralization.
 
+#### Volume meshes on an octree (graded tetrahedra fitted to a skin)
+
+**`meshioplusplus.octree_mesh`** meshes the inside of any skin (STL, OBJ, a volume mesh's boundary; holes and self-intersections are tolerated through the fast winding number) on a 2:1-balanced octree whose leaves follow a size field (curvature, sharp features, thin gaps, a user array). The default output is a conforming graded tetrahedral mesh: a graded BCC lattice cut to the skin by isosurface stuffing, sharp corners and edges snapped, then optimised under a guard that never worsens the extreme dihedral angles; `skin_grading="uniform"` gives Labelle and Shewchuk's 10.7°–164.8° bound. `output="castellated"` gives the inside leaves as hexahedra with the `surrogate_boundary` side region and `sdf:distance`/`sdf:closest_point`, for embedded and Shifted Boundary Method solvers. The same operation is in C++, C, Fortran, Julia, R, WASM, both CLIs (`octree-mesh`), the pipeline (`OctreeMesh`) and MCP. See `doc/octree_mesh.md`.
+
+<!--pytest-codeblocks:skip-->
+
+```python
+tets, report = meshioplusplus.octree_mesh(skin, min_size=0.02, max_size=0.2, return_report=True)
+print(report["num_tetrahedra"], report["min_dihedral"], report["warnings"])
+cells = meshioplusplus.octree_mesh(skin, output="castellated", min_size=0.02)
+```
+
+#### Surface meshes from CAD (conforming triangulation of a B-rep)
+
+**`meshioplusplus.mesh_cad_surface`** triangulates the faces of a CAD model (a Kratos CAD JSON read, or STEP and IGES through OpenCASCADE) into one conforming surface mesh at a target edge size, with no CAD kernel: every B-rep edge is sampled once and shared by the faces that use it, so a closed solid comes out watertight, and each face is a constrained Delaunay triangulation of its parameters on Shewchuk's exact predicates, lifted onto the surface. A face that cannot be meshed is reported by index and reason, never meshed wrong, and the output is identical across backends and thread counts. `triangulate_polygon_2d` exposes the planar triangulator. The same operation is in C++, C, Fortran, Julia, R, WASM, both CLIs (`mesh-cad-surface`) and MCP. See `doc/mesh_cad.md`.
+
+<!--pytest-codeblocks:skip-->
+
+```python
+surface, report = meshioplusplus.mesh_cad_surface(meshioplusplus.read("part.cad.json"), 0.1, return_report=True)
+print(report["num_failed"], report["num_open_edges"], report["min_angle_deg"])
+```
+
 #### ODT remeshing (relocate + flip connectivity)
 
 **`meshioplusplus.optimize_volume`** raises a tetrahedral mesh's worst element quality by *ODT remeshing* — relocating vertices AND changing connectivity. It is the genuine "ODT remeshing" and the third member of a trio whose other two each do half the job: `smooth(method="odt")` moves points on *fixed* connectivity, `remesh_volume` discards the input's tets for a fresh lattice mesh. It alternates the ODT vertex relocation with quality-improving topological **flips** (2-3 and 3-2), **predicate-free** — a flip is applied only when a pure signed-volume test finds the local configuration convex and the minimum scaled Jacobian strictly improves (no in-sphere/Delaunay predicate). See `doc/optimize_volume.md`.
@@ -1039,33 +1062,4 @@ For a **transient** surrogate the shape is a window — the last K states of eve
 
 A trained model answers any mesh it is given, and the answer for a part unlike anything it saw is finite, plausible and wrong. `GeometryGuard` is the check it cannot make for itself — fit a description of the shapes a dataset contains, score a new one against it, and get back the descriptors that put it there. The descriptors are deliberately not scale- or position-invariant, because a scaled part is a different part.
 
-Once a model is trained, applying it to one mesh needs no manifest at all — `meshioplusplus predict model.mdlus part.vtu part_pred.vtu`, or `predict_file` from Python. Everything comes from the checkpoint's own model card, and a mesh carrying no truth predicts anyway rather than reporting an error against itself.
-
-The same call adds *world* edges beside a mesh's own — contact between surfaces that are near but not connected — and `bistride_hierarchy` coarsens a graph so a signal crosses the mesh in logarithmically many message-passing steps. See [proximity graphs](https://loumalouomega.github.io/meshioplusplus/proximity_graphs.html).
-
-If PhysicsNeMo itself is unfamiliar, [**PhysicsNeMo basics**](https://loumalouomega.github.io/meshioplusplus/physicsnemo/overview.html) is a fourteen-page map of the framework — what a `Module` and a `.mdlus` checkpoint are, which of the 25 architecture families fits the shape of your data, how simulation output becomes batched tensors, and where meshio++ ends and the framework begins. Each page closes by naming what meshio++ supplies, or by saying plainly that nothing does.
-
-</details>
-
-<details>
-<summary><b>MCP server</b> — expose every operation to AI agents over the Model Context Protocol (click to expand)</summary>
-
-### MCP server
-
-Every operation in this README is also exposed to AI agents as a tool over the [Model Context Protocol](https://modelcontextprotocol.io/) — reading/writing all the formats, conversion, and the full mesh- and data-operation suite:
-
-```sh
-pip install "meshioplusplus[mcp]"     # the mcp SDK needs Python >= 3.10
-claude mcp add meshioplusplus -- meshioplusplus-mcp
-```
-
-Then ask the agent to convert, inspect, slice, partition, … and it drives the 87 tools itself. Tools are file-path based (optionally sandboxed with `--root DIR`), parsed inputs are cached between calls and re-read when a file changes, and every report is strict JSON. `meshioplusplus-mcp --http` (`pip install "meshioplusplus[dashboard]"`) serves the same tools over HTTP — MCP over streamable HTTP for agents, plus the JSON API the browser [dataset dashboard](https://loumalouomega.github.io/meshioplusplus/dashboard.html) uses as its local companion process. See [the MCP docs](https://loumalouomega.github.io/meshioplusplus/mcp.html) for the tool table and client setup.
-
-</details>
-
-<details>
-<summary><b>Blender add-on</b> (click to expand)</summary>
-
-### Blender add-on
-
-Blender ships Python and reads al
+Once a model is trained, applying it to one mesh needs no manifest at all — `me

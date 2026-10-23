@@ -33,7 +33,7 @@
 
 ## 三步拿到鼓谱
 
-1. **复制链接**：在 B站打开鼓谱视频，复制地址栏或「分享」里的链接（形如 `https://www.bilibili.com/video/BV…`）。多 P 视频带上 `?p=2` 这样的分 P 也可以。
+1. **复制链接**：复制 B站鼓谱视频的完整 BV 链接（形如 `https://www.bilibili.com/video/BV…`），或 App 分享的 `https://b23.tv/…` 短链接。网页也支持粘贴整段分享文案。多 P 视频按完整链接或短链接展开后的 `?p=2` 分 P 处理。
 2. **粘贴提交**：打开 [drum.kenqia.top](https://drum.kenqia.top/)，粘贴链接，点「整理鼓谱」。
 3. **查看下载**：整理完成后，网页会把每一页都显示出来。看一遍没问题，点「下载 A4 PDF」。
 
@@ -117,6 +117,19 @@ python3.12 -m venv .venv
 - [测试与验证](docs/verification.md) · [全部文档](docs/README.md)
 
 </details>
+
+## 支持鼓谱整理 · Support 鼓谱整理
+
+如果鼓谱整理帮到了你，欢迎支持它继续开发。谢谢你帮这个项目一直走下去 ❤️
+
+If 鼓谱整理 has been useful to you, you can support its continued development. Thank you for helping keep the project going ❤️
+
+<p align="center">
+<img src="docs/assets/wechat-pay.png" width="240" alt="微信收款码 WeChat Pay QR code"><br>
+<sub>微信扫码支持 · WeChat Pay</sub>
+</p>
+
+不方便打赏也没关系，给仓库点个 ⭐ Star，或者把 [drum.kenqia.top](https://drum.kenqia.top/) 分享给身边的鼓手，同样是很大的支持。
 
 ## 许可
 

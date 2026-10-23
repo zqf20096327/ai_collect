@@ -15,6 +15,11 @@
   <a href="LICENSE"><img src="https://img.shields.io/github/license/rongxinzy/RongxinAI" alt="AGPL-3.0"></a>
   <a href="https://github.com/rongxinzy/RongxinAI/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/rongxinzy/RongxinAI/ci.yml?branch=main&label=CI" alt="CI"></a>
   <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey" alt="Platforms">
+  <a href="https://github.com/rongxinzy/RongxinAI/releases"><img src="https://img.shields.io/github/downloads/rongxinzy/RongxinAI/total?label=downloads" alt="Downloads"></a>
+  <img src="https://img.shields.io/badge/Electron-44-47848F?logo=electron&logoColor=white" alt="Electron 44">
+  <img src="https://img.shields.io/badge/Bun-1.4-fbf0df?logo=bun&logoColor=black" alt="Bun 1.4">
+  <a href="https://www.rongxzyai.com"><img src="https://img.shields.io/badge/Website-rongxzyai.com-0A66C2" alt="Website"></a>
+  <a href="https://github.com/rongxinzy/RongxinAI/discussions"><img src="https://img.shields.io/badge/Discussions-Welcome-brightgreen?logo=github" alt="Discussions"></a>
 </p>
 
 <p align="center">
@@ -201,6 +206,7 @@ The mock is only active in browser mode (`import.meta.env.DEV` + no `window.elec
 - [Report a bug](https://github.com/rongxinzy/RongxinAI/issues/new?template=bug_report.yml) with your system, app version, reproduction steps, and relevant logs.
 - [Suggest a feature](https://github.com/rongxinzy/RongxinAI/issues/new?template=feature_request.yml) by describing the workflow and expected behavior.
 - [Contribute code or documentation](CONTRIBUTING.md). Read [`AGENTS.md`](AGENTS.md) first and follow [`DESIGN.md`](DESIGN.md) for UI changes.
+- [Security policy](SECURITY.md) — report vulnerabilities privately; do not open public issues for unfixed security bugs.
 
 Star the repository to follow the project, or share a workflow you have built with ZhiYuan.
 

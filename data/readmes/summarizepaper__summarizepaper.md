@@ -167,6 +167,14 @@ are made for previews. Active-filter chips remove only the chosen filter and res
 
 ### Journal club editor and PDF layout
 
+The slide language is chosen explicitly (French/English), independently from the interface language.
+`deck_lang` and `deck_version` pin preview, save and PowerPoint URLs to the same content. Generation
+uses `slides_v2` and requires a translated presentation title; every generated text field is requested
+in that language. Built-in titles, figure credits, PowerPoint metadata and proofing language also follow
+the deck language. Original image labels and author names remain unchanged. Legacy `slides` /
+`slides_edit` records remain available through the previous-presentation link; new private copies use
+`slides_edit_v2`, so upgrading never overwrites an earlier edited presentation.
+
 Journal club keeps the generated deck shared and saves each Premium reader's text, notes and layout
 in a separate `Generated(kind='slides_edit')` row keyed by user, paper and language. Private results
 are owner-only and page/save responses are never cached. A revision hash rejects stale-tab saves
@@ -179,6 +187,18 @@ Notes remain outside the slide and never enter the PDF. The PDF button waits for
 uses the browser's print-to-PDF dialog; `slides.css` specifies a zero-margin 338.666667 × 190.5mm page
 (16:9), one slide per page, including when invoked during presentation mode. A print-dialog paper
 size override may override the CSS page size. Check the final PDF in the target browser.
+
+The PowerPoint button posts the current editor snapshot to the Premium-only, CSRF-protected
+`journal-club/<paper>/powerpoint/` endpoint. It includes unsaved changes without modifying the saved
+copy. The server validates the snapshot against the generated deck and revision; image URLs and
+credits always come from the source. `python-pptx` writes a 16:9 file with native text boxes, image
+objects, theme fonts and speaker notes. Text is measured before export; content that cannot fit
+returns an actionable error rather than being truncated.
+
+Source images are embedded as PNG (also converted from self-contained SVG with `resvg_py`). Downloads
+are restricted to HTTPS arXiv HTML paths, including every redirect, bounded by size/time, and cached
+six hours. SVG external/local resources are excluded; embedded PNG/JPEG panels are supported. Image
+failure returns a retryable error rather than silently dropping a figure. No external AI service is used.
 
 Validation: `python manage.py test summarizer` and `node --test tests/*.test.cjs`.
 

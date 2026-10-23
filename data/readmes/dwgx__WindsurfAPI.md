@@ -15,7 +15,7 @@
 
 <br/>
 
-JavaScript · MIT · ★3,046
+JavaScript · MIT · ★3,104
 
 [docs](https://dwgx.github.io/WindsurfAPI/) · [releases](https://github.com/dwgx/WindsurfAPI/releases) · [issues](https://github.com/dwgx/WindsurfAPI/issues)
 
@@ -388,8 +388,13 @@ Gemini 原生客户端不发 `Authorization: Bearer`，它用 `x-goog-api-key` �
 查询参数 —— 两种都收，所以官方 SDK 不用改代码就能连。
 
 > **优先用请求头**：`x-goog-api-key`（或 `Authorization: Bearer`）不会把密钥写进 URL。
-> `?key=` 仍可用，但完整 URL 会进反向代理日志、浏览器历史和抓包；自带 nginx 的访问日志
-> 已只记 `$uri`（丢弃全部 query），其它代理和上游日志不归本项目控制。
+> `?key=` 目前**仍然支持**（兼容用途，不是推荐用法），但完整 URL 会进反向代理日志、
+> 浏览器历史和抓包；自带 nginx 的访问日志已只记 `$uri`（丢弃全部 query），其它代理和
+> 上游日志不归本项目控制。
+>
+> **弃用路径**：`?key=` 已进入弃用流程 —— 先警告（响应头 + 只记 key 哈希的日志），再在
+> 下个主版本默认拒绝，最后移除；补丁版本不会移除。每个阶段的版本门槛、迁移命令和
+> “为什么”见 [docs/QUERY-KEY-DEPRECATION.md](docs/QUERY-KEY-DEPRECATION.md)。
 
 ```python
 from google import genai
@@ -567,7 +572,10 @@ data URL / base64，或显式开启 `DEVIN_ACP_VISION=1` 走本机 Devin CLI 的
 | **代理配置** | 全局或单账号的 HTTP / SOCKS5 代理 |
 | **日志** | 实时 SSE 串流 · 按级别筛 · 每条 `turns=N chars=M` 诊断多轮 |
 | **统计分析** | 时间范围 6h / 24h / 72h · 账号维度 · p50 / p95 延迟 |
+| **ACU 用量** | 按组织聚合的 ACU 限额 · 周期用量 · 每日消耗 · 分产品明细 · 按量余额（美元） |
 | **实验性** | Cascade 对话复用 · **模型身份注入（每厂商可自定义 prompt）** |
+
+**ACU 用量**面板按组织读取 `app.devin.ai/{org}/billing/*`，同一组织的成员只展示一份账本，不会按账号重复计数。真实性规则：`max_acu_limit: null` 表示不限量（不是 0）；周期合计缺失显示 `—`（不是伪造的 0）；`overage_credits` 是**带符号的美元余额**。负数表示按量余额已透支，显示为 `-$0.10 (已透支)`，不会被归零或隐藏。
 
 ## 支持的模型
 
@@ -777,8 +785,14 @@ MIT License. See [LICENSE](LICENSE).
 ## 发布与密钥边界
 
 发布流程会自动推 Docker 镜像和 GitHub Release，并为四个发布资产（Windows exe/zip、macOS
-arm64 二进制/zip）附上 `SHA256SUMS`。下载后先校验再运行：
-`sha256sum -c SHA256SUMS`（macOS 用 `shasum -a 256 -c SHA256SUMS`）。
+arm64 二进制/zip）附上 `SHA256SUMS`。**它证明的是完整性，不是来源**：清单和二进制在同一个
+Release 下，能改 Release 的人也能一起改；当前发布**没有签名**，OTA 更新校验的是 tag/commit
+（GitHub 引用 + TLS），不是签名。下载后先校验再运行：`sha256sum -c SHA256SUMS`
+（macOS 用 `shasum -a 256 -c SHA256SUMS`；Windows 用 `Get-FileHash`）。清单使用**扁平
+文件名**，把五个资产下载到同一目录即可；v3.9.53（首个带清单的版本）的清单带
+`dist-windows/` / `dist-macos/` 前缀，需要先按目录摆放（更早的版本没有 `SHA256SUMS`）。
+信任边界、OTA 的具体校验步骤，以及未来的签名路径（minisign / cosign，仓库内不放任何密钥）
+见 [docs/RELEASE-SIGNING.md](docs/RELEASE-SIGNING.md)。
 
 **别把 token、API key、cookie、上游账号凭据
 写进 issue、PR、日志或提交的配置文件里。** 如果报告问题必须带上鉴权信息，只贴脱敏后的元数据

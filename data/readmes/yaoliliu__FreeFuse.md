@@ -20,6 +20,8 @@
 - [x] Supports FLUX.2-klein-4B/9B  in diffusers
 - [x] Supports FLUX.2-klein-4B/9B in ComfyUI
 - [x] Supports Krea2 in ComfyUI
+- [x] Experimental MOSS Image Base/SFT support in Diffusers and ComfyUI
+- [x] [Anima Base v1.0 support in ComfyUI](docs/anima.md)
 - [x] Support ControlNet+FreeFuse in ComfyUI
 - [ ] Exploring FreeFuse in text2video model
 
@@ -140,8 +142,10 @@ Thanks for [Tekemo](https://civarchive.com/users/Tekemo) and [jrewingwannabe947]
 
 Thanks to [gpl1967](https://github.com/gpl1967) and [merermero](https://github.com/merermero) for the Krea2 support request and discussion in [issue #26](https://github.com/yaoliliu/FreeFuse/issues/26).
 
+Single-LoRA character references are shown at the left of each row. See [reference generation settings](docs/character_references.md).
+
 <p align="center">
-  <img src="assets/compare_all.png" alt="Architecture" width="100%">
+  <img src="assets/compare_all_with_references.png" alt="Single-LoRA references and FreeFuse comparisons" width="100%">
 </p>
 
 <p align="center">

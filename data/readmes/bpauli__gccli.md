@@ -11,7 +11,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 
 ## Features
 
-- **Activities** - list, search, view details, download (FIT/GPX/TCX/KML/CSV), upload, create manual entries (with date), rename, retype, describe, change privacy, mark as favorite, delete, set exercise sets for strength training, list activity types, list pending activities, list comments and likes, like and unlike
+- **Activities** - list, search, view details, download (FIT/GPX/TCX/KML/CSV), upload, create manual entries (with date), rename, retype, describe, change privacy, mark as favorite, delete, set exercise sets for strength training, list activity types, list pending activities, list, add, edit and delete comments, like and unlike activities and comments
 - **Exercise Catalog** — browse Garmin's exercise categories and exercises for strength training
 - **Health Data** - daily summaries, steps, heart rate, resting HR, sleep, stress, HRV, SpO2, respiration, body battery (with daily low and high), floors, training readiness, daily and weekly training status, VO2max, fitness age, race predictions, endurance and hill scores with statistics, intensity minutes, lactate threshold, cycling FTP, critical swim speed, power curve, running economy, heat and altitude acclimation, running tolerance, cycling ability, activity progress totals per period
 - **Body Composition** - weight tracking, latest weigh-in, weekly weight summaries, body fat, muscle mass, blood pressure, glucose, FIT file encoding for composition uploads
@@ -20,8 +20,8 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Segments** - list your segments and favorites, search segments by name or map area, view a segment, its leaderboard and your rank, list the segments that an activity crossed, create a segment from a part of an activity, add and remove favorites, delete segments
 - **Devices** - list registered devices, view settings, solar data, alarms, primary/last-used device, set the primary activity tracker, paired sensors, backup summary and device backups, historical devices, device messages, cancel a pending device message
 - **Gear** — list gear, usage stats, linked activities, defaults per activity type, link/unlink to activities, gear types, add, update, retire, unretire and delete gear, list, create, rename and delete gear collections, add gear to a collection
-- **Goals & Badges** — active goals, set daily goals for steps, floors, intensity minutes and hydration, earned/available/in-progress badges, badge details, challenges, personal records
-- **Training** - browse and view training plans, show your active plans, list adaptive coaching workout types
+- **Goals & Badges** - active goals, set daily goals for steps, floors, intensity minutes and hydration, earned/available/in-progress badges, badge details, challenges (show, join and leave badge and virtual challenges; create, view, answer, leave and delete ad-hoc challenges and invite people to them), personal records
+- **Training** - browse, search and view training plans, show a plan's schedule, join and leave a plan, move and delete its workouts, show your active plans, list adaptive coaching workout types
 - **Profile** - user profile and settings, privacy settings, list, add and delete privacy zones, heart rate zones, power zones for all sports or one sport
 - **Hydration** — view and log daily water intake
 - **Nutrition** - view daily food logs, meals, and nutrition settings, search the Garmin food database, list recent and favorite foods, log foods and quick entries in a meal, delete log entries, and add and remove favorite foods (all but the first three need Garmin Connect+)
@@ -382,6 +382,13 @@ gccli activity likes <id>
 gccli activity likes add <id>
 gccli activity likes remove <id>
 
+# Comment on an activity, change the comment, like it, and delete it
+gccli activity comments add <id> "Nice run"
+gccli activity comments edit <id> <comment-id> "Great run"
+gccli activity comments likes add <comment-id>
+gccli activity comments likes remove <comment-id>
+gccli activity comments delete <id> <comment-id> --force
+
 # Download and upload
 gccli activity download <id> --format fit
 gccli activity download <id> --format gpx --output track.gpx
@@ -729,6 +736,20 @@ gccli challenges completed
 gccli challenges virtual available
 gccli challenges virtual completed
 gccli challenges virtual in-progress
+gccli challenges show <uuid>      # a badge or virtual challenge
+gccli challenges join <uuid>
+gccli challenges leave <uuid>     # no prompt: join undoes it
+gccli challenges adhoc            # ad-hoc challenges that are not finished (same as adhoc list)
+gccli challenges adhoc history
+gccli challenges adhoc show <uuid>
+gccli challenges adhoc invites <uuid>       # each invite has its adHocChallengeInviteId
+gccli challenges adhoc accept <invite-id>
+gccli challenges adhoc decline <invite-id>
+gccli challenges adhoc leave <uuid>         # no undo: only a new invite gets you back in
+gccli challenges adhoc delete <uuid>        # only a challenge that you created
+gccli challenges adhoc create "Step up" --type steps --invite ann   # a week from today
+gccli challenges adhoc create "Ride" --type cycling --duration custom --start +1d --end +14d
+gccli challenges adhoc invite <uuid> ann bob   # only people who follow you and whom you follow
 gccli records                     # personal records (same as records list)
 gccli records types
 gccli records activity <activityId>
@@ -787,8 +808,16 @@ gccli training plans --locale en
 gccli training plan <id>
 gccli training active
 gccli training active --start 2026-01-01
+gccli training search --sport Running --goal 5k --level Beginner   # Find a catalog plan
+gccli training schedule <id>                                       # Weeks, days, workouts and task IDs
+gccli training join <id> --start 2026-11-02                        # Prints the ID of your copy of the plan
+gccli training task move <plan-id> <task-id> 2026-11-04
+gccli training task delete <plan-id> <task-id> --force
+gccli training leave <plan-id> --force
 gccli training coach-workouts
 ```
+
+`training join` copies a catalog plan into your account under a new ID and puts its workouts in your calendar. The other plan commands take that new ID. `training schedule` prints a task ID for each workout of a joined plan, and `training task move` and `training task delete` take it. Garmin gives a moved workout a new task ID, which the command prints. A deleted workout becomes a rest day.
 
 ### Events
 
@@ -990,6 +1019,23 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `<id>`: Activity ID.
 - `gccli activity comments list <id>`: List the comments on an activity. Also runs as `gccli activity comments <id>`.
   - `<id>`: Activity ID.
+- `gccli activity comments add <id> <text>`: Add a comment to an activity.
+  - `<id>`: Activity ID.
+  - `<text>`: Comment text.
+- `gccli activity comments edit <id> <comment-id> <text>`: Change the text of your comment on an activity.
+  - `<id>`: Activity ID.
+  - `<comment-id>`: Comment ID (conversationCommentUuid in activity comments list).
+  - `<text>`: New comment text.
+- `gccli activity comments delete <id> <comment-id> [flags]`: Delete a comment on an activity.
+  - `<id>`: Activity ID.
+  - `<comment-id>`: Comment ID (conversationCommentUuid in activity comments list).
+  - `-f, --force`: Skip confirmation prompt.
+- `gccli activity comments likes list <comment-id>`: List the likes of a comment. Also runs as `gccli activity comments likes <comment-id>`.
+  - `<comment-id>`: Comment ID (conversationCommentUuid in activity comments list).
+- `gccli activity comments likes add <comment-id>`: Like a comment.
+  - `<comment-id>`: Comment ID (conversationCommentUuid in activity comments list).
+- `gccli activity comments likes remove <comment-id>`: Remove your like from a comment.
+  - `<comment-id>`: Comment ID (conversationCommentUuid in activity comments list).
 - `gccli activity likes list <id>`: List the likes of an activity. Also runs as `gccli activity likes <id>`.
   - `<id>`: Activity ID.
 - `gccli activity likes add <id>`: Like an activity.
@@ -1485,6 +1531,39 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli challenges virtual available`: Show available virtual challenges.
 - `gccli challenges virtual completed`: Show completed virtual challenges.
 - `gccli challenges virtual in-progress`: Show virtual challenges in progress.
+- `gccli challenges show <uuid>`: Show a badge or virtual challenge.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+- `gccli challenges join <uuid>`: Join a badge or virtual challenge.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+- `gccli challenges leave <uuid>`: Leave a badge or virtual challenge.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+- `gccli challenges adhoc list`: Show your ad-hoc challenges that are not finished. Also runs as `gccli challenges adhoc`.
+- `gccli challenges adhoc history`: Show your finished ad-hoc challenges.
+- `gccli challenges adhoc show <uuid>`: Show an ad-hoc challenge.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+- `gccli challenges adhoc create --type=STRING <name> [flags]`: Create an ad-hoc challenge and invite people who follow you and whom you follow.
+  - `<name>`: Challenge name.
+  - `--type=STRING`: Activity: walking, running, cycling, swimming, steps, pushes or pushing-distance.
+  - `--duration="week"`: Length: day, weekend (Saturday and Sunday), week (7 days), month (to the end of the month) or custom (to --end).
+  - `--start=DATE`: First day (YYYY-MM-DD, today, +3d). Default: today, the Saturday of this week for weekend, the first day of this month for month.
+  - `--end=DATE`: Last day. Only with --duration custom, at most 60 days after the first day.
+  - `--description=FREE-TEXT`: Description. Defaults to the name, because Garmin requires one.
+  - `--invite=DISPLAY-NAME`: Display name of a person who follows you and whom you follow. Repeat it to invite more people.
+- `gccli challenges adhoc invites <uuid>`: List the open invites of an ad-hoc challenge with their adHocChallengeInviteId.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+- `gccli challenges adhoc invite <uuid> <display-name> ...`: Invite people who follow you and whom you follow to an ad-hoc challenge.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+  - `<display-name> ...`: Display name of a person who follows you and whom you follow.
+- `gccli challenges adhoc accept <invite-id>`: Accept an invite to an ad-hoc challenge.
+  - `<invite-id>`: Invite ID (adHocChallengeInviteId).
+- `gccli challenges adhoc decline <invite-id>`: Decline an invite to an ad-hoc challenge.
+  - `<invite-id>`: Invite ID (adHocChallengeInviteId).
+- `gccli challenges adhoc leave <uuid> [flags]`: Leave an ad-hoc challenge. Only a new invite gets you back in.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+  - `-f, --force`: Skip confirmation prompt.
+- `gccli challenges adhoc delete <uuid> [flags]`: Delete an ad-hoc challenge that you created.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli records list`: View personal records. Also runs as `gccli records`.
 - `gccli records types`: List personal record types.
 - `gccli records activity <id>`: List the personal records set in an activity.
@@ -1680,130 +1759,7 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `<id>`: Training plan ID.
 - `gccli training active [flags]`: Show active training plans.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
-- `gccli training coach-workouts`: List adaptive coaching workout types.
-- `gccli wellness menstrual-cycle [<date>]`: Show the menstrual cycle day view of a date.
-  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
-- `gccli wellness menstrual-summary [<date>]`: Show the menstrual cycle summary of a date.
-  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
-- `gccli wellness menstrual-calendar --start=DATE --end=DATE`: Show the menstrual cycle calendar for a date range.
-  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
-  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
-- `gccli wellness menstrual-log view [<date>]`: Show the menstrual daily log of a date. Also runs as `gccli wellness menstrual-log [<date>]`.
-  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
-- `gccli wellness menstrual-log set <date> [flags]`: Change the menstrual daily log of a date. Other fields keep their values.
-  - `<date>`: Date of the log (YYYY-MM-DD, today, yesterday, 3d, +30d).
-  - `--flow=FLOW`: Flow: light, medium or heavy. An empty value clears it.
-  - `--symptoms=SYMPTOM,...`: Comma-separated symptoms: acne, backache, bloating, body-aches, constipation, cramps, cravings, diarrhea, dizziness, fatigue, headache, insomnia, nausea, tender-breasts. An empty value clears them.
-  - `--moods=MOOD,...`: Comma-separated moods: energetic, emotional, fine, frustrated, happy, irritable, mood-swings, motivated, overwhelmed, sad. An empty value clears them.
-  - `--discharge=DISCHARGE,...`: Comma-separated discharge: creamy, egg-white, no-discharge, spotting, sticky, unusual. no-discharge takes no other value. An empty value clears it.
-  - `--sex-drive=LEVEL`: Sex drive: average, high or low. An empty value clears it.
-  - `--sexual-activity=KIND`: Sexual activity: protected or unprotected. An empty value clears it.
-  - `--notes=TEXT`: Notes. An empty value clears them.
-  - `--ovulation`: Mark the day as the ovulation day. --no-ovulation removes the mark.
-- `gccli wellness menstrual-log delete <date> [flags]`: Delete the menstrual daily log of a date.
-  - `<date>`: Date of the log (YYYY-MM-DD, today, yesterday, 3d, +30d).
-  - `-f, --force`: Skip confirmation prompt.
-- `gccli wellness pregnancy-summary`: Show pregnancy summary.
-- `gccli wellness jet-lag list`: List jet lag trips. Also runs as `gccli wellness jet-lag`.
-- `gccli wellness jet-lag add --from=PLACE --to=PLACE --depart=TIME --arrive=TIME [flags]`: Add a jet lag trip of a flight and an optional return flight.
-  - `--from=PLACE`: Place of departure, such as "Frankfurt, Germany".
-  - `--to=PLACE`: Place of arrival, such as "New York, USA".
-  - `--depart=TIME`: Local departure time with the UTC offset of --from, such as 2026-11-02T10:00+01:00.
-  - `--arrive=TIME`: Local arrival time with the UTC offset of --to, such as 2026-11-02T13:00-05:00.
-  - `--return-depart=TIME`: Local departure time of the return flight from --to, with its UTC offset.
-  - `--return-arrive=TIME`: Local arrival time of the return flight at --from, with its UTC offset.
-- `gccli wellness jet-lag update <id> [flags]`: Change the places or times of a jet lag trip.
-  - `<id>`: Trip ID.
-  - `--from=PLACE`: New place of departure. The return flight arrives there.
-  - `--to=PLACE`: New place of arrival. The return flight departs there.
-  - `--depart=TIME`: New local departure time with the UTC offset, such as 2026-11-02T10:00+01:00.
-  - `--arrive=TIME`: New local arrival time with the UTC offset.
-  - `--return-depart=TIME`: New local departure time of the return flight, with the UTC offset.
-  - `--return-arrive=TIME`: New local arrival time of the return flight, with the UTC offset.
-- `gccli wellness jet-lag delete <id> [flags]`: Delete a jet lag trip.
-  - `<id>`: Trip ID.
-  - `-f, --force`: Skip confirmation prompt.
-- `gccli wellness jet-lag status [<date>]`: Show jet lag status for a date.
-  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
-- `gccli reload [<date>]`: Request data reload for a date.
-  - `[<date>]`: Date to reload (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
-- `gccli completion <shell>`: Generate shell completion script.
-  - `<shell>`: Shell type (bash, zsh, fish, powershell).
-<!-- gccli:commands:end -->
-
-## Output Formats
-
-### Table (default)
-
-Human-readable aligned columns:
-
-```bash
-$ gccli activities list --limit 3
-ID         DATE        TYPE     NAME             DISTANCE  DURATION  CALORIES
-123456789  2024-06-15  running  Morning Run      10.02 km  52:31     712
-123456780  2024-06-14  walking  Evening Walk     3.10 km   38:05     180
-123456771  2024-06-13  cycling  Cycling Workout  42.50 km  1:25:10   950
-```
-
-### JSON
-
-Machine-readable output for scripting and automation:
-
-```bash
-$ gccli --json activities list --limit 3
-[
-  {
-    "activityId": 123456789,
-    "activityName": "Morning Run",
-    "activityType": {"typeKey": "running"},
-    "startTimeLocal": "2024-06-15 07:30:00"
-  },
-  ...
-]
-```
-
-Data goes to stdout, errors and progress to stderr for clean piping:
-
-```bash
-gccli --json activities list --limit 100 | jq '.[] | select(.activityType.typeKey == "running")'
-```
-
-### Plain (TSV)
-
-Tab-separated values with no header row. Add `--header` to print the column names first. A tab, newline or backslash in a value is escaped (see [Output](#output)), so each record is one line. Only the commands listed under [Output](#output) print TSV. Most other commands print JSON, also with `--plain`.
-
-```bash
-$ gccli --plain activities list --limit 3
-123456789	2024-06-15	running	Morning Run	10.02 km	52:31	712
-123456780	2024-06-14	walking	Evening Walk	3.10 km	38:05	180
-123456771	2024-06-13	cycling	Cycling Workout	42.50 km	1:25:10	950
-```
-
-```bash
-$ gccli --plain --header courses list
-ID	NAME	TYPE	DISTANCE	CREATED
-111	Morning Loop	running	5.10 mi	2026-09-01T10:00:00.0
-112	Hill Repeats	cycling	26.10 mi	2026-09-20T10:00:00.0
-113	Tab\there\nNewline\\back\rCR	hiking	0.62 mi	2026-09-21T10:00:00.0
-```
-
-## Examples
-
-### Export all runs from the last month
-
-```bash
-gccli --json activities search --start 2024-05-15 --end 2024-06-15 --limit 100 | \
-  jq -r '.[] | select(.activityType.typeKey == "running") | .activityId' | \
-  while read id; do
-    gccli activity download "$id" --format gpx --output "run_${id}.gpx"
-  done
-```
-
-### Daily health check script
-
-```bash
-gccli --json health summary | jq '{
-  steps: .totalSteps,
-  calories: .totalKilocalories,
-  distance_km: (.totalDistanceMeters / 1000),
-  active_minutes: .moderateInt
+- `gccli training search [flags]`: Search the Garmin catalog of training plans.
+  - `--sport=STRING`: Sport as Garmin prints it in the SPORT column, such as Running.
+  - `--goal=STRING`: Goal as Garmin prints it in the GOAL column, such as 5k, 10k, HalfMarathon or Marathon.
+  - `--le

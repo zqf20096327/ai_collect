@@ -6,32 +6,30 @@ Local image, audio, video and 3D generation on your own computer. No cloud, no s
 
 | | |
 |---|---|
-| Windows 10/11, NVIDIA or AMD Radeon | [NV-AI-Setup-0.5.3.exe](https://github.com/Mantux775/NVAI-open/releases/download/v0.5.3/NV-AI-Setup-0.5.3.exe) |
-| macOS 15+ on Apple Silicon, signed and notarized | [NV-AI-0.4.2.dmg](https://github.com/Mantux775/NVAI-open/releases/download/v0.5.3/NV-AI-0.4.2.dmg) |
+| Windows 10/11, NVIDIA or AMD Radeon | [NV-AI-Setup-0.5.6.exe](https://github.com/Mantux775/NVAI-open/releases/download/v0.5.6/NV-AI-Setup-0.5.6.exe) |
+| macOS 15+ on Apple Silicon, signed and notarized | [NV-AI-0.4.4.dmg](https://github.com/Mantux775/NVAI-open/releases/download/v0.5.6/NV-AI-0.4.4.dmg) |
 
 All releases: [github.com/Mantux775/NVAI-open/releases](https://github.com/Mantux775/NVAI-open/releases)
 
 ## What's new? / Was gibt's Neues?
 
-October 2026: NV-AI 0.5.3 for Windows ([release notes](https://github.com/Mantux775/NVAI-open/releases/tag/v0.5.3)); the Mac app stays at 0.4.2
+October 2026: NV-AI 0.5.6 for Windows, the Mac app stays at 0.4.4 ([release notes](https://github.com/Mantux775/NVAI-open/releases/tag/v0.5.6))
 
 | | |
 |---|---|
-| LoRAs | Search Hugging Face and Civitai, NV-AI checks which model a LoRA fits before downloading; pick LoRAs with a strength slider when generating, images and video |
-| New video models | LTX-2.3 with sound (101 s for 4 s at 1280 × 704), Mochi 1 (Apache-2.0), Kandinsky 5.0 Video Lite (MIT) |
-| Expand prompt everywhere | Now also for video (motion, camera, sound), sound effects, music tags and 3D ("object from text") |
-| Image to video with LTX | The start image picker now also shows up for LTX-2.5 and LTX-2.3 |
+| Two graphics cards, measured | NV-AI now computes on the strongest card by itself. Before, everything ran on card 0, in my PC the slower RTX 4060: FLUX 3 took 29 instead of 9 s there, Qwen-Image-2512 18 minutes instead of 97 s. What a second card brings and what it doesn't: [Several graphics cards](#several-graphics-cards) |
+| Fill with FLUX 3 | FLUX 3 now fills a masked area too: NV-AI cuts it out with its surroundings, greys it, lets FLUX 3 paint it and puts back only the area, aligned. In the PhotoCraft add-on "Fill" chooses FLUX 3 by itself: [Fill with FLUX 3](#fill-with-flux-3) |
+| Clearer card choice | Which card computes images, language models and 3D is now a table of buttons, the strongest card is marked |
 
-Since 0.5.2: LTX-2.5 with sound, Boogu-Image, HiDream-O1, censored/uncensored labels, cancel, storage locations. Since 0.5.0/0.5.1: report a problem as an anonymized GitHub issue, AMD Radeon and several graphics cards (experimental, testers wanted: [#1](https://github.com/Mantux775/NVAI-open/issues/1), [#2](https://github.com/Mantux775/NVAI-open/issues/2)), expand prompt on the Mac.
+Since 0.5.5: outpainting without ghost outlines, "Extend" tab in the PhotoCraft add-on. Since 0.5.4: outpainting, shorter "Expand prompt", tested realism LoRAs (Boreal, Lenovo UltraReal, Wuli Turbo, Wan 2.2 Lightning). Since 0.5.3: LoRAs from Hugging Face and Civitai, LTX-2.3, Mochi 1, Kandinsky 5, expand prompt for video, audio and 3D. Since 0.5.2: LTX-2.5 with sound, Boogu-Image, HiDream-O1, censored/uncensored labels, cancel, storage locations. Since 0.5.0/0.5.1: report a problem as an anonymized GitHub issue, AMD Radeon (experimental, testers wanted: [#2](https://github.com/Mantux775/NVAI-open/issues/2)) and several graphics cards ([#1](https://github.com/Mantux775/NVAI-open/issues/1)), expand prompt on the Mac.
 
 | | |
 |---|---|
-| LoRAs | Auf Hugging Face und Civitai suchen, NV-AI prüft vor dem Laden, zu welchem Modell eine LoRA passt; beim Generieren mit Stärke-Regler auswählen, für Bild und Video |
-| Neue Videomodelle | LTX-2.3 mit Ton (101 s für 4 s in 1280 × 704), Mochi 1 (Apache-2.0), Kandinsky 5.0 Video Lite (MIT) |
-| Prompt ausbauen überall | Jetzt auch für Video (Bewegung, Kamera, Ton), Soundeffekte, Musik-Tags und 3D („Objekt aus Text“) |
-| Bild zu Video mit LTX | Die Startbild-Auswahl gibt es jetzt auch bei LTX-2.5 und LTX-2.3 |
+| Zwei Grafikkarten, gemessen | NV-AI rechnet jetzt von selbst auf der stärksten Karte. Bisher lief alles auf Karte 0, bei mir der langsameren RTX 4060: FLUX 3 brauchte dort 29 statt 9 s, Qwen-Image-2512 18 Minuten statt 97 s. Was eine zweite Karte bringt und was nicht: [Mehrere Grafikkarten](#mehrere-grafikkarten) |
+| Füllen mit FLUX 3 | FLUX 3 füllt jetzt auch einen maskierten Bereich: NV-AI schneidet ihn mit Umgebung aus, färbt ihn grau, lässt FLUX 3 malen und setzt nur den Bereich ausgerichtet zurück. Im PhotoCraft-Add-on nimmt „Füllen“ FLUX 3 von selbst: [Füllen mit FLUX 3](#füllen-mit-flux-3) |
+| Klarere Kartenwahl | Welche Karte Bilder, Sprachmodelle und 3D rechnet, ist jetzt eine Tabelle aus Schaltflächen, die stärkste Karte ist markiert |
 
-Seit 0.5.2: LTX-2.5 mit Ton, Boogu-Image, HiDream-O1, Kennzeichnung zensiert/unzensiert, Abbrechen, Speicherorte. Seit 0.5.0/0.5.1: Problem als anonymisiertes GitHub-Issue melden, AMD Radeon und mehrere Grafikkarten (experimentell, Tester gesucht: [#1](https://github.com/Mantux775/NVAI-open/issues/1), [#2](https://github.com/Mantux775/NVAI-open/issues/2)), Prompt ausbauen auf dem Mac.
+Seit 0.5.5: Outpainting ohne Geisterkonturen, Reiter „Erweitern“ im PhotoCraft-Add-on. Seit 0.5.4: Outpainting, kürzeres „Prompt ausbauen“, getestete Realismus-LoRAs (Boreal, Lenovo UltraReal, Wuli Turbo, Wan 2.2 Lightning). Seit 0.5.3: LoRAs von Hugging Face und Civitai, LTX-2.3, Mochi 1, Kandinsky 5, Prompt ausbauen für Video, Audio und 3D. Seit 0.5.2: LTX-2.5 mit Ton, Boogu-Image, HiDream-O1, Kennzeichnung zensiert/unzensiert, Abbrechen, Speicherorte. Seit 0.5.0/0.5.1: Problem als anonymisiertes GitHub-Issue melden, AMD Radeon (experimentell, Tester gesucht: [#2](https://github.com/Mantux775/NVAI-open/issues/2)) und mehrere Grafikkarten ([#1](https://github.com/Mantux775/NVAI-open/issues/1)), Prompt ausbauen auf dem Mac.
 
 [English](#english) · [Video](#video) · [Deutsch](#deutsch)
 
@@ -43,20 +41,20 @@ Seit 0.5.2: LTX-2.5 mit Ton, Boogu-Image, HiDream-O1, Kennzeichnung zensiert/unz
 
 I vibe-coded this app because I needed it myself, and I'd like to share it. I wanted images, sounds and 3D models for my own game projects without paying per picture or sending everything to the cloud.
 
-It has only been tested on my own hardware: a Windows PC with an RTX 5060 Ti (16 GB) and 64 GB RAM, and a Mac mini M1 with 8 GB. Feedback is very welcome as an [issue](https://github.com/Mantux775/NVAI-open/issues), easiest with "Report a problem" in the app (top right on Windows, Settings on the Mac): it attaches an anonymized report with the logs. I have a full-time job, so answers can take a while. NV-AI was built in German first, so you may still find German code comments. English and German are both available in all apps.
+It has only been tested on my own hardware: a Windows PC with an RTX 5060 Ti (16 GB), since October also an RTX 4060 (8 GB) as a second card, and 64 GB RAM, and a Mac mini M1 with 8 GB. Feedback is very welcome as an [issue](https://github.com/Mantux775/NVAI-open/issues), easiest with "Report a problem" in the app (top right on Windows, Settings on the Mac): it attaches an anonymized report with the logs. I have a full-time job, so answers can take a while. NV-AI was built in German first, so you may still find German code comments. English and German are both available in all apps.
 
 ### Features at a glance
 
 | | Windows | Mac |
 |---|---|---|
 | Images | FLUX 3 Image Klein, Qwen-Image-2512, Boogu-Image, HiDream-O1, Chroma, Z-Image, SDXL family and more | FLUX.2 Klein 4B (MLX), Stable Diffusion via Core ML |
-| Editing | Reference images, image to image, inpainting with a mask | Reference images, image to image, inpainting with a mask |
+| Editing | Reference images, image to image, inpainting with a mask (since 0.5.6 also with FLUX 3) | Reference images, image to image, inpainting with a mask |
 | Expand prompt | For every model: images, video, sound, music, 3D | Images, since 0.4 |
 | LoRAs | From Hugging Face and Civitai, checked before download, for images and video | |
 | Audio | Sound effects (Stable Audio Open), music with vocals (ACE-Step) | |
 | Video | LTX-2.5 and LTX-2.3 with sound, Wan 2.1/2.2, Mochi, Kandinsky 5, text or image to video | |
 | 3D | Image to GLB model, with PBR textures (TRELLIS.2) or shape only (TripoSG) | |
-| Graphics | NVIDIA, AMD Radeon (experimental), several cards (experimental) | Apple Silicon |
+| Graphics | NVIDIA, AMD Radeon (experimental), several cards (the strongest one computes by itself) | Apple Silicon |
 | Uncensored models | Chroma, Pony, NoobAI and more, one click away | |
 | Claude Code | MCP server with 15 tools | |
 | PhotoCraft add-on | Yes | Yes |
@@ -87,12 +85,34 @@ Setup with the Windows setup, data folder and port: [docs/CLAUDE_CODE.md](docs/C
 |---|---|
 | NVIDIA RTX 50 | Uses the NVFP4 versions of FLUX 3 and Qwen-Image, which the card computes natively in hardware |
 | NVIDIA RTX 20, 30, 40 | Recommends the INT8 versions instead; FLUX 3 INT8 runs on 8 GB cards according to Black Forest Labs |
-| Two or more NVIDIA cards | Experimental since 0.5: in the header or under "Models" → "Graphics cards", image models, language models and 3D each get their own card. The language models then run in a second ComfyUI, so "Expand prompt" works while an image renders |
+| Two or more NVIDIA cards | Since 0.5.6 NV-AI computes on the strongest card by itself. In the header or under "Models" → "Graphics cards" image models, language models and 3D can each get their own card; what that brings is measured [below](#several-graphics-cards) |
 | AMD Radeon | Experimental since 0.5: the setup detects a Radeon and installs PyTorch with ROCm 7.2.1 from AMD. Needs driver 26.2.2 or newer and a card on AMD's [compatibility list](https://rocm.docs.amd.com/projects/radeon-ryzen/en/latest/docs/compatibility.html). Image models in INT8 or FP8; 3D needs NVIDIA for now |
 
 The model list marks which models fit your card and says when a format does not run natively on it.
 
-Testers wanted: I only have one NVIDIA card. The multi-card mode is tested with one card simulating two, and on AMD the installation is tested but no image was generated yet. If you have the hardware, please use "Report a problem" or report in [#1 (several NVIDIA cards)](https://github.com/Mantux775/NVAI-open/issues/1) or [#2 (AMD Radeon)](https://github.com/Mantux775/NVAI-open/issues/2).
+Testers wanted for AMD: the installation is tested, but no image was generated on a Radeon yet. If you have one, please use "Report a problem" or report in [#2 (AMD Radeon)](https://github.com/Mantux775/NVAI-open/issues/2).
+
+### Several graphics cards
+
+Since 0.5.6 NV-AI computes on the strongest card by itself (most memory first, then the newest generation). Before, everything ran on card 0. Measured in my PC with an RTX 5060 Ti 16 GB and an RTX 4060 8 GB on a riser cable (PCIe 3.0 x4), driver 610.62, ComfyUI 0.42.1:
+
+![Time per image on the RTX 5060 Ti and the RTX 4060](docs/images/multi-gpu-strongest-card.png)
+
+| Question | Measured |
+|---|---|
+| Does a second card make room for larger models? | No. Two cards do not pool their memory for one model. Larger models already run on one card because ComfyUI streams what does not fit from system RAM: Qwen-Image-2512 with 20 billion parameters fills 15.5 of the 16 GB |
+| Text encoder on the second card? | No gain (warm runs): FLUX 3 9 → 13 s, Qwen-Image-2512 97 → 99 s, LTX-2.3 video 79 → 81 s |
+| Language model on the second card? | The prompt upsampler in its default int8 version (9.75 GB) does not fit into 8 GB: "Expand prompt" took 134 to 203 s instead of 11 s. NV-AI therefore takes the w4a8 version (6.72 GB) when it is installed: 7.5 to 8.6 s, but FLUX 3 with a new prompt then took 35 to 41 instead of 31 to 34 s |
+| Both cards at full load at once | "Expand prompt" on the RTX 4060 while Qwen rendered on the 5060 Ti: after a few seconds the 4060 dropped off the bus (Windows: "BusReset TDR"), only a restart brought it back. Ollama ran on both cards at full load in the same PC without problems, so the cause is open |
+| PhotoCraft add-on | Works with two cards: expand prompt 10.9 s, extend with FLUX 3 52 s, fill with Qwen 72 s and with FLUX 3 68 s, all on the strongest card |
+
+![Where the language model runs: same card, RTX 4060 with int8, RTX 4060 with w4a8](docs/images/multi-gpu-language-model.png)
+
+Which card does what can be changed in the header (click a card) or under "Models" → "Graphics cards": each task is a row, each card a column, one click moves it. "Distribute automatically" goes back to the strongest card.
+
+![The graphics card table under "Models"](docs/images/multi-gpu-settings.jpg)
+
+In short: with these two cards the gain comes from computing on the right card, not from splitting the work. Results with other cards are welcome in [#1](https://github.com/Mantux775/NVAI-open/issues/1).
 
 ### Uncensored models
 
@@ -117,6 +137,9 @@ Type a few words, click "Expand prompt", and NV-AI writes a full image descripti
 | Windows | The prompt upsampler of FLUX 3 Image Klein (Qwen3.5-9B) | about 15 s on an RTX 5060 Ti |
 | Mac | The text encoder of FLUX.2 Klein (Qwen3-4B), nothing extra to download | 22 to 25 s on a Mac mini M1 |
 
+![Qwen-Image-2512 with "a medieval blacksmith" and with the expanded prompt](docs/images/expand-prompt.jpg)
+<p align="center"><sub>Left "a medieval blacksmith" as typed, right the expanded prompt with the inventions removed (Qwen-Image-2512).</sub></p>
+
 ### 3D: from an image to a model
 
 Generate an image of an object, then turn it into a GLB model for Unity, Blender or any engine. TRELLIS.2 (MIT) also paints PBR textures (color, metal, roughness, 2048²) in about 75 seconds; TripoSG (MIT) builds the shape only.
@@ -135,7 +158,45 @@ Same prompt, seed and size (832 × 1216), measured on an RTX 5060 Ti with the mo
 
 ![Explorer, full body: FLUX 3, Qwen-Image-2512 and Qwen-Image 2.1](docs/images/compare-explorer.jpg)
 
+![Crate with stencilled lettering: FLUX 3 and Qwen-Image-2512](docs/images/compare-crate.jpg)
+
+![Shop sign "FRESH BREAD DAILY": FLUX 3 and Qwen-Image-2512](docs/images/compare-sign.jpg)
+
+![Lighthouse as an oil painting: FLUX 3 and Qwen-Image-2512](docs/images/compare-lighthouse.jpg)
+
+Editing with FLUX 3: the reference image on the left, "replace the rope handles with iron handles, keep everything else unchanged" on the right, 44 s.
+
+![Editing with a reference image in FLUX 3](docs/images/flux3-edit.jpg)
+
 In short: FLUX 3 is fast and the only one that edits images while keeping the rest intact. Qwen-Image-2512 is better at lettering and at how things are built, and is Apache-2.0. More comparisons, prompt tips and test results: [docs/MODELS.md](docs/MODELS.md). All images in this README were generated with NV-AI.
+
+### Outpainting: extend a picture
+
+Pick how many pixels to add on the left, top, right and bottom, and NV-AI paints the new border to match. With FLUX 3 the original stays as it is: FLUX never returns the picture exactly in place, so NV-AI extends one axis at a time, measures the offset and moves the result back before putting the original in (since 0.5.5; 0.5.4 still showed ghost outlines). In the web interface under "Rework an existing image", over MCP, and in the PhotoCraft add-on as its own "Extend" tab.
+
+![Outpainting all around: original, NV-AI 0.5.4 and 0.5.5](docs/images/outpaint-before-after.jpg)
+
+![Detail at full resolution: ghost head in 0.5.4, clean in 0.5.5](docs/images/outpaint-detail.jpg)
+
+On the Mac, FLUX.2 Klein fills the border through a mask; the transition there stays softer and can remain visible.
+
+### Fill with FLUX 3
+
+Since 0.5.6 FLUX 3 also fills a masked area. It takes no mask itself, so NV-AI does what it does for extending: it cuts out the area with some surroundings, greys it, lets FLUX 3 paint it from the prompt, measures FLUX's small offset and puts back only the area. Outside the mask the picture stays pixel for pixel. About 60 to 70 s on the RTX 5060 Ti. Good for removing things and adding new ones:
+
+![Fill with FLUX 3: crates removed, a seagull added](docs/images/fill-flux3.jpg)
+
+To change something that is already there, such as the lettering on a sign, "Refine" works better: there FLUX 3 sees the original and keeps its angle. Filling with Qwen-Image-2512 painted the new sign flat over the hand.
+
+![Changing a sign: Qwen-Image-2512 fills flat, FLUX 3 refines it in place](docs/images/sign-fill-vs-refine.jpg)
+
+In the PhotoCraft add-on "Fill" now chooses FLUX 3 unless you pick another model; over MCP and REST it is `mask_asset_id` with `flux3-klein-nvfp4`.
+
+### LoRAs for more realism
+
+LoRAs are small add-on files that teach a model a style. Tested on Qwen-Image-2512 with the same seed: Boreal looks most like a real photo, Lenovo UltraReal stays closest to the prompt. Both allow selling the images.
+
+![Portrait without LoRA, with Boreal and with Lenovo UltraReal](docs/images/lora-realism.jpg)
 
 ### Mac app
 
@@ -193,20 +254,20 @@ NV-AI und das PhotoCraft-Add-on in Aktion, ein kurzes Video auf YouTube.<br>
 
 Ich habe diese App aus eigenem Bedarf „vibegecodet“ und möchte sie teilen. Ich wollte Bilder, Sounds und 3D-Modelle für meine eigenen Spieleprojekte erzeugen, ohne pro Bild zu zahlen oder alles in die Cloud zu schicken.
 
-Getestet ist sie nur auf meiner eigenen Hardware: einem Windows-PC mit RTX 5060 Ti (16 GB) und 64 GB RAM und einem Mac mini M1 mit 8 GB. Über Feedback als [Issue](https://github.com/Mantux775/NVAI-open/issues) freue ich mich sehr, am einfachsten mit „Problem melden“ in der App (Windows oben rechts, Mac in den Einstellungen): Das hängt einen anonymisierten Bericht mit den Protokollen an. Ich habe einen Vollzeitjob, Antworten können also dauern. NV-AI ist zuerst auf Deutsch entstanden, im Code stehen deshalb noch deutsche Kommentare. Deutsch und Englisch sind in allen Apps wählbar.
+Getestet ist sie nur auf meiner eigenen Hardware: einem Windows-PC mit RTX 5060 Ti (16 GB), seit Oktober dazu einer RTX 4060 (8 GB) als zweiter Karte, und 64 GB RAM sowie einem Mac mini M1 mit 8 GB. Über Feedback als [Issue](https://github.com/Mantux775/NVAI-open/issues) freue ich mich sehr, am einfachsten mit „Problem melden“ in der App (Windows oben rechts, Mac in den Einstellungen): Das hängt einen anonymisierten Bericht mit den Protokollen an. Ich habe einen Vollzeitjob, Antworten können also dauern. NV-AI ist zuerst auf Deutsch entstanden, im Code stehen deshalb noch deutsche Kommentare. Deutsch und Englisch sind in allen Apps wählbar.
 
 ### Funktionen im Überblick
 
 | | Windows | Mac |
 |---|---|---|
 | Bilder | FLUX 3 Image Klein, Qwen-Image-2512, Boogu-Image, HiDream-O1, Chroma, Z-Image, SDXL-Familie und weitere | FLUX.2 Klein 4B (MLX), Stable Diffusion über Core ML |
-| Bearbeiten | Referenzbilder, Bild zu Bild, Füllen mit Maske | Referenzbilder, Bild zu Bild, Füllen mit Maske |
+| Bearbeiten | Referenzbilder, Bild zu Bild, Füllen mit Maske (seit 0.5.6 auch mit FLUX 3) | Referenzbilder, Bild zu Bild, Füllen mit Maske |
 | Prompt ausbauen | Für jedes Modell: Bild, Video, Ton, Musik, 3D | Bilder, seit 0.4 |
 | LoRAs | Von Hugging Face und Civitai, vor dem Laden geprüft, für Bild und Video | |
 | Audio | Soundeffekte (Stable Audio Open), Musik mit Gesang (ACE-Step) | |
 | Video | LTX-2.5 und LTX-2.3 mit Ton, Wan 2.1/2.2, Mochi, Kandinsky 5, aus Text oder Bild | |
 | 3D | Aus einem Bild ein GLB-Modell, mit PBR-Texturen (TRELLIS.2) oder als reine Form (TripoSG) | |
-| Grafik | NVIDIA, AMD Radeon (experimentell), mehrere Karten (experimentell) | Apple Silicon |
+| Grafik | NVIDIA, AMD Radeon (experimentell), mehrere Karten (die stärkste rechnet von selbst) | Apple Silicon |
 | Unzensierte Modelle | Chroma, Pony, NoobAI und weitere, einen Klick entfernt | |
 | Claude Code | MCP-Server mit 15 Werkzeugen | |
 | PhotoCraft-Add-on | Ja | Ja |
@@ -237,12 +298,34 @@ Einrichtung mit dem Windows-Setup, Datenordner und Port: [docs/CLAUDE_CODE.md](d
 |---|---|
 | NVIDIA RTX 50 | Nutzt die NVFP4-Fassungen von FLUX 3 und Qwen-Image, die die Karte nativ in Hardware rechnet |
 | NVIDIA RTX 20, 30, 40 | Empfiehlt stattdessen die INT8-Fassungen; FLUX 3 INT8 läuft laut Black Forest Labs schon auf 8-GB-Karten |
-| Zwei oder mehr NVIDIA-Karten | Experimentell seit 0.5: In der Kopfleiste oder unter „Modelle“ → „Grafikkarten“ bekommen Bildmodelle, Sprachmodelle und 3D je eine eigene Karte. Die Sprachmodelle laufen dann in einem zweiten ComfyUI, „Prompt ausbauen“ geht also, während ein Bild rechnet |
+| Zwei oder mehr NVIDIA-Karten | Seit 0.5.6 rechnet NV-AI von selbst auf der stärksten Karte. In der Kopfleiste oder unter „Modelle“ → „Grafikkarten“ können Bildmodelle, Sprachmodelle und 3D je eine eigene Karte bekommen; was das bringt, ist [unten](#mehrere-grafikkarten) gemessen |
 | AMD Radeon | Experimentell seit 0.5: Das Setup erkennt eine Radeon und installiert PyTorch mit ROCm 7.2.1 von AMD. Nötig sind Treiber 26.2.2 oder neuer und eine Karte auf AMDs [Kompatibilitätsliste](https://rocm.docs.amd.com/projects/radeon-ryzen/en/latest/docs/compatibility.html). Bildmodelle in INT8 oder FP8; 3D braucht vorerst NVIDIA |
 
 Die Modellliste markiert, welche Modelle zur Karte passen, und sagt, wenn ein Format darauf nicht nativ rechnet.
 
-Tester gesucht: Ich habe nur eine NVIDIA-Karte. Der Mehrkartenbetrieb ist mit einer Karte getestet, die zwei simuliert, und auf AMD ist die Installation getestet, aber noch kein Bild erzeugt. Wer die Hardware hat: bitte über „Problem melden“ oder in [#1 (mehrere NVIDIA-Karten)](https://github.com/Mantux775/NVAI-open/issues/1) oder [#2 (AMD Radeon)](https://github.com/Mantux775/NVAI-open/issues/2) berichten.
+Tester gesucht für AMD: Die Installation ist getestet, auf einer Radeon wurde aber noch kein Bild erzeugt. Wer eine hat: bitte über „Problem melden“ oder in [#2 (AMD Radeon)](https://github.com/Mantux775/NVAI-open/issues/2) berichten.
+
+### Mehrere Grafikkarten
+
+Seit 0.5.6 rechnet NV-AI von selbst auf der stärksten Karte (erst nach Speicher, dann nach der neuesten Generation). Bisher lief alles auf Karte 0. Gemessen in meinem PC mit einer RTX 5060 Ti 16 GB und einer RTX 4060 8 GB an einem Riser-Kabel (PCIe 3.0 x4), Treiber 610.62, ComfyUI 0.42.1:
+
+![Zeit je Bild auf der RTX 5060 Ti und der RTX 4060](docs/images/multi-gpu-strongest-card-de.png)
+
+| Frage | Gemessen |
+|---|---|
+| Passen mit einer zweiten Karte größere Modelle? | Nein. Zwei Karten legen ihren Speicher nicht für ein Modell zusammen. Größere Modelle laufen ohnehin auf einer Karte, weil ComfyUI nachlädt, was nicht passt: Qwen-Image-2512 mit 20 Milliarden Parametern belegt 15,5 der 16 GB |
+| Text-Encoder auf die zweite Karte? | Kein Gewinn (warme Läufe): FLUX 3 9 → 13 s, Qwen-Image-2512 97 → 99 s, LTX-2.3-Video 79 → 81 s |
+| Sprachmodell auf die zweite Karte? | Der Prompt-Upsampler passt in seiner Standardfassung int8 (9,75 GB) nicht in 8 GB: „Prompt ausbauen“ dauerte 134 bis 203 s statt 11 s. NV-AI nimmt deshalb die Fassung w4a8 (6,72 GB), wenn sie geladen ist: 7,5 bis 8,6 s, dafür brauchte FLUX 3 mit neuem Prompt 35 bis 41 statt 31 bis 34 s |
+| Beide Karten zugleich unter Volllast | „Prompt ausbauen“ auf der RTX 4060, während Qwen auf der 5060 Ti rechnete: Nach wenigen Sekunden fiel die 4060 vom Bus (Windows: „BusReset TDR“), erst ein Neustart brachte sie zurück. Ollama lief im selben PC mit beiden Karten unter Volllast ohne Probleme, die Ursache ist also offen |
+| PhotoCraft-Add-on | Läuft mit zwei Karten: Prompt ausbauen 10,9 s, Erweitern mit FLUX 3 52 s, Füllen mit Qwen 72 s und mit FLUX 3 68 s, alles auf der stärksten Karte |
+
+![Wo das Sprachmodell läuft: dieselbe Karte, RTX 4060 mit int8, RTX 4060 mit w4a8](docs/images/multi-gpu-language-model-de.png)
+
+Welche Karte was rechnet, lässt sich in der Kopfleiste (Karte anklicken) oder unter „Modelle“ → „Grafikkarten“ ändern: jede Aufgabe eine Zeile, jede Karte eine Spalte, ein Klick verschiebt sie. „Automatisch verteilen“ legt alles zurück auf die stärkste Karte.
+
+![Die Grafikkarten-Tabelle unter „Modelle“](docs/images/multi-gpu-settings-de.jpg)
+
+Kurz gesagt: Mit diesen beiden Karten kommt der Gewinn davon, auf der richtigen Karte zu rechnen, nicht vom Aufteilen. Ergebnisse mit anderen Karten gern in [#1](https://github.com/Mantux775/NVAI-open/issues/1).
 
 ### Unzensierte Modelle
 
@@ -267,6 +350,9 @@ Ein paar Worte eintippen, auf „Prompt ausbauen“ klicken, und NV-AI schreibt 
 | Windows | Den Prompt-Upsampler von FLUX 3 Image Klein (Qwen3.5-9B) | rund 15 s auf einer RTX 5060 Ti |
 | Mac | Den Text-Encoder von FLUX.2 Klein (Qwen3-4B), kein zusätzlicher Download | 22 bis 25 s auf einem Mac mini M1 |
 
+![Qwen-Image-2512 mit „a medieval blacksmith“ und mit ausgebautem Prompt](docs/images/expand-prompt.jpg)
+<p align="center"><sub>Links „a medieval blacksmith“ wie eingetippt, rechts der ausgebaute Prompt, Erfundenes gestrichen (Qwen-Image-2512).</sub></p>
+
 ### 3D: vom Bild zum Modell
 
 Ein Bild eines Objekts erzeugen, dann daraus ein GLB-Modell für Unity, Blender oder jede Engine machen. TRELLIS.2 (MIT) malt dazu PBR-Texturen (Farbe, Metall, Rauheit, 2048²) in rund 75 Sekunden; TripoSG (MIT) baut nur die Form.
@@ -285,7 +371,45 @@ Gleicher Prompt, Seed und Format (832 × 1216), gemessen auf einer RTX 5060 Ti m
 
 ![Entdeckerin, ganze Figur: FLUX 3, Qwen-Image-2512 und Qwen-Image 2.1](docs/images/compare-explorer.jpg)
 
+![Kiste mit Schablonenschrift: FLUX 3 und Qwen-Image-2512](docs/images/compare-crate.jpg)
+
+![Ladenschild „FRESH BREAD DAILY“: FLUX 3 und Qwen-Image-2512](docs/images/compare-sign.jpg)
+
+![Leuchtturm als Ölgemälde: FLUX 3 und Qwen-Image-2512](docs/images/compare-lighthouse.jpg)
+
+Bearbeiten mit FLUX 3: links das Referenzbild, rechts „replace the rope handles with iron handles, keep everything else unchanged“, 44 s.
+
+![Bearbeiten mit Referenzbild in FLUX 3](docs/images/flux3-edit.jpg)
+
 Kurz gesagt: FLUX 3 ist schnell und als einziges Modell in der Lage, Bilder zu bearbeiten und den Rest unverändert zu lassen. Qwen-Image-2512 ist besser bei Schrift und Konstruktion und steht unter Apache-2.0. Weitere Vergleiche, Prompt-Tipps und Testergebnisse: [docs/de/MODELLE.md](docs/de/MODELLE.md). Alle Bilder in diesem README hat NV-AI erzeugt.
+
+### Outpainting: ein Bild erweitern
+
+Angeben, wie viele Pixel links, oben, rechts und unten dazukommen, und NV-AI malt den neuen Rand passend dazu. Mit FLUX 3 bleibt das Original, wie es ist: FLUX gibt das Bild nie genau an derselben Stelle wieder, deshalb erweitert NV-AI Achse für Achse, misst den Versatz und rückt das Ergebnis zurück, bevor das Original eingesetzt wird (seit 0.5.5; 0.5.4 zeigte noch Geisterkonturen). In der Weboberfläche unter „Vorhandenes Bild überarbeiten“, über MCP und im PhotoCraft-Add-on als eigener Reiter „Erweitern“.
+
+![Rundum erweitert: Original, NV-AI 0.5.4 und 0.5.5](docs/images/outpaint-before-after.jpg)
+
+![Ausschnitt in voller Auflösung: Geisterkopf in 0.5.4, sauber in 0.5.5](docs/images/outpaint-detail.jpg)
+
+Auf dem Mac füllt FLUX.2 Klein den Rand per Maske; der Übergang bleibt dort weicher und kann sichtbar bleiben.
+
+### Füllen mit FLUX 3
+
+Seit 0.5.6 füllt FLUX 3 auch einen maskierten Bereich. Selbst nimmt es keine Maske, deshalb macht NV-AI dasselbe wie beim Erweitern: Es schneidet den Bereich mit etwas Umgebung aus, färbt ihn grau, lässt FLUX 3 ihn nach dem Prompt malen, misst den kleinen Versatz von FLUX und setzt nur den Bereich zurück. Außerhalb der Maske bleibt das Bild pixelgleich. Rund 60 bis 70 s auf der RTX 5060 Ti. Gut zum Entfernen und zum Hinzufügen:
+
+![Füllen mit FLUX 3: Kisten entfernt, Möwe hinzugefügt](docs/images/fill-flux3.jpg)
+
+Um etwas zu ändern, das schon da ist, etwa die Schrift auf einem Schild, ist „Überarbeiten“ besser: Dort sieht FLUX 3 das Original und hält seine Neigung. Füllen mit Qwen-Image-2512 malte das neue Schild flach über die Hand.
+
+![Schild ändern: Qwen-Image-2512 füllt flach, FLUX 3 überarbeitet an Ort und Stelle](docs/images/sign-fill-vs-refine.jpg)
+
+Im PhotoCraft-Add-on nimmt „Füllen“ jetzt FLUX 3, wenn kein anderes Modell gewählt ist; über MCP und REST ist es `mask_asset_id` mit `flux3-klein-nvfp4`.
+
+### LoRAs für mehr Realismus
+
+LoRAs sind kleine Zusatzdateien, die einem Modell einen Stil beibringen. Getestet an Qwen-Image-2512 mit gleichem Seed: Boreal wirkt am ehesten wie ein echtes Foto, Lenovo UltraReal bleibt am nächsten am Prompt. Beide erlauben den Verkauf der Bilder.
+
+![Porträt ohne LoRA, mit Boreal und mit Lenovo UltraReal](docs/images/lora-realism.jpg)
 
 ### Mac-App
 

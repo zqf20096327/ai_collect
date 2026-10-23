@@ -20,7 +20,7 @@
 <strong>English</strong> | <a href="README.ko.md">한국어</a> | <a href="README.ja.md">日本語</a> | <a href="README.zh-cn.md">简体中文</a>
 </p>
 
-`e2e-skills` gives AI coding agents four skills for generating, reviewing, and debugging Playwright/Cypress end-to-end (E2E) tests. A skill is a set of instructions the agent follows for a task.
+`e2e-skills` provides four open-source skills for Playwright and Cypress end-to-end (E2E) testing with Claude Code, Codex, and other compatible AI coding agents. Generate Playwright tests, review existing Playwright/Cypress tests and PRs, and debug failed runs.
 
 <p align="center">
   <a href="https://www.kimi.ai/resources/software-testing-skills">
@@ -38,10 +38,10 @@ A passing test can still miss a broken feature. `e2e-skills` helps check whether
 
 | Need | Skill | Result |
 | --- | --- | --- |
-| Generate new Playwright coverage | `playwright-test-generator` | Playwright tests based on the observed page, with scanner and test-execution results |
-| Review Playwright/Cypress tests or PR/diff changes | `e2e-reviewer` | Problems ranked by severity, with evidence and suggested fixes; for changes, whether each problem is new, worsened, or pre-existing |
-| Debug a failed Playwright run | `playwright-debugger` | Likely cause, supporting evidence, and a suggested fix |
-| Debug a failed Cypress run | `cypress-debugger` | Likely cause, supporting evidence, and a suggested fix |
+| Generate new Playwright coverage | [`playwright-test-generator`](skills/playwright-test-generator/SKILL.md) | Playwright tests based on the observed page, with scanner and test-execution results |
+| Review Playwright/Cypress tests or PR/diff changes | [`e2e-reviewer`](skills/e2e-reviewer/SKILL.md) | Problems ranked by severity, with evidence and suggested fixes; for changes, whether each problem is new, worsened, or pre-existing |
+| Debug a failed Playwright run | [`playwright-debugger`](skills/playwright-debugger/SKILL.md) | Likely cause, supporting evidence, and a suggested fix |
+| Debug a failed Cypress run | [`cypress-debugger`](skills/cypress-debugger/SKILL.md) | Likely cause, supporting evidence, and a suggested fix |
 | Run a deterministic local scan | `skills/e2e-reviewer/scripts/scan.sh` | Possible code problems without installing the target project’s packages |
 
 Review results use P0/P1/P2 for severity: P0 means a test can pass despite a broken feature, P1 concerns reliability or diagnosis, and P2 concerns maintenance. Debuggers use F1–F15 to label 15 failure categories, such as timing, selectors, and authentication.
@@ -103,11 +103,13 @@ The bundled scanner catches the false-green assertions without project configura
 ```console
 $ /bin/bash -p skills/e2e-reviewer/scripts/scan.sh tests/
 
-[P0] #4f Locator always-true assertion (truthy/defined/not-null) (2 hits)
-  .../tests/login.spec.ts:5:  expect(page.getByText('Welcome back')).toBeDefined();
-  .../tests/login.spec.ts:6:  expect(page.locator('.user-badge')).not.toBeNull();
+[P0][CONFIRMED] #4f Static finding (2 hits)
+  "login.spec.ts":5: #4f
+  "login.spec.ts":6: #4f
 
-Summary: 2 total hit(s), 2 P0
+AST-origin total: 2 hit(s); retained findings, not ast-grep execution.
+
+Summary: 2 total hit(s), 2 P0, 0 P1/P2 heuristic, 0 LLM-triage, 0 P0 candidate; 2 AST-origin hit(s), canonical retained findings.
 ```
 
 Because this run reports P0 findings, `scan.sh` exits 1.
@@ -214,7 +216,7 @@ Debug the failed Cypress report in cypress/reports/.
 
 Use the skills alongside a real application and its E2E suite. Review and debugging support Playwright and Cypress; generation supports Playwright only.
 
-The bundled shell scripts and artifact readers target conventional macOS/Linux layouts with `/bin/bash` and the fixed system executable paths required by their launchers. Windows users need a compatible WSL distribution and artifacts inside the WSL filesystem; native Windows is not supported. NixOS and Nix-, pyenv-, Conda-, or nvm-only tool installations are not universally auto-discovered. The reviewer scanner supports validated absolute `E2E_SMELL_*_BIN` overrides; this does not imply the same overrides exist in the debugger launchers. Missing trusted tools stop the affected operation; do not bypass that boundary with ambient `PATH` lookup. Resolve skill resources from the actual host-provided skill location, including plugin caches and custom installs, not a guessed home directory.
+The bundled shell scripts and artifact readers target conventional macOS/Linux layouts with `/bin/bash` and the fixed system executable paths required by their launchers. Windows users need a compatible WSL distribution and artifacts inside the WSL filesystem; native Windows is not supported. NixOS and Nix-, pyenv-, Conda-, or nvm-only tool installations are not universally auto-discovered. Missing trusted tools stop the affected operation; do not bypass that boundary with ambient `PATH` lookup. Resolve skill resources from the actual host-provided skill location, including plugin caches and custom installs, not a guessed home directory.
 
 The generator prepends `thin-rules.md` and safety instructions to the official planner and generator, then runs the reviewer scanner and the new tests. It installs nothing, changes no agent or MCP configuration, and uses no CLI fallback or healer. Missing configuration is reported with setup guidance.
 
@@ -350,15 +352,23 @@ The debuggers classify product regressions separately from brittle tests and ret
 Run the code scanner directly without asking an AI agent. It reports possible problems for review; it does not run your tests or decide whether they prove the intended behavior.
 
 ```bash
+npx --yes --package=@voidmatcha/e2e-skills-scanner@3.1.1 e2e-skills-scan --scan path/to/tests --format text
+```
+
+Requires Node.js 22 or newer; the TypeScript parser is bundled. npx downloads the package and its dependencies if they are not already cached. Scanning does not execute tests or project configuration. Use `--format json` for structured output or `--report-file <new-file>` to save a full report without overwriting an existing file.
+
+The reviewer already includes an offline copy of the scanner; no npm installation is needed. By default, this bundled scanner does not download tools or load project configuration. From an installed skill or source checkout, use:
+
+```bash
 /bin/bash -p skills/e2e-reviewer/scripts/scan.sh path/to/tests
 ```
 
-Requires Python 3 and ripgrep (`rg`) with PCRE2 support. By default it neither runs the target project’s ESLint code nor downloads tools. If a required tool is missing or a file cannot be read, it reports an error rather than a clean result.
+Scanning does not start assertion mutation or fault injection. Those checks require a trusted, prepared project; see the [CLI and probe guide](packages/scanner/README.md).
 
 <details>
 <summary>Advanced scanner options and file access</summary>
 
-The scanner requires a PCRE2-capable `rg` and Python 3. Python creates and validates NUL-safe candidate identity records so candidate drift or malformed records fail closed; this mandatory bookkeeping is separate from optional Tier 2 AST tooling. It does not execute target-controlled ESLint binaries, plugins, parsers, or configuration by default, and it does not download tools by default. `E2E_SMELL_ALLOW_PROJECT_ESLINT=1` opts a trusted checkout into project ESLint execution; `E2E_SMELL_NO_ESLINT_DOWNLOAD=0` and `E2E_SMELL_NO_AST_GREP_DOWNLOAD=0` separately opt into pinned downloads. Set `E2E_SMELL_DISABLE_AST_GREP=1` when a portability check must ignore preinstalled host binaries.
+To run installed project ESLint with its configuration, add `--project-eslint --trust-project` after explicitly trusting the checkout and approving the exact command. This executes project-controlled code with host access; no sandbox or dependency installation is provided. Bundled checks run without that opt-in.
 
 > **Read boundary.**
 > <!-- README-I18N-CONTRACT:SCANNER-READ-SCOPE:START -->
@@ -369,7 +379,7 @@ The scanner requires a PCRE2-capable `rg` and Python 3. Python creates and valid
 Bundled checks read `.ts`, `.js`, `.tsx`, `.jsx`, `.mts`, `.mjs`, `.cts`, and `.cjs` sources.
 <!-- README-CONTRACT:SCANNER-EXTENSIONS:END -->
 
-Tier 3 is the bundled fallback. Optional ESLint and ast-grep tiers add precision but do not replace semantic review. The scanner exits 2 on infrastructure or filesystem errors rather than reporting a false clean result. See [SECURITY.md](SECURITY.md) for the trust and network boundary.
+The default `p0` policy exits 1 for confirmed mechanical P0 findings. Choose `--fail-on p0-candidate` to also gate retained P0 candidates; `any` gates confirmed findings and `none` is report-only. Exit 0 means only that the selected threshold was not reached. Retained candidates and review obligations still need review, including when execution completed with P0=0. Missing inputs, source-integrity or analysis failures produce INCOMPLETE and exit 2. The scanner does not establish complete semantic coverage. See [SECURITY.md](SECURITY.md) for the trust and network boundary.
 
 </details>
 

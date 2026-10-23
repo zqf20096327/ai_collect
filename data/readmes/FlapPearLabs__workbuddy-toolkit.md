@@ -173,9 +173,17 @@ wb-usage      积分消耗与流速统计
 
 - macOS：`launchd`
 - Linux：`systemd --user`，必要时降级到 `cron`
-- Windows：任务计划程序
+- Windows：任务计划程序；被组策略或安全软件拦截时，自动降级为登录时执行
 
 > 多账号自动签到与保活对话会以客户端身份批量访问 WorkBuddy 服务，可能触发平台风控或违反服务条款，请自行评估。
+
+> **Windows 降级触发器**：如果 `schtasks` 注册失败，安装器会在当前用户的「启动」
+> 文件夹写入 `WorkBuddyDailyCheckin.vbs` 作为兜底（只在启用了 `--with-checkin`
+> 且任务计划不可用时才会出现）。`uninstall.py` 会删除它，任务计划恢复后重新运行
+> 安装器也会自动清理。
+>
+> 如果 `schtasks` 本身可用、只是 `daily` 触发器被策略限制，也可以手动改用登录
+> 触发器：`schtasks /create /tn WorkBuddyDailyCheckin /tr "<命令>" /sc onlogon /f`。
 
 ### 开发者工具
 
@@ -333,13 +341,24 @@ Toolkit 增加运行时兼容层，同时坚持一个边界：**需要解密能�
 |---|---|---|
 | macOS | `launchd` | WorkBuddy macOS 应用数据目录 |
 | Linux | `systemd --user` / `cron` 降级方案 | XDG 风格应用数据目录 |
-| Windows 10/11 | 任务计划程序 | `%APPDATA%` 应用数据目录 |
+| Windows 10/11 | 任务计划程序 / 登录启动项降级 | `%APPDATA%` 应用数据目录 |
 
 要求：
 
-- Python 3.8+
+- Python 3.8+（3.8 校验只针对 WorkBuddy 自带解释器；PATH 里的解释器按原样使用，不做版本检查）
 - WorkBuddy 已安装并至少登录过一次
 - Toolkit 基础安装主要使用 Python 标准库，不要求额外 pip 依赖
+
+> **Windows 用户注意**：`wb-*.cmd` 启动器是安装时生成的文本，不是运行时解释的。
+> 升级 Toolkit、或修复了启动器相关的问题之后，需要重新运行一次
+> `python install.py` 才会生效。启动器查找解释器的顺序是：WorkBuddy 自带
+> Python → `PATH` 中的 `python`（自动跳过 Microsoft Store 的占位符）
+> → `py` launcher；三者都不可用时以退出码 9009 报错，而不是弹出应用商店。
+>
+> **不支持 Microsoft Store 版 Python**：它的入口同样是
+> `%LOCALAPPDATA%\Microsoft\WindowsApps\python.exe`，与「0 字节占位符」路径相同、
+> 形态相同，无法区分。如果只装了商店版 Python，启动器会返回 9009 并提示改用官方
+> 安装包；也可以依赖 WorkBuddy 自带解释器。
 
 实际兼容性请运行：
 

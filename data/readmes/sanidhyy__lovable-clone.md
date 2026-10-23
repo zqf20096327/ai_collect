@@ -298,12 +298,12 @@ Useful resources and dependencies that are used in Vibe.
 - [@hookform/resolvers](https://www.npmjs.com/package/@hookform/resolvers): ^5.9.1
 - [@ianvs/prettier-plugin-sort-imports](https://www.npmjs.com/package/@ianvs/prettier-plugin-sort-imports): ^4.7.1
 - [@inngest/agent-kit](https://www.npmjs.com/package/@inngest/agent-kit): ^0.13.2
-- [@next/eslint-plugin-next](https://www.npmjs.com/package/@next/eslint-plugin-next): ^16.3.8
+- [@next/eslint-plugin-next](https://www.npmjs.com/package/@next/eslint-plugin-next): ^16.4.2
 - [@prisma/adapter-pg](https://www.npmjs.com/package/@prisma/adapter-pg): ^7.10.0
 - [@prisma/client](https://www.npmjs.com/package/@prisma/client): ^7.9.1
 - [@radix-ui/react-collapsible](https://www.npmjs.com/package/@radix-ui/react-collapsible): ^1.1.20
 - [@radix-ui/react-dialog](https://www.npmjs.com/package/@radix-ui/react-dialog): ^1.3.1
-- [@radix-ui/react-dropdown-menu](https://www.npmjs.com/package/@radix-ui/react-dropdown-menu): ^2.1.24
+- [@radix-ui/react-dropdown-menu](https://www.npmjs.com/package/@radix-ui/react-dropdown-menu): ^2.2.1
 - [@radix-ui/react-label](https://www.npmjs.com/package/@radix-ui/react-label): ^2.1.15
 - [@radix-ui/react-separator](https://www.npmjs.com/package/@radix-ui/react-separator): ^1.1.16
 - [@radix-ui/react-slot](https://www.npmjs.com/package/@radix-ui/react-slot): ^1.3.3
@@ -320,8 +320,8 @@ Useful resources and dependencies that are used in Vibe.
 - [@types/prismjs](https://www.npmjs.com/package/@types/prismjs): ^1.26.6
 - [@types/react](https://www.npmjs.com/package/@types/react): ^19.3.0
 - [@types/react-dom](https://www.npmjs.com/package/@types/react-dom): ^19.3.0
-- [@vercel/config](https://www.npmjs.com/package/@vercel/config): ^0.3.0
-- [@vercel/functions](https://www.npmjs.com/package/@vercel/functions): ^3.6.2
+- [@vercel/config](https://www.npmjs.com/package/@vercel/config): ^0.12.0
+- [@vercel/functions](https://www.npmjs.com/package/@vercel/functions): ^3.10.1
 - [class-variance-authority](https://www.npmjs.com/package/class-variance-authority): ^0.7.1
 - [client-only](https://www.npmjs.com/package/client-only): ^0.0.1
 - [clsx](https://www.npmjs.com/package/clsx): ^2.1.1
@@ -341,7 +341,7 @@ Useful resources and dependencies that are used in Vibe.
 - [next-themes](https://www.npmjs.com/package/next-themes): ^0.4.6
 - [openai](https://www.npmjs.com/package/openai): ^7.5.0
 - [pg](https://www.npmjs.com/package/pg): ^8.23.1
-- [prettier](https://www.npmjs.com/package/prettier): ^3.9.5
+- [prettier](https://www.npmjs.com/package/prettier): ^3.9.10
 - [prettier-plugin-tailwindcss](https://www.npmjs.com/package/prettier-plugin-tailwindcss): ^0.8.1
 - [prisma](https://www.npmjs.com/package/prisma): ^7.10.0
 - [prismjs](https://www.npmjs.com/package/prismjs): ^1.30.0

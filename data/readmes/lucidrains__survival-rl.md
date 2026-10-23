@@ -12,7 +12,7 @@ $ pip install survival-rl
 
 ## Usage
 
-`HazardCritic` takes a batch of states, actions and events, and predicts for each state-action pair the time bin in which the event is first dwelled upon, conditioned on that event. It is trained by maximum likelihood on the predicted logits, where `reach_event_index` marks the observed time bin, and `-1` (or anything at or past `horizon_cutoff`) is treated as right censored.
+`HazardCritic` takes a batch of states, actions and events, and predicts the time bin in which the event is first reached, conditioned on that event. It is trained by maximum likelihood on the predicted logits, where `reach_event_index` marks the observed time bin, and `-1` (or anything at or past `horizon_cutoff`) is treated as right censored.
 
 ```python
 import torch
@@ -65,7 +65,7 @@ loss = -critic.extract_policy(actor, state, event, negate = True).mean()
 loss.backward()
 ```
 
-The reach indices for training are computed from any trajectory data with `compute_first_dwell_time`, which finds the first time each trajectory dwells within `eps` of its event.
+The reach indices are computed from trajectory data with `compute_first_dwell_time`, which finds the first time each trajectory dwells within `eps` of its event.
 
 ```python
 import torch
@@ -80,7 +80,43 @@ event  = states[:, -1:]             # (batch, num_queries, dim)
 reach_event_index, horizon_cutoff = compute_first_dwell_time(event, states = states, eps = 0.25)
 ```
 
-For a variant where the time bins compete for a single unit of mass through a softmax, use `HazardCriticCompetitive` in place of `HazardCritic`.
+To extract a policy from multiple critics, use `PolicyExtractor`. Each `ExtractionSpec` is one term in the objective. Setting `negate = True` pulls the policy away from the event instead of toward it. The actor is forwarded once and shared across specs. Each spec also accepts `weight` and `lr`. A list of critics, e.g. `ExtractionSpec([critic_a, critic_b])`, uses the pessimistic minimum.
+
+```python
+from survival_rl import PolicyExtractor, ExtractionSpec
+
+# a second, state-only critic for crashes
+
+crash_critic = HazardCritic(
+    dim = 64,
+    depth = 2,
+    dim_state = 8,
+    num_actions = 3,
+    pred_time_bins = 32,
+    condition_on_event = False
+)
+
+# (train `critic` and `crash_critic` on their respective events)
+
+extractor = PolicyExtractor(
+    actor,
+    [
+        ExtractionSpec(critic, name = 'goal'),                       # pull toward the goal
+        ExtractionSpec(crash_critic, negate = True, name = 'crash')  # push away from crashes
+    ],
+    base_lr = 1e-3,
+    avoid_lr_scale = 0.1   # avoid specs take smaller steps by default
+)
+
+for _ in range(1000):
+    extractor.step(state, event = event)
+```
+
+For a variant where the time bins compete for a single unit of mass through a softmax, simply swap in `HazardCriticCompetitive`, which takes the same arguments.
+
+```python
+from survival_rl import HazardCriticCompetitive as HazardCritic
+```
 
 ## Citations
 

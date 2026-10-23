@@ -4,9 +4,10 @@
 
 ---
 
-* Download Civitai generations (image, video, audio, 3D)
-* Download posts and comics
+* Download generations, posts, comics, and 3D
+* Auto download, on a delay from 5 minutes to 1 day
 * Explore your library in an offline website
+* Filter by rating, post tags, and content tags
 * Media and data saved to the file system, sorted by date
 * Export media for re-use
 * Auto-updates for new versions
@@ -30,8 +31,10 @@ The software is:
 
 ## Installation
 
-Install [Node.js](https://nodejs.org)  
-If you already have Node, it requires version 20 or above.
+Install [Node.js](https://nodejs.org).
+This build runs on Node 18 and newer. It is tested on Node 20 and newer. Below Node 18, civitai-sync stops before it moves any files.
+
+To upgrade Node that you installed from nodejs.org, close civitai-sync. Download the current long-term support installer: the Windows Installer (`.msi`) on Windows, or the macOS Installer (`.pkg`) on a Mac. Run it and accept the defaults. It replaces the Node that installer put there before. Open a terminal, run `node -v`, and open civitai-sync again. If `node -v` is still the old version, Node is also installed another way. This installer did not replace that copy.
 
 Download the zip archive of the program from the model page.  
 Or download/clone the repository.
@@ -58,7 +61,9 @@ npm run setup
 
 
 *Create a Civitai API key* in your account:  
-https://civitai.com/user/account
+https://civitai.com/user/account/security
+
+Save it in the CLI, or on the Explorer's Download page.
 
 
 ## Open the civitai-sync CLI
@@ -113,12 +118,12 @@ civitai-sync bob
 This is an alias for:
 
 ```
-npm run cli bob
+npm run cli -- bob
 ```
 
-Or give a full path to anywhere on the file system, and the config file will be loaded from or created there.
+A new name starts with its own folders, `data-bob` and `media-bob`. The default config stays on `data` and `media`. An existing named config keeps its folders.
 
-_Set each account's download *folder* to be different_, unless you want the data and media for the accounts to be merged.
+Or give a full path to anywhere on the file system, and the config file will be loaded from or created there.
 
 
 **Network access**

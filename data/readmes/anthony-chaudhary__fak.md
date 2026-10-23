@@ -80,6 +80,12 @@ fak agent --offline   # -> task completed
 - **Guard hardening:** context changes, memory apply, and plugin writes are refused
   unless an act-bound lease fences them.
 
+## DeepSeek V4.1 Flash on one Strix Halo — 2026-10-22
+
+`DeepSeek-V4.1-Flash-Q2_K` decodes at **4.61 tok/s** on one 128 GB AMD Strix Halo
+(warm, single stream, greedy output unchanged). The 30 tok/s decode target is not yet
+met. Details: [Strix Halo V4.1 Flash results](docs/benchmarks/STRIX-HALO-DEEPSEEK-V41-FLASH.md).
+
 ## Latest hardware results — 2026-09-25
 
 One row per hardware family: the newest committed performance receipt for that platform,

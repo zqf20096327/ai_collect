@@ -638,6 +638,8 @@ Reading list and comments/short reviews around reasoning models, training techni
 - [Into the Unknown: Benchmarking AI agents on open scientific research problems](https://arxiv.org/abs/2610.19159)
 - [Evidence-First Agentic Verification](https://arxiv.org/abs/2610.17724)
 - [Predicting Privileged Information Effectiveness for On-Policy Self-Distillation](https://arxiv.org/abs/2610.22512)
+- [Automating ML for Science: Can Frontier Agents Climb Scientific Hills in the Wild?](https://arxiv.org/abs/2610.28763) - NeurIPS 2026 evaluation and datasets track; Anthropic
+- [Harness Scaling for Generalizable Agentic Reinforcement Learning](https://arxiv.org/abs/2610.29458)
 
 #### Topic - Audio Reasoning
 
@@ -666,4 +668,4 @@ Start with the first-linked survey.
 
 **Emerging topic, seen a few papers around this theme recently.**
 
-- [Learning to Reason without External Rewards](https://arxiv.org/abs/2505.19590) - "We propose Intuitor, an RLIF method that uses a model's own confidence, termed self-certainty, as its sole reward signal. Intuitor replaces external rewards in Group Relative Policy Optimization (GRPO) w
+- [Learn

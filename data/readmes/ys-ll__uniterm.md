@@ -65,7 +65,7 @@ Connection management, split panes, cloud sync, themes & i18n — your terminal,
 
 - **Connection Manager** — Group, quickly search, create, and batch-operate server connections.
 - **Workspace** — Drag terminal tabs into the content area to split freely and combine them into a workspace; drag panel edges to resize and rearrange.
-- **Cloud Sync** — Dual-mode cloud sync via private Git repository or WebDAV — no worry about data loss or leaks, and pick up your work seamlessly across devices.
+- **Cloud Sync** — Encrypted cloud sync in five modes: Git repository, WebDAV, SFTP, S3 and SMB — no worry about data loss or leaks, and pick up your work seamlessly across devices.
 - **Custom Keybindings** — Freely bind keyboard shortcuts for every action for full keyboard-driven operation, hands never leaving the keyboard.
 - **Themes & Internationalization** — 28 terminal themes plus 3 UI themes (Dark / Deep Blue / Light) and a customizable background image; 11-language UI: Simplified Chinese, Traditional Chinese, English, Japanese, Korean, German, Spanish, French, Russian, Portuguese, Vietnamese.
 
@@ -87,7 +87,7 @@ Connection management, split panes, cloud sync, themes & i18n — your terminal,
 | File Transfer | WebDAV | WebDAV server file management |
 | File Transfer | S3 | Amazon S3 compatible object storage |
 | File Transfer | Zmodem | In-terminal file transfer via rz/sz commands |
-| Remote Desktop | RDP | Windows server remote desktop management (Windows only) |
+| Remote Desktop | RDP | Windows server remote desktop management |
 | Remote Desktop | VNC | Linux server remote control |
 | Remote Desktop | SPICE | KVM/QEMU VM management |
 | Remote Desktop | X11 | X Window forwarding |
@@ -275,6 +275,14 @@ If uniTerm is helpful to you, please consider giving it a ⭐ Star — it's the 
 
 [![GitHub stars](https://img.shields.io/github/stars/ys-ll/uniterm?style=social)](https://github.com/ys-ll/uniterm)
 [![Gitee stars](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fgitee.com%2Fapi%2Fv5%2Frepos%2Fys-l%2Funiterm&query=%24.stargazers_count&label=Stars&style=social&logo=gitee)](https://gitee.com/ys-l/uniterm)
+
+<a href="https://www.star-history.com/?repos=ys-ll%2Funiterm&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=ys-ll/uniterm&type=date&theme=dark&legend=top-left&sealed_token=EJf9Yr6aVGkBwIbfGQ6u9hRwpxdIl7vVpUJshd8jaRUCw-OkotyrQX9qzDP5cXNidgLvC0yq8ltQivK06MxiTJYOxkVbPCPuIuCBZj7aTkMxUA-mqJk2KA" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=ys-ll/uniterm&type=date&legend=top-left&sealed_token=EJf9Yr6aVGkBwIbfGQ6u9hRwpxdIl7vVpUJshd8jaRUCw-OkotyrQX9qzDP5cXNidgLvC0yq8ltQivK06MxiTJYOxkVbPCPuIuCBZj7aTkMxUA-mqJk2KA" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=ys-ll/uniterm&type=date&legend=top-left&sealed_token=EJf9Yr6aVGkBwIbfGQ6u9hRwpxdIl7vVpUJshd8jaRUCw-OkotyrQX9qzDP5cXNidgLvC0yq8ltQivK06MxiTJYOxkVbPCPuIuCBZj7aTkMxUA-mqJk2KA" />
+ </picture>
+</a>
 
 ## Feedback &amp; Contributing
 

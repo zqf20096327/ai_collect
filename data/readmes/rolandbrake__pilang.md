@@ -108,20 +108,24 @@ After building Pilang, add a `package.loon` beside your entry file and run:
 
 ```powershell
 cd test\package
-..\..\bin\pilang.exe pack target:win
+..\..\bin\pilang.exe pack
 ```
 
-After adding `bin/` to `PATH`, use `pilang pack target:win`. The resulting
-`.exe` includes the Pilang runtime and application, with no SDL DLLs required
-beside it. See [`test/package/package.loon`](test/package/package.loon)
-for a complete manifest example.
+`pack` creates every target declared in `package.loon`. To create just one,
+use `pilang pack target:win` or `pilang pack target:web`. A Windows `.exe`
+includes the Pilang runtime and application, with no SDL DLLs required beside
+it. See [`test/package/package.loon`](test/package/package.loon) for a
+complete manifest example.
 
 ```loon
 name: "My App"
+version: "1.0.0"
 entry: "main.pi"
 targets:
   win:
     output: "my-app.exe"
+  web:
+    output: "dist"
 ```
 
 ## Visual Computing
@@ -446,11 +450,12 @@ The language website and playground are available at:
 
 Use it to read docs, browse examples, and try Pilang in the browser.
 
-<p align="center">
-    <a href="./samples/graphics/monkey_3d.pi">
-        <img src="resources/monkey.gif" alt="Pilang rotating OBJ monkey model" width="180" >
-    </a>
+<br/>
+<br/>
+<p align="center">    
+    <img src="resources/pi_monster.png" alt="The PI Monster!" width="80" />    
 </p>
+<br/>
 
 ## License
 

@@ -72,14 +72,14 @@
 |:---|:---:|:---|
 | 工单与事件 | 可用 | 状态流转、分派、SLA、BPMN 绑定、租户隔离已完整 |
 | 工单类型与动态表单 | 可用 | 自定义字段、表单 Preset、Workflow/SLA 绑定 |
-| 变更管理 | 预览 | 风险评估、审批链、回滚方案、PIR；提交门禁（关键 CI/开放事件强制 high 风险等级 + 窗口冲突拦截）已收口；审批主链路已原子化 |
+| 变更管理 | 可用 | 风险评估、审批链、回滚清单、PIR；提交门禁（关键 CI/开放事件强制 high 风险等级 + 窗口冲突拦截）已收口；审批主链路已原子化、会签/阈值/多级链在 `/approve` 上真实生效（未达阈值返回 pending），终态流转与审批链收口同事务；实施结果可如实记录（`/fail` 入口 + 失败/回滚原因必填并落 `outcomeNote`，PIR 仅对 completed/rolled_back/failed 开放）；**失败可回退**已可验证——回滚清单逐项确认（`/rollback-steps`：done/skipped/failed + 备注/确认人/时间），还有未确认步骤时不许标记已回滚，实施开始后清单锁定 |
 | 问题与 Known Error | 可用 | 根因分析、临时方案、关联事件、SLA（与工单/事件同一引擎）、评论、知识沉淀 |
 | 服务目录与请求 | 预览 | 目录管理、请求审批、服务任务；交付链路已收口「失败即终态」——执行权原子领取（重复执行 409 不再二次交付）、失败可重试（尝试次数封顶 5 次）、自动重试走不通时可人工判定并留痕；交付 Provider 仍为 Stub，未接真实云 API |
 | CMDB | 可用 | CI 类型、配置项、关系、拓扑、影响分析 |
 | CMDB 云发现 | 预览 | 阿里云适配，自动发现和同步 |
 | BPMN 与审批 | 预览 | 流程定义、实例、任务、变量、执行历史 |
 | SLA | 可用 | 策略、截止时间、预警、违规统计 |
-| 知识与 RAG | 预览 | 文章管理、关键词/向量检索、问答降级 |
+| 知识与 RAG | 预览 | 文章管理、关键词/向量检索、问答降级、问题→知识沉淀（`POST /problems/:id/knowledge`，草稿进评审流）、发布门禁（未过评审不可发布，通过即入检索、驳回即出检索） |
 | AI 辅助 | 预览 | LLM Gateway、分诊、摘要、RAG |
 | 通知与连接器 | 预览 | 站内通知、投递审计、渠道诊断（通知已达可用）；飞书/企微/钉钉连接器均已实现（Pilot，部署就绪由 READY 环境变量申报） |
 | RBAC/多租户 | 可用 | 角色权限、Endpoint ACL、租户隔离、审计日志 |
@@ -278,6 +278,24 @@ go run -tags migrate main.go             # 执行迁移
 open http://localhost:8090/swagger/index.html
 ```
 
+### 通过 MCP 接入（Agent 直接操作 ITSM）
+
+`itsm-cli/bin/itsm-mcp.js` 是一个零依赖的 MCP server（stdio / JSON-RPC），把 268 条命令暴露给 WorkBuddy、Claude Desktop 等客户端：20 个精选工具 + `itsm_discover`/`itsm_describe`/`itsm_call` 覆盖全部命令，高风险写操作需显式确认，列表默认裁剪到 50 条。
+
+```json
+{
+  "mcpServers": {
+    "itsm": {
+      "command": "node",
+      "args": ["/path/to/itsm/itsm-cli/bin/itsm-mcp.js"],
+      "env": { "ITSM_BASE_URL": "http://localhost:8090" }
+    }
+  }
+}
+```
+
+启动方式、安全模型、工具清单与排障见 [ITSM MCP Server](./docs/tools/itsm-mcp.md)。
+
 ### 常见场景
 
 | 场景 | 操作 |
@@ -397,7 +415,7 @@ itsm/
 ├── itsm-ai-service/  # AI/RAG 辅助服务
 ├── itsm-agent/       # Agent 扩展
 ├── itsm-skill/       # Skill 扩展
-├── itsm-cli/         # CLI 入口
+├── itsm-cli/         # CLI + Agent 协议 + MCP Server
 ├── docs/             # 产品、架构、开发、部署、测试文档
 ├── scripts/          # 开发、生产、发布与诊断脚本
 └── monitoring/       # Prometheus/Grafana 配置

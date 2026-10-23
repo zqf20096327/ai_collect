@@ -24,7 +24,7 @@
 <p align="center">
   <img alt="license" src="https://img.shields.io/badge/license-Apache_2.0-blue">
   <img alt="python" src="https://img.shields.io/badge/python-3.9+-green">
-  <img alt="version" src="https://img.shields.io/badge/version-2.9.7-informational">
+  <img alt="version" src="https://img.shields.io/badge/version-2.9.8-informational">
   <img alt="engines" src="https://img.shields.io/badge/engines-272-orange">
   <img alt="mcp" src="https://img.shields.io/badge/MCP-19%20tools-purple">
 </p>
@@ -57,7 +57,8 @@ Argo 的能力通过四个子技能（sub-skills）组织，每个子技能是�
 Argo 同时是 DeepSeek Harness 的插件，一行命令装好：
 
 ```bash
-dsh plugin --profile web add "github:taxueseek/argo"
+dsh plugin --profile web add argo-search                  # npm 发布版
+dsh plugin --profile web add "github:taxueseek/argo"      # GitHub main
 ```
 
 装完重启 `dsh web` 即生效。搜索和抓取成为原生一等工具，不依赖 MCP 连接，不占常驻上下文开销。另有 1 个 `wide_research` 并行研究和 19 个 MCP 工具按需开启。完整接入形态见下文。
@@ -144,8 +145,10 @@ dsh plugin --profile web add "github:taxueseek/argo"
 # 方式一：一键脚本（推荐本机长期用）
 curl -fsSL https://raw.githubusercontent.com/taxueseek/argo/main/scripts/install.sh | bash
 
-# 方式二：npx 即用即走（推荐 Agent 快速挂载）
-npx -y github:taxueseek/argo
+# 方式二：npm / npx（已支持，当前 2.9.8；按 tag 发布，版本固定）
+npm install -g argo-search      # 全局安装 CLI
+npx -y argo-search              # 或即用即走，不装
+npx -y github:taxueseek/argo    # 要跟 main 最新提交时用这条
 
 # 方式三：git clone（开发 / 改源码）
 git clone https://github.com/taxueseek/argo.git
@@ -174,7 +177,7 @@ Argo 支持四种接入方式，按你的场景挑：
 | **MCP Server** | Agent 常驻挂载 | 19 个检索工具随时可用，一条命令注入 Claude Code / Cursor / Windsurf / Codex / OpenCode / Cline，写配置前自动备份 |
 | **DSH 插件** | DeepSeek Harness 用户 | 一行 `dsh plugin add` 装好，搜索和抓取成为原生一等工具，不依赖 MCP 连接，不占常驻上下文开销；自带六分区设置页，改完即生效 |
 | **Skill 文件** | Claude Code / Grok Build / Kimi 等 | 技能包装进 Agent 的技能目录，你说「帮我查一下」「核实一下」，它自己去查 |
-| **npx 即用即走** | 快速试一下 | `npx -y github:taxueseek/argo`，不用装，适合临时把 MCP 挂进任意客户端 |
+| **npx 即用即走** | 快速试一下 | `npx -y argo-search`（npm 发布版）或 `npx -y github:taxueseek/argo`（main），不用装，适合临时把 MCP 挂进任意客户端 |
 
 四种形态底层是同一套 Python 代码，CLI 与 MCP 工具一一对应，装哪种都不缺能力。
 
@@ -279,7 +282,7 @@ freshness  ≈ 发布时间（会忽略「2015 年以来」这类历史对比年
 
 ## 快速开始
 
-任选一种即可。**以 GitHub 为唯一安装来源**（`npx github:taxueseek/argo` 或 `install.sh` / `install.ps1`），当前推荐 **v2.9.7**。**请勿用 `npm install argo-search`**——npm registry 上那份是**非官方陈旧版 v1.0.1**（非本仓库维护，功能残缺、不随本项目更新）。本包 `package.json` 已设 `private: true` 防止误发布到 npm registry。
+任选一种即可。**npm 安装已支持，当前版本 2.9.8**，与 GitHub 同为本仓库发布。npm 路线用 `npm install -g argo-search` 或 `npx -y argo-search`，按 tag 发布、版本固定、下载体积更小；GitHub 路线用 `install.sh` / `install.ps1` 或 `npx github:taxueseek/argo`，跟 main 走。之后每次打 tag，CI 会把两个 npm 包和 GitHub Release 一起发出；registry 上更早的 v1.0.1 是历史版本，不要锁定到它。
 
 **零配置就能跑**：不配 API Key 时走免费引擎 + 本地 `local_*` 引擎；配了 Key 的源质量通常更好，没配则自动跳过。
 
@@ -344,9 +347,11 @@ npx -y github:taxueseek/argo
 
 ```bash
 # 装法 A：19 个 mcp__argo__* 工具（主包自带 bundle，与 MCP 全量相同）
-dsh plugin --profile web add "github:taxueseek/argo"
+dsh plugin --profile web add argo-search                  # npm 发布版
+dsh plugin --profile web add "github:taxueseek/argo"      # GitHub main
 
 # 装法 B：搜索工具 + wide_research 并行研究调度（子包）
+dsh plugin --profile web add @taxueseek/argo-dsh          # npm 发布版
 dsh plugin --profile web add "github:taxueseek/argo#main&path:packages/dsh-plugin"
 ```
 
@@ -491,13 +496,15 @@ python3 -m pytest tests/test_unit.py -q             # 单测（可选）
 | `deep` | 调研、综述 | 质量优先，可多用引擎 |
 | `budget` | 额度紧 | 配额控制，用完降级 |
 
-### 当前大致能力（v2.9.7）
+### 当前大致能力（v2.9.8）
 
 Argo 干的事，一句话能说完：把一个问题按领域和语言分给合适的源，取回结果后按可信度排个序，交回给 Agent 的是能排序、能复核的材料。搜索、抓取、核验、本机文件检索走同一条管线，19 个 MCP 工具和 CLI 命令一一对应，装哪种形态都不缺能力。另有几个单点命令随用随取：argo tweet 打包 X 帖子，argo auth 管登录态，argo job 聚合招聘信息。
 
 装成 DSH 插件后，这些能力直接变成宿主的原生工具：高频的搜索与抓取默认就开，长尾取证能力在设置页里按需勾选，argo 本体的 28 个行为开关（缓存、重排、去重、守卫、代理、TTL 等）也从环境变量搬进了面板。密钥写进宿主凭证库，明文不回显，改完即生效。
 
 最近几个版本各修了一类问题。
+
+v2.9.8 做的是路由精度与反馈闭环。issue #18 报告的三件事——「latest」被误判进实时新闻、人民网匹配不到时回默认 feed、local_bing 只命中「2026」——都已复现并修掉；顺着这条线回放真实查询，又把 16 类同类误触发收窄：品牌名里的「雪」、产品名里的「火山引擎」、UI 排障里的「图标」、工商与金融字段里的「代码」、代码语境里的「汇率」等。SERP 覆盖率门与 CJK 交叉验证同时落地，避免「有结果就算相关」。感谢 @wpp666 提供的复现与定位。
 
 v2.9.7 修的是三个老毛病。DSH 宿主里的 AI 要读一个网址时，走的是宿主自带的抓取，短链跳转和 JS 挑战页经常直接失败，argo 的抓取链根本用不上；这版把宿主的读网址接到 argo 上，这类页面从失败变成成功，普通页面没有变化。路由候选池里原先混着 18 个「只能显式指定」的引擎，万一被自动选中，唯一的付费引擎就会悄悄扣费；如今候选池里没有它们，要用必须写明白。引擎每成功一次，熔断器都要加锁重写一次磁盘；健康状态下这版已经零文件开销，多个引擎的记账也合并成一笔事务。开源协议同时从 MIT 换成了 Apache-2.0，公司商用更放心。
 
@@ -794,6 +801,7 @@ argo/
 
 | 版本 | 说明 |
 |------|------|
+| **v2.9.8** | **路由精度审计 + issue #18/#19 修复 + 测试态隔离**：回放真实查询收窄 16 类误触发（品牌名/产品名/字段名/ASCII 子串），SERP 覆盖率门与 CJK 交叉验证落地；nightly 空日志、people_daily 默认 feed、缓存命中守卫一并收口；全量测试按用例隔离 adaptive/熔断状态。感谢 @wpp666 的复现与定位。详见 [发布说明](docs/RELEASE_NOTES_v2.9.8.md) |
 | **v2.9.7** | **架构收口 + DSH web_fetch 占位 + License 转 Apache-2.0**：宿主 web_fetch 改走 argo 抓取链，JS 挑战页与跨源跳转从失败变成功；18 个 explicit_only 引擎从路由候选池剔除，堵住 auto 档误调付费引擎扣费；熔断、记账、配额恢复与路由缓存一批状态契约收口。 |
 | **v2.9.6** | **DeepSeek Search 接入 + 查询操作符契约 + 传输层去重付费 + 路由快照门**：新引擎 `deepseek_search` 默认启用（445-510ms，权威分级 / rerank_score / 时间窗唯一全覆盖）；查询操作符收敛为契约层；POST 连接池复用省 320-561ms/次；路由决策变成可 diff 的 golden。 |
 | **v2.9.5** | **汇率查询专域 + 去重双轨 + 排序误杀修复 + daemon 多检出隔离**：新增 `fx_query` 域，汇率与中间价直接出即期与快讯，不再落进百科词条；去重补站后缀归一与模糊复核；daemon 落盘名字按检出目录隔离，多 worktree 不再互抢。 |

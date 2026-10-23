@@ -4,7 +4,7 @@
 
 LiteRT is Google's on-device ML runtime for Android and the successor to TensorFlow Lite (renamed 2024-09): PyTorch models are converted with Google's `litert-torch` into `.tflite` files that run every op on the phone's GPU through [`CompiledModel`](https://ai.google.dev/edge/litert) (ML Drift), e.g. DINOv2 ViT-S/14 at 448² runs in 53.6 ms on a Galaxy S26 GPU ([npubench](npubench/), LiteRT 2.2.0, median of 50 runs, 2026-08).
 
-This repository is the model zoo for that path: **91 converted models** (as of 2026-09-08), each with its download, input/output shapes, preprocessing, the conversion script that produced it, and a standalone Android sample app (Kotlin). No MediaPipe and no vendor SDK: the `.tflite` graphs run on `CompiledModel` GPU with every op delegated (no CPU fallback), and the four 3B chat models run on LiteRT-LM. The GPU-compatibility rewrites these conversions need are catalogued in [docs/LITERT_CONVERSION_GUIDE.md](docs/LITERT_CONVERSION_GUIDE.md) and packaged in [`litert_gpu_toolkit/`](litert_gpu_toolkit/).
+This repository is the model zoo for that path: **91 converted models** (as of 2026-09-08), each with its download, input/output shapes, preprocessing, the conversion script that produced it, and a standalone Android sample app (Kotlin). No MediaPipe and no vendor SDK: the `.tflite` graphs run on `CompiledModel` GPU with every op delegated (no CPU fallback), and the chat models run on LiteRT-LM. The GPU-compatibility rewrites these conversions need are catalogued in [docs/LITERT_CONVERSION_GUIDE.md](docs/LITERT_CONVERSION_GUIDE.md) and packaged in [`litert_gpu_toolkit/`](litert_gpu_toolkit/).
 
 **If you like this repository, please give it a star.**
 
@@ -117,10 +117,12 @@ This repository is the model zoo for that path: **91 converted models** (as of 2
 | [d1-3B](#d1-3b-typed-decisions-desktop) | Typed decisions: yes-no / choice / score questions about a text, a JSON value or a photo, a probability for every option | Apple M4 Max (Mac, Metal float32) | 3 questions in 153.9 ms, a photo and 1 question in 389.3 ms | [🤗 HF](https://huggingface.co/litert-community/d1-3B-LiteRT) |
 | [clef-flash](#clef-flash-typed-decisions-desktop) | Typed decisions: yes-no / choice / score questions about a text, a JSON value or a photo, every question answered at once with a probability for every option | Apple M4 Max (Mac, Metal float32) | a 236-token request in 360.7 ms, a 1,007-token request in 1,346.9 ms, a request with one photo (448 px tile, 688 tokens) in 1,493.8 ms | [🤗 HF](https://huggingface.co/litert-community/clef-flash-LiteRT) |
 | [Phocinae-Largha-150M](#phocinae-largha-150m-typed-decisions) | Typed decisions: choice / score / yes-no questions about a text, calibrated probabilities (EN / ZH) | Galaxy S26 | 19.8 ms per question at 384 tokens (NPU), 22.9 ms (GPU FP16); a 3-question request in 114 ms (NPU, the editor) | [🤗 HF](https://huggingface.co/litert-community/Phocinae-Largha-150M-LiteRT) |
+| [Timestral-209M](timestral/) | Time-series forecasting: 21 quantiles for up to 1,024 steps of your own series (univariate, context up to 8,192 steps); weights: Mistral AI Modified MIT License (condition 2: no rights if the company's or employer's monthly revenue exceeds $20 million) | Galaxy S26 | 21.1 ms per forecast (NPU), 30.8 ms (GPU FP16), 57.5 ms (CPU int8, 4 threads): a 120-value series, 300-step horizon, median of 10 forecasts in the sample app's debug build | [🤗 HF](https://huggingface.co/mlboydaisuke/Timestral-209M-LiteRT) |
 | [Falcon3-3B-Instruct](#falcon3-3b-instruct) | LLM chat (LiteRT-LM) | iPhone 17 Pro | ~27 tok/s | [🤗 HF](https://huggingface.co/mlboydaisuke/Falcon3-3B-Instruct-LiteRT) |
 | [Llama-3.2-3B-Instruct](#llama-32-3b-instruct) | LLM chat (LiteRT-LM) | iPhone 17 Pro | ~18.5 tok/s | [🤗 HF](https://huggingface.co/mlboydaisuke/Llama-3.2-3B-Instruct-LiteRT) |
 | [Ministral-3-3B-Instruct-2512](#ministral-3-3b-instruct-2512) | LLM chat (LiteRT-LM) | iPhone 17 Pro | ~17.6 tok/s | [🤗 HF](https://huggingface.co/mlboydaisuke/Ministral-3-3B-Instruct-2512-LiteRT) |
 | [SmolLM3-3B](#smollm3-3b) | LLM chat (LiteRT-LM) | iPhone 17 Pro | ~22.5 tok/s | [🤗 HF](https://huggingface.co/mlboydaisuke/SmolLM3-3B-LiteRT) |
+| [Qwen3.8-27B](#qwen38-27b-mac-chat-app) | LLM chat (LiteRT-LM), a 27B model in a Mac app ([litertlm-chat-mac](litertlm-chat-mac/)) | Apple M4 Max (Mac, GPU) | ~18.4 tok/s | [🤗 HF](https://huggingface.co/litert-community/Qwen3.8-27B) |
 | [Qwen3-ASR-1.7B](asr_litertlm/) | Speech recognition, 30 languages (LiteRT-LM) | Galaxy S26 (CPU) | 2.49 s for a 6.4 s clip (RTF 0.39) | [🤗 HF](https://huggingface.co/litert-community/Qwen3-ASR-1.7B) |
 | [Qwen3-ASR-1.7B-15s](asr_litertlm/) | Speech recognition, 30 languages, the same weights with a 15 s encoder window (LiteRT-LM) | Galaxy S26 (CPU) | 1.79 s for a 6.4 s clip (RTF 0.28) | [🤗 HF](https://huggingface.co/litert-community/Qwen3-ASR-1.7B) |
 | [Fun-ASR-Nano-2512](asr_litertlm/) | Speech recognition, zh / en / ja (LiteRT-LM) | Galaxy S26 (CPU) | 1.19 s for a 6.4 s clip (RTF 0.19) | [🤗 HF](https://huggingface.co/litert-community/Fun-ASR-Nano-2512) |
@@ -913,12 +915,4 @@ Encoder converted via **litert-torch** with SigmoidGELU patch. Decoder exported 
 
 **Preprocessing**: 16kHz mono audio → log-mel spectrogram (80 bins, 3000 frames). Mel computation in Kotlin with Cooley-Tukey FFT.
 
-**Decoding**: Autoregressive greedy decoding. Prompt: `[SOT, language, transcribe, no_timestamps]`. Max 224 tokens.
-
-**Sample app**: [whisper/](whisper/) — Microphone recording + audio file picker + language selector + transcription display.
-
-**Original project**: [openai/whisper](https://github.com/openai/whisper) | [MIT](https://github.com/openai/whisper/blob/main/LICENSE)
-
-### wav2vec2-CTC (fully-GPU, single-pass)
-
-[wav2vec2-base-960h](https://huggingface.co/facebook/wav2vec2-base-960h) (Facebook, Apache-2.0) running **fully on the CompiledModel GPU**. Unlike Whisper's encoder–decoder, the **CTC** head needs **no autoregressive decoder** — it's one GPU graph, a **single forward pass** (`997/997` LITERT_CL on a Pixel 8a, **~22 ms** for a 10 s clip, device-vs-PyTorch corr
+**Decoding*

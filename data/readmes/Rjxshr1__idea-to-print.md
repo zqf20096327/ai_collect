@@ -15,15 +15,18 @@
 | 功能 | 提供什么 |
 |---|---|
 | 文字与图片入口 | 生成候选概念、记录设计选择，或直接导入 PNG/JPEG/WebP；保存原图及 SHA256 |
-| 官方图生 3D | 腾讯混元 3.1 官方 SDK 适配器，支持主图和指定补充视角、Geometry 白模及 150 万面请求 |
+| 官方图生 3D | 腾讯混元 3.1 官方 SDK 适配器，支持主图和指定补充视角、Geometry 白模，按打印尺寸自动选择面数（上限 150 万） |
 | 分阶段造型 | 依次检查参考一致性、轮廓与体积、毛束/鳞片/羽片；分别记录外观和制造结果 |
 | Blender 模型处理 | 保留原始高模，导出 STL、GLB、BLEND 和轻量预览；支持尺寸归一或保留原毫米坐标 |
 | 有限区域修形 | 在指定区域柔化、钝化、加厚，带保护区和位移预算 |
+| 名字底座 | 给手办加一个向前加长的圆角底座，名字（支持中文）和日期凸起在顶面，自动加粗过细的笔画，合并成一个可打印的封闭实体 |
 | 实际模型预览 | 从最终 STL 渲染正面、侧面、左右斜面、背面和底面；支持脸部特写和中断续渲染 |
+| 3D 转台 / AR 预览页 | 把 STL 转成真实尺寸的 GLB，生成可分享的网页：自动旋转、可拖动缩放、标注打印尺寸，手机上可按实际大小放到桌面上看（AR） |
 | 统一执行账本 | `next/status/record/reconcile/export` 管理阶段、尝试、远端任务及证据；候选、最佳和交付版本分开 |
 | 有限尝试与恢复 | 默认 2 次生成、3 次局部修复、1 次参考纠正；连续无改善退出策略；已有任务继续查询或下载 |
 | Bambu 切片 | 展开预设继承链，固定摆盘、快照保存机器/工艺/耗材配置，在 Windows 或 macOS 上调用离线 CLI 切片并核验结果 |
 | 切片预览与交付 | 提取原始 G-code 直接预览，保存关键层截图；导出模型、切片、评价历史和统一文件清单 |
+| 打印延时视频 | 打印时每层从打印机相机抓一帧（只读），合成带层号进度的 MP4/GIF，可在片头放参考图、片尾放实物照片 |
 
 用户与 Agent 的评价分别保存，同一模型的用户否决不会被后续 Agent 评价覆盖。模型、配置或截图变更后，关联检查自动失效。结果保留 `PASS / FAIL / UNKNOWN`；达到尝试上限时，交付最佳候选及未完成项。内置几何检查会逐对检测自相交；在配置文件中填写零件的阈值后，还会测量每个面的壁厚、细节与连接厚度，以及底面接触面积和重心稳定性（同时按实心和空心外壳计算，取最差值）。缺少阈值的检查保持 `UNKNOWN`，作业止于 `preview_complete`；全部几何检查通过并完成外观与切片审查后，才会标记 `print_ready`。作业目录可以整体移动或改名，已记录的证据路径会自动跟随。
 
@@ -83,6 +86,16 @@ python install.py --destination ~/.agents/skills
 
 图像生成与桌面控制由 Agent 宿主提供。混元官方 API 需要腾讯云凭据和可用额度；Blender 与切片在本地运行，云端图生 3D 不占用本机推理显存。
 
+## 一键体验
+
+装好 `requirements.txt` 和 `requirements-modeling.txt` 后，离线跑一遍完整流程，不需要账号、网络或打印机：
+
+```bash
+python skills/idea-to-print/scripts/demo.py --out demo
+```
+
+它用一张合成参考图建作业，生成一只坐在圆底座上的小猫雕塑，跑完 16 项几何检查和网格审计，再生成一个 3D 转台 / AR 预览页，并打印每一步的实际命令。本机装有 Bambu Studio（Windows 或 macOS）时，加 `--slice` 还会展开预设并离线切片，`--printer` 可选 `a1mini`、`a1`、`p1s`、`x1c`。切片结果不会发送到打印机。
+
 ## 命令行入口
 
 创建图片作业并查看下一步：
@@ -98,6 +111,36 @@ python skills/idea-to-print/scripts/workflow_v2.py status --job jobs/my-sculptur
 
 # 检查官方 API 配置，不发起生成
 python skills/printable-modeling/scripts/hunyuan31_api.py config-check
+```
+
+检查模型几何（配置文件以 `printability-profile.example.json` 为模板，按零件填写阈值），退出码 0=PASS、2=FAIL、3=UNKNOWN：
+
+```bash
+python skills/3d-print-workflow/scripts/printability_gate.py inspect \
+  --mesh jobs/my-sculpture/outputs/model-v1.stl \
+  --profile jobs/my-sculpture/work/printability-profile.json \
+  --out jobs/my-sculpture/work/geometry-v1.json
+```
+
+离线切片（以 macOS 上的 A1 mini 为例；Windows 的预设目录在 Studio 安装目录下的 `resources/profiles/BBL`）：
+
+```bash
+python skills/3d-print-workflow/scripts/slice_pipeline.py resolve-profiles \
+  --out jobs/my-sculpture/work/profiles \
+  --search /Applications/BambuStudio.app/Contents/Resources/profiles/BBL \
+  --machine "Bambu Lab A1 mini 0.4 nozzle" --process "0.20mm Standard @BBL A1M" \
+  --filament "Bambu PLA Basic @BBL A1M"
+
+python skills/3d-print-workflow/scripts/slice_pipeline.py prepare \
+  --mesh jobs/my-sculpture/outputs/model-v1.stl --out jobs/my-sculpture/work/slice-v1 \
+  --machine jobs/my-sculpture/work/profiles/machine.json \
+  --process jobs/my-sculpture/work/profiles/process.json \
+  --filament jobs/my-sculpture/work/profiles/filament.json \
+  --slicer /Applications/BambuStudio.app/Contents/MacOS/BambuStudio \
+  --slicer-version 02.08.02.61 --bed 180 180 180
+
+python skills/3d-print-workflow/scripts/run_bambu_slice.py --launch jobs/my-sculpture/work/slice-v1/launch.json
+python skills/3d-print-workflow/scripts/slice_pipeline.py collect --run jobs/my-sculpture/work/slice-v1
 ```
 
 参考检查通过后，由 Agent 提交生成、记录实际结果并继续下一阶段。提交响应不确定且没有 JobId 时停止重投；已有 JobId 则继续查询同一任务，下载失败只恢复下载。

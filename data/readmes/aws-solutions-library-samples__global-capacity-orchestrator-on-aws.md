@@ -90,7 +90,7 @@ Running accelerated workloads across Regions means finding capacity, standing up
 - An AWS account you can create infrastructure in, with credentials the AWS CLI can use
 - Git and a container runtime: [Docker](https://docs.docker.com/reference/), [Finch](https://runfinch.com/) or [Podman](https://podman.io/docs) ([Colima](https://github.com/abiosoft/colima) also works)
 
-The dev container brings everything else — Python 3.14, Node.js 24, CDK, [kubectl](https://kubernetes.io/docs/reference/kubectl/), the [AWS CLI](https://aws.amazon.com/cli/), and Docker CLI + [Buildx](https://github.com/docker/buildx) — at pinned versions. A host install is possible but advanced; see *More ways to run GCO* below.
+The dev container brings everything else — Python 3.14, Node.js 24, CDK, [kubectl](https://kubernetes.io/docs/reference/kubectl/), the [AWS CLI](https://aws.amazon.com/cli/) with the Session Manager plugin, and Docker CLI + [Buildx](https://github.com/docker/buildx) — at pinned versions. A host install is possible but advanced; see *More ways to run GCO* below.
 
 ### Deploy
 
@@ -309,9 +309,9 @@ GCO ships with the **GCO MCP server** — an [MCP server](gco_mcp/) exposing 144
     <th><a href="https://code.visualstudio.com/docs/copilot/chat/mcp-servers">VS Code</a></th>
   </tr>
   <tr>
-    <td><a href="https://kiro.dev/launch/mcp/add?name=gco&config=%7B%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22--python%22%2C%223.14%22%2C%22--from%22%2C%22git%2Bhttps%3A%2F%2Fgithub.com%2Faws-solutions-library-samples%2Fglobal-capacity-orchestrator-on-aws.git%40v8.13.1%22%2C%22gco-mcp%22%5D%7D"><img src="https://kiro.dev/images/add-to-kiro.svg" alt="Add to Kiro"></a></td>
-    <td><a href="https://cursor.com/en/install-mcp?name=gco&config=eyJjb21tYW5kIjoidXZ4IiwiYXJncyI6WyItLXB5dGhvbiIsIjMuMTQiLCItLWZyb20iLCJnaXQraHR0cHM6Ly9naXRodWIuY29tL2F3cy1zb2x1dGlvbnMtbGlicmFyeS1zYW1wbGVzL2dsb2JhbC1jYXBhY2l0eS1vcmNoZXN0cmF0b3Itb24tYXdzLmdpdEB2OC4xMy4xIiwiZ2NvLW1jcCJdfQ%3D%3D"><img src="https://cursor.com/deeplink/mcp-install-light.svg" alt="Add to Cursor"></a></td>
-    <td><a href="https://insiders.vscode.dev/redirect/mcp/install?name=gco&config=%7B%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22--python%22%2C%223.14%22%2C%22--from%22%2C%22git%2Bhttps%3A%2F%2Fgithub.com%2Faws-solutions-library-samples%2Fglobal-capacity-orchestrator-on-aws.git%40v8.13.1%22%2C%22gco-mcp%22%5D%7D"><img src="https://img.shields.io/badge/Install_on-VS_Code-FF9900?style=flat-square" alt="Install on VS Code" height="28"></a></td>
+    <td><a href="https://kiro.dev/launch/mcp/add?name=gco&config=%7B%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22--python%22%2C%223.14%22%2C%22--from%22%2C%22git%2Bhttps%3A%2F%2Fgithub.com%2Faws-solutions-library-samples%2Fglobal-capacity-orchestrator-on-aws.git%40v8.14.1%22%2C%22gco-mcp%22%5D%7D"><img src="https://kiro.dev/images/add-to-kiro.svg" alt="Add to Kiro"></a></td>
+    <td><a href="https://cursor.com/en/install-mcp?name=gco&config=eyJjb21tYW5kIjoidXZ4IiwiYXJncyI6WyItLXB5dGhvbiIsIjMuMTQiLCItLWZyb20iLCJnaXQraHR0cHM6Ly9naXRodWIuY29tL2F3cy1zb2x1dGlvbnMtbGlicmFyeS1zYW1wbGVzL2dsb2JhbC1jYXBhY2l0eS1vcmNoZXN0cmF0b3Itb24tYXdzLmdpdEB2OC4xNC4xIiwiZ2NvLW1jcCJdfQ%3D%3D"><img src="https://cursor.com/deeplink/mcp-install-light.svg" alt="Add to Cursor"></a></td>
+    <td><a href="https://insiders.vscode.dev/redirect/mcp/install?name=gco&config=%7B%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22--python%22%2C%223.14%22%2C%22--from%22%2C%22git%2Bhttps%3A%2F%2Fgithub.com%2Faws-solutions-library-samples%2Fglobal-capacity-orchestrator-on-aws.git%40v8.14.1%22%2C%22gco-mcp%22%5D%7D"><img src="https://img.shields.io/badge/Install_on-VS_Code-FF9900?style=flat-square" alt="Install on VS Code" height="28"></a></td>
   </tr>
 </table>
 <!-- END MCP INSTALL TABLE -->

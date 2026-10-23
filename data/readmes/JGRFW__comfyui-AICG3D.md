@@ -1,12 +1,14 @@
-<img width="1424" height="696" alt="image" src="https://github.com/user-attachments/assets/5a6c88f8-df4e-4091-b06b-ca799349f6c1" />
-<img width="1532" height="626" alt="image" src="https://github.com/user-attachments/assets/83787eb7-761e-4ddc-b70f-5bf6cd36c4ef" />
-<img width="1395" height="666" alt="image" src="https://github.com/user-attachments/assets/fcc53765-8818-470f-bacf-ceaf5a93fec3" />
+<img width="1735" height="964" alt="屏幕截图 2026-10-23 193931" src="https://github.com/user-attachments/assets/12e0430b-2694-466d-abc1-e59c53afd5ac" />
+<img width="1902" height="701" alt="屏幕截图 2026-10-23 210816" src="https://github.com/user-attachments/assets/43a3f73e-5519-4518-92de-1435f17b87fb" />
+<img width="2154" height="846" alt="屏幕截图 2026-10-23 205631" src="https://github.com/user-attachments/assets/b1abcf32-c77d-4947-af86-1c6600b2133b" />
+
+工作流下载地址：https://github.com/JGRFW/comfyui-AICG3D/tree/main/workflows
 <h1 align="center">短剧工作台</h1>
 <h3 align="center">ComfyUI · MiniMax H3 · 本地无限长视频生成工作流</h3>
 <p align="center"><strong>官方名称：短剧工作台</strong> · <strong>核心搜索词：无限时长视频的 MiniMax H3 工作流</strong></p>
 <p align="center">GitHub：<a href="https://github.com/JGRFW/comfyui-AICG3D">https://github.com/JGRFW/comfyui-AICG3D</a></p>
 
-短剧工作台（ComfyUI-AICG3D-Integrated）是一个专为专业 AI 视频创作者打造的深度整合插件包。它将 MiniMax H3 的核心生成能力、智能分段解析与高阶渲染策略集成于一体，旨在为用户提供一个**零冲突、工业级、可预测**的视频创作环境。
+短剧工作台（comfyui-AICG3D）是一个专为专业 AI 视频创作者打造的深度整合插件包。它将 MiniMax H3 的核心生成能力、智能分段解析与高阶渲染策略集成于一体，旨在为用户提供一个**零冲突、工业级、可预测**的视频创作环境。
 
 ## 官方搜索入口
 
@@ -21,17 +23,47 @@
 
 官方仓库地址：https://github.com/JGRFW/comfyui-AICG3D
 
+## 🆕 v1.1.17 更新摘要
+
+完整说明见 [RELEASE_NOTES_v1.1.17.md](release_notes/RELEASE_NOTES_v1.1.17.md)。
+
+- **全能参考采样预览恢复**：修复“高级·加速”渲染器解码了预览帧却未回传原生预览通道的问题，全能参考、图生视频和数字人模式均可实时显示采样预览。
+- **未引用音频不再误用**：`Ref2VA 全能参考` 只有提示词明确写入有效的 `<Audio N>` 时才读取资源库音频；没有音频标签时自动忽略音频，图片与视频参考保持不变。
+- **数字人音频驱动保持兼容**：数字人（锁定音频）仍会直接把资源库音频作为驱动音轨，不要求额外填写 `<Audio N>`。
+
+## v1.1.16 更新摘要
+
+完整说明见 [RELEASE_NOTES_v1.1.16.md](release_notes/RELEASE_NOTES_v1.1.16.md)。
+
+- **资源库音频/视频直接引用**：点击音频、视频卡片会按当前光标位置插入 `<Audio N>` / `<Video N>`，播放按钮独立操作，不再抢占卡片点击。
+- **截取时长与选段窗口**：音频/视频裁剪支持输入 `5`、`5 秒`、`5s` 或 `0:05`；新增“选段位置”滑块可整体移动固定时长片段。
+- **视频段落布局修复**：提示词编辑区占满可用空间，参数和按钮固定行高，展开资源库后不再出现大块空白。
+- **旧工作流引导帧迁移**：自动修复素材 JSON 错位到“引导帧位置”的旧数据，恢复为数字 `0` 并保留素材引用。
+
+## 🆕 v1.1.15 更新摘要
+
+完整说明见 [RELEASE_NOTES_v1.1.15.md](release_notes/RELEASE_NOTES_v1.1.15.md)。
+
+- **目录结构唯一命名空间加固**：`h3easy/`、`h3goohai/` 迁移至 `aicg3d_h3easy/`、`aicg3d_h3goohai/`，进一步降低与同源插件的加载冲突。
+- **新增 3D 人物白模与分段采样器**：`MiniMax H3 Aicg 3D人物白模`（视频→动作骨架）与 `分段采样器` 节点。
+- **新增 11 号多参考·首尾帧·数字人、15 号分段人物场景动作迁移替换工作流**。
+- **数字人长音频自动分段**：超长音频自动切段顺序生成，配合 SelfLift 潜空间放大提速。
+- **修复数字人模式渲染报错**：修复 `NameError: name 'self' is not defined`。
+
 ## 🆕 v1.1.14 更新摘要
 
-完整说明见 [RELEASE_NOTES_v1.1.14.md](RELEASE_NOTES_v1.1.14.md)。
+完整说明见 [RELEASE_NOTES_v1.1.14.md](release_notes/RELEASE_NOTES_v1.1.14.md)。
 
 - **Registry 搜索修复**：修复安全扫描标记的 PyTorch 不安全反序列化。
 - **安全加载权重**：非 SafeTensors 的 latent 放大模型改用 `weights_only=True` 加载。
 - **公开管理器可检索**：新版本通过自动扫描后，其他电脑可直接在自定义节点管理器搜索安装。
+- **开源兼容性加固**：内部 Python 包、HTTP 路由和前端扩展名全部改为 AICG3D 唯一命名空间，降低与同源插件的加载冲突。
+- **分段解析正式节点 ID**：改为 `AICG3D_H3PromptSegmentSplit`；未安装旧 PromptSplit 插件时仍保留旧 ID 兼容别名，新工作流不会争用通用节点名。
+- **API Key 不回传浏览器**：提示词优化设置只返回“是否已保存”，留空保存会保留原密钥，并支持显式清除。
 
 ## v1.1.13 更新摘要
 
-完整说明见 [RELEASE_NOTES_v1.1.13.md](RELEASE_NOTES_v1.1.13.md)。
+完整说明见 [RELEASE_NOTES_v1.1.13.md](release_notes/RELEASE_NOTES_v1.1.13.md)。
 
 - **模型目录树**：加载器下拉按 `MiniMax`、`Krea2`、`Qwen`、`LTX2.5` 等文件夹分组显示。
 - **LoRA 多级目录**：支持 `Krea2/Krea2-风格` 这类多层文件夹展开选择。
@@ -40,7 +72,7 @@
 
 ## v1.1.12 更新摘要
 
-完整说明见 [RELEASE_NOTES_v1.1.12.md](RELEASE_NOTES_v1.1.12.md)。
+完整说明见 [RELEASE_NOTES_v1.1.12.md](release_notes/RELEASE_NOTES_v1.1.12.md)。
 
 - **缺失素材自动检查**：打开工作流后批量检查图片、音频和视频是否存在。
 - **精确段落提示**：提示缺失文件属于哪一个视频段落，资源卡片同步显示红色“素材缺失”。
@@ -49,7 +81,7 @@
 
 ## v1.1.11 更新摘要
 
-完整说明见 [RELEASE_NOTES_v1.1.11.md](RELEASE_NOTES_v1.1.11.md)。
+完整说明见 [RELEASE_NOTES_v1.1.11.md](release_notes/RELEASE_NOTES_v1.1.11.md)。
 
 - **接入 Comfy Registry**：补齐官方节点管理器要求的项目名称、Publisher、显示名称、图标、关键词、仓库和问题反馈地址。
 - **官方管理器可检索**：发布后可搜索 `AICG3D`、`短剧工作台` 或 `MiniMax H3` 找到本插件。
@@ -57,15 +89,15 @@
 
 ## v1.1.10 更新摘要
 
-完整说明见 [RELEASE_NOTES_v1.1.10.md](RELEASE_NOTES_v1.1.10.md)。
+完整说明见 [RELEASE_NOTES_v1.1.10.md](release_notes/RELEASE_NOTES_v1.1.10.md)。
 
 - **彻底取消上游 Easy 依赖**：单独安装本插件即可使用资源库，不需要另外安装 `ComfyUI-MiniMaxH3-Easy`。
 - **修复干净环境启动失败**：移除启动日志中的 Emoji 输出，避免 Windows GBK 控制台无法编码导致整个插件被误判为加载失败。
-- **资源库面板内置注册**：只加载 `ComfyUI-AICG3D-Integrated` 时，`MiniMax H3 Aicg资源库` 也会正常显示上传区、图片、音频和视频面板。
+- **资源库面板内置注册**：只加载 `comfyui-AICG3D` 时，`MiniMax H3 Aicg资源库` 也会正常显示上传区、图片、音频和视频面板。
 
 ## v1.1.9 更新摘要
 
-完整说明见 [RELEASE_NOTES_v1.1.9.md](RELEASE_NOTES_v1.1.9.md)。
+完整说明见 [RELEASE_NOTES_v1.1.9.md](release_notes/RELEASE_NOTES_v1.1.9.md)。
 
 - **修复资源库白板**：`mediaLoaderResize` 测量后不再恢复旧的隐藏状态，面板会稳定保持可见。
 - **同步可见状态**：同时修复 `hidden`、`type`、`options.hidden`、`options.canvasOnly` 与 `_state`，避免工作流重载后只恢复一半。
@@ -73,14 +105,14 @@
 
 ## 🆕 v1.1.8 更新摘要
 
-完整说明见 [RELEASE_NOTES_v1.1.8.md](RELEASE_NOTES_v1.1.8.md)。
+完整说明见 [RELEASE_NOTES_v1.1.8.md](release_notes/RELEASE_NOTES_v1.1.8.md)。
 
 - 为 13 号无限长视频工作流最终合成补齐 `imageio-ffmpeg` 运行依赖。
 - 缺少 FFmpeg 时给出中文安装提示和 ComfyUI Python 安装命令。
 
 ## 🆕 v1.1.7 更新摘要
 
-完整说明见 [RELEASE_NOTES_v1.1.7.md](RELEASE_NOTES_v1.1.7.md)。
+完整说明见 [RELEASE_NOTES_v1.1.7.md](release_notes/RELEASE_NOTES_v1.1.7.md)。
 
 - **资源库点击引用严格跟随光标**：图片、视频和音频标签现在插入到用户最后操作的位置，不再追加到提示词末尾。
 - **兼容隐藏与可见 textarea**：优先使用用户实际点击的编辑框，同时保留原提示词编辑器的选区恢复。
@@ -88,7 +120,7 @@
 
 ## 🆕 v1.1.6 更新摘要
 
-完整说明见 [RELEASE_NOTES_v1.1.6.md](RELEASE_NOTES_v1.1.6.md)。
+完整说明见 [RELEASE_NOTES_v1.1.6.md](release_notes/RELEASE_NOTES_v1.1.6.md)。
 
 - **五种 H3 任务模式已接入执行链**：`Ref2VA 全能参考（推荐）`、`T2VA 纯文本`、`I2VA 首帧参考`、`FL2VA 首尾帧参考`、`L2VA 尾帧参考`。
 - **模式会真实改变生成行为**：素材数量校验、首尾帧条件、模型角色和提示词优化规则都会随模式切换。
@@ -99,7 +131,7 @@
 
 ## 🆕 v1.1.5 更新摘要
 
-完整说明见 [RELEASE_NOTES_v1.1.5.md](RELEASE_NOTES_v1.1.5.md)。
+完整说明见 [RELEASE_NOTES_v1.1.5.md](release_notes/RELEASE_NOTES_v1.1.5.md)。
 
 - **三个渲染器支持外部采样**：高级·加速、一采、二采放大均新增“外部采样器”和“外部调度器（Sigmas）”可选输入。
 - **二采全路径支持**：二采整幅采样与分块采样都能使用外部采样器和 Sigmas。
@@ -109,7 +141,7 @@
 
 ## v1.1.4 更新摘要
 
-完整说明见 [RELEASE_NOTES_v1.1.4.md](RELEASE_NOTES_v1.1.4.md)。
+完整说明见 [RELEASE_NOTES_v1.1.4.md](release_notes/RELEASE_NOTES_v1.1.4.md)。
 
 - **外部采样器接口**：无限段落顺序生成（全局设置）新增“外部采样器”和“外部调度器（Sigmas）”输入，连接后自动覆盖内置采样器、调度器、步数和 denoise 截断。
 - **DMAD 官方四步加速**：支持 `DMAD Sampler (re-noise)` + `DMAD Sigmas`，官方推荐参数为 LoRA 强度 1.0、步数 4、shift 12。
@@ -119,7 +151,7 @@
 
 ## v1.1.3 更新摘要
 
-完整说明见 [RELEASE_NOTES_v1.1.3.md](RELEASE_NOTES_v1.1.3.md)。
+完整说明见 [RELEASE_NOTES_v1.1.3.md](release_notes/RELEASE_NOTES_v1.1.3.md)。
 
 - **视频段落编辑区重排**：提示词框自动占据节点的主要伸缩空间，底部操作按钮固定为 32px，不再出现大面积空白。
 - **资源库展开更稳定**：资源库打开时最高 320px，内容过多时内部滚动；提示词仍保留可编辑空间，节点可自由拖高且不会回弹。
@@ -144,7 +176,7 @@
 
 ## v1.1.1 更新摘要
 
-完整说明见 [RELEASE_NOTES_v1.1.1.md](RELEASE_NOTES_v1.1.1.md)。
+完整说明见 [RELEASE_NOTES_v1.1.1.md](release_notes/RELEASE_NOTES_v1.1.1.md)。
 
 - **跨段接缝曝光锁定**：匹配上一段尾帧的低频色光，使用有上限的全局亮度对齐，解决分段拼接处明暗跳变。
 - **拼接模糊修复**：修正接缝亮度过渡的运算顺序，避免为平滑曝光而把整段画面模糊。
@@ -171,7 +203,7 @@
 
 ## 🛠️ 安装与部署
 
-1.  **快速安装**：将 ComfyUI-AICG3D-Integrated 文件夹复制到 custom_nodes/ 目录下。
+1.  **快速安装**：将 `comfyui-AICG3D` 文件夹复制到 ComfyUI 的 `custom_nodes/` 目录下。
 2.  **启动服务**：重启 ComfyUI。
 3.  **定位节点**：在右键菜单中找到 **AICG3D** 分类即可开始创作。
 
@@ -182,10 +214,17 @@
 如果安装后仍提示缺少 FFmpeg，请在当前 ComfyUI 使用的 Python 环境执行：
 
 ```powershell
-python.exe -m pip install imageio-ffmpeg
+python.exe -m pip install -r requirements.txt
 ```
 
 然后重启 ComfyUI。请勿安装到系统 Python 或其他虚拟环境，否则节点仍可能找不到。
+
+### 官方工作流的附加节点
+
+- 13 号 1.2 工作流使用 `DMADSampler` / `DMADSigmas`，需安装 [ComfyUI-DMAD](https://github.com/Yzmblog/DMAD)。
+- 11 号数字人工作流中的 `MiniMaxH3DMADSampler` 来自 `Spark-H3`；没有该节点时请改用工作流内可用的 AICG3D 采样器，或安装对应节点包。
+- 12、13 号工作流里的 `Label (rgthree)` 只是画布注释；缺少 [rgthree-comfy](https://github.com/rgthree/rgthree-comfy) 时不影响后端生成，但建议安装以正常显示标签。
+
 
 > **💡 迁移指南**：由于采用了强制前缀，若您迁移旧版工作流，请将原有的 MiniMaxH3Easy 节点手动替换为对应的 AICG3D_H3_ 节点。
 
@@ -202,4 +241,4 @@ python.exe -m pip install imageio-ffmpeg
 
 ## 📜 开源协议
 
-本项目遵循 GNU GPL v3.0 协议开源。
+本项目遵循 GNU GPL v3.0 或更高版本（GPL-3.0-or-later）协议开源。

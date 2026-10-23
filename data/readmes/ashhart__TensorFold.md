@@ -6,6 +6,39 @@ Serving needs no Python or MLX installation.
 
 Building with a coding agent? Have it load the [contributor skill](docs/recipes/SKILL.md) before it writes any code.
 
+## Contributing with agents
+
+Please use [Agent Traffic Control](https://github.com/ashhart/ATC) before editing TensorFold so contributors and agents can avoid duplicate work and conflicting changes.
+Check the [live agent radar](https://tensorfold.dev/atc) before choosing an issue and follow [CONTRIBUTING.md](CONTRIBUTING.md) and the [ATC contributor instructions](docs/atc/SKILL.md).
+
+Install or upgrade ATC to 0.7.0 or later, then run from an updated TensorFold clone:
+
+```sh
+npm install -g github:ashhart/ATC
+atc check ISSUE --json
+atc claim ISSUE --json
+```
+
+Replace `ISSUE` with the issue number and claim only after a complete check says the work is free.
+TensorFold enables automatic public check-ins: a successful new claim starts an anonymous session on the radar and returns its `session` number.
+Keep that number instead of starting a duplicate session.
+For work already yours, start a session with `atc start ISSUE --json`.
+Add `--github-name` to `claim` or `start` only if you want your verified GitHub name shown; `--local` keeps a new session on your machine.
+The board shows the issue, activity state and last check-in; GitHub still associates the verification comment with its author.
+Check that `publication` is `public`; `unavailable` means the public update failed even if the local claim or session succeeded.
+
+Pulse only while the agent is working, before its five-minute check-in expires:
+
+```sh
+atc pulse ISSUE SESSION working --json
+atc who path/to/file --json
+atc overlap --json
+atc land ISSUE SESSION --json
+atc release ISSUE --json
+```
+
+Use `reviewing` or `blocked` when appropriate, land the session when it stops, and resolve overlaps before opening a pull request.
+
 ## Quick start
 
 Start with Qwen3.5-2B, the small 4-bit checkpoint checked on Metal and a GB10. The commands below download its
@@ -59,10 +92,19 @@ On Windows with an NVIDIA GPU, follow [the native Windows build guide](docs/WIND
 Use `tensorfold --help`, `tensorfold capabilities --json` and `tensorfold serve REPO --help` to inspect your binary.
 You can also serve a complete local checkpoint directory or an existing Hugging Face cache.
 
+`--parallel N` caps active requests at N; extra requests wait for a free slot.
+Omitting the flag uses `--parallel auto`, which asks for up to eight streams as memory and the engine allow.
+An explicit number is refused if the engine cannot fit that many streams.
+Read the engine's startup capacity line, such as `8 streams at once` on CUDA, for the count it accepted.
+With API authentication off, `/health` reports `live.connections` as active plus waiting requests and
+`live.waiting` as the queued count. For example, 8 connections with 4 waiting means 4 active requests.
+Completing or cancelling an active request frees its slot; cancelling a waiting request removes it from the queue.
+
 ## Mac app
 
 The [TensorFold desktop workspace](app/README.md) bundles the local engine, model downloads, hardware recommendations, live generation metrics, coding workers and document editing.
-Download the Apple-silicon [beta 8 DMG](https://github.com/ashhart/TensorFold/releases/tag/v1.0.0-beta.8), or build from [`app/`](app/README.md).
+Download the Apple-silicon [beta 9 DMG](https://github.com/ashhart/TensorFold/releases/tag/v1.0.0-beta.9), or build from [`app/`](app/README.md).
+The desktop app launches the bundled `tensorfold-native` executable directly.
 Mobile clients in `app/mobile/` remain preview software.
 
 ## Living Weights (experimental)
@@ -244,7 +286,7 @@ The binary's `capabilities --json` response lists its supported flags and platfo
 | `--drafter-bits 0\|4` | Drafter weight precision where the model offers a choice: 4 bits (the default), or 0 to keep bf16. Qwen3.8-27B on CUDA takes 4 only. |
 | `--record DIR` | Write each stream's committed tokens, positions and tapped rows under DIR, for drafter training. CUDA Nemotron only; a single stream runs through the lane rounds, and recording stops below 25 GiB free disk. |
 | `--keep-warm SECONDS` | Keep the Metal GPU active while idle for this long after a request, default 900; zero disables it. |
-| `--parallel N` | Admit up to N requests where the engine shares lanes; `auto` is the default. |
+| `--parallel N\|auto` | Cap active requests at N and queue the rest. Default `auto` asks for up to 8 as memory and the engine allow; an explicit count that cannot fit is refused. Read the accepted count at startup. |
 | `--prompt-cache-gib GIB` | Retained-prefix budget, 16 GiB by default or less where memory is short; 0 disables it. |
 | `--prompt-cache-over-cap` | Permit an explicit prefix budget past what 70% of RAM leaves once the server loads. |
 | `--learn` | Keep shared prompt prefixes on disk for new conversations to resume; the models are below the table. |
@@ -292,6 +334,8 @@ The `.metal` sources need Xcode's Metal compiler. Install full Xcode and its Met
 zig build native -Dcpu=apple_m1
 zig build test test-golden -Dcpu=apple_m1
 ```
+
+Structured output and required tool calls need the release archive's `lib/` or `zig build grammar -Dxgrammar=DIR`; prepare DIR with `git clone --branch v0.2.8 --recurse-submodules https://github.com/mlc-ai/xgrammar` (use the native build's same `--prefix` for grammar).
 
 On macOS, `test` also runs available Metal device checks. See [CONTRIBUTING.md](CONTRIBUTING.md) for the host-test subset.
 

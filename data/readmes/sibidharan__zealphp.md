@@ -97,7 +97,7 @@ docker compose up app
 
 ```bash
 # New project
-composer create-project zealphp/project:^0.4.15 my-project
+composer create-project zealphp/project:^0.4.16 my-project
 cd my-project
 php app.php
 # → https://php.zeal.ninja
@@ -452,7 +452,7 @@ App::onWorkerStart(function($server, $workerId) use ($hitCounter) {
 |--------|---------|
 | `App::mode(App::MODE_COROUTINE)` | Modern ZealPHP apps — recommended default |
 | `App::mode(App::MODE_LEGACY_CGI)` | Unmodified WordPress/Drupal — pure `require_once` apps |
-| `App::mode(App::MODE_COROUTINE_LEGACY)` | Legacy request-style PHP run **concurrently** — per-coroutine isolation of `$_GET/$_POST/$_SESSION`, `$GLOBALS`, function statics, `require_once`, silent re-declaration. `define()` isolation is opt-in via `App::defineIsolation(true)`, not part of the preset. **Requires ext-zealphp.** |
+| `App::mode(App::MODE_COROUTINE_LEGACY)` | Legacy request-style PHP run **concurrently** — per-coroutine isolation of `$_GET/$_POST/$_SESSION`, `$GLOBALS`, function statics, `require_once`, silent re-declaration. `define()` isolation is opt-in via `App::defineIsolation(true)`, not part of the preset. Statics (function-local and class) of code defined **before the server starts** (in `app.php`, or preloaded) are boot state and are shared by every request in the worker; only code loaded during a request is reset per request. **Requires ext-zealphp.** |
 | `App::mode(App::MODE_MIXED)` | Symfony/Laravel bridge — real `$_SESSION`, sequential, no CGI fork cost |
 
 The fine-grained setters (`App::superglobals()`, `App::isolation()`, `App::enableCoroutine()`, etc.) remain available for custom combinations. See the [lifecycle modes reference](https://php.zeal.ninja/coroutines#lifecycle-modes) for the full matrix.
@@ -469,16 +469,16 @@ The fine-grained setters (`App::superglobals()`, `App::isolation()`, `App::enabl
 2. Run `composer validate`, `./vendor/bin/phpunit`, and `./vendor/bin/phpstan analyse --no-progress` (level 10, zero errors).
 3. Open a release PR, wait for required checks to go green, and merge (rebase):
    ```bash
-   git checkout -b release/v0.4.15
-   git commit -am "chore: release v0.4.15"
-   git push origin1 release/v0.4.15
-   gh pr create --base master --head release/v0.4.15 --title "chore: release v0.4.15"
+   git checkout -b release/v0.4.16
+   git commit -am "chore: release v0.4.16"
+   git push origin1 release/v0.4.16
+   gh pr create --base master --head release/v0.4.16 --title "chore: release v0.4.16"
    ```
 4. After merge, tag the merged commit and push to both remotes (tags aren't protected):
    ```bash
    git checkout master && git pull origin1 master --ff-only
-   git tag -a v0.4.15 -m "Release v0.4.15"
-   git push origin v0.4.15 && git push origin1 v0.4.15
+   git tag -a v0.4.16 -m "Release v0.4.16"
+   git push origin v0.4.16 && git push origin1 v0.4.16
    ```
 5. Bump `zealphp/project` (the scaffold) to the same version and refresh its `llms.txt`. Packagist auto-syncs via webhook for both packages.
 

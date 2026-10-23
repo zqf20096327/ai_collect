@@ -1059,14 +1059,27 @@ signal, a power cut -- the directory is left behind in your OS temp directory
 and is safe to delete by hand. Running with the proxy off writes no spills at
 all.
 
-### Four switches, and what each one trades
+### The main switches, and what each one trades
 
-| variable                           | default    | what it does                                               |
-| ---------------------------------- | ---------- | ---------------------------------------------------------- |
-| `TOKEN_OPTIMIZER_PROXY`            | on         | the compression proxy itself; set `0` to opt out           |
-| `TOKEN_OPTIMIZER_COMPRESSION`      | `balanced` | `balanced`, `aggressive`, `conservative`, `lossless`       |
-| `TOKEN_OPTIMIZER_PROXY_KNOWLEDGE`  | on         | put what this project already learned in the cached prefix |
-| `TOKEN_OPTIMIZER_PROXY_NET_SAVING` | off        | never send upstream more bytes than the client gave        |
+| variable                               | default    | what it does                                                                |
+| -------------------------------------- | ---------- | --------------------------------------------------------------------------- |
+| `TOKEN_OPTIMIZER_PROXY`                | on         | the compression proxy itself; set `0` to opt out                            |
+| `TOKEN_OPTIMIZER_COMPRESSION`          | `balanced` | `balanced`, `aggressive`, `conservative`, `lossless`                        |
+| `TOKEN_OPTIMIZER_PROXY_KNOWLEDGE`      | on         | put what this project already learned in the cached prefix                  |
+| `TOKEN_OPTIMIZER_PROXY_NET_SAVING`     | off        | never send upstream more bytes than the client gave                         |
+| `TOKEN_OPTIMIZER_PROXY_REPO_PACK`      | on         | one shared snapshot of the repository for every agent on it                 |
+| `TOKEN_OPTIMIZER_PROXY_REPO_PACK_TASK` | off        | also pack a subagent's task repository when the session runs outside a repo |
+| `TOKEN_OPTIMIZER_PROXY_TRIM_SUBAGENTS` | on         | drop the memory index, skill text and unused tool lists from subagents      |
+| `TOKEN_OPTIMIZER_PROXY_READONLY_ROUTE` | off        | `down`: declared read-only subagents one model tier down (measured to cost more) |
+| `TOKEN_OPTIMIZER_PROXY_REPO_PACK_POSITION` | `first` | the pack right after the first cached system block; `last` appends it       |
+| `TOKEN_OPTIMIZER_PROXY_PREFETCH`       | off        | fetch the issue or PR a subagent is assigned before its first turn          |
+| `TOKEN_OPTIMIZER_PROXY_WORKER_TERSE`   | on         | ask subagents for short reports (output is billed 5x input)                 |
+| `TOKEN_OPTIMIZER_PROXY_CLEAR_TOOL_USES`| off        | server-side clearing of old tool results; measured to cost more (see below) |
+| `TOKEN_OPTIMIZER_PROXY_COMPACT`        | off        | server-side compaction past `_TRIGGER` input tokens (min 50,000)            |
+| `TOKEN_OPTIMIZER_REPEATS`              | on         | a re-run command or re-read file returns only what changed                  |
+| `TOKEN_OPTIMIZER_BLACKBOARD`           | on         | a subagent's briefing lists read-only commands its siblings already ran     |
+| `TOKEN_OPTIMIZER_LEAN_HANDOFF`         | on         | a foreground subagent's report over 4,000 characters reaches the lead lean  |
+| `TOKEN_OPTIMIZER_REPO_ASK`             | off        | a `repo_ask "<question>"` shell command for agents, named in their briefing |
 
 Both of the `on` rows said `off` here until 7.1.0, which was wrong about the
 shipped code rather than a change of default: an unset value has always meant
@@ -1078,6 +1091,21 @@ the rest of the session, which pays on a long conversation and does not on a sho
 one. Turn it on and the block is dropped on any turn where sending it would hand
 upstream more bytes than the client handed us -- the wire never inflates, and the
 prefix knowledge is what you give up for that.
+
+`TOKEN_OPTIMIZER_PROXY_CLEAR_TOOL_USES` is off because the client re-sends its
+whole history every turn: once a conversation passes the trigger, every request
+clears, and the boundary moves forward with each new tool use, re-writing the
+cache from there each time while the model re-reads what was cleared. On the
+long single-agent benchmark the run that crossed the trigger cost about 1.5x the
+runs without clearing. `TOKEN_OPTIMIZER_REPO_ASK` is off because agents offered
+it never used it (0 calls across about 230 benchmark subagents); the briefing
+line was a cost on every agent. `TOKEN_OPTIMIZER_PROXY_PREFETCH` is off because
+on the 10-agent campaign replay the workers fetched their issues themselves
+anyway, and runs with it cost about 10% more than runs without.
+`TOKEN_OPTIMIZER_PROXY_READONLY_ROUTE` is off because the routed subagents
+searched in many more, smaller calls and every call re-reads the whole context:
+on the exploration benchmark Claude Code reported $0.349 per run routed against
+$0.255 unrouted.
 
 ### Rollout channels
 
@@ -1717,65 +1745,3 @@ turn on.
 
 #### What you get immediately
 
-From the first message of the next session, expensive built-in calls are
-**refused and redirected** to the optimized equivalent:
-
-| You (or the model) do this                     | What happens                                         |
-| ---------------------------------------------- | ---------------------------------------------------- |
-| `Read` a file over ~25 KB                      | Denied → `smart_read` (cached)                       |
-| `Read` **any** file already read this session  | Denied → `smart_read` (returns only the diff)        |
-| `Grep` file contents / `Glob` for files        | Denied → `smart_grep` / `smart_glob`                 |
-| `Edit` a file over ~25 KB                      | Denied → `smart_edit` (returns a diff, not the file) |
-| `cat`/`head`/`tail`/`Get-Content` a large file | Denied → `smart_read`                                |
-| `grep -r` / `rg` across the tree               | Denied → `smart_grep`                                |
-| Context fills and compaction starts            | `optimize_session` runs first                        |
-
-The re-read case is usually the largest single win and the one most often
-missed: a 5 KB config read fifteen times across a session costs far more than
-one 200 KB file read once. Size-based rules never catch it.
-
-#### It cannot get you stuck
-
-Three properties, all tested:
-
-- **Fail-open.** Any error in the optimizer — bad payload, unreadable file,
-  unexpected exception — allows the original call through, exactly as if the
-  plugin were not installed.
-- **Loop-breaking.** A given target is refused **once**. Come back to it and it
-  is allowed. So if the MCP server is missing or misconfigured, the cost is one
-  wasted turn per file, self-healing, with no intervention.
-- **Cheap calls are left alone.** Small files, paged reads, `git log | head`,
-  and binary paths are never touched.
-
-#### Turning it down
-
-One variable, no reinstall:
-
-```bash
-TOKEN_OPTIMIZER_MODE=advise   # nudge instead of refuse (the pre-5.2 behaviour)
-TOKEN_OPTIMIZER_MODE=off      # disable the hooks entirely
-TOKEN_OPTIMIZER_LARGE_READ_BYTES=51200   # raise the "large file" threshold
-```
-
-#### MCP server only (not recommended)
-
-If you want the tools without the enforcement:
-
-```bash
-claude mcp add --transport stdio --scope user token-optimizer -- \
-  npx -y @ooples/token-optimizer-mcp@latest
-```
-
-Verify with `claude mcp get token-optimizer`, or `/mcp` inside Claude Code. Then
-add the recommendations from [`integrations/AGENTS.md`](./integrations/AGENTS.md)
-to your `CLAUDE.md` — but be aware that guidance in a context file is advisory,
-and models routinely read past it.
-
-Installing the package changes nothing on your machine. Hooks and managed Claude Code, Codex, and OpenCode commands are wired by one explicit command:
-
-```bash
-npm install -g @ooples/token-optimizer-mcp@latest
-token-optimizer-install
-```
-
-`token-optimizer-

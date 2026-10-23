@@ -14,9 +14,7 @@
   <img src="https://img.shields.io/badge/license-Apache--2.0-lightgrey" alt="Apache-2.0 license">
 </p>
 
-<p align="center">
-  <img src="assets/demo-frames.gif" alt="decode in the terminal" width="800">
-</p>
+https://github.com/user-attachments/assets/f8711e5b-05e2-4c31-aa7f-355374c332d8
 
 <p align="center">
   <a href="https://www.decodingai.com/p/building-a-coding-agent-from-scratch-system-design" target="_blank"><b>📖 Read Lesson 1 (17 min)</b></a>
@@ -156,9 +154,9 @@ The finished agent ships with demo skills under [`.decode/skills/`](.decode/skil
 - Deploy the headless harness on Modal, triggering remote agents via the CLI, a webhook, or a cron job ([article 6](https://www.decodingai.com/p/coding-agents-in-remote-headless) · [video 4](https://www.youtube.com/watch?v=nIhTdQH6z5g))
 - Spawn parallel subagents via fan-out strategies ([article 5](https://www.decodingai.com/p/subagents-are-context-engineering))
 - Add observability ([article 2](https://www.decodingai.com/p/the-coding-agent-loop) · [video 1](https://www.youtube.com/watch?v=sJpop1juVBQ))
-- Design an eval harness for benchmarking the agent and checking for regressions ([article 7](https://www.decodingai.com/p/evaluate-ai-agents-benchmarks-regression-tests) · _video 5 soon_)
-- Organically grow your regression suite from failed agent traces ([article 8](https://www.decodingai.com/p/transform-agent-traces-into-regression-cases) · _video 6 soon_)
-- Reproduce agent failures and check for regressions when changing your prompts or models by replaying traces with Kitaru ([article 8](https://www.decodingai.com/p/transform-agent-traces-into-regression-cases) · _video 6 soon_)
+- Design an eval harness for benchmarking the agent and checking for regressions ([article 7](https://www.decodingai.com/p/evaluate-ai-agents-benchmarks-regression-tests) · [video 5](https://www.youtube.com/watch?v=3QQaonJyUf4))
+- Organically grow your regression suite from failed agent traces ([article 8](https://www.decodingai.com/p/transform-agent-traces-into-regression-cases) · [video 6](https://www.youtube.com/watch?v=HuRLvkG7tVg))
+- Reproduce agent failures and check for regressions when changing your prompts or models by replaying traces with Kitaru ([article 8](https://www.decodingai.com/p/transform-agent-traces-into-regression-cases) · [video 6](https://www.youtube.com/watch?v=HuRLvkG7tVg))
 
 <p align="center">
   <img src="assets/tui-plan-mode-todo.png" alt="decode in plan mode breaking the Snake demo into a task list with the todo tool" width="800">
@@ -189,8 +187,8 @@ For the full experience, go through the articles and videos that cover what the 
 - Why compaction fires at ~80% of the window instead of at the limit. ([article 4](https://www.decodingai.com/p/context-engineering-for-coding-agents) · [video 3](https://www.youtube.com/watch?v=dx77BRFZ0_M))
 - Why subagents are context engineering: scoped windows instead of one bloated context. ([article 5](https://www.decodingai.com/p/subagents-are-context-engineering))
 - Why your agents should keep working after you close your laptop lid. ([article 6](https://www.decodingai.com/p/coding-agents-in-remote-headless) · [video 4](https://www.youtube.com/watch?v=nIhTdQH6z5g))
-- Why you need both benchmarks and regression tests. ([article 7](https://www.decodingai.com/p/evaluate-ai-agents-benchmarks-regression-tests) · _video 5 soon_)
-- Why we record every run, and what a replay buys you that a re-run doesn't. ([article 8](https://www.decodingai.com/p/transform-agent-traces-into-regression-cases) · _video 6 soon_)
+- Why you need both benchmarks and regression tests. ([article 7](https://www.decodingai.com/p/evaluate-ai-agents-benchmarks-regression-tests) · [video 5](https://www.youtube.com/watch?v=3QQaonJyUf4))
+- Why we record every run, and what a replay buys you that a re-run doesn't. ([article 8](https://www.decodingai.com/p/transform-agent-traces-into-regression-cases) · [video 6](https://www.youtube.com/watch?v=HuRLvkG7tVg))
 
 ## 📚 Course Outline
 
@@ -239,13 +237,13 @@ For the full experience, go through the articles and videos that cover what the 
   <tr>
     <td align="center"><b>7</b><br/>AI Evals Foundations: Benchmarks, Regression and Online<br/><br/><i>Score your agent on a 19-task benchmark and a regression suite in Opik.</i><br/><sub>⏱ 19-min read</sub></td>
     <td align="center"><a href="https://www.decodingai.com/p/evaluate-ai-agents-benchmarks-regression-tests" target="_blank"><img src="assets/architecture_lesson_7.png" width="300" alt="Lesson 7 — AI evals foundations: benchmarks, regression and online"/></a><br/><i><a href="https://www.decodingai.com/p/evaluate-ai-agents-benchmarks-regression-tests" target="_blank">Article 7</a></i></td>
-    <td align="center">🎬 <i>Video 5 — coming soon</i></td>
+    <td align="center"><a href="https://www.youtube.com/watch?v=3QQaonJyUf4" target="_blank"><img src="assets/thumbnail_video_5.jpg" width="300" alt="Video 5 — the video version of lesson 7"/></a><br/><i><a href="https://www.youtube.com/watch?v=3QQaonJyUf4" target="_blank">Video 5</a></i></td>
     <td align="center"><a href="running_the_code/01_install_and_usage.md">01_install_and_usage.md</a> · <a href="running_the_code/02_modal_endpoints.md">02_modal_endpoints.md</a> · <a href="running_the_code/05_evals.md">05_evals.md</a></td>
   </tr>
   <tr>
     <td align="center"><b>8</b><br/>AI Evals on Steroids via Replays<br/><br/><i>Record runs in Kitaru, cluster failures into cohorts, and replay them to verify fixes.</i><br/><sub>⏱ 16-min read</sub></td>
     <td align="center"><a href="https://www.decodingai.com/p/transform-agent-traces-into-regression-cases" target="_blank"><img src="assets/architecture_lesson_8.png" width="300" alt="Lesson 8 — AI evals on steroids via replays"/></a><br/><i><a href="https://www.decodingai.com/p/transform-agent-traces-into-regression-cases" target="_blank">Article 8</a></i></td>
-    <td align="center">🎬 <i>Video 6 — coming soon</i></td>
+    <td align="center"><a href="https://www.youtube.com/watch?v=HuRLvkG7tVg" target="_blank"><img src="assets/thumbnail_video_6.jpg" width="300" alt="Video 6 — the video version of lesson 8"/></a><br/><i><a href="https://www.youtube.com/watch?v=HuRLvkG7tVg" target="_blank">Video 6</a></i></td>
     <td align="center"><a href="running_the_code/01_install_and_usage.md">01_install_and_usage.md</a> · <a href="running_the_code/02_modal_endpoints.md">02_modal_endpoints.md</a> · <a href="running_the_code/06_evals_replays.md">06_evals_replays.md</a></td>
   </tr>
 </table>

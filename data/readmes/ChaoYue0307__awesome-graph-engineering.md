@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-  <a href="#-resource-directory"><img alt="601 curated resources" src="https://img.shields.io/badge/resources-601-9d7dff?style=flat-square"></a>
+  <a href="#-resource-directory"><img alt="620 curated resources" src="https://img.shields.io/badge/resources-620-9d7dff?style=flat-square"></a>
   <a href="https://github.com/ChaoYue0307/awesome-graph-engineering/actions/workflows/quality.yml"><img alt="Quality checks" src="https://img.shields.io/github/actions/workflow/status/ChaoYue0307/awesome-graph-engineering/quality.yml?branch=main&style=flat-square&label=quality"></a>
   <a href="https://huggingface.co/datasets/cy0307/awesome-graph-engineering"><img alt="Hugging Face dataset" src="https://img.shields.io/badge/%F0%9F%A4%97-dataset-FFD21E?style=flat-square"></a>
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0--1.0-b8f24a?style=flat-square"></a>
@@ -57,16 +57,16 @@ Here, **graph engineering** means engineering graph-structured **AI-agent system
 
 <table>
   <tr>
-    <td align="center"><strong>601</strong><br><sub>curated resources</sub></td>
+    <td align="center"><strong>620</strong><br><sub>curated resources</sub></td>
     <td align="center"><strong>11</strong><br><sub>directory sections</sub></td>
     <td align="center"><strong>9</strong><br><sub>design layers</sub></td>
     <td align="center"><strong>248</strong><br><sub>distinct sources</sub></td>
   </tr>
   <tr>
-    <td align="center"><strong>279</strong><br><sub>papers &amp; preprints</sub></td>
+    <td align="center"><strong>298</strong><br><sub>papers &amp; preprints</sub></td>
     <td align="center"><strong>149</strong><br><sub>tools, docs &amp; standards</sub></td>
     <td align="center"><strong>40</strong><br><sub>benchmarks &amp; datasets</sub></td>
-    <td align="center"><strong>332</strong><br><sub>published in 2026</sub></td>
+    <td align="center"><strong>351</strong><br><sub>published in 2026</sub></td>
   </tr>
 </table>
 
@@ -172,7 +172,7 @@ The resource directory prioritizes primary research, official documentation, mai
 
 <!-- CORPUS_BREAKDOWN_START -->
 
-**Corpus composition:** 601 resources drawn from 248 distinct sources. By evidence label: 144 peer-reviewed research, 108 practitioner analysis, 135 research preprints, 71 official documentation, 65 maintained OSS projects, 40 benchmarks or datasets, 13 industry standards, 14 community resources, 11 books or courses. 332 entries were published or materially updated in 2026.
+**Corpus composition:** 620 resources drawn from 248 distinct sources. By evidence label: 144 peer-reviewed research, 108 practitioner analysis, 154 research preprints, 71 official documentation, 65 maintained OSS projects, 40 benchmarks or datasets, 13 industry standards, 14 community resources, 11 books or courses. 351 entries were published or materially updated in 2026.
 
 <!-- CORPUS_BREAKDOWN_END -->
 
@@ -183,16 +183,16 @@ Use the [interactive Resource Atlas](https://chaoyue0307.github.io/awesome-graph
 ### Contents
 
 - [Start Here](#start-here) — 53 resources
-- [Research Foundations](#research-foundations) — 161 resources
+- [Research Foundations](#research-foundations) — 163 resources
 - [Frameworks &amp; SDKs](#frameworks--sdks) — 61 resources
-- [Protocols &amp; Handoffs](#protocols--handoffs) — 39 resources
+- [Protocols &amp; Handoffs](#protocols--handoffs) — 41 resources
 - [State, Memory &amp; Artifacts](#state-memory--artifacts) — 32 resources
-- [Verification &amp; Evals](#verification--evals) — 36 resources
-- [Reliability &amp; Durable Execution](#reliability--durable-execution) — 39 resources
-- [Observability &amp; Cost](#observability--cost) — 37 resources
-- [Benchmarks &amp; Datasets](#benchmarks--datasets) — 48 resources
+- [Verification &amp; Evals](#verification--evals) — 38 resources
+- [Reliability &amp; Durable Execution](#reliability--durable-execution) — 41 resources
+- [Observability &amp; Cost](#observability--cost) — 39 resources
+- [Benchmarks &amp; Datasets](#benchmarks--datasets) — 51 resources
 - [Production Case Studies](#production-case-studies) — 39 resources
-- [Critiques &amp; Limits](#critiques--limits) — 56 resources
+- [Critiques &amp; Limits](#critiques--limits) — 62 resources
 
 ### Start Here
 
@@ -245,7 +245,7 @@ Use the [interactive Resource Atlas](https://chaoyue0307.github.io/awesome-graph
 | 📐 **[Agentic AI Foundation (AAIF), Linux Foundation](https://www.linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation)**<br><sub>Standard · Communities and forums</sub> | **Linux Foundation**<br><sub>Linux Foundation · 2025</sub> | Neutral governance body formed December 2025, anchored by the Model Context Protocol (donated by Anthropic), goose (Block), and AGENTS.md. Launched with 150+ member organizations, described as the fastest-growing foundation in Linux Foundation history; A2A, donated by Google in June 2025, sits alongside it.<br><sub><strong>Why:</strong> Neutral governance for agent infrastructure, which determines whether protocol choices stay portable.</sub> | **Industry standard**<br><sub>Handoffs</sub> |
 | 📐 **[AGNTCY — the Internet of Agents collective](https://agntcy.org/)**<br><sub>Standard · Communities and forums</sub> | **Linux Foundation / AGNTCY**<br><sub>Cisco, LangChain, Galileo and contributors · 2026</sub> | Open-source collective, now part of the Linux Foundation, building the cross-vendor plumbing for agent collaboration: a federated agent-discovery registry, a network-level agent messaging protocol, an identity/verification layer, and multi-agent observability collectors. Supporting orgs include LlamaIndex, Glean, AG2, Traceloop, MongoDB, and Weaviate.<br><sub><strong>Why:</strong> A cross-vendor collective for agent interoperability, worth tracking if your nodes span organizations.</sub> | **Industry standard**<br><sub>Handoffs</sub> |
 | 📝 **[Agentic AI Weekly (Berkeley RDI)](https://berkeleyrdi.substack.com/)**<br><sub>Blog · Newsletters, blogs and podcasts</sub> | **Substack**<br><sub>Berkeley Center for Responsible, Decentralized Intelligence · 2026</sub> | Weekly research-leaning roundup from the group behind the Berkeley Agentic AI MOOC and the AgentX-AgentBeats competition (1,300+ teams across 100+ countries, $1M+ in prizes, Phase 2 launched 23 February 2026). Consistent academic coverage of coordination and evaluation that practitioner newsletters skip.<br><sub><strong>Why:</strong> A weekly digest from an academic center, a lower-noise way to track the field than social feeds.</sub> | **Practitioner analysis**<br><sub>Topology</sub> |
-| 📝 **[Latent Space: The AI Engineer Podcast and Newsletter](https://www.latent.space/podcast)**<br><sub>Blog · Newsletters, blogs and podcasts</sub> | **Substack**<br><sub>swyx, Alessio Fanelli · 2026</sub> | 194,000+ subscribers and 217 episodes as of late July 2026, with recurring deep dives on multi-agent orchestration — including a 7 April 2026 episode on Symphony, OpenAI's internal Elixir-based layer for spinning up, supervising, and coordinating large fleets of coding agents across tickets and repos.<br><sub><strong>Why:</strong> The podcast and newsletter where practitioners describe agent architectures before they are written up.</sub> | **Practitioner analysis**<br><sub>Topology</sub> |
+| 📝 **[Latent Space: The AI Engineer Podcast and Newsletter](https://latent.space/podcasts/)**<br><sub>Blog · Newsletters, blogs and podcasts</sub> | **Substack**<br><sub>swyx, Alessio Fanelli · 2026</sub> | 194,000+ subscribers and 217 episodes as of late July 2026, with recurring deep dives on multi-agent orchestration — including a 7 April 2026 episode on Symphony, OpenAI's internal Elixir-based layer for spinning up, supervising, and coordinating large fleets of coding agents across tickets and repos.<br><sub><strong>Why:</strong> The podcast and newsletter where practitioners describe agent architectures before they are written up.</sub> | **Practitioner analysis**<br><sub>Topology</sub> |
 | 📝 **[Anthropic Engineering blog](https://www.anthropic.com/engineering)**<br><sub>Blog · Newsletters, blogs and podcasts</sub> | **Anthropic**<br><sub>Anthropic engineering teams · 2026</sub> | First-party writeups of production agent architecture, including "How we built our multi-agent research system" (13 Jun 2025, orchestrator-worker with parallel subagents), "Building a C compiler with a team of parallel Claudes" (5 Feb 2026), "Harness design for long-running application development" (24 Mar 2026), and "Scaling Managed Agents: Decoupling the brain from the hands" (8 Apr 2026).<br><sub><strong>Why:</strong> The first-party engineering blog behind several of the production accounts in this catalog.</sub> | **Practitioner analysis**<br><sub>Roles</sub> |
 | 📝 **[3 Years of Graph Engineering with LangGraph](https://www.langchain.com/blog/3-years-of-graph-engineering-with-langgraph)**<br><sub>Blog · Framework retrospective</sub> | **LangChain**<br><sub>Sydney Runkle, Harrison Chase · 2026</sub> | A July 22, 2026 retrospective from the team behind the reference graph-native framework, arguing production agents need cycles rather than DAGs, that a loop is a simplified graph rather than an alternative to one, and that nodes have grown from single model calls into full agent runs. Reports 65M+ monthly downloads.<br><sub><strong>Why:</strong> The framework author's own account of what three years of building agent graphs taught them, including where the DAG mental model breaks.</sub> | **Practitioner analysis**<br><sub>Topology</sub> |
 | 📄 **[From Static Templates to Dynamic Runtime Graphs: A Survey of Workflow Optimization for LLM Agents](https://arxiv.org/abs/2603.22386)**<br><sub>Paper · Field survey</sub> | **arXiv**<br><sub>Ling Yue, Kushal Raj Bhandari, Ching-Yun Ko, Dhaval Patel, Shuxin Lin, Nianjun Zhou, Jianxi Gao, Pin-Yu Chen, Shaowu Pan · 2026</sub> | Surveys how agent systems build and optimize executable workflows, treating them as agentic computation graphs and separating reusable templates from the run-specific graph and its execution trace. Organizes the literature by when structure is fixed, what is optimized, and which signals guide it, and argues for structure-aware evaluation alongside task scores.<br><sub><strong>Why:</strong> A workflow-optimization survey whose split between reusable templates and run-specific graphs matches the org and run graph distinction used throughout.</sub> | **Research preprint**<br><sub>Topology</sub> |
@@ -320,4 +320,5 @@ Use the [interactive Resource Atlas](https://chaoyue0307.github.io/awesome-graph
 | 📄 **[Exploring Advanced LLM Multi-Agent Systems Based on Blackboard Architecture](https://arxiv.org/abs/2507.01701)**<br><sub>Paper · Blackboard revival</sub> | **arXiv**<br><sub>Bochen Han, Songmao Zhang · 2025</sub> | First implementation of a full blackboard architecture for LLM agents: all roles share one public blackboard, a control unit selects which agent acts based on blackboard content, and rounds repeat until consensus. Matches state-of-the-art master-slave systems on reasoning and math benchmarks while spending fewer tokens — evidence that shared state can beat message passing on cost.<br><sub><strong>Why:</strong> A full shared-state architecture for language agents, testing whether the classical idea survives modern nodes.</sub> | **Research preprint**<br><sub>State</sub> |
 | 📄 **[LLM-based Multi-Agent Blackboard System for Information Discovery in Data Science](https://arxiv.org/abs/2510.01285)**<br><sub>Paper · Blackboard revival</sub> | **arXiv**<br><sub>Aoxue Li et al. · 2025</sub> | Replaces the master-slave orchestration paradigm with a blackboard: a central agent posts requests to a shared board and subordinate agents volunteer answers, so the orchestrator never needs to know which agent holds what. 13-57% relative improvement in end-to-end task success over direct-communication baselines on data-discovery tasks.<br><sub><strong>Why:</strong> Replacing central orchestration with a shared board changes who decides what happens next, which is a topology claim.</sub> | **Research preprint**<br><sub>State</sub> |
 | 📄 **[SagaLLM: Context Management, Validation, and Transaction Guarantees for Multi-Agent LLM Planning](https://arxiv.org/abs/2503.11951)**<br><sub>Paper · Consistency &amp; transactions</sub> | **arXiv**<br><sub>Edward Y. Chang, Longling Geng (Stanford) · 2025</sub> | Imports the Saga transaction pattern from distributed databases into agent graphs: persistent cross-agent memory, independent validation agents, checkpointing, and compensating actions so a partially-failed multi-agent plan rolls back consistently instead of leaving corrupted shared state. The most direct treatment of the two-agents-one-resource consistency problem in the literature.<br><sub><strong>Why:</strong> Brings transaction guarantees to agent state, addressing the partial-write problem that breaks shared memory in practice.</sub> | **Research preprint**<br><sub>Reliability</sub> |
-| 📄 **[MemGPT: Towards LLMs as Operating Systems](https://arxiv.org/abs/2310.08560)**<br><sub>Paper · Memory systems</sub> | **arXiv**<br><sub>Charles Packer, Sarah Wooders, et al. (UC Berkeley) · 2023</sub> | T
+| 📄 **[MemGPT: Towards LLMs as Operating Systems](https://arxiv.org/abs/2310.08560)**<br><sub>Paper · Memory systems</sub> | **arXiv**<br><sub>Charles Packer, Sarah Wooders, et al. (UC Berkeley) · 2023</sub> | The paper that started OS-inspired agent memory: virtual context management pages data between the fixed context window (main memory) and external storage, with the agent editing its own memory via tools. Direct ancestor of Letta and of the memory-block abstraction now used for multi-agent shared state.<br><sub><strong>Why:</strong> The paper that started operating-system framing for agent memory, and the ancestor of most current designs.</sub> | **Research preprint**<br><sub>State</sub> |
+| 📄 **[Multi-Agent Systems: From Classical Paradigms to Large Foundation Model-Enabled Futures](https://arxiv.org/abs/2604.18133)**<br><sub>Paper · Classical MAS bridge</sub> | **arXiv / IEEE-CAA Journal of Automatica Sinica**<br><sub>Zixiang Wang, Mengjia Gong, Qiyu Sun, et al. · 2026</sub> | April 2026 survey bridging classical MAS theory (consensus, formation control, distributed decis

@@ -138,14 +138,14 @@ flowchart LR
   Ledger --> DB
   Engine["Progression engine<br/>loads computed by code"] -.-> Web
   Engine -.-> Mobile
-  Parser["Planned sentence fallback: rules → on-device model → cloud<br/>M4 v5 quality gate failed; native integration pending<br/>source checks + user confirmation required"] -.-> Mobile
+  Parser["Planned sentence fallback: rules → on-device model → cloud<br/>M4 v8 semantic gate failed; native integration pending<br/>source checks + user confirmation required"] -.-> Mobile
 ```
 
 See the [mobile plan](docs/product/2026-10-18-mobile-agent-plan.md), [product log](docs/product/PRODUCT_LOG.md) and the [90-second phone demo](docs/product/DEMO_90S.md) (synthetic data; the coach answer in it is a scripted fixture).
 
-[M4 v5 evidence](research/m4-parser/results/run-20261022T071000Z-v5/README.md): a fresh loss-reduction comparison reproduces the previous control exactly, but the candidate falls from 206/240 to 197/240 challenge accuracy. Quantization agreement, zero truncation and legal clarification labels pass; exercise binding, missing units and RPE scope still reject the candidate. Verified backup/replay and reproducible CPU error/catalog audits explain the next step; native integration remains pending.
+[M4 v8 evidence](research/m4-parser/results/run-20261023T025600Z-v8/README.md): a fixed training × inference prompt comparison completed one training and 3,120 new HF predictions. A/B/C/D challenge scores are 185/166/0/216 of 240; D is the sole candidate. Its remaining 24 errors are RPE scope (15), missing units (4) and action identity (5). Semantic gates reject D, so quantization is unmeasured and native integration remains pending. Two complete weights, all predictions and reviewed source were restored; 39 reports replay identically. The [v7 result](research/m4-parser/results/run-20261023T001500Z-v7/README.md) remains historical evidence.
 
-[M4 v6 preparation](research/m4-parser/train/GPU_V6.md) aligns 40 conflicting alias labels and fixes a two-arm catalog comparison, with actual CPU token/train/export and recovery checks. It has no GPU quality result yet; original acceptance gates and the exclusion of private utterances/derivatives remain in force.
+The [history audit](research/m4-parser/results/contract-v8-20261023/HISTORY.md) confirms the earlier Q8 peak of 213/240 and later 180/240 on identical challenge bytes. V8's 216 is HF, not a new measured Q8 peak. Its cross-prompt failure shows why weights and inference instructions must be versioned together; a valid format alone does not establish correct records. All 6,400 training tuples and numeric gates stayed fixed. The private 20 utterances and all derivatives remain excluded. [Next CPU work](research/m4-parser/results/run-20261023T025600Z-v8/NEXT.md), candidate continuous-dialogue acceptance, useful incremental coverage and physical-device validation still precede native activation.
 
 ## AI reliability pipeline
 

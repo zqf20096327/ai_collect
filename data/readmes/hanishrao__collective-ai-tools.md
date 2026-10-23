@@ -852,6 +852,7 @@ Use these hashtags in search to filter out the tools
 
 - [AI Room Planner](https://roomaiplanner.com/) - Get hundreds of interior design ideas for your room - free with no limit. `#free`
 - [Interior AI](https://interiorai.com/) - Generates redesigned photos of real rooms in dozens of styles from a single uploaded photo. `#freemium`
+- [Spaceora](https://spaceora.app) - AI room and garden designer — redesign interiors, virtually stage, and plan landscapes from a single photo. `#freemium`
 
 **[⬆️ Back to Top](#table-of-contents)**
 
@@ -1097,5 +1098,4 @@ Use these hashtags in search to filter out the tools
 
 - [Consensus](https://consensus.app/) - AI-powered research engine that finds and summarizes scientific papers. `#freemium`
 - [Elicit](https://elicit.org/) - AI research assistant that helps you find and analyze academic papers. `#freemium`
-- [Lime AI](https://www.datalimeai.com/) - AI-powered research assistant for data-related tasks, designed to streamline and simplify data research and analysis processes. `#paid`
-- [Musuw](https://musuw.com/) - AI knowledge workspace with cited answers, connected Wiki pages, an
+- [Lime AI](https://www.datalimeai.com/) - AI-powered research assistant for data-related tasks, designed to streamline a

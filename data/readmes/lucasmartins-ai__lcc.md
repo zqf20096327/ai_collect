@@ -30,10 +30,11 @@ is kept as it was.
 | `/compact` | one summary | rewritten into the summary | gone |
 | **lcc** (`rules`, `stashed`) | **28,807 (−49.5%)** | **43 / 43 byte for byte** | 33, each one `recall` away |
 
-Measured with `lcc measure-session` (1.2.0, offline, exact `o200k_base` token count). That
-session is one of the best cases. **Across all 266 of my long sessions** (100+ messages each,
-31.6 M tokens) the median cut was **22.7%** (middle half 15% to 32%, best 65%), with 0 messages
-lost. These are all my sessions: [run it on yours](#send-us-your-numbers) and post the result.
+Measured with `lcc measure-session` (PyPI 1.2.0, offline, exact `o200k_base` token count;
+re-run 2026-10-23). On `main`, whose stash note now states lines and size, the same session
+gives 28,983 (−49.2%). That session is one of the best cases. **Across all 299 of my long sessions** (100+ messages each,
+36.3 M tokens) the median cut was **21.8%** (middle half 15% to 31%, best 65%), with 0 messages
+lost (`python benchmarks/research/long_sessions.py`, 2026-10-23, `main`). These are all my sessions: [run it on yours](#send-us-your-numbers) and post the result.
 
 In a pre-registered test on 172 real requests ([evidence](docs/EVIDENCE.md)), an agent answering
 from the `stashed` context plus `recall` did as well as with the full context on file recall
@@ -45,7 +46,11 @@ right (our reimplementation of `/compact`, written by Opus); full and verbatim c
 
 ```sh
 pip install "local-context-compiler[tiktoken]"   # the CLI is `lcc`
+lcc measure-session "$(ls -t ~/.claude/projects/*/*.jsonl | head -1)"   # your latest session
 ```
+
+The second line reads your most recent Claude Code session, runs every mode offline and prints
+counts only. Nothing is changed and nothing leaves the machine.
 
 **Claude Code plugin** (replaces the `/compact` summary). Function hooks are early access, so
 this needs **Claude Code 2.1.274+ and the flag below**:
@@ -87,6 +92,8 @@ lcc explain report.json --source notes.md         # why each block was kept or d
 lcc measure-session ~/.claude/projects/<project>/<session>.jsonl --markdown
 # Codex CLI rollouts are auto-detected from their session_meta record:
 lcc measure-session /path/to/rollout.jsonl --markdown
+# or a whole project directory: per-mode median and p90 reduction over its sessions
+lcc measure-session ~/.claude/projects/<project>/ --markdown
 ```
 
 It runs every mode on one of your sessions, offline, and prints **counts only**: messages, tool
@@ -108,6 +115,8 @@ Every number from someone other than me makes the claims above less mine and mor
 - **Verbatim.** Kept spans are byte-identical to the source. Nothing is summarized or rewritten.
 - **Recoverable.** `stashed` moves removed outputs to a local content-addressed store
   (`~/.cache/lcc/stash`); `recall` re-hashes on read.
+  The placeholder, `[removed: 120 lines, 4.3 KB · lcc recall <id>]`, states lines and size, not
+  tokens, so it is identical on every machine.
 - **Auditable.** Every pass writes a JSON report; `lcc explain` gives the reason for every drop.
 - **Local.** The default judges run on your CPU in plain Python. No API key, no network.
 
@@ -187,6 +196,7 @@ pass as not worth it, and the Claude Code plugin keeps the built-in summary.
 | Claude Code plugin | [CLAUDE_CODE.md](docs/CLAUDE_CODE.md) |
 | MCP server | [MCP.md](docs/MCP.md) |
 | Tool-call compaction and rules modes | [TOOL_CALLS.md](docs/TOOL_CALLS.md) |
+| Aider chat history as input | [AIDER.md](docs/AIDER.md) |
 | The local ranker | [SPECIALIST.md](docs/SPECIALIST.md) |
 | Benchmarks | [BENCHMARKS.md](docs/BENCHMARKS.md), [REAL_SESSION_BENCHMARKS.md](docs/REAL_SESSION_BENCHMARKS.md), [benchmarks/](benchmarks/README.md) |
 | Python API (`lcc.msi.compile`) | [msi-api.md](docs/lcc/msi-api.md) |

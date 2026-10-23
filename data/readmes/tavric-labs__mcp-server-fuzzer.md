@@ -5,9 +5,10 @@ Black-box security assessment for live
 authorized target over its real transport, sends realistic and malformed input,
 classifies the responses, and writes findings and reproduction data to disk.
 
-[![CI](https://github.com/Agent-Hellboy/mcp-server-fuzzer/actions/workflows/tests.yml/badge.svg)](https://github.com/Agent-Hellboy/mcp-server-fuzzer/actions/workflows/tests.yml)
-[![Lint](https://github.com/Agent-Hellboy/mcp-server-fuzzer/actions/workflows/lint.yml/badge.svg)](https://github.com/Agent-Hellboy/mcp-server-fuzzer/actions/workflows/lint.yml)
+[![CI](https://github.com/tavric-labs/mcp-server-fuzzer/actions/workflows/tests.yml/badge.svg)](https://github.com/tavric-labs/mcp-server-fuzzer/actions/workflows/tests.yml)
+[![Lint](https://github.com/tavric-labs/mcp-server-fuzzer/actions/workflows/lint.yml/badge.svg)](https://github.com/tavric-labs/mcp-server-fuzzer/actions/workflows/lint.yml)
 [![Codecov](https://codecov.io/gh/Agent-Hellboy/mcp-server-fuzzer/graph/badge.svg?token=HZKC5V28LS)](https://codecov.io/gh/Agent-Hellboy/mcp-server-fuzzer)
+[![Docs](https://img.shields.io/badge/docs-mcp--server--fuzzer.tavric--labs.net-0f766e.svg)](https://mcp-server-fuzzer.tavric-labs.net/)
 [![PyPI version](https://img.shields.io/pypi/v/mcp-fuzzer.svg)](https://pypi.org/project/mcp-fuzzer/)
 [![PyPI downloads](https://static.pepy.tech/badge/mcp-fuzzer)](https://pepy.tech/projects/mcp-fuzzer)
 [![MCP versions](https://img.shields.io/badge/MCP-2024--11--05%20%7C%202025--03--26%20%7C%202025--06--18%20%7C%202025--11--25%20%7C%202026--07--28-0f766e)](https://modelcontextprotocol.io/specification/2026-07-28/)
@@ -15,10 +16,10 @@ classifies the responses, and writes findings and reproduction data to disk.
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-3776ab)](https://www.python.org/downloads/)
 
-**[Documentation](https://agent-hellboy.github.io/mcp-server-fuzzer/)** |
-**[Assessment workflow](https://agent-hellboy.github.io/mcp-server-fuzzer/getting-started/audit-workflow/)** |
-**[CLI reference](https://agent-hellboy.github.io/mcp-server-fuzzer/development/reference/)** |
-**[Releases](https://github.com/Agent-Hellboy/mcp-server-fuzzer/releases)**
+**[Documentation](https://mcp-server-fuzzer.tavric-labs.net/)** |
+**[Assessment workflow](https://mcp-server-fuzzer.tavric-labs.net/getting-started/audit-workflow)** |
+**[CLI reference](https://mcp-server-fuzzer.tavric-labs.net/development/reference)** |
+**[Releases](https://github.com/tavric-labs/mcp-server-fuzzer/releases)**
 
 ## Authorization
 
@@ -105,7 +106,7 @@ To try the tool without a target, use the bundled fixtures in
 
 Start with low run counts, bounded timeouts, dedicated credentials, and an
 isolated target. The
-[assessment workflow](https://agent-hellboy.github.io/mcp-server-fuzzer/getting-started/audit-workflow/)
+[assessment workflow](https://mcp-server-fuzzer.tavric-labs.net/getting-started/audit-workflow)
 describes what to record at each stage.
 
 ## What it produces
@@ -209,18 +210,18 @@ written artifacts, and credentials embedded in URLs are stripped. Redaction is
 key-driven, so a secret echoed inside a response body under an unrelated key is
 not caught. Review and redact artifacts before sharing them, and store them
 under the same restrictions as the engagement's other evidence. See
-[understand run results](https://agent-hellboy.github.io/mcp-server-fuzzer/getting-started/results/).
+[understand run results](https://mcp-server-fuzzer.tavric-labs.net/getting-started/results).
 
 ## Documentation
 
-- [Choose an assessment path](https://agent-hellboy.github.io/mcp-server-fuzzer/getting-started/)
-- [Run the assessment workflow](https://agent-hellboy.github.io/mcp-server-fuzzer/getting-started/audit-workflow/)
-- [Focused audit recipes](https://agent-hellboy.github.io/mcp-server-fuzzer/getting-started/examples/)
-- [Interpret evidence and findings](https://agent-hellboy.github.io/mcp-server-fuzzer/getting-started/results/)
-- [Configure repeatable assessments](https://agent-hellboy.github.io/mcp-server-fuzzer/configuration/configuration/)
-- [Contain local targets](https://agent-hellboy.github.io/mcp-server-fuzzer/components/safety/)
-- [Collect evidence in CI](https://agent-hellboy.github.io/mcp-server-fuzzer/security-ci/)
-- [CLI reference](https://agent-hellboy.github.io/mcp-server-fuzzer/development/reference/)
+- [Choose an assessment path](https://mcp-server-fuzzer.tavric-labs.net/getting-started/)
+- [Run the assessment workflow](https://mcp-server-fuzzer.tavric-labs.net/getting-started/audit-workflow)
+- [Focused audit recipes](https://mcp-server-fuzzer.tavric-labs.net/getting-started/examples)
+- [Interpret evidence and findings](https://mcp-server-fuzzer.tavric-labs.net/getting-started/results)
+- [Configure repeatable assessments](https://mcp-server-fuzzer.tavric-labs.net/configuration/configuration)
+- [Contain local targets](https://mcp-server-fuzzer.tavric-labs.net/components/safety)
+- [Collect evidence in CI](https://mcp-server-fuzzer.tavric-labs.net/security-ci)
+- [CLI reference](https://mcp-server-fuzzer.tavric-labs.net/development/reference)
 
 ## References
 

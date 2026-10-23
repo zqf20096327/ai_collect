@@ -23,6 +23,24 @@ _In June 2023, I wrote the blog post [The How and Why of Reading 300 Papers in 5
 
 #### Papers Read in 2026:
 
+##### [26-10-23] [paper598]
+- Data-Efficient Pathology Whole-Slide Image Segmentation With Slide-Level Conditioning
+ [[pdf]](https://www.nature.com/articles/s44303-026-00201-7) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Data-Efficient%20Pathology%20Whole-Slide%20Image%20Segmentation%20With%20Slide-Level%20Conditioning.pdf)
+- `npj Imaging, 2026`
+- [Computational Pathology]
+```
+Well-written and quite interesting paper, pretty happy that I decided to read this. The main idea makes sense to me, to do tile-level segmentation/prediction and aggregate these into a segmentation of the full WSI as usual, but to condition the tile-level predictions on the slide-level feature vector. The analysis in Section 2.4 - 2.7 is all quite interesting. Encouraging results in Figure 3, seems like you don't need too much annotated data. Somewhat strange results when comparing "w/o FiLM" in Supplementary Table 7 & 8 with the results in Table 1 & 2 though, as this variant often is worse than all baselines, even the most basic U-Net. Section 2.7 is interesting, using mean-pooled UNI2 patch-level features as the slide-level features instead of Prov-Gigapath's slide-level.
+```
+
+##### [26-10-23] [paper597]
+- TiSAM: Fusing Spatial and Histopathology Foundation Models for Whole-Slide Image Segmentation
+ [[pdf]](https://www.biorxiv.org/content/10.64898/2026.10.16.759688v1) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/TiSAM%20Fusing%20Spatial%20and%20Histopathology%20Foundation%20Models%20for%20Whole-Slide%20Image%20Segmentation.pdf)
+- `biorxiv, 2026-10`
+- [Computational Pathology]
+```
+Fairly interesting paper. Figure 1.B is interesting, that UNI-only is quite a lot better than SAM3-only, whereas UNI + SAM3 doesn't add that much more. TiSAM with UNI2-h is substantially better than with Resnet-50 in Figure 2, but not really in Figure 3.B. Figure 4.C seems encouraging, that not too much annotated data is needed for good performance (would like to see results for TiSAM with Resnet-50 here as well though, but I guess that might perform similarly to DeeplabV3+).
+```
+
 ##### [26-10-18] [paper596]
 - A Multimodal Whole-Slide Foundation Model for Pathology
  [[pdf]](https://www.nature.com/articles/s41591-025-03982-3) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/A%20Multimodal%20Whole-Slide%20Foundation%20Model%20for%20Pathology.pdf)
@@ -1084,26 +1102,4 @@ Well written and quite interesting paper. I think the method makes sense overall
 - `BMC Medicine, 2023 (Opinion paper)`
 - [ML for Medicine/Healthcare]
 ```
-Fairly interesting paper, quick to read. Can of course seem like all this should be obvious, but I do quite like the final conclusion: "In conclusion, clinical prediction models are never truly validated due to expected heterogeneity in model performance between locations and settings, and over time. This calls for a stronger focus on validation studies, using principled validation strategies to quantify heterogeneity, regularly monitor model performance, and update models". Yes, I can agree that we should encourage validation studies more, put more effort into evaluating current models really extensively, instead of just churning out more and more new models.
-```
-
-##### [25-07-23] [paper478]
-- Generalizability Assessment of AI Models Across Hospitals in a Low-Middle and High Income Country
- [[pdf]](https://www.nature.com/articles/s41467-024-52618-6) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Generalizability%20Assessment%20of%20AI%20Models%20Across%20Hospitals%20in%20a%20Low-Middle%20and%20High%20Income%20Country.pdf)
-- `Nature Communications, 2024`
-- [ML for Medicine/Healthcare]
-```
-Well written and solid paper. Results make sense, nothing is particularly surprising, but quite interesting study with both UK and Vietnam data etc.
-```
-
-##### [25-07-22] [paper477]
-- Predicting Type 1 Diabetes in Children Using Electronic Health Records in Primary Care in the UK: Development and Validation of a Machine-Learning Algorithm
- [[pdf]](https://www.thelancet.com/journals/landig/article/PIIS2589-7500(24)00050-5/fulltext) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Predicting%20Type%201%20Diabetes%20in%20Children%20Using%20Electronic%20Health%20Records%20in%20Primary%20Care%20in%20the%20UK%20Development%20and%20Validation%20of%20a%20Machine-Learning%20Algorithm.pdf)
-- `The Lancet Digital Health, 2024`
-- [ML for Medicine/Healthcare]
-```
-Quite interesting paper. A lot of data, interesting problem, I quite enjoyed reading it overall. I'm confused by the "Mean number of days by which diagnosis would have been anticipated" results in Table 3 and Figure 3 though. They discuss this a bit at the end of the Discussion, how it might seem weird that the random chance baseline has a higher number than their model, but that this "must be balanced against the lower proportion of correct diagnoses that the chance algorithm would achieve". But, does it make sense to report this number then, this conditional number? Could it not be better to report the total number of days, across all patients? Sort of?
-```
-
-##### [25-07-22] [paper476]
-- A Scalable Federated Learning Solution for Se
+Fairly interesting paper, quick to read. Can of course seem like all this should be obvious, but I do quite like the final conclusion: "In conclusion, clinical prediction models are never truly validated due to expected heterogeneity in model performance between locations and settings, and over time. This calls for a stronger focus on validation studies, using principled validation strategies to quantify heterogeneity, regularly monitor model performance, and update models". Yes, I can agree that we should encourage validation stu

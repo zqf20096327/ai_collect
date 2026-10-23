@@ -133,6 +133,9 @@ answer deltas), followed by exactly one terminal `result` record:
 ```bash
 gokin -p "run the test suite" --output-format json
 gokin -p "one-off review" --no-session-persistence
+# Fast agent-worker output; retain native skills, hooks, settings and MCP.
+gokin -p "apply the focused fix" --no-plugins --brief --no-self-review \
+  --permission-mode acceptEdits --output-format json
 gokin -p "run the test suite" --max-turns 40 --timeout 45m \
   --max-budget-usd 2.50 \
   --output-format stream-json |
@@ -504,6 +507,39 @@ locked-down CI deterministic without granting the broad authority of
 name, Gokin continues enforcing sandbox, path-boundary, hard command-safety,
 hook, and tool-capability controls. When the flag is omitted, the configured
 permission and plan modes are preserved.
+
+In headless mode, a permission-mode or permission-rule denial is an ordinary
+error tool result: the model is told not to retry that call and may finish the
+request using its remaining tools. `dontAsk` never prompts, denies calls that
+are not already allowed, and continues; conservative read-only Bash remains
+allowed by that mode.
+`acceptEdits` permits edits; an unapproved Bash check can be denied without
+reverting the edit or failing the whole invocation. JSON results always include
+`permission_denials`, with `tool`, optional `tool_use_id`, and a short reason;
+raw inputs and potentially sensitive policy text are omitted. Use
+`--strict-permissions` to stop on the first ordinary denial with
+`status: "policy_blocked"`. Capability/schema ceilings, hard safety blocks and
+blocking pre-tool hooks, hook `continue:false`, and missing required managed
+hooks remain terminal with `status: "policy_blocked"`. Hook stops retain the
+existing `error.kind: "hook_stopped"` diagnostic.
+
+`--brief` requests one final summary line without verification narration. JSON
+results always include `files_changed`, a sorted array of workspace-relative
+paths reported as mutated by the foreground and invocation-owned child tool
+ledgers, including edits without Bash. Text mode buffers the answer and prints
+the summary followed by one changed path per line. Read-only and denied calls
+add no paths. Unreported shell side effects are not inferred from unrelated
+pre-existing Git changes. A supplied `--json-schema` remains authoritative.
+
+`--no-self-review` (or `GOKIN_NO_SELF_REVIEW=1`) disables the optional completion
+review, multi-file verification reminders, and delegated verification nudges
+for that invocation. The hard done-gate and its bounded auto-fixes remain;
+the existing `done_gate.enabled: false` setting (also implicit in `--bare`)
+disables that gate. Incomplete-todo continuation and Stop hooks remain active.
+Headless completion review also skips a single successful edit whose reported
+diff adds and removes exactly one line; unknown diff sizes, repeated mutations
+and multi-file changes retain review. A passing hard gate runs checks without
+adding model rounds; a failed check can still require an auto-fix round.
 
 ---
 
@@ -1165,7 +1201,7 @@ scopes write their corresponding Claude settings files. Option values remain
 in user-owned settings at every install scope. Bare mode rejects management.
 Project-scoped runtime components still require workspace trust.
 
-Normal CLI launches reconcile explicitly declared `extraKnownMarketplaces`
+Normal CLI launches reconcile cached, explicitly declared `extraKnownMarketplaces`
 (`additionalMarketplaces` is also accepted) and `enabledPlugins` before loading
 runtime components. User and managed declarations apply in every workspace;
 project/local declarations apply only in a trusted workspace. Relative project
@@ -1173,7 +1209,8 @@ marketplace paths resolve against the main checkout when launching from a Git
 worktree. Registration preserves each declaration's original settings scope.
 An enabled `name@claude-plugins-official` also declares Anthropic's official
 catalog. Managed marketplace sources replace same-name lower-tier sources;
-Gokin records install provenance and rebuilds outdated copies before they load.
+Gokin records install provenance; uncached or outdated required copies are
+fetched in the background before a later launch/reload can load them.
 Legacy installs without that provenance need reinstallation when a managed
 marketplace requires them. Required userConfig values may come from managed
 settings, including ordered drop-ins.
@@ -1198,13 +1235,21 @@ plugins. Ordinary auto-update passes skip install/helper commands. Accepted comm
 sources have a separate session refresh, described below; changed commands and
 download helpers still require explicit installation or update.
 
-Gokin reconciles declarations before runtime discovery, with a two-minute
-startup deadline. Interactive automatic updates are deferred until after the
-first user message; noninteractive opted-in hosts complete them at startup.
-Failed fetches or validation retain working copies and produce diagnostics. `gokin
-plugin sync` runs a full reconciliation without a model and returns a structured
-report with `--json`. Embedding hosts opt in using `BuildOptions.SyncDeclaredPlugins`;
-bare mode disables it. Passive runtime discovery remains offline. The declaration
+Startup uses cached plugin copies and local sources, with a 500ms reconciliation
+budget and no synchronous marketplace network fetch or clone. Missing catalogs
+and remote plugins are omitted for that launch. A background refresh starts
+after construction, has a two-minute bound, is cancelled with the app context,
+and never writes headless stdout. New copies are available on the next launch
+or reload; current installed versions stay pinned. Marketplace failures persist
+per source in `plugins/gokin/marketplace_failures.json`: retries back off for
+6h, then 12h, capped at 24h; success resets the failure state. Explicit
+`/plugin marketplace update`, `gokin plugin marketplace update`, and
+`gokin plugin sync` bypass automatic retry backoff. Failed fetches retain cached
+copies. Embedding hosts opt in using `BuildOptions.SyncDeclaredPlugins`.
+`--no-plugins` (or `GOKIN_NO_PLUGINS=1`) disables plugin discovery, marketplaces
+and plugin components while preserving native MCP servers, skills, hooks and
+settings; it rejects `--plugin-dir`. `--bare` disables the broader discovery
+surface. Passive runtime discovery remains offline. The declaration
 and update keys follow the [organization settings](https://code.claude.com/docs/en/plugins/org)
 and [loading reference](https://code.claude.com/docs/en/plugins/loading).
 
@@ -1367,8 +1412,9 @@ again when the pass starts. The pass has a two-minute deadline, does not run
 command sources or header helpers, and stops when the session closes. Cancelling
 a foreground turn leaves this session task running. Bare/headless sessions and
 embedding hosts that did not enable `SyncDeclaredPlugins` do not schedule it.
-Noninteractive opted-in hosts and `gokin plugin sync` retain startup/explicit
-reconciliation. Successful background updates show a reload notice, while
+Noninteractive opted-in hosts use the bounded background startup refresh;
+`gokin plugin sync` performs explicit reconciliation. Successful background
+updates show a reload notice, while
 failures remain independent diagnostics and preserve installed working copies.
 
 Interactive opted-in sessions retain their installed-version paths until
@@ -1573,50 +1619,4 @@ to read their output, wait for progress or address stuck tasks. A lost completio
 notification does not leave a waiting goal permanently idle.
 
 Set `GOKIN_GOAL_CHECKIN_MINUTES` (or `CLAUDE_CODE_GOAL_CHECKIN_MINUTES`) to change
-the initial interval; later intervals scale by two and four. `0` disables both
-check-ins and automatic goal retries. Resuming an active session resets retry
-and check-in baselines along with its turn, elapsed-time and token counters.
-Headless runs never start idle timers or delayed retries after returning.
-
-Approved plan execution now returns to the same goal after its intentional
-context replacement. Direct steps, delegated steps and nested tasks contribute
-their owned model usage; unrelated background completions are excluded. Native
-verification output and step evidence reach the independent evaluator. A
-completed plan can be a milestone: a `not_met` verdict continues the larger
-condition. Failed or paused plans do not automatically replay their steps.
-Approval refreshes the read-only planning request's tool schema for execution;
-explicit invocation tool ceilings remain binding, including native verification.
-
-With `--json-schema`, validation and tool-free format correction run before the
-goal verdict is published. The invocation has one two-correction allowance,
-shared across all goal turns, plus its common model-turn/time/cost limits.
-Correction preserves work evidence and cannot resume a paused goal or execute
-tools. Status and clear commands never request model formatting. Reported model
-rounds include nested agent and auxiliary requests even when the cap is disabled.
-
-Goal spend includes foreground responses and nested or detached agent responses
-from the same measurement period. In-flight usage is included when a turn ends;
-late agent usage is saved before its completion notification. Repeated completion
-checkpoints cannot charge it twice. Goal replacement, session changes and resume
-baselines exclude late usage from the previous measurement period. A failed save
-retains pending usage for the next successful checkpoint.
-
-Auxiliary requests for compaction, tool-output distillation, session memory,
-message scoring, error reflection and task planning share that accounting and
-the invocation's model-turn, time and cost limits. Usage remains charged when
-an auxiliary response is partial or its output fails validation. Hierarchical
-summaries account for every stage. Headless automatic compaction and memory
-extraction join the invocation; session restoration cannot launch an unscoped
-automatic compaction request before its limits are installed.
-
-Set `GOKIN_SMALL_FAST_MODEL` to select the small fast model used by the goal
-evaluator and auxiliary work. `ANTHROPIC_DEFAULT_HAIKU_MODEL` is the compatible
-alternative, with `ANTHROPIC_SMALL_FAST_MODEL` accepted as a legacy fallback.
-The native variable takes priority, then the compatible variable, then the
-legacy one. Values are full model IDs on the current provider, including custom
-gateway IDs. Invalid aliases or recognizable foreign-provider IDs produce an
-actionable error before the auxiliary request. The main session's model stays
-as selected; auxiliary clients keep isolated prompts, tools and mutable state.
-
-The `haiku` alias uses the same selection in `--model`, `/model`, task agents
-and skill/plugin-agent model settin
+the initi

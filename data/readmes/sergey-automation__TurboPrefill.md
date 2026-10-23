@@ -20,10 +20,16 @@ TurboPrefill is the first public proof-of-concept implementation of Intra-Prompt
 
 Further development has added support for multi-user workloads, Vision Language Models (VLM), and Multi-Token Prediction (MTP) models. The implementation has also been validated on modern high-performance GPUs.
 
-See [how to launch the latest version](https://github.com/sergey-automation/TurboPrefill-MTP/blob/main/READMI.md). Ready-to-use fork based on llama.cpp b10451 (August 16, 2026):
-https://github.com/sergey-automation/llama.cpp/tree/turboprefill-mtp
+The latest TurboPrefill version for llama.cpp from October 5, 2026. is available here:  
+https://github.com/sergey-automation/TurboPrefill/tree/main/TurboPrefill_llama.cpp_b11429_v2.2m 
 
 TurboPrefill v6.8 for Iwan Kawrakow's ik_llama.cpp has now been published in this repository. It is based on ik_llama.cpp build 5005, commit 3d27f5bb6348c4d79edded63b03e9a93efb2f80e from October 5, 2026.
+
+For reference, an earlier ready-to-use fork based on llama.cpp b10451 (August 16, 2026) is available here:  
+https://github.com/sergey-automation/llama.cpp/tree/turboprefill-mtp
+
+Launch instructions for this earlier version:  
+https://github.com/sergey-automation/TurboPrefill-MTP/blob/main/READMI.md
 
 For a detailed architectural discussion, see:
 [RFC: Intra-Prompt Pipeline Scheduling for Multi-GPU Prefill](doc/rfc_turboprefill.md)

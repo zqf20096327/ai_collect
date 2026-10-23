@@ -331,6 +331,7 @@ Press `g` in the TUI or use `--group-by` in `--light`/`--json` mode to control h
 | **Workspace + Model** | `--group-by workspace,model` | | Group local usage by workspace key, then model — add [`--merge-worktrees`](#per-workspace-cost) to fold git worktrees into their repo |
 | **Session + Model** | `--group-by session,model` | | One row per `session_id` and model — attribute cost to a specific agent-CLI session |
 | **Client + Session + Model** | `--group-by client,session,model` | | One row per client, session, and model — useful for multi-agent runners that join on `session_id` |
+| **Machine + Model** | `--group-by machine,model` | | One row per machine label and model — see [Per-machine usage](#per-machine-usage) |
 
 **`--group-by model`** (most consolidated)
 
@@ -397,6 +398,37 @@ tokscale models --json --group-by workspace,model --merge-worktrees
 ```
 
 In the TUI, press `g` → **Workspace + Model**, then `w` to toggle worktree rollup (the footer shows `[w:worktrees]` or `[w:repos]`).
+
+#### Per-machine usage
+
+If you copy other machines' session folders into local directories and add them with `scanner.extraScanPaths`, give each folder a machine label with `scanner.machineLabels`. Every session file under a labeled folder counts toward that machine; everything else counts toward `scanner.localMachineLabel` (default `"local"`):
+
+```json
+{
+  "scanner": {
+    "extraScanPaths": {
+      "codex": ["/Users/me/mirrors/steven/.codex/sessions"],
+      "claude": ["/Users/me/mirrors/steven/.claude/projects"]
+    },
+    "machineLabels": {
+      "/Users/me/mirrors/steven": "steven"
+    },
+    "localMachineLabel": "laptop"
+  }
+}
+```
+
+A folder matches every file beneath it, compared on whole path components (case-insensitively on Windows); when folders nest, the longest one wins. Then group by machine:
+
+```bash
+# One row per (machine, model), with a Machine column
+tokscale models --light --group-by machine,model
+
+# JSON entries carry a `machine` field in this mode only
+tokscale models --json --group-by machine,model
+```
+
+In the TUI, press `g` → **Machine + Model**.
 
 Workspace rows are labeled `repo` or `repo ⑃ worktree`. Clients disagree about how they record a workspace — Claude Code stores a dash-mangled directory slug (`-Users-me-devpro-app`) while Codex and OpenCode store real paths — so tokscale resolves slugs back to their true path against the filesystem. Four consequences worth knowing:
 
@@ -989,6 +1021,8 @@ Tokscale stores settings in `settings.json` in its config directory. By default 
 | `autosubmit` | object | disabled | Saved `tokscale autosubmit` state: interval, client/date filters, scheduler backend, last run time, and last error. Prefer `tokscale autosubmit enable/status/disable` over editing this object by hand. |
 | `cursor.syncTimeoutSeconds` | number | unset | Overall time budget, in seconds (1-86400), for each account's usage download in `tokscale cursor sync`. When unset, the budget starts at 120 s and grows with the number of usage events Cursor reports, up to 1800 s. `tokscale cursor sync --timeout <SECONDS>` overrides it for one run. See [Cursor IDE Commands](#cursor-ide-commands). |
 | `scanner.extraScanPaths` | object | `{}` | Additional per-client scan roots for sessions outside Tokscale's default home-root locations |
+| `scanner.machineLabels` | object | `{}` | Machine label for each folder, as `{ "<folder>": "<label>" }`. Session files under a folder count toward its label in `--group-by machine,model`; the longest matching folder wins. See [Per-machine usage](#per-machine-usage). |
+| `scanner.localMachineLabel` | string | `"local"` | Machine label for session files under no `scanner.machineLabels` folder |
 | `scanner.bucketTimezone` | string | auto-detected | IANA name of the timezone this device buckets usage days into (e.g. `"Asia/Seoul"`). Recorded automatically on first run. Prefer `tokscale config set timezone <zone>` over editing this by hand. |
 
 #### Day boundaries and `scanner.bucketTimezone`
@@ -1562,12 +1596,4 @@ AI coding tools store their session data in cross-platform locations. Most tools
 | Pi | `~/.pi/` | `%USERPROFILE%\.pi\` | Same path on all platforms |
 | Oh My Pi | `~/.omp/` | `%USERPROFILE%\.omp\` | Same path on all platforms ([Oh My Pi](https://github.com/can1357/oh-my-pi)) |
 | Kimchi Coding | `~/.config/kimchi/harness/sessions/` | `%USERPROFILE%\.config\kimchi\harness\sessions\` | Configurable via `KIMCHI_CODING_AGENT_DIR` env var; Pi-compatible JSONL sessions |
-| Kimi CLI | `~/.kimi/` | `%USERPROFILE%\.kimi\` | Same path on all platforms |
-| Kimi Code | `~/.kimi-code/` | `%USERPROFILE%\.kimi-code\` | Same path on all platforms |
-| Kimi Work (desktop) | `~/Library/Application Support/kimi-desktop/` | `%APPDATA%\kimi-desktop\` | No Linux build |
-| Qwen CLI | `~/.qwen/` | `%USERPROFILE%\.qwen\` | Same path on all platforms |
-| Roo Code | `~/.config/Code/User/globalStorage/rooveterinaryinc.roo-cline/tasks/` | `%USERPROFILE%\.config\Code\User\globalStorage\rooveterinaryinc.roo-cline\tasks\` | VS Code globalStorage task logs |
-| Kilo | `~/.config/Code/User/globalStorage/kilocode.kilo-code/tasks/` | `%USERPROFILE%\.config\Code\User\globalStorage\kilocode.kilo-code\tasks\` | VS Code globalStorage task logs |
-| Cline | Linux: `~/.config/Code/User/globalStorage/saoudrizwan.claude-dev/tasks/`; macOS: `~/Library/Application Support/Code/User/globalStorage/saoudrizwan.claude-dev/tasks/`; server: `~/.vscode-server/data/User/globalStorage/saoudrizwan.claude-dev/tasks/`; Cline CLI fallback: `~/.cline/data/sessions/` | `%APPDATA%\Code\User\globalStorage\saoudrizwan.claude-dev\tasks\`; Cline CLI fallback: `%USERPROFILE%\.cline\data\sessions\` | VS Code globalStorage task logs; Cline CLI selects the first available root in order `$CLINE_SESSION_DATA_DIR` → `$CLINE_DATA_DIR/sessions/` → `$CLINE_DIR/data/sessions/` → `~/.cline/data/sessions/`; blank/whitespace-only environment values are ignored |
-| Mux | `~/.mux/sessions/` | `%USERPROFILE%\.mux\sessions\` | Same path on all platforms |
-| Codebuff | `~/.config/manicode/projects/` (+ `manicode-dev`, `manicode-staging`) | `%US
+| 

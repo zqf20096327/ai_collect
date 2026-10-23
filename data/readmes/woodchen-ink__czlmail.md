@@ -46,6 +46,9 @@ anniversaries, categories) · groups · address books · vCard import
 
 **Files** — Stalwart file storage with list / grid views, favorites, cut / copy / paste, drag-and-drop upload
 
+**Notes** — plain Markdown files kept in your file storage, editable offline and synced across devices, with daily notes ·
+read them on your phone with the [web reader](web-phone-note/README.md) (hosted at https://mail-notes.czl.net, or deploy your own)
+
 **Server-side settings** — identities and HTML signatures, vacation auto-reply, Sieve filters
 (rule builder compatible with Bulwark's rules, plus a raw Sieve editor)
 
@@ -104,6 +107,10 @@ Download the latest release from [Releases](https://github.com/woodchen-ink/czlm
 
 - Windows: `czlmail-amd64-installer.exe` (per-user install, no admin rights needed)
 - macOS: `czlmail-darwin-universal.dmg` (Intel and Apple silicon, macOS 10.15+)
+- Phone (read notes only): open **https://mail-notes.czl.net** and sign in with your server, email and an app password;
+  add it to the home screen to use it like an app. It is only static files: your browser talks to your own mail server directly,
+  and we never receive or store your password or notes.
+  It needs a JMAP server with file storage and CORS ([details](web-phone-note/README.md#server-requirements)).
 
 What changed in each version: [changelog (Chinese)](https://www.sunai.net/t/topic/1495).
 

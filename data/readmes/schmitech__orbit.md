@@ -24,6 +24,10 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/schmitech/orbit">⭐ Star ORBIT</a> to help others discover the project.<br />
+</p>
+
+<p align="center">
   <strong>ORBIT control plane</strong>
   <br />
   <img width="700" alt="ORBIT admin panel in action: resource monitoring, API keys, users, audit logs, and MCP tools" src="https://github.com/user-attachments/assets/9d56a174-fbf1-4caa-887b-691c4f1b07a7" />
@@ -110,7 +114,7 @@ Choose **one** flavor:
 | **OpenRouter** | `schmitech/orbit-openrouter:latest` | `OPENROUTER_API_KEY` exported in your shell. Free models. |
 | **Cohere** | `schmitech/orbit-cohere:latest` | `COHERE_API_KEY` exported in your shell. |
 
-Each image is also published with a version tag (e.g. `schmitech/orbit-ollama:2.19.1`) if you want to pin to a specific release instead of `:latest`.
+Each image is also published with a version tag (e.g. `schmitech/orbit-ollama:2.20.1`) if you want to pin to a specific release instead of `:latest`.
 
 **Ollama**
 
@@ -189,8 +193,8 @@ See the [Docker guide](docker/README.md#flavor-images-recommended-pull-and-run) 
 **Prerequisites:** Python 3.12+, an internet connection for downloads, and [Ollama](https://ollama.com/) installed and running. If needed, run `ollama serve` in a separate terminal. On Windows, follow the [installation guide](install/windows.md).
 
 ```bash
-curl -LO https://github.com/schmitech/orbit/releases/download/v2.19.1/orbit-2.19.1.tar.gz
-tar -xzf orbit-2.19.1.tar.gz && cd orbit-2.19.1
+curl -LO https://github.com/schmitech/orbit/releases/download/v2.20.1/orbit-2.20.1.tar.gz
+tar -xzf orbit-2.20.1.tar.gz && cd orbit-2.20.1
 ./install/setup.sh --profile default
 
 ollama pull gemma4:e2b

@@ -13,6 +13,14 @@ problem formulations that unnecessarily limit the outcome. Keep the attempts, ev
 Planning and the catalog example are free in your browser. Computer execution uses a separately configured
 native model and isolated runner. [What works now and how to begin](docs/agent/SUCCESSOR_ALPHA.md).
 
+**Autonomous Enterprises · Build the means of building.** Construct checked Walsh, XOR-convolution and inverse
+capabilities, freeze their bytes, then invoke them on later tasks in the same mission history.
+[Free local foundry and evidence guide](docs/autonomous-enterprises/README.md) ·
+[Selected 23-page paper](docs/Autonomous_Enterprises.pdf) ·
+[Source candidate and qualification](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/pull/4855).
+This additive source preview preserves SUCCESSOR Ω, Discovery Lab and all six research stages.
+Installed cross-repository receivers, public deployment and the operational real-task pilot remain unqualified.
+
 <!-- featured-research-papers -->
 ## Featured research
 
@@ -25,6 +33,12 @@ Vincent Boucher · MONTREAL\.AI · 2026-10 · English PDF.
 
 **Companion papers · reading order**
 
+- **[Autonomous Enterprises — Foundry v2](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/autonomous-enterprises-foundry-v2.pdf)** · A simulated thermal\-fluid foundry constructs fixtures, a calibration station and a qualified research instrument, then a new calorimetry method and a distinct simulated successor\. A retained failure: the 4\.9477% predicted/observed heat difference passes the 5% runtime rule, while the calorimeter has 8\.6964% error against reference\-model true heat\. Conventional engineering ties useful accuracy with 384 versus 672 readings; a centralized lab is CAD 460 cheaper\. Participant withdrawal and underutilization fail in the tested economic cases\. Finite search, modeled economics and Python contract checks; physical construction and deployment NOT RUN\. Reproduction requires the full research companion; standalone TeX requires the full LaTeX source ZIP\.
+  Vincent Boucher · MONTREAL\.AI · QUEBEC\.AI · Montréal, Québec, Canada · 2026-10-22 · English PDF.
+- **[Autonomous Enterprises — Capability Inheritance](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/autonomous-enterprises-capability-inheritance-v1.pdf)** · Retained executable capabilities serve 48 mathematical tasks using 63,196 counted work units versus 915,136 for rebuilding, but the supplied expert uses 5,760\. Inherited successor qualification loses 7,918 versus 2,030 directly\. A separate simulated thermal witness gives a conditional 1\.8862% bound\. Local\-EVM and native\-worker evidence remains separate from unfinished end\-to\-end thermal integration; physical validity and full monetary, human and energy costs are unknown\. No measured profit is established\. The 25\-page manuscript is preserved; reproducible TeX requires its complete source package\.
+  Vincent Boucher · MONTREAL\.AI · 2026-10-22 · English PDF.
+- **[Autonomous Enterprises — The Discoverability Compiler](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/autonomous-enterprises-discoverability-v1.pdf)** · A bounded compiler constructs nuisance\-canceling measurement programs and checks whether they separate an authorized decision\. Conventional baselines tie development acquisition costs; an adaptive control wins\. Reuse reduces counted construction work, while timing is unstable and centralized execution remains faster\. The ≤US$100 total\-cost to US$10,000 realizable incremental\-value challenge is UNPROVEN: no executable offer or customer receipt exists, and complete cost is unknown\. This preserved 24\-page amended paper does not qualify its open\-review runnable experience or establish physical validation or installed enterprise integration\. Reproducible TeX requires the complete research source\.
+  Vincent Boucher · MONTREAL\.AI · QUEBEC\.AI · 2026-10-22 · English PDF.
 - **[Out\-Learn 📚](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/Out_Learn.pdf)** · Studies how to construct measurement protocols and learn reusable calibration, with error guarantees under declared drift and measurement\-error assumptions in exact synthetic studies\.
   Vincent Boucher · MONTREAL\.AI · 2026-10-21 · English PDF.
 - **[Out\-Think 🧠](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/Out_Think.pdf)** · Studies executable reasoning representations that preserve required answers and operations, and when to replace rather than refine inherited internal codes, in exact finite models\.
@@ -37,17 +51,23 @@ Vincent Boucher · MONTREAL\.AI · 2026-10 · English PDF.
   Vincent Boucher · MONTREAL\.AI · 2026-10-21 · English PDF.
 - **[Out\-Evolve ♾️](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/Out_Evolve.pdf)** · A proposed architecture for building experimentation and production capabilities that make further discoveries and successor capabilities possible\.
   Vincent Boucher · MONTREAL\.AI · 2026-10-20 · English PDF.
+- **[TRANSFORMATIONAL AUTONOMOUS ENTERPRISES](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/transformational-autonomous-enterprises-v1.pdf)** · A finite graph\-capability study connects four source runtimes and five local\-EVM contracts: fresh mission checks remain, repeated qualification work falls, direct\-specialist wins and unproven economic value are retained\.
+  MONTREAL\.AI — Writer \#4 research edition · 2026-10-23 · English PDF.
 
 Research proposals and bounded studies, not claims of general autonomous capability or physical deployment.
 [Explore the papers in English or French](https://montrealai.github.io/AGI-Alpha-Agent-v0/#papers)
 <!-- /featured-research-papers -->
 
-**Current source candidate · 1.38.0.** [Integrated flagship release notes](docs/agent/RELEASE_NOTES_1.38.0.md).
-This combined software candidate adds bounded OUT-EXECUTE execution and brings the seven original papers together
-with the six-stage Discovery Lab, frozen future-task experiments and one replayed evidence docket. It preserves
-existing proposal and Out-Evolve journeys. This is not a claim that every proposed capability is implemented.
-Synthetic results and unsigned work drafts grant no operational authority.
-Predecessor qualification, independent integration review and exact-source publication checks remain required.
+**Current experimental source candidate · 1.39.0.** [Autonomous Enterprises preview notes](docs/agent/RELEASE_NOTES_1.39.0.md).
+The additive enterprise workspace develops a bounded finite capability, freezes it and compares later tasks
+while retaining rejected alternatives, declared costs and recoverable history. It extends the existing six-stage
+Discovery Lab, OUT-EXECUTE and thirteen-section evidence docket. Supplied synthetic semantics and zero-cap
+inspection drafts describe the supported preview; installed native compatibility, external model/tool pilots
+and observed organizational benefit retain separate qualification. Fresh exact-source release gates remain pending.
+
+This combined software candidate adds bounded OUT-EXECUTE execution to the preserved proposal and Out-Evolve journeys.
+This is not a claim that every proposed capability is implemented. Synthetic results and unsigned work drafts grant
+no operational authority.
 
 ## Choose your next step
 
@@ -1808,117 +1828,4 @@ download the checkpoint directly:
 python scripts/download_hf_gpt2.py models/gpt2
 # Or fetch manually from Hugging Face
 curl -O https://huggingface.co/openai-community/gpt2/resolve/main/pytorch_model.bin
-curl -O https://huggingface.co/openai-community/gpt2/resolve/main/vocab.json
-curl -O https://huggingface.co/openai-community/gpt2/resolve/main/merges.txt
-curl -O https://huggingface.co/openai-community/gpt2/resolve/main/config.json
-```
-
-For a production-ready ADK setup see
-[PRODUCTION_GUIDE.md](alpha_factory_v1/demos/alpha_agi_business_v1/PRODUCTION_GUIDE.md).
-
-### Finance Demo Quick‑Start
-
-Launch the finance alpha demo directly from your terminal:
-
-```bash
-curl -L https://raw.githubusercontent.com/MontrealAI/AGI-Alpha-Agent-v0/main/alpha_factory_v1/demos/finance_alpha/deploy_alpha_factory_demo.sh | bash
-```
-
-The script pulls the signed demo container, runs a BTC/GLD strategy, prints open
-positions and P&L, and exposes the trace‑graph UI at
-<http://localhost:${TRACE_WS_PORT}>.
-
-Need a different pair or port? Use environment variables:
-`STRATEGY=my_pair PORT_API=8001 TRACE_WS_PORT=9000 bash deploy_alpha_factory_demo.sh`
-
-No GPU → falls back to GGML Llama‑3‑8B‑Q4.
-No `OPENAI_API_KEY` → switches to local SBERT + heuristics.
-`AF_LLM_CACHE_SIZE` caps in-memory LLM cache entries (default 1024).
-`AF_PING_INTERVAL` sets the ping frequency in seconds (default 60, minimum 5).
-`AF_DISABLE_PING_AGENT=true` disables the built‑in ping agent.
-
----
-
-<a name="61-running-tests"></a>
-### 6.1 · Running Tests 🧪
-
-Unit tests can be executed with the bundled helper script:
-
-```bash
-python -m alpha_factory_v1.scripts.run_tests
-```
-
-Always run `python check_env.py --auto-install` beforehand so optional
-dependencies like `openai_agents` and `gymnasium` are present. Use
-`ALPHA_FACTORY_FULL=1` to install heavy extras.
-
-The helper validates the target directory, prefers `pytest` when
-available and otherwise falls back to `unittest`. Ensure all tests pass
-before deploying changes.
-
-Install the optional test dependencies with:
-
-```bash
-pip install -r requirements-dev.txt
-pip install -r requirements.lock  # pinned versions for deterministic setup
-pip install -r alpha_factory_v1/backend/requirements-lock.txt  # includes RDKit
-```
-
-Install the project in editable mode so tests resolve imports:
-```bash
-pip install -e .
-python check_env.py --auto-install  # times out after 10 minutes
-# Install heavier extras so tests needing torch or faiss work:
-ALPHA_FACTORY_FULL=1 python check_env.py --auto-install
-```
-The `run_tests` helper automatically executes `python check_env.py --auto-install`
-before running `pytest`. When offline, set `WHEELHOUSE` or pass
-`--wheelhouse <dir>` so packages install from the local wheel cache. The
-repository ships with a `wheels/` directory that can be used as this cache.
-The full test suite relies on optional packages including `numpy`, `torch`,
-`pandas`, `prometheus_client`, `gymnasium`, `playwright`, `httpx`, `uvicorn`,
-`git`, `hypothesis` and `requests_mock`.
-
-Tests that depend on optional heavy packages skip automatically when those
-libraries are missing. Set environment variables like `SKIP_WEBKIT_TESTS=1`
-or `PYTEST_NET_OFF=1` to bypass browser or network tests if the necessary
-dependencies aren't installed.
-
-#### Wheelhouse Setup
-
-Tests install packages from PyPI unless a local wheelhouse is provided. Build
-one from `requirements.lock` and point `WHEELHOUSE` to it before verifying the
-environment and running the suite:
-
-```bash
-mkdir -p wheels
-pip wheel -r requirements.lock -w wheels
-export WHEELHOUSE=$(pwd)/wheels
-python check_env.py --auto-install --wheelhouse "$WHEELHOUSE"
-WHEELHOUSE="$WHEELHOUSE" pytest -q
-```
-
-If network access is unavailable and the variable is unset these commands fail
-instead of falling back to PyPI.
-
-#### Offline or Restricted Environments
-
-Run `./scripts/build_offline_wheels.sh` to populate a wheelhouse on a
-machine with internet access, then set `WHEELHOUSE=<path>` before executing
-the tests so dependencies install from this local cache.
-If `npx playwright install` fails to download WebKit, set `SKIP_WEBKIT_TESTS=1`
-so browser checks skip gracefully.
-
-#### Test Runtime
-
-Running `pytest` may take several minutes on the first run while caches are
-created. Execute the suite in verbose mode to see ongoing progress:
-
-```bash
-pytest -vv
-```
-
-After completion `pytest` prints a summary such as `### passed in 120.00s`.
-
-The suite includes `tests/test_api_rate_limit.py` which spins up
-`api_server.app` with `API_RA
+curl -O https://huggingface.co

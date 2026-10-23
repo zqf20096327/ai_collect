@@ -370,7 +370,7 @@ lake env lean examples/lean/06_ProjectVerificationArc.lean
 All documented example groups are also runnable through the Makefile:
 
 ```bash
-make examples                 # lean, native, integration, and legacy groups
+make examples                 # lean, native, and integration groups
 make examples GROUP=lean      # one group; report in .zil/examples-reports/
 ```
 
@@ -605,6 +605,23 @@ Facts and rules can be exported to Soufflé Datalog or Prolog:
 
 These interfaces let external analysis tools and assistants consume the same relational state used by the Lean implementation.
 
+### Operations and exchange tools
+
+Each is a Lean executable behind `bin/zil`; every one has a specification and a test gate that does not need Clojure.
+
+| Command | What it does | Specification | Gate |
+|---|---|---|---|
+| `control` | formal control plane: exchange with the worker, hash-chained control events and receipts in SQLite | `spec/control-event-store-v1.md`, `spec/exchange-protocol-v1.md` | `scripts/test-control-plane.sh` |
+| `plugin` | extension registry for `ZIL-EXTENSION/1` manifests, with quarantine and an external-command adapter | `spec/extension-manifest-v1.md` | `scripts/test-plugins.sh` |
+| `evaluate-runtime` | scores where a component is best implemented, with exact arithmetic | `spec/runtime-evaluation-v1.md` | `scripts/test-evaluation.sh` |
+| `release-attest` | binds a release request to its evidence | `spec/release-attestation-v1.md` | `scripts/test-release-attestation.sh` |
+| `import-hcl`, `export-tla`, `export-lean` | Terraform/OpenTofu to ZIL; `LTS_ATOM` to TLA+ and to Lean | `spec/interop-v1.md` | `scripts/test-interop.sh` |
+| `embedded-scan`, `embedded-snapshot`, `embedded-drift-check`, `embedded-native` | ZIL blocks written in comments of Lean, Python, Clojure, Rust and Markdown sources | `spec/embedded-blocks-v1.md` | `scripts/test-embedded.sh` |
+| `ingest`, `import-data`, `convert-data` | `DATASOURCE` declarations to facts, causal edges and a revision log; data files to and from JSON, EDN, text, CSV, a YAML subset and key=value | `spec/datasource-ingest-v1.md` | `scripts/test-ingest.sh` |
+
+Their expected outputs were written by the earlier implementation and are checked byte for byte or as data; the gates run
+the Lean tools alone. The control store needs `sqlite3`, the gates need `python3`, and the REST adapter needs `curl`.
+
 ## Use cases
 
 ZIL Lean can support:
@@ -621,15 +638,60 @@ ZIL Lean can support:
 - step-by-step explanations for inferred project relationships;
 - exchange of relation data with Datalog and Prolog tools.
 
-## Existing `.zc` runtime
+## Shared model substrate (macro library)
 
-The repository also contains the standalone ZIL syntax and Clojure/DataScript runtime. It supports `.zc` files, macros, import/export tools, embedded annotations, and adapters.
+`libsets/model-substrate` is an opt-in macro library that gives domain macros one shared vocabulary for structure (entities, associations, states, messages), intent (actors, use cases), scenarios (feature, case, given/when/then steps with explicit order) and the coverage links between them, plus coherence queries that list use cases without a scenario, scenarios without a use case, and `then` steps that realize nothing. It adds no relation kind or syntax; a model that does not load it is unchanged.
 
 ```bash
-clojure -M -m zil.cli examples/it-infra-minimal.zc
+bin/zil expand examples/model-substrate/book-loan/model.zc - --lib libsets/model-substrate
+bin/zil query-ci examples/model-substrate/book-loan/model.zc loan_profile - --lib libsets/model-substrate
+scripts/test-model-substrate.sh
 ```
 
-The standard exchange layer connects that runtime with the native Lean representation.
+The contract is `spec/model-substrate-v0.1.md`; the targets and test inventory are `spec/model-substrate-targets-v0.md`. See `examples/model-substrate/README.md`.
+
+## The `.zc` language
+
+ZIL is Lean. The `.zc` syntax (facts, rules, queries, macros, declarations, embedded annotations) is parsed, expanded, compiled and queried by the native Lean engine: `bin/zil compile`, `expand`, `query-ci`, `conformance` and the audits listed under *Native CLI*. There is no other runtime and nothing here depends on Clojure. An earlier Clojure/DataScript runtime was removed; its control plane, plugin loader, release attestation, placement evaluation, embedded blocks, datasource ingest and HCL, TLA+ and LTS tools were rewritten in Lean (*Operations and exchange tools*), and `spec/clojure-removal.md` says where each part went. `scripts/check-no-clojure.sh` keeps Clojure out.
+
+### Native macro extension qualification
+
+`spec/macro-extension-matrix.tsv` records each macro library variant and a representative
+model that exercises it. Run the full qualification from this directory:
+
+```bash
+./tools/macro_extension_matrix.sh
+```
+
+The check runs on the native engine alone. Each row's native expansion must equal its reviewed golden in
+`spec/macro-extension-golden/`, the native frontend must compile the model, and the generated
+Lean module must typecheck. A library column of `-` marks a model that defines its macros
+inline. After an intended change to a library or the expander, run
+`./tools/macro_extension_matrix.sh --update` and review the golden diff. Add a row when
+introducing a macro library or extension; keep distinct legacy `lib/` variants represented even
+when a similarly named `libsets/` copy exists.
+
+The Souffle compatibility macros (`libsets/souffle-compat`) declare relations and facts in the form a Souffle program uses. They are qualified by the same matrix; the bridge that ran Souffle from ZIL belonged to the removed runtime. See `spec/souffle-macro-compat-v1.md`.
+
+`bin/zil corpus` (`scripts/check-corpus.sh`) compiles every `.zc` file under `lib/`, `libsets/` and `examples/` alone and compares the outcome with `spec/corpus-status.tsv`, so a change in what compiles shows up in review. A macro file or a model that needs its library is rejected alone and recorded as such; the matrix covers those with their libraries.
+
+## Extension libraries
+
+Opt-in macro libraries, each selected with `--lib` and qualified by the macro matrix.
+
+| Library | Adds | Example |
+|---|---|---|
+| `libsets/process-algebra` | temporal process prefixes with internal and external sides, pi-calculus hand-offs, vector clocks with required orders, and a discrete clock with windows | `examples/process-algebra-checks.zc` |
+| `libsets/proof-evidence` | `LEAN_PROOF` and `LEAN_LEMMA_PROOF`, the kernel-evidence form `bin/zil theorem-audit` reads | `examples/proof-evidence/contracts.zc` |
+| `libsets/discovery-api` | rules and queries over the facts of a Discovery-style API description (methods, schemas, fields, references) | `examples/discovery-api/sample-model.zc` |
+
+The AWS, TLM, Petri-net, namespace, theorem, interop and other libraries are listed in
+`spec/macro-extension-matrix.tsv`. `scripts/test-extension-libraries.sh` checks the row counts the
+three libraries above must give on their examples, and that the theorem audit refuses a high
+theorem without evidence.
+
+Keyword values written with a leading colon, such as `move=:N`, read as the name without the
+colon, so the Petri-net layer in `examples/petrinet-nd-macro-layer.zc` compiles natively.
 
 ## Repository layout
 
@@ -641,7 +703,8 @@ Zil/Trust/           proof-backed rules
 Zil/Exchange/        snapshots and deltas
 examples/lean/       progressive native examples
 examples/native-cli/ CLI snapshot example
-src/zil/             Clojure runtime and tools
+libsets/             opt-in macro libraries, selected with --lib (model-substrate, aws-model, ...)
+bin/ scripts/ tools/ commands, test runners and gates (no Clojure)
 spec/                language and runtime specifications
 ```
 
@@ -652,7 +715,7 @@ Expected repository validation:
 ```bash
 lake build
 lake exe zilLeanTests
-clojure -M:test
+bin/zil test --profile lean
 ```
 
 The Lean toolchain is pinned to `leanprover/lean4:v4.31.0`.

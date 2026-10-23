@@ -155,10 +155,10 @@ Install only Hermes Mobile; the app walks you through the rest and picks up wher
    the phone, install it and open it (allow your browser to *install unknown apps* if Android asks).
 2. **Get the helper apps:** tap **Install all**. Android first asks you to allow Hermes Mobile to *install unknown apps*: turn
    the switch on and go back. Then tap **Install** on Android's prompt for each app: Termux, Termux:API and Termux:Boot (from
-   F-Droid) and Shizuku (from GitHub). The app checks that each one comes from its maker before installing it.
+   F-Droid) and Shizuku (from GitHub). Each app row links to its official page (F-Droid or Shizuku's releases) if you prefer to install it yourself; the Termux apps must all come from F-Droid. The app checks that each one comes from its maker before installing it.
 3. **Start Shizuku** (recommended, you can skip it and do it later): it keeps Android from stopping the long install ("signal 9")
    and lets Hermes use the screen. Turn on Developer options (Settings → About phone → tap *Build number* 7 times; on some phones
-   it is under *Software information* or called *OS version*), connect to Wi-Fi, which Wireless debugging needs, then open Shizuku,
+   it is under *Software information* or called *OS version*), connect to Wi-Fi, which Wireless debugging needs (Shizuku uses Android's own wireless debugging to start itself without a computer or root; it is local only), then open Shizuku,
    tap *Pairing* and follow its steps (Developer options → Wireless debugging → *Pair device with pairing code*, then type the code
    into Shizuku's notification), and tap *Start*. Rooted: just tap *Start* in Shizuku.
 4. Allow Hermes Mobile to *run commands in Termux* when Android asks.
@@ -171,8 +171,8 @@ Install only Hermes Mobile; the app walks you through the rest and picks up wher
 6. Back in the app: **Connect Hermes to a model**. Sign in with your subscription or paste an API key, then pick the model new
    chats use. You can change all of this later in **Settings → Subscriptions & accounts / API keys / Default models**.
 
-   ChatGPT, Grok and Nous Portal sign in inside the app. Claude opens Termux for its sign-in, because Hermes only allows that one
-   from a terminal: open the link it shows, approve, and paste the code back into Termux.
+   ChatGPT, Claude, Grok and Nous Portal sign in inside the app. For Claude, tap **Open claude.ai**, approve, and paste the code
+   Claude shows back into the app (it runs the same login as `hermes auth add anthropic`; **Use Termux instead** does it there).
 
 <details>
 <summary>Without the app's help (by hand in Termux)</summary>
@@ -282,6 +282,43 @@ Open **Settings → Setup check** in the app first: it shows what's missing, wit
 | Hermes can't read your files | Setup check → *Hermes can use your files* → Allow, then Restart Hermes |
 | Termux:API won't install | Termux and Termux:API come from different stores. Install both from F-Droid |
 
+### Uninstall
+
+In the app: **Settings → Danger zone → Uninstall Hermes**. It lists what goes, offers a backup, asks you to type `uninstall`, then
+removes Hermes with all chats, memory, skills, settings and keys, Debian, the installer's files and its phone setting (inside Termux, with
+`phone/uninstall.sh`). After that Android asks you to confirm each app: Termux:API, Termux:Boot, Shizuku, Termux, and Hermes Mobile last.
+Removing Termux makes Android close the app; open it again and it shows the last step.
+
+**Backup** (on by default): `Download/hermes-backup-<date>.tar.gz` with Hermes's chats (`state.db`), memory, skills, cron jobs, canvas
+documents, config, profiles and this app's settings (`hermes-mobile-settings.json`); no program files, caches or logs. API keys (`.env`)
+and sign-ins (`auth.json`, `*token*.json`) are left out unless you switch on *Include API keys and sign-ins*: any app that may read your
+Downloads could read them. A key typed straight into `config.yaml` is not filtered. To restore on a new install, unpack it into Hermes's
+folder in Debian (`~/bin/hermes-debian bash -c 'tar -xzf /sdcard/Download/hermes-backup-<date>.tar.gz -C /root/.hermes'`) and restart Hermes.
+
+Kept: files Hermes saved to your storage (Downloads, Pictures/Hermes). The phone setting needs Shizuku running; without it Android's
+child-process limit stays lifted, which is harmless (Android 14+: Developer options → *Disable child process restrictions* → off).
+
+<details>
+<summary><b>By hand, without the app</b></summary>
+
+In Termux: `curl -fsSL https://raw.githubusercontent.com/omarqaterge/hermes-mobile-app/main/phone/uninstall.sh -o un.sh && bash un.sh --backup`
+(leave out `--backup` to skip the backup; add `--keys` to include keys). It is safe to run again. What it does, step by step, if you'd
+rather type it yourself:
+
+1. Stop Hermes: `kill` the PIDs in `~/logs/*.pid` (the supervisor's loops) and the dashboard (`pkill -f 'hermes dashboard --host 127.0.0.1 --port 9119'`).
+2. Optional backup: copy what you want out of Debian's `/root/.hermes` (proot: `$PREFIX/var/lib/proot-distro/containers/debian/rootfs/root/.hermes`).
+3. With Shizuku running: `~/bin/rish -c 'device_config delete activity_manager max_phantom_processes; device_config set_sync_disabled_for_tests none; settings delete global settings_enable_monitor_phantom_procs'`
+   (the computer route did the same over `adb shell`).
+4. Remove Debian: `proot-distro remove debian` (rooted, chroot-distro: `chroot-distro kill debian && chroot-distro remove debian`; never
+   delete a chroot's folder by hand, it can still have the phone's storage mounted inside).
+5. Remove the installer's files: `rm -rf ~/.hermes-mobile ~/bin/hermes-services ~/bin/hermes-debian ~/bin/rish ~/bin/rish_shizuku.dex
+   ~/.termux/boot/10-hermes ~/hermes-mobile ~/hermes-mobile.apk ~/hm.sh`, and the `allow-external-apps = true` line in
+   `~/.termux/termux.properties`.
+6. Uninstall the apps in Android's settings: Termux:API, Termux:Boot, Shizuku, Termux, Hermes Mobile. Uninstalling Termux alone also
+   deletes steps 1-5 (except the phone setting of step 3) with it; on a rooted phone using chroot-distro, restart the phone first.
+
+</details>
+
 <details>
 <summary><b>Everything it does, and how it works</b></summary>
 
@@ -293,6 +330,9 @@ per-chat drafts; messages typed offline are sent on reconnect; turn stats; file 
 
 **Voice:** read replies aloud (any installed speech engine, voice, speed, pitch), dictation, hands-free Live mode, and Hermes as your
 phone's assistant.
+
+**Cards in replies:** Hermes can answer with interactive cards, tables, charts, tabs, steps, buttons and forms drawn by OpenUI;
+tapping a button or sending a form answers in the chat, and a card can show live, read-only data (web search, chats, files). Off switch in Settings → Replies.
 
 **Canvas:** documents you and Hermes share per chat (Markdown, HTML, code, CSV, SVG, Mermaid…) with version history, diffs and restore;
 HTML runs in an offline sandbox.

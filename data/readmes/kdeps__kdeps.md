@@ -186,6 +186,32 @@ The API returns a JSON response containing the AI's answer.
 
 The example token is for local testing only. Use a secure token and appropriate network protections for real deployments.
 
+### 5. Test the workflow
+
+Add `tests:` to `workflow.yaml` to check the response your workflow returns:
+
+```yaml
+tests:
+  - name: chat
+    request:
+      method: POST
+      path: /api/v1/chat
+      body:
+        q: "Say hi"
+    assert:
+      status: 200
+      body:
+        jsonPath:
+          - path: $.data.answer
+            exists: true
+```
+
+```bash
+kdeps test .
+```
+
+`kdeps test` runs each case in-process against the workflow's own router - the same auth, routes, and resources as `kdeps run` - with no port bound.
+
 More examples: [kdeps.com/examples](https://kdeps.com/examples/)
 
 ## How workflows work
@@ -235,7 +261,7 @@ kdeps run workflow.yaml --dev
 
 Agent mode is an interactive AI assistant you can use from your terminal.
 
-Give it a goal, and the AI can decide which available tools to call and what to do next.
+Give it a task, and the AI can decide which available tools to call and what to do next.
 
 For example, a coding agent might:
 
@@ -357,6 +383,7 @@ Installation and downloads: [Desktop app documentation](https://kdeps.com/agent/
 Kdeps also includes:
 
 - **Reusable components and providers** — Add tools and AI providers through configuration and shared assets.
+- **Your own tools and slash commands** — Drop a YAML file in `~/.kdeps/tools/` (an `http:`, `exec:`, `sql:` or `python:` tool) or `~/.kdeps/commands/`; kdeps serves it on the kdeps API with no Go code and no registry entry.
 - **Knowledge vault** — Help agents find useful notes and project knowledge.
 - **Search and retrieval** — Find relevant information in supported document collections.
 - **Session history and instrumentation** — Inspect agent sessions, tool calls, errors, and workflow events.

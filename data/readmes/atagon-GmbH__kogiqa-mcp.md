@@ -1,5 +1,9 @@
 ## kogiQA MCP Web Browser
 
+[![npm version](https://img.shields.io/npm/v/kogiqa-mcp.svg)](https://www.npmjs.com/package/kogiqa-mcp)
+[![Total Downloads](https://img.shields.io/npm/dt/kogiqa-mcp.svg)](https://www.npmjs.com/package/kogiqa-mcp)
+[![License](https://img.shields.io/npm/l/kogiqa-mcp.svg)](https://www.npmjs.com/package/kogiqa-mcp)
+
 A Model Context Protocol (MCP) server that provides browser automation capabilities using kogiQA. This server
 enables LLMs to interact with web pages through natural language, bypassing the need for screenshots
 or visually-tuned models.

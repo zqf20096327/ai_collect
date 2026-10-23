@@ -1670,6 +1670,47 @@ symptom entries it cannot use, list items and notes without text, and ids shared
 by two entries; entries dated in the future are checked for body readings and
 symptoms as well.
 
+## Income, Debts, Countdowns & Supplies
+
+Four more trackers, all local, per profile, encrypted with the rest of your data
+when encryption is on, and covered by backup, restore, export and the doctor.
+
+```
+"I got paid 3000 salary"                 "how did the last three months go?"
+"I borrowed 500 from Ali, due the 15th"  "I paid Ali 200"
+"Mehmet owes me 120 for dinner"          "who owes what?"
+"count down to the holiday on 2026-12-20"  "how long since I quit smoking?"
+"I have 30 vitamin D pills, one a day"   "when do I run out?"
+```
+
+- **Income and cash flow** (`log_income`, `get_cash_flow`): income is a tracker
+  like the others (list, edit, delete, undo, backdate, `log_many`). The cash
+  flow report puts income next to your logged spending per month: net, the
+  share of income you kept, the average of finished months and your income
+  sources, and it says so when you have spent more than you earned this month.
+- **Debts** (`add_debt`, `record_debt_payment`, `get_debts`, `update_debt`,
+  `delete_debt`): money you owe (`owe`) and money owed to you (`owed`, also
+  "lent"). Record partial payments (backdated if needed; you cannot pay more
+  than what is open), see both sides with a net figure, and overdue flags. A
+  debt that is overdue or due within three days appears in the proactive nudges
+  and in today's agenda.
+- **Countdowns** (`add_countdown`, `get_countdowns`, `update_countdown`,
+  `delete_countdown`): days until an event, or days since one (past dates are
+  fine). A yearly countdown always points at its next anniversary and counts the
+  years; Feb 29 falls on Mar 1 in other years. Countdowns within two days are
+  nudged, within a week they are in the agenda.
+- **Supplies** (`add_supply`, `refill_supply`, `get_supplies`, `update_supply`,
+  `delete_supply`): pills, contact lenses, pet food, anything that runs out.
+  Tell Hermes how many you have and use per day and it works out how many are
+  left today and the day you run out. A refill adds to what is left (or sets
+  the count); changing the daily use applies from today. Supplies running out
+  within a week are nudged, within three days they are in the agenda.
+
+The proactive nudges now show up to three planner items per run instead of two,
+and the doctor checks the four new stores (an income amount or date it cannot
+use, a debt without a usable amount or direction, a countdown or supply it
+cannot read, shared ids).
+
 ## Local Days, Night Owls & Backdating
 
 Every tracker stamps its entries with a calendar date, and everything that
@@ -1905,6 +1946,25 @@ Not medical or therapeutic advice - a reflection of your own patterns,
 phrased as a nudge, nothing more.
 
 ## What's New
+
+**v1.44.0 - Income, Debts, Countdowns, Supplies**
+- New **income** tracker: `log_income` and `get_cash_flow` (income vs logged
+  spending per month: net, savings rate, average, sources). Income works with
+  `list_logs`, `edit_log`, `delete_log`, `undo_last_log`, backdating and
+  `log_many`.
+- New **debts**: `add_debt`, `record_debt_payment`, `get_debts`, `update_debt`,
+  `delete_debt` for money you owe and money owed to you, with partial payments,
+  due dates and overdue flags.
+- New **countdowns**: `add_countdown`, `get_countdowns`, `update_countdown`,
+  `delete_countdown` for days until and since, with yearly anniversaries.
+- New **supplies**: `add_supply`, `refill_supply`, `get_supplies`,
+  `update_supply`, `delete_supply` with remaining count and run-out date.
+- Debts that are due, countdowns and supplies about to run out appear in the
+  proactive nudges (now up to three planner items) and in `get_today_agenda`;
+  the doctor checks the four new stores and future-dated income; backup,
+  restore, export and rekey cover them.
+- Fix: the `date` property of `log_symptom` was shared with other schemas.
+- 315 new tests - suite grew from 3339 to 3654.
 
 **v1.43.0 - Lists, Savings Goals, Symptoms, Notes**
 - New **lists**: `add_list_items`, `get_list`, `get_lists`, `check_list_item`,
@@ -2205,68 +2265,4 @@ phrased as a nudge, nothing more.
   `get_habit_consistency`): percentage of successful check-ins per
   habit, a different and sometimes more honest signal than the current
   streak alone.
-- New **Habit Mood Impact** (`demo/habit_correlation.py`,
-  `get_habit_mood_impact`): compares average mood on days a habit was
-  completed versus missed - a genuine correlation feature, naturally
-  forward-looking since it depends on check-in history recorded from
-  here on.
-- New **Habit Overview** (`demo/habit_overview.py`,
-  `get_habit_overview`): a single combined dashboard over Habit
-  Milestones, Habit Personal Bests, and Habit Consistency for a
-  general "how are my habits doing" question.
-- 33 new tests - suite grew from 1091 to 1124.
-
-**v1.26.0 - Hydration, Focus, Dream, and Stress Summaries**
-- New **Hydration Summary** (`demo/hydration_summary.py`,
-  `get_hydration_summary`): average daily intake vs. goal, days the
-  goal was met, and the current consecutive-day goal-met streak,
-  rebuilt from the raw hydration log rather than the single "today"
-  counter.
-- New **Focus Summary** (`demo/focus_summary.py`, `get_focus_summary`):
-  totals, average duration/quality, completion rate, total
-  distractions, and the most common task.
-- New **Dream Recap** (`demo/dream_recap.py`, `get_dream_recap`):
-  totals, average vividness, most common tone, and symbols/emotions
-  that recur across multiple distinct dreams. Reads from
-  `get_recent_memory` since dreams have no dedicated storage file.
-- New **Stress Summary** (`demo/stress_summary.py`,
-  `get_stress_summary`): average score, a first-half-vs-second-half
-  trend within the window, high-stress day count, and top triggers.
-- 43 new tests - suite grew from 1048 to 1091.
-
-**v1.25.0 - Workout, Meditation, Gratitude, and Meal Summaries**
-- New **Workout Summary** (`demo/workout_summary.py`,
-  `get_workout_summary`): totals, breakdown by workout type, and a
-  consecutive-day workout streak computed over full history rather
-  than just the requested window.
-- New **Meditation Summary** (`demo/meditation_summary.py`,
-  `get_meditation_summary`): totals and a consistency percentage
-  (days with at least one session logged).
-- New **Gratitude Recap** (`demo/gratitude_recap.py`,
-  `get_gratitude_recap`): totals, recurring-word frequency across
-  logged items, and the most recent entries.
-- New **Meal Summary** (`demo/meal_summary.py`, `get_meal_summary`):
-  totals, average calories per meal/day, breakdown by meal time, and
-  the most frequently logged foods.
-- 43 new tests - suite grew from 1005 to 1048.
-
-**v1.24.0 - Logging Consistency, Time-of-Day Insights, Month-over-Month, Habit PBs**
-- New **Logging Consistency** (`demo/consistency.py`,
-  `get_logging_consistency`): percentage of recent days with at least
-  one entry logged, overall and per tracked metric - unused trackers
-  are omitted rather than shown as a discouraging 0%.
-- New **Time-of-Day Insights** (`demo/time_of_day.py`,
-  `get_time_of_day_insights`): buckets individual logged entries into
-  Morning/Afternoon/Evening/Night by hour and reports the best/worst
-  time of day per metric - a companion to Day-of-Week Insights that
-  works entry-by-entry instead of on daily averages.
-- New **Month-over-Month Comparison** (`demo/monthly_summary.py`,
-  `get_monthly_comparison`): compares this calendar month so far
-  against the same day-count span at the start of last calendar month,
-  reusing `compare_periods()`'s averaging/delta math with calendar
-  month boundaries instead of rolling day windows; correctly caps a
-  longer current month's span against a shorter previous month (e.g.
-  comparing a 31-day January against February).
-- New **Habit Personal Bests** (`demo/habit_pb.py`,
-  `get_habit_pb_progress`): compares every habit's current streak
-  
+- New **Habit Mood Impact**

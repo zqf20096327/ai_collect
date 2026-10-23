@@ -14,13 +14,11 @@ It's built with Next.js, Express, MongoDB, Clerk, LiveKit, Stripe and Gemini.
 
 ## Table of Contents
 
-- [What's included](#whats-included)
 - [Features](#features)
 - [Screenshots](#screenshots)
 - [Tech stack](#tech-stack)
 - [Getting started](#getting-started)
 - [Documentation](#documentation)
-- [Roadmap](#roadmap)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -86,7 +84,7 @@ It's built with Next.js, Express, MongoDB, Clerk, LiveKit, Stripe and Gemini.
 
 ## Getting started
 
-You need Node.js 20 or later, [pnpm](https://pnpm.io/) 8, and free accounts with MongoDB Atlas, Clerk, Cloudinary, LiveKit, Google AI Studio and Stripe.
+You need Node.js 20 or later, [pnpm](https://pnpm.io/) 8, and free accounts with MongoDB Atlas and Clerk. Stripe, LiveKit, Cloudinary and Google AI Studio (Gemini) are optional: each one turns on payments, video consultations, photo uploads or the AI assistant once you add its keys. See [Configuration](docs/configuration.md).
 
 1. Clone the repository and install dependencies:
 
@@ -124,6 +122,7 @@ You need Node.js 20 or later, [pnpm](https://pnpm.io/) 8, and free accounts with
 | [AI assistant](docs/ai-assistant.md)   | What the assistant can do, its setup, and prompts to try                 |
 | [Demo mode](docs/demo-mode.md)         | Public demo logins: turning them on and removing them                    |
 | [Branding](docs/branding.md)           | Changing the name, logo, colours and fonts                               |
+| [AI coding agents](docs/ai-agents.md)  | Claude Code, Cursor and OpenCode setup, and where to add skills and MCPs |
 | [AGENTS.md](AGENTS.md)                 | Architecture notes and commands, for contributors and AI coding agents   |
 
 ## Contributing

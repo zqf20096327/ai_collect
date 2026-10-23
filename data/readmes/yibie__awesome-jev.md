@@ -61,21 +61,21 @@ Found something wrong? Open an issue or a pull request — **removal is as valid
 
 ## Current coverage
 
-- [Classification & Routing](categories/classification-routing.md) — 75 entries
+- [Classification & Routing](categories/classification-routing.md) — 76 entries
 - [Adaptive & Realtime UI](categories/adaptive-realtime-ui.md) — 12 entries
-- [Verification & Guardrails](categories/verification-guardrails.md) — 59 entries
+- [Verification & Guardrails](categories/verification-guardrails.md) — 60 entries
 - [Scoring & Ranking](categories/scoring-ranking.md) — 44 entries
 - [Agent Decisions](categories/agent-decisions.md) — 63 entries
 - [Data Labeling & Curation](categories/data-labeling-curation.md) — 11 entries
 - [Evaluation & Benchmarking](categories/evaluation-benchmarking.md) — 45 entries
-- [Calibration & Research](categories/calibration-research.md) — 54 entries
-- [Infra / SDKs / Integrations](categories/infra-sdks-integrations.md) — 119 entries
+- [Calibration & Research](categories/calibration-research.md) — 55 entries
+- [Infra / SDKs / Integrations](categories/infra-sdks-integrations.md) — 121 entries
 - [Game & Simulation](categories/game-simulation.md) — 26 entries
 - [Robotics & Physical](categories/robotics-physical.md) — 11 entries
 - [Finance & Trading](categories/finance-trading.md) — 10 entries
-- [Compliance & Legal](categories/compliance-legal.md) — 2 entries
-- [Content Moderation](categories/content-moderation.md) — 12 entries
-- [Related Practices / Discussions](categories/related-practices-discussions.md) — 105 entries
+- [Compliance & Legal](categories/compliance-legal.md) — 3 entries
+- [Content Moderation](categories/content-moderation.md) — 13 entries
+- [Related Practices / Discussions](categories/related-practices-discussions.md) — 106 entries
 
 ### Open categories still being seeded
 
@@ -196,6 +196,7 @@ Source file: [`categories/classification-routing.md`](categories/classification-
 - [vd-jev](https://github.com/ondata/vd-jev) ![stars](https://img.shields.io/github/stars/ondata/vd-jev?style=flat-square&label=%E2%98%85) - Data inspection: a VisiData plugin that asks one closed question about every row of a chosen text column, turning free text in a spreadsheet into a column of typed answers without leaving the viewer.
 - [X Reply Judge](https://github.com/liaocaoxuezhe/x-reply-judge-jev) ![stars](https://img.shields.io/github/stars/liaocaoxuezhe/x-reply-judge-jev?style=flat-square&label=%E2%98%85) - AI-text labelling: a Chrome extension that puts one badge on every X post showing the probability Jev assigns to the text being AI-written, with stated colour cutoffs at 70 and 31 and no explanation list at all.
 - [Trio-Spark Ticket Rush](https://github.com/machinefi/trio-spark/tree/main/demos/ticket-rush) ![stars](https://img.shields.io/github/stars/machinefi/trio-spark?style=flat-square&label=%E2%98%85) - Support triage: sends each of 1,000 support tickets to the System One-compatible Trio-Spark API as one `choice` over eight team queues and routes any ticket whose top probability is below 0.6 to human review instead.
+- [SpotAsk](https://github.com/shiquda/SpotAsk) ![stars](https://img.shields.io/github/stars/shiquda/SpotAsk?style=flat-square&label=%E2%98%85) - Query routing: a native macOS menu bar assistant that asks Jev a typed `Choice` over your configured channels to decide whether a question is answered in the app or sent to a web AI, desktop app, or CLI agent, with confirmation by default and optional auto-routing above a confidence threshold.
 
 ### Adaptive & Realtime UI
 
@@ -277,6 +278,7 @@ Source file: [`categories/verification-guardrails.md`](categories/verification-g
 - [Document review with Unsiloed and Jev](https://www.unsiloed.ai/blog/document-review-unsiloed-typesafe-jev) - Document review: gates extracted fields with `Noul` questions and states the semantics the whole ecosystem depends on — a value of 0.04 is a 4% probability of yes, not a claim that Jev is 4% confident.
 - [ClauJev](https://github.com/Civalski/claujev) ![agent: Claude Code](https://img.shields.io/badge/agent-Claude%20Code-C1512C?style=flat-square) ![stars](https://img.shields.io/github/stars/Civalski/claujev?style=flat-square&label=%E2%98%85) - Second opinion: hooks Jev into Claude Code on the principle that Claude does the work and Jev checks it before the change lands, keeping the request, the verdict and the probability for each check.
 - [MedGemma Ophthalmology + JEV](https://github.com/harsaas/medgemma_Ophthalmology_jev) ![stars](https://img.shields.io/github/stars/harsaas/medgemma_Ophthalmology_jev?style=flat-square&label=%E2%98%85) - Medical check: a research demo that reads retinal fundus images with a fine-tuned MedGemma adapter, has Jev evaluate the generated findings, and drafts separate patient and ophthalmologist summaries - stating explicitly that it is not a clinical decision system.
+- [ReadyCode Reader](https://github.com/ReadycodeAI/readycode-reader) ![stars](https://img.shields.io/github/stars/ReadycodeAI/readycode-reader?style=flat-square&label=%E2%98%85) - Document evidence: searches a large PDF, Word or Excel file locally for up to 20 candidate passages and makes one Jev call with typed relevance checks, returning only passages it can cite instead of putting the document into context.
 
 ### Scoring & Ranking
 
@@ -343,7 +345,4 @@ Source file: [`categories/agent-decisions.md`](categories/agent-decisions.md)
 - [dsh-auto-mode](https://git.allen-software.com/allenh1/dsh-auto-mode) ![agent: DeepSeek Harness](https://img.shields.io/badge/agent-DeepSeek%20Harness-2D5BD7?style=flat-square) - Coding agents: DeepSeek Harness permission preset whose end-prompt step has Jev answer the open questions an agent leaves in its final message, steering them back only when a choice clears 0.6 confidence and an autonomy-safety Noul clears 0.5, and returning the turn to the human otherwise.
 - [augustus](https://github.com/24601/Augustus) ![stars](https://img.shields.io/github/stars/24601/Augustus?style=flat-square&label=%E2%98%85) - Coding agents: independent augustus and augustus-train skills for application-specific decision models, covering primitive/base-model/method selection, data assembly, fitting, export/reload, bounded improvement and independent evaluation, with TypeSafe Jev as the default hosted exemplar.
 - [yoshi](https://github.com/compozy/yoshi) ![agent: Multi](https://img.shields.io/badge/agent-Multi-1F6FEB?style=flat-square) ![type: proxy](https://img.shields.io/badge/type-proxy-4B5563?style=flat-square) ![stars](https://img.shields.io/github/stars/compozy/yoshi?style=flat-square&label=%E2%98%85) - Context management: proxy for Claude Code and Codex where Jev judges which conversation history is still needed before pruning.
-- [pi-jev (TheoOliveira)](https://github.com/TheoOliveira/pi-jev) ![agent: Pi](https://img.shields.io/badge/agent-Pi-8250DF?style=flat-square) ![stars](https://img.shields.io/github/stars/TheoOliveira/pi-jev?style=flat-square&label=%E2%98%85) - Coding agents: semantic tool routing and typed System One decisions for the Pi coding agent.
-- [pi-quiet-ask](https://github.com/HyunjunJeon/pi-quiet-ask) ![agent: Pi](https://img.shields.io/badge/agent-Pi-8250DF?style=flat-square) ![stars](https://img.shields.io/github/stars/HyunjunJeon/pi-quiet-ask?style=flat-square&label=%E2%98%85) - Coding agents: gives the Pi agent a quiet Jev decision layer for judgments it would otherwise hand to a chat model.
-- [fastbrowse](https://github.com/agent-labs-dev/fastbrowse) ![stars](https://img.shields.io/github/stars/agent-labs-dev/fastbrowse?style=flat-square&label=%E2%98%85) - Browser agents: Jev picks each action from what is on the page while an LLM reads and plans.
-- [super-jev](https://github.com/Kevthetech143/super-jev) ![stars](https://img.shields.io/github/stars/Kevthetech143/super-jev
+- [pi-jev (TheoOliveira)](https://github.com/TheoOliveira/pi-jev) ![agent: Pi](https://img.shields.io/badge/agent-Pi-8250DF?style=flat-square) ![stars](https://img.shields.io/github/stars/TheoOliveira/pi-jev?style=flat-square&label=

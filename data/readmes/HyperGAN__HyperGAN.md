@@ -1,273 +1,284 @@
-# README
+# HyperGAN
 
-## HyperGAN 1.0
+HyperGAN is being rebuilt to make proven GANs configurable and practical: prepare data, train, inspect samples, recover runs, and build generators for applications. The next release integrates on `develop`, using [ParticleGAN](https://github.com/255BITS/ParticleGAN) primitives inside a HyperGAN-owned training loop.
 
-[![docs](https://img.shields.io/badge/gitbook-docs-yellowgreen)](https://hypergan.gitbook.io/hypergan/) [![Discord](https://img.shields.io/badge/discord-join%20chat-brightgreen.svg)](https://discord.gg/t4WWBPF) [![Twitter](https://img.shields.io/badge/twitter-follow-blue.svg)](https://twitter.com/hypergan)
+The current foundation supports native CUDA training, flexible Python components, complete training checkpoints, a Docker-style CLI for managing live and historical runs from any directory, a functional Python API (`import hypergan as hg`), and a local Web Observatory (`hypergan view`). The first measured image recipe is [CIFAR-10 with ParticleGAN and a pretrained discriminator](docs/cifar-recipe.md), with a scratch generator, PNG previews and explicit FID evaluation. New projects target CUDA; CPU execution is explicit for small correctness fixtures. Full image reproduction, actual two-GPU image qualification and real cluster training remain release gates. Custom configurations still require their own qualification.
 
-A composable GAN built for developers, researchers, and artists.
+The experimental [256×256 logo colorization demo](docs/colorization.md) pairs a grayscale particle encoder with a DINOv3 attention discriminator, held-out color and structure metrics, and multiple sampled colorizations.
 
-HyperGAN is in pre-release and open beta.
+---
 
-![Colorizer 0.9 1](https://s3.amazonaws.com/hypergan-apidocs/0.9.0-images/colorizer-2.gif)
+## Install
 
-_Logos generated with_ [_examples/colorizer_](./examples/colorizer.py)
+Use Python 3.12+ for the tested training runtime. Lightweight package checks cover Python 3.11–3.14 on Linux, macOS and Windows; the CPU reference profile is tested on Linux.
 
-See more on the [hypergan youtube](https://www.youtube.com/channel/UCU33XvBbMnS8002_NB7JSvA)
+Install the `2.0.0a1` alpha release from PyPI:
 
-## Table of contents
-
-* [About](#about)
-* [Documentation](https://hypergan.gitbook.io/hypergan/)
-* [Changelog](./changelog.md)
-* [Quick start](#quick-start)
-  * [Requirements](#requirements)
-  * [Install](#install)
-  * [Train](#train)
-* [API](#api)
-  * [Using a trained hypergan model](#using-a-trained-hypergan-model)
-  * [Training a gan](#training-a-gan)
-  * [Examples](#examples)
-  * [Tutorials](#tutorials)
-* [The pip package hypergan](#the-pip-package-hypergan)
-  * [Training](#training)
-  * [Sampling](#sampling)
-  * [Additional Arguments](#additional-arguments)
-  * [Running on CPU](#running-on-cpu)
-  * [Troubleshooting](#troubleshooting)
-  * [Development Mode](#development-mode)
-* [Datasets](#datasets)
-  * [Creating a Dataset](#creating-a-dataset)
-  * [Downloadable Datasets](#downloadable-datasets)
-  * [Cleaning up data](#cleaning-up-data)
-* [Features](#features)
-* [Showcase](#showcase)
-* [Sponsors](#sponsors)
-* [Contributing](./#contributing.md)
-* [Versioning](#Versioning)
-* [Citation](#citation)
-
-## About
-
-HyperGAN builds generative adversarial networks in pytorch and makes them easy to train and share.
-
-For a general introduction to GANs see [http://blog.aylien.com/introduction-generative-adversarial-networks-code-tensorflow/](http://blog.aylien.com/introduction-generative-adversarial-networks-code-tensorflow/)
-
-Join the community [discord](https://discord.gg/t4WWBPF).
-
-## Documentation
-
-* [Gitbook documentation](https://hypergan.gitbook.io/)
-
-## Changelog
-
-See the full changelog here: [Changelog.md](changelog.md)
-
-## Quick start
-
-### Requirements
-
-OS: Windows, OSX, Linux
-
-For training:
-
-GPU: Nvidia, GTX 1080+ recommended
-
-### Install
-
-1. Install HyperGAN
-  For users: `pip3 install hypergan`
-
-  For developers: Download this repo and run `python3 setup.py develop`
-
-2. Test it out
-  * `hypergan train preset:celeba -s 128x128x3`
-
-3. Join the community
-  * Once you've made something cool, be sure to share it on the Discord \([https://discord.gg/t4WWBPF](https://discord.gg/t4WWBPF)\).
-
-### Create a new model
-
-```bash
-  hypergan new mymodel
+```sh
+python -m venv .venv
+. .venv/bin/activate
+python -m pip install 'torch==2.14.0' --index-url https://download.pytorch.org/whl/cu130
+python -m pip install "hypergan[train,image,web]==2.0.0a1"
+hypergan --help
+python -m hypergan --version
 ```
 
-This will create a mymodel.json based off the default configuration. You can change configuration templates with the `-c` flag.
+Or install from a source checkout:
 
-### List configuration templates
-
-```bash
-  hypergan new mymodel -l
+```sh
+git clone https://github.com/HyperGAN/HyperGAN.git
+cd HyperGAN
+python -m venv .venv
+. .venv/bin/activate
+python -m pip install .
+hypergan --help
+python -m hypergan --version
 ```
 
-See all configuration templates with `--list-templates` or `-l`.
+For local NVIDIA GPU training from source, install the CUDA runtime and training/web/image extras:
 
-### Train
-
-```bash
-  hypergan train folder/ -s 32x32x3 -c mymodel --resize
+```sh
+python -m pip install 'torch==2.14.0' --index-url https://download.pytorch.org/whl/cu130
+python -m pip install '.[train,image,web]'
 ```
 
-## API
+For a CPU correctness fixture, install the CPU PyTorch wheel instead (`--index-url https://download.pytorch.org/whl/cpu`) and pass `--device cpu` (or `-d cpu`). Lightweight CLI commands (`new`, `validate`, `ps`, `status`, `logs`, `inspect`, `tag`, `runs`, `queue`, `prune`, `rm`) do not import PyTorch or ParticleGAN.
+
+---
+
+## Quickstart: Project Scaffolding & Starter Templates
+
+Explore starter architectures (`dcgan`, `tiny-transformer`, `resnet`, `gaussian-grid`) or packaged recipes:
+
+```sh
+hypergan new --list
+hypergan recipes
+```
+
+Scaffold a complete project workspace (`hypergan.toml`, `runs/`, and `configs/<template>.toml`). When `--dataset` points at an image folder, `hypergan new` inspects image headers without loading pixels into RAM, auto-detects the resolution (`32`, `64`, `128`, or `256`) and color mode (`RGB` or `L`), and sizes the generator/critic HNDL architectures automatically:
+
+```sh
+# Image GAN project sized automatically from a folder of images
+hypergan new --project my_gan --dataset ./images
+
+# Or specify an explicit template and resolution (or 2D toy fixture on CPU)
+hypergan new --project my_transformer --template tiny-transformer --resolution 64
+hypergan new --project my_toy --template gaussian-grid --device cpu
+```
+
+Validate the generated `format = "hypergan-model/1"` configuration (or the project directory itself):
+
+```sh
+# Fast structural validation (no Torch imports)
+hypergan validate my_gan/configs/dcgan.toml
+hypergan validate my_gan
+
+# Validate with inline overrides and emit resolved JSON
+hypergan validate my_gan/configs/dcgan.toml -s train.batch_size=32 -s optimizer.lr=0.0002 --json
+
+# Verify image dataset inventory/hashes (--data) and construct networks in a worker (--runtime)
+hypergan validate my_gan/configs/dcgan.toml --data
+hypergan validate my_gan/configs/dcgan.toml --runtime
+```
+
+---
+
+## Training & Docker-Style Live Run Management
+
+Start training from a model `.toml` file. You can customize the run name (`-n`), override any config setting (`-s KEY=VALUE`), or select the execution device (`-d`):
+
+```sh
+hypergan train my_gan/configs/dcgan.toml --steps 1000
+hypergan train my_gan/configs/dcgan.toml -n exp-lr2e4 -s train.lr=0.0002 -s train.batch_size=32
+hypergan train my_toy/configs/gaussian-grid.toml --steps 20 -d cpu --no-server
+```
+
+Every run is registered in a daemonless global registry with a unique **Run ID** (`<short_id>`, e.g. `0608d849`), a memorable Docker-style **Slug** (`<adj>-<noun>`, e.g. `fleet-hawk`), and an experiment **Name** / tag. You can inspect and control runs from **any working directory** using zero arguments (which automatically targets the active or most recent run) or by passing `<slug>`, `<short_id>`, `<tag>`, or `<run_dir>`:
+
+```sh
+# List active runs, live GPU VRAM usage, and queued jobs
+hypergan ps
+
+# List all historical runs (active, completed, stopped, failed) across the host/workspace
+hypergan ps -a
+hypergan ps -a --json
+
+# Concise single-screen status summary (progress, speed, ETA, latest losses, best FID, checkpoints)
+hypergan status
+hypergan status fleet-hawk
+
+# View or follow (-f) formatted training logs (Ctrl-C detaches without stopping training)
+hypergan logs -n 50
+hypergan logs -f fleet-hawk
+
+# Request an immediate durable checkpoint at the next update boundary
+hypergan checkpoint
+hypergan checkpoint fleet-hawk
+
+# Gracefully stop an active run (saves a complete checkpoint before exiting)
+hypergan stop
+hypergan stop fleet-hawk
+hypergan stop --all
+```
+
+---
+
+## Post-Run Inspection, Tagging, Resuming, Sampling, Evaluation, Export & Cleanup
+
+### Tagging & Inspecting Runs
+```sh
+# Rename or tag a run in its manifest, summary, and global registry
+hypergan tag fleet-hawk baseline-dcgan32
+
+# Inspect full run manifest JSON or model architecture/loss/optimizer summary
+hypergan inspect baseline-dcgan32
+hypergan model baseline-dcgan32
+hypergan model baseline-dcgan32 --write   # build on meta device and save RUN/model.json
+```
+
+### Resuming Training
+Continue a stopped or completed run from its latest checkpoint (or a specific `--checkpoint`). When `lr_floor = 1.0` (constant learning rate), `--steps` can extend the total step budget seamlessly:
+
+```sh
+hypergan resume baseline-dcgan32 --steps 2000
+```
+
+### Sampling, Evaluation & Standalone Export
+```sh
+# Draw fresh samples from the EMA generator (writes PNG grid for image models or JSON)
+hypergan sample baseline-dcgan32 --count 16 --seed 42
+
+# Run configured snapshot evaluations (e.g. FID, color moments, sample diversity)
+hypergan eval baseline-dcgan32
+hypergan evaluate baseline-dcgan32 --metric sample_diversity
+
+# Export a standalone, hash-verified EMA inference bundle (model.pt + model.sha256)
+hypergan export baseline-dcgan32 --checkpoint latest -o exported_model.pt
+```
+
+### Comparing Runs & Multi-GPU Job Queue
+```sh
+# List and filter runs, or compare metrics across step milestones side-by-side
+hypergan runs ls --sort fid
+hypergan runs compare baseline-dcgan32 exp-lr2e4
+hypergan runs compare baseline-dcgan32 exp-lr2e4 --metric loss_g --at 500,1000,best,latest --json
+
+# Schedule and run experiments sequentially across GPUs
+hypergan queue status
+hypergan queue add my_gan/configs/dcgan.toml -n job1 --steps 5000 -s train.lr=0.0005 -d gpu0
+hypergan queue ls --json
+hypergan queue run --once
+hypergan queue stop --all
+```
+
+### Garbage Collection & Run Removal
+```sh
+# Reclaim disk space by cleaning rebuildable views and compacting routine train events
+hypergan prune baseline-dcgan32 --dry-run
+hypergan gc baseline-dcgan32
+hypergan checkpoints prune baseline-dcgan32 --dry-run
+
+# Delete a run directory and unregister it from the global registry (-f stops if active)
+hypergan rm exp-lr2e4
+```
+
+---
+
+## Web Observatory (`hypergan view`)
+
+With `.[web]` installed, `hypergan train` and `hypergan resume` automatically launch a background Web Observatory on `0.0.0.0:8765` (or the next free port; disable with `--no-server`). You can also start, inspect, or stop the Web Observatory for any runs root or individual run (`<slug>`, `<short_id>`, `<tag>`, or path):
+
+```sh
+# Start the global runs dashboard and per-run observatory
+hypergan view
+hypergan view my_gan/runs --port 8765 --open
+hypergan view baseline-dcgan32 --port 8765
+
+# Check status or stop a background dashboard
+hypergan view --status
+hypergan view --stop
+```
+
+The Web Observatory provides:
+- **Global Runs Dashboard (`GET /` and `GET /api/runs`)**: Live-updating table of all runs with search/status filtering, progress bars, throughput (`it/s`), latest/best FID, disk usage, and one-click **Checkpoint** (`POST /api/runs/<id>/checkpoint`) and **Stop** (`POST /api/runs/<id>/stop`) controls for active runs.
+- **Per-Run Observatory (`GET /runs/<id_or_slug_or_tag>`)**: Real-time learning curves backed by a WebAssembly streaming reducer, retained EMA sample history sliders, snapshot evaluation charts, and the **Model** tab showing the ParticleGAN integration, loss metrics, and per-layer HNDL network tables.
+
+See [Local browser and streaming API](docs/local-web.md) for authentication (`--auth token`), TLS proxy setup (`--public-origin`), and the full `/api/runs/*` and `/api/v1/runs/*` REST/SSE contract.
+
+---
+
+## Python Developer API (`import hypergan as hg`) & Environment Variables
+
+Everything available in the CLI is exposed as a clean, functional Python API at the top level of `hypergan` (lazy-loaded so importing `hypergan` never imports PyTorch until training or sampling runs):
 
 ```python
 import hypergan as hg
+
+# 1. Scaffold or load a model configuration
+info = hg.new(project="my_gan", template="dcgan", dataset="./images", device="cpu")
+model = hg.load(info["recipe_path"])
+model = hg.override(model, {"train.steps": 100, "train.batch_size": 16})
+warnings = hg.validate(model)
+
+# 2. Train and inspect runs by slug, short ID, custom tag, or path
+run = hg.train(model, "my_gan/runs/exp1", steps=100)
+active_and_all = hg.ps(all_runs=True)
+all_runs = hg.list_runs()
+
+st = hg.status("exp1")                  # dict with step, status, latest_metrics, best_fid, etc.
+log_lines = hg.logs("exp1", tail=20)    # list[str] of formatted log lines (silent on stdout)
+manifest = hg.inspect("exp1")           # dict of the run's manifest.json
+hg.tag("exp1", "my-best-gan")
+
+# 3. Sample, export, and reload inference bundles
+sample = hg.sample("my-best-gan", count=8, seed=42)
+bundle_path = hg.export("my-best-gan", checkpoint="latest")
+bundle = hg.load_bundle(bundle_path)    # or hg.load(bundle_path)
+
+# 4. Clean up
+hg.prune("my-best-gan", dry_run=True)
+hg.rm("my-best-gan")
 ```
 
-Note this API is currently under work in 1.0. If you are reading this before 1.0 is released check the examples.
+### Environment Variables
 
-See the [gitbook documentation](https://hypergan.gitbook.io/) for more details.
+| Variable | Purpose |
+| --- | --- |
+| `HYPERGAN_HOME` / `HYPERGAN_STATE_DIR` | Override the directory used for the global run registry (`runs.json` and `registry.lock`). Defaults to `~/.local/share/hypergan` (or `$XDG_DATA_HOME/hypergan`). Setting either variable isolates run discovery to that state directory. |
+| `HYPERGAN_WORKSPACE` | Explicitly point to a workspace `hypergan.toml` file (or its parent directory) when running outside the workspace directory tree. |
+| `HYPERGAN_QUEUE_FILE` | Override the path to the multi-GPU job queue state file (defaults to `<workspace>/.hypergan/queue.json` or `./.hypergan/queue.json`). |
+| `HYPERGAN_VIEWER_DEV` | Set to `1` (`true`/`yes`/`on`) to serve Web Observatory frontend assets fresh from disk on every request with auto-reload. |
 
-### Using a trained hypergan model
+---
 
-```python
-my_gan = hg.GAN('model.hypergan')
-batch_sample = my_gan.sample()
+## Configure the recipe
+
+`hypergan new` generates `format = "hypergan-model/1"` TOML model files (`[data]`, `[prior]`, `[networks.generator]`, `[networks.discriminator]`, `[[losses]]`, `[train]`, `[metrics]`, `[evaluations.<id>]`, `[checkpoints]`, `[sampling]`). During validation and training, HyperGAN lowers the model file into the engine's resolved numerical recipe.
+
+ParticleGAN supplies the released GAN formulation and its selected defaults for loss, learning rates, hyperparameters, normalization and optimizers. HyperGAN consumes its public recipe and owns networks, data, execution, checkpoints and metrics. See the [integration boundary](docs/particlegan.md). Networks are declared in HNDL (`source = "..."` or `hndl = "file.hndl"`) or importable Python modules (`module = "pkg.mod:Class"`), with full source recorded in every run.
+
+See:
+- [Configuration and component contracts](docs/configuration.md) and the [paired synthetic example](examples/paired-linear.toml)
+- [Image data and preprocessing](docs/image-data.md)
+- [Recovery and compatibility](docs/recovery.md) and [Run observation contract](docs/observation.md)
+- [Public execution profiles](docs/execution.md), [Execution profiles and preflight](docs/execution-profiles.md), [Replicated run service](docs/replicated-run-service.md), [CUDA/NCCL workers](docs/replicated-cuda.md), and [Bounded previews and progress](docs/replicated-observation.md)
+
+## Development and migration
+
+The map/reduce storage and shared Rust reducers now live in **Foldlite DB**.
+This branch requires `foldlitedb>=0.1.2,<0.2`:
+
+```sh
+python -m pip install "foldlitedb>=0.1.2,<0.2"
+python -m pip install -e '.[dev,web]'
 ```
 
-### Training a gan
+CI accepts the repository variable `FOLDLITEDB_SOURCE` as a wheel URL or a pip
+source reference pinned to an exact revision. Without that variable it uses the
+configured package index, which requires Foldlite DB to have been released.
+See the [Foldlite integration and cache contract](docs/foldlitedb.md).
 
-```python
-gan = hg.GAN("default.json", inputs=hg.inputs.ImageLoader(...))
-trainable_gan = hg.TrainableGAN(gan)
-for step in trainable_gan.train():
-    print("I'm on step ", step)
-```
+Install `.[dev,train,image,web]` in the tested runtime environment, then run `python -m pytest` for CPU and lightweight correctness tests. That default selection deselects the `heavy` marker, which gates the tests that start real subprocesses, multi-rank jobs and worker services; run those deliberately with `python -m pytest -m heavy`. With two visible NVIDIA GPUs and the CUDA runtime, run `python -m pytest tests/cuda`; see [CUDA execution and validation](docs/cuda.md) and [CI and PyPI releases](docs/releasing.md).
 
-### Examples
-
-See the examples [https://github.com/hypergan/HyperGAN/tree/master/examples](https://github.com/hypergan/HyperGAN/tree/master/examples)
-
-### Tutorials
-
-See the tutorials [https://hypergan.gitbook.io/hypergan/tutorials](https://hypergan.gitbook.io/hypergan/tutorials)
-
-## The pip package hypergan
-
-```bash
-pip install hypergan
-```
-
-### Training
-
-```bash
-  # Train a 32x32 gan with batch size 32 on a folder of pngs
-  hypergan train [folder] -s 32x32x3 -b 32 --config [name]
-```
-
-### Sampling
-
-```bash
-  hypergan sample [folder] -s 32x32x3 -b 32 --config [name] --sampler batch_walk --save_samples
-```
-
-By default hypergan will not save training samples to disk. To change this, use `--save_samples`.
-
-### Additional Arguments
-
-To see a detailed list, run
-
-```bash
-  hypergan -h
-```
-
-### Running on CPU
-
-You can switch the backend with:
-
-```bash
-  hypergan [...] -B cpu
-```
-
-Don't train on CPU! It's too slow.
-
-### Troubleshooting
-
-Make sure that your cuda, nvidia drivers, pillow, pytorch, and pytorch vision are the latest version.
-
-Check the discord for help.
-
-### Development mode
-
-If you wish to modify hypergan
-
-```bash
-git clone https://github.com/hypergan/hypergan
-cd hypergan
-python3 setup.py develop
-```
-
-Make sure to `pip3 uninstall hypergan` to avoid version conflicts.
-
-## Datasets
-
-To build a new network you need a dataset.
-
-### Creating a Dataset
-
-Datasets in HyperGAN are meant to be simple to create. Just use a folder of images. Nested folders work too.
-
-### Cleaning up data
-
-HyperGAN is built to be resilient to all types of unclean data. By default images are resized then cropped if necessary.
-
-See `--nocrop`, `--random_crop` and `--resize` for additional image scaling options.
-
-## Features
-
-A list of features in the 1.0 release:
-
-* API
-* CLI
-* Viewer - an electron app to explore and create models
-* Cross platform - Windows, OSX, Linux
-* Inference - Add AI content generation to your project
-* Training - Train custom models using accelerated parallel training backends
-* Sharing - Share built models with each other. Use them in python projects as hypergan models, or in any project as onxx models
-* Customizable - Define custom architectures in the json, or replace any component with your own pytorch creation
-* Data - Built to work on unclean data and multiple data types
-* Unsupervised learning
-* Unsupervised alignment - Align one distribution to another or discover new novel distributions.
-* Transfer learning
-* Online learning
-
-## Showcase
-
-### 1.0 models are still training
-
-Submit your showcase with a pull request!
-
-For more, see the \#showcase room in [![Discord](https://img.shields.io/badge/discord-join%20chat-brightgreen.svg)](https://discord.gg/t4WWBPF)
-
-## Sponsors
-
-We are now accepting financial sponsors. Sponsor to (optionally) be listed here.
-
-https://github.com/sponsors/hypergan
-
-## Contributing
-
-Contributions are welcome and appreciated! We have many open issues in the _Issues_ tab. Join the discord.
-
-See [how to contribute.](./)
-
-## Versioning
-
-HyperGAN uses semantic versioning. [http://semver.org/](http://semver.org/)
-
-TLDR: _x.y.z_
-
-* _x_ is incremented on stable public releases.
-* _y_ is incremented on API breaking changes.  This includes configuration file changes and graph construction changes.
-* _z_ is incremented on non-API breaking changes.  _z_ changes will be able to reload a saved graph.
-
-## Citation
-
-```text
-  HyperGAN Community
-  HyperGAN, (2016-2020+), 
-  GitHub repository, 
-  https://github.com/HyperGAN/HyperGAN
-```
-
-HyperGAN comes with no warranty or support.
+Historical HyperGAN code and experiments are preserved in archive tags. Legacy configurations and checkpoints require their archived runtime; see [migration notes](docs/migration.md), [preservation evidence](reports/resurrection-preservation-2026-09-18.md), [the execution ledger](reports/resurrection-status.md), and [resurrection plan](reports/resurrecting-hypergan-plan-2026-09-18.md).
 

@@ -83,8 +83,10 @@ The README follows the survey's argument rather than presenting a detached softw
 We analyze a harness as **H = (E, T, C, S, L, V)**: six governance functions that repeatedly appear across public systems. The lens compares architectural coverage; product quality and production readiness require separate evidence.
 
 <p align="center">
-  <img src="assets/architecture_diagram.png" width="720" alt="H=(E,T,C,S,L,V) six-component analytical framework"/>
+  <img src="assets/architecture_p2.png" width="960" alt="H=(E,T,C,S,L,V) six-component analytical framework"/>
 </p>
+
+Representative lifecycle interception points are shown; V exports events and trajectories rather than assigning scores. The robot is an illustrative symbol for execution.
 
 | Component | Symbol | What to look for |
 |---|:---:|---|
@@ -100,8 +102,10 @@ We analyze a harness as **H = (E, T, C, S, L, V)**: six governance functions tha
 ## 2. Historical Evolution
 
 <p align="center">
-  <img src="assets/timeline.png" width="720" alt="Historical evolution of agent harnesses"/>
+  <img src="assets/timeline_p2.png" width="1080" alt="Historical evolution of agent harnesses"/>
 </p>
+
+Representative historical contributions, not an exhaustive timeline or priority claim. Columns denote categorical periods, not proportional elapsed time. Paper dates identify cited publications; software/protocol dates identify cited source records rather than first releases. The convergence is analytical, not a claim of direct causal descent. The table below retains the broader milestone list.
 
 | Year | Milestone | Why it matters to harnesses |
 |---|---|---|

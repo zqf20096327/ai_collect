@@ -1,6 +1,7 @@
 # LastLight
 
-[![PyPI version](https://img.shields.io/pypi/v/lastlight.svg)](https://pypi.org/project/lastlight/)
+[![PyPI version](https://img.shields.io/pypi/v/lastlight?label=PyPI%20release)](https://pypi.org/project/lastlight/)
+[![Latest GitHub release](https://img.shields.io/github/v/release/edujbarrios/lastlight?label=GitHub%20release)](https://github.com/edujbarrios/lastlight/releases/latest)
 [![Python versions](https://img.shields.io/pypi/pyversions/lastlight.svg)](https://pypi.org/project/lastlight/)
 
 **A stdlib-only Python library for low-power, offline retrieval in disaster and infrastructure-failure scenarios.**
@@ -13,10 +14,11 @@ No cloud API. No embeddings. No vector database. No telemetry. No runtime depend
 
 ## Install
 
-LastLight is published on [PyPI](https://pypi.org/project/lastlight/):
+The current stable release is **0.3.1**, available on [PyPI](https://pypi.org/project/lastlight/0.3.1/).
+The PyPI and GitHub badges above resolve dynamically to the latest release.
 
 ```bash
-python -m pip install lastlight
+python -m pip install --upgrade lastlight==0.3.1
 ```
 
 Python 3.10+ is supported.
@@ -81,6 +83,49 @@ Confidence: HIGH
 
 Source paths are **pack-relative and stable**: the same document keeps the same logical path whether the pack is a directory, a ZIP file, or the ZIP is renamed. Pack identity metadata (`pack_name`, `pack_version`, `pack_source`, and `pack_path`) is preserved consistently whether one pack or several packs are mounted. Once the package and knowledge pack are local, querying does not require a network connection.
 
+
+## 0.3.x: hybrid retrieval and configurable evidence calibration
+
+The hybrid retrieval and calibrated decision features introduced in LastLight
+0.3.0 remain supported in 0.3.1. This maintenance release also adds read-only
+external benchmark-v4 readiness checks and controlled version-comparison tooling
+in the source repository. The separate corpus-v4 results have not yet been
+reproduced, so 0.3.1 makes no new retrieval-performance claims.
+See the [0.3.1 release notes](docs/releases/0.3.1.md).
+
+```python
+from lastlight import LastLight, CalibrationConfig, StrategyCalibration, SectionConfig
+
+policy = CalibrationConfig(
+    bm25=StrategyCalibration(
+        min_strength=0.48,
+        min_evidence_coverage=0.32,
+        min_passage_coverage=0.28,
+        min_decision_score=0.47,
+        ambiguity_ratio=1.08,
+    ),
+)
+engine = LastLight(
+    "lastlight-example-en.zip",
+    strategy="hybrid",            # lexical + BM25 reciprocal-rank fusion
+    calibration=policy,
+    sections=SectionConfig(min_chars=1500, max_chars=1800, overlap_chars=250),
+)
+result = engine.query("How long can a refrigerator keep food cold during an outage?")
+print(result.accepted, result.confidence)
+print(result.retrieval.strategy, result.decision.calibrated_score)
+print(result.decision.refusal_code, result.decision.explanation)
+for source in result.sources:
+    print(source.path, source.section, source.backend_scores)
+```
+
+Hybrid scores are **RRF scores**, not BM25 or lexical scores. A recovered
+source still needs explicit passage evidence before acceptance. Public decision
+thresholds and weights are [documented](docs/decision_calibration.md), and
+the optional section configuration preserves small-document behavior by default.
+Structured rejection codes complement, rather than replace, the legacy
+`refusal_reason` values. See the [0.2.2 → 0.3.0 migration guide](docs/migration_0_3.md).
+
 ## Confidence-aware refusal
 
 LastLight does not turn every weak match into an answer. The public result makes that decision explicit:
@@ -138,7 +183,7 @@ These package-root contracts are the intended integration boundary for UIs, benc
 
 ## Compare retrieval strategies
 
-LastLight exposes two fixed retrieval strategies plus an adaptive planner. The examples below are checked against the built wheel in CI.
+LastLight exposes lexical, BM25, and deterministic hybrid retrieval plus an adaptive planner. The examples below are checked against the built wheel in CI.
 
 ```python
 from lastlight import LastLight
@@ -148,7 +193,7 @@ query = (
     "How long will food stay safe in my refrigerator if I keep the door closed?"
 )
 
-for strategy in ("lexical", "bm25"):
+for strategy in ("lexical", "bm25"):  # raw-score comparisons; hybrid uses RRF instead
     result = LastLight(
         "lastlight-example-en.zip",
         strategy=strategy,

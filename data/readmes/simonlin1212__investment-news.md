@@ -3,8 +3,8 @@
 <h1 align="center">Investment News · 投资资讯</h1>
 
 <p align="center">
-  <b>为 A股投资者追踪全球产业链领先信号 —— 12 大赛道一一对应 A股板块，覆盖 100+ 权威源，AI 每日提炼为中文要点，全程本地、零 API key。</b><br>
-  Tracking the global industry signals behind China A-share sectors — 12 sectors mapped to A-share themes, 100+ authoritative sources, distilled into daily Chinese key points by your own AI, fully local, zero API key.
+  <b>为 A股投资者追踪全球产业链领先信号 —— 12 大赛道一一对应 A股板块，覆盖 100+ 权威源，AI 每日提炼为中文要点，本地运行、零 API key（默认直接用你的 Claude Code）。</b><br>
+  Tracking the global industry signals behind China A-share sectors — 12 sectors mapped to A-share themes, 100+ authoritative sources, distilled into daily Chinese key points by your own AI, runs locally, zero API keys (uses your Claude Code by default).
 </p>
 
 <p align="center">
@@ -35,7 +35,7 @@
 
 **Investment News 是为 A股投资者打造的全球产业链资讯看板。** 半导体、AI、机器人、新能源车、航天…这 12 大赛道一一对应 A股板块，而真正驱动板块的领先信号，往往先出现在全球英文源里。本工具覆盖全球 100+ 权威信息源，调用你自己的大模型，将各赛道最新动向每日提炼为中文「今日要点」并完成翻译，统一呈现在一个本地浏览器看板中。
 
-区别于信息过载的新闻聚合器，其核心在于**由 AI 完成阅读与提炼**：每个赛道置顶 3–5 条「今日要点」，跨源聚合去重，便于快速把握各赛道全貌，并可下钻至原文核实。抓取过程在**本地**完成（纯 Python 标准库），AI 使用**你自己**的 Claude 订阅（$0）或任意 API key，**数据全程留存本机，无需账号，无托管依赖**。
+区别于信息过载的新闻聚合器，其核心在于**由 AI 完成阅读与提炼**：每个赛道置顶 3–5 条「今日要点」，跨源聚合去重，便于快速把握各赛道全貌，并可下钻至原文核实。抓取过程在**本地**完成（纯 Python 标准库），AI 使用**你自己**的 Claude 订阅（$0）或任意 API key，**新闻库和报告都存在本机，无需账号，无托管依赖**。
 
 适用场景：
 
@@ -49,13 +49,13 @@
 
 | 能力 | 说明 |
 |---|---|
-| **今⁠日⁠要⁠点** | 每个赛道置顶 3–5 条中文要点，跨源聚合去重、提炼核心公司与数据，由本地大模型生成 |
+| **今⁠日⁠要⁠点** | 每个赛道置顶 3–5 条中文要点，跨源聚合去重、提炼核心公司与数据，由你选的大模型生成 |
 | **双⁠语⁠呈⁠现** | 英文标题自动译为中文，中文为主、原文备查，无需英文阅读能力即可掌握 |
 | **覆⁠盖⁠赛⁠道** | AI/大模型 · 半导体/芯片 · 机器人/自动化 · 汽车/新能源车 · 能源/新能源 · 生物医药/健康 · 航天/太空 · 网络安全 · 科技/互联网 · 消费电子/数码 · 财经/宏观 · 科学/前沿 |
 | **要⁠点⁠溯⁠源** | 每条要点附原文链接，可一键回溯至主要信息来源 |
 | **一⁠键⁠刷⁠新** | 看板内触发抓取与摘要，执行完成后自动刷新，无需命令行操作 |
 | **引⁠擎⁠双⁠选** | 支持本机 Claude 订阅（`claude-cli`，$0）与任意 OpenAI 兼容 API 两种接入，单一配置项切换 |
-| **本⁠地⁠运⁠行** | 抓取与呈现均在本地完成，数据全程留存本机；无数据库、无托管、无 RSSHub |
+| **本⁠地⁠运⁠行** | 抓取与呈现均在本地完成；生成要点时，程序把新闻标题（附来源和赛道名）发给你选的模型——默认 Claude Code，或你的 API 服务商；无数据库、无托管、无 RSSHub |
 | **合⁠规⁠过⁠滤** | 内置关键词过滤，自动剔除博彩、预测市场、加密货币、色情类内容；时政、财经正常收录 |
 
 ## 截图 Screenshot
@@ -102,7 +102,7 @@ python3 server.py
 ## 工作原理
 
 ```
-sources.json  (108 个源 / 12 赛道)
+sources.json  (106 个源 / 12 赛道)
        │
        ▼  scripts/fetch.py    抓取 + 合规过滤 + 最近 N 天 + 北京时间归一
   data.js  (原始条目)
@@ -139,7 +139,7 @@ sources.json  (108 个源 / 12 赛道)
 
 ## 覆盖赛道与信息源
 
-12 大赛道、108 个精选源，**英文权威媒体与中文垂直媒体并重**，例如：
+12 大赛道、106 个精选源，**英文权威媒体与中文垂直媒体并重**，例如：
 
 - **AI/大模型**：OpenAI · Google Research · Hugging Face · 量子位 · 机器之心 · 智东西 · MIT Tech Review
 - **半导体/芯片**：DIGITIMES · SemiAnalysis · IEEE Spectrum · EE Times · Semiconductor Engineering
@@ -166,7 +166,7 @@ sources.json  (108 个源 / 12 赛道)
 investment-news/
 ├── index.html          浏览器看板(侧栏 12 赛道 + 今日要点 + 双语列表 + 刷新)
 ├── server.py           本地服务 + /api/refresh
-├── sources.json        108 源 / 12 赛道 / 合规词(调整源即编辑此文件)
+├── sources.json        106 源 / 12 赛道 / 合规词(调整源即编辑此文件)
 ├── llm.config.json     大模型 provider(订阅 / API)
 ├── data.js             生成的数据(fetch + digest 产出)
 ├── scripts/
@@ -185,7 +185,7 @@ investment-news/
 
 ## 使用边界 / 免责声明
 
-- **仅本地运行**：不含任何托管、上传或服务端，数据仅留存于本机。
+- **仅本地运行**：不含任何托管或远程服务端，内置看板服务只监听本机；新闻库、报告和配置都存在本机。
 - **仅读取公开 RSS / 接口**，保持低频访问，并遵守各信息源的服务条款。
 - **结论仅供参考**：本工具属**资讯聚合**，所呈现的是行业动向与领先信号，**不构成任何投资建议**；据此决策的后果由使用者自行承担。
 

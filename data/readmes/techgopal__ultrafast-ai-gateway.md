@@ -33,6 +33,9 @@ more (dark theme, logs, models) are in [`docs/images/`](docs/images/).
   chat formats and the Responses API, with tool calling and image input
   (vision), structured outputs (`response_format`) and reasoning effort, over
   any provider kind that has the feature. See Endpoints.
+- **Coding agents.** Claude Code and Codex: same-family calls are passed
+  through as sent, other families are translated; sessions, prompt-cache
+  tokens and cache prices in the logs. See Coding agents.
 - **Prompt templates.** Named, versioned messages with `{{variables}}`; a call
   names a template and gives its values. Managed in the console and with
   `/api/prompts/*`. See Prompt templates.
@@ -89,7 +92,7 @@ variations, and realtime audio.
 printf 'UF_ADMIN_EMAIL=you@example.com\nUF_ADMIN_PASSWORD=a long password\n' > admin.env
 chmod 600 admin.env
 docker run -d --name ufaigw -p 3000:3000 -v ufaigw-data:/var/lib/ufaigw \
-  --env-file admin.env ghcr.io/techgopal/ufaigw:3.0.0
+  --env-file admin.env ghcr.io/techgopal/ufaigw:3.1.0
 ```
 
 Upgrading from 2.x: keep your existing volume (`-v ultrafast-data:/var/lib/ufaigw`),
@@ -99,7 +102,7 @@ not a new `ufaigw-data` one, or the gateway starts empty.
 (Linux x86_64/aarch64, macOS Intel/Apple Silicon, Windows x64). For Linux x86_64:
 
 ```bash
-V=3.0.0; T=x86_64-unknown-linux-musl
+V=3.1.0; T=x86_64-unknown-linux-musl
 curl -LO https://github.com/techgopal/ultrafast-ai-gateway/releases/download/v$V/ufaigw-v$V-$T.tar.gz
 curl -LO https://github.com/techgopal/ultrafast-ai-gateway/releases/download/v$V/SHA256SUMS
 sha256sum --ignore-missing -c SHA256SUMS   # macOS: shasum -a 256 --ignore-missing -c
@@ -599,6 +602,110 @@ out.
   one is an error. An imported template belongs to the importing admin. An
   export is refused (409, or an error on the command line) while a template has a
   version that cannot be read, naming it, rather than leaving it out of the file.
+
+## Coding agents
+
+Claude Code and Codex work through the gateway, with keys, routes, limits,
+budgets, guardrails and logs like any other client.
+
+**Claude Code.** Point it at the gateway with a key, and name the model by a
+route or model whose name is the model id Claude Code asks for:
+
+```bash
+export ANTHROPIC_BASE_URL=http://127.0.0.1:3000
+export ANTHROPIC_AUTH_TOKEN=$UF_KEY
+export CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY=1   # lists the models of the key
+claude --model claude-opus-5-5
+```
+
+Create a route named `claude-opus-5-5` (its targets may be any provider), or
+open the model of an Anthropic provider under that name. `GET /v1/models` lists
+what the key may call, each with a `display_name`; `POST
+/v1/messages/count_tokens` goes to the first Anthropic target of the model (it
+is not a call for the books: it takes a request-rate permit like any call (no
+token charge), the input guardrails read it, and it has no budget and no log
+row); `HEAD /api/hello` answers 200 for the probe Claude Code makes at startup.
+
+**Codex.** In `~/.codex/config.toml`:
+
+```toml
+model_provider = "gateway"
+[model_providers.gateway]
+name = "gateway"
+base_url = "http://127.0.0.1:3000/v1"
+env_key = "UF_KEY"
+wire_api = "responses"
+```
+
+then `codex -m gpt-5.5` with `UF_KEY` set to a gateway key.
+
+**Same family: passed through.** A `/v1/messages` call whose target is an
+Anthropic provider, and a `/v1/responses` call whose target is an OpenAI or
+Azure provider, are forwarded as the agent sent them: the body as it is (only
+`model` is replaced by the target's name), the `anthropic-*` (or `openai-*`)
+headers, the query (`?beta=true`), and the provider's answer, stream and
+errors back as they came. The caller's own credentials, and an
+`openai-organization` or `openai-project` header, are never forwarded; the
+provider's key is the gateway's. Nothing the provider supports is lost to a
+translation, such as thinking blocks, server tools or `context_management`.
+The response cache is not used on such a call, and a prompt template cannot be
+(400). A stream held for an external output guardrail is translated instead.
+Calls of the provider's web search (Anthropic's `server_tool_use.web_search_requests`,
+OpenAI's `web_search_call` items) are priced at a flat $0.01 each on top of the
+tokens, for every model, and count in spend and budgets. An Azure Responses call
+uses the provider's `api_version` when it is 2025-03-01 or later, else
+`2025-03-01-preview`. A stream a guardrail cuts, or whose caller leaves,
+records the usage the provider had reported by then.
+A provider's 429 or 5xx is retried and failed over like any; when the last try
+was a passed-through one, the caller gets that provider's own status, headers
+and body.
+
+**State of the provider account is refused.** A passed-through call acts with
+the gateway's credential, which every key shares, so a call that reads or
+writes what is stored in the provider account is refused with a 400 naming the
+field: on `/v1/responses` `store: true`, `previous_response_id`,
+`conversation`, `background: true`, a `file_id` (in a file or an image),
+`vector_store_ids`, and the hosted tools `file_search`, `code_interpreter`,
+`computer*`, `mcp` and `image_generation`; on `/v1/messages` a `file_id`
+source, `container` and `mcp_servers`. What Claude Code and Codex send is not
+affected (Codex sends `store: false`; the web search and web fetch tools are
+allowed). A Responses call that leaves `store` out is forwarded as it is, and
+OpenAI keeps such a response by default unless the client sends `store: false`
+(Codex does). `store: true` is accepted for an Azure target only, and without
+the fields that read a stored response back. Also refused: `item_reference`
+input items, tools with a `container` or `environment`, and `code_execution`
+tools. A `file_id` is refused where the API reads it (a content block's
+`source`, `input_file`, `input_image`), not inside tool input or results.
+
+**Other family: translated.** Claude Code to an OpenAI, Azure or Gemini
+provider, and Codex to an Anthropic provider, are translated as every
+`/v1/messages` and `/v1/responses` call is. What the target cannot express is
+dropped and named in the log row (`dropped`), not shown to the agent: unknown
+request fields, thinking and other blocks, server tools, documents. A feature
+a target cannot take at all (for instance reasoning effort on Gemini) is
+refused with a 400.
+
+**Guardrails.** Input rules read, and redact, the text of the agent's own
+request, whether the translator accepts it or not: system text, user and
+assistant text, tool calls' input and tool results, document text (Claude
+Code); instructions, input and output text, function and custom tool calls and
+their outputs (Codex). Redaction rewrites the prompt: for a coding agent this
+costs prompt-cache hits, and Claude Code drops earlier thinking from the
+conversation, so prefer Block or Flag for coding agents. Output rules redact
+the text of an answer, the inputs of the tool calls in it, and a stream's text
+and tool-call deltas, and on a Responses stream the `.done` and `completed`
+events that repeat the whole text; a block ends a stream with the API's own
+error event.
+
+**Sessions and cache.** A log row records the agent's session, agent, prompt
+and request class (from `x-claude-code-*` headers, or Codex's `session-id`),
+the client (`claude-code` or `codex`), and the tokens read from and written to
+the provider's prompt cache. The console filters logs by session and has a
+session view with the calls in order and their totals. A model has a cache
+read and a cache write price (dollars per 1M tokens); an empty one uses the
+input price. A call's cost prices uncached input, cache reads, cache writes
+and output; rate limits, budgets, metrics and the usage API count all the
+input, cache included, as input.
 
 ## MCP gateway
 
@@ -1516,7 +1623,7 @@ A webhook body:
   "subject": "budget:12:2026-10-01",
   "summary": "Budget '...' passed 80% (...)",
   "details": { },
-  "at": "2026-10-08T10:20:30Z", "gateway": "ufaigw 3.0.0" }
+  "at": "2026-10-08T10:20:30Z", "gateway": "ufaigw 3.1.0" }
 ```
 
 `state` is `firing` or `resolved` (`test` for a Send test). The body holds
@@ -1580,130 +1687,4 @@ fixed phrase, never the URL) is on the event.
   fires when the share of failed calls in the window reaches `percent` and the
   window holds at least `min_requests` calls. A failure is a 5xx answer,
   or a 429 the provider gave; the gateway's own 429s (rate limit,
-  budget), other 4xx and 499 (caller left) are not failures. A route subject
-  counts only configured routes (a call to `provider/model` counts under its
-  provider, key and the gateway, not under a route), and a call that never
-  resolved to a model or route (404, 403) is not counted. Playground calls are
-  counted like any other. It resolves after the
-  rate has stayed under `percent` for one full window; because old failures
-  must also leave the window, that is up to about two windows after the last
-  failure.
-- `circuit_open` (`provider`, `model`, each optional: left out means any):
-  fires when a matching target's circuit breaker opens. It resolves only after
-  the breaker has stayed closed for a quiet period of 5 minutes (checked every
-  30 s), or when the target is removed from the catalog. A breaker that opens
-  again inside the quiet period continues the same episode and says nothing, so
-  a provider that flaps is one `firing` and one `resolved`, not a pair for
-  every flap.
-
-Disabling a rule forgets what it was firing for, silently: no `resolved`
-notice is sent, and enabling it again starts fresh. Changing a rule's params
-does the same. A rule's `kind` cannot be changed.
-
-*Configuration export and import* carry alert channels (name and kind only, no
-URL or secret) and rules (with their channel names, and budget rule targets by
-name). An imported channel is created disabled, with a new secret and no URL:
-an admin sets the URL in the console (Alerts), rotates the secret if needed and
-enables it. `ufaigw config import` cannot create a channel (it has no access
-to the encryption key); use the console for the first import of a file that
-holds new channels. Error windows are not exported.
-
-**Reverse proxy and Cloudflare.** Start with `--trusted-proxy CIDR` (or
-`UF_TRUSTED_PROXIES`) so sign-in limiting counts the client's address, not the
-proxy's. The proxy must set or overwrite `CF-Connecting-IP` and
-`X-Forwarded-For` itself and never pass on what the client sent; never list a
-network clients can reach directly. Without it, 20 failed sign-ins from anyone
-behind a proxy block sign-in for everyone for 15 minutes.
-
-**HTTPS and cookies.** The session cookie is `Secure`, so the console needs
-HTTPS except on localhost; over plain HTTP elsewhere the browser drops the
-cookie and the sign-in page says so. Terminate TLS at the proxy, or on a
-trusted network use `--insecure-cookies`. `/v1` with a key works over HTTP.
-
-## Clients
-
-Rust, Python and TypeScript clients for the gateway (or a provider directly),
-built on one Rust core, `ufaigw-translate`, and tested with shared fixtures
-(`clients/fixtures/`). They do not retry, route or cache; an error says
-whether to retry and when. Install them (the packages appear from v2.0.0-beta.4,
-as pre-releases; before that, build from source as each README says):
-
-```sh
-cargo add ufaigw-client
-pip install --pre ufaigw ufaigw-admin
-npm i @ufaigw/client@beta @ufaigw/admin@beta
-```
-
-Rust ([`crates/client`](crates/client/README.md)):
-
-```rust
-use ufaigw_client::{ChatRequest, Client, Target};
-
-let client = Client::new(Target::gateway("http://127.0.0.1:3000", key));
-let reply = client.chat(ChatRequest::new("anthropic/claude-sonnet-5").user("Say hi.")).await?;
-println!("{}", reply.content);
-```
-
-Python ([`crates/client-py`](crates/client-py/README.md)):
-
-```python
-import ufaigw
-
-client = ufaigw.Client(ufaigw.gateway("http://127.0.0.1:3000", key))
-reply = client.chat("anthropic/claude-sonnet-5", [{"role": "user", "content": "Say hi."}])
-print(reply.content)
-```
-
-TypeScript ([`clients/ts`](clients/ts/README.md)):
-
-```ts
-import { Client, gateway } from "@ufaigw/client";
-
-const client = new Client(gateway({ baseUrl: "http://127.0.0.1:3000", key }));
-const reply = await client.chat({ model: "anthropic/claude-sonnet-5", messages: [{ role: "user", content: "Say hi." }] });
-console.log(reply.content);
-```
-
-All three also stream and make embeddings, and send `tags` as `x-uf-tags`.
-They also take tools and images: Rust through `ChatRequest` (tools, tool choice,
-image and tool-result messages), Python with flat tool dicts
-(`{"name", "description", "parameters"}`) and a `ToolCall` you can pass straight
-back in the next assistant message, TypeScript with `tools`, `toolChoice` and
-`toolCalls` / `toolCallId`; see each README. Streams yield tool-call events. All three take `response_format` (Rust
-`ChatRequest::response_format`, Python `response_format=` with the OpenAI
-shape, TypeScript `responseFormat` with `jsonSchema` in camelCase). They do not
-yet call `/v1/responses`, images, audio or prompt templates; use any OpenAI
-SDK against the gateway for those.
-
-### Admin SDKs
-
-Two more clients manage the gateway instead of calling models: they wrap the
-admin API (`/api`: providers, models, routes, keys, users, teams, limits,
-budgets, alerts, guardrails, prompts, settings, usage, logs, audit, backup and
-configuration). Both are generated from `openapi/admin.json`, authenticate with an
-access token (Account, Access tokens in the console), and raise a typed error
-with the gateway's `status`, `code` and field messages. They are meant for
-npm and PyPI from v2.0.0-beta.4 (install commands above), once publishing is
-live (see Known limits); until then, build from source. CI regenerates both and fails when the
-committed copy differs.
-
-TypeScript ([`clients/admin-ts`](clients/admin-ts/README.md)):
-
-```sh
-npm i @ufaigw/admin@beta
-# from a checkout: pnpm --dir clients/admin-ts install && pnpm --dir clients/admin-ts build
-```
-
-```ts
-import { createAdminClient } from "@ufaigw/admin";
-
-const api = createAdminClient({ baseUrl: "http://127.0.0.1:3000", token: process.env.UF_ADMIN_TOKEN! });
-const { providers } = await api.call(api.raw.GET("/api/providers"));
-console.log(providers.map((p) => p.name));
-const { channel } = await api.call(
-  api.raw.POST("/api/alerts/channels", { body: { name: "ops", kind: "webhook", url: "https://example.com/hook" } }),
-);
-console.log("created channel", channel.id);
-```
-
-Python 3.11 or newer ([`clien
+  bud

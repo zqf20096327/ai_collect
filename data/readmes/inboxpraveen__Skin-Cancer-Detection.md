@@ -2,7 +2,7 @@
 
 ![Header](./assets/Header.png)
 
-A production-grade deep learning system for automated skin lesion classification using the HAM10000 dataset. This system provides training, evaluation, and real-time inference capabilities for detecting seven types of skin lesions.
+A research project for classifying seven types of skin lesions in the HAM10000 dataset. It includes CNN training, evaluation, image inference and a Flask demo. This is an educational project, not a clinical diagnostic tool.
 
 ## Overview
 
@@ -79,7 +79,7 @@ Skin-Cancer-Detection/
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
+git clone https://github.com/inboxpraveen/Skin-Cancer-Detection.git
 cd Skin-Cancer-Detection
 ```
 

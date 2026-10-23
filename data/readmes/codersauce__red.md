@@ -19,9 +19,9 @@ configuration; optional agent support requires an installed, authenticated Codex
 [Documentation](#documentation) ·
 [Community](https://discord.gg/5PWvAUNRHU)
 
-<!-- current-release: 0.9.1 -->
+<!-- current-release: 0.10.0 -->
 The current documented release is
-[v0.9.1](https://github.com/codersauce/red/releases/tag/v0.9.1).
+[v0.10.0](https://github.com/codersauce/red/releases/tag/v0.10.0).
 
 ![Red editing its Rust rendering pipeline with the project tree open](docs/images/editor-overview.jpg)
 
@@ -55,7 +55,7 @@ The PowerShell installer verifies the release checksum, installs to
 To pin a release or choose another directory:
 
 ```shell
-RED_VERSION=0.9.1 RED_INSTALL_DIR="$HOME/bin" \
+RED_VERSION=0.10.0 RED_INSTALL_DIR="$HOME/bin" \
   sh -c "$(curl --proto '=https' --tlsv1.2 -fsSL https://getred.dev/install.sh)"
 ```
 
@@ -98,19 +98,24 @@ completed `codex login`.
   sessions retain buffers, plugins, LSP state, and running agents across
   terminal or SSH disconnects.
 
-## New in v0.8.2
+## New in v0.10.0
 
-The v0.8.2 release adds a managed updater for official standalone installations:
+- **Pick up a previous Codex conversation.** Press `Alt-s` in the Agent pane or
+  run `:AgentSessions` to search previous sessions from Red, this workspace, or
+  all of Codex, and resume or continue one.
+- **Keep the conversation after a relaunch.** Reopening Red in a workspace
+  resumes the same Codex thread, and a reply cut off by a crash asks whether to
+  retry, continue, or leave it.
+- **Updates install themselves.** Official standalone installations install a
+  new stable release in the background after verifying its signed checksums. Set
+  `[updates] mode = "notify"` to install when you choose.
+- **Agent edits respect your work.** Edits change only the lines they need, and
+  Red asks before saving a buffer with your unsaved changes.
+- **Copy from anywhere.** Yanks reach your local clipboard over SSH, Herdr, and
+  tmux through OSC 52.
 
-- **Check automatically, install when you choose.** Red checks for a newer stable
-  release once per day and notifies you. Run `red update`, `:update`, or
-  **Update Red** in the command palette to install it.
-- **Verify before replacing.** The updater checks the archive's published SHA-256
-  checksum, candidate version, and bundled runtime before replacing the binary.
-  Existing editing sessions keep their current version until restarted.
-
-Use `[updates] mode = "off"` to disable automatic checks. Manual updates remain
-available. Homebrew and source builds keep their existing update process.
+See the [release notes](https://github.com/codersauce/red/releases/latest) for
+everything else.
 
 ## First five minutes
 

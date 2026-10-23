@@ -50,13 +50,13 @@
 ## Installation		
 
 ### Source Code
-- Download [Version 0.9](https://github.com/sepandhaghighi/mytext/archive/v0.9.zip) or [Latest Source](https://github.com/sepandhaghighi/mytext/archive/dev.zip)
+- Download [Version 1.0](https://github.com/sepandhaghighi/mytext/archive/v1.0.zip) or [Latest Source](https://github.com/sepandhaghighi/mytext/archive/dev.zip)
 - `pip install .`				
 
 ### PyPI
 
 - Check [Python Packaging User Guide](https://packaging.python.org/installing/)     
-- `pip install mytext==0.9`						
+- `pip install mytext==1.0`						
 
 
 ## Usage
@@ -90,17 +90,17 @@ mytext \
 | Argument | Description | Default |
 |--------- |-------------|---------|
 | `text`/`--text` | Text to process (required unless `--loop` is used) | - |
-| `--mode` | Text processing mode | `paraphrase` |
-| `--tone` | Output text desired tone | `neutral` |
+| `--mode` | Text processing mode | `polish` |
+| `--tone` | Output text desired tone | `preserve` |
 | `--provider` | AI provider selection | `auto` |
 | `--loop` | Enable interactive loop mode | `false` |
 | `--model` | Override provider LLM model | - |
 | `--version` | Show application version| - |
 | `--info` | Show application information| - |
 
-ℹ️ Supported modes: `paraphrase`, `grammar`, `summarize`, `simplify`, `bulletize`, `shorten`, `emojify`
+ℹ️ Supported modes: `polish`, `paraphrase`, `grammar`, `summarize`, `simplify`, `bulletize`, `shorten`, `emojify`
 
-ℹ️ Supported tones: `neutral`, `formal`, `casual`, `friendly`, `professional`, `academic`, `creative`, `biblical`, `viking`, `zen`, `corporate`
+ℹ️ Supported tones: `preserve`, `neutral`, `formal`, `casual`, `friendly`, `professional`, `academic`, `creative`, `biblical`, `viking`, `zen`, `corporate`
 
 ℹ️ Supported providers: `auto`, `ai-studio`, `cloudflare`, `openrouter`, `cerebras`, `groq`, `nvidia`
 
@@ -130,8 +130,8 @@ print(result["status"], result["message"])
 |-----------|-------------|---------|
 | `text` | Input text to process | - |
 | `auth` | Authentication parameters for the provider | - |
-| `mode` | Text processing mode | `Mode.PARAPHRASE` |
-| `tone` | Output text desired tone | `Tone.NEUTRAL` |
+| `mode` | Text processing mode | `Mode.POLISH` |
+| `tone` | Output text desired tone | `Tone.PRESERVE` |
 | `provider` | AI provider | `Provider.AI_STUDIO` |
 | `model` | Override provider LLM model | `None` |
 
@@ -144,7 +144,7 @@ Each provider has a default model. You may optionally override it using either t
 |---------|--------------------------------|------------|------------|------------|
 | [**AI Studio**](https://ai.google.dev/) | `AI_STUDIO_API_KEY` | `gemma-4-31b-it` | `AI_STUDIO_MODEL` | ![](https://img.shields.io/github/actions/workflow/status/sepandhaghighi/mytext/api-ai-studio.yml?style=flat-square&label=AI%20Studio) |
 | [**Cloudflare**](https://developers.cloudflare.com/workers-ai/) | `CLOUDFLARE_API_KEY`, `CLOUDFLARE_ACCOUNT_ID` | `llama-3.1-8b-instruct-fast` | `CLOUDFLARE_MODEL` | ![](https://img.shields.io/github/actions/workflow/status/sepandhaghighi/mytext/api-cloudflare.yml?style=flat-square&logo=cloudflare&label=Cloudflare) |
-| [**OpenRouter**](https://openrouter.ai/docs) | `OPENROUTER_API_KEY` | `z-ai/glm-5.2:free` | `OPENROUTER_MODEL` | ![](https://img.shields.io/github/actions/workflow/status/sepandhaghighi/mytext/api-openrouter.yml?style=flat-square&logo=openai&label=OpenRouter) |
+| [**OpenRouter**](https://openrouter.ai/docs) | `OPENROUTER_API_KEY` | `nvidia/nemotron-3-super-120b-a12b:free` | `OPENROUTER_MODEL` | ![](https://img.shields.io/github/actions/workflow/status/sepandhaghighi/mytext/api-openrouter.yml?style=flat-square&logo=openai&label=OpenRouter) |
 | [**Cerebras**](https://docs.cerebras.ai/) | `CEREBRAS_API_KEY` | `gpt-oss-120b` | `CEREBRAS_MODEL` | ![](https://img.shields.io/github/actions/workflow/status/sepandhaghighi/mytext/api-cerebras.yml?style=flat-square&logo=cerebras&label=Cerebras) |
 | [**Groq**](https://console.groq.com/docs) | `GROQ_API_KEY` | `openai/gpt-oss-20b` | `GROQ_MODEL` | ![](https://img.shields.io/github/actions/workflow/status/sepandhaghighi/mytext/api-groq.yml?style=flat-square&logo=groq&label=Groq) |
 | [**NVIDIA**](https://docs.nvidia.com/nim/) | `NVIDIA_API_KEY` | `nvidia/nemotron-3-super-120b-a12b` | `NVIDIA_MODEL` | ![](https://img.shields.io/github/actions/workflow/status/sepandhaghighi/mytext/api-nvidia.yml?style=flat-square&logo=nvidia&label=NVIDIA) |
