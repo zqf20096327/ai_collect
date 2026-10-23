@@ -2916,5 +2916,57 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "northumber/person-autocrop": {
+  "rel_ver": "1.2.1",
+  "rel_pub": "2024-01-15",
+  "rel_days": 1012,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 63,
+   "Batchfile": 18,
+   "Shell": 18
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "kirinonakar/TxtAIEditor": {
+  "rel_ver": "v2.9.5",
+  "rel_pub": "2026-10-23",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C#": 83,
+   "JavaScript": 14,
+   "HTML": 2,
+   "CSS": 1,
+   "Python": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }
