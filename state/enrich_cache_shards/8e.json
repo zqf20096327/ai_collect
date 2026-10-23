@@ -3089,5 +3089,54 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "nobodywho-ooo/flutter-starter-example": {
+  "rel_ver": "v5.0.0",
+  "rel_pub": "2026-10-08",
+  "rel_days": 15,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Dart": 55,
+   "C++": 19,
+   "CMake": 15,
+   "Ruby": 2,
+   "Shell": 2
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "trimplexx/music-transcription": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TeX": 62,
+   "Python": 30,
+   "Jupyter Notebook": 7,
+   "Makefile": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

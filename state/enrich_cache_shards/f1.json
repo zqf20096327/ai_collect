@@ -2741,5 +2741,54 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "mapick-ai/mapick": {
+  "rel_ver": "v1.0.19",
+  "rel_pub": "2026-05-07",
+  "rel_days": 169,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "JavaScript": 87,
+   "Shell": 13
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "justindujardin/hillspace": {
+  "rel_ver": "v0.1.2",
+  "rel_pub": "2025-07-11",
+  "rel_days": 469,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 68,
+   "TypeScript": 25,
+   "CSS": 6
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

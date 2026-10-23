@@ -2568,5 +2568,28 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "SAP-samples/btp-agentic-ai-use-cases": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Python": 89,
+   "TypeScript": 8,
+   "JavaScript": 3,
+   "Dockerfile": 0,
+   "Procfile": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

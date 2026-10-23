@@ -2960,5 +2960,29 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "a-tokyo/ai-zero-shot-classifier": {
+  "rel_ver": "0.0.11",
+  "rel_pub": "2025-10-30",
+  "rel_days": 358,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 98,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

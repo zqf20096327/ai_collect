@@ -3330,5 +3330,54 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "arcmindai/arcmindai": {
+  "rel_ver": "0.3.0",
+  "rel_pub": "2024-02-10",
+  "rel_days": 986,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 86,
+   "Shell": 11,
+   "JavaScript": 3
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "wildsurfer/your-mail-mcp": {
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-09-07",
+  "rel_days": 46,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Go": 100,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

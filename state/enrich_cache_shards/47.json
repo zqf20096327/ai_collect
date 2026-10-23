@@ -3232,5 +3232,32 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "TuringOpsSH/NextConsole": {
+  "rel_ver": "v0.2.9",
+  "rel_pub": "2025-12-01",
+  "rel_days": 326,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Vue": 43,
+   "Python": 38,
+   "TypeScript": 11,
+   "PLpgSQL": 7,
+   "HTML": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

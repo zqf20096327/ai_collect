@@ -2998,5 +2998,32 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "raro42/mac-stats": {
+  "rel_ver": "v0.1.2216",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 73,
+   "JavaScript": 17,
+   "CSS": 5,
+   "Python": 2,
+   "TypeScript": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

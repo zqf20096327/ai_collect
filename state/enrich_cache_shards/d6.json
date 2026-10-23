@@ -3146,5 +3146,55 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "devloperdevesh/EnterpriseRAG-AI": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 27,
+  "lang": {
+   "Python": 53,
+   "TypeScript": 27,
+   "CSS": 18,
+   "HTML": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "ViuGiaLai/researchmind": {
+  "rel_ver": "v0.6.0",
+  "rel_pub": "2026-07-28",
+  "rel_days": 87,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 45,
+   "TypeScript": 35,
+   "CSS": 18,
+   "JavaScript": 1,
+   "Rust": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

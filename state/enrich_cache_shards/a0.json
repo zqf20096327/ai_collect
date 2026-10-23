@@ -2847,5 +2847,55 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "harveyxiacn/blender-mcp-ai": {
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-10-13",
+  "rel_days": 10,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "NOEL-MNI/deepFCD": {
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2025-08-21",
+  "rel_days": 428,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 52,
+   "Jupyter Notebook": 44,
+   "Dockerfile": 2,
+   "Makefile": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }
