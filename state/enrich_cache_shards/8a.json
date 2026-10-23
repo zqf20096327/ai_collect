@@ -206,7 +206,7 @@
   "commit_90d": 3,
   "rel_ver": "1.0.0rc10",
   "rel_pub": "2024-06-27",
-  "rel_days": 841,
+  "rel_days": 848,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -219,10 +219,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

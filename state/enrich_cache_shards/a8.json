@@ -3848,5 +3848,59 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "ARCANGEL0/Mitsu": {
+  "commit_90d": 126,
+  "commit_7d": 22,
+  "rel_ver": "v3.1",
+  "rel_pub": "2026-02-20",
+  "rel_days": 245,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100,
+   "Shell": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "commit": "20261023",
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "code-gal/namblog": {
+  "rel_ver": "v0.10.5",
+  "rel_pub": "2026-01-23",
+  "rel_days": 273,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 73,
+   "C#": 24,
+   "HTML": 1,
+   "CSS": 1,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

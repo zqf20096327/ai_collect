@@ -1822,13 +1822,16 @@
    "CSS": 1,
    "HTML": 0
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261023",
   "dim_ts": {
    "release": "20261021",
    "security": "20261021",
    "contrib": "20261021",
-   "lang": "20261021"
-  }
+   "lang": "20261021",
+   "commit": "20261023"
+  },
+  "commit_90d": 87,
+  "commit_7d": 87
  },
  "lucaperl/paperless-local-ai": {
   "rel_ver": "v0.5.2",
@@ -2762,6 +2765,52 @@
    "HTML": 29,
    "Jinja": 1,
    "Dockerfile": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "scos-lab/markview": {
+  "rel_ver": "v1.0.5",
+  "rel_pub": "2026-04-14",
+  "rel_days": 192,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 75,
+   "Rust": 16,
+   "CSS": 8,
+   "HTML": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "mohcodes01/Document-Intelligence": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 98,
+   "Dockerfile": 2
   },
   "enriched_at": "20261023",
   "dim_ts": {

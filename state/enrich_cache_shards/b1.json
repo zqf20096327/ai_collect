@@ -1800,13 +1800,16 @@
    "Java": 1,
    "Batchfile": 0
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261023",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261023"
+  },
+  "commit_90d": 59,
+  "commit_7d": 0
  },
  "derdacavga/Esp32-Ai-Voice-Assistant": {
   "rel_ver": null,
@@ -3254,6 +3257,56 @@
   "contrib_n": 1,
   "lang": {
    "Python": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "hajdu-patrik/MIGT2025-BME-Competition_JAVA": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2025-12-12",
+  "rel_days": 315,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Java": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "ekristen/guppi": {
+  "rel_ver": "v0.1.3-beta.2",
+  "rel_pub": "2026-04-20",
+  "rel_days": 186,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Go": 57,
+   "TypeScript": 41,
+   "CSS": 1,
+   "HTML": 0,
+   "Makefile": 0
   },
   "enriched_at": "20261023",
   "dim_ts": {

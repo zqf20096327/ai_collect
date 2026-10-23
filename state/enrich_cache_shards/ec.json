@@ -1575,13 +1575,16 @@
    "Ruby": 7,
    "PowerShell": 1
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261023",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261023"
+  },
+  "commit_90d": 79,
+  "commit_7d": 10
  },
  "speediedan/finetuning-scheduler": {
   "rel_ver": "v2.14.1",
@@ -3024,6 +3027,72 @@
    "MDX": 1,
    "JavaScript": 0,
    "CSS": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "balancegsr/skill-creators": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "santiagocasas/clapp": {
+  "rel_ver": "v1.0.2",
+  "rel_pub": "2026-02-03",
+  "rel_days": 262,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100,
+   "Shell": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "luxonis/modelconverter": {
+  "rel_ver": "v0.6.2-beta",
+  "rel_pub": "2026-09-24",
+  "rel_days": 29,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 14,
+  "lang": {
+   "Python": 98,
+   "Dockerfile": 1,
+   "Shell": 1
   },
   "enriched_at": "20261023",
   "dim_ts": {

@@ -2173,13 +2173,16 @@
    "HTML": 25,
    "JavaScript": 12
   },
-  "enriched_at": "20261022",
+  "enriched_at": "20261023",
   "dim_ts": {
    "release": "20261022",
    "security": "20261022",
    "contrib": "20261022",
-   "lang": "20261022"
-  }
+   "lang": "20261022",
+   "commit": "20261023"
+  },
+  "commit_90d": 6,
+  "commit_7d": 6
  },
  "recranvvi5c/BeaconGrid": {
   "rel_ver": "v6.130.3",
@@ -2473,6 +2476,100 @@
    "Shell": 1,
    "PowerShell": 0,
    "VBScript": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "waqarranadev/Web-Development-01-HTML-CSS-JS": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "Beyond-Horizons-Institute/symbio-basic": {
+  "rel_ver": "v1.1.3",
+  "rel_pub": "2026-10-02",
+  "rel_days": 21,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 98,
+   "Python": 1,
+   "JavaScript": 1,
+   "HTML": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "bushuhui/machinelearning_notebook": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 10,
+  "lang": {
+   "Jupyter Notebook": 96,
+   "Python": 3,
+   "C++": 0,
+   "Shell": 0,
+   "C": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "bolnet/attestor": {
+  "rel_ver": "v4.1.11",
+  "rel_pub": "2026-05-26",
+  "rel_days": 150,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 94,
+   "JavaScript": 2,
+   "CSS": 2,
+   "HTML": 1,
+   "PLpgSQL": 1
   },
   "enriched_at": "20261023",
   "dim_ts": {

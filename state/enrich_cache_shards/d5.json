@@ -3123,5 +3123,28 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "neoneye/ARC-Interactive": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 77,
+   "HTML": 10,
+   "CSS": 8,
+   "PLpgSQL": 4,
+   "Python": 2
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

@@ -1459,13 +1459,16 @@
    "CSS": 4,
    "Shell": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261023",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261023"
+  },
+  "commit_90d": 407,
+  "commit_7d": 42
  },
  "QuentinWach/image-ranker": {
   "rel_ver": "v1.0.1",
@@ -3212,6 +3215,78 @@
   "contrib_n": 1,
   "lang": {
    "Python": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "ItisShikhar/captioncat": {
+  "rel_ver": "v1.0.6",
+  "rel_pub": "2026-09-03",
+  "rel_days": 50,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 80,
+   "JavaScript": 20,
+   "CSS": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "miuuyy/Octopus-SI-OS": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 65,
+   "JavaScript": 17,
+   "TypeScript": 11,
+   "Swift": 3,
+   "CSS": 2
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "mwakidenis/GBV-SafeSpace": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 98,
+   "PLpgSQL": 1,
+   "CSS": 1,
+   "HTML": 0,
+   "JavaScript": 0
   },
   "enriched_at": "20261023",
   "dim_ts": {

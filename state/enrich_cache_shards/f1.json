@@ -1603,13 +1603,16 @@
    "Shell": 5,
    "Dockerfile": 0
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261023",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261023"
+  },
+  "commit_90d": 1091,
+  "commit_7d": 94
  },
  "Jason2Brownlee/MachineLearningMischief": {
   "rel_ver": null,
@@ -3001,6 +3004,32 @@
   "contrib_n": 1,
   "lang": {
    "Python": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "armgabrielyan/primer": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-03-22",
+  "rel_days": 215,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 91,
+   "Shell": 8,
+   "JavaScript": 1,
+   "Ruby": 0
   },
   "enriched_at": "20261023",
   "dim_ts": {

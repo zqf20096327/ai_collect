@@ -3404,5 +3404,83 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "ultrametricai/ultrametric": {
+  "rel_ver": "data-2026-09-02",
+  "rel_pub": "2026-09-02",
+  "rel_days": 51,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 84,
+   "Python": 15,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "Colton-z/AstraBox": {
+  "rel_ver": "v0.1.11",
+  "rel_pub": "2026-10-21",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "high",
+  "sec_last": "2026-09-27",
+  "sec_ids": [
+   "GHSA-vvgj-888f-x85j(-,high)"
+  ],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 57,
+   "TypeScript": 39,
+   "Shell": 2,
+   "Dockerfile": 1,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "comet-ml/cometx": {
+  "rel_ver": "3.6.11",
+  "rel_pub": "2026-10-01",
+  "rel_days": 22,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Python": 100,
+   "Shell": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

@@ -30,11 +30,11 @@
   }
  },
  "decolua/9router": {
-  "commit_7d": 38,
-  "commit_90d": 459,
+  "commit_7d": 39,
+  "commit_90d": 473,
   "rel_ver": "v0.5.35",
   "rel_pub": "2026-07-16",
-  "rel_days": 92,
+  "rel_days": 99,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -59,10 +59,10 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -3481,5 +3481,109 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "musichen/awesome-artificial-intelligence": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "Seelam-Mohith/ScholarChat-AI": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "PerryLink/dsh-translate": {
+  "rel_ver": "v0.2.24",
+  "rel_pub": "2026-10-18",
+  "rel_days": 5,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "panzeyu2013/dsh-chamber": {
+  "rel_ver": "v0.4.2",
+  "rel_pub": "2026-10-21",
+  "rel_days": 2,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 75,
+   "JavaScript": 15,
+   "Swift": 8,
+   "CSS": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "ayuanwong/dsh-ux": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": []
+ },
+ "tryAGI/ElevenLabs": {
+  "rel_ver": "v1.0.8",
+  "rel_pub": "2026-09-01",
+  "rel_days": 52,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false
  }
 }

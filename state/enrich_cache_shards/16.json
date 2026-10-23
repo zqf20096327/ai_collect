@@ -3486,5 +3486,58 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "flightdeckhq/flightdeck": {
+  "rel_ver": "v0.5.3",
+  "rel_pub": "2026-08-30",
+  "rel_days": 54,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 38,
+   "Python": 34,
+   "Go": 21,
+   "JavaScript": 6,
+   "Makefile": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "friedbotstudio/baseline": {
+  "rel_ver": "v0.26.6",
+  "rel_pub": "2026-09-02",
+  "rel_days": 51,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "JavaScript": 95,
+   "Nunjucks": 3,
+   "Shell": 2,
+   "CSS": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

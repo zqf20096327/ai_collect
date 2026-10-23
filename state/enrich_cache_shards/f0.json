@@ -38,11 +38,11 @@
   }
  },
  "jeecgboot/JeecgBoot": {
-  "commit_7d": 20,
-  "commit_90d": 60,
+  "commit_7d": 2,
+  "commit_90d": 65,
   "rel_ver": "v3.9.5",
   "rel_pub": "2026-08-27",
-  "rel_days": 50,
+  "rel_days": 57,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -67,10 +67,10 @@
    "TypeScript": 0,
    "Python": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2923,6 +2923,107 @@
    "Python": 83,
    "JavaScript": 11,
    "Shell": 5
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "Agents4Academia-AI/prior": {
+  "rel_ver": "v06.26",
+  "rel_pub": "2026-07-03",
+  "rel_days": 112,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "HTML": 65,
+   "Python": 30,
+   "TypeScript": 4,
+   "CSS": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "jdonohoo/vern-bot": {
+  "rel_ver": "v2.9.1",
+  "rel_pub": "2026-02-22",
+  "rel_days": 243,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 95,
+   "Shell": 3,
+   "Batchfile": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "mehdihadeli/genai-eshop-semantic-kernel": {
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-09-13",
+  "rel_days": 40,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C#": 99,
+   "Shell": 1,
+   "Dockerfile": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "kamathhrishi/sourcemapr": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 38,
+   "TypeScript": 34,
+   "HTML": 24,
+   "JavaScript": 3,
+   "CSS": 1
   },
   "enriched_at": "20261023",
   "dim_ts": {

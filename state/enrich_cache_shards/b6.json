@@ -2652,5 +2652,159 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "sainathadapa/mediaeval-2019-moodtheme-detection": {
+  "rel_ver": "v3.0",
+  "rel_pub": "2019-10-04",
+  "rel_days": 2576,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Jupyter Notebook": 82,
+   "Python": 18
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "AliceLJY/recallnest": {
+  "rel_ver": "v4.0.0",
+  "rel_pub": "2026-10-17",
+  "rel_days": 6,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 95,
+   "Shell": 2,
+   "JavaScript": 1,
+   "HTML": 1,
+   "Python": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "47thtechcorner/RayCodes_FreeToken": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "zerkerlabs/treeship": {
+  "rel_ver": "v0.31.14",
+  "rel_pub": "2026-10-05",
+  "rel_days": 18,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 6,
+  "sec_worst": "high",
+  "sec_last": "2026-10-02",
+  "sec_ids": [
+   "GHSA-w5fp-wc8j-3h4p(-,high)",
+   "GHSA-w356-2hw3-x2v2(-,high)",
+   "GHSA-qhv9-h5vq-hw6r(-,medium)",
+   "GHSA-29hj-wmwv-7hx8(-,medium)",
+   "GHSA-pmp9-x698-fh4v(-,high)",
+   "GHSA-p367-33qm-pwv7(-,high)"
+  ],
+  "contrib_n": 4,
+  "lang": {
+   "Rust": 74,
+   "Python": 8,
+   "TypeScript": 5,
+   "Go": 5,
+   "HTML": 4
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "SasanLabs/LLMForge": {
+  "rel_ver": "0.0.3",
+  "rel_pub": "2026-07-29",
+  "rel_days": 86,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 61,
+   "JavaScript": 18,
+   "CSS": 14,
+   "HTML": 6,
+   "Shell": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "microsoft/entra-agentid-samples": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Python": 31,
+   "PowerShell": 27,
+   "JavaScript": 15,
+   "HTML": 13,
+   "Shell": 10
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

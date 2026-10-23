@@ -3187,5 +3187,44 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "Harshit-J004/toolguard": {
+  "rel_ver": "v6.1.1",
+  "rel_pub": "2026-04-06",
+  "rel_days": 200,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 97,
+   "CSS": 1,
+   "JavaScript": 1,
+   "HTML": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "itsmarsss/kahootgpt": {
+  "rel_ver": "v3.4.5",
+  "rel_pub": "2023-05-19",
+  "rel_days": 1253,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": []
  }
 }

@@ -1,7 +1,7 @@
 {
  "anthropics/claude-quickstarts": {
-  "commit_7d": 0,
-  "commit_90d": 27,
+  "commit_7d": 1,
+  "commit_90d": 28,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -16,10 +16,10 @@
    "Shell": 3,
    "JavaScript": 2
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -3355,6 +3355,33 @@
    "Gnuplot": 4,
    "CMake": 1,
    "C": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "chuanchuan123321/minibot": {
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-03-04",
+  "rel_days": 233,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 91,
+   "JavaScript": 4,
+   "CSS": 3,
+   "HTML": 2,
+   "Shell": 0
   },
   "enriched_at": "20261023",
   "dim_ts": {

@@ -50,11 +50,11 @@
   }
  },
  "humanlayer/humanlayer": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 7,
+  "commit_90d": 7,
   "rel_ver": "nightly-0.1.0-nightly-20260227142452",
   "rel_pub": "2026-02-27",
-  "rel_days": 231,
+  "rel_days": 238,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -70,10 +70,10 @@
    "JavaScript": 2,
    "Rust": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2594,6 +2594,46 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "hwdsl2/parsecrate": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 73,
+   "Shell": 25,
+   "Dockerfile": 2
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "jabberjabberjabber/Context-Tester": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
   "enriched_at": "20261023",
   "dim_ts": {
    "release": "20261023",

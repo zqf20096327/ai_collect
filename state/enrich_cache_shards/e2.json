@@ -207,7 +207,7 @@
   "commit_7d": 0,
   "rel_ver": "Release-3.3.0",
   "rel_pub": "2025-09-29",
-  "rel_days": 382,
+  "rel_days": 389,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -223,10 +223,10 @@
    "Shell": 0,
    "Jupyter Notebook": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -3516,6 +3516,29 @@
    "Shell": 0,
    "PowerShell": 0,
    "Dockerfile": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "pipulate/pipulate": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 79,
+   "JavaScript": 10,
+   "Nix": 3,
+   "CSS": 3,
+   "Jupyter Notebook": 2
   },
   "enriched_at": "20261023",
   "dim_ts": {

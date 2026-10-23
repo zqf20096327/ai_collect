@@ -94,10 +94,10 @@
  },
  "spinabot/brigade": {
   "commit_7d": 0,
-  "commit_90d": 139,
+  "commit_90d": 132,
   "rel_ver": "brigade-v1.39.0",
   "rel_pub": "2026-09-15",
-  "rel_days": 31,
+  "rel_days": 38,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -113,10 +113,10 @@
    "PowerShell": 0,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -3421,6 +3421,69 @@
    "Python": 97,
    "Batchfile": 2,
    "Shell": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "IMPACT-L/MedViTV2": {
+  "commit_90d": 4,
+  "commit_7d": 4,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 73,
+   "Python": 27
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "commit": "20261023",
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "PaddlePaddle/PassNet": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 12,
+  "lang": {},
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "sipsalabs/ultracompress": {
+  "rel_ver": "v0.6.24",
+  "rel_pub": "2026-06-07",
+  "rel_days": 138,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
   },
   "enriched_at": "20261023",
   "dim_ts": {

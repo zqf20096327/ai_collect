@@ -1690,13 +1690,16 @@
    "Go": 100,
    "Makefile": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261023",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261023"
+  },
+  "commit_90d": 0,
+  "commit_7d": 0
  },
  "jobovy/extreme-deconvolution": {
   "rel_ver": "1.4",
@@ -3430,6 +3433,48 @@
   "contrib_n": 1,
   "lang": {
    "Shell": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "AwesomeHou/szu-cli": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 100,
+   "HTML": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "paudel54/PulseForgeAI": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 82,
+   "JavaScript": 8,
+   "CSS": 7,
+   "HTML": 3
   },
   "enriched_at": "20261023",
   "dim_ts": {

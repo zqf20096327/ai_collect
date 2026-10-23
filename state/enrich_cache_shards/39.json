@@ -3552,5 +3552,26 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "mosynthkey/beat_this_cpp": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "C++": 81,
+   "Python": 11,
+   "CMake": 7
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

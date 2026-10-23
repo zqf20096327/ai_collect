@@ -3220,5 +3220,106 @@
    "lang": "20261023"
   }
  },
- "www-norma-dev/IONOS-simple-chatbot": {}
+ "www-norma-dev/IONOS-simple-chatbot": {
+  "rel_ver": "0.1.4",
+  "rel_pub": "2025-09-18",
+  "rel_days": 400,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Python": 49,
+   "TypeScript": 38,
+   "CSS": 7,
+   "Smarty": 3,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "awdemos/RegicideOS": {
+  "rel_ver": "v0.0.4",
+  "rel_pub": "2026-09-13",
+  "rel_days": 40,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Shell": 39,
+   "Python": 29,
+   "HTML": 20,
+   "Rust": 12,
+   "Just": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "KietzmannLab/pyavs": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 75,
+   "Jupyter Notebook": 24,
+   "Shell": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "OpenChara/OpenCharaAgent": {
+  "rel_ver": "v0.2.2",
+  "rel_pub": "2026-07-21",
+  "rel_days": 94,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 58,
+   "HTML": 22,
+   "TypeScript": 14,
+   "CSS": 3,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ }
 }

@@ -2062,13 +2062,16 @@
    "Shell": 5,
    "CSS": 4
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261023",
   "dim_ts": {
    "release": "20261021",
    "security": "20261021",
    "contrib": "20261021",
-   "lang": "20261021"
-  }
+   "lang": "20261021",
+   "commit": "20261023"
+  },
+  "commit_90d": 9,
+  "commit_7d": 8
  },
  "aimclub/FEDOT.Web": {
   "rel_ver": null,
@@ -3387,6 +3390,76 @@
    "Shell": 10,
    "JavaScript": 0,
    "Batchfile": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "Eipgen/Atomistic-Machine-Learning-for-Computational-Chemistry": {
+  "commit_90d": 1,
+  "commit_7d": 1,
+  "rel_ver": "v0.0.6",
+  "rel_pub": "2025-10-07",
+  "rel_days": 381,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {},
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "commit": "20261023",
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "Tylogi/TyloQuant": {
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-10-17",
+  "rel_days": 6,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 12,
+  "lang": {
+   "C++": 52,
+   "Python": 25,
+   "Cuda": 10,
+   "TypeScript": 5,
+   "HIP": 5
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "jenasuraj/Ai_agents": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
   },
   "enriched_at": "20261023",
   "dim_ts": {
