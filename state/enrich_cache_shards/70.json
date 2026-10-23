@@ -3116,5 +3116,53 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "gabe-santana/corollary": {
+  "rel_ver": "v0.1.0a4",
+  "rel_pub": "2026-10-04",
+  "rel_days": 19,
+  "rel_n90": 2,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "git-jr/Projeto-Amadeus-Assistente-Android": {
+  "rel_ver": "v3.0.0-alpha-1",
+  "rel_pub": "2026-04-04",
+  "rel_days": 202,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Kotlin": 76,
+   "Java": 24,
+   "Shell": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

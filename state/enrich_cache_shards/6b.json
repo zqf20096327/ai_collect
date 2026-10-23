@@ -2577,5 +2577,105 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "CorvinLabs/CorvinOS": {
+  "rel_ver": "tier1-complete",
+  "rel_pub": "2026-09-18",
+  "rel_days": 35,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 86,
+   "TypeScript": 10,
+   "JavaScript": 2,
+   "Shell": 1,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "eric-cielo/moflo": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 14,
+  "lang": {
+   "TypeScript": 87,
+   "JavaScript": 12,
+   "Shell": 0,
+   "Rust": 0,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "pulp-platform/picobello": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 10,
+  "lang": {
+   "C": 49,
+   "SystemVerilog": 30,
+   "Python": 15,
+   "Makefile": 3,
+   "Smarty": 2
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "singjc/redeem": {
+  "rel_ver": "foundation-v0770-production-freeze",
+  "rel_pub": "2026-10-06",
+  "rel_days": 17,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Rust": 89,
+   "Python": 6,
+   "Jupyter Notebook": 4,
+   "Shell": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

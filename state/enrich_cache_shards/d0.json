@@ -2228,5 +2228,32 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "851-labs/codevisor": {
+  "rel_ver": "v0.1.108-alpha.2070",
+  "rel_pub": "2026-10-23",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Swift": 51,
+   "TypeScript": 43,
+   "JavaScript": 3,
+   "Shell": 1,
+   "Rust": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

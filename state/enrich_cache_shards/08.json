@@ -3189,5 +3189,81 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "rustyneuron01/BTC-ETH-SOL-Price-Predict": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 96,
+   "Shell": 3,
+   "JavaScript": 1,
+   "Dockerfile": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "d3xvn/ergo": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-03-14",
+  "rel_days": 223,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Dart": 89,
+   "C++": 5,
+   "CMake": 4,
+   "Swift": 1,
+   "Ruby": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "ur-grue/toptop": {
+  "rel_ver": "v1.1.1",
+  "rel_pub": "2026-09-21",
+  "rel_days": 32,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Rust": 96,
+   "Python": 2,
+   "Shell": 2,
+   "Ruby": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

@@ -3212,5 +3212,31 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "christopherkarani/MetalANNS": {
+  "rel_ver": "0.3.0",
+  "rel_pub": "2026-08-24",
+  "rel_days": 60,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Swift": 93,
+   "Metal": 4,
+   "Python": 2,
+   "C": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

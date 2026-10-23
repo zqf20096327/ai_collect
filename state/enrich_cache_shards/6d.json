@@ -3219,5 +3219,29 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "lydakis/alloy": {
+  "rel_ver": "v0.3.1",
+  "rel_pub": "2025-09-06",
+  "rel_days": 412,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 98,
+   "Makefile": 2
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

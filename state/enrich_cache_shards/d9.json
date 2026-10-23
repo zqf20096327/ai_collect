@@ -2222,5 +2222,81 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "neuro-inc/apolo-cli": {
+  "rel_ver": "v26.9.0",
+  "rel_pub": "2026-09-28",
+  "rel_days": 25,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 30,
+  "lang": {
+   "Python": 100,
+   "Makefile": 0,
+   "Batchfile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "Verzeta/Verzeta-Studio": {
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-09-28",
+  "rel_days": 25,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 84,
+   "QML": 14,
+   "CMake": 1,
+   "C": 1,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "davis7dotsh/faster-models-dev": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Svelte": 50,
+   "CSS": 31,
+   "TypeScript": 14,
+   "JavaScript": 5,
+   "HTML": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

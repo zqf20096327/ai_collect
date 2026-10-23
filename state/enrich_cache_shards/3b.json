@@ -3059,5 +3059,132 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "moshthepitt/lionclaw": {
+  "rel_ver": "v0.8.0",
+  "rel_pub": "2026-06-10",
+  "rel_days": 135,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Rust": 88,
+   "Python": 12,
+   "CSS": 0,
+   "HTML": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "Stellaryz/Deep-Live-Cam-Bypass-Id-Verification-2fa-User-Face": {
+  "rel_ver": "sandbox",
+  "rel_pub": "2025-12-15",
+  "rel_days": 312,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "C#": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "tarekwasfy01/Mustatil-YOLO-AI-Model-Trainer-": {
+  "rel_ver": "Mustatil-5.6",
+  "rel_pub": "2026-06-22",
+  "rel_days": 123,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 57,
+   "HTML": 43,
+   "TeX": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "bonnguyenitc/antigravity-superpowers": {
+  "rel_ver": "v5.2.4",
+  "rel_pub": "2026-05-08",
+  "rel_days": 168,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 42,
+   "JavaScript": 29,
+   "Shell": 16,
+   "HTML": 8,
+   "TypeScript": 5
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "ChiShengChen/neural-signals-101": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-05-30",
+  "rel_days": 146,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 55,
+   "Python": 45,
+   "Makefile": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

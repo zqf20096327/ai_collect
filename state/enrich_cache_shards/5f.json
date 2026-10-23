@@ -3318,5 +3318,55 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "vansh070605/PlacementOS": {
+  "rel_ver": "1.0.1",
+  "rel_pub": "2026-06-06",
+  "rel_days": 139,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 34,
+   "Jupyter Notebook": 28,
+   "CSS": 21,
+   "Python": 17,
+   "HTML": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "acmucsd/acm-ai-workshops": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 19,
+  "lang": {
+   "Jupyter Notebook": 88,
+   "Python": 11,
+   "TypeScript": 1,
+   "SCSS": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

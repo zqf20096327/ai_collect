@@ -2810,5 +2810,30 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "kowais915/localbrain": {
+  "rel_ver": "v0.5.0",
+  "rel_pub": "2026-07-25",
+  "rel_days": 90,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 85,
+   "Rust": 8,
+   "JavaScript": 7
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

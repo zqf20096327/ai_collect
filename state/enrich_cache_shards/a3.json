@@ -2925,5 +2925,76 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "microsoft/github-copilot-appmod": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {},
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "puffball1567/koutendb": {
+  "rel_ver": "v0.15.0",
+  "rel_pub": "2026-09-25",
+  "rel_days": 28,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Nim": 78,
+   "Shell": 12,
+   "Python": 2,
+   "C": 2,
+   "C++": 2
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "humane-intelligence/hi-oss-ai-red-teaming": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-09-10",
+  "rel_days": 43,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 67,
+   "TypeScript": 32,
+   "HCL": 0,
+   "Makefile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

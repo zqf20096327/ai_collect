@@ -2236,5 +2236,124 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "Wolfe-Jam/grok-faf-mcp": {
+  "rel_ver": "v2.1.0",
+  "rel_pub": "2026-10-05",
+  "rel_days": 18,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": null,
+  "sec_last": "2026-06-11",
+  "sec_ids": [
+   "GHSA-cc2g-gq8c-r332(-,medium)"
+  ],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 91,
+   "JavaScript": 7,
+   "Shell": 2,
+   "Python": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "H0nGzA1/testpilot": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 54,
+   "TypeScript": 45,
+   "CSS": 1,
+   "Dockerfile": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "andykear/FileMaker-XMLsnippet-Claude-Skill": {
+  "rel_ver": "v2.0",
+  "rel_pub": "2026-10-01",
+  "rel_days": 22,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {},
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "ShiJieWorld/SekaiBlender": {
+  "rel_ver": "SekaiBlender-v1.0",
+  "rel_pub": "2026-08-07",
+  "rel_days": 77,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "C++": 80,
+   "Python": 15,
+   "C": 1,
+   "GLSL": 1,
+   "CMake": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "imlrz/InMind": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }
