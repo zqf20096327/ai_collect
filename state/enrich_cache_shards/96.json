@@ -1,11 +1,11 @@
 {
  "milvus-io/milvus": {
-  "commit_7d": 64,
-  "commit_90d": 647,
+  "commit_7d": 78,
+  "commit_90d": 655,
   "rel_ver": "v3.0.3",
   "rel_pub": "2026-10-14",
-  "rel_days": 2,
-  "rel_n90": 11,
+  "rel_days": 9,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 3,
@@ -24,18 +24,18 @@
    "Shell": 0,
    "Groovy": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "ahujasid/mcp-for-blender": {
-  "commit_7d": 0,
-  "commit_90d": 84,
+  "commit_7d": 6,
+  "commit_90d": 83,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -50,10 +50,10 @@
    "PowerShell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -92,10 +92,10 @@
   }
  },
  "MODSetter/SurfSense": {
-  "commit_7d": 152,
-  "commit_90d": 3185,
-  "rel_ver": "v2.2.1",
-  "rel_pub": "2026-10-14",
+  "commit_7d": 154,
+  "commit_90d": 3380,
+  "rel_ver": "v2.2.3",
+  "rel_pub": "2026-10-21",
   "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
@@ -112,10 +112,10 @@
    "JavaScript": 0,
    "CSS": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -152,8 +152,8 @@
   }
  },
  "hongleizhang/RSPapers": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 2,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -162,21 +162,21 @@
   "sec_ids": [],
   "contrib_n": 16,
   "lang": {},
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "RediSearch/RediSearch": {
-  "commit_90d": 555,
-  "commit_7d": 54,
+  "commit_90d": 548,
+  "commit_7d": 27,
   "rel_ver": "v2.10.31",
   "rel_pub": "2026-06-17",
-  "rel_days": 121,
+  "rel_days": 128,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -194,10 +194,10 @@
    "C++": 8,
    "Shell": 2
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -234,12 +234,12 @@
   }
  },
  "GiovanniPasq/agentic-rag-for-dummies": {
-  "commit_90d": 3,
-  "commit_7d": 0,
-  "rel_ver": "v2.3",
-  "rel_pub": "2026-06-21",
-  "rel_days": 117,
-  "rel_n90": 0,
+  "commit_90d": 7,
+  "commit_7d": 4,
+  "rel_ver": "v2.3.1",
+  "rel_pub": "2026-10-17",
+  "rel_days": 6,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -252,10 +252,10 @@
    "Python": 32,
    "Dockerfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

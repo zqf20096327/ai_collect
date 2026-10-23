@@ -1,11 +1,11 @@
 {
  "TEN-framework/ten-framework": {
-  "commit_7d": 5,
-  "commit_90d": 69,
-  "rel_ver": "0.11.73",
-  "rel_pub": "2026-09-22",
-  "rel_days": 24,
-  "rel_n90": 5,
+  "commit_7d": 10,
+  "commit_90d": 67,
+  "rel_ver": "0.11.74",
+  "rel_pub": "2026-10-21",
+  "rel_days": 2,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -20,10 +20,10 @@
    "TypeScript": 12,
    "Rust": 11
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

@@ -1,11 +1,11 @@
 {
  "usestrix/strix": {
-  "commit_7d": 14,
-  "commit_90d": 345,
+  "commit_7d": 11,
+  "commit_90d": 331,
   "rel_ver": "v1.7.0",
   "rel_pub": "2026-10-05",
-  "rel_days": 11,
-  "rel_n90": 12,
+  "rel_days": 18,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -20,10 +20,10 @@
    "Jinja": 1,
    "Shell": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -31,11 +31,11 @@
  },
  "blader/humanizer": {
   "commit_7d": 4,
-  "commit_90d": 62,
+  "commit_90d": 58,
   "rel_ver": "v3.1.0",
   "rel_pub": "2026-09-28",
-  "rel_days": 18,
-  "rel_n90": 6,
+  "rel_days": 25,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -46,10 +46,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -107,8 +107,8 @@
   }
  },
  "ikaijua/Awesome-AITools": {
-  "commit_90d": 264,
-  "commit_7d": 14,
+  "commit_90d": 260,
+  "commit_7d": 7,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -119,21 +119,21 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "ailyProject/aily-blockly": {
-  "commit_90d": 613,
-  "commit_7d": 49,
-  "rel_ver": "v0.9.105",
-  "rel_pub": "2026-10-10",
-  "rel_days": 6,
+  "commit_90d": 632,
+  "commit_7d": 46,
+  "rel_ver": "v0.9.107",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -149,10 +149,10 @@
    "HTML": 2,
    "SCSS": 2
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

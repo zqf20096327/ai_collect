@@ -82,7 +82,7 @@
   }
  },
  "heilcheng/awesome-agent-skills": {
-  "commit_7d": 3,
+  "commit_7d": 0,
   "commit_90d": 3,
   "rel_ver": null,
   "rel_none": true,
@@ -98,10 +98,10 @@
    "JavaScript": 1,
    "CSS": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -128,12 +128,12 @@
   }
  },
  "crate/crate": {
-  "commit_7d": 30,
-  "commit_90d": 343,
+  "commit_7d": 28,
+  "commit_90d": 355,
   "rel_ver": "6.5.0",
   "rel_pub": "2026-10-13",
-  "rel_days": 3,
-  "rel_n90": 9,
+  "rel_days": 10,
+  "rel_n90": 7,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 10,
@@ -156,10 +156,10 @@
    "ANTLR": 0,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2941,6 +2941,23 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "aldegad/awesome-geo": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

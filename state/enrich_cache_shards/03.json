@@ -1,10 +1,10 @@
 {
  "openbq-org/OpenBB": {
-  "commit_7d": 2,
-  "commit_90d": 6,
+  "commit_7d": 5,
+  "commit_90d": 9,
   "rel_ver": "openbb-v5.0.0",
   "rel_pub": "2026-09-30",
-  "rel_days": 16,
+  "rel_days": 23,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -16,22 +16,22 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "feast-dev/feast": {
-  "commit_90d": 222,
-  "commit_7d": 16,
+  "commit_90d": 210,
+  "commit_7d": 5,
   "rel_ver": "v0.67.0",
   "rel_pub": "2026-10-13",
-  "rel_days": 3,
-  "rel_n90": 3,
+  "rel_days": 10,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 1,
@@ -48,10 +48,10 @@
    "Java": 2,
    "JavaScript": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2624,6 +2624,46 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "kpshinnik/docs_masked": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 98,
+   "Shell": 2
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "aisa-group/decomposing-eval-awareness": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 86,
+   "Shell": 14
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

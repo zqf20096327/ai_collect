@@ -1,10 +1,10 @@
 {
  "weaviate/weaviate": {
-  "commit_7d": 101,
-  "commit_90d": 3572,
-  "rel_ver": "v1.40.1",
-  "rel_pub": "2026-10-13",
-  "rel_days": 3,
+  "commit_7d": 2,
+  "commit_90d": 3322,
+  "rel_ver": "v1.40.2",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -22,10 +22,10 @@
    "Shell": 0,
    "C": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -92,11 +92,11 @@
   }
  },
  "PriorLabs/TabPFN": {
-  "commit_7d": 10,
-  "commit_90d": 143,
+  "commit_7d": 4,
+  "commit_90d": 137,
   "rel_ver": "v9.2.0",
   "rel_pub": "2026-10-12",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
@@ -108,10 +108,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -119,7 +119,7 @@
  },
  "h2oai/h2o-3": {
   "commit_7d": 0,
-  "commit_90d": 54,
+  "commit_90d": 49,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -134,21 +134,21 @@
    "Python": 11,
    "R": 6
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "traceloop/openllmetry": {
-  "commit_7d": 5,
-  "commit_90d": 22,
+  "commit_7d": 1,
+  "commit_90d": 23,
   "rel_ver": "0.62.4",
   "rel_pub": "2026-09-29",
-  "rel_days": 17,
+  "rel_days": 24,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -161,22 +161,22 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "mizorewww/laya-mlx": {
-  "commit_7d": 5,
-  "commit_90d": 12,
-  "rel_ver": "v0.4.0",
-  "rel_pub": "2026-10-10",
-  "rel_days": 6,
-  "rel_n90": 2,
+  "commit_7d": 8,
+  "commit_90d": 20,
+  "rel_ver": "v0.5.0",
+  "rel_pub": "2026-10-20",
+  "rel_days": 3,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -187,10 +187,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -241,10 +241,10 @@
    "Shell": 4,
    "JavaScript": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -3075,6 +3075,29 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "cernodatainc/cernodata": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 64,
+   "JavaScript": 25,
+   "CSS": 5,
+   "HTML": 5,
+   "PowerShell": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

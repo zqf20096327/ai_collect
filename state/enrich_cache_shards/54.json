@@ -26,11 +26,11 @@
   }
  },
  "xming521/WeClone": {
-  "commit_7d": 0,
-  "commit_90d": 53,
+  "commit_7d": 9,
+  "commit_90d": 64,
   "rel_ver": "v0.3.03",
   "rel_pub": "2026-01-04",
-  "rel_days": 285,
+  "rel_days": 292,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -45,10 +45,10 @@
    "CSS": 4,
    "HTML": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -81,8 +81,8 @@
   }
  },
  "trailhq/Trail-Code": {
-  "commit_7d": 14,
-  "commit_90d": 473,
+  "commit_7d": 35,
+  "commit_90d": 340,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -97,10 +97,10 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -167,11 +167,11 @@
   }
  },
  "Osmantic/ODS": {
-  "commit_90d": 4368,
-  "commit_7d": 186,
+  "commit_90d": 4397,
+  "commit_7d": 424,
   "rel_ver": "v3.0.0",
   "rel_pub": "2026-09-24",
-  "rel_days": 22,
+  "rel_days": 29,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -193,10 +193,10 @@
    "PowerShell": 5,
    "CSS": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -3228,6 +3228,53 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "augix/SNPBag": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 100,
+   "Python": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "ChronoAIProject/Ornn": {
+  "rel_ver": "v0.18.0",
+  "rel_pub": "2026-09-17",
+  "rel_days": 36,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "TypeScript": 98,
+   "Python": 1,
+   "CSS": 1,
+   "Dockerfile": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

@@ -49,7 +49,7 @@
   }
  },
  "skyzh/tiny-llm": {
-  "commit_90d": 121,
+  "commit_90d": 104,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -65,10 +65,10 @@
    "CMake": 0,
    "Handlebars": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2662,7 +2662,7 @@
  "achref-soua/helio": {
   "rel_ver": "v2.3.1",
   "rel_pub": "2026-06-29",
-  "rel_days": 115,
+  "rel_days": 116,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -2670,6 +2670,20 @@
   "sec_worst": null,
   "sec_last": null,
   "sec_ids": [],
-  "contrib_n": 1
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 82,
+   "Python": 9,
+   "MDX": 6,
+   "Shell": 2,
+   "PowerShell": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

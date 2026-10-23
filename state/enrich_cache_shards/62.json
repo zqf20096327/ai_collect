@@ -1,9 +1,9 @@
 {
  "onyx-dot-app/onyx": {
-  "commit_7d": 217,
-  "commit_90d": 1720,
-  "rel_ver": "helm/onyx-0.9.16",
-  "rel_pub": "2026-10-16",
+  "commit_7d": 248,
+  "commit_90d": 1812,
+  "rel_ver": "helm/onyx-0.9.23",
+  "rel_pub": "2026-10-23",
   "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
@@ -26,21 +26,21 @@
    "HCL": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "tbphp/gpt-load": {
-  "commit_7d": 28,
-  "commit_90d": 914,
-  "rel_ver": "v2.0.0-rc.51",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
+  "commit_7d": 10,
+  "commit_90d": 884,
+  "rel_ver": "v1.4.13",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -60,10 +60,10 @@
    "Python": 0,
    "CSS": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2183,5 +2183,41 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "mybigday/llama.node": {
+  "rel_ver": "v1.8.0-rc.10",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
+  "rel_n90": 10,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "C++": 39,
+   "TypeScript": 23,
+   "JavaScript": 15,
+   "C": 13,
+   "CMake": 3
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "hardenbr-personal/JobScoutPublic": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1
  }
 }

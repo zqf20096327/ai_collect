@@ -1,7 +1,7 @@
 {
  "ahmedkhaleel2004/gitdiagram": {
-  "commit_7d": 2,
-  "commit_90d": 449,
+  "commit_7d": 15,
+  "commit_90d": 444,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -16,10 +16,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -30,7 +30,7 @@
   "commit_90d": 13,
   "rel_ver": "wasp-v0.26-template",
   "rel_pub": "2026-10-15",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -46,21 +46,21 @@
    "JavaScript": 2,
    "CSS": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "aipoch/open-science": {
-  "commit_90d": 2895,
-  "commit_7d": 187,
-  "rel_ver": "v1.0.0",
-  "rel_pub": "2026-10-14",
-  "rel_days": 2,
+  "commit_90d": 2871,
+  "commit_7d": 140,
+  "rel_ver": "v1.0.2",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -76,21 +76,21 @@
    "CSS": 0,
    "R": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "LazyAGI/LazyLLM": {
-  "commit_90d": 72,
-  "commit_7d": 5,
+  "commit_90d": 69,
+  "commit_7d": 6,
   "rel_ver": "v1.4.0",
   "rel_pub": "2026-10-13",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
@@ -106,18 +106,18 @@
    "CMake": 0,
    "TeX": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "morphik-org/morphik-core": {
-  "commit_90d": 14,
-  "commit_7d": 5,
+  "commit_90d": 17,
+  "commit_7d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -132,10 +132,10 @@
    "PowerShell": 1,
    "Rust": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2634,5 +2634,6 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
- }
+ },
+ "ShaerWare/ai-development-partner": {}
 }

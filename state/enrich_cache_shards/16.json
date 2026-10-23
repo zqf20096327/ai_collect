@@ -1,11 +1,11 @@
 {
  "NVIDIA/Megatron-LM": {
-  "commit_7d": 81,
-  "commit_90d": 911,
+  "commit_7d": 80,
+  "commit_90d": 932,
   "rel_ver": "26.09-lambda.rc1",
   "rel_pub": "2026-10-13",
-  "rel_days": 3,
-  "rel_n90": 8,
+  "rel_days": 10,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -20,21 +20,21 @@
    "C++": 0,
    "Cuda": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "leon-ai/leon": {
-  "commit_7d": 15,
-  "commit_90d": 497,
+  "commit_7d": 65,
+  "commit_90d": 560,
   "rel_ver": "tcp-server_v2.0.0",
   "rel_pub": "2026-02-19",
-  "rel_days": 239,
+  "rel_days": 246,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -50,10 +50,10 @@
    "Sass": 2,
    "SCSS": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

@@ -1,10 +1,10 @@
 {
  "ultralytics/yolov5": {
-  "commit_7d": 0,
-  "commit_90d": 39,
+  "commit_7d": 5,
+  "commit_90d": 40,
   "rel_ver": "v7.0",
   "rel_pub": "2022-11-22",
-  "rel_days": 1424,
+  "rel_days": 1431,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -18,22 +18,22 @@
    "Shell": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "zhayujie/CowAgent": {
-  "commit_7d": 332,
-  "commit_90d": 1931,
+  "commit_7d": 173,
+  "commit_90d": 1991,
   "rel_ver": "2.2.1",
   "rel_pub": "2026-10-14",
-  "rel_days": 2,
-  "rel_n90": 8,
+  "rel_days": 9,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 1,
@@ -50,21 +50,21 @@
    "HTML": 2,
    "CSS": 2
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "openclaw/Peekaboo": {
-  "commit_90d": 838,
-  "commit_7d": 61,
-  "rel_ver": "v4.9.4",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
+  "commit_90d": 839,
+  "commit_7d": 37,
+  "rel_ver": "v4.9.6",
+  "rel_pub": "2026-10-20",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -80,22 +80,22 @@
    "Python": 0,
    "C": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "dathere/qsv": {
-  "commit_90d": 743,
-  "commit_7d": 79,
-  "rel_ver": "25.0.0",
-  "rel_pub": "2026-10-14",
-  "rel_days": 2,
-  "rel_n90": 4,
+  "commit_90d": 778,
+  "commit_7d": 94,
+  "rel_ver": "26.0.0",
+  "rel_pub": "2026-10-19",
+  "rel_days": 4,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -110,10 +110,10 @@
    "JavaScript": 4,
    "PowerShell": 4
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2890,6 +2890,31 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "qdrant/qcloud-cli": {
+  "rel_ver": "v0.32.0",
+  "rel_pub": "2026-10-14",
+  "rel_days": 9,
+  "rel_n90": 10,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 13,
+  "lang": {
+   "Go": 100,
+   "Shell": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

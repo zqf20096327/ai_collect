@@ -22,11 +22,11 @@
   }
  },
  "dotnet/machinelearning": {
-  "commit_7d": 23,
-  "commit_90d": 56,
+  "commit_7d": 13,
+  "commit_90d": 65,
   "rel_ver": "v5.0.1",
   "rel_pub": "2026-10-15",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -42,21 +42,21 @@
    "PowerShell": 1,
    "CMake": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "tensorflow/tensorboard": {
-  "commit_90d": 7,
-  "commit_7d": 0,
+  "commit_90d": 9,
+  "commit_7d": 2,
   "rel_ver": "2.21.0",
   "rel_pub": "2026-06-29",
-  "rel_days": 109,
+  "rel_days": 116,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -72,10 +72,10 @@
    "Rust": 3,
    "HTML": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -105,11 +105,11 @@
   }
  },
  "mistralai/mistral-vibe": {
-  "commit_90d": 23,
-  "commit_7d": 0,
-  "rel_ver": "v2.26.1",
-  "rel_pub": "2026-10-09",
-  "rel_days": 7,
+  "commit_90d": 27,
+  "commit_7d": 5,
+  "rel_ver": "v3.0.2",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -125,10 +125,10 @@
    "Nix": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2811,6 +2811,33 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "introlab/t-top": {
+  "rel_ver": "DNN_Weights_v4.1.0",
+  "rel_pub": "2024-05-13",
+  "rel_days": 893,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Python": 46,
+   "C++": 44,
+   "JavaScript": 5,
+   "CMake": 3,
+   "Shell": 2
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

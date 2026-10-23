@@ -4,7 +4,7 @@
   "commit_90d": 0,
   "rel_ver": "v0.15.1",
   "rel_pub": "2025-02-05",
-  "rel_days": 618,
+  "rel_days": 625,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -17,21 +17,21 @@
    "Python": 100,
    "HTML": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "OpenCoworkAI/open-codesign": {
-  "commit_90d": 94,
-  "commit_7d": 7,
+  "commit_90d": 117,
+  "commit_7d": 23,
   "rel_ver": "v0.2.2",
   "rel_pub": "2026-09-19",
-  "rel_days": 27,
+  "rel_days": 34,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -47,22 +47,22 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "embabel/embabel-agent": {
-  "commit_90d": 171,
-  "commit_7d": 10,
+  "commit_90d": 175,
+  "commit_7d": 18,
   "rel_ver": "v1.5.3",
   "rel_pub": "2026-10-05",
-  "rel_days": 11,
-  "rel_n90": 5,
+  "rel_days": 18,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -77,10 +77,10 @@
    "HTML": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -103,10 +103,10 @@
    "JavaScript": 0,
    "Kotlin": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

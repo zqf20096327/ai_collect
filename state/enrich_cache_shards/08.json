@@ -4,7 +4,7 @@
   "commit_90d": 195,
   "rel_ver": "v6.2",
   "rel_pub": "2026-09-30",
-  "rel_days": 16,
+  "rel_days": 23,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -18,10 +18,10 @@
    "Shell": 1,
    "Objective-C": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -84,11 +84,11 @@
   }
  },
  "rcourtman/Pulse": {
-  "commit_7d": 971,
-  "commit_90d": 6535,
-  "rel_ver": "v6.6.0-rc.2",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
+  "commit_7d": 242,
+  "commit_90d": 6936,
+  "rel_ver": "v6.6.0-rc.5",
+  "rel_pub": "2026-10-20",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -112,10 +112,10 @@
    "JavaScript": 2,
    "Shell": 2
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -3150,6 +3150,44 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "Dedeep007/browse_code": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 63,
+   "Python": 32,
+   "HTML": 5
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "allanta8/slop-check": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {},
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

@@ -1,12 +1,12 @@
 {
  "pydantic/pydantic-ai": {
-  "commit_7d": 218,
-  "commit_90d": 1750,
-  "rel_ver": "v2.57.0",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
+  "commit_7d": 440,
+  "commit_90d": 2003,
+  "rel_ver": "clai2-bleeding",
+  "rel_pub": "2026-10-06",
+  "rel_days": 17,
   "rel_n90": 12,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 16,
   "sec_worst": "high",
@@ -29,21 +29,21 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "BlockRunAI/ClawRouter": {
-  "commit_7d": 25,
-  "commit_90d": 205,
-  "rel_ver": "v0.12.288",
-  "rel_pub": "2026-10-13",
-  "rel_days": 3,
+  "commit_7d": 43,
+  "commit_90d": 245,
+  "rel_ver": "v0.12.298",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -59,10 +59,10 @@
    "CSS": 2,
    "PowerShell": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -70,10 +70,10 @@
  },
  "NVIDIA/nccl": {
   "commit_7d": 0,
-  "commit_90d": 406,
+  "commit_90d": 372,
   "rel_ver": "v2.32.3-1",
   "rel_pub": "2026-09-17",
-  "rel_days": 29,
+  "rel_days": 36,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -89,10 +89,10 @@
    "Python": 9,
    "Cython": 3
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

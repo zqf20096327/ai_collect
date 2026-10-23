@@ -1,10 +1,10 @@
 {
  "qax-os/excelize": {
-  "commit_7d": 2,
-  "commit_90d": 53,
+  "commit_7d": 3,
+  "commit_90d": 55,
   "rel_ver": "v2.11.0",
   "rel_pub": "2026-07-06",
-  "rel_days": 102,
+  "rel_days": 109,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -25,10 +25,10 @@
   "lang": {
    "Go": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

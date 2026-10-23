@@ -1,10 +1,10 @@
 {
  "bytedance/deer-flow": {
-  "commit_7d": 207,
-  "commit_90d": 1512,
+  "commit_7d": 190,
+  "commit_90d": 1591,
   "rel_ver": "v2.1.0",
   "rel_pub": "2026-09-24",
-  "rel_days": 22,
+  "rel_days": 29,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -20,22 +20,22 @@
    "Shell": 0,
    "HTML": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "serengil/deepface": {
-  "commit_7d": 1,
-  "commit_90d": 45,
-  "rel_ver": "v0.0.102",
-  "rel_pub": "2026-10-09",
-  "rel_days": 7,
-  "rel_n90": 2,
+  "commit_7d": 6,
+  "commit_90d": 51,
+  "rel_ver": "v0.0.103",
+  "rel_pub": "2026-10-20",
+  "rel_days": 3,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -49,22 +49,22 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "alibaba/MNN": {
-  "commit_7d": 23,
-  "commit_90d": 211,
+  "commit_7d": 15,
+  "commit_90d": 209,
   "rel_ver": "3.6.1",
   "rel_pub": "2026-07-23",
-  "rel_days": 85,
-  "rel_n90": 1,
+  "rel_days": 92,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -79,21 +79,21 @@
    "Kotlin": 2,
    "Assembly": 2
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "paradedb/paradedb": {
-  "commit_7d": 41,
-  "commit_90d": 559,
-  "rel_ver": "v0.26.2",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
+  "commit_7d": 42,
+  "commit_90d": 561,
+  "rel_ver": "v0.26.3",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -109,21 +109,21 @@
    "Nix": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "google-deepmind/open_spiel": {
-  "commit_7d": 0,
-  "commit_90d": 45,
+  "commit_7d": 19,
+  "commit_90d": 63,
   "rel_ver": "v2.0.2",
   "rel_pub": "2026-08-12",
-  "rel_days": 65,
+  "rel_days": 72,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -139,10 +139,10 @@
    "CMake": 1,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -173,11 +173,11 @@
   }
  },
  "bytebase/dbhub": {
-  "commit_7d": 3,
-  "commit_90d": 105,
+  "commit_7d": 1,
+  "commit_90d": 95,
   "rel_ver": "v1.5.0",
   "rel_pub": "2026-10-09",
-  "rel_days": 7,
+  "rel_days": 14,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -197,10 +197,10 @@
    "Dockerfile": 0,
    "HTML": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2915,6 +2915,27 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "ansari-project/ansari-skill": {
+  "rel_ver": "v3.4.1",
+  "rel_pub": "2026-08-31",
+  "rel_days": 53,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

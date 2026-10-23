@@ -1,11 +1,11 @@
 {
  "agentscope-ai/agentscope": {
-  "commit_7d": 30,
-  "commit_90d": 339,
+  "commit_7d": 33,
+  "commit_90d": 357,
   "rel_ver": "v2.0.10",
   "rel_pub": "2026-10-12",
-  "rel_days": 4,
-  "rel_n90": 7,
+  "rel_days": 11,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -18,22 +18,22 @@
    "Dockerfile": 0,
    "Mako": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "nltk/nltk": {
-  "commit_7d": 148,
-  "commit_90d": 1240,
-  "rel_ver": "v3.10.3-rc1",
-  "rel_pub": "2026-08-12",
-  "rel_days": 65,
-  "rel_n90": 7,
+  "commit_7d": 78,
+  "commit_90d": 1312,
+  "rel_ver": "v3.10.4",
+  "rel_pub": "2026-10-21",
+  "rel_days": 2,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 30,
@@ -57,10 +57,10 @@
    "Makefile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

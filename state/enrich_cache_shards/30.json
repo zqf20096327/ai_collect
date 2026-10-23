@@ -1,10 +1,10 @@
 {
  "iOfficeAI/AionUi": {
   "commit_7d": 1,
-  "commit_90d": 233,
+  "commit_90d": 193,
   "rel_ver": "v2.2.2",
   "rel_pub": "2026-09-09",
-  "rel_days": 37,
+  "rel_days": 44,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -20,21 +20,21 @@
    "NSIS": 1,
    "Shell": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "topoteretes/cognee": {
-  "commit_7d": 174,
-  "commit_90d": 2669,
+  "commit_7d": 25,
+  "commit_90d": 2520,
   "rel_ver": "v1.6.5.dev0",
   "rel_pub": "2026-10-16",
-  "rel_days": 0,
+  "rel_days": 7,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -52,22 +52,22 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "Narcooo/inkos": {
-  "commit_7d": 0,
-  "commit_90d": 146,
+  "commit_7d": 5,
+  "commit_90d": 148,
   "rel_ver": "v1.8.0",
   "rel_pub": "2026-08-17",
-  "rel_days": 60,
-  "rel_n90": 3,
+  "rel_days": 67,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -81,10 +81,10 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -121,7 +121,7 @@
   "commit_7d": 1,
   "rel_ver": "v3.0.4",
   "rel_pub": "2026-01-24",
-  "rel_days": 265,
+  "rel_days": 272,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -139,21 +139,21 @@
    "PowerShell": 1,
    "CSS": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "zenml-io/zenml": {
-  "commit_90d": 148,
-  "commit_7d": 7,
+  "commit_90d": 138,
+  "commit_7d": 0,
   "rel_ver": "0.98.0",
   "rel_pub": "2026-10-14",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -169,10 +169,10 @@
    "Go Template": 0,
    "CSS": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -238,8 +238,8 @@
   }
  },
  "M-3LAB/awesome-industrial-anomaly-detection": {
-  "commit_90d": 8,
-  "commit_7d": 0,
+  "commit_90d": 9,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -248,10 +248,10 @@
   "sec_ids": [],
   "contrib_n": 28,
   "lang": {},
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

@@ -1,10 +1,10 @@
 {
  "siyuan-note/siyuan": {
-  "commit_7d": 1,
-  "commit_90d": 4013,
-  "rel_ver": "v3.8.8-alpha.3",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
+  "commit_7d": 240,
+  "commit_90d": 4910,
+  "rel_ver": "v3.8.9-alpha.4",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -29,21 +29,21 @@
    "SCSS": 1,
    "C++": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "rocketride-org/rocketride-server": {
-  "commit_7d": 16,
-  "commit_90d": 366,
-  "rel_ver": "vscode-v1.4.0-prerelease",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
+  "commit_7d": 18,
+  "commit_90d": 368,
+  "rel_ver": "vscode-v1.5.0-prerelease",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -59,10 +59,10 @@
    "JavaScript": 3,
    "C": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

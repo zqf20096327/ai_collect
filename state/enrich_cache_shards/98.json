@@ -1,12 +1,12 @@
 {
  "ComposioHQ/composio": {
-  "commit_7d": 160,
-  "commit_90d": 1349,
-  "rel_ver": "@composio/cli@0.4.6-beta.457",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
+  "commit_7d": 169,
+  "commit_90d": 1409,
+  "rel_ver": "@composio/slim@0.27.0",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
   "rel_n90": 12,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -20,21 +20,21 @@
    "JavaScript": 1,
    "Tape": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "chroma-core/chroma": {
-  "commit_7d": 2,
-  "commit_90d": 114,
+  "commit_7d": 4,
+  "commit_90d": 98,
   "rel_ver": "latest",
   "rel_pub": "2025-04-01",
-  "rel_days": 563,
+  "rel_days": 570,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -50,21 +50,21 @@
    "Go": 5,
    "Jupyter Notebook": 2
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "shap/shap": {
-  "commit_7d": 14,
-  "commit_90d": 86,
+  "commit_7d": 15,
+  "commit_90d": 94,
   "rel_ver": "v0.54.1",
   "rel_pub": "2026-10-16",
-  "rel_days": 0,
+  "rel_days": 7,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -80,18 +80,18 @@
    "JavaScript": 0,
    "Cuda": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "NirDiamant/GenAI_Agents": {
-  "commit_7d": 0,
-  "commit_90d": 22,
+  "commit_7d": 5,
+  "commit_90d": 25,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -105,10 +105,10 @@
    "HTML": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -142,8 +142,8 @@
   }
  },
  "civitai/civitai": {
-  "commit_90d": 4763,
-  "commit_7d": 649,
+  "commit_90d": 5193,
+  "commit_7d": 769,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -158,10 +158,10 @@
    "PLpgSQL": 1,
    "Shell": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -182,10 +182,10 @@
    "JavaScript": 22,
    "Smarty": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -220,12 +220,12 @@
   }
  },
  "IAHispano/Applio": {
-  "commit_90d": 158,
-  "commit_7d": 49,
-  "rel_ver": "3.6.6",
-  "rel_pub": "2026-10-12",
-  "rel_days": 4,
-  "rel_n90": 3,
+  "commit_90d": 129,
+  "commit_7d": 14,
+  "rel_ver": "3.7.0",
+  "rel_pub": "2026-10-16",
+  "rel_days": 7,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -240,10 +240,10 @@
    "CSS": 2,
    "Batchfile": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2742,6 +2742,29 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "kuluruvineeth/codecapsule": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 93,
+   "CSS": 5,
+   "Dockerfile": 2,
+   "Shell": 1,
+   "Python": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

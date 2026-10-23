@@ -1,10 +1,10 @@
 {
  "tensorflow/tensorflow": {
-  "commit_7d": 663,
-  "commit_90d": 4682,
+  "commit_7d": 519,
+  "commit_90d": 4960,
   "rel_ver": "v2.22.0-rc0",
   "rel_pub": "2026-09-24",
-  "rel_days": 22,
+  "rel_days": 29,
   "rel_n90": 1,
   "rel_pre": true,
   "rel_none": false,
@@ -29,20 +29,20 @@
    "Starlark": 4,
    "HTML": 4
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "Arize-ai/phoenix": {
-  "commit_7d": 62,
-  "commit_90d": 1143,
-  "rel_ver": "arize-phoenix-v20.23.0",
-  "rel_pub": "2026-10-16",
+  "commit_7d": 55,
+  "commit_90d": 1075,
+  "rel_ver": "arize-phoenix-v20.25.0",
+  "rel_pub": "2026-10-23",
   "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
@@ -59,10 +59,10 @@
    "C": 1,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -94,10 +94,10 @@
  },
  "Project-MONAI/MONAI": {
   "commit_7d": 11,
-  "commit_90d": 95,
+  "commit_90d": 101,
   "rel_ver": "1.6.1",
   "rel_pub": "2026-09-27",
-  "rel_days": 19,
+  "rel_days": 26,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -122,21 +122,21 @@
    "Shell": 0,
    "C": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "HelixDB/helix-db": {
-  "commit_7d": 46,
-  "commit_90d": 1492,
+  "commit_7d": 15,
+  "commit_90d": 1507,
   "rel_ver": "v3.5.1",
   "rel_pub": "2026-10-08",
-  "rel_days": 8,
+  "rel_days": 15,
   "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
@@ -152,10 +152,10 @@
    "Go": 1,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2718,6 +2718,54 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "yhanottv/agenthub": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 87,
+   "CSS": 12,
+   "HTML": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "dante-compass/dante-engine": {
+  "rel_ver": "v4.1.1.1",
+  "rel_pub": "2026-09-25",
+  "rel_days": 28,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Java": 99,
+   "HTML": 1,
+   "CSS": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

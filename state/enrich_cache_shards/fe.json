@@ -2786,5 +2786,32 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "scitex-ai/emacs-claude-code": {
+  "rel_ver": "v3.4.1",
+  "rel_pub": "2026-04-27",
+  "rel_days": 179,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Emacs Lisp": 48,
+   "Shell": 28,
+   "Python": 19,
+   "Jupyter Notebook": 4,
+   "Makefile": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

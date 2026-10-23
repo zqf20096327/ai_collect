@@ -1,11 +1,11 @@
 {
  "FluxML/Flux.jl": {
-  "commit_7d": 7,
-  "commit_90d": 45,
-  "rel_ver": "v0.16.12",
-  "rel_pub": "2026-09-14",
-  "rel_days": 32,
-  "rel_n90": 2,
+  "commit_7d": 22,
+  "commit_90d": 62,
+  "rel_ver": "v0.16.13",
+  "rel_pub": "2026-10-19",
+  "rel_days": 4,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -16,10 +16,10 @@
   "lang": {
    "Julia": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -38,10 +38,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2364,6 +2364,52 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "LiuXinchen1997/PCVisAPP": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "CSS": 23,
+   "HTML": 23,
+   "Python": 21,
+   "C++": 14,
+   "JavaScript": 9
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "perminder-klair/ruuh": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 67,
+   "Shell": 16,
+   "Python": 13,
+   "CSS": 3,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

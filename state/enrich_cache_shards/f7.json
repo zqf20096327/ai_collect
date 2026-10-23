@@ -37,11 +37,11 @@
   }
  },
  "comet-ml/opik": {
-  "commit_7d": 95,
-  "commit_90d": 1115,
-  "rel_ver": "2.2.103",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
+  "commit_7d": 161,
+  "commit_90d": 1176,
+  "rel_ver": "2.2.117",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -59,10 +59,10 @@
    "Jupyter Notebook": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -113,10 +113,10 @@
   }
  },
  "BoundaryML/baml": {
-  "commit_7d": 25,
-  "commit_90d": 659,
-  "rel_ver": "baml-language-0.22.3-nightly.20261014.a",
-  "rel_pub": "2026-10-15",
+  "commit_7d": 44,
+  "commit_90d": 614,
+  "rel_ver": "baml-language-0.22.3-nightly.20261021.a",
+  "rel_pub": "2026-10-22",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -133,10 +133,10 @@
    "C#": 3,
    "Python": 3
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -201,11 +201,11 @@
   }
  },
  "KimYx0207/AI-Coding-Guide-Zh": {
-  "commit_90d": 37,
+  "commit_90d": 39,
   "commit_7d": 2,
   "rel_ver": "v5.5",
   "rel_pub": "2026-10-03",
-  "rel_days": 13,
+  "rel_days": 20,
   "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
@@ -217,22 +217,22 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "google-deepmind/dm_control": {
-  "commit_90d": 13,
-  "commit_7d": 1,
-  "rel_ver": "1.0.49",
-  "rel_pub": "2026-10-14",
-  "rel_days": 2,
-  "rel_n90": 6,
+  "commit_90d": 14,
+  "commit_7d": 3,
+  "rel_ver": "1.0.50",
+  "rel_pub": "2026-10-23",
+  "rel_days": 0,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -246,10 +246,10 @@
    "Shell": 0,
    "Linker Script": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -308,10 +308,10 @@
   }
  },
  "kubernetes-sigs/agent-sandbox": {
-  "commit_90d": 465,
-  "commit_7d": 44,
-  "rel_ver": "v1.0.7",
-  "rel_pub": "2026-10-15",
+  "commit_90d": 458,
+  "commit_7d": 46,
+  "rel_ver": "v1.0.8",
+  "rel_pub": "2026-10-22",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -328,10 +328,10 @@
    "HTML": 2,
    "Shell": 2
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

@@ -1,11 +1,11 @@
 {
  "D4Vinci/Scrapling": {
-  "commit_7d": 4,
-  "commit_90d": 102,
-  "rel_ver": "v0.4.15",
-  "rel_pub": "2026-08-23",
-  "rel_days": 54,
-  "rel_n90": 4,
+  "commit_7d": 25,
+  "commit_90d": 239,
+  "rel_ver": "v0.5",
+  "rel_pub": "2026-10-17",
+  "rel_days": 6,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -17,10 +17,10 @@
    "Python": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -53,12 +53,12 @@
   }
  },
  "Tencent/ncnn": {
-  "commit_7d": 10,
-  "commit_90d": 94,
-  "rel_ver": "20260526",
-  "rel_pub": "2026-05-26",
-  "rel_days": 143,
-  "rel_n90": 0,
+  "commit_7d": 19,
+  "commit_90d": 111,
+  "rel_ver": "20261020",
+  "rel_pub": "2026-10-20",
+  "rel_days": 3,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 2,
@@ -76,21 +76,21 @@
    "Python": 4,
    "CMake": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "yizhiyanhua-ai/fireworks-tech-graph": {
-  "commit_7d": 0,
-  "commit_90d": 4,
+  "commit_7d": 1,
+  "commit_90d": 5,
   "rel_ver": "v1.2.0",
   "rel_pub": "2026-07-17",
-  "rel_days": 91,
+  "rel_days": 98,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -105,21 +105,21 @@
    "HTML": 4,
    "Shell": 2
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "crynta/terax-ai": {
-  "commit_7d": 35,
-  "commit_90d": 248,
+  "commit_7d": 11,
+  "commit_90d": 234,
   "rel_ver": "v0.9.0",
   "rel_pub": "2026-10-16",
-  "rel_days": 0,
+  "rel_days": 7,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -135,22 +135,22 @@
    "Zig": 2,
    "JavaScript": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "google/adk-go": {
-  "commit_7d": 33,
-  "commit_90d": 294,
+  "commit_7d": 25,
+  "commit_90d": 311,
   "rel_ver": "v1.9.0",
   "rel_pub": "2026-10-15",
-  "rel_days": 1,
-  "rel_n90": 12,
+  "rel_days": 8,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -165,10 +165,10 @@
    "JavaScript": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -205,11 +205,11 @@
   }
  },
  "pytorch/rl": {
-  "commit_7d": 13,
-  "commit_90d": 339,
+  "commit_7d": 6,
+  "commit_90d": 345,
   "rel_ver": "v0.14.1",
   "rel_pub": "2026-10-10",
-  "rel_days": 6,
+  "rel_days": 13,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -225,10 +225,10 @@
    "Cuda": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

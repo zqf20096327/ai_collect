@@ -1,11 +1,11 @@
 {
  "rohitg00/agentmemory": {
-  "commit_7d": 31,
-  "commit_90d": 112,
+  "commit_7d": 22,
+  "commit_90d": 124,
   "rel_ver": "v0.9.30",
   "rel_pub": "2026-10-06",
-  "rel_days": 10,
-  "rel_n90": 3,
+  "rel_days": 17,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -20,21 +20,21 @@
    "Python": 2,
    "CSS": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "microsoft/agent-lightning": {
-  "commit_7d": 0,
-  "commit_90d": 55,
+  "commit_7d": 2,
+  "commit_90d": 57,
   "rel_ver": "v1.0.2",
   "rel_pub": "2026-09-29",
-  "rel_days": 17,
+  "rel_days": 24,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -47,10 +47,10 @@
    "Python": 99,
    "Shell": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -85,10 +85,10 @@
  },
  "deepseek-ai/DeepEP": {
   "commit_7d": 1,
-  "commit_90d": 6,
+  "commit_90d": 7,
   "rel_ver": "v1.2.1",
   "rel_pub": "2025-09-16",
-  "rel_days": 395,
+  "rel_days": 402,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -104,22 +104,22 @@
    "CMake": 0,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "xorbitsai/inference": {
-  "commit_7d": 47,
-  "commit_90d": 418,
+  "commit_7d": 106,
+  "commit_90d": 481,
   "rel_ver": "v4.0.1",
   "rel_pub": "2026-10-16",
-  "rel_days": 0,
-  "rel_n90": 9,
+  "rel_days": 7,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 3,
@@ -138,10 +138,10 @@
    "Dockerfile": 0,
    "CSS": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2546,6 +2546,25 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "lil-lab/knotgym": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

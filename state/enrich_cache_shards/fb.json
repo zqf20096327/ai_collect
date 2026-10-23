@@ -4,7 +4,7 @@
   "commit_90d": 0,
   "rel_ver": "v3.3.2",
   "rel_pub": "2026-04-28",
-  "rel_days": 171,
+  "rel_days": 178,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -20,10 +20,10 @@
    "CSS": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

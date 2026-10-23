@@ -1,10 +1,10 @@
 {
  "upstash/context7": {
-  "commit_7d": 22,
-  "commit_90d": 156,
-  "rel_ver": "ctx7@0.8.0",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
+  "commit_7d": 40,
+  "commit_90d": 185,
+  "rel_ver": "mcpb-v4.4.4",
+  "rel_pub": "2026-10-19",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -18,21 +18,21 @@
    "JavaScript": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "crewAIInc/crewAI": {
-  "commit_7d": 36,
-  "commit_90d": 327,
+  "commit_7d": 35,
+  "commit_90d": 349,
   "rel_ver": "1.15.28",
   "rel_pub": "2026-10-14",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -48,10 +48,10 @@
    "Jinja": 0,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -112,10 +112,10 @@
  },
  "jev-chat/jev-chat-jarvis": {
   "commit_90d": 142,
-  "commit_7d": 2,
+  "commit_7d": 1,
   "rel_ver": "global-v0.1.0",
   "rel_pub": "2026-10-06",
-  "rel_days": 10,
+  "rel_days": 17,
   "rel_n90": 2,
   "rel_pre": true,
   "rel_none": false,
@@ -128,10 +128,10 @@
    "Kotlin": 96,
    "Python": 4
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

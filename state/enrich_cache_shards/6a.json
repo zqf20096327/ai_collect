@@ -1,10 +1,10 @@
 {
  "hugohe3/ppt-master": {
-  "commit_7d": 17,
-  "commit_90d": 871,
-  "rel_ver": "v6.7.1",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
+  "commit_7d": 42,
+  "commit_90d": 819,
+  "rel_ver": "v6.7.3",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -22,10 +22,10 @@
    "CSS": 1,
    "HTML": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -62,13 +62,13 @@
   }
  },
  "alibaba/zvec": {
-  "commit_7d": 4,
-  "commit_90d": 129,
-  "rel_ver": "v0.8.0-alpha",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
-  "rel_n90": 3,
-  "rel_pre": true,
+  "commit_7d": 17,
+  "commit_90d": 139,
+  "rel_ver": "v0.8.0",
+  "rel_pub": "2026-10-21",
+  "rel_days": 2,
+  "rel_n90": 5,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -82,10 +82,10 @@
    "C": 3,
    "CMake": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -112,11 +112,11 @@
   }
  },
  "ultralytics/yolov3": {
-  "commit_7d": 0,
+  "commit_7d": 3,
   "commit_90d": 32,
   "rel_ver": "v9.6.0",
   "rel_pub": "2021-11-14",
-  "rel_days": 1797,
+  "rel_days": 1804,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -131,21 +131,21 @@
    "Dockerfile": 1,
    "Shell": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "mengxi-ream/read-frog": {
-  "commit_7d": 16,
-  "commit_90d": 296,
-  "rel_ver": "v1.51.0",
-  "rel_pub": "2026-10-12",
-  "rel_days": 4,
+  "commit_7d": 20,
+  "commit_90d": 286,
+  "rel_ver": "v1.52.1",
+  "rel_pub": "2026-10-21",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -161,20 +161,20 @@
    "Python": 0,
    "HTML": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "vitali87/code-graph-rag": {
-  "commit_90d": 7133,
-  "commit_7d": 605,
-  "rel_ver": "v0.2.0",
-  "rel_pub": "2026-10-15",
+  "commit_90d": 6525,
+  "commit_7d": 160,
+  "rel_ver": "v0.2.19",
+  "rel_pub": "2026-10-22",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -197,21 +197,21 @@
    "Java": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "transformerlab/transformerlab-app": {
-  "commit_90d": 33,
+  "commit_90d": 31,
   "commit_7d": 0,
   "rel_ver": "v0.40.1",
   "rel_pub": "2026-06-19",
-  "rel_days": 119,
+  "rel_days": 126,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -227,10 +227,10 @@
    "JavaScript": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -289,10 +289,10 @@
   }
  },
  "cyberbotics/webots": {
-  "commit_90d": 21,
+  "commit_90d": 22,
   "commit_7d": 2,
-  "rel_ver": "nightly_15_10_2026",
-  "rel_pub": "2026-10-15",
+  "rel_ver": "nightly_22_10_2026",
+  "rel_pub": "2026-10-22",
   "rel_days": 1,
   "rel_n90": 3,
   "rel_pre": true,
@@ -309,23 +309,23 @@
    "Python": 7,
    "Makefile": 4
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "archestra-ai/archestra": {
-  "commit_90d": 1992,
-  "commit_7d": 369,
-  "rel_ver": "platform-v1.4.0-rc.49",
-  "rel_pub": "2026-10-16",
+  "commit_90d": 2181,
+  "commit_7d": 386,
+  "rel_ver": "platform-v1.4.2",
+  "rel_pub": "2026-10-23",
   "rel_days": 0,
   "rel_n90": 12,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 3,
   "sec_worst": null,
@@ -343,10 +343,10 @@
    "JavaScript": 1,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

@@ -30,11 +30,11 @@
   }
  },
  "tensorflow/models": {
-  "commit_7d": 0,
-  "commit_90d": 49,
+  "commit_7d": 3,
+  "commit_90d": 46,
   "rel_ver": "v2.20.0",
   "rel_pub": "2026-02-11",
-  "rel_days": 247,
+  "rel_days": 254,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -50,21 +50,21 @@
    "Shell": 0,
    "Starlark": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "activepieces/activepieces": {
-  "commit_7d": 118,
-  "commit_90d": 1230,
+  "commit_7d": 136,
+  "commit_90d": 1290,
   "rel_ver": "0.92.3",
   "rel_pub": "2026-10-12",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -89,10 +89,10 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -158,7 +158,7 @@
   }
  },
  "e2b-dev/fragments": {
-  "commit_7d": 1,
+  "commit_7d": 0,
   "commit_90d": 10,
   "rel_ver": null,
   "rel_none": true,
@@ -173,23 +173,23 @@
    "JavaScript": 0,
    "Python": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "agentgateway/agentgateway": {
-  "commit_7d": 96,
-  "commit_90d": 846,
-  "rel_ver": "v1.6.0",
-  "rel_pub": "2026-10-02",
-  "rel_days": 14,
+  "commit_7d": 87,
+  "commit_90d": 868,
+  "rel_ver": "v1.7.0-alpha.1",
+  "rel_pub": "2026-10-21",
+  "rel_days": 2,
   "rel_n90": 10,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 5,
   "sec_worst": "high",
@@ -209,21 +209,21 @@
    "CSS": 1,
    "Shell": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "microsoft/SynapseML": {
-  "commit_7d": 18,
-  "commit_90d": 242,
+  "commit_7d": 11,
+  "commit_90d": 253,
   "rel_ver": "v1.1.3",
   "rel_pub": "2026-04-07",
-  "rel_days": 192,
+  "rel_days": 199,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -239,10 +239,10 @@
    "Shell": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -305,11 +305,11 @@
   }
  },
  "laravel/boost": {
-  "commit_7d": 6,
-  "commit_90d": 137,
+  "commit_7d": 1,
+  "commit_90d": 135,
   "rel_ver": "v2.10.3",
   "rel_pub": "2026-10-07",
-  "rel_days": 9,
+  "rel_days": 16,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -324,10 +324,10 @@
    "PHP": 76,
    "Blade": 24
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2372,6 +2372,49 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "sileod/llm-theory-of-mind": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "noir4y/comment-translate.nvim": {
+  "rel_ver": "v1.0.5",
+  "rel_pub": "2026-10-11",
+  "rel_days": 12,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Lua": 99,
+   "Makefile": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

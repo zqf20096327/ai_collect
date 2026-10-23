@@ -1,10 +1,10 @@
 {
  "zylon-ai/private-gpt": {
-  "commit_7d": 8,
-  "commit_90d": 65,
+  "commit_7d": 5,
+  "commit_90d": 64,
   "rel_ver": "v1.0.1",
   "rel_pub": "2026-06-18",
-  "rel_days": 120,
+  "rel_days": 127,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -20,21 +20,21 @@
    "Jinja": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "trycua/cua": {
-  "commit_7d": 300,
-  "commit_90d": 1768,
-  "rel_ver": "cua-sdk-v0.4.4",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
+  "commit_7d": 234,
+  "commit_90d": 1832,
+  "rel_ver": "cua-spaces-v0.13.1",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -50,18 +50,18 @@
    "Swift": 10,
    "Go": 3
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "Fosowl/agenticSeek": {
-  "commit_7d": 17,
-  "commit_90d": 45,
+  "commit_7d": 7,
+  "commit_90d": 52,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -76,21 +76,21 @@
    "Shell": 3,
    "Batchfile": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "NVIDIA/NemoClaw": {
-  "commit_7d": 101,
-  "commit_90d": 2885,
+  "commit_7d": 68,
+  "commit_90d": 2771,
   "rel_ver": "ci-native-podman-e2e-2026-10-01",
   "rel_pub": "2026-10-01",
-  "rel_days": 15,
+  "rel_days": 22,
   "rel_n90": 1,
   "rel_pre": true,
   "rel_none": false,
@@ -106,21 +106,21 @@
    "Dockerfile": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "triggerdotdev/trigger.dev": {
-  "commit_7d": 52,
-  "commit_90d": 758,
-  "rel_ver": "v4.7.4",
-  "rel_pub": "2026-10-14",
-  "rel_days": 2,
+  "commit_7d": 103,
+  "commit_90d": 813,
+  "rel_ver": "v4.7.7",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -145,21 +145,21 @@
    "CSS": 0,
    "ANTLR": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "apache/doris": {
-  "commit_7d": 190,
-  "commit_90d": 1278,
+  "commit_7d": 150,
+  "commit_90d": 1329,
   "rel_ver": "4.1.5-release",
   "rel_pub": "2026-10-15",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -175,10 +175,10 @@
    "Shell": 1,
    "Thrift": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -242,11 +242,11 @@
   }
  },
  "pydantic/logfire": {
-  "commit_7d": 19,
-  "commit_90d": 312,
+  "commit_7d": 47,
+  "commit_90d": 339,
   "rel_ver": "v5.2.0",
   "rel_pub": "2026-10-13",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -260,10 +260,10 @@
    "JavaScript": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -3033,6 +3033,55 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "c4a-ri/dialbb": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 97,
+   "Vue": 1,
+   "JavaScript": 1,
+   "HTML": 0,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "saeedkolivand/claude-usage-streamdeck-plugin": {
+  "rel_ver": "v1.14.0",
+  "rel_pub": "2026-10-04",
+  "rel_days": 19,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "JavaScript": 80,
+   "TypeScript": 17,
+   "HTML": 3,
+   "Python": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

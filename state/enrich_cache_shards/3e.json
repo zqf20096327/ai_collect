@@ -1,7 +1,7 @@
 {
  "anthropics/claude-plugins-official": {
-  "commit_7d": 181,
-  "commit_90d": 2249,
+  "commit_7d": 105,
+  "commit_90d": 2091,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -16,10 +16,10 @@
    "JavaScript": 8,
    "Shell": 3
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -138,11 +138,11 @@
   }
  },
  "satellite-image-deep-learning/techniques": {
-  "commit_7d": 10,
-  "commit_90d": 45,
+  "commit_7d": 8,
+  "commit_90d": 53,
   "rel_ver": "v1.3",
   "rel_pub": "2025-07-05",
-  "rel_days": 468,
+  "rel_days": 475,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -152,21 +152,21 @@
   "sec_ids": [],
   "contrib_n": 29,
   "lang": {},
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "tech-leads-club/agent-skills": {
-  "commit_90d": 127,
-  "commit_7d": 8,
-  "rel_ver": "v1.6.1",
-  "rel_pub": "2026-10-14",
-  "rel_days": 2,
+  "commit_90d": 122,
+  "commit_7d": 4,
+  "rel_ver": "skills-catalog-v0.17.13",
+  "rel_pub": "2026-10-16",
+  "rel_days": 7,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -182,10 +182,10 @@
    "Shell": 2,
    "HTML": 2
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2682,6 +2682,25 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "trustabl/homebrew-tap": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Ruby": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

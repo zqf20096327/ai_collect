@@ -28,11 +28,11 @@
   }
  },
  "osaurus-ai/osaurus": {
-  "commit_7d": 33,
-  "commit_90d": 780,
-  "rel_ver": "0.25.22",
-  "rel_pub": "2026-10-14",
-  "rel_days": 2,
+  "commit_7d": 39,
+  "commit_90d": 749,
+  "rel_ver": "0.25.25",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -48,21 +48,21 @@
    "Python": 0,
    "Go": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "Gentleman-Programming/gentle-ai": {
-  "commit_7d": 55,
-  "commit_90d": 3330,
+  "commit_7d": 201,
+  "commit_90d": 3249,
   "rel_ver": "v4.2.0",
   "rel_pub": "2026-10-15",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -78,10 +78,10 @@
    "JavaScript": 1,
    "TypeScript": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -115,10 +115,10 @@
  },
  "clearml/clearml": {
   "commit_7d": 1,
-  "commit_90d": 47,
+  "commit_90d": 48,
   "rel_ver": "v2.1.12",
   "rel_pub": "2026-08-19",
-  "rel_days": 58,
+  "rel_days": 65,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -130,22 +130,22 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "Countly/countly-server": {
-  "commit_7d": 12,
-  "commit_90d": 816,
+  "commit_7d": 6,
+  "commit_90d": 777,
   "rel_ver": "25.03.55",
   "rel_pub": "2026-10-12",
-  "rel_days": 4,
-  "rel_n90": 10,
+  "rel_days": 11,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 5,
@@ -166,10 +166,10 @@
    "SCSS": 3,
    "Shell": 2
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

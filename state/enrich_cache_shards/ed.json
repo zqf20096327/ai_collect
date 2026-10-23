@@ -159,8 +159,8 @@
   }
  },
  "WeThinkIn/AIGC-Interview-Book": {
-  "commit_7d": 22,
-  "commit_90d": 486,
+  "commit_7d": 7,
+  "commit_90d": 440,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -171,10 +171,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -207,11 +207,11 @@
   }
  },
  "NVIDIA/TransformerEngine": {
-  "commit_7d": 27,
-  "commit_90d": 297,
+  "commit_7d": 16,
+  "commit_90d": 290,
   "rel_ver": "v2.20.2",
   "rel_pub": "2026-10-05",
-  "rel_days": 11,
+  "rel_days": 18,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -227,10 +227,10 @@
    "C": 1,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

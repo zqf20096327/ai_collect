@@ -1,7 +1,7 @@
 {
  "f/prompts.chat": {
-  "commit_7d": 333,
-  "commit_90d": 1656,
+  "commit_7d": 243,
+  "commit_90d": 1751,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -16,21 +16,21 @@
    "JavaScript": 0,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "ggml-org/llama.cpp": {
-  "commit_7d": 162,
-  "commit_90d": 1632,
-  "rel_ver": "b11700",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
+  "commit_7d": 154,
+  "commit_90d": 1708,
+  "rel_ver": "b11829",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -55,10 +55,10 @@
    "Cuda": 5,
    "TypeScript": 4
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -96,10 +96,10 @@
  },
  "coze-dev/coze-loop": {
   "commit_7d": 5,
-  "commit_90d": 68,
+  "commit_90d": 67,
   "rel_ver": "v1.5.1",
   "rel_pub": "2026-01-20",
-  "rel_days": 269,
+  "rel_days": 276,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -115,10 +115,10 @@
    "JavaScript": 0,
    "Less": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -151,8 +151,8 @@
   }
  },
  "Sumanth077/Hands-On-AI-Engineering": {
-  "commit_7d": 4,
-  "commit_90d": 48,
+  "commit_7d": 62,
+  "commit_90d": 107,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -167,10 +167,10 @@
    "JavaScript": 1,
    "HTML": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

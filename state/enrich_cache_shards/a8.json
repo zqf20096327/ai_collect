@@ -23,11 +23,11 @@
   }
  },
  "go-kratos/kratos": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 3,
+  "commit_90d": 3,
   "rel_ver": "v3.0.0",
   "rel_pub": "2026-06-26",
-  "rel_days": 112,
+  "rel_days": 119,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -42,21 +42,21 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "langchain-ai/langchainjs": {
-  "commit_7d": 11,
-  "commit_90d": 194,
-  "rel_ver": "langchain@1.5.18",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
+  "commit_7d": 29,
+  "commit_90d": 217,
+  "rel_ver": "langchain@1.5.19",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -78,10 +78,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -145,12 +145,12 @@
   }
  },
  "haris-musa/excel-mcp-server": {
-  "commit_90d": 113,
-  "commit_7d": 51,
-  "rel_ver": "v2.1.1",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
-  "rel_n90": 7,
+  "commit_90d": 136,
+  "commit_7d": 30,
+  "rel_ver": "v2.2.2",
+  "rel_pub": "2026-10-21",
+  "rel_days": 2,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 16,
@@ -171,10 +171,10 @@
    "Python": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

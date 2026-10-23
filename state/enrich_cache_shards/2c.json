@@ -1,10 +1,10 @@
 {
  "The-Vibe-Company/quivr": {
-  "commit_7d": 63,
+  "commit_7d": 0,
   "commit_90d": 569,
   "rel_ver": "v2.0.0-alpha.7",
   "rel_pub": "2026-10-14",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 7,
   "rel_pre": true,
   "rel_none": false,
@@ -20,10 +20,10 @@
    "MDX": 6,
    "JavaScript": 3
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -56,11 +56,11 @@
   }
  },
  "apache/maka": {
-  "commit_7d": 99,
-  "commit_90d": 2890,
-  "rel_ver": "v0.2.1-dev.88.20261016",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
+  "commit_7d": 73,
+  "commit_90d": 2790,
+  "rel_ver": "v0.2.2-dev.92.20261019",
+  "rel_pub": "2026-10-19",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -76,10 +76,10 @@
    "CSS": 1,
    "Python": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

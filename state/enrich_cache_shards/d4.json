@@ -1,10 +1,10 @@
 {
  "jumpserver/jumpserver": {
-  "commit_7d": 86,
+  "commit_7d": 48,
   "commit_90d": 556,
-  "rel_ver": "v5.1.0",
-  "rel_pub": "2026-10-15",
-  "rel_days": 1,
+  "rel_ver": "v5.1.1",
+  "rel_pub": "2026-10-20",
+  "rel_days": 3,
   "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
@@ -29,10 +29,10 @@
    "Go": 0,
    "Java": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -63,11 +63,11 @@
   }
  },
  "huggingface/sentence-transformers": {
-  "commit_7d": 58,
-  "commit_90d": 320,
-  "rel_ver": "v6.1.0",
-  "rel_pub": "2026-09-18",
-  "rel_days": 28,
+  "commit_7d": 42,
+  "commit_90d": 324,
+  "rel_ver": "v6.2.0",
+  "rel_pub": "2026-10-21",
+  "rel_days": 2,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -80,10 +80,10 @@
    "Python": 100,
    "Makefile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -118,13 +118,13 @@
   }
  },
  "chthollyphile/folia-major": {
-  "commit_90d": 1508,
-  "commit_7d": 228,
-  "rel_ver": "v0.7.20",
-  "rel_pub": "2026-10-15",
+  "commit_90d": 1673,
+  "commit_7d": 313,
+  "rel_ver": "limo",
+  "rel_pub": "2026-10-22",
   "rel_days": 1,
   "rel_n90": 12,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -138,10 +138,10 @@
    "CSS": 1,
    "Rust": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -172,12 +172,12 @@
   }
  },
  "iflytek/astron-rpa": {
-  "commit_90d": 34,
-  "commit_7d": 4,
-  "rel_ver": "v1.1.6",
-  "rel_pub": "2026-02-25",
-  "rel_days": 233,
-  "rel_n90": 0,
+  "commit_90d": 49,
+  "commit_7d": 18,
+  "rel_ver": "v1.1.7",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -192,22 +192,22 @@
    "TypeScript": 15,
    "HCL": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "deepjavalibrary/djl": {
-  "commit_90d": 27,
-  "commit_7d": 2,
-  "rel_ver": "v0.38.0",
-  "rel_pub": "2026-09-09",
-  "rel_days": 37,
-  "rel_n90": 2,
+  "commit_90d": 34,
+  "commit_7d": 7,
+  "rel_ver": "v0.39.0",
+  "rel_pub": "2026-10-20",
+  "rel_days": 3,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 3,
@@ -226,10 +226,10 @@
    "C": 2,
    "Python": 2
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

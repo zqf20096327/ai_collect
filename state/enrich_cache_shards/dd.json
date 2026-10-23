@@ -1,6 +1,6 @@
 {
  "speedyapply/2027-AI-College-Jobs": {
-  "commit_7d": 8,
+  "commit_7d": 7,
   "commit_90d": 90,
   "rel_ver": null,
   "rel_none": true,
@@ -10,21 +10,21 @@
   "sec_ids": [],
   "contrib_n": 2,
   "lang": {},
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "FlorianBruniaux/claude-code-ultimate-guide": {
-  "commit_7d": 4,
-  "commit_90d": 378,
+  "commit_7d": 32,
+  "commit_90d": 408,
   "rel_ver": "v3.44.1",
   "rel_pub": "2026-10-06",
-  "rel_days": 10,
+  "rel_days": 17,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -40,22 +40,22 @@
    "TypeScript": 12,
    "Shell": 10
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "aurelio-labs/semantic-router": {
-  "commit_7d": 29,
-  "commit_90d": 107,
-  "rel_ver": "v1.0.0",
-  "rel_pub": "2026-10-15",
+  "commit_7d": 16,
+  "commit_90d": 122,
+  "rel_ver": "v1.1.1",
+  "rel_pub": "2026-10-22",
   "rel_days": 1,
-  "rel_n90": 3,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 1,
@@ -70,21 +70,21 @@
    "Makefile": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "yvgude/lean-ctx": {
-  "commit_7d": 105,
-  "commit_90d": 5414,
+  "commit_7d": 41,
+  "commit_90d": 4685,
   "rel_ver": "v3.11.4",
   "rel_pub": "2026-10-11",
-  "rel_days": 5,
+  "rel_days": 12,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -100,10 +100,10 @@
    "JavaScript": 2,
    "TypeScript": 2
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

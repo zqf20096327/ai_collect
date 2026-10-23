@@ -26,11 +26,11 @@
   }
  },
  "TykTechnologies/tyk": {
-  "commit_7d": 4,
-  "commit_90d": 70,
+  "commit_7d": 2,
+  "commit_90d": 68,
   "rel_ver": "v5.15.1",
   "rel_pub": "2026-10-02",
-  "rel_days": 14,
+  "rel_days": 21,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -46,10 +46,10 @@
    "JavaScript": 0,
    "Java": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2483,7 +2483,7 @@
  "forge-sdlc/forge": {
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-09-03",
-  "rel_days": 49,
+  "rel_days": 50,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -2491,7 +2491,21 @@
   "sec_worst": null,
   "sec_last": null,
   "sec_ids": [],
-  "contrib_n": 11
+  "contrib_n": 11,
+  "lang": {
+   "Python": 100,
+   "Shell": 0,
+   "Dockerfile": 0,
+   "Go Template": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  },
  "liuchaoqi-7/DA_Multi_Agent_Workflow": {
   "rel_ver": null,
@@ -2636,6 +2650,30 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "CoffeeMethod/KokoroGUI": {
+  "rel_ver": "4.0.0-beta.2",
+  "rel_pub": "2026-10-02",
+  "rel_days": 21,
+  "rel_n90": 3,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 100,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

@@ -1,10 +1,10 @@
 {
  "harry0703/MoneyPrinterTurbo": {
-  "commit_7d": 43,
-  "commit_90d": 485,
-  "rel_ver": "v1.3.8",
-  "rel_pub": "2026-10-03",
-  "rel_days": 13,
+  "commit_7d": 29,
+  "commit_90d": 507,
+  "rel_ver": "v1.3.9",
+  "rel_pub": "2026-10-21",
+  "rel_days": 2,
   "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
@@ -20,18 +20,18 @@
    "Shell": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "microsoft/generative-ai-for-beginners": {
-  "commit_7d": 2,
-  "commit_90d": 96,
+  "commit_7d": 24,
+  "commit_90d": 128,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -46,10 +46,10 @@
    "TypeScript": 0,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -57,11 +57,11 @@
  },
  "plotly/dash": {
   "commit_7d": 29,
-  "commit_90d": 360,
+  "commit_90d": 378,
   "rel_ver": "v4.5.0rc1",
   "rel_pub": "2026-10-15",
-  "rel_days": 1,
-  "rel_n90": 3,
+  "rel_days": 8,
+  "rel_n90": 2,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
@@ -76,21 +76,21 @@
    "JavaScript": 10,
    "CSS": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "Skyvern-AI/skyvern": {
-  "commit_7d": 52,
-  "commit_90d": 1079,
+  "commit_7d": 84,
+  "commit_90d": 990,
   "rel_ver": "v1.0.56",
   "rel_pub": "2026-10-14",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
@@ -106,17 +106,17 @@
    "Jinja": 1,
    "MDX": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "NoFxAiOS/nofx": {
-  "commit_7d": 41,
+  "commit_7d": 13,
   "commit_90d": 75,
   "rel_ver": null,
   "rel_none": true,
@@ -132,10 +132,10 @@
    "JavaScript": 1,
    "Shell": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -172,11 +172,11 @@
   }
  },
  "microsoft/FLAML": {
-  "commit_90d": 37,
-  "commit_7d": 0,
+  "commit_90d": 50,
+  "commit_7d": 14,
   "rel_ver": "v2.7.0",
   "rel_pub": "2026-09-18",
-  "rel_days": 28,
+  "rel_days": 35,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -192,10 +192,10 @@
    "JavaScript": 0,
    "CSS": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2805,6 +2805,29 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "Crystalmislip/card-craft": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-10-18",
+  "rel_days": 5,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C#": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

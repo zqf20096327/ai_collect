@@ -1,10 +1,10 @@
 {
  "storytold/artcraft": {
-  "commit_7d": 5,
-  "commit_90d": 26,
+  "commit_7d": 4,
+  "commit_90d": 30,
   "rel_ver": "artcraft-v0.41.0",
   "rel_pub": "2026-09-26",
-  "rel_days": 20,
+  "rel_days": 27,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -20,10 +20,10 @@
    "Python": 0,
    "CSS": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -59,11 +59,11 @@
   }
  },
  "pipecat-ai/pipecat": {
-  "commit_7d": 269,
-  "commit_90d": 3170,
-  "rel_ver": "v1.12.0",
-  "rel_pub": "2026-09-26",
-  "rel_days": 20,
+  "commit_7d": 354,
+  "commit_90d": 3404,
+  "rel_ver": "v1.13.0",
+  "rel_pub": "2026-10-19",
+  "rel_days": 4,
   "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
@@ -84,10 +84,10 @@
    "JavaScript": 0,
    "CSS": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -118,10 +118,10 @@
  },
  "microsoft/skill-recorder": {
   "commit_7d": 0,
-  "commit_90d": 164,
+  "commit_90d": 163,
   "rel_ver": "v0.7.0",
   "rel_pub": "2026-09-21",
-  "rel_days": 25,
+  "rel_days": 32,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -137,10 +137,10 @@
    "PowerShell": 3,
    "Shell": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2351,6 +2351,29 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "FunnyRabbitIsAHabbit/CryptoAutotrader": {
+  "rel_ver": "v6.0.5",
+  "rel_pub": "2026-02-24",
+  "rel_days": 241,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

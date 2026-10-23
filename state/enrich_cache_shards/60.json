@@ -1,7 +1,7 @@
 {
  "Shubhamsaboo/awesome-llm-apps": {
-  "commit_7d": 11,
-  "commit_90d": 186,
+  "commit_7d": 29,
+  "commit_90d": 180,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -16,22 +16,22 @@
    "HTML": 7,
    "CSS": 3
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "mudler/LocalAI": {
-  "commit_7d": 156,
-  "commit_90d": 1488,
-  "rel_ver": "v4.11.0",
-  "rel_pub": "2026-10-02",
-  "rel_days": 14,
-  "rel_n90": 6,
+  "commit_7d": 73,
+  "commit_90d": 1437,
+  "rel_ver": "v4.12.0",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -46,21 +46,21 @@
    "C++": 4,
    "HTML": 3
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "openai/openai-agents-python": {
-  "commit_7d": 22,
-  "commit_90d": 764,
+  "commit_7d": 12,
+  "commit_90d": 737,
   "rel_ver": "v0.24.0",
   "rel_pub": "2026-10-15",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -75,21 +75,21 @@
    "PowerShell": 0,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "botpress/botpress": {
-  "commit_7d": 2,
-  "commit_90d": 99,
+  "commit_7d": 3,
+  "commit_90d": 84,
   "rel_ver": "v12.30.9",
   "rel_pub": "2023-06-22",
-  "rel_days": 1212,
+  "rel_days": 1219,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -105,10 +105,10 @@
    "Shell": 0,
    "Starlark": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2288,6 +2288,80 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "DrSeedon/orchestra": {
+  "rel_ver": "v2.46.0",
+  "rel_pub": "2026-10-15",
+  "rel_days": 8,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 82,
+   "HTML": 12,
+   "JavaScript": 5,
+   "CSS": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "jonathan-laurent/delphyne": {
+  "rel_ver": "v0.14.0",
+  "rel_pub": "2025-11-05",
+  "rel_days": 352,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 87,
+   "TypeScript": 12,
+   "Makefile": 1,
+   "Jinja": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "Jackohhhh/MedLLM-Finetuning": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 90,
+   "Shell": 10
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

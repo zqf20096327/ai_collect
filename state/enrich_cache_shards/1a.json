@@ -57,11 +57,11 @@
   }
  },
  "google/adk-python": {
-  "commit_7d": 152,
-  "commit_90d": 1501,
+  "commit_7d": 132,
+  "commit_90d": 1545,
   "rel_ver": "v2.12.0",
   "rel_pub": "2026-10-13",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -77,23 +77,23 @@
    "JavaScript": 0,
    "HCL": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "iii-hq/iii": {
-  "commit_7d": 21,
+  "commit_7d": 24,
   "commit_90d": 240,
-  "rel_ver": "iii-alpha/v0.24.5-alpha.2",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
+  "rel_ver": "iii/v0.25.0",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
   "rel_n90": 12,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -107,10 +107,10 @@
    "Go": 2,
    "CSS": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -137,11 +137,11 @@
   }
  },
  "rllm-org/rllm": {
-  "commit_90d": 14,
+  "commit_90d": 9,
   "commit_7d": 0,
   "rel_ver": "v0.3.0-pre",
   "rel_pub": "2026-04-30",
-  "rel_days": 169,
+  "rel_days": 176,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -157,21 +157,21 @@
    "Go Template": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "cloudflare/vibesdk": {
-  "commit_90d": 186,
-  "commit_7d": 0,
+  "commit_90d": 163,
+  "commit_7d": 5,
   "rel_ver": "v1.5.0",
   "rel_pub": "2026-02-06",
-  "rel_days": 252,
+  "rel_days": 259,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -187,10 +187,10 @@
    "JavaScript": 0,
    "HTML": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2525,6 +2525,50 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "frangelbarrera/awesome-ai-agents": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 29,
+  "lang": {},
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "timoheimonen/macOS-memory-benchmark": {
+  "rel_ver": "v.0.64.0",
+  "rel_pub": "2026-09-06",
+  "rel_days": 47,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 84,
+   "Objective-C++": 8,
+   "Assembly": 4,
+   "Python": 3,
+   "Shell": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

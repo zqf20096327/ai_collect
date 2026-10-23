@@ -26,12 +26,12 @@
   }
  },
  "ZhuLinsen/daily_stock_analysis": {
-  "commit_7d": 6,
-  "commit_90d": 151,
+  "commit_7d": 5,
+  "commit_90d": 136,
   "rel_ver": "v3.33.0",
   "rel_pub": "2026-10-15",
-  "rel_days": 1,
-  "rel_n90": 7,
+  "rel_days": 8,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -46,21 +46,21 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "google/langextract": {
-  "commit_7d": 7,
-  "commit_90d": 29,
+  "commit_7d": 1,
+  "commit_90d": 30,
   "rel_ver": "v1.7.1",
   "rel_pub": "2026-10-08",
-  "rel_days": 8,
+  "rel_days": 15,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -74,10 +74,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -115,10 +115,10 @@
  },
  "jo-inc/camofox-browser": {
   "commit_7d": 0,
-  "commit_90d": 170,
+  "commit_90d": 146,
   "rel_ver": "v1.18.1",
   "rel_pub": "2026-10-05",
-  "rel_days": 11,
+  "rel_days": 18,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -134,10 +134,10 @@
    "Python": 1,
    "PowerShell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2871,6 +2871,70 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "limengge426/llm-syllogism": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "claudefi/claudefi": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 98,
+   "PLpgSQL": 2,
+   "JavaScript": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "TashanGKD/tashan-research-skills": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 96,
+   "HTML": 3,
+   "JavaScript": 1,
+   "CSS": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

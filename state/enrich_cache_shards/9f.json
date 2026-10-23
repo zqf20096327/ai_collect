@@ -1,10 +1,10 @@
 {
  "Graphify-Labs/graphify": {
-  "commit_7d": 227,
-  "commit_90d": 1249,
-  "rel_ver": "v0.9.92",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
+  "commit_7d": 106,
+  "commit_90d": 1245,
+  "rel_ver": "v0.9.94",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -20,21 +20,21 @@
    "TypeScript": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "harvard-edge/cs249r_book": {
-  "commit_7d": 782,
-  "commit_90d": 5715,
+  "commit_7d": 33,
+  "commit_90d": 5714,
   "rel_ver": "tinytorch-v0.2.0",
   "rel_pub": "2026-10-01",
-  "rel_days": 15,
+  "rel_days": 22,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -50,10 +50,10 @@
    "TypeScript": 3,
    "HTML": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -90,11 +90,11 @@
   }
  },
  "py-why/EconML": {
-  "commit_7d": 0,
-  "commit_90d": 12,
+  "commit_7d": 2,
+  "commit_90d": 11,
   "rel_ver": "v0.17.0",
   "rel_pub": "2026-08-04",
-  "rel_days": 73,
+  "rel_days": 80,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -110,23 +110,23 @@
    "TeX": 0,
    "R": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "kirodotdev/KiroCrew": {
-  "commit_7d": 1396,
-  "commit_90d": 10560,
-  "rel_ver": "v0.10.0-rc.1",
-  "rel_pub": "2026-10-16",
+  "commit_7d": 1068,
+  "commit_90d": 11212,
+  "rel_ver": "ffmpeg-decoder-7.1.1-r1",
+  "rel_pub": "2026-10-23",
   "rel_days": 0,
   "rel_n90": 12,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 1,
   "sec_worst": "high",
@@ -142,10 +142,10 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -3085,6 +3085,40 @@
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
-  "sec_ids": []
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 89,
+   "Python": 11
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "rblalock/omakaseagent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 51,
+   "HTML": 28,
+   "CSS": 19,
+   "Go Template": 2
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

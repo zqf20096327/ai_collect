@@ -1,12 +1,12 @@
 {
  "openclaw/openclaw": {
-  "commit_7d": 5573,
-  "commit_90d": 42073,
-  "rel_ver": "v2026.10.10-beta.1",
-  "rel_pub": "2026-10-15",
+  "commit_7d": 5712,
+  "commit_90d": 45601,
+  "rel_ver": "v2026.10.6",
+  "rel_pub": "2026-10-22",
   "rel_days": 1,
   "rel_n90": 12,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 30,
   "sec_worst": "high",
@@ -29,10 +29,10 @@
    "JavaScript": 2,
    "Shell": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -69,11 +69,11 @@
   }
  },
  "langchain-ai/langchain": {
-  "commit_7d": 22,
-  "commit_90d": 554,
-  "rel_ver": "langchain-core==1.6.12",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
+  "commit_7d": 73,
+  "commit_90d": 584,
+  "rel_ver": "langchain-core==1.7.0",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -98,10 +98,10 @@
    "XSLT": 0,
    "HTML": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -218,11 +218,11 @@
   }
  },
  "kagent-dev/kagent": {
-  "commit_7d": 59,
-  "commit_90d": 441,
-  "rel_ver": "v1.0.0-alpha14",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
+  "commit_7d": 44,
+  "commit_90d": 446,
+  "rel_ver": "v1.0.0-alpha17",
+  "rel_pub": "2026-10-21",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -238,10 +238,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

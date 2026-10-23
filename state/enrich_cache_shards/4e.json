@@ -1,12 +1,12 @@
 {
  "infiniflow/ragflow": {
-  "commit_7d": 282,
-  "commit_90d": 2748,
-  "rel_ver": "v1.0.0-rc2",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
+  "commit_7d": 175,
+  "commit_90d": 2657,
+  "rel_ver": "nightly",
+  "rel_pub": "2025-12-01",
+  "rel_days": 326,
   "rel_n90": 5,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 8,
   "sec_worst": "critical",
@@ -29,21 +29,21 @@
    "Python": 3,
    "C": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "mem0ai/mem0": {
-  "commit_7d": 2,
-  "commit_90d": 184,
+  "commit_7d": 1,
+  "commit_90d": 154,
   "rel_ver": "v2.2.1",
   "rel_pub": "2026-09-25",
-  "rel_days": 21,
+  "rel_days": 28,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -59,10 +59,10 @@
    "CSS": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -119,12 +119,12 @@
   }
  },
  "shimat/opencvsharp": {
-  "commit_7d": 51,
-  "commit_90d": 234,
-  "rel_ver": "5.0.0.20261012",
-  "rel_pub": "2026-10-12",
-  "rel_days": 4,
-  "rel_n90": 11,
+  "commit_7d": 14,
+  "commit_90d": 205,
+  "rel_ver": "5.0.0.20261018",
+  "rel_pub": "2026-10-18",
+  "rel_days": 5,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -139,10 +139,10 @@
    "CMake": 0,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

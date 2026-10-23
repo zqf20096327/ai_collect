@@ -1,7 +1,7 @@
 {
  "microsoft/ai-agents-for-beginners": {
-  "commit_7d": 35,
-  "commit_90d": 278,
+  "commit_7d": 24,
+  "commit_90d": 254,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -16,10 +16,10 @@
    "PowerShell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -75,8 +75,8 @@
   }
  },
  "Thysrael/Horizon": {
-  "commit_7d": 1,
-  "commit_90d": 60,
+  "commit_7d": 20,
+  "commit_90d": 80,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -89,10 +89,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2925,6 +2925,59 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "LeonardLeroy/EcoCode": {
+  "rel_ver": "v0.4.0-beta",
+  "rel_pub": "2026-04-12",
+  "rel_days": 194,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 76,
+   "TypeScript": 19,
+   "JavaScript": 3,
+   "CSS": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "chr243/Verdroid": {
+  "rel_ver": "v1.0.66",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 70,
+   "Kotlin": 14,
+   "C": 13,
+   "GLSL": 2,
+   "CMake": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

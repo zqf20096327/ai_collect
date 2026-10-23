@@ -1,11 +1,11 @@
 {
  "roboflow/supervision": {
-  "commit_7d": 33,
-  "commit_90d": 261,
-  "rel_ver": "0.31.0",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
-  "rel_n90": 11,
+  "commit_7d": 38,
+  "commit_90d": 281,
+  "rel_ver": "0.31.1",
+  "rel_pub": "2026-10-20",
+  "rel_days": 3,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -16,22 +16,22 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "ifixai-ai/iFixAi": {
-  "commit_7d": 85,
-  "commit_90d": 232,
-  "rel_ver": "v4.2.0",
-  "rel_pub": "2026-10-15",
+  "commit_7d": 44,
+  "commit_90d": 273,
+  "rel_ver": "v4.3.0",
+  "rel_pub": "2026-10-22",
   "rel_days": 1,
-  "rel_n90": 8,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -45,10 +45,10 @@
    "PowerShell": 0,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -56,10 +56,10 @@
  },
  "oceanbase/oceanbase": {
   "commit_7d": 0,
-  "commit_90d": 572,
-  "rel_ver": "v4.4.2_CE_BP3",
-  "rel_pub": "2026-09-15",
-  "rel_days": 31,
+  "commit_90d": 562,
+  "rel_ver": "v4.2.5_CE_BP8",
+  "rel_pub": "2026-10-21",
+  "rel_days": 2,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -75,10 +75,10 @@
    "C": 0,
    "CMake": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2931,6 +2931,27 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "pochenai/llm-inference-calculator": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 96,
+   "CSS": 4,
+   "HTML": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

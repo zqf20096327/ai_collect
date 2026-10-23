@@ -26,11 +26,11 @@
   }
  },
  "StarTrail-org/PixelRAG": {
-  "commit_7d": 9,
-  "commit_90d": 43,
+  "commit_7d": 4,
+  "commit_90d": 47,
   "rel_ver": "v0.4.0",
   "rel_pub": "2026-07-16",
-  "rel_days": 92,
+  "rel_days": 99,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -46,10 +46,10 @@
    "JavaScript": 2,
    "Shell": 2
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -83,7 +83,7 @@
   "commit_7d": 0,
   "rel_ver": "v2.8.0",
   "rel_pub": "2025-03-11",
-  "rel_days": 584,
+  "rel_days": 591,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -99,21 +99,21 @@
    "TypeScript": 8,
    "JavaScript": 3
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "twinnydotdev/twinny": {
-  "commit_90d": 117,
-  "commit_7d": 9,
+  "commit_90d": 118,
+  "commit_7d": 1,
   "rel_ver": "v4.0.20",
   "rel_pub": "2026-09-22",
-  "rel_days": 24,
+  "rel_days": 31,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -129,10 +129,10 @@
    "Dockerfile": 0,
    "Go Template": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2953,6 +2953,53 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "smixs/disruptor-skills": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-07-01",
+  "rel_days": 114,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 88,
+   "Shell": 12
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "ml-rust/boostr": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 87,
+   "Cuda": 12,
+   "WGSL": 0,
+   "Python": 0,
+   "C": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

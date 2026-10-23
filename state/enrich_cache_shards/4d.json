@@ -57,11 +57,11 @@
   }
  },
  "datawhalechina/easy-vibe": {
-  "commit_7d": 0,
-  "commit_90d": 130,
+  "commit_7d": 12,
+  "commit_90d": 143,
   "rel_ver": "v0.4.0",
   "rel_pub": "2026-08-07",
-  "rel_days": 70,
+  "rel_days": 77,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -75,20 +75,20 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "LMCache/LMCache": {
-  "commit_7d": 75,
-  "commit_90d": 573,
-  "rel_ver": "nightly-xpu",
-  "rel_pub": "2026-10-16",
+  "commit_7d": 97,
+  "commit_90d": 627,
+  "rel_ver": "nightly-rocm",
+  "rel_pub": "2026-10-23",
   "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": true,
@@ -107,21 +107,21 @@
    "C++": 2,
    "Cuda": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "google-deepmind/sonnet": {
-  "commit_7d": 0,
-  "commit_90d": 1,
+  "commit_7d": 1,
+  "commit_90d": 2,
   "rel_ver": "v2.0.2",
   "rel_pub": "2024-01-02",
-  "rel_days": 1018,
+  "rel_days": 1025,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -135,10 +135,10 @@
    "Starlark": 4,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -172,11 +172,11 @@
   }
  },
  "SwanHubX/SwanLab": {
-  "commit_7d": 1,
-  "commit_90d": 40,
+  "commit_7d": 0,
+  "commit_90d": 37,
   "rel_ver": "v0.10.2",
   "rel_pub": "2026-10-09",
-  "rel_days": 7,
+  "rel_days": 14,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -191,10 +191,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

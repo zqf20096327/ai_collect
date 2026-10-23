@@ -1,10 +1,10 @@
 {
  "headroomlabs-ai/headroom": {
-  "commit_7d": 95,
-  "commit_90d": 1006,
+  "commit_7d": 32,
+  "commit_90d": 974,
   "rel_ver": "v0.41.0",
   "rel_pub": "2026-10-14",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -22,22 +22,22 @@
    "JavaScript": 2,
    "HTML": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "yamadashy/repomix": {
-  "commit_7d": 19,
-  "commit_90d": 356,
+  "commit_7d": 10,
+  "commit_90d": 321,
   "rel_ver": "v1.18.1",
   "rel_pub": "2026-09-21",
-  "rel_days": 25,
-  "rel_n90": 3,
+  "rel_days": 32,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 5,
@@ -58,10 +58,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -211,7 +211,7 @@
   "commit_7d": 0,
   "rel_ver": "v0.0.8",
   "rel_pub": "2025-10-27",
-  "rel_days": 354,
+  "rel_days": 361,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -226,10 +226,10 @@
    "Shell": 2,
    "R": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -3175,6 +3175,29 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "realnaka/alphaloop": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-06-23",
+  "rel_days": 122,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Shell": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

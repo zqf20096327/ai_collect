@@ -1,11 +1,11 @@
 {
  "microsoft/graphrag": {
-  "commit_7d": 0,
-  "commit_90d": 19,
+  "commit_7d": 1,
+  "commit_90d": 20,
   "rel_ver": "v3.3.0",
   "rel_pub": "2026-10-08",
-  "rel_days": 8,
-  "rel_n90": 4,
+  "rel_days": 15,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -20,21 +20,21 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "PaddlePaddle/Paddle": {
-  "commit_7d": 25,
-  "commit_90d": 176,
+  "commit_7d": 11,
+  "commit_90d": 164,
   "rel_ver": "v3.4.0",
   "rel_pub": "2026-09-11",
-  "rel_days": 35,
+  "rel_days": 42,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -50,21 +50,21 @@
    "CMake": 1,
    "Shell": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "teableio/teable": {
-  "commit_7d": 3,
-  "commit_90d": 7,
-  "rel_ver": "release.2026-10-16T07-06-34Z.3445",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
+  "commit_7d": 4,
+  "commit_90d": 9,
+  "rel_ver": "release.2026-10-22T04-57-21Z.3531",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -89,10 +89,10 @@
    "PLpgSQL": 0,
    "ANTLR": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -155,11 +155,11 @@
   }
  },
  "RunanywhereAI/runanywhere-sdks": {
-  "commit_7d": 38,
-  "commit_90d": 332,
-  "rel_ver": "cpp-desktop-v0.20.39",
-  "rel_pub": "2026-10-09",
-  "rel_days": 7,
+  "commit_7d": 9,
+  "commit_90d": 278,
+  "rel_ver": "cpp-desktop-v0.20.42",
+  "rel_pub": "2026-10-21",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -175,22 +175,22 @@
    "Swift": 8,
    "Kotlin": 7
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "LykosAI/StabilityMatrix": {
-  "commit_7d": 13,
-  "commit_90d": 202,
-  "rel_ver": "v2.16.4",
-  "rel_pub": "2026-09-16",
-  "rel_days": 30,
-  "rel_n90": 3,
+  "commit_7d": 14,
+  "commit_90d": 246,
+  "rel_ver": "v2.16.5",
+  "rel_pub": "2026-10-21",
+  "rel_days": 2,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 1,
@@ -207,10 +207,10 @@
    "PowerShell": 0,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -275,7 +275,7 @@
   "commit_90d": 1,
   "rel_ver": "v2.6.0",
   "rel_pub": "2024-11-05",
-  "rel_days": 710,
+  "rel_days": 717,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -291,18 +291,18 @@
    "Java": 4,
    "CMake": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "BIT-DataLab/Edit-Banana": {
-  "commit_7d": 0,
-  "commit_90d": 11,
+  "commit_7d": 2,
+  "commit_90d": 12,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -314,18 +314,18 @@
    "Python": 99,
    "Shell": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "huggingface/notebooks": {
-  "commit_7d": 2,
-  "commit_90d": 65,
+  "commit_7d": 35,
+  "commit_90d": 72,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -339,10 +339,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2548,7 +2548,7 @@
  "Rudie-Verweij/the-artificial-guide-to-a-great-human-life": {
   "rel_ver": "v1.0.1-alpha",
   "rel_pub": "2026-02-15",
-  "rel_days": 249,
+  "rel_days": 250,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -2556,7 +2556,15 @@
   "sec_worst": null,
   "sec_last": null,
   "sec_ids": [],
-  "contrib_n": 0
+  "contrib_n": 0,
+  "lang": {},
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  },
  "llmsecrets/llm-secrets": {
   "rel_ver": "v3.1.0-macos",
@@ -2636,6 +2644,128 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "ibmshaikh/OpenPilot": {
+  "rel_ver": "v1.0.5",
+  "rel_pub": "2026-08-12",
+  "rel_days": 72,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 76,
+   "CSS": 16,
+   "HTML": 8
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "GH05TCREW/eidolon": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 59,
+   "TypeScript": 29,
+   "CSS": 11,
+   "PowerShell": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "mcpspan/mcpspan": {
+  "rel_ver": "all/v0.8.1",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 53,
+   "PHP": 8,
+   "Python": 8,
+   "Java": 7,
+   "Go": 7
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "manglu097/Thoth": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 98,
+   "Shell": 2
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "huhamhire/code-meeseeks": {
+  "rel_ver": "v0.12.1",
+  "rel_pub": "2026-09-10",
+  "rel_days": 43,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 83,
+   "SCSS": 10,
+   "Python": 3,
+   "Go": 2,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

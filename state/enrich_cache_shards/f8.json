@@ -20,12 +20,12 @@
   }
  },
  "tinyhumansai/openhuman": {
-  "commit_7d": 7331,
-  "commit_90d": 34170,
+  "commit_7d": 9486,
+  "commit_90d": 43202,
   "rel_ver": "v0.64.15",
   "rel_pub": "2026-10-09",
-  "rel_days": 7,
-  "rel_n90": 12,
+  "rel_days": 14,
+  "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 12,
@@ -49,22 +49,22 @@
    "Shell": 1,
    "CSS": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "CVHub520/X-AnyLabeling": {
-  "commit_7d": 15,
-  "commit_90d": 102,
-  "rel_ver": "v4.1.3",
-  "rel_pub": "2026-10-15",
-  "rel_days": 1,
-  "rel_n90": 11,
+  "commit_7d": 11,
+  "commit_90d": 97,
+  "rel_ver": "v4.2.0",
+  "rel_pub": "2026-10-18",
+  "rel_days": 5,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -79,21 +79,21 @@
    "C++": 0,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "NVIDIA/warp": {
-  "commit_90d": 387,
-  "commit_7d": 25,
+  "commit_90d": 385,
+  "commit_7d": 47,
   "rel_ver": "v1.18.0",
   "rel_pub": "2026-10-05",
-  "rel_days": 11,
+  "rel_days": 18,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -109,10 +109,10 @@
    "Standard ML": 0,
    "C": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -171,11 +171,11 @@
   }
  },
  "ModelTC/LightLLM": {
-  "commit_90d": 125,
-  "commit_7d": 11,
+  "commit_90d": 131,
+  "commit_7d": 18,
   "rel_ver": "v1.2.0",
   "rel_pub": "2026-08-10",
-  "rel_days": 67,
+  "rel_days": 74,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -190,10 +190,10 @@
    "Jinja": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

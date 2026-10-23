@@ -1,10 +1,10 @@
 {
  "AstrBotDevs/AstrBot": {
-  "commit_7d": 27,
-  "commit_90d": 399,
-  "rel_ver": "v4.29.0",
-  "rel_pub": "2026-10-14",
-  "rel_days": 2,
+  "commit_7d": 29,
+  "commit_90d": 410,
+  "rel_ver": "v4.29.1",
+  "rel_pub": "2026-10-17",
+  "rel_days": 6,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -23,21 +23,21 @@
    "JavaScript": 2,
    "HTML": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "google/magika": {
-  "commit_7d": 14,
-  "commit_90d": 127,
+  "commit_7d": 12,
+  "commit_90d": 139,
   "rel_ver": "cli/v1.1.0",
   "rel_pub": "2026-04-24",
-  "rel_days": 175,
+  "rel_days": 182,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -53,10 +53,10 @@
    "TypeScript": 7,
    "Shell": 3
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2515,6 +2515,50 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "Yutarop/turtlebot3_agent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "jjang-ai/exploitbot": {
+  "rel_ver": "v1.5.3",
+  "rel_pub": "2026-07-15",
+  "rel_days": 100,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 73,
+   "Swift": 26,
+   "Shell": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

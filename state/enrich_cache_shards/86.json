@@ -1,10 +1,10 @@
 {
  "photoprism/photoprism": {
-  "commit_7d": 315,
-  "commit_90d": 1888,
+  "commit_7d": 197,
+  "commit_90d": 1918,
   "rel_ver": "261007-65faaae5d",
   "rel_pub": "2026-10-07",
-  "rel_days": 9,
+  "rel_days": 16,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -20,20 +20,20 @@
    "CSS": 1,
    "Dockerfile": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "charmbracelet/crush": {
-  "commit_7d": 27,
-  "commit_90d": 516,
+  "commit_7d": 33,
+  "commit_90d": 488,
   "rel_ver": "nightly",
-  "rel_pub": "2026-10-16",
+  "rel_pub": "2026-10-23",
   "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": true,
@@ -50,10 +50,10 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -89,8 +89,8 @@
   }
  },
  "naganandy/graph-based-deep-learning-literature": {
-  "commit_7d": 0,
-  "commit_90d": 15,
+  "commit_7d": 13,
+  "commit_90d": 28,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -101,10 +101,10 @@
   "lang": {
    "Jupyter Notebook": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2812,6 +2812,29 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "gretl-project/gretl": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 17,
+  "lang": {
+   "C": 92,
+   "TeX": 3,
+   "Shell": 3,
+   "CSS": 1,
+   "Makefile": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

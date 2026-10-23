@@ -1,10 +1,10 @@
 {
  "jnMetaCode/agency-agents-zh": {
-  "commit_7d": 4,
-  "commit_90d": 81,
+  "commit_7d": 41,
+  "commit_90d": 108,
   "rel_ver": "v1.2.6",
   "rel_pub": "2026-06-16",
-  "rel_days": 122,
+  "rel_days": 129,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -18,10 +18,10 @@
    "PowerShell": 33,
    "JavaScript": 2
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -54,11 +54,11 @@
   }
  },
  "corsairdev/corsair": {
-  "commit_7d": 12,
-  "commit_90d": 569,
+  "commit_7d": 69,
+  "commit_90d": 610,
   "rel_ver": "v0.1.0",
   "rel_pub": "2025-12-05",
-  "rel_days": 315,
+  "rel_days": 322,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -74,10 +74,10 @@
    "CSS": 0,
    "Swift": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -113,11 +113,11 @@
   }
  },
  "niedev/RTranslator": {
-  "commit_7d": 6,
-  "commit_90d": 52,
+  "commit_7d": 9,
+  "commit_90d": 58,
   "rel_ver": "3.0.0-beta2",
   "rel_pub": "2026-10-12",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 2,
   "rel_pre": true,
   "rel_none": false,
@@ -132,20 +132,20 @@
    "C++": 2,
    "CMake": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "anthropics/claude-agent-sdk-python": {
-  "commit_7d": 12,
-  "commit_90d": 197,
-  "rel_ver": "v0.2.168",
-  "rel_pub": "2026-10-15",
+  "commit_7d": 21,
+  "commit_90d": 196,
+  "rel_ver": "v0.2.173",
+  "rel_pub": "2026-10-22",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -161,20 +161,20 @@
    "Python": 99,
    "Shell": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "pbek/QOwnNotes": {
-  "commit_7d": 25,
-  "commit_90d": 283,
-  "rel_ver": "v26.10.7",
-  "rel_pub": "2026-10-15",
+  "commit_7d": 35,
+  "commit_90d": 309,
+  "rel_ver": "v26.10.10",
+  "rel_pub": "2026-10-22",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -191,21 +191,21 @@
    "JavaScript": 1,
    "CMake": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "Kiln-AI/Kiln": {
-  "commit_7d": 23,
-  "commit_90d": 1167,
+  "commit_7d": 92,
+  "commit_90d": 1229,
   "rel_ver": "v1.2.0",
   "rel_pub": "2026-09-29",
-  "rel_days": 17,
+  "rel_days": 24,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -221,10 +221,10 @@
    "Shell": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -261,11 +261,11 @@
   }
  },
  "walkinglabs/hands-on-modern-rl": {
-  "commit_7d": 0,
-  "commit_90d": 295,
+  "commit_7d": 24,
+  "commit_90d": 326,
   "rel_ver": "v0.2.1",
   "rel_pub": "2026-06-18",
-  "rel_days": 120,
+  "rel_days": 127,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -281,18 +281,18 @@
    "Shell": 0,
    "TeX": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "killop/anything_about_game": {
-  "commit_7d": 2,
-  "commit_90d": 22,
+  "commit_7d": 8,
+  "commit_90d": 28,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -301,10 +301,10 @@
   "sec_ids": [],
   "contrib_n": 16,
   "lang": {},
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -3104,6 +3104,105 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "fentas/atty": {
+  "rel_ver": "v0.8.0",
+  "rel_pub": "2026-06-28",
+  "rel_days": 117,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Zig": 73,
+   "Rust": 18,
+   "Shell": 4,
+   "Python": 4,
+   "C": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "harukikuri/spotnote": {
+  "rel_ver": "v0.5.0",
+  "rel_pub": "2026-10-21",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 71,
+   "JavaScript": 29,
+   "CSS": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "spences10/nopeek": {
+  "rel_ver": "nopeek@0.0.17",
+  "rel_pub": "2026-09-27",
+  "rel_days": 26,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "harshithsunku/learn-jev-end-to-end": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 91,
+   "Python": 8,
+   "PowerShell": 0,
+   "Shell": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

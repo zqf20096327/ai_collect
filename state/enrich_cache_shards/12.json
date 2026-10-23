@@ -30,11 +30,11 @@
   }
  },
  "flipped-aurora/gin-vue-admin": {
-  "commit_7d": 2,
-  "commit_90d": 20,
+  "commit_7d": 4,
+  "commit_90d": 24,
   "rel_ver": "v2.9.2-stable",
   "rel_pub": "2026-07-17",
-  "rel_days": 91,
+  "rel_days": 98,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -59,10 +59,10 @@
    "Go Template": 5,
    "SCSS": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -89,8 +89,8 @@
   }
  },
  "NirDiamant/agents-towards-production": {
-  "commit_7d": 0,
-  "commit_90d": 19,
+  "commit_7d": 4,
+  "commit_90d": 23,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -105,10 +105,10 @@
    "Kotlin": 0,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -149,7 +149,7 @@
   "commit_90d": 1,
   "rel_ver": "v6.110.0",
   "rel_pub": "2022-06-20",
-  "rel_days": 1579,
+  "rel_days": 1586,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -165,10 +165,10 @@
    "Batchfile": 6,
    "Shell": 6
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -203,11 +203,11 @@
   }
  },
  "modelscope/ms-agent": {
-  "commit_7d": 0,
-  "commit_90d": 58,
+  "commit_7d": 3,
+  "commit_90d": 60,
   "rel_ver": "v1.6.0",
   "rel_pub": "2026-03-23",
-  "rel_days": 207,
+  "rel_days": 214,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -223,10 +223,10 @@
    "JavaScript": 0,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2412,6 +2412,48 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "JichinX/codex-glm-proxy": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 95,
+   "Shell": 5
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "ruguo0119/AI-Desktop-Pet": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 45,
+   "Python": 41,
+   "CSS": 13,
+   "HTML": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

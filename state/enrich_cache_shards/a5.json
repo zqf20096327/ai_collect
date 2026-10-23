@@ -1,10 +1,10 @@
 {
  "morluto/rea": {
-  "commit_7d": 1631,
-  "commit_90d": 2986,
-  "rel_ver": "rea-agents-6.5.0",
-  "rel_pub": "2026-10-14",
-  "rel_days": 2,
+  "commit_7d": 941,
+  "commit_90d": 3718,
+  "rel_ver": "rea-agents-6.7.0",
+  "rel_pub": "2026-10-18",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -20,10 +20,10 @@
    "Python": 2,
    "Java": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2814,13 +2814,52 @@
  "ngpepin/stylometric-transfer": {
   "rel_ver": "v1.9.0",
   "rel_pub": "2026-07-07",
-  "rel_days": 107,
+  "rel_days": 108,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
-  "sec_ids": []
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 98,
+   "Shell": 1,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "AyehBlk/RAPTOR": {
+  "rel_ver": "v2.2.1",
+  "rel_pub": "2026-03-18",
+  "rel_days": 219,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 95,
+   "Shell": 2,
+   "R": 2,
+   "CSS": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

@@ -28,11 +28,11 @@
   }
  },
  "vastsa/PI-Desktop": {
-  "commit_90d": 5258,
-  "commit_7d": 367,
-  "rel_ver": "v0.21.0-beta.1",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
+  "commit_90d": 5396,
+  "commit_7d": 221,
+  "rel_ver": "v0.21.0-beta.6",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -48,10 +48,10 @@
    "CSS": 3,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2932,6 +2932,25 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "Vedantgitbot/booth": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

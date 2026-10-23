@@ -74,12 +74,12 @@
   }
  },
  "basicmachines-co/basic-memory": {
-  "commit_7d": 67,
-  "commit_90d": 776,
-  "rel_ver": "v0.23.2",
-  "rel_pub": "2026-08-25",
-  "rel_days": 52,
-  "rel_n90": 3,
+  "commit_7d": 27,
+  "commit_90d": 763,
+  "rel_ver": "v0.24.0",
+  "rel_pub": "2026-10-23",
+  "rel_days": 0,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -94,22 +94,22 @@
    "Just": 0,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "ai-robots-txt/ai.robots.txt": {
-  "commit_7d": 4,
-  "commit_90d": 98,
-  "rel_ver": "v2.0",
-  "rel_pub": "2026-10-03",
-  "rel_days": 13,
-  "rel_n90": 6,
+  "commit_7d": 7,
+  "commit_90d": 105,
+  "rel_ver": "v2.1",
+  "rel_pub": "2026-10-17",
+  "rel_days": 6,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -120,20 +120,20 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "PenglongHuang/chinese-novelist-skill": {
-  "commit_7d": 0,
-  "commit_90d": 11,
-  "rel_ver": null,
-  "rel_none": true,
+  "commit_7d": 9,
+  "commit_90d": 18,
+  "rel_ver": "v2.3.1",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -142,14 +142,18 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
-  }
+  },
+  "rel_pub": "2026-10-20",
+  "rel_days": 3,
+  "rel_n90": 4,
+  "rel_pre": false
  },
  "superlinked/sie": {
   "commit_7d": 149,
@@ -2844,6 +2848,55 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "longyijdos/hi-shell": {
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-09-26",
+  "rel_days": 27,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 92,
+   "Shell": 8,
+   "Makefile": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "TaegyuJEONG/ftja": {
+  "rel_ver": "media",
+  "rel_pub": "2026-10-11",
+  "rel_days": 12,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 61,
+   "HTML": 39
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

@@ -62,18 +62,18 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "vinta/pangu.js": {
-  "commit_90d": 1007,
-  "commit_7d": 1,
+  "commit_90d": 856,
+  "commit_7d": 6,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -88,10 +88,10 @@
    "CSS": 3,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -118,11 +118,11 @@
   }
  },
  "enactic/openarm": {
-  "commit_90d": 63,
-  "commit_7d": 9,
+  "commit_90d": 60,
+  "commit_7d": 8,
   "rel_ver": "1.1",
   "rel_pub": "2025-10-31",
-  "rel_days": 350,
+  "rel_days": 357,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -138,10 +138,10 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

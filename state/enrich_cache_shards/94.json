@@ -56,11 +56,11 @@
   }
  },
  "ggml-org/ggml": {
-  "commit_7d": 131,
-  "commit_90d": 769,
+  "commit_7d": 3,
+  "commit_90d": 772,
   "rel_ver": "v0.27.0",
   "rel_pub": "2026-10-15",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -76,22 +76,22 @@
    "Metal": 3,
    "GLSL": 2
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "google/ax": {
-  "commit_7d": 12,
-  "commit_90d": 73,
+  "commit_7d": 10,
+  "commit_90d": 56,
   "rel_ver": "v0.3.1",
   "rel_pub": "2026-09-25",
-  "rel_days": 21,
-  "rel_n90": 6,
+  "rel_days": 28,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -105,10 +105,10 @@
    "Python": 1,
    "Makefile": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -146,10 +146,10 @@
  },
  "tensorflow/datasets": {
   "commit_7d": 1,
-  "commit_90d": 13,
+  "commit_90d": 14,
   "rel_ver": "v4.9.10",
   "rel_pub": "2026-05-08",
-  "rel_days": 161,
+  "rel_days": 168,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -165,21 +165,21 @@
    "NewLisp": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "CortexReach/memory-lancedb-pro": {
-  "commit_7d": 1,
-  "commit_90d": 40,
+  "commit_7d": 3,
+  "commit_90d": 37,
   "rel_ver": "v1.1.0-beta.10",
   "rel_pub": "2026-03-23",
-  "rel_days": 207,
+  "rel_days": 214,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -194,10 +194,10 @@
    "Python": 0,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2920,6 +2920,33 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "Nurysso/eulix": {
+  "rel_ver": "v0.8.3",
+  "rel_pub": "2026-10-14",
+  "rel_days": 9,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 44,
+   "Go": 42,
+   "Python": 10,
+   "HTML": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

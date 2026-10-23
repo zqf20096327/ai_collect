@@ -1,10 +1,10 @@
 {
  "JuliusBrussee/caveman": {
-  "commit_7d": 280,
-  "commit_90d": 1509,
+  "commit_7d": 40,
+  "commit_90d": 1563,
   "rel_ver": "v4.0.1",
   "rel_pub": "2026-10-13",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -20,21 +20,21 @@
    "Python": 10,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "marimo-team/marimo": {
-  "commit_7d": 65,
-  "commit_90d": 554,
-  "rel_ver": "0.25.1",
-  "rel_pub": "2026-10-01",
-  "rel_days": 15,
+  "commit_7d": 124,
+  "commit_90d": 616,
+  "rel_ver": "0.25.2",
+  "rel_pub": "2026-10-19",
+  "rel_days": 4,
   "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
@@ -53,10 +53,10 @@
    "JavaScript": 0,
    "HTML": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -91,11 +91,11 @@
   }
  },
  "sktime/pytorch-forecasting": {
-  "commit_7d": 3,
-  "commit_90d": 37,
+  "commit_7d": 2,
+  "commit_90d": 38,
   "rel_ver": "v1.8.0",
   "rel_pub": "2026-06-24",
-  "rel_days": 114,
+  "rel_days": 121,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -108,10 +108,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -140,11 +140,11 @@
   }
  },
  "nextlevelbuilder/goclaw": {
-  "commit_7d": 0,
-  "commit_90d": 139,
-  "rel_ver": "v3.15.0-beta.228",
-  "rel_pub": "2026-10-04",
-  "rel_days": 12,
+  "commit_7d": 4,
+  "commit_90d": 126,
+  "rel_ver": "v3.15.0-beta.229",
+  "rel_pub": "2026-10-17",
+  "rel_days": 6,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -160,10 +160,10 @@
    "HTML": 0,
    "PLpgSQL": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2437,6 +2437,30 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "nandlabs/golly": {
+  "rel_ver": "v1.8.0",
+  "rel_pub": "2026-07-06",
+  "rel_days": 109,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Go": 100,
+   "Makefile": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

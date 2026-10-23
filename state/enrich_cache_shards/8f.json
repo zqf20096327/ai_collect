@@ -1,10 +1,10 @@
 {
  "jlcodes99/cockpit-tools": {
-  "commit_7d": 14,
-  "commit_90d": 346,
-  "rel_ver": "v1.3.70",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
+  "commit_7d": 21,
+  "commit_90d": 364,
+  "rel_ver": "v1.3.73",
+  "rel_pub": "2026-10-21",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -20,10 +20,10 @@
    "Go": 4,
    "JavaScript": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -60,12 +60,12 @@
   }
  },
  "browser-use/browser-harness": {
-  "commit_7d": 2,
-  "commit_90d": 285,
+  "commit_7d": 3,
+  "commit_90d": 279,
   "rel_ver": "v0.1.13",
   "rel_pub": "2026-09-04",
-  "rel_days": 42,
-  "rel_n90": 7,
+  "rel_days": 49,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -78,21 +78,21 @@
    "HTML": 14,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "The-PR-Agent/pr-agent": {
-  "commit_7d": 53,
-  "commit_90d": 921,
+  "commit_7d": 150,
+  "commit_90d": 1051,
   "rel_ver": "v0.48.0",
   "rel_pub": "2026-10-16",
-  "rel_days": 0,
+  "rel_days": 7,
   "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
@@ -106,10 +106,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -142,10 +142,10 @@
   }
  },
  "n4ze3m/page-assist": {
-  "commit_7d": 4,
-  "commit_90d": 78,
-  "rel_ver": "v1.5.87",
-  "rel_pub": "2026-10-11",
+  "commit_7d": 5,
+  "commit_90d": 80,
+  "rel_ver": "v1.5.88",
+  "rel_pub": "2026-10-18",
   "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
@@ -161,10 +161,10 @@
    "HTML": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -194,11 +194,11 @@
   }
  },
  "datajuicer/data-juicer": {
-  "commit_7d": 7,
-  "commit_90d": 66,
-  "rel_ver": "v1.6.0",
-  "rel_pub": "2026-09-09",
-  "rel_days": 37,
+  "commit_7d": 9,
+  "commit_90d": 70,
+  "rel_ver": "v1.6.1",
+  "rel_pub": "2026-10-19",
+  "rel_days": 4,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -214,10 +214,10 @@
    "Dockerfile": 0,
    "Cython": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -248,11 +248,11 @@
   }
  },
  "BehaviorTree/BehaviorTree.CPP": {
-  "commit_7d": 7,
+  "commit_7d": 4,
   "commit_90d": 35,
   "rel_ver": "4.9.0",
   "rel_pub": "2026-02-11",
-  "rel_days": 247,
+  "rel_days": 254,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -267,21 +267,21 @@
    "Python": 0,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "Chevey339/kelivo": {
-  "commit_7d": 15,
-  "commit_90d": 653,
+  "commit_7d": 73,
+  "commit_90d": 714,
   "rel_ver": "v1.3.1",
   "rel_pub": "2026-10-09",
-  "rel_days": 7,
+  "rel_days": 14,
   "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
@@ -297,21 +297,21 @@
    "HTML": 1,
    "Objective-C": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "microsoft/mcp": {
-  "commit_7d": 31,
-  "commit_90d": 503,
-  "rel_ver": "Template.Mcp.Server-0.0.12-alpha.6964643",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
+  "commit_7d": 38,
+  "commit_90d": 493,
+  "rel_ver": "Template.Mcp.Server-0.0.12-alpha.6990318",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -327,10 +327,10 @@
    "TypeScript": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -3101,6 +3101,26 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "loyiv/CoMAP": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 97,
+   "Shell": 3
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

@@ -1,11 +1,11 @@
 {
  "AlexsJones/llmfit": {
-  "commit_7d": 22,
-  "commit_90d": 305,
+  "commit_7d": 9,
+  "commit_90d": 262,
   "rel_ver": "v1.1.17",
   "rel_pub": "2026-10-08",
-  "rel_days": 8,
-  "rel_n90": 12,
+  "rel_days": 15,
+  "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -20,21 +20,21 @@
    "CSS": 1,
    "Shell": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "openai/openai-python": {
-  "commit_7d": 33,
-  "commit_90d": 337,
-  "rel_ver": "v3.31.0",
-  "rel_pub": "2026-10-14",
-  "rel_days": 2,
+  "commit_7d": 60,
+  "commit_90d": 386,
+  "rel_ver": "v3.37.0",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -50,18 +50,18 @@
    "Dockerfile": 0,
    "Ruby": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "cactus-compute/needle": {
-  "commit_7d": 12,
-  "commit_90d": 120,
+  "commit_7d": 13,
+  "commit_90d": 129,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -76,10 +76,10 @@
    "HTML": 1,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -138,11 +138,11 @@
   }
  },
  "agentscope-ai/agentscope-java": {
-  "commit_7d": 46,
-  "commit_90d": 354,
+  "commit_7d": 45,
+  "commit_90d": 383,
   "rel_ver": "v2.1.0-BETA1",
   "rel_pub": "2026-10-08",
-  "rel_days": 8,
+  "rel_days": 15,
   "rel_n90": 5,
   "rel_pre": true,
   "rel_none": false,
@@ -158,10 +158,10 @@
    "Python": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2738,6 +2738,75 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "KacemMathlouthi/metis": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 53,
+   "Python": 44,
+   "CSS": 1,
+   "JavaScript": 1,
+   "Makefile": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "dshakes/compass": {
+  "rel_ver": "v2.2.0",
+  "rel_pub": "2026-07-27",
+  "rel_days": 88,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Shell": 90,
+   "Python": 6,
+   "JavaScript": 3,
+   "Go Template": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "przeprogramowani/agent-forum": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

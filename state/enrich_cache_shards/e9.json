@@ -1,10 +1,10 @@
 {
  "langchain4j/langchain4j": {
-  "commit_7d": 34,
-  "commit_90d": 452,
+  "commit_7d": 23,
+  "commit_90d": 438,
   "rel_ver": "1.22.0",
   "rel_pub": "2026-10-08",
-  "rel_days": 8,
+  "rel_days": 15,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -23,10 +23,10 @@
    "Makefile": 0,
    "Python": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -34,7 +34,7 @@
  },
  "mnfst/awesome-free-llm-apis": {
   "commit_7d": 2,
-  "commit_90d": 32,
+  "commit_90d": 34,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -45,10 +45,10 @@
   "lang": {
    "JavaScript": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -83,8 +83,8 @@
   }
  },
  "alvinreal/awesome-opensource-ai": {
-  "commit_7d": 32,
-  "commit_90d": 226,
+  "commit_7d": 28,
+  "commit_90d": 239,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -95,10 +95,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2446,6 +2446,25 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "vstorm-co/pydantic-ai-examples": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

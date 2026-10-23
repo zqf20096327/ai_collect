@@ -1,10 +1,10 @@
 {
  "livekit/agents": {
-  "commit_7d": 61,
-  "commit_90d": 563,
+  "commit_7d": 82,
+  "commit_90d": 607,
   "rel_ver": "livekit-agents@1.8.8",
   "rel_pub": "2026-10-15",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -21,21 +21,21 @@
    "Makefile": 0,
    "CMake": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "BasedHardware/omi": {
-  "commit_7d": 1012,
-  "commit_90d": 12216,
-  "rel_ver": "v0.12.493+12493-macos",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
+  "commit_7d": 1990,
+  "commit_90d": 12183,
+  "rel_ver": "v0.12.524+12524-macos",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -51,10 +51,10 @@
    "TypeScript": 13,
    "C": 6
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

@@ -1,11 +1,11 @@
 {
  "RSSNext/Folo": {
-  "commit_7d": 413,
-  "commit_90d": 563,
-  "rel_ver": "mobile/v0.6.0",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
-  "rel_n90": 11,
+  "commit_7d": 168,
+  "commit_90d": 720,
+  "rel_ver": "mobile/v0.6.1",
+  "rel_pub": "2026-10-19",
+  "rel_days": 4,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 4,
@@ -25,18 +25,18 @@
    "JavaScript": 1,
    "HTML": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "ai-collection/ai-collection": {
-  "commit_7d": 10,
-  "commit_90d": 109,
+  "commit_7d": 8,
+  "commit_90d": 117,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -45,10 +45,10 @@
   "sec_ids": [],
   "contrib_n": 45,
   "lang": {},
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -56,10 +56,10 @@
  },
  "google/agents-cli": {
   "commit_7d": 1,
-  "commit_90d": 14,
-  "rel_ver": "v1.10.0",
-  "rel_pub": "2026-10-12",
-  "rel_days": 4,
+  "commit_90d": 13,
+  "rel_ver": "v1.11.0",
+  "rel_pub": "2026-10-20",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -75,10 +75,10 @@
    "Makefile": 1,
    "Java": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

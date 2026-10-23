@@ -1,10 +1,10 @@
 {
  "browser-use/browser-use": {
-  "commit_7d": 41,
-  "commit_90d": 503,
+  "commit_7d": 64,
+  "commit_90d": 497,
   "rel_ver": "0.13.13",
   "rel_pub": "2026-10-15",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
@@ -21,10 +21,10 @@
    "Dockerfile": 0,
    "HTML": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -113,12 +113,12 @@
   }
  },
  "obss/sahi": {
-  "commit_90d": 72,
+  "commit_90d": 63,
   "commit_7d": 1,
   "rel_ver": "0.12.8",
   "rel_pub": "2026-09-30",
-  "rel_days": 16,
-  "rel_n90": 7,
+  "rel_days": 23,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -130,10 +130,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -171,10 +171,10 @@
  },
  "grobidOrg/grobid": {
   "commit_90d": 63,
-  "commit_7d": 3,
+  "commit_7d": 4,
   "rel_ver": "0.9.1",
   "rel_pub": "2026-08-04",
-  "rel_days": 73,
+  "rel_days": 80,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -193,22 +193,22 @@
    "Kotlin": 3,
    "Ruby": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "makcedward/nlpaug": {
-  "commit_90d": 81,
-  "commit_7d": 81,
-  "rel_ver": "2.0.6",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
-  "rel_n90": 6,
+  "commit_90d": 109,
+  "commit_7d": 36,
+  "rel_ver": "2.0.7",
+  "rel_pub": "2026-10-17",
+  "rel_days": 6,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -222,10 +222,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2790,6 +2790,23 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "badmuriss/unslop": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

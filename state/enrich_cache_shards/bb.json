@@ -1,10 +1,10 @@
 {
  "CherryHQ/cherry-studio": {
-  "commit_7d": 206,
-  "commit_90d": 2033,
-  "rel_ver": "v2.1.6",
-  "rel_pub": "2026-10-11",
-  "rel_days": 5,
+  "commit_7d": 154,
+  "commit_90d": 2087,
+  "rel_ver": "v2.1.7",
+  "rel_pub": "2026-10-19",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -25,10 +25,10 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -85,11 +85,11 @@
   }
  },
  "gpustack/gpustack": {
-  "commit_7d": 55,
-  "commit_90d": 432,
-  "rel_ver": "v2.3.0rc3",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
+  "commit_7d": 52,
+  "commit_90d": 455,
+  "rel_ver": "v2.3.0rc4",
+  "rel_pub": "2026-10-21",
+  "rel_days": 2,
   "rel_n90": 6,
   "rel_pre": true,
   "rel_none": false,
@@ -109,10 +109,10 @@
    "Dockerfile": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -161,10 +161,10 @@
   }
  },
  "homeassistant-ai/ha-mcp": {
-  "commit_7d": 65,
-  "commit_90d": 1056,
-  "rel_ver": "v8.7.0.dev3056",
-  "rel_pub": "2026-10-16",
+  "commit_7d": 77,
+  "commit_90d": 1026,
+  "rel_ver": "v9.0.0.dev3132",
+  "rel_pub": "2026-10-23",
   "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": true,
@@ -187,10 +187,10 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2808,5 +2808,18 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "Gabriel-sy/OmniSubs": {
+  "rel_ver": "v2.0",
+  "rel_pub": "2025-02-28",
+  "rel_days": 602,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1
  }
 }

@@ -1,10 +1,10 @@
 {
  "ollama/ollama-python": {
   "commit_7d": 1,
-  "commit_90d": 6,
+  "commit_90d": 5,
   "rel_ver": "v0.6.3",
   "rel_pub": "2026-09-29",
-  "rel_days": 17,
+  "rel_days": 24,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -16,10 +16,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2242,7 +2242,27 @@
    "lang": "20261022"
   }
  },
- "vastxie/ai-worldcup-2026": {},
+ "vastxie/ai-worldcup-2026": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 67,
+   "HTML": 32,
+   "Shell": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
  "Azure-Samples/data-extraction-using-azure-content-understanding": {
   "rel_ver": null,
   "rel_none": true,
@@ -2304,6 +2324,54 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "Clarifai/examples": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 21,
+  "lang": {
+   "Jupyter Notebook": 97,
+   "Python": 3,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "sparckix/ztare": {
+  "rel_ver": "v1.2.4",
+  "rel_pub": "2026-07-17",
+  "rel_days": 98,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 59,
+   "Lean": 21,
+   "HTML": 17,
+   "JavaScript": 2,
+   "TeX": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

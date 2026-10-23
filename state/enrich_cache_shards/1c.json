@@ -24,11 +24,11 @@
   }
  },
  "bentoml/BentoML": {
-  "commit_90d": 6,
-  "commit_7d": 0,
+  "commit_90d": 7,
+  "commit_7d": 1,
   "rel_ver": "v1.4.39",
   "rel_pub": "2026-05-07",
-  "rel_days": 162,
+  "rel_days": 169,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -53,10 +53,10 @@
    "Starlark": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -64,10 +64,10 @@
  },
  "jeinlee1991/chinese-llm-benchmark": {
   "commit_90d": 29,
-  "commit_7d": 3,
+  "commit_7d": 2,
   "rel_ver": "v5.10",
   "rel_pub": "2026-04-21",
-  "rel_days": 178,
+  "rel_days": 185,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -77,21 +77,21 @@
   "sec_ids": [],
   "contrib_n": 2,
   "lang": {},
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "buxuku/SmartSub": {
-  "commit_90d": 262,
-  "commit_7d": 98,
-  "rel_ver": "v3.10.1",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
+  "commit_90d": 292,
+  "commit_7d": 57,
+  "rel_ver": "v3.11.0",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
   "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
@@ -107,18 +107,18 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "microsoft/agent-academy": {
-  "commit_90d": 243,
-  "commit_7d": 5,
+  "commit_90d": 216,
+  "commit_7d": 17,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -130,10 +130,10 @@
    "JavaScript": 86,
    "PowerShell": 14
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

@@ -1,7 +1,7 @@
 {
  "shanraisshan/claude-code-best-practice": {
-  "commit_7d": 55,
-  "commit_90d": 947,
+  "commit_7d": 75,
+  "commit_90d": 953,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -13,10 +13,10 @@
    "HTML": 95,
    "Python": 5
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -83,12 +83,12 @@
   }
  },
  "WasmEdge/WasmEdge": {
-  "commit_7d": 32,
-  "commit_90d": 257,
-  "rel_ver": "0.18.0",
-  "rel_pub": "2026-10-05",
-  "rel_days": 11,
-  "rel_n90": 11,
+  "commit_7d": 29,
+  "commit_90d": 264,
+  "rel_ver": "0.18.1",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 1,
@@ -105,21 +105,21 @@
    "Shell": 1,
    "Pawn": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "oumi-ai/oumi": {
-  "commit_7d": 4,
-  "commit_90d": 114,
+  "commit_7d": 9,
+  "commit_90d": 113,
   "rel_ver": "v0.9",
   "rel_pub": "2026-09-16",
-  "rel_days": 30,
+  "rel_days": 37,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -135,18 +135,18 @@
    "Jinja": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "vladmandic/sdnext": {
-  "commit_7d": 2,
-  "commit_90d": 848,
+  "commit_7d": 44,
+  "commit_90d": 969,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 7,
@@ -169,10 +169,10 @@
    "JavaScript": 0,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -3444,9 +3444,74 @@
  "product-on-purpose/thinking-framework-skills": {
   "rel_ver": "v0.18.6",
   "rel_pub": "2026-10-20",
-  "rel_days": 2,
+  "rel_days": 3,
   "rel_n90": 11,
   "rel_pre": false,
-  "rel_none": false
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 96,
+   "MDX": 3,
+   "Astro": 1,
+   "CSS": 0,
+   "TypeScript": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "yohanvillarp/metamorph": {
+  "rel_ver": "v2.2.0",
+  "rel_pub": "2026-10-09",
+  "rel_days": 14,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "TypeScript": 97,
+   "JavaScript": 2,
+   "CSS": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "ruvnet/llm-stream-reformat": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 57,
+   "JavaScript": 43
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

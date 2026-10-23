@@ -30,11 +30,11 @@
   }
  },
  "junhoyeo/tokscale": {
-  "commit_7d": 67,
-  "commit_90d": 492,
-  "rel_ver": "v4.19.1",
-  "rel_pub": "2026-10-15",
-  "rel_days": 1,
+  "commit_7d": 45,
+  "commit_90d": 494,
+  "rel_ver": "v4.20.0",
+  "rel_pub": "2026-10-17",
+  "rel_days": 6,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -50,10 +50,10 @@
    "Python": 1,
    "HTML": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -110,12 +110,12 @@
   }
  },
  "elie222/rakazo": {
-  "commit_7d": 130,
-  "commit_90d": 1275,
-  "rel_ver": "v0.2.0",
-  "rel_pub": "2026-10-10",
-  "rel_days": 6,
-  "rel_n90": 10,
+  "commit_7d": 426,
+  "commit_90d": 1682,
+  "rel_ver": "v0.3.3",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -130,10 +130,10 @@
    "CSS": 1,
    "Python": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2938,9 +2938,41 @@
  "GobbyAI/gobby": {
   "rel_ver": "ghook-v0.7.2",
   "rel_pub": "2026-07-15",
-  "rel_days": 99,
+  "rel_days": 100,
   "rel_n90": 0,
   "rel_pre": false,
-  "rel_none": false
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 81,
+   "TypeScript": 13,
+   "JavaScript": 6,
+   "CSS": 1,
+   "PLpgSQL": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "i365dev/community-tldr": {
+  "rel_ver": "v1.1.4",
+  "rel_pub": "2025-03-08",
+  "rel_days": 594,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1
  }
 }

@@ -1,10 +1,10 @@
 {
  "langchain-ai/deepagents": {
-  "commit_7d": 86,
-  "commit_90d": 1420,
-  "rel_ver": "deepagents==0.7.27",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
+  "commit_7d": 125,
+  "commit_90d": 1362,
+  "rel_ver": "deepagents==0.7.30",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -23,10 +23,10 @@
    "Makefile": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

@@ -28,12 +28,12 @@
   }
  },
  "modelscope/ms-swift": {
-  "commit_7d": 21,
-  "commit_90d": 341,
+  "commit_7d": 19,
+  "commit_90d": 337,
   "rel_ver": "v4.6.0",
   "rel_pub": "2026-10-13",
-  "rel_days": 3,
-  "rel_n90": 6,
+  "rel_days": 10,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 3,
@@ -50,10 +50,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -107,11 +107,11 @@
   }
  },
  "kucherenko/jscpd": {
-  "commit_90d": 683,
-  "commit_7d": 38,
-  "rel_ver": "v5.4.1",
-  "rel_pub": "2026-10-09",
-  "rel_days": 7,
+  "commit_90d": 719,
+  "commit_7d": 63,
+  "rel_ver": "v5.4.2",
+  "rel_pub": "2026-10-20",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -127,10 +127,10 @@
    "TypeScript": 2,
    "Shell": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

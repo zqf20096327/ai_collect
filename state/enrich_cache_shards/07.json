@@ -1,10 +1,10 @@
 {
  "VectifyAI/PageIndex": {
-  "commit_7d": 18,
-  "commit_90d": 182,
-  "rel_ver": "v0.4.1",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
+  "commit_7d": 32,
+  "commit_90d": 208,
+  "rel_ver": "v0.4.5",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -16,18 +16,18 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "zoicware/RemoveWindowsAI": {
-  "commit_7d": 8,
-  "commit_90d": 64,
+  "commit_7d": 5,
+  "commit_90d": 69,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -39,21 +39,21 @@
    "PowerShell": 98,
    "Wolfram Language": 2
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "cloudwego/eino": {
-  "commit_7d": 0,
-  "commit_90d": 14,
-  "rel_ver": "v0.9.21",
-  "rel_pub": "2026-09-23",
-  "rel_days": 23,
+  "commit_7d": 1,
+  "commit_90d": 12,
+  "rel_ver": "v0.9.22",
+  "rel_pub": "2026-10-19",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -66,21 +66,21 @@
    "Go": 100,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "openchamber/openchamber": {
-  "commit_7d": 362,
-  "commit_90d": 2912,
-  "rel_ver": "v2.3.3",
-  "rel_pub": "2026-10-14",
-  "rel_days": 2,
+  "commit_7d": 409,
+  "commit_90d": 3248,
+  "rel_ver": "v2.5.1",
+  "rel_pub": "2026-10-23",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -96,10 +96,10 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -126,10 +126,10 @@
   }
  },
  "leejet/stable-diffusion.cpp": {
-  "commit_90d": 187,
-  "commit_7d": 20,
-  "rel_ver": "master-968-8cd731e",
-  "rel_pub": "2026-10-15",
+  "commit_90d": 200,
+  "commit_7d": 27,
+  "rel_ver": "master-995-fd21ecf",
+  "rel_pub": "2026-10-22",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -153,10 +153,10 @@
    "CMake": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2767,6 +2767,55 @@
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
+  }
+ },
+ "Julien-Livet/aicpp": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 72,
+   "Python": 26,
+   "CMake": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "Thanatos9404/llmslim": {
+  "rel_ver": "v0.11.1",
+  "rel_pub": "2026-10-17",
+  "rel_days": 6,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 74,
+   "TypeScript": 22,
+   "CSS": 3,
+   "Jupyter Notebook": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
   }
  }
 }

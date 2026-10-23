@@ -1,10 +1,10 @@
 {
  "dmlc/xgboost": {
-  "commit_7d": 33,
-  "commit_90d": 224,
+  "commit_7d": 7,
+  "commit_90d": 212,
   "rel_ver": "v3.4.2",
   "rel_pub": "2026-09-15",
-  "rel_days": 31,
+  "rel_days": 38,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -20,17 +20,17 @@
    "R": 7,
    "Scala": 5
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "liyupi/ai-guide": {
-  "commit_7d": 0,
+  "commit_7d": 1,
   "commit_90d": 13,
   "rel_ver": null,
   "rel_none": true,
@@ -46,21 +46,21 @@
    "Stylus": 0,
    "HTML": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "doocs/md": {
-  "commit_7d": 1,
-  "commit_90d": 103,
+  "commit_7d": 3,
+  "commit_90d": 100,
   "rel_ver": "v2.1.0",
   "rel_pub": "2025-10-17",
-  "rel_days": 364,
+  "rel_days": 371,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -76,21 +76,21 @@
    "CSS": 1,
    "Less": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "apify/apify-mcp-server": {
-  "commit_7d": 71,
-  "commit_90d": 308,
-  "rel_ver": "v0.18.4",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
+  "commit_7d": 38,
+  "commit_90d": 302,
+  "rel_ver": "v0.19.3",
+  "rel_pub": "2026-10-21",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -109,10 +109,10 @@
    "Shell": 0,
    "HTML": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -179,12 +179,12 @@
   }
  },
  "mock-server/mockserver-monorepo": {
-  "commit_90d": 1780,
-  "commit_7d": 254,
-  "rel_ver": "mockserver-9.0.0",
-  "rel_pub": "2026-10-15",
-  "rel_days": 1,
-  "rel_n90": 4,
+  "commit_90d": 1707,
+  "commit_7d": 149,
+  "rel_ver": "mockserver-9.1.0",
+  "rel_pub": "2026-10-21",
+  "rel_days": 2,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 1,
@@ -201,10 +201,10 @@
    "Shell": 5,
    "JavaScript": 3
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -3206,5 +3206,41 @@
    "contrib": "20261022",
    "lang": "20261022"
   }
+ },
+ "tchivs/gsd-omp": {
+  "rel_ver": "v1.0.25",
+  "rel_pub": "2026-09-30",
+  "rel_days": 23,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "S0L0GUY/NOVA-AI": {
+  "rel_ver": "v2026.4.21",
+  "rel_pub": "2026-04-22",
+  "rel_days": 184,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4
  }
 }

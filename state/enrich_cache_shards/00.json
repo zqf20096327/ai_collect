@@ -26,10 +26,10 @@
   }
  },
  "genspark-ai/genoffice": {
-  "commit_7d": 63,
-  "commit_90d": 952,
-  "rel_ver": "v0.11.829",
-  "rel_pub": "2026-10-15",
+  "commit_7d": 46,
+  "commit_90d": 992,
+  "rel_ver": "v0.12.29",
+  "rel_pub": "2026-10-22",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -46,10 +46,10 @@
    "JavaScript": 1,
    "Python": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -79,7 +79,7 @@
  },
  "zebbern/claude-code-guide": {
   "commit_90d": 76,
-  "commit_7d": 3,
+  "commit_7d": 6,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -93,10 +93,10 @@
    "Shell": 5,
    "TypeScript": 4
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2692,8 +2692,57 @@
    "lang": "20261022"
   }
  },
- "codewithbro95/openmind": {},
- "godfaddaai/multiplayer-ai": {},
+ "codewithbro95/openmind": {
+  "rel_ver": "v0.0.7",
+  "rel_pub": "2026-07-22",
+  "rel_days": 93,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100,
+   "HTML": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "godfaddaai/multiplayer-ai": {
+  "rel_ver": "v0.4.19",
+  "rel_pub": "2026-08-03",
+  "rel_days": 81,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 77,
+   "CSS": 14,
+   "HTML": 9,
+   "Ruby": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
  "mrviduus/textstack": {
   "rel_ver": "v0.1.0",
   "rel_pub": "2026-05-06",

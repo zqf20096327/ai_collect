@@ -1,10 +1,10 @@
 {
  "unslothai/unsloth": {
-  "commit_7d": 744,
-  "commit_90d": 4991,
-  "rel_ver": "v0.1.908-beta",
-  "rel_pub": "2026-10-15",
-  "rel_days": 1,
+  "commit_7d": 664,
+  "commit_90d": 5444,
+  "rel_ver": "v0.1.909-beta",
+  "rel_pub": "2026-10-19",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -20,21 +20,21 @@
    "Shell": 2,
    "Rust": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "can1357/oh-my-pi": {
-  "commit_7d": 2157,
-  "commit_90d": 16632,
-  "rel_ver": "v18.11.2",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
+  "commit_7d": 2059,
+  "commit_90d": 17757,
+  "rel_ver": "v18.12.6",
+  "rel_pub": "2026-10-21",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -50,10 +50,10 @@
    "CSS": 0,
    "Nix": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -111,11 +111,11 @@
   }
  },
  "vllm-project/semantic-router": {
-  "commit_90d": 1202,
-  "commit_7d": 166,
+  "commit_90d": 1260,
+  "commit_7d": 108,
   "rel_ver": "v0.4.0",
   "rel_pub": "2026-09-27",
-  "rel_days": 19,
+  "rel_days": 26,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -131,10 +131,10 @@
    "CSS": 2,
    "Shell": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261023",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261023",
+   "release": "20261023",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
