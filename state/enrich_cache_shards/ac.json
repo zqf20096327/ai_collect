@@ -2889,5 +2889,122 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "Carasibana/NarrativeNode": {
+  "rel_ver": "v1.0.0.0",
+  "rel_pub": "2026-07-08",
+  "rel_days": 107,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 78,
+   "Python": 22,
+   "CSS": 1,
+   "Batchfile": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "MafiAtUN/osaa-unga-analysis": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "Shell": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "OpenScribbler/syllago": {
+  "rel_ver": "v0.15.0",
+  "rel_pub": "2026-10-02",
+  "rel_days": 21,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Go": 99,
+   "Shell": 1,
+   "JavaScript": 0,
+   "Makefile": 0,
+   "Python": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "hoangnhat42/guru-mono": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 50,
+   "Python": 31,
+   "Go": 15,
+   "CSS": 2,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "mikonos/LLM-GTD": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Shell": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

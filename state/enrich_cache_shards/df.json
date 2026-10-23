@@ -3132,5 +3132,166 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "kcitlyn/PolyScribe": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "aryankumar06/Dailysync.ai": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 89,
+   "PLpgSQL": 9,
+   "CSS": 1,
+   "JavaScript": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "SFzxc/aipocket": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 86,
+   "CSS": 9,
+   "HTML": 5,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "photon-hq/buildspace": {
+  "rel_ver": "v1.9.0",
+  "rel_pub": "2026-06-02",
+  "rel_days": 143,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "JavaScript": 65,
+   "Python": 35
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "MatheusKindrazki/clauderc": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-01-24",
+  "rel_days": 272,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "sap-tutorials/tutorials-ims": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "JavaScript": 64,
+   "TypeScript": 21,
+   "Vue": 6,
+   "CAP CDS": 3,
+   "HTML": 3
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "cih1996/AgentKernel": {
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-05-24",
+  "rel_days": 152,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 55,
+   "JavaScript": 22,
+   "HTML": 15,
+   "CSS": 6,
+   "Shell": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

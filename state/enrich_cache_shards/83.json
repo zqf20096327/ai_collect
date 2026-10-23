@@ -3433,5 +3433,29 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "yaniv-golan/pretext-skill": {
+  "rel_ver": "v0.2.2",
+  "rel_pub": "2026-07-14",
+  "rel_days": 101,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 66,
+   "Shell": 34
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

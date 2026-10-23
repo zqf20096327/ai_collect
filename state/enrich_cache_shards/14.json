@@ -3127,5 +3127,97 @@
    "lang": "20261023"
   }
  },
- "f/poke-tui": {}
+ "f/poke-tui": {
+  "rel_ver": "v0.0.1",
+  "rel_pub": "2026-03-23",
+  "rel_days": 214,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "AniaBot-Project/AniaBot": {
+  "rel_ver": "v4.8.0",
+  "rel_pub": "2026-10-20",
+  "rel_days": 3,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Go": 87,
+   "Vue": 11,
+   "JavaScript": 2,
+   "CSS": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "camail-official/LinearAttentionPruning": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "Shell": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "Responsible-AI-Labs/rail-score-sdk": {
+  "rel_ver": "v2.6.1",
+  "rel_pub": "2026-06-07",
+  "rel_days": 138,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ }
 }

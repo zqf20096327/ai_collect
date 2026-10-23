@@ -3281,5 +3281,128 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "miroslav-reiter/miroslav-reiter": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "yeet-src/claudefeed": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "C": 39,
+   "JavaScript": 38,
+   "Makefile": 12,
+   "Shell": 12
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "Poll-The-People/customgpt-integrations": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 72,
+   "JavaScript": 26,
+   "TypeScript": 1,
+   "CSS": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "warrence/openclaw-hearth": {
+  "rel_ver": "v1.0.3",
+  "rel_pub": "2026-04-23",
+  "rel_days": 183,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 56,
+   "Vue": 29,
+   "JavaScript": 12,
+   "Shell": 2,
+   "SCSS": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "amdadulbari/ai-devops-roadmap": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "ekkodale/hugo-Community": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

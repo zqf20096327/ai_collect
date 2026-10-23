@@ -2924,5 +2924,75 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "itmo-mbss-lab/sr_labs_book": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 98,
+   "Python": 2,
+   "Perl": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "synpulse8-opensource/pulse8-ai-cortex-knowledge-vault": {
+  "rel_ver": "v1.6.0",
+  "rel_pub": "2026-07-27",
+  "rel_days": 88,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 94,
+   "Shell": 4,
+   "JavaScript": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "caichuanwang/OpenDocs": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-08-17",
+  "rel_days": 67,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

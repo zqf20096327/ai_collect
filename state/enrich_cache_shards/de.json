@@ -3035,5 +3035,85 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "huanyuzhilv/skills-travel-planner": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-06-01",
+  "rel_days": 144,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "HTML": 50,
+   "Python": 46,
+   "Shell": 3,
+   "CSS": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "ramonsesma/live-studio": {
+  "rel_ver": "v1.2.2",
+  "rel_pub": "2026-07-09",
+  "rel_days": 106,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 70,
+   "JavaScript": 28,
+   "CSS": 1,
+   "Python": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "federiconeri/wiggum-cli": {
+  "rel_ver": "v0.18.3",
+  "rel_pub": "2026-04-08",
+  "rel_days": 198,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 92,
+   "Shell": 4,
+   "Go Template": 4,
+   "HTML": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

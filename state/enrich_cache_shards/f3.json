@@ -2973,5 +2973,31 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "iFulling/cdcasSK": {
+  "rel_ver": "v4.6.0",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 69,
+   "CSS": 15,
+   "HTML": 15,
+   "TypeScript": 2
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

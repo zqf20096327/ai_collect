@@ -3068,5 +3068,50 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "gosomea/dsh-godot-ai": {
+  "rel_ver": "v0.7.0",
+  "rel_pub": "2026-10-07",
+  "rel_days": 16,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "TypeScript": 85,
+   "JavaScript": 15
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "jnMetaCode/agency-agents-ru": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Shell": 59,
+   "PowerShell": 39,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

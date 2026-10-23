@@ -2793,5 +2793,78 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "mdruhulkuddus/awesome-free-ai-tools": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "CSS": 39,
+   "JavaScript": 37,
+   "HTML": 24
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "ngocsangyem/MeowKit": {
+  "rel_ver": "v2.15.0",
+  "rel_pub": "2026-07-27",
+  "rel_days": 88,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 38,
+   "MDX": 21,
+   "Python": 14,
+   "JavaScript": 12,
+   "Shell": 8
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "NotYuSheng/Doppelganger": {
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-06-23",
+  "rel_days": 122,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 97,
+   "Shell": 2,
+   "Batchfile": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

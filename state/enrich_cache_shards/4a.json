@@ -2740,5 +2740,82 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "crisandrews/claude-whatsapp": {
+  "rel_ver": "v1.21.1",
+  "rel_pub": "2026-07-29",
+  "rel_days": 86,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 98,
+   "JavaScript": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "alfaro96/scikit-lr": {
+  "rel_ver": "0.3.0",
+  "rel_pub": "2026-10-17",
+  "rel_days": 6,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 82,
+   "Cython": 13,
+   "Shell": 3,
+   "Meson": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "iOSDevSK/mcp-for-woocommerce": {
+  "rel_ver": "v1.3.0",
+  "rel_pub": "2026-10-07",
+  "rel_days": 16,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "PHP": 86,
+   "JavaScript": 9,
+   "Shell": 4,
+   "CSS": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

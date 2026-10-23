@@ -2831,5 +2831,126 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "fadhiilahahmadzikri/mortemtrimmer": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-06-11",
+  "rel_days": 134,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "SlavkoPrytula/QCell": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 85,
+   "HTML": 11,
+   "CSS": 4
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "julilien/LabelRelaxation": {
+  "rel_ver": "v0.2.1",
+  "rel_pub": "2026-08-16",
+  "rel_days": 68,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "OHDSI/DeepPatientLevelPrediction": {
+  "rel_ver": "v2.4.0",
+  "rel_pub": "2026-09-28",
+  "rel_days": 25,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "R": 54,
+   "Python": 45,
+   "Dockerfile": 1,
+   "Shell": 0,
+   "Perl": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "Secure-Vector/securevector-ai-threat-monitor": {
+  "rel_ver": "v6.0.1",
+  "rel_pub": "2026-10-09",
+  "rel_days": 14,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 49,
+   "Python": 47,
+   "CSS": 3,
+   "TypeScript": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

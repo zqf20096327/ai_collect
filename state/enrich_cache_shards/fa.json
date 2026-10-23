@@ -2984,5 +2984,55 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "pinecone-io/pulumi-pinecone-byoc": {
+  "rel_ver": "v0.6.2",
+  "rel_pub": "2026-10-12",
+  "rel_days": 11,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Python": 99,
+   "Shell": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "cv-superding/dsweb-proxy": {
+  "rel_ver": "v0.1.2",
+  "rel_pub": "2026-09-23",
+  "rel_days": 30,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 62,
+   "JavaScript": 31,
+   "HTML": 4,
+   "Rust": 3
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

@@ -2986,5 +2986,130 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "OpenAgentHQ/openagent-eval": {
+  "rel_ver": "v0.4.10",
+  "rel_pub": "2026-08-23",
+  "rel_days": 61,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 26,
+  "lang": {
+   "Python": 97,
+   "HTML": 2,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "langfuse/experiment-action": {
+  "rel_ver": "v1.0.12",
+  "rel_pub": "2026-10-19",
+  "rel_days": 4,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "TypeScript": 85,
+   "JavaScript": 10,
+   "Python": 5,
+   "Shell": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "openaudr/audr": {
+  "rel_ver": "spec/v1.1.0",
+  "rel_pub": "2026-10-12",
+  "rel_days": 11,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 66,
+   "Python": 32,
+   "JavaScript": 1,
+   "Makefile": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "FidarOrg/mcpfoundry": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 58,
+   "Handlebars": 23,
+   "JavaScript": 19
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "raydeStar/sir-thaddeus": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-07-30",
+  "rel_days": 85,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "C#": 80,
+   "TypeScript": 12,
+   "PowerShell": 4,
+   "JavaScript": 2,
+   "Python": 2
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

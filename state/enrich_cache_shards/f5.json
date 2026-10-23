@@ -3301,5 +3301,199 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "Chamanrajragu/claude-multi": {
+  "rel_ver": "v1.30.7",
+  "rel_pub": "2026-09-04",
+  "rel_days": 49,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 80,
+   "CSS": 14,
+   "HTML": 6
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "0xJaksun/lithium-core": {
+  "rel_ver": "v0.0.5",
+  "rel_pub": "2026-05-29",
+  "rel_days": 147,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 98,
+   "Go Template": 2
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "stanislavkozlovski/dclaude": {
+  "rel_ver": "v0.1.93",
+  "rel_pub": "2026-09-18",
+  "rel_days": 35,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 80,
+   "Shell": 20,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "FlorianBx/status-bar-claude": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Shell": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "angelafeliciaa/xCreator": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 99,
+   "CSS": 1,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "lowcache/mcp-box": {
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-06-07",
+  "rel_days": 138,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 54,
+   "Nix": 20,
+   "Python": 17,
+   "Shell": 9,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "ToruAI/toru-claude-agents": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-01-25",
+  "rel_days": 271,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Shell": 65,
+   "Python": 35
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "mareforma/mareforma": {
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-09-10",
+  "rel_days": 43,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 5,
+  "sec_worst": "high",
+  "sec_last": "2026-07-07",
+  "sec_ids": [
+   "GHSA-hxh5-gp44-rc6p(CVE-2026-71536,medium)",
+   "GHSA-xfq4-8hf9-5h43(CVE-2026-71534,high)",
+   "GHSA-rgg9-956j-3378(CVE-2026-71500,high)",
+   "GHSA-m29v-3g7g-9c63(CVE-2026-71533,high)",
+   "GHSA-8776-qf3h-26r3(CVE-2026-71535,high)"
+  ],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

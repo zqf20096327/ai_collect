@@ -2989,6 +2989,47 @@
   "sec_worst": null,
   "sec_last": null,
   "sec_ids": [],
-  "contrib_n": 5
+  "contrib_n": 5,
+  "lang": {
+   "Jupyter Notebook": 87,
+   "Python": 13,
+   "Shell": 0,
+   "Dockerfile": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "gamedevpl/www.gamedev.pl": {
+  "rel_ver": "cli-v0.56.0",
+  "rel_pub": "2026-10-21",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 33,
+  "lang": {
+   "TypeScript": 93,
+   "CSS": 3,
+   "Shell": 2,
+   "JavaScript": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

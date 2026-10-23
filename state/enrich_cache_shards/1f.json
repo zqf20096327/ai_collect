@@ -2546,5 +2546,53 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "BieleckiLtd/IosScreenCaptureTool": {
+  "rel_ver": "v1.0.10",
+  "rel_pub": "2026-03-07",
+  "rel_days": 230,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C#": 99,
+   "PowerShell": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "mrwogu/factory-droid-openai": {
+  "rel_ver": "v1.13.0",
+  "rel_pub": "2026-10-07",
+  "rel_days": 16,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 99,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

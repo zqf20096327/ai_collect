@@ -3144,5 +3144,32 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "abhinaykrupa/cowork-to-code-bridge": {
+  "rel_ver": "v0.7.0",
+  "rel_pub": "2026-09-26",
+  "rel_days": 27,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Python": 82,
+   "Shell": 17,
+   "Makefile": 1,
+   "Ruby": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

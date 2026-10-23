@@ -2572,5 +2572,101 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "claudiocebpaz/vite-react-best-practices": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "verivus-oss/llm-cli-gateway": {
+  "rel_ver": "v3.2.1",
+  "rel_pub": "2026-09-09",
+  "rel_days": 44,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "TypeScript": 89,
+   "JavaScript": 8,
+   "Shell": 1,
+   "Go": 1,
+   "HTML": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "chandshy/mailpouch": {
+  "rel_ver": "v4.0.5",
+  "rel_pub": "2026-10-13",
+  "rel_days": 10,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "TypeScript": 93,
+   "JavaScript": 7,
+   "Rust": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "shreyashpatel5506/githubanalyzer": {
+  "rel_ver": "v1.3.0",
+  "rel_pub": "2026-01-13",
+  "rel_days": 283,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 13,
+  "lang": {
+   "TypeScript": 87,
+   "PLpgSQL": 6,
+   "JavaScript": 6,
+   "Shell": 1,
+   "CSS": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

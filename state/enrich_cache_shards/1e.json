@@ -3161,5 +3161,134 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "aayush-1709/ai-crop-disease-detection-agent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 19,
+  "lang": {
+   "HTML": 51,
+   "JavaScript": 27,
+   "CSS": 15,
+   "Python": 7
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "awesomo913/Claude-Token-Saver": {
+  "rel_ver": "v5.0.0",
+  "rel_pub": "2026-09-30",
+  "rel_days": 23,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 97,
+   "JavaScript": 1,
+   "CSS": 1,
+   "Shell": 0,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "NUGURI-7/CoCoWork": {
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-10-20",
+  "rel_days": 3,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 58,
+   "TypeScript": 39,
+   "HTML": 2,
+   "CSS": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "issacops/opencloser-v2": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-10-02",
+  "rel_days": 21,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 73,
+   "Rust": 17,
+   "HTML": 6,
+   "CSS": 3,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "aliyun/maxcompute-semantic": {
+  "rel_ver": "v0.18.3",
+  "rel_pub": "2026-09-14",
+  "rel_days": 39,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 95,
+   "HTML": 4,
+   "ANTLR": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

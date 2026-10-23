@@ -2487,5 +2487,114 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "Hiteshydv001/Guard-AI-Designing-Remote-Proctoring-System": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 14,
+  "lang": {
+   "TypeScript": 56,
+   "HTML": 14,
+   "Python": 13,
+   "CSS": 9,
+   "SCSS": 6
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "ictinnovations/ictcontact-mcp": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-09-01",
+  "rel_days": 52,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 87,
+   "JavaScript": 13
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "ggsharma/microgradpp": {
+  "rel_ver": "v0.1.0-alpha",
+  "rel_pub": "2024-10-14",
+  "rel_days": 739,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 76,
+   "Makefile": 18,
+   "CMake": 5,
+   "Python": 1,
+   "C": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "Mexes-GM/booru-prompt-gallery": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 89,
+   "JavaScript": 10,
+   "CSS": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "msu-denver/bili-core": {
+  "rel_ver": "v5.11.0",
+  "rel_pub": "2026-09-06",
+  "rel_days": 47,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7
  }
 }

@@ -3362,5 +3362,55 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "epicsagas/alcove": {
+  "rel_ver": "v0.14.1",
+  "rel_pub": "2026-10-23",
+  "rel_days": 0,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 99,
+   "JavaScript": 0,
+   "Tape": 0,
+   "Shell": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "buffer121328/vibe-coding-and-agents": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 80,
+   "JavaScript": 7,
+   "Mermaid": 6,
+   "HTML": 5,
+   "CSS": 2
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

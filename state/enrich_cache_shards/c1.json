@@ -3172,5 +3172,32 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "Yuch3nE/luciddesk": {
+  "rel_ver": "v0.23.0",
+  "rel_pub": "2026-10-23",
+  "rel_days": 0,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 81,
+   "Fluent": 8,
+   "PowerShell": 3,
+   "Python": 2,
+   "Astro": 2
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
  }
 }

@@ -3167,5 +3167,83 @@
    "lang": "20261023"
   }
  },
- "dshapi/AI-SPM": {}
+ "dshapi/AI-SPM": {
+  "rel_ver": "#ai-security",
+  "rel_pub": "2026-05-05",
+  "rel_days": 171,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 56,
+   "JavaScript": 37,
+   "Shell": 5,
+   "Open Policy Agent": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "ivan-magda/swift-claw": {
+  "rel_ver": "v0.16.1",
+  "rel_pub": "2026-10-22",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Swift": 99,
+   "Python": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ },
+ "DevOnBike/Overfit": {
+  "rel_ver": "10.0.29",
+  "rel_pub": "2026-07-05",
+  "rel_days": 110,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C#": 97,
+   "Python": 3,
+   "Batchfile": 0,
+   "PowerShell": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261023",
+  "dim_ts": {
+   "release": "20261023",
+   "security": "20261023",
+   "contrib": "20261023",
+   "lang": "20261023"
+  }
+ }
 }
