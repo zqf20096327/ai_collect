@@ -34,6 +34,7 @@
 |---------|-------------------|
 | **Portable `python_embeded` integration** | The GUI launches the upscaling engine through a configurable Python executable (the bundled portable `python_embeded`, or any interpreter you point it at). No global Python install is assumed; paths are resolved through the **Settings** window. |
 | **Multi‑stage pipeline** | A staged DiT → VAE‑decode → encode pipeline with automatic fallbacks (tile throttling, batch step‑down, dynamic‑shape clamps) so heavy jobs degrade gracefully instead of crashing. |
+| **VAE RT (TensorRT decode)** | Optional TensorRT VAE decoding — **~1.4× faster decode**, ~15–20 % faster renders overall. The GPU-specific engine compiles once on first use and is cached; automatic fallback to the standard decoder keeps every render safe. |
 | **Native preview workflow** | A one‑click **Preview** captures a single frame, upscales it, and drops you straight into a live split‑screen original‑vs‑result comparison — no full render required. |
 | **Simple & Advanced modes** | A clean default surface for quick jobs, with an Advanced toggle that reveals memory, performance, caching and debugging controls. |
 | **Container‑aware export** | A two‑step Container → Codec workflow plus a full image‑sequence pipeline (TIFF/PNG/DPX/EXR) for archival masters. |
@@ -52,7 +53,8 @@ This section walks through **every** section of the interface and documents **ev
 
 | Control | Type | Purpose |
 |---------|------|---------|
-| **About** | Button | Opens the About dialog (version / credits). |
+| **Send Logs** | Button | Collects all program logs (app.log, error.log, recent CLI failure reports, config), adds optional name/email/problem description, and e-mails the report to the developer. |
+| **Update** | Button | Checks GitHub releases in-app (also silently at startup). When a newer version exists it turns into a red **Update!**, downloads the new build with a progress bar and self-installs/restarts. |
 | **GitHub** | Button | Opens the project page in your browser. |
 | **Simple / Advanced Mode** | Toggle | Switches between the streamlined surface and the full control set. Advanced reveals BlockSwap memory, Performance, Quality Control, Model Cache and Debug groups. |
 | **Settings** | Button | Opens **Paths & Configuration** (Python executable, script folder, FFmpeg, models directory). |
@@ -252,6 +254,15 @@ Caching keeps models loaded so they aren't repeatedly re‑initialized — a cle
 > [!WARNING]
 > **VAE Decode Tile‑Size Clamping (1024 → 256).** VAE decode is where most OOM crashes happen. To prevent them, the pipeline **throttles the decode tile size down from 1024 toward 256** as part of its automatic recovery stages — decoding the frame in smaller tiles uses far less peak VRAM. This clamp is what lets very high‑resolution decodes complete on limited GPUs instead of crashing.
 
+#### VAE RT (TensorRT Decode) *[Advanced]*
+
+| Control | Type | Effect |
+|---------|------|--------|
+| **VAE RT (TensorRT)** | Toggle (default **OFF**) | Runs the VAE *decode* phase on a TensorRT engine instead of PyTorch — **~1.4× faster decode**, ~15–20 % faster renders overall. |
+
+> [!IMPORTANT]
+> **First launch builds your GPU's engine — once.** TensorRT engines are GPU-architecture specific, so with VAE RT enabled the first render compiles the engine for your exact GPU (a few minutes; progress appears in the log). It is cached under `models\trt_vae\\` afterwards and loads instantly. Any temporal batch size is supported — common sizes map to pre-built profiles, others are covered by causal-safe padding. If VRAM is tight or an engine is unavailable, the render **automatically falls back to the standard decoder** and always completes.
+
 #### Streaming Mode & Chunk Controls
 
 | Control | Type | Range / Default | Effect |
@@ -347,7 +358,15 @@ When the preview completes, the dual **QPixmap** comparison engine:
 
 ## 4. Changelog & Recent Upgrades
 
-### Latest crucial updates
+### v2.0.0 — VAE RT (TensorRT decode), Send Logs, In-app Update
+
+- **⚡ VAE RT (TensorRT decode)** — new toggle in *Model & Performance* (default **OFF**). Decodes the VAE through a TensorRT engine instead of PyTorch: **~1.4× faster VAE decode** (measured: 73.8 s → 52.4 s on a 162-frame 720p render; a 9-batch 654-frame render decoded at a steady 22.5 s/batch) and **~15–20 % faster renders overall**.
+- **⏳ First launch compiles a GPU-specific engine — once.** TensorRT engines are tied to your GPU architecture: with VAE RT enabled, the first render builds your engine (a few minutes — please wait; progress appears in the log). Afterwards it is cached and loads instantly. Missing batch-size profiles are built automatically when needed, and any render **automatically falls back to the standard decoder** if an engine is unavailable.
+- **📨 Send Logs** — new header button (replaces *About*): optional name/email/problem description, then all program logs (app.log, error.log, recent CLI failure reports, config) are e-mailed to the developer.
+- **🔄 In-app Update** — the *Update* button checks GitHub releases inside the app (also silently at startup). With a new version available it becomes a red **Update!**, downloads the build with a progress bar, self-installs and restarts.
+- **Name unified to `1Click_SeedVR2.5`** across the window title, executable metadata and installer.
+
+### Latest crucial updates (v1.9.x)
 
 - **Fixed Preview subfolder bug.** Preview outputs now sit **cleanly next to the input video** instead of being dropped inside a newly created subfolder. The saver detects a direct image file path (e.g. `..._preview_upscaled.tiff`), creates only the parent directory, and writes the upscale to that exact filename — so the split‑screen view always locates the result.
 - **Fixed Split‑Screen view responsiveness.** The comparison engine now performs **automatic internal path tracking** (loading both TIFFs from their tracked disk paths), **load validation** (skipping null pixmaps and falling back gracefully), and **automated layout switching** (programmatically forcing the UI into split‑view the instant a preview completes).
@@ -371,5 +390,6 @@ Apache License 2.0 — see [LICENSE](LICENSE).
 
 - 🌟 [GitHub Repository](https://github.com/naxci1/1Click_SeedVR2.5)
 - 🔬 [Original SeedVR2 Project](https://github.com/ByteDance-Seed/SeedVR)
+
 
 

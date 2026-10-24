@@ -6,13 +6,16 @@
 
 **It falls out of your notch.**
 
-Hotkey, repo, Return. Your terminal opens at that repo with Claude Code, Codex,
-or whichever agent you're into this week, already running.
+A free, open source macOS launcher for Claude Code and Codex.<br/>
+Hotkey, repo, Return. Your terminal opens at that repo with the agent already running.
+
+**[Download for macOS](https://github.com/sorkila/tintpad/releases/latest/download/Tintpad.dmg)**
+&nbsp;·&nbsp; `brew install --cask sorkila/tap/tintpad`
 
 [![CI](https://github.com/sorkila/tintpad/actions/workflows/ci.yml/badge.svg)](https://github.com/sorkila/tintpad/actions/workflows/ci.yml)
+&nbsp;[![Latest release](https://img.shields.io/github/v/release/sorkila/tintpad?label=release&color=000)](https://github.com/sorkila/tintpad/releases/latest)
 &nbsp;![macOS 14+](https://img.shields.io/badge/macOS-14%2B-000)
-&nbsp;![Swift 6](https://img.shields.io/badge/Swift-6-orange)
-&nbsp;![License: MIT](https://img.shields.io/badge/license-MIT-blue)
+&nbsp;![License: MIT](https://img.shields.io/badge/license-MIT-000)
 
 <a href="https://tintpad.com"><img src="docs/assets/demo.gif" alt="Tintpad demo: a black drop hangs from the MacBook notch with repo names inside. Keycaps show each shortcut as it is pressed: ⌥⌘Space summons it, → walks a white chip through the repos, tab switches the agent between Claude Code and Codex, and ⇧tab turns the MODE chip red for Skip permissions" width="100%" /></a>
 
@@ -23,11 +26,8 @@ or whichever agent you're into this week, already running.
 ## Install
 
 **[Download Tintpad.dmg](https://github.com/sorkila/tintpad/releases/latest/download/Tintpad.dmg)**
-(signed and notarized, macOS 14+), or:
-
-```sh
-brew install --cask sorkila/tap/tintpad
-```
+(signed and notarized, macOS 14+), or the brew command above. Homebrew asks once to trust
+the tap, say yes (`brew trust sorkila/tap` does it up front).
 
 Or build it yourself (Swift 6, Xcode 16+):
 
@@ -36,6 +36,14 @@ git clone https://github.com/sorkila/tintpad.git && cd tintpad
 swift run                  # dev run
 ./Scripts/package.sh       # Tintpad.app into .build/release
 ```
+
+## Thirty seconds
+
+1. Launch Tintpad. Setup asks where your repos live and which terminal is yours.
+2. Press <kbd>⌥⌘Space</kbd> anywhere. The drop falls out of the notch with your repos inside.
+3. Type a few letters, press <kbd>⏎</kbd>. Your terminal opens at that repo running what the two chips say.
+
+You bring the agent: install `claude`, `codex` or any other agent CLI first.
 
 ## What it does
 
@@ -46,8 +54,11 @@ swift run                  # dev run
 - **The contract.** Two chips say exactly what Return runs, in the agent's own words. A mode
   that skips permissions turns red first and can ask before it fires, on every path.
 - **Frecency.** The repos you actually use float up, with the agent and mode you used last.
-- **Worktrees and dispatch.** <kbd>⌃W</kbd> for a fresh branch checkout with an agent inside,
-  <kbd>⌃⏎</kbd> to run one in the background and get pinged when it's done.
+- **Worktrees and dispatch.** <kbd>⌃W</kbd> for a fresh branch checkout with an agent inside
+  (<kbd>⌘0</kbd> continues its conversation there), <kbd>⌃⏎</kbd> to run one in the background
+  and get pinged when it's done.
+- **Any agent.** Claude Code and Codex come set up. Anything else with a CLI is one line, see
+  [Configure](#configure).
 - **The rest.** Prompt library, per-repo presets, GitHub import, open in editor.
 - **Polite.** Dynamic Type, VoiceOver, Reduce Motion. Local-only, no account, no telemetry.
 
@@ -65,24 +76,25 @@ relaunch.
 
 | Key | Action |
 |---|---|
-| <kbd>⌥⌘Space</kbd> | Summon (change in Settings → Hotkeys) |
+| <kbd>⌥⌘Space</kbd> | Summon (change in Settings → Keys) |
 | <kbd>↑</kbd> <kbd>↓</kbd> | Move through your repos |
 | <kbd>←</kbd> <kbd>→</kbd> | Move through your repos while the field is empty |
 | <kbd>⏎</kbd> | Launch what the chips say |
-| <kbd>⌘0</kbd> | Resume the last session exactly |
+| <kbd>⌘0</kbd> | Continue the last conversation |
 | <kbd>⌘1</kbd>–<kbd>⌘9</kbd> | Jump straight to the nth repo and launch it |
 | <kbd>⌘⏎</kbd> | Open repo in editor |
 | <kbd>⌥⏎</kbd> | Launch the dangerous mode |
 | <kbd>⇧⏎</kbd> | Launch the safest mode |
 | <kbd>⌃⏎</kbd> | Headless dispatch |
 | <kbd>⌃W</kbd> | New worktree |
+| <kbd>⌃R</kbd> | Continue the conversation |
 | <kbd>⇥</kbd> / <kbd>⇧⇥</kbd> | Cycle agent / mode |
 | <kbd>⌘L</kbd> · <kbd>⌘P</kbd> | Inline prompt · cycle saved prompt |
 | <kbd>⌘R</kbd> · <kbd>Esc</kbd> | Re-scan repos · close |
 | <kbd>⌘,</kbd> | Settings |
 
 Hold <kbd>⌘</kbd> for a beat and the drop shows each repo's number and each chip's key.
-The menu bar's **Palette keys** menu lists this table.
+The menu bar's **Palette keys** menu and **Settings → Keys** list this table.
 
 ## Configure
 
@@ -92,8 +104,14 @@ Agents are just command templates with variables, set them in **Settings → Age
 claude {mode} {prompt}
 ```
 
-Variables: `{repoPath}` `{repoName}` `{branch}` `{remote}` `{prompt}` `{mode}` `{shell}` `{worktreePath}`.
+Variables: `{repoPath}` `{repoName}` `{branch}` `{remote}` `{prompt}` `{mode}` `{shell}` `{worktreePath}` `{continue}`.
 Every interpolated value is sanitized and shell-quoted before it runs.
+
+<kbd>⌃R</kbd> and <kbd>⌘0</kbd> run the agent's **Continue** form (`--continue` for Claude Code,
+`resume --last` for Codex) at `{continue}`, or right after the binary when the template has no
+slot. An agent without one says so and launches nothing. Agents keep conversations per
+directory, so a session launched into a worktree continues there, and one held in a
+`claude -w` worktree is out of Tintpad's sight.
 
 ## Contributing
 
@@ -107,8 +125,7 @@ Lockpaw covers your screen while they run and glows when one needs you. Also fre
 ## Support
 
 Free and MIT, the whole thing. Nothing to unlock, no Pro version. If it saves you a
-morning, [**sponsor it on GitHub →**](https://github.com/sponsors/sorkila) or
-[buy me a coffee](https://www.buymeacoffee.com/eriknielsen).
+morning, [**sponsor it on GitHub →**](https://github.com/sponsors/sorkila)
 
 ## License
 

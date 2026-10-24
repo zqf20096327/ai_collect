@@ -79,7 +79,8 @@ remain available for consumers that have not migrated; see the
 
 ## Quickstart
 
-Requires Go 1.26+ and an OpenAI-compatible endpoint. From this repository:
+Use Go 1.26.10 (the tested CI/release toolchain) and an OpenAI-compatible
+endpoint. From this repository:
 
 ```bash
 # Ollama (no API key required)
@@ -97,7 +98,8 @@ GOWORK=off go run ./examples/quickstart
 On PowerShell use `$env:PRAXO_BASE_URL = "..."` and the same variable names.
 Set `PRAXO_PROMPT` to change the request. The model adapter uses only the
 standard library; no provider SDK is required. The example demonstrates tool
-calling, events, and policy.
+calling, streamed text deltas through `agent.Options.OnDelta`, events, and
+policy.
 
 Optional adapters:
 
@@ -186,16 +188,21 @@ result, err := ag.Run(ctx, agent.Session{
 See [examples/integrator](examples/integrator/main.go) for a self-contained
 external-integrator example, [examples/reference](examples/reference) for a
 workspace agent with confined VFS tools, policy, memory, and events,
+[examples/governed-workspace](examples/governed-workspace) for a deterministic
+read-only, approval, denial, and trace demo,
 [examples/checkpoint](examples/checkpoint) for checkpoint/resume,
-[examples/sandbox](examples/sandbox) for policy-gated command execution, and
-[examples/multiagent](examples/multiagent) for subagent delegation.
+[examples/sandbox](examples/sandbox) for policy-gated command execution,
+[examples/multiagent](examples/multiagent) for subagent delegation, and
+[examples/ecosystem/mcp](examples/ecosystem/mcp) for MCP resources and prompts.
 
 ## Status
 
-`2.3.2` is the current core release. It adds no exported `pkg/...` declarations,
-corrects Gemini streaming candidate selection, and hardens provider and security
-recipes. The `1.0.0` API freeze remains in effect, and the canonical package
-paths are `pkg/toolcall`, `pkg/formatter`, and `pkg/tool/jsonschema`.
+`2.5.0` is the current core release. It adds the additive `pkg/conformance`
+package and hardens local VFS path validation. Existing exported `pkg/...`
+declarations are unchanged. The workspace adapters remain offline evaluation
+modules, not live-verified production integrations. The `1.0.0` API freeze
+remains in effect, and the canonical package paths are `pkg/toolcall`,
+`pkg/formatter`, and `pkg/tool/jsonschema`.
 
 Optional adapters are versioned independently: `adapters/mcp/v0.3.0`,
 `adapters/otel/v0.2.0`, `adapters/anthropic/v0.1.0`,
@@ -208,6 +215,12 @@ extracted from PRAXOVELA's proven runtime.
 [Documentation site](https://axisvela.github.io/praxo-core/) |
 [简体中文文档](docs/zh-CN/README.md)
 
+- [2.5.0 release notes](docs/releases/2.5.0.md)
+- [2.4.0 release notes](docs/releases/2.4.0.md)
+- [2.3.6 release notes](docs/releases/2.3.6.md)
+- [2.3.5 release notes](docs/releases/2.3.5.md)
+- [2.3.4 release notes](docs/releases/2.3.4.md)
+- [2.3.3 release notes](docs/releases/2.3.3.md)
 - [2.3.2 release notes](docs/releases/2.3.2.md)
 - [2.3.1 release notes](docs/releases/2.3.1.md)
 - [2.3.0 release notes](docs/releases/2.3.0.md)
@@ -217,6 +230,7 @@ extracted from PRAXOVELA's proven runtime.
 - [Recipes](docs/recipes.md)
 - [Adapter index](docs/adapters.md)
 - [Multi-agent patterns](docs/13-multi-agent.md)
+- [Workspace and session contract](docs/14-workspace-session.md)
 - [Comparison with other Go agent frameworks](docs/comparison.md)
 - [Benchmarks](docs/benchmarks.md)
 - [AxisVela ecosystem integration](docs/12-ecosystem.md)
@@ -226,12 +240,14 @@ extracted from PRAXOVELA's proven runtime.
 - [Integration](docs/03-integration.md)
 - [License and provenance](docs/04-license-and-provenance.md)
 - [Compatibility](docs/05-compatibility.md)
+- [Compatibility and deprecation policy](docs/16-compatibility-policy.md)
 - [v2 migration](docs/11-migration-v2.md)
 - [Security policy](SECURITY.md)
 - [API freeze inventory](docs/07-api-freeze.md)
 - [Security model](docs/08-security.md)
 - [Release process](docs/09-release.md)
 - [Plugin authoring](docs/10-plugin-authoring.md)
+- [Plugin trust and SBOM](docs/15-plugin-trust-sbom.md)
 - [Roadmap detail](docs/06-roadmap.md)
 - [Roadmap](ROADMAP.md)
 

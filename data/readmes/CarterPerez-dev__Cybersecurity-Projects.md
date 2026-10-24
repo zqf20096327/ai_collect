@@ -26,7 +26,7 @@
 <h2 align="center"><strong>View Complete Projects:</strong></h2>
 <div align="center">
   <a href="https://github.com/CarterPerez-dev/Cybersecurity-Projects/tree/main/PROJECTS">
-    <img src="https://img.shields.io/badge/Full_Source_Code-42/70-blue?style=for-the-badge&logo=github" alt="Projects"/>
+    <img src="https://img.shields.io/badge/Full_Source_Code-43/70-blue?style=for-the-badge&logo=github" alt="Projects"/>
   </a>
 </div>
 
@@ -35,20 +35,13 @@
 ---
 
 <div align="center">
-  <a href="https://www.star-history.com/carterperez-dev/cybersecurity-projects">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/badge?repo=CarterPerez-dev/Cybersecurity-Projects&type=rank&theme=dark"/>
-      <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/badge?repo=CarterPerez-dev/Cybersecurity-Projects&type=rank"/>
-      <img src="https://api.star-history.com/badge?repo=CarterPerez-dev/Cybersecurity-Projects&type=rank" alt="Star History Rank"/>
-    </picture>
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/badge?repo=CarterPerez-dev/Cybersecurity-Projects&type=trending&theme=dark"/>
-      <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/badge?repo=CarterPerez-dev/Cybersecurity-Projects&type=trending"/>
-      <img src="https://api.star-history.com/badge?repo=CarterPerez-dev/Cybersecurity-Projects&type=trending" alt="GitHub Trending Repository of the Day"/>
-    </picture>
+  <a href="https://trendshift.io/repositories/20757?utm_source=repository-badge&amp;utm_medium=badge&amp;utm_campaign=badge-repository-20757" target="_blank" rel="noopener noreferrer">
+    <img src="https://trendshift.io/api/badge/repositories/20757" alt="CarterPerez-dev/Cybersecurity-Projects | GitHub Trending #1 Repository of the Day" width="250" height="55"/>
+  </a>
+  <a href="https://trendshift.io/repositories/20757?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-20757" target="_blank" rel="noopener noreferrer">
+    <img src="https://trendshift.io/api/badge/trendshift/repositories/20757/daily?language=Go" alt="CarterPerez-dev/Cybersecurity-Projects | Trendshift Go #1 Repository of the Day" width="250" height="55"/>
   </a>
 </div>
-
 
 ## Quick Navigation
 
@@ -138,7 +131,7 @@ Tools, courses, certifications, communities, and frameworks for cybersecurity pr
 | **[Wireless Deauth Detector](./SYNOPSES/intermediate/Wireless.Deauth.Detector.md)**<br>Monitor WiFi deauth attacks | ![2-4d](https://img.shields.io/badge/⏱️_2--4d-blue) ![Rust](https://img.shields.io/badge/Rust-000000?logo=rust&logoColor=white) ![Intermediate](https://img.shields.io/badge/●_Intermediate-yellow) | Wireless security • Packet sniffing • Attack detection<br>[Learn More](./SYNOPSES/intermediate/Wireless.Deauth.Detector.md) |
 | **[Credential Enumeration](./PROJECTS/intermediate/credential-enumeration)**<br>Post-exploitation credential collection | ![2-4d](https://img.shields.io/badge/⏱️_2--4d-blue) ![Nim](https://img.shields.io/badge/Nim-FFE953?logo=nim&logoColor=black) ![Intermediate](https://img.shields.io/badge/●_Intermediate-yellow) | Credential extraction • Browser forensics • Red team tooling • Nim language<br>[Source Code](./PROJECTS/intermediate/credential-enumeration) \| [Docs](./PROJECTS/intermediate/credential-enumeration/learn) |
 | **[Binary Analysis Tool](./PROJECTS/intermediate/binary-analysis-tool)**<br>Disassemble and analyze executables | ![3-5d](https://img.shields.io/badge/⏱️_3--5d-blue) ![Rust](https://img.shields.io/badge/Rust-000000?logo=rust&logoColor=white) ![Intermediate](https://img.shields.io/badge/●_Intermediate-yellow) | Binary analysis • String extraction • Malware detection<br>[Source Code](./PROJECTS/intermediate/binary-analysis-tool) \| [Docs](./PROJECTS/intermediate/binary-analysis-tool/learn)<br>[![https://elitenetwork4life.com/](https://img.shields.io/badge/elitenetwork4life.com-E8730C?style=flat&logo=googlechrome&logoColor=white)](https://elitenetwork4life.com/) |
-| **[Chaos Engineering Security Tool](./SYNOPSES/intermediate/Chaos.Engineering.Security.Tool.md)**<br>Inject security failures to test resilience | ![3-5d](https://img.shields.io/badge/⏱️_3--5d-blue) ![Go](https://img.shields.io/badge/Go-00ADD8?logo=go&logoColor=white) ![Intermediate](https://img.shields.io/badge/●_Intermediate-yellow) | Chaos engineering • Security resilience • Credential spraying • Auth testing<br>[Learn More](./SYNOPSES/intermediate/Chaos.Engineering.Security.Tool.md) |
+| **[Chaos Engineering Security Tool](./PROJECTS/intermediate/chaos-engineering-tool)**<br>Inject security failures and measure control behavior | ![3-5d](https://img.shields.io/badge/⏱️_3--5d-blue) ![Go](https://img.shields.io/badge/Go-00ADD8?logo=go&logoColor=white) ![Intermediate](https://img.shields.io/badge/●_Intermediate-yellow) | Security chaos engineering • Authentication • TLS and DNS • Recovery<br>[Source Code](./PROJECTS/intermediate/chaos-engineering-tool) \| [Docs](./PROJECTS/intermediate/chaos-engineering-tool/learn) |
 | **[Credential Rotation Enforcer](./SYNOPSES/intermediate/Credential.Rotation.Enforcer.md)**<br>Track and enforce credential rotation policies | ![2-4d](https://img.shields.io/badge/⏱️_2--4d-blue) ![Crystal](https://img.shields.io/badge/Crystal-black?logo=crystal&logoColor=white) ![Intermediate](https://img.shields.io/badge/●_Intermediate-yellow) | Credential hygiene • Secret rotation • Compliance dashboards • API integration<br>[Source Code](./PROJECTS/intermediate/credential-rotation-enforcer) \| [Docs](./PROJECTS/intermediate/credential-rotation-enforcer/learn) |
 | **[Race Condition Exploiter](./SYNOPSES/intermediate/Race.Condition.Exploiter.md)**<br>TOCTOU race condition attack & defense lab | ![3-5d](https://img.shields.io/badge/⏱️_3--5d-blue) ![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi) ![React](https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=black) ![Intermediate](https://img.shields.io/badge/●_Intermediate-yellow) | TOCTOU attacks • Double-spend bugs • Concurrent exploitation • Race visualization<br>[Learn More](./SYNOPSES/intermediate/Race.Condition.Exploiter.md) |
 | **[JA3/JA4 TLS Fingerprinting Tool](./SYNOPSES/intermediate/JA3.JA4.TLS.Fingerprinting.Tool.md)**<br>Fingerprint TLS clients by handshake | ![2-4d](https://img.shields.io/badge/⏱️_2--4d-blue) ![Rust](https://img.shields.io/badge/Rust-000000?logo=rust&logoColor=white) ![Intermediate](https://img.shields.io/badge/●_Intermediate-yellow) | TLS handshake analysis • JA3/JA4 hashing • Bot detection • Malware C2 identification<br>[Source Code](./PROJECTS/intermediate/ja3-ja4-tls-fingerprinting) \| [Docs](./PROJECTS/intermediate/ja3-ja4-tls-fingerprinting/learn)<br>[![mkultraalumni.com](https://img.shields.io/badge/mkultraalumni.com-E8730C?style=flat&logo=googlechrome&logoColor=white)](https://mkultraalumni.com/) |

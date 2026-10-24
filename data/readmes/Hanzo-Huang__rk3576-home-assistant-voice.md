@@ -213,6 +213,35 @@ Restart after editing:
 sudo docker compose up -d
 ```
 
+### Change the Piper voice
+
+Piper images are built with one voice each:
+
+| Voice | Language | Image tag |
+| --- | --- | --- |
+| Amy Medium (default) | English (US) | `en-us-amy-medium` or `latest` |
+| Huayan Medium | Chinese (Mandarin) | `zh-cn-huayan-medium` |
+
+To use Chinese speech, change `piper.image` in [`docker-compose.yml`](docker-compose.yml):
+
+```yaml
+piper:
+  image: ghcr.io/hanzo-huang/wyoming-piper-rk3576:zh-cn-huayan-medium
+  restart: unless-stopped
+  privileged: true
+  ports:
+    - "10200:10200"
+```
+
+Then pull and restart Piper:
+
+```bash
+sudo docker compose pull piper
+sudo docker compose up -d piper
+```
+
+Select the Chinese voice in your Home Assistant Assist pipeline. For Chinese recognition too, configure Whisper as described below.
+
 ### Change Whisper language
 
 Whisper supports English and Chinese model vocabularies in this image. The default service starts with English.
@@ -287,12 +316,52 @@ Model name: rkllm-model
 
 ## Development Notes
 
-The Whisper and Piper images are built by GitHub Actions. During image builds, the workflow downloads the RK3576 model archives from a release bundle and places them in:
+The Whisper and Piper images are built by GitHub Actions for Linux ARM64.
 
-- [`whisper/model`](whisper/model)
-- [`piper/model`](piper/model)
+The services have separate workflows: **Build Whisper image** and **Build Piper images**.
+To build only Chinese Piper, open **Actions -> Build Piper images -> Run workflow**
+and set **voice** to `zh-cn-huayan-medium`. Use `en-us-amy-medium` for English,
+or `all` to build every voice in the catalog. An unknown voice tag fails before
+any image build starts.
 
-The model assets are intentionally not committed to the repository. See the model directory READMEs for the expected files.
+The same selection works through the GitHub CLI:
+
+```bash
+gh workflow run build-piper.yml -f voice=zh-cn-huayan-medium
+```
+
+Automatic push and pull request builds run for changes to the corresponding
+service, shared runtime, or workflow. Version tags build both services and all
+Piper voices. Manual Piper builds do not require a Whisper model release.
+
+Piper model files stay on [Hugging Face](https://huggingface.co/buckets/HanzoHuang/piper-voices-rknn-bucket/tree). The Piper Dockerfile downloads and includes only the selected voice's three inference files: `encoder.onnx`, `decoder_rk3576.rknn`, and `config.json`. Other decoders, training checkpoints, datasets, and training scripts are not downloaded. No model release bundle or local model download is needed.
+
+To add a Piper voice, append an entry to [`piper/models.json`](piper/models.json):
+
+```json
+{
+  "voice": "zh_CN-huayan-medium",
+  "tag": "zh-cn-huayan-medium",
+  "url": "https://huggingface.co/buckets/HanzoHuang/piper-voices-rknn-bucket/resolve/zh/zh_CN/huayan/medium",
+  "default": false
+}
+```
+
+Use a unique lowercase image tag and a direct download directory URL containing those three files. Keep exactly one entry with `"default": true`; it also receives the `latest` tag. The workflow reads this catalog and builds each voice automatically. Version and commit tags also include the voice tag, for example `v1.0.0-zh-cn-huayan-medium`.
+
+To build a voice locally without editing the catalog:
+
+```bash
+docker buildx build --platform linux/arm64 --load \
+  -f piper/Dockerfile \
+  --build-arg PIPER_VOICE=zh_CN-huayan-medium \
+  --build-arg PIPER_MODEL_URL=https://huggingface.co/buckets/HanzoHuang/piper-voices-rknn-bucket/resolve/zh/zh_CN/huayan/medium \
+  -t wyoming-piper-rk3576:zh-cn-huayan-medium .
+```
+
+`PIPER_VOICE` sets the voice name advertised over Wyoming; `--voice` can override it at runtime. Docker caches model downloads, so use `--no-cache` when rebuilding after files change at the same URL.
+
+Whisper still downloads its model archive from the GitHub release selected by the workflow's `model_release` input into [`whisper/model`](whisper/model). See its model directory README for the expected files. Model assets are intentionally not committed to this repository.
 
 ## Related Projects
 

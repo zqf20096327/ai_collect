@@ -113,7 +113,8 @@ Read the [First 10 minutes](docs/FIRST_10_MINUTES.md), the
   connects Claude Code, Codex or Claude Desktop in one click (MCP, plus a REST API
   for scripts). Agents read and write the script, cast, locations and storyboard
   and start generations; you watch every change in the app. See
-  [docs/agent-connect.md](docs/agent-connect.md).
+  [docs/agent-connect.md](docs/agent-connect.md), and copy a ready prompt from the
+  [MCP recipes](docs/mcp-recipes.md).
 
 ## Earlier (September 2026)
 
@@ -149,7 +150,7 @@ open-weights models for images and video.
 
 ## Quick start
 
-**New here?** Watch the [4-minute setup video](https://youtu.be/p99IG1m5ybU) first.
+**New here?** Follow the [First 10 Minutes Walkthrough](docs/FIRST_10_MINUTES.md) or watch the [4-minute setup video](https://youtu.be/p99IG1m5ybU).
 
 **Just want the app?** Download the newest installer from
 [GitHub Releases](https://github.com/LudwigKienle/ai-video-production-editor/releases/latest)
@@ -240,6 +241,7 @@ releases need these GitHub Actions secrets: `MACOS_CERTIFICATE_BASE64`,
 
 ## Configuration and privacy
 
+- For step-by-step instructions on setting up credentials for Gemini, Replicate, FAL, xAI, ElevenLabs, and more, see the [BYOK Provider Setup Guide](docs/BYOK_PROVIDER_SETUP.md).
 - Provider keys are entered in the app and stored locally. `.env.local` is for
   development, hosted features and build signing only.
 - Never commit `.env`, certificates, private keys, release builds or provider

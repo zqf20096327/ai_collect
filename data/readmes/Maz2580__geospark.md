@@ -15,16 +15,50 @@
 
 ---
 
-Ask an LLM *"How far is the Eiffel Tower from the Louvre?"* or *"Is this point inside that polygon?"*
-and the answer depends on which model you picked. Across 9 models we benchmarked, small open-weight
-models (3.8B–9B) got numeric distance questions wrong about 95% of the time. Frontier APIs ranged
-from 25% (Gemini 2.5 Pro) to 95% (GPT-5.4) correct.
+GeoSpark gives AI models tools that **compute** spatial answers instead of estimating them: geodesic
+distances, exact topology, official datum and height conversions, geocoding, elevation, routing,
+open map data and live environmental data. Every answer carries its sources, units and caveats, and
+says when it can't be answered rather than guessing.
 
-GeoSpark gives the model tools that **compute** the answer: geodesic distances on the WGS84
-ellipsoid, exact topology, CRS transformations, geocoding, elevation and live environmental data.
-With them, every model that made valid tool calls answered 76–96% of the same questions correctly.
-A 7B model on your own CPU then performs like a paid frontier API, and every answer comes with a
-deterministic trace you can check.
+### How it has changed, and why
+
+GeoSpark is tested against the models people actually use, and it changes as they do.
+
+1. **The first benchmark (GeoSpark Bench v2).** Across 9 models of the time, small open-weight models
+   (3.8B–9B) got numeric distance questions wrong about 95% of the time, and frontier APIs ranged from
+   25% to 95% correct. With GeoSpark's tools, every model that made valid tool calls answered 76–96%
+   correctly; a 7B model on a CPU went from 5% to 76%.
+2. **The models improved.** Re-checked in October 2026, Claude Opus 5.5 and GPT-6.1 answer those
+   distance and topology questions well on their own, and with GeoSpark's tools a 4B open model on a
+   workstation answers them as well as they do. Distances between two given points are no longer the
+   gap.
+3. **We looked for the next gap, with practitioners' problems in mind.** Both frontier models apply
+   datum shifts, plate motion and map projections to the millimetre, but anything that needs a
+   national grid file defeated them: converting a GNSS or drone height to AHD, ODN, NZVD2016 or
+   NAVD88, or using Britain's OSTN15. Answering directly (even with their own code sandboxes, which
+   have no internet), GPT-6.1 declined and Opus 5.5 estimated, up to 9.9 m off. GeoSpark now does these
+   conversions with the official grids. (Writing a script for you to run online, both frontier
+   models got them right; smaller local models did not.)
+4. **We checked our own answers, not just the models'.** Matching PROJ only proves a model used the
+   tool, so GeoSpark's answers were compared with Geoscience Australia, Ordnance Survey, LINZ and the
+   US National Geodetic Survey: agreement within millimetres, with one disclosed exception. The same
+   audit corrected overclaims on our website and fixed what the edge cases broke.
+
+Every step's questions, scripts and results are in the repository, so anyone can re-run them
+([benchmark results](#benchmark-results), [October 2026 re-check](#re-check-with-current-models-october-2026),
+[agency checks](https://github.com/Maz2580/geospark/blob/main/docs/benchmarks/2026-10/agency_checks.md)).
+
+### What GeoSpark is now
+
+- **A live site, API and hosted MCP server** at [geospark.terrascout.app](https://geospark.terrascout.app):
+  ask questions, draw reachable areas, explore open map data, convert datums and heights.
+- **Verifiable answers:** sources and licences, units, caveats (an ambiguous place name, a DEM's
+  accuracy, a local height datum), and status `ok`, `partial` or `cannot_answer`. Coordinates a model
+  types from memory, or a conversion to a different system than the question asks for, mark the
+  answer partial.
+- **Self-hostable on one server** with a local model at no API cost: routing (Valhalla), an
+  OpenStreetMap copy (Overpass) and the official grids, all under one data folder.
+- **Open:** Apache-2.0, 1,190+ offline tests, and benchmarks you can re-run.
 
 ## Try it
 
@@ -49,7 +83,7 @@ Add a custom connector with this URL (in Claude: Settings → Connectors → Add
 https://geospark.terrascout.app/mcp
 ```
 
-It is open, with no key, and has the same fifteen tools as the local server below, with the same
+It is open, with no key, and has the same seventeen tools as the local server below (which adds three for your own files), with the same
 rate limits as the hosted API. It never reads files; for your own files, run the server locally.
 
 **In Claude Desktop or any MCP client, running on your computer**
@@ -103,9 +137,10 @@ public server, add `-e GEOSPARK_ENV=production -e GEOSPARK_ADMIN_TOKEN=<secret>`
 |---|---|
 | **Spatial engine** | Geodesic distance, area and length (pyproj on WGS84); topology checks (contains, within, intersects, touches, crosses, overlaps, disjoint) via Shapely; shape-preserving buffers; union, intersection, difference, centroid, convex hull; CRS transformation of every input geometry |
 | **Places and terrain** | Geocoding and reverse geocoding (OpenStreetMap Nominatim, following its usage policy: ≤ 1 request/s and cached); elevation from Copernicus GLO-30 with Open Elevation fallback and vertical-datum awareness (NAVD88 / EGM96 / WGS84); routing (OSRM); **isochrones** (where can I reach in N minutes on foot, by bike or by car) and travel-time matrices (Valhalla) |
+| **Official datums and heights** | Coordinate conversions with the national agencies' published transformations and grids, as PROJ implements them (GDA94 → GDA2020, MGA zones, British National Grid via OSTN15, NAD27 → NAD83 via NADCON, ITRF at an epoch) and heights between the ellipsoid and AHD, ODN, NZVD2016 or NAVD88 with the official geoid models. Grids are downloaded once; PROJ's silent ballpark fallbacks are refused; every result states the operation and its accuracy |
 | **Live data** | Overture Maps places, buildings, roads and admin areas (no key, via DuckDB); weather and forecasts (Open-Meteo, no key); air quality (OpenAQ v3, free key); active fires (NASA FIRMS, free key); satellite scene search (STAC) |
 | **Agents** | `GeoAgent` (multi-step analysis from a plain-English goal), `SpatialReport` (a location dossier: amenities, accessibility, elevation, weather), `SiteSelector` (multi-criteria site ranking), and a coordinator that routes a goal to the right one |
-| **Interfaces** | Python library, CLI (`geospark …`), REST API (52 documented operations, reference at `/docs`), MCP server (`geospark-mcp`), web playground |
+| **Interfaces** | Python library, CLI (`geospark …`), REST API (54 documented operations, reference at `/docs`), MCP server (`geospark-mcp`), web playground |
 | **Memory and workflows** | Spatial memory with facts, episodes and contradiction detection; a tiered context store; Flows (DAG workflows, buildable from a natural-language goal) |
 | **GeoSpark Bench** | 535 reproducible questions across topology, distance, multi-step reasoning, change and multimodal tasks, with computed ground truth |
 
@@ -186,6 +221,43 @@ no key. Results report the Overture release and the licence of the records retur
 available from the CLI (`geospark overture places -37.818 144.969 --category cafe`), the REST API
 (`POST /api/v1/overture/{theme}`) and the MCP tool `overture_features`.
 
+### Official datum and height conversions
+
+```python
+from geospark import geodesy
+
+# A drone's GNSS height at Federation Square, in the Australian Height Datum (AUSGeoid2020)
+geodesy.convert_height(-37.8177, 144.9691, 40.0, "ellipsoidal", "AHD")
+# {'height_m': 35.2574, 'separation_m': 4.7426, 'geoid_model': 'AUSGeoid2020', 'accuracy_m': 0.15, ...}
+
+# GDA94 / MGA zone 55 -> GDA2020 / MGA zone 55 (a 1.55 m shift), with the EPSG operation used
+geodesy.transform("EPSG:28355", "EPSG:7855", [[321242.045, 5812466.767]]).as_dict()
+```
+
+In our October 2026 test of two frontier models, both applied datum parameters and plate motion
+correctly but could not use the national grids: GPT-6.1 declined every ellipsoid-to-AHD height ("I
+cannot access the AUSGeoid2020 grid") and Claude Opus 5.5 estimated them 0.2-5.3 m off. PROJ itself
+falls back silently when a grid is missing (AHD becomes the ellipsoidal height, 4.7 m off in
+Melbourne; British National Grid moves about 124 m); GeoSpark refuses instead.
+
+**Checked against the agencies themselves**, not only against PROJ
+([details](https://github.com/Maz2580/geospark/blob/main/docs/benchmarks/2026-10/agency_checks.md)):
+Geoscience Australia's calculators (GDA94 to GDA2020 and ATRF2014 to GDA2020 within 0.1 mm at eight
+points; AUSGeoid2020 heights within 2 mm in three cities), Ordnance Survey's 40 OSTN15/OSGM15 test
+points (grid coordinates within 8 mm, heights within 2 mm), LINZ's NZVD2016 example points (within
+their 1 cm rounding) and NGS's GEOID18 service (1 mm); at scale, GDA94 to GDA2020 agrees with
+Victoria's surveyed marks within 7 mm (416 marks) and AUSGeoid2020 with spirit-levelled AHD to 6 mm
+median (99 marks). Limits to know: AHD is refused outside mainland
+Australia and Tasmania; OSGM15 heights on Scilly, the Isle of Man, the Outer Hebrides, Orkney and
+Shetland are labelled with their local datum, not ODN; and NAD27 to NAD83 uses the original NADCON,
+about 0.27 m from NGS's current NADCON 5 in San Francisco (within NADCON 5's own stated uncertainty).
+The accuracy given with each result is
+the one EPSG states for the operation, not a measurement.
+
+Also as `POST /api/v1/transform`, `POST /api/v1/height`
+and the MCP tools `transform_coordinates` and `convert_height`. Grids are cached in
+`$GEOSPARK_DATA_DIR/proj`; set `GEOSPARK_PROJ_NETWORK=false` to never download.
+
 ### Your own data
 
 ```bash
@@ -197,10 +269,33 @@ geospark layer intersect parcels.gpkg flood_zones.geojson
 ```
 
 Formats: GeoJSON, GeoPackage, Shapefile (or a .zip), GeoParquet, CSV with longitude/latitude
-columns, FlatGeobuf, KML, GML, File Geodatabase. **The CRS is never guessed**:
+columns, FlatGeobuf, KML, GML, File Geodatabase. **The CRS comes from the file, not a guess**:
 - a projected file (e.g. MGA zone 55) is reprojected, and its original CRS is reported;
 - a Shapefile without `.prj` is refused until you pass `--crs EPSG:28355`;
+- a CSV has no CRS: longitude/latitude columns are read as WGS 84 and the result says so (pass
+  `--crs` for GDA94 or another datum); x/y columns are refused until you name the CRS;
 - invalid shapes are refused until you pass `--repair`.
+
+**Check a file before you use it**, or find out why two layers disagree:
+
+```bash
+geospark layer check pipes.csv --crs EPSG:7855                          # CRS, datum and height caveats
+geospark layer check pipes.csv --crs EPSG:7855 --against parcels.csv --against-crs EPSG:7855
+# problem: pipes.csv sits 1.55 m from parcels.csv, matching the official GDA94 to GDA2020 shift here.
+#          pipes.csv holds GDA94 coordinates but is treated as the same datum as parcels.csv.
+```
+
+`check` looks for the silent errors: no CRS declared, projected numbers labelled as degrees (or the
+reverse), swapped latitude/longitude, points outside the CRS's zone, Australian data labelled WGS 84,
+and heights that don't say whether they are ellipsoidal or AHD. With `--against` it measures the
+offset to a reference layer and names the cause only when the numbers match one: GDA94 data labelled
+GDA2020 (checked against the official shift at that place), the wrong MGA zone, feet instead of
+metres, swapped axes, a plate-motion epoch, or ellipsoidal against AHD heights. Anything else is
+reported as an unexplained offset. Tried on 2,000 of Victoria's published survey marks, it named
+real GDA94 numbers labelled GDA2020 (1.55 m, scatter 3 cm), a wrong zone and ellipsoidal against AHD
+heights, and found nothing wrong when they were labelled correctly (6 mm). The exit code is 2 when it finds a problem, so it fits in a
+pipeline; in Python, `geospark.io.check.check_layer` and `compare_layers`; for Claude, the local MCP
+tool `check_dataset`.
 
 Results carry each file's SHA-256, so an analysis can be reproduced against exactly that data. In
 Python, use `geospark.io.layers` (`load_layer`, `count_within`, `nearest`, `intersect`). The local
@@ -347,6 +442,67 @@ Re-run it yourself with `python -m geospark.bench run`. The datasets regenerate 
 for provenance, and the
 [benchmark report](https://github.com/Maz2580/geospark/blob/main/docs/BENCHMARK_REPORT.md) for
 every table.
+
+### Re-check with current models (October 2026)
+
+We keep testing as models improve. In October 2026 we re-ran a sample of GeoSpark Bench on today's
+frontier models and on open models served from a local workstation, and added a new test of datum
+and height conversions, where we found the next gap. Everything needed to re-run it (questions,
+the scripts that compute the official answers, the harness and a scored summary) is in
+[docs/benchmarks/2026-10](https://github.com/Maz2580/geospark/tree/main/docs/benchmarks/2026-10).
+
+**GeoSpark Bench sample** (20 numeric-distance questions and 18 topology questions, 3 per predicate,
+coordinates given; distance correct within 10% of the `pyproj` geodesic, topology exact):
+
+| Model | Where it ran | Without tools: distance / topology | With GeoSpark tools |
+|---|---|:---:|:---:|
+| Claude Opus 5.5 | API | 100% / 100% | 100% / 100% |
+| GPT-6.1 | API | 95% ¹ / 100% | 100% / 100% |
+| gpt-oss 20B | local workstation | 95% / 100% | 100% / 100% |
+| Qwen 3.5 4B | local workstation | 90% / 100% | 100% / 100% |
+| Qwen 3.5 9B | local workstation | — ² | 100% / 94% |
+| Phi-4-mini 3.8B | local workstation | 15% / 50% | 20% / 50% ³ |
+
+¹ One reply ran out of length while reasoning and gave no number. ² Most replies timed out on a busy
+workstation, so the run is not a fair score. ³ It never called the tools. Gemma 4 12B timed out the
+same way and is left out.
+
+The finding has moved on since the first run: the newest frontier models now handle these questions
+on their own, and with tools a 4B model on a workstation answers them as well as they do.
+
+**Datum and height conversions** (new; 32 questions in Australia, the UK, New Zealand and the US,
+with answers computed by PROJ's most accurate EPSG operations and the national grids (checked
+against Geoscience Australia's and NGS's own services where they offer one; see above): GDA94 to
+GDA2020, MGA zones, ITRF2014 to GDA2020 at an epoch, ellipsoidal heights to AHD, ODN, NZVD2016 and
+NAVD88, OSTN15, NAD27 to NAD83). Survey-grade means within 5 cm, or within the geoid model's stated
+accuracy for heights:
+
+| Model | Without tools: survey-grade | within 0.5 m | wrong | declined | With GeoSpark's geodesy tools |
+|---|:---:|:---:|:---:|:---:|:---:|
+| Claude Opus 5.5 | 15 | 7 | 8 (up to 5.3 m off) | 2 ⁴ | **31 survey-grade, 1 within 6 cm** |
+| GPT-6.1 | 13 | 2 | 1 (1.65 m off) | 16 | **32 survey-grade** |
+
+⁴ Two British National Grid answers ran past an 8,000-token reply limit while working by hand.
+
+Because GeoSpark's tools also use PROJ, the with-tools column shows that the models used the tools
+correctly; whether PROJ's answers are right is the separate agency check above. For the two NAD27
+questions the reference itself is only good to about 0.27 m (NGS's stated uncertainty), so "survey-grade"
+there means agreement with PROJ's NADCON, not centimetre truth.
+
+Both models apply datum parameters, plate motion and map projections to the millimetre. What they
+can't do, answering directly, is read the national grids that heights and some datum conversions
+depend on: GPT-6.1 declines ("I cannot access the AUSGeoid2020 grid"), and Opus 5.5 estimates from
+memory. That is the gap GeoSpark's [`transform_coordinates` and `convert_height`](#official-datum-and-height-conversions)
+close.
+
+**Fairness checks** ([details](https://github.com/Maz2580/geospark/blob/main/docs/benchmarks/2026-10/fairness.md)):
+the gap holds with the providers' own code execution at high effort (their sandboxes have PROJ but no
+internet; GPT-6.1 declined all 17 grid questions, Opus 5.5 estimated with errors up to 9.9 m) and across
+three repeated runs. It does **not** hold when these frontier models write a script that you run with
+internet access: Opus 5.5 got all 8 everyday GIS scripting tasks right, AHD included, and GPT-6.1 got 7
+and failed safely on the eighth. The silently wrong scripts came from the smaller local models (gpt-oss
+20B printed the ellipsoidal height unchanged as "AHD"; Qwen 3.5 4B got 1 of 8). Not tested: web
+browsing. The whole October 2026 re-check cost US$8.46 in API calls.
 
 ## Self-hosting
 

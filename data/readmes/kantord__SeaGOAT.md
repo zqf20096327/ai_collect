@@ -24,7 +24,7 @@ leverages vector embeddings to enable you to search your codebase semantically.
 In order to install SeaGOAT, you need to have the following
 dependencies already installed on your computer:
 
-- Python 3.10 or newer
+- Python 3.11 or newer
 - ripgrep
 - [bat](https://github.com/sharkdp/bat) (**optional**, highly recommended)
 
@@ -132,7 +132,7 @@ for more details!
 **Requirements**:
 
 - [uv](https://docs.astral.sh/uv/)
-- Python 3.10 or newer
+- Python 3.11 or newer
 - [ripgrep](https://github.com/BurntSushi/ripgrep)
 
 ### Install dependencies
@@ -274,6 +274,10 @@ computer or in the cloud, and
 [configure](https://kantord.github.io/SeaGOAT/latest/configuration/)
 the `seagoat`/`gt` command to connect to this remote server through the
 internet.
+
+By default the server only accepts connections from the same computer. To
+accept remote connections, set `host: 0.0.0.0` under `server` in the global
+configuration file of the computer running the server.
 
 Keep in mind that SeaGOAT itself does not enforce any security as it is
 primarily designed to run locally. If you have private code that you do not

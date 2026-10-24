@@ -1,17 +1,22 @@
 <div align="center">
-  <h1>Windows-MCP 1.4.2</h1>
+  <h1>Windows-MCP 1.4.5</h1>
   <p>给编程 AI 接入真实 Windows 桌面操作能力</p>
 </div>
 
+[![Tests](https://github.com/CyanQX/Windows11-mcp/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/CyanQX/Windows11-mcp/actions/workflows/test.yml)
+[![Windows EXE setup](https://github.com/CyanQX/Windows11-mcp/actions/workflows/setup.yml/badge.svg?branch=main)](https://github.com/CyanQX/Windows11-mcp/actions/workflows/setup.yml)
+
 ## 工具用途
 
-Windows-MCP 是面向 Claude Code、Codex、DeepSeek Harness 等 AI 编程工具的 Windows 自动化服务。连接后，AI 可以读取窗口和控件，操作真实应用、浏览器与文件，并核对实际结果。
+文档更新：**2026-10-24**。功能说明与截图跟随 [main 最新源码](https://github.com/CyanQX/Windows11-mcp/tree/main) 同步更新，改动记录见 [CHANGELOG](CHANGELOG.md)。当前公开稳定安装包为 [v1.4.5](https://github.com/CyanQX/Windows11-mcp/releases/tag/v1.4.5)；本版包含固定布局、全自动授权锁定及六个“关于”页面，并修复静默更新在安装前退出的问题；发布验收使用管理器实际传入的更新参数。
 
-配套的 **Windows 安装与维护管理器**提供浅蓝玻璃原生界面：自动检测编程端，一次安装 Skill 和 MCP，随后可验证连接、修复、备份、恢复与安全卸载。Skill 提供操作说明，MCP 服务提供真正的 31 个工具。Codex 的安装目标为 **Codex 桌面端**，不安装或调用 Codex CLI。
+Windows-MCP 是面向 Claude Code、Codex、DeepSeek Harness、Gemini CLI、Zcode、Trae 的 Windows 自动化服务。连接后，AI 可以读取窗口和控件，操作真实应用、浏览器与文件，并核对实际结果。
 
-![Windows-MCP 1.4.2 安装与维护页面](assets/manager-v1.4.2.png)
+配套的 **Windows 安装与维护管理器**提供浅白背景和直角主面板：自动检测编程端，一次安装 Skill 和 MCP，随后可验证连接、修复、备份、恢复与安全卸载。编程端下拉列表居中显示、可内部滚动，已安装项目以圆点标识且不可重复选择；再次点击入口即可收起。Skill 提供操作说明，MCP 服务提供真正的 31 个工具。Codex 的安装目标为 **Codex 桌面端**，不安装或调用 Codex CLI。
 
-界面实拍，图中检测状态为隔离验收示例。
+![main 最新源码的安装与维护固定布局](assets/manager-v1.4.4.png)
+
+main 固定布局界面实拍，图中检测状态为隔离验收示例。
 
 本项目基于 [CursorTouch/Windows-MCP](https://github.com/CursorTouch/Windows-MCP) 二次开发，以 [MIT 许可证](LICENSE.md)发布。
 
@@ -21,14 +26,15 @@ Windows-MCP 是面向 Claude Code、Codex、DeepSeek Harness 等 AI 编程工具
 - **语义执行与结果核对**：`Observe → Execute → Verify`，先定位目标，再操作并读回状态；支持真实鼠标键盘输入。
 - **浏览器自动化**：独立 Playwright 浏览器会话，读取页面、填表、操作 iframe 和弹窗。
 - **原生文件与状态监听**：授权目录内的文件操作、多个窗口的事件监听、有界等待和取消。
-- **视觉兜底与权限控制**：自绘界面可按窗口截图定位；受保护操作默认逐次本机审批，也可由操作员在“操作授权”中显式开启可撤销的完全授权。普通权限不能绕过 UAC、锁屏或管理员窗口限制。
-- **一键接入客户端**：支持 Codex 桌面端、Claude Code、官方 DeepSeek Harness、OpenCode 和 Gemini CLI；Harness 支持检测系统注册的自定义安装位置。已安装项禁用重复安装，卸载目标在独立窗口选择；保留其他 MCP、个人配置与仍被使用的共享服务。
+- **视觉兜底与权限控制**：自绘界面可按窗口截图定位；受保护操作默认逐次本机审批，也可由操作员在“设置 → 操作审批”中显式开启可撤销的全自动授权。普通权限不能绕过 UAC、锁屏或管理员窗口限制。
+- **一键接入客户端**：支持 Codex 桌面端、Claude Code、官方 DeepSeek Harness、Gemini CLI、Zcode 和 Trae；Harness 支持检测系统注册的自定义安装位置。已安装项禁用重复安装，卸载目标在独立窗口选择；保留其他 MCP、个人配置与仍被使用的共享服务。
 - **维护与诊断**：真实连接验证、事务备份与回滚、智能修复、脱敏错误报告和自定义安装目录；安装状态与连接结果以清晰的卡片展示。
-- **3D 触感玻璃界面**：银白高光、冷灰蓝材质与实体按压反馈；三个面板支持拖拽缩放、停靠换位和浮动。左右区域整侧跟随拖动滑入边缘，外框与内容一起移动，居中把手恢复整侧；关闭后记住布局。浅蓝、暖色护眼、深色、跟随系统主题，日志背景独立设置；视觉强度提供常规与玻璃拟态，点击“完成”后应用。
+- **固定布局界面**：左侧为安装目标，右上为安装与维护，右下为安装操作；面板不能拖拽、换位、浮动或滑入边缘。保留浅白、暖色护眼、深色、跟随系统主题及独立日志背景；视觉强度提供常规与玻璃拟态，点击“完成”后应用。
+- **外观与程序路径设置**：全局主题、日志背景及视觉强度均支持点击展开、再次点击关闭。连接与日志的数字只通过加减按钮调整，不能选中文字；高级设置自动检测已安装程序，也可添加真实文件夹后点击“检测”，未安装时显示提示，保存前不改动配置。
 - **选择与撤销**：可一键全选或清除尚未安装的目标；安装期间可撤销整批操作，完成后也能预览并撤回最近一次安装，保留个人修改和其他接入。
 - **真实任务进度**：手动检测、安装、卸载、验证、修复和更新在日志上方显示 0–100% 单向进度；按真实完成阶段与下载字节计算。成功约 8 秒后淡出并保留占位，失败信息保留，日志布局保持稳定。
-- **可视化审批**：受保护操作默认打开本机审批窗口，由你核对参数并批准一次或拒绝，无需反复输入 PowerShell 命令。确认信任当前使用者时，可在设置 → 操作授权中自行开启“仅本次会话”或“永久”的完全授权，让鼠标、键盘等 R2 操作不再逐次询问；授权可随时撤销，R3 能力不受影响。
-- **检查与安装更新**：启动后自动检查官方稳定版，发现新版时在设置中的“检查更新”旁显示红色 new；点击“更新安装”后下载并核对 SHA-256。安装版直接显示更新进度页，更新后打开管理器并验证受管接入；首次安装保留向导。便携版校验 ZIP，由独立助手替换、重启并验证，失败保留回滚副本。更新记录见 [CHANGELOG](CHANGELOG.md)。
+- **可视化审批与全自动**：可在任务开始前进入左上角“设置 → 操作审批”，勾选“全自动”并“保存默认审批”，无需等待首个待审请求。也可以在任务触发的审批窗口中勾选并批准。未启用时逐次审批，启用后鼠标、键盘和网页等 R2 操作持续自动执行，重连后仍生效；勾选框保持选中并锁定，通过审批窗口下方“操作授权… → 撤销授权”恢复逐次审批，该入口也提供 8 小时授权。R3 能力仍需单独开启和逐次审批。
+- **检查与安装更新**：启动后自动检查官方稳定版，发现新版时仅在设置中“检查更新”按钮内部右侧显示红点，菜单宽度与文字位置保持不变；点击“更新安装”后下载并核对 SHA-256。安装版直接显示更新进度页，更新后打开管理器并验证受管接入；首次安装保留向导。便携版校验 ZIP，由独立助手替换、重启并验证，失败保留回滚副本。更新记录见 [CHANGELOG](CHANGELOG.md)。
 
 Windows 11 已实测；Windows 10、混合 DPI 多显示器和特殊应用的验证范围见 Skill 的[按需参考](skills/windows-mcp/references/advanced.md)。
 
@@ -36,12 +42,12 @@ Windows 11 已实测；Windows 10、混合 DPI 多显示器和特殊应用的验
 
 ### Windows x64 安装版与便携版
 
-从 [1.4.2 Releases](https://github.com/CyanQX/Windows11-mcp/releases/tag/v1.4.2) 选择一种下载。两种格式均内置管理页面、Skill、MCP 服务和 Python 依赖，无需另装 Python。
+从 [最新正式 Release](https://github.com/CyanQX/Windows11-mcp/releases/latest) 选择一种下载，当前为 v1.4.5。两种格式均内置管理页面、Skill、MCP 服务和 Python 依赖，无需另装 Python；每个安装包的具体功能与更新说明见其对应 Release。
 
 | 下载 | 使用方法 | 管理数据位置 |
 |---|---|---|
-| [Windows-MCP-Setup-v1.4.2-x64.exe](https://github.com/CyanQX/Windows11-mcp/releases/download/v1.4.2/Windows-MCP-Setup-v1.4.2-x64.exe) | 首次运行安装向导选择位置，后续升级直接显示进度页 | 当前用户的 `%LOCALAPPDATA%\WindowsMCP`；管理器设置在 `~/.windows-mcp` |
-| [Windows-MCP-Portable-v1.4.2-x64.zip](https://github.com/CyanQX/Windows11-mcp/releases/download/v1.4.2/Windows-MCP-Portable-v1.4.2-x64.zip) | 完整解压后双击 `Windows-MCP.exe`，直接打开管理页面 | 解压目录旁的 `data`，包含设置、日志、备份、收据、运行时和审批数据 |
+| [Windows-MCP-Setup-v1.4.5-x64.exe](https://github.com/CyanQX/Windows11-mcp/releases/download/v1.4.5/Windows-MCP-Setup-v1.4.5-x64.exe) | 首次运行安装向导选择位置，后续升级直接显示进度页 | 当前用户的 `%LOCALAPPDATA%\WindowsMCP`；管理器设置在 `~/.windows-mcp` |
+| [Windows-MCP-Portable-v1.4.5-x64.zip](https://github.com/CyanQX/Windows11-mcp/releases/download/v1.4.5/Windows-MCP-Portable-v1.4.5-x64.zip) | 完整解压后双击 `Windows-MCP.exe`，直接打开管理页面 | 解压目录旁的 `data`，包含设置、日志、备份、收据、运行时和审批数据 |
 
 安装版提供路径选择、开始菜单入口和系统卸载程序，默认安装到当前用户的 `%LOCALAPPDATA%\Programs\Windows-MCP`，无需管理员权限。可从 Windows“设置 → 应用 → 已安装的应用”卸载管理器；**Skill 与 MCP 接入在管理器页面中单独卸载**，卸载管理器会保留这些接入和个人数据。
 
@@ -52,8 +58,10 @@ Windows 11 已实测；Windows 10、混合 DPI 多显示器和特殊应用的验
 1. 在左侧选择已检测到、尚未接入的编程端，可多选。**Codex 目标为桌面端**，不安装或调用 Codex CLI。
 2. 点击“安装 Skill + MCP”，核对路径与文件预览后确认。Skill 和客户端配置始终安装到下表的官方用户目录，便携模式也一样。
 3. 安装完成会真实验证服务版本、全部 31 个工具及 Session READY。重启对应客户端或新建会话后使用。
-4. 检查、验证连接、修复使用右侧按钮；卸载从独立窗口进入。设置位于“安装操作”面板，包含外观、备份恢复、安装目录、更新和诊断。拖动标题可浮动或换位；拖动分隔边调整大小，缩至最小后继续向边缘拖动并松手收起，点击或拖出边缘把手恢复。未检测到的客户端可在“高级设置”添加其安装文件夹，保存后自动扫描。
-5. 发现新版后进入“设置 → 检查更新”，点击“更新安装”。安装版保留原安装位置，下载校验后直接进入更新进度页；便携版校验 ZIP 后替换程序并保留 data。完成后打开新版管理器并更新、验证受管 Skill 与 MCP。自动检查只提示，不会自行下载安装。
+4. 检查、验证连接、修复使用右侧按钮；卸载从独立窗口进入。固定工作区左上角是点击前后均透明、无边框的“设置、关于”，设置包含外观、操作审批、高级设置、备份恢复、安装目录、更新和诊断。安装状态只展示名称、状态和“详情”，详情内部滚动不带动外层页面；安装目录详情按内容高度展开。
+5. 需要指定程序位置时，进入“设置 → 高级设置”。页面自动检测程序路径，也可通过“添加文件夹”选择真实安装目录，再点击右侧“检测”；保存后应用。全自动的提前开启、锁定及撤销方式见上方“可视化审批与全自动”。
+6. “关于”按顺序提供[关于软件](installer/resources/legal/about.html)、[使用政策](installer/resources/legal/usage.html)、[隐私政策](installer/resources/legal/privacy.html)、[许可证](installer/resources/legal/license.html)、[第三方声明](installer/resources/legal/third-party.html)、[AI使用免责声明](installer/resources/legal/ai-disclaimer.html)，可离线阅读并打开随包许可原文。用户使用条款并入使用政策；AI 说明涵盖生成内容标识、人工核验及法定责任，隐私政策说明实际数据处理与权利渠道。维护及隐私联系邮箱为 jingyanx2@gmail.com。
+7. 发现新版后进入“设置 → 检查更新”，点击“更新安装”。安装版保留原安装位置，下载校验后直接进入更新进度页；便携版校验 ZIP 后替换程序并保留 data。完成后打开新版管理器并更新、验证受管 Skill 与 MCP。自动检查只提示，不会自行下载安装。
 
 修改前创建私有备份，失败执行散列校验回滚；保留其他 MCP、JSONC 注释与个人配置。多个客户端共享服务，仍有引用时保留运行时。界面显示最近一次真实验证结果及时间，MCP 由客户端按需启动。普通桌面与已安装 Edge 无需额外下载；其他 Playwright 通道需提供相应浏览器。
 
@@ -62,12 +70,13 @@ Windows 11 已实测；Windows 10、混合 DPI 多显示器和特殊应用的验
 | Claude Code | `~/.claude/skills/windows-mcp` | `~/.claude.json` |
 | Codex 桌面端 | `~/.agents/skills/windows-mcp` | `~/.codex/config.toml` |
 | DeepSeek Harness | `~/.dsh/skills/windows-mcp` | `~/.dsh/cordis.patch.yml` |
-| OpenCode | `~/.config/opencode/skills/windows-mcp` | `~/.config/opencode/opencode.json` 或已有的 `opencode.jsonc` |
 | Gemini CLI | `~/.gemini/skills/windows-mcp` | `~/.gemini/settings.json` |
+| Zcode | `~/.zcode/skills/windows-mcp` | `~/.zcode/cli/config.json` 的 `mcp.servers` |
+| Trae | `~/.trae-cn/skills/windows-mcp`，国际版为 `.trae/skills/windows-mcp` | 默认 `%APPDATA%\Trae CN\User\mcp.json`；优先沿用已存在的国内版、国际版或 SOLO 配置 |
 
-`~` 表示当前用户主目录。界面显示实际目录，支持 `CODEX_HOME`、`DSH_HOME` 等环境变量。DeepSeek 桌面版和 CLI 使用同一个 Harness Home。目录规则参照 [Claude Code](https://code.claude.com/docs/en/skills)、[Codex](https://learn.chatgpt.com/docs/build-skills)、[DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/skills.md)、[OpenCode](https://opencode.ai/docs/skills/) 和 [Gemini CLI](https://geminicli.com/docs/cli/using-agent-skills/) 的官方文档。
+`~` 表示当前用户主目录。界面显示实际目录，支持 `CODEX_HOME`、`DSH_HOME` 等环境变量。DeepSeek 桌面版和 CLI 使用同一个 Harness Home。目录和格式规则参照 [Claude Code](https://code.claude.com/docs/en/skills)、[Codex](https://learn.chatgpt.com/docs/build-skills)、[DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/skills.md)、[Gemini CLI](https://geminicli.com/docs/cli/using-agent-skills/)、[Zcode MCP](https://zcode.z.ai/cn/docs/mcp-services)、[Zcode Skill](https://zcode.z.ai/cn/docs/skill)、[Trae MCP](https://docs.trae.cn/ide_add-mcp-servers) 和 [Trae Skill](https://docs.trae.cn/ide_skills)。OpenCode 不再提供新安装选项，旧安装记录仍保留维护与卸载能力。
 
-接入的是当前用户的本地编程工具；网页聊天与云端会话需有能连接本机的客户端。Codex 桌面端使用用户级 `config.toml`，同一用户其他 Codex 客户端也会读取它。受保护操作自动打开“本机操作审批”，由你核对会话、参数和期限后批准一次或拒绝，再让 AI 重试相同调用；审批窗口打开期间暂停 MCP 桌面输入。
+接入的是当前用户的本地编程工具；网页聊天与云端会话需有能连接本机的客户端。Codex 桌面端使用用户级 `config.toml`，同一用户其他 Codex 客户端也会读取它。受保护操作自动打开“本机操作审批”，由你核对会话、参数和期限后决定：不勾选“全自动”则批准一次，勾选并批准则开启持续授权。AI 重试当前调用后，在授权有效期间直接继续后续 R2 操作；审批窗口打开期间暂停 MCP 桌面输入。
 
 源码位于 [main 分支](https://github.com/CyanQX/Windows11-mcp/tree/main)，版本变化见 [CHANGELOG](CHANGELOG.md)。发布 `v<版本>` 标签后，GitHub Actions 自动运行测试、构建安装包和便携 ZIP、验证安装及卸载，再上传到 Releases；校验值见对应 Release 的 `SHA256SUMS.txt`。
 
@@ -76,7 +85,7 @@ Windows 11 已实测；Windows 10、混合 DPI 多显示器和特殊应用的验
 已有 Python 3.12+ 和 [uv](https://docs.astral.sh/uv/) 时，可继续安装固定版本：
 
 ```powershell
-uv tool install --force --with "playwright>=1.51,<2" "git+https://github.com/CyanQX/Windows11-mcp.git@v1.4.2"
+uv tool install --force --with "playwright>=1.51,<2" "git+https://github.com/CyanQX/Windows11-mcp.git@v1.4.5"
 ```
 
 将 `%USERPROFILE%\.local\bin\windows-mcp.exe` 作为客户端 MCP 命令，参数为 `["serve"]`。使用 Skill 可从本仓库 `main` 的 `skills/windows-mcp` 复制到上表相应目录。工具参数与可选设置见 [Skill 参考](skills/windows-mcp/references/advanced.md)。

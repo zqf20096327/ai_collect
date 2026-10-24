@@ -1,23 +1,22 @@
 <img width="2072" height="1505" alt="yantr" src="https://github.com/user-attachments/assets/c8a4f811-294e-4db5-9eb8-ce38dcbf0a33" />
 
-
 <div align="center">
 
 # ⚡ Yantr
 
-**A self-hosted app store that runs alongside your OS — not instead of it.**
+**A self-hosted app store that never touches your host.**
 
 [![Podman](https://img.shields.io/badge/Podman-ghcr.io-892ca0?style=flat-square&logo=podman&logoColor=white)](https://github.com/besoeasy/yantr/pkgs/container/yantr)
 [![Rootless](https://img.shields.io/badge/Security-100%25%20Rootless-emerald?style=flat-square)](https://yantr.org)
 [![Daemonless](https://img.shields.io/badge/Architecture-Daemonless-blueviolet?style=flat-square)](https://yantr.org)
-[![Go](https://img.shields.io/badge/Go-1.23+-00ADD8?style=flat-square&logo=go&logoColor=white)](https://go.dev)
+[![Go](https://img.shields.io/badge/Go-1.25+-00ADD8?style=flat-square&logo=go&logoColor=white)](https://go.dev)
 [![License](https://img.shields.io/badge/License-PolyForm%20Noncommercial-blue?style=flat-square)](LICENSE)
 [![Vue 3](https://img.shields.io/badge/Vue-3-42b883?style=flat-square&logo=vue.js&logoColor=white)](https://vuejs.org)
 [![Website](https://img.shields.io/badge/Website-yantr.org-5c6bc0?style=flat-square)](https://yantr.org)
 
 [![Star History Rank](https://api.star-history.com/badge?repo=besoeasy/yantr&type=rank)](https://www.star-history.com/besoeasy/yantr)
 
-[Why Podman?](#️-rootless-by-design-why-podman-over-docker) · [Quick Start](#-quick-start) · [App Catalog](#-app-catalog) · [Community](#-community) · [yantr.org](https://yantr.org) · [Report a Bug](https://github.com/besoeasy/yantr/issues)
+[Why Podman?](#️-rootless-by-design-why-podman-over-docker) · [Quick Start](#-quick-start) · [Community](#-community) · [yantr.org](https://yantr.org) · [Report a Bug](https://github.com/besoeasy/yantr/issues)
 
 </div>
 
@@ -65,37 +64,6 @@ Most homelab platforms and container managers rely on Docker running as a root-l
 | **Idle Memory Overhead** | Always-on background daemon consuming RAM & CPU 24/7 | **Zero daemon overhead** — only your running apps consume resources |
 | **Docker Socket Safety** | Exposing `/var/run/docker.sock` gives complete host root takeover | **Safe user socket translation** — apps get Docker API without host root |
 
-### Key Architectural Advantages
-
-#### 1. True Rootless Isolation (Zero Host Root Privileges)
-Under standard Docker, the container engine runs as `root`. Granting a user access to the Docker socket or `docker` group is practically identical to granting passwordless `sudo`. If any web app or container has a zero-day exploit or escape vulnerability, the attacker gains root control of the physical host.
-
-Under rootless Podman, Yantr runs entirely inside Linux **user namespaces** (`subuid` and `subgid`). Even if an app runs as "root" (UID 0) inside its container, the Linux kernel maps that UID to an unprivileged user ID on the host. If an attacker breaches the container sandbox, they have zero host root permissions: they cannot read `/etc/shadow`, cannot overwrite host binaries, and cannot install system-wide rootkits.
-
-#### 2. Daemonless Architecture (No Single Point of Failure)
-Docker requires `dockerd` running continuously in the background. If the Docker daemon crashes, hangs, or restarts during a package update, all running containers can be killed or lose network connectivity. Furthermore, the idle daemon constantly consumes memory.
-
-Podman is **daemonless**. It uses a direct fork/exec model managed by lightweight `conmon` (container monitor) processes. There is no central daemon to crash. If Yantr itself is stopped, restarted, or updated, all of your background applications (Nextcloud, Jellyfin, Vaultwarden, AI models) continue running uninterrupted.
-
-#### 3. Native Linux systemd Integration (Quadlet)
-Docker fights your operating system with its own restart policies and proprietary supervisors.
-
-Yantr embraces the native Linux init system using **systemd Quadlet** (`.container` declarations in `~/.config/containers/systemd/`):
-- **Auto-starts on boot** via standard Linux user lingering (`loginctl enable-linger`).
-- **Native administration**: Control Yantr using standard `systemctl --user {status,restart,stop} yantr`.
-- **Unified system logging**: Stream live container logs directly with `journalctl --user -u yantr -f`.
-- **Native cgroups v2**: Clean per-service resource limits and process tracking managed directly by the kernel.
-
-#### 4. Untouched Host Networking & Firewall Safety
-Docker notoriously rewrites host `iptables` and `nftables` rules directly. On Linux distros like Ubuntu or Debian, Docker often punches holes right through UFW (Uncomplicated Firewall) without warning, accidentally exposing internal database ports or admin panels to the public internet.
-
-Rootless Podman executes network routing strictly within an isolated user network namespace (via `pasta` or `slirp4netns`). It **never modifies host firewall rules**. Your host firewall configuration stays 100% intact and trustworthy.
-
-#### 5. Transparent Docker Socket Emulation Without Root Risk
-Many popular homelab tools (such as Glances, Beszel, Portainer, or Arcane) expect `/var/run/docker.sock`. On Docker, mounting this socket hands the container keys to the kingdom.
-
-Yantr automatically detects and routes Docker socket requests to Podman's unprivileged user socket (`/run/user/$UID/podman/podman.sock`). The apps function with complete Docker compatibility, but without giving them root privileges on your host machine.
-
 ---
 
 ## 🚀 Quick Start
@@ -106,7 +74,7 @@ One-line installation on Linux (automatically configures rootless Podman and sys
 curl -fsSL https://cdn.jsdelivr.net/gh/besoeasy/yantr@latest/install.sh | bash
 ```
 
-The script is also in the repo root as [`install.sh`](install.sh). The one-liner above resolves `@latest` to the newest tagged release via jsDelivr, so users always get a released installer — never whatever is sitting on `main`.
+Resolves `@latest` to the newest tagged release via jsDelivr (never `main`). The script is also in the repo root as [`install.sh`](install.sh).
 
 <div align="center">
 
@@ -118,17 +86,17 @@ The script is also in the repo root as [`install.sh`](install.sh). The one-liner
 
 </div>
 
-The installer detects your package manager (`dnf`, `apt`, `pacman`, `zypper`) and sets up rootless Podman and the systemd Quadlet service automatically. Any other Linux with Podman and systemd installed works via the manual command below. Alpine is deliberately not listed: the installer can install Podman there, but the whole service model rides on systemd Quadlet, which Alpine does not ship.
+Detects your package manager (`dnf`, `apt`, `pacman`, `zypper`), sets up rootless Podman + systemd Quadlet. Any Linux with Podman + systemd works via the manual command below (Alpine excluded — no systemd Quadlet).
 
-The container image is published on the **GitHub Container Registry** — [github.com/besoeasy/yantr/pkgs/container/yantr](https://github.com/besoeasy/yantr/pkgs/container/yantr):
+Image on GHCR ([besoeasy/yantr](https://github.com/besoeasy/yantr/pkgs/container/yantr)):
 
 ```bash
 podman pull ghcr.io/besoeasy/yantr:latest
 ```
 
-Every release image is multi-arch (`amd64` + `arm64`) and [cosign-signed](https://github.com/sigstore/cosign) in CI, and the image you pull yourself is the same `ghcr.io/besoeasy/yantr:latest` artifact the installer registers as the Quadlet. A rolling `:dev` tag follows `main`, if you want what CI built rather than what a release packaged.
+Multi-arch (`amd64`/`arm64`), cosign-signed. `:dev` tracks `main`.
 
-> **Run as your normal user — never with `sudo`.** Yantr is rootless-only by design. Installed as root it would attach to a rootful Podman service, so every app it deploys would hold full host root — exactly what the architecture above exists to prevent. The installer refuses to run as root.
+> **Run as your normal user — never `sudo`.** Rootless-only by design; the installer refuses root.
 
 Or run manually with rootless Podman:
 
@@ -145,52 +113,13 @@ podman run -d \
   ghcr.io/besoeasy/yantr:latest
 ```
 
-`HOST_PODMAN_SOCKET` tells Yantr where the socket lives **on the host**, which is the path it hands to apps mounting `/var/run/docker.sock` (Portainer, Homarr, Glances). Without it Yantr has to ask the Podman API at runtime, and apps that need the socket can fail to deploy.
-
-The two read-only `/host` and `/sys` binds are what back the host dashboard: filesystem usage and hardware temperatures. CPU, memory, load, uptime, disk I/O and per-interface network are read straight from `/proc`, which needs no mount because those files are not PID- or network-namespaced. Skip the binds and everything still works — those two tiles just report as unavailable.
+- `HOST_PODMAN_SOCKET` — host path to the Podman socket handed to apps mounting `/var/run/docker.sock` (Portainer, Homarr, Glances). Without it Yantr queries the API at runtime and socket-needing apps may fail to deploy.
+- `/host` and `/sys` (read-only) — back the host dashboard's filesystem-usage and temperature tiles. CPU, memory, load, uptime, disk I/O and network come from `/proc` and need no mount. Skip the binds and those two tiles just report unavailable.
 
 Open **http://localhost:5252** and create your operator account on first visit.
 
 ---
 
-## 📦 App Catalog
-
-A curated app catalog, one-click deploy.
-
-| Category | Apps |
-|---|---|
-| 🤖 AI & Agents | Open WebUI, Perplexica, Agent Zero, Kokoro |
-| 🎬 Media | Jellyfin, Emby, Stremio, Swingmusic, Metube |
-| 📥 Downloads | qBittorrent, Radarr, Sonarr, Jackett, Prowlarr |
-| ☁️ Cloud & Files | Nextcloud, Seafile, Syncthing, MinIO |
-| 🔐 Security | Vaultwarden, AdGuard Home, Pi-hole, WireGuard |
-| 🛠️ Dev Tools | Supabase, PostgreSQL, MongoDB, n8n, Gitea |
-| 📡 Networking | Cloudflare Tunnel, Glances |
-| 📝 Productivity | Memos, Wiki.js, Linkwarden, FreshRSS |
-| 💰 Finance | Actual Budget, Ghostfolio, Rotki |
-| ⛓️ Bitcoin | Bitcoin Knots, Monerod, Cashu.me |
-
-> Browse all in [`apps/`](apps/) · Add your own via the [authoring guide](AGENTS.md)
-
----
-
-## ✨ What Makes It Different
-
-**Zero OS footprint** — Yantr never writes to your host. Every app is a Podman Compose stack with named volumes. Uninstall and nothing is left behind.
-
-**Automatic Docker socket translation** — Apps requesting `/var/run/docker.sock` (such as Glances, Beszel, Arcane, or Portainer) are automatically routed to your rootless Podman socket with zero configuration.
-
-**Full environment control** — Edit env vars per deployment. No fixed presets, no platform lock-in. Deploy the same app twice for testing, family, or clients.
-
-**No dependency hell** — Python, Node, CUDA, whatever — each app brings its own runtime inside its container. Nothing conflicts.
-
-**Built-in networking** — Port conflict detection and Cloudflare Tunnel for public exposure.
-
-**Volume browser** — Inspect and manage your app data directly from the browser.
-
-**REST API** — Every action (installing, updating, removing, logging) is a JSON endpoint. Scriptable and CLI-friendly.
-
----
 
 ## 💬 Community
 
@@ -202,17 +131,6 @@ Issues and bug reports belong on [GitHub](https://github.com/besoeasy/yantr/issu
 
 ---
 
-## Star History
-
-<a href="https://www.star-history.com/?repos=besoeasy%2Fyantr&type=date&legend=top-left">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=besoeasy/yantr&type=date&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=besoeasy/yantr&type=date&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=besoeasy/yantr&type=date&legend=top-left" />
- </picture>
-</a>
-
----
 
 ## License
 

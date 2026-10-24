@@ -1,8 +1,8 @@
 <div align="center">
   <img src="web/public/memdoor-logo.png" alt="Memdoor" width="128" height="128">
   <h1>Memdoor</h1>
-  <p><strong>The coding agent for durable workflows.</strong><br>Repeatable, headless, open source, on your own key.</p>
-  <p>Start it from CI, a schedule or a shell. Finish it from your phone or a window. It proves each step and stops where only you decide.</p>
+  <p><strong>Your daemon agents on every door.</strong><br>A coding agent whose runs live on a gateway you own, and whose multi-step jobs are files in the repo, run again without a prompt.</p>
+  <p>Start it from CI, a schedule or a shell. Finish it from your phone or a window. Each step is checked by its output, and the run stops where only you decide.</p>
   <p>
     <a href="LICENSE"><img alt="Apache 2.0" src="https://img.shields.io/badge/license-Apache%202.0-blue"></a>
     <a href="https://github.com/guregodevo/memdoor/actions/workflows/lint.yml"><img alt="CI" src="https://github.com/guregodevo/memdoor/actions/workflows/lint.yml/badge.svg"></a>
@@ -12,11 +12,26 @@
   </p>
 </div>
 
+On this machine:
+
 ```bash
 curl -fsSL https://memdoor.ai/install.sh | bash
 export OPEN_ROUTER_API_KEY=sk-or-...   # or ANTHROPIC_API_KEY, OPENAI_API_KEY, GEMINI_API_KEY, …
 cd your-project && memdoor             # the first run sets the machine up
 ```
+
+Or on a box you can ssh to, with nothing installed there:
+
+```bash
+curl -fsSL https://memdoor.ai/install.sh | bash          # here, once
+memdoor --gateway ssh://you@box                           # installs memdoor on the box, starts its gateway, opens the window on it
+memdoor --gateway ssh://you@box connect openrouter        # your key, kept on the box; every turn there runs on it
+memdoor --gateway ssh://you@box run "fix the failing test" # the same box from a script or CI
+```
+
+The runs live on the box: close the laptop, the work goes on, and your phone or the next terminal opens the same conversation there.
+
+No account. Telemetry off unless you turn it on. macOS, Linux, Windows, one static binary, Apache 2.0.
 
 On a ChatGPT Plus or Pro plan? Skip the key: `memdoor connect chatgpt` (or
 `/connect chatgpt` in the window) opens Sign in with ChatGPT, and your plan's
@@ -69,6 +84,23 @@ run again, by hand or on your local cron
 ([`docs/features/WORKFLOWS.md`](docs/features/WORKFLOWS.md)). Why workflows
 rather than skills: [the write-up](https://guregodevo.github.io/2026/10/06/workflows-not-skills/).
 Worked examples, each run before it was added: [`examples/workflows/`](examples/workflows/).
+One of them, the step that grades a trading rule (`examples/workflows/nightly-rule/steps/grade.yaml`), as it runs nightly; no code in it:
+
+```yaml
+type: agent
+prompt: |
+  Today's partition is {{.partition}}.
+  Read rules/{{.partition}}.md and grade today's trading rule: assess it
+  briefly (clarity, risk profile, plausibility) and write a JSON object
+  {"score": <0-100 integer>, "verdict": "<one sentence>"} into
+  grades/{{.partition}}.json (create grades/ if needed).
+requires:
+  - table_pattern: build
+target:
+  # run by the engine, not by the agent: the grade must exist and be newer than step 1's start stamp
+  command: test "grades/{{.partition}}.json" -nt "rules/{{.partition}}.start" && test -s "grades/{{.partition}}.json"
+timeout: 10m
+```
 
 A recorded session of the review loop (findings verified by running, a gate,
 the fixes applied) plays at [memdoor.ai/workflows](https://memdoor.ai/workflows).
@@ -97,6 +129,7 @@ downloads.
 | `/workflow` | The project's workflows and runs; enter opens a run's graph, `a` approves a gate, `/workflow:<name>` runs one |
 | `/usage` | This month on your key, per model, and what the decision model kept out of the bill |
 | `/remote` | This conversation on your phone: a link and a QR code, the terminal itself, end-to-end encrypted |
+| `/remote view` | A watch-only link: whoever opens it sees the terminal live and cannot type, no account, up to 200 at once; `?live=1` is the terminal alone, for a stream or OBS |
 | `/share` | A read-only link to the conversation, encrypted, secrets removed; `/unshare` deletes it |
 | `/files` or `ctrl+f` | The project's files, the ones this conversation read or changed first, each with what happened to it; enter previews, `ctrl+d` diffs, `ctrl+e` opens in `$EDITOR`, tab puts `@path` in the prompt |
 | `/graph` or `ctrl+g` | This turn as a graph: the reads, the edits that depended on them, the runs that depended on the edits, the failing check in red |
@@ -128,7 +161,8 @@ memdoor run "make the retry wait configurable and add a test"     # a headless t
 git diff | memdoor run "review this diff; one line per finding"    # stdin is the input
 memdoor run --json "fix the failing test" | jq 'select(.event=="done")'
 memdoor workflow run release --wait                                 # progress on stderr, results on stdout
-memdoor remote --last                                               # the link /remote gives, on stdout; holds the run for your phone
+memdoor remote --last                                               # the link /remote gives, on stdout; the gateway holds the run for your phone
+memdoor remote --view --last                                        # the watch-only link: an audience, or a pair of eyes
 ```
 
 The exit code is the turn's receipt: 0 checked, 2 unverified or a failing check,

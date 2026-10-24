@@ -24,7 +24,8 @@ One conversation for the life of the app. You talk; she remembers, organizes, an
 [**Changelog**](CHANGELOG.md) ·
 [**Wiki**](wiki/Home.md) ·
 [**Architecture**](wiki/Architecture.md) ·
-[**Scenarios**](wiki/Scenario-engine.md)
+[**Scenarios**](wiki/Scenario-engine.md) ·
+[**Contribute**](CONTRIBUTING.md)
 
 <br/>
 
@@ -67,12 +68,13 @@ Core principles:
 | 📅 **Calendar** | Creates and reads events via the system calendar or Google Calendar |
 | ⏰ **Reminders & alarms** | "Remind me at 6", "next time I see Reza", "only if I haven't sent it", or "wake me up at 7". Reminders ring on time without the network; alarms go to your clock app |
 | 🔔 **Follow-ups & briefings** | Hourly and nightly background passes plus a morning briefing, respecting quiet hours on your clock |
-| 💗 **Emotional understanding** | Assesses her contribution and uncertainty, remembers ongoing experiences, learns scoped support lessons from feedback, and keeps her internal feelings separate from the tone you need; her orb can mix two feelings |
+| 💗 **Emotional understanding** | Assesses her contribution and uncertainty, remembers ongoing experiences, learns scoped support lessons from feedback, and keeps her internal feelings separate from the tone you need; keeps feelings scoped to individual situations and recognizes emotional transitions; her orb can mix two feelings |
 | 🌐 **Persian & RTL** | Persian replies read right to left; understands Persian times and Jalali dates |
 | 📴 **Offline queue** | Messages sent without a connection are processed in one batch later |
 | ☁️ **Multi-device sync** | Every record syncs through a Google Drive `appDataFolder` change log |
 | 🔎 **Web search** | Optional, when she needs current information |
 | 🗄️ **Memory SQL navigator** | Inspect exactly what she has stored |
+| 🔑 **Her Cloud** | No API key? Buy credit on [Her Cloud](https://cloud.her-project.ir/), then paste or scan the settings it gives you, on the first screen or in Settings |
 | 🔐 **Private by design** | API keys in Android Keystore-backed storage; never written to the database, never synced |
 
 ## Getting started
@@ -84,7 +86,7 @@ Get Her on [Cafe Bazaar](https://cafebazaar.ir/app/com.her), or grab the signed 
 ### First run
 
 1. Open the app. Give your name, then hers.
-2. Enter an OpenAI-compatible **Base URL**, **API key**, and **Model**.
+2. Enter an OpenAI-compatible **Base URL**, **API key**, and **Model**. No key? Tap **Get credit on Her Cloud**, then **Paste settings** or **Scan QR code** with what [Her Cloud](https://cloud.her-project.ir/) gives you.
 3. Continue. She greets you by those names once the connection works.
 4. *Optional:* grant calendar permission, tap Connect Google for Drive/Calendar, enable web search.
 5. *Optional:* Settings → Advanced → Experimental to hide the Memory SQL navigator (shown by default).
@@ -204,6 +206,10 @@ Then add these repository secrets (`Settings → Secrets and variables → Actio
 ## Credits
 
 The loading orbs are [thinking-orbs](https://github.com/Jakubantalik/Libraries.dev/tree/main/packages/thinking-orbs) by Jakub Antalik (MIT), ported to Kotlin and checked against its golden vectors. See [`third_party/thinking-orbs`](third_party/thinking-orbs/README.md).
+
+## Contributing
+
+Pull requests are welcome anytime, no issue needed first. See [CONTRIBUTING.md](CONTRIBUTING.md) for why and when to help, the product rules every change keeps, and how to test it.
 
 ## License
 

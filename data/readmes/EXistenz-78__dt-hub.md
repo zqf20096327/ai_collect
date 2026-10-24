@@ -19,7 +19,7 @@ This is an independent community project, not affiliated with or endorsed by Dra
 - **Presets and preset pipelines.** Save a configuration as a preset and chain several presets into one Run. Recommended settings per model family are suggested for you.
 - **A local LLM (MLX)** that runs inside the app and can see images, with controls to free memory so the image model and the LLM can share a Mac. Nothing is downloaded unless you ask for it.
 - **Prompt tools.** *Enhance Prompt* rewrites your prompt for the selected model's family (and sees the start image and the Moodboard pictures, so "image 1", "image 2"… keep their meaning) and *Generate Prompt* writes one from the start image, both with the local language model.
-- **Plug-ins**, each with its own tab and active only on the model families it was made for: Prompt Master, Prompt Master I4 (Ideogram 4), Prompt Master F3 (the structured prompt of FLUX.3, with boxes), Flux3 Editing (FLUX.3 editing with reference pictures and boxes), Prompt Master MOSS (the JSON layout prompt of MOSS Image: a summary and boxes in pixels from the centre), Sphere Light Reference, Character Sheet (Qwen Image 2.1), Batch plus (a series of RUNs with growing parameters, or one per prompt; all families), AI Assistant (chat with a local LLM that can write the prompt and the settings on command), Qwen 2.1 Inpainting (colored marks and instructions on the start image, for Qwen Image 2.1) LoRA Advisor (a visual list of your LoRAs with thumbnails and notes, and the LLM's advice on which to use; all families), Depth & Pose (a depth map and a DWPose-style skeleton with face and hands from one picture, sent to the Moodboard; edit and in-context models) and Tiled Upscale (a 2× or 4× enlargement tile by tile with FLUX.2 klein 9B or Qwen Image 2.1, with joins that do not show; the result goes to the Results). See [`Plugins/`](Plugins/README.md).
+- **Plug-ins**, each with its own tab and active only on the model families it was made for: Prompt Master, Prompt Master I4 (Ideogram 4), Prompt Master F3 (the structured prompt of FLUX.3, with boxes), Flux3 Editing (FLUX.3 editing with reference pictures and boxes), Prompt Master MOSS (the JSON layout prompt of MOSS Image: a summary and boxes in pixels from the centre), Sphere Light Reference, Character Sheet (Qwen Image 2.1), Batch plus (a series of RUNs with growing parameters, or one per prompt; all families), AI Assistant (chat with a local LLM that can write the prompt and the settings on command), Qwen 2.1 Inpainting (colored marks and instructions on the start image, for Qwen Image 2.1) LoRA Advisor (a visual list of your LoRAs with thumbnails and notes, and the LLM's advice on which to use; all families), Depth & Pose (a depth map and a DWPose-style skeleton with face and hands from one picture, sent to the Moodboard; edit and in-context models) and Tiled Upscale (a 2× or 4× enlargement tile by tile with FLUX.2 klein 9B, FLUX.3 klein or Qwen Image 2.1, with joins that do not show; the result goes to the Results). See [`Plugins/`](Plugins/README.md).
 - **Keyboard.** ⌘↩ Run, ⌘. Stop, ⌘R Results, ⌃Page Up / ⌃Page Down to step through the tabs.
 - **Managed server.** DT Hub can start Draw Things' `gRPCServerCLI` by itself, or connect to the server of the Draw Things app.
 - **DT+ (Draw Things+ cloud).** When DT Hub is connected to the Draw Things app with Bridge Mode on, the **DT+** switch next to the model menu lists the models the cloud can run (asked to Draw Things' cloud server, no account involved) and adds the cloud's LoRAs to yours, always for the current model. Account and subscription stay in the Draw Things app.
@@ -61,7 +61,7 @@ This is an independent community project, not affiliated with or endorsed by Dra
 
 ## Install
 
-1. Download **`DT-Hub-0.4.1-macOS-arm64.zip`** from the [latest release](https://github.com/EXistenz-78/dt-hub/releases/latest).
+1. Download **`DT-Hub-0.4.3-macOS-arm64.zip`** from the [latest release](https://github.com/EXistenz-78/dt-hub/releases/latest).
 2. Unzip it and drag **DT Hub.app** into `/Applications`.
 3. Read **First launch** below before you open it.
 4. Optional: add the plug-ins (they are in the same release, see [`Plugins/`](Plugins/README.md#install)).
@@ -121,6 +121,29 @@ DT Hub looks for MLX models (Hugging Face format: a folder with `config.json` an
 
 Each installed LLM can be assigned to a model family and a use (enhance, generate, both, plug-ins only); a dedicated LLM's own `system_prompt.txt` is used when present. With a single LLM installed nothing needs to be set up.
 
+### Recommended LLMs
+
+These are the models the author uses, with the setting of **Family** and **Use** that goes with each in **Preferences › LLM**. Put each one in its own folder inside the models folder (a folder per model; one level of folders, such as `mlx-community/` or `prithivMLmods/`, is fine). All of them are MLX conversions that read pictures.
+
+| Model | Size | Family | Use | What for |
+| --- | --- | --- | --- | --- |
+| [mlx-community/Qwen3-VL-8B-Instruct-4bit](https://huggingface.co/mlx-community/Qwen3-VL-8B-Instruct-4bit) (Apache-2.0) | about 5.8 GB | **All others** | **Both** | The general LLM: Enhance Prompt, Generate Prompt, the plug-ins and the chat, for every family that has no LLM of its own. It is also the one *Download the recommended model* fetches. |
+| [mlx-community/flux-3-image-klein-pup-8bit](https://huggingface.co/mlx-community/flux-3-image-klein-pup-8bit) (Apache-2.0; also a [4-bit copy](https://huggingface.co/mlx-community/flux-3-image-klein-pup-4bit), about 6 GB) | about 10 GB | **FLUX.3 [klein]** | **Both** | BFL's own prompt upsampler [black-forest-labs/flux-3-image-klein-pup](https://huggingface.co/black-forest-labs/flux-3-image-klein-pup), dedicated to FLUX.3 [klein]. It is used by Enhance Prompt, Generate Prompt, Prompt Master F3 and Flux3 Editing with its official prompts: see below. |
+| [prithivMLmods/Qwen-Image-2.1-PE-I2I-MLX](https://huggingface.co/prithivMLmods/Qwen-Image-2.1-PE-I2I-MLX) (Qwen research licence; download the contents of its `4bit` folder) | about 6 GB | **Qwen Image 2.1** | **I2I (images in Control)** | The prompt rewriter of Qwen Image 2.1 for editing: it reads the pictures of the Control tab and the instruction. |
+| [prithivMLmods/Qwen-Image-2.1-PE-T2I-MLX](https://huggingface.co/prithivMLmods/Qwen-Image-2.1-PE-T2I-MLX) (Qwen research licence; the `4bit` folder as well) | about 6 GB | **Qwen Image 2.1** | **T2I (empty Control)** | The same rewriter for text-to-image: it turns a short request into a detailed prompt. |
+
+With this setup a FLUX.3 [klein] prompt goes to the prompt upsampler, a Qwen Image 2.1 prompt goes to the I2I or the T2I rewriter depending on whether the Control tab has pictures, and every other family goes to Qwen3-VL. An LLM on **All others** serves every family without an LLM of its own; **Plug-ins only** keeps a model away from the prompt buttons. The sizes are those of the files on Hugging Face.
+
+### The FLUX.3 prompt upsampler (PUP)
+
+If the LLM assigned to a family is Black Forest Labs' own prompt upsampler (`black-forest-labs/flux-3-image-klein-pup`, or a converted copy such as `mlx-community/flux-3-image-klein-pup-8bit`: the folder has a `system_prompts.json`), DT Hub uses the model's **official prompts** instead of the family prompts above:
+
+- *Enhance Prompt* uses `t2i` when the Control tab has no pictures, and `i2i` when it has: the start image and the Moodboard pictures that are on go to the model, in that order. A prompt that ends with a table of boxes (as Prompt Master F3 and Flux3 Editing write it) goes through `t2i_bbox` / `i2i_bbox`, and your boxes and ids are put back into the answer.
+- *Generate Prompt* always uses `i2i`, with the start image. **Whatever is in the prompt field goes along as the request**, so a prompt left over from another image will mix with what the model sees: clear the field first for a pure description of the picture (an empty field asks the model to describe the image as a detailed prompt).
+- The model decodes as BFL does (greedy, top-p 0.95, top-k 20), no thinking.
+
+Prompt Master F3 and Flux3 Editing do the same with their own prompts (`t2i_bbox` and `i2i_bbox`). Without the PUP everything works as before. A converted PUP whose `preprocessor_config.json` lacks `processor_class` is fixed by DT Hub when it loads the model.
+
 ### The prompts that guide the LLM
 
 What *Enhance Prompt* and *Generate Prompt* tell the LLM is not hidden in the code: it is a set of Markdown files in `~/Library/Application Support/DT Hub/Data/DTHub/`, written by the app at launch and read at every request.
@@ -153,7 +176,7 @@ The interface of the app and of the plug-ins is available in **English and Itali
 
 ## Status
 
-An early version (0.4.1), used daily by its author. Feedback, bug reports and ideas are welcome: open an [Issue](../../issues).
+An early version (0.4.3), used daily by its author. Feedback, bug reports and ideas are welcome: open an [Issue](../../issues).
 
 ## License
 

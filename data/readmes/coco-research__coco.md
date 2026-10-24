@@ -1,6 +1,12 @@
 # CoCo Super Intelligence
 
-495 personas across 13 departments, **229 skills**[^installed] and **388 commands** in the full catalog (coco main, 2026-10-05).
+495 personas across 13 departments, **229 skills**[^installed] and **388 commands** in the full catalog (coco 1.9.0, 2026-10-21).
+
+Agent skills, slash commands and subagents for Claude Code, Cursor, Codex and other AI coding agents. One command installs them into the tool you already use, and everything runs locally:
+
+```bash
+npx cocosuperintelligence
+```
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/readme/hero-dark-mode.png">
@@ -38,7 +44,7 @@ An illustration built from a real `/SI-Decide` run (Claude Sonnet 5.5, 30 Septem
 
 Prerequisites: git, bash, Node.js 14 or newer (for `npx`), and python3 (it generates the `/SI-*` commands).
 
-`npx cocosuperintelligence` installs the latest release. It clones the pinned release tag (currently `v1.9.0`, not floating `main`) into `./coco` of the current directory, then runs `install.sh`. Run it from your home folder, so the clone is `~/coco` and not a folder inside another project. On a fresh machine it took about 3 minutes, including the download. <!-- x-release-please-version -->
+`npx cocosuperintelligence` installs the latest release. It clones the pinned release tag (currently `v1.9.1`, not floating `main`) into `./coco` of the current directory, then runs `install.sh`. Run it from your home folder, so the clone is `~/coco` and not a folder inside another project. On a fresh machine it took about 3 minutes, including the download. <!-- x-release-please-version -->
 
 ```bash
 npx cocosuperintelligence

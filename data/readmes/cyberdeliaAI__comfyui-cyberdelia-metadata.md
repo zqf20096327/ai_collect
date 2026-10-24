@@ -1,0 +1,256 @@
+# comfyui-cyberdelia-metadata
+
+<p align="center">
+  <img src="assets/icon.png" alt="Cyberdelia Image Metadata icon" width="200">
+</p>
+
+[![Tests](https://github.com/cyberdeliaAI/comfyui-cyberdelia-metadata/actions/workflows/tests.yml/badge.svg)](https://github.com/cyberdeliaAI/comfyui-cyberdelia-metadata/actions/workflows/tests.yml)
+[![License: GPL-3.0](https://img.shields.io/badge/License-GPL--3.0-blue.svg)](LICENSE)
+
+Civitai-compatible image metadata for ComfyUI, with robust handling of complex conditioning chains and modern multi-sampler workflows.
+
+By **Cyberdelia AI Lab** · [github.com/cyberdeliaAI](https://github.com/cyberdeliaAI)
+
+## What it does
+
+Adds a Cyberdelia save node that writes structured metadata to PNG, JPG, or WebP files. The format is compatible with Civitai, so when you upload your image it reads back your seed, model, LoRAs, prompts, and sampler settings automatically — no manual entry.
+
+## What's different in this version
+
+Writing prompt and sampler info into a PNG sounds simple, but breaks down in real workflows. This release is focused on the rough edges:
+
+### Version 2.2.4 — Composer latent pass-through
+
+- A connection from the Composer's LATENT output no longer makes its character
+  prompts and regional LoRAs appear in normal-generation metadata. That output
+  returns the unchanged input latent and does not apply regional conditioning.
+- Metadata follows the original latent source for size/model ancestry while
+  keeping Composer's model and conditioning routes intact when they are used.
+- Composer mask previews and diagnostic reports alone also do not contribute
+  character-generation metadata.
+- Covers retained Composer cache entries and ON → OFF transitions, with and
+  without an explicit rgthree metadata context.
+
+### Version 2.2.3 — Core switch routing
+
+- Prompt metadata follows the selected branch of ComfyUI's `ComfySwitchNode`
+  when controlled by a literal boolean or a connected `PrimitiveBoolean`.
+- Inactive branches are excluded from prompt and resource ancestry, so toggling
+  Krea2 Composer off does not retain its character prompts or regional LoRAs.
+- Composer OFF saves the original normal positive prompt without `Scene:` or
+  character sections, even after an earlier Composer ON run was cached.
+- Applies to conditioning, text switches, connected rgthree contexts and
+  NegPiP source recovery when the sampler's negative input is disconnected.
+- No additional workflow connections are required. Unknown dynamic boolean
+  producers retain the previous fallback behavior.
+
+### Version 2.2.2 — Krea2 Two Character Composer
+
+- Captures the shared scene and both regional character prompts, including
+  triggers, as one labeled positive prompt. The original global negative stays
+  in the separate negative field, even when NegPiP operates through the positive
+  conditioning and the sampler's negative socket is disconnected.
+- With Composer **0.4.5 or newer**, reads the actual expanded texts and loaded
+  regional LoRAs from cached conditioning. No extra wiring is required and
+  cache hits retain the same information without re-running the composer.
+- Includes character LoRA names/hashes/strengths, region layout, separation,
+  edge softness and base strength. Prompt-only older Composer versions fall
+  back to source fields, which may still contain common-prompt placeholders.
+- Recognizes KSampler, CyberKrea, CFGGuider/BasicGuider and rgthree context
+  paths while keeping positive/negative roles separate.
+
+### Version 2.2.1 — JPG/WebP sidecar fix
+
+- Fixes `jpg_with_json` and `webp_with_json` failing with
+  `TypeError: 'PosixPath' object is not subscriptable` while inserting EXIF
+  metadata before writing the workflow JSON sidecar.
+
+### Version 2.2.0 — ComfyUI-MultiGPU model metadata
+
+- Adds model-name and UNET-hash extraction for `UNETLoaderMultiGPU` and
+  `UNETLoaderDisTorch2MultiGPU`.
+- Uses the selected `unet_name` from ComfyUI-MultiGPU, so model metadata is
+  preserved through model-patching, NegPiP, rgthree context, and sampler chains.
+
+### Version 2.1.0 — CyberKrea metadata
+
+- Adds native metadata extraction for `CyberKreaSampler` and
+  `CyberKreaEmptyLatent` without requiring an extra save node or new workflow
+  connection.
+- Records the real seed, step count, CyberKrea sampler/schedule, base CFG,
+  generation dimensions, preset, guidance mode, restart settings, detail,
+  eta, sigma gate, and manifold contraction.
+- Recovers both original NegPiP prompt strings when CyberKrea's optional
+  negative input is deliberately left disconnected.
+- Prevents a seed relayed through rgthree's `steps` channel from replacing an
+  already detected sampler step count.
+
+### Version 2.0.1 fixes
+
+- Restores node previews by returning output-relative, URL-safe subfolder paths to ComfyUI.
+- Automatically recognizes workflows installed through the Registry, Git, ComfyUI-Manager custom install, and the tagged revived predecessor pack when migrating legacy node ids.
+- Keeps ComfyUI's validated safe basename when `subdirectory_name` is set. In that mode, directory components in `filename_prefix` are intentionally not reused.
+
+### Correct prompt/sampler attribution in complex graphs
+
+- **ConditioningZeroOut handling** — when your negative is zeroed out, metadata reports it as empty instead of walking past the zero-out and picking up whatever CLIPTextEncode was upstream.
+- **rgthree Context Big / Context Switch** — the walker follows the right input slot through these passthrough nodes, so the negative branch doesn't accidentally pull text from the positive branch.
+- **ControlNet apply chains** — passthrough resolution that respects positive/negative separation.
+- **Multi-sampler workflows** — in base + upscale pass setups, the primary generation sampler (farthest from the save node) is reported, not whichever was found first.
+
+### Runtime text capture
+
+Nodes that compute their final text at runtime — wildcard expanders, dynamic prompts, LLM-based prompt engineers like [Cyberdelia Z-Engineer](https://github.com/cyberdeliaAI/comfyui-cyberdelia-z-engineer) — can register their resolved text via the hook API and have it captured in metadata, instead of falling back to a raw widget value or unresolved wildcard placeholder.
+
+### Broad third-party integration
+
+Out-of-the-box support for ~20 popular custom node packs (rgthree, efficiency-nodes, easyuse-nodes, lora-manager, RES4LYF, WanVideoWrapper, and more — see [`modules/defs/ext/`](modules/defs/ext/)). Adding a new one is a small Python file following an existing pattern.
+
+### Output flexibility
+
+PNG (lossless), JPG, or WebP (lossy or lossless) at adjustable quality. Optional sidecar `.json` workflow file. Subdirectory templating with date masks, model name, and prompt prefixes. Five metadata scopes from `full` to `none`.
+
+## Installation
+
+### Via ComfyUI-Manager
+
+Search for **`comfyui-cyberdelia-metadata`** or **`Cyberdelia`** and install.
+
+### Manual
+
+```bash
+cd ComfyUI/custom_nodes
+git clone https://github.com/cyberdeliaAI/comfyui-cyberdelia-metadata.git
+```
+
+Restart ComfyUI.
+
+Version 2 uses installation-wide unique serialized ids. It can coexist with
+`nkchocoai/ComfyUI-SaveImageWithMetaData`; neither pack overwrites the other's
+node registration.
+
+## Usage
+
+Replace your `Save Image` node with **Save Image With Metadata (Cyberdelia)**.
+Hook up the image input — the rest is automatic.
+
+If you use rgthree, you can optionally connect the `CONTEXT` output of
+**Context** or **Context Big** to the node's `context` input. Non-empty context
+values for seed, steps, CFG, checkpoint, sampler, and scheduler take priority
+over automatic graph detection. The context conditioning selects the prompt;
+its text fields and CLIP dimensions fill gaps only when prompt text or generation
+size cannot otherwise be detected. Empty context fields keep using the normal
+graph fallback, so the input is safe to leave disconnected and existing
+workflows remain unchanged.
+
+## Node options
+
+| Option | Description |
+|---|---|
+| `context` | Optional rgthree `CONTEXT`; populated values are authoritative metadata overrides |
+| `filename_prefix` | Filename template — supports mask tokens (see below) |
+| `subdirectory_name` | Relative subdirectory inside ComfyUI's output folder — supports mask tokens |
+| `output_format` | `png`, `jpg`, `webp`, or any of those + `_with_json` for a sidecar workflow file |
+| `quality` | `max` / `lossless WebP` (100%), `high` (80%), `medium` (60%), `low` (30%). PNG ignores this. |
+| `metadata_scope` | `full` (default + extras), `default` (Comfy stock), `parameters_only` (A1111 string), `workflow_only`, or `none` |
+
+### Filename and subdirectory templating
+
+`filename_prefix` and `subdirectory_name` accept these mask tokens:
+
+| Token | Replacement |
+|---|---|
+| `%seed%` | Seed value |
+| `%width%` / `%height%` | Image dimensions |
+| `%pprompt%` / `%pprompt:[n]%` | Positive prompt (optionally first *n* characters) |
+| `%nprompt%` / `%nprompt:[n]%` | Negative prompt (optionally first *n* characters) |
+| `%model%` / `%model:[n]%` | Checkpoint name (optionally first *n* characters) |
+| `%date%` | Date as `yyyyMMddhhmmss` |
+| `%date:[format]%` | Date in a custom format |
+
+Date format identifiers: `yyyy` (year), `MM` (month), `dd` (day), `hh` (hour), `mm` (minute), `ss` (second). Example: `%date:yyyy-MM%` produces `2026-05`.
+
+When `subdirectory_name` is empty, directory components in `filename_prefix`
+continue to create subdirectories as supported by ComfyUI. When
+`subdirectory_name` is set explicitly, it alone selects the destination
+directory and the filename keeps the basename validated by ComfyUI.
+
+## Runtime text capture (for node authors)
+
+Building a custom node that computes its final prompt text at runtime? You can register that text so it ends up in saved metadata instead of whatever the user typed in the widget. The mechanism is loose-coupled — no hard import dependency on this extension:
+
+```python
+import sys
+from comfy_execution.utils import get_executing_context
+
+context = get_executing_context()
+if context is not None:
+    for mod in sys.modules.values():
+        if mod is None:
+            continue
+        record_fn = getattr(mod, "record_resolved_text", None)
+        if callable(record_fn):
+            record_fn(context.node_id, final_text, getattr(context, "list_index", None))
+```
+
+If users don't have a compatible metadata extension installed, the snippet does nothing. This is how [Cyberdelia Z-Engineer](https://github.com/cyberdeliaAI/comfyui-cyberdelia-z-engineer) gets its LLM-engineered output into metadata.
+
+## Supported third-party nodes
+
+Each file in [`modules/defs/ext/`](modules/defs/ext/) registers a third-party node pack. Currently covered: CyberKrea Sampler, ComfyUI-MultiGPU, rgthree, efficiency-nodes, easyuse-nodes, lora-manager, RES4LYF, WanVideoWrapper, Lightx02-Nodes, comfyui-custom-scripts, comfyui-clip-with-break, comfyui-easy-civitai-xt-nodes, comfyui-flux-settings-node, comfyui-gguf, comfyui-miaoshouai-tagger, comfyui-restart-sampling, comfyui-weilinnodes, ComfyUI-NegPiP-ZImage, Krea2 Two Character Composer, CheckpointDiscoveryHub, CR_ApplyLoRAStack, everywhere, size_from_presets, SantodanNodes.
+
+> [!TIP]
+> If the `full` metadata scope errors out, it's usually an unrecognised third-party node in your workflow. Either swap to a Comfy Core equivalent or add a new file under [`modules/defs/ext/`](modules/defs/ext/) following the existing pattern.
+
+## Migrating workflows to version 2
+
+The legacy ids `SaveImageWithMetaData` and `CreateExtraMetaData` are owned by
+the original nkchocoai pack as well. Version 2 therefore uses the unique ids
+`CyberdeliaSaveImageWithMetaData` and
+`CyberdeliaCreateExtraMetaData`. Registering the old ids as aliases would
+reintroduce the same load-order conflict, so they are deliberately not exposed
+by the backend.
+
+Normal UI workflows created with this fork are migrated automatically before
+ComfyUI checks for missing nodes when their `cnr_id` or `aux_id` identifies the
+Registry package, the `cyberdeliaAI/comfyui-cyberdelia-metadata` Git repository,
+or the tagged revived predecessor package. Save the workflow once to persist
+the new ids. Workflows belonging to nkchocoai are left untouched.
+
+For a directory of workflow JSON files, first run the bundled migrator in dry
+run mode:
+
+```bash
+python3 scripts/migrate_workflows.py /path/to/workflows
+```
+
+Then write the changes; each changed file gets a `.json.bak` backup:
+
+```bash
+python3 scripts/migrate_workflows.py --write /path/to/workflows
+```
+
+Old API JSON and workflows without a recognized `cnr_id` or `aux_id` cannot be
+distinguished from the original pack automatically. If the selected files are
+definitely meant to use the Cyberdelia nodes, opt in explicitly:
+
+```bash
+python3 scripts/migrate_workflows.py --all-legacy --write /path/to/workflows
+```
+
+This package remains the direct successor to
+`revived_comfyui_image_metadata_extension`. Tagged predecessor workflows are
+migrated automatically; untagged ones need the same one-time `--all-legacy`
+migration because they also use the shared legacy ids.
+
+## Credits
+
+Built on the work of:
+
+- **edelvarden** — [comfyui_image_metadata_extension](https://github.com/edelvarden/comfyui_image_metadata_extension) — original concept and initial implementation.
+- **Santodan** — [revived_comfyui_image_metadata_extension](https://github.com/Santodan/revived_comfyui_image_metadata_extension) — picked up maintenance and added LoRA metadata, subdirectory templating, format/quality controls, and metadata scope options.
+- **Cyberdelia AI Lab** — this version — conditioning chain resolution rewrite, multi-sampler workflow support, runtime text capture, and ongoing maintenance.
+
+## License
+
+GPL-3.0 — see [LICENSE](LICENSE). Inherited through the fork chain; derivative works must remain GPL-3.0 and preserve copyright notices of all prior authors.

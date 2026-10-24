@@ -9,6 +9,8 @@
 
 **[Documentation](https://github.com/alessioricco/certo/blob/main/docs/README.md)** · [Getting started](https://github.com/alessioricco/certo/blob/main/docs/getting-started.md) · [Troubleshooting](https://github.com/alessioricco/certo/blob/main/docs/troubleshooting.md)
 
+Certo is a **coding-agent harness**: the layer around the model that runs the agent, gives it its tools, chooses the model, sets the limits, and checks the result. The model writes the code; the harness decides what counts as done. The agent loop and the basic tools come from the [OpenHands SDK](https://docs.openhands.dev/sdk); Certo adds the model choice, the limits and the verification.
+
 Certo runs coding tasks on any model, local or cloud. It can pick the best model for each task. When a model can't finish, or its provider goes down, it hands the task to the next one, with a note on where things stand.
 
 It knows when to switch because it doesn't take the agent's word for it: when the agent says it's done, Certo runs your real tests and build itself, with no AI involved, and ends with one verdict and an exit code a script can rely on. *Certo* is Italian for "sure".
@@ -18,7 +20,7 @@ It knows when to switch because it doesn't take the agent's word for it: when th
 *A real run: the first model's key was rejected (invalid on purpose, for the demo), so Certo handed the task to the next model, which passed the checks. 1m 32s, $0.02. [The record of this run](https://github.com/alessioricco/Certo/blob/main/docs/benchmark/escalation-provider-failure-0.1.22.md).*
 
 ```bash
-pip install certo
+uv tool install certo           # or: pip install certo
 certo init                      # pick Ollama for a local model, or a cloud provider
 cd certo-workspace && certo tasks/wordle.md --project wordle
 ```
@@ -168,11 +170,13 @@ With `--escalate`, the failing verdicts are what move a task to the next model. 
 ## Quickstart
 
 ```bash
-pip install certo
+uv tool install certo
 certo init
 cd certo-workspace
 certo tasks/wordle.md --project wordle
 ```
+
+[uv](https://docs.astral.sh/uv/) installs Certo as a command in its own environment. With pip, install it inside a virtual environment: `python3 -m venv ~/.venvs/certo`, then `~/.venvs/certo/bin/pip install certo` (on systems that protect their Python, `pip install` outside one fails). Upgrade with `uv tool upgrade certo` or `pip install -U certo`. See [Getting started](https://github.com/alessioricco/certo/blob/main/docs/getting-started.md#1-install).
 
 `certo init` asks which provider you use (OpenAI, Anthropic, Gemini, a local Ollama, or any LiteLLM model), takes your API key at a hidden prompt, saves the settings, and makes one real call to check the model works. It also leaves five sample tasks in `tasks/`: Wordle and the Tower of Hanoi in the terminal, in Python, and three browser games (a space-rocks shooter, a maze chase and an alien-fleet shooter), which need Node 18+. With a cloud model a run uses your credits, and Certo prints the cost at the end. The generated project lands in `projects/wordle`.
 
@@ -311,6 +315,7 @@ The full list is in the [documentation](https://github.com/alessioricco/certo/bl
 - [Getting started](https://github.com/alessioricco/certo/blob/main/docs/getting-started.md): install, `certo init`, your first task, and reading the verdict
 - [Write a task Certo can check](https://github.com/alessioricco/certo/blob/main/docs/guides/write-a-good-task.md): the habits that turn a vague request into a verified result
 - [Troubleshooting](https://github.com/alessioricco/certo/blob/main/docs/troubleshooting.md): the problems people actually hit, with their fix
+- [Questions and answers](https://github.com/alessioricco/certo/blob/main/docs/questions-and-answers.md): how Certo decides to hand a task to another model, what that model gets, and verdicts in CI
 - [Why agents lie](https://github.com/alessioricco/certo/blob/main/docs/concepts/why-agents-lie.md): the real cases of agents claiming "done", and how Certo catches each one
 - [ROADMAP.md](https://github.com/alessioricco/certo/blob/main/ROADMAP.md): where Certo is going; [TODO.md](https://github.com/alessioricco/certo/blob/main/TODO.md): what's left to do
 
@@ -327,4 +332,4 @@ uv run pytest -q     # no API key needed
 
 ## License
 
-[MIT](https://github.com/alessioricco/certo/blob/main/LICENSE). Built by [Alessio Ricco](https://github.com/alessioricco).
+[MIT](https://github.com/alessioricco/certo/blob/main/LICENSE). Built and maintained by [Alessio Ricco](https://github.com/alessioricco) ([LinkedIn](https://www.linkedin.com/in/alessioricco/), [Medium](https://medium.com/@alessioricco)).

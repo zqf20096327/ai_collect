@@ -130,6 +130,17 @@ just frontend
 
    # Override the cloud model (default: gemini/gemini-2.0-flash):
    echo 'HINBOX_CLOUD_MODEL=gemini/gemini-2.5-flash' >> .env
+
+   # Other providers: openai/... needs OPENAI_API_KEY; anthropic/... needs
+   # ANTHROPIC_API_KEY and `uv sync --extra anthropic`
+   echo 'HINBOX_CLOUD_MODEL=openai/gpt-6-luna' >> .env
+
+   # Ollama models get reasoning_effort="none" (thinking off) by default;
+   # set this to "" to keep a model's own default, or e.g. "high":
+   echo 'HINBOX_OLLAMA_REASONING_EFFORT=' >> .env
+   # With thinking on, Ollama calls get at least this many output tokens
+   # (default 8192) so the model can finish thinking and still answer:
+   echo 'HINBOX_OLLAMA_THINKING_MAX_TOKENS=8192' >> .env
    ```
 
 5. **Verify installation:**
@@ -189,6 +200,23 @@ just process --domain afghanistan_1980s --force-reprocess
 just frontend
 ```
 Explore extracted entities at http://localhost:5001
+
+### Evaluating Models
+The scoreboard grades any model on your hand-labelled answer keys, so you can compare cloud, frontier and local models (or later, optimized prompts) on equal terms.
+```bash
+# Score a model on the relevance labels or the merge labels
+just eval relevance --model gemini/gemini-2.0-flash
+just eval merge --model ollama/qwen3.6:35b-a3b --split test
+
+# Show every run so far
+just eval show
+
+# Pick hard look-alike entity pairs to label (writes merge_candidates_v2.jsonl)
+just eval-mine
+```
+Gold files live in `{output_dir}/eval/`. Each run writes its per-item predictions to `eval/runs/` and adds one row to `eval/scoreboard.jsonl`. Items are split 60/20/20 into train/dev/test by a stable hash, so anything tuned on `train` is never graded on `test`. Results report balanced accuracy next to the "always give the common answer" baseline, because the label sets are lopsided.
+
+**DSPy experiments** live in [`experiments/dspy_opt/`](experiments/dspy_opt/README.md), in their own environment, so DSPy never enters Hinbox's main dependencies, and LiteLLM is never installed. `just dspy-merge --model <model> --optimizer mipro` optimises the merge check for one model and puts the result on the same scoreboard.
 
 ### Data Management
 ```bash

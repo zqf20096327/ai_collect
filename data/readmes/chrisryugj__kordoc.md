@@ -4,6 +4,7 @@
 
 [![npm version](https://img.shields.io/npm/v/kordoc.svg)](https://www.npmjs.com/package/kordoc)
 [![license](https://img.shields.io/npm/l/kordoc.svg)](LICENSE)
+[![MCP Registry](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fregistry.modelcontextprotocol.io%2Fv0%2Fservers%3Fsearch%3Dio.github.chrisryugj%2Fkordoc%26version%3Dlatest&query=%24.servers%5B0%5D.server.version&label=MCP%20Registry&color=blue)](https://registry.modelcontextprotocol.io/v0/servers?search=io.github.chrisryugj/kordoc)
 
 > *대한민국에서 둘째가라면 서러울 문서지옥. 거기서 7년 버틴 공무원이 만들었습니다.*
 
@@ -38,7 +39,7 @@ CLI는 설치 없이 `npx kordoc`으로 실행할 수 있습니다. PDF·OCR 의
 npx -y kordoc setup
 ```
 
-Claude Desktop·Claude Code·Cursor·Codex 등 설치된 클라이언트에 MCP를 등록합니다. 클라이언트를 재시작하면 파싱·비교·생성·검수·렌더 등 **18개 도구**를 사용할 수 있습니다.
+Claude Desktop·Claude Code·Cursor·Codex 등 설치된 클라이언트에 MCP를 등록합니다. 공식 MCP 레지스트리에도 [`io.github.chrisryugj/kordoc`](https://registry.modelcontextprotocol.io/v0/servers?search=io.github.chrisryugj/kordoc)으로 등재돼 있습니다. 클라이언트를 재시작하면 파싱·비교·생성·검수·렌더 등 **18개 도구**를 사용할 수 있습니다.
 
 Claude Code 플러그인:
 
@@ -100,34 +101,35 @@ await writeFile("보고서.hwpx", Buffer.from(hwpx))
 
 ## 검증 결과
 
-**4.22.14 · 2026-10-19 검증**. 고정 코퍼스와 참조 기준으로 측정한 결과입니다.
+**4.22.14 · 2026-10-19 검증**(렌더 배치·PDF 표는 4.24.4 · 2026-10-24). 고정 코퍼스와 참조 기준으로 측정한 결과입니다.
 
 | 대상 | 규모 | 결과 |
 | --- | --- | --- |
 | HWPX | 2,424문서 · 10,342표 | 표 구조 일치 **10,342/10,342 · 100%** |
 | HWP 5.x ↔ HWPX | 1,130쌍 · 4,315표 | 짝 문서의 표 구조 일치 **100%** |
 | PDF 글 | 744쌍 | 글자 재현율 **99.879%** · 정확도 **99.670%** · 읽기 순서 **99.247%** · 어절 F1 **99.049%** |
-| PDF 표 | 708쌍 · 2,331표 | 표 탐지 **99.87%** · 구조 일치 **98.16%** · 칸 F1 **0.9918** |
+| PDF 표 | 708쌍 · 2,331표 | 표 탐지 **99.87%** · 구조 일치 **98.20%** · 칸 F1 **0.9922** |
 | HWPX 재조판 | 다중줄 25,187문단 (12개 폴더) | 모든 줄 시작 일치 **24,941/25,187 · 99.02%** |
 | PDF 중첩표 (텍스트층) | 29문서 · 101표 | 구조·칸 내용 **101/101 · 100%** |
 | 법령 별표 | 272건 · 346표 | HWP **346/346**, PDF **342/346 · 98.84%** |
 | PDF 전체 | 1,911문서 중 1,729건 채점 | 글 커버리지 **99.80%** |
 | OCR | 53문서 · 102쪽 | CER **0.0409** · 글자 재현율 **99.02%** |
 | opendataloader-bench | PDF 200문서 | 종합 기본값 **0.964** · OCR 끔 **0.939** |
+| HWPX 렌더 배치 (4.24.4) | 한컴 PDF 짝 · 글 조각 90,762 · 그림 4,107 | 글 위치(±1.5pt) **87,509 · 96.4%** · 그림 위치(±2pt) **4,019 · 97.9%** |
 
 표 구조 점수와 셀 내용·화면 재현은 별도 지표입니다. 중첩표 100%는 위 101표에 한정하며 전체 PDF·조판의 완전 일치를 뜻하지 않습니다. 채점 범위·제외 기준·옵션별 수치·재현 방법은 [벤치마크 상세](docs/benchmarks.md)에 있습니다.
 
 ## 최근 업데이트
 
-최신 배포: **[4.24.1](https://github.com/chrisryugj/kordoc/releases/tag/v4.24.1)** · 2026-10-21
+최신 배포: **[4.24.4](https://github.com/chrisryugj/kordoc/releases/tag/v4.24.4)** · 2026-10-24
 
-| 버전 | 주요 변경 |
-| --- | --- |
-| 4.24.1 | 검수 수정: 블록 검수 희소 표 메모리 폭주·천원 규칙 이차 시간·예산 검산(목록 줄·소계(A)·비율 행), `generate --template` 견본 덮어쓰기 차단 |
-| 4.24.0 | 블록 단위 검수 `lintBlocks`: 열린 문서의 문단·표 칸을 블록으로 넘기면 지적을 블록 id·블록 안 위치로 돌려줌(CLI `lint-blocks`, MCP `lint_document`, 워커, Python SDK) |
-| 4.23.1 | 견본 생성 제목표 결재선 칸을 직위별로, 산출근거 줄·표 칸 천원 단위 오탐 제거 |
-| 4.23.0 | 부서 서식 견본으로 새 문서 생성(`generate --template`), 예산 문서 검수(`lint --budget`), MCP `lint_document` |
-| 4.22.18 | kordoc 생성 보고서의 제목 틀·장 띠·요약 상자 패치, 변경 추적 HWP 패치 결과가 한글에 보이지 않던 문제 |
+| 버전 | 주요 변경 | 수치 변화 |
+| --- | --- | --- |
+| 4.24.4 | 렌더: 넘친 줄 줄이기(빈칸 20%·나머지 글자마다), 칸 안 개체가 키운 칸 높이, KoPub 대체 글꼴로 작성된 문서, 쪽 바닥 행 판정 · PDF: 옆 칸 선이 걸친 칸 변 | 렌더 글 위치 87,289 → **87,509**(새 측정 기준) · 그림 4,017 → **4,019** · PDF 표 구조 98.16% → **98.20%** |
+| 4.24.3 | 렌더: 한컴이 쪽에서 갈라 저장한 여러 행 칸, 엇갈린 병합 표 행 높이, 짝·홀 바탕쪽 물려받기, 묶음 안 회전 사진, 그림자 사진 · PDF: 쪽마다 갈린 행의 이어짐 보존 | 렌더 글 위치 86,954 → **87,215** · 그림 3,881 → **4,017** · 별표 PDF 재현율 0.99976 → **0.99982** |
+| 4.24.2 | 렌더를 한컴 PDF 와 맞춤: 쪽을 넘어온 떠 있는 표, 칸 안 개체 쌓기, 세로 오프셋 이중 계산, 마지막 행 높이, 줄바꿈 앞 공백, 쪽 번호 | 렌더 글 위치 86,508 → **86,954** / 90,550 · 그림 3,872 → **3,881** / 3,976 |
+| 4.24.1 | 블록 검수 희소 표 메모리 폭주, 천원 규칙 이차 시간, 예산 검산(목록 줄·소계(A)·비율 행), `generate --template` 견본 덮어쓰기 차단 | 20만 자 표기 검수 7.3초 → **10ms 안팎** |
+| 4.24.0 | 블록 단위 검수 `lintBlocks`(CLI `lint-blocks`, MCP `lint_document`, 워커, Python SDK) | 새 기능 |
 
 이전 버전과 상세 내용은 [변경 이력](CHANGELOG.md)에 있습니다.
 

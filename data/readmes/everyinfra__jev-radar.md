@@ -1,6 +1,12 @@
-<div align="center">
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/hero-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="docs/assets/hero-light.svg">
+    <img alt="A radar sweeps across Jev ecosystem categories; graded entries light up as it passes, and the latest verified projects are listed with their tiers. 1,199 entries: A 534 and B 665." src="docs/assets/hero-light.svg" width="100%">
+  </picture>
+</p>
 
-<img src="docs/assets/banner.png" width="880" alt="Jev Radar — the most rigorously verified tracker of the Jev ecosystem" />
+<div align="center">
 
 # Jev Radar 📡
 
@@ -9,9 +15,9 @@
 
 **验证最严,没有之一 · Every entry graded A/B by evidence depth — the only registry in the ecosystem that does.**
 
-[![status](https://img.shields.io/badge/monitor-active-brightgreen)]() [![cases](https://img.shields.io/badge/casebook-220%2B_cases-blue)]() [![registry](https://img.shields.io/badge/registry-1170_graded_entries-9cf)]() [![last scan](https://img.shields.io/badge/last_scan-2026--10--17-important)]() [![verified](https://img.shields.io/badge/evidence_graded-A%2FB%2FC-purple)]() [![guide](https://img.shields.io/badge/API_access_guide-included-success)]()
+[![registry](https://img.shields.io/badge/registry-1199_graded_entries-brightgreen)](data/projects.json) [![cases](https://img.shields.io/badge/casebook-220%2B_cases-brightgreen)](CASEBOOK.md) [![verified](https://img.shields.io/badge/evidence_graded-A%2FB%2FC-brightgreen)](#why-you-can-trust-it) [![guide](https://img.shields.io/badge/API_access_guide-included-brightgreen)](docs/jev-api-access-guide.zh.md) [![license](https://img.shields.io/badge/license-CC_BY_4.0_%C2%B7_data_CC0-brightgreen)](LICENSE)
 
-**[English](#english) · [中文](#中文)**
+**[English](#english) · [简体中文](#中文) · [Español](i18n/README.es.md)**
 
 </div>
 
@@ -35,12 +41,12 @@ The pitch that took over developer Twitter: **70–500 ms** end-to-end latency, 
 
 Four days after launch, the Jev ecosystem crossed **1,000 repositories** within five days (21,600+ stars at day 4). Jev Radar is an independent attempt to answer one question with evidence: **what is the world actually building with this thing?**
 
-Every case here was verified against a primary source — a repository we opened, a live demo we hit, or the author's original post. No hearsay, no listicle padding. Since 2026-09-19 an automated sweep (GitHub · X/Twitter · five community directories) has run every three hours, then daily at 19:00 UTC+8 from 10-11; anything new is verified, graded, and committed — see *Cadence* below.
+Every case here was verified against a primary source — a repository we opened, a live demo we hit, or the author's original post. No hearsay, no listicle padding. Since 2026-09-19 an automated sweep (GitHub · X/Twitter · five community directories) has collected candidates; anything new is verified, graded, and committed — see *Last scan* below. Last scan: 2026-10-24.
 
 ### 📅 26 天推送日历 / 26-Day Scan Calendar(2026-09-19 → 10-14)
 
-09-19 至 10-14 每天至少一次真实提交,无一日中断;10-15 起由新的定时任务接续每日扫描。每格为当日提交数(图例:`·` 0 `▁` 1-2 `▄` 3-5 `▆` 6-9 `█` 10+)。
-At least one real commit every day from 2026-09-19 to 10-14 — no gaps. Daily scans continue from 10-15 on a new scheduler.
+09-19 至 10-14 每天至少一次真实提交,无一日中断;10-15 起由新的定时任务接续扫描。最近一次扫描:2026-10-24。每格为当日提交数(图例:`·` 0 `▁` 1-2 `▄` 3-5 `▆` 6-9 `█` 10+)。
+At least one real commit every day from 2026-09-19 to 10-14 — no gaps. Scanning continued from 10-15 on a new scheduler. Last scan: 2026-10-24.
 
 ```
 █ █                                        09-19:14  09-20:12
@@ -60,7 +66,7 @@ Every structured registry entry (108 in the first 2026-09-19 batch, 1,170 as of 
 | **B** | 0.75 | Primary source on record (repo or original post), inspected at description level |
 | **C** | 0.60 | Directory-indexed only — promoted on the next scan once opened |
 
-Original 2026-09-19 case-verification cohort: **38 × A · 70 × B · 0 × C** (the registry distribution as of the last scan, 2026-10-17, is the badge above — 1,170 entries: A 505 · B 665). Numbers inside entries are **as reported by their authors** unless marked reproduced. We also document what *doesn't* work: confidence ≠ correctness, ordering sensitivity, and a circulating wave of sped-up fake demos — with guidance on which repos carry real traces.
+Original 2026-09-19 case-verification cohort: **38 × A · 70 × B · 0 × C** (the registry distribution as of the last scan, 2026-10-24, is the badge above — 1,199 entries: A 534 · B 665). Numbers inside entries are **as reported by their authors** unless marked reproduced. We also document what *doesn't* work: confidence ≠ correctness, ordering sensitivity, and a circulating wave of sped-up fake demos — with guidance on which repos carry real traces.
 
 ### What people are building (by density)
 
@@ -90,7 +96,7 @@ Original 2026-09-19 case-verification cohort: **38 × A · 70 × B · 0 × C** (
 | [`docs/jev-api-access-guide.zh.md`](./docs/jev-api-access-guide.zh.md) | **Jev API access guide** — waitlist walkthrough, the expedite-email trick, and no-wait alternatives (OpenRouter / Netlify / OpenJev / free playgrounds) |
 | [`skills/jev-radar-briefing/SKILL.md`](./skills/jev-radar-briefing/SKILL.md) | **One-file quickstart + daily-briefing skill** — drop into any SKILL.md-compatible agent for scheduled pulls and auto-generated digests; includes a no-agent shell script |
 
-**Cadence:** automated scan every 3 hours (2026-09-19 → 10-10), then daily at 19:00 UTC+8 from 10-11 (the 2026-10-15 19:00 run was skipped; scanning resumed the same evening). Every daily scan lands as a commit, with or without new entries; the registry stands at 1,170 entries as of the last scan.
+**Last scan:** 2026-10-24. Every scan lands as a commit, with or without new entries; the registry stands at 1,199 entries as of the last scan.
 **Sources swept:** awesome-typesafe · awesomejev.com (488 entries) · madewithjev.com (178 builds) · risetive.com/jev (98) · jevable.com · typesafeai.app · GitHub Search · X · Reddit · HN · V2EX/linux.do/Bilibili · YouTube · LinkedIn.
 
 ### Contributing
@@ -103,7 +109,19 @@ Content: **CC BY 4.0** · Data: **CC0**. Independent community research — **no
 
 ### About EveryInfra (maintainer disclosure)
 
-Jev Radar is initiated and maintained by [EveryInfra](https://everyinfra.com) — public-data, web-search and CAPTCHA infrastructure for AI products, one API across 90 platforms. An independent report earns trust by disclosing its maintainer: editorial criteria, confidence grading and scan logs are all public in this repo, and this project is not affiliated with TypeSafe AI. If your Jev project needs live data as decision input, start at [everyinfra.com/docs](https://everyinfra.com/docs).
+Jev Radar is initiated and maintained by [EveryInfra](https://everyinfra.com) — public-data, web-search and CAPTCHA infrastructure for AI products, one API across 90 platforms. An independent report earns trust by disclosing its maintainer: editorial criteria, confidence grading and scan logs are all public in this repo, and this project is not affiliated with TypeSafe AI. If your Jev project needs live data as decision input, start at [everyinfra.com/docs](https://everyinfra.com/en/docs?utm_source=github&utm_medium=readme&utm_campaign=jev-radar&utm_content=maintainer_note) or the open-source [agent plugin](https://github.com/everyinfra/everyinfra-agent-plugins).
+
+#### Shipping activity
+
+<!-- readme-stats: charts are regenerated daily, do not edit by hand -->
+
+Commits per day across all EveryInfra repositories, including the private gateway (counts only), and releases per week. The chart is regenerated every day and prints its update time.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme-stats/activity-en-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="docs/assets/readme-stats/activity-en-light.svg">
+  <img alt="Commits per day across all EveryInfra repositories and releases per week" src="docs/assets/readme-stats/activity-en-light.svg" width="100%">
+</picture>
 
 ---
 
@@ -125,11 +143,11 @@ Jev 是 TypeSafe AI 于 **2026-09-15** 发布的首个 *System One* 模型。它
 
 发布 7 天,Jev 生态已突破 **2000 个仓库**。Jev Radar 想用证据回答一个问题:**大家到底在用它做什么?**
 
-这里收录的每个案例都核对过一手出处——我们打开过的仓库、访问过的线上 demo、或作者原帖。不收传闻,不凑数。2026-09-19 起,一套自动化巡检(GitHub · X · 五个社区目录站)先是每 3 小时、10-11 起每天 19:00(UTC+8)跑一次,新东西先检验、再定级、然后提交进仓库,详见下方「节奏」。
+这里收录的每个案例都核对过一手出处——我们打开过的仓库、访问过的线上 demo、或作者原帖。不收传闻,不凑数。2026-09-19 起,一套自动化巡检(GitHub · X · 五个社区目录站)负责收集候选,新东西先检验、再定级、然后提交进仓库,详见下方「最近扫描」。最近一次扫描:2026-10-24。
 
 ### 为什么可信
 
-每条结构化注册记录(2026-09-19 首批 108 条,截至 10-17 最后一轮扫描共 1,170 条)都带研究时打上的 `verification` 块:
+每条结构化注册记录(2026-09-19 首批 108 条,截至 10-24 最后一轮扫描共 1,199 条)都带研究时打上的 `verification` 块:
 
 | 层级 | 置信度 | 怎么挣来的 |
 |---|---|---|
@@ -137,7 +155,7 @@ Jev 是 TypeSafe AI 于 **2026-09-15** 发布的首个 *System One* 模型。它
 | **B** | 0.75 | 一手源(仓库/原帖)在档,做过描述级核查 |
 | **C** | 0.60 | 暂仅目录收录——下次扫描打开后升级 |
 
-2026-09-19 首批案例验证队列:**38 × A · 70 × B · 0 × C**(截至 2026-10-17 最后一轮扫描的注册表分布见顶部徽章——1,170 条:A 505 · B 665)。条目里的数字均为**作者自报**,复现过的会单独标注。我们同样记录不好用的部分:置信度 ≠ 正确性、对输入顺序敏感、以及市面上流通的加速假 demo——并告诉你哪些仓库带真实 trace。
+2026-09-19 首批案例验证队列:**38 × A · 70 × B · 0 × C**(截至 2026-10-24 最后一轮扫描的注册表分布见顶部徽章——1,199 条:A 534 · B 665)。条目里的数字均为**作者自报**,复现过的会单独标注。我们同样记录不好用的部分:置信度 ≠ 正确性、对输入顺序敏感、以及市面上流通的加速假 demo——并告诉你哪些仓库带真实 trace。
 
 ### 大家在做什么(按密度排序)
 
@@ -167,7 +185,7 @@ Jev 是 TypeSafe AI 于 **2026-09-15** 发布的首个 *System One* 模型。它
 | [`docs/jev-api-access-guide.zh.md`](./docs/jev-api-access-guide.zh.md) | **Jev API 申请攻略**——waitlist 全流程(含官网按钮 bug 与加急邮件技巧)、OpenRouter / Netlify / OpenJev 免排队通道、免费 Playground |
 | [`skills/jev-radar-briefing/SKILL.md`](./skills/jev-radar-briefing/SKILL.md) | **单文件接入 + 每日简报 Skill**——装进任意支持 SKILL.md 的 agent 即可定时拉取、自动生成日报;附不开 agent 的纯脚本版 |
 
-**节奏:**2026-09-19 至 10-10 每 3 小时自动扫描一次,10-11 起每天 19:00(UTC+8)一次(10-15 19:00 那一轮未跑,当晚恢复);每轮扫描无论有无新增都提交一个 commit。注册表以最后一轮扫描为准,目前 1,170 条。
+**最近扫描:**2026-10-24。每轮扫描无论有无新增都提交一个 commit。注册表以最后一轮扫描为准,目前 1,199 条。
 **覆盖来源:** awesome-typesafe · awesomejev.com(488 条)· madewithjev.com(178 个 build)· risetive.com/jev(98)· jevable.com · typesafeai.app · GitHub 搜索 · X · Reddit · HN · V2EX/linux.do/B站 · YouTube · LinkedIn。
 
 ### 参与贡献
@@ -179,4 +197,16 @@ Jev 是 TypeSafe AI 于 **2026-09-15** 发布的首个 *System One* 模型。它
 内容 **CC BY 4.0** · 数据 **CC0**。独立社区研究,**与 TypeSafe AI 无关联**。指标均为作者自报;星数为 2026-09-19 时点快照。
 ### 关于 EveryInfra(维护方披露)
 
-Jev Radar 由 [EveryInfra](https://everyinfra.com) 发起并维护——面向 AI 产品的公开数据、网页搜索与验证码基础设施,一个 API 覆盖 90 个平台。独立报告的公信力来自维护方披露:编辑标准、置信度分级与扫描日志全部公开于本仓,本项目与 TypeSafe AI 无关联。若你的 Jev 项目需要实时数据作为决策输入,可从 [everyinfra.com/docs](https://everyinfra.com/docs) 开始。
+Jev Radar 由 [EveryInfra](https://everyinfra.com) 发起并维护——面向 AI 产品的公开数据、网页搜索与验证码基础设施,一个 API 覆盖 90 个平台。独立报告的公信力来自维护方披露:编辑标准、置信度分级与扫描日志全部公开于本仓,本项目与 TypeSafe AI 无关联。若你的 Jev 项目需要实时数据作为决策输入,可从 [everyinfra.com/docs](https://everyinfra.com/docs?utm_source=github&utm_medium=readme&utm_campaign=jev-radar&utm_content=maintainer_note_zh) 或开源的 [Agent 插件](https://github.com/everyinfra/everyinfra-agent-plugins)开始。
+
+#### 提交活跃度
+
+<!-- readme-stats: charts are regenerated daily, do not edit by hand -->
+
+EveryInfra 全部仓库（含未公开的网关仓，只统计数量）每天的提交和每周的发版。图每天重新生成，图上写着更新时间。
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme-stats/activity-zh-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="docs/assets/readme-stats/activity-zh-light.svg">
+  <img alt="EveryInfra 全部仓库每天的提交和每周的发版" src="docs/assets/readme-stats/activity-zh-light.svg" width="100%">
+</picture>

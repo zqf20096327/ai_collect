@@ -247,6 +247,8 @@ Or connect directly to the SSE endpoint at `http://localhost:3001/sse` if the cl
 | `index-status` | Model, counts, last indexer run and lag |
 | `reindex-note` | Re-index one note immediately |
 | `search-feedback` | Record a search rating and used or expected paths; available only with the learn log enabled |
+| `recommend-notes` | Find notes similar to positive examples and unlike negative examples, using `best_score` or `average_vector`; requires semantic search |
+| `maintenance-decision` | Record an explicit accept or reject decision on a maintenance finding; requires semantic search |
 
 See [Semantic search](#semantic-search) for setup.
 
@@ -304,6 +306,8 @@ obsidian-mcp-server/
 │   │   ├── store.ts          # pgvector schema, upserts, hybrid search
 │   │   ├── scanner.ts        # Vault walk and change detection
 │   │   └── SearchService.ts  # What the MCP tools call
+│   ├── maintain/             # Report configuration, decisions, renderer and worker
+│   ├── maintain.ts           # Report-only maintenance CLI
 │   ├── learn/                # Learn log, redaction, configuration and reports
 │   ├── learn-report.ts       # Read-only learn-report CLI
 │   ├── eval/                 # Golden validation, metrics and fixed ranking grid
@@ -328,6 +332,7 @@ obsidian-mcp-server/
 | `COMPACT_RESPONSES` | `false` | Enable minified response keys for 40-60% smaller responses |
 | `API_KEY` | *(none)* | API key for authentication. When set, requires a Bearer token (compared in constant time) |
 | `REQUIRE_TAILSCALE_LOGIN` | *(none)* | Optional. Require the `Tailscale-User-Login` header (set by `tailscale serve`) to equal this login. Only trustworthy when the server is reachable solely through `tailscale serve` on loopback |
+| `SSE_KEEPALIVE_SECONDS` | `30` | Seconds between `: ping` SSE comments on `GET /sse` streams; `0` disables. Some clients drop a stream that has carried no bytes for about five minutes and reconnect without sending `initialize` again, which loses the session's client name |
 | `MCP_INSTRUCTIONS_FILE` | *(none)* | Optional. Path to a text/Markdown file sent to clients as the MCP `instructions` in the `initialize` result: what this vault is and when to use it. Most clients add it to the model's context. A missing file is a startup error. Keep it short (some clients truncate around 2 KB) |
 | `MCP_INSTRUCTIONS` | *(none)* | Same, inline. Ignored when `MCP_INSTRUCTIONS_FILE` is set |
 | `DATABASE_URL` | *(none)* | Postgres + pgvector connection string. **Enables semantic search**; unset = feature off |
@@ -337,6 +342,15 @@ obsidian-mcp-server/
 | `LEARN_REDACT_PATTERNS_FILE` | unset | Required readable regex file when logging is enabled |
 | `LEARN_RETENTION_DAYS` | `30` | Days before query text, embeddings and feedback notes are cleared; integer 1–3650 |
 | `INDEX_COLLECTION` | `default` | Name of this vault's collection in the shared database |
+| `MAINTAIN_REPORT_DIR` | required unless dry | Existing writable directory for maintenance reports |
+| `MAINTAIN_REPORT_VAULT_DIR` | empty | Vault-relative report directory, used in recorded report paths |
+| `MAINTAIN_TZ` | `UTC` | IANA timezone for report timestamps and ISO weeks |
+| `MAINTAIN_LINK_COSINE` | `0.85` | Missing-link cosine threshold, strictly between 0 and 1 |
+| `MAINTAIN_DUP_COSINE` | `0.92` | Near-duplicate cosine threshold, strictly between 0 and 1 |
+| `MAINTAIN_DUP_TITLE_SIM` | `0.6` | Near-duplicate title similarity, strictly between 0 and 1 |
+| `MAINTAIN_HUB_DAYS` | `14` | Linked-note update gap for stale hubs, integer 1–365 |
+| `MAINTAIN_SUMMARY_DROP` | `0.05` | Summary/body cosine drop threshold, strictly between 0 and 1 |
+| `MAINTAIN_MAX_PER_CLASS` | `10` | New findings per class per run, integer 1–100 |
 | `SEARCH_FUSION` | `rrf` | Fusion: `rrf` (weighted reciprocal rank) or `dbsf` (distribution-based score fusion) |
 | `SEARCH_RRF_K` | `60` | RRF rank constant, integer 1–1000; validated but unused under DBSF |
 | `SEARCH_W_VECTOR` | `1` | Vector-leg weight, finite number 0–10 |
@@ -350,7 +364,7 @@ obsidian-mcp-server/
 
 ## Learn log
 
-The optional measurement layer requires semantic search and is off by default. It records the three search tools (`semantic-search`, `similar-notes`, `search-vault`), successful reads (`read-note`, `read-multiple-notes`, `read-section`), explicit feedback and SSE session connect/close with client names. Search ranking is unchanged; search never reads these logs.
+The optional measurement layer requires semantic search and is off by default. It records the three search tools (`semantic-search`, `similar-notes`, `search-vault`), successful reads (`read-note`, `read-multiple-notes`, `read-section`), explicit feedback and session start/close with client names. Sessions are the legacy SSE stream (`GET /sse` + `/message`) and, since 1.10.1, `POST /sse` clients: `initialize` returns an `Mcp-Session-Id` header, later requests that echo it are logged under that session, and `DELETE /sse` with the header closes it. `POST /sse` requests without the header are logged with client name `post` and no session. Search ranking is unchanged; search never reads these logs.
 
 Set `LEARN_LOG=true` and `LEARN_REDACT_PATTERNS_FILE` to a readable UTF-8 file. Blank lines and comments are ignored, whitespace is trimmed, and each other line is a JavaScript regex source compiled case-insensitively. An example file is:
 
@@ -755,3 +769,17 @@ MIT License - see [LICENSE](LICENSE) for details.
 - [Model Context Protocol](https://modelcontextprotocol.io) - Protocol specification
 - [Obsidian](https://obsidian.md) - Knowledge base application
 - [Claude](https://claude.ai) - AI assistant by Anthropic
+
+## Maintenance worker
+
+Run `node dist/maintain.js` (or `npm run maintain`) from the same image as the server, with `DATABASE_URL`, `INDEX_COLLECTION`, `VAULT_PATH` and `MAINTAIN_REPORT_DIR` configured. Schedule it weekly with your host's scheduler. `--dry` prints candidate counts and hygiene metrics without recording a run or writing a report. The index must already exist.
+
+Seven deterministic checks find missing links, unlinked mentions, uniquely repairable unresolved links, missing `index` or `aliases` frontmatter, stale summaries, near-duplicates and stale project or area hubs. Notes with type `journal` or `inbox` are excluded as targets. Notes under `Journal/` get no link suggestions in either direction. An unlinked mention counts only in a note's prose (not its frontmatter, first H1, code, wikilinks or markdown links) and only as a whole word, case-insensitively, with hyphens part of the word; the worker reads the source note from `VAULT_PATH` to check. Near-duplicate pairs skip notes that already link to each other and pairs of `plan` notes. The indexer records summary/body cosine history when content changes, and maintenance backfills baselines for older notes. Search ranking stays unchanged, and maintenance never reads learn tables.
+
+Each ISO week produces `Brain maintenance YYYY-Www.md` in the configured output directory. Reports are draft notes with `index: false`, stable finding ids, accept/reject checkboxes, trends and acceptance counts. They stay out of search and the link graph. A rerun parses ticks first and atomically replaces only that week's report; moved reports are still discovered by their `maintenance_report` frontmatter.
+
+Tick one checkbox per finding, or explicitly ask the assistant to call `maintenance-decision` with `finding: "f17"`, `decision: "accept"` or `"reject"`, and an optional reason. Conflicting ticks record no decision. A checkbox never overrides an earlier decision; an explicit tool call may change one. Rejected findings are never proposed again. Fixed findings resolve without counting as acceptance. New findings are capped per class, with at most 50 open findings listed in a report.
+
+This stage is report-only: accepting records a decision and changes no note. Apply accepted findings yourself. Near-duplicate merges and hub reviews remain report-only permanently. The worker never edits existing notes; its only vault write is its own report.
+
+`recommend-notes` takes 1–10 `positive` paths, up to 10 `negative` paths, an optional integer `k` (1–50), `type` and `directory`. It excludes the examples. `best_score` compares the nearest positive and negative; `average_vector` uses the positive mean, moved away from the negative mean when present. Neither tool requires learn logging; sensitive decision reasons are stored as null using the active redaction patterns or the built-ins.

@@ -14,8 +14,9 @@ This repo holds all of it. It's a [Turborepo](https://turborepo.com) monorepo th
 - `apps/riptide-electric-proxy`: the auth proxy in front of [Electric](https://electric-sql.com), which syncs Postgres to clients
 - `apps/riptide-cloud`: the admin web app (organizations, invites, settings, install page)
 - `apps/riptide-migrator`, `apps/updater-server`, `apps/stale-daemon-sweeper`, `apps/database-maintenance-function`: AWS Lambda jobs
-- `apps/riptide-*-plugin`, `apps/riptide-pi-extension`: plugins that mirror Claude Code, Codex, OpenCode, and Pi sessions into HumanLayer
-- `apps/riptide-rpi-claude-plugin`, `apps/rpi-cli`, `apps/linear-cli`: the Research-Plan-Implement skills and their CLIs
+- `apps/riptide-claude-code-plugin`, `apps/riptide-opencode-plugin`, `apps/riptide-pi-extension`: plugins that mirror Claude Code, OpenCode, and Pi sessions into HumanLayer
+- `apps/riptide-humanlayer-claude-plugin`: the built-in HumanLayer skills
+- `apps/riptide-rpi-claude-plugin`, `apps/linear-cli`: the Research-Plan-Implement skills and the Linear CLI
 - `apps/docs`: the user docs
 - `apps/devstack`: runs a full local stack per worktree
 - `packages/`: shared libraries (`db`, `schemas`, `ui`, `sync`, `ai`, `billing`, ...)
@@ -39,6 +40,10 @@ A build from source sends nothing to us: Sentry, PostHog, and the WorkOS client 
 ## Self-hosting
 
 HumanLayer Cloud runs this code. Guides for running it yourself are in progress.
+
+
+⚠️ note - If you use the Docker Compose file as a starter for self hosting, please note that it uses default/simple passwords that should be updated before you deploy.
+
 
 ## License
 

@@ -41,6 +41,7 @@ Enjoy 🤩
 - 压缩: [tinywow.com/pdf/compress](https://tinywow.com/pdf/compress)、[pdf2go.com/compress-pdf](https://www.pdf2go.com/compress-pdf)
 - 在线PDF转换工具: [Smallpdf](https://smallpdf.com)、[cleverpdf](https://www.cleverpdf.com/cn)
 - [PDF-XChange Editor Plus](https://www.tracker-software.com/product/downloads) PDF编辑
+- ![GitHub Repo stars](https://img.shields.io/github/stars/storytold/pdfcraft) [PdfCraft](https://github.com/storytold/pdfcraft) (Windows, Linux, macOS)
 - ![GitHub Repo stars](https://img.shields.io/github/stars/ocrmypdf/OCRmyPDF) [OCRmyPDF](https://github.com/ocrmypdf/OCRmyPDF)
 - [PDFgear](https://www.pdfgear.com) 集合了多种 PDF 处理工具的软件套装
 - ![GitHub Repo stars](https://img.shields.io/github/stars/sumatrapdfreader/sumatrapdf) [Sumatra pdf](https://github.com/sumatrapdfreader/sumatrapdf) 电子书阅读器 ⭐
@@ -511,7 +512,7 @@ Enjoy 🤩
 - ![GitHub Repo stars](https://img.shields.io/github/stars/huynhsontung/Screenbox) [Screenbox](https://github.com/huynhsontung/Screenbox) (Windows)
 - [Potplayer](https://potplayer.tv) (Windows) 来自韩国 Kakao Corp. 支持播放WebDAV
 - ![GitHub Repo stars](https://img.shields.io/github/stars/videolan/vlc) [VLC media player](https://github.com/videolan/vlc) 开源免费的跨平台多媒体播放器 ![Latest Release Date](https://img.shields.io/github/last-commit/videolan/vlc)
-- ![GitHub Repo stars](https://img.shields.io/github/stars/vzhd1701/gridplayer) [Gridplayer](https://github.com/vzhd1701/gridplayer) (Linux, Mac, and Windows)  VLC 的媒体播放器，可以同时播放多个视频
+- ![GitHub Repo stars](https://img.shields.io/github/stars/vzhd1701/gridplayer) [Gridplayer](https://github.com/vzhd1701/gridplayer) (Linux, macOS, and Windows)  VLC-based media player，可以同时播放多个视频
 - [PlayerFab Ultra HD Player](https://www.videohelp.com/software/DVDFab-Media-Player) 蓝光高清播放器
 - [GOM Player Plus](https://www.gomlab.com/gomplayerplus-media-player) 来自韩国播放器
 - ![GitHub Repo stars](https://img.shields.io/github/stars/Hiram-Wong/ZyPlayer) [ZyPlayer Hiram-Wong](https://github.com/Hiram-Wong/ZyPlayer) 支持IPTV、主流视频平台解析 ![Latest Release Date](https://img.shields.io/github/release-date/Hiram-Wong/ZyPlayer)
@@ -554,13 +555,13 @@ Enjoy 🤩
 - [Kodi](https://kodi.tv) 媒体中心，智能电视的播放软件
 - ![GitHub Repo stars](https://img.shields.io/github/stars/tsukinaha/tsukimi) [Tsukimi](https://github.com/tsukinaha/tsukimi) (Windows, Linux) A simple third-party Emby client
 - [Infuse](https://firecore.com/infuse) (iOS, macOS, AppleTV) 支持HDR和杜比。不支持多版本选择，扫库机制体验较差
-- ![GitHub Repo stars](https://img.shields.io/github/stars/AttemptD/AfuseKt-release) [AfuseKt](https://github.com/AttemptD/AfuseKt-release/releases) 非开源，GitHub仅发布release版本，不包含任何代码。需安卓11以上，支持协议：Alist，SMB，Webdav，Emby（直连），Local，jellyfin（直连），阿里网盘
+- ![GitHub Repo stars](https://img.shields.io/github/stars/AttemptD/AfuseKt-release) [AfuseKt](https://github.com/AttemptD/AfuseKt-release/releases) (Android) 需安卓11以上，非开源，GitHub仅发布release版本，不包含任何代码。支持协议：Alist，SMB，Webdav，Emby(直连)，Local，jellyfin(直连)，阿里盘
 - [Plex Media Server](https://www.plex.tv/media-server-downloads) 看IPTV用 Cigaras 或 IPTV.bundle 插件
   - ![GitHub Repo stars](https://img.shields.io/github/stars/sct/overseerr) [Plex Overseerr](https://overseerr.dev) 与Plex搭配使用
 - ![GitHub Repo stars](https://img.shields.io/github/stars/jellyfin/jellyfin) [Jellyfin](https://github.com/jellyfin/jellyfin) The Free Software Media System 官方称由于Emby 3.6开始闭源后，引起了一些核心开发人员的不满，所以最近在Emby的基础上单独开发了Jellyfin媒体服务器
   - ![GitHub Repo stars](https://img.shields.io/github/stars/fredrikburmester/streamyfin) [Streamyfin](https://github.com/fredrikburmester/streamyfin) a simple and user-friendly Jellyfin client built with Expo
 - ![GitHub Repo stars](https://img.shields.io/github/stars/jellyfin/jellyfin-media-player) [jellyfin-media-player](https://github.com/jellyfin/jellyfin-media-player) Jellyfin Desktop Client
-- [SenPlayer](https://apps.apple.com/app/id6443975850) (iOS, macOS, Apple TV) 支持8解码，长按最高8倍速，画中画播放；支持HDR10, HLG集成最新FFMPEG7.0，支持本地视频，相册视频，网络视频, KSPlayer项目的授权并基于该目开发，视频播放直接调用FFmpeg
+- [SenPlayer](https://apps.apple.com/app/id6443975850) (iOS, macOS, Apple TV) 支持8解码，长按最高8倍速，画中画播放；支持HDR10, HLG集成最新FFMPEG7.0，支持本地视频，相册视频，网络视频, KSPlayer项目的授权并基于该目开发，视频播放直接调用FFmpeg ⭐
 - [VidHub](https://apps.apple.com/cn/app/id1659622164) (iOS, macOS, Apple TV) 可连Trakt
 - [Reflix](https://apps.apple.com/app/id6621243955) (iOS)
 - [HamHub](https://apps.apple.com/app/id6458691598) (iOS, Apple TV)
@@ -745,7 +746,7 @@ Enjoy 🤩
 
 - [Photopea](https://www.photopea.com) (Web) ⭐
 - Adobe: [Photoshop](https://www.photoshop.com), [Lightroom](https://www.adobe.com/products/photoshop-lightroom.html) 
-- ![GitHub Repo stars](https://img.shields.io/github/stars/storytold/photocraft) [PhotoCraft](https://github.com/storytold/photocraft)
+- ![GitHub Repo stars](https://img.shields.io/github/stars/storytold/photocraft) [PhotoCraft](https://github.com/storytold/photocraft) 取代PS
 - [NeeView](https://bitbucket.org/neelabo/neeview/wiki/Home) 图像查看器
 - [Kiko Card](https://apps.apple.com/us/app/kiko-card-text-post-carousel/id6463467787) 文字生成图片
 - ![GitHub Repo stars](https://img.shields.io/github/stars/MewPurPur/GodSVG) [GodSVG](https://github.com/MewPurPur/GodSVG) (Windows, Android) 免费开源SVG矢量图形编辑工具，支持在线编辑
@@ -769,17 +770,16 @@ Enjoy 🤩
 - ![GitHub Repo stars](https://img.shields.io/github/stars/jgraph/drawio) [draw.io](https://github.com/jgraph/drawio) 开源跨平台绘图软件Drawio，基于Eelectron开发
 - ![GitHub Repo stars](https://img.shields.io/github/stars/flxzt/rnote) [Rnote](https://github.com/flxzt/rnote) 基于矢量的开源绘图应用程序
 - ![GitHub Repo stars](https://img.shields.io/github/stars/lxfater/inpaint-web) [Inpaint-web](https://github.com/lxfater/inpaint-web) 图片修复、放大
-- [BandiView](https://www.bandisoft.com/bandiview) image viewer，HoneyView的升级版
-
+- [BandiView](https://www.bandisoft.com/bandiview) (Windows) image viewer，HoneyView的升级版
 - [FotoSketcher](https://fotosketcher.com) 免费软件，将普通照片转换为艺术作品
 - [iMazing Converter](https://imazing.com/zh/converter) 图片格式转换，转换HEIC至JPEG或PNG
 - ![GitHub Repo stars](https://img.shields.io/github/stars/Tichau/FileConverter) [File Converter](https://github.com/Tichau/FileConverter) 文件格式转换
 - ![GitHub Repo stars](https://img.shields.io/github/stars/joye61/pic-smaller) [Pic Smaller](https://github.com/joye61/pic-smaller) 图片压缩工具，支持WebP、PNG、JPEG和Gif图像在线压缩
 - [NXStudio](https://downloadcenter.nikonimglib.com/en/products/564/NX_Studio.html) 尼康的专业图像处理软件
 - [Procreate Pocket](https://apps.apple.com/us/app/procreate-pocket/id916366645) (iOS)
-- ![GitHub Repo stars](https://img.shields.io/github/stars/T8RIN/ImageToolbox) [ImageToolbox](https://github.com/T8RIN/ImageToolbox) 全能型图片处理工具
-- Scrollie (iOS)
-- StitchPics (iOS)
+- ![GitHub Repo stars](https://img.shields.io/github/stars/T8RIN/ImageToolbox) [ImageToolbox](https://github.com/T8RIN/ImageToolbox) (Android) 全能型图片处理工具
+- [Scrollie](https://apps.apple.com/us/app/scrollie-long-screenshot/id6757146579) (iOS)
+- [StitchPics](https://apps.apple.com/us/app/stitchpics-stitch-screenshots/id1175878538) (iOS)
 
 ## 💪Health & Fitness 健康健美
 
@@ -1280,6 +1280,4 @@ Enjoy 🤩
 - ![GitHub Repo stars](https://img.shields.io/github/stars/overleaf/overleaf) [overleaf](https://github.com/overleaf/overleaf) A web-based collaborative LaTeX editor
 - ![GitHub Repo stars](https://img.shields.io/github/stars/Zettlr/Zettlr) [Zettlr](https://github.com/Zettlr/Zettlr)
 - ![GitHub Repo stars](https://img.shields.io/github/stars/streetwriters/notesnook) [Notesnook](https://github.com/streetwriters/notesnook) ⭐
-- ![GitHub Repo stars](https://img.shields.io/github/stars/obsidianmd/obsidian-releases) [Obsidian](https://obsidian.md) (macOS, iOS, Windows, Android, Linux) 闭源Freeware，官方同步收费。Obsidian LiveSync同步插件。同步手机端使用频率高不建议用obsidian-git 。remotely-save通过Cloudflare R2 (S3 API)在多个设备同步，免费每月10G。iCloud同步缺点: Linux 不好同步；每次打开都要同步 iCloud，vault 较大时间会很久；Home 等页面出现多文件的情况（如 Home Dashboard 2），原因是 iCloud 不会自己同步；iCloud 没有版本管理功能，如果不小心误删文件无法找回（设置删除文件时移动到回收站来解决）；没有数据库管理（当笔记数量很多的时候效率变慢）。无网页版。Obsidian插件：Code editor shortcuts, easy typing, kanban, surfing, advanced tables, better command palette, calendar
-- ![GitHub Repo stars](https://img.shields.io/github/stars/pbek/QOwnNotes) [QOwnNotes](https://github.com/pbek/QOwnNotes)
-- ![GitHub Repo stars
+- ![GitHub Repo stars](https://img.shields.io/github/stars/obsidianmd/obsidian-releases) [Obsidian](https://obsidian.md) (macOS, iOS, Windows, Android, Linux) 闭源Freeware，官方同步收费。Obsidian LiveSync同步插件。同步手机端使用频率高不建议用obsidian-git 。remotely-save通过Cloudflare R2 (S3 API)在多个设备同步，免费每月10G。iCloud同步缺点: Linux 不好同步；每次打开都要同步 iCloud，vault 较大时间会很久；Home 等页面出现多文件的情况（如 Home Dashboard 2），原因是

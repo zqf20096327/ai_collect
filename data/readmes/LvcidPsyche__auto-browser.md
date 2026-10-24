@@ -93,7 +93,7 @@ Every release is also published to GHCR, so you can skip the build:
 docker compose -f docker-compose.yml -f docker-compose.images.yml up -d
 ```
 
-`AUTO_BROWSER_IMAGE_TAG` picks the version: `latest` (the default), a release such as `1.10.0`, or
+`AUTO_BROWSER_IMAGE_TAG` picks the version: `latest` (the default), a release such as `1.10.1`, or
 `edge` for the current `main`. The images are linux/amd64, and each carries an SBOM and a build
 provenance attestation (`gh attestation verify oci://ghcr.io/lvcidpsyche/auto-browser-controller:latest -R LvcidPsyche/auto-browser`).
 The controller image leaves out the agent CLIs; for `*_AUTH_MODE=cli`, build from source with
@@ -136,6 +136,11 @@ curl -s http://127.0.0.1:8000/sessions/<session-id>/observe | jq
 ```
 
 ## Recent Changes
+
+**1.10.1**
+
+- **Rebuilt Docker images** with updated dependencies (Pillow 13.0.0). Image tags now publish only
+  from a `main` commit whose CI run succeeded.
 
 **1.10.0**
 
@@ -281,6 +286,7 @@ For deployment details, hosted Witness notes, CLI auth modes, and reverse-SSH gu
 
 - [`docs/deployment.md`](./docs/deployment.md)
 - [`docs/production-hardening.md`](./docs/production-hardening.md)
+- [`docs/session-isolation-audit.md`](./docs/session-isolation-audit.md): what each isolation mode does and does not separate
 
 ## Architecture at a Glance
 
@@ -354,6 +360,7 @@ Core components:
 | run the curl-first examples | [`examples/README.md`](./examples/README.md) |
 | deploy on a trusted host | [`docs/deployment.md`](./docs/deployment.md) |
 | review production constraints | [`docs/production-hardening.md`](./docs/production-hardening.md) |
+| see what session isolation does and does not separate | [`docs/session-isolation-audit.md`](./docs/session-isolation-audit.md) |
 | run the convergence harness | [`docs/convergence-harness.md`](./docs/convergence-harness.md) |
 | inspect release history | [`CHANGELOG.md`](./CHANGELOG.md) |
 | see where the project is headed | [`ROADMAP.md`](./ROADMAP.md) |

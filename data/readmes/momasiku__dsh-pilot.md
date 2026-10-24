@@ -173,6 +173,29 @@ dsh plugin --profile <你的profile> add "file:E:\path\to\dsh-pilot"
 
 ### 最近改动
 
+**0.6.4** —— 接管提示改成按回合显示。
+
+- **以前每个动作开关一次，画图这种连续操作就是一路闪。** 现在一个回合只显示一次，**最后一次动作后 2 秒**才隐藏；新动作会取消这个隐藏。
+- **首次出画约 0.7 秒**（不预热）。比这更短的单步动作仍然可能看不到第一帧 —— 这是不预热的代价。
+- **修掉启动竞态**：脚本末尾的 `Show()`/`Hide()` 会和定时器的第一次真实显示撞车，导致首个动作记两次 show。句柄已经由 `EnsureHandle()` 建好，那两句是多余的。
+- **`Test-Path` 短暂失败不再立即隐藏**：宿主每次动作都会截断重写 `show.txt`，正好撞上读不到就是一次假隐藏。现在连续三次读不到才隐藏。
+- **单实例互斥**：一个进程独占一个状态目录，DSH 重启留下的孤儿不会再和新进程抢同一块屏幕。
+- **新增 `tools/overlay-smoke.ps1`**：首次出画耗时、回合内不重显、结束只隐藏一次、第二份进程必须退出。
+
+**0.6.3** —— `controls` 的两处真问题（issue #1 / #2）。
+
+- **结构化输出里有、模型可见文本里没有**：`controlText()` 只拼了 action / cursor / foreground，把 `controls` 和 `windows` 整个丢了 —— 对纯文本模型来说，README 里说的「便宜路径」事实上不可用，只能退回截图。现在渲染成 `<controls>` / `<windows>` 块，并带上窗口名与计数。
+- **`meaningfulOnly` 的 `$name` 从未赋值**：`$null.Length -eq 0` 恒为真，于是 ListItem / TreeItem / MenuItem / DataItem 四类**无论有没有名字都被丢弃**。改成读元素自己的名字，与注释里写的意图一致。
+- **`Pane` 不在白名单**：原生 Win32 对话框（`#32770`）的所有子控件经 MSAA 桥接后都报 `Pane`，于是一个满是按钮的对话框过滤后是空的。命名 Pane 现在算控件，无名 Pane 仍视作布局。
+- **过滤不再无声**：新增 `controlTotal` / `filteredOut` 并渲染进文本。实测「运行」对话框：10 个元素，保留 6 个（确定 / 取消 / 浏览 / 提示文字），丢掉 4 个无名 Pane。
+- **回归测试**：`script-smoke` 现在会真按一次 `Win+R`，断言该对话框在 `meaningfulOnly:true` 下非空且含「确定/取消」，随后 Esc 关闭。
+
+**0.6.2** —— 兼容性声明落到能验证的地方。
+
+- **在 DSH 0.2.1-rc.3 上实测通过**：`screen_view` 抓屏、`windows` 枚举、`controls` 控件树、`desktop_sequence` 三步批次都正常，peer 声明 `>=0.2.1-0 <0.3.0-0` 本身就覆盖 rc.3。
+- **`check-peers` 新增 `--asar`**：以前它只校验开发副本 `node_modules`（可能落在旧代），现在可以直接读**已安装桌面端**的 `app.asar`，按里面真实携带的 dsh-* 版本判定 —— 也就是用户真正在跑的那一代。
+- **`--asar` 的两个细节**：Electron 的 fs 会把 `.asar` 当压缩包拦截，读取失败时回退到临时副本；asar 头部按 4 字节对齐填充 NUL，要剥掉尾部才能 `JSON.parse`。
+
 **0.6.1** —— 简介和 README 都用中文先说。
 
 - **仓库简介和 npm 简介换成同一句中文**：能做和人一样的事，包括且不仅限于 CAD、WPS、浏览器操作、发微信；安全、快速、可靠、聪明、人性化。
@@ -461,6 +484,29 @@ and what `dsh plugin add` checks before it installs anything. Requirements:
 (`deepseek-flash` does).
 
 ### Recent changes
+
+**0.6.4** — the takeover prompt is held per round, not per action.
+
+- **It used to toggle on every action, so a run of small steps strobed.** One round now shows it once and hides it **two seconds after the last action**; a new action cancels that hide.
+- **First paint takes about 0.7 s** (no pre-warm, by request). A single action shorter than that can still miss the first frame - that is the price of not pre-warming.
+- **Fixed a startup race**: the `Show()`/`Hide()` at the end of the script collided with the timer's first real show, logging two shows for the first action. The handles already exist from `EnsureHandle()`, so those two lines were redundant.
+- **A transient `Test-Path` failure no longer hides the overlay**: the host rewrites `show.txt` with a truncating write on every action, and a check that lands in that window reads false. It now takes three consecutive misses.
+- **Single instance**: one process owns a state directory, so an overlay orphaned by a host restart cannot fight the new one for the same screen.
+- **New `tools/overlay-smoke.ps1`**: first-paint latency, no re-show inside a round, exactly one hide at the end, and a second copy must exit.
+
+**0.6.3** — two real `controls` bugs, both reported in issues #1 and #2.
+
+- **Structured output had them, the model's text did not**: `controlText()` only wrote action / cursor / foreground, dropping `controls` and `windows` entirely — so the "cheap path" the README describes was unusable for a text-only model, which fell back to screenshots. Both now render as `<controls>` / `<windows>` blocks, with the window name and counts.
+- **`meaningfulOnly` compared an unassigned `$name`**: `$null.Length -eq 0` is always true, so ListItem, TreeItem, MenuItem and DataItem rows were dropped whether they had a name or not. It reads the element's own name now, which is what the comment above it always said.
+- **`Pane` was missing from the whitelist**: every child of a native Win32 dialog (`#32770`) bridges through MSAA and reports as a Pane, so a dialog full of buttons filtered down to nothing. A named Pane now counts as a control; an unnamed one is still layout.
+- **Filtering is no longer silent**: `controlTotal` and `filteredOut` are new, and they render into the text. Measured on the Run dialog: 10 elements, 6 kept (OK / Cancel / Browse / the prompt), 4 unnamed Panes dropped.
+- **Regression test**: `script-smoke` now raises a real `Win+R` dialog, asserts it is non-empty under `meaningfulOnly: true` and contains OK/Cancel, then closes it with Esc.
+
+**0.6.2** — the compatibility claim now sits where it can be checked.
+
+- **Verified on DSH 0.2.1-rc.3**: `screen_view`, `windows`, `controls` and a three-step `desktop_sequence` all ran there, and the declared peer range `>=0.2.1-0 <0.3.0-0` already covered rc.3.
+- **`check-peers --asar`**: the check used to judge only the dev copy in `node_modules`, which can sit on an older generation than the app a user actually runs. It now reads the installed desktop app's `app.asar` and judges against the dsh-* versions that build really carries.
+- **Two details the flag had to handle**: Electron's patched fs treats any `.asar` path as an archive and refuses the bytes, so a failed read falls back to a temporary copy; and the asar header is NUL-padded to a four-byte boundary, so the padding has to go before `JSON.parse`.
 
 **0.6.1** — the description and the README lead with Chinese.
 

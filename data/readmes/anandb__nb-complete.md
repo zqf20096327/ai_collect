@@ -1,6 +1,6 @@
 # BeanBot
 
-[![Version](https://img.shields.io/badge/version-1.26.1-blue.svg)](pom.xml)
+[![Version](https://img.shields.io/badge/version-1.27.0-blue.svg)](pom.xml)
 [![Build Status](https://img.shields.io/badge/build-success-brightgreen.svg)](https://github.com/anandb/nb-complete)
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.anandb/beanbot)](https://central.sonatype.com/artifact/io.github.anandb/beanbot/versions)
 [![NetBeans](https://img.shields.io/badge/NetBeans-RELEASE220-blue.svg)](https://netbeans.apache.org/download/index.html)
@@ -18,8 +18,6 @@ BeanBot is a NetBeans IDE plugin designed to provide integrated AI capabilities 
 
 ## Getting Started
 
-See the [User Guide](https://anandb.github.io/beanbot_user_guide.html) for setup, feature details, and usage instructions.
-
 Supported coding harnesses: **Oh My Pi, OpenCode, Codex, OpenClaw, Pi, Goose, Cursor, Copilot, Claude, Hermes, Gemini, Devin** — pick one during onboarding or later from the help menu.
 
 **Token and cost statistics** are captured from the ACP traffic itself, not from an external process: the usage updates and per-turn token figures a harness already sends are recorded into an embedded H2 database under the NetBeans user directory (`beanbot/usage-stats.mv.db`), so they survive restarts and are readable without a harness running. The currency button in the toolbar opens the panel, which breaks the figures down by model and by agent; they are approximate for harnesses that report incomplete usage.
@@ -33,7 +31,7 @@ Supported coding harnesses: **Oh My Pi, OpenCode, Codex, OpenClaw, Pi, Goose, Cu
    ```
 2. Build the package:
    ```bash
-   mvn package -DskipTests
+   ./mvnw package -DskipTests
    ```
 3. The generated NBM will be located in the `./target/nbm/` directory.
 4. Install the plugin through the NetBeans Plugin Manager.

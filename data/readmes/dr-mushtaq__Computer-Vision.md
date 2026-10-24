@@ -331,6 +331,8 @@ explore transformer architecture in the context of computer vision and learn how
 | Topic Name/Tutorial | Video | Code | Note|Extra Resoruces|
 |---|---|---|---|---|
 | [**1- Introduction to Image Classification**](https://coursesteach.com/mod/page/view.php?id=10657)| [1](https://drive.google.com/file/d/1KFnLbH22xmUURQ3xOVidlA1DqJTtthr8/view?usp=sharing)[-2](https://youtu.be/o9XrwPZI_F0?si=OkH2bh09wip2VLlo) |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/dr-mushtaq/Computer-Vision/blob/main/notebooks/Unit%203%20-%20Vision%20Transformers/transfer-learning-image-classification.ipynb)|---|---|
+| [**2- Image Classification with KNN**](https://coursesteach.com/mod/page/view.php?id=10661&forceview=1)| [1](https://drive.google.com/file/d/1PsHeoxMSC88JvgHKsXI3rH5kA9-G_3qH/view?usp=sharing)[-2](https://youtu.be/phzKCvyxcuE) |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/dr-mushtaq/Computer-Vision/blob/main/notebooks/Unit%203%20-%20Vision%20Transformers/transfer-learning-image-classification.ipynb)|---|---|
+
 
 </details>
 
@@ -512,7 +514,4 @@ delve into the realm of zero-shot learning in computer vision, covering aspects 
 |[**✅2-courses & resources**](https://github.com/SkalskiP/courses)|It is course of all AI domain| Pending|
 |[**✅3-AIBauchi-Computer-Vision-Bootcamp**](https://github.com/AIBauchi/AIBauchi-Computer-Vision-Bootcamp/tree/main)|It is course of all AI domain| Inprogress|
 |[**✅4-Awesome Computer Vision**](https://github.com/jbhuang0604/awesome-computer-vision?tab=readme-ov-file#courses)|It is course of all AI domain| Inprogress|
-|[**✅5-Community-led Computer Vision Community Course**](https://huggingface.co/learn/computer-vision-course/unit0/welcome/welcome)|This is the repository for a community-led course on Computer Vision. Over 60 contributors from the Hugging Face| Inprogress|
-|[Computer Vision](https://github.com/the-akira/Computer-Science-Resources/blob/master/db/computer_vision.md)|---|---|
-|[Computer Vision Tutorial Series M1C1](https://pub.towardsai.net/computer-vision-tutorial-series-m1c1-535c27cd36ca)|---|---|
-|[Learning-based 3D Vision](https://
+|[**✅5-Community-led Computer Vision Community Course**](h

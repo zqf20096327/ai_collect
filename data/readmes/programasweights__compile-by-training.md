@@ -68,18 +68,16 @@ If you use this compiler in research, please cite Compile by Training for the tr
 **[Compile by Training: Turning Natural-Language Specifications into Local Neural Functions](https://arxiv.org/abs/2609.04199)**
 
 ```bibtex
-@misc{paw_2609_04199,
+@inproceedings{paw_2609_04199,
   title = {{Compile by Training: Turning Natural-Language Specifications into Local Neural Functions}},
   author = {Deng, Yuntian and Nie, Pengyu and Shieber, Stuart},
+  booktitle = {EMNLP 2026 System Demonstrations},
   year = {2026},
-  note = {arXiv preprint},
-  eprint = {2609.04199},
-  archivePrefix = {arXiv},
   url = {https://arxiv.org/abs/2609.04199}
 }
 ```
 
-**[Program-as-Weights: A Programming Paradigm for Fuzzy Functions](https://openreview.net/forum?id=ppCD0mb6ty)**
+**[Program-as-Weights: A Programming Paradigm for Fuzzy Functions](https://arxiv.org/abs/2607.02512)**
 
 NeurIPS 2026 · [Preprint](https://arxiv.org/abs/2607.02512)
 
@@ -89,6 +87,6 @@ NeurIPS 2026 · [Preprint](https://arxiv.org/abs/2607.02512)
   author = {Zhang, Wentao and Hotsko, Liliana and Kim, Woojeong and Nie, Pengyu and Shieber, Stuart and Deng, Yuntian},
   booktitle = {The Fortieth Annual Conference on Neural Information Processing Systems},
   year = {2026},
-  url = {https://openreview.net/forum?id=ppCD0mb6ty}
+  url = {https://arxiv.org/abs/2607.02512}
 }
 ```

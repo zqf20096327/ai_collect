@@ -5,7 +5,7 @@
 ![license](https://img.shields.io/npm/l/@cardor/agent-harness-kit)
 [![Known Vulnerabilities](https://snyk.io/test/npm/@cardor/agent-harness-kit/badge.svg)](https://snyk.io/test/npm/@cardor/agent-harness-kit)
 
-Agent Harness Kit (AHK) gives AI coding providers a shared workflow for documents, tracked tasks, handoffs, and health evidence. It supports Claude Code, Codex CLI, Cursor, Grok Build, and OpenCode.
+Agent Harness Kit (AHK) gives AI coding providers a shared workflow for documents, tracked tasks, handoffs, and health evidence. It supports Claude Code, Codex CLI, Cursor, Grok Build, OpenCode, and OpenCode V2.
 
 AHK supplies structure and records. Your provider supplies the model and its own permissions; prompt instructions, including Codex instructions, are not a security boundary.
 
@@ -88,7 +88,7 @@ The lead coordinates the five roles. A reviewer may send bounded feedback back t
 
 Run the globally installed `ahk init` in the current directory. It asks for provider, docs path, and storage choices, and creates a native health-script starter when one is missing. Replace that starter with commands that actually verify your project. A health script that always succeeds is not valid completion evidence.
 
-Open or restart your provider after initialization so it reloads its MCP configuration. Claude Code uses the project-root `.mcp.json`; AHK also materializes native files for Codex, Cursor, Grok Build, and OpenCode.
+Open or restart your provider after initialization so it reloads its MCP configuration. Claude Code uses the project-root `.mcp.json`; AHK also materializes native files for Codex, Cursor, Grok Build, OpenCode, and OpenCode V2.
 
 Then make a bounded first request:
 
@@ -105,6 +105,16 @@ A globally installed `ahk` command and global database storage are different set
 - Local storage commonly keeps it in `.harness/harness.db`.
 
 `ahk init` does not create a home-directory provider scaffold. Agent and skill files it creates stay in the current project. The detailed setup and provider guide ships with [`ahk-docs`](src/core/materializer/skills/ahk-docs/resources/setup-and-providers.md).
+
+## OpenCode V2
+
+Choose **OpenCode V2** in `ahk init`, or use `ahk migrate --to opencode-v2` for an existing project. The existing `opencode` provider remains v1. Both versions share the `opencode` executable and `.opencode` paths; choosing a provider neither installs a runtime nor isolates the two versions.
+
+V2 generates native `mcp.servers` over stdio with direct tools (`codemode: false`), complete native agent frontmatter, lead as primary and four subagents, ordered permissions, and the existing skills/resources. `ahk models` accepts per-role `provider/model#variant` references or inheritance without a fixed model catalog. Nonimplementing roles deny edits and arbitrary shell commands; reviewer health/test exceptions can still create local build artifacts. These permissions are tool controls, not an OS sandbox.
+
+JSONC edits preserve comments and unrelated settings. Invalid, duplicate or ambiguous config paths and customized v1 shared agents stop migration before replacement. Canonical v1 conversion is backed up; returning to v1 requires the documented recovery rather than feeding native v2 files to v1. Install the v2 sound adapter with `ahk notifications install --provider opencode-v2`. Owned v1 hooks are replaced during migration; edited or foreign hooks are preserved as conflicts.
+
+See the bundled [OpenCode V2 guide](src/core/materializer/skills/ahk-docs/resources/opencode-v2.md) for locations, models, permissions, migration/recovery, diagnostics and evidence. Runtime integration was exercised against isolated OpenCode **2.1.4** with a deterministic local model provider; this does not establish paid-model quality or audible sound delivery.
 
 ## What AHK tracks
 
@@ -183,7 +193,7 @@ Keep your project configuration, specifications, and health script under normal 
 
 ## Optional local sounds
 
-Sounds are disabled by default. Interactive `ahk init` asks whether to enable sounds and separately whether to install managed hooks. For existing projects use `ahk notifications enable --scope project` or `--scope global`; `disable` switches the selected scope off. `ahk notifications configure --scope project --patch '{"categories":{"provider.completed":false}}'` patches supported settings, and `--unset enabled` restores inheritance. These commands preserve executable configuration using `agent-harness-kit.config.local.json`; global settings live at `~/.config/agent-harness-kit/notifications.json`. Defaults, global settings, base project configuration, then the managed project overlay determine precedence. Global ledger limits remain global. Install hooks separately with `ahk notifications install --provider cursor` (or `claude-code`, `codex-cli`, `opencode`). `ahk notifications status --json` reports stored/effective settings and packaged asset paths; `uninstall --provider ...` removes only verified owned hooks. Existing custom hooks, edited plugins, TOML trust settings and native sound preferences are preserved.
+Sounds are disabled by default. Interactive `ahk init` asks whether to enable sounds and separately whether to install managed hooks. For existing projects use `ahk notifications enable --scope project` or `--scope global`; `disable` switches the selected scope off. `ahk notifications configure --scope project --patch '{"categories":{"provider.completed":false}}'` patches supported settings, and `--unset enabled` restores inheritance. These commands preserve executable configuration using `agent-harness-kit.config.local.json`; global settings live at `~/.config/agent-harness-kit/notifications.json`. Defaults, global settings, base project configuration, then the managed project overlay determine precedence. Global ledger limits remain global. Install hooks separately with `ahk notifications install --provider cursor` (or `claude-code`, `codex-cli`, `opencode`, `opencode-v2`). `ahk notifications status --json` reports stored/effective settings and packaged asset paths; `uninstall --provider ...` removes only verified owned hooks. Existing custom hooks, edited plugins, TOML trust settings and native sound preferences are preserved.
 
 AHK emits task sounds only after verified completion commits, and blocked sounds for persisted health episodes. General provider completion is suppressed only by successfully played AHK events explicitly correlated to that same project/conversation/turn. Attention remains independent; `ahk notify attention --request-id <stable-id>` supplies an explicit workflow request. Cursor has no universal attention hook. Manually disable native completion sounds when replacing them; keeping both does not guarantee deduplication.
 
@@ -201,7 +211,7 @@ The agent can inspect synchronization drift, plan and apply supported provider/s
 
 `release/v2` maintains the v2 line for projects that cannot yet meet v3's Node.js requirement. The latest published v2 is currently [2.36.1](https://www.npmjs.com/package/@cardor/agent-harness-kit/v/2.36.1) (checked 2026-10-12); install it with `pnpm add @cardor/agent-harness-kit@2.36.1`. Its SQLite dependency's declared engine range includes Node 20.x, making v2 the compatibility path for projects on that runtime. Although the package manifest declares Node `>=14`, that broader engine field does not establish compatibility with older Node versions because the native SQLite dependency has its own runtime requirements. The local v2.36.2 cut is not yet a published npm version. Backport fixes deliberately; the SDK v2/Zod migration belongs to v3. Future v2 publications must explicitly use npm `--tag v2`, or selectively backport the release-tooling guards. Do not promote a v2 patch to `latest` after v3 stable is released. Updated tooling also keeps v2 GitHub releases from becoming the latest release.
 
-`release/v3` carries v3 development, currently `3.0.0-rc.3`. After an RC is published, use `pnpm add @cardor/agent-harness-kit@rc` or pin the full RC version. The `rc` npm channel and GitHub prerelease flag keep release candidates separate from stable `latest`. Preparing local branches, tags or a tarball does not publish a release.
+`release/v3` carries v3 development, currently prepared at `3.1.0` in this repository. This version has not been published. After an RC is published, use `pnpm add @cardor/agent-harness-kit@rc` or pin the full RC version. The `rc` npm channel and GitHub prerelease flag keep release candidates separate from stable `latest`. Preparing local branches, tags or a tarball does not publish a release.
 
 After reviewed v3 changes are committed, align local `main` by fast-forwarding it to the same `release/v3` commit. This is an explicit release step; it does not create automatic ongoing synchronization. Existing version tags are immutable. Release preparations accept an existing tag only when its peeled commit is the current HEAD.
 

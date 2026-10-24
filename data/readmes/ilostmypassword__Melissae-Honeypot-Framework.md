@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-2.6-brightgreen?style=flat-square" alt="Version" />
+  <img src="https://img.shields.io/badge/version-2.7-brightgreen?style=flat-square" alt="Version" />
   <img src="https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=white" alt="React" />
   <img src="https://img.shields.io/badge/Vite-6-646CFF?style=flat-square&logo=vite&logoColor=white" alt="Vite" />
   <img src="https://img.shields.io/badge/Tailwind-3.4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" alt="Tailwind" />
@@ -37,9 +37,9 @@ Most honeypots give you a wall of logs. **Melissae gives you a fleet of decoys, 
 
 - **Manager / agent fleet** : Deploy lightweight agents anywhere, manage them from a single hive.
 - **Zero-trust by default** : Every agent talks to the manager over mTLS (ECDSA P-384), enrolled with one-time tokens.
-- **Rule-based scoring** : YAML detection rules rate each IP from 0 to 100 (benign · suspicious · malicious).
-- **Inspektor AI** : Built-in threat analyst on AWS Bedrock + LangChain; chat with your hive, export PDF briefings.
-- **Real-time dashboard** : Live topology, GeoIP map, kill-chains, log search with logical operators, STIX 2.1 export.
+- **Rule-based scoring** : 14 YAML detection rules rate each IP from 0 to 100 (benign · suspicious · malicious).
+- **Inspektor AI** : Optional threat analyst on AWS Bedrock + LangChain; chat with your hive, export PDF briefings. Enabled at install or later with the `inspektor` manager command.
+- **Real-time dashboard** : Live topology, GeoIP map, kill-chains, log search with logical operators, STIX 2.1 export, `Ctrl/⌘+K` command palette.
 - **7 honeypot modules** : Web (Nginx/Apache), SSH, FTP, Telnet, Modbus/ICS, MQTT, plus CVE-specific decoys.
 
 <br>
@@ -186,7 +186,7 @@ https://<manager-ip>
 
 ## Contributing
 
-Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md) and join the hive on Discord:
+Contributions are welcome, see [CONTRIBUTING.md](CONTRIBUTING.md) and join the hive on Discord:
 
 <p>
   <a href="https://discord.gg/RXWn85cnYm"><img src="https://img.shields.io/badge/Discord-Join%20the%20hive-5865F2?style=flat-square&logo=discord&logoColor=white" alt="Discord" /></a>

@@ -63,7 +63,7 @@ Honest answer first, because your time is worth more than our install count.
 
 | Feature | Status |
 |---------|--------|
-| Subtitle search & download (21 providers + embedded extraction) | Core — most-tested path |
+| Subtitle search & download (29 built-in providers, 43 opt-in catalog providers, embedded extraction) | Core — most-tested path |
 | ASS-first scoring, deduplication, trust scoring | Core — most-tested path |
 | Sonarr/Radarr webhook integration | Core — most-tested path |
 | Standalone mode (no *arr required) | Core — filesystem watching + NFO metadata |
@@ -73,7 +73,7 @@ Honest answer first, because your time is worth more than our install count.
 | **LLM translation via Ollama / DeepL / Google** | **⚠️ Beta — experimental, quality varies** |
 
 ### 🔍 Subtitle Search & Download
-- **21 providers** — AnimeTosho, Jimaku, OpenSubtitles, SubDL, Subscene, Subf2m, Subsource, SubsDump, Addic7ed, BetaSeries, Titlovi, Titrari, TVSubtitles, Gestdown, Kitsunekko, Napisy24, Podnapisi, YIFY, Zimuku, LegendasDivX, TurkceAltyazi — plus embedded subtitle extraction
+- **29 built-in providers** (plus 43 opt-in catalog providers) — AnimeTosho, Jimaku, OpenSubtitles, SubDL, Subscene, Subf2m, Subsource, SubsDump, Addic7ed, BetaSeries, Titlovi, Titrari, TVSubtitles, Gestdown, Kitsunekko, Napisy24, Podnapisi, YIFY, Zimuku, LegendasDivX, TurkceAltyazi — plus embedded subtitle extraction
 - **Custom HTTP/JSON provider** — connect private subtitle servers or adapt any REST API via configuration (field mapping, multiple instances, no code required) — see [docs/CUSTOM_PROVIDER_API.md](docs/CUSTOM_PROVIDER_API.md)
 - **ASS-first scoring** — ASS/SSA gets +50 bonus over SRT; format, dialect, sync quality, and uploader reputation scored
 - **Smart deduplication** — avoids re-downloading identical files via SHA-256 hashing
@@ -488,11 +488,10 @@ weekly scheduled run), bandit findings below the gate, and `npm audit` over the
 dev tree. These are new gates; promoting a scanner to blocking before its
 baseline has been triaged only teaches you to click past a red check.
 
-**One documented exception:** `PYSEC-2026-3447` (setuptools) is ignored on
-purpose. It affects building an sdist with `MANIFEST.in` exclude directives,
-which Sublarr never does, and the fix is out of reach because `requirements.txt`
-pins `setuptools<81` to keep ffsubsync's webrtcvad fallback working. The ignore
-is written down in `ci.yml` with that reasoning, not hidden in a config.
+**No ignored advisories.** Until 1.17.2 `PYSEC-2026-3447` (setuptools) was
+ignored because `requirements.txt` pinned `setuptools<81` for ffsubsync's
+webrtcvad fallback. That pin turned out to be obsolete and was lifted, so
+`pip-audit` now runs without exceptions.
 
 **Two things this section used to get wrong**, fixed 2026-08-30 and worth naming
 because "we run security scans" is easy to claim and easy to get wrong:

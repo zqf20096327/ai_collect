@@ -33,6 +33,10 @@ built on [fastmcp](https://github.com/jlowin/fastmcp),
   contains a word or phrase, not the top few, and says how many documents it
   searched, so "list all", "how many" and "it is not there" get a complete
   answer. See [Finding every mention](#finding-every-mention).
+- **Look-alike documents named** — a result whose document shares most of its
+  text with other indexed documents, such as another version of it or a sibling
+  from the same template, names them and how much text they share. See
+  [Look-alike documents](#look-alike-documents).
 - **Filenames are searchable** — keyword search covers document titles as well
   as body text, and an informative filename becomes the document's title when
   the document's own heading is boilerplate. In many real document sets the
@@ -40,6 +44,11 @@ built on [fastmcp](https://github.com/jlowin/fastmcp),
   See [Titles and filenames](#titles-and-filenames).
 - **Multilingual by default** — the default embedding model covers 50+
   languages, so English and Russian corpora both work out of the box.
+- **Converted once, not re-read every chat** — a PDF handed to an assistant is read
+  again, page by page, in every new conversation, and scanned pages cost the most.
+  Here each document is converted (and OCRed) once at ingest, and a question
+  brings back only the sections that answer it, so it costs those sections rather
+  than the whole file.
 - **Chunks sized in tokens, passages returned whole** — what gets ranked is a
   small unit that fits the embedding model's 128-token ceiling; what comes back
   is the section around it — a transcript time window, a heading section, a
@@ -84,6 +93,44 @@ and only fails later, silently, when the client tries to launch the server.
 claude mcp add minirag --scope user --env BASE_DIR=/absolute/path/to/docs \
   -- uvx minirag-mcp
 ```
+
+### Claude Desktop (one-click)
+
+A Claude Desktop extension, `minirag-mcp.mcpb`, installs without `uv`, a terminal
+or a JSON file: open it (double-click, or **Settings > Extensions > Advanced
+settings > Install Extension…**), pick the **Documents folder**, then ask Claude to
+"sync minirag". It is not published yet; build it from a clone (`npx`, so Node.js,
+runs the official packer):
+
+```bash
+uv run python mcpb/build.py                         # writes dist/minirag-mcp.mcpb
+uv run python mcpb/smoke.py dist/minirag-mcp.mcpb   # install and start it as Desktop does
+```
+
+- Runs on Apple Silicon Macs with macOS 14 or later and on 64-bit Intel/AMD Windows.
+  Intel Macs and Windows on ARM cannot install it: `lancedb` publishes no package
+  for them.
+- Installing downloads the Python dependencies, about 650 MB on disk. The index
+  lives in a hidden `.minirag` folder inside the documents folder. The `[ocr]` and
+  `[classify]` extras are not included.
+- The file is unsigned: Desktop warns before installing it, and an organization
+  that requires signed extensions refuses it.
+
+**Verified:** the official `mcpb` CLI validates and packs it, and `mcpb/smoke.py`
+passes on an Apple Silicon Mac and, in CI (`.github/workflows/bundle.yml`), on
+GitHub's macOS (Apple Silicon) and Windows x64 runners. That script repeats outside
+the app what Claude Desktop 3.6556 does with such a file — unpack it into a folder
+whose path has a space, run `uv sync --quiet` there, start the server with the
+manifest's arguments, the picked folder and only the environment variables Desktop
+passes on — and checks `initialize`, the tool list and `status`; `--search` also
+indexes and finds a document (run on the Mac only). It uses uv 0.9.7, which Desktop
+downloads when a machine has no uv. **Not verified:** installing through the
+Desktop app itself, on macOS or Windows — the install dialog, the folder picker,
+the extension appearing under Connectors. The first start after installing took
+4–9 seconds on the CI runners but about 50 on the development Mac, loading native
+libraries for the first time (later starts: about 2); whether Desktop waits that
+long is untested. If the extension shows as failed right after installing, turn it
+off and on in **Settings > Extensions**.
 
 ### Claude Desktop
 
@@ -743,17 +790,17 @@ ever mention that its vectors describe truncated text.
 | Tool | Purpose |
 |---|---|
 | `sync_start` | Reconcile the index with the document roots (or one path inside them). Returns a `jobId`; the work runs in a background thread. |
-| `sync_status` | Poll a sync job started by `sync_start`: its state, per-file errors and `counts` (`scanned`, `ingested`, `skipped`, `moved`, `deleted`, `relabelled`, `unreadable`, `failed`). `relabelled` counts documents whose [labels](#document-labels-optional) were rewritten from their stored text; it stays 0 without a `classify.toml`. |
+| `sync_status` | Poll a sync job started by `sync_start`: its state, per-file errors and `counts` (`scanned`, `ingested`, `skipped`, `moved`, `deleted`, `relabelled`, `signed`, `ignored`, `unreadable`, `failed`). `relabelled` counts documents whose [labels](#document-labels-optional) were rewritten from their stored text; it stays 0 without a `classify.toml`. `signed` counts documents given a [look-alike](#look-alike-documents) signature from their stored text, such as every document of an index built before signatures existed. |
 | `ingest_file` | Ingest or re-ingest one file, replacing any content already indexed for it. |
 | `ingest_data` | Ingest text/markdown/html content the client holds, under a source id you choose. |
 | `ingest_url` | Fetch an http(s) URL, convert it to Markdown, and index it. |
-| `query_documents` | Hybrid search: semantic similarity plus a keyword boost for exact terms. Each hit carries `text` (the passage that matched) and `parentId`; the enclosing sections come back once each in the response's `parents` map — see [Chunking](#chunking). |
-| `find_mentions` | Every indexed document that mentions a word or phrase, with the number searched and matched, the word forms matched, and a snippet per document. Paged, never capped. See [Finding every mention](#finding-every-mention). |
+| `query_documents` | Hybrid search: semantic similarity plus a keyword boost for exact terms. Each hit carries `text` (the passage that matched) and `parentId`; the enclosing sections come back once each in the response's `parents` map — see [Chunking](#chunking). A source with [look-alikes](#look-alike-documents) names them in `lookAlikes`. |
+| `find_mentions` | Every indexed document that mentions a word or phrase, with the number searched and matched, the word forms matched, a snippet and any `lookAlikes` per document. Paged, never capped. See [Finding every mention](#finding-every-mention). |
 | `read_chunk_neighbors` | Read the chunks immediately before and after a search result, for context. |
 | `read_file` | Read a source's entire indexed content as Markdown, reconstructed from its chunks rather than concatenated from them. |
 | `list_files` | List files found on disk under the document roots, plus indexed data/url sources. |
 | `delete_file` | Delete an indexed file, data item, or url item from the index. |
-| `status` | Report configuration and index status, including whether the index predates the current chunking scheme. Works even when configuration is invalid. |
+| `status` | Report configuration and index status, including whether the index predates the current chunking scheme and how many documents still lack a look-alike signature (`unsignedSourceCount`, present only when above zero). Works even when configuration is invalid. |
 
 MCP tool file paths (`filePath`) must be absolute and inside a configured
 document root.
@@ -812,6 +859,25 @@ ideographs, for one).
 
 From a terminal, a term that starts with a dash goes after `--`, with every
 option before it: `minirag-mcp find --base-dir ~/docs -- -15%`.
+
+### Look-alike documents
+
+A `query_documents` source or a `find_mentions` document that overlaps other
+indexed documents by 0.5 or more carries `lookAlikes`: up to three of
+them, most first, each with `source`, `displayPath`, `overlap` and the document
+`date` when one is known, as in `{"source": "/docs/archive/regulation_v2.md",
+"displayPath": "archive/regulation_v2.md", "overlap": 0.71}`. `overlap` is the
+estimated Jaccard similarity of the two texts' five-word runs (runs in common over
+runs in either), from a MinHash signature each document gets at ingest. A short
+text wholly contained in a version three times its length scores about 0.33 and
+is not flagged. Look-alikes come from the whole index,
+whatever the scope or filters, and a row with none has no `lookAlikes` key. It
+is a measurement, not a verdict on which document is current: an older version
+and a sibling filled in from the same template look alike and may hold other
+figures, so check both before quoting a number. On a real 746-document corpus,
+206 documents have look-alikes. An index built before signatures existed gets
+them on its next sync, from its stored text, with nothing read or embedded
+again (3.3 s for that corpus).
 
 ## Search by Default
 
@@ -906,6 +972,25 @@ much better at picking the right document than the right span inside it
 measured to *degrade* attribution quality by 16–276% against the best
 granularity ([arXiv 2604.01432][granularity]). `sources` is that document list
 already, which is why `displayPath` lives there.
+
+Pages, for a PDF. A document is what an answer cites, but a page is how a person
+finds the passage in it, so a hit from a PDF carries `pages` — `"12"`, or
+`"12-13"` for a chunk that runs across a page break — in `query_documents`
+results, `read_chunk_neighbors` chunks and a `find_mentions` `firstMatch`, and
+the CLI prints it as `p. 12`. Other formats, and a PDF fetched by `ingest_url`,
+carry no `pages` at all. A page that cannot be told for certain is left out
+rather than guessed: a chunk gets one only where its own text is found, word for
+word, where the document says it should be, and only when every copy of that text
+there is on the same page — a table of identical rows, or a phrase repeated on
+every page, gets none.
+
+Upgrading costs one pass over your PDFs. The first sync after it reads again
+every PDF indexed before page numbers existed — with OCR again for a scanned
+one, and with the choice model labelling it again when the corpus has a
+`classify.toml`. Until then `status` counts them as `unpagedSourceCount` and
+`list_files` shows them as `stale_pages`. On an install without the `[ocr]`
+extra, a PDF that was read with OCR is kept as it is, listed as `unreadable`,
+rather than read again without its scanned pages.
 
 Plain text, not a link — the one thing a model can still get wrong about a
 string it is copying is to wrap it. A `file://` URL is refused or mishandled by

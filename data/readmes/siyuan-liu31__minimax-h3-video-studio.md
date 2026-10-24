@@ -35,7 +35,7 @@ MiniMax H3 Video Studio brings video generation, image creation, voice conversio
 | --- | --- |
 | **Video** | Generate video with native audio from text, keyframes, or image/video/audio references; remake source footage, replace a performer, and assemble longer videos with segmented generation and continuation. |
 | **Images** | Generate and edit images with local Z-Image Turbo, Qwen-Image 2.1, and FLUX.2 Klein profiles, or connect **GPT Image, Nano Banana, OpenRouter, and compatible image APIs**. Reuse image results as video references. |
-| **Audio** | Record or upload audio; convert speech and singing voices; separate vocals and accompaniment; transcribe and correct lyrics; re-sing new Mandarin lyrics phrase by phrase over the original backing; preview, export stems, and adjust the vocal/backing mix. Whole-song recreation is also available as an experimental mode. |
+| **Audio** | Edit spoken lines while retaining voice and total duration, replacing only the changed span; record or upload audio; convert speech and singing voices; separate vocals and accompaniment; transcribe and correct lyrics; re-sing new Mandarin lyrics phrase by phrase over the original backing; preview, export stems, and adjust the vocal/backing mix. Whole-song recreation is also available as an experimental mode. |
 | **Media and projects** | Trim clips, extract frames or audio, replace video soundtracks, and organize reusable assets and results with folders, search, pinning, and durable task history. |
 
 ## Visual interface, CLI, or Agent conversation
@@ -400,3 +400,9 @@ Protocol references: [OpenAI Images](https://developers.openai.com/api/reference
 ## Automatic H3 prompt formatting
 
 The canvas sends video prompts with `prompt_mode: "auto"`. Ordinary descriptions are organized into the official text/keyframe or full-reference structure using the actual connected media roles. Complete official prompts are preserved apart from resolving asset mentions; incomplete or conflicting templates return a precise validation error instead of being wrapped again. The preview shows the exact compiled text. This is deterministic formatting, without automatic translation or the hosted Context-IR service. Existing callers can still explicitly request `preserve_tags_only`.
+
+## Spoken dialogue editing
+
+The **Edit dialogue** sidebar accepts 1–30 seconds of single-speaker Mandarin speech. Confirm the transcript, enter new lines, and generate a sample-aligned splice using the existing Vevo2 and ASR models. Unchanged regions retain their original samples. Compare audio, download WAV, or save to Assets.
+
+Start the Mac system-speech helper once with `h3ctl dialogue serve --studio-origin http://127.0.0.1:16020`. The server also needs its offline speech runtime configured. CLI/Agents can use `h3ctl dialogue edit`; other platforms can supply synthesized speech with `--tts-source`. Music, overlapping speakers, excessive text changes, and insertions without a pause may require adjustment. See [dialogue setup and API](docs/dialogue-edit.md).

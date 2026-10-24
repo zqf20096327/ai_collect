@@ -49,6 +49,7 @@ clawo runs --since 1h   # every turn on every engine: model, tokens, cost, verdi
 | Switch engines mid-task          | `session_handoff` replays a live conversation onto another engine in the same workspace. → [sessions](./skills/references/sessions.md)                                                                                                                                                                                        |
 | Know what it cost                | A durable per-turn ledger across engines (`clawo runs`) and a `maxBudgetUsd` cap the runtime enforces on every engine. → [observability](./skills/references/observability.md)                                                                                                                                                |
 | Runs that survive a crash        | Durable workflows: every transition is checkpointed; resume, retry, timeout, cancel and steer come from the kernel. → [workflow](./skills/references/workflow.md)                                                                                                                                                             |
+| Leave Codex on a goal for hours  | `clawo goal` runs a Codex `/goal` on one thread until it finishes, reattaches it after a crash, resumes it after usage limits within a bound, optionally inside your own sandbox, then judges it with your checks. → [workflow](./skills/references/workflow.md#goal)                                                         |
 | Call it from your own tools      | An MCP server (`clawo-mcp`), an ACP agent (`clawo acp`) for Zed, JetBrains and other ACP editors, an OpenAI-compatible endpoint, a TypeScript SDK, and the CLI. → [integrations](#integrations)                                                                                                                               |
 
 **How it relates to other tools.** claude-squad, Conductor and Vibe Kanban are interfaces for running agents side by side in worktrees; Claude Code subagents and Codex's parallel attempts stay within one vendor. Claw Orchestrator is a headless runtime: several vendors behind one API, durable workflows, and a verification step the agents cannot edit. They can be used together.
@@ -71,6 +72,7 @@ The server writes an access token to `~/.openclaw/server-token`; the CLI reads i
 ```bash
 clawo solve "Fix the failing tests" --engine claude --check "npm test" --wait
 clawo fanout "How would you speed up this test suite?" --engines claude,codex,grok --synthesize --wait
+clawo goal --objective-file GOAL.md --check "npm run bench:check" --check-timeout 120 --wait
 clawo workflow list
 ```
 
@@ -99,7 +101,7 @@ const result = await manager.sendMessage('fix-tests', 'Fix the failing tests');
 | Capability                  | What it does                                                                                                                                                                                                                                                                                                                                                                                                                              | Reference                                                  |
 | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
 | **Persistent Sessions**     | Long-lived coding agents kept alive across requests, with full context, tool, model, and worktree control.                                                                                                                                                                                                                                                                                                                                | [`sessions.md`](./skills/references/sessions.md)           |
-| **Multi-Engine Runtime**    | One interface over Claude Code, Codex, Antigravity (agy), Grok Build, OpenCode, and arbitrary custom CLIs.                                                                                                                                                                                                                                                                                                                                | [`multi-engine.md`](./skills/references/multi-engine.md)   |
+| **Multi-Engine Runtime**    | One interface over Claude Code, Codex, Antigravity (agy), Grok Build, OpenCode, any Agent Client Protocol agent (Kimi Code, dsh), and arbitrary custom CLIs.                                                                                                                                                                                                                                                                              | [`multi-engine.md`](./skills/references/multi-engine.md)   |
 | **Session Handoff**         | Move a live conversation to another engine or model — a stuck Claude session into Codex, an expensive model into a cheaper one. The new session picks up where the old one stopped, in the same workspace; the old one keeps running.                                                                                                                                                                                                     | [`sessions.md`](./skills/references/sessions.md)           |
 | **Multi-Agent Council**     | Parallel agents in isolated git worktrees, voting on consensus until they agree.                                                                                                                                                                                                                                                                                                                                                          | [`council.md`](./skills/references/council.md)             |
 | **Fan-out**                 | Run one task across N engine/model agents in parallel and collect their answers, with an optional synthesis pass — the cross-engine best-of-N / diverse-perspective primitive (no rounds or worktrees).                                                                                                                                                                                                                                   | [`tools.md`](./skills/references/tools.md)                 |
@@ -165,16 +167,17 @@ block, and the cancellation and permission limitations are in
 
 ## Engine Compatibility
 
-| Engine      | CLI        | Tested Version |
-| ----------- | ---------- | -------------- |
-| Claude Code | `claude`   | 2.1.307        |
-| Codex       | `codex`    | 0.163.0        |
-| Antigravity | `agy`      | 1.4.4          |
-| Grok Build  | `grok`     | 1.0.67         |
-| OpenCode    | `opencode` | 1.19.3         |
-| Custom CLI  | any        | —              |
+| Engine      | CLI        | Tested Version                  |
+| ----------- | ---------- | ------------------------------- |
+| Claude Code | `claude`   | 2.1.310                         |
+| Codex       | `codex`    | 0.164.0                         |
+| Antigravity | `agy`      | 1.4.6                           |
+| Grok Build  | `grok`     | 1.0.70                          |
+| OpenCode    | `opencode` | 1.19.4                          |
+| ACP agent   | any        | Kimi Code 2.3.1, dsh 0.2.1-rc.2 |
+| Custom CLI  | any        | —                               |
 
-Any coding CLI that runs as a subprocess can be wired up as a custom engine — see [`multi-engine.md`](./skills/references/multi-engine.md#custom-engine-engine-custom).
+An agent that serves the Agent Client Protocol on stdio runs as `engine: 'acp'` — see [`multi-engine.md`](./skills/references/multi-engine.md#acp-agents-engine-acp). Any other coding CLI that runs as a subprocess can be wired up as a custom engine — see [`multi-engine.md`](./skills/references/multi-engine.md#custom-engine-engine-custom).
 
 ---
 

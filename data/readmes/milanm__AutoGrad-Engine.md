@@ -1,3 +1,5 @@
+<p align="center"><img src="assets/logo.png" alt="MicroGPT.cs: a complete GPT in about 600 lines of C#" width="640"></p>
+
 # MicroGPT.cs
 
 [![Build & Test](https://github.com/milanm/AutoGrad-Engine/actions/workflows/build.yml/badge.svg)](https://github.com/milanm/AutoGrad-Engine/actions/workflows/build.yml)

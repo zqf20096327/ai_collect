@@ -175,7 +175,8 @@ upgrades and reinstalls keep it. To wipe it:
   character, `*` for any text within a line and `[nń]` for one of several;
   words match from their start (`*ile` also finds "file"). Opening a result
   finds the text in the chat. Every search reads the transcripts afresh —
-  no index is kept.
+  no index is kept. The field on a project's screen searches only that
+  project's sessions, which is quicker.
 - **Structured event stream** — text streamed as deltas, tool-call cards (Bash
   output, Edit diffs, TodoWrite checklists), thinking blocks, compact
   boundaries, and cost/context meters. Not terminal scraping — real structured
@@ -198,7 +199,10 @@ upgrades and reinstalls keep it. To wipe it:
   without opening it, close individually or all at once (closing a tab asks
   first and leaves the session running). Pinned tabs stay first and "close
   all" skips them; projects and a project's past sessions can be pinned to
-  the top too (pins are kept per device).
+  the top too (pins are kept per device). A tab pulses while it waits for an
+  approval, or when its turn ended with a question to you (Claude's last
+  text ends in "?"; the card says "waiting for your answer") until the
+  session is opened or answered on any device.
 - **Plan usage always in sight** — the rate-limit reading the SDK returns with
   every request: "21% (5h) · 82% (7d)" at the end of the chat's status line,
   and per window with its reset time and a bar in session info. The chat
@@ -235,6 +239,10 @@ upgrades and reinstalls keep it. To wipe it:
   With a mouse or trackpad (also an iPad's trackpad keyboard) ⏎ sends the
   message and ⇧⏎ starts a new line, and key hints show; on a phone ⏎ is a
   new line and the ↑ button sends.
+- **Six languages** — English, German, Spanish, French, Italian and
+  Polish; the browser's language picks one, *Language* in the menu changes
+  it on that device. Messages from the server and the CLI
+  stay in English. Adding a language is one file (see Development).
 - **Installable PWA** — add to the home screen of a phone or tablet for a
   full-screen, app-like experience with icons and manifest. An open page
   notices when the frontend on the server has changed and offers a one-tap
@@ -387,6 +395,8 @@ is what each one does:
   below).
 - `quiet_hours`, `quiet_tz` — the nightly window and its time zone; set them
   with `c4ai quiet-hours` rather than by hand.
+- `incognito_mcp` — MCP servers an incognito chat gets (none by default;
+  see below); set it with `c4ai config incognito-mcp`.
 
 You don't need to edit the file by hand. `c4ai config` checks each value as the
 server does and changes only the key you name, leaving the rest of the file as
@@ -403,8 +413,9 @@ c4ai config roots remove ~/projects       # lists the devices that lose it
 ```
 
 The server reads the file at start, except the quiet hours, which apply at
-once. It keeps keys it does not know, so a typo in a name is silently
-ignored (`c4ai config` lists such keys as unused).
+once, and `incognito_mcp`, read each time an incognito chat starts. It keeps
+keys it does not know, so a typo in a name is silently ignored (`c4ai config`
+lists such keys as unused).
 
 `allowed_roots` is the ceiling for every device's folders, e.g.
 `"allowed_roots": ["~/work"]`. It **must not be `~`** (nor `/`, `/home` or
@@ -446,6 +457,26 @@ server writes to stderr — with the systemd unit above that is `journalctl
   process's own debug log in `~/.clicker4ai/logs/cli-<sid>.log` (`--debug-file`;
   grows without limit, delete it by hand);
 - `"error"` — nothing of the above.
+
+An incognito chat has no MCP servers unless `incognito_mcp` names some — for
+example a browser that reads pages in a throwaway profile, for sites
+WebFetch cannot read. Each server lists the tools the chat may call:
+
+```bash
+c4ai config incognito-mcp add browser --command node \
+    --arg /opt/browser/mcp.js --env TOKEN_FILE=/opt/browser/read-token \
+    --tool fetch_private
+c4ai config incognito-mcp remove browser
+```
+
+`add` refuses a server without `--tool` (repeatable) unless you give
+`--all-tools`. The chat reads untrusted pages and can send what it learns
+anywhere through WebFetch, so give it only tools that cannot reach your
+accounts, files or logged-in sessions. Every other tool is refused before
+it runs, even when your settings allow it — but the chat may still see the
+server's other tools listed, so a server that can expose fewer tools is
+better set up that way. Only stdio servers; `--env` values are stored in
+`config.json`, so point at a token file rather than pasting a token.
 
 ## Devices and grants
 
@@ -616,10 +647,14 @@ Viewing a file:
 - text as plain text (the first 1 MB); *Find* (`/`, ⌘F or Ctrl+F)
   highlights the matches, ⏎ and ⇧⏎ (or ↓ ↑) go from one to the next, Esc
   closes the search;
+- Markdown (`.md`, `.markdown`) rendered as in the chat; *Source* (`s`)
+  shows the plain text and stays on for ← → until the viewer closes; *Find*
+  searches the view on screen;
 - images whole on the screen, never above 1:1 with their pixels (a tap shows
   1:1);
 - any file can be downloaded;
-- with a keyboard: ↑ ↓ scroll, ← → the next file, `d` downloads, ⏎ closes;
+- with a keyboard: ↑ ↓ scroll, ← → the next file, `d` downloads, `s`
+  switches Markdown to its source, ⏎ closes;
   back closes just the viewer.
 
 Uploading (only devices with the `--files-upload` grant): several files at
@@ -876,7 +911,8 @@ accordingly:
   with it.
 - **Incognito chats are confined, not just hidden.** Their session has only
   the WebSearch and WebFetch tools (Bash, Read, Edit… do not exist in it)
-  and no MCP servers; "always allow" stays in the session; True View is
+  and no MCP servers but those of `incognito_mcp`, whose unlisted tools a
+  hook refuses; "always allow" stays in the session; True View is
   refused by the server. The folder lives in the server's data directory
   (`~/.clicker4ai/incognito/<device>/<sid>`) and only the owning device's
   scope reaches it.
@@ -906,7 +942,8 @@ accordingly:
   `auto` (Claude Code's classifier approves instead of you and asks again
   after repeated blocks; not on Haiku, where the session says so and runs
   in `default`). `bypassPermissions` and `dontAsk` can't be selected from
-  the app. True View starts in the session's mode, `default` included.
+  the app. True View starts in the session's mode, `default` included. An
+  incognito chat offers only `default` and `auto`.
 - **Hardening:** failed logins throttled (10/min → 429), state-changing `/api/`
   requests must be `application/json` (CSRF), WebSocket Origin allowlist,
   validated model/mode/session ids, `~/.clicker4ai` 0700 with 0600 files
@@ -988,18 +1025,50 @@ python3 -m venv .venv                     # create the venv
 .venv/bin/python scripts/search_test.py   # past-session search on made-up transcripts
 .venv/bin/python scripts/e2e_live.py      # live end-to-end (text / Bash / compact / resume / sync / hooks)
 node scripts/kbd_test.js <pairing code>   # keyboard shortcuts (Playwright; test server on 8781)
+python3 scripts/i18n_check.py             # translations against app.js
+node scripts/i18n_test.js <code> <code> [de=<code>…]  # every screen in en, pl and more (Playwright; test server on 8781)
 ```
 
 The `scripts/e2e_*.py` files each exercise one slice end-to-end against a live
 server (resume parity, permission approve/deny, terminal↔webapp sync, Stop-hook
 status feedback).
 
+### Translations
+
+The app's texts live in `clicker4ai/web/i18n/`, one JSON file per language;
+`en.json` holds every key and stands in for any key a translation lacks.
+To add a language:
+
+1. Copy `en.json` to `<code>.json` (`de.json`, `pt-BR.json`) and translate
+   the values. Keep the `{name}` placeholders as they are. A count has one
+   text per plural form, named as `Intl.PluralRules` names them for that
+   language (`one`, `few`, `many`, `other`…); `other` is required.
+2. Add the code and the language's own name to `languages.json`.
+3. Run `python3 scripts/i18n_check.py` — it reports missing and unknown
+   keys and placeholders that differ from English.
+
+No restart is needed; open pages offer the reload themselves. In `app.js`
+a text is `t("key", {n: 2})`, or `tn()` when it holds a node such as a
+`<code>`.
+
 ## Changes
 
-Coming in 1.1.0: the app in German, Spanish, French, Italian and Polish;
-MCP tools and auto mode in incognito chats; images pasted into messages; a
-tab pulses when a turn ends with a question to you; Markdown files open
-rendered in the file viewer.
+### 1.1.0 (2026-10-23)
+
+- The app in German, Spanish, French, Italian and Polish too (menu →
+  *Language*); a new language is one file.
+- Incognito chats can get chosen MCP tools (`c4ai config incognito-mcp`).
+- Incognito chats can run in auto mode.
+- Images can be pasted into a message (up to 5); 🖼 in the chat opens them
+  again.
+- A tab whose turn ended with a question to you pulses until you open it.
+- Markdown files open rendered in the file viewer (*Source* or `s` for the
+  text).
+- True View has keys for scrolling the TUI on a phone (PgUp, PgDn, ^Home,
+  ^End and more).
+- Search within one project from its screen (quicker than the global one).
+- Fix: lines Claude puts one under another stay that way in the chat, as
+  in the terminal.
 
 ### 1.0.0 (2026-10-15)
 

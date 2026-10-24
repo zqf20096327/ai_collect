@@ -1,3 +1,5 @@
+<p align="center"><b>English</b> · <a href="https://github.com/selimfirat/pysad/blob/master/README_zh.md">简体中文</a></p>
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/selimfirat/pysad/master/docs/images/logo.svg" alt="PySAD" width="360">
 </p>
@@ -31,6 +33,7 @@
   <a href="https://pysad.readthedocs.io/en/stable/benchmark.html">Benchmarks</a> ·
   <a href="https://pysad.readthedocs.io/en/stable/detectors.html">Detectors</a> ·
   <a href="https://pysad.readthedocs.io/en/stable/api.html">API</a> ·
+  <a href="https://selimfirat.github.io/pysad/lab/index.html?path=nyc_taxi_alerts.ipynb">Live demo</a> ·
   <a href="https://colab.research.google.com/github/selimfirat/pysad/blob/master/examples/quickstart.ipynb">Try it in Colab</a>
 </p>
 
@@ -107,6 +110,7 @@ PySAD supports Python 3.10 to 3.14 on Linux, macOS and Windows. Every detector w
 
 ## Quick start
 
+[![Open in JupyterLite](https://jupyterlite.rtfd.io/en/latest/_static/badge.svg)](https://selimfirat.github.io/pysad/lab/index.html?path=nyc_taxi_alerts.ipynb)
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/selimfirat/pysad/blob/master/examples/quickstart.ipynb)
 
 Score a stream point by point, and measure the detector while it runs:

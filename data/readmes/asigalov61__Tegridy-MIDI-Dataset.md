@@ -373,6 +373,12 @@ The PCD-K dataset is a dataset for piano transcription in ensemble settings and 
 ## [IDMT-PIANO-MM](https://zenodo.org/records/7544248)
 IDMT-PIANO-MM includes a total of 432 piano recordings (around four hours), which cover nine music pieces recorded in eight different rooms using six different recording devices. The pieces cover classical music (B. Bartók, W. A. Mozart, J. Pachelbel, and L. v. Beethoven) as well as jazz (S. Joplin as well as own compositions) and range from simple to medium difficulty. All music pieces are in the public domain.
 
+## [RESTRICTED] [MOSA](https://zenodo.org/records/11393449)
+MOSA dataset is a large-scale music dataset containing 742 professional piano and violin solo music performances with 23 musicians (> 30 hours, and > 570 K notes).
+
+## [RESTRICTED] [ViolinEtudes](https://zenodo.org/records/6564408)
+A large-scale, curated dataset of 27.8 hours of violin performances with automatic, constrained f₀ (fundamental frequency) labels, designed for music performance analysis and pitch estimation research.
+
 </details>
 
 ***
@@ -553,6 +559,22 @@ A curated list of online demos, colab notebooks, and software for audio processi
 ## Miscellaneous MIDI and music applications
 
 - **[Online] [Amazing Music Spaces](https://huggingface.co/collections/projectlosangeles/amazing-music-spaces)** - A large collection of very useful HQ MIDI and music Hugging Face spaces.
+
+***
+
+## Awesome MIDI music related websites
+NOTE: Most of these require registration for limited access or a subscription for full access.
+
+- **[Musopen](https://musopen.org)** - Recordings, sheet music, and textbooks to the public for free, without copyright restrictions.
+- **[MuseScore](https://musescore.com)** - Sheet music and MIDIs.
+- **[Mirelo AI Studio](https://mirelo.ai/studio/transcriptor)** - Pro version of MuScriptor AMT which outperforms open-source versions. Turn any recording into an editable musical transcription.
+- **[MVSEP](https://mvsep.com/)** - MVSEP performs separation of audio on voice and music parts.
+
+***
+
+## Music Papers
+
+- **[Qwen Deep Research Music Papers](https://github.com/asigalov61/Qwen-Deep-Research-Music-Papers)** - Stay on top of things! Follow latest Project Los Angeles research here.
 
 ***
 

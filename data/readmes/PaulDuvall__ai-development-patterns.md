@@ -15,7 +15,7 @@ A comprehensive collection of patterns based on my experience for building softw
 
 This catalog uses **coding agent** for tools such as Claude Code, OpenAI Codex, and Google Jules that can generate and execute code, run checks, and iterate on results. **Agentic engineering** is the professional practice of building software with those agents. The broader terms **AI assistant** and **AI coding assistant** are reserved for systems that may provide suggestions or chat without independently executing and validating changes.
 
-Adoption verdicts are mechanically recomputed from structured, tiered evidence. Model-backed evidence research runs only on demand in a signed-in local Codex session with an explicit plan approval; GitHub Actions never calls an evaluator model or receives an evaluator API key. CI performs deterministic schema, provenance, derivation, status-drift, link, and content checks, including a weekly read-only freshness check. See [verification/STATUS.md](verification/STATUS.md) for every stable and exploratory pattern's assessed, pending, and freshness state, and [verification/](verification/README.md) for the local-agent workflow and trust model.
+Adoption verdicts are mechanically recomputed from structured, tiered evidence. Model-backed evidence research runs only on demand in a signed-in interactive evaluator session with an explicit plan approval, implemented today by the local Codex app; GitHub Actions never calls an evaluator model or receives an evaluator API key. CI performs deterministic schema, provenance, derivation, status-drift, link, and content checks, including a weekly read-only freshness check. See [verification/STATUS.md](verification/STATUS.md) for every stable and exploratory pattern's assessed, pending, and provenance state, and [verification/](verification/README.md) for the local-agent workflow and trust model.
 
 ```mermaid
 graph TB
@@ -2063,3 +2063,20 @@ graph TD
     C -->|✓ <2 hours| E[Rapid feedback cycle]
     C -->|✓ Clear I/O| F[Testable interface]
     C -->|✓ No shared state| G[Conflict-free]
+    C -->|✗ Fails check| H[Split Further]
+    H --> B
+    
+    D --> I[Ready for Agent]
+    E --> I
+    F --> I
+    G --> I
+```
+
+**Core Decomposition Process**
+
+```bash
+# Feature: User Authentication System
+# Bad: Monolithic task
+❌ "Implement complete user authentication with JWT, password hashing, rate limiting, and email verification"
+
+# Good: Atomic breakdown with

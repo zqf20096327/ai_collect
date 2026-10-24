@@ -209,7 +209,7 @@ use_frameworks! :linkage => :static
 target 'YourApp' do
   pod 'XmaxSDK',
       :git => 'https://github.com/Xmax-AI/XmaxSDK-iOS.git',
-      :tag => '1.0.11'
+      :tag => '1.0.14'
 end
 
 post_install do |installer|
@@ -230,7 +230,7 @@ pod install --repo-update
 ### Manual
 
 Download
-[`XmaxSDK-1.0.11.xcframework.zip`](https://github.com/Xmax-AI/XmaxSDK-iOS/releases/download/1.0.11/XmaxSDK-1.0.11.xcframework.zip),
+[`XmaxSDK-1.0.14.xcframework.zip`](https://github.com/Xmax-AI/XmaxSDK-iOS/releases/download/1.0.14/XmaxSDK-1.0.14.xcframework.zip),
 then follow the [manual integration guide](./Materials/installation.md#manual-integration)
 to add the required dependencies and configure your Xcode target.
 
@@ -267,7 +267,7 @@ let client = XmaxClient(
 )
 
 let realtime = client.createRealtimeManager(
-    options: RealtimeConfiguration(model: .x2_1)
+    options: RealtimeConfiguration(model: .x2_1_1_preview_cn)
 )
 
 let localStream = try await realtime.createLocalCameraStream(
@@ -322,7 +322,7 @@ input stream or starting generation.
 | Listener | Purpose |
 | --- | --- |
 | `setStateListener` | Observe pipeline states and termination reasons during real-time generation. |
-| `setRemoteVideoFrameListener` | Receive generated frames for recording or custom processing. |
+| `setRemoteMediaFrameListener` | Receive generated audio and video frames for recording or custom processing. |
 | `setNetworkQualityListener` | Monitor uplink and downlink network quality. |
 | `setPerformanceAlarmListener` | Detect device performance limitations or recovery, with a suggested video format when available. |
 

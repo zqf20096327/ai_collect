@@ -7,7 +7,7 @@
 [![Non-Commercial License](https://img.shields.io/badge/License-Non--Commercial-c79a49?style=flat-square)](LICENSE)
 [![GitHub Stars](https://img.shields.io/github/stars/ziguishian/MxInspireX?style=flat-square&color=c79a49&label=Stars)](https://github.com/ziguishian/MxInspireX/stargazers)
 
-MxinspireX 是灵矩绘境出品的 **AI 设计工作区**，面向设计师、文创团队和产品创作者，用来把需求与参考资料变成可继续编辑、比较和导出的设计作品。
+MxinspireX 是灵矩绘境出品的 **AI 设计工作区**，面向设计师、创意团队和产品创作者，支持不同领域的设计任务，用来把需求与参考资料变成可继续编辑、比较和导出的设计作品。
 
 你可以上传产品图、品牌资料或文档，用自然语言说明需求；Agent 结合上下文调用模型，将产品概念、包装、海报、IP 形象、场景图等结果放到同一个无限画布。后续可以继续对话修改，也可以连接节点，让上游文字或图片成为下一次生成的参考。
 
@@ -76,6 +76,8 @@ npm run start:portable
 ```
 
 ## 开发与验证
+
+外部 Agent 可通过 CLI 访问本地工作区：`node scripts/mxinspirex.mjs --help`。支持 JSON 输出、稳定请求 ID、任务等待/取消/原结果取回，以及资产上传下载；需要应用或本地 API 已启动。完整用法及 Windows/macOS 包内启动器见 [CLI 文档](docs/cli.md)。
 
 ```sh
 npm run setup:portable    # 安装锁定依赖

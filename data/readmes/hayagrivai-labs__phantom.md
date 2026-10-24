@@ -58,7 +58,7 @@ Phantom does not modify Python, install import hooks, or change your environment
 
 ## Features
 
-- Seven instructions: events, bounded counters, diagnostic notes, author/version metadata ([reference](docs/LANGUAGE_GUIDE.md)).
+- Eight instructions: events, bounded counters, diagnostic notes, author/license/version metadata ([reference](docs/LANGUAGE_GUIDE.md)).
 - A formal grammar ([SPECIFICATION.md](SPECIFICATION.md)) and a typed, immutable IR.
 - Four encodings: **comment** (recommended), whitespace, zero-width Unicode, hybrid ([ENCODINGS.md](docs/ENCODINGS.md)).
 - Static validation with line/column diagnostics and SARIF export.
@@ -102,9 +102,9 @@ Walkthrough: [docs/QUICKSTART.md](docs/QUICKSTART.md).
 
 | Command | Purpose | Executes your code? |
 | :--- | :--- | :--- |
-| `phantom check FILE [--strict] [--format sarif]` | Validate; exit 2 on errors | No |
-| `phantom inspect FILE [--json] [--strict]` | Show recognised instructions, locations, capabilities | No |
-| `phantom run FILE [--timeout SEC] [-- ARGS]` | Validate, apply, run the host; exits with the host's status | **Yes** |
+| `phantom check FILE [--strict] [--format sarif] [--deny CAP] [--allow-only CAP]` | Validate (optionally against a capability policy); exit 2 on errors | No |
+| `phantom inspect FILE [--json] [--strict] [--deny CAP] [--allow-only CAP]` | Show recognised instructions, locations, capabilities (and which a policy blocks) and any parse errors; exit 2 on parse errors or `--strict` findings | No |
+| `phantom run FILE [--timeout SEC] [--deny CAP] [--allow-only CAP] [--handlers-from DIR] [--allow-handler PATTERN] [-- ARGS]` | Validate, apply, run the host; exits with the host's status | **Yes** |
 | `phantom generate FILE --intent TEXT [--placement …] [--encoding …] [--output …] [--dry-run] [--allow-remote]` | Propose a candidate with Phantom instructions | No (sends source to the provider) |
 | `phantom diff ORIGINAL CANDIDATE` | Unified diff | No |
 | `phantom verify ORIGINAL CANDIDATE` | Run both and compare stdout/stderr/exit code | **Yes** (both) |
@@ -169,7 +169,7 @@ Everyone who has a pull request merged is thanked in the release notes.
 
 [SPECIFICATION](SPECIFICATION.md) · [VISION](VISION.md) · [ROADMAP](ROADMAP.md) · [CHANGELOG](CHANGELOG.md) · [SECURITY](SECURITY.md) · [CONTRIBUTING](CONTRIBUTING.md)
 
-Guides: [Contributor guide](docs/CONTRIBUTOR_GUIDE.md) · [Installation](docs/INSTALLATION.md) · [Quickstart](docs/QUICKSTART.md) · [Language](docs/LANGUAGE_GUIDE.md) · [Encodings](docs/ENCODINGS.md) · [Runtime](docs/RUNTIME.md) · [Generator](docs/GENERATOR.md) · [Architecture](docs/ARCHITECTURE.md) · [Compatibility](docs/COMPATIBILITY.md) · [Troubleshooting](docs/TROUBLESHOOTING.md) · [FAQ](docs/FAQ.md) · [Threat model](docs/THREAT_MODEL.md) · [Research status](docs/RESEARCH_STATUS.md)
+Guides: [Contributor guide](docs/CONTRIBUTOR_GUIDE.md) · [Installation](docs/INSTALLATION.md) · [CI](docs/CI.md) · [Quickstart](docs/QUICKSTART.md) · [Language](docs/LANGUAGE_GUIDE.md) · [Encodings](docs/ENCODINGS.md) · [Runtime](docs/RUNTIME.md) · [Generator](docs/GENERATOR.md) · [Architecture](docs/ARCHITECTURE.md) · [Compatibility](docs/COMPATIBILITY.md) · [Troubleshooting](docs/TROUBLESHOOTING.md) · [FAQ](docs/FAQ.md) · [Threat model](docs/THREAT_MODEL.md) · [Research status](docs/RESEARCH_STATUS.md)
 
 Research: [overview](docs/research/README.md) · [Phantom C](docs/research/PHANTOM_C.md) · [Observability](docs/research/OBSERVABILITY.md) · [Method](docs/research/EXPERIMENTAL_METHOD.md)
 

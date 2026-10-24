@@ -21,6 +21,65 @@ capabilities, freeze their bytes, then invoke them on later tasks in the same mi
 This additive source preview preserves SUCCESSOR Ω, Discovery Lab and all six research stages.
 Installed cross-repository receivers, public deployment and the operational real-task pilot remain unqualified.
 
+<!-- featured-mission-intelligence -->
+## Foundation: AGI ALPHA
+### A Scalable Substrate for Intelligence Organizations
+
+**AGI ALPHA organizes intelligence. TRANSFORMATIONAL INTELLIGENCE changes the conditions of discovery.**
+The AGI ALPHA paper proposes a testable architecture and evaluation program for coordinated, governed,
+evidence-producing work across agents, jobs, validators, tools, memory, markets, settlement and capacity allocation.
+It does not claim achieved AGI, ASI, empirical state of the art, autonomous sovereignty, energy abundance
+or civilization-scale capability.
+
+**[Read the foundational AGI ALPHA paper →](https://github.com/MontrealAI/agialpha-first-real-loop/blob/main/docs/manuscript/AGI_ALPHA_Unified_Publication_Final.pdf)** ·
+[Announcement on X](https://x.com/Montreal_AI/status/2064731302524330046) ·
+[TRANSFORMATIONAL INTELLIGENCE and the research series](#featured-research)
+
+## Related architecture research
+
+### Mission-Sovereign Successor · v5.0.0
+A proposed design for governed mission capability: manufacture useful capability, require fresh proof for
+mission-bounded superiority, and keep authority within that proof. A research doctrine, not a report of achieved
+general capability or deployed mission sovereignty.
+
+**[Read Mission-Sovereign Successor (v5.0.0 PDF) →](https://montrealai.github.io/goalos-singularity-navigator-omega-seize-agi-alpha-or-agi-club-owner-access-v1/research/GoalOS_Singularity_Navigator_Omega_SEIZE_Mission_Sovereign_Successors_v5_0_0_A4.pdf)** ·
+[Paper announcement on X](https://x.com/Montreal_AI/status/2086510829629768005)
+
+### NEURAL-SYMBOLIC SUCCESSOR Ω
+**Customer-Owned Mission Intelligence · Current edition: v1**
+
+A proposed portable mission institution with four distinct programs: **WORLD** maintains beliefs,
+**POLICY** proposes actions, **PROOF** records independently demonstrated claims, and **AUTHORITY**
+defines permitted actions. A successor may inherit memory, provenance, failures, program lineage
+and operating history, but proof status and production authority start empty and must be earned anew.
+Architecture and product constitution, not a claim of complete implementation or achieved general autonomous capability.
+
+**[Read the current architecture paper (v1 PDF) →](https://montrealai.github.io/neuralsymbolicsuccessoromegav1.pdf)** ·
+[v1 announcement on X](https://x.com/Montreal_AI/status/2092617366785908841) ·
+[Earlier edition (v0 PDF)](https://montrealai.github.io/neuralsymbolicsuccessoromegav0.pdf) ·
+[v0 announcement](https://x.com/Montreal_AI/status/2092451554049540118)
+
+### SUCCESSOR Ω × AGI JOBS
+A proposed connection between mission-governed intelligence and sealed work orders that manufacture, test,
+operate and renew capabilities. The paper connects institutional design with a work-order mechanism;
+it does not establish a fully deployed or commercially proven autonomous institution.
+
+**[Read SUCCESSOR Ω × AGI JOBS (v2 PDF) →](https://montrealai.github.io/successor-omega-x-agi-jobs-v2.pdf)** ·
+[Paper announcement on X](https://x.com/Montreal_AI/status/2087522091868283128)
+
+### Gym, Specialist ASI & Successor Ω
+A proposed institutional separation: Mission Gym supplies controlled, versioned, rights-cleared mission environments;
+Specialist ASI is an earned, mission-bounded designation requiring comparison against strong alternatives on fresh
+protected work; Successor Ω requires separate admission with scoped, expiring, revocable authority.
+Training is not certification, and descendants may inherit memory, not authority. These are research design requirements,
+not a claim that the designation or deployed institution has been achieved.
+
+**[Read Gym, Specialist ASI & Successor Ω (v2.1.0 PDF) →](https://montrealai.github.io/GoalOS_Gym_Specialist_ASI_Successor_Omega_v2_1_0_US_LETTER.pdf)** ·
+[Paper announcement on X](https://x.com/Montreal_AI/status/2086933432563622391)
+
+**[Featured thread from MONTREAL.AI →](https://x.com/Montreal_AI/status/2096976110479175692)**
+<!-- /featured-mission-intelligence -->
+
 <!-- featured-research-papers -->
 ## Featured research
 
@@ -33,12 +92,21 @@ Vincent Boucher · MONTREAL\.AI · 2026-10 · English PDF.
 
 **Companion papers · reading order**
 
+- **[Autonomous Enterprises — Build the Means of Building](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/autonomous-enterprises.pdf)** · A bounded certifying computation constructs a checked transform–convolution–inverse solver and studies exact capital and capability retention under declared concatenability assumptions\. The finite examples compare shared construction with isolated tasks and show when cash\-only pruning loses useful capability\. Research constructions and exact models, not a new Fourier algorithm, physical deployment or realized commercial growth\.
+  Vincent Boucher · MONTREAL\.AI · 2026-10-21 · English PDF.
+- **[Autonomous Enterprises — Activate\. Evolve\. Scale\.](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/autonomous-enterprises-activate-evolve-scale.pdf)** · Three deterministic local offerings study reusable launch kits and transfer of rejection experience while leaving full acceptance checks unchanged\. Retained limits include a conventional ordering that wins one comparison, a rejected second learned update and a four\-worker run slower than two workers\. A bounded local study, not general recursive self\-improvement or evidence of three paying businesses\.
+  Vincent Boucher · MONTREAL\.AI · QUEBEC\.AI · 2026-10-22 · English PDF.
+- **[Autonomous Enterprises — SUCCESSOR Ω Harness](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/autonomous-enterprises-successor-omega.pdf)** · A source\-grounded integration specification and bounded interval\-measurement experiment compare independent setup, ordinary harness reuse and instrument reuse, including verification, failed transfer and recovery\. The manuscript distinguishes deployed inventory, an open Harness candidate, replayed examples and new simulations\. It does not establish autonomous incorporation, observed demand, investment performance or approved mainnet execution\. The Harness implementation remains separately tracked in unresolved PR \#4863; this paper listing does not claim that it has shipped\.
+  Vincent Boucher · MONTREAL\.AI · QUEBEC\.AI · 2026-10-22 · English PDF.
 - **[Autonomous Enterprises — Foundry v2](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/autonomous-enterprises-foundry-v2.pdf)** · A simulated thermal\-fluid foundry constructs fixtures, a calibration station and a qualified research instrument, then a new calorimetry method and a distinct simulated successor\. A retained failure: the 4\.9477% predicted/observed heat difference passes the 5% runtime rule, while the calorimeter has 8\.6964% error against reference\-model true heat\. Conventional engineering ties useful accuracy with 384 versus 672 readings; a centralized lab is CAD 460 cheaper\. Participant withdrawal and underutilization fail in the tested economic cases\. Finite search, modeled economics and Python contract checks; physical construction and deployment NOT RUN\. Reproduction requires the full research companion; standalone TeX requires the full LaTeX source ZIP\.
   Vincent Boucher · MONTREAL\.AI · QUEBEC\.AI · Montréal, Québec, Canada · 2026-10-22 · English PDF.
+  [Read the edition and resources](https://montrealai.github.io/AGI-Alpha-Agent-v0/reports/research-foundry-v2/index.html) · [Explore the interactive foundry](https://montrealai.github.io/AGI-Alpha-Agent-v0/reports/thermal-fluid-foundry-v2/experience.html) · [Download the research companion](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/releases/download/study-foundry-v2-2026-10-22-r1/Autonomous_Enterprises_Foundry_v2_Research_Companion.zip) · [View source and evidence](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/releases/tag/study-foundry-v2-2026-10-22-r1)
 - **[Autonomous Enterprises — Capability Inheritance](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/autonomous-enterprises-capability-inheritance-v1.pdf)** · Retained executable capabilities serve 48 mathematical tasks using 63,196 counted work units versus 915,136 for rebuilding, but the supplied expert uses 5,760\. Inherited successor qualification loses 7,918 versus 2,030 directly\. A separate simulated thermal witness gives a conditional 1\.8862% bound\. Local\-EVM and native\-worker evidence remains separate from unfinished end\-to\-end thermal integration; physical validity and full monetary, human and energy costs are unknown\. No measured profit is established\. The 25\-page manuscript is preserved; reproducible TeX requires its complete source package\.
   Vincent Boucher · MONTREAL\.AI · 2026-10-22 · English PDF.
+  [Read the edition and resources](https://montrealai.github.io/AGI-Alpha-Agent-v0/reports/research-capability-inheritance-v1/index.html)
 - **[Autonomous Enterprises — The Discoverability Compiler](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/autonomous-enterprises-discoverability-v1.pdf)** · A bounded compiler constructs nuisance\-canceling measurement programs and checks whether they separate an authorized decision\. Conventional baselines tie development acquisition costs; an adaptive control wins\. Reuse reduces counted construction work, while timing is unstable and centralized execution remains faster\. The ≤US$100 total\-cost to US$10,000 realizable incremental\-value challenge is UNPROVEN: no executable offer or customer receipt exists, and complete cost is unknown\. This preserved 24\-page amended paper does not qualify its open\-review runnable experience or establish physical validation or installed enterprise integration\. Reproducible TeX requires the complete research source\.
   Vincent Boucher · MONTREAL\.AI · QUEBEC\.AI · 2026-10-22 · English PDF.
+  [Read the edition and resources](https://montrealai.github.io/AGI-Alpha-Agent-v0/reports/research-discoverability-v1/index.html)
 - **[Out\-Learn 📚](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/Out_Learn.pdf)** · Studies how to construct measurement protocols and learn reusable calibration, with error guarantees under declared drift and measurement\-error assumptions in exact synthetic studies\.
   Vincent Boucher · MONTREAL\.AI · 2026-10-21 · English PDF.
 - **[Out\-Think 🧠](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/Out_Think.pdf)** · Studies executable reasoning representations that preserve required answers and operations, and when to replace rather than refine inherited internal codes, in exact finite models\.
@@ -51,24 +119,32 @@ Vincent Boucher · MONTREAL\.AI · 2026-10 · English PDF.
   Vincent Boucher · MONTREAL\.AI · 2026-10-21 · English PDF.
 - **[Out\-Evolve ♾️](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/Out_Evolve.pdf)** · A proposed architecture for building experimentation and production capabilities that make further discoveries and successor capabilities possible\.
   Vincent Boucher · MONTREAL\.AI · 2026-10-20 · English PDF.
-- **[TRANSFORMATIONAL AUTONOMOUS ENTERPRISES](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/transformational-autonomous-enterprises-v1.pdf)** · A finite graph\-capability study connects four source runtimes and five local\-EVM contracts: fresh mission checks remain, repeated qualification work falls, direct\-specialist wins and unproven economic value are retained\.
+- **[TRANSFORMATIONAL AUTONOMOUS ENTERPRISES](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/transformational-autonomous-enterprises-v1.pdf)** · A finite graph\-capability study connects four source runtimes and five local\-EVM contracts: fresh mission checks remain, repeated qualification work falls, direct\-specialist wins and unproven economic value are retained\. The experimental companion's source and assembly guidance do not establish installed or deployed acceptance\.
   MONTREAL\.AI — Writer \#4 research edition · 2026-10-23 · English PDF.
+  [Download standalone TeX](https://montrealai.github.io/AGI-Alpha-Agent-v0/papers/transformational-autonomous-enterprises-v1.tex) · [Current corrected companion guide and helper](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/studies/transformational-autonomous-enterprises-v1/README.md) · [Historical experimental companion source and assembly](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/accfe2a0a66a87087e36fcf3cd4285b337321c23/studies/transformational-autonomous-enterprises-v1/README.md)
+- **[The Possibility Foundry](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/possibility-foundry-v1.pdf)** · A bounded 64\-channel synthetic\-spectroscopy study constructs a calibrated instrument from a finite 60\-plan grammar\. Under the declared resource cap, 1,678/2,048 fresh missions pass quality and cost\. The full scanner has better quality; both supplied software builders use less construction work than the foundry\. Transfer succeeds on 204/512 tasks; narrow\-line stress passes 0/128\. A temporal child passes 128/128 with retained parent capital, but 0/128 with fully loaded de novo cost; a shorter conventional construction also fits its cap\. Two same\-seed runs are not independent replication\. Retained Alpha workbench/Jobs compiler source evidence does not establish installed four\-repository, physical or commercial acceptance\. Full monetary and human costs are unknown; the $100\-to\-$10,000 target is NOT ESTABLISHED\. This original 21\-page paper is preserved; compiling its TeX requires the complete archive bibliography and figures\.
+  MONTREAL\.AI; research direction Vincent Boucher · 2026-10-23 · English PDF.
+  [Download complete research source ZIP](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/releases/download/study-possibility-foundry-v1-2026-10-23-r1/The_Possibility_Foundry_Complete_Source.zip) · [Download visual signature (not cryptographic)](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/releases/download/study-possibility-foundry-v1-2026-10-23-r1/The_Possibility_Foundry_Signature.png) · [View source and evidence](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/releases/tag/study-possibility-foundry-v1-2026-10-23-r1)
+- **[SUCCESSOR Ω HARNESS](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/successor-omega-harness-detector-v1.pdf)** · A 28\-page simulated detector study with a runnable research companion: retained construction ties conventional caching, while expert construction uses fewer counted rational calls\. Physical validity, settlement and profit are not established\.
+  MONTREAL\.AI · AGI ALPHA Research &amp; Engineering · 2026-10-24 · English PDF.
+  [Download the research companion](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/releases/download/study-successor-omega-harness-detector-v1-2026-10-24/SUCCESSOR_Omega_Research_Companion.zip) · [Download complete research source ZIP](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/releases/download/study-successor-omega-harness-detector-v1-2026-10-24/SUCCESSOR_Omega_Harness_LaTeX_Source.zip) · [View source and evidence](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/releases/tag/study-successor-omega-harness-detector-v1-2026-10-24)
 
 Research proposals and bounded studies, not claims of general autonomous capability or physical deployment.
 [Explore the papers in English or French](https://montrealai.github.io/AGI-Alpha-Agent-v0/#papers)
 <!-- /featured-research-papers -->
 
-**Current experimental source candidate · 1.39.0.** [Autonomous Enterprises preview notes](docs/agent/RELEASE_NOTES_1.39.0.md).
-The additive enterprise workspace develops a bounded finite capability, freezes it and compares later tasks
-while retaining rejected alternatives, declared costs and recoverable history. It extends the existing six-stage
-Discovery Lab, OUT-EXECUTE and thirteen-section evidence docket. Supplied synthetic semantics and zero-cap
-inspection drafts describe the supported preview; installed native compatibility, external model/tool pilots
-and observed organizational benefit retain separate qualification. Fresh exact-source release gates remain pending.
+**Current experimental source candidate · 1.41.1.** [Immutable workbench submission patch](docs/agent/RELEASE_NOTES_1.41.1.md).
+The existing research catalogue now connects the Foundry v2 paper, retained-evidence interactive experience,
+named reproducible companion and source release. The inherited enterprise workspace develops a bounded finite
+capability, freezes it and compares later tasks while retaining rejected alternatives, declared costs and history.
+Finite synthetic studies and zero-cap inspection drafts describe this preview; physical construction,
+installed enterprise compatibility, external model/tool pilots and observed organizational benefit retain
+separate qualification. The corrected companion retains its non-UI source-API/local-EVM evidence and adds a separate full HTTP QA gate. The 1.41.0 standalone publication is preserved. This 1.41.1 patch captures submitted workbench inputs before validation and execution; its own exact-source release gates remain required.
+
 
 This combined software candidate adds bounded OUT-EXECUTE execution to the preserved proposal and Out-Evolve journeys.
 This is not a claim that every proposed capability is implemented. Synthetic results and unsigned work drafts grant
 no operational authority.
-
 ## Choose your next step
 
 **[Open the guided website →](https://montrealai.github.io/AGI-Alpha-Agent-v0/)** · **[Commencer en français →](https://montrealai.github.io/AGI-Alpha-Agent-v0/?lang=fr)**
@@ -1630,202 +1706,4 @@ Cells with \(Δ\mathcal F < 0\) glow 🔵 on Grafana; Ω‑Agents race to harves
 
 <a name="6-5-minute-quick-start"></a>
 ## 6 · 5‑Minute Quick‑Start 🚀
-This guide assumes the repository is cloned at `v0.1.0-alpha`. The walkthrough
-requires the `numpy`, `yaml` and `pandas` packages which `check_env.py` installs
-automatically when run with `--auto-install`.
-```bash
-git clone --branch v0.1.0-alpha https://github.com/MontrealAI/AGI-Alpha-Agent-v0.git
-cd AGI-Alpha-Agent-v0
-./quickstart.sh --preflight   # optional environment check
-python check_env.py --auto-install  # verify & auto-install deps (10 min timeout)
-# Install heavy optional packages such as openai_agents, gymnasium and google_adk.
-# Running tests without these extras will skip or fail the modules that depend on
-# them. Use ALPHA_FACTORY_FULL=1 with check_env.py to ensure they install. See
-# `tests/README.md` for detailed instructions.
-ALPHA_FACTORY_FULL=1 python check_env.py --auto-install
-# Install runtime dependencies
-pip install -r requirements.lock
-# (If this fails with a network error, create a wheelhouse and rerun
-#  with --wheelhouse <path> or place the wheels under ./wheels)
-# Build a wheelhouse if the machine has no internet access:
-#   ./scripts/build_offline_wheels.sh
-./quickstart.sh               # creates venv, installs deps, launches
-# Use `--wheelhouse /path/to/wheels` to install offline packages when
-# the host has no internet access. The setup script automatically
-# sets `WHEELHOUSE` to `./wheels` when that directory exists. When
-# working offline, run `python check_env.py --auto-install --wheelhouse
-# /path/to/wheels` to verify and install packages. The setup script
-# exits with a message if neither network nor a wheelhouse are available.
-# Example offline workflow:
-#   export WHEELHOUSE=$(pwd)/wheels
-#   python check_env.py --auto-install --wheelhouse "$WHEELHOUSE"
-#   WHEELHOUSE=$WHEELHOUSE ./quickstart.sh
-#   WHEELHOUSE=$WHEELHOUSE pytest -q
-# Open http://localhost:8000/docs in your browser
-# Alternatively, ``python alpha_factory_v1/quickstart.py`` provides the same
-# workflow on Windows and other systems without Bash.
-
-# Deploy instantly with Docker (prebuilt image)
-docker run --pull=always -p 8000:8000 ghcr.io/montrealai/alpha-factory:latest
-
-# Pull a specific build by commit SHA
-docker run --pull=always -p 8000:8000 ghcr.io/montrealai/alpha-factory:<commit>
-
-# The `alpha-factory` CLI also works when the package is installed:
-# A short warning is printed before startup.
-#   pip install -e .
-#   alpha-factory --list-agents
-#   alpha-asi-demo --demo   # launch the α‑ASI world‑model UI
-#   alpha-agi-insight-v1 orchestrator   # run the Insight orchestrator
-#
-# Or install directly from GitHub for a quick test:
-#   pip install git+https://github.com/MontrealAI/AGI-Alpha-Agent-v0.git@v0.1.0-alpha
-#   alpha-factory --list-agents
-
-# Automated one-click setup (builds & starts Docker stack)
-./alpha_factory_v1/scripts/one_click_install.sh --deploy
-
-# Verify the Ω‑Lattice demo locally
-python alpha_factory_v1/demos/alpha_agi_business_3_v1/alpha_agi_business_3_v1.py --loglevel info
-# The entrypoint automatically verifies dependencies via `check_env.py`.
-```
-
-Adjust `alpha_factory_v1/demos/alpha_asi_world_model/config.yaml` to tune the world-model loop. Key options include
-`env_batch` (parallel environments), `hidden` (latent state size) and `mcts_simulations` (MCTS rollouts per action).
-
-
-### Insight Browser Demo
-
-A browser-only Pareto explorer lives under
-`alpha_factory_v1/demos/alpha_agi_insight_v1/insight_browser_v1`.
-Run `npm run build` in that directory to generate the `dist/` assets
-(they are not stored in Git) then open `dist/index.html` to run the demo locally.
-The quick-start guide is available from the
-[documentation](https://montrealai.github.io/AGI-Alpha-Agent-v0/) and is copied
-to `dist/insight_browser_quickstart.pdf` during the build so it is available
-alongside the compiled assets.
-Set `window.DEBUG = true` before loading the page to expose debugging helpers
-such as `window.pop`.
-
-For evolutionary experiments you can run the optional
-[evolution worker](https://montrealai.github.io/AGI-Alpha-Agent-v0/) container
-and POST a tarball of agent code to `/mutate`.
-
-## Docker Quickstart
-Start the full stack using Docker Compose:
-```bash
-docker compose up --build
-```
-Browse the dashboard at <http://localhost:8080>.
-
-## One-Click Docker Quickstart
-Run the minimal image directly:
-```bash
-./run_quickstart.sh
-```
-The script prints the project disclaimer, builds `docker/quickstart/Dockerfile`
-and launches the container with your `.env` file mounted.
-
-The same configuration can be installed via Helm:
-```bash
-helm upgrade --install alpha-demo ./infrastructure/helm-chart \
-  --values ./infrastructure/helm-chart/values.yaml \
-  --set env.RUN_MODE=web
-```
-This deploys the services to your local Kubernetes cluster.
-
-Generate TLS certificates for the gRPC bus using the bundled helper:
-```bash
-./infrastructure/gen_bus_certs.sh > .env.bus
-source .env.bus
-```
-The script prints `AGI_INSIGHT_BUS_CERT`, `AGI_INSIGHT_BUS_KEY` and
-`AGI_INSIGHT_BUS_TOKEN` which you can append to your `.env` file.
-
-### .env Setup & Security
-Before running the orchestrator, copy `alpha_factory_v1/.env.sample` to `.env` and
-replace all placeholder values with strong secrets. The sample sets
-`NEO4J_PASSWORD=REPLACE_ME` as a placeholder—generate a random password for
-services like Neo4j and Postgres using `openssl rand -base64 18` or a similar
-tool and **never deploy with the defaults**. The orchestrator will refuse to
-start if `NEO4J_PASSWORD` remains `REPLACE_ME` or is missing.
-Set `API_TOKEN` to a strong secret so that the REST API can authenticate
-incoming requests. Clients must send `Authorization: Bearer <token>`.
-The server aborts if `API_TOKEN` equals `REPLACE_ME_TOKEN`.
-
-#### API Token Requirement
-
-Before starting the API server or running the test suite, ensure `API_TOKEN`
-is set to a non-default value. The examples in `tests/test_api_status.py` use
-`test-token` as a reference token for local runs.
-Use `API_RATE_LIMIT` to limit requests per minute per IP (default `60`).
-If more than 5% of requests return HTTP `429` within a minute, the server calls
-`utils.alerts.send_alert` to report excessive throttling.
-Avoid storing private keys directly in `.env`. Instead set
-`AGI_INSIGHT_SOLANA_WALLET_FILE` to a file containing your hex-encoded wallet
-key and keep that file readable only by the orchestrator.
-To enable secure gRPC transport set `AGI_INSIGHT_BUS_CERT`,
-`AGI_INSIGHT_BUS_KEY` and `AGI_INSIGHT_BUS_TOKEN`. If these values are
-omitted and `AGI_INSIGHT_ALLOW_INSECURE=1`, the bus starts without TLS.
-See the [documentation](https://montrealai.github.io/AGI-Alpha-Agent-v0/)
-for instructions and example volume mounts.
-
-`.env.sample` notes that paths on Windows may require quotes (e.g., `C:\\path\\to\\file`).
-
-#### Supported Environment Variables
-
-| Variable | Default | Purpose |
-|----------|---------|---------|
-| `OPENAI_API_KEY` | _(empty)_ | API key for hosted models. Offline mode is used when empty. |
-| `OPENAI_TIMEOUT_SEC` | `30` | Timeout for OpenAI API requests in seconds. |
-| `NO_LLM` | `0` | Set to `1` to skip the LLM planner even when `OPENAI_API_KEY` is provided. |
-| `ALPHA_ASI_LLM_MODEL` | `gpt-4o-mini` | Planner model name used by the world model demo. |
-| `ALPHA_ASI_SEED` | `42` | Deterministic RNG seed for the demo (can also be set via `general.seed` in `config.yaml`). |
-| `ALPHA_ASI_MAX_STEPS` | `100000` | Learner steps before auto-stop. |
-| `ALPHA_ASI_BUFFER_LIMIT` | `50000` | Replay-buffer length. |
-| `ALPHA_ASI_TRAIN_BATCH` | `128` | SGD mini-batch size. |
-| `ALPHA_ASI_MAX_GRID` | `64` | Safety clamp on generated mazes. |
-| `ALPHA_ASI_HOST` | `0.0.0.0` | FastAPI bind address for the demo. |
-| `ALPHA_ASI_PORT` | `7860` | FastAPI port for the demo. |
-| `NEO4J_PASSWORD` | `REPLACE_ME` | Database password required by the orchestrator. |
-| `RUN_MODE` | `api` | Launch mode for Compose or Helm (`api`, `cli`, `web`). |
-| `PORT` | `8000` | REST API port. |
-| `AGI_INSIGHT_OFFLINE` | `0` | Set to `1` to force local inference models. |
-| `AGI_INSIGHT_BUS_PORT` | `6006` | gRPC bus port used by the demo. |
-| `AGI_INSIGHT_LEDGER_PATH` | `./ledger/audit.db` | Path to the local audit ledger. |
-| `AGI_INSIGHT_SECRET_BACKEND` | _(empty)_ | Set to `vault`, `aws` or `gcp` to load secrets from an external manager. |
-| `VAULT_ADDR`/`VAULT_TOKEN` | _(empty)_ | Connection details for HashiCorp Vault when using the `vault` backend. |
-| `AWS_REGION`/`OPENAI_API_KEY_SECRET_ID` | _(empty)_ | AWS Secrets Manager region and secret ID when using the `aws` backend. |
-| `GCP_PROJECT_ID`/`OPENAI_API_KEY_SECRET_ID` | _(empty)_ | GCP project and secret name when using the `gcp` backend. |
-| `AGI_INSIGHT_BUS_CERT` | _(empty)_ | Path to the gRPC bus certificate. |
-| `AGI_INSIGHT_BUS_KEY` | _(empty)_ | Private key matching `AGI_INSIGHT_BUS_CERT`. |
-| `AGI_INSIGHT_BUS_TOKEN` | _(empty)_ | Shared secret for bus authentication. |
-| `AGI_INSIGHT_ALLOW_INSECURE` | `0` | Set to `1` to run the bus without TLS when no certificate is provided. |
-| `API_TOKEN` | `REPLACE_ME_TOKEN` | Bearer token required by the REST API. Startup fails if unchanged. |
-| `API_CORS_ORIGINS` | `*` | Comma-separated list of allowed CORS origins. |
-| `SANDBOX_CPU_SEC` | `2` | CPU time limit for sandboxed code. |
-| `SANDBOX_MEM_MB` | `256` | Memory cap for sandboxed code in MB. |
-| `MAX_RESULTS` | `100` | Maximum stored simulation results. |
-| `MAX_SIM_TASKS` | `4` | Maximum concurrent simulation tasks. |
-| `IPFS_GATEWAY` | `https://ipfs.io/ipfs` | Base URL for fetching pinned Insight demo runs. Not used for asset downloads. |
-| `HF_GPT2_BASE_URL` | `https://huggingface.co/openai-community/gpt2/resolve/main` | Base URL for the GPT‑2 checkpoints. |
-| `PYODIDE_BASE_URL` | `https://cdn.jsdelivr.net/pyodide/v0.28.0/full` | Base URL for the Pyodide runtime files. |
-| `FETCH_ASSETS_ATTEMPTS` | `3` | Download retry count for `fetch_assets.py`. |
-| `FETCH_ASSETS_BACKOFF` | `1` | Base delay between retries in seconds. |
-| `OTEL_ENDPOINT` | _(empty)_ | OTLP endpoint for anonymous telemetry. |
-| `SKIP_WEBKIT_TESTS` | _(empty)_ | Skip WebKit browser tests when set. |
-| `ALPHA_FACTORY_ENABLE_ADK` | `false` | Set to `true` to start the Google ADK gateway. |
-| `ALPHA_FACTORY_ADK_PORT` | `9000` | Port for the ADK gateway when enabled. |
-| `ALPHA_FACTORY_ADK_TOKEN` | _(empty)_ | Optional auth token for the ADK gateway. |
-
-
-#### Troubleshooting Asset Downloads
-
-If `scripts/fetch_assets.py` or `npm run fetch-assets` returns `401` or `404`,
-download the checkpoint directly:
-
-```bash
-python scripts/download_hf_gpt2.py models/gpt2
-# Or fetch manually from Hugging Face
-curl -O https://huggingface.co/openai-community/gpt2/resolve/main/pytorch_model.bin
-curl -O https://huggingface.co
+This guide 

@@ -313,7 +313,7 @@ ragleap-core/
 │   ├── workflows.py       # n8n workflow automation — webhook triggers
 │   └── api.py             # FastAPI app — /health, /upload, /chat, /profile, /employees, /n8n-workflows, /webhook/*
 ├── channels/              # Messaging + voice channel adapters
-│   ├── whatsapp/          # Twilio + Gupshup
+│   ├── whatsapp/          # Twilio + Gupshup + Meta Cloud API
 │   ├── telegram/
 │   ├── discord/
 │   └── voice/             # Twilio Media Streams, WebSocket server
@@ -375,7 +375,7 @@ pip install ragleap-rag
 - **`ragleap-graph`** — Neo4j-backed knowledge graph retrieval, usable standalone or alongside `ragleap-rag`.
 - **`ragleap-vectorstores`** — pluggable vector backends beyond `ragleap-rag` core's 6. Backends: Chroma and LanceDB (embedded/local), Redis (RediSearch/Redis Stack), Upstash Vector (managed serverless) and OpenSearch (k-NN). Install with `pip install ragleap-vectorstores[chroma]` or `uv add ragleap-vectorstores[chroma]`.
 - **`ragleap-tools`** — standalone, dependency-light tools for LLM tool-calling. 12 stateless tools (calculator, date/time, unit conversion, JSON/CSV parsing, text utilities), sandboxed file ops (symlink-escape protected), `search_documents` (hybrid vector+keyword search), `search_web` (pluggable BYOK providers such as Tavily and Serper), `search_github_repositories`, `describe_image` (BYOK vision providers for Gemini and Anthropic; only Gemini has been live-checked), and optional `ragleap-rag`-backed document ingestion. Every HTTP provider has a response-size cap and a hard total deadline. Does not own a tool-calling execution loop — provides `Tool` objects for your own loop or for `ragleap-agents`. Write your own tools with the `@tool` decorator and dispatch a model's call safely with `Toolkit` (arguments are validated before your code runs). Install with `pip install ragleap-tools` or `uv add ragleap-tools`.
-- **`ragleap-integrations`** — MCP (Model Context Protocol) client over Streamable HTTP that returns `ragleap-tools` `Tool` objects. The owner configures the servers and an exact `server.tool` allowlist; the model only supplies arguments. HTTPS-only transport with DNS pinning and a hard wall-clock deadline. Live-checked against public servers: DeepWiki on the legacy protocol path, and Google Cloud's MCP endpoints on the newest revision (2026-07-28; discovery only, `tools/call` on that path is not yet live-verified). The default response cap is 1 MiB (256 KiB in 0.1.0, which Google Cloud's Pub/Sub MCP endpoint exceeded); raise `max_response_bytes` if discovery fails. No curated business connectors and no agent loop yet. Install with `pip install ragleap-integrations` or `uv add ragleap-integrations`.
+- **`ragleap-integrations`** — MCP (Model Context Protocol) client over Streamable HTTP that returns `ragleap-tools` `Tool` objects. The owner configures the servers and an exact `server.tool` allowlist; the model only supplies arguments. HTTPS-only transport with DNS pinning and a hard wall-clock deadline. Live-checked against public servers: DeepWiki on the legacy protocol path, and Google Cloud's MCP endpoints on the newest revision (2026-07-28; discovery only). Also live-checked on 2026-10-17 (0.1.1) and again on 2026-10-24 (the published 0.2.0 wheel) against a third party's public mock MCP servers (mcpplaygroundonline.com): modern-path `tools/call` succeeded (pinned and unpinned), bearer-token authentication worked (HTTP 401 without a token, success with a fresh one) and the legacy fallback worked. Not yet live-verified: `x-mcp-header` mirroring, pagination and this client's handling of a live `-32022` reply. The default response cap is 1 MiB (256 KiB in 0.1.0, which Google Cloud's Pub/Sub MCP endpoint exceeded); raise `max_response_bytes` if discovery fails. Version 0.2.0 adds `connect(url, allow=[...])` (one call from a URL to ready tools and a `ragleap-tools` Toolkit) and governance: server tool hints are treated as untrusted, flagged tools can require approval through an `approve` hook, and an `on_event` hook reports one audit event per discovery and per call (never arguments or results). The 0.2.0 additions are tested against fake servers only and are not yet live-verified against a real MCP server. No curated business connectors and no agent loop yet. Install with `pip install ragleap-integrations` or `uv add ragleap-integrations`.
 - **`ragleap-ops`** — Kubernetes deployment manifests for RagLeap Core, live-tested end-to-end on a real cluster. Install with `pip install ragleap-ops` or `uv add ragleap-ops`.
 - **`ragleap-app-chart`** — generic, reusable Helm chart for deploying arbitrary services to Kubernetes, not RagLeap-specific. Point it at your own app via a `services:` list. Install with `pip install ragleap-app-chart` or `uv add ragleap-app-chart`.
 - **`ragleap-observability`** — Prometheus, Grafana, Loki + Promtail for `ragleap-ops`, live-verified end-to-end against a real cluster (real connection confirmed, real non-zero metrics returned; 21+ real log streams with correct namespace/pod/container labels). AlertManager is wired to Prometheus with a first real alert rule, plus optional Slack/email receivers (off by default; delivery verified against a stand-in, real send not yet confirmed). Install with `pip install ragleap-observability` or `uv add ragleap-observability`.
@@ -469,6 +469,44 @@ just setting `OLLAMA_MODEL`:
    `INPUT` chain, not `FORWARD`/`DOCKER-USER`. Allow it explicitly:
    `ufw allow from 172.18.0.0/16 to any port 11434 proto tcp` (adjust the
    subnet to match your actual Docker network).
+
+## WhatsApp Channel (Twilio, Gupshup or Meta)
+
+The WhatsApp adapter answers incoming messages through one of three providers,
+picked with `WHATSAPP_PROVIDER` in `.env`: `twilio` (the default), `gupshup`,
+or `meta` (Meta's WhatsApp Cloud API — any business with a verified Meta
+Business Account can connect directly, no reseller in between). Replies go out
+through the configured provider's send API; incoming messages arrive at the
+same `/webhook/whatsapp` route for all three.
+
+**Setup (Meta Cloud API):**
+1. Create an app at [developers.facebook.com](https://developers.facebook.com)
+   and add the **WhatsApp** product. **WhatsApp > API Setup** gives you a
+   temporary access token and your phone number's ID; for a token that
+   outlives the test window, create a system user token in
+   [Business settings](https://business.facebook.com/settings).
+2. Set in `.env`:
+   - `WHATSAPP_PROVIDER=meta`
+   - `META_ACCESS_TOKEN` — the access token from step 1
+   - `META_PHONE_NUMBER_ID` — the ID of the phone number you send from
+3. In **WhatsApp > Configuration**, set the webhook callback URL to
+   `https://your-domain.com/webhook/whatsapp` and enter the same string in the
+   "Verify token" field that you set as `META_VERIFY_TOKEN` in `.env`. Meta
+   checks it once with a GET during setup (the handler echoes `hub.challenge`).
+4. Set `META_APP_SECRET` from **App settings > Basic**. Every incoming webhook
+   request must then carry a valid `X-Hub-Signature-256` (HMAC-SHA256 of the
+   raw body with that secret) or it is rejected with 403.
+
+For Twilio the credentials are `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN` and
+`TWILIO_WHATSAPP_NUMBER`; for Gupshup `GUPSHUP_API_KEY`, `GUPSHUP_APP_NAME`
+and `GUPSHUP_SOURCE_NUMBER`. `WHATSAPP_ALLOW_UNSIGNED=true` accepts webhook
+requests without a signature, for local testing only (logs a warning each
+time).
+
+**Honest status:** the Meta send path and webhook verification are covered by
+offline tests (`tests/test_whatsapp_meta.py`); they have not yet been
+live-tested against a real Meta app. Twilio and Gupshup are the long-standing,
+verified paths.
 
 ## Voice Channel (Twilio)
 

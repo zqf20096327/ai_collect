@@ -147,6 +147,25 @@ runners and on Linux at the declared minimum, Bun 1.2.0 (the `installs` and
 repository material, not in the npm package); a platform
 whose leg is red there is not one the package is known to run on.
 
+From a source checkout, `bun run verify:nova -- --label "<issue + purpose>"
+--owner "<who>" --session "<session id>" [--bun <version>]` sends the full
+selftest to the Nova pool (`NOVA_RUN` names the runner, or `nova-run.sh` is on
+PATH). `--bun 1.2.0` selects that exact stable release. Before upload, the hand
+fetches Bun's official `SHASUMS256.txt` and checks that the Linux x64 baseline
+archive is available; on the pool it downloads the pinned archive, verifies its
+SHA-256, checks its executable's version, and puts that private Bun first on PATH
+for corpus fetch and selftest. The remote command's first line is
+`verify:nova: Bun 1.2.0`. The temporary runtime is removed on exit. Without
+`--bun`, the pool's Bun and existing command are unchanged; dependency installation
+still uses the pool runner's installation step. The selftest's exit is returned
+unchanged: selecting a runtime does not promise a green run. Memory ceilings
+remain those of that platform and Bun major.minor's tracked row; a missing
+measurement remains a reported HOLE. Malformed, duplicate or missing
+versions, unavailable releases/assets and unreadable checksums are refused by
+name with exit 2 before upload. Use a published exact `X.Y.Z` (no `v` prefix,
+alias, range or prerelease), or retry a failed network fetch. This is repository
+verification tooling, not an installed `rigc` command or a change to CI's matrix.
+
 **The npm package is `rig-c`; the command it installs is `rigc`.** npm
 refuses the name `rigc` as too similar to packages that already exist, so the
 project and the executable keep their name and the registry entry carries one
@@ -185,6 +204,16 @@ fetch-examples`, and says so by name when the corpus is absent. `check` is not o
 of them: it reads whatever frames you point it at, so it runs from the installed
 package on pictures of your own — which is what *Where to go next* below tells you
 to do with it, and it is the one instrument here that can see a wrong animation.
+
+Programmatic checked consumers can import `rig-c/render-shared`: the official
+candidate chooser (`loadCandidate`, `throughPoser`), setup and animation samplers
+(`sampleSetupPose`, `sampleAnimation`) and raster reads (`pageFor`, `projector`,
+`rasterisePiece`, `renderFrame`), with their argument/result types and named
+failures. It loads without the optional Spine runtime; a Spine input requires
+explicitly loading `rig-c/render`, whose eager runtime dependency is unchanged.
+The promised scope and planned first minor release are in
+[RELEASING.md, The import surface](https://github.com/rig-c/core/blob/main/RELEASING.md#the-import-surface);
+[AUTHORING §0.5](docs/AUTHORING.md#05-reading-a-build-from-code) shows the call chain.
 
 ### Install it into your agent
 
@@ -606,7 +635,7 @@ commands take it and what its default is.
 | `ingest <skeleton.json> --out <dir>` | `build` run backwards: reads a Spine 4.3 skeleton and writes the rig spec and motion spec that **rebuild it**, plus a findings report naming everything it could not carry. a skeleton that declares no stage is carried as declaring none, `--stage x,y,w,h` adds a box to one — and is refused, rather than ignored, beside one that declares a box — and `--images <dir>` writes the spec's own images directory — the opposite direction from `build --images`, which overrides it — so the rebuild carries no flag at all |
 | `split --rig … --motion … --slot <name> --out <dir>` | the answer to a mesh refused because its triangles are **several pieces that share no vertex** — two legs after the triangles bridging them were deleted. It reads the two specs and writes them back into an absent or empty `--out` with one mesh per piece: piece 1 stays in the slot, piece k gets a new slot `<slot>_<k>` after it, each with the original's uvs and weights unchanged, its triangles renumbered outline first where the hull rule needs it, and every deform key re-sliced to the new indices — plus `split.json`, where every original vertex and triangle went. One piece is said so and nothing is written; what it cannot carry is refused by name ([AUTHORING §3.4.11](docs/AUTHORING.md)) |
 | `explain --rig … --motion …` | the compiled rig as a table — every bone with its resolved parent, the slots in draw order, every timeline key by key. Writes nothing. What to reach for when a rig compiles and still looks wrong |
-| `render --candidate <dir>` | PNG frames plus a contact sheet, in `render/`, one directory per set: `<anim>@<fps>fps/` rather than `<anim>/` at any rate but the default — `--fps 24` writes `<anim>@24fps/`, and the default 12 writes `<anim>/`. `--hide <slot,…>` or `--slot <slot,…>` draws part of the rig on the **same grid** as the whole, so the two frames overlay and the difference is the part; `frames.json` records the subset and `check` refuses such a set as a reference. `--geometry` adds a `geometry.json` per set: every frame's bone world transforms and skinned attachment vertices, with the rest geometry, on the frames' own grid. `--folds` adds a `folds.json` per set and prints one line per mesh with a triangle turned over against the setup pose: the frames, the worst frame's count and which triangles, their world box and their setup-pose area. `--pass-through <cloth>:<leg>` adds a `pass-through.json` per set and prints the frames where a cloth drawn over a leg has its side inside the leg's drawn outline, with the depth and the world box — a reading, not a gate. `--seam <slot>:<slot>` adds a `seam.json` per set and prints, per pair, the frames where two slots that meet open background inside the joint (a gap) or show the overlap band of one past the other (a ghost), with the worst frame's cell count and world box — a reading, not a gate; the exit status never moves. `--overlaps` adds an `overlaps.json` per set and prints one `OVERLAP "<under>" under "<over>"` line per pair of slots where the one drawn later covers the earlier one and the motion moves it — the frames, and the most pixels covered and the frame of them — with an outline plate per covered frame; the render reports what was drawn, and the draw-order key is the author's remedy — a reading, not a gate. `--angle-range <bone>:<relative-to>` prints how far one bone turns against another over each set: the lowest and highest angle and the frames they fall on — a reading, not a gate. `--viewport <x,y,w,h>` or `--viewport-from <frames.json>` draws over a given box instead of a fitted one, so two builds land on one pixel grid; a slot that reaches past it is named by set and frame, and `frames.json` records it. `--environment <schedule.json>` draws the rig under the wind and gravity its physics answers, in time — the same frames on the core and on spine-core; an inspection of the response the rig states, not a scene |
+| `render --candidate <dir>` | PNG frames plus a contact sheet, in `render/`, one directory per set: `<anim>@<fps>fps/` rather than `<anim>/` at any rate but the default — `--fps 24` writes `<anim>@24fps/`, and the default 12 writes `<anim>/`. `--hide <slot,…>` or `--slot <slot,…>` draws part of the rig on the **same grid** as the whole, so the two frames overlay and the difference is the part; `frames.json` records the subset and `check` refuses such a set as a reference. `--geometry` adds a `geometry.json` per set: every frame's bone world transforms and skinned attachment vertices, with the rest geometry, on the frames' own grid. `--folds` adds a `folds.json` per set and prints one line per mesh with a triangle turned over against the setup pose: the frames, the worst frame's count and which triangles, their world box and their setup-pose area. `--pass-through <cloth>:<leg>` adds a `pass-through.json` per set and prints the frames where a cloth drawn over a leg has its side inside the leg's drawn outline, with the depth and the world box — a reading, not a gate. `--seam <slot>:<slot>` adds a `seam.json` per set and prints, per pair, the frames where two slots that meet open background inside the joint (a gap) or show the overlap band of one past the other (a ghost), with the worst frame's cell count and world box; `ghostA` and `ghostB` partition the same ghost by which named pair member drew it, each with its own frames, spans and worst; `gapOpen` and `gapCovered` partition `gap` by zero versus positive rendered alpha from the whole skeleton, including faint and clipped drawings ([AUTHORING §8.8](docs/AUTHORING.md#88-where-two-slots-stop-meeting--render---seam)) — a reading, not a gate; the exit status never moves. `--overlaps` adds an `overlaps.json` per set and prints one `OVERLAP "<under>" under "<over>"` line per pair of slots where the one drawn later covers the earlier one and the motion moves it — the frames, and the most pixels covered and the frame of them — with an outline plate per covered frame; the render reports what was drawn, and the draw-order key is the author's remedy — a reading, not a gate. `--angle-range <bone>:<relative-to>` prints how far one bone turns against another over each set: the lowest and highest angle and the frames they fall on — a reading, not a gate. `--viewport <x,y,w,h>` or `--viewport-from <frames.json>` draws over a given box instead of a fitted one, so two builds land on one pixel grid; a slot that reaches past it is named by set and frame, and `frames.json` records it. `--environment <schedule.json>` draws the rig under the wind and gravity its physics answers, in time — the same frames on the core and on spine-core; an inspection of the response the rig states, not a scene |
 | `preview --candidate <dir>` | one self-contained `.html` that plays it, headed by the line `validate <dir>` prints for it and the rigc version — a refused candidate is still previewed, and its header says so in the gate's words. Repeat `--candidate` for one page with a pane per candidate, in the order given; a green `build` ends by naming this command for its own `--out` |
 | `vote --candidate a --candidate b` | one `.html` that asks a human which; `vote --record <file>` checks the answer into `votes.jsonl` |
 | `pose --images <dir> --frame <png>` | reads part placements **out of** a picture |

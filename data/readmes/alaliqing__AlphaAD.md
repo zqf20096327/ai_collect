@@ -3,8 +3,8 @@
 # 🚗 AlphaAD · Autonomous Driving Research
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Last Update](https://img.shields.io/badge/Last%20Updated-2026--10--23-blue)
-![Total Papers](https://img.shields.io/badge/Papers-1421-green)
+![Last Update](https://img.shields.io/badge/Last%20Updated-2026--10--24-blue)
+![Total Papers](https://img.shields.io/badge/Papers-1417-green)
 ![Auto Update](https://img.shields.io/badge/Auto--Update-Daily-brightgreen)
 
 **A daily, explainable research signal for autonomous driving.**<br>
@@ -20,7 +20,7 @@ Browse one primary topic per paper, then refine the signal with method and resou
 
 ## Browse by topic
 
-All 1421 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
+All 1417 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
 
 | Topic | Papers | Latest | Jump |
 |:--|--:|:--|:--|
@@ -30,10 +30,10 @@ All 1421 papers remain in this README. For full-text search, filters, and sortin
 | Control & Vehicle Dynamics | 57 | 2026-10-21 | [View papers](#category-control-vehicle-dynamics) |
 | Mapping & Localization | 54 | 2026-10-18 | [View papers](#category-mapping-localization) |
 | End-to-End & VLA | 161 | 2026-10-22 | [View papers](#category-end-to-end-vla) |
-| Safety, Security & Verification | 226 | 2026-10-22 | [View papers](#category-safety-security-verification) |
+| Safety, Security & Verification | 224 | 2026-10-22 | [View papers](#category-safety-security-verification) |
 | Systems, Deployment & Connectivity | 164 | 2026-10-21 | [View papers](#category-systems-deployment-connectivity) |
-| Human Factors & Policy | 32 | 2026-10-17 | [View papers](#category-human-factors-policy) |
-| Cross-cutting / Other | 305 | 2026-10-21 | [View papers](#category-cross-cutting-other) |
+| Human Factors & Policy | 31 | 2026-10-17 | [View papers](#category-human-factors-policy) |
+| Cross-cutting / Other | 304 | 2026-10-21 | [View papers](#category-cross-cutting-other) |
 
 ---
 
@@ -54,7 +54,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 | World Model | 115 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
 | Reinforcement Learning | 140 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
 | Imitation Learning | 31 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Imitation+Learning) |
-| Hardware / Real-Time | 101 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
+| Hardware / Real-Time | 100 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
 | Survey | 27 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Survey) |
 | Explainability | 118 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
 | Human Interaction | 18 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Human+Interaction) |
@@ -415,7 +415,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2609-28239"></a>
 
-### ODPure: Backdoor Purification for Object Detection via Ensemble Corruption Consensus ![Recent](https://img.shields.io/badge/Recent-orange)
+### ODPure: Backdoor Purification for Object Detection via Ensemble Corruption Consensus ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Li Zeng, Mingcheng Duan, Longfei Fan, Hangtao Zhang, Xianlong Wang, et al.<br>
 **Published:** 2026-09-23<br>
@@ -1672,4 +1672,4 @@ Each paper has one primary topic and may carry several method or resource tags. 
 **Published:** 2026-06-10<br>
 **Links:** [arXiv abstract](https://arxiv.org/abs/2606.12826) | [PDF](https://arxiv.org/pdf/2606.12826.pdf) | [↑ BackToTop](#browse-by-topic)
 
-**Abstract:** Moving instance segmentation (MIS) attracts increasing attention due to i
+**Abstract:** Moving instance segmentation (MIS) attracts increasing attention due to its

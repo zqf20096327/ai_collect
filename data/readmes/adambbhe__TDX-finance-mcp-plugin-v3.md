@@ -20,7 +20,7 @@
 
 **TDX Finance MCP Plugin v3** 是一个为 OpenClaw 平台设计的金融数据服务插件，提供通达信（TDX）A 股金融数据接口的统一访问能力。
 
-本插件封装了 **6 个经过验证的核心工具**，并内置 **46 个专业投资分析技能**，覆盖 A 股实时行情、K线、F10 基本面、智能选股、指标筛选与代码检索等需求。
+本插件封装了 **8 个经过验证的核心工具**（6 个联网数据工具 + 2 个本地固化清单工具），并内置 **48 个专业投资分析技能**，覆盖 A 股实时行情、K线、F10 基本面、智能选股、指标筛选、代码检索、主要指数与行业板块目录等需求。
 
 ### v3 与旧版的区别
 
@@ -33,19 +33,21 @@ v3 是在 v2 基础上的**清理与精简版本**，主要变更（详见 [CHAN
 
 ### 近期变更（v3.4.x）
 
+- **v3.4.2**：修复 `tdx_quotes` / `tdx_kline` 数字传参崩溃（LLM 客户端把 `code`/`setcode` 传成 number 时 `String()` 规范化兜底）。
+- **v3.4.1**：新增 `tdx_index_list`（100 个主要指数固化清单）与 `tdx_industry_list`（503 个行业板块目录，一级 30 / 二级 128 / 三级 345）两个本地固化清单工具，工具总数 6 → 8；移植 `tdx-yijinerb-daban`（一进二打板，含云端通道）与 `tdx-obv-ma-strategy`（OBV+MA 量价共振）技能，技能总数 46 → 48。
 - **v3.4.0**：新增单股盘中跟踪分析技能（`tdx-intraday-tracking`），技能总数 45 → 46；配套 `scripts/indicators.mjs`（MA/MACD/KDJ/OBV 海峡四象限，真实日K验证）。
 - **v3.3.1**：移除一进二打板技能（`tdx-daban-yijinerb-PS-SKILL`），技能总数 46 → 45。
 - **v3.3.0**：`tdx_api_data` 注册表接入 `ybpj|yjyg`（业绩预告，服务端当前返回空表、原始透传）；修复 `tdx_quotes` 摘要涨跌幅 NaN；修正测试分类器对数据数字的 401 误判（详见 [CHANGELOG.md](./CHANGELOG.md)）。
 
-> 现在工具层、清单（`openclaw.plugin.json`）与文档三者完全一致：**6 个工具，全部可用**。
+> 现在工具层、清单（`openclaw.plugin.json`）与文档三者完全一致：**8 个工具，全部可用**。
 
 ### 一包包含：工具 + 技能
 
 ```
 tdx-finance-mcp-plugin-v3/
-├── index.js                 # 6 个数据工具（核心实现，单文件 ESM）
+├── index.js                 # 8 个数据工具（核心实现，单文件 ESM）
 ├── openclaw.plugin.json     # 插件清单（工具 + 技能声明）
-├── skills/                  # 46 个专业投资技能（提示词 + agents 配置）
+├── skills/                  # 48 个专业投资技能（提示词 + agents 配置）
 ├── install.sh               # Linux/Mac 安装脚本
 ├── install.ps1              # Windows 安装脚本
 ├── config.example.json      # 配置示例
@@ -58,7 +60,7 @@ tdx-finance-mcp-plugin-v3/
 
 ## 架构总览
 
-本插件的 6 个工具调用 **2 个不同的 API 服务器**。理解这一架构是正确使用和调试的关键。
+本插件的 6 个联网工具调用 **2 个不同的 API 服务器**；另有 2 个固化清单工具（`tdx_index_list` / `tdx_industry_list`）数据内置插件、本地直返，不发起网络请求。理解这一架构是正确使用和调试的关键。
 
 | # | 服务器地址 | 用途 | 涉及工具 |
 |---|-----------|------|---------|
@@ -81,17 +83,19 @@ tdx-finance-mcp-plugin-v3/
 | 4 | **tdx_lookup_stock** | 股票/指数/基金代码 RAG 检索 | 服务器2 | AI RAG | 🟢 |
 | 5 | **tdx_screener** | 自然语言智能选股 | 服务器1 | `JNLPSE:wendaQuery` | 🟢 |
 | 6 | **tdx_indicator_select** | 金融指标选择与查询 | 服务器1 | `NLPSE:InfoSelectV2` | 🟢 |
+| 7 | **tdx_index_list** | 主要指数固化清单（100 个，宽基/创业/科创/红利/策略/区域等分组，支持 group 过滤） | 本地内置 | —（无网络请求） | 🟢 |
+| 8 | **tdx_industry_list** | 通达信行业板块目录固化清单（503 个：一级 30 / 二级 128 / 三级 345，支持 level/search 过滤） | 本地内置 | —（无网络请求） | 🟢 |
 
 ### 实测结果（2026-10-12，标的 000001；另有 11 只跨市场样本交叉验证）
 
 > 通过 `test/run-tests.mjs` 驱动真实插件代码实测。完整报告见 [test/test-report.md](./test/test-report.md)。
 
-- **6 个核心工具：全部可用 ✅**（行情 ~190ms、K线 ~87ms、代码检索 ~189ms、选股 ~216ms、指标 ~1.2s、F10 ~120ms）。
+- **8 个工具：全部可用 ✅**（行情 ~190ms、K线 ~87ms、代码检索 ~189ms、选股 ~216ms、指标 ~1.2s、F10 ~120ms；2 个固化清单工具本地直返、零网络开销）。
 - **F10 子模块：除 2 个服务端未注册模块外全部可用。** 已验证可用：公司概况 `gsgk`、公司概要 `zxts/gsgy`、盈利预测 `ybpj/yzyq`、业绩预告 `ybpj/yjyg`（服务端当前返回空表，原始透传）、事件与题材 `rdtc/sjcd·zttzbkz·zttzztk`、龙虎榜涨停/大宗/融资融券/资金流 `jyds/ztfx·dzjy·rzrq·zjlx`、股东研究 `gdyj/gdrs·cgbd·jgcg·jgcgqk·ltgd`、股本结构 `gbjg/xslt`、主力持仓 `zlcc`、分红 `fhrz/fhpm_pxrzb·pxmz`、综合 `comreq/jglhb`。
 - **不可用子模块（服务端未注册，与 Token 权限无关）：** `fhrz_fh/fh`、异动 `iyds/yxsbxx`（`E|-7202` / HTTP 503）。另有 4 个非标准 fixedTag 组合返回 `-1005 数据库执行失败`（探测噪声，不代表 entry 不可达）。
 - **「无数据」的表现形式是 0 行空结果集**（如北交所贝特瑞 835185 的资金流向），而非错误。
 - **⚠️ 历史勘误（v3.2.7 及更早报告）**：此前记载的 `401 需登录` 子模块（股东人数/分红历史/融资融券/资金流向等）为测试分类器把数据数字（如 `4.814011`、`4018`）误判为 401 的伪影，v3.3.0 已修复分类器——上述子模块实际全部可用，无需升级 Token 权限。
-- **技能层：46 个技能 43 ✅ 可用 / 2 🟡 部分 / 0 ❌ 不可用**。测试框架（`test/run-tests.mjs`）动态枚举 `skills/` 目录，按各技能声明的数据依赖逐项验证；「部分可用」指个别依赖子模块未注册时自动降级。
+- **技能层：48 个技能 43 ✅ 可用 / 2 🟡 部分 / 0 ❌ 不可用**（`tdx-obv-ma-strategy` 与 `tdx-yijinerb-daban` 依赖本地通道/云端 Python 脚本，测试框架标注「无可测依赖」单列）。测试框架（`test/run-tests.mjs`）动态枚举 `skills/` 目录，按各技能声明的数据依赖逐项验证；「部分可用」指个别依赖子模块未注册时自动降级。
 
 ---
 
@@ -111,7 +115,7 @@ tdx-finance-mcp-plugin-v3/
 git clone https://github.com/adambbhe/TDX-finance-mcp-plugin-v3.git
 cd TDX-finance-mcp-plugin-v3
 
-# 一键安装（自动配置 Token + 安装 46 个技能）
+# 一键安装（自动配置 Token + 安装 48 个技能）
 # Linux/Mac:
 chmod +x install.sh && ./install.sh
 
@@ -149,7 +153,7 @@ $env:TDX_API_KEY = "你的API_KEY"
 openclaw start
 ```
 
-插件会自动加载 **6 个工具 + 46 个技能**。
+插件会自动加载 **8 个工具 + 48 个技能**。
 
 ---
 
@@ -254,6 +258,31 @@ tdx_indicator_select message="000001 技术指标"
 tdx_indicator_select message="银行业估值对比"
 ```
 
+### 7. `tdx_index_list` — 主要指数固化清单
+
+- **数据来源**：插件内置 `MAJOR_INDICES` 数组（通达信终端"主要指数"模块，2026-10-24 快照），**无网络请求**。
+- **数据内容**：100 个主要指数，字段 `code/setcode/name/exchange/group`；分组覆盖宽基规模、创业系、科创系、风格、红利、策略加权、区域、本地特色。
+- **过滤参数**：`group`（分组名子串，如 `宽基规模`）。配合 `tdx_quotes`/`tdx_kline` 按 code+setcode 逐只取数，即可在无本地终端环境下实现主要指数数据全云端获取。
+
+```bash
+tdx_index_list                          # 全部 100 个
+tdx_index_list group="宽基规模"          # 按分组过滤
+```
+
+### 8. `tdx_industry_list` — 行业板块目录固化清单
+
+- **数据来源**：插件内置 `INDUSTRY_LIST` 数组（通达信终端 market=16/17/18，2026-10-24 快照），**无网络请求**。
+- **数据内容**：503 个行业板块（研究行业一级 30 / 二级 128 / 三级 345），字段 `code/setcode/name/exchange/level`，代码均为 `881xxx.SH`。
+- **过滤参数**：`level`（`1`/`2`/`3`/`all`）、`search`（名称子串）。云端 `tdx_quotes`/`tdx_kline` 对 881 行业指数取数已验证可用（881002 实测）。
+
+```bash
+tdx_industry_list                        # 全部 503 个
+tdx_industry_list level=1                # 仅一级
+tdx_industry_list search="煤炭"          # 名称子串搜索
+```
+
+> 注：与 `references/industry-index-881.md`（467 条三级映射，setcode=1 口径）相比，本清单来自终端 16/17/18 市场快照（503 条，三级 345），口径略有差异、以各自文档标注为准。
+
 ---
 
 ## 认证机制
@@ -317,4 +346,4 @@ Token 来源优先级：插件配置 `tdxApiToken` → 环境变量 `TDX_API_KEY
 
 ---
 
-<p align="center">Made with ❤️ by TDX Team · v3.4.0</p>
+<p align="center">Made with ❤️ by TDX Team · v3.4.2</p>

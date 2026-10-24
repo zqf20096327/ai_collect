@@ -1,9 +1,9 @@
 # DocuQuery RAG Agent
 
-[![Release](https://img.shields.io/badge/RELEASE-V1.2.0-blue?style=for-the-badge&logo=github)](https://github.com/Nazar-Plokhuta/docuquery-rag-agent/releases/tag/v1.2.0)
+[![Release](https://img.shields.io/badge/RELEASE-V2.1.0-blue?style=for-the-badge&logo=github)](https://github.com/Nazar-Plokhuta/docuquery-rag-agent/releases/tag/v2.1.0)
 [![CI Pipeline](https://img.shields.io/badge/CI%20PIPELINE-PASSING-brightgreen?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/Nazar-Plokhuta/docuquery-rag-agent/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/PYTHON-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
-[![Tests](https://img.shields.io/badge/TESTS-160%20PASSING-44cc11?style=for-the-badge&logo=pytest&logoColor=white)](https://github.com/Nazar-Plokhuta/docuquery-rag-agent)
+[![Tests](https://img.shields.io/badge/TESTS-215%20PASSING-44cc11?style=for-the-badge&logo=pytest&logoColor=white)](https://github.com/Nazar-Plokhuta/docuquery-rag-agent)
 
 > **Enterprise-grade Retrieval-Augmented Generation microservice.** Strict grounding. Zero hallucinations. Full async. Production-ready from day one.
 
@@ -29,11 +29,24 @@ Standard off-the-shelf RAG pipelines fail in production for three predictable re
 
 ## Architecture
 
-DocuQuery is a Clean Architecture FastAPI microservice with five strictly bounded layers. Dependency arrows point strictly inward: the presentation layer (`api`) never touches the database; the storage layer never formats response payloads.
+DocuQuery is a Clean Architecture FastAPI microservice in a monorepo (`apps/api/` for the `uv`-managed service, `apps/web/` for the Next.js Studio UI, `docker/` for the multi-container Compose stack) with five strictly bounded backend layers. Dependency arrows point strictly inward: the presentation layer (`api`) never touches the database; the storage layer never formats response payloads.
+
+The full Compose stack is a single request path from the browser to the data services:
+
+```
+Browser ──▶ Web (Next.js 16 / Port 3000) ──▶ API (FastAPI / Port 8000) ──▶ PostgreSQL & Chroma
+              rewrites /api/v1/*              RAG · ingestion · audit        audit trail · vectors
+```
 
 ```mermaid
 flowchart TD
     Client(["🌐 Client / Browser"])
+
+    subgraph Web["Web  (apps/web · Next.js 16 · Port 3000)"]
+        direction TB
+        UI["DocuQuery Studio\n(Chat · Ingest · Telemetry)"]
+        PX["Rewrite proxy  /api/v1/*  →  API_INTERNAL_URL"]
+    end
 
     subgraph Presentation["Presentation Layer  (src/api)"]
         direction TB
@@ -62,23 +75,33 @@ flowchart TD
     subgraph Storage["Storage Layer  (src/storage)"]
         direction TB
         VEC["ChromaVectorStore\n(asyncio.to_thread · HNSW cosine)"]
-        ADB["SQLiteAuditRepository\n(aiosqlite · persistent connection)"]
+        ADB["SQLAlchemyAuditRepository\n(SQLAlchemy 2.0 async · asyncpg · Alembic)"]
+    end
+
+    subgraph Data["Data Services  (docker/docker-compose.yml)"]
+        direction TB
+        PG[("PostgreSQL 16\nquery_telemetry")]
+        CH[("ChromaDB\nembedded or standalone server")]
     end
 
     subgraph Gateways["External Gateways"]
         direction TB
-        OAI["OpenAI Official Platform\ngpt-4o-mini · text-embedding-3-small"]
-        ORT["OpenRouter / vLLM / LocalAI\n(OpenAI-compatible via OPENAI_BASE_URL)"]
+        OAI["OpenAI · Anthropic Claude · OpenRouter · ...\nrouted by LiteLLM"]
+        ORT["Custom gateways: vLLM / LocalAI\n(OpenAI-compatible via OPENAI_BASE_URL)"]
     end
 
-    Client -->|"HTTPS / SSE"| Presentation
+    Storage -->|"asyncpg"| PG
+    Storage -->|"PersistentClient / HttpClient"| CH
+    Client -->|"HTTP"| Web
+    Web -->|"HTTP / SSE (api:8000)"| Presentation
+    Client -.->|"direct API access (curl, SDKs)"| Presentation
     Presentation -->|"RAGEngine"| Domain
     Presentation -->|"IngestionPipeline"| Ingestion
     Domain -->|"similarity_search"| Storage
     Domain -->|"TelemetryRecord"| Storage
     Ingestion -->|"add_documents"| Storage
-    Domain -->|"chat.completions"| Gateways
-    Ingestion -->|"embeddings.create"| Gateways
+    Domain -->|"litellm.acompletion"| Gateways
+    Ingestion -->|"litellm.aembedding"| Gateways
 ```
 
 **Query flow (non-streaming):**
@@ -86,15 +109,15 @@ flowchart TD
 ```
 POST /api/v1/query/
         │
-        ├─ 1. Embed query          → OpenAI text-embedding-3-small
+        ├─ 1. Embed query          → litellm.aembedding (default text-embedding-3-small)
         ├─ 2. Retrieve top-k       → ChromaDB HNSW cosine similarity
         ├─ 3. Score filter         → discard chunks below score_threshold
         ├─ 4. Fast-path refusal    → if no chunks pass → return FALLBACK_REFUSAL_MESSAGE
         ├─ 5. Token budgeting      → TokenBudgetManager (cl100k_base, greedy descending score)
         ├─ 6. Prompt assembly      → build_rag_prompt() with anti-hallucination system prompt
-        ├─ 7. LLM completion       → OpenAI GPT-4o-mini, temperature=0.0
+        ├─ 7. LLM completion       → litellm.acompletion (default gpt-4o-mini), temperature=0.0
         ├─ 8. Citation extraction  → one Citation per budgeted chunk
-        └─ 9. Telemetry logging    → TelemetryRecord → SQLite audit trail
+        └─ 9. Telemetry logging    → TelemetryRecord → PostgreSQL audit trail
 ```
 
 ---
@@ -130,11 +153,11 @@ This citation format is enforced by prompt design. Every `Citation` object in th
 
 ### Full Async I/O
 
-Every network call, database operation, and filesystem interaction is `async`/`await`. The sole synchronous exception — ChromaDB's local driver — is explicitly offloaded via `asyncio.to_thread()`. The FastAPI event loop is never blocked.
+Every network call, database operation, and filesystem interaction is `async`/`await`. The sole synchronous exception — the ChromaDB client (local or HTTP) — is explicitly offloaded via `asyncio.to_thread()`. The FastAPI event loop is never blocked.
 
 ### Clean Architecture with Dependency Inversion
 
-All service instances (vector store, OpenAI client, audit repository, RAG engine) are constructed **once** at application startup and shared across requests via `app.state`. Routers depend on abstract interfaces, not on concrete adapters. Swapping ChromaDB for Weaviate requires changing one file.
+All service instances (vector store, audit repository, RAG engine, ingestion pipeline) are constructed **once** at application startup and shared across requests via `app.state`. Routers depend on abstract interfaces, not on concrete adapters. Swapping ChromaDB for Weaviate requires changing one file.
 
 ### Universal Multi-Format Document Ingestion
 
@@ -153,7 +176,7 @@ DocuQuery utilizes an extensible **Strategy + Factory** pattern (`DocumentLoader
 
 ## Quickstart
 
-### Option A: Docker Compose (Recommended for Production Preview)
+### Option A: Docker Compose (Web + API + PostgreSQL, optional ChromaDB server)
 
 ```bash
 # 1. Clone and configure
@@ -162,36 +185,52 @@ cd docuquery-rag-agent
 cp .env.example .env
 # Edit .env and set OPENAI_API_KEY=sk-...
 
-# 2. Build and start
-docker compose up --build
+# 2. Build and start (from the repository root)
+docker compose -f docker/docker-compose.yml --env-file .env up --build
 
-# 3. Verify health
+# 3. Open DocuQuery Studio in the browser
+#    http://localhost:3000
+
+# 4. Verify health (directly against the API, or through the Studio proxy)
 curl http://localhost:8000/api/v1/health/
+curl http://localhost:3000/api/v1/health/
 ```
 
-The `./data` directory on the host is bind-mounted into the container, so ChromaDB vector indices and SQLite telemetry persist across container restarts.
+Compose starts a `postgres:16-alpine` service (`db`, data in the named volume `pg_data`), the `api` service, which waits for the database healthcheck, runs `alembic upgrade head`, and then launches Uvicorn, and the `web` service (DocuQuery Studio, a Next.js standalone build on port 3000). `web` starts once `api` has started and reaches it at `http://api:8000` over the internal network; its healthcheck calls `/api/v1/health/` through the Next.js rewrite, so a green `web` container also proves the proxy path. The API origin is baked into the image at build time (Next.js freezes rewrite destinations during `next build`), so changing it requires rebuilding `web`. The host port is configurable with `WEB_PORT` (default `3000`). The `api` container always connects to `db` over the internal network: its `DATABASE_URL` is assembled from `POSTGRES_USER` / `POSTGRES_PASSWORD` / `POSTGRES_DB`, and the `DATABASE_URL` in `.env` (which targets `localhost` for local development) is ignored.
+
+By default ChromaDB runs embedded in the API process and persists to the repository-level `data/` directory, which is bind-mounted into the container. To run Chroma as a standalone server instead (named volume `chroma_data`), set `CHROMA_HOST=chroma` in `.env` and enable the `chroma` profile:
+
+```bash
+docker compose -f docker/docker-compose.yml --env-file .env --profile chroma up --build
+```
+
+`--env-file .env` is required because Compose only reads a `.env` located next to the compose file (`docker/`) for variable interpolation; the shared `.env` lives at the repository root.
 
 ### Option B: Local Development
 
-**Prerequisites:** Python 3.11+
+**Prerequisites:** [`uv`](https://docs.astral.sh/uv/getting-started/installation/) (it provisions Python 3.11+ on demand)
 
 ```bash
-# 1. Create a virtual environment
-python -m venv .venv
-source .venv/bin/activate        # Linux / macOS
-.venv\Scripts\Activate.ps1       # Windows PowerShell
+# 1. Create the virtual environment and install pinned dependencies (incl. dev group)
+cd apps/api
+uv sync
 
-# 2. Install dependencies
-pip install -e ".[dev]"
+# 2. Everything below runs through `uv run`; no manual venv activation needed
+#    (from the repository root, add `--directory apps/api` after `uv run`)
 
-# 3. Configure environment
+# 3. Configure environment (one shared .env at the repository root)
 cp .env.example .env
 # Edit .env and set OPENAI_API_KEY=sk-...
+# DATABASE_URL defaults to PostgreSQL; for a server-less run use
+#   DATABASE_URL=sqlite+aiosqlite:///./data/telemetry.db
 
 # 4. Start the server with hot-reload
-uvicorn src.main:app --reload --port 8000
+uv run uvicorn src.main:app --reload
 
-# 5. Open the interactive API docs
+# 5. Run the test suite
+uv run pytest
+
+# 6. Open the interactive API docs
 # Swagger UI  → http://localhost:8000/api/docs
 # ReDoc       → http://localhost:8000/api/redoc
 # Root path / → automatically redirects to /api/docs
@@ -202,7 +241,7 @@ uvicorn src.main:app --reload --port 8000
 With the API listening on port 8000, run the human-paced pipeline walkthrough locally:
 
 ```bash
-python scripts/demo_runner.py
+uv run --project apps/api python scripts/demo_runner.py
 ```
 
 The script drives health, ingestion, a grounded query, refusal, and analytics through Rich console panels and HTTPX. The same flow is recorded by `demo.tape` into `docs/assets/demo.gif`.
@@ -223,7 +262,7 @@ curl -s http://localhost:8000/api/v1/health/ | jq
 {
   "status": "ok",
   "app_name": "DocuQuery RAG Agent",
-  "version": "1.2.0",
+  "version": "2.1.0",
   "environment": "development"
 }
 ```
@@ -307,6 +346,8 @@ data: {"token": "-GCM"}
 data: [DONE]
 ```
 
+**Failures.** A fault before the first token (embedding, retrieval, opening the completion) is an ordinary HTTP error with a `{"error", "message"}` JSON body: `502` provider rejected the request or credentials, `429` rate limit or quota, `503` provider or storage unavailable, `504` provider timeout. A fault after streaming has begun cannot change the committed `200`, so it arrives in-band as a final `data: {"error": "LLMUnavailableError", "message": "..."}` frame, still followed by `data: [DONE]`. The same `{error, message}` envelope covers ingestion: unparseable files return `422`, and no error is ever served as bare `text/plain`.
+
 ---
 
 ### Telemetry & Latency Audit
@@ -354,17 +395,19 @@ curl -s -X POST http://localhost:8000/api/v1/query/ \
 
 ## Multi-Gateway Support
 
-DocuQuery targets **any OpenAI-compatible inference gateway** with zero codebase changes. The `OPENAI_BASE_URL` setting is the single control point:
+All LLM completions and embeddings are routed through [LiteLLM](https://docs.litellm.ai) (`litellm.acompletion` / `litellm.aembedding`). The provider is selected by the model identifier alone; no code change is needed.
 
-| Gateway | `OPENAI_BASE_URL` | `OPENAI_API_KEY` |
+| Target | `OPENAI_MODEL` | Credentials |
 |---|---|---|
-| OpenAI (default) | *(unset)* | `sk-...` |
-| [OpenRouter](https://openrouter.ai) | `https://openrouter.ai/api/v1` | OpenRouter key |
-| vLLM (self-hosted) | `http://localhost:8001/v1` | `EMPTY` |
-| LocalAI | `http://localhost:8080/v1` | `sk-unused` |
-| Azure OpenAI | `https://<resource>.openai.azure.com/openai` | Azure key |
+| OpenAI (default) | `gpt-4o-mini` | `OPENAI_API_KEY` |
+| Anthropic | `anthropic/claude-sonnet-4-5` | `ANTHROPIC_API_KEY` |
+| [OpenRouter](https://openrouter.ai) | `openrouter/<vendor>/<model>` | `OPENROUTER_API_KEY` |
+| vLLM / LocalAI / any OpenAI-compatible gateway | `openai/<served-model>` | `OPENAI_API_KEY` + `OPENAI_BASE_URL` (e.g. `http://localhost:8001/v1`) |
+| Azure OpenAI | `azure/<deployment>` | `AZURE_API_KEY`, `AZURE_API_BASE`, `AZURE_API_VERSION` |
 
-Both LLM completions (`chat.completions`) and embedding calls (`embeddings.create`) are routed through the same base URL. No adapter swap, no code change — only environment variables.
+`OPENAI_API_KEY` and `OPENAI_BASE_URL` are forwarded **only** to OpenAI-routed models, so they never leak to another vendor. Other providers read their own environment variables (LiteLLM also loads a `.env` file). Use an explicit `provider/` prefix for non-OpenAI models. `LITELLM_DROP_PARAMS=true` (default) lets LiteLLM drop request parameters a provider does not support.
+
+> **`OPENAI_MODEL` and `EMBEDDING_MODEL` are routed independently.** An unprefixed `EMBEDDING_MODEL` (the default `text-embedding-3-small`) goes to OpenAI and needs a real `OPENAI_API_KEY`, even when chat completions run on OpenRouter. With only an `OPENROUTER_API_KEY`, prefix both: `OPENAI_MODEL=openrouter/google/gemini-2.5-flash` and `EMBEDDING_MODEL=openrouter/openai/text-embedding-3-small`. The latter returns the same vectors as the bare OpenAI name (cosine ≈ 0.9999), so switching between the two keeps an existing index valid; any other embedding model changes the vector space and requires re-ingesting every document. The API logs a startup warning for model/credential combinations that cannot work.
 
 ---
 
@@ -438,39 +481,41 @@ curl -s -X POST http://localhost:8000/api/v1/query/ \
 ### Running the Test Suite
 
 ```bash
-# Run full automated test suite (160 tests)
-pytest -v
+# Run full automated test suite (215 tests)
+uv run --directory apps/api pytest -v
 
 # Run only unit tests
-pytest tests/unit/
+uv run --directory apps/api pytest tests/unit/
 
 # Run only integration tests
-pytest tests/integration/
+uv run --directory apps/api pytest tests/integration/
 
 # Run offline multi-format loader smoke verification
-python scripts/verify_all_loaders.py
+uv run --project apps/api python scripts/verify_all_loaders.py
 
 # Run the interactive terminal showcase (server must already be listening)
-python scripts/demo_runner.py
+uv run --project apps/api python scripts/demo_runner.py
 ```
 
-All tests are fully isolated: no live OpenAI credentials, no running ChromaDB server, and no network access are required. Mocks cover all external boundaries.
+All tests are fully isolated: no live LLM credentials, no running ChromaDB server, and no network access are required. Mocks cover all external boundaries.
 
 ### Linting and Formatting
 
 ```bash
 # Check for lint violations
-ruff check src/ tests/
+uv run --directory apps/api ruff check .
 
 # Auto-fix lint issues
-ruff check --fix src/ tests/
+uv run --directory apps/api ruff check --fix .
 
 # Format code
-ruff format src/ tests/
+uv run --directory apps/api ruff format .
 
 # Check formatting without modifying files
-ruff format --check src/ tests/
+uv run --directory apps/api ruff format --check .
 ```
+
+Inside `apps/api/`, drop `--directory apps/api`. Pytest and Ruff read their configuration from `apps/api/pyproject.toml`, and `apps/api/uv.lock` pins every dependency; run `uv lock` after editing `pyproject.toml`.
 
 ### End-to-End Smoke Test
 
@@ -478,10 +523,10 @@ After starting the server, run the automated smoke test to verify the full pipel
 
 ```bash
 # Against the local dev server
-python scripts/smoke_test.py
+uv run --project apps/api python scripts/smoke_test.py
 
 # Against a custom URL (e.g. Docker Compose)
-python scripts/smoke_test.py --base-url http://localhost:8000
+uv run --project apps/api python scripts/smoke_test.py --base-url http://localhost:8000
 ```
 
 The smoke test probes all six critical paths: health, document ingestion, grounded query with citations, out-of-scope refusal, SSE streaming, and analytics telemetry.
@@ -492,19 +537,33 @@ The smoke test probes all six critical paths: health, document ingestion, ground
 
 All configuration is read from environment variables (or `.env` file) via Pydantic Settings. See `.env.example` for the full reference.
 
+The shared `.env` at the repository root is located by absolute path, so it is found regardless of the working directory; a `.env` in the working directory takes precedence. Relative persistence paths (the `./data/...` defaults below) resolve against the **process working directory**, so start the server from the repository root to share the top-level `data/` directory. Docker Compose sets absolute container paths and is unaffected.
+
 | Variable | Default | Description |
 |---|---|---|
-| `OPENAI_API_KEY` | *(required)* | OpenAI API key (or your gateway's key) |
-| `OPENAI_MODEL` | `gpt-4o-mini` | LLM model for completions |
-| `EMBEDDING_MODEL` | `text-embedding-3-small` | OpenAI embedding model |
-| `OPENAI_BASE_URL` | *(unset — uses OpenAI platform)* | Custom OpenAI-compatible gateway URL |
+| `OPENAI_API_KEY` | *(required)* | API key for OpenAI-routed models (or your OpenAI-compatible gateway's key) |
+| `OPENAI_MODEL` | `gpt-4o-mini` | LiteLLM chat model identifier (e.g. `anthropic/claude-sonnet-4-5`) |
+| `EMBEDDING_MODEL` | `text-embedding-3-small` | LiteLLM embedding model identifier |
+| `OPENAI_BASE_URL` | *(unset — uses OpenAI platform)* | Custom OpenAI-compatible gateway URL (pair with an `openai/<model>` identifier) |
+| `LITELLM_DROP_PARAMS` | `true` | Drop request parameters unsupported by the target provider |
 | `APP_ENV` | `development` | Runtime environment (`development`, `staging`, `production`) |
 | `APP_PORT` | `8000` | Server port |
+| `WEB_PORT` | `3000` | Docker Compose only: host port the `web` (DocuQuery Studio) container is published on |
 | `LOG_LEVEL` | `INFO` | Root log level |
-| `CHROMA_PERSIST_DIRECTORY` | `./data/chroma_db` | ChromaDB persistence path |
-| `SQLITE_DATABASE_PATH` | `./data/telemetry.db` | SQLite audit database path |
+| `CHROMA_PERSIST_DIRECTORY` | `./data/chroma_db` | ChromaDB persistence path (local mode) |
+| `CHROMA_HOST` | *(unset — local mode)* | Hostname of a standalone Chroma server; when set, `CHROMA_PERSIST_DIRECTORY` is ignored |
+| `CHROMA_PORT` | `8000` | Port of the standalone Chroma server |
+| `POSTGRES_USER` / `POSTGRES_PASSWORD` / `POSTGRES_DB` | `postgres` / `postgres` / `docuquery` | Docker Compose only: credentials and database of the `db` service |
+| `DATABASE_URL` | `postgresql+asyncpg://postgres:postgres@localhost:5432/docuquery` | SQLAlchemy async URL of the audit database (`sqlite+aiosqlite:///...` for server-less runs) |
 
-> **OpenRouter & Custom Gateways:** Set `OPENAI_BASE_URL=https://openrouter.ai/api/v1` and `OPENAI_API_KEY=<your-openrouter-key>` to route all LLM and embedding calls through OpenRouter or any other OpenAI-compatible provider (vLLM, LocalAI, Azure OpenAI). When unset, the service targets the official OpenAI platform. No code changes required.
+> **Database schema:** The service creates the `query_telemetry` table on startup if it is missing. Use Alembic for reproducible schema changes, run from the repository root:
+>
+> ```bash
+> uv run --directory apps/api alembic upgrade head   # apply migrations to DATABASE_URL
+> uv run --directory apps/api alembic check          # fail when models and migrations drift
+> ```
+
+> **Other providers & gateways:** Set `OPENAI_MODEL=anthropic/claude-sonnet-4-5` with `ANTHROPIC_API_KEY`, `OPENAI_MODEL=openrouter/<vendor>/<model>` with `OPENROUTER_API_KEY`, or `OPENAI_MODEL=openai/<model>` with `OPENAI_BASE_URL` for vLLM/LocalAI. Anthropic has no embedding endpoint, so point `EMBEDDING_MODEL` at an embedding-capable provider (e.g. `openrouter/openai/text-embedding-3-small`). No code changes required.
 
 ---
 
@@ -512,33 +571,44 @@ All configuration is read from environment variables (or `.env` file) via Pydant
 
 ```
 docuquery-rag-agent/
-├── src/
-│   ├── config/          # Pydantic Settings — typed environment configuration
-│   ├── core/
-│   │   ├── models.py    # Domain models: DocumentChunk, RetrievalResult, Citation, RAGResult
-│   │   ├── interfaces.py# ABCs: VectorStoreInterface, AuditRepositoryInterface
-│   │   ├── exceptions.py# AppException hierarchy (ConfigurationError, StorageError, …)
-│   │   └── rag/
-│   │       ├── engine.py       # RAGEngine — full query and streaming pipeline
-│   │       ├── token_counter.py# TokenBudgetManager — greedy bin-packing
-│   │       └── prompts.py      # Anti-hallucination system prompt + citation format
-│   ├── ingestion/
-│   │   ├── loaders/     # BaseDocumentLoader, Factory, PDF, DOCX, CSV, Excel, HTML, Text
-│   │   ├── chunker.py   # TokenSlidingWindowChunker — cl100k_base BPE sliding window
-│   │   └── pipeline.py  # IngestionPipeline — load → chunk → embed → index
-│   ├── storage/
-│   │   ├── vector_store.py# ChromaVectorStore — asyncio.to_thread HNSW adapter
-│   │   └── audit_db.py  # SQLiteAuditRepository — aiosqlite persistent connection
-│   ├── api/
-│   │   ├── routes/      # health · query · ingestion · analytics routers
-│   │   ├── schemas/     # QueryRequest · QueryResponse · IngestResponse · AnalyticsResponse
-│   │   └── dependencies.py# Depends factories resolving services from app.state
-│   └── main.py          # FastAPI app · lifespan DI graph · exception handlers
-├── tests/
-│   ├── unit/            # Unit tests (loaders, chunker, RAG, settings — zero live APIs)
-│   └── integration/     # Integration tests (mocked engine/pipeline/repo)
+├── apps/
+│   ├── api/                 # FastAPI RAG service (also the Docker build context)
+│   │   ├── src/
+│   │   │   ├── config/          # Pydantic Settings — typed environment configuration
+│   │   │   ├── core/
+│   │   │   │   ├── models.py    # Domain models: DocumentChunk, RetrievalResult, Citation, RAGResult
+│   │   │   │   ├── interfaces.py# ABCs: VectorStoreInterface, AuditRepositoryInterface
+│   │   │   │   ├── exceptions.py# AppException hierarchy (ConfigurationError, StorageError, …)
+│   │   │   │   └── rag/
+│   │   │   │       ├── engine.py       # RAGEngine — full query and streaming pipeline
+│   │   │   │       ├── token_counter.py# TokenBudgetManager — greedy bin-packing
+│   │   │   │       └── prompts.py      # Anti-hallucination system prompt + citation format
+│   │   │   ├── ingestion/
+│   │   │   │   ├── loaders/     # BaseDocumentLoader, Factory, PDF, DOCX, CSV, Excel, HTML, Text
+│   │   │   │   ├── chunker.py   # TokenSlidingWindowChunker — cl100k_base BPE sliding window
+│   │   │   │   └── pipeline.py  # IngestionPipeline — load → chunk → embed → index
+│   │   │   ├── storage/
+│   │   │   │   ├── vector_store.py# ChromaVectorStore — asyncio.to_thread HNSW adapter
+│   │   │   │   ├── orm_models.py# SQLAlchemy declarative base + query_telemetry table (Alembic target)
+│   │   │   │   └── audit_db.py  # SQLAlchemyAuditRepository — async sessions over asyncpg / aiosqlite
+│   │   │   ├── api/
+│   │   │   │   ├── routes/      # health · query · ingestion · analytics routers
+│   │   │   │   ├── schemas/     # QueryRequest · QueryResponse · IngestResponse · AnalyticsResponse
+│   │   │   │   └── dependencies.py# Depends factories resolving services from app.state
+│   │   │   └── main.py          # FastAPI app · lifespan DI graph · exception handlers
+│   │   ├── tests/
+│   │   │   ├── unit/            # Unit tests (loaders, chunker, RAG, settings — zero live APIs)
+│   │   │   └── integration/     # Integration tests (mocked engine/pipeline/repo)
+│   │   ├── alembic/         # Alembic migration environment + versions (alembic.ini alongside)
+│   │   ├── pyproject.toml   # Project metadata, dependencies, Ruff, and Pytest config
+│   │   ├── uv.lock          # Deterministic dependency lockfile (uv)
+│   │   └── Dockerfile       # Multi-stage production image (non-root, slim)
+│   └── web/                 # DocuQuery Studio — Next.js 16 App Router, Tailwind v4, shadcn/ui
+│       └── Dockerfile       # Multi-stage standalone image (non-root `nextjs:nodejs`)
+├── docker/
+│   └── docker-compose.yml   # PostgreSQL 16 + API (auto-migrate) + Web (Next.js) + optional Chroma server
 ├── data/
-│   └── sample_docs/     # Enterprise sample documents for testing and demos
+│   └── sample_docs/         # Enterprise sample documents for testing and demos
 ├── scripts/
 │   ├── smoke_test.py           # Async E2E smoke test script (httpx)
 │   ├── verify_all_loaders.py   # Offline loader verification suite
@@ -548,10 +618,7 @@ docuquery-rag-agent/
 │       ├── architecture.md  # Authoritative architecture reference + ADR log
 │       └── state.md         # Living implementation state + test inventory
 ├── demo.tape            # VHS tape automation for the documentation GIF
-├── Dockerfile           # Multi-stage production image (non-root, slim)
-├── docker-compose.yml   # Local development compose with bind-mounted data volume
-├── pyproject.toml       # Project metadata, dependencies, Ruff, and Pytest config
-└── .env.example         # Environment variable reference template
+└── .env.example         # Environment variable reference template (copy to shared root .env)
 ```
 
 ---
@@ -563,11 +630,13 @@ The full ADR log is maintained in [`docs/internal/architecture.md`](docs/interna
 | ADR | Decision |
 |---|---|
 | ADR-01 | ChromaDB blocking calls dispatched via `asyncio.to_thread()` |
-| ADR-02 | Single persistent `aiosqlite` connection shared across lifespan |
+| ADR-02 | Pooled async SQLAlchemy engine with a session per operation for the audit store |
 | ADR-03 | Embedding vectors passed as a separate parameter, not embedded in `DocumentChunk` |
 | ADR-04 | Heading-inclusive scan for Markdown section attribution |
 | ADR-05 | SSE streaming with `X-Accel-Buffering: no` proxy-bypass headers |
 | ADR-06 | Single-instance lifespan DI graph shared between ingestion and query engines |
+| ADR-07 | Multi-container Compose topology (PostgreSQL, optional Chroma server) with Alembic migrate-on-start |
+| ADR-08 | Technical UI architecture & reverse-proxy topology (Next.js 16 standalone container, `/api/v1/*` rewrite to FastAPI) |
 
 ---
 

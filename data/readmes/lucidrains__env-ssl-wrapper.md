@@ -122,9 +122,11 @@ for iteration in range(...):
     env.commit_stats()       # make this rollout's states current
 
 # evaluation runs on a frozen copy of the training statistics
-eval_env.load_state_dict(env.state_dict())
-eval_env.update_mode = 'frozen'
+eval_env = StateNormalizationWrapper(eval_env, update_mode = 'frozen')
+eval_env.load_state_dict(env.state_dict())    # statistics only - the mode stays the caller's
 ```
+
+Loading a checkpoint never changes `update_mode`, so a training checkpoint can never silently resume updating the statistics of a frozen eval env.
 
 `commit_stats()` needs no raw states: the pending accumulator holds exact sufficient statistics (count / mean / variance), so it can be stored in a memmap replay buffer as normalized states and committed at the update boundary all the same. For pipelines that keep raw states, `commit_stats(raw_states)` folds external data in — a tensor, an iterable of batches (a replay buffer dataloader), or a dict keyed by obs key.
 
@@ -311,6 +313,20 @@ obs, info = env.reset()
 ```
 
 `configs` holds reset states — or callables drawing one (`lambda rng: ...`) — passed through `options`, or built by a `reset_options_fn` / `state_transform`.  `reset_configs` is accepted as an alias.
+
+Banks can nest, and a group may mix leaves with groups, so the tree can be ragged:
+
+```python
+reset_states = [
+    native_state,                                       # leaf at the root
+    dict(name = 'easy', configs = [easy_a, easy_b]),    # named group
+    [hard_a, [hard_b, hard_c]],                         # deeper branch
+]
+
+env = SGSWrapper(env, reset_states, frontier_success_rate = .5)
+```
+
+A group's rate is pooled from its children (count weighted by default; override with `success_fn`), and a group may set `target`, `kappa`, `eps` or `unvisited_weight` for its group children.  Sampling stays one categorical draw over leaves, and `sampler.group_rates` / `group_probs` expose the tree.
 
 For a bank ordered by difficulty, `build_difficulty_bank` composes a ladder from generator factories and appends the native tail, and `difficulty_score_fn` scores against an explicit difficulty — so replicas at one difficulty and non-uniform rungs do not distort the frontier:
 

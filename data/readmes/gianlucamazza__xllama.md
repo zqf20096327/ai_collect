@@ -71,7 +71,9 @@ First launch: downloads default model (~219 MB). No model bundled in MSIX.
 | ----------- | ------ | --------------- | ----------------------- |
 | LFM2.5-230M | 230M   | **132.4** tok/s | Floor (fastest, 236 MB) |
 | LFM2.5-350M | 350M   | **101.6** tok/s | Default chat            |
-| LFM2-2.6B   | 2.6B   | **18.4** tok/s  | Quality (H9 7/8)        |
+| LFM2-2.6B   | 2.6B   | **17.9** tok/s  | Quality (H9 7/8)        |
+
+Xbox Series S, CPU 6 threads, median of 3 ([docs/benchmarks.md](docs/benchmarks.md)).
 
 Full catalogue + Phase 14 coding models: [model-matrix.md](docs/model-matrix.md) · [benchmarks.md](docs/benchmarks.md)
 
@@ -171,8 +173,8 @@ docs/             # SSOT map → docs/README.md
 
 ## Citation
 
-The versioned research report is archived through Zenodo after the release
-gate. Until the first archive exists, cite the tagged GitHub repository:
+The versioned research report is archived on Zenodo. The concept DOI
+10.5281/zenodo.22118437 always resolves to the latest version; to cite 1.0.6 specifically:
 
 ```bibtex
 @software{xllama_research_1_0,

@@ -37,6 +37,8 @@ It is organized in three independently reviewable layers:
 > This is the formal front door. The original long-form README is preserved unchanged at
 > [`docs/archive/README_legacy_20260712.md`](docs/archive/README_legacy_20260712.md) — nothing was removed, only formalized.
 
+The shared rules for everyone working in this repo are [`docs/AUREON_RULES.md`](docs/AUREON_RULES.md).
+
 ### How it fits together
 
 ```mermaid
@@ -107,10 +109,88 @@ AUREON_LLM_OFFLINE=1 pytest tests/test_operator_*.py tests/test_saas_*.py tests/
 
 Everything needed to inspect source and run offline tests is in this repo. Do not
 inject exchange, model, hosting, or deployment credentials while validating the
-current release: every supported entrypoint intentionally returns **HOLD** and
-starts no operator, frontend, supervisor, network listener, or trading process.
+current release: the isolated operator bootstrap, containers, and supervisor
+entrypoints stay on **HOLD**.
+
+The local installer is the path that brings a clone up. Linux and macOS:
+`bash production/install.sh`. Windows: `production\Install-AUREON.ps1` (or
+`production\install-windows.bat`). `bash scripts/linux/aureon-up.sh` calls that
+installer when the virtualenv is missing, then starts the same preflight.
+The shell is `http://127.0.0.1:5173/`. Dashboard and Command Center are tabs of
+the local console at `http://127.0.0.1:5173/console/local`. Every other
+dashboard and status page — the 8080 console, Orca on 8888, market status on
+8791, the gateway on 8790, the fusion seat on 8765, the circulation bus on
+8799, the neural canvas, the thought-action hub, the error sink, and API B —
+is a tab at `http://127.0.0.1:5173/console/seats`, with the other status
+pages (queen unified, pro dashboard, master hub, Earth shield, queen web,
+system hub, bot hunter, the dashboard API, queen power, trader telemetry,
+Kraken telemetry, and the legacy command center) on that same tab row. Those
+tabs read the live buses through the gateway. A source that is down, or a
+page that draws invented readings, shows the reason and no invented number.
+`AUREON_SIMULATED_BOOT` stays unset, so those generators do not load. The launcher leaves port 8080 alone. Live mode turns on when a complete exchange key group is in
+`.env`. With no complete group the boot stays paper/public-data and the health
+report says `trading_mode=paper/public-data (no exchange keys)`. With keys it
+says `trading_mode=live (exchange keys present)`. The launcher does not place
+an order by itself. The thought bus health check is
+`http://127.0.0.1:8799/healthz`. The fusion seat keeps
+`http://127.0.0.1:8765/healthz`.
 A HOLD receipt proves only that the fail-closed preflight ran; it is not proof
 that the whole system is protected or production-ready.
+
+### Canonical organism launcher
+
+The terminal-HOLD bootstraps stay holds. The organism launcher is a separate entry. Its default is full autonomy, and it does not place an order by itself:
+
+```bash
+scripts/launch/aureon-master.sh
+```
+
+Windows uses `scripts/launch/aureon-master.ps1` and `scripts/launch/aureon-master.bat`. On a fresh clone it writes `.env` from `.env.example` when `.env` is absent, installs Python requirements into `.venv`, Node packages for `frontend/`, and the self-host Docker images, then starts the organism and prints a health table. Paths follow the checkout. Trading is live when the operator's own exchange keys are in `.env`. With no keys the report says `trading_mode=paper/public-data (no exchange keys)`. A missing binary, script, or daemon is a blocked row. The mode is in [`AUTONOMY.md`](AUTONOMY.md). The module name and the table are in [`LAUNCHER_INVENTORY.md`](LAUNCHER_INVENTORY.md). What still names a machine is in [`PORTABILITY.md`](PORTABILITY.md).
+
+### How anyone can run it
+
+A fresh clone on your own machine is enough. The launcher does not need Gary's home directory, a hosted runner, or a key that shipped with the repo.
+
+Linux and macOS, from the checkout:
+
+```bash
+scripts/launch/aureon-master.sh
+```
+
+Windows, from the checkout:
+
+```bat
+scripts\launch\aureon-master.ps1
+```
+
+`scripts\launch\aureon-master.bat` is the same entry. That one command writes `.env` from `.env.example` when `.env` is absent, installs Python requirements into `.venv`, Node packages for `frontend/`, and the self-host images when Docker answers, then starts the organism. An existing `.env` is left as it is. Paths follow the checkout.
+
+Put your own exchange keys in `.env` after that file exists (Kraken, Binance, Alpaca, or Capital.com: the whole group for that venue). The next boot is live and the health report says `trading_mode=live (exchange keys present)`. With no complete group the same boot stays in paper/public-data mode and the report says `trading_mode=paper/public-data (no exchange keys)`. Do not commit `.env`. The launcher does not place an order by itself.
+
+The boot is unrestricted by default. `AUREON_AUTONOMY_MODE` unset is `full`. Self-coding may edit any path except credential material, approves its own edits, and commits a patch after that patch's tests pass. Nothing is pushed. There is no kill switch and no kill file: `AUREON_SELF_REPAIR_KILL` and `state/SELF_REPAIR_KILL` do not stop a write or an order. Changes and order attempts are appended to `state/autonomy_audit.jsonl`. The unity exchange brain, the unified market trader, the Capital.com CFD trader, and the micro-profit labyrinth each record an attempt. Secret values are redacted. The same records are published on the circulation thought bus. The metacognition and self-repair loops consume them. After repeated failed self-changes, metacognition raises a concern and lowers its confidence, and self-repair deprioritises a target that keeps failing. A self-patch whose tests fail stays applied. It is not reversed. Credentials are still never written into the repo or into a log.
+
+The health table is the last thing the launcher prints. Each row is `order`, `name`, `status`, `health`, and `reason`. A missing binary, script, or daemon is `blocked` with the reason. The totals are `started`, `blocked`, and `total`.
+
+```bash
+scripts/launch/aureon-master.sh --status
+scripts/launch/aureon-master.sh --stop
+```
+
+`--status` prints that table and starts nothing. `--stop` stops the processes this launcher recorded. Postgres, Redis, or nginx it did not start are left alone. On Windows, pass the same flags to `aureon-master.ps1` or `aureon-master.bat`. Those two flags are ordinary process control.
+
+The existing installer is the one step that also brings up the toolchain and the UI. Linux and macOS:
+
+```bash
+bash production/install.sh
+```
+
+Windows: `production\Install-AUREON.ps1`, or `production\install-windows.bat`. Running it again is safe. It installs Python, venv, Node, npm, git, and curl when apt, dnf, Homebrew, or winget can, writes `.env` from `.env.example` only when `.env` is absent, installs and builds the frontend, then calls the master launcher above. Docker images are used when the daemon answers. With no daemon the launcher uses its native fallbacks. When the UI answers, the installer prints `Aureon UI: http://127.0.0.1:5173/`.
+
+`PyAudio` in `requirements.txt` needs the system audio headers (`portaudio`) before pip can build it. The Linux installer uses `requirements-linux.txt`, which leaves that package out and includes pytest, so `tests/test_preflight_snags.py` can run in the installer environment. Build the test virtualenv with `python -m venv --copies .venv`. A symlinked interpreter fails 32 evidence tests: `sys.executable` must be a real file inside the venv, which `--copies` provides and a symlink into another prefix does not. The installer creates `.venv` with `--copies`. Pytest prints a header note when the interpreter it is running is itself a symlink.
+
+### Archive of unreferenced root files
+
+`archive/workspace-root/` holds notes, one-off scripts, and captured ledgers that the running fleet does not import. Live organ paths stay where [`aureon_fusion/paths.py`](aureon_fusion/paths.py) and [`aureon_fusion/organ_registry.py`](aureon_fusion/organ_registry.py) name them. Fleet output stays untracked.
 
 Direct-module and go-live runbooks are superseded until native process
 containment, target-source measurement, external HNC head anchoring, and
@@ -203,6 +283,7 @@ Open-source repository traffic to date (verifiable in the repo's GitHub **Insigh
 
 | You are… | Start here |
 |---|---|
+| **Working on Aureon OS** | [`docs/AUREON_RULES.md`](docs/AUREON_RULES.md) — the shared rulebook |
 | **An investor or funder** | [`docs/investor/README.md`](docs/investor/README.md) — diligence path, capability categories, and claim discipline |
 | **A developer** | [`docs/INDEX.md`](docs/INDEX.md) · [`CAPABILITIES.md`](CAPABILITIES.md) · [`docs/SAAS_PLATFORM.md`](docs/SAAS_PLATFORM.md) |
 | **A researcher** | [`docs/THE_SYNTHESIS.md`](docs/THE_SYNTHESIS.md) · [`docs/CLAIMS_AND_EVIDENCE.md`](docs/CLAIMS_AND_EVIDENCE.md) · [`docs/research/READING_PATHS.md`](docs/research/READING_PATHS.md) |

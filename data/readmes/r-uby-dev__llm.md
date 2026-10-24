@@ -24,11 +24,22 @@ tracks what has changed between releases.
 
 ## Install
 
+##### v17
+
 The v17 series requires Ruby 3.4 or later. <br>
-The v18 series (unreleased) requires Ruby 4.0 or later.
 
 ```bash
 gem install llm.rb
+```
+
+##### v18
+
+The v18 series is available as a prerelease. <br>
+It requires Ruby 4.0 or later <br>
+Ruby (4.1.0.dev|4.1.0.preview1) is recommended.
+
+```bash
+gem install llm.rb --pre
 ```
 
 ## Quick start
@@ -81,11 +92,81 @@ tracer = LLM::Tracer.pretty(llm)
 tools  = [GetTime]
 stream = StringIO.new
 
-agent  = LLM::Agent.new(llm, tools:, tracer:, stream:)
+##
+# requires v18+
+# use `:thread` on <=v17
+concurrency = :ractor
+
+agent = LLM::Agent.new(llm, tools:, tracer:, stream:, concurrency:)
 agent.talk "hello world"
 agent.talk "what time is it?"
 puts stream.string
 ```
+
+##### interrupt.rb
+
+The
+[`LLM.interrupt`](https://r.uby.dev/api-docs/llm.rb/LLM.html#interrupt-class_method)
+method has access to a process-wide
+registry that contains every active instance of
+[`LLM::Agent`](https://r.uby.dev/api-docs/llm.rb/LLM/Agent.html),
+and that includes Sequel and ActiveRecord agents, too. An
+agent enters the registry when it starts a turn, and it
+exits the registry afterwards. The method returns the
+agent it interrupted, and otherwise it returns false.
+
+There is often a window between when an agent is queued
+and when it runs, so a poll approach lets you eventually
+interrupt the agent, or give up trying:
+
+```ruby
+require "llm"
+require "llm/tools"
+
+llm   = LLM.deepseek
+agent = LLM::Agent.new(llm)
+
+Thread.new do
+  LLM.interrupt(
+    id: agent.id,
+    attempts: 50,
+    interval: 0.1
+  )
+end
+
+begin
+  stream      =  $stdout
+  tools       = [LLM::Tool::ReadFile]
+  concurrency = LLM::VERSION.start_with?("18.") ? :ractor : :thread
+  agent.talk("summarize README.md", concurrency:, stream:, tools:)
+rescue LLM::Interrupt
+  puts "!! interrupted !!"
+end
+```
+</details>
+
+##### mcp.rb
+
+The MCP example uses the HTTP transport to connect to
+GitHub's MCP server. The example uses a Personal Access
+Token (get yours [here](https://github.com/settings/apps))
+although it could also use a token that was obtained
+through OAuth and belongs to a user other than you:
+
+```ruby
+require "llm"
+
+llm = LLM.deepseek
+mcp = LLM::MCP.http(
+  url: "https://api.githubcopilot.com/mcp/",
+  headers: {"Authorization" => "Bearer #{ENV['GITHUB_PAT']}"},
+  transport: :net_http_persistent
+)
+
+agent = LLM::Agent.new(llm, stream: $stdout, tools: mcp.tools)
+agent.talk "Find me an interesting Ruby project on GitHub"
+```
+
 
 #### Essentials
 
@@ -650,7 +731,7 @@ agent.talk "What's our uptime?", stream: $stdout
 
 #### Database
 
-<details><summary>ActiveRecord </summary>
+<details><summary>ActiveRecord</summary>
 <br>
 
 Both
@@ -740,7 +821,7 @@ agent.console
 </details>
 
 <details>
-<summary>SQL optimizations </summary>
+<summary>SQL optimizations</summary>
 <br>
 
 In a database environment the runtime optimizes for
@@ -953,7 +1034,7 @@ begin
   agent.talk "find every TODO in the repository", stream: $stdout
 rescue LLM::Interrupt
   puts
-  puts "!! cancelled !!"
+  puts "!! interrupted !!"
 end
 ```
 </details>
@@ -987,15 +1068,29 @@ and when it runs, so a poll approach lets you eventually
 interrupt the agent, or give up trying:
 
 ```ruby
-class InterruptJob
-  def call(agent_id:)
-    LLM.interrupt(
-      id: agent_id,
-      attempts: 10,
-      interval: 0.1
-    )
-  end
+require "llm"
+require "llm/tools"
+
+llm   = LLM.deepseek
+agent = LLM::Agent.new(llm)
+
+Thread.new do
+  LLM.interrupt(
+    id: agent.id,
+    attempts: 50,
+    interval: 0.1
+  )
 end
+
+begin
+  stream      =  $stdout
+  tools       = [LLM::Tool::ReadFile]
+  concurrency = LLM::VERSION.start_with?("18.") ? :ractor : :thread
+  agent.talk("summarize README.md", concurrency:, stream:, tools:)
+rescue LLM::Interrupt
+  puts "!! interrupted !!"
+end
+
 ```
 </details>
 
@@ -1479,22 +1574,22 @@ the quick start. Each chapter is a topic of its own:
 I think so. Our Windows build is green on CI.
 That's the only signal I have to go by.
 
-However support is limited compared to
-other platforms. The `fork` strategy is not
-available (Windows does not provide fork),
-and the `ractor` strategy has one test out
-of many that hangs - so it is assumed ractor
-support is not perfect.
+But I know support is a little more limited compared
+to other platforms. The `fork` strategy is not
+available because Windows does not implement it
 
-The `curses` gem that the console requires has
+And the `curses` gem that the console requires has
 to be compiled from source, and this can be a
 challenge on Windows without a compiler toolchain.
 By default the console does not work but it might
 work if you are able to install the `curses` gem.
 
-So it mostly works as long as you avoid the
-parts that don't work. Pull requests that
-improve Windows support are very welcome.
+The `ractor` concurrency strategy **does work**
+on Windows **but requires llm.rb v18+ and Ruby v4.1.0+**.
+Both are available as preleases. So overall everything
+mostly works as long as you avoid the parts that don't
+work. Pull requests that improve Windows support are
+very welcome.
 </details>
 
 <details>

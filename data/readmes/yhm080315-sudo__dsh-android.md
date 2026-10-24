@@ -1,8 +1,10 @@
+[English](README.en.md) | 中文
 # DSH for Android
 
 把 [DeepSeek Harness](https://www.npmjs.com/package/@deepseek-ai/dsh)（下称 DSH）打包成**独立 Android 应用**。
 
-装一个 APK 就能用：**不需要 Termux、不需要 proot、不需要 root、不需要电脑**。运行时（Node、bash、ripgrep、coreutils）全部内嵌在 APK 里。
+装一个 APK 就能用：**不需要 Termux、不需要 proot、不需要电脑**。运行时（Node、bash、ripgrep、coreutils）全部内嵌在 APK 里。
+设备操控（看屏幕/点按/输入）需要一条提权通道。**不装任何东西也能用**：打开无障碍 + 授权一次投屏即可；想要更省事可以装 Shizuku；有 root 也支持。详见「设备能力」一节。
 
 > **状态**：可用。已在小米 2509FPN0BC / Android 17 上验证（截屏、点按、文件读写、图片上传、插件系统均正常）。
 > **代价**：`targetSdk` 必须是 28，因此**无法上架 Google Play**。原因见 [docs/PITFALLS.md](docs/PITFALLS.md)。
@@ -46,11 +48,12 @@ App 首次运行会写一份带全部键和默认值的 `theme.example.conf` 供
 
 - Linux 构建机（x86_64 或 aarch64 均可）
 - JDK 21
-- `android-sdk/build-tools/29.0.3`（提供 `aapt2` / `zipalign` / `apksigner` / `dalvik-exchange`）
+- `android-sdk/build-tools/29.0.3`（提供 `aapt2` / `zipalign` / `apksigner`）
+- **D8**（R8 发行包里的 `r8.jar`，dex 由它生成；`dalvik-exchange`/dx 编不了 Shizuku 的 invokedynamic）
 - Android platform jar（**API 30**）
 - Node.js（用于 `install-dsh.sh` 拉包）
 
-**注意：不需要 Gradle。** 本项目用 `aapt2 → javac → dx → zipalign → apksigner` 手工打包。
+**注意：不需要 Gradle。** 本项目用 `aapt2 → javac → D8 → zipalign → apksigner`（D8 而非 dx：Shizuku 的库用了 invokedynamic，dx 编不了） 手工打包。
 
 ### 三步构建
 
@@ -73,13 +76,13 @@ bash scripts/build-app.sh
 `AndroidManifest.xml` 和文档都从它读，不在两处各写一遍。
 
 ```
-APP_VERSION=1.0.1            本项目版本（对应 Git tag v1.0.1）
-APP_VERSION_CODE=10001       Android versionCode（= 1*10000 + 0*100 + 1）
-DSH_VERSION=0.2.0-rc.2       内嵌的 DeepSeek Harness 版本
+APP_VERSION=1.0.19           本项目版本（对应 Git tag v1.0.19）
+APP_VERSION_CODE=10019       Android versionCode（= 1*10000 + 0*100 + 19；清单里也要改，aapt2 的 --version-code 只在清单没写时生效）
+DSH_VERSION=0.2.1-rc.2       内嵌的 DeepSeek Harness 版本
 ```
 
-APK 的 `versionName` 把两层都带上：**`1.0.1+dsh.0.2.0-rc.2`**，
-产物名为 `DSH-Android-v1.0.1-dsh0.2.0-rc.2.apk`。
+APK 的 `versionName` 把两层都带上：**`1.0.19+dsh.0.2.1-rc.2`**，
+产物名为 `DSH-Android-v1.0.19-dsh0.2.1-rc.2.apk`。
 应用启动日志里也会打一行 `versions: app … · dsh …`——
 报 bug 时看这行就知道是哪一层的版本。
 
@@ -90,7 +93,7 @@ APK 的 `versionName` 把两层都带上：**`1.0.1+dsh.0.2.0-rc.2`**，
 ```
 
 ```bash
-apksigner verify --print-certs DSH-Android-v1.0.1-dsh0.2.0-rc.2.apk | grep "SHA-256 digest"
+apksigner verify --print-certs DSH-Android-v1.0.19-dsh0.2.1-rc.2.apk | grep "SHA-256 digest"
 ```
 
 ⚠️ **装过官方 APK 的人无法用自己构建的 APK 覆盖升级**——签名不同，Android 会拒绝安装，
@@ -184,7 +187,6 @@ Android 10+ 的 W^X 策略禁止应用执行自己写出来的文件——而本
 ---
 
 ## 与其它移动端方案的关系
-## 与其它移动端方案的关系
 
 安卓上跑 dsh 目前有两条路，各有代价。说清代价比互相贴标签有用 —— 它们不是谁替代谁，
 而是把成本记在了不同的账上。
@@ -210,25 +212,38 @@ glibc 原生模块加载失败、`dx` 静默丢类等等。**这些补丁是持�
 **如果目标是长期紧跟上游**，容器派在这种场景下更省事；
 **如果目标是体积小、启动快、不依赖 root**，本项目更合适。
 
-### 设备能力：两边都需要提权
+### 设备能力：零安装优先，Shizuku 次之，root 最后
 
-本项目的设备能力（读屏、点按、通知、剪贴板、传感器）由应用自己提供接口，容器派里的同类操作
-通常直接调 `su`——**但这不是"要不要 root"的差别，两边都要**：
+`screencap` / `input` 这类命令只有 shell 或 root 能调用，普通应用调不了。应用里的 `DeviceShell`
+**按操作类型**选后端，而不是全局只有一条通道：
 
 ```
-screencap    只有 shell 或 root 能调用，普通应用调不了
-input        同上
+capture  → Backend.capture()            MediaProjection（投屏）| screencap（Shizuku / su）
+input    → Backend.tap/swipe/key/text   无障碍 dispatchGesture / ACTION_SET_TEXT | input（Shizuku / su）
+shell    → Backend.exec()               任意命令（只有 Shizuku / su 能做，无障碍做不到）
 ```
 
-本项目的屏幕操作插件与设备桥现在都走 `su -c screencap` / `su -c input`。
-要真正不依赖 root，得换成下面两条之一，**本项目都还没做**：
+优先级**按"用户要付出多少"排**，门槛最低的在前：
 
-- **Shizuku**：用户一次性授权，拿到 adb 级权限，`screencap` / `input` 照样可用，不需要 root。
-- **MediaProjection + 无障碍服务**：纯应用层，取帧与注入各授权一次，
-  但注入受无障碍限制、取帧要维持一个投屏会话。
+| 顺序 | 通道 | 用户要做什么 | 能做什么 |
+|---|---|---|---|
+| 1 | **无障碍 + 投屏** | 设置里开无障碍 + 授权一次投屏 | 点按 ✓ 滑动 ✓ 输入 ✓ 读界面 ✓ 截图 ✓ |
+| 2 | **Shizuku** | 装 Shizuku，点一次允许 | 同上 + 任意 shell 命令 |
+| 3 | **root** | 已有 root | 全部 |
+| — | 都没有 | — | 返回 `NO_PRIVILEGE`，并给出上面三条的具体开启路径 |
 
-换句话说：**现在两条路都需要提权**，区别只在提权的形式和用户要做的操作。
+状态行一眼可见**每类操作各自走了哪条通道**：
 
+```
+device: capture=MediaProjection | input=accessibility | shell=su | ui=accessibility
+```
+
+几个实现上的点：
+
+- **投屏授权在进程重启后失效**（系统的单次令牌语义），重新授权一次即可；控制台「投屏」那行会显示是否有效
+- **无障碍做不了截图**，所以 capture 这条路第一顺位是 MediaProjection，不是无障碍
+- 未授权时**不会静默失败**：错误信息里直接列出「开启无障碍 / 授权投屏 / 装 Shizuku / 用 root」四条路径
+- 三条通道都是同一个 `Backend` 接口的实现，加新通道只加一个类 + 路由表一行，上层与插件不动
 
 ## 为什么不用 Termux
 
@@ -252,7 +267,7 @@ Termux 路线（Termux + proot-distro）能跑任何 Linux 程序，代价是：
 `targetSdk ≤ 28` 是唯一合法绕开方式。代价是无法上架 Google Play。
 
 **Q：为什么 APK 这么大？**
-内嵌了完整的 Node.js（45 MB）+ DSH 及 177 个依赖包 + 一批 coreutils。
+内嵌了完整的 Node.js（45 MB）+ DSH 及其依赖包 + 一批 coreutils。
 解压后约 600 MB，所以首次启动要解包几秒。
 
 **Q：能不能支持 iOS？**
@@ -313,6 +328,7 @@ mkdir -p /sdcard/DSH/.dsh-state && touch /sdcard/DSH/.dsh-state/NO-BACKUP
 - 目录 `fsync` 一路 sync 到根 → `EACCES`
 - `sharp` 等原生图像库无法加载 → 纯 JS 头部解析替代
 - WebView 默认不处理 `<input type=file>`（且必须回传结果，否则永久卡住）
+- 老 WebView 内核（< Chrome 100）缺 `Promise.withResolvers` / `AbortSignal.any` 等新 API，客户端在 import 阶段就死，页面永远停在「重新连接中」→ P26 注入内联 polyfill
 - `dx` 会**静默丢弃**含新版 API 引用的整个类（编译成功 ≠ 代码进包）
 - 客户端插件图为空 → 页面只有 3709 字节
 
@@ -321,12 +337,36 @@ mkdir -p /sdcard/DSH/.dsh-state && touch /sdcard/DSH/.dsh-state/NO-BACKUP
 ## 许可
 
 - **本项目代码**（`app/`、`scripts/`、`patches/`、`tools/`）：MIT，见 [LICENSE](LICENSE)
-- **内嵌的 DSH**：MIT（`@deepseek-ai/dsh` 及其 177 个依赖包）
+- **内嵌的 DSH**：MIT（`@deepseek-ai/dsh` 及其依赖，`node_modules` 下约 568 个包目录）
 - **内嵌的 Termux 二进制**：各自许可证，含 **GPL** 组件（coreutils、bash、busybox）
-- 第三方清单与义务见 [THIRD-PARTY.md](THIRD-PARTY.md)
+- 第三方清单与义务见 [THIRD-PARTY.md](THIRD-PARTY.md)；APK 内的全文声明见
+  `THIRD-PARTY-NOTICES.md`（随载荷打包，装好后在
+  `files/runtime/THIRD-PARTY-NOTICES.md`，诊断页 `http://127.0.0.1:3097/` 也会打出来）
 
-⚠️ **本仓库不包含任何第三方插件**。皮肤类插件往往带有限制性许可
-（例如鲸鱼皮肤为 `CC-BY-NC-SA-4.0`，禁止商用且具传染性），请自行评估后再安装。
+### 关于第三方插件：仓库和 APK 是两件事
+
+**(a) 本仓库不含任何第三方插件源码。** `app/`、`patches/`、`scripts/`、`tools/` 只有本项目
+自己的 MIT 代码；插件不提交进仓库。
+
+**(b) 但发布的 APK 里确实带着两个插件**，它们随载荷（`assets/runtime.tar.gz`）打进包，
+源码不在本仓库（下表还留着一个已移除的，用删除线标出）：
+
+| APK 内的插件 | 许可 | 用途 / 说明 |
+|---|---|---|
+| `dsh-screen-operate` 0.1.5 | **未声明 —— 许可待作者确认** | 本机识屏与操作，核心功能。`package.json` 没有 `license` 字段，包内也没有 `LICENSE`；拿到作者明确许可前不构成对外再分发授权 |
+| ~~`dsh-boot-animation` 0.4.2~~ | ~~BSD-3-Clause~~ | 片头动画，纯装饰。**自 1.0.19-beta16 起已从载荷移除**（用户要求）。白屏自愈探针曾以为依赖它注入的 `window.__DSH_BOOT__`，实测那个全局是外壳 HTML 自己写的（`dsh-client-modules`），探针现改为按 `#root` 的渲染内容判断 |
+| `dsh-web-mobile` 3.0.5 | **MIT**（作者 mexiaosh） | **手机端界面适配**：把 Web UI 在竖屏/窄屏上排成可用布局，不是可选装饰——没有它手机浏览器里是桌面宽度界面；已随附 MIT 全文（版权行照录包内 `LICENSE`） |
+
+许可义务以上面的 `THIRD-PARTY-NOTICES.md` / [THIRD-PARTY.md](THIRD-PARTY.md) 为准。
+
+有两个插件**曾经**出现在早期 APK 里，现已移除：`dsh-skin-whale-fantasy`
+（`CC-BY-NC-SA-4.0`，禁止商用且具传染性，不能随包分发）、`dsh-pro-mode-splash`
+（MIT，纯装饰）。升级安装时应用会清掉 profile 配置里遗留的对应行 —— 留着会让 Loader
+因「引用了不存在的插件」启动失败。
+
+`dsh-web-mobile` 也在 beta13/beta14 里被当成「非必要」删过一次，但那是判断错误：它就是
+手机界面适配本身。自 `1.0.19-beta15` 起已放回载荷（MIT 合规），`pruneRemovedRows()` 的
+`REMOVED_PLUGINS` 里也已去掉它。
 
 ---
 

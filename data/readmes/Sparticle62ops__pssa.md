@@ -530,7 +530,9 @@ allocations measured in days instead of hours. Anything meaningfully above the
 entry-level card this ran on changes what can be asked.
 
 If you have compute to grant, or you work somewhere that does, that is the
-single highest-leverage thing anyone can offer this project.
+single highest-leverage thing anyone can offer this project. The immediate
+milestone is a 105M-parameter run trained from scratch, with a same-scale
+transformer baseline, so the comparison above finally gets asked at scale.
 
 ### Sponsorship
 

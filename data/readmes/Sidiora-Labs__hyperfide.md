@@ -2,7 +2,7 @@
 
 # Hyperfide
 
-<img src="https://supabase.paxeer.app/storage/v1/object/public/json/readme_codify.png">
+<img src="https://supabase.paxeer.app/storage/v1/object/public/paxeer/img_centra_10.svg">
 <a
   href="https://trendshift.io/repositories/267432?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-267432" target="_blank" rel="noopener noreferrer">
 <img src="https://trendshift.io/api/badge/trendshift/repositories/267432/daily?language=C" alt="Sidiora-Labs%2Fcodify | Trendshift" width="250" height="55"/>
@@ -10,7 +10,6 @@
 
 **The agent workflow tool that scales from small, simple projects to large, complex codebases.**
 
-The local CLI is pure C11: one binary, one SQLite database, no telemetry.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
 [![Language: C11](https://img.shields.io/badge/Language-C11-lightgrey?style=for-the-badge)](#)
@@ -23,6 +22,23 @@ The local CLI is pure C11: one binary, one SQLite database, no telemetry.
 
 ---
 
+## Platform runtime
+
+The runtime under `platform/` adds browser, desktop and mobile surfaces, a
+server, host daemons and provider plugins to the C binary and control plane.
+Use Node 24 and pnpm 9.15: `pnpm -C platform install --frozen-lockfile`, then
+`pnpm -C platform dev`. The public command is `hyperfide platform --help`.
+
+| Command | Description |
+| --- | --- |
+| `hyperfide platform <args...>` | Front door to the platform runtime CLI: runs `HYPERFIDE_PLATFORM_BIN`, the repository's `platform/apps/cli/bin/hyperfide-platform`, or `hyperfide-platform` on PATH, in that order, passing arguments, streams and exit status through untouched |
+
+The [platform guide](docs/hyperfide/platform.md) describes runtime
+capabilities, authority plugins, fleet, slices and memory integration boundaries,
+and names the qualification command for each. The
+[operations guide](docs/hyperfide/operations.md) records measured image and index
+costs. A worker finishing a thread does not mark its spec task qualified.
+
 ## Overview
 
 Run `hyperfide platform --help` for the Hyperfide platform runtime commands.
@@ -31,7 +47,6 @@ The front door preserves arguments, streams and exit codes; see the
 
 Hyperfide is an agent workflow engine in a single binary, `hyperfide`. It maintains the four things a project needs beyond the code itself — what the code **is**, how it got **here**, what happens **next**, and what was **learned** along the way — and serves all four to humans and AI agents alike.
 
-This tree is Hyperfide 2.0 in development: `hyperfide version` prints `2.0.0-dev`, and nothing in it is a production release. Hyperfide grew out of Codify, whose 1.x releases, feature IDs (such as `codify-v15` and `codify-v16`) and commit history keep their original names. 2.0 adds a [distributed control plane](#the-hyperfide-control-plane) — a leader and feature managers on a supervisory server, remote sandboxes for builds and agents, PostgreSQL as the authority — around the same local CLI.
 
 > **Compatibility.** `hyperfide` is the canonical command. `cg` is a deprecated compatibility alias installed from the same executable, with identical arguments, JSON and exit codes; it stays for the supported compatibility window of the approved release and is removed only in a later release that announces it. Every example below uses `hyperfide`; `cg` runs the same thing.
 
@@ -195,6 +210,7 @@ Environment variables are spelled `HYPERFIDE_*` throughout. The older `CG_*` nam
 | `hyperfide init [--nested] [--force]` | Create `.codegraph/` and build the initial index; inside a linked git worktree of an initialized repository, join the shared graph under this branch instead. Refuses inside an enclosing project (`--nested` makes this directory its own) and in your home directory (`--force`) |
 | `hyperfide sync [paths] [--max-age MS] [--background] [--wait MS] [--auto] [--workers N]` | Incremental index: coalesces into a pass already running (`--wait`, default 2000 ms), skips when fresh, and walks only the paths named; `--auto` marks an implicit sync that `[sync] auto = false` skips |
 | `hyperfide index [--full] [--workers N]` | The blocking form of sync that always walks, waiting for a pass already running. `--workers N` (on both) beats `HYPERFIDE_INDEX_WORKERS` and `[index] workers` in the project configuration. Exits 75 when the database stays busy past the lock wait |
+| `hyperfide index-status [--json]` | Indexed file and symbol counts for the current branch; `--json` adds the total counts plus per-file paths and symbol counts |
 | `hyperfide branches` | Every branch indexed into the shared graph, with its worktree, head, base, and file count |
 | `hyperfide search <q> [-n N]` | Symbol and full-text search (default 20 results; `--path`, `--lang`, `--kind`, `--name`, `--no-tests` narrow it): a phrase matches names (`export memory` finds `memory_export` and `exportMemory`), doc comments and bodies, ranked in that order with source before tests; file hits show the matching line. Definitions answer, never their prototypes; a bounded typo fallback applies when exact and segment matches find nothing ([docs/retrieval.md](docs/retrieval.md)) |
 | `hyperfide grep <pattern> [-E] [-i]` | Line search instead of a shell grep: a literal (or `-E` regex) found through the trigram index, read from disk, each hit placed in its enclosing symbol, ranked and capped by `-n` and `--budget` with the omitted tail; `--path`, `--lang`, `--no-tests`, `--symbol`, `--kind`, `-C`, `--files`, `--count` ([docs/retrieval.md](docs/retrieval.md)) |
@@ -789,10 +805,4 @@ The extension displays as Hyperfide Workflow; its package and Marketplace identi
 ```sh
 make                     # build ./hyperfide and its byte-identical copy ./cg
 make unit                # C unit tests          (tests/unit/*.c against build/libcg.a)
-make integration         # end-to-end CLI tests  (tests/integration/*.sh in sandboxes)
-make test                # both
-make hyperfide-services  # build the TypeScript control services (after make hyperfide-deps)
-make hyperfide-check     # type-check them
-```
-
-`make release` runs `scripts/release.sh`, which constructs a checksummed release on a remote executor and never publishes it. It needs `scripts/release.sh --output DIR` and `HYPERFIDE_BUILD_PLACEMENT=remote`, plus the pinned Node, npm and Python toolchain it checks for; plain `make release` passes no `--output` and stops with `hyperfide release: --output is required
+make integration         # end-

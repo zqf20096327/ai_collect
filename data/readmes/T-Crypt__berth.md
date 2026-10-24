@@ -42,7 +42,7 @@ claim. When another engine holds it, Berth:
 The numbered markers on the timeline are those four steps. A process that holds VRAM without a lease
 shows up as a stowaway: Berth reports its PID and memory and leaves it running.
 
-> **Status: alpha, v0.3.5.** Runs daily on an RTX 4090 workstation beside llama-swap, NInfer,
+> **Status: alpha, v0.3.6.** Runs daily on an RTX 4090 workstation beside llama-swap, NInfer,
 > Strata, ComfyUI and games, and testers run it on Windows. The [docs](docs/README.md) cover what works and has tests; the
 > [roadmap](docs/roadmap.md) lists the phases and what is still missing.
 
@@ -149,7 +149,7 @@ line goes away.
 
 **Built for agents and scripts**
 - **`berth skill install`** teaches Claude Code, Codex, OpenCode, Hermes Agent and other agents to ask Berth
-  for the card instead of killing GPU processes.
+  for the card instead of killing GPU processes, and to set up and run ComfyUI image generation through Berth.
 - Every reporting command takes `--format json|yaml`. All of them keep results on stdout and
   diagnostics on stderr, and exit 0, 1 or 2 by one rule.
 
@@ -284,7 +284,16 @@ The table of cards Berth has run on, and how to add yours, is in
 
 ## Swap numbers
 
-Measured switch times on the reference RTX 4090 are in [Benchmarks](docs/benchmarks.md#swap-numbers).
+On the reference RTX 4090 with 62.5 GiB of RAM, one chat request through llama-swap, from the
+request to the reply, lease included (2026-10-23):
+
+| Switch | Time |
+|---|---|
+| A 21 GB chat model, file in the page cache | 5.6 s |
+| ComfyUI parks in RAM | under 1 s |
+| ComfyUI to a 27B chat model | 13.6 to 16.3 s |
+
+Strata's numbers and the method are in [Benchmarks](docs/benchmarks.md#swap-numbers).
 
 ## Roadmap
 

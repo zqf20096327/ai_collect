@@ -101,7 +101,7 @@ Make sure `~/.cargo/bin` is in your PATH (restart your terminal or run `source ~
 
 ```bash
 # Clone the repo
-git clone https://github.com/redbasecap-buiss/ssd-llm.git
+git clone https://github.com/quantumnic/ssd-llm.git
 cd ssd-llm
 
 # Build and install to ~/.cargo/bin (available as `ssd-llm` globally)

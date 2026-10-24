@@ -17,6 +17,7 @@ Designed for readable implementations, reproducible experiments, and explicit va
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-eb6834)](CONTRIBUTING.md)
 [![Stars](https://img.shields.io/github/stars/krishanth7/EveryO?style=flat&color=eda100)](https://github.com/krishanth7/EveryO/stargazers)
 [![GitGem](https://gitgem.org/api/badge/github/krishanth7/EveryO.svg)](https://gitgem.org/github/krishanth7/EveryO)
+[![XERJ Corpus Hub contributor](https://hub.xerj.org/contributors/krishanth7/badge.svg)](https://hub.xerj.org/contributors/krishanth7)
 
 **[What is EveryO?](#what-is-everyo) · [What you would use it for](#what-you-would-use-it-for) · [Quick start](#-quick-start-60-seconds) · [Capabilities](#-what-it-actually-does) · [Results](#-results-from-a-real-run) · [Correctness](#-correctness-is-the-feature) · [Architecture](#-architecture) · [Roadmap](#-roadmap--all-shipped) · [Contribute](#-contributing) · [Governance](#-governance-and-project-policies)**
 

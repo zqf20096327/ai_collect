@@ -158,7 +158,7 @@ quantization phase and the previous backend is restored afterwards. Set
 * ✨ Stable `hf_` [packing/repacking API](docs/hf_packing_api.md) for layer-wise kernel feasibility, packing, and repacking used by external integrators such as AutoRound.
 * 🚀 [vLLM](https://github.com/vllm-project/vllm) and [SGLang](https://github.com/sgl-project/sglang) inference integration for quantized models. SGLang supports GPTQ `FORMAT.GPTQ`/`FORMAT.GPTQ_V2`/`FORMAT.MARLIN` and AWQ `FORMAT.GEMM`/`FORMAT.MARLIN`.
 * ✨ GPTQ, AWQ, ParoQuant, QQQ, VPTQ, GGUF, FP8, EXL3, GPTAQ, and FOEM quantization support.
-* ✨ Current GGUF tensor assignments are supported, with native quantization and dequantization for `Q1_0`, `Q2_0`, `TQ1_0`, `TQ2_0`, and `MXFP4`, plus native `NVFP4` dequantization. See the [GGUF compatibility notes](docs/prism-bonsai-gguf.md).
+* ✨ All current GGUF quantized tensor types are supported end to end for CPU quantization and inference: every `Q*_0`/`Q*_1`, `Q2_K`-`Q8_K`, `IQ1_S`-`IQ4_XS`, `TQ1_0`/`TQ2_0`, `MXFP4`, `NVFP4`, `Q1_0`, `Q2_0`, and the `Q1_0_g128` sign-only variant. Install the bindings with `pip install gptqmodel[gguf]` (`gguf>=0.19.0`, `llama-cpp-python>=0.3.36`). CPU inference uses llama.cpp's native SIMD kernels (`BACKEND.GGUF_CPP_CPU`) with a per-shape autotuned Torch fallback. Native ggml dot kernels also quantize activations, so outputs can differ from weight-only Torch inference; set `GPTQMODEL_GGUF_CPP_NATIVE_MATMUL=0` to keep the Torch path. `Q8_1`/`Q8_K` always use Torch, including when native execution is forced, since upstream ggml exposes no matmul for them. CPU dequantization reconstructs weights in FP32 before casting to FP16/BF16. See the [GGUF compatibility notes](docs/prism-bonsai-gguf.md).
 * 🚀 Routing-aware MoE quantization controls for extreme activation bias via `Moe.Routing` and/or `FailSafe`.
 * 🚀 Data Parallelism for 80%+ quantization speed reduction with Multi-GPU.
 * 🚀 Optimized for Python >= 3.13t (free threading) with lock-free threading.
@@ -493,6 +493,39 @@ model.quantize(calibration_dataset, batch_size=1)
 
 model.save(quant_path)
 ```
+
+#### Calibration grid workspaces
+
+GPTQ/QQQ MSE shrink searches and AWQ clipping searches evaluate candidates in
+chunks. Their temporary workspace targets can be adjusted per
+`QuantizeConfig` via `MSEConfig` on the `mse` field (a bare float, e.g.
+`mse=2.4`, still works and only sets the search exponent `norm`):
+
+```py
+from gptqmodel import GPTQConfig, MSEConfig
+
+quant_config = GPTQConfig(
+    bits=4,
+    group_size=128,
+    mse=MSEConfig(norm=2.4, grid_budget="64M", clip_grid_budget="64M"),
+)
+```
+
+| `MSEConfig` field | Search | CPU default | GPU default |
+|---|---|---:|---:|
+| `norm` | MSE objective exponent (`0` disables the search) | — | — |
+| `grid_budget` | GPTQ/QQQ MSE shrink grid | `16M` | `256M` |
+| `clip_grid_budget` | AWQ clipping grid | `16M` | `256M` |
+
+Budget values are byte counts (ints) or strings with a `K`/`M`/`G` postfix
+(e.g. `"256M"`, `"1G"`).
+
+Set either field to `0` to evaluate one candidate at a time; AWQ also uses
+one-token product tiles. These are chunk-sizing targets, not limits on total
+process memory: AWQ sizes its scratch buffers independently, and a single
+candidate, full-token error buffer, or minimum product tile can exceed the
+target. These settings affect calibration scratch only, not stored quantized
+weights.
 
 #### Checkpoint and Resume Long Quantization Jobs 💾
 

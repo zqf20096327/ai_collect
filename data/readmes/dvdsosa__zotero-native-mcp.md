@@ -15,14 +15,7 @@ collections, add references, and attach PDFs from your disk.
 Every operation runs against the Zotero application on `127.0.0.1`. **No
 zotero.org account. No web API key. No Zotero plugin. No cloud round trip.**
 
-```text
-You:     "File that arXiv paper under Thesis > Methods and attach the PDF
-          I just downloaded."
-
-Claude:  ✓ created collection "Methods" under "Thesis"
-         ✓ added "Attention Is All You Need" (Vaswani et al., 2017)
-         ✓ attached transformer.pdf                          … in 180 ms
-```
+![Claude files a paper into a Zotero collection, then renames 290 tags across the library, all through zotero-native-mcp](docs/images/demo.gif)
 
 ## Why this exists
 

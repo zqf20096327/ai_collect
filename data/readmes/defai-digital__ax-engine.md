@@ -36,7 +36,7 @@ MiniCPM-V, and others) are documented under
 
 - **Mac mini M4 Pro 64 GB** — best experience and qualification SKU for Qwen 3.8 27B AXQ (`qwen3.8-27b:axq`); MXFP4 SKU qualification pending
 - **MacBook Pro M5 Max 128 GB** — qualification and certification standard for Qwen 3.8 Flash Next MXFP4 MTP
-  (125B-A6B). Second SKU. Qualification and certification standard: MacBook Pro M5 Max 128 GB, single-stream resident (one request at a time, MTP off, contexts up to 32k). MXFP4 MTP target; native functional controls verified; direct-default release gates passed on one larger host and do not certify this standard by themselves; model MTP is an explicit experimental opt-in. MTP Tier 2 pending. AX certification record: Candidate (standard host MacBook Pro M5 Max 128 GB; MTP gates open). `qwen3.8-flash-next:axq` and `qwen3.8-flash-next:mxfp4` select the pinned MXFP4 MTP pack.
+  (125B-A6B). Second SKU. Qualification and certification standard: MacBook Pro M5 Max 128 GB, single-stream resident (one request at a time, MTP off, contexts up to 32k). MXFP4 MTP target; native functional controls verified; direct-default release gates passed on this standard host; model MTP is an explicit experimental opt-in. MTP Tier 2 pending. AX certification record: Candidate (direct-default release gates passed on MacBook Pro M5 Max 128 GB; MTP gates open). `qwen3.8-flash-next:axq` and `qwen3.8-flash-next:mxfp4` select the pinned MXFP4 MTP pack.
   Start the server with `--max-concurrent-requests 1`. Measured decode on one machine: 32 / 32 / 28 tok/s at 2k / 8k / 32k context.
   Historical 6-bit numbers do not qualify MXFP4. This host is also the benchmark host for other packs.
 - **Mac Studio, Ultra-class Apple Silicon (M2 Ultra or newer) with 192 GB+ RAM** — larger-memory host for the same Flash Next pack.
@@ -139,7 +139,7 @@ sw_vers -productVersion  # must print 26.0 or higher
    python3.13 -m venv "$HOME/.venvs/ax-engine"
    source "$HOME/.venvs/ax-engine/bin/activate"
    python -m pip install --upgrade pip
-   python -m pip install --upgrade "ax-engine[download]>=7.8.0,<8"
+   python -m pip install --upgrade "ax-engine[download]>=7.9.0,<8"
    ax-engine doctor
    ```
 
@@ -203,6 +203,8 @@ copy; keep one channel per shell. See [Getting Started](docs/GETTING-STARTED.md)
 for the full channel comparison and troubleshooting.
 
 ### Run AX Engine
+
+A native macOS app is also available as a [source build](docs/MACOS-APP.md), with model downloads, server controls and streaming chat. The CLI and TUI remain supported.
 
 **Option A — interactive TUI** (pick a model, download, serve, chat):
 

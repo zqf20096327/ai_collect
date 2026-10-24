@@ -16,6 +16,38 @@
 
 **Web Scraper** is a powerful, production-ready web scraping and research tool with full-stack capabilities. It combines a Python FastAPI backend with a modern React Next.js frontend, featuring LLM-powered research capabilities with citation support.
 
+### Install
+
+The MCP server for web search and reading that Dot, the always-on agent for macOS, uses ships as a Python package, `dotagent-web-research` (the import package is `web_scraper`):
+
+```bash
+pip install dotagent-web-research
+# or, as a command of its own
+uv tool install dotagent-web-research
+```
+
+It installs two commands: `web-research-mcp`, the MCP server over stdio (tools `web_search`, `web_scrape`, `web_map`, `web_extract`, `web_health`, `web_crawl_start`, `web_crawl_status`, `web_crawl_results`, `web_crawl_cancel`), and `web-scraper`, the CLI and REST server described below. The headless-browser fallbacks are extras: `pip install "dotagent-web-research[camoufox]"` or `"[playwright]"`.
+
+#### The tools, and what 1.3.0 added to them
+
+| Tool | New in 1.3.0 |
+|---|---|
+| `web_search` | `compact` (the default over MCP: per result `title, url, domain, date, date_confidence, source_type, snippet, score`, and a `run` block with `provider`, `warnings`, `fallback`), `debug` (adds facets, queries, timings, score parts), `resolve_dates` (reads the head of the top pages for their dates; on for news and date ranges), `strict_dates` (drops undated and low-confidence results and says how many), `primary_first` (official sites and mainstream news lead; on for news). Results carry `date_confidence` and `date_conflicts`; the source type `aggregator` ranks lower. Providers heal: a wall earns a 10-minute cooldown, healthy providers go first, and `BRAVE_SEARCH_API_KEY` / `SERPER_API_KEY` turn on Brave and Serper (asked first, DuckDuckGo behind). A deep search no longer cuts its primary-source angle at 5 seconds. |
+| `web_scrape` | `date`, `date_source`, `date_confidence`, `date_conflicts` (every date signal of the page weighed); `recover` (a walled page is read through the archive, its AMP or print form, its feed or another outlet, and says which: `recovered_from`, `alternates`, `next_action`); `lean`; `content_id` with `offset` (reads on in a page that `max_chars` cut, from the cache); the page's Markdown comes as a text block of its own, with its line breaks. |
+| `web_extract` | The same `date*` fields; a named `published_at` is held to them. |
+| `web_health` | New: each search provider's state (`ok`, `degraded`, `cooling` with the time left, `no_key`), calls, `block_rate`, mean latency, last error. |
+| `web_map`, `web_crawl_*` | Unchanged. |
+
+[CHANGELOG.md](CHANGELOG.md) has the decisions; [docs/web-tools.md](docs/web-tools.md) the settings.
+
+**How Dot uses it.** Dot's package depends on this one, so a fresh Dot install brings it. Dot starts `web-research-mcp` as one of its MCP servers (named `web-research`) and its tools reach the agent as `mcp__web-research__web_search`, `mcp__web-research__web_scrape` and so on. In Dot's `config.toml` it is one table; [docs/web-tools.md](docs/web-tools.md) has it and the settings (`WEB_TOOLS_*`) the server reads.
+
+```toml
+[[mcp]]
+name = "web-research"
+command = "web-research-mcp"
+```
+
 ### Features
 
 - **Dual Interface**: CLI commands and REST API
@@ -23,7 +55,7 @@
 - **LLM Research Tool**: AI-powered web research with citations
 - **Async Architecture**: High-performance concurrent scraping
 - **Production Ready**: Docker, monitoring (Prometheus/Grafana), rate limiting, circuit breaker
-- **Security First**: SSRF protection, input validation, security headers
+- **Security First**: SSRF protection, input validation, security headers. The server connects only to an address it checked in the same step: a host name is resolved once, every address must be public, and the connection goes to those addresses, never to a second lookup (so a DNS-rebinding answer cannot steer a read to the loopback or the home network); the IPv6 forms that carry a private IPv4 address are refused too. What this does not cover, the headless browser's own name resolution among it, is in [docs/web-tools.md](docs/web-tools.md#security-boundaries).
 - **Multi-language UI**: English and Turkish language support
 - **Streaming Support**: Real-time research progress via Server-Sent Events (SSE)
 - **Code Block Preservation**: Scraper preserves code blocks from source pages with syntax highlighting
@@ -129,6 +161,20 @@ MIT License
 
 **Web Scraper**, güçlü ve üretim ortamına hazır bir web kazıma ve araştırma aracıdır. Python FastAPI backend ile modern React Next.js frontend'i birleştirir, alıntılı LLM destekli araştırma özelliklerine sahiptir.
 
+### Kurulum
+
+Dot'un (macOS için her zaman açık ajan) kullandığı web arama ve okuma MCP sunucusu bir Python paketi olarak gelir: `dotagent-web-research` (içe aktarılan paket `web_scraper`):
+
+```bash
+pip install dotagent-web-research
+# veya kendi başına bir komut olarak
+uv tool install dotagent-web-research
+```
+
+İki komut kurar: stdio üzerinden MCP sunucusu `web-research-mcp` ve aşağıda anlatılan CLI ile REST sunucusu `web-scraper`. Araçlar: `web_search`, `web_scrape`, `web_map`, `web_extract`, `web_health` (1.3.0: her sağlayıcının durumu), `web_crawl_start`, `web_crawl_status`, `web_crawl_results`, `web_crawl_cancel`. 1.3.0 tarihleri güvenilir kılar (`date_confidence`, `date_conflicts`; `resolve_dates`, `strict_dates`), engellenen sayfayı başka yoldan okur (`recover`: arşiv, AMP/yazdırma biçimi, besleme, başka yayıncı), çıktıyı küçültür (`compact`, `lean`, `content_id` ile `offset`) ve sağlayıcıları iyileştirir (10 dakikalık soğuma, isteğe bağlı Brave ve Serper anahtarları). Headless tarayıcı yedekleri ek pakettir: `pip install "dotagent-web-research[camoufox]"` veya `"[playwright]"`.
+
+**Dot bunu nasıl kullanır.** Dot'un paketi buna bağlıdır; yeni bir Dot kurulumu bunu da getirir. Dot `web-research-mcp`'yi MCP sunucularından biri olarak (`web-research` adıyla) başlatır; araçlar ajana `mcp__web-research__web_search`, `mcp__web-research__web_scrape` gibi görünür. Ayrıntı ve ayarlar için [docs/web-tools.md](docs/web-tools.md).
+
 ### Özellikler
 
 - **Çift Arayüz**: CLI komutları ve REST API
@@ -136,7 +182,7 @@ MIT License
 - **LLM Araştırma Aracı**: Alıntılı AI destekli web araştırması
 - **Asenkron Mimari**: Yüksek performanslı eşzamanlı kazıma
 - **Üretim Hazır**: Docker, izleme (Prometheus/Grafana), hız sınırlama, circuit breaker
-- **Güvenlik Öncelikli**: SSRF koruması, giriş doğrulama, güvenlik başlıkları
+- **Güvenlik Öncelikli**: SSRF koruması, giriş doğrulama, güvenlik başlıkları. Sunucu yalnızca aynı adımda denetlediği bir adrese bağlanır: ana makine adı bir kez çözülür, her adres genel (public) olmalıdır ve bağlantı o adreslere yapılır, ikinci bir sorguya değil (DNS rebinding yanıtı bir okumayı loopback'e ya da ev ağına yöneltemez); özel IPv4 adresi taşıyan IPv6 biçimleri de reddedilir. Kapsamadığı şeyler (başsız tarayıcının kendi ad çözümlemesi dahil) [docs/web-tools.md](docs/web-tools.md#security-boundaries) içindedir.
 - **Çok Dilli UI**: İngilizce ve Türkçe dil desteği
 - **Yayın Akışı**: Sunucu Tarafından Gönderilen Olaylar (SSE) ile gerçek zamanlı araştırma ilerlemesi
 - **Kod Bloğu Koruma**: Kaynak sayfalardan kod blokları söz dizimi vurgulamasıyla korunur

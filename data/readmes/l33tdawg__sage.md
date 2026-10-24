@@ -100,7 +100,7 @@ docker run -d --name sage \
   ghcr.io/l33tdawg/sage:latest
 ```
 
-Pin a specific version with `ghcr.io/l33tdawg/sage:11.24.1`.
+Pin a specific version with `ghcr.io/l33tdawg/sage:11.24.2`.
 
 The SAGE server stays in that container. To give a local MCP client a stdio
 bridge, start a second process **inside the same running container**:
@@ -317,7 +317,15 @@ uses re-enrollment; historical memory authorship is preserved.
 ---
 
 <details>
-<summary>Recent release notes (v11.24.1 and earlier)</summary>
+<summary>Recent release notes (v11.24.2 and earlier)</summary>
+
+## What's New in v11.24.2
+
+**PostgreSQL stats now exclude deprecated memories from totals and per-domain counts, matching SQLite.** Status counts and last activity retain their audit history.
+
+**CEREBRUM timelines now include in-range memories at fractional-second date boundaries.** Whole-second and fractional bounds keep exact inclusive timestamp checks and canonical visibility checks.
+
+**No consensus change or chain migration.** App-v29 remains active. Container: `ghcr.io/l33tdawg/sage:11.24.2`. SDK 11.24.2.
 
 ## What's New in v11.24.1
 
@@ -1016,13 +1024,4 @@ Container: `ghcr.io/l33tdawg/sage:11.19.8`. SDK 11.19.8.
 ## What's New in v11.19.5
 
 **Claim recovery and host wake coordination now survive real multi-transport
-runtimes.** Both exact-local compatibility claim paths—`GET /v1/pipe/inbox`
-and explicit `PUT /v1/pipe/{pipe_id}/claim`—atomically bind the session and
-create its receipt, so ownership cannot commit without recovery evidence. MCP
-claimant identities are durable and transport-scoped across stdio,
-Streamable HTTP, and SSE; `claimant_identity_mode` discloses whether the
-identity is durable, a safe concurrent ephemeral fallback, inherited, or
-unavailable.
-
-Claim transfer remains deliberate. `sage_message_handoff` requires the exact
-`claimant_session_id` and `claim_revisio
+runtimes.** Both exact-local compatibility claim paths—`G

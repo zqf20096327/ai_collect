@@ -2,11 +2,8 @@
 
 **Audit tools for AI literature reviews.** CiteProof checks that a review's citations, quotes, counts and risk-of-bias judgements hold up. It comes in two parts: an **MCP server** for Claude Science and other research agents, and a full **research assistant app** that writes evidence-grounded papers.
 
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE) ![Python 3.12+](https://img.shields.io/badge/python-3.12+-3776AB?style=flat-square&logo=python&logoColor=white) ![MCP](https://img.shields.io/badge/MCP-24%20tools-5A45FF?style=flat-square) ![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white) ![LangGraph](https://img.shields.io/badge/LangGraph-1C3C3C?style=flat-square) ![Pydantic v2](https://img.shields.io/badge/Pydantic-v2-E92063?style=flat-square&logo=pydantic&logoColor=white) ![Docker](https://img.shields.io/badge/Docker-ready-2496ED?style=flat-square&logo=docker&logoColor=white)
 
-[![Live demo](https://img.shields.io/badge/demo-live-2ea44f?style=flat-square)](https://deep-research-ai-xi.vercel.app/) ![Frontend on Vercel](https://img.shields.io/badge/frontend-Vercel-000000?style=flat-square&logo=vercel&logoColor=white) ![Backend on FastAPI Cloud](https://img.shields.io/badge/backend-FastAPI%20Cloud-009688?style=flat-square&logo=fastapi&logoColor=white) [![GitHub stars](https://img.shields.io/github/stars/Aryan-Pardeshi/CiteProof-AI-MCP?style=flat-square)](https://github.com/Aryan-Pardeshi/CiteProof-AI-MCP/stargazers) ![Last commit](https://img.shields.io/github/last-commit/Aryan-Pardeshi/CiteProof-AI-MCP?style=flat-square)
-
-**🔗 Live demo of the research app → [deep-research-ai-xi.vercel.app](https://deep-research-ai-xi.vercel.app/)**
+**🔗 Research Web → [CiteProof.top](https://citeproof.top/)**
 
 ## Contents
 
@@ -321,7 +318,7 @@ MIT, see [LICENSE](LICENSE). Two files inside the MCP server are adapted from An
 
 ---
 
-## Star history
+## Star History
 
 <a href="https://www.star-history.com/?repos=aryan-pardeshi%2Fciteproof-ai-mcp&type=date&legend=top-left">
  <picture>

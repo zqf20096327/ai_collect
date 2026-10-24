@@ -25,11 +25,14 @@ autocontext is a harness for agent improvement. Give it a goal, it runs the task
 
 ## Install
 
+For Python CUDA/SFT installation, follow the [maintained Accelerate build guide](docs/security/accelerate-risk-assessment.md).
+Published installations must install the bundled security build before adding the CUDA extra; source checkouts use the locked uv source.
+
 | Surface             | Command                               |
 | ------------------- | ------------------------------------- |
 | Python CLI          | `uv tool install autocontext==0.19.1` |
 | Python library/dev  | `uv pip install autocontext==0.19.1`  |
-| TypeScript/Node CLI | `bun add -g autoctx@0.19.0`           |
+| TypeScript/Node CLI | `bun add -g autoctx@0.19.1`           |
 | Pi extension        | `pi install npm:pi-autocontext@0.12.0` |
 
 The PyPI package is `autocontext`; the CLI is `autoctx`. The npm package is `autoctx` (not the unrelated `autocontext` npm package). Provider variables live in [`.env.example`](.env.example).

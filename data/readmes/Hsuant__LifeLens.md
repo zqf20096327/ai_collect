@@ -1,25 +1,32 @@
 # LifeLens
 
-> 旅游数据爬取与分析系统 —— 从携程等平台采集景点信息、详情与用户评论，为旅行决策提供数据支撑。
+> 旅游数据爬取与分析系统 —— 从携程、去哪儿等平台采集景点信息、详情与用户评论，为旅行决策提供数据支撑。
+
+> **免责声明**
+>
+> 请以学习与研究为目的使用本项目。禁止将本项目用于商业用途、大规模或高频采集、绕过平台访问控制，以及任何违反法律法规或平台规则的行为。使用者应自行确认采集行为的合规性，并承担因使用本项目产生的一切责任。项目作者不对任何直接或间接损失、数据使用后果或法律纠纷负责。
+>
+> 详细条款见 [使用须知](#使用须知) 与 [License](#license)。
 
 ## 功能概览
 
 **已实现**
 
-- **全链路采集**：携程景点列表、详情、评论一站式爬取；美团平台已预留模块位
-- **ID 自动解析**：根据景点名或地区名自动定位 `poi_id` / `district_id`，无需手动查询
-- **流水线编排**：`list → detail → comments` 一键串联，单个入口支持景点、地区、关键词三种模式
+- **全链路采集**：携程与去哪儿景点列表、详情、评论一站式爬取
+- **ID 自动解析**：根据景点名或城市名自动定位 `poi_id` / `district_id`，无需手动查询
+- **流水线编排**：`list → detail → comments` 一键串联，单个入口支持 `sight` / `city` / `poi_id` / `district_id` 四种目标
 - **断点续跑**：中断后重新执行自动跳过已完成景点；评论按页 checkpoint，失败页面单独记录
 - **请求防护**：随机延迟（默认 1-3 秒）、HTTP 非 200 状态码线性退避重试 3 次
 - **集中配置**：API 端点、请求头、超时、分页参数统一管理于 `config.py`
-- **离线测试**：全部单测 mock 网络请求，不依赖真实 API 可用性
-- **统一基础设施**：`BaseSpider` 重试复用与 `StorageBackend` 统一 JSON/CSV 存储已接入各携程模块
+- **离线测试**：核心单测 mock 网络请求，不依赖真实 API 可用性
+- **统一基础设施**：`BaseSpider` 重试、`SpiderLogger` 分级日志、`storage_layout` 统一目录布局与 `StorageBackend` JSON/CSV 存储
 
 **待实现**
 
 - **分析层**：情感分析、词云、地理热图（占位模块与依赖已就位）
 - **数据模型接入**：`Sight` / `Comment` 数据模型替换裸 dict（模型已定义，尚未替换各模块返回值）
 - **代理轮换**：`RequestOptimizer.get_random_proxy()` 已实现，但尚未接入各爬虫的实际请求调用
+- **美团平台**：平台目录已预留，尚未接入
 
 ## 环境要求
 
@@ -46,37 +53,40 @@ pip install -e ".[dev]"           # 基础功能 + 测试依赖
 
 ### 命令行用法
 
-真正可执行的 CLI 是携程流水线模块本身：
+两个平台使用统一的参数名：名称参数为 `--sight`、`--city`，ID 参数为
+`--poi-id`、`--district-id`。
 
 ```bash
-# 已知携程地区 ID：完整流水线（列表 → 详情 → 评论）
-python -m lifelens.platforms.ctrip.pipeline --district-id 9 --city-name 上海 --list-pages 3 --max-comment-pages 50
+# 按景点名称
+python -m lifelens.platforms.ctrip.pipeline --sight "黄鹤楼"
 
-# 已知景点 POI ID：仅详情 + 评论
-python -m lifelens.platforms.ctrip.pipeline --poi-id 10568753 --poi-name 千岛湖
+# 按城市名称
+python -m lifelens.platforms.ctrip.pipeline --city "杭州" --list-pages 3
 
-# 只知道名字：关键词自动解析（景点名或地区名均可）
-python -m lifelens.platforms.ctrip.pipeline --keyword "黄鹤楼"
-python -m lifelens.platforms.ctrip.pipeline --keyword "杭州"
+# 按景点 POI ID
+python -m lifelens.platforms.ctrip.pipeline --poi-id 10568753
 
-# 自定义输出目录
-python -m lifelens.platforms.ctrip.pipeline --keyword "西湖" --output-dir ./out
+# 按地区 ID
+python -m lifelens.platforms.ctrip.pipeline --district-id 9 --list-pages 3
+
+# 去哪儿同样使用 --sight、--city、--poi-id
+python -m lifelens.platforms.qunar.pipeline --city "北京" --max-sights 10
 ```
 
-参数说明（`--keyword` / `--district-id` / `--poi-id` 三选一）：
+参数说明（`--sight` / `--city` / `--poi-id` / `--district-id` 四选一）：
 
 | 参数 | 说明 | 默认值 |
 |------|------|--------|
-| `--keyword` | 景点名或地区名，自动解析 ID | `""` |
+| `--sight` | 景点名称，自动解析 POI ID | `""` |
+| `--city` | 城市名称，自动解析地区 ID | `""` |
+| `--poi-id` | 景点 POI ID | `None` |
 | `--district-id` | 携程地区 ID | — |
-| `--poi-id` | 景点 POI ID | `""` |
-| `--poi-name` | 景点名称（用于目录/文件命名） | `""` |
-| `--city-name` | 城市名（地区模式用于目录命名） | `""` |
 | `--list-pages` | 景点列表爬取页数 | `None`（不限制，自动爬取所有页） |
 | `--max-comment-pages` | 每个景点评论最大爬取页数 | `None`（不限制，爬取所有页） |
 | `--output-dir` | 输出根目录 | `data` |
 
-> 注：顶层入口 `python -m lifelens`（或安装后的 `lifelens` 命令）目前只是子命令路由占位（`ctrip-list` / `ctrip-detail` / `ctrip-comments` 尚未接入），请直接使用上面的模块入口。
+> 注：Qunar 评论接口暂不支持地区 ID 查询，因此 `--district-id` 仅适用于
+> Ctrip；Qunar 请使用 `--city`。
 
 ### 编程式用法
 
@@ -85,11 +95,11 @@ from lifelens.platforms.ctrip.pipeline import CtripPipeline
 
 pipeline = CtripPipeline(output_dir="data")
 
-# 推荐主入口：同一个 run() 支持指定景点、指定地区、关键词自动识别
-result = pipeline.run(poi_id="10568753", poi_name="千岛湖")
-result = pipeline.run(district_id=9, city_name="上海", list_pages=5, max_comment_pages=50)
-result = pipeline.run(keyword="杭州", list_pages=5, max_comment_pages=50)
-result = pipeline.run(keyword="黄鹤楼", max_comment_pages=50)
+# 统一主入口：名称用 sight / city，ID 用 poi_id / district_id
+result = pipeline.run(poi_id="10568753")
+result = pipeline.run(district_id=9, list_pages=5, max_comment_pages=50)
+result = pipeline.run(city="杭州", list_pages=5, max_comment_pages=50)
+result = pipeline.run(sight="黄鹤楼", max_comment_pages=50)
 print(result)
 ```
 
@@ -99,8 +109,8 @@ print(result)
 // 地区模式
 {"total": 20, "completed": 18, "failed": 2, "skipped": 0, "elapsed_seconds": 152.3}
 
-// 关键词模式：在上述字段外额外附带
-{"keyword": "杭州", "resolved_type": "district", "resolved_info": {...}}
+// 名称解析模式：在上述字段外额外附带
+{"city": "杭州", "resolved_type": "district", "resolved_info": {...}}
 
 // 景点模式
 {"total": 1, "completed": 1, "failed": 0, "skipped": 0,
@@ -115,9 +125,9 @@ print(result)
 
 | 方法 | 适用场景 | 关键参数 |
 |------|----------|----------|
-| `run()` | 推荐入口，自动识别景点 / 地区 / 关键词 | `keyword` / `district_id` / `poi_id` 三选一 |
-| `run_district()` | 已知携程地区 ID，爬该地区所有景点 | `district_id`, `city_name`, `list_pages`, `max_comment_pages` |
-| `run_sight()` | 已知景点 POI ID，仅详情 + 评论 | `poi_id`, `poi_name`, `max_comment_pages` |
+| `run()` | 统一入口，按景点、城市或 ID 选择任务 | `sight` / `city` / `poi_id` / `district_id` 四选一 |
+| `_run_district()` | 内部地区流水线 | `district_id`, `city`, `list_pages`, `max_comment_pages` |
+| `_run_sight()` | 内部单景点流水线 | `poi_id`, `sight`, `max_comment_pages` |
 
 ### 单模块使用
 
@@ -188,33 +198,46 @@ spider.crawl_multiple_pois([("10568753", "千岛湖"), ("77593", "黄鹤楼")], 
 
 ## 数据输出
 
-地区模式（`run_district()`，目录名取 `city_name`，为空时用 `district_id`）：
+统一目录结构为：
+
+```text
+data/<platform>/<province>/<city>/<sight>_<poi-id>/
+```
+
+省、市优先取平台字段；缺失时从详情地址解析。无法确定的行政区使用
+`Unknown`，不会猜测。
+
+地区任务（`_run_district()`）：
 
 ```
 data/
-└── 上海/
-    ├── sights.json                # 景点列表
-    ├── summary.json               # 运行结果汇总
-    ├── pipeline_progress.json     # 已完成景点 ID 列表
-    ├── details/                   # 景点详情（每景点一个 JSON）
-    │   ├── 10568753.json
-    │   └── 102088.json
-    └── comments/                  # 评论数据（每景点一个 CSV）
-        ├── 10568753_千岛湖秀水街.csv
-        ├── progress.json          # 评论断点进度
-        └── failed_pages.json      # 失败页面记录
+└── ctrip/
+    └── 浙江省/
+        └── 杭州市/
+            ├── sights.json
+            ├── summary.json
+            ├── pipeline_progress.json
+            └── 千岛湖_10568753/
+                ├── detail.json
+                ├── comments.csv
+                ├── comments_progress.json
+                ├── failed_pages.json
+                └── summary.json
 ```
 
-景点模式（`run_sight()`）：
+景点任务（`_run_sight()`）：
 
 ```
 data/
-└── poi_10568753/
-    ├── summary.json
-    ├── details/10568753.json
-    └── comments/
-        ├── 10568753_千岛湖.csv
-        └── progress.json
+└── qunar/
+    └── 北京市/
+        └── 北京市/
+            └── 故宫博物院_989946426/
+                ├── detail.json
+                ├── comments.csv
+                ├── comments_progress.json
+                ├── failed_pages.json
+                └── summary.json
 ```
 
 评论 CSV 采用 `utf-8-sig` 编码（Excel 可直接打开），字段依次为：
@@ -224,9 +247,21 @@ data/
 ## 断点续跑机制
 
 - `pipeline_progress.json`：仅当某景点**详情与评论都成功**时才写入。只成功一项的景点不会被标记完成，下次运行会重新尝试该景点。
-- `comments/progress.json`：按 `{poi_id: {last_page, total_pages, status}}` 记录每个景点的评论爬取进度，重跑时从断点页继续追加写入 CSV。
-- `comments/failed_pages.json`：记录 `{poi_id, page, error, timestamp}`，便于事后定位与补采。
+- `comments_progress.json`：位于景点目录，按 `{poi_id: {last_page, total_pages, status}}` 记录评论断点。
+- `failed_pages.json`：位于景点目录，记录 `{poi_id, page, error, timestamp}`，便于定位与补采。
 - 需要强制重新采集时，删除对应进度文件即可。
+
+日志按平台、组件和日期组织：
+
+```text
+logs/
+├── ctrip/
+│   ├── pipeline_2026-10-24.log
+│   └── comment_spider_2026-10-24.log
+└── qunar/
+    ├── pipeline_2026-10-24.log
+    └── comment_spider_2026-10-24.log
+```
 
 ## 测试
 
@@ -238,7 +273,7 @@ D:\Environments\Anaconda\envs\AI\python.exe -m pytest -q
 python -m pytest -q
 ```
 
-`pyproject.toml` 已配置 `pythonpath = ["src"]`，无需手动设置 `PYTHONPATH`。当前基线：**47 passed**。
+`pyproject.toml` 已配置 `pythonpath = ["src"]`，无需手动设置 `PYTHONPATH`。当前离线基线：**105 passed**。
 
 | 测试文件 | 覆盖内容 |
 |----------|----------|
@@ -248,12 +283,17 @@ python -m pytest -q
 | `test_comment_csv.py` | CSV 表头、字段顺序、跨页追加、断点进度 |
 | `test_comment_pagination.py` | 总页数向上取整计算 |
 | `test_comments_api.py` | 评论 API 响应结构探测 |
-| `test_pipeline_run.py` | `run()` 三种模式的参数分发与关键词解析 |
+| `test_pipeline_run.py` | `run()` 四种目标分发、城市/景点解析与统一 CLI 参数 |
 | `test_log.py` | 日志各级别输出 |
+| `test_logging_standard.py` | 分级日志格式、URL 脱敏、日志文件分组、请求/延迟统计 |
+| `test_storage_layout.py` | 行政区解析、安全路径、平台/省市/景点目录布局 |
 | `test_base_spider.py` | `BaseSpider` 共享重试封装、`CtripBaseSpider` JSON POST、继承契约 |
 | `test_keyboard_interrupt.py` | 评论爬虫与流水线 `Ctrl+C` 中断保留断点/已完成进度 |
+| `test_qunar_sight_detail.py` | 去哪儿详情页与简介页字段解析 |
+| `test_qunar_comment_locator.py` | 去哪儿 `window.context` 评论解析与兜底逻辑 |
+| `test_qunar_online.py` | 去哪儿联网冒烟测试（离线自动跳过） |
 
-所有测试均为离线测试（mock 网络），不依赖真实 API。`tests/online_smoke_test.py` 是联网冒烟脚本，文件名不匹配 `test_*.py`，pytest 不会自动收集，需要时手动运行。
+除 `test_qunar_online.py` 与 `tests/online_smoke_test.py` 外，其余测试均为离线测试（mock 网络），不依赖真实 API。`tests/online_smoke_test.py` 文件名不匹配 `test_*.py`，pytest 不会自动收集，需要时手动运行。
 
 ## 项目结构
 
@@ -266,18 +306,26 @@ LifeLens/
 │   ├── config.py                 # 集中配置 (URL / headers / 超时 / 分页)
 │   ├── core/                     # 基础设施层 (平台无关)
 │   │   ├── base_spider.py        #   BaseSpider 抽象基类 + 重试封装
-│   │   ├── logger.py             #   SpiderLogger 通用日志
+│   │   ├── logger.py             #   SpiderLogger 分级日志 + 任务汇总
 │   │   ├── request_optimizer.py  #   随机延迟 + 代理 + 退避参数
+│   │   ├── storage_layout.py     #   跨平台数据目录布局 + 行政区解析
 │   │   ├── storage.py            #   StorageBackend (JSON / CSV)
-│   │   └── pipeline.py           #   BasePipeline 编排接口
+│   │   └── pipeline.py           #   BasePipeline + PipelineStats 结果统计
 │   ├── platforms/
 │   │   ├── ctrip/                # 携程平台
 │   │   │   ├── sight_locator.py  #   关键词 → POI ID / 地区 ID (自动解析)
 │   │   │   ├── sight_list.py     #   地区 → 景点列表 (分页)
 │   │   │   ├── sight_detail.py   #   景点详情 (电话/门票/描述/交通)
 │   │   │   ├── sight_comments.py #   评论爬取 (断点续爬 + CSV)
-│   │   │   ├── base.py          #   CtripBaseSpider 公共请求/重试基类
+│   │   │   ├── base.py           #   CtripBaseSpider 公共请求/重试基类
 │   │   │   └── pipeline.py       #   CtripPipeline 全流程编排 (含 CLI)
+│   │   ├── qunar/                # 去哪儿平台
+│   │   │   ├── sight_locator.py  #   景点 / 城市 → ID 解析
+│   │   │   ├── sight_list.py     #   城市榜单 → 景点列表
+│   │   │   ├── sight_detail.py   #   详情页 + 内嵌简介页解析
+│   │   │   ├── sight_comments.py #   评论爬取 (window.context + CSV)
+│   │   │   ├── base.py           #   QunarBaseSpider 公共 GET / 解析基类
+│   │   │   └── pipeline.py       #   QunarPipeline 全流程编排 (含 CLI)
 │   │   └── meituan/              # 美团平台 (待实现)
 │   ├── models/
 │   │   └── sight.py              # Sight / SightDetail / Comment 数据模型
@@ -306,10 +354,14 @@ LifeLens/
 - [x] 携程景点列表爬取（分页 + 重试）
 - [x] 携程景点详情获取（结构化解析）
 - [x] 携程评论爬取（断点续爬 + CSV 持久化）
+- [x] 去哪儿景点列表 / 详情 / 定位 / 评论爬取
 - [x] 流水线编排（list → detail → comments）
 - [x] 集中配置（`config.py` 统一管理）
 - [x] ID 自动解析（`SightLocator`：关键词 → `poi_id` / `district_id`）
-- [x] 流水线 CLI（`python -m lifelens.platforms.ctrip.pipeline`）
+- [x] 流水线 CLI（携程 / 去哪儿模块入口）
+- [x] 统一平台参数（`sight` / `city` / `poi_id` / `district_id`）
+- [x] 分级日志与任务汇总（`SpiderLogger` / `PipelineStats`）
+- [x] 统一数据目录布局（`data/<platform>/<province>/<city>/<sight>_<poi-id>`）
 - [x] `BaseSpider` 继承复用（消除各模块重复的重试逻辑）
 - [x] `StorageBackend` 接入（统一 JSON/CSV 存储）
 - [ ] 数据模型接入（`Sight` / `Comment` 替换裸 dict）
@@ -320,8 +372,64 @@ LifeLens/
 
 ## 使用须知
 
-本项目面向学习与研究用途。采集前请确认已遵守目标平台的服务条款与相关法规，合理控制请求频率，避免影响服务可用性；采集数据仅限个人分析使用，请勿用于商业用途或二次分发。
+> 使用本项目即表示你已阅读并同意以下条款。如不同意，请停止使用并删除本项目及相关数据。
+
+### 1. 项目定位
+
+本项目仅用于个人学习、技术研究与数据分析练习，不提供任何形式的数据采集服务，也不构成对任何平台数据的授权。
+
+### 2. 合规使用
+
+- 使用前请自行确认目标平台的服务条款、robots 协议、用户协议以及所在地法律法规；
+- 不得采集、存储或传播涉及国家安全、商业秘密、个人隐私或其他受法律保护的信息；
+- 不得绕过登录验证、验证码、访问控制、反爬机制或其他技术保护措施；
+- 不得将本项目用于大规模、高频次或影响目标平台正常运行的采集活动；
+- 如需采集个人信息，应取得合法授权，并遵循最小必要原则。
+
+### 3. 使用限制
+
+- 禁止将本项目及其衍生代码用于任何商业用途，包括但不限于销售、付费服务、数据转售或商业数据产品；
+- 禁止将采集结果用于骚扰、画像、精准营销、欺诈或其他侵害他人权益的行为；
+- 禁止删除、隐藏或篡改本项目中的版权声明与许可信息。
+
+### 4. 数据与隐私
+
+- 采集数据归原始权利人或相关平台所有，本项目不授予你对第三方数据的任何权利；
+- 评论、用户昵称、IP 归属地等字段可能涉及个人信息，请谨慎存储、脱敏处理，并在使用后及时删除；
+- 请勿将采集数据上传至公开仓库、云盘或其他可被未授权访问的位置。
+
+### 5. 请求频率与平台影响
+
+- 默认随机延迟为 1-3 秒，请根据实际情况适当调大，避免对目标平台造成压力；
+- 出现限流、封禁或异常响应时应立即停止采集；
+- 本项目不提供绕过限流、验证码或封禁的能力。
+
+### 6. 账号与凭证
+
+- 请勿将 Cookie、Token、账号密码等敏感凭证提交至版本库；
+- 建议将凭证保存在本地未跟踪文件中，并定期轮换；
+- 因凭证泄露造成的损失由使用者自行承担。
+
+### 7. 风险与责任
+
+- 本项目按“现状”提供，不保证功能完整性、稳定性或适用性；
+- 因使用或无法使用本项目导致的任何直接或间接损失、数据丢失、账号封禁或法律纠纷，作者不承担责任；
+- 使用者应自行评估并承担全部使用风险。
+
+### 8. 条款变更
+
+作者保留随时修改本使用须知的权利，修改后的条款自发布之日起生效。
 
 ## License
 
-见 [LICENSE](LICENSE)。
+本项目采用 [CC BY-NC 4.0（知识共享 署名-非商业性使用 4.0 国际）](https://creativecommons.org/licenses/by-nc/4.0/) 许可协议，完整条款见 [LICENSE](LICENSE)。
+
+在遵守以下条件的前提下，你可以复制、修改、分发和以非商业目的使用本项目：
+
+- **署名**：必须注明原作者及本项目链接，并说明是否作出修改；
+- **非商业性使用**：不得将本项目用于商业目的，包括销售、付费服务、数据转售或其他直接或间接获利行为；
+- **无附加限制**：不得通过法律条款或技术手段限制他人行使许可证允许的权利。
+
+如需学术授权、 商业授权或其他用途，请联系 [hsuantx@163.com](mailto:hsuantx@163.com)。
+
+> 注意：本项目许可证仅覆盖本项目代码与文档，不覆盖通过本项目采集的第三方数据。第三方数据的版权、使用权与合规责任由原始权利人或使用者自行承担。

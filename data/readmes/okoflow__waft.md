@@ -8,7 +8,7 @@
 
 <h1 align="center">Waft</h1>
 
-<p align="center">On-device dictation for macOS with AI cleanup.</p>
+<p align="center">On-device dictation with AI cleanup.</p>
 
 <p align="center">
   <a
@@ -38,9 +38,7 @@
 
 https://github.com/user-attachments/assets/359db10e-c56e-4ece-ab27-7a31721d0264
 
-**Hold <kbd>right ⌥</kbd>, speak, let go.** The text appears wherever you
-type, in any app. Whisper recognizes your speech on your Mac, and an AI mode
-cleans it up when you want prose.
+**Hold <kbd>right ⌥</kbd>, speak, let go.** The text appears wherever you type, in any app. Whisper recognizes your speech on your Mac, and an AI mode cleans it up when you want prose.
 
 <table>
   <thead>
@@ -76,6 +74,14 @@ cleans it up when you want prose.
 
 ![The HUD at the notch while listening, cleaning up, after pasting, and under the pointer](.github/screenshots/hud.jpg)
 
+## Install
+
+```sh
+brew install --cask okoflow/tap/waft
+```
+
+Or download the disk image from the [latest release](https://github.com/okoflow/waft/releases/latest). [Install](docs/getting-started.md#1-install) lists the requirements and how to open a copy from the disk image the first time.
+
 ## How it compares
 
 <picture>
@@ -103,18 +109,12 @@ cleans it up when you want prose.
 
 ## Waft+
 
-[Waft+](docs/usage.md#waft) adds the AI modes, editing by voice, the
-translator, file transcription, and the Accurate speech model for a single
-payment of $13.99, and is free while Waft is in beta.
+Dictation is free. [Waft+](docs/usage.md#waft) adds the AI features and the Accurate speech model for a single payment of $13.99, and is free while Waft is in beta.
 
 ## Contributing
 
-Pull requests are welcome; [CONTRIBUTING.md](CONTRIBUTING.md) covers the
-setup, checks, and conventions. Report vulnerabilities privately as
-[SECURITY.md](SECURITY.md) describes.
+Pull requests are welcome; [CONTRIBUTING.md](CONTRIBUTING.md) covers the setup, checks, and conventions. Report vulnerabilities privately as [SECURITY.md](SECURITY.md) describes.
 
 ## License
 
-Waft is copyright The Waft Authors ([AUTHORS](AUTHORS)) and licensed under
-GPL-3.0-only ([LICENSE](LICENSE)). The license covers the code, not the Waft
-name and logo.
+Waft is copyright The Waft Authors ([AUTHORS](AUTHORS)) and licensed under GPL-3.0-only ([LICENSE](LICENSE)). The license covers the code, not the Waft name and logo.

@@ -8,6 +8,11 @@
 
 一套开源三件套：**构建端（DK Build）+ 查询端（MCP Service）+ 可视化（Viewer）**。
 
+**参与开发 / Agent start here：** [协作入口与任务看板](https://github.com/xcosmosbox/Cairn/issues/7) ·
+[Roadmap](ROADMAP.md) · [接手指南](AGENTS.md) ·
+[项目汇报](https://github.com/xcosmosbox/Cairn/issues/9)。
+任何维护者或 Agent 都可以从仓库记录了解现状、提出任务、领取与交接；无需私人对话背景。
+
 ---
 
 ## 它解决什么问题
@@ -153,6 +158,8 @@ cd graph-viewer && npm install && npm run dev
 ```
 
 ### 无凭证试跑整条流水线
+
+可复制的运行、来源查询与负例：[免费公开演示](examples/public-demo/README.md)（明确区分 fixed fake 与未执行的合成多文档输入）。
 
 `cairnd --fake` 为每次运行创建独立的本地 Source/Catalog bare 仓库和状态目录，
 写入固定的演示知识，模拟两次 PR 合并并生成可验证的 Bundle，最终到达 `Stable`。

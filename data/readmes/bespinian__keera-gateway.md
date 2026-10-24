@@ -1,6 +1,6 @@
 # Keera Gateway - one endpoint for every AI request
 
-[keera.ch](https://keera.ch)
+[keera.ch](https://keera.ch) · [Documentation](https://docs.keera.ch)
 
 One static Go binary in front of every model you run yourself and every one you
 license. You decide who may use which model, and how. It runs in your own
@@ -22,7 +22,9 @@ GPUs or on Swiss ones.
   [release](https://github.com/bespinian/keera-gateway/releases) has it for
   Linux, macOS and Windows.
 - **A single-host deployment** - compose files that run the gateway, its
-  database, Keera Engine and Keera Decider on one machine. This is also the development loop.
+  database, Keera Engine and Keera Decider on one machine. There, Keera Engine
+  runs on llama.cpp on the CPU, or on vLLM on a GPU. This is also the
+  development loop.
 
 Every tool that calls a model uses the same address. The gateway checks each
 request, logs it and passes it on.
@@ -41,8 +43,8 @@ request, logs it and passes it on.
                                   └──────────────┬──────────────┘
                                                  │
                                                  ▼
-                                 Every request into the audit log,
-                                      Postgres and your SIEM
+                                Every request into the request log
+                                          in Postgres
 ```
 
 Everything runs on one port, `:8080`, split by path: inference under `/api`,
@@ -78,10 +80,11 @@ cannot do. [First run](docs/install.md#first-run) issues a first key and sends
 a request, and [docs/install.md](docs/install.md) covers every setting.
 [docs/run-locally.md](docs/run-locally.md) is the development loop.
 
-`keera doctor` checks the deployment's configuration and an organisation's
-models. It lists what is missing and what is declared but not enforced, and
-what to do about each. With `--probe`, it also checks that every enabled model
-answers with a tool call rather than prose.
+How to use and manage Keera is in the [documentation](https://docs.keera.ch).
+`docs/` explains how each piece works and why, for operators and contributors.
+
+`keera doctor` checks the deployment and says what to fix; see
+[When it does not work](docs/install.md#when-it-does-not-work).
 
 A developer signs in with one command, which also makes that deployment the
 default for later commands
@@ -113,7 +116,7 @@ like `keera-speed`, so you can swap the model behind it without developers
 changing anything ([the alias](docs/gateway.md#the-alias-is-the-api-contract)).
 
 ```sh
-keera guardrail set project <project-id> --models keera-speed --rpm 120 --budget 500 --period month
+keera guardrail set project <project-id> --models keera-speed --requests 120 --budget 500 --period month
 keera guardrail effective key <key-id>   # and what holds this one key
 keera usage --by project
 ```
@@ -124,9 +127,13 @@ regular expressions catches anything with a fixed shape, such as an API key or
 an IBAN. A new filter starts in shadow, so you can measure it on a week of real
 traffic before it enforces. [docs/filters.md](docs/filters.md)
 
-**Routers** change where a request goes: small tasks to the local model and
-heavy reasoning to a large one, or to the next model when one is down. A client
-names a router where it would name a model. [docs/routers.md](docs/routers.md)
+**Routers** are what a client calls besides a model, by naming one where it
+would name a model. They chain filters, route steps, rate limits, budgets and
+system prompts in the order you draw them, each branch ending at a model. A
+route step changes where a request goes: small tasks to the local model and
+heavy reasoning to a large one, or to the next model when one is down. Around it, a router can
+redact only what goes to a hosted model, or fall back to the local one once the
+hosted budget is spent. [docs/routers.md](docs/routers.md)
 
 **Sandboxes** are developer machines inside the cluster, each with the
 toolchain, its own API key and an expiry. An agent's sandbox does one task and

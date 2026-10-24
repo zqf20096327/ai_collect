@@ -591,7 +591,7 @@ TOKEN=$(curl -sX POST http://localhost:8080/api/v1/auth/login \
   -d '{"username":"ci","password":"ci"}' | jq -r .access_token)
 curl -X POST http://localhost:8080/api/v1/admin/llm-config \
   -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
-  -d '{"base_url":"https://api.deepseek.com/v1","model":"deepseek-v4-flash","api_key":"sk-..."}'
+  -d '{"base_url":"https://api.deepseek.com","model":"deepseek-flash","api_key":"sk-..."}'
 ```
 
 The security gateway holds a failover pool of upstreams: on 429 (rate limit) / 402 (quota exhausted) it switches to the next upstream. Add backups via `extra_upstreams` — all keys stay in the gateway Secret only:
@@ -599,9 +599,46 @@ The security gateway holds a failover pool of upstreams: on 429 (rate limit) / 4
 ```bash
 curl -X POST http://localhost:8080/api/v1/admin/llm-config \
   -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
-  -d '{"base_url":"https://api.kimi.com/coding/v1","model":"k3","api_key":"sk-...",
-       "extra_upstreams":[{"base_url":"https://api.deepseek.com/v1","model":"deepseek-v4-flash","api_key":"sk-..."}]}'
+  -d '{"base_url":"https://api.kimi.com/coding/v1","model":"kimi-k3","api_key":"sk-...",
+       "extra_upstreams":[{"base_url":"https://api.deepseek.com","model":"deepseek-flash","api_key":"sk-..."}]}'
 ```
+
+### 🎯 Your first change
+
+The wizard ends with a working platform; the first thing to do with it is give it work. Work enters through the task API: a goal is decomposed into tasks, the tasks are dispatched to agents in the sandbox, and what they produce lands as a commit through the same pipeline the platform runs on itself.
+
+```bash
+# The installer generates the bootstrap admin's password at install time and
+# injects it from the cluster Secret; no password for it is in this repository.
+ADMIN_PASSWORD=$(kubectl -n cogneva get secret cogneva-secrets \
+  -o jsonpath='{.data.admin-password}' | base64 -d)
+TOKEN=$(curl -sX POST http://localhost:8080/api/v1/auth/login \
+  -H 'Content-Type: application/json' \
+  -d "{\"username\":\"admin\",\"password\":\"$ADMIN_PASSWORD\"}" | jq -r .access_token)
+
+# The first line of the goal becomes the landing commit's subject, so it has to
+# read as a title: one line, at most 50 characters. Everything after it is the
+# body, written into the commit verbatim.
+curl -sX POST http://localhost:8080/api/v1/tasks \
+  -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
+  -d '{"goal":"Fix the webhook sender retry backoff\n\nThe sender retries immediately after a failure; it should back off exponentially up to a cap."}'
+
+# Accepted asynchronously: decomposing a goal takes more than one model call, so
+# the reply carries the id to follow rather than the tasks themselves.
+curl -s http://localhost:8080/api/v1/tasks/list \
+  -H "Authorization: Bearer $TOKEN" | jq -r '.[] | "\(.id)\t\(.status)"'
+```
+
+The change ledger, the per-face readings and the alerts are all derived from the events this produces, so the first goal is also the first thing you can follow end to end. Everything the platform submits on its own schedule enters through the same route.
+
+### 📋 What this deployment does not provide
+
+Written down rather than left to be discovered:
+
+- **Declared quota is not enforced.** The hierarchy of limits is configurable and the check runs at submission, but nothing records today's usage into those levels, so the check cannot block anything today. A deployment that needs a hard spend ceiling must enforce it upstream of the platform.
+- **Alerts are delivered to the WebUI panel, not to the outside world.** The panel is the delivery surface: a firing alert is a row with its own badge and an inbox that keeps it until someone marks it seen. Email, Slack and webhook outlets are optional add-ons on top, and stay silent until an address is configured.
+- **There is no diagnosis command and no support bundle.** The readings are the surfaces (metrics, alerts, the task graph); collecting them is left to the operator's own tooling.
+- **The WebUI observes; it does not submit work.** It shows the task graph, the agents, the alerts and token spend, and it talks to running agents. Goals are submitted through the API above.
 
 ### ☸️ Existing cluster
 
@@ -688,7 +725,7 @@ For manual compilation: `cargo build --release`. Container image: see `Dockerfil
 
 - **Namespaces partition data, they are not an authorization boundary.** A namespace scopes memory and task storage; the platform does not authenticate a caller *as* a tenant and does not enforce namespace-level access control.
 - **Neither quota enforcement nor billing reaches the request path.** The `cog-quota` crate is initialised in the application process and publishes its pre-check counter (`quota_pre_checks_total`; on 2026-10-20 both `allowed=true` and `allowed=false` read 0, i.e. no pre-check has ever run on a real request), but there is no tenant dimension and no metering or invoicing component.
-- **Alert delivery needs an outlet you provide.** Alert rules and the `alerts` table ship with the platform; notification channels (email, Slack, generic webhook) are empty until configured, and nothing is sent until then.
+- **Alert delivery is the WebUI panel.** Rules and the `alerts` table ship with the platform, and every firing alert appears in the panel with its own inbox entry; that surface needs no address. Outbound channels (email, Slack, generic webhook) are optional and stay empty until configured.
 - **Upgrade and rollback are not yet exercised end-to-end in production.** The live deployments so far were delivered by manifest apply and image rollouts; run `helm upgrade` / `helm rollback` on a staging cluster before depending on them for a production upgrade.
 
 ---

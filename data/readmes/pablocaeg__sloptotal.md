@@ -7,6 +7,7 @@
   <a href="https://github.com/pablocaeg/sloptotal/releases"><img src="https://img.shields.io/github/v/release/pablocaeg/sloptotal?color=b5282e" alt="Latest release"></a>
   <a href="https://github.com/pablocaeg/sloptotal/pkgs/container/sloptotal"><img src="https://img.shields.io/badge/docker-ghcr.io-1a1a18?logo=docker&logoColor=white" alt="Docker image"></a>
   <img src="https://img.shields.io/badge/python-3.10%2B-3d3b37" alt="Python 3.10+">
+  <a href="https://github.com/pablocaeg/sloptotal/stargazers"><img src="https://img.shields.io/github/stars/pablocaeg/sloptotal?style=flat&color=e3b341&logo=github" alt="GitHub stars"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-2d8a4e" alt="MIT license"></a>
   <a href="https://sloptotal.com"><img src="https://img.shields.io/badge/live%20demo-sloptotal.com-b5282e" alt="Live demo"></a>
 </p>
@@ -47,8 +48,9 @@ it publishes how accurate that is, failures included.
   the harness and the raw per-sample scores.
 - **Private by default.** Self-hosted, no third-party AI APIs, no tracking,
   reports deleted after 30 days.
-- **CPU-only is fine.** Auto-detects your hardware; 4 GB RAM is enough for the
-  lite profile, a GPU is optional.
+- **CPU-only is fine.** Auto-detects your hardware; a GPU is optional. Loaded
+  models need about 8.3 GB of RAM (an estimate; see
+  [docs/MODELS.md](docs/MODELS.md)).
 - **JSON API and a [Chrome extension](https://github.com/pablocaeg/sloptotal-extension)**
   that marks AI-looking results in Google Search and LinkedIn.
 
@@ -95,9 +97,10 @@ classifiers which top the RAID benchmark drop to AUC 0.75 on current models.
 docker run -p 8000:8000 -v sloptotal-models:/app/models ghcr.io/pablocaeg/sloptotal
 ```
 
-Open <http://localhost:8000>. The first scan downloads about 2 GB of models into
-the `sloptotal-models` volume, so later starts are quick. To build from source
-instead, run `docker compose -f docker/docker-compose.yml up`.
+Open <http://localhost:8000>. The first scan downloads about 9 GB of models
+(see [docs/MODELS.md](docs/MODELS.md)) into the `sloptotal-models` volume, so
+later starts are quick. To build from source instead, run
+`docker compose -f docker/docker-compose.yml up`.
 
 ### From source
 
@@ -273,13 +276,32 @@ the Fakespot bias against pre-1920 prose that led to it.
 SlopTotal detects CPU, RAM and GPU at startup and picks a profile. Everything
 can be overridden with environment variables; see [`.env.example`](.env.example).
 
-| Profile | RAM | CPU | GPU | Notes |
-|---------|-----|-----|-----|-------|
-| Lite | 4 GB | 2 cores | None | All engines, slower |
-| Standard | 8 GB | 4 cores | None | Default for most laptops |
-| Performance | 16 GB+ | 6+ cores | CUDA optional | Pool replicas, max throughput |
+| Profile | When chosen (RAM) | CPU | GPU | Notes |
+|---------|-------------------|-----|-----|-------|
+| Lite | below 8 GB | 2 cores | None | Fewer workers; still loads every model |
+| Standard | 8 GB or more | 4 cores | None | Default for most laptops |
+| Performance | 16 GB or more | 6+ cores | CUDA optional | Pool replicas, max throughput |
 
-What each engine costs in memory and time, measured on one machine, is in [docs/MODELS.md](docs/MODELS.md).
+Profiles change workers and replicas, not which engines run. Every profile loads
+all models: about 8.3 GB of RAM once loaded (an estimate) and about 9 GB on
+disk. Per-engine memory and latency, measured on one machine, are in
+[docs/MODELS.md](docs/MODELS.md).
+
+**NVIDIA GPU:** `requirements.txt` installs the CPU-only torch wheel. To run the
+models on the GPU, replace it with a CUDA build of the same torch version (keep
+the version: upgrading torch can move scores):
+
+```bash
+pip uninstall -y torch
+pip install torch==<installed version> --index-url https://download.pytorch.org/whl/cu130 --extra-index-url https://pypi.org/simple
+python -c "import torch; print(torch.cuda.is_available())"   # True
+```
+
+`cu130` needs an NVIDIA driver with CUDA 13 support and covers RTX 20xx through
+50xx; pick another index from [pytorch.org](https://pytorch.org/get-started/locally/)
+for older cards. With CUDA and at least 4 GB of VRAM, startup selects the
+`performance` profile and the banner shows `Device: cuda`. All models run in
+fp32, so scores match the CPU to three decimals.
 
 **High-RAM CPU servers (e.g. 64 GB, no GPU):** you automatically get the `performance` profile. With no CUDA, all inference stays on CPU but you can run more concurrent workers and model pool replicas:
 

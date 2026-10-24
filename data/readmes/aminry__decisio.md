@@ -236,10 +236,10 @@ Measured on 2026-10-09 on decisio 0.11.0 from PyPI, on one RTX PRO 6000 Blackwel
 ### With Docker
 
 ```bash
-docker run -d --gpus all --shm-size 8g -p 127.0.0.1:8000:8000 -v decisio-data:/data ghcr.io/aminry/decisio@sha256:d1cee30f7e242afd904c6652acfd5f7170c195ec5c8af05d127ad000ebe013b4
+docker run -d --gpus all --shm-size 8g -p 127.0.0.1:8000:8000 -v decisio-data:/data ghcr.io/aminry/decisio@sha256:0c3c94436127e6b44dfc14bacac928c803268f49e33845e776b0d0b31a8fd71a
 ```
 
-That digest is the 0.26.0 image (`ghcr.io/aminry/decisio:0.26.0`); the release notes of every release give theirs, and `gh attestation verify oci://ghcr.io/aminry/decisio@sha256:<digest> --repo aminry/decisio` checks it.
+That digest is the 0.27.1 image (`ghcr.io/aminry/decisio:0.27.1`); the release notes of every release give theirs, and `gh attestation verify oci://ghcr.io/aminry/decisio@sha256:<digest> --repo aminry/decisio` checks it.
 [Docker](#docker) has the compose file.
 The same `curl` as above, with `/v1/systemone` on port 8000 and no `model` field, asks the server you started.
 
@@ -477,7 +477,7 @@ Linux, one NVIDIA card, a driver that supports CUDA 13.0, Python 3.12 and [uv](h
 
 <!-- x-release-please-start-version -->
 ```bash
-git clone --branch v0.26.0 https://github.com/aminry/decisio
+git clone --branch v0.27.1 https://github.com/aminry/decisio
 cd decisio
 uv sync --extra serve --frozen
 uv run python -m decisio.serve.vllm_engine
@@ -655,7 +655,7 @@ curl http://127.0.0.1:8000/v1/tasks -H 'Content-Type: application/json' -d @exam
 The served defaults need no flags; these change behaviour ([`docs/cli.md`](docs/cli.md) has every flag and its default per base):
 - `--pad-policy row`: pads a single-question request so its whole row ends on the block boundary, faster on a new state at a small cost in repeatability.
 - `--multi-question warm`: scores a request's questions in one batch for bulk scoring, faster, but each answer then depends on the batch. It is the Gemma 4 31B base's default: with the engine in the server's process a warm request repeated exactly on a server that had answered it before (vLLM 0.30.0: 272 of 272 four-question requests, 5 repeats each); on vLLM 0.30.0 and 0.31.0 alike a request repeats exactly on a freshly started server, and on a server that has already answered it a repeat can differ (5 of 200 single-question requests, up to 0.031, no top answer changed, 31B, the same on both versions, `EVAL_CARD.md` section 7.5); and on the items measured it chose as `sequential` did every time (`runs/2026-10-05_engine-death-gates/`).
-- `--noul-commit`: reports a yes/no probability inside JevBench v1.5's no-answer band at the band's edge; the answer never changes, its calibration does.
+- `--noul-commit`: commits a yes/no answer by moving a probability between 0.20 and 0.80 to the edge of that band on its own side; the answer never changes, its calibration does.
 - `--prompt-tail compact`: the compact layout, for tasks registered under it.
 - `--image-model`: a second engine on the same card for requests that carry images.
 - `--backend`: `vllm` (the default), `mlx` for Apple silicon, `hf` for the CPU stand-in.

@@ -556,8 +556,19 @@ ToolDef，也不再按 `swe-*` 名字硬判定“无视觉”。
 实时目录。
 
 `DEVIN_CONNECT_IMAGE_INNER_TAGS` 仍可覆盖内部 `base64,mime` tag（默认 `1,2`），仅用于未来
-wire 变更的应急校准。远程 `https://` 图片 URL 仍不会由同步 wire builder 主动下载；请使用
-data URL / base64，或显式开启 `DEVIN_ACP_VISION=1` 走本机 Devin CLI 的 ACP 视觉通道。
+wire 变更的应急校准。远程 `http(s)://` 图片 URL 会在 `streamChat` 组装 proto 之前，用与
+Cascade 相同的 `fetchImageUrl` 有界下载（8 秒总预算、5MB 上限、`image/*` 白名单、每一跳都
+拒绝私网/回环地址），转成 data URL 后写进 `#10`；下载失败、超限或类型不符会打 warn（只记
+host，不记可能带签名的完整 URL）并只丢这一张图，文本照常发送。`DEVIN_CONNECT_IMAGE_TAG=0`
+时不做任何下载。也可以显式开启 `DEVIN_ACP_VISION=1` 走本机 Devin CLI 的 ACP 视觉通道。
+
+远程图片默认只接受 `https://`：明文 `http://` 的图片字节可被链路上任何中间人替换，而它会
+原样进入模型上下文（`#10` / Cascade 图片块）。被拒时只丢这一张图、文本照发，并打一条只含
+host 的 warn（完整 URL 可能带签名 query，不记录）。`WINDSURFAPI_ALLOW_HTTP_IMAGES=1` 只恢复
+**公网主机**的明文 http（http 与 https 都收）；默认或任何其他值只收 https。私网/回环地址
+不受该开关影响，始终被独立的 SSRF 策略拒绝（`localhost`、私网 IP，以及每一跳解析到私网地址
+的情况都包括在内），所以它不能用来接可信内网图床。该检查在 `fetchImageUrl` 的每一跳上执行，
+所以 https 首跳重定向到 http 同样会被拒。
 
 ## Dashboard 功能面板
 
@@ -784,15 +795,18 @@ MIT License. See [LICENSE](LICENSE).
 
 ## 发布与密钥边界
 
-发布流程会自动推 Docker 镜像和 GitHub Release，并为四个发布资产（Windows exe/zip、macOS
-arm64 二进制/zip）附上 `SHA256SUMS`。**它证明的是完整性，不是来源**：清单和二进制在同一个
-Release 下，能改 Release 的人也能一起改；当前发布**没有签名**，OTA 更新校验的是 tag/commit
-（GitHub 引用 + TLS），不是签名。下载后先校验再运行：`sha256sum -c SHA256SUMS`
-（macOS 用 `shasum -a 256 -c SHA256SUMS`；Windows 用 `Get-FileHash`）。清单使用**扁平
-文件名**，把五个资产下载到同一目录即可；v3.9.53（首个带清单的版本）的清单带
-`dist-windows/` / `dist-macos/` 前缀，需要先按目录摆放（更早的版本没有 `SHA256SUMS`）。
-信任边界、OTA 的具体校验步骤，以及未来的签名路径（minisign / cosign，仓库内不放任何密钥）
-见 [docs/RELEASE-SIGNING.md](docs/RELEASE-SIGNING.md)。
+发布流程会自动推 Docker 镜像和 GitHub Release。从 v3.10.0 起，每个 Release 为四个发布资产
+（Windows exe/zip、macOS arm64 二进制/zip）生成 `SHA256SUMS`，并用 **cosign keyless**
+（GitHub OIDC，仓库内没有任何私钥或签名 secret）为四个资产和清单分别发布 `.sig`、`.pem` 与
+`.sigstore.json`。签名证明“这些字节由本仓库的 release workflow 在某个 `v*` tag 上产生”，
+不证明人工审阅或构建可复现；
+能改写仓库/tag 的人仍能重新签名，因此 tag/commit 的 out-of-band 核对依然重要。下载后先验签再
+校验哈希：`node scripts/verify-release-assets.mjs <下载目录>`（需要 cosign），或按
+[docs/RELEASE-SIGNING.md](docs/RELEASE-SIGNING.md) 用 `cosign verify-blob` 验证
+`SHA256SUMS.sigstore.json` 后再 `sha256sum -c SHA256SUMS`。清单使用**扁平文件名**，把资产
+放在同一目录即可；v3.9.53 的清单带 `dist-windows/` / `dist-macos/` 前缀，v3.10.0 之前的
+Release 没有签名。Dashboard 的 git 自更新与 Docker 更新不下载 Release 资产，cosign 签名不
+覆盖它们（Docker 可用 digest 固定），细节见 docs/RELEASE-SIGNING.md。
 
 **别把 token、API key、cookie、上游账号凭据
 写进 issue、PR、日志或提交的配置文件里。** 如果报告问题必须带上鉴权信息，只贴脱敏后的元数据

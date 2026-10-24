@@ -20,12 +20,12 @@ OpenAI-compatible protocol.
 
 ## Modes
 
-Each session runs in one execution mode. Normal is the default. Switch with a
+Each session runs in one execution mode. Auto is the default. Switch with a
 slash command in the TUI, or pass a flag to headless prompts.
 
 <table>
 <tr>
-<td width="33%" valign="top">
+<td width="25%" valign="top">
 
 ### UltraSave
 
@@ -40,7 +40,7 @@ still run before a task counts as done.
 `/ultrasave on` or `--ultrasave`
 
 </td>
-<td width="33%" valign="top">
+<td width="25%" valign="top">
 
 ### UltraFast
 
@@ -55,7 +55,7 @@ model, effort and verification steps stay the same.
 `/ultrafast on` or `--ultrafast`
 
 </td>
-<td width="33%" valign="top">
+<td width="25%" valign="top">
 
 ### UltraCode
 
@@ -68,6 +68,22 @@ Delegation is optional and has no speed or cost claim yet. Your model, effort
 and permissions stay the same.
 
 `/ultracode on` or `--ultracode`
+
+</td>
+<td width="25%" valign="top">
+
+### Auto
+
+# Balanced
+
+Auto used **57% less total time** and **77% fewer estimated LLM credits**
+than Normal; both passed **20/20 tasks** in our paired benchmark.
+
+It switches modes as work changes. Subagents inherit Auto and adapt independently.
+
+`/mode auto` or `--mode auto`
+
+[Results and tradeoffs](https://github.com/samuelfaj/distill/pull/45).
 
 </td>
 </tr>

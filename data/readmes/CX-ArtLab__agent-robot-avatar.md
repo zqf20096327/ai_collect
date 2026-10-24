@@ -38,18 +38,12 @@ Built with SVG and vanilla JavaScript, it works as a native custom element with 
 - Jelly-style drag deformation with elastic recovery
 - Press-and-hold squeeze and draggable spring antenna interactions
 - Programmatically controlled Agent states and expressions
-- Waiting, success, failure, warning, review, blocked, and system-error feedback
+- Expressions for waiting, success, failure, affirm, wary, inspect, angry, refuse, love and more
 - Reduced-motion support
 - Configurable sleep behavior
 - Adjustable head roundness
-- Optional antenna status flashing
+- 42 material and pattern skins with light that follows the pointer
 - TypeScript declarations included
-
-## Embedded eyes (experimental)
-
-An independent, allocation-free C++11 eyes-only engine draws the same 18 expressions on robot and dev-board screens. Firmware examples cover 26 board and screen configurations across ESP32, ESP32-S3 and RP2040 — ST7789, ST7735, GC9A01 round, ILI9341/9342/9488, CO5300 AMOLED, ST7701S RGB panels and SSD1306/SH1106 OLEDs, including LilyGO, M5Stack, Waveshare, Seeed and Espressif boards. Every example compiles in CI; none is verified on real hardware yet, so please send a hardware report if you try one.
-
-See the [embedded guide](https://github.com/CX-ArtLab/agent-robot-avatar/tree/main/embedded) and [中文说明](https://github.com/CX-ArtLab/agent-robot-avatar/blob/main/embedded/README.zh-CN.md). The Web component's installation and behavior are unchanged.
 
 ## Install
 
@@ -89,15 +83,30 @@ avatar.reset();
 
 Available actions:
 
-`idle` · `bored` · `waiting-spin` · `waiting-wrap` · `waiting-wave` · `input` · `affirm` · `success` · `failure` · `wary` · `inspect` · `angry` · `refuse` · `surprise` · `love` · `random` · `sleep` · `wake`
+| Action | Looks like | Use when |
+| --- | --- | --- |
+| `idle` | Blinks and glances around | Default state |
+| `bored` | Glances slowly from side to side | Nothing has happened for a while |
+| `waiting-spin` | Eyes circle from side to side | Waiting for a reply (default) |
+| `waiting-wrap` | Eyes slide out one side and back in the other | Waiting for a reply |
+| `waiting-wave` | Eyes bob up and down in turn | Waiting for a reply |
+| `input` | Eyes become blinking text cursors | The user is typing |
+| `affirm` | Nods | Got it, confirmed |
+| `success` | Happy, smiling eyes | Task completed |
+| `failure` | Head and eyes droop | Task or connection failed |
+| `wary` | Turns its head and gives a guarded up-and-down look | An action needs confirmation |
+| `inspect` | Narrows its eyes and scans up and down | Checking or reviewing something |
+| `angry` | Lowered, glaring eyes | Content blocked |
+| `refuse` | Shakes its head | Cannot or will not do the request |
+| `surprise` | Wide-open eyes | Something unexpected |
+| `love` | Eyes merge into a beating heart | Thanks, affection |
+| `random` | Eyes spin like slot-machine reels | Random pick, playful moment |
+| `sleep` | Closes its eyes and sleeps | No activity for a long time |
+| `wake` | Opens its eyes and wakes up | Activity resumes |
 
-`waiting-wave` plays three 1.1-second waves: the eyes bob vertically with a staggered rhythm and amplitude of 10 SVG units, then settle. Use `startWaiting({ variant: 'wave' })` for seamless continuous waiting, and `stopWaiting()` to stop. It honors the component's reduced-motion setting and reports the canonical `waiting` action lifecycle.
+Waiting actions play one round with `play()`. `startWaiting({ variant: 'spin' | 'wrap' | 'wave' })` loops until another action starts or `stopWaiting()` is called.
 
-Action names describe what the avatar does. `refuse` shakes the head, for a request the Agent cannot or will not carry out; `failure` is for a task or connection that did not succeed; `wary` turns the head and gives a guarded up-and-down look, for an action that needs confirmation. Names from 0.5 (`send`, `warning`, `error`, `blocked` and others) still work with a console notice until 1.0; see the [upgrade table](CHANGELOG.md#upgrading-from-05x).
-
-`love` expresses affection or thanks: the two eyes lean together into a single heart, beat three times, then return.
-
-`random` plays a slot-machine spin: each eye rolls over a drum, then the left eye slows, bounces and settles, followed by the right. `slot` is an alias.
+Names from 0.5 (`send`, `warning`, `error`, `blocked`, `slot` and others) still work with a console notice until 1.0; see the [upgrade table](CHANGELOG.md#upgrading-from-05x).
 
 For a real Agent request lifecycle:
 
@@ -139,6 +148,7 @@ try {
 | `motion` | Motion policy: `auto`, `reduce`, or `full` |
 | `press-squeeze` | Center press-and-hold squeeze; set to `false` to disable |
 | `antenna-drag` | Antenna drag, spring return, and angry reaction; set to `false` to disable |
+| `skin` | Material: `obsidian`, `porcelain`, `gold` … (42); leave it out for the flat color |
 
 Common runtime controls:
 
@@ -150,6 +160,31 @@ avatar.setAntennaDrag(true);
 ```
 
 The avatar center begins the squeeze interaction. Moving more than 4 CSS pixels transfers the same pointer gesture to the existing head drag. Dragging the antenna uses the same pull limit as head dragging and ends with the existing angry reaction.
+
+## Skins
+
+42 skins in five families. Light follows the pointer:
+
+```html
+<agent-robot-avatar skin="obsidian"></agent-robot-avatar>
+```
+
+```js
+avatar.setSkin('porcelain'); // any name below
+avatar.setSkin(null);        // back to the flat color
+```
+
+| Family | Skins |
+| --- | --- |
+| Glass and gems | `obsidian`, `midnight`, `jade`, `amber`, `ruby`, `sapphire`, `emerald`, `neon` |
+| Porcelain, pastel and clay | `porcelain`, `pearl`, `sakura`, `mint`, `lavender`, `lemon`, `sky`, `peach`, `terracotta` |
+| Metal | `gold`, `silver`, `copper`, `titanium`, `rose-gold`, `graphite` |
+| Gradients | `aurora`, `ocean`, `forest`, `candy` |
+| Printed patterns | `tartan`, `polka`, `terrazzo`, `marble`, `black-marble`, `wood`, `pixel`, `confetti`, `rainbow`, `denim`, `graph-paper`, `halftone`, `leaves`, `blossoms`, `brick` |
+
+The `SKIN_NAMES` export lists every name, for example to build a picker.
+
+Every expression and gesture works with a skin. When the skin is removed, the `color` attribute applies again.
 
 ## Events and integration
 
@@ -164,6 +199,10 @@ A minimal integration example is available at [`examples/basic.html`](./examples
 Designed for modern browsers with support for ES Modules, Custom Elements, SVG, Pointer Events, Web Animations API, `IntersectionObserver`, `ResizeObserver`, and `matchMedia`.
 
 Automated browser tests cover Chromium, Firefox, and WebKit.
+
+## Hardware version (in development)
+
+A C++ version that shows the avatar's expressions on robot and dev-board screens (it draws only the eyes) is in development and not released yet. See the [hardware guide](https://github.com/CX-ArtLab/agent-robot-avatar/tree/main/embedded).
 
 ## Contributing
 

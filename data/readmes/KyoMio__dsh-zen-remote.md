@@ -296,6 +296,7 @@ The `push_notify` tool. The model should call it when you explicitly asked to be
 - Turn-process folding, left-edge swipe back, Android back-gesture takeover, phone-local attachment upload
 - A pairing code buys a long-lived device token; identity follows the token, not the IP, revocable at any time
 - Real PWA + real Web Push (VAPID + aes128gcm), firing only for approvals and questions by default
+- Cold start paints an app-shaped skeleton from the first HTML byte; content-hashed build assets are cached for a year, so a repeat open reuses the shell instead of re-downloading it
 
 **Host (2.0 additions)**
 
@@ -305,7 +306,8 @@ The `push_notify` tool. The model should call it when you explicitly asked to be
 **Desktop client (2.0 additions)**
 
 - Remote groups in the sidebar ("server name · workspace name"), remote sessions open like local ones: full history, live progress, messages, cancels, queue edits, approvals and question answers, model selection, file tree, changes list plus changes summary/diff, goals, slash commands, agent presets, subagent prompts/interrupts, attachments and @ references, terminals running server-side
-- Remote sessions can attach **non-image files**: the upload request is caught by the sub-client's own backend and streamed through the relay to the server session; the 100 MiB cap is the relay's own (local uploads have no such limit), an over-limit pick is refused locally on the client with a readable message, and slow links are bounded by the 300-second timeout
+- Artifacts a remote session produces can be **downloaded to this computer**: the deliverable card and the document preview header each carry a "download to this computer" action that reads the host file through the relay in byte windows (any file size, never held whole in memory) and hands it to the browser; Word/Excel/PPT previews are now rendered to PDF by the host's LibreOffice (`officeToPdf/*` is on the relay allowlist) instead of failing with "not supported in remote sessions"
+- Remote sessions can attach **non-image files**: the upload request is caught by the sub-client's own backend and streamed through the relay to the server session; the 500 MiB cap is the relay's own (local uploads have no such limit), an over-limit pick is refused locally on the client with a readable message, and slow links are bounded by the client's 15-minute upload budget (the host HTTP server's 5-minute request deadline is the practical ceiling: 500 MiB needs ~14 Mbps sustained).
 - The model picker in a remote session lists the **server's** model catalog (groups named "server name · group name"), local sessions list only local models; the last-fetched server groups survive while the relay is offline; server groups never appear in local settings such as the vision router. Known boundary: a session created on the server that has never sent a message shows the local default model in the picker
 - New sessions created inside a remote group run on the server's workspace and are shared automatically; remote sessions can be renamed, archived, pinned, forked, and their remote access closed (with confirmation) from the client
 - Title-row connection icon per remote session (online / offline / version differs); a "remote closed" banner with the reason when a session is slept or closed server-side; offline groups go grey with input disabled and reconnect automatically with backoff
@@ -314,6 +316,10 @@ The `push_notify` tool. The model should call it when you explicitly asked to be
 **Both ends (2.1 additions)**
 
 - The **plugin bridge**: another plugin registers one bridge declaration and its panel data in remote sessions is served by the HOST — the sub-client reroutes the declared GET requests to the server, which executes them over loopback and streams the answer back; local data never leaks into a remote session. Bridged requires the plugin name, exact version and declaration to agree on BOTH ends; whole-machine data additionally needs the server owner's per-plugin consent in the settings page. Author guide: [the plugin bridge](docs/plugin-bridge.md)
+
+**Desktop client (2.2 additions)**
+
+- Dragging files into a remote session attaches them by **upload**: the desktop app's same-machine shortcut (a dragged file keeps its disk path and would become an `@absolute path` mention naming a file on YOUR machine, unreadable on the server) is intercepted in the browser, and the guard uploads each file ITSELF through the relay — the bytes land in the SERVER session's workspace (`.dsh-uploads/`, the same directory the attach button uses) and the `@.dsh-uploads/<name>` mention is inserted into the composer for you. Dragging a **folder** into a remote session is not supported: the drop is stopped with a short on-screen notice. Local sessions are untouched — the shortcut keeps working there — and the guard's status is visible in the settings page diagnostics.
 
 In depth: [interface](docs/interface.md) · [public access + relay protocol](docs/remote-access.en.md)
 

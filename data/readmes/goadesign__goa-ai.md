@@ -43,6 +43,10 @@ and an application-specific guide to the code they need to implement.
 | **An MCP server** exposing Go service methods, resources, and prompts, or **an MCP client** consuming them | [MCP integration guide](https://goa.design/docs/2-goa-ai/mcp-integration/) |
 | **A tool registry** that publishes capabilities across services and lets agents discover independently implemented Agent operations without loading provider code, or binds generated native tools to selected registrations while retaining typed codecs and child routes | [Registries and tool search](docs/tool_search.md) |
 
+Catalog owners can [inspect active registration facts](docs/tool_search.md#inspect-active-registration-facts)
+without loading tool declarations, using the saved identity, exact token and
+service-or-native kind.
+
 Low-level runtime and custom Store integrations use a required generated
 [run subject](docs/run-subjects.md) to identify the actual executor. Read its
 upgrade requirements before changing a deployment with saved runs.
@@ -182,7 +186,9 @@ service wiring, and connecting a model. For MCP, follow the
 - **Large results and images.** Bound model-visible results, continue paginated
   queries, retain native image evidence, and keep rich host data outside model
   requests. Saved history remains readable after tool changes; only compatible
-  current tools can supply another page.
+  current tools can supply another page. Outbound run-log record encoding applies
+  the workflow payload allowance before publication; complete records assembled
+  inside storage and historical reads preserve separately accepted data.
 
 [Agent DSL](docs/dsl.md#agent-use-and-export) · [Runtime and composition](docs/runtime.md) · [Native images](docs/native_images.md)
 
@@ -373,8 +379,12 @@ replacing existing deployments; a source rollback alone cannot undo new stored
 work.
 
 When binding generated service or Agent tools, the previous-registration reader
-returns the owner's exact `ResolvedToolset` along with its error. New pages can
-then verify their saved declarations while using current input and paging rules,
+returns the owner's exact `ResolvedToolset`, or nil without an error when the
+saved registration has no matching current resource. That query offers no new
+page, while its saved messages and results remain readable. A failed read or
+malformed binding still stops planning. Every member of a page chain is checked
+before an unavailable chain is omitted. The returned declarations let new pages
+verify their saved declarations while using current input and paging rules,
 including after a tool description changes. See [static tool binding](docs/tool_search.md#bind-generated-service-tools).
 
 ## Learn more

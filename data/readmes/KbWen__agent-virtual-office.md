@@ -6,16 +6,13 @@
 [![Node.js](https://img.shields.io/badge/node-%3E%3D22-brightgreen.svg)](https://nodejs.org)
 [![React 19](https://img.shields.io/badge/react-19-61dafb.svg)](https://react.dev)
 
-**A tiny pixel office where your coding agents come to life.**
+**Your coding agents have a little office now.**
 
-![Agent Virtual Office — pixel-art virtual office visualizing AI coding agents (Claude Code, Codex, Gemini CLI) working, blocked, and shipping in real time](https://raw.githubusercontent.com/KbWen/agent-virtual-office/main/docs/screenshot.png)
+![Agent Virtual Office — local office scene with all eight characters idle at capture](https://raw.githubusercontent.com/KbWen/agent-virtual-office/main/docs/screenshot.jpg)
 
-<sub><i>The office mid-session: someone heads-down, someone blocked, someone just shipped — all from a live session.</i></sub>
+<sub><i>Captured with the local session connected and all eight characters idle.</i></sub>
 
-While Claude Code grinds through your codebase, a pixel version sits at a desk doing the same — typing,
-getting blocked, stomping off to argue with QA about whether that's *really* a bug. Point it at your
-Claude Code / Codex / CI session and your agents clock in for real — `working`, `blocked`, shipping,
-bickering, live. It does approximately nothing useful, and you'll leave it open all day anyway.
+Connect Claude Code, Codex, Gemini CLI, or CI to see who’s working, blocked, or idle in a pixel office. When you need a break, squeeze the paper star or pick up the postcard.
 
 [Quick Start](#quick-start) · [Meet the Team](#meet-the-team) · [FAQ](#faq) · [中文版](README.zh-TW.md)
 
@@ -28,76 +25,60 @@ bickering, live. It does approximately nothing useful, and you'll leave it open 
 <table>
 <tr>
 <td width="50%" align="center">
-<img src="https://raw.githubusercontent.com/KbWen/agent-virtual-office/main/docs/assets/office-hero.png" alt="The pixel office mid-session: agents at desks working, a blocked agent, speech bubbles, a pet wandering the lounge" /><br>
-<sub><b>The office, live.</b> Each character is a real agent in your session.</sub>
+<img src="https://raw.githubusercontent.com/KbWen/agent-virtual-office/main/docs/screenshot.jpg" alt="The pixel office" /><br>
+<sub><b>The office.</b> A quick look around.</sub>
 </td>
 <td width="50%" align="center">
-<img src="https://raw.githubusercontent.com/KbWen/agent-virtual-office/main/docs/assets/office-poke.gif" alt="Animated: poking a character makes it bob and pop a speech bubble showing its current status" /><br>
-<sub><b>Poke a character</b> and it bobs and pops a bubble with its current status. It never moves or changes state.</sub>
+<img src="https://raw.githubusercontent.com/KbWen/agent-virtual-office/main/docs/assets/office-poke.gif" alt="Animated: poking a character makes it bob and show its current status" /><br>
+<sub><b>Poke a character</b> to see what it's doing. It stays in place.</sub>
 </td>
 </tr>
 <tr>
 <td width="50%" align="center">
-<img src="https://raw.githubusercontent.com/KbWen/agent-virtual-office/main/docs/assets/share-card.png" alt="A cozy pixel-art postcard summarizing the day's office activity" height="300" /><br>
-<sub><b>End-of-day card.</b> One click exports the day as a PNG. A quiet day says so.</sub>
+<img src="https://raw.githubusercontent.com/KbWen/agent-virtual-office/main/docs/assets/cozy-postcard.jpg" alt="Office postcard preview with the optional Cat sticker selected" /><br>
+<sub><b>Office postcard.</b> Pick it up from the notice board, add a sticker, and download a PNG.</sub>
 </td>
 <td width="50%" align="center">
-<img src="https://raw.githubusercontent.com/KbWen/agent-virtual-office/main/docs/assets/office-zh.png" alt="The office rendered in Traditional Chinese with localized labels and speech bubbles" /><br>
-<sub><b>繁體中文 built in.</b> Labels, bubbles, and names all localized.</sub>
+<img src="https://raw.githubusercontent.com/KbWen/agent-virtual-office/main/docs/screenshot-zh-TW.jpg" alt="The office with Traditional Chinese labels" /><br>
+<sub><b>繁體中文 built in.</b> Switch languages in the app.</sub>
 </td>
 </tr>
 </table>
 
 ## Meet the Team
 
-| Character | Personality | Usually spotted... |
-|-----------|------------|------------------------|
-| **PM** | Meetings are a love language | Realigning a Gantt chart that needed no realigning |
-| **Architect** | Beret. Opinions. | Bolting to the whiteboard mid-thought yelling "Eureka!" |
-| **Developer** | Twin-tails, running on caffeine | Five empty cups deep, brewing number six |
-| **QA** | Trusts nothing, magnifying glass ready | Telling Dev the bug is real. It's real. |
-| **DevOps** | Hard hat, no fear | One deep breath, then hitting the big red button |
-| **Researcher** | Lives behind a book fort | Adding to the pile until something clicks |
-| **Gatekeeper** | The bouncer of your pipeline | Shield up: "Prerequisites not met." Try again. |
-| **Designer** | Pink hair, strong opinions on padding | Nudging a swatch 2px left, for the third time |
+| Character | A little about them |
+|-----------|---------------------|
+| **PM** | Reopens a Gantt chart nobody asked to change |
+| **Architect** | Beret, strong opinions, suddenly sprints to the whiteboard |
+| **Developer** | Twin-tails, five empty cups, brewing number six |
+| **QA** | Magnifying glass out: the bug is real. |
+| **DevOps** | Hard hat on, deep breath, then the big red button |
+| **Researcher** | Hiding behind a book fort, adding one more book |
+| **Gatekeeper** | Shield up: “Prerequisites not met.” Try again. |
+| **Designer** | Pink hair, strong padding opinions, swatch two pixels left again |
 
 ## Office Life
 
-Leave it running and stuff just… happens. Some events fire on **real signals** from your session —
-a real deploy sets off the celebration, a blocked streak kicks off the argument — while the social
-stuff drifts in on a timer and quietly backs off when a live session is busy, so the office never
-talks over real work:
+Tool reports drive the working and blocked indicators. Timed office scenes add background chatter and slow down while work is busy; some scenes also respond to session events. The colored ring and work symbol show status; speech bubbles are character chatter.
 
-- **Tea Break** — a few sneak off to the coffee machine to talk about the others
-- **Stand-up** — PM herds everyone to the whiteboard. Nobody escapes.
-- **Food's Here** — someone walks in with a bag. Productivity ends.
-- **Review Beef** — Dev: "no bug." QA: "look here." Dev: "…fine."
-- **It Deployed** — Ops slaps the button, the whole room loses it
-- **Eureka** — Architect freezes, then sprints to the whiteboard
+- **Tea Break** — someone slips out for coffee
+- **Stand-up** — PM gathers the room at the whiteboard
+- **Food's Here** — the paper bag wins
+- **Review Beef** — Dev and QA disagree about a bug
+- **Eureka** — Architect makes a run for the whiteboard
 
-…and the rare stuff: someone brings a dog, the AC dies and everyone fans themselves, the boss does a
-walkthrough and the whole office *suddenly looks very busy*.
+The office fills the width of its window, from an IDE sidebar to a full window. Hit **☰** for a roster of working and blocked characters plus recent activity.
 
-The office fills the width of whatever you dock it in — IDE sidebar, half-screen, full window — with no
-dead gutters. Hit **☰** for a vertical roster: who's working, who's blocked, and a live feed of what just happened.
+## Scene interactions
 
-## Why it's nice
+- **Characters:** Click to see current activity; `Space` pokes again, and right-click pokes without opening the inspector.
+- **Paper star:** On the lounge table. Short, medium, and long presses each get a different reaction.
+- **Postcard:** Pick it up from the notice board, add an optional Plant or Cat sticker, then choose **Download PNG**. Stickers apply to the postcard only.
 
-It's pure SVG — 8 hand-drawn characters, no canvas, no GPU, tiny bundle.
+Pet, plant, and idle-wave behaviors are optional, off by default, and can be enabled in Settings.
 
-The same tool animates differently per role. `qa + Bash` pulls out a magnifier; `ops + Bash` hits the deploy button; `designer + Edit` walks to the whiteboard.
-
-Everything you see is real. Events fire from your actual session, and an agent's status is never made up. When one gets stuck you see *why* — 🧪 test run, 🔨 build, 📦 install, or just ❔ unknown — with a ↻ when the same thing keeps failing. It only names a cause when the hook actually reports one; otherwise it stays vague on purpose.
-
-Each role murmurs in its own voice — the skeptic QA, the brisk PM, the heads-down Researcher — but the speech bubble is *only* for that voice; status always rides the colored ring and a work symbol. Personality without faking it: no invented conversations, no made-up rapport the agents couldn't actually have.
-
-Click a character and it bobs and tells you what it's doing right now. It won't move or change state. `Space` pokes again; right-click pokes without opening the inspector.
-
-One click saves the day as a little pixel-art postcard you can share. Slow day with nothing finished? The card says so.
-
-The quieter stuff: weather follows the room's mood, 45 seconds of silence reads as thinking instead of stuck, reduced-motion and a11y are respected, and a watchdog keeps anyone from freezing mid-walk.
-
-→ The classifier, movement, and behavior engine are written up in **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)**.
+→ More on the classifier, movement, and behavior engine: **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)**.
 
 ---
 

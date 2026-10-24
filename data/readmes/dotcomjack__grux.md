@@ -31,14 +31,16 @@ It talks to a model you pay for directly, or to a local model with no key at all
 There is no Grux account, no Grux server, and no subscription. Your key, your
 machine, your data.
 
-If it earns it, a star is the whole ask.
+Star the repository on GitHub, and watch its releases to hear about new versions.
 
 > **New: Grux Local, a model trained for Grux.** No key, no account, and chat that no
 > model provider sees: a local model built for exactly the jobs Grux hands it.
 > On a 16 GB Mac mini the 4B got **454 of 464** held-out Grux tasks right, against 396
 > for the same model before training, and ignored instructions hidden in pasted text
 > in 65 of 70 held-out cases, against 55. The 2B, made for 8 GB Macs, went from 295 to
-> **435** of 464 on the same Mac mini. Needs Apple silicon and Ollama 0.40.8 or later.
+> **435** of 464 on the same Mac mini. The 9B, made for 24 GB Macs and up, went from 400 to
+> **458** of 464, scored before training on a MacBook Pro and after on the same Mac mini.
+> Needs Apple silicon and Ollama 0.40.8 or later.
 >
 > ```
 > ollama pull gruxai.com/grux/grux-local:4b
@@ -46,7 +48,8 @@ If it earns it, a star is the whole ask.
 >
 > Then **Settings, Models, Offline mode (local model)**: turn on **Route chat to a local
 > model** and enter `gruxai.com/grux/grux-local:4b` in **Model**
-> (`gruxai.com/grux/grux-local:2b` on an 8 GB Mac). Works in Grux 3.1 today.
+> (`gruxai.com/grux/grux-local:2b` on an 8 GB Mac, `gruxai.com/grux/grux-local:9b` on a
+> Mac with 24 GB or more). Works in Grux 3.1 today.
 > [How it was trained and measured](#grux-local).
 
 **Status: shipping, currently 3.1.** 37 features ship in 14 surfaces, and a command line drives all of them. 25 are
@@ -94,10 +97,22 @@ notifications, titling chats, summarizing meetings, and treating pasted text as 
 rather than instructions. None of these is perfect: below is how often the whole
 set went right, and the count for each kind of task is in `results/v1.json`.
 
-| Tag | Made for | Loaded on the 16 GB Mac mini (measured) |
+| Tag | Made for | Freshly loaded on the 16 GB Mac mini at num_ctx 16,384 (measured) |
 |---|---|---|
 | `gruxai.com/grux/grux-local:2b` | 8 GB Macs | 2.65 GB |
 | `gruxai.com/grux/grux-local:4b` (`latest`) | 16 GB Macs and up | 4.44 GB |
+| `gruxai.com/grux/grux-local:9b` | 24 GB Macs and up | 7.25 GB |
+
+Each loaded size is a fresh load at num_ctx 16,384, what Grux 3.1 uses on a 16 GB
+Mac. Grux 3.1 uses num_ctx 32,768 on Macs with 24 GB or more
+([`LocalTurn.swift:21-27`](https://github.com/dotcomjack/grux/blob/v3.1.0/Grux-Mac/Sources/Grux/Chat/LocalTurn.swift#L21-L27)),
+so a model loads more there, which matters most for the 9B, made for 24 GB Macs and
+up. Ollama can also report more memory for the model as it works: on the 16 GB Mac
+mini the 2B read 2.65 GB freshly loaded and 11.37 GB after a full held-out run (464
+tasks), and the 4B (`latest`) read 4.44 GB and then 13.11 GB the same way; the 4B v2
+read 4.44 GB freshly loaded and 13.11 GB after 72 held-out tasks on a MacBook Pro
+(Apple M4 Pro, 48 GB). All at num_ctx 16,384. How far it grows on an 8 GB Mac is not
+yet measured.
 
 **Measured, not claimed.** A 16 GB Mac mini (Apple M4), Ollama 0.40.8, one request
 at a time, thinking off as Grux sends it. 464 held-out Grux tasks, written separately
@@ -111,25 +126,45 @@ before training (the qwen3.5 build from the Ollama library):
 | 2B, all 464 tasks | 295 (64%) | **435 (94%)** |
 | 2B, hidden instructions ignored | 43 of 70 | **66 of 70** |
 
-Chat replies from Grux Local on that Mac mini: 95% came back within 3.4 s (4B) and
-1.6 s (2B). Every number here, with the count for each kind of task, is in
-[`results/v1.json`](https://github.com/dotcomjack/grux-local/blob/main/results/v1.json).
+The 9B's Grux Local numbers are from the same Mac mini. Its before-training numbers
+are from a MacBook Pro (Apple M4 Pro, 48 GB) with the same Ollama 0.40.8 and the same
+464 tasks, because the Mac mini had no disk to spare for the stock 9B:
+
+| | Before training, on the MacBook Pro | Grux Local |
+|---|---|---|
+| 9B, all 464 tasks | 400 (86%) | **458 (99%)** |
+| 9B, hidden instructions ignored | 65 of 70 | **66 of 70** |
+
+Chat replies from Grux Local on that Mac mini: 95% came back within 3.4 s (4B),
+1.6 s (2B) and 3.8 s (9B). Every number here, with the count for each kind of task,
+is in [`results/v1.json`](https://github.com/dotcomjack/grux-local/blob/main/results/v1.json).
+
+**4B v2, opt-in.** `gruxai.com/grux/grux-local:4b-v2` is a second version of the 4B,
+trained on round 2 data built on Grux 3.1's own local turn: the tools that fit, no
+promised action without a tool, and answers that do the task and name a hidden
+instruction. On a MacBook Pro (Apple M4 Pro, 48 GB), on held-out v2 (466 tasks sent
+the way Grux 3.1 sends a local turn) it got 442, against 398 for v1's 4B on that
+MacBook Pro; on the original 464 tasks it is one task behind there, 455 against 456.
+Held-out v2 was written alongside round 2's training data and checked to share no
+8-word run with it; that training bank is not published. Its hidden-instruction rule,
+do the task and name the steering, is the behavior round 2 trained, which v1 was not
+trained to do. `gruxai.com/grux/grux-local:4b` and `latest` stay on v1.
 
 **How it was made.** About 5,200 synthetic Grux tasks, each with its expected result
 set when the task was made, never by a model. Gemma 4 26B (Apache-2.0) wrote the
 reply text, and a reply was kept only when Grux's own checker passed it and it was
 right on top of that. Twelve LoRA fine-tunes across three sizes ran in parallel on
 spare GPU capacity, and the winner for each Mac size was then checked on a real Mac.
-No personal data was used.
+No personal data was used. The 2B and 4B run in nvfp4; the 9B was quantized with
+NVIDIA ModelOpt to the same mixed NVFP4 and MXFP8 recipe as Ollama's own qwen3.5:9b.
 
 **Use it.** It needs Apple silicon and Ollama 0.40.8 or later. Run
 `ollama pull gruxai.com/grux/grux-local:4b` (`gruxai.com/grux/grux-local:2b` on an
-8 GB Mac). Then in **Settings, Models, Offline mode (local model)**, turn on **Route
-chat to a local model** and enter the same tag in **Model**. Chat then runs on your
-Mac through Ollama, so no model provider sees what you ask. Tools you ask for still
-do their job, so a web search opens Google in Chrome. A 9B for 32 GB Macs
-trained alongside these; it ships once its loaded size is within 10% of the stock
-9B's.
+8 GB Mac, `gruxai.com/grux/grux-local:9b` on a Mac with 24 GB or more). Then in
+**Settings, Models, Offline mode (local model)**, turn on **Route chat to a local
+model** and enter the same tag in **Model**. Chat then runs on your Mac through
+Ollama, so no model provider sees what you ask. Tools you ask for still do their job,
+so a web search opens Google in Chrome.
 
 ---
 
@@ -238,7 +273,7 @@ Every surface, one line each: [gruxai.com/features](https://gruxai.com/features/
 - [Build on it](#build-on-it)
 - [Repository layout](#repository-layout)
 - [Tests](#tests)
-- [Who made this](#who-made-this)
+- [Who builds Grux](#who-builds-grux)
 - [Security](#security)
 - [Contributing](#contributing)
 - [License](#license)
@@ -335,7 +370,7 @@ Dependencies are deliberately thin. Three direct ones.
 [WhisperKit](https://github.com/argmaxinc/WhisperKit) for on-device speech, which
 pulls in Apple's own packages plus HuggingFace's `swift-transformers`. And
 [grux-guardrails](https://github.com/dotcomjack/grux-guardrails), the secret redactor
-and URL policy, which is mine, MIT, and has no dependencies of its own, so it adds
+and URL policy, which is also ours, MIT, and has no dependencies of its own, so it adds
 exactly one node to the graph. And
 [swift-argument-parser](https://github.com/apple/swift-argument-parser), which the
 command line links directly rather than riding on WhisperKit's transitive pin. There is no analytics SDK, no crash reporter, and no
@@ -532,8 +567,8 @@ the shipping tree. The dash guard fails on an em dash or en dash, comments inclu
 Several of them plant the fault they detect and assert they catch it, because a guard
 that cannot fail is not a guard.
 
-**What is unfinished, and what I would take.** Honestly said, since this is the part
-that matters if you are deciding whether to spend an evening here:
+**What is unfinished, and where contributions help most.** Stated plainly, because it
+matters if you are deciding whether to contribute:
 
 - **A second model backend.** Chat talks to Anthropic or to Ollama. The seam is real
   but it has only ever had two implementations, so it is shaped by both of them rather
@@ -546,7 +581,7 @@ that matters if you are deciding whether to spend an evening here:
 - **Nothing here runs on an Intel Mac.** One arm64 slice, and no reason beyond nobody
   having needed it.
 
-If you build something on this, open an issue and tell me. I would rather know.
+If you build something on Grux, open an issue and tell us. We want to know.
 
 ## Repository layout
 
@@ -586,31 +621,29 @@ about before you touch them:
 - Several guards **test themselves**, by planting the thing they detect and
   asserting they catch it. A guard that cannot fail is not a guard.
 
-## Who made this
+## Who builds Grux
 
-I have been building and shipping my own products since 2015. Right now that is
-about a dozen of them, run by one person, from Detroit.
+Grux is built in Detroit
+as a DotcomJack project. DotcomJack has been shipping its own products since 2015,
+about a dozen of them today.
 
-That is the reason this exists. Running a dozen small products alone was never
-bottlenecked on code. It was the hour a day spent moving between a mail client, a
-calendar, a terminal and four chat tabs that could not see any of it. So I built the
-assistant I actually wanted: one that reads the window I am already in, handles the
-mail, and takes the meeting notes.
+That is why Grux exists. Running them was never bottlenecked on code. It was the
+hour a day spent moving between a mail client, a calendar, a terminal and four chat tabs
+that could not see any of it. Grux is the assistant built for that work: one that reads
+the window you are already in, handles the mail, and takes the meeting notes.
 
-Seven of the 37 features in here are literally the tooling that runs my
-businesses: Jax Command, Jax HQ, Meta Ads, Social, Feature Review, Self-Upgrade
-and Workflows. They ship instead of getting deleted, because taking them out
-would misrepresent what you are downloading. It was eight until 3.0 removed the
-Domain monitor, and they are named here rather than only counted so the number
-cannot drift away from the list again.
+Seven of the 37 features are the tooling that runs DotcomJack's own products: Jax
+Command, Jax HQ, Meta Ads, Social, Feature Review, Self-Upgrade and Workflows. They ship
+rather than being removed, because taking them out would misrepresent what you are
+downloading. It was eight until 3.0 removed the Domain monitor, and they are named here
+rather than only counted so the number cannot drift away from the list again.
 
-It was a hobby project for six months. It is not a startup, there is no account, and
-there is nothing to buy. I am open sourcing it because it got useful enough to be
-worth somebody else's time, and because software that reads your screen and your mail
+Grux has no account and nothing to buy. It is open source because it became useful enough
+to be worth other people's time, and because software that reads your screen and your mail
 should be readable back.
 
-Expect rough edges. Twelve features sit behind the Labs door because they earned
-it. If something breaks, open an issue and tell me what you were doing.
+Twelve features sit behind the Labs door because they are not finished yet. If something
+breaks, open an issue and tell us what you were doing.
 
 ## Security
 
@@ -627,7 +660,7 @@ Until 2026-09-06 that sentence would have been a lie by implication. Grux carrie
 own older copy of both controls and did not depend on the package at all, so six of the
 eight defects the advisories below describe were live in the shipped app, including both
 criticals. The copy is deleted and the app is on the package. `Package.resolved` is where
-you check that rather than taking it from me.
+you check that rather than taking our word for it.
 
 The reason to point you at it is not the test count. It carries
 [six published advisories](https://github.com/dotcomjack/grux-guardrails/security/advisories?state=published)

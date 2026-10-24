@@ -132,11 +132,11 @@ squirrel auth login
 
 ## Reports
 
-Category scores for SEO, performance, security and Agent Experience (AX). Publish reports to the web to share with team members or coding agents (fix instructions are embedded)
+A health score and grade, group scores for SEO, performance, security and Agent Experience (AX) colored by score, a ranked list of issues, and a copy fix prompt for each one that you can paste into your coding agent. Publish reports to the web to share with team members or coding agents (fix instructions are embedded).
 
-![squirrelscan report](https://squirrelscan.com/images/html-report-screenshot.webp)
+![A squirrelscan report for squirrelscan.com. The header shows the site, 220 of 220 pages scanned, the Full audit level and a health score of 79 (C). A notice says 912 of 1412 external links were not checked. Four group cards show SEO 86 (B), Performance 59 (F), Security 95 (A) and Agents 42 (F), each with its error and warning counts. Below are pass, warning and fail totals, an auto-generated summary, and the first three ranked issues, each with a Copy fix prompt button.](docs/images/report/example-report.webp)
 
-[see an example report](https://reports.squirrelscan.com/01KWKSVT79R6SZDQE7K6WWZCFY)
+[See an example report](https://reports.squirrelscan.com/01M5NJH51Q6FNRAA3QGW8GYWB6), or read [how to read your report](https://docs.squirrelscan.com/guides/read-your-report).
 
 ## Add to your coding agent
 
@@ -286,6 +286,7 @@ NO_TELEMETRY=1 squirrel audit https://example.com
 
 - [Website](https://squirrelscan.com)
 - [Documentation](https://docs.squirrelscan.com)
+- [FAQ](https://docs.squirrelscan.com/faq)
 - [Coding agent integration](https://docs.squirrelscan.com/agents)
 - [Share feedback](https://squirrelscan.com/feedback)
 - [Bugs, issues and feature requests](https://github.com/squirrelscan/squirrelscan/issues)

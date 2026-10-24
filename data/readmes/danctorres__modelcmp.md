@@ -74,14 +74,15 @@ modelcmp list --task coding                # best model per price for coding, ch
 modelcmp compare sonnet-5 gpt-5            # side by side, with a verdict
 modelcmp show sonnet-5                     # everything about one model
 modelcmp open sonnet-5 --on openrouter     # its page there, or on models.dev, Hugging Face, ...
-modelcmp fav coding sonnet-5               # set your favorite for coding
+modelcmp fav coding sonnet-5 --tier mid    # set your favorite for coding's mid tier
 modelcmp get gemma-3-4b-it                 # download a model and run it on your machine
 ```
 
-In the TUI, `R` recommends, `space` selects models, `C` compares them, `f` sets your favorite
-for a task and `/` filters. `enter` shows everything about a model, `o` opens its page on
-a site like OpenRouter and `t` changes the theme. `x` opens a harness on the model, or downloads
-a local model and runs it with ollama or llama.cpp, installing the runner if you have neither.
+In the TUI, `R` recommends, `d` picks a tier's model there, `space` selects models, `C` compares
+them, `f` sets your favorite for a task's tiers and `/` filters. `enter` shows everything about a
+model, `o` opens its page on a site like OpenRouter and `t` changes the theme. `x` opens a harness
+on the model, or downloads a local model and runs it with ollama or llama.cpp, installing the
+runner if you have neither.
 Movement uses vim keys (`hjkl`, `gg`, `G`, counts like `3j`), and the arrows and mouse work too.
 `?` lists every key, and `enter` on one changes it. `qq` quits.
 
@@ -93,15 +94,16 @@ Recommendations come from each task's Pareto frontier of price and score: the mo
 cheaper or equally priced model beats. Each tier picks the best of them within its price.
 
 Each task has four tiers, `free`, `low`, `mid` and `high`. `free` gets the best free model, `low`
-the best up to $2 and `mid` up to $5 per 1M tokens (the tier header in recommend or `modelcmp tier` changes these), and `high`
-the best one. A favorite you set beats that pick in every tier whose price it fits.
+the best up to $2 per 1M tokens, `mid` the best up to $5 and `high` the best at any price. The tier
+header in recommend, or `modelcmp tier`, changes these caps. A favorite you set for a tier beats
+its pick when it costs no more than the cap.
 
-You can add tasks of your own, next to the built-in ones. In the TUI, press `f` on a model and pick
-`+ new task`, or from the command line:
+You can add tasks of your own next to the built-in ones. In the TUI, pick `+ new task` in
+recommend or in the grid `f` opens on a model, or use the command line:
 
 ```sh
-modelcmp fav debugging opus-5.5 --about "finding and fixing a bug"   # a new task, with its model
-modelcmp fav debugging 3.7-flash --tier low                          # a cheaper model for its low tier
+modelcmp fav debugging opus-5.5 --tier high --about "finding and fixing a bug"   # a new task, with its model
+modelcmp fav debugging 3.7-flash --tier low                                      # a cheaper model for its low tier
 ```
 
 Agents choose a task by what you wrote in `--about`, and your tasks show up last in recommend.
@@ -110,7 +112,7 @@ To get a local model, press `a` in the TUI to list every model, then `x` on one 
 `download and run` entry, or run `modelcmp get <model>`. Via shows how big each download is, and
 `<` `8` on Via hides the models over 8 GB. Models on your machine show as free, and
 [run as agents in pi](REFERENCE.md#models-on-your-machine) once you add your runner to it.
-A model that fits your GPU takes a tier in recommend when it scores higher, marked `↓` with its size.
+A model that fits your GPU takes a tier in recommend when it scores higher, marked `↓` with its size when it needs a download.
 
 ## For agents
 
@@ -134,12 +136,12 @@ local model from ollama or llama.cpp that you made your favorite.
 - [Epoch AI](https://epoch.ai/benchmarks) (CC-BY): benchmarks, and it needs no API key.
 - [Artificial Analysis](https://artificialanalysis.ai): benchmarks and speed, and it needs a
   free API key.
-- [Arena](https://arena.ai/leaderboard/agent) (CC-BY): how models rank in real agent sessions,
-  chat and web development, the Arena column, and it needs no API key.
+- [Arena](https://arena.ai/leaderboard/agent) (CC-BY): how models do in real agent sessions,
+  chat and web development (the Arena column), and it needs no API key.
 
-When the TUI is first started, it prompts the user for an Artificial Analysis API key.
-If a key is provided, the recommended models are based on Artificial Analysis benchmarks, else Epoch AI is used.
-Artificial Analysis provides more information (including performance metrics) and covers more models than Epoch AI.
+The first time you start the TUI, it asks for an Artificial Analysis API key.
+With a key, recommendations use Artificial Analysis benchmarks, otherwise Epoch AI's.
+Artificial Analysis covers more models than Epoch AI and also measures speed.
 Data is cached for 24 hours.
 
 ## More

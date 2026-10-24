@@ -1,11 +1,12 @@
 # pyGAEB
 
-**Python parser for GAEB DA XML construction data exchange files, with LLM-powered item classification.**
+**Python library to parse, validate, write and convert GAEB DA XML files (2.0–3.3): construction tenders, bids, orders, cost estimates and quantity take-offs. Exports to PDF, Excel, Word, HTML, Markdown, CSV and pandas; optional LLM item classification and extraction.**
 
 [![CI](https://github.com/frameIQ/pygaeb/actions/workflows/test.yml/badge.svg)](https://github.com/frameIQ/pygaeb/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/frameIQ/pygaeb/branch/main/graph/badge.svg)](https://codecov.io/gh/frameIQ/pygaeb)
 [![PyPI version](https://img.shields.io/pypi/v/pyGAEB.svg)](https://pypi.org/project/pyGAEB/)
 [![Python versions](https://img.shields.io/pypi/pyversions/pyGAEB.svg)](https://pypi.org/project/pyGAEB/)
+[![PyPI Downloads](https://static.pepy.tech/personalized-badge/pygaeb?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=GREEN&left_text=downloads)](https://pepy.tech/projects/pygaeb)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 > **[Deutsche Version (README.de.md)](README.de.md)**
@@ -25,6 +26,9 @@ An optional LLM classification layer enriches each item with a semantic construc
 - **Document diff** — Compare two BoQs with significance-classified field changes, structural diff, and financial impact
 - **BoQ Builder** — Programmatic document construction with auto OZ, Decimal convenience, phase rules, and version checks
 - **Excel export** — Structured .xlsx workbooks with hierarchy-aware layout, phase-specific columns, and multi-sheet mode
+- **PDF printout** — LV layout with hierarchy, long texts, German number format, subtotals, and carry-forward lines
+- **Word, HTML, Markdown** — the same LV as an editable .docx, a web page or embeddable fragment, or Markdown to read or hand to an LLM
+- **CSV and pandas** — one row per item for every document kind, as a CSV file or a DataFrame, with amounts as floats or exact Decimals
 - **Round-trip** — Parse → modify → write back to any DA XML version
 - **Version conversion** — Upgrade/downgrade between DA XML 2.0–3.3
 - **MCP server** — Expose GAEB documents to LLM agents (ChatGPT, Gemini, Claude, Copilot, Cursor) over a bounded, query-oriented tool surface
@@ -318,6 +322,38 @@ to_excel(doc, "tender_full.xlsx", mode="full")
 # With optional columns
 to_excel(doc, "detailed.xlsx", include_long_text=True, include_classification=True)
 ```
+
+### PDF Printout
+
+```python
+from pygaeb.convert.to_pdf import PdfStyle, to_pdf
+
+to_pdf(doc, "tender.pdf")                                   # German labels and number format
+to_pdf(doc, "tender-en.pdf", style=PdfStyle(locale="en"))   # English
+```
+
+Requires `pip install pyGAEB[pdf]`.
+
+### Word, HTML and Markdown
+
+```python
+from pygaeb.convert import to_docx, to_html, to_markdown
+
+to_docx(doc, "tender.docx")                 # editable Word document (pip install pyGAEB[docx])
+to_html(doc, "tender.html")                 # complete page; standalone=False for a fragment
+text = to_markdown(doc)                     # Markdown, e.g. for an LLM prompt
+```
+
+### pandas DataFrame
+
+```python
+from pygaeb import to_dataframe
+
+df = to_dataframe(doc)                      # the CSV table: one row per item (pip install pyGAEB[pandas])
+df.loc[df["affects_total"], "total_price"].sum()
+```
+
+Amounts are floats; `to_dataframe(doc, exact=True)` keeps pyGAEB's exact `Decimal` values.
 
 ### LLM Classification
 

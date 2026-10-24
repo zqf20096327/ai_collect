@@ -1,5 +1,9 @@
 # compressed-context
 
+[![ci](https://github.com/1cyberlangke1/compressed-context/actions/workflows/ci.yml/badge.svg)](https://github.com/1cyberlangke1/compressed-context/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/compressed-context)](https://www.npmjs.com/package/compressed-context)
+[![license](https://img.shields.io/npm/l/compressed-context)](LICENSE)
+
 OpenCode 的上下文压缩插件。它会将较早的对话历史折叠成独立的摘要块，让长会话在有限的上下文窗口里继续跑下去。
 
 ![compressed-context TUI 面板](docs/panel.png)
@@ -34,6 +38,7 @@ OpenCode 的上下文压缩插件。它会将较早的对话历史折叠成独�
 - **双摘要格式**：支持标准 `markdown`（默认）和极致压缩的 `babel` 格式（首行 `T=标题|G=目标`，正文为高密度非自然语言）。
 - **超长提醒**：上下文增长超过设定阈值时，在请求尾部追加轻量提醒，引导模型自主决定压缩时机；`compress` 工具关闭时自动跳过。
 - **TUI 面板**：直观查看摘要块、缓存命中率与上下文构成，支持在面板内直接修改配置。
+- **按模型设置**：可为单个模型（或所有同名模型）覆盖阈值类参数；侧栏常驻显示当前模型实际生效的设置与来源。
 
 ## 安装与配置
 
@@ -78,6 +83,38 @@ OpenCode 的上下文压缩插件。它会将较早的对话历史折叠成独�
 | `decompressTempMaxAgeHours` | `24`          | 启动时清理超过这个小时数的解压临时文件（1–720）               |
 
 关闭 `compress` 工具后，主动提醒会直接跳过，但不会改写你的 `nudgeGrowthTokens` 设置；重新打开工具后提醒会按原设置恢复。
+
+## 按模型设置
+
+同一份配置可以给不同模型单独设阈值。默认值永远按**该模型自己的窗口**折算，所以不配置任何东西时，200K 模型和 1M 模型本来就会得到不同的触发点。
+
+```jsonc
+{
+  // 全局默认：没单独设置的模型都用这套
+  "triggerPercent": 90,
+  "summaryTotalPercent": 50,
+
+  "models": {
+    // 只写模型名：所有提供商的同名模型都生效
+    "claude-sonnet-4-5": { "triggerPercent": 80 },
+
+    // 提供商/模型：最具体，优先级最高
+    "google/gemini-3-pro": { "contextLimit": 800000, "summaryTotalPercent": 40 }
+  }
+}
+```
+
+合并顺序：**内置默认 → 全局字段 → `models["模型名"]` → `models["提供商/模型"]`**。
+
+只有这 5 个 token 相关字段可以按模型覆盖：`contextLimit`、`triggerPercent`、`nudgeGrowthTokens`、`summaryBlockPercent`、`summaryTotalPercent`。
+
+配置里只保存**真正改过的字段**：某个字段改回与全局相同的值时会自动删除，一条覆盖里的字段全被删掉时整条移除，`models` 为空时连这个键也不留。
+
+TUI 里同样能改：`/compressed-context` 打开设置后，第一层是 `默认设置 / 按模型 / 摘要 / 开关 / 解压 / 界面`：
+
+- `默认设置` 只放 token 数值（上下文上限、压缩阈值、提醒间隔、单条/全部摘要上限）
+- `按模型` → `当前模型` 直接编辑当前会话所用模型，`模型覆盖` 里管理其它模型
+- 选择器里每个模型都有两行：`[提供商]模型`（精确）和 `仅模型名`（所有同名模型）；选中「仅模型名」且存在多个提供商时会再问一次作用范围
 
 ## 本地开发
 

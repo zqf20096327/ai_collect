@@ -17,7 +17,7 @@ Run Mixture-of-Experts models larger than the device's memory by streaming the e
 Built on llama.cpp's public API; Android, iOS, macOS, Windows and Linux; a local OpenAI-compatible
 server on each.
 
-<table>
+<table align="center">
 <tr>
 <td align="center" width="50%"><img src="docs/assets/screens/android.gif" width="220" alt="Qwen3.6-35B-A3B generating an answer on a 12 GB Android phone, in real time."></td>
 <td align="center" width="50%"><img src="docs/assets/screens/iphone.gif" width="220" alt="Qwen3.6-35B-A3B generating an answer on a 12 GB iPhone, in real time."></td>
@@ -154,7 +154,7 @@ each device does, and the reason for each decision.
 |---|---|---|---|---|---|
 | Engine and CLI | arm64 | Apple silicon | x86_64, arm64 | x86_64, aarch64 | arm64 (in the app) |
 | App and server | native app | web app | web app | web app | native app, built from source |
-| Accelerators | Hexagon NPU, Vulkan, OpenCL | Metal | Vulkan, OpenCL (arm64) | Vulkan | Metal |
+| Accelerators | Hexagon NPU, Vulkan, OpenCL | Metal | Vulkan, OpenCL (arm64), Hexagon NPU (arm64, opt-in) | Vulkan | Metal |
 | Run on hardware | 12 GB phone | 16 GB laptop | 16 GB laptop | CI, community | 12 GB iPhone ([#235](https://github.com/Helldez/BigMoeOnEdge/issues/235)) |
 
 Details and what was measured where: [docs/platforms.md](docs/platforms.md).
@@ -169,9 +169,11 @@ scripts/build-host.sh
 build/bin/bmoe-server --open
 ```
 
-Tests: `cd build && ctest --output-on-failure` (needs `python3` with the `gguf` package). Android:
-`scripts/build-android.ps1`, then the APK in [`examples/android`](examples/android).
-[CONTRIBUTING.md](CONTRIBUTING.md).
+Tests: `cd build && ctest --output-on-failure` (needs `python3` with the `gguf` package). Install
+the desktop layout (the binaries, their backend libraries, the web UI and the catalog, in one
+folder): `cmake --install build --component bmoe --prefix <dir>`, then `<dir>/bin/bmoe-server`.
+Android: `scripts/build-android.ps1`, then the APK in [`examples/android`](examples/android).
+Warning and sanitizer options: [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Documentation
 
@@ -187,4 +189,7 @@ on Apple silicon; BigMoeOnEdge uses llama.cpp's public API across architectures 
 
 ## License
 
-Apache-2.0. See [LICENSE](LICENSE).
+Apache-2.0. See [LICENSE](LICENSE). The binaries and the apps also carry llama.cpp and ggml,
+cpp-httplib, nlohmann/json, the web UI's JavaScript libraries (MIT, Apache-2.0) and two fonts
+(SIL OFL 1.1): their licenses are in
+[THIRD_PARTY_LICENSES](THIRD_PARTY_LICENSES), which ships in every archive and APK.

@@ -2,6 +2,8 @@
 
 AgentBeam is a local security layer for AI agents. `beam` is the AgentBeam CLI. It installs hooks for the agents detected on your machine, captures agent and MCP activity, applies your AgentBeam policy locally, and sends approved telemetry to the AgentBeam dashboard.
 
+**Full documentation, guides and cookbooks: [docs.agentbeam.com](https://docs.agentbeam.com).** This README is a quick reference; the docs explain each feature in depth, and every page there can be handed to your coding agent.
+
 ## WipeBench: coding agent safety benchmark
 
 [WipeBench](https://github.com/whyashthakker/WipeBench) gives coding agents an
@@ -51,6 +53,9 @@ beam sync                  # fetch the latest organization policy
 beam monitor --file <log>  # watch a running app's logs and traffic (see App monitoring)
 beam monitor configure     # save what to watch and which LLM key to use; shows where each setting comes from
 beam cve check .           # check an app's dependencies for known vulnerabilities
+beam add package express   # scan an npm package and its dependencies, then install it if it passes
+beam packages scan .       # scan everything already in node_modules and .venv for malware
+beam share ./my-skill      # share a skill, CLAUDE.md or slash command with your team (see Team library)
 ```
 
 Run `beam setup` again when adding an agent or repairing an installation. It preserves existing agent configuration.
@@ -216,13 +221,36 @@ export function middleware(request: NextRequest, event: NextFetchEvent) {
     url: request.nextUrl.pathname + request.nextUrl.search,
     ip: request.headers.get("x-forwarded-for")?.split(",")[0]?.trim(),
     userAgent: request.headers.get("user-agent"),
+    headers: request.headers, // host and country (x-vercel-ip-country, cf-ipcountry) for the analytics
   });
   event.waitUntil(beam.flush());
   return NextResponse.next();
 }
 ```
 
-For Express, use `app.use((req, _res, next) => { beam.request({ method: req.method, url: req.originalUrl, ip: req.ip, userAgent: req.get("user-agent") }); next(); })`. `beam.log(line)` checks application log lines too.
+For Express, report after the response so Beam knows what became of each request: `app.use((req, res, next) => { res.on("finish", () => beam.request({ method: req.method, url: req.originalUrl, ip: req.ip, userAgent: req.get("user-agent"), status: res.statusCode })); next(); })`. `beam.log(line)` checks application log lines too.
+
+**Only what might have worked is raised.** With a response status (from the SDK's `status`, or the access logs `beam monitor` reads), an attack the app refused (3xx or 4xx) is folded into one low-severity roll-up per rule every few minutes: never alerted on, not counted against the monthly allowance, and shown in the dashboard's attack analytics. Middleware runs before the response, so there the SDK also rolls up attacks on software a JavaScript app can't run, like WordPress, PHP or Java paths; set `proxiesOtherStacks: true` if the app proxies such paths to another server.
+
+**Signs an attack is underway.** ([details](https://docs.agentbeam.com/agent-cli/app-monitoring#signs-an-attack-is-underway)) Besides single requests, Beam watches for patterns, with thresholds that follow the level:
+
+| Signal | What it means | From |
+| --- | --- | --- |
+| Scan found a live path | An address with a run of 4xx answers gets a 2xx on a real page | Access logs, `request()` with `status` |
+| Server errors jumped | 5xx on one route far above its usual rate | Access logs, `request()` with `status` |
+| Address walking the app | One address requests 100+ different paths in a minute | Access logs, `request()` |
+| Sign-in after failures | A sign-in succeeds right after a run of failures (same address or user) | Access logs, log lines, `event()` |
+| Admin granted, new API key | A role or admin grant, or a new key or token | Log lines, writes to role and key endpoints, `event()` |
+| Unusual LLM spend | One user's tokens in an hour past a budget (`tokensPerUserHour`) | Logged usage fields, `usage()` |
+| First call to a new host | The app calls a host it never has; the workspace learns the usual ones for a day first | `watchOutbound: true`, `outbound()` |
+
+```ts
+beam.event("login.failed", { user: user.id, ip });       // and "login.succeeded", "admin.granted", "apikey.created"
+beam.usage({ user: user.id, tokens: res.usage.total_tokens, model });
+const beam = createAppMonitor({ watchOutbound: true });  // notes the host of each fetch(); never the URL or body
+```
+
+**Framework-aware.** Tell Beam the app's framework (`createAppMonitor({ stack: "nextjs" })`, or `beam monitor --stack django`; `--app` detects it) and it adds that framework's rules, such as the Next.js middleware bypass, Laravel Ignition, Spring4Shell, exposed Spring actuators, Werkzeug consoles, Rails info pages, Go pprof and ASP.NET diagnostics. Attacks on frameworks the app doesn't run are rolled up instead of raised. Stacks: `nextjs`, `express`, `nestjs`, `vite`, `node`, `django`, `flask`, `fastapi`, `rails`, `laravel`, `php`, `wordpress`, `spring`, `java`, `go`, `dotnet`, `static`. Per-framework cookbooks: [docs.agentbeam.com/cookbooks/overview](https://docs.agentbeam.com/cookbooks/overview).
 
 **LLM features (prompt injection and friends).** If the app sends text to a model, check it on the way in and out with the same `beam` instance. Both calls run locally in microseconds and return what they found, so the app decides what to do. Beam itself still never blocks anything.
 
@@ -355,6 +383,43 @@ Each release runs a stress test of all of this (`npm run stress`) and publishes 
 **Dependency checks** read `package-lock.json`, `npm-shrinkwrap.json`, `yarn.lock`, `pnpm-lock.yaml`, `bun.lock`, `requirements*.txt` (pinned `==` lines), `poetry.lock`, `uv.lock`, `Pipfile.lock`, `go.mod`, `Cargo.lock`, `composer.lock`, `Gemfile.lock`, NuGet `packages.lock.json`, `gradle.lockfile`, `mix.lock`, `Package.resolved` and GitHub Actions workflow files. The search goes four directory levels deep and skips `node_modules`, `vendor` and virtual environments. Manifests without pinned versions, such as `package.json` ranges or `pom.xml`, are not checked.
 
 **Usage.** Findings, dependency checks and LLM checks count toward the workspace's monthly App monitoring allowance, shown in `beam monitor status` and in the dashboard. When the allowance runs out, capture pauses until the reset date. The app itself is never affected.
+
+## Package scanning
+
+`beam add package` scans npm and PyPI packages before they're installed, the way `beam add skill` does for skills. It's useful when an AI agent wants to install a package it named itself.
+
+```bash
+beam add package zod                          # scan zod and every dependency, then install the scanned version
+beam add package requests==2.32.3 --pip       # PyPI, installed with pip
+beam add package some-cli -g --scan-only      # report only, install nothing
+beam packages scan .                          # scan node_modules (npm, yarn, pnpm, bun) and .venv/venv/env
+```
+
+- **Nothing runs during the scan.** npm packages are fetched with `--ignore-scripts`. Python packages are fetched as wheels only, because building a source distribution would run its `setup.py`. When a package ships source only, its sdist comes straight from PyPI, its hash is checked, and it's unpacked without being built.
+- **What it looks for:** install scripts, and what those scripts run, that read the whole environment, fingerprint the machine and phone home, or contact Discord or Telegram webhooks and request-capture services. It also looks for decode-and-exec droppers (`eval(Buffer.from(...))`, `exec(base64.b64decode(...))`), obfuscated code, credential and wallet file access, `.pth` startup hooks, dependencies from outside the registry, and names one typo away from a popular package. A typo name on a package first published in the last 30 days is blocked.
+- **Known vulnerabilities:** on a machine connected with `beam connect` (or with `BEAM_APP_TOKEN` set), every package in the tree is checked against the same database as `beam cve check`. Only names and versions are sent. Critical advisories and actively exploited ones (CISA KEV) count as critical.
+- **What blocks an install:** a critical finding stops the install, and the command exits 2 (`--force` installs anyway). Other findings are shown as warnings. If the package passes, Beam installs the exact version it scanned with your project's own package manager (`npm`, `pnpm`, `yarn` or `bun`, detected from the lockfile).
+
+## Team library
+
+`beam share` shares a skill, a `CLAUDE.md` / `AGENTS.md` / `GEMINI.md`, a slash command, a subagent or a Cursor rule with everyone in your workspace. Teammates install it with one command. It needs a device connected with `beam setup`. The same library is in the dashboard under **Team library**, where you can also share from the browser.
+
+```bash
+beam share ./.claude/skills/release-checklist        # share a skill folder (the kind is detected from the path)
+beam share ./CLAUDE.md --name "Backend conventions"  # share project instructions
+beam share ./.claude/commands/review.md -m "Covers migrations"   # publish a new version with a note
+beam share list                                      # what your team has shared
+beam share install release-checklist                 # install the newest approved version
+beam share install release-checklist@3 --all-agents  # a specific version, for every supported agent
+beam share update                                    # bring installed shares up to date
+beam share delete release-checklist                  # unshare something you shared
+```
+
+- **Only what you confirm leaves your machine.** Beam lists every file and shows its own scan before asking. Hidden files, `node_modules`, symlinks and non-text files are left out, and each one left out is listed. Limits: 100 files, 128 KB per file, 512 KB per share.
+- **Credentials are refused.** If a file contains an API key, access token, private key or a password inside a URL, Beam doesn't upload anything. The workspace runs the same check again. The error names the file and line, never the value.
+- **The workspace scans every upload itself.** Prompt injection or other high-risk findings send a share to an administrator for review before anyone can install it. Administrators can also require review for every share, or turn sharing off.
+- **Installs are checked before anything is written.** Beam checks the download against the workspace's content hash, re-validates every path, and runs its full skill scan on this machine. Files are only written inside the install folder, and never as executables. A file or folder that Beam didn't install, or that you edited since, is left alone unless you pass `--force`, which keeps a backup beside it.
+- **Only you or an administrator can publish new versions of your share.** A teammate can't push their own content under your share's name. Every publish, approval, rejection and deletion is in the workspace audit log.
 
 ## Dashboard
 

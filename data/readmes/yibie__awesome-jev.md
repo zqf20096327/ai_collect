@@ -63,17 +63,17 @@ Found something wrong? Open an issue or a pull request — **removal is as valid
 
 - [Classification & Routing](categories/classification-routing.md) — 76 entries
 - [Adaptive & Realtime UI](categories/adaptive-realtime-ui.md) — 12 entries
-- [Verification & Guardrails](categories/verification-guardrails.md) — 60 entries
+- [Verification & Guardrails](categories/verification-guardrails.md) — 61 entries
 - [Scoring & Ranking](categories/scoring-ranking.md) — 44 entries
-- [Agent Decisions](categories/agent-decisions.md) — 63 entries
+- [Agent Decisions](categories/agent-decisions.md) — 64 entries
 - [Data Labeling & Curation](categories/data-labeling-curation.md) — 11 entries
-- [Evaluation & Benchmarking](categories/evaluation-benchmarking.md) — 45 entries
+- [Evaluation & Benchmarking](categories/evaluation-benchmarking.md) — 46 entries
 - [Calibration & Research](categories/calibration-research.md) — 55 entries
-- [Infra / SDKs / Integrations](categories/infra-sdks-integrations.md) — 121 entries
-- [Game & Simulation](categories/game-simulation.md) — 26 entries
+- [Infra / SDKs / Integrations](categories/infra-sdks-integrations.md) — 122 entries
+- [Game & Simulation](categories/game-simulation.md) — 27 entries
 - [Robotics & Physical](categories/robotics-physical.md) — 11 entries
 - [Finance & Trading](categories/finance-trading.md) — 10 entries
-- [Compliance & Legal](categories/compliance-legal.md) — 3 entries
+- [Compliance & Legal](categories/compliance-legal.md) — 4 entries
 - [Content Moderation](categories/content-moderation.md) — 13 entries
 - [Related Practices / Discussions](categories/related-practices-discussions.md) — 106 entries
 
@@ -121,7 +121,6 @@ Optional tags on an entry name the coding agent it targets and the kind of integ
 Source file: [`categories/classification-routing.md`](categories/classification-routing.md)
 
 - [Neutron Email Triage](https://github.com/Geneonosis/neutron-email-triage) ![stars](https://img.shields.io/github/stars/Geneonosis/neutron-email-triage?style=flat-square&label=%E2%98%85) - Email triage: uses Jev `Choice` to classify Proton Mail Bridge messages as keep, archive, review, or trash, defaults to dry-run, and only permits execute-mode trash moves when trash wins with probability at or above an explicitly supplied threshold of at least 0.9.
-
 - [JEV Book Tags](https://github.com/iamjonatha/jev-book-tags) ![type: plugin](https://img.shields.io/badge/type-plugin-4B5563?style=flat-square) ![stars](https://img.shields.io/github/stars/iamjonatha/jev-book-tags?style=flat-square&label=%E2%98%85) - Library cataloguing: a calibre plugin asks Jev `Noul` questions about book genres and subjects, applies configurable per-tag probability thresholds, and preserves existing tags while leaving uncertain results for review.
 - [Diffusion Jev](https://github.com/Hangzhi/diffusion-jev-sglang) ![stars](https://img.shields.io/github/stars/Hangzhi/diffusion-jev-sglang?style=flat-square&label=%E2%98%85) - Visual classification: independent Jev-style DiffusionGemma/SGLang server that selects doodle and flower labels from image pixels with typed Choice questions and displays candidate scores in a drawing playground, with public evaluation artifacts and uncalibrated probabilities.
 - [Notra](https://github.com/usenotra/notra) ![stars](https://img.shields.io/github/stars/usenotra/notra?style=flat-square&label=%E2%98%85) - Marketing analytics: production GEO platform whose `NOTRA_JEV_CLASSIFIERS` flag routes brand-visibility classifiers off an LLM and onto Jev `Boolean` decisions at a 0.5 threshold, targeting 300 ms p50.
@@ -279,6 +278,7 @@ Source file: [`categories/verification-guardrails.md`](categories/verification-g
 - [ClauJev](https://github.com/Civalski/claujev) ![agent: Claude Code](https://img.shields.io/badge/agent-Claude%20Code-C1512C?style=flat-square) ![stars](https://img.shields.io/github/stars/Civalski/claujev?style=flat-square&label=%E2%98%85) - Second opinion: hooks Jev into Claude Code on the principle that Claude does the work and Jev checks it before the change lands, keeping the request, the verdict and the probability for each check.
 - [MedGemma Ophthalmology + JEV](https://github.com/harsaas/medgemma_Ophthalmology_jev) ![stars](https://img.shields.io/github/stars/harsaas/medgemma_Ophthalmology_jev?style=flat-square&label=%E2%98%85) - Medical check: a research demo that reads retinal fundus images with a fine-tuned MedGemma adapter, has Jev evaluate the generated findings, and drafts separate patient and ophthalmologist summaries - stating explicitly that it is not a clinical decision system.
 - [ReadyCode Reader](https://github.com/ReadycodeAI/readycode-reader) ![stars](https://img.shields.io/github/stars/ReadycodeAI/readycode-reader?style=flat-square&label=%E2%98%85) - Document evidence: searches a large PDF, Word or Excel file locally for up to 20 candidate passages and makes one Jev call with typed relevance checks, returning only passages it can cite instead of putting the document into context.
+- [playwright-system1-triage](https://github.com/kint4/playwright-system1-triage) ![stars](https://img.shields.io/github/stars/kint4/playwright-system1-triage?style=flat-square&label=%E2%98%85) - CI triage: categorises Playwright failures with typed decisions instead of a prose essay per timeout, on the argument that when eighty specs fail at once a generative model is both slow and unreadable.
 
 ### Scoring & Ranking
 
@@ -344,5 +344,4 @@ Source file: [`categories/agent-decisions.md`](categories/agent-decisions.md)
 - [limpet](https://github.com/noplan-inc/limpet) ![stars](https://img.shields.io/github/stars/noplan-inc/limpet?style=flat-square&label=%E2%98%85) - Coding agents: Stop hook that keeps an agent from finishing too early by judging plain-language completion rules with Jev.
 - [dsh-auto-mode](https://git.allen-software.com/allenh1/dsh-auto-mode) ![agent: DeepSeek Harness](https://img.shields.io/badge/agent-DeepSeek%20Harness-2D5BD7?style=flat-square) - Coding agents: DeepSeek Harness permission preset whose end-prompt step has Jev answer the open questions an agent leaves in its final message, steering them back only when a choice clears 0.6 confidence and an autonomy-safety Noul clears 0.5, and returning the turn to the human otherwise.
 - [augustus](https://github.com/24601/Augustus) ![stars](https://img.shields.io/github/stars/24601/Augustus?style=flat-square&label=%E2%98%85) - Coding agents: independent augustus and augustus-train skills for application-specific decision models, covering primitive/base-model/method selection, data assembly, fitting, export/reload, bounded improvement and independent evaluation, with TypeSafe Jev as the default hosted exemplar.
-- [yoshi](https://github.com/compozy/yoshi) ![agent: Multi](https://img.shields.io/badge/agent-Multi-1F6FEB?style=flat-square) ![type: proxy](https://img.shields.io/badge/type-proxy-4B5563?style=flat-square) ![stars](https://img.shields.io/github/stars/compozy/yoshi?style=flat-square&label=%E2%98%85) - Context management: proxy for Claude Code and Codex where Jev judges which conversation history is still needed before pruning.
-- [pi-jev (TheoOliveira)](https://github.com/TheoOliveira/pi-jev) ![agent: Pi](https://img.shields.io/badge/agent-Pi-8250DF?style=flat-square) ![stars](https://img.shields.io/github/stars/TheoOliveira/pi-jev?style=flat-square&label=
+- [yoshi](https://github.com/compozy/yoshi) ![agent: Multi](https://img.shields.io/badge/agent-Multi-1F6FEB?style=flat-square) ![type: proxy](https://img.shields.io/badge/type-proxy-4B5563?style=flat-square) ![stars](https://img.shields.io/github/stars/compozy/yoshi?

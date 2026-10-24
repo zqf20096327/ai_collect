@@ -1,3 +1,5 @@
+# Awesome MCP Servers
+
 [![ไทย](https://img.shields.io/badge/Thai-Click-blue)](README-th.md)
 [![English](https://img.shields.io/badge/English-Click-yellow)](README.md)
 [![繁體中文](https://img.shields.io/badge/繁體中文-點擊查看-orange)](README-zh_TW.md)
@@ -434,4 +436,4 @@ Design and visualize software architecture, system diagrams, and technical docum
 - [docsor1212/aesthete-agent](https://github.com/docsor1212/aesthete-agent) [![docsor1212/aesthete-agent MCP server](https://glama.ai/mcp/servers/docsor1212/aesthete-agent/badges/score.svg)](https://glama.ai/mcp/servers/docsor1212/aesthete-agent) 🐍 🏠 🍎 🪟 🐧 - Mechanically validated frontend aesthetics for coding agents: an evidence-ranked palette library, OKLCH harmony generation, WCAG 2.2 + APCA contrast gates, color-blind simulation and AI-slop detection; installable as an agent skill or MCP server via uvx.
 - [Daksh-create349/Contradiction-MCP](https://github.com/Daksh-create349/Contradiction-MCP) [![Contradiction-MCP MCP server](https://glama.ai/mcp/servers/Daksh-create349/Contradiction-MCP/badges/score.svg)](https://glama.ai/mcp/servers/Daksh-create349/Contradiction-MCP) 📇 🏠 ☁️ 🍎 🪟 🐧 - Detect contradictions and architectural drift in Kubernetes manifests, READMEs, OpenAPI specs and Word docs, with deterministic scoring and resolution advice.
 - [DayuanJiang/next-ai-draw-io](https://github.com/DayuanJiang/next-ai-draw-io/tree/main/packages/mcp-server) [![DayuanJiang/next-ai-draw-io MCP server](https://glama.ai/mcp/servers/DayuanJiang/next-ai-draw-io/badges/score.svg)](https://glama.ai/mcp/servers/DayuanJiang/next-ai-draw-io) 📇 🏠 🍎 🪟 🐧 - Draw and edit draw.io diagrams from your project's files on a live browser canvas you can also edit by hand, with version history, undo, AWS, Azure and GCP shape libraries and PNG or SVG export.
-- [ejwhite7/brandkit-mcp](https://github.com/ejwhite7/brandkit-mcp) [![ejwhite7/brandkit-mcp MCP
+- [ejwhite7/brandkit-mcp](https://github.com/ejwhite7/brandkit-mcp) [![ej

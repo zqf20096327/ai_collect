@@ -4,7 +4,7 @@
 > 作者：**太阳阶梯jqk8707**
 
 把小说、剧本或随口一个点子丢进来，全流程跑在**自己的机器上**：
-**H3 分段提示词 → Qwen-Image 2.1 资产图 → MiniMax H3 视频**。
+**H3 分段提示词 → Moss Image 资产图 → MiniMax H3 视频**。
 每两步之间都会停下来，把产物摆到工作台页面上让你拍板——不是黑盒式"一键生成"。
 
 生成全部走 **ComfyUI 原生 HTTP 接口**（`/prompt`、`/upload/image`、`/history`、`/view`、`/object_info`），
@@ -17,7 +17,7 @@
 | | 内容 |
 |---|---|
 | **做** | ① MiniMax H3 分段提示词（英文正文 + 中文对照）　② 人物/场景/道具资产提示词　③ 视频简介 |
-| | 用 Qwen-Image 2.1 出资产图（人物默认 4:3 三段定设图）　生成带声音的分段成片　一键拼整片 |
+| | 用 Moss Image（TE-Speed 加速）出资产图（人物默认 4:3 三段定设图）　生成带声音的分段成片　一键拼整片 |
 | **不做** | 不写分集大纲、不写分镜表、不做"剧本页"——你要的是片子，不是 PPT |
 
 **没有"剧本"环节**：你给的原文就是输入，直接进提示词生产。
@@ -70,6 +70,40 @@ H3 恒定少 1/6：提示词写 `sec` 秒，API 实传 `round(sec×5/6)`（5–1
 `images` 比对提示词指纹，`videos` 比对提示词 + 资产图指纹——
 **没在页面上呈现过、没登记 `present`，就拒绝生成**。防止"图还没看就往下跑"。
 
+**⑧ 运镜目录（44 条）· 按导演思维选，不硬用**
+`references/camera-moves.json` 收录 44 条 H3 可落地的运镜（主角主导 / 机器主导 / 光学变化 / 视角设定 / 复合 / 双人机位），
+每条带中英镜头句、戏用说明、LoRA 候选与降级写法。选用顺序是**戏眼 → 站位 → 能量走向**，不是"先挑一个炫的"：
+
+- 一段里**最多 1 个 shot 有明确运镜**，其余定机位；大部分段落根本不用运镜。
+- 每段只挂 **1 个运镜 LoRA**，接在链条最末的独立节点 `491`，**不占**页面那三个可选 LoRA 位。
+- 档位四档（2026-10-24 整体往后推一档）：**T0 导演钦点**（模型按剧情判定 `camera.lead = true`，与景别无关）/
+  **T1 近景**（有必挂）/ **T2 中景**（不需要 LoRA 的不挂，需要且有的挂；**全景已并入中景**）/
+  **T3 本机缺文件**（不挂、不写触发词，改用降级句）。
+- 有触发词的运镜（`dolly_zm`、`lockstab`、`mpov…`、360-orbit 固定 caption）由脚本自动前置到提示词最前面。
+- **跨段接头硬规则**：上一段尾镜与下一段首镜不许**同景别 + 同方向**，否则拼接后闪屏、人物跳动。
+  `check` 会解析每段的景别词 + 机位方向词自动抓，`[×]` 硬问题。
+- 工作台每个分镜卡片里都有「运镜」下拉（按分类分组）+ 实时档位徽标 + 「为什么用这个镜头」输入。
+
+细则见 `references/06-camera-moves.md`。
+
+**⑨ 资产取词库（42 槽 / 370 条英文词条）**
+`references/qwen-wordbank.json` + `07-qwen-wordbank.md`：从 Luori-Sunset 的 93 字段中文词库裁出来，
+只留人物 / 场景 / 道具三类用得上的槽位，改写成一词一条的英文短词条，配槽位顺序与配额。
+
+- **一个资产 = 一条提示词**，不给 A/B 版；要更细就往下补槽，不是写成两版让人挑。
+- **一个槽只取一个词**：长发＋寸头、素颜＋浓妆这类互斥词同写会把脸拉糊。
+- 人物 18 槽挑 14–17、场景 10 槽挑 9–10，**两者都 ≥500 词（500–700 最佳）**；道具 8 槽全用（400–600 词）。
+- **默认把人写好看、写体面**：质感靠皮肤纹理 / 毛发细节 / 布料材质 / 一处高光，
+  **不许**用「毛孔清晰可见 / 无修图 / 干裂 / 凌乱 / 皱巴巴 / 污渍 / 油光」换"真实"。
+- 痣 / 疤 / 伤口 / 痘印 / 破衣烂衫只有剧本写明才写，且只留 1 条、记进 `assets[].note`。
+
+取词只管"用什么词"；行文仍是 `03` 的八步框架与五条硬禁令。
+
+**⑩ 用户上传替换的资产，提示词自动让位给图**
+页面点「上传替换」后，资产被打上 `imageSource: user-upload`，所有分段里对应的 `<Subject N>` 会被自动压成一句
+「相貌／衣着／体型严格参照图 N」（场景：格局/材质/陈设/光位；道具：外形/材质/颜色/磨损），**描述词全部清空**——
+文字和图对不上，H3 会按文字画另一个版本。本段开场站位与音色句保留；`check` 对"上传了图还在写描述"判硬问题。
+
 ---
 
 ## 环境要求
@@ -79,29 +113,29 @@ H3 恒定少 1/6：提示词写 `sec` 秒，API 实传 `round(sec×5/6)`（5–1
 - ComfyUI 侧需要（脚本自动读它们暴露的节点与模型列表）：
   - **自定义节点**：**必须先装齐下表 4 个仓库**，缺一个工作流就提交不了（见下节）
   - **VHS**（`VHS_VideoCombine`）用于 mp4 输出；工作流里还用到 rgthree / KJNodes
-  - **模型**：H3 主模型 + H3 LoRA + 32B H3 专用 CLIP + 视频 VAE + 音频 VAE；生图侧 Qwen-Image 2.1 UNet + 8B CLIP + VAE
+  - **模型**：H3 主模型 + H3 LoRA（可叠到 3 条）+ 32B H3 专用 CLIP + 视频 VAE + 音频 VAE；生图侧 Moss Image UNet + qwen3.5 9B CLIP（type `moss_image`）+ flux2 VAE
   - 具体文件名见 `使用手册.md` 第二章，或直接看工作台参数区的下拉
 
 > **不需要联网**。除了本地 ComfyUI，全程不访问外部服务（也不下载任何权重）。
 
 ### ComfyUI 需要安装的自定义节点
 
-内嵌的两份工作流（H3 视频 + Qwen-Image 2.1 生图）依赖下面 4 个自定义节点仓库。
+内嵌的两份工作流（H3 视频 + Moss Image 生图）里，H3 那条走的是 **ComfyUI 原生的 MiniMax H3 节点链**，
+主干节点随 ComfyUI 本体（≥ 0.42）就有；另外还需要下面 3 个仓库。
 **缺节点时 ComfyUI 会直接报 `node type not found` / 提交被拒，工作台参数区也会读不到模型下拉**，装完重启 ComfyUI 再跑。
 
 | 仓库 | 提供什么 | 用在哪 |
 |---|---|---|
-| [`star7code/minimax-h3-chunk-star7`](https://github.com/star7code/minimax-h3-chunk-star7) | Star7chunk 系列 H3 节点（`MiniMaxH3ChunkEnhancedLoaderStar7`、`MiniMaxH3PromptImportStar7`、`MiniMaxH3MaterialPromptStar7`、`MiniMaxH3OneClickHDStar7`、分块解码等） | 视频工作流主干 |
-| [`star7code/minimax-h3-fp16-exact-star7`](https://github.com/star7code/minimax-h3-fp16-exact-star7) | H3 fp16 精确计算相关节点 | 视频工作流 |
-| [`tl2012tl/TE-Speed-QwenImage21`](https://github.com/tl2012tl/TE-Speed-QwenImage21) | Qwen-Image 2.1 推理加速 | 生图工作流（25 步） |
-| [`winchao110/TaiYang_MultiImage`](https://github.com/winchao110/TaiYang_MultiImage) | 多图输入 / 参考图槽位 | 生图与参考图挂载 |
+| ComfyUI 本体（≥ 0.42） | `MiniMaxH3ReferenceToVideo`、`MiniMaxH3SigmaShift`、`MiniMaxChunkFeedForward`、`MiniMaxLowVRAMAttention`、`ModelAttentionBackend`、`BlockSparseAttention`、`ResolutionSelector`、`SaveVideo`、`CreateVideo`，以及 comfy kitchen 量化注意力 | 视频工作流主干 |
+| [`kijai/ComfyUI-KJNodes`](https://github.com/kijai/ComfyUI-KJNodes) | `ModelPreviewOverrideKJ`（采样过程中的低分辨率预览） | 视频工作流 |
+| [`winchao110/TaiYang_MultiImage`](https://github.com/winchao110/TaiYang_MultiImage) | 多图 / 多音轨输入（`TaiYangMultiImageLoader`、`TaiYangMultiAudioLoader`） | 参考图与参考音挂载 |
+| TE-Speed（MOSS 版） | 生图加速 | 生图工作流里的 `TESpeedMoss` 节点，缺它入队会报 `node type not found` |
 
 ```bash
 cd <ComfyUI>/custom_nodes
-git clone https://github.com/star7code/minimax-h3-fp16-exact-star7.git
-git clone https://github.com/star7code/minimax-h3-chunk-star7.git
-git clone https://github.com/tl2012tl/TE-Speed-QwenImage21.git
+git clone https://github.com/kijai/ComfyUI-KJNodes.git
 git clone https://github.com/winchao110/TaiYang_MultiImage.git
+# TE-Speed（MOSS 版）：装 TESpeedMoss 节点（本机已装；换机器时按作者的 MOSS 版仓库装，别装 Qwen 版）
 # 各自按仓库 README 装 requirements（如有），然后重启 ComfyUI
 ```
 
@@ -196,28 +230,43 @@ python scripts/drama.py status --project "D:/短剧/剧名-20261019"
 
 ## 参数区
 
-### 生图参数（Qwen-Image 2.1）
+### 生图参数（Moss Image · TE-Speed）
+
+**参数只有五项**（2026-10-24 用户钦定，多一个都不放）：
 
 | 参数 | 说明 |
 |---|---|
-| UNet / CLIP / VAE | 下拉现读 ComfyUI，默认 `qwen_image_2.1_int8_convrot` + `qwen3vl_8b_int8_convrot` + `qwen_image_2.1_vae_bf16` |
-| **步数** | 整数，可自行填写，默认 **25**（对应 `qwen-image21.quality25` 工作流） |
+| 生图 UNet | 下拉现读 ComfyUI，默认 `Moss_image\moss_image_sft_int8_convrot` |
+| 生图 CLIP | 默认 `Moss_image\qwen3.5_9b_int8_convrot`（加载器 type = `moss_image`） |
+| 生图 VAE | 默认 `Moss_image\flux2-vae` |
+| 步数（整数） | 默认 **50**（Moss Image 官方口径，TE-Speed 会跳掉一部分步） |
+| 人物参考图 · 小脸自动抹除 | 默认**勾选**，只在人物资产（定设图）生成时生效（挂 `TaiYangSmallFaceErase(79)`）；场景 / 道具一律不挂 |
+
+> CFG 3.5、euler + simple、TE-Speed 六项加速参数、小脸节点的人脸模型/阈值/保留脸数/涂抹倍数/填充色，
+> **全部按官方默认写死在代码里，不在页面上暴露，也不进参数记忆**（`REMEMBER_KEYS` 里只留这 5 项）。
+
+| 每张资产自己的参数 | 说明 |
+|---|---|
 | 百万像素 | 人物/场景/道具默认均 **2.0** |
 | 比例 | 人物 **4:3**、场景 16:9、道具 1:1 |
 | 人物视图模板 | 中文框即是唯一口径：左大幅脸部特写 \| 中无头全身 \| 右有头背面 的三段式定设图 |
 
-### 视频参数（MiniMax H3 · Star7chunk-1006）
+### 视频参数（MiniMax H3 · 原生 Ref2VA）
 
 | 参数 | 说明 |
 |---|---|
-| 主模型 / LoRA / LoRA 强度 | 下拉现读；默认 `minimax_h3_hybrid_fl2va_ref2va_b25-49-int8` + `turbo_v4_step600` @ 0.75 |
+| 主模型 | 下拉现读；默认 `minimax_h3_hybrid_fl2va_ref2va_b25-49-int8` |
+| **LoRA ×3 + 强度 ×3** | 三个独立位置，按 1→2→3 串联。**1 号位默认挂 `dmad_full_dareties_v4_step600` @ 0.8，2、3 号位默认「（不挂 LoRA）」**。哪格留空，那颗 LoRA 节点整颗摘掉、链条自动接回去；想叠风格 LoRA 就在 2 号位选 `MysticXXX_MMH3-V1` @ 0.35 |
 | **CLIP** | 必须 **32B H3 专用**（5120 维），见下方"已踩过的坑" |
-| **视频 VAE / 音频 VAE** | 下拉现读，默认 `minimax_h3_video_vae_int8_convrot1` + `minimax_h3_audio_vae_fp32` |
+| **视频 VAE / 音频 VAE** | 下拉现读，默认 `minimax_h3_video_vae_int8_convrot` + `minimax_h3_audio_vae_fp32` |
 | 步数 / 种子 / 生成后控制 | 默认 5 步、`fixed` 可改 `increment / decrement / randomize` |
-| 比例 / 百万像素 | 同时决定视频分辨率（例：0.9MP → 640×1120） |
-| 二采高清放大 | 默认关；开了可设目标像素（默认 1.5MP） |
-| 显存加速后端 | 默认 `comfy_kitchen_int8`；决定 363 节点用哪种注意力内核（existing / sla_ / sol_ / vsa_ / hybrid_，选项实时读 ComfyUI） |
-| VEDA 加速 | 默认**不勾**；勾了才把 `Star7VedaSparseAttention(408)` 留在工作流里，需要 ComfyUI 里已有 VEDA 预测模型 |
+| **每段时长 · 最短 / 最长** | 两个小下拉，控制每段**实传**秒数区间（5–15），默认 **6–15**；`genSec` 先按 5/6 折算再夹进区间。拉长后要同步改台词与动作，`check` 会提示哪段被夹住 |
+| 比例 / 百万像素 | 写进分辨率选择器，由它按 32 对齐算出实际宽高（例：9:16 · 0.9MP → 704×1280） |
+| **模型稀疏注意力** | 一个勾选：勾上启用块稀疏注意力（省显存、更快），取消就把节点整颗从工作流摘掉、走完整注意力 |
+| **模型注意力加速后端** | 两档：`comfy kitchen`（量化 INT8，默认）/ `pytorch`（原生，最兼容） |
+| **分块前馈 · 分块数 / 序列阈值** | 默认 2 块 / 4096。显存紧就调大块数、调小阈值 |
+| **低显存注意力 · 头分块数** | 默认 4。注意力按头分几份算，越大越省显存越慢 |
+| **运镜 LoRA（自动）** | 不在参数区，也不在 `settings` 里。由每段的 `segments[].camera` 决定，最多 1 个，写进独立节点 `491`（链条 `… 490 → 491 → 331`）。本机缺文件就不挂、不写触发词，改用降级句 |
 
 同一个人在页面上调过的值就是这一轮的唯一口径，脚本原样执行、不再追问，也**不会**擅自换成"更好"的值。
 
@@ -241,20 +290,24 @@ python scripts/drama.py status --project "D:/短剧/剧名-20261019"
 
 ```
 auto-drama-video/
-├─ SKILL.md                    主流程与 19 条铁律（给智能体看）
+├─ SKILL.md                    主流程与 21 条铁律（给智能体看）
 ├─ 使用手册.md                  中文说明书（给人看）
 ├─ assets/workbench.template.html   工作台模板
 ├─ references/
 │  ├─ 01-h3-prompt-bilingual.md     H3 提示词落地规范（中英分段）
 │  ├─ h3-wenxi-v2-template.md       权威结构模板（运镜/光影/台词预算）
+│  ├─ 06-camera-moves.md            44 条运镜目录 + 导演思维 + T0/T1/T2/T3 + 跨段防闪
+│  ├─ camera-moves.json             运镜数据源（脚本与页面共用）
+│  ├─ 07-qwen-wordbank.md           资产取词库用法（槽位顺序 / 配额 / 正反例）
+│  ├─ qwen-wordbank.json            资产词库数据源（42 槽 / 370 条）
 │  ├─ 02-asset-prompt-spec.md       资产清单与信息项
-│  ├─ 03-qwen-image-prompt.md       Qwen-Image 2.1 提示词规范
+│  ├─ 03-qwen-image-prompt.md       生图提示词规范（Qwen 系，现役 Moss Image）
 │  ├─ qwen-t2i-rules.md / qwen-cheat-sheet.md / qwen-edit-rules.md
 │  ├─ 04-comfy-api.md               接口与排错
 │  ├─ 05-project-schema.md          drama.json 字段表
 │  └─ workflows/
-│     ├─ minimax-h3.ref2va.api.json        H3 视频工作流（Star7chunk-1006）
-│     └─ qwen-image21.quality25.api.json   生图工作流（25 步）
+│     ├─ minimax-h3.ref2va.api.json        H3 视频工作流（原生 Ref2VA，28 节点）
+│     └─ moss-image.te-speed.api.json      生图工作流（Moss Image + TE-Speed，50 步）
 └─ scripts/
    ├─ drama.py           主程序（init/build/serve/images/videos/check/…）
    ├─ comfy_api.py       ComfyUI HTTP 封装（标准库）
@@ -327,11 +380,13 @@ auto-drama-video/
 | 文件 | 什么时候看 |
 |---|---|
 | `使用手册.md` | 中文说明书：怎么唤起、四页怎么用、参数怎么调、常见问题 |
-| `SKILL.md` | 主流程 + 19 条铁律（智能体执行口径） |
+| `SKILL.md` | 主流程 + 21 条铁律（智能体执行口径） |
 | `references/01` + `h3-wenxi-v2-template.md` | 写 H3 提示词 |
 | `references/02` + `03` | 写资产提示词 |
 | `references/04` | 调接口、排错 |
 | `references/05` | `drama.json` 字段含义 |
+| `references/06` | 运镜怎么选、怎么落地（44 条目录 + 导演思维 + T0/T1/T2/T3 + 跨段防闪） |
+| `references/07` | 资产提示词取词库（42 槽 / 370 条 + 配额 + 正反例，每个资产只出一条 ≥500 词的） |
 
 ---
 

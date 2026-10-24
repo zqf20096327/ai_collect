@@ -26,14 +26,14 @@ The most intuitive and efficient MCP Server for Blender. Control Blender entirel
 
 ## Key Features
 
-- **[191 tools](https://blenderwright.holdmybeer.gg/)** across 28 modules covering every major Blender domain: modeling, mesh editing, materials, shader nodes, lighting, camera, animation, rendering, sculpting, UV mapping, physics, geometry nodes, rigging, curves, sweeps along a path, 3D-print checking, annotations, collections, file I/O, Bool Tool, viewport control, mesh quality analysis, and extension suggestions
+- **[217 tools](https://blenderwright.holdmybeer.gg/)** across 31 modules covering every major Blender domain: modeling, mesh editing, materials, shader nodes, lighting, camera, animation, rendering, sculpting, UV mapping, physics, geometry nodes, rigging, curves, sweeps along a path, 3D-print checking, annotations, collections, file I/O, Bool Tool, viewport control, mesh quality analysis, and extension suggestions
 - **13 expert prompts**: topology best practices, real-world scale references, lighting principles, studio setup, character basemesh workflow, PBR material guide, auto-critique feedback loop, and more
 - **Visual feedback loop**: fast viewport screenshots via OpenGL render (~ms, not seconds) with auto-critique prompts that guide the LLM to check its own work
 - **Mesh quality analysis**: structured reports covering non-manifold edges, loose vertices, zero-area faces, duplicate vertices, and wire edges
 - **Extension suggestions**: proactively recommends Bool Tool, LoopTools, and Node Wrangler when a task would benefit from them (skips already-installed extensions)
 - **Raw Python is opt-in**: `execute_blender_code` is off until you tick "Allow raw Python" in the N-panel, per session, never saved into the .blend. When on, every snippet is echoed to the console and listed in the panel. A restricted namespace blocks obvious mistakes (`os`, `subprocess`, `exec`, `open`, ...); it is a guard against accidents, not a security boundary
 - **Render-aware**: automatically detects when Blender is rendering and queues commands. Recovers from stuck render guards via `load_post` handler and reset command
-- **Blender 4.2+ compatible**: ships as a Blender Extension; tested against Blender 5.1 with EEVEE identifier, Annotation API, sculpt stroke_method, SLIM UV unwrap, Raycast shader node, and EEVEE light path intensity controls
+- **Built for Blender 5.2 LTS**: ships as a Blender Extension; developed and tested on Blender 5.2
 - **Custom port**: configure the server port from the N-panel UI (default: 9876, range: 1024–65535)
 - **Zero telemetry**: no usage tracking, no analytics, no data collection. Everything runs locally on `127.0.0.1`
 - **Zero-dependency addon**: the Blender addon uses only Python stdlib + `bpy`. Nothing to pip install inside Blender
@@ -62,17 +62,17 @@ Then point your client at `uv run --directory /path/to/blenderwright blenderwrig
 ### 2. Install the Blender addon
 
 1. Download the latest addon zip from [GitHub Releases](https://github.com/HoldMyBeer-gg/blenderwright/releases)
-2. Open Blender 4.2 or later
+2. Open Blender 5.2 LTS
 3. Go to **Edit > Preferences > Get Extensions**, click the dropdown (▾) top-right, and choose **Install from Disk...**
 4. Select the downloaded `.zip` file
 5. Enable **"blenderwright"** in the extensions list
 
-> **Blender 4.0 / 4.1 users:** Not supported. blenderwright ships as a Blender Extension, which requires Blender 4.2 (LTS) or later. Please upgrade Blender from [blender.org/download](https://www.blender.org/download/).
+> **Blender 5.1 and earlier:** Not supported. blenderwright targets Blender 5.2 LTS, and Blender refuses to install it on older versions. Please upgrade Blender from [blender.org/download](https://www.blender.org/download/).
 
 <details>
 <summary><strong>Developer install (symlink)</strong></summary>
 
-If you're developing on blenderwright, symlink the addon folder into Blender's user extensions directory instead. Replace `<ver>` with your Blender version (e.g. `4.2`, `5.1`).
+If you're developing on blenderwright, symlink the addon folder into Blender's user extensions directory instead. Replace `<ver>` with your Blender version (e.g. `5.2`).
 
 ```bash
 # macOS
@@ -179,7 +179,7 @@ python install_addon.py upgrade /Applications/Blender.app/Contents/MacOS/Blender
 python install_addon.py upgrade /usr/local/bin/blender
 
 # Windows
-python install_addon.py upgrade "C:\Program Files\Blender Foundation\Blender 4.2\blender.exe"
+python install_addon.py upgrade "C:\Program Files\Blender Foundation\Blender 5.2\blender.exe"
 ```
 
 It refuses to run while Blender is open, checks the path before touching anything,
@@ -239,7 +239,7 @@ blenderwright includes 13 MCP prompts that guide the LLM toward professional-qua
 ## Tool Domains
 
 <details>
-<summary><strong>All 191 tools across 28 modules</strong></summary>
+<summary><strong>All 217 tools across 31 modules</strong></summary>
 
 Full reference with every parameter: **[blenderwright.holdmybeer.gg](https://blenderwright.holdmybeer.gg/)**
 
@@ -249,7 +249,7 @@ Full reference with every parameter: **[blenderwright.holdmybeer.gg](https://ble
 | Objects | 15 | Create primitives, duplicate, parent, join, visibility, origin, convert, auto-smooth |
 | Transforms | 6 | Position, rotation (euler/quat), scale, apply, snap |
 | Modeling | 13 | Modifiers, booleans, subdivide, extrude, bevel, loop cut, bridge edge loops |
-| Mesh Editing | 16 | Inset, fill, grid fill, mark seam/sharp, normals, dissolve, knife project, spin, crease |
+| Mesh Editing | 19 | Inset, fill, grid fill, mark seam/sharp, normals, dissolve, knife project, spin, crease, symmetrize, bisect, loop tools (circle, space evenly, flatten) |
 | Selection | 6 | Select by index, by axis, by face sides, by similarity; invert; report what is selected |
 | Mesh Quality | 3 | Analyze mesh defects: non-manifold, loose verts, zero-area faces, duplicates and repair them; decimate to reduce polycount |
 | Bool Tool | 4 | Auto union, difference, intersect, slice (via Blender's Bool Tool addon) |
@@ -258,14 +258,17 @@ Full reference with every parameter: **[blenderwright.holdmybeer.gg](https://ble
 | Camera | 6 | Create, aim, DOF, viewport capture, active camera |
 | Animation | 8 | Keyframes, interpolation, frame range, follow path |
 | Rendering | 7 | Engine, resolution, samples, output format, render, EEVEE light path intensity |
+| Render settings | 7 | Color management (AgX, looks, exposure), film transparency, denoising, Cycles sampling and light paths, motion blur, render passes |
+| Compositor | 5 | Post-processing chain: glare and bloom, lens distortion, colour balance, blur, Essentials vignette, film grain, chromatic aberration, split toning, sharpening |
+| Deform | 10 | Vertex groups and weights (assign, normalize, smooth, clean, limit, mirror), shape keys (add, sculpt by offset with weighted falloff, blend, animate) |
 | Curves | 10 | Bezier/NURBS/path, 3D text, convert, reverse, handle types, cyclic, subdivide |
 | Sweep | 2 | Sweep a profile along a 3D path for tubes, hoses, cables and rails, with flip-free framing; check a path for bends too tight for the profile |
 | 3D Printing | 1 | Reversed normals, self-intersection, thin walls, shells and overhangs via Blender's 3D Print Toolbox |
 | Sequencer | 5 | Image-sequence strips, sound strips, list and remove strips, render to MP4, MKV or WebM with audio |
 | Sculpting | 8 | Brushes, remesh, multires, symmetry, dynamic topology, stroke_method |
-| UV Mapping | 4 | Smart project, unwrap (ANGLE_BASED, CONFORMAL, SLIM), projection, pack islands |
+| UV Mapping | 4 | Smart project, unwrap (ANGLE_BASED, CONFORMAL, MINIMUM_STRETCH), projection, pack islands |
 | Physics | 9 | Rigid body, cloth, fluid, particles (velocity, rendering, delete), bake |
-| Geometry Nodes | 5 | Create node trees, add/connect nodes, set inputs |
+| Geometry Nodes | 6 | Create node trees, add/connect nodes, set inputs, Essentials modifiers (array, scatter on surface, instance on elements, curve to tube, ...) |
 | Armature | 6 | Bones, constraints, auto weights, pose |
 | Annotations | 5 | Annotation layers and strokes (5.1 Annotation API) |
 | Collections | 4 | Create, move objects, visibility, delete |
@@ -313,7 +316,7 @@ AI Assistant <--stdio/MCP--> blenderwright server <--TCP socket--> Blender addon
 - **MCP Server** (`src/blenderwright/`): Python process using the `mcp` SDK. Exposes tools, resources, and prompts over stdio. Validates all inputs before forwarding to Blender.
 - **Blender Addon** (`addon/`): Runs a TCP socket server inside Blender on a background thread. Commands are queued and executed on the main thread via `bpy.app.timers` to respect Blender's threading model.
 - **Render Guard**: Tracks render state via `bpy.app.handlers`. During renders, the server immediately returns a "busy" status. Automatically recovers from crashed renders via `load_post` handler. Can be force-reset via MCP command.
-- **Protocol**: Length-prefixed JSON messages over TCP with SO_KEEPALIVE for stale connection detection. Each message is a 4-byte big-endian length header followed by a UTF-8 JSON payload.
+- **Protocol**: Length-prefixed JSON messages over TCP with SO_KEEPALIVE for stale connection detection. Each message is a 4-byte big-endian length header followed by a UTF-8 JSON payload. Every request carries a `token` field (see Security).
 
 </details>
 
@@ -332,6 +335,7 @@ AI Assistant <--stdio/MCP--> blenderwright server <--TCP socket--> Blender addon
 <summary><strong>Security</strong></summary>
 
 - **Localhost only**: The TCP socket binds to `127.0.0.1`, never exposed to the network.
+- **Auth token**: any local program can reach `127.0.0.1`, so every command must carry a token. Start Server writes a fresh random token to a file only your user can read (`~/Library/Application Support/blenderwright/token` on macOS, `%APPDATA%\blenderwright\token` on Windows, `~/.config/blenderwright/token` on Linux) and deletes it on Stop. The MCP server reads it automatically. A wrong or missing token gets an error, the connection is closed, and the N-panel shows the count. If the MCP server runs where it can't see that file (WSL, Docker), set `BLENDERWRIGHT_TOKEN_FILE` to its path.
 - **Raw Python is off by default**: `execute_blender_code` refuses to run until you tick "Allow raw Python" in the blenderwright N-panel. The switch is a `WindowManager` property, so it is per Blender session and is never written into a `.blend` file. Every run is echoed to the system console and the panel shows a count and the last snippet. The 191 structured tools do not need it.
 - **The restricted namespace is not a sandbox**: when raw Python is on, the import hook refuses 25 imports (`os`, `subprocess`, `socket`, `shutil`, `sys`, `ctypes`, `importlib`, `pathlib`, `signal`, `multiprocessing`, `pickle`, `shelve`, `tempfile`, `http`, `urllib`, `ftplib`, `smtplib`, `xmlrpc`, `code`, `codeop`, `compileall`, `webbrowser`, `antigravity`, `turtle`, `tkinter`) and the builtins `__import__`, `exec`, `eval`, `compile`, `open`, `globals`, `locals`, `vars`, `input`, `breakpoint`, `exit`, `quit`, `help` and `memoryview` are removed. That catches a model making a mistake. It does not contain an adversary: the code runs in-process with full `bpy`, and `bpy` alone can save files anywhere and run any operator. Treat "Allow raw Python" the way you would treat running a script someone else wrote: read what the model is about to run, and turn it off when you are done.
 - **Input validation**: All inputs pass through validators before reaching Blender: name sanitization, path traversal prevention, numeric range checks, enum allowlists.
@@ -385,11 +389,11 @@ blenderwright/
 │   ├── server.py           # FastMCP entry point
 │   ├── connection.py       # TCP client to Blender (with busy-retry)
 │   ├── validators.py       # Input validation
-│   ├── tools/              # 28 tool modules (191 tools)
+│   ├── tools/              # 31 tool modules (217 tools)
 │   ├── resources/          # MCP resources (scene, objects, materials)
 │   └── prompts/            # 13 expert prompt templates
 ├── addon/                  # Blender addon (zero external deps)
-│   ├── blender_manifest.toml  # Blender 4.2+ Extension manifest
+│   ├── blender_manifest.toml  # Blender 5.2+ Extension manifest
 │   ├── __init__.py         # bl_info (legacy fallback) + register/unregister
 │   ├── server.py           # TCP socket server (SO_KEEPALIVE)
 │   ├── dispatcher.py       # Command routing + allowlist

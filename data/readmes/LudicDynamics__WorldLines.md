@@ -2,38 +2,44 @@
 
 **Language:** [English](./README.md) · [简体中文](./README.zh.md) · [日本語](./README.ja.md) · [한국어](./README.ko.md)
 
-> **What's open:** the example worlds and tools in this repo — AGPL-3.0. Fork, modify, and ship your own worlds.
-> **What's not:** the engine core (`neonrp`). Free to play, not free to fork or redistribute. See [LICENSE](LICENSE).
+> **WorldLines — a multi-agent world-simulation engine built for you and your character agents.**
+> Open source: the **NeonRP** engine (Apache-2.0), the **WorldLines** product (AGPL-3.0), the documents and the benchmarks (CC BY 4.0).
 
 <p align="center">
   <img alt="GitHub Stars" src="https://img.shields.io/github/stars/LudicDynamics/WorldLines?style=flat-square&color=8b5cf6" />
-  <img alt="Watchers" src="https://img.shields.io/github/watchers/LudicDynamics/WorldLines?style=flat-square&color=8b5cf6" />
   <img alt="Forks" src="https://img.shields.io/github/forks/LudicDynamics/WorldLines?style=flat-square&color=8b5cf6" />
   <img alt="Issues" src="https://img.shields.io/github/issues/LudicDynamics/WorldLines?style=flat-square&color=8b5cf6" />
-  <a href="https://hub.worldlines.gg"><img src="https://img.shields.io/badge/Live%20Demo-hub.worldlines.gg-8b5cf6?style=flat-square" /></a>
+  <a href="https://worldlines.gg"><img alt="Live" src="https://img.shields.io/badge/Live-worldlines.gg-8b5cf6?style=flat-square" /></a>
+  <img alt="LINUX DO" src="https://img.shields.io/badge/LINUX%20DO-WorldLines-8b5cf6?style=flat-square" />
   <a href="https://doi.org/10.1145/3800965.3834285"><img alt="Paper" src="https://img.shields.io/badge/Paper-CHI%20PLAY%20Companion%20%2726-b31b1b?style=flat-square" /></a>
   <a href="https://arxiv.org/abs/2606.16014"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2606.16014-8b5cf6?style=flat-square" /></a>
-  <img alt="License" src="https://img.shields.io/badge/License-AGPL--3.0%20(examples)-blue?style=flat-square" />
-  <img alt="LINUX DO" src="https://img.shields.io/badge/LINUX%20DO-WorldLines-8b5cf6?style=flat-square" />
+  <img alt="Engine license" src="https://img.shields.io/badge/neonrp-Apache--2.0-blue?style=flat-square" />
+  <img alt="Product license" src="https://img.shields.io/badge/worldlines-AGPL--3.0-blue?style=flat-square" />
 </p>
 
 <p align="center">
-  <img src="./assets/hero.png" alt="WorldLines — The Door to Living Worlds" width="640" />
+  <img src="./worldlines/assets/hero.png" alt="WorldLines — The Door to Living Worlds" width="640" />
 </p>
 
-## Overview
+## What it is
 
-> Most AI role-play gives you a *character to chat with*. WorldLines gives you a **world where every AI genuinely lives** — a real-time multi-agent simulation you step into, where each soul has its own mind, memory, and agenda. Not a chat. A world.
+Most AI role-play gives you a character to chat with. WorldLines gives you **a world the character lives in** — with places,
+prices, factions, other characters with their own minds, and rules that hold. You don't just talk; you go somewhere, strike a
+deal, pick a fight, and the world answers with consequences that stay.
 
-**What can you do with it?**
+We believe that in the age of games we wrote simulators in code, and in the age of agents we orchestrate simulators with agents. And tabletop role-play is the best world simulator there is. You and your AI characters can play freely inside this TRPG world simulator.
 
-Step into a world that remembers everything you do. Give siege orders in a grey-fog northern port. Sit across from an amnesiac healer who really remembers every word you say. Create a world in minutes — set its rules, its pace, its NPCs — or browse a public catalog and jump straight in. This is a multi-agent society running in real time: many AI souls and you, in one world, shaping it together.
+**TRPG × AIRP: tabletop role-play is itself a form of world simulation. That is our core.**
 
-WorldLines is a **multi-agent simulation engine for role-play**: the world is a society of independent agents. A world-agent owns the world and orchestrates a cast of **soul-agents** — every character is its own agent with a private mind, memory, and agenda, not a line of dialogue data. You join through an avatar terminal. This is not a chatbot, not a scripted game.
+Under it is **NeonRP**, a world-simulation engine built on one idea: *let the model tell the story, let the world keep its rules.*
 
-> Status: **v0.2.0 — Hub Launch** (2026-06) · [Play now →](https://hub.worldlines.gg)
-
----
+- **Talk first, then resolve.** Say what you want to do. In the planning beat the characters present answer and you
+  agree on a plan; once a judge says the talk is settled (or you say 「定」 / `@dm`), the resolve beat rolls what needs
+  rolling, writes the story and commits one validated change to the world.
+- **Three parties.** The world, you and every character keep their own agency. What you say is an *attempt*, not a fact;
+  characters decide for themselves.
+- **The world is files.** Plain JSON / Markdown you can read, diff and version; every turn is a commit you can roll back
+  or branch from.
 
 ## Team & Vision
 
@@ -49,9 +55,22 @@ WorldLines is what came out of that obsession.
 
 We built a harness that connects world-agents, place-agents, and soul-agents into one living simulation. We want this engine to power: **interactive-experience creation · multi-agent society experiments · agent-research advancement · personality-model and world-model benchmarks.**
 
-> **Agent Role Play.** People already role-play directly inside Claude Code and Codex — letting an agentic system drive characters and scenes. That's a new paradigm beyond prompt-based chat, and it's the one we're building for. WorldLines takes that same agentic muscle and makes it **faster, model-agnostic (run it on DeepSeek / OpenRouter / local / free models), and multi-agent at scale** — turning it into a living, playable world where the souls actually come alive.
+We believe language models and agents are not just for generating stories. They can simulate a world: given laws, an engine and boundary conditions, they can run one. A world simulation can be a game in itself, or all the character agents and the world together can be the foundation a game is built on. In such a simulated world, every character is really living there, together with the player. Only a character that lives in a world is a real character.
 
----
+- **Stories from simulation.** NeonRP writes stories out of the friction between a simulated world and character agents
+  with their own goals.
+- **Orchestration anyone can write.** How a turn runs, from tabletop role-play to murder mystery, is designed in plain
+  words and shared as content.
+- **Characters, worlds and play kept apart.** A character's assets and settings, a world's, and the rules of play are
+  separate pieces that combine freely.
+- **A fast engine under any front end.** The AI engine stays fast, robust and open-ended; put a front end on top and it
+  becomes a full game client.
+- **Open engine, hosted platform.** The engine is open source and runs with your own API key. [worldlines.gg](https://worldlines.gg)
+  is the platform for everyone else. The community builds on both.
+
+One article per task: [Vision](https://docs.worldlines.gg/docs/vision/overview).
+
+> **Agent Role Play.** People already role-play directly inside Claude Code and Codex — letting an agentic system drive characters and scenes. That's a new paradigm beyond prompt-based chat, and it's the one we're building for. WorldLines takes that same agentic muscle and makes it **faster, model-agnostic (run it on DeepSeek / OpenRouter / local / free models), and multi-agent at scale** — turning it into a living, playable world where the souls actually come alive.
 
 ## Demo & Video
 
@@ -62,222 +81,171 @@ We built a harness that connects world-agents, place-agents, and soul-agents int
 </p>
 <p align="center"><em>▶ Watch the demo on YouTube</em></p>
 
----
+## What's in this repository
 
-## Quick Start
+| Folder | What | License |
+|---|---|---|
+| [`neonrp/`](./neonrp) | The engine: turn loop, schema, packs (`rpg`, `pct`, `werewolf`, `monopoly`) and mixins (`economy`, `factions`), templates, CLI, terminal UI, SDK | Apache-2.0 |
+| [`worldlines/`](./worldlines) | The product: web UI (3.0), launcher package, templates, example worlds, tutorials; the NeonRP desktop app (macOS) | AGPL-3.0 |
+| [`documents/`](./documents) | Specs (world · soul · template · contract · pack) and the source of [docs.worldlines.gg](https://docs.worldlines.gg) | CC BY 4.0 |
+| [`benchmarks/`](./benchmarks) | The test suites behind the engine's design decisions | code Apache-2.0 · data CC BY 4.0 |
+| `CLAUDE.md` · `AGENTS.md` · `.claude/` · `.agents/` | A card-crafting workbench for Claude Code / Codex (see below) | AGPL-3.0 |
 
-### 🖥️ Download the desktop app
+## This repository and the PyPI packages
 
-Double-click to install — it bootstraps the engine on first launch and opens
-the full local web product. No terminal needed.
+The PyPI packages are built from the same code and add components that are not open source
+([`neonrp/LICENSE-PROPRIETARY.md`](./neonrp/LICENSE-PROPRIETARY.md)):
 
-| Platform | File | Download |
-|----------|------|----------|
-| macOS (Apple Silicon) | `WorldLines-Installer.dmg` | [latest](https://github.com/LudicDynamics/WorldLines/releases/latest/download/WorldLines-Installer.dmg) |
-| Windows | `WorldLines-Desktop-windows-x64-setup.exe` | [latest](https://github.com/LudicDynamics/WorldLines/releases/latest/download/WorldLines-Desktop-windows-x64-setup.exe) |
+| | This repository | PyPI `neonrp` / `worldlines` |
+|---|---|---|
+| Turn | Resolve beat | Planning beat + resolve beat, and the bundled orchestrations |
+| Web UI | Workbench, test bench, play page | Also the Hub, the standard player and the phone chat page |
+| Bundled worlds | Greyoak House, Stoneford | The same; other official worlds come from worldlines.gg after sign-in |
 
-macOS: right-click the installer → Open → Open — it downloads and installs
-the desktop app; afterwards WorldLines opens with a normal double-click.
-Windows: SmartScreen → More info → Run anyway. Linux uses the terminal
-install below.
+Everything in this repository runs on its own with your own API key.
 
-### ⌨️ Or install via terminal
-
-```bash
-# macOS / Linux
-curl -LsSf https://worldlines.gg/install.sh | sh
-
-# Windows (PowerShell)
-irm https://worldlines.gg/install.ps1 | iex
-```
-
-Then:
+## Quick start
 
 ```bash
-worldlines
+pip install worldlines          # or: uv tool install worldlines — the product, with the neonrp engine
+worldlines                      # local web UI → http://127.0.0.1:8787/local
+neonrp                          # terminal: the "Welcome to WorldLines" launcher
 ```
 
-This launches the TUI. From there you can start a new world, browse the catalog, or jump into a saved session.
+**Desktop app (macOS, Apple silicon):** [download NeonRP](https://worldlines.gg/downloads/NeonRP_aarch64.dmg). Not notarized: on first launch, open System Settings › Privacy & Security and click "Open Anyway". The app installs the engine on first launch.
 
-> **First run walks you through API setup.** Keys save to `~/.neonrp/config.json`. [Full provider guide →](https://docs.worldlines.gg/docs/getting-started/quickstart)
+**Desktop app (Windows, x64):** [download NeonRP](https://worldlines.gg/downloads/NeonRP_x64-setup.exe). Not signed: if SmartScreen stops it, click "More info" › "Run anyway".
 
-### 🌐 Or just play online
+The local edition installs from here (PyPI packages; this repository is the source). [worldlines.gg](https://worldlines.gg)
+is online play, nothing to install. Both commands check for a newer release at launch and update themselves
+(`/update mode prompt` inside the game to be asked first). Release notes: [`neonrp/CHANGELOG.md`](./neonrp/CHANGELOG.md) ·
+[GitHub Releases](https://github.com/LudicDynamics/WorldLines/releases). The one-line installer still works:
+`curl -LsSf https://worldlines.gg/install.sh | sh` (macOS / Linux) · `irm https://worldlines.gg/install.ps1 | iex` (Windows).
+Python 3.10 or newer. The first run walks you through choosing a model: sign in with a Worldlines account (`/login`: model
+relay and the Jev judge, no key of your own), or bring your own key (OpenCode Zen, DeepSeek, OpenRouter, Anthropic, OpenAI,
+GLM, or any OpenAI-compatible server). Keys stay on your machine.
 
-No install. Go to **[hub.worldlines.gg](https://hub.worldlines.gg)**, sign in, and play in the browser.
+## Play
 
----
+Pick a world, and the world opens with its own opening scene. Then just say what you want to do:
+
+```text
+你:   艾琳娜，陪我去杂货铺买一瓶小治疗药水，价你来砍。
+主持: 杂货铺在主街，你们走了十来分钟。艾琳娜在柜台前和老苇讲价，说好谈下来的差价一半归她……
+      金 18 → 8 · 两人到杂货铺 · +小治疗药水
+```
+
+Each turn has two beats. In the **planning** beat the host sets the scene and the characters present answer; you agree on
+what to do. When the talk is settled — a judge decides (Jev with a Worldlines account, otherwise your run's own model), or you
+say 「定」 / `@dm` — the **resolve** beat narrates what happens and writes the change into the world. The state is written at
+once and checked again in the background; if the check finds a mistake, it is corrected and you are told what changed.
+
+| Template | What it is |
+|---|---|
+| Greyoak House · The Closed Door | an old house at the end of Fog Lane whose master walked through a door three days ago and never came out; one night, a tight-lipped butler, percentile-dice mystery |
+| Stoneford · The Night the Fog Withdraws | the fog draws back one night a year: two nights and a day to gather what you need to leave by the north gate |
+
+The local edition ships these two worlds. The other official worlds are on the Hub: browse them without signing in and play
+them online at [worldlines.gg](https://worldlines.gg) (or from "Hub ↗" in the local web UI); sign in with a Worldlines account
+to download one and play it locally.
 
 ## Screenshots
 
-<p align="center">
-  <img src="./assets/web-multi-agent.png" alt="WorldLines — the multi-agent village, live" width="860" />
-</p>
-<p align="center"><em>The multi-agent village, live (Stoneford · Elena) — Elena and Rowan each perceive, think, and act on their own, the world-agent narrates, and the agent map tracks who's where.</em></p>
 
 <p align="center">
-  <img src="./assets/multi-agent-play.png" alt="WorldLines — multi-agent play, 7 souls in the scene" width="720" />
+  <img src="./worldlines/assets/readme-turn-en.png" alt="WorldLines" width="860" />
 </p>
-<p align="center"><em>Multi-agent play (Kagura Island) — 7 souls in the scene; three reason in parallel this turn, the rest live on in the background.</em></p>
+<p align="center"><em>The two beats of one turn — in planning the host and the characters settle what is about to happen; in resolve the dice are rolled, the narration is written and the result enters the world. The player said "I cut down everyone in front of me"; the world did not oblige.</em></p>
 
----
+<p align="center">
+  <img src="./worldlines/assets/readme-tui-en.png" alt="WorldLines" width="860" />
+</p>
+<p align="center"><em>Greyoak House's backyard in the terminal — a key turns up under a flowerpot and won't go into the lock, because half the hairpin you snapped earlier is jammed in the keyhole. Things stay: the inventory on the right has one more item.</em></p>
 
-## Example Worlds
-
-WorldLines **is a multi-agent simulation**: a world-agent wrapping a cast of **independent souls** — each a character-agent with its own mind, memory, secrets, and agenda (the tell-tale sign is a `souls/` folder). This is the engine, and where every world is heading.
-
-> Lighter modes exist for simpler, single-thread scenes — `orch` orchestrates domain agents over data-driven NPCs, `fast` is a single-voice agent — but the heart of WorldLines is the multi-agent society below.
-
-### 👥 The multi-agent society — independent souls in one world
-
-> **Runs locally.** Multi-agent isn't on hosted play yet (hosted play offers `fast` + `orch`). Play it in the **Launcher** (New game → pick the world → **Browser · Web**) or `neonrp web --project examples/multi-agent/<world>` — multi-agent plays best in the browser, where you watch every soul live. **New here? Start with Stoneford · Elena.** (For scripting / research, `neonrp play --project … --json --trace`.)
-
-| World | Souls | Run |
-|---|---|---|
-| **[Kagura Island](./examples/multi-agent/kagura-island)** | **7** — Kagami · Hane · Makoto · Miyaji · Shiro · Tsubasa · Yuto. Japanese-folk mystery, time loop, CoC checks. The richest multi-agent society. | [Source →](./examples/multi-agent/kagura-island) |
-| **[Stoneford · Elena](./examples/multi-agent/stoneford-elena)** | **2** — Elena (the healer who remembers) + Rowan. The Stoneford world, now inhabited by living souls. | [Source →](./examples/multi-agent/stoneford-elena) · [Talk to Elena (hosted)](https://hub.worldlines.gg/play/souls/elena) |
-
-### ⛩ Also: lighter `orch` / `fast` worlds
-
-These run a world-agent voicing data-driven NPCs — no per-soul agents. Good for tighter, single-thread scenes, and the on-ramp to the full multi-agent society above.
-
-**Stoneford** — a grey-fog northern river port. Classic-fantasy TRPG · d20 dice · a world-agent routing to town, dungeon, combat, and story agents. **[Play online →](https://hub.worldlines.gg/play/worlds/stoneford)** · **[Source & docs →](./examples/orch/stoneford)**
-
-### More `orch` / `fast` worlds
-
-| World | Play style | Live Demo |
-|---|---|---|
-| **Goblin Ambush** | 3-layer dungeon — fight through 3 boss goblins | [Source →](./examples/orch/goblin-ambush) |
-| **Worldline** | Time-drift narrative — text the past | [Source →](./examples/orch/worldline) |
-| **Sakura Hallway** | A school love story · emotional narrative | [Source →](./examples/orch/sakura-hallway) |
-| **Lamp of Souls** (引魂灯·盛世缘) | 国风 otome court romance · 4 princes, a soul-lamp, 8 endings · zh | [Source →](./examples/orch/otome-lamp) |
-
-All worlds live in [examples/](./examples/) — open-source (AGPL-3.0), fork and ship your own.
-
-### Quick run
-
-```bash
-# multi-agent — the village (play in the browser: neonrp web)
-neonrp web --project examples/multi-agent/stoneford-elena   # 2 souls — Elena & Rowan  ← start here
-neonrp web --project examples/multi-agent/kagura-island     # 7 souls — Japanese-folk mystery
-
-# orch (neonrp tui)
-neonrp tui --from examples/orch/stoneford           # flagship siege TRPG
-neonrp tui --from examples/orch/goblin-ambush/zh    # 3-layer dungeon
-neonrp tui --from examples/orch/sakura-hallway/zh   # school-life narrative
-```
-
-Play online (hosted `fast`/`orch`): [Stoneford](https://hub.worldlines.gg/play/worlds/stoneford) · [Talk to Elena](https://hub.worldlines.gg/play/souls/elena). Multi-agent worlds (Kagura, Stoneford·Elena) run locally.
-
-### Claude Code / MCP
-
-Open Claude Code inside any world directory and the agents are there:
-
-```
-cd examples/orch/stoneford
-claude
-@world-agent 开始游戏
-```
-
-WorldLines exposes its agents as MCP tools. Claude Code discovers them
-automatically — no extra setup. Each example ships with `.claude/agents/`
-pre-configured.
-
----
-
-## Other Projects Using This Engine
-
-- **[Soul Talk](https://hub.worldlines.gg/play/souls/elena)** — character-agent dialogue scene. Elena remembers.
-- **[Worldline](./examples/orch/worldline)** — time-drift narrative engine. Text the past, watch timelines rewrite.
-- **Coming: RP-Abyss** — TRPG expedition. DM + dice checks.
-
----
+<p align="center">
+  <img src="./worldlines/assets/readme-orchestration-en.png" alt="WorldLines" width="860" />
+</p>
+<p align="center"><em>Orchestration — how a game runs is a state machine: planning → resolve, handing off to a combat referee when a fight starts and coming back after. This diagram is the orchestration inside a template; change it and you change the play.</em></p>
 
 ## Who Is This For
 
 ### 🎮 AI Role-Play Players
 
-You come from **Character.AI, SillyTavern, or AI Tavern**. You love deep character conversations — but the world always forgets.
+You come from **Character.AI, SillyTavern, or AI Tavern**. You love deep character conversations, but the world always forgets what you said.
 
-WorldLines gives you characters with **real memory**. They remember what you said three sessions ago. They have inner voices, intentions, goals. And they're not alone — they live in a world with other characters who also remember.
+WorldLines gives you characters with **real memory**: they remember what you said three sessions ago, they have intentions and goals of their own, and they live in a world with other characters who remember too. Turns are fast; a beat takes seconds.
 
-→ [Play Soul Talk](https://hub.worldlines.gg/play/souls/elena) · [Bring an AI character card into a world](https://docs.worldlines.gg/docs/guides/sillytavern-import)
+Go one step further and build orchestration with us: how a game runs is yours to design, and the orchestration tools can be combined and tried out until the play is the one you want.
+
+→ [Play online](https://worldlines.gg) · [Bring an AI character card into a world](https://docs.worldlines.gg/docs/players/your-character) · [Orchestration you speak into being](https://docs.worldlines.gg/docs/vision/orchestration-for-everyone)
 
 ### 📖 Galgame · Otome · Visual Novel Fans
 
-You love **Ren'Py, TyranoBuilder, and branching narratives** — but you're tired of writing every route by hand. You want stories that *respond*, not just branch.
+You love **Ren'Py, TyranoBuilder, and branching narratives**, but you're tired of writing every route by hand. You want stories that *respond*, not just branch.
 
-WorldLines lets you set the characters, the world rules, and the tone — and the agents generate the story in real time. Every choice ripples. No two playthroughs are the same.
+WorldLines lets you set the characters, the world rules and the tone, and the agents generate the story in real time; every choice ripples. The engine only handles what's underneath, and the presentation belongs to the front end: try the Godot or TypeScript heavy-front-end workbench, build the portraits, staging and branching screens the way you want them, then write what you made back into the engine as part of a template.
 
-→ [Play Sakura Hallway](./examples/orch/sakura-hallway) (a school love story) · [Play Lamp of Souls](./examples/orch/otome-lamp) (a 国风 otome court romance) · [Create your first world](https://hub.worldlines.gg/create/world) · *a dedicated visual-novel open-source project — coming soon*
+→ [Godot integration](https://docs.worldlines.gg/docs/developers/godot) · [Godot example](./worldlines/examples/clients/godot) · [TS example front end](./worldlines/examples/clients/ts) · [Developer quickstart](https://docs.worldlines.gg/docs/developers/quickstart)
 
 ### ✍️ TRPG GMs & World Creators
 
-You run tabletop campaigns in **Foundry VTT, Discord, or pen-and-paper**. You spend more time prepping than playing.
+You run campaigns in **Foundry VTT, Discord, or pen-and-paper**, and you spend more time prepping than playing.
 
-WorldLines is a GM's engine: you set the constraints — the rules, the NPCs, the tone — and the agents run the world for you. Auto-indexed lore, per-NPC memory, dice-referee agents.
+WorldLines is a GM's engine: you set the constraints, the rules, the NPCs, the tone, and the agents run the world for you. Auto-indexed lore, per-NPC memory, a dice referee.
 
-→ [Quickstart](https://docs.worldlines.gg/docs/getting-started/quickstart) · [Stoneford starter world](./examples/orch/stoneford)
+What we most want is to study the orchestration tools together with you: does the current frame, planning → resolve plus a play contract, cover what you need at the table, what is missing, where does it get in the way. Come talk on Discord.
+
+→ [Quickstart](https://docs.worldlines.gg/docs/players/quickstart) · [Stoneford starter world](./worldlines/templates/stoneford-town.template) · [Play contracts](https://docs.worldlines.gg/docs/creators/contracts) · [Workbench](https://docs.worldlines.gg/docs/creators/workbench)
 
 ### 🔬 Researchers — AI Personality · World Models · Multi-Agent
 
-You study personality models, world-model benchmarks, or multi-agent societies. You need a **reproducible sandbox** — not a black-box API.
+You study personality models, world-model benchmarks, or multi-agent societies. You need a **reproducible sandbox**, not a black-box API.
 
-WorldLines is **file-backed, event-sourced, and git-diffable**. Every agent decision, every world-state change, is a plain-text event you can trace, replay, and measure.
+WorldLines is **file-backed, event-sourced, and git-diffable**. Every agent decision and every world-state change is a plain-text event you can trace, replay and measure. [`benchmarks/`](./benchmarks) holds the test suites behind each of the engine's design decisions.
 
-Large many-player co-op isn't ready yet — but the **multi-agent village** is the substrate today: a society of independent souls you can run, script, and reproduce. `neonrp play` is the dedicated multi-agent runner, with scriptable JSON + trace output:
+The current focus is a stable world simulation; custom editing of the engine is still in testing. The next step is a `science` pack beside the `rpg` pack: rules for social simulation and economic simulation. **Have a research need? [Open an issue](https://github.com/LudicDynamics/WorldLines/issues) or email `info@worldlines.gg` and we'll work with your experiment.**
 
-```bash
-neonrp play --project examples/multi-agent/kagura-island                 # interactive REPL
-neonrp play "..." --project examples/multi-agent/kagura-island --json --trace   # one-shot, scriptable
-```
-
-A multi-agent tutorial is coming. **Have a research need? [Open an issue](https://github.com/LudicDynamics/WorldLines/issues) or email `info@worldlines.gg` — we'll work with your experiment.**
-
-→ [Multi-agent mode](https://docs.worldlines.gg/docs/core-concepts/engine-modes#multi-agent) · [Core concepts](https://docs.worldlines.gg/docs/core-concepts/agents-orchestration) · [How It Works](#how-it-works)
+→ [Three layers: engine · template packs · product](https://docs.worldlines.gg/docs/concepts/overview) · [A run, end to end](https://docs.worldlines.gg/docs/concepts/journey) · [Specs](./documents/spec/)
 
 ### 🛠️ Developers
 
-You build with **Claude Code, LangGraph, or custom agent pipelines**. You're curious how a world-agent, soul-agents, and a player-agent actually fit together.
+You build with **Claude Code, LangGraph, or custom agent pipelines**. You're curious how the world, the characters and the player fit together as agents, and what a fast, solid AI engine looks like underneath.
 
-We haven't open-sourced the protocol yet — the **world-agent · soul-agent · player-agent** architecture is still being iterated. We don't think there's one perfect answer; we're actively researching a cleaner design. The example worlds *are* open (AGPL-3.0) — fork a world, mod an agent, study how it's wired.
+The NeonRP engine and its specs are open source (Apache-2.0): the specs for worlds, characters, templates, play contracts and rules packs are in [`documents/spec/`](./documents/spec/), and the turn loop is right there in [`neonrp/`](./neonrp). The interface is HTTP, an event stream and files. There are two ways in:
 
-If this is your kind of problem, **[join our Discord](https://discord.gg/HJYWbdqWrE)** and shape the architecture with us.
+- **Build your own heavy front end.** The engine only handles state, turns, agents and the ledger; everything you see belongs to the front end. The [Godot](./worldlines/examples/clients/godot) and [TypeScript](./worldlines/examples/clients/ts) example clients are a starting point, and the staging and screens you build can be written back into a template as part of the world.
+- **Write rules packs and orchestration tools.** Beside the `rpg` pack we are working on a `science` pack (rules for social and economic simulation), and we are looking for people to make the orchestration tools comfortable to use. Custom editing of the engine is still in testing and the architecture is still being iterated; we don't think there is one perfect answer — fork a world, mod an agent, study how it's wired, then come to **[Discord](https://discord.gg/HJYWbdqWrE)** and help settle it with us.
 
-The repo itself is an authoring workbench: clone it, open it in Claude Code / Codex, and the creation skills in `.claude/skills/` auto-load — see **[tutorials/](./tutorials/)** to make character cards / worlds / souls.
+The repo itself is an authoring workbench: clone it, open it in Claude Code / Codex, and the creation skills in `.claude/skills/` auto-load — see **[tutorials/](./worldlines/tutorials/)** to make character cards / worlds / characters.
 
-→ [tutorials/](./tutorials/) · [examples/](./examples/) · [How It Works](#how-it-works)
+→ [Developer quickstart](https://docs.worldlines.gg/docs/developers/quickstart) · [Rules packs](https://docs.worldlines.gg/docs/developers/packs) · [Godot integration](https://docs.worldlines.gg/docs/developers/godot) · [benchmarks/](./benchmarks)
+## Create
 
----
+Clone this repository and open it in **Claude Code** or **Codex**: the workbench (`CLAUDE.md` / `AGENTS.md` and the skills in
+`.claude/skills/` · `.agents/skills/`) helps you craft a character, a world, or a full template — and checks it with the engine.
 
-## How It Works
-
-WorldLines treats the game world as a file-backed, event-sourced state machine. Every turn is an append-only Event; Snapshots make rewind fast.
-
-**Agent architecture — a society of agents:**
-
-```
-world-agent          — owns the canonical world: state · routing · narration · archive
-  └─ soul-agents     — one per character, each its own mind:
-                        persona · memory (long + short) · secrets · goals · inner voice
-                        they perceive, decide, and act on their own
-  (lighter modes)    — orch adds domain agents (town / dungeon / combat / story)
-                        over data-driven NPCs; fast is a single-voice agent
+```bash
+neonrp template lint  my/<id>.template          # every problem; blocks stop publishing
+neonrp template build my/<id>.template /tmp/try
+cd /tmp/try && neonrp tui --play
 ```
 
-- **File-persisted memory & world state** — Everything lives on disk as plain JSON and Markdown.
-- **Auto-indexed context, auto-injected** — No manual lorebook juggling.
-- **Branch / Undo / Redo** — Explore narrative forks like git branches.
-- **Sandbox & Replay** — Verify determinism.
-- **Local-first models** — GLM, OpenAI, LM Studio, or Ollama.
+Specs: [world](./documents/spec/world.en.md) · [soul](./documents/spec/soul.en.md) · [template](./documents/spec/template.en.md)
+· [contract](./documents/spec/contract.en.md) · [pack](./documents/spec/pack.en.md)
+· tutorials (zh): [`worldlines/tutorials/`](./worldlines/tutorials).
 
----
+## Research & citation
 
-## Paper & Citation
-
-The framework behind WorldLines — **Orchestrated Reality** — formalizes an LLM-driven game world for a human player as a *Parameterized-Action POMDP*, with a Plan–Diff–Validate–Apply pipeline that commits schema-validated JSON deltas.
+The claims behind WorldLines are written up as three papers — define the world, scale it to many agents, and show that a world
+holding together is a property of the architecture. Summary: [worldlines.gg/research](https://worldlines.gg/research/).
 
 > **[From Character Role-Play to Orchestrated Reality: LLM-Driven Game World Simulation as a Parameterized-Action POMDP](https://doi.org/10.1145/3800965.3834285)**
 > Yuhang Huang, Chenmiao Li, Chaowei Fang. *CHI PLAY Companion '26*, ACM. DOI: 10.1145/3800965.3834285 · [arXiv:2606.16014](https://arxiv.org/abs/2606.16014)
+
+> **Multi-Agent LLM Simulation for Living Game Worlds: Coordinating World, Soul, and Player Agents over a Pub/Sub Message Bus**
+> *IPSJ Entertainment Computing 2026* (Kyoto, Sep 2026).
+
+A third, working paper is in preparation.
 
 ```bibtex
 @inproceedings{huang2026orchestrated,
@@ -293,73 +261,35 @@ The framework behind WorldLines — **Orchestrated Reality** — formalizes an L
 }
 ```
 
----
+## Contributing
 
-## Tutorial
-
-**Create with Claude Code / Codex (in this repo, skills auto-load) — [tutorials/](./tutorials/)** *(zh)*:
-
-| I want to make | Tutorial |
-|---|---|
-| A character card (tavern-compatible) | [01 · Character Card](./tutorials/01-character-card.md) |
-| A world card / lorebook | [02 · World Card](./tutorials/02-world-card.md) |
-| A full orch world from scratch (like Sakura Hallway / Lamp of Souls) | [03 · Full World](./tutorials/03-game-world.md) |
-| A soul with its own mind + a multi-agent world | [04 · Soul & Multi-agent](./tutorials/04-soul-multi-agent.md) |
-
-Full documentation at **[docs.worldlines.gg](https://docs.worldlines.gg)**:
-
-| Topic | Link |
-|---|---|
-| Getting started | [docs.worldlines.gg/docs/getting-started](https://docs.worldlines.gg/docs/getting-started) |
-| Core concepts | [docs.worldlines.gg/docs/core-concepts](https://docs.worldlines.gg/docs/core-concepts) |
-| Guides | [docs.worldlines.gg/docs/guides](https://docs.worldlines.gg/docs/guides) |
-| Q&A / comparisons | [docs.worldlines.gg/docs/qa](https://docs.worldlines.gg/docs/qa) |
-
----
-
-## Roadmap
-
-| Version | Status |
-|---|---|
-| **v0.1.9** — Engine (2026-04) | ✓ 10-agent orchestrator · Stoneford starter · Claude Code runtime |
-| **v0.2.0** — Hub Launch (2026-06) | ✓ WebHub · Hosted Play · Soul Talk · Create Studio · Stripe · Covers · Saves |
-| **v0.2.3** — Multi-Agent Village (2026-06) | ✓ The village: a world-agent wrapping independent souls · Kagura Island · Stoneford · Elena · runs locally |
-| **v0.3.0** — Desktop (2026-07) | ✓ Unified Web/TUI · Web Launcher · White-box world creation · Self-hostable web |
-| **v1.0** — Protocol | ○ Stable WORLD/SOUL protocol · Worlds that keep living |
-
-Full roadmap: [docs.worldlines.gg/docs/roadmap](https://docs.worldlines.gg/docs/roadmap)
-
----
+This repository is the public release of WorldLines; development happens upstream and each release lands here as one commit.
+Issues and pull requests are welcome — accepted PRs are merged here first (your authorship stays in this history) and carried
+into the next release. See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## License
 
-**Open-source (AGPL-3.0):** the example worlds, character bundles, and tools in `examples/` and `tools/`. (The agent protocol/architecture is still being iterated and not open-sourced yet — see Developers above.)
+- `neonrp/` — Apache License 2.0 ([`neonrp/LICENSE`](./neonrp/LICENSE), [`neonrp/NOTICE`](./neonrp/NOTICE))
+- `worldlines/` and the workbench — GNU AGPL v3.0 ([`worldlines/LICENSE`](./worldlines/LICENSE))
+- `documents/`, benchmark data — CC BY 4.0 ([`documents/LICENSE`](./documents/LICENSE))
+- setting content in `worldlines/templates/` and `worldlines/examples/` — text CC BY 4.0, images and audio CC BY-NC 4.0
+  ([`worldlines/CONTENT-LICENSE.md`](./worldlines/CONTENT-LICENSE.md))
 
-**Open-source (AGPL-3.0) — the WorldLines shell:** the web UI (`ui/`) and desktop shells (`desktop/`); the NeonRP engine they talk to over HTTP stays proprietary and is distributed separately.
-
-**Not open-source:** the engine core (`neonrp`). Proprietary preview — free to play, not free to fork.
+"NeonRP" and "WorldLines" are names of Ludic Dynamics; the licenses do not grant rights to use them.
 
 ## Star History
 
 <p align="center">
   <a href="https://github.com/LudicDynamics/WorldLines/stargazers">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="assets/star-history-dark.svg" />
-      <source media="(prefers-color-scheme: light)" srcset="assets/star-history-light.svg" />
-      <img alt="Star History Chart" src="assets/star-history-light.svg" />
+      <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=LudicDynamics/WorldLines&type=Date&theme=dark" />
+      <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=LudicDynamics/WorldLines&type=Date" width="720" />
     </picture>
   </a>
 </p>
 
----
-
 ## Community
 
-- Web: [worldlines.gg](https://worldlines.gg) · Docs: [docs.worldlines.gg](https://docs.worldlines.gg)
-- Discord: [discord.gg/HJYWbdqWrE](https://discord.gg/HJYWbdqWrE)
-- GitHub: [LudicDynamics/WorldLines](https://github.com/LudicDynamics/WorldLines)
-- Contact: `info@worldlines.gg`
-
----
+- [worldlines.gg](https://worldlines.gg) · [docs.worldlines.gg](https://docs.worldlines.gg) · [Discord](https://discord.gg/HJYWbdqWrE) · `info@worldlines.gg`
 
 Developed by **nikoloside** & **redoctober**, advanced by [Ludic Dynamics](https://ludicdynamics.com).

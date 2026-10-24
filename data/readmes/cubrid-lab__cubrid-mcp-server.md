@@ -293,7 +293,8 @@ The **raw SQL text, bound parameters, and literal values are never logged**, so 
 git clone https://github.com/cubrid-lab/cubrid-mcp-server.git
 cd cubrid-mcp-server
 python -m venv .venv && source .venv/bin/activate
-make install        # pip install -e ".[dev]"
+python -m pip install --upgrade pip   # the dev group needs pip >= 25.1
+make install        # python -m pip install -e . --group dev
 make doctor         # check the required tools
 
 # Lint, format check & type check (ruff check ., ruff format --check ., mypy)
@@ -302,12 +303,16 @@ make check
 # Unit tests with the 95% coverage floor (no database)
 make test
 
-# Integration tests on a Docker CUBRID that make starts and always removes
-make integration    # CUBRID_VERSION=11.4 INTEGRATION_PORT=33000 by default
+# Integration tests on a run-owned Compose CUBRID that make starts and always removes
+make integration    # CUBRID_VERSION=11.4 CUBRID_TEST_PORT=33000 by default
 
 # Integration tests against a CUBRID you already run
 export CUBRID_HOST=localhost CUBRID_USER=dba CUBRID_PASSWORD="" CUBRID_DATABASE=demodb
 make integration-local
+
+# A persistent local CUBRID (docker-compose.yml) for manual work; make integration never touches it
+make docker-up      # demodb on 127.0.0.1:33000 (CUBRID_VERSION, CUBRID_TEST_PORT)
+make docker-down    # keeps the data volume; make docker-clean deletes it
 ```
 
 CI calls the same Make targets; `make help` lists them all and

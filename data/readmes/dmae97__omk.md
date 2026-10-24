@@ -14,7 +14,8 @@
 </p>
 
 <p align="center">
-  A terminal coding agent with model switching and explicit, test-backed goals.
+  An open-source multi-agent coding CLI for your terminal: switch models in one
+  session and finish a goal only when your test passes.
 </p>
 
 <p align="center">
@@ -37,9 +38,11 @@
 
 ---
 
-A lightweight, MIT-licensed coding agent for your terminal. Switch models in
-one session, add subagents when you need them, and mark a goal done only when
-your own check passes.
+OMK is a lightweight, MIT-licensed AI coding agent for your terminal, written in
+TypeScript. Switch models in one session, add subagents when you need them, and
+mark a goal done only when your own check passes. It is a standalone CLI, so it
+can serve as an open-source alternative to a single-provider agent such as
+Claude Code.
 
 Requires Node.js 22.19 or newer:
 
@@ -115,9 +118,15 @@ omk
 
 Or run `npx --ignore-scripts open-multi-agent-kit` without a global install.
 
-<!-- TODO: a standalone binary installer (install.sh with SHA256SUMS) is planned,
-     but the latest release has no install.sh asset yet. Add it back here once
-     https://github.com/dmae97/omk/releases/latest/download/install.sh resolves. -->
+Or install the standalone binary, which needs no Node.js (macOS, Linux):
+
+```bash
+curl -fsSL https://github.com/dmae97/omk/releases/latest/download/install.sh | sh
+```
+
+The script checks the download against the release's `SHA256SUMS` and installs
+to `~/.omk/bin`; add that folder to your `PATH` as it tells you. Windows builds
+are attached to each [release](https://github.com/dmae97/omk/releases/latest).
 
 1. On a first run OMK opens `/login` for you: sign in with a subscription or an
    API key. An existing Claude Code or Codex CLI login can be reused with
@@ -470,7 +479,7 @@ material that is not published with the repository.
 - [Containerization](packages/coding-agent/docs/containerization.md)
 - [Public skill catalog](SKILLS.md)
 - [Changelog](packages/coding-agent/CHANGELOG.md)
-- [Release notes for v1.5.7](.github/RELEASE_NOTES_v1.5.7.md)
+- [Release notes for v1.5.8](.github/RELEASE_NOTES_v1.5.8.md)
 - Latest public release: [GitHub Releases](https://github.com/dmae97/omk/releases/latest). The source-version notes linked above can describe a candidate until its tag workflow completes.
 
 ## Development
@@ -490,6 +499,22 @@ published CLI includes a generated `npm-shrinkwrap.json`. Read
 change.
 
 ## FAQ
+
+### What is OMK?
+
+OMK (Open Multi-Agent Kit) is an open-source coding agent CLI for the terminal.
+It reads files, edits code, and runs commands in your repository. You can switch
+models inside one session, add subagents when a task needs them, and use
+`/goal verify` so a goal only counts as done when your chosen check passes. It
+is MIT-licensed and written in TypeScript.
+
+### How do I install OMK?
+
+With Node.js 22.19 or newer, run
+`npm install -g open-multi-agent-kit --ignore-scripts`, then `omk` in your
+project. Without Node.js, use the standalone installer on macOS or Linux:
+`curl -fsSL https://github.com/dmae97/omk/releases/latest/download/install.sh | sh`.
+See [Quick start](#quick-start).
 
 ### Why use OMK instead of Claude Code?
 
@@ -515,40 +540,6 @@ Not automatically. Subagents require setup, and verification must be part of
 the chosen workflow. Its result covers the declared checks, not all behavior. See
 [what runs by default](#what-runs-by-default) and [evidence and limits](#evidence-and-limits).
 
-## Next: v1.5.0 (planned, not released)
-
-This section tracks planned work. Nothing here ships until it is merged and released, and every number below comes from mock-model A/B runs, not real models.
-
-| Item | Status | What it changes |
-| --- | --- | --- |
-| MCP tool output cap (spec 066) | Merged (#145) | Large MCP results are cut to the first and last 2000 lines / 50KB, and the full text is saved to a private file (mode 0600). `OMK_MCP_OUTPUT_CAP=0` turns it off. Mock A/B: a fact at the end of a 1MB result went from 0/20 to 20/20 success. Known cost: when the fact sits in the middle, billed input tokens rise (200KB: +59%, 1MB: about 60x). |
-| Pre-commit dependency-tree hook fix | Merged (#146) | Stops a false `invalid` report for the root `qs` override on npm 10.9.3. |
-| Temp output cleanup (spec 068) | Spec approved | Opt-in `OMK_TEMP_OUTPUT_CLEANUP=1` removes OMK's own saved output files on exit and in a daily startup sweep. |
-| Truncated output navigation (spec 069) | Spec drafted | Opt-in hints that point the model to `grep` the saved file before reading it in pages, aimed at the mid-output token cost above. |
-| Search, edit and read tool research | Research | Survey of current agent tools such as fff before any change to `grep`, `find`, `read` or `edit`. |
-| Prompt cache prefix measurement (spec 070) | Spec drafted | Offline measurement of how much of each request prefix stays byte-identical between turns, and what breaks it. No runtime change. |
-| Subagent runtime (spec 071) | Spec approved | Opt-in `OMK_SUBAGENT_RUNTIME`. At most 4 subagents, further limited by the resource tier: 2 at once on the default `normal` tier and 1 on constrained tiers. A request over the limit is refused with a typed `busy` error (with the limit and tier name) instead of queued. The lead and all workers share one turn and token budget. Each subagent gets its own git worktree. |
-| Parallel session protocol | Planning | A written contract for messages, file ownership locks, completion and failure reports, and cancel propagation between parallel sessions. |
-| Reasoning auto v5 for subagents | Planning | Builds on auto v4 after a memory and CPU baseline for subagents. |
-| Subagent loop guard and git pre-checks | Planning | Always on for subagents, with no flag. A subagent cannot start another subagent, and it stops after 3 identical calls in a row, 3 repeated errors, an A/B ping-pong, or 5 turns without progress. Before reporting done it must leave a clean `git status`, updated docs, and a conflict-free `git merge-tree` against main. |
-| Image previews and model image size (spec 075) | Planning | Tool-result images get the same 6-line, 80-column preview limit as prompt attachments, with a one-line text fallback. Images sent to the model follow the provider's documented resize rule; saved originals stay full size. |
-
-Behavior changes planned for 1.5.0: a subagent request over the concurrency limit is refused with a typed `busy` error instead of waiting, and Ultra mode gets the same limit. The limit is the smaller of 4 and the resource tier's heavy-process limit, so the default `normal` tier runs 2 subagents at once.
-
-To run 4 at once on the `normal` tier, set this in `settings.json`:
-
-```json
-{ "resourceGovernor": { "normalMaxHeavyProcesses": 4 } }
-```
-
-In a mock run, 4 truly concurrent workers finished about 24% faster than the default of 2 but used about 65% more peak memory (777MB vs 472MB). Real workers hold larger contexts, so expect the extra memory to be higher.
-
-On hold:
-
-- Stryker upgrade and removing the `qs` override. The latest `@stryker-mutator/core` (10.0.0) still pins `typed-rest-client ~2.3.0`, so the override stays for now.
-- A hard limit on repeated reads of saved output. Spec 069 starts with hints only; a hard limit waits for real-model data showing hints are not enough.
-- Real-model re-measurement of timeouts and of the opt-in hints. This needs a cost approval first.
-
 ## Recent releases
 
 <details>
@@ -560,6 +551,29 @@ On hold:
 > section above for the shipped guards and optional-corpus boundary.
 
 <!-- releases:start -->
+
+## Release v1.5.8
+
+### Added
+
+- Goal autonomy behind `OMK_GOAL_AUTONOMY=1` (flag, default off). `/goal budget <usd|-> [<deadline ISO>|-]` sets a user-only cost and deadline budget that includes subagent lane cost; the goal stops with `budget-limit`, `deadline`, `outcome-unknown` or `scope-changed`, steering pauses it, and only `/goal resume` restarts it. Stop reasons are custom entries; the `omk.goal.v1` schema is unchanged (#266, #268).
+- Strong-only skill auto-load behind `OMK_SKILL_AUTO_LOAD` (flag, default off), with an observe-only `skill-autoload.jsonl` log (#262).
+- Evidence recall delete-after-use behind `OMK_EVIDENCE_LIFECYCLE=delete` (flag, default off; `observe` only records) (#263).
+
+With all new flags off, behavior is the same as 1.5.7.
+
+### Fixed
+
+- Evidence recall delete recovery can no longer fail `session_start` (#264).
+- `session_info` JSON test no longer flakes (#265).
+
+### Changed
+
+- Research count scripts for spec 117 and 119 on synthetic fixtures (#267), NaN/Infinity tolerance (#269), header comment fix (#271).
+- Spec 118 D3 measurement addendum, design only (#272).
+- `AGENTS.md` lists the goal autonomy flag.
+
+Release notes live in [RELEASE_NOTES_v1.5.8.md](.github/RELEASE_NOTES_v1.5.8.md).
 
 ## Release v1.5.7
 
@@ -610,26 +624,6 @@ With all four flags off, behavior is the same as 1.5.5.
 - The trademark notice moved out of `LICENSE`, so GitHub detects the MIT license. AdaptOrch logo files moved to `readmeasset/adaptorch/` with a `NOTICE` saying they are not MIT-licensed (#205).
 
 Release notes live in [RELEASE_NOTES_v1.5.6.md](.github/RELEASE_NOTES_v1.5.6.md).
-
-## Release v1.5.5
-
-### Behavior change (security)
-
-- Secret redaction no longer runs on text, log, session, run-journal and bash-output paths (d58ed90719). Secrets that appear in those values (for example API responses recorded by `ApiBroker`, compaction input, journal entries, verified-bash output) are now written to disk as-is. If you relied on omk to mask them, keep secrets out of tool output or clean those files yourself.
-
-### Changed
-
-- `VERIFIED_BASH_REDACTION_POLICY_ID` is now `omk-bash-combined-v2+raw-unredacted+utf8+capture-tail-128k+tail-64k`. The old id claimed `omk-sensitive-text-v1` redaction that no longer runs. Receipts already written with the old id are unchanged; code that compares against the old string must update.
-
-### Deprecated
-
-- `redactForModel` is still exported from the package root with its v1.5.4 behavior, but omk no longer calls it. It will be removed in 2.0.0.
-
-### Fixed
-
-- Next-task suggestions follow the editor on screen. An extension that swaps in its own editor at session start (for example `pi-powerline-footer`) left the gray suggestion on the hidden default editor, so it never appeared and Tab never inserted it.
-
-Release notes live in [RELEASE_NOTES_v1.5.5.md](.github/RELEASE_NOTES_v1.5.5.md).
 
 <!-- releases:end -->
 

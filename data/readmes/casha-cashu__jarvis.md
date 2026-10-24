@@ -2,7 +2,7 @@
 
 ![CI](https://github.com/casha-cashu/jarvis/actions/workflows/test.yml/badge.svg)
 ![Release](https://img.shields.io/github/v/release/casha-cashu/jarvis)
-![Tests](https://img.shields.io/badge/tests-934%20passed-brightgreen)
+![Tests](https://img.shields.io/badge/tests-1352%20passed-brightgreen)
 ![License](https://img.shields.io/github/license/casha-cashu/jarvis)
 [![Сайт](https://img.shields.io/website?url=https%3A%2F%2Fcasha-cashu.github.io%2Fjarvis%2F)](https://casha-cashu.github.io/jarvis/)
 
@@ -15,6 +15,8 @@
 - **Распознавание речи** — Vosk (быстрый, офлайн) или faster-whisper (точный)
 - **Синтез речи** — Piper TTS (русский голос Дмитрия), gTTS fallback
 - **LLM интеграция** — Ollama (локально, с tool-use), OpenAI (нативный API, с tool-use), Anthropic Claude (нативный API, с tool-use), OpenRouter (агрегатор, чат)
+- **Рассуждения моделей (Reasoning)** — потоковое извлечение и отображение цепочек мыслей (`<think>`) с таймером и аккордеоном в UI, со 100% гарантией вырезания из озвучки (TTS invariant)
+- **Зрение и анализ экрана (Multimodal Vision)** — команда «что на экране» / скриншот экрана с анализом в мультимодальных моделях (Ollama, OpenAI, Anthropic, OpenRouter)
 - **NLU-классификатор** — TF-IDF + LogisticRegression intent classifier (кэшируется через joblib). Маршрутизирует русские фразы в команды по intent+slots, fallback на fuzzy-match
 - **Bash-агент** — LLM (Ollama, OpenAI, Anthropic) вызывает bash/read/write tools через нативный tool-calling API. Трёхслойный approval gate: hardline blocklist (`rm -rf /`, `mkfs`, `dd of=/dev/`, fork bombs, ...) → dangerous-pattern детектор (~20 паттернов: `curl|sh`, `git push -f`, `iptables -F`, ...) → approval gate (`auto` / `strict` / `yolo`)
 - **Управление системой** — воркспейсы, окна, скриншоты, звук, блокировка
@@ -34,7 +36,7 @@
 Десктопный интерфейс на Tauri 2 + React 19 в каталоге `jarvis-ui/`:
 
 - Тёмная/светлая тема, кастомный тайтлбар
-- Чаты с сохранением истории, стриминг ответов, траектория агента (команда → вывод)
+- Чаты с сохранением истории, стриминг ответов, блок размышлений (Reasoning / `<think>`), вложения файлов и Drag & Drop (изображения, код), траектория агента (команда → вывод)
 - Провайдеры моделей: добавьте endpoint+ключ один раз — модели всех провайдеров подгружаются и группируются в одном селекторе
 - Выбор микрофона (PulseAudio/PipeWire), системные статусы, напоминания
 
@@ -57,26 +59,26 @@ npm run tauri dev   # или npm run dev для браузерного режи�
 
 ## Быстрый старт
 
-### Пакеты (рекомендуется) — v2.8.0
+### Пакеты (рекомендуется) — v2.9.0
 
-Скачайте из [Releases](https://github.com/casha-cashu/jarvis/releases/tag/v2.8.0):
+Скачайте из [Releases](https://github.com/casha-cashu/jarvis/releases/tag/v2.9.0):
 
 ```bash
 # Debian/Ubuntu
-sudo apt install ./JARVIS_2.8.0_amd64.deb
+sudo apt install ./JARVIS_2.9.0_amd64.deb
 jarvis   # /usr/bin/jarvis + /usr/bin/jarvis-bridge
 
 # Fedora
-sudo dnf install ./JARVIS-2.8.0-1.x86_64.rpm
+sudo dnf install ./JARVIS-2.9.0-1.x86_64.rpm
 
 # Arch/CachyOS
-sudo pacman -U ./jarvis-2.8.0-1-x86_64.pkg.tar.zst
+sudo pacman -U ./jarvis-2.9.0-1-x86_64.pkg.tar.zst
 
 # Универсально (любой дистр)
-chmod +x JARVIS_2.8.0_amd64.AppImage && ./JARVIS_2.8.0_amd64.AppImage
+chmod +x JARVIS_2.9.0_amd64.AppImage && ./JARVIS_2.9.0_amd64.AppImage
 ```
 
-GUI — `jarvis` в меню, конфиг сидится в `~/.config/jarvis/config.yaml` (из `config.example.yaml`).
+GUI — `jarvis` в меню, конфиг хранится в `~/.config/jarvis/config.yaml` (из `config.example.yaml`).
 
 ### Из исходников
 
@@ -135,7 +137,7 @@ pip install -e .
 
 Или вручную:
 ```bash
-pip install pyyaml pyaudio numpy torch faster-whisper silero-vad scikit-learn joblib anthropic openai requests gtts pydantic rapidfuzz filelock "ruamel.yaml>=0.18" "audioop-lts>=0.2; python_version>='3.13'"
+pip install pyyaml pyaudio numpy torch faster-whisper silero-vad scikit-learn joblib anthropic openai requests gtts pydantic rapidfuzz filelock pillow "ruamel.yaml>=0.18" "audioop-lts>=0.2; python_version>='3.13'"
 # vosk — опционален (wheels только для Python 3.10-3.12):
 # pip install -e ".[vosk]"
 ```
@@ -192,14 +194,21 @@ jarvis dictation
 # Управление пресетами
 jarvis presets
 
+# TTS-голоса: список и загрузка
+jarvis voice list
+jarvis voice download ru_RU-irina
+
 # Тест модулей
 jarvis test
 
 # Systemd автозапуск (только Linux)
-jarvis service install
+jarvis service install | remove | status
 
 # Проверка новой версии
 jarvis update
+
+# Отчёт об ошибке (zip с маскированными логами и конфигом)
+jarvis bugreport
 
 # Telegram-бот (нужен токен от @BotFather, см. config.example.yaml)
 jarvis telegram

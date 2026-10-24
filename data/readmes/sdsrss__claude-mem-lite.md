@@ -197,7 +197,7 @@ node install.mjs install
 2. **Register MCP server** -- `mem-lite` server with 19 tool definitions (10 core + 9 hidden-but-callable; `mem_search_feedback` is registered only when search telemetry is enabled). The pre-v2.78 generic server name `mem` is renamed to `mem-lite` for namespace hygiene; the tool names themselves (`mem_search`, `mem_recall`, ...) are unchanged.
 3. **Configure hooks** -- all seven lifecycle events: `SessionStart`, `PreCompact`, `PreToolUse`, `PostToolUse`, `PostToolUseFailure`, `Stop`, `UserPromptSubmit`
 4. **Create data directory** -- `~/.claude-mem-lite/` (hidden) for database, runtime, and managed resource files
-5. **Auto-migrate** -- If `~/.claude-mem/` (original claude-mem) or `~/claude-mem-lite/` (pre-v0.5 unhidden) exists, migrates database and runtime files to `~/.claude-mem-lite/`, preserving the original untouched
+5. **Auto-migrate** -- `~/.claude-mem/claude-mem.db` (original claude-mem) is moved into `~/.claude-mem-lite/` as a `.legacy-backup-<time>` file and a fresh database is created. A database left in `~/claude-mem-lite/` (the unhidden directory of versions before the first release, 2.0.0) is moved into the data directory at the first open, when the data directory holds no database, log, snapshot or kept copy of a claude-mem-lite store yet; nothing else in either directory is moved or removed (the plugin install differs: see Migration)
 6. **Initialize database** -- SQLite with WAL mode, FTS5 indexes created on first server start
 
 Restart Claude Code after installation to activate.
@@ -207,20 +207,21 @@ Restart Claude Code after installation to activate.
 All installation methods auto-detect and migrate from previous versions:
 
 **From claude-mem (original `~/.claude-mem/`):**
-- Copy `claude-mem.db` → `~/.claude-mem-lite/claude-mem-lite.db` (renamed)
-- Copy the `runtime/` directory
-- **Original `~/.claude-mem/` is preserved** (no deletion, no overwrite)
+- `claude-mem.db` and its `-wal`/`-shm` are moved into `~/.claude-mem-lite/` under `.legacy-backup-<time>` names (`claude-mem-lite.db.legacy-backup-<time>`, `claude-mem-lite.db-wal.legacy-backup-<time>`), when `~/.claude-mem-lite/claude-mem-lite.db` does not exist yet
+- A fresh database is created: the original claude-mem schema has no upgrade path
 
-**From pre-v0.5 unhidden directory (`~/claude-mem-lite/`):**
-- Entire directory is moved to `~/.claude-mem-lite/` (hidden)
+**From the unhidden directory of versions before the first release, 2.0.0 (`~/claude-mem-lite/`):**
+- Its database (`claude-mem-lite.db` or `claude-mem.db`, with its `-wal` and `-shm`) is moved into the data directory at the first open, when the data directory holds no database, log, snapshot or kept copy of a claude-mem-lite store yet. Nothing else is moved, and nothing in either directory is removed
+- The move is a rename: with `CLAUDE_MEM_DIR` on another filesystem it fails, and so does every open, until the database is moved there by hand together with its `-wal` and `-shm`
+- The plugin install differs: at session start, when `~/.claude-mem-lite/` does not exist, `scripts/setup.sh` moves the whole `~/claude-mem-lite/` directory there, whatever it holds; with `CLAUDE_MEM_DIR` set, nothing then reads the database it moved
 
 **In-place rename:**
 - Existing `claude-mem.db` in `~/.claude-mem-lite/` is automatically renamed to `claude-mem-lite.db`
 
-Remove old directories manually after confirming:
+Remove old directories manually once nothing in them is needed. A database still in `~/claude-mem-lite/` has not moved (see above), and the command below deletes it:
 ```bash
 rm -rf ~/.claude-mem/       # original claude-mem
-rm -rf ~/claude-mem-lite/   # pre-v0.5 unhidden (if not auto-moved)
+rm -rf ~/claude-mem-lite/   # unhidden data dir from before the first release (not a git clone of this repository)
 ```
 
 ### Directory Structure
@@ -1239,6 +1240,4 @@ benchmark and A/B harness are calibrated against — changing them invalidates t
 | `CLAUDE_MEM_UPS_OR_BM25_MIN` | Floor applied to the OR-fallback arm (looser query, needs a stricter floor). | `30` |
 | `CLAUDE_MEM_UPS_TOP_MIN` | Minimum score for the top hit; `0` disables (useful on tiny test corpora). | `50` |
 | `CLAUDE_MEM_UPS_FLOOR_REF_CORPUS` | Reference corpus size the score floors are normalized against, so a fresh install with few rows is not silently gated to zero injections. Shared by every floor-bearing surface, including error-recall below. | `584` |
-| `CLAUDE_MEM_ERROR_RECALL_BM25_MIN` | Relevance floor for the error-recall surface (memories injected after a failed Bash command). **Off by default.** Setting it to `10.5` (the calibrated value) makes the surface stay silent when its best-matching memory is not actually about the failure — the whole set is dropped, never trimmed row-by-row. **It is a real trade, not a free win:** measured on a live database at that threshold, injections fall ~37% and ~39% of firings go silent, concentrated in projects with few memories. Off by default because nothing shows the dropped rows were noise. Explore with `node benchmark/error-recall-suite.mjs --sweep`. | `0` (off) |
-| `CLAUDE_MEM_ERROR_RECALL_RERANK` | `off` restores the flat keyword ordering of the error-recall surface. **On by default**, and unlike the floor above it removes nothing: memories that share only the failed command's vocabulary are demoted below memories that mention the failure itself, and when a project has none of the latter the result is unchanged. Measured on a live database over 52 real failing commands × 15 projects: the lead memory matched no error term in 42.3% of firings before, 21.5% after, with the injected row count identical. | _(on)_ |
-| `CLAUDE_MEM_ERROR_RECALL_ON_FAILURE` | `off` stops the plugin from recalling memories when a Bash command **fails at the host level**. On by default. Claude Code delivers failed tool calls to a separate `PostToolUseFailure` hook event, so before this the surface only ever s
+| `CLAUDE_MEM_ERROR_RECALL_BM25_MIN` | Relevance floor for the error-recall surface (memories injected after a failed Bash command). 

@@ -83,9 +83,10 @@ All keys go to the focused terminal, except the `ctrl+b` prefix (tmux style):
 
 | After `ctrl+b` | Action |
 |---|---|
-| `c` or `C` | Split right / below (opens a picker: installed agents or shell) |
-| `a` or `A` | Split right / below with the default agent directly |
-| `s` or `S` | Split with a new shell pane directly (right / below), also `%`/`\"` and `\|`/`-` |
+| `c` or `C` | Split in the default direction / the other direction (opens a picker: installed agents or shell) |
+| `a` or `A` | Split in the default / other direction with the default agent directly |
+| `s` or `S` | Split with a new shell pane directly (default / other direction); `%` and `\|` always split right, `\"` and `-` always below |
+| `v` | Cycle the default split direction: right, below, auto |
 | `w` | New workspace (directory prompt with tab completion, then agent/shell picker) |
 | `t` | New tab in the current workspace (opens the agent/shell picker) |
 | `n` or `p` | Next / previous tab |
@@ -95,6 +96,7 @@ All keys go to the focused terminal, except the `ctrl+b` prefix (tmux style):
 | `/` | Fuzzy finder over groups, workspaces, tabs, and panes: type to filter, arrows select, enter jumps |
 | `b` | Collapse or expand the workspace sidebar |
 | `P` | Open experimental plugin lifecycle controls |
+| `D` | Open the durable agents panel for the current workspace (see [Durable agents](#durable-agents)) |
 | `r` | Rename the focused pane |
 | `m` | Open the pane context menu |
 | `=` | Equalize all splits |
@@ -106,6 +108,8 @@ All keys go to the focused terminal, except the `ctrl+b` prefix (tmux style):
 | `ctrl+b` | Send a literal ctrl+b to the pane |
 | `q` | Quit |
 | `left` / `right` | Scroll the hint row in the footer (narrow terminals) |
+
+The default split direction is right, so `c`, `a`, and `s` keep their usual meaning. Change it with `v` or under the terminal tab in settings: **below** swaps the lowercase and uppercase keys, and **auto** splits the focused pane along its longer side (side by side when it is at least twice as wide as tall in cells, otherwise below). The choice is saved as the optional `split_direction` (`"down"` or `"auto"`; empty means right). The `-right` / `-down` action names in `keys.json` keep naming the lowercase and uppercase keys; context menus and the socket API keep their explicit directions.
 
 Panes whose process exits (for example `exit` in a shell) close automatically; the sibling pane takes the room. Panes that fail to start stay visible with the error.
 
@@ -126,15 +130,25 @@ Keys are configurable via a `keys.json` next to the state file (`~/Library/Appli
 }
 ```
 
-Actions: `prefix`, `literal`, `quit`, `picker-right`, `picker-down`, `agent-right`, `agent-down`, `agent-cycle` (unbound by default), `shell-right`, `shell-down`, `workspace`, `tab-new`, `tab-next`, `tab-prev`, `tab-1` through `tab-9`, `tab-0`, `space-next`, `space-prev`, `pane-next`, `pane-prev`, `find`, `sidebar-toggle`, `close-pane`, `close-space`, `equalize`, `rename`, `menu`, `settings`, `plugins`, `scroll-up`, `scroll-down`, `live`, `navigate-up`, `navigate-down`.
+Actions: `prefix`, `literal`, `quit`, `picker-right`, `picker-down`, `agent-right`, `agent-down`, `agent-cycle` (unbound by default), `shell-right`, `shell-down`, `split-cycle`, `workspace`, `tab-new`, `tab-next`, `tab-prev`, `tab-1` through `tab-9`, `tab-0`, `space-next`, `space-prev`, `pane-next`, `pane-prev`, `find`, `sidebar-toggle`, `close-pane`, `close-space`, `equalize`, `rename`, `menu`, `settings`, `plugins`, `scroll-up`, `scroll-down`, `live`, `navigate-up`, `navigate-down`.
 
 ## Mouse
 
-Everything is clickable: workspace, tab, and pane rows in the sidebar, the collapse arrow beside `WORKSPACES`, the main tab bar, menus, and the settings entry at the bottom. The compact sidebar shortens workspace and branch names after six display cells and pane names after two, hides the `WORKSPACES` heading and new-workspace entry, and shows only the left-aligned expand arrow and settings gear. Drag workspaces to reorder them, drag pane borders to resize, right-click for context menus, and drag with the left button to select text. Completed selections are copied straight to your clipboard by default; turn this off under the terminal tab in settings when you only want the highlight. Wheel events go to the pane under the cursor: agent TUIs scroll themselves, shells scroll their local history, and `shift+pgup` / `shift+pgdn` do the same from the keyboard.
+Everything is clickable: workspace, tab, and pane rows in the sidebar, the collapse arrow beside `WORKSPACES`, the main tab bar, menus, and the settings entry at the bottom. The compact sidebar shortens workspace and branch names after six display cells and pane names after two, hides the `WORKSPACES` heading and new-workspace entry, and shows only the left-aligned expand arrow and settings gear. Drag workspaces to reorder them, drag the sidebar's right border to widen or narrow it (20 to 80 columns, never more than half the window; the width is remembered and the compact sidebar keeps its fixed width), drag pane borders to resize, right-click for context menus, and drag with the left button to select text. Completed selections are copied straight to your clipboard by default; turn this off under the terminal tab in settings when you only want the highlight. Wheel events go to the pane under the cursor: agent TUIs scroll themselves, shells scroll their local history, and `shift+pgup` / `shift+pgdn` do the same from the keyboard.
 
 Local scrollback stops at the oldest available line; further upward wheel events do not wrap back to live output. hrdx reassembles mouse reports fragmented by its input decoder so rapid wheel input is not mistaken for typing. A literal `alt+[` may wait up to 30 ms to distinguish it from a fragmented mouse report; ordinary Escape, other keys, and paste keep their normal behavior.
 
 Sidebar context menus follow the clicked row: workspace names and Git branch rows offer workspace actions; the first pane row of each tab in a multi-tab workspace offers tab actions; other pane rows offer pane actions. Closing a tab leaves the workspace and its other tabs intact. The final tab cannot be closed through the tab menu, and pane menus omit Close for a tab's last pane. To close the entire workspace, use its workspace menu or the workspace-close key binding. Blank rows and dividers do not change focus. Custom socket menu entries follow the same scopes (`sidebar`, `tab`, or `pane`). If automation removes a menu or tab-picker target before selection, its stale action is dismissed instead of acting on the newly focused workspace or creating an invisible pane.
+
+### Folding workspaces
+
+Turn on **allow folding workspaces in the sidebar** under the terminal tab in settings (off by default, saved as `workspace_folding`). Each workspace name in the expanded sidebar then ends in a `▾` toggle. Clicking it, or choosing **Collapse** from the workspace context menu, folds the workspace to its name row; `▸` and **Expand** bring the branch, tab, and pane rows back. A folded row summarizes its panes: a spinner while any agent is working, an orange `●` when one finished unseen, and the pane count. Folding is purely visual: panes keep running, and keys, the finder, and the socket API still reach them. The fold is saved per workspace as the optional `folded` field. Turning the setting off shows every workspace expanded and removes the toggles and menu entries, but keeps each workspace's fold for when it is turned on again. The compact sidebar has no fold toggles and always shows one row per workspace.
+
+### Sub-repositories
+
+A workspace can also list the Git repositories nested inside its directory. Enable it with the **show nested git repositories in the sidebar** checkbox under the terminal tab in settings (off by default); once checked, the rows below it choose how deep to search (1 to 3 folder levels). Unchecking and checking again restores the previous depth. Repositories appear below the workspace's branch row as an indented tree: folders that only lead to deeper repositories are shown once as dimmed `name/` rows, which do not react to clicks. Each repository shows its name, branch, and status: `●n` changed or untracked files, `!n` merge conflicts, `↑n`/`↓n` commits ahead of or behind its upstream. Hidden directories, `node_modules`, and `vendor` are skipped, repositories inside a found repository are not searched, and at most 24 are listed per workspace. Status is refreshed in the background every 15 seconds with at most four `git status` processes at a time, so rendering never waits for Git; without Git only the branch is shown. The compact sidebar hides these rows.
+
+Clicking a repository row's text (or right-clicking anywhere on the row) asks where to open it: a new tab, a split right or down of the focused pane, or a separate workspace; the row stays highlighted while you choose. **Hide folder** removes a repository from that workspace's list; hidden folders, and everything below them, are no longer scanned. The workspace context menu offers **Show hidden folders (n)** to bring them all back. The hidden list is saved per workspace as optional `hidden_subrepos` paths relative to the workspace directory. A pane opened in a repository keeps that start directory across restarts (saved as the pane's optional `cwd`); if the directory has disappeared, the pane falls back to the workspace directory. With the setting enabled, `status` adds an optional `subrepos` array to each workspace once a scan has completed.
 
 ## Remote and container panes
 
@@ -221,6 +235,25 @@ spinner on screen while it is really idle or blocked on a prompt: a matching
 title always outranks the screen scrape. Check what your harness emits with
 `printf '\e]2;...\a'`-style OSC titles before picking a substring.
 
+### Program status reports
+
+Agents that report their state through the Program Status Protocol (OSC 7501)
+are tracked from those reports instead of the screen: `working` is busy,
+`blocked` shows the orange attention dot, and `idle`, `done`, or `error` are
+idle. Reports outrank both title markers and the screen scrape, so custom
+spinner themes and braille characters in transcript text do not affect the busy
+state. Only the state is used; report messages are ignored. Agents that never
+report, or clear their status on exit, fall back to screen detection.
+
+hrdx answers the protocol's support query, but ConPTY does not forward that
+acknowledgement on Windows, so agents that wait for it are handled per agent:
+
+| Agent | Busy detection |
+|---|---|
+| codex | OSC 7501 reports, sent without a query |
+| zot, pi | OSC 7501 reports; panes start with `ZOT_PROGRAM_STATUS=1` and `PI_PROGRAM_STATUS=1` unless already set (set `0` before launching hrdx to opt out) |
+| claude | Terminal title: `◐`/`◑` while working, `✳` when idle; OSC 7501 reports win when they arrive (for example on macOS and Linux) |
+
 ## Workspace groups
 
 Groups are optional organisational labels, independent of directories, branches, tabs, and PTY lifetime. Socket clients and approved plugins can place any workspace, including non-Git directories, at an arbitrarily nested `group_path`:
@@ -297,6 +330,39 @@ Plugins stop with the TUI using bounded graceful shutdown and platform-specific 
 
 The [plugin protocol and manifest reference](docs/plugin-platform.md) documents methods, grants, limits, compatibility, and remaining work. The platform is experimental, independently versioned, and does not claim zot wire compatibility.
 
+## Durable agents
+
+Experimental. Durable agents run on a [zot continuous](https://www.zot.sh) host instead of inside the pane. The pane is a real PTY running zot's attached TUI as a view of one conversation. The host owns execution, queues, approvals, and recovery, so the work continues when the view closes, when hrdx quits, or when the holder restarts. Everything else keeps working as before: ordinary agents and shells, holder persistence, and resume behavior are unchanged, and durable and ordinary panes can share a workspace, tab, and split layout.
+
+Create one by picking `zot (durable)` at the end of any agent picker (`ctrl+b c`, `ctrl+b t`, the tab bar `+`, or a split menu). It is never the preselected entry, and no existing default turns durable on its own. The first durable agent in a project starts a managed host for that project in the background, with a private store under `continuous/` next to the state file. Each further durable agent in the workspace gets its own conversation. "Open another view" in the pane menu, or the panel, shows the same conversation again.
+
+`ctrl+b D` opens the durable agents panel for the current workspace: every associated conversation with its state and number of open views, even with no pane open, plus actions to open a view, queue or steer a prompt, rename, review pending approvals (allow this call, allow this tool for the conversation, or deny), review recovery holds, show usage, list tasks with abort or cleanup retry, list forks and owned subagents with open view, prompt, and abort actions, show and set the conversation cost budget, change the model (`provider/model`, other configuration such as instructions and tool restrictions is preserved), explicitly abort work, forget a conversation locally (host history is kept), and start or stop managed hosts. Destructive actions ask first. The settings window gains a `durable` section to mute individual notification categories (finished, failed, approval, recovery, host) and pick the host for new durable agents in the current workspace; muting silences sound and notices but keeps the attention dot. The sidebar shows authoritative host state for durable panes: the busy spinner while the host runs work, `queued`, `approve`, `recover`, `failed`, or `offline` when the host cannot be reached. A disconnected host never reads as idle or finished. Finished turns, failures, approval requests, recovery holds, and lost hosts use the notification settings, once per transition, never for history seen at startup.
+
+Lifetime rules:
+
+- Closing a durable pane, tab, or workspace ends only the attached view. It never aborts host work or stops a host. Aborting is an explicit panel or API action.
+- Quitting hrdx detaches views like any held pane. Managed hosts keep running independently of the TUI and the holder; `hrdx stop` still manages only the holder.
+- On restart each durable pane reattaches to its exact conversation. If the host is missing, the conversation is gone, or the host workspace key now resolves to a different conversation (another store), the pane stays visible with the error instead of starting a fresh agent. "Retry durable binding" in the pane menu tries again.
+- A managed host stopped on purpose is not restarted when hrdx reopens; start it from the panel or with `hrdx continuous start`. hrdx never restarts a crashed host in a loop; zot performs its own recovery when the host starts.
+- Prompts submitted from hrdx carry a stable request ID. A lost response is reported as unknown, never resubmitted under a new ID.
+
+Manage host profiles without starting the TUI. Profiles live in `continuous-hosts.json` next to the state file; tokens are referenced by file and never copied into state, status output, or logs.
+
+```sh
+hrdx continuous hosts                                   # profiles and whether they answer (--json)
+hrdx continuous add --id team --address /path/to/host.sock [--token-file FILE]
+hrdx continuous add --id remote --address host.example:7000 --tls-ca ca.pem --token-file token
+hrdx continuous start --id local-1a2b3c4d5e6f           # managed hosts only
+hrdx continuous stop --id local-1a2b3c4d5e6f            # interrupted work stays recoverable
+hrdx continuous remove --id team                        # the host and its history are untouched
+```
+
+An added external host can be selected per workspace from the panel ("Use host for new durable agents") or with `continuous.workspace_host`. Existing panes keep their binding when the selection changes.
+
+Remote hosts (`host:port`, served by `zot continuous serve --listen`) require TLS 1.3 against the profile's CA bundle and a token; plaintext TCP is accepted only on loopback. Managed hosts are always local. On native Windows the profile's socket path maps to the same private named pipe zot derives, and a stopped managed host is terminated rather than interrupted (zot keeps the interrupted work recoverable either way).
+
+Limitations: durable agents need zot with `zot continuous` and a state location (not `--state ""`). Forks and owned subagents have no workspace key; their views attach by conversation ID, which needs a zot whose `--help` lists `--continuous-conversation`. With an older zot such a view reports "update zot" and nothing else changes. Native prompts attach local files with `@path` tokens (relative to the workspace; `@@` keeps a literal `@`): UTF-8 text and PNG, JPEG, GIF, or WebP images, at most 16 files and 1 MiB per prompt, sent only to hosts that advertise attachment support. Older hrdx releases ignore the durable fields and would relaunch such panes as ordinary zot, so back up the state file before downgrading.
+
 ## Socket API
 
 While hrdx runs it serves a control API on a Unix socket next to the state file (`hrdx.sock`), so scripts, editors, and coding agents can inspect and drive a running session. Disable with `--api=false`. The session holder uses `holder.sock` in the same directory.
@@ -343,9 +409,38 @@ echo '{"id": "7", "method": "menu.register", "params": {"target": "pane", "label
 | `plugins.status` | Inspect experimental plugin lifecycle states, requires `--plugins` |
 | `plugins.control` | Request `start`, `stop`, `restart`, or explicitly reapproved `reload` for a plugin (`plugin`, `action`), requires `--plugins` |
 
+Durable agent methods are separate from pane input: `pane.send_text` types into a view, `continuous.submit` admits work to a conversation. They answer after a host round trip that never blocks the UI (up to 45 seconds when a managed host must start). Host error codes such as `conflict`, `busy`, `queue_full`, `not_found`, and `unauthorized` pass through unchanged; `unavailable` means the host could not be reached and `unsupported` means the platform lacks local hosts.
+
+| Method | Effect |
+|---|---|
+| `continuous.hosts` | Host profiles with `managed`, `connection`, and intentional `stopped` state |
+| `continuous.host.start` / `continuous.host.stop` | Start or stop a managed host (`profile`) |
+| `continuous.workspace_host` | Host profile for new durable panes in a workspace (`workspace`, `profile`; empty restores the managed host) |
+| `continuous.attach` | Open a durable view (`workspace`, optional `profile`, `split`: `right`, `down`, `tab`). Without `conversation` it creates a new durable agent; with one, another view of it (unassociated conversations also need `profile`; without `workspace_key` the view attaches by conversation ID, for forks and subagents). Answers once bound, with `pane_id` |
+| `continuous.list` | Conversations on a host (`profile`, optional `after`, `limit`) |
+| `continuous.snapshot` | Execution state, queue, run, approvals, recovery, tasks, and usage (`profile`, `conversation`) |
+| `continuous.submit` | Admit a prompt (`profile`, `conversation`, `content`, required `request_id`, `policy`: `queue` or `steer`, optional `files`: local paths read by hrdx, relative to the selected workspace). Retrying with the same `request_id` returns the original submission |
+| `continuous.submission` | Read one submission (`profile`, `submission`) |
+| `continuous.rename` | Set a title (`profile`, `conversation`, `expected_revision`, `title`) |
+| `continuous.abort` | Explicitly abort active work and withdraw queued prompts (`profile`, `conversation`) |
+| `continuous.approvals` / `continuous.decide` | List pending approvals, or decide one (`approval`, `allow`, `scope`: `call` or `tool`, optional `reason`) |
+| `continuous.recovery` / `continuous.unblock` | Preview interrupted runs, or release one hold (`run_id`) so the host applies its recovery plan |
+| `continuous.tasks` | Host tasks of a conversation (`profile`, `conversation`) |
+| `continuous.task.abort` / `continuous.task.retry_cleanup` | Abort one task (`task`, optional `include_background`), or retry its failed cleanup |
+| `continuous.budgets` | Budgets that apply to a conversation, with spend and `exceeded` |
+| `continuous.budget.set` | Write a budget (`scope`: `runtime` or `conversation`, `conversation`, `limit_usd`, `limit_tokens`, `reserve_usd`, `window_seconds`, `expected_revision`) |
+| `continuous.configure` | Change `provider`, `model`, or `reasoning` of a conversation; empty fields and all other configuration are kept |
+
+```sh
+echo '{"id": "8", "method": "continuous.attach", "params": {"workspace": "api", "split": "tab"}}' | nc -U "$SOCK"
+echo '{"id": "9", "method": "continuous.submit", "params": {"profile": "local-1a2b3c4d5e6f", "conversation": "<id>", "content": "run the tests", "request_id": "ci-42"}}' | nc -U "$SOCK"
+```
+
+`status` marks durable panes with `"mode": "durable"` and a `durable` object (`profile`, `workspace_key`, `conversation`, `title`, `connection`: `connected`, `disconnected`, or `unknown`, `execution`: `ready`, `queued`, `running`, `approval`, `recovery`, `failed`, or `aborted`, `revision`, `observed_at`, `queued`, `approvals`, and `error`). While disconnected, `execution` is the last observed value. Workspaces add `continuous_host` and a `continuous` list of associated conversations with their open `views`. Ordinary panes omit these fields, and `busy` keeps its meaning.
+
 Successful responses are `{"id": "...", "result": {...}}`; failures are `{"id": "...", "error": {"code": "not_found", "message": "..."}}` with codes `not_found`, `invalid_params`, `unknown_method`, `timeout`, and `error`.
 
-After `events.subscribe` the connection stays open and hrdx pushes lines like `{"event": "pane.busy_changed", "data": {"pane_id": 3, "busy": false}}`. Events: `workspace.created`, `workspace.closed`, `workspace.moved`, `pane.created`, `pane.closed`, `pane.busy_changed`, and `menu.action`, so a script can react the moment an agent finishes instead of polling.
+After `events.subscribe` the connection stays open and hrdx pushes lines like `{"event": "pane.busy_changed", "data": {"pane_id": 3, "busy": false}}`. Events: `workspace.created`, `workspace.closed`, `workspace.moved`, `pane.created`, `pane.closed`, `pane.busy_changed`, `menu.action`, `continuous.bound` (a durable pane was bound to a conversation), `continuous.state_changed` (`profile`, `conversation`, `state`, `previous`), and `continuous.host_changed` (`profile`, `connected`, `error`), so a script can react the moment an agent finishes instead of polling.
 
 A `menu.register` entry appears after the built-in actions in the requested context menu. Selecting it publishes `{"event":"menu.action","data":{"action_id":"custom.run_linter","target":"pane","pane_id":3,"workspace":"api","path":"/path/to/api","tab_index":0}}`. Registrations are ephemeral, re-registering an `action_id` replaces it, and events use the API's existing best-effort delivery for slow subscribers.
 
@@ -402,6 +497,8 @@ The notification section of the settings window has two independent toggles for 
 ## Persistence
 
 Quitting hrdx does not kill your sessions. Pane processes live in a small background process (the session holder) that hrdx starts on demand and talks to over a local socket. Close the TUI, reopen it, and every shell and agent reattaches exactly where it was: running commands keep running, scrollback and screen state are replayed, nothing restarts. The holder is the same `hrdx` binary and uses no resources worth mentioning.
+
+The holder serves one hrdx terminal at a time. Starting hrdx while another terminal is attached exits with `already running in another terminal` instead of opening a second, unpersisted session; quit the other terminal first, or pass a different `--state` file for an independent instance. Only a socket with nothing listening is treated as stale and replaced.
 
 Workspaces, panes, split layout, ratios, selection, sidebar collapsed state, and holder session ids are saved automatically (default: `~/Library/Application Support/hrdx/state.json` on macOS, `$XDG_CONFIG_HOME/hrdx/state.json` on Linux, `%AppData%\hrdx\state.json` on Windows). An absolute `XDG_CONFIG_HOME` takes precedence on macOS too, so everything hrdx stores next to the state file (keys, harnesses, themes, plugins, sockets) follows it. An existing `~/Library/Application Support/hrdx` keeps being used until you move it to `$XDG_CONFIG_HOME/hrdx`, so setting the variable never orphans running sessions. Windows ignores the variable. On the next launch the layout is restored and each pane reattaches to its held session. When a held session is gone (rebooted machine, killed holder), the pane starts fresh instead: shell panes get a new shell, and agent panes relaunch resuming their latest session for that directory via the agent's own session store.
 

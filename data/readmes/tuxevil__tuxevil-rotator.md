@@ -1,7 +1,7 @@
 <div align="center">
 
 [![npm version](https://img.shields.io/npm/v/tuxevil-rotator?logo=npm&label=version)](https://www.npmjs.com/package/tuxevil-rotator)
-[![Node](https://img.shields.io/badge/node-%3E%3D22.0.0-brightgreen?logo=node.js)](package.json)
+[![Node](https://img.shields.io/badge/node-22.23.4%2B%20%7C%2024.22.1%2B%20%7C%2026.12.1%2B-brightgreen?logo=node.js)](package.json)
 [![License](https://img.shields.io/github/license/tuxevil/tuxevil-rotator?logo=opensourceinitiative)](LICENSE)
 [![CI](https://img.shields.io/github/actions/workflow/status/tuxevil/tuxevil-rotator/ci.yml?logo=github&label=CI)](https://github.com/tuxevil/tuxevil-rotator/actions)
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
@@ -54,6 +54,8 @@ Originally built as a multi-account rotator for Google Antigravity. It now gener
 ---
 
 ## Current Model Update
+
+- **v4.2.2: Security updates and dynamic model discovery**: Requires patched Node.js releases (22.23.4+, 24.22.1+, or 26.12.1+ on their supported release lines), updates Undici to 7.30.1, and prevents long URL slash sequences from blocking the OpenCode discovery plugin. Antigravity models now follow live account catalogs, and installers use the OpenCode 2 plugin API. Upgrade Node.js and restart existing rotator services after updating the package. ([Release notes](https://github.com/tuxevil/tuxevil-rotator/releases/tag/v4.2.2); [PR #41](https://github.com/tuxevil/tuxevil-rotator/pull/41) by [@CyR1en](https://github.com/CyR1en))
 
 - **v4.2.0: Effort routing editor**: Create, edit, rename and disable effort aliases from the Models page, with route previews and unsaved-edit protection. Claude-style requests now select variants from `output_config.effort` or thinking budgets, and model configuration edits apply immediately. Includes automatic discovery of future Codex GPT models across account catalogs. ([Release notes](https://github.com/tuxevil/tuxevil-rotator/releases/tag/v4.2.0); [PR #40](https://github.com/tuxevil/tuxevil-rotator/pull/40) by [@CyR1en](https://github.com/CyR1en))
 
@@ -173,7 +175,7 @@ Existing `enc:v1` records remain decryptable during migration; newly written rec
 
 ## Quick Start
 
-**Requirements:** Node.js 22+ for npm/source installs. Docker image uses Node 22.
+**Requirements:** Node.js 22.23.4+ on 22.x, 24.22.1+ on 24.x, or 26.12.1+ for npm/source installs. The Docker image uses Node 22.23.4. These releases fix the [Brotli decoder vulnerability, CVE-2026-111497](https://nodejs.org/en/blog/vulnerability/october-2026-security-releases). Restart the rotator after upgrading Node.js.
 
 > **Non-technical? Don't follow the steps — paste a prompt instead.** Copy the ready-made install prompt from [`docs/agent-install-prompt.md`](docs/agent-install-prompt.md) (English and Spanish versions) into your AI agent — OpenCode, Codex, Claude Code, Cursor, Cline… — and it installs the rotator, walks you through the account logins, runs it as a background service, and wires your agent to it automatically.
 

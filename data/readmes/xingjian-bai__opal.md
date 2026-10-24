@@ -48,7 +48,7 @@ model trains. Its docs are at https://github.com/xingjian-bai/opal. Please set i
    show me what it prints (how long training will wait for the agent, also as a multiple of the run's own time, and
    the cost). Ask me for a cost cap (max_cost_usd); leave decisions unset unless I ask, so that the waiting stays
    within 4x the run's own time. Wait for my go-ahead; then give me the exact command to launch it, and how to
-   follow it (opal show, opal report).
+   follow it (opal show, opal watch, opal report).
 ```
 
 ## Start by hand
@@ -92,8 +92,10 @@ python train.py                                  # backend="keep": must match th
 opal doctor --live                               # one tiny agent call to check the setup
 opal estimate --total-steps 10000 --sec-per-step 0.05   # waiting time and cost, before you launch
 python train.py                                  # with max_cost_usd=20: the agent rewrites the optimizer
-opal show   opal_runs/<folder>                   # one line per decision
-opal report opal_runs/<folder>                   # one HTML page: loss, learning rates, rationales, code diffs
+opal show    opal_runs/<folder>                  # one line per decision
+opal watch   opal_runs/<folder>                  # events as they are written; --timeout 0 prints what is there
+opal report  opal_runs/<folder>                  # one HTML page: loss, learning rates, rationales, code diffs
+opal compare opal_runs/<a> opal_runs/<b>         # two runs, or two result.json files, side by side
 ```
 
 Each wrapped run prints a `profiler_start` / `profiler_stop` pair on stderr when a program starts: OPAL audits one
@@ -120,7 +122,7 @@ Each number is one run, and each agent started from the task's own recipe:
 
 | Example | Measure | Official recipe | Reactive optimizer |
 |---|---|---|---|
-| SiT-B/2, ImageNet 256, 400K updates | FID-50K ↓ | 35.7 (our evaluator) | 23.6 |
+| SiT-B/2, ImageNet 256, 400K updates | FID-50K ↓ | 35.7 (ADM evaluator; the SiT paper reports 33.0) | 23.6 |
 | RAEv2-B, ImageNet 256, 20 epochs | FID-50K ↓ | 3.39 | 3.19 |
 | Goldfish 125M GPT, Swahili | FLORES-200 bits ↓ | 79.37 | 77.25 |
 | modded-nanogpt record #36 | validation loss ↓ | 3.2781 | 3.2749 |
@@ -199,7 +201,7 @@ Code CLI against a local mock.
 
 ## Status and limitations
 
-v0.3.7, under active development. Tested on one GPU and on DDP within one node (NCCL, eager and `torch.compile`).
+v0.3.8, under active development. Tested on one GPU and on DDP within one node (NCCL, eager and `torch.compile`).
 Multi-node, FSDP and DeepSpeed are not supported. Accelerate works if you wrap after `accelerator.prepare`, without
 fp16 GradScaler or Accelerate's gradient accumulation; the HF Trainer works through `opal.hf.OpalTrainer`. Both are
 tested on CPU. Lightning should work through `opt.observe(loss)` but we have not tried it. The agent can make a run

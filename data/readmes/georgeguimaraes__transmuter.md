@@ -41,7 +41,39 @@ Nx.Serving.run(serving, %{messages: [%{role: "user", content: "What is the capit
 #=>               token_summary: %{input: 15, output: 167, padding: 0}}]}
 ```
 
-The text tasks are `text_embedding`, `text_classification`, `text_ranking` (cross-encoders and rerankers such as Qwen3-Reranker), `zero_shot_classification`, `token_classification`, `fill_mask`, `question_answering`, `generation` and `text_to_text` (T5 and Marian, and NLLB and M2M100 for translation between many languages). `Transmuter.Vision` gives the image tasks `image_classification`, `image_embedding`, `zero_shot_image_classification`, `image_to_text` (ViT-GPT2, TrOCR and Florence-2), `image_text_to_text` (chats about images with SmolVLM and Qwen2-VL), `object_detection` (DETR, YOLOS, RT-DETR and RF-DETR), `zero_shot_object_detection` (OWL-ViT, OWLv2 and Grounding DINO), `depth_estimation` (Depth Anything), `image_segmentation` (Segformer), `background_removal` (ORMBG) and `mask_generation` (SAM and SAM 2 with point and box prompts) and `image_to_image` (Swin2SR super resolution). `Transmuter.Audio` gives `speech_to_text` (Whisper), `audio_classification` (AST and wav2vec2), `zero_shot_audio_classification` (CLAP) and `text_to_speech` (VITS and SpeechT5). Their results have the shapes of Bumblebee or of Python transformers, and their values match the pipelines of Python transformers. The text of `image_text_to_text` matches ONNX Runtime on the same files. See the [Pipelines guide](guides/pipelines.md).
+The tasks:
+
+- [`Transmuter.Text`](https://hexdocs.pm/transmuter/Transmuter.Text.html)
+  - [`text_embedding`](https://hexdocs.pm/transmuter/Transmuter.Text.html#text_embedding/2): MiniLM, BGE, EmbeddingGemma and Qwen3-Embedding
+  - [`text_classification`](https://hexdocs.pm/transmuter/Transmuter.Text.html#text_classification/2): DistilBERT and other sequence classifiers
+  - [`text_ranking`](https://hexdocs.pm/transmuter/Transmuter.Text.html#text_ranking/2): MS MARCO cross-encoders and Qwen3-Reranker
+  - [`zero_shot_entity_recognition`](https://hexdocs.pm/transmuter/Transmuter.Text.html#zero_shot_entity_recognition/2): GLiNER (span and token models)
+  - [`zero_shot_classification`](https://hexdocs.pm/transmuter/Transmuter.Text.html#zero_shot_classification/3): DistilBERT MNLI and other NLI models
+  - [`token_classification`](https://hexdocs.pm/transmuter/Transmuter.Text.html#token_classification/2): BERT NER
+  - [`fill_mask`](https://hexdocs.pm/transmuter/Transmuter.Text.html#fill_mask/2): DistilRoBERTa
+  - [`question_answering`](https://hexdocs.pm/transmuter/Transmuter.Text.html#question_answering/2): DistilBERT SQuAD
+  - [`generation`](https://hexdocs.pm/transmuter/Transmuter.Text.html#generation/2): SmolLM2, SmolLM3, Qwen3 and Gemma 3
+  - [`text_to_text`](https://hexdocs.pm/transmuter/Transmuter.Text.html#text_to_text/2): T5 and Marian, and NLLB and M2M100 for translation between many languages
+- [`Transmuter.Vision`](https://hexdocs.pm/transmuter/Transmuter.Vision.html)
+  - [`image_classification`](https://hexdocs.pm/transmuter/Transmuter.Vision.html#image_classification/2): ViT
+  - [`image_embedding`](https://hexdocs.pm/transmuter/Transmuter.Vision.html#image_embedding/2): CLIP, SigLIP and SigLIP2
+  - [`zero_shot_image_classification`](https://hexdocs.pm/transmuter/Transmuter.Vision.html#zero_shot_image_classification/3): CLIP, SigLIP and SigLIP2
+  - [`image_to_text`](https://hexdocs.pm/transmuter/Transmuter.Vision.html#image_to_text/2): ViT-GPT2, TrOCR and Florence-2
+  - [`image_text_to_text`](https://hexdocs.pm/transmuter/Transmuter.Vision.html#image_text_to_text/2): chats about images with SmolVLM, Qwen2-VL, Qwen3-VL, Ministral 3, Gemma 3 and LLaVA
+  - [`object_detection`](https://hexdocs.pm/transmuter/Transmuter.Vision.html#object_detection/2): DETR, YOLOS, RT-DETR and RF-DETR
+  - [`zero_shot_object_detection`](https://hexdocs.pm/transmuter/Transmuter.Vision.html#zero_shot_object_detection/3): OWL-ViT, OWLv2 and Grounding DINO
+  - [`depth_estimation`](https://hexdocs.pm/transmuter/Transmuter.Vision.html#depth_estimation/2): Depth Anything
+  - [`image_segmentation`](https://hexdocs.pm/transmuter/Transmuter.Vision.html#image_segmentation/2): Segformer
+  - [`background_removal`](https://hexdocs.pm/transmuter/Transmuter.Vision.html#background_removal/2): ORMBG
+  - [`mask_generation`](https://hexdocs.pm/transmuter/Transmuter.Vision.html#mask_generation/2): SAM, SAM 2 and the SAM 3 tracker, with point and box prompts
+  - [`image_to_image`](https://hexdocs.pm/transmuter/Transmuter.Vision.html#image_to_image/2): Swin2SR super resolution
+- [`Transmuter.Audio`](https://hexdocs.pm/transmuter/Transmuter.Audio.html)
+  - [`speech_to_text`](https://hexdocs.pm/transmuter/Transmuter.Audio.html#speech_to_text/2): Whisper
+  - [`audio_classification`](https://hexdocs.pm/transmuter/Transmuter.Audio.html#audio_classification/2): AST and wav2vec2
+  - [`zero_shot_audio_classification`](https://hexdocs.pm/transmuter/Transmuter.Audio.html#zero_shot_audio_classification/3): CLAP
+  - [`text_to_speech`](https://hexdocs.pm/transmuter/Transmuter.Audio.html#text_to_speech/2): VITS and SpeechT5
+
+The results have the shapes of Bumblebee or of Python transformers, and their values match the pipelines of Python transformers. The text of `image_text_to_text` matches ONNX Runtime on the same files. See the [Pipelines guide](guides/pipelines.md).
 
 ## Tensors
 
@@ -75,16 +107,6 @@ Transmuter runs the graph that is in the file, and nothing more. The graph of al
 
 - Call it directly. Each operator runs immediately, one after the other. This is eager execution. It is slower, but the model can read values while it runs.
 - Give it to `Nx.Defn.jit/2` or `Nx.Defn.value_and_grad/2`. Nx then records the operators as one graph, and the backend compiles that graph.
-
-## Text to speech with Kokoro
-
-`bench/kokoro_tts.exs` runs [Kokoro-82M](https://huggingface.co/onnx-community/Kokoro-82M-v1.0-ONNX) from its ONNX export and writes a WAV file. All operators of the export run in Transmuter. The example also shows how to round audio lengths to 200 ms buckets to limit recompilation.
-
-Kokoro reads phonemes, not text. Elixir has no phonemizer yet, so the example contains phonemes that were made in advance. See the [Speech and Audio guide](guides/speech_and_audio.md) for more models and patterns.
-
-`Transmuter.Audio.text_to_speech/2` speaks text with VITS (MMS-TTS) and SpeechT5. It does not run Kokoro, because Kokoro needs phonemes.
-
-The example also fixes one node of the export. The export computes the STFT phase with the `atan2` of `torch.onnx`, which gives -π for `atan2(0, x)` when x is negative. `torch.atan2` gives π, and the model was trained with π. Transmuter computes an exact STFT, so the imaginary part is 0 at DC and Nyquist, and the wrong phase in every frame adds a tone at 4.8 kHz. ONNX Runtime hides the error, because its STFT has small rounding errors at these bins. The example changes the `Greater` test of the `atan2` to `GreaterOrEqual`, as in `torch.atan2`.
 
 ## Installation
 
@@ -158,21 +180,23 @@ Fine-tune an fp32 export. Inference exports have no dropout, and quantized weigh
 |---|---|
 | Top exports for each Hugging Face task | 75 of 77 repositories, 112 of 114 files match |
 | q4, int8 and fp16 variants of 10 repositories | all 12 q4 files match; int8 and fp16 are within the noise of ONNX Runtime |
-| Models requested in Bumblebee issues | 11 of 12 files match. The Stable Diffusion VAE encoder samples noise |
+| Models requested in Bumblebee issues, with Apertus, a tiny Qwen3-MoE for the routing of Mixtral, GPT-J and Falcon | 15 of 18 files match. The Stable Diffusion VAE encoder samples noise. The int8 Falcon file differs from ONNX Runtime on x86, whose int8 kernel is not exact, and matches ONNX Runtime on arm64, see below. The int8 GPT-J file differs, and its cause is not traced |
 | Image classifiers from the ONNX Model Zoo, with the int8 VGG16, AlexNet and ZFNet | 7 of 7 match |
 | Faster R-CNN 10 and 12 and Mask R-CNN 12 from the ONNX Model Zoo | 3 of 3 match |
-| Models that Bumblebee pull requests add: GLiNER, Nomic BERT, ColBERT, MPNet, Jina BERT v2, Swin, M2M100, NLLB, Llama 3.2, Phi-3.5, SmolLM3, Qwen3-VL, Gemma 4 and Ministral 3 | 18 of 21 files match. The Phi-3.5 q4f16 file is within noise. The Gemma 4 decoder differs, see below. The Ministral 3 vision encoder times out at its 1540x1540 input |
+| Models that Bumblebee pull requests add: GLiNER, Nomic BERT, ColBERT, MPNet, Jina BERT v2, Swin, M2M100, NLLB, Llama 3.2, Phi-3.5, SmolLM3, Qwen3-VL, Gemma 4 and Ministral 3 | 19 of 21 files match. The Phi-3.5 q4f16 file is within noise. The Gemma 4 decoder differs, see below. The Ministral 3 vision encoder matches at its 1540x1540 input with EMLX on the GPU of an Apple M2 Pro |
 | Small language models: Granite 4.0-H (hybrid with Mamba-2 layers), LFM2-8B-A1B (mixture of experts), Gemma 3, Phi-4-mini, Qwen3, DeepSeek-R1-Distill, Falcon3, TinyLlama, MobileLLM-R1 and Baguettotron | 11 of 11 q4 files match |
 | SigLIP and SigLIP2: the full model, the vision model and the text model | 6 of 6 match |
 | One graph for each operator variant | 255 of 255 match |
 
 Transmuter supports all 203 operators of the ONNX standard domain, and the ONNX Runtime contrib operators that Hugging Face exports use, including the mixture-of-experts operators `MoE` and `QMoE`.
 
-Three models do not match value by value, because they make small rounding differences large:
+These models do not match value by value. Most of them make small rounding differences large:
 
 - **Grounding DINO** selects 900 of 13,294 queries with `TopK`, and some scores differ by only 9.5e-7. All operators before `TopK` match. On `test/fixtures/cats.png` with three labels, Transmuter gives the same labels and number of detections as ONNX Runtime, with scores within 0.001.
-- **The Gemma 4 E2B decoder** has activations up to about 1300 and final norm weights up to about 700. When the test changes the float inputs of ONNX Runtime by 1e-7 of their values, about one f32 rounding step, the logits of ONNX Runtime change by up to 5.5. The logits of Transmuter differ from ONNX Runtime by 5.3 on the CPU and by 13.6 on the GPU, which is the same noise. The two give the same token for 7 of 8 positions of the random test input.
-- **Kokoro** sums a phase over all audio samples and takes its STFT. ONNX Runtime and MLX round that sum differently. Also, the `atan2` of the export gives a different phase for an exact STFT than for the STFT of ONNX Runtime (see [Text to speech with Kokoro](#text-to-speech-with-kokoro)). When the test gives the `Sin` and `STFT` outputs of ONNX Runtime to Transmuter, all other operators match. With the `atan2` fix of the example, the spectrum of the speech matches PyTorch, with no tone at 4.8 kHz.
+- **The Gemma 4 E2B decoder** has activations up to about 1300 and final norm weights up to about 700. When the test changes the float inputs of ONNX Runtime by 1e-7 of their values, about one f32 rounding step, the logits of ONNX Runtime change by up to 5.5. The logits of Transmuter differ from ONNX Runtime by 5.3 on the CPU and by 13.6 on the GPU, which is the same noise. The two give the same token for 7 of 8 positions of the random test input. That input has random embeddings with sigma 0.5, without the scale of the real embeddings. With a real prompt of 20 tokens through `embed_tokens_q4` and `decoder_model_merged_q4`, Transmuter on the GPU gives the 32 greedy tokens of ONNX Runtime on the CPU, with logits within about 1e-4 at each step, also at a step where the top two logits of ONNX Runtime are only 0.055 apart.
+- **Kokoro** sums a phase over all audio samples and takes its STFT. ONNX Runtime and MLX round that sum differently. Also, the `atan2` of the export gives a different phase for an exact STFT than for the STFT of ONNX Runtime (see [The atan2 fix](guides/speech_and_audio.md#the-atan2-fix)). When the test gives the `Sin` and `STFT` outputs of ONNX Runtime to Transmuter, all other operators match. With the `atan2` fix of the example, the spectrum of the speech matches PyTorch, with no tone at 4.8 kHz.
+- **The int8 export of falcon-rw-1b** uses `DynamicQuantizeLinear` and `MatMulInteger`. The ONNX Runtime reference ran on x86 with AVX2 and no VNNI. There, the `MatMulInteger` kernel of ONNX Runtime adds each pair of u8 × s8 products in int16, and a pair above 32767 saturates. Transmuter gives the exact int32 sum, which is the result that the operator defines. Layers 0 to 2 match, and one of the 6144 values of the layer 3 `query_key_value` product differs by 912. A numpy product with the int16 saturation gives the output of ONNX Runtime exactly, and the exact product gives that of Transmuter. The logits then differ by up to 1.46. ONNX Runtime on arm64 (macOS) gives the result of Transmuter, with logits within 1.9e-5.
+- **The int8 export of slovak-gpt-j-405M** also differs from ONNX Runtime on the same machine, with logits up to 0.83 apart. Its `MatMulInteger` nodes are in an `If` branch, which the trace does not reach, so its cause is not traced.
 
 These models also ran from input to final result, and the result agrees with ONNX Runtime:
 
@@ -183,6 +207,9 @@ These models also ran from input to final result, and the result agrees with ONN
 | [MMS-TTS English](https://huggingface.co/Xenova/mms-tts-eng) | With the random values of ONNX Runtime, the same audio length and a waveform within 6e-5. Without noise, `text_to_speech` gives the audio length of PyTorch and a waveform within 1e-4 |
 | [SpeechT5](https://huggingface.co/Xenova/speecht5_tts) | With a decoder dropout that keeps all values, `text_to_speech` gives the audio length of PyTorch and a waveform within 1e-4 |
 | [SAM 2.1 tiny](https://huggingface.co/onnx-community/sam2.1-hiera-tiny-ONNX) | The same masks (IoU 1.0) for 1 point, 3 points, a box, and a box with a point |
+| [Apertus 0.5B Instruct](https://huggingface.co/onnx-community/Apertus-v1.1-0.5B-Instruct-ONNX) | `generation` gives the 16 greedy tokens of ONNX Runtime on the q4 export for a chat |
+| [BigBird RoBERTa base](https://huggingface.co/google/bigbird-roberta-base) (exported with Optimum) | `fill_mask` gives the top 5 tokens of ONNX Runtime, with scores within 1e-5, for 9 and 1809 tokens. The text of 1809 tokens needs `compile: [sequence_length: 2048]`, because the default lengths stop at 512. The export has full attention. Above 704 tokens, Python uses block sparse attention and gives other tokens |
+| [SAM 3 tracker](https://huggingface.co/onnx-community/sam3-tracker-ONNX) | `mask_generation` gives the masks of ONNX Runtime with the processor of Python transformers 5, for 1 point, 3 points, a box, and a box with a point |
 | [Moonshine base](https://huggingface.co/onnx-community/moonshine-base-ONNX) | The same tokens for 2 s, 6 s and 15 s of speech |
 | [Parakeet TDT 110M](https://huggingface.co/csukuangfj/sherpa-onnx-nemo-parakeet_tdt_transducer_110m-en-36000) (sherpa-onnx export) | The same transcripts for 2 s, 6 s and 15 s of speech, with the encoder, the LSTM decoder and the joiner in Transmuter |
 | [wav2vec2 base 960h](https://huggingface.co/Xenova/wav2vec2-base-960h) | The same CTC transcripts for 2 s, 6 s and 15 s of speech |
@@ -191,6 +218,10 @@ These models also ran from input to final result, and the result agrees with ONN
 | [SmolVLM 256M](https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct) | The same 100 tokens for an image with 13 tiles |
 | [EmbeddingGemma 300M](https://huggingface.co/onnx-community/embeddinggemma-300m-ONNX) | `text_embedding` within 9.3e-7 of ONNX Runtime for 9 and 543 tokens. The export attends to all tokens, but the model has a sliding window of 512 tokens. So a text of more than 512 tokens differs from sentence-transformers (cosine 0.983 at 543 tokens), and a short text differs by up to 5.6e-4 |
 | [Qwen2-VL 2B](https://huggingface.co/onnx-community/Qwen2-VL-2B-Instruct) | With the vision features of ONNX Runtime, the q4 decoder gives the same 60 tokens for two images of different sizes. The fp32 vision encoder is within 2e-5. With the fp32 vision encoder, `image_text_to_text` gives the greedy text of ONNX Runtime, up to 24 tokens, for a wide image, a tall image and a chat without images |
+| [Qwen3-VL 2B](https://huggingface.co/onnx-community/Qwen3-VL-2B-Instruct-ONNX) | The processor gives the patches of `Qwen2VLImageProcessorFast` within 1e-4 on 6 values and on the mean absolute value. Two of the values change with the weights of Pillow. It also gives the prompt and the 3-D positions of transformers. With the fp32 vision encoder and the q4 embeddings, `image_text_to_text` gives the greedy text of ONNX Runtime, up to 24 tokens, for a wide image, a tall image, a chat with both images and a chat without images. The export has no deepstack features, so the text can differ from the PyTorch model |
+| [Ministral 3 3B](https://huggingface.co/mistralai/Ministral-3-3B-Instruct-2512-ONNX) | The processor gives the pixel values and the prompt of `PixtralImageProcessorFast` and `PixtralProcessor` for 3 image sizes. With the q4 files, `image_text_to_text` gives the greedy text of ONNX Runtime for a chat with an image and a text chat. The q4 vision encoder at 1540x1540 (12100 patches) is within 3.9e-5 of ONNX Runtime. Its coverage case takes 27 s with EMLX on the GPU of an Apple M2 Pro, with the load and the compilation |
+| [Gemma 3 4B](https://huggingface.co/onnx-community/gemma-3-4b-it-ONNX) | The processor gives the pixel values and the prompt of `Gemma3ImageProcessor` and `Gemma3Processor` for a wide image, a tall image and two images. With the default q4 and 8-bit files, `image_text_to_text` gives the greedy text of ONNX Runtime, up to 24 tokens, for a wide image, a tall image and a text chat, alone and in a batch. The q4 vision encoder at 896x896 is within 3.8e-4 (largest value 31.3) and the q4 decoder within 9.5e-3 on the logits (largest value 28.2). The decoder of the export attends causally over the image tokens, so the text can differ from the PyTorch model, which attends in both directions inside an image |
+| [LLaVA-Interleave 0.5B](https://huggingface.co/llava-hf/llava-interleave-qwen-0.5b-hf) | The processor gives the pixel values and the prompt of `SiglipImageProcessor` and `LlavaProcessor` for a wide and a tall image, and those of `CLIPImageProcessor` for the tiny export. With the default q4 and 8-bit files, `image_text_to_text` gives the greedy text of ONNX Runtime, up to 24 tokens, for a wide image, a tall image and a text chat, alone and in a batch |
 | [InsightFace buffalo_l](https://huggingface.co/WePrompt/buffalo_l) | SCRFD detection within 2.7e-5, and ArcFace embeddings with a cosine similarity of 1.0 to ONNX Runtime |
 | [RapidOCR](https://github.com/RapidAI/RapidOCR) (PaddleOCR v4) | The same text for three lines of rendered text, after detection, cropping and recognition |
 | [Real-ESRGAN x4](https://huggingface.co/imgdesignart/realesrgan-x4-onnx) | The upscaled image within 1.3e-5 |
@@ -267,8 +298,10 @@ With the correct constants, the export gives the text of PyTorch for all 6 tasks
 | MaskRCNN-12 (ONNX Model Zoo) | image-segmentation | 44.4M | MaskRCNN-12 | matches |
 | [Xenova/tiny-random-Florence2ForConditionalGeneration](https://huggingface.co/Xenova/tiny-random-Florence2ForConditionalGeneration) | image-text-to-text | 5.16M | decoder_model, decoder_model_merged, decoder_with_past_model, embed_tokens, encoder_model, vision_encoder | matches |
 | [Xenova/tiny-random-LlavaForConditionalGeneration](https://huggingface.co/Xenova/tiny-random-LlavaForConditionalGeneration) | image-text-to-text | 9.44M | decoder_model, decoder_model_merged, decoder_with_past_model, embed_tokens, vision_encoder | matches |
-| [mistralai/Ministral-3-3B-Instruct-2512-ONNX](https://huggingface.co/mistralai/Ministral-3-3B-Instruct-2512-ONNX) | image-text-to-text | 4.29B | decoder_model_merged_q4, embed_tokens_q4, vision_encoder_q4 | decoder_model_merged_q4, embed_tokens_q4 match; vision_encoder_q4 times out |
+| [mistralai/Ministral-3-3B-Instruct-2512-ONNX](https://huggingface.co/mistralai/Ministral-3-3B-Instruct-2512-ONNX) | image-text-to-text | 4.29B | decoder_model_merged_q4, embed_tokens_q4, vision_encoder_q4 | matches |
 | [onnx-community/Qwen3-VL-2B-Instruct-ONNX](https://huggingface.co/onnx-community/Qwen3-VL-2B-Instruct-ONNX) | image-text-to-text | 2.37B | decoder_model_merged_q4, embed_tokens_q4, vision_encoder | matches |
+| [onnx-community/gemma-3-4b-it-ONNX](https://huggingface.co/onnx-community/gemma-3-4b-it-ONNX) | image-text-to-text | 4.3B | decoder_model_merged_q4, embed_tokens_quantized, vision_encoder_q4 | matches |
+| [onnx-internal-testing/tiny-random-Gemma3ForConditionalGeneration](https://huggingface.co/onnx-internal-testing/tiny-random-Gemma3ForConditionalGeneration) | image-text-to-text | 16.9M | decoder_model_merged, embed_tokens, vision_encoder | matches |
 | [onnx-community/gemma-4-E2B-it-ONNX](https://huggingface.co/onnx-community/gemma-4-E2B-it-ONNX) | image-text-to-text | 5.64B | audio_encoder_q4, decoder_model_merged_q4, embed_tokens_q4, vision_encoder | audio_encoder_q4, embed_tokens_q4, vision_encoder match; decoder_model_merged_q4 differ, see below |
 | [Xenova/swin2SR-classical-sr-x2-64](https://huggingface.co/Xenova/swin2SR-classical-sr-x2-64) | image-to-image | 12.1M | model | matches |
 | [Xenova/swin2SR-lightweight-x2-64](https://huggingface.co/Xenova/swin2SR-lightweight-x2-64) | image-to-image | 1.03M | model | matches |
@@ -307,6 +340,11 @@ With the correct constants, the export gives the text of PyTorch for all 6 tasks
 | [onnx-community/Qwen3-0.6B-ONNX](https://huggingface.co/onnx-community/Qwen3-0.6B-ONNX) | text-generation | 601M | model, model_q4, model_quantized | model, model_q4 match; model_quantized within noise |
 | tiny random Falcon (exported with Optimum) | text-generation | 4.18M | model | matches |
 | tiny random GPT-J (exported with Optimum) | text-generation | 131K | model | matches |
+| [onnx-community/Apertus-v1.1-0.5B-Instruct-ONNX](https://huggingface.co/onnx-community/Apertus-v1.1-0.5B-Instruct-ONNX) | text-generation | 573M | model_q4 | matches |
+| [onnx-internal-testing/tiny-random-ApertusForCausalLM](https://huggingface.co/onnx-internal-testing/tiny-random-ApertusForCausalLM) | text-generation | 4.21M | model, model_q4 | matches |
+| [onnx-internal-testing/tiny-random-Qwen3MoeForCausalLM](https://huggingface.co/onnx-internal-testing/tiny-random-Qwen3MoeForCausalLM) | text-generation | 11.3M | model | matches |
+| [Xenova/falcon-rw-1b](https://huggingface.co/Xenova/falcon-rw-1b) | text-generation | 1.31B | decoder_model_merged_quantized | matches ONNX Runtime on arm64, differs on x86, see above |
+| [Xenova/slovak-gpt-j-405M](https://huggingface.co/Xenova/slovak-gpt-j-405M) | text-generation | 414M | decoder_model_merged_quantized | differs, see above |
 | [Xenova/gpt2](https://huggingface.co/Xenova/gpt2) | text-generation | 127M | model | matches |
 | [Xenova/llama2.c-stories15M](https://huggingface.co/Xenova/llama2.c-stories15M) | text-generation | 30.4M | decoder_model, decoder_model_merged, decoder_with_past_model, model | matches |
 | [Xenova/tiny-random-GemmaForCausalLM](https://huggingface.co/Xenova/tiny-random-GemmaForCausalLM) | text-generation | 2.05M | model | matches |

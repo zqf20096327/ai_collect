@@ -51,11 +51,13 @@ Coding agents rarely work alone, and Git only notices when two of them change th
 
 - **79.4%** of agent pull requests in a study of 2,807 GitHub repositories were open at the same time as another agent pull request in the same repository ([Xu, Subramanian and Karthik](https://arxiv.org/abs/2607.04697)).
 - **1 in 4** overlapping agent pull request pairs stopped with a Git conflict when we replayed 733 of them.
-- **1 clean merge** in that replay passed its tests on both sides and failed them once merged. Git let it through, and gitta flagged it before the merge.
+- **1 of 43** clean merges in that replay whose tests we could run passed them on both sides and failed them once merged. Git let that merge through, and gitta flagged it before the merge.
 
 The [research page](https://gitta.io/research/) shows how we measured it.
 
 ## Install
+
+gitta needs Git. With Git 2.28 or later, it also stops a failed fast-forward before it lands.
 
 **macOS and Linux**
 
@@ -63,7 +65,7 @@ The [research page](https://gitta.io/research/) shows how we measured it.
 curl -fsSL https://gitta.io/install.sh | sh
 ```
 
-The script picks the build for your system, checks its SHA-256 checksum and puts `gitta` in `~/.local/bin`.
+The script picks the build for your system, checks its SHA-256 checksum and puts `gitta` in `~/.local/bin`. If that folder is not on your `PATH`, the script adds it in your shell's startup file and tells you which file it changed.
 
 **Homebrew**
 
@@ -83,11 +85,17 @@ The script picks the x86_64 or arm64 build, checks its SHA-256 checksum, puts `g
 
 **From source**
 
+Use a recent stable Rust toolchain.
+
 ```sh
-cargo build --release --manifest-path gitta-cli/Cargo.toml
+git clone https://github.com/gitta-io/gitta
+cd gitta
+cargo install --path gitta-cli
 ```
 
-Run `gitta update` later to get the newest version.
+[CONTRIBUTING.md](CONTRIBUTING.md#build-and-test) has the steps to build and test each part.
+
+Run `gitta update` later to get the newest version. If you installed gitta with Homebrew or `cargo install`, `gitta update` only prints the command that updates it, such as `brew upgrade gitta`.
 
 ## Quick start
 
@@ -105,7 +113,7 @@ gitta watch             # see what gitta does, live
 git merge agent-branch  # gitta runs the gate on the combined code first
 ```
 
-You can also let gitta start the agents, one worktree per task.
+You can also let gitta set up the repository and start the agents, one worktree per task. Use this instead of `gitta init`: in a repository that is already set up, `gitta run` ignores `--gate`.
 
 ```sh
 gitta run --gate "npm test" --task "Add a dark mode" --task "Add a search box"
@@ -132,7 +140,7 @@ You merge with plain `git merge`, `git pull` or `git push`. gitta runs your gate
 - **Reads your code.** Python, TypeScript and JavaScript, Go, Rust, Java, C#, Kotlin, C and C++.
 - **Pull request checks.** The [GitHub Action](gitta-action) checks open pull requests against each other, so reviewers see which ones clash.
 - **A clear record.** `gitta watch` shows each step live, and `.gitta/gitta.log` keeps the same story as plain lines. A merge that removes tests or weakens a security check is named in the merge output.
-- **Safe agent workspaces on Linux.** [gitta-fs](gitta-fs) gives each agent a copy-on-write workspace, and [gitta-sandbox](gitta-sandbox) limits its file and network rights.
+- **Safe agent workspaces on Linux.** [gitta-fs](gitta-fs) gives each agent a copy-on-write workspace, and [gitta-sandbox](gitta-sandbox) runs the agent in a world built from only its worktree and the toolchain.
 - **One team policy.** The gate and the rules live in `.gitta.toml`, committed with your code, so every machine and the CI check use the same ones.
 
 ## Works with
@@ -163,7 +171,7 @@ The full documentation is at [gitta.io/docs](https://gitta.io/docs/), and its so
 | [`gitta-cli`](gitta-cli) | The `gitta` command |
 | [`gitta-core`](gitta-core) | Code reading and the cross-agent checks |
 | [`gitta-fs`](gitta-fs) | Copy-on-write agent workspaces on Linux (FUSE) |
-| [`gitta-sandbox`](gitta-sandbox) | Runs an agent with limited file and network rights on Linux (Landlock) |
+| [`gitta-sandbox`](gitta-sandbox) | Runs an agent in a sandbox built from only its worktree and the toolchain on Linux (bubblewrap) |
 | [`gitta-action`](gitta-action) | The GitHub Action for pull requests |
 | [`gitta-ci`](gitta-ci) | The pull request check for GitLab and Azure DevOps |
 | [`dist`](dist) | The install scripts and the Homebrew formula |

@@ -13,7 +13,7 @@ Coordinate Claude Code, Codex and Cursor with shared tasks, independent reviews 
 
 **Free and open source** — MIT licence, no account, everything runs on your machine.
 
-**Version 3.10.3** · Python 3.12+ · macOS / POSIX
+**Version 3.10.4** · Python 3.12+ · macOS / POSIX
 
 **English** · [Italiano](README.it.md) · [Privacy](PRIVACY.md)
 
@@ -122,8 +122,6 @@ Install from a clean, committed checkout with a **new backup directory** each ti
 
 **With /plugin.** In Claude Code, run `/plugin marketplace update squadra`, then `/plugin update squadra@squadra`, then restart Claude Code. For Codex, run `codex plugin marketplace upgrade`, then `codex plugin add squadra@squadra` again.
 
-**If you installed 3.10.2 before the afternoon of 17 October 2026,** the improvements listed under 3.10.2 in What's new, published under the same version number, reach Claude Code only through a reinstall, because `/plugin update` answers that 3.10.2 is already the latest: run `/plugin marketplace update squadra`, then `/plugin uninstall squadra@squadra` and `/plugin install squadra@squadra`, then restart Claude Code. Codex and the standalone installer pick them up with the usual steps. To check, ask the window «Show me the help of squadra's `resource` command»: the refresh lists `--wait`.
-
 **With the standalone installer.** From 3.6.1 on, releases keep their history: run `git pull`, then the installer again, with a new backup folder each time. A checkout of 3.6.0 or earlier needs `git fetch origin` and `git reset --hard origin/main` instead, which discards any local edit in that checkout.
 
 ```sh
@@ -133,7 +131,12 @@ python3 -B scripts/install.py \
 squadra --version
 ```
 
-Every release raises the version number, except a refresh of the same release announced in What's new, as for 3.10.2 on 17 October 2026. Plugins installed from the Store keep their version until `squadra plugin install <name>` runs again from the new release ([Plugins bundled in your release](#plugin-store)). Open windows keep the version they read until they restart, and a running squad keeps its protocol until you switch it explicitly.
+Every release raises the version number, except a refresh that adds to a release under the same number, as 3.10.2 did on 17 October 2026. Plugins installed from the Store keep their version until `squadra plugin install <name>` runs again from the new release ([Plugins bundled in your release](#plugin-store)). Open windows keep the version they read until they restart, and a running squad keeps its protocol until you switch it explicitly.
+
+**Updating from 3.10.3 or 3.10.2 to 3.10.4: the registry stays as it is.**
+- **Windows can move one at a time.** 3.10.2, 3.10.3 and 3.10.4 windows share the same registry; nothing is converted.
+- **Update the coordinator first.** The rule that the other model reads binds the tasks a 3.10.4 window records, and an older window does not check it at `check` or `close`. Tasks recorded before the update keep closing as before.
+- **Plugins from the Store:** run `squadra plugin install <name>` again, as after every release.
 
 **Updating from 3.10.1 to 3.10.2: the registry stays as it is.**
 - **Windows can move one at a time.** 3.10.1 and 3.10.2 windows share the same registry while you update them; nothing is converted.
@@ -528,7 +531,7 @@ More terms, such as log and exit, UTC, PID and cwd: [the page guide](references/
 
 ### Rule 0: find the windows and introduce yourself
 
-The squad starts from a Claude window: the first Claude window that applies the skill becomes the coordinator, finds every Codex, Claude or Cursor window of the project and introduces itself to each one. A Codex window called first does not coordinate, because from its sandbox it can neither find nor wake the Claude windows: it tells you so, gives you the sentence to type in a Claude window and waits as an executor. The Claude window then introduces itself to every window, the Codex one included. Without a Claude window you decide, after the Codex window has said what it cannot do. An existing coordinator in the same registry that answers a ping keeps the role; a pending or expired ping never transfers leadership or resources. The full rule is in [the skill](SKILL.md); census limits and joining in detail are in [startup and presentation](references/start.md#install-and-join-details).
+The squad starts from a Claude window: the first Claude window that applies the skill becomes the coordinator, finds every Codex, Claude or Cursor window of the project and introduces itself to each one. A Codex window called first does not coordinate, because from its sandbox it can neither find nor wake the Claude windows: it tells you so, gives you the sentence to type in a Claude window and waits as an executor. The Claude window then introduces itself to every window, the Codex one included. Without a Claude window you decide, after the Codex window has said what it cannot do. An existing coordinator in the same registry that answers a ping keeps the role; a pending or expired ping never transfers leadership or resources. With the introduction, at every resume and when a window joins or leaves, the coordinator tells you how to split the work between Claude and Codex windows (the Composition line of `squadra status` and of the dashboard): advice only, it assigns nothing. The full rule is in [the skill](SKILL.md); census limits and joining in detail are in [startup and presentation](references/start.md#install-and-join-details).
 
 **Cursor windows work interactively only:** you open the Cursor agent (`cursor-agent`) yourself, and it uses the squadra CLI like any other window. Squadra never starts it, because Cursor runs team, user and enterprise hooks outside any sandbox and cannot switch them off.
 
@@ -555,7 +558,7 @@ window only through it, and the Codex queue needs it.
 
 ### Rule 1: work in parallel
 
-The coordinator gives independent work to every available window at once (Codex, Claude, interactive Cursor), and no window waits idle while some exists: one builder per tree, reads on frozen copies, and a release's final read by a Claude reader and a Codex reader at the same time. The coordinator builds only the integration and the release, and gives the lanes to the builders, so it keeps its attention for mail and seams. The coordinator reads its registry mail at every step, because a window may get work directly from the owner and report it only there.
+The coordinator gives independent work to every available window at once (Codex, Claude, interactive Cursor), and no window waits idle while some exists: one builder per tree, reads on frozen copies, and a release's final read by a Claude reader and a Codex reader at the same time. Codex writes and Claude reads, Claude writes and Codex reads: the read that counts comes from the other model, a same-model read only adds to it, and `task` refuses a reader of the task owner's model unless you record why with `--same-client-reason`. The coordinator builds only the integration and the release, and gives the lanes to the builders, so it keeps its attention for mail and seams. The coordinator reads its registry mail at every step, because a window may get work directly from the owner and report it only there.
 
 ### Rule 2: the progress table is always visible
 
@@ -916,6 +919,17 @@ Static, behavioral and dependency checks, excluding `tests/`. Passing means no H
 <a id="news"></a>
 ## What's new
 
+**3.10.4 — a short private temporary folder for proofs, and Claude and Codex read each other's work**
+
+- **A short private temporary folder for proofs.** Proofs, quick checks, `selftest` and offline benchmarks keep their temporary files in a short private folder outside the registry, so a project kept under a shared folder such as MAMP's `htdocs` no longer fails on temporary paths that are too long or that others can write.
+- **Refusals that name the files.** A refused read names the files that changed since delivery.
+- **Two models that check each other.** Codex writes and Claude reads, Claude writes and Codex reads: a reader of the same model is refused unless you record why. In the final block, the read that counts for each change is the one by the other model.
+- **Advice on splitting your windows.** The coordinator tells you how to split your windows between the two models, for example that with 2 Claude windows and 1 Codex window the Codex window would read everything.
+- Plugins: memoranda 1.0.8, Playwright 1.0.9, Sentry 0.1.6.
+
+<details>
+<summary><strong>Earlier versions</strong></summary>
+
 **3.10.3**
 
 - **Final review block by default.** Builders deliver checked work; independent Claude and Codex readers review the combined candidate before release.
@@ -991,9 +1005,6 @@ https://github.com/user-attachments/assets/6ea747a5-a993-4aa7-a58d-1b2b7f908720
 | Page update when nothing changed | 0.02 s | about 0.001 s |
 
 </details>
-
-<details>
-<summary><strong>Earlier versions</strong></summary>
 
 **3.10.1 — see what every AI window really spends, and where the next task should go**
 

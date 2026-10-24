@@ -68,9 +68,9 @@ Why use our gallery?
 
 | Metric | Count |
 |--------|-------|
-| 📝 Total Prompts | **3198** |
+| 📝 Total Prompts | **3202** |
 | ⭐ Featured Prompts | **3** |
-| 🔄 Last Updated | **2026-10-23** |
+| 🔄 Last Updated | **2026-10-24** |
 
 ---
 
@@ -189,6 +189,63 @@ A mystical and noble celestial Valkyrie, a dignified and beautiful woman with lo
 
 > 📝 Sorted by publish date (newest first)
 
+### Grok Imagine Daily Life Video Prompt
+
+![日本語](https://img.shields.io/badge/lang-日本語-green)
+
+> Video generation prompt for Grok Imagine depicting autumn rainy day walks with consistent character appearance across two cuts.
+
+#### 📝 Prompt
+
+```
+Overall Theme & Structure
+* Total Duration: 12 seconds (6s x 2 cuts)
+* Concept: Autumn after rain, casual daily walk
+* Character Consistency: Maintain consistency of face, hairstyle, and outfit for the woman from @Image1 and @Image2 (glasses, brown hair in bun, yellow zip-up knit, white turtleneck, khaki cargo pants, beige boots).
+BGM
+* Proposal: Warm chill Lo-Fi hip hop/acoustic sound with acoustic guitar and piano (calm music fitting the post-rain cityscape).
+
+[Cut Details]
+Cut 1 (00:00 - 00:06)
+* Base Image: @Image1
+* Location: Park bench (scene with fallen red leaves)
+* Action/Pose:
+  * Pose 1 (0-3s): Start from @Image1 state. Sitting on bench, eyes slightly downcast, still.
+  * Pose 2 (3-6s): Suddenly look at camera (or front), smile softly while adjusting glasses frame slightly.
+Cut 2 (00:06 - 00:12)
+* Base Image: @Image2
+* Location: Street corner sidewalk (post-rain building area)
+* Action/Pose:
+  * Pose 1 (6-9s): Start from @Image2 state. Standing at street corner holding transparent umbrella, looking at camera.
+  * Pose 2 (9-12s): Tilt umbrella slightly, start walking slowly, turn back, smile and wave small at camera.
+```
+
+<img src="https://cms-assets.youmind.com/media/1792827729119_wlde2s_HVXKgy4aMAAKF0l.jpg" width="600" alt="Grok Imagine Daily Life Video Prompt">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12987)**
+
+**Author:** [はる](https://x.com/HaluAIArt) | **Source:** [Link](https://x.com/HaluAIArt/status/2113835372463472982) | **Published:** Oct 24, 2026
+
+---
+### Rainy Night Tram Stop Cinematic Portrait
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A detailed video generation prompt for Grok Imagine creating a cinematic close-up portrait of a woman in a qipao at a 1930s Shanghai tram stop on a rainy night, featuring specific lighting, camera movements, and style references like Wong Kar-wai.
+
+#### 📝 Prompt
+
+```
+Vertical cinematic chest-up close-up portrait, framed from the collarbone up, 1930s Shanghai rainy night tram stop. Opens immediately on a beautiful elegant Chinese woman in a deep emerald silk qipao with gold piping and high mandarin collar, finger-wave hair, pearl earrings, face in soft three-quarter profile under a warm wet streetlamp, rain falling. Slow orbit around her; behind her, out of focus, the warm round headlight of a vintage tram glides in as bokeh and steam drifts across; she slowly turns her head toward the light. Teal and amber grade, anamorphic bokeh, film grain, Wong Kar-wai mood. Tight framing: hands never in frame. Background fully blurred, no signs, no destination boards, no text or letters anywhere. Sharp from first frame.
+```
+
+<img src="https://pbs.twimg.com/ext_tw_video_thumb/2113611402556440576/pu/img/zlFgnK4UjmwWCW-c.jpg" width="600" alt="Rainy Night Tram Stop Cinematic Portrait">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12986)**
+
+**Author:** [Brucewu666](https://x.com/452864064q45713) | **Source:** [Link](https://x.com/452864064q45713/status/2113611424572342475) | **Published:** Oct 23, 2026
+
+---
 ### Gnome Teaching Wrestling Strategy
 
 ![English](https://img.shields.io/badge/lang-English-blue)
@@ -263,6 +320,44 @@ Make up a day trading strategy and have a gnome teach it to his 25 year old gorg
 **[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12961)**
 
 **Author:** [Síle Máire Róisín Ní Mathghamhna](https://x.com/blarneytrades) | **Source:** [Link](https://x.com/blarneytrades/status/2113465601888854093) | **Published:** Oct 23, 2026
+
+---
+### Rooftop Blackout Video Prompt
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A prompt for generating a cinematic video of a girl and her grandpa watching a city skyline light up from a rooftop during a blackout.
+
+#### 📝 Prompt
+
+```
+Night rooftop over a city in total blackout. A girl and her grandpa stand still, seen from behind; the whole skyline lights up gold. Slow orbit to their faces, smiling in awe.
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2113122860315340800/img/OsjgvqdGlF2ZCjCW.jpg" width="600" alt="Rooftop Blackout Video Prompt">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12984)**
+
+**Author:** [Imagvio AI](https://x.com/Imagvio_AI) | **Source:** [Link](https://x.com/Imagvio_AI/status/2113374844448293044) | **Published:** Oct 22, 2026
+
+---
+### Cyberpunk Body Horror Transformation
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A detailed video prompt for Grok Imagine creating a hyper-realistic cyberpunk scene where a person undergoes a violent mechanical transformation in a rain-soaked neon alley.
+
+#### 📝 Prompt
+
+```
+A lone figure stands in a rain-soaked neon alley deep in a dystopian megacity at night. Towering holographic billboards flicker overhead with corrupted advertisements while endless streams of vehicles streak past on elevated highways. The figure’s body begins a next-level, hyper-realistic transformation: skin splits and peels back in wet, organic layers as black carbon-fiber plates and exposed chrome biomechanics violently erupt from underneath. Flesh and circuitry fuse in real time — tendons rewiring into fiber-optic cables, eyes flooding with liquid metal and splitting into multiple glowing irises, jaw unhinging as teeth morph into a shifting mechanical maw. Blood and coolant spray in slow motion under harsh neon pink and cyan light. The camera is pure cinematic: low-angle tracking shot that pushes in aggressively, then circles the subject as the transformation accelerates into full body horror — limbs elongating, spine fracturing and reforming into a segmented mechanical exoskeleton, face collapsing into a nightmarish hybrid of human and machine. Shallow depth of field, anamorphic lens flares, heavy rain droplets on the lens, volumetric fog, and hyper-detailed photorealistic textures (wet skin, reflective metal, torn fabric, glowing circuitry). Dark, oppressive atmosphere with a rising industrial drone and distorted human screams echoing through the alley. Ultra-realistic, filmic, 35mm, high detail, no stylization.
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2113287043811815424/img/oYksLa45_B08bXFp.jpg" width="600" alt="Cyberpunk Body Horror Transformation">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12985)**
+
+**Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2113287133167239203) | **Published:** Oct 22, 2026
 
 ---
 ### Precise Lip-Sync Video Generation
@@ -2027,159 +2122,4 @@ This is your brain and goofballs
 
 <img src="https://pbs.twimg.com/amplify_video_thumb/2110853340129038336/img/ZWVswso71RtBEyoJ.jpg" width="600" alt="Funny overreacting neurons brain video">
 
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12605)**
-
-**Author:** [a victim of many things!](https://x.com/evidence446653) | **Source:** [Link](https://x.com/evidence446653/status/2110853367413260479) | **Published:** Oct 15, 2026
-
----
-### Baroque Space Drama Video
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A prompt for generating a baroque-style space scene accompanied by music, emphasizing grandeur and complex layers.
-
-#### 📝 Prompt
-
-```
-Baroque In space accompanied by musicGrandeur, deep religious or civic drama, complex layers.
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2110849555704983552/img/TZOKI8T7IxtCVEkQ.jpg" width="600" alt="Baroque Space Drama Video">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12600)**
-
-**Author:** [Marie](https://x.com/Marie8508319540) | **Source:** [Link](https://x.com/Marie8508319540/status/2110849595634774146) | **Published:** Oct 15, 2026
-
----
-### Grok Imagine Video Prompt: Electric Banjos Scene
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A dynamic video generation prompt for Grok Imagine involving electric banjos, robot hands, and golden decks.
-
-#### 📝 Prompt
-
-```
-Electric banjos enter, Robot hand touches golden DH deck, scene speeds up and a sudden flash of light....
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2110849158818971648/img/wuKoqe2fIwOpLTyR.jpg" width="600" alt="Grok Imagine Video Prompt: Electric Banjos Scene">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12612)**
-
-**Author:** [Michael Erikson](https://x.com/erikson_michael) | **Source:** [Link](https://x.com/erikson_michael/status/2110849273298641275) | **Published:** Oct 15, 2026
-
----
-### Spooky Church Skeleton Video Prompt
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A video generation prompt featuring a minister entering a church with skeletons on pews who react to his presence.
-
-#### 📝 Prompt
-
-```
-Have the minister walk up to the podium. Show skeletons sitting on the weathered pews. Have one of the skeletons sit up straight when the minister walks in. Make spooky sounds and have the minister say let us pray.
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2110842540085714945/img/cJLiE5uLBkLAWFM6.jpg" width="600" alt="Spooky Church Skeleton Video Prompt">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12602)**
-
-**Author:** [SkyRocket111](https://x.com/Soaring2TheMoon) | **Source:** [Link](https://x.com/Soaring2TheMoon/status/2110842561086841078) | **Published:** Oct 15, 2026
-
----
-### Grok Imagine Video Prompt: Lilac Nebula Music
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A sci-fi themed video prompt for Grok Imagine involving a character named Lilac Nebula playing music in the year 2100.
-
-#### 📝 Prompt
-
-```
-Meanwhile in year 2100 , 200 years after she was born Lilac Nebula plays any tune you want it to play
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2110838906182889472/img/Bs0aXUTXKUmDQPUW.jpg" width="600" alt="Grok Imagine Video Prompt: Lilac Nebula Music">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12598)**
-
-**Author:** [Cathy has this](https://x.com/lighthouse42f) | **Source:** [Link](https://x.com/lighthouse42f/status/2110838935744303400) | **Published:** Oct 15, 2026
-
----
-### Family photo artistic rendering video
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A prompt combining historical family photographs from 1908 with present-day artistic rendering techniques for video output.
-
-#### 📝 Prompt
-
-```
-“Artistic rendering based on family photographs 1908 and present day artistic rendering
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2110833613365538816/img/TzkOHB_b4OrrSxHb.jpg" width="600" alt="Family photo artistic rendering video">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12606)**
-
-**Author:** [Traditional_Teodor](https://x.com/Trad_Teodor) | **Source:** [Link](https://x.com/Trad_Teodor/status/2110834563970904205) | **Published:** Oct 15, 2026
-
----
-### Tesla Showroom Walkthrough
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> First-person perspective video prompt walking around a Tesla showroom parking lot.
-
-#### 📝 Prompt
-
-```
-I walk around the parking lot outside the Tesla showroom. I look at the Tesla cars that have been parked from the new transport.
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2110826911727230976/img/d6kegkQ4zmCh0DcW.jpg" width="600" alt="Tesla Showroom Walkthrough">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12592)**
-
-**Author:** [Jarosław Justka](https://x.com/jaras70berlin) | **Source:** [Link](https://x.com/jaras70berlin/status/2110826957680287835) | **Published:** Oct 15, 2026
-
----
-### Grok Imagine Video Prompt: Fall Background Edit
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A video/image transformation prompt for Grok Imagine adding fall elements like pumpkins, cider, and clothing changes.
-
-#### 📝 Prompt
-
-```
-Add a fall background with pumpkins and cider. A brown long leaf shirt. Add hat....
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2110822642089353216/img/tuyyaASop2urY-eL.jpg" width="600" alt="Grok Imagine Video Prompt: Fall Background Edit">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12610)**
-
-**Author:** [Mimi9060](https://x.com/MelodyM662010) | **Source:** [Link](https://x.com/MelodyM662010/status/2110822665821073453) | **Published:** Oct 15, 2026
-
----
-### Futuristic Multi-Terrain Roadster
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A detailed prompt for generating a video of an ultra-futuristic roadster with aerodynamic design and multi-terrain capabilities.
-
-#### 📝 Prompt
-
-```
-Create a video with ultra futuristic roadster with aerodynamic design and multi terrain elements!
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2110747191383887872/img/28XU5XWWf8B-KZ4L.jpg" width="600" alt="Futuristic Multi-Terrain Roadster">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12599)**
-
-**Author:** [Viswanath M. Aluru](https://x.com/vmaluru) | **Source:** [Link](https://x.com/vmaluru/status/2110747222333857995) | **Published:** Oct 15, 2026
-
+**[🎬 View Video →](https://

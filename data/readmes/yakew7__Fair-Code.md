@@ -367,7 +367,13 @@ Fair-Code/
 │   ├── path-specific-effects.md
 │   ├── randomized-post-processing.md
 │   ├── fairness-accuracy-pareto-frontier.md
-│   └── choosing-a-mitigation-strategy.md
+│   ├── choosing-a-mitigation-strategy.md
+│   ├── auc-gaps-by-group.md
+│   ├── decision-curve-analysis-by-group.md
+│   ├── cost-sensitive-evaluation.md
+│   ├── popularity-bias.md
+│   ├── two-sided-fairness.md
+│   └── position-bias-and-click-models.md
 │
 ├── .pre-commit-config.yaml              # em-dash/broken-links/ruff + build-explainers pre-push hooks
 ├── CHANGELOG.md
@@ -858,10 +864,10 @@ features = [
 
 ## Explainers
 
-108 short, plain-language write-ups of individual fairness concepts, each with runnable detection code. The healthcare-focused ones are called out above in [Healthcare AI Bias Focus](#healthcare-ai-bias-focus).
+114 short, plain-language write-ups of individual fairness concepts, each with runnable detection code. The healthcare-focused ones are called out above in [Healthcare AI Bias Focus](#healthcare-ai-bias-focus).
 
 <details>
-<summary><strong>Show all 108 explainers →</strong></summary>
+<summary><strong>Show all 114 explainers →</strong></summary>
 
 | Explainer | What it covers |
 |-----------|----------------|
@@ -973,6 +979,12 @@ features = [
 | [Randomized Post-Processing](explainers/randomized-post-processing.md) | The linear programme for randomized equalized-odds post-processing on Tenant Screening: gap 0.149 down to under 0.02, with random decisions in a few rows. |
 | [Fairness-Accuracy Pareto Frontier](explainers/fairness-accuracy-pareto-frontier.md) | A sweep of 1,681 threshold pairs on Tenant Screening gives a nearly flat frontier, and shows where the benchmark's five strategies sit against it. |
 | [Choosing a Mitigation Strategy](explainers/choosing-a-mitigation-strategy.md) | Choosing among the five mitigation strategies from the benchmark's results: what each needs, the median accuracy cost and the gap left, over 13 pairs. |
+| [What Is an AUC Gap Between Groups?](explainers/auc-gaps-by-group.md) | Per-group AUC and its gap with bootstrap and DeLong intervals: when equal AUC hides unequal errors, and when a threshold hides a real ranking gap. |
+| [What Is Decision Curve Analysis by Group?](explainers/decision-curve-analysis-by-group.md) | Net benefit by group against treating everyone or no one: how to read a decision curve per group and see where a model helps one group and not another. |
+| [How Does Unequal Cost Change a Fairness Evaluation?](explainers/cost-sensitive-evaluation.md) | Per-group expected cost under unequal false positive and false negative costs, the cost-optimal threshold, and how it relates to group-specific thresholds. |
+| [What Is Popularity Bias?](explainers/popularity-bias.md) | A simulated popularity feedback loop on a real audit: the shown set freezes, merit stops ordering exposure, and a group imbalance is locked in. |
+| [What Is Two-Sided Fairness in a Marketplace?](explainers/two-sided-fairness.md) | Exposure for the ranked side and nDCG for the searcher on one re-ranking sweep, and where fairness to one side starts to cost the other. |
+| [How Does Position Bias Distort What a Ranking Learns?](explainers/position-bias-and-click-models.md) | Simulated clicks from a known relevance: why a ranker trained on raw clicks learns position, how inverse propensity weighting fixes it, and its limits. |
 
 </details>
 
@@ -1310,6 +1322,8 @@ pip install -r requirements-lock.txt
 
 **For new audits and reruns:** Update `results/` as usual. Do not regenerate `paper/results-frozen/` or move the `v1.0-paper` tag as part of an ordinary audit. Run `scripts/freeze_paper_results.py` only when deliberately creating a new reference snapshot; it replaces the existing frozen snapshot and mirrors its CSV files into `faircode/_results_frozen/`.
 
+`results/PROVENANCE.json` records what produced the live files: the commit and whether the tree was dirty, the Python and library versions, the hash of `requirements-lock.txt`, the resample and permutation counts, the audits included and the SHA-256 of each CSV. `faircode benchmark` writes it, a test fails if a CSV changes without it, and `scripts/diff_results.py` prints both sides' provenance and the library versions that differ, so a moved row can be told from a library bump.
+
 To see how far `results/` has moved from that snapshot, run `python3 scripts/diff_results.py`. It joins the two tables per audit, strategy, model, protected attribute and metric and prints the per-row change, flagging rows that moved by more than `--threshold` (default 0.01) or exist on one side only (`--json`, `--all`, `--kind` and `--fail-on-change` are also available; `--audit NAME` limits it to one or more audits and `--summary` prints one line per audit; each row has a `sample` field, `same`, `different` or `unknown`, and rows whose group sizes differ between the two files (so they were scored on different test rows) are marked `~` and counted; it only reads).
 
 To deliberately create a new reference snapshot, run:
@@ -1348,7 +1362,7 @@ This copies `results/` into a snapshot alongside a `MANIFEST.md` recording the e
 - [ ] LLM bias audit
 
 <details>
-<summary><strong>Show 111 completed items →</strong></summary>
+<summary><strong>Show 117 completed items →</strong></summary>
 
 - [x] COMPAS Criminal Justice Bias
 - [x] AI Fair Recruitment Bias
@@ -1459,6 +1473,12 @@ This copies `results/` into a snapshot alongside a `MANIFEST.md` recording the e
 - [x] Explainer: Randomized Post-Processing
 - [x] Explainer: Fairness-Accuracy Pareto Frontier
 - [x] Explainer: Choosing a Mitigation Strategy
+- [x] Explainer: What Is an AUC Gap Between Groups?
+- [x] Explainer: What Is Decision Curve Analysis by Group?
+- [x] Explainer: How Does Unequal Cost Change a Fairness Evaluation?
+- [x] Explainer: What Is Popularity Bias?
+- [x] Explainer: What Is Two-Sided Fairness in a Marketplace?
+- [x] Explainer: How Does Position Bias Distort What a Ranking Learns?
 - [x] Fairness audit web dashboard - [Open Dataset Profiler](#open-dataset-profiler)
 - [x] Bias detection utility library (`faircode/` module)
 
@@ -1478,14 +1498,14 @@ The full public roadmap - with phases, completion status, and content schedule -
 
 | Metric | Count |
 |--------|------:|
-| GitHub Stars | 52 |
+| GitHub Stars | 53 |
 | External Contributors | 54 |
 | Forks | 64 |
 | Watching | 8 |
 | Combined Social Reach (Instagram + LinkedIn) | 30K+ |
 | Countries Reached (Website Visitors) | 20 |
 | Code Audits Published | 7 |
-| Explainers Published | 108 |
+| Explainers Published | 114 |
 
 Tracked weekly in [METRICS.md](METRICS.md).
 
@@ -1507,17 +1527,4 @@ To add yourself here, open a PR alongside your contribution. See the full commit
 
 ## Website
 
-The full project is at **[thefaircode.xyz](https://www.thefaircode.xyz)** - everything in this repo presented visually, with before/after terminal outputs, bias bar charts, search and filter across all audits and explainers, copy buttons on every code block, share links per audit, and light/dark mode.
-
----
-
-## Connect
-
-Follow the project on Instagram: **[@thefaircodeproject](https://instagram.com/thefaircodeproject)**
-Data. Code. Accountability. One post at a time.
-
-Questions, bug reports, or collaboration: **[yashkewlani2020@gmail.com](mailto:yashkewlani2020@gmail.com)**, or open an issue on [GitHub](https://github.com/yakew7/Fair-Code/issues). See the site's [FAQ](https://www.thefaircode.xyz/#faq) for common questions.
-
----
-
-*All datasets used in this project are publicly available. Fair Code is for educational and awareness purposes.*
+The full project is at **[thefaircode.xyz](https://www.thefaircode.xyz)** - everything i

@@ -63,9 +63,14 @@ wpm install jq
 
 | | |
 |---|---|
+| **winget** | `winget install WinuxCmd` (ID `caomengxuan666.WinuxCmd`) |
 | **Installer (recommended)** | Grab `WinuxCmd-<version>-x64-setup.exe` (or the ARM64 setup) from [GitHub Releases](https://github.com/unixwin/WinuxCmd/releases/latest) |
 | **Portable** | Unzip `WinuxCmd-<version>-win-x64.zip` anywhere and add it to your `PATH` |
 | **Build from source** | VS 2022 + CMake 3.30 + Ninja — see [Building from source](#️-building-from-source) |
+
+## 🔏 Code signing
+
+Release binaries are code-signed via the [SignPath Foundation](https://signpath.org).
 
 ## 🚀 Why WinuxCmd
 

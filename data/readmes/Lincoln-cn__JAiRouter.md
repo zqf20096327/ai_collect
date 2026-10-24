@@ -43,8 +43,8 @@ product:         JAiRouter
 repository:      Lincoln-cn/JAiRouter
 checkout_dir:    model-router            # the local/git directory name differs from the product name
 artifact:        model-router            # Maven artifactId
-project_version: 3.4.0                   # pom.xml
-latest_release:  v3.4.0 (2026-10-21)
+project_version: 3.5.2                   # pom.xml
+latest_release:  v3.5.2 (2026-10-24)
 stack:
   backend:  Java 17 + Spring Boot 3.5.5 (WebFlux / reactive)
   frontend: Vue 3 + TypeScript + Vite, bilingual zh-CN / en-US
@@ -367,8 +367,50 @@ delivery. See [Status and recent work](#status-and-recent-work) for the open led
 
 ## Status and recent work
 
-**Latest release: v3.4.0 (2026-10-21)** — the feature release that follows `v3.3.6`. It completes the console
-overhaul (P0-1 → P3) and lands three backend capabilities, with **one schema migration** and **one authorization
+**Latest release: v3.5.2 (2026-10-24)** — a feature release that adds **end-user rate limiting** (a per-minute
+allowance counted per API key × end user, which is the only way to limit several people who share one key) and
+**wires up client-dimension rate limiting**, which was fully implemented but never called. Both are off by default.
+It also gives the remaining rate-limit rejections a `Retry-After` header and bounds the API-key limiter's window
+table. **No breaking changes.**
+
+| Theme | What changed |
+|-------|--------------|
+| **End-user rate limiting (#627 / #628)** | New layer counted per `(API key × end user)`, disabled by default. Identity from `X-End-User-Id`, then the request-body `user`, then Anthropic `metadata.user_id`; malformed or over-long values become a SHA-256 fingerprint and the raw value never reaches Redis keys, logs or error responses. Fixed minute windows, bounded local Caffeine counter, or atomic single-script Redis counting when `jairouter.ratelimit.distributed.enabled=true` (fail-open). Over-limit answers 429 with `Retry-After` / `X-RateLimit-*`. The identity is self-reported, so this is **not a security boundary** |
+| **Client-dimension wiring (#623)** | `RateLimitManager.tryAcquireClientIp` is now called from the request path (after authentication, before the service-level pre-deduct and the cache read). All 16 bundled `client-ip-enable: true` entries became `false`, because counting by IP behind a cluster without an L7 proxy merges different clients — and since the switch was inert before, no admission behavior changes |
+| **Retry hints and bounded windows (#624 / #625)** | Service-level 429 and all-instances-limited 503 now carry `Retry-After: 1`; `TokenBucketRateLimiter`'s window table moved from an unbounded `ConcurrentHashMap` to Caffeine (10,000 entries / 2× window expiry), with strict counting left to `jairouter.quota.*` |
+| **Docs and gates** | `configuration/rate-limiting.md`, `deployment/multi-replica.md`, `deployment/kubernetes.md` and `reference/roadmap.md` rewritten (zh/en) to match reality; capability-claims gate updated; two new guard tests pin the defaults and the 429 path |
+
+See the [`[3.5.2]` changelog entry](docs/en/reference/changelog.md). Released as GitHub Release `v3.5.2` with multi-arch images (`v3.5.2` / `3.5.2` / `latest`).
+
+**`v3.5.1` (2026-10-24)** was a patch release that follows `v3.5.0` on the same day. It added the
+record-governance page, made the call-history encryption key source actually honor its configuration, and cleared
+the first four tech-debt batches (#604).
+
+| Theme | What changed |
+|-------|--------------|
+| **Record governance (#617 / #618)** | `jairouter.call-history.encryption-key-source: env` used to be settable and echoed back but never applied (`RecordContentCipher` was wired through its no-arg constructor). It is now resolved from configuration, with read-only observations (`encryptionKeySourceRequested` / `…Effective` / `…Honored`, `environmentKeyPresent`, `encryptionAlgorithm`, `encryptionKeyFingerprint`) on `GET /api/config/call-history`; the console gains `/security/record-governance` (three record levels, `FULL` behind a second confirmation, read-only encryption & storage card, decryption-audit entry) and the menu grows 28 → 29 items |
+| **Config snapshot (#605 / #619)** | `GET /api/config/sanitization`'s `gatewayResponseFilter` is composed live (`enabled=…;scopeMode=…;sanitizeSse=…;failOnError=…`) instead of returning a hard-coded legacy string |
+| **Tech debt A–D (#604)** | End-to-end 400 case through the real HTTP stack plus a bare-catch ceiling (baseline 835 / 257 files); `QuotaLedgerService` 1268 → 1094 and `ServiceRequestHandler` 1027 → 785 lines via extraction; the two hottest files go from 49 bare catches to 0 (baseline 835 → 786) |
+| **Docs and gates (#606 / #607)** | Gateway entry surface documented as `/api/v1/*` (with `/v1/*` covering only the 4 OpenAI-native endpoints); the code-fence parity check is wired into `docs-quality.yml`; console screenshots re-shot on v3.5.0 |
+
+See the [`[3.5.1]` changelog entry](docs/en/reference/changelog.md). Released as GitHub Release `v3.5.1` with multi-arch images (`v3.5.1` / `3.5.1` / `latest`).
+
+**`v3.5.0` (2026-10-24)** was the feature release that follows `v3.4.0`. It takes response
+sanitization from "practically no coverage" to "non-streaming JSON plus SSE frames, and configurable", closes out
+circuit-breaker governance, and brings **one breaking API change** and **one schema migration that cannot be rolled
+back automatically** (which under strict semver would make it `4.0.0`; it shipped as `3.5.0` and the tag is left as-is).
+
+| Theme | What changed |
+|-------|--------------|
+| **Sanitization coverage (#560 series)** | Non-streaming JSON under `/v1/**` is sanitized; the effective scope is configurable (`jairouter.security.sanitization.response.scope.mode` = exclude / include with `patterns`, falling back to the built-in set when empty); a response buffer limit (`max-buffered-bytes`, 1 MiB by default) decides between pass-through and termination; SSE streams are sanitized frame by frame (`sanitize-sse`, on by default); the shipped PII rules become five bounded patterns (mobile numbers stop hitting UUIDs, ID-card and card-number tails stop leaking) and JSON keys such as `traceId` keep their values |
+| **Breaking change (#601 / #602)** | The request-side sanitization configuration surface is removed: `GET/PUT /api/config/sanitization` handles `response` only, and **Flyway V5** deletes historical `request` rows plus the `whitelist_users` column (no automatic rollback). Record-side `sanitizeForStorage` semantics are unchanged |
+| **Circuit-breaker governance (#551 / #554 / #555)** | `clear-all` now performs a full reset (`CircuitBreakerAdminService.resetAll`, response carries `matched`); force-open / force-close gain canonical paths under `/api/monitoring/metrics-pipeline/circuit-breaker/*` with `@Deprecated` aliases; the never-effective `stateSyncIntervalMinutes` is removed |
+| **Console, docs and CI** | Exception pages off gradients, JWT filters inline, load-balancer header tightened, overview tabs fixed, acceptance-batch UI fixes (45 files); JWT docs now use real config keys, Chinese capability labels unified, Dockerfile example documents secret injection; the frontend test workflow is restricted to read-only permissions |
+
+See the [`[3.5.0]` changelog entry](docs/en/reference/changelog.md). Released as GitHub Release `v3.5.0` with multi-arch images (`v3.5.0` / `3.5.0` / `latest`).
+
+**`v3.4.0` (2026-10-21)** was the feature release that follows `v3.3.6`. It completed the console
+overhaul (P0-1 → P3) and landed three backend capabilities, with **one schema migration** and **one authorization
 semantics change**.
 
 | Theme | What changed |

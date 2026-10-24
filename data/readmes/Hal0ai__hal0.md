@@ -31,9 +31,14 @@ process to babysit.
 curl -fsSL https://hal0.dev/install.sh | sudo bash
 ```
 
-> **v1.6.0 is the current stable release.** A minor release (2026-10-23): new
-> functionality, no config-schema migration, and an ordinary `hal0 update`
-> from any 1.4.x or later box; a 1.3.x box hops through 1.5.0 first. With
+> **v1.6.5 is the current stable release.** A release on the 1.6 line
+> (2026-10-24): FastFlowLM 1.0.10 run from its runner image, privilege
+> hardening, and fixes, with no config-schema migration and an ordinary
+> `hal0 update` from any 1.4.x or later box; a 1.3.x box hops through 1.5.0
+> first. It removes four CLI spellings that had a second name
+> (`hal0 agent upgrade hermes --to`, `hal0 update owui`,
+> `hal0 agent bootstrap hermes`, `hal0 uninstall --keep-data`/`--clean-slate`);
+> read the 1.6.5 **Breaking** notes for the replacements. With
 > Hermes v0.22.4, a chat opened for a non-default profile and `hermes chat`
 > need the Hermes gateway running. Since 1.4.0, three changes can break a
 > script or a setup: `hal0 update`
@@ -42,9 +47,9 @@ curl -fsSL https://hal0.dev/install.sh | sudo bash
 > brain profile is refused until hal0 enforces its tool policy; and an
 > installed MCP server that would send its secrets over plain `http://` to
 > another host no longer loads. After
-> updating, re-run the installer once to pick up the new Hindsight limits,
-> the Open WebUI client key and the Hermes wrappers. Read the 1.6.0
-> **Breaking** and **Migrations** notes in [CHANGELOG.md](CHANGELOG.md)
+> updating from before 1.6.0, re-run the installer once to pick up the new
+> Hindsight limits, the Open WebUI client key and the Hermes wrappers. Read the
+> 1.6.0 **Breaking** and **Migrations** notes in [CHANGELOG.md](CHANGELOG.md)
 > first. The project has followed semver since v1.0.0; a minor release's
 > **Breaking** notes flag behaviour changes an operator or a script may
 > notice. Upgrades start at 1.4.0; on anything older, read
@@ -195,7 +200,7 @@ passthrough still needs the privileged-LXC recipe. See
 
 ```sh
 hal0 uninstall                 # prompts before deleting config + model data
-hal0 uninstall --keep-data     # keep /etc/hal0 and /var/lib/hal0
+hal0 uninstall --purge         # also wipe /etc/hal0, /var/lib/hal0, the hal0 user and images
 ```
 
 ## First ten minutes
@@ -229,7 +234,7 @@ from zero.
 
 - **Hermes v0.22.4 on Python 3.14.** The bundled agent moves from 0.19.0 to
   v0.22.4 (`4d043038`). Every build (install, `reprovision --repair`,
-  `upgrade`, update) produces an immutable release under
+  update) produces an immutable release under
   `/var/lib/hal0/hermes/releases/`, health-checked before the `current`
   symlink flips, with a flip-back to `previous` if the re-check fails.
   See [Hermes, the bundled agent](#hermes-the-bundled-agent).
@@ -504,9 +509,9 @@ inference, tools and memory. `hal0 agent install hermes` installs it.
   switches, migrates the Hermes config and restarts; a failed re-check flips
   back to `previous` with `config.yaml` restored. Sessions are kept
   (`sessions.auto_prune: false`).
-- **Upgrades are vetted commits.** `hal0 agent upgrade hermes --to <40-hex
-  sha>` accepts only a commit listed in `VETTED_HERMES_REFS`; version strings
-  are refused.
+- **Updates are vetted commits.** `hal0 update component hermes --target
+  <40-hex sha>` accepts only a commit listed in `VETTED_HERMES_REFS`; version
+  strings are refused. The override stays until `--clear-override`.
 - **Profiles show up in Open WebUI.** hal0 registers one pinned, read-only
   upstream per profile that has an API key: `hermes` for the default profile
   and `hermes.<profile>` for the rest. `/v1/models` lists `hermes-agent` plus
@@ -931,7 +936,7 @@ later. Four things to know before you take it:
 - **Rolling back to 1.5.x leaves the Hermes build failing** (`Hermes Python
   must be exactly 3.12`) until you update forward again. Do not edit
   `/etc/hal0/hermes-python.env` to 3.12 on 1.5.x.
-- **Profile chat needs the gateway.** With Hermes v0.22.4 a chat opened for a non-default profile (such as `hal0-brain`) in Hermes's dashboard, and the `hermes chat` CLI, attach to `hermes-gateway.service` and report `gateway inaccessible` while it is stopped. Run `sudo systemctl enable --now hermes-gateway`. Once v0.22.4 is live, `hal0 agent upgrade hermes --to d923a5eb...` is refused as a downgrade.
+- **Profile chat needs the gateway.** With Hermes v0.22.4 a chat opened for a non-default profile (such as `hal0-brain`) in Hermes's dashboard, and the `hermes chat` CLI, attach to `hermes-gateway.service` and report `gateway inaccessible` while it is stopped. Run `sudo systemctl enable --now hermes-gateway`. Once v0.22.4 is live, `hal0 update component hermes --target d923a5eb...` is refused as a downgrade.
 
 The agent chat proxy is gone: `/api/agents/{id}/events`, `/submit` and
 `/session/*` return 404.

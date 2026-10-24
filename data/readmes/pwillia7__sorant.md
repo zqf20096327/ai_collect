@@ -66,7 +66,7 @@ It is only a front end: no model weights, no database, nothing expensive.
 | **Disk** | **43 GB** for Text to Video alone; **234.5 GB** for every workflow; **337.4 GB** with every optional extra. See below. |
 | **ComfyUI** | A recent build — tested on 0.38 — plus five custom node packs. |
 | **OS** | Windows, Linux or macOS for ComfyUI; tested on Windows, which needs [one registry fix](docs/setup.md#on-windows-raise-the-gpu-timeout-first). |
-| **For the app** | Node 20.9+ and pnpm. A free Vercel account to deploy it. A Tailscale account to reach your ComfyUI from Vercel. An AI Gateway key is optional: the prompt rewrite can run on your own machine instead. |
+| **For the app** | Node 20.9+ and pnpm. A free Vercel account to deploy it. To reach your ComfyUI from Vercel, a free DuckDNS name and a router you can forward a port on (Tailscale Funnel works without the router, but is too slow for long videos). An AI Gateway key is optional: the prompt rewrite can run on your own machine instead. |
 
 Disk space by what you want to run — download only what you will use:
 
@@ -120,9 +120,10 @@ agent does that for you and checks each step as it goes.
    are deploying, then installs the node packs, downloads the models, applies
    the Windows GPU fixes, runs a test generation and fixes what fails, makes
    ComfyUI reachable and deploys. You only step in for what has to be yours:
-   choosing the ComfyUI password, signing in to Vercel and Tailscale (and
-   Hugging Face, for the Edit button), and choosing where prompts are
-   rewritten: on your own machine with no account, or with an AI Gateway key.
+   choosing the ComfyUI password, signing in to Vercel and DuckDNS (and
+   Hugging Face, for the Edit button), forwarding a port on your router, and
+   choosing where prompts are rewritten: on your own machine with no account,
+   or with an AI Gateway key.
    At the end it offers to send a setup report to the project if anything went
    wrong; that's up to you.
 
@@ -146,7 +147,8 @@ most failed setups skipped a step. In short:
    and a choice of where prompts are rewritten: on that machine, or with an AI
    Gateway key.
 2. **[Make ComfyUI reachable](docs/setup.md#2-make-comfyui-reachable)** — only
-   if you are deploying. Tailscale Funnel is the easy way.
+   if you are deploying. A DuckDNS name with Caddy for HTTPS; Tailscale Funnel
+   if you cannot forward a port.
 3. **[Run it locally](docs/setup.md#3-run-it-locally)**:
 
    ```bash
@@ -161,9 +163,14 @@ most failed setups skipped a step. In short:
 
 ## Updating
 
-When a new release is out, the app shows an **Update** notice in its header.
-Open your coding agent in your clone and paste this (in Claude Code, `/update`
-does the same):
+The app checks for a new release each time you open it. When there is one, an
+**Update** badge appears in the header and the status pill gets a blue dot;
+click either for step-by-step instructions. Updating means redeploying your
+copy of the app, and sometimes updating your ComfyUI machine first.
+
+**With a coding agent (easiest).** Open Claude Code, Codex, Cursor or another
+coding agent in the folder you cloned Soran’t into, and paste this (in Claude
+Code, `/update` does the same):
 
 ```text
 Update Soran't to the latest release by following the "Updating an existing
@@ -174,13 +181,23 @@ deploying.
 
 Most releases change only the app, and those can be deployed from any machine
 with a clone. Some also need something on the ComfyUI machine, such as a new
-node pack, a pack update or a model file. The agent tells the two apart from
-`machine-requirements.json` and won't deploy the app before your ComfyUI
-machine has what the new version needs. The notice says which kind an update
-is, and the workflow cards say if your ComfyUI is missing anything.
+node pack, a pack update or a model file. Run those on the ComfyUI machine. The
+agent tells the two apart from `machine-requirements.json` and won't deploy the
+app before your ComfyUI machine has what the new version needs. The notice says
+which kind an update is, and the workflow cards say if your ComfyUI is missing
+anything.
 
-By hand: `git pull`, `pnpm install`, then make any ComfyUI machine changes
-listed in the release notes, run `pnpm check:nodes`, and `vercel deploy --prod`.
+**By hand:**
+
+1. In your Soran’t folder: `git pull`, then `pnpm install`.
+2. If the release notes list **ComfyUI machine changes**, make them on that
+   machine: update ComfyUI, install or update the node packs they name, and
+   `pnpm models:download` for new models. Restart ComfyUI, then run
+   `pnpm check:nodes` until it reports nothing missing.
+3. Deploy. If Vercel builds from your GitHub fork, press **Sync fork** on the
+   fork's GitHub page and Vercel deploys it. Otherwise run
+   `vercel deploy --prod` in the folder.
+4. Reload the app. The notice goes away once the new version is live.
 
 ## When something goes wrong
 

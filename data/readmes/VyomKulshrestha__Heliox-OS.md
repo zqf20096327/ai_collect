@@ -39,9 +39,9 @@ User intent → Planner → Permission and risk gates → Specialist → Executo
                     ↘ durable task state, memory, audit, cancellation and recovery ↗
 ```
 
-Published release: **v0.14.0** · Python **3.11+** · Windows is the primary hardware-development platform.
+Published release: **v0.15.0** · Python **3.11+** · Windows is the primary hardware-development platform.
 
-v0.14.0 adds a consented assistance co-adaptation study, accessibility-grounded desktop control with human takeover, restart-surviving and scheduled autonomous jobs, tools from your own MCP servers, voice-first control while a task runs, and fail-closed settings, gateway profiles and approvals. Provider subscriptions, integrations, peers, hardware inputs, and host actions remain subject to their documented availability and safety boundaries.
+v0.15.0 adds per-task undo with a line-by-line view of what changed, Ed25519-signed task receipts, an opt-in activity timeline with a Today tab and daily brief, focus sessions, reminders, notes, routines, voice shortcuts, saved app setups, task requests from a paired phone, a Ctrl+K command palette and a Your data panel. It builds on v0.14.0's consented assistance co-adaptation study, accessibility-grounded desktop control, durable and scheduled autonomy, MCP tools and fail-closed approvals. Provider subscriptions, integrations, peers, hardware inputs, and host actions remain subject to their documented availability and safety boundaries.
 
 ## Why Heliox
 
@@ -61,12 +61,12 @@ v0.14.0 adds a consented assistance co-adaptation study, accessibility-grounded 
 | Action schema        | 162 declared action types                                                                     | Availability depends on OS, dependencies, permissions, credentials, and policy                 |
 | Specialist mesh      | 21 executable specialists with providers for 162/162 declared actions                         | Provider coverage is not universal environment compatibility                                   |
 | Outcome verification | 22 actions have an independent observed post-condition verifier                               | The other 140 currently rely on the executor result                                            |
-| Guarded fast path    | 28.727 ms median, 32.192 ms p95 across 100 non-LLM CPU-usage iterations; zero model calls (18 October 2026) | This is not provider, browser, voice, camera, TTS, neural, or full-workflow latency            |
+| Guarded fast path    | 27.183 ms median, 28.257 ms p95 across 100 non-LLM CPU-usage iterations; zero model calls (24 October 2026) | This is not provider, browser, voice, camera, TTS, neural, or full-workflow latency            |
 | Subscription planning | 3/3 fixed Codex CLI cases; 14.708 s median; zero executed or destructive actions             | One account and planning only; not action-execution, Claude, or universal provider evidence     |
 | Intent dispatch      | 59/59 curated bounded-intent and ambiguous-fall-through regression cases                     | Fixed corpus; not population-level language-understanding accuracy                            |
 | Typed decisions      | Gnomon v4.1 (Qwen3.5-2B QLoRA): 98.3% yes/no and 100% choice accuracy, 0 false allowances on a fresh 128-case authored set | Opt-in; reviews autonomous plans but can only ask for approval; authored labels; rating error 0.202 vs 0.024 for the hosted reference model |
 | Learned risk model   | 25,200 training, 5,400 calibration, and 5,400 temporal-validation samples; 5/5 direction invariants | Covers 12 coarse disk/process action transitions; deterministic policy remains authoritative |
-| Async responsiveness | 64 heartbeats during a real one-second CPU monitor; 25.061 ms maximum heartbeat interval      | Windows timer granularity and host load apply; this is not UI or hardware-input latency        |
+| Async responsiveness | 64 heartbeats during a real one-second CPU monitor; 16.237 ms maximum heartbeat interval      | Windows timer granularity and host load apply; this is not UI or hardware-input latency        |
 | Assistance co-adaptation | 3/3 policy agency audits passed on two simulated tuning families, five simulated people per family | In-sample simulation only; the adaptive engine does not beat the plain interface for every family; no human accuracy claim |
 | Plugins              | 6 manifests in the generated public catalog                                                   | Marketplace and local plugins remain capability-constrained                                    |
 | CI                   | Python, frontend, visual, Rust, marketplace, and installer gates                              | CI does not prove camera, microphone, speaker, EEG, or human accuracy                          |
@@ -78,8 +78,8 @@ v0.14.0 adds a consented assistance co-adaptation study, accessibility-grounded 
 - [Human-readable evidence and limitations](https://www.helioxos.dev/proof.html)
 - [Detailed Markdown evidence](proof.md)
 - [Machine-readable capability catalog](capabilities.json)
-- [Latest v0.14.0 software benchmark snapshot (18 October 2026)](docs/evidence/software-benchmarks-2026-10-18.json)
-- [Original v0.14.0 release benchmark snapshot](docs/evidence/software-benchmarks-2026-10-16.json)
+- [v0.15.0 release software benchmark snapshot (24 October 2026)](docs/evidence/software-benchmarks-2026-10-24.json)
+- [Earlier v0.14.0 snapshots: 18 October](docs/evidence/software-benchmarks-2026-10-18.json) and [16 October](docs/evidence/software-benchmarks-2026-10-16.json)
 - [Raw subscription-planning evidence](docs/evidence/subscription-planning-codex-2026-08-16.json)
 - [Historical guarded fast-path benchmark](docs/evidence/react-latency-2026-08-12.json)
 - [Live CI history](https://github.com/VyomKulshrestha/Heliox-OS/actions)
@@ -135,7 +135,11 @@ No comparison declares a universal winner. See the [transparent cost page](https
 | Air Handoff            | Opt-in same-LAN phone pairing and one-target encrypted transfer of a held screenshot, text value, or immutable file snapshot. Optionally, a paired phone can send a request that waits for **Run** on the computer; status checks can start at once and answer back to the phone. The phone never approves anything |
 | Signed task receipts   | After each task that ran actions, an Ed25519-signed, hash-chained receipt of what ran, what you approved and what happened; contents appear only as hashes, and `python -m pilot.workflows.task_receipts verify` checks one anywhere |
 | Today view and brief   | A Today tab shows what Heliox ran, where your time went and what can still be undone, with Undo on each task; an opt-in daily brief arrives at the time you choose, as a notification and in chat, optionally read aloud. "Undo the last two tasks" opens each task's undo preview in turn |
-| Focus and reports      | "Focus for 45 minutes" holds reminders and the brief and keeps Heliox quiet (approvals still come through), then gives one summary of where the time went; the Today tab adds **This week** and **Export report** (Markdown with every task and its receipt id) |
+| Your data              | Settings → Your data lists everything Heliox keeps on this computer with sizes and a Clear button for each; "forget my activity from the last hour"; backups to Downloads (never settings, tokens or keys) and restore |
+| Command palette        | Ctrl+K (or "what can I say?") lists every built-in command with working examples and your recent requests; choosing one fills the command box so you can check it before it runs |
+| Notes, nudges, settings | "Note that the plumber comes Tuesday" / "read my notes"; "tell me if I spend more than an hour on YouTube today" (once a day, from the activity timeline, nothing blocked); "turn on the activity timeline" or "send me a daily brief at 7 pm" by voice (security settings never change by voice) |
+| Setups and history     | "Save this as my coding setup" remembers which apps are open and "open my coding setup" brings them back (with normal approvals); "when did I ask you to email the invoice?" searches your task history; "set a timer for 10 minutes" |
+| Focus and reports      | "Start a pomodoro", quiet hours ("focus every weekday from 9 to 12") and "say that again"; "Focus for 45 minutes" holds reminders and the brief and keeps Heliox quiet (approvals still come through), then gives one summary of where the time went; the Today tab adds **This week** and **Export report** (Markdown with every task and its receipt id) |
 | Reminders and recall   | "Remind me in 20 minutes to stretch" or "tomorrow at 9 to send the report" (kept across restarts, spoken when due); "where did you put my report?" from what Heliox moved or saved; **Show what changed** in the undo preview gives a line-by-line diff of each file Heliox wrote |
 | Routines and shortcuts | "Do that every day at 9" turns the last task into a routine that may use only the actions that task used (you confirm on screen); "when I say start work, open VS Code and Slack" creates a voice shortcut; "do that again" repeats the last task with fresh approvals |
 | Activity timeline      | Opt-in local record of which app and window title were in front, so "what was I working on yesterday afternoon?" gets an answer by voice or chat (and "what did you do today?" is answered from receipts); never pixels or screen text, password managers and private windows skipped |

@@ -143,7 +143,23 @@ export XAI_API_KEY=...
 
 A provider can use `base_url_cmd = "pass lunar/xai-url"` instead of `base_url`, and `key_cmd = "pass my_key"` instead of `key_name`. Commands run through `sh -c` before the TUI opens, so interactive credential helpers such as GPG pinentry work normally. Lunar trims trailing whitespace from stdout. `base_url_cmd` takes precedence over `base_url`; `key_cmd` takes precedence over `key_name`.
 
-Alternatively, let Lunar store the credential. Use `/login` in the TUI: xAI (subscription via device code, or a masked API key), OpenAI (ChatGPT Plus/Pro via device code), or Anthropic (Claude Pro/Max via copy-code). Set `key_in = "auth"` and `auth_provider = "xai"`, `"openai"`, or `"anthropic"` on the provider. `/logout xai`, `/logout openai`, and `/logout anthropic` remove the credential.
+For ChatGPT Plus/Pro, run `/login openai`, then choose a numbered subscription profile’s model with `/model`. No Lua entry is needed. Lunar discovers models at login and startup, and keeps a cached list if refresh fails.
+
+Different OpenAI accounts receive stable names such as `openai-subscription-1` and `openai-subscription-2`; logging in again to the same account updates its existing profile. Select a default in user or project Lua:
+
+```lua
+return {
+  defaults = {
+    subscription = "openai-subscription-1", -- instead of provider
+    model = "gpt-5.4", -- a wire model ID from /model
+    thinking = "high", -- optional
+  },
+}
+```
+
+`/logout openai-subscription-1` disconnects just that profile; `/logout openai` disconnects all OpenAI profiles. Names are never renumbered. An unavailable subscription default shows a notice so you can recover with `/login` or `/model`.
+
+The same subscription behavior applies to `/login anthropic` and `/login xai`: profiles are named `anthropic-subscription-N` and `xai-subscription-N`, appear in `/model`, and work with `defaults.subscription`. Use `/logout <profile>` for one account or `/logout anthropic|xai|openai` for all accounts of that integration. Lua providers remain available for API keys and custom endpoints. Discovery uses each integration's reported capabilities; xAI currently reports context windows but no thinking levels.
 
 For an unauthenticated local server, set `key_in = "none"` and an explicit HTTP or HTTPS `base_url`; Lunar sends no Authorization header:
 

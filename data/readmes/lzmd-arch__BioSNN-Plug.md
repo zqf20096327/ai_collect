@@ -13,6 +13,20 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/lzmd-arch/BioSNN-Plug/blob/main/examples/quickstart_register_plugin.ipynb)
 
+## 发表与存档
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23429379.svg)](https://doi.org/10.5281/zenodo.23429379)
+
+| 产出 | 类型 / 许可 | 标识 | 状态 |
+| :--- | :--- | :--- | :--- |
+| **P2 论文**：W2 e-prop 与同预算 BPTT 的对照 | 预印本 / CC-BY-4.0 | [10.5281/zenodo.23429379](https://doi.org/10.5281/zenodo.23429379) | 已发表（v1.1，2026-10-17） |
+| **P4 论文**：仲裁何时可被测量（协同基准 + 协议处决） | 预印本 / CC-BY-4.0 | [10.5281/zenodo.23613539](https://doi.org/10.5281/zenodo.23613539) | 已发表（v1.0，2026-10-24） |
+| **记录 A**：W2 发现与协议快照 | 报告 / Apache-2.0 | [10.5281/zenodo.23428426](https://doi.org/10.5281/zenodo.23428426) | 已发布（v0.2，2026-10-17） |
+| **记录 C**：P4 设计笔记（仲裁形式化、协同性基准判据、三条裁决） | 报告 / Apache-2.0 | [10.5281/zenodo.23603639](https://doi.org/10.5281/zenodo.23603639) | 已发布（v0.1，2026-10-24） |
+| **记录 D**：架构与设计决策存证（计划书 v6.3、ADR 索引、四轴框架） | Other | [10.5281/zenodo.23603642](https://doi.org/10.5281/zenodo.23603642) | 已发布（v0.1，2026-10-24） |
+
+⚠️ 存档是**不可变快照**，记的是存款当时的状态；当前数字以本 README 与[复现记录](docs/reproducibility.md)为准。
+
 ## 这是什么
 
 研究原型，验证一个问题：**智能能否从纯局部学习规则中生长出来，并学会借助外部推理扩展自身边界？**
@@ -49,18 +63,30 @@
 ⚠️ **本表最后一行有两格是 ○ 而不是 ✅**——「自主触发」排在第五阶段、「持续学习」排在第三阶段，
 两者的实现都**尚未开始**。把符号分开写，就是为了不让这张表读起来像我们已经做到了。
 
+## 研究定位
+
+把"智能为什么涌现"拆成四轴：**基质**（规模、维度、突触数）、**动力学**（全局状态变量偏置学习——
+激素、情绪、巩固、本能）、**组织**（基因预编码、脑区分化、新旧更替、自增殖）、**接地**（物理规则、
+真实感知、模态拟真）。四者若真有关系，是**乘法**：任何一轴为零，整体就封顶。
+
+**我们的押注**：退出基质轴的竞争——那里不缺参与者，也不缺算力；把资源押在
+**动力学 × 组织能否替代基质**上，做一台能测这个问题的仪器。若答案是肯定的，规模就不是
+涌现的原因，而是组织方式允许达到的尺度。
+
+测量纪律不是宣言：预注册、平凡解排查、机器检查单与负向验证，都记录在[复现记录](docs/reproducibility.md)里。
+
 ## 当前状态
 
-| 部分 | 状态 |
-| :--- | :--- |
-| `biosnn-bus` 骨架库 | **0.3.0（仓库内，含音频插件；PyPI 上仍是 0.2.0）**——插件接口、注册与发现、脉冲总线、**TAAF 时间注意力融合**（rate-based gating，权重由各路发放率现算，**无反向传播**） |
-| 模态插件 | **四路**：`image_diff`（DVS 事件编码）、`mnist_pulse`（发放率）、**`text_zscore`**（冻结本地 embedding + z-score top-k 群体编码）、**`audio_cochlea`**（对数频带分解 + 发放率；未发布到 PyPI） |
-| 研究代码：三条验证线 | **第一阶段实现完成**——W1 Hebbian 感知 MNIST **97.79%**（默认闭式解读出；SGD 读出 98.01%）✓；W2 e-prop 序列 sMNIST **0.7764**（30 epoch × 5 种子）→ **0.8889**（**官方收官**：**LIF** @ lr=1e-2 @ 250 epoch，已收敛；同档 ALIF 0.8831 为对照）；lr 交互扫描完成，**LIF 在四档 lr 上全网格领先** ✓；W3 R-STDP CartPole 中位数 **237.8 步**（阈值 ≥ 200）✓。数字与复现记录见[复现记录](docs/reproducibility.md) |
-| **网络规模** | **256 个脉冲神经元**（W2）；W1 另有 3,072 个**速率型**单元（不算脉冲神经元）。计划书 §2.2 的认知核心目标是约 5 万——**差约 195 倍**，详见 [research/README](research/README.md) |
-| 仲裁器 | **零件就位**（`research/arbiter/`）：冲突判定（余弦 > 90°）+ ES 元学习仲裁器，**已接进两条研究线**（共享输入突触）。⚠️ 但只共享输入→隐藏一处，且「减少冲突事件 50%」在合成数据上是**平凡成立**的——见该目录 README |
-| 执行层脉冲化（第三阶段） | **入口、线性 TD Critic、TD-LTP 群体 Critic 均已就位，但一个都没过 200。**⚠️ **2026-10-18 之前的数字全部作废**：训练回合漏了环境种子，同种子两次轨迹不同；修复后 **10 种子对照**：线性 TD 中位数 50.4、群体默认 55.0、工作点 37.1——**区间全部重叠、均 0/10**，三个主臂分不开。速率版中位数 237.8 仍是唯一通过验收的实现。见 [research/rstdp_spiking](research/rstdp_spiking/README.md) |
-| 跨模态检索 | **十轮检索实验**：原标准（绝对 R@1 50%）在两种数据上都无法区分「局部学习成立」，已重述为**恢复率**（合成集 75.2%、Flickr8k **78.7%**，完整网格）；Flickr8k 的**前端**另有验收口径——caption 内容词线性探针 AUC 中位数 **0.790**（文本侧自查 1.000） |
-| 认知核心 / LLM 协同 | **未开始**，见[计划书 §七](BioSNN-Plug_项目计划书_v6.2.md) |
+| 部分 | 状态 | 最近更新 |
+| :--- | :--- | :--- |
+| `biosnn-bus` 骨架库 | **0.3.0（含音频插件，已发布到 PyPI）**——插件接口、注册与发现、脉冲总线、**TAAF 时间注意力融合**（rate-based gating，权重由各路发放率现算，**无反向传播**）；`Used in:` [Axo](https://github.com/lzmd-arch/Axo)（生产终端）：其独立进程 `axo.busd` 常驻实例化 `SpikeBus` 并持续 `step()`（融合 + 稀疏随机投影），新记忆经自定义 `ModalityPlugin` 编码后进总线；UI 只读 stdlib 写的 JSONL 事件，不 import 本库 | 2026-10-18 |
+| 模态插件 | **四路**：`image_diff`（DVS 事件编码）、`mnist_pulse`（发放率）、**`text_zscore`**（冻结本地 embedding + z-score top-k 群体编码）、**`audio_cochlea`**（对数频带分解 + 发放率；随 0.3.0 发布到 PyPI） | 2026-10-18 |
+| 研究代码：三条验证线 | **第一阶段实现完成**——W1 Hebbian 感知 MNIST **97.79%**（默认闭式解读出；SGD 读出 98.01%）✓；W2 e-prop 序列 sMNIST **0.7764**（30 epoch × 5 种子）→ **0.8889**（**官方收官**：**LIF** @ lr=1e-2 @ 250 epoch，已收敛；同档 ALIF 0.8831 为对照；**同预算 BPTT 对照 0.9630，领先 7.41 个百分点**，这条差距照实写：局部规则仍落后于反向传播；**配方待遇量化**：BPTT 的优化器形式在小学习率上值 **+8.53 pp**（1e-3），在最终选定的学习率上只剩 **+0.88 pp**（落在并列带内）——操作点上两臂的配方是可比的）；lr 交互扫描完成，**LIF 在四档 lr 上全网格领先** ✓；W3 R-STDP CartPole 中位数 **237.8 步**（阈值 ≥ 200）✓。数字与复现记录见[复现记录](docs/reproducibility.md) | 2026-10-18 |
+| **网络规模** | **256 个脉冲神经元**（W2）；W1 另有 3,072 个**速率型**单元（不算脉冲神经元）。计划书 §2.2 的认知核心目标是约 5 万——**差约 195 倍**，详见 [research/README](research/README.md) | 2026-10-18 |
+| 仲裁器 | **P4 终版结论**（`research/arbiter/`）：静态 50/50 混合优于任一单方，协同量 **+0.179**；**自适应仲裁在本基准不可测**——被预注册协议处决，完整探针约七小时/次拟合。见[论文二](paper/p4/)（Zenodo `10.5281/zenodo.23613539`）；历史口径留在该目录 README | 2026-10-24 |
+| 执行层脉冲化（第三阶段） | **入口、线性 TD Critic、TD-LTP 群体 Critic 均已就位，但一个都没过 200。**⚠️ **2026-10-18 之前的数字全部作废**：训练回合漏了环境种子，同种子两次轨迹不同；修复后 **10 种子对照**：线性 TD 中位数 50.4、群体默认 55.0、工作点 37.1——**区间全部重叠、均 0/10**，三个主臂分不开。速率版中位数 237.8 仍是唯一通过验收的实现。见 [research/rstdp_spiking](research/rstdp_spiking/README.md) | 2026-10-18 |
+| 跨模态检索 | **十轮检索实验**：原标准（绝对 R@1 50%）在两种数据上都无法区分「局部学习成立」，已重述为**恢复率**（合成集 75.2%、Flickr8k **78.7%**，完整网格）；Flickr8k 的**前端**另有验收口径——caption 内容词线性探针 AUC 中位数 **0.790**（文本侧自查 1.000） | 2026-10-17 |
+| 认知核心 / LLM 协同 | **未开始**，见[计划书 §七](BioSNN-Plug_项目计划书_v6.2.md) | — |
 
 **第二阶段的四条成功标准，实况**：
 
@@ -69,14 +95,25 @@
 | 插件可独立替换 | ✅ 四路插件 + entry points，骨架库已上 PyPI |
 | TAAF 微调样本量 < 从头训练 1/10 | ⚠️ **标准随 [ADR-0012](docs/adr/ADR-0012-taaf-locality-and-bus-output-contract.md) 消解，非达成**——融合权重按红线根本不训练，这条标准**失去了所指**（没有微调，就没有「微调样本量」）。见计划书修订说明 ㉗ |
 | 跨模态检索 R@1 50%+ | ⚠️ **原标准（绝对 50%）未达成且被判无区分力**（合成集可被记忆化满足；Flickr8k 冻结前端上界 0.076）。**已重述为「恢复率」并通过**：局部规则拿回线性上界的 **75.2%（合成集）/ 78.7%（Flickr8k，完整网格）**——见 [research/retrieval](research/retrieval/README.md) |
-| 仲裁器使双规则冲突事件减少 50%+ | ✅ 在**真实共享突触**上达标（10 → 0，`retention` 0.3） |
+| 仲裁器使双规则冲突事件减少 50%+ | ⚠️ 原判据在合成数据上**平凡成立**，已被协同性基准取代；P4 终版：静态混合 **+0.179**，自适应仲裁**不可测**（完整探针约七小时/次拟合） |
 
 两处需要说清楚的边界：
 
 - **TAAF 已实现，但默认策略仍是拼接**：`TemporalAttentionFusion` 是**显式选用**的融合策略（`SpikeBus(strategy=...)`），默认仍是平凡拼接。⚠️ 它的注意力权重**由各路发放率现算、不训练**（rate-based gating）——这条红线用 **AST 结构断言**钉死，见 [ADR-0012](docs/adr/ADR-0012-taaf-locality-and-bus-output-contract.md)。
 - **感知层允许冻结预训练前端**（边界声明，见[计划书 §2.3](BioSNN-Plug_项目计划书_v6.3.md)）：「纯局部学习」的主张范围是**突触学习规则**，不是**输入编码器**。判据是「参数进不进梯度」，不是「模型大不大」——冻结的 2GB 预训练 embedding 与固定随机投影等价；反过来，100 行的本地编码器若用反向传播训自己参数，就**违反**这条边界。文本插件用的 `nomic-embed-text`（Ollama，768 维）就是冻结的。
 - （骨架库为何独立成包、为何刻意不包含这些东西，见 [ADR-0001](docs/adr/ADR-0001-skeleton-as-separate-library.md)。）
-- 骨架库**已发布到 PyPI**：`pip install biosnn-bus`（PyPI 上是 `0.2.0`；仓库里已经是 `0.3.0`，多出 `audio_cochlea` 插件，**尚未发布**）。发布走 PyPI trusted publishing（OIDC，不存 token），流程见 [release.yml](.github/workflows/release.yml)。
+- 骨架库**已发布到 PyPI**：`pip install biosnn-bus`（PyPI 上是 `0.3.0`，含 `audio_cochlea` 音频插件）。发布走 PyPI trusted publishing（OIDC，不存 token），流程见 [release.yml](.github/workflows/release.yml)。
+
+## 探索项（不进当前排期）
+
+以下三项已立项，但**不占用当前阶段的任何排期**。每条写明激活条件，条件不满足就不启动——
+写在这里，是为了让"没做"和"没打算做"在门面上区分开。
+
+| 项 | 归属 | 激活条件 |
+| :--- | :--- | :--- |
+| **世界模型组件**（[ADR-0015](docs/adr/ADR-0015-world-model-as-phase-four-component.md)） | 阶段四正式组件（承接 Predictive E-prop） | 阶段三验收通过，且组件化 ADR 立起来 |
+| **唤醒通道**（[ADR-0016](docs/adr/ADR-0016-arousal-channel-and-consolidation-experiment.md)） | 动力学轴的组件化 | 组件化 ADR 通过 |
+| **PINN 物理先验**（[v7.0 候选](docs/roadmap_v7_candidates.md)） | 路线图 v7.0 候选（探索笔记） | 阶段三验收 + CL 探针落地；复查日期 2027 夏 |
 
 ## 架构
 
@@ -93,14 +130,14 @@ flowchart TB
     end
 
     subgraph L3["认知层（认知核心）"]
-        WM["工作记忆<br/>RSNN + ALIF + e-prop<br/>◐ 第一阶段：学习规则已验证（W2）<br/>⬜ 多层 RSNN 与工作记忆回路"]
+        WM["工作记忆<br/>RSNN + LIF（默认；ALIF 待重评估）+ e-prop<br/>◐ 第一阶段：学习规则已验证（W2）<br/>⬜ 多层 RSNN 与工作记忆回路"]
         EM["情景记忆<br/>模式分离 + 神经发生<br/>⬜ 第四阶段"]
         MG["元认知门控<br/>不确定性监控<br/>⬜ 第四阶段"]
     end
 
     subgraph ARB["跨规则仲裁 research/arbiter"]
         CF["冲突判定：余弦 > 90°<br/>✅ 已实现"]
-        ES["ES 元学习仲裁器<br/>✅ 已接进两条线（共享输入突触）<br/>⚠️「减少 50%」在合成数据上平凡成立"]
+        ES["P4：静态混合 +0.179<br/>自适应仲裁不可测<br/>（完整探针约七小时/次拟合）"]
     end
 
     subgraph L2["骨架库 biosnn-bus"]
@@ -111,7 +148,7 @@ flowchart TB
         IMG["图像 image_diff<br/>DVS 事件编码<br/>✅ 已实现"]
         MN["MNIST mnist_pulse<br/>发放率编码<br/>✅ 已实现"]
         TXT["文本 text_zscore<br/>冻结 embedding + z-score top-k<br/>✅ 已实现"]
-        AUD["音频 audio_cochlea<br/>对数频带分解 + 发放率<br/>✅ 已实现（未发布到 PyPI）"]
+        AUD["音频 audio_cochlea<br/>对数频带分解 + 发放率<br/>✅ 已实现（0.3.0 已发布）"]
         THIRD["第三方插件<br/>entry points 接入<br/>✅ 机制已就绪"]
         HEB["学习规则：核化 IB-Hebbian + 除法归一化<br/>◐ 第一阶段已验证（W1，MNIST 97.79%）"]
     end
@@ -144,7 +181,7 @@ flowchart TB
     FE -.->|说明上界为何低| CRIT
 ```
 
-层间冲突由 **ES 元学习仲裁器**调节：冲突判定与仲裁器都已实现，并**已接进两条研究线**（`research/arbiter/shared_synapse.py`，两条规则共享输入→隐藏那一组突触）。⚠️ 但「冲突事件减少 50%」在合成数据上是**平凡成立**的——最优解是把一条规则关掉，所以降幅要与 `retention` 一起读；详见 [`research/arbiter/README`](research/arbiter/README.md)。
+层间冲突由 **ES 元学习仲裁器**调节。P4 的终版结论是：**静态 50/50 混合优于任一单方，协同量 +0.179**；而**自适应仲裁在本基准不可测**——被预注册协议处决，完整探针约七小时/次拟合。旧口径（「冲突事件减少 50%」）在合成数据上平凡成立，作为历史记录留在 [`research/arbiter/README`](research/arbiter/README.md)。
 
 ⚠️ **图里的 ✅ 是「已实现」，不等于「已接入路线图上的那个位置」**：例如 TAAF 已实现，但它是**显式选用**的融合策略（默认仍是拼接）；文本插件已实现，但它接的是**冻结的预训练前端**（边界声明见[计划书 §2.3](BioSNN-Plug_项目计划书_v6.3.md)——「纯局部学习」只管突触学习规则，不管输入编码器）。各层学习规则的完整说明见[计划书](BioSNN-Plug_项目计划书_v6.2.md) §2、§3。
 

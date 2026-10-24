@@ -1,19 +1,59 @@
 # 企业出海咨询/国区营商环境监测智能体
 
-给企业海外业务团队、咨询人员和国区研究者使用。输入产品、目标市场和经营约束，得到带来源的进入路径分析、待核实问题和后续行动建议。
+围绕企业真正要做的选择，比较市场与进入方式，理清交易责任、成本和经营前提，形成带来源的分析与后续验证安排。
 
-[中文说明与上手](README.zh-CN.md) · [Quickstart](#try-it-in-two-minutes) · [Public examples](examples/README.md) · [Live research](docs/live-research.md)
-
-# Market Entry Agent
+Market Entry Agent · [English guide](#english-guide) · [中文完整说明](README.zh-CN.md) · [先跑示例](#try-it-in-two-minutes) · [正式版本 / Release](https://github.com/workstonedai-collab/market-entry-agent/releases/tag/v0.13.0)
 
 [![CI](https://github.com/workstonedai-collab/market-entry-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/workstonedai-collab/market-entry-agent/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-3776AB)](pyproject.toml)
 [![Status: Alpha](https://img.shields.io/badge/status-alpha-orange.svg)](docs/roadmap.md)
 
-For overseas business teams, advisers and country researchers. Describe your product, target markets and operating constraints to build a sourced assessment of entry options, open questions and next checks.
+出海前要回答的问题很多：先做哪个市场，找经销商还是自建团队，产品能否进入，售后怎么安排，政策变化会不会改变原来的成本和计划。通用国别报告往往很难回答一家企业的具体问题。相同的市场，对不同产品、客户和经营条件，可能意味着完全不同的选择。
 
-**Self-hosted alpha.** The offline demo uses fictional evidence and needs no model key. Live research requires a configured model and sources.
+这是一个围绕企业实际情况做出海研究、并持续跟踪目标市场变化的智能体。告诉它你卖什么、服务什么客户、打算去哪里、目前处在哪个阶段，以及预算、渠道和交付有哪些约束，它会检索公开信息，阅读相关材料，梳理进入路径、经营条件、值得验证的机会和需要补充的信息。报告尽量把判断落到准入、渠道、订单、成本与执行条件上，并交代建议成立的前提。
+
+它面向有出海业务的企业、跨国公司高管，以及战略、风控、海外业务等相关部门，也面向咨询公司、律所和其他服务企业出海的专业机构。同一个项目里，高管可能先看选择与主要依据，业务部门更关心需要取得什么材料、哪个环节会阻断推进，顾问则需要回看分析所用的来源和条件。
+
+## 可以这样使用
+
+**选市场与进入方式：把选项放在企业条件下比较。** 如果一家设备企业在两个市场之间选择，可以围绕需求、准入、渠道、交付和售后逐项展开，比较经销、合作或自建能力的条件与代价。资料不足时，仍可解释什么情况下某个方案更合适，并把会改变选择的问题列出来；有了年度营商指标，也仍需结合产品和交易判断。
+
+**交易责任与业务测算：先分清由谁承担，再看这笔业务。** 同一款产品采用两种进口安排，生产方、出口方、卖方、进口主体和客户的责任可能不同。项目可以记录这些关系，以及你提供的报价或假设，按同一币种、数量和单位比较贡献额与现金占用。未知项留空，数值保留依据，报价修改后能回看前后差异。贡献额尚未计入未列出的费用，不等于企业净利润。
+
+**经营前提与方案跟踪：进入市场后，继续看哪些条件发生了变化。** 一项贸易安排、投资规则或当地经营政策，可能带来机会，也可能改变原来的计划。围绕已经记录的方案与假设，可以查看新资料关联了哪些选项、阶段和决策，安排接下来需要谁取得什么材料、在什么节点再作判断。是否调整选择，仍由你决定。
+
+## 把研究接着做下去
+
+例如，一家设备企业正在比较两个市场，可以先把产品资料、渠道报价和已有调研放入项目知识库，结合公开准入与营商资料开展研究。形成方案后，再围绕会影响选择的经营前提设置持续关注。以后拿到新报价或政策材料，可以更新文件，回看原来的测算依据，再决定先补什么资料、是否调整方案。
+
+你提供的材料可以在“我的知识库”里按项目整理：上传文件、查看解析状态，再选择本次研究使用哪些资料。原件、版本与出处留在私有工作空间，更新资料后仍能追溯旧任务。
+
+不同项目可以分别整理产品、渠道和目标市场资料，本次研究只选需要的知识库。引用保留文档版本与可取得的出处位置，文件更新后仍能追溯旧任务使用的版本。原件和片段保存在私有工作空间，不进入两个项目交换的公共证据包；选中材料的相关内容会按配置交给模型服务。
+
+希望持续关注时，先保存监测方案，预览并确认范围、提醒标准和检查/汇总频率，再启动工作进程。事件风险、长期议题和经营机会分别设置；没有新增内容时保持安静。需要飞书等渠道时，可显式接入已有 Hermes 发送配置。
+
+持续关注可以围绕准入条件、渠道安排、交付限制或新的经营机会设置，不必把所有消息都归为高危风险。检查与汇总采用各自的频率，免打扰时段和首次是否提醒也由你决定。规则模式按明确词项和来源筛选；需要判断新资料是否符合文字标准时，可以选择有预算的模型模式。方案、来源配置或外部接收位置变化后，需要重新预览并确认。
+
+项目还可以按你的选择积累研究经验：本地整理有效步骤与纠正，或在独立额度内让模型提炼技能候选。技能保留来源任务与版本，可以启用、停用和回退；不会自动扩大工具权限或公开你的资料。[知识库、持续监测与技能学习说明](docs/continuous-research.md)
+
+比如，你可以补充“比较进口安排前，先确认进口主体和费用由谁承担”，把这条经验整理成项目技能候选。默认由你选择版本启用，以后也能停用或回退。学习在报告保存后另行处理，本地整理不增加模型调用，模型提炼使用单独限额；新技能不会替你改写已有决策，也不能增加工具权限。
+
+你可以围绕一个问题跑一次研究，也可以把资料、方案和判断保存在同一个项目中接着做。来源陈述、假设、分析和操作者决定分别保留，修改有版本和原因；新的问题与输入优先。周期跟踪需要单独启动工作进程，获取新资料与本地对比是不同操作。
+
+研究完成后，报告和来源可以重新打开，导出 Markdown、JSON，或通过可选的本地 OfficeCLI 导出可编辑 Word，继续用于内部讨论或咨询工作。已有 Word、Excel、PowerPoint 可通过可选适配器导入；本地 MCP 接口也能让自己的客户端读取已有研究。办公转换不额外调用模型，私有企业资料与公共证据分开管理。[方案与测算说明](docs/decision-paths.md) · [办公资料与任务入口](docs/office-and-tasks.md) · [研究记忆](docs/research-memory.md)
+
+如果你不熟悉编程，可以把这个仓库交给自己的 Agent，让它按说明部署，先用演示熟悉操作，再接入模型、公开搜索和信息源。可以独立使用，也可以与[地缘政治风险监测预警智能体](https://github.com/workstonedai-collab/georisk-agent)共享公共证据。企业画像、任务和咨询报告保存在各自的私有工作空间。
+
+**开放范围与交流：** 国区评分配方、分项权重、贡献计算与通用研究步骤已公开。部分进一步的研究方法、专用提示词和相关知识内容暂未开源。如有需要或希望进一步交流，欢迎[联系作者](https://github.com/workstonedai-collab)或提交[项目 Issue](https://github.com/workstonedai-collab/market-entry-agent/issues/new)；私人资料请勿直接发布在公开 Issue。
+
+当前正式版本为 **v0.13.0**。可自行部署，项目仍处于 Alpha 阶段；离线演示无需模型密钥，真实研究需配置模型与来源。
+
+<a id="english-guide"></a>
+
+# Market Entry Agent
+
+A research agent for the choices businesses face when entering and operating in overseas markets. Describe the product, customers, target markets, current stage and constraints. The agent reads permitted sources and connects available evidence to market access, channels, delivery, costs and execution, with explicit conditions and questions to verify.
 
 ## See the workspace
 
@@ -52,38 +92,31 @@ See the [Windows installation, model configuration and troubleshooting guide](do
 
 ## Background and open scope
 
-<details>
-<summary>Research use cases, ongoing work and contact</summary>
+Build named private knowledge collections from your files, then select them for a project task. Draft and preview a watch, confirm its scope, criteria and check/digest cadence, and run a separate worker. Optional procedural learning turns completed tool paths and explicit corrections into private, versioned skills; activation and rollback remain visible. Model distillation has its own opt-in daily budget. [Setup and limits](docs/continuous-research.md).
 
-一个围绕企业实际情况做出海研究、并持续跟踪目标市场变化的智能体。告诉它你卖什么、打算去哪里、目前处在哪个阶段，以及预算、渠道和交付有哪些约束，它会检索公开信息，阅读相关材料，梳理市场进入路径、经营条件、值得验证的机会和需要补充的信息。
+For an equipment business comparing two markets, start with product documents, channel quotes and earlier research in a private library, then combine selected material with public entry and business-environment sources. Once an option is documented, watch the operating premises that could affect it. Updated quotes or policy documents give you a basis to revisit the assumptions and decide what to verify or change next.
 
-出海前要回答的问题很多：先做哪个市场，找经销商还是自建团队，产品能否进入，售后怎么安排，政策变化会不会改变原来的成本和计划。通用国别报告往往很难回答一家企业的具体问题。这个项目把企业背景放进研究任务，让报告尽量落到准入、渠道、订单、成本和执行条件上；材料不足时，直接列出下一步需要验证的问题。
+Organize product, channel and market documents by project, selecting only the libraries needed for the current task. Citations retain document versions and available source locations, so earlier tasks remain traceable after a file is replaced. Originals and searchable fragments stay outside shared public evidence bundles; relevant selected material goes to your configured model service.
 
-它既可用于进入市场前的咨询研究，也可用于进入市场后的营商环境跟踪。新的贸易安排、投资规则、基础设施进展或产业政策，可能带来机会，也可能改变原来的经营前提。你可以围绕一个问题跑一次研究，也可以设置周期任务，保存来源和报告，持续积累对目标市场的判断。它适合企业海外业务团队、咨询机构和国区研究人员使用。
+Watches can cover entry requirements, channel arrangements, delivery constraints and business opportunities. Set checking and digest intervals separately, choose quiet hours and decide whether to notify on the first check. Rules mode matches explicit terms and sources; model mode assesses your written criteria within a research budget. Changes to the watch, source configuration or external destination require preview and confirmation again.
 
-如果你不熟悉编程，可以把这个仓库交给自己的 Agent，让它按说明部署，先用演示熟悉操作，再接入模型、公开搜索和信息源。可以独立使用，也可以与[地缘政治风险监测预警智能体](https://github.com/workstonedai-collab/georisk-agent)共享公共证据。企业画像、任务和咨询报告保存在各自的私有工作空间。
+A correction such as “identify the importer and who bears each cost before comparing import arrangements” can become a private skill candidate. You choose which version to activate, disable or restore. Learning runs after the report is saved: local extraction adds no model calls, while model distillation has a separate allowance. A skill cannot change your recorded decision or grant additional tool permissions.
 
-**开放范围与交流：** 国区评分配方、分项权重、贡献计算与通用研究步骤已公开。部分进一步的研究方法、专用提示词和相关知识内容暂未开源。如有需要或希望进一步交流，欢迎[联系作者](https://github.com/workstonedai-collab)或提交[项目 Issue](https://github.com/workstonedai-collab/market-entry-agent/issues/new)；私人资料请勿直接发布在公开 Issue。
+A research agent for the choices businesses face when entering and operating in overseas markets. Describe the product, customers, target markets, current stage and constraints. The agent reads permitted sources and connects available evidence to market access, channels, delivery, costs and execution, with explicit conditions and questions to verify.
 
-A research agent for businesses evaluating overseas markets and following changes after entry. Give it your product, target markets, entry stage and operating constraints. It searches explicit public queries, reads relevant materials and saves an assessment of entry options, operating requirements, opportunities to test and questions that still need answers.
+It serves businesses with overseas operations, multinational executives and teams in strategy, risk and international business, as well as consultants, legal professionals and other advisers supporting market entry. The same project can retain the basis for a management decision and the material that an operating team needs to act on it.
 
-A country overview rarely answers a company's immediate choices: which market to test first, whether to use distributors, what needs checking before shipment, or when local service capacity becomes necessary. This agent brings the business context into the research task and connects available evidence to market access, channels, costs and execution. It records gaps rather than inventing a country ranking or a guaranteed return.
+Choose **market and entry options** to compare markets and routes under your business conditions. Choose **transaction responsibility and economics** to distinguish the manufacturer, exporter, seller, importer and buyer, and compare operator-supplied quotes or assumptions on a consistent basis. Choose **operating-premise monitoring** to connect new material to saved assumptions, options and decisions. Missing figures remain unknown; contribution is not net profit, and the operator retains the final choice.
 
-Run a one-off study or recurring missions as trade rules, investment conditions and local operating assumptions change. It serves overseas business teams, advisers and country researchers. It can exchange public evidence with GeoRisk Agent while keeping company profiles, tasks and reports in separate private workspaces.
-
-New to deployment? Give this repository to your own coding agent. Ask it to run the offline demonstration, then help configure a model endpoint, public search and permitted sources. The project is a self-hosted alpha with a CLI and browser workspace.
+Keep related research in one project, retaining source statements, assumptions, judgments and decisions with their revisions. Reopen reports, inspect sources and continue unresolved questions. Optional local adapters import DOCX/XLSX/PPTX and export the complete saved report as editable Word without another model call. Recurring work requires a separately started worker, and local comparisons use saved material. [Task and Office guide](docs/office-and-tasks.md).
 
 **Open scope and contact.** The country-reference formula, component weights, contributions and general research steps are public. Some additional research methods, specialized prompts and associated knowledge resources are not open source at this time. For further discussion, [contact the author](https://github.com/workstonedai-collab) or open a [project issue](https://github.com/workstonedai-collab/market-entry-agent/issues/new) without posting private material.
 
-Reports now use a versioned writing skill during initial drafting. Compare event assessments, record entry-route tradeoffs and next checks, and inspect source retrieval status. See [report writing and case evaluation](docs/report-quality.md).
+Initial drafting uses a versioned writing skill to explain the current choice, option tradeoffs, conditions and next checks. Source retrieval status is available alongside the evidence. See [report writing and case evaluation](docs/report-quality.md).
+
+Research questions, exact source fragments and next steps can now be saved and resumed. Optional public-term search composition and local text/CSV imports extend the existing tools. PDF text extraction requires a separately configured adapter and does not include OCR; the base runtime has no added dependencies. [Research-state guide](docs/research-state.md).
 
 Three additional historical cases can be run individually to inspect the agent’s direct output: `cbam-importer`, `cptpp-origin`, `eudr-furniture`. Inputs, returned JSON actions and raw reports are retained privately for comparison. [Case instructions](docs/report-quality.md#用几组真实事件检查直接生成的原稿).
-
-[中文上手与详细说明](README.zh-CN.md) · [工作流程与技术路线](#workflow-and-technical-route) · [Public examples](examples/README.md) · [Live research](docs/live-research.md)
-
-[简体中文](README.zh-CN.md) · [Quickstart](#try-it-in-two-minutes) · [Architecture](docs/architecture.md) · [Project memory and skills](docs/kernel.md) · [Windows setup](docs/windows.md) · [Deployment](docs/deployment.md) · [Peer project](https://github.com/workstonedai-collab/georisk-agent)
-
-</details>
 
 ## Continue the business project
 
@@ -92,6 +125,10 @@ Keep the product, buyers, capabilities and constraints alongside the markets and
 New matching public material prompts you to revisit a premise and shows the linked options and stages. The agent can propose a plan; you record decisions, actual progress and results. Local comparison checks saved material, so collecting new information still requires research, source refresh or a configured worker.
 
 [Workflow guide and public replay](docs/product-workflow.md) · [Case sources](examples/public-project-case.json)
+
+### Compare responsibility and scenario economics
+
+Record manufacturer, exporter, seller, importer and buyer separately. Operator quotes or explicit assumptions drive single-currency calculations of contribution and cash outlay; missing inputs stay unknown. Quote revisions retain each figure’s basis and the before/after results. Premise checks are ordered by blockers, decision impact and effort, while source changes point to affected options and decisions. See [entry decision paths](docs/decision-paths.md).
 
 ## Questions to bring to the agent
 
@@ -201,7 +238,7 @@ sequenceDiagram
     end
 ```
 
-The configured model receives the mission, business context and selected evidence. Public search receives only the public query entries explicitly supplied by the user. Source content is treated as data rather than instructions.
+The configured model receives the mission, business context and selected evidence. Public search receives only explicit public queries or combinations of operator-approved public terms. Source content is treated as data rather than instructions.
 
 ### Shared code, independent workspaces
 
@@ -232,7 +269,7 @@ The shared foundation denotes code distributed inside each package. Private miss
 
 ## Continue a project across research tasks
 
-Give related missions an explicit `project_id`. Save operator-owned facts, recall related reports, load document skills on demand and inspect model-call receipts. Current task input takes precedence; private context stays in the workspace and goes only to the configured model. Public search still receives only explicit public queries.
+Give related missions an explicit `project_id`. Save operator-owned facts, recall related reports, load document skills on demand and inspect model-call receipts. Current task input takes precedence; private context stays in the workspace and goes only to the configured model. Public search receives only explicit queries or approved public-term combinations.
 
 ```bash
 market-entry-agent memory-set fictional-research product "Synthetic equipment export case"
@@ -242,6 +279,10 @@ market-entry-agent skills
 ```
 
 Model context uses a configurable character budget and saved-result references. Pause/cancel controls settle at safe boundaries; failed attempts retain completed steps and a model-call limit across resume. [Full guide: memory, context, tools, skills and recovery](docs/kernel.md). Windows uses the same commands through its venv Python.
+
+### Continue research with typed memory
+
+Source statements, hypotheses, judgments and proposed decisions stay distinct across runs of an explicit project. Context selection uses the current question and critical constraints, retaining relevant opposing evidence. Operators can record decisions, inspect revisions and remove memory; resumed runs retain their frozen context. Previous analysis never becomes newly read evidence. See [research memory and context](docs/research-memory.md).
 
 ## Use a model and your evidence
 
@@ -280,13 +321,15 @@ The public package includes generic role instructions, the published research ou
 |---|---|
 | Model-directed research | One JSON action per turn; the model selects documented, bounded tools |
 | Evidence | Content-addressed revisions, original links, claim status and two timestamps |
-| Memory | Explicit project facts, frozen business state and related private reports; legacy same-mission recall without a project ID |
+| Memory | Project facts, source statements, hypotheses, judgments, proposed decisions and operator decisions retain their provenance; context is selected for the current question and frozen per attempt; legacy same-mission recall remains available without a project ID |
 | Recovery | Save steps and model context; retry a failed run without repeating saved steps |
-| Monitoring | Persist recurring missions; a separate worker executes them |
-| Delivery | Save reports immediately; export Markdown/JSON; local pending-review notification inbox |
-| Interfaces | CLI, browser workspace, loopback HTTP API and container recipe |
+| Monitoring | Confirmed event/topic/operating watches with separate check and digest cadence, meaningful-change records and recovery; a separate worker executes them |
+| Delivery | Save reports immediately; export Markdown/JSON; local inbox by default, optional explicitly confirmed Hermes destination with receipts |
+| Interfaces | CLI, browser workspace, loopback HTTP API, opt-in local MCP stdio adapter and container recipe |
+| Knowledge libraries | Selected project collections retain original files, versions and source locations; local retrieval and index rebuilding stay in the private workspace |
+| Procedural skills | Opt-in local extraction or separately budgeted model distillation, with visible candidate versions, activation, disabling and rollback |
 
-Available tools: `country_baseline`, `research_plan`, `search_evidence`, `read_evidence`, `recall`, `list_sources`, `fetch_feed`, `web_search`, `fetch_page`, `finish`, `load_skill`, `read_result`, `project_state`. There is no model-generated shell execution. Finding citations must reference records the agent actually read. This validates provenance, not the truth of every model statement.
+Available tools: `country_baseline`, `research_plan`, `search_evidence`, `read_evidence`, `recall`, `list_sources`, `fetch_feed`, `web_search`, `fetch_page`, `finish`, `load_skill`, `read_result`, `project_state`. Saved-research tools add `research_state` and `update_research`; optional public-term composition adds `adaptive_search`, while research depth adds `research_branch` and `close_branch`. Tools are exposed only when their prerequisites are configured. There is no model-generated shell execution. Finding citations must reference records the agent actually read. This validates provenance, not the truth of every model statement.
 
 ## Keep a mission running
 
@@ -299,7 +342,7 @@ market-entry-agent schedules
 market-entry-agent outbox
 ```
 
-Creating a schedule does not start a background service. Model runs may choose to refresh registered feeds; a schedule does not force every source to refresh. New evidence revisions create a new local notification; unchanged evidence for the same mission is deduplicated. Nothing is sent to an external channel. See [runtime and recovery](docs/runtime.md).
+Creating a schedule does not start a background service. Model runs may choose to refresh registered feeds; a schedule does not force every source to refresh. New evidence revisions create a new local notification; unchanged evidence for the same mission is deduplicated. Legacy schedules remain local; new confirmed watches can opt into a separately configured Hermes destination. See [continuous research](docs/continuous-research.md). See [runtime and recovery](docs/runtime.md).
 
 ## Two agents, interoperable evidence
 
@@ -316,8 +359,50 @@ docker run --rm market-entry-agent demo
 
 For persistent serving, authentication, workers and reverse proxy setup, see [deployment](docs/deployment.md). GitHub hosts the code and releases; it does not operate a live monitoring service for you.
 
+## Tools and Office files
+
+### Connect tools and choose research depth
+
+Expose saved tasks, reports and project state through an opt-in [MCP stdio adapter](docs/mcp.md), read-only by default. Explicit startup permission enables bounded task execution. Operator-configured outbound MCP search receives public queries only. [Optional research branches](docs/research-depth.md) retain separate question paths inside the same run and budgets; document skills describe inputs, outputs and tool needs without granting permissions.
+
+### Office files and task-focused research
+
+Choose a task in the browser or CLI: geopolitical topic research, event/reporting preparation or interest monitoring; market options, transaction review or operating-premise monitoring. Optional MarkItDown imports local DOCX/XLSX/PPTX, while a local iOfficeAI/OfficeCLI adapter exports the complete saved report as editable DOCX without another model call. [Setup and boundaries](docs/office-and-tasks.md) · [Integration references](docs/integration-references.md).
+
 ## Scope and next steps
 
-This is a **single-operator, self-hosted alpha**. Current limitations: no hosted tenant system, automatic messaging, guaranteed event coverage, calibrated forecasts, commercial country index or autonomous transaction execution. Automated contract tests cover recovery, citations, search boundaries and streaming failures. See the [roadmap](docs/roadmap.md) and [security boundaries](SECURITY.md).
+This is a **single-operator, self-hosted alpha**. Current limitations: no hosted tenant system, default external messaging, guaranteed event coverage, calibrated forecasts, commercial country index or autonomous transaction execution. Automated contract tests cover recovery, citations, search boundaries and streaming failures. See the [roadmap](docs/roadmap.md) and [security boundaries](SECURITY.md).
 
 Code is MIT licensed. World Bank observations retain their own attribution and terms in [LICENSE-DATA.md](LICENSE-DATA.md). Contributions with reproducible public or synthetic examples are welcome.
+
+
+## Release and evaluation history
+
+[当前正式版本 v0.13.0](https://github.com/workstonedai-collab/market-entry-agent/releases/tag/v0.13.0) · [完整更新记录](RELEASE_NOTES.md) · [报告案例与实际限制](docs/report-quality.md)
+
+Recent releases connect incoming material, everyday research tools and continued project work:
+
+| Release | What changes in use | Guide |
+|---|---|---|
+| v0.13.0: private libraries, watches and procedural skills | Import files, preview and confirm monitoring, and choose whether to generate, activate or roll back private skills | [Setup, recovery and limits](docs/continuous-research.md) |
+| v0.12.0–v0.12.1: Office files and task entry points | Choose a task, optionally import Office material or export a complete Word report; Windows test cleanup waits for file handles to close | [Office and tasks](docs/office-and-tasks.md) |
+| v0.11.0: tool integration and question branches | Read saved research through MCP, explicitly enable task execution, and investigate separate questions within the original task budget | [MCP](docs/mcp.md) · [Research branches](docs/research-depth.md) |
+
+The v0.13.0 installed-package checks exercised library creation, report saving and reopening, watch confirmation and skill generation. Cross-platform checks continue on macOS, Windows and Linux. Scripted substitutes cover the new model branches and Hermes receipts; real-model report cases and their limits remain documented in the case guide linked above.
+
+<details>
+<summary>Earlier v0.11.0 product paths and evaluation</summary>
+
+## v0.11.0: compare the transaction, then choose what to verify first
+
+The [release and installation packages](https://github.com/workstonedai-collab/market-entry-agent/releases/tag/v0.11.0) are available. Keep transaction responsibilities, quotes and key premises in one project, then track which new sources may affect the choice.
+
+For two import arrangements, record the manufacturer, exporter, seller, importer and buyer separately, with quotes or explicit assumptions. The project compares contribution and cash outlay on the same currency, quantity and unit basis. Missing inputs stay unknown; figures retain their basis, and quote revisions show what changed. Contribution excludes unlisted costs and is not net profit. Tax rates and responsibilities require operator input. See [entry decision paths](docs/decision-paths.md).
+
+Record which premises block progress, how much they affect the choice and who needs to obtain which material. New sources point to related options, stages and decisions; you decide whether to change course. Follow-up research keeps source statements, hypotheses, judgments and proposed decisions separate, selecting relevant material and opposing evidence for the current question while retaining your decision history. [Research memory](docs/research-memory.md) · [Saved research state](docs/research-state.md)
+
+An optional [local MCP adapter](docs/mcp.md) lets your client read saved work; task creation and recovery require explicit startup permission. [Question branches](docs/research-depth.md) can examine matters such as rule applicability and transaction costs within the same task and budgets. Public search uses only approved queries or term combinations, without adding private business context.
+
+This version was exercised with MiniMax on historical CBAM material and two fictional transaction paths, including quote edits, recalculation, revisions and report reopening. The original report retains one cost-difference wording error, which can be checked against the calculation table. See [case results, save recovery and limits](docs/report-quality.md#v0110-产品路径验收).
+
+</details>

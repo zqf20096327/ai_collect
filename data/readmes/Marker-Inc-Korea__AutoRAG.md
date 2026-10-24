@@ -461,7 +461,9 @@ mirrored are kept and not re-parsed on the next run. `onProgress` reports `parse
 (`processed`/`total` are files, `currentVirtualPath` is the file about to be processed) and
 `datasources` (`processed`/`total` are datasource skills). During the parse phase
 `.autorag/refresh-progress.json` also carries the running `sourceFiles.total` and
-`parsedCounts`. Without these options a refresh behaves as before.
+`parsedCounts`, refreshed every 25 files rather than per file. The marker is replaced with a
+retried rename (an in-place overwrite if a reader keeps the destination held, as on Windows).
+Without these options a refresh behaves as before.
 
 ---
 
@@ -476,7 +478,7 @@ mirrored are kept and not re-parsed on the next run. `onProgress` reports `parse
 | `autorag health` | Check model provider authentication, token validity, and API reachability |
 | `autorag models list` | List chat models the pi runtime can resolve (built-ins, `models.json`, custom/extension providers) with provider auth status; never prints credential values |
 | `autorag update-check` | Compare the running `autorag` against the published npm version (also runs on `autorag tui` launch) |
-| `autorag tui` | Open Pi's interactive librarian TUI (`/login`, `/model`, `/resume`, …); `--telegram` / `--whatsapp` / `--discord` add the Telegram / WhatsApp / Discord remote-control bridges; `--permission-mode ask\|auto\|full` (Shift+Tab, `/permissions`) sets the [approval gate for file changes](docs/permissions.md) |
+| `autorag tui` | Open Pi's interactive librarian TUI (`/login`, `/model`, `/resume`, …); the agent can stop and ask you a multiple-choice or open question through the [`ask_user` tool](docs/ask-user.md); `--telegram` / `--whatsapp` / `--discord` add the Telegram / WhatsApp / Discord remote-control bridges; `--permission-mode ask\|auto\|full` (Shift+Tab, `/permissions`) sets the [approval gate for file changes](docs/permissions.md) |
 | `autorag duplicates [DIR]` | Read-only scan for exact and near-duplicate document families with `dupey` |
 | `autorag lite ...` | CLI bootstrap, indexing repair, terminal maintenance, and fallback interface; agents use MCP for normal Lite operation |
 | `autorag memory inspect` | Render a read-only, path-opaque snapshot of retrieval memory (judged evidence, curated results, evidence chunks, insights); model-free |
@@ -730,7 +732,7 @@ Deep dive into AutoRAG Agent's architecture, security, and integration guides:
 - **[Telegram Remote Control](docs/telegram.md):** Ask the librarian from a Telegram chat through a running `autorag tui --telegram` session: setup, commands, and keeping it alive.
 - **[Datasource Skills Reference](docs/datasource-skills.md):** Full configuration contracts, connection aliases, and connector options.
 - **[Apple Calendar & Reminders via EventKit MCP](docs/eventkit-mcp.md):** macOS-only: read Calendar events and Reminders (Google/iCloud/Exchange accounts already in Calendar.app) by running `mcp-server-apple-events` beside `autorag-mcp`. Live, read-only; not indexed.
-- **[Jev Decisions](docs/jev-decisions.md):** Jev query pipeline, **on by default** via Dazzi Models when signed in (OpenRouter otherwise): it routes each question to a direct answer (intrinsic knowledge) or local search (everything needing more information; web search is left to the agent after the fast answer), splits multi-part questions into up to five parallel searches (`dazzi/openai/gpt-6-luna` when signed in, else `openrouter/qwen/qwen3.7-flash`), picks which registered datasources to search before the fast answer, and ends the run after the fast answer when that answer is complete. Also covers the `jev` judgment tool, backends (OpenRouter, TypeSafe, Vercel AI Gateway), and how to opt out.
+- **[Jev Decisions](docs/jev-decisions.md):** Jev query pipeline, **on by default** via Dazzi Models when signed in (OpenRouter otherwise): it routes each question to a direct answer (intrinsic knowledge), local search (everything needing more information; web search is left to the agent after the fast answer), `organize` (move, rename, convert, or sort files and folders), or `extra` (any other action such as committing code; no retrieval), splits multi-part questions into up to five parallel searches (`dazzi/openai/gpt-6-luna` when signed in, else `openrouter/qwen/qwen3.7-flash`), picks which registered datasources to search before the fast answer, and ends the run after the fast answer when that answer is complete. Also covers the `jev` judgment tool, backends (OpenRouter, TypeSafe, Vercel AI Gateway), and how to opt out.
 - **[Manual QA & Datasource Test Harnesses](docs/manual-qa-datasources.md):** Real-world testing guides for Discord, KakaoTalk, Slack, Notion, and email.
 - **[Supply Chain Security & License Audits](docs/supply-chain.md):** Software bill of materials (SBOM) and dependency gate policies.
 - **[Competitive Landscape Study](docs/competitive-landscape-2026-09.md):** In-depth analysis of why in-place federation outperforms centralized RAG.

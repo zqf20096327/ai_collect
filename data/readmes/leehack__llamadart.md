@@ -58,7 +58,7 @@ For Dart or Flutter apps:
 
 ```yaml
 dependencies:
-  llamadart: ^0.16.0
+  llamadart: ^0.16.1
 ```
 
 Flutter iOS/macOS apps that should link Apple XCFrameworks through Swift
@@ -89,9 +89,9 @@ overrides fail the build; resolve the matching companion and rerun
 
 ```yaml
 dependencies:
-  llamadart: ^0.16.0
+  llamadart: ^0.16.1
   llamadart_llama_cpp_flutter: ^0.16.0 # GGUF / llama.cpp
-  llamadart_litert_lm_flutter: ^0.16.0 # Apple .litertlm / LiteRT-LM targets
+  llamadart_litert_lm_flutter: ^0.16.1 # Apple .litertlm / LiteRT-LM targets
   llamadart_stable_diffusion_flutter: ^0.16.0 # Apple image generation, opt-in
 ```
 
@@ -108,8 +108,11 @@ ignore it. Adding it opts iOS and macOS builds into the image generation
 runtime (about 37 MB per Apple target), so leave it out unless the app uses
 `ImageGenerationEngine`.
 
-Use LiteRT-LM companion `0.16.0` with core `0.16.x` for native `v0.18.1`, or
-`0.15.2` with core `>=0.15.6 <0.16.0` for `v0.18.0-3`; both load dedicated ASR
+Use LiteRT-LM companion `0.16.1` with core `>=0.16.1 <0.17.0` for native
+`v0.18.1-2`, which fixes nondeterministic CPU output and slow Gemma 4 CPU decode
+on SME2 CPUs. Companion `0.16.0` pins `v0.18.1` and pairs with core `0.16.0`;
+later `0.16.x` cores build it with a macOS upgrade warning. Use `0.15.2` with
+core `>=0.15.6 <0.16.0` for `v0.18.0-3`. All three load dedicated ASR
 `.litertlm` containers such as Whisper tiny. Locked `0.15.0`/`0.15.1`
 companions keep `v0.18.0-2` and work with core `0.15.6` with a macOS upgrade
 warning; pair `0.14.0` with core `0.14.x`. From `v0.18.0-2`, the runtime reduces duplicated words at untimed ASR
@@ -218,8 +221,10 @@ fallback when model template metadata is empty. See
 
 - GGUF model loading and generation through llama.cpp.
 - `.litertlm` model loading and generation through LiteRT-LM. Automatic tool
-  loops require reliable runtime termination reporting and reject the pinned
-  LiteRT-LM native and Web runtimes; use manually managed completion there
+  loops require reliable runtime termination reporting: native LiteRT-LM
+  reports it from litert-lm-native `v0.18.0-3` (the default pin does), while
+  older native runtimes and LiteRT-LM Web reject the loops; use manually
+  managed completion there
   ([tool-calling guide](https://llamadart.leehack.com/docs/guides/tool-calling)).
 - Gemma 2/3/3n and legacy Mistral tool-result retries fold an immediately
   following user message into the result turn; successfully rendered histories
@@ -289,10 +294,10 @@ llama.cpp also accepts image/audio content with bridge assets v0.1.64+ and an
 API-version-1 embedding modality probe. The default pin is qualified with
 EmbeddingGemma-2 on Chrome CPU wasm memory64 against native CPU/Metal; repeated
 media batches require memory64. Hardware WebGPU remains unqualified. LiteRT-LM
-supports text, image and audio embeddings (qualified on macOS arm64 CPU only)
-with `LiteRtLmModelParams(embeddingEngine: true)`. Select `ComputeDevice.cpu`
-on native; native GPU and all LiteRT-LM Web paths throw
-`LlamaUnsupportedException`. GGUF loaders reject this LiteRT-LM-only flag.
+supports text, image and audio embeddings on macOS arm64, iOS arm64 and Android
+arm64 CPU (Android verified on a Galaxy S24 without SME and on arm64 emulators) with `LiteRtLmModelParams(embeddingEngine: true)`. Select
+`ComputeDevice.cpu`; native GPU, Linux, Windows, Android x86_64 and all LiteRT-LM
+Web paths throw `LlamaUnsupportedException` before native engine creation. GGUF loaders reject this LiteRT-LM-only flag.
 llama.cpp text-only content follows `embed`, including causal unpooled models.
 Unsupported native media diagnostics name the required v0.7.0-1 ABI. Windows
 requires the complete native DLL bundle; missing media symbols leave text
@@ -469,8 +474,8 @@ Current default runtime pins:
 | Runtime | Pin |
 | --- | --- |
 | Native llama.cpp / GGUF | `leehack/llamadart-native@v0.7.0-2` |
-| Native LiteRT-LM / `.litertlm` | `leehack/litert-lm-native@v0.18.1` |
-| Web llama.cpp / GGUF | `leehack/llama-web-bridge-assets@v0.1.71` |
+| Native LiteRT-LM / `.litertlm` | `leehack/litert-lm-native@v0.18.1-2` |
+| Web llama.cpp / GGUF | `leehack/llama-web-bridge-assets@v0.1.73` |
 | Web LiteRT-LM / `.litertlm` | `@litert-lm/core@0.18.0` |
 
 Native overrides accept stable `vMAJOR.MINOR.PATCH` releases and preserve

@@ -138,6 +138,10 @@ arXiv 2023. [[Paper](https://arxiv.org/abs/2309.01431)][[Github](https://github.
 EMNLP 2025. [[Paper](https://aclanthology.org/2025.emnlp-main.739/)][[Github](https://github.com/ANGEL-NTU/ESGenius)][[Dataset](https://huggingface.co/datasets/cy0307/ESGenius)] \
 2 Jun 2025 
 
+**MultiHaystack: Benchmarking Multimodal Retrieval and Reasoning over 40K Images, Videos, and Documents** \
+*Dannong Xu, Zhongyu Yang, Jun Chen, Yingfang Yuan, Ming Hu, Lei Sun, Luc Van Gool, Danda Pani Paudel, Chun-Mei Feng* \
+ECCV 2026. [[Paper](https://arxiv.org/abs/2603.05697)][[Github](https://github.com/Danielxu0208/MultiHaystack)][[Dataset](https://huggingface.co/datasets/DanielXu0208/MultiHaystack_Full)] \
+5 Mar 2026
 
  
 ## Retrieval-enhanced LLMs
@@ -147,6 +151,10 @@ EMNLP 2025. [[Paper](https://aclanthology.org/2025.emnlp-main.739/)][[Github](ht
 *Zhengbao Jiang, Frank F. Xu, Luyu Gao, Zhiqing Sun, Qian Liu, Jane Dwivedi-Yu, Yiming Yang, Jamie Callan, Graham Neubig* \
 EMNLP 2023 - May 2023 [[Paper](https://arxiv.org/abs/2305.06983)][[Github](https://github.com/jzbjyb/flare)] \
  -->
+
+**SPARK: Adaptive Parametric Knowledge Participation for Faithful Retrieval-Augmented Generation** \
+*Ruochang Li, Pengcheng Huang, Zhenghao Liu, Yukun Yan, Huiyuan Xie, Yu Gu, Ge Yu, Maosong Sun* \
+arXiv - Jun 2026 [[Paper](https://arxiv.org/abs/2606.27786)][[Github](https://github.com/OpenBMB/SHIFT)]
 
 **ParamMute: Suppressing Knowledge-Critical FFNs for Faithful Retrieval-Augmented Generation** \
 *Pengcheng Huang, Zhenghao Liu, Yukun Yan, Haiyan Zhao, Xiaoyuan Yi, Hao Chen, Zhiyuan Liu, Maosong Sun, Tong Xiao, Ge Yu, Chenyan Xiong* \
@@ -328,6 +336,10 @@ NeurIPS 2026 - Aug 2026 [[Paper](https://arxiv.org/abs/2608.30468)][[Github](htt
 **Annotation-Free Reinforcement Learning Query Rewriting via Verifiable Search Reward** \
 *Sungguk Cha, DongWook Kim, Taeseung Hahn, Mintae Kim, Youngsub Han, Byoung-Ki Jeon* \
 arXiv - Jul 2025 [[Paper](https://arxiv.org/abs/2507.23242)]
+
+**ExpandR: Teaching Dense Retrievers Beyond Queries with LLM Guidance** \
+*Sijia Yao, Pengcheng Huang, Zhenghao Liu, Yu Gu, Yukun Yan, Shi Yu, Ge Yu* \
+EMNLP 2025 - Feb 2025 [[Paper](https://aclanthology.org/2025.emnlp-main.963/)][[Github](https://github.com/NEUIR/ExpandR)]
 
 **Enhancing Retrieval and Managing Retrieval: A Four-Module Synergy for Improved Quality and Efficiency in RAG Systems** \
 *Yunxiao Shi, Xing Zi, Zijing Shi, Haimin Zhang, Qiang Wu, Min Xu* \

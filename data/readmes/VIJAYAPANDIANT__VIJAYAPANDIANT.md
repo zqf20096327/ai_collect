@@ -7,9 +7,9 @@
 <img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,20,24&height=220&section=header&text=Vijayapandian%20T&fontSize=72&fontColor=00FFFF&animation=fadeIn&fontAlignY=38&desc=AI%20Engineer%20%7C%20Backend%20Developer%20%7C%20Problem%20Solver&descAlignY=62&descColor=FF6BFF&descSize=20" alt="header"/>
 
 <div align="center">
-
+  
 <a href="https://git.io/typing-svg">
-<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=700&size=90&duration=3000&pause=1000&color=00FFFF&center=true&vCenter=true&width=4000&height=220&lines=%F0%9F%8E%93+Pre-Final+Year+CSE+%40+SRM+Easwari;%F0%9F%9A%80+Aspiring+Software+Development+Engineer;%F0%9F%92%BB+Full+Stack+Developer;%E2%9A%99%EF%B8%8F+Building+Scalable+Backend+Systems;%F0%9F%A4%96+AI+%26+Machine+Learning+Enthusiast;%F0%9F%A7%A9+Problem+Solver+%E2%80%A2+400%2B+DSA+Problems+Solved;%F0%9F%A4%9D+Open+to+Collaborate+%26+Build" alt="Typing SVG"/>
+<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=700&size=90&duration=3000&pause=1000&color=00FFFF&center=true&vCenter=true&width=4000&height=220&lines=%F0%9F%8E%93+Pre-Final+Year+CSE+%40+SRM+Easwari;%F0%9F%9A%80+Aspiring+Software+Development+Engineer;%F0%9F%92%BB+Full+Stack+Developer;%E2%9A%99%EF%B8%8F+Building+Scalable+Backend+Systems;%F0%9F%A4%96+AI+%26+Machine+Learning+Enthusiast;%F0%9F%A7%A9+Problem+Solver+%E2%80%A2+450%2B+DSA+Problems+Solved;%F0%9F%A4%9D+Open+to+Collaborate+%26+Build" alt="Typing SVG"/>
 </a>
 
 </div>
@@ -24,7 +24,7 @@
 &nbsp;
 <img src="https://img.shields.io/badge/Focus-AI_%26_Backend-FF6BFF?style=for-the-badge&labelColor=0d1117" alt="focus"/>
 &nbsp;
-<img src="https://img.shields.io/badge/DSA-400%2B_Problems-00FFFF?style=for-the-badge&labelColor=0d1117" alt="dsa"/>
+<img src="https://img.shields.io/badge/DSA-450%2B_Problems-00FFFF?style=for-the-badge&labelColor=0d1117" alt="dsa"/>
 &nbsp;
 <img src="https://img.shields.io/badge/Status-Open_To_Collaborate-FF6BFF?style=for-the-badge&labelColor=0d1117" alt="status"/>
 </div>
@@ -43,7 +43,7 @@
 
 🚀 Building **real-world applications**, solving **DSA challenges**, and continuously improving **software engineering skills**
 
-⚡ **400+ DSA Problems Solved** across **LeetCode**, **CodeChef**, and **GeeksforGeeks**
+⚡ **450+ DSA Problems Solved** across **LeetCode**, **CodeChef**, and **GeeksforGeeks**
 
 💡 Interested in **building scalable software products** and exploring **startup opportunities**
 
@@ -203,7 +203,7 @@
 <p align="center">
 
 <a href="https://leetcode.com/u/hackervj18/">
-<img src="https://img.shields.io/badge/LeetCode-400%2B%20Problems-FFA116?style=for-the-badge&logo=leetcode&logoColor=black"/>
+<img src="https://img.shields.io/badge/LeetCode-450%2B%20Problems-FFA116?style=for-the-badge&logo=leetcode&logoColor=black"/>
 </a>
 
 <a href="https://www.codechef.com/users/vijay_code07">
@@ -238,35 +238,38 @@
 <div align="center">
 
 <table>
+  
 <tr>
 
 <td width="50%" valign="top">
 
-<h3>🌌 01 · IntelliSphere</h3>
+<h3>🛡️ 01 · Online Examination System</h3>
 
-<p><strong>AI-Powered Decision Intelligence Platform</strong></p>
+<p><strong>Proctored Exam & Coding Assessment Platform</strong></p>
 
 <p>
-Transforming multi-industry telemetry into intelligent,
-actionable decisions with AI-powered risk analysis.
+A full-stack online exam platform with automated proctoring,
+a multi-language code editor, and real-time rankings.
 </p>
 
-⚡ Global Risk & Sustainability Intelligence  
-⚡ 42-Table Multi-Industry Data Architecture  
-⚡ Gemini AI Risk Simulation & Insights  
-⚡ GIS-Based Interactive Risk Mapping  
-⚡ Role-Based Enterprise Access Control  
-⚡ Automated AI-Powered PDF Reports  
+⚡ Multi-Language Coding Compiler (Java, Python, JS, C, C++)  
+⚡ Automated Proctoring with Violation Points  
+⚡ Tab-Switch Tracking & Auto-Termination  
+⚡ Redis-Powered Real-Time Leaderboard  
+⚡ RabbitMQ Queue for Concurrent Submissions  
+⚡ Admin Dashboard with Live Session Alerts (WebSocket)  
 
 <p>
-<img src="https://img.shields.io/badge/Java_21-ED8B00?style=flat-square&logo=openjdk&logoColor=white">
+<img src="https://img.shields.io/badge/Java_17-ED8B00?style=flat-square&logo=openjdk&logoColor=white">
 <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=flat-square&logo=springboot&logoColor=white">
-<img src="https://img.shields.io/badge/React_19-61DAFB?style=flat-square&logo=react&logoColor=black">
-<img src="https://img.shields.io/badge/PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white">
+<img src="https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=react&logoColor=black">
+<img src="https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=mysql&logoColor=white">
+<img src="https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white">
+<img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white">
 </p>
 
-🔗 **[Live Demo](https://intellisphere-one.vercel.app/)** ·
-📂 **[GitHub](https://github.com/VIJAYAPANDIANT/intellisphere)**
+🔗 **[Live Demo](https://online-examination-system-m6sf.vercel.app/)** ·
+📂 **[GitHub](https://github.com/VIJAYAPANDIANT/online-examination-system)**
 
 </td>
 

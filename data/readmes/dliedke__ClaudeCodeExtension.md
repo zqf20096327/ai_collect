@@ -173,6 +173,23 @@ Pull requests for new features are welcome. Bug fixes too — if you find an iss
 
 ## Version History
 
+### Version 261.0
+- Opening or switching a folder or solution no longer freezes Visual Studio while the chat agent restarts; the restart now waits until the IDE has finished loading. Thanks to [@MartinWooChina](https://github.com/MartinWooChina) (#215).
+- Changing the model, effort, or permission mode no longer blocks the IDE while the previous agent shuts down.
+- New *Modern* chat icon style: the chat toolbar, Stop and jump-to-latest buttons use Visual Studio's own icons, the live status shows a rotating ring, and chat tabs show colored status (✅ done, ❌ error, ❓ waiting). Opt-in from *Settings → Layout → Chat icons*. Thanks to [@ClaudioCas](https://github.com/ClaudioCas) (#214).
+- In the Modern style you can pick the working icon on the tab: blue arrows, an animated clock or an animated moon.
+- New option to hide token counts in the chat, both while the agent works and after each turn (*Settings → Layout → Chat tabs*).
+- The chat's turn timer now counts whole seconds instead of tenths.
+- In the Modern style, attached images show as cards with the whole picture and the file name, so you can tell what you attached at a glance.
+- New *Claude Code* toolbar (View → Toolbars) and View menu entries open the chat or the panel in one click.
+
+### Version 260.0
+- When Claude Code resumes on its own after its background tasks finish, the native chat now shows the turn as running again (clock, tokens, Stop and tab status) instead of leaving it at "Done". The end of such a turn only plays the finish sound and notification, without running the configured action.
+
+### Version 259.0
+- Native chat tabs now show what each session is doing in front of their name (⏳ working, ❓ waiting for your answer, ✳ done, ❌ error), so you no longer need to open every tab to check on it.
+- Chat tabs you have not renamed are named after their topic, taken from your first message or, for Claude Code, written by a low-cost AI model. Both options are on by default in *Settings → Layout → Chat tabs*.
+
 ### Version 258.0
 - In native mode the Claude Code panel now hides itself once the chat opens in its own tab, instead of staying open as an empty window. It comes back when the chat is docked back or native mode is turned off; turn it off in *Settings → Layout* ("Hide this panel while the native chat is in its own tab").
 - When the agent asks a question, you can pick an answer and also type extra details in the free-text box. Both are sent together, and the box shows which answers the details apply to.

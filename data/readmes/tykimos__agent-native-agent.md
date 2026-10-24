@@ -88,6 +88,10 @@ Run ANA in your browser without installing WSL, Node or tmux on your computer. B
 
 **[Browser quick-start guide](docs/codespaces.md)** — automatic setup → open **ANA / 8809** in Ports → complete Claude setup in ANA chat. Keep the port **Private**. Codespaces usage is billed separately from Claude; ANA stops when the codespace stops.
 
+## Offline edition — no LLM, no internet (Windows)
+
+Need ANA on a PC without internet or an AI agent? `node scripts/package-offline.mjs` builds a portable Windows x64 zip (Node 24 LTS included). Unzip it and double-click `start.bat`. You get tasks, calendar, notes, relations, files and requirements; agent features are hidden. Install guide: [docs/offline.md](docs/offline.md).
+
 ## Quickstart — run the base (2 min)
 
 **Prerequisites:** Node ≥ 24, tmux, and a coding-agent CLI (e.g. [Claude Code](https://claude.com/claude-code)). The runtime (`channel-core.js`) has zero dependencies; the base app has one, [NodeRel](https://github.com/tykimos/NodeRel), installed from GitHub with `npm install`.
@@ -144,15 +148,28 @@ Open **http://localhost:8809** and tap the chat button. The server needs **no la
 
 ## What's in the base
 
-![Workspace · Collaborate · System on a phone](docs/assets/areas-mobile.webp)
+![Workspace and System on a phone](docs/assets/areas-mobile.webp)
 
-The base is a solo operations board: notes, tasks and a calendar you run together with a coding agent. It is split into **three areas** (a bottom menu on phones, a switch next to the logo on desktop):
+The base is an operations board: notes, tasks and a calendar you run together with a coding agent. It has **two scopes**, and the top of the screen always shows which one you are in:
 
-| Area | Tabs | For |
-|---|---|---|
-| **Workspace** | Tasks · Calendar · Notes | your own data, per workspace (switch, add, rename, reorder) |
-| **Collaborate** | Evolve · Approvals · Requests · Requirements | the agent and you working together. The badge counts what is waiting on you |
-| **System** | Stats · Relations · Trustworthiness · Safety · Security | how the system is doing and whether you can trust it. The badge counts checks at risk |
+| Scope | Who | Tabs | For |
+|---|---|---|---|
+| **Workspace** (name shown at the top) | members | **Work** (Tasks · Calendar · Notes) · **Knowledge** · **Files** · **Inbox** | the work and data of one workspace |
+| **System** (dark header band) | admin | **Inbox** · **Roadmap** · **Ontology** · **Health** | decisions that apply to every workspace |
+
+On phones the bottom menu follows the scope (Work · Knowledge · Files · Inbox, plus System for the admin; in System: Inbox · Roadmap · Health · Workspace). On desktop a switch next to the logo changes scope.
+
+Each page shows one kind of thing at a time; pages with several kinds have sub-tabs, and each list filters *Open / Done*:
+
+- **Inbox (Workspace):** *Approvals* (data changes, analysis results to add to the knowledge graph, decisions, access) · *Work requests* (what the agent needs you to do or tell it) · *Evolve* (suggestions for running this workspace better) · *Sent* (what you asked the admin, your feature requests). The same words as System › Inbox.
+- **Knowledge:** *Links* (how items connect, where the flow breaks) · *Knowledge graph* (this workspace's entities and facts) · *Analysis* (the agent reads your items) · *Ontology* (the shared concepts, read-only).
+- **Files** is the workspace's own folder, plus chat attachments (read-only).
+- **Inbox (System):** *Approvals* · *Work requests* for the admin, from members, the agent and the system checks.
+- **Roadmap:** *Requirements* · *Evolve* (system proposals) · *Updates* (upstream). Each item is one line with its stage (e.g. Request → Proposal → Building → Checked) and the next action.
+- **Ontology:** *Classes* · *Relations* — the concepts every workspace's knowledge graph uses. The core (Note, Task, Event, Day and the app's relations) is built in; the admin adds the rest, or approves the ones an analysis proposes.
+- **Health:** *Trustworthiness* · *Safety* · *Security* (riskiest first, OK checks folded) · *Tests* (run this ANA's tests and see what failed) · *Usage* (stats and activity).
+
+**Where is Evolve?** Workspace › Inbox › *Evolve* for this workspace (members start them), System › Roadmap › *Evolve* for the system (the admin starts them).
 
 ### Chat — like the Claude app
 
@@ -200,21 +217,37 @@ That graph is the **fixed layer**: the app decides what may link to what. **Rela
 - an **ontology**: the schema. Classes with parents (Client ⊂ Organization ⊂ Agent) and relation types with From → To (`client_of`: Client → Organization).
 - a **knowledge graph**: the data. Entities typed by those classes (Acme is a Client) and facts typed by those relations (Acme `client_of` Our team), each citing the items it came from.
 
-The server checks the result against the ontology (classes and relations must exist, facts must respect From → To, sub-classes count). Facts that don't fit are dropped and reported. The ontology carries over to the next analysis, so concepts keep their names. The knowledge graph is indexed in the same NodeRel graph (`kg:<id>`, `MENTIONED_IN` → source items), so `/api/graph/trace` walks from a note to the people in it. Results open in [OntoAir](https://poc.aifactory.space/ontoair/) as a 3D graph, or download as OWL Turtle.
+The server checks the result against the ontology (classes and relations must exist, facts must respect From → To, sub-classes count). Facts that don't fit are dropped and reported. The ontology carries over to the next analysis, so concepts keep their names. The knowledge graph is indexed in the same NodeRel graph (`kg:<id>`, `MENTIONED_IN` → source items), so `/api/graph/trace` walks from a note to the people in it. Results open in [OntoAir](https://poc.aifactory.space/ontoair/) as a 3D graph, or download as OWL Turtle. The ontology is shared by the whole system (System › Ontology, admin); each workspace keeps its own knowledge graph, which grows when a member approves an analysis result.
 
 → Full write-up, covering both layers, the analysis process, the ontology, the knowledge graph, the checks and export: **[docs/relations.md](docs/relations.md)**
 
-### Collaborate — Evolve · Approvals · Requests
+### Inbox — what the agent needs from you
 
-| Tab | Who asks | What |
+| Item | From | What |
 |---|---|---|
-| **Evolve** | agent → the app | The agent looks at the app's features, your data and the usage log (`/api/activity`) and proposes how the app should evolve. Approve one and the running agent builds it. |
-| **Approvals** | agent → you, before it goes on | Pending **data changes** (the agent proposes a diff; nothing changes until you approve) plus requests of kind `approval`, `decision` (option buttons), `access`. |
-| **Requests** | agent → you | Work only you can do (`action`) and information it is missing (`info`). |
+| **Needs you** | agent → you | Work only you can do (`action`), information it is missing (`info`), decisions (option buttons), access, and pending **data changes** (the agent proposes a diff; nothing changes until you approve). |
+| **Suggestions** | agent → this workspace | Better ways to run the workspace with existing features. *Do it* hands it to the agent (data only, no code); *Propose to the system* lifts it to the Roadmap when it needs a new feature. |
+| **Sent by you** | you → admin / system | *Ask the admin* requests and *Request a feature* items, with their progress. |
 
-Each tab has a button that asks the agent to fill it. The agent registers items with `POST /api/requests {requests:[{kind, title, desc?, options?, ref?}]}` (`ref` = a task/event/note id shown as a link). Your answer goes straight to the agent in chat. *I did it* / *Not now* notify it (`POST /api/request-act {id, action: answer|done|dismiss|reopen}`).
+*Ask the agent* has it fill the inbox. The agent registers items with `POST /api/requests {requests:[{kind, title, desc?, options?, ref?}]}` (`ref` = a task/event/note id shown as a link). Your answer goes straight to the agent in chat. *Resolved* / *Not now* notify it (`POST /api/request-act {id, action: answer|done|dismiss|reopen}`).
 
-### System — Trustworthiness · Safety · Security
+### Admins and members
+
+Workspaces are where **members** work; the **System** is decided by the **admin**.
+
+| | Member (Workspace) | Admin (System) |
+|---|---|---|
+| Proposals | **Inbox › Suggestions**: better ways to run this workspace with existing features. Members start these themselves | **Roadmap**: features, screens, APIs, the shared ontology. Only the admin starts or cancels them |
+| Approval requests | data changes in the workspace (Inbox) | system changes, in **System › Inbox** |
+| Work requests | what the agent needs from the member (Inbox) | what only the admin can do (access, installs, connecting data), in **System › Inbox** |
+| Requirements | *Request a feature* | **Roadmap**: checked by the agent, turned into proposals, re-checked when built |
+
+- **Who is admin:** `ANA_ADMINS=email,…`. If it's empty, if the ANA has no identity header (single user), or for calls with no identity from this machine (you or the agent on it), everyone is admin, so single-user installs work as before.
+- **Admin-only actions** (checked on the server): starting, cancelling or reopening a system proposal; bringing in an Update; switching the agent to a mode that never asks (Bypass / Full Access); deleting a workspace. When a member tries one, it becomes an approval request in **System › Inbox**. Approving it runs the action as the admin.
+- **Asking the admin:** members use *Ask the admin* in their Inbox and follow it under *Sent by you*. The agent uses `POST /api/admin/requests {type: work|approval, title, desc?}`. A system check at **risk** opens a work request by itself and closes it once the check is fine again.
+- **API:** `GET /api/admin/inbox` (an admin sees all; a member sees their own) and `POST /api/admin/act {id, action: approve|reject|start|done|fail|cancel|reopen, note?}`. `GET /api/me` → `role`. `POST /api/evolve` takes `scope: system|workspace`.
+
+### System › Health — Trustworthiness · Safety · Security
 
 Checks computed from real state (`GET /api/trust`), not static text:
 
@@ -286,8 +319,8 @@ claude plugin install ana@agent-native-agent          # later: claude plugin upd
 | [`chat-window`](skills/chat-window/SKILL.md) | the Claude-app chat: session combo, log-based rendering, model sheet, usage rings, voice, attachments, Codex |
 | [`context-chips`](skills/context-chips/SKILL.md) | Chip mode, ✎ draw-on-screen annotation, ⟳ register new elements |
 | [`relations`](skills/relations/SKILL.md) | NodeRel item relations, relation chips, the Relations tab |
-| [`app-shell`](skills/app-shell/SKILL.md) | Workspace / Collaborate / System areas, bottom menu, workspace combo |
-| [`agent-requests`](skills/agent-requests/SKILL.md) | Collaborate: Evolve, Approvals, Requests |
+| [`app-shell`](skills/app-shell/SKILL.md) | Workspace / System scopes, bottom menu per scope, workspace combo |
+| [`agent-requests`](skills/agent-requests/SKILL.md) | Inbox, Roadmap, admin inbox: requests, approvals, proposals, requirements |
 | [`trust-checks`](skills/trust-checks/SKILL.md) | System: Trustworthiness, Safety, Security checks |
 
 ### Updating an existing ANA
@@ -374,6 +407,12 @@ Free to use, modify, and self-host. If you run a modified version as a network s
 
 ## File browser
 
-Open **System → Files** to browse, upload and download files within this ANA’s project directory. Breadcrumbs and the parent button navigate folders; uploads go into the current folder. The limit is 25 MB per file, and existing files are never overwritten.
+Open **System → Files** to browse, upload and download files. Breadcrumbs and the parent button navigate folders; uploads go into the current folder. The limit is 25 MB per file, and existing files are never overwritten. There are three folders:
 
-The default root is the directory containing `server.js`. Set `ANA_FILES_ROOT=/absolute/path` to an existing directory when starting the server to use another root. Parent traversal and symbolic links are blocked. This directory is shared across the ANA’s Workspaces. Restart the server and refresh the browser after installing this change.
+| Folder | What | Uploads |
+|---|---|---|
+| **Files** (default) | your own folder: `<data dir>/files` (`.ana/files`), or `ANA_FILES_ROOT=/absolute/path` | yes |
+| **From chat** | what you attached in the chat (`.ana/uploads`) | read-only |
+| **Project files** | the whole ANA folder, shown only after you tick *Show project files* | yes, except inside `.ana/` and `.git/` |
+
+Parent traversal and symbolic links are blocked in every folder. The folders are shared across the ANA’s Workspaces.

@@ -71,7 +71,7 @@ Alongside the inherited foundation, this project focuses on the workflows below:
 | Cursor Agent or Oh My Pi in your vault | Choose either integration alongside Claude Code, Codex, Grok Build, OpenCode, and Pi. |
 | Help getting a local agent ready | Provider-specific Readiness checks and supported CLI install/update actions. |
 | Easier review of longer conversations | Expand completed work, inspect edit diffs, and keep your position while reading. |
-| Actions that understand Obsidian's vault structure | Claude, Codex, OpenCode, and Pi can inspect backlinks, manage frontmatter, and move files with Obsidian link updates. |
+| Actions that understand Obsidian's vault structure | Claude, Codex, DeepSeek Harness, OpenCode, and Pi can inspect backlinks, manage frontmatter, and move files with Obsidian link updates. |
 
 Upstream evolves independently. See [Claudian's current README](https://github.com/YishenTu/claudian#readme) when comparing available features. There is no need to migrate if your current setup already meets your needs.
 
@@ -88,9 +88,9 @@ The built-in provider integrations are:
 - [Pi](https://github.com/earendil-works/pi)
 - [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)
 
-For DeepSeek Harness, configure `dsh web` or open DeepSeek Harness Desktop once before enabling it in **Providers → DeepSeek Harness**. Discover the native model catalog, then explicitly select the models to show in chat. Auto prefers `dsh`; set the Desktop `.app` path or Windows installation folder to use its bundled runtime. The integration reuses your native profile, credentials and MCP servers. It supports native history/resume, images, permissions and Stop, with optional code mode and additional preset plugins. Planning and Obsidian-native vault tools are not exposed by this integration.
+For DeepSeek Harness, configure `dsh web` or open DeepSeek Harness Desktop once before enabling it in **Providers → DeepSeek Harness**. Discover the native model catalog, then explicitly select the models to show in chat. Auto prefers `dsh`; set the Desktop `.app` path or Windows installation folder to use its bundled runtime. The integration reuses your native profile, credentials and MCP servers. It supports native history/resume, images, permissions and Stop, with optional code mode and additional preset plugins. Chat presets include Obsidian-native vault tools through a session-scoped local bridge. Planning is not exposed by this integration.
 
-Provider capabilities are intentionally different. The plugin exposes controls only when the selected provider supports them; model discovery, permissions, history, planning, MCP, and runtime behavior remain provider-specific. The Obsidian-native vault actions below are currently available in Claude, Codex, OpenCode, and Pi.
+Provider capabilities are intentionally different. The plugin exposes controls only when the selected provider supports them; model discovery, permissions, history, planning, MCP, and runtime behavior remain provider-specific. The Obsidian-native vault actions below are currently available in Claude, Codex, DeepSeek Harness, OpenCode, and Pi.
 
 ## Usage
 
@@ -105,6 +105,8 @@ Type `/` to discover commands and skills supported by the selected provider. Ins
 On desktop, collapse the sidebar containing Oh My Claudian to move its existing chat into a floating panel over your notes. Click the activity preview to expand or collapse the conversation; reopen the sidebar to restore the full view. Drafts, running responses and pending approvals stay in the same session.
 
 Drag the handle below the panel to move it, or focus the handle and use arrow keys (Shift for larger steps). Press Home or double-click the handle to return to the bottom-center dock. The position is remembered. Disable **Enable zen mode** in the plugin's general settings to keep the sidebar-only behavior. Main-area chat tabs and popout windows do not float.
+
+An empty conversation shows only the composer. Assign hotkeys to **Toggle Zen panel** to temporarily hide or restore it, and **Toggle Zen conversation history** to expand or collapse existing messages. Restoring the panel focuses the same composer; reopening its sidebar resets temporary hiding. Model and permission menus open toward available workspace space.
 
 ### Read a conversation and inspect changes
 
@@ -130,7 +132,9 @@ Only models enabled in provider settings appear in the composer. The button show
 
 ### Use Obsidian-native vault actions
 
-Claude, Codex, OpenCode, and Pi can inspect backlinks, update or remove note frontmatter properties, move or rename vault files while Obsidian handles link updates, and send files to Obsidian trash.
+Claude, Codex, DeepSeek Harness, OpenCode, and Pi can inspect backlinks, update or remove note frontmatter properties, move or rename vault files while Obsidian handles link updates, and send files to Obsidian trash.
+
+DeepSeek exposes these actions as `obsidian_vault` in chat presets. Passive and read-only auxiliary presets do not receive this tool. See [DeepSeek tool integration](docs/deepseek-obsidian-tools.md) for lifecycle and packaging boundaries.
 
 The UI is available in 10 locales, including Simplified and Traditional Chinese.
 

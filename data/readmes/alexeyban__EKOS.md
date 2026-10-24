@@ -816,6 +816,83 @@ ekos conflicts list --type model_column_missing
 
 The testbed is `docker-compose.oracle.yml` + `deploy/fixtures/idempiere-oracle.sh`.
 
+### Write behaviour: how each table is updated and deleted (RFC 0212)
+
+Before copying a table incrementally you need to know whether every change moves its timestamp
+column and whether rows ever disappear. `ekos commit` writes one `WriteBehaviour` per table with
+both, each class citing where it came from:
+
+- **update:** `po_only`, `raw_sql_sets_updated`, `raw_sql_skips_updated` (a raw `UPDATE` that leaves
+  `Updated` alone — a watermark misses it), `no_updated_column`;
+- **delete** (a set): `deleted_by_app` (a raw `DELETE` or a `PO` delete in code), `deleted_by_users`,
+  `deleted_by_cascade`, `purged` (age-based or whole-table deletes), `soft_delete_only`,
+  `never_deleted_in_code`;
+- **change log:** whether the application records deletes of the table.
+
+Users' deletes and change logging live in the application's dictionary, not its code; for
+iDempiere-family schemas `[[databases]] dictionary = "idempiere"` reads those two flags of
+`AD_Table` (opt-in). On iDempiere: 144 of 903 tables have a raw `UPDATE` that skips `Updated`, and
+754 are deletable by users — something no source file says. No model calls.
+
+```bash
+ekos commit   # … Write behaviour: 903 table(s); update: po_only 737, raw_sql_skips_updated 144, …
+ekos ekl "FIND Object WHERE kind = 'WriteBehaviour' AND update_class = 'raw_sql_skips_updated'"
+```
+
+### Tickets: commits, migrations and code joined by ticket key (RFC 0219)
+
+Legacy estates cite their issue tracker in file names, comments and commit messages. With
+`[tickets] keys = ["IDEMPIERE"]` (`ekos init --detect` proposes keys found in file names), every
+ticket a commit names becomes a `Ticket` — its commits, dates, authors, a title taken from the first
+commit's subject, and the files it touched — linked at `ekos commit` to the migration change sets
+and code that cite it. A schema question then reaches when, why and who: on iDempiere,
+`C_Country.ISOCountryCodeAlpha3` → change set `202412261358_IDEMPIERE-6349` → one commit,
+2024-12-27, "Add M49 country codes to the C_Country table". Ticket ids are matched by exact key
+only. `[observe] git-max-commits` raises the default of 500 commits read from history (the
+iDempiere history has 16,260; read in full: 4,597 tickets).
+
+```bash
+ekos commit   # … Ticket links: 4597 ticket(s) from commits; linked to 272 JavaMethod, 154 JavaType, 3074 SchemaChangeSet …
+ekos ekl "FIND Object WHERE kind = 'Ticket' AND name = 'IDEMPIERE-6349'"
+```
+
+### Run logs: every pipeline step as JSON lines (RFC 0220)
+
+`build`, `recover`, `resolve`, `compile` and `commit` each write a JSON-lines run log next to their
+usual output: one line per step with its counts (each connector scanned, each Oracle dictionary
+query with rows and milliseconds, the reconciliation, a pass summary, analyzer stats, merges, facts
+written), the warnings any part logged (redacted; the first 200, the rest counted), and two closing
+lines — the model calls the command made, then its outcome. The file is `EKOS_RUN_LOG` when set,
+otherwise `.ekos/runs/<timestamp>-<command>.jsonl`; the console sets it per run and shows the lines as
+a steps table on the run page. On iDempiere every command logged zero model calls.
+
+```
+{"stage":"oracle.catalog","msg":"read DBA_TAB_COLUMNS","ms":687,"owner":"ADEMPIERE","query":"columns","rows":30457,"cmd":"build","t_ms":4889}
+{"stage":"oracle.catalog","msg":"reconciled against DBA_OBJECTS","kinds":13,"mismatches":0,"objects":10613,"owner":"ADEMPIERE","cmd":"build","t_ms":8985}
+{"stage":"llm","msg":"calls","count":0,"cache_hits":0,"embeddings":0,"cmd":"build","t_ms":19987}
+{"stage":"run","msg":"finished","ok":true,"ms":19987,"warnings":0,"cmd":"build","t_ms":19987}
+```
+
+### Documentation repositories and wiki snapshots (RFC 0221)
+
+A documentation site kept as Markdown (Docusaurus, MkDocs, a `docs/` folder) is a source like code: add it to a
+project's `[[sources]]`. Front matter becomes the document's properties (`title`, `description`, and for a wiki
+snapshot `source_url`, `source_revision`, `licence`) instead of the text of a section, and each section records the
+tickets it names, so `ekos commit` links a ticket to the docs pages that describe it as well as to the commits,
+migrations and code. On iDempiere (code + docs repository): 1,743 docs sections linked to tickets, e.g.
+`C_Country.ISOCountryCodeAlpha3` → change set `202412261358_IDEMPIERE-6349` → `IDEMPIERE-6349` → the page "New
+Fields in Country".
+
+`scripts/wiki-snapshot.py` turns MediaWiki pages into such a directory — from a `Special:Export` file saved in a
+browser, or from the API (one request a second; it stops at a 403 or a bot challenge rather than working around
+it). Each page keeps its URL, revision id and licence. Snapshots are for analysis; check the licence before
+republishing anything derived from them.
+
+```bash
+scripts/wiki-snapshot.py --xml export.xml --out ~/wiki-snapshot --licence "CC BY-SA 4.0"
+ekos source add wiki --path ~/wiki-snapshot
+```
+
 ### PL/pgSQL stored procedures (RFC 0163)
 
 A stored procedure is also *imperative* — ordered statements, branches, loops, exception handlers —
@@ -1598,73 +1675,4 @@ LLM — RFC 0124), `ekos_ekl` (EKL filters on built-in columns and on any proper
 `COUNT`/`GROUP BY` aggregation — RFC 0096, and `SEMANTIC 'text'` retrieval candidate sets — RFC
 0124), `ekos_neighborhood` (`depth` 0-3, stops at `max_objects` — default 500, at most
 5,000 — and says so with `truncated: true`),
-`ekos_state`, `ekos_dependents` (single-hop impact analysis; each entry shows the other end's
-`status`), `ekos_impact` (directed, kind-filtered, multi-hop impact tracing — RFC 0018; like the
-neighbourhood, it never steps onto an unconfirmed hypothesis or proposal), `ekos_graph_export` (the whole compiled
-graph as nodes + edges in one call — filtered, optionally collapsed to super-nodes, truncation
-reported; RFC 0127), `ekos_diff` (raw ledger-entry changes since
-T), `ekos_audit` (the write history of one object/relationship with the pipeline run, stage, and
-source artifact behind each version — RFC 0135; the source artifact is the object/relationship's
-own recovered `KnowledgeArtifact` id(s) where `compile` tracked one, falling back to the run's CKM
-content hash for compiler-synthesized objects like rollups and risks), `ekos_status` (with a
-`freshness` block: does the ledger still match the source? RFC 0171), `ekos_conflicts` (where
-sources disagree about one fact, every claim with its file and line — read-only, RFC 0172; an
-`ekos_query`/`ekos_retrieve` claim about such an attribute is marked `disputed: true`, RFC 0173),
-`ekos_transformation_explain`/`ekos_transformation_diff` (Transformation IR
-explanation and migration diffing — RFC 0028), `ekos_architecture_evaluate`/
-`ekos_architecture_drift`/`ekos_architecture_diff` (real completeness/evidence-coverage scoring,
-documentation drift, and a real architecture-level diff between two points in time — technologies,
-crate role classifications, risks, open questions — distinct from `ekos_diff`'s raw entry report;
-RFC 0065/0068 §55/RFC 0107-0108), `ekos_semantics_lookup`/`ekos_semantics_gaps` (RFC 0170 —
-the recovered business meaning of a table, column or code value with its review status and
-evidence, and the open semantic gaps; read-only — confirming or rejecting stays a human-only CLI /
-web console action), and `ekos_identity_review`/`ekos_architecture_review` (confirm or
-reject a `SameAs` identity candidate, or an LLM-classified crate role claim — RFC 0029/RFC 0109,
-the two write-capable tools; each decision is an event citing evidence that names the optional
-`reviewer` and `note`; every other tool reads only the local ledger, except the gated
-`ekos_clickhouse_query`, which records each live query, and the opt-in
-`ekos_session_note`, RFC 0151 — it writes a redacted note to a local inbox file, never to the ledger). Long-lived server
-sessions reuse one cached, read-only ledger handle across calls without ever blocking a concurrent
-`ekos build`/`commit` in another process (RFC 0097). Every read tool (and `ekos ekl` run from the
-CLI) appends one line to `.ekos/query-log.jsonl` — a real usage log the previous designs had no
-equivalent of, groundwork for a future materialized-views pass (RFC 0114); a static heuristic
-classifies each call cheap/expensive from its own arguments and opportunistically caches an
-expensive one's result for an identical repeat while the workspace hasn't changed underneath it. A
-gated `ekos_clickhouse_query` tool (RFC 0056) is also available, off by default — see the
-ClickHouse connector section below. Connect Claude Code with:
-
-```bash
-claude mcp add ekos -- ekos --config /path/to/ekos.toml mcp serve --workspace /path/to/workspace
-```
-
-The server also honors `EKOS_WORKSPACE` and `EKOS_CONFIG` environment variables, so a
-registration can be path-free: `claude mcp add ekos --env EKOS_WORKSPACE=/path/to/workspace -- ekos mcp serve`.
-
-#### TCP transport — one server, multiple clients (RFC 0115)
-
-Stdio mode spawns a fresh `ekos mcp serve` process (and a fresh cached ledger handle) per client,
-which is fine for one tool but wasteful the moment a second one wants to talk to the same
-workspace — a second Claude Code session, PyCharm's AI chat, or any other MCP-speaking tool.
-`--tcp <addr>` starts a second, additive transport on the same command: a plain NDJSON-over-TCP
-socket that any number of clients can connect to concurrently, each getting its own
-`std::thread::spawn`'d connection and its own independent cached ledger handle (not shared across
-connections — RFC 0115's Concurrency model section explains why). Stdio stays the default and is
-completely unaffected when `--tcp` is omitted; passing it just adds the second transport alongside.
-
-**Local — multiple tools on the same machine.** Bind loopback and point every local tool at it:
-
-```bash
-ekos mcp serve --workspace /path/to/workspace --tcp 127.0.0.1:7331
-```
-
-Any MCP client on that machine that supports connecting to a raw TCP socket (rather than spawning
-its own subprocess) points at `127.0.0.1:7331` instead of a spawn command. Verify the server is
-actually answering before wiring up a client:
-
-```bash
-printf '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26"}}\n' \
-  | nc 127.0.0.1 7331
-```
-
-A one-line JSON-RPC response (`"serverInfo":{"name":"ekos", ...}`) confirms the server is up and
-speaking the protocol correctly
+`ekos_state`, `ekos_dependents` (

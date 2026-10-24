@@ -11,6 +11,7 @@
   <a href="https://www.osbytes.io" target="_blank" rel="noopener noreferrer" title="osbytes — open source bytes"><img src="https://www.osbytes.io/badge.svg" alt="osbytes — open source bytes" width="24" height="24"></a>
   <a href="https://github.com/osbytes/reelsaw/releases"><img src="https://img.shields.io/github/v/release/osbytes/reelsaw?label=release" alt="Latest release"></a>
   <a href="https://github.com/osbytes/reelsaw/actions/workflows/ci.yml"><img src="https://github.com/osbytes/reelsaw/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://scorecard.dev/viewer/?uri=github.com/osbytes/reelsaw"><img src="https://api.scorecard.dev/projects/github.com/osbytes/reelsaw/badge" alt="OpenSSF Scorecard"></a>
   <a href="https://github.com/osbytes/reelsaw/pkgs/container/reelsaw"><img src="https://img.shields.io/badge/ghcr.io-osbytes%2Freelsaw-2496ED?logo=docker&logoColor=white" alt="Docker image on GHCR"></a>
   <a href="https://glama.ai/mcp/servers/osbytes/reelsaw"><img src="https://glama.ai/mcp/servers/osbytes/reelsaw/badges/score.svg" alt="Glama MCP server score"></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/osbytes/reelsaw" alt="License: AGPL-3.0"></a>
@@ -73,7 +74,7 @@ Pure TypeScript. Any AI vendor via the [AI SDK](https://ai-sdk.dev). One-step de
 **Agents and automation**
 
 - **MCP server** – `/api/mcp` (Streamable HTTP) lets Claude Code, Claude Desktop, Cursor or a script create projects, wait for them, read timed transcripts, edit, create and re-render clips, manage the intro/outro library and download the results. Authenticate with an API key from Settings, or with `MCP_OAUTH=true` so claude.ai and Claude Desktop connectors sign in through the browser.
-- **Operator CLI** – `docker compose exec app reelsaw …` inspects and fixes a running instance: `status`, `events`, `clip`, `rerender`, `stuck`, `recover`, `logs`, `cuts`, `align`, `hear`, `flags`, `storage`, `retention`, `deleted`, `restore`, `purge`, `users`, `approve`, `make-admin`, `bumpers`, `import-report` and more (every command is in [Operator CLI](#operator-cli)).
+- **Operator CLI** – `docker compose exec app reelsaw …` inspects and fixes a running instance: `status`, `events`, `clip`, `rerender`, `stuck`, `recover`, `logs`, `cuts`, `align`, `hear`, `flags`, `storage`, `retention`, `deleted`, `restore`, `purge`, `users`, `approve`, `make-admin`, `set-password`, `bumpers`, `import-report` and more (every command is in [Operator CLI](#operator-cli)).
 
 **Hosting and accounts**
 
@@ -90,7 +91,7 @@ Pure TypeScript. Any AI vendor via the [AI SDK](https://ai-sdk.dev). One-step de
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) (principles, tests, sign-off). Roadmap for learning from user decisions: [docs/SELF-IMPROVEMENT.md](docs/SELF-IMPROVEMENT.md).
 
-Read [docs/PRINCIPLES.md](docs/PRINCIPLES.md) first: the consistency, concurrency and UI rules every change follows. Overlay stacking (Select inside a Dialog, z-index, portals) and the mobile viewport (`h-dvh`, not `h-screen`) are [docs/UI.md](docs/UI.md). Agent instructions live in `AGENTS.md` / `CLAUDE.md`.
+Read [docs/PRINCIPLES.md](docs/PRINCIPLES.md) first: the consistency, concurrency and UI rules every change follows. Overlay stacking (Select inside a Dialog, z-index, portals) and the mobile viewport (`h-dvh`, not `h-screen`) are [docs/UI.md](docs/UI.md). Agent instructions live in `AGENTS.md` (the only agent file; see the process principles).
 
 ## Install (no source needed)
 
@@ -276,13 +277,19 @@ form starts from them and can save its current values back. Admins also see the 
 with `HEALTH_DETAILS=true`).
 
 Suspending an account (Users page) ends its sessions and refuses its API keys at the next request;
-removing one deletes its projects, clips and files. Locked out? `docker compose exec app reelsaw
-make-admin you@example.com` promotes an account from the shell.
+removing one deletes its projects, clips and files. Locked out of the password? Sign-in has Forgot
+password when email is on. Without email, an operator sets a new one from the shell (`docker
+compose exec app reelsaw set-password you@example.com`); `--must-change` makes them pick their own
+at the next sign-in, without asking for the temporary password (the session is the proof they knew
+it). To promote an account from the shell: `docker compose exec app reelsaw make-admin
+you@example.com`.
 
 Email (`EMAIL_DRIVER=smtp|resend`, `EMAIL_FROM`, `SMTP_URL` or `RESEND_API_KEY`) turns on approval
 notices, password reset and, with `REQUIRE_EMAIL_VERIFICATION=true`, verification before the
-first sign-in. Confirmation links work for 24 hours and only once; an expired link lands on a page
-that sends a new one. Without email everything else works; approvals are handled on the Users page.
+first sign-in. Confirmation and reset links work for 24 hours and only once; an expired link lands
+on a page that sends a new one. Sign-in has **Forgot password?** when email is on; choosing a new
+password signs out other devices. Without email everything else works; approvals are handled on
+the Users page.
 
 ## Hosting for many people
 
@@ -308,7 +315,7 @@ them), so a single-user box stays as it is:
   `ADMIN_EVENT_RETENTION_DAYS` (365) delete old rows in batches once a day (0 keeps everything);
   a project's run skeleton (created, run started, done) is always kept.
 - **Bot protection**: `CAPTCHA_PROVIDER` (Cloudflare Turnstile, reCAPTCHA, hCaptcha) with site and
-  secret keys puts a widget on sign-up and sign-in.
+  secret keys puts a widget on sign-up, sign-in and password reset.
 - **Free-tier abuse** (all off unless set; `apps/server/src/abuse.ts`): `MAX_SIGNUPS_PER_IP_PER_DAY`
   caps accounts per network address (behind a proxy, `TRUST_PROXY` reads `CF-Connecting-IP`,
   `X-Real-IP`, `X-Forwarded-For`); `BLOCK_DISPOSABLE_EMAILS` refuses temporary-address domains; one
@@ -378,6 +385,14 @@ container) and `REELSAW_API_KEY`:
 { "mcpServers": { "reelsaw": { "command": "docker", "args": ["exec", "-i", "-e", "REELSAW_API_KEY=rs_…", "reelsaw-app-1", "reelsaw", "mcp"] } } }
 ```
 
+Reelsaw is listed on the [MCP registry](https://registry.modelcontextprotocol.io) as
+`io.github.osbytes/reelsaw` (`server.json`, published on every release), so registry-aware clients
+can install the bridge from the image without a running container to exec into:
+
+```json
+{ "mcpServers": { "reelsaw": { "command": "docker", "args": ["run", "-i", "--rm", "-e", "REELSAW_URL=https://your-host", "-e", "REELSAW_API_KEY=rs_…", "ghcr.io/osbytes/reelsaw", "reelsaw", "mcp"] } } }
+```
+
 The tools (generated from `apps/server/src/mcp-tools.ts`; each tool's full description and input
 schema say what it returns, whether it runs in the background and which neighbour to use instead):
 
@@ -406,18 +421,26 @@ schema say what it returns, whether it runs in the background and which neighbou
 | `retry_project` | Resume a failed or stuck project from its furthest completed stage: re-render unfinished clips if there are clips, else pick clips, refine or transcribe again. |
 | `reanalyze_project` | Pick clips again from the existing transcript (needs one), optionally with new settings. |
 | `search_assets` | Find assets. |
-| `add_asset` | Add to your library from exactly one source: a public url or an uploadId (video, image, GIF, SVG or sound), or a search_assets catalog / provider hit (provider + externalId: checksum verified, license and credit recorded, one shared copy per instance). |
+| `add_asset` | Add from exactly one source: a public url or an uploadId (video, image, GIF, SVG or sound) becomes one of your library uploads; a search_assets catalog / provider hit (provider + externalId) materializes one instance-shared copy (checksum verified, license recorded; not listed in your library). |
 | `update_asset` | Rename one of your own library items, replace its tags, or change how long a still image shows (removed items too; shared catalog and provider items cannot be changed). |
-| `remove_asset` | Remove an item from your library and from your defaults (a shared catalog or provider item is only unsaved). |
+| `remove_asset` | Remove one of your uploads from the library and from your defaults. |
 | `restore_asset` | Bring one of your removed library items back (the id from remove_asset or `reelsaw library list`); restoring an item that is not removed changes nothing. |
-| `asset_usage` | The projects and clips that use a library item, as intro, outro, overlay or music (clips a re-analyze replaced are left out). |
+| `asset_usage` | Where a library item is used: as intro, outro, overlay or music on projects and clips (replaced clips left out), and in layer templates. |
 | `set_default_bumper` | Make a library item your default intro or outro for projects you create from now on (assetId null clears it). |
 | `set_project_bumpers` | Set one project's intro and/or outro: "default" (your current default), "none", or a library asset id; a slot left out is untouched, and introSec/outroSec are saved with the project. |
 | `set_clip_bumpers` | Override the intro and/or outro of up to 200 clips of one project: "inherit" (follow the project), "none", or a library asset id; a slot left out is untouched. |
+| `list_layer_templates` | Your layer templates (sets of layers that fit any clip length). |
+| `save_layer_template` | Create a template from exactly one of clipId (that clip's layers: spanning = fill, touching the start = head, touching the end = tail, else anchored to the nearer edge) or layers (each with a timing, see list_layer_templates). |
+| `update_layer_template` | Rename a layer template and/or replace its layers (the whole list, each with a timing); a field left out is untouched. |
+| `remove_layer_template` | Remove a template and drop it from your project defaults; clips that already got its layers keep them. |
+| `restore_layer_template` | Bring back a layer template removed in the last 30 days (the id from list_layer_templates deleted). |
+| `apply_framing` | Make one clip's framing the whole project's, for a recording whose layout never changes (a slide deck with a webcam tile, a fixed camera): the clip's section at `at` (else its first framed section) gives the mode and its nudge / subject / crop, which become the project's reframe and reframeAdjust; every clip's own sections are cleared (unless keepOverrides) and the finished clips re-render. |
+| `apply_layer_template` | Write a template's layers onto clips of one project (up to 200 clipIds, or all), fitted to each clip's length. |
 | `delete_project` | Delete one of your projects and all its clips; work in progress stops. |
 | `restore_project` | Bring back a deleted project with its clips and files (find it with list_projects deleted: true); restoring a project that is not deleted changes nothing. |
 | `restore_clip` | Bring back a deleted clip or one a re-analyze replaced (get_project lists them as replacedClips); it goes to the end of the project's clips. |
 | `check_for_update` | Admins only: is a newer Reelsaw published? |
+| `list_releases` | Published Reelsaw versions from GitHub (reelsaw.com/releases): tag, date, a short summary and the change notes. |
 | `get_instance_settings` | Admins only: the instance settings in force (sign-up mode, email verification, captcha, legal links, quotas, upload limits, retention, stall watchdog, update check, health details) and where each comes from. |
 | `list_workers` | Admins only: every Reelsaw process that has checked in (API, worker, or a combined app), with CPU, memory, disk (free/total MB; -1 free means unmeasurable), GPU, render slots, the queues it listens on, and the jobs it last reported. |
 | `get_failure` | Admins only: one failed project or clip (title, owner email, stage, full recorded reason, when). |
@@ -446,9 +469,11 @@ Run as `docker compose exec app reelsaw <command>` (from source: `pnpm --filter 
 | Command | What it does |
 | --- | --- |
 | `reelsaw version [--json]` | running version, latest published release, how to upgrade |
+| `reelsaw releases [--json] [--limit n]` | published versions from GitHub (reelsaw.com/releases / list_releases) |
 | `reelsaw users` | list accounts: role, status, sign-up date |
 | `reelsaw approve <email>` | approve a waiting account (when email is off or the admin is locked out) |
 | `reelsaw make-admin <email>` | promote an account to admin (approves it first if needed) |
+| `reelsaw set-password <email> [--must-change]` | set an account's password from a prompt (or two stdin lines); `--must-change` requires a new one at next sign-in. Do not put the secret on the command line |
 | `reelsaw retention` | run the retention sweep now (SOURCE_RETENTION_DAYS / CLIP_RETENTION_DAYS) |
 | `reelsaw deleted` | deleted projects that can still be restored, with their purge date |
 | `reelsaw restore <projectId>` | undo a project delete (same as projects.restore and the restore_project tool) |
@@ -487,6 +512,8 @@ Run as `docker compose exec app reelsaw <command>` (from source: `pnpm --filter 
 | `reelsaw project-bumpers <projectId> [--intro default\|none\|<id>] [--outro …] [--intro-sec n] [--outro-sec n] [--rerender]` | a project's intro/outro: the library default, none or a specific item |
 | `reelsaw clip-bumpers <projectId> <clipId…> [--intro inherit\|none\|<id>] [--outro …] [--intro-sec n] [--outro-sec n] [--rerender]` | a clip's own choice (inherit the project's, none or an item); both act as the project's owner; --rerender re-renders only the affected clips |
 | `reelsaw clip-layers <projectId> <clipId> [--set '<json array>' \| --add <assetId> --from <sec> --to <sec> [--x f] [--y f] [--w f] [--opacity f] [--loop\|--no-loop] \| --add-text <text> --from <sec> --to <sec> [--x f] [--y f] [--size f] [--color #RRGGBB] [--font <family>] [--box] [--opacity f] \| --add-sound <assetId> --from <sec> [--to <sec>] [--volume 0-1] [--offset <sec>] [--fade <sec>] [--duck\|--no-duck] [--loop\|--no-loop] \| --remove <layerId> \| --clear] [--rerender]` | everything laid over or played under a clip, one list (source seconds, x/y/w/size as fractions of the 9:16 frame); a sound of 8 s or less, is a one-shot at full level, anything else music (ducked, faded, looped); with no change flag it lists them |
+| `reelsaw apply-framing <clipId> [--at <sec>] [--keep-overrides] [--no-rerender]` | make one clip's framing (its section at --at, else its first framed one: mode plus nudge / subject / crop) the project's default for every clip, clearing the others' own sections and re-rendering the finished ones (same as the editor's "Use for all clips" and apply_framing) |
+| `reelsaw templates list \| show <id> \| save <projectId> <clipId> <name…> \| rename <id> <name…> \| set <id> --layers '<json array>' \| remove <id> \| restore <id> \| apply <templateId> <projectId> [clipId…] [--add] [--rerender]` | layer templates: layers whose timing fits any clip length (head / tail / fill / relative); `save` builds one from a clip's layers, `apply` writes them onto the clips of a project (all of them without clip ids; --add keeps the clip's own layers, default replaces); --rerender re-renders the finished ones. Same procedures as the Templates page and the MCP tools |
 | `reelsaw overlays <projectId> [--store]` | scan the source for burned-in captions / watermarks; --store saves them (renders then hide them) |
 | `reelsaw usage` | [--days 30]                     per account: projects, source minutes, clips, model calls / tokens / reported cost, minutes transcribed, stored bytes (same numbers as Users → Usage) |
 | `reelsaw limits <email> [--watermark always\|never\|follow]` | an account's quotas: instance value, plan, override, in force, in use now; --watermark sets the per-user override (same as Users → Limits) |
@@ -509,7 +536,8 @@ Where a value comes from, from the weakest source to the strongest (a later link
 | Other stage knobs (`TRANSCRIPT_BIAS`, `VAD`, `ALIGNER`, `FACE_DETECTION`, `TEXT_DETECTION`, concurrency) | `.env` only. No UI or per-project override exists. |
 | A project's settings | built-in defaults, then the user's **Project defaults**, then what the create form or agent sent. The result is frozen into `projects.settings`; later changes (`updateStyle`, re-analyze with new settings) patch that row. |
 | A clip's style | the project's style, then the clip's own override (`clips.style`). `updateStyle` clears clip overrides unless told to keep them. |
-| Framing | `auto` (face detection decides), then the project's `reframe`, then the clip's `layoutOverride`, then a section of the clip (`layoutSections[i].mode`). |
+| Layer template | the user's **Project defaults** `layerTemplateId`, then the project's setting (frozen into `projects.settings` at creation), then each clip the project creates from then on gets the template's layers. Existing clips never change with the setting; `apply_layer_template` / the selection bar's Template… / `reelsaw templates apply` do those. |
+| Framing | `auto` (face detection decides), then the project's `reframe` with its `reframeAdjust` (a nudge, subject or crop; `apply_framing` sets both from one clip), then the clip's `layoutOverride`, then a section of the clip (`layoutSections[i]`, mode and adjustment). |
 | Quotas | `.env` `MAX_*` (0 = unlimited), then the instance setting an admin saved under Settings → System → Limits, then what the account's plan grants (hosted, `REELSAW_EE`), then a per-user limit set on the Users page. The Users page says which applies. |
 | Watermark | An admin's per-user choice (Users → Limits), else the plan (a paid plan removes it), else `WATERMARK_NON_ADMINS` for everyone who is not an admin. |
 
@@ -580,6 +608,14 @@ pnpm --filter @reelsaw/server test
 ```
 
 ## Releases and distribution
+
+Every image is built by the release workflow with an SBOM and SLSA provenance attached, and a
+GitHub artifact attestation for its digest. Verify what you are about to run:
+
+```bash
+gh attestation verify oci://ghcr.io/osbytes/reelsaw:latest --owner osbytes
+docker buildx imagetools inspect ghcr.io/osbytes/reelsaw:latest --format '{{ json .SBOM }}' | head -c 400
+```
 
 Users install from a published image. The runtime image contains only
 the minified server bundle (`apps/server/scripts/bundle.mjs`), the web build and production

@@ -89,6 +89,8 @@
 - [SongGPT](https://songgpt.com/) ![freemium](https://img.shields.io/badge/freemium-4a3500?style=flat-square) - AI song generator for producing full tracks from short text prompts with genre selection.
 - [Tunee](https://tunee.ai/) ![freemium](https://img.shields.io/badge/freemium-4a3500?style=flat-square) - AI music and lyric generation platform with access to multiple underlying generative models for varied output styles.
 - [Tunely](https://tunelyai.com) ![freemium](https://img.shields.io/badge/freemium-4a3500?style=flat-square) - Text-to-song generator that turns a one-line description or your own lyrics into a full song with vocals and synced lyrics, plus remix tools to add vocals to your own beat or re-sing a song in another language.
+- [SongUp AI](https://www.songupai.com) ![freemium](https://img.shields.io/badge/freemium-4a3500?style=flat-square) ![api](https://img.shields.io/badge/API-0d2b45?style=flat-square) - Web app that writes and sings full songs with vocals in 76 languages from a prompt, your own lyrics or a hummed melody, plus free browser tools for mastering, auto-tune and key/BPM detection.
+- [Aimusicgen](https://aimusicgen.app) ![freemium](https://img.shields.io/badge/freemium-4a3500?style=flat-square) - Browser-based song generator that turns a text description or your own lyrics into a full track with vocals or an instrumental, plus a lyrics generator and an AI song cover tool.
 
 [↑ Back to top](#quick-navigation)
 
@@ -254,6 +256,7 @@
 - [Podsqueeze](https://podsqueeze.com) ![freemium](https://img.shields.io/badge/freemium-4a3500?style=flat-square) - Re-purpose your audio or video podcast into transcript, show notes, blog post, video clips and other assets to publish and promote your show.
 - [TidyTools Audio Transcription](https://apify.com/tidytools/audio-transcriber) ![paid](https://img.shields.io/badge/paid-5c1a1a?style=flat-square) ![api](https://img.shields.io/badge/API-0d2b45?style=flat-square) - Hosted Whisper large-v3-turbo transcription of audio and video URLs or podcast RSS feeds into timestamped text and SRT or VTT subtitles in 90+ languages, billed per audio minute.
 - [akou](https://github.com/GeiserX/akou) ![free](https://img.shields.io/badge/free-1a4731?style=flat-square) ![open-source](https://img.shields.io/badge/open--source-4a2800?style=flat-square) - Records calls and meetings on an Apple silicon Mac and transcribes them on the machine with speaker labels, and also runs as a self-hosted transcription server.
+- [Yap Audio to Text](https://yapapp.cc/audio-to-text) ![free](https://img.shields.io/badge/free-1a4731?style=flat-square) - Transcribes audio and video files to text or SRT and VTT subtitles right in the browser, so the files are never uploaded.
 
 [↑ Back to top](#quick-navigation)
 
@@ -282,6 +285,7 @@
 ## Tools & SDKs
 
 - [Quilio](https://www.quilio.dev/) ![api](https://img.shields.io/badge/API-0d2b45?style=flat-square) - We maintain tools to help developers build real-time audio AI applications with ease.
+- [PlaceCall](https://voygr.tech/placecall/) ![paid](https://img.shields.io/badge/paid-5c1a1a?style=flat-square) ![api](https://img.shields.io/badge/API-0d2b45?style=flat-square) - Voice agent that an AI assistant sends to phone US businesses through phone menus and hold, returning the call outcome, transcript and recording through a REST API or MCP server.
 
 ---
 

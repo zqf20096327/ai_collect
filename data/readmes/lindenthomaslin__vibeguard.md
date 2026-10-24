@@ -14,7 +14,9 @@
   <img alt="rust" src="https://img.shields.io/badge/rust-2024-orange">
   <img alt="build" src="https://img.shields.io/badge/build-single%20binary-informational">
   <img alt="status" src="https://img.shields.io/badge/status-early-yellow">
-  <img alt="tests" src="https://img.shields.io/badge/tests-325%20passing-brightgreen">
+  <img alt="tests" src="https://img.shields.io/badge/tests-363%20passing-brightgreen">
+  <img alt="license" src="https://img.shields.io/badge/license-MIT-blue">
+  <a href="https://www.npmjs.com/package/vibeguard"><img alt="npm" src="https://img.shields.io/npm/v/vibeguard"></a>
 </p>
 
 <p align="center">
@@ -72,6 +74,34 @@ delete commands. A security tool that can rewrite your files is itself an attack
 
 ## Install
 
+If you have Node:
+
+```bash
+npm install -g vibeguard
+vibeguard
+```
+
+The npm package is a thin wrapper — `postinstall` fetches the prebuilt binary for your platform and
+checks its SHA-256, so `vibeguard` is on your PATH immediately after install.
+
+No Node, no Rust:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/lindenthomaslin/vibeguard/master/install.sh | sh
+```
+
+It picks the right binary for macOS or Linux (Intel and ARM), checks the SHA-256, and drops it in
+`/usr/local/bin` or `~/.local/bin`. Override with `VIBEGUARD_INSTALL_DIR=... sh install.sh` or pin a
+version with `VIBEGUARD_VERSION=v0.1.0`.
+
+Already have cargo?
+
+```bash
+cargo install --git https://github.com/lindenthomaslin/vibeguard
+```
+
+From source, if you want to hack on it:
+
 ```bash
 git clone https://github.com/lindenthomaslin/vibeguard.git
 cd vibeguard
@@ -115,6 +145,9 @@ Early, but it does real work. Two stages, one report:
 - An unchanged repo costs **zero** requests; one edited file costs 3 instead of 7.
 - Plan mode can still investigate: it refuses writes but allows read-only commands (`rg`, `find`,
   `ls`, `cat`, `git log`), so it greps instead of reading files one at a time.
+- A cloned repo cannot act on its own: the first start in a directory asks whether you trust it.
+  Say no — or press Esc — and the session stays read-only, because a repository is attacker-controlled
+  input and a comment that says "ignore previous instructions" is only text until something obeys it.
 
 **How accurate is it?** Measured, not asserted.
 
@@ -136,6 +169,12 @@ Read that as: it does not miss what is planted, and it is noisy — roughly thre
 one real problem. Deduplicating same-line reports is the next number to move. Every scan also
 states how much of the checklist it covered, so "clean" and "not looked at" never look the same.
 
+There is a third measurement, because the model only ever sees the files retrieval hands it: on a
+306-file repository, the files that need judging are **all** retrieved (15/15), and about nine files
+go into each batch. Before the checklist's English titles were added to the keyword set it was
+13/15 — two planted bugs sat in a file retrieval never showed the model. That is the failure mode
+worth measuring: a perfect judge that never sees the evidence scores zero.
+
 The report files are worth adding to your `.gitignore`.
 
 ## Docs
@@ -153,4 +192,6 @@ English is the default language for this project's docs; the Chinese version is
 
 ## License
 
-Not chosen yet. Ask before you redistribute.
+MIT — see [LICENSE](LICENSE). Use it, fork it, ship it inside a company; just keep the copyright
+notice. It comes with no warranty, which for a security tool means: a clean scan is not a
+guarantee that the code is safe.

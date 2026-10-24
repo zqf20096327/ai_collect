@@ -9,6 +9,8 @@
 
 <p align="center"><strong>The open-source, local-first desktop AI agent — start free with a built-in model, run GGUF models locally, and assign tasks from WeChat, Feishu or DingTalk.</strong></p>
 
+<p align="center"><sub>Repo: <a href="https://github.com/rongxinzy/RongxinAI">rongxinzy/RongxinAI</a> · Product: ZhiYuan Agent · Site: <a href="https://www.rongxzyai.com">rongxzyai.com</a></sub></p>
+
 <p align="center">
   <a href="https://github.com/rongxinzy/RongxinAI/stargazers"><img src="https://img.shields.io/github/stars/rongxinzy/RongxinAI?style=flat&logo=github" alt="Stars"></a>
   <a href="https://github.com/rongxinzy/RongxinAI/releases"><img src="https://img.shields.io/github/v/release/rongxinzy/RongxinAI?include_prereleases" alt="Release"></a>
@@ -62,7 +64,7 @@ Local models reduce reliance on cloud inference. Web search, model downloads, re
 
 Sessions, configuration, and task metadata are stored locally. The desktop execution environment accesses local files. When you use a cloud model or remote tool, the content needed for that request is sent to the corresponding service.
 
-Tool execution follows the permission mode chosen in the task composer. **Allow all** (the default) runs tool calls without prompting, including irreversible ones; **Ask for permission** shows an approval request before each tool call. Progress and results remain visible in the workspace.
+Tool execution follows the permission mode chosen in the task composer. **Ask before sensitive actions** (the default) requests your approval before sensitive actions; **Allow all** runs tool calls without prompting, including irreversible ones. Progress and results remain visible in the workspace.
 
 ## How it compares
 
@@ -152,7 +154,7 @@ The edition is selected with `ZHIYUAN_UPDATE_VARIANT` and decides which bundled 
 | --- | --- | --- |
 | `lite` | Windows x64 only | None (no llama.cpp) |
 | `cpu` | Windows x64, Linux x64, macOS arm64 and x64 | llama.cpp CPU + Vulkan on Windows/Linux; Metal on macOS |
-| `cuda` | Windows x64, Linux x64 | llama.cpp built for RTX 40 (sm_89) with CUDA 12.4, the CUDA runtime libraries it needs, and a CPU fallback |
+| `cuda` | Windows x64, Linux x64 | llama.cpp built for RTX 40 (sm_89) with CUDA 12.4, the CUDA runtime libraries it needs, and a CPU fallback. **Windows x64 cuda** also bundles the Strata dual-engine (Qwen + DeepSeek CUDA13 engines + control runtime); see [STRATA-DUAL-ENGINE.md](STRATA-DUAL-ENGINE.md). |
 
 | Command | Output |
 | --- | --- |
@@ -203,12 +205,14 @@ The mock is only active in browser mode (`import.meta.env.DEV` + no `window.elec
 
 ## Contribute
 
-- [Report a bug](https://github.com/rongxinzy/RongxinAI/issues/new?template=bug_report.yml) with your system, app version, reproduction steps, and relevant logs.
-- [Suggest a feature](https://github.com/rongxinzy/RongxinAI/issues/new?template=feature_request.yml) by describing the workflow and expected behavior.
-- [Contribute code or documentation](CONTRIBUTING.md). Read [`AGENTS.md`](AGENTS.md) first and follow [`DESIGN.md`](DESIGN.md) for UI changes.
-- [Security policy](SECURITY.md) — report vulnerabilities privately; do not open public issues for unfixed security bugs.
+- [Good first issues](https://github.com/rongxinzy/RongxinAI/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) — best place to start
+- [Discussions](https://github.com/rongxinzy/RongxinAI/discussions) — questions and showcases (not for bugs)
+- [Report a bug](https://github.com/rongxinzy/RongxinAI/issues/new?template=bug_report.yml)
+- [Suggest a feature](https://github.com/rongxinzy/RongxinAI/issues/new?template=feature_request.yml)
+- [Contributing guide](CONTRIBUTING.md) · [Code of Conduct](CODE_OF_CONDUCT.md) · [`AGENTS.md`](AGENTS.md)
+- [Security policy](SECURITY.md) — report vulnerabilities privately; do not open public issues for unfixed security bugs
 
-Star the repository to follow the project, or share a workflow you have built with ZhiYuan.
+Star the repository to follow the project, or share a workflow in Discussions.
 
 ## Acknowledgments and license
 

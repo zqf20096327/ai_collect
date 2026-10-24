@@ -1,11 +1,11 @@
 <p align="center"><img src="docs/splash.png" alt="Prism start screen" width="820"></p>
 
 <h3 align="center">Free AI that codes, beautifully.</h3>
-<p align="center">No subscription. No credit card. No account needed.</p>
+<p align="center">No subscription. No credit card. No account needed.<br>Already pay for ChatGPT, Claude, Grok, Gemini or Copilot? Sign in and use your plan too.</p>
 
 <p align="center"><img src="docs/prism-demo.gif" alt="Prism builds a todo app with free AI, then the app is used in Firefox" width="820"></p>
 
-Prism is a coding assistant for your terminal that runs entirely on **free AI**. It reads your code, edits files, runs commands and checks its own work. When it builds a web page, it opens it in a headless browser and clicks through it like a person (add, tick, filter, reload) before calling it done.
+Prism is a coding assistant for your terminal that runs on **free AI**, or on the AI plan you already pay for. It reads your code, edits files, runs commands and checks its own work. When it builds a web page, it opens it in a headless browser and clicks through it like a person (add, tick, filter, reload) before calling it done.
 
 It runs inside Docker, so it can only touch the one folder you give it.
 
@@ -40,6 +40,7 @@ The first start takes a few minutes while Docker builds Prism; later starts take
 | System | Status |
 | --- | --- |
 | Linux (Ubuntu and Ubuntu-based) | tested on Linux Mint 22, which is built on Ubuntu 24.04 |
+| Linux (Arch-based: CachyOS, Omarchy, Manjaro) | builds and runs on Omarchy; the installer shows `pacman` steps and sets up fish |
 | macOS | should work with Docker Desktop, not tested yet |
 | Windows | tested on Windows 11 inside WSL (Debian) with Docker Desktop |
 
@@ -68,7 +69,7 @@ A **router** is a small helper that picks a free AI for each step, and a **key**
 
 Prism works with **no keys at all**. Out of the box it uses free models from Kilo Gateway, BlockRun and LLM7; the router below hides most of the slowness.
 
-Want it faster and smarter? `prism setup` walks you through free keys, about a minute each. None of them ask for a card. Already pay for a model? `/key <name> <secret>` inside Prism adds it (22 presets, or any OpenAI-compatible service with `prism keys add`); it only answers when you pick it by name. Pay for ChatGPT, Claude, Grok, Gemini or Copilot? `/login <name>` opens your browser, you sign in, and your plan's models appear in `/models`. `/model <name>` pins any of them for the chat; `/model auto` lets Prism choose again.
+Want it faster and smarter? `prism setup` walks you through free keys, about a minute each. None of them ask for a card.
 
 | Provider | What you get | Key |
 | --- | --- | --- |
@@ -83,6 +84,24 @@ Want it faster and smarter? `prism setup` walks you through free keys, about a m
 | Z.ai | GLM-4.7 Flash | free |
 | Ollama | any model on your own computer | none |
 
+## Use the plan you already pay for
+
+Prism works with every major AI subscription. Type `/login`, pick your plan with the arrow keys or the mouse, press Enter and sign in in your browser. Your plan's real models appear in `/models`, and `/model` picks one for the chat (`/model auto` goes back to free models). They only answer when you pick them, so free `auto` never spends your plan.
+
+| Plan | Models you get | How you sign in |
+| --- | --- | --- |
+| ChatGPT (Plus, Pro) | your plan's GPT models | browser |
+| Claude (Pro, Max) | Claude Sonnet, Opus, Haiku | browser |
+| Grok (SuperGrok) | Grok | browser, or a device code |
+| Google Antigravity | Gemini, plus Claude on paid plans | browser with your Google account |
+| GitHub Copilot | the models your Copilot plan includes | device code |
+
+If the sign-in page shows a code instead of sending you back, paste the code (or the whole link) into Prism and press Enter. `/login` shows who you're signed in to; `/login rm <name>` signs out. Sign-ins are saved on your computer only (`subscriptions.json`, readable only by you) and renew themselves.
+
+Pay per use instead? `/key <name> <secret>` adds a key for 22 services (OpenAI, Anthropic, DeepSeek, xAI, Mistral, Gemini, OpenRouter and more), and `prism keys add` connects any OpenAI-compatible service. Like plans, they only answer when you pick them.
+
+> These sign-ins use the same app IDs as each company's own tools, so a company can change or block them at any time, and using them may go against its terms.
+
 ### How it stays fast
 
 A small router picks the model for every step:
@@ -91,6 +110,7 @@ A small router picks the model for every step:
 - **Learns which models are quick** and remembers it between runs.
 - **Skips models that are busy or down**, and tries them again later.
 - **Fast lane:** on NVIDIA's Nemotron models, short questions skip the slow thinking step.
+- **Gets out of loops.** A model that keeps writing the same lines is stopped early, its text is taken back, and another model answers. A model that keeps making the same call with the same result is told so and the next step goes to another model; after two switches Prism stops and says why, instead of using up the free models.
 
 ### Benchmarks
 
@@ -148,6 +168,90 @@ Skills are short playbooks Prism follows for common jobs. It picks the right one
 
 `/skills` lists them. Add your own as `.prism/skills/<name>.md` in a project or `~/.config/prism/skills/<name>.md`. See [cli/skills/README.md](cli/skills/README.md) for the format.
 
+## Crew mode (helper agents)
+
+**Subagents? Why didn't you say so?**
+
+There's no command for them, and you don't need one. Just tell Prism what you want done and that you'd like helpers:
+
+```
+use a few helpers: one builds the page, one writes the tests
+```
+```
+do these in parallel: fix the login bug and add a dark theme
+```
+
+Prism does the rest:
+
+- **Splits the work.** It hands out the job to 2 or 3 helpers and gives each one its own files. A helper can only change its own files, so two helpers never edit the same thing.
+- **Watches them for you.** A live panel shows what each helper is doing, step by step, in the terminal and in the browser.
+- **Keeps them going.** If a free model is busy, the helper waits for one to free up and carries on. Helpers spread across different models, so they don't all wait on the same one. A helper that runs too long is stopped instead of hanging forever.
+- **Checks the result.** If you ask for a review, a separate read-only helper looks over everything they changed. Any problems it finds go back for one round of fixes.
+- **Tests it at the end.** When the helpers finish, Prism runs your project's checks itself before telling you it's done.
+
+Press `esc` at any time to stop the whole crew.
+
+## Plan first
+
+Type `/plan` (or `/plan add a login page`) and Prism looks around before it touches anything. It can read files and search the web, but it can't edit, write or run commands. It answers with a short plan: the goal, the steps and files, and how it will check the work.
+
+When the plan is ready you pick:
+
+- **run this plan**: plan mode turns off and Prism starts
+- **keep planning**: type what to change
+- **leave plan mode**: nothing runs
+
+The status bar says `plan mode` while it's on. `/plan` again (or `/plan off`) turns it off. Works the same in the terminal and the browser.
+
+## Asks before risky commands
+
+Prism runs most commands on its own, inside the Docker box. It stops and asks first when a command could do real damage or reach other people:
+
+- deleting folders (`rm -rf src`; clearing `node_modules`, `dist`, `build` and other cache folders doesn't ask)
+- throwing away changes (`git reset --hard`, `git checkout -- .`)
+- `git push`, and force pushes
+- publishing or deploying (`npm publish`, `docker push`, `gh pr create`, `vercel --prod`, …)
+- running a script straight from the internet (`curl … | sh`)
+- connecting to another computer (`ssh`, `scp`)
+- deleting database data (`DROP TABLE`, `dropdb`, …)
+- commands that can break the system (`mkfs`, `shutdown`, …)
+
+You answer **yes, once**, **yes for this chat** (the same kind of command won't ask again until `/new`) or **no** (Prism is told not to try another way). In the terminal press `y`, `a` or `n`; in the browser click or press the same keys. `prism fix` still asks before every command, and `prism run` without a terminal answers no.
+
+**Your own rules.** Put them in `.prism/rules.json` for one project, or `~/.config/prism/rules.json` for every project:
+
+```json
+{
+  "allow": ["git push origin main", "npm publish*"],
+  "ask":   ["docker *"],
+  "block": ["git push --force*"]
+}
+```
+
+`*` matches anything. `block` stops the command, `ask` always asks, `allow` runs it without asking. A project's `allow` rules only count after `/rules trust`, and any change to the file turns them off again, so a project you download can't let itself run risky commands. `/rules` lists everything, `/rules off` turns a project's allow rules off.
+
+## Hooks (your own checks)
+
+Hooks are your own commands that Prism runs at set moments. Put them in `.prism/hooks.json`:
+
+```json
+{
+  "before_bash": [{ "run": "./scripts/guard.sh" }],
+  "after_edit":  [{ "run": "gofmt -w \"$PRISM_FILE\"", "match": "*.go" }],
+  "turn_end":    [{ "run": "go test ./...", "must_pass": true }, "notify-send 'prism is done'"]
+}
+```
+
+| When | What happens |
+| --- | --- |
+| `before_bash` | runs before each command the AI runs (`$PRISM_COMMAND` holds it). If your hook fails, the command doesn't run and the AI is told why. |
+| `after_edit` | runs after the AI writes a file (`$PRISM_FILE`), for example a formatter. `match` picks files by name, like `*.go`. |
+| `turn_end` | runs when the AI is about to finish a turn that changed files or ran commands. If a `must_pass` hook fails, the AI gets its output and keeps working, up to 3 tries. |
+
+A hook is a command, or `{ "run", "match", "must_pass", "timeout" }` (timeout in seconds: 60 by default, 300 for `turn_end`, 600 at most). Hooks run in the project folder, inside the Docker box (on your computer in `prism fix`).
+
+**Hooks stay off until you trust them.** `/hooks` lists them, `/hooks trust` turns them on and `/hooks off` turns them off. If the file changes, even when the AI edits it, they're off again until you trust them again. A folder you cloned can't run anything on its own.
+
 ## Tools and plugins (MCP)
 
 Prism can connect MCP servers to give the AI extra tools such as file access, web pages, library docs, git or GitHub. Add a `.prism/mcp.json` like this to connect the filesystem server:
@@ -185,7 +289,7 @@ The same Prism, Shard and beam included, in your browser. It opens by itself; th
 
 <p align="center"><img src="docs/web.png" alt="Prism in the browser, firing the Last Prism beam" width="820"></p>
 
-Inside the terminal app, `/web` moves the current chat to your browser (same history and memory). Close the tab or press enter in the terminal to come back, and everything done in the browser is there. The browser version understands the same slash commands, with the same suggestion list.
+Inside the terminal app, `/web` moves the current chat to your browser (same history and memory). Close the tab or press enter in the terminal to come back, and everything done in the browser is there. The browser version understands the same slash commands, with the same suggestion list. Commands that need a choice (`/model`, `/login`, `/theme`, `/resume`, `/mcp add`, `/tabs`) open a list you can click or drive with the arrow keys, Enter and Esc, and it fits a phone screen too.
 
 ## Project tree
 
@@ -231,7 +335,27 @@ Prism can search the web and read pages when it needs facts it doesn't have, lik
 | `pgup` `pgdown`, mouse wheel | scroll (smooth, with a scrollbar) |
 | click a `▸ N steps` line | open folded steps from an earlier turn (`ctrl+o` opens all of them) |
 | `/` | list every command, `tab` completes |
-| `/models` `/new` `/resume` `/init` `/skills` `/mcp` `/memory` `/usage` `/beam` `/quiet` `/web` `/help` `/quit` | |
+| `/model` `/models` | pick the model for this chat · see every model |
+| `/login` `/key` | sign in to a plan you pay for · add a provider key |
+| `/new` `/clear` `/compact` `/undo` `/resume` | fresh chat · clear · shorten the chat · undo the last changes · reopen a chat |
+| `/skills` `/init` `/memory` `/mcp` | playbooks · write PRISM.md · what Prism remembers · connected tools |
+| `/plan` | plan first, nothing changes until you pick run (see [Plan first](#plan-first)) |
+| `/rules` | which commands Prism asks about first (see [Asks before risky commands](#asks-before-risky-commands)) |
+| `/commands` `/hooks` | your saved prompts, run as `/<name>` (see below) · your own checks (see [Hooks](#hooks-your-own-checks)) |
+| `/files` `/open` `/tree` | browse and read project files |
+| `/tabs` `/rename` `/ask` | several chats at once |
+| `/web` `/usage` `/theme` `/beam` `/quiet` `/help` `/quit` | |
+
+**Saved commands.** Save a prompt you type often as `.prism/commands/<name>.md` in a project (or `~/.config/prism/commands/<name>.md` for every project; the project's wins) and it becomes `/<name>`, in the terminal and the browser:
+
+```markdown
+---
+description: review my change before I commit
+---
+Review the uncommitted changes. Focus on $ARGUMENTS. List real bugs first, then small things.
+```
+
+`/review error handling` sends that text with `$ARGUMENTS` replaced by `error handling` (`$1`, `$2` are single words). With no placeholder, the words are added at the end. `/commands` lists them, `/commands new <name>` writes a starter file, and edits take effect right away. Names use lowercase letters, numbers and dashes; built-in commands always win.
 
 ## Meet Shard
 
@@ -248,7 +372,7 @@ Shard is Prism's mascot. He reacts to what the AI is doing: thinking, working, d
 - Prism only sees the folder you start it in, and won't start in your home folder or `/`. The one exception is `prism fix`, which you start on purpose: it runs on your computer and asks before every change.
 - Commands run inside the Docker box, not on your computer. Files it creates belong to you.
 - Keys live in `keys.conf`, readable only by you and ignored by git.
-- The router only listens on `127.0.0.1`, so other devices on your network can't use it.
+- The router only listens on `127.0.0.1`, so other devices on your network can't use it, and it refuses requests from web pages. Changing keys or sign-ins needs a secret (`.router-token`) that the AI's own commands can't read.
 - **Free AI services may keep what you send them.** Don't paste passwords or private data.
 
 ## How it's built

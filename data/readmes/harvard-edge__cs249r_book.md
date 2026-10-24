@@ -94,7 +94,7 @@ A growing community of contributors helps improve every part of it: fixing error
 Every component connects. The textbook gives you the mental models. The labs let you reason through trade-offs interactively, powered by MLSys·im — a modeling engine for infrastructure you can't physically access, and a standalone tool in its own right. TinyTorch makes you build the machinery yourself. The hardware kits put you face-to-face with real deployment constraints. StaffML tests whether you actually understand it. SocratiQ adds AI-guided reading, contextual quizzes, and spaced repetition inside the learning experience. And the instructor hub, slides, and newsletter give educators everything they need to bring this into a classroom.
 
 <p align="center">
-  <img src="README/curriculum-map.svg?v=4" alt="Curriculum map showing how the textbook, labs, TinyTorch, hardware kits, MLSys·im, and StaffML connect" width="760">
+  <img src="README/curriculum-map.svg?v=5" alt="Curriculum map showing how the textbook, labs, TinyTorch, hardware kits, MLSys·im, and StaffML connect" width="760">
 </p>
 
 ### For Students
@@ -169,7 +169,7 @@ Every component connects. The textbook gives you the mental models. The labs let
     <tr>
       <td align="center">🎓</td>
       <td><b>Instructor Hub</b></td>
-      <td>The AI Engineering Blueprint: two 16-week syllabi, pedagogy guide, assessment rubrics, and a TA handbook.</td>
+      <td>A syllabus for each course, with weekly readings and slides: introductory, scaling, TinyML, Edge AI, Physical AI (draft), and Agentic AI (in preparation).</td>
       <td><a href="https://mlsysbook.ai/instructors/">View hub</a> · <a href="instructors/README.md">Repo guide</a></td>
     </tr>
     <tr>
@@ -196,7 +196,7 @@ The pieces are designed to work together, but you do not need to adopt everythin
 | If you are... | Start here | Then go deeper |
 |---|---|---|
 | **A student or self-learner** | [Read Volume I](https://mlsysbook.ai/vol1/) and try [Lab 00](https://mlsysbook.ai/labs/vol1/lab_00_introduction/) | Build [TinyTorch](https://mlsysbook.ai/tinytorch/), use [MLSys·im](https://mlsysbook.ai/mlsysim/), and practice with [StaffML](https://mlsysbook.ai/staffml/) |
-| **An instructor** | Open [The AI Engineering Blueprint](https://mlsysbook.ai/instructors/) | Use the [course map](https://mlsysbook.ai/instructors/course-map.html), [slides](https://mlsysbook.ai/slides/), rubrics, and TA guide |
+| **An instructor** | Open the [Instructor Hub](https://mlsysbook.ai/instructors/) | Pick a course and use its syllabus, [slides](https://mlsysbook.ai/slides/), and labs |
 | **A contributor** | Pick the component you use most | Improve chapters, labs, tests, examples, hardware notes, simulator models, or assessment content |
 
 The learning loop is: **Read → Explore → Build → Model → Deploy → Practice → Teach**.
@@ -341,7 +341,11 @@ I have always learned best by building from scratch and teaching others.
 
 Whenever I want to really understand an emerging or complex systems area, writing about it and writing code for it forces me to slow down. It forces me to find the core invariants, work through the math, and separate what is fundamentally true about physics and hardware from whatever happens to be trending on social media this week.
 
-This repository—the four textbook volumes, TinyTorch, our MLSys·im simulator, and the hands-on hardware kits—is my open workshop and teaching lab. It is how I clarify my own thinking for my students at Harvard, my research lab, and open benchmarking efforts like MLPerf. Putting it all out in the open is my way of giving back to the community. If following along helps you on your own engineering journey, I couldn't be happier to share it with you.
+This repository (the four textbook volumes, TinyTorch, our MLSys·im simulator, and the hands-on hardware kits) is my open workshop and teaching lab. It is how I clarify my own thinking for my students at Harvard, my research lab, and open benchmarking efforts like MLPerf.
+
+There is also a deeper reason. In the late 1990s, as an undergraduate, I wrote to a professor at Stanford because I was fascinated by genetic algorithms. I did not expect an answer. Then a brown package arrived at my house with a VHS tape on genetic algorithms inside. I never learned who sent it, so I never got to say thank you. But I have not forgotten what it felt like to have someone I had never met take the time to share what they knew with a curious student. It sparked my curiosity, and it stayed with me.
+
+Students write to me now the way I once wrote to that professor, far more than I can answer one by one. This curriculum is my way of sending the package back out, to a much bigger classroom than any lecture hall can hold. If it helps you on your own engineering journey, I couldn't be happier to share it with you.
 
 </details>
 
@@ -479,7 +483,7 @@ Rather than viewing textbooks and LLMs in opposition, we bring them together. Th
 
 Yes, completely! Every volume is free to read online at [mlsysbook.ai](https://mlsysbook.ai).
 
-The entire textbook is open source under a Creative Commons license ([CC BY-NC-SA 4.0](LICENSE.md)), which means you are welcome to read, share, and adapt it for non-commercial educational use with attribution. If you prefer print, a hardcopy edition is coming in 2026 with MIT Press.
+The textbook is published by MIT Press under a Creative Commons license ([CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/)), which means you are welcome to read and share it for non-commercial educational use with attribution. Translations and other modified versions need permission. If you prefer print, the MIT Press hardcover edition is on its way.
 
 The companion frameworks, simulators, and labs are also open source under permissive licenses (like MIT and Apache 2.0). Everything is right here in this repository—dive in and enjoy!
 
@@ -505,7 +509,7 @@ The companion frameworks, simulators, and labs are also open source under permis
     </tr>
     <tr>
       <td align="center"><h3>④</h3></td>
-      <td><b>Teach it.</b> Adopt the curriculum with the <a href="https://mlsysbook.ai/instructors/">AI Engineering Blueprint</a> and <a href="https://mlsysbook.ai/slides/">lecture slides</a>.</td>
+      <td><b>Teach it.</b> Use a course syllabus from the <a href="https://mlsysbook.ai/instructors/">Instructor Hub</a> and the <a href="https://mlsysbook.ai/slides/">lecture slides</a>.</td>
     </tr>
   </tbody>
 </table>
@@ -653,7 +657,8 @@ This is a multi-component repository, and **each component is released under its
 
 | Component | License | What it means |
 |---|---|---|
-| Textbook (`books/`), Labs (`labs/`), Kits (`kits/`), Slides (`slides/`), Instructors (`instructors/`) | [CC-BY-NC-SA 4.0](LICENSE.md) | Share and adapt for **non-commercial** use, with attribution and same-license sharing. |
+| Textbook (`books/`) | [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/) | The license of the MIT Press edition. Share for **non-commercial** use with attribution; modified versions, including translations, need permission. |
+| Labs (`labs/`), Kits (`kits/`), Slides (`slides/`), Instructors (`instructors/`) | [CC-BY-NC-SA 4.0](LICENSE.md) | Share and adapt for **non-commercial** use, with attribution and same-license sharing. |
 | [TinyTorch](tinytorch/LICENSE) | MIT | Permissive — use, modify, redistribute, including commercially. |
 | [MLSys·im](mlsysim/LICENSE.md) | Apache 2.0 | Permissive with explicit patent grant. |
 | [StaffML](staffml/app/LICENSE) | AGPL v3 | Strong copyleft — modifications to deployed services must be published. Commercial licensing available; contact the authors. |

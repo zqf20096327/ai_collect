@@ -1,4 +1,4 @@
-# SUPERFAST
+﻿# SUPERFAST
 
 [![Install: one script, unattended](https://img.shields.io/badge/install-one%20script%2C%20unattended-2ea44f?logo=linux&logoColor=white)](#install-a-machine)
 [![Target: Fedora 44, Strix Halo gfx1151](https://img.shields.io/badge/target-Fedora%2044%20%C2%B7%20gfx1151-8957e5)](#install-a-machine)
@@ -1731,30 +1731,6 @@ every token in its reasoning channel (21,977 characters) and returned empty cont
 `finish_reason=length`. The per-task budget ends before it writes a word, so any score would
 measure the budget rather than the model.
 
-## Benchmark: MetriLLM
-
-MetriLLM is a second third-party benchmark with its own CLI (npm `metrillm` 0.2.6) and its own
-leaderboard, which reports **Hardware Fit**, **Quality** and **Global** on a 0-100 scale. Unlike
-PipelineScore it does not run against an OpenAI endpoint: it drives **Ollama or LM Studio** on the
-same machine, so the numbers it publishes describe the hardware that hosts the model.
-
-| profile | client model id | score | status |
-|---|---|---|---|
-| ornith | `ornith-1.5-35b-a3b` | — | not measured |
-| dense | `qwen3.8-27b` | — | not measured |
-| gemma | `gemma-4-26b-a4b` | — | not measured |
-| flash | `qwen3.8-flash-next` | — | not measured |
-| deepseek | `deepseek-v4-flash` | — | not measured |
-
-The MetriLLM runs are **not done**, and the reason is measured rather than assumed. MetriLLM cannot
-drive our gateway: it speaks to Ollama or LM Studio only, so Ollama has to exist on the host
-first. On 2026-10-22 the official installer was retried with a resumable download (`curl -C -`, in
-a retry loop, so an interruption loses nothing): it moved from 3.699.168 to 4.166.432 bytes in
-30 seconds, about **15 KB/s**, which is roughly **20 hours** for the ~1 GB archive. The download is
-left running; the scores go in this table only when a run on this machine exists, never estimated.
-The model side needs no download: the GGUF already in `~/ornith-models` can be imported with a
-`Modelfile` (`FROM <path>.gguf`), so once Ollama is installed the import is local.
-
 ## Benchmark: assbench
 
 assbench is a third-party benchmark whose task is a single hard deliverable: one self-contained
@@ -1835,10 +1811,32 @@ benchmark.
 
 
 
-## Honest limits
+## Benchmark: MultiPL-E (C#)
 
-- **One GPU target.** gfx1151 only, by construction.
-- **Vision is on by default.** The flash and gemma models read images: their
-  vision tower and projector are downloaded at setup and **loaded by default**,
-  so the machine comes up able to see. `VISION_DEFAULT=0` keeps it text-only.
-  `superfast-switch vision on|off` (or the panel toggle) c
+[`nuprl/MultiPL-E`](https://huggingface.co/datasets/nuprl/MultiPL-E) config `humaneval-cs` ships 158
+C# problems, each a function to complete plus the tests that check it. The model receives the prompt
+with the signature and the opening brace already written and returns the body only; the file compiled
+is prompt + body + tests, built and run with `dotnet` against a net8.0 console project, and a failed
+`Debug.Assert` is a failed task. The generation budget is 512 tokens, the one the benchmark itself
+uses to score pass@1, so the numbers mean the same thing for every profile. No cap of ours is
+involved and no judge: the tests decide.
+
+| profile | tasks | passed | compiled | pass % | median s/task | total |
+|---|---|---|---|---|---|---|
+| ornith-1.5-35b-a3b | 158 | 70 | 116 | 44 | 3.2 | 0h08m |
+| qwen3.8-flash-next | 158 | 51 | 79 | 32 | 13.6 | 0h34m |
+| halogen-qwen3.8-27b | 158 | 21 | 28 | 13 | 10.6 | 0h27m |
+| gemma-4-26b-a4b | 158 | 19 | 25 | 12 | 10.6 | 0h28m |
+
+Ornith is first on both counts: it passes the most tasks and it is four times faster per task than
+the other three. Flash is second and compiles far more of what it writes (79 against 25-28), so the
+gap between flash and the other two is wider than the pass rate alone suggests. Gemma and dense are
+within one task of each other and are not separated by this benchmark.
+
+What this does and does not say:
+
+- **Function level, not repository level.** 158 single functions from the HumanEval lineage, no
+  cross-file context, no tools. It ranks the profiles on code synthesis, not on agentic work; for
+  that axis the README reports PipelineScore (ornith 90,1 · dense 85,9 · flash 83,8 · gemma 81,2).
+- **512 tokens is the benchmark's budget, not a saving measure.** Without a cap the same models
+  generate tens of thousands of tokens for one 

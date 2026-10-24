@@ -20,7 +20,7 @@ Each week this repository highlights:
 [![License](https://img.shields.io/github/license/dyronrh/awesome-agentops-landscape?style=for-the-badge)](LICENSE)
 
 <!-- META:START -->
-**Last generated:** 2026-10-23  
+**Last generated:** 2026-10-24  
 **Automation:** GitHub Actions + GitHub API
 <!-- META:END -->
 
@@ -115,14 +115,14 @@ AgentOps platforms are instrumented via **OpenTelemetry**, where each agent sess
 | Tool | Stars | Links |
 |------|------|------|
 | LiteLLM | ⭐ 61.9k | https://github.com/BerriAI/litellm |
-| Langfuse | ⭐ 36.2k | https://github.com/langfuse/langfuse |
-| Promptfoo | ⭐ 26.3k | https://github.com/promptfoo/promptfoo |
-| Opik (Comet) | ⭐ 22.8k | https://github.com/comet-ml/opik |
+| Langfuse | ⭐ 36.3k | https://github.com/langfuse/langfuse |
+| Promptfoo | ⭐ 26.4k | https://github.com/promptfoo/promptfoo |
+| Opik (Comet) | ⭐ 22.9k | https://github.com/comet-ml/opik |
 | DeepEval | ⭐ 19.1k | https://github.com/confident-ai/deepeval |
 | AgentNeo | ⭐ 16.2k | https://github.com/raga-ai-hub/RagaAI-Catalyst |
 | RAGAS | ⭐ 16.1k | https://github.com/explodinggradients/ragas |
 | Phoenix (Arize) | ⭐ 12.0k | https://github.com/Arize-ai/phoenix |
-| Bifrost | ⭐ 9.0k | https://github.com/maximhq/bifrost |
+| Bifrost | ⭐ 9.1k | https://github.com/maximhq/bifrost |
 | Evidently AI | ⭐ 8.0k | https://github.com/evidentlyai/evidently |
 | Guardrails AI | ⭐ 7.6k | https://github.com/guardrails-ai/guardrails |
 | OpenLLMetry | ⭐ 7.5k | https://github.com/traceloop/openllmetry |
@@ -141,15 +141,15 @@ AgentOps platforms are instrumented via **OpenTelemetry**, where each agent sess
 | Agent Evaluation (AWS Labs) | ⭐ 375 | https://github.com/awslabs/agent-evaluation |
 | Monocle2AI | ⭐ 343 | https://github.com/monocle2ai/monocle |
 | OrcaReplay | ⭐ 281 | https://github.com/Continuum-AI-Corp/OrcaReplay |
-| traceAI | ⭐ 224 | https://github.com/future-agi/traceAI |
-| AgentMeasure | ⭐ 217 | https://github.com/roy-tong/AgentMeasure |
-| agenttrace | ⭐ 150 | https://github.com/luoyuctl/agenttrace |
-| KubeStellar | ⭐ 149 | https://github.com/kubestellar/console |
+| traceAI | ⭐ 244 | https://github.com/future-agi/traceAI |
+| AgentMeasure | ⭐ 218 | https://github.com/roy-tong/AgentMeasure |
+| agenttrace | ⭐ 151 | https://github.com/luoyuctl/agenttrace |
+| KubeStellar | ⭐ 150 | https://github.com/kubestellar/console |
 | Open Bias | ⭐ 145 | https://github.com/open-bias/open-bias |
-| ai-evaluation | ⭐ 127 | https://github.com/future-agi/ai-evaluation |
-| ax | ⭐ 121 | https://github.com/Necmttn/ax |
+| ai-evaluation | ⭐ 128 | https://github.com/future-agi/ai-evaluation |
+| ax | ⭐ 122 | https://github.com/Necmttn/ax |
 | Agent Barn | ⭐ 110 | https://github.com/aai-labs/agent-barn |
-| RewardHarness | ⭐ 88 | https://github.com/TIGER-AI-Lab/RewardHarness |
+| RewardHarness | ⭐ 89 | https://github.com/TIGER-AI-Lab/RewardHarness |
 | Dunetrace | ⭐ 68 | https://github.com/dunetrace/dunetrace |
 | agent-command-center-sdk | ⭐ 30 | https://github.com/future-agi/agent-command-center-sdk |
 | whatbroke | ⭐ 21 | https://github.com/arthi-arumugam-git/whatbroke |

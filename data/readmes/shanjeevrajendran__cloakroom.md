@@ -10,6 +10,7 @@
   <a href="#when-cloakroom-blocks-your-prompt">Blocked prompt?</a> ·
   <a href="#results">Results</a> ·
   <a href="#how-it-works">How it works</a> ·
+  <a href="#extra-protections">Extra protections</a> ·
   <a href="#dashboard">Dashboard</a> ·
   <a href="#faq">FAQ</a> ·
   <a href="https://github.com/shanjeevrajendran/cloakroom/blob/main/docs-LIMITS.md">Known limits</a>
@@ -40,6 +41,8 @@ expect rough edges.
   the drafts saved on your disk have the real names.
 - **Medical or HR records:** names, birth dates, addresses and ID numbers are masked, so Claude can summarise or tidy a record without knowing whose it is.
 - **`.env` files and logs:** Claude fixes the config without ever seeing the password or API key.
+- **Finance work:** bank and card numbers are masked, calls that move money wait for your OK, and `cloakroom report`
+  with the tamper-evident log is your audit trail ([for finance teams](#for-finance-teams)).
 - **Scans and photos of documents:** read on your machine (no upload) and masked like any other file.
 - **Learns from you:** mark a false alarm once in the dashboard and a rule stops it next time.
 
@@ -66,6 +69,7 @@ You need Claude Code, installed and signed in. Then:
    are covered in about a minute; names and addresses a few minutes later, once the detection model has downloaded
    (about 1 GB on a Mac, up to about 4 GB elsewhere). Claude's tool calls are held back until then.
    It also updates itself when the plugin updates (an install you made by hand is left alone).
+   On a Mac, if it asks to use the "cloakroom" item in your Keychain, click Always Allow (it only lets Cloakroom read its own key).
 4. **Check it.** Open a new terminal window and run:
 
    ```bash
@@ -122,24 +126,78 @@ Details: [docs-HOW-IT-WORKS.md](https://github.com/shanjeevrajendran/cloakroom/b
 
 ## Extra protections
 
-Masking is the core. These come with it, on by default:
+Masking is the core. These come with it, on by default, and need nothing from you.
 
-- **Secrets don't leave through a command:** a command that would send a known secret off your machine (curl,
-  wget, ssh, scp, rsync, nc, git push with credentials, a literal token in an `Authorization` header) is held, and
-  the message names what it found by placeholder only. If you meant it, type `cr: allow`, then ask Claude to run
-  the same command again: it passes once.
+**Real values don't leave your machine**
+
+- **Commands that send data are held:** a command that would send a known secret off your machine (curl, wget,
+  ssh, scp, rsync, nc, git push with credentials, a literal token in an `Authorization` header) is held, and the
+  message names what it found by placeholder only. If you meant it, type `cr: allow`, then ask Claude to run the
+  same command again: it passes once.
+- **Network one-liners count too:** `python -c`, `node -e`, `ruby -e`, `perl -e`, `php -r`, `deno eval` and
+  `bash -c` that can open a connection are treated like curl.
 - **Encoded copies count:** a secret Cloakroom has seen is also caught base64-encoded, URL-encoded or JSON-escaped.
 - **Web, MCP and subagent calls carry placeholders only:** a web fetch, an MCP tool call or a prompt to a subagent
   that holds a real value is stopped before it runs.
-- **No key lands in a file git would commit:** when Claude writes a file with Write or Edit, a key or password that
-  would end up in a tracked file is refused, and Claude is told to use `.env` instead. Ignored files and `.env`
-  work as before.
-- **MCP images are read locally:** a screenshot or image returned by an MCP tool is read by local OCR and Claude
-  gets the masked text instead of the picture; without OCR the image is held back, with a one-line reason.
-- **PDFs, scans and photos become masked text:** Cloakroom pulls the text out on your machine and Claude never gets
-  the file or the picture.
+- **Pictures and PDFs become masked text:** PDFs, scans, photos and images returned by MCP tools are read on your
+  machine and Claude gets masked text, never the file or the picture. Without OCR an image is held back, with a
+  one-line reason.
+
+**Keys stay out of git**
+
+- **Files git would commit:** when Claude writes a file, a key or password that would end up in a tracked file is
+  refused, and Claude is told to use `.env` instead. Ignored files and `.env` work as before.
+- **Commits and pushes:** before Claude runs `git commit` or `git push`, Cloakroom reads what would be committed or
+  pushed. A key or password there holds the command, naming the file and placeholder; `cr: allow` lets it run once.
+- **Agent config files:** a live token written into `.mcp.json`, `.claude/settings.json`, `.cursor/mcp.json` or a
+  copy of `claude_desktop_config.json` in a repo is refused, and Claude is told to use an environment reference
+  such as `${GITHUB_TOKEN}`.
+
+**You stay in control, and can show it**
+
 - **Claude can't turn Cloakroom off:** its settings change only from the dashboard or when you type `cr: pause` or
   `cr: resume`.
+- **A log you can check and export:** each line of the activity log carries the hash of the line before it, so an
+  edited or removed line shows up. `cloakroom report` (or Export on the dashboard) gives counts per day and session,
+  without values.
+- **Placeholders can't be guessed:** each one ends in a short tag only your machine can make
+  (`PII_SECRET_1_k7q2ab`), and only placeholders issued in this session get their real value back. A file that
+  names `PII_SECRET_1` to fish for a key gets nothing; after three such tries in a session you see one line.
+- **Files Claude wrote stay masked:** when a real value is put back into a file, Cloakroom remembers where (never the
+  value), so reading that file again later, even in a new session, shows the placeholder.
+- **Old transcripts can be cleaned:** `cloakroom clean-history` finds keys and passwords already sitting in old
+  Claude Code transcripts and your prompt history, and replaces them on your yes, with a backup you delete.
+
+<a id="for-finance-teams"></a>**For finance teams**
+
+- **Bank numbers are masked:** US routing numbers (the ABA checksum plus a word or field like "routing" or "ABA")
+  and bank account numbers (next to "account number", "acct", "checking account", "DDA", in a CSV column of that
+  name, a line of an ACH payment file, or beside a routing number in the same record) become `PII_BANK_1_k7q2ab`.
+  Digits with no such word stay as they are, so order numbers, phone numbers and ZIP+4 codes are left alone.
+- **Calls that move money are held:** a write to a payment, payout or transfer API (Stripe, Plaid, Dwolla, Wise,
+  Adyen, PayPal, Square, Increase, Modern Treasury, Column) from curl, PowerShell or a payment CLI, or an MCP tool
+  named for it (`send_money`, `create_payout`, `initiate_transfer`), waits until you type `cr: allow`; then it runs
+  once. Reads such as a balance check pass. Add your own hosts and tools in `~/.cloakroom/config.json` with
+  `"money_hosts": ["payments.example.com/api/wires"]` and `"money_tools": ["disburse"]`; turn the hold off with
+  `"money_hold": false`.
+- **The audit trail:** every hold and every `cr: allow` lands in the same tamper-evident log (above), so
+  `cloakroom report` shows them per day and session.
+
+<details>
+<summary><b>Commands and limits</b></summary>
+
+- **`cloakroom report [--since 2026-10-01] [--format csv|json]`:** counts per day and session by data kind and action
+  (masked, withheld, held, allowed once, denied), with paths reduced to their extension and top folder. It starts
+  with what it covers and what it can't: a miss leaves no line, and other agents, machines without Cloakroom and
+  prompts sent with `cr!` are not in it.
+- **`cloakroom report --verify`:** checks the log's hash chain and prints the head hash. Keep that somewhere else:
+  anyone who rewrites every later line can rebuild the chain. The log keeps `"log_months"` months (default 12).
+- **`cloakroom clean-history [--dry-run]`:** the first run only counts, per project. Files changed in the last ten
+  minutes (an open session) are skipped.
+- **Commit and push check:** it reads the staged change (for `git push`, the commits no remote has yet) within two
+  seconds; a larger or slower one runs unchecked. Repos that commit sample keys need `"allow_secret_paths"`.
+
+</details>
 
 ## Dashboard
 
@@ -211,10 +269,11 @@ in a log looks like ordinary text to them.
 - **What a false alarm costs:** Claude sees a placeholder where it needed the real text. Nothing leaks.
 
 Every number comes from a set run once before any tuning on it unless it says otherwise. All tools at default
-settings, offline, tested 12 to 14 October 2026. maisecrets' maintainers reproduced our numbers and pointed out
-where the older sets were unfair to them (keys in formats vendors don't issue, and the `regions` setting); the
-key-format set and the setting below are the fix. The maintainers of the compared tools were contacted before
-publishing. Method, versions and every run: [bench/RESULTS.md](https://github.com/shanjeevrajendran/cloakroom/blob/main/bench/RESULTS.md).
+settings, offline, tested 12 to 14 October 2026 (Cloakroom's rows rerun 24 October for 0.6.2). maisecrets'
+maintainers reproduced our numbers and pointed out where the older sets were unfair to them (keys in formats vendors
+don't issue, and the `regions` setting); the key-format set and the setting below are the fix. The maintainers of
+the compared tools were contacted before publishing. Method, versions and every run:
+[bench/RESULTS.md](https://github.com/shanjeevrajendran/cloakroom/blob/main/bench/RESULTS.md).
 
 **Made-up agent traffic** (five sets written by a different model: chats, logs, config files, spreadsheets, support
 tickets): 1,339 key and personal values (the rest are in RESULTS.md) and 200 safe look-alikes. Fewer is better.
@@ -224,7 +283,7 @@ any tuning on them.
 | Tool | Personal data leaked (of 1,005) | Keys, passwords, cards, IDs leaked (of 334) | False alarms (of 200 safe samples) |
 |---|---|---|---|
 | **Cloakroom, first run** | **0** | 4 | 60 |
-| Cloakroom today (has seen these sets, so not a fair score) | 1 | **2** | 23 |
+| Cloakroom today (has seen these sets, so not a fair score) | 1 | **2** | 20 |
 | sensitive-canary (blocks the call instead of masking) | 119 | 40 | 16 |
 | maisecrets (`"regions": ["us", "uk", "in"]`) | 547 | 54 | 6 |
 | claude-code-redact, PII on | 607 | 101 | 31 |
@@ -239,7 +298,7 @@ passwords with no fixed shape, encoded emails; 77 values, 15 look-alikes):
 
 | Tool | Leaked (of 77) | False alarms (of 15) |
 |---|---|---|
-| **Cloakroom** | **0** | 3 |
+| **Cloakroom** | **0** | 2 |
 | maisecrets | 3 | **1** |
 | sensitive-canary | 14 | 3 |
 | redact-hook (default / aggressive) | 15 | 5 |
@@ -252,7 +311,7 @@ rule is built to catch: first number without it, in brackets the whole set.
 
 | Tool | Real secrets caught (of every 100), higher is better | False alarms (of every 100 harmless look-alikes), lower is better |
 |---|---|---|
-| **Cloakroom** | **73** (65) | 22 (25) |
+| **Cloakroom** | **73** (65) | 19 (22) |
 | maisecrets | 58 (**68**) | 7 (6) |
 | claude-code-redact | 36 (31) | 8 (7) |
 | sensitive-canary (blocks the call instead of masking) | 30 (27) | 21 (18) |
@@ -260,9 +319,9 @@ rule is built to catch: first number without it, in brackets the whole set.
 | redact-hook, aggressive | 36 (26) | 12 (20) |
 
 Without the test-vector repository, Cloakroom catches the most; with it, maisecrets does, and maisecrets is the most
-precise either way (of what it masks, 86 to 91 in 100 are real secrets, against Cloakroom's 71). Cloakroom masks far
-more harmless look-alikes (3,903 against maisecrets' 997 on the whole set): false alarms are Cloakroom's main open
-problem ([precision, recall and F1 for every tool](https://github.com/shanjeevrajendran/cloakroom/blob/main/bench/RESULTS.md)).
+precise either way (of what it masks, 86 to 91 in 100 are real secrets, against Cloakroom's 73 to 74). Cloakroom
+masks far more harmless look-alikes (3,457 against maisecrets' 997 on the whole set, down from 3,903 before 0.6.2):
+false alarms are Cloakroom's main open problem ([precision, recall and F1 for every tool](https://github.com/shanjeevrajendran/cloakroom/blob/main/bench/RESULTS.md)).
 
 **On public datasets we didn't write** (run once; details in
 [bench/public/RESULTS.md](https://github.com/shanjeevrajendran/cloakroom/blob/main/bench/public/RESULTS.md)):
@@ -287,7 +346,9 @@ rest are mostly names and addresses Gretel leaves unlabelled.
   every date (by default only birth dates and dates in someone's record), `"mask_own_username": true` to mask your
   own login name in paths too, `"allow_images": true` to let pictures through unchecked (with a warning),
   `"allow_secret_paths": ["tests/fixtures/*"]` (globs, relative to the project folder) for files where sample keys
-  may be written even though git would commit them.
+  may be written (or committed) even though git would commit them, `"log_months"` for how many months of the
+  activity log to keep (default 12).
+- **Report and log check:** `cloakroom report`, see [Extra protections](#extra-protections).
 
 Exceptions, backends, CI and troubleshooting: [the handbook](https://github.com/shanjeevrajendran/cloakroom/blob/main/docs-HANDBOOK.md).
 
