@@ -197,11 +197,11 @@
   }
  },
  "CoderLuii/HolyClaude": {
-  "commit_90d": 17,
-  "commit_7d": 2,
+  "commit_90d": 14,
+  "commit_7d": 0,
   "rel_ver": "v1.6.7",
   "rel_pub": "2026-10-15",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -216,10 +216,10 @@
    "Python": 5,
    "Dockerfile": 5
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3104,6 +3104,89 @@
  },
  "AzureCosmosDB/gallery": {
   "rel_ver": null,
-  "rel_none": true
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "JavaScript": 61,
+   "TypeScript": 33,
+   "CSS": 6
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "kitao/pyxel-skill": {
+  "rel_ver": "v1.4.3",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "julyfun/how-to": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Markdown": 92,
+   "Python": 6,
+   "C++": 2,
+   "Rust": 0,
+   "Typst": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "AAitorG/napari-DINOSim": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 87,
+   "Jupyter Notebook": 13
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

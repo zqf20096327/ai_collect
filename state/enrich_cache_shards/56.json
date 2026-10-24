@@ -182,7 +182,7 @@
   }
  },
  "huhusmang/Awesome-LLMs-for-Vulnerability-Detection": {
-  "commit_7d": 7,
+  "commit_7d": 6,
   "commit_90d": 84,
   "rel_ver": null,
   "rel_none": true,
@@ -194,10 +194,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -233,10 +233,10 @@
  },
  "ngxson/wllama": {
   "commit_7d": 1,
-  "commit_90d": 18,
+  "commit_90d": 19,
   "rel_ver": "3.8.1",
   "rel_pub": "2026-10-02",
-  "rel_days": 15,
+  "rel_days": 22,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -252,10 +252,10 @@
    "CMake": 1,
    "Shell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -291,12 +291,12 @@
   }
  },
  "hashgraph-online/standards-sdk": {
-  "commit_7d": 0,
-  "commit_90d": 7,
-  "rel_ver": "v0.1.191",
-  "rel_pub": "2026-10-08",
-  "rel_days": 9,
-  "rel_n90": 7,
+  "commit_7d": 1,
+  "commit_90d": 8,
+  "rel_ver": "v0.1.192",
+  "rel_pub": "2026-10-19",
+  "rel_days": 5,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -309,10 +309,10 @@
    "HTML": 27,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -370,11 +370,11 @@
   }
  },
  "TechNomadCode/AI-Product-Development-Toolkit": {
-  "commit_7d": 3,
+  "commit_7d": 1,
   "commit_90d": 40,
   "rel_ver": "1.3.1",
   "rel_pub": "2026-10-17",
-  "rel_days": 0,
+  "rel_days": 7,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -384,10 +384,10 @@
   "sec_ids": [],
   "contrib_n": 2,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -2640,6 +2640,79 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "kabudu/token-scavenger": {
+  "rel_ver": "v0.8.0",
+  "rel_pub": "2026-10-10",
+  "rel_days": 14,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 99,
+   "CSS": 0,
+   "Python": 0,
+   "Shell": 0,
+   "Ruby": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "AKKI0511/QuantTradeAI": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 100,
+   "Makefile": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "anchorco/anchor-sdk": {
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-02-04",
+  "rel_days": 262,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Python": 46,
+   "TypeScript": 45,
+   "Jupyter Notebook": 9,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

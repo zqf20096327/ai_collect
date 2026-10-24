@@ -309,7 +309,7 @@
  },
  "numerai/example-scripts": {
   "commit_90d": 6,
-  "commit_7d": 2,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -321,10 +321,10 @@
    "Jupyter Notebook": 90,
    "Python": 10
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

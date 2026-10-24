@@ -380,11 +380,11 @@
   }
  },
  "bghira/SimpleTuner": {
-  "commit_90d": 1025,
-  "commit_7d": 33,
-  "rel_ver": "v4.9.3",
-  "rel_pub": "2026-10-01",
-  "rel_days": 16,
+  "commit_90d": 952,
+  "commit_7d": 50,
+  "rel_ver": "v4.10.1",
+  "rel_pub": "2026-10-18",
+  "rel_days": 6,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -400,21 +400,21 @@
    "CSS": 2,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "bespokelabsai/curator": {
-  "commit_90d": 14,
-  "commit_7d": 10,
+  "commit_90d": 15,
+  "commit_7d": 1,
   "rel_ver": "v0.1.30",
   "rel_pub": "2026-10-13",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -429,22 +429,22 @@
    "Makefile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "waybarrios/vllm-mlx": {
-  "commit_90d": 173,
-  "commit_7d": 18,
-  "rel_ver": "v0.5.0",
-  "rel_pub": "2026-09-17",
-  "rel_days": 30,
-  "rel_n90": 2,
+  "commit_90d": 185,
+  "commit_7d": 5,
+  "rel_ver": "v0.6.0",
+  "rel_pub": "2026-10-20",
+  "rel_days": 4,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -455,10 +455,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3576,14 +3576,87 @@
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
-  "sec_ids": []
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 97,
+   "CSS": 2,
+   "Python": 1,
+   "JavaScript": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  },
  "tryAGI/ElevenLabs": {
   "rel_ver": "v1.0.8",
   "rel_pub": "2026-09-01",
-  "rel_days": 52,
+  "rel_days": 53,
   "rel_n90": 3,
   "rel_pre": false,
-  "rel_none": false
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "C#": 100,
+   "Shell": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "padmilkhandelwal/convert-claude-to-codex-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {},
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "dralkh/spaceforge": {
+  "rel_ver": "1.1.3",
+  "rel_pub": "2026-10-19",
+  "rel_days": 5,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 91,
+   "CSS": 9,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

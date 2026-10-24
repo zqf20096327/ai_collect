@@ -88,11 +88,11 @@
   }
  },
  "onehumanbeing/esp32-iphone-agent": {
-  "commit_90d": 48,
-  "commit_7d": 48,
+  "commit_90d": 54,
+  "commit_7d": 6,
   "rel_ver": "v0.1.0",
   "rel_pub": "2026-10-14",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -108,10 +108,10 @@
    "C++": 3,
    "JavaScript": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -2664,6 +2664,29 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "project-flogo/ml": {
+  "rel_ver": "v0.1.3",
+  "rel_pub": "2020-05-27",
+  "rel_days": 2341,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Go": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

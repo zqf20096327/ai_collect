@@ -115,11 +115,11 @@
   }
  },
  "emgucv/emgucv": {
-  "commit_7d": 0,
-  "commit_90d": 462,
+  "commit_7d": 4,
+  "commit_90d": 393,
   "rel_ver": "5.0.0",
   "rel_pub": "2026-10-09",
-  "rel_days": 8,
+  "rel_days": 15,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -135,21 +135,21 @@
    "Shell": 1,
    "PowerShell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "SemiAnalysisAI/InferenceX": {
-  "commit_7d": 111,
-  "commit_90d": 902,
+  "commit_7d": 141,
+  "commit_90d": 1018,
   "rel_ver": "tilert-v0.1.5.post2-inferencex.1",
   "rel_pub": "2026-08-19",
-  "rel_days": 59,
+  "rel_days": 66,
   "rel_n90": 1,
   "rel_pre": true,
   "rel_none": false,
@@ -165,21 +165,21 @@
    "HTML": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "ovg-project/kvcached": {
-  "commit_7d": 14,
-  "commit_90d": 112,
+  "commit_7d": 9,
+  "commit_90d": 116,
   "rel_ver": "v0.1.6",
   "rel_pub": "2026-10-03",
-  "rel_days": 14,
+  "rel_days": 21,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -194,10 +194,10 @@
    "Shell": 4,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -226,12 +226,12 @@
   }
  },
  "easystats/performance": {
-  "commit_7d": 27,
-  "commit_90d": 61,
-  "rel_ver": "v0.18.2",
-  "rel_pub": "2026-09-10",
-  "rel_days": 37,
-  "rel_n90": 3,
+  "commit_7d": 13,
+  "commit_90d": 72,
+  "rel_ver": "v0.19.0",
+  "rel_pub": "2026-10-18",
+  "rel_days": 6,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -243,10 +243,10 @@
    "R": 97,
    "TeX": 3
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -257,7 +257,7 @@
   "commit_90d": 9,
   "rel_ver": "v2.15.0",
   "rel_pub": "2026-05-22",
-  "rel_days": 148,
+  "rel_days": 155,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -273,10 +273,10 @@
    "CSS": 0,
    "Nix": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -2634,6 +2634,30 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "SOLRICKS/comfyui-solricks": {
+  "rel_ver": "0.2.1",
+  "rel_pub": "2026-05-31",
+  "rel_days": 146,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 95,
+   "Batchfile": 5
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

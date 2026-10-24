@@ -369,11 +369,11 @@
   }
  },
  "samchon/nestia": {
-  "commit_7d": 3,
-  "commit_90d": 144,
-  "rel_ver": "v14.0.4",
-  "rel_pub": "2026-10-15",
-  "rel_days": 2,
+  "commit_7d": 2,
+  "commit_90d": 94,
+  "rel_ver": "v14.1.0",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
   "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
@@ -391,10 +391,10 @@
    "JavaScript": 1,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -454,12 +454,12 @@
   }
  },
  "HelgeSverre/ollama-gui": {
-  "commit_7d": 6,
-  "commit_90d": 42,
-  "rel_ver": "v2.0.4",
-  "rel_pub": "2026-10-13",
-  "rel_days": 4,
-  "rel_n90": 5,
+  "commit_7d": 4,
+  "commit_90d": 46,
+  "rel_ver": "v2.0.5",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -474,10 +474,10 @@
    "JavaScript": 1,
    "Shell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3188,6 +3188,49 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "rockyco/OpenWLAN": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Verilog": 51,
+   "VHDL": 21,
+   "HTML": 10,
+   "MATLAB": 8,
+   "Tcl": 3
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "MINE-USTC/LAT": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 98,
+   "Shell": 2
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

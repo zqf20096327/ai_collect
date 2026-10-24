@@ -190,7 +190,7 @@
   "commit_7d": 0,
   "rel_ver": "2.2.0",
   "rel_pub": "2026-07-06",
-  "rel_days": 103,
+  "rel_days": 110,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -203,17 +203,17 @@
    "Python": 68,
    "Jupyter Notebook": 32
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "XiaomingX/indie-hacker-tools-plus": {
-  "commit_90d": 92,
+  "commit_90d": 91,
   "commit_7d": 7,
   "rel_ver": null,
   "rel_none": true,
@@ -223,10 +223,10 @@
   "sec_ids": [],
   "contrib_n": 3,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -338,11 +338,11 @@
   }
  },
  "jx-sec/jxwaf": {
-  "commit_90d": 38,
+  "commit_90d": 34,
   "commit_7d": 0,
   "rel_ver": "v4.5",
   "rel_pub": "2025-03-28",
-  "rel_days": 568,
+  "rel_days": 575,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -358,18 +358,18 @@
    "Go Template": 3,
    "CSS": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "rashakil-ds/Roadmap-Docs": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 1,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -378,10 +378,10 @@
   "sec_ids": [],
   "contrib_n": 2,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

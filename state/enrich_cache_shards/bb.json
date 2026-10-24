@@ -224,11 +224,11 @@
   }
  },
  "huggingface/huggingface.js": {
-  "commit_7d": 26,
-  "commit_90d": 238,
-  "rel_ver": "lerobot-v0.0.13",
-  "rel_pub": "2026-10-15",
-  "rel_days": 2,
+  "commit_7d": 10,
+  "commit_90d": 242,
+  "rel_ver": "usd-web-viewer-v0.2.0",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -244,10 +244,10 @@
    "Python": 1,
    "Jinja": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -312,13 +312,13 @@
   }
  },
  "microsoft/azure-pipelines-agent": {
-  "commit_7d": 1,
-  "commit_90d": 43,
-  "rel_ver": "v5.281.0",
-  "rel_pub": "2026-10-14",
-  "rel_days": 3,
+  "commit_7d": 8,
+  "commit_90d": 50,
+  "rel_ver": "v5.281.1",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
   "rel_n90": 5,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -332,10 +332,10 @@
    "JavaScript": 1,
    "Batchfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -396,11 +396,11 @@
   }
  },
  "Denys88/rl_games": {
-  "commit_7d": 0,
-  "commit_90d": 16,
+  "commit_7d": 1,
+  "commit_90d": 17,
   "rel_ver": "v1.6.5",
   "rel_pub": "2026-02-20",
-  "rel_days": 239,
+  "rel_days": 246,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -413,10 +413,10 @@
    "Jupyter Notebook": 97,
    "Python": 3
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -452,11 +452,11 @@
   }
  },
  "owlbarn/owl": {
-  "commit_7d": 2,
-  "commit_90d": 3,
+  "commit_7d": 1,
+  "commit_90d": 4,
   "rel_ver": "1.2",
   "rel_pub": "2024-12-24",
-  "rel_days": 662,
+  "rel_days": 669,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -472,10 +472,10 @@
    "Makefile": 0,
    "Python": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -508,12 +508,12 @@
   }
  },
  "NikoDemon80/ComfyUI-H3-Motion-Context": {
-  "commit_7d": 0,
-  "commit_90d": 12,
-  "rel_ver": "v0.6.2",
-  "rel_pub": "2026-09-06",
-  "rel_days": 41,
-  "rel_n90": 9,
+  "commit_7d": 7,
+  "commit_90d": 20,
+  "rel_ver": "v0.7.1",
+  "rel_pub": "2026-10-18",
+  "rel_days": 6,
+  "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -525,10 +525,10 @@
    "Python": 94,
    "JavaScript": 6
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3348,6 +3348,73 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "abhinav-bohra/abhinav-bohra.github.io": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "HTML": 88,
+   "TypeScript": 11,
+   "CSS": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "renocrypt/renocrypt.com": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Astro": 72,
+   "CSS": 15,
+   "TypeScript": 10,
+   "JavaScript": 4
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "wm1634208243/Video-Subtitle-OCR": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 65,
+   "JavaScript": 17,
+   "CSS": 7,
+   "HTML": 4,
+   "Shell": 4
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

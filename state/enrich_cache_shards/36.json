@@ -396,8 +396,8 @@
   }
  },
  "scadastrangelove/awesome-ai-security-tools": {
-  "commit_7d": 11,
-  "commit_90d": 212,
+  "commit_7d": 31,
+  "commit_90d": 240,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -408,10 +408,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

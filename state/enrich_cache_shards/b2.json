@@ -322,12 +322,12 @@
   }
  },
  "mlmed/torchxrayvision": {
-  "commit_90d": 12,
-  "commit_7d": 3,
-  "rel_ver": "1.5.5",
-  "rel_pub": "2026-09-29",
-  "rel_days": 18,
-  "rel_n90": 2,
+  "commit_90d": 16,
+  "commit_7d": 4,
+  "rel_ver": "1.5.7",
+  "rel_pub": "2026-10-17",
+  "rel_days": 7,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -340,10 +340,10 @@
    "Python": 2,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -362,10 +362,10 @@
   "lang": {
    "TypeScript": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

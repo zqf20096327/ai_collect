@@ -380,10 +380,10 @@
   }
  },
  "event-catalog/eventcatalog": {
-  "commit_90d": 188,
-  "commit_7d": 19,
-  "rel_ver": "@eventcatalog/sdk@2.31.1",
-  "rel_pub": "2026-10-16",
+  "commit_90d": 200,
+  "commit_7d": 29,
+  "rel_ver": "@eventcatalog/visualiser@5.1.2",
+  "rel_pub": "2026-10-23",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -400,20 +400,20 @@
    "JavaScript": 2,
    "CSS": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "Tavris1/ComfyUI-Easy-Install": {
-  "commit_90d": 441,
-  "commit_7d": 4,
-  "rel_ver": "3.22.0",
-  "rel_pub": "2026-10-15",
+  "commit_90d": 449,
+  "commit_7d": 8,
+  "rel_ver": "3.25.1",
+  "rel_pub": "2026-10-22",
   "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
@@ -426,10 +426,10 @@
   "lang": {
    "Batchfile": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -500,7 +500,7 @@
   "commit_7d": 0,
   "rel_ver": "v1.6.0",
   "rel_pub": "2026-01-05",
-  "rel_days": 285,
+  "rel_days": 292,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -516,10 +516,10 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -530,7 +530,7 @@
   "commit_7d": 0,
   "rel_ver": "v2.2.0",
   "rel_pub": "2026-09-29",
-  "rel_days": 18,
+  "rel_days": 25,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -545,10 +545,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -582,11 +582,11 @@
   }
  },
  "razzant/ouroboros": {
-  "commit_90d": 5920,
-  "commit_7d": 0,
-  "rel_ver": "v7.6.0",
-  "rel_pub": "2026-10-05",
-  "rel_days": 12,
+  "commit_90d": 10421,
+  "commit_7d": 2323,
+  "rel_ver": "v7.8.0",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -602,10 +602,10 @@
    "HTML": 0,
    "Java": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -640,11 +640,11 @@
   }
  },
  "datalayer/jupyter-mcp-server": {
-  "commit_90d": 180,
-  "commit_7d": 5,
+  "commit_90d": 165,
+  "commit_7d": 1,
   "rel_ver": "v2.2.4",
   "rel_pub": "2026-10-11",
-  "rel_days": 6,
+  "rel_days": 13,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -663,10 +663,10 @@
    "Makefile": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -693,8 +693,8 @@
   }
  },
  "Zefan-Cai/R-KV": {
-  "commit_90d": 21,
-  "commit_7d": 0,
+  "commit_90d": 20,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -708,10 +708,10 @@
    "ANTLR": 1,
    "Jupyter Notebook": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -719,10 +719,10 @@
  },
  "superlinear-ai/raglite": {
   "commit_90d": 2,
-  "commit_7d": 1,
+  "commit_7d": 0,
   "rel_ver": "v1.1.1",
   "rel_pub": "2026-05-18",
-  "rel_days": 152,
+  "rel_days": 159,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -735,18 +735,18 @@
    "Python": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "elastic/elastic-labs": {
-  "commit_90d": 53,
-  "commit_7d": 0,
+  "commit_90d": 56,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -761,10 +761,10 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3564,6 +3564,26 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "ColomboAI-com/Cairo-Super-Agent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "CSS": 61,
+   "HTML": 39
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

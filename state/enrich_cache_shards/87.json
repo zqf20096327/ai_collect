@@ -115,11 +115,11 @@
   }
  },
  "MiniMax-AI/cli": {
-  "commit_90d": 75,
+  "commit_90d": 80,
   "commit_7d": 6,
   "rel_ver": "v1.0.28",
   "rel_pub": "2026-10-12",
-  "rel_days": 5,
+  "rel_days": 12,
   "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
@@ -132,22 +132,22 @@
    "TypeScript": 100,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "johannfaouzi/pyts": {
-  "commit_90d": 13,
-  "commit_7d": 7,
-  "rel_ver": "v0.14.0",
-  "rel_pub": "2026-10-04",
-  "rel_days": 13,
-  "rel_n90": 1,
+  "commit_90d": 35,
+  "commit_7d": 22,
+  "rel_ver": "0.14.1",
+  "rel_pub": "2026-10-21",
+  "rel_days": 3,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -158,21 +158,21 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "jundizhou/easy-stock": {
-  "commit_90d": 206,
-  "commit_7d": 15,
-  "rel_ver": "v1.5.4",
-  "rel_pub": "2026-10-17",
-  "rel_days": 0,
+  "commit_90d": 255,
+  "commit_7d": 52,
+  "rel_ver": "v1.6.0",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -188,21 +188,21 @@
    "JavaScript": 6,
    "Python": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "geek-fun/dockit": {
-  "commit_90d": 113,
-  "commit_7d": 9,
-  "rel_ver": "v1.4.5",
-  "rel_pub": "2026-09-06",
-  "rel_days": 41,
+  "commit_90d": 115,
+  "commit_7d": 7,
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-10-18",
+  "rel_days": 6,
   "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
@@ -218,10 +218,10 @@
    "HTML": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -2911,6 +2911,75 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "mazamaka/claude-code-server-ops": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 61,
+   "Shell": 39
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "vasilvestre/mcp-rector": {
+  "rel_ver": "v1.1.2",
+  "rel_pub": "2025-10-31",
+  "rel_days": 358,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 93,
+   "JavaScript": 7
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "lglucas/ai-dev-operating-system": {
+  "rel_ver": "v0.5.6",
+  "rel_pub": "2026-10-01",
+  "rel_days": 23,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 88,
+   "PowerShell": 6,
+   "Shell": 6
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

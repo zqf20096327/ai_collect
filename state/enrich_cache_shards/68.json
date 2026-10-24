@@ -149,11 +149,11 @@
   }
  },
  "fairlearn/fairlearn": {
-  "commit_90d": 51,
-  "commit_7d": 13,
+  "commit_90d": 74,
+  "commit_7d": 26,
   "rel_ver": "v0.15.0",
   "rel_pub": "2026-10-12",
-  "rel_days": 5,
+  "rel_days": 12,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -168,10 +168,10 @@
    "PowerShell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -259,11 +259,11 @@
   }
  },
  "limecloud/lime": {
-  "commit_90d": 189,
-  "commit_7d": 20,
-  "rel_ver": "v1.160.0",
-  "rel_pub": "2026-10-17",
-  "rel_days": 0,
+  "commit_90d": 244,
+  "commit_7d": 61,
+  "rel_ver": "v1.168.0",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -279,10 +279,10 @@
    "HTML": 0,
    "Python": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -337,11 +337,11 @@
   }
  },
  "ccfos/huatuo": {
-  "commit_90d": 633,
-  "commit_7d": 38,
+  "commit_90d": 695,
+  "commit_7d": 94,
   "rel_ver": "v2.3.0",
   "rel_pub": "2026-08-13",
-  "rel_days": 65,
+  "rel_days": 72,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -357,10 +357,10 @@
    "JavaScript": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3055,6 +3055,54 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "overbit/fast-jev-compaction-opencode": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 84,
+   "HTML": 12,
+   "JavaScript": 4
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "iyashjayesh/tokenchit": {
+  "rel_ver": "v0.8.0",
+  "rel_pub": "2026-09-12",
+  "rel_days": 42,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 65,
+   "JavaScript": 23,
+   "CSS": 10,
+   "HTML": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

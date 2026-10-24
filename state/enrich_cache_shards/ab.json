@@ -223,8 +223,8 @@
   }
  },
  "signerlabs/ShipSwift": {
-  "commit_90d": 3,
-  "commit_7d": 0,
+  "commit_90d": 4,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -236,10 +236,10 @@
    "Swift": 86,
    "Metal": 14
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -323,11 +323,11 @@
   }
  },
  "explosion/spacy-transformers": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 4,
+  "commit_7d": 4,
   "rel_ver": "release-v1.4.0",
   "rel_pub": "2026-03-17",
-  "rel_days": 214,
+  "rel_days": 221,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -342,10 +342,10 @@
    "Makefile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -353,10 +353,10 @@
  },
  "Kuingsmile/word-GPT-Plus": {
   "commit_90d": 3,
-  "commit_7d": 3,
+  "commit_7d": 0,
   "rel_ver": "v2.0.1",
   "rel_pub": "2026-01-04",
-  "rel_days": 286,
+  "rel_days": 293,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -372,10 +372,10 @@
    "JavaScript": 3,
    "HTML": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3241,13 +3241,25 @@
  "EdAbati/outlines-haystack": {
   "rel_ver": "1.0.0",
   "rel_pub": "2026-02-23",
-  "rel_days": 242,
+  "rel_days": 243,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
-  "sec_ids": []
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 83,
+   "Jupyter Notebook": 17
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

@@ -272,8 +272,8 @@
   }
  },
  "Haidra-Org/AI-Horde": {
-  "commit_90d": 251,
-  "commit_7d": 0,
+  "commit_90d": 235,
+  "commit_7d": 3,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -288,10 +288,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -366,11 +366,11 @@
   }
  },
  "data-goblin/power-bi-agentic-development": {
-  "commit_90d": 141,
-  "commit_7d": 58,
-  "rel_ver": "v26.40.5",
-  "rel_pub": "2026-10-13",
-  "rel_days": 4,
+  "commit_90d": 137,
+  "commit_7d": 3,
+  "rel_ver": "v26.40.7",
+  "rel_pub": "2026-10-17",
+  "rel_days": 7,
   "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
@@ -386,10 +386,10 @@
    "Shell": 7,
    "PowerShell": 3
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -448,12 +448,12 @@
   }
  },
  "strelov1/freehire": {
-  "commit_90d": 2568,
-  "commit_7d": 65,
-  "rel_ver": "extension-v0.1.6",
-  "rel_pub": "2026-08-17",
-  "rel_days": 61,
-  "rel_n90": 5,
+  "commit_90d": 2554,
+  "commit_7d": 238,
+  "rel_ver": "extension-v0.1.12",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
+  "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -468,10 +468,10 @@
    "HTML": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

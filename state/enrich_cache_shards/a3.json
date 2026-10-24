@@ -167,11 +167,11 @@
   }
  },
  "NVIDIA/physicsnemo": {
-  "commit_90d": 144,
-  "commit_7d": 29,
+  "commit_90d": 146,
+  "commit_7d": 21,
   "rel_ver": "v2.2.2",
   "rel_pub": "2026-09-11",
-  "rel_days": 36,
+  "rel_days": 43,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -187,10 +187,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3358,6 +3358,43 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "AICommitApp/community": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "enkhbold470/inky-gigachad": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 52,
+   "JavaScript": 48
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

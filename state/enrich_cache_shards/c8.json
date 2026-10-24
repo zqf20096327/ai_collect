@@ -25,11 +25,11 @@
   }
  },
  "taylorwilsdon/google_workspace_mcp": {
-  "commit_90d": 742,
-  "commit_7d": 0,
-  "rel_ver": "v2.1.0",
-  "rel_pub": "2026-10-09",
-  "rel_days": 8,
+  "commit_90d": 1012,
+  "commit_7d": 197,
+  "rel_ver": "v2.2.0",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -43,10 +43,10 @@
    "Go Template": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -57,7 +57,7 @@
   "commit_7d": 0,
   "rel_ver": "v1.3.0",
   "rel_pub": "2026-08-09",
-  "rel_days": 69,
+  "rel_days": 76,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -70,10 +70,10 @@
    "Python": 99,
    "Shell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -132,11 +132,11 @@
   }
  },
  "cortexkit/magic-context": {
-  "commit_90d": 5305,
-  "commit_7d": 637,
-  "rel_ver": "v0.49.8",
-  "rel_pub": "2026-10-17",
-  "rel_days": 0,
+  "commit_90d": 5489,
+  "commit_7d": 472,
+  "rel_ver": "v0.49.20",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -152,10 +152,10 @@
    "Shell": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -251,7 +251,7 @@
   "commit_7d": 0,
   "rel_ver": "v0.0.7",
   "rel_pub": "2024-08-09",
-  "rel_days": 799,
+  "rel_days": 806,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -267,10 +267,10 @@
    "Makefile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3254,5 +3254,6 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
- }
+ },
+ "shokribardiya/Angra-AI-Model-Collaboration-Bridge-.-Bardiya-Shokri-": {}
 }

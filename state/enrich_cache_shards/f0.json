@@ -327,10 +327,10 @@
  },
  "microsoft/Generative-AI-for-beginners-dotnet": {
   "commit_7d": 4,
-  "commit_90d": 42,
+  "commit_90d": 46,
   "rel_ver": "2026-08-24",
   "rel_pub": "2026-08-24",
-  "rel_days": 54,
+  "rel_days": 61,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -346,10 +346,10 @@
    "Bicep": 4,
    "Shell": 4
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -400,12 +400,12 @@
   }
  },
  "xhluca/bm25s": {
-  "commit_7d": 0,
+  "commit_7d": 2,
   "commit_90d": 15,
-  "rel_ver": "0.3.13",
-  "rel_pub": "2026-10-07",
-  "rel_days": 10,
-  "rel_n90": 4,
+  "rel_ver": "0.3.15",
+  "rel_pub": "2026-10-22",
+  "rel_days": 2,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -416,10 +416,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -508,12 +508,12 @@
   }
  },
  "Comfy-Org/comfy-cli": {
-  "commit_7d": 24,
-  "commit_90d": 363,
-  "rel_ver": "v1.22.0",
-  "rel_pub": "2026-09-30",
-  "rel_days": 17,
-  "rel_n90": 10,
+  "commit_7d": 23,
+  "commit_90d": 360,
+  "rel_ver": "v1.23.0",
+  "rel_pub": "2026-10-20",
+  "rel_days": 4,
+  "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -524,10 +524,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3031,6 +3031,33 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "NC0DER/KeyphraseExtraction": {
+  "rel_ver": "KeyphraseExtractionv1.0",
+  "rel_pub": "2021-09-15",
+  "rel_days": 1865,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 81,
+   "C": 15,
+   "MATLAB": 2,
+   "Shell": 2,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

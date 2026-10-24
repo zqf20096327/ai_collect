@@ -262,11 +262,11 @@
   }
  },
  "MaxMiksa/Autonomous-Company": {
-  "commit_90d": 94,
-  "commit_7d": 13,
+  "commit_90d": 124,
+  "commit_7d": 27,
   "rel_ver": "v3.0.0",
   "rel_pub": "2026-10-13",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -282,10 +282,10 @@
    "Shell": 6,
    "CSS": 5
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -347,12 +347,12 @@
   }
  },
  "pytorch/FBGEMM": {
-  "commit_90d": 384,
-  "commit_7d": 49,
+  "commit_90d": 421,
+  "commit_7d": 74,
   "rel_ver": "v1.8.0",
   "rel_pub": "2026-07-22",
-  "rel_days": 87,
-  "rel_n90": 1,
+  "rel_days": 94,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -367,22 +367,22 @@
    "HIP": 3,
    "CMake": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "datalevin/datalevin": {
-  "commit_90d": 417,
-  "commit_7d": 42,
-  "rel_ver": "1.2.5",
-  "rel_pub": "2026-10-15",
-  "rel_days": 2,
-  "rel_n90": 10,
+  "commit_90d": 397,
+  "commit_7d": 11,
+  "rel_ver": "1.2.7",
+  "rel_pub": "2026-10-21",
+  "rel_days": 3,
+  "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -397,10 +397,10 @@
    "JavaScript": 4,
    "Shell": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -437,11 +437,11 @@
   }
  },
  "LING71671/open-reverselab": {
-  "commit_90d": 56,
-  "commit_7d": 3,
+  "commit_90d": 75,
+  "commit_7d": 24,
   "rel_ver": "v1.2.1",
   "rel_pub": "2026-09-07",
-  "rel_days": 40,
+  "rel_days": 47,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -457,10 +457,10 @@
    "PowerShell": 4,
    "Vue": 3
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -501,7 +501,7 @@
   "commit_7d": 0,
   "rel_ver": "0.1.10",
   "rel_pub": "2026-03-31",
-  "rel_days": 200,
+  "rel_days": 207,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -515,10 +515,10 @@
    "C++": 23,
    "CMake": 3
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

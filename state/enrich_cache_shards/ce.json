@@ -320,11 +320,11 @@
   }
  },
  "sonos/tract": {
-  "commit_7d": 67,
-  "commit_90d": 879,
+  "commit_7d": 111,
+  "commit_90d": 948,
   "rel_ver": "v0.23.9",
   "rel_pub": "2026-10-15",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
@@ -345,10 +345,10 @@
    "Jinja": 3,
    "Cuda": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -461,12 +461,12 @@
   }
  },
  "kwaroran/Risuai": {
-  "commit_7d": 39,
-  "commit_90d": 213,
-  "rel_ver": "v2026.8.250",
-  "rel_pub": "2026-08-25",
-  "rel_days": 53,
-  "rel_n90": 3,
+  "commit_7d": 15,
+  "commit_90d": 203,
+  "rel_ver": "v2026.10.220",
+  "rel_pub": "2026-10-22",
+  "rel_days": 2,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -481,10 +481,10 @@
    "Rust": 0,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -492,10 +492,10 @@
  },
  "writer/writer-framework": {
   "commit_7d": 0,
-  "commit_90d": 2,
+  "commit_90d": 1,
   "rel_ver": "v0.8.2",
   "rel_pub": "2024-12-02",
-  "rel_days": 684,
+  "rel_days": 691,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -511,21 +511,21 @@
    "JavaScript": 1,
    "HTML": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "WSTxda/SwitchAI": {
-  "commit_7d": 21,
+  "commit_7d": 0,
   "commit_90d": 23,
   "rel_ver": "4.2",
   "rel_pub": "2026-10-17",
-  "rel_days": 0,
+  "rel_days": 7,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -538,10 +538,10 @@
    "Kotlin": 100,
    "AIDL": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3036,6 +3036,32 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "saidsef/ml-classifier": {
+  "rel_ver": "v2026.10",
+  "rel_pub": "2026-10-10",
+  "rel_days": 14,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Jupyter Notebook": 98,
+   "Python": 1,
+   "Dockerfile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

@@ -340,8 +340,8 @@
   }
  },
  "DSXiangLi/DecryptPrompt": {
-  "commit_7d": 2,
-  "commit_90d": 18,
+  "commit_7d": 1,
+  "commit_90d": 19,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -350,22 +350,22 @@
   "sec_ids": [],
   "contrib_n": 10,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "tslearn-team/tslearn": {
-  "commit_7d": 2,
-  "commit_90d": 43,
-  "rel_ver": "v0.9.0",
-  "rel_pub": "2026-06-30",
-  "rel_days": 109,
-  "rel_n90": 0,
+  "commit_7d": 11,
+  "commit_90d": 50,
+  "rel_ver": "v0.10.0",
+  "rel_pub": "2026-10-21",
+  "rel_days": 3,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -376,10 +376,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -440,11 +440,11 @@
   }
  },
  "ddalcu/mlx-serve": {
-  "commit_7d": 85,
-  "commit_90d": 672,
-  "rel_ver": "v26.10.2",
-  "rel_pub": "2026-10-12",
-  "rel_days": 5,
+  "commit_7d": 35,
+  "commit_90d": 671,
+  "rel_ver": "v26.10.3",
+  "rel_pub": "2026-10-22",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -460,10 +460,10 @@
    "C++": 5,
    "Python": 4
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -536,8 +536,8 @@
   }
  },
  "taishi-i/awesome-japanese-nlp-resources": {
-  "commit_7d": 6,
-  "commit_90d": 80,
+  "commit_7d": 10,
+  "commit_90d": 83,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -546,10 +546,10 @@
   "sec_ids": [],
   "contrib_n": 13,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

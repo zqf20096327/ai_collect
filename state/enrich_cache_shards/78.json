@@ -428,12 +428,12 @@
   }
  },
  "openlake-project/openlake": {
-  "commit_90d": 83,
-  "commit_7d": 0,
+  "commit_90d": 65,
+  "commit_7d": 2,
   "rel_ver": "v.0.10.0",
   "rel_pub": "2026-09-24",
-  "rel_days": 23,
-  "rel_n90": 6,
+  "rel_days": 30,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -448,22 +448,22 @@
    "Cuda": 4,
    "JavaScript": 3
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "boxlite-ai/boxlite": {
-  "commit_90d": 420,
-  "commit_7d": 39,
-  "rel_ver": "v0.10.6",
-  "rel_pub": "2026-10-12",
-  "rel_days": 5,
-  "rel_n90": 7,
+  "commit_90d": 434,
+  "commit_7d": 37,
+  "rel_ver": "v0.10.8",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 8,
@@ -487,10 +487,10 @@
    "Python": 5,
    "Shell": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -498,10 +498,10 @@
  },
  "prism-php/prism": {
   "commit_90d": 9,
-  "commit_7d": 9,
+  "commit_7d": 0,
   "rel_ver": "v0.102.0",
   "rel_pub": "2026-10-16",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -516,10 +516,10 @@
    "Blade": 0,
    "Hack": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -687,12 +687,12 @@
   }
  },
  "Abraxas-365/langchain-rust": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": "v4.6.0",
-  "rel_pub": "2024-10-06",
-  "rel_days": 741,
-  "rel_n90": 0,
+  "commit_90d": 45,
+  "commit_7d": 45,
+  "rel_ver": "v7.0.0",
+  "rel_pub": "2026-10-22",
+  "rel_days": 2,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -705,22 +705,22 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "ShiftHackZ/Stable-Diffusion-KMP": {
-  "commit_90d": 8,
+  "commit_90d": 0,
   "commit_7d": 0,
   "rel_ver": "1.1.2",
   "rel_pub": "2026-07-19",
-  "rel_days": 90,
-  "rel_n90": 1,
+  "rel_days": 97,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -735,10 +735,10 @@
    "JavaScript": 1,
    "CMake": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3263,6 +3263,33 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "emergent-wisdom/sema": {
+  "rel_ver": "v0.10.0",
+  "rel_pub": "2026-10-11",
+  "rel_days": 13,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 74,
+   "TeX": 11,
+   "TypeScript": 11,
+   "Shell": 2,
+   "HTML": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

@@ -219,11 +219,11 @@
   }
  },
  "JustGlowing/minisom": {
-  "commit_90d": 14,
+  "commit_90d": 16,
   "commit_7d": 2,
   "rel_ver": "2.3.6",
   "rel_pub": "2026-02-11",
-  "rel_days": 248,
+  "rel_days": 255,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -235,22 +235,22 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "griffinmartin/opencode-claude-auth": {
-  "commit_90d": 27,
-  "commit_7d": 2,
+  "commit_90d": 16,
+  "commit_7d": 0,
   "rel_ver": "v3.0.0",
   "rel_pub": "2026-10-16",
-  "rel_days": 1,
-  "rel_n90": 11,
+  "rel_days": 8,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -264,21 +264,21 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "DasterProkio/awesome-ai-companion": {
-  "commit_90d": 278,
-  "commit_7d": 34,
+  "commit_90d": 273,
+  "commit_7d": 8,
   "rel_ver": "v26.9",
   "rel_pub": "2026-09-27",
-  "rel_days": 20,
+  "rel_days": 27,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -291,10 +291,10 @@
    "HTML": 97,
    "Python": 3
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -2577,6 +2577,23 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "Riskstate/risk-engine": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {},
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

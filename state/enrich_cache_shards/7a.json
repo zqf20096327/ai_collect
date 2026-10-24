@@ -327,11 +327,11 @@
   }
  },
  "Core-Mate/OpenGUI": {
-  "commit_90d": 124,
-  "commit_7d": 4,
+  "commit_90d": 125,
+  "commit_7d": 1,
   "rel_ver": "opengui-workbuddy-v0.4.1",
   "rel_pub": "2026-10-11",
-  "rel_days": 6,
+  "rel_days": 13,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -347,21 +347,21 @@
    "JavaScript": 0,
    "Java": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "xuzhougeng/wisp-science": {
-  "commit_90d": 1947,
-  "commit_7d": 62,
+  "commit_90d": 1685,
+  "commit_7d": 23,
   "rel_ver": "v1.20.0",
   "rel_pub": "2026-10-14",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -377,10 +377,10 @@
    "TypeScript": 7,
    "C#": 4
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3627,5 +3627,18 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "sedum-dev/sedum": {
+  "rel_ver": "sedum-cli@0.1.0-alpha.18",
+  "rel_pub": "2026-10-16",
+  "rel_days": 8,
+  "rel_n90": 7,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6
  }
 }

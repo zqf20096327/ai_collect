@@ -264,11 +264,11 @@
   }
  },
  "raphaelmansuy/edgequake": {
-  "commit_7d": 99,
-  "commit_90d": 373,
-  "rel_ver": "v0.35.6",
-  "rel_pub": "2026-10-17",
-  "rel_days": 0,
+  "commit_7d": 25,
+  "commit_90d": 357,
+  "rel_ver": "v0.36.0",
+  "rel_pub": "2026-10-19",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -284,10 +284,10 @@
    "Python": 5,
    "Shell": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -377,11 +377,11 @@
   }
  },
  "spotify/voyager": {
-  "commit_7d": 8,
+  "commit_7d": 0,
   "commit_90d": 9,
   "rel_ver": "v2.2.2",
   "rel_pub": "2026-10-16",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -397,10 +397,10 @@
    "CMake": 1,
    "Makefile": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -411,7 +411,7 @@
   "commit_90d": 0,
   "rel_ver": "v0.7.1",
   "rel_pub": "2025-03-18",
-  "rel_days": 578,
+  "rel_days": 585,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -426,10 +426,10 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3219,6 +3219,79 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "Android-PowerUser/ScreenOperator": {
+  "rel_ver": "v2026.10.22",
+  "rel_pub": "2026-10-22",
+  "rel_days": 2,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "ai-agents-buzz/rag-chunking-playground": {
+  "rel_ver": "v1.0",
+  "rel_pub": "2026-03-26",
+  "rel_days": 212,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "jsh135790/AIGC-Gallery": {
+  "rel_ver": "v3.2.1",
+  "rel_pub": "2026-10-16",
+  "rel_days": 8,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 51,
+   "Vue": 43,
+   "CSS": 3,
+   "JavaScript": 3,
+   "HTML": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

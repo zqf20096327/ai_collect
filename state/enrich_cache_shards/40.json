@@ -201,10 +201,10 @@
  },
  "tensorflow/privacy": {
   "commit_7d": 1,
-  "commit_90d": 2,
+  "commit_90d": 3,
   "rel_ver": "v0.9.0",
   "rel_pub": "2024-02-14",
-  "rel_days": 976,
+  "rel_days": 983,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -219,10 +219,10 @@
    "Starlark": 1,
    "Shell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -260,9 +260,9 @@
  },
  "kizuna-ai-lab/sokuji": {
   "commit_7d": 164,
-  "commit_90d": 2442,
-  "rel_ver": "v0.45.5",
-  "rel_pub": "2026-10-16",
+  "commit_90d": 2495,
+  "rel_ver": "v0.46.1",
+  "rel_pub": "2026-10-23",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -279,10 +279,10 @@
    "HTML": 3,
    "SCSS": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -316,13 +316,13 @@
   }
  },
  "AltanS/collie": {
-  "commit_7d": 813,
-  "commit_90d": 3081,
-  "rel_ver": "v1.22.1",
-  "rel_pub": "2026-10-17",
-  "rel_days": 0,
+  "commit_7d": 790,
+  "commit_90d": 3820,
+  "rel_ver": "v1.24.0-edge.4",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
   "rel_n90": 12,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -336,10 +336,10 @@
    "PowerShell": 0,
    "HTML": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -2884,6 +2884,60 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "Vedant363/Vehicle-Detection-and-Traffic-Assessment": {
+  "rel_ver": "v4.0",
+  "rel_pub": "2026-05-03",
+  "rel_days": 174,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 68,
+   "Python": 13,
+   "HTML": 10,
+   "CSS": 5,
+   "JavaScript": 4
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "lilrepaer-glitch/Vedit": {
+  "rel_ver": "v1.0.2",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 89,
+   "NSIS": 3,
+   "Java": 2,
+   "CSS": 2,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

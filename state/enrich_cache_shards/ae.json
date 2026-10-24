@@ -171,11 +171,11 @@
   }
  },
  "AI-Hypercomputer/maxtext": {
-  "commit_7d": 126,
-  "commit_90d": 1254,
+  "commit_7d": 139,
+  "commit_90d": 1315,
   "rel_ver": "mlperf6.1-submission-dsv3",
   "rel_pub": "2026-10-16",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -190,18 +190,18 @@
    "Shell": 5,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "ailia-ai/ailia-models": {
-  "commit_7d": 0,
-  "commit_90d": 177,
+  "commit_7d": 2,
+  "commit_90d": 164,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -216,20 +216,20 @@
    "Jinja": 0,
    "C": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "AtomicBot-ai/Atomic-Chat": {
-  "commit_7d": 67,
-  "commit_90d": 761,
-  "rel_ver": "v2.2.14",
-  "rel_pub": "2026-10-16",
+  "commit_7d": 23,
+  "commit_90d": 781,
+  "rel_ver": "v2.2.26",
+  "rel_pub": "2026-10-23",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -246,10 +246,10 @@
    "Python": 1,
    "PowerShell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -325,10 +325,10 @@
    "TypeScript": 12,
    "CSS": 8
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

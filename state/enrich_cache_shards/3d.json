@@ -217,11 +217,11 @@
   }
  },
  "samber/cc-skills-golang": {
-  "commit_7d": 0,
+  "commit_7d": 1,
   "commit_90d": 28,
   "rel_ver": "v2.0.0",
   "rel_pub": "2026-08-20",
-  "rel_days": 58,
+  "rel_days": 65,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -235,21 +235,21 @@
    "Makefile": 15,
    "Shell": 6
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "ForceInjection/AI-fundamentals": {
-  "commit_7d": 20,
-  "commit_90d": 163,
+  "commit_7d": 10,
+  "commit_90d": 151,
   "rel_ver": "v4.0",
   "rel_pub": "2026-09-29",
-  "rel_days": 18,
+  "rel_days": 25,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -265,10 +265,10 @@
    "Shell": 6,
    "Cuda": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -327,11 +327,11 @@
   }
  },
  "tphakala/birdnet-go": {
-  "commit_7d": 66,
-  "commit_90d": 466,
+  "commit_7d": 158,
+  "commit_90d": 577,
   "rel_ver": "20261014",
   "rel_pub": "2026-10-14",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -349,10 +349,10 @@
    "Shell": 2,
    "Python": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -391,11 +391,11 @@
   }
  },
  "rynfar/meridian": {
-  "commit_7d": 59,
-  "commit_90d": 542,
-  "rel_ver": "meridian-v1.83.1",
-  "rel_pub": "2026-10-16",
-  "rel_days": 1,
+  "commit_7d": 68,
+  "commit_90d": 617,
+  "rel_ver": "meridian-v1.85.0",
+  "rel_pub": "2026-10-21",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -411,10 +411,10 @@
    "CSS": 0,
    "Nix": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -447,10 +447,10 @@
   }
  },
  "heymrun/heym": {
-  "commit_7d": 16,
-  "commit_90d": 557,
-  "rel_ver": "v0.0.130",
-  "rel_pub": "2026-10-16",
+  "commit_7d": 55,
+  "commit_90d": 528,
+  "rel_ver": "v0.0.137",
+  "rel_pub": "2026-10-23",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -476,10 +476,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -576,11 +576,11 @@
   }
  },
  "OpenCSGs/csghub-server": {
-  "commit_7d": 29,
-  "commit_90d": 296,
+  "commit_7d": 6,
+  "commit_90d": 282,
   "rel_ver": "v2.6.0-ce",
   "rel_pub": "2026-10-15",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -596,10 +596,10 @@
    "PLpgSQL": 0,
    "Go Template": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3390,6 +3390,32 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "shaneconner/fold": {
+  "rel_ver": "v4.2.8",
+  "rel_pub": "2026-10-09",
+  "rel_days": 15,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 70,
+   "TypeScript": 20,
+   "Python": 10,
+   "Shell": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

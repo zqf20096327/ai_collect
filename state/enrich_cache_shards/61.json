@@ -379,8 +379,8 @@
   }
  },
  "MARKTECHPOST-AI-MEDIA-INC/AI-Agents-Projects-Tutorials": {
-  "commit_7d": 3,
-  "commit_90d": 69,
+  "commit_7d": 1,
+  "commit_90d": 59,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -392,18 +392,18 @@
    "Jupyter Notebook": 99,
    "Python": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "e2b-dev/open-computer-use": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 2,
+  "commit_90d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -415,10 +415,10 @@
    "Python": 99,
    "HTML": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -447,10 +447,10 @@
   }
  },
  "mlrun/mlrun": {
-  "commit_7d": 7,
+  "commit_7d": 9,
   "commit_90d": 136,
-  "rel_ver": "v1.13.0-rc12",
-  "rel_pub": "2026-10-15",
+  "rel_ver": "v1.14.0-rc2",
+  "rel_pub": "2026-10-22",
   "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": true,
@@ -467,10 +467,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -503,11 +503,11 @@
   }
  },
  "pypose/pypose": {
-  "commit_7d": 30,
-  "commit_90d": 34,
+  "commit_7d": 3,
+  "commit_90d": 36,
   "rel_ver": "v0.9.5",
   "rel_pub": "2026-04-12",
-  "rel_days": 188,
+  "rel_days": 195,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -519,20 +519,20 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "import-ai/omnibox": {
-  "commit_7d": 2,
+  "commit_7d": 1,
   "commit_90d": 16,
-  "rel_ver": "v0.1.53",
-  "rel_pub": "2026-10-15",
+  "rel_ver": "v0.1.54",
+  "rel_pub": "2026-10-22",
   "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
@@ -546,10 +546,10 @@
    "Python": 92,
    "Shell": 8
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -583,11 +583,11 @@
   }
  },
  "symfony/ai": {
-  "commit_7d": 24,
-  "commit_90d": 462,
-  "rel_ver": "v0.14.1",
-  "rel_pub": "2026-09-27",
-  "rel_days": 20,
+  "commit_7d": 104,
+  "commit_90d": 535,
+  "rel_ver": "v0.15.0",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -603,10 +603,10 @@
    "CSS": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -629,10 +629,10 @@
    "Kotlin": 2,
    "Shell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

@@ -183,12 +183,12 @@
   }
  },
  "withcatai/node-llama-cpp": {
-  "commit_90d": 16,
-  "commit_7d": 1,
+  "commit_90d": 17,
+  "commit_7d": 2,
   "rel_ver": "v3.22.2",
   "rel_pub": "2026-10-17",
-  "rel_days": 0,
-  "rel_n90": 7,
+  "rel_days": 7,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -203,10 +203,10 @@
    "Vue": 1,
    "CMake": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -242,7 +242,7 @@
   }
  },
  "kaushikb11/awesome-llm-agents": {
-  "commit_90d": 24,
+  "commit_90d": 25,
   "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
@@ -254,10 +254,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3320,6 +3320,33 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "danterolle/tund": {
+  "rel_ver": "v3.0",
+  "rel_pub": "2026-08-14",
+  "rel_days": 71,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C": 58,
+   "Dart": 20,
+   "C++": 7,
+   "CMake": 5,
+   "HTML": 3
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

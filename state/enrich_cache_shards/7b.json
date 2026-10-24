@@ -444,12 +444,12 @@
   }
  },
  "microsoft/azure-devops-mcp": {
-  "commit_7d": 4,
-  "commit_90d": 75,
-  "rel_ver": "v2.10.0",
-  "rel_pub": "2026-09-09",
-  "rel_days": 38,
-  "rel_n90": 2,
+  "commit_7d": 13,
+  "commit_90d": 83,
+  "rel_ver": "v2.11.0",
+  "rel_pub": "2026-10-22",
+  "rel_days": 2,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -461,10 +461,10 @@
    "TypeScript": 100,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -543,13 +543,13 @@
   }
  },
  "wm94i/Work-Review": {
-  "commit_7d": 7,
-  "commit_90d": 80,
-  "rel_ver": "v1.1.3-rc.3",
-  "rel_pub": "2026-10-16",
-  "rel_days": 1,
+  "commit_7d": 3,
+  "commit_90d": 69,
+  "rel_ver": "v1.1.3",
+  "rel_pub": "2026-10-20",
+  "rel_days": 4,
   "rel_n90": 7,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -563,10 +563,10 @@
    "CSS": 3,
    "Shell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -585,21 +585,21 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "RongleCat/grok-app": {
-  "commit_7d": 25,
-  "commit_90d": 2102,
-  "rel_ver": "v0.2.41",
-  "rel_pub": "2026-10-14",
-  "rel_days": 3,
+  "commit_7d": 15,
+  "commit_90d": 1866,
+  "rel_ver": "v0.2.42",
+  "rel_pub": "2026-10-19",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -615,10 +615,10 @@
    "Python": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3542,6 +3542,95 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "conorbronsdon/ai-tools-for-creators": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {},
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "officeos-co/officeos": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C#": 51,
+   "Python": 26,
+   "TypeScript": 21,
+   "Go": 1,
+   "HTML": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "fruggr/zendesk-mcp-server": {
+  "rel_ver": "v3.5.0",
+  "rel_pub": "2026-10-21",
+  "rel_days": 3,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "TypeScript": 95,
+   "JavaScript": 5,
+   "Shell": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "clay-good/mantissa-log": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 77,
+   "JavaScript": 14,
+   "HCL": 7,
+   "Shell": 1,
+   "CSS": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

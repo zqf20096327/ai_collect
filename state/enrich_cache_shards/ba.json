@@ -54,8 +54,8 @@
   }
  },
  "QwenLM/Qwen-MM-Plugins": {
-  "commit_90d": 300,
-  "commit_7d": 14,
+  "commit_90d": 311,
+  "commit_7d": 5,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -70,21 +70,21 @@
    "Jupyter Notebook": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "containers/ramalama": {
-  "commit_90d": 165,
-  "commit_7d": 8,
+  "commit_90d": 177,
+  "commit_7d": 25,
   "rel_ver": "v0.25.0",
   "rel_pub": "2026-09-25",
-  "rel_days": 22,
+  "rel_days": 29,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -100,21 +100,21 @@
    "Dockerfile": 1,
    "TypeScript": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "ianarawjo/ChainForge": {
-  "commit_90d": 53,
-  "commit_7d": 0,
+  "commit_90d": 58,
+  "commit_7d": 5,
   "rel_ver": "v0.3.7",
   "rel_pub": "2026-09-16",
-  "rel_days": 31,
+  "rel_days": 38,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -130,22 +130,22 @@
    "JavaScript": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "pykeio/ort": {
-  "commit_90d": 111,
-  "commit_7d": 33,
-  "rel_ver": "v2.0.0-rc.14",
-  "rel_pub": "2026-10-12",
+  "commit_90d": 117,
+  "commit_7d": 15,
+  "rel_ver": "v2.0.0-rc.15",
+  "rel_pub": "2026-10-19",
   "rel_days": 5,
-  "rel_n90": 2,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -159,10 +159,10 @@
    "TypeScript": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -229,12 +229,12 @@
   }
  },
  "Toni-SM/skrl": {
-  "commit_90d": 6,
-  "commit_7d": 1,
-  "rel_ver": "2.1.0",
-  "rel_pub": "2026-05-11",
-  "rel_days": 159,
-  "rel_n90": 0,
+  "commit_90d": 15,
+  "commit_7d": 9,
+  "rel_ver": "2.1.1",
+  "rel_pub": "2026-10-21",
+  "rel_days": 3,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -245,22 +245,22 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "anush008/fastembed-rs": {
-  "commit_90d": 32,
-  "commit_7d": 1,
-  "rel_ver": "v7.1.1",
-  "rel_pub": "2026-10-07",
-  "rel_days": 10,
-  "rel_n90": 9,
+  "commit_90d": 71,
+  "commit_7d": 39,
+  "rel_ver": "v7.5.0",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -273,10 +273,10 @@
    "Nix": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3014,6 +3014,33 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "AetherAI3/agent-browser": {
+  "rel_ver": "v0.2.2",
+  "rel_pub": "2026-09-04",
+  "rel_days": 50,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 84,
+   "JavaScript": 10,
+   "Shell": 6,
+   "TypeScript": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

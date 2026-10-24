@@ -111,11 +111,11 @@
   }
  },
  "google/tunix": {
-  "commit_90d": 686,
-  "commit_7d": 54,
+  "commit_90d": 682,
+  "commit_7d": 42,
   "rel_ver": "v0.1.7",
   "rel_pub": "2026-06-11",
-  "rel_days": 128,
+  "rel_days": 135,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -131,23 +131,23 @@
    "Jupyter Notebook": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "atomicstrata/llm-wiki-compiler": {
-  "commit_90d": 119,
-  "commit_7d": 7,
-  "rel_ver": "v1.5.0-rc.1",
-  "rel_pub": "2026-10-15",
-  "rel_days": 2,
-  "rel_n90": 8,
-  "rel_pre": true,
+  "commit_90d": 120,
+  "commit_7d": 1,
+  "rel_ver": "v1.5.0",
+  "rel_pub": "2026-10-19",
+  "rel_days": 5,
+  "rel_n90": 9,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -161,18 +161,18 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "xenodium/agent-shell": {
-  "commit_90d": 505,
-  "commit_7d": 31,
+  "commit_90d": 518,
+  "commit_7d": 37,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -183,10 +183,10 @@
   "lang": {
    "Emacs Lisp": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -329,10 +329,10 @@
    "JavaScript": 74,
    "Python": 26
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

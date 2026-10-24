@@ -140,7 +140,7 @@
  },
  "langchain-ai/agent-chat-ui": {
   "commit_7d": 2,
-  "commit_90d": 23,
+  "commit_90d": 18,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -153,21 +153,21 @@
    "CSS": 3,
    "JavaScript": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "pytorch/ao": {
-  "commit_7d": 8,
-  "commit_90d": 133,
+  "commit_7d": 3,
+  "commit_90d": 124,
   "rel_ver": "v0.18.0",
   "rel_pub": "2026-08-03",
-  "rel_days": 75,
+  "rel_days": 82,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -183,10 +183,10 @@
    "Metal": 1,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -281,10 +281,10 @@
   }
  },
  "tenstorrent/tt-metal": {
-  "commit_7d": 347,
-  "commit_90d": 3838,
-  "rel_ver": "v0.81.0-dev20261016",
-  "rel_pub": "2026-10-16",
+  "commit_7d": 378,
+  "commit_90d": 3949,
+  "rel_ver": "v0.81.1-rc2",
+  "rel_pub": "2026-10-23",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": true,
@@ -301,10 +301,10 @@
    "Shell": 1,
    "CMake": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -2818,6 +2818,25 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "r10a/prompt-reference.nvim": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Lua": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

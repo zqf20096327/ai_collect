@@ -163,11 +163,11 @@
   }
  },
  "uzairansaruzi/hermex": {
-  "commit_90d": 484,
-  "commit_7d": 68,
+  "commit_90d": 497,
+  "commit_7d": 16,
   "rel_ver": "v1.9.0",
   "rel_pub": "2026-10-13",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -182,10 +182,10 @@
    "Ruby": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -270,7 +270,7 @@
   "commit_7d": 0,
   "rel_ver": "v2.2.0",
   "rel_pub": "2025-10-23",
-  "rel_days": 359,
+  "rel_days": 366,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -286,18 +286,18 @@
    "CMake": 2,
    "Python": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "TinyLLaVA/TinyLLaVA_Factory": {
-  "commit_90d": 1,
-  "commit_7d": 0,
+  "commit_90d": 2,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -309,10 +309,10 @@
    "Python": 87,
    "Shell": 13
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -2806,5 +2806,15 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
- }
+ },
+ "leestott/local-rag": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1
+ },
+ "wlmosv-png/apk-index": {}
 }

@@ -246,7 +246,7 @@
   "commit_7d": 0,
   "rel_ver": "v0.1.8",
   "rel_pub": "2023-09-07",
-  "rel_days": 1136,
+  "rel_days": 1143,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -258,10 +258,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -298,12 +298,12 @@
   }
  },
  "lightseekorg/tokenspeed": {
-  "commit_90d": 1340,
-  "commit_7d": 226,
+  "commit_90d": 1409,
+  "commit_7d": 133,
   "rel_ver": "v0.1.1",
   "rel_pub": "2026-10-06",
-  "rel_days": 11,
-  "rel_n90": 2,
+  "rel_days": 18,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -318,10 +318,10 @@
    "Cuda": 0,
    "CMake": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -450,11 +450,11 @@
   }
  },
  "SciML/NeuralPDE.jl": {
-  "commit_90d": 75,
-  "commit_7d": 7,
+  "commit_90d": 74,
+  "commit_7d": 2,
   "rel_ver": "v7.4.0",
   "rel_pub": "2026-10-14",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -466,10 +466,10 @@
   "lang": {
    "Julia": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

@@ -147,11 +147,11 @@
   }
  },
  "OpenCoworkAI/open-cowork": {
-  "commit_7d": 25,
-  "commit_90d": 113,
+  "commit_7d": 21,
+  "commit_90d": 167,
   "rel_ver": "v3.3.1",
   "rel_pub": "2026-05-23",
-  "rel_days": 147,
+  "rel_days": 154,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -167,10 +167,10 @@
    "CSS": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -242,8 +242,8 @@
   }
  },
  "Barca0412/Introduction-to-Quantitative-Finance": {
-  "commit_7d": 6,
-  "commit_90d": 63,
+  "commit_7d": 7,
+  "commit_90d": 69,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -254,10 +254,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

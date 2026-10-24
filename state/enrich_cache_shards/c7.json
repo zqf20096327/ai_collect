@@ -86,11 +86,11 @@
   }
  },
  "simonlin1212/Vibe-Research": {
-  "commit_90d": 146,
-  "commit_7d": 7,
-  "rel_ver": "v2.2.1",
-  "rel_pub": "2026-10-11",
-  "rel_days": 6,
+  "commit_90d": 149,
+  "commit_7d": 17,
+  "rel_ver": "v2.2.3",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -106,10 +106,10 @@
    "CSS": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -156,11 +156,11 @@
   }
  },
  "BetaStreetOmnis/xhs_ai_publisher": {
-  "commit_90d": 4,
-  "commit_7d": 4,
+  "commit_90d": 5,
+  "commit_7d": 1,
   "rel_ver": "v2.0.0-rc.2",
   "rel_pub": "2026-10-15",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 2,
   "rel_pre": true,
   "rel_none": false,
@@ -176,10 +176,10 @@
    "Batchfile": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -225,11 +225,11 @@
   }
  },
  "comarkdown/comark": {
-  "commit_90d": 191,
-  "commit_7d": 14,
-  "rel_ver": "comark@0.7.0",
-  "rel_pub": "2026-09-10",
-  "rel_days": 37,
+  "commit_90d": 218,
+  "commit_7d": 28,
+  "rel_ver": "comark@0.8.1",
+  "rel_pub": "2026-10-21",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -244,10 +244,10 @@
    "Svelte": 2,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3012,6 +3012,51 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "qingpy/relay": {
+  "rel_ver": "v1.5.1",
+  "rel_pub": "2026-10-20",
+  "rel_days": 4,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 95,
+   "CSS": 4,
+   "Dockerfile": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "toviszsolt/nodejs-native-gpu": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

@@ -205,7 +205,7 @@
   "commit_7d": 0,
   "rel_ver": "v5.4.1",
   "rel_pub": "2026-08-15",
-  "rel_days": 63,
+  "rel_days": 70,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -221,21 +221,21 @@
    "Handlebars": 0,
    "PLpgSQL": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "explorerhq/sql-explorer": {
-  "commit_90d": 8,
-  "commit_7d": 0,
+  "commit_90d": 9,
+  "commit_7d": 1,
   "rel_ver": "5.3.1",
   "rel_pub": "2026-09-24",
-  "rel_days": 23,
+  "rel_days": 30,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -253,10 +253,10 @@
    "SCSS": 2,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -316,11 +316,11 @@
   }
  },
  "patterns-ai-core/langchainrb": {
-  "commit_90d": 54,
-  "commit_7d": 30,
+  "commit_90d": 64,
+  "commit_7d": 10,
   "rel_ver": "0.19.5",
   "rel_pub": "2025-05-01",
-  "rel_days": 534,
+  "rel_days": 541,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -335,10 +335,10 @@
    "JavaScript": 0,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -398,11 +398,11 @@
   }
  },
  "google-deepmind/mujoco_warp": {
-  "commit_90d": 166,
-  "commit_7d": 12,
-  "rel_ver": "v3.16.0",
-  "rel_pub": "2026-10-14",
-  "rel_days": 3,
+  "commit_90d": 164,
+  "commit_7d": 8,
+  "rel_ver": "v3.17.0",
+  "rel_pub": "2026-10-22",
+  "rel_days": 2,
   "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
@@ -416,10 +416,10 @@
    "Jupyter Notebook": 14,
    "TypeScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

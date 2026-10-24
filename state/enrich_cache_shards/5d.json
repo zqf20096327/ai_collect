@@ -271,8 +271,8 @@
   }
  },
  "yibie/awesome-jev": {
-  "commit_7d": 48,
-  "commit_90d": 846,
+  "commit_7d": 43,
+  "commit_90d": 882,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -284,21 +284,21 @@
    "Python": 77,
    "Shell": 23
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "langgraph4j/langgraph4j": {
-  "commit_7d": 41,
-  "commit_90d": 526,
-  "rel_ver": "v1.9.5",
-  "rel_pub": "2026-10-13",
-  "rel_days": 4,
+  "commit_7d": 12,
+  "commit_90d": 533,
+  "rel_ver": "v1.9.6",
+  "rel_pub": "2026-10-18",
+  "rel_days": 6,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -314,21 +314,21 @@
    "TypeScript": 3,
    "Mustache": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "agentlas-ai/Agentlas-OS": {
-  "commit_7d": 79,
-  "commit_90d": 589,
-  "rel_ver": "v1.2.66",
-  "rel_pub": "2026-10-17",
-  "rel_days": 0,
+  "commit_7d": 14,
+  "commit_90d": 562,
+  "rel_ver": "v1.2.67",
+  "rel_pub": "2026-10-20",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -344,10 +344,10 @@
    "Go Template": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -384,8 +384,8 @@
   }
  },
  "e2b-dev/e2b-cookbook": {
-  "commit_7d": 38,
-  "commit_90d": 173,
+  "commit_7d": 12,
+  "commit_90d": 184,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -398,10 +398,10 @@
    "JavaScript": 22,
    "Python": 8
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -409,7 +409,7 @@
  },
  "ArcadeAI/arcade-mcp": {
   "commit_7d": 4,
-  "commit_90d": 33,
+  "commit_90d": 35,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 1,
@@ -425,10 +425,10 @@
    "Jinja": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

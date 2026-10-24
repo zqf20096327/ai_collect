@@ -290,21 +290,21 @@
    "Python": 99,
    "Shell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "TanStack/ai": {
-  "commit_90d": 541,
-  "commit_7d": 45,
-  "rel_ver": "@tanstack/openai-base@0.14.0",
-  "rel_pub": "2026-10-13",
-  "rel_days": 4,
+  "commit_90d": 569,
+  "commit_7d": 42,
+  "rel_ver": "@tanstack/solid-ai-devtools@1.0.0",
+  "rel_pub": "2026-10-22",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -320,21 +320,21 @@
    "Svelte": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "frgfm/torch-cam": {
-  "commit_90d": 60,
-  "commit_7d": 8,
+  "commit_90d": 71,
+  "commit_7d": 14,
   "rel_ver": "v0.5.0",
   "rel_pub": "2026-10-03",
-  "rel_days": 14,
+  "rel_days": 21,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -347,20 +347,20 @@
    "Python": 99,
    "Makefile": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "theopenco/llmgateway": {
-  "commit_90d": 1307,
-  "commit_7d": 112,
-  "rel_ver": "v1.21.0",
-  "rel_pub": "2026-10-12",
+  "commit_90d": 1324,
+  "commit_7d": 106,
+  "rel_ver": "v1.22.0",
+  "rel_pub": "2026-10-19",
   "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
@@ -386,10 +386,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -418,10 +418,10 @@
   }
  },
  "ashhart/TensorFold": {
-  "commit_90d": 2800,
-  "commit_7d": 1771,
-  "rel_ver": "v1.0.12",
-  "rel_pub": "2026-10-16",
+  "commit_90d": 4138,
+  "commit_7d": 704,
+  "rel_ver": "v1.1.3",
+  "rel_pub": "2026-10-23",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -438,10 +438,10 @@
    "Python": 3,
    "Cuda": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -449,11 +449,11 @@
  },
  "aws-samples/bedrock-chat": {
   "commit_90d": 44,
-  "commit_7d": 15,
-  "rel_ver": "v3.17.0",
-  "rel_pub": "2026-06-16",
-  "rel_days": 123,
-  "rel_n90": 0,
+  "commit_7d": 8,
+  "rel_ver": "v3.18.0",
+  "rel_pub": "2026-10-19",
+  "rel_days": 5,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -468,10 +468,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -505,12 +505,12 @@
   }
  },
  "ZHangZHengEric/Sage": {
-  "commit_90d": 491,
-  "commit_7d": 164,
-  "rel_ver": "v2.1.0",
-  "rel_pub": "2026-10-13",
-  "rel_days": 4,
-  "rel_n90": 2,
+  "commit_90d": 596,
+  "commit_7d": 111,
+  "rel_ver": "v2.1.1",
+  "rel_pub": "2026-10-19",
+  "rel_days": 5,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -525,18 +525,18 @@
    "JavaScript": 8,
    "Rust": 4
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "currenjin/site-for-developers": {
-  "commit_90d": 23,
-  "commit_7d": 3,
+  "commit_90d": 29,
+  "commit_7d": 6,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -545,18 +545,18 @@
   "sec_ids": [],
   "contrib_n": 41,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "garylab/MakeMoneyWithAI": {
-  "commit_90d": 51,
-  "commit_7d": 5,
+  "commit_90d": 64,
+  "commit_7d": 18,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -567,10 +567,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3483,5 +3483,14 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "lovetimo0421/yumina-oss": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0
  }
 }

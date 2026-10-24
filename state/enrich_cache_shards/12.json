@@ -316,11 +316,11 @@
   }
  },
  "Bitterbot-AI/bitterbot-desktop": {
-  "commit_7d": 44,
-  "commit_90d": 604,
-  "rel_ver": "v1.7.0",
-  "rel_pub": "2026-10-16",
-  "rel_days": 1,
+  "commit_7d": 29,
+  "commit_90d": 601,
+  "rel_ver": "v1.10.1",
+  "rel_pub": "2026-10-22",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -339,21 +339,21 @@
    "Rust": 1,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "learnhouse/learnhouse": {
-  "commit_7d": 42,
-  "commit_90d": 479,
-  "rel_ver": "1.4.0",
-  "rel_pub": "2026-10-11",
-  "rel_days": 6,
+  "commit_7d": 41,
+  "commit_90d": 388,
+  "rel_ver": "1.4.2",
+  "rel_pub": "2026-10-22",
+  "rel_days": 2,
   "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
@@ -369,22 +369,22 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "nitrictech/nitric": {
-  "commit_7d": 15,
-  "commit_90d": 15,
-  "rel_ver": "v1.28.3",
+  "commit_7d": 10,
+  "commit_90d": 16,
+  "rel_ver": "v1.28.4",
   "rel_pub": "2026-10-17",
-  "rel_days": 0,
-  "rel_n90": 7,
+  "rel_days": 7,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -399,22 +399,22 @@
    "Dockerfile": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "fancydirty/mediary-scout": {
-  "commit_7d": 6,
-  "commit_90d": 191,
-  "rel_ver": "v2026.10.12",
-  "rel_pub": "2026-10-12",
-  "rel_days": 5,
-  "rel_n90": 9,
+  "commit_7d": 7,
+  "commit_90d": 168,
+  "rel_ver": "v2026.10.22",
+  "rel_pub": "2026-10-22",
+  "rel_days": 2,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -429,10 +429,10 @@
    "Python": 2,
    "Shell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -489,11 +489,11 @@
   }
  },
  "datalab-to/lift": {
-  "commit_7d": 0,
-  "commit_90d": 3,
+  "commit_7d": 3,
+  "commit_90d": 6,
   "rel_ver": "v0.1.2",
   "rel_pub": "2026-10-05",
-  "rel_days": 12,
+  "rel_days": 19,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -505,10 +505,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -2948,6 +2948,29 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "sh4lu-z/Cipher-MD": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Shell": 46,
+   "Batchfile": 34,
+   "PowerShell": 16,
+   "JavaScript": 2,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

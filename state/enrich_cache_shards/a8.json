@@ -211,10 +211,10 @@
  },
  "xyproto/algernon": {
   "commit_90d": 78,
-  "commit_7d": 15,
+  "commit_7d": 1,
   "rel_ver": "v1.17.12",
   "rel_pub": "2026-10-12",
-  "rel_days": 5,
+  "rel_days": 12,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -239,10 +239,10 @@
    "Shell": 1,
    "Roff": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -302,12 +302,12 @@
   }
  },
  "Kav-K/GPTDiscord": {
-  "commit_90d": 10,
-  "commit_7d": 10,
-  "rel_ver": "v12.4.0",
-  "rel_pub": "2026-02-06",
-  "rel_days": 253,
-  "rel_n90": 0,
+  "commit_90d": 19,
+  "commit_7d": 12,
+  "rel_ver": "v13.2.6",
+  "rel_pub": "2026-10-18",
+  "rel_days": 6,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -319,21 +319,21 @@
    "Python": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "pnoker/iot-dc3": {
-  "commit_90d": 518,
-  "commit_7d": 21,
-  "rel_ver": "v2026.10.9",
-  "rel_pub": "2026-10-08",
-  "rel_days": 9,
+  "commit_90d": 520,
+  "commit_7d": 39,
+  "rel_ver": "v2026.10.10",
+  "rel_pub": "2026-10-19",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -349,10 +349,10 @@
    "PLpgSQL": 2,
    "Python": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -363,7 +363,7 @@
   "commit_7d": 0,
   "rel_ver": "v3.0.0",
   "rel_pub": "2026-10-11",
-  "rel_days": 6,
+  "rel_days": 13,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -378,10 +378,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -443,8 +443,8 @@
   }
  },
  "legeling/awesome-codex-pet": {
-  "commit_90d": 805,
-  "commit_7d": 136,
+  "commit_90d": 795,
+  "commit_7d": 54,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -459,10 +459,10 @@
    "CSS": 1,
    "PowerShell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

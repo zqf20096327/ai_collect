@@ -122,12 +122,12 @@
   }
  },
  "opengeos/geoai": {
-  "commit_7d": 0,
-  "commit_90d": 30,
+  "commit_7d": 3,
+  "commit_90d": 24,
   "rel_ver": "v0.43.1",
   "rel_pub": "2026-09-21",
-  "rel_days": 26,
-  "rel_n90": 3,
+  "rel_days": 33,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -141,18 +141,18 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "eracle/OpenOutreach": {
-  "commit_7d": 11,
-  "commit_90d": 187,
+  "commit_7d": 5,
+  "commit_90d": 165,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -166,10 +166,10 @@
    "Makefile": 2,
    "Shell": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -202,13 +202,13 @@
   }
  },
  "spiceai/spiceai": {
-  "commit_7d": 135,
-  "commit_90d": 1291,
-  "rel_ver": "v2.4.0-rc.2",
-  "rel_pub": "2026-10-15",
-  "rel_days": 2,
+  "commit_7d": 128,
+  "commit_90d": 1354,
+  "rel_ver": "v2.3.3",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
   "rel_n90": 12,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -222,10 +222,10 @@
    "Makefile": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -233,9 +233,9 @@
  },
  "vava-nessa/free-coding-models": {
   "commit_7d": 2,
-  "commit_90d": 203,
-  "rel_ver": "v0.5.98",
-  "rel_pub": "2026-10-10",
+  "commit_90d": 190,
+  "rel_ver": "v0.5.99",
+  "rel_pub": "2026-10-17",
   "rel_days": 7,
   "rel_n90": 12,
   "rel_pre": false,
@@ -252,10 +252,10 @@
    "CSS": 2,
    "MDX": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -308,11 +308,11 @@
   }
  },
  "birdnet-team/BirdNET-Analyzer": {
-  "commit_7d": 1,
-  "commit_90d": 35,
+  "commit_7d": 14,
+  "commit_90d": 47,
   "rel_ver": "v2.4.0",
   "rel_pub": "2025-11-07",
-  "rel_days": 344,
+  "rel_days": 351,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -327,18 +327,18 @@
    "Dockerfile": 0,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "AlibabaResearch/DAMO-ConvAI": {
-  "commit_7d": 0,
-  "commit_90d": 2,
+  "commit_7d": 3,
+  "commit_90d": 5,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -353,10 +353,10 @@
    "HTML": 1,
    "Haskell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -438,7 +438,7 @@
   }
  },
  "0xsline/awesome-deepseek-harness": {
-  "commit_7d": 27,
+  "commit_7d": 0,
   "commit_90d": 1516,
   "rel_ver": null,
   "rel_none": true,
@@ -450,10 +450,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -486,7 +486,7 @@
   "commit_90d": 5,
   "rel_ver": "pw_v1.3.0",
   "rel_pub": "2026-04-22",
-  "rel_days": 178,
+  "rel_days": 185,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -501,10 +501,10 @@
    "HTML": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -587,11 +587,11 @@
   }
  },
  "openai/openai-cli": {
-  "commit_7d": 89,
-  "commit_90d": 421,
-  "rel_ver": "v1.38.0",
-  "rel_pub": "2026-10-08",
-  "rel_days": 9,
+  "commit_7d": 101,
+  "commit_90d": 507,
+  "rel_ver": "v1.40.6",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -607,10 +607,10 @@
    "JavaScript": 0,
    "Tape": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

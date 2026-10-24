@@ -75,11 +75,11 @@
   }
  },
  "magefree/mage": {
-  "commit_90d": 1092,
-  "commit_7d": 16,
+  "commit_90d": 1111,
+  "commit_7d": 63,
   "rel_ver": "xmage_1.4.62V1",
   "rel_pub": "2026-10-03",
-  "rel_days": 14,
+  "rel_days": 21,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -95,18 +95,18 @@
    "Go Template": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "1038lab/ComfyUI-RMBG": {
-  "commit_90d": 27,
-  "commit_7d": 0,
+  "commit_90d": 32,
+  "commit_7d": 13,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -118,21 +118,21 @@
    "Python": 98,
    "JavaScript": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "coder-hxl/x-crawl": {
-  "commit_90d": 4,
-  "commit_7d": 0,
+  "commit_90d": 5,
+  "commit_7d": 1,
   "rel_ver": "v10.1.0",
   "rel_pub": "2025-04-06",
-  "rel_days": 559,
+  "rel_days": 566,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -145,10 +145,10 @@
    "TypeScript": 98,
    "JavaScript": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -186,11 +186,11 @@
  },
  "u14app/neo-chat": {
   "commit_90d": 49,
-  "commit_7d": 7,
-  "rel_ver": "v2.5.0",
-  "rel_pub": "2026-09-11",
-  "rel_days": 36,
-  "rel_n90": 3,
+  "commit_7d": 4,
+  "rel_ver": "v2.7.0",
+  "rel_pub": "2026-10-21",
+  "rel_days": 3,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -205,10 +205,10 @@
    "HTML": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -243,11 +243,11 @@
   }
  },
  "wzyn20051216/solidworks-automation-skill": {
-  "commit_90d": 217,
-  "commit_7d": 1,
+  "commit_90d": 199,
+  "commit_7d": 12,
   "rel_ver": "v2.0.0",
   "rel_pub": "2026-10-05",
-  "rel_days": 12,
+  "rel_days": 19,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -263,22 +263,22 @@
    "CSS": 3,
    "JavaScript": 3
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "agents-flex/agents-flex": {
-  "commit_90d": 337,
-  "commit_7d": 0,
+  "commit_90d": 292,
+  "commit_7d": 12,
   "rel_ver": "v2.3.0",
   "rel_pub": "2026-09-17",
-  "rel_days": 30,
-  "rel_n90": 8,
+  "rel_days": 37,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -289,10 +289,10 @@
   "lang": {
    "Java": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

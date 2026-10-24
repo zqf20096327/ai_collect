@@ -172,10 +172,10 @@
   }
  },
  "aws/sagemaker-python-sdk": {
-  "commit_7d": 20,
-  "commit_90d": 206,
-  "rel_ver": "v3.25.0",
-  "rel_pub": "2026-10-14",
+  "commit_7d": 23,
+  "commit_90d": 195,
+  "rel_ver": "v3.27.0",
+  "rel_pub": "2026-10-21",
   "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
@@ -201,21 +201,21 @@
    "Makefile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "LetsFG/LetsFG": {
-  "commit_7d": 5,
-  "commit_90d": 139,
+  "commit_7d": 7,
+  "commit_90d": 143,
   "rel_ver": "v2026.5.103",
   "rel_pub": "2026-10-02",
-  "rel_days": 15,
+  "rel_days": 22,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -231,10 +231,10 @@
    "QML": 19,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -298,11 +298,11 @@
   }
  },
  "python-adaptive/adaptive": {
-  "commit_7d": 3,
+  "commit_7d": 0,
   "commit_90d": 3,
   "rel_ver": "v1.5.2",
   "rel_pub": "2026-06-10",
-  "rel_days": 129,
+  "rel_days": 136,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -315,10 +315,10 @@
    "Python": 90,
    "Jupyter Notebook": 10
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3038,6 +3038,26 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "herchila/unittest-ai-agent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 97,
+   "Makefile": 3
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

@@ -150,11 +150,11 @@
   }
  },
  "xlang-ai/OSWorld": {
-  "commit_90d": 8,
-  "commit_7d": 0,
+  "commit_90d": 158,
+  "commit_7d": 122,
   "rel_ver": "v0.1.16",
   "rel_pub": "2024-06-26",
-  "rel_days": 843,
+  "rel_days": 850,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -170,10 +170,10 @@
    "Shell": 0,
    "HTML": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -285,10 +285,10 @@
   }
  },
  "panxunying/ai-coding-welfare": {
-  "commit_90d": 286,
-  "commit_7d": 34,
-  "rel_ver": "data-20261014-0130",
-  "rel_pub": "2026-10-14",
+  "commit_90d": 327,
+  "commit_7d": 43,
+  "rel_ver": "data-20261021-1152",
+  "rel_pub": "2026-10-21",
   "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
@@ -304,10 +304,10 @@
    "HTML": 2,
    "PowerShell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3080,5 +3080,14 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "agimx-ai/seedagent-tia-programming": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2
  }
 }

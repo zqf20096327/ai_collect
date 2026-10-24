@@ -262,12 +262,12 @@
   }
  },
  "felinics/Memoh": {
-  "commit_7d": 46,
-  "commit_90d": 503,
-  "rel_ver": "v0.21.0",
-  "rel_pub": "2026-10-05",
-  "rel_days": 12,
-  "rel_n90": 5,
+  "commit_7d": 47,
+  "commit_90d": 523,
+  "rel_ver": "v0.22.0",
+  "rel_pub": "2026-10-19",
+  "rel_days": 5,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -282,22 +282,22 @@
    "PLpgSQL": 1,
    "Shell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "Kritt-ai/open-kritt": {
-  "commit_7d": 0,
-  "commit_90d": 114,
+  "commit_7d": 6,
+  "commit_90d": 104,
   "rel_ver": "v1.4.1",
   "rel_pub": "2026-08-16",
-  "rel_days": 62,
-  "rel_n90": 5,
+  "rel_days": 69,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -312,10 +312,10 @@
    "CSS": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -432,11 +432,11 @@
   }
  },
  "zyx0814/FilePress": {
-  "commit_7d": 0,
-  "commit_90d": 5,
+  "commit_7d": 1,
+  "commit_90d": 3,
   "rel_ver": "3.0.1",
   "rel_pub": "2026-07-08",
-  "rel_days": 101,
+  "rel_days": 108,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -452,10 +452,10 @@
    "CSS": 3,
    "Java": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -484,11 +484,11 @@
   }
  },
  "mariadb-operator/mariadb-operator": {
-  "commit_7d": 0,
-  "commit_90d": 120,
+  "commit_7d": 10,
+  "commit_90d": 129,
   "rel_ver": "26.10.1",
   "rel_pub": "2026-09-21",
-  "rel_days": 26,
+  "rel_days": 33,
   "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
@@ -504,10 +504,10 @@
    "Go Template": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3096,6 +3096,29 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "ThorstenDoherr/searchengine": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "xBase": 79,
+   "Stata": 8,
+   "C++": 7,
+   "C": 4,
+   "Python": 2
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

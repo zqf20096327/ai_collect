@@ -161,11 +161,11 @@
   }
  },
  "lobehub/sd-webui-lobe-theme": {
-  "commit_7d": 3,
-  "commit_90d": 4,
+  "commit_7d": 1,
+  "commit_90d": 5,
   "rel_ver": "v3.0.3",
   "rel_pub": "2023-09-04",
-  "rel_days": 1139,
+  "rel_days": 1146,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -180,10 +180,10 @@
    "JavaScript": 1,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -276,11 +276,11 @@
   }
  },
  "silverstein/minutes": {
-  "commit_7d": 42,
-  "commit_90d": 1076,
-  "rel_ver": "v0.30.1",
-  "rel_pub": "2026-10-16",
-  "rel_days": 1,
+  "commit_7d": 127,
+  "commit_90d": 1154,
+  "rel_ver": "v0.30.10",
+  "rel_pub": "2026-10-22",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -296,23 +296,23 @@
    "HTML": 6,
    "Python": 4
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "basetenlabs/truss": {
-  "commit_7d": 13,
-  "commit_90d": 108,
-  "rel_ver": "v0.18.36rc0",
-  "rel_pub": "2026-10-14",
+  "commit_7d": 9,
+  "commit_90d": 106,
+  "rel_ver": "v0.18.36",
+  "rel_pub": "2026-10-21",
   "rel_days": 3,
   "rel_n90": 12,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -326,10 +326,10 @@
    "JavaScript": 1,
    "Jinja": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3455,6 +3455,53 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "Kololu777/onnx-sea-raft": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 82,
+   "Dockerfile": 18
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "harn3ss/open-infra": {
+  "rel_ver": "v3.2.0",
+  "rel_pub": "2026-10-12",
+  "rel_days": 12,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Go": 58,
+   "TypeScript": 28,
+   "Shell": 11,
+   "Python": 2,
+   "C#": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

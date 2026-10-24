@@ -145,11 +145,11 @@
   }
  },
  "MemTensor/memmy-agent": {
-  "commit_90d": 1333,
-  "commit_7d": 9,
-  "rel_ver": "v1.2.2",
-  "rel_pub": "2026-10-12",
-  "rel_days": 5,
+  "commit_90d": 1474,
+  "commit_7d": 52,
+  "rel_ver": "v1.2.4",
+  "rel_pub": "2026-10-22",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -165,22 +165,22 @@
    "PowerShell": 1,
    "Shell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "qq362946/Fantasy": {
-  "commit_90d": 53,
-  "commit_7d": 0,
+  "commit_90d": 46,
+  "commit_7d": 2,
   "rel_ver": "2026.1.2003",
   "rel_pub": "2026-10-02",
-  "rel_days": 15,
-  "rel_n90": 6,
+  "rel_days": 22,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -195,20 +195,20 @@
    "Shell": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "tomasz-tomczyk/crit": {
-  "commit_90d": 229,
-  "commit_7d": 19,
-  "rel_ver": "v0.23.0",
-  "rel_pub": "2026-10-16",
+  "commit_90d": 249,
+  "commit_7d": 24,
+  "rel_ver": "v0.23.1",
+  "rel_pub": "2026-10-23",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -227,21 +227,21 @@
    "CSS": 4,
    "Shell": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "FranciscoMoretti/chat-js": {
-  "commit_90d": 706,
-  "commit_7d": 12,
+  "commit_90d": 737,
+  "commit_7d": 35,
   "rel_ver": "@chat-js/cli@0.8.0",
   "rel_pub": "2026-09-05",
-  "rel_days": 42,
+  "rel_days": 49,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -257,10 +257,10 @@
    "JavaScript": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -326,11 +326,11 @@
   }
  },
  "datadrivenconstruction/OpenConstructionERP": {
-  "commit_90d": 5574,
-  "commit_7d": 1093,
-  "rel_ver": "v18.6.4",
-  "rel_pub": "2026-10-17",
-  "rel_days": 0,
+  "commit_90d": 5519,
+  "commit_7d": 115,
+  "rel_ver": "v18.8.2",
+  "rel_pub": "2026-10-22",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -353,10 +353,10 @@
    "HTML": 0,
    "Rust": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3284,6 +3284,52 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "QuickerHub/quicker-rpc": {
+  "rel_ver": "v0.14.8",
+  "rel_pub": "2026-06-17",
+  "rel_days": 129,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 50,
+   "C#": 32,
+   "JavaScript": 5,
+   "CSS": 4,
+   "HTML": 4
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "martinopedal/linkedin-auto-poster": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

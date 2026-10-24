@@ -81,11 +81,11 @@
   }
  },
  "cogwheel0/conduit": {
-  "commit_7d": 12,
-  "commit_90d": 579,
+  "commit_7d": 0,
+  "commit_90d": 572,
   "rel_ver": "v4.2.1",
   "rel_pub": "2026-10-16",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -101,21 +101,21 @@
    "Shell": 0,
    "Ruby": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "skrub-data/skrub": {
-  "commit_7d": 8,
-  "commit_90d": 75,
+  "commit_7d": 9,
+  "commit_90d": 81,
   "rel_ver": "0.11.0",
   "rel_pub": "2026-10-01",
-  "rel_days": 16,
+  "rel_days": 23,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -131,10 +131,10 @@
    "CSS": 1,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

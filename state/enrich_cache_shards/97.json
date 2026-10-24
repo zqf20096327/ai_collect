@@ -353,8 +353,8 @@
   }
  },
  "amitshekhariitbhu/ai-engineering-interview-questions": {
-  "commit_90d": 39,
-  "commit_7d": 3,
+  "commit_90d": 43,
+  "commit_7d": 8,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -365,10 +365,10 @@
   "lang": {
    "Markdown": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -483,8 +483,8 @@
   }
  },
  "WASasquatch/was-node-suite-comfyui": {
-  "commit_90d": 54,
-  "commit_7d": 7,
+  "commit_90d": 63,
+  "commit_7d": 10,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -497,21 +497,21 @@
    "JavaScript": 27,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "Open-Source-Legal/OpenContracts": {
-  "commit_90d": 494,
-  "commit_7d": 33,
+  "commit_90d": 489,
+  "commit_7d": 28,
   "rel_ver": "v3.1.1",
   "rel_pub": "2026-09-10",
-  "rel_days": 37,
+  "rel_days": 44,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -527,21 +527,21 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "goodroot/hyprwhspr": {
-  "commit_90d": 324,
-  "commit_7d": 23,
-  "rel_ver": "v1.49.1",
-  "rel_pub": "2026-10-17",
-  "rel_days": 0,
+  "commit_90d": 311,
+  "commit_7d": 24,
+  "rel_ver": "v1.49.2",
+  "rel_pub": "2026-10-19",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -557,20 +557,20 @@
    "Nix": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "tensorlakeai/tensorlake": {
-  "commit_90d": 149,
-  "commit_7d": 4,
-  "rel_ver": "cli-v0.5.151",
-  "rel_pub": "2026-10-14",
+  "commit_90d": 153,
+  "commit_7d": 16,
+  "rel_ver": "cli-v0.5.158",
+  "rel_pub": "2026-10-21",
   "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
@@ -594,10 +594,10 @@
    "JavaScript": 1,
    "Just": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3428,6 +3428,49 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "sokojh/ai-notifier-swift": {
+  "rel_ver": "v1.0.6",
+  "rel_pub": "2026-01-21",
+  "rel_days": 276,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Swift": 85,
+   "Shell": 15
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "mohsengh/SCFS": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

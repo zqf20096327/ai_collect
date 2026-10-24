@@ -224,12 +224,12 @@
   }
  },
  "Prismer-AI/PrismerCloud": {
-  "commit_7d": 3,
-  "commit_90d": 11,
-  "rel_ver": "cloud/v2.2.69",
-  "rel_pub": "2026-10-14",
-  "rel_days": 3,
-  "rel_n90": 7,
+  "commit_7d": 2,
+  "commit_90d": 13,
+  "rel_ver": "cloud/v2.2.71",
+  "rel_pub": "2026-10-22",
+  "rel_days": 2,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -244,10 +244,10 @@
    "Shell": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3519,6 +3519,28 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "xingbpshen/prompt4trust": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 91,
+   "Jupyter Notebook": 8,
+   "Shell": 1,
+   "TeX": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

@@ -142,12 +142,12 @@
   }
  },
  "can4hou6joeng4/boss-agent-cli": {
-  "commit_90d": 115,
-  "commit_7d": 9,
-  "rel_ver": "v3.0.0",
-  "rel_pub": "2026-10-01",
-  "rel_days": 16,
-  "rel_n90": 8,
+  "commit_90d": 116,
+  "commit_7d": 8,
+  "rel_ver": "v3.0.1",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -160,10 +160,10 @@
    "Dockerfile": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -283,11 +283,11 @@
   }
  },
  "Edwardxlai/easyread": {
-  "commit_90d": 296,
-  "commit_7d": 39,
-  "rel_ver": "v1.4.3",
-  "rel_pub": "2026-10-15",
-  "rel_days": 2,
+  "commit_90d": 323,
+  "commit_7d": 26,
+  "rel_ver": "v1.4.4",
+  "rel_pub": "2026-10-20",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -303,10 +303,10 @@
    "HTML": 1,
    "Batchfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -2917,6 +2917,28 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "rmorison/engineering-standards": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 55,
+   "JavaScript": 24,
+   "Shell": 21,
+   "Go Template": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

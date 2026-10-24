@@ -280,12 +280,12 @@
   }
  },
  "mnemosyne-oss/mnemosyne": {
-  "commit_90d": 657,
-  "commit_7d": 36,
-  "rel_ver": "v4.0.0b4",
-  "rel_pub": "2026-10-03",
-  "rel_days": 14,
-  "rel_n90": 11,
+  "commit_90d": 695,
+  "commit_7d": 59,
+  "rel_ver": "v4.0.0b5",
+  "rel_pub": "2026-10-19",
+  "rel_days": 5,
+  "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 1,
@@ -301,10 +301,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -371,11 +371,11 @@
   }
  },
  "tensorflow/model-optimization": {
-  "commit_90d": 2,
+  "commit_90d": 1,
   "commit_7d": 0,
   "rel_ver": "v0.8.1",
   "rel_pub": "2026-05-12",
-  "rel_days": 158,
+  "rel_days": 165,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -391,10 +391,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -450,11 +450,11 @@
   }
  },
  "cisco-ai-defense/mcp-scanner": {
-  "commit_90d": 21,
-  "commit_7d": 1,
-  "rel_ver": "v4.8.6",
-  "rel_pub": "2026-10-07",
-  "rel_days": 10,
+  "commit_90d": 27,
+  "commit_7d": 8,
+  "rel_ver": "4.8.7",
+  "rel_pub": "2026-10-20",
+  "rel_days": 4,
   "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
@@ -470,10 +470,10 @@
    "JavaScript": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3217,6 +3217,30 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "ParendumOU/Nexora-Mobile": {
+  "rel_ver": "v0.1.2",
+  "rel_pub": "2026-07-19",
+  "rel_days": 97,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 95,
+   "JavaScript": 5
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

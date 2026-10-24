@@ -352,11 +352,11 @@
   }
  },
  "Cloud-CV/EvalAI": {
-  "commit_90d": 56,
+  "commit_90d": 54,
   "commit_7d": 0,
   "rel_ver": "1.1",
   "rel_pub": "2018-04-13",
-  "rel_days": 3109,
+  "rel_days": 3116,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -372,18 +372,18 @@
    "Shell": 2,
    "SCSS": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "AkaliKong/MiniOneRec": {
-  "commit_90d": 10,
-  "commit_7d": 0,
+  "commit_90d": 20,
+  "commit_7d": 10,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -395,10 +395,10 @@
    "Python": 98,
    "Shell": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -2947,6 +2947,33 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "oll4com/spaceapp": {
+  "rel_ver": "v1.1.6",
+  "rel_pub": "2026-10-19",
+  "rel_days": 5,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 79,
+   "JavaScript": 9,
+   "HTML": 6,
+   "CSS": 5,
+   "Python": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

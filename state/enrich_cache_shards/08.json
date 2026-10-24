@@ -152,11 +152,11 @@
   }
  },
  "griptape-ai/griptape": {
-  "commit_90d": 34,
-  "commit_7d": 0,
+  "commit_90d": 38,
+  "commit_7d": 4,
   "rel_ver": "v1.13.0",
   "rel_pub": "2026-08-26",
-  "rel_days": 52,
+  "rel_days": 59,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -171,21 +171,21 @@
    "Makefile": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "chrisryugj/kordoc": {
-  "commit_90d": 891,
-  "commit_7d": 423,
-  "rel_ver": "v4.22.5",
-  "rel_pub": "2026-10-16",
-  "rel_days": 1,
+  "commit_90d": 975,
+  "commit_7d": 102,
+  "rel_ver": "v4.24.1",
+  "rel_pub": "2026-10-21",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -201,21 +201,21 @@
    "Java": 2,
    "PowerShell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "PurpleDoubleD/locally-uncensored": {
-  "commit_90d": 2185,
-  "commit_7d": 77,
-  "rel_ver": "v3.0.6",
-  "rel_pub": "2026-10-11",
-  "rel_days": 6,
+  "commit_90d": 2140,
+  "commit_7d": 50,
+  "rel_ver": "v3.0.7",
+  "rel_pub": "2026-10-19",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -231,10 +231,10 @@
    "Python": 1,
    "Shell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -263,12 +263,12 @@
   }
  },
  "autonomio/talos": {
-  "commit_90d": 53,
-  "commit_7d": 0,
-  "rel_ver": "v2.0.9",
-  "rel_pub": "2026-10-05",
-  "rel_days": 12,
-  "rel_n90": 3,
+  "commit_90d": 61,
+  "commit_7d": 8,
+  "rel_ver": "v2.0.10",
+  "rel_pub": "2026-10-21",
+  "rel_days": 3,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -283,10 +283,10 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3538,5 +3538,60 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "postbasehq/postbase": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 96,
+   "HTML": 1,
+   "JavaScript": 1,
+   "Python": 1,
+   "PLpgSQL": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "DewashishCodes/dolphin": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 71,
+   "PLpgSQL": 10,
+   "JavaScript": 7,
+   "CSS": 5,
+   "Jupyter Notebook": 4
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "JackyLi-HKUST/awesome-uav-usv-landing": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1
  }
 }

@@ -314,8 +314,8 @@
   }
  },
  "felladrin/awesome-ai-web-search": {
-  "commit_90d": 9,
-  "commit_7d": 0,
+  "commit_90d": 11,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -326,21 +326,21 @@
   "lang": {
    "HTML": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "nachifur/MulimgViewer": {
-  "commit_90d": 8,
-  "commit_7d": 0,
+  "commit_90d": 10,
+  "commit_7d": 2,
   "rel_ver": "v3.9.7",
   "rel_pub": "2022-05-16",
-  "rel_days": 1615,
+  "rel_days": 1622,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -354,10 +354,10 @@
    "Nix": 0,
    "Ruby": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -378,21 +378,21 @@
    "HTML": 0,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "yashab-cyber/opendroid": {
-  "commit_90d": 312,
-  "commit_7d": 0,
+  "commit_90d": 294,
+  "commit_7d": 4,
   "rel_ver": "v1.0.7",
   "rel_pub": "2026-09-04",
-  "rel_days": 43,
+  "rel_days": 50,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -408,10 +408,10 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -438,7 +438,7 @@
   }
  },
  "vinyzu-archive/Botright": {
-  "commit_90d": 4,
+  "commit_90d": 5,
   "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
@@ -453,10 +453,10 @@
    "JavaScript": 1,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

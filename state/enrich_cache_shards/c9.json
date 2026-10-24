@@ -259,11 +259,11 @@
   }
  },
  "alicevision/AliceVision": {
-  "commit_90d": 170,
-  "commit_7d": 90,
+  "commit_90d": 179,
+  "commit_7d": 21,
   "rel_ver": "nightly",
   "rel_pub": "2026-06-10",
-  "rel_days": 129,
+  "rel_days": 136,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -279,10 +279,10 @@
    "CMake": 5,
    "Modula-3": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -332,10 +332,10 @@
    "Jupyter Notebook": 100,
    "Python": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -372,11 +372,11 @@
   }
  },
  "kitops-ml/kitops": {
-  "commit_90d": 35,
+  "commit_90d": 22,
   "commit_7d": 0,
   "rel_ver": "v1.16.0",
   "rel_pub": "2026-09-29",
-  "rel_days": 18,
+  "rel_days": 25,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -394,10 +394,10 @@
    "Dockerfile": 1,
    "Awk": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -434,8 +434,8 @@
   }
  },
  "udecode/dotai": {
-  "commit_90d": 368,
-  "commit_7d": 129,
+  "commit_90d": 465,
+  "commit_7d": 104,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -449,10 +449,10 @@
    "Swift": 1,
    "HTML": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3339,6 +3339,30 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "iunera/ypipe": {
+  "rel_ver": "windows/v1.3.2",
+  "rel_pub": "2026-08-31",
+  "rel_days": 54,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "PowerShell": 51,
+   "Shell": 49
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

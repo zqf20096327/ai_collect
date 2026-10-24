@@ -283,11 +283,11 @@
   }
  },
  "nilearn/nilearn": {
-  "commit_90d": 147,
-  "commit_7d": 10,
+  "commit_90d": 160,
+  "commit_7d": 16,
   "rel_ver": "0.14.1",
   "rel_pub": "2026-09-04",
-  "rel_days": 43,
+  "rel_days": 50,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -303,10 +303,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

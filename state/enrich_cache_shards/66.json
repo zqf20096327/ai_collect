@@ -217,12 +217,12 @@
   }
  },
  "huangwb8/ChineseResearchLaTeX": {
-  "commit_90d": 98,
-  "commit_7d": 0,
-  "rel_ver": "v4.1.1",
-  "rel_pub": "2026-10-04",
-  "rel_days": 13,
-  "rel_n90": 3,
+  "commit_90d": 106,
+  "commit_7d": 9,
+  "rel_ver": "v4.1.2",
+  "rel_pub": "2026-10-17",
+  "rel_days": 7,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -237,10 +237,10 @@
    "Lua": 2,
    "Shell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -277,12 +277,12 @@
   }
  },
  "rednaga/APKiD": {
-  "commit_90d": 5,
-  "commit_7d": 0,
-  "rel_ver": "v3.1.0",
-  "rel_pub": "2026-04-09",
-  "rel_days": 191,
-  "rel_n90": 0,
+  "commit_90d": 8,
+  "commit_7d": 3,
+  "rel_ver": "v3.2.0",
+  "rel_pub": "2026-10-21",
+  "rel_days": 3,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -296,10 +296,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -384,8 +384,8 @@
   }
  },
  "meta-pytorch/tnt": {
-  "commit_90d": 20,
-  "commit_7d": 2,
+  "commit_90d": 21,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -396,21 +396,21 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "nicobailon/pi-mcp-adapter": {
-  "commit_90d": 559,
-  "commit_7d": 21,
-  "rel_ver": "v5.3.2",
-  "rel_pub": "2026-10-17",
-  "rel_days": 0,
+  "commit_90d": 461,
+  "commit_7d": 22,
+  "rel_ver": "v6.0.0",
+  "rel_pub": "2026-10-22",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -424,10 +424,10 @@
    "JavaScript": 4,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3195,6 +3195,51 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "paradedb/superkmeans-rs": {
+  "rel_ver": "v0.3.0",
+  "rel_pub": "2026-10-21",
+  "rel_days": 3,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Rust": 98,
+   "Python": 2
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "cryptoyasenka/crypto-signal-board": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 97,
+   "CSS": 2,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

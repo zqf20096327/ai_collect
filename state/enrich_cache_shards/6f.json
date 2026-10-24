@@ -183,11 +183,11 @@
   }
  },
  "FB208/OpenBidKit_Yibiao": {
-  "commit_90d": 502,
-  "commit_7d": 28,
-  "rel_ver": "v2.30.18",
-  "rel_pub": "2026-10-15",
-  "rel_days": 2,
+  "commit_90d": 463,
+  "commit_7d": 14,
+  "rel_ver": "v2.30.20",
+  "rel_pub": "2026-10-21",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -203,10 +203,10 @@
    "C#": 5,
    "Python": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -243,11 +243,11 @@
   }
  },
  "DevXDojo/MrRSS": {
-  "commit_90d": 566,
+  "commit_90d": 505,
   "commit_7d": 0,
   "rel_ver": "v1.3.40",
   "rel_pub": "2026-10-09",
-  "rel_days": 8,
+  "rel_days": 15,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -263,10 +263,10 @@
    "CSS": 1,
    "Python": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -326,10 +326,10 @@
  },
  "microsoft/onnxruntime-genai": {
   "commit_90d": 261,
-  "commit_7d": 11,
+  "commit_7d": 21,
   "rel_ver": "v0.17.0",
   "rel_pub": "2026-09-28",
-  "rel_days": 19,
+  "rel_days": 26,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -345,10 +345,10 @@
    "C#": 2,
    "CMake": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3239,6 +3239,29 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "BelloneLab/lisbet": {
+  "rel_ver": "v0.4.3",
+  "rel_pub": "2026-07-23",
+  "rel_days": 93,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

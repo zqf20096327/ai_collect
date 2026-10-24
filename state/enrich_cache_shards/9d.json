@@ -90,11 +90,11 @@
   }
  },
  "ALwrity/ALwrity": {
-  "commit_7d": 0,
-  "commit_90d": 25,
+  "commit_7d": 6,
+  "commit_90d": 31,
   "rel_ver": "v0.5.1",
   "rel_pub": "2026-06-05",
-  "rel_days": 134,
+  "rel_days": 141,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -110,18 +110,18 @@
    "PLpgSQL": 0,
    "HTML": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "peonist-ai/halogen-flash-server": {
-  "commit_7d": 27,
-  "commit_90d": 144,
+  "commit_7d": 12,
+  "commit_90d": 156,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -133,10 +133,10 @@
    "Shell": 82,
    "Python": 18
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

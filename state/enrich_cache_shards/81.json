@@ -217,11 +217,11 @@
  },
  "vstorm-co/full-stack-ai-agent-template": {
   "commit_7d": 0,
-  "commit_90d": 44,
+  "commit_90d": 37,
   "rel_ver": "0.2.21",
   "rel_pub": "2026-10-06",
-  "rel_days": 11,
-  "rel_n90": 5,
+  "rel_days": 18,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -236,10 +236,10 @@
    "HTML": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -250,7 +250,7 @@
   "commit_90d": 0,
   "rel_ver": "v0.16.0",
   "rel_pub": "2026-07-03",
-  "rel_days": 106,
+  "rel_days": 113,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -266,21 +266,21 @@
    "MDX": 3,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "ollaya-dev/ollaya": {
-  "commit_7d": 18,
-  "commit_90d": 241,
-  "rel_ver": "v0.13.0",
-  "rel_pub": "2026-10-13",
-  "rel_days": 4,
+  "commit_7d": 77,
+  "commit_90d": 317,
+  "rel_ver": "v0.17.0",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -296,10 +296,10 @@
    "JavaScript": 3,
    "Shell": 3
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

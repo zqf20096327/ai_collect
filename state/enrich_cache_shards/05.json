@@ -323,12 +323,12 @@
   }
  },
  "LiveHelperChat/livehelperchat": {
-  "commit_7d": 36,
-  "commit_90d": 170,
-  "rel_ver": "4.96v",
-  "rel_pub": "2026-10-14",
-  "rel_days": 3,
-  "rel_n90": 9,
+  "commit_7d": 8,
+  "commit_90d": 178,
+  "rel_ver": "4.97v",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 18,
@@ -352,10 +352,10 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -408,10 +408,10 @@
  },
  "CurvineIO/curvine": {
   "commit_7d": 17,
-  "commit_90d": 354,
-  "rel_ver": "v0.5.3-alpha",
-  "rel_pub": "2026-10-10",
-  "rel_days": 7,
+  "commit_90d": 310,
+  "rel_ver": "v0.5.4-alpha",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
   "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
@@ -427,10 +427,10 @@
    "Java": 3,
    "Go": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3383,6 +3383,26 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "ccao-data/model-condo-avm": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "R": 99,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

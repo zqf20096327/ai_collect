@@ -141,11 +141,11 @@
   }
  },
  "jnMetaCode/agency-orchestrator": {
-  "commit_90d": 405,
-  "commit_7d": 2,
-  "rel_ver": "desktop-v0.4.12",
-  "rel_pub": "2026-10-08",
-  "rel_days": 9,
+  "commit_90d": 435,
+  "commit_7d": 40,
+  "rel_ver": "desktop-v0.4.14",
+  "rel_pub": "2026-10-21",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -161,10 +161,10 @@
    "Shell": 2,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -213,11 +213,11 @@
   }
  },
  "kodustech/kodus-ai": {
-  "commit_90d": 1824,
-  "commit_7d": 37,
-  "rel_ver": "web-1.2.7",
-  "rel_pub": "2026-10-06",
-  "rel_days": 11,
+  "commit_90d": 2263,
+  "commit_7d": 364,
+  "rel_ver": "2.2.8",
+  "rel_pub": "2026-10-22",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -233,21 +233,21 @@
    "Python": 0,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "fancyboi999/ai-engineering-from-scratch-zh": {
-  "commit_90d": 77,
-  "commit_7d": 40,
+  "commit_90d": 88,
+  "commit_7d": 11,
   "rel_ver": "zh-manuals-20261013",
   "rel_pub": "2026-10-12",
-  "rel_days": 5,
+  "rel_days": 12,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -263,10 +263,10 @@
    "HTML": 5,
    "Go": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3355,6 +3355,25 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "Loophole-LLC/lebron-james-is-president": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

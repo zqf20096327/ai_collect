@@ -237,11 +237,11 @@
   }
  },
  "ggozad/oterm": {
-  "commit_7d": 3,
-  "commit_90d": 56,
-  "rel_ver": "0.26.0",
-  "rel_pub": "2026-10-12",
-  "rel_days": 5,
+  "commit_7d": 10,
+  "commit_90d": 55,
+  "rel_ver": "0.26.1",
+  "rel_pub": "2026-10-21",
+  "rel_days": 3,
   "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
@@ -254,21 +254,21 @@
    "Python": 100,
    "HTML": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "scverse/scvi-tools": {
-  "commit_7d": 2,
-  "commit_90d": 53,
+  "commit_7d": 5,
+  "commit_90d": 49,
   "rel_ver": "1.5.1",
   "rel_pub": "2026-09-10",
-  "rel_days": 37,
+  "rel_days": 44,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -281,10 +281,10 @@
    "Python": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -315,7 +315,7 @@
   }
  },
  "microsoft/ai-dev-gallery": {
-  "commit_7d": 1,
+  "commit_7d": 0,
   "commit_90d": 7,
   "rel_ver": null,
   "rel_none": true,
@@ -329,10 +329,10 @@
    "PowerShell": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3349,6 +3349,30 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "specpact/specpact": {
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-07-06",
+  "rel_days": 110,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Shell": 53,
+   "JavaScript": 47
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

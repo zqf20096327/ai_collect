@@ -198,11 +198,11 @@
   }
  },
  "lioensky/VCPToolBox": {
-  "commit_90d": 363,
-  "commit_7d": 35,
+  "commit_90d": 439,
+  "commit_7d": 140,
   "rel_ver": "v1.4.0",
   "rel_pub": "2026-08-29",
-  "rel_days": 49,
+  "rel_days": 56,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -218,10 +218,10 @@
    "C#": 6,
    "TypeScript": 5
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -251,11 +251,11 @@
   }
  },
  "IliasHad/edit-mind": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 1,
+  "commit_7d": 1,
   "rel_ver": "v0.30.0",
   "rel_pub": "2026-06-28",
-  "rel_days": 111,
+  "rel_days": 118,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -271,21 +271,21 @@
    "JavaScript": 0,
    "OCaml": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "rivet-dev/agents": {
-  "commit_90d": 48,
-  "commit_7d": 8,
+  "commit_90d": 52,
+  "commit_7d": 4,
   "rel_ver": "v0.5.3",
   "rel_pub": "2026-10-14",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -301,10 +301,10 @@
    "HTML": 2,
    "Dockerfile": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -338,11 +338,11 @@
   }
  },
  "chunxiaoxx/nautilus-compass": {
-  "commit_90d": 1653,
-  "commit_7d": 64,
+  "commit_90d": 1689,
+  "commit_7d": 49,
   "rel_ver": "v3.3.0",
   "rel_pub": "2026-10-04",
-  "rel_days": 13,
+  "rel_days": 20,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -358,18 +358,18 @@
    "Shell": 1,
    "PowerShell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "bilibili/Index-1.9B": {
-  "commit_90d": 6,
-  "commit_7d": 2,
+  "commit_90d": 4,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -381,10 +381,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -2672,6 +2672,28 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "pablo-reyes8/kimi-k3-pytorch": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 99,
+   "Jupyter Notebook": 0,
+   "Dockerfile": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

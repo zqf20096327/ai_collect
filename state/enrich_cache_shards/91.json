@@ -231,8 +231,8 @@
   }
  },
  "sambecker/exif-photo-blog": {
-  "commit_90d": 235,
-  "commit_7d": 8,
+  "commit_90d": 236,
+  "commit_7d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -245,22 +245,22 @@
    "CSS": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "beehive-lab/TornadoVM": {
-  "commit_90d": 893,
-  "commit_7d": 78,
+  "commit_90d": 1057,
+  "commit_7d": 61,
   "rel_ver": "v7.3.1",
   "rel_pub": "2026-10-15",
-  "rel_days": 2,
-  "rel_n90": 10,
+  "rel_days": 9,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -275,21 +275,21 @@
    "C": 0,
    "Cuda": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "NPC-Worldwide/npcpy": {
-  "commit_90d": 112,
-  "commit_7d": 9,
+  "commit_90d": 123,
+  "commit_7d": 12,
   "rel_ver": "v2.1.25",
   "rel_pub": "2026-10-12",
-  "rel_days": 5,
+  "rel_days": 12,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -303,10 +303,10 @@
    "Makefile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

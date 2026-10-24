@@ -300,11 +300,11 @@
   }
  },
  "Source-Robotics/PAROL6-Desktop-robot-arm": {
-  "commit_7d": 0,
-  "commit_90d": 5,
+  "commit_7d": 1,
+  "commit_90d": 6,
   "rel_ver": "V1",
   "rel_pub": "2025-03-08",
-  "rel_days": 588,
+  "rel_days": 595,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -320,22 +320,22 @@
    "CSS": 1,
    "C": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "open-webui/open-terminal": {
-  "commit_7d": 4,
-  "commit_90d": 27,
-  "rel_ver": "v0.14.1",
-  "rel_pub": "2026-10-16",
+  "commit_7d": 16,
+  "commit_90d": 43,
+  "rel_ver": "v0.14.4",
+  "rel_pub": "2026-10-23",
   "rel_days": 1,
-  "rel_n90": 11,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 1,
@@ -351,18 +351,18 @@
    "Slim": 3,
    "Dockerfile": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "taishi-i/awesome-ChatGPT-repositories": {
-  "commit_7d": 12,
-  "commit_90d": 65,
+  "commit_7d": 8,
+  "commit_90d": 70,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -373,10 +373,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -456,11 +456,11 @@
   }
  },
  "microsoft/hve-core": {
-  "commit_7d": 31,
-  "commit_90d": 345,
+  "commit_7d": 18,
+  "commit_90d": 350,
   "rel_ver": "hve-core-v3.3.101",
   "rel_pub": "2026-04-25",
-  "rel_days": 175,
+  "rel_days": 182,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -476,10 +476,10 @@
    "CSS": 1,
    "HTML": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -572,11 +572,11 @@
   }
  },
  "lhotse-speech/lhotse": {
-  "commit_7d": 0,
-  "commit_90d": 16,
+  "commit_7d": 11,
+  "commit_90d": 27,
   "rel_ver": "v1.33.0",
   "rel_pub": "2026-04-20",
-  "rel_days": 180,
+  "rel_days": 187,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -589,10 +589,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

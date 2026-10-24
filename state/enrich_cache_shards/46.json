@@ -159,12 +159,12 @@
   }
  },
  "bradygaster/squad": {
-  "commit_7d": 42,
-  "commit_90d": 702,
-  "rel_ver": "v1.0.1",
-  "rel_pub": "2026-10-04",
-  "rel_days": 13,
-  "rel_n90": 5,
+  "commit_7d": 23,
+  "commit_90d": 713,
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-10-20",
+  "rel_days": 4,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -179,20 +179,20 @@
    "PowerShell": 1,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "av/harbor": {
-  "commit_7d": 4,
-  "commit_90d": 334,
-  "rel_ver": "v0.5.15",
-  "rel_pub": "2026-10-13",
+  "commit_7d": 13,
+  "commit_90d": 305,
+  "rel_ver": "v0.5.16",
+  "rel_pub": "2026-10-20",
   "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
@@ -209,10 +209,10 @@
    "HTML": 7,
    "Rust": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -245,7 +245,7 @@
   "commit_90d": 0,
   "rel_ver": "v2.1.1",
   "rel_pub": "2025-11-17",
-  "rel_days": 334,
+  "rel_days": 341,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -261,10 +261,10 @@
    "Meson": 1,
    "Shell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -275,7 +275,7 @@
   "commit_90d": 10,
   "rel_ver": "v1.2.0",
   "rel_pub": "2026-01-26",
-  "rel_days": 264,
+  "rel_days": 271,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -288,10 +288,10 @@
    "Python": 100,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -320,11 +320,11 @@
   }
  },
  "HexmosTech/git-lrc": {
-  "commit_7d": 0,
-  "commit_90d": 95,
-  "rel_ver": "v0.6.15",
-  "rel_pub": "2026-10-05",
-  "rel_days": 12,
+  "commit_7d": 2,
+  "commit_90d": 97,
+  "rel_ver": "v0.6.17",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -340,10 +340,10 @@
    "CSS": 6,
    "Shell": 4
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3009,6 +3009,49 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "StevSant/HireSense": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Python": 67,
+   "TypeScript": 21,
+   "HTML": 8,
+   "SCSS": 4,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "double-k-3033/NR-AI-short-form-video-generator": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100,
+   "Makefile": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

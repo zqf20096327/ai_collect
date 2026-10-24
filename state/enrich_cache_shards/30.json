@@ -258,12 +258,12 @@
   }
  },
  "brightdata/brightdata-mcp": {
-  "commit_90d": 45,
-  "commit_7d": 17,
-  "rel_ver": "v3.1.0",
-  "rel_pub": "2026-10-15",
-  "rel_days": 2,
-  "rel_n90": 6,
+  "commit_90d": 63,
+  "commit_7d": 18,
+  "rel_ver": "v4.1.0",
+  "rel_pub": "2026-10-20",
+  "rel_days": 4,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -275,21 +275,21 @@
    "JavaScript": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "hydropix/TranslateBooksWithLLMs": {
-  "commit_90d": 113,
-  "commit_7d": 8,
-  "rel_ver": "v1.5.16",
-  "rel_pub": "2026-10-13",
-  "rel_days": 4,
+  "commit_90d": 122,
+  "commit_7d": 9,
+  "rel_ver": "v1.5.17",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -305,10 +305,10 @@
    "CSS": 2,
    "Batchfile": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -338,11 +338,11 @@
   }
  },
  "Ebony-Vinyl/EAC-Desktop": {
-  "commit_90d": 690,
-  "commit_7d": 16,
+  "commit_90d": 707,
+  "commit_7d": 13,
   "rel_ver": "V6.0.1",
   "rel_pub": "2026-10-09",
-  "rel_days": 8,
+  "rel_days": 15,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -358,21 +358,21 @@
    "PowerShell": 4,
    "NSIS": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "androoAGI/starnet": {
-  "commit_90d": 11536,
-  "commit_7d": 1836,
+  "commit_90d": 10976,
+  "commit_7d": 0,
   "rel_ver": "v0.13.5",
   "rel_pub": "2026-10-16",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -388,21 +388,21 @@
    "Rust": 1,
    "Python": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "tensorflow/text": {
-  "commit_90d": 13,
-  "commit_7d": 8,
+  "commit_90d": 15,
+  "commit_7d": 3,
   "rel_ver": "v2.21.1",
   "rel_pub": "2026-09-09",
-  "rel_days": 38,
+  "rel_days": 45,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -418,21 +418,21 @@
    "Shell": 0,
    "Linker Script": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "EvolvingLMMs-Lab/LLaVA-OneVision-2": {
-  "commit_90d": 97,
+  "commit_90d": 101,
   "commit_7d": 7,
   "rel_ver": "2.0",
   "rel_pub": "2026-08-06",
-  "rel_days": 72,
+  "rel_days": 79,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -448,22 +448,22 @@
    "Cuda": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "Folkbench/folkbench": {
-  "commit_90d": 49,
-  "commit_7d": 27,
-  "rel_ver": "switch-v0.1.0-beta.3",
-  "rel_pub": "2026-10-14",
-  "rel_days": 3,
-  "rel_n90": 3,
+  "commit_90d": 61,
+  "commit_7d": 13,
+  "rel_ver": "switch-v0.1.0-beta.5",
+  "rel_pub": "2026-10-22",
+  "rel_days": 2,
+  "rel_n90": 5,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
@@ -478,10 +478,10 @@
    "CSS": 4,
    "Astro": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3397,6 +3397,27 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "caseclose/cma-harness": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "HTML": 49,
+   "CSS": 44,
+   "Python": 7
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

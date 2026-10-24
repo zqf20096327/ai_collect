@@ -352,12 +352,12 @@
   }
  },
  "icereed/paperless-gpt": {
-  "commit_90d": 141,
-  "commit_7d": 47,
+  "commit_90d": 138,
+  "commit_7d": 0,
   "rel_ver": "v0.31.0",
   "rel_pub": "2026-10-14",
-  "rel_days": 3,
-  "rel_n90": 5,
+  "rel_days": 10,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -372,10 +372,10 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -432,11 +432,11 @@
   }
  },
  "pixeltable/pixeltable": {
-  "commit_90d": 239,
-  "commit_7d": 31,
-  "rel_ver": "v0.7.18",
-  "rel_pub": "2026-10-16",
-  "rel_days": 1,
+  "commit_90d": 254,
+  "commit_7d": 28,
+  "rel_ver": "v0.7.20",
+  "rel_pub": "2026-10-22",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -452,10 +452,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -474,21 +474,21 @@
   "lang": {
    "JavaScript": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "microsoft/Tutel": {
-  "commit_90d": 8,
-  "commit_7d": 0,
+  "commit_90d": 9,
+  "commit_7d": 2,
   "rel_ver": "v0.4.1",
   "rel_pub": "2025-03-20",
-  "rel_days": 576,
+  "rel_days": 583,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -503,10 +503,10 @@
    "C++": 4,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

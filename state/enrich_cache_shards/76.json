@@ -150,11 +150,11 @@
   }
  },
  "agentuniverse-ai/agentUniverse": {
-  "commit_90d": 60,
-  "commit_7d": 0,
+  "commit_90d": 1739,
+  "commit_7d": 1006,
   "rel_ver": "v0.0.19",
   "rel_pub": "2025-11-17",
-  "rel_days": 334,
+  "rel_days": 341,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -166,10 +166,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

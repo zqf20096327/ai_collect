@@ -296,11 +296,11 @@
   }
  },
  "qufei1993/skills-hub": {
-  "commit_7d": 33,
-  "commit_90d": 339,
+  "commit_7d": 0,
+  "commit_90d": 333,
   "rel_ver": "v1.0.1",
   "rel_pub": "2026-10-16",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
@@ -316,10 +316,10 @@
    "JavaScript": 5,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -475,7 +475,7 @@
   }
  },
  "deeplethe/solid-glass": {
-  "commit_7d": 92,
+  "commit_7d": 0,
   "commit_90d": 92,
   "rel_ver": null,
   "rel_none": true,
@@ -491,10 +491,10 @@
    "JavaScript": 1,
    "HTML": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -531,12 +531,12 @@
   }
  },
  "DrizzleTime/Foxel": {
-  "commit_7d": 16,
-  "commit_90d": 55,
-  "rel_ver": "v2.2.8",
-  "rel_pub": "2026-10-13",
-  "rel_days": 4,
-  "rel_n90": 6,
+  "commit_7d": 28,
+  "commit_90d": 80,
+  "rel_ver": "v2.3.4",
+  "rel_pub": "2026-10-21",
+  "rel_days": 3,
+  "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -551,10 +551,10 @@
    "Shell": 1,
    "HTML": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3536,6 +3536,27 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "RealEgor/re-protocol": {
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-03-23",
+  "rel_days": 215,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

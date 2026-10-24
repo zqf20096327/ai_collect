@@ -319,11 +319,11 @@
   }
  },
  "datastax/jvector": {
-  "commit_7d": 10,
-  "commit_90d": 29,
-  "rel_ver": "4.0.1",
-  "rel_pub": "2026-09-18",
-  "rel_days": 29,
+  "commit_7d": 5,
+  "commit_90d": 33,
+  "rel_ver": "4.0.2",
+  "rel_pub": "2026-10-19",
+  "rel_days": 5,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -339,10 +339,10 @@
    "C": 1,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -483,8 +483,8 @@
   }
  },
  "anthropics/oss-scanner": {
-  "commit_7d": 161,
-  "commit_90d": 275,
+  "commit_7d": 146,
+  "commit_90d": 460,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -496,10 +496,10 @@
    "Dockerfile": 72,
    "Python": 28
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3085,6 +3085,29 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "amirhosssein0/ai-platform-lab": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 49,
+   "TypeScript": 42,
+   "Dockerfile": 6,
+   "JavaScript": 1,
+   "CSS": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

@@ -115,7 +115,7 @@
   "commit_7d": 0,
   "rel_ver": "underthesea-v9.5.0",
   "rel_pub": "2026-05-17",
-  "rel_days": 153,
+  "rel_days": 160,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -131,17 +131,17 @@
    "Rust": 10,
    "CSS": 6
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "AgentR1/Agent-R1": {
-  "commit_90d": 1,
+  "commit_90d": 0,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -153,21 +153,21 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "langchain-ai/deepagentsjs": {
-  "commit_90d": 99,
-  "commit_7d": 9,
+  "commit_90d": 86,
+  "commit_7d": 4,
   "rel_ver": "deepagents@1.15.1",
   "rel_pub": "2026-10-16",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -181,10 +181,10 @@
   "lang": {
    "TypeScript": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -215,12 +215,12 @@
   }
  },
  "fmaclen/hollama": {
-  "commit_90d": 14,
-  "commit_7d": 0,
-  "rel_ver": "0.36.0",
-  "rel_pub": "2026-10-05",
-  "rel_days": 12,
-  "rel_n90": 1,
+  "commit_90d": 18,
+  "commit_7d": 4,
+  "rel_ver": "0.36.2",
+  "rel_pub": "2026-10-22",
+  "rel_days": 2,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -235,10 +235,10 @@
    "CSS": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

@@ -109,11 +109,11 @@
   }
  },
  "moltis-org/moltis": {
-  "commit_7d": 0,
-  "commit_90d": 166,
-  "rel_ver": "20260913.02",
-  "rel_pub": "2026-09-14",
-  "rel_days": 33,
+  "commit_7d": 16,
+  "commit_90d": 169,
+  "rel_ver": "20261023.01",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -132,21 +132,21 @@
    "JavaScript": 4,
    "Swift": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "drl990114/MarkFlowy": {
-  "commit_7d": 22,
-  "commit_90d": 293,
+  "commit_7d": 12,
+  "commit_90d": 291,
   "rel_ver": "v1.2.0",
   "rel_pub": "2026-10-17",
-  "rel_days": 0,
+  "rel_days": 7,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -162,10 +162,10 @@
    "CSS": 2,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -284,11 +284,11 @@
   }
  },
  "nano-muse/nanoMuse": {
-  "commit_7d": 554,
-  "commit_90d": 1580,
+  "commit_7d": 117,
+  "commit_90d": 1680,
   "rel_ver": "v1.0.5",
   "rel_pub": "2026-10-13",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -304,10 +304,10 @@
    "TypeScript": 9,
    "C": 4
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

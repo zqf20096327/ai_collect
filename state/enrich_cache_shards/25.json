@@ -280,8 +280,8 @@
   }
  },
  "rafska/awesome-local-llm": {
-  "commit_90d": 38,
-  "commit_7d": 15,
+  "commit_90d": 42,
+  "commit_7d": 5,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -290,21 +290,21 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "lobehub/lobe-icons": {
-  "commit_90d": 68,
-  "commit_7d": 10,
-  "rel_ver": "v6.0.0",
-  "rel_pub": "2026-10-15",
-  "rel_days": 2,
+  "commit_90d": 148,
+  "commit_7d": 86,
+  "rel_ver": "v6.9.0",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -319,10 +319,10 @@
    "JavaScript": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -407,8 +407,8 @@
   }
  },
  "xianshang33/llm-paper-daily": {
-  "commit_90d": 75,
-  "commit_7d": 6,
+  "commit_90d": 74,
+  "commit_7d": 7,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -421,21 +421,21 @@
    "JavaScript": 7,
    "Shell": 3
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "onnx/onnxmltools": {
-  "commit_90d": 17,
-  "commit_7d": 3,
+  "commit_90d": 18,
+  "commit_7d": 1,
   "rel_ver": "1.16.0",
   "rel_pub": "2026-01-30",
-  "rel_days": 260,
+  "rel_days": 267,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -448,10 +448,10 @@
    "Python": 100,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3307,6 +3307,32 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "dipjyotimetia/JARVIS": {
+  "rel_ver": "v1.0.3",
+  "rel_pub": "2025-10-01",
+  "rel_days": 388,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Go": 83,
+   "HTML": 15,
+   "Makefile": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

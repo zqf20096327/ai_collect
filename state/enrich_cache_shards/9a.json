@@ -209,10 +209,10 @@
  },
  "YanWenKun/ComfyUI-Docker": {
   "commit_90d": 15,
-  "commit_7d": 2,
+  "commit_7d": 1,
   "rel_ver": "v6.0",
   "rel_pub": "2025-10-15",
-  "rel_days": 367,
+  "rel_days": 374,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -225,10 +225,10 @@
    "Dockerfile": 52,
    "Shell": 48
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -349,11 +349,11 @@
   }
  },
  "google-deepmind/synthid-text": {
-  "commit_90d": 1,
-  "commit_7d": 0,
+  "commit_90d": 11,
+  "commit_7d": 10,
   "rel_ver": "0.2.1",
   "rel_pub": "2024-11-14",
-  "rel_days": 702,
+  "rel_days": 709,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -366,21 +366,21 @@
    "Python": 69,
    "Jupyter Notebook": 31
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "rockbenben/subtitle-translator": {
-  "commit_90d": 67,
-  "commit_7d": 1,
+  "commit_90d": 72,
+  "commit_7d": 7,
   "rel_ver": "v3.2.1",
   "rel_pub": "2026-09-17",
-  "rel_days": 30,
+  "rel_days": 37,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -396,10 +396,10 @@
    "HTML": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

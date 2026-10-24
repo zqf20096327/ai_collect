@@ -169,13 +169,13 @@
   }
  },
  "Darkatse/TauriTavern": {
-  "commit_90d": 529,
-  "commit_7d": 0,
-  "rel_ver": "Canary",
-  "rel_pub": "2026-04-26",
-  "rel_days": 174,
-  "rel_n90": 2,
-  "rel_pre": true,
+  "commit_90d": 738,
+  "commit_7d": 70,
+  "rel_ver": "v2.4.0",
+  "rel_pub": "2026-10-22",
+  "rel_days": 2,
+  "rel_n90": 3,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -189,10 +189,10 @@
    "HTML": 5,
    "CSS": 3
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

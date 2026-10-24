@@ -243,11 +243,11 @@
   }
  },
  "Card-Forge/forge": {
-  "commit_7d": 62,
-  "commit_90d": 1042,
+  "commit_7d": 86,
+  "commit_90d": 1044,
   "rel_ver": "daily-snapshots",
   "rel_pub": "2025-02-20",
-  "rel_days": 604,
+  "rel_days": 611,
   "rel_n90": 2,
   "rel_pre": true,
   "rel_none": false,
@@ -263,10 +263,10 @@
    "Shell": 0,
    "AppleScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -351,11 +351,11 @@
   }
  },
  "karust/openserp": {
-  "commit_7d": 0,
+  "commit_7d": 2,
   "commit_90d": 7,
-  "rel_ver": "v0.8.12",
-  "rel_pub": "2026-07-22",
-  "rel_days": 87,
+  "rel_ver": "v0.8.14",
+  "rel_pub": "2026-10-19",
+  "rel_days": 5,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -370,10 +370,10 @@
    "Dockerfile": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -462,11 +462,11 @@
   }
  },
  "matthiasn/lotti": {
-  "commit_7d": 43,
-  "commit_90d": 1234,
-  "rel_ver": "1.1.56+4444",
-  "rel_pub": "2026-10-16",
-  "rel_days": 1,
+  "commit_7d": 32,
+  "commit_90d": 1189,
+  "rel_ver": "1.1.62+4450",
+  "rel_pub": "2026-10-22",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -482,22 +482,22 @@
    "TLA": 1,
    "TypeScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "Derpyu520/qq-bridge": {
-  "commit_7d": 0,
-  "commit_90d": 43,
-  "rel_ver": "v0.2.0-r3",
-  "rel_pub": "2026-10-03",
-  "rel_days": 14,
-  "rel_n90": 6,
+  "commit_7d": 3,
+  "commit_90d": 46,
+  "rel_ver": "v0.2.1-r1",
+  "rel_pub": "2026-10-22",
+  "rel_days": 2,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -510,10 +510,10 @@
    "HTML": 18,
    "Batchfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -2859,6 +2859,27 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "nongjun/feishu-cursor-claw": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 50,
+   "TypeScript": 41,
+   "Shell": 9
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

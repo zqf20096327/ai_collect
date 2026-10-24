@@ -132,7 +132,7 @@
   "commit_90d": 0,
   "rel_ver": "0.4.0",
   "rel_pub": "2025-01-03",
-  "rel_days": 652,
+  "rel_days": 659,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -148,10 +148,10 @@
    "SCSS": 1,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -244,11 +244,11 @@
   }
  },
  "intel/auto-round": {
-  "commit_7d": 19,
-  "commit_90d": 225,
+  "commit_7d": 15,
+  "commit_90d": 234,
   "rel_ver": "v0.16.1",
   "rel_pub": "2026-10-16",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -264,10 +264,10 @@
    "CMake": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -301,11 +301,11 @@
   }
  },
  "milvus-io/pymilvus": {
-  "commit_7d": 5,
-  "commit_90d": 32,
+  "commit_7d": 3,
+  "commit_90d": 26,
   "rel_ver": "v3.0.2",
   "rel_pub": "2026-09-18",
-  "rel_days": 29,
+  "rel_days": 36,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -320,10 +320,10 @@
    "Makefile": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3357,6 +3357,66 @@
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
+  }
+ },
+ "AmitVaisman/Turbo-DDCM": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "a-ariff/ariff-claude-plugins": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Shell": 76,
+   "PowerShell": 24
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "TamSiuhin/P2P": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 95,
+   "Shell": 3,
+   "Jinja": 2
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
   }
  }
 }

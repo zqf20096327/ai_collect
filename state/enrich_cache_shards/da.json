@@ -137,11 +137,11 @@
  },
  "HUANGCHIHHUNGLeo/claude-real-video": {
   "commit_7d": 0,
-  "commit_90d": 59,
+  "commit_90d": 56,
   "rel_ver": "v0.10.7",
   "rel_pub": "2026-09-26",
-  "rel_days": 21,
-  "rel_n90": 12,
+  "rel_days": 28,
+  "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -155,10 +155,10 @@
    "CSS": 13,
    "Shell": 3
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -2707,5 +2707,28 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
- }
+ },
+ "hshatti/Tensorium": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Pascal": 78,
+   "Assembly": 15,
+   "C": 4,
+   "Cuda": 3
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "fpedd/l3m": {}
 }
