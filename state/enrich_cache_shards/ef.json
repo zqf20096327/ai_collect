@@ -3814,5 +3814,90 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "metacore-stack/vocalcanvas-studio": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 46,
+   "HTML": 46,
+   "CSS": 7
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "linearuncle/xharness": {
+  "rel_ver": "v0.0.9",
+  "rel_pub": "2026-08-03",
+  "rel_days": 82,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 57,
+   "JavaScript": 34,
+   "CSS": 7,
+   "HTML": 2
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "kaushalpowar/talk_to_pdf": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "pguso/gpt-from-scratch": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

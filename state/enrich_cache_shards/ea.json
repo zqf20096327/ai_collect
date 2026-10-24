@@ -4279,5 +4279,97 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "JarnoRalli/gstreamer-examples": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 71,
+   "Python": 25,
+   "C": 3,
+   "CMake": 1,
+   "Makefile": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "GiovanniIacuzzo/SemEval-2026-Task-13": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 67,
+   "TeX": 31,
+   "Shell": 2
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "syswe/AURA": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 85,
+   "Shell": 12,
+   "Makefile": 3,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "Ramcharan747/cursor-trajectory": {
+  "rel_ver": "v2.0.1",
+  "rel_pub": "2026-05-22",
+  "rel_days": 155,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 64,
+   "Rust": 28,
+   "Shell": 5,
+   "Batchfile": 4
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

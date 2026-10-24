@@ -3429,5 +3429,55 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "loopai-hq/pulsar": {
+  "rel_ver": "v1.1.7",
+  "rel_pub": "2026-10-10",
+  "rel_days": 14,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 39,
+   "Python": 32,
+   "Objective-C++": 21,
+   "Metal": 5,
+   "C": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "brandonhimpfen/awesome-ai-healthcare": {
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-05-05",
+  "rel_days": 172,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

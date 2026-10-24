@@ -3355,5 +3355,123 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "noah8368/OmegaZero": {
+  "rel_ver": "v5",
+  "rel_pub": "2026-09-01",
+  "rel_days": 53,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 93,
+   "Python": 4,
+   "C": 2,
+   "Shell": 1,
+   "Makefile": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "utkukose/gemex": {
+  "rel_ver": "v1.2.2",
+  "rel_pub": "2026-04-08",
+  "rel_days": 199,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "billy-enrizky/Pytorch-Handwritten-Digit-Recognition": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 83,
+   "Jupyter Notebook": 17
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "tems-ai/temsai-asr-server": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-10-07",
+  "rel_days": 17,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 87,
+   "Dockerfile": 8,
+   "Shell": 3,
+   "Go Template": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "sfeir-open-source/sfeir-school-langchain": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Jupyter Notebook": 90,
+   "Shell": 5,
+   "Python": 4,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

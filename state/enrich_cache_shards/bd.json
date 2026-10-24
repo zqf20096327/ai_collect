@@ -3356,5 +3356,95 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "2389-research/breakaway-agent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 100,
+   "Shell": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "shanraisshan/draw-json-architecture-skill": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-05-31",
+  "rel_days": 146,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 68,
+   "JavaScript": 23,
+   "Python": 7,
+   "CSS": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "backpack-lab/doora": {
+  "rel_ver": "v0.1.3",
+  "rel_pub": "2026-05-26",
+  "rel_days": 151,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 100,
+   "Shell": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "fxl1209739475-fxl/feishu-base-custom-api": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

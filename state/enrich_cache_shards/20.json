@@ -3388,5 +3388,185 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "Linden-TR/ziwei-doushu-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "ribeirogab/zeno-agent": {
+  "rel_ver": "v2026.5.22-1",
+  "rel_pub": "2026-05-22",
+  "rel_days": 155,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 88,
+   "Python": 3,
+   "MDX": 3,
+   "HTML": 3,
+   "CSS": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "phvv-me/frame-representation-hypothesis": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 84,
+   "JavaScript": 8,
+   "Python": 7,
+   "HTML": 1,
+   "CSS": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "TravisWheelerLab/DIPLOMAT": {
+  "rel_ver": "v0.6.0",
+  "rel_pub": "2026-10-06",
+  "rel_days": 18,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Python": 99,
+   "HTML": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "gokmengokhan/deo-llm-reframing": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 97,
+   "R": 3
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "namhv94/ezRouter": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-09-25",
+  "rel_days": 29,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 59,
+   "TypeScript": 29,
+   "CSS": 6,
+   "Python": 3,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "Graph-COM/EAPrivacy": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "lunai408/local-agent-factory": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 51,
+   "Python": 43,
+   "Shell": 3,
+   "PowerShell": 2,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

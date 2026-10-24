@@ -4015,5 +4015,108 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "reunanen/anno": {
+  "rel_ver": "v1.0.266",
+  "rel_pub": "2026-01-02",
+  "rel_days": 295,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 96,
+   "NSIS": 3,
+   "QMake": 1,
+   "C": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "scalattice/scalattice-agent": {
+  "rel_ver": "v1.1.158",
+  "rel_pub": "2026-10-22",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Rust": 80,
+   "PowerShell": 7,
+   "Python": 6,
+   "Shell": 4,
+   "Inno Setup": 2
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "J0EY0/Reseno": {
+  "rel_ver": "v0.4.2",
+  "rel_pub": "2026-10-07",
+  "rel_days": 17,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 59,
+   "TypeScript": 38,
+   "JavaScript": 2,
+   "CSS": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "KylerianHD/replay-bin": {
+  "rel_ver": "8.7.0",
+  "rel_pub": "2026-03-08",
+  "rel_days": 230,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Shell": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

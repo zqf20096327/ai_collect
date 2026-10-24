@@ -3715,5 +3715,73 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "usebridgeai/cli": {
+  "rel_ver": "v1.0.4",
+  "rel_pub": "2026-04-21",
+  "rel_days": 186,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 98,
+   "Shell": 1,
+   "PowerShell": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "Arfazrll/RAG-DocsInsight-Engine": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "CSS": 37,
+   "HTML": 21,
+   "JavaScript": 21,
+   "Python": 20,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "Francis1998/multi-bot-agentic": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 100,
+   "Shell": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

@@ -3741,5 +3741,48 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "dvelm/SCAIL-2-Unlimited-Video-Low-VRAM": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Python": 84,
+   "Shell": 8,
+   "Batchfile": 7
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "ash0545/sdn-ml-ids": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Jupyter Notebook": 98,
+   "Python": 2,
+   "Shell": 0,
+   "PHP": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

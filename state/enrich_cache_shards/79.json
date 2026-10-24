@@ -3994,5 +3994,105 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "Drix10/hypothesis-arena": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 52,
+   "C++": 32,
+   "JavaScript": 15,
+   "Shell": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "alzin/lucy-screen-agent": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-08-26",
+  "rel_days": 59,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Dart": 62,
+   "Kotlin": 38
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "F0Rextasy/omp-laya-judge": {
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-09-26",
+  "rel_days": 28,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 54,
+   "Python": 35,
+   "TypeScript": 11,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "OortCloudGroup/VLStream-Cloud": {
+  "rel_ver": "v1.2.7",
+  "rel_pub": "2026-10-18",
+  "rel_days": 6,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Java": 43,
+   "Vue": 29,
+   "JavaScript": 15,
+   "PLpgSQL": 3,
+   "TypeScript": 2
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

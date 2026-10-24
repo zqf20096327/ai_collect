@@ -3859,5 +3859,78 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "crusoecloud/crusoe-developer-hub": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 80,
+   "Jupyter Notebook": 9,
+   "TypeScript": 9,
+   "Cuda": 1,
+   "CSS": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "cumakurt/dede": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 85,
+   "Jinja": 8,
+   "Shell": 5,
+   "Dockerfile": 1,
+   "Makefile": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "begoneeraj/Newsup": {
+  "rel_ver": "v2.1.4",
+  "rel_pub": "2026-10-17",
+  "rel_days": 7,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 48,
+   "Dart": 46,
+   "TypeScript": 6,
+   "PowerShell": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

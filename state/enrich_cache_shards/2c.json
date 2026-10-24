@@ -3225,5 +3225,52 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "kenq1145/deepSeek-pet": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 60,
+   "JavaScript": 21,
+   "Python": 12,
+   "HTML": 4,
+   "C++": 2
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "mhajder/zabbix-mcp": {
+  "rel_ver": "v0.7.1",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 99,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

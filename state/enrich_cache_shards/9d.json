@@ -3261,5 +3261,81 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "KKenny0/script-weaver": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 68,
+   "TypeScript": 29,
+   "CSS": 2,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "cruxwell/pcode": {
+  "rel_ver": "v0.1.9",
+  "rel_pub": "2026-10-18",
+  "rel_days": 6,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 99,
+   "TypeScript": 1,
+   "Shell": 0,
+   "Makefile": 0,
+   "Ruby": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "tsunamayo7/helix-ai-studio": {
+  "rel_ver": "v12.8.4",
+  "rel_pub": "2026-03-12",
+  "rel_days": 226,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 57,
+   "HTML": 33,
+   "JavaScript": 9,
+   "CSS": 1,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

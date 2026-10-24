@@ -3785,5 +3785,79 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "kython28/wekua": {
+  "rel_ver": "0.4.0",
+  "rel_pub": "2026-07-18",
+  "rel_days": 98,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Zig": 63,
+   "C": 37,
+   "Makefile": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "aws-samples/rag-with-amazon-bedrock-and-memorydb": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Jupyter Notebook": 50,
+   "Python": 49,
+   "Batchfile": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "ujjalsharma100/agent-trace-cli": {
+  "rel_ver": "v0.1.3",
+  "rel_pub": "2026-07-25",
+  "rel_days": 91,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 86,
+   "JavaScript": 9,
+   "CSS": 3,
+   "Shell": 2,
+   "HTML": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

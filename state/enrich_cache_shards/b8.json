@@ -3939,5 +3939,75 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "pranavpanchal1326/ARGUS-PRISM": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 46,
+   "TypeScript": 39,
+   "CSS": 15,
+   "PowerShell": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "ai-domain-data/spec": {
+  "rel_ver": "v0.1.1",
+  "rel_pub": "2025-11-18",
+  "rel_days": 340,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 83,
+   "TypeScript": 17
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "covid19-bh-machine-learning/master": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 13,
+  "lang": {
+   "Jupyter Notebook": 100,
+   "Python": 0,
+   "TeX": 0,
+   "R": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

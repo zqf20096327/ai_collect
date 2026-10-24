@@ -3135,5 +3135,75 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "datatorch/python": {
+  "rel_ver": "v0.8.0",
+  "rel_pub": "2026-10-16",
+  "rel_days": 8,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Python": 100,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "CemRoot/deepfake-detection-streamlit": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "chirag127/bookmark-mind": {
+  "rel_ver": "prerelease",
+  "rel_pub": "2026-07-12",
+  "rel_days": 104,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "JavaScript": 76,
+   "HTML": 19,
+   "CSS": 4,
+   "Python": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

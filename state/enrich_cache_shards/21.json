@@ -3287,5 +3287,98 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "andredisa/chess_AI_agents": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "TysonTranThai/gpu-rental-kit": {
+  "rel_ver": "v1.7.0",
+  "rel_pub": "2026-09-23",
+  "rel_days": 31,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Shell": 94,
+   "PowerShell": 6,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "pengqianhan/Awesome-Free-AI-Course": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Jupyter Notebook": 100,
+   "TeX": 0,
+   "HTML": 0,
+   "Python": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "nobodywho-ooo/NobodyWho-Chat": {
+  "rel_ver": "v1.1.0-build-13",
+  "rel_pub": "2026-09-21",
+  "rel_days": 33,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 96,
+   "JavaScript": 3,
+   "Kotlin": 0,
+   "Ruby": 0,
+   "Swift": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

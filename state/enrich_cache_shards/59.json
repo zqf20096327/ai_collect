@@ -3718,5 +3718,101 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "Autonion/Automation-Companion": {
+  "rel_ver": "v1.1.4",
+  "rel_pub": "2026-09-21",
+  "rel_days": 33,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Kotlin": 98,
+   "C++": 1,
+   "Python": 0,
+   "PowerShell": 0,
+   "CMake": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "amckenna41/pySAR": {
+  "rel_ver": "v2.5.0",
+  "rel_pub": "2026-04-10",
+  "rel_days": 197,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "Hebbian-Robotics/pareto": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 78,
+   "TypeScript": 17,
+   "Python": 4,
+   "Dockerfile": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "neurono-ml/typed-lm": {
+  "rel_ver": "0.1.1",
+  "rel_pub": "2026-09-25",
+  "rel_days": 29,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

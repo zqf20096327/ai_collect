@@ -3558,5 +3558,80 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "chinkan/RustFox": {
+  "rel_ver": "v1.0.6",
+  "rel_pub": "2026-10-21",
+  "rel_days": 3,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Rust": 86,
+   "TypeScript": 8,
+   "JavaScript": 2,
+   "HTML": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "lix19937/xinfer": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 93,
+   "Python": 3,
+   "C": 3,
+   "CMake": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "cobusgreyling/recollect": {
+  "rel_ver": "v0.2.1",
+  "rel_pub": "2026-06-13",
+  "rel_days": 133,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Python": 98,
+   "Makefile": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

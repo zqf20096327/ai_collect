@@ -3441,5 +3441,102 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "Leonwenhao/deeprepo": {
+  "rel_ver": "v0.2.5",
+  "rel_pub": "2026-02-25",
+  "rel_days": 241,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100,
+   "HTML": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "bloom500/cinderpaw": {
+  "rel_ver": "v2026.10.23-beta.1",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 71,
+   "Rust": 18,
+   "Go": 3,
+   "JavaScript": 3,
+   "Python": 3
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "dasein108/freqtrade_dev_mcp": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100,
+   "Makefile": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "lec77/PopChat": {
+  "rel_ver": "v0.1.3",
+  "rel_pub": "2026-09-18",
+  "rel_days": 36,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Swift": 98,
+   "Shell": 1,
+   "Python": 1,
+   "Objective-C": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

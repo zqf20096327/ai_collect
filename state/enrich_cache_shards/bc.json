@@ -3777,5 +3777,101 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "killerbotofthenewworld/DDR5-AI-memory-tuner": {
+  "rel_ver": "v6.0.2",
+  "rel_pub": "2025-08-14",
+  "rel_days": 436,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 97,
+   "PowerShell": 1,
+   "Batchfile": 1,
+   "Shell": 1,
+   "Inno Setup": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "vuhuusy/data-lakehouse-platform": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 50,
+   "Makefile": 37,
+   "Dockerfile": 9,
+   "Mustache": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "Nitin-Shukla-eng/Multi-Agents": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "Mats2208/qwen-image-local": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-09-24",
+  "rel_days": 30,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 50,
+   "JavaScript": 22,
+   "CSS": 11,
+   "Python": 8,
+   "HTML": 6
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

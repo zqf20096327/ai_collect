@@ -3859,5 +3859,51 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "EliseyRotar/jarvis-ai": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 55,
+   "TypeScript": 25,
+   "Go": 5,
+   "HTML": 5,
+   "CSS": 4
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "lumina-gen/lumina-core": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 47,
+   "Go": 44,
+   "Python": 6,
+   "Makefile": 1,
+   "CSS": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

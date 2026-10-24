@@ -3331,5 +3331,125 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "Celebez/hermes-agent-install-free-api": {
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-06-28",
+  "rel_days": 118,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Shell": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "EvotecIT/IntelligenceX": {
+  "rel_ver": "IntelligenceX-packages-v0.1.1",
+  "rel_pub": "2026-09-08",
+  "rel_days": 46,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "C#": 92,
+   "JavaScript": 3,
+   "Swift": 2,
+   "PowerShell": 1,
+   "CSS": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "aaravriyer193/TED": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 57,
+   "CSS": 23,
+   "Python": 18,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "himanshu-jadhav108/RepoMind-AI": {
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-08-21",
+  "rel_days": 64,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 57,
+   "Python": 43,
+   "CSS": 0,
+   "Dockerfile": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "KhazP/Reddit-to-AI": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 73,
+   "CSS": 14,
+   "HTML": 13
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

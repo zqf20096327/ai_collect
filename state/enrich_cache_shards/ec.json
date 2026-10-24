@@ -3537,5 +3537,55 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "zilet/cairn": {
+  "rel_ver": "v2.1.8",
+  "rel_pub": "2026-10-22",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 53,
+   "JavaScript": 42,
+   "CSS": 4,
+   "Shell": 1,
+   "Python": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "railwise-cn/tender-master": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-07-24",
+  "rel_days": 92,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

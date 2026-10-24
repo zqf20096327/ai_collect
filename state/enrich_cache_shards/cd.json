@@ -3592,5 +3592,126 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "darktw1nk/Lineage": {
+  "rel_ver": "v1.1.1",
+  "rel_pub": "2026-08-03",
+  "rel_days": 82,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 97,
+   "JavaScript": 3,
+   "CSS": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "tainguyen07/llm-structured-extract": {
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-08-21",
+  "rel_days": 64,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 98,
+   "Makefile": 2
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "eklavya2201/breakinggood": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-10-17",
+  "rel_days": 7,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 99,
+   "JavaScript": 1,
+   "Python": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "ML4NS/ml4ns.github.io": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Jupyter Notebook": 99,
+   "HTML": 0,
+   "Python": 0,
+   "CSS": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "GooDAnDReaDY/dsh-image-gen": {
+  "rel_ver": "v0.12.6",
+  "rel_pub": "2026-10-19",
+  "rel_days": 5,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

@@ -4085,5 +4085,130 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
- }
+ },
+ "NVIDIA/srt-slurm-recipes": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Python": 94,
+   "Shell": 6
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "megamen32/gptadmin_opensource": {
+  "rel_ver": "node-v1035-7741c1fb14f8",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Go": 51,
+   "Python": 30,
+   "TypeScript": 8,
+   "Shell": 3,
+   "Rust": 3
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "DazzleNodes/ComfyUI-Smart-Resolution-Calc": {
+  "rel_ver": "v0.12.11",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "JavaScript": 50,
+   "Python": 44,
+   "Shell": 5,
+   "HTML": 1,
+   "Tape": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "alibaba/AILens": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-04-29",
+  "rel_days": 178,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 49,
+   "TypeScript": 37,
+   "Java": 8,
+   "CSS": 5,
+   "ANTLR": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "nkhdiscovery/headless-agentic-codebase": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Shell": 63,
+   "Python": 16,
+   "TypeScript": 6,
+   "Makefile": 6,
+   "Vim Snippet": 4
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "josephkamau32/devintel": {}
 }

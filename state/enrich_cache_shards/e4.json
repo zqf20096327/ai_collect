@@ -3490,5 +3490,125 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "zybuu-ai/abhed": {
+  "rel_ver": "v1.2.8",
+  "rel_pub": "2026-10-14",
+  "rel_days": 10,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 10,
+  "sec_worst": "high",
+  "sec_last": "2026-10-14",
+  "sec_ids": [
+   "GHSA-9hfj-r2q4-67r8(-,medium)",
+   "GHSA-mf6r-228r-jwx9(-,medium)",
+   "GHSA-494p-9fcp-vvpp(-,high)",
+   "GHSA-974x-w8wr-w72j(-,high)",
+   "GHSA-3mvv-4xx6-wcf6(-,high)",
+   "GHSA-m285-qvqx-8558(-,high)",
+   "GHSA-92f7-29hh-w37j(-,high)",
+   "GHSA-jgqc-6fp9-9hcj(-,high)"
+  ],
+  "contrib_n": 2,
+  "lang": {
+   "Go": 96,
+   "HTML": 2,
+   "Python": 1,
+   "Shell": 0,
+   "PLpgSQL": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "VectorInstitute/VLDBench": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "nomoremrniceguy123/fR33d0M": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "LatentEvals/hty": {
+  "rel_ver": "v0.9.1",
+  "rel_pub": "2026-08-31",
+  "rel_days": 54,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Zig": 88,
+   "MDX": 8,
+   "JavaScript": 2,
+   "Shell": 2,
+   "Python": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "zhound420/D365FO-claude-connector": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 91,
+   "JavaScript": 8,
+   "Shell": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

@@ -3992,5 +3992,54 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "skirianov/dom-distill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 96,
+   "JavaScript": 2,
+   "CSS": 2,
+   "HTML": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "ThreeFish-AI/negentropy": {
+  "rel_ver": "negentropy-v0.0.1-rc.2",
+  "rel_pub": "2026-06-19",
+  "rel_days": 127,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 52,
+   "Python": 26,
+   "TypeScript": 22,
+   "CSS": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

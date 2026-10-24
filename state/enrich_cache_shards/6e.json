@@ -3430,5 +3430,82 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "kingkate2009-droid/ai-switch": {
+  "rel_ver": "v2.4.9",
+  "rel_pub": "2026-10-12",
+  "rel_days": 12,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 64,
+   "HTML": 30,
+   "CSS": 6,
+   "Shell": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "Exponential-OS/prompt-engineering-in-action": {
+  "rel_ver": "v4.1.0",
+  "rel_pub": "2026-04-29",
+  "rel_days": 178,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "TypeScript": 74,
+   "Shell": 18,
+   "PowerShell": 3,
+   "HTML": 3,
+   "Python": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "FavorPan/ai-daily-pulse": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 51,
+   "Python": 43,
+   "JavaScript": 6,
+   "CSS": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

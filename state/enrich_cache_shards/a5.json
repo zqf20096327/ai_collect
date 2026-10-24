@@ -3699,6 +3699,73 @@
   "sec_worst": null,
   "sec_last": null,
   "sec_ids": [],
-  "contrib_n": 9
+  "contrib_n": 9,
+  "lang": {
+   "TypeScript": 92,
+   "MDX": 3,
+   "JavaScript": 3,
+   "CSS": 2
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "use-junction/usejunction": {
+  "rel_ver": "agent-v0.4.20",
+  "rel_pub": "2026-10-20",
+  "rel_days": 4,
+  "rel_n90": 10,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 82,
+   "Go": 16,
+   "Shell": 1,
+   "JavaScript": 1,
+   "CSS": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "thedoublejay/braingent-manifesto": {
+  "rel_ver": "v1.3.0",
+  "rel_pub": "2026-10-12",
+  "rel_days": 12,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 77,
+   "CSS": 8,
+   "Astro": 8,
+   "Shell": 6,
+   "TypeScript": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

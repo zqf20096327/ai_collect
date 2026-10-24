@@ -3259,5 +3259,75 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "cmdupuis3/Blade": {
+  "rel_ver": "0.2.0",
+  "rel_pub": "2023-03-20",
+  "rel_days": 1314,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "F#": 54,
+   "C++": 14,
+   "Blade": 13,
+   "Rocq Prover": 7,
+   "LLVM": 6
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "veilm/hinata": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 37,
+   "JavaScript": 28,
+   "Python": 20,
+   "CSS": 5,
+   "Shell": 4
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "stabgan/Multiple-Linear-Regression": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 64,
+   "R": 36
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

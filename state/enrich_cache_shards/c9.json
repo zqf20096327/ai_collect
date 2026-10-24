@@ -3778,5 +3778,101 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "LinuxDevil/Create-MCP": {
+  "rel_ver": "1.0.6",
+  "rel_pub": "2025-09-25",
+  "rel_days": 394,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 91,
+   "JavaScript": 9
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "kurakurai/Luth-2": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 88,
+   "Jinja": 7,
+   "Makefile": 4,
+   "Shell": 2
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "microbit-foundation/cctd-ml-machine": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2023-06-19",
+  "rel_days": 1223,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "TypeScript": 53,
+   "Svelte": 29,
+   "Python": 10,
+   "CMake": 4,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "filrg/split_learning": {
+  "rel_ver": "v4.0.0",
+  "rel_pub": "2026-05-06",
+  "rel_days": 171,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

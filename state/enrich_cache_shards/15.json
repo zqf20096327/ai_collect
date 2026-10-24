@@ -3661,5 +3661,130 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "521ox/OpenCode-V2-zh-CN": {
+  "rel_ver": "v2.0.22-zhcn.1",
+  "rel_pub": "2026-10-04",
+  "rel_days": 20,
+  "rel_n90": 6,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 453,
+  "lang": {
+   "TypeScript": 82,
+   "MDX": 16,
+   "CSS": 2,
+   "Astro": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "banye-technology/AbaoPal": {
+  "rel_ver": "v1.0",
+  "rel_pub": "2026-08-03",
+  "rel_days": 82,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Kotlin": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "elbruno/ElBruno.Text2Image": {
+  "rel_ver": "v1.7.0",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "C#": 96,
+   "JavaScript": 2,
+   "HTML": 1,
+   "PowerShell": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "joshdholtz/hive-old": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 81,
+   "Shell": 18,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "ToddThomson/Mila": {
+  "rel_ver": "v0.20.0",
+  "rel_pub": "2026-09-22",
+  "rel_days": 32,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 79,
+   "Cuda": 10,
+   "Python": 7,
+   "CMake": 2,
+   "HTML": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

@@ -3435,6 +3435,119 @@
   "sec_worst": null,
   "sec_last": null,
   "sec_ids": [],
-  "contrib_n": 2
- }
+  "contrib_n": 2,
+  "lang": {},
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "franzvill/action-sync": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 48,
+   "JavaScript": 34,
+   "CSS": 18,
+   "Dockerfile": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "tjcrims0nx/Helix": {
+  "rel_ver": "v0.6.11",
+  "rel_pub": "2026-08-16",
+  "rel_days": 69,
+  "rel_n90": 11,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 46,
+   "Vue": 37,
+   "TypeScript": 10,
+   "CSS": 5,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "Pro-GenAI/Agent-Action-Guard": {
+  "rel_ver": "v1.2.1",
+  "rel_pub": "2026-09-23",
+  "rel_days": 31,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 66,
+   "JavaScript": 25,
+   "TypeScript": 6,
+   "Shell": 2,
+   "Makefile": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "lopadova/AskMyDocs": {
+  "rel_ver": "v8.41.0",
+  "rel_pub": "2026-09-27",
+  "rel_days": 27,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "PHP": 66,
+   "TypeScript": 28,
+   "MDX": 4,
+   "JavaScript": 1,
+   "CSS": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "RealManage/dx-training": {}
 }

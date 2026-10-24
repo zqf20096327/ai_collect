@@ -3134,5 +3134,126 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "moragu3001-ship-it/synareon-harness": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-09-13",
+  "rel_days": 41,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "RaymondMaarloeve/RaymondMaarloeve": {
+  "rel_ver": "release-2026-01-12-085901",
+  "rel_pub": "2026-01-12",
+  "rel_days": 285,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "C#": 100,
+   "Python": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "sisinflab/WaveDiT": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-06-12",
+  "rel_days": 134,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "Shell": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "Hugues-DTANKOUO/olga": {
+  "rel_ver": "v0.1.3",
+  "rel_pub": "2026-05-26",
+  "rel_days": 151,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 94,
+   "Python": 5,
+   "HTML": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "amol-patil/html-artifact-kit": {
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-08-22",
+  "rel_days": 63,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 54,
+   "CSS": 25,
+   "JavaScript": 21
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

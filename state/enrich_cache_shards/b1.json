@@ -3598,5 +3598,81 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "Scaffoldic/agentforge-py": {
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-06-24",
+  "rel_days": 122,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100,
+   "Go Template": 0,
+   "SurrealQL": 0,
+   "Cypher": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "sudoeren/tadan": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 95,
+   "CSS": 2,
+   "JavaScript": 1,
+   "PLpgSQL": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "AureliusIvan/remembear": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2024-07-30",
+  "rel_days": 816,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "TypeScript": 67,
+   "Python": 22,
+   "MDX": 8,
+   "CSS": 1,
+   "Java": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

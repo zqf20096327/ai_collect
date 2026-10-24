@@ -3681,5 +3681,154 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "vuhai2002/zalo-agent": {
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-10-24",
+  "rel_days": 0,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 97,
+   "HTML": 3,
+   "Dockerfile": 0,
+   "CSS": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "damingishere-coder/Ai-Clip-Workflow": {
+  "rel_ver": "v2.6.1",
+  "rel_pub": "2026-10-19",
+  "rel_days": 5,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 70,
+   "HTML": 18,
+   "JavaScript": 7,
+   "CSS": 3,
+   "PowerShell": 2
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "Brhiza/sydf": {
+  "rel_ver": "v0.1.6",
+  "rel_pub": "2026-09-10",
+  "rel_days": 44,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 45,
+   "Vue": 41,
+   "CSS": 13,
+   "JavaScript": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "Lakeside529/ComfyUI-Anima-3.8B-LoRA-Bridge": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-08-24",
+  "rel_days": 61,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "mattbaconz/signal": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "PowerShell": 85,
+   "Shell": 12,
+   "HTML": 2,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "darksuit-ai/darksuitai": {
+  "rel_ver": "v0.0.9",
+  "rel_pub": "2026-07-18",
+  "rel_days": 98,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }
