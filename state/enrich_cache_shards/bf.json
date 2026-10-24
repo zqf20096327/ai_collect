@@ -3730,5 +3730,57 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "app-builders-club/mvp-builder": {
+  "rel_ver": "v0.3.0",
+  "rel_pub": "2026-09-06",
+  "rel_days": 48,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Shell": 52,
+   "PowerShell": 24,
+   "JavaScript": 24
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "xAmirHamza77/OmniCode": {
+  "rel_ver": "omnicode-v1.121.1",
+  "rel_pub": "2026-05-22",
+  "rel_days": 155,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 96,
+   "CSS": 1,
+   "JavaScript": 1,
+   "HTML": 1,
+   "Rust": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

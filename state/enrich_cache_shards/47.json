@@ -3704,5 +3704,32 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "johnson7788/AIMovie": {
+  "rel_ver": "0.1",
+  "rel_pub": "2026-06-17",
+  "rel_days": 129,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Vue": 54,
+   "Python": 34,
+   "TypeScript": 9,
+   "SCSS": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

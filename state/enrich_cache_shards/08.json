@@ -3646,5 +3646,53 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "sou350121/Agent-Playbook": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "PowerShell": 33,
+   "HCL": 28,
+   "Shell": 26,
+   "Dockerfile": 13
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "mutablelogic/go-llm": {
+  "rel_ver": "v0.4.5",
+  "rel_pub": "2026-06-23",
+  "rel_days": 123,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Go": 100,
+   "PLpgSQL": 0,
+   "Makefile": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

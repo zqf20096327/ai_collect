@@ -3508,5 +3508,56 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "openchamber/opencode-cursor": {
+  "rel_ver": "v2.5.1",
+  "rel_pub": "2026-08-21",
+  "rel_days": 64,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 98,
+   "JavaScript": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "Yuvakunaal/ai-interview-sdk": {
+  "rel_ver": "@interview-sdk/react@0.3.0",
+  "rel_pub": "2026-07-19",
+  "rel_days": 97,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 87,
+   "CSS": 11,
+   "JavaScript": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

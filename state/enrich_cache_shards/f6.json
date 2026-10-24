@@ -3345,5 +3345,84 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "jholhewres/anchored": {
+  "rel_ver": "v0.20.2",
+  "rel_pub": "2026-10-17",
+  "rel_days": 7,
+  "rel_n90": 10,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Go": 97,
+   "JavaScript": 2,
+   "CSS": 1,
+   "HTML": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "mlr-org/mlr3misc": {
+  "rel_ver": "v0.23.0",
+  "rel_pub": "2026-08-21",
+  "rel_days": 64,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 14,
+  "lang": {
+   "R": 96,
+   "C": 4,
+   "Shell": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "spotta85/anyagent": {
+  "rel_ver": "v0.0.4",
+  "rel_pub": "2026-09-13",
+  "rel_days": 41,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 84,
+   "Swift": 6,
+   "TypeScript": 4,
+   "Python": 4,
+   "Go": 2
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

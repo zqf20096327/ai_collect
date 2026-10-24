@@ -3409,5 +3409,52 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "jaredboynton/warpsock": {
+  "rel_ver": "v4.3.0",
+  "rel_pub": "2026-07-07",
+  "rel_days": 109,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 91,
+   "Python": 6,
+   "Shell": 2,
+   "JavaScript": 1,
+   "Just": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "Mindful-AI-Research/.github": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "HTML": 85,
+   "Python": 15
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

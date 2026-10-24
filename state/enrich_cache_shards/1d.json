@@ -3347,5 +3347,78 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "comsky/remy-skill-recipes": {
+  "rel_ver": "v1.5.0",
+  "rel_pub": "2026-07-14",
+  "rel_days": 102,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "lucinate-ai/lucinate": {
+  "rel_ver": "v1.25.0",
+  "rel_pub": "2026-08-02",
+  "rel_days": 83,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Go": 97,
+   "Shell": 3,
+   "Makefile": 0,
+   "PowerShell": 0,
+   "Go Template": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "zvec-ai/zvec-mcp-server": {
+  "rel_ver": "v0.3.0",
+  "rel_pub": "2026-04-09",
+  "rel_days": 198,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

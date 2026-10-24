@@ -3309,5 +3309,101 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "ymh0000123/dsh-client-masquerade": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "KarineAyrs/knowledge-distillation-semantic-search": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "sattyamjjain/agent-audit-kit": {
+  "rel_ver": "v0.6.25",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 3,
+  "sec_worst": "low",
+  "sec_last": "2026-10-20",
+  "sec_ids": [
+   "GHSA-365f-cwj8-6mfx(-,medium)",
+   "GHSA-rf8j-469g-49hf(-,low)",
+   "GHSA-5c69-frmp-5p7h(-,medium)"
+  ],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 99,
+   "Shell": 0,
+   "TypeScript": 0,
+   "Makefile": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "sudoeren/karpa": {
+  "rel_ver": "v1.3.10",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 97,
+   "CSS": 3,
+   "JavaScript": 0,
+   "Rust": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

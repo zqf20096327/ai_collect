@@ -3208,5 +3208,112 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "kangraemin/ai-paper-digest": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 89,
+   "Python": 5,
+   "Shell": 4,
+   "CSS": 1,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "HKUST-Aerial-Robotics/FC-Family": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "fzxbl/terminal-mcp": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 2,
+  "sec_worst": "high",
+  "sec_last": "2026-10-14",
+  "sec_ids": [
+   "GHSA-cjvm-92f6-9fvp(-,high)",
+   "GHSA-x2v9-j37c-j562(-,high)"
+  ],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 98,
+   "CSS": 2
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "Xmax-AI/XmaxSDK-RN": {
+  "rel_ver": "1.0.4",
+  "rel_pub": "2026-10-07",
+  "rel_days": 17,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 53,
+   "JavaScript": 34,
+   "Swift": 6,
+   "Kotlin": 5,
+   "Java": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "khlaifiabilel/awesome-geospatial-super-resolution": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }
