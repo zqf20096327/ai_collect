@@ -3500,5 +3500,78 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "sizwinz/StudySage-Offline-Online-AI-Note-Assistant": {
+  "rel_ver": "Summarizer",
+  "rel_pub": "2025-06-10",
+  "rel_days": 501,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 79,
+   "TypeScript": 14,
+   "CSS": 7,
+   "HTML": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "nirholas/solana-sniper-mcp": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 86,
+   "HTML": 14
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "ATboy-web/AI_NovelWriter": {
+  "rel_ver": "v3.2.0",
+  "rel_pub": "2026-09-18",
+  "rel_days": 36,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 93,
+   "Kotlin": 4,
+   "Shell": 1,
+   "TypeScript": 1,
+   "Java": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

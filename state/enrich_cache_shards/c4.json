@@ -3458,5 +3458,82 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "rfdiosuao/Hermes-Agent-phone": {
+  "rel_ver": "v6",
+  "rel_pub": "2026-04-12",
+  "rel_days": 195,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Kotlin": 69,
+   "Java": 28,
+   "HTML": 3
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "justrach/zag": {
+  "rel_ver": "zag-rt-0.1.0-gamma.3",
+  "rel_pub": "2026-03-20",
+  "rel_days": 218,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 349,
+  "lang": {
+   "C": 56,
+   "Zig": 30,
+   "C++": 13,
+   "Assembly": 0,
+   "RPC": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "aibtcdev/aibtc-mcp-server": {
+  "rel_ver": "mcp-server-v1.76.1",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 21,
+  "lang": {
+   "TypeScript": 99,
+   "HTML": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

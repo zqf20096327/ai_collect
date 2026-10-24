@@ -3231,5 +3231,59 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "chasedputnam/go-kiro-gateway": {
+  "rel_ver": "v1.3.4",
+  "rel_pub": "2026-09-07",
+  "rel_days": 47,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "HTML": 81,
+   "Go": 18,
+   "TypeScript": 1,
+   "Shell": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "msk-labs/grok-build-gui": {
+  "rel_ver": "v0.1.4",
+  "rel_pub": "2026-08-12",
+  "rel_days": 73,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "TypeScript": 85,
+   "CSS": 8,
+   "JavaScript": 5,
+   "Python": 1,
+   "HTML": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

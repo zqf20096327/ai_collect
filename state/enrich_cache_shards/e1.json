@@ -3875,5 +3875,85 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "DINKIssTyle/DINKIssTyle-Translator-AI": {
+  "rel_ver": "v1.0.3",
+  "rel_pub": "2026-07-24",
+  "rel_days": 92,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 38,
+   "Go": 31,
+   "Java": 10,
+   "CSS": 9,
+   "Swift": 8
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "monkeypuzzl/civitai-sync": {
+  "rel_ver": "v6.1.2",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 96,
+   "CSS": 4,
+   "HTML": 0,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "ThreeDeeJay/VKS3D": {
+  "rel_ver": "latest_spirv-val",
+  "rel_pub": "2026-10-24",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C": 95,
+   "Batchfile": 2,
+   "C++": 1,
+   "CMake": 1,
+   "PowerShell": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

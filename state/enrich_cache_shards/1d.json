@@ -3420,5 +3420,57 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "imweb-project/ImWeb": {
+  "rel_ver": "v0.25.0",
+  "rel_pub": "2026-09-17",
+  "rel_days": 37,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 91,
+   "HTML": 4,
+   "CSS": 3,
+   "Shell": 1,
+   "Python": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "secbear/skelegent": {
+  "rel_ver": "neuron-v0.4.0",
+  "rel_pub": "2026-03-03",
+  "rel_days": 235,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 100,
+   "Nix": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

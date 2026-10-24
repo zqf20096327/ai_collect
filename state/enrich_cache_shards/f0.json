@@ -3175,5 +3175,76 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "XHJ2AIDEVS/aitaxs-assistant": {
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-03-16",
+  "rel_days": 222,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "HTML": 75,
+   "Python": 25
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "YawLabs/caddy-mcp": {
+  "rel_ver": "v2.6.0",
+  "rel_pub": "2026-10-09",
+  "rel_days": 15,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 2,
+  "sec_worst": "high",
+  "sec_last": "2026-09-25",
+  "sec_ids": [
+   "GHSA-jff5-pw93-m3j3(-,medium)",
+   "GHSA-6859-g3p8-jc93(-,high)"
+  ],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 85,
+   "JavaScript": 10,
+   "Shell": 5
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "SwissCore92/comfyui-telegram-suite": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }
