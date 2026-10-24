@@ -3726,5 +3726,32 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "eeljoe/quota-viewer": {
+  "rel_ver": "v1.4.0",
+  "rel_pub": "2026-10-18",
+  "rel_days": 6,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 82,
+   "JavaScript": 9,
+   "CSS": 4,
+   "NSIS": 4,
+   "HTML": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

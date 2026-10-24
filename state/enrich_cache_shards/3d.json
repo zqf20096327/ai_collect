@@ -3634,5 +3634,109 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "kagura-ai/memory-cloud": {
+  "rel_ver": "v0.125.0",
+  "rel_pub": "2026-10-24",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 7,
+  "sec_worst": "high",
+  "sec_last": "2026-10-06",
+  "sec_ids": [
+   "GHSA-m833-q262-qfc7(-,medium)",
+   "GHSA-fqr3-fc3x-qf9c(-,medium)",
+   "GHSA-m3h8-5qx6-68g5(-,medium)",
+   "GHSA-mwhm-837r-7m8w(-,medium)",
+   "GHSA-5964-g5w8-c2mf(-,high)",
+   "GHSA-gw2r-4ch3-jxgh(-,low)",
+   "GHSA-7r9g-h22f-wh4j(-,high)"
+  ],
+  "contrib_n": 5,
+  "lang": {
+   "Python": 83,
+   "TypeScript": 15,
+   "Shell": 1,
+   "HTML": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "Olawoyin007/intentKeeper": {
+  "rel_ver": "v0.7.0",
+  "rel_pub": "2026-09-20",
+  "rel_days": 34,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 48,
+   "JavaScript": 45,
+   "HTML": 4,
+   "CSS": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "opencx-labs/zevals": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 97,
+   "JavaScript": 3
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "Vasallo94/obsidian-mcp-server": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100,
+   "Shell": 0,
+   "Makefile": 0,
+   "TypeScript": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

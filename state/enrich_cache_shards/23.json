@@ -2918,5 +2918,28 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "lingxukunxinkong/MomoTalk-AI": {
+  "rel_ver": "发行版v1.0",
+  "rel_pub": "2025-10-04",
+  "rel_days": 385,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

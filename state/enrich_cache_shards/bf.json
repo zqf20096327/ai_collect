@@ -3911,5 +3911,29 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "nile-green-ai/thermomind-continuity": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-05-24",
+  "rel_days": 153,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 55,
+   "Python": 45
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

@@ -3202,5 +3202,32 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "guyoung/boxagnts": {
+  "rel_ver": "20260724",
+  "rel_pub": "2026-07-24",
+  "rel_days": 92,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 54,
+   "Rust": 24,
+   "CSS": 16,
+   "Vue": 3,
+   "TypeScript": 2
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }
