@@ -3134,5 +3134,32 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "Arienax/gxworks-agent": {
+  "rel_ver": "v0.3.3-20261021",
+  "rel_pub": "2026-10-21",
+  "rel_days": 3,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 81,
+   "TypeScript": 12,
+   "C#": 5,
+   "CSS": 1,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

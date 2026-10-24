@@ -4209,5 +4209,55 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "shynloc/ACKS-Office-Suite-Simplify": {
+  "rel_ver": "v3.0.0",
+  "rel_pub": "2026-10-10",
+  "rel_days": 14,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "BrentFarris/echo": {
+  "rel_ver": "nightly-20260814-77",
+  "rel_pub": "2026-08-14",
+  "rel_days": 71,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Go": 58,
+   "TypeScript": 30,
+   "JavaScript": 7,
+   "CSS": 3,
+   "Python": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

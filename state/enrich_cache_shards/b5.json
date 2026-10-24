@@ -3727,5 +3727,28 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "anewgithubname/Juzhen": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Cuda": 43,
+   "C++": 39,
+   "Python": 6,
+   "Objective-C++": 6,
+   "CMake": 3
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

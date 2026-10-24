@@ -3556,5 +3556,30 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "HenriquesLab/folder2md4llms": {
+  "rel_ver": "v0.5.18",
+  "rel_pub": "2026-07-14",
+  "rel_days": 102,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 96,
+   "Shell": 3,
+   "Just": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

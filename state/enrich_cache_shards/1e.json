@@ -3687,5 +3687,70 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "ark-forge/mcp-eu-ai-act": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 1,
+  "sec_worst": null,
+  "sec_last": "2026-09-14",
+  "sec_ids": [
+   "GHSA-93f9-v357-x7m7(-,medium)"
+  ],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 96,
+   "Shell": 4,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "AhmadJeddi/LLM-VLM-Guide": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "llnl/orchestrator": {
+  "rel_ver": "v0.6.0",
+  "rel_pub": "2025-10-09",
+  "rel_days": 380,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 98,
+   "Shell": 2,
+   "AMPL": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

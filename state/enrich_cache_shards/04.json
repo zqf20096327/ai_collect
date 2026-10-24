@@ -3505,5 +3505,45 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "raffaelefarinaro/ciaobot": {
+  "rel_ver": "v1.6.1",
+  "rel_pub": "2026-10-21",
+  "rel_days": 3,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 71,
+   "TypeScript": 17,
+   "Vue": 10,
+   "JavaScript": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "galyarderlabs/galyarder-agent": {
+  "rel_ver": "v0.1.21",
+  "rel_pub": "2026-05-01",
+  "rel_days": 176,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4
  }
 }

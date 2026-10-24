@@ -3818,5 +3818,104 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "harishmuh/Machine-Learning-Specialization-Coursera": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 97,
+   "Python": 3
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "sulci-io/sulci-oss": {
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 8,
+  "sec_worst": "high",
+  "sec_last": "2026-10-11",
+  "sec_ids": [
+   "GHSA-h46p-f5hc-657q(-,medium)",
+   "GHSA-9cj9-6f34-9h4x(-,medium)",
+   "GHSA-422g-wg9w-2266(-,low)",
+   "GHSA-68hp-3mch-34p3(-,medium)",
+   "GHSA-2q9h-96c5-p6qx(-,medium)",
+   "GHSA-42qc-532h-ww45(-,high)",
+   "GHSA-xhqx-v55w-4p83(-,medium)",
+   "GHSA-5hj8-jxw9-7gjr(-,medium)"
+  ],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 99,
+   "Makefile": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "Drvivek34/Free-API-Bazaar": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "WinVector/wvpy": {
+  "rel_ver": "0.4.2",
+  "rel_pub": "2023-07-02",
+  "rel_days": 1210,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 88,
+   "Python": 11,
+   "Jupyter Notebook": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

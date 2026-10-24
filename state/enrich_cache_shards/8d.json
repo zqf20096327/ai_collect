@@ -4130,5 +4130,81 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "Jossifresben/BibCrit": {
+  "rel_ver": "v3.3.0",
+  "rel_pub": "2026-05-29",
+  "rel_days": 148,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 45,
+   "JavaScript": 27,
+   "HTML": 16,
+   "CSS": 10,
+   "TypeScript": 2
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "lincux0/ollmin": {
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-09-30",
+  "rel_days": 24,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 36,
+   "TypeScript": 35,
+   "JavaScript": 13,
+   "PowerShell": 8,
+   "CSS": 7
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "epergaboni/jevseo": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "TypeScript": 95,
+   "JavaScript": 4,
+   "CSS": 1,
+   "PHP": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

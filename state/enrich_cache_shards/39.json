@@ -4021,5 +4021,59 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "ashser004/Ollama-UI": {
+  "rel_ver": "v1.4.9",
+  "rel_pub": "2026-05-27",
+  "rel_days": 150,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 92,
+   "JavaScript": 3,
+   "CSS": 3,
+   "HTML": 2,
+   "Inno Setup": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "maojiebc/majia-chatcut-koubo": {
+  "rel_ver": "v1.8.1",
+  "rel_pub": "2026-10-21",
+  "rel_days": 3,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "JavaScript": 95,
+   "CSS": 2,
+   "TypeScript": 2,
+   "HTML": 1,
+   "Python": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }
