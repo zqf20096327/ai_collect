@@ -3282,5 +3282,78 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "denfry/mcpfabric": {
+  "rel_ver": "v0.8.0",
+  "rel_pub": "2026-10-16",
+  "rel_days": 8,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "low",
+  "sec_last": "2026-10-05",
+  "sec_ids": [
+   "GHSA-pm7h-9g86-5c9m(-,low)"
+  ],
+  "contrib_n": 3,
+  "lang": {
+   "Java": 53,
+   "TypeScript": 44,
+   "JavaScript": 3
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "noi-techpark/stuart-chatbot": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "Python": 69,
+   "JavaScript": 13,
+   "Shell": 6,
+   "CSS": 6,
+   "HTML": 5
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "rokrokss/shizue": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 72,
+   "JavaScript": 18,
+   "HTML": 9,
+   "CSS": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

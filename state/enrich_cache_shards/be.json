@@ -3700,5 +3700,53 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "ChizhongWang/OpenVerifAIble": {
+  "rel_ver": "v0.0.6",
+  "rel_pub": "2026-02-07",
+  "rel_days": 259,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "styleio/ShikishaTerm": {
+  "rel_ver": "v0.28.1",
+  "rel_pub": "2026-10-13",
+  "rel_days": 11,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 84,
+   "JavaScript": 13,
+   "PowerShell": 1,
+   "Shell": 0,
+   "TypeScript": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

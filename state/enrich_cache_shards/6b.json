@@ -3129,5 +3129,55 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "Armaan29-09-2005/AI-OSINT-Security-Analyzer": {
+  "rel_ver": "2.5.2",
+  "rel_pub": "2025-05-31",
+  "rel_days": 511,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "PlexMCP/PlexMCP-OSS": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-01-08",
+  "rel_days": 289,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 45,
+   "TypeScript": 37,
+   "HTML": 11,
+   "PLpgSQL": 4,
+   "Shell": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

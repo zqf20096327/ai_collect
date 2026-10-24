@@ -3363,5 +3363,57 @@
    "contrib": "20261023",
    "lang": "20261023"
   }
+ },
+ "RagavRida/agentdom": {
+  "rel_ver": "v3.7.0",
+  "rel_pub": "2026-05-14",
+  "rel_days": 163,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 82,
+   "TypeScript": 7,
+   "Python": 6,
+   "CSS": 2,
+   "HTML": 2
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "LouisHaoL/dsh-timer-agent": {
+  "rel_ver": "v0.8.0",
+  "rel_pub": "2026-10-09",
+  "rel_days": 15,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 56,
+   "JavaScript": 38,
+   "CSS": 6
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

@@ -3164,5 +3164,53 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
- }
+ },
+ "Shayanthn/AI-Agent-Architectures": {
+  "rel_ver": "v0.0.0",
+  "rel_pub": "2025-11-22",
+  "rel_days": 336,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "autoreg-ai/autoreg": {
+  "rel_ver": "v0.3.39",
+  "rel_pub": "2026-09-15",
+  "rel_days": 39,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "MDX": 90,
+   "JavaScript": 10
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "NetherlandsForensicInstitute/DNANet": {}
 }
