@@ -3610,5 +3610,54 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
- }
+ },
+ "ManifoldKit/ManifoldKit": {
+  "rel_ver": "v0.79.1",
+  "rel_pub": "2026-10-16",
+  "rel_days": 8,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Swift": 93,
+   "Shell": 5,
+   "JavaScript": 1,
+   "Python": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "hardenedlinux/velum": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 60,
+   "Python": 37,
+   "CMake": 3
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "Alpha-Park/genpark-knowledge-graph-entity-relation-triplet-extractor-skill": {}
 }

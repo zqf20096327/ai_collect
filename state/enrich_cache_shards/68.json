@@ -3592,5 +3592,32 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "CMU-SAFARI/Athena": {
+  "rel_ver": "v1.0",
+  "rel_pub": "2025-12-13",
+  "rel_days": 315,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "C++": 89,
+   "Python": 8,
+   "C": 3,
+   "Makefile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

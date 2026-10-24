@@ -4221,5 +4221,32 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "zzz27578/CentDeck": {
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-10-02",
+  "rel_days": 22,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 78,
+   "CSS": 14,
+   "HTML": 8,
+   "Batchfile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

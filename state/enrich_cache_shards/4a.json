@@ -3285,5 +3285,29 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "clanker-lover/codedocent": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-02-20",
+  "rel_days": 246,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 79,
+   "HTML": 21
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

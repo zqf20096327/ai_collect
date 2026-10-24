@@ -3585,5 +3585,80 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "quotentiroler/CactusRoute": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "Koustubh12345/TenSeiAi": {
+  "rel_ver": "v8.1.0",
+  "rel_pub": "2026-10-20",
+  "rel_days": 4,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Python": 93,
+   "HTML": 3,
+   "Java": 2,
+   "Shell": 1,
+   "Rust": 1
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "The127/aibox": {
+  "rel_ver": "v2.2.0",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": null,
+  "sec_last": "2026-10-12",
+  "sec_ids": [
+   "GHSA-phpc-8wrw-cp5j(-,medium)"
+  ],
+  "contrib_n": 3,
+  "lang": {
+   "Go": 99,
+   "Dockerfile": 0,
+   "Just": 0,
+   "Shell": 0,
+   "Nix": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

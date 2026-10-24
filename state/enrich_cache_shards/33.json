@@ -4113,5 +4113,32 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "inthhq/leadtype": {
+  "rel_ver": "leadtype@0.6.0",
+  "rel_pub": "2026-10-16",
+  "rel_days": 8,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 96,
+   "CSS": 2,
+   "Vue": 1,
+   "Svelte": 0,
+   "Astro": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }
