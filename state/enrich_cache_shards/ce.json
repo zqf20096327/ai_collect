@@ -3747,5 +3747,53 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "manit6752025/AXIOM-AI": {
+  "rel_ver": "v0.3.0-beta.5",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "critical",
+  "sec_last": "2026-10-11",
+  "sec_ids": [
+   "GHSA-gm49-gjhh-hgm9(-,critical)"
+  ],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 63,
+   "TypeScript": 26,
+   "CSS": 9,
+   "Shell": 1,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "Foadsf/jev-for-engineers": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

@@ -3530,5 +3530,57 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "glamboyosa/docket": {
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-10-13",
+  "rel_days": 11,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 78,
+   "CSS": 9,
+   "Astro": 8,
+   "Shell": 4,
+   "TypeScript": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "TriangleCatAy/fireplace": {
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-10-03",
+  "rel_days": 21,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Dart": 99,
+   "Python": 1,
+   "Kotlin": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

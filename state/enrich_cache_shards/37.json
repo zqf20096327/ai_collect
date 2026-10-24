@@ -3847,5 +3847,32 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "qawwali6969/HyperNotch": {
+  "rel_ver": "v1.6.0",
+  "rel_pub": "2026-09-28",
+  "rel_days": 26,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Swift": 52,
+   "HTML": 35,
+   "JavaScript": 12,
+   "CSS": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

@@ -341,11 +341,11 @@
   }
  },
  "mlcommons/training": {
-  "commit_90d": 11,
-  "commit_7d": 0,
+  "commit_90d": 12,
+  "commit_7d": 1,
   "rel_ver": "v4.0",
   "rel_pub": "2024-04-05",
-  "rel_days": 925,
+  "rel_days": 932,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -361,10 +361,10 @@
    "Shell": 4,
    "TypeScript": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3946,6 +3946,73 @@
    "TypeScript": 65,
    "Python": 29,
    "JavaScript": 6
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "Alpha-Park/genpark-agent-hybrid-memory-retriever-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "im0xMagnus/deepseek-v4.1-flash-uncensored-8x-dgx-spark": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Shell": 80,
+   "Python": 18,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "megagonlabs/tabulaflow": {
+  "rel_ver": "v0.4.3",
+  "rel_pub": "2026-10-23",
+  "rel_days": 1,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Python": 94,
+   "JavaScript": 4,
+   "CSS": 1,
+   "Makefile": 0,
+   "HTML": 0
   },
   "enriched_at": "20261024",
   "dim_ts": {

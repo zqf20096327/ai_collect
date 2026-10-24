@@ -60,11 +60,11 @@
   }
  },
  "mlfoundations/open_clip": {
-  "commit_7d": 0,
-  "commit_90d": 33,
+  "commit_7d": 2,
+  "commit_90d": 35,
   "rel_ver": "v3.3.0",
   "rel_pub": "2026-02-27",
-  "rel_days": 231,
+  "rel_days": 239,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -78,10 +78,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -3559,6 +3559,42 @@
   "lang": {
    "Python": 100
   },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "Alpha-Park/genpark-agent-reputation-credit-ledger-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "oliversilva-dev2094b2/CupCat-Video-Editor-Ai": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
   "enriched_at": "20261024",
   "dim_ts": {
    "release": "20261024",

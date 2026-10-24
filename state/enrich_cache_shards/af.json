@@ -67,7 +67,7 @@
   "commit_90d": 0,
   "rel_ver": "v0.13.2",
   "rel_pub": "2026-06-18",
-  "rel_days": 120,
+  "rel_days": 128,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -82,10 +82,10 @@
    "TypeScript": 97,
    "JavaScript": 3
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -144,11 +144,11 @@
   }
  },
  "lucidrains/vector-quantize-pytorch": {
-  "commit_7d": 0,
-  "commit_90d": 12,
+  "commit_7d": 1,
+  "commit_90d": 9,
   "rel_ver": "1.27.21",
   "rel_pub": "2026-02-12",
-  "rel_days": 246,
+  "rel_days": 254,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -160,10 +160,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261024",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261024",
+   "release": "20261024",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -3639,6 +3639,54 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "OmniJev/awesome-jev-papers": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 40,
+   "CSS": 32,
+   "JavaScript": 28
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "Clawhunt-Site/awwo-canvas": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-10-09",
+  "rel_days": 15,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 81,
+   "CSS": 13,
+   "JavaScript": 4,
+   "Python": 1,
+   "HTML": 0
+  },
   "enriched_at": "20261024",
   "dim_ts": {
    "release": "20261024",
