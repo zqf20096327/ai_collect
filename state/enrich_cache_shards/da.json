@@ -3666,5 +3666,48 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "enkerewpo/plugshell": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 78,
+   "Python": 8,
+   "Objective-C++": 7,
+   "Shell": 4,
+   "CMake": 2
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "Nikhil-creat/careflow": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 96,
+   "Dockerfile": 4
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
  }
 }

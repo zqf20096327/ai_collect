@@ -3694,5 +3694,123 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "urbullet/readword": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-10-23",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Ruby": 100
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "workstonedai-collab/social-media-read-for-agent": {
+  "rel_ver": "v0.1.0a15",
+  "rel_pub": "2026-10-21",
+  "rel_days": 4,
+  "rel_n90": 10,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 95,
+   "Shell": 2,
+   "JavaScript": 2,
+   "HTML": 1,
+   "Swift": 0
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "mateonunez/jod": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-09-17",
+  "rel_days": 38,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 100,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "ricyoung/bev": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 97,
+   "Jinja": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "Mirocow/prismgit": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 85,
+   "JavaScript": 13,
+   "CSS": 1,
+   "Makefile": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
  }
 }

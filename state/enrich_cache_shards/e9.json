@@ -3970,5 +3970,77 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "himomohi/jev-skill-router": {
+  "rel_ver": "v0.4.1",
+  "rel_pub": "2026-09-22",
+  "rel_days": 33,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 97,
+   "TypeScript": 3,
+   "Shell": 0,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "Prashant-4527/shiori-rag": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "dominodatalab/domino-ai-plugin": {
+  "rel_ver": "release-2026.603.9",
+  "rel_pub": "2026-10-20",
+  "rel_days": 5,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 78,
+   "Shell": 13,
+   "Rust": 7,
+   "JavaScript": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
  }
 }

@@ -3587,5 +3587,32 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "areguig/petit-poucet": {
+  "rel_ver": "v0.6.0",
+  "rel_pub": "2026-10-23",
+  "rel_days": 2,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 87,
+   "HTML": 6,
+   "Shell": 4,
+   "JavaScript": 2,
+   "CSS": 1
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
  }
 }

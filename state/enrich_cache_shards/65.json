@@ -4115,5 +4115,52 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "stacksimplify/mlops-01-ccfd-project": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 90,
+   "Python": 9,
+   "Shell": 0
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "Arkanji/iwork-studio": {
+  "rel_ver": "v2.6.1",
+  "rel_pub": "2026-10-13",
+  "rel_days": 12,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 86,
+   "Shell": 10,
+   "HTML": 4,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
  }
 }

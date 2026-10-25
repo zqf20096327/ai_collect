@@ -3596,5 +3596,82 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "Salto-Angel-Tech/Falco-Swift": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 64,
+   "Python": 33,
+   "CSS": 2,
+   "JavaScript": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "matacoder/deckaway": {
+  "rel_ver": "v1.65.1",
+  "rel_pub": "2026-10-24",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 44,
+   "JavaScript": 26,
+   "HTML": 24,
+   "CSS": 4,
+   "Shell": 2
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "incoplax/ai-softphone": {
+  "rel_ver": "v1.1.7",
+  "rel_pub": "2026-10-17",
+  "rel_days": 8,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 71,
+   "QML": 17,
+   "Inno Setup": 6,
+   "CMake": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
  }
 }

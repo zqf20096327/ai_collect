@@ -4128,5 +4128,77 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "SHAROZ221/DocChat": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 44,
+   "JavaScript": 29,
+   "HTML": 21,
+   "CSS": 6
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "TarasKutsyk/Sector": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 56,
+   "Python": 22,
+   "HTML": 17,
+   "CSS": 3,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "paulfxyz/megamesh": {
+  "rel_ver": "v1.5.8",
+  "rel_pub": "2026-10-18",
+  "rel_days": 7,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Shell": 34,
+   "CSS": 17,
+   "JavaScript": 16,
+   "HTML": 16,
+   "Python": 12
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
  }
 }

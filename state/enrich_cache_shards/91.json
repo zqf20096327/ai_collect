@@ -3977,5 +3977,78 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "2026heshao/dsh-obsidian-board": {
+  "rel_ver": "v0.2.4",
+  "rel_pub": "2026-10-20",
+  "rel_days": 5,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "ArcLite-Red/hal": {
+  "rel_ver": "v0.1.4",
+  "rel_pub": "2026-10-08",
+  "rel_days": 17,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "R": 100
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "thecarsonford-dotcom/deadgrid": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-09-19",
+  "rel_days": 36,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 77,
+   "JavaScript": 12,
+   "HTML": 5,
+   "CSS": 4,
+   "PowerShell": 3
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
  }
 }

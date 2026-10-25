@@ -3772,5 +3772,28 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "TIS199/MCAIA": {
+  "rel_ver": "v1.3.0",
+  "rel_pub": "2026-10-09",
+  "rel_days": 16,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Java": 100
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
  }
 }

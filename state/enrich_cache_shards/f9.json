@@ -3922,5 +3922,28 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "adityasing9/EcoVision": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 68,
+   "Python": 29,
+   "JavaScript": 1,
+   "CSS": 1,
+   "HTML": 1
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
  }
 }

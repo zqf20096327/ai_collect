@@ -4211,5 +4211,182 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "nguyenduclong-ict/dsh-session-progress": {
+  "rel_ver": "v0.11.4",
+  "rel_pub": "2026-10-01",
+  "rel_days": 24,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "AnshSinglaDev/Akshar-hindi-hinglish": {
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-10-17",
+  "rel_days": 8,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 89,
+   "Python": 9,
+   "CMake": 3
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "nimbusxr/axx": {
+  "rel_ver": "v0.2.21",
+  "rel_pub": "2026-10-15",
+  "rel_days": 10,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Go": 83,
+   "Java": 13,
+   "TypeScript": 2,
+   "Objective-C": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "VelVet8418/memoir-product": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 71,
+   "CSS": 27,
+   "HTML": 2
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "MongLong0214/jev-gate": {
+  "rel_ver": "v0.8.63",
+  "rel_pub": "2026-10-23",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 90,
+   "JavaScript": 10,
+   "Python": 0,
+   "Shell": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "jonymusky/indicators": {
+  "rel_ver": "v0.2.1",
+  "rel_pub": "2026-09-24",
+  "rel_days": 31,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Swift": 81,
+   "HTML": 13,
+   "Python": 4,
+   "Shell": 2,
+   "Makefile": 0
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "wanatabe-yuu/agentown": {
+  "rel_ver": "v0.5.1",
+  "rel_pub": "2026-10-16",
+  "rel_days": 9,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 88,
+   "CSS": 5,
+   "Shell": 3,
+   "Go": 2,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
  }
 }

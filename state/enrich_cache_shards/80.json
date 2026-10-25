@@ -4497,5 +4497,29 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "CEM888AI/cem888": {
+  "rel_ver": "v1.0.46",
+  "rel_pub": "2026-10-17",
+  "rel_days": 8,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "PowerShell": 63,
+   "Shell": 37
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
  }
 }

@@ -4524,5 +4524,55 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "NagisaShip/quantlab": {
+  "rel_ver": "v0.1.0-preview.2",
+  "rel_pub": "2026-10-22",
+  "rel_days": 3,
+  "rel_n90": 2,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 62,
+   "TypeScript": 30,
+   "CSS": 7,
+   "Rust": 1,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "yyh-0428/ai2048": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 54,
+   "JavaScript": 42,
+   "C": 2,
+   "Python": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
  }
 }

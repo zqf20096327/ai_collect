@@ -4672,5 +4672,75 @@
    "lang": "20261025"
   }
  },
- "watermelon588/Walkthru": {}
+ "watermelon588/Walkthru": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 41,
+   "HTML": 31,
+   "TypeScript": 24,
+   "PLpgSQL": 2,
+   "CSS": 1
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "sourceblender/comfyui-kotodama": {
+  "rel_ver": "v0.3.0",
+  "rel_pub": "2026-09-26",
+  "rel_days": 29,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 88,
+   "JavaScript": 6,
+   "HTML": 6
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "ChuanShuoShuai/winui3-architecture-skill": {
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-10-20",
+  "rel_days": 5,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C#": 100
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ }
 }

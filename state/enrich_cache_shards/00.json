@@ -3950,5 +3950,127 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "WYSTAF/polaris-comfyui-zluda": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "tc3oliver/piship": {
+  "rel_ver": "v0.13.0",
+  "rel_pub": "2026-10-09",
+  "rel_days": 16,
+  "rel_n90": 9,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "high",
+  "sec_last": "2026-10-01",
+  "sec_ids": [
+   "GHSA-w3j6-fv7v-wwr4(-,high)"
+  ],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 98,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "Nikhil-creat/cloudpulse-ai": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 56,
+   "HTML": 19,
+   "JavaScript": 15,
+   "TypeScript": 10,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "TC635807/KnowledgeDiver": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-10-04",
+  "rel_days": 21,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 69,
+   "TypeScript": 25,
+   "CSS": 6,
+   "Shell": 1,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "forcewake/forge": {
+  "rel_ver": "v0.42.0",
+  "rel_pub": "2026-09-28",
+  "rel_days": 27,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100,
+   "JavaScript": 0,
+   "Shell": 0,
+   "C#": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
  }
 }

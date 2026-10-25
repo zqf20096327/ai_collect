@@ -3519,5 +3519,74 @@
    "lang": "20261025"
   }
  },
- "Zar-Manah/diatom-tdi": {}
+ "Zar-Manah/diatom-tdi": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-10-02",
+  "rel_days": 23,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 72,
+   "HTML": 11,
+   "TeX": 10,
+   "Swift": 4,
+   "Shell": 3
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "Isyyyue/dsh-ai-memory": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-10-24",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "xdmanflow/Aerolisa": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 84,
+   "Makefile": 16
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ }
 }

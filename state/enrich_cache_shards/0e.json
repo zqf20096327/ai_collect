@@ -3687,5 +3687,50 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "AnqiLi24/OpenTumorBoard": {
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-10-01",
+  "rel_days": 24,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 89,
+   "Shell": 11
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "thevibeworks/opus-5-5-for-everyone": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 55,
+   "CSS": 26,
+   "HTML": 19
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
  }
 }

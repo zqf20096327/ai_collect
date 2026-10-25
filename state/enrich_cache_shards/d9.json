@@ -3633,5 +3633,56 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "keylorpineda/healthycropping": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-10-16",
+  "rel_days": 9,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 53,
+   "TypeScript": 46,
+   "JavaScript": 1,
+   "Jupyter Notebook": 1
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "coreweave/inference-cookbook": {
+  "rel_ver": "v1.0.2",
+  "rel_pub": "2026-10-23",
+  "rel_days": 2,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 98,
+   "Shell": 2,
+   "Jinja": 0
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
  }
 }

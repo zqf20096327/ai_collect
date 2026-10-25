@@ -3986,5 +3986,51 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "Nikhil-creat/personal-mcp-assistant": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 92,
+   "Python": 7,
+   "Dockerfile": 1,
+   "JavaScript": 1,
+   "CSS": 0
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "gryszzz/TEV-Bot-Trading-Terminal": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 85,
+   "JavaScript": 8,
+   "HTML": 4,
+   "CSS": 3,
+   "Swift": 0
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
  }
 }

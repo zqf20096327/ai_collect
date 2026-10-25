@@ -3908,5 +3908,104 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "coolapso/agent-skills-validator": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-09-25",
+  "rel_days": 30,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 48,
+   "HTML": 44,
+   "Shell": 6,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "Lucki74/draggy": {
+  "rel_ver": "b-6",
+  "rel_pub": "2026-10-23",
+  "rel_days": 2,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 43,
+   "Rust": 31,
+   "JavaScript": 24,
+   "Swift": 1,
+   "CSS": 0
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "Song-812/api-balance-panel": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-10-23",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C#": 94,
+   "JavaScript": 4,
+   "PowerShell": 2
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "Starst796/qqbot": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 81,
+   "HTML": 17,
+   "Shell": 2
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
  }
 }

@@ -3866,5 +3866,100 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "backpropbrigade-dev/Mail-Craft-AI": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 84,
+   "CSS": 7,
+   "Python": 6,
+   "HTML": 1,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "zhang-dc/jellyfin-ai-tv-launcher": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Java": 92,
+   "JavaScript": 8
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "liberation8/hermes-workbuddy-provider": {
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-10-24",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 78,
+   "Python": 17,
+   "Batchfile": 5
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "dividehex/context-guard": {
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-09-15",
+  "rel_days": 40,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 67,
+   "Python": 26,
+   "JavaScript": 4,
+   "HTML": 2,
+   "TypeScript": 1
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
  }
 }

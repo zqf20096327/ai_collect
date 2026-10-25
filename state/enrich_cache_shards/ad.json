@@ -4570,5 +4570,53 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "prgr1no/gnome-nan-usage": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-09-11",
+  "rel_days": 44,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 88,
+   "Shell": 6,
+   "CSS": 6
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "UdayaNirogi/promptcapsule": {
+  "rel_ver": "v0.3.3.1",
+  "rel_pub": "2026-09-28",
+  "rel_days": 27,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
  }
 }

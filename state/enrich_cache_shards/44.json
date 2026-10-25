@@ -4430,5 +4430,83 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "UpstageAI/korean-tax-calc-mcp": {
+  "rel_ver": "v0.11.0",
+  "rel_pub": "2026-10-22",
+  "rel_days": 3,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 100,
+   "Shell": 0
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "facebey/Glyvex-Group-AI-Suite-Open-Source": {
+  "rel_ver": "v0.10.0-beta",
+  "rel_pub": "2026-10-19",
+  "rel_days": 6,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 58,
+   "JavaScript": 32,
+   "HTML": 6,
+   "CSS": 1,
+   "Rust": 1
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "arnavvsharmaaa/Vibe-Guard": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-09-27",
+  "rel_days": 28,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 69,
+   "JavaScript": 13,
+   "HTML": 12,
+   "CSS": 5,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
  }
 }

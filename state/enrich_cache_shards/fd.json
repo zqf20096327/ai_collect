@@ -3900,5 +3900,30 @@
    "lang": "20261025"
   }
  },
- "zxh0/llm-engine-book": {}
+ "zxh0/llm-engine-book": {
+  "rel_ver": "v26.10.25",
+  "rel_pub": "2026-10-25",
+  "rel_days": 0,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 88,
+   "HTML": 10,
+   "JavaScript": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ }
 }

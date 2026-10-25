@@ -4301,5 +4301,28 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "ggbdpq/qoder-proxy-api": {
+  "rel_ver": "v0.3.0",
+  "rel_pub": "2026-10-01",
+  "rel_days": 24,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 100
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
  }
 }

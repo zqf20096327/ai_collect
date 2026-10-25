@@ -3664,5 +3664,83 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "weftgo/weft": {
+  "rel_ver": "v0.18.3",
+  "rel_pub": "2026-10-21",
+  "rel_days": 4,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 63,
+   "TypeScript": 36,
+   "JavaScript": 1,
+   "Shell": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "KazKozDev/docket": {
+  "rel_ver": "v0.5.0",
+  "rel_pub": "2026-09-28",
+  "rel_days": 27,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "HTML": 1,
+   "Dockerfile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "ChromaDotNet/ChromaDB.Aspire": {
+  "rel_ver": "v0.2.8",
+  "rel_pub": "2026-10-14",
+  "rel_days": 11,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "C#": 90,
+   "PowerShell": 8,
+   "Shell": 2
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
  }
 }

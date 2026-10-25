@@ -3821,5 +3821,28 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "e2sy/mcp-hub": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 92,
+   "TypeScript": 6,
+   "CSS": 3,
+   "Shell": 0,
+   "Python": 0
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
  }
 }

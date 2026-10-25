@@ -4527,5 +4527,32 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "asasemahmed/FullDots": {
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-10-22",
+  "rel_days": 3,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "TypeScript": 91,
+   "CSS": 8,
+   "JavaScript": 0,
+   "Dockerfile": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
  }
 }

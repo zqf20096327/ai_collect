@@ -3822,5 +3822,32 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "nanhudev/chat2blend": {
+  "rel_ver": "desktop-v0.4.2",
+  "rel_pub": "2026-10-09",
+  "rel_days": 16,
+  "rel_n90": 4,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 54,
+   "JavaScript": 24,
+   "Python": 19,
+   "HTML": 3,
+   "Shell": 0
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
  }
 }
