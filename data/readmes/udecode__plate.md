@@ -4,7 +4,7 @@ Plate
 
 <p>
 <div align="center">
-  <a href="https://www.npmjs.com/package/@platejs/core"><img src="https://img.shields.io/npm/dm/@platejs/core.svg" alt="Total Downloads"></a>
+  <a href="https://www.npmjs.com/package/platejs"><img src="https://img.shields.io/npm/dm/platejs.svg" alt="Total Downloads"></a>
   <a target="_blank" href="https://github.com/udecode/plate/releases/latest"><img src="https://img.shields.io/github/v/release/udecode/plate" /></a>
   <a target="_blank" href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome"></a>
   <a target="_blank" href="https://discord.gg/mAZRuBzGM3"><img src="https://img.shields.io/badge/chat-on%20discord-7289da.svg?sanitize=true" /></a>
@@ -23,11 +23,11 @@ Plate
 
 You can choose one of the following templates to get started:
 
-| Option                                                                            | Plate | Plugins | AI  | Backend |
-| --------------------------------------------------------------------------------- | ----- | ------- | --- | ------- |
-| [Notion-like template](https://pro.platejs.org/docs/templates/potion)             | ✅    | ✅      | ✅  | ✅      |
-| [Plate playground template](https://github.com/udecode/plate-playground-template) | ✅    | ✅      | ✅  |         |
-| [Plate minimal template](https://github.com/udecode/plate-template)               | ✅    |         |     |         |
+| Option | Plate | Plugins | AI | Backend |
+| --- | --- | --- | --- | --- |
+| [Notion-like template](https://pro.platejs.org/docs/templates/potion) | ✅ | ✅ | ✅ | ✅ |
+| [Plate playground template](https://github.com/udecode/plate-playground-template) | ✅ | ✅ | ✅ |  |
+| [Plate minimal template](https://github.com/udecode/plate-template) | ✅ |  |  |  |
 
 ## Documentation
 
@@ -41,7 +41,7 @@ To get started, check out our [contributing guide](CONTRIBUTING.md).
 
 We'd love for you to join us! Whether it's through giving us a 🌟 star, making a 📥 pull request, or **sharing your plugins**, your help is always appreciated.
 
-[![Star History Chart](https://star-history.dera.page/svg?repos=udecode/plate&type=Date)](https://star-history.dera.page/#udecode/plate&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=udecode/plate&type=Date)](https://star-history.com/#udecode/plate&Date)
 
 Need more help? Join us on [Discord](https://discord.gg/mAZRuBzGM3). We're always here to guide you.
 

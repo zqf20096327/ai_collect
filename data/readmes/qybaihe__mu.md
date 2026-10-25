@@ -2,7 +2,7 @@
   <img src="desktop/resources/app.png" width="96" alt="mu">
 </p>
 <h1 align="center">mu</h1>
-<p align="center">A coding agent that hands its routine decisions to a small, fast judge model, so the main model can focus on the code. Built on <a href="https://github.com/earendil-works/pi">pi</a>.</p>
+<p align="center">Most of what a coding agent decides isn't code. It's yes/no calls, and mu hands 40 kinds of them to a small model. Built on <a href="https://github.com/earendil-works/pi">pi</a>.</p>
 
 <p align="center">
   <a href="https://github.com/qybaihe/mu/actions/workflows/ci.yml"><img src="https://github.com/qybaihe/mu/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
@@ -24,15 +24,15 @@
   </picture>
 </p>
 
-A coding agent makes hundreds of decisions per session that aren't about the code: what goes into the context, whether a command is safe, whether a finding is worth passing to another agent, whether the work is really done. Handing these to the main model costs tokens, time and focus. Fixed rules get them wrong too often. mu hands them to a **judge**: a small, fast model that answers one bounded question at a time, at 40 decision points in the agent loop. The main model keeps its attention on the work.
+Does this output matter? Is this command safe for the task? Is the work really done? A coding agent answers questions like these hundreds of times a session. Handing them to the main model or to fixed rules costs you in three ways:
+
+- **Wasted tokens.** A 2,000-line test log goes into the context whole, and every request after it pays for it again. mu's judge reads long output chunk by chunk and lets in only what the task needs; the rest waits behind a pointer. Stale results are dropped without a summary, and when you're likely to be back, the prompt cache is refreshed before it expires. Test-log trimming, off by default, folds exact repeats without losing a byte: it cuts 40% of the characters in Jest failure logs and 19.5% across 71 real failing test logs (see [Measured](#measured)).
+- **Commands approved on autopilot.** The agent asks before every step, so you click Allow without reading, or turn the prompts off. In *Judge mode*, the default, the judge lets through what the task clearly needs and asks you about the rest. Rules catch risky commands first, and web pages and MCP output are screened for instructions aimed at the AI before the model sees them.
+- **Runs that stop halfway.** "Next I'll run the tests," and the turn ends. The judge catches a run that stopped short, or a "done" that nothing verified, and sends the agent back to finish, as in the recording above.
+
+Asking the main model each of these costs tokens and its attention, and fixed rules get them wrong too often. mu asks a **judge**: a small, fast model that answers one bounded question at a time, at 40 decision points in the agent loop. 34 of them act on their verdicts out of the box. Every verdict goes into a local ledger with its probabilities and timing (`mu ledger`, `/status` or the desktop app's Judge tab), and any decision point can run in shadow mode, asked and logged but changing nothing, so you can compare judges before you rely on one.
 
 mu comes as a command-line tool, `mu`, which does everything pi does and adds the judgment kernel, and as a desktop app that bundles mu and its runtime. The default judge model is Jev, hosted by TypeSafe. It answers yes/no, choice and score questions with a probability for each answer. Any judge model can take its place: [mude 1.0](#mude-10-a-decision-model-optimized-for-coding), mu's own model, on your Mac; another decision model from Hugging Face; your own System One server; or any LLM.
-
-What you get:
-
-- **A lean context and a warm cache.** In the authors' own sessions, the context rarely fills: long tool output is judged chunk by chunk so only what's needed enters, and stale results are dropped without a summary. Test-log trimming, off by default, folds exact repeats: on the longest failing test logs it cut 51% of the characters, losslessly (see [Measured](#measured)). Before the prompt cache expires, the kernel predicts whether you'll be back and refreshes the cache if you will.
-- **Permission checks that don't stop you at every step.** In *Judge mode*, the default, the judge lets through what the task clearly needs and asks you about the rest. Rules catch risky commands first, and web pages and MCP output are screened for instructions aimed at the AI before the model sees them.
-- **Decisions you can audit.** Every verdict goes into a local ledger with its probabilities and timing (`mu ledger`, `/status` or the desktop app's Judge tab). Any decision point can run in shadow mode, asked and logged but changing nothing, so you can compare judges before you rely on one.
 
 **Contents:** [Quick start](#quick-start) · [How a turn works](#how-a-turn-works) · [Decision points](#decision-points) · [Judges](#judges) · [How mu is built](#how-mu-is-built) · [Measured](#measured) · [The hive](#the-hive) · [The board](#the-plain-language-board) · [Desktop app](#the-desktop-app) · [Command line](#command-line) · [Privacy](#privacy) · [Documentation](#documentation) · [Contributing](#contributing)
 
@@ -47,6 +47,8 @@ npm i -g mu-agent   # Node.js 22.19 or newer
 mu setup            # connect a model
 mu                  # start a session in the current directory
 ```
+
+**On Nebius Token Factory with NVIDIA Nemotron.** Paste a Token Factory key into `mu setup`: mu starts on Nemotron 3 Super and offers Nemotron 3 Ultra as the judge. This is in the npm package from mu-agent 0.2.9; [docs/nebius.md](docs/nebius.md) has the steps, the measurements behind the choice of models, and a Nemotron 3 Nano 4B judge, fine-tuned for mu, that runs on your machine.
 
 You don't need a judge key to start: until you set one, the free Jev on OpenCode Zen answers. Out of the box, 34 of the 40 decision points act on their verdicts, and every verdict is logged (`/status`, `mu ledger` or the app's Judge tab). To record what the judge would do without acting on it, put `{"modes": {"default": "shadow"}}` in `~/.mu/agent/mu.json`. More in [Getting started](docs/getting-started.md).
 
@@ -165,6 +167,7 @@ Every point, with its feature switch and options: [docs/reference/decision-point
 - **Other decision models from Hugging Face** (local, a Mac with Apple silicon): `mu judge model add <link>` (or Settings → Judges in the app) adds one that is packaged like mude 1.0 and makes it the judge. Laya is no longer included: a `mu.json` that still names it gets mude 1.0 in its place when mude is set up, otherwise the remaining judges or Jev, and mu says so once.
 - **Any classifier model** in pi's catalog can serve as a tier: `classifier:<provider>/<model>`. Examples include Cloudflare's Clef (`clef`, `clef-flash`), the System One models on OpenRouter and the Vercel AI Gateway, or a llama.cpp classifier.
 - **Any LLM** can serve as a tier: `llm:<provider>/<model>`.
+- **NVIDIA Nemotron on Nebius Token Factory**: `nemotron` is Nemotron 3 Ultra with thinking off, and `nemotron-local` is Nemotron 3 Nano 4B, fine-tuned for mu's judge, served on your machine. With Nemotron 3 Super as the coding model, both of mu's model roles run on Token Factory: see [docs/nebius.md](docs/nebius.md), which also covers running commands in Token Factory Sandboxes (new, and so far tested only against a stand-in for the Sandboxes API).
 
 Judges can be chained in tiers, cheapest first:
 
@@ -218,6 +221,16 @@ Decision accuracy is a separate, plainer measure: the share of checks a model ge
   </picture>
 </p>
 
+## NVIDIA Nemotron on Nebius Token Factory
+
+With one [Token Factory](https://tokenfactory.nebius.com) key, `mu setup` puts both of mu's model roles on NVIDIA Nemotron:
+
+- **Nemotron 3 Super writes, runs and tests the code** through mu's tools. mu's thinking levels map onto the `reasoning_effort` values Super accepts.
+- **Nemotron 3 Ultra is the judge** (`nemotron`). `nemotron-think` asks it with thinking on; a few lines of config route the four decision points where that measurably decides better to it.
+- **A Nemotron 3 Nano 4B fine-tuned for mu's judge runs on your own GPU** (`nemotron-local`, from [mu-judge-nemotron](https://github.com/qybaihe/mu-judge-nemotron); weights on [Hugging Face](https://huggingface.co/qybaihe/mu-judge-nemotron-nano-4b)), approving a command in about 0.1 s.
+
+Token Factory is what made choosing these models a measurement rather than a guess. Every Nemotron it serves sat in the judge's seat on the same 1,353 held-out judge requests from mu's sessions, scored by what mu then did; only Ultra clearly beat having no judge (47.3 on real requests, Super 2.7, Lightning 15.4). We then fine-tuned Nemotron 3 Nano 4B as mu's judge, and on 4,838 held-out test requests, scored once, the 4B judge scored above Ultra (68.2 against 54.7 on real requests, 59.9 against 48.4 on constructed ones). All of it came to about $27 of Token Factory credit, with no model of our own to host. Setup, routes and the numbers with their confidence intervals: [docs/nebius.md](docs/nebius.md).
+
 ## How mu is built
 
 <p align="center">
@@ -242,20 +255,45 @@ The code map, and where each step lives: [docs/architecture.md](docs/architectur
 
 ## Measured
 
-The numbers below come from the repository's own replay script, [`kyrn/spikes/judge-bench/test-log-replay.ts`](kyrn/spikes/judge-bench/test-log-replay.ts). The method and the full tables are in [kyrn/docs/09-test-log-admission.en.md](kyrn/docs/09-test-log-admission.en.md).
+Does handing the small calls to a judge make an agent finish more of the work, or only spend less? Two measurements so far: whole tasks, end to end, and what reaches the model from a failing test run. Both say what they don't show.
 
-**Exact repeats.** A failing run often prints the same diff, DOM dump or stack trace once per failed test. mu keeps the first copy and replaces each later copy with a single line naming the lines it repeats. No model is called. The markers expand back to the original byte for byte, and the full log stays on disk, behind a pointer at the end of the output.
+### Whole tasks: Terminal-Bench 2.1
+
+Same model, same tasks, same time limits, three attempts per task. mu passed 68.2% of its Terminal-Bench 2.1 attempts; pi, the harness mu is built on, passed 58.7%. mu failed less often in both ways: fewer of its attempts ran out of time with the task unfinished, and fewer finished with a wrong result.
+
+| 88 tasks × 3 attempts, MiMo v2.6 Pro | mu · Jev | mu · pre-release mude | pi |
+| --- | --- | --- | --- |
+| Attempts passed | **180 of 264 (68.2%)** | 174 of 264 (65.9%) | 155 of 264 (58.7%) |
+| Difference from pi, 95% interval | +9.5 points (+3.8 to +15.2) | +7.2 points (+1.5 to +13.3) | |
+| Tasks mu passes more often / less often than pi | 25 / 8 | 25 / 10 | |
+| Failed attempts: out of time / finished wrong | 65 / 19 | 71 / 19 | 81 / 28 |
+| Agent time per passed attempt | 23.6 min | 22.2 min | 27.4 min |
+| Cost per passed attempt | $0.067 | $0.063 | $0.069 |
+
+What this run is and isn't:
+
+- Terminal-Bench 2.1 through Harbor 0.24.0, at each task's own time limit. Harbor runs a task's tests even when the agent runs out of time, so an attempt can hit the limit and still pass. pytorch-model-recovery is left out of the totals, because the harness didn't pass its instruction to pi or mu in the first runs. Every configuration passed it in all three attempts on record, so leaving it out doesn't change the comparison.
+- MiMo v2.6 Pro with reasoning effort high, everywhere. pi 1.4.0 is the control. mu is mu-agent 0.1.12, built on pi 1.3.0, with its defaults; Jev is version 1.14. The mude column is a pre-release build with 24 layers, served on the same Mac. mude 1.0 is the 20-layer model made from it and hasn't been run on Terminal-Bench; neither has mu 0.2.x.
+- Three attempts per task, from 2026-10-22 to 2026-10-24, on one 16 GB Mac with Apple silicon. Attempts were rerun only for infrastructure failures, by rules set beforehand. Rosetta breaks four tasks for every configuration, so absolute pass rates are about 4.5 points lower than on x86_64 and can't be compared with the public leaderboard.
+
+Every attempt's result is in [docs/benchmarks/terminal-bench-2.1.csv](docs/benchmarks/terminal-bench-2.1.csv), and the method is in [docs/benchmarks/terminal-bench-2.1.md](docs/benchmarks/terminal-bench-2.1.md). The Harbor adapter that ran mu and pi, and a script that recomputes this table from the CSV, are in [bench/harbor/](bench/harbor/).
+
+### What reaches the model: failing test logs
+
+The numbers below come from the repository's own scripts. Folding was measured on 2026-10-25 with [`test-log-repeats.ts`](kyrn/spikes/judge-bench/test-log-repeats.ts); goal-aware selection on 2026-09-21 with [`test-log-replay.ts`](kyrn/spikes/judge-bench/test-log-replay.ts), whose offline arms give the same results on today's code. The method and the full tables are in [kyrn/docs/09-test-log-admission.en.md](kyrn/docs/09-test-log-admission.en.md).
+
+**Exact repeats.** A failing run often prints the same diff, DOM dump or stack trace once per failed test. mu keeps the first copy and replaces each later copy with a single line naming the lines it repeats. No model is called. The markers expand back to the original byte for byte, and the full log stays on disk, behind a pointer at the end of the output. How much goes depends on the runner: Jest and pytest print each failure's diff and stack trace in full, while Vitest's default reporter repeats less.
 
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/readme/bench-test-log-repeats-dark.svg">
-    <img src="docs/readme/bench-test-log-repeats-light.svg" width="880" alt="Seven real failing Vitest logs from the authors' sessions, 139,820 characters in total. Folding exact repeats removed 86%, 44%, 44%, 47% and 16% of the five largest logs and left the two smallest whole: 51% overall.">
+    <img src="docs/readme/bench-test-log-repeats-light.svg" width="880" alt="Failing test logs folded without loss: 40% of the characters in Jest logs from 4 open-source projects, 27% in pytest logs from 2, 9% in Vitest logs from 6, 6% in Vitest logs from mu's own CI and 51% in Vitest logs from the authors' sessions on September 21; 19.5% across all 71 logs, 2,453,384 characters.">
   </picture>
 </p>
 
 <p align="center"><img src="docs/readme/test-log-folding.gif" width="960" alt="A failing Vitest run of 338 lines scrolls past with its repeated diff blocks highlighted, then the same run as the model sees it: 135 lines, with one marker line for each folded block. 7,686 characters become 4,262, with no model call."></p>
 
-**Goal-aware selection.** With a verbose reporter, what's worth keeping depends on what you asked for. Passing tests are noise when you're debugging a failure, and evidence when you ask which tests ran. In a single request, the judge is asked about each block of passing tests and each block of test output: does the goal still need it? The summary and the failures are never put to the judge. A block is left out only when the judge gives "not needed" a probability of 0.9 or higher. In these measurements, the judge is Jev.
+**Goal-aware selection.** With a verbose reporter, what's worth keeping depends on what you asked for. Passing tests are noise when you're debugging a failure, and evidence when you ask which tests ran. In a single request, the judge is asked about each block of passing tests and each block of test output: does the goal still need it? The summary and the failures are never put to the judge. A block is left out only when the judge gives "not needed" a probability of 0.9 or higher. In these measurements, the judge is Jev 1.13, the default at the time; they haven't been rerun with Jev 1.14.
 
 <p align="center">
   <picture>
@@ -272,8 +310,8 @@ What these numbers don't show:
 
 - The selection cases are real Vitest, node:test and pytest output from synthetic projects, plus 13 hand-written edge cases. The goals and labels were written by the authors. The held-out goals were labeled first and run once, and nothing was changed afterward.
 - They measure what reaches the model and what's lost, not whether the model then finishes the task.
-- The repeats come from two days of one developer's sessions: 15 test logs, all from Vitest, of which the 7 over 4,000 characters are charted. Other test runners haven't been measured.
-- There's no end-to-end comparison with pi, Claude Code or Codex on the same tasks yet.
+- The folding sample is mostly CI logs: from each of 12 open-source projects, chosen by test runner before measuring, its 6 most recent failed runs, and from mu's own CI its failed test runs since 2026-09-22, one failing log per run, cut to what mu's bash tool hands over (the last 2,000 lines or 50 KB). The 7 logs from the authors' sessions are the earlier sample. In their recent sessions the agent piped most test runs through `tail`, so few logs reached the 4,000 characters admission starts at.
+- Go and Cargo output isn't recognized as a test log, so it isn't folded.
 
 <details>
 <summary>The charts as tables</summary>
@@ -284,16 +322,14 @@ What these numbers don't show:
 | Perfect judge | 52.5% | 0 of 72 | 46.5% | 0 of 19 |
 | Keep failures only | 61.9% | 9 of 72 | 59.4% | 6 of 19 |
 
-| Real failing test log | Characters | Folded |
-| --- | --- | --- |
-| 5 failures, one diff each | 37,819 | 86% |
-| DOM test, 4 failures | 34,115 | 44% |
-| The same run, seen by a subagent | 34,115 | 44% |
-| Shared stderr stack | 15,565 | 47% |
-| 2 failures | 9,249 | 16% |
-| 7 suites fail to parse | 4,953 | 0%: one repeat, too small to fold |
-| 5 different failures | 4,004 | 0%: no repeats |
-| All 7 | 139,820 | 51.0% |
+| Failing test logs, one per run | Logs | Characters | Folded |
+| --- | --- | --- | --- |
+| Jest, 4 open-source projects | 14 | 584,229 | 40.1% |
+| pytest, 2 open-source projects | 5 | 255,721 | 26.7% |
+| Vitest, 6 open-source projects | 18 | 530,853 | 9.2% |
+| Vitest, mu's own CI | 27 | 942,761 | 6.0% |
+| Vitest, the authors' sessions (2026-09-21) | 7 | 139,820 | 51.0% |
+| All | 71 | 2,453,384 | 19.5% |
 
 </details>
 
@@ -379,7 +415,7 @@ Your keys stay on your machine. mu never downloads a model or a runtime on its o
 
 ## Documentation
 
-- [Getting started](docs/getting-started.md) · [Configuration](docs/configuration.md) · [Judges](docs/judges.md) · [Troubleshooting](docs/troubleshooting.md)
+- [Getting started](docs/getting-started.md) · [Configuration](docs/configuration.md) · [Judges](docs/judges.md) · [Nebius and NVIDIA Nemotron](docs/nebius.md) · [Troubleshooting](docs/troubleshooting.md)
 - Reference: [every decision point](docs/reference/decision-points.md) · [every feature and option](docs/reference/features.md) · [Changelog](CHANGELOG.md)
 - For contributors: [How mu works](docs/architecture.md) · [Adding a decision point](docs/adding-a-decision-point.md) · [Translations](docs/translations.md) · [Writing style](docs/writing-style.md)
 

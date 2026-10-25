@@ -115,6 +115,7 @@ Servers you started yourself are never restarted. Run non-interactively (scripts
 | `./harness config` | menu of saved answers (engine, sidecar, voice, update check, sudo hints); change one, applied right away |
 | `./harness tune` | re-run the speed probe and re-size the limits |
 | `./setup.sh --doctor` | read-only health check of the whole install |
+| `./setup.sh --refresh-mcp` | reset the serena/semble MCP exposure and ensure the default DDG server (backs up `mcp.json` first) |
 
 ## Efficiency
 
@@ -158,10 +159,16 @@ from; locally they cut prefill time.
   `~/.local/bin/serena`); it also needs a language server for your language. Measured: a function body in ~820 chars instead of reading a ~14,000-char file. In real
   sessions the agent reached for `read` far more often, so `tool-trim` now hints at serena or
   `offset`/`limit` after a big whole-file source read, and the installed `AGENTS.md` says the same.
+  Nine core tools are `direct`; the long tail stays script-reachable through `codemode` when it is
+  active (`./setup.sh --refresh-mcp` restores the shipped exposure).
 - **Semantic code search** — the pinned [semble](https://pypi.org/project/semble/) MCP server
   (`search` + `find_related`), wired into `mcp.json` by setup. A/B on 18 ground-truth queries
   against the NPU RAG pipeline it replaced: 17/18 vs 13/18 top-3 hits, 2-3x faster queries, ~40x
   faster indexing. It needs no NPU and indexes any local path or remote git URL on first query.
+- **Web search and page reading** — the [DuckDuckGo MCP server](https://github.com/nickclyde/duckduckgo-mcp-server)
+  (`search`, `fetch_content`, `expand_link`), wired into `mcp.json` and enabled by default. No
+  account or API key; `fetch_content` returns Markdown, with `max_length`/`start_index` for long
+  pages. Jina remains optional (disabled by default) for academic/image/rerank work.
 - **Sidecar suite off the main context** — `ling-tiny-compaction` (non-blocking, thinking off,
   10/10 rule retention on the canary), `ling-tiny-commit`, `ling-tiny-branch-summary`,
   `ling-tiny-repomap`. Diffs and transcripts never touch halogen's prompt cache, so a side call
@@ -272,7 +279,7 @@ remote Strix Halo appliance via `baseUrl` + `PI_NPU_BASE`). `--strata [url]` and
 do a pi-only install with a provider for that engine. Other flags: `--voice`,
 `--halogen-upgrade [tag]`, `--uninstall`, `--help`. Prerequisites: docker (setup will not sudo-install it),
 pi (setup installs it via npm if missing), `uvx` from [uv](https://docs.astral.sh/uv) for semantic
-search, and an IOMMU-enabled gfx1151 box for the NPU driver. The launch is pinned to local files
+and web search, and an IOMMU-enabled gfx1151 box for the NPU driver. The launch is pinned to local files
 (no `HALOGEN_DOWNLOAD`), so the engine makes no outbound connections.
 
 > [!NOTE]

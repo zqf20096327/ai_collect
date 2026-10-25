@@ -39,7 +39,7 @@ Paper trading only. Research base: the
 | 💬 | **Chat with the manager** | Follow-up chat grounded in that run's research. |
 | 🕶️ | **Incognito mode** | Market-only run: no account, no saving; download the report and it is gone. |
 | 🧪 | **Walk-forward backtests** | Replay past dates with point-in-time data, graded vs SPY after costs. |
-| ✅ | **Tested end to end** | 33 automated check groups plus a real-browser smoke; every setting round-trips exactly through the API and the web UI. |
+| ✅ | **Tested end to end** | 32 automated check groups plus a real-browser smoke; every setting round-trips exactly through the API and the web UI. |
 | 🕘 | **Durable history** | Every run saved in SQLite, reopenable from the Runs page. |
 | 📊 | **Real market data** | Finnhub, Olostep, yfinance; Bako (TimesFM) forecasts at the run's horizon, with a local ridge-model fallback. |
 | 🧠 | **Model flexibility** | Any OpenAI-compatible endpoint (OpenAI, DeepSeek, OpenRouter, Z.AI, vLLM, Ollama), per role or per agent, with automatic fallback when a provider rejects an output format. |
@@ -94,9 +94,12 @@ uv run app     # start the app on http://127.0.0.1:8000
 Screen-by-screen walkthrough with screenshots: wiki [Usage](https://github.com/kingabzpro/BetterTradingAgents/wiki/Usage).
 
 > [!TIP]
-> It is cheap to run for real: a full first session (three agent runs, including
-> a ten-agent Max debate, plus manager chat) cost about **¥0.07 of DeepSeek
-> credit, roughly $0.01**.
+> It is cheap to run for real. With DeepSeek V4.1 Flash, one ticker costs
+> about **$0.02 at Fast (3 agents), $0.04 at Pro (7 agents), $0.07 at Max
+> (10 agents)** - the measured median of 88 real Max runs; news-heavy
+> sessions run higher, and DeepSeek off-peak is half price. Mock mode is
+> free, and an LLM key is the only paid prerequisite: every data provider
+> has a free tier and yfinance needs no key.
 
 ## Configuration
 
@@ -109,13 +112,12 @@ sign-up links and what is optional: wiki [Providers](https://github.com/kingabzp
 | `LLM_API_KEY` | Not set | Enables the LLM agents; without it, mock mode |
 | `LLM_MODEL` | `gpt-6-luna` | Model for every role without an override |
 | `FINNHUB_API_KEY` | Not set | Fundamentals and news (yfinance fallback) |
-| `OLOSTEP_API_KEY` | Not set | News search and social sentiment |
-| `TAVILY_API_KEY` | Not set | News web search, first fallback behind Olostep |
-| `FIRECRAWL_API_KEY` | Not set | News web search, second fallback behind Olostep |
+| `OLOSTEP_API_KEY` | Not set | Web search + scraping for news, and social sentiment (recommended); without it, news falls back to any other configured search key, then yfinance |
 | `BAKO_API_KEY` | Not set | Forecast for the run's outlook horizon (TimesFM via Bako); without it, a local ridge model on yfinance closes |
 | `ALPACA_API_KEY_ID` | Not set | Alpaca **paper** key; enables paper trading |
 | `ALPACA_TRADING_ENABLED` | `0` | Kill switch for order submissions |
 | `TERMINAL_LOGGING` | `0` | `1` shows the full INFO log trail and uvicorn request lines in the terminal |
+| `APP_PORT` | `8000` | Port for `uv run app`; if busy, the next free port is used automatically |
 | `AUTOMATION_*` | see `.env.example` | Autopilot schedule, candidates, confidence bar, budget, webhook |
 | `WEBHOOK_URL` | Not set | One plain-text POST per finished autopilot session |
 
@@ -149,29 +151,38 @@ Full schema and SSE catalog: wiki [API](https://github.com/kingabzpro/BetterTrad
 
 ## Backtesting
 
-Walk-forward replays: point-in-time data only, graded vs SPY after costs, untouched
-holdout. Sweep of 2026-10-21, 6 tickers, 23 dates, 138 decisions per arm:
-
-| Configuration | Test return | Mean alpha |
-|---|---:|---:|
-| Fast (3 agents) | -9.19% | -0.71% |
-| SPY (buy & hold) | +12.41% | - |
-| Pro (7 agents) | +45.04% | +0.37% |
-| Max (10 agents + judge) | +94.87% | +1.80% |
-
-- Full grid: Max +214.6% vs momentum +132.2% vs SPY +31.3%
-- Paired: Max +1.28% net per decision over Fast, 95% CI excludes zero
-- Judge halves worst drawdown; mock agents, real-LLM replays cost-gated
-- Validated 2026-10-22, re-validated 2026-10-23 after the simplify pass: sweep
-  re-run reproduced every number and all 138 decisions per arm identically
+Replay past stock decisions and grade them against SPY after trading costs.
+Mock mode is free and deterministic; add `--llm` for real agents with a cost
+confirmation. No paper account is required.
 
 ```bash
-uv run python -m app.backtest --tickers NVDA,AMD,META --start 2026-03-01 --end 2026-06-30
-uv run python scripts/backtest_sweep.py
+uv run python -m app.backtest --tickers NVDA,AMD --start 2026-03-01 --end 2026-06-30
 ```
 
-[report-sweep.md](backtests/report-sweep.md) · [report-paired-depth.md](backtests/report-paired-depth.md) ·
-wiki [Backtesting](https://github.com/kingabzpro/BetterTradingAgents/wiki/Backtesting)
+**Mock results: holdout only, 60 decisions per depth.**
+
+| Depth | Cumulative | Mean alpha | Max drawdown |
+|---|---:|---:|---:|
+| Fast | -9.19% | -0.71% | 44.62% |
+| Pro | +45.04% | +0.37% | 46.94% |
+| Max | +94.87% | +1.80% | 24.50% |
+
+**Real-LLM results: full grid, 138 decisions per depth (DeepSeek V4.1 Flash).**
+
+| Depth | Cumulative | Hit rate | Max drawdown |
+|---|---:|---:|---:|
+| Fast | +132.21% | 54.9% | 43.58% |
+| Pro | +55.94% | 53.5% | 40.63% |
+| Max | +82.29% | 53.8% | 29.57% |
+
+Both used six tickers over 2025-06-02 to 2026-09-14, with a 2026-02-15
+holdout. The tables cover different date slices. Returns compound simulated
+decision windows, not a funded portfolio; samples do not establish a winning
+depth, and historical LLM runs carry memorization risk.
+
+Reports and reproducibility manifests go to `backtests/`.
+See the [Backtesting wiki](https://github.com/kingabzpro/BetterTradingAgents/wiki/Backtesting)
+for results, holdout comparisons, data limits, and reproducibility commands.
 
 ## Development
 

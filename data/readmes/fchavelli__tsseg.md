@@ -98,10 +98,10 @@ extra, for instance `pip install "tsseg[torch]"`, or all of them at once with
 | `tsseg[prophet]` | Prophet | `ProphetDetector` |
 | `tsseg[beast]` | Rbeast | `BeastDetector` |
 | `tsseg[changeforest]` | changeforest | `ChangeForestDetector` |
+| `tsseg[fluss]` | stumpy | `FLUSSDetector` |
 | `tsseg[docs]` | Sphinx toolchain | building the documentation |
 | `tsseg[all]` | everything above | |
 
-`FLUSSDetector` needs `stumpy` (`pip install stumpy`).
 The `tsseg[patss]` extra installs nothing: the deprecated `PatssDetector` needs
 `npbad`, which is not on PyPI and must be installed by hand.
 
@@ -391,8 +391,9 @@ Several algorithms bundle adapted or vendored code under their own licenses.
 
 Each directory above that bundles code under a published license contains a
 copy of it (`LICENSE`, or `LICENCE` in `patss/`). The aeon license is copied in
-`eagglo/`, `hidalgo/`, `hmm/` and `igts/`, and also covers the base classes in
-`tsseg/algorithms/base.py`. The sources marked *not specified* publish no
+`eagglo/`, `hidalgo/`, `hmm/` and `igts/`, and in the opening comment of
+`tsseg/algorithms/base.py`, whose base classes are adapted from aeon. The
+sources marked *not specified* publish no
 license. Rbeast, which `beast/` only wraps, is installed by `tsseg[beast]`;
 tsseg follows the license of its R package, GPL (>= 2), although its PyPI
 wheel declares MIT.

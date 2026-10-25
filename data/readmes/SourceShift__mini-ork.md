@@ -1,6 +1,3 @@
-<p align="center">
-  <img src="assets/mini-ork-icon.svg" alt="mini-ork" width="112" height="112">
-</p>
 
 <h1 align="center">mini-ork</h1>
 
@@ -15,7 +12,14 @@
   <img alt="Python 3.11 | 3.12" src="https://img.shields.io/badge/python-3.11%20%7C%203.12-blue.svg">
 </p>
 
-<p align="center">English | <a href="README.zh-CN.md">简体中文</a></p>
+<p align="center">English | <a href="README.zh-CN.md">简体中文</a> | <a href="README.ja.md">日本語</a> | <a href="README.ko.md">한국어</a> | <a href="README.es.md">Español</a> | <a href="README.pt-BR.md">Português (Brasil)</a> | <a href="README.de.md">Deutsch</a> | <a href="README.fr.md">Français</a> | <a href="README.ru.md">Русский</a> | <a href="README.hi.md">हिन्दी</a> | <a href="README.it.md">Italiano</a> | <a href="README.tr.md">Türkçe</a> | <a href="README.id.md">Bahasa Indonesia</a></p>
+
+<p align="center">
+  <a href="https://miniork.dev/media/mini-ork-demo.mp4">
+    <img src="assets/mini-ork-demo.gif" alt="A code-fix run in the mini-ork IDE: classify, plan, implement, verify, three review lenses, publish, then Keep or Reject for each changed file" width="900">
+  </a>
+</p>
+<p align="center"><sub>A <code>code-fix</code> run in the mini-ork IDE: classify → plan → implement → verify → three review lenses on three model families → publish, then each changed file waits for Keep or Reject. Sample run from the <a href="https://miniork.dev/">walkthrough</a> · <a href="https://miniork.dev/media/mini-ork-demo.mp4">full-quality video</a>.</sub></p>
 
 mini-ork turns a goal into a planned, executed, and **verified** run across a fleet of
 models: **classify → plan → execute → verify → reflect → improve**. Every verdict comes
@@ -158,6 +162,55 @@ exit code: 1
 Exit codes `0` PROVEN, `1` REFUTED, `2` UNVERIFIED — it abstains rather than guesses,
 so CI can gate on it. Needs Docker and one model lane.
 Try `bash examples/certify-demo/demo.sh`.
+
+## Verification, learning, and self-improvement
+
+<p align="center">
+  <a href="https://miniork.dev/media/mini-ork-loops.mp4">
+    <img src="assets/mini-ork-loops.gif" alt="The zone map on miniork.dev: the run loop, the learning loop, the repair loop and the RSI loop light up in turn, each showing what flows between the engine, verification, learning and recovery" width="900">
+  </a>
+</p>
+<p align="center"><sub>Four loops around one engine, from the <a href="https://miniork.dev/">walkthrough</a> (sample data) · <a href="https://miniork.dev/media/mini-ork-loops.mp4">full-quality video</a>.</sub></p>
+
+The GIF at the top of this page is the run loop. Three more layers sit around it.
+
+### Verification the agents cannot talk their way past
+
+Every verdict is execution evidence. A recipe's verifiers run a tamper guard, the test
+suite, a base replay (the test must fail on the old code) and a mutation-adequacy check.
+A second model lane writes blind spec tests from the kickoff before the implementer
+starts, and the implementer cannot edit them. The publisher's gate chain refuses anything
+that did not pass, and a reviewer model may veto a result but can never create a pass.
+`certify` applies the same stance to one change and answers PROVEN, REFUTED, or
+UNVERIFIED when it cannot prove either way. On an adversarial SWE-bench corpus, 21 of 21
+PROVEN verdicts were correct with 0 false completions; the method and its limits are in
+[docs/RESULTS.md](docs/RESULTS.md), the mechanisms in
+[docs/architecture/verification-stack.md](docs/architecture/verification-stack.md).
+
+### Learning that keeps only what verified
+
+After every run the traces become a process reward per node, and a positive reward has to
+be paired with verifier evidence. From there the loop fans out: per-lane advantages the
+router learns from (GRPO), textual gradients the reflection step mines into lessons, and
+a conflict check before any lesson is written. Only verified lessons reach a prompt, every
+prompt carries the learned block, and an injection ledger records exactly what each node
+received, so credit flows back to the lesson that earned it. Today the gradients and
+verified themes do flow into prompts, while learned routing still decides a small minority
+of routes. Lifecycle and status:
+[docs/LEARNING-LOOP-LIFECYCLE.md](docs/LEARNING-LOOP-LIFECYCLE.md).
+
+### Self-improvement, gated
+
+mini-ork edits mini-ork through the same recipe graph: `framework-edit` (verified
+self-edits with blind spec tests), `self-improve` (scan, lenses, synthesis, implement,
+gates), `rsi-technique-review` (reads the literature and proposes techniques to build) and
+`goal-loop`. A learned change must pass a hackability audit and a verifier audit, then a
+non-regression gate on frozen probes against a blind-rerun control arm, and every promoted
+version keeps a rollback pointer. The apply loop that rewrites prompts unattended ships
+**off by default** (see the warning below). `framework-edit` is the most-run recipe, and
+`self-improve` found and merged its own fix on 2026-10-23. Details:
+[docs/RECURSIVE-SELF-IMPROVE.md](docs/RECURSIVE-SELF-IMPROVE.md),
+[docs/SAFETY.md](docs/SAFETY.md), [docs/ECOSYSTEM.md](docs/ECOSYSTEM.md).
 
 ## Everyday commands
 

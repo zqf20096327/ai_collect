@@ -1,7 +1,6 @@
 ![AI Access for PHP](https://github.com/user-attachments/assets/88c604b4-18bc-4820-9d3a-7d5aa4d9ca3a)
 
 [![Downloads this Month](https://img.shields.io/packagist/dm/ai-access/ai-access.svg)](https://packagist.org/packages/ai-access/ai-access)
-[![Tests](https://github.com/dg/ai-access/actions/workflows/tests.yml/badge.svg)](https://github.com/dg/ai-access/actions)
 [![Coverage Status](https://coveralls.io/repos/github/dg/ai-access/badge.svg?branch=master)](https://coveralls.io/github/dg/ai-access?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/ai-access/ai-access/v/stable)](https://github.com/dg/ai-access/releases)
 [![License](https://img.shields.io/badge/license-New%20BSD-blue.svg)](https://github.com/dg/ai-access/blob/master/license.md)
@@ -489,6 +488,9 @@ a key left optional or an open map (`arrayOf()`) is reported by `setResponseSche
 right away, so keep keys `required()` and make them `nullable()` instead; note that
 `Expect::from()` leaves an optional constructor parameter optional, so override it
 through its second argument, `Expect::from(new Company, ['note' => Expect::string()->nullable()->required()])`.
+Claude takes no numeric or size bounds, so `min()` and `max()` are left out of what
+it is sent and checked by `getJson()` alone; an open map or a `tuple()` it cannot
+take at all, and `setResponseSchema()` says so.
 Class types (`Expect::type(DateTime::class)`) have no JSON counterpart and are refused
 too: use `Expect::string()->castTo(DateTime::class)`.
 

@@ -213,7 +213,9 @@ The tools the bridge grants run on the **client**, so this works in every auth m
 
 Context windows match the Claude Code CLI registry. Each model's prompt truncation ceiling is
 derived from its own window (`contextWindow × 3` chars) — see [ADR 0011](docs/adr/0011-per-model-prompt-char-budget.md)
-and `CLAUDE_MAX_PROMPT_CHARS` in [Environment Variables](#environment-variables).
+and `CLAUDE_MAX_PROMPT_CHARS` in [Environment Variables](#environment-variables). Older messages are trimmed
+to fit it; a request whose **newest** message alone does not fit is refused with `400 context_length_exceeded`
+rather than served without its question — see [ADR 0024](docs/adr/0024-over-budget-newest-message-is-refused.md).
 
 The canonical list lives in [`models.json`](./models.json) — the single source of truth as of v3.11.0, validated in CI against [`models.schema.json`](./models.schema.json). Both `server.mjs` (the `/v1/models` endpoint) and `setup.mjs` (the OpenClaw registration) derive from it. Adding a new model is now a one-file edit:
 
@@ -313,7 +315,7 @@ So the blind spot is real but narrow: it needs `stream: true`, no tools — or `
 | `CLAUDE_MAX_CONCURRENT` | `8` | Max concurrent claude processes (`-p`/stream-json path) |
 | `CLAUDE_MAX_QUEUE` | `16` | Max requests **waiting** for a `-p` concurrency slot. Beyond `CLAUDE_MAX_CONCURRENT`, requests queue (up to this cap) instead of being rejected; when the queue is **also** full, the request gets `HTTP 429` + `Retry-After` (not an opaque 500). Surfaced on `/health.concurrency` + `/health.stats.queueRejections`. |
 | `CLAUDE_QUEUE_RETRY_AFTER` | `5` | Seconds advertised in the `Retry-After` header on a `-p` concurrency-overflow `429`. |
-| `CLAUDE_MAX_PROMPT_CHARS` | *(derived per model)* | Prompt truncation limit in chars. By default there is **no single limit**: each request is bounded by the named model's own `contextWindow × 3` from the models.json SPOT — **3,000,000** for the native-1M models (`claude-opus-5`, `-4-8`, `-4-7`, `claude-sonnet-5`) and **600,000** for the 200k models (`claude-opus-4-6`, `claude-sonnet-4-6`, `claude-haiku-4-5`). Setting this env var (or `ocp settings maxPromptChars`) overrides the derivation absolutely, applying that one number to **every** model. See [ADR 0011](docs/adr/0011-per-model-prompt-char-budget.md) (supersedes [ADR 0009](docs/adr/0009-spot-derived-prompt-budget.md)'s single global ceiling). Note: very large prompts burn subscription-window quota quickly and slow TTFT; the TUI-mode paste path is untested beyond ~hundreds of KB. Applies to **text only** — image bytes bypass this budget (see [Images / Multimodal](#images--multimodal-vision)). |
+| `CLAUDE_MAX_PROMPT_CHARS` | *(derived per model)* | Prompt budget in chars: older messages are trimmed to fit it, and a request whose newest message alone exceeds it is refused with `400 context_length_exceeded` ([ADR 0024](docs/adr/0024-over-budget-newest-message-is-refused.md)). By default there is **no single limit**: each request is bounded by the named model's own `contextWindow × 3` from the models.json SPOT — **3,000,000** for the native-1M models (`claude-opus-5`, `-4-8`, `-4-7`, `claude-sonnet-5`) and **600,000** for the 200k models (`claude-opus-4-6`, `claude-sonnet-4-6`, `claude-haiku-4-5`). Setting this env var (or `ocp settings maxPromptChars`) overrides the derivation absolutely, applying that one number to **every** model. See [ADR 0011](docs/adr/0011-per-model-prompt-char-budget.md) (supersedes [ADR 0009](docs/adr/0009-spot-derived-prompt-budget.md)'s single global ceiling). Note: very large prompts burn subscription-window quota quickly and slow TTFT; the TUI-mode paste path is untested beyond ~hundreds of KB. Applies to **text only** — image bytes bypass this budget (see [Images / Multimodal](#images--multimodal-vision)). |
 | `OCP_STRUCTURED_MAX_ATTEMPTS` | `3` | Max attempts (initial + retries) to coerce a schema-valid JSON reply when a request uses OpenAI `response_format`. Fail-closed: a non-numeric value keeps the default. See [Structured Outputs](#structured-outputs-openai-response_format). |
 | `CLAUDE_AUTH_CHECK_INTERVAL_MS` | `600000` | How often the background `claude auth status` probe runs (ms, default: 10 min). Lower it for faster detection of a real credential outage — the verdict needs **2 consecutive** conclusive rejections, so onset is reported within roughly one interval. Fail-closed parsing: an empty/garbage value keeps the default. Probe outcome is surfaced on `/health.auth.lastOutcome` (`authenticated`/`token-present`/`rejected`/`timeout`/`unavailable`) and the running tally on `/health.auth.consecutiveFailures`, so an operator can tell a host-load timeout from a real credential rejection. **`token-present` is not `authenticated`** — see § "What `auth.ok` means". See [ADR 0010](docs/adr/0010-health-verdict-semantics.md) and [ADR 0014](docs/adr/0014-auth-verdict-measures-what-it-measured.md). |
 | `CLAUDE_AUTH_CHECK_TIMEOUT_MS` | `10000` | Per-probe timeout for that same probe (ms). The probe runs **asynchronously** and never blocks request serving; this only bounds a stuck child. A probe killed by this timeout is **inconclusive** — it measures host load, not credentials, so it never changes `/health.status` or `auth.ok`. Fail-closed parsing: an empty/garbage value keeps the default. |
@@ -563,7 +565,7 @@ export CLAUDE_CACHE_TTL=300000   # cache responses for 5 minutes
 ```
 
 **How it works:**
-- Cache key = SHA-256 of `v2|<keyId or "anon">|model + messages + temperature + max_tokens + top_p + reasoning_effort`
+- Cache key = SHA-256 of one JSON document (`"v3"`, `<keyId or "anon">`, model, temperature, max_tokens, top_p, reasoning_effort, config epoch, structured-output descriptor, messages). Each message is hashed **whole** — `role`, `content`, `tool_calls`, `tool_call_id`, `name` and any other field the client sends — so two histories that differ only in a tool call's arguments never share a slot
 - **Per-key isolation** — different API keys never share cache entries; anonymous callers share one `anon` pool
 - Cache hits return instantly — no Claude CLI process spawned. **Streaming hits** are replayed as multiple SSE chunks (80 codepoints each), not one large delta, so incremental render is preserved
 - **`cache_control` bypass** — a request carrying an Anthropic `cache_control` annotation (top-level or nested in `content[]`) skips OCP's cache entirely, so it doesn't interfere with Anthropic-side prompt caching
@@ -577,7 +579,7 @@ curl -X DELETE http://127.0.0.1:3456/cache   # clear all cached responses
 ocp settings cacheTTL 0                       # disable at runtime
 ```
 
-Cache is **disabled by default** (`CLAUDE_CACHE_TTL=0`). All data is stored locally in `~/.ocp/ocp.db`. **Cache keys resolve model aliases as of v3.25.0:** a request for an alias (`opus`, `sonnet`, `haiku`, or a legacy alias like `claude-haiku-4-5`) is now keyed on the canonical model it resolves to, not on the string the client sent. Two consequences, both one-time and self-healing: rows written before the upgrade don't match the new lookups, so they orphan and are reaped by the TTL cleanup interval within one window — no migration script required; and an alias now correctly shares a cache slot with its canonical id, since both produce an identical spawn. Scope: for the **normal** cache only alias-addressed rows rekey — rows keyed on a literal model id keep matching, *unless* you run `OCP_LOCAL_TOOLS=1`, in which case the whole normal cache rekeys once because v3.25.0 also reworded that wrapper and the wrapper text feeds the config epoch. **Every structured-output row rekeys regardless**, since the same change folds the config epoch into the structured key, which it previously omitted. This is what makes an alias repoint (such as v3.25.0's `opus` → `claude-opus-5`) take effect immediately instead of being masked by the cache until TTL expiry. **Hash format upgrade in v3.13.0:** legacy `v1` cache rows don't match new `v2`-format lookups; they orphan and are reaped by the TTL cleanup interval within one window — no migration script required.
+Cache is **disabled by default** (`CLAUDE_CACHE_TTL=0`). All data is stored locally in `~/.ocp/ocp.db`. **Cache keys resolve model aliases as of v3.25.0:** a request for an alias (`opus`, `sonnet`, `haiku`, or a legacy alias like `claude-haiku-4-5`) is now keyed on the canonical model it resolves to, not on the string the client sent. Two consequences, both one-time and self-healing: rows written before the upgrade don't match the new lookups, so they orphan and are reaped by the TTL cleanup interval within one window — no migration script required; and an alias now correctly shares a cache slot with its canonical id, since both produce an identical spawn. Scope: for the **normal** cache only alias-addressed rows rekey — rows keyed on a literal model id keep matching, *unless* you run `OCP_LOCAL_TOOLS=1`, in which case the whole normal cache rekeys once because v3.25.0 also reworded that wrapper and the wrapper text feeds the config epoch. **Every structured-output row rekeys regardless**, since the same change folds the config epoch into the structured key, which it previously omitted. This is what makes an alias repoint (such as v3.25.0's `opus` → `claude-opus-5`) take effect immediately instead of being masked by the cache until TTL expiry. **Hash format upgrade in v3.13.0:** legacy `v1` cache rows don't match new `v2`-format lookups; they orphan and are reaped by the TTL cleanup interval within one window — no migration script required. **Hash format upgrade in the first release after v3.42.0:** the key became one framed JSON document (`v3`), so `v2` rows don't match new lookups; they orphan and are reaped the same way, and the cache starts cold once.
 
 ## Structured Outputs (OpenAI `response_format`)
 
@@ -666,7 +668,8 @@ the OpenAI vision spec, which does not place images in the system role.
 Images bypass the text `CLAUDE_MAX_PROMPT_CHARS` budget and are instead bounded by
 their own byte/count caps. The **text** in a multimodal request is still subject to
 `CLAUDE_MAX_PROMPT_CHARS` (older text is truncated exactly as on the text-only
-path — only the image bytes are exempt). All numeric caps are parsed **fail-closed**:
+path — only the image bytes are exempt; a newest message whose text alone exceeds the
+budget is refused with `400 context_length_exceeded`, as on the text path). All numeric caps are parsed **fail-closed**:
 a malformed value (e.g. `CLAUDE_MAX_BODY_SIZE=unlimited` or `=5MB`) is rejected with
 a startup warning and the safe default is kept — a misconfigured cap can never
 silently disable the guard. Requests that violate a cap get a clear `4xx` (never a
@@ -827,14 +830,4 @@ OCP has been **open source from day one** — not a freemium tool, not a commerc
 
 I built it because my family and I needed it. We use OCP every day across our own machines and IDEs — keeping one Claude Pro/Max subscription powering everything, saving the per-token API cost we'd otherwise pay. It's been quietly heartwarming to hear from users online who say OCP has saved them money the same way it saves ours. That's the whole point.
 
-Behind every version are hundreds of hours that don't show up in commits: building it from scratch, adding new features as the Claude Code ecosystem evolves, debugging across Mac / Windows / Linux machines, validating against half a dozen IDEs (Claude Code, Cursor, Cline, OpenCode, Aider, Continue.dev, OpenClaw), tracking down `cli.js` drift, OAuth refresh edge cases, SSE streaming quirks, concurrency leaks, and the occasional incident that turns into a multi-day investigation (the [2026-04-11 alignment drift](./docs/adr/0002-alignment-constitution.md), the [v3.11.1 concurrency leak](./CHANGELOG.md), the v3.12 SSE replay regression).
-
-**The commitment**: this project will keep being updated, keep getting new features, and will stay open source as long as I'm able to maintain it.
-
-**Please try it.** If something breaks or could be better, [open an issue](https://github.com/dtzp555-max/ocp/issues) — feedback is genuinely what keeps the project moving.
-
-And if OCP saves you (or your team, or your family) real money and you'd like to chip in toward the next debugging session:
-
-- ☕ **[Buy me a coffee](https://buymeacoffee.com/dtzp555)**
-
-Donations directly fund the time it takes to keep O
+Behind every version are hundreds of hours that don't show up in commits: building it from scratch, adding new features as the Claude Code

@@ -8,14 +8,14 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/banner.svg?t=a3f30b86b6c8" />
-  <source media="(prefers-color-scheme: light)" srcset="docs/assets/banner-light.svg?t=a3f30b86b6c8" />
-  <img src="docs/assets/banner.svg?t=a3f30b86b6c8" width="100%" alt="WindsurfAPI — 把 Windsurf/Devin 云端 100+ 模型变成 OpenAI / Anthropic / Gemini 三套兼容 API" />
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/banner.svg?t=39eb43029984" />
+  <source media="(prefers-color-scheme: light)" srcset="docs/assets/banner-light.svg?t=39eb43029984" />
+  <img src="docs/assets/banner.svg?t=39eb43029984" width="100%" alt="WindsurfAPI — 把 Windsurf/Devin 云端 100+ 模型变成 OpenAI / Anthropic / Gemini 三套兼容 API" />
 </picture>
 
 <br/>
 
-JavaScript · MIT · ★3,104
+JavaScript · MIT · ★3,107
 
 [docs](https://dwgx.github.io/WindsurfAPI/) · [releases](https://github.com/dwgx/WindsurfAPI/releases) · [issues](https://github.com/dwgx/WindsurfAPI/issues)
 
@@ -454,6 +454,11 @@ curl -X DELETE http://localhost:3003/v1/responses/resp_xxx -H "Authorization: Be
 > API key 时,两个调用方发相同的 `user` 会推导出逐字节相同的 callerKey,所以别把 id
 > 当成除"难猜"以外的任何保证。
 
+> `metadata` 是**回显字段**:请求里带上它,响应对象(含流式每一帧的 `response`)和之后的
+> `GET /v1/responses/{id}` 都原样带回,便于调用方挂 trace/租户标签。按 OpenAI 契约限制
+> 最多 16 对、键 ≤64 字符、值 ≤512 字符的字符串;超限返回 400 而不是静默丢弃。它**不会**
+> 转发给上游模型,也计入存储的字节预算。
+
 ### Cline / Cursor / Aider
 
 在客户端配置里 **Custom OpenAI Compatible**：
@@ -629,7 +634,9 @@ swe-1.5 / 1.5-fast / 1.6 / 1.6-fast / 1.7 / 1.7-lightning · arena-fast · arena
 
 > `swe-1.6` / `swe-1.6-fast` / `adaptive` / `arena-*` 属于 special-agent 路径。direct Cascade 会报 unknown model UID / route 不通；默认不会假装可用。需要测试时显式开启 `WINDSURFAPI_SPECIAL_AGENT_BACKEND=devin-cli`，并安装/挂载 Devin CLI。当前 PoC 是 `devin -p` print 模式，默认拒绝 caller-local tools/media；ACP 工具桥接另做。
 
-> **免费账号 entitled 模型**主要是 `gemini-2.5-flash`、`glm-4.7`、`glm-5` / `5.1`、`kimi-k2` / `k2.5` / `k2-6`、`qwen-3` 等开源系列；Claude / GPT 全系 + Opus 系列要 Pro。具体每个账号的 entitled 清单看 dashboard。
+> **DEVIN_CONNECT 模型拼写**：dotted `claude-sonnet-4.6` 是刻意保留的 alias，解析到上游 `claude-sonnet-4-6-thinking`（思考变体，credit 6）。要非 thinking 基座，显式写 catalog selector `claude-sonnet-4-6`（credit 4）—— 两种拼写都 `mapped:true`，别名是默认选择而不是降级。
+
+> **免费账号 entitled 模型**主要是 `gemini-2.5-flash`、`glm-4.7`、`glm-5` / `5.1`、`kimi-k2` / `k2.5` / `k2-6`、`qwen-3` 等开源系列；Claude / GPT 全系 + Opus 系列要 Pro。具体每个账号的 entitled 清单看 dashboard。冷启动静态基表只有 `gemini-2.5-flash`；其余是**按账号探测**出来的（GetUserStatus 白名单 + 一次成功调用），新号只显示 1 个属正常，dashboard 点 Probe 后补齐。
 >
 > **工具调用稳定性**（v2.0.82+ 实测）：Claude family 走 `<tool_use>` 协议最稳；GLM-4.7 / Kimi-K2.5 走 NLU 兜底 + 可选 retry 大部分 case 能调；GLM-5.1 在 cascade 后端不稳（经常空回复 textLen=0），proxy 救不动；GPT 在 cascade 协议层不传 tools[] schema 也救不全。Claude Code 调本地工具优先 `claude-haiku-4.5` / `claude-sonnet-4.6`。
 
@@ -639,7 +646,7 @@ swe-1.5 / 1.5-fast / 1.6 / 1.6-fast / 1.7 / 1.7-lightning · arena-fast · arena
 - **账号池 + LS 池** 每个独立 proxy 一个 LS 实例 不混用
 - **NO_TOOL 模式** `planner_mode=3` 关掉 Cascade 内置工具循环，避免 `/tmp/windsurf-workspace/` 路径泄漏
 - **三层 sanitize** LS 内建工具结果过滤 · `<tool_call>` 文本解析 · 输出路径清洗
-- **真实 token 计量** 从 `CortexStepMetadata.model_usage` 抓 Cascade 真实 `inputTokens` / `outputTokens` / `cacheRead` / `cacheWrite`，`prompt_tokens` 含 cacheWrite
+- **真实 token 计量** 从 `CortexStepMetadata.model_usage` 抓 Cascade 真实 `inputTokens` / `outputTokens` / `cacheRead` / `cacheWrite`。DEVIN_CONNECT 路径的 `prompt_tokens` 是完整输入（fresh + cache_read + cache_write），cache 明细在 `prompt_tokens_details.cached_tokens` 与 `cache_creation_input_tokens`；Cascade 路径的 `prompt_tokens` 只含 fresh + cache_read，cache_write 计入 `total_tokens` 与 `cache_creation_input_tokens`
 
 ## PM2 部署
 
@@ -705,6 +712,21 @@ flowchart TD
 | 改大 `.env` 里的 timeout 但 `context deadline exceeded` 还在 | 那个超时不在这一层。见下面同名问答 |
 | 一开就"所有账号 rate-limited",怀疑代理坏了 | 大概率是 IP 级冷却,不是账号问题也不是代理问题 |
 
+**要别人帮看一条请求？先打包现场**：用 `WINDSURFAPI_TRACE=1` 复现一次（默认写到
+`.trace/`，可用 `WINDSURFAPI_TRACE_DIR` 指定目录），然后：
+
+```bash
+node scripts/support-bundle.mjs
+```
+
+它把最近 5 个 trace 目录、`/health` 的 commit、版本和**脱敏后的**开关快照打进
+`support-bundle-<utc>.zip`，旁边还有一份 `manifest.json`（文件清单 + sha256）。打包前先脱敏：
+文本 leg 里的凭证字段、账号邮箱和预签名 URL 查询参数替换为 `[redacted]`；上游请求 protobuf
+里 ClientMetadata 的会话 token / user JWT 替换为 `[redacted]`；无法脱敏的二进制 leg 不打包，
+只在 manifest 里记 path + size + sha256。然后用仓库的 secret 规则逐个文件扫描，命中即拒绝打包
+（exit 1，不写任何文件）。trace 里有 prompt 片段、没有 key，但仍是私有现场：只附在 issue 里，
+不要贴到公开渠道。
+
 排查请求链路时,**发真实请求看响应,别只读代码** —— 这是协议转换网关,两层
 key、四条出口路径,读代码容易推错。
 
@@ -726,7 +748,7 @@ A: 已修。cold stall 检测按输入长度自适应（基数 30s，每 1500 �
 A: 能。`export ANTHROPIC_BASE_URL=http://你的API` + `export ANTHROPIC_API_KEY=你的key`。`/v1/messages` 支持 system + tools + tool_use + tool_result + stream + multi-turn 全套，已实测通过。
 
 **Q: 免费账号能用什么模型**
-A: 主要是 `gemini-2.5-flash`、`glm-4.7` / `5` / `5.1`、`kimi-k2` / `k2.5` / `k2-6`、`qwen-3` 这些开源系列。Claude family + GPT 全系 + Opus / Max / Thinking 高阶模型要 Pro entitlement。具体每个账号的 entitled 清单 dashboard 里看 — `model_not_entitled` 错误返回的 `available_in_pool` 字段也会列出账号池能用的。
+A: 主要是 `gemini-2.5-flash`、`glm-4.7` / `5` / `5.1`、`kimi-k2` / `k2.5` / `k2-6`、`qwen-3` 这些开源系列。Claude family + GPT 全系 + Opus / Max / Thinking 高阶模型要 Pro entitlement。具体每个账号的 entitled 清单 dashboard 里看 — `model_not_entitled` 错误返回的 `available_in_pool` 字段也会列出账号池能用的。静态冷启动基表只有 `gemini-2.5-flash`（#149），其余靠逐账号探测；新号只显示 1 个不是 bug。
 
 **Q: 免费账号调工具稳吗**
 A: 看模型。Claude family `<tool_use>` 协议训练扎实最稳（free 账号若 entitled 也是优选）；GLM-4.7 / Kimi-K2.5 走 NLU 兜底 + `WINDSURFAPI_NLU_RETRY=1` retry-with-correction 多数 case 能调；GLM-5.1 在 cascade 后端经常空回复 proxy 救不动；GPT 系列受 cascade 协议层限制（不传 OpenAI tools[] schema）也不稳。**Claude Code / Cline / Codex 调本地文件 / 跑命令优先 `claude-haiku-4.5` 或 `claude-sonnet-4.6`**。

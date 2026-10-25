@@ -124,7 +124,7 @@ The eight-layer Sequential Transport Chain computes how hard a page is for a giv
 
 | Layer | The Question It Answers | Research Basis |
 |-------|------------------------|----------------|
-| **Saliency** | Can they find the thing they came for? | CIE-Lab W₂ perceptual model |
+| **Visual Complexity** | How much visual clutter and motion is there to see past? | A count of visual elements plus animation level (hand-set; not the attention model) |
 | **Cognitive Load** | Is there more on this page than they can hold at once? | Sweller (1988) CLT |
 | **Decision** | Are there too many choices to pick between? | Hick-Hyman Law |
 | **Motor** | Can they physically hit the target? | Grossman & Balakrishnan (2005) |
@@ -186,7 +186,7 @@ The agent-perceivability axis measures whether a machine can perceive your eleme
 
 ## Cognitive User Simulation
 
-Research-backed cognitive traits and motivational values model how real users think, struggle and give up:
+Cognitive traits and motivational values model how users think, struggle and give up. Each trait's scale is drawn from the research in the table below; the values the built-in personas carry on those scales are set by hand and registered as hypotheses, not measured:
 
 | Trait | Research Basis | What It Models |
 |-------|---------------|----------------|

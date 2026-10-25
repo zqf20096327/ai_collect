@@ -3,7 +3,7 @@
 [![CI](https://github.com/SourceShift/InterLock/actions/workflows/ci.yml/badge.svg)](https://github.com/SourceShift/InterLock/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/SourceShift/InterLock/actions/workflows/codeql.yml/badge.svg)](https://github.com/SourceShift/InterLock/actions/workflows/codeql.yml)
 ![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue)
-![Detectors: 118](https://img.shields.io/badge/detectors-118-blue)
+![Detectors: 121](https://img.shields.io/badge/detectors-121-blue)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
 
 **Stop a bad tool call before your AI agent makes it.**
@@ -68,10 +68,14 @@ watches what it *does*, at the last moment you can still say no.
 - **Checks results too.** Injected instructions arrive in tool output: a web
   page, an email, a document. interlock checks what tools return before your
   agent reads it.
+- **Knows where data came from.** Boundary provenance labels a tool's output
+  (`tool:fetch_url`) and a declarative source→sink rule can refuse "fetched
+  data must not reach an email field", even when the destination is otherwise
+  allowed.
 - **One policy everywhere.** The same rules guard decorated functions, MCP
   sessions, LangChain tools, your own tool loop, Node.js agents, and coding
   agents: **Claude Code, Codex and Cursor**, through their hooks.
-- **115 ready-made detectors** for prompt injection, SQL and shell injection,
+- **121 ready-made detectors** for prompt injection, SQL and shell injection,
   secret and PII redaction, SSRF, egress, MCP server trust, budgets, and loops.
   Shell rules judge **what a command does**, not its spelling: `rm -fr ~`,
   `bash -c 'rm -rf /'` and `sudo /bin/rm -Rf /` are the same act.
@@ -226,7 +230,7 @@ somewhere other than a checkout? Pass `--static /path/to/web/dist`.
 | Credentials | The agent writes `{{secret:id}}`; the value is filled in after the decision, only where allowed | [Credentials](docs/guides/credentials.md) |
 | Databases and APIs | SQL judged by its effects and tables (`WITH … DELETE` is a delete), checksum-validated data masking on results, runbooks, HTTP path and method rules | [Databases](docs/guides/databases.md) |
 | Review queue | Refuse now with a review id; the identical retry runs once after a human approves; quorum and expiry | [Reviews](docs/guides/reviews.md) |
-| Detectors | 118 ready-made rules, grouped by attack | [Using detectors](docs/guides/detectors.md) · [catalog](docs/reference/detectors.md) |
+| Detectors | 121 ready-made rules, grouped by attack | [Using detectors](docs/guides/detectors.md) · [catalog](docs/reference/detectors.md) |
 | MCP trust | Allowlist servers, pin tool schemas, catch changed tool listings, time-limited grants | [MCP](docs/guides/mcp.md) |
 | Scopes | Per-tenant and per-agent policies; sub-agents can't exceed their parent | [Scopes](docs/guides/scopes.md) |
 | Audit log | Chained, signed receipts of every decision; arguments hashed, not stored; `interlock report` summarizes them | [Audit log](docs/guides/audit-log.md) |
@@ -234,6 +238,7 @@ somewhere other than a checkout? Pass `--static /path/to/web/dist`.
 | BRACE sandbox | Runs subprocesses under bubblewrap (Linux) or Seatbelt (macOS), built from your policy | [Sandbox](docs/guides/sandbox.md) |
 | Node.js client | Guards JS agents with the same Python policy through a local daemon | [js/README.md](js/README.md) |
 | Console | A local web app: activity, the review queue, the audit log, the policy editor, a detector playground, and ops; writes need a terminal-only unlock | [Console](docs/guides/console.md) |
+| Mesh | Subscribe to community policy packs (`"extends": "mesh:coding-agent@stable"`), verified from a pinned root with signed, expiring metadata; new rules run in shadow mode first and a ring caps their verdict. Or publish a commons yourself | [Mesh](docs/guides/mesh.md) |
 
 ## Works with
 
@@ -280,17 +285,24 @@ settings that weaken protection.
 
 Start with [getting started](docs/getting-started.md), then
 [concepts](docs/concepts.md). Everything else is indexed on the
-[docs home page](docs/overview.md): guides for each task, the
+[docs home page](docs/index.md): guides for each task, the
 [Python API](docs/reference/python-api.md), the
 [detector catalog](docs/reference/detectors.md), and the
 [sidecar reference](docs/reference/sidecar.md).
 
 ## Status
 
-**Alpha (v0.0.1).** The core API is stable and covered by over 2,700 tests. Not
-yet on PyPI or npm. Next on the [roadmap](ROADMAP.md): a false-positive harness
-for the detectors, rules over data flow between tools, automatic interception of
-MCP clients and model SDKs, and signed PyPI/npm releases.
+**Alpha (v0.0.1).** The core API is stable and covered by about 4,900 tests. Not
+yet on PyPI or npm. The default coding-agent pack is measured against two
+committed benign corpora: **0 false positives over 70 events plus a 20-event
+held-out split**, per-rule and per-detector numbers, **0 of 560 poisoned calls
+induced to block**, and **28 ms worst case** on pathological-but-legal input —
+all gated in CI. In-process overhead is **243 µs p50 / 392 µs p95** over an
+empty-engine baseline ([methodology](benchmarks/overhead/README.md)). MCP
+client sessions attach with `interlock.attach()`; its compatibility contract is
+`interlock attach --check`, and `interlock.attach_monitor()` notices a guarded
+client changing underneath. Next on the [roadmap](ROADMAP.md): rules over data
+flow between tools, and signed PyPI/npm releases.
 
 ## Contributing
 
@@ -306,4 +318,7 @@ Release history is in [CHANGELOG.md](CHANGELOG.md).
 
 ## License
 
-Apache-2.0. See [LICENSE](LICENSE).
+The code and the policy packs are Apache-2.0. See [LICENSE](LICENSE).
+
+The data the mesh commons shares (indicators, fingerprints and redacted
+samples) is CC0-1.0. See [LICENSE-DATA](LICENSE-DATA).

@@ -16,7 +16,7 @@
 </div>
 
 [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
-![Papers Count](https://img.shields.io/badge/Research%20Papers-364+-b31b1b)
+![Papers Count](https://img.shields.io/badge/Research%20Papers-365+-b31b1b)
 ![Last Update](https://img.shields.io/github/last-commit/VoltAgent/awesome-ai-agent-papers?label=Last%20update)
 [![Discord](https://img.shields.io/discord/1361559153780195478.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://s.voltagent.dev/discord)
 
@@ -51,7 +51,7 @@ Hundreds of papers are published on arXiv every week, and a growing number of th
 - [Memory & RAG](#memory--rag) (58)
 - [Multi-Agent](#multi-agent) (54)
 - [Memory & RAG](#memory--rag) (57)
-- [Eval & Observability](#eval--observability) (86)
+- [Eval & Observability](#eval--observability) (87)
 - [Agent Tooling](#agent-tooling) (95)
 - [AI Agent Security](#ai-agent-security) (83)
 - [Agent Tooling](#agent-tooling) (100)
@@ -89,12 +89,13 @@ You ship products with AI, but every launch still dies quietly because nobody po
 <br/>
 
 <details open id="multi-agent">
-<summary><h3 style="display:inline">Multi-Agent (54)</h3></summary>
+<summary><h3 style="display:inline">Multi-Agent (55)</h3></summary>
 
 <br>
 
 | Paper | arXiv ID |
 |---|:---:|
+| **[AgonAlpha: Autonomous Alpha Discovery via Prompt Economy and Scalable Agentic Search](https://arxiv.org/pdf/2608.11250)** - A proposer agent writes each trading factor as a full research record (hypothesis, executable expression, platform results, rationale), and a separate reviewer with fresh context re-runs the evaluation and can veto made-up claims. On WorldQuant BRAIN it got 17 SPECTACULAR-grade alphas out of 60 submissions across five users and six model backends, with Sharpe up to 3.48. | <a href="https://arxiv.org/abs/2608.11250"><img src="https://img.shields.io/badge/arXiv-2608.11250-b31b1b.svg" alt="arXiv" /></a> |
 | **[Agon: An Autonomous Large-Scale Omnidisciplinary Research System Built on Prompt Economy](https://arxiv.org/pdf/2606.24177)** - Treats prompt engineering as an engineering discipline rather than an art, minimizing human time while expecting maximum output. Carries the smallest prompt footprint among cross-disciplinary autoresearch systems (18 roles, 230.6 KiB total), has run across 10+ research fields without modification, and the longest observed run went 30 days unattended. | <a href="https://arxiv.org/abs/2606.24177"><img src="https://img.shields.io/badge/arXiv-2606.24177-b31b1b.svg" alt="arXiv" /></a> |
 | **[PerceptUI: LLM Agents as Human-Aligned Synthetic Users for UI/UX Evaluation](https://arxiv.org/pdf/2606.05697)** - A persona-conditioned framework that predicts how a specific user would answer UI/UX evaluation questions and explains why in natural language. Trained via contrastive reflection fine-tuning and reflective prompt evolution, reaching human-level realism and generalizing to unseen questions and personas. | <a href="https://arxiv.org/abs/2606.05697"><img src="https://img.shields.io/badge/arXiv-2606.05697-b31b1b.svg" alt="arXiv" /></a> |
 | **[OpenCLAW-P2P v6.0: Resilient Multi-Layer Persistence, Live Reference Verification, and Production-Scale Evaluation of Decentralized AI Peer Review](https://arxiv.org/pdf/2604.19792)** - Presents a decentralized AI peer-review platform where autonomous agents publish, score, verify references, and preserve research papers across a multi-layer storage and retrieval architecture. | <a href="https://arxiv.org/abs/2604.19792"><img src="https://img.shields.io/badge/arXiv-2604.19792-b31b1b.svg" alt="arXiv" /></a> |
@@ -230,12 +231,14 @@ You ship products with AI, but every launch still dies quietly because nobody po
 <br>
 
 <details id="eval--observability">
-<summary><h3 style="display:inline">Eval & Observability (86)</h3></summary>
+<summary><h3 style="display:inline">Eval & Observability (87)</h3></summary>
 
 <br>
 
 | Paper | arXiv ID |
 |---|:---:|
+| **[Super Research: Answering Highly Complex Questions with Large Language Models through Super Deep and Super Wide Research](https://arxiv.org/pdf/2603.00582v2)** - Tests research agents on 300 expert-written questions that require planning, broad evidence gathering, and in-depth investigation across sources. The public benchmark includes 3,600 reports from twelve systems for inspecting how they approach these tasks. | <a href="https://arxiv.org/abs/2603.00582v2"><img src="https://img.shields.io/badge/arXiv-2603.00582-b31b1b.svg" alt="arXiv" /></a> |
+| **[Empowering Edge Agents: A Systematic Analysis of Edge-Cloud Collaboration in LLM Agent Execution](https://arxiv.org/pdf/2610.17816)** - A benchmark of 128 OpenClaw workspace tasks where a small edge model and a cloud model share the work, scored at once on task completion, cloud cost and edge FLOPs, and how much annotated sensitive data reaches the cloud. With Qwen3.5-2B on the edge, per-step routing raises completion from 12.75 to 39.97 while using 22.7% of the cloud-only cost. | <a href="https://arxiv.org/abs/2610.17816"><img src="https://img.shields.io/badge/arXiv-2610.17816-b31b1b.svg" alt="arXiv" /></a> |
 | **[TraceDance: An Automated System for Building Agent Behavior Benchmarks from Real-World Agent Deployment Traces](https://arxiv.org/pdf/2609.33295)** - Turns descriptions of unwanted agent behavior into tests built from real deployment logs. Each test scores the model's next response at a recorded decision point, including tool use, error handling, and claims about finished work, without running its actions. | <a href="https://arxiv.org/abs/2609.33295"><img src="https://img.shields.io/badge/arXiv-2609.33295-b31b1b.svg" alt="arXiv" /></a> |
 | **[Why Do AI Agents Break Rules? How Framing, Context, and Social Signals Shape Compliance](https://arxiv.org/pdf/2608.12323)** - Puts twelve LLMs in a procurement-agent role under one environmental rule and varies how the rule is framed, what the penalty is, and who pushes back. Compliance spans 46 percentage points across models under identical conditions, and stating the fine, manager demands, peer outcomes, and user pressure each raise violation rates. | <a href="https://arxiv.org/abs/2608.12323"><img src="https://img.shields.io/badge/arXiv-2608.12323-b31b1b.svg" alt="arXiv" /></a> |
 | **[PerspectiveGap: A Benchmark for Multi-Agent Orchestration Prompting](https://arxiv.org/pdf/2606.08878)** - A 110-scenario benchmark testing whether LLMs can compose orchestration prompts that distribute context to sub-agents without information leakage. Across 10 topologies and 27 commercial models, GPT-5.5 leads with 62% pass rate while the average is 14.9%. | <a href="https://arxiv.org/abs/2606.08878"><img src="https://img.shields.io/badge/arXiv-2606.08878-b31b1b.svg" alt="arXiv" /></a> |
@@ -347,9 +350,4 @@ You ship products with AI, but every launch still dies quietly because nobody po
 | **[Structured Context Engineering for File-Native Agentic Systems](https://arxiv.org/pdf/2602.05447v1)** - Tests how context format (YAML, JSON, Markdown) affects agent accuracy across 9,649 experiments in file-native agentic systems. | <a href="https://arxiv.org/abs/2602.05447v1"><img src="https://img.shields.io/badge/arXiv-2602.05447-b31b1b.svg" alt="arXiv" /></a> |
 | **[ProAct: Agentic Lookahead in Interactive Environments](https://arxiv.org/pdf/2602.05327v1)** - Explores training agents to think ahead by distilling environment search into causal reasoning chains in interactive environments. | <a href="https://arxiv.org/abs/2602.05327v1"><img src="https://img.shields.io/badge/arXiv-2602.05327-b31b1b.svg" alt="arXiv" /></a> |
 | **[Autonomous Question Formation for Large Language Model-Driven AI Systems](https://arxiv.org/pdf/2602.01556v1)** - Investigates teaching agents to ask themselves the right questions before acting to adapt to new situations autonomously. | <a href="https://arxiv.org/abs/2602.01556v1"><img src="https://img.shields.io/badge/arXiv-2602.01556-b31b1b.svg" alt="arXiv" /></a> |
-| **[From Perception to Action: Spatial AI Agents and World Models](https://arxiv.org/pdf/2602.01644v1)** - Surveys the connection between agentic architectures and spatial tasks like robotics and navigation, covering memory, planning, and world models in embodied agents. | <a href="https://arxiv.org/abs/2602.01644v1"><img src="https://img.shields.io/badge/arXiv-2602.01644-b31b1b.svg" alt="arXiv" /></a> |
-| **[World Models as an Intermediary between Agents and the Real World](https://arxiv.org/pdf/2602.00785v1)** - Argues for using world models as a bridge between agents and high-cost real-world environments to provide richer learning signals across domains like robotics and ML engineering. | <a href="http://arxiv.org/abs/2602.00785v1"><img src="https://img.shields.io/badge/arXiv-2602.00785-b31b1b.svg" alt="arXiv" /></a> |
-| **[Engineering AI Agents for Clinical Workflows: A Case Study in Architecture, MLOps, and Governance](https://arxiv.org/pdf/2602.00751v1)** - Presents a reference architecture for production AI agents integrating Clean Architecture, event-driven design, per-agent MLOps lifecycles, and human-in-the-loop governance. | <a href="http://arxiv.org/abs/2602.00751v1"><img src="https://img.shields.io/badge/arXiv-2602.00751-b31b1b.svg" alt="arXiv" /></a> |
-| **[Autonomous Data Processing using Meta-Agents](https://arxiv.org/pdf/2602.00307v1)** - Proposes a meta-agent framework that builds, runs, and keeps refining data processing pipelines through hierarchical agent orchestration. | <a href="http://arxiv.org/abs/2602.00307v1"><img src="https://img.shields.io/badge/arXiv-2602.00307-b31b1b.svg" alt="arXiv" /></a> |
-| **[MEnvAgent: Scalable Polyglot Environment Construction for Verifiable Software Engineering](https://arxiv.org/pdf/2601.22859v2)** - Proposes a multi-agent framework for automatically building executable test environments across ten programming languages using planning-execution-verification with environment reuse. | <a href="http://arxiv.org/abs/2601.22859v2"><img src="https://img.shields.io/badge/arXiv-2601.22859-b31b1b.svg" alt="arXiv" /></a> |
-| **[Learning with Challenges: Adaptive Difficulty-Aware Data Generation for M
+| **[From Perception to Action: Spatial AI Agents and World Models](https://arxiv.org/pdf/2602.01644v1)** - Surveys the connection between agentic architectures and spatial tasks like robotics and navigation, covering memory, planning, and world models in embodied agents. | <a href="https://arxiv.org/abs/2602.01644v1"><img src="https://img.shields.io/badge/arXiv-2602.01644-b31b

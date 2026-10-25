@@ -40,7 +40,7 @@
 - **(Mar 9th, 2026)**: We have updated all accepted papers in **CVPR 2026**.
 - **(Nov 19th, 2025)**: We have updated all accepted papers in **AAAI 2026**.
 - **(Sep 13th, 2025)**: Add a new direction: [🎯 Reinforcement Learning for Video Generation](#-reinforcement-learning-for-video-generation).
-- **(Aug 21th, 2025)**: Add a new direction: [🗣️ Audio-Driven Video Generation](#️-audio-driven-video-generation).
+- **(Aug 21st, 2025)**: Add a new direction: [🗣️ Audio-Driven Video Generation](#️-audio-driven-video-generation).
 - **(Aug 20th, 2025)**: Initial commit and repository structure established.
 
 </details>
@@ -835,4 +835,6 @@
 
 - [Waver: Wave Your Way to Lifelike Video Generation](https://arxiv.org/pdf/2508.15761) [![GitHub Stars](https://img.shields.io/github/stars/FoundationVision/Waver?style=social)](https://github.com/FoundationVision/Waver)
 - [FlexTraj: Image-to-Video Generation with Flexible Point Trajectory Control](https://arxiv.org/pdf/2510.08527) [![Project Page](https://img.shields.io/badge/Project-Page-blue?logo=website)](https://bestzzhang.github.io/FlexTraj/)
-- [UniVideo: Unified Understanding, Generation, and Editing for Videos](https://arxiv.org/pdf/2510.08377) [![Project Page](https://img.shields.io/
+- [UniVideo: Unified Understanding, Generation, and Editing for Videos](https://arxiv.org/pdf/2510.08377) [![Project Page](https://img.shields.io/badge/Project-Page-blue?logo=website)](https://congwei1230.github.io/UniVideo/)
+- [Kandinsky 5.0: A Family of Foundation Models for Image and Video Generation](https://arxiv.org/pdf/2511.14993) [![GitHub Stars](https://img.shields.io/github/stars/kandinskylab/kandinsky-5?style=social)](https://github.com/kandinskylab/kandinsky-5) [![Huggingface Face](https://img.shields.io/badge/Hugging-Face-orange?logo=website)](https://huggingface.co/kandinskylab/Kandinsky-5.0-I2V-Pro-sft-5s-Diffusers)
+- [Physics‑Grounded Motion Forecasting via Equation Discovery for Trajectory‑Guided Image‑to‑Video Generation](http://arxiv.org/abs/2

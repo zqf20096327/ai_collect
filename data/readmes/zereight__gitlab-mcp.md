@@ -163,15 +163,15 @@ Supports PAT, OAuth, read-only mode, dynamic API URLs, and remote authorization 
 | **Node.js**    | >=18.17                                                           | Often >=24                                   | Node.js 20+ for stdio via `mcp-remote`                                                                                                           |
 | **License**    | MIT                                                               | Varies                                       | Part of GitLab                                                                                                                                   |
 
-### tools/list size (measured 2026-10-23)
+### tools/list size (measured 2026-10-24)
 
 A client sends the whole `tools/list` result to the model at session start. Token estimate is UTF-8 bytes / 4.
 
 | Profile | Tools | JSON bytes | Est. tokens |
 | ------- | ----: | ---------: | ----------: |
-| Default (`core` + `discover_tools`) | 39 | 48,069 | 12,018 |
-| `GITLAB_TOOL_PROFILE=slim` | 38 | 47,199 | 11,800 |
-| `GITLAB_TOOLSETS=all` | 275 | 274,896 | 68,724 |
+| Default (`core` + `discover_tools` + `help`) | 40 | 50,682 | 12,671 |
+| `GITLAB_TOOL_PROFILE=slim` | 39 | 49,646 | 12,412 |
+| `GITLAB_TOOLSETS=all` | 276 | 285,677 | 71,420 |
 
 Re-measure with `npm run test:mock` (`test/tools-list-budget.test.ts`) after description or schema changes.
 
@@ -258,7 +258,7 @@ The store path is pinned by your lock file; update it with `nix flake update git
 
 The examples use `zereight-mcp-gitlab`, a less collision-prone alias for the legacy `mcp-gitlab` binary. If your MCP client cannot find it, use the absolute path from `which zereight-mcp-gitlab`.
 
-No global install? Pin `npx` to the previous stable release (the version these docs recommend), for example `npx -y @zereight/mcp-gitlab@2.3.7`. If you always want the newest release, use `npx -y @zereight/mcp-gitlab@latest` instead. To try a fix merged to `main` before the next stable release, use `npx -y @zereight/mcp-gitlab@next`, a pre-release build that is not meant for production. The server prints a notice to stderr on startup when a newer version is available (disable with `GITLAB_DISABLE_VERSION_CHECK=true`).
+No global install? Pin `npx` to the previous stable release (the version these docs recommend), for example `npx -y @zereight/mcp-gitlab@2.3.10`. If you always want the newest release, use `npx -y @zereight/mcp-gitlab@latest` instead. To try a fix merged to `main` before the next stable release, use `npx -y @zereight/mcp-gitlab@next`, a pre-release build that is not meant for production. The server prints a notice to stderr on startup when a newer version is available (disable with `GITLAB_DISABLE_VERSION_CHECK=true`).
 
 #### Claude Desktop one-click install (MCP Bundle)
 
@@ -298,7 +298,7 @@ Some MCP clients (like GitHub Copilot CLI) have issues with environment variable
 - `--masking-config` - Path to a masking configuration file (replaces `GITLAB_MASKING_CONFIG`)
 - `--masking-policy-file` - Path to a protected managed-policy file (replaces `GITLAB_MASKING_POLICY_FILE`)
 - `--masking-workspace-dir` - Directory used to resolve masking files (replaces `GITLAB_MASKING_WORKSPACE_DIR`)
-- `--download-dir` - Directory `download_attachment` saves files under (replaces `GITLAB_DOWNLOAD_DIR`; default `.gitlab-mcp-downloads`)
+- `--download-dir` - Directory `download_attachment` and `download_job_artifacts` save files under (replaces `GITLAB_DOWNLOAD_DIR`; default `.gitlab-mcp-downloads`)
 - `--compact-results=true` - Truncate oversized MCP tool replies and attach a CLI command for the full payload (replaces `GITLAB_MCP_COMPACT_RESULTS`; default off)
 - `--compact-result-chars` - Character threshold for compacting (replaces `GITLAB_MCP_COMPACT_RESULT_CHARS`; default `4000`)
 - `--compact-tools` - Comma-separated tool names to compact when oversized, without turning global compact on (replaces `GITLAB_MCP_COMPACT_TOOLS`)
@@ -630,7 +630,7 @@ or
 Private-Token: glpat-xxxxxxxxxxxxxxxxxxxx
 ```
 
-The token is stored per session (identified by `mcp-session-id` header) and reused for subsequent requests in the same session.
+The token is stored per session (identified by `mcp-session-id` header) and reused for subsequent requests in the same session. The session belongs to the GitLab user of that token: a request with another user's token gets `404 Session not found`, and `GET` / `DELETE /mcp` without a token get `401`.
 
 #### Remote Authorization Client Configuration Example with Cursor
 
@@ -914,7 +914,7 @@ Register the skill directory in your AI client to get optimal tool usage guidanc
 136. `list_pipeline_jobs` - List all jobs in a specific pipeline
 137. `list_pipeline_trigger_jobs` - List trigger jobs (bridges) in a pipeline
 138. `get_pipeline_job` - Get details of a GitLab pipeline job number
-139. `get_pipeline_job_output` - Get the output/trace of a pipeline job with optional pagination
+139. `get_pipeline_job_output` - Get a pipeline job trace, with end-based pagination or full-log substring/regex search
 140. `validate_ci_lint` - Validate provided GitLab CI/CD YAML content for a project
 141. `validate_project_ci_lint` - Validate an existing .gitlab-ci.yml configuration for a project
 142. `list_ci_catalog_resources` - List GitLab CI/CD Catalog resources/components visible to the user
@@ -942,7 +942,7 @@ Register the skill directory in your AI client to get optimal tool usage guidanc
 164. `wait_for_pipeline` - Wait for a pipeline to reach a terminal status
 165. `wait_for_job` - Wait for a job to reach a terminal status
 166. `list_job_artifacts` - List artifact files in a job's archive
-167. `download_job_artifacts` - Download job artifact archive (zip) and save to a local path
+167. `download_job_artifacts` - Download job artifact archive (zip) and save it under the download directory
 168. `get_job_artifact_file` - Get content of a single file from a job's artifacts
 169. `list_merge_requests` - List merge requests (without project_id: user's MRs; with project_id: project MRs)
 170. `list_group_merge_requests` - List merge requests across all projects of a group and its subgroups

@@ -81,7 +81,7 @@ feature-set differences.
 
 `wirken run` spawns adapter processes, accepts authenticated connections,
 routes messages to the agent, and serves a WebChat UI at
-`http://localhost:18790`:
+`http://127.0.0.1:18790`; log in with `wirken webchat open --browser`:
 
 ```
   wirken v2.5.1
@@ -90,7 +90,7 @@ routes messages to the agent, and serves a WebChat UI at
   Provider: ollama/llama3.2
   Ollama version: 0.19.0
   Route: Telegram -> agent:default
-  WebChat: http://localhost:18790
+  WebChat: http://127.0.0.1:18790 (log in with `wirken webchat open`)
 
   Wirken running. Press Ctrl+C to stop.
 ```
@@ -169,7 +169,8 @@ graph TD
     Channels -- "UDS · Ed25519 · Cap'n Proto" --> Registry[Adapter Registry]
 
     subgraph Wirken
-        Registry --> Detect[Injection Detection]
+        Registry --> Senders["Sender Allowlist · adapter channels"]
+        Senders --> Detect[Injection Detection]
         Detect --> Router
         Router -- "resolve" --> Factory[AgentFactory]
         Factory --> Agent[Agent Runtime]
@@ -240,6 +241,10 @@ compromise impossible. The honest edges:
   is enforced at the process level; the compile-time `SessionHandle<Channel>`
   API exists and is tested but is not threaded through the production message
   path.
+- **The iMessage adapter has not been verified against a live BlueBubbles
+  server.** Its API calls and webhook check follow BlueBubbles Server's source;
+  no run against a running server has confirmed them. See
+  [docs/channels.md](docs/channels.md#imessage-bluebubbles).
 - **Agents share the gateway's address space.** Channel adapters are separate
   processes; agents are not.
 - **Permissions are per agent, not per user.** A Tier 2 approval granted by

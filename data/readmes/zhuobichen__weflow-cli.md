@@ -107,7 +107,7 @@ Linux 的自动初始化能力取决于微信发行版、Python 依赖和当前�
 | --- | --- |
 | 聊天记录 | 查询会话、联系人和消息；导出 **Markdown / JSON / TXT / HTML / Excel**。Markdown 导出把图片**落盘**到 `<会话>_assets/`、正文用相对路径引用（喂给编辑器或别的工具时这才是能用的形态）；**文档本体**（微信里的 Word/Excel/PDF/PPT 等）按原名与扩展名拷进 `<会话>_assets/files/`，正文里按原名链接到 `files/` 下；HTML 导出内嵌图片并给出一份媒体覆盖报告（哪些没嵌上、为什么）。**匹配只做一遍**：Markdown 导出写下清单，之后 JSON/TXT/Excel 导出（或 `--media`）会自动带上同样的图片与文档路径。 |
 | 公众号日报 | 抓取文章、AI 摘要与分类、生成本地阅读页，保留收藏和已读状态。 |
-| 个人知识库 | 同步微信读书笔记、构建 Obsidian Vault、语义搜索、RAG 问答和概念 Wiki，以及**双击就能打开**的概念图谱页面（`weflow-cli wiki graph --open` 出 3D、加 `--flat` 出 2D；自包含、不联网、不需要服务器；`--min-degree N` 只看枢纽、`--line wiki\|chat` 只看一条线）。 |
+| 个人知识库 | 同步微信读书笔记、构建 Obsidian Vault、语义搜索、RAG 问答和概念 Wiki，以及**双击就能打开**的概念图谱页面（`weflow-cli wiki graph --open` 出 3D、加 `--flat` 出 2D；自包含、不联网、不需要服务器；`--min-degree N` 只看枢纽、`--line wiki\|chat` 只看一条线；**2D 页里点一条边能看到它凭什么连着**——两页的共同来源卡片，没有共同来源的边也会如实说来自正文链接）。 |
 | AI 协作 | 通过 MCP 把文章、知识库、日报和受控的本地数据能力交给兼容客户端；工具清单以 `weflow-cli mcp-config` 和 `docs/MCP.md` 为准。 |
 | 个人回顾 | 聊天月报、年度报告、待办提取与朋友圈本地缓存查询。 |
 | 微信收藏 | 读取微信"收藏"内容（公众号文章、文字、图片、视频、聊天记录），支持类型过滤、关键词搜索与 Markdown/JSON 导出。 |
@@ -137,7 +137,15 @@ weflow-cli check
 > - 马上能用：换成 `weflow-cli.cmd check`（`.cmd` 那份包装不走 PowerShell 策略）；
 > - 一次性解决：`Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`，然后重开终端。
 
-安装标准 Windows 4.x 工作流所需的 Python 依赖：
+一条命令装好 Python 依赖（推荐）——它会在 `~/.weflow-cli/venv` 建一个本工具**自管**的虚拟环境
+并安装依赖，之后的 Python 工作流会优先用它，不用再管 PATH 上哪个 Python 可用
+（Windows 上自动改用 `sqlcipher3-wheels` 预编译轮，省去装编译器的麻烦）：
+
+```powershell
+weflow-cli setup
+```
+
+也可以手动安装（效果相同；从源码运行时在仓库根目录执行）：
 
 ```powershell
 python -m pip install -r requirements.txt
@@ -278,6 +286,8 @@ weflow-cli panel               # 打开本机面板窗口 (不扫码也能用)
 - 「知识库里怎么讲 RAG 的？」— 概念 Wiki 检索
 - 「帮我回老王那句话」— 起草回复：先判断对方要什么、风险和该不该给实质内容，再给几条候选。
   **只产出文本，不会替你发送**；涉钱或风险很高时不给草稿，只说明该先确认什么
+- 「（对方直接发来一张图片）」— 开了 `wechatMediaDownload` 后图片会落盘，助手能直接看图回答
+  （隐私模式 strict 下不出境，见下段与 D-128）
 - 「记住：我的项目叫 weflow-cli」— 写入长期记忆
 
 运行机制：守护进程通过微信官方 Bot 通道（iLink）长轮询收发消息，Agent 循环、三层记忆（工作窗口 / 滚动摘要 / 长期事实）、数据库查询全部在本机执行；仅最终提问与回复文本会发送给所配置的 LLM，新装默认就是 `assistantPrivacy=strict`：工具输出中的电话/邮箱/链接等 PII 自动脱敏，且第三方聊天正文不出境（`balanced` 放宽到正文可出境、只对 PII 打码，`open` 全不打码；`ollama` 本地引擎则完全不出网）。会话 24 小时未活跃需重新扫码，单窗口内主动回复有官方条数限制。
@@ -303,7 +313,7 @@ weflow-cli config set assistantGroupRequireMention true
 
 | 目标 | 命令 |
 | --- | --- |
-| 检查环境与配置 | `weflow-cli check` · `weflow-cli config show` |
+| 检查环境与配置 | `weflow-cli check` · `weflow-cli setup`（自管 Python venv，一条命令装依赖） · `weflow-cli config show` |
 | 初始化或手动指定路径 | `weflow-cli init [--path <目录>]` |
 | 浏览聊天数据 | `weflow-cli sessions` · `weflow-cli messages <联系人>` · `weflow-cli contacts` |
 | 谁在等我回话 | `weflow-cli awaiting --dry-run` · `weflow-cli awaiting --yes` |
@@ -314,11 +324,14 @@ weflow-cli config set assistantGroupRequireMention true
 | 那年今日 | `weflow-cli today --years 1,3,5`（几年前的今天在聊什么）|
 | 人脉图谱 | `weflow-cli network --groups` · `--with <名字>`（共同群）· `--intro <名字>`（谁能引荐；只读 contact.db）|
 | 某号观点演变 | `weflow-cli timeline --list` · `--source <公众号名>`（按时间看它说法的变化）|
+| 关系网络时间重放 | `weflow-cli replay`（按月展开，生成可播放的单文件 HTML；看哪条边断了，不只是图变大）|
 | 本机判断层 | `weflow-cli decide --request <file> --dry-run` · `--yes` |
 | 导出聊天记录 | `weflow-cli export <联系人> <json\|txt\|html\|excel>` |
-| 同步检查点 | `weflow-cli sync run <联系人> --since <日期>` · `sync status` · `sync verify` |
+| 同步检查点 | `weflow-cli sync run <联系人> --since <日期>` · `sync status` · `sync verify` · `sync cursor-probe`（离稳定增量游标还差什么，实测当前后端）|
+| QQ 聊天导入 | `weflow-cli import qchat <qchat导出>` · `import list` · `import show <会话>` （读 qchat-cli 的 JSON 导出；之后 `chat-notes --source qq` 产知识卡、`search-index --include-imports` 进搜索）|
 | 公众号日报与阅读器 | `weflow-cli daily` · `weflow-cli daily-server` · `weflow-cli review` |
 | 朋友圈缓存 | `weflow-cli sns timeline` · `weflow-cli sns users` · `weflow-cli sns stats` |
+| 联系人头像 | `weflow-cli avatar <联系人>` · `avatar --list` · `avatar --all`（读 head_image.db，头像本体在库里，缓存清理不丢） |
 | 微信收藏 | `weflow-cli fav list` · `weflow-cli fav export markdown` · `weflow-cli fav set-key` |
 | 微信读书 | `weflow-cli weread shelf` · `notes` · `search` · `stats`（key 从 https://weread.qq.com/r/weread-skills 拿，见 [OPERATIONS.md](./OPERATIONS.md)） |
 | 知识库 | `weflow-cli vault` · `weflow-cli wiki` · `weflow-cli search <query>` · `weflow-cli chat`（语义检索需先 `config set dashscopeApiKey`；`search --phrase <词> --line all` 连语音转写一起搜）|

@@ -1087,7 +1087,9 @@ unambiguously. `.xlsx` needs the optional `excel` extra, `.parquet` needs
 the optional `parquet` extra.
 
 Python 3.10 or newer is required (the code uses 3.10 features such as `X | None` annotations and
-`Path.write_text(newline=...)`, and the `mcp` extra needs 3.10 too). CI runs the suite on 3.10, 3.12 and 3.13.
+`Path.write_text(newline=...)`, and the `mcp` extra needs 3.10 too). CI runs the test suite and the
+audits on 3.12 only, and lint and the explainer build on 3.11; 3.10 and 3.13 are supported but not
+tested in CI.
 
 ```bash
 pip install -e .                                   # installs the faircode console script
@@ -1524,7 +1526,3 @@ list - it's what to trust if a name here looks missing or out of date.*
 To add yourself here, open a PR alongside your contribution. See the full commit-level history on [GitHub](https://github.com/yakew7/Fair-Code/graphs/contributors).
 
 ---
-
-## Website
-
-The full project is at **[thefaircode.xyz](https://www.thefaircode.xyz)** - everything i

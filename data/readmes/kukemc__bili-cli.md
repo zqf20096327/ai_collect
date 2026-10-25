@@ -79,7 +79,7 @@ $ bili comment reply BV1pM… 3175… "谢谢！教程下周更新～"
 $ bili hot rank --zone tech --unseen
   ✓ 科技区 Top 30（已跳过看过的）
 $ bili video watch BV1KiJk67EQ9
-  ✓ AI 总结 · 字幕全文 · 热评 · 9 帧画面总览图          ← 多模态模型直接“看”画面
+  ✓ AI 总结 · 字幕全文 · 热评 · 弹幕高能时刻 · 画面总览图   ← 多模态模型直接“看”画面和观众反应
 $ bili dm send owner "今天科技区第二名很有意思：有人造了一块会飞的滑板……"
   ✓ 已发送
 ```
@@ -93,7 +93,10 @@ $ bili dm send owner "今天科技区第二名很有意思：有人造了一块�
 看到喜欢的就**点赞、收藏到指定收藏夹、一键三连**。投币是真金白银，所以要显式指定个数，并且本地限制每天最多 5 个。
 
 ### 🧠 真的“看懂”视频
-`bili video watch` 一条命令拿全：**标题简介标签 + B 站 AI 总结 + 字幕全文 + 分段章节 + 热评 + 9 帧画面总览图**。
+`bili video watch` 一条命令拿全：**标题简介标签 + B 站 AI 总结 + 字幕全文 + 分段章节 + 热评 + 弹幕高能时刻 + 画面总览图**。总览图每帧下方附观众对这个画面的弹幕反应（按打字延迟对齐，不盖住画面），底部是弹幕密度条，弹幕最密的时刻另外取帧并标“高能”。
+<p align="center"><img src="https://raw.githubusercontent.com/kukemc/bili-cli/main/assets/danmaku_sheet.jpg" alt="bili video frames --danmaku 生成的总览图：每帧下方是观众对这个画面的弹幕反应，底部是弹幕密度" width="860"></p>
+<p align="center"><sub><code>bili video frames BV1bGJR6HErW -q hd --danmaku</code> 的总览图（节选 6 帧）。0:24 那一眼 110 条弹幕刷屏，被标成“高能”。<br>弹幕是看完画面才打的字，屏幕上叠着的弹幕往往在说前几秒的镜头；这里已经按打字延迟把每条弹幕对齐到它反应的那一帧。<br>画面来自 B 站视频《所以说我很羡慕你啊…大肥鱼》（UP 主 a网友爱顺音），README 版去掉了涉及时政的弹幕。</sub></p>
+
 没有字幕？一键部署本地语音转写 **Qwen3-ASR**——有 NVIDIA 显卡自动用 GPU，**31 分钟的视频 2 分钟转完**；没显卡也能用 CPU 版，或者接云端服务。
 
 ### 💬 像 UP 主一样社交
@@ -101,7 +104,7 @@ $ bili dm send owner "今天科技区第二名很有意思：有人造了一块�
 - **真正的 @**：对方会收到提醒（不是在正文里写个“@昵称”），填 UID 或昵称都行
 - **带图评论、B 站表情**：评论可以附图，也能看到别人评论里的图（存到本地交给多模态模型看）；`bili comment emotes` 查当前账号能用的表情，`[笑哭]` 直接写进正文
 - **不漏回复**：`--unreplied` 只列还没回过的评论；自己作品下的评论可以**置顶**
-- **私信**：读会话、回私信，有新发现直接**私信汇报给主人**；还能配置 B 站自带的**私信自动回复**（被关注、收到消息、关键词）
+- **私信**：读会话、回私信，有新发现直接**私信汇报给主人**；`bili dm watch` **实时收新私信**（和网页版一样走推送，几秒内就知道），Agent 可以像真人一样陪粉丝聊天；还能配置 B 站自带的**私信自动回复**（被关注、收到消息、关键词）
 - 发出去之后还能**检查评论是否被折叠**，新号也心里有数
 
 ### 🎨 自己发内容
@@ -185,11 +188,11 @@ bili mcp install --yes      # 写入配置（先备份为 .bak，只改 bili-cli
 | 命令 | 说明 |
 | --- | --- |
 | `bili auth login / status / logout` | 扫码登录、登录状态（自动续期）、登出 |
-| `bili video info / stats / subtitle / danmaku / summary / chapters` | 视频信息、数据、字幕、弹幕、AI 总结、分段章节 |
-| `bili video watch` | 一次拿全：信息 + 标签 + AI 总结 + 全文 + 章节 + 热评 + 画面总览图；`--record` 写入历史记录 |
+| `bili video info / stats / subtitle / danmaku / summary / chapters` | 视频信息、数据、字幕、弹幕（`--peaks N` 只看观众反应最强烈的时刻）、AI 总结、分段章节 |
+| `bili video watch` | 一次拿全：信息 + 标签 + AI 总结 + 全文 + 章节 + 热评 + 弹幕高能时刻 + 带弹幕反应的画面总览图；`--record` 写入历史记录 |
 | `bili video like / coin / fav / triple / relation` | 点赞、投币（必须指定个数，每天最多 5 个）、收藏、一键三连、查看我和视频的关系 |
 | `bili me favs` | 我的收藏夹 |
-| `bili video frames` | 抽帧并拼总览图：默认用进度条缩略图（快、免 ffmpeg），`-q hd` 精确帧 |
+| `bili video frames` | 抽帧并拼总览图：默认用进度条缩略图（快、免 ffmpeg），`-q hd` 精确帧；`--danmaku` 每帧附弹幕反应，`--peaks N` 在弹幕最密集的 N 个时刻取帧 |
 | `bili video transcribe` | 语音转文字，格式同字幕，结果缓存 |
 | `bili feed inbox` | 一次看完所有新消息（读取后 B 站标为已读） |
 | `bili feed replies / mentions / likes / system / notifications` | 回复、@、赞、系统通知、未读数 |
@@ -201,6 +204,8 @@ bili mcp install --yes      # 写入配置（先备份为 .bak，只改 bili-cli
 | `bili user info / videos` | 任意用户的资料、粉丝数、投稿列表（按播放 / 收藏排序，按关键词筛系列）；动态用 `bili dynamic list --mid` |
 | `bili comment list / replies / post / reply / like / delete / check / pin / emotes / images` | 评论读写、`--unreplied` 只看没回过的、置顶自己作品下的评论；`--at <UID|昵称|owner>` 真正的 @，`--image` 带图，`emotes` 查可用表情；`--type dynamic/draw/article` 用于动态和专栏 |
 | `bili dm list / read / send` | 私信 |
+| `bili dm watch` | 实时接收新私信（推送 + 20 秒兜底轮询 + 定期全量对账，每条一行 JSON；`--backlog` 先吐积压） |
+| `bili dm send --image` | 私信带图片 |
 | `bili dm autoreply show / set / on / off / keyword add / keyword delete` | B 站自带的私信自动回复（1000 粉以上） |
 | `bili owner set / show / clear` | 设置“主人” |
 | `bili dynamic post / list / show / delete / vote` | 动态：图文（最多 9 张）、`--at` @ 人、`--vote` 投票及结果 |
@@ -258,6 +263,8 @@ bili mcp install --yes      # 写入配置（先备份为 .bak，只改 bili-cli
 <summary>多个账号怎么办？</summary>
 
 设置环境变量 `BILI_CLI_HOME` 指向不同目录，每个目录是一套独立的登录、限流和审计日志。本项目不提供批量控制多账号的功能。
+
+**命令卡住怎么办？** 不会无限卡住：普通命令超过 3 分钟没完成会自己中止，返回 `network_error`，Agent 重试即可；投稿、语音转写、`dm watch` 这类长任务不受限制。用环境变量 `BILI_CLI_TIMEOUT` 改上限（秒，0 表示不限）。单个读请求最多等 45 秒。报错里带 `stalled_seconds` 说明整个进程被暂停过（机器或容器挂起、CPU 被占满），不是网络问题；排查时加 `BILI_CLI_DEBUG=1`，stderr 会打出每个请求的耗时。
 
 </details>
 

@@ -19,8 +19,9 @@
 
 ## ✨ 功能特色与核心亮点 (Key Features)
 
-### 1. 🦾 74 项具名工具 + 144+ 项 Action 目录与透传（74 个一级具名工具 + 万能透传）
-- **74 个开箱即用的第一公民具名工具 (First-Class Tools)**：提供完备的 JSON Schema 类型校验与清晰参数说明，覆盖常用消息、文件、群管理和账号操作；
+### 1. 🦾 全量 144+ 项 NapCat 接口 100% 覆盖（14 个核心正交工具 + 74 项具名工具 + 万能透传）
+- **默认暴露 14 个精选正交核心工具 (OMNIQQ_TOOL_PROFILE=core)**：严格遵循 MCP 最佳实践区间（3~15 个工具），避免撑爆 LLM 上下文窗口，每个工具均附带完整 MCP nnotations、outputSchema、前置权限说明与替代工具路由指引；
+- **74 个具名工具全量兼容 (OMNIQQ_TOOL_PROFILE=full)**：全部 74 个细分具名工具始终支持通过 	ools/call 直接按名调用，或通过设置环境变量 OMNIQQ_TOOL_PROFILE=full 在 	ools/list 中全量列出；
 - **万能底层接口透传 (`call_napcat_api`)**：支持直接调用 NapCat 官方引擎全部 **144+ 个标准与扩展 Action**（如群相册、群打卡、语音转文字 `fetch_ptt_text`、AI 声聊 `send_group_ai_record` 等），并内置 `list_supported_napcat_actions` 供 AI 自主查阅全部接口目录。
 
 ### 2. 📱 原生支持二维码扫码登录与多 QQ 账号切换
@@ -111,6 +112,10 @@ python -m pip install -r requirements.txt
 - **元数据审计**：日志不保留消息正文、文件内容、完整调用参数或凭据，支持轮转和可配置路径。
 
 更新全部 MCP 宿主使用的源码或安装包后，重启 MCP 进程以加载新版本。新安装的运行时、日志、账号选择和 Token 默认位于 `%LOCALAPPDATA%\OmniQQ-MCP`；已有 `napcat_runtime` 会继续使用。
+
+### v1.2.0 (2026-10-25)
+- **核心工具精简与全量兼容 (`OMNIQQ_TOOL_PROFILE`)**：默认 `tools/list` 暴露 19 个核心与本地工具（14 个高频核心工具 + 5 个无 OneBot 等价接口的纯本地工具），`tools/call` 仍支持直接调用全部 74 项具名工具，设置 `OMNIQQ_TOOL_PROFILE=full` 可全量列出。
+- **标准注解与返回结构**：为全部工具补齐 MCP `annotations` 与 `outputSchema`，剥离主描述中重复的 `:param` 行并补全使用场景、权限要求与副作用说明。
 
 完整历史见 [CHANGELOG.md](./CHANGELOG.md)，兼容性和回滚说明见 [可靠性说明](docs/RELIABILITY_REVIEW.md)。
 

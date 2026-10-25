@@ -328,3 +328,10 @@ If it saved you days, send me a screenshot. If it broke something, open an issue
 ---
 
 [MIT](./LICENSE) · 2026 Enrique Rocha · `tododeia.`
+
+<!-- marca-agua:inicio -->
+
+---
+
+<sub>Hecho por **Enrique Rocha (@soyenriquerocha)** · [tododeia.com](https://www.tododeia.com)⁠​‌‌​​‌​‌​‌‌‌​​‌​​​‌​‌‌​‌​‌‌​​‌‌​​‌‌​​‌​‌​‌‌​​‌​‌​​‌‌​‌​‌​​‌‌​​‌​​‌‌​​‌‌​​‌‌​​​​‌​​‌‌‌​​‌⁠</sub>
+<!-- marca-agua:fin -->

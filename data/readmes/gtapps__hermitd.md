@@ -2,7 +2,7 @@
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License" /></a>
   <a href="https://code.claude.com/docs/en/plugins"><img src="https://img.shields.io/badge/Claude%20Code-plugin-orange.svg" alt="Claude Code Plugin" /></a>
-  <a href="plugins/hermitd/CHANGELOG.md"><img src="https://img.shields.io/badge/version-1.4.20-green.svg" alt="Version 1.4.20" /></a>
+  <a href="plugins/hermitd/CHANGELOG.md"><img src="https://img.shields.io/badge/version-1.4.21-green.svg" alt="Version 1.4.21" /></a>
   <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/gtapps/hermitd/_gh_traffic_stats/.github/badges/clones.json" alt="Downloads" />
   <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome" />
   <a href="https://discord.gg/54sJqAxhUh"><img src="https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white" alt="Join" /></a>
@@ -284,15 +284,7 @@ You can run separate agents for different responsibilities, each with its own wo
 
 ## Upgrading from claude-code-hermit
 
-Claude Code 2.1.287 blocks plugins named `claude*`, so this project moved from `claude-code-hermit` to `hermitd`. Before migrating, update every registered agent in the Claude config directory to core **1.4.8** and stop all of them, including Docker agents. Run once on the host:
-
-```bash
-curl -fsSL https://gtapps.github.io/hermitd/migrate.sh | bash
-```
-
-The migration records every agent before replacing the marketplace, moves project state to `.hermit/`, refreshes launchers and permissions, and rebuilds Docker images. Customized managed files receive `.bak` copies. If interrupted, rerun the same command to resume. Disabled plugin installs are reported and are not reinstalled.
-
-Follow the printed start command for each agent, then run `/hermitd:hermit-evolve`. Pending `later` commands that still use old paths are reported for re-arming.
+Claude Code 2.1.287 blocks plugins named `claude*`, so this project moved from `claude-code-hermit` to `hermitd`. Stop every agent in this Claude config directory, then follow the [migration prompt](plugins/hermitd/docs/upgrading.md#upgrading-from-claude-code-hermit).
 
 ## Upgrading
 

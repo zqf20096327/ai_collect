@@ -1,12 +1,39 @@
 # Echo Memory / 回声记忆
 
-[中文文档](README.zh-CN.md) · [Download v0.9.0](https://github.com/questionjie-max/echo-memory/releases/latest) · [MCP reference](docs/mcp.md) · [Security](SECURITY.md) · [Contributing](CONTRIBUTING.md)
+[![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
 
-**Turn every conversation into long-term memory.** Echo Memory is a Personal Memory OS for AI-native work. It turns conversations, documents, decisions, and changing ideas into a traceable personal memory layer that can be reused by different AI agents.
+[中文文档](README.zh-CN.md) · [Download v1.0.0](https://github.com/questionjie-max/echo-memory/releases/latest) · [MCP reference](docs/mcp.md) · [Security](SECURITY.md) · [Contributing](CONTRIBUTING.md)
 
-> AI knows more about the world every day, but it still does not truly know you. Echo Memory gives your AI a memory of what you experienced, why you decided, and how your thinking changed.
+**Turn your recordings and AI conversations into memory your agents can actually reuse.**
 
-**[Download the signed macOS release](https://github.com/questionjie-max/echo-memory/releases/latest)** or build from source. Echo Memory v0.9.0 closes the loop from capture and transcription to structured analysis, evidence-backed retrieval, and agent access — and the memories you confirmed are now retrievable, not just stored.
+The decisions you made in this week's meetings and the conclusions you reached in AI chats are scattered across apps a week later — and every new AI session starts with you re-explaining your own context.
+
+Echo Memory collects three kinds of sources into one local library on your Mac:
+
+- **Recordings** — one click records your Mac's microphone in-app (stop and it transcribes and analyzes automatically); meetings, interviews, and voice memos are also supported (USB recorders import automatically)
+- **Documents** — Markdown, TXT, DOCX
+- **AI conversations** — local Claude Code / Codex sessions, ChatGPT / Claude export archives
+
+Transcription and analysis run entirely on your machine (Whisper + Ollama — no cloud, no per-minute caps), every conclusion can be clicked back to the exact words and timestamp it came from; citations are compared word for word against the transcript, and anything that does not match is dropped — fabricated citations are never shown. Only memories you have personally confirmed are exposed to your agents through read-only MCP — what they receive is not the AI's guess, it is the account you signed off on.
+
+**⬇ [Download the signed and notarized macOS build](https://github.com/questionjie-max/echo-memory/releases/latest)** · macOS Apple Silicon · Apache-2.0
+
+## What it is not
+
+It is not a meeting bot, not a 24-hour recorder, and not a team collaboration tool. It does not capture system output audio (the far side of an online meeting is not recorded), there is no live transcription during recording (transcription and analysis run after you stop), and there is no Windows/mobile app and no cloud sync — these are trade-offs, not debts. It is a capture-plus-precipitation layer: record with one click in the app, or bring your own material — it makes sure that material stays usable by you and your agents later.
+
+## Three steps to start
+
+1. Download the DMG and drag the app into your Applications folder;
+2. Click "开始记录" on the home screen to record a clip, or drag in an existing audio file;
+3. Ask knowledge chat about a conclusion from last week and see whether it can click back to the exact words.
+
+## FAQ
+
+- **Microphone permission denied?** Allow Echo Memory under "System Settings → Privacy & Security → Microphone".
+- **No Ollama installed, analysis unavailable?** Clicking analysis opens the setup panel — local one-click prepare or cloud with an API key, either works.
+- **Can the cloud fully replace local?** Cloud covers analysis/understanding only; knowledge indexing still needs local Ollama.
+- **Is there a Windows version?** No Windows/mobile app, no cloud sync, no automatic meeting joining.
 
 ## Why it exists
 
@@ -20,22 +47,9 @@ Capture -> Understand -> Connect -> Evolve -> Retrieve -> Feedback
 
 The goal is not to save more notes. It is to preserve a person's experiences and reasoning as a durable, user-controlled context layer for future AI.
 
-## Product position
+## What the product already does
 
-Echo Memory is not defined by transcription or meeting summaries. Those are input and processing capabilities.
-
-The long-term product has four connected layers:
-
-1. **Personal Memory Layer**: shared, permissioned context so every AI does not need to learn the user from zero.
-2. **Cognitive Database**: evidence-backed records of knowledge, decisions, open questions, and how beliefs change.
-3. **Personal Memory OS**: one system for capture, understanding, organization, retrieval, and feedback.
-4. **Digital Twin Database**: a long-term, correctable model of what a person experienced, knows, values, and how they make decisions.
-
-The digital-twin direction is a product vision, not a claim that the current release can fully model a person.
-
-## What v0.9.0 does
-
-### Latest improvements
+### Capabilities from the 0.9 line
 
 - **Memories you confirmed are now retrievable**: knowledge chat runs hybrid retrieval over records *and* confirmed memory items, labels the two sources separately (资料原文 / 你的过往记忆), and memory citations jump back to the originating record or audio.
 - **AI conversations are a first-class input**: ChatGPT/Claude exports, conversational Markdown, and a local agent-session scanner (Claude Code, Codex) land as searchable records in their own lane — they stay out of the recording memory chain and out of the pending queue.
@@ -49,7 +63,8 @@ The digital-twin direction is a product vision, not a claim that the current rel
 
 ### Complete workflow
 
-- First-run onboarding: environment check, resumable local model downloads, and inbox setup.
+- First-run onboarding: environment check, resumable local model downloads, and inbox setup; analysis models can be configured later in Settings without blocking first use.
+- In-app local recording: one-click microphone capture that saves, transcribes, and analyzes automatically when stopped; unsealed recordings from a crashed session can be recovered or discarded.
 - Audio inbox: watch folders and USB recorders; new audio imports, transcribes, and analyzes automatically.
 - Personal hotword vocabulary injected into transcription, with optional local LLM correction that never overwrites the original transcript.
 - Cross-record action items and open questions dashboard with completion tracking and evidence jumps.
@@ -98,6 +113,14 @@ With user authorization, different AI tools can retrieve the context needed for 
 
 The screenshots use synthetic demonstration data.
 
+### Home recording card
+
+![Home recording card: one click to record your Mac's microphone](docs/images/recording-home.png)
+
+### Analysis setup panel
+
+![Analysis setup panel: local one-click prepare / cloud with an API key](docs/images/analysis-setup.png)
+
 ### Evidence-backed knowledge chat
 
 ![Echo Memory knowledge chat](docs/images/knowledge-chat.png)
@@ -135,9 +158,31 @@ See the [MCP reference](docs/mcp.md) for tools and development configuration.
 
 ## Current boundary and direction
 
-The current release focuses on a single-user, single-device workflow. It does not currently provide real-time recording, automatic meeting joining, mobile or Windows apps, cloud sync, team collaboration, public APIs, or MCP writes.
+The current release focuses on a single-user, single-device workflow. In-app recording of your Mac's microphone is supported, but system output audio is not captured and transcription is not live during recording. Automatic meeting joining, mobile or Windows apps, cloud sync, team collaboration, public APIs, and MCP writes are not provided.
 
 The longer-term direction is to expand from traceable conversation memory into a personal memory infrastructure that can connect events, people, projects, questions, knowledge, decisions, and outcomes across time. That direction still requires product, privacy, and user-trust validation.
+
+## Direction
+
+Echo Memory is not defined by transcription or meeting summaries. Those are input and processing capabilities.
+
+The long-term product has four connected layers:
+
+1. **Personal Memory Layer**: shared, permissioned context so every AI does not need to learn the user from zero.
+2. **Cognitive Database**: evidence-backed records of knowledge, decisions, open questions, and how beliefs change.
+3. **Personal Memory OS**: one system for capture, understanding, organization, retrieval, and feedback.
+4. **Digital Twin Database**: a long-term, correctable model of what a person experienced, knows, values, and how they make decisions.
+
+The digital-twin direction is a product vision, not a claim that the current release can fully model a person.
+
+
+## Repository layout
+
+- `app/` — the Tauri application. `app/src/` is the React frontend (components, hooks, shared utilities); `app/src-tauri/src/` is the Rust backend (commands, database layer, native bridge); `app/src-tauri/migrations/` holds the database migrations; `app/tests/ui/` and `app/src-tauri/tests/` hold the frontend and backend test suites.
+- `docs/` — product documentation: `docs/mcp.md` (MCP reference), `docs/macos-signing.md` (signing and notarization), `docs/analysis-quality.md`, `docs/plans/` (design and planning notes), `docs/release-notes-*.md` (per-release notes, including v1.0.0), and `docs/images/` (screenshots used by the READMEs).
+- `benchmarks/` — performance benchmarks and sample clips.
+- `.github/` — CI workflow (`workflows/ci.yml`) and the bug-report issue template.
+- Root files — `README.md` / `README.zh-CN.md` (this introduction), `LICENSE` (Apache-2.0), `CONTRIBUTING.md`, `SECURITY.md`, `CITATION.cff`.
 
 ## Requirements
 
@@ -175,7 +220,9 @@ cargo test --features mcp-bin
 
 ## Project status
 
-Echo Memory v0.9.0 is the current public release. Download the latest build from [GitHub Releases](https://github.com/questionjie-max/echo-memory/releases). Source builds are supported. Distribution artifacts must be labeled truthfully according to their actual signing and Apple notarization status; this repository does not claim notarization unless the artifact passes the documented verification commands.
+Echo Memory v1.0.0 is the current public release. Download the latest build from [GitHub Releases](https://github.com/questionjie-max/echo-memory/releases). Source builds are supported. Distribution artifacts must be labeled truthfully according to their actual signing and Apple notarization status; this repository does not claim notarization unless the artifact passes the documented verification commands.
+
+Full v1.0.0 notes (highlights, verification status, distribution SHA-256 and notarization): [docs/release-notes-v1.0.0.md](docs/release-notes-v1.0.0.md) and the [v1.0.0 release page](https://github.com/questionjie-max/echo-memory/releases/tag/v1.0.0).
 
 Contributions are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening an issue or pull request, and never attach real audio, transcripts, databases, credentials, or private customer material to a public issue. Security reports should follow [SECURITY.md](SECURITY.md).
 

@@ -14,7 +14,7 @@
 
 > Running open models for your company? [**Tiyuvta**](https://tiyuvta.ai/services/) helps with model choice, deployment and optimization, and fine-tuning on your hardware or cloud account.
 
-Agents that "use a computer" normally take over *your* screen — they move your mouse, steal focus, and drive your logged-in browser. `agent-workspace-linux` gives the agent its **own** desktop instead: a headless X11 display with its own window manager, apps, clipboard, and browser. The agent launches apps, types, clicks, screenshots, and browses there; you can watch (and pause) through a small floating viewer. It speaks [MCP](https://modelcontextprotocol.io) over stdio, so it drops into Claude Code, Codex, and other MCP hosts.
+Agents that "use a computer" normally take over *your* screen — they move your mouse, steal focus, and drive your logged-in browser. `agent-workspace-linux` gives the agent its **own** desktop instead: a private X11 or native Wayland display with its own window manager or compositor, apps, clipboard, and browser. The agent launches apps, types, clicks, screenshots, and browses there; you can watch (and pause) through a small floating viewer. It speaks [MCP](https://modelcontextprotocol.io) over stdio, so it drops into Claude Code, Codex, and other MCP hosts.
 
 ## Why this project
 
@@ -99,6 +99,143 @@ agent-workspace-linux workspace observe --screenshot --output /tmp/ws.png
 agent-workspace-linux workspace stop
 ```
 
+`workspace start` and `workspace open-profile` accept `--session x11`,
+`--session kwin`, `--session gnome`, `--session i3`, `--session hyprland`, or
+`--session cosmic`.
+MCP and saved profiles use the same backend names, for example
+`"session": {"backend":"hyprland"}`. Explicit CLI/MCP input overrides the
+profile. Omitting both keeps the pinned Xvfb + Openbox default
+(`{"backend":"x11"}`).
+
+KWin sessions run a native Wayland virtual compositor directly. There is no
+Xvfb underneath KWin. Each workspace owns its Wayland socket, session D-Bus,
+settings, input and clipboard. KWin 6.6 or newer (including `kwin-common`),
+`libkscreen-bin` (`kscreen-doctor`), `wl-clipboard`, and access to a DRM render node are required;
+`doctor` reports their readiness separately from X11. This is KWin, not a full
+Plasma desktop shell.
+
+Hyprland uses a private KWin renderer and a separate Hyprland headless output,
+with native toplevel capture and authenticated XWayland. See
+[the Hyprland backend guide](docs/hyprland.md) for dependencies and its isolated
+acceptance probe.
+
+COSMIC sessions run a private native `cosmic-comp` under a software-only Weston
+headless parent. No host display, input device or GPU is used. COSMIC supports
+fractional output scaling and authenticated XWayland clients. See
+[COSMIC setup and isolation](docs/native-cosmic.md) for dependencies, its private
+launcher restrictions and its isolated acceptance probe.
+
+Use `--scale 1.5` with `--session kwin`, `gnome`, `hyprland` or `cosmic` for a
+150% output, or set `"scale":1.5` in the corresponding profile or MCP `session`
+object. On the native Wayland backends, width, height, window geometry and
+pointer coordinates stay in screenshot pixels. The KWin adapter converts between these
+pixels and KWin's logical coordinates. KWin aligns output sizes to logical
+pixels; status reports the effective size. GNOME, Hyprland and COSMIC use physical
+pixels, including at fractional output scales. Apps use native Wayland by default;
+rootless XWayland remains available for legacy clients. The existing viewer,
+IPC, permission ceiling and explicit Chrome profile import rules apply to every
+backend.
+
+i3 sessions use a private Xvfb display and i3 window manager at scale 1.
+The private i3 configuration has no launcher bindings, bar, or startup commands.
+Moving or resizing a tiled window makes it floating. Minimize uses the i3 scratchpad;
+show returns the window to the current workspace. Window capture leaves focus unchanged.
+Install `i3-wm` and the X11 dependencies, including ImageMagick `import`.
+`doctor` reports i3 readiness separately. Run `scripts/i3_smoke.py` against a built
+binary with `AGENT_WORKSPACE_BIN` to check the real private session and restricted apps.
+
+Sandboxed apps use private process namespaces and receive only the workspace
+display, an application bus without compositor methods, the accessibility bus,
+and, for a managed terminal, that terminal's own socket directory. Network-only
+profiles keep normal host file access but hide every workspace runtime and the
+host desktop IPC (session and system bus, X11 sockets, IBus). Unsandboxed apps
+and attached controllers such as computer-use-linux use the compositor control
+bus, as in a regular desktop session.
+Sandboxed apps also get a restricted Wayland socket. On Hyprland, KWin and
+COSMIC it is a filter that forwards only an allow-list of ordinary app globals,
+so capture, input injection, input method, toplevel and workspace management,
+layer shell, session lock, output control and clipboard-manager globals stay
+hidden, and binds of hidden names are refused. The daemon's own helpers keep
+the unfiltered socket.
+`scripts/sandbox_wayland_globals_smoke.py` checks this on each native backend.
+This covers Wayland only. Sandboxed apps still share the workspace's X11
+display (Xvfb or XWayland) and accessibility bus with its other apps, so do not
+run untrusted sandboxed apps next to unsandboxed apps or terminals in the same
+workspace.
+
+Managed terminal sessions end when their workspace stops, even after the terminal
+window has closed. Stale cleanup uses the saved launch and session identity.
+Verified terminal cleanup uses Linux pidfds. Older kernels without `SO_PEERPIDFD`
+use `pidfd_open` with process, session and exact socket-argument verification.
+If ownership cannot be verified, stop and cleanup preserve the runtime and report
+an error instead of signaling an unrelated process.
+
+### Native GNOME sessions
+
+`--session gnome` starts GNOME Shell and Mutter with a private headless output.
+GNOME Shell 50 or 51, matching Mutter libraries, `Xwayland`, `dbus-daemon`,
+`gsettings`, `bubblewrap`, and `timeout` are required. `doctor` reports GNOME readiness
+separately. Software rendering works without a GPU or parent compositor.
+
+```bash
+agent-workspace-linux workspace start --ack-hidden-workspace \
+    --session gnome --scale 1.5 --width 1200 --height 900
+```
+
+MCP and profiles accept `"session": {"backend":"gnome", "scale":1.5}`.
+Mutter validates scale against the chosen physical output mode. For example,
+1200x900 supports 150%; 960x720 does not. Unsupported combinations fail at
+startup. Geometry, input and screenshots use physical pixels throughout.
+GTK clients may use a larger integer buffer scale on fractional outputs.
+Native Unicode text requires a focused Wayland text-input field. A request
+that cannot be typed in full is rejected before any key is sent. Legacy
+editable fields (GTK, Qt, Chromium, Firefox, Electron) use the private
+accessibility bus, with client PID, focus, caret, selection and text readback
+checks. Xterm gets text through PRIMARY and its Shift+Insert binding: a
+short-lived X client owns PRIMARY, serves the text once to the xterm process
+only, then exits, which leaves PRIMARY empty. CLIPBOARD is not touched.
+Unsupported legacy fields return an error instead of reporting dropped
+Unicode characters as typed. Window screenshots paint the window offscreen
+and do not change focus or stacking.
+
+The session has a private session bus, accessibility bus and empty system bus.
+A bundled Shell extension exposes fixed native controls only to the workspace
+daemon. The Shell mode disables the overview, run dialog, settings launchers and
+unrelated extensions. Shell Eval and extension installation are denied on its
+bus. Apps launch through workspace policy; native Wayland and private XWayland
+clients retain the same permission ceiling, browser-profile consent and viewer
+controls.
+
+Build the binary and run `scripts/gnome_probe.sh` for the disposable Ubuntu 26.04
+acceptance checks. It uses software rendering with no host display, input device,
+system bus or GPU. It checks real GTK input at 100% and 150%, clipboard, window
+operations, physical screenshot dimensions, MCP and viewer IPC, private-bus
+restrictions, managed terminal cleanup, and native/XWayland apps under enforced
+mount and network isolation. Override `GNOME_PROBE_BIN` and
+`GNOME_PROBE_ARTIFACT_DIR` to select the binary and evidence directory.
+
+### Native KWin checks
+
+Build the binary, then run `scripts/kwin_probe.sh`. The disposable Ubuntu 26.04
+container checks actual 100% and 150% scaling, native Qt input and capture, MCP
+startup, viewer frames, denied desktop-service activation, and a legacy terminal
+with enforced mount and network isolation. It exposes one DRM render node and
+no host display, input device or session runtime. The container permits nested
+user namespaces so the bubblewrap checks can run.
+
+To test Computer Use Linux against the same desktop, build both projects and run:
+
+```bash
+KWIN_PROBE_BIN=/path/to/agent-workspace-linux \
+COMPUTER_USE_LINUX_BIN=/path/to/computer-use-linux \
+scripts/kwin_cul_probe.sh
+```
+
+This verifies native AT-SPI activation, global logical-coordinate clicks and
+client-local element fallback against a Qt window at actual 150% scale. Portal
+consent applies only to the disposable workspace. Both runners print their
+artifact directory and return nonzero on failure.
+
 ### Browser automation
 
 Browser commands need a workspace-owned Chrome with loopback DevTools. `open-browser`
@@ -144,7 +281,7 @@ In short: **by default the agent host owns permission**, a developer can **lock 
 
 ## Core concepts
 
-- **Hidden workspace** — a private `Xvfb` display + window manager + control socket. Apps launched into it attach to that display, not your session. Creating one requires `--ack-hidden-workspace` so it is never silent.
+- **Hidden workspace** — a private X11 or native Wayland display, window manager or compositor, and control socket. Apps launched into it attach to that display, not your session. Creating one requires `--ack-hidden-workspace` so it is never silent.
 - **Permission ceiling** — optional, declared in JSON (`network`, `mounts`, `apps`). When set, it is enforced for the life of the MCP process. Mount and network isolation are applied with [bubblewrap](https://github.com/containers/bubblewrap) when available.
 - **Profiles** — reusable workspace definitions (mounts, network mode, setup commands, startup apps), e.g. `profile template project-dev` or `browser-session`.
 - **Viewer** — a small GPUI window that shows workspace state and a live screen view, with pause / read-only / stop controls. It is not always-on-top by default.
@@ -174,7 +311,7 @@ The MCP exposes ~86 tools. To avoid dumping them all into the agent's context, i
 
 ## Features
 
-- Hidden X11 workspace with window listing, screenshots, keyboard/mouse input, clipboard, and per-app logs — all scoped to the workspace display.
+- Hidden X11 or native Wayland workspace with window listing, screenshots, keyboard/mouse input, clipboard, and per-app logs — all scoped to the workspace display.
 - Optional, daemon-enforced permission ceiling (network / mounts / app allowlist) via flag or `AGENT_WORKSPACE_PERMISSIONS`.
 - bubblewrap-backed mount and network isolation (`disabled`, `local_only`, `inherit_host`) when available.
 - Workspace-owned browser control over loopback CDP — discover targets, read pages, navigate, extract results.
@@ -184,7 +321,7 @@ The MCP exposes ~86 tools. To avoid dumping them all into the agent's context, i
 
 ## Limitations
 
-- **Linux only.** Targets an X11 (`Xvfb`) workspace; the viewer is validated on X11/Xwayland, with native Wayland still maturing.
+- **Linux only.** The viewer is validated on X11/Xwayland, with native Wayland still maturing.
 - **Pre-1.0.** Interfaces and tool schemas can change between versions.
 - **Single-user trust model.** The control socket is a same-uid Unix socket (mode 0600); there is no cross-user protection by design. Run as a dedicated user for multi-user isolation.
 - **Mount/network enforcement needs bubblewrap.** Without it, those policies are declared but not enforced (the runtime tells you which).

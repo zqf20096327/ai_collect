@@ -16,12 +16,13 @@
 
 [English | [日本語](https://github.com/AkihikoWatanabe/paper_notes/blob/master/README_ja.md) ]
 
-This repository is a manually curated collection of **AI-related papers and related resources**, such as blog posts, repositories, slides, and SNS posts.  
-All items are managed as **GitHub Issues**.
-Notes managed in GitHub Issues are dumped daily under `agent_docs/` and can be explored conversationally through an agent. See [Conversational Interface](#conversational-interface).
+This repository is a human-curated collection of AI research papers and related resources, including blog posts. The maintainer follows discussions on X every day to keep up with developments in AI. Each item is managed as a GitHub Issue.
 
-The primary purpose of this repository is to serve as a **personal study log and memory aid** for the maintainer.  
-Since the maintainer is Japanese, **paper notes are manually written in Japanese**, reflecting the maintainer’s own understanding and learning process.
+- **Curated from What's Being Discussed on X:** The collection focuses primarily on papers and resources that attract broad interest on X, while the maintainer's own interests also influence what gets added.
+- **Tagged for Discovery:** Tags are manually assigned to reflect the maintainer's interpretation of each item. Filter by tag to find related work and follow a topic across issues.
+- **Notes Based on the Maintainer's Understanding:** Some items include notes in Japanese reflecting the maintainer's understanding of the X posts and papers. These notes are tagged by content and focus.
+
+**All content stored in GitHub Issues is exported daily as XML files under `agent_docs/`.** An AI agent can use these files to answer questions across the collection.  See [Conversational Interface](#conversational-interface).
 
 ---
 
@@ -32,7 +33,7 @@ Each issue mainly contains the following information:
 - 🔗 Links to papers, blog posts, or related resources
 - 📄 Paper metadata and abstracts
 - 🌐 **Japanese** translations and summaries of abstracts
-- 📝 Notes based on the maintainer’s understanding
+- 📝 **Notes** based on the maintainer’s understanding
 - 🏷️ **Manually assigned labels** reflecting the maintainer’s interpretation
 - 📚 Useful external references
 
@@ -205,6 +206,9 @@ It returns a structured document explaining the literature on pretraining, based
 **2024.09**
 - I reorganized Issue notes into a blog-style format.  
 - The blog is available [here](https://akihikowatanabe.github.io/paper_notes/).
+
+**2022–Early 2023**:
+- Beginning to Systematically Track AI Research on Twitter (X).
 
 **2017.12.28**
 - I started this repository and created the first issue.

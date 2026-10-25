@@ -94,7 +94,7 @@ dsh plugin --profile web add dsh-zen-remote
 // ~/.dsh/profiles/desktop/package.json
 {
   "dependencies": {
-    "dsh-zen-remote": "^2.2.5"        // for local development: "link:/path/to/dsh-zen-remote"
+    "dsh-zen-remote": "^2.2.9"        // for local development: "link:/path/to/dsh-zen-remote"
   }
 }
 ```
@@ -319,7 +319,7 @@ The `push_notify` tool. The model should call it when you explicitly asked to be
 
 **Desktop client (2.2 additions)**
 
-- Dragging files into a remote session attaches them by **upload**: the desktop app's same-machine shortcut (a dragged file keeps its disk path and would become an `@absolute path` mention naming a file on YOUR machine, unreadable on the server) is intercepted in the browser, and the guard uploads each file ITSELF through the relay — the bytes land in the SERVER session's workspace (`.dsh-uploads/`, the same directory the attach button uses) and the `@.dsh-uploads/<name>` mention is inserted into the composer for you. Dragging a **folder** into a remote session is not supported: the drop is stopped with a short on-screen notice. Local sessions are untouched — the shortcut keeps working there — and the guard's status is visible in the settings page diagnostics.
+- Dragging files into a remote session attaches them by **upload**: the desktop app's same-machine shortcut (a dragged file keeps its disk path and would become an `@absolute path` mention naming a file on YOUR machine, unreadable on the server) is intercepted in the browser and the drop is re-shaped into an ordinary upload — the same relay path as the attach button, so the server session gets the bytes. Dragging a **folder** into a remote session is not supported: the drop is stopped with a short on-screen notice. Local sessions are untouched — the shortcut keeps working there — and the guard's status is visible in the settings page diagnostics.
 
 In depth: [interface](docs/interface.md) · [public access + relay protocol](docs/remote-access.en.md)
 
@@ -360,6 +360,8 @@ What a paired device is trusted with, stated plainly:
 ## Known issues
 
 **iOS 26.x standalone PWA viewport shrinkage**: after adding to the home screen, the viewport loses a status-bar's height at the bottom; an ordinary Safari tab is fine. This is an iOS defect — the missing region is outside the document and CSS cannot reach it. The plugin ships three layers of mitigation (light manifest background, safe-area compensation, forced reflow) which reduce it without guaranteeing a fix. Only quitting and reopening the whole app restores it fully.
+
+**iOS 26+ standalone PWA system top progressive blur**: when opened from the home screen on iOS 26+, WebKit draws a system-level scroll-edge progressive blur (`WKScrollPocket` / `UIScrollEdgeEffect`) across the top ~95px of the window (status bar plus the upper half of the top bar). Because it is an OS compositor layer outside the DOM, page CSS cannot remove it directly; entering a session and returning to the session list clears it on the list page. Android and regular Safari tabs are unaffected.
 
 **In a few environments the soft keyboard is completely invisible to the browser, and the lift falls back to an estimate**: in some combinations the system never tells the page the keyboard's height (visualViewport and the VirtualKeyboard API both fail; both ruled out by measurement). The fallback probes for ~1.2s after focus and lifts the input box by an estimated height when the keyboard is judged invisible. If the lift is visibly off, tune `keyboardLiftRatio` / `keyboardLiftMaxPx` / `keyboardSafetyPadPx` in the settings page. Normal environments never take this path.
 

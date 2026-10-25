@@ -170,7 +170,7 @@ In Xcode, choose **File → Add Package Dependencies**, enter the repository URL
 and add the **XmaxSDK** product to your application target:
 
 ```text
-https://github.com/XingMai/XmaxSDK-MacOS.git
+https://github.com/Xmax-AI/XmaxSDK-MacOS.git
 ```
 
 ### CocoaPods
@@ -186,8 +186,8 @@ use_frameworks! :linkage => :static
 
 target 'YourApp' do
   pod 'XmaxSDK',
-      :git => 'https://github.com/XingMai/XmaxSDK-MacOS.git',
-      :tag => '1.0.1'
+      :git => 'https://github.com/Xmax-AI/XmaxSDK-MacOS.git',
+      :tag => '1.0.2'
 end
 
 post_install do |installer|
@@ -208,7 +208,7 @@ pod install --repo-update
 ### Manual
 
 Download
-[`XmaxSDK-1.0.1.xcframework.zip`](https://github.com/XingMai/XmaxSDK-MacOS/releases/download/1.0.1/XmaxSDK-1.0.1.xcframework.zip),
+[`XmaxSDK-1.0.2.xcframework.zip`](https://github.com/Xmax-AI/XmaxSDK-MacOS/releases/download/1.0.2/XmaxSDK-1.0.2.xcframework.zip),
 then follow the [manual integration guide](./Materials/installation.md#manual-integration)
 to add the required dependencies and configure your Xcode target.
 
@@ -254,7 +254,7 @@ let realtime = client.createRealtimeManager(
 
 let localStream = try await realtime.createLocalCameraStream()
 
-let videoView = XmaxRealtimeVideoView(
+let videoView = XmaxRealtimeDualVideoView(
     localTrack: localStream.videoTrack,
     videoContentMode: .fill
 )
@@ -275,17 +275,23 @@ let remoteStream = try await realtime.startGeneration(
 videoView.remoteTrack = remoteStream.videoTrack
 ```
 
-The view displays a local camera preview until the first generated frame arrives.
+`XmaxRealtimeDualVideoView` keeps local preview running underneath the generated
+result, fades in the result after its first frame, and restores local preview when
+`remoteTrack` is cleared. To display a single local or remote track, use
+`XmaxRealtimeVideoView(track:)`.
+
+The Dual views expose `remoteVideoFadeInDuration` (default `0.3` seconds). Set it to
+`0` for an immediate switch; this option is available in both AppKit and SwiftUI.
 
 <br>
 
 ### Using SwiftUI
 
-Use `XmaxRealtimeVideo` as your primary SwiftUI view. Store the local and remote
+Use `XmaxRealtimeDualVideo` as your primary SwiftUI view. Store the local and remote
 tracks in observable state, updating them dynamically as streams become available:
 
 ```swift
-XmaxRealtimeVideo(
+XmaxRealtimeDualVideo(
     localTrack: localTrack,
     remoteTrack: remoteTrack,
     videoContentMode: .fill
@@ -293,6 +299,7 @@ XmaxRealtimeVideo(
 ```
 
 See the [SwiftUI guide](./Materials/usage.md#appkit-and-swiftui) for state binding.
+Use `XmaxRealtimeVideo(track:)` when displaying one local or remote track.
 
 <br>
 
@@ -305,13 +312,13 @@ pulsing rings, and fading tail as the Web and iOS SDKs. Local previews do not se
 trajectories.
 
 ```swift
-videoView.isInteractionEnabled = true // XmaxVideoView or XmaxRealtimeVideoView
+videoView.isInteractionEnabled = true // XmaxRealtimeVideoView or XmaxRealtimeDualVideoView
 videoView.isMirrored = true           // Mirrors the result; pointer coordinates keep their displayed orientation
 videoView.trajectoryRenderer = nil    // Built-in effect
 ```
 
 Use `isInteractionEnabled`, `isMirrored`, and `trajectoryRenderer` in the SwiftUI
-`XmaxVideo` and `XmaxRealtimeVideo` initializers as well. To customize visuals,
+`XmaxRealtimeVideo` and `XmaxRealtimeDualVideo` initializers as well. To customize visuals,
 implement `TrajectoryEffectRendering` with an `NSView` and its began, moved, ended,
 and reset callbacks. The SDK continues to own input collection, coordinate mapping,
 and signaling independently of the renderer.
@@ -331,7 +338,7 @@ input stream or starting generation.
 | Listener | Purpose |
 | --- | --- |
 | `setStateListener` | Observe pipeline states and termination reasons during real-time generation. |
-| `setRemoteVideoFrameListener` | Receive generated frames for recording or custom processing. |
+| `setRemoteMediaFrameListener` | Receive remote PCM and processed video with shared stream identity and timestamps. |
 | `setNetworkQualityListener` | Monitor uplink and downlink network quality. |
 | `setPerformanceAlarmListener` | Detect device performance limitations or recovery, with a suggested video format when available. |
 
@@ -350,8 +357,9 @@ Handle errors thrown by async calls with `do/catch`. Failures that end the realt
 workflow are also available through `state.reason` after cleanup completes.
 
 For camera input, bind the returned video track to a preview view. The SDK enters
-`ready` after it has received a valid frame and the preview view is bound; observe
-this through `setStateListener`.
+`ready` after native camera capture has started and the preview view is bound;
+observe this through `setStateListener`. Agora renders the local preview directly,
+without routing local pixels through the raw video frame observer.
 
 <br>
 
@@ -397,7 +405,7 @@ this through `setStateListener`.
 ## Contact us
 
 For bug reports and feature requests, please open a
-[GitHub Issue](https://github.com/XingMai/XmaxSDK-MacOS/issues). For integration
+[GitHub Issue](https://github.com/Xmax-AI/XmaxSDK-MacOS/issues). For integration
 assistance and technical support, contact us at [sdk@xmax.ai](mailto:sdk@xmax.ai).
 
 <br>

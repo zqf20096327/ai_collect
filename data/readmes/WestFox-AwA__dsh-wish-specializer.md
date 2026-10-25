@@ -1,10 +1,12 @@
 # 许愿特化器 · Wish Specializer
 
-**v0.9.0-beta-1** · DSH Web 插件 · 包名 `@dsh-external/dsh-wish-specializer`
+**v0.9.0-stable** · DSH Web 插件 · 包名 `@dsh-external/dsh-wish-specializer`
 
 **中文** ｜ [English](README.en.md)
 
 > 把一句话的愿望，特化成工作 AI 真正能照着做的要求。
+
+> 如果你（或你的 AI）要**研究这个插件的实现与证据**，请从 [文档索引](docs/INDEX.md) 进入：那里标明了哪些是现行契约、哪些只是历史。
 
 ---
 
@@ -45,7 +47,28 @@
 | 交互与状态 | 能怎么操作、悬停/点击/拖拽给什么反馈、边界在哪 |
 | 验收口径 | 一句话说清"怎样算做到"，省得来回返工 |
 
-补充是**方向性要求**，不是实现步骤、不写代码、不写数值参数——具体怎么做交给工作 AI。
+## 注入文现在长这样
+
+三段，都是**方向性的、大概的指导（许愿）**，具体怎么做交给工作 AI：
+
+```text
+【制作建议】
+1. ……
+2. ……
+
+【临时脚手架建议】
+1. ……
+2. ……
+
+【Ask用户(ask_user_question)】
+1. ……
+```
+
+- **制作建议**：这一轮真正决定成品水平的方向（审美、结构、材质、光影、交互、可信度）；
+- **临时脚手架建议**：为了让工作 AI 做得更准、更省，值得临时开发或复用的**制作与自反馈能力**——例如让局部修改能立刻拿到可比较的结果，而不是反复截图再重读整段代码。由优化 AI 结合目标自己判断，**不是固定模板**，也不需要时那就留空；
+- **Ask用户**：只列确实需要你确认的问题，**不给选项**——工作模型会自己组织合适的选项来问你。
+
+三段合计预算 **3000 token**（是上限，不必填满）。这些建议值得优先考虑，但**不是硬性要求**，也不覆盖你的原话。
 
 ## 30 秒用起来
 
@@ -60,17 +83,16 @@
 | 档位 | 补充程度 | 解释包预算 | 最多澄清几问 |
 |---|---|---|---|
 | 关闭 | 只记录、不补充 | — | — |
-| 轻度 | 2–3 条最影响成品的方向 | 700 字 | 1 |
-| 标准 | 4–6 条 + 一句验收口径 | 1200 字 | 2 |
-| 重度 | 把决定成败的几条写透 + 阶段建议 | 2000 字 | 3 |
+| 轻度 | 只点最有价值的方向，不展开例子 | 3000 token | 1 |
+| 标准 | 关键方向可带一个更小的现象作例子 | 3000 token | 2 |
+| 重度 | 更深入地想清上限与脚手架消耗 | 3000 token | 3 |
 
-档位只放宽"补多少 / 问几个"，**不放大你的决策权**。
+档位改变的是展开程度与提问配额，**三段共享同一个 3000 token 上限**，也不放大你的决策权。
 
 ## 面板里还有什么
 
 - **顾问**：另起一个只读模型独立复核，结论是「必须执行 / 待补」这类可执行方向；
 - **权限**：审查（先给出处与依据，你确认）/ 自动（直接生效）；
-- **协作基调**：普通 / 硬邦邦；
 - **英文模式**：同一轮额外返回忠实英文任务；
 - **模型与思考档位**：解释层用哪个模型、思考强度多大；
 - **上下文**：读最近几回合，或读你手上保留的全部；
@@ -83,7 +105,7 @@
 安装来源只有一个：**本仓库的 Release 附件**（`.tgz`）。
 
 ```powershell
-$v = '0.9.0-beta-1'; $d = "$env:USERPROFILE\Downloads"
+$v = '0.9.0-stable'; $d = "$env:USERPROFILE\Downloads"
 Invoke-WebRequest "https://github.com/WestFox-AwA/dsh-wish-specializer/releases/download/v$v/dsh-external-dsh-wish-specializer-$v.tgz" -OutFile "$d\dsh-external-dsh-wish-specializer-$v.tgz"
 Invoke-WebRequest "https://github.com/WestFox-AwA/dsh-wish-specializer/releases/download/v$v/SHA256SUMS-$v.txt" -OutFile "$d\SHA256SUMS-$v.txt"
 Get-Content "$d\SHA256SUMS-$v.txt"     # 与下载到的 tgz 比对 sha256
@@ -103,13 +125,13 @@ dsh --profile po061
 | 使用帮助（面板里的 `?` 同源） | [`po06/HELP-0.6.md`](po06/HELP-0.6.md) |
 | 详细安装 / 自检 / 排障 | [`po06/README.md`](po06/README.md) |
 | 更新日志 | [`CHANGELOG.md`](CHANGELOG.md) |
-| 人工验收清单 | [`po06/HUMAN-TEST.md`](po06/HUMAN-TEST.md) |
+| 历史人工验收清单 | [旧版清单](docs/legacy/po06-HUMAN-TEST.md)（不代表当前验收） |
 | 发版规程 | [`docs/RELEASING.md`](docs/RELEASING.md) |
 | 旧版本（0.1–0.6） | [`old/`](old/README.md) |
 
 ## 版本与证据
 
-- 当前：**v0.9.0-beta-1**（开发中）；上一个稳定版：v0.8.4-stable
+- 当前：**v0.9.0-stable**（正式版）；上一个稳定版：v0.8.4-stable
 - 全部套件：`node po06/scripts/run-suites.mjs`；发版门：`node po06/scripts/check-release.mjs`
 - 兼容：`dsh-0.1.7-rc.2`（实测运行）、`dsh-0.2.0-rc.2`（静态契约核对通过）
 - 作者：啃轮胎的西狐 · 💬 QQ 群 **1121399051**（版本公告 / 安装帮助）

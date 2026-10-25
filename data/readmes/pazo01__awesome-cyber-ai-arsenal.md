@@ -441,10 +441,18 @@ Everything is split into **🔴 Offensive (Red Team)**, **🔵 Defensive (Blue T
 
 > For offline/private research where cloud models refuse security tasks. **Use responsibly and legally.**
 
+**Notable creators:** [huihui-ai](https://huggingface.co/huihui-ai) · [dealignai](https://huggingface.co/dealignai) · [audnai](https://huggingface.co/audnai) · [HauhauCS](https://huggingface.co/HauhauCS)
+
 | Resource | Description |
 | --- | --- |
 | [heretic](https://github.com/p-e-w/heretic) | Automatic "decensoring" of transformer models. |
-| [Huihui-GLM abliterated](https://huggingface.co/huihui-ai) | Abliterated / uncensored GLM model weights (GGUF). |
+| [Huihui-CyberStrike-OffSec-35B-abliterated](https://huggingface.co/huihui-ai/Huihui-CyberStrike-OffSec-35B-abliterated) | 35B purpose-built for offensive-security / red-team reasoning (huihui-ai). |
+| [Huihui-GLM-5.3-Flash-abliterated-GGUF](https://huggingface.co/huihui-ai/Huihui-GLM-5.3-Flash-abliterated-GGUF) | GLM 5.3 Flash, abliterated, GGUF for llama.cpp/Ollama (huihui-ai). |
+| [Huihui-GLM-5.2-abliterated-GGUF](https://huggingface.co/huihui-ai/Huihui-GLM-5.2-abliterated-GGUF) | GLM 5.2, abliterated, GGUF (huihui-ai). |
+| [Huihui-Kimi-K2.7-Code-abliterated-GGUF](https://huggingface.co/loxxxxx/Huihui-Kimi-K2.7-Code-abliterated-GGUF) | Kimi K2.7 Code abliterated, code-focused — GGUF repack by loxxxxx of a huihui-ai model. |
+| [Qwen3.5-VL-397B-A17B-UNCENSORED-JANG_1L](https://huggingface.co/dealignai/Qwen3.5-VL-397B-A17B-UNCENSORED-JANG_1L) | Large uncensored vision-language MoE, 397B/17B active (dealignai). |
+| [penclaw-GLM-5.3-abliterated](https://huggingface.co/audnai/penclaw-GLM-5.3-abliterated) | GLM 5.3 abliterated variant (audnai). |
+| [Qwen3.8-27B-Uncensored-HauhauCS-Aggressive-MTP-GGUF](https://huggingface.co/HauhauCS/Qwen3.8-27B-Uncensored-HauhauCS-Aggressive-MTP-GGUF) | 27B uncensored Qwen, aggressive tune with multi-token prediction, GGUF (HauhauCS). |
 
 ### AI Security Frameworks & Knowledge
 

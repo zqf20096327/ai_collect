@@ -1,8 +1,8 @@
 <div align="center">
-  <img src="web/public/memdoor-logo.png" alt="Memdoor" width="128" height="128">
+  <img src="web/public/icon-512.png" alt="" width="72" height="72">
   <h1>Memdoor</h1>
-  <p><strong>Your daemon agents on every door.</strong><br>A coding agent whose runs live on a gateway you own, and whose multi-step jobs are files in the repo, run again without a prompt.</p>
-  <p>Start it from CI, a schedule or a shell. Finish it from your phone or a window. Each step is checked by its output, and the run stops where only you decide.</p>
+  <p><strong>Your daemon agents on every door.</strong><br>A lightweight coding and automation agent in a single CLI binary. Run it locally or connect over SSH to another machine — no Docker or Python required. Work interactively from a terminal, your IDE or phone, or start a run from a shell script, CI or a schedule and finish it from any of those, on a gateway you own, using your own key.</p>
+  <p>One binary to deploy. A headless-first CLI. Multi-step jobs kept as files in your repo, with checks, approval gates and resume. Less of your token bill, through a decision model in front of the chat model.</p>
   <p>
     <a href="LICENSE"><img alt="Apache 2.0" src="https://img.shields.io/badge/license-Apache%202.0-blue"></a>
     <a href="https://github.com/guregodevo/memdoor/actions/workflows/lint.yml"><img alt="CI" src="https://github.com/guregodevo/memdoor/actions/workflows/lint.yml/badge.svg"></a>
@@ -41,6 +41,12 @@ way (Anthropic's terms); Claude needs an API key.
 No money on a key yet? A free OpenRouter account and `/model
 nvidia/nemotron-3-super-120b-a12b:free` run a real session: 50 requests a day,
 and the free hosts train on what they are sent, so a trial, not private code.
+Or no key at all: `memdoor connect local` finds a model running on this machine
+([janis](https://github.com/guregodevo/janis), Ollama, llama.cpp, LM Studio),
+and nothing leaves it. janis is ours: one Go server that runs the open models on
+a Mac's GPU through MLX or on an NVIDIA box through CUDA, serves chat and the
+decision model with no key, and runs Qwen3-Coder-30B-A3B on a $0.71-an-hour
+Google L4; `memdoor --gateway ssh://you@box connect local` makes that box yours.
 
 <p align="center"><img src="docs/img/memdoor-window.png" alt="The window: a task typed, the files read and patched, the tests run, and the receipt line: checked, 2 files changed, tests PASS" width="880"></p>
 
@@ -120,12 +126,20 @@ Git Bash when it is installed, otherwise PowerShell). One binary, installed to
 ([`scripts/install.sh`](scripts/install.sh)) verifies the SHA-256 of what it
 downloads.
 
+From a clone, with Go 1.25:
+
+```bash
+git clone https://github.com/guregodevo/memdoor && cd memdoor
+make build                             # ./memdoor, stamped with the tag it was built from
+cp memdoor ~/.local/bin/               # or anywhere on your PATH
+```
+
 ## In the window
 
 | Command | What it does |
 |---|---|
 | `/model` | Which model answers: the agent's ladder (cheapest rung first), or pin any model of your providers, with list prices |
-| `/connect` | Add a provider: OpenRouter, Anthropic, OpenAI, Gemini, DeepSeek, Baseten, Groq, xAI, any OpenAI-compatible endpoint, your company's AI gateway; `/connect chatgpt` signs in with a ChatGPT Plus/Pro plan, no key |
+| `/connect` | Add a provider: OpenRouter, Anthropic, OpenAI, Gemini, DeepSeek, Baseten, Groq, xAI, any OpenAI-compatible endpoint, your company's AI gateway; `/connect local` a runtime on this machine or the box (Ollama, llama.cpp, janis), no key; `/connect chatgpt` signs in with a ChatGPT Plus/Pro plan, no key |
 | `/workflow` | The project's workflows and runs; enter opens a run's graph, `a` approves a gate, `/workflow:<name>` runs one |
 | `/usage` | This month on your key, per model, and what the decision model kept out of the bill |
 | `/remote` | This conversation on your phone: a link and a QR code, the terminal itself, end-to-end encrypted |

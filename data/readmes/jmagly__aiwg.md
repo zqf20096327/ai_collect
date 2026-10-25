@@ -25,10 +25,10 @@ me only for choices you cannot safely determine.
 ```
 
 The installer detects old, broken, duplicate, and development-mode installs,
-then guides you through repair or update. It deploys the preferred complete
-system with one self-verifying `aiwg use all` command. That command refreshes
-the indices, regenerates project context, verifies the resulting deployment,
-and reports whether a provider reload is actually required.
+then guides you through repair or update. Once the CLI is healthy, guided
+setup records an interview plan, lets you review it, and applies the selected
+frameworks and integrations through the existing deployment owners. The apply
+report distinguishes core readiness from optional integration failures.
 
 For long-running agents that need an isolated executor, optionally install AIWG Cockpit with a self-hosted Agentic
 Sandbox executor you control and audit:
@@ -50,15 +50,21 @@ If you prefer to install manually:
 ```bash
 npm i -g aiwg
 cd /path/to/your/project
-aiwg use all --provider <provider>
+aiwg setup --scope project --providers <provider>
+aiwg setup --review
+aiwg setup --apply
 ```
 
 Replace `<provider>` with your AI tool's name, such as `claude`, `codex`,
 `copilot`, `cursor`, `omp`, or `pi`.
 
-The final command deploys, indexes, connects, verifies, and reports one outcome.
-The standalone index, regenerate, status, and doctor commands remain available
-for advanced maintenance and troubleshooting; they are not extra install steps.
+The interview saves a plan without changing provider configuration. Review is
+read-only; apply asks for confirmation and reports the verified outcome. Optional
+Jev decision offload and direct workers require explicit opt-in. Repeating apply
+resumes unfinished actions and leaves completed actions alone. See the
+[guided setup reference](docs/getting-started/guided-setup.md) for headless flags,
+credential references, scope choices, and recovery. For a direct complete-system
+deployment, `aiwg use all --provider <provider>` remains available.
 
 For the complete beginner path and provider-name table, see
 [Install, Connect, and Verify](docs/getting-started/install-connect-verify.md).
@@ -1646,9 +1652,4 @@ See [cross-platform overview](docs/integrations/cross-platform-overview.md) for 
 | Muse Code | `aiwg use all --provider muse` | `AGENTS.md` | `.agents/skills/` project; XDG user root at deploy time | Stable; no aliases. See [Muse quickstart](docs/integrations/muse-quickstart.md). |
 | Oh My Pi | `aiwg use all --provider omp` | `.omp/AGENTS.md` | Agents, prompts, rules, skills | Dedicated OMP quickstart: [Oh My Pi quickstart](docs/providers/omp.md). |
 | Pi Coding Agent | `aiwg use all --provider pi` | `AGENTS.md` | Agent Skills, prompt templates, trust-gated extension bridge | Experimental; see [Pi quickstart](docs/integrations/pi-quickstart.md). |
-| Antigravity | `aiwg use all --provider antigravity` | `AGENTS.md` and `.agents/` | Agents, skills, indexed commands, MCP config when enabled | See [Antigravity provider docs](docs/providers/antigravity.md). |
-| Generic Markdown | `aiwg use all --provider generic` | `AIWG.md` / `WORKSPACE.md` | Markdown instructions | Use when a provider reads repo docs but has no dedicated integration. |
-
-For CI jobs, [build verification](docs/integrations/build-verify.md) checks
-deployment and provider discovery before the provider runs a task. For routines,
-teamma
+| Antigravity | `aiwg use all --provider antigravity` | `AGENTS.md` and `.agents/` | Agents, skills, indexed commands, MCP config when enabled | See [Antigravity provider docs](docs/provid

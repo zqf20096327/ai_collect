@@ -815,6 +815,8 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
   - Answer: [How does speculative LLM generation start replying before the user finishes?](https://outcomeschool.com/blog/speculative-generation-in-voice-agents)
 - What are filler phrases in a voice agent, and how do they hide the latency of a tool call?
   - Answer: [How do filler phrases hide latency in a voice agent?](https://outcomeschool.com/blog/filler-phrases-in-voice-agents)
+- How do you handle a slow or long-running tool call in a voice agent?
+  - Answer: [How does a voice agent hide the delay of a slow tool call?](https://outcomeschool.com/blog/slow-tool-calls-in-voice-agents)
 - How do you handle barge-in (user interruptions) in a voice agent?
   - Answer: [Design a Real-Time Voice AI Agent](https://outcomeschool.com/blog/design-a-real-time-voice-ai-agent), [What is turn-taking in a voice AI agent?](https://outcomeschool.com/blog/what-is-turn-taking-in-a-voice-ai-agent) and [What is barge-in in a voice AI agent?](https://outcomeschool.com/blog/what-is-barge-in-in-a-voice-ai-agent)
 - Cascaded ASR + LLM + TTS vs native speech-to-speech models: what are the trade-offs?

@@ -2,23 +2,27 @@
 
 **Share the LLMs on your GPUs through one IP address, in three steps, and run them fast.**
 
-Goethe turns a Linux machine with an NVIDIA GPU into your own OpenAI-compatible API. Install it, add a model, and point your apps, your team or your other machines at one address. Your prompts, your data and your models stay on hardware you control.
+Goethe turns a Linux machine with an NVIDIA GPU into your own API, compatible with OpenAI, Anthropic and LiteLLM clients. Install it, add a model, and point your apps, your team or your other machines at one address. Your prompts, your data and your models stay on hardware you control.
 
 ```bash
-# 1. Install
 curl -fsSL https://meshapplied.com/install.sh | bash
-
-# 2. Start Goethe and load a model
-goethe up
-goethe install Qwen/Qwen3-8B --load
-
-# 3. Share it
-goethe configure api                  # this machine only, your VPN (recommended), or a public address
-goethe key create --name my-laptop    # one key per app or person
-goethe get api                        # the address to give your apps
+goethe start
 ```
 
-Anything that speaks the OpenAI API can use it right away: the OpenAI SDKs, LangChain, LlamaIndex, Open WebUI, coding assistants, or plain `curl`.
+`goethe start` starts Goethe and walks you through three steps: install a model, serve it through the API, and configure who can reach it. If you prefer plain commands, these do the same:
+
+```bash
+# 1. Start Goethe and load a model
+goethe up
+goethe install --model Qwen/Qwen3-8B --load
+
+# 2. Share it
+goethe configure api                 # this machine only, your VPN (recommended), or a public address
+goethe key --create my-laptop        # one key per app or person
+goethe api                           # the address to give your apps
+```
+
+Anything that speaks the OpenAI, Anthropic or LiteLLM API can use it right away, all at the same address: the OpenAI and Anthropic SDKs, LiteLLM, LangChain, LlamaIndex, Open WebUI, coding assistants, or plain `curl`.
 
 ```python
 from openai import OpenAI
@@ -34,7 +38,7 @@ print(reply.choices[0].message.content)
 ## Why Goethe
 
 - **Three steps, one address.** Every model you load is served at the same URL; a request picks its model by name.
-- **Fast.** Models run on SGLang, with continuous batching, prefix caching and CUDA graphs. Goethe adds its own NVFP4 kernels for Blackwell and Ampere GPUs, so 4-bit models use about a quarter of the memory of the full-precision version and stay quick.
+- **Fast.** Models run on SGLang, with continuous batching, prefix caching and CUDA graphs. Goethe adds its own NVFP4 kernels for Blackwell, Hopper, Ada and Ampere GPUs, so 4-bit models use about a quarter of the memory of the full-precision version and stay quick.
 - **Private by default.** Nothing can reach the API until you allow it, and every client needs its own key. You can rate-limit, expire, scope or revoke keys at any time.
 - **Fits your network.** Serve on this machine only, over Tailscale, WireGuard or ZeroTier, or on a public IP. `goethe configure api` walks you through the choice.
 - **Many models, many GPUs.** Run several models side by side, split large models across GPUs, and keep other GPU software running next to Goethe.
@@ -44,10 +48,12 @@ print(reply.choices[0].message.content)
 
 - Linux on x86_64 or ARM64.
 - An NVIDIA GPU:
-  - Blackwell: GeForce RTX 5090, RTX PRO 6000 Blackwell, or DGX Spark (GB10);
-  - or Ampere with compute capability 8.6: GeForce RTX 3090, RTX A6000, and similar.
-- NVIDIA driver 580 or newer.
-- The CUDA 13.0 toolkit, used to build GPU kernels on the first model load ([install steps](docs/user-guide.md#install)).
+  - Blackwell: GeForce RTX 5090, RTX PRO 6000 Blackwell, DGX Spark (GB10), B200 or B300;
+  - Hopper: H100, H200 or GH200;
+  - Ada: GeForce RTX 4090, RTX 6000 Ada, L40S or L4;
+  - or Ampere: A100, RTX A6000, GeForce RTX 3090, and similar.
+  - GPUs of different kinds can share one machine; each model runs on GPUs of one kind.
+- NVIDIA driver 580 or newer. That is all: Goethe brings its own CUDA compiler, and the installer sets up the driver, a C++ compiler and the other tools it needs when they are missing (it asks first).
 - Enough GPU memory for your model. `goethe recommend` lists the models that fit your machine.
 
 Details on [supported hardware, model families and formats](docs/user-guide.md#what-goethe-supports) are in the user guide.
@@ -72,3 +78,5 @@ Our models are on [Hugging Face](https://huggingface.co/meshapplied) and at [mes
 ## License
 
 Apache-2.0 for this repository. The license of each model you serve still applies.
+
+Goethe is built on open-source software, notably [SGLang](https://github.com/sgl-project/sglang) (Apache-2.0, shipped in a modified build), PyTorch, FlashInfer, Triton, Hugging Face Transformers, uv and nginx, and installs NVIDIA's CUDA libraries under NVIDIA's license. [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) lists every component and its license; the installer places it, with the full license texts, in `$GOETHE_HOME`.

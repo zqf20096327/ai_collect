@@ -26,7 +26,7 @@ The most intuitive and efficient MCP Server for Blender. Control Blender entirel
 
 ## Key Features
 
-- **[217 tools](https://blenderwright.holdmybeer.gg/)** across 31 modules covering every major Blender domain: modeling, mesh editing, materials, shader nodes, lighting, camera, animation, rendering, sculpting, UV mapping, physics, geometry nodes, rigging, curves, sweeps along a path, 3D-print checking, annotations, collections, file I/O, Bool Tool, viewport control, mesh quality analysis, and extension suggestions
+- **[262 tools](https://blenderwright.holdmybeer.gg/)** across 32 modules covering every major Blender domain: modeling, mesh editing, materials, shader nodes, lighting, camera, animation, rendering, sculpting, UV mapping, physics, geometry nodes, rigging, curves, sweeps along a path, 3D-print checking, annotations, collections, file I/O, Bool Tool, viewport control, mesh quality analysis, and extension suggestions
 - **13 expert prompts**: topology best practices, real-world scale references, lighting principles, studio setup, character basemesh workflow, PBR material guide, auto-critique feedback loop, and more
 - **Visual feedback loop**: fast viewport screenshots via OpenGL render (~ms, not seconds) with auto-critique prompts that guide the LLM to check its own work
 - **Mesh quality analysis**: structured reports covering non-manifold edges, loose vertices, zero-area faces, duplicate vertices, and wire edges
@@ -239,13 +239,13 @@ blenderwright includes 13 MCP prompts that guide the LLM toward professional-qua
 ## Tool Domains
 
 <details>
-<summary><strong>All 217 tools across 31 modules</strong></summary>
+<summary><strong>All 262 tools across 32 modules</strong></summary>
 
 Full reference with every parameter: **[blenderwright.holdmybeer.gg](https://blenderwright.holdmybeer.gg/)**
 
 | Domain | Tools | Highlights |
 |--------|-------|-----------|
-| Scene | 6 | Get scene info, set frame range, manage scenes, suggest helpful extensions |
+| Scene | 7 | Get scene info, set frame range, units, manage scenes, suggest helpful extensions |
 | Objects | 15 | Create primitives, duplicate, parent, join, visibility, origin, convert, auto-smooth |
 | Transforms | 6 | Position, rotation (euler/quat), scale, apply, snap |
 | Modeling | 13 | Modifiers, booleans, subdivide, extrude, bevel, loop cut, bridge edge loops |
@@ -254,25 +254,26 @@ Full reference with every parameter: **[blenderwright.holdmybeer.gg](https://ble
 | Mesh Quality | 3 | Analyze mesh defects: non-manifold, loose verts, zero-area faces, duplicates and repair them; decimate to reduce polycount |
 | Bool Tool | 4 | Auto union, difference, intersect, slice (via Blender's Bool Tool addon) |
 | Materials | 25 | Principled BSDF, procedural and raster textures, textures, blend modes, shader node graph (add/connect/remove nodes, including 5.1 Raycast node) |
-| Lighting | 7 | Point/sun/spot/area lights, HDRIs, light rigs, shadows |
+| Lighting | 9 | Point/sun/spot/area lights, HDRIs, light rigs, shadows, Blender's built-in HDRIs, HDRI rotation, procedural sky with sun, light linking |
 | Camera | 6 | Create, aim, DOF, viewport capture, active camera |
-| Animation | 8 | Keyframes, interpolation, frame range, follow path |
+| Animation | 16 | Keyframes, interpolation, frame range, follow path, drivers with Python-free simple expressions, keyframe any property (material colours, light power, world, lens), actions and NLA strips (share, push down, repeat, layer), F-curve modifiers (cycles, noise, stepped, smooth) |
 | Rendering | 7 | Engine, resolution, samples, output format, render, EEVEE light path intensity |
-| Render settings | 7 | Color management (AgX, looks, exposure), film transparency, denoising, Cycles sampling and light paths, motion blur, render passes |
+| Render settings | 12 | Color management (AgX, looks, exposure), film transparency, denoising, Cycles sampling and light paths, motion blur, render passes, ray visibility and shadow catcher, EEVEE quality, render performance, light groups, shader AOVs |
+| Baking | 1 | Bake albedo, normal (high-poly to low-poly with cage), AO, roughness, emission or lit maps to PNG/EXR/TIFF with Cycles |
 | Compositor | 5 | Post-processing chain: glare and bloom, lens distortion, colour balance, blur, Essentials vignette, film grain, chromatic aberration, split toning, sharpening |
-| Deform | 10 | Vertex groups and weights (assign, normalize, smooth, clean, limit, mirror), shape keys (add, sculpt by offset with weighted falloff, blend, animate) |
+| Deform | 12 | Vertex groups and weights (assign, normalize, smooth, clean, limit, mirror), shape keys (add, sculpt by offset with weighted falloff, blend, animate), color attributes (vertex colors) |
 | Curves | 10 | Bezier/NURBS/path, 3D text, convert, reverse, handle types, cyclic, subdivide |
 | Sweep | 2 | Sweep a profile along a 3D path for tubes, hoses, cables and rails, with flip-free framing; check a path for bends too tight for the profile |
 | 3D Printing | 1 | Reversed normals, self-intersection, thin walls, shells and overhangs via Blender's 3D Print Toolbox |
 | Sequencer | 5 | Image-sequence strips, sound strips, list and remove strips, render to MP4, MKV or WebM with audio |
-| Sculpting | 8 | Brushes, remesh, multires, symmetry, dynamic topology, stroke_method |
-| UV Mapping | 4 | Smart project, unwrap (ANGLE_BASED, CONFORMAL, MINIMUM_STRETCH), projection, pack islands |
-| Physics | 9 | Rigid body, cloth, fluid, particles (velocity, rendering, delete), bake |
+| Sculpting | 10 | Brushes, remesh, multires, symmetry, dynamic topology, stroke_method, masks, face sets |
+| UV Mapping | 8 | Smart project, unwrap (ANGLE_BASED, CONFORMAL, MINIMUM_STRETCH), projection, pack islands, island operations (average scale, minimize stretch, randomize, arrange, weld), texel density, multiple UV maps (lightmaps) |
+| Physics | 14 | Rigid body (constraints: hinge, slider, spring, motor, breakable; world substeps), cloth, fluid, particles (velocity, rendering, delete), bake, force fields, colliders, soft body |
 | Geometry Nodes | 6 | Create node trees, add/connect nodes, set inputs, Essentials modifiers (array, scatter on surface, instance on elements, curve to tube, ...) |
-| Armature | 6 | Bones, constraints, auto weights, pose |
-| Annotations | 5 | Annotation layers and strokes (5.1 Annotation API) |
-| Collections | 4 | Create, move objects, visibility, delete |
-| File I/O | 5 | Import/export (FBX, OBJ, glTF, USD, STL...), save/open |
+| Armature | 8 | Bones, constraints, auto weights, pose, bone collections, IK chains with pole targets, more constraint types |
+| Grease Pencil | 9 | Grease Pencil v3 drawings (tapered, coloured strokes on layers and frames), Line Art inked outlines, annotation layers and strokes |
+| Collections | 8 | Create, move objects, visibility, delete, collection instances, make instances real, view layers (holdout, indirect only, material override) |
+| File I/O | 10 | Import/export (FBX, OBJ, glTF, USD, STL...), save/open, list/link/append from other .blend files, pack/unpack resources, check and relink external paths |
 | Viewport | 3 | Shading mode, overlays, focus on object |
 | Screenshot | 1 | Fast viewport capture (OpenGL) or full render, base64 output |
 | Code Exec | 1 | Sandboxed Python execution in Blender (dangerous imports blocked) |
@@ -316,7 +317,7 @@ AI Assistant <--stdio/MCP--> blenderwright server <--TCP socket--> Blender addon
 - **MCP Server** (`src/blenderwright/`): Python process using the `mcp` SDK. Exposes tools, resources, and prompts over stdio. Validates all inputs before forwarding to Blender.
 - **Blender Addon** (`addon/`): Runs a TCP socket server inside Blender on a background thread. Commands are queued and executed on the main thread via `bpy.app.timers` to respect Blender's threading model.
 - **Render Guard**: Tracks render state via `bpy.app.handlers`. During renders, the server immediately returns a "busy" status. Automatically recovers from crashed renders via `load_post` handler. Can be force-reset via MCP command.
-- **Protocol**: Length-prefixed JSON messages over TCP with SO_KEEPALIVE for stale connection detection. Each message is a 4-byte big-endian length header followed by a UTF-8 JSON payload. Every request carries a `token` field (see Security).
+- **Protocol**: Length-prefixed JSON messages over TCP with SO_KEEPALIVE for stale connection detection. Each message is a 4-byte big-endian length header followed by a UTF-8 JSON payload. A connection opens with a challenge-response handshake that also checks both sides speak the same protocol version, then every message is signed (see Security).
 
 </details>
 
@@ -335,13 +336,13 @@ AI Assistant <--stdio/MCP--> blenderwright server <--TCP socket--> Blender addon
 <summary><strong>Security</strong></summary>
 
 - **Localhost only**: The TCP socket binds to `127.0.0.1`, never exposed to the network.
-- **Auth token**: any local program can reach `127.0.0.1`, so every command must carry a token. Start Server writes a fresh random token to a file only your user can read (`~/Library/Application Support/blenderwright/token` on macOS, `%APPDATA%\blenderwright\token` on Windows, `~/.config/blenderwright/token` on Linux) and deletes it on Stop. The MCP server reads it automatically. A wrong or missing token gets an error, the connection is closed, and the N-panel shows the count. If the MCP server runs where it can't see that file (WSL, Docker), set `BLENDERWRIGHT_TOKEN_FILE` to its path.
+- **Authenticated socket**: any local program can reach `127.0.0.1`, so the connection is authenticated. Start Server writes a fresh random token to a file only your user can read (`~/Library/Application Support/blenderwright/token` on macOS, `%APPDATA%\blenderwright\token` on Windows, `~/.config/blenderwright/token` on Linux) and deletes it on Stop. The token never crosses the socket: Blender and the MCP server each prove they know it by signing fresh random nonces (HMAC-SHA256), and every command and reply after that is signed with a per-connection key and numbered, so commands cannot be injected, altered or replayed. The MCP server refuses to send anything to a process on the port that cannot prove itself. A failed check closes the connection and the N-panel shows the count. On Windows the port is claimed exclusively. If the MCP server runs where it can't see the token file (WSL, Docker), set `BLENDERWRIGHT_TOKEN_FILE` to its path.
 - **Raw Python is off by default**: `execute_blender_code` refuses to run until you tick "Allow raw Python" in the blenderwright N-panel. The switch is a `WindowManager` property, so it is per Blender session and is never written into a `.blend` file. Every run is echoed to the system console and the panel shows a count and the last snippet. The 191 structured tools do not need it.
 - **The restricted namespace is not a sandbox**: when raw Python is on, the import hook refuses 25 imports (`os`, `subprocess`, `socket`, `shutil`, `sys`, `ctypes`, `importlib`, `pathlib`, `signal`, `multiprocessing`, `pickle`, `shelve`, `tempfile`, `http`, `urllib`, `ftplib`, `smtplib`, `xmlrpc`, `code`, `codeop`, `compileall`, `webbrowser`, `antigravity`, `turtle`, `tkinter`) and the builtins `__import__`, `exec`, `eval`, `compile`, `open`, `globals`, `locals`, `vars`, `input`, `breakpoint`, `exit`, `quit`, `help` and `memoryview` are removed. That catches a model making a mistake. It does not contain an adversary: the code runs in-process with full `bpy`, and `bpy` alone can save files anywhere and run any operator. Treat "Allow raw Python" the way you would treat running a script someone else wrote: read what the model is about to run, and turn it off when you are done.
 - **Input validation**: All inputs pass through validators before reaching Blender: name sanitization, path traversal prevention, numeric range checks, enum allowlists.
 - **File safety**: Import operations disable `use_scripts_auto_execute` to prevent script injection from imported files. File extensions are checked against allowlists.
 - **Command allowlist**: The addon dispatcher only processes explicitly registered commands. Unknown commands are rejected.
-- **Shader node allowlist**: Only 64 known shader node types can be created, which prevents arbitrary type injection.
+- **Shader node allowlist**: Only 93 known shader node types can be created, which prevents arbitrary type injection.
 
 </details>
 
@@ -389,7 +390,7 @@ blenderwright/
 │   ├── server.py           # FastMCP entry point
 │   ├── connection.py       # TCP client to Blender (with busy-retry)
 │   ├── validators.py       # Input validation
-│   ├── tools/              # 31 tool modules (217 tools)
+│   ├── tools/              # 32 tool modules (262 tools)
 │   ├── resources/          # MCP resources (scene, objects, materials)
 │   └── prompts/            # 13 expert prompt templates
 ├── addon/                  # Blender addon (zero external deps)

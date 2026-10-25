@@ -1,8 +1,9 @@
 # WEIPING_COUNCIL
 
-A local web app and CLI that sends one question to several LLMs, has them review each
-other's answers anonymously, and returns a chairman's synthesis together with the
-dissent and a trace of every model call.
+A local web app and CLI for anyone who wants to see where several LLMs disagree before
+trusting an answer: it sends one question to each model, has them review each other's
+answers anonymously, and returns a chairman's synthesis with the dissent and a trace of
+every model call.
 
 The council protocol (first opinions, anonymized peer review, chairman synthesis) is
 Andrej Karpathy's **[llm-council](https://github.com/karpathy/llm-council)** idea. I
@@ -11,9 +12,9 @@ demo mode and an eval script. No llm-council code is included.
 
 ![Council run in demo mode](docs/screenshot.png)
 
-*Captured with `vc serve --demo`: the replies are canned (hand-written in
-[`backend/demo.py`](backend/demo.py)), while the protocol run, the 13 traced calls and
-the saved session are produced by the real code. The stages view is in
+*Captured with `vc serve --demo` on the council protocol: the replies are canned
+(hand-written in [`backend/demo.py`](backend/demo.py)), while the protocol run, the 13
+traced calls and the saved session are produced by the real code. The stages view is in
 [docs/screenshot-stages.png](docs/screenshot-stages.png).*
 
 ## Quickstart
@@ -32,6 +33,14 @@ npm run build                      # builds the UI into frontend/dist
 cd ..
 vc serve --demo                    # open http://127.0.0.1:8000, no API key needed
 ```
+
+Demo mode only has canned replies for the `council` protocol and its sample question,
+which is pre-filled in the input box (another question gets the same canned answer with
+a note that nothing was sent). `auto` routes the sample question to a single member and
+shows that member's canned first opinion. `debate`, `redteam`, `consensus` and
+`specialist` run their stages but end with a placeholder answer saying demo mode only
+covers the council, and `tournament` finishes marked degraded with no winner. Those need
+a real key.
 
 For real answers, add a key and drop `--demo`:
 

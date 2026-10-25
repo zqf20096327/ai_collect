@@ -1,10 +1,8 @@
- [![es](https://img.shields.io/badge/lang-es-black.svg)](https://github.com/nla-group/classix/blob/master/README.md)
- [![ch](https://img.shields.io/badge/lang-ch-white.svg)](https://github.com/nla-group/classix/blob/master/README-ch.md)
-  
 <h1 align="center">
   CLASSIX: Fast and explainable clustering in Python
 </h1>
 
+**English** | [简体中文](README-ch.md)
 
 [![Publish](https://github.com/nla-group/classix/actions/workflows/package_release.yml/badge.svg?branch=master)](https://github.com/nla-group/classix/actions/workflows/package_release.yml)
 [![!pypi](https://img.shields.io/pypi/v/classixclustering?color=tomato)](https://pypi.org/project/classixclustering/)
@@ -259,7 +257,7 @@ Any form of contribution is welcome. We particularly welcome the contribution of
 
 ## Citation 
 
-If you use the software and the method, cite: 
+If you use CLASSIX, cite: 
 ```bibtex
 @article{CG24,
     title = {Fast and explainable clustering based on sorting},
@@ -270,7 +268,16 @@ If you use the software and the method, cite:
     year = {2024},
     doi = {https://doi.org/10.1016/j.patcog.2024.110298}
 }
+
+@article{CGK26,
+  title   = {{CLASSIX}: A High-Performance Library for Explainable Clustering},
+  author = {Xinye Chen and Stefan Güttel and Kaustubh Roy},
+  journal = {Journal of Machine Learning Research},
+  year    = {2026},
+  note    = {Accepted for publication}
+}
 ```
+
 
 If you use Tanimoto and Manhatta distances, cite this:
 ```bibtex
@@ -284,6 +291,7 @@ If you use Tanimoto and Manhatta distances, cite this:
     url={https://arxiv.org/abs/2601.08781}, 
 }
 ```
+
 ## License
 This project is licensed under the terms of the [MIT license](https://github.com/nla-group/classix/blob/master/LICENSE).
 

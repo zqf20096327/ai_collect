@@ -4,16 +4,16 @@
 
 读讲义卡住时，通用 AI 会把最漂亮的解法给你——包括你还没学的。旁批知道你读到第几讲第几页：超出进度的内容必须标出来源，讲义里没有的必须说明是补充。
 
-**点击下方后在页面下面找到Assets，点击zip压缩包即可下载！**
-
-[![下载](https://img.shields.io/badge/%E2%AC%87_%E4%B8%8B%E8%BD%BD_Windows_%E4%BE%BF%E6%90%BA%E7%89%88-10_MB-d99a5b?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/LovableWind/Text-Tutor/releases/latest)
-[![版本](https://img.shields.io/github/v/release/LovableWind/Text-Tutor?color=d99a5b&label=version&cacheSeconds=60)](https://github.com/LovableWind/Text-Tutor/releases/latest) [![平台](https://img.shields.io/badge/platform-Windows_10_%2F_11-555555)](https://github.com/LovableWind/Text-Tutor/releases/latest)
+[![Windows下载](https://img.shields.io/badge/⬇_下载_Windows_便携版-10_MB-d99a5b?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/LovableWind/Text-Tutor/releases/latest/download/Pangpi-v2.0.0-portable-win64.zip)
+[![macOS下载](https://img.shields.io/badge/⬇_下载_macOS_版-0.24_MB-d99a5b?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/LovableWind/Text-Tutor/releases/latest/download/Pangpi-v2.0.0-macos.zip)
+[![版本](https://img.shields.io/github/v/release/LovableWind/Text-Tutor?color=d99a5b&label=version)](https://github.com/LovableWind/Text-Tutor/releases) 
 
 <img src="web/icon-256.png" width="96" align="right" alt="旁批图标">
 
-支持 Windows 10 / 11 · 解压即用 · 自带 Python 运行时 · 需要自己的 API Key（一次讲解不到一分钱）
+支持 Windows 10 / 11 与 macOS · 解压即用 · 需要自己的 API Key（一次讲解不到一分钱）
 
-<img src="docs/screenshot.png" width="760" alt="旁批界面：左边 PDF，右边讲解卡片">
+> 界面截图放在这里：左边 PDF 阅读器，右边旁批侧栏。
+> 录屏或截图后替换这一行即可（建议存成 `docs/screenshot.png`）。
 
 ---
 
@@ -134,7 +134,8 @@ Windows 给下载文件打的标记，不是病毒。`.exe` 未签名，点"更�
 
 ## 已知限制
 
-- **只支持 Windows**。剪贴板、全局热键、窗口置顶依赖 Win32；macOS 在 2.0 计划里。
+- **macOS 有三个差异**：没有全局热键（用 `Cmd+C` 代替）、窗口不能置顶、自动取词需要辅助功能权限。其余功能一致。
+- **macOS 包不带 Python 运行时**，用系统自带的 `python3`（macOS 10.15+ 通常已有，缺了运行 `xcode-select --install`）。
 - **扫描版 / 手写讲义没有文字层**，建不了页码索引；取词讲解仍可用，但要手动设当前页。
 - **PPT 里的公式多是图片**，课件提供的是概念清单，公式本身得靠选中文字或截图。
 - **讲解由模型生成，可能出错**，重要结论以讲义和课本为准。

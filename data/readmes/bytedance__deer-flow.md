@@ -138,7 +138,9 @@ With `run_events.backend: db`, caller-supplied ISO 8601 event timestamps are nor
 Run event streams include `run.terminal` for the owning worker's confirmed final
 Run status, while `run.end` continues to describe each root graph completion.
 Terminal publication is best effort; event persistence failure does not undo the
-Run outcome or prevent stream completion. See [Run Event Stream](backend/docs/RUN_EVENT_STREAM.md#authoritative-run-outcome).
+Run outcome or prevent stream completion. Recovery with built-in SQL Run and Event stores
+sharing an engine uses one pooled connection for each guarded event write, so it
+can publish with only one pool slot available. See [Run Event Stream](backend/docs/RUN_EVENT_STREAM.md#authoritative-run-outcome).
 
 Operators can extend lead-agent, subagent, and DeerMem extraction prompts with
 literal prepend/append configuration without editing source templates. See
@@ -254,6 +256,8 @@ fences, including unclosed fences, in complete and streamed replies.
    Optional per-model pricing must use one currency across all priced models.
    DeerFlow disables Console cost estimates when currencies are mixed rather
    than presenting an invalid aggregate.
+   For older runs without a per-model usage breakdown, Console attributes the
+   recorded total and input token counts to the run's model.
 
    Administrators can open **Settings → Models** to select a provider and enter
    only its **API Key** and **model ID**. Endpoints, authentication and adapters are
@@ -514,6 +518,7 @@ make docker-logs    # View logs
 ```
 
 `make docker-start` starts `provisioner` only when `config.yaml` uses provisioner mode (`sandbox.use: deerflow.community.aio_sandbox:AioSandboxProvider` with `provisioner_url`). Direct Compose users can add `--profile provisioner` to the dev command for the same mode; the default stack does not require Kubernetes.
+With `USERDATA_PVC_NAME`, sandbox data, extra mounts and Lark broker credentials share one `user-data` volume with separate `subPath` mounts, avoiding duplicate references to the same claim on NFS CSI drivers.
 
 Docker builds use the upstream `uv` registry by default. The gateway image installs with `uv sync --locked`, and `uv.lock` pins `https://pypi.org/simple`, so `UV_INDEX_URL` has to keep that value: exporting a mirror such as `https://pypi.tuna.tsinghua.edu.cn/simple` fails the build with ``The lockfile at `uv.lock` needs to be updated, but `--locked` was provided`` (reproduce in an already-synced environment with `cd backend && UV_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple uv sync --locked --check`; if the environment itself is stale, `--check` reports that instead for either index, so use `uv lock --check` to see it without syncing). Installing from a mirror requires regenerating the lock or dropping `--locked`, and both change what the image installs, so keep the default index for a checkout you intend to contribute back. `NPM_REGISTRY=https://registry.npmmirror.com` is independent of this: it applies to the frontend image's `pnpm` install and to the gateway image's Lark CLI install (`@larksuite/cli`, which `backend/Dockerfile` installs with npm).
 
@@ -548,13 +553,21 @@ The checkpoint storage settings `database.checkpoint_channel_mode` and
 both are frozen when the process first builds an agent (including through
 `DeerFlowClient`) and require a process restart to change safely.
 
+In delta mode, a run selecting an older checkpoint reports an error before rewriting
+state if either the selected checkpoint or the current head has pending tool
+execution. For `Command(resume=...)`, other pending graph nodes also prevent the
+rewrite, except for the synthetic input entry node. Resume pending work from the
+latest checkpoint; to regenerate completed work, submit new input there. Full-mode
+resumes and ordinary replay without pending execution keep their existing behavior.
+
 The optional `database.checkpoint_cache` section (delta channel mode only)
 caches materialized checkpoint histories: `type` is `memory` (default) or
 `redis`, and `max_entries: 0` disables the cache. The `redis` backend is
 Gateway/async-only; the sync TUI/embedded path supports `memory` only. The
 cache is performance-only — results are identical with it disabled — so it is
 never frozen and workers sharing one checkpoint database may safely run
-different cache settings. Redis thread cleanup treats a configured `key_prefix`
+different cache settings. Returned state snapshots have independent nested values,
+so editing one cannot change later checkpoint reads. Redis thread cleanup treats a configured `key_prefix`
 as literal text, including glob metacharacters, so deletion stays within that
 namespace and thread.
 
@@ -621,6 +634,11 @@ When fine-grained authorization is enabled, Live Browser connections require `th
 The bundled Docker, local and Helm nginx configs proxy Live Browser WebSocket upgrades with a 600-second read timeout for quiet streams. Helm uses nginx's default connection and send timeouts for the in-cluster Gateway. Any additional Ingress or reverse proxy must also allow WebSocket upgrades.
 
 Browser login uses `HttpOnly` session cookies. The login page offers a "keep me signed in" option that extends the browser session when the request is HTTPS (including trusted `X-Forwarded-Proto: https`) or localhost HTTP. The localhost exception uses the direct request `Host` and ignores forwarded host headers. Public HTTP deployments, including many temporary sandbox URLs, fall back to session cookies by default. DeerFlow never stores the password in browser storage; the UI may remember only the email address.
+
+Password forms accept non-ASCII email addresses and trim surrounding email whitespace.
+Sign-in requires at least six password characters; creating an account or choosing
+a new password requires eight. These checks run before sending a request.
+Passwords, including surrounding spaces, are submitted unchanged.
 
 OIDC/SSO authorization endpoints may include provider query parameters such as `?prompt=login`. DeerFlow preserves those parameters when adding the login request, including for configured `authorization_endpoint` overrides.
 
@@ -988,6 +1006,9 @@ still retain their error or partial-result status.
 
 #### MCP Server
 
+Tool steps mark explicit execution failures. Scheduled-task steps show completed
+operations only after a valid response, rather than when the request is issued.
+
 In the chat UI, enable **Token Usage → Debug** to inspect generic/MCP tool calls.
 Each **Tool details** panel starts collapsed and shows the tool name, call ID,
 input, and received result or explicit error. Large previews are truncated;
@@ -1098,6 +1119,10 @@ Invalid UTF-8 in `channels/store.json` follows the same recovery policy as malfo
 SQL migration warns and skips the file, leaving it unchanged so channels can start; the
 memory backend's JSON store warns and starts empty, replacing the file on its next write.
 
+On Windows, JSON runtime channel-config saves wait for a competing file-lock holder
+without the operating system's roughly ten-second cutoff. A wait reaching 50 retries
+(about ten seconds) logs the lock-file path once; permanent lock errors fail immediately.
+
 Conversation-binding, runtime channel-credential and WeChat auth-state saves preserve the original
 persistence failure when staged-file cleanup also fails. Remaining cleanup still runs, and warnings
 identify copies that could not be removed. Buzz keeps failed snapshots available for retry, even if
@@ -1107,32 +1132,4 @@ On startup, runtime credential and WeChat auth stores remove their own `.<state-
 staging files older than 24 hours. Fresh files, symlinks and unrelated files are preserved. Older
 anonymous `tmp*.tmp` files require manual inspection because their writer cannot be identified safely.
 
-DeerFlow can also expose user-owned IM channel connections in the workspace UI. When `channel_connections` is enabled, logged-in users can bind Telegram, Slack, Discord, Feishu/Lark, DingTalk, WeChat, WeCom, QQ, or Buzz from the sidebar / Settings > Channels. It reuses the existing outbound `channels.*` transports, so no public IP or provider callback URL is required. Incoming IM messages then run under the connected DeerFlow user account. See [IM Channel Connections](backend/docs/IM_CHANNEL_CONNECTIONS.md) for setup and security notes. Buzz backlog paging stops with a warning if timestamp-based queries cannot advance, and channel removal closes both live and backlog subscriptions.
-
-For Discord and Buzz, the local and Docker launchers detect the required optional
-dependencies when both `channel_connections.enabled` and the corresponding
-`channel_connections.<provider>.enabled` are `true`. Selecting Discord in
-`make setup` sets these flags. A nonempty `UV_EXTRAS` overrides configuration
-auto-detection, so include `discord` or `buzz` there if you set it manually.
-
-| Channel | Transport | Difficulty |
-|---------|-----------|------------|
-| Telegram | Bot API (long-polling) | Easy |
-| Slack | Socket Mode | Moderate |
-| Feishu / Lark | WebSocket | Moderate |
-| WeChat | Tencent iLink (long-polling) | Moderate |
-| WeCom | WebSocket | Moderate |
-| QQ | WebSocket (text-only C2C and group @mentions; four/five passive replies per source) | Moderate |
-| DingTalk | Stream Push (WebSocket) | Moderate |
-| Buzz | Nostr relay (WebSocket, NIP-42) | Moderate |
-
-Attachments saved by the shared IM ingestion pipeline or Feishu/DingTalk's
-embedded downloads keep distinct filenames, including when concurrent uploads
-choose the same name. The final filename is passed to the agent and used for
-sandbox sync; an existing conversation file is not overwritten.
-Embedded client uploads also keep earlier same-name files under distinct names.
-Renamed originals and Markdown companions retain private source snapshots and
-become visible only after the complete copy is published.
-
-Feishu and DingTalk attachment transfers return standalone temporary sandboxes
-to the pool after synchronization, without interrupting an active
+DeerFlow can also expose user-owned IM channel connections in the workspace UI. When `channel_connections` is enabled, logged-in users can bind Telegram, Slack, Discord, Feishu/Lark, DingTalk, WeChat, WeCom, QQ, or Buzz from the sidebar / Settings > Channels. It reuses the existing outbound `channels.*` transports, so no public IP or provider callback URL is req

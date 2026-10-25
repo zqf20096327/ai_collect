@@ -1,6 +1,6 @@
 # nexus-llm-router
 
-![Tests](https://img.shields.io/badge/tests-1768%20passing-brightgreen) ![Python](https://img.shields.io/badge/python-3.11%2B-blue) ![CI](https://github.com/Francis1998/nexus-llm-router/actions/workflows/ci.yml/badge.svg)
+![Tests](https://img.shields.io/badge/tests-1783%20passing-brightgreen) ![Python](https://img.shields.io/badge/python-3.11%2B-blue) ![CI](https://github.com/Francis1998/nexus-llm-router/actions/workflows/ci.yml/badge.svg)
 
 
 > Intelligent multi-LLM routing middleware with task-aware model selection, cost optimization, fallback safety, and a drop-in OpenAI-compatible API.
@@ -40,6 +40,27 @@ Offline HITL `collision_ratio` bands. Gap vs vLLM/SGLang/TGI sampling-seed colli
 
 Offline HITL `vocab_skew_ratio` bands. Gap vs vLLM/SGLang/TGI tokenizer vocab-skew monitors. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/TOKENIZER_VOCAB_SKEW_BAND_ADVISOR_GUIDE.md`.
 
+
+
+### SpeculativeAcceptanceEntropyBandAdvisor
+
+![SpeculativeAcceptanceEntropyBandAdvisor](assets/demo/speculative-acceptance-entropy-band-advisor.gif)
+
+Offline HITL `entropy_ratio` bands. Gap vs vLLM/SGLang/TGI speculative acceptance-entropy monitors. See `docs/guides/SPECULATIVE_ACCEPTANCE_ENTROPY_BAND_ADVISOR_GUIDE.md`.
+
+
+### DecodePreemptionPingPongBandAdvisor
+
+![DecodePreemptionPingPongBandAdvisor](assets/demo/decode-preemption-ping-pong-band-advisor.gif)
+
+Offline HITL `ping_pong_ratio` bands. Gap vs vLLM/SGLang/TGI decode preemption ping-pong monitors. See `docs/guides/DECODE_PREEMPTION_PING_PONG_BAND_ADVISOR_GUIDE.md`.
+
+
+### KvBlockStealStormBandAdvisor
+
+![KvBlockStealStormBandAdvisor](assets/demo/kv-block-steal-storm-band-advisor.gif)
+
+Offline HITL `steal_ratio` bands. Gap vs vLLM/SGLang/TGI KV block steal-storm monitors. See `docs/guides/KV_BLOCK_STEAL_STORM_BAND_ADVISOR_GUIDE.md`.
 
 ### SpeculativeTreeDepthBlowupAdvisor
 

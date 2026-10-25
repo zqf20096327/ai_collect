@@ -44,9 +44,9 @@
   </tr>
   <tr>
     <td valign="top">
-      <strong>Plugins, built by the agent</strong><br>
-      Describe one with <code>/plugin create</code> — from a game to an API client.<br>
-      <a href="docs/extending/build-with-the-agent.md">Build a plugin →</a>
+      <strong>Mini apps, built by the agent</strong><br>
+      Describe one with <code>/mini-app create</code>: a meal log from photos, a dashboard, a game, wired to the agent, models and embeddings.<br>
+      <a href="docs/extending/build-with-the-agent.md">Build a mini app →</a>
     </td>
     <td valign="top">
       <strong>Your coding agents</strong><br>
@@ -59,7 +59,51 @@
       <a href="docs/features/providers.md">Providers →</a> · <a href="docs/features/local-models.md">Local models →</a>
     </td>
   </tr>
+  <tr>
+    <td colspan="3" valign="top">
+      <strong>Mini apps as Mac apps</strong><br>
+      Install a mini app as its own app: a Dock icon, a window of its own, and the agent beside it.<br>
+      <a href="docs/features/mini-app-mac-apps.md">Mini apps as Mac apps →</a>
+    </td>
+  </tr>
 </table>
+
+## Plugins and mini apps
+
+Two separate kinds of extension that share nothing. A **plugin** is the Claude Code format — skills,
+commands, agents, hooks, mods, MCP and LSP servers — and the same folder loads in Claude Code and in
+Localix; manage plugins with `/plugin`. A **mini app** is Localix's own format: screens, a backend,
+and agent tools over Localix's own APIs; manage mini apps with `/mini-app` and in the Store
+([mini apps](docs/features/mini-apps.md)).
+
+- **Compatible with Claude Code.** Plugins, skills, slash commands, agents, hooks, mods, MCP and
+  language servers, output styles, `CLAUDE.md` and your `~/.claude` settings load the way Claude
+  Code loads them, checked against Claude Code 2.1.310. What differs, and why, is listed in
+  [Claude Code compatibility](docs/extending/claude-code-compatibility.md).
+- **Claude Code plugins work as they are.** `/plugin install owner/repo` reads
+  `.claude-plugin/plugin.json` in place, with Claude Code's rules for commands, skills, hooks and
+  MCP servers; what Localix does not run yet is reported, never dropped silently. See
+  [Claude Code plugins](docs/extending/claude-code-plugins.md).
+- **Mini apps, built by the agent.** Run `/mini-app create <what it should do>`. The agent writes
+  the interface from the app's own components and the tools that go with it; each build is checked —
+  style, types, builds and tests — and replaces the working one only when every check passes. See
+  [build with the agent](docs/extending/build-with-the-agent.md).
+- **Any app, part of Localix.** A calorie counter needs only a `log_meal` tool and a screen: attach
+  a meal photo and, with a model that reads images, the chat agent logs it through that tool. A
+  deployment dashboard reads your cluster through its own tools; a research board ranks notes with
+  the embedding model; a game's opponent is a decision model. The bundled DevOps, Database, Trading
+  and Kanban workbenches are mini apps on the same contract.
+- **Localix's APIs.** A mini app's backend can start an agent turn (`ctx.host.wake`), ask a
+  [decision model](docs/features/decision-models.md) typed questions (`ctx.host.decisions`), index
+  and search its own items by meaning (`ctx.host.semantic`), resolve vault secrets, keep data per
+  chat or per project, follow its own changes and push live updates to its screen. See
+  [what you can build](docs/extending/mini-apps.md#what-you-can-build).
+- **Its own Mac app.** **Install _App_ as App**, from the app's tab, its rail button or the command
+  palette, makes `~/Applications/Localix Apps/<App>.app`: its own Dock icon, menu bar, Cmd+Tab entry
+  and window, found by Spotlight and Launchpad. It opens the app's screen in a project of its own,
+  with the agent beside it and its conversations as the app's history. Localix stays the host and
+  starts in the background if it is not running. macOS only. See
+  [mini apps as Mac apps](docs/features/mini-app-mac-apps.md).
 
 ## On this computer
 
@@ -69,9 +113,6 @@
 - **Search by meaning.** On by default: an embedding model downloads in the background, and search
   then finds chats, messages, skills, plugins, MCP servers and agents by what they mean, in any
   language. See [semantic search](docs/features/semantic-search.md).
-- **For plugins.** A plugin can index its own items and follow its own changes through
-  `ctx.host.semantic` and `ctx.host.changes`. See
-  [semantic index and change feed](docs/extending/plugin-semantics.md).
 
 ## Download
 
@@ -83,7 +124,7 @@ Each release lists checksums in `SHA256SUMS.txt`.
 
 ## Run from source
 
-For the desktop app, install [Bun](https://bun.sh) **1.3.14**, a Rust toolchain, and your platform's
+For the desktop app, install [Bun](https://bun.sh) **1.4.4**, a Rust toolchain, and your platform's
 [Tauri prerequisites](https://tauri.app/start/prerequisites/).
 
 ```bash

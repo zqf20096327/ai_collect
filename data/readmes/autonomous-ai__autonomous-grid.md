@@ -548,6 +548,9 @@ Walkthrough: [docs/codex-quickstart.md](docs/codex-quickstart.md).
 
 ### Run Claude Code on your grid
 
+> **Deprecated (2026-10-25):** `grid launch claude` is no longer used and gets no further fixes. It
+> still works; see [docs/cli.md](docs/cli.md#launch).
+
 ```bash
 grid launch claude
 ```
@@ -635,11 +638,14 @@ A complete GRPO climb, no GPU:
 
 ```bash
 # Any machine, CUDA or CPU — about six minutes
-python -m train.torch_grpo_hello
+"$(uv tool dir)/grid/bin/python" -m train.torch_grpo_hello
 
-# Apple Silicon, needs `pip install mlx-lm` — about one minute
-python -m train.mlx.grpo_hello
+# Apple Silicon — about one minute
+"$(uv tool dir)/grid/bin/python" -m train.mlx.grpo_hello
 ```
+
+Both need the training extra, and `grid`'s own Python, which a plain `python` is not: see
+[docs/start-on-a-mac.md](docs/start-on-a-mac.md) step 0.
 
 Figures and measured curves: [train/README.md](train/README.md). One Mac:
 [docs/start-on-a-mac.md](docs/start-on-a-mac.md) · two machines:

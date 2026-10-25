@@ -1,18 +1,59 @@
 # Project UAI
 
 A universal AI agent that runs inside a Roblox client. It works in any game,
-with Chat Completions and Anthropic Messages endpoints, including compatible
-local servers and relays.
+with Chat Completions, OpenAI Responses and Anthropic Messages endpoints,
+including compatible local servers and relays.
 
-**Project UAI 3.6.6 — October 23, 2026: a provider gallery and a clearer queue.**
-Adding a provider opens a searchable gallery with Recommended, Paid and Local
-tiers. Each card describes the route and what access costs, hybrid services are
-labelled by their free half, and choosing a card seeds the editor with its URL,
-protocol and auth style. The catalog grows to 66 presets, led by Project UAI Free,
-AgentRouter, OpenCode Zen, OpenRouter and OpenCode Go. Queued follow-ups open as
-**Up next** with numbered cards and per-message controls, and Settings opens from
-one sidebar row. The client is 3.6.6; the bridge remains `bridge-v3.6.6`, and the
-Windows and Android downloads remain 3.6.5 until their own builds.
+**Project UAI 3.7.1 - October 25, 2026: UI polish and individual API keys.**
+The Roblox client, bridge, web UI and Android companion are 3.7.1; the Windows
+desktop remains 3.7.0. **Manage API keys** opens a dedicated modal with named,
+masked entries. Add, rename, replace or remove a key without losing the others.
+**Rotate keys** is the default; choose **Use one key** to pin requests to a
+specific entry. Existing key pools are preserved. The setup guide opens expanded
+by default.
+
+Pause individual keys while keeping them saved, and see their locally recorded
+requests and input/output tokens. Each conversation also shows its AI request
+count, including retries, tool follow-ups, summaries and subagents.
+
+Log details and context breakdown fit their contents, and shared modals have
+consistent inner padding. The Discord invitation, tutorial and donation dialogs
+are cleaner, settings group related controls, and Code keeps long selections
+visible with improved tabs, captions and comparison contrast.
+
+The bridge and Android patch extends Kilo quota recovery to every free-model
+spelling (`:free`, `/free`, `-free`). Anonymous Kilo free requests start directly;
+an explicit address-quota refusal can start a private Tor connection and one
+bounded circuit retry. The connection is enabled by default, starts only when needed, and has
+status and off switches in the apps. Shared exits still have quotas: this is
+recovery from one address allowance, not guaranteed unlimited access.
+See [Kilo setup, evidence and limitations](docs/KILO_TUNNEL.md).
+
+The bridge's **Tunnels** tab groups OpenCode, Kilo and Cline. Install and sign in
+to Cline to use its current free CLI models from the
+**Cline (Bridge)** provider in Roblox or Cowork. The bridge handles CLI work;
+Roblox retains tools, approvals and Stop. See [Cline setup](docs/CLINE_TUNNEL.md).
+The Windows app checks whether OpenCode and Cline are installed before Cowork
+starts, with a separate refresh after installation. Sign-in and model readiness
+remain separate from installation status.
+
+AgentRouter GPT models now use native Responses with the selected reasoning
+effort and UAI tools. A complete `gpt-6.1-sol` tool round trip was verified;
+account quotas and availability still apply. See [AgentRouter setup](docs/AGENTROUTER.md).
+Seven additional services join the gallery with explicit access labels and
+[individual setup guides](docs/providers/README.md).
+
+The Roblox model picker includes a searchable saved-provider switcher, model
+names and metadata on separate lines, and current connection status. The model
+list scrolls while search, provider selection and footer controls stay fixed.
+Compact layouts preserve focused fields and keep reasoning options and custom
+models reachable. Closing or switching providers cancels an outdated model refresh.
+
+Tools and Logs now support multiword searches. Tool details are built when
+opened, keeping the full catalog lighter to browse. Usage history preserves
+unknown-cost counts and cache writes, and invalid provider counters cannot
+corrupt totals. See [tool discovery](docs/TOOL_DISCOVERY.md),
+[diagnostics](docs/DIAGNOSTICS.md) and [usage accounting](docs/USAGE_ACCOUNTING.md).
 
 The apps retain verified automatic downloads and updates.
 The public page has a responsive white monochrome design with an interactive 3D
@@ -46,11 +87,11 @@ workspace. Go keeps its own catalog and routes; the optional free CLI backend
 does not intercept it. Subscription and workspace region refusals identify the
 setting to check. See [provider setup](docs/PROVIDER_COMPATIBILITY.md).
 
-The client is 3.6.6, the bridge is `bridge-v3.6.6`, and the Windows desktop and
-Android companion remain 3.6.5.
+The client, bridge, web UI and Android companion are 3.7.1; the Windows desktop is 3.7.0.
 UI LIB remains 1.3.0 and SDK 1.0.0.
-Model pricing and context/reply limits use a refreshed provider-specific catalog;
-included Project UAI Free access is counted at zero cost.
+Model pricing and context/reply limits use an October 25 catalog with 1,760
+entries across 15 providers, including exact Kilo and Cline routes. Unknown
+prices stay unknown; included Project UAI Free access is counted at zero cost.
 See the [release notes](CHANGELOG.md), [script development manual](docs/SCRIPT_DEVELOPMENT.md)
 and [UI library guide](docs/UI_LIBRARY.md). The client exposes the scripting
 manual through `scripting_docs`: start with `quickstart`, then read only the
@@ -63,7 +104,9 @@ it. The model modal edits the same global effort setting, including for other
 models when **Options → Reasoning support** is enabled. The Thinking row estimates
 visible text only. A long retained trace is labelled
 **Excerpt**, not a 5,999-token model limit. See [provider behavior](docs/PROVIDER_COMPATIBILITY.md).
-See [3.6.6 verification](docs/TESTING_3.6.6.md),
+See [3.7.1 verification](docs/TESTING_3.7.1.md),
+[3.7.0 verification](docs/TESTING_3.7.0.md),
+[3.6.6 verification](docs/TESTING_3.6.6.md),
 [3.6.5 verification](docs/TESTING_3.6.5.md),
 [bridge 3.6.2 verification](docs/TESTING_3.6.2.md),
 [3.6.1 verification](docs/TESTING_3.6.1.md), [3.6.0 verification](docs/TESTING_3.6.0.md),
@@ -160,7 +203,7 @@ too, so a delegated job runs until it answers instead of coming back with "I rea
 this session's step limit before finishing".
 
 **Any provider.** A provider is a base URL, an auth style, a key and a model.
-**Add a provider** opens a gallery of 66 presets with three tiers -- Recommended,
+**Add a provider** opens a gallery of 67 presets with three tiers -- Recommended,
 Paid and Local -- and a search field that spans them. Recommended leads with
 Project UAI Free, AgentRouter, OpenCode Zen, OpenRouter and OpenCode Go; hybrid
 services are labelled by their free half rather than as paid, and "Custom endpoint"
@@ -557,8 +600,25 @@ detail names the endpoint a request will actually go to, the model-list route, t
 wire protocol, whether a socket is configured (and therefore whether a long reply can
 arrive at all), the health counters, the last observed latency, how long a benched
 provider has left, and the extra headers, body fields and query parameters the record
-sends. The API key is never rendered: it is set through a prompt and shown as its last
-four characters.
+sends. **Manage API keys** opens from provider details or connection setup. Name
+each entry and use Add API key, Replace or Remove without changing the others.
+Rotation is on by default. **Use one key** applies only the selected credential
+to this provider's inference and model discovery, including quota retries. The
+ordinary provider fallback setting remains independent. Removing the selected key
+restores rotation; removing another key preserves the selected credential.
+Saved secrets show only a masked suffix, and keys shorter than five characters
+are fully masked. Cancel discards changes. Apply saves directly from provider
+details; during connection setup, it updates the draft for the provider's Save.
+Pause excludes a key from new requests without deleting it. A paused selected key
+stays selected and blocks that provider until resumed or another active key is
+chosen. Calls already in progress retain their original request policy.
+
+Each key card shows locally recorded request attempts and input/output tokens;
+estimates are labelled. Renaming or pausing retains usage, while replacing a
+credential starts a fresh counter. The conversation header shows that chat's AI
+request attempts; Context breakdown explains what is included. Counts persist on
+this device from this update and do not reconstruct earlier requests. Model
+discovery and relay status polling are excluded.
 
 The layout follows the live viewport: compact desktop controls on handhelds,
 a floating resizable window on a desktop, and a large centred panel on a console.
@@ -742,7 +802,7 @@ first two entirely.
 
 Cowork gives your Roblox conversation more room in the browser. Keep Roblox and
 its local bridge running on the same computer. The [Windows desktop launcher](desktop/README.md)
-is a single [UAI-Bridge-3.6.5-win-x64.exe](https://github.com/Project-Ptolemy/ProjectUAI/releases/download/v3.6.5/UAI-Bridge-3.6.5-win-x64.exe)
+is a single [UAI-Bridge-3.7.0-win-x64.exe](https://github.com/Project-Ptolemy/ProjectUAI/releases/download/v3.7.0/UAI-Bridge-3.7.0-win-x64.exe)
 download. Open it directly,
 complete Node setup if needed using **Get Node.js** or an existing
 installation, click **Start Cowork**, and load the updated UAI script. It discovers the app on dedicated port
@@ -806,7 +866,7 @@ troubleshooting, limits, architecture, and organized Node/Lua/browser tests.
 
 ## Android companion
 
-Install [UAI Relay 3.6.5](https://github.com/Project-Ptolemy/ProjectUAI/releases/download/v3.6.5/UAI-Relay-3.6.5.apk)
+Install [UAI Relay 3.7.0](https://github.com/Project-Ptolemy/ProjectUAI/releases/download/v3.7.0/UAI-Relay-3.7.0.apk)
 on Android 8 or later, start the relay, and load the current UAI script in your
 executor. With Relay mode set to Auto, the client discovers and pairs with the
 companion on the same phone. The relay holds the provider connection while the

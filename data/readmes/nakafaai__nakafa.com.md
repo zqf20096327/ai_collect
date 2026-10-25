@@ -6,7 +6,7 @@ Nakafa is a source-available educational platform for structured learning,
 assessments, Quran study, and political analysis. The production site is
 [nakafa.com](https://nakafa.com).
 
-This repository owns the React and Next.js applications, design system,
+This repository owns the React applications on TanStack Start, design system,
 transactional Convex backend, renderer implementations, user state, and
 product integrations. The separate
 [Aksara repository](https://github.com/nakafaai/aksara) owns authored content
@@ -19,9 +19,9 @@ authored content source or publication path.
 `package.json` is the toolchain source of truth:
 
 - Node.js 24
-- pnpm 11.28.5
+- Bun 1.4.4
 - Turborepo
-- Next.js 16 and React 19
+- TanStack Start and React 19
 - Native TypeScript 7
 - Convex
 - Vitest
@@ -36,7 +36,7 @@ cannot express.
 ```sh
 git clone https://github.com/nakafaai/nakafa.com.git
 cd nakafa.com
-pnpm install --frozen-lockfile
+bun install --frozen-lockfile
 cp apps/www/.env.example apps/www/.env.local
 ```
 
@@ -51,23 +51,23 @@ Nakafa uses Portless HTTPS URLs for local development. Google rejects
 Nakafa's owned development suffix before testing Google sign-in:
 
 ```sh
-pnpm exec portless proxy start --tld local.nakafa.com
+bunx portless proxy start --tld local.nakafa.com
 ```
 
 Stop an existing proxy before changing its suffix. This setting is shared by
 local projects. Portless listens on port 443, creates and trusts a local
 certificate authority, and registers local DNS entries for running apps.
 
-Run `pnpm dev` for hot reload. The canonical checkout serves
+Run `bun run dev` for hot reload. The canonical checkout serves
 `https://nakafa.local.nakafa.com`; worktrees receive their own prefix, such as
-`https://ci.nakafa.local.nakafa.com`. The web, CAS, and email preview servers
-receive separate names. Use `pnpm exec portless list` to inspect active routes,
-`pnpm exec portless get nakafa` to obtain this checkout's web URL, and
-`pnpm exec portless doctor` to check the proxy, DNS, and certificate trust.
+`https://ci.nakafa.local.nakafa.com`. The web and email preview servers
+receive separate names. CAS runs as Cloudflare Workers, so it has no local server. Use `bunx portless list` to inspect active routes,
+`bunx portless get nakafa` to obtain this checkout's web URL, and
+`bunx portless doctor` to check the proxy, DNS, and certificate trust.
 
 Set `SITE_URL` in `apps/www/.env.local` and the selected development backend
-to that exact web origin. Set `NEXT_PUBLIC_CONVEX_URL` and
-`NEXT_PUBLIC_CONVEX_SITE_URL` to the same main dev deployment. The shared
+to that exact web origin. Set `VITE_CONVEX_URL` and
+`VITE_CONVEX_SITE_URL` to the same main dev deployment. The shared
 deployment carries one `SITE_URL`, which backs auth and checkout, so a
 worktree on its own origin must use an isolated development deployment
 instead of the shared one. Google's client configuration must include the
@@ -79,13 +79,13 @@ Google does not accept wildcard callbacks. See the
 Acceptance databases use inert authentication credentials. Real sign-in requires
 a development backend configured with the Google client credentials.
 
-Ordinary `pnpm build` and `pnpm start` use your configured nonproduction backend.
+Ordinary `bun run build` and `bun run start` use your configured nonproduction backend.
 For a reproducible production-mode acceptance run, use:
 
 ```sh
-pnpm acceptance:prepare
-pnpm acceptance:build
-pnpm acceptance:start
+bun run acceptance:prepare
+bun run acceptance:build
+bun run acceptance:start
 ```
 
 Preparation creates a private native Convex database under `.cache/acceptance`,
@@ -114,37 +114,36 @@ Playwright at this checkout's URL and let its Node HTTP client trust the same
 local certificate authority:
 
 ```sh
-PLAYWRIGHT_BASE_URL="$(pnpm exec portless get nakafa)" \
+PLAYWRIGHT_BASE_URL="$(bunx portless get nakafa)" \
 NODE_EXTRA_CA_CERTS="${PORTLESS_STATE_DIR:-$HOME/.portless}/ca.pem" \
-pnpm --filter www test:browser --workers=1
+bun --filter www test:browser --workers=1
 ```
 
 If the proxy uses a custom state directory, set `PORTLESS_STATE_DIR` to that
 directory in both terminals.
 
-Stop acceptance services before `pnpm acceptance:clean` removes their database,
+Stop acceptance services before `bun run acceptance:clean` removes their database,
 source checkout, signer, logs, and the web app's cached signed fetch responses.
 Cleanup verifies filesystem ownership and refuses a database whose identity
 changed. To refresh the fixture, clean it and repeat preparation. Update the
 pinned Aksara revision deliberately when the acceptance contract needs new
 reviewed examples.
 
-Protected Vercel builds run only after a protected main merge. The web build command
-deploys Convex functions before building Next.js because prerendering queries
-those functions. Vercel supplies `NEXT_PUBLIC_CONVEX_URL`, which the runtime
-guard verifies against the protected production deployment. Convex's `--cmd`
-runs before the backend deployment and cannot be used for this ordering.
-Builds query bounded real published samples and verify the signed content with
-the current renderer. App builds do not export or import production tables or
-release history. Full corpus validation remains in Aksara's publication and
-renderer compatibility checks.
+Production deploys run from GitHub Actions only after a merge to `main`. The
+deploy workflow deploys the Convex backend with its deploy key, then runs
+`alchemy deploy` for the stage. The Alchemy stack in `apps/www/alchemy.run.ts`
+builds the web app and deploys it to Cloudflare Workers. App builds query bounded
+real published samples and verify the signed content with the current renderer.
+They do not export or import production tables or release history. Full corpus
+validation remains in Aksara's publication and renderer compatibility checks.
+See ADR 0037.
 
 ## Repository layout
 
-- `apps/www`: main Next.js application at `https://nakafa.local.nakafa.com`
-- `apps/mcp`: frameworkless Vercel ingress for the Convex MCP runtime
-- `apps/api`: frameworkless Vercel ingress for the Convex REST runtime
-- `apps/cas`: Python CAS service at `https://cas.nakafa.local.nakafa.com`
+- `apps/www`: main TanStack Start application at `https://nakafa.local.nakafa.com`
+- `apps/mcp`: Cloudflare Worker edge for the Convex MCP runtime
+- `apps/api`: Cloudflare Worker edge for the Convex REST runtime
+- `apps/cas`: CAS math engine, a Python Durable Object behind a TypeScript front at `https://cas.nakafa.com`
 - `apps/email`: email preview application at `https://email.nakafa.local.nakafa.com`
 - `packages/backend`: Confect schema, functions, workflows, native Agent capabilities, and integrations
 - `packages/design-system`: shared React components and renderer implementations
@@ -162,25 +161,25 @@ tests, type-level tests, module structure, and API design in the vendored source
 ## Commands
 
 ```sh
-pnpm dev
-pnpm dev:all
-pnpm build
-pnpm start
-pnpm test
-pnpm lint
-pnpm security:audit
-pnpm format
-pnpm boundaries
-pnpm effect:source:check
+bun run dev
+bun run dev:all
+bun run build
+bun run start
+bun run test
+bun run lint
+bun run security:audit
+bun run format
+bun run boundaries
+bun run effect:source:check
 ```
 
 There is no root typecheck script. Run the typecheck owned by each changed
 workspace, for example:
 
 ```sh
-pnpm --filter www typecheck
-pnpm --filter @repo/backend typecheck
-pnpm --filter @repo/design-system typecheck
+bun --filter www typecheck
+bun --filter @repo/backend typecheck
+bun --filter @repo/design-system typecheck
 ```
 
 Tests use Vitest config files owned by each workspace. Keep tests colocated as
@@ -199,7 +198,7 @@ Nakafa consumes only authenticated current Aksara contracts and signed
 publication artifacts.
 
 The shared `@nakafa/aksara-contracts/locale` module is the only locale source
-of truth. English, Indonesian, and German are active. Next.js routing, API
+of truth. English, Indonesian, and German are active. TanStack Start routing, API
 validation, Convex validators, AI language handling, date formatting, checkout
 localization, and sitemap generation derive from that contract. Do not add a
 second app-local locale list.
@@ -227,9 +226,9 @@ Open Source Definition.
 
 | Area | License or policy |
 | --- | --- |
-| Software source code | [Nakafa Source Available License 1.0](LICENSE) |
-| Educational content, articles, exercises, datasets, and media | [Nakafa Content License 1.0](CONTENT_LICENSE.md) |
-| Names, logos, domains, product names, UI identity, and brand assets | [Nakafa Trademark and Brand Policy](TRADEMARKS.md) |
+| Software source code | [Nakafa Source Available License 2.0](LICENSE) |
+| Educational content, articles, exercises, datasets, and media | [Nakafa Content License 2.0](CONTENT_LICENSE.md) |
+| Names, logos, domains, product names, UI identity, and brand assets | [Nakafa Trademark and Brand Policy 2.0](TRADEMARKS.md) |
 
 Commercial, hosted, redistribution, modification, white-label, rebrand, and
 AI-training uses require prior written permission from PT. Nakafa Tekno

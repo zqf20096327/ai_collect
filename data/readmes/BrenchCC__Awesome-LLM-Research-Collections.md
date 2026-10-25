@@ -14,6 +14,7 @@
   - [Interpretability](#interpretability)
   - [Detection](#detection)
 - [Multimodal LLMs](#multimodal-llms)
+  - [Video Generation](#video-generation)
   - [Vision-Language](#vision-language)
   - [Multimodal Reasoning](#multimodal-reasoning)
   - [VLA](#vla)
@@ -277,7 +278,23 @@
 
 # Multimodal LLMs
 
+## Video Generation
+
+- **StreamEval: Evaluating Interactive Streaming Video Generation Models** (2026.10) \
+  **Description**: StreamEval is a benchmark for interactive streaming video generation across avatar dialogue and performance, world generation, and video editing. Its 300 scripted cases span 15–300-second sessions and use ten metrics to assess task execution, state consistency, visual fidelity, and audio-visual coordination. \
+  <a href="https://arxiv.org/abs/2610.28402"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
+  <a href="https://streameval.ai/"><img src="assets/icons/project.svg" alt="Project" width="20"></a>
+  <a href="https://github.com/StreamEval/StreamEval"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
+  <a href="https://huggingface.co/datasets/StreamEval/StreamEval"><img src="assets/icons/huggingface.svg" alt="Hugging Face" width="20"></a>
+
 ## Vision-Language
+
+- **WeVisOne-VL: Unified Visual Perception from Objects to Pixels** (2026.10) \
+  **Description**: WeVisOne-VL unifies object-level and pixel-level visual perception in a vision-language model, supporting detection, localization, counting, pointing, OCR, segmentation, and matting through structured token prediction and a lightweight pixel decoder. Trained with staged supervised fine-tuning followed by mixed-task reinforcement learning, it reports leading results across more than 30 benchmarks. \
+  <a href="https://arxiv.org/abs/2610.31329"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
+  <a href="https://tencent.github.io/WeVisOne-VL/"><img src="assets/icons/project.svg" alt="Project" width="20"></a>
+  <a href="https://github.com/Tencent/WeVisOne-VL"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
+  <a href="https://huggingface.co/tencent/WeVisOne-VL-4B"><img src="assets/icons/huggingface.svg" alt="Hugging Face" width="20"></a>
 
 - **OmniCompass: A Holistic Benchmark for Omni-Modal Video Grounding and Understanding** (2026.10) \
   **Description**: OmniCompass evaluates video understanding through visual and joint audio-visual tracks, combining temporal grounding, spatial grounding, and question answering under paired text-only and text+image target specifications. Evaluation of 50 MLLMs reveals persistent difficulties in precise grounding, audio-visual understanding, and consistency across target specifications. \
@@ -823,18 +840,4 @@
 - **SafeEvolve: Harness-Policy Co-Evolution from Agent Experience for Safety Alignment** (2026.09) \
   **Description**: SafeEvolve uses safety evidence from on-policy agent trajectories to co-evolve runtime safety prompts, hierarchical skills, and the policy. It combines bounded, auditable harness updates with harness-use SFT and harness-augmented RL using verifier-decomposed rewards, improving the balance between safety and task utility during multi-step interactions. \
   <a href="https://arxiv.org/abs/2609.02786"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
-  <a href="https://github.com/MaoPopovich/SafeEvolve"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
-
-- **X-Tree: Tokenizing Reusable Experience for Efficient Agent Generalization** (2026.09) \
-  **Description**: X-Tree mines reusable hierarchies of action spans from agent trajectories without LLM calls, merging frequently reused and successful subprocedures into an experience tree. Its nodes guide offline RL as training instances, online RLVR through adaptive skill bonuses, and on-policy self-distillation as privileged teacher context. \
-  <a href="https://arxiv.org/abs/2609.32993"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
-  <a href="https://sitaocheng.github.io/xtree/"><img src="assets/icons/project.svg" alt="Project" width="20"></a>
-  <a href="https://github.com/sitaocheng/X-Tree"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
-  <a href="https://huggingface.co/papers/2609.32993"><img src="assets/icons/huggingface.svg" alt="Hugging Face" width="20"></a>
-
-- **DART-SD: Diamond-topology Aware Retrieval and Tuning for Self-Distillation of Multi-Turn Tool-Calling Agents** (2026.08) \
-  **Description**: This paper proposes DART-SD, a topology-aware self-distillation framework that represents multi-turn tool execution as an Interaction-State Transition Graph (ISTG), preserving the diamond-shaped alternatives induced by order-independent sub-goals. It identifies the Critical Topological Breakpoint (CTB) in failed student rollouts and applies supervision only to retrieved recovery steps, protecting valid prefixes while progressively improving tool-use behavior. \
-  <a href="https://arxiv.org/abs/2608.18524"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
-
-- **ContextPilot: Teaching Agents for Proactive Context Management via Fine-grained RL** (2026.08) \
-  **Description**: ContextPilot equips long-horizon agents with planning, long-ter
+  <a h

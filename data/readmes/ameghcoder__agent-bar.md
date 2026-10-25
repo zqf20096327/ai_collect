@@ -106,6 +106,12 @@ agentbar install-hooks --apply   # usually "Nothing to change"; safe to run
 Reinstalling a file with the *same* version number needs
 `sudo apt install --reinstall ./agentbar_<version>_all.deb`.
 
+From 0.3.0 on, AgentBar notices when it has been upgraded. It shows "Log out to
+finish updating AgentBar" in its menu, plus one notification, each with a Log
+Out button that opens GNOME's normal logout confirmation. It never logs you out
+by itself. Upgrading from 0.2.x, log out by hand: 0.2.x does not have this
+check yet.
+
 ## Uninstall
 
 Three separate steps, from least to most thorough:
@@ -143,6 +149,33 @@ Three separate steps, from least to most thorough:
 | `No updates` | No event for 10 minutes. Claude may still be busy with a long command; the menu says "Claude open" if its process is alive |
 | `Ended` | The Claude process is gone (terminal closed, crash) |
 | `AgentBar - No sessions` | Nothing captured yet, or every session is older than 24 hours |
+
+## Settings
+
+Open AgentBar's settings from its menu (Settings), or from the Extensions app
+(AgentBar, then the settings button).
+
+| Setting | Choices |
+| --- | --- |
+| Show in top bar | Icon and text (default), Icon only, Text only |
+| Icon | Animated spark (default), Simple pulse, Still |
+| Alerts: Permission needed, Waiting for you, Failed | Banner and sound (default), Banner only, Sound only, Top bar only |
+| Alerts: Turn complete | Banner only (default), Banner and sound, Sound only, Top bar only |
+
+With Animated spark, the icon spins a small spark while Claude works, pulses
+when it needs you, pops once when a turn completes, and shakes once when a
+turn fails. Stale and ended sessions never move, and the spark pauses in
+fullscreen, on the lock screen, and when GNOME's "Reduce animation" is on.
+
+Changes apply immediately. With Icon only, screen readers still read the
+whole title; with Text only, "Permission needed" and "Failed" keep their
+colours. Each alert row has a **Test** button that raises one test alert
+through AgentBar itself, so you can hear and see your choice without waiting
+for Claude. Each state has its own sound from your system's sound theme. When
+several alerts arrive together, only the most urgent one plays a sound. Do Not
+Disturb silences banners and sounds alike. Whatever you choose, the top bar
+and the menu always show the true state. Settings stay on your machine, in
+GNOME's own settings store.
 
 ## Troubleshooting
 

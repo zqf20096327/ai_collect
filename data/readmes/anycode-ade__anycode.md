@@ -1,6 +1,9 @@
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
-
 # anycode
+
+[![Release](https://img.shields.io/github/v/release/anycode-ade/anycode?style=flat-square&color=3388ff)](https://github.com/anycode-ade/anycode/releases)
+[![Build](https://img.shields.io/github/actions/workflow/status/anycode-ade/anycode/test-build.yml?branch=main&style=flat-square)](https://github.com/anycode-ade/anycode/actions/workflows/test-build.yml)
+[![Tests](https://img.shields.io/badge/tests-400%2B%20passing-brightgreen?style=flat-square)](https://github.com/anycode-ade/anycode/actions)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg?style=flat-square)](LICENSE)
 
 **anycode** is a web platform where people and agents build together. Run it locally or remotely and work from any device you want: desktop, laptop, mobile, or even VR. Use any agent, including Codex, Claude Code, OpenCode, as well as local models.
 
@@ -26,30 +29,41 @@
 
 The project consists of several packages:
 
-- **`anycode/`** - Main React frontend application
+- **`anycode/`** - Main React frontend application and Tauri desktop app
 - **`anycode-base/`** - Core editor library with tree-sitter support
 - **`anycode-react/`** - React wrapper for the editor
 - **`anycode-backend/`** - Rust backend for file system access
 - **`anycode-example/`** - Example application demonstrating anycode usage
 
 ## Installation
-### From releases
 
-#### macOS and Linux one-shot installer:
-```bash
-curl -fsSL https://raw.githubusercontent.com/anycode-ade/anycode/main/install.sh | sh
-```
+### Desktop Application
 
-#### Windows PowerShell installer (x64):
-```powershell
-irm https://raw.githubusercontent.com/anycode-ade/anycode/main/install.ps1 | iex
-```
+Download the prebuilt native installer from [GitHub Releases](https://github.com/anycode-ade/anycode/releases/latest):
 
-Windows installer details:
-- Installs `anycode.exe` into `%USERPROFILE%\AppData\Local\anycode\bin` by default
-- Adds that directory to the user `PATH` if needed
-- Supports overrides via `ANYCODE_VERSION`, `ANYCODE_INSTALL_DIR`, and `ANYCODE_REPO`
-- Current release installer targets Windows x64; Windows ARM64 can still build from source
+| Platform | Packages |
+|---|---|
+| **macOS** | [Apple Silicon (ARM64)](https://github.com/anycode-ade/anycode/releases/latest) (`.dmg`) · [Intel (x64)](https://github.com/anycode-ade/anycode/releases/latest) (`.dmg`) |
+| **Windows** | [Windows x64 Installer](https://github.com/anycode-ade/anycode/releases/latest) (`.exe`) |
+| **Linux** | [Debian / Ubuntu](https://github.com/anycode-ade/anycode/releases/latest) (`.deb`) · [Universal Binary](https://github.com/anycode-ade/anycode/releases/latest) (`.tar.gz`) |
+
+> 📖 **Need help with first launch or package dependencies?**  
+> Check the **[Installation Guide](docs/install.md)** for macOS Gatekeeper approval (`xattr`), Windows Defender SmartScreen, and Linux WebKitGTK setup.
+
+### CLI & Server
+
+Run anycode as a standalone local or remote server:
+
+- **macOS & Linux**:
+  ```bash
+  curl -fsSL https://raw.githubusercontent.com/anycode-ade/anycode/main/install.sh | sh
+  ```
+- **Windows (PowerShell)**:
+  ```powershell
+  irm https://raw.githubusercontent.com/anycode-ade/anycode/main/install.ps1 | iex
+  ```
+
+See the [Installation Guide](docs/install.md) for custom install paths and version overrides.
 
 ## Usage
 
@@ -115,7 +129,10 @@ Prerequisites:
    cargo run --release
    ```
 
-5. **Open your browser** and navigate to the frontend URL
+5. **Run Desktop app in development:**
+   ```bash
+   pnpm --filter anycode tauri dev
+   ```
 
 ## Contributing
 

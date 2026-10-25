@@ -43,7 +43,7 @@ Margin needs Harper installed alongside it.
 
 - **VS Code:** [Margin on the Marketplace](https://marketplace.visualstudio.com/items?itemName=phoenixak.margin-ai) or [Open VSX](https://open-vsx.org/extension/phoenixak/margin-ai) (VSCodium, Cursor, Windsurf), or `code --install-extension phoenixak.margin-ai`. It installs Harper's extension too.
 - **Chrome:** [Margin on the Chrome Web Store](https://chromewebstore.google.com/detail/margin-ai-second-pass-for/bjpeephdhfhplfapahlnnjdkgmejnpfl). Use it alongside Harper's browser extension.
-- **Firefox:** in review on Firefox Add-ons. Until then, build from source (below).
+- **Firefox:** [Margin on Firefox Add-ons](https://addons.mozilla.org/firefox/addon/margin-ai/) (Firefox 140+, desktop). Use it alongside Harper's browser extension.
 - **Obsidian:** **Margin AI Proofreader** in the [community plugins](https://community.obsidian.md/plugins/margin-ai-proofreader) (Settings → Community plugins → Browse). Needs Harper's Obsidian plugin.
 - **Neovim, Helix, Emacs, Sublime, Zed:** [margin-ls](packages/ls/README.md), from source.
 

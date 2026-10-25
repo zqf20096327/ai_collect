@@ -2,18 +2,33 @@
 
 # Agent Config — every claim machine-checked, including the artifact counts in these badges
 
-[![Smoke](https://github.com/event4u-app/agent-config/actions/workflows/smoke.yml/badge.svg)](https://github.com/event4u-app/agent-config/actions/workflows/smoke.yml) [![Public install smoke (3 OS × 2 Node)](https://github.com/event4u-app/agent-config/actions/workflows/smoke-public-install.yml/badge.svg)](https://github.com/event4u-app/agent-config/actions/workflows/smoke-public-install.yml) [![npm](https://img.shields.io/npm/v/@event4u/agent-config?style=flat-square&label=npm&color=orange)](https://www.npmjs.com/package/@event4u/agent-config) [![agent-config MCP server](https://glama.ai/mcp/servers/event4u-app/agent-config/badges/score.svg)](https://glama.ai/mcp/servers/event4u-app/agent-config) [![MCP Toplist](https://mcptoplist.com/badge/glama%2Fevent4u-app%2Fagent-config.svg)](https://mcptoplist.com/server/glama%2Fevent4u-app%2Fagent-config)
+[![Smoke](https://github.com/event4u-app/agent-config/actions/workflows/smoke.yml/badge.svg)](https://github.com/event4u-app/agent-config/actions/workflows/smoke.yml) [![Public install smoke (3 OS × 2 Node)](https://github.com/event4u-app/agent-config/actions/workflows/smoke-public-install.yml/badge.svg)](https://github.com/event4u-app/agent-config/actions/workflows/smoke-public-install.yml) [![npm](https://img.shields.io/npm/v/@event4u/agent-config?style=flat-square&label=npm&color=orange)](https://www.npmjs.com/package/@event4u/agent-config) [![agent-config MCP server](https://glama.ai/mcp/servers/event4u-app/agent-config/badges/score.svg)](https://glama.ai/mcp/servers/event4u-app/agent-config) [![MCP Toplist](https://mcptoplist.com/badge/io.github.event4u-app%2Fagent-config.svg)](https://mcptoplist.com/server/io.github.event4u-app%2Fagent-config)
 
-[![Skills](https://img.shields.io/badge/Skills-301-orange?style=flat-square)](dist/agent-src/skills/) [![Rules](https://img.shields.io/badge/Rules-122-orange?style=flat-square)](dist/agent-src/rules/) [![Commands](https://img.shields.io/badge/Commands-210-orange?style=flat-square)](dist/agent-src/commands/) [![Guidelines](https://img.shields.io/badge/Guidelines-121-orange?style=flat-square)](docs/guidelines/) [![Personas](https://img.shields.io/badge/Personas-29-orange?style=flat-square)](dist/agent-src/personas/) [![Advisors](https://img.shields.io/badge/Advisors-5-orange?style=flat-square)](dist/agent-src/personas/advisors/) <!-- claim:published-artifact-counts -->
+
+[![Skills](https://img.shields.io/badge/Skills-301-orange?style=flat-square)](dist/agent-src/skills/) [![Rules](https://img.shields.io/badge/Rules-122-orange?style=flat-square)](dist/agent-src/rules/) [![Commands](https://img.shields.io/badge/Commands-211-orange?style=flat-square)](dist/agent-src/commands/) [![Guidelines](https://img.shields.io/badge/Guidelines-121-orange?style=flat-square)](docs/guidelines/) [![Personas](https://img.shields.io/badge/Personas-29-orange?style=flat-square)](dist/agent-src/personas/) [![Advisors](https://img.shields.io/badge/Advisors-5-orange?style=flat-square)](dist/agent-src/personas/advisors/) <!-- claim:published-artifact-counts -->
 [![downloads](https://img.shields.io/npm/dm/@event4u/agent-config?style=flat-square&label=downloads%2Fmonth&color=orange)](https://www.npmjs.com/package/@event4u/agent-config)
 
-<sub>**How these are counted** — one canonical counter, `agent-config` → `update_counts --check`, re-derives all six from the tree and fails CI when one is off by one. Two bases are not what the linked directory shows, so they are stated here rather than left to be inferred: **Commands 210** counts every command file **recursively** (the linked directory holds 62 at its top level) and **Rules 122** counts the **source** rules while the linked projection holds 121 — one rule is dormant and is not projected. **Personas 29** excludes the directory README. Counts are of files and directories: none of them measures quality, activation or adoption. <!-- claim:published-artifact-counts --></sub>
+<sub>**How these are counted** — one canonical counter, `agent-config` → `update_counts --check`, re-derives all six from the tree and fails CI when one is off by one. Two bases are not what the linked directory shows, so they are stated here rather than left to be inferred: **Commands 211** counts every command file **recursively** (the linked directory holds 62 at its top level) and **Rules 122** counts the **source** rules while the linked projection holds 121 — one rule is dormant and is not projected. **Personas 29** excludes the directory README. Counts are of files and directories: none of them measures quality, activation or adoption. <!-- claim:published-artifact-counts --></sub>
 
-**Try it in 30 seconds** — drop one read-only subagent into any repo and watch it check "done": `@production-validator check this branch is actually done`. No wizard, no lock-in, nothing else installed — the [30-second wedge ↓](#quickstart) is the whole first step. Start at the proof, not the catalog: **[event4u-app.github.io/agent-config/proof/](https://event4u-app.github.io/agent-config/proof/)**.
+**Try it in 30 seconds** — one read-only subagent checks "done" in any repo, nothing else installed: [the wedge ↓](#quickstart). Start at the proof, not the catalog: **[event4u-app.github.io/agent-config/proof/](https://event4u-app.github.io/agent-config/proof/)**.
 
 ![The trust surface running green — every "verify it yourself" command from a real, CI-re-executed run](docs/media/proof-demo.gif)
 
 **Every public claim in this README is machine-checked — [verify it yourself](docs/proof.md).** In a market that runs on unbacked headline numbers, this one binds each claim to resolvable evidence or fails its own build.
+
+### See what a change touches
+
+`agent-config code-graph map` draws an offline map of the repository. Pick a file and every area it reaches lights up.
+
+![Code map blast radius](.github/assets/screenshots/graph-blast.png)
+
+<details><summary><b>More views</b></summary>
+
+| ![Area](.github/assets/screenshots/area.png) | ![Knowledge](.github/assets/screenshots/knowledge.png) |
+|---|---|
+| ![Matrix](.github/assets/screenshots/matrix.png) | ![Treemap](.github/assets/screenshots/treemap.png) |
+
+</details>
 
 > **Choose your experience — developer · founder · content · agency · finance · ops. Add packs. Get a focused command set, not a 500-artefact dump.** Bring your own AI provider.
 
@@ -33,8 +48,7 @@ npx -y @event4u/agent-config init
 /work "your first real task"
 ```
 
-**Try one thing in 30 seconds** — before the full suite, drop in a single
-self-contained subagent and see the discipline on your own repo:
+**Or try one subagent first**, on your own repo:
 
 ```bash
 mkdir -p .claude/agents
@@ -43,10 +57,9 @@ curl -fsSL https://raw.githubusercontent.com/event4u-app/agent-config/main/docs/
 # then in Claude Code:  @production-validator check this branch is actually done
 ```
 
-`production-validator` is read-only and installs nothing else — it gates "done"
-by hunting mocks/stubs on the shipped path and demanding real-system evidence
-([what it does](docs/wedge/production-validator/README.md)). Like it? The full
-suite installs in one command — [Quickstart ↓](#quickstart).
+`production-validator` is read-only: it hunts mocks and stubs on the shipped path
+and demands real-system evidence ([what it does](docs/wedge/production-validator/README.md)).
+The full suite is one command — [Quickstart ↓](#quickstart).
 
 ---
 
@@ -239,7 +252,7 @@ refine → memory → analyze → plan → implement → test → verify → rep
 - **Plans** the change; you confirm before any file is touched.
 - **Implements** under `minimal-safe-diff` + `scope-control` — no drive-by edits.
 - **Tests** (targeted first, full suite on success).
-- **Reviews** the diff through four judges (bugs, security, tests, code quality).
+- **Reviews** the diff through seven judges (bugs, security, tests, quality, architecture, spec, overbuild).
 - **Reports** changes, verdicts, follow-ups — then stops. `/commit` and `/pr:create` are suggestions, never auto-run.
 
 Any ambiguity halts the flow with numbered options — never a silent guess. Persona comes from `.agent-settings.yml` (`roles.active_role`): `senior-engineer` (default), `qa` or `advisory` (plan-only).

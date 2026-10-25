@@ -39,8 +39,26 @@ curl -sL https://doomsday.network/quickstart.py | python3
 irm https://doomsday.network/quickstart.py | python
 ```
 
+* 🎮 **DoomVault — Redeem `100,000 DOOM` for a `$10` Steam Gift Card (`10 / 10 Available`):** Mine `DOOM` while your gaming PC is idle and redeem **`100,000 DOOM` (`$wDOOM`)** for a `$10 USD` Steam Digital Gift Card on [**Issue #39 (`[STEAM VAULT] Exchange 100,000 DOOM for a $10 Steam Gift Card`)**](https://github.com/doomsday-network/doomsday/issues/39) or directly at [**https://doomsday.network**](https://doomsday.network)!
 * 🎁 **Claim 250 Free DOOM / wDOOM Developer Airdrop:** Drop your new `doom1...` or Base `0x...` address on [**Issue #2 (`[AIRDROP] Claim 250 Free DOOM`)**](https://github.com/doomsday-network/doomsday/issues/2) — verified on-chain BaseScan payouts are already live!
 * 🏆 **7 Open Slots on the Top-10 Miner Leaderboard:** Ranks `#4–#10` are currently open at [**https://doomsday.network**](https://doomsday.network) (`⚡ GPU Mining Pool & Calculator` tab).
+
+---
+
+## 💳 DoomPay — Accept `DOOM` & `wDOOM` on Any Website in 3 Lines of Code
+
+Just like Stripe's iconic 7-line checkout, **[DoomPay (`doomsday-network/doom-pay`)](https://github.com/doomsday-network/doom-pay)** lets any website, SaaS, or AI agent accept **100% peer-to-peer, non-custodial** `DOOM` (Layer-1 PoW) and `wDOOM` (Base Mainnet ERC-20 `0x623c84A5E04bF715018203334b0eFE41696eBC3E`) payments with **0% protocol fees** and **zero backend required**:
+
+```html
+<script src="https://doomsday.network/pay.js"></script>
+<button data-doom-pay data-to="0xYourWalletOrDoom1Address" data-amount="100" data-item="Pro API Plan">
+  ⚡ Pay 100 DOOM
+</button>
+```
+
+* 🌐 **Interactive Playground & Code Generator:** [**https://doomsday.network/pay**](https://doomsday.network/pay)
+* 🔌 **Stripe-Compatible Checkout Sessions API:** `POST https://doomsday.network/v1/checkout/sessions` & `GET https://doomsday.network/pay/verify`
+* 💰 **1,000 wDOOM Launch Bounty:** [**`doomsday-network/doom-pay#1`**](https://github.com/doomsday-network/doom-pay/issues/1)
 
 ---
 

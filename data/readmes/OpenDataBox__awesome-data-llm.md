@@ -46,6 +46,7 @@ We observe the evolution of **LLM/Agent-as-Data-Analyst** techniques follows a f
 
 ## 📤 LLM-Enhanced Application-Ready Data Preparation
 
+
 We present a systematic survey of **LLM-enhanced data preparation**, an emerging paradigm driven by growing demands for application-ready data, advances in large language models, and agent-oriented data infrastructures. 
 - **(1) Paradigm Shift Identification:** We reveal the transition from rule-based, model-specific pipelines to prompt-driven, context-aware, and agentic preparation workflows;
 - **(2) Task-Centric Taxonomy:** We organize existing methods into data cleaning, data integration, and data enrichment;  
@@ -214,13 +215,15 @@ Mike Conover, Matt Hayes, Ankit Mathur, et al. *2023*. [[Source](https://www.dat
 
 ### Data for LLM Evaluation
 
-1. **MMMU: A Massive Multi-discipline Multimodal Understanding and Reasoning Benchmark for Expert AGI**
+1. **StructEval: Benchmarking LLMs' Capabilities to Generate Structural Outputs**
+   Jialin Yang, Dongfu Jiang, Lipeng He, et al. *TMLR 2025*. [[Paper](https://openreview.net/forum?id=buDwV7LUA7)] [[Code](https://github.com/TIGER-AI-Lab/StructEval)] [[Dataset](https://huggingface.co/datasets/TIGER-Lab/StructEval)]
+2. **MMMU: A Massive Multi-discipline Multimodal Understanding and Reasoning Benchmark for Expert AGI**
    Xiang Yue, Yuansheng Ni, Kai Zhang, et al. *CVPR 2024*. [[Paper](https://openaccess.thecvf.com/content/CVPR2024/papers/Yue_MMMU_A_Massive_Multi-discipline_Multimodal_Understanding_and_Reasoning_Benchmark_for_CVPR_2024_paper.pdf)]
-2. **LexEval: A Comprehensive Chinese Legal Benchmark for Evaluating Large Language Models**
+3. **LexEval: A Comprehensive Chinese Legal Benchmark for Evaluating Large Language Models**
    Haitao Li, You Chen, Qingyao Ai, et al. *NeurIPS 2024*. [[Paper](https://arxiv.org/abs/2409.20288)]
-3. **What disease does this patient have? a large-scale open domain question answering dataset from medical exams**
+4. **What disease does this patient have? a large-scale open domain question answering dataset from medical exams**
    Di Jin, Eileen Pan, Nassim Oufattole, et al. *AAAI 2021*. [[Paper](https://arxiv.org/abs/2009.13081)]
-4. **Evaluating Large Language Models Trained on Code**
+5. **Evaluating Large Language Models Trained on Code**
    Mark Chen, Jerry Tworek, Heewoo Jun, et al. *arXiv 2021*. [[Paper](https://arxiv.org/abs/2107.03374)]
 
 ### Data for LLM Agents
@@ -720,9 +723,11 @@ Synthesize reasoning steps using, e.g., CoT.
 
 #### Reinforcement Learning
 
-1. **Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena**
+1.**Chunks as Arms: Multi-Armed Bandit-Guided Sampling for Long-Context LLM Preference Optimization**
+   Shaohua Duan, Pengcheng Huang, Xinze Li, et al. *ACL 2026*. [[Paper](https://arxiv.org/abs/2508.13993)]
+2. **Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena**
    Lianmin Zheng, Wei-Lin Chiang, Ying Sheng, et al. *NeurIPS 2023*. [[Paper](https://dl.acm.org/doi/10.5555/3666122.3668142)]
-2. **Training a Helpful and Harmless Assistant with Reinforcement Learning from Human Feedback**
+3. **Training a Helpful and Harmless Assistant with Reinforcement Learning from Human Feedback**
    Yuntao Bai, Andy Jones, Kamal Ndousse, et al. *arXiv 2022.* [[Paper](https://doi.org/10.48550/arXiv.2204.05862)]
 
 #### Retrieval-Augmentation Generation
@@ -1201,7 +1206,11 @@ Synthesize reasoning steps using, e.g., CoT.
 
 1. **A Watermark for Large Language Models** [[Paper](https://arxiv.org/abs/2301.10226)]
 
+#### Agent Execution Tracing and Replay
 
+1. **OrcaReplay**: Records LLM requests, responses, and tool
+   interactions as local traces for replay and debugging.
+   [[Code](https://github.com/Continuum-AI-Corp/OrcaReplay)]
 
 ## 4 LLM for Data Management
 
@@ -1420,10 +1429,4 @@ Synthesize reasoning steps using, e.g., CoT.
    Mingyang Geng, Shangwen Wang, Dezun Dong, et al. *ICSE 2024.* [[Paper](https://doi.org/10.1145/3597503.3608134)]
 3.  **Automatic Semantic Augmentation of Language Model Prompts (for Code Summarization)**
    Toufique Ahmed, Kunal Suresh Pai, Premkumar Devanbu, Earl Barr. *ICSE 2024.* [[Paper](https://doi.org/10.1145/3597503.3639183)]
-4.  **CoCoMIC: Code Completion by Jointly Modeling In-file and Cross-file Context**
-   Yangruibo Ding, Zijian Wang, Wasi Ahmad, et al. *LREC-COLING 2024.* [[Paper](https://aclanthology.org/2024.lrec-main.305/)]
-5.  **SCLA: Automated Smart Contract Summarization via LLMs and Semantic Augmentation**
-   Yingjie Mao, Xiaoqi Li, Wenkai Li, et al. *arXiv 2024.* [[Paper](https://doi.org/10.48550/arXiv.2402.04863)]
-6.  **Code Structure–Guided Transformer for Source Code Summarization**
-   Shuzheng Gao, et al. *ACM Transactions on Software Engineering and Methodology 2023.* [[Paper](https://doi.org/10.1145/3522674)]
-7.  **RepoFusion: Training Code Models to Understand Your Re
+4.  **CoCoMIC: Code Completion by Jointly Modeling In-file and 

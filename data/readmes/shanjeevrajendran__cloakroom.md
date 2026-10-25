@@ -1,8 +1,8 @@
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/shanjeevrajendran/cloakroom/main/assets/hero.svg" alt="Cloakroom, a privacy layer for Claude Code: names, emails, addresses and API keys are swapped for placeholders before the model sees them." width="880">
+<img src="https://raw.githubusercontent.com/shanjeevrajendran/cloakroom/main/assets/hero.svg" alt="Cloakroom, a privacy layer for AI coding agents (Claude Code, Codex CLI, Gemini CLI): names, emails, addresses and API keys are swapped for placeholders before the model sees them." width="880">
 
-**Cloakroom is a free, open-source Claude Code plugin that masks API keys, secrets and personal data (PII) on your machine before the model sees them.**
+**Cloakroom is free and open source. It masks API keys, secrets and personal data (PII) on your machine before your AI coding agent sees them. Works with Claude Code, Codex CLI and Gemini CLI.**
 
 <p>
   <a href="https://www.youtube.com/shorts/U9lN4emgeE0">▶ 40-second demo</a> ·
@@ -29,10 +29,48 @@
 **Cloakroom swaps your secrets and personal data for placeholders before Claude sees them, and puts the real values
 back in the files Claude writes.**
 
-The only Claude Code privacy tool that catches personal data, masks instead of blocking, and learns from your corrections.
+Cloakroom catches personal data as well as keys, masks it instead of blocking the call, and learns from your corrections.
 
 Runs on your machine, sets itself up on first start, works on Mac, Windows and Linux. Free and open source. Young:
 expect rough edges.
+
+New in 0.7, it also protects other coding agents (Mac and Linux):
+
+- **OpenAI's Codex CLI:** run `cloakroom install codex` ([Codex](#codex)).
+- **Google's Gemini CLI:** run `cloakroom install gemini` ([Gemini CLI](#gemini-cli)).
+
+## What works where
+
+| Protection | Claude Code | Codex CLI | Gemini CLI |
+|---|---|---|---|
+| Prompts you type | partly: blocked, not masked | partly: blocked, not masked | partly: blocked, not masked; pictures unchecked |
+| File reads | ✓ | partly: via shell, as blocked result | partly: masked, sent as blocked result |
+| Command output | ✓ | partly: blocked result; long-running output unmasked | partly: masked, sent as blocked result |
+| MCP tool output | ✓ | partly: masked, sent as blocked result | partly: masked, sent as blocked result |
+| Images and PDFs | ✓ | partly: `view_image` has no hook | partly: images read by OCR, PDFs held back |
+| Real values put back in commands and edits | ✓ | partly: unknown commands denied, not asked | ✓ |
+| Real values kept out of web and MCP calls | ✓ | partly: hosted web search has no hook | ✓ |
+| Keys written into files git would commit | ✓ | ✓ | ✓ |
+| The agent's `git commit` / `git push` check | ✓ | ✓ | ✓ |
+| Network sends holding secrets or placeholders | ✓ | partly: denied instead of asked | ✓ |
+| Calls that move money | ✓ | ✓ | ✓ |
+| Git hook for your own commits | ✓ (Windows: untested) | ✓ | ✓ |
+| Systems | Mac, Linux, Windows | Mac, Linux | Mac, Linux |
+
+Codex skips the hooks until you trust them once (`/hooks`). Gemini CLI lets a call through when a check runs past
+its time limit. Both were tested live (Codex 0.164, Gemini CLI 0.65). Everything
+else: [Known limits](https://github.com/shanjeevrajendran/cloakroom/blob/main/docs-LIMITS.md).
+
+## Recent releases
+
+- **0.7.1** (2026-10-25): checks that let a call through unchecked are logged and counted in `cloakroom report`;
+  `cloakroom install git-hook` checks the commits you make yourself; Codex can hold long-running commands.
+- **0.7.0** (2026-10-24): Cloakroom also protects Codex CLI and Gemini CLI, on Mac and Linux.
+- **0.6.6** (2026-10-24): a known secret is still caught when hashed, hex-encoded or written backwards.
+- **0.6.5** (2026-10-24): US bank routing and account numbers are masked, and calls that move money wait for your OK.
+
+Claude Code plugin updates arrive a few days after each PyPI release, once the release has settled. All changes:
+[CHANGELOG.md](https://github.com/shanjeevrajendran/cloakroom/blob/main/CHANGELOG.md).
 
 **Hand Claude the files you'd never paste into a chat:**
 
@@ -41,6 +79,8 @@ expect rough edges.
   the drafts saved on your disk have the real names.
 - **Medical or HR records:** names, birth dates, addresses and ID numbers are masked, so Claude can summarise or tidy a record without knowing whose it is.
 - **`.env` files and logs:** Claude fixes the config without ever seeing the password or API key.
+- **Disguised copies:** a key or email that a command hashed, hex-encoded or reversed is still masked
+  ([what's covered](#disguised-copies)).
 - **Finance work:** bank and card numbers are masked, calls that move money wait for your OK, and `cloakroom report`
   with the tamper-evident log is your audit trail ([for finance teams](#for-finance-teams)).
 - **Scans and photos of documents:** read on your machine (no upload) and masked like any other file.
@@ -137,11 +177,24 @@ Masking is the core. These come with it, on by default, and need nothing from yo
 - **Network one-liners count too:** `python -c`, `node -e`, `ruby -e`, `perl -e`, `php -r`, `deno eval` and
   `bash -c` that can open a connection are treated like curl.
 - **Encoded copies count:** a secret Cloakroom has seen is also caught base64-encoded, URL-encoded or JSON-escaped.
+- **Disguised copies count:** that secret is also caught hashed, as hex or reversed ([details](#disguised-copies)).
 - **Web, MCP and subagent calls carry placeholders only:** a web fetch, an MCP tool call or a prompt to a subagent
   that holds a real value is stopped before it runs.
 - **Pictures and PDFs become masked text:** PDFs, scans, photos and images returned by MCP tools are read on your
   machine and Claude gets masked text, never the file or the picture. Without OCR an image is held back, with a
   one-line reason.
+
+<a id="disguised-copies"></a>**Disguised copies**
+
+Once Cloakroom has seen a key, password, card or account number, or an email, it also looks for copies a command
+changed on the way. Each copy gets its own placeholder, and the exact copy is put back in files Claude writes.
+
+- **Covered:** MD5, SHA-1 and SHA-256 hashes of a key or an email; hex (`6b39...`, `0x...`, `6b 39 ...`,
+  `\x6b...`); a key or password of 12+ characters written backwards; pairs like `user:password` or
+  `DB_PASSWORD=...` in hex or URL encoding; a card or account number's last 4 digits right after "ending in",
+  "last 4" or `****`; an email's username on its own when it can't be an ordinary word (`r.okafor77`, not `admin`).
+- **Not covered:** salted or keyed hashes (bcrypt, HMAC), other hashes, a name in different capitals, initials,
+  a last 4 with no word pointing at it, and anything Cloakroom hasn't seen in plain form first.
 
 **Keys stay out of git**
 
@@ -149,6 +202,12 @@ Masking is the core. These come with it, on by default, and need nothing from yo
   refused, and Claude is told to use `.env` instead. Ignored files and `.env` work as before.
 - **Commits and pushes:** before Claude runs `git commit` or `git push`, Cloakroom reads what would be committed or
   pushed. A key or password there holds the command, naming the file and placeholder; `cr: allow` lets it run once.
+- **Commits you make yourself:** `cloakroom install git-hook` (in a repo) also checks commits you make yourself,
+  with the same rules and your own known secrets (your always-mask values), no agent needed. It adds `pre-commit`
+  and `pre-push` hooks (where `core.hooksPath` points, if set) and never changes a hook another tool put there: it
+  skips it and prints the one line to add to it. Skip the check once with git's own `--no-verify`; remove it with
+  `cloakroom uninstall git-hook`. One repo at a time (no `--global`: git's template folder would only reach new
+  clones). Mac and Linux; Git Bash on Windows isn't tested yet.
 - **Agent config files:** a live token written into `.mcp.json`, `.claude/settings.json`, `.cursor/mcp.json` or a
   copy of `claude_desktop_config.json` in a repo is refused, and Claude is told to use an environment reference
   such as `${GITHUB_TOKEN}`.
@@ -189,7 +248,9 @@ Masking is the core. These come with it, on by default, and need nothing from yo
 - **`cloakroom report [--since 2026-10-01] [--format csv|json]`:** counts per day and session by data kind and action
   (masked, withheld, held, allowed once, denied), with paths reduced to their extension and top folder. It starts
   with what it covers and what it can't: a miss leaves no line, and other agents, machines without Cloakroom and
-  prompts sent with `cr!` are not in it.
+  prompts sent with `cr!` are not in it. A "Checks skipped" section counts the calls let through without a full
+  check (too large, too slow, a git error, the model not ready), by check and reason; you're also told about each
+  reason once per session when it happens.
 - **`cloakroom report --verify`:** checks the log's hash chain and prints the head hash. Keep that somewhere else:
   anyone who rewrites every later line can rebuild the chain. The log keeps `"log_months"` months (default 12).
 - **`cloakroom clean-history [--dry-run]`:** the first run only counts, per project. Files changed in the last ten
@@ -333,6 +394,74 @@ false alarms are Cloakroom's main open problem ([precision, recall and F1 for ev
 
 On Gretel, over half of those extra masks are number strings Cloakroom treats as account or reference numbers; the
 rest are mostly names and addresses Gretel leaves unlabelled.
+
+## Codex
+
+Cloakroom also works with OpenAI's Codex CLI, on Mac and Linux (tested with Codex 0.164).
+
+1. Install the program by hand: `uv tool install "cloakroom[model,torch,ocr]"`.
+2. Run `cloakroom install codex`. It adds four hooks to `~/.codex/hooks.json` and leaves your own hooks alone.
+3. Start Codex (`codex`), type `/hooks`, open each of the four Cloakroom hooks and trust it. Until you do, Codex
+   skips them, and `codex exec` gives no warning, so nothing is masked. `cloakroom doctor` shows whether they're
+   installed.
+
+What works as in Claude Code: shell output and MCP results are masked before the model sees them, placeholders in
+shell commands and patches get their real values back on your machine, real values are kept out of MCP calls, and a
+prompt holding a secret is stopped with what to do next. What's different:
+
+- Codex can't swap a tool's output in place, so the masked output reaches the model as a "blocked" tool result
+  that holds the masked text.
+- Codex hooks can't ask you. A command that would send placeholders off the machine, or one Cloakroom doesn't
+  know, is stopped instead of asked about.
+- **Open gap:** a command that runs longer than Codex waits (10 seconds by default), such as a dev server, a watch
+  or a slow build, hands its first output to the model while it is still running, and Codex runs no hook on that
+  output, so it is not masked. To close most of it, set `"codex_hold_long_running": true` in
+  `~/.cloakroom/config.json` (off by default for now): commands that obviously keep running (`tail -f`, `watch`,
+  `npm run dev` and other dev servers, `docker logs -f`, `docker compose up`, `kubectl logs -f`, `journalctl -f`,
+  `ping` without `-c`, `--watch`...) are then held, with one line saying their output won't be masked; `cr: allow`
+  lets one run once. A slow build or a command that only sometimes runs long isn't caught.
+
+To remove it: `cloakroom uninstall codex`. More in
+[Known limits](https://github.com/shanjeevrajendran/cloakroom/blob/main/docs-LIMITS.md#codex).
+
+## Gemini CLI
+
+Cloakroom also works with Google's Gemini CLI, on Mac and Linux (built against Gemini CLI 0.65).
+
+1. Install the program by hand: `uv tool install "cloakroom[model,torch,ocr]"`.
+2. Run `cloakroom install gemini`. It writes one thing: a Gemini extension named `cloakroom` in
+   `~/.gemini/extensions/cloakroom/` (`gemini-extension.json` and `hooks/hooks.json`, four hooks that call the
+   `cloakroom` program). Your `settings.json` and your own hooks and extensions aren't touched. Gemini runs the
+   hooks from its next start, in every folder; `gemini extensions list` shows it, `cloakroom doctor` too, and warns
+   when the extension is disabled or Gemini's hooks are switched off.
+
+What works as in Claude Code: the output of every tool (shell, file reads, MCP) is masked before the model sees it,
+pictures are read by local OCR or held back, placeholders in shell commands, `write_file` and `replace` get their
+real values back on your machine, real values are kept out of MCP calls and web tools, and a prompt holding a
+secret is stopped with what to do next. What's different:
+
+- Gemini can't swap a tool's output in place, so the masked output reaches the model as a "blocked" tool result
+  that holds the masked text.
+- Prompts can only be stopped, not masked. Gemini could rewrite a prompt on its way to the model, but it keeps the
+  original in the conversation and sends that to Google on other calls no hook sees.
+- Gemini lets a call through when a hook runs past its time limit. Cloakroom never waits for its model to load:
+  until it's ready, checks run on the rules only (keys, cards, IDs).
+
+To remove it: `cloakroom uninstall gemini` (deletes that folder, nothing else). More in
+[Known limits](https://github.com/shanjeevrajendran/cloakroom/blob/main/docs-LIMITS.md#gemini-cli).
+
+## In an editor
+
+- **Claude Code in VS Code or JetBrains:** Cloakroom works as in the terminal. The VS Code extension runs Claude
+  Code with your plugins, and the JetBrains plugin runs `claude` in the IDE's terminal.
+- **Codex in VS Code** (OpenAI's Codex extension): the extension's own Codex reads the same `~/.codex/hooks.json`,
+  so it loads Cloakroom's hooks. Trust them first in the `codex` CLI (`/hooks`, step 3 above); the Codex limits
+  above apply.
+- **Gemini Code Assist in VS Code:** Cloakroom does not protect you there. Its agent mode doesn't run the hooks
+  of Gemini extensions. Use the Gemini CLI in a terminal instead (VS Code's own terminal is fine).
+- **Antigravity**, and editors not listed here: not supported. Cloakroom installs nothing there.
+
+More in [Known limits](https://github.com/shanjeevrajendran/cloakroom/blob/main/docs-LIMITS.md#editors).
 
 ## Ways to run
 

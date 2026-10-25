@@ -31,7 +31,7 @@ and the Studio in one window and our Metal backend running the models. It lives 
 
 ## macOS support (pre-release)
 
-macOS support is available in [v0.1.18](https://github.com/truespar/paddock/releases/tag/v0.1.18)
+macOS support is available in [v0.1.19](https://github.com/truespar/paddock/releases/tag/v0.1.19)
 for Apple Silicon running **macOS 26 or later**. The native app is pre-release;
 expect visual glitches and incomplete features. The native Swift app is under
 active development and is not yet feature-complete.
@@ -99,7 +99,8 @@ Every model below runs on the engine today. Sizes are the checkpoint's own, and
 **Text, vision and tool use**
 
 - **Qwen** - 3.5 9B, 3.6 27B, 3.6 35B-A3B, 3.8 27B, and 3.8 Flash Next
-- **Gemma 4** - 31B, 26B-A4B, and 12B, which also takes speech
+- **Gemma 4** - 31B, 26B-A4B, and 12B; the 12B also takes speech, on NVIDIA
+  GPUs for now
 - **DiffusionGemma** - 26B-A4B, which writes a whole block of text per step
 - **GPT-OSS** - 20B and 120B
 - **Bonsai 2** - 27B, in ternary weights

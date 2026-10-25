@@ -14,6 +14,8 @@ A product of **Wayne Tech Lab LLC**, created by **Lucas (SatoshiUNO)**.
 [Use this template](https://github.com/WayneTechLab/dotSYSTEMX/generate) ·
 [First-time setup](https://github.com/WayneTechLab/dotSYSTEMX/wiki/First-Time-Setup) ·
 [Manual](https://github.com/WayneTechLab/dotSYSTEMX/wiki) ·
+[Advanced walkthrough](#advanced-walkthrough) ·
+[Introduction video](#introduction-video) ·
 [White paper: PDF](.SYSTEMX/MEDIA/White-Paper/SYSTEMX-White-Paper-v2.0.pdf) ·
 [Paper guide](https://github.com/WayneTechLab/dotSYSTEMX/wiki/White-Paper)
 
@@ -24,21 +26,64 @@ A product of **Wayne Tech Lab LLC**, created by **Lucas (SatoshiUNO)**.
 > [release policy](https://github.com/WayneTechLab/dotSYSTEMX/wiki/Release-Policy)
 > and [version history](https://github.com/WayneTechLab/dotSYSTEMX/wiki/Versions-and-Changelog).
 
+## Advanced walkthrough
+
+**Inside the coordination layer** is a **5 minute 54 second** animated guide to
+the implemented `1.11.0-alpha.6` workflow: an accepted plan, bounded task packets,
+Agent 0/X/Y/Z, Agent Alpha, ROOT observations, `.SYSTEMXP` scopes, and reversible
+adoption. It includes an initial project brief, a bounded follow-up prompt, real
+local CLI examples, and a reproducible context-counting demonstration.
+
+[![Watch the advanced .SYSTEMX walkthrough: the coordination layer connects plans, agents, scoped project records, and evidence.](docs/assets/systemx-advanced-poster-4k.jpg)](https://www.youtube.com/watch?v=pLQu1JAZfRU)
+
+[Watch the advanced walkthrough](https://www.youtube.com/watch?v=pLQu1JAZfRU) ·
+[Download the Full HD MP4](https://github.com/WayneTechLab/dotSYSTEMX/releases/download/media-advanced-v2.0/SYSTEMX-Advanced-Walkthrough-v2.0.mp4) ·
+[4K poster](docs/assets/systemx-advanced-poster-4k.jpg) ·
+[Transcript, chapters, and captions](docs/media/advanced-walkthrough/README.md) ·
+[Copyable prompts](docs/media/advanced-walkthrough/PROMPTS.md) ·
+[Context demonstration and limits](docs/media/advanced-walkthrough/CONTEXT-DEMO.md)
+
+The film is **1080p at 24 fps**, with synthetic narration and English captions;
+the separate poster is **native 3840 × 2160**. The local walkthrough uses synthetic
+project data. Its 20 HTML fixtures are not a completed WebApp, and no model,
+provider worker, PR, or cloud deployment was run. The token demonstration compares
+authored inputs, includes setup overhead and a smaller ordinary handoff, and
+does not measure bills, model quality, or processing speed. Media edition **2.0**
+does not change the software version or the generic template records.
+
+## Introduction video
+
+A **1 minute 50 second animated introduction** to project memory, Agent 0/X/Y/Z,
+Agent Alpha, ROOT, AUTOBOT, DATA, `.SYSTEMXP` scopes, and reversible adoption.
+Created in Blender with synthetic narration, original music, and English captions.
+
+[![Watch the .SYSTEMX introduction on YouTube: an animated core represents portable project context beside the uppercase .SYSTEMX wordmark.](docs/assets/systemx-intro-poster-4k.jpg)](https://www.youtube.com/watch?v=-EM-T6uNQAs)
+
+[Watch on YouTube](https://www.youtube.com/watch?v=-EM-T6uNQAs) ·
+[Download the Full HD MP4](https://github.com/WayneTechLab/dotSYSTEMX/releases/download/media-intro-v1.0/SYSTEMX-Introduction-v1.0.mp4) ·
+[4K poster](docs/assets/systemx-intro-poster-4k.jpg) ·
+[Transcript and captions](docs/media/introduction/README.md) ·
+[Video guide](https://github.com/WayneTechLab/dotSYSTEMX/wiki/Introductory-Video)
+
+The film is **1080p**; its custom thumbnail is the **3840 × 2160** poster.
+YouTube provides nine chapters and selectable English captions.
+[Wayne Tech Lab on YouTube](https://www.youtube.com/@WayneTechLab).
+
 ## Quick start: add `.SYSTEMX` to a local project
 
 Run this from the **containing project directory** on macOS or Linux. You need
 Python 3.9+ and Git. The isolated Python environment lives outside the project;
 the first `first-run` command previews changes before you apply them. This
-example selects the reviewed `v1.11.0-alpha.5` release and leaves updates manual.
+example selects the reviewed `v1.11.0-alpha.6` release and leaves updates manual.
 
 ```bash
 python3 -m venv "$HOME/.venvs/dotsystemx"
 "$HOME/.venvs/dotsystemx/bin/python" -m pip install \
-  "git+https://github.com/WayneTechLab/dotSYSTEMX.git@v1.11.0-alpha.5"
+  "git+https://github.com/WayneTechLab/dotSYSTEMX.git@v1.11.0-alpha.6"
 systemx() { "$HOME/.venvs/dotsystemx/bin/python" -I -B -m systemx "$@"; }
 
-systemx first-run --target "$PWD" --profile project --version 1.11.0-alpha.5
-systemx first-run --target "$PWD" --profile project --version 1.11.0-alpha.5 --apply
+systemx first-run --target "$PWD" --profile project --version 1.11.0-alpha.6
+systemx first-run --target "$PWD" --profile project --version 1.11.0-alpha.6 --apply
 systemx status --target "$PWD"
 systemx run --target "$PWD" --offline -- validate
 ```

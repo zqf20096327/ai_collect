@@ -1,122 +1,129 @@
 <p align="center">
-  <img src="docs/assets/poster.png" alt="Jarvis, a glass ball with two glowing eyes, beside the words Jarvis, by Allen Shi" width="100%">
+  <img src="docs/assets/readme/icon.png" alt="Jarvis's icon: a glass ball with two glowing eyes" width="112">
 </p>
 
-> **Demo video coming soon.** A short walkthrough of Jarvis running on my Mac will be posted right here.
->
-> **Status:** Jarvis is my personal assistant. I built it for my own Mac and iPhone and use it every day, and I'm still expanding and refining it quickly. It isn't a product you can download and use yet; a public version for other people is planned for later.
->
-> **In a rush?** You can see the interface on sample data with one command, no keys or setup. [Click here to try the demo.](#try-the-demo)
->
-> **Docs:** a feature-by-feature tour, in English and Chinese, is at [samsara0xgg.github.io/Jarvis](https://samsara0xgg.github.io/Jarvis/).
+<h1 align="center">Ask it about any day of your life.</h1>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/macOS-000000?logo=apple&logoColor=white" alt="macOS">
-  <img src="https://img.shields.io/badge/iOS-000000?logo=apple&logoColor=white" alt="iOS">
+  <b>Jarvis</b> is a personal voice AI agent that lives on your own devices and remembers your life.
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Apple-macOS%20%C2%B7%20iOS%20%C2%B7%20iPadOS%20%C2%B7%20watchOS-000000?logo=apple&logoColor=white" alt="Apple: macOS, iOS, iPadOS and watchOS">
+  <img src="https://img.shields.io/badge/Raspberry%20Pi-A22846?logo=raspberrypi&logoColor=white" alt="Raspberry Pi">
+  <img src="https://img.shields.io/badge/Claude-D97757?logo=claude&logoColor=white" alt="Claude">
   <img src="https://img.shields.io/badge/Swift-F05138?logo=swift&logoColor=white" alt="Swift">
   <img src="https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white" alt="Python 3.12">
-  <img src="https://img.shields.io/badge/Electron-47848F?logo=electron&logoColor=white" alt="Electron">
-  <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white" alt="React 19">
   <img src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white" alt="TypeScript">
-  <img src="https://img.shields.io/badge/MCP-1C1C1C?logo=modelcontextprotocol&logoColor=white" alt="MCP">
-</p>
-
-Jarvis sits next to the MacBook notch as a small glass ball with eyes. It answers when you talk to it, keeps a record of your day, and tells you when a Claude Code or Codex session needs you. Its brain runs on an always-on Raspberry Pi, so it keeps going when the laptop is closed; the Mac and a native iPhone app are two ways to reach the same Jarvis.
-
-## What it does
-
-- **What's left today, and what you did yesterday.** Answers come from your calendar, to-dos, git history and screen activity, and each item in the daily report points back to the record it came from.
-- **Claude Code and Codex from the notch.** Sessions show as marks beside the notch, grouped by whether they need you, are working, finished or parked. When a Claude Code session wants to run a command, a card drops down and you allow or deny it without switching windows.
-- **It remembers.** Each past day is kept as a short summary, and every night it rewrites what it knows about you as a new, undoable version. The Memory page shows each note with the record it came from, and lets you correct it.
-- **Mail that needs you.** A small model reads new mail, marks the letters that need a reply and the junk you can archive with one tap. The Mail page opens a letter with a one-line summary and can draft the reply.
-- **It speaks up, carefully.** When something needs you, a card comes to the notch, and every card asks whether it came at the right level. You can tell it to stop popping up, or not to disturb you at all, and it saves what it held back for one summary later.
-- **Your limits.** The Usage page shows how much of your Claude and Codex plans you've used, when each limit resets, and where your tokens went by day and session.
-- **English and Chinese.** It follows whichever one you speak.
-- **Your accounts through MCP.** Gmail, Outlook, Microsoft To Do, GitHub and Notion connect as plugins, and it asks before it acts on any of them.
-
-<p align="center">
-  <img src="docs/assets/readme/agents-live.png" alt="Real Jarvis Agents view showing Claude Code and Codex sessions grouped by Needs You and Working, with the live session indicators at the top of the screen" width="100%">
 </p>
 
 <p align="center">
-  <img src="docs/assets/readme/conversation-plugins-live.png" alt="A real English follow-up conversation with Jarvis, beside its connected Gmail, Linear, Microsoft and Notion plugins" width="100%">
+  <img src="docs/assets/readme/devices.png" alt="Jarvis on an iPad, an iPhone and an Apple Watch: the whole day drawn as one line, its answer to "How did I sleep?" and last night's sleep opened beside it, the map of the day's outings, and the watch listening as you speak" width="100%">
 </p>
 
-<p align="center">
-  <img src="docs/assets/readme/usage-projects-live.png" alt="Real Claude and Codex usage windows, reset times and OpenAI API spending, alongside a cropped seven-day Jarvis project activity chart" width="100%">
-  <br><sub>Captured from the running app, with an English interface and a real conversation. Screenshots are cropped and arranged for this page; UI text and values are unchanged. Usage and activity are snapshots of one installation.</sub>
-</p>
+- **It keeps your days.** Where you went, what you worked on, what you said and how you slept, recorded quietly across your devices. Ask *when did I get home on Tuesday?* and the answer links back to the moment it came from.
+- **You talk to it.** It is voice-first: say "Hey Jarvis", or tap on the watch, and just talk. Cut in any time, in English or Chinese.
+- **It gets things done.** Mail, reminders, buses, web search, your Mac and any app with an MCP server, all done knowing your day.
+- **It knows you better every year.** Each night it distills what it learned into one memory of you that grows denser, not longer.
+- **It lives at home.** The brain is a Raspberry Pi on your own network; your Mac, iPhone, iPad and Apple Watch are its bodies.
 
-## Design notes
+> **Status:** Jarvis is my personal agent. I built it for my own devices and use it every day, and it is still changing quickly. It isn't something you can download and install yet.
 
-Four engineering stories, each with what was measured and the option that lost, are told in full on the [design notes page](https://samsara0xgg.github.io/Jarvis/architecture/design-notes/):
+## How it gets to know you
 
-- **Interrupting it.** You can talk over Jarvis at any point. With a reSpeaker XVF3800 mic array, its own voice is removed on the board before speech recognition hears it.
-- **Long answers.** The full answer goes on screen, and Jarvis speaks a version of one to three sentences.
-- **Staying fast as it remembers more.** The wait before each model request grew with the event log, from 0.16 s at 16k events to 1.36 s at 48.6k. Each turn now reads only the events since the last one.
-- **Pops in the audio.** They came from the speech provider's volume limiter, not from streaming, and went away with the volume left at its default.
+What it knows about you is plain text you can read, edit and undo, built up in a loop:
 
-The daemon is split into six layers, and only `runtime/` may connect them; `lint-imports` fails if anything else does. Each decision that moves a boundary gets a short record in [docs/adr](docs/adr), nearly 250 so far.
+- **It sees your days.** Everything it records is kept raw, as it came, and never overwritten.
+- **It asks about your life.** A life interview, chapter by chapter, one question at a time, so it learns what no sensor can see.
+- **It sleeps on it.** Every night it rewrites its memory of you from the day just past, citing where each change came from.
+- **It takes your corrections.** When it guesses wrong, your word wins and is never rewritten.
 
-## How it's built
+Every section of that memory has a fixed size, so each night it has to merge, sharpen and let go rather than grow; over the years it gets closer to the essence of who you are. It isn't trained into any model, so a better model can read the same memory and know you from its first day.
 
-One brain holds everything that is Jarvis: memory, the event log, model calls and tools. It is a Python daemon on a Raspberry Pi. Every other device is a terminal ([ADR 0170](docs/adr/0170-one-brain-holds-the-owners-state-and-every-other-device-is-its-terminal.md)): it keeps its own microphone, echo cancellation and speaker, and reaches the brain over a private network. On the Mac the terminal is the companion, Electron with React and TypeScript plus a small AppKit module for the glass. On the iPhone it is a native SwiftUI app, in [ios/](ios). Models are Claude by default: Sonnet for conversation and Haiku for the frequent background analysts ([ADR 0253](docs/adr/0253-claude-by-default-sonnet-low-for-conversation-sonnet-medium-for-background-writing-haiku-for-forced-tool-analysts-gpt-live-off.md)). Wake word: microWakeWord. Speech recognition: SenseVoice with Silero VAD, optionally with local Whisper for longer turns. Speech: MiniMax. Mail and agent sorting: a small model on zero-data-retention endpoints. Storage: SQLite. The full design is in [docs/spec.html](docs/spec.html).
-
-## Run it
-
-Jarvis is built for one person and one machine, so the setup below is a developer's setup, not an installer. A public version will take some time.
-
-You need macOS (built and tested on Apple Silicon), Node.js (tested with Node 24) and the Xcode Command Line Tools (`xcode-select --install`). Running it for real also needs Python 3.12+ and [uv](https://docs.astral.sh/uv/). On a MacBook it sits beside the notch; on a screen without one it lives in a small black pill at the top.
-
-### Try the demo
-
-To see the companion on its built-in demo data, with no daemon and no keys, paste this into Terminal:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/samsara0xgg/Jarvis/main/scripts/try-demo.sh | bash
-```
-
-It checks for the Xcode Command Line Tools and Node.js 24, lists anything missing and asks before installing it, then clones Jarvis into `~/Jarvis`, installs its npm dependencies and starts the demo. The first run takes a few minutes. You can [read the script](scripts/try-demo.sh) before running it.
+Models will keep getting better, and everyone will have them; the days you have lived can't be recorded later. I believe a record like this will be one of the most valuable things a person owns, and the best time to start it is now.
 
 <details>
-<summary>Prefer to do it by hand?</summary>
+<summary>What it records, how the interview works, and what happens at night</summary>
 
-With the Xcode Command Line Tools and Node.js 24 installed:
+**What it records**
 
-```bash
-git clone https://github.com/samsara0xgg/Jarvis
-cd Jarvis/desktop/resonance
-npm ci
-npm run companion -- --demo
-```
+- **Where you went.** The iPhone keeps every GPS fix while you move and the car's motion while you ride, and turns them into stays, walks, rides and drives.
+- **What you were doing.** Your Mac's screen activity, the apps in front on your iPhone and iPad, your calendar, mail, messages, photos (metadata only), Safari history and git commits.
+- **Your body.** Sleep, steps, workouts and heart rate from Apple Health.
+- **Your words.** Every conversation with Jarvis, and, if you turn it on, the day's audio from the Mac or the phone.
+- **Your work with coding agents.** Every session transcript, on your Mac and in the cloud, is kept raw on the brain.
+- **Data you export from other services.** Give it an export, such as your claude.ai history or a bank or payment statement, and it joins the same timeline.
+
+Nothing is read until you grant it: each source needs its own permission on the device it comes from. When a source that should be producing goes quiet, the nightly check tells you.
+
+**The life interview**
+
+Its memory of you begins with a long, unhurried conversation: your story from childhood to now, the people around you, where you want to be in a month, a year and five years, and how you want to be treated.
+
+It asks why and how it felt, not only what happened. Nothing is pushed: a chapter you aren't ready for waits until you bring it up, and a topic you decline is never asked again. Your answers are kept word for word; only the facts you confirm go into its memory, and anything it worked out on its own is labeled as a guess.
+
+**At night**
+
+The memory it rewrites has sections for your story, values, body, money, taste, rules, promises and deadlines, and the people and threads of your life. Each change lands as a new version you can undo, and you can edit any of it on the Memory page. The day itself is kept as a short summary; conversation topics are rebuilt from the day's raw words, never from a summary of a summary.
 
 </details>
 
-What the demo shows: the companion beside the notch, its agent stars, and the Dashboard filled with sample data (calendar, to-dos, mail, the morning brief, agents). What it doesn't: it doesn't listen or speak, nothing in it is your own data, and the full Agents window (Startrail) doesn't open. Those need the full setup below. Press Ctrl+C in the terminal to quit.
+## Look back on any day
 
-### Run it for real
+The **Today** page draws your day as one line. Claude reads everything in each stretch and writes what you were doing in a few words, like *Writing the lab report* or *Bus 27 to campus*. The **Map** page replays where you went, with the route, stops, speed and heart rate.
 
-Start the daemon:
+<p align="center">
+  <img src="docs/assets/readme/phone-day.png" alt="Three iPhone screens: the Today page asking whether a stretch was a break, an answer with links back to the moments it read, and the map replaying a trip with its speed and heart rate" width="100%">
+</p>
 
-```bash
-uv sync
-uv run python -m jarvis serve
-```
+## Ask about it
 
-and the companion in a second terminal:
+Ask in your own words: *how much did I walk today?*, *what did I tell Mia about the trip?* Every night your talk is filed under topics (a person, a plan, a project), so you can pick one up again weeks later.
 
-```bash
-cd desktop/resonance
-npm ci
-npm run companion
-```
+## Let it act, knowing you
 
-On its first start the daemon downloads its speech models (about 240 MB) and runs text-only until they finish; voice works after that.
+<p align="center">
+  <img src="docs/assets/readme/watch-cards.png" alt="Four Apple Watch screens: Jarvis listening as you speak, its answer asking before it emails anyone, time to leave in 2 minutes, and 3 stops to go on the bus" width="100%">
+</p>
 
-The first time it starts, the companion walks you through setup: your name, its language, an OpenAI key (required) and a MiniMax key for its voice. Each key is checked before it is saved to your login Keychain. You can also put keys in `~/.jarvis/env`, one `KEY=value` per line.
+Mail, reminders and bus times are things any assistant can do. Jarvis does them from your own record: it knows where you are right now, what is already on your day, and what you promised and to whom. It asks before anything that goes out or can't be undone, and it never calls something done that isn't.
 
-Anything that reads another app or account (agent sessions, usage, screen activity, plugins) is off until you turn it on in Settings.
+- **Mail.** It reads your inbox, tells you what needs a reply, drafts the reply as a Gmail draft and sends only after you see every recipient on a card. Bills, due dates and verification codes are picked out for you.
+- **Plans and reminders.** It plans the day with you each morning, keeps your appointments, to-dos and bills, and rings on your phone and watch at the right time.
+- **Job hunt.** Every application, interview, offer and rejection in one list, kept up from your mail, with a heads-up when an employer writes back.
+- **Getting around.** Bus times from BC Transit's real timetable, when to leave, how many stops are left, the weather where you are going, and places nearby.
+- **Looking things up.** Quick or deep web search, any page you name, and a photo you send it.
+- **Your Mac.** It opens files and links by name, reads your clipboard or your screen, searches your Obsidian notes, and keeps the Mac working overnight with the screen off.
+- **Your coding agents.** Claude Code and Codex sessions show beside the Mac notch, and when one wants to run a command you allow or deny it there.
+- **Any app.** Gmail, GitHub, Notion and Hue come as plugins, and any other MCP server can be added.
 
-The iPhone app in [ios/](ios) is generated with [XcodeGen](https://github.com/yonaskolb/XcodeGen) (`cd ios && xcodegen generate`), built in Xcode with your own signing team, and paired with a running brain.
+Every tool call ends in a receipt, and code checks what Jarvis says it did against those receipts before it speaks.
 
-Jarvis runs from a developer checkout. It is not a signed app yet, and a few defaults still assume the author's machine.
+## On each device
+
+- **iPhone.** Today, Chat and Map. Press the Action button, say "Hey Jarvis" with the app open, or share anything to it from another app.
+- **Apple Watch.** Tap to talk and read the answer on your wrist. Reminders, "time to leave" and bus progress arrive as cards.
+- **iPad.** The same day and chat on a bigger screen, and **Jarvis Remote**: your Mac's screen on the iPad at up to 120 fps, driven by touch, trackpad gestures and voice.
+- **Mac.** A small glass ball with eyes beside the notch. It listens, shows your coding agents or the day's timeline, and records what was on your screen.
+
+Say "Hey Jarvis" with several devices around and exactly one answers: the one you are already talking to, or else the one you touched last.
+
+## Privacy
+
+- **Your data lives on a machine you own.** There is no Jarvis cloud, no telemetry and no update check.
+- **Your devices reach it only over your private network** ([Tailscale](https://tailscale.com)). The brain never listens on a public address.
+- **What leaves goes only to services you choose:** model providers with your own keys (mainly Claude for thinking, Qwen for hearing your words, MiniMax for its voice), plus what its tools call, such as web search, weather and BC Transit. The spec lists every outgoing request: [docs/spec.html#egress](docs/spec.html#egress).
+
+## How it's built
+
+One Python brain on the Pi holds memory, the event log, model calls and tools; every other device is one of its bodies ([ADR 0170](docs/adr/0170-one-brain-holds-the-owners-state-and-every-other-device-is-its-terminal.md)). Every decision that moves a boundary is written down in [docs/adr](docs/adr), more than 400 so far.
+
+<details>
+<summary>More on the build</summary>
+
+- **Bodies.** Each body keeps its own microphone, wake word, echo cancellation and speaker. The Mac companion is Electron with React and TypeScript plus a small AppKit module for the glass; the iPhone, iPad and watch apps are native SwiftUI, in [ios/](ios). Jarvis Remote streams HEVC from ScreenCaptureKit and VideoToolbox.
+- **Models.** Claude by default: Sonnet for conversation, Opus to write what you were doing, Haiku for frequent background analysts. Your words are heard by Qwen's streaming recognizer through the brain, with an on-device recognizer as the fallback (SenseVoice with Silero VAD on the Mac). Wake word on the Mac: microWakeWord. Voice: MiniMax. Storage: SQLite.
+- **Four blocks, one place to join them.** Decision, execution, surface and deployment never import one another, over a base of state and shared helpers. Only `runtime/` joins them and it holds nothing else; `lint-imports` and a canary fail the build otherwise.
+- **Design notes.** Four engineering stories, with what was measured and the option that lost, are on the [design notes page](https://samsara0xgg.github.io/Jarvis/architecture/design-notes/).
+
+</details>

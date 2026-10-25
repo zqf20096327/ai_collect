@@ -16,7 +16,11 @@ app = FastAPI()
 
 # ... your existing routes ...
 
-mcp = FastAPIMCP(app, name="my-app")
+mcp = FastAPIMCP(
+    app,
+    name="my-app",
+    mode="graphql",  # or "progressive" / "tools" — the three shapes below
+)
 mcp.run()  # HTTP MCP server: get_schema + graphql_query + graphql_mutation
 ```
 
@@ -26,8 +30,8 @@ mcp.run()  # HTTP MCP server: get_schema + graphql_query + graphql_mutation
 | mode | what the agent does |
 |---|---|
 | `graphql` (default) | reads the schema once, then one query composes any routes — projection, aliases, one round trip |
-| `progressive` | the same queries, discovery in domain fragments — for large apps (constant ~1.5k-token catalog at any size) |
-| `tools` | one typed tool per route — plain arguments, no GraphQL to write; clients gate each tool individually |
+| `progressive` | the same queries, discovery served in fragments grouped by your route **tags** (tags = "domains" in the schema) — for large apps (constant ~1.5k-token catalog at any size) |
+| `tools` | one typed tool per route — plain arguments, no GraphQL to write; clients gate each tool individually. The natural landing for [fastapi_mcp migrants](#migrating-from-fastapi_mcp): the tool-per-route shape carries over, so existing permission and client setups keep working (the other modes change the tool set) |
 
 **Contents** — [Installation](#installation) · [Why](#why) ·
 [How it works](#how-it-works) · [Capability boundaries](#capability-boundaries) · [Usage](#usage) · [Agent lifecycle](#what-the-agent-sees-connection-lifecycle) · [Authentication](#authentication) ·
@@ -170,8 +174,8 @@ The shape follows two rules:
 
 - **Writes are exposed by default** — the bridge mirrors the app, and the
   app's own auth gates them per caller (`allow_mutation=False` for a
-  read-only view; `mutation_include=[...]` globs to whitelist specific
-  write routes). `graphql_mutation` carries `destructiveHint`, so clients
+  read-only view; write scoping via `mutation_include` is deprecated with the
+  other path globs — pair tag-filtered deployments instead). `graphql_mutation` carries `destructiveHint`, so clients
   confirm writes; `graphql_query` refuses mutation documents.
 - **Mutation ordering**: per the GraphQL spec, mutation fields at the ROOT
   execute serially in declaration order — with the grouped schema that means
@@ -295,7 +299,7 @@ exposes them (`path`, `method`, `reason`) for CI assertions, and
 | `Form()` / `File()` body | MCP tool arguments are JSON; the protocol has no file channel yet (SEP-2631 draft). The route stays available over plain HTTP |
 | required header/cookie parameter | headers are not GraphQL arguments — make it optional; caller credentials ride `passthrough_headers` |
 | query-parameter model mixed with plain params | FastAPI itself cannot serve that shape on the wire; move the plain params into the model |
-| write verbs, when you pass `allow_mutation=False` (read-only view) | writes are exposed by default; narrow them with `mutation_include` or hide with `allow_mutation=False` |
+| write verbs, when you pass `allow_mutation=False` (read-only view) | writes are exposed by default; hide them with `allow_mutation=False`, or serve writes from a separate tag-filtered deployment |
 | hidden route (`include_in_schema=False`) | opt in with `include_hidden=True` |
 | returns a raw `Response` (streaming, plain text) | no typed body to expose |
 | response/parameter annotation with no mapping at all (`-> bytes`, a bare custom class, mixed-type `Literal`) | no per-field shape exists to degrade to — annotate with a JSON-compatible type |
@@ -320,6 +324,7 @@ the schema predictable:
 | `Field(exclude=True)` | never a GraphQL **output** field (it never serializes) but still a valid **input** field — exclude is serialization-only |
 | optional `Header()` / `Cookie()` params | never GraphQL arguments: optional ones are simply not sent, REQUIRED ones skip the route — credentials ride `passthrough_headers`, not arguments |
 | `@app.api_route(methods=["GET", "POST"])` | the first verb in GET/POST/PUT/PATCH/DELETE priority wins; the dropped verbs are warned about |
+| HTTP verb | read/write classification (GET reads, writes carry `destructiveHint`); `@mcp_query` / `@mcp_mutation` override per route when the verb lies |
 | sync `def` endpoints | run through Starlette's anyio threadpool — transparent to the bridge |
 | `BackgroundTasks` / `Request` / `Response` params | FastAPI injections, ignored as arguments; the route stays fully functional |
 | same-named model classes from different modules | qualified type names (`Item_mymod`), with a warning |
@@ -365,7 +370,6 @@ context). Use `mount_to(app, "/mcp")` to serve MCP on the app's own port.
 mcp = FastAPIMCP(
     app,
     name="my-app",
-    include=["/api/*"],
     include_tags=["iam:*"],  # keep only routes tagged iam:… (untagged drop)
     # The caller's own Authorization header travels to the routes by default;
     # an empty list disables forwarding entirely.
@@ -386,7 +390,7 @@ interacts with:
 |---|---|---|---|
 | toolset | 3 tools, constant | 7 tools, constant | one tool per route |
 | catalog cost | ~0.6–2.5k tok, flat | ~1.5k tok, flat | ~250 tok per route |
-| discovery | the whole SDL in one shot (`get_schema`) | domain fragments on demand | typed signatures inline in every tool |
+| discovery | the whole SDL in one shot (`get_schema`) | tag-grouped fragments on demand (a route's tags are its "domain") | typed signatures inline in every tool |
 | invocation | the agent writes GraphQL documents | same documents | plain typed arguments — no GraphQL to write |
 | composition | one document combines any routes, one round trip | same | one route per call; clients compose via parallel tool calls |
 | field selection | selection set inside the document | same | a `fields` argument per tool |
@@ -416,10 +420,13 @@ graphql_query:                                    get_stats()          (parallel
   between reads and writes: `graphql_query` auto-runs (`readOnlyHint`),
   `graphql_mutation` asks for confirmation (`destructiveHint`);
   `allow_mutation=False` gives analysts a pure read-only deployment and
-  `mutation_include` narrows which writes exist at all. Best for
+  (deprecated `mutation_include` used to scope writes; pair
+  tag-filtered deployments instead). Best for
   composition-heavy internal work — one round trip across many routes.
 - **`progressive` — `graphql`'s contract for apps too big to hand over
-  in one shot.** The agent learns one domain at a time
+  in one shot.** The agent learns one domain at a time (a route's
+  FastAPI tags are its domain path — `tags=["billing:invoice"]` nests
+  `billing → invoice`)
   (`list_domains` → fragments); the catalog stays ~1.5k tokens whether
   the API has 30 routes or 300.
 
@@ -430,8 +437,34 @@ tool annotations), the analytics dashboard gets a read-only deployment
 
 Nothing switches implicitly: `graphql` warns above
 `progressive_threshold` (default 25), `tools` warns above 50 routes (the
-linear catalog overtakes the constant modes there). `"simple"` is a
-deprecated alias for `graphql`.
+linear catalog overtakes the constant modes there).
+
+### Read/write classification (`@mcp_query` / `@mcp_mutation`)
+
+The bridge classifies routes by HTTP verb: GET reads, writes get
+`destructiveHint`. Two real-world shapes break that default, and the
+route's author knows the truth — so say it on the route:
+
+```python
+from fastapi_mcp_neo import mcp_mutation, mcp_query
+
+@app.post("/search")          # POST-for-read: payload bodies beat
+@mcp_query                    # query strings — but it IS a read
+async def search(q: SearchQuery) -> Hits: ...
+
+@app.get("/admin/flush")      # GET-with-side-effects — it IS a write
+@mcp_mutation
+async def flush() -> Ok: ...
+```
+
+The marker may sit on either side of the route decorator (both orders
+verified); the rule is adjacency — any decorator in between that
+replaces the function object (some cache/log wrappers do) would drop the
+marker silently. It flips the classification at scan time, so every
+consumer aligns: schema placement (Query/Mutation root), tools-mode
+annotations, and the `allow_mutation` gate (a read-only deployment keeps
+`@mcp_query` POSTs). The physical verb is untouched — the route still
+executes via POST/GET on the wire.
 
 ### What the agent sees (connection lifecycle)
 
@@ -571,7 +604,7 @@ the same one-tool-per-route shape with a typed soul:
 | fastapi_mcp | here |
 |---|---|
 | `FastApiMCP(app)` | `FastAPIMCP(app, mode="tools")` |
-| `include_operations=["get_note"]` | `include=["/notes/{note_id}"]` (path globs) or `include_tags=[...]` |
+| `include_operations=["get_note"]` | `include_tags=[...]` (path globs are deprecated) |
 | `mcp.mount()` (lifespan never fires [#256](https://github.com/tadata-org/fastapi_mcp/issues/256); requests hang [#259](https://github.com/tadata-org/fastapi_mcp/issues/259)) | `mount_to(app, "/mcp")` — lifespan chained, e2e-tested |
 | `AuthConfig` | `auth=` (TokenVerifier gate / OAuth provider) + `passthrough_headers` — each caller acts as themselves |
 | tool names from `operation_id` (`list_notes_notes_get`) | tool names from function names (`list_notes`) |
@@ -671,7 +704,8 @@ One token, two checks: the gate verifies the endpoint, and the routes' own
 security schemes verify business calls — the same Bearer reaches them via
 `passthrough_headers`. A perimeter you already control (network ACL,
 gateway auth on the `/mcp` path) works too. Combine with
-`allow_mutation=False` / `mutation_include` to keep writes out of reach.
+`allow_mutation=False` (or a separate read-only, tag-filtered
+  deployment) to keep writes out of reach.
 
 ### MCP endpoint OAuth
 

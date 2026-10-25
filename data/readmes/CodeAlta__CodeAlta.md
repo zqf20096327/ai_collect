@@ -1,4 +1,4 @@
-# CodeAlta [![ci](https://github.com/CodeAlta/CodeAlta/actions/workflows/ci.yml/badge.svg)](https://github.com/CodeAlta/CodeAlta/actions/workflows/ci.yml) [![NuGet](https://img.shields.io/nuget/v/CodeAlta.svg?label=CodeAlta)](https://www.nuget.org/packages/CodeAlta/) [![NuGet](https://img.shields.io/nuget/v/CodeAlta.Tui.svg?label=CodeAlta.Tui)](https://www.nuget.org/packages/CodeAlta.Tui/)
+# CodeAlta [![ci](https://github.com/CodeAlta/CodeAlta/actions/workflows/ci.yml/badge.svg)](https://github.com/CodeAlta/CodeAlta/actions/workflows/ci.yml) [![NuGet](https://img.shields.io/nuget/v/CodeAlta.svg?label=CodeAlta)](https://www.nuget.org/packages/CodeAlta/) [![NuGet](https://img.shields.io/nuget/v/CodeAlta.Tui.svg?label=CodeAlta.Tui)](https://www.nuget.org/packages/CodeAlta.Tui/) [![NuGet](https://img.shields.io/nuget/v/CodeAlta.Cli.svg?label=CodeAlta.Cli)](https://www.nuget.org/packages/CodeAlta.Cli/)
 
 CodeAlta is an open-source workspace for AI coding agents, local code, terminals and Git. It runs on Windows, macOS and Linux, with a desktop app and a terminal UI.
 
@@ -24,6 +24,13 @@ dotnet tool install -g CodeAlta.Tui
 altatui
 ```
 
+CodeAlta CLI runs the same agents without a window, for scripts, CI and editors (ACP):
+
+```sh
+dotnet tool install -g CodeAlta.Cli
+altacli run "Fix the failing test"
+```
+
 Launch the app from a project folder. On first launch it opens the provider setup: sign in with a Claude, ChatGPT or GitHub Copilot subscription, or add an API key.
 
 See [Getting Started](https://codealta.github.io/docs/getting-started/) for requirements and the first steps.
@@ -34,13 +41,14 @@ CodeAlta Desktop brings together:
 
 - **Sessions & delegation**: run agents in split panes; resume, queue, steer and delegate work; archive finished sessions and restore them when you need them.
   In Desktop, `Enter` sends when idle and enqueues while busy; `Cmd+Enter` on macOS or `Ctrl+Enter` on Windows/Linux sends now (steers a busy turn).
-- **Several windows**: [move or drag tabs](https://codealta.github.io/docs/workspace/#windows-desktop) into windows of their own, name and color them, and find them on their monitor at the next start (the terminal UI has one screen).
+- **Several windows**: [move or drag tabs](https://codealta.github.io/docs/workspace/#windows) into windows of their own, name and color them, and find them on their monitor at the next start (the terminal UI has one screen).
 - **Fork & rewind**: branch a session from any turn and keep the original, or roll it back to an earlier prompt.
-- **Attach files**: [add files, images, folders and issues to a prompt](https://codealta.github.io/docs/getting-started/#attach-files-and-images-to-a-prompt) from a menu, a drop or a paste; PDFs go to the models that read them, and other documents (Word, Excel, PowerPoint…) are converted to Markdown for any model.
+- **Attach files**: [add files, images, folders and issues to a prompt](https://codealta.github.io/docs/getting-started/#attach-files) from a menu, a drop or a paste; PDFs go to the models that read them, and other documents (Word, Excel, PowerPoint…) are converted to Markdown for any model.
 - **Speech to prompt**: [dictate a prompt](https://codealta.github.io/docs/speech/) with a speech model that runs on your computer, downloaded the first time you use the microphone.
 - **Search your work**: `Ctrl+P` and [`alta search`](https://codealta.github.io/docs/search/) find the prompts and answers of your sessions, your plans, the guide, the skills and the tools from a local index; turn on search by meaning to find them by what they are about, with a model that runs on your computer.
 - **Code & Git**: search and edit files, run terminals and inspect diffs.
 - **Worktrees**: give sessions separate checkouts and branches; manage and clean them up.
+- **Prompt suggestions**: after a turn, the model suggests the next prompt in the empty composer, with any provider; `Tab` or `→` takes it.
 - **Session titles**: a title you give stays; other sessions are titled from the first prompt, the last message or by the model, as you choose.
 - **Work items**: review agent-proposed tasks and plans; start, defer or dismiss them; follow the reviews in flight.
 - **[Reviews](https://codealta.github.io/docs/reviews/)**: comment on the lines of a plan, a file or an agent's changes, send them with a verdict, and have agents wait for your approval before they commit.
@@ -56,15 +64,16 @@ CodeAlta Desktop brings together:
 - **Welcome page**: jump back to recent projects and sessions, with useful shortcuts.
 - **Built-in documentation**: read the guide beside your work, or ask an agent to help.
 - **Model choice**: use Claude Code, Codex or GitHub Copilot subscriptions, or APIs, with several accounts of the same provider; choose provider, model and reasoning effort per session.
-- **ACP agents**: add a coding agent of the [ACP registry](https://agentclientprotocol.com/get-started/registry) (GitHub Copilot, Gemini CLI, Cursor…) in one click as a provider, with the tools of CodeAlta, and continue its sessions with any other provider.
+- **ACP agents**: add a coding agent of the [ACP registry](https://agentclientprotocol.com/get-started/registry) (GitHub Copilot, Gemini CLI, Cursor…) in one click as a provider, with the tools of CodeAlta, its models named and priced and the reasoning levels of each, and continue its sessions with any other provider.
 - **Model tiers & fallback**: pick Complex, Standard or Quick instead of a model, and optionally [go on with the next model of the tier](https://codealta.github.io/docs/model-tiers/) when a provider runs out of quota or goes down.
-- **Claude Code with VS Code**: [continue in CodeAlta](https://codealta.github.io/docs/workspace/#claude-code-sessions-from-vs-code-and-terminals) the Claude Code sessions you started in VS Code or a terminal, and open CodeAlta's in VS Code in one click.
+- **Claude Code with VS Code**: [continue in CodeAlta](https://codealta.github.io/docs/sessions/claude-code/) the Claude Code sessions you started in VS Code or a terminal, and open CodeAlta's in VS Code in one click.
 - **Permissions & visibility**: set each session to ask first, accept edits or run freely, and turn off tools a session should not have, such as the shell; inspect tool inputs, outputs, file changes and live commands.
 - **Agent prompts**: plan, build, review or define your own roles.
 - **Skills & MCP**: bring in skills, tools and services, and the skills MCP servers publish, loaded once you approve them; the views of [MCP Apps](https://codealta.github.io/docs/plugins/mcp/#views-of-mcp-apps) show in the conversation; the skills used most come first in the prompt, and hundreds of them stay cheap.
+- **Command line**: run a prompt to its end with [`altacli`](https://codealta.github.io/docs/command-line/) from a script, a CI job or a benchmark, with exit codes and a JSON Lines trace in the ACP format, or serve CodeAlta to an editor as an ACP agent; its sessions show in the app as they run.
 - **Copilot compatibility**: reuse `.github` instructions, skills and agents unchanged.
 - **UI automation**: let agents see and drive CodeAlta through built-in tools or MCP.
-- **Storage**: manage [local disk usage and cleanup](https://codealta.github.io/docs/workspace/#storage).
+- **Storage**: manage [local disk usage and cleanup](https://codealta.github.io/docs/workspace/settings/#storage).
 
 <p align="center">
   <img src="site/img/alta-home.png" alt="CodeAlta TUI with the projects sidebar, a session timeline, and the prompt editor" width="920">

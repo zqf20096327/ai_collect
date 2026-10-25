@@ -8,7 +8,7 @@ Yifan He<sup>†1</sup> · <a href="https://ly041021.github.io/">Yang Liu</a><su
 <a href="https://scholar.google.com/citations?user=4RObDv0AAAAJ">Fei Gao</a><sup>1,2</sup> · Huan Yu<sup>\*1,2</sup> · <a href="http://zipengdai.com/">Zipeng Dai</a><sup>\*1</sup> · Ziming Ding<sup>\*1</sup><br>
 <sup>1</sup>Differential Robotics · <sup>2</sup>Zhejiang University&nbsp;&nbsp;&nbsp;<sup>†</sup>equal contribution · <sup>\*</sup>corresponding
 
-<a href="https://www.youtube.com/watch?v=Y3w2-He-zMM&amp;t=32s"><img src="assets/buttons/video.svg" height="32" alt="Video"></a>
+<a href="https://www.bilibili.com/en/video/BV1isam6VEDF/"><img src="assets/buttons/video.svg" height="32" alt="Video"></a>
 <a href="https://arxiv.org/abs/2609.18191"><img src="assets/buttons/arxiv.svg" height="32" alt="arXiv"></a>
 <img src="assets/buttons/paper.svg" height="32" alt="Paper · coming soon">
 <a href="#citation"><img src="assets/buttons/bibtex.svg" height="32" alt="BibTeX"></a>

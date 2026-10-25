@@ -9,6 +9,26 @@
 <p align="center">
  <img src="https://github.com/koo-ec/xwhy/blob/main/docs/graphics/XWhy_Logo_v1.png" alt="XWhy, SMILE, Explainability, Interpretability, XAI, machine learning explainability, responsible ai"> </p>
 
+<table align="center">
+  <tr>
+    <td align="center" width="33%">
+      <a href="https://www.youtube.com/watch?v=ot40-m7AAB8">
+        <img src="https://img.youtube.com/vi/ot40-m7AAB8/hqdefault.jpg" alt="Watch XWhy video 1 on YouTube" width="100%">
+      </a>
+    </td>
+    <td align="center" width="33%">
+      <a href="https://www.youtube.com/watch?v=sBfGj61oMTI">
+        <img src="https://img.youtube.com/vi/sBfGj61oMTI/hqdefault.jpg" alt="Watch XWhy video 2 on YouTube" width="100%">
+      </a>
+    </td>
+    <td align="center" width="33%">
+      <a href="https://www.youtube.com/watch?v=Dy1qU_OJnsU">
+        <img src="https://img.youtube.com/vi/Dy1qU_OJnsU/hqdefault.jpg" alt="Watch XWhy video 3 on YouTube" width="100%">
+      </a>
+    </td>
+  </tr>
+</table>
+
 ## Abstract
 <p align="justify">Machine learning is currently undergoing an explosion in capability, popularity, and sophistication. However, one of the major barriers to widespread acceptance of machine learning (ML) is trustworthiness: most ML models operate as black boxes, their inner workings opaque and mysterious, and it can be difficult to trust their conclusions without understanding how those conclusions are reached. Explainability is therefore a key aspect of improving trustworthiness: the ability to better understand, interpret, and anticipate the behaviour of ML models. To this end, we propose a SMILE, a new method that builds on previous approaches by making use of statistical distance measures to improve explainability while remaining applicable to a wide range of input data domains</p>
 
@@ -19,26 +39,32 @@ The SMILE approach has been extended for <b>Point Cloud Explainability</b>. Plea
 ```
 pip install xwhy
 ```
-<!--
-## Simple Example
+
+## LLM Explainability Example
 ```
 import xwhy
-import xgboost
+from xwhy import LLMExplainer
 
-# train an XGBoost model
-X, y = xwhy.datasets.boston()
-model = xgboost.XGBRegressor().fit(X, y)
+explainer = LLMExplainer(
+    provider="openai",
+    model_name="gpt-5-nano",
+    embedding_type="word2vec",
+    distance_type="wmd",
+    use_best_surrogate=True,
+)
 
-# explain the model's predictions using xwhy
-# (same syntax works for LightGBM, CatBoost, scikit-learn, transformers, Spark, etc.)
-explainer = xwhy.Explainer(model)
-xwhy_values = explainer(X)
+result = explainer.explain(
+    instance="Machine learning is fascinating.",
+    fidelity_plot=True,
+)
 
-# visualize the first prediction's explanation
-xwhy.plots.waterfall(xwhy_values[0])
-
+print(result.metrics)
+xwhy.plots.text_heatmap(result)
+result.plot()
 ```
--->
+Here is a sample result that you can get from the above code. There are functions one can try. Check the Tutorial <a href="https://dependable-intelligent-systems-lab.github.io/xwhy/llm_explainer/">here</a>.
+<p align="center">
+ <img src="https://github.com/Dependable-Intelligent-Systems-Lab/xwhy/blob/main/docs/graphics/examples/case2-glove-heatmap.png" alt="XWhy, SMILE, LLM Explainability, LLM Interpretability, XAI, machine learning explainability, responsible ai"> </p>
 
 ## Example of using SMILE for Image Explainability
 <p align="center">

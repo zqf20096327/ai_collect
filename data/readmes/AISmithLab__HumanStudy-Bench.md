@@ -3,7 +3,7 @@
 
   <h1>HumanStudy-Bench: Towards AI Agent Design for Participant Simulation</h1>
 
-  [![Leaderboard & Results](https://img.shields.io/badge/Leaderboard_%26_Results-hs--bench.clawder.ai-orange)](https://www.hs-bench.clawder.ai)
+  [![Leaderboard & Results](https://img.shields.io/badge/Benchmark-humanstudy--hub.com-orange)](https://humanstudy-hub.com/results)
   [![Read the Paper](https://img.shields.io/badge/Paper-arXiv%3A2602.00685-b31b1b)](https://arxiv.org/abs/2602.00685)
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
   [![Community Edition](https://img.shields.io/badge/Community_Edition-Contribute_New_Studies-brightgreen)](https://github.com/HumanStudy-Hub/HumanStudy-Bench)

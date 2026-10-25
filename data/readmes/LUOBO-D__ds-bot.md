@@ -24,21 +24,36 @@
 它不是客服机器人，是一个「像人一样聊天」的框架：会分条说话、记得你说过的事、有自己的日程和情绪、
 按喜好收藏表情包、偶尔主动戳你一下、会自己发说说（都要你手动打开）。
 
+跑起来以后打开控制台 <http://127.0.0.1:3001/ui/>（token 就是 `.env` 里的 `ADMIN_TOKEN`），
+聊天记录、情绪、记忆和开关都在那儿。
+
 ## 功能一览
+
+- **世界状态**：她嘴里说的状态（在洗碗/在收碗/手机在充电）会被记进账本，和 presence、你的事实对齐，冲突时自动重说。见 [WORLD_STATE](docs/WORLD_STATE.md)。
 
 | 能力 | 说明 | 文档 |
 | --- | --- | --- |
 | 收发消息 | 私聊/群聊，文本、图片、语音、表情包、@、回复、戳一戳 | [OneBot 接口表](docs/RESEARCH.md) |
 | 自动回复 | 私聊白名单 / 所有好友；静默去抖、分条发送、防复读、可补话 | [CONFIG](docs/CONFIG.md) |
 | 角色卡 | `assets/personas/*.md` 多张卡热切换，记忆 / 情绪 / 生活线按角色隔离 | [PERSONAS](docs/PERSONAS.md) |
-| 记忆 | 30 条上下文 + **当天备忘**（随聊随压）+ 事实/情节记忆 + 每日日结，按人隔离 | [MIND](docs/MIND.md) |
+| 记忆 | 30 条上下文 + **当天备忘**（随聊随压）+ 事实/情节记忆 + **夜间巩固**（碎片→情节卡）+ 每日日结，按人隔离 | [MIND](docs/MIND.md) |
+| 向量记忆 | 语义召回 + 每晚自动去重/归档 | [MIND](docs/MIND.md) |
+| 夜间自省 | 每晚只读翻一遍自己的工程，写优化提案，并把复盘直接发到 owner 的 QQ；主人在聊天里说「看看工程」也能立刻翻一遍 | [MIND](docs/MIND.md) |
+| 聊天内查看 | 主人说「看看 角色卡」「看看 qqbot/brain.py 前 40 行」，她当场只读看一眼再回答；没读过就不许说看到了 | [MIND](docs/MIND.md) |
+| 她自己的本子 | `love/` 只给她写 Markdown：聊天回复里的 `[[love]]` 块会落盘并从消息里删掉，每天有限篇数，内容不入库 | [MIND](docs/MIND.md) |
+| 想法流 | 一个人待着时也会冒出心里话（不发送），下一轮聊天自然接上 | [THOUGHTS](docs/THOUGHTS.md) |
 | 情绪与生活 | 三维情绪会漂会回落；每天生成日程，15 分钟一拍推进生活事件 | [MIND](docs/MIND.md) |
+| 后台健康 | 日结/巩固/备忘/自省的成功与失败可见（`/api/state` 的 `mind.tasks`）；模型 402 余额不足自动冷却并私聊告警，余额低于预警线也会提前提醒，401/402 不再无意义重试 | [MIND](docs/MIND.md) |
 | 识图 | 图片/表情包先 OCR + 视觉模型描述，再进对话 | [VISION](docs/VISION.md) |
 | 听语音 | SILK 解码 + SenseVoice 本地转写，带语气提示 | [ASR](docs/ASR.md) |
 | 表情包 | 好友发来的表情包按喜好收藏，聊天时按概率发出去 | [STICKERS](docs/STICKERS.md) |
 | 主动行为 | 戳一戳、自主发说说、刷好友空间、点赞评论（默认关闭） | [PROACTIVE](docs/PROACTIVE.md) |
 | QQ 空间 | 发说说、看好友动态、点赞评论（需要 onebot-qzone sidecar） | [PROACTIVE](docs/PROACTIVE.md) |
 | 个人主页 | 自己写个性签名（头像只读，不给她改） | [PROFILE](docs/PROFILE.md) |
+| 关系状态 | 每个好友的温度/张力/阶段：会随对话涨落、每天回落，影响语气和主动度 | [RELATIONSHIPS](docs/RELATIONSHIPS.md) |
+| 好友标签 | 认得每个好友是谁（主人/好朋友），说话时有分寸 | [FRIENDS](docs/FRIENDS.md) |
+| **Web 控制台** | 浏览器里看聊天、情绪、记忆、素材，切自动回复、戳一戳、换签名 | [CONSOLE](docs/CONSOLE.md) |
+| 安全自检 | 发布前扫密钥/QQ 号，可装 pre-commit 钩子 | [SECURITY](SECURITY.md) |
 
 ## 架构
 
@@ -183,6 +198,13 @@ DEEPSEEK_MODEL=deepseek-chat                # 换成你的模型名，例如 gpt
 | GET/POST | `/api/personas` | 角色列表 / 切换 |
 | GET | `/api/mind` | 情绪 + 生活线 + 心跳 + 记忆一步看全 |
 | GET/POST | `/api/memory/memo` | 当天备忘（查看 / 手动压缩） |
+| GET/POST | `/api/memory/episodes`、`/api/memory/consolidate` | 情节卡列表 / 手动巩固 |
+| GET | `/api/self/reviews` | 她的夜间自省记录 |
+| POST | `/api/self/review` | 让她立刻只读翻一遍工程并发给 owner |
+| GET | `/api/love` | 她自己的本子：目录、最近几篇、统计 |
+| GET | `/api/love/file?name=` | 读本子里的一篇 |
+| POST | `/api/love` | 手动补写一篇（调试用） |
+| GET/POST | `/api/relationships`、`/api/relationships/adjust`、`/api/relationships/reset`、`/api/relationships/decay` | 关系温度：查看 / 手动调 / 重置 / 跑一次回落 |
 | GET | `/api/events` | SSE 事件流 |
 
 完整路由见 `qqbot/main.py`。
@@ -197,21 +219,29 @@ ds-bot/
 │  ├─ autoreply.py        # 自动回复：去抖、上下文、发送、反思
 │  ├─ brain.py            # 大模型调用与提示词装配
 │  ├─ personas.py         # 多角色卡
-│  ├─ memory.py           # 记忆：检索 / 反思 / 当天备忘 / 日结
+│  ├─ memory.py           # 记忆：检索 / 反思 / 当天备忘 / 夜间巩固 / 日结
+│  ├─ selfreview.py       # 夜间自省：只读翻工程、写提案、发消息给 owner
 │  ├─ emotion.py          # 三维情绪
 │  ├─ life.py             # 日程与生活事件
 │  ├─ keeper.py           # 后台心跳
+│  ├─ health.py           # 后台任务健康：成败、退避、结果摘要
+│  ├─ jsonx.py            # 模型 JSON 解析与截断打捞
+│  ├─ reader.py           # 聊天内快速查看（只读）
+│  ├─ love.py             # 她自己的本子：只往 love/ 写 Markdown
+│  ├─ relationships.py    # 关系温度
 │  ├─ proactive.py        # 戳一戳 / 自主说说
 │  ├─ social.py           # QQ 空间：刷动态 / 点赞 / 评论
 │  ├─ vision.py           # 识图（OCR + 视觉模型）
 │  ├─ asr.py              # 语音转写（SenseVoice / Paraformer）
 │  ├─ stickers.py         # 表情包库
 │  ├─ profile.py          # 个人主页（签名；头像只读）
+│  ├─ webui/              # Web 控制台（纯静态，零构建）
 │  ├─ store.py            # SQLite
 │  └─ tools.py            # 发送、查询、限速
 ├─ assets/
 │  ├─ personas/           # 角色卡（*.md）+ active.json
 │  └─ stickers/manifest.json
+├─ love/                  # 她自己的本子（只放 Markdown，内容不入库）
 ├─ docs/                  # 设计与使用文档
 ├─ scripts/               # 安装 / 基准 / 空间 Cookie 刷新脚本
 ├─ tests/                 # 假网关 + e2e
@@ -237,8 +267,9 @@ ds-bot/
 - [docs/SETUP.md](docs/SETUP.md) —— 从零安装（NapCat / 扫码 / 反向 WS / 排错）
 - [docs/CONFIG.md](docs/CONFIG.md) —— 全部环境变量与调参说明
 - [docs/PERSONAS.md](docs/PERSONAS.md) —— 角色卡怎么写、怎么切换、记忆如何隔离
-- [docs/CHARACTER.md](docs/CHARACTER.md) —— 示例角色「沈知微」完整设定
+- [docs/CHARACTER.md](docs/CHARACTER.md) —— 早期示例角色设定（已归档，卡已移除）
 - [docs/MIND.md](docs/MIND.md) —— 记忆 / 情绪 / 生活线设计
+- [docs/PRESENCE.md](docs/PRESENCE.md) —— 在场感：她此刻在哪、在做什么
 - [docs/VISION.md](docs/VISION.md) · [docs/ASR.md](docs/ASR.md) · [docs/STICKERS.md](docs/STICKERS.md) —— 识图 / 语音 / 表情包
 - [docs/PROACTIVE.md](docs/PROACTIVE.md) —— 主动戳戳、自主说说、空间互动
 - [docs/RESEARCH.md](docs/RESEARCH.md) —— 生态选型调研（为什么是 NapCat）
@@ -253,3 +284,4 @@ ds-bot/
 ## License
 
 [MIT](LICENSE)
+- [主动性 v2 方案](docs/INITIATIVE.md)：意图池 + λ 节流 + 拒绝/缺席（设计稿）

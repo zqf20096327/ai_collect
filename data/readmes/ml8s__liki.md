@@ -109,8 +109,8 @@ npx skills add https://liki.hk
 ### 工程与隐私事实
 
 - 双体系显式合参：八字、紫微分侧计算，冲突分层列证。
-- Skill 与引擎版本按日历版本绑定，旧引擎拒绝调用（fail-closed）。
-- 引擎镜像按不可变 digest 构建与部署（`ghcr.io/ml8s/liki-engine@sha256:...`）。
+- Skill 与服务端不做版本兼容检查；未知工具会返回明确错误。
+- 镜像由本地构建，按 commit sha 部署。
 - 敏感问题走关怀优先（support-first）的安全策略。
 - 未命中内置城市表时，`city_coords` 可能把城市名发送到 Nominatim（OSM）完成地理编码；自部署可用 `LIKI_EXTERNAL_GEOCODING=off` 关闭。
 
@@ -146,6 +146,11 @@ Skill 会追问，或使用真实事件进入考时流程。证据不足时明�
 ### 怎么更新？
 
 按提示重新执行 `npx skills add https://liki.hk -y`。版本校验失败时不降级调用旧 RPC。
+
+## 仓库与部署
+
+四个仓：`liki`、`liki-agent-runtime`、`liki-web`、`liki-deploy`。镜像在各仓本地构建
+（tag = commit sha）；`liki-deploy` 负责全系统 e2e、部署与 smoke。
 
 ## 许可与声明
 

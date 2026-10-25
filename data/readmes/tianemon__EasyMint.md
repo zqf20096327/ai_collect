@@ -10,12 +10,12 @@
 <h1 align="center">EasyMint</h1>
 
 <p align="center">
-  <strong>An open-source desktop AI coding platform with a built-in Pi Agent.</strong>
+  <strong>An open-source AI coding workspace, from your first idea to working software.</strong>
 </p>
 
 <p align="center">
   <a href="https://github.com/tianemon/EasyMint/releases"><img src="https://img.shields.io/github/v/release/tianemon/EasyMint?style=flat-square&color=16a34a" alt="Version" /></a>
-  <img src="https://img.shields.io/badge/Pi%20Coding%20Agent-1.3.0-blue?style=flat-square" alt="Pi Coding Agent" />
+  <img src="https://img.shields.io/badge/Pi%20Coding%20Agent-1.4.0-blue?style=flat-square" alt="Pi Coding Agent" />
   <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License" />
 </p>
 
@@ -23,82 +23,153 @@
 
 ## Overview
 
-EasyMint is an **open-source desktop AI coding platform with a built-in Pi Agent**. [Pi Coding Agent](https://github.com/earendil-works/pi) provides the coding engine, while EasyMint adds a graphical interface, multi-agent collaboration, and project guidance from requirements to delivery.
+Describe what you want to build, refine the features with Mint, and continue through design, development, and acceptance in one desktop workspace. For UI projects that need a prototype, choose a visual direction and try an interactive page before approving implementation.
 
-It supports two kinds of users:
+EasyMint is powered by the built-in [Pi Coding Agent](https://github.com/earendil-works/pi). It supports macOS, Windows, and Linux, with guided project creation for beginners and a multi-agent coding workspace for developers.
 
-- **Beginners**: guided conversations collect requirements and confirm prototypes and technical plans. Drive development through conversation and choices.
-- **Developers**: use multi-agent collaboration, session management, and cross-device migration as a daily AI coding workspace.
+![Mint presents a project delivery summary, with execution details folded above it](assets/screenshots/main.png)
 
-Projects can start in two ways, with the option to switch at any time:
+*A project conversation in EasyMint. Read the delivery summary first and expand thinking and tool activity when needed. Screenshots currently show the Chinese interface; the application also supports English.*
 
-- **Start with a conversation**: describe your idea directly. Mint fills in missing details through a guided workflow. You can also skip the guidance and let the AI work from your description.
-- **Start with a form**: provide a name, use case, features, style, and budget. Mint follows up on open questions in the conversation.
+## Design philosophy: turn an idea into a project that can be discussed
 
-## Why EasyMint
+Many software projects do not begin with a complete requirements document. They begin with a vague observation: a workflow is too cumbersome, a tool is missing something, or someone wants to build a small product for themselves. The real questions appear only after starting—how should the features be separated, how do prototyping, development, and acceptance fit together, and how should the request be expressed to an AI so that the result is usable?
 
-Writing code is only part of delivering usable software. Requirements, prototypes, technical decisions, and acceptance checks also need attention. **EasyMint brings these steps into one desktop application**: clarify requirements, produce an interactive prototype, confirm the technical plan, and check the result against the approved prototype.
+EasyMint does not assume that the user already knows these things. The four-step project definition turns “what I want to make” into constraints that can be selected and revised one at a time: basic information establishes scope; the feature list helps decompose capabilities; visual direction turns aesthetic preference into comparable pages; and delivery preferences make completeness, deployment, AI capabilities, and cost boundaries explicit. The user does not need to learn prompt engineering or understand a project structure first; they only need to make judgments about the choices in front of them.
 
-- **Guidance without assuming coding experience**: seven gates cover intent, scope, prototype, user approval, technical plan, development, and acceptance against the approved prototype. Each gate has a confirmation point.
-- **Reusable project knowledge**: lessons learned are stored in Markdown, selected by technology stack, and reused across sessions alongside project rules.
-- **Local data**: project files and session records stay in `~/.easymint/` and the project's `.easymint/` directory. Cross-device migration uses encrypted local-network transfer with whole-package verification. **No accounts and no telemetry.** When you start a conversation, prompts, project context, code, command output, and images are sent directly to your configured AI provider. See [PRIVACY.md](PRIVACY.md) for details (Chinese).
-- **Isolated development environments**: Standard mode redirects dependencies, caches, and temporary files into a project-specific runtime. Commands run inside an operating-system sandbox: Seatbelt on macOS, bubblewrap on Linux, and a dedicated sandbox account on Windows. Network access uses a domain allowlist; eligible individual browser and container commands can use compatibility exemptions. `git push` can use the SSH agent in Standard mode. Tools such as `gh` that need host credentials may require Full access. Read-only mode is available for inspection. Full access uses your real environment without an OS sandbox; dangerous system operations receive best-effort checks before execution.
-- **Choice of models and tools**: switch between provider presets and custom OpenAI- or Anthropic-compatible endpoints, with account login or API keys where supported. Reuse skills from the Claude Code, Codex, and GitHub Agent Skills ecosystems, as well as MCP plugins.
+Once the project begins, Mint moves between implementation, explanation, and review. The user can see how requirements become tasks, how tasks become prototypes and code, which constraints shaped the result, and how the next round of changes can be expressed. EasyMint is not intended to let people skip learning. It is intended to make the first project possible, then build an understanding of software lifecycles and AI collaboration through real work.
 
-This provides:
+## Quick start
 
-1. **A path from an idea to running software**: Mint guides requirements, prototypes, technical planning, and acceptance. You can see an interactive prototype before implementation begins.
-2. **Replaceable providers and tools**: changing prices, rate limits, or providers does not require replacing your workflow. Existing skills and compatible MCP configurations can be reused. See [CHANGELOG.md](CHANGELOG.md) for upgrade notes (Chinese).
-3. **Portable data**: local storage, cross-device migration, and the MIT license let you move between devices and versions and inspect the source.
+Download an installer from [Releases](https://github.com/tianemon/EasyMint/releases):
 
-> EasyMint may be a poor fit if you only need inline code completion, prefer a CLI without project guidance, or need multiple people to collaborate on the same cloud-hosted sessions and documents. It does not provide cloud collaboration.
+| Platform | Download |
+|---|---|
+| macOS · Apple Silicon | `.dmg` |
+| Windows · x64 | `.exe` installer or portable edition |
+| Linux · x64 | `.AppImage`, `.deb`, or `.tar.gz` |
+
+See [CHANGELOG.md](CHANGELOG.md) for release and compatibility notes (Chinese).
+
+1. **Configure an AI provider.** Follow the first-launch setup and use an API key or account authorization supported by your provider. EasyMint has no separate account system; model usage follows your provider's billing rules. See [AI providers](#ai-providers).
+2. **Create or open a project.** Describe your idea in chat, use the four-step form, or import an existing directory. The form covers project details, features, visual style, and delivery preferences.
+3. **Try the result.** For a UI project that needs a prototype, open its preview and discuss changes before approving implementation. Simple tasks can proceed directly; project guidance adapts to the scope.
+4. **Continue development.** Mint implements directly or delegates suitable work. Review the result, use configured project scripts in the run panel, and describe the next change.
+
+Static prototype links are **local to your computer and remain available while EasyMint is running**. They are not public hosting links. Applications that need a build tool or backend use their own development service.
 
 ## Features
 
-- **Conversational project guidance**: create projects through chat or forms. Seven gates cover intent, scope, prototype, user approval, technical planning (capability, current research, and cost checks), development, and acceptance against the approved prototype.
-- **Prototypes first**: projects of moderate complexity or greater receive interactive HTML prototypes from the built-in designer agent and brand library before development.
-- **Multi-agent collaboration**: project management, coding, evaluation, and design agents coordinate work until it is complete.
-- **Subagent delegation**: delegate research, code exploration, and analysis; receive summaries without filling the main conversation with details. Progress and output are visible.
-- **Permission modes**: Read-only, Standard (default), and Full access. Standard mode isolates the development environment and applies an OS sandbox and network allowlist. Full access uses the host environment after a risk confirmation.
-- **Skill interoperability**: discover and reuse skills from Claude Code, Codex, and GitHub Agent Skills.
-- **Pi extension interoperability**: discover native Pi extensions at user and project scope. Approved extensions are available to new Full access sessions; original settings and files stay in place.
-- **Experience retention**: when enabled, Mint records useful lessons after tasks. Entries can be edited or deleted and reused by technology stack.
-- **Context management**: monitor context usage, confirm compaction at a threshold, and interrupt compaction when needed.
-- **Issue tracking**: record and edit issues, update their status, and let Mint work through the list.
-- **Session management**: multiple tabs and windows, per-session activity state, archiving, and restoration.
-- **Run panel**: detect, run, stop, restart, edit, and delete project scripts. Monitor ports and view ANSI-colored logs.
-- **Input history**: search previous prompts in a side drawer and jump to the original message.
-- **Pinned notes**: pin important AI output as resizable floating notes that persist with the session.
-- **Local ownership**: project and session data stay on your machine. [PRIVACY.md](PRIVACY.md) explains provider requests, agent capabilities, and credential storage (Chinese).
-- **Cross-device migration**: discover devices on the same LAN, pair once, and transfer projects and historical sessions with file selection and ignore rules. The receiving device confirms each transfer. Encryption and package verification protect transfers; interrupted transfers do not leave partially imported projects.
+- **Project guidance and visual direction**: start from conversation or a four-step form, preview complete page styles for web and mobile, and add your own design brief.
+- **Interactive prototypes**: try a page before implementation. Static HTML previews come with a clickable local link without requiring a separate server setup.
+- **Multi-agent work**: Mint coordinates requirements and tasks; Builder, Evaluator, Mint-D, and custom agents can take on suitable implementation, review, design, and research work. Progress and results stay visible.
+- **A conversation workspace**: multiple tabs and windows, archived sessions, searchable input history, floating pinned notes, and execution records that keep conclusions visible while thinking and tools stay folded. Monitor context usage and compact long conversations when needed.
+- **Tasks, to-dos, and run scripts**: track development tasks and issues, collect follow-up ideas, and run configured project commands with port status and colored logs. The run panel reads the project's `.easymint/run.json` configuration.
+- **Models and image tools**: choose providers or compatible custom endpoints, configure a separate vision model, generate image assets, or use planning and execution models through automatic routing.
+- **Skills and integrations**: reuse skills from Claude Code, Codex, and GitHub Agent Skills, connect MCP tools, and explicitly approve native Pi extensions for Full access sessions.
+- **Local data and controlled access**: keep project files and sessions on your machine, select Read-only, Standard, or Full access, and transfer projects and sessions between paired devices over the local network.
 
-## Screenshots
+> EasyMint may be a poor fit if you only need inline code completion or want a CLI without project guidance. It does not provide shared cloud-hosted sessions or documents.
 
-Screenshots show the Chinese interface.
+## How a project begins: four steps, then collaboration
 
-| Main window |
-|---|
-| ![Main window](assets/screenshots/main.png) |
+The four-step flow is not a questionnaire that must be completed in one pass. It unfolds the decisions that are easiest to blur into an order of dependency. Each step offers comparable choices and accepts a custom description; the user makes the first decision, and Mint continues to clarify it in conversation.
 
-| Task panel | Run panel |
+| Step | What the user decides | What becomes a project constraint |
+|---|---|---|
+| **Step 1 · Basics** | What the project is, how it will be used, and where it runs | Name, use case, and target platforms |
+| **Step 2 · Features** | What the first version must accomplish | A feature list that can be discussed and decomposed, with optional recommendations from Mint |
+| **Step 3 · Visual direction** | How it should look and feel | Complete page previews across web and mobile, or a custom design brief |
+| **Step 4 · Delivery** | How complete this version should be, how it runs, and what it may cost | Completeness, deployment, AI capabilities, and budget boundaries |
+
+### Steps 1–2: turn a vague idea into project scope
+
+Start with a name, purpose, and target platforms, then separate “the thing I want to build” into concrete capabilities. It is acceptable not to know the full requirements yet: choose the closest use case, ask Mint for feature suggestions, and add or remove items from there.
+
+![Project wizard with name, location, use case, and target platforms](assets/screenshots/project-create.png)
+
+### Step 3: express visual preference through pages, not terminology
+
+Visual styles are not presented as abstract labels. Each direction is rendered as a complete page, with web and mobile previews and support for a custom description. The user does not need design vocabulary to judge whether the result feels right.
+
+![Cyberpunk style shown as a complete interactive page in the project wizard](assets/screenshots/style-select.png)
+
+### Step 4: define completeness and delivery boundaries
+
+The final step grounds the project in more concrete constraints: whether this version is a full release, an MVP, or a demonstration prototype; whether it runs locally or in the cloud; whether it needs AI capabilities; and whether the technical budget is flexible, limited, or free-only. These choices do not replace later discussion, but they give the first implementation a clear scope and explicit trade-offs.
+
+### After creation: from tasks and prototypes to a runnable project
+
+Once the four steps are confirmed, Mint turns the project scope into subsequent tasks. UI projects can be tried through a local prototype link before implementation is approved. During development, task progress and run scripts remain beside the conversation. Repeatable commands live in the run panel, so starting, stopping, and inspecting logs do not require leaving the workspace.
+
+| Task progress | Run scripts |
 |---|---|
-| ![Task panel](assets/screenshots/task-panel.png) | ![Run panel](assets/screenshots/run-panel.png) |
+| ![Task list alongside a project conversation](assets/screenshots/task-panel.png) | ![Run panel with local preview and project scripts](assets/screenshots/run-panel.png) |
+
+<details>
+<summary>More workspace tools: agent templates, skills, input history, and pinned notes</summary>
+
+Choose agent responsibilities and reuse skills and MCP integrations in settings. During a conversation, revisit earlier prompts or keep useful output visible as a floating note.
+
+| Agent templates | Skills and integrations |
+|---|---|
+| ![Built-in Mint, Mint-D, Builder, and Evaluator agent templates](assets/screenshots/agent-templates.png) | ![Skill settings showing discovered skills and enable controls](assets/screenshots/skills-mcp.png) |
 
 | Input history | Pinned notes |
 |---|---|
-| ![Input history](assets/screenshots/history-drawer.png) | ![Pinned notes](assets/screenshots/pin-notes.png) |
+| ![Searchable prompt history in a side drawer](assets/screenshots/history-drawer.png) | ![Important output pinned beside the conversation](assets/screenshots/pin-notes.png) |
 
-| Subagent output | Shell output |
+</details>
+
+## Local data and permissions
+
+EasyMint itself has **no account system, telemetry, or project cloud storage**. AI requests go directly to the provider you configure; messages, files the agent reads, command output, and images may enter those requests. The provider's privacy and retention policies apply. See the bilingual [Privacy & Data Handling](PRIVACY.md) document.
+
+Default local storage is split across:
+
+| Location | Contents |
 |---|---|
-| ![Subagent output](assets/screenshots/agent-output.png) | ![ANSI shell output](assets/screenshots/shell-output.png) |
+| Your project directory | Source code, documents, and generated assets |
+| `<project>/.easymint/` | Project configuration, to-dos, and project-specific knowledge |
+| `~/.easymint/` | App settings, provider credentials, sessions, skills, and project runtimes |
 
-| Vision model settings | Input status indicators |
-|---|---|
-| ![Vision model](assets/screenshots/vision-model.png) | ![Agent and shell status](assets/screenshots/agent-capsules.png) |
+Provider credentials are stored locally in plaintext. MCP OAuth credentials use the operating system's secure storage when available, with a plaintext fallback on Linux systems without a keyring. Keep the global data directory private.
 
-## Multi-agent collaboration
+| Permission mode | Typical use | Boundary |
+|---|---|---|
+| Read-only | Inspect project content | Approved read tools; no commands, writes, or network access |
+| Standard · default | Develop and run checks | OS sandbox, a separate project runtime, and a network allowlist, with defined compatibility exemptions |
+| Full access | Use the host environment and credentials | No OS sandbox; pre-execution checks provide best-effort protection |
 
-- **Mint (project manager)**: understands requirements, breaks work into `task.json`, coordinates agents, and tracks progress.
+<details>
+<summary>Permission enforcement, compatibility exemptions, and Pi extension boundaries</summary>
+
+EasyMint checks operations **before execution**. Standard mode also runs commands inside an operating-system sandbox. Three categories define the boundaries:
+
+- **System core**: system directories, raw devices, and disk or security mechanisms such as `csrutil`, `spctl`, and `fdesetup` are blocked in all modes.
+- **Dangerous operations**: privilege escalation (`sudo` / `doas`), system service changes, and persistent configurations that can execute code—such as MCP configuration, startup directories, and EasyMint model/provider settings—are blocked in all modes.
+- **Ordinary resources**: Read-only mode limits reads to approved ordinary project content. Standard mode confines writes to the project, its runtime, and permitted temporary areas, and blocks highly sensitive credentials. Full access removes the ordinary workspace restriction.
+
+Pi extensions are explicitly approved main-process code and load only in **Full access** sessions. Extension initialization and event handlers do not pass through the ordinary tool sandbox. When switching to Standard or Read-only, the current response may finish, extension tools stop immediately, and the session is rebuilt with the new permissions when idle.
+
+The modes differ as follows:
+
+- **Read-only**: allows approved read tools for ordinary project content. Unknown tools, commands, file and application-state changes, MCP, network access, and sensitive credentials are blocked. Builds, tests, dependency installation, and Git operations are unavailable.
+- **Standard (default)**: redirects `HOME`, `TMPDIR`, and npm/pip/cargo caches into `~/.easymint/runtimes/<project-id>/`. Commands run inside the OS sandbox. A compatibility list, single-command exemptions, and network allowlist support development tools. The `open` exemption accepts one HTTP(S) URL; compound commands, pipes, redirections, and command substitution do not qualify. `git push` and `fetch` can use SSH-agent signing when the key is already loaded. Tools needing host login directories may require Full access.
+- **Full access**: uses the real host environment without an OS sandbox. Tools such as `gh`, Git, system commands, browsers, and Playwright can use the host environment. Switching requires a risk confirmation. Protection for system-core writes, privilege escalation, and persistent configuration is best effort before execution, not strong isolation against dynamic scripts.
+- **Conservative preflight checks**: checks target identifiable paths and privilege escalation. Message text, regular expressions, and script content are not treated as file paths. Kernel enforcement provides the additional boundary in sandboxed modes.
+- **Visible mode indicators**: the input card shows a lock shield for Read-only, a checked shield for Standard, and a warning shield with a danger color for Full access.
+
+</details>
+
+## Workspace details
+
+<details>
+<summary>Agent roles and templates, project tools, reusable knowledge, and skills</summary>
+
+### Multi-agent collaboration
+
+- **Mint (project manager)**: understands requirements, plans tasks when needed, coordinates agents, and tracks progress.
 - **Builder (coding)**: implements tasks, runs tests, and fixes problems; supports TDD.
 - **Evaluator (acceptance)**: checks the result against requirements and returns incomplete work for revision.
 - **Mint-D (UI design)**: produces HTML prototypes using the brand library and design guidelines.
@@ -106,27 +177,23 @@ Screenshots show the Chinese interface.
 
 Task progress is visible in the panel. Role-specific tasks use their assigned templates; general tasks use standard subagents. Delegation depth and task types are controlled.
 
-## Permissions and security
+### Agent templates
 
-EasyMint checks commands **before execution**. Standard and Read-only modes also apply operating-system enforcement. Three categories define the boundaries:
+Mint, Mint-D, Builder, and Evaluator are built-in **read-only** templates. To customize a role, create a template with its name, responsibility description, and prompt. Subagents inherit the main session's provider, model, and thinking level; those settings are not configured per template.
 
-- **System core**: system directories, raw devices, and disk or security mechanisms such as `csrutil`, `spctl`, and `fdesetup` are blocked in all modes.
-- **Dangerous operations**: privilege escalation (`sudo` / `doas`), system service changes, and persistent configurations that can execute code—such as MCP configuration, startup directories, and EasyMint model/provider settings—are blocked in all modes.
-- **Ordinary resources**: Read-only and Standard modes restrict resource access to the project workspace, its runtime, and system temporary directories, with sensitive credential access blocked. Full access removes the ordinary workspace restriction.
+### Project management
 
-Pi extensions are explicitly approved main-process code and load only in **Full access** sessions. Extension initialization and event handlers do not pass through the ordinary tool sandbox. When switching to Standard or Read-only, the current response may finish, extension tools stop immediately, and the session is rebuilt with the new permissions when idle.
+- File tree and Monaco editor with syntax highlighting and completion.
+- Multiple session tabs and windows.
+- Project renaming with automatic session-data migration, relocation, and existing-directory import.
+- Git integration.
+- Cross-device transfer of files and sessions.
 
-The modes differ as follows:
+### Pinned notes
 
-- **Read-only**: allows approved read tools for ordinary project content. Unknown tools, commands, file and application-state changes, MCP, network access, and sensitive credentials are blocked. Builds, tests, dependency installation, and Git operations are unavailable.
-- **Standard (default)**: redirects `HOME`, `TMPDIR`, and npm/pip/cargo caches into `~/.easymint/runtimes/<project>/`. Commands run inside the OS sandbox. A compatibility list, single-command exemptions, and network allowlist support development tools. The `open` exemption accepts one HTTP(S) URL; compound commands, pipes, redirections, and command substitution do not qualify. `git push` and `fetch` can use SSH-agent signing when the key is already loaded. Tools needing host login directories may require Full access.
-- **Full access**: uses the real host environment without an OS sandbox. Tools such as `gh`, Git, system commands, browsers, and Playwright can use the host environment. Switching requires a risk confirmation. Protection for system-core writes, privilege escalation, and persistent configuration is best effort before execution, not strong isolation against dynamic scripts.
-- **Conservative preflight checks**: checks target identifiable paths and privilege escalation. Message text, regular expressions, and script content are not treated as file paths. Kernel enforcement provides the additional boundary in sandboxed modes.
-- **Visible mode indicators**: the input card shows a lock shield for Read-only, a checked shield for Standard, and a warning shield with a danger color for Full access.
+Pin important AI output as floating notes in the chat area. Notes can be resized, attached as colored sticky notes, and persisted with the session.
 
-**Data sharing is a separate boundary.** Conversation content, files read by the agent, command output, injected project context, and images are sent directly to the AI provider you configure. Its privacy and retention policies apply. Web search and extraction use Tavily. See [PRIVACY.md](PRIVACY.md) for the full list, telemetry policy, and storage details (Chinese).
-
-## Experience retention
+### Experience retention
 
 When enabled in settings (off by default), Mint can retain useful lessons from completed tasks:
 
@@ -135,45 +202,43 @@ When enabled in settings (off by default), Mint can retain useful lessons from c
 - **Technology-aware selection**: entries tagged for a stack or platform appear only in matching projects.
 - **Editable Markdown**: entries are saved directly without a separate confirmation and can be edited or deleted at any time.
 
-## Project management
-
-- File tree and Monaco editor with syntax highlighting and completion.
-- Multiple session tabs and windows.
-- Project renaming with automatic session-data migration, relocation, and existing-directory import.
-- Git integration.
-- Cross-device transfer of files and sessions.
-
-## Pinned notes
-
-Pin important AI output as floating notes in the chat area. Notes can be resized, attached as colored sticky notes, and persisted with the session.
-
-## Agent templates
-
-Mint, Builder, Evaluator, and Mint-D each have built-in templates. All except Mint can be edited. Custom templates can specify responsibilities, provider, model, and thinking level.
-
-## Skills
+### Skills
 
 - **Automatic discovery**: discover standard skills in Claude Code (`~/.claude/skills/`), Codex (`~/.codex/skills/`), and project GitHub Agent Skills (`.github/skills/`) directories without changing the original files.
 - **Project precedence**: skills in a project's `.claude/skills/`, `.codex/skills/`, and `.github/skills/` override global skills with the same name. The interface shows their source and shadowed status.
 - **Install from a path or link**: send Mint a GitHub repository URL or local skill directory. Installation copies files without running repository scripts.
 - **AI-managed skills**: enable skill management in settings to let Mint create, update, and delete skills in a dedicated area separate from manually authored skills.
 
-## Workflow
+</details>
 
-1. **Create a project** through conversation or a form.
-2. **Refine the plan** through requirements, feature discussions, prototype approval, and technical planning.
-3. **Develop with agents** that break work into tasks and iterate between implementation and evaluation.
-4. **Keep iterating** by describing requirement changes; new tasks are appended incrementally.
+## AI providers
 
-## Installation
+Presets include **Anthropic, OpenAI, OpenAI Codex, GitHub Copilot, OpenRouter, DeepSeek, Zhipu GLM (Z.AI), Kimi, MiniMax, Qwen, Xiaomi MiMo, xAI, Google Gemini, and OpenCode**. Custom OpenAI- and Anthropic-compatible providers are also supported. Configure multiple providers and switch between them. A separate vision model can handle image understanding and interface checks.
 
-Download an installer from [Releases](https://github.com/tianemon/EasyMint/releases):
+Authentication depends on the provider:
 
-- **macOS**: `.dmg` for Apple Silicon.
-- **Windows**: `.exe` installer or portable edition for x64.
-- **Linux**: `.AppImage`, `.deb`, or `.tar.gz` for x64.
+- **Account login (browser authorization)**: available presets include Anthropic (token-based charges rather than plan allowance), OpenAI Codex (ChatGPT Plus / Pro account), GitHub Copilot (subscription account), OpenRouter, Kimi Coding, and xAI.
+- **API key**: used by the other built-in presets—including OpenAI, DeepSeek, Zhipu GLM / Z.AI, MiniMax, Qwen, Google Gemini, Xiaomi MiMo, and OpenCode—and custom providers. Keys and account credentials are stored locally **in plaintext under `~/.easymint/`**, comparable to `.npmrc`, `git-credentials`, or `~/.aws/credentials`. MCP OAuth credentials use OS-protected storage when available; see the privacy document for fallback behavior. See [PRIVACY.md](PRIVACY.md).
 
-Choose an AI provider on first launch. Use account authorization where supported, or enter an API key. See “AI providers” below.
+> Supported authentication methods come from the built-in engine's provider declarations. The settings selector appears only when both methods are supported. **OpenAI and OpenAI Codex are separate presets**: OpenAI uses the official API (`api.openai.com`) with an API key; OpenAI Codex uses the subscription endpoint (`chatgpt.com/backend-api`) with account login.
+
+## Web search
+
+Mint uses [Tavily](https://tavily.com) for built-in web search and page extraction. Create an API key at [app.tavily.com/home](https://app.tavily.com/home) and enter it under **Settings → Models → Model capabilities → Web access**. Search and extraction share the same key; onboarding configures that same setting.
+
+These tools use basic search and extraction. Free allowances and charges are set by Tavily; see its [credits and pricing](https://docs.tavily.com/documentation/api-credits). If extraction fails, EasyMint may fetch the URL directly from your computer, as described in [PRIVACY.md](PRIVACY.md).
+
+Clearing the key disables EasyMint's built-in search and extraction tools; there is no separate toggle. Configured MCP tools or agent-run commands can have their own network capabilities and permission requirements.
+
+## Vision
+
+For text-only models, configure a separate vision model through an OpenAI- or Anthropic-compatible endpoint to read images and check screenshots. Providing a key enables the capability; clearing it disables the capability. There is no separate toggle.
+
+## Native images and automatic models
+
+In **Settings → Models → Native images and automatic models**, select an image model from a configured provider. Start or reopen a chat to ask Mint to generate an asset or edit reference images. Assets are saved in an existing project directory and open from their chat links. Calls use provider credentials and incur image API charges.
+
+Configure planning and execution models, then select `easymint-auto` under the planning provider. Each new message starts with planning; successful file edits switch to execution, while retries keep their model. Replies show the actual provider and model. Wait for an active automatic-model run to finish before changing its configuration. Switching can lose prompt caching or trigger compaction; assess costs on your own workloads.
 
 ## Mobile client (Android / iOS)
 
@@ -186,34 +251,13 @@ Mobile repository: [**tianemon/EasyMintMobile**](https://github.com/tianemon/Eas
 
 The phone stores pairing credentials only. Projects, sessions, and messages stay on the computer. Communication uses P-256 ECDH and AES-256-GCM encryption. The desktop does not send project absolute paths or API keys to the phone.
 
-## AI providers
+## Interface language
 
-Presets include **Anthropic, OpenAI, OpenAI Codex, GitHub Copilot, OpenRouter, DeepSeek, Zhipu GLM (Z.AI), Kimi, MiniMax, Qwen, Xiaomi MiMo, xAI, Google Gemini, and OpenCode**. Custom OpenAI- and Anthropic-compatible providers are also supported. Configure multiple providers and switch between them. A separate vision model can handle image understanding and interface checks.
+Choose Simplified Chinese, English, or Follow system on the welcome page or under **Settings → General → Interface language** (设置 → 通用 → 界面语言). The default is Follow system: both Simplified and Traditional Chinese systems use the Simplified Chinese interface; all other system languages use English. Explicit language choices are preserved.
 
-Authentication depends on the provider:
+Application controls support Simplified Chinese and English, including settings, project creation and management, chat actions, permission and error messages, environment checks, device transfers, and the HTML prototype editor. Manual language changes apply without restarting and synchronize across application windows.
 
-- **Account login (browser authorization)**: available presets include Anthropic (token-based charges rather than plan allowance), OpenAI Codex (ChatGPT Plus / Pro account), GitHub Copilot (subscription account), OpenRouter, Kimi Coding, and xAI.
-- **API key**: used by the other built-in presets—including OpenAI, DeepSeek, Zhipu GLM / Z.AI, MiniMax, Qwen, Google Gemini, Xiaomi MiMo, and OpenCode—and custom providers. Keys and account credentials are stored locally **in plaintext under `~/.easymint/`**, comparable to `.npmrc`, `git-credentials`, or `~/.aws/credentials`. MCP OAuth credentials use system-keychain encryption. See [PRIVACY.md](PRIVACY.md) (Chinese).
-
-> Supported authentication methods come from the built-in engine's provider declarations. The settings selector appears only when both methods are supported. **OpenAI and OpenAI Codex are separate presets**: OpenAI uses the official API (`api.openai.com`) with an API key; OpenAI Codex uses the subscription endpoint (`chatgpt.com/backend-api`) with account login.
-
-## Web search
-
-Mint uses [Tavily](https://tavily.com) for web search and page extraction. Create your own API key at [app.tavily.com/home](https://app.tavily.com/home) and enter it in the web capability settings (联网能力). Search and extraction share the same key; the provider step in onboarding configures that same setting.
-
-Tavily's free allowance is **1,000 credits per month**, with this application's basic search calls costing **1 credit each** and extraction costing **1 credit per five successful page extractions**. That corresponds to roughly 1,000 searches or 5,000 extractions, or about 600 rounds of one search plus three page reads. Failed extractions do not consume credits.
-
-Without the key, Mint cannot search or extract web pages and relies on the model's existing knowledge. Clearing the key disables both capabilities; there is no separate toggle.
-
-## Vision
-
-For text-only models, configure a separate vision model through an OpenAI- or Anthropic-compatible endpoint to read images and check screenshots. Providing a key enables the capability; clearing it disables the capability. There is no separate toggle.
-
-## Native images and automatic models
-
-In **Settings → Models → Native images and automatic models**, select an image model from a configured provider. Start or reopen a chat to ask Mint to generate an asset or edit reference images. Assets are saved in an existing project directory and open from their chat links. Calls use provider credentials and incur image API charges.
-
-Configure planning and execution models, then select `easymint-auto` under the planning provider. Each new message starts with planning; successful file edits switch to execution, while retries keep their model. Replies show the actual provider and model. Wait for an active automatic-model run to finish before changing its configuration. Switching can lose prompt caching or trigger compaction; assess costs on your own workloads.
+Switching language does not rewrite chat history, user-defined names, project files, built-in prompts, or prototype template content. AI responses continue to follow the user's language. Third-party output and raw diagnostics retain their original language; native system controls follow the platform language.
 
 ## Technology stack
 
@@ -225,35 +269,23 @@ Configure planning and execution models, then select `easymint-auto` under the p
 | State | Zustand 5 |
 | Editor / terminal | Monaco Editor / xterm.js |
 | Plugins | Pi Extensions / Model Context Protocol SDK |
-| AI engine | Pi Coding Agent 1.3.0 |
+| AI engine | Pi Coding Agent 1.4.0 |
 
 ## Local development
 
 ```bash
 git clone https://github.com/tianemon/EasyMint.git
 cd EasyMint
-npm install
+node scripts/install-deps.cjs
 npm run dev          # Vite dev server + Electron
 npm run build        # Production build
 npm run lint         # ESLint + TypeScript checks
 ```
 
-Requires a Node.js environment.
-
----
-
-EasyMint uses the open-source Pi Coding Agent engine for agent orchestration, multi-role collaboration, and context management. Its guided workflow covers the main steps from an idea to a working product.
+Requires a Node.js environment. The installer configures Electron downloads through `ELECTRON_MIRROR`, preserving an existing value. For lockfile installation, use `node scripts/install-deps.cjs ci`.
 
 ## Development story
 
 EasyMint's development is itself an experiment in AI coding: approximately 99% of the project was produced using DeepSeek models (the lowest-cost flash tier since July), growing from a 14-file shell template into a desktop product.
 
 [**Building a desktop coding agent with a low-cost model**](PROJECT_STORY.md) (Chinese).
-
-## Interface language
-
-Choose Simplified Chinese, English, or Follow system on the welcome page or under **Settings → General → Interface language** (设置 → 通用 → 界面语言). The default is Follow system: both Simplified and Traditional Chinese systems use the Simplified Chinese interface; all other system languages use English. Explicit language choices are preserved.
-
-Application controls support Simplified Chinese and English, including settings, project creation and management, chat actions, permission and error messages, environment checks, device transfers, and the HTML prototype editor. Manual language changes apply without restarting and synchronize across application windows.
-
-Switching language does not rewrite chat history, user-defined names, project files, built-in prompts, or prototype template content. AI responses continue to follow the user's language. Third-party output and raw diagnostics retain their original language; native system controls follow the platform language.

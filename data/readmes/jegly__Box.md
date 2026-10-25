@@ -38,9 +38,9 @@
 
 > ⭐️ **If this project helped you, please star it** — it helps others find it.
 >
-> We've hit **40K downloads**! Thank you to everyone for supporting Box.
+> We've hit **40K downloads**! Thank you to everyone for supporting Box. All releases are now PQC ML-DSA-87 signed.
 
-[![Download Box v3.5.5 APK](https://img.shields.io/badge/Download-Latest_APK-A6E3A1?style=for-the-badge&logo=android&logoColor=1E1E2E)](https://github.com/jegly/Box/releases/latest)
+[![Download Box v3.5.5-PQC APK](https://img.shields.io/badge/Download-Latest_APK-A6E3A1?style=for-the-badge&logo=android&logoColor=1E1E2E)](https://github.com/jegly/Box/releases/latest)
 
 > **Note:** If you're using a custom ROM (LineageOS, GrapheneOS, CalyxOS), download the `custom-rom-support` APK from the [latest release](https://github.com/jegly/Box/releases/latest) instead.
 
@@ -92,12 +92,14 @@ Box began as a fork of [Google AI Edge Gallery](https://github.com/google-ai-edg
 <details>
 <summary>
 
-## Changelog v1.0.7 – v3.5.5
+## Changelog v1.0.7 – v3.5.5-PQC
 
 </summary>
 
 | Version | Feature | Details |
 |---|---|---|
+| v3.5.5-PQC | **Post-quantum release signatures** | Release APKs now carry post-quantum (PQC) signatures alongside the standard Android signature. |
+| v3.5.5-PQC | **Dependencies updated** | Libraries bumped to current versions. Otherwise identical to v3.5.5. |
 | v3.5.5 | **Removed several crashing models** | A batch of newer LiteRT models were failing to load or crashing outright, mostly reported on lower RAM devices like the Pixel 6a. They need a newer LiteRT runtime than Box currently ships. Removed: Granite-4.0-H-1B, InternVL3-2B, InternVL3_5-2B, Jan-nano, MiniCPM5-1B (int4), Nanbeige4.2-3B, OLMo-2-1B-Instruct, Phi-4-mini-instruct, Phi-4-mini-reasoning, SmolLM3-3B, SmolVLM2-2.2B, SmolVLM2-500M, and both Ministral-3-3B models. |
 | v3.5.5 | **Kokoro TTS download fixed** | The Hugging Face repo Kokoro downloaded from was wiped upstream, so downloads landed on an error page instead of the model. Repointed to the model's new home; existing installs redownload cleanly. |
 | v3.5.5 | **Gemini Nano hub updated** | The 256-token reply cap is lifted, up to 4096 tokens depending on device. Added Pixel 11 (Nano v4) support and a much longer list of supported phones. Updated the About text in the hub, which was out of date. |

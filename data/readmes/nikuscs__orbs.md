@@ -1,86 +1,119 @@
-# 🔮 Orbs
+# 🤖 Orbs
 
-> Multi-bot chat you run yourself. Jev picks who answers, and a daemon on your machine runs each turn through Pi.
+> Your own bots, on your own Mac. Chat with them from the web, your iPhone or the desktop app.
 
-Rooms hold people and bots. A direct room is one bot. Mention a bot to wake it. With no mention, Jev scores who should reply.
-
-An open-source, self-hosted alternative to Grok Bot, Muse and Dots: an AI group chat where several bots share one room, each on any model your Pi can reach (OpenAI Codex, Claude, Grok, OpenRouter and more).
+Orbs runs a small daemon on your computer. Each bot is a persistent [Pi](https://github.com/earendil-works/pi) agent with its own conversation, tools, skills and memory, and it keeps working when you close the app. Your devices pair with the daemon once, then talk to it over your local network or Tailscale. There are no accounts and no cloud service in between.
 
 ## ✨ Features
 
-- 💬 **Rooms and direct chats.** Create a bot, set its name, instructions and model, and talk to it alone or in a group.
-- 🎯 **Routing.** `@handle` wakes that bot. `@everyone`, `@all` and `@here` wake every member. Otherwise Jev (TypeSafe) decides.
-- 🖥️ **Your machine runs the turn.** The daemon connects out and drives your own Pi (`pi --mode rpc`). Pi is not bundled.
-- 🏠 **Two hosts, same app.** Cloudflare (Workers, D1, R2, one Durable Object per organization) or one local Bun process (SQLite and disk).
-- 🔑 **Sign in, then a daemon key.** Email and password, or Google. The daemon uses an organization API key, not your password.
+- 💬 **Persistent bots.** Give a bot a name, an avatar, instructions and a model. Its conversation survives restarts, and work in progress resumes on its own.
+- 🔌 **Any model Pi can reach.** Log in to OpenAI Codex, Claude, Grok and other providers from Settings, or reuse the logins you already have in Pi.
+- 🧰 **Skills, MCP and plugins.** Bots inherit your agent skills, instructions and MCP servers, and you can add more per bot. Pick a skill from the composer with `/`.
+- 🤝 **Bots talk to each other.** A bot can message another bot, wait for the answer and pass it on, up to three bots deep. Bots can also start subagents in the foreground or background.
+- ✅ **Approvals you control.** Each bot has a permission mode: read-only, ask, auto or full. Auto lets [Jev](https://typesafe.ai) approve safe calls and asks you about the rest, using your own plain-language rules.
+- 🔑 **Secrets without leaks.** A bot can ask you for an API key. You type it once, it is stored encrypted, and the bot only ever sees a placeholder that a local proxy swaps for the real value.
+- 📎 **Files, questions and reactions.** Attach files and images, answer a bot's multiple-choice questions, and react to messages.
+- ⏰ **Routines.** Schedule a bot to run on its own; results land in its chat.
+- 📊 **Artifacts.** Bots build documents, charts and HTML pages you can open and edit from the artifacts page.
+- 📱 **iOS app.** Scan the pairing QR code and chat on the go. Push notifications show the bot's own avatar.
+- 🍎 **macOS app.** Starts the daemon for you, pairs itself, and can also open Orbs running on another Mac.
+- 💾 **Backups.** One command snapshots every bot, its files and the database, and restores them later.
 
 ## 🧰 Built with
 
-[Bun](https://bun.sh) · [TanStack Start](https://tanstack.com/start) · [Cloudflare Workers](https://developers.cloudflare.com/workers/) · [D1](https://developers.cloudflare.com/d1/) · [Durable Objects](https://developers.cloudflare.com/durable-objects/) · [R2](https://developers.cloudflare.com/r2/) · [Better Auth](https://www.better-auth.com) · [oRPC](https://orpc.dev) · [Kysely](https://kysely.dev) · [Pi](https://github.com/earendil-works/pi)
+[Bun](https://bun.sh) · [Turborepo](https://turborepo.com) · [Pi Durable](https://github.com/earendil-works/pi) · [oRPC](https://orpc.dev) · [TanStack Start](https://tanstack.com/start) · [Expo](https://expo.dev) · [Electrobun](https://electrobun.dev) · SQLite · [Paraglide](https://inlang.com/m/gerre34r/library-inlang-paraglideJs)
 
 ## 🚀 Run it locally
 
-**You need:** [Bun](https://bun.sh) 1.4.2 and [Pi](https://github.com/earendil-works/pi) on your `PATH` (`pi`, 0.99.0 or newer). A TypeSafe API key if you want Jev to route, and Google OAuth credentials if you want Google sign-in.
+**You need:** [Bun](https://bun.sh) 1.4 on macOS. The iOS app also needs Xcode.
 
 **1. Install**
 
 ```bash
-git clone https://github.com/nikuscs/orbs && cd orbs && bun install
-cp apps/web/.env.example apps/web/.env
+git clone https://github.com/nikuscs/orbs && cd orbs
+bun install
+cp .env.example .env
 ```
 
-The example `BETTER_AUTH_SECRET` is fine on your machine. Put a real `TYPESAFE_API_KEY` in that file if you want Jev to run. The Google placeholders only satisfy startup; they do not sign anyone in.
+The defaults in `.env.example` work as they are.
 
-**2. Start the web app**
+**2. Start the daemon and the web app**
 
 ```bash
-cd apps/web && bun run dev:cloudflare
+bun run dev:web
 ```
 
-Open http://localhost:47101 and sign up with email. The verification link is printed in that terminal as one JSON line (`tag: mail`); the default mail driver does not send email.
+This starts the daemon on port 47191 and the web app on http://localhost:47190. Dev data lives in `~/.config/orbs-dev`, apart from a real install in `~/.config/orbs`.
 
-**3. Start the daemon**
+**3. Pair your browser**
 
-In the app, open **Daemon key** (`/settings/daemon-key`). The key is shown once. Paste it into a new `apps/daemon/.env`:
+While no device is paired, the daemon prints a pairing link and a QR code in the terminal. Open the link to pair this browser. To pair another device later, open **Settings → Devices** on a paired one, or run `orbs pair`.
 
-```bash
-cp apps/daemon/.env.example apps/daemon/.env
-```
+**4. Connect a model**
 
-Set `ORBS_API_KEY`, and `ORBS_WORKDIR` to a real folder. `ORBS_URL` defaults to `http://localhost:47101`. Then:
-
-```bash
-cd apps/daemon && bun run dev:cloudflare
-```
-
-`bun run dev:cloudflare` from the repo root starts the web app and the daemon together. The daemon exits until its `.env` is filled in.
+Open **Settings → Providers** and log in. If you already use Pi, its saved logins in `~/.pi/agent` work right away.
 
 > [!WARNING]
-> Bots run Pi's tools (read, bash, edit, write) as your user, in `ORBS_WORKDIR`. This is not a sandbox. A bot asked to change a repo will change that repo.
+> Bots run their tools as your user, on your machine. This is not a sandbox. Use the permission modes to decide what a bot may do without asking.
 
-Bot instructions are edited in the bot form. Extra instructions and skills can live in `~/.orbs/bots/<botId>/` (`AGENTS.md` and `skills/`). Skills shared by the bots on this daemon default to `~/.orbs/shared` (`ORBS_SHARED_HOME`).
+### iPhone
 
-### Without Cloudflare
+```bash
+bun run dev:mobile
+```
 
-`bun run dev:bun` from the repo root builds the web app in native mode and starts one Bun process on port 47101, plus the daemon. It uses the same `apps/web/.env`, and data defaults to `~/.orbs/data`. It listens on every interface, so LAN and Tailscale can reach it; set `HOST=127.0.0.1` to keep it local.
+This boots the iOS Simulator and starts the dev client. Scan the pairing QR code from **Settings → Devices** in the web app. For a real phone, the daemon must be reachable on your LAN or Tailscale; it listens on every interface by default.
 
-## ☁️ Cloudflare
+### Desktop app
 
-`apps/web/wrangler.jsonc` names the Worker `orbs-web`, the D1 database `orbs-database`, the R2 bucket `orbs-files` and the `TenantObject` Durable Object. It has no `database_id`, and `deploy:cloudflare` and `deploy:first` pass `--no-x-provision`, so a fresh account will not create those resources on its own.
+```bash
+bun run dev:desktop
+```
 
-Before a production deploy, create the database, bucket and Worker yourself, set `APP_URL` to an `https://` origin, and put the keys from `apps/web/.env.example` in `apps/web/.env.production`, with `apps/web/.prod.vars` as a symlink to it for Wrangler (both gitignored). `bun run deploy:first` (in `apps/web`) is the first upload; later deploys are `bun run deploy:cloudflare` from the repo root. The secret check refuses a deploy whose `APP_URL` is not https; the committed `http://localhost:47101` is for local dev only.
+The macOS app starts the daemon and web app if they are not running, then pairs itself. On first launch it asks where Orbs runs: **This Mac** or **Another Mac**.
+
+### The `orbs` command
+
+Run `bun link` in `apps/daemon` once, then:
+
+```bash
+orbs start                # Run in the foreground; Ctrl+C stops it
+orbs start --detach       # Run in the background
+orbs pair                 # Print a new pairing code, link and QR code
+orbs service register     # Start the daemon at every macOS login
+orbs service unregister   # Stop starting it at login
+```
+
+`bun run --cwd apps/daemon backup` creates and restores backups. See the [API reference](.agents/references/api.md#daemon-and-storage) for details.
+
+### Release
+
+```bash
+bun run release            # next patch: 0.0.1, 0.0.2, ...
+bun run release 0.2.0      # a specific version
+bun run release --draft    # publish the GitHub Release as a draft
+```
+
+This releases from a clean `main` that matches `origin/main`. It runs `check` and `lint`, sets the version in every `package.json`, commits and tags it, then builds from a clean checkout of the tag. It pushes `main` and the tag, and creates a GitHub Release with two files:
+
+- `Orbs-<version>-macos-arm64.zip`: the macOS app, signed with your Developer ID and notarized by Apple.
+- `Orbs-<version>-server.tar.gz`: the daemon and web app for a Mac without the desktop app. Run `bun server/daemon/entry.native.js start` and `bun server/web/src/application/server.bun.js`.
+
+The iOS app ships through EAS and TestFlight, not GitHub. `bun run release:desktop` builds only the macOS app, without tagging.
+
+Signing reads `DESKTOP_SIGNING_KEYCHAIN` (a dedicated keychain holding the Developer ID certificate) and `DESKTOP_SIGNING_IDENTITY` (its SHA-1) from `.env`. The keychain password and notary key come from `.env` or from a `credentials.json` next to the keychain; see `.env.example`.
 
 ## 🧪 Development
 
 ```bash
-bun run check
-bun run lint
-cd apps/server && bun run test
+bun run check       # TypeScript in every package
+bun run lint        # Oxlint, architecture rules and import cycles
+bun run lint:dead   # Unused files, exports and dependencies
 ```
 
-`bun run check` needs `apps/web/.env`, because Wrangler builds the Worker env types from it. CI copies `.env.example` into place for that reason.
+Agent guidance lives in `AGENTS.md` and `.agents/`. Run `bun run agents:sync` after changing it: it links `CLAUDE.md`, `.claude/` and the worktree configs for Paseo, Orca, Conductor and T3 Code from `.agents/orchestrators/`.
 
-`bun run build:daemon` writes a binary to `apps/daemon/dist/orbs-daemon`.
+[Architecture](.agents/references/architecture.md) shows how the apps and packages fit together and where each kind of file goes. The [API reference](.agents/references/api.md) lists the daemon, RPC and Pi behavior the code does not make obvious.
 
 ## 📄 License
 

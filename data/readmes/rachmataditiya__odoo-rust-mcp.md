@@ -4,7 +4,7 @@
 [![Release](https://github.com/rachmataditiya/odoo-rust-mcp/actions/workflows/release.yml/badge.svg)](https://github.com/rachmataditiya/odoo-rust-mcp/actions/workflows/release.yml)
 [![codecov](https://codecov.io/gh/rachmataditiya/odoo-rust-mcp/branch/main/graph/badge.svg)](https://codecov.io/gh/rachmataditiya/odoo-rust-mcp)
 [![GitHub release](https://img.shields.io/github/v/release/rachmataditiya/odoo-rust-mcp)](https://github.com/rachmataditiya/odoo-rust-mcp/releases)
-[![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Homebrew](https://img.shields.io/badge/homebrew-available-orange)](https://rachmataditiya.github.io/homebrew-odoo-rust-mcp/)
 [![Debian/Ubuntu](https://img.shields.io/badge/apt-available-blue)](https://rachmataditiya.github.io/odoo-rust-mcp/)
 [![Docker](https://img.shields.io/badge/docker-ghcr.io%2Fodoo--rust--mcp-2496ED?logo=docker&logoColor=white)](https://github.com/rachmataditiya/odoo-rust-mcp/pkgs/container/odoo-rust-mcp)
@@ -469,6 +469,7 @@ export MCP_AUTH_TOKEN=               # Bearer token (generate: openssl rand -hex
 ```bash
 # Install
 brew tap rachmataditiya/odoo-rust-mcp
+brew trust rachmataditiya/odoo-rust-mcp  # If prompted on Homebrew 4.4+
 brew install rust-mcp
 
 # Configure (edit with your Odoo credentials)
@@ -541,6 +542,43 @@ The binary automatically loads config from `~/.config/odoo-rust-mcp/env`, so you
 This means you can use `rust-mcp` directly without the shell wrapper `rust-mcp-service`. This is especially important for MCP clients like Windsurf that don't support shell script execution.
 
 For full Homebrew documentation, see: https://rachmataditiya.github.io/homebrew-odoo-rust-mcp/
+
+#### Agent Skills & Intelligence (Claude Code & Antigravity CLI)
+
+Teach Claude Code, Antigravity CLI (AGY), or Cursor to act as an autonomous Odoo ERP expert with domain knowledge, safe multi-instance protocols, Polish notation domain guides, and standard workflow runbooks:
+
+To install the agent skill and register the MCP server automatically:
+
+```bash
+./scripts/install-agent-skills.sh
+```
+
+Or configure manually:
+
+**Claude Code (`~/.claude.json`):**
+```json
+{
+  "mcpServers": {
+    "odoo": {
+      "type": "http",
+      "url": "http://127.0.0.1:8787/mcp"
+    }
+  }
+}
+```
+
+**Antigravity CLI (`~/.gemini/config/mcp_config.json`):**
+```json
+{
+  "mcpServers": {
+    "odoo": {
+      "url": "http://127.0.0.1:8787/mcp"
+    }
+  }
+}
+```
+
+Skill documentation and runbooks are located at `skills/odoo-mcp/SKILL.md`.
 
 #### Option 2: APT (Debian/Ubuntu)
 

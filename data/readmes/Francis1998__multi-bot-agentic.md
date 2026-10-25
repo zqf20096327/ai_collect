@@ -216,6 +216,27 @@ Offline HITL `skew_ratio` bands. Gap vs LangGraph/CrewAI/AutoGen critic-fanout s
 Offline HITL `contention_ratio` bands. Gap vs LangGraph/CrewAI/AutoGen shared-lock contention monitors. See `docs/guides/SHARED_LOCK_CONTENTION_BAND_ADVISOR_GUIDE.md`.
 
 
+
+### ConsensusQuorumStallAdvisor
+
+![ConsensusQuorumStallAdvisor](assets/demo/consensus-quorum-stall.gif)
+
+Offline HITL `stall_ratio` bands. Gap vs LangGraph/CrewAI/AutoGen consensus quorum-stall monitors. See `docs/guides/CONSENSUS_QUORUM_STALL_ADVISOR_GUIDE.md`.
+
+
+### SupervisorRestartThrashAdvisor
+
+![SupervisorRestartThrashAdvisor](assets/demo/supervisor-restart-thrash.gif)
+
+Offline HITL `restart_ratio` bands. Gap vs LangGraph/CrewAI/AutoGen supervisor restart-thrash monitors. See `docs/guides/SUPERVISOR_RESTART_THRASH_ADVISOR_GUIDE.md`.
+
+
+### ToolResultSchemaDriftBandAdvisor
+
+![ToolResultSchemaDriftBandAdvisor](assets/demo/tool-result-schema-drift-band.gif)
+
+Offline HITL `drift_ratio` bands. Gap vs LangGraph/CrewAI/AutoGen tool-result schema-drift monitors. See `docs/guides/TOOL_RESULT_SCHEMA_DRIFT_BAND_ADVISOR_GUIDE.md`.
+
 ### SubgraphCancelLeakAdvisor
 
 ![SubgraphCancelLeakAdvisor](assets/demo/subgraph-cancel-leak.gif)

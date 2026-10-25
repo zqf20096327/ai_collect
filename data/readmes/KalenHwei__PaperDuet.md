@@ -5,7 +5,8 @@
 <h1 align="center">PaperDuet</h1>
 
 <p align="center">
-  <em>A lightweight AI paper translator built for researchers!</em>
+  <em>A lightweight AI paper translator built for researchers!</em><br>
+  <a href="https://paperduet.com">paperduet.com</a>
 </p>
 
 <p align="center">
@@ -29,47 +30,55 @@
 <p align="center">
   <strong>PaperDuet is a lightweight AI mirror translator for papers that keeps the original layout.</strong><br>
   Five open-source AI translation models to choose from.<br>
-  No sign-in, no fees, fully local!
+  No fees, fully local!
 </p>
 
 <p align="center">
-  <img src="docs/images/hero.gif" width="880" alt="PaperDuet translating Attention Is All You Need from scratch: the outline in the sidebar turns Chinese first, then the title and the abstract appear on the right page, in the same place as on the original"><br>
+  <img src="docs/images/en/hero.gif" width="880" alt="PaperDuet translating Attention Is All You Need from scratch: the outline in the sidebar turns Chinese first, then the title and the abstract appear on the right page, in the same place as on the original"><br>
   <sub>A recording of Attention Is All You Need (15 pages) being translated from scratch</sub>
 </p>
 
-PaperDuet is a lightweight AI mirror translator for papers. It lays out the original and the translation as mirror images, with formulas, figures and tables corrected and aligned page by page. No sign-up, no API key, no fees, and it runs entirely on your computer!
+PaperDuet is a lightweight AI mirror translator for papers. It lays out the original and the translation as mirror images, with formulas, figures and tables corrected and aligned page by page. No API key, no fees, and it runs entirely on your computer!
 
 ## Every page, made easy
 
 <p align="center">
-  <img src="docs/images/layout.gif" width="880" alt="Scrolling through pages 3 to 5: the Transformer diagram, the attention diagrams and the formulas sit in the same place on both sides, with the English text replaced by Chinese on the right">
+  <img src="docs/images/en/layout.gif" width="880" alt="Scrolling through pages 3 to 5: the Transformer diagram, the attention diagrams and the formulas sit in the same place on both sides, with the English text replaced by Chinese on the right">
 </p>
 
 The original paper is on the left and its translation on the right, and both sides scroll and zoom together. Columns, headings, captions, footnotes and references are recognised automatically, and paragraphs that run across columns or pages are joined up. The two sides line up exactly, so comparing them is easy.
 
-## Fast! Fast! Fast!
+## Saving translation? AI summary? No problem!
 
 <p align="center">
-  <img src="docs/images/double-click.gif" width="880" alt="On page 9, section 6.3 is not translated yet; a double-click on its first paragraph moves the section to the front, the status bar says so, and its paragraphs appear in Chinese one after another while the rest of the page waits">
+  <img src="docs/images/en/progress-save.gif" width="880" alt="The last paragraphs come in, the progress ring in the toolbar turns into a green check and one click saves the translation as a PDF; then the light bulb next to it opens and the AI summary of the whole paper appears line by line">
 </p>
 
-Headings are translated first, so you can see how the paper is structured; the title, abstract and introduction come next, so you get the key points quickly. Want to read a later section first? Just double-click its paragraph in the original and it starts right away!
+The toolbar shows the translation progress. When the whole paper is done, the ring turns into a green check and a bubble pops up: one click saves the translation as a PDF next to the original. The light bulb next to it is the AI summary: open it to read what the paper asks, how it works and what it found, written by the model after reading the whole paper. You can also choose from five models to suit your computer and your needs!
 
-## Notes? Just make them on the translation!
+## Think it. Find it.
 
 <p align="center">
-  <img src="docs/images/highlights.gif" width="880" alt="Two sentences of the abstract are selected on the original and highlighted yellow; the same sentences turn yellow in the translation. Then part of the last Chinese sentence is highlighted green, and the matching English sentence turns green on the left">
+  <img src="docs/images/en/library.gif" width="880" alt="A library of over fifty papers; in AI Organize, Computer Vision and a topic are chosen, the matching papers rise to the top and the rest turn grey. Then the AI Search queries “polyp segmentation” and “reinforcement learning” bring up the matching papers, with passages from their summaries">
 </p>
 
-Highlight, underline or add a note on either side, and the matching sentence on the other side is marked too.
+Every paper you've read lives in your library. AI Organize tags each one by field and topic, and the papers you pick rise to the top. AI Search finds a paper by its title, its text, its translation or its summary, in English or Chinese.
 
-## Progress? Speed? No problem!
+## Don't get it? Go click it.
 
 <p align="center">
-  <img src="docs/images/progress-save.gif" width="880" alt="The last paragraphs of the paper come in, the progress ring in the toolbar turns into a green check, a bubble offers to save the translation as a PDF, and one click saves it next to the original">
+  <img src="docs/images/en/double-click.gif" width="880" alt="While the first pages are still translating, the view jumps down to section 6.3 on page 9, not translated yet; a double-click on its first paragraph puts it first and it appears in Chinese right away">
 </p>
 
-The toolbar shows the translation progress. When the whole paper is done, the ring turns into a green check and a bubble pops up: one click saves the translation as a PDF next to the original. You can also choose from five models to suit your computer and your needs!
+Headings are translated first, so you can see how the paper is structured; then the title, abstract and introduction. Want a later passage now? Double-click it and it jumps the queue, no waiting for the progress to get there.
+
+## Taking notes? You got it!
+
+<p align="center">
+  <img src="docs/images/en/highlights.gif" width="880" alt="A sentence of the Chinese translation is selected and a note is written; the matching English sentence on the left gets the same mark and opens the same note. Then the original PDF with the note is exported and opened in Preview, where the mark and the note are there too">
+</p>
+
+Highlight, underline and write notes right on the translation; the matching sentences in the original are marked too. Export the original PDF with your notes as standard PDF annotations, ready for Preview, Zotero and other apps.
 
 ## And there's more
 
@@ -107,7 +116,7 @@ Already have one of these models from LM Studio, llama.cpp or Hugging Face? Pape
 ## Private by design
 
 - Your papers, translations and notes stay on your computer.
-- No account needed. Only if you agree, PaperDuet sends anonymous usage and diagnostic data (version, system, interface language, model and kinds of errors), never paper content, and you can turn it off anytime in Settings.
+- Only if you agree, PaperDuet sends anonymous usage and diagnostic data (version, system, interface language, model and kinds of errors), never paper content, and you can turn it off anytime in Settings.
 - PaperDuet goes online only to download a model, to check for updates and to send that data; you can turn off the last two.
 
 ## Get started
@@ -170,6 +179,7 @@ Yes, for personal study and research, and for universities, schools, research in
 
 ## Changelog
 
+- **0.5.4** (2026-10-24): a cleaner interface without the extra explanatory text; the AI search field now reads "Search with AI".
 - **0.5.3** (2026-10-24): PaperDuet now asks once whether you'd like to share anonymous usage and diagnostic data to help improve it; never paper content, and you can turn it off anytime in Settings › Data.
 - **0.5.2** (2026-10-24): AI Search 🔍 in the library finds papers you've read by title, original text, translation, summary or tags, in English or Chinese; search and AI Organize move the papers found to the top and grey out the rest.
 - **0.5.1** (2026-10-24): a library in place of the folder panel, with every paper read or imported, renamed in place and summarised; import many PDFs or a whole folder; AI Organize ✨ filters papers by field and topic; fixes for garbled tables and paragraphs that failed to translate in some papers.

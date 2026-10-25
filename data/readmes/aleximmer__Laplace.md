@@ -1,7 +1,7 @@
 <div align="center">
  <img src="https://raw.githubusercontent.com/AlexImmer/Laplace/main/logo/laplace_logo.png" alt="Laplace" width="300"/>
 
-![pytest](https://github.com/aleximmer/laplace/actions/workflows/pytest-default.yml/badge.svg)
+![pytest](https://github.com/aleximmer/laplace/actions/workflows/pytest.yml/badge.svg)
 ![lint](https://github.com/aleximmer/laplace/actions/workflows/lint-ruff.yml/badge.svg)
 ![format](https://github.com/aleximmer/laplace/actions/workflows/format-ruff.yml/badge.svg)
 
@@ -12,12 +12,9 @@
 <br />
 </div>
 
-The laplace package facilitates the application of Laplace approximations for entire neural networks, subnetworks of neural networks, or just their last layer.
+The `laplace` package facilitates the application of Laplace approximations for entire neural networks, subnetworks of neural networks, or just their last layer.
 The package enables posterior approximations, marginal-likelihood estimation, and various posterior predictive computations.
-It also includes function-space estimators selected through `Laplace` with
-`subset_of_weights="all"` and `hessian_structure="gp"`: [ELLA](docs/ella.md) uses
-`functional_approximation="nystrom"`, while [VaLLA](docs/valla.md) uses
-`functional_approximation="variational"`.
+It includes both weight-space and function-space Laplace approximations.
 
 There is also a corresponding paper, [_Laplace Redux — Effortless Bayesian Deep Learning_](https://arxiv.org/abs/2106.14806), which introduces the library, provides an introduction to the Laplace approximation, reviews its use in deep learning, and empirically demonstrates its versatility and competitiveness. Please consider referring to the paper when using our library:
 
@@ -100,3 +97,9 @@ pred = la(x, pred_type="glm", link_approx="probit")
 
 Pull requests are very welcome.
 Please follow the guidelines in <https://aleximmer.github.io/Laplace/devs_guide>
+
+> [!WARNING]
+> AI-assisted contributions are welcome, but you must understand the problem you are solving.
+> You must also understand the solutions your AI agent proposes and review them yourself.
+> When opening a PR, you **must** write the description yourself.
+> First-time contributors must disclose their AI usage and confirm that they understand the changes.

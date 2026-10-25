@@ -91,7 +91,7 @@ Config, logs, prompt caches, daemon ownership, process locks, and loopback endpo
 
 Serving and acceptance tests read user-selected model locations and policy from Development only. Their mutable config, cache, and logging fixtures use temporary `.astronomical-dev` state and never `~/.astronomical`. Config boundary tests may construct temporary Stable fixtures solely to prove channel separation. Explicit app validation with `--real-model` uses the Development instance.
 
-On first launch each instance creates its own versioned `config.json` and adjacent offline JSON Schema. Open Library in Observatory to install a curated model under that instance's automatic models directory. When an existing unversioned configuration can be migrated without changing its behavior, Astronomical preserves its exact bytes once as `config.legacy-v0.json` before atomically replacing `config.json`. An unsafe migration leaves the original configuration unchanged and creates no backup. Additional existing model locations remain available as recursive scan roots:
+On first launch each instance creates its own versioned `config.json` and adjacent local JSON Schema. Open Library in Observatory to install a curated model under that instance's automatic models directory. When an existing unversioned configuration can be migrated without changing its behavior, Astronomical preserves its exact bytes once as `config.legacy-v0.json` before atomically replacing `config.json`. An unsafe migration leaves the original configuration unchanged and creates no backup. Additional existing model locations remain available as recursive scan roots:
 
     {
       "$schema": "./astronomical-config.schema.json",
@@ -106,7 +106,7 @@ On first launch each instance creates its own versioned `config.json` and adjace
       }
     }
 
-The memory value uses decimal gigabytes. Remove `maximum_mlx_memory_gb` to use the Mac-reported MLX ceiling. Per-model entries can set a lower context ceiling, generation defaults, chunking overrides, and multi-token-prediction depth. Explicit request values override generation defaults. Overrides for temporarily absent models remain dormant and are reported as unmatched rather than preventing other models from serving. Global chunking controls remain available under `chunking`, and each model may override individual values. See the [version 1 configuration schema](https://aosama.github.io/astronomical/schemas/config/v1/astronomical-config.schema.json) for the complete contract.
+The memory value uses the gigabyte Apple uses to market the Mac: 1 GB = 1,073,741,824 bytes (2³⁰). Remove `maximum_mlx_memory_gb` to use the Mac-reported MLX ceiling. Per-model entries can set a lower context ceiling, generation defaults, chunking overrides, and multi-token-prediction depth. Explicit request values override generation defaults. Overrides for temporarily absent models remain dormant and are reported as unmatched rather than preventing other models from serving. Global chunking controls remain available under `chunking`, and each model may override individual values. See the [version 1 configuration schema](https://aosama.github.io/astronomical/schemas/config/v1/astronomical-config.schema.json) for the complete contract.
 
 ## Build the app
 
@@ -132,7 +132,7 @@ Stable installation and release publication are isolated under `scripts/release/
 
     scripts/release/build-and-install-stable-app.sh
 
-Use `--dry-run` to build and validate Stable while previewing, rather than performing, the installation. `scripts/release/build-stable-app.sh` and `scripts/release/install-stable-app.sh` remain available when the two stages need to run independently. The packaging contracts run on every pull request and can also be run explicitly before release work with `scripts/release/tests/test-release-contracts.sh`; the app-builder journey itself runs as `cargo test-app-builder` on the macOS offline verification check.
+Use `--dry-run` to build and validate Stable while previewing, rather than performing, the installation. `scripts/release/build-stable-app.sh` and `scripts/release/install-stable-app.sh` remain available when the two stages need to run independently. The packaging contracts run on every pull request and can also be run explicitly before release work with `scripts/release/tests/test-release-contracts.sh`; the app-builder journey itself runs as `cargo test-app-builder` on the macOS build job.
 
 Stable candidate builds perform signature, resource, metadata, and bundled-daemon validation without launching over a running Stable instance. Promotion does not restart the running app. Stable builds require a clean Git worktree.
 
@@ -152,10 +152,10 @@ Point an OpenAI-compatible local client at that address, select a discovered mod
 
 ## Verification
 
-Check Rust formatting, then run the Rust offline and REST suites:
+Check Rust formatting, then run the Rust integration and REST suites:
 
     cargo fmt --all -- --check
-    cargo test-offline-and-rest
+    cargo test-integration-and-rest
 
 Run the macOS menu contracts:
 

@@ -29,9 +29,14 @@ Give your iPhone a task in plain language: inspect a screen, enter text, adjust 
 - **Keep your phone wireless.** Leave the powered bridge on a shelf or in a room corner within Bluetooth range.
 - **Use your normal Wi-Fi.** The phone and bridge share your home or office network. Open Safari to start a task.
 
+https://github.com/user-attachments/assets/7601869f-7cc6-445e-b64d-0073a8bf657d
+
+**AI orders takeaway on an iPhone.** The agent selects MIXUE drinks, sets ice and sugar, and works through checkout. The video ends with the delivered order.
+
+**Set an alarm**
+
 https://github.com/user-attachments/assets/d72669a6-e150-40d7-ba2f-1d9586d9c2ea
 
-An agent sets an alarm on a real iPhone.
 
 ## ⚙️ How it works
 

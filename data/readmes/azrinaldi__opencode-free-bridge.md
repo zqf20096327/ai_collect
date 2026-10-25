@@ -465,7 +465,96 @@ identity sync, and the self-updater.
   `/data/state` (`OPENCODE_BRIDGE_STATE_DIR`) so the setting survives a
   recreate. Plain `docker run` needs that env var and volume too.
 
-`/health` reports `egress.mode` (`proxy`, `relay`, or `direct`) plus
+### Egress pool
+
+The free-tier allowance is per egress IP, not per account. Running one bridge
+per host multiplies processes, service units and tunnels without giving anything
+a pool does not: the pool rotates the egress while one process keeps the
+identity, the catalog and the session cache in one place.
+
+A pool is a list of egress entries. Each keeps its own health, so an entry that
+upstream throttles is skipped until its cooldown ends instead of being retried
+by every request.
+
+```bash
+# in the panel under "Pool egress", one entry per line
+med1=http://pool:token@127.0.0.1:20251
+med2=http://pool:token@127.0.0.1:20252
+```
+
+```bash
+# operator override: comma- or newline-separated, label=url optional
+UPSTREAM_PROXY_POOL="med1=http://a:1,med2=http://b:2" \
+UPSTREAM_PROXY_STRATEGY=failover \
+  bun server.js
+```
+
+- **Entry shape:** a URL string, `{id,label,url,enabled,weight}`, or
+  `{direct: true}` for this machine's own address. `direct` is a first-class
+  entry, so the hosting IP can take part in the rotation instead of being the
+  fallback used only when every proxy is down.
+- **Strategies:** `round-robin` (default; even spread across healthy entries),
+  `failover` (sticky on the first healthy entry, which keeps upstream prompt
+  caching on one IP), `random` (weighted).
+- **Cooldown:** a refusal on a pooled egress is recorded against *that* entry.
+  The backoff doubles per consecutive failure from `cooldownMs` (default 120 s)
+  up to `maxCooldownMs` (default 30 min); a success resets it. A `429` earns four
+  times the base window because it is an unambiguous allowance answer.
+- **Always sends:** when every entry is cooling, the one that recovers first is
+  used anyway. Refusing would turn a throttled pool into a dead bridge, and
+  upstream answers a throttled IP with a normal refusal the caller already
+  handles.
+- **Failover on a gate rejection:** the bridge drops the entry that was refused
+  and retries through a different one, in the same request. An unreachable proxy
+  is also failed over, since nothing reached upstream.
+- **One egress per request:** the protocol-lane, endpoint-migration, 5xx and
+  gate retries all reuse the entry the request started on, because upstream ties
+  a retry to the address that saw the first attempt. Only the two cases above
+  move it.
+- **`/health`** reports `egress.mode: "pool"` and `egress.proxy.pool` with each
+  entry's host, state, remaining cooldown and failure count. Credentials are
+  never included.
+
+#### Health across restarts
+
+Cooldowns are written to `<state dir>/pool-health.json` (mode `0600`), so a
+service restart or a host suspend/resume does not forget which IPs are spent and
+re-burn all of them.
+
+- A refusal is written immediately; a success is coalesced over one second,
+  because a success arrives with every request and a rewrite per request would
+  turn a memory update into disk churn.
+- The file is written by rename, so a crash mid-write keeps the previous copy
+  instead of leaving a truncated one that would cost every cooldown.
+- Records are keyed by a truncated SHA-256 of the egress identity, not by URL,
+  so the file is not a second copy of the proxy credentials. A `label` field
+  carries `host:port` (or `direct`), which `/health` already exposes.
+- Saving the pool in the panel keeps existing cooldowns; only an entry that
+  leaves the pool loses its record.
+- A corrupt or missing health file costs the cooldowns and nothing else: the
+  bridge starts, reports the pool from `proxy.json`, and treats every entry as
+  ready.
+
+#### Turning a host into a pool member
+
+`egress-proxy.js` is a dependency-free HTTP proxy for exactly this: it answers
+`CONNECT` and absolute-URI HTTP, and forwards bytes without inspecting them.
+Its TLS is tunneled end to end, so it never sees plaintext.
+
+```bash
+# on the node
+PORT=8888 EGRESS_PROXY_TOKEN=secret bun egress-proxy.js
+
+# from the bridge host: put it on a loopback port, so the proxy itself is never
+# exposed and the tunnel carries the authentication
+ssh -L 127.0.0.1:20251:127.0.0.1:8888 node
+```
+
+`/healthz` is unauthenticated on purpose: it reports a connection count and an
+uptime, nothing about the target or the token, so a monitor does not need the
+credential to ask whether the proxy is up.
+
+`/health` reports `egress.mode` (`pool`, `proxy`, `relay`, or `direct`) plus
 `egress.proxy` with the same credential-free description.
 
 The proxy applies *in addition to* the relay: with both configured, the request
@@ -537,23 +626,38 @@ ClientAliveCountMax 4        # dead peer detected in 120s
 
 OpenSSH uses the **first** value it reads, so a later-sorting file (for example `99-*.conf`) is silently ignored. Verify with `sshd -T | grep -i clientalive` and `systemctl reload ssh`.
 
-### `429 FreeUsageLimitError` — is it the quota, or the request shape?
+### `429 FreeUsageLimitError` — the quota, or a missing `<env>` block?
 
-`429 FreeUsageLimitError` means the transport gate accepted the request and the
-free-tier allowance is spent. It is *not* the shape gate (`403 FreeTierError`)
-and *not* an IP block (`403` + "abusive traffic"). Measured behaviour:
+`429 FreeUsageLimitError` has **two** causes, and the gateway uses the same
+message for both:
 
-- The allowance is **not** keyed to egress IP. Seven different egress IPs
-  (three cloud regions plus a residential line) returned `429` in the same
-  minute.
-- The allowance is **not** keyed to session or project id. Freshly minted
-  session ids and the CLI's own project id both returned `429`.
-- It refills on a short window. The same bridge answered `200` at 06:24 UTC and
-  `429` at 06:33 UTC with no configuration change.
+1. the free-tier allowance is spent, or
+2. the request's system prompt is missing the harness environment block.
 
-Because of that window, "the CLI works but the bridge does not" is a
-**time-of-measurement artifact**, not proof of a bridge defect. Both are drawing
-on the same allowance. Verify by interleaving the two within the same minute:
+Cause 2 is the one that made the bridge look throttled while the CLI worked.
+Reproduced by capturing the CLI's own request and replaying it byte-for-byte:
+the captured body answers `200`, the same body with only its system prompt
+replaced by a short one answers `429`. Same headers, same session id, same TLS
+stack — the difference is the body.
+
+The trigger is precise: an `<env>` block containing a `Working directory:` line.
+
+| system prompt | result |
+|---|---|
+| `You are a helpful assistant.` | `429` |
+| 12 KB of generic prompt text | `429` |
+| `<env>Working directory: /tmp</env>` (65 bytes) | `200` |
+| 12 KB generic prompt **plus** the env block | `200` |
+
+Length is not the rule, and neither is the model — `big-pickle` and
+`mimo-v2.6-flash-free` split the same way. Sending `tools: []` also produces
+this `429`, which is why an empty tool profile looked like a quota error too.
+
+The bridge has appended the block since the fix in this release: it derives the
+working directory, workspace root, git-repo flag and platform from its own
+process. A client that already forwards the CLI's prompt keeps its own block
+and does not get a duplicate. If you still see `429` on an up-to-date bridge,
+the allowance really is spent — check with the interleaving probe:
 
 ```bash
 for i in 1 2 3; do
@@ -565,9 +669,9 @@ for i in 1 2 3; do
 done
 ```
 
-If both refuse, the allowance is spent and nothing about the bridge needs
-changing. If the CLI answers while the bridge refuses **in the same minute**,
-the bridge is being charged more per request than the CLI is.
+If both refuse, the allowance is spent. If the CLI answers while the bridge
+refuses **in the same minute** on a bridge older than this release, upgrade —
+that is the shape bug, not a quota.
 
 #### Why the bridge can be charged earlier than the CLI
 
@@ -578,18 +682,20 @@ real CLI always sends the full profile. Measured against a captured CLI request
 
 | | CLI | bridge, `core` | bridge, `full` |
 |---|---|---|---|
-| tools | 12 | 2 | 12 |
-| tool schema bytes | 13,991 | 2,522 | 12,865 |
-| system prompt chars | 12,251 | 128 | 250 |
+| tools | 12 | 2 | 13 |
+| tool schema bytes | 13,991 | 2,522 | 13,972 |
+| system prompt chars | 12,259 | ~470 | ~470 |
 | `max_completion_tokens` | 32,000 | 5,120 | 5,120 |
-| total body bytes | 26,262 | 2,864 | 13,329 |
+| total body bytes | 26,296 | ~3,300 | ~14,500 |
 
 `TOOL_PROFILE_SCOPE=full` closes the tool gap and is the safer default when a
-deployment is being throttled ahead of the CLI. The remaining gap is the
-system prompt: the bridge does not ship the CLI's harness prompt, so a request
-still looks lighter than a real CLI turn. This is not a shape-gate failure —
-the gate accepts it — but it does mean the bridge is not byte-identical to the
-CLI.
+deployment is being throttled ahead of the CLI.
+
+The system-prompt gap is **not** cosmetic: before the `<env>` fix in this
+release it was the whole `429` cause. What remains after the fix is the CLI's
+harness prose (persona, communication rules, skill catalogue), which the bridge
+does not ship. That part is accepted by the gateway — the env block is the only
+anchor it checks — so the bridge no longer needs to reproduce the full prompt.
 
 ```bash
 # systemd drop-in for a service that runs as a dedicated user
@@ -651,6 +757,6 @@ tail -50 ~/Library/Logs/opencode-free-bridge.log
 bun ~/.opencode-free-bridge/server.js
 ```
 
-## License
+## License and upstream data
 
-MIT
+This project is licensed under [MIT](./LICENSE). `identity.js` derives request identity and tool metadata from the [OpenCode source repository](https://github.com/anomalyco/opencode). Its offline fallback includes OpenCode `read` and `shell` tool descriptions and schema fields; related source-shaped fixtures appear in `test/identity.test.js`. See [`THIRD_PARTY_NOTICES.md`](./THIRD_PARTY_NOTICES.md) for the OpenCode MIT notice and contributor credit.

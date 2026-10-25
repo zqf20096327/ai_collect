@@ -15,7 +15,7 @@
 
 </div>
 
-> **Status:** Beta b604 — non-actively developed by a solo maintainer, and developed with itself: the maintainer uses FlashAgent (Occamy 1.0) to change its own code, alongside other coding agents. See the [changelog](CHANGELOG.md) and the [roadmap](ROADMAP.md).
+> **Status:** Beta b609 — non-actively developed by a solo maintainer, and developed with itself: the maintainer uses FlashAgent (Occamy 1.0) to change its own code, alongside other coding agents. See the [changelog](CHANGELOG.md) and the [roadmap](ROADMAP.md).
 
 ## Quick start
 
@@ -61,6 +61,21 @@
 </table>
 
 <sub>Every recording on this page is a real session against MiniMax M3.1 Flash through OpenRouter — so the thoughts, timings and token counts are the ones it produced. Playback is sped up; nothing else is edited.</sub>
+
+## How it compares
+
+The structural differences, not the feature checklists — those change faster
+than any table. Checked October 2026; where a cell says "docs", that project's
+own documentation is the truth, not this table.
+
+| | FlashAgent | Claude Code | Codex CLI | Gemini CLI | aider | OpenCode |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| Runs with no account, against a local server | ✓ LM Studio, Ollama, llama.cpp, vLLM | — needs an Anthropic plan | ~ OpenAI-compatible endpoints, incl. local | — needs a Google key | ✓ via LiteLLM | ✓ |
+| Cloud APIs | 19 presets, 4 native protocols | one vendor | one vendor + compatible endpoints | one vendor | many via LiteLLM | many |
+| What you install | one 19 MB static binary, ~58 MB idle | Node | binary | Node | Python | binary |
+| Telemetry | none — there is nothing to turn off | docs | docs | docs | docs | docs |
+| Checks the model can call tools (`--tool-test`) | ✓ 20 scenarios, scores in the README | — | — | — | — | — |
+| License | MIT, one repo, five crates | docs | Apache-2.0 | docs | Apache-2.0 | MIT |
 
 ---
 

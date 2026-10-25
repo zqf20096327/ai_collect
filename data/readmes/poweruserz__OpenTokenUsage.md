@@ -18,9 +18,13 @@ OpenTokenUsage lives in the notification area and shows how much of your AI codi
 winget install PowerUserZ.OpenTokenUsage
 ```
 
-Or [**download the latest release**](https://github.com/PowerUserZ/OpenTokenUsage/releases/latest) and run the installer.
+Or [**download the latest release**](https://github.com/PowerUserZ/OpenTokenUsage/releases/latest) and run `OpenTokenUsage_<version>_x64-setup.exe`.
 
-The app checks for new releases in-app and updates itself.
+Either way it installs for your Windows user only (`%LOCALAPPDATA%\OpenTokenUsage`), so updates need no admin rights. The app checks for new releases in-app and updates itself.
+
+**Installed 0.7.7 or earlier (MSI or WinGet)?** Use the in-app update once. It moves the app to the per-user install and asks for admin once, to remove the old per-machine copy. Your settings stay. Until then, `winget upgrade` says the install technology is different.
+
+Releases are built by GitHub Actions from this repository. The installer's code signing comes from the [SignPath Foundation](https://signpath.org/); see the [code signing policy](#code-signing-policy).
 
 ## What It Does
 
@@ -28,6 +32,7 @@ The app checks for new releases in-app and updates itself.
 - **Next to the clock.** The tray shows the app icon, a percent, bars, or one number or logo ring per provider.
 - **Taskbar strip (experimental).** Provider logos with session and weekly usage right in the taskbar, in your own fonts, colors and order.
 - **Pace.** Every limit says whether you're ahead or behind, and when it runs out at this rate.
+- **Banked resets.** Codex and Claude reset counts, each expiry date and a live countdown. Open the provider’s usage page with one click. With usage notifications enabled, reminders arrive in the final seven days and again in the final 24 hours while the app is running. Unknown expiry dates stay marked as unavailable.
 - **Notifications.** At the usage levels you pick, when you're on pace to run out before a reset, and when a limit resets, with a built-in sound or your own.
 - **One-click fixes.** Errors come with the fix: run the login command in a terminal, or open the provider's API key page and Windows' Environment Variables.
 - **Service status.** A badge on the card when the provider's status page reports an incident.
@@ -49,12 +54,20 @@ Settings → **Tray icon** picks what sits next to the clock. Settings → **Tas
 
 ![The panel in the pure black dark theme and in the light theme](docs/images/themes.webp)
 
+## Smart refresh
+
+Settings → **Auto refresh → Smart** adjusts each account independently. After a quota change, it checks every 2 minutes. Once results stay the same for a few checks, the wait grows to 5, 10 and finally 15 minutes. Any further quota change restarts the 2-minute checks. Existing fixed intervals and the default 15-minute setting stay available.
+
+Checks are scheduled after results arrive, so a slow account does not overlap itself or block another account. Failures use a separate 2/5/10/15-minute backoff, and the existing HTTP rate-limit gate still enforces server retry delays. Opening the panel refreshes data at least a minute old, without bypassing error backoff. At the 15-minute cadence, usage elsewhere can take up to 15 minutes to be detected.
+
+Smart polls reuse successful local token-history scans for up to 15 minutes; manual refreshes and fixed intervals still scan fresh history. Quota checks remain live. Only raw progress values and limits determine activity, so countdown text and history charts cannot keep an idle account polling rapidly. No file watchers or burn-rate prediction are involved.
+
 ## Supported Providers
 
 - [**Amp**](docs/providers/amp.md) / free tier, bonus, credits
 - [**Antigravity**](docs/providers/antigravity.md) / Gemini and Claude models, session and weekly
 - [**Claude**](docs/providers/claude.md) / session, weekly, Fable, extra usage, rate limit resets, local token usage (ccusage)
-- [**Codex**](docs/providers/codex.md) / session, weekly, reviews, credits
+- [**Codex**](docs/providers/codex.md) / session, weekly, reviews, credits, banked resets with expiry countdowns
 - [**Copilot**](docs/providers/copilot.md) / credits, extra usage, chat, completions
 - [**Cursor**](docs/providers/cursor.md) / credits, total usage, requests, auto usage, API usage, Grok Bot, on-demand, bonus spend, CLI auth
 - [**Factory / Droid**](docs/providers/factory.md) / standard, premium tokens
@@ -79,6 +92,31 @@ Settings → **Tray icon** picks what sits next to the clock. Settings → **Tas
 OpenTokenUsage is free and made by one person. If it saves you time, you can buy me a coffee.
 
 <a href="https://www.buymeacoffee.com/PowerUserZ" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me a Coffee" height="60" width="217"></a>
+
+## Code signing policy
+
+Free code signing provided by [SignPath.io](https://about.signpath.io/), certificate by [SignPath Foundation](https://signpath.org/).
+
+Signing starts with the first release after the SignPath Foundation accepts the project; earlier releases are unsigned.
+
+- **What is signed:** only the OpenTokenUsage app and its installer (`OpenTokenUsage_<version>_x64-setup.exe`), built by GitHub Actions ([`publish.yml`](.github/workflows/publish.yml)) from a tagged commit of this repository. Nothing built elsewhere and no third-party program is signed.
+- **Committers and reviewers:** [PowerUserZ](https://github.com/PowerUserZ). Outside contributions arrive as pull requests and are merged only after review.
+- **Approvers:** [PowerUserZ](https://github.com/PowerUserZ) (owner) approves every release.
+- **System changes:** it installs for the current Windows user in `%LOCALAPPDATA%\OpenTokenUsage`, without admin rights. Start on login is on by default (a value under `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`); turn it off in Settings. It asks Windows to show its tray icon next to the clock, only if you haven't chosen yourself. Updates come only from this repository's releases, are checked against the updater signing key, and install when you choose.
+- **Uninstall:** Windows Settings > Apps > Installed apps > OpenTokenUsage. The uninstaller can also delete the app's settings. Turn off Start on login first to remove its Run value too.
+
+## Privacy
+
+This program will not transfer any information to other networked systems unless specifically requested by the user or the person installing or operating it.
+
+OpenTokenUsage has no telemetry, no analytics and no server of its own. It connects only to:
+
+- **The AI providers you use,** with the sign-in already on your computer, to read your usage and to refresh that sign-in when it expires. Each provider receives only its own credentials.
+- **GitHub** (`api.github.com`, `github.com`), to check for updates and show the changelog.
+- **Provider status pages** (for example `status.claude.com`), for the status badge.
+- **The npm registry, through your own package manager:** when Bun, pnpm or npm is installed, the Claude and Codex cards run [ccusage](https://github.com/ryoppippi/ccusage) to total local token usage, and the package manager may download it the first time.
+
+Settings and cached usage stay on your computer (`%APPDATA%\com.sunstory.openusage`). The local HTTP API listens on `127.0.0.1` only.
 
 ## License
 

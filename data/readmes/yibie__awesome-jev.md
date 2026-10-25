@@ -65,12 +65,12 @@ Found something wrong? Open an issue or a pull request — **removal is as valid
 - [Adaptive & Realtime UI](categories/adaptive-realtime-ui.md) — 12 entries
 - [Verification & Guardrails](categories/verification-guardrails.md) — 61 entries
 - [Scoring & Ranking](categories/scoring-ranking.md) — 44 entries
-- [Agent Decisions](categories/agent-decisions.md) — 64 entries
+- [Agent Decisions](categories/agent-decisions.md) — 65 entries
 - [Data Labeling & Curation](categories/data-labeling-curation.md) — 11 entries
 - [Evaluation & Benchmarking](categories/evaluation-benchmarking.md) — 46 entries
 - [Calibration & Research](categories/calibration-research.md) — 55 entries
-- [Infra / SDKs / Integrations](categories/infra-sdks-integrations.md) — 122 entries
-- [Game & Simulation](categories/game-simulation.md) — 27 entries
+- [Infra / SDKs / Integrations](categories/infra-sdks-integrations.md) — 123 entries
+- [Game & Simulation](categories/game-simulation.md) — 28 entries
 - [Robotics & Physical](categories/robotics-physical.md) — 11 entries
 - [Finance & Trading](categories/finance-trading.md) — 10 entries
 - [Compliance & Legal](categories/compliance-legal.md) — 4 entries

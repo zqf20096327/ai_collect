@@ -73,8 +73,10 @@ What the server does for whoever sits in the seat:
   command. Exit codes are recognised across callers.
 - **Many callers at once.** Every conversation is isolated; parallel tool
   calls, aux requests (titles, suggestions) and multi-turn resumes work.
-- **Images** from callers and from tool results are saved locally for the
-  seat.
+- **Images and files** from callers and from tool results (OpenAI `file` /
+  `input_file`, Anthropic `document`, a PDF from Claude Code's Read, any
+  binary) are saved locally for the seat. Standard `/v1/files` uploads and
+  `file_id` references work too.
 
 ## Quick start
 
@@ -156,6 +158,7 @@ omni2api/
 - [SETUP.md](SETUP.md) — deployment recipe for agents
 - `docs/seat-cli.md` — the oh-seat reference
 - [`docs/status-json.md`](docs/status-json.md) — the stable `--json` status contract, for embedding omni2api
+- [`docs/mcp.md`](docs/mcp.md) — sit in the seat over MCP (`oh-seat mcp`): registration for 8 tested hosts
 - `docs/DEVELOPMENT.md` — building and testing
 - `docs/protocol.md`, `protocol/` — the wire specification
 

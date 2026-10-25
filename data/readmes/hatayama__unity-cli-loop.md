@@ -1,8 +1,6 @@
-# Unity Loop Harness
+# Unity CLI Loop
 
 English | [日本語](README_ja.md)
-
-> Formerly **Unity CLI Loop**, and **uLoopMCP** before that. Only the name changed: the `uloop` command, the package ID, and the install steps stay the same.
 
 [![Unity](https://img.shields.io/badge/Unity-2022.3+-red.svg)](https://unity3d.com/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE.md)<br>
@@ -27,17 +25,73 @@ Designed to keep AI-driven development loops running autonomously inside your ex
 > - **[Migrating Custom Tools and Skills to V3](Packages/src/Documentation~/migration-v2-to-v3.md)** — for anyone who has written C# custom tools, or skills and scripts that call the `uloop` command. Everyone else migrates just by updating the package and the CLI
 
 # Concept
-Unity Loop Harness is a Unity integration tool designed so that **AI can drive your Unity project forward with minimal human intervention**. Your LLM tool (Claude Code, Codex, Cursor, and others) runs the agent; Unity Loop Harness is the part of its harness that reaches into Unity, giving the agent hands to operate the Editor and eyes to check the result.
+Unity CLI Loop is a Unity integration tool designed so that **AI can drive your Unity project forward with minimal human intervention**.
 Tasks that humans typically handle manually — compiling, running the Test Runner, checking logs, editing scenes, capturing windows to verify UI layouts, and even operating a freshly implemented feature to confirm it actually works — can all be carried out from LLM tools.
 
-Unity Loop Harness is built around four core ideas:
+Unity CLI Loop is built around four core ideas:
 
 1. **A self-hosted development loop where AI autonomously compiles, tests, inspects logs, and fixes issues** — it can even pause execution at any source line without editing code and read the variables at that moment to pin down a cause. Method-body fixes can be applied instantly to the running game without waiting for a recompile. Uses `compile`, `run-tests`, `get-logs`, `clear-console`, `pause-point`, `hot-reload`.
 2. **AI-driven Unity Editor operation — scene building, object manipulation, menu execution, and UI refinement from screenshots.** Uses `execute-dynamic-code`, `screenshot`.
 3. **PlayMode automated testing — AI clicks buttons, drags elements, presses keys, replays recorded input, and verifies game behavior.** Uses `simulate-mouse-ui`, `simulate-mouse-input`, `simulate-keyboard`, `replay-input`, `execute-dynamic-code`, `screenshot`.
 4. **Achieving the above with a minimal set of tools.** See [Design Philosophy](#design-philosophy).
 
-https://github.com/user-attachments/assets/569a2110-7351-4cf3-8281-3a83fe181817
+# Demos
+
+Each clip is a real Claude Code session driving a small voxel game through `uloop`. Stretches where only the terminal changes are sped up; the game plays at real speed.
+
+## Launch Unity: `launch`
+
+`uloop launch` opens the project in the Unity version it specifies and returns once the Editor can take commands.
+
+https://github.com/user-attachments/assets/4e83a196-66a4-4f39-80fb-f33b7a038066
+
+## Add a feature and test it: `compile`, `run-tests`
+
+Claude adds a glowing torch block, builds the project with `compile`, and runs the EditMode tests with `run-tests`. It fixes the test that fails, then checks the torch at night in Play Mode.
+
+https://github.com/user-attachments/assets/98bba49f-1846-4b8e-9702-733207e8318f
+
+## Change code during Play Mode: `hot-reload`
+
+Claude adds a double jump and applies it with `hot-reload` without leaving Play Mode, then presses Space with `simulate-keyboard` to measure the jump heights.
+
+https://github.com/user-attachments/assets/fdba761a-b65a-4297-92f1-5cb274f4c4cf
+
+## Stop on a line and read that frame: `pause-point`
+
+The first time water flows into a gap, `pause-point` stops the game on the line that decides a cell's new water level and returns that frame's local variables, fields, and call path. A watch expression then tracks the water level along the channel while the water advances one tick at a time.
+
+https://github.com/user-attachments/assets/99ef7b4a-b32f-4e75-9aa8-9e976f7b0078
+
+## Run C# inside the game: `execute-dynamic-code`
+
+`execute-dynamic-code` runs C# in the running game. Claude stacks ten glass blocks in front of the player, then renders a wide shot of the tower from a temporary camera.
+
+https://github.com/user-attachments/assets/804d81bc-e019-4423-bfcd-089cd0e207c2
+
+## Capture what the game shows: `screenshot`
+
+Claude finds the lake with `execute-dynamic-code`, moves the camera high above it, and captures the view with `screenshot`, then hides the HUD and takes the shot again.
+
+https://github.com/user-attachments/assets/da9302a6-7785-4b21-affa-e6f814094c48
+
+## Read the scene: `get-hierarchy`, `find-game-objects`
+
+`get-hierarchy` saves the running scene's tree to a file, and `find-game-objects` reads the Player's components.
+
+https://github.com/user-attachments/assets/ccb960a9-fa8a-40d8-b72c-7e24e11d32c8
+
+## Press keys: `simulate-keyboard`
+
+`simulate-keyboard` holds W through the Input System. The player walks off the bank into the lake, and a screenshot confirms the underwater view.
+
+https://github.com/user-attachments/assets/7b7abb7c-6d87-464e-b7d7-223109c27d30
+
+## Move and click the mouse: `simulate-mouse-input`
+
+`simulate-mouse-input` moves the mouse gradually, the way a hand would, to break three blocks and fill the hole with water.
+
+https://github.com/user-attachments/assets/0ecf0876-8230-4b4d-b51a-fe72cf9ca4c7
 
 # Quickstart
 
@@ -140,7 +194,7 @@ Name: OpenUPM
 URL: https://package.openupm.com
 Scope(s): io.github.hatayama.uloopmcp
 ```
-2. In `Window > Package Manager`, select OpenUPM under My Registries and install Unity Loop Harness (listed as Unity CLI Loop up to v3.19.0).
+2. In `Window > Package Manager`, select OpenUPM under My Registries and install Unity CLI Loop.
 
 </details>
 
@@ -284,7 +338,7 @@ The connection uses **no TCP ports**. It goes over a Unix domain socket on macOS
 
 # Design Philosophy
 
-Unity Loop Harness does not chase tool count. With dynamic C# code execution (`execute-dynamic-code`), almost any Unity Editor operation can be accomplished through a single tool.
+Unity CLI Loop does not chase tool count. With dynamic C# code execution (`execute-dynamic-code`), almost any Unity Editor operation can be accomplished through a single tool.
 
 Too many tools make it harder for AI to choose the right one. And even when tools are packaged as Skills, each tool's description still consumes the context window. We believe keeping tools to the essential minimum is good design.
 
@@ -321,7 +375,7 @@ For detailed descriptions and usage examples of every tool, see the **[Tool Refe
 - `simulate-keyboard` - Simulate keyboard input via Input System
 - `replay-input` - Replay input recorded in the Recordings window during PlayMode
 
-## Unity Loop Harness Extension Development
+## Unity CLI Loop Extension Development
 
 Add project-specific custom tools in a type-safe way without touching the core package. Ship a `Skill/SKILL.md` alongside your tool and AI agents discover it automatically.
 
@@ -329,7 +383,7 @@ For implementation steps and how to write Skills, see the **[Custom Tool Develop
 
 ## Other
 
-### Unity Loop Harness Files
+### Unity CLI Loop Files
 
 `UserSettings/UnityCliLoopSettings.json` stores per-user editor settings and should always remain local-only.
 
@@ -356,6 +410,3 @@ The `.uloop/` directory at the project root stores CLI cache, tool registry, and
 
 ## License
 MIT License
-
-## Trademarks
-Unity Loop Harness is not sponsored by or affiliated with Unity Technologies or its affiliates. Unity is a trademark or registered trademark of Unity Technologies or its affiliates in the U.S. and elsewhere.

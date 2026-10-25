@@ -16,13 +16,15 @@ Be-Ambitious Harness is a **prompt engineering framework and multi-agent workflo
 
 - **Two bars** — the baseline result and a more ambitious one, with the extra work and the main uncertainty named.
 - **A gate check** — a cheap, observable test that decides whether the ambitious path is worth starting, with a pass criterion fixed *before* the test runs and three outcomes: passed, failed, insufficient data.
-- **Role isolation** — a planner writes the prompt, a worker executes it, a verifier grades the result seeing only the requirements, the acceptance criteria and the evidence log. Nobody grades their own work.
+- **Role isolation** — a planner writes the prompt, a worker executes it, a verifier grades the result seeing only the goal, the requirements, the gate and acceptance criteria, and the evidence log. Nobody grades their own work.
 - **Six scenario playbooks** — design/UX, data analysis, code, writing/research, decisions/plans, generic — each with domain-specific checks and traps.
-- **An eval suite** — 8 test tasks and a 30-criteria scorecard, so you can tell when the harness itself breaks. Two of the tasks have been run so far — see [Status](#status-what-has-been-tested).
+- **An eval suite** — 8 test tasks and a 31-criteria scorecard, so you can tell when the harness itself breaks. Two of the tasks have been run so far — see [Status](#status-what-has-been-tested).
 
 It ships as a **Claude Code skill** (`/be-ambitious-harness`) in **English and Russian**, and works with any agent that can read a folder of markdown files.
 
 **Install:** `git clone https://github.com/alexpiar/be-ambitious-harness.git ~/.claude/skills/be-ambitious-harness`, then `/be-ambitious-harness` in Claude Code. Details and the Russian version — [Install](#install).
+
+**Cost:** in v0.1 a pass through the three roles took about twice the sub-agent tokens of a single skill (≈592k vs ≈283k over the two recorded tasks; the single skill's own auditor is not counted). For a task under a day it does not pay off. The v0.2 figure will be added after its acceptance run.
 
 ---
 
@@ -38,7 +40,7 @@ The prompt is excellent and it has a limit: it is one prompt. As soon as you add
 |---|---|---|
 | **Constraint saturation** | Reliable instruction following breaks down beyond 5–6 simultaneous constraints in a single generation; across 15 models at k=8, individual constraints still pass ~41% of the time, but all eight hold together only 5.7% of the time ([Vasileva, arXiv:2608.12426](https://arxiv.org/abs/2608.12426); poster at an ICML 2026 workshop) | Each role gets only the files for its step (250–630 words each); structure comes from templates, not from rules held in context |
 | **Negative instructions backfire** | Naming a forbidden word primes the model to produce it; in failures the suppression signal is 4.4× weaker ([Rana, 2026 preprint](https://arxiv.org/abs/2601.08070); one model, Qwen2.5-7B-Instruct) | Instructions are positive: "include only the template sections" instead of "do not include the analysis" |
-| **Self-preference bias** | LLM judges rate low-perplexity text higher than human evaluators do, regardless of who wrote it ([Wataoka et al., NeurIPS 2024 Safe Generative AI Workshop](https://arxiv.org/abs/2410.21819)) | The verifier sees only requirements, criteria, result and evidence — and preferably runs on a different model, which is what actually changes the judge's perplexity |
+| **Self-preference bias** | LLM judges rate low-perplexity text higher than human evaluators do, regardless of who wrote it ([Wataoka et al., NeurIPS 2024 Safe Generative AI Workshop](https://arxiv.org/abs/2410.21819)) | The verifier sees only the goal, requirements, criteria, result and evidence — and preferably runs on a different model, which is what actually changes the judge's perplexity |
 
 Each of these rests on one recent study, and applying them to agent instructions is the harness's own extrapolation. The harness is an attempt to keep "be more ambitious" working within these limits — and its eval suite is there to show where it does not.
 
@@ -80,7 +82,7 @@ A gate can show that 200 ms is reachable and that users would notice. Whether th
 |---|---|---|
 | **Planner** | task, context, mode, one scenario file | a seven-section prompt with the gate inside |
 | **Worker** | the prompt, materials, the scenario's "for the worker" block, its instruction files | the result and an evidence log |
-| **Verifier** | sections 2 and 6 of the prompt, the result, materials, the evidence log | a verdict: accept / accept with notes / reject |
+| **Verifier** | sections 1, 2, 4 and 6 of the prompt, the result, materials, the evidence log | a verdict: accept / accept with notes / reject |
 
 The verifier does not fix. The worker does not grade itself in place of the verifier. The verifier preferably runs on a **different model** — same-model verification is partial by construction.
 
@@ -189,7 +191,7 @@ For a single project, use `.claude/skills/be-ambitious-harness/` inside the proj
 1. Give the planner four things: the **task**, the **context** (who the result is for, materials, deadline, mandatory requirements), the **mode** (`keep scope` / `ambitious extension` / `recommend` — default `recommend`), and **stop after analysis** (`yes` / `no` — default `no`).
 2. Read the analysis and the ≤3 questions. Answer, or accept the assumptions marked `[...]`.
 3. Hand the prompt to a worker in a fresh session, with the materials.
-4. Hand sections 2 and 6, the result, and the evidence log to a verifier in another fresh session.
+4. Hand sections 1, 2, 4 and 6, the result, and the evidence log to a verifier in another fresh session.
 5. Run `checklists/post-run.md`. Decide.
 
 **What the first call looks like** (Claude Code):
@@ -243,8 +245,11 @@ be-ambitious-harness/
 │   └── report-format.md     worker report, verifier verdict, 5-line human summary
 ├── scenarios/               _index.md + six playbooks
 ├── checklists/              pre-flight.md, post-run.md
-├── evals/                   tasks.md (6 + 2 traps), scorecard.md (30 criteria)
+├── evals/                   tasks.md (6 + 2 traps), scorecard.md (31 criteria)
+│   ├── fixtures/            data generators for the eval tasks
 │   └── runs/                recorded runs: protocol, fixtures, logs, scores
+├── tools/                   lint-harness.py, gate-check.py and their tests
+├── .github/workflows/       CI: lint and tool tests on every push and PR
 ├── ru/                      the Russian originals — same layout
 ├── README.md · README.ru.md · README.zh-CN.md · README.es.md
 └── LICENSE · CITATION.cff

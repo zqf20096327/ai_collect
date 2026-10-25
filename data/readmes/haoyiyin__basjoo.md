@@ -2,10 +2,10 @@
 
 [![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
-[![Next.js](https://img.shields.io/badge/Next.js-000000?logo=next.js&logoColor=white)](https://nextjs.org/)
+[![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)](https://vite.dev/)
 [![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![SQLite](https://img.shields.io/badge/SQLite-003B57?logo=sqlite&logoColor=white)](https://www.sqlite.org/)
 [![Redis](https://img.shields.io/badge/Redis-DC382D?logo=redis&logoColor=white)](https://redis.io/)
 [![Qdrant](https://img.shields.io/badge/Qdrant-Vector_Search-blue)](https://qdrant.tech/)
 [![Scrapling](https://img.shields.io/badge/Scrapling-Web_Crawling-green)](https://github.com/D4Vinci/Scrapling)
@@ -15,10 +15,10 @@ English | [简体中文](README.zh-CN.md)
 Basjoo is an AI customer-support platform with three main parts:
 
 - a **FastAPI backend** for agent configuration, chat, indexing, auth, and scheduling
-- a **Next.js admin/dashboard frontend** in `frontend-nextjs/`
+- a **Vite SPA admin/dashboard** in `frontend-nextjs/` (React + react-router 7)
 - an **embeddable chat widget** in `widget/` that talks to the backend over HTTP and SSE
 
-The stack also uses **SQLite** for application data, **Redis** for rate limiting, **Qdrant** for vector search and document indexing, **PostgreSQL** for relational data, a **Scrapling microservice** for web content fetching, and **nginx** for Docker-based reverse proxying.
+The stack also uses **SQLite** for application data, **Redis** for rate limiting, **Qdrant** for vector search and document indexing, a **Scrapling microservice** for web content fetching, and **nginx** for Docker-based reverse proxying.
 
 ## System requirements
 
@@ -129,18 +129,17 @@ The widget provides the visitor-facing chat window with persisted sessions, mult
 ### Backend
 
 - FastAPI
-- SQLAlchemy async + SQLite
+- SQLAlchemy async + SQLite (application data store)
 - Redis (rate limiting, caching)
 - Qdrant REST API (vector search, document ingestion, hybrid retrieval)
-- PostgreSQL (application data persistence)
 - Scrapling microservice (curl_cffi + readability-lxml web content extraction)
 - APScheduler
-- Provider SDKs for OpenAI-compatible APIs, Anthropic, and Google Gemini
+- OpenAI-compatible provider layer (DeepSeek, Gemini via Google's OpenAI-compatible endpoint, Anthropic, xAI, OpenRouter, …)
 
 ### Frontend
 
-- Next.js 14
-- React 18
+- Vite 8
+- React 18 + react-router 7
 - TypeScript
 - i18next
 
@@ -179,7 +178,6 @@ Default dev ports:
 - Frontend: `http://localhost:3000`
 - Backend API: `http://localhost:8000`
 - Qdrant: `http://localhost:6333`
-- PostgreSQL: `127.0.0.1:5432`
 - Redis: `127.0.0.1:6379`
 
 The dev frontend and backend ports are bound as `3000:3000` and `8000:8000`, so they are reachable from other devices that can access the host.
@@ -225,9 +223,8 @@ npm run dev
 ```bash
 npm install
 npm run dev
-npm run build
-npm run start        # production build locally
-npm run lint
+npm run build        # tsc --noEmit && vite build
+npm run preview      # serve the production bundle locally
 npm run typecheck
 npm run test         # vitest
 ```
@@ -354,15 +351,15 @@ The retrieval/indexing pipeline spans:
 - `backend/services/scraper.py`
 - `backend/services/crawler.py`
 
-The LLM abstraction is in `backend/services/llm_service.py`. Provider selection is driven by `Agent.provider_type`. The current code supports OpenAI-compatible providers plus dedicated paths for OpenAI Native and Google.
+The LLM abstraction is in `backend/services/llm_service.py`. Provider selection is driven by `Agent.provider_type`. Every supported provider goes through the OpenAI-compatible client; OpenAI Native keeps its dedicated class, and Google (Gemini) uses Google's OpenAI-compatible endpoint at `generativelanguage.googleapis.com/v1beta/openai`.
 
 Embedding settings are independent from the chat model provider. Admins can choose Jina or SiliconFlow for knowledge-base indexing/retrieval in Playground; the Websites and File Upload pages only require the API key for the currently selected embedding provider. SiliconFlow can use a dedicated SiliconFlow Embedding API key, with legacy fallback to the main SiliconFlow AI key when the AI provider is also SiliconFlow.
 
 ### Frontend
 
-The active UI is the Next.js app in `frontend-nextjs/`.
+The active UI is the Vite SPA in `frontend-nextjs/` (the directory name is a leftover from the former Next.js app).
 
-- App Router routes live under `frontend-nextjs/app/`
+- the route table lives in `frontend-nextjs/src/App.tsx` (react-router 7)
 - most screen logic lives in `frontend-nextjs/src/views/`
 - shared components live in `frontend-nextjs/src/components/`
 - admin auth state is stored in `frontend-nextjs/src/context/AuthContext.tsx`
@@ -475,8 +472,7 @@ Basjoo is built on top of these amazing open-source projects:
 - **[Qdrant](https://qdrant.tech/)** — High-performance vector similarity search engine. Powers Basjoo's self-developed multi-tenant knowledge base.
 - **[Scrapling](https://github.com/D4Vinci/Scrapling)** — Stealthy web scraping with TLS fingerprint impersonation (curl_cffi). Powers Basjoo's URL content extraction microservice.
 - **[FastAPI](https://github.com/tiangolo/fastapi)** — The web framework powering Basjoo's backend APIs.
-- **[Next.js](https://github.com/vercel/next.js)** — The React framework powering Basjoo's admin dashboard.
-- **[pgvector](https://github.com/pgvector/pgvector)** — Open-source vector similarity search for PostgreSQL.
+- **[Vite](https://vite.dev/)** — The build tool powering Basjoo's admin dashboard.
 
 ## Contributors
 

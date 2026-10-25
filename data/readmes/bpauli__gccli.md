@@ -19,16 +19,16 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Courses** — list courses, view favorites, get full course detail, download as FIT/GPX, import GPX files as new courses, send courses directly to a device, delete courses
 - **Segments** - list your segments and favorites, search segments by name or map area, view a segment, its leaderboard and your rank, list the segments that an activity crossed, create a segment from a part of an activity, add and remove favorites, delete segments
 - **Devices** - list registered devices, view settings, solar data, alarms, primary/last-used device, set the primary activity tracker, paired sensors, backup summary and device backups, historical devices, device messages, cancel a pending device message
-- **Gear** — list gear, usage stats, linked activities, defaults per activity type, link/unlink to activities, gear types, add, update, retire, unretire and delete gear, list, create, rename and delete gear collections, add gear to a collection
-- **Goals & Badges** - active goals, set daily goals for steps, floors, intensity minutes and hydration, earned/available/in-progress badges, badge details, challenges (show, join and leave badge and virtual challenges; create, view, answer, leave and delete ad-hoc challenges and invite people to them), personal records
+- **Gear** — list gear, usage stats, linked activities, defaults per activity type and set or unset them, link/unlink to activities, gear types, search gear brands and models, add, update, retire, unretire and delete gear, list, create, rename and delete gear collections, add gear to a collection and remove it
+- **Goals & Badges** - list, add, update and delete activity goals, set daily goals for steps, floors, intensity minutes and hydration, set and delete the weight goal, earned/available/in-progress badges, badge details, challenges (show, join and leave badge and virtual challenges; create, view, answer, leave and delete ad-hoc challenges and invite people to them), personal records and record candidates, hide or show a record type, delete a personal record
 - **Training** - browse, search and view training plans, show a plan's schedule, join and leave a plan, move and delete its workouts, show your active plans, list adaptive coaching workout types
-- **Profile** - user profile and settings, privacy settings, list, add and delete privacy zones, heart rate zones, power zones for all sports or one sport
+- **Profile** - user profile and settings, view and change privacy settings, list, add and delete privacy zones, heart rate zones, power zones for all sports or one sport
 - **Hydration** — view and log daily water intake
 - **Nutrition** - view daily food logs, meals, and nutrition settings, search the Garmin food database, list recent and favorite foods, log foods and quick entries in a meal, delete log entries, and add and remove favorite foods (all but the first three need Garmin Connect+)
 - **Events** — list, list upcoming, add, and delete calendar events (races, group rides, etc.) with goals and training priority support
 - **Calendar** - month view of activities, workouts, events and notes, add, update, move and delete calendar notes, turn the iCalendar feed on and off, and change the web calendar preferences
 - **Wellness** - menstrual cycle data and calendar, menstrual daily log (view, set, delete), pregnancy summary, jet lag trips (list, add, update, delete) and status
-- **Social** - notifications (page with a cursor, dismiss and undismiss, unread state), view and change notification preferences, connections, connection requests, followers, following, newsfeed, groups
+- **Social** - notifications (page with a cursor, dismiss and undismiss, unread state), view and change notification preferences, connections, connection requests, followers, following, follow and unfollow, follow requests, mute, user search, newsfeed, groups
 - **Insights** - compare your steps, sleep, floors, VO2 max, speed, power and more with people of your age group and gender (needs Insights turned on in Garmin Connect)
 - **Golf** - scorecards, the courses you played, golf and shot stats (drive, approach, chip, putt), the clubs in your bag, club types and leaderboards
 - **Agent-ready** - ships a bundled agent skill (`skills/gccli/`) that plugs into AI assistants like Claude Code, Codex, Hermes, and OpenClaw so you can drive Garmin Connect in plain language
@@ -701,9 +701,11 @@ gccli gear list
 gccli gear stats <uuid>
 gccli gear activities <uuid> --limit 20
 gccli gear defaults
+gccli gear set-default <uuid> running     # also unset-default; a type can have more than one default gear
 gccli gear link <uuid> <activity-id>
 gccli gear unlink <uuid> <activity-id>
 gccli gear types
+gccli gear models "brooks ghost"   # Garmin's brands and models, for gear add --brand and --model
 gccli gear add "Pegasus 41" --brand Nike --model Pegasus --type shoes
 gccli gear update <uuid> --name "Pegasus 41 (old)"
 gccli gear retire <uuid>          # gear unretire <uuid> undoes it
@@ -711,6 +713,7 @@ gccli gear delete <uuid> --force
 gccli gear collections list
 gccli gear collections create "Road shoes"
 gccli gear collections add <collection-uuid> <gear-uuid>
+gccli gear collections remove <collection-uuid> <gear-uuid>
 ```
 
 ### Goals, Badges & Challenges
@@ -718,7 +721,14 @@ gccli gear collections add <collection-uuid> <gear-uuid>
 ```bash
 gccli goals list                  # active goals (default)
 gccli goals list --status past    # active, future or past
+gccli goals add "Run 50 km" --period seven-days --activity-type running --distance 50km
+gccli goals add "Ride 10 h" --period one-month --duration 10h   # starts on the 1st of this month
+gccli goals update <id> --calories 3000   # a new target replaces the old one
+gccli goals delete <id>           # (with confirmation)
+gccli goals effective steps --date 2026-11-01   # also floors-climbed, intensity-minutes, hydration, weight-grams
 gccli goals weight --start 2026-01-01 --end 2026-06-30
+gccli goals weight set 72.5       # kg, or --unit lbs
+gccli goals weight delete         # (with confirmation) an earlier weight goal applies again
 gccli goals set floors-climbed 12   # also intensity-minutes (minutes) and hydration (ml)
 gccli goals set hydration 2500 --date 2026-11-01
 gccli goals steps set 9000
@@ -753,6 +763,10 @@ gccli challenges adhoc invite <uuid> ann bob   # only people who follow you and 
 gccli records                     # personal records (same as records list)
 gccli records types
 gccli records activity <activityId>
+gccli records candidates          # records that Garmin did not accept yet
+gccli records hide <typeId>       # hide a record type on the records page
+gccli records unhide <typeId>
+gccli records delete <recordId>   # asks first; --force skips the prompt
 ```
 
 ### Profile
@@ -761,6 +775,8 @@ gccli records activity <activityId>
 gccli profile
 gccli profile settings
 gccli profile privacy
+gccli profile privacy set --activities connections --badges private
+gccli profile privacy set --profile public --wellness groups
 gccli profile privacy-zones
 gccli profile privacy-zones add --lat 52.52 --lon 13.405 --radius 500
 gccli profile privacy-zones add --lat 40.7 --lon=-74.0 --radius 1000   # A negative value needs the = form
@@ -911,8 +927,20 @@ gccli social following                 # List the users you follow
 gccli social following <display-name>  # List the users that another user follows
 gccli social requests                  # List pending connection requests
 gccli social feed                      # Show your newsfeed
+gccli social search anna               # Search users by name
+gccli social follow <display-name>     # Follow a user (a private profile gets a follow request)
+gccli social unfollow <display-name>   # Stop following a user
+gccli social follow-requests           # List the users who asked to follow you
+gccli social accept <display-name>     # Accept a follow request
+gccli social decline <display-name>    # Decline a follow request
+gccli social remove-follower <display-name>
+gccli social mute <display-name>       # Mute a user that you follow
+gccli social unmute <display-name>
+gccli social muted                     # List the users that you muted
 gccli groups list                      # List your groups
 ```
+
+`unfollow`, `remove-follower` and `unmute` read the follow status or the muted list first, because Garmin answers 204 whether there is something to remove or not. They exit 1 when there is nothing to remove. `unfollow` and `remove-follower` ask first (`--force` skips the question). Garmin no longer takes new connection requests (410 `API_DEPRECATED`), so gccli has no command to send one.
 
 ### Data Reload
 
@@ -1465,7 +1493,15 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli gear unlink <uuid> <activity-id>`: Unlink gear from an activity.
   - `<uuid>`: Gear UUID.
   - `<activity-id>`: Activity ID.
+- `gccli gear set-default <uuid> <activity-type>`: Make a gear item a default gear for an activity type.
+  - `<uuid>`: Gear UUID, with or without dashes.
+  - `<activity-type>`: Activity type key, as activities types prints it (e.g. running, trail_running).
+- `gccli gear unset-default <uuid> <activity-type>`: Stop a gear item being a default gear for an activity type.
+  - `<uuid>`: Gear UUID, with or without dashes.
+  - `<activity-type>`: Activity type key, as activities types prints it (e.g. running, trail_running).
 - `gccli gear types`: List gear types.
+- `gccli gear models <search>`: Search the Garmin list of gear brands and models.
+  - `<search>`: Brand or model words, such as "brooks ghost".
 - `gccli gear add --brand=FREE-TEXT --model=FREE-TEXT <name> [flags]`: Add a gear item.
   - `<name>`: Gear name.
   - `--type="shoes"`: Gear type. One of: shoes, bike, other.
@@ -1496,6 +1532,10 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli gear collections add <uuid> <gear-uuid>`: Add a gear item to a gear collection.
   - `<uuid>`: Collection UUID.
   - `<gear-uuid>`: Gear UUID, with or without dashes.
+- `gccli gear collections remove <uuid> <gear-uuid> [flags]`: Remove a gear item from a gear collection. The gear item stays.
+  - `<uuid>`: Collection UUID.
+  - `<gear-uuid>`: Gear UUID, with or without dashes.
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli gear collections delete <uuid> [flags]`: Delete a gear collection. The gear items stay.
   - `<uuid>`: Collection UUID.
   - `-f, --force`: Skip confirmation prompt.
@@ -1504,9 +1544,40 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 
 - `gccli goals list [flags]`: List goals. Also runs as `gccli goals [flags]`.
   - `--status="active"`: Goal status: active, future, past.
-- `gccli goals weight [flags]`: Show the effective weight goal for a date range.
+- `gccli goals add --period=STRING <name> [flags]`: Add an activity goal.
+  - `<name>`: Goal name, 1 to 49 characters.
+  - `--period=STRING`: Goal period: seven-days, thirty-days, one-month or annual.
+  - `--activity-type="all"`: Activity type key, as activities types prints it (e.g. running, cycling), or all.
+  - `--start=DATE`: First day of the goal (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today, and to the first day of this month for a one-month goal.
+  - `--distance=DISTANCE`: Distance to cover (e.g. 50km, 30mi, 5000m).
+  - `--duration=DURATION`: Time to spend (e.g. 10h, 90m).
+  - `--calories=KCAL`: Kilocalories to burn.
+  - `--activities=N`: Number of activities to do.
+- `gccli goals update <id> [flags]`: Change an activity goal.
+  - `<id>`: Goal ID, as goals list prints it.
+  - `--name=FREE-TEXT`: New name, 1 to 49 characters.
+  - `--period=PERIOD`: New period: seven-days, thirty-days, one-month or annual.
+  - `--activity-type=FREE-TEXT`: New activity type key, as activities types prints it (e.g. running, cycling), or all.
+  - `--start=DATE`: New first day of the goal (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--distance=DISTANCE`: Distance to cover (e.g. 50km, 30mi, 5000m).
+  - `--duration=DURATION`: Time to spend (e.g. 10h, 90m).
+  - `--calories=KCAL`: Kilocalories to burn.
+  - `--activities=N`: Number of activities to do.
+- `gccli goals delete <id> [flags]`: Delete an activity goal.
+  - `<id>`: Goal ID, as goals list prints it.
+  - `-f, --force`: Skip confirmation prompt.
+- `gccli goals effective <type> [flags]`: Show the daily goal of one type that applies on a date.
+  - `<type>`: Goal type: floors-climbed, intensity-minutes, hydration, steps or weight-grams.
+  - `--date=DATE`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+- `gccli goals weight view [flags]`: Show the effective weight goal for a date range. Also runs as `gccli goals weight [flags]`.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+- `gccli goals weight set <weight> [flags]`: Set the weight goal.
+  - `<weight>`: Goal weight.
+  - `--unit="kg"`: Unit of the weight: kg or lbs.
+  - `--date="today"`: First day of the goal (YYYY-MM-DD, today, yesterday, 3d). The goal stays for the days after it.
+- `gccli goals weight delete [flags]`: Delete the current weight goal. An earlier weight goal then applies again.
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli goals set <type> <value> [flags]`: Set the daily goal for floors climbed, intensity minutes or hydration.
   - `<type>`: Goal type: floors-climbed, intensity-minutes or hydration.
   - `<value>`: Daily goal: floors for floors-climbed, minutes for intensity-minutes, milliliters for hydration.
@@ -1568,6 +1639,14 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli records types`: List personal record types.
 - `gccli records activity <id>`: List the personal records set in an activity.
   - `<id>`: Activity ID.
+- `gccli records candidates`: List the personal record candidates that wait for your review.
+- `gccli records hide <type-id>`: Hide a personal record type on the records page.
+  - `<type-id>`: Record type ID, as records types prints it.
+- `gccli records unhide <type-id>`: Show a hidden personal record type on the records page again.
+  - `<type-id>`: Record type ID, as records types prints it.
+- `gccli records delete <id> [flags]`: Delete a personal record. This cannot be undone.
+  - `<id>`: Personal record ID, as records list prints it.
+  - `-f, --force`: Skip confirmation prompt.
 
 ### Events
 
@@ -1635,6 +1714,28 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `[<display-name>]`: Display name of the user. Defaults to your display name.
 - `gccli social requests`: List pending connection requests.
 - `gccli social feed`: Show your newsfeed.
+- `gccli social follow <display-name>`: Follow a user. A user with a private profile gets a follow request.
+  - `<display-name>`: Display name of the user.
+- `gccli social unfollow <display-name> [flags]`: Stop following a user.
+  - `<display-name>`: Display name of the user.
+  - `-f, --force`: Skip confirmation prompt.
+- `gccli social follow-requests`: List the users who asked to follow you.
+- `gccli social accept <display-name>`: Accept the follow request of a user.
+  - `<display-name>`: Display name of the user, as social follow-requests lists it.
+- `gccli social decline <display-name>`: Decline the follow request of a user.
+  - `<display-name>`: Display name of the user, as social follow-requests lists it.
+- `gccli social remove-follower <display-name> [flags]`: Remove a user from your followers.
+  - `<display-name>`: Display name of the user.
+  - `-f, --force`: Skip confirmation prompt.
+- `gccli social mute <display-name>`: Mute a user that you follow.
+  - `<display-name>`: Display name of the user.
+- `gccli social unmute <display-name>`: Unmute a user.
+  - `<display-name>`: Display name of the user.
+- `gccli social muted`: List the users that you muted.
+- `gccli social search <query> [flags]`: Search Garmin Connect users by name.
+  - `<query>`: Name to search for, at least 2 characters.
+  - `-l, --limit=20`: Maximum number of users to return.
+  - `--offset=0`: Number of users to skip.
 - `gccli groups list`: List your groups. Also runs as `gccli groups`.
 - `gccli notifications list [flags]`: List notifications. Also runs as `gccli notifications [flags]`.
   - `--limit=50`: Maximum number of notifications to return.
@@ -1658,108 +1759,4 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `--field=STRING`: Field of the activity as insights options prints it: AVG_SPEED, VO2_MAX_VALUE, AVG_POWER, WEEKLY_AVG_DISTANCE, WEEKLY_AVG_DURATION, STEPS, SLEEP, FLOORS or COUNT.
   - `--age=FREE-TEXT`: Age group as insights options prints it (e.g. 40-44, 75+).
   - `--gender="ALL"`: Gender: ALL, M or F.
-  - `--year=INT`: Year (e.g. 2025).
-  - `--month=MONTH`: Month (1-12). Omit it for the whole year.
-  - `--locale-unit="METRIC"`: Units of the answer: METRIC or STATUTE.
-- `gccli insights preferences`: Show your saved Insights comparisons.
-
-### Golf
-
-- `gccli golf scorecards [flags]`: List your golf scorecards. Also runs as `gccli golf [flags]`.
-  - `-l, --limit=20`: Maximum number of scorecards to return.
-  - `--offset=0`: Number of scorecards to skip.
-- `gccli golf courses [flags]`: List the golf courses you played.
-  - `-l, --limit=20`: Maximum number of courses to return.
-  - `--offset=0`: Number of courses to skip.
-- `gccli golf stats`: Show your golf statistics.
-- `gccli golf shot-stats <kind>`: Show your golf shot statistics of one shot type.
-  - `<kind>`: Shot type: drive, approach, chip or putt.
-- `gccli golf clubs`: List the golf clubs in your bag.
-- `gccli golf club-types`: List the golf club types with their loft and lie angles.
-- `gccli golf leaderboards [flags]`: List the golf leaderboards you played in.
-  - `-l, --limit=20`: Maximum number of leaderboards to return.
-  - `--offset=0`: Number of leaderboards to skip.
-
-### Hydration, Nutrition, Profile, Training, Wellness & Utilities
-
-- `gccli hydration view [<date>]`: Show hydration data for a date. Also runs as `gccli hydration [<date>]`.
-  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
-- `gccli hydration daily --start=DATE --end=DATE`: Show daily hydration statistics for a date range.
-  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
-  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
-- `gccli hydration weekly [flags]`: Show weekly hydration statistics.
-  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
-  - `--weeks=4`: Number of weeks.
-- `gccli hydration add <amount> [flags]`: Add a hydration log entry.
-  - `<amount>`: Amount of water in milliliters.
-  - `--date=DATE`: Date to log for (YYYY-MM-DD). Defaults to today.
-- `gccli nutrition food-log [<date>]`: Show daily food log for a date. Also runs as `gccli nutrition [<date>]`.
-  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
-- `gccli nutrition meals [<date>]`: Show meal summaries for a date.
-  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
-- `gccli nutrition settings [<date>]`: Show nutrition settings for a date.
-  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
-- `gccli nutrition search <query> [flags]`: Search the Garmin food database. Needs Garmin Connect+.
-  - `<query>`: Text to search for, such as a food name.
-  - `-l, --limit=20`: Maximum number of foods to return.
-  - `--offset=0`: Number of foods to skip.
-- `gccli nutrition recent [<date>] [flags]`: List the foods you logged recently. Needs Garmin Connect+.
-  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
-  - `-l, --limit=20`: Maximum number of foods to return.
-  - `--offset=0`: Number of foods to skip.
-- `gccli nutrition add --query=TEXT --meal=MEAL <date> <food-id> [flags]`: Log a food of the Garmin food database in a meal. Needs Garmin Connect+.
-  - `<date>`: Date of the meal (YYYY-MM-DD, today, yesterday, 3d).
-  - `<food-id>`: Food ID, as nutrition search prints it.
-  - `-q, --query=TEXT`: Search text that finds the food, as you gave it to nutrition search. Garmin has no read of one food by ID.
-  - `-m, --meal=MEAL`: Meal: breakfast, lunch, dinner, snacks, or a custom meal you enabled.
-  - `--serving=UNIT`: Serving unit, such as g or oz, or serving ID, as nutrition search --json lists them under nutritionContents. Defaults to the first serving of the food.
-  - `--servings=1`: Number of servings. A serving can hold more than one unit, such as 100 g.
-  - `--time=HH:MM`: Meal time (HH:MM). Defaults to the start time of the meal, or to the current time for a meal without one, such as snacks.
-- `gccli nutrition quick-add --meal=MEAL --calories=KCAL <date> [flags]`: Log calories and macros in a meal without a food. Needs Garmin Connect+.
-  - `<date>`: Date of the meal (YYYY-MM-DD, today, yesterday, 3d).
-  - `-m, --meal=MEAL`: Meal: breakfast, lunch, dinner, snacks, or a custom meal you enabled.
-  - `--calories=KCAL`: Calories (kcal).
-  - `--carbs=GRAMS`: Carbohydrates in grams.
-  - `--protein=GRAMS`: Protein in grams.
-  - `--fat=GRAMS`: Fat in grams.
-  - `--name=NAME`: Name of the entry, such as Coffee with milk.
-  - `--time=HH:MM`: Meal time (HH:MM). Defaults to the start time of the meal, or to the current time for a meal without one, such as snacks.
-- `gccli nutrition delete <date> <log-id> ... [flags]`: Delete food log entries of a day. Needs Garmin Connect+.
-  - `<date>`: Date of the entries (YYYY-MM-DD, today, yesterday, 3d).
-  - `<log-id> ...`: Log ID of an entry, as the add commands print it or nutrition food-log --json lists it.
-  - `-f, --force`: Skip confirmation prompt.
-- `gccli nutrition favorites list [flags]`: List your favorite foods. Needs Garmin Connect+. Also runs as `gccli nutrition favorites [flags]`.
-  - `-l, --limit=20`: Maximum number of foods to return.
-  - `--offset=0`: Number of foods to skip.
-- `gccli nutrition favorites add --query=TEXT <food-id> [flags]`: Add a food to your favorite foods. Needs Garmin Connect+.
-  - `<food-id>`: Food ID, as nutrition search prints it.
-  - `-q, --query=TEXT`: Search text that finds the food, as you gave it to nutrition search. Garmin has no read of one food by ID.
-  - `--serving=UNIT`: Serving unit, such as g or oz, or serving ID, as nutrition search --json lists them under nutritionContents. Defaults to the first serving of the food.
-  - `--servings=1`: Number of servings. A serving can hold more than one unit, such as 100 g.
-- `gccli nutrition favorites remove <food-id>`: Remove a food from your favorite foods. Needs Garmin Connect+.
-  - `<food-id>`: Food ID, as nutrition favorites prints it.
-- `gccli profile view`: Show user profile. Also runs as `gccli profile`.
-- `gccli profile settings`: Show user settings.
-- `gccli profile privacy view`: Show privacy settings. Also runs as `gccli profile privacy`.
-- `gccli profile privacy-zones list`: List privacy zones. Also runs as `gccli profile privacy-zones`.
-- `gccli profile privacy-zones add --lat=DEGREES --lon=DEGREES --radius=METERS`: Add a privacy zone around a point.
-  - `--lat=DEGREES`: Latitude of the center, -90 to 90. Give a negative value as --lat=-33.9.
-  - `--lon=DEGREES`: Longitude of the center, -180 to 180. Give a negative value as --lon=-30.
-  - `--radius=METERS`: Radius in meters, 500 to 1500.
-- `gccli profile privacy-zones delete <id> [flags]`: Delete a privacy zone.
-  - `<id>`: Privacy zone ID.
-  - `-f, --force`: Skip confirmation prompt.
-- `gccli profile hr-zones`: Show heart rate zones.
-- `gccli profile power-zones list`: Show power zones for all sports. Also runs as `gccli profile power-zones`.
-- `gccli profile power-zones sport <sport>`: Show power zones for one sport.
-  - `<sport>`: Sport: cycling, running, rowing or cross-country-skiing.
-- `gccli training plans [flags]`: List training plans. Also runs as `gccli training [flags]`.
-  - `--locale="en"`: Locale for training plans (e.g. en, de, fr).
-- `gccli training plan <id>`: Show a specific training plan.
-  - `<id>`: Training plan ID.
-- `gccli training active [flags]`: Show active training plans.
-  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
-- `gccli training search [flags]`: Search the Garmin catalog of training plans.
-  - `--sport=STRING`: Sport as Garmin prints it in the SPORT column, such as Running.
-  - `--goal=STRING`: Goal as Garmin prints it in the GOAL column, such as 5k, 10k, HalfMarathon or Marathon.
-  - `--le
+  - `--year=INT`: Year (e.g

@@ -154,7 +154,7 @@ harvey run
 
 This is the part that makes Harvey different from a black box, and it is deliberately not skippable.
 
-Harvey knows how to collect **26 signals** about a business. It does not collect any of them until you say so. On first run it *proposes* the catalog; you confirm, skip, or reject each one in the dashboard or from the terminal:
+Harvey knows how to collect **29 signals** about a business. It does not collect any of them until you say so. On first run it *proposes* the catalog; you confirm, skip, or reject each one in the dashboard or from the terminal:
 
 ```bash
 harvey signals                       # review the catalog
@@ -392,6 +392,8 @@ Before anything leaves, a **deterministic pre-send gate** — no model involved 
 
 Optionally, the same step can ask [Precleared](https://precleared.dev) whether cold email to each new address is allowed before the first one goes out. See [Legal and deliverability](#legal-and-deliverability).
 
+**Office hours in the recipient's time zone.** Set `channels.email.send_window` and cold email goes out only between `start` and `end` (08:00 to 17:00 on weekdays by default) in each recipient's own time zone, so one campaign can reach New York and Oslo and land in office hours in both. Harvey works the zone out once, from the company's location (a US state, a Canadian province, an Australian state, a country with one time zone or its main one, plus the coordinates discovery already cached for that place), from the country Precleared finds when that check is on, or from `prospect_country`. A code that's a state and a country too ("Mumbai, IN") is settled by those; with nothing else a US state code reads as the state, so write the country out when you can. Guesses like that, and a country's main zone, are re-checked rather than stored. Anyone it can't place gets the window in `usage.quiet_hours.timezone`. Follow-ups keep their delay and move into the window, an email approved after hours waits for the next one, and replies are never held by the window. `weekdays_only` means Monday to Friday everywhere. Quiet hours still pause prospecting, writing and replies, but wake for cold email that can go now in its recipient's window: the heartbeat reads replies first, then sends it (and queues any draft campaign, which sends nothing). Gmail, Microsoft and SMTP only.
+
 ### Approval or autopilot
 
 Harvey has two sending modes. The dashboard shows which one you're in at the
@@ -538,7 +540,7 @@ product:      { name, description, pricing, key_benefits, objection_responses, o
 icp:          { industries, titles, company_size, geography, hiring_signals, geo_coordinates }
 channels:
   email:      { provider: gmail | microsoft | smtp | instantly, max_daily_sends, require_approval,
-                send_to_risky, max_bounce_rate }
+                send_to_risky, max_bounce_rate, warmup, send_window }
 usage:        { max_daily_claude_percent, heartbeat_interval_minutes, quiet_hours }
 brain:        { provider: claude | codex, model, reasoning_effort }   # optional; claude by default
 writer:       { humanizer }   # optional; true adds one editing pass per batch using ~/.claude/skills/humanizer/SKILL.md
@@ -616,7 +618,9 @@ Harvey automates outreach, but **you are the sender.** Cold email is legal in mo
 
 **GDPR / PECR (EU & UK).** B2B cold email needs a defensible legitimate interest: the pitch must be genuinely relevant to that person's role, you must know where the data came from, and objecting must be effortless. If you can't say why a specific person would care, Harvey shouldn't email them — and its qualification rules say so.
 
-**Per-recipient check (optional).** Those rules turn on facts about each recipient: a UK sole trader needs consent where a limited company doesn't, Germany wants prior consent even for business email, and Canada's CASL depends on whether the address was published. With `compliance.precleared.enabled: true`, Harvey asks [Precleared](https://precleared.dev) about each new recipient before the first cold email. Anything other than `ok_to_email` holds that email back, with the rule and the next step shown in the Outbox, and the signed receipt id is logged with every send. One check per address, cached for 30 days (changing the sender country, address source, product description or prospect country triggers a fresh check); replies are never checked; native providers (Gmail, SMTP) only. Precleared works out each recipient's country from the address, company records or the company's website; if all your prospects are in one country, also set `prospect_country` (for example `US`), which it uses only when none of those show it. Precleared receives the recipient's address, your sender country, the address source, your product description and, if set, your prospects' country. Without a key it allows 10 checks a day, and a free key (`PRECLEARED_API_KEY`) allows 25. Put the setting in `harvey.yaml`, or in `harvey.local.yaml` if you trained Harvey, since that file wins.
+**Per-recipient check (optional).** Those rules turn on facts about each recipient: a UK sole trader needs consent where a limited company doesn't, Germany wants prior consent even for business email, and Canada's CASL depends on whether the address was published. With `compliance.precleared.enabled: true`, Harvey asks [Precleared](https://precleared.dev) about each new recipient before the first cold email. Anything other than `ok_to_email` holds that email back, with the rule and the next step shown in the Outbox, and the signed receipt id is logged with every send. One check per address, cached for 30 days (changing the sender country, address source, product description or prospect country triggers a fresh check); replies are never checked; native providers (Gmail, Microsoft 365, SMTP) only. Precleared works out each recipient's country from the address, company records or the company's website; if all your prospects are in one country, also set `prospect_country` (for example `US`), which it uses only when none of those show it. Precleared receives the recipient's address, your sender country, the address source, your product description and, if set, your prospects' country. Without a key it allows 10 checks a day, and a free key (`PRECLEARED_API_KEY`) allows 25. Put the setting in `harvey.yaml`, or in `harvey.local.yaml` if you trained Harvey, since that file wins.
+
+**If the check is held up.** When Precleared can't answer (the day's free checks are used up, the key is out of checks or was rejected, or Precleared can't be reached), cold email waits and replies still go out. The Today page and `harvey status` say how many cold emails are waiting and what fixes it.
 
 **Bot disclosure.** Some jurisdictions require disclosing automation. Harvey is instructed to answer truthfully, always, if a prospect asks whether they're talking to an AI. Never configure it otherwise.
 

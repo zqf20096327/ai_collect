@@ -3,8 +3,8 @@
 # 🚗 AlphaAD · Autonomous Driving Research
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Last Update](https://img.shields.io/badge/Last%20Updated-2026--10--24-blue)
-![Total Papers](https://img.shields.io/badge/Papers-1417-green)
+![Last Update](https://img.shields.io/badge/Last%20Updated-2026--10--25-blue)
+![Total Papers](https://img.shields.io/badge/Papers-1416-green)
 ![Auto Update](https://img.shields.io/badge/Auto--Update-Daily-brightgreen)
 
 **A daily, explainable research signal for autonomous driving.**<br>
@@ -20,7 +20,7 @@ Browse one primary topic per paper, then refine the signal with method and resou
 
 ## Browse by topic
 
-All 1417 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
+All 1416 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
 
 | Topic | Papers | Latest | Jump |
 |:--|--:|:--|:--|
@@ -30,7 +30,7 @@ All 1417 papers remain in this README. For full-text search, filters, and sortin
 | Control & Vehicle Dynamics | 57 | 2026-10-21 | [View papers](#category-control-vehicle-dynamics) |
 | Mapping & Localization | 54 | 2026-10-18 | [View papers](#category-mapping-localization) |
 | End-to-End & VLA | 161 | 2026-10-22 | [View papers](#category-end-to-end-vla) |
-| Safety, Security & Verification | 224 | 2026-10-22 | [View papers](#category-safety-security-verification) |
+| Safety, Security & Verification | 223 | 2026-10-22 | [View papers](#category-safety-security-verification) |
 | Systems, Deployment & Connectivity | 164 | 2026-10-21 | [View papers](#category-systems-deployment-connectivity) |
 | Human Factors & Policy | 31 | 2026-10-17 | [View papers](#category-human-factors-policy) |
 | Cross-cutting / Other | 304 | 2026-10-21 | [View papers](#category-cross-cutting-other) |
@@ -395,7 +395,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2609-29835"></a>
 
-### Retrieve-to-Localize: Bridging Large Language Models and LiDAR Geometry for Spatial Grounding ![Recent](https://img.shields.io/badge/Recent-orange)
+### Retrieve-to-Localize: Bridging Large Language Models and LiDAR Geometry for Spatial Grounding ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Byounggun Park, Giyong Moon, Jusung Kim, Soonmin Hwang<br>
 **Published:** 2026-09-24<br>
@@ -405,7 +405,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2609-29235"></a>
 
-### SARFusion: Scene-Aware Routing Fusion for Robust Camera-LiDAR 3D Object Detection ![Recent](https://img.shields.io/badge/Recent-orange)
+### SARFusion: Scene-Aware Routing Fusion for Robust Camera-LiDAR 3D Object Detection ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Yuting Zhao, Ziyi Zheng, Shuxiao Li<br>
 **Published:** 2026-09-24<br>
@@ -1121,7 +1121,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2607-23537"></a>
 
-### ObsDriveBench: Benchmarking Multimodal Understanding under Adverse Weather with Observability Awareness ![Fresh](https://img.shields.io/badge/Fresh-yellow)
+### ObsDriveBench: Benchmarking Multimodal Understanding under Adverse Weather with Observability Awareness
 
 **Authors:** Qiao Yan, Yihan Wang, Zhenghao Xing, Jiaqi Xu, Pheng-Ann Heng<br>
 **Published:** 2026-07-26<br>
@@ -1672,4 +1672,4 @@ Each paper has one primary topic and may carry several method or resource tags. 
 **Published:** 2026-06-10<br>
 **Links:** [arXiv abstract](https://arxiv.org/abs/2606.12826) | [PDF](https://arxiv.org/pdf/2606.12826.pdf) | [↑ BackToTop](#browse-by-topic)
 
-**Abstract:** Moving instance segmentation (MIS) attracts increasing attention due to its
+**Abstract:** Moving instance segmentation (MIS) attracts increasing attention due to its broad applications in traffic surveillance, autonomous 

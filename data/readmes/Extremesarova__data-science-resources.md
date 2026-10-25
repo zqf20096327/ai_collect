@@ -741,7 +741,7 @@ Lazy Predict helps build a lot of basic models without much code and helps under
 - [Advanced курс по MLOps: Kubernetes, Kafka, CI/CD](https://pymagic.ru/hard-mlops)
 - [Awesome MLOps](https://github.com/visenger/awesome-mlops)
 - [Awesome MLOps (Tools)](https://github.com/kelvins/awesome-mlops)
-- [DTU MLOps Course](https://github.com/SkafteNicki/dtu_mlops)
+- [DTU MLOps Course](https://github.com/SkafteNicki/dtu_mlops) <!--- comment -->
 - [Evidently](https://github.com/evidentlyai/evidently)
 - [Introduction to Machine Learning Systems (Vijay Janapa Reddi)](https://mlsysbook.ai/vol1/)
 - [Lean Data Science (LeanDS) — вводный курс](https://ods.ai/tracks/leands-course)
@@ -776,6 +776,7 @@ I prefer going through this book using [Amazon SageMaker](https://d2l.ai/chapter
 - [Mastering PyTorch by Ashish Ranjan Jha](https://www.oreilly.com/library/view/mastering-pytorch/9781801074308/?_gl=1*10hryeg*_ga*MTc1MTUyNjI1OS4xNzI0MjMyMzk4*_ga_092EL089CH*MTcyNDIzMjM5OC4xLjEuMTcyNDIzMjQyMy4zNS4wLjA)
 - [The Tensor Cookbook by Thomas Dybdahl Ahle](https://tensorcookbook.com) <!--- comment -->
 - [Deep Learning and Computational Physics](https://arxiv.org/pdf/2301.00942v1) <!--- comment -->
+- [Mathematical Introduction to Deep Learning: Methods, Implementations, and Theory by Arnulf Jentzen, Benno Kuckuck and Philippe von Wurstemberger](https://arxiv.org/abs/2310.20360) <!--- comment -->
 - [Виктор Владимирович Китов. Глубокое обучение](https://deepmachinelearning.ru/docs/Neural-networks/book-title)
 - [Grokking Deep Learning — code repository](https://github.com/iamtrask/Grokking-Deep-Learning/blob/master/README.md)
 
@@ -1169,4 +1170,75 @@ Every LLM is implemented from scratch with no abstractions and full control, mak
 - [Авито. Рекомендации](https://youtu.be/zopTexr7gfY?si=7yGMorHG_PZpTUKv)
 - [Recommenders. Best Practices on Recommendation Systems](https://github.com/recommenders-team/recommenders) <!--- comment -->
 - [Рекомендательные системы](https://education.yandex.ru/knowledge/rekomendatelnye-sistemy.-mashinnoe-obuchenie)
-- [Рекомендательные системы: идеи, подходы, задачи](https://habr.com/ru/companies/jetinfosystems/articles/453792/
+- [Рекомендательные системы: идеи, подходы, задачи](https://habr.com/ru/companies/jetinfosystems/articles/453792/)
+- [A Survey of Deep Reinforcement Learning in Recommender Systems](https://arxiv.org/pdf/2109.03540.pdf)
+- [Advances and Challenges in Conversational Recommender Systems: A Survey](https://arxiv.org/pdf/2101.09459.pdf)
+- [Blueprints for Recommender System Architectures: 10th Anniversary Edition](https://amatriain.net/blog/RecsysArchitectures)
+- [Graph Neural Networks in Recommender Systems: A Survey](https://arxiv.org/pdf/2011.02260.pdf)
+- [OneRec: Unifying Retrieve and Rank with Generative Recommender](https://arxiv.org/abs/2502.18965)
+- [Pointwise vs Pairwise vs Listwise Learning to Rank](https://medium.com/@nikhilbd/pointwise-vs-pairwise-vs-listwise-learning-to-rank-80a8fe8fadfd)
+- [Recommender Systems in Python 101](https://www.kaggle.com/code/gspmoreira/recommender-systems-in-python-101)
+- [Ultimate RecSys List](https://github.com/Darel13712/ultimate-recsys-list)
+- [Дропаем ранжирующие метрики в рекомендательной системе, часть 2: двухэтапные модели](https://habr.com/ru/companies/ods/articles/751210/)
+- [Дропаем ранжирующие метрики в рекомендательной системе: визуальный анализ и popularity bias](https://habr.com/ru/companies/ods/articles/750974/)
+
+<!-- omit in toc -->
+### Packages
+
+- [Revisiting BPR](https://github.com/Nemexur/revisit-bpr)
+
+## Time Series
+
+- [Временные ряды](https://education.yandex.ru/handbook/ml/article/vremennye-ryady)
+- [Topic 9. Time Series Analysis with Python](https://mlcourse.ai/book/topic09/topic09_intro.html)
+- [Прогнозирование временных рядов](https://education.yandex.ru/knowledge/prognozirovanie-vremennyh-ryadov.-mashinnoe-obuchenie)
+- [Time Series](https://www.kaggle.com/learn/time-series)
+- [Forecasting time series with gradient boosting: Skforecast, XGBoost, LightGBM, Scikit-learn and CatBoost](https://cienciadedatos.net/documentos/py39-forecasting-time-series-with-skforecast-xgboost-lightgbm-catboost) by Joaquín Amat Rodrigo, Javier Escobar Ortiz
+- [ARIMA and SARIMAX models with Python](https://cienciadedatos.net/documentos/py51-arima-sarimax-models-python.html) by Joaquín Amat Rodrigo, Javier Escobar Ortiz
+- Груздев А.В., Рафферти Г. [Прогнозирование временных рядов с помощью Prophet, sktime, ETNA и Greykite](https://dmkpress.com/catalog/computer/data/978-5-93700-212-9/)
+- [Forecasting: Principles and Practice (3rd ed)](https://otexts.com/fpp3/) <!--- comment -->
+- [Dive into Time-Series Anomaly Detection: A Decade Review](https://arxiv.org/pdf/2412.20512)
+- [M5 Forecasting - Uncertainty](https://www.kaggle.com/c/m5-forecasting-uncertainty/overview)
+- [Predict Future Sales](https://www.kaggle.com/competitions/competitive-data-science-predict-future-sales/overview)
+- [StatsForecast Documentation](https://nixtlaverse.nixtla.io/statsforecast/docs/getting-started/getting_started_complete.html)
+- [Time Series Analysis in Python – A Comprehensive Guide with Examples](https://www.machinelearningplus.com/time-series/time-series-analysis-python/)
+- [Time Series Forecasting With Python (Mini-Course)](https://machinelearningmastery.com/time-series-forecasting-python-mini-course/)
+- [Дмитрий Макаров — вводный курс по временным рядам](https://www.dmitrymakarov.ru/intro/time-series-20/)
+
+## Big Data
+
+<!-- omit in toc -->
+### Books
+
+- Перрен Ж.Ж. [Spark в действии](https://dmkpress.com/catalog/computer/data/978-5-97060-879-1/) / [Spark in Action](https://www.manning.com/books/spark-in-action-second-edition) by Jean-Georges Perrin <!--- comment -->
+- [Learning Spark](https://pages.databricks.com/rs/094-YMS-629/images/LearningSpark2.0.pdf) <!--- comment -->
+- [Data Analysis with Python and PySpark](https://www.manning.com/books/data-analysis-with-python-and-pyspark) <!--- comment -->
+- [POSTGRES: Первое знакомство](https://edu.postgrespro.ru/introbook_v9.pdf)
+- [Высоконагруженные приложения — Martin Kleppmann](https://www.litres.ru/book/martin-kleppman-1733/vysokonagruzhennye-prilozheniya-programmirovanie-mass-39100996/)
+
+<!-- omit in toc -->
+### Other
+
+- [Анализируем данные с помощью фреймворка Spark](https://www.youtube.com/watch?v=McXK_ObP00c)
+- [PySpark для аналитика. Как правильно просить ресурсы и как понять, сколько нужно брать](https://habr.com/ru/companies/avito/articles/732870/?erid=2VtzqxjG1Yk&erid=2Vtzqwxo44G)
+- [PySpark для аналитика. Как выгружать данные с помощью toPandas и его альтернатив](https://habr.com/ru/companies/avito/articles/740232/)
+- [Spark Architecture by FaangTalk](https://www.youtube.com/watch?v=1nzLD5VZE4I&t=132s)
+- [SPARK для «малышей»](https://habr.com/ru/companies/alfa/articles/808415/)
+- [Apache Superset Documentation](https://superset.apache.org/docs/intro/#)
+- [ClickHouse Documentation (русская версия)](https://clickhouse.com/docs/ru)
+- [Cumulative Table Design](https://github.com/EcZachly/cumulative-table-design)
+- [Hadoop. Система для обработки больших объемов данных (Stepik)](https://stepik.org/course/150/promo)
+- [Palantir PySpark Style Guide](https://github.com/palantir/pyspark-style-guide)
+- [PySpark Style Guide (MrPowers)](https://github.com/MrPowers/spark-style-guide/blob/main/PYSPARK_STYLE_GUIDE.md)
+
+## System Design
+
+- [The System Design Primer](https://github.com/donnemartin/system-design-primer#study-guide) <!--- comment -->
+- [Algorithms you should know before you take system design interviews](https://blog.bytebytego.com/p/algorithms-you-should-know-before)
+- [Top 14 System Design interview questions for software engineers](https://www.educative.io/blog/top-10-system-design-interview-questions#proximity)
+- [System Design for Interviews and Beyond](https://systemdesignthinking.thinkific.com/courses/system-design-for-interviews-and-beyond)
+- [System Design](https://balun.courses/courses/system_design#program)
+- [System Design by Karan Pratap Singh](https://github.com/karanpratapsingh/system-design) <!--- comment -->
+- [System Design 101](https://github.com/ByteByteGoHq/system-design-101)
+- [Systems Design Interview Guide](http://patrickhalina.com/posts/systems-design-interview-guide/)
+- [Designing Distributed Systems](https://azure.microsoft.com/en-us/resources/designing-distribute

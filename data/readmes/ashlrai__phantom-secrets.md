@@ -39,7 +39,7 @@ brew trust --formula ashlrai/phantom/phantom
 brew install ashlrai/phantom/phantom
 ```
 
-macOS via Homebrew; installs `phantom` and `phantom-mcp` (reviewed `v0.7.8`). Linux and Windows:
+macOS via Homebrew; installs `phantom` and `phantom-mcp` (reviewed `v0.7.9`). Linux and Windows:
 use the matching [release asset](#exact-v079-github-assets). Then run
 `phantom init` in your project and `phantom setup --client claude` (or
 `cursor`, `windsurf`, `codex`). Full walkthrough: [Quick Start](#quick-start).
@@ -106,8 +106,8 @@ What this does not show: it is a scripted worst case, not an LLM, so it measures
 ## Quick Start
 
 Install both binaries from the reviewed [`v0.7.9` GitHub release](#installation).
-On macOS, the Homebrew formula is the shortest path; it currently installs the
-previous reviewed `v0.7.8` binaries until the tap is bumped to `v0.7.9`:
+On macOS, the Homebrew formula is the shortest path; it installs the reviewed
+`v0.7.9` binaries:
 
 ```bash
 $ brew tap ashlrai/phantom
@@ -430,14 +430,14 @@ dashboard is designed to show team memberships and member lists.
 | `phantom add <KEY>` | Create a new secret name transactionally in an initialized project through a hidden terminal prompt or trusted `--stdin` producer; existing names are denied before any value read and are never replaced |
 | `phantom remove <KEY>` | After exact trusted-terminal confirmation, transactionally remove the vault value, lifecycle config, and exact managed-dotenv mapping; headless use fails before value access or mutation |
 | `phantom reveal <KEY>` | From an attached trusted terminal, review and type the exact challenge before printing one value or copying it for an auto-cleared 30-second clipboard window |
-| `phantom status` | Show vault/mapping state and whether the machine-local lifecycle lock is held; a held lock does not authenticate or identify a listener |
+| `phantom status` | Show vault/mapping state and whether the machine-local lifecycle lock is held; a held lock does not authenticate or identify a listener. `--json` emits the value-free [status contract](docs/hub-status-contract.md) |
 | `phantom rotate` | After an exact attached-terminal challenge bound to the project, config, managed dotenv, and sorted protected-name digest, regenerate every local phantom token (old mappings become invalid). Headless use fails before vault access or mutation. Provider-backed `--name`/`--provider` execution is hard-denied before credential or network access in 0.7.9. |
 | `phantom grant add <provider>` | Reserved provider-enrollment surface; hard-denied before credential or network access in 0.7.9. See [Provider grants](#provider-grants). |
 | `phantom grant list` / `status` | Read provider-grant names, providers, lifecycle state, and expiry metadata without returning credential values. |
 | `phantom grant revoke <provider>` | Reserved remote-revocation surface; currently fails closed before local mutation because provider revocation is not wired. |
 | `phantom doctor` | Check configuration and vault health (`--fix` to auto-repair). Reports install source, vault backend, audit-log status, Argon2 params, and MCP wiring per client |
 | `phantom agent report` | Emit a read-only AI-agent readiness report (`--json` for automation). Reports `unsafe`, `protected`, `verified`, `team-ready`, or `compliance-ready` |
-| `phantom agent doctor` | Human-readable agent readiness view backed by the same policy engine |
+| `phantom agent doctor` | Human-readable agent readiness view backed by the same policy engine; `--json` emits the value-free [preflight contract](docs/agent-preflight-contract.md) (`--vault` to probe the vault, `--strict` for verdict exit codes) |
 | `phantom agent setup` | Preview or apply safe defaults for agent use (`--dry-run` first, `--apply` to write changes) |
 | `phantom workspace plan [--json]` | Build an exact sealed setup plan and create a value-free pending request; does not change the workspace or vault |
 | `phantom workspace apply --request <ID>` | Recompute and claim the exact request in an attached trusted terminal, require typed confirmation, then apply transactionally with rollback on failure |
@@ -518,7 +518,7 @@ fails closed before vendor execution. No single-provider exception exists.
 - **Export/import** -- Encrypted export requires an attached terminal, exact challenge, and hidden passphrase; export passphrase files, plaintext, and argv passphrases are disabled. Import uses its own exact terminal ceremony; only non-Windows encrypted-backup import may read a bounded private passphrase file. Competitor imports support Doppler, Infisical, dotenvx, 1Password, and plain `.env`.
 - **Tamper-evident audit log** -- `PHANTOM_AUDIT=1` writes vault events as JSONL to `~/.phantom/audit.log`. Each entry is chained with HMAC-SHA256; `phantom audit verify` detects tampering. `phantom audit show/tail/path` for log access.
 - **Response scrubbing** -- Scrubs configured secret values from supported API response paths before returning data to the caller
-- **Script wrapping** -- `phantom wrap` wraps selected runtime/build scripts (`dev`, `start`, `serve`, `build`, `deploy`, `preview`) and deliberately leaves test, lint, type, and format scripts alone
+- **Script wrapping** -- `phantom wrap` wraps selected runtime/build scripts (`dev`, `start`, `serve`, `build`, `deploy`, `preview`) and deliberately leaves test, lint, type, and format scripts alone; a script that is a shell command line (`VAR=value cmd`, `a && b`, pipes) is left unchanged and reported, because `phantom exec` runs one program without a shell
 - **Watch mode** -- `phantom watch` reports new unprotected secrets; legacy `--auto` hard-denies before mutation, so protection stays a reviewed transactional `phantom init`
 - **Multi-project scanner** -- `phantom init --all <DIR>` processes eligible repositories found within a five-level bounded scan and stops below the first matching repository; use `--dry-run` to verify the exact set and `--jobs N` to control parallelism
 - **Multi-IDE setup** -- `phantom setup --client claude|cursor|windsurf|codex|gemini` writes the right MCP config for each AI tool, or `--print` for a generic snippet
@@ -532,7 +532,7 @@ fails closed before vendor execution. No single-provider exception exists.
 
 ## Installation
 
-### Homebrew (macOS; formula currently at v0.7.8)
+### Homebrew (macOS; formula at v0.7.9)
 
 Homebrew 6 requires explicit formula trust for third-party taps:
 
@@ -543,8 +543,8 @@ $ brew install ashlrai/phantom/phantom
 ```
 
 This formula installs both `phantom` and `phantom-mcp` from the immutable
-[`v0.7.8` GitHub release](https://github.com/ashlrai/phantom-secrets/releases/tag/v0.7.8).
-It has not yet been bumped to `v0.7.9`. Until it is, a Homebrew install writes
+[`v0.7.9` GitHub release](https://github.com/ashlrai/phantom-secrets/releases/tag/v0.7.9).
+The tap was bumped from `v0.7.8` to `v0.7.9` in ashlrai/homebrew-phantom#7. A `v0.7.8` Homebrew install wrote
 Claude Code MCP registration to the legacy location; see the
 [Claude Code guide](docs/claude-code.md) for the manual `.mcp.json` step, or use
 the `v0.7.9` assets below.
@@ -584,7 +584,7 @@ Do not treat unpinned package-manager commands as `v0.7.9`. In the exact
 exist only under `release-candidate` after failing cross-platform acceptance.
 No npm `0.7.9`, crates.io `0.7.9`, or MCP Registry `0.7.9` publication is
 represented by this GitHub release receipt. Homebrew is separately published
-and verified through its tap, and currently remains at `v0.7.8`.
+and verified through its tap, which now installs `v0.7.9` (requeried 2026-10-12).
 
 ### Release-state snapshot
 
@@ -597,8 +597,8 @@ and verified through its tap, and currently remains at `v0.7.8`.
 > release record by tag-bound workflow
 > [34153902556](https://github.com/ashlrai/phantom-secrets/actions/runs/34153902556).
 > Exact public registry endpoints were requeried on 2026-09-29. The Homebrew
-> formula still installs the previous reviewed `v0.7.8` until its tap is bumped;
-> npm `latest` remains `0.6.0`, and the npm
+> formula now installs `v0.7.9` (requeried 2026-10-12);
+> npm `latest` is `0.7.9` as of 2026-10-12 (it was `0.6.0` at this snapshot), and the npm
 > `0.7.4` wrappers remain quarantined under `release-candidate` after failed
 > npm-channel acceptance. The GitHub receipt alone does not prove the separately
 > verified Homebrew formula, an npm or crates.io package, MCP Registry entry, hosted-service

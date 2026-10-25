@@ -93,7 +93,7 @@ iOS does not show the microphone permission prompt that playing out any remote a
 
 #### Fast mode
 
-Fast mode (`speed: "fast"`) serves the session from a higher-compute tier for lower latency and higher throughput; output quality is unchanged. It is currently available for `lucy-2.5` / `lucy-latest` and `lucy-vton-3.6` / `lucy-vton-3.5` / `lucy-vton-latest`, in the US region only, and is billed at 2x the standard realtime rate for those models. Other models ignore the option. Omit it (the default) for standard mode.
+Fast mode (`speed: "fast"`) serves the session from a higher-compute tier for lower latency and higher throughput; output quality is unchanged. It is currently available for `lucy-2.6`, `lucy-2.5` / `lucy-latest` and `lucy-vton-3.6` / `lucy-vton-3.5` / `lucy-vton-latest`, in the US region only, and is billed at 2x the standard realtime rate for those models. Other models ignore the option. Omit it (the default) for standard mode.
 
 ```ts
 const realtimeClient = await client.realtime.connect(stream, {
@@ -210,6 +210,25 @@ subscriber.on("connectionChange", (state) => {
 // Disconnect when done
 subscriber.disconnect();
 ```
+
+**Viewer with the session's input** — also receive what the publisher sends in (its camera and
+microphone), e.g. to show the original next to the styled output:
+
+```typescript
+const subscriber = await client.realtime.subscribe({
+  token: subscribeToken,
+  onRemoteStream: (stream) => {
+    outputVideo.srcObject = stream;
+  },
+  onInputStream: (stream) => {
+    inputVideo.srcObject = stream;
+  },
+  inputVideoQuality: "low", // "low" | "medium" | "high" (default)
+});
+```
+
+Without `onInputStream` the input is never downloaded. `inputVideoQuality` sets the highest
+simulcast layer of the input video to receive; the SFU still steps down when bandwidth requires.
 
 ### Connection quality
 

@@ -24,7 +24,7 @@ Navigate projects and sessions on the left, chat with Ya on the right, and open 
 
 ## Platform support
 
-Release assets are self-contained and do not require Node.js. Node.js 22 or newer is required only for source development or npm installation.
+Standalone CLI and desktop release assets are self-contained and do not require Node.js. Node.js 22 or newer is required for source development or installation of the npm package.
 
 | Operating system | CLI | Desktop GUI | API key storage |
 | --- | --- | --- | --- |
@@ -51,7 +51,20 @@ Run the command and browser on the same computer. If the browser does not open a
 
 Account sign-in uses the PKCE protocol implemented by [DeepSeek's official Harness](https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/credentials/deepseek-account-platform). Ya receives a platform account grant and sends it to the official Messages API as `x-dsh-auth-token`; it does not request your password. Available access and billing follow your platform account. While signed in, the account takes priority over API keys. Signing out removes the account grant and attempts remote session revocation; existing API keys remain available. A rejected account token prompts you to sign in again.
 
-The account grant is stored separately from settings at `~/.ya/auth/credentials.json` (or `$YA_HOME/auth/credentials.json`). On Unix, the directory and file use permissions `0700` and `0600`; Windows uses the directory's access controls. Keep this user data directory private. The grant is never returned to the desktop renderer or stored in conversation history, and local file tools block reading the credential file.
+The account grant is stored as plaintext (unencrypted JSON), separately from settings, at `~/.ya/auth/credentials.json` (or `$YA_HOME/auth/credentials.json`). On Unix, the directory and file use permissions `0700` and `0600`; Windows uses the directory's access controls. These permissions and access controls restrict file access but do not encrypt the grant. Use disk encryption and encrypted backups to protect the stored grant if a disk is lost or a backup is exposed. Keep this user data directory private. The grant is never returned to the desktop renderer or stored in conversation history, and local file tools block reading the credential file.
+
+## Install the CLI from a release tarball
+
+Install Node.js 22 or newer, then download `ya-agent-<version>.tgz` from the [GitHub Release assets](https://github.com/ZedingZhang/ya-agent/releases/latest). Before running the command, replace `<version>` with the package version in the downloaded filename, without the tag's leading `v`. Run it from the directory containing that file:
+
+```sh
+npm install -g "./ya-agent-<version>.tgz"
+ya --help
+```
+
+The release workflow attaches the npm tarball to GitHub Releases; it does not publish it to the npm registry. This package installs the CLI. For the desktop app or a CLI that does not require Node.js, use the separate [standalone release assets](#standalone-releases).
+
+The published `v0.8.0` tarball still uses legacy native bindings: a clean Windows installation fails to start with `Cannot find native binding`. Until a release built from the current TypeScript core is available, use [source installation](#install-from-source).
 
 ## Install from source
 
@@ -129,7 +142,7 @@ ya ask --help
 ya ask "Explain recursion"
 ya ask --web on "Compare the latest evidence for two approaches"
 ya ask --thinking on --reasoning-effort max "Analyze this decision"
-ya ask --model vision --image ./chart.png "Explain this chart"
+ya ask --image ./chart.png "Explain this chart"
 ```
 
 Interactive terminals render Ya's common Markdown subset. Redirected output preserves raw Markdown for scripts and files:
@@ -195,7 +208,9 @@ The tool set can:
 
 The file tools cannot delete files. Every change shows an absolute path and requires approval. Replacements include a unified diff capped at 200 lines. In a non-interactive shell, file changes are denied unless that invocation includes `--approve`.
 
-Reads remain inside the resolved workspace. Symlink escapes, `.git`, `.env`, credentials, private keys, binary files, invalid UTF-8, and files larger than 1 MiB are blocked. Action audit logs contain metadata—not file content or diffs—and rotate at 1 MiB with three archives.
+Reads remain inside the resolved workspace. Symlink escapes, `.git`, `.env`, credentials, private keys, binary files, invalid UTF-8, and files larger than 1 MiB are blocked. Writes, edits, and moves also reject sensitive paths before approval. Action audit logs contain metadata—not file content or diffs—and rotate at 1 MiB with three archives.
+
+Search returns at most 100 filename and text matches. Recursive searches skip directories named `node_modules`, `dist`, and `.next` at any depth. Selecting one of these directories explicitly as the search root searches its contents; the exclusions still apply to descendant directories.
 
 For existing files, Ya prefers `local_edit`: `local_read` returns exact content and a SHA-256 `revision`, which the edit submits as `expected_revision` with 1–100 `{old_text, new_text}` replacements. Each non-empty `old_text` must match exactly once in the original file; ambiguous, missing or overlapping matches reject the whole batch before approval. Use surrounding context for insertion and an empty `new_text` for deletion. No fuzzy matching or newline normalization is performed.
 
@@ -228,7 +243,9 @@ ya ask --local --exec --approve --approve-commands --no-feedback "Fix the bug an
 
 Commands use `cmd.exe /d /s /c` on Windows and `/bin/sh -c` on macOS/Linux, inherit the installed project toolchain, and run without stdin. Use one-shot checks instead of watch modes, interactive programs or detached background services. Process-tree termination uses the operating system's process controls; if cleanup cannot be confirmed, the result reports an error and bounds output draining instead of hanging. The default timeout is 120 seconds; the model can request an integer from 1 to 600 seconds. Each tool result retains the last 64 KiB of stdout and stderr, with explicit truncation flags. Command-enabled tasks have up to 20 tool rounds for inspection, repair and verification; other tasks retain the six-round limit. Final answers must report the checks performed and any failures, denied commands or incomplete checks.
 
-Only the **initial working directory** is confined to the resolved workspace. Shell commands execute with your account's permissions and can modify or delete files elsewhere or access the network; execution is not sandboxed. Ya excludes its `DEEPSEEK_API_KEY`, `YA_HOME` and application runtime flags from the child environment. Audit logs record command status, working-directory metadata, exit code and duration, without command text or stdout/stderr.
+Only the **initial working directory** is confined to the resolved workspace. Shell commands execute with your account's permissions and can modify or delete files elsewhere or access the network; execution is not sandboxed. CLI and GUI commands share a default environment allowlist: system and home paths, locale and temporary-directory settings, terminal settings, and common Node.js, Python, Java, Go, Rust, Android and .NET toolchain locations. Other inherited variables are omitted, including cloud/CI/API credentials, SSH agents, askpass helpers, `DEEPSEEK_API_KEY`, `YA_HOME` and application runtime flags. Project-specific variables must be set explicitly in the command you approve. Files and other credentials accessible to your account remain accessible to commands. Audit logs record command status, working-directory metadata, exit code and duration, without command text or stdout/stderr.
+
+Approving `npm install` or `npm ci` can also run [dependency lifecycle scripts](https://docs.npmjs.com/cli/v11/using-npm/scripts/#life-cycle-operation-order), including `postinstall`. These scripts can access files, the network, and credentials available to the command; review the repository and its dependencies before approving installation.
 
 ### Configuration
 
@@ -237,6 +254,8 @@ ya config set model pro
 ya config set thinking on
 ya config set reasoning-effort max
 ```
+
+API attempts allow up to 90 seconds for the initial response. Non-streaming attempts have a 90-second total deadline. After a streaming response starts, its 90-second idle timeout resets as data or heartbeats arrive, so an active answer can continue beyond 90 seconds. These limits apply to both API keys and platform accounts and are independent of the ToA worker timeout. Stop or Ctrl+C still cancels the request; a failed stream is not retried after visible text has been delivered.
 
 Configuration remains compatible with earlier Python releases and is stored at `~/.ya/config.json`. Set `YA_HOME` to choose another state directory. Model ids that are no longer served—`deepseek-v4-flash`, `deepseek-v4-flash-vision-exp`, the `vision` alias, and the `deepseek-v4.1-flash` and `deepseek-v4-pro-0813` names this project briefly shipped before the API rejected them—are migrated when the file is loaded.
 
@@ -264,7 +283,7 @@ The desktop application uses a two-column workspace inspired by the [official De
 
 After a successful `local_write` or `local_edit`, the conversation shows an expandable diff card. Open **Changes** in the top-right corner to review the current session's file changes; repeated edits to a path are recorded separately. Diffs include red/green additions and deletions, old/new line numbers, three lines of context, expansion for longer changes, and copying. Cards and change history are saved with the conversation, so switching sessions or restarting preserves the diff at the time of each operation, without requiring Git.
 
-Each preview retains at most 2,000 lines and 128K characters. Larger previews are marked as truncated while statistics cover the complete change; a diff calculation timeout displays an unavailable preview. Sensitive files and non-text writes do not retain content diffs. The history covers file-tool operations, excluding changes made by shell commands, and records individual operations rather than a net session diff. Action audits and model-facing tool results continue to contain metadata only.
+Each preview retains at most 2,000 lines and 128K characters. Larger previews are marked as truncated while statistics cover the complete change; a diff calculation timeout displays an unavailable preview. Sensitive-path writes are rejected before approval; non-text writes do not retain content diffs. The history covers file-tool operations, excluding changes made by shell commands, and records individual operations rather than a net session diff. Action audits and model-facing tool results continue to contain metadata only.
 
 Add projects with the sidebar's **+** button, create sessions with **New session**, and switch between saved sessions in the project list. Ctrl/⌘+N starts a session, Ctrl/⌘+B collapses the sidebar, and Ctrl/⌘+Enter sends a task. The composer’s **Task options** menu contains local tools, command execution, web search, ToA, and image-detail controls.
 

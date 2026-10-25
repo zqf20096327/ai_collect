@@ -427,6 +427,8 @@ This course dives deep into sequence modeling techniques for Natural Language Pr
 - **[Learning LLMs in 2026](https://amanxai.com/2026/08/25/if-i-were-learning-llms-in-2026-id-start-with-these-concepts/?fbclid=IwY2xjawT5_lBwZG9mAWV4dG4DYWVtAjExAHNydGMGYXBwX2lkEDIyMjAzOTE3ODgyMDA4OTIAAR7CGVyjP8CcVx8hDcMhT83bZugHWqKxTBaqRzGWFRk2xAMT5Dk28fNRV5BvJQ_aem_SQoUu63JwDfCyvUp6IiwHQ)** - FREE
 - **[Dan's AI Notes](https://dankornas.substack.com/archive?sort=new)** - FREE
 - **[Zero to AI](https://zero-to-ai.dev/10-specializations)** - FREE
+- **[LLM Fine-Tuning Cheat Sheet](https://amanxai.com/2026/10/25/llm-fine-tuning-cheat-sheet/?fbclid=IwY2xjawVK7FJleHRuA2FlbQIxMQBwZG9mAXNydGMGYXBwX2lkEDIyMjAzOTE3ODgyMDA4OTIAAR58HbiicWLKpIKegxKMl0h6IysBMYd2pZUk18spaHiCB5xUFVpWgaY4InbGNA_aem_exmMvDg4RR5LLRuUUIbG-w)** - FREE
+- **[LLM Fine-Tuning Cheat Sheet](https://github.com/dr-mushtaq/natural-language-processing-projects-python/blob/main/Understanding%20Large%20Language%20Model/LLM%20Fine-Tuning%20Cheat%20Sheet.md)** - FREE
   
 
 #### Code
@@ -508,5 +510,4 @@ This course dives deep into sequence modeling techniques for Natural Language Pr
  |**✅1-Comparing Local Tool Calling: Gemma, Llama, and Mistral**|[1](https://youtu.be/oQ8fP7ZvNeA?si=woocxGZKK4W27yrE) |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|[1](https://machinelearningmastery.com/comparing-local-tool-calling-gemma-4-vs-llama-3-vs-mistral/)|
  |**🌐1-DeepSeek**| |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|---|
  |**🌐1-Qwen**| |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|---|
- |**🌐1-Gemma**| |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|---|
-  |**✅1-Pre-training large language models**|[1](https://drive.google.com/file/d/1N0MkdihOwhxENog3cChTH6l3Zz5B2hNw/view?usp=drive_link)[-2](https://youtu.be/zN1yGzOBnpg?si=vzgwR4WZsz8T2trR)|[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Languag
+ |**🌐1-Gemma**| |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)

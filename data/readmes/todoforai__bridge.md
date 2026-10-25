@@ -3,6 +3,10 @@
 Native bridge runtime. Connects user machines, Firecracker sandboxes, and
 cloud VMs to the TODOforAI backend over an encrypted WebSocket channel.
 
+Also ships the agent's in-shell helpers in the same binary: **`tfa-cat`**
+(let an AI agent *see* images and PDFs from its terminal), a live `tail`, and
+`adb connect` to phones — see [Shell helpers](#shell-helpers-tfa-cat-tail-adb).
+
 The same binary runs everywhere. Location is a deployment detail; the
 protocol is uniform.
 
@@ -44,7 +48,7 @@ Server side: `backend/src/api/ws/handlers/BridgeHandler.ts`.
 | File                  | Purpose                                              |
 |-----------------------|------------------------------------------------------|
 | `main.c`              | Event loop, session table, command dispatch         |
-| `subcmd.c` / `.h`     | CLI subcommands: `login` / `enroll` / `whoami`      |
+| `subcmd.c` / `.h`     | CLI subcommands: `login` / `enroll` / `whoami`; shell helpers `tfa-cat`, `__live`, `__adb` |
 | `conn.c` / `conn.h`   | TCP + WS client handshake + Noise_NX initiator      |
 | `util.c` / `util.h`   | Base64 + SHA-1 (for WS-Accept)                      |
 | `pty.c` / `pty.h`     | `forkpty` session: read/write/resize/signal         |
@@ -141,6 +145,66 @@ exe=$(readlink -f /proc/$PPID/exe 2>/dev/null || readlink -f "$(command -v todof
 
 No new protocol messages, no in-binary HTTP client, no extra dependencies.
 
+## Shell helpers (`tfa-cat`, `tail`, `adb`)
+
+Small tools the agent uses inside its bash, built into the bridge binary — no
+npm/pip install, always the bridge's version. Linux, macOS and Windows.
+
+They don't call the API themselves: they hand bytes to the running bridge
+daemon over loopback (`127.0.0.1:$TODOFORAI_BRIDGE_PORT`, an ephemeral port
+exported to every RUN), and the daemon relays them on its already-open Noise
+channel (`shell:open` / `shell:data` / `shell:end` → `shell:close`). No
+curl, no TLS handshake per call. The backend accepts a stream only with the
+RUN's own token (`TODOFORAI_API_TOKEN`) for a block that is still running on
+this device. See `shell_relay.h`.
+
+### `tfa-cat` — cat for AI agents that shows images and PDFs to the model
+
+A terminal can't carry an image to an LLM: raw PNG bytes in a PTY are noise,
+and the output is capped anyway. `tfa-cat` is a drop-in `cat` that fixes this
+for the agent's shell:
+
+```sh
+tfa-cat screenshot.png          # the model sees the image in this bash result
+tfa-cat a.png report.pdf        # several files → several attachments
+curl -s "$URL" | tfa-cat        # stdin works (type sniffed by magic bytes)
+ssh host cat /tmp/x.png | tfa-cat   # remote file: run tfa-cat locally
+tfa-cat notes.md                # text prints exactly like cat
+tfa-cat shot.png > copy.png     # stdout redirected/piped → raw bytes, like cat
+tfa-cat skill:pdf               # a skill on this machine (…/skills/pdf/SKILL.md)
+tfa-cat skill:pdf/forms.md      # another file of that skill
+tfa-cat todoforai:todos/<todoId>/plan.md        # a TODOforAI file
+tfa-cat todoforai:todos/<todoId>/photo.jpg > photo.jpg   # …downloaded
+tfa-cat todoforai:todos/<todoId>              # a folder → its listing
+```
+
+- Formats: PNG, JPEG, GIF, WebP, PDF (≤ 20 MB per command; an image ≤ 3.5 MB,
+  the model APIs' limit — downscale bigger ones).
+- `skill:<name>` looks in `.agents/skills` and `.claude/skills` of the cwd,
+  its parents, then `$HOME` — local only, no network.
+- `todoforai:<path>` is resolved by the backend with the RUN's user and the
+  todo's project (what the agent's `read` sees). On the agent's terminal an
+  image/PDF is attached by the backend directly (no bytes travel to the
+  device); anything else — or anything piped/redirected — is streamed down
+  (`shell:open {kind:"fetch"}` → `shell:ready` + `shell:data` → `shell:close`).
+- Media goes only to a terminal stdout inside an agent RUN
+  (`TODOFORAI_BLOCK_ID` set): it's attached to the running bash block, and
+  the backend hands it to the agent with that command's result. Prints
+  nothing on success; on failure `tfa-cat: <file>: not attached: <reason>`,
+  exit 1.
+- Linux/macOS: a symlink `~/.todoforai/tools/bin/tfa-cat` → the bridge (on
+  PATH in every RUN), dispatched on `argv[0]`. Windows: a `tfa-cat` shell
+  function in the RUN shell → `<bridge> __cat`.
+
+### Live `tail`, phone `adb`
+
+- `cmd | tail -N` would print nothing until EOF; the RUN shell's `tail()`
+  wrapper tees the pipe through `<bridge> __live`, so the chat block shows
+  lines as they come (display only — the tool result is still tail's). The
+  daemon batches and rate-limits them; the pipe itself never waits.
+- `adb connect|pair|disconnect <phone>` → `<bridge> __adb` resolves a paired
+  phone through the device's ADB relay; other `adb` commands pass through.
+
 ## Skills (`SKILL.md`)
 
 The TODOforAI agent discovers skills on a bridge by walking well-known
@@ -155,9 +219,9 @@ locations and reading `SKILL.md` files. Both `.agents/skills` and
 Discovery rules (`agent/src/agents/skills_info.jl`):
 
 - Priority order: repo `.agents` → repo `.claude` → user; skills are deduped by
-  `name`, first match wins. Built-in skills (`agent/builtin-skills/`) are served by the
-  agent itself as `todoforai:skills/<name>/SKILL.md`; nothing is installed on the device,
-  and a device skill with the same name wins.
+  `name`, first match wins. Built-in skills (`packages/shared-fbe/builtin-skills/`) are
+  `todoforai:skills/<name>/SKILL.md` (agent `read` and the backend, so `tfa-cat` too);
+  nothing is installed on the device, and a device skill with the same name wins.
 - Walk depth: `find -maxdepth 6`; hidden entries (`.*`) are pruned.
 - Only files literally named `SKILL.md` are accepted.
 - Only the first 8 KiB of each file is read for metadata.

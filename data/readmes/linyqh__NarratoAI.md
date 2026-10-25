@@ -38,14 +38,6 @@ NarratoAI 是一款自动化影视解说工具，基于 LLM 实现文案撰写�
   <img src="docs/volcengine.png" alt="火山引擎 Agent plan & Coding plan" style="width: 100%; max-width: 840px; height: auto;">
 </a>
 
-### APIMart
-
-感谢 APIMart 赞助了本项目！APIMart 是专注 AI 图片/视频生成的低价 API 平台，GPT-Image-2 低至 $0.006/张，1 美元可出图 160+ 张。图片、视频一套异步 API 通吃，提交任务拿 ID、回调取结果，跑批万张不超时、换模型不改代码。按量付费、无月费，通过[此注册链接](https://go.apimart.ai/gh-narratoai)注册即可开用。
-
-<a href="https://go.apimart.ai/gh-narratoai">
-  <img src="docs/apimart.png" alt="APIMart" style="width: 100%; max-width: 900px; height: auto;">
-</a>
-
 > 即日起全面支持硅基流动！注册即享2000万免费Token（价值16元平台配额），剪辑10分钟视频仅需0.1元！  
 > 
 > 🔥 快速领福利：  
@@ -197,26 +189,11 @@ uv run streamlit run webui.py --server.maxUploadSize=2048
 
 📷 3. 关注公众号【NarratoAI助手】，掌握最新资讯
 
-🎵 4. 关注抖音号【NarratoAI】（抖音号：**76958193368**），获取最新动态，也可以私信反馈问题和建议。打开抖音扫一扫，扫描下方二维码即可关注。
-
-<img src="docs/douyin-qr-code.jpg" alt="NarratoAI 抖音号二维码，抖音号：76958193368" width="300">
-
 ## 参考项目 📚
 - https://github.com/FujiwaraChoki/MoneyPrinter
 - https://github.com/harry0703/MoneyPrinterTurbo
 
 该项目基于以上项目重构而来，增加了影视解说功能，感谢大佬的开源精神 🥳🥳🥳 
-
-## 请作者喝一杯咖啡 ☕️
-<div style="display: flex; justify-content: space-between;">
-  <img src="https://github.com/user-attachments/assets/5038ccfb-addf-4db1-9966-99415989fd0c" alt="Image 1" style="width: 350px; height: 350px; margin: auto;"/>
-  <img src="https://github.com/user-attachments/assets/07d4fd58-02f0-425c-8b59-2ab94b4f09f8" alt="Image 2" style="width: 350px; height: 350px; margin: auto;"/>
-</div>
-
-## 赞助
-<a href="https://dartnode.com">
-  <img src="https://dartnode.com/_branding/white_color_full.png" alt="Powered by DartNode" style="background-color: #333; padding: 10px; border-radius: 4px;">
-</a>
 
 ## 许可证 📝
 

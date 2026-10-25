@@ -6,7 +6,7 @@
 
 <p align="center">
   <b>每天读完心理学和精神医学的新研究，挑出值得看的几条。</b><br>
-  期刊、预印本、学会、监管机构和媒体，94 个公开信源，学界和业界都收；模型筛选、两次独立评分、中文摘要，每天早上 8 点出一份心理学日报。
+  期刊、预印本、学会、监管机构和媒体，95 个公开信源，学界和业界都收；模型筛选、两次独立评分、中文摘要，每天早上 8 点出一份心理学日报。
 </p>
 
 <p align="center">
@@ -69,12 +69,12 @@ PsyHOT 基于 [AIHOT](https://github.com/KKKKhazix/AIHOT) 开源框架改造。�
 
 ## 信源
 
-94 个正文信源，另有 123 个只作热度信号、1 个暂停，全部用项目自己的抓取代码验证过能抓到、最近仍在更新。期刊、学会和政府机构官网是 T1，预印本和媒体是 T2（预印本没有经过同行评审，入选门槛更高）。站内默认只显示摘要和原文链接。
+95 个正文信源，另有 123 个只作热度信号、1 个暂停，全部用项目自己的抓取代码验证过能抓到、最近仍在更新。期刊、学会和政府机构官网是 T1，预印本和媒体是 T2（预印本没有经过同行评审，入选门槛更高）。站内默认只显示摘要和原文链接。
 
 | 方向 | 信源 |
 |---|---|
 | 综合与综述 | Nature Human Behaviour、Communications Psychology、Nature Reviews Psychology、Psychological Science、Perspectives on Psychological Science、Current Directions in Psychological Science、Psychological Science in the Public Interest |
-| 精神医学与心理健康 | The Lancet Psychiatry、JAMA Psychiatry、American Journal of Psychiatry、World Psychiatry、Nature Mental Health、Biological Psychiatry |
+| 精神医学与心理健康 | The Lancet Psychiatry、BMJ Open（Mental health collection）、JAMA Psychiatry、American Journal of Psychiatry、World Psychiatry、Nature Mental Health、Biological Psychiatry |
 | 临床、治疗与咨询 | Clinical Psychological Science、Clinical Psychology Review、Behaviour Research and Therapy、Psychotherapy Research、Counselling and Psychotherapy Research、Journal of Counseling & Development |
 | 认知 | Trends in Cognitive Sciences、Cognition、Cognitive Psychology、Cognitive Science |
 | 社会、人格与跨文化 | Personality and Social Psychology Review、Journal of Experimental Social Psychology、Journal of Cross-Cultural Psychology |
@@ -138,6 +138,8 @@ PsyHOT 汇总的是研究和行业动态，只用于了解领域进展，不构�
 ## 文档
 
 `docs/` 下是 AIHOT 框架的文档，同样适用于本项目：[定制](docs/customize.md) · [信源](docs/sources.md) · [精选与校准](docs/selection.md) · [事件归组](docs/grouping.md) · [部署](docs/deploy.md) · [架构](docs/architecture.md)。改代码前先读 [AGENTS.md](AGENTS.md)。
+
+身份异常的确定性扫描、dry-run、审计和保守合并见 [`docs/identity-repair.md`](docs/identity-repair.md)。确定性模块只做扫描和 dry-run；经管理员复核后，历史合并通过 `scripts/repair-material-identities.ts --apply --actor admin:<id> --reason "..."` 执行。
 
 技术栈：Node.js 24 · TypeScript · React Router（服务端渲染）· Fastify · PostgreSQL · pg-boss · Tailwind CSS · Docker Compose。内部包名沿用 `@aihot/*`，方便合并上游更新。
 

@@ -1,5 +1,5 @@
 
-<!--------|---------|---------|------------------- Main Banner  ---------------------------------------------------------------->
+<!--------|---------|---------|------------------- Main Banner  ------------------------------------------------------------------>
 <div align="center">
   
   ![Project Banner](https://capsule-render.vercel.app/api?type=waving&color=gradient&height=200&section=header&text=Machine+Learning+Classification+Using+Python&fontSize=40&fontColor=ffffff&animation=twinkling&desc=Data+Analysis+%7C+Visualization+%7C+Model+Evaluation&descSize=18&descAlignY=70)
@@ -175,6 +175,32 @@ The decision boundary shows:
 - **Boundary Lines**: Decision thresholds learned by the model
 
 <img alt="image" src="https://github.com/user-attachments/assets/6533de51-60a6-4f35-b29c-09077b3dab3d" />
+
+
+
+
+## Quick start
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/fraisasghar/Machine-Learning-Classification-using-Python.git
+cd Machine-Learning-Classification-using-Python
+```
+
+### 2. Install the required libraries
+
+```bash
+python -m pip install numpy pandas matplotlib seaborn scikit-learn jupyter
+```
+
+### 3. Run the project
+
+Open the project notebooks or Python scripts in the repository and execute them in the appropriate order. If using Jupyter Notebook, run:
+
+```bash
+jupyter notebook
+```
 
 ## Conclusion
 

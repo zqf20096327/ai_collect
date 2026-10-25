@@ -5,7 +5,7 @@
 <p align="center">
   <a href="https://pypi.org/project/evaltrack/"><img src="https://img.shields.io/pypi/v/evaltrack.svg" alt="PyPI version"></a>
   <a href="https://evaltrack.jesravnbol.dk"><img src="https://img.shields.io/badge/docs-evaltrack.jesravnbol.dk-3f6fe4" alt="Documentation"></a>
-  <a href="https://pypi.org/project/evaltrack/"><img src="https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13%20%7C%203.14-blue" alt="Python versions"></a>
+  <a href="https://pypi.org/project/evaltrack/"><img src="https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13%20%7C%203.14%20%7C%203.15-blue" alt="Python versions"></a>
   <a href="https://github.com/jesrav/evaltrack/actions/workflows/ci.yml"><img src="https://github.com/jesrav/evaltrack/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://github.com/jesrav/evaltrack/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License: MIT"></a>
   <img src="https://img.shields.io/badge/basedpyright-checked-42b983" alt="basedpyright: strict">
@@ -44,8 +44,9 @@ That one marker gives you three things:
   Amazon S3 as the remote), with a dashboard you run locally to inspect them and compare them across
   PRs and releases. Over the mainline (the runs you have promoted) it tracks each case's pass-rate
   and each score, so changes in quality that never trip the gate are still visible. You can save any
-  run as a standalone HTML file that opens anywhere, to share or attach to a CI job. See
-  [Repositories and storage] and [CI/CD].
+  run as a standalone HTML file that opens anywhere, to share or attach to a CI job. You can start
+  without a remote: CI writes a report of each pull request's run and links it on the pull request.
+  See [Repositories and storage] and [CI/CD].
 
 ![Animated demo: a failing eval run in the dashboard, with per-case verdicts, scores against their bars, reliability history, and a comparison against the baseline][dashboard-demo]
 

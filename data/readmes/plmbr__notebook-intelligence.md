@@ -21,6 +21,7 @@ NBI is free and open-source. Connect it to a free or paid LLM provider of your c
   - [Notebook toolbar generation](#notebook-toolbar-generation)
   - [Multi-language and kernel-aware notebooks](#multi-language-and-kernel-aware-notebooks)
   - [Reload open files when changed on disk](#reload-open-files-when-changed-on-disk)
+  - [Replies in your language](#replies-in-your-language)
 - [Configuration](#configuration)
   - [Configuration files](#configuration-files)
   - [Remembering GitHub Copilot login](#remembering-github-copilot-login)
@@ -164,7 +165,7 @@ A Chatbook is a notebook whose cells can be written in English. Running a prompt
 
 What happens to generated code before it runs is yours to choose: **Always confirm** (the default) shows the code and waits, **Confirm if risky** waits only when a scan finds destructive calls, and **Auto-run** executes straight away. Admins can cap that choice fleet-wide, or turn Chatbook off entirely.
 
-Prompts can pull in context with `@` mentions, rules apply to generation the same way they apply to chat, the backend kernel need not be Python, and a Chatbook exports to a plain code notebook when you want to hand someone the result instead of the prompts. See [`docs/chatbook.md`](docs/chatbook.md).
+Prompts can pull in context with `@` mentions, rules apply to generation the same way they apply to chat, the backend kernel need not be Python, a Chatbook exports to a plain code notebook when you want to hand someone the result instead of the prompts, and an existing notebook converts to a Chatbook. See [`docs/chatbook.md`](docs/chatbook.md).
 
 ### Code generation with inline chat
 
@@ -211,6 +212,10 @@ When the agent needs a notebook in a language the current context has not establ
 ### Reload open files when changed on disk
 
 NBI reloads open document tabs when their files change on disk, so edits an AI agent makes via its Read/Write tools appear in the editor without a manual refresh. Tabs with unsaved local edits are skipped so user work is never clobbered. Toggle via the **NBI Settings dialog → External changes → "Refresh open files when changed on disk"** (default on).
+
+### Replies in your language
+
+When JupyterLab is set to another language through a language pack, turn on **NBI Settings dialog → Language → "Reply in my JupyterLab language"** (default off) to have the AI write its chat replies and Chatbook cell descriptions in that language, in every chat mode (the configured provider, Claude, and ACP agents). Code, identifiers, file names and file contents are left as they are. The language is sent to the model by the English name of its JupyterLab language pack ("German (Germany)"), and while JupyterLab is in English, or the setting is off, prompts are unchanged. In Claude and ACP mode the instruction goes with each message rather than a slash command, and a conversation keeps following it after the setting is turned off until you start a new chat.
 
 ## Configuration
 
@@ -507,7 +512,7 @@ Full guide, including the span and event reference, the probe thresholds, worked
 - [`docs/skills.md`](docs/skills.md) — Claude Skills management and the org-manifest reconciler.
 - [`docs/rulesets.md`](docs/rulesets.md) — ruleset frontmatter and discovery.
 - [`docs/acp.md`](docs/acp.md) — using the experimental ACP agent mode, and its limits.
-- [`docs/chatbook.md`](docs/chatbook.md) — writing Chatbook cells, execution modes, export, and why there is no per-cell sandbox.
+- [`docs/chatbook.md`](docs/chatbook.md): writing Chatbook cells, execution modes, conversion and export, and why there is no per-cell sandbox.
 - [`docs/chatbook-extensions.md`](docs/chatbook-extensions.md) — dynamic Chatbook context and mention providers.
 - [`docs/troubleshooting.md`](docs/troubleshooting.md) — common problems with copy-pasteable fixes.
 - [`docs/performance-diagnostics.md`](docs/performance-diagnostics.md): turn timelines, the environment probe, and how to read both.
@@ -525,7 +530,7 @@ Full guide, including the span and event reference, the probe thresholds, worked
 
 ## Roadmap
 
-NBI 6.x is the current line. New features land in minor releases (6.1, 6.2, …); breaking changes are reserved for a major release and announced in the [changelog](CHANGELOG.md). 6.0 marks Chatbook's arrival, and no traitlet, env var, REST route, or on-disk format was renamed or removed. Deployments using the experimental ACP mode must now preinstall its adapter; see the [migration guidance](docs/admin-guide.md#gating-the-experimental-acp-agent-378). Upgrading from 4.x? See the [5.0.0 migration note](CHANGELOG.md#migration-note) for the `fastmcp` → `mcp` dependency swap, the new path sandboxes, and the workspace-file-attach behavior change.
+NBI 6.x is the current line. New features land in minor releases (6.1, 6.2, …); breaking changes are reserved for a major release and announced in the [changelog](CHANGELOG.md). 6.0 marks Chatbook's arrival, and no traitlet, env var, REST route, or on-disk format was renamed or removed. Deployments using the experimental ACP mode must now preinstall its adapter; see the [migration guidance](docs/admin-guide.md#gating-the-experimental-acp-agent-378). Upgrading from 4.x? See the [5.0.0 migration note](CHANGELOG.md#migration-note-1) for the `fastmcp` → `mcp` dependency swap, the new path sandboxes, and the workspace-file-attach behavior change.
 
 ## License
 

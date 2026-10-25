@@ -23,6 +23,15 @@ _In June 2023, I wrote the blog post [The How and Why of Reading 300 Papers in 5
 
 #### Papers Read in 2026:
 
+##### [26-10-25] [paper599]
+- AI-Powered Deep Visual Proteomics Reveals Critical Molecular Transitions in Pancreatic Cancer Precursors 
+ [[pdf]](https://aacrjournals.org/cancerdiscovery/article/16/7/1323/786251/AI-Powered-Deep-Visual-Proteomics-Reveals-Critical) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/AI-Powered%20Deep%20Visual%20Proteomics%20Reveals%20Critical%20Molecular%20Transitions%20in%20Pancreatic%20Cancer%20Precursors.pdf)
+- `Cancer Discovery, 2026`
+- [Computational Pathology]
+```
+Quite interesting paper, even though I definitely didn't understand absolutely everything, and it's difficult for me to judge how interesting/important/impactful these results and findings actually are. Main claimed finding: "histologically normal ducts from patients with cancer display significantly different molecular profiles than those from cancer-free individuals despite identical histopathologic presentation", which seems interesting. I've heard of "deep visual proteomics" before but didn't really know what this means until now.
+```
+
 ##### [26-10-23] [paper598]
 - Data-Efficient Pathology Whole-Slide Image Segmentation With Slide-Level Conditioning
  [[pdf]](https://www.nature.com/articles/s44303-026-00201-7) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Data-Efficient%20Pathology%20Whole-Slide%20Image%20Segmentation%20With%20Slide-Level%20Conditioning.pdf)
@@ -1093,13 +1102,4 @@ Well-written paper, and I think this was quite useful for me to read. I think it
 - `TPAMI, 2025`
 - [ML for Medicine/Healthcare], [Vision-Language Models] 
 ```
-Well written and quite interesting paper. I think the method makes sense overall, and they also describe things well. I don't quite understand how the actual report generation is done though, how the learned dictionary is utilized there. Results seem promising, but difficult for me to properly judge I think.
-```
-
-##### [25-07-23] [paper479]
-- There Is No Such Thing as a Validated Prediction Model
- [[pdf]](https://bmcmedicine.biomedcentral.com/articles/10.1186/s12916-023-02779-w) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/There%20Is%20No%20Such%20Thing%20as%20a%20Validated%20Prediction%20Model.pdf)
-- `BMC Medicine, 2023 (Opinion paper)`
-- [ML for Medicine/Healthcare]
-```
-Fairly interesting paper, quick to read. Can of course seem like all this should be obvious, but I do quite like the final conclusion: "In conclusion, clinical prediction models are never truly validated due to expected heterogeneity in model performance between locations and settings, and over time. This calls for a stronger focus on validation studies, using principled validation strategies to quantify heterogeneity, regularly monitor model performance, and update models". Yes, I can agree that we should encourage validation stu
+Well written and quite interesting paper. I think the method makes sense overall, and they also describe things well. I don't quite understand how the actual report generat

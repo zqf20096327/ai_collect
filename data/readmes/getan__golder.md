@@ -20,6 +20,67 @@ curl -fsSL https://golder-cli.pages.dev/install.sh | sh
 
 macOS / Linux 一条命令装好，不需要 Node/Python。Windows 从 [Releases](https://github.com/getan/golder/releases) 下载 `.zip`；镜像、sha256 校验、从源码构建等细节见[安装细节](#安装细节)。
 
+## 推荐终端
+
+推荐在 [Ghostty](https://github.com/ghostty-org/ghostty) 里使用 golder，TUI 也主要在 Ghostty 上测试，因此在那里的表现最接近日常开发时的样子。其他现代终端同样可以运行，但测试覆盖以 Ghostty 为主；内置浏览器 pane 仍需要终端支持相应的图形协议。
+
+## 自带终端工作区
+
+```bash
+golder workspace                         # 打开全局 default；没有运行则启动
+golder workspace -s coding               # 打开另一套命名会话
+golder workspace new trading -C ~/trade  # 严格新建，名字已存在就报错
+golder workspace attach coding          # 只连接正在运行的会话，不创建
+golder workspace list                    # 全局列表，与当前目录无关
+golder workspace list --json
+golder workspace status coding
+golder workspace stop coding            # 结束这套 daemon 和所有 pane，保留记录
+golder workspace rm coding              # 删除已停止会话的记录和默认状态目录
+golder workspace --shell                 # 启动时首个 pane 改为 shell
+golder workspace -- --model NAME         # 启动时给首个 agent 指定模型
+```
+
+macOS / Linux 上不必另装 `tuios` 或 `kitty-browse`。默认 `Ctrl+b d` 脱离客户端后，后台 daemon 与 pane 继续运行；再次运行 `golder workspace` 可重新连接。已有 tuios/herdr 中的普通 `golder` 行为不变；嵌套工作区默认拒绝，需要明确 `--nested`。
+
+工作区采用**焦点即输入**：点击或切换到 pane 后直接输入，不需要在“窗口管理模式”和“终端模式”之间切换。`Ctrl+b` 后接方向键切换 pane，接 `c` 新建 pane、`P` 打开命令面板、`?` 查看帮助；命令执行后即可继续输入。普通 `Esc`、`Tab`、`Ctrl+c` 和字母交给 pane 内的程序；前缀等待期间的 `Esc` / `Ctrl+c` 只取消命令，不透传给 shell。
+
+拖动标题栏移动 pane，拖动边框/分隔线调整大小；普通内容拖动始终选文字，原有的 `Alt` / `Ctrl` 拖动移动手势仍然可用。界面升级后，先脱离旧客户端，再用新版 `golder workspace` 重新连接即可使用新交互，无需为了升级界面而结束已有 pane。
+
+**名字选会话，目录只决定进程从哪里启动。** 同一用户、同一个 `GOLDER_HOME` 下，在不同目录运行 `golder workspace` 都进入 `default`；`coding`、`trading` 各有独立 daemon、配置、状态和日志。首次启动使用当前目录（可用 `-C/--cwd` 指定）；已停止会话重启使用保存的启动目录，`-C` 可显式更新。正在运行时 `-C`、`--shell` 和 agent 参数会报错，不能借 attach 修改现有 pane。连接、查询、停止不要求原项目目录仍存在。会话名使用小写字母、数字、`-`、`_`，以字母或数字开头，最多 64 字节。
+
+agent、shell、浏览器入口都来自同一个 golder 二进制，但**每个命名会话**的后台 daemon 是独立进程。浏览器仍需本机 Chromium 和支持相应图形协议的终端，不会自动下载 Chromium。`--headless` 输出一行 JSON readiness；新启动时持续运行 daemon，已有 daemon 时仅报告 readiness 并退出，不等同于可见工作区。状态与自有 harness 放在 `$GOLDER_HOME/workspace/sessions/<name>/`，不读写个人 tuios 配置。`stop` 不会恢复运行中的任务；下次启动是新进程，不自动复活旧 PTY。`rm` 只删除该命名目录，不删除外置的 `--state-dir`/`--config`，也不删除项目或聊天历史。工作区中的 pane 仍按各自 cwd 确定项目和 agent 权限；命名会话不提供 git/worktree 隔离。详见 [命名会话与兼容规则](docs/workspace-sessions.md)。
+
+旧的项目级会话不会自动搬家或被认领为 `default`。`list` 将其标为 `legacy`，显示 `<project-id>/<session>`；用 `golder workspace attach --legacy <project-id>/<session>` 连接，`status`/`stop` 同样支持该参数。没有旧 owner 记录的会话无法可靠确定 endpoint，会显示 `unreachable`，不会猜测或启动替代进程。
+
+### 进程与连接关系
+
+`golder workspace` 不是把 agent 跑在客户端里，而是三层：
+
+```text
+终端 client（golder workspace）
+        │ Unix socket
+workspace daemon（后台常驻，拥有 pane）
+        ├─ agent pane：普通 golder 进程
+        ├─ shell pane
+        └─ browser pane
+```
+
+- `golder workspace` 默认启动 daemon，再在前台 attach 一个 client。`Ctrl+b d` 只断开 client，daemon 和 pane 继续运行；再次 `golder workspace` 是 attach 回同一个 daemon，不是启动新 agent。`golder workspace stop` 才会结束 daemon 和所有 pane；`--headless` 只启动 daemon，不 attach client。
+- 同一个 daemon 可以同时挂多个 client。比如 Mac 上开着 `coding`，iPad SSH 到同一台 Mac、同一用户和 `GOLDER_HOME` 后执行 `golder workspace attach coding`，就是再挂一个 client，两边看到并操作同一组 pane；无需重复项目路径或自定义 socket，endpoint 已保存在会话记录里。Unix socket 是本机的，换机器或换用户连不到。
+- agent pane 里的 `golder` 是普通 agent 进程，负责模型调用、工具执行和会话持久化；daemon 负责 pane 生命周期和终端 I/O，client 负责画面与输入。
+- 不带 workspace 的直接 `golder` 不创建 daemon/client，它就是当前终端里的一个普通 agent 进程。没有外层复用器时，终端断开，进程就结束。
+
+### 已经用 tuios / herdr / tmux 时
+
+这些终端复用器已经提供了自己的 server/client 或 detach/reattach，直接在它们的 pane/window 里跑普通 `golder` 即可：
+
+```bash
+# 在 tuios / herdr pane，或 tmux / zellij / screen window 里
+golder
+```
+
+不需要再套一层 `golder workspace`；检测到已经在这些宿主里时，`golder workspace` 默认会拒绝嵌套，除非显式 `--nested`，而通常没有这个必要。保持/恢复会话交给宿主：tmux detach、tuios/herdr 的 pane 常驻，重新 attach 后普通 `golder` 还在；这和外层 `golder workspace` 通常二选一。tuios/herdr 的 rail/Inbox 状态上报属于 host-compat，和 workspace 的 daemon/client 是两套独立机制，按需配置即可。
+
 ## 亮点
 
 - **多 Provider 热切换，会话不绑定厂商**：`/provider` 随时换网关，`/resume` 在当前 provider 上继续同一份上下文；内置 19 个会话网关，覆盖 OpenAI Chat / Responses、Anthropic Messages、Gemini 四种线上协议，也可指向任意兼容端点。
@@ -31,18 +92,18 @@ macOS / Linux 一条命令装好，不需要 Node/Python。Windows 从 [Releases
 
 <p align="center">
   <a href="https://golder-cli.pages.dev/?utm_source=github&utm_medium=readme#demo">
-    <img src="docs/assets/demo.gif" width="92%" alt="golder 真实会话：go test 红 → 读码打补丁 → 全绿">
+    <img src="docs/assets/demo.gif" width="92%" alt="golder workspace 真实会话：左边 agent 改代码，右边 shell 里 go test 红 → 全绿">
   </a>
 </p>
 
 <p align="center">
-  <sub>真实会话、无剪辑造假：<code>go test</code> 红 → 模型自主读码打补丁 → 全绿（14 秒 GIF，<a href="https://golder-cli.pages.dev/?utm_source=github&utm_medium=readme#demo">完整 26 秒录像</a>）</sub>
+  <sub>真实会话、无剪辑造假：左边 agent 自己读码打补丁，右边 shell 里 <code>go test</code> 从红到绿（12 秒 GIF，<a href="https://golder-cli.pages.dev/?utm_source=github&utm_medium=readme#demo">完整 37 秒录像</a>）</sub>
 </p>
 
 <table>
 <tr>
-<td width="50%"><img src="docs/assets/demo-tools.png" alt="工具卡片：读文件、打补丁、跑测试，含真实 diff"></td>
-<td width="50%"><img src="docs/assets/demo-done.png" alt="收尾：go test 四个用例全绿，逐条给出验证结果"></td>
+<td width="50%"><img src="docs/assets/demo-tools.png" alt="分屏工作区：左 pane 的补丁 diff 卡片，右 pane 里红着的 go test"></td>
+<td width="50%"><img src="docs/assets/demo-done.png" alt="收尾：agent 逐条给出验证结果，shell 里复跑全绿"></td>
 </tr>
 </table>
 
@@ -284,10 +345,14 @@ golder -m ollama/qwen2.5-coder -u http://localhost:11434/v1 -p "..."   # 本地 
 | `write_stdin` | 轮询 bash 会话输出、写入输入或发送中断（`\u0003`） |
 | `todo` | 结构化任务清单（pending / in_progress / completed） |
 | `webfetch` / `websearch` | 抓取网页转 Markdown / 联网搜索（按凭证自动选择后端：Tavily / Exa / DuckDuckGo） |
-| `task` | 派发子 Agent（继承父级工具边界） |
+| `task` | 派发子 Agent；`context=fresh`（默认，带项目规则/git status 但不带父对话）或 `context=fork`（继承父对话与系统提示）；工具边界仍继承父级 |
 | `memory_search` | 检索持久化记忆（BM25 全文索引） |
 | `get_context_remaining` / `new_context` | 查看剩余上下文预算 / 主动开启新上下文窗口 |
 | `schedule_create` / `schedule_list` / `schedule_delete` | 会话内定时提醒：到点后作为新消息回到对话（不持久化） |
+
+`task` 的 `context` 由 agent 根据任务自行选择：独立 fan-out 用 `fresh`，继续父会话已经讨论过的工作用 `fork`。两者共享 cwd、文件树和父级授权边界，都保留完整系统指令（包括自定义 `--system-prompt`）；`fresh` 不带父对话，Git 简报最多读取 40 行/8KiB，超时或取消就跳过。`fork` 使用派发时的实时 model/provider、推理档位和压缩配置，但预算独立，不会改写父会话；继承历史已达阈值时会在第一次请求前压缩，最终仍只把报告带回父会话。
+
+委派需要明确授权：只有用户或适用的 `AGENTS.md`/已加载的技能指示明确要求子 agent、委派或并行 agent 工作时才派；"更深入""更彻底""研究/调查""详细分析"都不算授权，拿不准就自己做。获准后也先做本地规划：立即阻塞下一步的活留给自己，只把具体、有界、能与你本地工作并行且真正推进主线的 sidecar 任务交出去；你自己能独立做完的整件事不算这种任务。不要重复劳动，同一未决问题不要反复派。并行编辑要划分不重叠的文件范围，父 agent 也不要同时修改子任务负责的文件；存在重叠时串行处理，或显式建立独立 worktree 后集成。子任务运行期间做有意义的非重叠工作，不要反射式等待，也不要重做它的事。父 agent 负责审查结果、集成改动和核对测试；这些提示不改变工具、审批或沙箱权限。
 
 **持久记忆的每轮自动召回（默认关）**：除 `memory_search` 工具外，还有一条自动通道——把最近一条用户消息当查询做 BM25，命中就以 `<system-reminder>` 注入当轮请求（只进请求，不进历史、不上转写）。它默认**关闭**，因为注入是每轮都付的上下文成本：`/memory recall on|off` 开关（写 `config.toml` 的 `[memory] recall`，当前会话立即生效）。打开后有守卫：查询至少 2 个单元（英文词 / 中文二字组——"继续""ok"不算），命中至少共享 2 个单元；索引对账默认最多每 30 秒一次（`recall_reconcile_seconds`，`0` 为每轮、负数关闭），因为那一步是线性遍历记忆文件。`/memory` 报告会显示策略和最近一次决定（是否注入、查询原文、命中的文件），"为什么突然想起这个"因此有据可查。
 
@@ -404,7 +469,8 @@ golder host-compat uninstall   # 只删 golder 自己写的那份
 | `GOLDER_SKILLS_DIR` | 覆盖技能发现目录（默认 `~/.agents/skills`） |
 | `GOLDER_PROXY` | 为选中的 provider 提供代理地址，优先于 `/proxy` 保存的地址 |
 | `GOLDER_SANDBOX` | 执行隔离：`off`（不启用）/ `auto`（默认，获准的 bash 默认收容；可完整枚举的信封直接跑）/ `enforce`（全部收容，且强制要求 runner） |
-| `GOLDER_STREAM_RESUME` | `0`/`false`/`off`：关闭文本续写；默认开：流在已输出文本且无工具调用时被切断，自动从断点续写；`commandcode` 另用禁用压缩和连接复用的传输（HTTP/2 保留） |
+| `GOLDER_STREAM_MAX_RETRIES` | 默认 `4` 次重试（共 `5` 次尝试），连接失败、idle/EOF、文本续写和未执行的本地工具调用共用预算；`0` 禁用重试 |
+| `GOLDER_STREAM_RESUME` | `0`/`false`/`off`：关闭已输出文本的续写；默认开。未完成的本地工具调用可安全重发，只在完整响应后执行一次；已由 provider 执行的服务端工具不自动重放 |
 | `GOLDER_STREAM_FIRST_CONTENT_TIMEOUT` | 首个内容帧的等待预算（Go duration，默认 `2m`）；超时即重试，不再随尝试次数放宽 |
 | `GOLDER_STREAM_IDLE_TIMEOUT` | 连续无任何字节的空闲窗口（Go duration，默认 `90s`）；SSE keep-alive 不计入内容进度 |
 | `GOLDER_SANDBOX_READABLE` | 追加沙箱读白名单（冒号/逗号分隔的绝对路径），如 `/Volumes/KIOXIA:$HOME/miniconda3` |

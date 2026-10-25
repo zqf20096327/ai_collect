@@ -1,4 +1,16 @@
 <!-- current-entrypoints -->
+# Two lists. A clear next step.
+
+**[Try it now →](https://montrealai.github.io/AGI-Alpha-Agent-v0/try/)** ·
+**[Essayer maintenant →](https://montrealai.github.io/AGI-Alpha-Agent-v0/try/?lang=fr)**
+
+Compare two nonpersonal CSV lists locally, see missing matches and conflicting values, and group every
+exception into an action plan without losing its source references. Download the plan, full differences
+and an offline reusable workspace. No account, installation, wallet, API key or model service.
+Grouping measures records and evidence coverage; it does not establish time saved or decide which source is correct.
+[Foundation: Transformational Intelligence](https://montrealai.github.io/AGI-Alpha-Agent-v0/Transformational_Intelligence.pdf) ·
+[Implementation and acceptance](examples/ti-guide/README.md).
+
 # Find your Alpha. Build your SUCCESSOR Ω.
 
 **MONTREAL.AI FLAGSHIP · Computer Use · Level 3 strategy development · Level 4 problem reframing**
@@ -128,18 +140,43 @@ Vincent Boucher · MONTREAL\.AI · 2026-10 · English PDF.
 - **[SUCCESSOR Ω HARNESS](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/successor-omega-harness-detector-v1.pdf)** · A 28\-page simulated detector study with a runnable research companion: retained construction ties conventional caching, while expert construction uses fewer counted rational calls\. Physical validity, settlement and profit are not established\.
   MONTREAL\.AI · AGI ALPHA Research &amp; Engineering · 2026-10-24 · English PDF.
   [Download the research companion](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/releases/download/study-successor-omega-harness-detector-v1-2026-10-24/SUCCESSOR_Omega_Research_Companion.zip) · [Download complete research source ZIP](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/releases/download/study-successor-omega-harness-detector-v1-2026-10-24/SUCCESSOR_Omega_Harness_LaTeX_Source.zip) · [View source and evidence](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/releases/tag/study-successor-omega-harness-detector-v1-2026-10-24)
+- **[AGI ALPHA FLYWHEEL](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/agi-alpha-flywheel-acceleration-v2.pdf)** · An 18\-page bounded study of retained executable component bases\. All four workflows qualify 864/864 tasks; conventional caching ties the flywheel, the authored expert costs less, and none of eight streams demonstrates sustained acceleration\. Computational counts do not establish commercial value\.
+  Vincent Boucher · MONTREAL\.AI · 2026-10-24 · English PDF.
+- **[AGI ALPHA FLYWHEEL: The Economics of Autonomous Work](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/agi-alpha-work-economics-v1.pdf)** · A bounded exact\-reconciliation study reports 36/36 accepted fresh jobs and 0\.301\-second median turnaround\. Official labor data support conditional human\-work economics; complete costs, remaining employer attention and a matched human trial are unmeasured\.
+  Vincent Boucher · MONTREAL\.AI · 2026-10-25 · English PDF.
+  [Historical experimental companion source and assembly](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/223e4a4381820ddf827df4b40fcee4db9802fbc9/studies/agi-alpha-work-economics-v1/README.md)
+- **[AGI ALPHA FLYWHEEL](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/agi-alpha-capability-construction-v1.pdf)** · A preregistered bounded study accepts 42/42 fresh jobs across seven digital\-work families and records actual reusable\-capability invocation\. Tested inheritance candidates establish neither net savings nor self\-acceleration\. Official labor data support conditional adoption economics; full Agent cost and employer attention remain unmeasured\.
+  AGI ALPHA research engineering study · 2026-10-25 · English PDF.
+  [Historical experimental companion source and assembly](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/2afc163e4ca51ad85ae677b5fdffa3c69e2a662b/studies/agi-alpha-capability-construction-v1/README.md)
+- **[AGI ALPHA FLYWHEEL](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/agi-alpha-operational-economics-v1.pdf)** · A separately frozen, market\-data\-grounded operational comparison prices delivery, failures, review, setup and capability upkeep against traditional non\-AI work\. The primary 30\-minute office scenario does not establish an economic win at the modeled expected\-use capacity limit\. Conditional thresholds, complete\-demand fallback and unvalidated setup scheduling remain explicit; no deployed\-service cost or new human trial is claimed\.
+  AGI ALPHA research engineering study · 2026-10-25 · English PDF.
+  [Historical experimental companion source and assembly](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/5caa871db78352557699f783027cf64357403d8b/studies/agi-alpha-operational-economics-v1/README.md)
+- **[AGI ALPHA FLYWHEEL: The Productive Capital Engine](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/agi-alpha-productive-capital-v1.pdf)** · A frozen study connects useful local work to a conserved economic model; conditional service margins are modeled, while the constructed child does not outperform conventional reuse\.
+  MONTREAL\.AI · Independent research edition · 2026-10-25 · English PDF.
+- **[AGI ALPHA FLYWHEEL](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/agi-alpha-economic-engine-v1.pdf)** · A separately preregistered financial simulation connects useful recorded work, complete business costs, collected proceeds, reserves and bounded capability investment\. It preserves unfavorable paths, idle allocations and failed construction, with distinct source\-inspected USDC and AGIALPHA settlement routes\. Simulated gains, token realization and customer value remain conditional; no live revenue, transaction or self\-acceleration is demonstrated\.
+  AGI ALPHA research engineering study · 2026-10-25 · English PDF.
+  [Historical experimental companion source and assembly](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/67e664f419511c59f41f426171614d7f425ed67f/studies/agi-alpha-economic-engine-v1/README.md)
 
 Research proposals and bounded studies, not claims of general autonomous capability or physical deployment.
 [Explore the papers in English or French](https://montrealai.github.io/AGI-Alpha-Agent-v0/#papers)
 <!-- /featured-research-papers -->
 
-**Current experimental source candidate · 1.41.1.** [Immutable workbench submission patch](docs/agent/RELEASE_NOTES_1.41.1.md).
+**Current experimental source candidate · 1.44.0.** [Checked planning and repair](docs/agent/RELEASE_NOTES_1.44.0.md). [Configure the bounded Strategy Succession executor](docs/agent/STRATEGY_SUCCESSION.md). Published [1.43](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/releases/tag/v1.43.0) remains preserved.
+The existing `alpha-agent successor-study` entry point can run an explicitly approved finite operation,
+retain a closed executable source-selection program and test it on later changed inputs. Pause/Stop,
+lease expiry, bounded retries and committed-child recovery keep their existing journal history.
+The installed study tied equally enabled conventional reuse; capability growth and self-acceleration
+remain unestablished. [Operating guide](docs/agent/SUCCESSOR_SOURCE_OPERATION.md).
+The published [1.42.0 browser-first catalogue guide](docs/agent/RELEASE_NOTES_1.42.0.md) is preserved.
+Preserves the [immutable workbench submission patch](docs/agent/RELEASE_NOTES_1.41.1.md).
 The existing research catalogue now connects the Foundry v2 paper, retained-evidence interactive experience,
 named reproducible companion and source release. The inherited enterprise workspace develops a bounded finite
 capability, freezes it and compares later tasks while retaining rejected alternatives, declared costs and history.
 Finite synthetic studies and zero-cap inspection drafts describe this preview; physical construction,
 installed enterprise compatibility, external model/tool pilots and observed organizational benefit retain
-separate qualification. The corrected companion retains its non-UI source-API/local-EVM evidence and adds a separate full HTTP QA gate. The 1.41.0 standalone publication is preserved. This 1.41.1 patch captures submitted workbench inputs before validation and execution; its own exact-source release gates remain required.
+separate qualification. The corrected companion retains its non-UI source-API/local-EVM evidence and its full HTTP QA gate.
+The 1.41.0 standalone publication and 1.41.1 immutable submissions remain preserved. This 1.42.0 guide adds
+local catalogue usability; its own exact-source release and public browser gates remain required.
 
 
 This combined software candidate adds bounded OUT-EXECUTE execution to the preserved proposal and Out-Evolve journeys.
@@ -1598,112 +1635,4 @@ sequenceDiagram
 |5|`alpha_agi_marketplace_v1`|🛒|Peer‑to‑peer agent marketplace simulating price discovery.|Validates micro‑alpha extraction via agent barter.|`docker compose -f demos/docker-compose.marketplace.yml up`|
 |6|`alpha_asi_world_model`|🌌|Scales MuZero‑style world‑model to an open‑ended grid‑world.|Stress‑tests anticipatory planning for ASI scenarios.|`docker compose -f demos/docker-compose.asi_world.yml up`|
 |7|`cross_industry_alpha_factory`|🌐|Full pipeline: ingest → plan → act across 4 verticals.|Proof that one orchestrator handles multi‑domain alpha.|`./alpha_factory_v1/demos/cross_industry_alpha_factory/deploy_alpha_factory_cross_industry_demo.sh`|
-|8|`era_of_experience`|🏛|Lifelong RL stack blending real & synthetic experience streams.|Showcases sensor-motor tools, grounded rewards & non-human reasoning.|`cd alpha_factory_v1/demos/era_of_experience && ./run_experience_demo.sh`|
-|9|`finance_alpha`|💹|Live momentum + risk‑parity bot on Binance test‑net.|Generates real P&L; stress‑tested against CVaR.|`./alpha_factory_v1/demos/finance_alpha/deploy_alpha_factory_demo.sh`|
-|10|`macro_sentinel`|🌐|GPT‑RAG news scanner auto‑hedges with CTA futures.|Shields portfolios from macro shocks.|`docker compose -f demos/docker-compose.macro.yml up`|
-|11|`muzero_planning`|♟|MuZero in 60 s; online world‑model with MCTS.|Distills planning research into a one‑command demo.|`./alpha_factory_v1/demos/muzero_planning/run_muzero_demo.sh`|
-|12|`self_healing_repo`|🩹|CI fails → agent crafts patch ⇒ PR green again.|Maintains pipeline uptime alpha.|`docker compose -f demos/docker-compose.selfheal.yml up`|
-|13|`meta_agentic_tree_search_v0`|🌳|Recursive agent rewrites via best‑first search.|Rapidly surfaces AGI-driven trading alpha.|`mats-bridge --episodes 3`|
-|14|`alpha_agi_insight_v1`|👁️|Zero‑data search ranking AGI‑disrupted sectors.|Forecasts sectors primed for AGI transformation.|`alpha-agi-insight-v1 --episodes 5`|
-
-> **Colab?** Each folder ships an `*.ipynb` that mirrors the Docker flow with free GPUs.
-
-The official Docker image bundles **PyTorch&nbsp;2.2.x** and **Ray&nbsp;2.10.0**. The
-notebooks install PyTorch from the [PyTorch wheel index](https://download.pytorch.org/whl)
-and pin Ray to the same version for compatibility.
-
-* [Solving AGI Governance](alpha_factory_v1/demos/solving_agi_governance/README.md) — Monte‑Carlo governance simulation
-  with optional OpenAI‑Agents/ADK integration.
-  [Colab](alpha_factory_v1/demos/solving_agi_governance/colab_solving_agi_governance.ipynb)
-* [Self‑Healing Repo](alpha_factory_v1/demos/self_healing_repo/README.md) — agents automatically craft patches when CI
-  fails.
-  The underlying `MetaRefinementAgent` **only simulates** improvement by
-  generating placeholder diffs. We hope to replace this with genuine
-  optimisation based on real performance metrics—contributions are
-  warmly welcomed.
-* **Note:** The `alpha_agi_business_3_v1` demo is intentionally left out of the published package. Clone this repository
-  to run it from source.
-
-| `USE_GPU` | PyTorch wheel URL |
-|:--------:|-------------------------------------------------|
-| `True`   | <https://download.pytorch.org/whl/cu118> |
-| `False`  | <https://download.pytorch.org/whl/cpu> |
-
-### 4.1 · [α-ASI World-Model Demo 👁️✨](
-https://github.com/MontrealAI/AGI-Alpha-Agent-v0/tree/main/alpha_factory_v1/demos/alpha_asi_world_model)
-
-Paper: [Multi-Agent AGENTIC α-AGI World-Model Demo 🥑](https://github.com/MontrealAI/AGI-Alpha-
-Agent-v0/blob/main/alpha_factory_v1/demos/alpha_asi_world_model/Alpha_ASI_World_Model.pdf)
-
-```
-┌──────────────────────────────── Alpha-Factory Bus (A2A) ───────────────────────────────┐
-│                                                                                        │
-│   ┌──────────────┐   curriculum   ┌───────────┐   telemetry   ┌────────────┐          │
-│   │ StrategyAgent│───────────────►│ Orchestr. │──────────────►│   UI / WS  │          │
-│   └──────────────┘                │  (loop)   │◄──────────────│  Interface │          │
-│          ▲  ▲                     └───────────┘    commands   └────────────┘          │
-│          │  │ new_env/reward                     ▲                                   │
-│   plans  │  │ loss stats                        │ halt                              │
-│          │  └──────────────────────┐            │                                   │
-│   ┌──────┴───────┐   context       │            │                                   │
-│   │ ResearchAgent│───────────────► Learner (MuZero) ◄─ SafetyAgent (loss guard)      │
-│   └──────────────┘                │   ▲                                             │
-│              code patches         │   │                                             │
-│   ┌──────────────┐                │   │ gradients                                   │
-│   │ CodeGenAgent │────────────────┘   │                                             │
-│   └──────────────┘                    │                                             │
-│                                       ▼                                             │
-│                            POET Generator → MiniWorlds (env pool)                    │
-└────────────────────────────────────────────────────────────────────────────────────────┘
-```
-
-### 4.2 · [🏛️ Large‑Scale α‑AGI Business 3 Demo 👁️✨ — **Omega‑Grade Edition**](
-https://github.com/MontrealAI/AGI-Alpha-Agent-v0/tree/main/alpha_factory_v1/demos/alpha_agi_business_3_v1)
-
-> **Alpha‑Factory v1 → Ω‑Lattice v0**  
-> _Transmuting cosmological free‑energy gradients into compounding cash‑flows._
-
-Multi‑Scale Energy‑Landscape Diagram:
-
-```mermaid
-flowchart TB
-  subgraph Macro["Macro‑Finance Δβ"]
-    FIN[FinanceAgent]:::agent
-    ENE[EnergyAgent]:::agent
-  end
-  subgraph Meso["Supply‑Chain ΔS"]
-    MFG[ManufacturingAgent]:::agent
-    LOG[LogisticsAgent]:::agent
-  end
-  subgraph Micro["Bio/Chem ΔH"]
-    BIO[BiotechAgent]:::agent
-    MAT[MaterialsAgent]:::agent
-  end
-  FIN & ENE -->|β feed| ORC
-  MFG & LOG -->|entropy ΔS| ORC
-  BIO & MAT -->|latent ΔH| ORC
-  classDef agent fill:#cffafe,stroke:#0369a1;
-```
-
-Cells with \(Δ\mathcal F < 0\) glow 🔵 on Grafana; Ω‑Agents race to harvest.
-
----
-
-<a name="5-memory--knowledge-fabric"></a>
-## 5 · Memory & Knowledge Fabric 🧠
-
-```
-[Event] --embedding--> PGVector DB
-                   \--edge--> Neo4j (CAUSES, SUPPORTS, RISK_OF)
-```
-
-* Agents query `mem.search("supply shock beta>0.2")`  
-* Planner asks Neo4j: `MATCH (a)-[:CAUSES]->(b) WHERE b.delta_alpha > 5e6 RETURN path`
-* SQLite vector store fallback requires `numpy`
-* Realistic operation also relies on `pandas`
-
----
-
-<a name="6-5-minute-quick-start"></a>
-## 6 · 5‑Minute Quick‑Start 🚀
-This guide 
+|8|`era_of_experience`|🏛|Lifelong RL stack blending real & synthetic experience streams.|Showcases sensor-motor tools, grounded rewards & non-human reasoning.|`cd alpha_factory_v1/demos/era_of_experience && ./run_experien

@@ -21,7 +21,7 @@ listens on the managed host.
 [![Docker](https://img.shields.io/badge/ghcr.io-remotepower-blue.svg)](docs/install.md#docker-one-liner-alternative)
 [![Nginx](https://img.shields.io/badge/server-Nginx-green.svg)](https://nginx.org)
 [![Python](https://img.shields.io/badge/python-3.10+-yellow.svg)](https://python.org)
-[![Version](https://img.shields.io/badge/version-7.3.0-blue.svg)](https://github.com/tyxak/remotepower/releases)
+[![Version](https://img.shields.io/badge/version-7.4.0-blue.svg)](https://github.com/tyxak/remotepower/releases)
 [![Wiki](https://img.shields.io/badge/docs-wiki-blue.svg)](https://github.com/tyxak/remotepower/wiki)
 [![Discussions](https://img.shields.io/badge/community-discussions-blueviolet.svg)](https://github.com/tyxak/remotepower/discussions)
 
@@ -39,7 +39,7 @@ listens on the managed host.
 </tr>
 <tr>
 <td align="center"><b>Monitoring</b><br><a href="docs/screenshots/Monitoring.png"><img src="docs/screenshots/Monitoring.png" width="400"></a></td>
-<td align="center"><b>Device metrics</b><br><a href="docs/screenshots/Metrics.png"><img src="docs/screenshots/Metrics.png" width="400"></a></td>
+<td align="center"><b>Host metrics</b><br><a href="docs/screenshots/Metrics.png"><img src="docs/screenshots/Metrics.png" width="400"></a></td>
 </tr>
 <tr>
 <td align="center"><b>CVEs</b><br><a href="docs/screenshots/CVEs.png"><img src="docs/screenshots/CVEs.png" width="400"></a></td>
@@ -101,7 +101,7 @@ Node.js, no Redis, no Kubernetes. `install-server.sh` or `docker compose up`
 provisions PostgreSQL, the app server, a maintenance scheduler and a scanner
 satellite, with no flags required.
 
-A single small box handles a couple of hundred devices with no tuning. The
+A single small box handles a couple of hundred hosts with no tuning. The
 same box carries several thousand agents once you adjust the poll interval and
 the worker count — before load-balanced app nodes, read replicas or relay
 satellites come into it. See [docs/scaling.md](docs/scaling.md) for the
@@ -130,7 +130,7 @@ On the box, manage the stack with `rp`: `rp status`, the live `rp tui`
 dashboard, and `sudo rp doctor` for a one-shot health check. See
 [docs/cli.md](docs/cli.md).
 
-**Add a device — one line.** Take the command from *Add device → Quick install
+**Add a host — one line.** Take the command from *Add host → Quick install
 command* in the dashboard, then run it on the target host:
 
 ```bash
@@ -150,7 +150,7 @@ macOS agents, the demo vhost, advanced TLS and uninstall are covered in
 
 **Try it first.** A read-only demo runs at
 [demoremote.tvipper.com](https://demoremote.tvipper.com), seeded with synthetic
-devices, alerts and CVEs. Log in with `demo` / `demo`. It resets every few
+hosts, alerts and CVEs. Log in with `demo` / `demo`. It resets every few
 hours.
 
 ## What you can do with it
@@ -173,7 +173,7 @@ hours.
   tamper-evident audit log, a strict CSP, and an instance-wide view of who is
   signed in. A built-in KMIP key server keeps NAS and hypervisor encryption keys
   off the appliance they unlock. RemotePower also grades its own host's disk
-  encryption, since that is where every device token and the credential vault
+  encryption, since that is where every host token and the credential vault
   live.
 - **Scan for CVEs** — backed by OSV.dev, prioritised with CISA KEV and EPSS,
   with SBOM export in CycloneDX and SPDX.
@@ -199,6 +199,13 @@ recipes → [docs/cookbook.md](docs/cookbook.md).
 
 ### Recent releases
 
+- **v7.4.0 "F1nishMatters"** — a release about finish. What is already there
+  reads, looks and behaves better in every theme and every language, and each fix
+  comes with a check that keeps it fixed. One thing is new: threat intel can read
+  the syslog of an OPNsense, pfSense or MikroTik firewall and report the addresses
+  behind what it finds. Long pages show one group of cards under a tab bar, and
+  there are two public guides to building the honeypot Worker that RemotePower
+  reads.
 - **v7.3.0 "Edg3Matters"** — threat intel reads the edge. RemotePower can read
   Cloudflare's firewall events and your honeypot Worker's log with a read-only
   token and report what they show, with the evidence: only refusals that mean an
@@ -246,15 +253,6 @@ recipes → [docs/cookbook.md](docs/cookbook.md).
   terminal also verifies a host's SSH key before sending your password, and the
   Data Explorer, risk score, compliance checklist and Prometheus exporter now
   use signals the agents were already sending.
-- **v7.0.2 "Prec3dentMatters"** — the autonomy loop refused everything it looked
-  at, and each reason named a cause it did not have. Precedent could only come
-  from an AI verdict, so a fleet whose incidents people fix scored lower than one
-  with no memory at all; two sweeps already knew when a fix had worked and threw
-  the answer away; "only inside a maintenance window" called a function that does
-  not exist; and `no_verified_backup` refused actions a backup has no bearing on.
-  The catalog is 26 action classes now: two added, five dropped because the alert
-  that triggers them names no host, or the command cannot fix what fired it.
-  Receipts can be cleared, per row or in bulk.
 
 ## Security
 

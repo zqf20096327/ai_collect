@@ -28,7 +28,7 @@ agent that reads `AGENTS.md`. Those agents get the skills and an always-on direc
 the per-turn re-statement, which is a Claude Code hook
 ([per-agent detail](docs/MULTI-AGENT.md)), and no lift has yet been measured through them.
 
-Under the hood: **43 skills (347 files, ~89k lines)** of state-of-the-art 2026
+Under the hood: **43 skills (348 files, ~91k lines)** of state-of-the-art 2026
 practice, each **instruction** file under 500 lines so only the matching rules load —
 the cap applies to `skills/**` alone, never to README/CHANGELOG/`docs/` — every fast-moving
 claim web-verified against a primary source **as of the last full sweep** (the root
@@ -117,10 +117,12 @@ Findings name the control they violate — not just "this looks wrong":
   tag manager governance, the JVM web layer, and audit reports that
   carry reproduction steps and a finding lifecycle. Where a rule is detectable in code or
   config it ships an audit probe tested on a known-bad and a known-good fixture
-- **Languages** — all 9 language skills (Rust → Ruby, below) get the same rigor;
+- **Languages** — all 10 language skills (Rust → Swift, below) get the same rigor;
   formal standards where they exist: SEI CERT (C, C++, Java), MISRA C/C++, ANSSI Rust.
-  Each is also gap-checked against its ecosystem's own scanner registry
-  (all nine, by 2026-09-24 — [LANGUAGE-TIER](docs/LANGUAGE-TIER.md))
+  The nine that existed on 2026-09-24 were each gap-checked against their ecosystem's own
+  scanner registry ([LANGUAGE-TIER](docs/LANGUAGE-TIER.md)). Every language also says when an
+  unused suppression fails CI, which failures no catch/recover sees, and what silently
+  unfreezes a frozen install, each fact validated against a primary source (2026-10-25)
 - **Supply chain** — SLSA, Sigstore, in-toto, SBOM (CycloneDX/SPDX), NIST SSDF
 - **Cloud & identity** — CIS Benchmarks, NIST 800-207 zero trust, NIST 800-63-4,
   OAuth 2.1, FAPI 2.0, passkeys, SPIFFE
@@ -722,7 +724,7 @@ are load-bearing, because the ones that aren't are labelled.
 | `sota-docs-workflow` | Documentation architecture, API docs & changelogs, code review/PR workflow, commits & releases |
 | `sota-ux-writing` | Voice/tone & plain language (ISO 24495-1), microcopy, error & feedback messages, accessible/localizable interface text |
 | `sota-copywriting` | Positioning & value props, headlines/landing pages/CTAs, SEO content (E-E-A-T, spam policies), claims & legal trust (FTC, email law) |
-| `sota-rust` | Ownership/API design, errors & panics, unsafe discipline, tokio, supply chain, subprocess execution (`std::process::Command`), performance, CI |
+| `sota-rust` | Ownership/API design, errors & panics, unsafe discipline, tokio, supply chain, subprocess execution (`std::process::Command`), performance, CI, formal verification (Kani harnesses that can fail on vacuity, Flux) |
 | `sota-golang` | Errors, package design, goroutine safety, net/http hardening, security, pprof, CI |
 | `sota-c-cpp` | RAII/idioms, memory safety & sanitizers, undefined behavior, security (CERT/MISRA, hardening flags), concurrency, CMake/clang-tidy/fuzzing CI, performance |
 | `sota-jvm` | Java/Kotlin idioms, null/immutability API design, concurrency (virtual threads, JMM, coroutines), security (deserialization/JNDI/XXE/crypto), GC/JFR/GraalVM, Maven/Gradle supply chain & CI |
@@ -870,7 +872,10 @@ never touches symlinks it didn't create (`--copy` snapshots don't auto-update �
 re-run to refresh). With always-on routing enabled, a re-run also **refreshes
 the managed routing directive and reminder hook in place** when their wording
 changes upstream — prompting first, backing up, touching only the managed
-block; a hook you customized is left untouched.
+block; a hook you customized is left untouched. A `git pull` alone never
+rewrites the block: `scripts/verify-setup.sh` check 2e reports one that is older
+than your checkout, and `scripts/install.sh --print-routing-block` prints the
+current text without changing anything.
 
 **What an update does *not* refresh: the gates in your own repos.** `update.sh`
 re-links skills and re-syncs this checkout's own hooks; it never reaches a repo you
@@ -1061,7 +1066,7 @@ anything". Three corrections, each re-checked 2026-10-02:
   hooks and permissions programmatically. **`scripts/verified-done-hook.py`** uses that: an
   opt-in Stop hook that refuses "done" on a changed tree until a verification command has
   passed on exactly that tree (router principle 6, enforced). **`scripts/zsh-equals-hook.py`**, on by
-  default in the plugin, is a PreToolUse hook that refuses a zsh command carrying an unquoted `=word` before it runs
+  default in the plugin, is a PreToolUse hook that refuses a zsh command carrying an unquoted `=word`, or a `set -- $scalar` zsh will not split, before it runs
   (`sota-shell-scripting` rules/06 §1), a reflex the written rule did not stop. The git hooks from
   `scripts/init-gates.sh` and CI are enforcement on every host, whatever the agent.
 - **The router is not an always-on 43 KB blob.** Only each skill's frontmatter `description`
@@ -1225,20 +1230,4 @@ Built or audited a project with the library? Ship the attribution
 [![Built with SOTA Skills](https://img.shields.io/badge/Built%20with-SOTA%20Skills-2fa45f)](https://github.com/martinholovsky/SOTA-skills):
 
 ```md
-[![Built with SOTA Skills](https://img.shields.io/badge/Built%20with-SOTA%20Skills-2fa45f)](https://github.com/martinholovsky/SOTA-skills)
-```
-
-### Enforcing the gates
-
-Routing makes the model *apply* the rules; to make them stick regardless of who
-(or what) commits, wire them as git hooks. `scripts/init-gates.sh` generates a
-SOTA-aligned `.pre-commit-config.yaml` for whatever languages it finds in the
-target repo:
-
-```sh
-cd /path/to/your/project
-/path/to/SOTA-skills/scripts/init-gates.sh        # add --dry-run to preview first
-```
-
-It detects Python / Go / Rust / JS-TS / shell by manifest and extension, then
-writes the exact tools each skill prescribes — ruff·myp
+[![Built with SOTA Skills](https://img.shields.io/badge/Built%20with-SOTA%20Skills-2fa45f)](https://github.com/marti

@@ -138,8 +138,56 @@ This repository supports **ALL** Cheap Yellow Display variants currently availab
 | 7 | **3D Printer Terminal** | OctoPrint & Klipper monitor with hotend/bed thermals, progress % & touch controls | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/07-octoprint-klipper-terminal/) |
 | 8 | **NES Retro Arcade** | 8-Bit space invader arcade engine with on-screen D-pad, chiptune audio & score HUD | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/08-nes-game-emulator/) |
 | 9 | **Digital Oscilloscope** | 100kHz DSO with 8x6 graticule grid, Vpp/Vmax metrics, timebases & trace freeze | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/09-digital-oscilloscope-analyzer/) |
+| 10 | **Spotify Car Thing Remote** | Dedicated music controller: vinyl art, live scrubber, transport controls & volume | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/10-spotify-car-thing-remote/) |
+| 11 | **Stream Deck Controller** | 12-key tactile OBS Studio macro board with mic mute, webcam, live & panic switch | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/11-stream-deck-controller/) |
+| 12 | **LoRa Meshtastic Terminal** | Off-grid communicator with chat log, signal RSSI/SNR, emergency SOS & presets | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/12-lora-mesh-communicator/) |
+| 13 | **CAN Bus OBD-II Gauge** | Real-time tachometer (0-8k RPM), speedometer (MPH/KMH), coolant & shift lights | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/13-can-bus-obd2-gauge/) |
+| 14 | **Thermal Imager (MLX90640)** | Infrared thermal imaging camera: Ironbow/Rainbow heatmaps, min/max spot crosshair & alarm | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/14-flir-thermal-camera/) |
+| 15 | **Bitcoin & Lightning Monitor** | Node status: block height, BTC price, mempool sat/vB fees, channel liquidity & routed sats | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/15-bitcoin-lightning-node-monitor/) |
+| 16 | **Air Quality AQI & CO2 Station** | Environmental station: EPA AQI, SCD40 CO2 ppm, PM2.5, TVOC & 24h rolling trend | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/16-air-quality-pm25-co2-station/) |
+| 17 | **Solar & MPPT Dashboard** | Off-grid power flow: Solar PV watts, LiFePO4 battery SOC%, daily kWh & load | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/17-solar-battery-mppt-dashboard/) |
+| 18 | **WiFi Spectrum Auditor** | Wireless security audit: Open/WEP/WPA3 cipher check, 14-ch RF spectrum & rogue APs | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/18-wifi-penetration-tester-wardrive/) |
+| 19 | **GRBL CNC Motion Pendant** | Touch jog pendant: 3-axis X/Y/Z D-Pad, 0.1-50mm step selector, WCS readouts & E-STOP | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/19-cnc-grbl-motion-pendant/) |
+| 20 | **DSP Audio Spectrum Analyzer** | 16-band graphic equalizer: peak-hold decay, Cyberpunk/Inferno themes & beat sync LED | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/20-dsp-audio-spectrum-analyzer/) |
+| 21 | **Plant & Soil Microclimate** | Greenhouse station: 4-zone soil moisture bars, VPD kPa calculation & pump trigger | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/21-plant-soil-microclimate-monitor/) |
+| 22 | **NFC & RFID Tag Analyzer** | PN532 card reader: UID hex inspection, Mifare/NTAG type, memory dump & access | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/22-nfc-rfid-access-cloner/) |
+| 23 | **GPS Navigator & Speedometer** | Outdoor HUD: digital speedometer (KMH/MPH), rotating compass & WGS84 coords | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/23-gps-nav-speedometer-compass/) |
+| 24 | **Doppler Weather Radar Map** | Animated NEXRAD rain radar loops, 20-70 dBZ storm reflectivity & storm warnings | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/24-weather-radar-doppler-map/) |
+| 25 | **Electric Meter Pulse Counter** | Optical 1000 imp/kWh pulse counter: real-time kW, daily kWh & electricity tariff bill | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/25-smart-electric-meter-pulse/) |
+| 26 | **Air-Gapped Cold Wallet** | Offline crypto signer: BIP39 SegWit derivation, PSBT transaction review & QR emitter | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/26-hardware-crypto-cold-wallet/) |
+| 27 | **Local Voice AI & Smart Speaker** | Voice assistant: wake word detector, audio spectrum visualizer, LLM parser & TTS | ⭐⭐⭐⭐⭐ (5/5) | [Open](projects/advanced/27-ai-voice-smart-speaker-assistant/) |
 
 ---
+
+## 📱 2.8" Capacitive CYD Projects (`ESP32-2432S028C`)
+
+The **ESP32-2432S028C** is the dedicated **Capacitive Touch** variant of the Cheap Yellow Display. It replaces the resistive plastic overlay with **scratch-resistant optical glass** and an **I²C CST816S / CST820 controller** (`SDA: GPIO 33`, `SCL: GPIO 32`, `RST: GPIO 25`, `INT: GPIO 21`).
+
+These 20 projects are purpose-built to take full advantage of smartphone-grade zero-pressure touch, hardware-accelerated gestures (Swipe Up/Down/Left/Right, Double-Tap, Long-Press), and fluid kinetic scrolling:
+
+| # | Project | Description | Rating | Link |
+|---|---|---|---|---|
+| 01 | **CardFlow Gesture Launcher** | 5 modular telemetry cards, fluid horizontal swiping, CST816 gestures & RGB sync | ⭐⭐⭐⭐⭐ (5/5) | [Open](projects/capacitive/01-cardflow-gesture-launcher/) |
+| 02 | **Pull-Down Quick Settings Shade** | Mobile OS pull-down shade: brightness PWM, volume, WiFi/BT toggles & flashlight. | ⭐⭐⭐⭐⭐ (5/5) | [Open](projects/capacitive/02-pulldown-quicksettings-shade/) |
+| 03 | **Android 9-Dot Pattern Lock & Vault** | Security terminal: 9-dot connected pattern gesture unlock, haptic audio click & credential safe. | ⭐⭐⭐⭐⭐ (5/5) | [Open](projects/capacitive/03-pattern-gesture-security-vault/) |
+| 04 | **CoverFlow 3D Media Browser** | Perspective 3D coverflow: kinetic card swiping, reflection mirror & album art explorer. | ⭐⭐⭐⭐⭐ (5/5) | [Open](projects/capacitive/04-coverflow-media-browser/) |
+| 05 | **Touch Synthesizer & Ribbon Controller** | Acoustic synthesizer: glissando pitch ribbon, 14 piano keys, octave shift & tone generator. | ⭐⭐⭐⭐⭐ (5/5) | [Open](projects/capacitive/05-polyphonic-touch-synthesizer/) |
+| 06 | **DJ Beat Launchpad & XY Filter Pad** | 16-pad drum machine + continuous XY Kaoss-style filter pad with live audio feedback. | ⭐⭐⭐⭐⭐ (5/5) | [Open](projects/capacitive/06-dj-launchpad-xy-filter/) |
+| 07 | **Smooth Glass Sketchpad & Signature** | Anti-aliased drawing canvas: 6-color palette, stroke width slider & flick-to-clear gesture. | ⭐⭐⭐⭐⭐ (5/5) | [Open](projects/capacitive/07-smooth-sketchpad-signature/) |
+| 08 | **Swipe-to-Slice Arcade Game** | High-speed blade slashing game: parabolic flying targets, blade particle trail & combo counter. | ⭐⭐⭐⭐⭐ (5/5) | [Open](projects/capacitive/08-swipe-slice-arcade/) |
+| 09 | **2048 Kinetic Slide Puzzle** | 4x4 puzzle with animated sliding tile physics, CST816 directional gestures & score saving. | ⭐⭐⭐⭐⭐ (5/5) | [Open](projects/capacitive/09-2048-kinetic-slide-puzzle/) |
+| 10 | **Air Hockey Touch Arena** | 60 FPS 2D puck physics arena: fingertip paddle tracking, AI opponent & digital scoreboard. | ⭐⭐⭐⭐⭐ (5/5) | [Open](projects/capacitive/10-air-hockey-touch-arena/) |
+| 11 | **Spotify Gesture Remote Companion** | Music remote: swipe to skip/rewind, vertical swipe volume, tap pause & progress scrubber. | ⭐⭐⭐⭐⭐ (5/5) | [Open](projects/capacitive/11-spotify-gesture-companion/) |
+| 12 | **Candlestick Finance Navigator** | Financial chart workstation: interactive crosshair cursor, timeframe selector & OHLC metrics. | ⭐⭐⭐⭐⭐ (5/5) | [Open](projects/capacitive/12-candlestick-finance-navigator/) |
+| 13 | **Kanban Card Desk Planner** | 3-column Kanban board: touch-and-drag task cards between To-Do, In-Progress & Done. | ⭐⭐⭐⭐⭐ (5/5) | [Open](projects/capacitive/13-kanban-touch-desk-planner/) |
+| 14 | **Rotary Gesture Pomodoro Timer** | Circular touch dial: spin finger to dial minutes, tap center to start & RGB breathing alert. | ⭐⭐⭐⭐⭐ (5/5) | [Open](projects/capacitive/14-rotary-pomodoro-timer/) |
+| 15 | **Smart Thermostat Circular Dial** | Smart HVAC thermostat: radial dial dragging, 16-30°C range, Heat/Cool modes & flame status. | ⭐⭐⭐⭐⭐ (5/5) | [Open](projects/capacitive/15-smart-thermostat-circular-dial/) |
+| 16 | **Swipeable Room Wall Controller** | Smart wall panel: horizontal swipe between 4 rooms, light sliders, climate & scene triggers. | ⭐⭐⭐⭐⭐ (5/5) | [Open](projects/capacitive/16-swipeable-room-wall-controller/) |
+| 17 | **Multi-Channel Lighting Dimmer** | 4-channel lighting desk: Warm, Cold, Amber & RGB faders with blackout switch. | ⭐⭐⭐⭐⭐ (5/5) | [Open](projects/capacitive/17-multichannel-light-mixer/) |
+| 18 | **Touch Logic Waveform Analyzer** | Digital waveform viewer: touch-and-drag timeline scrubber across 4 channels & delta timing. | ⭐⭐⭐⭐⭐ (5/5) | [Open](projects/capacitive/18-pinch-pan-logic-analyzer/) |
+| 19 | **3D Printer G-Code Scrubber & Jogger** | 3D printer pendant: vertical layer scrubber preview + 3-axis continuous motion jog pad. | ⭐⭐⭐⭐⭐ (5/5) | [Open](projects/capacitive/19-gcode-layer-scrubber-jogger/) |
+| 20 | **Capacitive Touch Sensor Diagnostics** | Raw sensor inspector: contact coordinate tracer, velocity px/s, gesture register & noise floor. | ⭐⭐⭐⭐⭐ (5/5) | [Open](projects/capacitive/20-capacitive-touch-diagnostics/) |
+
 
 ## 🖨️ 3D Printable Enclosures
 

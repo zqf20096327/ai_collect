@@ -148,7 +148,7 @@ python3 hsi_prediction.py --no-email            # 港股：恒指三周期
 | 预测内容 | 恒指三周期 + 个股三周期 + 异常检测（5/10/20d） | 个股三周期（5/10/20d）+ 综合买卖建议 + 板块 |
 | 指数预测 | ✅ 恒指 5/10/20d（折聚类后不显著） | ❌ |
 | 市场特有 | 南向资金 | 北向资金、涨跌停特征 |
-| 模型 | CatBoost（5/10/20d，按周期选型） | CatBoost |
+| 模型 | LightGBM（5/10/20d；rank 标签） | LightGBM |
 | 特征量 | ~1400 → 选择 Top500 | ~1077 |
 | 数据硬限 | — | **腾讯源恒返回 640 行（≈2.5 年）** |
 | 自动化 | 工作日 16:30 HKT | 本地 15:15 CST；CI 周日 11:00 |
@@ -288,9 +288,9 @@ python3 comprehensive_analysis.py
 ./scripts/run_comprehensive_analysis.sh
 python3 detect_stock_anomalies.py --mode standalone --mode-type deep
 python3 simulation_trader.py
-python3 ml_services/ml_trading_model.py --mode train --horizon 20 --model-type catboost --use-feature-selection
-python3 ml_services/ml_trading_model.py --mode predict --horizon 20 --model-type catboost --use-feature-selection
-python3 ml_services/walk_forward_validation.py --model-type catboost --horizon 20 --use-feature-selection
+python3 ml_services/ml_trading_model.py --mode train --horizon 20 --model-type lgbm --use-feature-selection
+python3 ml_services/ml_trading_model.py --mode predict --horizon 20 --model-type lgbm --use-feature-selection
+python3 ml_services/walk_forward_validation.py --model-type lgbm --horizon 20 --use-feature-selection
 python3 ml_services/risk_reward_analyzer.py --stocks watchlist --style moderate
 
 # ============ 🇨🇳 A股 ============

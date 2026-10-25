@@ -1,12 +1,12 @@
-# Archetype (A-19)
+# Archetype (A-20)
 
 **Archetype** is an evolving library of LLM prompt architectures, reusable reasoning modules, specialist knowledge systems, and versioned plugin and skill archives. It brings together domain expertise, research methods, creative work, and software engineering with an emphasis on conceptual precision, reuse, validation, and continuous improvement.
 
-**Current repository inventory (October 18, 2026):** **42 Markdown specifications** (21 standalone specialists and 21 Construct modules) and **35 checked-in ZIP files** (26 topic archives in `blocks/`, eight GPT-named archives in `gpt/`, and one Grok archive in `grok/`). The previously documented five knowledge maps are **not present** on the current `main` branch. These numbers describe tracked files, not independently verified or import-tested packages.
+**Current repository inventory (October 25, 2026):** **42 Markdown specifications** (21 standalone specialists and 21 Construct modules) and **35 checked-in ZIP files** (26 topic archives in `blocks/`, eight GPT-named archives in `gpt/`, and one Grok archive in `grok/`). The previously documented five knowledge maps are **not present** on the current `main` branch. These numbers describe tracked files, not independently verified or import-tested packages.
 
 **Contact:** [@1arry1iu on X](https://x.com/1arry1iu)
 
-[Archetype Projects](#archetype-projects) · [Get Started](#get-started) · [Architecture](#architecture) · [Packaged Distributions](#packaged-distributions) · [Construct Modules](#construct-modules) · [Standalone Specialists](#standalone-specialists) · [Repository Layout](#repository-layout) · [Validation](#validation)
+[Archetype Projects](#archetype-projects) · [Get Started](#get-started) · [Architecture](#architecture) · [Packaged Distributions](#packaged-distributions) · [Construct Modules](#construct-modules) · [Standalone Specialists](#standalone-specialists) · [Repository Layout](#repository-layout)
 
 ## Archetype Projects
 
@@ -25,8 +25,6 @@ Selected demo projects showcased alongside the Archetype knowledge architectures
 1. Browse the [standalone specialists](blocks) or [Construct modules](blocks/Construct).
 2. Open a Markdown source such as [Archetype](blocks/Construct/A.md), [Analytical Psychology](blocks/AP.md), [Citation](blocks/CT.md), [Research](blocks/RS.md), or [Visual Art](blocks/VA.md).
 3. Extract and adapt the relevant knowledge, instructions, and protocols to the target model, tools, task, and context window.
-
-These specifications can be very long. Conceptual breadth **does not demonstrate model performance**. For focused applications, use a compact, task-specific subset and evaluate it on representative tasks.
 
 ### Use a packaged archive
 
@@ -53,11 +51,13 @@ Archive versions below are taken from filenames. Listing a file does **not** cer
 | Analytical Psychology V.0.1.2.zip | [`analytical_psychology_v.0.1.2.zip`](gpt/analytical_psychology_v.0.1.2.zip) | Snapshot; contents and runtime compatibility not independently verified |
 | Cinematic Creativity | [`Cinematic_Creativity_v.0.1.3.zip`](gpt/Cinematic_Creativity_v.0.1.3.zip) | Checked in (5,352,028 bytes); archive contents and runtime compatibility not independently verified |
 | Citation V.0.1.1.zip | [`citation_v.0.1.1.zip`](gpt/citation_v.0.1.1.zip) | Snapshot; contents and runtime compatibility not independently verified |
-| Construct V.0.9.23.zip | [`construct_v.0.9.23.zip`](gpt/construct_v.0.9.23.zip) | Snapshot; contents and runtime compatibility not independently verified |
+| Construct v1.0.0 | [`construct-v1.0.0.zip`](gpt/construct-v1.0.0.zip) | Checked in (18,621,169 bytes); contents and runtime compatibility not independently verified |
 | Postgraduate Application | [`post-graduate-application-v.1.0.1.zip`](gpt/post-graduate-application-v.1.0.1.zip) | Snapshot; contents and runtime compatibility not independently verified |
 | Systematic Review V.0.1.7.zip | [`systematic_review_v.0.1.7.zip`](gpt/systematic_review_v.0.1.7.zip) | Snapshot; contents and runtime compatibility not independently verified |
 | Visual Art V.0.1.1.zip | [`visual_art_v.0.1.1.zip`](gpt/visual_art_v.0.1.1.zip) | Snapshot; contents and runtime compatibility not independently verified |
 | Web Development V.1.0.20.zip | [`web_development_v.1.0.20.zip`](gpt/web_development_v.1.0.20.zip) | Snapshot; contents and runtime compatibility not independently verified |
+
+**Construct archive update (October 25, 2026):** `gpt/construct-v1.0.0.zip` replaces the previously tracked `gpt/construct_v.0.9.23.zip`, which is no longer available at its former path. This is a file inventory update, **not** a confirmation that the newer ZIP imports successfully or matches the current Markdown source modules.
 
 ### Grok archive
 
@@ -97,15 +97,6 @@ The 26 tracked topic archives are listed below. They are snapshots rather than a
 | Research | [`research.zip`](blocks/research.zip) |
 | Strategy | [`strategy.zip`](blocks/strategy.zip) |
 | Systematic Review | [`systematic_review.zip`](blocks/systematic_review.zip) |
-
-**Archive integrity:** Listing an archive does not establish that it can be opened, imported, or run successfully. The [Cinematic Creativity GPT archive](gpt/Cinematic_Creativity_v.0.1.3.zip) replaced a former two-byte placeholder and is now tracked at 5,352,028 bytes, but its internal integrity and runtime compatibility have **not** been independently verified. The same verification limitation applies to the other archives.
-
-### Source and package versioning
-
-- Markdown specifications are the inspectable source/reference layer. ZIP files are independently checked-in snapshots and are **not automatically rebuilt** when a Markdown source changes.
-- Versions in archive filenames refer to those archives, not to the entire repository. Identically themed Markdown and ZIP files must not be assumed to contain the same revision.
-- No automated archive integrity checks, source-to-package consistency checks, platform-import smoke tests, or model-output evaluations are included in the current CI workflow.
-- For a basic local archive-integrity check, use `python -m zipfile -t path/to/archive.zip`. This checks ZIP readability and CRCs, **not** completeness, correctness, safety, platform compatibility, or equivalence to Markdown sources.
 
 
 ## Construct Modules
@@ -185,24 +176,5 @@ archetype/
 ├── LICENSE                           # Apache License 2.0
 └── README.md
 ```
-
-The former `Prompts/`, `GPT Plugins/`, `Grok Skills/`, and `Knowledge Maps/` directories are not in the current repository tree.
-
-## Validation
-
-Run `python tests/test_readme.py` to check recognized local links and README heading anchors. [GitHub Actions](.github/workflows/readme-check.yml) runs this validator on pushes and pull requests.
-
-**Scope of the current check:** The validator uses a regular expression to parse inline Markdown links in `README.md`. It checks whether their local paths exist and whether fragments targeting the README match detected headings. It does **not** validate every Markdown source, Markdown images, reference-style links, cross-file heading fragments, external URLs, ZIP integrity, archive contents, source-to-archive synchronization, installation compatibility, or AI-model performance. A green workflow therefore means **the limited README check passed**, not that the repository's packages or prompts were fully validated.
-
-### Maintainer release checklist
-
-Before describing an archive as validated or ready to install:
-
-1. Confirm the archive's contents, format, integrity, and target-platform import requirements.
-2. Confirm which exact source revision and configuration the archive contains; document the relationship explicitly.
-3. Update the README's inventory and archive lists, and run `python tests/test_readme.py`.
-4. Test representative model tasks and report the model, settings, evaluation method, known failure cases, and results when making quality claims.
-
-These steps are currently **manual recommendations**, not enforced repository checks.
 
 ![Archetype avatar](A_Avatar.png)

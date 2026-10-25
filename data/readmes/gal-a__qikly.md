@@ -25,33 +25,52 @@ never saw the acceptance criteria and discovered that rate limit from a failing
 test: it then added `or rate > 100` by itself, so the 9 of 9 is code eventually
 passing the test suite after applying fixes in an automated repair loop.*
 
-A student who writes the exam paper, writes the answer key and then sits the
-exam will pass. That is what happens when one model is given the acceptance
-criteria and asked to produce both the implementation and the suite that checks
-it. Everything goes green, and the green means nothing. **qikly takes the answer
-key away from the student: the coding agent never sees the acceptance criteria.**
-
 <!-- 2026-10-14: grouped into parts with this map, same sections and
      wording; every heading kept, so every existing link still lands. -->
 | | |
 |---|---|
-| **Get started** | [Start here](#start-here) · [What it is for](#what-it-is-for) · [From your coding agent](#use-it-from-your-coding-agent) |
+| **Get started** | [Why use qikly?](#why-use-qikly) · [Start here](#start-here) · [What it is for](#what-it-is-for) · [From your coding agent](#use-it-from-your-coding-agent) |
 | **How it works** | [The idea](#the-idea) · [What makes this different](#what-makes-this-different) |
 | **Running it** | [Four ways to use it](#how-to-use-the-tools-in-this-project) · [Free commands](#the-free-commands-in-detail) · [The demo](#what---demo-looks-like) · [Your own data](#your-own-data-in-full) · [Test data](#two-kinds-of-test-data-from-two-different-sources) · [Running](#running) · [When a run stalls](#when-a-run-does-not-converge) · [Output](#output) · [Two free checks](#two-free-checks-on-what-your-tests-are-not-measuring) |
 | **Set up** | [Configuration](#configuration-and-llm-provider) · [Use it in CI](#use-it-in-ci) · [Version check](#version-check) |
 | **Reference** | [Features](#features) · [Where it fits today](#where-it-fits-today) · [What it has caught](#examples-of-what-qikly-has-actually-caught) · [Further reading](#further-reading) |
 | **Community** | [The badge](#using-qikly-show-it) · [Contributing a task](#contributing-a-task) · [Where this came from](#where-this-came-from) · [Privacy](#privacy) · [License](#license) |
 
+## Why use qikly?
+
+A student who writes the exam paper, writes the answer key and then sits the
+exam will pass. That is what happens when one model is given the acceptance
+criteria and asked to produce both the implementation and the suite that checks
+it. Everything goes green, and the green can mean nothing. **qikly takes the answer
+key away from the student: the coding agent never sees the acceptance criteria.**
+
 ## Start here
 
-Run these from your project's root folder. Each takes one module or a whole
+**Before you start**, three things:
+
+1. **Install qikly**: `pip install --upgrade qikly`.
+2. **Set one API key**, for steps 2 and 3: Google Gemini (free tier, no card),
+   Anthropic or OpenAI. In the terminal you will run qikly from:
+
+   ```bash
+   export GEMINI_API_KEY="..."          # macOS and Linux
+   $env:GEMINI_API_KEY = "..."          # Windows PowerShell
+   ```
+
+   [Getting a key, and the other two providers](https://github.com/gal-a/qikly/blob/main/docs/PROVIDER_KEY_SETUP.md).
+   Step 1 needs no key; without one, step 2 leaves every answer for you to
+   write.
+3. **Check your tests pass on their own**, from your project's root folder:
+   `python -m pytest`. qikly runs them the same way, so a missing package or
+   the wrong Python version stops step 1 too.
+
+Then run these from that root folder. Each takes one module or a whole
 folder, and the same path in every step:
 
 ```bash
-pip install --upgrade qikly
 qikly --score my_module.py       # 1. what your tests miss         free, no key
-qikly --scaffold my_module.py    # 2. the task file, to answer in  free, no key
-qikly --tasks my_module.py       # 3. the run                      needs an API key
+qikly --scaffold my_module.py    # 2. the drafted spec, to check   a fraction of a cent
+qikly --tasks my_module.py       # 3. the run                      a cent or so
 ```
 
 1. **`--score` scores the tests you have.** It plants faults in a copy of your
@@ -60,33 +79,37 @@ qikly --tasks my_module.py       # 3. the run                      needs an API 
    `test_*.py` and `*_test.py` files that import your code, searched from the
    project root. To name them instead, add `--score-tests tests/`. No model is
    called and nothing of yours is changed.
-2. **`--scaffold` writes the task file**, `inputs_private/config/tasks/MY_MODULE_VERIFY.yaml`,
+2. **`--scaffold` drafts the spec**, `inputs_private/config/tasks/MY_MODULE_VERIFY.yaml`,
    with everything it can read from your code filled in, and a data file of
-   the values your tests already call it with. What is left is what only you
-   know: the questions from step 1, under `acceptance_criteria`, each with
-   what your code does there now, found by running it, and for a boundary
-   only on either side of it, never at it:
+   the values your tests already call it with. With a key set (Google
+   Gemini, Anthropic or OpenAI), a spec agent then drafts the parts only an
+   owner could write: a line on what the module is for, and an answer to
+   each of step 1's questions as an acceptance criterion. **It reads your
+   README and docstrings, never your code**, so it says what the code should
+   do rather than what it does, and a test written from it can disagree
+   with the code:
 
    ```yaml
-   #?     if rate < 0 or rate > 100:
-   #? Your tests never try rate at exactly 100.
    #? What should apply_discount(100, 100) do?
-   #? Answer with a number, found by running your code:
-   #?   1 = apply_discount(100, 100) returns VALUE   (write it as 1: the value; as rate 99 does now (it returns 1.0))
-   #?   2 = apply_discount(100, 100) raises ValueError   (as rate 101 does now)
-   - 2
+   #? Answer below drafted by qikly from your README or docstrings: "...so a rate
+   #? of 100 or more is rejected with ValueError". Keep it, or change it.
+   - "apply_discount(100, 100) raises ValueError"
    ```
 
-   You replace each TODO line with an option's number, `1: <value>` for one
-   that asks for a value, `keep` where one option is what your code does
-   now, or a sentence of your own that names a value, with or without
-   quotes (a sentence with a colon in it needs them). `qikly --validate`
-   shows each short answer as the criterion it becomes. A TODO you leave is skipped. Replace the
-   `requirements` line too, marked `TODO: MODIFY THIS:`, with what the
-   module is for in your words. On a folder it writes one task file for
-   each module step 1 asked about. Lines starting `#?` are notes for you,
+   Each answer says where it came from: a quote from your documentation,
+   checked word for word, or `CHECK` where the agent judged it from the
+   module's purpose because nothing written decides it. Run the draft as it
+   is, or change any answer you disagree with, with or without quotes. What
+   the documentation cannot decide is left as a TODO: answer it with an
+   option's number where qikly found values by running your code
+   (`1: <value>` for one that asks for a value, `keep` for what the code does
+   now), or a sentence that names a value. A TODO you leave is skipped.
+   Without a key, every answer is yours to write, and the `requirements`
+   line is marked `TODO: MODIFY THIS:`. On a folder it writes one task file
+   for each module step 1 asked about. Lines starting `#?` are notes for you,
    and neither agent reads them. This file is the one source of truth: change
-   it and run step 3 again. `qikly --validate my_module.py` checks it, free.
+   it and run step 3 again. `qikly --validate my_module.py` checks it, free,
+   and shows each short answer as the criterion it becomes.
 3. **`--tasks` runs it**, which needs an API key (Google Gemini, Anthropic or
    OpenAI). A test agent writes tests from your criteria before any code is
    shown to it, and a separate coding agent, which never sees them, repairs a
@@ -737,7 +760,7 @@ a run.
 
 **Two ways to pin, and the choice is yours.** `@v0` is a moving alias that
 this project repoints at every release, so you receive fixes without receiving
-a breaking change. `@v0.6.0` is an exact pin that never moves, so nothing
+a breaking change. `@v0.6.1` is an exact pin that never moves, so nothing
 changes under you and nothing reaches you either. The templates use `@v0`
 because most people want the fixes; use the exact form if your policy requires
 it.
@@ -803,7 +826,7 @@ left holding afterwards.
 | **Cost forecast** | Printed before a run starts, from your own history when you have any, labelled as a projection rather than a price |
 | **PR comments** | `--pr-comment` renders the latest run as markdown; the template workflow updates one comment in place rather than adding many |
 | **Pre-commit hook** | `qikly-validate`, the free check, so a hook never bills you for typing `git commit` |
-| **GitHub Action** | `gal-a/qikly@v0.6.0`, uploading the suite, the code and the JUnit XML |
+| **GitHub Action** | `gal-a/qikly@v0.6.1`, uploading the suite, the code and the JUnit XML |
 
 ## Where it fits today
 

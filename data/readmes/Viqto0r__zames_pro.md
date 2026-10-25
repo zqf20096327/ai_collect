@@ -13,7 +13,7 @@
   <a href="https://www.npmjs.com/package/zames_pro"><img src="https://img.shields.io/npm/dm/zames_pro.svg" alt="npm downloads"></a>
   <a href="https://github.com/Viqto0r/zames_pro/actions/workflows/test.yml"><img src="https://github.com/Viqto0r/zames_pro/actions/workflows/test.yml/badge.svg" alt="tests"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
-  <a href="package.json"><img src="https://img.shields.io/badge/node-%3E%3D20-brightgreen.svg" alt="Node.js"></a>
+  <a href="package.json"><img src="https://img.shields.io/badge/node-%3E%3D22-brightgreen.svg" alt="Node.js"></a>
   <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-strict-3178c6.svg" alt="TypeScript"></a>
   <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs welcome"></a>
 </p>
@@ -96,8 +96,8 @@ Key pieces:
 - **A persistent per-provider profile** (`~/.zames/profile` for DeepSeek,
   `~/.zames/qwen-profile` for Qwen) keeps you signed in; the headless
   User-Agent is patched so the site's CDN does not 403 the login.
-- **A send throttle** (15 s on DeepSeek, ~1 s on Qwen, which tolerates rapid
-  sends; GLM uses an adaptive pause that starts at 0) keeps the web chat's rate
+- **A send throttle** (15 s on DeepSeek, 4 s on Qwen, which tolerates a faster
+  pace; GLM uses an adaptive pause that starts at 0) keeps the web chat's rate
   limit happy during long tool-heavy runs.
 - **The agent is sandboxed** to the directory it was started in — no tool can
   read or write above it.
@@ -115,7 +115,8 @@ Key pieces:
 
 - **Tools like Claude Code / Codex** — `Read`, `Write`, `Edit`, `Bash`,
   `Glob`, `Grep`, plus `MultiEdit`, `ApplyPatch`, `LS`, `TodoWrite`, git and web
-  tools. Every edit is backed by `/undo`.
+  tools. Every edit is backed by `/undo`, and `/rewind` restores the whole
+  working tree from a checkpoint.
 - **Runs while you keep typing** — queue messages during a task; they run right
   after it, in the same chat (like typing during generation on the web).
 - **Plan mode** — `/plan` (or `--plan`) drops all mutating tools, so the agent
@@ -148,7 +149,7 @@ Key pieces:
 
 ## Requirements
 
-- Node.js >= 20
+- Node.js >= 22
 - An account on the chat you want to use — **DeepSeek** (`chat.deepseek.com`,
   the default), **Qwen** (`chat.qwen.ai`) or **GLM** (`chat.z.ai`). Qwen also
   works in guest mode for a few messages. On first launch zames asks for your login in the terminal
@@ -194,8 +195,8 @@ Credentials and toggles can also be edited from `/config`
 
 ## Switching providers (DeepSeek / Qwen / GLM)
 
-zames can drive either **DeepSeek** (`chat.deepseek.com`, the default) or
-**Qwen** (`chat.qwen.ai`):
+zames can drive **DeepSeek** (`chat.deepseek.com`, the default), **Qwen**
+(`chat.qwen.ai`) or **GLM** (`chat.z.ai`):
 
 ```bash
 /provider qwen      # switch to Qwen (persisted) — applied live, no restart
@@ -209,9 +210,10 @@ zames can drive either **DeepSeek** (`chat.deepseek.com`, the default) or
 Notes:
 
 - The switch is **live**: zames closes the current backend and opens the other
-  one in place, so no restart is needed. The two backends use **separate
+  one in place, so no restart is needed. The backends use **separate
   persistent profiles** (`~/.zames/profile` for DeepSeek, `~/.zames/qwen-profile`
-  for Qwen), so switching never signs the other one out.
+  for Qwen, `~/.zames/glm-profile` for GLM), so switching never signs the other
+  one out.
 - A chat id belongs to ONE backend, so the new provider opens a **fresh chat**.
   If the previous chat had messages they are summarized and posted as a
   handoff with the next task; an empty chat is switched silently.
@@ -230,10 +232,10 @@ Notes:
   solved programmatically). zames therefore launches GLM headed by default and
   prints a note about it; `--headless` still forces headless (sends will hit
   the captcha). `--headed` is accepted everywhere.
-- **Send telemetry**: every send is recorded in
+- **Send telemetry** (off by default): when enabled, every send is recorded in
   `~/.zames/logs/sends-<provider>.jsonl` (timing, mode flags, the outcome and
-  the server error — never the prompt or the answer). Turn it off with
-  `/config set browser.sendTelemetry false`. `/limits` shows the recent sends
+  the server error — never the prompt or the answer). Turn it on with
+  `/config set browser.sendTelemetry true`. `/limits` shows the recent sends
   and the current pause. GLM additionally uses an **adaptive pause**: it starts
   at 0 and backs off from a REAL rate limit.
 - **Warning**: automating a web chat may violate the service's terms of use and
@@ -295,11 +297,11 @@ The prompt is a small line editor with persistent history:
 Full-screen mode adds dialog navigation, so a long answer can be read and
 selected without leaving the terminal:
 
-- `ui.mouseScroll=false` (default) — the terminal owns the mouse: normal text
-  selection works and the wheel is inert (it never scrolls the input history —
-  history is arrow keys only).
-- `ui.mouseScroll=true` — the app consumes the wheel and scrolls the dialog;
-  selecting text then needs `Shift`+click (the TUI convention).
+- `ui.mouseScroll=true` (default) — the app consumes the wheel and scrolls the
+  dialog; selecting text then needs `Shift`+click (the TUI convention). The
+  wheel never scrolls the input history — history is arrow keys only.
+- `ui.mouseScroll=false` — the terminal owns the mouse again: normal text
+  selection works and the wheel is inert.
 - `PgUp` / `PgDn` — move up/down the dialog half a screen.
 - `Home` / `End` — jump to the very top / bottom of the dialog (only while the
   input line is empty; with text typed they move the caret as usual).
@@ -336,8 +338,11 @@ instead of staying silent.
 zames --task <task text>
 zames --chat <id>
 zames --new-chat
+zames --resume-last
 zames --resend-prompt
 zames --dir <path>
+zames --provider <deepseek|qwen|glm>
+zames --max-iter <n>
 zames --headless
 zames --headed
 zames --plan
@@ -368,15 +373,19 @@ zames --task "..." --output-format jsonl \
 
 The agent has the same style of tools as Claude Code / Codex CLI:
 
-- **File tools** — `Read`, `Write`, `Edit`, `Bash`, `Glob`, `Grep`. `Read`
-  returns raw content by default; pass `numbered=true` to get `cat -n`-style
-  line numbers (for reference only — do not paste them into `Edit`).
+- **File tools** — `Read`, `Write`, `Edit`, `Bash`, `BashOutput`, `Glob`,
+  `Grep`. `Read` returns raw content by default; pass `numbered=true` to get
+  `cat -n`-style line numbers (for reference only — do not paste them into
+  `Edit`). `Bash` takes `run_in_background`; `BashOutput` then polls or kills
+  that process.
 - **Extra tools** — `LS` (list a directory), `MultiEdit` (several edits to one
   file applied atomically), `TodoWrite` (session task checklist), `ApplyPatch`
   (multi-file patch in Codex's V4A format: `*** Begin Patch` … `*** End Patch`).
 - **Git** — `GitStatus`, `GitDiff`, `GitLog`, `GitShow`, `GitBranchList`,
   `GitAdd`, `GitCommit`, `GitPush`.
 - **Web** — `WebFetch`, `WebSearch`.
+- **Operator** — `AskUser` (a modal question with options; skipped in plan
+  mode so a plan is never interrupted).
 - **Service** — `respond` (final answer to the operator, ends the task).
 
 All file tools stay inside the working directory (sandbox). `Write`/`Edit` and
@@ -384,11 +393,12 @@ All file tools stay inside the working directory (sandbox). `Write`/`Edit` and
 
 ## Slash commands
 
-Type / in the prompt for hints (Tab completes). Besides the session and
-config commands (/new, /chats, /resume, /cd, /status, /config,
-/undo, /transcript, /mcp, /skills, /memory, /init, /reload,
-/debug-dom, /help, /exit) there are a few that mirror Claude Code /
-Codex CLI:
+Type / in the prompt for hints (Tab completes) — that list is always complete,
+`/help <command>` describes any single one. Besides the session and config
+commands (/new or /clear, /sessions, /chats, /resume-id, /last, /chat, /cd,
+/pwd, /status, /config, /undo, /undo-list, /rewind, /rewind-list, /transcript,
+/tasks, /mcp, /skills, /memory, /remember, /init, /reload, /debug-dom, /help,
+/exit) there are a few that mirror Claude Code / Codex CLI:
 
 - /diff [--staged] — show the working-tree git diff (--staged for the index).
 - /diffstat — a one-line change summary (`git diff --stat`).
@@ -450,11 +460,12 @@ tests`). /cron "<min> <hour> <dom> <month> <dow>" <task> — run on a schedule.
   current task.
 
 The token context is also shown live: the status line above the input has the
-spinner/text on the left and the context on the right (e.g. `125k · 13%`,
-percent of a 1M context). It is COLORED by fill level: green below 50%,
-yellow 50-80%, red above 80%. It comes from the provider's own token
-counter (DeepSeek's `accumulated_token_usage`, Qwen's `input_tokens`, GLM's
-`prompt_tokens`) and is
+spinner/text on the left and the context on the right (e.g. `125k · 13%`). The
+percentage is of the ACTIVE provider's window — 1M for DeepSeek, a per-model
+value for Qwen and GLM (`qwen.contextLimit` / `glm.contextLimit`) — and it is
+COLORED by fill level: green below 50%, yellow 50-80%, red above 80%.
+It comes from the provider's own token counter (DeepSeek's
+`accumulated_token_usage`, Qwen's `input_tokens`, GLM's `prompt_tokens`) and is
 hidden until the first answer delivers it.
 
 ## Project context, skills and memory
@@ -587,8 +598,9 @@ Examples:
 /config lang en
 ```
 
-Changes are written to the project `.zamesrc.json` and applied right away
-(where possible without a restart).
+Changes are written to the HOME config (`~/.zames/config.json`), NOT to the
+project `.zamesrc.json` — a personal toggle must not leak into git — and applied
+right away (where possible without a restart).
 
 ### Language
 
@@ -645,7 +657,7 @@ signed-in browser profile.
 **How do I install a terminal AI coding agent?**
 
 ```bash
-npm install -g zames_pro   # Node.js >= 20; Chromium is fetched automatically
+npm install -g zames_pro   # Node.js >= 22; Chromium is fetched automatically
 cd your-project
 zames
 ```
@@ -777,9 +789,9 @@ zames не вызывает API модели. Он запускает headless C
   `~/.zames/qwen-profile` у Qwen, `~/.zames/glm-profile` у GLM) держит вас
   залогиненным; User-Agent
   headless-браузера подменяется, чтобы CDN сайта не отдавал 403 на вход.
-- **Троттлинг отправки** (15 с у DeepSeek, ~1 с у Qwen, который спокойно
-  переносит частые отправки; у GLM — адаптивная пауза с нуля) щадит рейт-лимит
-  веб-чата во время долгих прогонов с инструментами.
+- **Троттлинг отправки** (15 с у DeepSeek, 4 с у Qwen, который спокойно
+  переносит более частый темп; у GLM — адаптивная пауза с нуля) щадит
+  рейт-лимит веб-чата во время долгих прогонов с инструментами.
 - **Агент запесочен** в директорию запуска — ни один инструмент не может
   читать или писать выше неё.
 
@@ -796,7 +808,8 @@ zames не вызывает API модели. Он запускает headless C
 
 - **Инструменты как в Claude Code / Codex** — `Read`, `Write`, `Edit`, `Bash`,
   `Glob`, `Grep`, плюс `MultiEdit`, `ApplyPatch`, `LS`, `TodoWrite`, git- и
-  веб-инструменты. Каждая правка подкреплена `/undo`.
+  веб-инструменты. Каждая правка подкреплена `/undo`, а `/rewind` возвращает
+  всё рабочее дерево к чекпойнту.
 - **Работает, пока вы печатаете** — сообщения, набранные во время задачи,
   встают в очередь и уходят сразу после неё, в тот же чат (как набор текста
   во время генерации на сайте).
@@ -832,7 +845,7 @@ zames не вызывает API модели. Он запускает headless C
 
 ## Требования
 
-- Node.js >= 20
+- Node.js >= 22
 - Аккаунт в нужном чате — **DeepSeek** (`chat.deepseek.com`, по умолчанию),
   **Qwen** (`chat.qwen.ai`) или **GLM** (`chat.z.ai`). Qwen также работает в
   гостевом режиме на несколько сообщений. При первом запуске zames спросит логин в терминале (и сохранит его
@@ -911,10 +924,10 @@ zames умеет работать с **DeepSeek** (`chat.deepseek.com`, по у�
   программно её не пройти). Поэтому zames запускает GLM с окном по умолчанию и
   пишет об этом при старте; `--headless` по-прежнему форсирует headless
   (отправки будут упираться в капчу). `--headed` работает везде.
-- **Телеметрия отправок**: каждая отправка пишется в
-  `~/.zames/logs/sends-<provider>.jsonl` (тайминги, флаги режимов, исход и
-  ошибка сервера — без промптов и ответов). Отключается через
-  `/config set browser.sendTelemetry false`. Команда `/limits` показывает
+- **Телеметрия отправок** (по умолчанию выключена): когда включена, каждая
+  отправка пишется в `~/.zames/logs/sends-<provider>.jsonl` (тайминги, флаги
+  режимов, исход и ошибка сервера — без промптов и ответов). Включается через
+  `/config set browser.sendTelemetry true`. Команда `/limits` показывает
   последние отправки и текущую паузу. У GLM вдобавок **адаптивная пауза**: она
   начинается с 0 и растёт только после НАСТОЯЩЕГО лимита.
 - **Предупреждение**: автоматизация веб-чата может нарушать условия
@@ -978,11 +991,11 @@ zames
 В полноэкранном режиме добавляется навигация по диалогу, чтобы длинный ответ
 можно было прочитать и выделить не покидая терминал:
 
-- `ui.mouseScroll=false` (по умолчанию) — терминал владеет мышью: обычное
-  выделение текста работает, колесо инертно (и никогда не листает историю
-  ввода — история только стрелками).
-- `ui.mouseScroll=true` — приложение перехватывает колесо и скроллит диалог;
-  выделение текста тогда — `Shift`+клик (стандарт TUI).
+- `ui.mouseScroll=true` (по умолчанию) — приложение перехватывает колесо и
+  скроллит диалог; выделение текста тогда — `Shift`+клик (стандарт TUI). Колесо
+  никогда не листает историю ввода — история только стрелками.
+- `ui.mouseScroll=false` — мышью снова владеет терминал: обычное выделение
+  текста работает, колесо инертно.
 - `PgUp` / `PgDn` — вверх/вниз по диалогу на пол-экрана.
 - `Home` / `End` — прыжок в самый верх / низ диалога (только когда строка ввода
   пуста; при набранном тексте они двигают курсор, как обычно).
@@ -1020,8 +1033,11 @@ base64-блок с узнаваемой сигнатурой изображен�
 zames --task <текст задачи>
 zames --chat <id>
 zames --new-chat
+zames --resume-last
 zames --resend-prompt
 zames --dir <path>
+zames --provider <deepseek|qwen|glm>
+zames --max-iter <n>
 zames --headless
 zames --headed
 zames --plan
@@ -1052,16 +1068,19 @@ zames --task "..." --output-format jsonl \
 
 У агента тот же стиль инструментов, что в Claude Code / Codex CLI:
 
-- **Файловые** — `Read`, `Write`, `Edit`, `Bash`, `Glob`, `Grep`. `Read` по
-  умолчанию отдаёт сырое содержимое; передайте `numbered=true`, чтобы получить
-  нумерацию строк в стиле `cat -n` (только для справки — не вставляйте её в
-  `Edit`).
+- **Файловые** — `Read`, `Write`, `Edit`, `Bash`, `BashOutput`, `Glob`,
+  `Grep`. `Read` по умолчанию отдаёт сырое содержимое; передайте
+  `numbered=true`, чтобы получить нумерацию строк в стиле `cat -n` (только для
+  справки — не вставляйте её в `Edit`). `Bash` принимает `run_in_background`,
+  а `BashOutput` затем опрашивает или убивает этот процесс.
 - **Дополнительные** — `LS` (список директории), `MultiEdit` (несколько правок
   одного файла атомарно), `TodoWrite` (чек-лист задач сессии), `ApplyPatch`
   (мультифайловый патч в формате V4A от Codex: `*** Begin Patch` … `*** End Patch`).
 - **Git** — `GitStatus`, `GitDiff`, `GitLog`, `GitShow`, `GitBranchList`,
   `GitAdd`, `GitCommit`, `GitPush`.
 - **Web** — `WebFetch`, `WebSearch`.
+- **Оператор** — `AskUser` (модальный вопрос с вариантами; в режиме плана не
+  предлагается, чтобы не прерывать план).
 - **Служебный** — `respond` (финальный ответ оператору, завершает задачу).
 
 Все файловые инструменты остаются внутри рабочей директории (песочница).
@@ -1070,10 +1089,12 @@ zames --task "..." --output-format jsonl \
 
 ## Слэш-команды
 
-Введите / в промпте для подсказок (Tab дополняет). Кроме команд сессии и
-конфига (/new, /chats, /resume, /cd, /status, /config, /undo, /transcript,
-/mcp, /skills, /memory, /init, /reload, /debug-dom, /help, /exit) есть
-несколько в духе Claude Code / Codex CLI:
+Введите / в промпте для подсказок (Tab дополняет) — этот список всегда полный,
+а `/help <команда>` описывает любую одну из них. Кроме команд сессии и конфига
+(/new или /clear, /sessions, /chats, /resume-id, /last, /chat, /cd, /pwd,
+/status, /config, /undo, /undo-list, /rewind, /rewind-list, /transcript,
+/tasks, /mcp, /skills, /memory, /remember, /init, /reload, /debug-dom, /help,
+/exit) есть несколько в духе Claude Code / Codex CLI:
 
 - /diff [--staged] — показать git-диф рабочего дерева (--staged для индекса).
 - /diffstat — сводка изменений одной строкой (`git diff --stat`).
@@ -1136,11 +1157,12 @@ zames --task "..." --output-format jsonl \
   текущей задачи.
 
 Контекст в токенах показывается и вживую: в строке статуса над вводом слева
-спиннер/текст, справа — контекст (например, `125k · 13%`, процент от 1M
-контекста). Он ОКРАШЕН по уровню заполнения: зелёный ниже 50%, жёлтый 50-80%,
-красный выше 80%. Значение приходит из счётчика токенов провайдера (у DeepSeek —
-`accumulated_token_usage`, у Qwen — `input_tokens`, у GLM — `prompt_tokens`) и
-скрыто до первого ответа.
+спиннер/текст, справа — контекст (например, `125k · 13%`). Процент считается от
+окна АКТИВНОГО провайдера — 1M у DeepSeek, у Qwen и GLM — своё значение на
+модель (`qwen.contextLimit` / `glm.contextLimit`). Он ОКРАШЕН по уровню
+заполнения: зелёный ниже 50%, жёлтый 50-80%, красный выше 80%. Значение
+приходит из счётчика токенов провайдера (у DeepSeek — `accumulated_token_usage`,
+у Qwen — `input_tokens`, у GLM — `prompt_tokens`) и скрыто до первого ответа.
 
 ## Контекст проекта, навыки и память
 
@@ -1272,8 +1294,9 @@ enum переключаются на месте; числа и строки от
 /config lang en
 ```
 
-Изменения пишутся в проектный `.zamesrc.json` и применяются сразу (где это
-возможно без перезапуска).
+Изменения пишутся в домашний конфиг (`~/.zames/config.json`), а НЕ в проектный
+`.zamesrc.json` — личный переключатель не должен попадать в git, — и применяются
+сразу (где это возможно без перезапуска).
 
 ### Язык
 
@@ -1332,7 +1355,7 @@ reasoning-модель при включённом «Deep thinking»). В Qwen �
 **Как установить терминальный AI coding-агент?**
 
 ```bash
-npm install -g zames_pro   # Node.js >= 20; Chromium скачается автоматически
+npm install -g zames_pro   # Node.js >= 22; Chromium скачается автоматически
 cd your-project
 zames
 ```

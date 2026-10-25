@@ -427,6 +427,25 @@ Identifiers use `[OWNER/]REPO` format. Omitting owner defaults to `-` (the API's
 
 Push excludes `.git/`, `node_modules/`, `__pycache__/`, `.venv/`, `dist/`, `build/`, `target/`, `.next/`, `.cache/`, plus `.env*` files, common secret extensions (`.pem`, `.key`, `.pfx`, `.p12`, `.crt`), and rejects binary or oversize (>1 MiB) files. Pull wipes the destination dir before writing; non-empty directories without a `SKILL.md`/`AGENTS.md` marker require `--yes`.
 
+### `tunnel` and `relay` — Serve private network connections
+
+A private network connection lets LangSmith reach a network it can't reach directly, through a connector running inside that network. These commands run the connector until interrupted. Create the connection in LangSmith first and pass its ID.
+
+```bash
+# Tunnel: LangSmith reaches the named targets through this machine.
+# An http(s):// target also gets a tunnel URL; host:port is raw TCP.
+langsmith tunnel connect <connection-id> --target app=http://localhost:8080 --target db=10.0.0.5:5432
+
+# Relay: sandbox traffic matching a relay rule leaves through this machine
+langsmith relay connect <relay-id> --allow 10.0.0.0/8 --deny 10.0.9.0/24
+```
+
+A relay reaches public addresses on ports 80 and 443 by default. `--allow` widens that and `--deny` narrows it; each rule is a CIDR, an IP address, a hostname, or a `*.` wildcard, optionally followed by `:PORT`. Cloud metadata addresses are always refused.
+
+The connector authenticates with an API key (`LANGSMITH_API_KEY` or a profile with an API key); OAuth logins are not accepted.
+
+For a long-running deployment, `langsmith connector run` takes the same settings from environment variables (`LANGSMITH_CONNECTION_ID`, `LANGSMITH_CONNECTOR_TARGETS`, `LANGSMITH_CONNECTOR_RELAY_MODE`, `LANGSMITH_API_KEY` or `LANGSMITH_API_KEY_FILE`, and the rest listed in `langsmith connector run --help`) or a YAML file, and logs JSON. The `langchain/langsmith-connector` container image runs it.
+
 ### `self-update` — Update langsmith to the latest version
 
 ```bash
@@ -541,24 +560,11 @@ Ensure `~/.local/bin` is in your `PATH` before `~/go/bin`. This way commands lik
 
 ## Releasing
 
-Releases are tag-driven. Pushing a `v*` tag runs [`.github/workflows/release.yml`](.github/workflows/release.yml),
-which invokes GoReleaser to cross-compile linux/darwin/windows on amd64+arm64, publish the
-archives and `checksums.txt`, and cut the GitHub Release with a changelog generated from the
-commits since the previous tag (`docs:`, `test:`, and `ci:` commits are excluded).
+Releases work as in the langsmith SDK repos. [`release-please.yml`](.github/workflows/release-please.yml) keeps a release PR open on langsmith-cli with the next version and its changelog, built from the conventional commit titles of the changes Copybara exports (`test` and `ci` commits are left out). Merging that PR tags the version, creates the GitHub Release, and dispatches [`publish-binaries.yml`](.github/workflows/publish-binaries.yml): GoReleaser cross-compiles linux/darwin/windows on amd64+arm64 and attaches the archives and `checksums.txt`, and the Homebrew tap gets a bump PR.
 
-```bash
-git checkout main && git pull
-git tag v0.2.44          # next patch after the latest tag
-git push origin v0.2.44
-```
+A release must use a released `langsmith-go`, so merge a release PR only while `go.mod` requires a released tag. The release is the release PR's merge commit, and the workflow refuses to release a commit whose `go.mod` uses a pseudo-version or a `replace`. If one is merged anyway, the workflow fails with the way out: release `langsmith-go` and update `go.mod`, then revert the release PR and remove its `autorelease: pending` label, and release-please opens a new release PR.
 
-The release fails if `go.mod` requires an unreleased `langsmith-go` (a pseudo-version or a `replace`). Release `langsmith-go` first, update `go.mod` to that tag, and tag the CLI again.
-
-There is no version file or changelog to edit — the version is stamped into the binary from the
-tag via ldflags, so `git tag` is the only bump. Find the latest tag with `git tag --sort=-v:refname | head -1`.
-
-The install scripts and `langsmith self-update` both read the latest GitHub Release, so a tag push
-is all that's needed to ship to users.
+There is no version file to edit: the version is stamped into the binary from the tag via ldflags. The install scripts and `langsmith self-update` both read the latest GitHub Release.
 
 ## License
 

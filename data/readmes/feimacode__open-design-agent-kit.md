@@ -113,13 +113,20 @@ Everything lives in [`docs/`](docs/README.md):
 - **Guides:**
   - [generate a design](docs/guides/generate-a-design.md), [explore design directions](docs/guides/explore-directions.md), [turn a document into a deck](docs/guides/deck-from-a-document.md), [diagrams of your code](docs/guides/diagrams.md), [3D objects](docs/guides/3d-objects.md), [engineering documents](docs/guides/engineering-docs.md);
   - [design systems](docs/guides/design-systems.md), [remix and the gallery](docs/guides/remix-and-gallery.md), [community designs](docs/guides/community-designs.md);
-  - [preview, comment and edit](docs/guides/preview-comments-edit.md), [Figma](docs/guides/figma.md), [promote to app code](docs/guides/promote-to-app-code.md), [connect other services](docs/guides/integrations.md);
+  - [preview, comment and edit](docs/guides/preview-comments-edit.md), [Figma](docs/guides/figma.md), [promote to app code](docs/guides/promote-to-app-code.md), [build a component set](docs/guides/component-library.md), [connect other services](docs/guides/integrations.md);
   - [social media posts](docs/guides/social-posts.md), [HTML email](docs/guides/html-email.md), [paste into WeChat, Notion and newsletters](docs/guides/paste-html.md), [posters and print](docs/guides/posters.md), [sell what you make](docs/guides/sell-what-you-make.md), [run a campaign](docs/guides/campaigns.md), [YouTube videos](docs/guides/youtube-video.md);
   - [export images](docs/guides/export-images.md), [export decks and PDFs](docs/guides/export-decks.md), [export animations](docs/guides/export-animations.md), [share and publish](docs/guides/share-and-publish.md).
 - **Reference:** [tools](docs/reference/tools.md), [prompts and commands](docs/reference/prompts-and-commands.md), [CLI](docs/reference/cli.md), [settings and environment variables](docs/reference/settings-and-env.md), [artifact manifest](docs/reference/artifact-manifest.md).
 - **Help:** [troubleshooting](docs/troubleshooting.md).
 - **Automation:** [social media pipeline](docs/automation/social-pipeline.md).
 - **Contributing:** [architecture](docs/contributing/architecture.md), [content sync](docs/contributing/content-sync.md), [adding a skill or prompt](docs/contributing/adding-a-skill-or-prompt.md), [upstream ports](docs/contributing/upstream-ports.md), [releasing](docs/contributing/releasing.md).
+
+## Community
+
+- **Gallery:** remixable designs from the community live in [awesome-open-design](https://github.com/feimacode/awesome-open-design). Made something good? Add it there.
+- **Questions and show-and-tell:** [GitHub Discussions](https://github.com/feimacode/open-design-agent-kit/discussions).
+- **Bugs and requests:** [open an issue](https://github.com/feimacode/open-design-agent-kit/issues/new/choose).
+- **Contributing:** start with [CONTRIBUTING.md](CONTRIBUTING.md) and the [`good first issue`](https://github.com/feimacode/open-design-agent-kit/labels/good%20first%20issue) label.
 
 ## Provenance
 

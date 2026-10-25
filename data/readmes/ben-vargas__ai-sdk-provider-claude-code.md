@@ -253,7 +253,7 @@ If you're upgrading from version 1.x:
 
 ## Structured Outputs
 
-This provider supports **native structured outputs** via Claude Agent SDK constrained decoding. On the 4.x line (AI SDK v7), use `generateText()` with an `output` specification such as `Output.object({ schema })`, then destructure `output` from the result. For streaming structured output, use `streamText()` with the same `output` setting and read `partialOutputStream` as partial objects arrive.
+This provider supports **native structured outputs** via the Claude Agent SDK's `outputFormat` option: the CLI validates the model's answer against your schema and asks the model to retry on a mismatch. On the 4.x line (AI SDK v7), use `generateText()` with an `output` specification such as `Output.object({ schema })`, then destructure `output` from the result. `streamText()` with the same `output` setting also works; see [Streaming structured output](#streaming-structured-output) for how partial objects are delivered.
 
 ```typescript
 import { generateText, Output } from 'ai';
@@ -278,16 +278,38 @@ console.log(output); // Matches the schema above
 
 **Benefits:**
 
-- ✅ **Schema compliance (supported features)** - Constrained decoding ensures valid output
+- ✅ **Schema compliance (supported features)** - The CLI validates output against the schema
 - ✅ **No JSON parsing errors** - AI SDK handles validation against your schema
 - ✅ **No prompt engineering** - Schema enforcement is native to the SDK
 - ✅ **Better performance** - No retry/extraction logic needed
 
-> **Note:** Schema-less JSON output (AI SDK v7 `Output.json()`) is not supported by Claude Code; use `Output.object()` / `Output.array()` / `Output.choice()` with a schema or choices. The provider emits a V4 `unsupported` warning with `feature: 'responseFormat'` and treats the call as plain text.
+> **Note:** Schema-less JSON output (AI SDK v7 `Output.json()`) is not supported by Claude Code; use `Output.object()` / `Output.array()` / `Output.choice()` with a schema or choices. The provider emits a V4 `unsupported` warning with `feature: 'responseFormat'` and treats the call as plain text. In `streamText`, the text is buffered and emitted once when the response completes.
 >
 > **Current CLI limitation:** Some JSON Schema features can cause the Claude Code CLI to silently fall back to prose (no `structured_output`). The provider mitigates the most common case: `format` keywords (`date-time`, `email`, `uri`, `uuid`, ... — produced by Zod's `.datetime()`, `.email()`, `.url()`, `.uuid()`) are stripped client-side before the schema is sent, with the hint folded into the field's `description` (e.g., `(expected format: email)`). Server-side enforcement of `format` still does not exist in the CLI, but the AI SDK validates `output` against your original Zod schema client-side, so nothing is lost. Complex regex `pattern`s (lookaheads/backreferences) remain unmitigated — `pattern` is passed through untouched because the CLI genuinely rejects some patterns. Keep generation schemas simple and enforce stricter invariants after generation.
 >
 > If you are staying on the 3.x (AI SDK v6) line, its legacy structured-output examples may still use `generateObject()` / `streamObject()`; new 4.x code should use `generateText()` / `streamText()` with `Output`.
+
+### Streaming structured output
+
+By default, `streamText({ output })` delivers the object **in one piece when the run finishes**: the provider holds back the model's in-progress JSON and emits the CLI-validated `structured_output`. Tool progress, reasoning, and raw events still stream live. This is deliberate. The model can submit more than one answer in a run (for example, the CLI rejects a first attempt that fails the schema and the model retries), and text that has already been streamed cannot be taken back, so streaming each attempt would concatenate them into unparseable JSON (`NoObjectGeneratedError`).
+
+To get incremental partial objects anyway, opt in with `streamStructuredOutput: true`:
+
+```typescript
+const { partialOutputStream, output } = streamText({
+  model: claudeCode('sonnet', { streamStructuredOutput: true }),
+  output: Output.object({ schema: UserProfileSchema }),
+  prompt: 'Generate a user profile for a software developer',
+});
+
+for await (const partial of partialOutputStream) {
+  console.log(partial); // Updates as each field is typed
+}
+```
+
+With the opt-in, a run in which the model submits more than one structured answer fails with `NoObjectGeneratedError`, and `partialOutputStream` can show fields from an attempt the CLI later rejected. Use it only where a live preview is worth an occasional failed run. To preview progress without that risk, keep the default and render previews from raw SDK events (`onSdkMessage`, or `includeRawChunks` on the AI SDK call), where the `StructuredOutput` tool's `input_json_delta` events arrive as stream events.
+
+The opt-in mode is best-effort. If the CLI's stop event arrives before all of the JSON fragments (a non-standard ordering), the text already streamed can stay truncated even though the final `structured_output` is valid. The default buffered mode is not affected.
 
 ## Core Features
 
@@ -387,6 +409,22 @@ const model = claudeCode('sonnet', {
 ```
 
 The `OnUserDialog`, `UserDialogRequest`, and `UserDialogResult` types are re-exported. Note that `UserDialogResult.result` is typed `unknown` — the CLI validates it against the dialog kind's own result schema at runtime, and a result that doesn't match (e.g. the wrong shape or an unknown string) is **silently** replaced by the dialog's default (for `'refusal_fallback_prompt'`, `'cancelled'`), so double-check the result values for each kind you handle.
+
+### Tool availability and pre-approval (`tools`, `allowedTools`, `disallowedTools`)
+
+These three settings do different jobs, and you can combine them:
+
+- `tools` sets which built-in tools exist (`['Read', 'Grep']`; `[]` disables all built-in tools). MCP tools are controlled separately, through `mcpServers` and permission rules.
+- `allowedTools` only **pre-approves** tools, so they run without a permission prompt. It is not an allowlist: unlisted tools stay available and go through `permissionMode`, `canUseTool`, and hooks as usual.
+- `disallowedTools` denies tools (or matching calls, such as `'Bash(rm:*)'`). Deny rules take precedence, so a tool listed in both lists is denied.
+
+```ts
+const model = claudeCode('sonnet', {
+  tools: ['Read', 'Grep', 'Bash'], // only these built-in tools exist
+  allowedTools: ['Read', 'Grep', 'Bash(git log:*)'], // run without prompting
+  disallowedTools: ['Bash(rm:*)'], // calls matching this rule are always denied
+});
+```
 
 ### Permission decisions (`canUseTool`, `permissionMode`, and AI SDK `toolApproval`)
 
@@ -772,6 +810,8 @@ try {
 This provider handles Anthropic `content_block_*` stream events directly for more responsive UIs:
 
 - **Tool input streaming** — `tool-input-delta` streams arguments incrementally; `tool-call` emits when the tool input block completes (before results), enabling “running” state in UIs.
+  - If `content_block_stop` arrives before the complete assistant tool block, the `tool-call` is emitted at the stop with the streamed input, so the UI can show the tool as running. A complete input that arrives later cannot replace a `tool-call` that was already emitted. This is by design.
+  - Tool input is capped at 1 MB (`1_048_576`) as a coarse safety limit. The cap counts JavaScript string length (UTF-16 code units), not UTF-8 bytes, so multi-byte text can exceed 1 MB on the wire before it trips.
 - **Text streaming** — `text-start/delta/end` emitted from content blocks with proper lifecycle management.
 - **Extended thinking** — `reasoning-start/delta/end` emitted from `thinking` content blocks in streaming mode; `reasoning` content parts returned from `doGenerate` in non-streaming mode (availability depends on model and request).
 

@@ -26,9 +26,53 @@ Agents, RAG pipelines, LLMs and models on one set of evaluators: sandboxed runs 
 
 Evals.si evaluates an AI system across its life. **Before you ship**, it runs agents, RAG pipelines and models on datasets and sandboxed tasks, and fails the build when a gate fails. **While it runs**, it scores live traces as they arrive and writes the scores back to the MLflow, Phoenix or Langfuse your team already uses. **As you train it**, the same evaluators become RL rewards and checkpoint checks for fine-tuning. One set of evaluators serves all three, so a metric means the same thing in CI, in production and in training.
 
-## Try it in 30 seconds
+Start with the published SDK below. You do not need Evals.si's harness, a server,
+Docker or Kubernetes to score your application's recorded outputs. The
+[guided setup](docs/guides/onboarding.md) explains how to progress to live
+application evaluation and optional agent execution.
+
+## Quickstart
+
+The shell example uses Bash. For Windows activation and creating the input file
+in an editor, follow [guided setup](docs/guides/onboarding.md).
 
 No clone, no server and no API key. You need Python 3.11+.
+
+```bash
+python -m venv .venv
+. .venv/bin/activate
+python -m pip install evalsi
+```
+
+Save these two synthetic examples as `cases.jsonl`, or use your own approved
+records with `input`, `output` and `reference` fields:
+
+```jsonl
+{"id":"correct","input":"What is the return window?","output":"30 days","reference":"30 days"}
+{"id":"regression","input":"What is the return window?","output":"7 days","reference":"30 days"}
+```
+
+```bash
+evalsi eval --data cases.jsonl --evaluators exact-match --output results.json
+evalsi report results.json -o report.html
+```
+
+Open `report.html` locally. One answer matches and the other does not; inspect
+the `regression` case to see expected versus actual output. Exact match checks
+literal agreement, not general semantic correctness. Choose checks appropriate
+to your application before making a release decision.
+
+The scoring command exits 0 when scoring completes, even when a check fails;
+it is **not a release gate**. Two synthetic examples are not release evidence.
+Nothing calls a model unless you explicitly configure one.
+
+Next, replace the sample with a few cases from your application. See
+[guided setup](docs/guides/onboarding.md) for the application-first workflow,
+version availability and explicit CI gates. Advanced sandbox/server
+prerequisites are not prerequisites for this quickstart.
+
+<details>
+<summary>Additional examples: recorded agent tools and RAG outputs</summary>
 
 ### An agent
 
@@ -76,12 +120,16 @@ citation-accuracy  2  0.500  [0.095, 0.905]        0       0
 
 The second answer cites passage `[4]`, but only two passages were retrieved. Add a judge and the `faithfulness`, `answer-relevance`, `context-precision` and `context-recall` metrics tell you whether retrieval or generation is at fault ([guide](docs/guides/evaluate-rag.md)).
 
+</details>
+
 For the setup commands (0.3.1) and maintained GitHub Action, see [guided setup](docs/guides/onboarding.md).
 For dataset version review and digest-pinned runs, see [dataset snapshots](docs/guides/dataset-snapshots.md).
 Validate the evaluator itself with [judge calibration](docs/guides/judge-calibration.md): freeze human labels, select prompts/models/thresholds on tuning cases, then measure held-out validity and fresh-call repeatability. Try the [offline example](examples/judge-calibration/README.md).
 Turn production incidents into reviewed regression cases with the [failure inbox](docs/guides/failure-inbox.md), then share [approved immutable dataset versions](docs/guides/dataset-catalog.md) and pin them in server runs. Compare a candidate with a reviewed baseline using [enforced release decisions](docs/guides/release-decisions.md), or configure and investigate the check in the [browser release workbench](docs/guides/release-workbench.md). Start an agent suite from the [support and refund starter](docs/guides/support-refund-suite.md): synthetic tasks graded on the final state of a simulated shop.
 
 Next: [gate an agent in CI](docs/guides/gate-an-agent-in-ci.md) (free and offline, with a failing gate and a GitHub Actions workflow), [evaluate a RAG pipeline](docs/guides/evaluate-rag.md), [run an agent on sandboxed tasks](docs/guides/agent-runs.md), [score live traces](docs/guides/trace-sources.md), [train with evaluators as rewards](docs/guides/fine-tuning.md), or [score plain model outputs](#quickstart). The docs are at [evalsi.dev](https://evalsi.dev/).
+
+First time? The [tutorials](docs/tutorials/README.md) walk through installing Evals.si and its agent harness and driving a fake tool-calling model through every feature, offline, with the rough edges a first install hit in an [onboarding study](docs/tutorials/00-onboarding-study.md).
 
 ## What you can evaluate
 
@@ -141,9 +189,10 @@ Each release publishes (see the [Kubernetes guide](docs/guides/kubernetes.md#ins
 - **Python:** `pip install evalsi` (SDK and CLI) and `pip install evalsi-harness` (the agent harness) from PyPI; the same wheels and sdists are attached to the release. Since v0.2.0, releases also publish Linux (amd64, arm64) platform wheels that carry `evalsid` and its sandbox's `bwrap`, so `evalsi serve` and code evaluators need nothing else; v0.1.0 and other platforms get the pure-Python wheel and a separate `evalsid`.
 - **Kubernetes:** multi-architecture images at `ghcr.io/abhishek-rnjn/evalsi` and the three Helm charts as OCI artifacts, `oci://ghcr.io/abhishek-rnjn/charts/evalsi`, `evalsi-crds` and `evalsi-sandboxd`.
 
-To try it from source, use the quickstart below.
+To contribute from source, use the development setup below. It is not required
+for the installed SDK quickstart.
 
-## Quickstart
+## Develop from source
 
 You need [uv](https://docs.astral.sh/uv/) (it installs Python 3.11+ for you). Running the server also needs [Go](https://go.dev/dl/) 1.26+. On Linux, the sandbox for code evaluators needs bubblewrap (see [Development](#development)).
 
@@ -217,6 +266,8 @@ with Client("http://localhost:8080") as client:          # API key from EVALSI_A
 ```
 
 `Client.evaluate()` returns the same result as in-process `evalsi.evaluate()`, intervals included; `evaluate_async()` and `evaluate_stream()` (with `evalsi[grpc]`) don't block. REST lives under `/v1alpha1` (`POST /v1alpha1/evaluate`, `POST /v1alpha1/runs`, `GET /v1alpha1/traces/{trace_id}`, `GET /v1alpha1/scores` for online scores per trace and label, …; the full list is in `internal/server/rest.go`), and gRPC reflection is on.
+
+A run spec that names a dataset file (`dataset: {path: tasks.jsonl}`) needs `datasets_dir` in the config: the server reads dataset files only under that directory, and refuses paths without it. [`examples/tinylm/server.yaml`](examples/tinylm/server.yaml) is a four-line config that has it. `evalsi serve -- -h` lists the server's flags.
 
 On loopback with no `auth` section the server runs without authentication; on any other address it requires it unless you pass `--no-auth`. The example's judge is Claude: export `ANTHROPIC_API_KEY` first, or `llm-judge` reports errors (never zeros). To try API keys, roles and the audit log locally, use [`examples/auth/local.yaml`](examples/auth/local.yaml) and the [identity guide](docs/guides/identity.md).
 
@@ -380,7 +431,7 @@ local evaluation overhead, with separate limits for hosted platforms.
 
 | Start here | Guides | Reference |
 |---|---|---|
-| [Documentation site](https://evalsi.dev/) | [Gate an agent in CI](docs/guides/gate-an-agent-in-ci.md) · [Agent runs](docs/guides/agent-runs.md) · [Agent frameworks](docs/guides/agent-frameworks.md) · [Trace sources](docs/guides/trace-sources.md) | [Architecture](docs/DESIGN.md) |
+| [Documentation site](https://evalsi.dev/) · [Tutorials](docs/tutorials/README.md) | [Gate an agent in CI](docs/guides/gate-an-agent-in-ci.md) · [Agent runs](docs/guides/agent-runs.md) · [Agent frameworks](docs/guides/agent-frameworks.md) · [Trace sources](docs/guides/trace-sources.md) | [Architecture](docs/DESIGN.md) |
 | [End-to-end guide](docs/guides/end-to-end.md) | [Kubernetes](docs/guides/kubernetes.md) · [agentgateway on Kubernetes](docs/guides/agentgateway-kubernetes.md) · [Identity](docs/guides/identity.md) | [Decision records](docs/decisions/README.md) |
 | [Examples](examples/) | [Guardrails](docs/guides/guardrails.md) · [MCP](docs/guides/mcp.md) · [Plugins](docs/guides/plugins.md) · [DeepEval and JevEval](docs/guides/deepeval.md) · [Webhooks](docs/guides/webhooks.md) | [Product requirements](docs/PRD.md) |
 | [Integrate an agent harness](docs/guides/integrate-an-agent-harness.md) | [Annotation](docs/guides/annotation.md) · [Fine-tuning and RL](docs/guides/fine-tuning.md) · [Web UI](docs/guides/web-ui.md) | [Roadmap and leftovers](docs/LEFTOVERS.md) |

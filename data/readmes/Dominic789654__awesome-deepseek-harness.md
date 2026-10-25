@@ -358,6 +358,9 @@ _DSH's core composition mechanism: a **profile** stacks bundle patch layers, the
 - [1497105876/dsh-text-inject](https://github.com/1497105876/dsh-text-inject) — DSH plugin: inject text into the system prompt or session context from the Settings page, with standalone file storage, hot reload and history backups.
 - [ft54482/chengzipro-dsh-plugin](https://github.com/ft54482/chengzipro-dsh-plugin) — Chengzi PRO relay-station provider plugin for DSH: adds a New API–compatible relay channel as a model provider, with account login, a model catalogue, image input and image / video generation tools.
 - [zenVibeCoding/dsh-newapi-provider](https://github.com/zenVibeCoding/dsh-newapi-provider) — New API gateway provider for DeepSeek Harness: multi-channel models, quota, image and video generation.
+- [gulagala001/oh-my-agents-above-all](https://github.com/gulagala001/oh-my-agents-above-all) — Five selectable agent working modes inside DSH (Codex, Grok Build, Cursor, Pi, ZCode), each with its own source prompts, workflow and theme adaptation; reuses the host's configured models and credentials.
+- [yuanshuoSY/dsh-coder-preset](https://github.com/yuanshuoSY/dsh-coder-preset) — Coder agent preset for DSH bundling 35 Matt Pocock engineering skills scoped to Coder sessions; configuration and Markdown only.
+- [menghuanshiguang/dsh-claudecode-prompt](https://github.com/menghuanshiguang/dsh-claudecode-prompt) — Runs DeepSeek Harness on Claude Code's system prompt — a Cordis bundle that swaps only the assembled system prompt, leaving tools, runtime context and other plugins untouched.
 
 ## Harnesses & Runtimes
 
@@ -545,9 +548,4 @@ _DeepSeek-native or DeepSeek-first agent harnesses / coding agents, plus runtime
 - [ilharp/dsh-tool-approval](https://github.com/ilharp/dsh-tool-approval) — Manual approval for tool calls (a "manual mode" / "ask mode" for DSH).
 - [blissito/ghostycode](https://github.com/blissito/ghostycode) — DeepSeek V4 terminal coding agent and constitutional harness (Rust TUI with MCP and sub-agents).
 - [bobleer/deepseek-harness-rust](https://github.com/bobleer/deepseek-harness-rust) — Rust implementation of DeepSeek Harness: layered crates for session log, turn/step loop, and DeepSeek SSE adapter.
-- [didclawapp-ai/zagens](https://github.com/didclawapp-ai/zagens) — Open-source agent harness for DeepSeek V4.  `⭐13`
-- [liubf21/ds-forge](https://github.com/liubf21/ds-forge) — Lightweight agent harness for DeepSeek V4.
-- [Owen718/FlashCoder](https://github.com/Owen718/FlashCoder) — Simple harness for DeepSeek models.
-- [ArtificialNotImbecile/dsh-context-taxonomy](https://github.com/ArtificialNotImbecile/dsh-context-taxonomy) — Logical-call context taxonomy plugin for DeepSeek Harness.
-- [BaronCyrus/dsh-kimi-subscription](https://github.com/BaronCyrus/dsh-kimi-subscription) — Use a Kimi Code subscription in DeepSeek Harness with OAuth, quota display, and composer usage.
-- [d86e/dsh-doctor](https://github.com/d86e/dsh-doctor) — dsh-doctor: self-healing watchdog for the DeepSeek Harness web profile. Recovers from plugin-induced boot failures within 60s, runs a
+- [didclawapp-ai/zagens](https://github.com/didclawapp-ai/zagens) — Open-source

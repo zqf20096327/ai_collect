@@ -64,11 +64,11 @@ a small fixed-label task is a control.
 ## Start with System 1
 
 Python 3.11+ and NumPy are required. Install the published release, whose
-[released documentation](https://github.com/muellerberndt/cadence/blob/v0.86.0/docs/README.md)
+[released documentation](https://github.com/muellerberndt/cadence/blob/v0.88.0/docs/README.md)
 describes the APIs in that package:
 
 ```sh
-python -m pip install cadence-net==0.86.0
+python -m pip install cadence-net==0.88.0
 ```
 
 ```python
@@ -103,9 +103,12 @@ lower-level `step` loop, which works with or without `arousal=True`; its
 runs that loop through changed conditions and saved continuation.
 
 A teacher label changes graph parameters. The default associative memory
-ignores labels; the opt-in episodic memory (`memory_choice=True`) records them.
-[Memory](https://github.com/muellerberndt/cadence/blob/main/docs/memory.md)
-lists every memory of the composed brain and which one suits which task.
+ignores labels. Add `memory_choice=True` when remembered demonstrations and outcomes should
+vote in the choice. Add `learned_code=units, attention=True` when the brain should retrieve a
+relevant recent context and its successor, and `recall_heads=k` when one answer needs several
+witnessed facts at once. The options can be used together.
+[Choose a memory](https://github.com/muellerberndt/cadence/blob/main/docs/memory.md#start-with-the-need)
+starts with these common cases before giving the complete reference.
 
 ```python
 phases = brain.imagine([observation, next_observation])
@@ -176,6 +179,13 @@ or, opt-in, on a code the brain learns while it lives (`learned_code=units`,
 [the learned code](https://github.com/muellerberndt/cadence/blob/main/docs/senses.md#the-learned-code)),
 both described under *Code* in the glossary. `evolve` mutates and selects genomes across lives
 ([evolution](https://github.com/muellerberndt/cadence/blob/main/docs/anatomy.md#evolve-a-brain)).
+The opt-in `Brain.compose(..., learned_code=units, attention=True)` recipe uses that learned
+code as a two-moment Recall address and holds one selected memory read through the shared
+settle; with `recall_heads=k` it reads the same memories through k heads, each learning its
+own address
+([several heads](https://github.com/muellerberndt/cadence/blob/main/docs/memory.md#several-heads-opt-in)).
+No read revises its query during that settle
+([memory guide](https://github.com/muellerberndt/cadence/blob/main/docs/memory.md#single-head-learned-code-attention-opt-in)).
 
 ### Where the learning signal comes from
 

@@ -46,6 +46,7 @@ Kumi opens once it's installed and walks you through signing in and connecting t
 - **Listens:** loudness, tonal balance, width, tempo and key of a mix, a sample or its own bounce, and how your mix compares with a reference.
 - **Judges its own changes:** brings each change back to the level it belongs at (with the last Live Limiter, else a Utility it adds), hears before and after, and keeps a change only if its target improved and nothing else got worse. `/loop` works in rounds until a goal is met; `/goal` keeps at one across turns.
 - **Measures a style:** a file, a folder, a YouTube or Spotify link, or words like "Burial" or "dub techno" become example tracks and a measured profile with the style's range, kept for next time.
+- **Learns your taste** from your own music, on your computer, and leans on it when you leave the style open ("make me a beat"). `/music` shows and manages it.
 - **Matches a reference:** builds several takes on a sound, scores each against the reference and refines the best. `/loop` keeps at it until it gets there.
 - **Watches tutorials** from YouTube or a file, then builds what they show on a new track.
 - **Plays, records and resamples**, to let you hear what it built or to check its work.
@@ -60,8 +61,8 @@ Kumi opens once it's installed and walks you through signing in and connecting t
 
 ## Status
 
-- Kumi 1.22.0 is currently supported for Ableton Live 12.4.15b4 (beta) and above on macOS and Windows. You may run into issues on lower versions. If you do, **please file an issue!**
-- 1.22.0 is tested with Live on macOS. On Windows, installing and updating are tested; using it with Live there is still new. Please send a `kumi report` when something breaks.
+- Kumi 1.23.2 is currently supported for Ableton Live 12.4.15b4 (beta) and above on macOS and Windows. You may run into issues on lower versions. If you do, **please file an issue!**
+- 1.23.2 is tested with Live on macOS. On Windows, installing and updating are tested; using it with Live there is still new. Please send a `kumi report` when something breaks.
 - REAPER 7.82 and Renoise 3.5.4 are tested on macOS. On Windows and Linux, CI tests putting Kumi's extension and tool in place and loading the extension; using them with REAPER and Renoise there is new.
 
 ## Development

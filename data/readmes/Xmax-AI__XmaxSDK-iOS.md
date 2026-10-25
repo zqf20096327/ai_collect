@@ -209,7 +209,7 @@ use_frameworks! :linkage => :static
 target 'YourApp' do
   pod 'XmaxSDK',
       :git => 'https://github.com/Xmax-AI/XmaxSDK-iOS.git',
-      :tag => '1.0.14'
+      :tag => '1.0.15'
 end
 
 post_install do |installer|
@@ -230,7 +230,7 @@ pod install --repo-update
 ### Manual
 
 Download
-[`XmaxSDK-1.0.14.xcframework.zip`](https://github.com/Xmax-AI/XmaxSDK-iOS/releases/download/1.0.14/XmaxSDK-1.0.14.xcframework.zip),
+[`XmaxSDK-1.0.15.xcframework.zip`](https://github.com/Xmax-AI/XmaxSDK-iOS/releases/download/1.0.15/XmaxSDK-1.0.15.xcframework.zip),
 then follow the [manual integration guide](./Materials/installation.md#manual-integration)
 to add the required dependencies and configure your Xcode target.
 
@@ -274,7 +274,7 @@ let localStream = try await realtime.createLocalCameraStream(
     position: .front
 )
 
-let videoView = XmaxRealtimeVideoView(
+let videoView = XmaxRealtimeDualVideoView(
     localTrack: localStream.videoTrack,
     videoContentMode: .fill
 )
@@ -294,15 +294,18 @@ Add the video view to your view hierarchy. The view displays a local camera
 preview until the first generated frame arrives, with touch interaction enabled
 by default.
 
+Set `remoteVideoFadeInDuration` to customize the remote video's fade-in duration
+in seconds. The default is `0.3`; use `0` to show it without animation.
+
 <br>
 
 ### Using SwiftUI
 
-Use `XmaxRealtimeVideo` as your primary SwiftUI view. Store the local and remote
+Use `XmaxRealtimeDualVideo` as your primary SwiftUI view. Store the local and remote
 tracks in observable state, updating them dynamically as streams become available:
 
 ```swift
-XmaxRealtimeVideo(
+XmaxRealtimeDualVideo(
     localTrack: localTrack,
     remoteTrack: remoteTrack,
     videoContentMode: .fill

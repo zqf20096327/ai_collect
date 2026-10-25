@@ -26,7 +26,7 @@
 </p>
 
 <!-- STATS_START -->
-![npm downloads](https://img.shields.io/badge/monthly%20downloads-54-blue)
+![npm downloads](https://img.shields.io/badge/monthly%20downloads-41-blue)
 ![GitHub stars](https://img.shields.io/github/stars/vinpatel/aeorank?style=social)
 <!-- STATS_END -->
 
@@ -215,7 +215,7 @@ The working score path is the CLI above — no account. The hosted dashboard at 
 
 See [DEMO.md](./DEMO.md) for today's auto-generated scan.
 
-Last updated: October 24, 2026
+Last updated: October 25, 2026
 
 ## Star History
 

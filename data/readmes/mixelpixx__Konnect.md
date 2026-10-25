@@ -5,18 +5,30 @@
 <img src="resources/images/KiCAD-MCP-Server-rust.svg" alt="KiCAD-MCP-Server Logo" height="240" />
 
 
-# Konnect *BETA Release
+# Konnect is MOVING!!!
 
 </div>
 
-**AI-assisted PCB design for KiCAD 10.** Konnect is a native KiCAD plugin — a single
-Rust binary — that lets Claude and other AI assistants design schematics and PCBs
-through the [Model Context Protocol](https://modelcontextprotocol.io) (MCP).
-
-**228 tools across 21 on-demand toolsets.** Schematic capture, PCB layout and
-routing, ERC/DRC, design-review audits, JLCPCB part search, reference
-circuits, and a full manufacturing export pipeline — with bundled skills and agents
-that teach Claude KiCAD conventions out of the box.
+> ## Konnect has moved to Konnect-EDA
+>
+> **This repository will be archived at midnight (US Eastern) at the end of Sunday, October 25, 2026.**
+> After that it's read-only. Everything here stays readable, and the releases already published stay
+> available under the AGPL-3.0, but no new issues, comments or pull requests can be added.
+>
+> Konnect continues as **[Konnect-EDA](https://github.com/Orchis-ai-LLC/Konnect-EDA)**, from
+> Orchis.ai LLC. It's the same AI-assisted KiCad design tool, and all development continues there:
+>
+> - **Downloads:** the [Konnect-EDA Releases page](https://github.com/Orchis-ai-LLC/Konnect-EDA/releases);
+>   the first release is coming soon. Konnect-EDA is commercial, closed-source software, **free to use
+>   during the beta** (until version 1.0).
+> - **Bugs and feature requests:** the
+>   [Konnect-EDA issue tracker](https://github.com/Orchis-ai-LLC/Konnect-EDA/issues).
+> - **Want to help build it?** Sign up to contribute at
+>   **[orchis.ai/konnect/join](https://orchis.ai/konnect/join)**.
+> - **Contributed to Konnect?** Please answer your sign-off email, or sign in with GitHub at
+>   [orchis.ai/konnect/sign-off](https://orchis.ai/konnect/sign-off). It's open until November 20.
+>
+> Thank you to everyone who built Konnect with us.
 
 > **Status: beta.** The core toolchain is tested and working, but this is a young
 > release and it wants real-world mileage and review. Issues and PRs are welcome —
@@ -33,6 +45,20 @@ that teach Claude KiCAD conventions out of the box.
 > - Works with claude.ai, Claude Desktop, Claude Code, VS Code, and any MCP client
 > - 1 credit = 1 search · extraction always free · free 50-credit trial, no card
 > - Official MCP Registry: [`ai.orchis/nimrod`](https://registry.modelcontextprotocol.io)
+
+
+
+
+
+
+**AI-assisted PCB design for KiCAD 10.** Konnect is a native KiCAD plugin — a single
+Rust binary — that lets Claude and other AI assistants design schematics and PCBs
+through the [Model Context Protocol](https://modelcontextprotocol.io) (MCP).
+
+**228 tools across 21 on-demand toolsets.** Schematic capture, PCB layout and
+routing, ERC/DRC, design-review audits, JLCPCB part search, reference
+circuits, and a full manufacturing export pipeline — with bundled skills and agents
+that teach Claude KiCAD conventions out of the box.
 
 
 ## Why Konnect exists

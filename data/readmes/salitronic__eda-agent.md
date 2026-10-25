@@ -6,6 +6,10 @@ MCP server that lets an AI (or any MCP-compatible client) **interact with a live
 
 ## Demo
 
+Claude Code with eda-agent designs a round 54 mm, 4-layer RGB LED display board in Altium Designer from a written spec to manufacturing files. It builds a project library from scratch, with a symbol, footprint, 3D model and part numbers for every part. It then draws the schematic, places 61 LEDs in rings, routes the USB pair at 90 ohms, pours stitched ground, gets DRC clean and writes the Gerbers, drill, BOM, pick-and-place and STEP files. A correction round follows: a review prompt lists issues from the first pass, and Claude reroutes the whole USB pair as a coupled differential pair, gives every part a realistic 3D model from its datasheet drawing and finishes the schematics with title blocks. The result would still get a manual tweaking pass before prototyping, but it is already at a very good stage.
+
+[![eda-agent demo: a round RGB LED board from spec to Gerbers in Altium Designer](assets/demo_round_led.jpg)](https://youtu.be/JnQsJlrpzBM)
+
 Claude Code with eda-agent draws a 12 V to 3.3 V, 2 A step-down supply around the TI TPS62130 in Altium Designer from one sentence. It fetches the datasheet, sizes the inductor, capacitors and feedback divider from it, builds the symbols, draws the schematic and verifies the netlist.
 
 [![eda-agent demo: a schematic from a one-line spec in Altium Designer](assets/demo_schematic.jpg)](https://youtu.be/ZwF9c97ZS6Y)
@@ -137,6 +141,17 @@ From then on, every Altium startup compiles the script project and the polling l
 2. Expand `Altium_API` → `Dispatcher.pas`, select **StartMCPServer**, click **Run**
 
 The polling loop starts and your MCP client can drive Altium.
+
+### Updating
+
+Once a day at most, the server checks this repository for new commits in the background. When there are some, `app_ping` and `app_context` say so and list them, and the assistant asks you before installing anything. If you agree, `server_update(apply=True)` fast-forwards your clone, reinstalls when the dependencies changed, copies the Altium scripts again when they changed and restarts the polling loop. Then reconnect the server (`/mcp` in Claude Code) to run the new Python. From a terminal, the same thing is:
+
+```bash
+eda-agent update          # shows what is new, then asks
+eda-agent update --check  # only shows what is new
+```
+
+A clone with uncommitted changes, commits of its own or another branch checked out is never touched; the update says why and stops. Set `EDA_AGENT_UPDATE_CHECK=0` to stop the daily check from reaching the network.
 
 ## EDA backends
 
@@ -468,6 +483,7 @@ All intelligence lives in Python. The DelphiScript side is a pass-through layer 
 | `eda-agent --no-dashboard` / `eda-agent --headless` | MCP server only, no web dashboard. Required by strict-stdio MCP clients (Codex, etc) that can't tolerate the dashboard thread. Also via env var: `EDA_AGENT_DISABLE_DASHBOARD=1` or `EDA_AGENT_HEADLESS=1`. |
 | `eda-agent scripts-path` | Print path to bundled DelphiScript sources |
 | `eda-agent install-scripts [--dest PATH] [--force]` | Copy scripts to every folder Altium loads them from, or to PATH |
+| `eda-agent update [--check] [--yes] [--no-relaunch]` | Show the new commits on the repository and, once you agree, update this clone, the Altium scripts and the polling loop |
 | `eda-agent review --offline <file> [--json/--sarif] [--fail-on ...]` | **Offline** component-level design review of a `.SchDoc`/`.PrjPcb` (no Altium). Opt-in (`--offline` or `EDA_AGENT_HEADLESS_REVIEW=1`); exit 1 on findings at/above `--fail-on` - a hardware-CI gate |
 | `eda-agent bom --offline <file> [--csv/--json]` | **Offline** consolidated BOM from a `.SchDoc`/`.PrjPcb` (no Altium). Opt-in |
 | `eda-agent netlist --offline <file> [--json] [--fail-on ...]` | **Offline** geometric netlist reconstruction + connectivity ERC (`single_pin_net`, `net_short`) from a `.SchDoc` (no Altium). Opt-in; exit 1 on findings at/above `--fail-on` |

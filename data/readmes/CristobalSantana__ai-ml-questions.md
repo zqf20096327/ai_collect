@@ -8,7 +8,7 @@ Free multiple-choice questions for learning artificial intelligence and machine 
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/question-en-dark.png">
-  <img src="docs/images/question-en-light.png" width="600" alt="A medium question on sampling temperature, answered in study mode. The chosen option, 0.73, is marked wrong and 0.98 right; under each option a line explains why, followed by the explanation and the source.">
+  <img src="docs/images/question-en-light.png" width="600" alt="A medium question of the Apply type on sampling temperature, answered in study mode. The chosen option, 0.73, is marked wrong and 0.98 right; under each option a line explains why, followed by the explanation and the source.">
 </picture>
 
 - **103 questions in English and Spanish**, in 8 topics and three levels. Study mode shows the explanation after each answer; exam mode, the results at the end.
@@ -34,7 +34,7 @@ Free multiple-choice questions for learning artificial intelligence and machine 
 
 ## How the questions are made
 
-Each question states its level in Bloom's taxonomy and gets an estimated difficulty from a rubric. A validator checks the format and the writing rules, and a second model checks facts, sources and the translation before a person approves the question. Once a question has enough answers, they also show whether it tells apart people who know more. The details are in [`docs/`](docs/README.md).
+Each question states its level in Bloom's taxonomy, which the site shows as the type of reasoning it asks for (from Remember to Evaluate), and gets an estimated difficulty from a rubric. A validator checks the format and the writing rules, and a second model checks facts, sources and the translation before a person approves the question. Once a question has enough answers, they also show whether it tells apart people who know more. The details are in [`docs/`](docs/README.md).
 
 ## Contributing
 
@@ -49,8 +49,9 @@ The most useful help right now is checking questions, because a person has not r
 ## Run it locally
 
 ```bash
-pip install jsonschema
+pip install jsonschema pytest
 python scripts/validate.py                    # checks the questions
+python -m pytest tests                        # tests the validator and the updates
 python scripts/build_site.py --include-drafts # builds site/data
 python -m http.server 8000 --directory site   # then open http://localhost:8000
 ```
@@ -61,6 +62,7 @@ python -m http.server 8000 --directory site   # then open http://localhost:8000
 |---|---|
 | `questions/` | The questions, one JSON file per area |
 | `taxonomy.json` | Topics, areas and subtopics, in English and Spanish |
+| `updates.json` | The updates listed on the site's home screen |
 | `schema/` | The format of a question |
 | `scripts/` | The validator, the site builder and the statistics of each question |
 | `prompts/` | Prompts for generating and reviewing questions, in English and in their original Spanish |

@@ -9,7 +9,7 @@
 
 [![ComfyUI Manager](https://img.shields.io/badge/ComfyUI-Manager-green?style=for-the-badge&logo=comfyui)](https://github.com/ltdrdata/ComfyUI-Manager)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
-[![Changelog](https://img.shields.io/badge/📖_Changelog-v1.60.1-blue?style=for-the-badge)](CHANGELOG.md)
+[![Changelog](https://img.shields.io/badge/📖_Changelog-v1.61.0-blue?style=for-the-badge)](CHANGELOG.md)
 [![Bilibili Video](https://img.shields.io/badge/Bilibili-视频演示-00A1D6?style=for-the-badge&logo=bilibili)](https://www.bilibili.com/video/BV1boHx61Enc/)
 [![Bilibili Voices](https://img.shields.io/badge/Bilibili-配音演示-00A1D6?style=for-the-badge&logo=bilibili)](https://www.bilibili.com/video/BV1bkpZ6uEZQ/)
 [![Reddit](https://img.shields.io/badge/Reddit-r%2Fcomfyui-FF4500?style=for-the-badge&logo=reddit)](https://www.reddit.com/r/comfyui/s/n38ihf3DLf)
@@ -40,7 +40,7 @@
 
 <p align="center"><img src="docs/images/en-scan.webp" width="520" alt="Scan results: each file matched on Civitai"></p>
 
-**2. Someone else's workflow opens with red nodes.** Model Check says which models are missing. When the workflow carries model fingerprints (the plugin writes them into the workflows and images of everyone who has it, unless they turn it off), the ones you already have under another name or in another folder go back in with one press, and the rest can be downloaded from Civitai or Hugging Face, each download checked against its fingerprint. A workflow without fingerprints can only be matched by file name: a file of the same name elsewhere on your computer is offered for you to confirm.
+**2. Someone else's workflow opens with red nodes.** Model Check says which models are missing. When the workflow carries model fingerprints (the plugin writes them into the workflows and images of everyone who has it, unless they turn it off), the ones you already have under another name or in another folder go back in with one press, and the rest can be downloaded from Civitai, Hugging Face or ComfyUI-Manager's model list, each download checked against its fingerprint (a Manager entry that only shares the file name is marked so, for you to decide). A workflow without fingerprints can only be matched by file name: a file of the same name elsewhere on your computer is offered for you to confirm.
 
 <p align="center"><img src="docs/images/en-model-check.webp" width="760" alt="Model Check puts back three missing models with one press"></p>
 
@@ -48,7 +48,7 @@
 
 <p align="center"><img src="docs/images/en-gallery.webp" width="760" alt="Gallery search, then drag an image onto the canvas"></p>
 
-**4. The same model, LoRAs and prompt, again and again.** Pick those nodes on the canvas, right-click → **Save as combo**, and they are kept as a card beside the canvas. Next time press **Put on canvas** (or drag the card) and the wired group comes back where you click; nothing already on the canvas changes. Models and prompts in a combo can be changed later.
+**4. The same model, LoRAs and prompt, again and again.** Pick those nodes on the canvas, right-click → **AMB** → **Save as combo**, and they are kept as a card beside the canvas. Next time press **Put on canvas** (or drag the card) and the wired group comes back where you click; nothing already on the canvas changes. Models and prompts in a combo can be changed later.
 
 <p align="center"><img src="docs/images/en-combo.webp" width="760" alt="Picked nodes saved as a combo, then put back on the canvas as wired nodes"></p>
 
@@ -149,7 +149,7 @@ Open the browser with **Shift + B** (again to close), the floating button on the
 
 <p align="center"><img src="docs/images/scan.webp" width="520" alt="扫描结果：每个文件都在 C 站认出来了"></p>
 
-**2. 打开别人的工作流，一片红框。** 模型检查会告诉你缺哪些模型。如果工作流里带着模型指纹（装了本插件的人出图、保存工作流时会自动记下，除非他在设置里关掉），你电脑里其实有、只是改了名或换了文件夹的，点一下就换上；真没有的可以从 C 站或 Hugging Face 下载，下载完按指纹核对过才用。没有指纹的工作流只能按文件名找：别处有同名文件，会列出来让你确认。
+**2. 打开别人的工作流，一片红框。** 模型检查会告诉你缺哪些模型。如果工作流里带着模型指纹（装了本插件的人出图、保存工作流时会自动记下，除非他在设置里关掉），你电脑里其实有、只是改了名或换了文件夹的，点一下就换上；真没有的可以从 C 站、Hugging Face 或 ComfyUI-Manager 的模型清单下载，下载完按指纹核对过才用（Manager 清单里只是同名、没法核对的，会标出来让你决定）。没有指纹的工作流只能按文件名找：别处有同名文件，会列出来让你确认。
 
 <p align="center"><img src="docs/images/model-check.webp" width="760" alt="模型检查一键换上 3 个缺失的模型"></p>
 
@@ -157,7 +157,7 @@ Open the browser with **Shift + B** (again to close), the floating button on the
 
 <p align="center"><img src="docs/images/gallery.webp" width="760" alt="图库搜索后把图拖到画布"></p>
 
-**4. 每次都要重新配一遍模型、LoRA 和提示词。** 在画布上选中这几个节点，右键 **存为搭配**，它们就成了画布旁的一张卡片。下次点 **放到画布**（或者直接拖卡片），点哪里，那组连好线的节点就出现在哪里，画布上原有的东西不动。搭配里的模型和提示词以后还能换。
+**4. 每次都要重新配一遍模型、LoRA 和提示词。** 在画布上选中这几个节点，右键 → **AMB** → **存为搭配**，它们就成了画布旁的一张卡片。下次点 **放到画布**（或者直接拖卡片），点哪里，那组连好线的节点就出现在哪里，画布上原有的东西不动。搭配里的模型和提示词以后还能换。
 
 <p align="center"><img src="docs/images/combo.webp" width="760" alt="选中的节点存为搭配，再放回画布变成连好线的节点"></p>
 

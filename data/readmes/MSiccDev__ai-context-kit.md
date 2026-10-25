@@ -227,7 +227,6 @@ Operational workflow authority is skill-first:
 - `skills/validate-skill/`
 - `skills/create-checkpoint/`
 - `skills/restore-checkpoint/`
-- `skills/time-awareness/`
 
 ### Invoking Skills
 
@@ -317,7 +316,7 @@ If paths must change, update the specification and README first, then adjust ski
 
 ## Installing as a Plugin
 
-AI Context Kit ships native plugin metadata for Codex and compatibility metadata for Claude Code and GitHub Copilot CLI. Installing registers all 12 skills in the target runtime, with no manual `SKILL.md` loading required.
+AI Context Kit ships native plugin metadata for Codex and compatibility metadata for Claude Code and GitHub Copilot CLI. Installing registers all 11 skills in the target runtime, with no manual `SKILL.md` loading required.
 
 ### OpenAI Codex
 
@@ -385,7 +384,6 @@ Skills are namespaced to the plugin name. Inside a session:
 | `repository-drift-control` | Check and enforce consistency across spec, templates, and docs |
 | `create-checkpoint` | Capture session state as a checkpoint artifact (spec section 4.4) |
 | `restore-checkpoint` | Restore session state from a checkpoint artifact (spec section 4.4) |
-| `time-awareness` | Ground date, time-of-day, elapsed-time, and pacing statements in a real local clock reading |
 
 ### Update
 
@@ -399,9 +397,11 @@ claude plugin update ai-context-kit
 
 Codex auto-discovers skills from the `.agents/skills/` directory, scanning upward from the current working directory to the repo root. AI Context Kit ships a `.agents/skills/` directory whose entries are symlinks to the canonical `skills/` folders, so repo-local skill discovery and plugin packaging both point at the same source of truth.
 
+On Windows, git creates these symlinks only with Developer Mode enabled (or `core.symlinks=true` and elevated rights). Without it the entries check out as plain text files and discovery fails; either enable Developer Mode and re-clone, or install the plugin instead.
+
 ### Auto-discovery (no install needed)
 
-If you clone this repo and run Codex from within it, all 12 skills are discovered automatically. No registration or import is required for repo-local use.
+If you clone this repo and run Codex from within it, all 11 skills are discovered automatically. No registration or import is required for repo-local use.
 
 ### Invoking skills in Codex
 
@@ -413,7 +413,7 @@ $validate-agents-md
 $repository-drift-control
 ```
 
-`repository-drift-control` requires explicit invocation (`allow_implicit_invocation: false`) since it is a governance action.
+`repository-drift-control` is a governance action: invoke it explicitly. No per-skill sidecar blocks implicit invocation, so Codex may also select it on its own.
 
 ### Installing the plugin instead of using repo-local discovery
 

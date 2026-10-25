@@ -187,11 +187,23 @@ XmaxSDK is distributed through [**Maven Central**](#maven-central).
 
 ### Maven Central
 
-Version **1.0.11** uses Agora RTC and supports `X2_1_1_PREVIEW_CN` and
-`X2_1_1_PREVIEW_US`. When upgrading from 1.0.8, replace removed model constants
-and rebuild your application against the updated SDK.
+XmaxSDK uses Agora RTC and supports `RealtimeModel.X2_1_1_PREVIEW_CN` and
+`RealtimeModel.X2_1_1_PREVIEW_US`. Select China or global service routing through
+`XmaxConfiguration.environment`. The quality controls and unified remote
+audio/video output described below are available starting in version 1.0.12.
 
-When upgrading to **1.0.11**, remove the `videoFormat` argument from
+When upgrading from **1.0.11 or earlier**, replace `setRemoteVideoFrameListener(...)` with
+`setRemoteMediaFrameListener(...)` and handle its audio and video packet variants.
+External sources providing their own preview must override `providesPreview` to
+`true`; otherwise XmaxSDK renders the submitted frames.
+
+When upgrading to **1.0.13**, rename single-track components from `XmaxVideo` and
+`XmaxVideoView` to `XmaxRealtimeVideo` and `XmaxRealtimeVideoView`. Rename
+dual-track components from `XmaxRealtimeVideo` and `XmaxRealtimeVideoView` to
+`XmaxRealtimeDualVideo` and `XmaxRealtimeDualVideoView`. The old names are not
+retained as compatibility aliases. The examples below use the new names.
+
+When upgrading from **1.0.10 or earlier**, also remove the `videoFormat` argument from
 `createLocalImageStream(...)` and `createLocalVideoStream(uri)` calls and rebuild
 your application. The SDK now derives image and local video input formats from
 the media dimensions and model defaults.
@@ -220,7 +232,7 @@ Add XmaxSDK to your application module:
 
 ```kotlin
 dependencies {
-    implementation("ai.xmax:xmax-sdk:1.0.11")
+    implementation("ai.xmax:xmax-sdk:1.0.13")
 }
 ```
 
@@ -268,7 +280,7 @@ import ai.xmax.sdk.RealtimeVideoFormat
 import ai.xmax.sdk.VideoContentMode
 import ai.xmax.sdk.XmaxClient
 import ai.xmax.sdk.XmaxConfiguration
-import ai.xmax.sdk.XmaxRealtimeVideoView
+import ai.xmax.sdk.XmaxRealtimeDualVideoView
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 
@@ -281,8 +293,9 @@ val realtime = client.createRealtimeManager(
     options = RealtimeConfiguration(model = RealtimeModel.X2_1_1_PREVIEW_CN),
 )
 
-val videoView = XmaxRealtimeVideoView(this).apply {
+val videoView = XmaxRealtimeDualVideoView(this).apply {
     videoContentMode = VideoContentMode.FILL
+    remoteVideoFadeInDuration = 0.3
 }
 setContentView(videoView)
 
@@ -304,16 +317,26 @@ lifecycleScope.launch {
 }
 ```
 
-`XmaxRealtimeVideoView` displays the local camera preview until the first generated
+`XmaxRealtimeDualVideoView` displays the local camera preview until the first generated
 frame arrives, then transitions to the remote video. Touch interaction is enabled by
 default after the generated video becomes visible.
 
-Local camera, image, and video dimensions are capped by the model's maximum pixel
-count without upscaling, and aligned to multiples of four, preserving the exact
-aspect ratio where possible. Camera requests must still match a supported model
-resolution bucket. For images and local videos, the SDK selects the generation
-canvas separately; downlink quality tiers use the processed media dimensions as
-their fixed baseline and produce four-pixel-aligned return sizes.
+Set `remoteVideoFadeInDuration` to customize the remote fade-in duration in
+seconds. The default is `0.3`; zero, negative, or nonfinite values show the remote
+video without animation after its first frame arrives. Changes apply to the next
+transition without changing an active animation.
+
+Local camera, image, video, and external input dimensions are resized into the model's
+minimum and maximum pixel-area limits and aligned to multiples of four, preserving
+the exact aspect ratio where possible. Both preview models accept processed media
+between 200,000 and 2,100,000 pixels; smaller inputs are enlarged and larger inputs
+are reduced. Only camera requests must match a supported model resolution bucket.
+
+The SDK selects the generation canvas (`size`) separately by the closest model
+aspect ratio. Live frame input uses `padding: "contain"` only when its aspect ratio
+differs from the canvas. Uplink and downlink quality use the processed media
+dimensions as their fixed baseline, not the model canvas. Downlink `target_size`
+is aligned to multiples of four and retains the media aspect ratio where possible.
 
 Touch trajectories are sent in `tracks` as normalized `[0, 1]` coordinates based
 on the fixed, processed local media dimensions, accounting for FIT letterboxing
@@ -335,7 +358,7 @@ import android.net.Uri
 
 val localStream = realtime.createNetworkVideoStream(
     uri = Uri.parse(drivingVideoUrl),
-    videoFormat = RealtimeVideoFormat(width = 1024, height = 1920, fps = 30),
+    videoFormat = RealtimeVideoFormat(width = 1080, height = 1920, fps = 30),
     onFinish = {
         // Called once on Main for the current task after the server reports completion.
         // Remote tail frames can still arrive; this does not close the session.
@@ -353,7 +376,7 @@ Network preview is silent and plays once, retaining the last frame while attache
 The default server sampling method is `RealtimeVideoSampleMethod.TIME`; `FPS` is
 also available. This source does not upload local audio. Remote audio is subscribed
 after the first generated frame is ready, with the same default playback volume
-as local video inputs. Audio recording and muxing are not performed.
+as local video inputs. Recording and muxing remain your app's responsibility.
 `onFinish` comes from the current task's `video_stopped` message, independently of
 local preview playback, and is delivered only after generation is ready. Generated
 output is not cached or looped. Use `disconnect()` to end the session while keeping
@@ -386,7 +409,7 @@ Camera input does not use the microphone by default. Opt in when creating the st
 
 ```kotlin
 val localStream = realtime.createLocalCameraStream(
-    videoFormat = RealtimeVideoFormat(width = 1024, height = 1920, fps = 30),
+    videoFormat = RealtimeVideoFormat(width = 1080, height = 1920, fps = 30),
     position = CameraPosition.FRONT,
     useMicrophone = true,
 )
@@ -409,11 +432,48 @@ val globalClient = XmaxClient(
         environment = XmaxEnvironment.GLOBAL,
     ),
 )
+
+val globalRealtime = globalClient.createRealtimeManager(
+    options = RealtimeConfiguration(model = RealtimeModel.X2_1_1_PREVIEW_US),
+)
 ```
 
-`XmaxEnvironment.CHINA` uses `https://cloud.xmax.22duck.cn/open/api/v1`, and
-`XmaxEnvironment.GLOBAL` uses `https://api.xmax.cloud/open/api/v1`. Realtime and
-storage API requests use the environment selected for their client.
+`XmaxEnvironment.CHINA` uses `https://cloud.xmax.22duck.cn/open/api/v1`.
+For `XmaxEnvironment.GLOBAL`, realtime sessions use `https://api.xmax.ai/open/api/v1`,
+while storage and other API requests use `https://api.xmax.cloud/open/api/v1`.
+Use `RealtimeModel.X2_1_1_PREVIEW_CN` for China and
+`RealtimeModel.X2_1_1_PREVIEW_US` for the global environment. The default model is
+`X2_1_1_PREVIEW_CN`; selecting a model does not change the client's environment.
+
+Both preview models support generation canvases of `1024×1920` and `1920×1024`.
+The default camera format is `1024×1920` at 30 fps.
+The model's `supportedVideoFormats` lists these sizes with their recommended frame rates.
+
+Create a camera stream using a supported format:
+
+```kotlin
+val localStream = realtime.createLocalCameraStream(
+    videoFormat = RealtimeVideoFormat(width = 1024, height = 1920, fps = 30),
+    position = CameraPosition.FRONT,
+)
+```
+
+Once the camera preview is `READY` and realtime is disconnected, change its
+resolution without replacing the track or rebinding the view:
+
+```kotlin
+realtime.updateCameraFormat(RealtimeVideoFormat(width = 1920, height = 1024, fps = 30))
+val currentFormat = realtime.currentCameraVideoFormat
+val currentPreset = realtime.currentCameraPreset
+```
+
+Camera presets are available only when their dimensions match the selected
+model's supported formats. The retained presets do not match these preview models;
+use a full `RealtimeVideoFormat` instead, and `currentCameraPreset` is `null`.
+Unsupported formats or failed changes preserve the previous track configuration.
+These media settings are independent of L1–L5
+transmission quality levels. When no minimum uplink bitrate is specified, the
+SDK uses 500 kbps, capped at the maximum bitrate; explicit values take priority.
 
 Still images and local videos can also be used as input:
 
@@ -432,29 +492,30 @@ Only one local input stream can be active at a time.
 
 ### Using Jetpack Compose
 
-Use `XmaxRealtimeVideo` to keep the local preview visible until the first generated
+Use `XmaxRealtimeDualVideo` to keep the local preview visible until the first generated
 frame arrives, then transition to the remote video:
 
 ```kotlin
-import ai.xmax.sdk.XmaxRealtimeVideo
+import ai.xmax.sdk.XmaxRealtimeDualVideo
 import ai.xmax.sdk.VideoContentMode
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 
-XmaxRealtimeVideo(
+XmaxRealtimeDualVideo(
     localTrack = localStream?.videoTrack,
     remoteTrack = remoteStream?.videoTrack,
     modifier = Modifier.fillMaxSize(),
     videoContentMode = VideoContentMode.FILL,
+    remoteVideoFadeInDuration = 0.3,
 )
 ```
 
-Use `XmaxVideo` to display a single local or remote track:
+Use `XmaxRealtimeVideo` to display a single local or remote track:
 
 ```kotlin
-import ai.xmax.sdk.XmaxVideo
+import ai.xmax.sdk.XmaxRealtimeVideo
 
-XmaxVideo(
+XmaxRealtimeVideo(
     track = localStream?.videoTrack,
     modifier = Modifier.fillMaxSize(),
     videoContentMode = VideoContentMode.FIT,
@@ -468,13 +529,14 @@ parameters change and unbind tracks when removed from the composition. Keep stre
 objects in lifecycle-aware Compose state; the caller remains responsible for
 managing media streams and the realtime manager's lifecycle.
 
-You can also embed `XmaxRealtimeVideoView` directly with `AndroidView`:
+You can also embed `XmaxRealtimeDualVideoView` directly with `AndroidView`:
 
 ```kotlin
 AndroidView(
-    factory = { context -> XmaxRealtimeVideoView(context) },
+    factory = { context -> XmaxRealtimeDualVideoView(context) },
     update = { view ->
         view.videoContentMode = VideoContentMode.FILL
+        view.remoteVideoFadeInDuration = 0.3
         view.localTrack = localStream?.videoTrack
         view.remoteTrack = remoteStream?.videoTrack
     },
@@ -498,7 +560,7 @@ stream or starting generation.
 | Listener | Purpose |
 | --- | --- |
 | `setStateListener` | Observe pipeline states and terminal failure reasons; camera `READY` means the first local frame can be previewed. |
-| `setRemoteVideoFrameListener` | Receive generated I420 frames for recording or custom processing. |
+| `setRemoteMediaFrameListener` | Receive owned PCM16 audio and I420 video with a shared stream identity and presentation timeline. |
 | `setNetworkQualityListener` | Monitor uplink and downlink network quality. |
 | `setPerformanceAlarmListener` | Detect device performance limitations or recovery, with a suggested video format when available. |
 
@@ -518,10 +580,73 @@ realtime.setStateListener { state ->
 manager returns to `READY` when a local preview remains, or `IDLE` otherwise;
 `state.reason` distinguishes a normal stop from a failure. Individual suspending
 calls still throw their own errors. Listeners are delivered on the main thread,
-except remote video frame callbacks,
+except remote audio/video frame callbacks,
 which run serially on an SDK background dispatcher.
 
+To record or process generated media, register `setRemoteMediaFrameListener` and
+handle `RealtimeMediaFrame.Content.Audio` (PCM16 little-endian) and
+`RealtimeMediaFrame.Content.Video` (I420). Both tracks share `streamID` and
+`presentationTimeUs`; use one recording origin rather than rebasing each track
+independently. Audio comes from the remote publisher before user mixing and is
+independent of playback volume. Registering the listener does not change audio
+subscriptions, enable the microphone, or require a video view.
+
+Packets own their data and can be retained after callbacks return. Delivery is
+serial, not timestamp-sorted across tracks. The queue retains at most 256 packets
+or 32 MiB, including an executing callback. Slow consumers can lose packets;
+`isDiscontinuous` marks the first packet of each track, format/clock changes, and
+the next packet after discarded output. A new `streamID` starts a new timeline.
+Clearing the listener discards queued output; an executing callback may finish.
+XLab demonstrates H.264/AAC recording and MP4 muxing outside the SDK.
+
 <br>
+
+### Adjust transmission quality
+
+Automatic uplink and downlink adaptation is enabled by default. To use manual
+quality control only, disable it when creating the realtime manager:
+
+```kotlin
+val manualRealtime = client.createRealtimeManager(
+    options = RealtimeConfiguration(
+        model = RealtimeModel.X2_1_1_PREVIEW_CN,
+        isAdaptiveQualityEnabled = false,
+    ),
+)
+```
+
+When disabled, each connection starts at L1 without reading or updating quality
+history. Manual quality changes remain available. Network quality, performance,
+and uplink/downlink statistics listeners are unaffected.
+
+Read the successfully applied uplink level and successfully submitted downlink
+level through `uplinkQualityLevel` and `downlinkQualityLevel`. A direction with no
+active configuration returns `null`; both become `null` when disconnecting.
+The actual received resolution may change slightly after the downlink property.
+
+While generating, adjust either direction independently:
+
+```kotlin
+import ai.xmax.sdk.RealtimeQualityLevel
+
+realtime.setUplinkQualityLevel(RealtimeQualityLevel.L3)
+realtime.setDownlinkQualityLevel(RealtimeQualityLevel.L2)
+```
+
+L1–L5 target 100%, 90%, 75%, 60%, and 50% of the media baseline's width and
+height, with uplink frame-rate limits of 30, 24, 24, 20, and 16 fps. With automatic
+adaptation enabled, both directions start at L2 when history is missing, expired,
+or invalid. Disabling adaptation starts both directions at L1. Pixel alignment and
+minimum dimensions still apply; uplink also retains at least 200,000 pixels, so a
+lower tier may exceed its nominal dimension percentage. Downlink does not use
+that minimum area.
+Uplink encoding dimensions are multiples of four; downlink retains its existing
+dimension rules, with the final `target_size` aligned to multiples of four.
+Manual choices do not change the media baseline or model canvas, and do not
+disable adaptation when it is enabled. Only successful adjustments update the
+current level; one-hour history is updated only when adaptation is enabled.
+Calls outside generation, or calls that cannot apply the requested configuration,
+throw an error without intentionally ending the current generation.
 
 ### Upload a reference image
 
@@ -588,7 +713,7 @@ credentials are not embedded in the host application.
 
 A complete example application featuring a Jetpack Compose implementation
 is available in
-[`examples/XLab`](https://github.com/XingMai/XmaxSDK-Android/tree/main/examples/XLab).
+[`examples/XLab`](https://github.com/Xmax-AI/XmaxSDK-Android/tree/main/examples/XLab).
 It demonstrates real-time generation using live camera feeds, static images, and
 local video files.
 
@@ -606,7 +731,7 @@ local video files.
 ## Contact us
 
 For bug reports and feature requests, please open a
-[GitHub Issue](https://github.com/XingMai/XmaxSDK-Android/issues). For integration
+[GitHub Issue](https://github.com/Xmax-AI/XmaxSDK-Android/issues). For integration
 assistance and technical support, contact us at [sdk@xmax.ai](mailto:sdk@xmax.ai).
 
 <br>

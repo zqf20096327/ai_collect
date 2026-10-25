@@ -161,6 +161,7 @@ It runs on a strong model, never raises a budget cap, and you can turn it on kee
 | `keel2 update` | get the newest version |
 | `keel2 doctor` | find problems and say how to fix them |
 | `keel2 start --wifi` / `keel2 share tailscale` | use keel from your phone (pair it in Settings › Devices) |
+| `keel2 muxy hook` / `keel2 muxy workspace` | keel in [Muxy](https://github.com/muxy-app/muxy) (a macOS terminal): questions and flow results as Muxy notifications, a ready workspace ([more](docs/muxy.md)) |
 | `keel2 help` | all commands |
 
 **Something wrong?** Run `keel2 doctor`. It tells you what to do.
@@ -176,6 +177,24 @@ chats with KeelBot. Start keel with `keel2 start --wifi` (your Wi-Fi), or share 
 on your tailnet) or `keel2 share tunnel` (a public https address). Then pair the app in **Settings › Devices › Pair a
 phone**: scan the QR code. It talks to keel directly; nothing goes through a server of ours.
 [More](docs/GUIDE.md#use-keel-from-your-phone)
+
+## In your JetBrains IDE
+
+The keel plugin ([jetbrains/](jetbrains/README.md), IntelliJ IDEA, PyCharm, WebStorm and the other 2024.3+ IDEs)
+brings keel into the editor: review threads on the pull request's diff with "Is the reviewer right?", the questions
+your flows wait at (a balloon and "keel · N questions" in the status bar), Start a flow from a selection, and KeelBot
+with its changed lines marked in the editor. Build it with `cd jetbrains && ./gradlew buildPlugin`, install the zip
+(Settings › Plugins › ⚙ › Install Plugin from Disk), then connect in Settings › Tools › keel: keel2 on this computer,
+or a pairing code like the phone.
+
+## In VS Code
+
+The keel extension ([vscode/](vscode/README.md), VS Code 1.90+) has the same features as the JetBrains plugin: your
+flows with their live activity (the running agents, their edits, commands and tests), the questions they wait at (a
+notification and "◆ keel: 1 question" in the status bar), review threads on the pull request's changed lines in the
+normal editors, Start a flow, and KeelBot (Ctrl+Alt+K on a selection). Build it with
+`cd vscode && npm ci && npm run package`, install it with `code --install-extension keel-vscode-0.1.0.vsix`, then run
+**keel: Connect**: keel2 on this computer, an API key, or a pairing code like the phone. [More](docs/vscode.md)
 
 ## More
 

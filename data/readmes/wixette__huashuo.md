@@ -17,11 +17,11 @@
 
 <p align="center">简体中文 | <a href="README.en.md">English</a></p>
 
-话说（Huashuo）把中文小说（TXT、EPUB）做成多角色有声书：先由 LLM 找出每句对白是谁说的，再按角色的性别、年龄和性格为每个人挑一个合适的声音，用 Qwen3-TTS 在 Mac 本机合成语音，最后生成带章节、封面的 M4B 有声书，可以直接在 Apple Books 里收听。语音合成完全在本机进行；LLM 可以用云端服务，也可以用本机运行的模型，做到零费用。当前是预发布版 0.1.0a1。
+话说（Huashuo）把中文小说（TXT、EPUB）做成多角色有声书：先由 LLM 找出每句对白是谁说的，再按角色的性别、年龄和性格为每个人挑一个合适的声音，用 Qwen3-TTS 在 Mac 本机合成语音，最后生成带章节、封面的 M4B 有声书，可以直接在 Apple Books 里收听。语音合成完全在本机进行；LLM 可以用云端服务，也可以用本机运行的模型，做到零费用。当前版本 0.2.0。
 
 > Huashuo turns Chinese novels (TXT / EPUB) into multi-voice M4B audiobooks on an Apple
 > Silicon Mac: an LLM finds who says each line, and Qwen3-TTS reads every character in a
-> fitting voice, locally. Pre-release 0.1.0a1. [English README →](README.en.md)
+> fitting voice, locally. Version 0.2.0. [English README →](README.en.md)
 
 ## 试听
 
@@ -36,7 +36,7 @@ https://github.com/user-attachments/assets/46a00a20-8378-4aa3-97c8-bdf618f45e63
 https://github.com/user-attachments/assets/b276f93a-4595-4c31-8619-d9aae55b9897
 
 每句对白是谁说的、每个角色用什么声音，都是程序自动决定的；《广告》只在试听后手工对调了两个角色的声音。
-完整的有声书可以从 [v0.1.0a1 发布页](https://github.com/wixette/huashuo/releases/tag/v0.1.0a1)下载：
+完整的有声书（用 0.1.0a1 制作）可以从 [v0.1.0a1 发布页](https://github.com/wixette/huashuo/releases/tag/v0.1.0a1)下载：
 M4B 有声书（用 Apple Books 收听）、单个 MP3 文件、分章节的 MP3 文件。两篇小说采用 CC BY-NC-ND 4.0
 许可，经作者许可用于演示。
 
@@ -52,7 +52,7 @@ M4B 有声书（用 Apple Books 收听）、单个 MP3 文件、分章节的 MP3
 
 ## 现状与限制
 
-这是预发布版，面向试用者和开发者：
+0.2.0 是第一个正式版，仍然需要从源码安装：
 
 - 只支持 Apple Silicon Mac（M1 或更新的芯片，建议 16 GB 以上内存），需要从源码安装；命令行界面只有英文
 - 中文书可以多角色朗读；英文书暂时只能由旁白一个声音读全书
@@ -97,7 +97,7 @@ huashuo clean book.epub            # 删除合成过程中缓存的音频（有�
 | 想要 | 做法 |
 |---|---|
 | 换某个角色的声音 | 修改 `cast.json` 里该角色的 `voice`；`huashuo voices` 列出所有可选的声音，`huashuo audition book.epub --library` 逐一试听 |
-| 纠正读错的字 | 在 `pron.txt` 里加一行，例如 `单于 = chán yú`（写拼音或同音字都可以） |
+| 纠正读错的字 | 在 `pron.txt` 里加一行，例如 `单于 = chán yú`（写拼音或同音字都可以）。TTS 不认识的生僻字（如「笹垣」的「笹」）会自动换成同音常用字来读，导入时会列出来 |
 | 纠正认错的说话人 | LLM 没有把握的对白列在 `review.txt` 里；在 `script.huaben.jsonl` 里修改那句对白的 `speaker` |
 | 换旁白的声音 | `--narrator female`（女声）、`--narrator male`（男声）或某个具体的声音；`--narrator auto` 恢复自动选择 |
 | 由旁白一个声音读全书 | `--single-voice`；`--multi-voice` 恢复多角色朗读 |
@@ -112,7 +112,8 @@ huashuo clean book.epub            # 删除合成过程中缓存的音频（有�
 ## LLM 的选择与费用
 
 多角色朗读需要 LLM 读一遍全书，找出每句对白是谁说的。可以任选一种方式，配置写在运行 `huashuo`
-的目录下的 `.env` 文件里（这个文件不会被提交到 Git）。
+的目录下的 `.env` 文件里（这个文件不会被提交到 Git）。仓库里的 [`.env.example`](.env.example) 是带说明的模板，
+复制一份改名为 `.env` 再填写：`cp .env.example .env`。
 
 **云端 LLM**（默认，质量最好）：任何兼容 OpenAI 接口的服务都可以，默认模型是 `gpt-6-sol`。
 
@@ -137,7 +138,7 @@ HUASHUO_LLM_BASE_URL=http://localhost:1234/v1   # LM Studio；Ollama 是 http://
 HUASHUO_LLM_MODEL=…                             # 在本机服务里加载的模型名
 ```
 
-模型需要支持 JSON Schema 结构化输出，长篇的提示词较长，上下文窗口也要足够大。注意：这个预发布版还没有用本机模型测试过
+模型需要支持 JSON Schema 结构化输出，长篇的提示词较长，上下文窗口也要足够大。注意：目前还没有用本机模型测试过
 标注质量，能在 Mac 上运行的模型对中文小说的理解通常不如云端大模型，说话人可能认错得更多；建议先用短篇或 `--sample` 试听。
 
 **不用 LLM**（零费用）：`--single-voice` 由旁白一个声音读全书，不需要任何配置。

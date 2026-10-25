@@ -58,10 +58,11 @@ For each area, Kiln Watch shows every day since 2003 on the harmonized scale, an
 
 Ask a question in plain English or Bangla, for example *"When is burning season in Rajshahi, and is this year unusual so far?"* or *"Did the correction really remove the 2012 jump?"*
 
-- **It picks its own steps.** Claude (Anthropic) decides which of the project's five functions to call, and in what order: find an area, its fire calendar, this season so far, the two-week outlook, and the harmonization evidence. It takes at most 6 steps per question.
+- **It picks its own steps.** Google Gemini decides which of the project's seven functions to call, and in what order: find an area, its fire calendar, this season so far, the two-week outlook, the harmonization evidence, kiln seasons and the national trend. It takes at most 6 steps per question.
 - **Our code computes; the AI explains.** Every figure comes from a tested project function reading NASA FIRMS data in the public export. A check blocks any answer that states a number no function returned, and the page shows "blocked" rather than an unchecked figure.
 - **You can see the data behind each answer:** every function call, its result, the dataset and the data build.
-- **Where to use it.** `python -m kilnwatch ask "your question"` answers any question live (needs an `ANTHROPIC_API_KEY`). The website's AI agent page (`#/ask`) shows saved answers to demo questions, generated with `python -m kilnwatch ask --build-cache`, so it works offline. Until answers are generated for a data build, the page says so.
+- **Where to use it.** `python -m kilnwatch ask "your question"` answers any question live (needs an `GEMINI_API_KEY`). On the website's AI agent page (`#/ask`), you add your own Gemini key in Settings and ask; every question you ask is saved with its answer under "Your saved answers", in your browser only, with each figure linked to the data that returned it.
+- **Live chat with your own key.** The `#/ask` page can also answer live with Google Gemini, using a key you paste in (kept in your browser, sent only to Google). That path does not call the seven functions: the page gives Gemini a fixed set of facts for one district, and the same number check blocks any figure outside them. See [`docs/AI_USE.md`](docs/AI_USE.md).
 - **Limits.** It answers about Bangladesh areas only, the same areas the website covers. Code: [`kilnwatch/ask.py`](kilnwatch/ask.py); disclosure: [`docs/AI_USE.md`](docs/AI_USE.md).
 
 ## Extension 1: crop burning windows
@@ -111,15 +112,20 @@ Every topic has three layers: *what it means* in one plain sentence, an app to *
 | **Home** | All four | The harmonized fire record in one picture, three findings, today's NASA fire data, real questions turned into actions, and a four-card guide for judges |
 | **How it works** | Creativity, Relevance | Steps through the whole approach on real data (cameras, hot pixels, one scale, calendars, who acts, then the kiln extension), then a checklist of everything the challenge asks for and where it is on the site |
 | **My area** | Impact | Search, tap the map or use their location → when burning season is there, whether this season is unusual so far, a tested two-week outlook (1 November to mid-May), a typical year month by month with the harvest windows (Extension 1) and kiln months (Extension 2); compare two areas. The map can show NASA satellite or night-lights imagery and step through this season week by week |
-| **AI agent** (Ask Kiln Watch) | Creativity, Validity | Plain-language answers written by Claude from the project's own functions, with every function call and result behind each figure |
+| **News** | Impact, Relevance | Bangladeshi newspaper stories about crop, waste and kiln burning beside our own satellite data: a map of this season's fire with a pin per story, and each story with what the satellites saw around its date, how common fire is in that district and earlier news there. The tab appears only when a news build exists ([`docs/news_plan.md`](docs/news_plan.md)) |
+| **AI agent** (Ask Kiln Watch) | Creativity, Validity | Plain-language answers written by Gemini from the project's own functions, with every function call and result behind each figure |
+| **For farmers** (`#/crops`) | Impact | Built for farmers who are not technical: choose a district (or use your location; the choice is remembered on that device) → what this month means for the farm, whether this season has had more fire than usual, the two-week forecast, the next twelve months with the Aman, Boro, wheat and sugarcane harvests, the months fields near you are usually burned and the month to get ready (Extension 1), what to do with straw instead of burning it, what burning costs in fertiliser, and a one-tap call to the government Krishi Call Centre (16123). One column on a phone; on a laptop the district and "right now" stay in view beside the months. Each outside fact is linked to its source |
 | **World map** | Relevance | Every country, state and city on Earth, opening on South Asia, with NASA satellite and night-light backgrounds: search any place or tap the map to see what Kiln Watch covers there. Bangladesh is live; South Asia's calendar is being built |
+| **Seen from space** | Creativity, Presentation | A guided tour on a full-window 3D globe that arrives from deep space (Back / Next, chapter tabs, a video-style time bar): the five fire satellites circling the Earth and passing over any place you click or search for (fire squares in Bangladesh) on a chosen day, a whole season of fire-days rising as 11 km columns, and how much ground one MODIS or VIIRS pixel covers (and how small a kiln is next to it). Detailed globe online (CesiumJS, NASA GIBS, Sentinel-2 close up); light globe offline (globe.gl, bundled NASA images) |
 | **Who benefits** | Impact | Picks a person (farm officer, family, scientist, journalist, inspector, policy maker) and a district → their real question, what the data shows there, dated actions, the benefit and the limits. Printable, with its own link |
 | **Can you trust it?** | Validity | Every pre-registered test in plain words, marked passed, failed or no link found; whether the cameras agree after correction; how the outlook was tested; how we kept ourselves honest; what we never claim |
 | **Kiln planner** (extension) | Impact | Drag a slider 2012 → today and watch the kiln season lengthen on the map; per-area start, busiest month and end; longest and fastest-growing seasons |
-| **Sensor switch**, **Timeline** | Creativity, Impact | The 2012 "fire explosion" puzzle; 2002 → 2027 by season with laws and satellite milestones (linked from the pages above) |
+| **Sensors** (Sensor switch), **Timeline** | Creativity, Impact | The 2012 "fire explosion" puzzle; 2002 → 2027 by season with laws and satellite milestones |
 | **For experts** | Validity | The original science story, Evidence, Method, the full Explorer (drawn boxes, raw vs harmonized, 95% intervals), kiln charts, code, the research data (CSV + Parquet) and the pre-registration |
 
-The crop burning windows (Extension 1) have no page of their own: they appear on My area, the Explorer and the farm-officer plan.
+The crop burning windows (Extension 1) have their own page for farmers, and also appear on My area, the Explorer and the farm-officer plan.
+
+Every page above has its own tab, under its short name. Below 1024 px the tabs sit on their own row and wrap instead of scrolling, so every tab stays in view.
 
 Everything is computed in the browser from the public, area-level export. "Use my location" is matched to an area on the device and never sent anywhere.
 
@@ -206,6 +212,9 @@ Good first pages:
 | Can you trust it? (every test, failures included) | http://localhost:5173/kiln-watch/#/trust |
 | My area | http://localhost:5173/kiln-watch/#/area |
 | AI agent (Ask Kiln Watch) | http://localhost:5173/kiln-watch/#/ask |
+| News (map of stories beside this season's fire) | http://localhost:5173/kiln-watch/#/news/map |
+| For farmers | http://localhost:5173/kiln-watch/#/crops |
+| Seen from space (3D globe tour) | http://localhost:5173/kiln-watch/#/space |
 
 **Production build** (what GitHub Pages serves):
 
@@ -242,7 +251,7 @@ Fill in `.env` (it is gitignored; never commit it):
 | `FIRMS_MAP_KEY` | NASA FIRMS fire archive and the daily near-real-time update | https://firms.modaps.eosdis.nasa.gov/api/map_key/ |
 | `OPENAQ_API_KEY` | Dhaka PM2.5 readings (validation only) | https://explore.openaq.org/register |
 | `EE_PROJECT` | Google Earth Engine: clear-land fractions, night lights, radar | A Google Cloud project registered at https://code.earthengine.google.com/register |
-| `ANTHROPIC_API_KEY` | Optional: the AI agent (`python -m kilnwatch ask`) | https://console.anthropic.com |
+| `GEMINI_API_KEY` | Optional: the AI agent (`python -m kilnwatch ask`, the daily `ask.json` refresh) | https://aistudio.google.com/apikey |
 | `EE_API_KEY`, `EOG_USER`, `EOG_PASSWORD` | Not needed by the current pipeline | Leave empty |
 
 Then sign in to Earth Engine once and run everything:
@@ -290,21 +299,23 @@ The first `npm run e2e` may ask you to run `npx playwright install chromium`.
 | 6 | `python -m kilnwatch gates` | Pre-registered feasibility gates G0–G3 → `GATE_BRANCH` |
 | 7 | `python -m kilnwatch harmonize` | Calibration chain Aqua ← S-NPP ← NOAA-20 (NOAA-21 not yet calibrated), pooling ladder, M0/M1, leave-one-season-out, seam test |
 | 8 | `python -m kilnwatch classify` | Source classifier, 4 holdouts, label-set comparison, persistence ablation, transfer test |
-| 9 | `python -m kilnwatch metrics` | ~570 per-unit calendars, normals, flags, season metrics, map layers, grid tiles |
+| 9 | `python -m kilnwatch metrics` | ~560 per-unit calendars, normals, flags, season metrics, map layers, grid tiles |
 | 10 | `python -m kilnwatch validate` | Validation layers (shape across seasons, TROPOMI NO₂ DiD, Dhaka PM2.5 lags) |
 | 11 | `python -m kilnwatch activity --extract all` | Amendment 1: Black Marble night lights (half-monthly, 2012–) and Sentinel-1 radar (monthly, 2015–) at every kiln cluster and its 3 matched controls; tests GL/GS on the held-out clusters; kiln-season calendars per area (slow, resumable) |
 | 11b | `python -m kilnwatch transfer` | Amendment 2: the kiln method in **Pakistan and India**. APAD kilns, a seeded 2,000-cluster sample per country, distance-ring controls, Black Marble night lights (and Sentinel-1 radar on a subsample), tested with Bangladesh's months and with months learned on 400 calibration clusters. `--prepare-only` builds samples and controls without any outcome data (slow, resumable) |
 | 12 | `python -m kilnwatch export` | Public tier → `web/public/data/`, with name + value safety checks and size budgets |
+| 12b | `python -m kilnwatch news` | Optional: finds stories in Bangladeshi newspapers' sitemaps, Gemini reads them, code checks every field (needs `GEMINI_API_KEY`). `--publish` uploads the store as the `news-current` release asset |
+| 12c | `python -m kilnwatch news-pair` | Adds the satellite parts to each story and writes `news/` into the public export (no AI, no network) |
 | 13 | `cd web; $env:DATA_SRC="real"; npm run build` | Static site in `web/dist/` |
 
-`python -m kilnwatch all` runs steps 1, 3, 4, 6–10, 11 (from its cache, without `--extract`) and 12 in order, and fails fast if the Earth Engine cache is missing.
+`python -m kilnwatch all` runs steps 1, 3, 4, 6–10, 11 (from its cache, without `--extract`) and 12 in order, and fails fast if the Earth Engine cache is missing. The news steps are not part of `all`.
 
 ## How it is built
 
 - **Pipeline:** Python 3.11+ · pandas · GeoPandas · scikit-learn · Earth Engine (`kilnwatch/`, one module per stage)
-- **Site:** React 19 + TypeScript + Vite + Tailwind CSS v4 + ECharts + a self-contained SVG map (`web/`). Static, no server; deep links via `HashRouter`.
+- **Site:** React 19 + TypeScript + Vite + Tailwind CSS v4 + ECharts + a self-contained SVG map, plus CesiumJS and globe.gl for the 3D globe (`web/`). Static, no server; deep links via `HashRouter`.
 - **Contract:** `web/src/lib/types.ts` (Python writes it, TypeScript reads it). It is tested under all five gate branches.
-- **Daily updates:** `.github/workflows/deploy.yml` fetches FIRMS near-real-time data, labels it with the frozen model and redeploys.
+- **Daily updates:** `.github/workflows/deploy.yml` fetches FIRMS near-real-time data, labels it with the frozen model and redeploys. Its news job stays off until the `GEMINI_API_KEY` secret exists; without a news build the site has no News tab.
 - **Pre-registration:** [`docs/PREREGISTRATION.md`](docs/PREREGISTRATION.md) was committed before any analysis. Its thresholds are never edited. Later additions are dated amendments in [`docs/PREREGISTRATION_AMENDMENTS.md`](docs/PREREGISTRATION_AMENDMENTS.md), each written before the data it governs were analysed.
 - **Knowledge graph:** `graphify-out/` holds a graph of the design docs (`graphify query "<question>"`).
 
@@ -320,7 +331,7 @@ Public files contain area-level statistics only. Kiln ids, cluster ids, candidat
 
 ## Credits and licences
 
-Code: MIT. Data:
+Code: MIT ([LICENSE](LICENSE)). Data:
 - NASA FIRMS (MODIS C6.1, VIIRS 375 m)
 - Google Earth Engine datasets: MOD14A1/MYD14A1/VNP14A1, ESA WorldCover, Sentinel-5P, ERA5-Land
 - NASA Black Marble VNP46A2 night lights (Román et al. 2018); Copernicus Sentinel-1 SAR (ESA); NASA ECOSTRESS L2T LSTE v2 and Landsat 8/9 Collection 2 (kiln pilots only)
@@ -331,17 +342,21 @@ Code: MIT. Data:
 - geoBoundaries ADM0 outlines of Pakistan (OpenStreetMap, ODbL 1.0) and India (CC0 1.0), for Amendment 2 controls
 - OpenAQ (CC BY 4.0)
 
+### Cite
+
+Use GitHub's "Cite this repository" button (from [`CITATION.cff`](CITATION.cff)). The research data release carries its own CC BY 4.0 licence and citation line.
+
 ## Team
 
-**Team Off The Binary**
+**Team Off The Binary**  
+*From Bangladesh*
 
-- Arna · Frontend
-- Sajid · Backend
-- Aalvee · AI Agent
-- Ahnaf · Data
-- Nazifa · Research
-- Maruf · Design
+| Team member | Team member | Team member |
+|---|---|---|
+| **Israt Jahan Arna**<br>**FRONTEND ENGINEERING LEAD** | **Nazifa Jahan**<br>**RESEARCH & INNOVATION LEAD** | **Sajid Alam Chowdhury Omee**<br>**BACKEND SYSTEMS ENGINEER** |
+| **Aalvee Aarham**<br>**AI SYSTEMS ARCHITECT & PROJECT LEAD** | **Maruf Hasan Tawhid**<br>**DATA ACQUISITION & DATA ANALYST** | **Muhammad Ahnaf Sarker**<br>**LEAD AI/ML DEVELOPER** |
+
 
 ## Build dates
 
-The planning documents, pipeline, data processing and first results were built on 5–6 October 2026, after the challenge summary was published; the plain-language redesign and its apps followed on 7 October 2026. The fire-calendar-first pages, the two-week outlook, the research data release, the world map and the AI agent followed on 10 October 2026. The public git history records every date.
+The planning documents, pipeline, data processing and first results were built on 5–6 October 2026, after the challenge summary was published; the plain-language redesign and its apps followed on 7 October 2026. The fire-calendar-first pages, the two-week outlook, the research data release, the world map and the AI agent followed on 10 October 2026. The Seen from space globe and the News page followed on 11–12 October 2026, and the Crops page and real data on the Ask stage on 13 October 2026. The Crops page was rebuilt as the page for farmers on 25 October 2026. The public git history records every date.

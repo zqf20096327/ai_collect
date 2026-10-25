@@ -15,10 +15,10 @@
 Welcome to the canonical llm.rb repository.
 
 llm.rb is a runtime for building agentic AI applications
-on CRuby. It has zero runtime dependencies by default, supports
-concurrent and parallel tool execution and has a single coherent API
-that spans 15+ providers.
-The README covers a lot of ground and the
+on CRuby. It runs on Ruby's standard library and nothing
+else by default, it supports concurrent and parallel tool
+execution and has a single coherent API that spans 15+
+providers. The README covers a lot of ground and the
 [changelog](CHANGELOG.md)
 tracks what has changed between releases.
 
@@ -35,8 +35,7 @@ gem install llm.rb
 ##### v18
 
 The v18 series is available as a prerelease. <br>
-It requires Ruby 4.0 or later <br>
-Ruby (4.1.0.dev|4.1.0.preview1) is recommended.
+It requires Ruby 4.0.0 or later. Ruby 4.1.0+ is recommended.
 
 ```bash
 gem install llm.rb --pre
@@ -87,20 +86,18 @@ class GetTime < LLM::Tool
   end
 end
 
-llm    = LLM.deepseek
-tracer = LLM::Tracer.pretty(llm)
-tools  = [GetTime]
-stream = StringIO.new
+llm     = LLM.deepseek
+options = {
+  tracer: LLM::Tracer.multi(llm, *[:Logger, :Telemetry].map { LLM::Tracer.const_get(it) }),
+  tools:  [GetTime],
+  stream: StringIO.new,
+  concurrency: LLM::VERSION.start_with?("18.") ? :ractor : :thread
+}
 
-##
-# requires v18+
-# use `:thread` on <=v17
-concurrency = :ractor
-
-agent = LLM::Agent.new(llm, tools:, tracer:, stream:, concurrency:)
+agent = LLM::Agent.new(llm, options)
 agent.talk "hello world"
 agent.talk "what time is it?"
-puts stream.string
+puts options[:stream].string
 ```
 
 ##### interrupt.rb
@@ -123,8 +120,9 @@ interrupt the agent, or give up trying:
 require "llm"
 require "llm/tools"
 
-llm   = LLM.deepseek
-agent = LLM::Agent.new(llm)
+llm         = LLM.deepseek
+concurrency = LLM::VERSION.start_with?("18.") ? :ractor : :thread
+agent       = LLM::Agent.new(llm, concurrency:)
 
 Thread.new do
   LLM.interrupt(
@@ -135,10 +133,9 @@ Thread.new do
 end
 
 begin
-  stream      =  $stdout
-  tools       = [LLM::Tool::ReadFile]
-  concurrency = LLM::VERSION.start_with?("18.") ? :ractor : :thread
-  agent.talk("summarize README.md", concurrency:, stream:, tools:)
+  stream = $stdout
+  tools  = [LLM::Tool::ReadFile]
+  agent.talk("summarize README.md", stream:, tools:)
 rescue LLM::Interrupt
   puts "!! interrupted !!"
 end
@@ -163,8 +160,14 @@ mcp = LLM::MCP.http(
   transport: :net_http_persistent
 )
 
-agent = LLM::Agent.new(llm, stream: $stdout, tools: mcp.tools)
-agent.talk "Find me an interesting Ruby project on GitHub"
+##
+# Roll the dice
+concurrency = %i[sequential async fork fiber thread ractor].sample
+
+##
+# Let's go
+agent = LLM::Agent.new(llm, stream: $stdout, concurrency:)
+agent.talk "Find me an interesting Ruby project on GitHub", tools: mcp.tools
 ```
 
 
@@ -710,20 +713,20 @@ require "llm"
 require "llm/tools"
 
 class Agent < LLM::Agent
-  set name: "sysadmin",
-      description: "performs system administration tasks",
-      instructions: proc { File.read("prompt.md") },
+  set name: "dennis",
+      description: "a unix expert",
+      instructions: proc { File.read("instructions.md") },
       concurrency: :fork,
-      tools: :mytools
+      tools: :toolset
 
   private
 
-  def mytools
+  def toolset
     [LLM::Tool::Exec]
   end
 end
 
-llm = LLM.deepseek
+llm   = LLM.deepseek
 agent = Agent.new(llm)
 agent.talk "What's our uptime?", stream: $stdout
 ```
@@ -761,13 +764,13 @@ require "active_record"
 require "llm"
 require "llm/active_record"
 
-class Octocat < ActiveRecord::Base
+class Agent < ActiveRecord::Base
   acts_as_agent(format: :jsonb) do |agent|
-    agent.set name: "octocat",
-              description: "performs actions on GitHub",
-              instructions: proc { File.read("prompt.md") },
+    agent.set name: "chris",
+              description: "a GitHub expert",
+              instructions: proc { File.read("instructions.md") },
               tools: :toolset,
-              tracer: proc { SQLTracer.new(llm, agent: self) }
+              tracer: proc { LLM::Tracer.pretty(llm) }
   end
 
   ##
@@ -783,7 +786,7 @@ class Octocat < ActiveRecord::Base
   def github
     @github ||= LLM::MCP.http(
       url: "https://api.githubcopilot.com/mcp/",
-      headers: {"Authorization" => "Bearer #{ENV['GITHUB_RUBYDEV_PAT']}"},
+      headers: {"Authorization" => "Bearer #{ENV['GITHUB_PAT']}"},
       transport: :net_http_persistent
     )
   end
@@ -799,18 +802,18 @@ class Octocat < ActiveRecord::Base
   end
 end
 
-agent = Octocat.create!
+agent = Agent.create!
 
 ##
 # Every call to `talk` automatically persists
 # to the database.
-agent.talk "what's new on the llm.rb repository?"
+agent.talk "what's new on r-uby-dev/llm ?", stream: $stdout
 
 ##
 # The conversation was persisted to database. A
 # fresh instance restores it and continues where
 # we left off
-agent = Octocat.find(agent.id).talk "and what about roda?"
+agent = Agent.find(agent.id).talk "what about roda?", stream: $stdout
 
 ##
 # Start an agent console.
@@ -1071,8 +1074,9 @@ interrupt the agent, or give up trying:
 require "llm"
 require "llm/tools"
 
-llm   = LLM.deepseek
-agent = LLM::Agent.new(llm)
+llm         = LLM.deepseek
+concurrency = LLM::VERSION.start_with?("18.") ? :ractor : :thread
+agent       = LLM::Agent.new(llm, concurrency:)
 
 Thread.new do
   LLM.interrupt(
@@ -1083,14 +1087,12 @@ Thread.new do
 end
 
 begin
-  stream      =  $stdout
-  tools       = [LLM::Tool::ReadFile]
-  concurrency = LLM::VERSION.start_with?("18.") ? :ractor : :thread
-  agent.talk("summarize README.md", concurrency:, stream:, tools:)
+  stream = $stdout
+  tools  = [LLM::Tool::ReadFile]
+  agent.talk("summarize README.md", stream:, tools:)
 rescue LLM::Interrupt
   puts "!! interrupted !!"
 end
-
 ```
 </details>
 
@@ -1655,7 +1657,7 @@ Rails deployment at a large-ish company.
       </p>
     </td>
     <td align="right" valign="middle" width="128">
-      <a href="https://www.youtube.com/watch?v=DmV49ogMDEI">
+      <a href="https://www.youtube.com/watch?v=IG0CHGGb1-I">
         <img src="jam.jpg" width="128" alt="Jam">
       </a>
     </td>

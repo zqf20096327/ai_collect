@@ -159,7 +159,7 @@ POST /api/graphs/simple_agent/stream
 $ curl -s http://localhost:7071/api/health
 {"status":"ok"}
 $ curl -s -X POST http://localhost:7071/api/graphs/simple_agent/invoke -H "Content-Type: application/json" -d '{"input":{"messages":[{"role":"human","content":"World"}],"greeting":""}}'
-{"output":{"messages":[{"role":"human","content":"World"},{"role":"assistant","content":"Hello, World! Goodbye!"}],"greeting":"Hello, World!"}}
+{"output": {"messages": [{"role": "human", "content": "World"}, {"role": "assistant", "content": "Hello, World! Goodbye!"}], "greeting": "Hello, World!"}}
 ```
 
 `/api/health` is the minimal anonymous liveness probe; `/api/health/details` is
@@ -305,6 +305,19 @@ app_local = LangGraphApp(auth_level=func.AuthLevel.ANONYMOUS)
 
 ### Streaming behavior
 
+Native buffered `POST /api/graphs/{name}/stream` responses encode each graph
+event directly as JSON in an `event: data` SSE frame, on both sync and async
+paths. Dictionaries remain JSON objects, tuples/lists become arrays, and scalars
+retain their JSON types (including `null`). In `stream_mode="messages"`, the
+message/metadata tuple becomes a two-element array; LangChain messages, including
+nested messages, retain structured `message_to_dict` data. Pydantic models use
+JSON-mode dumps; unsupported custom objects use the shared codec's `str` fallback.
+Non-dictionary events no longer use the lossy `{"data": "<Python repr>"}` envelope.
+Clients should JSON-decode each frame's `data:` value rather than assume an object.
+Non-finite numbers and other encoding failures produce the existing sanitized
+`event: error` frame, followed by `event: end`; normal completion also ends with
+`event: end`. Platform-compatible and true-streaming transports are unchanged.
+
 > **Default (`LangGraphApp`): buffered SSE.** All `/stream` endpoints on the classic
 > `LangGraphApp` (the native `POST /api/graphs/{name}/stream` and the
 > Platform-compatible `POST /threads/{id}/runs/stream` and `POST /runs/stream`)
@@ -356,6 +369,13 @@ run-lifecycle signals (`started` / `completed` / `failed` / `rejected`) for ever
 native invoke/stream run and every Platform `runs/wait` / `runs/stream` run. Each
 callback receives an immutable `RunContext` of **correlation identifiers and
 timing only** — never input, output, config, headers, or secrets.
+
+On the true-streaming surface, each started run receives exactly one terminal
+callback, including invoke cancellation, stream disconnection and iterator
+cleanup failures. Stream callbacks finish after iterator cleanup and lock
+release, before the final `event: end` frame is yielded, so closing at that
+frame cannot leave a span open. Cancellation and generator close still
+propagate; they are not reported as successful graph results.
 
 The package ships a built-in, dependency-free `LoggingRunObserver` for
 zero-boilerplate telemetry:
@@ -492,8 +512,34 @@ to customize.
 `thread_id_factory=...` to derive a checkpoint `thread_id` from a message; when
 it returns a value **and** the graph has a checkpointer, the app-level
 `thread_lock` guards the run so concurrent deliveries for the same logical
-thread do not mutate checkpoints concurrently. If the lock cannot be acquired a
-`ThreadContentionError` is raised so the binding abandons and retries.
+thread do not mutate checkpoints concurrently. Each delivery waits up to
+`lock_timeout=5.0` seconds (configurable on `register_service_bus`) before
+raising `ThreadContentionError` so the binding abandons and retries. The value
+must be finite and non-negative; `0.0` restores immediate contention failure.
+The adapter makes one `ThreadLock.acquire(..., timeout=...)` call, delegating
+blocking/backoff to the backend rather than busy-spinning. Async acquisition
+runs in a worker thread, not on the event loop. HTTP lock behavior is unchanged.
+
+**Wait budget and delivery safety.** The ceiling is per acquisition, not per
+message across redeliveries, and assumes the lock backend honors its timeout
+(configure bounded SDK/network timeouts on distributed backends too). Waiting,
+graph execution, result handling and settlement must fit within your queue or
+subscription's message lock duration, the host's `maxAutoLockRenewalDuration`
+for single-message triggers, and `functionTimeout`, with safety margin.
+Renewal can fail: this adapter neither renews broker locks nor reads remaining
+message/session lock lifetime. If sessions are explicitly enabled, budget for
+session lock/renewal limits as well; sessions remain **off by default**.
+`clientRetryOptions` controls broker operations, not function-execution retries.
+See the [Service Bus binding settings](https://learn.microsoft.com/en-us/azure/azure-functions/functions-bindings-service-bus).
+
+Host cancellation during async acquisition waits for the bounded worker to
+finish, releases any late-acquired token, then propagates cancellation without
+running the graph. Synchronous acquisition cannot be interrupted by Python;
+allow shutdown grace for its wait and backend cleanup. Abrupt process termination
+cannot guarantee cleanup. Waiting reduces rapid abandon/redelivery cycles but
+**cannot prevent dead-lettering** after `maxDeliveryCount` is exhausted. Delivery
+remains **at-least-once**, not exactly-once: make graphs and result handlers
+idempotent (for example using a durable message-ID record).
 
 **Error handling and telemetry.** Graph exceptions are **not swallowed** — a
 failing run propagates so the message is retried / dead-lettered per your
@@ -536,6 +582,17 @@ replacement for LangGraph checkpoints; reuse a checkpointer for conversation
 state as usual. Durable dependencies stay optional behind the `durable` extra.
 See [`examples/durable_async_agent/`](examples/durable_async_agent/) for a full
 create → poll → result → cancel walkthrough.
+
+Activity output is converted to plain JSON **before** the observer reports
+completion and before Durable persists the result. LangChain messages, including
+those nested in lists or dictionaries, retain structured `message_to_dict` data.
+Other custom values follow the existing JSON codec's string fallback. If encoding
+fails (for example, circular containers, unsupported dictionary keys, non-finite
+numbers, or a failing string conversion), the activity returns a normalized
+`error` with a generic serialization message and emits `on_run_failed`, never
+`on_run_completed`. It does not retry graph execution just to encode its output.
+Durable delivery remains **at-least-once**: duplicate deliveries or host failure
+can still execute the graph again, so graph side effects must be idempotent.
 
 
 ### Per-graph auth
@@ -608,6 +665,15 @@ With `platform_compat=True`, you also get SDK-compatible endpoints:
 - `POST /threads/{id}/history` — get state history
 
 ### Request format
+
+Native invoke responses keep the `{"output": ...}` envelope and use the shared
+JSON codec: nested LangChain messages retain structured `message_to_dict` data,
+Pydantic models use JSON-mode dumps, and other custom values (including datetime,
+set and bytes values nested in dictionaries) use the codec's `str` fallback.
+Response encoding finishes before `on_run_completed`. If encoding fails, the
+adapter returns a sanitized HTTP 500 with the same `X-Request-ID`, emits one
+`on_run_failed` event instead of completion, and releases the thread lock.
+Graph execution is not retried to serialize its output.
 
 ```json
 {
@@ -791,7 +857,26 @@ Notes:
 
 - **Single partition** — `AzureTableThreadStore` keys every thread under a single PartitionKey, capped by Azure Table per-partition throughput (~2000 entities/sec on Standard accounts). Search and count beyond `status` filtering are **client-side**; see [COMPATIBILITY.md](COMPATIBILITY.md).
 - **Prefix scans** — `AzureBlobCheckpointSaver` lists checkpoints via blob prefix scans; transaction count and latency grow with checkpoints-per-thread. Use the retention helpers below to keep that bounded.
-- **Entity size** — Azure Table entities are capped at 1 MB; the store logs a warning at 90% of the threshold.
+- **Table JSON capacity** — metadata, values and interrupts use legacy single-string properties
+  when they fit, or versioned `utf16-v1` chunks of at most 64 KiB per UTF-16 property.
+  Legacy entities remain readable. The store rejects content before writing if the
+  complete entity exceeds its conservative 1-MiB budget (including property names,
+  overhead and 4 KiB reserved for service/lock properties), or Azure's 255-property
+  limit. `TableStorageLimitError` is a `ValueError` with size and limit attributes:
+  reduce thread data or supply a Blob-backed custom `ThreadStore`; data is never
+  truncated. Conditional replacements remove obsolete chunks when documents shrink,
+  preserve unrelated fields, and retry ETag conflicts up to three times. Readers
+  must be upgraded before writers: older package versions cannot read chunked JSON.
+  Datetimes become strings, LangChain messages retain structured message dictionaries,
+  and Pydantic models use JSON-mode dumps through the shared JSON encoder.
+
+Platform wait and buffered-stream runs return a sanitized HTTP 500 when final
+storage persistence or outer-lock release fails, rather than reporting completion.
+The failure observer receives the actual exception; if graph execution failed
+first, that primary exception is retained and cleanup failures are logged separately.
+Outer-lock release is always attempted. A failed Table write can leave the row busy:
+inspect storage errors and use the stale-lock recovery procedure below; do not
+blindly retry a graph with non-idempotent side effects.
 
 #### Retention helpers
 
@@ -887,9 +972,20 @@ When using `AzureTableThreadStore` with Platform-compatible runs, each graph exe
 | Operation | Concurrency | Mechanism |
 | --- | --- | --- |
 | Lock acquisition (`try_acquire_run_lock`) | Atomic — exactly one caller wins | ETag CAS |
-| Lock release (`release_run_lock`) | Atomic — owner-fenced, ETag CAS | Owner-token check + merge update with ETag CAS |
+| Lock release (`release_run_lock`) | Atomic — owner-fenced, ETag CAS | Owner-token check + replacement with ETag CAS |
 
-**Owner fencing and CAS loss:** If an optional `owner_token` is supplied and no longer matches the thread's current `lock_token` (e.g. `reset_stale_locks()` already reclaimed it, or a newer run re-acquired it), the release is a no-op — the current entity is returned unchanged and a warning is logged. Likewise, if the ETag CAS itself is lost to a concurrent write between the owner check and the merge, the release is rejected and the current entity is returned instead of overwriting that concurrent change. In both cases the thread may remain `busy` — this is deliberate: a stale caller must never undo a newer owner's state.
+**Owner fencing and CAS retries:** If an optional `owner_token` is supplied and no longer matches the thread's current `lock_token` (e.g. `reset_stale_locks()` already reclaimed it, or a newer run re-acquired it), the release is a no-op — the current entity is returned unchanged and a warning is logged. On an ETag conflict, release reads the latest entity and checks ownership again, for at most three conditional-write attempts. A same-owner renewal or metadata update therefore does not strand the thread after a single conflict; a newer owner is never overwritten. Successful release atomically persists the terminal status and optional values, preserves other current properties, and removes `lock_token` and `lock_expires_at` using replacement semantics (merging `None` does not delete Azure Table properties). Exhaustion raises `RunLockReleaseError` (a `RuntimeError` subclass); Platform run handlers report a sanitized HTTP 500 rather than success, while still releasing local exclusion. Missing or concurrently deleted threads raise `KeyError`.
+
+**Renewal failure:** Platform runs renew store ownership every 20 seconds. A
+negative renewal result or exception is retained for cleanup: wait and buffered
+stream handlers return a sanitized HTTP 500 instead of reporting completion,
+notify the failure observer, and do not persist final graph values. An earlier
+graph error remains the primary failure. Cleanup stops and joins the renewal
+worker before owner-fenced store release and always attempts outer-lock release;
+host cancellation propagates after cleanup. Configure bounded Azure SDK network
+timeouts: cleanup must wait for any in-flight renewal I/O. This does not interrupt
+an executing synchronous graph or roll back side effects, so graph operations
+must remain idempotent. A newer owner's store lock is never cleared.
 
 **What can still go wrong:** Owner fencing and CAS protect against *concurrent* writers, not against a writer that never arrives. If a Function host instance is terminated during graph execution (scale-in, deployment, crash), **no** release call is ever made — there is no owner-token or CAS check to lose, because `release_run_lock` is simply never invoked — so the thread remains in `busy` status indefinitely.
 

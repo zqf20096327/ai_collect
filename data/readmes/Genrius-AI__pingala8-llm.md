@@ -5,11 +5,13 @@
   <br><sub>Click for the 31-second demo video (MP4, 4.3 MB). Text and timing from a real run; chat window recreated.</sub>
 </p>
 
+**Will it fit your GPU?** Try the [VRAM calculator](https://huggingface.co/spaces/Genrius-AI/llm-vram-calculator) | [![Qwen3-4B on Hugging Face, last 30 days](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fhuggingface.co%2Fapi%2Fmodels%2FGenrius-AI%2FQwen3-4B-Pingala8-2bit&query=%24.downloads&label=Qwen3-4B%20downloads%20%2830%20days%29&color=D4AF37)](https://huggingface.co/Genrius-AI/Qwen3-4B-Pingala8-2bit) [![Llama-3.1-8B on Hugging Face, last 30 days](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fhuggingface.co%2Fapi%2Fmodels%2FGenrius-AI%2FLlama-3.1-8B-Pingala8-2bit&query=%24.downloads&label=Llama-3.1-8B%20downloads%20%2830%20days%29&color=D4AF37)](https://huggingface.co/Genrius-AI/Llama-3.1-8B-Pingala8-2bit)
+
 **We make LLMs 85% smaller, with no retraining.** Pingala-8 is a 2-bit format for llama.cpp: Qwen3-4B goes from 8.05 GB to 1.24 GB (6.5x smaller), Llama-3.1-8B from 16.08 GB to 2.39 GB.
 At the same file size as llama.cpp's IQ2_XXS, our Qwen3-4B scores 21% higher on a 5-task quiz (50.8 against 41.9; it keeps 90% of the 8-bit model's 56.3)
 and writes replies 39% faster than Q4_K_M at half its size (batch 1, one RTX 5070 Ti Laptop GPU).
 
-**[Download the one-click build](https://github.com/Genrius-AI/pingala8-llm/releases/tag/v2.4-oneclick)** (Windows and Linux, NVIDIA RTX 30/40/50) | **[Paper (DOI)](https://doi.org/10.5281/zenodo.23481757)** | [Paper page: abstract, PDF, BibTeX](https://genrius-ai.github.io/pingala8-llm/paper.html) | **Models on Hugging Face:** [Qwen3-4B](https://huggingface.co/Genrius-AI/Qwen3-4B-Pingala8-2bit), [Llama-3.1-8B](https://huggingface.co/Genrius-AI/Llama-3.1-8B-Pingala8-2bit)
+**[Download the one-click build](https://github.com/Genrius-AI/pingala8-llm/releases/latest)** (Windows and Linux, NVIDIA RTX 30/40/50) | **[Paper (DOI)](https://doi.org/10.5281/zenodo.23481757)** | [Paper page: abstract, PDF, BibTeX](https://genrius-ai.github.io/pingala8-llm/paper.html) | **Models on Hugging Face:** [Qwen3-4B](https://huggingface.co/Genrius-AI/Qwen3-4B-Pingala8-2bit), [Llama-3.1-8B](https://huggingface.co/Genrius-AI/Llama-3.1-8B-Pingala8-2bit)
 
 **How it compares:** at the same file size and without retraining, it beats llama.cpp's IQ2_XXS and ik_llama.cpp's IQ2_KT on Qwen3-4B and Llama-3.1-8B (WikiText-2 perplexity on Qwen3-4B: 16.64 against 28.61 and 18.15; lower is better), but loses narrowly to IQ2_KT on Qwen3-14B (9.57 against 9.40), reads long prompts slower (0.74x IQ2_XXS), and needs our patched llama.cpp (CUDA). Retrained models such as Ternary Bonsai 4B score higher (11.59 at 1.07 GB).
 
@@ -18,7 +20,7 @@ Code, llama.cpp patches, build scripts and logs for the paper
 **Small-State Coset Trellis Coding at IQ2_XXS Size: An Equal-Bytes Study in llama.cpp**
 Harshit Goyal, Genrius AI (harshit@genrius.in), former Google software engineer and IIIT Delhi alumnus. Preprint, October 2026, version 2.4, DOI [10.5281/zenodo.23481757](https://doi.org/10.5281/zenodo.23481757).
 
-**Try it in one click (Windows, NVIDIA RTX 30/40/50):** download `pingala8-windows-cuda12.zip` from the [v2.4-oneclick release](https://github.com/Genrius-AI/pingala8-llm/releases/tag/v2.4-oneclick), unzip it and double-click `run_qwen3_4b.bat`. The model downloads once, then a chat page opens in your browser.
+**Try it in one click (Windows, NVIDIA RTX 30/40/50):** download `pingala8-windows-cuda12.zip` from the [latest release](https://github.com/Genrius-AI/pingala8-llm/releases/latest), unzip it and double-click `run_qwen3_4b.bat`. The model downloads once, then a chat page opens in your browser.
 
 ## Summary
 
@@ -98,7 +100,7 @@ Llama-3.1-8B: `hf download Genrius-AI/Llama-3.1-8B-Pingala8-2bit` and pass
 
 | path | contents |
 |---|---|
-| `patches/` | `llama_cuda_vs_7ac59a6.patch` (CUDA runtime, 13 files) and `llama_cpu_vs_7ac59a6.patch` (AVX2 CPU backend plus CUDA, 18 files), both against llama.cpp `7ac59a6`; apply one, not both |
+| `patches/` | `llama_cuda_vs_7ac59a6.patch` (CUDA runtime, 13 files) and `llama_cpu_vs_7ac59a6.patch` (AVX2 CPU backend plus CUDA, 19 files), both against llama.cpp `7ac59a6`; apply one, not both |
 | `B4.md` | how the two released B4 files were built, their sizes and sha256, and where each B4 number is in the logs |
 | `REPRODUCE.md` | the supplementary README: runtime build, the B3 reference build step by step, and a file:line map for the B3-era numbers |
 | `research/detail/` | encoder, builders, native-file writers, evaluation and benchmark scripts |

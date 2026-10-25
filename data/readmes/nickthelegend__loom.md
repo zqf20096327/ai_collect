@@ -1560,6 +1560,16 @@ loom team                   # who's doing what, right now
 - **Worker commits carry `Loom-Goal`, `Loom-Task`, `Loom-Agent` and `Loom-Member`
   trailers.** `git log` alone tells you which goal, task and agent wrote a line.
 
+**Two people, one goal — the agents split it themselves.** When teammates turn
+on team auto-orchestration (`loom team auto on`, or **Turn on** in the Team tab),
+a goal you start splits across both machines. Your orchestrator gets their agents
+as `team:codex`, `team:opencode`…; a task sent to one is claimed by their Loom on
+its own, run with **their** agent and subscription, and merged back into your
+goal's branch — still one PR. A teammate who goes offline doesn't stall you: an
+unclaimed task returns to your orchestrator after 10 minutes. `loom team auto`
+says what's missing; `loom orchestrate "…" --solo` keeps a goal on your machine.
+See [docs/teams.md](docs/teams.md#two-people-one-goal-team-auto-orchestration).
+
 **Phase 2 (stop colliding) is built too:**
 - **Declaring touches.** On a team project, every orchestra task declares the files
   it will `touch`, and Loom takes a lease on them.
@@ -1742,19 +1752,4 @@ Daemon side: [`src/daemon/relay.ts`](src/daemon/relay.ts).
 
 The **LoomPad** is the pad on your desk: one key per agent, a bar you hold to
 talk, and the answer spoken back through its own speaker. Press a key and it
-locks that agent in Loom — a real baton handoff, visible in the thread like any
-other. It talks to the daemon over Wi‑Fi, with USB‑HID as a fallback.
-
-It is all here, MIT, in [`hardware/orchestrator-pad/`](hardware/orchestrator-pad/README.md):
-parametric CAD, printable STLs, the wiring diagram, the Arduino firmware and the
-voice backend. Nothing to buy a licence for and nothing to reverse‑engineer.
-
-### Print it
-
-Six parts, all watertight, none needing supports. 0.4 mm nozzle, 0.2 mm layers,
-PETG or PLA — it prints on a bed‑slinger in an evening.
-
-| Part | Download | Orientation |
-|---|---|---|
-| Tray | [`tray.stl`](hardware/orchestrator-pad/exports/tray.stl) | flat on the bed |
-| Switch deck | [`switch-deck.stl`](hardware/orchestrato
+locks that agent in 

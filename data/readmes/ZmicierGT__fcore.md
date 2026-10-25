@@ -6,7 +6,7 @@
 - Use an API to ease the development of AI-strategies for financial markets analysis.
 - Utilize the power of the 'classical' technical and fundamental analyses combined with the modern AI-approach.
 - Use the own backtesting engine which takes into account a lot of issues related to an actual trade/investment and supports strategies involving multiple securities.
-- Perform a real-time screening of the market using the screening API.
+- Perform on-demand screening of the market (based on the latest stock quotes) using the screening API.
 - Generate reports.
 
 ## Here is a simplified diagram of how Fcore is designed:
@@ -23,12 +23,17 @@ Here are some basic examples of how to use Fcore. Please note that all the provi
 
 Fcore obtains data and stores it in a database - no need to re-fetch it again.
 
+Data from different data sources can be combined via subqueries. For example, quotes may be fetched from Yahoo Finance while the capitalization data may be obtained from FMP (no quotes needed to fetch it). Then the cap value can be added to every quote with the help of a subquery:
+
 ```python
-# Fetch quotes if needed. Otherwise just take them from a database.
-yf.YF(symbol='IBM', first_date="2024-1-1", last_date="2025-1-1").get()
+yf.YF(symbol='AAPL', first_date=first_date, last_date=last_date).get()
+fmp.FMP(symbol='AAPL', first_date=first_date, last_date=last_date).get_cap()
+
+# Get quotes with the FMP cap values added via a subquery
+quotes = yf.YF(symbol='AAPL', first_date=first_date, last_date=last_date).get(queries=[Subquery('fmp_capitalization', 'cap', title='cap')])
 ```
 
-Fcore uses labelled numpy arrays as the main data containers as they are memory efficient and fast. You can get the obtained columns in a such way: `quotes['annual_cashflow']`
+Fcore uses labelled numpy arrays as the main data containers as they are memory efficient and fast. You can get the obtained columns in a such way: `quotes['cap']`
 
 Invoke **python -m quickstart.min_data_management** to run the full example.
 
@@ -158,6 +163,9 @@ Use the following tool to manage quotes and obtain data.
 - [tools/growth_probability.py](tools/growth_probability.py) - AI trend estimator based on probabilistic classification. (**python -m demo.tools.growth_probability_demo** for demonstration, [source of the demo](demo/tools/growth_probability_demo.py))
 
 ### Screening demos
+
+Screeners make a conclusion on a single invocation by picking the securities which correspond the defined criteria.
+
 - [screener/rsi_scr.py](screener/rsi_scr.py) - RSI strategy screener (**python -m demo.screening.rsi_scr_demo** for a demonstration, [source of the demo](demo/screening/rsi_scr_demo.py))
 - [screener/regression_scr.py](screener/regression_scr.py) - Regression AI screener (**python -m demo.screening.regression_scr_demo** for a demonstration, [source of the demo](demo/screening/regression_scr_demo.py))
 - [screener/classification_scr.py](screener/classification_scr.py) - Classification AI screener (**python -m demo.screening.classification_scr_demo** for a demonstration, [source of the demo](demo/screening/classification_scr_demo.py))
@@ -165,6 +173,7 @@ Use the following tool to manage quotes and obtain data.
 ### Examples of backtesting strategies with portfolio management
 - [eql_test.py](demo/backtest/eql_test.py) - Equal sector weight portfolio demo (similar to EQL ETF). Note that here you may 'reconstruct' the ETF even prior its inception date. (**python -m demo.backtest.eql_test**)
 - [djia_test.py](demo/backtest/djia_test.py) - Demo to assemble from stocks the price-weighted portfolio which corresponds the DJIA index. (**python -m demo.backtest.djia_test**)
+- [cap_weight_test.py](demo/backtest/cap_weight_test.py) - Demo to assemble a market cap weighted portfolio from stocks using Yahoo outstanding shares. (**python -m demo.backtest.cap_weight_test**)
 - [grouping_test.py](demo/backtest/grouping_test.py) - Demo to test grouping in a portfolio. Grouping allows you to create a group for a particular asset type (international or domestic stock, particular sectors, bonds etc.). Each group has a pre-defined size which impacts position sizing. (**python -m demo.backtest.grouping_test**)
 
 ### Other examples of backtesting strategies
@@ -174,6 +183,11 @@ Use the following tool to manage quotes and obtain data.
 - [backtest/ma_classification.py](backtest/ma_classification.py) - MA/price crossover strategy where true/false signals are determined by AI. (**python -m demo.backtest.ma_classification_test**, [source of the demo](demo/backtest/ma_classification_test.py))
 
 Note that the tools and backtesting demos create an image with the result of a calculation located in *images* folder and open the image in the default image viewer.
+
+## Testing
+
+To run unit tests, invoke ***python -m pytest tests/unit -v*** (only Data API is tested now).
+To run integration tests, invoke ***python -m tests.integration.test_name*** (only Data API is tested as well).
 
 ## Additional Details
 

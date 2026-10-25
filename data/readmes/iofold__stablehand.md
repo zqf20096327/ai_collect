@@ -67,7 +67,6 @@ sed -i.bak \
   -e "s|^LITELLM_SALT_KEY=.*|LITELLM_SALT_KEY=$(openssl rand -hex 32)|" \
   -e "s|^LITELLM_DATABASE_PASSWORD=.*|LITELLM_DATABASE_PASSWORD=$(openssl rand -hex 24)|" \
   -e "s|^GALLERY_WEBHOOK_SECRET=.*|GALLERY_WEBHOOK_SECRET=$(openssl rand -hex 24)|" \
-  -e 's|^STABLEHAND_EGRESS_EXTRA_ALLOW=.*|STABLEHAND_EGRESS_EXTRA_ALLOW="GET *;HEAD *"|' \
   .env && rm .env.bak
 ```
 
@@ -102,25 +101,16 @@ grep '^STABLEHAND_API_TOKEN=' .env
 
 Open http://localhost:3200, paste the token, and open Overnight Analyst to see the run, its receipt and its files. Pass `-e ANALYST_TZ=<IANA zone>` to the seed for a schedule in your own timezone.
 
-<!--
-  SCREENSHOT STRIP SLOT
-  Four 1440 px PNGs from a clean demo stack (no test agents, no client names), as a 2x2 table:
-    approval-card.png   approval card under an agent-drawn chart, human tool names, Approve / Reject
-    synced-tabs.png     three browser tabs on the same run, mid-stream, showing identical output
-    turn-inspector.png  turn details with model, tokens, cost, duration, budget and approvals
-    finished-brief.png  the Overnight Analyst brief as published to the gallery
-  Markup to uncomment once the files exist:
-  <table>
-    <tr>
-      <td><img src="docs/media/approval-card.png" alt="Approval card under a chart"></td>
-      <td><img src="docs/media/synced-tabs.png" alt="Three tabs on one run"></td>
-    </tr>
-    <tr>
-      <td><img src="docs/media/turn-inspector.png" alt="Turn inspector with cost"></td>
-      <td><img src="docs/media/finished-brief.png" alt="Finished brief"></td>
-    </tr>
-  </table>
--->
+<table>
+  <tr>
+    <td><img src="docs/media/approval-card.png" alt="The Overnight Analyst's approval card before it publishes its brief, with the headline, sources and file name, and Approve and Reject buttons"></td>
+    <td><img src="docs/media/synced-tabs.png" alt="The same run open in two laptop tabs and on a phone, all showing the same approval card"></td>
+  </tr>
+  <tr>
+    <td><img src="docs/media/turn-inspector.png" alt="Turn inspector with the model, tokens, cost, the approval and the files the run produced"></td>
+    <td><img src="docs/media/finished-brief.png" alt="The finished brief as the artifact gallery serves it"></td>
+  </tr>
+</table>
 
 ## Built with Stablehand
 
@@ -128,9 +118,9 @@ Open http://localhost:3200, paste the token, and open Overnight Analyst to see t
 |---|---|---|
 | Overnight Analyst | Opens your sources in a sandboxed browser every morning, screenshots each one, writes a one-page HTML brief and publishes it to a gallery page. We have run it daily since August 2026. | [packages/examples/overnight-analyst](packages/examples/overnight-analyst) and [extensions/artifact-gallery](extensions/artifact-gallery) |
 | Content factory | Each week reads what is working in your niche (Apify) and what came up in your meetings (Granola), drafts a LinkedIn post, an X thread and a blog outline in your voice, and waits for you to approve, edit or reject each one from your phone. Six agents chained by events under one campaign budget. | [packages/examples/content-factory](packages/examples/content-factory) |
-| Inbox agent | Gives each incoming email its own sandboxed run, pulls out the fields and shows where in the email each one came from, and drafts a reply that a person approves before it is sent. When the sender answers, the same thread picks up again. | Rebuilding on synthetic email |
-| Folder review | Takes a folder of documents, reads every file and returns findings that cite the document and page they came from. Follow-up questions run in the same thread. | Rebuilding on synthetic documents |
-| Experiment loop | Runs a benchmark task, reads the graded result, keeps or discards the change and queues the next run, all inside one campaign budget. | Rebuilding on [extensions/gdpval-bench](extensions/gdpval-bench) |
+| Inbox agent | Gives each incoming email its own sandboxed run, pulls out the fields and shows where in the email each one came from, and drafts a reply that a person approves before it is sent. When the sender answers, the same thread picks up again. | [packages/examples/inbox-agent](packages/examples/inbox-agent) |
+| Folder review | Takes a folder of documents, reads every file and returns findings that cite the document and page they came from. Follow-up questions run in the same thread. | [packages/examples/folder-review](packages/examples/folder-review) |
+| Experiment loop | Runs a graded task slice, has a proposer agent write the next change from the failures, keeps it only when the score beats run-to-run noise, and repeats until the campaign budget or iteration cap runs out. Every iteration leaves a receipt and a diff; you approve the winner before it reaches production. | [packages/examples/experiment-loop](packages/examples/experiment-loop) |
 | Chart chat | Answers questions with charts and tables drawn in the reply: bar, line, funnel, sankey, metric cards and 10 more. | The chart catalog ships today; try it in [packages/examples/react-embed-chat](packages/examples/react-embed-chat) |
 
 The inbox agent, folder review and experiment loop started as client and research projects. The public versions run on synthetic data or public benchmarks.
@@ -184,7 +174,7 @@ Settings live in `.env` (start from [.env.example](.env.example)). The full list
 | `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GOOGLE_API_KEY` | Provider keys. Agents reference them as `$secret:NAME` in their manifests. |
 | `SECRET_MASTER_KEY` | Encrypts per-agent secrets (AES-256-GCM). Required. |
 | `STABLEHAND_API_TOKEN` | Operator master token for the API and UI. Required. Create scoped `cmk_` keys for extensions under Settings, Access keys. |
-| `STABLEHAND_EGRESS_EXTRA_ALLOW` | Extra egress rules for sandboxes, `;`-separated, appended to [packages/egress-proxy/rules.default.txt](packages/egress-proxy/rules.default.txt). |
+| `STABLEHAND_EGRESS_EXTRA_ALLOW` | Extra egress rules for every agent's sandboxes, `;`-separated, appended to [packages/egress-proxy/rules.default.txt](packages/egress-proxy/rules.default.txt). Per-agent rules go on the agent instead: [docs/sandbox-egress.md](docs/sandbox-egress.md). |
 | `COMPOSE_FILE` | The compose files that make up the stack. `.env.example` lists the base file, the model gateway and the gallery. |
 | `STABLEHAND_IMAGE_TAG` | Tag of the `ghcr.io/iofold/stablehand-*` images. `latest` follows master; set a release such as `0.1.0` or `sha-<commit>` to pin one. |
 | `LITELLM_MASTER_KEY`, `STABLEHAND_MODEL_GATEWAY_*` | Model gateway credentials; [deploy/compose/model-gateway](deploy/compose/model-gateway/README.md) explains each. |
@@ -206,7 +196,7 @@ Remove an overlay from `COMPOSE_FILE` to run without it. `COMPOSE_FILE=docker-co
 | PostgreSQL | localhost:5433 |
 | Artifact gallery | http://localhost:8090 |
 | LiteLLM gateway | http://127.0.0.1:4400, loopback only |
-| Sandbox egress proxy | `egress:8080`, on the internal agents network only |
+| Sandbox egress proxy | `egress:8081` (`8080` for sandboxes started before per-agent egress), on the internal agents network only |
 | pgAdmin (`--profile debug`) | http://localhost:5050 |
 
 Day-to-day commands: `docker compose logs -f`, `docker compose down`, and `docker compose down -v` to also delete the data volumes.

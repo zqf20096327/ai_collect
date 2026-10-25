@@ -388,7 +388,7 @@ POST /api/translate                   Sentence EN -> ZH (cache + fallbacks)
 After installation, confirm:
 
 1. The launcher starts the server and opens <http://127.0.0.1:8300>;
-   `GET /api/health` returns `{"ok": true, "version": "0.2.0"}`.
+   `GET /api/health` returns `{"ok": true, "version": "0.2.1"}`.
 2. `GET /api/asr/status` reports `unloaded`; idle memory stays low.
 3. Import an audio file: the job moves through `transcribing` →
    (`translating`) → `done` (the first run downloads the model), and the

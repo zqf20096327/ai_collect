@@ -24,6 +24,8 @@ This is the Rust language implementation of [LangChain](https://github.com/langc
   - [x] [Ollama](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/llm_ollama.rs)
   - [x] [Anthropic Claude](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/llm_anthropic_claude.rs)
   - [x] [Response caching for any LLM](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/llm_cache.rs)
+  - [x] [Reasoning / thinking (Claude, OpenAI, Ollama, DeepSeek)](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/llm_thinking.rs)
+  - [x] [Prompt caching (Claude; cache usage for OpenAI, DeepSeek, Qwen, Bedrock)](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/llm_prompt_caching.rs)
 
 - Embeddings
 
@@ -48,6 +50,7 @@ This is the Rust language implementation of [LangChain](https://github.com/langc
   - [x] [SurrealDB](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/vector_store_surrealdb/src/main.rs)
   - [x] [Weaviate](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/vector_store_weaviate.rs)
   - [x] [Milvus](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/vector_store_milvus.rs)
+  - [x] [MariaDB](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/vector_store_mariadb.rs)
 
 - Chain
 
@@ -62,6 +65,8 @@ This is the Rust language implementation of [LangChain](https://github.com/langc
   - [x] [LLM Math Chain (word problems, exact arithmetic)](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/llm_math.rs)
   - [x] [Router Chain (LLM picks the chain)](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/router_chain.rs)
   - [x] [Constitutional Chain (critique and revise against principles)](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/constitutional_chain.rs)
+  - [x] [Transform Chain (your own function as a chain step)](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/transform_chain.rs)
+  - [x] [API Chain (answer from an HTTP API, allowed URLs only)](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/api_chain.rs)
 
 - Output parsers
 
@@ -77,6 +82,7 @@ This is the Rust language implementation of [LangChain](https://github.com/langc
 
   - [x] [Chat Agent with Tools](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/agent.rs)
   - [x] [Open AI Compatible Tools Agent](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/open_ai_tools_agent.rs)
+  - [x] [ReAct (MRKL) agent for models without tool calling, with parse-error retries and intermediate steps](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/react_agent.rs)
   - [x] [Streaming agent events + cancellation](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/streaming_agent.rs)
   - [x] [Tracing spans for LLM calls, tools and agent steps](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/tracing.rs)
 
@@ -86,10 +92,12 @@ This is the Rust language implementation of [LangChain](https://github.com/langc
   - [x] [Calculator](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/calculator_tool.rs)
   - [x] Serpapi/Google
   - [x] DuckDuckGo Search
+  - [x] [Exa web search](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/exa_search.rs)
   - [x] [Wolfram/Math](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/wolfram_tool.rs)
   - [x] Command line
   - [x] [Text2Speech](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/speech2text_openai.rs)
   - [x] Wikipedia
+  - [x] [Perplexity web search](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/perplexity_search.rs)
 
 - Semantic Routing
 
@@ -244,6 +252,9 @@ This is the Rust language implementation of [LangChain](https://github.com/langc
     let stream = loader_with_dir.load().await.unwrap();
     let documents = stream.map(|x| x.unwrap()).collect::<Vec<_>>().await;
     ```
+
+  - [x] [AssemblyAI audio transcripts](https://github.com/Abraxas-365/langchain-rust/blob/main/examples/assemblyai_loader.rs)
+  - [x] Notion export (`NotionDirectoryLoader::new("./Export-...")`, Markdown & CSV export)
 
 ## Installation
 

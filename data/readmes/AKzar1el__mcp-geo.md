@@ -15,7 +15,7 @@
 
 ## Quick Install
 
-Runs locally over stdio with your own API keys — all data stays on your machine (see [Privacy Policy](#privacy-policy)). Set at least one engine key (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, `PERPLEXITY_API_KEY`, `XAI_API_KEY`, `SERPAPI_API_KEY`); engines without a key skip gracefully.
+Runs locally over stdio with your own API keys. Brands, scan history, and cached responses are stored on your machine; scan prompts are sent to the AI providers you configure (see [Privacy Policy](#privacy-policy)). Set at least one engine key (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, `PERPLEXITY_API_KEY`, `XAI_API_KEY`, `SERPAPI_API_KEY`); engines without a key skip gracefully.
 
 **Runtime:** Node.js 22.13+ (CI exercises Node 22 and 24).
 
@@ -39,6 +39,8 @@ Runs locally over stdio with your own API keys — all data stays on your machin
 **ChatGPT (remote MCP):** ChatGPT does not connect directly to local STDIO MCP servers. For ChatGPT, use the [self-hosted remote MCP setup](#chatgpt-remote-mcp) below, or the [OpenAI Secure MCP Tunnel setup](#chatgpt-localprivate-via-openai-secure-mcp-tunnel) for a server running on a local/private machine. The public `geo-mcp.digestseo.com/mcp` endpoint is not a turnkey no-key fresh-scan service.
 
 **Perplexity Computer (remote MCP):** Perplexity Computer supports custom remote MCP connectors on eligible plans. After self-hosting mcp-geo, open **Account settings > Connectors > + Custom connector**, choose **Remote**, name it `digestseo`, and enter your own deployment's `https://<worker-host>/mcp` URL. Use the connector's OAuth option for the Worker flow; if you configured `CONNECT_SECRET`, complete that browser gate during connection. Do not use the public `geo-mcp.digestseo.com/mcp` endpoint as a turnkey no-key scan service. See Perplexity's current [Computer connector guidance](https://www.perplexity.ai/changelog/what-we-shipped---march-13-2026).
+
+**Perplexity Portable Computer (local STDIO):** On supported hardware with a Perplexity Pro/Max local model, open **Settings > MCP servers > Add server > Local (stdio)** and name the server `digestseo`. Portable requires an **absolute Command path**: on Windows use `C:\Windows\System32\cmd.exe` with arguments `/d`, `/s`, `/c`, and `npx -y @digestseo/mcp-geo` (each on its own line); on Linux use the absolute `npx` path with `-y` and `@digestseo/mcp-geo` as separate arguments. Select **Test**, then **Add**. Node.js 22.13+ is required. No provider keys are needed for tool discovery; engine-backed scans can incur provider charges. Portable's local tools are distinct from cloud Computer's Remote/OAuth connector. See the [local Portable setup guide](llms-install.md#perplexity-portable-computer-local-stdio) and [Perplexity's official instructions](https://www.perplexity.ai/help-center/en/articles/20260915-what-is-portable-computer).
 
 **Replit Agent (remote MCP):** after self-hosting mcp-geo, open **Integrations -> MCP Servers for Replit Agent -> Add MCP server**, name it `digestseo`, and enter your own deployment's `https://<worker-host>/mcp` URL. Choose the OAuth flow when prompted: Replit supports OAuth dynamic client registration (DCR), which the self-hosted Worker exposes through its standard discovery and registration endpoints. Select **Test & Save**, then complete the browser authorization step; if you configured `CONNECT_SECRET`, enter it in that gate. Replit supports remote HTTPS MCP servers rather than this package's local stdio process, so use your configured Worker URL and do not treat the public `geo-mcp.digestseo.com/mcp` endpoint as a turnkey provider-key service. See Replit's current [MCP guide](https://docs.replit.com/features/mcp/overview).
 
@@ -387,6 +389,40 @@ Open GitHub Copilot Chat in **Agent** mode and use the **Tools** menu to verify 
 **Cursor:**
 
 [![Add to Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en/install-mcp?name=digestseo&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsIkBkaWdlc3RzZW8vbWNwLWdlbyJdLCJlbnYiOnsiT1BFTkFJX0FQSV9LRVkiOiIiLCJBTlRIUk9QSUNfQVBJX0tFWSI6IiIsIkdFTUlOSV9BUElfS0VZIjoiIiwiUEVSUExFWElUWV9BUElfS0VZIjoiIiwiU0VSUEFQSV9BUElfS0VZIjoiIn19)
+
+**Devin (cloud / CLI / Desktop plugin):** install this repository's existing MCP plugin directly:
+
+```bash
+devin plugins install AKzar1el/mcp-geo
+```
+
+Alternatively, open **Customize > Plugins > Add plugin > From repository** in Devin and enter `AKzar1el/mcp-geo` at a scope you can manage. Devin recognizes this repository's Claude-compatible `.claude-plugin/plugin.json` and `.mcp.json`, which launch `npx -y @digestseo/mcp-geo` (no second server or package needed). Check `digestseo-geo` under **Customize > MCPs** and use a new Devin session to inspect its tools; STDIO servers are tested in a session, not with the remote **Test tools** control. CLI users can first check `devin plugins list`.
+
+Zero provider keys allow tool discovery; engine-backed scans need only the selected provider keys supplied through Devin's supported secret/environment configuration, never committed to the plugin. The plugin uses local STDIO in Devin's session environment; it is not a turnkey connection to the public DigestSEO Worker. See [Devin's plugin instructions](https://docs.devin.ai/product-guides/plugins) and [custom MCP guidance](https://docs.devin.ai/work-with-devin/mcp).
+
+**OpenHands CLI (local STDIO):** OpenHands can run the existing npm package as a local MCP server without a wrapper:
+
+```bash
+openhands mcp add digestseo --transport stdio npx -- -y @digestseo/mcp-geo
+openhands mcp list
+```
+
+Start a new `openhands` conversation and enter `/mcp` to verify the `digestseo` tools. On Windows, use `npx.cmd` if `npx` is not directly executable. Current OpenHands CLI stores server settings in `~/.openhands/mcp.json` (JSON; pre-1.0 TOML configuration needs migration). No provider keys are needed for tool discovery. For engine-backed scans, configure only the required provider keys using OpenHands' `--env` option or a private environment, never a committed file; provider usage may incur costs. This local process is not the hosted DigestSEO OAuth Worker. See the [OpenHands MCP instructions](https://github.com/OpenHands/docs/blob/main/openhands/usage/cli/mcp-servers.mdx).
+
+**Kimi Code CLI (local STDIO):** Add the existing npm server to `~/.kimi-code/mcp.json` (user-wide) or `.kimi-code/mcp.json` in a trusted project:
+
+```json
+{
+  "mcpServers": {
+    "digestseo": {
+      "command": "npx",
+      "args": ["-y", "@digestseo/mcp-geo"]
+    }
+  }
+}
+```
+
+Start a new Kimi Code CLI session and use `/mcp` to inspect the `digestseo` tools; `/mcp-config` manages server entries. Node.js 22.13+ is required. No provider keys are needed for tool discovery. Before engine-backed scans, provide only the optional provider credentials you intend to use through a private environment or Kimi's local `env` configuration, never a committed project file; provider usage may incur charges. Kimi Code prompts for trust when project-level MCP configuration can launch local commands, so inspect it before enabling. This is local STDIO, not a turnkey connection to the hosted DigestSEO OAuth Worker. See the [Kimi Code MCP guide](https://moonshotai.github.io/kimi-code/en/customization/mcp.html).
 
 **Windsurf:** open **Manage MCPs → View raw config** and add the local stdio package:
 
@@ -924,7 +960,7 @@ Each engine runs in its own Worker invocation with its own free-plan 50-subreque
 
 - `/admin/*` is gated by `SEED_SECRET` (constant-time compared).
 - `/mcp` requires OAuth; set `CONNECT_SECRET` so only people with the secret can complete the connect flow — strongly recommended whenever your worker URL is shared anywhere, since connected clients can call `visibility.refresh` and spend your engine API credits.
-- All engine keys live in Cloudflare's encrypted secret store; all data stays in your own D1 database.
+- Engine keys live in Cloudflare's encrypted secret store, and brands, scan history, and cached responses are stored in your own D1 database. Scan prompts are sent to the AI providers you configure; see the [Privacy Policy](#privacy-policy).
 
 Full details and vulnerability reporting: [SECURITY.md](https://github.com/AKzar1el/mcp-geo/blob/main/SECURITY.md).
 

@@ -12,6 +12,12 @@
 
 </div>
 
+<p align="center">
+  <a href="assets/architecture_p2.png"><img src="assets/architecture_p2.png" width="1100" alt="Agent harness architecture: execution, tools, context, state, lifecycle and evidence"/></a>
+</p>
+
+The harness governs repeated action, context, state and evidence. Lifecycle hooks are representative; V exports events and trajectories rather than assigning scores. The robot illustrates execution.
+
 > **Agent capability emerges from a model–harness–environment configuration.** The harness decides how the model observes, acts, uses tools, manages context and state, crosses permission boundaries, recovers from failure, and leaves evidence for evaluation.
 
 This is the official repository for **_Agent Harness for Large Language Model Agents: A Survey_**. The paper is the center of the project: it defines the object of study, introduces the ETCSLV analytical framework, reconstructs the field's historical lineages, compares representative systems, and sets an evaluation and research agenda. The resource index below keeps the survey's evidence base current between paper releases.
@@ -82,12 +88,6 @@ The README follows the survey's argument rather than presenting a detached softw
 
 We analyze a harness as **H = (E, T, C, S, L, V)**: six governance functions that repeatedly appear across public systems. The lens compares architectural coverage; product quality and production readiness require separate evidence.
 
-<p align="center">
-  <img src="assets/architecture_p2.png" width="960" alt="H=(E,T,C,S,L,V) six-component analytical framework"/>
-</p>
-
-Representative lifecycle interception points are shown; V exports events and trajectories rather than assigning scores. The robot is an illustrative symbol for execution.
-
 | Component | Symbol | What to look for |
 |---|:---:|---|
 | Execution Loop | **E** | Turn and step control, termination, retry, recovery, delegation |
@@ -96,6 +96,12 @@ Representative lifecycle interception points are shown; V exports events and tra
 | State Store | **S** | Cross-turn and cross-session persistence, checkpoints, recovery |
 | Lifecycle Hooks | **L** | Authentication, approval, policy, instrumentation, interception |
 | Evaluation Interface | **V** | Trajectories, intermediate state, outcomes, experiments, audit |
+
+<p align="center">
+  <a href="assets/step_state_p2.png"><img src="assets/step_state_p2.png" width="1000" alt="Illustrative tool-using execution path"/></a>
+</p>
+
+An illustrative tool-using path: events, guards, authorization before dispatch, result commitment and guarded retry are distinguished. Direct completion, refusal, cancellation and timeout branches are outside this subset; lanes indicate associated responsibilities.
 
 ---
 
@@ -128,6 +134,12 @@ Representative historical contributions, not an exhaustive timeline or priority 
 
 The system landscape moves from depth to breadth: four anchor cases expose the runtime in detail, the evidence matrix applies one comparison scheme, and the directory preserves the wider ecosystem of systems, substrates, modules, and evaluation infrastructure. The comparison set is evidence-driven and open-ended; 34 is the current result of the inclusion rule, not a target or a claim of completeness. Product form is not an exclusion rule: workplace and personal agents belong when their runtime architecture is documented well enough to assess.
 
+<p align="center">
+  <a href="assets/landscape_p2.png"><img src="assets/landscape_p2.png" width="1000" alt="Five runtime comparison groups and four adjacent analysis units"/></a>
+</p>
+
+The 34-system comparison set uses five reporting groups (4/10/5/7/8); names shown are selective examples except for the four anchors. The four adjacent analysis units are outside this runtime matrix. Membership does not establish performance or safety.
+
 ### Four Anchor Systems
 
 These four systems are the survey's anchor cases. They receive the same analytical weight because each exposes a distinct answer to the same runtime problem: how to turn model calls into governed, persistent, tool-using work.
@@ -140,6 +152,12 @@ These four systems are the survey's anchor cases. They receive the same analytic
 ### Evidence-Coded Comparison Matrix
 
 Ratings describe documented component coverage at the evidence cutoff. Quality, production maturity, and adoption are reported separately; popularity and stars serve only as adoption signals.
+
+<p align="center">
+  <a href="assets/component_matrix_p2.svg"><img src="assets/component_matrix_p2.svg" width="1000" alt="Documentation-backed component coverage for 34 systems"/></a>
+</p>
+
+Documentation-backed ETCSLV coverage for the same 34 systems as the table below. Figure cell labels F/P/A/? correspond to Full/Partial/Absent/Unverified; group codes are separate. Coverage is not a performance, quality or safety ranking. Open the full-resolution image for individual cells.
 
 **Legend:** ● **Full** — built in and documented · ◐ **Partial** — limited, optional, or supplied by an official extension · ○ **Absent** — first-party material explicitly excludes it · ? **Unverified** — public evidence is insufficient.
 
@@ -299,6 +317,12 @@ These projects are evaluated for their focused capability or research pattern ra
 ## 4. Evaluation Landscape
 
 A benchmark belongs here when it reveals something about the **runtime around the model**: component choice, state over time, recovery, permissions, auditability, protocol behavior, or evaluation infrastructure. Every result should identify the model, harness, environment, task version, budget, and evaluator together.
+
+<p align="center">
+  <a href="assets/evaluation_attribution_p2.png"><img src="assets/evaluation_attribution_p2.png" width="1000" alt="Three sources of evaluation attribution risk"/></a>
+</p>
+
+Environment drift, task ambiguity and harness coupling can complicate attribution. These are conditional explanatory paths; dashed cross-links describe interactions and lower annotations give controls, not measured effect sizes.
 
 ### 1. Harness effect
 
@@ -476,6 +500,13 @@ The hardest harness problems appear where execution, context, state, permissions
 
 > **Evidence focus:** Tool reliability depends on more than the number of available tools. Tool selection, typed contracts, semantic authorization, result validation, and recovery policy interact across the execution loop.
 
+<p align="center">
+  <a href="assets/tool_governance_p2.png"><img src="assets/tool_governance_p2.png" width="1000" alt="Tool governance across the execution lifecycle"/></a>
+</p>
+
+Tool governance spans registration, selection, dispatch, execution, result handling and recovery. Schema validity does not establish authorization; returned content remains untrusted, sandboxing is conditional, and logs are not independent audit.
+
+
 - <u>CodeAct</u>: **"Executable Code Actions Elicit Better LLM Agents"**. *Wang et al.* ICML 2024. [[Paper](https://arxiv.org/abs/2402.01030)] [[Code](https://github.com/xingyaoww/code-act)]
 - <u>Schema First</u>†: **"Schema First Tool APIs for LLM Agents: A Controlled Study of Tool Misuse, Recovery, and Budgeted Performance"**. *Sigdel & Baral.* arXiv 2026. [[Paper](https://arxiv.org/abs/2603.13404)]
 - <u>ToolLLM</u>: **"ToolLLM: Facilitating Large Language Models to Master 16000+ Real-world APIs"**. *Qin et al.* ICLR 2024. [[Paper](https://arxiv.org/abs/2307.16789)] [[Code](https://github.com/OpenBMB/ToolBench)]
@@ -522,6 +553,13 @@ The hardest harness problems appear where execution, context, state, permissions
 
 > **Evidence focus:** [AgencyBench](https://arxiv.org/abs/2601.11044) reports 48.4% aggregate performance for closed models versus 32.1% for open models, and separately observes native-ecosystem advantages for some proprietary systems. The aggregate 48.4% figure is not a native-SDK success rate.
 
+<p align="center">
+  <a href="assets/multi_agent_topology_p2.png"><img src="assets/multi_agent_topology_p2.png" width="1000" alt="Multi-agent coordination patterns and runtime responsibilities"/></a>
+</p>
+
+Illustrative coordination patterns expose different identity, authority, state-consistency and evidence responsibilities. Patterns can be combined; topology alone does not establish permission separation, isolation or safety.
+
+
 - <u>AdaptOrch</u>†: **"AdaptOrch: Task-Adaptive Multi-Agent Orchestration in the Era of LLM Performance Convergence"**. *Yu.* arXiv 2026. [[Paper](https://arxiv.org/abs/2602.16873)]
 - <u>SAGA</u>†: **"SAGA: A Security Architecture for Governing AI Agentic Systems"**. *Syros et al.* NDSS 2026. [[Paper](https://arxiv.org/abs/2504.21034)]
 - <u>MAS-FIRE</u>†: **"MAS-FIRE: Fault Injection and Reliability Evaluation for LLM-Based Multi-Agent Systems"**. *Jia et al.* arXiv 2026. [[Paper](https://arxiv.org/abs/2602.19843)]
@@ -549,6 +587,12 @@ The hardest harness problems appear where execution, context, state, permissions
 ---
 
 ### Harness Architectures and Evolution
+
+<p align="center">
+  <a href="assets/meta_harness_p2.png"><img src="assets/meta_harness_p2.png" width="1000" alt="Reported Meta-Harness code-evaluation-history feedback loop"/></a>
+</p>
+
+The reported Meta-Harness optimization loop uses candidate harness code, task evaluation, execution traces and accumulated history to inform later proposals. It illustrates harness-level optimization rather than weight updates or unrestricted recursive improvement; no numerical performance claim is made.
 
 - <u>AutoRef</u>†: **"AutoRef: Harness Optimization for Agentic Multi-Reference Image Generation"**. *Oshima et al.* arXiv 2026. [[Paper](https://arxiv.org/abs/2609.35530)] [[Code](https://github.com/KuOnoda/AutoRef)]
 - <u>Harness Engineering for Language Agents</u>†: **"Harness Engineering for Language Agents: The Harness Layer as Control, Agency, and Runtime"**. *He et al.* Preprints 2026. [[Paper](https://doi.org/10.20944/preprints202603.1756.v2)]

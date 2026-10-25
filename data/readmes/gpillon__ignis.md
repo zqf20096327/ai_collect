@@ -390,6 +390,51 @@ guide's [Why ignis](https://gpillon.github.io/ignis/why-ignis/) section.
 - **The weights are under the Qwen Research License, non-commercial use
   only**: do not serve the image model in a commercial product.
 
+### Speech to text, on the CPU, beside the card
+
+- **Qwen3-ASR** is served on OpenAI's route, `POST /v1/audio/transcriptions`,
+  on the CPU: it never takes VRAM from the model on the card, and runs while
+  that model switches or is unloaded. It is loaded by the first request and
+  unloaded after `speech.idle_unload` seconds without one. It is **off until
+  its files are on disk** (`ignis-server model download qwen3-asr-1.7b`);
+  nothing downloads by itself, and `GET /v1/models` carries a `speech` object
+  saying whether it can serve and, if not, why.
+- **OpenAI's clients work unchanged.** `model` may be absent, the speech
+  model's id, or one of `speech.compat_names` (`whisper-1`,
+  `gpt-4o-transcribe`, `gpt-4o-mini-transcribe`, ...): Aider works with
+  `OPENAI_API_BASE` pointed here and its hard-coded `whisper-1`. The answers
+  are `json`, `text` and `verbose_json`, or Server-Sent Events with `stream`;
+  `prompt` and `keywords[]` give the model context, `language` forces the
+  language. A field the server does not do (`srt`, word timestamps,
+  diarization, `temperature` other than 0) is a `400` naming it.
+- **Live dictation** goes over OpenAI's Realtime transcription session,
+  `GET /v1/realtime?intent=transcription`: PCM16 appends at 24 kHz (16 kHz, the
+  model's own rate, as an extension), `server_vad` by default (Silero VAD,
+  ported to Rust, finds each utterance and commits it after its silence, at
+  OpenAI's 0.5 / 300 ms / 500 ms) or a manual commit with
+  `turn_detection: null`, and the text as it settles. `delta` events carry
+  stable text only, so they join to the
+  transcript `completed` carries; a session that opts in with
+  `session.ignis.provisional_tail` also gets the tail the model may still
+  revise. The audio is encoded while it arrives, so a commit leaves only the
+  last seconds to decode. Up to four sessions (`speech.max_sessions`), served
+  ahead of the queued clips. See
+  [live transcription](docs/user/api/realtime-transcription.md).
+- **Requirements.** A CPU with AVX2 (Haswell, 2013, or later) and 1.4 to
+  3.1 GB of RAM while the model is in use. WAV, FLAC, MP3 and AAC are decoded,
+  and the Ogg and Matroska/WebM containers when they carry FLAC; Opus is not
+  decoded yet. A clip may be 20 minutes long, and is never split: the wait is
+  proportional to the audio, a few times faster than real time on a desktop CPU
+  and slower on a 4-core one; one clip runs at a time, and up to four wait
+  (`speech.max_queue`), then `503` with `Retry-After`.
+- **Forcing `language` Italianises English jargon**: the model hears a
+  sentence in Italian with English terms best left to detect the language on its
+  own; force it only when it guesses wrong.
+- **Dictation in the Playground.** A mic beside Send, in the Image studio and
+  on Decide's prose fields, or Ctrl+Shift+Space (held, push-to-talk): the
+  words show as they settle, and the text lands at the cursor, never sent by
+  itself ([dictating a prompt](docs/user/playground/chat.md#dictating-a-prompt)).
+
 ### Models that come and go
 
 - **One card, one model at a time, no restart.** `POST /v1/models/switch`
@@ -456,7 +501,7 @@ guide's [Why ignis](https://gpillon.github.io/ignis/why-ignis/) section.
 ### Batteries in the binary
 
 - **The Playground** at `/ui/` — chat with tools and subagents, parallel
-  sessions, image input, an Image studio, a Decide tab, a live Monitor and a
+  sessions, image input, dictation, an Image studio, a Decide tab, a live Monitor and a
   Server view that loads models and edits the running configuration. Built
   into the server, not a separate service.
 - **One declaration per setting**: every option is a flag, an `IGNIS_*`
@@ -619,12 +664,14 @@ Choices, not gaps — so nobody goes looking for them:
 - **`/v1/batches`.** An offline queue is a storage service, and this server
   holds no request past its connection: send the requests at once, and the
   scheduler batches them.
-- **Audio, in or out.** The model has no audio tower and no audio head.
+- **Audio out, and `/v1/audio/translations`.** Nothing here speaks, and the
+  speech model transcribes the language it hears; it does not translate.
 - **LoRA adapters.** They are trained against BF16 weights, and the checkpoint
   is NVFP4: merge the adapter and re-export the checkpoint instead.
-- **More than one model loaded at once.** The VRAM plan is decided at load,
-  for one: the server [switches](#models-that-come-and-go) between models by
-  a full reload instead.
+- **A second model on the card.** The VRAM plan is decided at load, for one:
+  the server [switches](#models-that-come-and-go) between models by a full
+  reload instead. The one exception is the [speech model](#speech-to-text-on-the-cpu-beside-the-card),
+  which runs on the CPU and never holds VRAM.
 
 ## Building it
 
@@ -669,7 +716,7 @@ time — check `make gpu-status` before starting anything on it.
 | [`docs/adr/`](docs/adr/) | Every architectural decision, and why it was taken. |
 | [`docs/findings/`](docs/findings/README.md) | Durable, evidence-backed measurements. |
 | [`docs/agents/`](docs/agents/) | Conventions for agents working in this repo. |
-| [`CONTEXT.md`](CONTEXT.md) | The glossary. One vocabulary, one meaning per term. |
+| [`GLOSSARY.md`](GLOSSARY.md) | The glossary. One vocabulary, one meaning per term. |
 
 The OpenAPI description of the HTTP surface is served at `/v1/openapi.json`,
 with a browsable reference at `/v1/docs/`.

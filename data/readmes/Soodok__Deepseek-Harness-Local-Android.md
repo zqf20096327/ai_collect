@@ -1,4 +1,4 @@
-﻿# DSH Mobile （Deepseek-harness-Mobile)
+# DSH Mobile （Deepseek-harness-Mobile)
 
 <p align="center">
   <img src="docs/promo/dsh-mobile-github.png" alt="DSH Mobile — DeepSeek Harness for Android" width="100%">
@@ -39,9 +39,9 @@ DSH Mobile 是 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harnes
 |---|---|---|
 | **冷启动到引擎就绪** | **< 10 秒** | 一加 15T（Android 16）真机 |
 | **多服务并行内存** | **< 400 MB** | 引擎 + 多服务并行 |
-| **兼容版本** | **Android 8.0 → 16** | 需 WebView ≥ Chrome 85 |
-| **APK 体积** | **约 144 MB** | 含完整 Node.js 运行时 + 19 项扩展的工具链闭包 |
-| **安装后占用** | **约 500 MB** | 运行时解压后 |
+| **兼容版本** | **Android 8.0 → 16** | 需 WebView ≥ Chrome 85（API 由 polyfill 补齐，实测最低 96） |
+| **APK 体积** | **约 227 MB** | 含完整 Node.js 运行时 + 19 项扩展的工具链闭包 + 内置 SSH 远程工作区插件 |
+| **安装后占用** | **约 720 MB** | 运行时解压后（约 494 MB）+ 应用本体 |
 
 对比：Termux 快照类方案首次启动通常需**数分钟**（解压 + 手动初始化）；本项目的运行时预置在 APK 内，装完即用。proot 系方案（Ubuntu 容器）APK 看着小，但首次使用要另下 500MB～2GB 的 rootfs。
 
@@ -65,6 +65,21 @@ DSH Mobile 是 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harnes
 - 搜索结果按兼容性过滤，减少装上才发现不能用的试错
 - 安装过程显示进度与失败原因，完成后立即出现在 WebUI 插件面板
 - **插件扩展 Agent 的能力，扩展中心提供命令行环境**：两套机制各司其职，按需组合
+
+### 🔐 内置 SSH 远程工作区：手机连服务器改代码
+
+默认内置 [@tiphareth/dsh-hardssh](https://github.com/tiphareth0/dsh-hardssh)（构建时由 CI 从 GitHub
+固定提交拉取源码并编译进 runtime，**插件源码不在本仓库**）：
+
+- **左侧栏「SSH 工作区」**：添加服务器（支持从 `~/.ssh/config` 导入），把远端目录绑定为工作区；绑定后会话里的 `read` / `write` / `edit` / `bash` **直接跑在服务器上**，改代码、跑测试、看日志都不用离开手机
+- **本地工作区**：Android 无系统文件夹框，自动使用应用内目录浏览器（内部存储 / Documents / 应用数据快捷入口；0.2.10 起按 DSH 样式重绘，并支持**新建文件夹**）
+- **SSH 私钥**：表单内直接“导入私钥”或“生成新密钥”并展示公钥；私钥存应用私有 `.ssh`（0600），也可手动放到 `Documents/dshdata/ssh`
+- **右侧栏「SSH」**：Web 终端（xterm）、文件上传下载、本地端口转发隧道、远端命令
+- **Agent 工具**：`ssh_list` / `ssh_exec` / `ssh_upload` / `ssh_download` / `ssh_tunnel` / `ssh_cluster`，以及 `remote_ls` / `remote_search` / `remote_status`
+- 主机与凭据留在应用私有目录；引擎仍只监听 `127.0.0.1`，远程能力来自出站连接
+- 升级插件只需改 `.github/workflows/android-build.yml` 里的 `HARDSSH_REF`
+
+详见 [docs/SSH.md](docs/SSH.md)。
 
 ### 🖥️ 完整 Agent 任务执行：不是只能聊天的壳
 
@@ -149,6 +164,7 @@ Agent 通过只监听 `127.0.0.1:3083` 的能力桥操作手机，所有调用�
 | 文档 | 内容 |
 |---|---|
 | [无障碍控制](docs/ACCESSIBILITY.md) | 读屏/点击/输入/滑动/长按/拖拽等 21 种原语；多层视觉兜底、每步验证；实测 ~1.45s/步 |
+| [SSH 远程工作区](docs/SSH.md) | 内置 @tiphareth/dsh-hardssh：远端工作区、Web 终端、隧道与 `ssh_*` 工具；CI 从 GitHub 构建 |
 | [闭环设计笔记](docs/LOCAL_CLOSED_LOOP.md) | 端侧决策引擎的设计与演进记录 |
 | [竖屏 UI 插件](docs/NARROW_UI.md) | 侧栏全宽 / 设置面板重构 / 右侧面板全屏（三个客户端插件） |
 | [局域网 WebUI](docs/LAN_WEBUI.md) | 反向代理、6 位验证码、常驻提醒与关闭链路 |
@@ -156,6 +172,7 @@ Agent 通过只监听 `127.0.0.1:3083` 的能力桥操作手机，所有调用�
 | [通知与后台行为](docs/NOTIFICATIONS.md) | AI 操作进度、任务完成、局域网提醒、退出彻底化 |
 | [复杂场景实测](docs/COMPLEX_SCENARIOS.md) | 噪声页面、跨应用任务、失败恢复的实测记录 |
 | [快速路径选择](docs/FAST_PATH_PICKER.md) | 端侧 UI 元素选择与判别 |
+| [发布与签名](docs/RELEASE.md) | 正式 key 保管与备份、GitHub Secrets、debug+release 构建、edge/ tag 发布 |
 
 ## 🌟 这些是 Termux 路线给不了的
 
@@ -163,7 +180,7 @@ Agent 通过只监听 `127.0.0.1:3083` 的能力桥操作手机，所有调用�
 dsh 的「一切皆插件」架构原样保留：插件热载、会话持久化全部照常工作。插件缺的语言环境由扩展中心一键补齐。Termux 路线上，`sharp` / `koffi` / `node-pty` 这类原生模块编译失败是常态。
 
 **跨版本兼容，逐台设备踩过的坑已经踩完**
-App 支持 Android 8.0 → 16；界面渲染依赖系统 WebView（**需 Chrome 85+**），构建时向前端注入 polyfill（覆盖 13 个现代 API），把 API 层门槛从原生 Chrome 126 拉回到 85；全部 so 按 **16KB 页对齐**，新内核设备直接可用。
+App 支持 Android 8.0 → 16；界面渲染依赖系统 WebView（**需 Chrome 85+**，85 是前端语法层的门槛），构建时向前端注入 polyfill（覆盖 14 个现代 API，含 AbortSignal#throwIfAborted/#reason——issue #40），把 API 层门槛从原生 Chrome 126 拉回到 85（国产 ROM 常见的 96 实测可用）；全部 so 按 **16KB 页对齐**，新内核设备直接可用。
 
 **后台不被杀，任务完成有通知**
 specialUse 前台服务 + 指数退避监督器扛住系统回收，长任务锁屏/后台持续运行，完成自动发系统通知。
@@ -214,7 +231,7 @@ gradle assembleDebug -Pabi=arm64-v8a
 
 ## ⛔ 边界（请知悉）
 
-- **WebView 需 Chrome 85+**：引擎前端用了 `??=` 等新语法，属解析期特性，polyfill 补不了。Android 8.0+ 的 WebView 是可独立升级的系统组件，升到 85+ 即可；少数无法升级的老机型为已知限制
+- **WebView 需 Chrome 85+**：引擎前端用了 `??=` 等新语法，属解析期特性，polyfill 补不了。Android 8.0+ 的 WebView 是可独立升级的系统组件，升到 85+ 即可；少数无法升级的老机型为已知限制。API 层缺口（throwIfAborted / AbortSignal.any / URL.parse 等 14 项）由构建期 polyfill 覆盖，WebView 96 实测正常
 - **没有桌面环境**：不能运行 Linux GUI 桌面应用；视觉产物通过本地 HTTP + 内置 WebView 预览
 - **模拟点击是"半盲"的**：读屏基于无障碍节点树，对纯图形/游戏画面无效
 - **Android 13+ 开启无障碍需系统确认**：侧载安装的应用，系统会弹出「允许完全控制设备」对话框，必须手动点 Allow 才生效；adb 直接写入设置会被系统清掉（真机请走 UI 指引）
@@ -231,7 +248,7 @@ gradle assembleDebug -Pabi=arm64-v8a
 
 **数据会上传吗？** 引擎/会话/工作区全在本机；数据是否出设备取决于你配置的模型服务地址。
 
-**APK 为什么约 144MB？** 内置了完整的 Node.js bionic 运行时、19 项扩展的工具链闭包以及 dsh 的依赖树。这是「不依赖 Termux、装完即用」的代价；Termux 系方案把这部分留给用户自行安装，所以包体更小，但首次使用需要先配置环境。
+**APK 为什么约 227MB？** 内置了完整的 Node.js bionic 运行时（解压后约 494 MB）、19 项扩展的工具链闭包、dsh 的依赖树，以及内置的 SSH 远程工作区插件（v1.4.18 起）。这是「不依赖 Termux、装完即用」的代价；Termux 系方案把这部分留给用户自行安装，所以包体更小，但首次使用需要先配置环境。
 
 **Agent 怎么展示网页？** 让它起本地 HTTP 服务并给你 `http://127.0.0.1:端口` 链接，点开即预览。
 

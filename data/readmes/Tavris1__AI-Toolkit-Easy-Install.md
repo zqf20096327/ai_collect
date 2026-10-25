@@ -18,7 +18,7 @@ Windows • NVIDIA GPUs
 
 ---
 
-<img width="1280" height="284" alt="AIT(R) 1280 BIG" src="https://github.com/user-attachments/assets/24d11b25-cba4-4abc-8988-5a788384cdd1" />  
+<img width="1480" height="390" alt="AI-Toolkit" src="https://github.com/user-attachments/assets/161064f9-45ea-4add-9039-fc8599dacbbd" />
 No system Python. No VENV. Just run and go.
 
 </div>
@@ -38,7 +38,6 @@ No system Python. No VENV. Just run and go.
 | FlashAttention | [![FlashAttention version](https://img.shields.io/badge/2.8.3-blue)](https://github.com/Dao-AILab/flash-attention) |
 | torchcodec | [![torchcodec version](https://img.shields.io/badge/0.15.0-blue)](https://github.com/meta-pytorch/torchcodec) - Compatible version for Torch 2.13.0 |
 | huggingface_hub\[hf_xet\] | [![hf_xet version](https://img.shields.io/github/v/release/huggingface/xet-core?label=&color=blue)](https://github.com/huggingface/xet-core) - Latest release |
-| FFmpeg | [![PyPI - FFmpeg](https://img.shields.io/pypi/v/ffmpeg?label=ffmpeg-python&color=blue&logo=python&logoColor=white)](https://pypi.org/project/ffmpeg/) - Latest release |
 | AI-Toolkit | [![AI-Toolkit last commit](https://img.shields.io/github/last-commit/ostris/ai-toolkit)](https://github.com/ostris/ai-toolkit) - Latest release |
 
 ### Launcher
@@ -55,10 +54,8 @@ No system Python. No VENV. Just run and go.
 2. Extract `AI-Toolkit-Easy-Install.bat` into a new folder and run it  
 
 > [!IMPORTANT]
-> - Do not run the installer as Administrator  
-> - Avoid system folders (`Program Files`, `Windows`, `C:\` root)  
-> - Avoid spaces and special characters in folder names  
-> - Make sure your NVIDIA drivers are up to date (v580 or newer)  
+> - Use a short, English-only path (e.g., `D:\AI\AI-Toolkit\`).
+> - Update NVIDIA drivers to v580 or newer.
 
 <div align="center">
 

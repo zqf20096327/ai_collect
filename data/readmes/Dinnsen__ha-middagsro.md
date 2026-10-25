@@ -42,6 +42,9 @@ The integration adds a **Middagsro panel** to the sidebar. It follows your Home 
 - A **requirements checklist** shows whether the plan keeps your rules.
 - Turn on **automation** to make next week's plan when the new offers come out – and optionally send it straight to the REMA list.
 - **Swap, delete or skip:** tap a dish in the plan to get three other suggestions, delete it or skip the day. The shopping list and recipe follow along.
+- **Move a dish** a day up or down with the arrows under 👍 and 👎 – leftovers follow, and never come before the day the food is made.
+- **Choose a dish yourself** for a day of the next plan (*Vælg ret*): from the recipe collection, REMA's recipes or Mealie. The AI plans the rest around it. A dish asked for in the wishes ("frikadeller på onsdag") is kept on that day too.
+- **No leftovers on chosen weekdays**, e.g. the weekend.
 - **Det skal AI'en huske** (what the AI must remember): standing points for every plan, e.g. “always fresh broccoli with salmon” – typed or dictated.
 - **Nutrition targets** per dinner (kcal and the split of protein, carbs and fat), and the **Sundhed** (health) tab with nutrition, the dietary advice and labels like the Keyhole.
 - Buttons that use AI are marked with ✦.
@@ -62,7 +65,7 @@ Ingredients and steps in large type. Tick them off as you go, start a **timer** 
 
 - For each ingredient, **the cheapest REMA product** that meets your rules is found. Products from the offers, organic products and weekly fixed items are labelled.
 - Price per product, number of packs and the total against the budget. With a [food budget](#food-budget-økonomi), sending a list that costs more than the week has left asks first.
-- **Send til REMA-listen** puts everything on your primary list in the REMA 1000 app. Items without a safe match are added as text. Sent items leave Middagsro's basket, so the next send only has what was added since – nothing ends up twice in the app. **Genskab seneste kurv** puts the last sent items back if something went wrong.
+- **Send til REMA-listen** puts everything on your primary list in the REMA 1000 app. Items without a safe match are added as text. Sent items leave Middagsro's basket, so the next send only has what was added since – nothing ends up twice in the app. **Genskab seneste kurv** puts the last sent items back if something went wrong. The REMA logo next to an item puts just that item on the REMA list right away.
 - Search the basket for any REMA product – also the offers in REMA's avis, including *partivarer* that are only sold in the shops.
 - **Search and add** other REMA products to the shopping list – also to the list for later in the week – or put one **straight on the REMA list** in the app with *+ REMA-listen*, past the meal plan. Tap an item to change how many, swap it or delete it.
 - **Basic items in the plan** (*Basisvarer i madplanen*) shows the basic items (salt, oil, butter …) the recipes use. Out of one? Tap **Tilføj til indkøb**, and the product is found by your settings.
@@ -127,6 +130,8 @@ The **Opskrifter** (recipes) tab has three pages: **Ugens opskrifter** (the week
 - **👍, 👎 and ❤️** on every dinner in the plan and on the recipe. 👍 saves the dish in the collection as one you like, 👎 as one you don't like (it is never put on a plan again), and ❤️ as a favourite (it also gets 👍, and the heart turns red). Tap again to take it back; 👍 after 👎 changes it.
 - **Search, sort and filter** the collection (name, newest, most used, quickest; all, favourites, liked, disliked).
 - **Add a recipe from a link:** paste the link to a recipe page and tap **Hent opskrift**. The recipe is read from the page (most recipe sites have it as data; otherwise the AI reads the page), and you can correct it before it is saved. The link itself is not kept. Or write a recipe yourself – type an ingredient and pick one of REMA's products for it, so the shopping list gets the very item.
+- **Scan a recipe from a cookbook:** *Scan fra kogebog* takes a photo of the page (or several pages); the AI reads it, and you check and correct it before it is saved. Needs an AI Task that can read images.
+- **Recipes from recipe sites:** search Valdemarsro, Madens Verden, Louises madblog, DK-kogebogen and Arla under *Opskrifter → Madsider*, save a recipe in the collection, or let the AI build the plan from the sites' recipes (*Indstillinger → Opskrifter og madsider*).
 - **Open a recipe** to edit the name, times, ingredients and steps, rate it, or **put it on the meal plan** on a day you choose – its items go on the shopping list.
 - New plans and swap suggestions use the family's favourites and liked dishes when they fit the week's offers, and never the disliked ones.
 - **REMA 1000's recipes:** search or browse REMA's own recipes – popular, newest, *Avisopskrifter* (built on this week's offers), *Aftensmad*, *Mad for børn*, *Kødfri* and more. Each card shows the time, a rough price and how many of its items are on offer. Every ingredient is linked to one of REMA's products, so the shopping list gets the very item. Save a recipe in the collection (with its photo), or put it straight on a day of the plan. In the plan, tap a dish and **Vælg en REMA-opskrift** to swap it for one of REMA's.
@@ -265,14 +270,15 @@ Actions are now called `middagsro.…` (before `rema1000.…`); change them in y
 [![Open your Home Assistant and add Middagsro.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=middagsro)
 
 1. Go to **Settings → Devices & services → Add integration** and choose **Middagsro**.
-2. Log in:
+2. Choose the shop. With **REMA 1000** you log in (below) and get prices on every item, REMA's recipes and the shopping list in the REMA app. With **another shop** (Netto, føtex, Lidl, Bilka, 365discount, MENY, SuperBrugsen, Kvickly, SPAR …) there is no login: the meal plan is built on the shop's offer catalogue, only the offers have a price (in Bilka every item has its Bilka ToGo price), and the shopping list is kept in Home Assistant (and can also go to another to-do list, e.g. Bring!). The setup lists what only works with REMA 1000. The shop can be changed later under **Reconfigure** – meal plans, recipes and settings are kept.
+3. With REMA 1000: log in:
 
    | Field | Description |
    |---|---|
    | **E-mail** | The e-mail you log in to rema1000.dk and the REMA 1000 app with. |
    | **Password** | Your REMA 1000 password. It is stored in Home Assistant and only sent to REMA 1000. |
 
-3. Open **Middagsro** in the sidebar, go to **Indstillinger** (settings) and choose the family's rules. Then tap **Lav madplan** (make meal plan).
+4. Open **Middagsro** in the sidebar, go to **Indstillinger** (settings) and choose the family's rules. Then tap **Lav madplan** (make meal plan).
 
 The integration logs in again by itself when the session expires. If you change your password, Home Assistant asks you for the new one (**Settings → Devices & services → Middagsro**). To change the e-mail or password yourself, choose **⋮ → Reconfigure** on the integration. You can add several REMA 1000 accounts. Each gets its own entities, and the actions can target a given account; the panel shows the one added first.
 

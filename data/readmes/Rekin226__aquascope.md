@@ -397,7 +397,7 @@ aquascope assess 51.415 -0.308 --problem flood_risk   # what can be answered her
 aquascope context 51.86 5.95                      # flood history, surface water, flood depth, dams, rain gauge, ET and soil at a place
 aquascope caravan export --source uk_ea --out caravan_gb   # a Caravan-format large-sample dataset from the archive
 aquascope export --to hec-ssp --station usgs/01134500   # inputs for HEC-HMS/RAS/SSP, SWMM, MODFLOW 6, Delft-FEWS or Raven
-aquascope gym run --basin uk_ea/013054a3-670e-49ee-afda-e0865a449197   # HydroGym: calibrate GR4J on a real basin as a gym episode
+aquascope gym run --basin uk_ea/013054a3-670e-49ee-afda-e0865a449197   # AquaScope Bench: calibrate GR4J on a real basin as a gym episode
 aquascope layers frames precip --start 2024-05-01 --end 2024-05-20   # a time-lapse of a dated map layer: dates and tile URLs
 aquascope map "trace the Nile to the sea" --resolve   # plain words to the Explorer's map actions (keyless rules)
 aquascope mesh my_run.p01.hdf                     # a HEC-RAS 2D or UGRID mesh result: cells, times, largest depth and speed
@@ -476,11 +476,11 @@ Full details, endpoints, and API-key requirements: [docs/data_sources.md](docs/d
 | [FAQ](docs/faq.md) · [Troubleshooting](docs/troubleshooting.md) | Common questions and fixes |
 | [Use cases](docs/use_cases.md) | Real-world applications and case studies |
 | [Advanced studies](docs/advanced_studies.md) | Is the flood changing, climate change to 2050, "what if" the rain drops: what runs and what the numbers cannot say |
-| [HydroGym](docs/gym.md) | A gym-style calibration environment over real basins, with baselines and a leaderboard |
+| [AquaScope Bench: calibration environment](docs/gym.md) | A gym-style calibration environment over real basins, with baselines and a leaderboard |
 | [Evaluating studies](docs/evaluation.md) | `aquascope eval`: a study's scorecard and trace, and stats across many runs, read from the bundles |
 | [Stability](docs/stability.md) | What 1.0 promises: the public API, the CLI and MCP surface, what counts as breaking, deprecations, what "experimental" means |
 | [Archive layout](docs/archive-layout.md) | The Archive as a contract: every prefix, its files, columns, units, cadence, licence and the workflow that writes it |
-| [HydroGym benchmark](docs/hydrogym.md) | Hydrology agents scored on real sites: task outcomes, plan quality against expert plans, and the report the user receives |
+| [AquaScope Bench](docs/hydrogym.md) | Hydrology agents scored on real sites: task outcomes, plan quality against expert plans, and the report the user receives |
 | [Integration guides](docs/integration_guides/) | xarray, QGIS, R interoperability |
 | [Contributing](CONTRIBUTING.md) | How to add a data source, methodology, or test |
 

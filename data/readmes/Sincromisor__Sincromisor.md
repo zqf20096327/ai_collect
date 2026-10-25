@@ -52,7 +52,7 @@ cp examples/compose.env .env
 docker compose up
 ```
 
-Linuxホストでは[journalの保存と読み取りの設定](documents/design/infrastructure/logging.md#ホストのjournal)を行ってください。
+Linuxホストでは[journalの保存と読み取りの設定](documents/guides/logging.md#起動前にjournalを準備する)を行ってください。
 ログの原本を読み取れない場合、ログ収集の監視結果は異常となります。
 
 同梱の設定で会話に必要なサービスが起動します。
@@ -68,8 +68,8 @@ Linuxホストでは[journalの保存と読み取りの設定](documents/design/
 記録の有無は、`.env`の`SINCRO_LOG_CONVERSATION_ENABLED`と`SINCRO_LOG_SYNTHESIS_ENABLED`でそれぞれ切り替えられます。
 設定を反映するには、対象サービスを再作成してください。
 
-詳しくは[ログの保存・検索と記録の切り替え](documents/design/infrastructure/logging.md)を参照してください。
-[停止中のログの回収](documents/design/infrastructure/logging.md#原本バッファ復旧)と[バックアップ・復元](documents/design/infrastructure/storage.md#ログ基盤)の手順も記載しています。
+詳しくは[ログの保存・検索と記録の切り替え](documents/guides/logging.md)を参照してください。
+[停止中のログの回収](documents/guides/logging.md#停止中のログを回収する)と[バックアップ・復元](documents/guides/logging.md#バックアップと復元確認)の手順も記載しています。
 
 ## クライアント側の使い方
 
@@ -96,19 +96,21 @@ Linuxホストでは[journalの保存と読み取りの設定](documents/design/
 ## 音声認識の固有名詞辞書を追加する
 
 名前や作品名の読み方を辞書に登録できます。
-[辞書の追加手順](documents/design/backend/services/speech-recognizer.md#辞書の追加手順)を参照してください。
+[辞書の追加手順](documents/guides/proper-noun-dictionary.md)を参照してください。
 
 ## 会話の設定を変える
 
 キャラクターの話し方や指示は、同梱の管理画面で編集できます。
-[管理画面の使い方](documents/design/backend/services/agent-server.md#管理者認証とeditor)を参照してください。
+[管理画面の使い方](documents/guides/mastra-studio.md)を参照してください。
 
 ## 別の端末から使う・処理を分散させる
 
 LAN内の別の端末から利用したり、複数のサーバーに処理を分散させたりすることもできます。
-[接続先と配置の設定](documents/design/infrastructure/compose.md#ブラウザの公開先)を参照してください。
+[接続先と配置の設定](documents/guides/network-deployment.md)を参照してください。
 
 ## OBSで利用する
+
+最新版のOBS Studioを対象とする。ブラウザーソースのCEFを基準とする[対象ブラウザーとCSS](documents/design/frontend/pages.md#対象ブラウザーとcss)を参照する。
 
 ### カメラ・マイクの利用許可
 
@@ -137,6 +139,8 @@ Google Chromeの設定を変えると、Chromium Embedded Frameworkにも反映�
 
 ## フロントエンドの開発
 
-Node.js 26.11.1とnpm 11.20.0を用意し、リポジトリルートで`npm ci`を一度実行する。採用版は`.node-version`と`package.json`に定義し、`npm run check:runtime`と導入時の検査で不一致を検出する。AgentServerは独立管理を維持する。
+開発環境の準備・日常操作・会話確認は[ローカル開発の手順](documents/design/infrastructure/local-development.md)、分散配置の更新・確認・復旧は[VPSへの配備手順](documents/design/infrastructure/vps-deployment.md)を参照する。
+
+Node.js 26.12.1とnpm 11.21.1を用意し、リポジトリルートで`npm ci`を一度実行する。採用版は`.node-version`と`package.json`に定義し、`npm run check:runtime`と導入時の検査で不一致を検出する。AgentServerは独立管理を維持する。
 
 日常操作はルートの`npm run dev`、`npm run build`、`npm test`、`npm run check`、`npm run format`を使う。Markdown全体の検査・整形は`check:md`・`format:md`、ブラウザー操作は`npm run browser -- <引数>`を使う。CLIのグローバル導入は不要。自動テスト用Chromiumは必要時だけ`npm run browser:install`で`work/playwright-browsers`へ取得し、`npm run browser:test -- <引数>`で同じ保存先を使う。実機用Chromeは別途用意し、[専用プロファイルの手順](documents/rules/playwright-cli.md)に従う。

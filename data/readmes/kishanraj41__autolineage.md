@@ -196,7 +196,7 @@ Every tracked operation becomes a span (`pandas-transforms.merge`, `sklearn.f1_s
 
 **pandas (65 hooks):** `read_csv`, `to_csv`, `read_parquet`, `to_parquet`, `dropna`, `fillna`, `merge`, `concat`, `get_dummies`, `groupby` + aggregations, `drop_duplicates`, boolean filtering, `assign`, `sort_values`, `pivot_table`, `melt`, plus 40+ more.
 
-**scikit-learn (227 hooks):** `train_test_split`, estimator `fit` / `predict` / `predict_proba` / `score` across 30+ classes (RandomForest, LogisticRegression, DecisionTree, SVC, KNN, GradientBoosting, etc.), 18 preprocessor classes, 15 metric functions, and the construction of each hooked class (its parameters and the line that built it).
+**scikit-learn (235 hooks):** `train_test_split`, estimator `fit` / `predict` / `predict_proba` / `score` across 30+ classes (RandomForest, LogisticRegression, DecisionTree, SVC, KNN, GradientBoosting, etc.), 18 preprocessor classes, `CountVectorizer` and `TfidfVectorizer`, 15 metric functions, and the construction of each hooked class (its parameters and the line that built it).
 
 **PySpark (49 hooks):** DataFrame transforms, `groupBy` + aggregations, join variants, reader / writer methods, actions.
 
@@ -268,7 +268,7 @@ At production data scales (≥10⁵ rows), end-to-end overhead becomes indisting
 
 ## Limitations
 
-- **Single-process tracking.** Each process tracks its own operations. With `autolineage[otel]`, every process can export spans carrying lineage IDs to one backend, but joining them into a single cross-machine lineage graph is still up to you; AutoLineage does not propagate context between processes.
+- **One machine.** A child started with `multiprocessing` or `multiprocess` after tracking is on sends its records to the parent tracker when the child is joined. With `autolineage[otel]`, every process can export spans carrying lineage IDs to one backend; joining those into a cross-machine graph is still up to you.
 - **Monkey-patching is version-sensitive.** Tested against pandas 2.x / 3.x, scikit-learn 1.x, PySpark 3.x / 4.x.
 - **Import order matters outside `__main__`.** A hooked function imported by name *before* the hooks are installed is rebound automatically in your script or notebook, but not inside other modules you import (a helper module that does `from sklearn.metrics import f1_score` first keeps the untracked reference). Put `import autolineage.auto` first to avoid both cases.
 - **C-extension code is invisible.** Operations that execute entirely in compiled code without re-entering Python (e.g., certain numpy reductions) are not captured.

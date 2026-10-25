@@ -564,6 +564,15 @@ uv run uvicorn autoapply_agent.main:app --reload
 ![ParentalBondingLeaveGapAdvisor](assets/demo/parental-bonding-leave-gap-advisor.gif)
 | Progyny/Carrot/Maven fertility medication coverage planners bury related math in closed UIs | Workers lack a local `offered_usd` vs `needed_usd` band | `FertilityMedicationCoverageGapAdvisor` bands offline `offered_usd` vs `needed_usd` for HITL review and never auto-approves |
 ![FertilityMedicationCoverageGapAdvisor](assets/demo/fertility-medication-coverage-gap-advisor.gif)
+| Rippling/Deel/Remote.com remote-work equipment stipend planners bury related math in closed UIs | Workers lack a local `offered_usd` vs `needed_usd` band | `RemoteWorkEquipmentGapAdvisor` bands offline `offered_usd` vs `needed_usd` for HITL review and never auto-approves |
+![RemoteWorkEquipmentGapAdvisor](assets/demo/remote-work-equipment-gap-advisor.gif)
+
+| Benevity/YourCause/DoubletheDonation volunteer PTO planners bury related math in closed UIs | Workers lack a local `offered_days` vs `needed_days` band | `VolunteerPtoGapAdvisor` bands offline `offered_days` vs `needed_days` for HITL review and never auto-approves |
+![VolunteerPtoGapAdvisor](assets/demo/volunteer-pto-gap-advisor.gif)
+
+| WageWorks/BenefitWallet/Optum eldercare FSA planners bury related math in closed UIs | Workers lack a local `offered_usd` vs `needed_usd` band | `EldercareFsaGapAdvisor` bands offline `offered_usd` vs `needed_usd` for HITL review and never auto-approves |
+![EldercareFsaGapAdvisor](assets/demo/eldercare-fsa-gap-advisor.gif)
+
 | Edenred/WageWorks/CommuterBenefits commute stipend planners bury related math in closed UIs | Workers lack a local `offered_usd` vs `needed_usd` band | `CommuteStipendGapAdvisor` bands offline `offered_usd` vs `needed_usd` for HITL review and never auto-approves |
 ![CommuteStipendGapAdvisor](assets/demo/commute-stipend-gap-advisor.gif)
 

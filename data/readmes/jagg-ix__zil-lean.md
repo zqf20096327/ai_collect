@@ -1,180 +1,348 @@
 # ZIL Lean
 
-ZIL is a small relational language for describing  objects, the relationships between them, and rules that derive additional relationships.
+**A declarative systems architecture language, relational inference engine, and formal verification substrate embedded in [Lean 4](https://lean-lang.org/).**
 
-Developers, review tools, CI, documentation tools, and AI assistants can query the same stored relationships.
+ZIL provides a framework for modeling distributed systems, cloud infrastructure topologies, cascading failure modes, and architectural contracts. Powered by a machine-checked Datalog inference engine in Lean 4, ZIL computes transitive closures, evaluates stratified negation, and proves structural invariants across complex software codebases.
 
-## Quick start
+---
 
+## Relation to Google Zanzibar 
+
+While based on Google's [Zanzibar](https://storage.googleapis.com/gweb-research2023-media/pubtools/5068.pdf) that popularize relational assertions for user access control (ReBAC/RBAC), **ZIL is meant for systems engineering, infrastructure reliability, and formal verification.**
+
+This was initially used for the [Entropic-physlib](https://github.com/jagg-ix/entropic-physlib) project to link theorems as a single coherent framework
+
+| Dimension | Google Zanzibar / ReBAC Engines | ZIL Lean |
+|---|---|---|
+| **Primary Domain** | User authorization & document ACLs | Distributed systems, infrastructure, and software architectures |
+| **Relational Logic** | Restricted graph reachability | Full Datalog with stratified negation (`NOT`) and inductive rules |
+| **System Degradation** | Binary permissions (`allow` / `deny`) | Cascading failures, circuit breaker states, and degraded services |
+| **Blast Radius & Cycles** | Not supported | Automated change impact analysis, reachability depth, and cycle detection |
+| **Formal Guarantees** | Operational guarantees only | Machine-checked Lean 4 kernel proofs for termination and correctness |
+| **Codebase Verification** | External directory service | Polyglot embedded comment scanning (Go, Rust, Python, Lean) to prevent architecture drift in CI |
+| **Formal Interoperability** | Proprietary APIs | Native compilation to Lean 4, bidirectional Terraform/OpenTofu HCL ingestion, and TLA+ export |
+
+---
+
+## Quick Start
+
+### Prerequisites
+- [Elan](https://github.com/leanprover/elan) (Lean 4 toolchain manager)
+
+### Installation & Build
 
 ```bash
 git clone https://github.com/jagg-ix/zil-lean
 cd zil-lean
-lake build        # the library and its tests
-lake build zil    # the command-line tool used below
+
+# Build the Lean library and verification kernel
+lake build
+
+# Build the standalone command-line tool (bin/zil)
+lake build zil
 ```
 
-The first build compiles the whole library and took about a minute on a laptop. While it builds, Lean prints deprecation warnings for
-the library's source code. They do not affect the result.
+---
 
+## Core Concepts: Relational Tuples & Rules
 
-## Relation tuples: from Zanzibar to ZIL
-
-ZIL's relation model is influenced by the tuple-oriented model described in Google's Zanzibar paper:
-
-[Zanzibar: Google's Consistent, Global Authorization System (USENIX ATC '19)](https://storage.googleapis.com/gweb-research2023-media/pubtools/5068.pdf)
-
-Section 2.1 represents an authorization tuple as:
+System state in ZIL is declared as a set of strongly typed **relation tuples**:
 
 ```text
-object#relation@user
+<entity>#<relationship>@<target> [optional_attributes].
 ```
 
-Table 1 gives these examples:
-
-```text
-doc:readme#owner@10
-group:eng#member@11
-doc:readme#viewer@group:eng#member
-doc:readme#parent@folder:A#...
-```
-
-They describe four useful relation patterns:
-
-```text
-user 10 is an owner of doc:readme
-user 11 is a member of group:eng
-members of group:eng are viewers of doc:readme
-doc:readme is in folder:A
-```
-
-The third tuple uses the userset:
-
-```text
-group:eng#member
-```
-
-This userset names everyone related to `group:eng` through `member`. A tuple can therefore refer to another relation, supporting group membership and inherited access.
-
-The `.zc` syntax expresses the same tuples:
+Entities can be physical or virtual nodes, networks, cloud resources, microservices, or state machines. Inference rules (Datalog Horn clauses) derive new relationships and system states:
 
 ```zc
-doc:readme#owner@user:10.
-group:eng#member@user:11.
-doc:readme#viewer@group:eng#member.
-doc:readme#parent@folder:A.
+// Multi-region interconnect
+location:dc_west#connected_to@location:dc_east [link="mpls", bandwidth_gbps=100].
+
+// Infrastructure deployment
+service:payment_api#deployed_on@location:dc_west.
+service:payment_api#depends_on@service:postgres_cluster.
+
+// Cascading failure rule with stratified negation
+RULE cascadingDegradation:
+IF ?service#depends_on@?dep AND NOT ?dep#status@value:healthy
+THEN ?service#status@value:degraded.
 ```
 
-The native Lean syntax expresses the same relations as Lean declarations:
+---
 
-```lean
-import Zil
+## Capabilities & Hands-On Examples
 
-zil_fact
-  node(doc.readme)
-    ⟶[owner]
-  node(user.u10)
+### 1. Service Topology, Cycle Detection & Change Impact Analysis
 
-zil_fact
-  node(group.engineering)
-    ⟶[member]
-  node(user.u11)
+ZIL models complex service architectures to detect circular dependencies and calculate blast radius prior to infrastructure deployments or migrations.
 
-zil_fact
-  node(doc.readme)
-    ⟶[viewer]
-  node(group.engineering)
+Save the following model as `service_mesh.zc`:
+
+```zc
+MODULE service_mesh.
+
+// Service Dependencies
+service:frontend#depends_on@service:gateway.
+service:gateway#depends_on@service:auth.
+service:gateway#depends_on@service:orders.
+service:orders#depends_on@service:database.
+service:auth#depends_on@service:database.
+
+// Upstream Infrastructure Dependency
+service:database#hosted_on@infra:rds_primary.
+
+// Circular Dependency Bug (Detected by ZIL)
+service:monitoring_agent#depends_on@service:telemetry_collector.
+service:telemetry_collector#depends_on@service:monitoring_agent.
+
+// Transitive Dependency Propagation Rule
+RULE transitiveDependency:
+IF ?service#depends_on@?dep AND ?dep#depends_on@?upstream
+THEN ?service#depends_on@?upstream.
 ```
 
-Zanzibar uses relation tuples to describe authorization data. ZIL uses the same compact relational building blocks for authorization models and for wider project relationships:
-
-```text
-document ───── viewer ──────▶ group
-declaration ── implements ──▶ requirement
-theorem ────── validates ────▶ component
-module ─────── dependsOn ────▶ module
-task ───────── blockedBy ────▶ issue
-claim ──────── supportedBy ──▶ document
-```
-
-## Lean and ZIL in one project
-
-ZIL stores relationships, dependencies and implements its own macro system that allows you to extend it with your own DSL 
-extensions to the language so you can leverage lean4 powers.
-
-Together they support questions such as:
-
-- Which declaration implements a requirement?
-- Which theorem validates a transformation?
-- Which modules depend on a changed declaration?
-- Which claims have supporting documents?
-- Which work items are waiting for a result?
-- Which advertised capabilities have implementation links?
-- Which facts and rules produced an inferred relationship?
-- Which project assumptions changed since the previous work session?
-
-These relationships can connect Lean declarations to requirements, documents, issues, tests, tools, and external sources across many modules.
-
-The clause-logic part (`Zil.Datalog`) has a proved semantics: the least model equals the set of facts with a derivation, an evaluation that fails
-instead of returning a partial answer when the rules need more rounds than the bound, and a certificate checker with a soundness theorem. See
-`spec/datalog-semantics-v1.md`.
-
-
-## Sharing the relationship graph between people and tools
-
-ZIL stores selected project facts with the source code. Developers, reviewers, build tools, documentation tools, issue trackers, and AI
-assistants can use the same graph.
-
-### Explain derived relations
-
-Each derived relation records its provenance:
-
-```text
-the rule that produced it
-the variable bindings
-the identifiers of the input facts
-```
-
-`bin/zil explain-query` prints this derivation step by step, so developers and tools can see how the engine reached a result
-(`spec/derivation-provenance-v1.md`).
-
-
-## Use cases
-
-ZIL Lean can support:
-
-- links from informal claims to Lean declarations;
-- requirement-to-implementation tracking;
-- theorem and component dependency analysis;
-- change-impact queries across modules;
-- evidence and source tracking;
-- repository coverage checks;
-- explicit task contracts for people and tools;
-- AI assistants continuing work across sessions, guarded by revision and action-token checks;
-- step-by-step explanations for inferred project relationships;
-- interchange with Terraform/OpenTofu and TLA+ models.
-
-
-## Macro libraries
-
-The macro engine and the nearest-`lib/` rule are part of this repository. The opt-in macro libraries (`libsets/`: model substrate,
-process algebra, proof evidence, discovery API, AWS, Souffle compatibility and others) live in
-[zil-lib](https://github.com/jagg-ix/zil-lib). That repository depends on this one at a pinned commit, tests each library against
-reviewed golden files, and keeps a catalog. Load a library with `--lib`:
-
+#### A. Detect Dependency Topologies and Cycles
+Inspect the directed graph and identify circular dependency cycles:
 
 ```bash
-bin/zil expand model.zc - --lib <zil-lib>/libsets/process-algebra
+./bin/zil dependency-graph service_mesh.zc
 ```
 
-The last commit of this repository that still holds `libsets/` is tagged `last-with-libsets`.
+**Output:**
+```text
+ZIL-DEPENDENCY-GRAPH    1
+nodes   8
+edges   8
+cycles  service.monitoring_agent,service.telemetry_collector
+edge    service.frontend           zil.dependsOn  service.gateway              1
+edge    service.gateway            zil.dependsOn  service.auth                 2
+edge    service.gateway            zil.dependsOn  service.orders               3
+edge    service.orders             zil.dependsOn  service.database             4
+edge    service.auth               zil.dependsOn  service.database             5
+edge    service.database           zil.hostedOn   infra.rds_primary            6
+edge    service.monitoring_agent   zil.dependsOn  service.telemetry_collector  7
+edge    service.telemetry_collector zil.dependsOn service.monitoring_agent     8
+```
 
-A keyword value written with a leading colon, such as `move=:N`, is read as the name without the colon, so the Petri-net layer in
-`examples/petrinet-nd-macro-layer.zc` compiles natively.
+#### B. Calculate Change Impact & Blast Radius
+Calculate every component impacted if `infra:rds_primary` undergoes maintenance or experiences an outage:
 
+```bash
+./bin/zil impact service_mesh.zc infra:rds_primary
+```
 
+**Output:**
+```text
+ZIL-CHANGE-IMPACT       1
+status          known
+changed         infra.rds_primary
+cycles          service.monitoring_agent,service.telemetry_collector
+affected        5
+impact          service.database   1   direct      service.database#zil.hostedOn@infra.rds_primary
+impact          service.auth       2   transitive  service.auth#zil.dependsOn@service.database -> service.database#zil.hostedOn@infra.rds_primary
+impact          service.orders     2   transitive  service.orders#zil.dependsOn@service.database -> service.database#zil.hostedOn@infra.rds_primary
+impact          service.gateway    3   transitive  service.gateway#zil.dependsOn@service.orders -> ...
+impact          service.frontend   4   transitive  service.frontend#zil.dependsOn@service.gateway -> ...
+```
+
+---
+
+### 2. Infrastructure Reliability & Audit Provenance
+
+ZIL's Datalog engine evaluates **stratified negation** to model degraded operational states, network failovers, and circuit breakers.
+
+Save the following model as `infrastructure.zc`:
+
+```zc
+MODULE infrastructure.
+
+// Datacenter Interconnects
+location:dc_west#connected_to@location:dc_east [link="mpls"].
+location:dc_west#connected_to@location:dc_east [link="internet"].
+network:vpn_overlay#overlays@link:internet.
+
+// Service Topology & Primary/Replica Mirroring
+app:api_server#deployed_on@location:dc_west.
+app:api_server#mirrored_by@app:api_server_standby.
+app:api_server#depends_on@service:database_cluster.
+
+// Cascading Failure Invariant Rule:
+// If a dependency is not marked healthy, the dependent application is degraded
+RULE dependencyFailure:
+IF ?app#depends_on@?dep AND NOT ?dep#status@value:healthy
+THEN ?app#state@value:degraded.
+
+QUERY degraded_services:
+FIND ?app WHERE ?app#state@value:degraded.
+```
+
+#### Explain Query Derivations (Audit Provenance)
+Query the system and inspect the complete, step-by-step mathematical provenance of derived facts:
+
+```bash
+./bin/zil explain-query infrastructure.zc degraded_services
+```
+
+**Output:**
+```text
+ZIL-QUERY-EXPLANATION   1
+query       degraded_services
+witnesses   1
+witness     degraded_services   app=app.api_server   fact=5   app=app.api_server,dep=service.database_cluster
+-- provenance --
+fact    0   0   rel   node:location.dc_west   zil.connectedTo   node:location.dc_east   link=s:mpls      origin  base
+fact    1   0   rel   node:location.dc_west   zil.connectedTo   node:location.dc_east   link=s:internet  origin  base
+fact    2   0   rel   node:network.vpn_overlay zil.overlays     node:link.internet                       origin  base
+fact    3   0   rel   node:app.api_server     zil.deployedOn    node:location.dc_west                    origin  base
+fact    4   0   rel   node:app.api_server     zil.dependsOn     node:service.database_cluster            origin  base
+fact    5   0   rel   node:app.api_server     zil.state         node:value.degraded                      origin  rule  dependencyFailure  4  app=app.api_server,dep=service.database_cluster
+```
+
+---
+
+### 3. Compiling System Architectures to Machine-Checked Lean 4 Code
+
+ZIL models compile directly into strongly typed Lean 4 definitions, inductive AST expressions, and formal Datalog programs:
+
+```bash
+./bin/zil compile infrastructure.zc -
+```
+
+**Generated Lean 4 Output:**
+```lean
+import Zil.Core.Program
+import Zil.Syntax.Environment
+
+namespace Zil.Generated.infrastructure
+
+private def sourceTuple0 : Zil.TupleExpr :=
+  { Zil.TupleExpr.direct
+      (.ground `location.dc_west)
+      `zil.connectedTo
+      (.ground `location.dc_east) with
+    attrs := #[{ key := `link, value := .text "mpls" }]
+    source := { frontend := "zc", line := some 4 } }
+
+private def sourceRule0 : Zil.Rule := {
+  name := `dependencyFailure
+  variables := #[`app, `dep]
+  premises := #[
+    { Zil.RelExpr.mkWithAttrs (.variable `app) `zil.dependsOn (.variable `dep) #[] with
+      source := { frontend := "zc", line := some 14 } }
+  ]
+  negativePremises := #[
+    { Zil.RelExpr.mkWithAttrs (.variable `dep) `zil.status (.ground `value.healthy) #[] with
+      source := { frontend := "zc", line := some 14 } }
+  ]
+  conclusion := {
+    Zil.RelExpr.mkWithAttrs (.variable `app) `zil.state (.ground `value.degraded) #[] with
+    source := { frontend := "zc", line := some 15 }
+  }
+  trust := .graphDerived
+  source := { frontend := "zc", line := some 13 }
+}
+end Zil.Generated.infrastructure
+```
+
+Because ZIL compiles to native Lean 4, system properties can be checked against the Lean 4 kernel with mathematical proofs guaranteeing deterministic evaluation and termination.
+
+---
+
+### 4. Continuous Architecture Drift Detection (Polyglot Embedded Blocks)
+
+Architectural specifications often drift from production implementations. ZIL allows engineers to embed declarative architectural assertions directly into code comments across Go, Rust, Python, Lean, and Markdown:
+
+```lean
+/-
+@zil target=self
+self#depends_on@service:postgres_cluster.
+self#enforces_sla@value:tier_1.
+@endzil
+-/
+def executePaymentTransaction (tx : Transaction) : IO TransactionResult := do
+  ...
+```
+
+#### Scan Codebases in CI:
+```bash
+# Scan and extract relational contracts from source code comments
+./bin/zil embedded-scan ./src /tmp/extracted_architecture.zc
+
+# Snapshot verified architecture
+./bin/zil embedded-snapshot ./src architecture_baseline.json
+
+# Fail CI builds if unapproved dependencies or architecture drift are detected
+./bin/zil embedded-drift-check ./src architecture_baseline.json
+```
+
+---
+
+### 5. Distributed Protocols & State Machines (`LTS_ATOM`)
+
+ZIL natively supports Labeled Transition Systems (`LTS_ATOM`) to model distributed protocol state transitions, connection handshakes, and recovery states:
+
+```zc
+MODULE protocol.
+
+LTS_ATOM tunnel_session [
+  states=#{offline connecting ready degraded},
+  initial=offline,
+  transitions={
+    [offline start] [connecting],
+    [connecting auth_ok] [ready],
+    [ready transport_drop] [degraded],
+    [degraded recover] [ready]
+  }
+].
+
+POLICY no_split_brain_transport [
+  condition="NOT (single_path AND dual_path)",
+  criticality=high
+].
+```
+
+Export state machine models directly to TLA+ for temporal model checking with TLC:
+
+```bash
+./bin/zil export-tla protocol.zc -
+```
+
+---
+
+## CLI Reference
+
+The `bin/zil` command-line tool provides a unified suite for modeling, verification, and interop:
+
+| Command | Purpose |
+|---|---|
+| `bin/zil dependency-graph <model.zc>` | Generates directed graph topology and identifies circular dependency cycles. |
+| `bin/zil impact <model.zc> <node>` | Calculates blast radius and direct/transitive change impact. |
+| `bin/zil explain-query <model.zc> <query>` | Produces complete step-by-step derivation provenance for any query. |
+| `bin/zil compile <model.zc> [out.lean]` | Compiles a ZIL specification into typed, machine-checked Lean 4 code. |
+| `bin/zil expand <model.zc> [out.zc]` | Expands domain macros into canonical relation tuples and Datalog rules. |
+| `bin/zil embedded-scan <path>` | Extracts architectural assertions embedded in source code comments. |
+| `bin/zil embedded-drift-check <path> <base.json>` | Verifies source code against architecture baseline to prevent drift in CI. |
+| `bin/zil export-tla <model.zc> [out.tla]` | Exports state machine specifications (`LTS_ATOM`) to TLA+ for model checking. |
+| `bin/zil import-hcl <dir> [out.zc]` | Ingests Terraform / OpenTofu HCL infrastructure configurations into ZIL. |
+| `bin/zil proof-obligations <model.zc>` | Maps system verification goals to solver obligations (Z3, TLAPS, Lean 4). |
+| `bin/zil test` | Runs the test suite across supported profiles. |
+| `bin/zil doctor` | Inspects local toolchain health and environment prerequisites. |
+
+---
+
+## Companion Library: `zil-lib`
+
+Advanced formal verification and solver integration capabilities are maintained in the companion [zil-lib](https://github.com/jagg-ix/zil-lib) library:
+
+- **SMT-Backed Policy Equivalence (`zilLib equiv`):** Formally proves that two refactored rule sets or architectures are semantically identical using Z3.
+- **Rule Repair Hints (`zilLib repair`):** Automatically suggests minimal rule modifications to repair broken architectural invariants.
+- **Automated Test Generation (`zilLib gentests`):** Generates test suites achieving 100% path coverage over complex rule graphs.
+- **Causal Revisions & Stale Views (`spec/stale-views-v0.1.md`):** Models distributed replica lag, causal bounds, and read/write consistency.
+- **Numeric Limits & Quota Arithmetic (`spec/numeric-limits-v0.1.md`):** Models concurrency quotas, rate-limiting budgets, and burst capacities.
+- **Assume-Guarantee Policy Composition (`spec/composition-v0.1.md`):** Verifies modular sub-systems under formal environment assumptions.
+
+---
 
 ## License
 
-[Apache License 2.0](LICENSE). A contribution is accepted under the same terms (section 5 of the license). The macro libraries that used
-to live here are in [zil-lib](https://github.com/jagg-ix/zil-lib), under the same license.
+This project is licensed under the [Apache License 2.0](LICENSE).

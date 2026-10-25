@@ -51,16 +51,12 @@
 
 ## What's new
 
-- **2.31.0: one line for your AI agent** ([changelog](CHANGELOG.md#2310-2026-10-24)). Add a site
-  gives one line to paste into Claude Code, Codex or Cursor. It holds a one-time code, never a key:
-  the agent takes the keys once, connects the site and reports back while you watch each step.
-- **2.30.0: set up in one step** ([changelog](CHANGELOG.md#2300-2026-10-23)). One command connects a
-  server's logs, with or without Docker; leads in one file or a WordPress plugin; the whole set-up
-  in one zip by mail, ready for a person or Claude Code.
-- **2.29.0: keep leads for good** ([changelog](CHANGELOG.md#2290-2026-10-22)). Leads and the pages
-  they read are never deleted when you choose so; visitors' pages before a sign-up up to 400 days.
-- **2.28.0: Leads' 7 days include today** ([changelog](CHANGELOG.md#2280-2026-10-22)). Today so
-  far plus the 6 days before, with the exact dates from and to, compared up to the same hour.
+- **2.34.0: social networks** ([changelog](CHANGELOG.md#2340-2026-10-24)). Traffic › Sources has a
+  Social network tab (X, LinkedIn, Facebook and more, each network's addresses added up), and All
+  sites shows every site's Search, Social, X, LinkedIn, AI and Direct side by side.
+- **2.33.0: Direct, likely, and sale alerts** ([changelog](CHANGELOG.md#2330-2026-10-24)). Sources
+  shows which Direct visits were likely a payment return, an in-app browser or a shared link, as an
+  estimate counted twice; a sale alert (off by default) tells you about each sale by mail or Slack.
 
 Earlier releases: [CHANGELOG.md](CHANGELOG.md).
 
@@ -242,7 +238,8 @@ your firewall, not instead of it.
   where visitors are active now, a countries table beside it. Natural Earth's public-domain
   outlines drawn in the page; no map service is asked for anything.
 - Nothing reads "unknown": a visit with no referrer and no campaign tag is **Direct**, a value the
-  log did not have is **Not recorded**.
+  log did not have is **Not recorded**. Under Direct, its **likely** cause (payment return,
+  in-app browser, shared link), an estimate with its own second count.
 - **Overview, today, live:** visitors now and the four tiles against **yesterday at this hour** (a
   figure with its own second count), the map, sources, what converted and AI & bots.
 - **Every table works the same way:** sort any column, filter columns, choose columns, and export
@@ -325,8 +322,11 @@ your firewall, not instead of it.
   disagrees withheld. A sample of API answers, labelled so, not what every user sees.
 
 **Results**
-- One section, **Leads & sales**, one question per tab: Leads, Summary, Sources, Calendar
-  bookings, Funnels, Events and Find a person.
+- One section, **Leads & sales**, one question per tab: Leads, Summary, Sources, Revenue,
+  Calendar bookings, Funnels, Events and Find a person.
+- **Revenue (2.32):** which sources (AI assistants among them), pages and campaigns made money: net revenue, sales, refunds,
+  new customers, renewals and revenue per visitor, per currency, never converted; by source, campaign, page, country or your own
+  tags; lifetime value by first source. Stripe's amounts are read; Polar, Dodo, Paddle, Lemon Squeezy, Gumroad or your own server send `value` and `currency` through the lead hook, Zapier, Make or n8n. Counted twice; a day that disagrees is withheld.
 - **Leads:** every lead of the period, newest first: when, name and email (owners and admins
   only, where the site keeps them), what they did and its label, its stage now, where it came
   from, the source, first touch, landing page and country; as a list, a board, a timeline or a
@@ -390,8 +390,8 @@ your firewall, not instead of it.
 - 404s and who met them (people, probes, crawlers), server errors by page, page speed, uptime from
   the heartbeat with every outage.
 - Alerts: site down, logging stopped, 5xx burst, 404 surge, crawler burst, new crawler, traffic
-  drop, each switched on or off per site. A failed morning run sends one short mail. Any alert can
-  go to **Slack** or any tool, as the signed webhook event `alert.opened`.
+  drop, each switched on or off per site, and a **sale** (or refund) once leads carry money. A failed
+  morning run sends one short mail. Any alert can go to **Slack** or any tool, as `alert.opened`.
 - A data-quality panel: unreadable lines, gaps, duplicates, log age.
 - Deploy and change markers on every chart.
 
@@ -462,6 +462,8 @@ person search and the other Settings pages need your own Skald. Every image belo
   <strong>Leads.</strong> Who they are, what they did and where they came from, in one list.
 </p>
 
+<p align="center"><img src="docs/screenshots/revenue.png" alt="Leads and sales, Revenue, on the demo's sample data for the last 90 days: a Currency switch with USD chosen and EUR beside it, Breakdown and Tag options; net revenue $16,798.40 ($16,818.00 sold, $19.60 refunded), 33 sales, 1 refund, 29 new customers, 4 renewals and $3.78 revenue per visitor over 4,440 visitors of the 58 days with values; the line Also in this period, never added: €488.40 net from 8 sales; and the start of Revenue by source (last touch)" width="900"><br><strong>Revenue (2.32).</strong> Which sources made money, per currency, never converted; refunds, renewals and lifetime value.</p>
+
 | | |
 | :---: | :---: |
 | <img src="docs/screenshots/sales-summary.png" alt="Leads and sales, Summary for the last 7 days: leads, sign-ups and contact forms against the period before, demos booked not set up in the lead database, leads per 100 visitors, and leads per day by kind" width="440"><br>**Summary.** How many, and better than before? | <img src="docs/screenshots/conversions.png" alt="Leads and sales, Sources counted from the tools: where the completed ones came from by last touch, first touch, campaign and landing page, each split by action" width="440"><br>**Sources.** Where the leads came from, first and last touch. |
@@ -522,6 +524,8 @@ person search and the other Settings pages need your own Skald. Every image belo
 | :---: | :---: |
 | <img src="docs/screenshots/overview.png" alt="Overview, Summary for 90 days: visitors, pages read, leads, visitors from AI, demos booked and returning visitors in tiles, a chart with each day's leads, and the countries and top pages" width="440"><br>**Overview.** The period at a glance. | <img src="docs/screenshots/compare-mode.png" alt="Compare with the previous period switched on: Traffic, Sources with A, B and the change beside every source" width="440"><br>**Compare with…** Previous period, last year or any period. |
 | <img src="docs/screenshots/traffic-sources-grid.png" alt="Traffic, Sources: one grid with segments for source type, referring site and campaign, with visitors, the change, a trend, leads and lead rate, then where returning visitors first came from" width="440"><br>**Sources.** One grid; search, filters and sort in the address. | <img src="docs/screenshots/visitors.png" alt="Traffic, Visitors for 7 days: the visitor flow from source through four pages, and each visit with its time, country, city, device, source, new or returning, pages and time on site" width="440"><br>**Visitors.** The flow, then each visit page by page. |
+| <img src="docs/screenshots/direct-likely.png" alt="Traffic, Sources, Direct, likely (inferred), 90 days: of 1,452 Direct visits, 82 likely a shared link (Instagram 43, WhatsApp 39), 37 likely a checkout return (Stripe), 26 likely an in-app browser (Instagram app), the rest with no likely cause" width="440"><br>**Direct, likely.** What Direct probably was, as an estimate. | <img src="docs/screenshots/alerts-sale.png" alt="Site, Alerts: the Sale and Refund on a sale switches, off by default, under the other alert rules" width="440"><br>**Sale alerts.** One alert per sale, by mail or Slack. |
+| <img src="docs/screenshots/social-networks.png" alt="Traffic, Sources, Social network, 90 days: LinkedIn 360, X 71, Reddit 61, Hacker News 45, Facebook 18 and Instagram 10 visitors; X open: t.co, twitter.com, the X Android app and x.com, and the pages its visitors landed on" width="440"><br>**Social networks.** One row per network, every address added up. | <img src="docs/screenshots/across-sites.png" alt="All sites, Where visitors came from, 30 days: for each site, visitors from Search, Social, X, LinkedIn, Facebook, Instagram, Reddit, YouTube, AI and Direct" width="440"><br>**All your sites.** Each source side by side. |
 | <img src="docs/screenshots/visitors-drawer.png" alt="The visitor drawer: a visitor from Austin with several visits over 17 days, where they first came from (google.com, search engine), and each visit as a line of pages with the time between them, newest first, with Replay" width="440"><br>**One visitor, every visit.** Where they first came from, replayable. | <img src="docs/screenshots/filters.png" alt="The filter builder over Traffic, Visitors: country is USA or GBR, pages read at least 2 and source type is not direct, joined by All rules, 193 of 578 visits match, each rule's own count, and a name to save it as a view" width="440"><br>**Advanced filters.** AND, OR and groups; saved as views. |
 | <img src="docs/screenshots/places-cities.png" alt="Places and devices, Cities: visitors by city, each with its country's flag and three-letter code (New York, USA; San Francisco, USA; London, England, GBR), searchable and exported as shown" width="440"><br>**Cities.** Each visit's city, from a free city file. | <img src="docs/screenshots/search.png" alt="Traffic, Search with made-up Search Console figures: clicks, impressions, CTR and average position for 28 days, clicks per day with the provisional day dashed, top queries, pages, countries and devices, and Search Console clicks beside Skald's people from Google" width="440"><br>**Search.** Google's and Bing's figures beside Skald's own. |
 | <img src="docs/screenshots/retention.png" alt="Traffic, Retention: weekly cohorts of new visitors, the share of each who came back in each week after, and a retention curve" width="440"><br>**Retention.** Who came back, week by week. | <img src="docs/screenshots/reports-preview.png" alt="Settings, Reports: a monthly report for a client of example.com with its schedule, period, sections and recipients, and the preview of its mail" width="440"><br>**Client reports** (your own Skald). Branded, with a PDF. |

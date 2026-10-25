@@ -7,7 +7,7 @@
 <p align="center"><strong>简体中文</strong> · <a href="README_EN.md">English</a></p>
 
 <p align="center">
-  <a href="docs/release-0.101.2.md"><img alt="OMD 0.101.2" src="https://img.shields.io/badge/release-OMD%200.101.2-0969da?style=flat-square"></a>
+  <a href="docs/release-0.104.0.md"><img alt="OMD 0.104.0" src="https://img.shields.io/badge/release-OMD%200.103.0-0969da?style=flat-square"></a>
   <a href="https://github.com/gulagala001/oh-my-dsh/releases"><img alt="GitHub 累计下载量" src="https://img.shields.io/github/downloads/gulagala001/oh-my-dsh/total?style=flat-square&amp;label=GitHub%20downloads&amp;color=0969da"></a>
   <a href="#readme-install"><img alt="DSH 0.2.1-rc.3" src="https://img.shields.io/badge/DSH-0.2.1--rc.3-0969da?style=flat-square"></a>
   <a href="https://github.com/gulagala001/oh-my-dsh/stargazers"><img alt="GitHub Stars" src="https://img.shields.io/github/stars/gulagala001/oh-my-dsh?style=flat-square&amp;color=0969da"></a>
@@ -44,10 +44,10 @@
 打开实际使用的 DSH 实例，在 **插件 → ＋ 添加插件** 中粘贴：
 
 ```text
-https://github.com/gulagala001/oh-my-dsh/releases/download/v0.2.1-rc.3.omd.0.101.2/oh-my-dsh-0.2.1-rc.3.omd.0.101.2.tgz
+https://github.com/gulagala001/oh-my-dsh/releases/download/v0.2.1-rc.3.omd.0.104.0/oh-my-dsh-0.2.1-rc.3.omd.0.104.0.tgz
 ```
 
-等当前任务结束后，按宿主提示启用或完整重启该实例，沿用原 profile 与数据。其他宿主、升级和卸载见[安装指南](docs/install.md) · [SHA256SUMS](https://github.com/gulagala001/oh-my-dsh/releases/download/v0.2.1-rc.3.omd.0.101.2/SHA256SUMS).
+等当前任务结束后，按宿主提示启用或完整重启该实例，沿用原 profile 与数据。其他宿主、升级和卸载见[安装指南](docs/install.md) · [SHA256SUMS](https://github.com/gulagala001/oh-my-dsh/releases/download/v0.2.1-rc.3.omd.0.104.0/SHA256SUMS).
 
 ### 2. 先试这一件事
 
@@ -182,6 +182,7 @@ OMD 组合 **Workflow、Rewind、Persona、Extensions 和 DeepSeek Workbench**�
 | [DSH BTW](https://github.com/gulagala001/dsh-btw) | 临时旁聊、历史、追问和独立停止 |
 | [DSH Theme](https://github.com/gulagala001/dsh-theme-plugin) | 主题、配色、背景、字体和外观管理 |
 | [Glyph](https://github.com/gulagala001/dsh-theme-plugin) | 动态字符界面与字符鲸鱼视觉 |
+| [DSH Response ID Reuse](https://github.com/gulagala001/dsh-response-id-reuse) | Responses 响应 ID 自动续传与完整请求回退 |
 | [Billion Context](https://github.com/ranxianglei/billion-context) | 管理长会话的上下文压缩、原文恢复和缓存诊断；在 OMD 上下文页按会话切换。 |
 | [dsh-ops](https://github.com/T-Auto/dsh-ops) | 增强文件、文档与命令操作，按需加载工具并复用结果；支持普通模式和 PTC，保留原生工具。 |
 | [DSH Intelligent UI](https://github.com/gulagala001/dsh-intelligent-ui) | 在回答中使用交互图表、表单、计算器、模拟和小游戏。 |

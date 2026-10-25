@@ -23,7 +23,7 @@ Yuxi 是面向需要企业自部署的多用户 Agent 产品，且需要自己�
 - **执行多步骤任务**：组合工具、MCP、Skills、子智能体和沙盒，产出可预览、可下载的文件。
 - **连接知识图谱**：从 Milvus 知识库的文档块中抽取实体和关系，写入 Neo4j 并参与检索。
 - **管理团队使用范围**：按用户、部门和共享范围管理知识库、智能体、Skills 和模型。
-- **对比运行质量**：评估知识库的检索结果，也可以用 Langfuse Dataset 评估完整智能体任务。
+- **对比运行质量**：评估知识库的检索结果；完整智能体评估可通过公开 API 自行构建，见[智能体评估](docs/agents/agent-evaluation.md)。
 
 
 ## 赞助商
@@ -34,28 +34,32 @@ Yuxi 是面向需要企业自部署的多用户 Agent 产品，且需要自己�
 
 ## 快速启动
 
-语析（Yuxi）完全基于 Docker 启动，服务和中间件主要包括：LangGraph、Vue、FastAPI、Milvus、Neo4j、PostgreSQL、MinerU、PaddleOCR。
+语析（Yuxi）的应用服务通过 Docker Compose 启动，Agent 执行环境使用专用 Linux/KVM 节点上的 Cube 用户 VM。Cube 不由 Compose 启动；请先在执行节点安装并运行 Cube，再启动应用。
 
 ### 前置条件
 
-安装 [Docker Engine](https://docs.docker.com/get-docker/) 和 Docker Compose，并准备一个可用的大模型 API。当前仓库默认配置对应 `v0.7.3`。
+安装 [Docker Engine](https://docs.docker.com/get-docker/) 和 Docker Compose，准备一个可用的大模型 API，并准备一台 x86_64 Linux/KVM 执行节点。节点需要 `/dev/kvm`、管理员权限、Docker（构建用户模板），以及与应用主机共享的 Workspace 和 Skills 目录。macOS/Windows 上运行应用也需要一台可访问的 Linux/KVM 节点。
 
-### 1. 获取代码并初始化
+本教程使用 `v0.8.0.beta3` 候选标签，尚未正式发布。0.8 仅面向全新部署，旧数据库、索引和文件布局不提供自动升级；请用独立数据目录试用，见[0.8.0 更新说明](docs/develop-guides/releases/0.8.0.md)。
+
+### 1. 准备 Cube 执行节点
+
+在专用节点按[沙盒配置与运维](docs/advanced/sandbox-operations.md#原生执行节点)运行 `docker/cube/setup-node.sh` 并构建 `yuxi-user` 模板。同一台 Linux 机器既运行应用又提供 `/dev/kvm` 时，可以直接在这台机器上安装；需要把开发节点放进独立容器或虚拟机时，按[嵌套开发节点](docs/advanced/sandbox-operations.md#当前机器的嵌套开发节点)启动独立 Cube Compose。
+
+Yuxi 启动时会检查 Cube 控制面、用户模板和数据代理，检查失败不会进入就绪状态。节点安装、共享目录和平台要求见[快速开始](docs/intro/quick-start.md)。
+
+### 2. 获取代码并初始化
 
 ```bash
-git clone --branch v0.7.3 --depth 1 https://github.com/xerrors/Yuxi.git
+git clone --branch v0.8.0.beta3 --depth 1 https://github.com/xerrors/Yuxi.git
 cd Yuxi
-
-# Linux/macOS
-./scripts/init.sh
-
-# Windows PowerShell
-.\scripts\init.ps1
 ```
 
-初始化脚本会创建 `.env`、读取 SiliconFlow API Key，并为 JWT、API Key 派生和 Sandbox provisioner 生成独立的安全密钥。也可以手动复制 `.env.template` 并填写这些值。
+先按[快速开始](docs/intro/quick-start.md)的步骤 3 准备 `.env`、Cube 连接值和共享目录。初始化使用 `./scripts/init.sh`（Linux/macOS）或 `.\scripts\init.ps1`（Windows；需先填写 `.env`，因为 `init.ps1` 不会从进程环境复制 `CUBE_*`）。
 
-### 2. 启动开发环境
+初始化脚本创建 `.env`、读取 SiliconFlow API Key，并为 JWT 与 API Key 派生生成独立安全密钥。也可以手动复制 `.env.template`。脚本不部署 Cube 节点；`CUBE_API_URL`、`CUBE_PROXY_NODE_IP`、`CUBE_NODE_USER_DATA_DIR` 和 `CUBE_NODE_SKILL_PROJECTION_DIR` 必须在运行前配置，控制面启用认证时填写 `CUBE_API_KEY`。启动前运行 `docker compose config --quiet` 检查配置。
+
+### 3. 启动开发环境
 
 ```bash
 docker compose up --build -d
@@ -70,12 +74,12 @@ curl --fail http://localhost:5050/api/system/ready
 
 返回的 `status` 为 `ready` 后，打开 [http://localhost:5173](http://localhost:5173)，按页面提示初始化超级管理员并登录。API 文档位于 [http://localhost:5050/docs](http://localhost:5050/docs)。
 
-从 v0.7.1 或 v0.7.2 升级到当前版本时，不能直接执行 `docker compose up`。请先阅读[生产部署与升级](docs/advanced/deployment.md)，在停机窗口完成备份和迁移。
-
 ## 文档导航
 
 - [项目介绍](https://xerrors.github.io/Yuxi/intro/project-overview)：了解能力、概念和系统边界。
-- [快速开始](https://xerrors.github.io/Yuxi/intro/quick-start)：从零启动本地环境。
+- [快速开始](https://xerrors.github.io/Yuxi/intro/quick-start)：准备执行节点并启动开发环境。
+- [命令行工具](docs/intro/cli.md)：登录实例、对话、发送附件和查询知识库。
+- [公开 Agent API 入门](docs/intro/agents-api-quickstart.md)：外部应用创建会话、提交消息和读取结果。
 - [模型配置](https://xerrors.github.io/Yuxi/intro/model-config)：接入聊天、嵌入和重排模型。
 - [知识库教程](https://xerrors.github.io/Yuxi/intro/knowledge-base)：创建知识库并验证检索。
 - [智能体开发](https://xerrors.github.io/Yuxi/agents/agents-config)：配置 Agent、工具和扩展。
@@ -117,7 +121,7 @@ Yuxi 把知识进入系统、Agent 执行任务和团队治理放在一条完整
 
 **人工审批与交付卡片**
 
-在执行涉及修改文件、调用外部高危接口等关键操作时，系统会弹出确认卡片等待人工审批；任务完成后自动汇总生成成果并提供交互式交付入口。
+默认审批模式要求确认命令执行和当前 Project 外的文件写入，Project 内写入自动放行；完全信任模式不要求审批。任务完成后，用户可以通过交付卡片预览或保存文件。
 
 ![人工审批与文件交付](https://oss-img.xerrors.cn/github/image-20260825163940350.png)
 
@@ -156,7 +160,7 @@ Yuxi 把知识进入系统、Agent 执行任务和团队治理放在一条完整
 
 **RAG 效果评估**
 
-支持构建专属的基准问答评估集，自动批量运行评测并输出检索召回率、答案相关性等量化指标，帮助快速发现知识盲区与配置短板。
+支持构建基准问答评估集并批量评测检索召回率；提供参考答案和评判模型时，还可评估答案准确性，帮助发现知识盲区与配置短板。
 
 ![image-20260830144852289](https://oss-img.xerrors.cn/github/image-20260830144852289.png)
 
@@ -185,7 +189,7 @@ Yuxi 把知识进入系统、Agent 执行任务和团队治理放在一条完整
 
 **图谱构建与索引状态**
 
-解析文档时自动执行实体识别与关系抽取，构建面向具体业务领域的知识图谱。可直观查看实体总数、关系边数量与构建进度。
+管理员对已索引的 Milvus 文档块提交构建任务后，系统执行实体识别与关系抽取并写入 Neo4j。图谱构建不随文档解析自动触发，用户可查看实体、关系与后台任务进度。
 
 ![image-20260826200519930](https://oss-img.xerrors.cn/github/image-20260826200519930.png)
 
@@ -282,7 +286,7 @@ Yuxi 把知识进入系统、Agent 执行任务和团队治理放在一条完整
 
 专为企业和团队多人协作打造。管理员可以集中管理成员与部门组织架构、统一配置模型接入凭据与 API Key，并通过监控看板查看平台的运行状况与调用指标。
 
-- 支持按租户、用户与部门配置知识库、Agent 以及功能的读写权限。
+- 支持按用户、部门和共享范围配置知识库、Agent 等资源的访问与管理权限。
 - 集中配置和调度多供应商的大模型能力，统一管理 API Key 凭据。
 - 实时统计分析使用量、请求趋势与资源负载，辅助运行维护。
 
@@ -293,7 +297,7 @@ Yuxi 把知识进入系统、Agent 执行任务和团队治理放在一条完整
 
 **用户、部门与细粒度权限体系**
 
-提供符合企业组织架构的多租户权限体系，支持按照部门或用户组精确控制对知识库、智能体、工具和沙盒工作区的访问与编辑权限。
+通过用户、部门和资源共享范围控制知识库、智能体等资源的访问与管理权限；沙盒工作区按用户隔离。
 
 ![image-20260826201638124](https://oss-img.xerrors.cn/github/image-20260826201638124.png)
 
@@ -306,7 +310,7 @@ Yuxi 把知识进入系统、Agent 执行任务和团队治理放在一条完整
 
 **Dashboard 与系统运行监控**
 
-直观的运维数据看板，实时展示系统请求量、Token 消耗统计、知识库检索频次与长任务排队状态，为容量规划和成本核算提供数据支撑。
+运维数据看板展示会话、模型和工具调用、Token 消耗以及 VM 状态等统计，为容量规划和成本核算提供数据支撑。
 
 ![image-20260826201346254](https://oss-img.xerrors.cn/github/image-20260826201346254.png)
 

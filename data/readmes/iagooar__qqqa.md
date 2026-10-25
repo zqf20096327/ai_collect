@@ -2,6 +2,14 @@
 
 Fast, stateless LLM-powered assistant for your shell: qq answers; qa runs commands
 
+## Status: feature-complete, and thank you
+
+qqqa started as a small itch: I was tired of switching to a browser for shell commands I always forget. Then it [launched on Hacker News](https://news.ycombinator.com/item?id=45833811), drew 165 points and 86 comments, and went well past anything I expected. Today it has more than 600 stars on GitHub, it ships in Homebrew core, and it runs on macOS, Linux and Windows.
+
+Much of qqqa came straight from that thread and the issues that followed: piped input, OpenRouter, local models through Ollama, Homebrew, privacy-first history, a tighter sandbox for `qa`, and support for Codex and Claude Code subscriptions. Thank you to everyone who starred it, filed an issue, sent a PR or argued about it on HN. You made it a much better tool.
+
+With [1.1.0](https://github.com/iagooar/qqqa/releases/tag/v1.1.0), qqqa does what it set out to do: quick answers and one-step tasks in your shell, fast, stateless, and out of your way. So it's done, on purpose. It stays on Homebrew and GitHub Releases, keeps building, and gets bug and security fixes; no new features are planned. Small PRs that fit its scope are still welcome. More in [#61](https://github.com/iagooar/qqqa/issues/61).
+
 ## What is qqqa
 
 qqqa is a two-in-one, stateless CLI tool that brings LLM assistance to the command line without ceremony.
@@ -42,7 +50,7 @@ The tools may include transient context you choose to provide:
 
 ## Why I recommend using OpenRouter by default
 
-OpenRouter mirrors the OpenAI Chat Completions API, adds generous community-hosted models, and keeps `openai/gpt-4.1-nano` fast and inexpensive. qqqa talks to `https://openrouter.ai/api/v1` out of the box and reads the API key from `OPENROUTER_API_KEY`, so your first run works as soon as you drop in a key.
+OpenRouter mirrors the OpenAI Chat Completions API and gives one key access to most models. The default profile runs `qwen/qwen3.8-27b` routed to Cerebras, which answers a typical qq question in well under a second for a fraction of a cent. The `luna` (`openai/gpt-6-luna`) and `haiku` (`anthropic/claude-haiku-5.5`) profiles are cheap alternatives: `qq -p haiku "..."`. qqqa talks to `https://openrouter.ai/api/v1` out of the box and reads the API key from `OPENROUTER_API_KEY`, so your first run works as soon as you drop in a key.
 
 If you need even more throughput, the bundled `groq` profile that targets `openai/gpt-oss-20b` and `openai/gpt-oss-120b` remains available, and you can still add any OpenAI-compatible provider by editing `~/.qq/config.json` or creating a new profile.
 
@@ -80,7 +88,8 @@ What to know:
 
 - Install Claude Code so the `claude` binary is on your `PATH`, then run `claude login` once.
 - Claude Code streams responses the same way API-based LLMs do.
-- Need to pin a different Claude desktop model? Add `"model_override": "claude-haiku-4-5"` under `model_providers.claude_cli.cli` in `~/.qq/config.json`. That override only applies to the Claude CLI; `qq -m/--model` still takes precedence per run.
+- qqqa runs `claude -p` with no built-in tools and no MCP servers (`--tools= --strict-mcp-config`), so it only produces text and each request stays small. The prompt goes on stdin, so large piped input works. This needs a Claude Code release that supports `--tools`.
+- Need to pin a different Claude desktop model? Add `"model_override": "claude-haiku-5-5"` under `model_providers.claude_cli.cli` in `~/.qq/config.json`. That override only applies to the Claude CLI; `qq -m/--model` still takes precedence per run.
 
 Minimal config snippet:
 
@@ -90,13 +99,13 @@ Minimal config snippet:
   "profiles": {
     "claude_cli": {
       "model_provider": "claude_cli",
-      "model": "claude-haiku-4-5"
+      "model": "claude-haiku-5-5"
     }
   },
   "model_providers": {
     "claude_cli": {
       "cli": {
-        "model_override": "claude-haiku-4-5"
+        "model_override": "claude-haiku-5-5"
       }
     }
   }
@@ -134,6 +143,15 @@ Download the Windows archive from Releases (choose the architecture that matches
 
 On first run qqqa creates a config file with safe permissions. The default path is `~/.qq/config.json`. If `XDG_CONFIG_HOME` is set and no legacy `~/.qq/config.json` exists, config is stored at `$XDG_CONFIG_HOME/qq/config.json` instead.
 
+The config file holds only your changes. qqqa keeps its defaults (providers, profiles, models) built in and layers the file over them key by key, so new providers and profiles from an update reach you without editing the file. A file from an older release, with every default spelled out, keeps working; the next time qqqa saves it (for example `qq --no-fun`), it is rewritten with only the values that differ from the defaults. For example, this is a complete config:
+
+```json
+{
+  "default_profile": "groq",
+  "profiles": { "groq": { "model": "openai/gpt-oss-120b" } }
+}
+```
+
 For a smooth first interaction, run the init flow:
 
 ```sh
@@ -147,13 +165,13 @@ If `~/.qq/config.json` already exists, the init command keeps it untouched and e
 
 The initializer lets you choose the default provider:
 
-- OpenRouter + `openai/gpt-4.1-nano` (default, fast and inexpensive)
+- OpenRouter + `qwen/qwen3.8-27b` on Cerebras (default, very fast and inexpensive)
 - Groq + `openai/gpt-oss-20b` (faster, cheap paid tier)
-- OpenAI + `gpt-5-mini` (slower, a bit smarter)
-- Anthropic + `claude-3-5-sonnet-20241022` (placeholder until their Messages API finalizes)
+- OpenAI + `gpt-6-luna` (inexpensive)
+- Anthropic + `claude-haiku-5-5` (placeholder until their Messages API finalizes)
 - Ollama (runs locally, adjust port if needed)
 - Codex CLI + `gpt-5` (wraps the `codex exec` binary so you can reuse a ChatGPT subscription; no API key needed, buffered output only)
-- Claude Code CLI + `claude-haiku-4-5` (wraps the `claude` binary; `qq` streams live, `qa` buffers so it can parse tool calls)
+- Claude Code CLI + `claude-haiku-5-5` (wraps the `claude` binary; `qq` streams live, `qa` buffers so it can parse tool calls)
   - Need to force a different desktop model? Add `"model_override"` under the provider's `cli` block (supported for both Codex and Claude). That override wins over the profile default but still yields to the per-run `--model` flag.
 - Gemini + `gemini-3-flash-preview` (Google's Gemini via OpenAI-compatible API)
 - Gemini CLI + `gemini-3-flash-preview` (wraps the `gemini` binary; sign in once or set `GEMINI_API_KEY`; buffered output only)
@@ -167,7 +185,7 @@ It also offers to store an API key in the config (optional). If you prefer envir
 - `OLLAMA_API_KEY` (optional; any non-empty string works—even `local`—because the Authorization header cannot be blank)
 - No API key is required for the Codex or Claude CLI profiles—their binaries handle auth (`codex login` / `claude login`). Gemini CLI accepts Google sign-in or `GEMINI_API_KEY`.
 
-Defaults written to `~/.qq/config.json`:
+Built-in defaults (override any of them in `~/.qq/config.json`):
 
 - Providers
   - `openrouter` → base `https://openrouter.ai/api/v1`, env `OPENROUTER_API_KEY`, default headers `HTTP-Referer=https://github.com/iagooar/qqqa` and `X-Title=qqqa`
@@ -179,19 +197,21 @@ Defaults written to `~/.qq/config.json`:
   - `gemini_cli` → mode `cli`, binary `gemini` (install `@google/gemini-cli`; auth via Google sign-in or `GEMINI_API_KEY`)
   - `codex` → mode `cli`, binary `codex` with base args `exec` (install Codex CLI; auth handled by `codex login`). Optional `"model_override"` in the `cli` block forces a fallback ChatGPT model if OpenAI retires the default.
   - `claude_cli` → mode `cli`, binary `claude` (install `@anthropic-ai/claude-code`; auth handled by `claude login`). Optional `"model_override"` pins Claude Code’s `--model` flag without touching your profile’s model.
-  - `codex` → CLI provider, binary `codex` - fails if the binary is missing
 - Profiles
-  - `openrouter` → model `openai/gpt-4.1-nano` (default)
-  - `openai` → model `gpt-5-mini`
+  - `openrouter` → model `qwen/qwen3.8-27b`, routed to Cerebras with `"extra_body": {"provider": {"order": ["cerebras"]}}` (default)
+  - `luna` → OpenRouter, model `openai/gpt-6-luna`
+  - `haiku` → OpenRouter, model `anthropic/claude-haiku-5.5`
+  - `openai` → model `gpt-6-luna`
   - `groq` → model `openai/gpt-oss-20b`
   - `ollama` → model `llama3.1`
-  - `anthropic` → model `claude-3-5-sonnet-20241022` (inactive placeholder until Anthropic integration lands)
+  - `anthropic` → model `claude-haiku-5-5` (inactive placeholder until Anthropic integration lands)
   - `gemini` → model `gemini-3-flash-preview`
   - `gemini_cli` → model `gemini-3-flash-preview` (passed to `gemini -m`)
-  - `codex` → model label `gpt-5` (only used for display; Codex CLI picks the backing ChatGPT model)
+  - `codex` → model label `gpt-5` (only used for display; Codex CLI picks the backing ChatGPT model unless you pass `-m` or set `model_override`, which qqqa forwards as `codex exec -m`)
 - Optional per-profile or global `prompt_suffix` text appended to the built-in system prompt (does not replace it). Useful for rules like "assume tools are installed" or "be less chatty".
-- Optional per-profile `reasoning_effort` for GPT-5 family models. If you leave it unset, qqqa sends `"reasoning_effort": "minimal"` for any `gpt-5*` model to keep responses fast. Set it to `"low"`, `"medium"`, or `"high"` when you want deeper reasoning.
-- (discouraged) Optional per-profile `temperature`. Most models default to `0.15` unless you set it in `~/.qq/config.json` or pass `--temperature <value>` for a single run. GPT-5 models ignore custom temperatures; qqqa forces them to `1.0`.
+- Optional per-profile or global `system_prompt` (text) or `system_prompt_file` (path; relative paths resolve against the config directory) that replaces qq's built-in system prompt, for example to use qq for general questions or to define prompt "modes" as profiles. A profile's setting wins over the global one; set only one of the two per level. `prompt_suffix` and `--no-fun` still apply on top. qa keeps its own system prompt, because it defines the tool-call protocol. Note that qq's formatting tags (`<cmd>`, `<info>`, …) only appear if your prompt asks for them.
+- Optional per-profile `reasoning_effort`. When set, qqqa sends it with every request (OpenAI reasoning models, `gpt-oss`, and other providers that accept it). When unset, qqqa sends `"reasoning_effort": "minimal"` only for `gpt-5`, `gpt-5-mini` and `gpt-5-nano` (also as `openai/gpt-5-mini` and similar) to keep responses fast; later GPT-5.x models do not accept `minimal`. Set it to `"low"`, `"medium"`, or `"high"` when you want deeper reasoning.
+- (discouraged) Optional per-profile `temperature`. Most models default to `0.15` unless you set it in `~/.qq/config.json` or pass `--temperature <value>` for a single run. Reasoning models (GPT-5 family, o1/o3/o4) reject custom temperatures: qqqa omits the temperature for them, or sends `1.0` when you pass `--temperature`.
 - Optional per-profile `max_tokens` (output cap for ordinary models, default `4096`) and `reasoning_max_tokens` (output cap for reasoning models such as `gpt-5*`, `o1`, `o3`, whose reasoning tokens count against it; it falls back to `max_tokens`, then to `16384`). When an answer stops at the cap, qq and qa print what arrived and exit with an error that names the limit, so scripts never take a cut-off answer as complete.
 - (discouraged): you can change the timeout, e.g. `"timeout": "240"` under a model profile in `~/.qq/config.json` to raise the per-request limit (`qq` + `qa` default to 180 s - this is SLOW; faster models are a better fix).
 
@@ -202,7 +222,7 @@ Example override in `~/.qq/config.json`:
   "profiles": {
     "openai": {
       "model_provider": "openai",
-      "model": "gpt-5-mini",
+      "model": "gpt-6-luna",
       "reasoning_effort": "medium"
     }
   }
@@ -359,6 +379,26 @@ The runner enforces a default allowlist (think `ls`, `grep`, `find`, `rg`, `awk`
 
 ## Advanced features and configurations
 
+### Custom headers and request fields (provider routing)
+
+Any HTTP provider accepts `headers` (sent with every request) and `extra_body` (JSON fields merged into every request body). A profile can add its own `extra_body`, which wins over the provider's. qqqa always sets `model`, `messages`, `stream` and `tools` itself; `extra_body` cannot replace them.
+
+For example, to send `openai/gpt-oss-120b` through Groq on OpenRouter ([provider routing](https://openrouter.ai/docs/features/provider-routing)):
+
+```json
+{
+  "profiles": {
+    "oss": {
+      "model_provider": "openrouter",
+      "model": "openai/gpt-oss-120b",
+      "extra_body": { "provider": { "order": ["groq"], "allow_fallbacks": false } }
+    }
+  }
+}
+```
+
+The OpenRouter provider's default headers (`HTTP-Referer`, `X-Title`) are ordinary `headers` entries; set your own values to replace them.
+
 ### Custom TLS certificates (self-signed proxies)
 
 Some OpenAI-compatible gateways (LiteLLM, local corporate proxies, etc.) terminate TLS with a self-signed CA. Add a per-provider `tls` block so qqqa trusts that CA in addition to the default Rustls bundle:
@@ -379,7 +419,7 @@ Some OpenAI-compatible gateways (LiteLLM, local corporate proxies, etc.) termina
 }
 ```
 
-- `ca_bundle_path` accepts a PEM or DER file. Relative paths are resolved against `~/.qq/` so you can keep certificates next to the config.
+- `ca_bundle_path` accepts a PEM or DER file. Relative paths are resolved against the config directory (`~/.qq/`, or `$XDG_CONFIG_HOME/qq/`) so you can keep certificates next to the config.
 - `ca_bundle_env` is optional; if set, qqqa reads that environment variable for the bundle path and falls back to `ca_bundle_path` when it is unset. This mirrors proxies that expose `SSL_CERTFILE_PATH` or similar knobs.
 - Multiple certificates can live in the same file (concatenate PEM entries). qqqa appends them to the existing Rustls trust store, so standard public CAs continue to work.
 

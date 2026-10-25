@@ -1,5 +1,21 @@
 # Xuxingjiu · 许杏玖
 
+> [!IMPORTANT]
+> **This repository is the archived v1.2 monolith — the active project has moved.**
+>
+> The current line runs on **[MaiBot](https://github.com/Mai-with-u/MaiBot)** and lives in
+> **[`Aston-x/xuxingjiu-maibot`](https://github.com/Aston-x/xuxingjiu-maibot)** — sanitised
+> config templates, the four patches it needs on top of upstream, deploy scripts, and the
+> full rationale for the rewrite.
+>
+> Why it moved: **NapCat** — the control end used here — replaces QQ's own Electron entry
+> point, which made the account easy to ban. So the control end was replaced with
+> **SnowLuma** (hook only; the desktop QQ stays a normal client), but SnowLuma's hook is
+> closed-source, so the brain had to become something we own too → MaiBot.
+>
+> Nothing about the character changed. This repository stays as a readable reference for
+> her design and for the QZone bridge.
+
 许杏玖 is a black cat-girl who lives in a second-hand bookshop. This repository is her:
 a QQ bot that runs on your own machine, with a daily routine, a mood that shifts, a
 two-layer memory, and a model layer you can point at anything from a local 7B to DeepSeek.

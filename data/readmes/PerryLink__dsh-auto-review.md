@@ -70,7 +70,7 @@ When an action crosses the sandbox boundary, a second model reads the evidence a
 | Harness | DeepSeek Harness `dsh-v0.2.1-rc.2` (verified 2026-10-18): `engines.dsh >=0.2.1-0 <0.3.0`; the P0 compatibility paths have regression tests. |
 | Node | `^22.19.0 \|\| >=24.0.0` |
 | Platforms | All (host answerer; optional Web review panel via the session-projection capability) |
-| Model | Any (the reviewer inherits the session agent's route; `reviewerModel` overrides) |
+| Model | Any generative model (the reviewer inherits the session agent's route; `reviewerModel` overrides), or the local non-generative `Phocinae-Largha-150M-v1` decision model (`reviewerBackend: phocinae`) |
 
 ## What you get
 
@@ -166,6 +166,13 @@ All tunables are Schemastery `Config` fields (changeable from cordis.yml). An id
 | `reviewerPreset` | *(none)* | Read-only Agent Preset id; required when the host exposes `startActivation` (0.2.1+) instead of `toolFilter` |
 | `reviewerModel` | *(inherit)* | Reviewer model id; unset inherits the session agent's route |
 | `reviewerModelProvider` | *(inherit)* | LLM provider route for `reviewerModel`; unset inherits the session agent's provider |
+| `reviewerBackend` | `agent` | Reviewer engine: `agent` (the generative reviewer) or `phocinae` (the local non-generative decision service). Unset infers it from `reviewerModel`: a `Phocinae…` id selects `phocinae` |
+| `phocinae.endpoint` | `http://127.0.0.1:8155/v1/systemone` | Phocinae decision-service URL; loopback only unless `phocinae.allowRemoteEndpoint` is set |
+| `phocinae.model` | `Phocinae-Largha-150M-v1` | Served model name; a Phocinae `reviewerModel` selects it automatically |
+| `phocinae.timeoutMs` | `5000` | Per-request HTTP deadline (one attempt, no retry), bounded by `reviewerTimeoutMs` |
+| `phocinae.minConfidence` | `0.4` | Calibrated-confidence floor for an `allow`; an unsure allow resolves through `fallbackPolicy` instead of granting. Measured: 0/53 destructive commands allowed at 0.4, while 0.35 let two through |
+| `phocinae.maxStateChars` | `4096` | Cap on the rendered decision state; a truncated state can deny but never allow |
+| `phocinae.allowRemoteEndpoint` | `false` | Permit a non-loopback endpoint. The state carries the reviewed call's text, so this is an explicit egress decision |
 | `reviewerTimeoutMs` | `60000` | Verdict deadline; on expiry the fallback policy applies |
 | `reviewerTools` | `[read, glob, grep]` | The reviewer child's tool allow-list (must be non-empty) |
 | `fallbackPolicy` | `rejected` | Reviewer failure: `rejected` (fail closed) / `delegate` / `allow-once` |
@@ -183,6 +190,26 @@ All tunables are Schemastery `Config` fields (changeable from cordis.yml). An id
 | `verdictCacheMaxEntries` | `256` | Maximum cached fingerprints before oldest-eviction |
 | `language` | `en` | UI language of the `/auto-review` command output (`en` \| `zh`) |
 | `allowUnmarkedAudit` | `false` | Force session-log audit on hosts that drop the `ignorable` marker or fail-closed on unknown event types (host `0.1.2-rc.1`+) (dangerous: unmarked events make sessions unresumable elsewhere); default is detect-and-degrade (adapted 2026-09-02, re-verified against `0.1.5-rc.2` on 2026-09-11): the session envelope keeps its ignorable field for stored-log read compatibility only - Session.append still cannot stamp it, so audit-gate behavior is unchanged. |
+
+### Local decision-model reviewer (Phocinae, optional)
+
+`reviewerBackend: phocinae` swaps the generative reviewer for the local, non-generative **Phocinae-Largha-150M-v1** decision model served by [`phocinae-server`](https://github.com/Phocinae/phocinae-server) (`POST /v1/systemone`). The model answers one typed question and never generates text, so a review needs **no API key, no `subagents`/`llm` seam, and no network**: one forward pass (≈21 ms warm on a GPU, ≈1.5 s single-threaded on CPU) returns a harm label with a calibrated confidence.
+
+```yaml
+config:
+  toolsPolicy: { overrides: { bash: ai } }
+  reviewerModel: Phocinae-Largha-150M-v1   # this alone selects the Phocinae backend
+  phocinae:
+    endpoint: http://127.0.0.1:8155/v1/systemone
+    minConfidence: 0.4
+  fallbackPolicy: delegate                 # optional: hand risky/unsure requests to the human chain
+```
+
+**It is a veto/triage layer, not a general-purpose approver.** Only a `harmless` answer with `answer_confidence >= phocinae.minConfidence` allows. `destructive` denies; `risky`, an unsure `harmless`, and an unreachable or malformed service resolve through `fallbackPolicy` (default fail-closed `rejected`; set `delegate` to send them to the human chain). The reviewer only asks about **shell commands**: a `write`/`edit` or any other call without a `command` argument escalates without contacting the model.
+
+The state is exactly `The agent is about to run the shell command "<command>" in its workspace.` with described options (the model's trained `criteria` rendered into the option text, because the HTTP contract has no `criteria` field). Measured on 89 labelled commands (2026-10-25, CPU fp32, released weights): **0 of 53 destructive commands were allowed at `0.4`** — 26 were denied and 27 escalated — while 5 of 36 routine commands were allowed; lowering the floor to 0.35 let two destructive Windows commands through. The approval reason, transcript and workspace path are **not** sent, and the command passes the same key-level and inline-secret redaction as the generative prompt. The endpoint is loopback-only unless `phocinae.allowRemoteEndpoint: true`. The backend applies to approval reviews only; `dsh-eval`'s review layer still uses a generative model.
+
+Start the service once: `pip install phocinae-server` (or run the checkout), download the weights from the model card, then `PHOC_MODEL_DIR=<weights-dir> python -m phocinae.main` — it listens on `127.0.0.1:8155`; verify with `curl http://127.0.0.1:8155/health`.
 
 Example (annotated full form: `fixtures/config/config-full.yaml`):
 

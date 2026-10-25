@@ -89,7 +89,7 @@
 
 📬 **[matt@ineedhemp.com](mailto:matt@ineedhemp.com)** · 📚 **[Case studies](https://nicedreamzwholesale.com/software/case-studies/)** · 🧠 [claude-code-local](https://github.com/nicedreamzapp/claude-code-local): **<!--CCL:START-->3,300+ stars, 638 forks<!--CCL:END-->** · [Awesome Claude Code](https://github.com/hesreallyhim/awesome-claude-code) · [MLX pull request](https://github.com/ml-explore/mlx-lm/pull/1710) · [@zcbenz](https://github.com/zcbenz) · [nemotron-omni-mlx](https://github.com/nicedreamzapp/nemotron-omni-mlx) · [Agent-12](https://github.com/nicedreamzapp/agent12) · [@galashko](https://github.com/galashko) · [HQ](https://github.com/nicedreamzapp/how-my-shop-runs)
 
-📱 **Shipped apps**: <!--APPS-LINE:START-->5 apps on the App Store and Google Play, **2,268 downloads** so far (1,514 App Store, 754 Google Play), 40 new on iPhone in the last week.<!--APPS-LINE:END-->
+📱 **Shipped apps**: <!--APPS-LINE:START-->5 apps on the App Store and Google Play, **2,284 downloads** so far (1,521 App Store, 763 Google Play), 41 new on iPhone in the last week.<!--APPS-LINE:END-->
 
 <img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/ac7196fa904c23a0ff2a4cef0d189ad0e6ba3c4d/assets/profile/rows/s02-rule.svg" width="100%" alt="">
 
@@ -117,18 +117,18 @@
 <picture><source media="(max-width: 610px), (min-width: 768px) and (max-width: 895px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/ac7196fa904c23a0ff2a4cef0d189ad0e6ba3c4d/assets/profile/rows/s04-banner-m.svg"><source media="(max-width: 1149px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/ac7196fa904c23a0ff2a4cef0d189ad0e6ba3c4d/assets/profile/rows/s04-banner-mid.svg"><img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/ac7196fa904c23a0ff2a4cef0d189ad0e6ba3c4d/assets/profile/rows/s04-banner.svg" width="100%" alt="04. App stats. Updated automatically every day"></picture>
 
 <!--APP-STATS:START-->
-> _Updated automatically **Oct 23, 2026** from Apple's sales reports and Google Play's install reports. Downloads are first-time App Store downloads (no updates or re-downloads) plus Google Play installs; Google runs about two weeks behind._
+> _Updated automatically **Oct 24, 2026** from Apple's sales reports and Google Play's install reports. Downloads are first-time App Store downloads (no updates or re-downloads) plus Google Play installs; Google runs about two weeks behind._
 
 | App | Live since | Downloads | App Store | Google Play | New on iPhone, last 7 days | App Store rating |
 |---|---|---:|---:|---:|---:|:---:|
-| **RealTime AI Cam** | Aug 2025 | **1,695** | 1,170 | 525 | 15 | ★ 5.0 (2) |
-| **Song Forge** | Jul 2026 | **283** | 113 | 170 | 5 | – |
-| **RealTime Space** | Jul 2026 | **215** | 167 | 48 | 16 | – |
-| **Brainforest** | Jul 2026 | **69** | 62 | 7 | 3 | ★ 5.0 (1) |
+| **RealTime AI Cam** | Aug 2025 | **1,701** | 1,171 | 530 | 13 | ★ 5.0 (2) |
+| **Song Forge** | Jul 2026 | **284** | 113 | 171 | 4 | – |
+| **RealTime Space** | Jul 2026 | **224** | 173 | 51 | 21 | – |
+| **Brainforest** | Jul 2026 | **69** | 62 | 7 | 2 | ★ 5.0 (1) |
 | **Hive Strike** | Sep 2026 | **6** | 2 | 4 | 1 | – |
-| **Total** | | **2,268** | **1,514** | **754** | **40** | |
+| **Total** | | **2,284** | **1,521** | **763** | **41** | |
 
-**New iPhone downloads per week, last 8 weeks:** 40 → 47 → 90 → 108 → 92 → 140 → 75 → 40 (-35 vs the week before).
+**New iPhone downloads per week, last 8 weeks:** 37 → 46 → 89 → 114 → 149 → 93 → 61 → 41 (-20 vs the week before).
 <!--APP-STATS:END-->
 
 <a id="just-shipped"></a>
@@ -215,7 +215,7 @@
 
 [Claude Code Local](https://github.com/nicedreamzapp/claude-code-local) [![Stars](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/github-stars-claude-code-local-357b31.svg)](https://github.com/nicedreamzapp/claude-code-local/stargazers) [![Forks](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/github-forks-claude-code-local-5184c0.svg)](https://github.com/nicedreamzapp/claude-code-local/network/members) · [Browser Broker](https://github.com/nicedreamzapp/browser-broker) [![Stars](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/github-stars-browser-broker-b96186.svg)](https://github.com/nicedreamzapp/browser-broker/stargazers) · [NarrateClaude + Ohm](https://github.com/nicedreamzapp/NarrateClaude) [![Stars](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/github-stars-narrateclaude-7426bb.svg)](https://github.com/nicedreamzapp/NarrateClaude/stargazers) · [Browser Agent](https://github.com/nicedreamzapp/browser-agent) [![Stars](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/github-stars-browser-agent-f805b6.svg)](https://github.com/nicedreamzapp/browser-agent/stargazers) · [RealTimeAICam](https://github.com/nicedreamzapp/RealTimeAICam) [![Stars](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/github-stars-realtimeaicam-b2f1d2.svg)](https://github.com/nicedreamzapp/RealTimeAICam/stargazers) · [Claude → Phone](https://github.com/nicedreamzapp/claude-screen-to-phone) [![Stars](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/github-stars-claude-screen-to-phone-2c6c89.svg)](https://github.com/nicedreamzapp/claude-screen-to-phone/stargazers)
 
-▶ [Browser Agent, 56-second demo](https://youtu.be/SIuMNa2k6Wc) · ▶ [RealTime AI Cam: watch it see the world, fully offline (90 sec)](https://www.youtube.com/watch?v=2BEYv-fv-gE) · [Awesome Claude Code](https://github.com/hesreallyhim/awesome-claude-code)
+▶ [Browser Agent, 56-second demo](https://youtu.be/SIuMNa2k6Wc) · ▶ [RealTime AI Cam: watch it see the world, fully offline (90 sec)](https://www.youtube.com/watch?v=2BEYv-fv-gE) · 🎙️ [RealTime AI Cam on the Blind Android Users podcast, Episode 307](https://youtu.be/VJ0atAEWl1g?t=871) · [Awesome Claude Code](https://github.com/hesreallyhim/awesome-claude-code)
 
 <img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/ac7196fa904c23a0ff2a4cef0d189ad0e6ba3c4d/assets/profile/rows/s08-rule.svg" width="100%" alt="">
 
@@ -323,7 +323,6 @@ Every model we run is also scored on real agent tasks at the open [Agent-12 lead
 ![JavaScript](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/badge-javascript-f7df1e-088fee.svg)
 ![Apple Silicon](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/badge-apple-silicon-000000-d5b7f3.svg)
 ![MLX](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/badge-mlx-8b5cf6-c88f0d.svg)
-![Claude](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/badge-claude-d97757-7966d2.svg)
 ![CoreML](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/badge-coreml-2563eb-522705.svg)
 ![Flask](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/badge-flask-000000-cac63f.svg)
 ![nginx](https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/main/assets/badges/badge-nginx-009639-21c450.svg)
@@ -359,6 +358,6 @@ Every model we run is also scored on real agent tasks at the open [Agent-12 lead
 
 **[ineedhemp.com](https://ineedhemp.com) · [GitHub](https://github.com/nicedreamzapp) · [LinkedIn](https://www.linkedin.com/in/matt-macosko-34708235/)**
 
-Built with code, caffeine, and Claude · Humboldt County, CA · the chickens are fine
+Built with code and caffeine · Humboldt County, CA · the chickens are fine
 
 </div>

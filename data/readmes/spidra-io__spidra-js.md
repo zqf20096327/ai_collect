@@ -49,6 +49,8 @@ console.log(result.content);
     - [Geo-targeted scraping](#geo-targeted-scraping)
     - [Authenticated pages](#authenticated-pages)
     - [Browser actions](#browser-actions)
+      - [When a step fails](#when-a-step-fails)
+      - [Action results](#action-results)
     - [forEach: process every element on a page](#foreach-process-every-element-on-a-page)
       - [inline mode](#inline-mode)
       - [navigate mode](#navigate-mode)
@@ -63,6 +65,9 @@ console.log(result.content);
   - [Crawling](#crawling)
     - [Why a page was skipped](#why-a-page-was-skipped)
   - [Mapping a site](#mapping-a-site)
+  - [Templates](#templates)
+  - [Presets](#presets)
+  - [Monitors](#monitors)
   - [Watching jobs (streaming results)](#watching-jobs-streaming-results)
   - [Logs](#logs)
   - [Usage statistics](#usage-statistics)
@@ -189,6 +194,8 @@ const result = await spidra.search({
 result.data.web?.[0].markdown; // the scraped page's content, right there on the result
 ```
 
+`markdown` is the clean page content. When a page was read by one of Spidra's site scrapers (Amazon, LinkedIn, Google Maps and others), the result also has a `structuredData` object with the page's fields.
+
 This makes the search take as long as its slowest scraped page, not the usual few seconds. Real scraping isn't instant, and Spidra would rather you wait once on one job than build your own polling loop around N separate scrape jobs.
 
 `maxResults` caps how many of the top-ranked web results get scraped; omit it to scrape all of them, up to a cap of 10. A result that fails to scrape or falls outside the time budget is simply left without `markdown`, not treated as an error.
@@ -224,6 +231,20 @@ const result = await spidra.scrape({
 console.log(result.content);
 // { plans: [{ name: "Starter", price: "$9/mo", features: [...] }, ...] }
 ```
+
+`output` is `"markdown"` (the default) or `"json"`, and `scrapeMode` is `"default"` (a real browser) or `"fast"` (a plain HTTP fetch). Any other value is rejected.
+
+Each entry in `result.data` describes one URL, in the order you sent them:
+
+- `url` is exactly the URL you sent. `canonicalUrl` appears when a site scraper used a cleaned link (tracking parameters removed, short link resolved).
+- `markdownContent` is the page as readable markdown.
+- `structuredData` is an object with the page's fields, present when the URL was handled by one of Spidra's site scrapers (Amazon, LinkedIn, Google Maps and others). The markdown does not include this data, so read it here.
+- `warnings` lists anything you asked for that was not done, such as `"deliveryZip was not applied to this page."`
+- `actionResults` reports each browser action, when the URL had any (see [Action results](#action-results)).
+
+With `output: "json"` and no prompt or schema, a site scraper URL returns its `structuredData` as is, with no AI involved. Other URLs go through the default AI extraction. With several URLs, `result.content` is an array in request order.
+
+`fullPageScreenshot: true` captures the whole page and implies a screenshot, so you don't need to send `screenshot: true` as well.
 
 ### Structured output with JSON schema
 
@@ -308,58 +329,108 @@ const result = await spidra.scrape({
 
 ### Browser actions
 
-Actions let you interact with the page before the scrape runs. They execute in order, and the scrape happens after all actions complete.
+Actions work with the page before it is captured: fill in a form, accept a cookie banner, open a menu, pick from a dropdown, scroll, or go through a list. They run in order, and the page is captured after the last one.
 
 ```typescript
 const result = await spidra.scrape({
   urls: [
     {
-      url: "https://spidra.io/products",
+      url: "https://quotes.toscrape.com/login",
       actions: [
-        { type: "click", selector: "#accept-cookies" },
-        { type: "wait",  duration: 1000 },
-        { type: "scroll", to: "80%" },
+        { type: "type",    selector: "#username", value: "demo" },
+        { type: "type",    selector: "#password", value: "demo" },
+        { type: "click",   selector: "input[type='submit']" },
+        { type: "waitFor", selector: "a[href='/logout']" },
       ],
     },
   ],
-  prompt: "Extract all product names and prices",
+  prompt: "List the first 3 quotes with their authors",
+  output: "json",
 });
 ```
 
 **Available actions:**
 
-| Action | Required fields | Description |
-|--------|----------------|-------------|
-| `click` | `selector` or `value` | Click a button, link, or any element |
-| `type` | `selector`, `value` | Type text into an input or textarea |
-| `check` | `selector` or `value` | Check a checkbox |
-| `uncheck` | `selector` or `value` | Uncheck a checkbox |
-| `wait` | `duration` (ms) | Pause execution for a set number of milliseconds |
-| `scroll` | `to` (0-100%) | Scroll the page to a percentage of its height |
-| `forEach` | `observe` | Loop over every matched element and process each one |
+| Action | Fields | What it does |
+|--------|--------|--------------|
+| `click` | `selector` | Click an element |
+| `type` | `selector`, `value` (or `text`) | Fill a text field. Without `selector`, the first visible field |
+| `check` / `uncheck` | `selector` | Tick or untick a checkbox |
+| `hover` | `selector` | Move the mouse over an element, for example to open a menu |
+| `select` | `selector`, `value` (or `option`) | Choose a dropdown option by its label or value. An array picks several |
+| `press` | `key`, optional `selector` | Press a key such as `"Enter"`, `"Tab"`, `"Escape"` or `"Control+A"` |
+| `wait` | `duration` | Pause for 1 to 30000 ms |
+| `waitFor` | `selector`, optional `state` | Wait until an element is `"visible"` (default), `"attached"`, `"hidden"` or `"detached"` |
+| `scroll` | `to` or `pixels` | Scroll to a percentage (`80` or `"80%"`), `"top"`, `"bottom"` or an element, or by a number of pixels |
+| `scrollUntilEnd` | optional `maxScrolls`, `pause`, `clickSelector` | Keep scrolling (or clicking a "load more" button) until the page stops growing |
+| `evaluate` | `script` | Run JavaScript in the page and return its value |
+| `screenshot` | optional `fullPage` | Take a screenshot at this step |
+| `forEach` | `observe` | Go through a set of elements and capture each one (see below) |
 
-For `selector`, use a CSS selector or XPath. For `value`, use a plain English description and Spidra will locate the element using AI.
+Type names are case-insensitive. `selector` takes a CSS selector, an XPath, or a plain-English description such as `"the Sign in button"`, which Spidra finds on the page for you. Every action except `forEach` also takes `timeout` (how long to look for the element, 100 to 30000 ms, default 10000) and `optional`.
 
 ```typescript
-// CSS selector
-{ type: "click", selector: "button[data-testid='submit']" }
-
-// Plain English
-{ type: "click", value: "Accept all cookies button" }
-
-// Type into a field
-{ type: "type", selector: "input[name='q']", value: "wireless headphones" }
-
-// Wait for content to load
-{ type: "wait", duration: 2000 }
-
-// Scroll to bottom
-{ type: "scroll", to: "100%" }
+{ type: "click",  selector: "button[data-testid='submit']" }        // CSS
+{ type: "click",  selector: "the Next page link" }                  // plain English
+{ type: "select", selector: "#dropdown", value: "Option 2" }
+{ type: "press",  selector: "#search", key: "Enter" }
+{ type: "waitFor", selector: "#finish", timeout: 15000 }
+{ type: "scroll", to: "bottom" }
+{ type: "scrollUntilEnd", maxScrolls: 5, clickSelector: "the Load more button" }
+{ type: "evaluate", script: "document.querySelectorAll('.quote').length" }
+{ type: "screenshot", fullPage: true }
 ```
+
+A URL can have up to 50 actions and 60 seconds of waiting in total (waits, `waitFor` timeouts and `scrollUntilEnd` pauses). A request that breaks a rule gets a 422 naming the action and the problem, before anything runs.
+
+Instead of listing steps, you can give a URL one plain-English `instruction`, such as `"search for wireless headphones and open the first result"`. It always runs in a real browser. A URL takes `instruction` or `actions`, not both.
+
+#### When a step fails
+
+By default a step that can't be done fails the job, and failed jobs are free. `scrape()` throws a `SpidraJobError` whose message names the step and the reason:
+
+```
+Failed to scrape https://quotes.toscrape.com: Action 1 (click "#does-not-exist") failed: no element matches "#does-not-exist" (waited 1 seconds). Add "optional": true to that action to skip it when it can't be done.
+```
+
+Mark a step `optional: true` when it may not be there, like a cookie banner that only shows in some regions. If it fails, it is skipped and the rest run.
+
+#### Action results
+
+Each URL's entry in `result.data` has `actionResults`, one entry per action in order, and `result.warnings` lists anything that didn't go as asked without failing the job:
+
+```typescript
+const result = await spidra.scrape({
+  urls: [
+    {
+      url: "https://quotes.toscrape.com",
+      actions: [
+        { type: "click", selector: "#cookie-banner .accept", optional: true, timeout: 1000 },
+        { type: "evaluate", script: "document.querySelectorAll('.quote').length" },
+        { type: "screenshot" },
+      ],
+    },
+  ],
+});
+
+for (const step of result.data[0].actionResults ?? []) {
+  console.log(step.index, step.type, step.status, step.result ?? step.screenshotUrl ?? step.error ?? "");
+}
+// 1 click skipped no element matches "#cookie-banner .accept" (waited 1 seconds).
+// 2 evaluate ok 10
+// 3 screenshot ok https://...png
+
+console.log(result.warnings);
+// [ 'Action 1 (click) was skipped: no element matches "#cookie-banner .accept" (waited 1 seconds).' ]
+```
+
+`status` is `"ok"`, `"skipped"` (an optional step that failed) or `"failed"`. `evaluate` returns the script's value in `result`, `scrollUntilEnd` returns `{ scrolls, stoppedBecause }`, and `screenshot` returns `screenshotUrl`.
+
+The action types are exported (`BrowserAction` is a union with one member per action type, such as `ClickAction` or `ForEachAction`), so an array typed as `BrowserAction[]` is checked field by field. For actions you build at runtime, use `GenericBrowserAction`, where every field is optional and the API does the checking.
 
 ### forEach: process every element on a page
 
-`forEach` finds a set of elements on the page and processes each one individually. It is the right tool when you need to collect data from a list of items, paginate through multiple pages, or click into each item's detail page.
+`forEach` finds a set of elements on the page and processes each one individually. It is the right tool when you need to collect data from a list of items, paginate through multiple pages, or click into each item's detail page. It must be the last action, and a URL can have only one.
 
 > You don't need `forEach` if the data fits on a single page and is short, a plain `prompt` is simpler and works just as well.
 
@@ -367,6 +438,19 @@ For `selector`, use a CSS selector or XPath. For `value`, use a plain English de
 - The list spans multiple pages and you need `pagination`
 - You need to click into each item's detail page (`navigate` mode)
 - You have 20+ items and want per-item AI extraction to stay consistent (`itemPrompt`)
+
+| Field | What it does |
+|-------|--------------|
+| `observe` | Which elements to go through, in plain English, such as `"each product card"` |
+| `mode` | `"click"` (default), `"inline"` or `"navigate"` |
+| `captureSelector` | What to capture for each item: a CSS selector, XPath or description |
+| `maxItems` | Most items across all pages, 1 to 50 (default 50) |
+| `waitAfterClick` | Milliseconds to wait after clicking or opening an item, 0 to 10000 (default 2500) |
+| `itemPrompt` | An extraction prompt run on each item on its own |
+| `actions` | Actions to run on each item after it is opened, 10 at most and no `forEach` |
+| `pagination` | `{ nextSelector, maxPages }` to move through results pages |
+
+`result.data[0].forEachItems` says how many items were captured. When `observe` finds nothing and the whole page is returned instead, or the loop stops early, `result.warnings` says so.
 
 #### inline mode
 
@@ -438,7 +522,7 @@ After processing all elements on the current page, follow the next-page link and
   maxItems: 40,
   pagination: {
     nextSelector: "li.next > a",
-    maxPages:     3,            // 3 additional pages beyond the first
+    maxPages:     3,            // pages in total, counting the first (1 to 10, default 5)
   },
 }
 ```
@@ -447,7 +531,7 @@ After processing all elements on the current page, follow the next-page link and
 
 #### Per-element actions
 
-Run additional browser actions on each item after navigating or clicking into it, before the content is captured. Useful for scrolling below the fold or expanding collapsed sections.
+Run additional browser actions on each item after navigating or clicking into it, before the content is captured. Useful for scrolling below the fold or expanding collapsed sections. Up to 10 actions, any type except `forEach`.
 
 ```typescript
 {
@@ -543,6 +627,8 @@ for (const item of batch.items) {
 
 Item statuses: `pending`, `running`, `completed`, `failed`.
 
+Batch `output` defaults to `"markdown"`, and passing a `schema` forces `"json"`. When a URL was handled by one of Spidra's site scrapers, its item also has a `structuredData` object.
+
 If some URLs fail (a site was down, a page timed out), you don't have to resubmit the whole batch. Re-queue just the failed items:
 
 ```typescript
@@ -557,6 +643,8 @@ if (result.failedCount > 0) {
   await spidra.retryBatchScrape(batchId);
 }
 ```
+
+A retry keeps every option from the original batch. Cookies are never stored, so if the batch used them, pass them again with `retryBatchScrape(batchId, { cookies })`. Without them the retried URLs run logged out, and the response includes `warnings` saying so.
 
 Cancelling stops everything still pending and refunds the credits for it:
 
@@ -801,6 +889,102 @@ for (const link of links) {
 
 `total` is how many URLs matched, `scanned` how many were found before the search filter. Map is a good first step before a batch scrape: pick the URLs you want, then scrape exactly those.
 
+## Templates
+
+Templates are ready-made jobs for common tasks, such as Google Maps leads, Amazon keyword rank or LinkedIn jobs. You fill in a few inputs and get back one row per result.
+
+```typescript
+// Find a template, then see its inputs
+const { templates } = await spidra.listTemplates({ site: "google-maps" });
+const template = await spidra.getTemplate("google-maps-leads");
+console.log(template.inputs.map((i) => `${i.key}${i.required ? " (required)" : ""}`));
+
+// What a run will cost, without running it (free)
+const { credits } = await spidra.estimateTemplate("google-maps-leads", {
+  inputs: { query: "dentist", areas: ["Ikeja, Lagos"] },
+});
+
+// Run it and wait for the rows
+const run = await spidra.runTemplate("google-maps-leads", {
+  inputs: { query: "dentist", areas: ["Ikeja, Lagos"] },
+});
+console.log(run.status, run.rowCount, run.creditsUsed);
+// completed 20 1
+console.log(run.rows?.[0]);
+```
+
+`runTemplate()` asks the API to wait first, so a quick run often finishes in that one call; longer ones are polled for you. A `partial` run (some pages failed) still returns its rows, with the failed pages in `failures`. A failed run throws `SpidraJobError`.
+
+To manage the run yourself, use `startTemplateRun()` and `getTemplateRun(runId, { rows: false })` while it runs. `listTemplateRuns()` lists past runs, and `lookupAirports({ q: "lagos" })` finds the codes the Google Flights templates take.
+
+## Presets
+
+A preset saves a job so you can run it again with one call. It's either a template with its inputs, or any tool's request body.
+
+```typescript
+// Save a template preset
+const { id } = await spidra.createPreset({
+  kind: "template",
+  name: "Dentists in Lekki",
+  template: "google-maps-leads",
+  inputs: { query: "dentist", areas: ["Lekki, Lagos"] },
+});
+
+// Or a tool preset: the request body for scrape, batch, crawl, map, search or parse
+await spidra.createPreset({
+  kind: "tool",
+  name: "Python docs: asyncio pages",
+  tool: "map",
+  config: { url: "https://docs.python.org/3/", search: "asyncio", limit: 3 },
+});
+
+// Run it, changing inputs for this run only
+const result = await spidra.runPreset(id, { overrides: { areas: ["Ikeja, Lagos"] } });
+```
+
+A template preset returns the template run (`result.run`); poll it with `getTemplateRun()`. A tool preset returns that tool's own response: a map's links straight away, or a scrape or crawl job ID to poll. `cookies` and `wait` are never stored in a preset.
+
+`listPresets()`, `getPreset()`, `updatePreset()` and `deletePreset()` manage them.
+
+## Monitors
+
+A monitor runs a template, a preset or a list of pages on a schedule, compares each check with the last, and alerts you when something changes.
+
+```typescript
+const monitor = {
+  name: "Docs page",
+  sources: [{ kind: "urls" as const, urls: ["https://httpbin.org/uuid"] }],
+  schedule: { every: "1w" as const, day: 1, at: "08:00", timezone: "Africa/Lagos" },
+  alertOn: "page" as const,
+  goal: "Only tell me if the uuid changes",
+  notify: { webhook: { url: "https://example.com/hooks/spidra" } },
+};
+
+// What it will cost (free), then create it
+console.log(await spidra.estimateMonitor(monitor));
+// { creditsPerCheck: 1, checksPerMonth: 5, creditsPerMonth: 5, usesAi: false }
+
+const { monitor: created } = await spidra.createMonitor(monitor);
+```
+
+The first check runs straight away and records the starting point without alerting (send `checkNow: false` to wait for the schedule). Webhooks are signed with `X-Spidra-Signature`; check them with `verifySpidraWebhook()`.
+
+Then:
+
+```typescript
+await spidra.checkMonitorNow(created.id);                 // runs in the background
+const { checks } = await spidra.listMonitorChecks(created.id);
+const check = await spidra.getMonitorCheck(created.id, checks[0].id);
+console.log(check.summary, check.sources?.[0]?.pages);    // what changed
+
+await spidra.pauseMonitor(created.id);
+await spidra.resumeMonitor(created.id);
+await spidra.updateMonitor(created.id, { goal: null });   // send only what changes
+await spidra.deleteMonitor(created.id);
+```
+
+`monitorLimits()` says how many monitors your plan allows and how often they can check. `testMonitorNotification({ notify })` sends a sample alert so you can check a webhook, Slack or Discord URL before saving.
+
 ## Watching jobs (streaming results)
 
 For long-running crawls and batches, `watchCrawl()`/`watchBatch()` give you each result as it lands instead of one snapshot at the end. They poll under the hood but only re-fetch page content when progress actually changes.
@@ -843,16 +1027,16 @@ Events: `snapshot` (every poll), `page`/`item` (each result exactly once, includ
 
 ## Logs
 
-Scrape logs are stored for every job that runs through the API.
+Every run is logged, including ones made in the dashboard, and logs outlast the jobs themselves.
 
 ```typescript
-// List logs with optional filters
+// Scrape logs
 const { logs, total } = await spidra.scrapeLogs({
-  status:     "failed",        // "success" | "failed"
+  status:     "error",         // "success" | "error" | "in_progress"
   searchTerm: "amazon.com",
   channel:    "api",           // "api" | "playground"
-  dateStart:  "2024-01-01",
-  dateEnd:    "2024-12-31",
+  dateStart:  "2026-10-01",
+  dateEnd:    "2026-10-31",
   page:       1,
   limit:      20,
 });
@@ -860,26 +1044,28 @@ const { logs, total } = await spidra.scrapeLogs({
 for (const log of logs) {
   console.log(log.urls[0]?.url, log.status, log.credits_used);
 }
-```
 
-Need the full detail on one job, not just the summary from the list? Fetch it by UUID:
-
-```typescript
+// One log in full, with its result
 const log = await spidra.getScrapeLog("log-uuid");
-console.log(log.result_data); // the full AI output for that job
+console.log(log.result_data);
 ```
+
+Search, map and parse have their own logs with the same filters: `searchLogs()` and `getSearchLog()`, `mapLogs()` and `getMapLog()` (with the links it returned), and `parseLogs()`. A parse log's `jobId` opens the full result with `getParse()`. A log's `uuid` isn't the job's ID.
 
 ## Usage statistics
 
-Returns credit and request usage broken down by day or week.
-
 ```typescript
-// Range options: "7d" | "30d" | "weekly"
+// Plan, credits left this period and proxy bandwidth
+const account = await spidra.account();
+console.log(account.plan.name, account.credits.remaining);
+
+// Credits, requests and tokens per day or week: "7d" | "30d" | "weekly"
 const rows = await spidra.usage("30d");
 
-for (const row of rows) {
-  console.log(row.date, row.requests, row.credits, row.tokens);
-}
+// Credits per day, split by tool: "1d" | "7d" | "30d", or "custom" with dates
+const days = await spidra.usageBreakdown({ range: "7d" });
+console.log(days[0]);
+// { label: "Oct 19", date: "2026-10-19", scrapeCredits: 74, crawlCredits: 0, searchCredits: 0, parseCredits: 0, mapCredits: 0 }
 ```
 
 ## Retries and reliability

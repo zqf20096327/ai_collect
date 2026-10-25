@@ -11,7 +11,8 @@ to [Flux.jl](https://fluxml.ai). It ports models from three Hugging Face librari
   300 architectures, including ResNet, ConvNeXt, EfficientNet, MobileNet and ViT, for
   classification or as backbones.
 - **Language models** from [transformers](https://github.com/huggingface/transformers): Llama,
-  Qwen, Gemma 3 and Granite.
+  Qwen, Gemma 3 and Granite, and the Qwen3.5 vision-language models, which also read images;
+  and SAM 3, which segments the objects of an image that a text or box prompts describe.
 - **Text-to-image pipelines** from [diffusers](https://github.com/huggingface/diffusers):
   FLUX.2 [klein].
 
@@ -37,8 +38,10 @@ safetensors weights by name, and is
   - [Fine-tuning](#fine-tuning)
   - [Model structure](#model-structure)
   - [Language models](#language-models)
+  - [Vision-language models](#vision-language-models)
   - [Text-to-image generation](#text-to-image-generation)
 - [Validated against PyTorch](#validated-against-pytorch)
+- [Scope](#scope)
 - [Contributing](#contributing)
 - [Upgrading from Metalhead 0.9](#upgrading-from-metalhead-09)
 - [Acknowledgements](#acknowledgements)
@@ -56,7 +59,7 @@ julia> ]add Metalhead
 | Library | Ported families |
 |:--|:--|
 | [timm](https://github.com/huggingface/pytorch-image-models) | ResNet, ResNeXt, Wide ResNet, SE- and ECA-ResNet, Res2Net, ConvNeXt, DenseNet, VGG, Inception, Inception-ResNet, Xception, EfficientNet and EfficientNetV2, MobileNetV1 to V4, MNASNet, MixNet, FBNet, LCNet, ConvMixer, MLP-Mixer, ResMLP, gMLP, and ViT with the image encoders of DINOv2, CLIP and SigLIP |
-| [transformers](https://github.com/huggingface/transformers) | Llama, Qwen2 and Qwen3, Gemma 3, and Granite, with its mixtures of experts and the Granite 4.0 models without Mamba layers |
+| [transformers](https://github.com/huggingface/transformers) | Llama, Qwen2 and Qwen3, Gemma 3, and Granite, with its mixtures of experts and the Granite 4.0 models without Mamba layers; Qwen3.5, a vision-language model; SAM 3 and SAM 3.1, which segment the objects that a prompt describes |
 | [diffusers](https://github.com/huggingface/diffusers) | FLUX.2 [klein]: the text-to-image pipeline, its transformer and its autoencoder |
 
 The [list of models](https://fluxml.ai/Metalhead.jl/dev/models/) gives each architecture of
@@ -206,6 +209,58 @@ logits = model(ids)                                      # vocabulary × sequenc
 decode(tokenizer, [argmax(logits[:, end]) - 1])          # " Paris"
 ```
 
+### Vision-language models
+
+Qwen3.5 answers prompts about images. `qwen3_5_image_inputs` resizes and cuts an image into
+the patches the model takes, and the prompt holds one image token for each 2 × 2 patches:
+
+```julia
+using HuggingFaceTokenizers
+using Metalhead.Transformers: qwen3_5_image_inputs
+
+model = create_model("Qwen/Qwen3.5-0.8B"; pretrained = true)
+tokenizer = from_pretrained(Tokenizer, "Qwen/Qwen3.5-0.8B")
+
+image = rand(Float32, 640, 480, 3)    # width × height × channels, in [0, 1]
+pixel_values, image_grid_thw = qwen3_5_image_inputs(image)
+n = prod(image_grid_thw) ÷ 4                              # the number of image tokens
+prompt = "<|im_start|>user\n<|vision_start|>" * "<|image_pad|>"^n *
+         "<|vision_end|>Describe this image.<|im_end|>\n<|im_start|>assistant\n" *
+         "<think>\n\n</think>\n\n"
+ids = encode(tokenizer, prompt).ids .+ 1
+for _ in 1:20                                             # greedy decoding
+    push!(ids, argmax(model(ids; pixel_values, image_grid_thw)[:, end]))
+end
+decode(tokenizer, ids[(end - 19):end] .- 1)
+```
+
+### Segmenting objects
+
+SAM 3 finds and segments the objects of an image that a text prompt names, or that box
+prompts show. `sam3_image_inputs` resizes images to the model's 1008 × 1008 pixels, and the
+post-processing keeps the objects found, with their boxes and masks at the size of the image:
+
+```julia
+using HuggingFaceTokenizers
+using Metalhead.Transformers: sam3_image_inputs, sam3_text_inputs,
+                              post_process_instance_segmentation
+
+model = create_model("unsloth/sam3.1"; pretrained = true)   # SAM 3.1; SAM 3: "jetjodh/sam3"
+tokenizer = from_pretrained(Tokenizer, "unsloth/sam3.1")
+
+image = rand(Float32, 640, 480, 3)    # width × height × channels, in [0, 1]
+pixel_values, original_sizes = sam3_image_inputs(image)
+input_ids, attention_mask = sam3_text_inputs([encode(tokenizer, "a cat").ids])
+outputs = model(pixel_values, input_ids; attention_mask)
+objects = only(post_process_instance_segmentation(model, outputs; threshold = 0.5,
+    target_sizes = original_sizes))
+objects.scores, objects.boxes, objects.masks             # n, 4 × n and 640 × 480 × n
+```
+
+Both repositories are ungated; `jetjodh/sam3` holds the same weights as Meta's gated
+`facebook/sam3`. Only the detector of SAM 3's video model is ported, not the tracker of
+objects across frames.
+
 ### Text-to-image generation
 
 A diffusers repository holds a pipeline, whose components `create_model` builds from the
@@ -238,6 +293,47 @@ A model is added to Metalhead only after it [reproduces PyTorch](https://fluxml.
 - With real pretrained weights, outputs match PyTorch to 1e-4 in float32.
 - Weights load by name, strictly: every tensor in the checkpoint must be used, and every
   parameter of the model must be found, with the right shape.
+
+## Scope
+
+Metalhead ports what a checkpoint determines, and checks it against PyTorch. It doesn't
+reimplement the general-purpose machinery of timm, transformers and diffusers. A feature
+belongs in Metalhead when both of these hold:
+
+1. The checkpoint determines it: through its configuration, its weights, or upstream code
+   specific to its architecture.
+2. Getting it wrong would silently change the results compared with the Python library, so
+   it has to be validated against them.
+
+In scope:
+
+- Architectures, their configurations and weights, and the feature interface of image
+  models (`forward_features`, `forward_intermediates`, ...).
+- The inference preprocessing that a checkpoint's configuration sets: resizing, cropping,
+  normalising, and the packing specific to a model, such as image patches and image
+  placeholder tokens.
+- The post-processing specific to a model, such as SAM 3's masks and boxes.
+- The schedulers and sampling loops of the ported diffusion pipelines. The sampler, not the
+  denoiser alone, defines the image. A scheduler is ported along with a pipeline that uses
+  it, not on its own.
+- The key-value cache of language models (not implemented yet).
+
+Out of scope, for other packages:
+
+- Tokenization algorithms. HuggingFaceTokenizers.jl tokenizes, and Metalhead uses it through
+  an extension.
+- Chat templates, and decoding strategies such as beam search, logits processors and
+  streaming.
+- Training: optimizers, learning-rate schedules, losses, weight averaging and training loops,
+  which Flux, Optimisers.jl and ParameterSchedulers.jl provide. The models are ordinary
+  differentiable Flux models.
+- Data augmentation, data loading and image I/O, which DataAugmentation.jl, MLUtils.jl and
+  FileIO.jl provide.
+- Task APIs such as transformers' `pipeline`, quantization, LoRA and distributed training.
+
+General-purpose code that matching PyTorch requires, such as PIL's resampling filters, stays
+internal rather than public. Architectures are added once a checkpoint validates them; the
+goal is not to cover each library's whole model collection.
 
 ## Contributing
 

@@ -19,7 +19,7 @@ on x86, NEON on ARM) handle the CPU path.
 
 Lattice is two things in one repo.
 
-**A Rust inference library.** Ten crates covering embeddings, generation, quantization,
+**A Rust inference library.** Thirteen crates covering embeddings, generation, quantization,
 LoRA fine-tuning, and optimal transport. Use `lattice-embed` as a library dependency, or run
 the `lattice` binary for interactive chat and an OpenAI-compatible HTTP server.
 
@@ -138,13 +138,16 @@ regenerated 2026-07-07): Lattice q4 16.59, q4-QuaRot 19.01 (2048 tokens); MLX q8
 | [`lattice-grammar`](crates/grammar/)               | Grammar-constrained decoding: JSON Schema and GBNF compilation, byte-level PDA, vocabulary masks; re-exported by `lattice-inference`                                  | [![](https://img.shields.io/crates/v/lattice-grammar.svg)](https://crates.io/crates/lattice-grammar)               |
 | [`lattice-weights`](crates/weights/)               | Weight storage: safetensors, f32/f16/Q3/Q4/Q8 representations and model-directory format detection; re-exported by `lattice-inference`                                | [![](https://img.shields.io/crates/v/lattice-weights.svg)](https://crates.io/crates/lattice-weights)               |
 | [`lattice-quant`](crates/quant/)                   | Quantization primitives: bounded Q4 manifest reading, Hadamard transforms and rotation absorption; re-exported by `lattice-inference`                                 | [![](https://img.shields.io/crates/v/lattice-quant.svg)](https://crates.io/crates/lattice-quant)                   |
+| [`lattice-model-config`](crates/model-config/)     | Model configurations: validated `config.json` parsing for Qwen3.5, Gemma 4, EmbeddingGemma 2 and BitNet; re-exported by `lattice-inference`                           | [![](https://img.shields.io/crates/v/lattice-model-config.svg)](https://crates.io/crates/lattice-model-config)     |
 | [`lattice-inference-core`](crates/inference-core/) | Shared base types: `InferenceError`, re-exported by `lattice-inference`                                                                                               | [![](https://img.shields.io/crates/v/lattice-inference-core.svg)](https://crates.io/crates/lattice-inference-core) |
+| [`lattice-metal-runtime`](crates/metal-runtime/)   | Shared Metal buffers, command encoding and pipeline construction; macOS with the optional `metal-gpu` feature                                                         | [![](https://img.shields.io/crates/v/lattice-metal-runtime.svg)](https://crates.io/crates/lattice-metal-runtime)   |
+| [`lattice-serve`](crates/serve/)                   | HTTP server and the `lattice` CLI: OpenAI-compatible routes, model workers, LoRA serving; installed with `cargo install lattice-serve`                                | [![](https://img.shields.io/crates/v/lattice-serve.svg)](https://crates.io/crates/lattice-serve)                   |
 | [`lattice-transport`](crates/transport/)           | Optimal transport: Sinkhorn-Knopp (balanced + unbalanced), Wasserstein barycenters, embedding drift detection                                                         | [![](https://img.shields.io/crates/v/lattice-transport.svg)](https://crates.io/crates/lattice-transport)           |
 
 Three leaf crates (`fann`, `transport`, `inference-core`) have zero intra-workspace
 dependencies. `tokenizer`, `grammar` and `weights` each depend only on `inference-core`
-at runtime. `quant` depends on `inference-core` and `weights`. `inference` depends on
-all five unconditionally and pulls in `fann` through
+at runtime. `model-config` depends on `inference-core` and `weights`; `quant` depends on those two and on `model-config`. `inference` depends on
+all six unconditionally and pulls in `fann` through
 the optional `mixture` or `metal-gpu` features. Each can be used on its own.
 
 ---
@@ -207,19 +210,21 @@ forwarded through `lattice-embed`.
 
 Three ways to get `lattice`, in order of convenience:
 
-**1. `cargo install` (from [crates.io](https://crates.io/crates/lattice-inference)):**
+**1. `cargo install` (from [crates.io](https://crates.io/crates/lattice-serve)):**
 
 ```bash
 # CPU build (Linux/macOS). BF16/F16 safetensors load in every feature set;
 # the f16 feature adds F8_E4M3/F8_E5M2 tensor loading and no dependencies.
-cargo install lattice-inference --bin lattice --features f16
+cargo install lattice-serve --bin lattice --features f16
 
 # With Metal GPU (macOS only)
-cargo install lattice-inference --bin lattice --features f16,metal-gpu
+cargo install lattice-serve --bin lattice --features f16,metal-gpu
 ```
 
 This installs `lattice` to `~/.cargo/bin/lattice`. Requires Rust 1.93+
 (`rustup update` if `cargo install` complains about the `rust-version`).
+Releases before 0.16 shipped the CLI in `lattice-inference`
+(`cargo install lattice-inference --bin lattice`).
 
 **2. Prebuilt release binaries:**
 
@@ -255,7 +260,7 @@ cd lattice
 
 # CLI binary (chat + serve). BF16/F16 safetensors load in every feature
 # set; the f16 feature adds F8_E4M3/F8_E5M2 tensor loading and no dependencies.
-cargo build --release -p lattice-inference --bin lattice --features f16
+cargo build --release -p lattice-serve --bin lattice --features f16
 
 # Interactive chat
 ./target/release/lattice chat --model ~/.lattice/models/qwen3.5-0.8b
@@ -275,7 +280,7 @@ exit status. Omit the flag for the interactive loop.
 With Metal GPU (macOS only):
 
 ```bash
-cargo build --release -p lattice-inference --bin lattice --features metal-gpu,f16
+cargo build --release -p lattice-serve --bin lattice --features metal-gpu,f16
 ```
 
 ### Get a model
@@ -525,20 +530,21 @@ Measured performance on normalized vectors (internal benchmarks, subject to hard
 | Feature     | Default | Description                                                                                                                                                                                        |
 | ----------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `native`    | yes     | Pure Rust inference via `lattice-inference`                                                                                                                                                        |
+| `image`     | yes     | PNG/JPEG decoding for vision embeddings (implies `native`)                                                                                                                                         |
 | `download`  | yes     | First-use model downloads (implies `native`)                                                                                                                                                       |
 | `metal-gpu` | no      | Metal GPU acceleration (macOS)                                                                                                                                                                     |
 | `avx512`    | no      | Deprecated no-op — the AVX-512 VNNI int8 kernel is compiled unconditionally on stable x86_64 and is selected at runtime only when AVX-512F/BW/VNNI are all detected; otherwise AVX2 or scalar runs |
 
 ### lattice-inference
 
-| Feature     | Default | Description                                                             |
-| ----------- | ------- | ----------------------------------------------------------------------- |
-| `f16`       | no      | Half-precision weights                                                  |
-| `metal-gpu` | no      | Metal compute backend                                                   |
-| `wgpu-gpu`  | no      | WGPU cross-platform GPU backend                                         |
-| `download`  | yes     | HuggingFace weight download with checksum verification                  |
-| `serve`     | yes     | HTTP serving stack (axum/tokio) for `lattice serve` and `lattice_serve` |
-| `backfill`  | no      | Re-embedding coordinator (requires `rusqlite`)                          |
+| Feature     | Default | Description                                            |
+| ----------- | ------- | ------------------------------------------------------ |
+| `f16`       | no      | Half-precision weights                                 |
+| `metal-gpu` | no      | Metal compute backend                                  |
+| `wgpu-gpu`  | no      | WGPU cross-platform GPU backend                        |
+| `download`  | yes     | HuggingFace weight download with checksum verification |
+| `image`     | yes     | PNG/JPEG decoding; also enabled by `lattice-serve`     |
+| `backfill`  | no      | Re-embedding coordinator (requires `rusqlite`)         |
 
 ---
 
@@ -554,13 +560,20 @@ flowchart TD
     Inference --> Grammar[lattice-grammar]
     Inference --> Weights[lattice-weights]
     Inference --> Quant[lattice-quant]
+    Inference --> ModelConfig[lattice-model-config]
     Grammar --> Core
     Weights --> Core
     Quant --> Core
     Quant --> Weights
+    Quant --> ModelConfig
+    ModelConfig --> Core
+    ModelConfig --> Weights
     Inference -.->|mixture or metal-gpu| Fann[lattice-fann]
+    Inference -.->|metal-gpu| MetalRuntime[lattice-metal-runtime]
+    MetalRuntime --> Core
     Tune[lattice-tune] --> Fann
     Tune -.->|inference-hook or train-backward| Inference
+    Serve[lattice-serve] --> Inference
     Transport[lattice-transport]
 ```
 
@@ -654,13 +667,14 @@ variable when the same requirement should apply to `make ci` or Git hooks.
 [`scripts/publish.sh`](scripts/publish.sh) publishes dependencies before dependents:
 
 1. `fann`, `transport`, and `inference-core` (leaves).
-2. `tokenizer`, `grammar`, and `weights`.
-3. `quant`.
-4. `inference`.
-5. `embed` and `tune`.
+2. `tokenizer`, `grammar`, `weights`, and `metal-runtime`.
+3. `model-config`.
+4. `quant`.
+5. `inference`.
+6. `embed`, `tune` and `serve`.
 
 The script waits 30 seconds between tiers for registry indexing. Its dry-run mode
-checks package sizes for all ten crates, then runs `cargo publish --dry-run` for
+checks package sizes for all thirteen crates, then runs `cargo publish --dry-run` for
 the leaf tier only; later tiers require this release's dependencies on crates.io.
 
 ```bash

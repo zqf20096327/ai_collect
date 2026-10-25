@@ -159,8 +159,8 @@ This server is useful when you want to:
 | [`uvx openai-api-server-via-codex`](#install-uvx) | `uv` and a Codex login | Most users |
 | [GitHub Release archive](#install-standalone-binary) | A Codex login | A standalone executable without Python or `uv` |
 | [GHCR image](#install-docker) | Docker and a Codex login | Containers and reproducible deployment |
-| [`go install ...@latest`](#install-go) | Go 1.23+ and a Codex login | Go users |
-| [Build from a checkout](docs/build-from-source.md#build-for-the-current-machine) | Go 1.23+ and a Codex login | Development and customization |
+| [`go install ...@latest`](#install-go) | Go 1.27.3+ and a Codex login | Go users |
+| [Build from a checkout](docs/build-from-source.md#build-for-the-current-machine) | Go 1.27.3+ and a Codex login | Development and customization |
 
 <a id="install-uvx"></a>
 <details>
@@ -201,16 +201,16 @@ Windows archives use `.zip`.
 For example, on an Apple silicon Mac:
 
 ```console
-$ curl -LO https://github.com/hotchpotch/openai-api-server-via-codex/releases/download/v0.2.2/openai-api-server-via-codex_0.2.2_darwin_arm64.tar.gz
-$ curl -LO https://github.com/hotchpotch/openai-api-server-via-codex/releases/download/v0.2.2/checksums.txt
+$ curl -LO https://github.com/hotchpotch/openai-api-server-via-codex/releases/download/v0.2.3/openai-api-server-via-codex_0.2.3_darwin_arm64.tar.gz
+$ curl -LO https://github.com/hotchpotch/openai-api-server-via-codex/releases/download/v0.2.3/checksums.txt
 $ grep 'darwin_arm64.tar.gz' checksums.txt | shasum -a 256 --check
-$ tar -xzf openai-api-server-via-codex_0.2.2_darwin_arm64.tar.gz
+$ tar -xzf openai-api-server-via-codex_0.2.3_darwin_arm64.tar.gz
 $ ./openai-api-server-via-codex --version
 ```
 
 The stable archive URLs and SHA-256 checksums are suitable for Homebrew
 Formulae. Installing a historical version through Homebrew requires a tap to
-retain a versioned Formula such as `openai-api-server-via-codex@0.2.2`.
+retain a versioned Formula such as `openai-api-server-via-codex@0.2.3`.
 
 </details>
 
@@ -220,7 +220,7 @@ retain a versioned Formula such as `openai-api-server-via-codex@0.2.2`.
 
 Stable Linux x86_64 and ARM64 images are published at
 `ghcr.io/hotchpotch/openai-api-server-via-codex`. `latest` tracks the newest
-stable release. Exact tags such as `v0.2.2` provide reproducible deployments;
+stable release. Exact tags such as `v0.2.3` provide reproducible deployments;
 prereleases publish only their exact version tag.
 
 The final Alpine image contains the Go server and CA certificates, but no
@@ -664,7 +664,7 @@ contract, and release tooling.
 
 Requirements:
 
-- Go 1.23 or newer
+- Go 1.27.3 or newer
 - Python 3.10 or newer
 - `uv`
 

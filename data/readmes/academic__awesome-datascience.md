@@ -198,6 +198,7 @@ How do you learn data science? By doing data science, of course! Okay, okay - th
 - [StepByStepML](https://www.stepbystepml.com) - Interactive calculator that visualizes the step-by-step manual math behind machine learning algorithms for exam prep.
 - [How to Build Optimal AI Agents That Actually Work](https://www.freecodecamp.org/news/how-to-build-optimal-ai-agents-that-actually-work-a-handbook-for-devs/) - A developer handbook on designing and building effective AI agents.
 - [Train LLM From Scratch](https://github.com/FareedKhan-dev/train-llm-from-scratch) - A straightforward method for training your LLM, from downloading data to generating text.
+- [Machine Learning 101](https://machinelearning101.com) - Free browser-based platform that teaches core machine learning algorithms through hands-on, interactive visualizations with no setup.
 
 ### Free Courses
 **[`^        back to top        ^`](#awesome-data-science)**
@@ -1028,6 +1029,4 @@ Below are some Social Media links. Connect with other data scientists!
 - [Data Science Day](https://www.facebook.com/datascienceday/)
 - [Data Science Academy](https://www.facebook.com/nycdatascience)
 - [Facebook Data Science Page](https://www.facebook.com/pages/Data-science/431299473579193?ref=br_rs)
-- [Data Science London](https://www.facebook.com/pages/Data-Science-London/226174337471513)
-- [Data Science Technology and Corporation](https://www.facebook.com/DataScienceTechnologyCorporation?ref=br_rs)
-- [Data Science - Closed Group](https://www.facebook.c
+- [Data Science London](https://www.facebook.com/pages/Data-Scienc

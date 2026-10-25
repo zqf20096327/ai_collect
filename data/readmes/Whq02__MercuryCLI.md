@@ -8,7 +8,7 @@
 </h1>
 
 <p align="center">
-  Runs AI coding agents in your terminal, inside your own git repositories on macOS, Linux and Windows.
+  A terminal-native environment for AI coding agents, inside your own git repositories on macOS, Linux and Windows.
 </p>
 
 <p align="center">
@@ -56,7 +56,7 @@ An agent reads and edits files, runs shell commands, steps through tests and deb
 
 Mercury is used to build Mercury, running multiple sessions and models across long tasks. Keeping track of that work is the hard part: what is still running, what changed, and what needs a decision. Each session writes its own handoff note when it finishes, and the next session reads that note once at startup alongside my pinned rules, stopping context poisoning between sessions.
 
-![One prompt to the coordinator on the session board launches two sessions, each in its own worktree; one asks before editing, and both finish with their changes ready to review](docs/media/session-board.gif)
+![The session board with three sessions on one project, each on its own model and effort: one ready to review, two working; opening the review session, then the finished documentation session](docs/media/session-board-stream.gif)
 
 Mercury is source-available under the Business Source License 1.1, and the SDKs in [sdk/](sdk/) and [sdk-py/](sdk-py/) are licensed under the Apache License 2.0. See [Licence](#licence) for the production-use terms.
 

@@ -27,6 +27,7 @@
 - ✅ "Fix with AI" Quick Fix on errors/warnings, with a diff preview
 - ✅ Add your own OpenAI-compatible endpoints (Ollama, LM Studio, any gateway)
 - ✅ One settings page for everything: `AI Free VSCode — Open Settings`
+- ✅ The same providers in [DeepSeek Harness](#deepseek-harness-plugin) too, as the `dsh-plugin-free-ai` plugin
 
 Only models from providers you are signed into appear in the picker — no
 dead entries that fail on use.
@@ -66,17 +67,21 @@ dead entries that fail on use.
 
 ### Kimi
 
-| Model     | ID          | Context |
-| --------- | ----------- | ------- |
-| Kimi K2.5 | `kimi-k2.5` | 128K    |
+| Model        | ID             | Context |
+| ------------ | -------------- | ------- |
+| Kimi Instant | `kimi-instant` | 128K    |
 
-> ⚠️ **Kimi is kept out of Copilot Chat** (`chat: false`). Short tool
-> sessions work, but once the context grows K2.5 escapes into its own
-> server-side code interpreter: it recreates the project in Kimi's sandbox,
-> "fixes" it there and reports success while nothing changed in your
-> workspace (seen in the agent test: 33 hidden `ipython` calls in one turn).
-> It stays available for commit messages, inline suggestions and Quick Fix,
-> where no tools are involved.
+Kimi Instant is whatever plain chat model the Kimi web app offers at the
+moment (K2.6 Instant on kimi.ai); the extension reads it from Kimi's own model
+list. The agent models (K3, K2.8) run inside Kimi's server-side sandbox and are
+not offered.
+
+> **How Kimi is kept on your tools.** Kimi has its own server-side tools
+> (`ipython`, `shell`) that no request option turns off, and on long sessions
+> it reaches for them — the work would then happen in Kimi's sandbox, with none
+> of your files. The extension stops such a call before Kimi runs it: a command
+> or Python run goes to your terminal tool instead (with the usual
+> confirmation), anything else is asked again with a reminder.
 
 
 ### Z.ai
@@ -233,6 +238,26 @@ To sign out:
 To check auth status:
 
 - `AI Free VSCode — Status`
+
+## DeepSeek Harness plugin
+
+The same providers also work in [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`), DeepSeek's open-source agent harness, through the [`dsh-plugin-free-ai`](https://www.npmjs.com/package/dsh-plugin-free-ai) plugin. It lives in [`dsh-plugin/`](dsh-plugin) and shares this extension's provider code.
+
+It works however you run DSH: the Web UI, the Desktop app, the terminal UI or one-shot headless tasks. A plugin is installed per DSH profile:
+
+```sh
+dsh plugin --profile web add dsh-plugin-free-ai        # dsh web
+dsh plugin --profile tui add dsh-plugin-free-ai        # dsh tui
+dsh plugin --profile headless add dsh-plugin-free-ai   # dsh headless "…"
+```
+
+In the Desktop app (and the Web UI) the same is **Plugins → Add plugin → `dsh-plugin-free-ai`**. Without a global `dsh`, prefix the commands with `npx @deepseek-ai/`.
+
+- Model routes: `qwen-web`, `deepseek-web`, `kimi-web`, `zai-web`; pick one in the model selector or set it as `agent-default-model`.
+- The first request to a provider opens its sign-in window; in the Web UI, Desktop and TUI, `/free-ai status`, `/free-ai login <provider>` and `/free-ai logout <provider>` in an open session manage the sign-ins. One sign-in covers every profile.
+- The plugin keeps its own sign-ins and browser profiles under `~/.ai-free-vscode/dsh`, so it runs alongside VS Code.
+
+Requirements, configuration and the model list: [dsh-plugin/README.md](dsh-plugin/README.md). The same [Important notice](#important-notice) applies.
 
 ## Editor features
 

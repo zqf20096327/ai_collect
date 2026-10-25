@@ -95,8 +95,9 @@ The working vertical slice includes:
 - OpenTUI client with session list, composer, slash commands, and selectable
   themes (`/theme`)
 - OpenAI-compatible, Meta Responses, Anthropic, and Gemini adapters with
-  bounded streaming; provider-reported token totals via `/usage` and
-  `veasel run` when adapters set `usage.reported` (no invented cost)
+  bounded streaming; provider-reported token totals by model across sessions
+  via `/usage`, including counts of turns that reported cache or reasoning
+  metrics, and `veasel run` when adapters set `usage.reported` (no invented cost)
 - Bounded workspace list/read/search; durable edit/shell/MCP proposals that
   require explicit review before effect
 - Searchable, paginated durable execution history across sessions in the Solid
@@ -210,11 +211,12 @@ For memory-bounded local V checks, see [AGENTS.md](AGENTS.md). Related maps:
 
 ## Licensing
 
-Code and the original geometric TUI pixel companion are MIT. The V project's
-official mascot artwork is CC BY-NC 4.0 and is not included or adapted. See
-[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md). No endorsement by the V
-project is implied. The README banner and mark in `static/` are Veasel Code
-originals under MIT.
+Code is MIT. The 128×128 pixel companion and its 32×32 TUI portrait are an
+original reinterpretation of Veasel's project-owned companion concept; the V
+project's official mascot artwork was not used as an image input. See
+[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for provenance and license
+notes. No endorsement by the V project is implied. The README banner and mark
+in `static/` are Veasel Code originals under MIT.
 
 ## Community
 

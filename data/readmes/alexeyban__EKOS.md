@@ -816,6 +816,12 @@ ekos conflicts list --type model_column_missing
 
 The testbed is `docker-compose.oracle.yml` + `deploy/fixtures/idempiere-oracle.sh`.
 
+
+`ekos database add|list|test|remove` (RFC 0223) manage `[[databases]]` without editing `ekos.toml`; `ekos database
+test <name>` connects read-only, checks a write is refused, and puts the census (tables, views, routines, triggers) next
+to what was compiled. In the web console, a project's **Sources** tab does the same: add directories and databases (the
+password goes to the server's keychain, never to `ekos.toml`), test, and analyse with Init & compile. On iDempiere,
+from an empty project in a browser: census and compiled counts equal for every kind.
 ### Write behaviour: how each table is updated and deleted (RFC 0212)
 
 Before copying a table incrementally you need to know whether every change moves its timestamp
@@ -892,6 +898,61 @@ republishing anything derived from them.
 scripts/wiki-snapshot.py --xml export.xml --out ~/wiki-snapshot --licence "CC BY-SA 4.0"
 ekos source add wiki --path ~/wiki-snapshot
 ```
+
+### Review and sign-off (RFC 0213)
+
+Before a lakehouse is built from a source estate, a person agrees to its source model. `ekos review list` shows six
+subjects — the tables in scope (classed by name: `T_*` transient, `I_*` import, `*_Trl` translation, `*Log*` log,
+`AD_*` config; `[review.scope]` adds rules), PII candidates, code ↔ database conflicts, identity matches, each table's
+write behaviour, and the glossary — with what is decided and what still blocks. Decide items with `ekos review scope`,
+`ekos review pii` and `ekos review write-behaviour` (conflicts, identity and glossary keep their own commands), then
+sign a subject off on the digest you were shown:
+
+```bash
+ekos review show pii --undecided
+ekos review pii C_BPARTNER.EMAIL --confirm --mask hash
+ekos signoff show pii                      # prints the digest
+ekos signoff approve pii --digest <digest>
+```
+
+A sign-off is valid only while the facts it covered are unchanged; after a compile that changes one, `signoff show`
+says **stale** and names the items added, removed or changed. Row and null counts are shown but not signed, so a fresh
+profile alone does not invalidate anything. Decisions and sign-offs are human-only: no MCP tool can make them.
+
+`ekos workflow status [--json]` is the step bar of the seven-step operator workflow (analyse, documentation, review
+and sign-off, requirements, extraction, bronze/silver, marts): step 1 from source freshness, step 3 from the six
+subjects' sign-offs, the others from an extension such as ekos-lakehouse. Steps 4–7 show `blocked` until every subject
+is validly signed, and an extension's step commands call the same gate before writing anything. Agents read the same
+state, without being able to change it, through the `ekos_signoff_status` MCP tool. The subject summary is cached
+beside the ledger under a key that every write moves (iDempiere: 24.5 s to compute, 1.8 s cached).
+
+In the web console, every project page shows the step bar, and the **Review** tab has one tab per subject: a filterable
+table of items (signed facts and shown-only measurements apart), decisions for selected items (scope, PII with a mask,
+write behaviour, identity matches — `ekos review identity` on the CLI), and a sign-off box that shows the digest and
+what changed since a stale sign-off and signs only after the subject's name is typed. Conflicts and the glossary are
+decided on their own tabs. Deciding and signing need the reviewer role; no API token holds it.
+
+### Source-estate documentation (RFC 0214)
+
+`ekos docs generate --layout estate --output docs/estate` writes a database estate's documentation from the ledger:
+functional areas with ER diagrams, one page per in-scope table (columns with business names, the database's foreign
+keys next to the application model's references, check constraints, who reads and writes it, write behaviour, schema
+history, open conflicts), a glossary of business terms, where each document type's `DocAction` methods start,
+routines with their nested statements, schema history by release, and findings. The pages use the lakehouse-docs page
+format, so `publish_github_wiki.py`, `publish_confluence.py` and `publish_azure_devops_wiki.py` publish them; manual
+"notes" sections survive regeneration. Tables follow the review's scope (RFC 0213). Two gates are built in: a column
+profile contributes counts only, never a value, and text is used only from sources with a known licence (detected from
+a source's `LICENSE` file, or set in `[docs-estate] licences`; a database has none until you set one). On iDempiere:
+1,060 pages in 26 s — published with a walkthrough of the first three workflow steps at
+[alexeyban/ekos-lakehouse-oracle](https://github.com/alexeyban/ekos-lakehouse-oracle).
+
+### iDempiere eval (RFC 0222)
+
+`evals/idempiere/` holds 25 checked questions about iDempiere (code, schema, history, docs, write behaviour, and six
+with no grounded answer), graded with `ekos eval run --datasets-dir evals/idempiere --dataset idempiere-25`. Add
+`--evidence-only` to grade retrieval without calling a model. First results (code + docs, with and without the
+Oracle database, answers by Claude Haiku 5.5): 14 and 15 of 25 passed, no hallucination, about 2 US cents a run;
+the nine misses are retrieval, mostly documentation prose outranking the code that implements an answer.
 
 ### PL/pgSQL stored procedures (RFC 0163)
 
@@ -1611,68 +1672,4 @@ recall@10 grading that had silently graded the wrong query (RFC 0139, devlog_182
 
 Those numbers moved mostly because the harness found something unflattering: **94% of what this
 repo was compiling wasn't its own code.** A Python virtualenv and two `.scannerwork/` directories
-had never been excluded from the observation walk — `.gitignore` does not filter it. Excluding
-them took the corpus from ~13,700 files to 834 and the model from 53,830 objects to 12,283, while
-`recover` produced *identical* symbol counts (2,623 Rust symbols, 1,734 `Calls` edges) — all
-signal kept, all noise gone. See [devlog_174](devlogs/devlog_174.md) and the
-[eval comparison report](https://alexeyban.github.io/EKOS/presentations/eval-comparison-report.html). Beyond the five headline scores, every run also captures real resource usage: **tokens
-saved** is genuine cache-hit attribution (`CachedLlmProvider` tracks hits/misses; a scenario whose
-answer came from the disk cache instead of a fresh network call is diffed and counted, not
-estimated), and **CPU time / peak RSS** are best-effort, Linux-only, read straight from
-`/proc/self/{stat,status}` — honestly `n/a` off-Linux or when unavailable, never fabricated.
-
-Every run saves a timestamped JSON report to `evals/reports/` and exits non-zero when the
-aggregate gate (`ekos_evals::report::GateThresholds`) misses — deliberately **not wired into CI**
-(real LLM calls against a real workspace, not free/fast/deterministic enough for every PR yet).
-`ekos eval history` reads every saved report back and renders one line per run, newest last — the
-"run history" a saved-JSON-per-run design gives for free. See `evals/README.md` for the scenario
-schema and category breakdown, and `ekos/docs/rfcs/0138-eval-harness.md` for the full design.
-
-### Hierarchical rollups (RFC 0044)
-
-Every other context-saving mechanism in EKOS (capped search results, hop-bounded graph walks) is
-*retrieval*-limiting — fewer raw facts, never a synthesized higher-level one. `ekos commit` now
-also synthesizes deterministic, zero-LLM `Rollup` objects: one per directory subtree (crate-level
-by default) or, in a multi-project `[observe] paths` estate, one per project — each carrying real
-member counts, a kind breakdown, and boundary-relationship counts (what crosses in/out of the
-subsystem), linked to every member via the same `Contains` relationship everything else already
-uses. This is exactly what closes the "huge project/many projects" context-window gap: an agent
-asking about a whole subsystem gets one condensed, evidence-linked object instead of personally
-synthesizing meaning from dozens of raw facts. Surfaced automatically in `Architecture.md`'s new
-`## Subsystems` section (see above) — running the same `docs generate` command against this
-repo's own source produces one rollup per crate/plugin (46 at last count).
-
-### Hosted demo server (RFC 0045, experimental)
-
-`ekos/crates/demo-server` is a small, read-only web server over a **fixed two-repo catalog** —
-built to answer a strategic question, not a roadmap phase: pick EKOS's single most painful task
-(making sense of a codebase without hitting an LLM's context-window ceiling) and put it in front of
-peers in a 5–10 minute demo, without anyone installing the CLI. Two binaries:
-
-```bash
-cargo run -p ekos-demo-server --bin prerender -- <curated-markdown-dir> <output-html-dir>  # bake step
-cargo run -p ekos-demo-server --bin demo-server -- catalog.toml                            # serve
-```
-
-`prerender` pre-renders `ekos docs generate --layout curated`'s Markdown output to static HTML once,
-offline (curated HTML isn't a general `docs-gen` feature yet — see the RFC). `demo-server` serves
-that pre-rendered output plus a `POST /ask` endpoint that reuses `AiRuntime::ask` unmodified,
-refusing to start rather than degrading silently if `ANTHROPIC_API_KEY` isn't set. Not general
-self-serve ingestion — a fixed, pre-baked catalog only. **Not yet demo-ready**: implemented and
-verified against a placeholder key (routing, boot check, rate limiting, static serving all confirmed
-correct), but live-question answer quality is unverified pending a real API key and a rehearsed run
-— see `devlog_45.md` and `TODO.md`.
-
-### AI agent access (MCP)
-
-`ekos mcp serve --workspace <dir>` exposes the read-only Runtime as a Model Context Protocol
-server over stdio (RFC 0013), a raw TCP socket (`--tcp`, RFC 0115), or Streamable HTTP
-(`--http`, RFC 0143) — tools: `ekos_search` (`limit` param — RFC 0124; `mode`
-`lexical`/`vector`/`hybrid` for semantic matching, plus `arms_run` in the response — RFC 0125),
-`ekos_query` /
-`ekos_retrieve` (compiled fact + graph answers and the inspectable query plan / evidence set, no
-LLM — RFC 0124), `ekos_ekl` (EKL filters on built-in columns and on any property, `WHERE status = 'confirmed'` or a nested `a.b`; a field no candidate has is an `unknown field` error, not an empty result — RFC 0175; it supports point-in-time `AS OF <timestamp>` queries,
-`COUNT`/`GROUP BY` aggregation — RFC 0096, and `SEMANTIC 'text'` retrieval candidate sets — RFC
-0124), `ekos_neighborhood` (`depth` 0-3, stops at `max_objects` — default 500, at most
-5,000 — and says so with `truncated: true`),
-`ekos_state`, `ekos_dependents` (
+had never been excluded from the observation walk — `.gitignore

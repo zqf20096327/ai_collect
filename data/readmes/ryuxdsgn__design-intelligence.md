@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://www.npmjs.com/package/@ryuxdsgn/design-intelligence"><img src="https://img.shields.io/badge/version-early__access%20v2.14-1f6feb" alt="Version: early access v2.14"></a>
+  <a href="https://www.npmjs.com/package/@ryuxdsgn/design-intelligence"><img src="https://img.shields.io/badge/version-early__access%20v2.19-1f6feb" alt="Version: early access v2.19"></a>
   <a href="https://github.com/ryuxdsgn/design-intelligence/actions/workflows/ci.yml"><img src="https://github.com/ryuxdsgn/design-intelligence/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-2ea44f" alt="MIT License"></a>
 </p>
@@ -110,6 +110,11 @@ and as a plugin for Claude Code (`/plugin marketplace add ryuxdsgn/design-intell
 `/plugin install ryux@design-intelligence`), Codex, GitHub Copilot, VS Code, and Gemini CLI. The
 [guide](GUIDE.md) covers each agent's install, global installs, updates, and the MCP.
 
+To check code without an LLM, run `npx @ryuxdsgn/design-intelligence scan src`. It flags what a
+machine can see, such as images with no alt text, zoom turned off, or Rupiah written as `Rp 50.000`.
+Give it a URL to measure the rendered page: sideways scroll, contrast, target size, colliding text.
+Add `--hook` to `install` to scan each file Claude Code edits ([guide](GUIDE.md#scan-your-code)).
+
 ## Benchmarks
 
 Each benchmark fixes its criteria before the first run, uses a fresh agent per run, and publishes the
@@ -193,7 +198,7 @@ vulnerability, see [SECURITY.md](./SECURITY.md).
 
 ## Status and license
 
-RYUX 2.14, early access, free. Available now: the skill, the CLI, skills.sh, the Claude Code plugin,
+RYUX 2.19, early access, free. Available now: the skill, the CLI, skills.sh, the Claude Code plugin,
 and the MCP server run locally. Coming: the hosted MCP and a larger reference library.
 
 **MIT**, © 2026 ryux.design (see [LICENSE](./LICENSE)). The code and the RYUX skill are covered by

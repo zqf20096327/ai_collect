@@ -71,6 +71,18 @@ code. See [AxisVela ecosystem integration](docs/12-ecosystem.md), the
 [runnable wiring demo](examples/ecosystem/cmd/demo), and the
 [real NOETIVELA SDK example](examples/ecosystem-sdk).
 
+## Multilingual SDKs
+
+Go remains the reference implementation. Python, TypeScript, and Java SDKs share
+one language-neutral contract in [`spec/`](spec/README.md): identical wire
+shapes, one conformance suite, and one-to-one idiomatic APIs. The
+[Python SDK](python/README.md), [TypeScript SDK](typescript/README.md),
+[Java SDK](java/README.md), and [Rust SDK](rust/README.md) core implementations
+pass all eleven vector groups; Python, TypeScript, and Java include streaming
+and an OpenAI-compatible adapter. See the
+[design](docs/17-multilingual-sdk.md) and
+[roadmap](docs/18-multilingual-roadmap.md).
+
 ## Module
 
 `github.com/axisvela/praxo-core/v2` (v2 semantic import path). The `v1` tags

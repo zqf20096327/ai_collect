@@ -178,7 +178,7 @@ Full step list and the complete env-var table:
 | `HAL0_BRAIN_MODEL=<id>` | Force a specific curated brain quant |
 | `HAL0_PULL_AGENT_MODEL=1` / `=0` | Opt in to the big agent pull unattended / force-skip it on a TTY |
 | `HAL0_PY_AUTOINSTALL=1` | Let the installer install `python3.12` when the box has no Python in 3.12-3.14 |
-| `HAL0_SKIP_HINDSIGHT=1`, `HAL0_SKIP_OPENWEBUI=1`, `HAL0_SKIP_HERMES=1`, `HAL0_SKIP_COMFYUI=1` | Skip individual companion services |
+| `HAL0_SKIP_HINDSIGHT=1`, `HAL0_SKIP_OPENWEBUI=1`, `HAL0_SKIP_HERMES=1` | Skip individual companion services |
 | `--no-start` | Provision everything, leave services stopped |
 | `--summary-json=PATH` | Write a versioned, machine-readable install summary (see [`installer/README.md`](./installer/README.md#--summary-jsonpath)) |
 
@@ -452,8 +452,9 @@ content-addressed, host-redacted archive you can attach anywhere, and
   OpenWebUI is prewired at `:3001` with zero config; its Services card shows an Agents chip once Hermes profiles
   are wired in.
 - **Image generation, day one** — `POST /v1/images/generations` via ComfyUI
-  in the `img` slot container (ROCm). The installer seeds the `img` slot and
-  its ComfyUI model share.
+  in the `img` slot container (ROCm). The installer seeds the `img` slot; the
+  ComfyUI provider creates its model tree under the model store when the slot
+  starts.
 - **Atomic self-update with rollback** — `hal0 update --channel
   stable|preview|nightly`. Cosign-verified tarballs swap a
   `/usr/lib/hal0/current` symlink; `--rollback` reverts. Staging happens in
@@ -829,8 +830,11 @@ hal0 doctor profiles          # dangling profile ref? un-pulled image?
 Usual causes: the runner image hasn't been pulled yet (the first load blocks
 on a multi-GB pull — watch the journal), the model named in
 `/etc/hal0/slots/<name>.toml` isn't in the registry (`hal0 model list`), or
-the GPU is held by image mode (the dispatcher returns 503 while the `img`
-slot owns the GPU — stop image mode or wait for idle-restore).
+the GPU is held for `img`: the dispatcher returns 503 `gpu.image_mode` while a
+pin holds image mode (unpin it, or switch to inference with `force`), when
+ComfyUI's queue cannot be read, or after a request has waited 120 seconds for
+the GPU. Without a pin, image mode ends about 10 seconds after the last render,
+and a request for a GPU slot waits for that instead.
 
 **Something bound the port but nothing answers on it.** That is usually a
 stale netavark DNAT rule left by a container that died badly:

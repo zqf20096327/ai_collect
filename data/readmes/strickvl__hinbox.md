@@ -135,6 +135,12 @@ just frontend
    # ANTHROPIC_API_KEY and `uv sync --extra anthropic`
    echo 'HINBOX_CLOUD_MODEL=openai/gpt-6-luna' >> .env
 
+   # Give one task its own model; the rest keep the default above. Tasks:
+   # RELEVANCE, EXTRACTION, MATCH, DISPUTE, PROFILE. The prefix decides where
+   # it runs (ollama/ = local). A --local run refuses cloud task models.
+   echo 'HINBOX_MATCH_MODEL=ollama/qwen3.6:35b' >> .env
+   echo 'HINBOX_PROFILE_MODEL=openai/gpt-6-luna' >> .env
+
    # Ollama models get reasoning_effort="none" (thinking off) by default;
    # set this to "" to keep a model's own default, or e.g. "high":
    echo 'HINBOX_OLLAMA_REASONING_EFFORT=' >> .env
@@ -213,10 +219,29 @@ just eval show
 
 # Pick hard look-alike entity pairs to label (writes merge_candidates_v2.jsonl)
 just eval-mine
+
+# Grow long profiles by replaying well-covered entities' articles in date order
+just eval-replay --list                          # article counts only, no model calls
+just eval-replay --model openai/gpt-6-luna --max-articles 40
+
+# Turn those snapshots into profile-update test cases
+just eval-cases --model openai/gpt-6-luna
+
+# Run the pipeline's profile update on those cases and score it
+just eval profile-update --model openai/gpt-6-luna --split dev
+just eval profile-update --model openai/gpt-6-luna --split dev --approach rewrite
 ```
 Gold files live in `{output_dir}/eval/`. Each run writes its per-item predictions to `eval/runs/` and adds one row to `eval/scoreboard.jsonl`. Items are split 60/20/20 into train/dev/test by a stable hash, so anything tuned on `train` is never graded on `test`. Results report balanced accuracy next to the "always give the common answer" baseline, because the label sets are lopsided.
 
-**DSPy experiments** live in [`experiments/dspy_opt/`](experiments/dspy_opt/README.md), in their own environment, so DSPy never enters Hinbox's main dependencies, and LiteLLM is never installed. `just dspy-merge --model <model> --optimizer mipro` optimises the merge check for one model and puts the result on the same scoreboard.
+`just eval-replay` prepares data for a profile-update eval. The entity database has no profile built from more than three articles, so it takes ten entities the corpus covers heavily (Nashiri, Judge Pohl, Camp Justice, the USS Cole bombing, ...), creates a profile from the first article mostly about each one, then runs the pipeline's own `update_profile` on each later article. It saves the profile after every step to `eval/profile_replay/<model>/<entity>/step_NNN.json`, and resumes where it stopped.
+
+`just eval-cases` turns those snapshots into test cases, each one an existing profile plus an article. There are three kinds: an article that only mentions the entity in passing (a good update keeps everything and changes little), the real next article (a good update adds the new facts with its citation and keeps the rest), and a copy of the next article with one year changed (a good update keeps both years, each with its own source). Cases are split into train/dev/test by entity (6/2/2 for the ten replay entities, with every entity type in train), so a tuned prompt never sees a test entity. Disputed cases come from a word-overlap heuristic and are marked `needs_review` until a person confirms the two sentences make the same claim.
+
+`just eval profile-update` runs the pipeline's `update_profile` on each case and scores the result without a model. A case fails if the profile shrinks by more than 20%, if fewer than 90% of its cited sentences survive (reworded sentences still count as kept), or if it cites an id that is neither an old source nor the new article. Each kind also has its own check: new-fact cases must cite the article, passing-mention cases may add at most two sentences, and disputed cases must keep the old year with its old source and state the new year with the new article. The scoreboard also shows how much old text was kept word for word, because a good update shouldn't rewrite text it had no reason to touch. In the full replay, 40 single updates cut a profile by more than a fifth (one went from 31k characters to 6k), and every one passed the pipeline's own QC.
+
+The pipeline's `update_profile` uses an edit-list updater (`--approach rewrite` scores the old whole-profile rewrite instead). Rather than writing the whole profile again, the model returns a short list of edits: add these sentences after this existing sentence (or under this heading, or at the end), or replace this one sentence with a sharper version. Code applies the edits to the old text, so a sentence the model never mentions stays exactly as it was, and a replaced sentence keeps its citations. The prompt (`profile_edit.md`) also says to keep both versions, each with its source, when the article contradicts the profile, and to add little or nothing from an article that only mentions the entity in passing. On the dev and test cases it passes 0.89 on Luna against 0.29 for the rewrite, in about 2s per update instead of 21s. Set `HINBOX_PROFILE_UPDATE_APPROACH=rewrite` to run the pipeline with the old rewrite.
+
+**DSPy experiments** live in [`experiments/dspy_opt/`](experiments/dspy_opt/README.md), in their own environment, so DSPy never enters Hinbox's main dependencies, and LiteLLM is never installed. `just dspy-merge --model <model> --optimizer mipro` optimises the merge check for one model and puts the result on the same scoreboard. `just dspy-profile --model <model> --reflection-model openai/gpt-6-luna` runs GEPA on the edit-list profile updater.
 
 ### Data Management
 ```bash

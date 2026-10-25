@@ -10,13 +10,16 @@
 
 ![Awesome DSH Plugin](https://awesome-dsh-plugin.com/badge.svg)![DSH 适配](https://img.shields.io/badge/DSH-0.2.1--rc.2%20%E5%B7%B2%E9%AA%8C%E8%AF%81-4E9BF1)![downloads](https://badgen.net/npm/dt/@furongjun1999/dsh-memory?label=downloads&color=4E9BF1)![Protocol](https://img.shields.io/badge/Protocol-MCP-blue)![Node](https://img.shields.io/badge/Node-%3E%3D22.19-brightgreen)![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
-**高性能 · 无幻觉 · 多智能体适用的长期记忆系统（v0.9.12）**
+**高性能 · 无幻觉 · 多智能体适用的长期记忆系统（v0.9.14）**
 
 📖 **[第三方上手教程](https://znsvdekx.vibedrop.site/)** —— 《灵枢 dsh-memory 初学者上手研究报告》（由第三方独立编写，非本项目官方文档）
 
 </div>
 
 **灵枢是一套可运行的长期记忆基础设施**——对话自动沉淀为纯文本 md 认知图，记什么、取什么、能不能写入全部由确定性规则裁决，全程可审计、结果可复现。它不训练模型，做的是**模型之外的那一整套**：记忆怎么存、取的时候依据什么、写错了怎么被发现、改过怎么留痕。任何支持 MCP 的 AI Agent 可直接挂载，不与任何单一 Agent 框架绑定。
+
+> **装不起来 / 看到奇怪的告警？** 先看 [环境与已知问题](https://github.com/FuRongJun-1999/dsh-memory/blob/main/docs/ops/%E7%8E%AF%E5%A2%83%E4%B8%8E%E5%B7%B2%E7%9F%A5%E9%97%AE%E9%A2%98.md)——
+> DSH Desktop 的启动告警、体积与整目录耦合、异步落盘、以及五条「看起来像 bug 其实是契约」的设计取舍都在那里。
 
 ## ⚠️ 升级须知：工具名去掉 lingshu_ 前缀（0.9.9 起）
 
@@ -115,7 +118,7 @@ python -m md_cg.mcp_server             # 直连自检：收到 initialize 应答
 | 📜 **中文编译器** | [`compiler/`](compiler/) | **验证 · 审计** | 词法 → 语法 → 名实校验 → 白名单代码生成 → 验证终裁，五环确定性编译链 |
 | ⬢ **蜂巢并发引擎** | [`hive/`](hive/) | **自我改进** | worker 池原子领取 / 心跳 / 超时强杀 / 崩溃恢复，文件协议即接口，MCP 五工具接入 |
 
-> 五件套共享同一套 18 条工作纪律与记忆闭环（见[工程纪律](#-工程纪律与设计者视角可选复用)）；**只用记忆就只接大脑**，不必理解蜂群与编译器。**🧬 身体面**（世界模型七层／3D 场景／白箱生成／蜂窝神经网络／记忆可视化）已独立公开为 [**FuRongJun-1999/lingshu**](https://github.com/FuRongJun-1999/lingshu)（经 MCP 与本大脑组合）。
+> 五件套共享同一套 19 条工作纪律与记忆闭环（见[工程纪律](#-工程纪律与设计者视角可选复用)）；**只用记忆就只接大脑**，不必理解蜂群与编译器。**🧬 身体面**（世界模型七层／3D 场景／白箱生成／蜂窝神经网络／记忆可视化）已独立公开为 [**FuRongJun-1999/lingshu**](https://github.com/FuRongJun-1999/lingshu)（经 MCP 与本大脑组合）。
 
 ## 🚫 它不是什么
 
@@ -156,7 +159,7 @@ DeepSeek Harness (cordis)
 | 去哪里 | 看什么 |
 |---|---|
 | [docs/ 目录索引](docs/README.md) | 六域快速索引 · 新文档归域规则 |
-| [安装与运维](docs/ops/README.md) | 安装前置 / 30+ 配置项 / 写入凭据 / 升级重启 / 排障 FAQ |
+| [安装与运维](docs/ops/README.md) | 安装前置 / 30+ 配置项 / 写入凭据 / 升级重启 / [环境与已知问题](https://github.com/FuRongJun-1999/dsh-memory/blob/main/docs/ops/%E7%8E%AF%E5%A2%83%E4%B8%8E%E5%B7%B2%E7%9F%A5%E9%97%AE%E9%A2%98.md)（宿主告警·体积·落盘·设计取舍） |
 | [评测总览](docs/eval/评测总览.md) | 六家横评 / 弱证据与证据防火墙 / 中英双语差距 / 公开数据集 / 七维标尺 / 第三方验证 |
 | [开发与编码约定](docs/dev/README.md) | 测试约定 / UTF-8 与 id 契约 / 开关矩阵 / Linux 双栈验证 |
 | [多 harness 接入](docs/mdcg/多harness接入.md) | 五端纪律注入差异 / 出货面 vs 源码树分界 |

@@ -109,7 +109,8 @@ After installation, configure the integration through Home Assistant's UI:
   order to naturally continue the conversation
     - If the user speaks, the assistant continues the conversation naturally
     - If the user stays silent, the assistant stops following up after a timeout
-    - If the user says a stop keyword (e.g. "STOP") while the agent is speaking, the follow-up is cancelled immediately
+    - If the user says a stop keyword (e.g. "STOP") while the agent is actively speaking, the follow-up is canceled immediately (default HomeAssistant behaviour)
+    - The agent is provided a `stop talking` tool to end the conversation via natural language request to the agent itself (while the assist satellite is listening, not speaking)
     - When disabled (default), only assistant responses ending in a question will pass the active voice turn back to the
       user
 
@@ -119,24 +120,32 @@ After installation, configure the integration through Home Assistant's UI:
 
 **Custom HTTP Headers**
 
-Add custom HTTP headers as key-value pairs to all LLM API requests. Useful for passing custom metadata or
-provider-specific headers.
+Add custom HTTP headers as key-value pairs to all LLM API requests. Useful for passing custom metadata or provider-specific headers:
+- Values support Jinja2 templates and have access to all default Home Assistant template variables and functions (e.g. entity `states`).
+- The current Conversation ID is available in the `conversation_id` variable.
+- All header values are coerced to strings after rendering.
 
 ### DeepSeek Cloud Configuration
 
 #### Reasoning Effort
 
 When the server type is set to *DeepSeek Cloud*, both conversation and AI task agents show a new **DeepSeek
-Configuration** section with a **Reasoning Effort** option. This option controls whether thinking is enabled, and what
-level of reasoning to perform on the request.
+Configuration** section with a **Reasoning Effort** option. This controls the depth of reasoning when thinking is
+enabled.
 
-- **Disabled** (default) — no thinking tokens.
-- **High** — enables thinking with standard reasoning effort.
-- **Max** — enables thinking with maximum reasoning effort.
+- **High** (default) — standard reasoning effort.
+- **Max** — maximum reasoning effort.
 
 When enabled, thinking content returned by the model is also fed back into the conversation as reasoning content on
 supported Home Assistant versions (2026.4+).
 
+#### Thinking Mode
+
+Controls when reasoning is enabled. Leave the option unset to disable thinking.
+
+- **Always on** — thinking remains enabled for every iteration.
+- **First loop iteration only** — thinking is disabled on iterations after the first (e.g., during tool-call rounds).
+  
 ---
 
 ### llama.cpp Configuration
@@ -144,12 +153,12 @@ supported Home Assistant versions (2026.4+).
 When the server type is set to *llama.cpp*, both conversation and AI task agents show a **llama.cpp Configuration**
 section with the following options.
 
-#### Enable thinking
+#### Thinking Mode
 
-Passes `enable_thinking=true` via `chat_template_kwargs` to enable reasoning on supported models.
+Controls when reasoning is enabled. Leave the option unset to disable thinking.
 
-- **Disabled** (default) — no thinking tokens.
-- **Enabled** — requests reasoning from the model.
+- **Always on** — reasoning is enabled for every iteration of the agent loop.
+- **First loop iteration only** — thinking is disabled on iterations after the first (e.g., during tool-call rounds).
 
 _Note: This option completely overrides any existing `enable_thinking` option in your Chat Template Arguments._
 
@@ -227,8 +236,13 @@ budget is reached, vLLM forces the reasoning block to be closed and the model pr
 - **0** — the reasoning block is closed immediately, so the model answers without thinking.
 - **Any higher value** — limits reasoning to that number of tokens.
 
-_Note: This only limits the length of thinking, it does not enable or disable it. Whether the model thinks at all is
-controlled by the model's chat template, typically via an `enable_thinking` Chat Template Argument._
+#### Thinking Mode
+
+Controls when reasoning is enabled. Leave the option unset to disable thinking.
+
+- **Always on** — reasoning is enabled for every iteration and the token budget (if set) applies to all
+  iterations.
+- **First loop iteration only** — thinking is disabled on iterations after the first (e.g., during tool-call rounds).
 
 Requires a reasoning model and a vLLM version that supports the parameter. Refer to
 the [vLLM reasoning outputs documentation](https://docs.vllm.ai/en/latest/features/reasoning_outputs/) for further
@@ -388,7 +402,7 @@ I would like to thank the following people for their contributions to this proje
 <tr>
   <td align="center"><a href="https://github.com/NickM-27"><img src="https://avatars.githubusercontent.com/u/14866235?v=4" width="64" height="64" style="border-radius:50%"></a><br><sub><b><a href="https://github.com/NickM-27">NickM-27</a></b></sub></td>
   <td align="center"><a href="https://github.com/JulienDeveaux"><img src="https://avatars.githubusercontent.com/u/73243388?v=4" width="64" height="64" style="border-radius:50%"></a><br><sub><b><a href="https://github.com/JulienDeveaux">JulienDeveaux</a></b></sub></td>
-  <td align="center"><a href="https://github.com/BryanCLieberman"><img src="https://avatars.githubusercontent.com/u/205995085?v=4" width="64" height="64" style="border-radius:50%"></a><br><sub><b><a href="https://github.com/BryanCLieberman">BryanCLieberman</a></b></sub></td>
+  <td align="center"><a href="https://github.com/VysseCodes"><img src="https://avatars.githubusercontent.com/u/205995085?v=4" width="64" height="64" style="border-radius:50%"></a><br><sub><b><a href="https://github.com/VysseCodes">VysseCodes</a></b></sub></td>
   <td align="center"><a href="https://github.com/PollyBot13"><img src="https://avatars.githubusercontent.com/u/261872620?v=4" width="64" height="64" style="border-radius:50%"></a><br><sub><b><a href="https://github.com/PollyBot13">PollyBot13</a></b></sub></td>
   <td align="center"><a href="https://github.com/srwalter"><img src="https://avatars.githubusercontent.com/u/79127?v=4" width="64" height="64" style="border-radius:50%"></a><br><sub><b><a href="https://github.com/srwalter">srwalter</a></b></sub></td>
   <td align="center"><a href="https://github.com/alexjurkiewicz"><img src="https://avatars.githubusercontent.com/u/379509?v=4" width="64" height="64" style="border-radius:50%"></a><br><sub><b><a href="https://github.com/alexjurkiewicz">alexjurkiewicz</a></b></sub></td>
@@ -406,6 +420,7 @@ I would like to thank the following people for their contributions to this proje
   <td align="center"><a href="https://github.com/Thyraz"><img src="https://avatars.githubusercontent.com/u/170099?v=4" width="64" height="64" style="border-radius:50%"></a><br><sub><b><a href="https://github.com/Thyraz">Thyraz</a></b></sub></td>
   <td align="center"><a href="https://github.com/jgancedo"><img src="https://avatars.githubusercontent.com/u/17992965?v=4" width="64" height="64" style="border-radius:50%"></a><br><sub><b><a href="https://github.com/jgancedo">jgancedo</a></b></sub></td>
   <td align="center"><a href="https://github.com/geryduyck"><img src="https://avatars.githubusercontent.com/u/36077321?v=4" width="64" height="64" style="border-radius:50%"></a><br><sub><b><a href="https://github.com/geryduyck">geryduyck</a></b></sub></td>
+  <td align="center"><a href="https://github.com/dudanogueira"><img src="https://avatars.githubusercontent.com/u/1761174?v=4" width="64" height="64" style="border-radius:50%"></a><br><sub><b><a href="https://github.com/dudanogueira">dudanogueira</a></b></sub></td>
 </tr>
 </table>
 

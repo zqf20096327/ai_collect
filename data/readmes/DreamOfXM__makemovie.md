@@ -6,6 +6,8 @@
 
 English | [中文](./README.zh-CN.md)
 
+Product tour, stage by stage: [MakeMovie — self-hosted AI video production](https://dreamofxm.github.io/makemovie/)
+
 Self-hostable · One pipeline for short dramas, films, and long-form video:
 
 `source audit → script → assets → storyboards → first frames → videos → voice & score → composition → acceptance → delivery`
@@ -78,6 +80,9 @@ MakeMovie turns a piece of source writing — a novel excerpt, a treatment, a sc
 - Traceability: every generated script, shot, asset and artifact records the task, prompt, provider, model and quality check that produced it
 - Review organised the way the chain produces: picture, clip and voice listed per shot with per-shot regeneration, and score, subtitles and the master presented as episode-level tracks
 - Pre-screen: a silent rough cut assembled in the browser from whatever already exists, shot by shot, with shots that have no clip standing in as their storyboard frame — see the pacing of the episode before spending on the missing pieces
+- Shot length is decided before spending: an episode carries a target duration and a rhythm profile, the breakdown records shot type, transition and sound per shot, and a shot longer than every bound model can buy is flagged in the pre-run review with three explicit choices — split it into takes, switch to a model that sells the length, or write more shots — rather than quietly trimmed
+- Continuous takes inside one shot: when a long shot is split, each take after the first opens on the previous take's last frame, and the cut between shots uses an xfade transition sized from the plan instead of a hard cut, so the seam is not something the viewer has to forgive
+- The review shows the numbers behind a verdict: seam count, master duration against the edit document, voice coverage, and per-shot frame scores, structure drift and neighbour repetition — a pass or a rejection points at a reading rather than an opinion
 - AI-content labeling on the delivered file, per the Chinese GB 45438-2025 rule for generated synthetic content: the master carries the marks and the delivery manifest records whether they were written or why they were downgraded
 
 **Sound**
@@ -113,6 +118,32 @@ MakeMovie turns a piece of source writing — a novel excerpt, a treatment, a sc
 | API startup self-check / API 启动自检 | `curl :4010/api/system/startup-check` | No login needed: database + applied migrations, ffmpeg filters (subtitles/drawtext), master key, storage backend. Model configuration is deliberately NOT here — that lives in Model Center readiness after login, so environment errors never masquerade as "models missing". / 免登录:数据库与已应用迁移数、ffmpeg 滤镜、主密钥、存储后端。模型配置刻意不在此——那是登录后模型中心就绪度的事,环境错误不会冒充"缺模型"。 |
 
 Common issues / 常见问题: Postgres is on host port **5433** and Redis on **6380**, not the defaults / Postgres 用宿主端口 5433、Redis 6380,不是默认端口; a slim ffmpeg build silently drops subtitle burning — `pnpm check` names the missing filters / 精简版 ffmpeg 会静默丢字幕烧录,`pnpm check` 会点名缺失滤镜; the all-zero master key is dev-only and production refuses to boot on it / 全零主密钥仅限开发,生产拒绝启动.
+
+## What's inside / 里头有什么
+
+| Capability / 能力 | Status / 状态 |
+| --- | --- |
+| Story-to-project creation with autosave drafts / 故事建项与草稿自动保存 | ✅ |
+| Versioned production recipes (9:16 & 16:9) / 版本化制作配方 | ✅ |
+| Distributed example projects (read-only, cloneable) / 可分发示例项目 | ✅ |
+| Creation readiness guidance / 创作就绪度引导 | ✅ |
+| Structured shot controls (framing, angle, movement, mood) / 镜头结构化控制 | ✅ |
+| Shot-length planning with split takes and frame chaining / 分镜定长与分段帧链 | ✅ |
+| Transitions between shots (xfade) / 镜头转场 | ✅ |
+| Review readings (seam, duration, voice coverage, per-shot scores) / 审片读数 | ✅ |
+| Selection locks (video/voice/references) / 选版锁定 | ✅ |
+| Video extend (artifact operations) / 视频延长 | ✅ (mock; real adapter pending) |
+| SFX slot for dialogue-free shots / 音效槽位 | ✅ |
+| Technical quality checks (probe, black frame detection) / 技术质量检查 | ✅ |
+| Multi-point visual audit frame extraction / 多时点视觉审核抽帧 | ✅ |
+| Edit timeline (reorder, trim, tracks, undo/redo) / 编辑时间线 | ✅ |
+| Content freshness tracking / 内容新鲜度 | ✅ |
+| Agent/MCP access with scoped tokens / Agent 接入 | ✅ |
+| Directed video editing / 定向视频编辑 | 🚧 pending real adapter |
+| ASR transcription / 语音转写 | 🚧 pending real ASR |
+
+Known limitations / 已知限制: real provider adapters for extend and directed editing require account setup; NLE import verification requires Premiere/Resolve testing.
+
 
 ## Architecture
 
@@ -150,7 +181,7 @@ wget https://github.com/DreamOfXM/makemovie/releases/latest/download/example.env
 docker compose --profile full up -d                  # postgres, redis, api, worker, web
 ```
 
-Migrations run inside the api container before it serves; open http://localhost:3010. The first start generates a `STUDIO_MASTER_KEY`, writes it into the `secrets` volume and reuses that one from then on. It decrypts the provider credentials in the database, so keep that volume backed up next to the database — or set `STUDIO_MASTER_KEY` (`openssl rand -hex 32`) in `.env` yourself and hold it deliberately. Pin a version with `VERSION=0.2.0` in `.env` (default is `latest`); images live at `ghcr.io/dreamofxm/makemovie/{api,worker,web}` for amd64 and arm64.
+Migrations run inside the api container before it serves; open http://localhost:3010. The first start generates a `STUDIO_MASTER_KEY`, writes it into the `secrets` volume and reuses that one from then on. It decrypts the provider credentials in the database, so keep that volume backed up next to the database — or set `STUDIO_MASTER_KEY` (`openssl rand -hex 32`) in `.env` yourself and hold it deliberately. Pin a version with `VERSION=0.2.1` in `.env` (default is `latest`); images live at `ghcr.io/dreamofxm/makemovie/{api,worker,web}` for amd64 and arm64.
 
 **Building the images yourself** (from a checkout):
 
@@ -195,6 +226,20 @@ Produce an episode:
    - Then inspect or download the manifest, the subtitle track, and the EDL / FCP XML edit lists for a finishing editor, and record an accept or reject.
 
 Triggering a stage twice returns the existing batch instead of queueing duplicate work; **Regenerate** is the deliberate way to re-run a stage after editing its upstream.
+
+## Agent skills
+
+A coding agent can operate an installation on your behalf, and both skills it needs ship in one npm package:
+
+```bash
+npx -y makemovie@latest install-skill             # into .claude/skills/ and .agents/skills/
+npx -y makemovie@latest install-skill --global    # the same, under your home directory
+npx -y makemovie@latest                           # or just read the manual in the terminal
+```
+
+`skills/makemovie/SKILL.md` is the operator's manual turned into instructions: bring the stack up, bind the four required slots, then step through the pipeline, stopping between stages for approval — every stage that spends money is a decision the human makes, not something the agent can step over. `skills/film-production/SKILL.md` is the methodology underneath: shot grammar, continuity, which artifact belongs to which step, and what a delivery has to prove.
+
+The package contains the skills and the manual; the platform itself runs from this repository or from the published images in Quick start above. `install-skill` is the only command that writes to disk — it reports each destination, replaces an older copy so a stale file cannot survive an upgrade, and touches nothing outside those directories. `--dry-run` prints the plan without writing; `--agent`, `--skill` and `--dir` place the skills somewhere else.
 
 ## Style Presets
 
@@ -341,8 +386,8 @@ API integration tests boot an embedded PostgreSQL, apply the real migrations, an
 - [ARCHITECTURE.md](./ARCHITECTURE.md) — domain model, capability policy, model readiness and content language, state machine, orchestration, queue design, quality gates, console information architecture, storage, security
 - [CONTRIBUTING.md](./CONTRIBUTING.md) — development workflow, testing, pull-request checklist
 - [AGENT-EDITING.md](./AGENT-EDITING.md) — the four concurrency rules for an agent editing a file a human may also be editing
-- [skills/makemovie/SKILL.md](./skills/makemovie/SKILL.md) — the one-command entry point for coding agents: `npx -y makemovie@latest`
-- [docs/skills/film-production/SKILL.md](./docs/skills/film-production/SKILL.md) — the production methodology the pipeline encodes
+- [skills/makemovie/SKILL.md](./skills/makemovie/SKILL.md) — how a coding agent operates an installation ([install it](#agent-skills))
+- [skills/film-production/SKILL.md](./skills/film-production/SKILL.md) — the production methodology the pipeline encodes
 
 ## License
 

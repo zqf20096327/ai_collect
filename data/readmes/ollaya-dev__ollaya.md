@@ -129,12 +129,13 @@ The [FAQ](https://ollaya.dev/docs/faq) compares Ollaya and Ollama in more detail
 | `qwen3guard` | Qwen3Guard-Gen-0.6B safety guard with built-in questions: safe, controversial or unsafe, and the category |
 | `nli`, `nli:modernbert-large` | Moritz Laurer's zero-shot NLI classifiers (DeBERTa-v3-large, ModernBERT-large) |
 | `gliclass` | Knowledgator's instruction-following zero-shot classifier (DeBERTa-v3-large) |
+| `gliclass-v4`, `gliclass-v4:9b` | Knowledgator's GLiClass v4 (decoder-KV on Qwen3.5-2B and -9B): the labels follow the instructions and the state in one decoder row, a two-layer scorer with up to three reasoning steps reads them, and the model's own calibrator rescales every label; text only |
 | `von` | Victor Hugo Panisa's Von 1.1 (ModernBERT-large): every option scored at its own marker, 8k-token context. Archived upstream on 2026-10-19; `d1-omni` is its successor |
 | `winnow` | EldanRing's Winnow-12B, the larger sibling of `winnow:e4b` |
 | `clm` | Contrastive-LM's CLM-v0.1-8B: the Qwen3-8B encoder and two projection heads score options by similarity, with questions and options cached. Built for agent, game and tool-calling states |
 | `jevk5` | alibiserikbay's JevK5 v0.3, a Qwen3.5-4B fine-tune run from the author's Q8_0 GGUF on llama.cpp, up to 16 options |
 | `nimble`, `nimble:9b-v3` | Bespoke Labs' Nimble v2: a LoRA on Qwen3.5-9B that reads the whole request as a JSON schema and scores option codes, with the author's temperature, up to 255 options. `nimble:9b-v3` is v3 (non-commercial license) as the author's Decision Index engine serves it |
-| `strands-decider` | Strands Agents' Strands Decider: a LoRA and a pointer head on Qwen3.5-2B base, every option scored at the end of its own line, calibrated per question type; up to 255 options |
+| `strands-decider`, `strands-decider:e2b`, `strands-decider:e4b` | Strands Agents' Strands Decider: a LoRA and a pointer head on Qwen3.5-2B base (the default) or on Gemma 4 E2B / E4B, every option scored at the end of its own line, calibrated per question type; up to 255 options |
 | `pplx-decider` | Perplexity's pplx-decider-flash v1.2: Qwen3.5-4B distilled from its 27B decision models, every question in one sequence and read at its own marker, calibrated; up to 255 options |
 | `d3`, `d3:edge`, `d3:lite`, `d3:nano`, `d3:flash` | Decision 3.0 by the vLLM Semantic Router contributors: Qwen3.5 fine-tunes (0.6B to 9B, 4B by default) with a 255-code readout, every question its own forward pass. Images and videos are not served |
 | `jeb`, `jeb:4b`, `jeb:27b` | Jason Brashear's Jebadiah (AINode): LoRAs merged into Qwen3.5 (9B by default, 4B) and Qwen3.8-27B, run from the authors' GGUF on llama.cpp with their per-type temperatures |
@@ -169,8 +170,8 @@ memory on a GPU and a CPU.
 <!-- results:bench -->
 Edition 2026.10 ran Ollaya 0.13.0 on an RTX 5090 desktop, and 0.14.0, 0.15.0, 0.17.0 and 0.18.0 added what they changed:
 
-- **Score.** Chance-corrected accuracy over 14 tasks, with 95 % intervals: `pplx-decider:flash` 73.7, `d3:mini` 68.0, `jeb:27b` 67.8 (scored without typed-decisions, which it was trained on), `d3:flash` 67.8 and `winnow:12b` 65.7. The fastest of these, `pplx-decider:flash`, answers five questions in 127 ms on the RTX 5090.
-- **Calibration.** The lowest calibration errors on the public benchmark are 0.016 (`pplx-decider:flash`), 0.022 (`laya:typed-decisions`, `nimble:9b`) and 0.024 (`jeb:27b`).
+- **Score.** Chance-corrected accuracy over 14 tasks, with 95 % intervals: `pplx-decider:flash` 73.7, `jeb:27b` 69.1 (scored without the 5 tasks it was trained on), `d3:mini` 68.0, `d3:flash` 67.8 and `jeb:9b` 66.0 (scored without the 5 tasks it was trained on). The fastest of these, `jeb:9b`, answers five questions in 111 ms on the RTX 5090.
+- **Calibration.** The lowest calibration errors on the public benchmark are 0.016 (`pplx-decider:flash`), 0.018 (`jeeves:9b`) and 0.020 (`jeb:9b`).
 - **Speed and memory.** Five-question requests through the HTTP API take 14 ms to 1.0 s on the RTX 5090 and 314 ms to 62.0 s on its Threadripper 3960X. Every model's VRAM and RAM are on its page.
 - **Parity.** Before a model ships, its runtime is checked question by question against the authors' code (or llama.cpp's own server, for GGUF models) on each device it runs on.
 
@@ -247,7 +248,7 @@ Apache-2.0. Each model keeps its own license: `laya` (Convai Innovations), `deci
 `kev` (Jared Palmer, on Qwen3.5 by the Qwen team), `decision` (the vLLM Semantic Router
 contributors, on Qwen3.5), `qwen3guard` (Qwen team), `gliclass` (Knowledgator), `von` (Victor Hugo
 Panisa), `winnow` (EldanRing, on Gemma 4 by Google DeepMind), `jevk5` (alibiserikbay, on Qwen3.5), `nimble`
-(Bespoke Labs, on Qwen3.5), `pplx-decider` (Perplexity, on Qwen3.5), `strands-decider` (Strands Agents, on Qwen3.5), `jeeves` (PostHog, on Qwen3.5), `clef` (Cloudflare, on Qwen3.5), `jeb` (Jason Brashear, on Qwen3.5 and Qwen3.8), `cygnet` (Gemma 4 by Google
+(Bespoke Labs, on Qwen3.5), `pplx-decider` (Perplexity, on Qwen3.5), `strands-decider` (Strands Agents, on Qwen3.5 and Gemma 4), `jeeves` (PostHog, on Qwen3.5), `clef` (Cloudflare, on Qwen3.5), `jeb` (Jason Brashear, on Qwen3.5 and Qwen3.8), `cygnet` (Gemma 4 by Google
 DeepMind; the Cygnet recipe is MIT), `snap` (logitlab, on MiniCPM5 by OpenBMB; snap's prompt is MIT), `decima` (A. M. Madani, on mmBERT-base by JHU CLSP and multilingual-e5-small by intfloat, both MIT), `largha` (Phocinae, on mmBERT-small by JHU CLSP, MIT) and `nli:modernbert-large` are Apache-2.0, and `nli:deberta-v3-large` (Moritz Laurer) is MIT. `arbiter`'s LoRA adapter and head (Codekins Pvt Ltd, Zyot Lab) are Apache-2.0; its base model, Gemma 3 4B IT by Google DeepMind, is under the Gemma Terms of Use. `nimble:9b-v3`'s adapter (Bespoke Labs) is CC BY-NC 4.0, which does not allow commercial use; its base, Qwen3.5-9B, is Apache-2.0. `d1` (Liquid AI) is under the LFM Open License v1.0: commercial use by an organization with US$10 million or more in annual revenue is not covered by it. llama.cpp, which Ollaya ships for
 GGUF models, is MIT.
 

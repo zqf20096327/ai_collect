@@ -13,6 +13,7 @@
 
 ## ✨ Features
 
+- **Modern Trading Desk UI (3.4.0)**: Left nav, content stage, and session strip (equity / P&L / connection) with VoxHash dark branding
 - **Multi-Strategy Trading**: 17+ built-in strategies including 7 ML-based approaches
 - **Real-time Monitoring**: Live portfolio tracking with P&L updates and health checks
 - **Risk Management**: Advanced risk controls with Kelly Criterion and drawdown protection
@@ -69,7 +70,12 @@ pip install -r requirements.txt
 python app.py
 ```
 
+Optional TA-Lib / deep-learning / remote API stack:
 
+```bash
+pip install -r requirements-optional.txt
+# or: pip install "forexsmartbot[talib,ml,remote]"
+```
 
 ### With GPU Acceleration (Optional)
 
@@ -85,12 +91,11 @@ See [docs/GPU_ACCELERATION.md](docs/GPU_ACCELERATION.md) for detailed setup inst
 
 ### With Native Rust Indicators (Optional)
 
-Lower-memory SMA/ATR/RSI and parallel batch SMA via PyO3 (`native/fsb_core`). Requires [Rust](https://rustup.rs/) and [maturin](https://www.maturin.rs/).
+Lower-memory SMA/EMA/ATR/RSI/MACD/Bollinger/Stochastic, parallel batch SMA, walk-forward / RSI / EMA / MACD / Bollinger / Stochastic sweeps, and multi-symbol equity aggregation via PyO3 (`fsb_core`). Install from PyPI or build from source:
 
 ```bash
-# once: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-pip install maturin
-cd native/fsb_core && maturin develop --release
+pip install fsb-core
+# or: pip install maturin && cd native/fsb_core && maturin develop --release
 ```
 
 Without the extension, the same Python APIs use a NumPy fallback automatically. See [docs/PERFORMANCE_TUNING.md](docs/PERFORMANCE_TUNING.md).
@@ -127,6 +132,7 @@ Full configuration reference: [docs/Configuration-Guide.md](docs/Configuration-G
 - **Getting Started**: [Quick Start Guide](docs/QUICK_START_V3.1.0.md)
 - **API Reference**: [Unified API Reference](docs/API-REFERENCE.md)
 - **Architecture**: [System Architecture](docs/ARCHITECTURE.md)
+- **v3.4.0 Shell**: [Modern Trading Desk](docs/V3.4.0_FEATURES.md)
 - **Data Providers**: [Provider Setup Guide](docs/DATA_PROVIDERS_SETUP.md)
 - **Examples**: [Example Scripts](examples/)
 - **FAQ**: [Frequently Asked Questions](docs/FAQ.md)

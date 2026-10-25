@@ -5,7 +5,7 @@
 [![Master skill generation validation](https://github.com/mickpletcher/AI-Skills/actions/workflows/master-skills-validation.yml/badge.svg?branch=main&event=push)](https://github.com/mickpletcher/AI-Skills/actions/workflows/master-skills-validation.yml?query=branch%3Amain)
 [![License](https://img.shields.io/github/license/mickpletcher/AI-Skills)](./LICENSE)
 
-A shared home for AI skills organized by platform. Skills live under the platform they are written for. Shared docs cover conventions and repo guidance only.
+A shared home for AI skills organized by platform. Shipped skills live under their platform folders; `master-skills/` and `generated/` hold separate canonical review sources and generated review candidates. Shared docs cover conventions and repo guidance only.
 
 See [completed-projects.md](./completed-projects.md) for completed repo additions.
 See [completed-upgrades.md](./completed-upgrades.md) for completed repo upgrades.
@@ -20,7 +20,7 @@ Current repo social preview asset:
 
 Use this repo in this order:
 
-1. Pick the platform you want to use first.
+1. Pick a shipped skill for your platform from the [skill catalog](CATALOG.md).
 2. Open that platform's skill folder.
 3. Read the skill `README.md` before anything else.
 4. Open the main source file for that skill.
@@ -39,6 +39,8 @@ If you are not sure which file is the source of truth:
 ## How To Implement A Skill In Each Ecosystem
 
 These steps are written for a first time user.
+
+Repository placement and candidate generation do not install or activate skills. Use the [platform installation guide](docs/installation.md) for host-specific placement and checks; available instruction/import surfaces vary by host and version.
 
 ### Claude
 
@@ -72,9 +74,13 @@ If you change a Claude skill:
 3. Rebuild the `.skill` package so the import file matches the source.
 4. Test again in Claude.
 
-### ChatGPT
+### OpenAI
 
-ChatGPT skills in this repo live under `chatgpt/skills/<skill-name>/`.
+OpenAI targets share the [openai/](openai/README.md) parent directory. ChatGPT and Codex keep separate source formats, capabilities and placement rules.
+
+#### ChatGPT
+
+ChatGPT skills in this repo live under `openai/chatgpt/skills/<skill-name>/`.
 
 What to open:
 
@@ -107,9 +113,17 @@ What to expect:
 - `README.md` explains where to paste it and how to test it
 - A custom GPT is usually the safer option because it does not affect unrelated chats
 
-### GitHub Copilot
+#### Codex
 
-Copilot skills in this repo live under `copilot/skills/<skill-name>/`.
+The existing example scaffold lives under `openai/codex/skills/example-skill/`. It is not a shipped catalog entry. Review candidates live under `generated/openai/codex/skills/`; their generation does not install or promote them.
+
+### Microsoft
+
+Microsoft targets share the [microsoft/](microsoft/README.md) parent: GitHub Copilot and Copilot Studio remain separate. Copilot Studio is reserved and has no generation/deployment support yet.
+
+#### GitHub Copilot
+
+Copilot skills in this repo live under `microsoft/copilot/skills/<skill-name>/`.
 
 What to open:
 
@@ -136,7 +150,7 @@ What to expect:
 
 Current example:
 
-- [copilot/skills/pr-review](./copilot/skills/pr-review/)
+- [microsoft/copilot/skills/pr-review](./microsoft/copilot/skills/pr-review/)
 
 ### Gemini
 
@@ -189,7 +203,7 @@ What to expect:
 
 ### Cursor
 
-Cursor skills in this repo will live under `cursor/skills/<skill-name>/`.
+Cursor skills in this repo live under `cursor/skills/<skill-name>/`.
 
 What to open:
 
@@ -222,13 +236,15 @@ Current examples:
 | Platform | Skill folder | Main source file | How you usually apply it |
 | ----- | ----- | ----- | ----- |
 | Claude | `claude/skills/<skill-name>/` | `SKILL.md` | Import or install the `.skill` package, then test in Claude |
-| ChatGPT | `chatgpt/skills/<skill-name>/` | `instructions.md` | Paste into a custom GPT or ChatGPT Custom Instructions |
-| Copilot | `copilot/skills/<skill-name>/` | platform instruction file | Paste into the Copilot instruction surface used by that repo or workflow |
+| ChatGPT | `openai/chatgpt/skills/<skill-name>/` | `instructions.md` | Paste into a custom GPT or ChatGPT Custom Instructions |
+| Copilot | `microsoft/copilot/skills/<skill-name>/` | platform instruction file | Paste into the Copilot instruction surface used by that repo or workflow |
 | Gemini | `gemini/skills/<skill-name>/` | `instructions.md` | Paste into a Gemini Gem or equivalent Gemini instruction surface |
 | Perplexity | `perplexity/skills/<skill-name>/` | `SKILL.md` | Paste Markdown directly or upload the skill file, depending on the skill README |
 | Cursor | `cursor/skills/<skill-name>/` | `instructions.md` | Paste into project rules, user rules, or chat context in Cursor |
 
 ## Complete Skill Catalog
+
+The separate [canonical candidate catalog](https://github.com/mickpletcher/AI-Skills/blob/main/master-skills/CATALOG.md) covers all 35 Claude skills plus an example. Four-target generated bundles are review candidates, not shipped replacements or evidence of model evaluation. See the [migration and generation guide](https://github.com/mickpletcher/AI-Skills/blob/main/master-skills/README.md) before using them.
 
 Use the [generated catalog](CATALOG.md) for every shipped skill across all platforms, including purpose, installation, declared prerequisites, package links, and versions. [catalog.json](catalog.json) provides the machine-readable manifest and [SHA256SUMS](SHA256SUMS) records package hashes. Undeclared versions/prerequisites and model-evaluation dates are never invented.
 
@@ -239,16 +255,18 @@ See [platform installation](docs/installation.md), [dependencies](docs/dependenc
 - `shared/`: repo-wide guidance, standards, and naming rules
 - `templates/`: starter templates for new skills
 - `claude/`: Claude-specific skills, scripts, and metadata
-- `chatgpt/`: ChatGPT-specific instructions, prompts, and schemas
-- `copilot/`: GitHub Copilot instructions and prompts
-- `gemini/`: Gemini-specific instructions and Gem-ready skill content
-- `perplexity/`: Perplexity-specific skill files and setup notes
+- `openai/`: OpenAI targets, with separate `chatgpt/` and `codex/` skill folders
+- `microsoft/`: separate `copilot/` instructions and reserved `copilot-studio/` adaptations
+- `gemini/`: reserved Gemini area; no shipped skills or generated candidates
+- `perplexity/`: reserved Perplexity area; no shipped skills or generated candidates
 - `cursor/`: Cursor-specific rules and coding assistant instructions
+- `amazon-q/` and `grok/`: reserved target guides; generation and deployment are not supported
+- `master-skills/`, `adapters/`, and `generated/`: canonical review sources, host guidance, and reproducible candidate copies; distinct from shipped platform sources
 
 ## Working Model
 
 1. Pick the target platform first.
-2. Write the skill in that platform's folder as the source of truth.
+2. Maintain shipped skills in their platform folders as the shipped source of truth. For canonical review candidates, edit `master-skills/` and `adapters/`, then regenerate; see the [migration guide](https://github.com/mickpletcher/AI-Skills/blob/main/master-skills/README.md). Generation does not promote or install candidates.
 3. Use `shared/` for naming, structure, and repo-level guidance only.
 4. Record checks with [templates/test-template.md](./templates/test-template.md).
 

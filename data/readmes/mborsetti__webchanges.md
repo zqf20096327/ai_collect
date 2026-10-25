@@ -54,6 +54,10 @@ or with ``pip``:
 
    pip install webchanges
 
+On Windows with Python 3.15, first run ``set PYYAML_FORCE_LIBYAML=0`` (in PowerShell:
+``$env:PYYAML_FORCE_LIBYAML = "0"``), as explained `here
+<https://webchanges.readthedocs.io/en/stable/introduction.html#install-windows>`__.
+
 Other ways to run
 -----------------
 - In a `Docker <https://www.docker.com/>`__ container: a minimal implementation (no browser) is `here
@@ -143,7 +147,7 @@ Relationship with **urlwatch**
 ==============================
 This project is a fork of `urlwatch 2.21
 <https://github.com/thp/urlwatch/tree/346b25914b0418342ffe2fb0529bed702fddc01f>`__ and has since added many features;
-see the `comparison <https://webchanges.readthedocs.io/en/stable/_static/webchanges-vs-urlwatch.html>`__.
+see the `comparison <https://webchanges.readthedocs.io/en/stable/upgrading.html>`__.
 
 
 .. |support| image:: https://img.shields.io/pypi/pyversions/webchanges.svg
