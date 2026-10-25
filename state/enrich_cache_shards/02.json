@@ -1024,10 +1024,10 @@
   }
  },
  "sixtysevenlf/dsh-blender-plugin": {
-  "commit_90d": 95,
-  "commit_7d": 21,
-  "rel_ver": "v2.1.0",
-  "rel_pub": "2026-10-16",
+  "commit_90d": 148,
+  "commit_7d": 53,
+  "rel_ver": "v2.6.1",
+  "rel_pub": "2026-10-23",
   "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
@@ -1043,10 +1043,10 @@
    "TypeScript": 4,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261025",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261025",
+   "release": "20261025",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -3916,6 +3916,33 @@
    "security": "20261024",
    "contrib": "20261024",
    "lang": "20261024"
+  }
+ },
+ "comarch/git-byline": {
+  "rel_ver": "v1.7.0",
+  "rel_pub": "2026-10-08",
+  "rel_days": 17,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Go": 92,
+   "TypeScript": 5,
+   "CSS": 2,
+   "Shell": 1,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
   }
  }
 }

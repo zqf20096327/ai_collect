@@ -4718,5 +4718,32 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "pavelhorak/pion": {
+  "rel_ver": "v1.0.5",
+  "rel_pub": "2026-10-24",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Mojo": 45,
+   "Python": 39,
+   "C": 10,
+   "Objective-C": 2,
+   "Metal": 1
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
  }
 }

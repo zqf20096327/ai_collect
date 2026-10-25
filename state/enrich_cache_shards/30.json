@@ -4307,5 +4307,83 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "AI-XiaoDao/xiaodao-ai-browser-mcp": {
+  "rel_ver": "v3.3.4",
+  "rel_pub": "2026-10-18",
+  "rel_days": 7,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 93,
+   "PowerShell": 7
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "grayrepo-byte/Agenvas": {
+  "rel_ver": "v0.0.7",
+  "rel_pub": "2026-10-24",
+  "rel_days": 1,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Java": 58,
+   "TypeScript": 34,
+   "CSS": 3,
+   "PLpgSQL": 3,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "telvax/telvax": {
+  "rel_ver": "v0.47.7",
+  "rel_pub": "2026-10-21",
+  "rel_days": 4,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 94,
+   "JavaScript": 3,
+   "Python": 1,
+   "Shell": 0,
+   "TypeScript": 0
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
  }
 }

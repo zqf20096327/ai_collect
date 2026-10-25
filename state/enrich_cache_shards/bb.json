@@ -812,8 +812,8 @@
   }
  },
  "Fractal-Compute-Orchestrations/FractalWorkspace": {
-  "commit_7d": 0,
-  "commit_90d": 22,
+  "commit_7d": 1,
+  "commit_90d": 23,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -824,10 +824,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261025",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261025",
+   "release": "20261025",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4386,6 +4386,128 @@
    "security": "20261024",
    "contrib": "20261024",
    "lang": "20261024"
+  }
+ },
+ "sstxww/blackgate-ai-game": {
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-09-29",
+  "rel_days": 26,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 86,
+   "HTML": 11,
+   "CSS": 3
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "AbhiramJayasankar/ryzenai-npu-lab": {
+  "rel_ver": "npu-dictate-v1.2.0",
+  "rel_pub": "2026-10-21",
+  "rel_days": 4,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 88,
+   "C++": 11,
+   "PowerShell": 2
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "wmy2981/ai-title-siyuan": {
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-10-18",
+  "rel_days": 7,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 92,
+   "HTML": 3,
+   "JavaScript": 3,
+   "SCSS": 1
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "maximilian467/ControlBench": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 57,
+   "Python": 41,
+   "CSS": 1,
+   "Mako": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "Gaussian-id/ChironDB": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 96,
+   "Python": 4,
+   "HTML": 0,
+   "Dockerfile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
   }
  }
 }

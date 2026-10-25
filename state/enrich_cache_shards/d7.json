@@ -3657,5 +3657,65 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "lballoriani/rpg-campaign-factory": {
+  "rel_ver": "sample-v1",
+  "rel_pub": "2026-10-01",
+  "rel_days": 24,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 61,
+   "Typst": 32,
+   "Shell": 6
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "TiaMEOWS/mergen": {
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-09-21",
+  "rel_days": 34,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 94,
+   "Python": 4,
+   "CSS": 2,
+   "Shell": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "xingxue-ux/dsh-comfyUI-control": {
+  "rel_ver": "v0.1.3",
+  "rel_pub": "2026-10-07",
+  "rel_days": 18,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false
  }
 }

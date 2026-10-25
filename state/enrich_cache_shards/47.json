@@ -4237,5 +4237,81 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "bountyoperator/bounty-operator": {
+  "rel_ver": "v0.9.21",
+  "rel_pub": "2026-10-21",
+  "rel_days": 4,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "low",
+  "sec_last": "2026-10-15",
+  "sec_ids": [
+   "GHSA-7p9h-3mfj-9vrj(-,low)"
+  ],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 63,
+   "HTML": 20,
+   "TypeScript": 6,
+   "Solidity": 5,
+   "CSS": 4
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "chrishotza/Skill-Conscious": {
+  "rel_ver": "p008-cf01-internal-holdout-20261016",
+  "rel_pub": "2026-10-16",
+  "rel_days": 9,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 99,
+   "Jupyter Notebook": 1
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "Magine1921/MagineCanvas-Learn": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 90,
+   "JavaScript": 7,
+   "CSS": 3,
+   "HTML": 0,
+   "Python": 0
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
  }
 }

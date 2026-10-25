@@ -626,8 +626,8 @@
   }
  },
  "deepseek-ai/deepseek-recipe": {
-  "commit_7d": 0,
-  "commit_90d": 2,
+  "commit_7d": 2,
+  "commit_90d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -642,10 +642,10 @@
    "CSS": 2,
    "HTML": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261025",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261025",
+   "release": "20261025",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -3692,6 +3692,74 @@
    "security": "20261024",
    "contrib": "20261024",
    "lang": "20261024"
+  }
+ },
+ "pCwOrM/mandelbrot-fractal-neural-synthesis": {
+  "rel_ver": "v3.1.0-stable",
+  "rel_pub": "2026-09-22",
+  "rel_days": 33,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 78,
+   "Python": 18,
+   "TeX": 4,
+   "Lean": 0
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "FlowForgeLabAi/-h3-8gb-traps": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "ImWuMie/wear-agent": {
+  "rel_ver": "v0.1.5",
+  "rel_pub": "2026-10-17",
+  "rel_days": 8,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Kotlin": 100
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
   }
  }
 }

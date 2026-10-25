@@ -4370,5 +4370,32 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "MartinM10/Myrmo": {
+  "rel_ver": "platform-v0.46.0",
+  "rel_pub": "2026-10-23",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 37,
+   "Rust": 23,
+   "JavaScript": 18,
+   "TypeScript": 10,
+   "HTML": 9
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
  }
 }

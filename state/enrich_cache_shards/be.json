@@ -4276,5 +4276,55 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "Darrkkens/matchmind": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 66,
+   "Vue": 25,
+   "TypeScript": 4,
+   "CSS": 2,
+   "HTML": 2
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "trytilde/tilde": {
+  "rel_ver": "v3.1.1",
+  "rel_pub": "2026-10-03",
+  "rel_days": 22,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 65,
+   "TypeScript": 23,
+   "Python": 7,
+   "JavaScript": 3,
+   "CSS": 1
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
  }
 }

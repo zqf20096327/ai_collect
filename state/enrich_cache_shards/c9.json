@@ -4103,5 +4103,80 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "Izzo047/ORCA-Marine-EcOsystem-Reasoning-with-Collaborative-Agents": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-09-28",
+  "rel_days": 27,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 38,
+   "JavaScript": 36,
+   "CSS": 19,
+   "HTML": 6,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "anasbekheit/typesafe-jev-mcp": {
+  "rel_ver": "v0.1.2",
+  "rel_pub": "2026-09-20",
+  "rel_days": 35,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 50,
+   "Shell": 26,
+   "PowerShell": 24
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "littlenew117/mibly-apple-health-mcp": {
+  "rel_ver": "v1.2.1",
+  "rel_pub": "2026-10-13",
+  "rel_days": 12,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 100
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
  }
 }

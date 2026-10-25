@@ -674,11 +674,11 @@
   }
  },
  "ling-stack-org/ling-stack": {
-  "commit_90d": 494,
-  "commit_7d": 74,
+  "commit_90d": 555,
+  "commit_7d": 81,
   "rel_ver": "desktop-dev-0.1.2-alpha.1-20261013-dfb61ac",
   "rel_pub": "2026-10-13",
-  "rel_days": 5,
+  "rel_days": 12,
   "rel_n90": 1,
   "rel_pre": true,
   "rel_none": false,
@@ -694,10 +694,10 @@
    "C++": 1,
    "Rust": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261025",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261025",
+   "release": "20261025",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -3841,6 +3841,68 @@
    "security": "20261024",
    "contrib": "20261024",
    "lang": "20261024"
+  }
+ },
+ "Nikhil-creat/jntuh-paper-predictor": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "nshkrdotcom/system_one_sdk": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Elixir": 99,
+   "Shell": 1
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "flufy3d/MaaLow": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 40,
+   "Kotlin": 25,
+   "Python": 24,
+   "C++": 7,
+   "CSS": 2
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
   }
  }
 }

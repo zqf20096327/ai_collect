@@ -3632,5 +3632,32 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "koltyakov/varro-openjet": {
+  "rel_ver": "v0.9.3",
+  "rel_pub": "2026-10-23",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Kotlin": 89,
+   "TypeScript": 5,
+   "Python": 3,
+   "JavaScript": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
  }
 }

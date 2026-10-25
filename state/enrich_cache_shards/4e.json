@@ -4175,5 +4175,55 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "kaanrkaraman/nblean": {
+  "rel_ver": "v0.2.1",
+  "rel_pub": "2026-10-24",
+  "rel_days": 1,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 100
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
+ },
+ "seanyourhighness/L0xRE-BeeLLama-Low": {
+  "rel_ver": "beellama-v0.4.7-r6",
+  "rel_pub": "2026-10-12",
+  "rel_days": 13,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Cuda": 51,
+   "C++": 36,
+   "C": 7,
+   "Python": 4,
+   "PowerShell": 2
+  },
+  "enriched_at": "20261025",
+  "dim_ts": {
+   "release": "20261025",
+   "security": "20261025",
+   "contrib": "20261025",
+   "lang": "20261025"
+  }
  }
 }
