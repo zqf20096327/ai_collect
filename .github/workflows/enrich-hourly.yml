@@ -1,13 +1,15 @@
 name: enrich-hourly
 
-# 临时冲刺:每小时一个 s7 小时窗(断点接力,未到期零调用)
+# 临时冲刺:每日两次 s7 小时窗(断点接力,未到期零调用)
+# 北京 06:21 / 18:33 各一窗(GHA cron 走 UTC 且仅分钟精度,秒位省略)
 # 10-22 提速:worker 数非瓶颈,吞吐被 CORE_PACE 按小时摊薄(实测 3.2s/仓匀速);
 # 52 分钟窗 + 低配额起窗先睡到重置点再全速(--wait-windows 1),全速 ~75 调用/分,
 # 每窗 ~2000+ 仓(视配额余量)。富集全部完成后删除本文件(或注释 schedule)停。
 on:
   schedule:
-    - cron: "17 0-12,14-23 * * *"  # 每小时第 17 分:避整点 GHA 排队拥挤(同 atlas :17 修法);
-                                   # 与 collect 的互斥仍由共组 state-writer 保证,cron 无需避让
+    - cron: "21 22 * * *"  # UTC 22:21 = 北京 06:21(:21 错开 cardgen :10 与整点排队)
+    - cron: "33 10 * * *"  # UTC 10:33 = 北京 18:33;两窗均避 collect 的 UTC 13 起 5h 窗
+                           # 与 collect 的互斥仍由共组 state-writer 保证,cron 无需避让
   workflow_dispatch: {}             # 手动可触发
 
 permissions:
