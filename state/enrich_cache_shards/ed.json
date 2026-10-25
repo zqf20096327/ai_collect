@@ -3581,5 +3581,55 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "jestr-ai/openmage-ai-suite": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-09-21",
+  "rel_days": 33,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "PHP": 89,
+   "JavaScript": 5,
+   "HTML": 3,
+   "CSS": 2,
+   "Shell": 2
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "klebr55/orchestrator-pipeline-skill": {
+  "rel_ver": "v1.0.2",
+  "rel_pub": "2026-09-30",
+  "rel_days": 24,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

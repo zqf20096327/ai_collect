@@ -4239,5 +4239,32 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "Barbaqueda/onyx": {
+  "rel_ver": "release",
+  "rel_pub": "2026-10-10",
+  "rel_days": 14,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 84,
+   "CSS": 13,
+   "PowerShell": 2,
+   "HTML": 1,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }

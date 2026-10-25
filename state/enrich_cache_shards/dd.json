@@ -4000,5 +4000,57 @@
    "contrib": "20261024",
    "lang": "20261024"
   }
+ },
+ "elektricM/gpuq": {
+  "rel_ver": "v0.3.1",
+  "rel_pub": "2026-10-17",
+  "rel_days": 7,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 97,
+   "Shell": 3,
+   "Makefile": 0,
+   "Nix": 0
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
+ },
+ "FindMalek/guesswork": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-09-19",
+  "rel_days": 35,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 84,
+   "Shell": 11,
+   "CSS": 4,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261024",
+  "dim_ts": {
+   "release": "20261024",
+   "security": "20261024",
+   "contrib": "20261024",
+   "lang": "20261024"
+  }
  }
 }
