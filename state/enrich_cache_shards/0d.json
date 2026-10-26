@@ -3688,5 +3688,79 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "Derrors/reelay": {
+  "rel_ver": "v1.1.2",
+  "rel_pub": "2026-10-25",
+  "rel_days": 1,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 70,
+   "TypeScript": 29,
+   "CSS": 1,
+   "Dockerfile": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261026",
+  "dim_ts": {
+   "release": "20261026",
+   "security": "20261026",
+   "contrib": "20261026",
+   "lang": "20261026"
+  }
+ },
+ "KardeniaPoyu/GlobexAgent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 97,
+   "TypeScript": 2,
+   "CSS": 1,
+   "Dockerfile": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261026",
+  "dim_ts": {
+   "release": "20261026",
+   "security": "20261026",
+   "contrib": "20261026",
+   "lang": "20261026"
+  }
+ },
+ "RDunbar01/Nexus-Adapter-Studio": {
+  "rel_ver": "v2.4.0-alpha",
+  "rel_pub": "2026-10-09",
+  "rel_days": 17,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 100,
+   "Python": 0
+  },
+  "enriched_at": "20261026",
+  "dim_ts": {
+   "release": "20261026",
+   "security": "20261026",
+   "contrib": "20261026",
+   "lang": "20261026"
+  }
  }
 }

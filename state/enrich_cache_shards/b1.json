@@ -175,12 +175,12 @@
   }
  },
  "explosion/thinc": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": "v8.3.13",
-  "rel_pub": "2026-03-23",
-  "rel_days": 208,
-  "rel_n90": 0,
+  "commit_90d": 2,
+  "commit_7d": 2,
+  "rel_ver": "v8.3.14",
+  "rel_pub": "2026-10-25",
+  "rel_days": 1,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -195,10 +195,10 @@
    "Sass": 3,
    "Cuda": 3
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261026",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261026",
+   "release": "20261026",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

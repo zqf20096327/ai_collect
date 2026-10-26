@@ -1839,13 +1839,16 @@
    "TypeScript": 98,
    "JavaScript": 2
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261026",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261026"
+  },
+  "commit_90d": 339,
+  "commit_7d": 42
  },
  "tzolov/spring-ai-cli-chatbot": {
   "rel_ver": null,
@@ -4580,6 +4583,25 @@
    "security": "20261025",
    "contrib": "20261025",
    "lang": "20261025"
+  }
+ },
+ "BlocksOrg/skills": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Shell": 100
+  },
+  "enriched_at": "20261026",
+  "dim_ts": {
+   "release": "20261026",
+   "security": "20261026",
+   "contrib": "20261026",
+   "lang": "20261026"
   }
  }
 }

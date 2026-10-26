@@ -5236,5 +5236,51 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "STARKTANG108/kindle-token-panel": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 67,
+   "HTML": 30,
+   "Shell": 3
+  },
+  "enriched_at": "20261026",
+  "dim_ts": {
+   "release": "20261026",
+   "security": "20261026",
+   "contrib": "20261026",
+   "lang": "20261026"
+  }
+ },
+ "jacke-pp/ai-wallet-binance": {
+  "rel_ver": "v0.1.4",
+  "rel_pub": "2026-10-25",
+  "rel_days": 1,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 93,
+   "CSS": 5,
+   "HTML": 2
+  },
+  "enriched_at": "20261026",
+  "dim_ts": {
+   "release": "20261026",
+   "security": "20261026",
+   "contrib": "20261026",
+   "lang": "20261026"
+  }
  }
 }

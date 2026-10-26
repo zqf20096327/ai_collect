@@ -209,11 +209,11 @@
   }
  },
  "claimed-framework/claimed": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 1,
+  "commit_90d": 1,
   "rel_ver": "v0.5.0",
   "rel_pub": "2026-06-30",
-  "rel_days": 109,
+  "rel_days": 118,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -229,10 +229,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261026",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261026",
+   "release": "20261026",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4249,6 +4249,102 @@
    "security": "20261025",
    "contrib": "20261025",
    "lang": "20261025"
+  }
+ },
+ "ArtLjn/agriagent-os": {
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-10-24",
+  "rel_days": 2,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 70,
+   "TypeScript": 15,
+   "Dart": 9,
+   "HTML": 3,
+   "Shell": 2
+  },
+  "enriched_at": "20261026",
+  "dim_ts": {
+   "release": "20261026",
+   "security": "20261026",
+   "contrib": "20261026",
+   "lang": "20261026"
+  }
+ },
+ "Vanchezze/FGSD": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261026",
+  "dim_ts": {
+   "release": "20261026",
+   "security": "20261026",
+   "contrib": "20261026",
+   "lang": "20261026"
+  }
+ },
+ "berkayturanci/ai-jury": {
+  "rel_ver": "v1.28.0",
+  "rel_pub": "2026-10-16",
+  "rel_days": 10,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "high",
+  "sec_last": "2026-09-28",
+  "sec_ids": [
+   "GHSA-p3xc-rjhw-cgp3(-,high)"
+  ],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 88,
+   "HTML": 4,
+   "JavaScript": 4,
+   "CSS": 2,
+   "TypeScript": 1
+  },
+  "enriched_at": "20261026",
+  "dim_ts": {
+   "release": "20261026",
+   "security": "20261026",
+   "contrib": "20261026",
+   "lang": "20261026"
+  }
+ },
+ "sqyCoder/AIstudy-chaoxing-helper": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 85,
+   "PowerShell": 10,
+   "HTML": 4,
+   "CSS": 2,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261026",
+  "dim_ts": {
+   "release": "20261026",
+   "security": "20261026",
+   "contrib": "20261026",
+   "lang": "20261026"
   }
  }
 }

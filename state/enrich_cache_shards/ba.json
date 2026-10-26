@@ -4070,5 +4070,58 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "comwit/comwit": {
+  "rel_ver": "@comwit/state@2.5.1",
+  "rel_pub": "2026-10-15",
+  "rel_days": 11,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "MDX": 46,
+   "TypeScript": 30,
+   "JavaScript": 12,
+   "CSS": 11
+  },
+  "enriched_at": "20261026",
+  "dim_ts": {
+   "release": "20261026",
+   "security": "20261026",
+   "contrib": "20261026",
+   "lang": "20261026"
+  }
+ },
+ "junginho0901/Kubeast": {
+  "rel_ver": "v0.7.2",
+  "rel_pub": "2026-10-25",
+  "rel_days": 1,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 53,
+   "Go": 34,
+   "Python": 11,
+   "Shell": 1,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261026",
+  "dim_ts": {
+   "release": "20261026",
+   "security": "20261026",
+   "contrib": "20261026",
+   "lang": "20261026"
+  }
  }
 }

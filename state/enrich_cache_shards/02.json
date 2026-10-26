@@ -3965,5 +3965,32 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "cyqlelabs/factor": {
+  "rel_ver": "v0.53.3",
+  "rel_pub": "2026-10-24",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Go": 93,
+   "JavaScript": 2,
+   "Python": 2,
+   "CSS": 1,
+   "HTML": 1
+  },
+  "enriched_at": "20261026",
+  "dim_ts": {
+   "release": "20261026",
+   "security": "20261026",
+   "contrib": "20261026",
+   "lang": "20261026"
+  }
  }
 }

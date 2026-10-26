@@ -3673,5 +3673,32 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "talos-hq/clud": {
+  "rel_ver": "2.8.32",
+  "rel_pub": "2026-10-23",
+  "rel_days": 3,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 75,
+   "Python": 24,
+   "JavaScript": 1,
+   "PowerShell": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261026",
+  "dim_ts": {
+   "release": "20261026",
+   "security": "20261026",
+   "contrib": "20261026",
+   "lang": "20261026"
+  }
  }
 }

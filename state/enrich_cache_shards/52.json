@@ -1399,11 +1399,11 @@
   }
  },
  "zereight/gitlab-mcp": {
-  "commit_7d": 145,
-  "commit_90d": 677,
-  "rel_ver": "v2.3.4",
-  "rel_pub": "2026-10-19",
-  "rel_days": 0,
+  "commit_7d": 203,
+  "commit_90d": 829,
+  "rel_ver": "v2.3.11",
+  "rel_pub": "2026-10-25",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1428,10 +1428,10 @@
    "Python": 0,
    "Nix": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261026",
   "dim_ts": {
-   "commit": "20261019",
-   "release": "20261019",
+   "commit": "20261026",
+   "release": "20261026",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"
@@ -4323,6 +4323,33 @@
    "security": "20261025",
    "contrib": "20261025",
    "lang": "20261025"
+  }
+ },
+ "hsq2004815-oss/resource-hub-desktop": {
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-10-20",
+  "rel_days": 6,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 54,
+   "Dart": 38,
+   "C++": 5,
+   "JavaScript": 1,
+   "PowerShell": 1
+  },
+  "enriched_at": "20261026",
+  "dim_ts": {
+   "release": "20261026",
+   "security": "20261026",
+   "contrib": "20261026",
+   "lang": "20261026"
   }
  }
 }

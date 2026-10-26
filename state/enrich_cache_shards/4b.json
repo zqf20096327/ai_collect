@@ -2157,13 +2157,16 @@
    "JavaScript": 10,
    "Python": 3
   },
-  "enriched_at": "20261022",
+  "enriched_at": "20261026",
   "dim_ts": {
    "release": "20261022",
    "security": "20261022",
    "contrib": "20261022",
-   "lang": "20261022"
-  }
+   "lang": "20261022",
+   "commit": "20261026"
+  },
+  "commit_90d": 58,
+  "commit_7d": 2
  },
  "gdevenyi/huggingface-estimate": {
   "rel_ver": null,
@@ -3451,6 +3454,26 @@
    "security": "20261025",
    "contrib": "20261025",
    "lang": "20261025"
+  }
+ },
+ "c-dyang/night-watch": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 85,
+   "Mermaid": 15
+  },
+  "enriched_at": "20261026",
+  "dim_ts": {
+   "release": "20261026",
+   "security": "20261026",
+   "contrib": "20261026",
+   "lang": "20261026"
   }
  }
 }

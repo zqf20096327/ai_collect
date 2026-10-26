@@ -3265,13 +3265,16 @@
    "Swift": 3,
    "CSS": 2
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261026",
   "dim_ts": {
    "release": "20261023",
    "security": "20261023",
    "contrib": "20261023",
-   "lang": "20261023"
-  }
+   "lang": "20261023",
+   "commit": "20261026"
+  },
+  "commit_90d": 293,
+  "commit_7d": 211
  },
  "mwakidenis/GBV-SafeSpace": {
   "rel_ver": null,
@@ -4288,6 +4291,60 @@
    "security": "20261025",
    "contrib": "20261025",
    "lang": "20261025"
+  }
+ },
+ "Ablation-Tool/ablation": {
+  "commit_90d": 1673,
+  "commit_7d": 322,
+  "rel_ver": "v2.81.0",
+  "rel_pub": "2026-10-15",
+  "rel_days": 11,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100,
+   "Shell": 0
+  },
+  "enriched_at": "20261026",
+  "dim_ts": {
+   "commit": "20261026",
+   "release": "20261026",
+   "security": "20261026",
+   "contrib": "20261026",
+   "lang": "20261026"
+  }
+ },
+ "Seokwoooo/lucian-ai-chat-exporter": {
+  "rel_ver": "v1.3.10",
+  "rel_pub": "2026-10-24",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 89,
+   "JavaScript": 8,
+   "Python": 1,
+   "CSS": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261026",
+  "dim_ts": {
+   "release": "20261026",
+   "security": "20261026",
+   "contrib": "20261026",
+   "lang": "20261026"
   }
  }
 }

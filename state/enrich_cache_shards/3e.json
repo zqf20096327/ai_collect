@@ -3975,5 +3975,14 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "doomsday-network/web3-agent-skills": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": null
  }
 }

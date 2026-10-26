@@ -1276,13 +1276,16 @@
    "JavaScript": 1,
    "CSS": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261026",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261026"
+  },
+  "commit_90d": 0,
+  "commit_7d": 0
  },
  "Zentar-Ai/Zentara-Code": {
   "rel_ver": "v.0.2.11",
@@ -1472,13 +1475,16 @@
    "TypeScript": 0,
    "Shell": 0
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261026",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261026"
+  },
+  "commit_90d": 527,
+  "commit_7d": 32
  },
  "anshutiwari9917-ui/survival-stat-tuner": {
   "rel_ver": null,
@@ -3708,6 +3714,33 @@
    "security": "20261025",
    "contrib": "20261025",
    "lang": "20261025"
+  }
+ },
+ "FlaxXTT/Typeleast": {
+  "rel_ver": "v1.21.3",
+  "rel_pub": "2026-10-25",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Swift": 37,
+   "C#": 29,
+   "JavaScript": 28,
+   "HTML": 5,
+   "Shell": 1
+  },
+  "enriched_at": "20261026",
+  "dim_ts": {
+   "release": "20261026",
+   "security": "20261026",
+   "contrib": "20261026",
+   "lang": "20261026"
   }
  }
 }

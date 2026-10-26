@@ -3808,5 +3808,28 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "Rastrian/DiscordMCP": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 99,
+   "Dockerfile": 0,
+   "Shell": 0,
+   "Mako": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261026",
+  "dim_ts": {
+   "release": "20261026",
+   "security": "20261026",
+   "contrib": "20261026",
+   "lang": "20261026"
+  }
  }
 }

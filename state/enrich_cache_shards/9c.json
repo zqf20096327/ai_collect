@@ -4139,5 +4139,31 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "ShiftHackZ/ellmsha": {
+  "rel_ver": "v2026.10.22-patch.4",
+  "rel_pub": "2026-10-22",
+  "rel_days": 4,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 78,
+   "Python": 12,
+   "Dockerfile": 5,
+   "Shell": 5
+  },
+  "enriched_at": "20261026",
+  "dim_ts": {
+   "release": "20261026",
+   "security": "20261026",
+   "contrib": "20261026",
+   "lang": "20261026"
+  }
  }
 }

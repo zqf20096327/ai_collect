@@ -4095,5 +4095,59 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "tinycomputers/tiny-tpu": {
+  "rel_ver": "v1.0",
+  "rel_pub": "2026-07-13",
+  "rel_days": 105,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Astro": 32,
+   "TypeScript": 32,
+   "JavaScript": 15,
+   "Python": 7,
+   "SystemVerilog": 5
+  },
+  "enriched_at": "20261026",
+  "dim_ts": {
+   "release": "20261026",
+   "security": "20261026",
+   "contrib": "20261026",
+   "lang": "20261026"
+  }
+ },
+ "omarfaruk-k/kontaka": {
+  "rel_ver": "v1.0",
+  "rel_pub": "2026-03-11",
+  "rel_days": 229,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 34,
+   "Dart": 32,
+   "CMake": 28,
+   "Swift": 3,
+   "C": 2
+  },
+  "enriched_at": "20261026",
+  "dim_ts": {
+   "release": "20261026",
+   "security": "20261026",
+   "contrib": "20261026",
+   "lang": "20261026"
+  }
  }
 }

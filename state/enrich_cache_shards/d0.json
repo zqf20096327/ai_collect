@@ -1100,13 +1100,16 @@
    "HTML": 16,
    "Shell": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261026",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261026"
+  },
+  "commit_90d": 2,
+  "commit_7d": 1
  },
  "thu-nics/FrameFusion": {
   "rel_ver": null,

@@ -1458,10 +1458,10 @@
  },
  "obsei/obsei": {
   "commit_90d": 116,
-  "commit_7d": 50,
+  "commit_7d": 0,
   "rel_ver": "v1.1.1",
   "rel_pub": "2026-10-17",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
@@ -1477,10 +1477,10 @@
    "Astro": 4,
    "MDX": 3
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261026",
   "dim_ts": {
-   "commit": "20261019",
-   "release": "20261019",
+   "commit": "20261026",
+   "release": "20261026",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"
@@ -3916,6 +3916,30 @@
    "security": "20261025",
    "contrib": "20261025",
    "lang": "20261025"
+  }
+ },
+ "AmiBastian/SillyTavern-SceneArchivist": {
+  "rel_ver": "v1.0.7",
+  "rel_pub": "2026-10-24",
+  "rel_days": 2,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 96,
+   "CSS": 4
+  },
+  "enriched_at": "20261026",
+  "dim_ts": {
+   "release": "20261026",
+   "security": "20261026",
+   "contrib": "20261026",
+   "lang": "20261026"
   }
  }
 }

@@ -3607,13 +3607,16 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261026",
   "dim_ts": {
    "release": "20261023",
    "security": "20261023",
    "contrib": "20261023",
-   "lang": "20261023"
-  }
+   "lang": "20261023",
+   "commit": "20261026"
+  },
+  "commit_90d": 1,
+  "commit_7d": 1
  },
  "vizuh/sabi": {
   "rel_ver": "controller-v0.1.7",
@@ -4411,13 +4414,16 @@
    "JavaScript": 6,
    "Dockerfile": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261026",
   "dim_ts": {
    "release": "20261024",
    "security": "20261024",
    "contrib": "20261024",
-   "lang": "20261024"
-  }
+   "lang": "20261024",
+   "commit": "20261026"
+  },
+  "commit_90d": 1,
+  "commit_7d": 1
  },
  "miladce/Bayesian-network-learning": {
   "rel_ver": null,

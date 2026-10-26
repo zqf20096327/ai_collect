@@ -2307,13 +2307,16 @@
    "Python": 97,
    "JavaScript": 3
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261026",
   "dim_ts": {
    "release": "20261021",
    "security": "20261021",
    "contrib": "20261021",
-   "lang": "20261021"
-  }
+   "lang": "20261021",
+   "commit": "20261026"
+  },
+  "commit_90d": 42,
+  "commit_7d": 13
  },
  "kevinelliott/agentmanager": {
   "rel_ver": "v1.5.0",

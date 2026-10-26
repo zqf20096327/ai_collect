@@ -1,7 +1,7 @@
 {
  "labmlai/annotated_deep_learning_paper_implementations": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 3,
+  "commit_90d": 3,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -14,10 +14,10 @@
    "Jupyter Notebook": 10,
    "Makefile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261026",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261026",
+   "release": "20261026",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -211,8 +211,8 @@
   }
  },
  "dtyq/magic": {
-  "commit_90d": 1105,
-  "commit_7d": 0,
+  "commit_90d": 5374,
+  "commit_7d": 637,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -227,10 +227,10 @@
    "Go": 7,
    "JavaScript": 5
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261026",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261026",
+   "release": "20261026",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

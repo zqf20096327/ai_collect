@@ -1746,13 +1746,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261019",
+  "enriched_at": "20261026",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261026"
+  },
+  "commit_90d": 32,
+  "commit_7d": 0
  },
  "wenjimods/timeboxed-execution": {
   "rel_ver": "v1.4.1",

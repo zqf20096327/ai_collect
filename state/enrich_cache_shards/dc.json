@@ -179,11 +179,11 @@
   }
  },
  "nageoffer/ragent": {
-  "commit_7d": 8,
-  "commit_90d": 157,
+  "commit_7d": 4,
+  "commit_90d": 137,
   "rel_ver": "1.1.0",
   "rel_pub": "2026-08-11",
-  "rel_days": 66,
+  "rel_days": 76,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -199,10 +199,10 @@
    "JavaScript": 1,
    "Smalltalk": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261026",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261026",
+   "release": "20261026",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

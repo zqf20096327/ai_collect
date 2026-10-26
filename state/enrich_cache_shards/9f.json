@@ -390,8 +390,8 @@
   }
  },
  "bilibili/Index-Translate": {
-  "commit_7d": 15,
-  "commit_90d": 111,
+  "commit_7d": 2,
+  "commit_90d": 113,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -406,10 +406,10 @@
    "Batchfile": 1,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261026",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261026",
+   "release": "20261026",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

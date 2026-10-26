@@ -3679,5 +3679,32 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "stainless-code/lossless": {
+  "rel_ver": "pi-lossless@0.1.2",
+  "rel_pub": "2026-10-24",
+  "rel_days": 2,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 87,
+   "MDX": 8,
+   "Astro": 5,
+   "Shell": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261026",
+  "dim_ts": {
+   "release": "20261026",
+   "security": "20261026",
+   "contrib": "20261026",
+   "lang": "20261026"
+  }
  }
 }

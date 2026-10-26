@@ -290,7 +290,7 @@
   "commit_7d": 0,
   "rel_ver": "1.0.4",
   "rel_pub": "2026-08-20",
-  "rel_days": 58,
+  "rel_days": 67,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -306,10 +306,10 @@
    "JavaScript": 1,
    "CSS": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261026",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261026",
+   "release": "20261026",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -2838,13 +2838,16 @@
    "Cuda": 5,
    "TypeScript": 4
   },
-  "enriched_at": "20261022",
+  "enriched_at": "20261026",
   "dim_ts": {
    "release": "20261022",
    "security": "20261022",
    "contrib": "20261022",
-   "lang": "20261022"
-  }
+   "lang": "20261022",
+   "commit": "20261026"
+  },
+  "commit_90d": 4,
+  "commit_7d": 4
  },
  "anpl-code/Deblank": {
   "rel_ver": "v1.0.0",

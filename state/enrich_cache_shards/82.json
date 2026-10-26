@@ -4488,5 +4488,28 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "zyd232/dsh-compaction-policy": {
+  "rel_ver": "v0.1.2",
+  "rel_pub": "2026-10-17",
+  "rel_days": 9,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261026",
+  "dim_ts": {
+   "release": "20261026",
+   "security": "20261026",
+   "contrib": "20261026",
+   "lang": "20261026"
+  }
  }
 }

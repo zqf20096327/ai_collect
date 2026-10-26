@@ -1726,12 +1726,12 @@
   }
  },
  "Tencent-Hunyuan/Hy-Memory": {
-  "commit_7d": 31,
-  "commit_90d": 31,
-  "rel_ver": "v1.0.4",
-  "rel_pub": "2026-10-18",
-  "rel_days": 1,
-  "rel_n90": 3,
+  "commit_7d": 79,
+  "commit_90d": 107,
+  "rel_ver": "hy-memory-v2.0.5",
+  "rel_pub": "2026-10-22",
+  "rel_days": 4,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1746,10 +1746,10 @@
    "CSS": 2,
    "Shell": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261026",
   "dim_ts": {
-   "commit": "20261019",
-   "release": "20261019",
+   "commit": "20261026",
+   "release": "20261026",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"

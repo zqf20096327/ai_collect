@@ -3812,5 +3812,58 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "daidaiJ/websearch-mcpserver": {
+  "rel_ver": "v3.10.2-registry",
+  "rel_pub": "2026-10-25",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Go": 91,
+   "JavaScript": 6,
+   "HTML": 1,
+   "CSS": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261026",
+  "dim_ts": {
+   "release": "20261026",
+   "security": "20261026",
+   "contrib": "20261026",
+   "lang": "20261026"
+  }
+ },
+ "xmmd07/ComfyUI-Prompt-Library": {
+  "rel_ver": "v0.4.5",
+  "rel_pub": "2026-10-25",
+  "rel_days": 1,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 92,
+   "CSS": 6,
+   "HTML": 2,
+   "Python": 0
+  },
+  "enriched_at": "20261026",
+  "dim_ts": {
+   "release": "20261026",
+   "security": "20261026",
+   "contrib": "20261026",
+   "lang": "20261026"
+  }
  }
 }

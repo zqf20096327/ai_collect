@@ -4262,5 +4262,27 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "glaucia86/devday-exchange-community-rio-2026": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 42,
+   "JavaScript": 42,
+   "CSS": 12,
+   "Astro": 4
+  },
+  "enriched_at": "20261026",
+  "dim_ts": {
+   "release": "20261026",
+   "security": "20261026",
+   "contrib": "20261026",
+   "lang": "20261026"
+  }
  }
 }

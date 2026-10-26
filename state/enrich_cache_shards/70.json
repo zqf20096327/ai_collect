@@ -4537,5 +4537,28 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "NoiraBaka/dsh-compact-suite": {
+  "rel_ver": "v2.9.2",
+  "rel_pub": "2026-10-17",
+  "rel_days": 9,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261026",
+  "dim_ts": {
+   "release": "20261026",
+   "security": "20261026",
+   "contrib": "20261026",
+   "lang": "20261026"
+  }
  }
 }
