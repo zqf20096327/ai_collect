@@ -25,7 +25,7 @@ token efficiency, and quality control built in.**
 [![Maintainability](https://qlty.sh/gh/marcusquinn/projects/aidevops/maintainability.svg)](https://qlty.sh/gh/marcusquinn/projects/aidevops)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/2b1adbd66c454dae92234341e801b984)](https://app.codacy.com/gh/marcusquinn/aidevops/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/Version-3.39.70-blue.svg)](https://github.com/marcusquinn/aidevops/releases)
+[![Version](https://img.shields.io/badge/Version-3.39.74-blue.svg)](https://github.com/marcusquinn/aidevops/releases)
 [![npm version](https://img.shields.io/npm/v/aidevops)](https://www.npmjs.com/package/aidevops)
 [![Homebrew](https://img.shields.io/badge/homebrew-marcusquinn%2Ftap-orange)](https://github.com/marcusquinn/homebrew-tap)
 
@@ -354,8 +354,8 @@ can inform routing, but cannot silently rewrite production policy.
 
 OpenCode defaults resolved models with larger windows to a ~240K usable-input
 compaction budget, without expanding smaller native windows or overriding
-explicit per-model context/input limits. GPT-6.1 Sol, GPT-6 Sol/Luna and their
-Fast variants also advertise the budget in their model metadata. Run `aidevops
+explicit per-model context/input limits. GPT-6.1 Sol/Terra, GPT-6 Sol/Luna and
+their Fast variants also advertise the budget in their model metadata. Run `aidevops
 gpt6-context status` to check those models in a fresh process, or `disable` to restore
 their native limits. Restart OpenCode after changes.
 

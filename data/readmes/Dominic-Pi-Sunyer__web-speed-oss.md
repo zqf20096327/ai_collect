@@ -88,6 +88,36 @@ Then quit and relaunch Claude Desktop / Cowork. The six tools will appear under 
 
 ---
 
+## Reading local dev servers (opt-in)
+
+Web Speed blocks private and loopback addresses by default (SSRF protection), so `http://127.0.0.1:8080`
+returns `BLOCKED`. To read your own dev server, list exact `host:port` pairs in `WEBSPEED_ALLOW_HOSTS`:
+
+```json
+"web-speed": {
+  "command": "/absolute/path/to/web-interpreter/venv/bin/python",
+  "args": ["/absolute/path/to/web-interpreter/server.py"],
+  "env": { "WEBSPEED_ALLOW_HOSTS": "127.0.0.1:8080" }
+}
+```
+
+- Comma-separated; IPv6 in brackets: `127.0.0.1:8080,[::1]:3000,localhost:5173`.
+- Matching is exact on host **and** port. `127.0.0.1:8080` does not open `127.0.0.1:6379` or any other address.
+- The port is always required, even for 80 or 443.
+- No wildcards or CIDR ranges. Malformed entries are ignored, so a typo stays blocked.
+- Prefer literal IPs. A hostname entry trusts whatever that name resolves to.
+- Leave it unset anywhere the server fetches URLs chosen by someone else.
+
+---
+
+## Tests
+
+```bash
+venv/bin/python -m unittest discover -s tests
+```
+
+---
+
 ## Output schemas
 
 ### `interpret_page`

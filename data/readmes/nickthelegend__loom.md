@@ -544,6 +544,21 @@ daemon), **Updates** (build rev, and how far the checkout is behind its remote),
   <img src="docs/img/settings.png" alt="Loom's Settings screen — Setup, Diagnostics, Updates, Preferences, Devices, About" width="100%">
 </p>
 
+
+### Split: several views in one window
+
+**⌘D** splits the window side by side, and **⌘⇧D** one above the other. Each pane is a whole
+Loom view (a project, a chat, any tab), so you can follow several agents' threads at once.
+
+- **Arranging:** drag a chat from a pane's sidebar onto another pane's edge to open it there, or
+  drag a pane by its grip to move it.
+- **Closing:** a pane's × closes it, and closing the last but one leaves split mode on the pane
+  that's left.
+- **Saving:** the layout is saved, so it's there when you come back.
+
+Panes keep their contents when the layout changes, so splitting never reloads what you were
+looking at. The approach comes from [Nuphos](https://github.com/nuphos/nuphos); the layout
+model is ported from its desktop app.
 ## GitHub & Linear, native
 
 Browse pull requests, issues, and **GitHub Project boards** in-app; open a worktree from
@@ -841,6 +856,27 @@ projections — they never hold the write lock. That's a design decision, not a 
 agents without a stable API can't be trusted with interrupt-safe writes. See
 [docs/integration-notes.md](docs/integration-notes.md) for the verified surfaces.
 
+## Any ACP agent
+
+One agent kind, `acp`, drives any agent that speaks the
+[Agent Client Protocol](https://agentclientprotocol.com) over stdio. That includes Claude Code
+and Codex through their ACP adapters, Gemini CLI, OpenCode and Grok.
+
+```bash
+loom agents:add acp --preset gemini --as gemini     # gemini --experimental-acp
+loom agents:add acp --preset claude --as claude-acp # npx @agentclientprotocol/claude-agent-acp
+loom agents:add acp --cmd "my-agent --acp" --as mine
+```
+
+- **Sessions:** each Loom chat is one ACP session, and it resumes with `session/load` when the agent supports it.
+- **What you see:** the agent's thoughts, its plan, each tool call and the diffs it reports show
+  up in the thread like any other agent's. Diffs appear as file edits.
+- **Permissions are Loom's:**
+  - Bypass picks the agent's own "allow" option.
+  - Auto runs Loom's Auto policy on the call.
+  - Always ask puts each request on an approval card in Loom and on your phone.
+  - A request that fails or is interrupted is answered "cancelled", never allowed.
+
 ## Agents that are models
 
 Every other agent in Loom wraps a CLI. A `model` agent is an HTTP endpoint:
@@ -1114,6 +1150,15 @@ phone buzzes when an agent **needs input**, when a **route completes or fails**,
 when a solo turn finishes — route hops are deliberately silent (a 5-step pipeline
 buzzes once, not five times). Verify with `loom clients --ping`.
 
+## Your phone, for every computer
+
+The phone app pairs with each computer you run Loom on: your desktop, your laptop, a box in the
+cloud. **Account ▸ Computers** shows them all live (answering or not, and how fast), and one tap
+switches between them. With Loom Cloud on, each answers from any network, through its own key.
+
+**Approve from the lock screen:** when an agent asks to use a tool, the alert has **Allow** and
+**Deny** buttons. The answer goes straight to the computer that asked, without opening the app.
+
 ## Permissions: bypass, auto, or always ask
 
 Every agent CLI has its own idea of "may I?". Loom gives you one dropdown with
@@ -1284,6 +1329,96 @@ In the desktop app, type the tasks in the composer, one per line, and choose
 phone, type them and tap 🌙. `--until` and `--max` stop *new* tasks from
 starting; the one running always finishes. A shift survives a daemon restart.
 A task the restart cut off is reported as failed, and the rest carry on.
+
+## Share live: a teammate in the same chat
+
+Let a teammate into a running chat, so you both talk to the same agent, see the same tool calls
+and steer the work together. Open the chat's menu ▸ **Share live…**, or run:
+
+```bash
+loom share --live --name Priya --role approve --hours 8
+```
+
+Choose what they can do:
+
+- **view:** read along.
+- **reply:** talk to the agent and stop a turn.
+- **approve:** also answer the agent's tool approvals in that chat.
+
+They open the link in a browser, with nothing to install. Their messages carry their name, and
+the thread says who allowed what. The link works once and its access expires. Revoke it any
+time with Settings ▸ Devices or `loom clients --revoke`.
+
+Their token reaches that one chat and nothing else on your machine: no other chats, terminals,
+files, git, settings or team. Over Loom Cloud it works from anywhere.
+
+The approach comes from [Nuphos](https://github.com/nuphos/nuphos)'s shared sessions.
+
+## Triggers: the next turn starts itself
+
+A schedule or a webhook starts an agent's turn, with nobody sitting in the chat. Each trigger
+gets its own thread, and its turns go through the project's queue like anything you type.
+A trigger whose last run is still waiting in the queue skips its next firing instead of piling up.
+
+```bash
+loom triggers:add "Summarise yesterday's merged PRs" --cron "0 9 * * 1-5"
+loom triggers:add "Check the error dashboard" --every 2h --agent codex
+loom triggers:add "CI failed on {{body.workflow_run.head_branch}}: look into it" --webhook --min-interval 60
+loom triggers            # each one, its next run, and its last few runs
+loom triggers:fire <id>  # now (a webhook's with --payload test.json)
+loom triggers:off <id>   # or :on, :rm
+```
+
+- **Webhooks:** each one prints its URL and secret once. The sender signs the body (GitHub's
+  `X-Hub-Signature-256` works as is) or sends the secret as `X-Loom-Secret`.
+- **Prompt templating:** `{{body.path}}`, `{{body}}` and `{{event}}` fill the prompt from the payload.
+- **Duplicates:** a redelivered webhook runs once, and `--min-interval` ignores bursts.
+- **Reaching it from the internet:** `tailscale funnel`, or `loom up --tailnet` for your tailnet.
+- **Who can manage triggers:** only this machine's owner can add, change or fire one, because a
+  trigger runs your agents, as you, unattended.
+
+## Slack and Discord: your agents in the team conversation
+
+Mention the bot in Slack or Discord and the message goes to a Loom thread. The agent's answer
+comes back in that Slack thread or Discord channel, and replies there need no mention.
+
+The bot runs inside your daemon with your own bot's tokens: Slack over Socket Mode, Discord over
+its gateway. Nothing needs a public URL, and no hosted service sits in between.
+
+```bash
+loom bridge slack --bot-token xoxb-… --app-token xapp-… --user U012ABC --channel C034DEF
+loom bridge discord --bot-token … --user 1234567890 --project api
+loom bridge            # both, connected or not, and how many messages each heard and ignored
+loom bridge slack --off   # or --remove to forget the tokens
+```
+
+- **Who it hears:** only the people you list. Everyone else, and other bots, are ignored.
+- **Approvals:** these stay in Loom and on your phone. The channel is told when a turn is waiting on one.
+- **Slack app setup:** turn on Socket Mode and give the bot the `app_mentions:read`,
+  `channels:history`, `chat:write` and `im:history` scopes, plus an app-level token with
+  `connections:write`.
+- **Discord bot setup:** turn on the Message Content intent.
+
+## What the agents cost this machine
+
+```bash
+loom top          # each agent CLI / MCP server / dev server the daemon started: MB, CPU, processes
+loom top --watch  # refresh every 2 s
+```
+
+`loom top` shows each one beside free memory, load and the turn cap. When memory runs low, `loom limits` sets how many turns run at once.
+
+## Search every session, and the audit trail
+
+```bash
+loom find --all "rate limit"   # every chat in every project, newest first, with where each hit is
+loom audit --since 7d          # who let what happen
+```
+
+The audit trail covers approvals answered (and by whom), teammates' messages in shared chats,
+messages from Slack and Discord, triggers that fired or didn't, and baton handoffs. Only this
+machine's owner can read it. A token scoped to some projects searches only those. In the
+composer, **/ ▸ Compact the agent's context** sends the agent its own `/compact`.
 
 ## Scorecards: which agent can you trust with this?
 
@@ -1624,132 +1759,4 @@ loom team brain trust <id>          # an untrusted memory is fine: share it
 **Phase 4 (land safely) is built too:**
 - **CI comes back to the owner.** Your daemon watches your goal PRs. A failing
   required check is rerun once; if it passes, it's labelled flaky and no agent
-  touches it. A real failure's log goes to the goal's orchestrator, which fixes
-  it and pushes to the same PR — at most 2 attempts, then your phone buzzes.
-- **A second opinion from another vendor.** An agent from a different vendor
-  than the goal's authors reviews each goal PR (on open and after each fix) and
-  posts a `loom/review` check that fails only on high-severity findings. It
-  comments; it never approves.
-- **Land.** One click (or `loom land`) merges fresh main into the goal, runs the
-  team's fast tests, pushes, and asks GitHub to merge when approvals and checks
-  pass. A conflict gets one agent attempt; a conflict in a hard zone goes to you.
-- **Stacks, Adopt, budgets.** Big goals can land as a stack of PRs
-  (`"delivery": {"stack": "auto"}`). When your goal is stuck and you're offline,
-  a teammate can adopt it, get it green on your branch, and hand it back. Goals
-  and members can have budgets, and the team view rolls up cost per member, per
-  goal and per landed PR.
-- **Doctor.** `loom team doctor` checks your repo for merge-queue traps
-  (workflows that don't run on `merge_group`, no required checks) and offers a
-  fix PR. It never changes repo settings.
-
-```bash
-loom team landing           # your goal PRs, and teammates' goals that need someone
-loom land                   # land the goal PR
-loom team adopt 123         # take a stuck teammate goal and make it green
-loom team doctor            # merge-queue setup check (add "fix" to open the PR)
-```
-
-```jsonc
-// loom.team.json — Phase 4 additions
-{ "landing": { "fastTest": "npm test -- --changed", "timeoutMin": 10, "autoFixAttempts": 2 },
-  "review": { "enabled": true, "maxRuns": 3 },
-  "delivery": { "protected": ["main"], "stack": "auto" },
-  "budgets": { "perGoalUsd": 15, "perMemberDailyUsd": 60 } }
-```
-
-**Hosted hub.** `loom team signin` with no URL signs in to hosted Loom Teams with
-your GitHub account; `loom team signin http://host:7430` still uses a
-self-hosted `loom hub`.
-
-**Phase 5 (runners) is built too:**
-- **Your goals keep going when your laptop sleeps.** A runner is your own
-  always-on Loom (a VPS, a home server, a container) paired to your account. Start
-  a goal on it, or move a running goal there — from the desktop or your phone —
-  and bring it back whenever you like. Its code never touches Loom's servers.
-- **Its own trust tier.** Each goal gets a fresh clone (a fresh container when
-  Docker runs), agents get a scrubbed environment with only their logins and a
-  fine-grained GitHub token, and `loom.team.json` sets how far they may go.
-- **CI fixes while you're away.** If your goal needs a fix and you've been offline
-  15 minutes, your runner takes it.
-- **Shared runners** can take teammates' goals when the repo's policy allows it.
-- **Deploys and release notes.** Deploy results show in the team feed, a failed
-  deploy that contains your goal buzzes your phone, and
-  `loom team release-notes --since v1.2.0` writes the notes.
-
-```bash
-loom runner pair                    # on your laptop: a one-time link
-loom runner join '<link>'           # on the always-on box (then: loom runner install)
-loom runner token github_pat_…      # a fine-grained token: contents + pull requests
-loom runner goal "Add rate limiting"  # start a goal there
-loom runner move <runId>            # move a running goal; `loom runner back <runId>` to return it
-```
-
-Or with Docker: `docker build -f Dockerfile.runner -t loom-runner .`
-
-**Phase 6 (land in turn, hear it now) is built too:**
-- **A landing train when there's no merge queue.** Land queues the goal in its
-  lanes and merges it on its turn: fresh main in, fast tests, push, green on that
-  commit, then `gh pr merge --squash`. The next goal in the lane lands on top of
-  it. A goal waiting shows **queued**; a red check on its turn hands the lane to
-  the next goal, and it rejoins when green. Repos with a merge queue keep
-  Phase 4's path.
-- **Lanes.** Path scopes in `loom.team.json`: goals in different lanes land side
-  by side.
-- **GitHub webhooks, no App needed.** `loom team webhook --install` points a repo
-  webhook at your hub (self-hosted, or the hosted hub's Edge Function). Checks,
-  merges, reviews and deploys reach the team feed as they happen, signed and
-  verified, and your daemon acts on your PR's CI result at once. Polling keeps
-  running; nothing is posted twice.
-
-```jsonc
-// loom.team.json — Phase 6 addition
-{ "landing": { "lanes": { "web": ["web/**"], "api": ["api/**", "db/**"] } } }
-```
-
-```bash
-loom team webhook --install         # a repo webhook to the team hub (prints the URL and secret)
-```
-
-**How to use it, step by step: [docs/teams.md](docs/teams.md).** The researched
-architecture (84 decisions, six phases, all built) is in
-**[docs/teams-architecture.md](docs/teams-architecture.md)**. Every doc is indexed
-in [docs/README.md](docs/README.md); the code map is [src/README.md](src/README.md).
-
-## Loom Cloud — your agents from any network
-
-Tailscale is great when your phone is on your tailnet. **Loom Cloud** reaches your
-computer from anywhere (mobile data, a café, another country) with nothing to
-install on the computer's network.
-
-```bash
-loom cloud enable --url https://<ref>.supabase.co --key <anon key>
-loom pair            # the QR now works from any network
-```
-
-- **End-to-end encrypted.** The daemon and the phone meet on a Supabase Realtime
-  channel. Every message is XChaCha20-Poly1305 with a key that exists only in the
-  pairing QR. Supabase relays ciphertext it cannot read or forge. `loom cloud rotate`
-  mints a new key and locks out every phone that paired with the old one.
-- **Same auth as the LAN.** Each relayed request becomes a real call against the
-  daemon, carrying the phone's own paired token. Scopes, admin-only routes and
-  revocation behave identically. The local admin bootstrap is never reachable
-  through the relay.
-- **Direct when it can, cloud when it must.** The phone tries the LAN or tailnet
-  address first and falls back to the relay. It reconnects on its own when you
-  come back to the app.
-- **Bring your own Supabase project.** Free tier is plenty. Loom never runs a
-  server of its own.
-
-Setup, including Google sign-in and the country-only usage stats, takes about 10 minutes:
-[docs/cloud.md](docs/cloud.md). Protocol: [`src/core/relay-protocol.ts`](src/core/relay-protocol.ts).
-Daemon side: [`src/daemon/relay.ts`](src/daemon/relay.ts).
-
-## Hardware
-
-<div align="center">
-<img src="hardware/orchestrator-pad/docs/images/hero.png" alt="The LoomPad — a 3D-printed macropad with one key per agent and a voice bar" width="720">
-</div>
-
-The **LoomPad** is the pad on your desk: one key per agent, a bar you hold to
-talk, and the answer spoken back through its own speaker. Press a key and it
-locks that agent in 
+  touches it. A

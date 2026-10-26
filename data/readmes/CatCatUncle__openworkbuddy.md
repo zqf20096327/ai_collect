@@ -233,6 +233,8 @@ bash deploy.sh --domain buddy.example.com # Docker + 自动 HTTPS
 
 **设置 → 模型**，挑预设（OpenAI / Anthropic / OpenRouter / DeepSeek / 通义 / 智谱 / Kimi / 火山方舟 / Ollama），粘 Key，保存即生效。生图、配音、生视频另有一张表。对照表 → [配置模型](docs/配置模型.md)
 
+助理模式也可在模型菜单选择本机 Codex、Claude Code 或已配置的 API 模型；默认沿用当前引擎，单独切换不改变定时任务的设置。
+
 > [!IMPORTANT]
 > Key 只存在 `config.json`，已在 `.gitignore` 里，别手滑提交。
 
@@ -266,6 +268,11 @@ openworkbuddy engines use claude-code # 换执行引擎：跑在你已经付过�
 入口分别在 `server.js`、`cli.js`、`src/im/`；Agent 在 `src/agent/agent.js`，工具在 `src/agent/tools.js` 与 `src/tools/`。会话、配置和用量记在本机 `data/`，任务文件写入项目工作区。代码分层 → [代码架构](docs/代码架构.md)；任务流程 → [实现细节](docs/实现细节.md)
 
 ## 最新动态
+
+- **10-27** 项目与自动化搜索保留输入框和光标，确认组词后再筛选，不重复请求列表；迟到的运行记录不再覆盖已切回的任务页。
+
+- **10-26** 执行追踪跨项目保留，展示本机引擎工具步骤与结果，读取失败明确提示。侧栏恢复「专家 · 技能 · 连接器」。
+- **10-26** 资料库搜索保留原输入框和光标；输入法确认组词后再搜索，旧请求不会覆盖新输入，修复英文输入乱序。
 
 - **10-24** 桌面工作台统一在主窗口切换任务，移除会话菜单的新窗口入口；任务链接和预览跳转复用主窗口，保留成果文件独立预览。
 

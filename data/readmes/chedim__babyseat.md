@@ -211,8 +211,8 @@ read the field (`state(section=...)` pulls one part of the seat's WHERE WE ARE:
 tracks, commands, interfaces, classes, loops, timelines, frame, digest, or
 changes since the last message), `learn` to keep a lesson (with the same guards as any turn),
 `forget` to clean up its mistakes, and the entity tools
-(`entity_add/edit/remove/link/inherit`, `entity_query`, `entity_tracks`,
-`entities_related`, …) and Cliffhanger's method tools (`method_define/call/each/inspect`). Commands compose in **Cliffhanger**, membrane's command
+(`entity_add/edit/remove/inherit`, `entity_query`, `entity_tracks`,
+`entities_related`, …) and Cliffhanger's method tools (`method_define/call/each/inspect`). There are no one-shot commands: the model defines a method on an entity, then calls it ([program the field first](docs/cliffhanger.md#program-the-field-first-576-part-f)). Commands compose in **Cliffhanger**, membrane's command
 language ([its spec](https://github.com/chedim/cliffhanger),
 [how membrane uses it](docs/cliffhanger.md)). Every write is audited with
 where it came from.
@@ -341,7 +341,7 @@ pass through to Ollama unchanged.
 | `membrane token seat` | print the seat token (`--rotate` for a new one, `--path` for its file, `~/.membrane/seat-token`, 0600): from another machine, every write to either port needs it (Bearer, Basic's password, or the web UI's one-time prompt); reads and localhost need none; see [docs/auth.md](docs/auth.md) |
 | `membrane token mint` | `--sub ID [--name NAME] [--ttl 30d]`: a token for a seat running the optional JWT mode (`MEMBRANE_JWT_SECRET`); see [docs/auth.md](docs/auth.md) |
 | `membrane stats` | token/call accounting + the savings baseline (`--baseline` compares the bounded window against a naive full-history replay; reads `serve-msgs`, plus the background model calls from `bg-usage.json`; no model call) |
-| `membrane toybox` | self's toys, the built-in kit (fast / slow / burst / drift / die / body / tower / ball, rung 7's turn toy): `list`, `add <kind> [--name N] [--param k=v]`, `remove`, `reset`, and `migrate --dry-run` / `--yes` to replace the model-written script toys, and `poke <toy> <action> [arg] [--as WHO]` to play with self (tower knock/rebuild, die roll, drift/burst nudge, ball roll -- roll it back to self; each change tagged by who made it; self acts on a toy by nudging it, #333); also the seat's `toybox` object and the 👶 panel's play buttons. Toys unlock as self earns achievements (#267, #295): a locked kind is refused, the dock shows the next ones greyed. See [docs/selfgrowth.md](docs/selfgrowth.md#toys) |
+| `membrane toybox` | self's toys, the built-in kit (fast / slow / burst / drift / die / body / tower / ball, rung 7's turn toy): `list`, `add <kind> [--name N] [--param k=v]`, `remove`, `reset`, and `migrate --dry-run` / `--yes` to replace the model-written script toys, and `poke <toy> <action> [arg] [--as WHO]` to play with self (tower knock/rebuild, die roll, drift/burst nudge, ball roll -- roll it back to self, from either side; each change tagged by who made it; self acts on a toy by nudging it, #333); also the seat's `toybox` object and the 👶 panel's play buttons. Every kind can be added (#576 retired the unlocks with the ladder). See [docs/selfgrowth.md](docs/selfgrowth.md#toys) |
 | `membrane bench` | held-out recall benchmark (MRR + hit@k across the `worldline`/`mean`/`state` reads) — runs against a field **copy**, never the live store |
 
 `MEMBRANE_EFIELD` selects the field's mode: `on` (the default: capture,
@@ -515,6 +515,32 @@ conservative.
 lift "who 1,500 never-seen mentions were about" from MRR **0.210 → 0.539**
 (mature entities 0.206 → 0.634); see the v0.5.0 notes and `experiments/`.
 
+**Public benchmark: LoCoMo, retrieval mode (2026-10-25).** On LoCoMo
+(Maharana et al. 2024: 10 long multi-session conversations, 5,882 turns),
+we score only whether `/membrane/ask` returns a question's annotated
+evidence turn in its top k. There is no answer generation and no LLM judge,
+so these numbers are **not comparable** to published answer-accuracy scores.
+Each conversation goes into its own fresh field through the capture path (no
+chat model), one turn per `doc` event, in session order with the session date;
+embedder mxbai-embed-large. The baseline is plain cosine over the same
+embeddings.
+
+| category (n) | hit@8 | hit@20 | hit@50 | cosine baseline hit@8 |
+|---|---|---|---|---|
+| multi-hop (282) | 50.0% | 65.6% | 77.0% | 63.8% |
+| temporal* (321) | 60.8% | 68.2% | 76.3% | 71.3% |
+| open-domain* (92) | 37.0% | 50.0% | 65.2% | 46.7% |
+| single-hop* (841) | 57.6% | 67.7% | 77.4% | 65.8% |
+| **all answerable (1,536)** | **55.6%** | **66.3%** | **76.4%** | **65.4%** |
+| adversarial (446, no answer in the conversation) | 52.7% | 63.9% | 75.8% | 57.2% |
+
+What it shows: membrane's recall ranks **below plain cosine** today: when a
+question names a person, the entity lane fills about 45% of the top 8 with
+that person's newest lines. And turns captured as a person's chat lines are
+never returned as recall answers (0%), though the injected context holds the
+evidence for 48% of questions. Both are open work. \*LoCoMo's code confirms
+multi-hop and adversarial; the other three names follow the common mapping.
+
 - **Token economics, live seat (2026-10-12):** 5,736 live entities over
   4,949 streamed events; the standing per-turn header ~3 KB (entity tracks,
   one line each) instead of state dumps; per-turn injection is the state
@@ -562,9 +588,9 @@ lift "who 1,500 never-seen mentions were about" from MRR **0.210 → 0.539**
 | [docs/multi-dev-field.md](docs/multi-dev-field.md) | **Team field: the substrate.** The opt-in merged field: the origin axis, disjoint writers / merged reads, divergence conflicts, the commons |
 | [docs/global-field.md](docs/global-field.md) | The global commons: facts true beyond one repo; operator promotion and consensus (shared only on the merged field) |
 | [docs/background-mind.md](docs/background-mind.md) | **The background mind:** thinker + dreamer, the NightClock, entity scripts and tracks, the intent steering wheel, **the pause**, kill switches |
-| [docs/selfgrowth.md](docs/selfgrowth.md) | **Growing self (#161)**, named Blurp (#277; each seat names its own, #283). Switching it on (⏻ on/off) and accepting what it earns (#299: an earned achievement opens its children only once the operator accepts it), reading its exp bar, the 👶 panel as a character sheet (attributes: measured traits; the skills it is learning now; growth curve, working hours, toys, relationships, live activity) and the toy dock, the amoeba and the brain on the screen (what it looks at, its trail of looks, shift pulses, the caption; ◎ self framing and 👁 self's eyes), the skill tree (#295: achievements with real prerequisites, earned out of order) and their real pass tests, the nudge (#333: Blurp's one act on the things of its world, aimed mostly at things it can look at, tilted toward those whose nudge outcomes it is learning fastest; first reach (rung 13) passes when its nudges at one thing beat that thing's tempo and the changes were its own; it speaks by nudging chat:out, a draft whose line is the NNLS fit over sentences heard in its private chat; recognize itself rebuilt on its looks at the mirror (rows only at a look; opens with feel and first reach, no person needed); meet an other rebuilt on delayed contingency (the look 30 s after a nudge's check finds a change its tempo does not predict, and not its own; opens with look and first reach); toys unlock by skill in #337's order; time its turn and expect a reply rebuilt on meet's other (its nudges timed by a bandit over the other's age, and its own prediction of each follow-up; the model advisor out)), how to help it climb, troubleshooting |
+| [docs/selfgrowth.md](docs/selfgrowth.md) | **Retired in #576 (D1): Blurp starts anew** -- the body stays (the ⏻ switch, energy and sleep, the record, the 👶 panel, rendering empty), the learner below is history until D2 plugs the new one into `self_loop.learn_step`. **Growing self (#161)**, named Blurp (#277; each seat names its own, #283). Switching it on (⏻ on/off) and accepting what it earns (#299: an earned achievement opens its children only once the operator accepts it), reading its exp bar, the 👶 panel as a character sheet (attributes: measured traits; the skills it is learning now; growth curve, working hours, toys, relationships, live activity) and the toy dock, the amoeba and the brain on the screen (what it looks at, its trail of looks, shift pulses, the caption; ◎ self framing and 👁 self's eyes), the skill tree (#295: achievements with real prerequisites, earned out of order) and their real pass tests, the nudge (#333: Blurp's one act on the things of its world, aimed mostly at things it can look at, tilted toward those whose nudge outcomes it is learning fastest; first reach (rung 13) passes when its nudges at one thing beat that thing's tempo and the changes were its own; it speaks by nudging chat:out, a draft whose line is the NNLS fit over sentences heard in its private chat; recognize itself rebuilt on its looks at the mirror (rows only at a look; opens with feel and first reach, no person needed); meet an other rebuilt on delayed contingency (the look 30 s after a nudge's check finds a change its tempo does not predict, and not its own; opens with look and first reach); toys unlock by skill in #337's order; time its turn and expect a reply rebuilt on meet's other (its nudges timed by a bandit over the other's age, and its own prediction of each follow-up; the model advisor out)), how to help it climb, troubleshooting |
 | [docs/patient-hm.md](docs/patient-hm.md) | Patient H.M., viewed from membrane: epilepsy as a loop that excites itself (the seat's brakes, a seizure's signature in the field, running out of energy as its end), and cutting sleep's consolidation as H.M.'s surgery, with the experiment that tests it |
-| [docs/sleep.md](docs/sleep.md) | Sleep, viewed from Blurp: its energy, sleep and wake (#345: the reserves, the sleep pull, what wakes it), consolidation (the day's raw record to dated archives, a summary of the windows its tests read, restart-safe), and the viewpoint from before it slept (one store, no open loops, windowed beliefs, per-thing models; its cycle pace against its record's growth) |
+| [docs/sleep.md](docs/sleep.md) | Sleep, viewed from Blurp: its energy, sleep and wake (#345: the reserves, the sleep pull, what wakes it), consolidation (the day's raw record to dated archives, a summary of the birth, the accepts and the last lines, restart-safe), and the viewpoint from before it slept (one store, no open loops, windowed beliefs, per-thing models; its cycle pace against its record's growth) |
 | [docs/vsa-token-lane.md](docs/vsa-token-lane.md) | **Entity keys + relations (the VSA lane).** Canonical ids, key binding, the relations composites, structure-awareness numbers |
 | [docs/token-economics.md](docs/token-economics.md) | Where the savings come from + the router: the ladder, the ceiling, the outage fallback |
 | [docs/monologue.md](docs/monologue.md) | The `[membrane]` thinking-channel banner: every line explained, `/monologue` toggle |
@@ -609,3 +635,15 @@ If you use babyseat in research, please cite it. The citation metadata is in
 every release is archived on Zenodo under the concept DOI
 [10.5281/zenodo.23550667](https://doi.org/10.5281/zenodo.23550667), which
 always resolves to the newest version.
+
+The LoCoMo results above use the LoCoMo dataset (downloaded at run time, never
+committed: it states no license). Cite it as:
+
+```bibtex
+@article{maharana2024evaluating,
+  title={Evaluating very long-term conversational memory of llm agents},
+  author={Maharana, Adyasha and Lee, Dong-Ho and Tulyakov, Sergey and Bansal, Mohit and Barbieri, Francesco and Fang, Yuwei},
+  journal={arXiv preprint arXiv:2402.17753},
+  year={2024}
+}
+```

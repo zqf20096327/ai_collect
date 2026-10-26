@@ -48,30 +48,35 @@ The base types are the documentation: every method starts with tests showing how
 ```
 strict Examples/Sum.strict 5 10 20        run on the Strict VM, arguments go to Run
 strict test Examples/Sum.strict           run the inline tests on the Strict VM (a folder: every file and package sub folder)
-strict build Examples/Sum.strict          run the tests, then build the native executable
+strict build Examples/Sum.strict          build the native executable without running tests
 strict build Examples/Sum.strict linux    also the Linux executable (on Windows through WSL)
 strict build Examples/Sum.strict web      .html, .js and .wasm for the browser (Emscripten, installed when missing)
 strict build Examples/Sum.strict android  arm64-v8a shared library and assets in Release/Android (Android NDK)
 strict build Examples/Sum.strict ios      arm64 iOS static archive and assets in Release/iOS (native packages need Xcode)
+strict build Examples/Sum.strict ios simulator  the same for the iOS Simulator of this Mac
 strict build Examples/Sum.strict small    optimized for size instead of speed
 strict build Policy.strict library        Policy.dll (.so, .dylib) exporting the public methods for C and C#, plus Policy.cs
 strict build Games/App/App.strict         a windowed program goes into Games/App/Release with its Content (macOS: a signed .app)
 strict check Examples                     validate a folder (type rules, unused members, limits)
 strict format Examples/Sum.strict         print the file in its canonical form
+strict test Examples/Sum.strict native    build and run the tests natively
 strict test Examples/Sum.strict lines     run the tests natively, then show how often and how long each line ran
 strict test Examples/Sum.strict values    run the tests on the Strict VM, then show the values each line produced
 strict update .                           copy or download the packages of a folder again
 strict version                            version and build time of this strict
 ```
-- A type without `Run` builds its tests: `strict build Character.strict` gives `Character.test.exe` and runs it as the test gate instead of the Strict VM (StrictComfy MossBlock 56-66 to 15 s, Moss 46 to 15 s), its exit code is the number of failed tests. When the test executable does not build or crashes, the tests run on the Strict VM. A program with `Run` runs its tests on the Strict VM, unless that took more than twice as long as its native build: then `Name.test.exe` is built too and later builds run it as the gate before building the program (StrictComfy MossImage 102-117 to 19-27 s; the self build, FizzBuzz and Xor keep the VM gate, their VM tests are faster than a second native build). Delete `Name.test.exe` to go back to the VM gate. A `web` or `library` build always runs the tests on the Strict VM first. Each test prints `Test passed: <test> in <Method> at <File>.strict:line <N>` or `Test failed: ...` with the value it got.
+- `strict build` compiles without running tests, including compiler refreshes, web and library builds. A type without `Run` produces `Name.test.exe` without executing it. Use `strict test <file>` for VM tests or `strict test <file> native` to build and run native tests explicitly; `lines` also collects per-line timings. Native test failures and toolchain errors return a nonzero exit code; neither falls back to the VM. CI requests both builds and native tests.
+- Desktop builds and successful native tests keep a `.nativecache` dependency stamp. When sources, native headers/flags, content, compiler/tools and required outputs match, `strict` reports `Up to date` or `Tests up to date` and skips the compiler and test executable entirely. Build options are part of the key. Instrumented tests and cross-platform/library builds bypass this stamp. VM tests continue using their existing `.strictbinary` results.
 - `strict build` and `strict test ... lines` run `Compiler/NativeCompiler.exe`; when a file of `Compiler/`, `Bytecode/` or `Expressions/` or a `Compiler/NativeRuntime*.mlir` is newer than it (an edit or a pull), they build the compiler again first and note that in `Compiler/NativeCompiler.checked`: the runtime files are read by every build while the compiler logic is fixed in the executable, after a pull a compiler from before a change of both (the lanes of grouped GPU loops) wrote only half of the heads of `Qwen3Block.Rotated` on the GPU and Qwen3.8-Flash-Next decoded NaN.
-- Exit codes: 0 success, `test` and `build` return the number of failed tests, 2 wrong usage or a missing file, an unhandled Error from `Run` exits with 1.
+- Exit codes: 0 success, `test` returns the number of failed tests, `build` returns nonzero on a compilation or toolchain failure, 2 wrong usage or a missing file, an unhandled Error from `Run` exits with 1.
 - `strict check` prints each issue as `<File>.strict:line <N>: <Rule>: <detail>`.
 - Files whose tests passed on the Strict VM get a `Name.strictbinary` (bytecode of all used types), while it is up to date `strict test` reports them as passed right away and running and building reuse it. Passing native tests write none, `strict test` still runs them on the VM.
 - Types are looked up in the current folder (and its sub folders in a project), next to `strict` (base types and packages like `Math`), in the projects next to the current one, then in GitHub repositories linked in the project's README and github.com/strict-lang (copied into the project with a `.origin` file).
 - Errors before anything runs: `TypeNotFound`, `ParsingFailed`, `NameNotFound`, `MethodNotFound`, each with file and line. At runtime an Error prints its name and the stack trace back to the `.strict` source (at most the first 40 and last 10 lines), a call nested too deep returns `StackOverflow`.
 
 Needed tools: `mlir-opt`, `mlir-translate`, `clang`, `opt` and `llc` of LLVM 22 (on Windows the msys2 ucrt64 `mlir` package and the LLVM release). When they are missing `strict` says so and installs them (Windows: winget and pacman, Linux: the LLVM release into `Tools/`, macOS: conda-forge with micromamba into `Tools/`).
+
+External tools crash now and then on valid input (mlir-opt's parallel verifier with an access violation, nsys tracing CUDA graphs, ncu replaying several metrics of one kernel). A build reruns a crashed tool once (`ToolRunner.Retried`); when a build, test or profile still fails without a message, run it again once before investigating, and report a crash that comes back on the same input to that project with the input file.
 
 `strict` runs, tests and checks on the Strict VM and hands `build` and `test ... lines` to `Compiler/NativeCompiler` (`.exe` on Windows), the native compiler next to it. Bootstrap a fresh checkout from the checked-in seed with `Compiler\Bootstrap.cmd` (Windows) or `sh Compiler/bootstrap.sh` (Linux and macOS): it builds `Compiler/NativeCompiler` from the seed, which then builds `strict`. After changing the compiler rebuild both, `strict build Compiler/NativeCompiler.strict` then `strict build Strict.strict`; building twice gives identical output.
 

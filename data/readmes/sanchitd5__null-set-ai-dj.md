@@ -1,0 +1,350 @@
+<div align="center">
+
+```
+ ███╗   ██╗██╗   ██╗██╗     ██╗         ██╗ ██╗    ███████╗███████╗████████╗
+ ████╗  ██║██║   ██║██║     ██║         ╚═╝ ╚═╝    ██╔════╝██╔════╝╚══██╔══╝
+ ██╔██╗ ██║██║   ██║██║     ██║         ██╗ ██╗    ███████╗█████╗     ██║
+ ██║╚██╗██║██║   ██║██║     ██║         ╚═╝ ╚═╝    ╚════██║██╔══╝     ██║
+ ██║ ╚████║╚██████╔╝███████╗███████╗    ██╗ ██╗    ███████║███████╗   ██║
+ ╚═╝  ╚═══╝ ╚═════╝ ╚══════╝╚══════╝    ╚═╝ ╚═╝    ╚══════╝╚══════╝   ╚═╝
+```
+
+### 🎧 an AI that DJs your library, live, on two decks 🤖
+
+**stems · phrase-locked transitions · merge → hold → drop · a local LLM that picks the next song**
+
+![version](https://img.shields.io/badge/version-v1.1.0.1-00ff66?style=for-the-badge&labelColor=0a0f0d)
+![AI DJ](https://img.shields.io/badge/AI%20DJ-NULL%3A%3ASET-00e5ff?style=for-the-badge&labelColor=0a0f0d)
+![local](https://img.shields.io/badge/runs-100%25%20local-ff2bd6?style=for-the-badge&labelColor=0a0f0d)
+![license](https://img.shields.io/badge/license-MIT-8a8f8c?style=for-the-badge&labelColor=0a0f0d)
+
+<img src="docs/images/null-set-v1-console.png" alt="NULL::SET console: two decks mid-set, stem-shaded waveforms, a studied Anyma combo streak on the VIBE strip" width="100%"/>
+
+<sub>▲ mid-set: Dom Dolla ft Daya "Dreamin (Anyma Remix)" into Kevin de Vries & Add-us "Nami", a <b>COMBO x3</b> of studied Anyma-set transitions</sub>
+
+</div>
+
+---
+
+## ▶ Drop the needle
+
+NULL::SET is a browser DJ console with an AI at the controls. It analyses every track, splits it into stems, learns how real DJs move between songs, then plays a whole set as one continuous piece of music. Beats locked, phrases aligned, one track owning the sub-bass at any moment.
+
+Everything runs on your own machine:
+
+| Layer | What it is |
+|---|---|
+| 🧠 **Brain** | a local LLM on Apple Silicon (Qwen3-Omni via mlx-vlm, one shared model for song picks and the live ear) or Ollama anywhere else |
+| 🎛️ **Hands** | a vanilla-JS console (WebAudio decks, 4-stem players, FX rack, sampler) that does the actual mixing, sample-accurate |
+| 🔬 **Ears** | librosa analysis (beat grid, 8-bar phrases, Camelot key, energy, vocals), Demucs stems, Rubber Band key-locked tempo stems |
+| 📚 **Knowledge** | an Obsidian DJ wiki in `DJ/`: 28 transition recipes, EQ and phrasing rules, playbooks. The code reads it directly |
+
+```
+   ┌──────────┐     ┌──────────────┐     ┌──────────────┐     ┌──────────┐
+   │  track A │ ──▶ │ analyse +    │ ──▶ │  pick next   │ ──▶ │ track B  │
+   │ on air ◉ │     │ stems (4)    │     │ combo / LLM  │     │ cued  ◎  │
+   └──────────┘     └──────────────┘     └──────────────┘     └──────────┘
+         │                                                          │
+         └──────────▶  MERGE ─▶ HOLD ─▶ HANDOVER  on the phrase ◀───┘
+```
+
+---
+
+## 🆕 New in 1.1
+
+- **$Up3R-M@SS!V3-M0v3**: a live multi-song stem mashup on the real decks, fired by the autopilot at a peak or by hand (`Shift+S`)
+- **Analysis v6**: sections on the 8-bar phrase grid, stem-aware drops and a main drop
+- **Electronic sub-families** with a neighbour table, so a set stays in its scene
+- **Studied sets play as studied**, even when a deadline hits
+- **SQLite** `app.db` / `user.db`, knowledge sync, replay, time travel and liked transitions
+- **FLAC** stems and renders
+
+Full notes: [docs/release-notes/1.1.md](docs/release-notes/1.1.md). Upgrading from 1.0.1 needs one re-analysis, see [CHANGELOG.md](CHANGELOG.md).
+
+---
+
+## 🎚️ What it plays
+
+### The transition it loves: merge → hold → transition
+
+The two tracks **merge** stem by stem (B's drums and bass under A's vocal and synths), **hold** together for whole 8-bar phrases while the pair stays clean, then **hand over** with the bass swapping on a downbeat. The hold length comes from the two songs' measured stem energy and vocal gaps, never a fixed constant. Only one track ever owns the low end.
+
+When the gates say no, it falls back to the move that fits the pair:
+
+| Move | When | What you hear |
+|---|---|---|
+| **Merge → hold → transition** | stems on both decks, tempos lock within 8 %, keys compatible | a mashup of both songs for 1 to 6 phrases, then the handover |
+| **Riff over rap** | A grooves into its breakdown, B raps, tempos 3 to 15 % apart | A key-locked to B's tempo, looped under B's rap, B slams in. From Fred again.. & Thomas Bangalter's USB002 |
+| **Mashup, then transition** | B has a vocal phrase over A's instrumental | B's voice rides A's beat, then B takes over on the line |
+| **Stem blend / bridge** | tempos lock, or they cannot | synths first and bass on one line, or a beatless bridge between two tempos |
+| **Echo Out** | clashing keys or big tempo gaps | an 8-bar echo, never a hard cut |
+
+> 🚫 **No hard cuts.** The autopilot never plays a Hard Cut or Quick Cut, and the only rewind in the whole codebase is the **REWIND REPLAY** of a supermove.
+
+### The peak move: $Up3R-M@SS!V3-M0v3
+
+A whole chain of songs layered by stem on the two real decks: each song enters by one stem and leaves by another, the cores are key-locked to one tempo, the handovers are Bass Swaps on the phrase line, and only one song ever owns the sub-bass or sings. Variants ship with the app as files in `app/music_brain/supermove/variants/` (`v1` is included).
+
+- **Automatic**: when the set energy is high and the playing song is in the first half of a variant, the autopilot may fire it at a booking point (seeded, at most once per variant per set). It never starts inside a build; it waits for the build to end.
+- **By hand**: pick **$Up3R-M@SS!V3-M0v3 v1** at the top of the MACRO list and press PLAY MACRO (or `Shift+S`); the status line counts down to the first layer; press again to stop it.
+- **NULL-BOT** dances in the centre of the screen with the move's name for the whole move (clicks pass through to the decks), then the normal set takes over.
+
+### Inside a song
+
+- **Sections and drops** (analysis v6): one section label per 8-bar phrase, drops found where the drums and bass come back to full groove, and one **main drop** per song
+- **Late entry**: B can come in on any strong downbeat, not only its first bar
+
+- **Stem remix**: hold-on loops, acapella breaks, drum breaks, bass out, synth holds
+- **Learned moves** from studied DJ sets: vocal loops, vocal re-cuts, chops on the 1/8 grid, loop extends
+- **Artist moves**: mids-only reverb sends, kick rolls into the drop, vocal echo throws, slip loops, cue teases, filter loops with an acapella on top
+- **Strip & rebuild** for famous songs, **hook drops** on the emotional line, a rationed **auto sampler**
+- An **FX budget** keeps it tasteful: one wet move per transition, a few per song
+
+### Picking the next song
+
+- **Studied combos first.** Pairs that real DJs played back to back (from sets it has studied, e.g. an Anyma Afterlife set) are tried before anything else, then known-good **combos** from the pair atlas, then the LLM
+- **FOLLOW SET**: play a song by an artist from a studied set and the autopilot follows that set's music, nearest by tempo, key and energy
+- A **pair atlas** scores every pair in your library by the console's own rules, with per-move compatibility (merge-hold, riff, mashup, supermove)
+- Scene continuity, artist spacing on every path, energy-arc rules, Camelot key gates, set memory across sessions
+- **Genre neighbours**: electronic music is split into sub-families (house, melodic, trance, techno, bass, drum and bass, chill, festival EDM, breaks) with a neighbour table; hip-hop and R&B are neighbours. A fallback keeps the scene too
+- **Set energy picks the recipe**: Mashup, then Bass Swap, then Long Blend, and B's entry point to match. A liked pair keeps its stored recipe
+- **BAD PAIR**: veto a pair for good from the console
+- **Punjabi scene profile** (`PUNJABI` in the toggle drawer: auto, on, off). When both songs are Punjabi it treats punjabi, bhangra and desi as one scene, allows a 4-decade era gap, plays 45 to 90 s snippets, folds 88 and 176 BPM as the same feel and falls back to a Quick Cut on the downbeat. Learned moves from studied Punjabi sets may blend on a key clash. Off is byte-identical to the default
+
+---
+
+## 🕹️ Macros: replay a set, move for move
+
+A **macro** is a stored set: songs, recipes, exit and entry points, hold bars. The console ships with studied-set macros, chains and seed combos, each with a proper title.
+
+| Control | Does |
+|---|---|
+| **PLAY MACRO** | runs the whole macro unattended, loading and pre-rendering each next song |
+| **PLAY STEP** / `Shift+M` | performs exactly the next stored move |
+| **AUTO MIX** | with a macro selected, loads the step's song and performs its move |
+| **SKIP / REPEAT / EDIT / SAVE** | step through, tweak a move, save your own |
+| **$Up3R-M@SS!V3-M0v3** / `Shift+S` | plays a saved supermove variant from the playing song; press again to stop |
+
+The autopilot prefers a known macro step 80 % of the time (`MACRO_PREFERENCE`), so a set sounds curated without becoming a replay.
+
+**HISTORY** (in the MACROS panel) lists past sessions with every transition and its time:
+
+| Control | Does |
+|---|---|
+| **FROM HERE** | loads that transition's A just before its exit and replays the set from there, as it played |
+| **THIS ONE** | replays only that transition |
+| **TIME TRAVEL** | `HH:MM:SS` (the step log's clock) or seconds into the set: loads the song that played then at its position and replays on |
+| **LIKE** | keeps the transition as it played; the autopilot performs it as stored whenever the pair comes up |
+
+Same from the shell:
+
+```bash
+python -m app.music_brain.learning.replay timeline 2026-09-29_235413
+python -m app.music_brain.learning.replay build 2026-09-29_235413 --from 9 --to 11 --save
+python -m app.music_brain.learning.replay at 2026-09-29_235413 00:16:45
+python -m app.music_brain.learning.liked seed        # the owner's liked transitions
+```
+
+API: `GET /api/sessions`, `GET /api/sessions/{id}/timeline`, `GET /api/sessions/{id}/state?at=`,
+`POST /api/replay {session, at | step, to}`, `GET/POST/DELETE /api/liked`, `POST /api/liked/seed`.
+
+---
+
+## 🤖 NULL, the mascot, and the visuals
+
+- **NULL-BOT** flies in for every supermove (merge drops, double drops, drop swaps, riff arrivals), pops in place for small moves, and dances on Anyma-style drops
+- The **bass band** at the bottom of the screen breathes with the low end; during a crossfade the wave travels from the incoming deck's side
+- **ANYMA LOOK** (optional): ice-white and cyan light inside the platters, waveforms, meters and the VIBE strip, with a "DROP IN N BARS" countdown
+- **VIBE strip**: what the AI hears, plans and does, including the combo streak
+- **LEARNING** panel: live progress of set studies
+
+---
+
+## 📀 Learn from real DJ sets
+
+```bash
+python -m app.music_brain.agent_bridge learn-set "https://www.youtube.com/watch?v=<set>" \
+    --tracklist tracklist.txt --jobs 2           # add --no-macros to skip the last step
+python -m app.music_brain.agent_bridge learn-status
+```
+
+It clips every tracklist boundary, separates stems, matches each song, detects the techniques (bass swaps, stem intros, acapella overs, vocal loops and re-cuts, loop extends), has the local model review them, and merges them into the learned store (`data/cache/app.db`). Then it imports the set's songs into your library and rebuilds the pair atlas incrementally, which writes the set's macros (`studied-<set_id>-<n>` per transition, `studied-set-<set_id>` for the whole set). The JSON result reports that step under `macros`. To redo it by hand: `python -m app.music_brain.pair_atlas import-set <set_id>` then `python -m app.music_brain.pair_atlas build`.
+
+Long sets are learned in parts. A set longer than `--split-minutes` (default 60, `0` never splits) is cut at tracklist boundaries into parts of about that length; neighbouring parts share one song, so each handover is studied once. Every finished part is checkpointed under `data/cache/sets/<set_id>/parts/`, and a run that crashes or is killed picks up at the next part when started again with the same tracklist. The result has the same shape as an unsplit run, and macros, ID cuts and the atlas build run once at the end.
+
+After every learn (and after each part) the learner cleans up. First it registers every good song in your library, the same way a download does, and cuts every unreleased ID out of the set recording. Only then does it delete the clips, their stems, the song files now in the library, yt-dlp leftovers and the set recording. A song the library does not hold (a wrong download, a failed import) is never deleted: the result's `cleanup` lists it under `kept` with the reason. Add `--keep-files` to skip the cleanup.
+
+Only want the set as a playable macro? `learn-set <url> --tracklist tracklist.txt --macros-only` skips the set download and stem separation: it fetches the songs, imports them, updates the atlas and writes `set-<set_id>` in tracklist order.
+
+What the player knows travels with the repo: `app/music_brain/knowledge/` holds every macro, the learned observations and a slim, segmented pair atlas. Every learn-set run exports there (`python -m app.music_brain.knowledge export`), and a fresh checkout seeds its own cache from it on start, matching songs by name. A pull that changes a file there updates the rows you have not touched (each file is versioned by its git commit sha); a row you changed stays yours and is listed by `python -m app.music_brain.knowledge conflicts`, resolved with `knowledge take ITEM --published` or `--local`. See ANNEX, knowledge sync.
+
+Glossary of every named concept (atlas, macros, gates, recipes, sim): [ANNEX.md](docs/engineering/ANNEX.md).
+
+---
+
+## ⚡ Quick start
+
+```bash
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+./start.sh            # one shared Qwen3-Omni server, the app, opens http://localhost:8000
+```
+
+Then paste a seed URL and press **▶ START SET**, or play any song and press **▶ FROM CURRENT**.
+
+| `start.sh` | |
+|---|---|
+| `./start.sh --no-open` | do not open a browser tab |
+| `./start.sh --dual` | a separate text model (mlx_lm) beside the ear model |
+| `PORT=8010 ./start.sh` | another port |
+| `OMNI_MAX_SEQS=4 ./start.sh` | concurrent sequences on the shared model |
+
+Logs: `/tmp/ai-dj-server.log` (app), `/tmp/ai-dj-omni-server.log` (model).
+
+**Maintenance.** After adding songs, after learning a set, or weekly, stop the app and run
+`./maintain.sh` (`--dry-run` first to see what it would do). One command separates missing
+stems, converts leftover WAVs to FLAC, labels unlabelled songs, AI-reviews never-reviewed sets,
+updates the atlas and re-exports `knowledge/`, then prints before / after counts. Details and a
+launchd schedule: [ANNEX, maintain.sh](docs/engineering/ANNEX.md#maintainsh).
+
+**Re-analysis.** When a release bumps the analysis version (1.1 moves to v6), stop the app and run
+`python3 -m app.music_brain.analysis.reanalyse --all` once (resumable, `--dry-run` to preview), then
+`python3 -m app.music_brain.maintain --steps atlas`. Songs not yet re-analysed keep working on the old rule.
+
+### Requirements
+
+- Python 3 with `requirements.txt` (librosa, numpy, scipy, demucs, torch, fastapi, uvicorn, yt-dlp, ...)
+- `ffmpeg`, and the `rubberband` CLI for key-locked tempo stems (`brew install rubberband`)
+- Apple Silicon with `mlx-vlm` in `~/.venvs/mlx-vlm` (default), or [Ollama](https://ollama.com) anywhere
+- Optional: Node.js for the JS checks and the virtual-set sim
+
+---
+
+## 🔧 Configuration (`.env`)
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `LLM_BACKEND` | `auto` | `auto`, `mlx` or `ollama` |
+| `OMNI_MODEL` | `mlx-community/Qwen3-Omni-30B-A3B-Instruct-4bit` | the shared model (song picks and live ear) |
+| `OMNI_PORT` / `OMNI_MAX_SEQS` | `8901` / see `start.sh` | model server port and batch size |
+| `MLX_MODEL` / `MLX_PORT` | `Qwen3-30B-A3B-Instruct-2507-4bit` / `8081` | the text model with `--dual` |
+| `OLLAMA_URL` / `OLLAMA_MODEL` | `http://localhost:11434` / `gemma3:27b` | fallback backend |
+| `YTDLP_COOKIES_FILE` | `~/.config/ai-dj/youtube-cookies.txt` | YouTube cookies for yt-dlp (keep it out of the repo) |
+| `YT_GUARD` | `off` | `on` brings back the bot-check cooldown breaker |
+| `KEYLOCK_CACHE_MAX_GB` | `20` | cap for regenerable key-locked tempo stems (oldest evicted first; counts FLAC bytes) |
+| `SUGGEST_BUDGET_S` / `SUGGEST_VERIFY` | `15` / `1` | suggestion time budget / check picks against YouTube |
+| `DJ_LIBRARY_DIRS` | none | semicolon-separated local music folders |
+| `LOG_LEVEL` / `CONSOLE_LEVEL` | `info` / `warn` | app log and `start.sh` console verbosity |
+| `AI_REVIEW_BACKEND` | `local` | `claudecode` sends two offline jobs (AI review of learned moves, genre / era labels) to your own `claude` CLI login |
+| `CLAUDECODE_MODEL` / `CLAUDECODE_CONCURRENCY` | `sonnet` / `1` | model for `claude --model`; parallel `claude` calls (max 2) |
+
+Everything runs 100% on your machine by default. The Claude Code backend is optional and off
+unless `AI_REVIEW_BACKEND=claudecode`; song picks and the live ear always stay on the local
+model. When it is on, the review sends observation facts (move kind, set times, stem levels,
+tempo gap, key score) with song names and short lyric lines, and labelling sends song names
+only. It uses the `claude` binary you installed and logged in to with your own Claude
+subscription (`ANTHROPIC_API_KEY` is removed from the child process). Anthropic's terms say
+subscription (OAuth) login "is intended exclusively for purchasers of Claude Free, Pro, Max,
+Team, and Enterprise subscription plans and is designed to support ordinary use of Claude Code
+and other native Anthropic applications" ([legal and compliance](https://code.claude.com/docs/en/legal-and-compliance)).
+So this is for personal use through your own install: if you share the app, each person must
+use their own `claude` login or leave the backend off; never bundle, share or proxy credentials.
+
+```bash
+python3 -m app.music_brain.agent_bridge learned-review --all --backend claudecode --dry-run   # counts and calls, no model
+python3 -m app.music_brain.agent_bridge learned-review --set SET_ID --backend claudecode
+python3 -m app.music_brain.analysis.genre_labels label --missing-only --backend claudecode --dry-run
+python3 -m app.music_brain.analysis.genre_labels label --missing-only --backend claudecode
+```
+
+`learned-review` merges the kept moves back per set in one store transaction and saves rejected ones,
+with the model's reason, to `data/cache/learned_review/<set id>.json`. Labels never replace a
+label you already have unless you pass `--overwrite`.
+
+Disk use: stems (`data/cache/stems/`) are 16-bit FLAC and key-locked renders (`data/cache/keylock/`) are 24-bit FLAC, both lossless. An older WAV cache keeps working; convert it in place with `python3 -m app.music_brain.audio_convert` (dry run, prints the projected saving) and then `--apply` while the app is idle. Add `--jobs N` to convert N folders in parallel (default min(4, cpus / 2); `--max-mem-gb` lowers N to fit memory).
+
+### Data layout: two SQLite files
+
+The stores that change often live in two SQLite files in `data/cache/` (WAL mode, one short
+transaction per write, readers never wait for a writer). Both are gitignored like the rest of `data/`.
+
+| File | Holds | Leaves the machine? |
+|---|---|---|
+| `app.db` | the player's knowledge: pair atlas, macros (every kind), learned techniques, genre / era labels | only through `knowledge export`, as the deterministic JSON in `app/music_brain/knowledge/` |
+| `user.db` | your own listening: set history (sessions, plays, transitions, moves, set logs), set memory, vetoes and liked marks | never: not exported, not in git |
+
+"Git linked" means through the export, never the `.db` file: the atlas alone is hundreds of MB,
+GitHub refuses files over 100 MB and binary diffs are unreadable. `knowledge seed` fills `app.db`
+back from the tracked JSON. The append-only logs stay files (`sessions/*/events.jsonl`, songs'
+`meta.json` / `steps.jsonl`, `set_logs/`); `user.db` is an index over them, rebuilt with
+`history.rebuild()`, and it keeps a session even after its log folder is pruned.
+
+First start after the switch migrates each old store once (well under a second each; the atlas
+about 10 s for 306k pairs) and renames the source with a `.migrated` suffix:
+`pair_atlas.migrated/` (or `pair_atlas.json.migrated`), `macros.migrated/`,
+`learned_techniques.json.migrated`, `genre_labels.json.migrated`, `set_memory.json.migrated`, `vetoes.json.migrated`, `liked.json.migrated`. Session folders are never pruned.
+To roll back: stop the app, delete `app.db*` / `user.db*`, and rename the `.migrated` copies back.
+
+---
+
+## 🧪 A virtual set, before you trust a rule
+
+The sim runs the console's real browser JS in node with fake decks on a virtual clock, against the real API, and scores a whole set with one number (lower is better). Record once with the real model, then replay deterministically with no network.
+
+```bash
+python3 -m app.sim.virtual_set --seed 1 --tracks 10 --mode quick --out app/sim/out/run
+python3 -m app.sim.virtual_set --replay real-s1-quick --out app/sim/out/replay
+python3 -m app.sim.suite --check        # regression gate vs baseline.json
+```
+
+Learning log: [`app/sim/LEARNINGS.md`](app/sim/LEARNINGS.md). It judges decisions, not sound: it cannot hear.
+
+```bash
+python -m pytest app/tests/ -q -m "not slow"      # 700+ tests; node checks run inside
+```
+
+---
+
+## 🗂️ Repository layout
+
+```
+app/
+  music_brain/    analysis, stems, recipe matcher, techniques, pair atlas, macros,
+                  studied combos, blend / mashup / keylock / riff planners, set learner
+  ui/             FastAPI server, autopilot service, engine (Host port), LLM runtime + gate,
+                  live ear, prerender, downloads, dedup
+  ui/static/      the console: autopilot, dj-mind, stem / fx / artist / learned moves,
+                  macro mode, NULL-BOT, visuals, ANYMA look (vanilla JS, no build step)
+  music_brain/knowledge/  tracked macros, learned observations, slim pair atlas
+  legacy_pipeline/        the older end-to-end batch mixer (data/songs -> data/output/mix.mp3)
+  sim/            the virtual set: fake decks, record / replay, scorer, suite
+  tests/          pytest + node checks
+DJ/               the Obsidian DJ knowledge base
+research/notes/   studies: hidden DJ practices, artist signatures, stack evaluation
+data/             songs and caches (gitignored)
+.github/workflows CI: console JS checks and pytest on every push and PR
+```
+
+The decision engine talks to the world only through an injected **Host port** (`engine.js`, `app/ui/services/engine.py`), so the same engine runs in the browser and in the sim.
+
+---
+
+## 📚 The DJ knowledge base
+
+`DJ/` is an Obsidian vault: fundamentals, phrasing, Camelot, EQ and frequency ownership, 28 transition recipes in a fixed 17-part template, energy management, genre playbooks and artist case studies. `knowledge_parser.py` turns the cookbook into executable recipes, and the rules the code enforces come from it: 8-bar phrase snapping, a single sub-bass owner below 120 Hz, Camelot scoring, Echo Out for big tempo gaps.
+
+## 🔌 Agent bridge and REST
+
+`app/music_brain/agent_bridge.py` is a Python API and a CLI that prints JSON (`analyze`, `separate`, `match`, `preview`, `list-recipes`, `learn-set`, `learned`, `learn-status`). The REST surface lives in `app/ui/server.py` and `app/ui/services/atlas_api.py`: tracks, stems, match and plans, autopilot suggest and plan, live ear, pair atlas partners, macros, studied sets, learn progress, session logs.
+
+---
+
+<div align="center">
+
+**v1.1.0.1** · see [CHANGELOG.md](CHANGELOG.md) · built with a lot of late nights, two decks and an AI that will not stop mixing
+
+<sub>MIT. See <a href="LICENSE">LICENSE</a>. Use only music you are legally allowed to use.</sub>
+
+🎧 ◉ ═══════ ◎ 🎧
+
+</div>

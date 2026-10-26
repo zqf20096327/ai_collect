@@ -148,6 +148,10 @@ documentation](https://cljdoc.org/d/datalevin/datalevin) and
 [JavaDoc](https://javadoc.io/doc/org.datalevin/datalevin-java/latest/datalevin/package-summary.html)
 for API details.
 
+For source integration development, see the
+[federation adapter guide](../federation/doc/adapter-development.md), covering the current
+embedded query-source SPI, mapping examples, and adapter validation.
+
 ## :tada: Quick Examples
 
 Datalevin is aimed to be a versatile database.
@@ -185,8 +189,10 @@ Here is a simple Clojure code example using Datalevin:
 ;; repeating a completed deletion or rename is safe.
 ;; (d/update-schema conn {:name {:db/unique :db/retract}})
 
-;; All attributes are indexed by default. For values read only through entity
-;; access or pull, declare :db/noindex true before storing data to omit AVE:
+;; New idoc and vec attributes default to :db/noindex true, unless unique or
+;; explicitly declared with :db/noindex false. Existing attributes keep their
+;; indexing policy. Other types participate in AVE by default. For values read
+;; only through entity access or pull, declare :db/noindex true to omit AVE:
 ;; (d/update-schema conn {:document/body {:db/valueType :db.type/string
 ;;                                       :db/noindex true}})
 ;; Query conditions on that attribute throw an error. To enable them later,
@@ -416,8 +422,8 @@ issue](https://github.com/datalevin/datalevin/issues/383).
 The goal of Datalevin is to simplify data storage and access. We aim to support
 diverse workloads and use cases.
 
-* 1.3.0 Direct analytics, virtual relations, and federation
-* 1.4.0 Rule-head aggregation and maintained analytics
+* 1.3.0 Direct analytics and federation
+* 1.4.0 Derived-fact views, rule-head aggregation, and incremental maintenance
 * 2.0.0 Compression and KV TTL
 * 2.1.0 Entity-level security
 * 2.2.0 Provenance annotations

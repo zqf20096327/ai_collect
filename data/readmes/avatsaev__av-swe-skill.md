@@ -74,6 +74,100 @@ stateDiagram-v2
     done --> [*]
 ```
 
+## See it work
+
+Animations of the four ops that shape a project, each following the steps the op runs.
+They are plain SVG (no GIF, no script) and follow your light/dark theme.
+
+### `grill` — turn a rough idea into a defined feature
+
+Interrogates a rough feature idea, back and forth with the engineer, into a decided brief that `scope` can turn into a spec without guessing. It asks and records; it never writes specs, plans or source.
+
+1. **Recon first**: reads the parts of the codebase the idea touches before the first question, so questions are grounded in what exists.
+2. **Rounds**: one theme per round (problem and outcome, scope boundary, happy path, data and state, integration points, edge cases and failure modes, non-functional constraints, acceptance), 3–5 questions each. Each question carries the agent's recommendation and the tradeoff, and the agent proposes concrete edge cases rather than asking for them.
+3. **Records every answer in the brief in the same round**, so a grill survives a session boundary and another agent can resume it. An unknown becomes a `TODO(verify)` with an owner, never a made-up default, and a skipped question is logged as deferred.
+4. **Challenges contradictions** with earlier decisions or the codebase instead of accepting them.
+5. **Converges** when the exit criteria hold: required sections filled, every edge-case area covered, no blocking question open, and the engineer has confirmed. Only then is the brief marked `Status: grilled`.
+
+<picture>
+  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="docs/anatomy/svg/grill-dark-still.svg">
+  <source media="(prefers-reduced-motion: reduce)" srcset="docs/anatomy/svg/grill-light-still.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/anatomy/svg/grill-dark.svg">
+  <img alt="Animation of grill: the codebase is read, then eight rounds of questions are answered and recorded in the brief, a contradiction is resolved, four exit checks pass and the brief is marked grilled." src="docs/anatomy/svg/grill-light.svg">
+</picture>
+
+### `scope` — capture what to build
+
+Writes the requirements and architecture down as spec documents under `swe/specs/`, before planning. It works on an existing codebase, a greenfield idea, or a grilled feature brief (whose decisions are used as the requirements, not re-asked).
+
+1. **Recon**: reads manifests, entry points, directory map, dependencies and data model, plus any `Status: grilled` brief. An unfinished brief is not specced from.
+2. **Writes `overview.md`**: purpose, stack, architecture, module map, data model, integrations, how to build, run and test, and an index of every sub-spec.
+3. **Writes sub-specs** (`features/<name>.md`, `architecture/<concern>.md`): purpose, public contract, behavior in pseudocode, error handling, edge cases, dependencies and acceptance criteria that later tasks can test against.
+4. **Cross-links and verifies**: the index lists every file created, and any verbatim source is stripped.
+
+Specs describe behavior and contracts, not pasted source. Anything unclear is marked `TODO(verify)` and collected in `overview.md` instead of guessed.
+
+<picture>
+  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="docs/anatomy/svg/scope-dark-still.svg">
+  <source media="(prefers-reduced-motion: reduce)" srcset="docs/anatomy/svg/scope-light-still.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/anatomy/svg/scope-dark.svg">
+  <img alt="Animation of scope: three code modules and a grilled brief are read in turn and each becomes a spec, one index line is added to the overview after each, and one unclear edge is flagged TODO(verify)." src="docs/anatomy/svg/scope-light.svg">
+</picture>
+
+### `plan` — derive the sprint and task plan
+
+Turns the specs (and the existing source) into an ordered plan: `swe/PLAN.md` plus one task file per task under `swe/sprints/`. It only plans and never implements.
+
+1. **Reads** `specs/overview.md`, every feature and architecture spec, and enough source to write accurate references, noting each spec's dependencies and acceptance criteria.
+2. **Orders the work bottom-up**: foundation, then cross-cutting architecture, then features in dependency order, then integration and hardening. A task never depends on something not yet built.
+3. **Groups tasks into sprints** of typically 3–8, each leaving the system buildable and testable. Sprint 001 establishes the runnable skeleton, so every later task can be validated.
+4. **Writes the tasks**: each one small and atomic, testable, linked to the exact spec sections and source files it touches, self-contained, and listing its prerequisites by task id.
+5. **Writes `PLAN.md` and verifies it**: every spec is covered by at least one task, no task depends on a later one, every sprint has its four state folders (each with a `.gitkeep`), and ids are unique and ordered.
+
+<picture>
+  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="docs/anatomy/svg/plan-dark-still.svg">
+  <source media="(prefers-reduced-motion: reduce)" srcset="docs/anatomy/svg/plan-light-still.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/anatomy/svg/plan-dark.svg">
+  <img alt="Animation of plan: nine tasks are cut from five specs and placed into three sprints in dependency order, each adding a row to PLAN.md, then the plan is verified." src="docs/anatomy/svg/plan-light.svg">
+</picture>
+
+### `implement` — run a sprint
+
+Executes one sprint, one task at a time in numeric order. For each task it:
+
+1. **Claims** it: confirms every task it depends on is already in `done/`, then moves it from `backlog/` to `in_progress/`.
+2. **Reads** the task, the spec sections it references and the source files it touches.
+3. **Implements** it in the real source, scoped to that task only.
+4. **Builds and tests**: the task is done only when the build, the configured typecheck/lint gates, the tests and every acceptance criterion pass. The agent runs the actual commands and records the results.
+5. **Completes** it: writes a summary (what was built, files changed, commands and results) and moves the task to `done/`.
+
+If a task can't go green after reasonable effort it stays in `in_progress/` with a `## Blocker` note and the sprint stops, because later tasks may depend on it. When the backlog is empty, the full build and test suite runs once more before the next sprint is reported.
+
+<picture>
+  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="docs/anatomy/svg/implement-dark-still.svg">
+  <source media="(prefers-reduced-motion: reduce)" srcset="docs/anatomy/svg/implement-light-still.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/anatomy/svg/implement-dark.svg">
+  <img alt="Animation of implement: three tasks go through claim, understand, implement and test in turn. One fails its tests and is fixed before all four checks pass and it moves to done with a summary." src="docs/anatomy/svg/implement-light.svg">
+</picture>
+
+<details>
+<summary>How the animations are made</summary>
+
+Each op has a script in [`docs/anatomy/`](docs/anatomy) that builds an interactive page with the `anatomy`
+agent skill's isometric kit (hover to scrub, arrow keys to step, space to pause; open the `.html` locally).
+`export-svg.mjs` then steps each page's own timeline in headless Chrome and writes the animated SVGs, so
+the drawing, the counts and the readouts all come from one model.
+
+```bash
+node docs/anatomy/grill.mjs            # also scope.mjs, plan.mjs, implement.mjs -> <op>.html, <op>-light.html
+node docs/anatomy/export-svg.mjs       # -> docs/anatomy/svg/<op>-<dark|light>[-still].svg
+```
+
+It needs a Node with a global `WebSocket` (22+; tested on 24), a Chrome or Chromium (`CHROME_PATH`) and the
+`anatomy` skill (`~/.agents/skills/anatomy`, or set `ANATOMY_DIR`).
+
+</details>
+
 ## The plan is documentation — built for agent handoff
 
 Every artifact av-swe produces is durable, self-describing markdown on disk. That makes the plan

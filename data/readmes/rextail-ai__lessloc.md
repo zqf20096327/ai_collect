@@ -1,4 +1,4 @@
-<!-- Plain-text docs for AI agents: https://lessloc.org/llms.txt (index), https://lessloc.org/llms-full.txt (all docs in one file), https://lessloc.org/agents (what an agent runs when its user asks about lessloc). Installing for a user: https://lessloc.org/install.md. Removing: https://lessloc.org/remove.md. Current install count: the <title> of https://lessloc-counter.rextail.ai/slime-light.svg. -->
+<!-- Plain-text docs for AI agents: https://lessloc.org/llms.txt (index), https://lessloc.org/llms-full.txt (all docs in one file), https://lessloc.org/agents (what an agent runs when its user asks about lessloc). Installing for a user: https://lessloc.org/install.md. Removing: https://lessloc.org/remove.md. Current download count (installs and daily update checks): the <title> of https://lessloc-counter.rextail.ai/slime-light.svg. -->
 
 <p align="center">
   <picture>
@@ -19,7 +19,7 @@
   <a href="https://github.com/rextail-ai/lessloc/blob/main/LICENSE"><img alt="license: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue"></a>
 </p>
 
-<p align="center"><a href="https://lessloc.org/start"><picture><source media="(prefers-color-scheme: dark)" srcset="https://lessloc-counter.rextail.ai/slime-dark.svg"><img alt="lessloc installs, counted live" src="https://lessloc-counter.rextail.ai/slime-light.svg" width="360" height="240"></picture></a></p>
+<p align="center"><a href="https://lessloc.org/start"><picture><source media="(prefers-color-scheme: dark)" srcset="https://lessloc-counter.rextail.ai/slime-dark.svg"><img alt="lessloc downloads, counted live" src="https://lessloc-counter.rextail.ai/slime-light.svg" width="360" height="240"></picture></a></p>
 
 ## Install in one sentence
 
@@ -44,7 +44,9 @@ To remove it: `Remove lessloc by following https://lessloc.org/remove.md`
 
 <p align="center"><a href="https://lessloc.org/benchmarks"><picture><source media="(prefers-color-scheme: dark)" srcset="https://lessloc.org/results-dark.svg"><img alt="117 real changes in 3 open-source projects, judged by hidden tests: 27% less code, 23% lower cost, the same results" src="https://lessloc.org/results-light.svg" width="880"></picture></a></p>
 
-<p align="center"><a href="https://lessloc.org/benchmarks"><picture><source media="(prefers-color-scheme: dark)" srcset="https://lessloc.org/projects-dark.svg"><img alt="On every project tested: 23 to 36% less code and 15 to 26% lower cost" src="https://lessloc.org/projects-light.svg" width="880"></picture></a></p>
+## How it works
+
+<p align="center"><a href="https://lessloc.org/guide/how-it-works"><picture><source media="(prefers-color-scheme: dark)" srcset="https://lessloc.org/mechanism-dark.svg"><img alt="How lessloc works inside your agent's own loop, through the hooks your agent tool already has: at session start it adds a short working standard, at each prompt it points to code you already have, before a write it refuses placeholders and junk, after a write it flags secrets and swallowed errors, and at the end of the turn it sends unfinished work back once. Principles: the least code that stays correct, reuse before new code, act in the loop with no reports, the agent's test runs as proof, review only the change. Built on Node.js with no dependencies, no API key and no model calls, git for snapshots, one table for 20+ agent tools, and a code index for 16 languages." src="https://lessloc.org/mechanism-light.svg" width="880"></picture></a></p>
 
 ## What changes
 
@@ -55,7 +57,7 @@ To remove it: `Remove lessloc by following https://lessloc.org/remove.md`
 
 ## Free and private
 
-Open source (Apache-2.0). No account, no API key, no network calls, no dependencies.
+Open source (Apache-2.0). No account, no API key, no dependencies. It keeps itself up to date: its only network contact of its own is a daily check for a newly published release.
 
 ## Learn more
 

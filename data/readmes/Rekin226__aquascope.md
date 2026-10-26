@@ -43,6 +43,8 @@ AquaScope unifies **37 global water-data sources** behind one Python schema, the
 The daily benchmark inputs are synthetic; flood benchmarks also use observed USGS annual peaks.
 See [validation scope](docs/validation_scope.md) for comparators and limitations.
 
+The [Archive](docs/archive.md) publishes that output as one open dataset: a catalog of **75,833 stations**, with mirrored daily observations for **5,374 of them** (2026-10-19 harvest).
+
 ---
 
 ## 🌍 Try it without installing anything
@@ -98,7 +100,16 @@ downstream, and it can be coloured by today's flow against its normal. Floods pa
 floods were reported in the news or seen by radar, month by month. **Ask the map** moves the
 view, switches layers and sets the date from plain words. **Explain this view** and **Scout**
 pin short notes and findings on the globe, every number taken from the data. Each action is
-logged and can be undone, and all of it works without a key.
+logged and can be undone, and all of it works without a key. With Chrome's built-in model or
+your own key, the model only picks which facts and actions to use; the code writes every number
+([assessment](docs/assessments/ai-on-the-map.md)).
+
+**Your own model results on the map:** drop a HEC-RAS 2D or UGRID result and see smooth depth,
+depth contours, 3D, hazard and arrival-time lenses, a cross-section and hydrograph you draw,
+and the buildings, roads and people under the water. Drop a MODFLOW run and see head contours,
+flow arrows, drawdown, capture zones, the layers in 3D, cross-sections and the water budget.
+Samples are one click away, and the files never leave your browser
+([mesh](docs/mesh.md), [MODFLOW](docs/modflow.md)).
 
 **Study** guides you from a question through a plan you approve to a report and export
 bundle: Word, Excel, figures, notebook, findings and study YAML. Core studies run without
@@ -375,7 +386,7 @@ Switch to MCMC with `degree>1` for polynomial models, or pass `prior_precision` 
 
 ## 💻 CLI
 
-AquaScope ships a 49-command CLI (`agri`, `basins`, `caravan`, `eval`, `evidence`, `groundwater`, `gym`, `layers`, `playbooks` and `river` carry subcommands) for the most common workflows:
+AquaScope ships a 51-command CLI (`agri`, `basins`, `caravan`, `eval`, `evidence`, `groundwater`, `gym`, `layers`, `playbooks`, `river` and `route` carry subcommands) for the most common workflows:
 
 ```bash
 # Find stations, then collect data
@@ -428,6 +439,7 @@ aquascope studio kingston/ --exclude-years 2014 --sign checked="A. Name"  # the 
 aquascope eval score kingston/                       # how the crew did: gates, Critic, report quality, time, cost
 aquascope eval stats studies/ --by model             # many studies at once: grades, gate failures, cost per study
 aquascope area-study --bbox=-0.9,51.2,0.3,51.8       # a flood study over every gauge in a box: Q100, flood trends, a regional curve
+aquascope paint --bbox=-8,49.8,2,59                    # paint every Archive gauge in a box with its flood trend, plus field significance
 
 # Interactive Streamlit dashboard — multipage workspace with 37 live sources,
 # smart auto-insights, and fully interactive Plotly charts
@@ -571,9 +583,10 @@ Thanks to these wonderful people who make AquaScope possible ([emoji key](CONTRI
       <td align="center" valign="top" width="20%"><a href="https://bharani-kudala.me/"><img src="https://avatars.githubusercontent.com/u/121555407?v=4?s=100" width="100px;" alt="Kudala Bharani Kumar Reddy"/><br /><sub><b>Kudala Bharani Kumar Reddy</b></sub></a><br /><a href="https://github.com/Rekin226/aquascope/commits?author=kudala-bharani" title="Tests">⚠️</a> <a href="https://github.com/Rekin226/aquascope/commits?author=kudala-bharani" title="Documentation">📖</a></td>
     </tr>
     <tr>
-      <td align="center" valign="top" width="20%"><a href="https://github.com/Berserker-GM"><img src="https://avatars.githubusercontent.com/u/229895835?v=4?s=100" width="100px;" alt="Berserker-GM"/><br /><sub><b>Berserker-GM</b></sub></a><br /><a href="https://github.com/Rekin226/aquascope/commits?author=Berserker-GM" title="Code">💻</a> <a href="https://github.com/Rekin226/aquascope/commits?author=Berserker-GM" title="Tests">⚠️</a></td>
+      <td align="center" valign="top" width="20%"><a href="https://github.com/Berserker-GM"><img src="https://avatars.githubusercontent.com/u/229895835?v=4?s=100" width="100px;" alt="Berserker-GM"/><br /><sub><b>Berserker-GM</b></sub></a><br /><a href="https://github.com/Rekin226/aquascope/commits?author=Berserker-GM" title="Code">💻</a> <a href="https://github.com/Rekin226/aquascope/commits?author=Berserker-GM" title="Tests">⚠️</a> <a href="#research-Berserker-GM" title="Research">🔬</a></td>
       <td align="center" valign="top" width="20%"><a href="https://galabavamsi.github.io/portfolio/"><img src="https://avatars.githubusercontent.com/u/51828882?v=4?s=100" width="100px;" alt="GALABA VAMSI"/><br /><sub><b>GALABA VAMSI</b></sub></a><br /><a href="https://github.com/Rekin226/aquascope/commits?author=Galabavamsi" title="Code">💻</a></td>
       <td align="center" valign="top" width="20%"><a href="https://github.com/didemkastan"><img src="https://avatars.githubusercontent.com/u/273810938?v=4?s=100" width="100px;" alt="Didem KAŞTAN"/><br /><sub><b>Didem KAŞTAN</b></sub></a><br /><a href="https://github.com/Rekin226/aquascope/commits?author=didemkastan" title="Code">💻</a> <a href="https://github.com/Rekin226/aquascope/commits?author=didemkastan" title="Tests">⚠️</a></td>
+      <td align="center" valign="top" width="20%"><a href="https://github.com/Duo-ee"><img src="https://avatars.githubusercontent.com/u/113885053?v=4?s=100" width="100px;" alt="Duo"/><br /><sub><b>Duo</b></sub></a><br /><a href="https://github.com/Rekin226/aquascope/commits?author=Duo-ee" title="Documentation">📖</a> <a href="https://github.com/Rekin226/aquascope/commits?author=Duo-ee" title="Code">💻</a> <a href="https://github.com/Rekin226/aquascope/commits?author=Duo-ee" title="Tests">⚠️</a> <a href="https://github.com/Rekin226/aquascope/pulls?q=is%3Apr+reviewed-by%3ADuo-ee" title="Reviewed Pull Requests">👀</a></td>
     </tr>
   </tbody>
 </table>
@@ -595,8 +608,8 @@ If you use AquaScope in your research, please cite:
   author  = {Ouédraogo, Abdoul Rachid},
   year    = {2026},
   url     = {https://github.com/Rekin226/aquascope},
-  version = {0.27.0},
-  doi     = {10.5281/zenodo.23301359},
+  version = {1.0.0},
+  doi     = {10.5281/zenodo.23671741},
   license = {MIT}
 }
 ```
@@ -604,7 +617,7 @@ If you use AquaScope in your research, please cite:
 Machine-readable metadata lives in [CITATION.cff](CITATION.cff); GitHub's "Cite this
 repository" button renders it in APA and BibTeX. Every tagged release is archived on
 Zenodo; `10.5281/zenodo.21903143` is the concept DOI that always resolves to the latest
-version (v0.27.0 is [10.5281/zenodo.23301359](https://doi.org/10.5281/zenodo.23301359)).
+version (v1.0.0 is [10.5281/zenodo.23671741](https://doi.org/10.5281/zenodo.23671741)).
 
 ## 📄 License
 

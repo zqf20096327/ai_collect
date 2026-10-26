@@ -11,6 +11,12 @@
 
 <sub>All names, companies and jobs in this demo are fictional.</sub>
 
+### What is new in 0.12.1
+
+* **Safer Blue Card check.** "Up to €60k" or "bis zu 60.000 €" is a ceiling, not the pay, so it no longer counts as the salary. Those jobs now show "ask in the interview" instead of a yes they may not deserve.
+* **Blue Card lines follow the pension ceiling.** Both lines are worked out from the yearly pension contribution ceiling (50% and 45.3%), and the shortage line keeps its cents (€45,934.20).
+* **Star on GitHub.** A new link at the bottom of the sidebar. If Stellenpilot helps you, a star helps others find it.
+
 ### What is new in 0.12.0
 
 * **Apply first.** Home lists up to three strong matches you could lose soon: the ad names a deadline in the next two weeks, it went online today, or it has been up for three weeks and may be filled. One button writes your CV for it.
@@ -42,6 +48,15 @@
 Older releases are on the [releases page](https://github.com/srvskr1/stellenpilot/releases).
 
 **Windows and Mac:** [download the app](https://github.com/srvskr1/stellenpilot/releases/latest), no Python needed ([Mac first start](https://github.com/srvskr1/stellenpilot/blob/main/docs/mac.md))
+
+**Mac or Linux with Homebrew:**
+
+```bash
+brew tap srvskr1/stellenpilot
+brew trust --formula srvskr1/stellenpilot/stellenpilot
+brew install stellenpilot
+stellenpilot serve
+```
 
 **Linux or Python:**
 
@@ -195,6 +210,18 @@ Windows may say "Windows protected your PC" because the app is not code signed y
 
 The app is not signed by Apple yet, so macOS stops it the first time: on macOS 15 and newer, open **System Settings, Privacy & Security** and click **Open Anyway**. Step by step, with the fix for older macOS and for a "damaged" message: [docs/mac.md](https://github.com/srvskr1/stellenpilot/blob/main/docs/mac.md), and the disk image is built by GitHub straight from this repository.
 
+### Mac and Linux: Homebrew
+
+```bash
+brew tap srvskr1/stellenpilot
+brew trust --formula srvskr1/stellenpilot/stellenpilot
+brew install stellenpilot
+mkdir -p ~/Stellenpilot && cd ~/Stellenpilot
+stellenpilot serve
+```
+
+Update with `brew upgrade stellenpilot`. The formula moves to each new version on its own one to two days after the release (Homebrew waits a day before it takes a new PyPI upload), and the daily search and desktop icon keep working across updates. Homebrew 7 and newer asks you to trust a tap before installing from it, which is the `brew trust` line. Homebrew builds Stellenpilot on your Mac, so there is no "unidentified developer" warning.
+
 ### With Python (Windows, macOS, Linux)
 
 **New to Python or the terminal?** Follow [INSTALL.md](https://github.com/srvskr1/stellenpilot/blob/main/INSTALL.md): step by step for Windows, macOS, Linux and Docker, from installing Python to your first search.
@@ -324,6 +351,7 @@ Do these steps in order. Steps 1 and 2 matter most: they stop the daily search b
 **3. Remove the program.**
 
 * Windows app: Windows Settings, Apps, Stellenpilot, Uninstall. It also removes the daily search task. Your files in `Documents\Stellenpilot` stay; delete that folder too if you want everything gone.
+* Installed with Homebrew: `brew uninstall stellenpilot`, then `brew untap srvskr1/stellenpilot`. Your workspace folder (for example `~/Stellenpilot`) stays until you delete it.
 * Installed with pip: activate the environment you installed it in, then `pip uninstall stellenpilot`. Delete that environment folder too if you made one just for it (for example `stellenpilot-env` or `.venv`).
 * Installed from source: delete the `stellenpilot` folder you cloned or unzipped (the environment `.venv` is inside it).
 * Docker: in the project folder run `docker compose down`, then `docker rmi ghcr.io/srvskr1/stellenpilot` (and `docker image prune` to free the space of any self built image).

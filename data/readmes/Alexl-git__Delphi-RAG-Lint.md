@@ -188,7 +188,7 @@ the three must agree (see the DOCS-IN-SYNC rule in `CLAUDE.md`).
 
 | Question | Command |
 |---|---|
-| What is in this unit? | `drag-lint outline --file <U.pas> --db <db>` |
+| What is in this unit? | `drag-lint outline --in <U.pas> --db <db>` |
 | Is this report still true? | `drag-lint compare --in <U.pas> --line <L>` |
 | Which unit declares `X`? | `drag-lint find-unit --name X --in <U.pas> --db <db>` |
 | Where is `X`, what is its signature? | `drag-lint query --name X --db <db>` |
@@ -213,7 +213,7 @@ the three must agree (see the DOCS-IN-SYNC rule in `CLAUDE.md`).
 > supplies the set, dropping absent files itself. With `--project`, a reader
 > resolved through the consumer DB list opens the project's OWN index (its exact
 > manifest section, else `<project dir>\_D-RAG\<base>.sqlite`) plus the platform
-> library -- no sibling project's DB. Two readers are exceptions: `outline --file
+> library -- no sibling project's DB. Two readers are exceptions: `outline --in
 > F --project P` also opens the DBs that hold or folder-match `F` (siblings
 > included), and `lint`'s `dl:shared` check opens the sibling projects a shared
 > unit declares, on purpose. `index` (given `--project` or a `.dpr`/`.dproj`) and
@@ -334,8 +334,8 @@ drag-lint index --scan-libraries-all --db Library.sqlite   # every registered pl
 
 - **`--scan-libraries-win`** covers the IDE's native targets (Win32 + Win64).
   Because the RTL / VCL / FMX `.pas` source is shared across platforms, this
-  already captures essentially all library source. (`--scan-libraries` is kept
-  as a back-compat alias for this.)
+  already captures essentially all library source. (Its older spelling is listed
+  under "Flag aliases:" in `drag-lint --help`.)
 - **`--scan-libraries-all`** enumerates **every** platform subkey under
   `...\BDS\37.0\Library` (Android*, iOS*, Linux64, OSX*, Win64x, ...). On top of
   the Win set it pulls in the platform-specific source trees - `source\rtl\posix`,
@@ -790,10 +790,10 @@ be written and writes nothing. This verb replaces `Register-DragLintProtocol.ps1
 |---|---:|---|
 | [Indexing](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#indexing) | 8 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#indexing) |
 | [Search and navigation](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#search-and-navigation) | 31 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#search-and-navigation) |
-| [Linting](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#linting) | 21 (+ 194 rules, 23 fixable) | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#linting) |
+| [Linting](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#linting) | 21 (+ 195 rules, 23 fixable) | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#linting) |
 | [Documentation](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#documentation) | 10 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#documentation) |
 | [Refactoring and code generation](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#refactoring-and-code-generation) | 15 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#refactoring-and-code-generation) |
-| [Component conversion](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#component-conversion) | 13 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#component-conversion) |
+| [Component conversion](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#component-conversion) | 14 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#component-conversion) |
 | [Graphs and reports](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#graphs-and-reports) | 21 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#graphs-and-reports) |
 | [Diagrams and charts](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#diagrams-and-charts) | 6 (+ 26 questions) | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#diagrams-and-charts) |
 | [Compiler integration](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#compiler-integration) | 12 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#compiler-integration) |
@@ -900,13 +900,13 @@ https://github.com/Alexl-git/Delphi-RAG-Lint/wiki and carry no `.md` suffix.)
 | `index --project <file.dproj>` | Index one project's **compile closure** -- members, transitively used project-local units, sibling `.dfm`, `{$I}` includes | `--dry-run`, `--watch`; accepts a `.dproj`, `.dpr` or `.dpk`; a positional project file beats the `project` key of `.drag-lint.json`, an explicit `--project` beats both |
 | `index --scan-libraries-win` / `--scan-libraries-all` | Index the IDE's registered Library + Browsing paths (Win32+Win64, or every platform incl. Posix/iOS/Android/OSX) | `--dry-run` |
 | `index --all` | Index every section of the named-DB manifest (`drag-lint.json`) | `--only <Sec1,Sec2>`, `--platform win32\|win64`, `--jobs <n>`, `--dry-run [--json]` |
-| any `index` run | Mode is chosen per run, independent of scan type | `--recompile` (default, incremental) / `--rebuild` (from scratch), `--force-reparse` (alias `--no-skip`: re-parse every walked file even when path+mtime+sha are unchanged -- needed once per DB after an engine upgrade that extracts something new), `--no-prune` (dry look), `--prune` |
+| any `index` run | Mode is chosen per run, independent of scan type | `--recompile` (default, incremental) / `--rebuild` (from scratch), `--force-reparse` (re-parse every walked file even when path+mtime+sha are unchanged -- needed once per DB after an engine upgrade that extracts something new), `--no-prune` (dry look), `--prune` |
 | any `index` run (walk scoping) | Decide which files the walk admits before anything is parsed | `--exclude <glob>` / `--exclude-under <dir>` / `--include-only <glob>` (all repeatable), `--max-file-kb N` (skip any file larger than N KB), `--no-use-ignore` (opt out of the `.gitignore` / `.hgignore` pattern files, honoured by default; a folder holding a `.scanignore` marker file is always pruned), `--deep` (also record usage refs; `--shallow` is the default) |
 | [`migrate-dbs`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/migrate-dbs) | Move project indexes into each project's `_D-RAG` folder | `--apply` |
 | `register-project` | Add a NEW project to the manifest so `index --all` and the IDE can index it | `<file.dproj>`, `--name <Section>`, `--apply`, `--json` |
 | [`resolve-dbs`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Show-Resolved-DBs-debug) | Show which DB(s) a project/file/platform resolves to | `--project <dproj>`, `--in <file>`, `--platform` |
 | [`library-drift`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Library-Drift-Check) | Registry library roots with source on disk but not yet in the index | `--platform` |
-| [`reconcile-project`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Reconcile-Project-Members-dpr-dproj) `<App.dpr\|.dproj>` | Sync a project's member list against disk; flag stale used units | `--apply`, `--only <unit,...>` (restrict MISSING, and therefore `--apply`, to a reviewed selection -- a dry run with `--only` previews exactly what `--apply` would write), `--db`, `--full`, `--json` (carries `applied` -- the outcome, not the flag -- plus `backups` and `edited` when applying, and `refused` naming closure entries kept in the report but never written, today the `{$I}` includes) |
+| [`reconcile-project`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Reconcile-Project-Members-dpr-dproj) `<App.dpr\|.dproj>` | Sync a project's member list against disk; flag stale used units. Each MISSING unit is judged: under the project's own roots = a missed project unit (fix: `--apply`), outside = third-party (fix: `--apply --to library` adds its folder to the manifest library section's `include`); units already in the library (registry library path or that `include`) are not reported | `--apply`, `--to project\|library`, `--only <unit,...>` (restrict MISSING, and therefore `--apply`, to a reviewed selection -- a dry run with `--only` previews exactly what `--apply` would write), `--db`, `--full`, `--json` (carries `applied` -- the outcome, not the flag -- plus `backups` and `edited` when applying, and `refused` naming closure entries kept in the report but never written, today the `{$I}` includes) |
 
 Wherever a database is *opened* (`index`, `query`, `lsp`, `serve`) the 32-bit
 build refuses one larger than its size guard, because it would run out of
@@ -932,7 +932,7 @@ Win64 build.
 | [`query typecat`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/query-typecat) `--name <t>` | Resolve a type's category (class/interface/float/string/...) | |
 | `query hints` | List stored compiler hints/warnings | `--name <code>`, `--rule <severity>` |
 | [`usages`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/usages) `--name <n>` | Grouped usage report (backs the IDE Symbol Search dialog) | `--width narrow\|wide\|very-wide`, `--depth N` |
-| [`outline`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/outline) `--file <f.pas>` | Unit outline (backs the IDE Structure form) | `--format text\|json` |
+| [`outline`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/outline) `--in <f.pas>` | Unit outline (backs the IDE Structure form) | `--format text\|json` |
 | [`compare`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/compare) `--old <report\|csv\|bundle> [--command "<id> ..."]` / `--in <U.pas> --line <L>` | Rerun a saved report's question and show before / delta / after (exit 0 same, 1 differs, 2 setup, 3 stale index) | `--new <f>` (two saved outputs), `--question <id> --target <T>`, `--update-doc`, `--old-db`, `--db <f>`, `--auto`, `--save`, `--snapshot-dir <dir>`, `--show`, `--format text\|json\|html`, `--open` |
 | [`ask`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/ask) `<question> --target <T> [--project <P.dproj>\|--in <U.pas>\|--db <idx>]` | Ask one report question (the 26 chart questions) and print the answer: the DocInsight remarks block the Reports menu copies, or the plain answer. All 26 questions answer in-process in the engine (exit 0 answered, 1 refused, 2 setup, 3 stale index) | `--to <B>`, `--server-db`, `--sql-db`, `--counterpart-db`, `--depth N`, `--cap N`, `--surface-cap N`, `--control <C>`, `--mode write\|read\|both`, `--max-rows N`, `--out-root <dir>`, `--pairs-file <f>`, `--allow-stale`, `--plain`, `--open`, `--resolve-only` |
 | `hover --qname <q>` | Hover card for a symbol | `--format plain\|md\|json` |
@@ -940,7 +940,7 @@ Win64 build.
 | [`find-unit`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/find-unit) `--name <X> --in <file>` | Find which unit declares `X`, to add to `uses` | `--apply` |
 | [`find-callees`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/find-callees) `--qname <X>` | Resolved outgoing calls of a routine | `--json` |
 | [`call-path`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/call-path) `--from <A> --to <B>` | Shortest resolved call path A -> B | `--max-depth N` |
-| [`ambiguous-calls`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/ambiguous-calls) | Resolver-coverage diagnostic: unresolved/ambiguous call sites | `--qname`, `--file` |
+| [`ambiguous-calls`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/ambiguous-calls) | Resolver-coverage diagnostic: unresolved/ambiguous call sites | `--qname`, `--in` |
 | [`helpers-of`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/helpers-of) `<T>` | Record/class helper edges targeting type `T` | `--json` |
 | `impact --qname <q>` | Blast radius: callers/units affected by a change, per depth level | `--depth N` |
 | `surface --qname <q>` | Public interface (declaration lines) of a class/record | `--include-impl`, `--all-visibility` |
@@ -951,7 +951,7 @@ Win64 build.
 
 #### Lint
 
-**194 rules across 16 categories -- 141 built-in + 53 external `.scm`, 164
+**195 rules across 16 categories -- 142 built-in + 53 external `.scm`, 165
 enabled by default, 23 with an auto-fix.**
 
 | Command | What it does | Notable flags |
@@ -960,8 +960,8 @@ enabled by default, 23 with an auto-fix.**
 | `lint <path>` | Run built-in + external `.scm` rules on a file/folder (no index needed). Pass `--db <index>` and the store-backed checks join in -- exact type resolution, cross-unit virtual-in-constructor, and the expected `type-name-prefix` letter is traced through the project index AND the `--library-db` / manifest library index (`EKeyViolation = class(EDatabaseError)` -> E); an ancestor in neither index is an error-severity index-gap finding. Without a store those degrade conservatively, which is why an editor buffer linted with no `--db` can show findings `lint-all` does not | `--rule <id>`, `--disable id1,id2`, `--json`, `--db <index.sqlite>`, `--library-db <lib.sqlite>` (override the manifest-resolved library index; the cross-store ancestry hop that lets a project class reach `TCustomForm` is otherwise untestable) |
 | `lint <file> --db <db> --project-rules` | Also runs the per-declaration doc rules (`doc-drift`, `missing-doc`) for that one file. **Off by default on purpose:** they rebuild the expected facts block per declaration at ~16 ms each, so a 53-decl unit costs 0.83 s and a real DataCopy unit reached 8.75 s -- past the IDE plugin's hard 8 s timeout, whose failure branch shows *no* diagnostics at all | |
 | `lint <snapshot> --stand-in-for <realpath>` | Analyse `<snapshot>`'s **text** under `<realpath>`'s **identity**. For editors that lint an unsaved buffer by writing it to a temp file: store membership, file id, `unit-name-matches-file` and the reported path all answer for the real file, so a temp path no longer defeats the index | Used by the IDE plugin's live diagnostics |
-| `lint --file <f> --fix [--fix-line <L> --fix-rule <id>] [--fix-naming] [--apply]` | **Autofix one file.** Without `--apply` it is a dry run: reports what it would change, writes no source file (and no index: a stale owning index is reported `index=stale`, not reindexed; `--apply` may reindex it first). `--fix-line`+`--fix-rule` narrow to one finding; omit both to apply every fixable finding. Only rules with `"fixable": true` are ever applied. `--fix-naming` consents, in a batch run, to the opt-in naming fixes (renamed in every owning project) without an `"autofix"` entry, and prints `rename-local: <N>` (stderr) | This is what the Structure form's right-click **Fix it** / **Fix all in unit** run |
-| `lint --project <dproj>` | One project-scoped rule (e.g. `unit-not-in-dpr`). A plain `lint-all --db <db>` now evaluates that rule too, inferring the project file from the manifest section that owns the DB -- passing `--project` additionally *scopes* the report, which inference deliberately does not | `--rule` |
+| `lint --in <f> --fix [--fix-line <L> --fix-rule <id>] [--fix-naming] [--apply]` | **Autofix one file.** Without `--apply` it is a dry run: reports what it would change, writes no source file (and no index: a stale owning index is reported `index=stale`, not reindexed; `--apply` may reindex it first). `--fix-line`+`--fix-rule` narrow to one finding; omit both to apply every fixable finding. Only rules with `"fixable": true` are ever applied. `--fix-naming` consents, in a batch run, to the opt-in naming fixes (renamed in every owning project) without an `"autofix"` entry, and prints `rename-local: <N>` (stderr) | This is what the Structure form's right-click **Fix it** / **Fix all in unit** run |
+| `lint --project <dproj>` | One project-scoped rule (e.g. `unit-not-in-dpr`, or `unit-not-in-library` -- a used third-party unit that is neither a project member nor in the library). A plain `lint-all --db <db>` now evaluates that rule too, inferring the project file from the manifest section that owns the DB -- passing `--project` additionally *scopes* the report, which inference deliberately does not | `--rule` |
 | [`lint-project`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/lint-project) `--db <db>` | Project-wide structural rules -- god-class, circular-uses, layering-violation, unused-public-symbol, and more | `--rule <id>`, `--layers <f.json>` |
 | `lint-all --db <db>` | Full project report. Since the per-file verb gained the store-backed project rules, what `lint-all` *uniquely* adds is narrower than it used to be: cross-file duplicate code, `interface-reference-cycle`, exception-class enrichment, and doc-drift/missing-doc across the whole project (`review-marker-unused` and `review-marker-malformed` moved to the per-file verb too, 2026-09-03) | `--project <.dproj>` (report only that project's compile closure), `--rule <id>` (report only that rule, and run only the checkers that can emit it; an OFF-by-default rule named here is opted in for the run, as with `lint`), `--output <file>` (alias `--out`; with `--json` or `--format sarif` it receives the JSON / SARIF document, with a note on stderr and nothing on stdout; `lint <path>` takes it the same way), `--json`, `--quiet` (no per-file progress lines on stderr), `--lint-third-party` (also lint roots outside the project's own -- set by `ownRoots`, minus `excludeRoots`, in `<project>\_D-RAG\drag-lint-project.json`), `--no-preprocess` (lint the raw bytes, including branches the compiler never sees -- the default now resolves conditionals the same way the indexer does) |
 | `lint-all --fix [--apply]` | **Autofix every fixable finding across the whole project.** Dry run without `--apply` -- this is what "Fix all in project" runs; it can rewrite many files at once. `lint-all` refuses `--file`/`--in` (exit 2) -- for one unit use `lint <file> --db <db> --fix` | |
@@ -1016,10 +1016,10 @@ before writing. Details: [Multi-Project-Rename](https://github.com/Alexl-git/Del
 | Command | What it does | Notable flags |
 |---|---|---|
 | `rename --kind symbol --name <q> --to <new> --db <db>` | Cross-unit rename (declaration + every reference). Refuses (exit 2, naming the file) when the old name is used in an indexed `.inc` include: refs inside `{$I}` text are not indexed until extractor 1.22. Renaming an event handler also rewrites its `OnClick = Name` binding in the form's text `.dfm`; a binary `.dfm` that holds the name refuses (exit 2, naming the `.dfm`). `--json` reports each edit at the identifier it replaces | `--apply`, `--no-backup`, `--json` |
-| `rename --kind param --file <f> --line <L> --col <C> --to <new>` | Routine-local rename (parameter/variable) | `--apply` |
+| `rename --kind param --in <f> --line <L> --col <C> --to <new>` | Routine-local rename (parameter/variable) | `--apply` |
 | `find-unit --name <X> --in <file> --apply` | Add the declaring unit to `uses` | |
 | [`safe-delete`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/safe-delete) `--name <q> --db <db>` | Delete a symbol iff it has zero references | `--apply`, `--json` |
-| [`extract-method`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/extract-method) `--file <f> --from-line --to-line --name <n>` | Pull a statement run into a new method | `--apply` |
+| [`extract-method`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/extract-method) `--in <f> --from-line --to-line --name <n>` | Pull a statement run into a new method | `--apply` |
 | [`create-enum-helper`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/create-enum-helper) `--qname <TEnum>` | Generate a Byte-family record helper for an enum | `--methods <csv>`, `--tostring rtti\|case` |
 | `uses-audit <unit.pas> --db <db>` | Propose interface->implementation moves + unused units | `--format text\|json` |
 | `uses-fix <unit.pas> --project <dproj> --db <db>` | Compiler-verified `uses` cleanup; `--only <Unit>` also decides a library (RTL/VCL) unit: remove, else move to implementation | `--apply`, `--remove-unused`, `--format json\|text`, `--only <unit,...>` |
@@ -1086,7 +1086,7 @@ reason with no stamp, an invalid or future date, or a stamp older than
 
 | Command | What it does | Notable flags |
 |---|---|---|
-| `cycles --db <db>` | Circular unit dependencies -- see the [worked example](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Circular-Dependency-Report) below | `--edges`, `--causes` (blame the exact symbols), `--plan` (refactoring playbook), `--f2047 [--unit <stem>]` (only the interface-only cycles dcc rejects with F2047: each interface edge with its forcing symbols and the next `--plan` / `--fix` commands; `--unit` takes the name from dcc's message, a unit in no such cycle is exit 0 with a note; JSON `[{units[],edges[{from,to,symbols[]}],plan,fix}]`), `--fix --project <X.dproj>` (mechanical fix of one group: `--cycle <n>`, `--unit <stem>`, `--part a\|b\|all`, `--no-compile`, `--shadow-out <dir>` (debug: where the shadow tree of the result is staged, default `C:\TEMP\draglint_cyclefix_<pid>\`); dry run exit 0 mechanical / 1 refused / 2 error; `--apply` writes with `.BCK<n>` backups (`--no-backup`), builds, re-indexes (`--no-reindex`) and verifies: exit 0 written and verified (or written with `--no-reindex`, unverified) / 1 refused, rolled back after a compile error or build timeout, or written but not verified / 2 error: a write or build failed part-way (rolled back) or bad flags), `--format json\|text` |
+| `cycles --db <db>` | Circular unit dependencies -- see the [worked example](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Circular-Dependency-Report) below | `--edges`, `--causes` (blame the exact symbols), `--plan` (refactoring playbook), `--f2047 [--unit <stem>]` (only the interface-only cycles dcc rejects with F2047: each interface edge with its forcing symbols and the next `--plan` / `--fix` commands; `--unit` takes the name from dcc's message, a unit in no such cycle is exit 0 with a note; JSON `[{units[],edges[{from,to,symbols[]}],plan,fix}]`), `--fix --project <X.dproj>` (mechanical fix of one group: `--cycle <n>`, `--unit <stem>`, `--part a\|b\|all`, `--no-compile`, `--shadow-out <dir>` (debug: where the shadow tree of the result is staged, default `C:\TEMP\draglint_cyclefix_<pid>\`), `--rsvars <rsvars.bat>` (the Studio build environment the compile gate calls, when the registry / BDS names none); dry run exit 0 mechanical / 1 refused / 2 error; `--apply` writes with `.BCK<n>` backups (`--no-backup`), builds, re-indexes (`--no-reindex`) and verifies: exit 0 written and verified (or written with `--no-reindex`, unverified) / 1 refused, rolled back after a compile error or build timeout, or written but not verified / 2 error: a write or build failed part-way (rolled back) or bad flags), `--format json\|text` |
 | `top --db <db>` | Top symbols by fan-in | `--by fanin`, `--limit N` |
 | `graph --db <db>` | Export the symbol graph | `--format dot\|mermaid`, `--name <substr>`, `--output <f>` |
 | [`callgraph`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/callgraph) `--qname <X> --db <db>` | N-deep resolved call tree | `--direction callers\|callees`, `--depth N` |
@@ -1116,20 +1116,10 @@ reason with no stamp, an invalid or future date, or a stamp older than
 | `import-log <logfile> --db <db>` | Parse a saved dcc/msbuild log into the DB | |
 | [`pp-profile`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/pp-profile) | Print the resolved `{$IFDEF}` define profile for a project: platform built-ins plus the `DCC_Define` of the `.dproj`'s `Base`, `Base_<Platform>`, `Cfg_N` and `Cfg_N_<Platform>` groups (the platform groups since v1.17.0-alpha / extractor 1.18.0-alpha, which is why every index re-parses once) | `--dproj`, `--platform`, `--config Release\|Debug` |
 | `project-facts --dproj <X.dproj>` | What the project's **build** does for one platform + config: every define that is ON and which group, option set or built-in turns it on; every `<Import>`; the exe/dcu output paths; the runtime packages; and a notice when a post-processor (EurekaLog, madExcept) is compiled in but no import brings in its build step -- the msbuild-exe-dies-at-start-up case. With `--db`, the units whose uses name that tool | `--platform`, `--config Release\|Debug`, `--db`, `--json` |
-| [`preprocess-file`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/preprocess-file) `--file <f>` | Print `{$IFDEF}`-resolved source to stdout (diagnostic) | `--define`, `--numeric K=V`, `--include-mode off\|defines-only` (how `{$I}` includes are handled; default `off`), `--no-near-search` (resolve includes strictly beside the source, no near-directory search), `--tolerances` (opt into the dcc-tolerance `;` replacement pass), `--include-sites` (list the active includes instead of the source) |
+| [`preprocess-file`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/preprocess-file) `--in <f>` | Print `{$IFDEF}`-resolved source to stdout (diagnostic) | `--define`, `--numeric K=V`, `--include-mode off\|defines-only` (how `{$I}` includes are handled; default `off`), `--no-near-search` (resolve includes strictly beside the source, no near-directory search), `--tolerances` (opt into the dcc-tolerance `;` replacement pass), `--include-sites` (list the active includes instead of the source) |
 
 #### Database
 
 | Command | What it does |
 |---|---|
-| [`fb-snapshot`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/fb-snapshot) `--connection "..." --db <db>` | Snapshot a live Firebird schema into an index |
-| [`link-orm`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/link-orm) `--db <projDb> --db <sqlDb>` | Link ORM classes/fields to tables/columns |
-
-`index` also indexes `.sql` migration scripts, including `CREATE EXCEPTION`
-messages from `MS*.sql` files by default (`--no-sql-ms` to index every `.sql`).
-
-#### Servers
-
-| Command | What it does |
-|---|---|
-| [`serve --db <db>`](https://github.com/Alexl-git
+| [`fb-snapshot`](https://github.com/Alexl-g

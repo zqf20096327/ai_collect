@@ -252,8 +252,8 @@ pnpm fetch:tts-python   # the interpreter local engines' environments are built 
 Browser development mode with frontend hot reload:
 
 ```bash
-# Terminal 1: backend
-cd backend && uv run --frozen python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8800
+# Terminal 1: backend (unlocks the data directory's key from the system keychain when needed)
+pnpm dev:backend
 
 # Terminal 2: frontend
 cd frontend && pnpm dev
@@ -272,6 +272,11 @@ code: a notice at the bottom says the main process code was updated, and **Resta
 Vite and the backend keep running (the browser session's top bar shows a restart badge too). The main-window DevTools
 shortcut on macOS is `Cmd+Option+I`.
 
+A data directory owns its master-key identity in `secret.key.owner`; the dev launcher reads that identity before
+unlocking `secret.key.sealed`, so `~/.mosael` and `~/.mosael-dev` do not fight over one keychain item. Do not run raw
+`uvicorn` against a sealed data directory without `MOSAEL_SECRET_KEY`, and do not point a packaged build at a directory
+owned by the dev identity.
+
 For a separate, isolated stack (its own backend on another port, `MOSAEL_DATA_DIR` pointing at a scratch directory),
 start Vite with the backend address so the very first page load talks to it:
 
@@ -284,18 +289,20 @@ says why in the console. `vite build` reads the variable too; release builds don
 
 ### Tests and checks
 
-The same steps as CI ([`.github/workflows/tests.yml`](.github/workflows/tests.yml), which runs them as three parallel jobs: the quick checks, the frontend, the backend) — keep the two in sync:
+The same steps as CI ([`.github/workflows/tests.yml`](.github/workflows/tests.yml), which runs them as parallel jobs: the quick checks, the frontend, the backend, MosaelCloud and `packages/mosael-formats`) — keep the two in sync:
 
 ```bash
-pnpm lint                                   # leftover merge-conflict markers + oxlint (frontend, website) + ruff (backend, community, packages/mosael-formats)
+pnpm lint                                   # leftover merge-conflict markers + oxlint (frontend, website) + ruff (backend, cloud, packages/mosael-formats)
 pnpm --dir frontend build                   # tsc --noEmit + vite build; the backend's burned-in text tests render with this dist
 (cd backend && uv run --frozen python -m pytest -q)
+(cd cloud && uv run --frozen python -m pytest -q)  # MosaelCloud: the account service, its own uv project
 pnpm --dir frontend exec vitest run
 uv run --project backend --frozen python backend/scripts/export_openapi.py --check && pnpm gen:api   # then: git diff frontend/src/api/generated/schema.d.ts
 pnpm --dir agent-sidecar typecheck && pnpm --dir agent-sidecar build && pnpm --dir agent-sidecar test
 pnpm typecheck:electron
 pnpm --dir browser-extension test && pnpm --dir browser-extension typecheck && pnpm build:extension
 pnpm --dir website test && pnpm --dir website build
+pnpm test:scripts                           # release tooling (download page, TTS interpreter manifest + sha256) via node:test
 ```
 
 Run checks from the repository root. Locally it is enough to run `pnpm lint` plus the lines for what you changed; CI runs all of them.

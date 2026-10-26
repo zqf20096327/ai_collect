@@ -872,6 +872,15 @@ lines — the model calls the command made, then its outcome. The file is `EKOS_
 otherwise `.ekos/runs/<timestamp>-<command>.jsonl`; the console sets it per run and shows the lines as
 a steps table on the run page. On iDempiere every command logged zero model calls.
 
+RFC 0218 widened it: every command whose catalogue class is write, review, admin or external writes
+one too (`docs generate`, `signoff approve`, `lakehouse marts build`, …), named after the command's
+path (`<timestamp>-lakehouse-marts-build.jsonl`); extensions add their own stage lines. `docs generate
+--layout estate` also records its latest run in `.ekos/docs/estate.json`, which step 2 of the
+workflow bar reads. The run logs feed the generated **demo book** (ekos-lakehouse `tools/demo-book`):
+a script walks the console through the seven steps and renders, per step, the screen, the run log
+behind it and the numbers, keeping the narration a person wrote — the iDempiere book is in
+[ekos-lakehouse-oracle/book](https://github.com/alexeyban/ekos-lakehouse-oracle/tree/main/book).
+
 ```
 {"stage":"oracle.catalog","msg":"read DBA_TAB_COLUMNS","ms":687,"owner":"ADEMPIERE","query":"columns","rows":30457,"cmd":"build","t_ms":4889}
 {"stage":"oracle.catalog","msg":"reconciled against DBA_OBJECTS","kinds":13,"mismatches":0,"objects":10613,"owner":"ADEMPIERE","cmd":"build","t_ms":8985}
@@ -945,6 +954,59 @@ profile contributes counts only, never a value, and text is used only from sourc
 a source's `LICENSE` file, or set in `[docs-estate] licences`; a database has none until you set one). On iDempiere:
 1,060 pages in 26 s — published with a walkthrough of the first three workflow steps at
 [alexeyban/ekos-lakehouse-oracle](https://github.com/alexeyban/ekos-lakehouse-oracle).
+
+### Oracle as a lakehouse source (RFC 0216)
+
+[EKOS Lakehouse](https://github.com/alexeyban/ekos-lakehouse) reads Oracle as well as PostgreSQL. In
+`[extensions.lakehouse]`, `source-engine = "oracle"` and `source-database = "<a [[databases]] entry>"` reuse the
+connection steps 1–3 already use; `lakehouse plan` maps every column with an Oracle → Iceberg type map (a `DATE`
+lands as `timestamp(6)` because it carries a time, an unconstrained `NUMBER` at the scale its data uses), and
+`lakehouse reconcile` checks bronze against Oracle directly at V1–V3. For that, `migrate-validate` renders the
+canonical form in Oracle SQL (`Dialect::Oracle`; the database must be AL32UTF8) and hashes a wide row over column
+digests, since an Oracle string stops at 4000 bytes. On the iDempiere testbed: 901 of 903 tables planned, 12 business
+and dictionary tables loaded and reconciled green with the planted control firing.
+
+With `application-watermark = "UPDATED"` (RFC 0225) the lakehouse reads EKOS's write-behaviour facts (RFC 0212): a
+table whose code always sets `Updated` loads incrementally on it, and gets a delete plan from how it is deleted —
+checked every run, or audited weekly where the code never hard-deletes. `lakehouse deletes` finds hard deletes by a
+bucketed key diff (only buckets whose key counts or hashes differ are read key by key) and applies nothing when more
+than 5 % of a table's keys vanish at once, until a person accepts it. On iDempiere 739 of 901 tables load
+incrementally.
+
+Step 5 is a reviewed decision (RFC 0226). The plan applies step 3's decisions from every review subject with a valid
+sign-off — tables out of scope are not planned, confirmed PII columns are masked in silver, write-behaviour overrides
+change the mode and delete plan — and is saved as a proposal. On the console's **Extraction** page (or
+`lakehouse extraction show|change|approve`) an operator reads each table's evidence, changes its mode, delete
+cadence or purge policy with a reason, and approves the plan; the approval is a ledger fact with the plan's digest.
+With `require-plan-approval = true`, `generate` builds only the approved plan and names the tables that moved since.
+On iDempiere: 849 tables planned, 53 out of scope, one column masked.
+
+Silver reads what the source and EKOS know about each column (RFC 0227): `Y`/`N` flags become booleans when a check
+constraint or the application model says so, declared value lists are tested strictly, and the application's own
+lists and logical foreign keys are tested as warnings, since the database does not enforce them. Retained purges are
+flagged, and history closes rows deleted at the source. `lakehouse run` starts the Dagster job (the console's
+**Run the pipeline**). On the iDempiere testbed a closed 165-table subset ran in Dagster: all bronze tables reconciled, 165 silver models built, 3,664 of 3,667 tests passing and 3 warnings on real data outside the application's lists. The full 849-table run was dropped.
+
+The whole workflow, step by step with its commands, settings and results, is in
+[docs/operator-workflow.md](docs/operator-workflow.md).
+
+Step 4 turns a request into an approved mart requirement (RFC 0215). On the console's **Requirements** page (or
+`lakehouse requirements draft|edit|show|approve`) an operator describes a mart in plain words. The model routed to
+the `requirements` task (local Ollama unless a metered route is allowed) drafts its header from a catalogue excerpt
+of the plan, and EKOS resolves every term against the deployed plan. Names match regardless of case, and a term may
+choose a join path with `… via table.column`. Joins are searched at most four keys deep, and one table is never
+joined along two paths. Whatever does not resolve is a question for the operator, answered by changing the term,
+never by the model. An approval commits `marts/<mart>.md` and is a ledger fact; with `require-plan-approval`,
+`gold draft` builds only approved requirements. On iDempiere the plan's example request was drafted by `llama3`,
+answered by nine edits (three `via` choices among 3, 36 and 19 key paths) and approved, and the gold mart was proposed
+with nothing invented.
+
+Step 7 builds the marts (RFC 0228). On the console's **Marts** page (or `lakehouse marts
+show|propose|merge|build|reconcile`) each approved requirement is proposed as a dbt model on a branch, merged (the
+approval, recorded in the ledger), built through Dagster on its own, and reconciled. Reconciliation shows each
+measure's total in the mart next to the same aggregate over silver. The page shows the SQL beside the requirement,
+which terms were compiled exactly and which a model drafted, the tests, and the lineage. On iDempiere four marts went
+from approved to reconciled, every total equal.
 
 ### iDempiere eval (RFC 0222)
 
@@ -1274,7 +1336,8 @@ max-tokens = 8192            # reasoning models spend hidden tokens; 1024/2048 t
 format (Claude and Qwen Flash on Messages, GPT/Grok on Responses, the rest on Chat Completions), and
 `[llm.tasks.<task>]` routes one kind of call to its own model — tasks: `ask`, `doc-semantics`,
 `description`, `semantics`, `sql-naming`, `session-capture`, `architecture`, `reconstruct`,
-`nl-sql`, `docs-prose`, `marketing`. Measured on this repository (RFC 0197's tables):
+`nl-sql`, `docs-prose`, `marketing`, `translate` (Pentaho code steps, RFC 0200), `requirements` (a plain-language mart
+request drafted as mart metadata, RFC 0215). Measured on this repository (RFC 0197's tables):
 
 ```toml
 [llm]
@@ -1581,95 +1644,4 @@ checked-in suite, one change at a time:
 | Step | Passed | What changed |
 |---|---|---|
 | Baseline, local `llama3:latest` (8B) — report `20260914T154459Z` | 42/101 | — |
-| + evidence text kept, citation parsing, refusal wording (devlog_183) | 53/101 | Grader and evidence-rendering bugs, not the model |
-| **+ DeepSeek V4 Flash** (model swap only) | **70/101** | A larger model, and the local one had been reading a **truncated prompt** — EKOS never sent `num_ctx`, so Ollama dropped the *start* of long prompts, where the instructions live (RFC 0145) |
-| + document structure (RFC 0144) | **79/101** | Markdown cut by heading instead of blind 2,500-char chunks, fully indexed; docs link to code and to each other; output limit raised to 8,192 |
-| + query-planner fixes (devlog_186) | **87/101** | A dependency phrase in a descriptive clause no longer triggers a graph walk; `crate::path` names resolve as one entity; generic words stop matching unrelated objects |
-
-Seventeen points came from the model and seventeen from engineering; 53 → 87 is **+34**. Per category, before → after:
-
-| Category | Before | After |
-|---|---|---|
-| Architecture | 9/20 | 18/20 |
-| Code | 8/15 | 13/15 |
-| Dependencies | 10/12 | 10/12 |
-| Lineage | 5/12 | 10/12 |
-| History | 3/12 | 11/12 |
-| Security | 7/12 | 10/12 |
-| Adversarial | 11/18 | 15/18 |
-| **Total** | **53/101** | **87/101** |
-
-| Metric | llama3 8B (53/101) | DeepSeek V4 Flash (87/101) |
-|---|---|---|
-| Answer correctness | 50.1% | **85.7%** |
-| Evidence groundedness | 65.9% | **95.6%** |
-| Hallucinated answers on adversarial questions | 7 | **3** |
-| Recall@10 | 64.7% | 55.9% — *fell* |
-| Latency | up to 79 s p95, killed three times for lack of memory on a 15 GB workstation | median 5 s per fresh call |
-| Cost of a full 101-question run | free (local) | about **$0.05–0.08** |
-
-Recall@10 fell because documents are now many heading-sections that outrank the crate or file a
-retrieval-only scenario expects; answers improved anyway, and section-vs-document ranking is a tracked
-follow-up. These numbers were re-verified against the per-category reports saved in
-`evals/reports/zen-*/` (`zen-base` 70, `zen-final-8k` 79, `zen-planner2` 87). The full account, including the model-swap
-run's 2,048-token output limit that cut off 17 answers (DeepSeek V4 Flash reasons, and its hidden reasoning
-counts against the limit — so the model's own contribution is, if anything, understated), is in
-[EKOS from 53 to 87](https://alexeyban.github.io/EKOS/presentations/deepseek-53-to-87.html) and
-devlog_183 / 185 / 186.
-
-**What still fails — 14 of 101, named rather than averaged away:**
-
-| Cause | Scenarios |
-|---|---|
-| The model correctly rejects a false premise but not in refusal wording the grader accepts | adv-004, adv-011, adv-015 |
-| The answer never reaches the top of the retrieved evidence | code-002, lin-008, dep-004 |
-| The fact isn't recorded yet (a workspace-inherited Rust edition, struct fields as claims, no caller reached the evidence) | code-004, lin-007, dep-005 |
-| Retrieval-only scenarios graded on recall@10 (see above) | arch-009, hist-007 |
-| Right in substance, wrong keyword | arch-020, sec-002, sec-010 |
-
-**Reproduce it, with your own model:**
-
-```bash
-export OPENCODE_API_KEY=...        # or any OpenAI-compatible endpoint: set base-url/model in the config
-cargo run -p ekos -- --config ../ekos.zen.toml eval run --dataset ekos-full --save-answers
-cargo run -p ekos -- eval history  # trend table across every saved run
-```
-
-```toml
-# ekos.zen.toml — hosted, or a self-hosted OpenAI-compatible server (vLLM, llama.cpp) inside the network
-[llm]
-provider    = "openai"
-base-url    = "https://opencode.ai/zen/v1"
-model       = "deepseek-v4-flash"
-api-key-env = "OPENCODE_API_KEY"
-
-[ai]
-max-tokens  = 8192   # a reasoning model: hidden reasoning counts against this
-
-# local Ollama: set the window explicitly — a silent default truncation cost 17 points
-# [llm]
-# provider = "ollama"
-# context-window = 32768
-```
-
-**Closed environments.** Compiling needs no GPU, no network and no model; answer quality tracks the model you
-can serve. A workstation-sized local model lands near the llama3 column; reaching the DeepSeek column without a
-cloud API means self-hosting a much larger open-weights model on dedicated GPU servers, with a context window of
-at least 32k tokens and enough throughput to answer in seconds. Prompts contain real source excerpts — EKOS
-redacts secrets and PII before anything reaches the ledger, but a hosted model still sees your code (Zen's paid
-models are zero-retention; its free models may use prompts for training).
-
-A local model is real and free to run, but it is not the reference: `ekos eval run` refuses outright rather than
-silently grading against the stub `MockLlmProvider` when the configured provider's API key isn't set (there is no
-`--agent mock` option). Grading is unchanged across every step above — keyword and id matching at temperature 0,
-unchanged prompts replayed from the LLM cache — so a score that moved is attributable to a real change.
-
-*Earlier history.* With llama3 held fixed the suite went 39 → 43 (RFC 0140/0141), then 42 → 53 against the
-`20260914T154459Z` baseline (devlog_183), mostly because the harness found something unflattering: an adversarial-question fabrication count that got *worse* (3 → 6) once
-third-party noise was gone and real objects made a wrong answer read more convincingly; a bit-identical re-run
-after RFC 0139/0140/0141 that confirmed `temperature: 0` makes an unchanged prompt reproducible; and
-recall@10 grading that had silently graded the wrong query (RFC 0139, devlog_182). Details: devlog_182, devlog_183.
-
-Those numbers moved mostly because the harness found something unflattering: **94% of what this
-repo was compiling wasn't its own code.** A Python virtualenv and two `.scannerwork/` directories
-had never been excluded from the observation walk — `.gitignore
+| + evidence text kept, citation parsing, refusal wording (devlog_183) | 53/101 | Grade

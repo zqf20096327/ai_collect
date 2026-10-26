@@ -18,7 +18,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![Tests](https://img.shields.io/badge/tests-passing-brightgreen)](https://github.com/speedyk-005/chunklet-py/actions)
 [![CodeFactor](https://www.codefactor.io/repository/github/speedyk-005/chunklet-py/badge)](https://www.codefactor.io/repository/github/speedyk-005/chunklet-py)
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/speedyk-005/chunklet-py)
+[![DeepWiki](https://raw.githubusercontent.com/speedyk-005/yasbd-lib/main/assets/deepwiki_badge.svg)](https://deepwiki.com/speedyk-005/chunklet-py)
 
 > [!WARNING]
 > **Quick heads up!** Version 3 has some breaking changes. No worries though - check our [Migration Guide](https://speedyk-005.github.io/chunklet-py/latest/migration/) for a smooth upgrade!
@@ -355,6 +355,8 @@ A huge thank you to the awesome people who helped shape Chunklet-py:
 - [@jmbernabotto](https://github.com/jmbernabotto): helped mostly on the CLI part, suggesting fixes, features, and design improvements.
 - [@arnoldfranz](https://github.com/arnoldfranz): reported the CLI Path Validation Bug (#6) that helped improve error handling.
 - [@AkshatSharma25](https://github.com/AkshatSharma25): fixed EML metadata extraction to capture all header fields.
+- [bh-official](https://github.com/bh-official): Added batch JSONL export example
+- [@vankudothuadhinaik](https://github.com/vankudothuadhinaik): fixed Windows multiprocessing pickling for batch processing (#104).
 
 ---
 

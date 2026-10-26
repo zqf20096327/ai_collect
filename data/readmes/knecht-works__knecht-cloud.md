@@ -63,7 +63,7 @@ As root on the fresh server:
 curl -fsSL https://raw.githubusercontent.com/knecht-works/knecht-cloud/main/scripts/install.sh | bash
 ```
 
-The installer asks for your domain and does the rest: Docker, the pinned ddev CLI, a one-time image warm-up, the repo checkout at the latest release under `/opt/knecht`, a generated `.env`, and finally the app plus the Caddy TLS entry point via docker compose. Takes a few minutes, safe to re-run.
+The installer asks for your domain and does the rest: Docker, the repo checkout at the latest release under `/opt/knecht`, a generated `.env`, and finally the app plus the Caddy TLS entry point via docker compose. Takes a few minutes, safe to re-run.
 
 Then:
 
@@ -130,11 +130,9 @@ sed -i 's/^KNECHT_VERSION=.*/KNECHT_VERSION=vX.Y.Z/' .env
 docker compose pull && docker compose up -d
 ```
 
-Host-level changes (Docker, the ddev CLI, the image warm-up) are not covered by the in-app update; release notes call it out when the provisioning script must be re-run:
+The update covers everything Knecht runs on, ddev included: the host only needs Docker, which stays with the operating system's package updates. After an update that brings a new ddev version, the first environment start waits a few minutes while Knecht pulls the new ddev images.
 
-```bash
-sudo KNECHT_UID=1000 KNECHT_GID=1000 /opt/knecht/scripts/provision-host.sh
-```
+Instances installed before v0.14.0 still have a ddev CLI on the host. Knecht never used it and it can stay, or be removed with `sudo apt-get remove ddev`.
 
 ### Pre-releases
 
@@ -158,27 +156,23 @@ All state lives in `/data/knecht/data` (SQLite database, run archives, uploaded 
 
 ## Development Setup
 
-Knecht needs a Linux host with Docker and the [ddev](https://ddev.com) CLI.
-For local development there is a Lima VM that provides exactly that.
+Knecht needs a Linux host with Docker. For local development there is a Lima
+VM that provides it. The dashboard runs there in a dev container built from
+the production image (`docker-compose.dev.yml`), so it drives
+[ddev](https://ddev.com) exactly like a production instance.
 
 ```bash
-# Install dependencies
-npm install
-
 # Prepare the environment
 cp .env.example .env   # adjust the values (see the comments in the file)
 
-# Run database migrations
-npm run db:migrate
-
-# Start the dashboard
-npm run dev
+# Start the dashboard in the VM (http://localhost:3333)
+npm run dev:vm
 ```
 
 > [!NOTE]
-> Running project environments requires a Linux host with Docker and ddev.
-> Details on host setup live in `.env.example` and the provisioning scripts
-> under `scripts/`.
+> The e2e CI runs the same dev container (`scripts/dev-compose.sh`). Details
+> on host setup live in `.env.example` and the provisioning scripts under
+> `scripts/`.
 
 ## License
 

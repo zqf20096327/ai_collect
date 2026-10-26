@@ -1,0 +1,507 @@
+# Mazu
+
+[![PyPI](https://img.shields.io/pypi/v/mazu)](https://pypi.org/project/mazu/) [![CI](https://github.com/turgutino/Mazu/actions/workflows/ci.yml/badge.svg)](https://github.com/turgutino/Mazu/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)](pyproject.toml)
+
+**Mazu is a local memory and checkpoint layer for coding agents.**
+
+Alpha, but usable — the core loop (memory, checkpoints, rollback) has been exercised through live testing against real Anthropic/OpenAI/DeepSeek API keys and a 1075+ test suite (see [Status & roadmap](#status--roadmap) for the honest gaps list, not just the wins).
+
+```
+  ███╗   ███╗
+  ████╗ ████║   A Z U
+  ██╔████╔██║   ══════════════════════════════
+  ██║╚██╔╝██║   memory-augmented coding agent
+  ██║ ╚═╝ ██║   persistent memory · checkpoints · skills · multi-model
+  ╚═╝     ╚═╝
+```
+
+## What is Mazu?
+
+A CLI coding agent (chat with it, or let it run autonomously) that keeps a real, queryable memory of your project across sessions, and checkpoints its code + memory + conversation together at every step so any point can be rolled back to. Open source, runs entirely on your own machine, works with Anthropic, OpenAI, DeepSeek, or Gemini.
+
+## Why not Cursor / Claude Code?
+
+Mazu isn't trying to replace them, and it isn't an IDE. The goal is narrower and more specific: **manage an agent's memory, its steps, and its ability to undo them** — not write more code faster. If you want a polished in-editor experience with a large tool ecosystem, use Cursor or Claude Code. If you've felt the specific pain of an agent forgetting a project decision it already made last week, or of not trusting a multi-step autonomous run because you can't see what it actually did or easily undo it, that's the gap Mazu fills. It's a complement to those tools' workflow, not a competitor to their editor.
+
+## Core idea: memory + checkpoints
+
+1. **Persistent structured memory.** Decisions, conventions, and mistakes made on a project are written to a local SQLite database, ranked by local BM25 (zero API cost — no embedding calls) against your current task, and automatically injected back into context. You never have to re-explain "we use Postgres, not SQLite" in every new session. Optional semantic search (see below) recovers matches BM25's keyword-only ranking would miss entirely.
+2. **A separate, global memory for *you*, not the project.** Personal facts — your name, preferred language, experience level, working style — live in `~/.mazu/global_memory.db` and follow you into every project, instead of being repeated (or lost) per-repo.
+3. **Checkpointable autonomy.** Every step of an autonomous run snapshots code (via git), the memory database, and the live conversation together. Roll back any one of them and you roll back all three, consistently — "undo" for an agent's actions, not just its files. `mazu timeline` / `checkpoint show` / `checkpoint diff` make that history inspectable, not just a black box you either trust or roll back blind.
+4. **A self-growing local skill library.** When the agent solves something reusable, it can save it as a plain Python function. Next time a similar task comes up, it can run the skill directly — skipping the model call entirely.
+5. **Provider-agnostic.** Anthropic, OpenAI, DeepSeek, and Gemini are all first-class, behind one thin adapter interface. Mazu auto-detects which one to use from whichever API key is actually set in your environment — no provider is required over another. A fifth option, `local:<model-name>`, points at any OpenAI-compatible server running on your own machine (LM Studio, Ollama, etc.) — no API key, no cloud, no per-token cost.
+6. **Council mode.** For a decision worth a second opinion, ask two or three different models the same question in parallel and have a lead model synthesize a final recommendation — opt-in, since it costs more than a single call.
+7. **Explore mode.** For a task worth trying more than one way, fork N branches from one checkpoint, run the same task on each with a different model in parallel (real `git worktree`s, real isolated execution — not just parallel opinions), and get a ranked comparison, optionally backed by your own test suite. Opt-in, cost-capped, never auto-merges anything.
+
+Everything above (agent loop, tool execution, memory database, skill library, checkpoints) runs locally. The only network traffic is your chosen model's API call, plus one cheap end-of-session call (on the same provider) to extract memories from the transcript. Nothing else leaves your machine, and there is no server run by this project.
+
+## Installation
+
+Requires **Python 3.11+** and **git** (used for checkpoints).
+
+```bash
+pip install mazu
+
+# Only needed for openai:* or deepseek:* models (DeepSeek's API is OpenAI-compatible,
+# so it reuses the same client library under a different base URL):
+pip install "mazu[openai]"
+
+# Only needed for gemini:* models:
+pip install "mazu[gemini]"
+
+# Only needed for `mazu ui` (the terminal UI):
+pip install "mazu[ui]"
+
+# Only needed for extracting attached .docx/.pdf/.xlsx/.pptx files -- pulled in
+# automatically if you install mazu-web, since document attachment is a
+# browser-UI-only feature today (no terminal equivalent):
+pip install "mazu[documents]"
+```
+
+To work on Mazu itself instead, install it from source in editable mode:
+
+```bash
+git clone https://github.com/turgutino/Mazu.git
+cd Mazu
+pip install -e ".[openai]"
+```
+
+Then set at least one API key — Mazu picks whichever provider is present automatically, so you only need the one you actually plan to use:
+
+```bash
+export ANTHROPIC_API_KEY=sk-ant-...     # or store it in ~/.mazu/config.toml
+export DEEPSEEK_API_KEY=sk-...
+export OPENAI_API_KEY=sk-...
+export GEMINI_API_KEY=...
+```
+
+On Windows (PowerShell): `$env:ANTHROPIC_API_KEY = "sk-ant-..."`
+
+Or skip the manual steps above and run the guided wizard instead:
+
+```bash
+mazu setup
+```
+
+Walks through picking a provider, pasting its key (persisted to `~/.mazu/config.toml`, never printed back), optionally verifying it with one real API call, optionally setting it as your default model, and initializing the current directory — everything above, in one guided pass.
+
+Something not working? `mazu doctor` (and `mazu doctor --live`) diagnoses the common causes, and `mazu doctor --fix` auto-fixes what's safely fixable (a missing `.gitignore` entry, an uninitialized git repo) — see [Diagnosing setup problems](#diagnosing-setup-problems) below.
+
+## Quick start
+
+```bash
+cd your-project/
+mazu init                 # creates .mazu/ (local memory + checkpoints) and a git repo if needed
+mazu chat                 # start talking to the agent
+```
+
+```
+> we use PostgreSQL for this project, not SQLite. remember that.
+[remember] saved (decision): use PostgreSQL, not SQLite
+> /checkpoint
+[checkpoint] cp_000001 saved (commit 4f2a91c)
+> add a health-check endpoint to app.py and run the tests
+...
+```
+
+Exit and come back later (even days later) — the next session already knows about PostgreSQL, without you repeating it:
+
+```bash
+mazu chat
+> what database does this project use?
+[memory] loaded prior context relevant to this task
+
+PostgreSQL — this was a project decision, not SQLite.
+```
+
+For a longer, real walkthrough of the actual reason checkpoints and memory exist — an agent makes a mistake, breaks a test, `mazu timeline`/`checkpoint diff` find and show exactly what broke, `mazu rollback` undoes it, and `mazu memory` makes sure it doesn't happen again — see [docs/demo.md](docs/demo.md).
+
+## Usage
+
+### Interactive chat
+
+```bash
+mazu chat                       # start a session in the current directory
+mazu chat --model deepseek:deepseek-chat
+```
+
+Inside the `>` prompt, two extra commands are always available:
+
+| Command | Effect |
+|---|---|
+| `/checkpoint` | Snapshot code, memory, and the live conversation right now |
+| `/rollback [id]` | Restore all three to that checkpoint (defaults to the most recent one) |
+
+Any destructive tool call (writing a file, editing a file, running a shell command) asks for confirmation first. Responses stream in as they're generated (token-by-token where the provider supports it), and each response's `[usage]` line shows both that message's and the session's running cost where pricing data is available for the current model (and says so plainly when it isn't, instead of just omitting the figure).
+
+For providers that support it (Anthropic, OpenAI's o-series/gpt-5 models, Gemini), `mazu config set reasoning_effort low|medium|high` (or `MAZU_REASONING_EFFORT`) controls how much the model reasons before answering. DeepSeek and local models accept the setting but ignore it — there's no per-model request-time gate in the terminal (see `mazu-web`'s equivalent UI control below, which does warn when the current model won't honor it).
+
+`mazu chat --shell-allowlist "git,npm,pytest"` restricts shell commands to ones starting with a listed program name — opt-in, and additive to the hardcoded denylist below (which always applies regardless).
+
+### Autonomous runs
+
+```bash
+mazu run "add input validation to utils.py, run the tests, and fix any failures" --max-steps 15
+```
+
+The agent keeps working, unattended, across multiple tool-use rounds until it finishes, hits `--max-steps`, or trips a safety limit. It checkpoints automatically along the way (`--checkpoint-every N`, default every round), so anything it does can be rolled back.
+
+Key flags:
+
+| Flag | Purpose |
+|---|---|
+| `--max-steps N` | Stop after N tool-use rounds (default 15) |
+| `--checkpoint-every N` | Snapshot every N rounds (default 1) |
+| `--allow-shell` | Skip the confirmation prompt for shell commands (the hardcoded safety denylist below still applies) |
+| `--shell-allowlist "git,npm,pytest"` | Only allow shell commands starting with a listed program name (opt-in, additive to the denylist) |
+| `--dry-run` | Preview the task — no files written, no commands executed, no checkpoints created (see below) |
+| `--max-cost USD` | Stop once estimated spend (from a built-in pricing table) reaches this amount |
+| `--keep-checkpoints N` | Prune on-disk checkpoint data beyond the N most recent (default 50) |
+| `--model provider:model` | Override the model for this run |
+
+By default, file writes/edits proceed unattended in `run` mode (checkpoints make them recoverable), but shell commands still ask for confirmation unless `--allow-shell` is passed. Regardless of that flag, a hardcoded denylist always blocks a short list of genuinely dangerous commands: force-pushing, `sudo`, touching `~/.ssh`, disk-format commands, and `rm -rf /`-style wipes — and blocked commands now say *why* (e.g. "elevates privileges via sudo"), not just that a rule matched. Checkpoints undo file damage — they can't undo an irreversible external action like a force-push or a sent network request, so that backstop stays even with `--allow-shell`.
+
+`mazu run` refuses to start on a dirty working tree, so the first checkpoint is always a clean baseline. If it's interrupted with **Ctrl-C**, you're offered `[c]ontinue`, `[r]ollback <id>`, or `[q]uit` before anything is lost.
+
+#### Dry runs
+
+```bash
+mazu run "refactor the auth module to use the new session API" --dry-run
+```
+
+`--dry-run` runs the task loop for real — the model still reasons, plans, and calls tools — but `write_file`/`edit_file`/`run_shell` report what they *would* do (`[dry-run] Would write 340 bytes to auth.py`) instead of touching disk or a shell. Read-only tools (`read_file`, `list_dir`, `glob_files`, `recall`) still run for real, so the model's plan is grounded in the actual project, not a guess. No checkpoints are created (nothing changed to snapshot), and the usual clean-working-tree requirement is waived, since a preview has no risk of corrupting a checkpoint baseline. Everything the plan would have done is still visible afterward via `mazu log show <session_id>`.
+
+#### Run reports & resuming
+
+Every `mazu run` ends with a structured report — not just scrollback you have to read back through:
+
+```
+=== Run report ===
+Session: 3f2b1a9c-...
+Stop reason: max_steps
+Steps: 15/15
+Files changed: auth.py, session.py, tests/test_auth.py
+Checkpoints created: 15
+Memories saved: 2
+Tool errors: 0
+```
+
+`mazu runs` lists recent invocations (id, status, stop reason, step progress) — this is what gives you the id to act on next:
+
+```bash
+mazu runs                        # id, status, stop reason, steps, checkpoints -- across every mazu run
+mazu run --resume <run_id>       # continue a run that stopped at --max-steps, hit --max-cost, or was interrupted
+```
+
+`--resume` picks up from that run's *last checkpoint* — not from scratch — reusing its original task, model, and options exactly (other flags passed alongside `--resume` are ignored, to avoid a confusing "which value actually won" situation). It's for the run that stopped short of finishing, not a substitute for `mazu chat`'s open-ended conversation. A run that never checkpointed (a `--dry-run`, or one that failed before its first `--checkpoint-every` boundary) has nothing to resume from and says so plainly instead of guessing.
+
+### Checkpoints & rollback
+
+```bash
+mazu checkpoint                     # manually snapshot code + memory (outside a chat session)
+mazu checkpoint list                # flat list of all checkpoints for this project
+mazu checkpoint prune --keep 20     # drop old on-disk snapshot copies (git history is untouched)
+mazu rollback                       # restore to the most recent checkpoint
+mazu rollback cp_000003             # restore to a specific one
+```
+
+A checkpoint bundles a git commit, a consistent copy of the memory database (taken via SQLite's online backup API, safe even mid-write), the skill library, and the conversation transcript. Restoring one restores all of them together, so code, what the agent remembers, and what it was talking about never drift out of sync with each other.
+
+To actually *see* a checkpoint's history instead of just an id list:
+
+```bash
+mazu timeline                       # every checkpoint: what changed since the previous one, memory/skills snapshot status
+mazu checkpoint show cp_000003      # one checkpoint's full detail — commit, conversation length, snapshot status
+mazu checkpoint diff cp_000003      # what's different between that checkpoint and right now (read-only, no rollback)
+```
+
+`checkpoint diff` calls out newly created files explicitly, in a separate section — `git diff` itself never lists untracked files no matter what it's compared against, so a file the agent created but never `git add`ed would otherwise silently disappear from the diff.
+
+A few more ways to work with checkpoint history without touching your current state:
+
+```bash
+mazu checkpoint inspect cp_000003 --memory         # the memories actually captured in that snapshot
+mazu checkpoint inspect cp_000003 --conversation   # the conversation transcript captured in that snapshot
+mazu checkpoint compare cp_000001 cp_000005        # diff between two checkpoints directly (not either vs. now)
+mazu branch-from cp_000003 my-experiment           # new git branch at that commit, current branch untouched
+```
+
+`branch-from` is deliberately lighter than `mazu rollback`: it only creates a git branch pointer, it never resets your working tree or restores memory/skills, and your current branch stays checked out. It's for exploring "what if I'd gone a different way from here" without the heavier, stateful implications of a full rollback — switch into it yourself with `git checkout my-experiment` when you're ready.
+
+For the stateful version — actually running a divergent task from a checkpoint, not just marking where it started — fork and run in one step:
+
+```bash
+mazu run --from-checkpoint cp_000003 --branch try-postgres "switch the storage layer to Postgres"
+```
+
+This checks out a new branch at that checkpoint's commit, restores its `memory.db`/skills snapshot onto it, and runs the given task as a brand-new run (its own run id, its own checkpoints) — the origin branch's later history is left completely alone, unlike `mazu run --resume` which continues the *same* run. Once you have two runs that forked from a shared ancestor, compare what each one actually did:
+
+```bash
+mazu checkpoint compare-branches <run_id_a> <run_id_b>   # status, steps, cost, memories saved, and a real diff, side by side
+```
+
+### Memory
+
+```bash
+mazu memory list                    # everything remembered about this project
+mazu memory list --category mistake # filter by category
+mazu memory list --global           # the cross-project store (facts about you, not the code)
+mazu memory forget <id>             # delete a memory by id
+mazu memory forget <id> --global
+mazu memory consolidate --dry-run   # preview near-duplicate memories that would be merged
+mazu memory consolidate             # merge them for real (nothing is deleted — see below)
+mazu memory why "<query>"           # what would be retrieved for this query, and why (score, or pinned/mistake floor)
+mazu memory pin <id>                # always include this memory in context, regardless of relevance ranking
+mazu memory unpin <id>
+mazu memory edit <id> --title "..." --body "..."   # correct a memory in place instead of forget + re-add
+mazu memory supersede <old-id> <new-id>            # mark old as replaced by new (nothing deleted, just retired)
+mazu memory stats                   # counts by category/source, pinned/superseded totals, oldest/newest
+```
+
+Every subcommand above takes `--global` to operate on the cross-project store instead of this project's.
+
+`mazu memory why` mirrors the exact selection logic used when building a session's context block, so it's a real answer to "why didn't the agent know X" or "why did it bring up Y" — not a separate approximation. `mazu memory list` also shows how many times each memory has actually been rendered into a session's context (`used Nx, last: ...`), tracked only on real retrieval, not on inspection commands like `why` or `list` themselves.
+
+Memory categories: `decision`, `convention`, `mistake`, `task_outcome`, `fact` (all project-scoped) and `user_preference` (global — your name, language, experience level, working style; injected into every project's context automatically).
+
+Memories are written two ways: explicitly, when the agent calls `remember` (you can just tell it "remember that..."), and automatically, via a cheap end-of-session pass that extracts anything notable you didn't ask it to remember. Both paths de-duplicate against existing memories (exact and fuzzy title matching) so the same fact doesn't pile up across sessions, and an explicit `remember` call can mark an older memory as superseded when something changes.
+
+`mazu memory consolidate` catches near-duplicates that slipped past that automatic dedup (entirely local, no API calls — a word-overlap similarity check, same one `remember` already uses). It keeps the **most recently created** entry in each duplicate group and marks the rest as superseded (nothing is deleted, superseded rows just stop showing up). That "keep the newest" rule is a simple heuristic, not a judgment about which entry is actually more complete or useful — a newer, sparser restatement of a fact can end up kept over an older, more detailed one. **Always run `--dry-run` first** and read what it proposes before applying; if it picked the wrong one, `mazu memory forget <id>` the survivor and keep the original.
+
+#### Semantic search (optional)
+
+BM25 only finds memories that share actual words with your current task — it can't tell that "the project's database is Postgres" and "which relational system backs this application" are the same question. Semantic search recovers that, by comparing meaning (via embeddings) instead of just vocabulary.
+
+It's **off by default** and entirely opt-in, since it adds a real (small) API cost per `remember` call and per retrieval, on top of whatever your main model already costs:
+
+```bash
+export MAZU_SEMANTIC_MEMORY=1
+export OPENAI_API_KEY=sk-...   # required even if your main model is a different provider
+pip install "mazu[openai]"     # if not already installed
+```
+
+With that set, new memories get an embedding (OpenAI's `text-embedding-3-small`) stored alongside them at write time, and retrieval blends BM25 with cosine similarity (50/50) instead of ranking on keywords alone. Memories written before you turned this on simply don't have a stored embedding and fall back to their BM25 contribution — nothing breaks, nothing needs to be backfilled. Requires an OpenAI key specifically (for the embedding call) regardless of which provider you use for the main conversation.
+
+#### Belief-shadow observation (experimental, observation-only — nothing is corrected automatically yet)
+
+Mazu's memory is good at remembering, but doesn't yet know when something it remembers is no longer true — a real gap on the way to genuinely human-like project memory. The first step toward closing it is pure observation, not correction: two SHADOW-MODE logs, written locally to `.mazu/belief_shadow.db`, that record real memory decisions without ever acting on them.
+
+- **Auto-extraction shadow log** — when the end-of-session extraction pass finds a new memory that's lexically close to (but not an exact/fuzzy duplicate of) something already stored, a cheap classifier judges the relationship (unrelated, duplicate, refinement, replacement, contradiction, or temporary state) and logs what it *would* do — insert, skip, or supersede — without ever actually superseding anything. Bounded to at most 5 classifier calls per session/compaction event, and only runs at all when a genuinely similar memory exists (the common case of a new, unrelated fact costs nothing extra).
+- **Explicit-action shadow log** — every real `remember`/`supersede` tool call the agent makes on its own is logged too, at zero extra API cost (a supersede's relationship is already known — the agent told us by choosing to supersede — so no classifier call is needed for it).
+
+```bash
+mazu memory-belief stats     # how many real decisions have been observed so far, and their distribution
+mazu memory-belief review    # human-readable detail on recent observed decisions, with filters
+```
+
+This exists purely to gather real evidence before any automatic memory correction is ever considered — see [Known gaps](#status--roadmap) for exactly what's still missing before that's justified.
+
+### Terminal UI
+
+```bash
+mazu ui
+```
+
+An interactive, full-screen alternative to `mazu timeline`/`mazu memory list`/`mazu log` for browsing the same data — three tabs (Checkpoints, Memory, Action Log), navigated with arrow keys and Tab, not a separate mechanism from the CLI commands above. `r` on a checkpoint rolls back to it (confirmed first, same as `mazu rollback`); `p` on a memory pins/unpins it (same as `mazu memory pin`/`unpin`); selecting a session in the Action Log tab loads its individual tool calls below it. Every action goes through the exact same store methods the CLI commands use — this is a different way to reach the same operations, not a second implementation of them. Requires the `mazu[ui]` extra (see [Installation](#installation)) and an initialized project (`mazu init` first).
+
+<img src="docs/images/mazu-ui-checkpoints.svg" alt="mazu ui — Checkpoints tab" width="600"> <img src="docs/images/mazu-ui-memory.svg" alt="mazu ui — Memory tab" width="600">
+
+### Web UI (separate package)
+
+Prefer a browser tab over a terminal? [`mazu-web`](https://github.com/turgutino/mazu-web) is a companion package — full parity with the commands above (chat, run, explore, council, checkpoints, memory, skills, router, usage, log, models, doctor, config, init, setup), streamed over the browser instead of printed to a terminal. Kept as a fully separate repo/package on purpose: the core `mazu` install stays terminal-first and dependency-light (no `flask`), and only pulls in a web stack if you explicitly install `mazu-web` on top.
+
+A few things only the browser UI currently offers, on top of the terminal's own feature set: attaching an image or a document (`.docx`/`.pdf`/`.xlsx`/`.pptx`, extracted to plain text via the optional `mazu[documents]` extra) to a chat message; a live, real-API-backed model picker per provider instead of picking a model name blind; and Explore's test-command field pre-filling itself with a best-effort guess (pytest/npm/go/cargo/maven/gradle markers) instead of starting empty.
+
+```bash
+pip install "mazu-web @ git+https://github.com/turgutino/mazu-web.git"
+cd your-project && mazu-web   # http://127.0.0.1:8765
+```
+
+### Skills
+
+```bash
+mazu skills list                    # saved reusable solutions for this project
+mazu skills forget <name>           # delete one
+```
+
+When the agent solves a reusable problem, it can save the solution as a plain Python function under `.mazu/skills/<name>/`. The next time a similar task comes up, it can call the skill directly instead of solving it again from scratch through the model — a real cost and latency win for repeated, mechanical work.
+
+### Council mode
+
+```bash
+mazu council "should we migrate this service to async I/O, and how risky is it?"
+mazu council "..." --models anthropic:claude-sonnet-5,openai:gpt-5,deepseek:deepseek-chat --lead anthropic:claude-opus-4-8
+```
+
+Asks each model independently and in parallel (they don't see each other's answers), then has the lead model compare and synthesize a single recommendation. Council members get **read-only** tools only (`read_file`, `list_dir`, `glob_files`, `recall`, `list_skills`) — they can inspect your project to give an informed answer, but can't write, edit, or run anything, so asking several models at once never risks them clobbering each other's changes. This is opt-in and costs one API call per model plus one for the lead — not something you'd want as the default flow for routine tasks.
+
+### Explore mode — parallel branches, automatic ranking
+
+```bash
+mazu explore "fix the intermittent test failure" --approaches 3 \
+  --models anthropic:claude-sonnet-5,deepseek:deepseek-chat,openai:gpt-5-mini \
+  --test-command "pytest -q" --max-cost 1.00
+```
+
+Forks N branches from your current checkpoint into real, isolated `git worktree`s (not sequential checkouts on one working tree — every branch runs at the same time, in its own directory, with its own copy of project memory), runs the identical task on each with a different model, optionally runs your test suite on each resulting branch, and prints a ranked comparison. No competitor combines real parallel code execution with automatic test-based ranking — existing multi-model features (including Mazu's own `mazu council`) only compare text answers, never actual resulting code.
+
+Nothing is ever auto-merged or auto-adopted — every branch's adoption command (`cd <worktree>`, or `git worktree remove ... && git checkout ...` to bring it back into the main repo) is printed for you to run yourself. `--approaches` is capped at 5 so a typo can't turn into an accidental large bill; `--max-cost` is shared across every branch, so one expensive branch can cut its siblings short instead of each one independently burning the full budget. `--allow-shell` is forced on for every branch (an unattended parallel branch can't answer an interactive confirmation prompt) — this is disclosed loudly every run, never silent; the hardcoded shell denylist still applies underneath it regardless.
+
+Don't want to type out `--models` by hand? `--auto-models` fills it in for you, ranked by this project's own router history for this kind of task (falling back to one model per other available provider for any slots history can't fill yet):
+
+```bash
+mazu explore "fix the intermittent test failure" --approaches 2 --auto-models --test-command "pytest -q"
+```
+
+### Learning model router — suggestions from your own project's explore history
+
+Every `mazu explore` run leaves behind real, comparable outcomes (which model, what kind of task, whether tests passed, what it cost) instead of throwing them away once the report is printed. `mazu run`/`mazu chat` — when called with no `--model` and enough matching history exists in *this* project — print a passive suggestion based on that accumulated data:
+
+```
+[router] DeepSeek has won most bug-fix explorations here (2/2, avg $0.0045) — consider --model deepseek:deepseek-chat.
+This is only a suggestion based on past `mazu explore` results in this project — never applied automatically.
+```
+
+```bash
+mazu router stats                       # win rate, pass rate, avg cost per model, all task types
+mazu router stats --task-type bugfix    # filtered to one task type
+mazu router stats --json
+```
+
+This never changes which model actually runs — `--model`/no-`--model` resolution is completely untouched by the router; the suggestion is only ever printed, never fed back into the run itself. Task-type classification is a local, zero-cost keyword heuristic (no extra API call on every plain run); suggestions only appear once at least 3 matching data points exist, and are scoped to the current project only — no cross-codebase inference. Turn it off with `mazu config set router_suggestions false`.
+
+### Curator — autonomous maintenance of Mazu's own state
+
+```bash
+mazu curator setup     # pick Curator's own model + API key, separate from your main one
+mazu curator run       # one maintenance pass, across whichever areas have real work pending
+mazu curator run --area memory --dry-run   # preview only, nothing applied
+mazu curator status                        # configured/enabled, each area's last run + eligibility
+mazu curator log                           # every real decision made, with its rationale
+mazu curator undo <log_id>                 # reverse one specific diary entry
+```
+
+An opt-in, fully autonomous background process that reviews and tidies up Mazu's own accumulated state on a project — memory (archiving stale/duplicate entries, superseding outdated decisions), skills (retiring or rewriting ones with a poor real success history), housekeeping (config, abandoned branches, spend patterns), and conflicts (finding and resolving genuinely contradictory memories) — using its **own, separate API key**, never your main model's. Completely inert (zero API calls, zero files touched) until `mazu curator setup`. Every real pass first does a free, local eligibility check per area and only spends money where there's an actual signal (real duplicate/stale counts, a real failure rate) worth acting on — running it again moments later typically costs nothing. Every mutating action is reversible (archive/supersede/edit, never a real delete) and logged with a required rationale via `mazu curator log`.
+
+### Cost & usage tracking
+
+Every `mazu chat`, `mazu run`, and `mazu council` call is logged (provider, model, tokens, estimated cost) to a small local store at `~/.mazu/usage.db` — global across every project, since spend is tied to your API keys, not any one codebase.
+
+```bash
+mazu usage                  # total estimated spend, all time, broken down by model
+mazu usage --since-days 7   # only the last 7 days
+```
+
+Like `--max-cost`, this is an *estimate* from a built-in, occasionally-stale pricing table (see [`mazu/llm/pricing.py`](mazu/llm/pricing.py)) — treat it as a helpful approximation, not a substitute for your provider's own billing dashboard.
+
+### Agent action log
+
+Every tool call `mazu chat`, `mazu run`, and `mazu council` make — what tool, what input, what happened, and what file (if any) it touched — is recorded to a project-scoped store at `.mazu/action_log.db`, so "what exactly did the agent do in this session" is always answerable after the fact, not just while you're watching the terminal.
+
+```bash
+mazu log                       # recent sessions: action count, error count, time range
+mazu log show <session_id>     # every tool call in that session, in order, with input/output
+```
+
+This captures the tool-call layer specifically — blocked (denylisted shell command), declined (you said no to a confirmation prompt), and unknown-tool cases are all recorded too, not just successful calls, so a `mazu log show` after a confusing run tells you exactly where and why something didn't happen the way you expected.
+
+### Machine-readable output
+
+`mazu timeline`, `mazu memory list`, `mazu log`/`mazu log show`, `mazu runs`, and `mazu models` all accept `--json` — the same data the formatted-text view shows, wrapped in a versioned envelope (`{"schema_version": 1, "mazu_version": "...", "data": ...}`) instead of parsed out of terminal text. Useful for scripting or a future editor integration; `mazu log`'s `--json` is a group-level flag, so it goes before the subcommand (`mazu log --json show <session_id>`, not after).
+
+### Diagnosing setup problems
+
+```bash
+mazu doctor          # checks Python/git, which provider keys are set, project readiness
+mazu doctor --live   # also makes one minimal real API call per configured key to confirm it actually works
+mazu doctor --fix    # auto-fixes what's safely fixable: missing .gitignore entry, uninitialized git repo
+```
+
+Useful when `mazu chat`/`mazu run` fails and it's not obvious why — `mazu doctor --live` will tell you, for example, if a key is set but has been revoked (a plain "not set" check can't catch that, only an actual API call can).
+
+`--fix` deliberately only touches things that have exactly one correct answer and no downside — it never touches API keys, your Python installation, or installs packages, since those need a value or a decision only you have. Use `mazu setup` for API keys instead.
+
+## Model naming
+
+Models are named `provider:model` — e.g. `anthropic:claude-sonnet-5`, `openai:gpt-5`, `deepseek:deepseek-chat`, `deepseek:deepseek-reasoner`, `gemini:gemini-2.0-flash`. A bare name with no prefix (`MAZU_MODEL=claude-opus-4-8`) is assumed to be Anthropic.
+
+Resolution order when you don't pass `--model`:
+1. `MAZU_MODEL` environment variable, if set.
+2. `default_model` set via `mazu config set` (see below), if set.
+3. Auto-detected from whichever provider's API key is actually present in your environment.
+4. A hardcoded Anthropic fallback (which just surfaces a clear "set ANTHROPIC_API_KEY" message if you truly have no key configured).
+
+A DeepSeek-only or OpenAI-only setup works with zero extra flags — Anthropic is only a tie-breaker if more than one key happens to be set, never a hard requirement.
+
+### Persistent settings
+
+```bash
+mazu config set default_model deepseek:deepseek-chat   # skip MAZU_MODEL / --model going forward
+mazu config set anthropic_api_key sk-ant-...            # alternative to an env var, same effect
+mazu config list                                        # secrets are masked, showing only the last 4 characters
+mazu config unset default_model
+```
+
+Stored in `~/.mazu/config.toml`, outside any repo. **Environment variables always win** — a config-file value is only used if the corresponding env var (`MAZU_MODEL`, `ANTHROPIC_API_KEY`, etc.) isn't already set, exactly like the resolution order above. Known keys: `default_model`, `anthropic_api_key`, `openai_api_key`, `deepseek_api_key`, `gemini_api_key`, `local_base_url` (plus a legacy `api_key`, kept as an alias for `anthropic_api_key` for anyone with a config file from before per-provider keys existed).
+
+### Model capabilities
+
+```bash
+mazu models
+```
+
+Lists every model Mazu knows about with real (token-by-token) streaming support, tool-use support, approximate context window, and approximate pricing side by side — useful for picking a model without cross-referencing four different providers' docs. Best-effort and may go stale; see [`mazu/llm/capabilities.py`](mazu/llm/capabilities.py).
+
+### Local models (LM Studio, Ollama, and other OpenAI-compatible servers)
+
+No cloud account, no API key, and no per-token cost — point Mazu at a model running entirely on your own machine:
+
+```bash
+mazu chat --model local:qwen2.5-coder-7b-instruct   # exact name as shown in your local server
+```
+
+`local:<model-name>` reuses the same `openai` package as the `openai`/`deepseek` providers (no separate install extra needed) and works with anything that speaks the OpenAI-compatible chat completions API — LM Studio, Ollama, llama.cpp's server, etc. Ollama-style multi-colon tags work too (`local:llama3.1:8b`).
+
+By default Mazu talks to `http://localhost:1234/v1` (LM Studio's default port). Point it at Ollama (`http://localhost:11434/v1`) or anything else instead:
+
+```bash
+mazu config set local_base_url http://localhost:11434/v1
+# or, without persisting it:
+export MAZU_LOCAL_BASE_URL=http://localhost:11434/v1
+```
+
+`local` is never auto-selected — unlike the cloud providers, Mazu won't guess you want it just because a server happens to be reachable; you always choose it explicitly via `--model`, `MAZU_MODEL`, or `mazu config set default_model`. Context window and pricing show as unknown in `mazu models` (genuinely unknowable for an arbitrary user-loaded model) — cost is $0 in API terms, though your own machine's compute isn't free. Quality and speed depend entirely on what you have loaded; smaller local models are noticeably weaker than the frontier cloud models on complex multi-file tasks.
+
+## Safety model
+
+- All file tools are sandboxed to the project root — paths (including through symlinks) that resolve outside it are rejected.
+- Shell commands go through a shared denylist (destructive/irreversible patterns, each with a human-readable reason) in **both** `mazu chat` and `mazu run`, regardless of confirmation settings — an opt-in `--shell-allowlist` narrows what's permitted further, but can't widen past the denylist.
+- `mazu run --dry-run` previews a task with real reasoning but no real writes/execution, for when you want to see the plan before trusting it with `--allow-shell` or unattended multi-step edits.
+- API keys are only ever read from environment variables or `~/.mazu/config.toml` (outside any repo) — Mazu never writes a key to disk itself, `mazu config list` masks every stored key to its last 4 characters, and `.mazu/`, `.env`, and `config.toml` are all gitignored by default.
+- `mazu run` refuses to start with uncommitted changes already present (unless `--dry-run`, which never writes anyway), so autonomous edits are always diffable against a clean baseline.
+- See [SECURITY.md](SECURITY.md) for the full policy and how to report a vulnerability.
+
+## Architecture
+
+The module map, the provider adapter seam, and how memory/checkpoints/skills fit together are documented separately in [ARCHITECTURE.md](ARCHITECTURE.md), so this README can stay focused on using Mazu rather than building it.
+
+## Status & roadmap
+
+Milestones M1–M4 (bare tool loop, persistent memory, checkpoint/rollback, supervised autonomy) all have a working implementation, plus multi-provider support (five providers, including a fully local, no-API-key option), council mode, explore mode (parallel branch exploration with automatic test-based ranking, plus a learning router that suggests — never auto-applies — a model based on your own project's past explore results), real-time streaming (`mazu chat`), context compaction (`mazu run`/`mazu chat`, including mid-session on hitting a real context-length error), dry-run mode, shell allowlists, a persistent agent action log (`mazu log`), resumable runs (`mazu run --resume`), branching checkpoints (`mazu run --from-checkpoint`, `mazu checkpoint compare-branches`), machine-readable `--json` output on the read-oriented commands, a model capability table (`mazu models`), persistent settings (`mazu config`), guided onboarding (`mazu setup`, `mazu doctor --fix`), a terminal UI (`mazu ui`), a separate [`mazu-web`](https://github.com/turgutino/mazu-web) browser companion with full command parity, optional semantic memory search, an opt-in autonomous maintenance process (`mazu curator`) for Mazu's own accumulated state, and an experimental, observation-only belief-shadow system (`mazu memory-belief`) laying the groundwork for eventually detecting outdated/contradictory memories automatically. This has been exercised through real, live head-to-head testing across Anthropic, OpenAI, and DeepSeek (full real generations on all three, not just authentication checks) on a range of real coding tasks — bugfixes, refactors, feature work, diagnosis — with real cost/quality/reliability data collected via `mazu explore`, plus a real local model served through LM Studio. Gemini is implemented and was previously live-verified for authentication, but hasn't been exercised in this latest round of real testing (no working Gemini credentials were available) — see known gaps. All of the above runs on every push via GitHub Actions across Python 3.11–3.13 on Linux/Windows/macOS, on a test suite of 1075+ tests (zero API cost by default). Also new since the last major milestone: image/document input for chat (`mazu-web`), reasoning-effort control for providers that support it, live real-API-backed model discovery (`mazu-web`'s model pickers), and a dedicated audit pass that found and fixed 11 real cases across `mazu-web` (plus a fourth, CLI-specific one — `--dry-run` not actually blocking memory/skill writes or a billed extraction call) where a control implied backend behavior that didn't actually happen — see [CHANGELOG.md](CHANGELOG.md)'s 0.24.0/0.24.1 entries for the full list. A [VS Code/Cursor extension design document](docs/vscode-extension-design.md) exists for a possible future editor integration — design only, not implemented; [CHANGELOG.md](CHANGELOG.md) has the version-by-version history.
+
+**Known gaps, honestly listed:**
+- **Automatic memory correction doesn't exist yet, by design.** `mazu memory-belief` observes real memory decisions (both the agent's own explicit `remember`/`supersede` calls and a cheap classifier's judgment on auto-extracted near-duplicates) and logs what it *would* do, but nothing is ever applied automatically. As of this writing, real observed decisions across actual usage are still well below the sample size (~20-30) needed to responsibly evaluate whether an automatic version would be trustworthy — this is deliberately staying in evidence-gathering mode until that changes.
+- Semantic search's 50/50 BM25/embedding blend weight is a fixed constant, not tuned against real usage data.
+- `mazu rollback` itself is still linear (`git reset --hard` in place) — but `mazu run --from-checkpoint` now forks a new branch non-destructively and `mazu checkpoint compare-branches` diffs two runs' outcomes side by side, so "try a different approach from here without losing the original" no longer requires manual git surgery. There's still no tree/graph *view* of branch history (the terminal UI's checkpoint table is a flat, branch-annotated list, not a graph) and no merge/rebase concept between branches — this is diverge-and-compare, not reconcile.
+- Streaming is `mazu chat`-only for now; Gemini doesn't stream at all yet (falls back to a complete response, correct but not incremental — see `mazu models`). Deliberately deferred: the `google-genai` SDK's docs and source don't say whether function-call parts arrive fragmented, whole, or only in the final chunk during a stream, and guessing wrong risks silently mishandling tool calls. Needs a live Gemini key with real quota to verify before implementing.
+- Live testing so far has been on Windows; CI runs the test suite on Linux/macOS too, but a real provider hasn't been exercised live on those platforms yet.
+- Gemini remains implemented but not currently live-tested in real multi-provider comparisons — no working Gemini API key has been available for this round of testing; revisit once one is.
+- `mazu memory consolidate` uses a "keep the newest" heuristic, which isn't always the most complete entry — check `--dry-run` output before applying.
+
+The full build sequence — what's next, in what order, and what's deliberately not planned yet — is in [ROADMAP.md](ROADMAP.md).
+
+Contributions and issue reports are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## License
+
+MIT — see [LICENSE](LICENSE). Free to use, modify, and distribute, commercially or otherwise, as long as the copyright notice (Turgut Sofuyev) is kept in copies of the software.

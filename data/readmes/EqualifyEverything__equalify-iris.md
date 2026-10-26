@@ -4,6 +4,10 @@ Iris turns the pages of a PDF into one accessible HTML document that meets WCAG 
 model reads each page, using prompts anyone can improve. Then a reader and a copy editor review the
 whole document and fix what they find.
 
+**To see how it works**, open `/how-it-works` on any running Iris (after the [Quick start](#quick-start),
+`http://localhost:8080/how-it-works`). It takes one document through the whole system in plain
+language, showing every API call and what each step did.
+
 **Where we are.** We're focused on one thing: the most accessible HTML conversion we can deliver.
 With the optional [equalify-iris-pdf](https://github.com/EqualifyEverything/equalify-iris-pdf), that
 HTML can also go back into a tagged PDF. Once we're confident in the conversion, we may move on to
@@ -25,23 +29,15 @@ Design constraints:
 
 ## How it works
 
-The pipeline as **implemented today** runs in three phases:
+`/how-it-works` shows this with a real document. In short:
 
-1. **Extraction** — for each page image, the `page` agent (`agents/page.md`) converts the whole
-   page to an accessible HTML fragment in one vision call. The output is then verified, and
-   corrected if the verifier objects. If the page agent names a content type a specialist would
-   handle better, that specialist is dispatched and its output merged. Pages are independent, so
-   they are extracted **in parallel** — up to `defaults.extraction_concurrency` at a time — and
-   fragments keep submitted document order regardless of which page finishes first.
-2. **Assembly** — fragments are joined in page order into a minimal accessible document shell
-   (`<html lang>`, `<title>`, `<main>`) and validated with axe-core.
-3. **Review** — the Reader reads the document in chunks as two views (HTML + a flattened
-   screen-reader view) and flags reading-order / semantic / accessibility issues, attributing
-   each to the source page(s) it appears on; the Copy Editor proposes fixes against **just those
-   pages'** source images; fixes are applied and the document re-linted. Loops up to
-   `max_review_iterations` (default 3), or until a round changes nothing. A document that spans
-   several chunks is read in parallel under the same concurrency cap, and the issues the chunks
-   raise stay in chunk order.
+1. **Each page.** The `page` agent (`agents/page.md`) writes the page's HTML from its image. A
+   second model checks it against the image, and code checks its links, image descriptions and ids.
+   A page that fails is fixed once. Pages run in parallel, up to `defaults.extraction_concurrency`.
+2. **Joining.** The pages are joined in order and checked with axe-core.
+3. **Review.** The reader lists problems in the whole document, and the copy editor fixes them
+   from the page images, for up to `max_review_iterations` rounds. Code throws away a fix that would
+   lose content. What is still open is listed in the HTML.
 
 When Iris meets content a specialist agent would handle better than the general pass, it saves a
 suggestion: the agent's name, the page, and why. Feedback that improves an agent is saved the same
@@ -200,7 +196,7 @@ What that costs, which Iris warns about at boot:
   read any document.
 - **Limits per address**, since the only credential a caller can present is shared.
 
-**So decide who may call it.** `server.api_token` gates `/v1/me` and `/v1/sessions` behind a shared
+**So decide who may call it.** `server.api_token` gates `/v1/me`, `/v1/settings` and `/v1/sessions` behind a shared
 secret you hand out; blank leaves them open. Gating also turns off the bundled demo page, which holds
 no credential. Nothing about a caller is stored.
 
@@ -210,18 +206,23 @@ The details, including what to do with a database from an earlier build, are in
 ## API
 
 All endpoints are under `/v1`. Where `server.api_token` is set,
-`/v1/me` and everything under `/v1/sessions` need `Authorization: Bearer <server.api_token>`; where it
+`/v1/me`, `/v1/settings` and everything under `/v1/sessions` need `Authorization: Bearer <server.api_token>`; where it
 is blank they need no header at all. Health, limits and stats never do. `/v1/quality` is the exception
 in the other direction: it has its own shared secret and 404s unless you set it.
 
+The exact contract for every endpoint is [docs/openapi.yaml](docs/openapi.yaml), served as
+`GET /v1/openapi.json`; tests keep it in step with the routes and with real answers.
+
 | Method & path | Purpose |
 | --- | --- |
+| `GET  /v1/openapi.json` | This API's OpenAPI document (never gated) |
 | `GET  /v1/health` | Liveness probe (never gated) |
 | `GET  /v1/stats` | Public tally of pages converted, plus a two-number quality summary (never gated; aggregate only) |
 | `GET  /v1/quality` | Deployment-wide tally of output *quality* (own shared secret, off by default; aggregate only) |
 | `GET  /v1/suggestions` | Saved agent suggestions, grouped, for the filing workflow (quality token, off by default) |
 | `GET  /v1/limits` | What an upload may be — formats, per-image size, page cap (never gated) |
 | `GET  /v1/me` | This deployment's defaults. Also the probe for whether it is gated |
+| `GET  /v1/settings` | Every non-secret setting, and the model each agent uses |
 | `GET  /v1/sessions` | List every session — see the note above on isolation |
 | `POST /v1/sessions` | Create a session, upload images and/or PDFs (`multipart/form-data`) |
 | `GET  /v1/sessions/{id}` | Poll status |
@@ -231,6 +232,7 @@ in the other direction: it has its own shared secret and 404s unless you set it.
 | `POST /v1/sessions/{id}/feedback` | Submit feedback, trigger a re-run |
 | `POST /v1/sessions/{id}/close` | Finalize the session and clean tmp |
 | `GET  /v1/sessions/{id}/logs` | Fetch the run log (ndjson) |
+| `GET  /v1/sessions/{id}/audit` | Audit mode only: page images, prompts and the document between steps |
 | `GET  /v1/sessions/{id}/diagnostics` | Cost/timing/health summary (token counts per run and per agent, phase + per-call durations, in-flight/hung call) |
 
 Example — create a session (order of `images` parts is the processing order):
@@ -285,6 +287,7 @@ src/
   version.ts             # the running build's version, reported by GET /v1/health
   index.ts               # server entry point
 public/demo.html         # the browser app served at /, driving the same /v1 API
+public/how-it-works.html # the technical walkthrough served at /how-it-works
 data/                    # sessions/, tmp/, and the SQLite DB (created at runtime)
 ```
 
@@ -300,12 +303,14 @@ change:
 | If you change… | Update | Which holds |
 | --- | --- | --- |
 | behaviour, or the reason for it | [docs/design-notes.md](docs/design-notes.md) | the reasoning, the benchmark evidence, superseded behaviour, and what a rule cost before it existed |
-| an endpoint, response field, or run-log event | [docs/API.md](docs/API.md) | what fires a line, what its fields hold, and the remedy — a reference for API consumers, not the rationale |
+| an endpoint, a parameter or a response field | [docs/openapi.yaml](docs/openapi.yaml) | the exact contract, which `/how-it-works` builds its API section from; tests fail if a route or error code is missing |
+| a run-log event | [docs/API.md](docs/API.md) | what fires a line and what its fields hold |
 | which model runs an agent | [docs/models.md](docs/models.md) | **suggested** models. Every model is declared in config, never in the code, so no doc may say Iris "uses" one |
 | the price of a step | [docs/cost.md](docs/cost.md) | prices with the round each came from. Iris costs nothing per token on self-hosted open-weight models; only a suggested config has a price |
 | accessibility reporting, testing, or support information | [ACCESSIBILITY.md](ACCESSIBILITY.md) | reporting and triage guidance, contributor checks, and testing limitations |
 | a workflow in `.github/` | [docs/ci.md](docs/ci.md) | the five workflows, including the bot that reviews your PR |
 | the gate, or what a 401 means | [docs/access.md](docs/access.md) | who may call the API, and an older database |
+| a pipeline step, or a run-log event a person needs explained | [`public/how-it-works.html`](public/how-it-works.html) | the walkthrough. An event's one-line meaning comes from API.md's index, so only a new step or a plainer sentence (`SAY`) needs an edit here |
 | a config key | [`config.example.yaml`](config.example.yaml) | the key list, documented inline. This README states decisions, not keys |
 | one of the five words in [Terms](#terms) | every doc that uses it | each is narrower here than in English and each has an unrelated sense |
 
@@ -322,6 +327,10 @@ Four things that catch most mistakes:
 - **Do not write a closing keyword next to an issue number** you do not mean to close. GitHub closes
   issues from PR bodies and commit messages, including from prose.
 
+**Diagnosing a run:** open `/how-it-works#session=<id>`. It lists what to look at first, and its
+download button gives an agent the session, the problems found, the diagnostics, the audit list and
+every log line as one JSON file.
+
 Commands: `npm test` is `node --test` over `test/*.test.ts` (not vitest), plus a reporter and a V8
 flag a bare run loses — see [CONTRIBUTING.md § Development](CONTRIBUTING.md#development). `npm run
 typecheck` is `tsc --noEmit`, and `./test/e2e.sh` runs the whole lifecycle against mocks with no
@@ -331,6 +340,7 @@ credentials.
 
 | Document | What is in it |
 |---|---|
+| `/how-it-works` on a running Iris | How a document moves through Iris and iris-pdf, step by step, with every API call. Open a session there to find out what went wrong. Start here. |
 | [docs/API.md](docs/API.md) | Every endpoint, with copy-pasteable `curl`. The run log's fields. |
 | [docs/design-notes.md](docs/design-notes.md) | Why the code is the way it is. Read this before changing it. |
 | [docs/models.md](docs/models.md) | Which model to run on which agent, what each was measured at, and how a swap fails quietly. |

@@ -13,7 +13,7 @@ npx prodlint
 ```
 
 ```
-  prodlint v0.10.0
+  prodlint v0.10.4
   Scanned 148 files · 2 critical · 5 warnings · 1 info
 
   src/app/api/checkout/route.ts
@@ -145,7 +145,7 @@ npm i -g prodlint     # Global install
 
 prodlint avoids common false positives:
 
-- **AST parsing** — Babel-based analysis for 12 rules (imports, catch blocks, redirects, SSRF, path traversal, JWT, HTML injection, hydration, transactions, env leaks, loops, SQL) with regex fallback
+- **AST parsing** — Babel-based analysis for 13 rules (imports, catch blocks, redirects, redirects in try/catch, SSRF, path traversal, JWT, HTML injection, hydration, transactions, env leaks, loops, SQL) with regex fallback
 - **Monorepo support** — npm/yarn/pnpm workspace dependencies resolved automatically
 - **Framework awareness** — Prisma, Drizzle, Supabase, Knex, and Sequelize whitelists prevent false SQL injection flags
 - **Middleware detection** — Clerk, NextAuth, Supabase middleware detected — auth findings downgraded
@@ -187,12 +187,16 @@ jobs:
           threshold: 50
 ```
 
-Posts a score breakdown as a PR comment and fails the build if below threshold.
+Posts a score breakdown as a PR comment, and fails the build when the scan finds critical
+issues or the score is below `threshold`. Each release of the action runs its matching
+prodlint version, so pinning the action (`@v1`, a version tag, or a commit SHA) also pins
+the scanner.
 
 | Input | Default | Description |
 |-------|---------|-------------|
 | `path` | `.` | Path to scan |
 | `threshold` | `0` | Minimum score to pass (0-100) |
+| `fail-on-critical` | `true` | Fail when the scan finds critical issues; `false` reports them without failing |
 | `ignore` | | Comma-separated glob patterns to ignore |
 | `comment` | `true` | Post PR comment with results |
 
@@ -234,7 +238,7 @@ Use prodlint inside Cursor, Claude Code, or any MCP-compatible editor:
 
 **Claude Code:**
 ```bash
-claude mcp add prodlint -- npx -y -p prodlint prodlint-mcp
+claude mcp add prodlint -- npx -y prodlint-mcp
 ```
 
 **Cursor / Windsurf:**
@@ -243,16 +247,25 @@ claude mcp add prodlint -- npx -y -p prodlint prodlint-mcp
   "mcpServers": {
     "prodlint": {
       "command": "npx",
-      "args": ["-y", "-p", "prodlint", "prodlint-mcp"]
+      "args": ["-y", "prodlint-mcp"]
     }
   }
 }
 ```
 
-`-p prodlint` runs the MCP server straight from the `prodlint` package, so you always get
-the current scanner.
+`prodlint-mcp` is a thin launcher for the server built into `prodlint`. It's published with
+every prodlint release, so it always runs the matching scanner.
 
 Ask your AI: *"Run prodlint on this project"* and it calls the `scan` tool directly.
+
+| Tool | Inputs | Returns |
+|------|--------|---------|
+| `scan` | `path` (project directory), optional `ignore`, `minSeverity` (`critical` / `warning` / `info`), `categories`, `maxFindings` (default 30) | Score, category scores, and findings most severe first. Every critical finding is listed, even past `maxFindings`. |
+| `scan-web` | `url` | Site score, grade, and the 14 agent-readiness checks |
+
+Both tools return a Markdown summary plus structured output (`structuredContent` matching
+each tool's `outputSchema`), and both are marked read-only (`readOnlyHint`), which hosted
+reviewers such as GitHub Copilot code review require before they call an MCP tool.
 
 ## Site Score
 

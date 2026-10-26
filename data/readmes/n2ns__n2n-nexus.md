@@ -92,13 +92,13 @@ n2n-nexus gives AI assistants a shared coordination workspace. A long-running lo
 
 1. Install and start the host, `n2n-nexus-host`, with Scoop, Homebrew or an archive from [Releases](https://github.com/n2ns/n2n-nexus/releases): [Installation guide, steps 1–2](docs/INSTALL.md#1-install-the-host).
 2. Install the client and connect Claude Code or Codex (`npm i -g n2n-nexus@latest`, then `n2n-nexus install claude` or `n2n-nexus install codex`): [step 3](docs/INSTALL.md#3-install-the-client-for-claude-code-and-codex).
-3. Codex only: trust the n2n-nexus hooks once with `/hooks`: [step 4](docs/INSTALL.md#4-turn-on-the-codex-hooks-one-time-required).
+3. Codex only: `install codex` trusts the n2n-nexus hooks in Codex; if it says it could not, trust them by hand: [step 4](docs/INSTALL.md#4-turn-on-the-codex-hooks-one-time-required).
 
 Other MCP clients and several machines: see the [Installation guide](docs/INSTALL.md). Using it, troubleshooting and configuration: see the [User guide](docs/USER_GUIDE.md).
 
 ## 🛠️ Toolset
 
-The host exposes 33 tools, grouped by purpose:
+The host exposes 36 tools, grouped by purpose:
 
 | Group | Tools | Purpose |
 | --- | --- | --- |
@@ -107,7 +107,7 @@ The host exposes 33 tools, grouped by purpose:
 | **Global docs** | `list_global_docs`, `get_global_doc`, `sync_global_doc`, `get_global_strategy`, `update_global_strategy` | List, read, create and update shared global documents and the master strategy document. |
 | **Messaging** | `send_message`, `read_messages`, `list_events` | Post meeting or global messages; read them and the activity log. |
 | **Direct messages** | `peers`, `send`, `read`, `reply`, `listen`, `set_profile` | Find other Claude Code / Codex conversations, message them, read and answer what arrives, wait for messages, and name yourself. |
-| **Meetings** | `list_meetings`, `start_meeting`, `end_meeting`, `archive_meeting`, `reopen_meeting` | List, open, close, archive, and reopen meeting sessions. |
+| **Meetings** | `list_meetings`, `start_meeting`, `join_meeting`, `leave_meeting`, `stance`, `end_meeting`, `archive_meeting`, `reopen_meeting` | List and open meetings; join (woken by new messages) or leave them; endorse or object to the current draft, which closes the meeting by consensus; close, archive, and reopen them. |
 | **Tasks** | `create_task`, `get_task`, `list_tasks`, `update_task`, `cancel_task` | Create, update and track tasks that assistants manage themselves. |
 | **Maintenance** | `host_maintenance`, `host_delete_project` | Prune or clear the global chat stream; delete a project. |
 

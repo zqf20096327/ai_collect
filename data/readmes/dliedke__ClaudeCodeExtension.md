@@ -58,7 +58,10 @@ Enjoying the extension? [Buy me a coffee](https://www.buymeacoffee.com/dliedke) 
 
 - **Theme aware** — Follows VS dark/light theme automatically, or force dark, light, or a custom background color via *⚙ → Settings → Theme*. Prompt zoom is persisted across sessions, and native chat zoom (Ctrl+Scroll, Ctrl+0 resets it) is too; set the terminal's console font and size via *⚙ → Settings → Terminal* (Ctrl+Scroll zoom applies for the current session).
 
+- **20 languages support**: English, Simplified Chinese, Japanese, Portuguese (Brazil), Spanish, Korean, German, French, Russian, Traditional Chinese, Indonesian, Turkish, Vietnamese, Polish, Italian, Ukrainian, Arabic, Hindi, Thai and Dutch. Pick one under *⚙ → Settings → Layout → Chat language*, or leave it on Automatic to follow the Visual Studio language.
+
 - **Persistent settings** — Layout, provider choice, model, flags, and font sizes all saved to `%LocalAppData%\ClaudeCodeExtension\claudecode-settings.json`.
+
 
 ## Native Mode
 
@@ -172,6 +175,23 @@ Pull requests for new features are welcome. Bug fixes too — if you find an iss
 - The extension's original developer reviews the PR and publishes the new version to the Marketplace.
 
 ## Version History
+
+### Version 272.0
+- Native chat text is left-aligned again instead of justified.
+- Code blocks in the native chat can be selected and copied in part again, and starting a selection in one no longer jumps the conversation.
+- Numbered lists in the native chat show their full numbers from 10 up instead of cutting off the first digit.
+- A numbered list that starts at a number other than 1 keeps its numbering.
+- Expanded tool calls show their command and output unwrapped again, with sideways scrolling for long lines.
+- Zooming the native chat in with Ctrl+Scroll no longer pushes your messages and tool calls past the right edge.
+- The coloured bar of a tool call no longer pokes out of its rounded frame, and the expand arrow sits centred whether the row is open or closed. Thanks to [@Gh61](https://github.com/Gh61) (#225).
+
+### Version 271.0
+- Fixed native chat text (replies, your messages, tool call input and output) showing in a serif font instead of the chat font chosen in Settings. Thanks to [@Gh61](https://github.com/Gh61) (#224).
+
+### Version 270.0
+- The language setting now translates the whole extension, not just the chat: panel, menus, toolbar, Settings and other dialogs, messages, and the Code Changes and Claude Usage windows (*Settings → Layout → Language*).
+- The language switches in real time: picking one in Settings changes the whole extension immediately, the Settings window included, and everything already open follows; Cancel puts the previous language back.
+- All 20 languages now cover the full extension.
 
 ### Version 269.0
 - The chat tab is now available in 20 languages: English, Simplified Chinese, Japanese, Portuguese (Brazil), Spanish, Korean, German, French, Russian, Traditional Chinese, Indonesian, Turkish, Vietnamese, Polish, Italian, Ukrainian, Arabic, Hindi, Thai and Dutch. Pick one under *Settings → Layout → Chat language*, or leave it on Automatic to follow the Visual Studio language.

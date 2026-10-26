@@ -8,7 +8,7 @@
 
 <p align="center">
   <a href="https://github.com/drewnekota/cetus/releases/latest/download/Cetus.dmg"><img alt="Download Cetus for macOS" src="https://img.shields.io/badge/Download-Cetus-111111?style=for-the-badge&logo=apple" /></a>
-  <a href="https://github.com/drewnekota/cetus/releases/download/swift/Cetus-Swift.dmg"><img alt="Download Cetus Swift (Beta) for macOS" src="https://img.shields.io/badge/Download-Cetus_Swift_(Beta)-F05138?style=for-the-badge&logo=swift&logoColor=white" /></a>
+  <a href="https://github.com/drewnekota/cetus/releases/download/swift/Cetus-Swift.dmg"><img alt="Download Cetus Swift (Beta) for macOS" src="https://img.shields.io/badge/Download-Cetus_Swift_(Beta)-555555?style=flat&logo=swift&logoColor=white" /></a>
 </p>
 
 <p align="center">
@@ -22,6 +22,19 @@
 <p align="center"><strong>English</strong> · <a href="./README.zh-CN.md">简体中文</a></p>
 
 ![Cetus demo — launch an agent, schedule an automation, and switch runtimes](docs/cetus-demo.gif)
+
+## Community
+
+⭐️ Star the repo to get notified about new releases. To share feedback, scan the QR code with WeChat to join the group chat.
+
+<p align="center"><img src="docs/cetus-community-wechat.jpg" width="280" alt="WeChat QR code for the Cetus community group" /></p>
+
+<details>
+<summary>Friendly links</summary>
+
+- [LINUX DO](https://linux.do) — A community of idealists.
+
+</details>
 
 ## Why Cetus
 
@@ -98,19 +111,6 @@ Both update themselves. Then:
 3. Choose a workspace and give the agent its first task.
 
 > **Early release:** Cetus is under active development. Please [open an issue](https://github.com/drewnekota/cetus/issues) if something breaks or a workflow is missing.
-
-## Community
-
-⭐️ Star the repo to get notified about new releases. To share feedback, scan the QR code with WeChat to join the group chat.
-
-<p align="center"><img src="docs/cetus-community-wechat.jpg" width="280" alt="WeChat QR code for the Cetus community group" /></p>
-
-<details>
-<summary>Friendly links</summary>
-
-- [LINUX DO](https://linux.do) — A community of idealists.
-
-</details>
 
 ## License
 

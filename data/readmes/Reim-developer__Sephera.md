@@ -138,13 +138,13 @@ sephera graph --path . --what-depends-on crates/sephera_context/src/types.rs --f
 
 | Metric | Value |
 |--------|-------|
-| Files analyzed | 42 |
-| Internal edges | 237 |
-| External edges | 120 |
+| Files analyzed | 43 |
+| Internal edges | 248 |
+| External edges | 133 |
 | Self-references (excluded above) | 16 |
-| Declared dependencies | 39 |
+| Declared dependencies | 40 |
 | Local crate edges | 0 |
-| Standard library edges | 71 |
+| Standard library edges | 83 |
 | Circular dependencies | 0 |
 
 ## Blast radius for `crates/sephera_context/src/types.rs`
@@ -161,16 +161,16 @@ sephera graph --path . --what-depends-on crates/sephera_context/src/types.rs --f
 | `crates/sephera_context/src/lib.rs` | `self::types`, `types::ContextDiffMetadata`, `types::ContextDiffSelection`, `types::ContextExcerpt`, `types::ContextFile`, `types::ContextGroupKind`, `types::ContextGroupSummary`, `types::ContextLanguageSummary`, `types::ContextMetadata`, `types::ContextReport`, `types::SelectionClass` |
 | `crates/sephera_context/src/ranker.rs` | `super::types::SelectionClass` |
 
-**34 further files reach them indirectly**, through the files above.
+**35 further files reach them indirectly**, through the files above.
 
 ## Dependencies
 
 | Package | Kind | Version | Import paths |
 |---------|------|---------|--------------|
-| `std` | stdlib | unknown | 66 |
+| `std` | stdlib | unknown | 81 |
 | `anyhow` | declared | 1.0.102 | 19 |
+| `tempfile` | declared | 3.27.0 | 10 |
 | `rmcp` | declared | 1.3.0 | 9 |
-| `tempfile` | declared | 3.27.0 | 9 |
 | `arbitrary` | undeclared | unknown | 4 |
 | `libfuzzersys` | undeclared | unknown | 3 |
 | `clap` | declared | 4.6.0 | 1 |
@@ -180,8 +180,8 @@ sephera graph --path . --what-depends-on crates/sephera_context/src/types.rs --f
 
 | File | Imported by |
 |------|-------------|
+| `crates/sephera_runtime/src/lib.rs` | 44 |
 | `crates/sephera_context/src/lib.rs` | 40 |
-| `crates/sephera_runtime/src/lib.rs` | 32 |
 | `crates/sephera_context/src/types.rs` | 27 |
 | `crates/sephera_symbols/src/lib.rs` | 24 |
 | `crates/sephera_cli/src/output.rs` | 17 |
@@ -195,10 +195,10 @@ sephera graph --path . --what-depends-on crates/sephera_context/src/types.rs --f
 
 | File | Imports |
 |------|---------|
-| `crates/sephera_cli/src/run.rs` | 31 |
+| `crates/sephera_cli/src/run.rs` | 36 |
+| `crates/sephera_mcp/src/server.rs` | 19 |
 | `crates/sephera_context/src/builder.rs` | 18 |
 | `crates/sephera_context/src/lib.rs` | 18 |
-| `crates/sephera_mcp/src/server.rs` | 13 |
 | `crates/sephera_cli/src/output.rs` | 11 |
 | `crates/sephera_mcp/src/render/tests.rs` | 10 |
 | `crates/sephera_runtime/src/lib.rs` | 10 |
@@ -220,40 +220,41 @@ graph LR
     n7["symbols.rs"]
     n8["run.rs"]
     n9["loc_table.rs"]
-    n10["builder.rs"]
-    n11["candidate.rs"]
-    n12["excerpt.rs"]
-    n13["focus.rs"]
-    n14["grouping.rs"]
-    n15["lib.rs"]
-    n16["ranker.rs"]
-    n17["types.rs"]
-    n18["context_builder.rs"]
-    n19["context_line_range.rs"]
-    n20["lib.rs"]
-    n21["loc.rs"]
-    n22["lib.rs"]
-    n23["render.rs"]
-    n24["excerpt.rs"]
-    n25["groups.rs"]
-    n26["metadata.rs"]
-    n27["tests.rs"]
-    n28["server.rs"]
-    n29["tests.rs"]
-    n30["context.rs"]
-    n31["lib.rs"]
+    n10["merge_corpus.rs"]
+    n11["builder.rs"]
+    n12["candidate.rs"]
+    n13["excerpt.rs"]
+    n14["focus.rs"]
+    n15["grouping.rs"]
+    n16["lib.rs"]
+    n17["ranker.rs"]
+    n18["types.rs"]
+    n19["context_builder.rs"]
+    n20["context_line_range.rs"]
+    n21["lib.rs"]
+    n22["loc.rs"]
+    n23["lib.rs"]
+    n24["render.rs"]
+    n25["excerpt.rs"]
+    n26["groups.rs"]
+    n27["metadata.rs"]
+    n28["tests.rs"]
+    n29["server.rs"]
+    n30["tests.rs"]
+    n31["context.rs"]
     n32["lib.rs"]
-    n33["lookup.rs"]
-    n34["tests.rs"]
-    n35["build_context_report.rs"]
-    n36["render_context_markdown.rs"]
-    n37["render_loc_table.rs"]
-    n38["loc.rs"]
-    n39["mod.rs"]
-    n40["symbols.rs"]
-    n41["main.rs"]
-    n0 --> n31
-    n1 --> n31
+    n33["lib.rs"]
+    n34["lookup.rs"]
+    n35["tests.rs"]
+    n36["build_context_report.rs"]
+    n37["render_context_markdown.rs"]
+    n38["render_loc_table.rs"]
+    n39["loc.rs"]
+    n40["mod.rs"]
+    n41["symbols.rs"]
+    n42["main.rs"]
+    n0 --> n32
+    n1 --> n32
     n2 --> n0
     n2 --> n1
     n2 --> n3
@@ -262,49 +263,48 @@ graph LR
     n3 --> n5
     n3 --> n6
     n3 --> n7
-    n4 --> n15
-    n5 --> n15
+    n4 --> n16
+    n5 --> n16
     n6 --> n1
-    n7 --> n32
-    n8 --> n31
+    n7 --> n33
     n8 --> n32
+    n8 --> n33
     n8 --> n0
     n8 --> n1
     n8 --> n3
     n9 --> n2
-    n10 --> n11
-    n10 --> n12
-    n10 --> n13
-    n10 --> n14
-    n10 --> n16
-    n10 --> n17
+    n10 --> n32
+    n11 --> n12
     n11 --> n13
+    n11 --> n14
+    n11 --> n15
     n11 --> n17
-    n12 --> n11
-    n12 --> n17
-    n13 --> n17
-    n14 --> n17
-    n15 --> n10
-    n15 --> n11
-    n15 --> n12
-    n15 --> n13
-    n15 --> n14
-    n15 --> n16
-    n15 --> n17
+    n11 --> n18
+    n12 --> n14
+    n12 --> n18
+    n13 --> n12
+    n13 --> n18
+    n14 --> n18
+    n15 --> n18
     n16 --> n11
+    n16 --> n12
+    n16 --> n13
+    n16 --> n14
+    n16 --> n15
     n16 --> n17
-    n18 --> n15
-    n19 --> n15
-    n20 --> n21
-    n21 --> n31
-    n22 --> n23
-    n22 --> n28
-    n23 --> n15
+    n16 --> n18
+    n17 --> n12
+    n17 --> n18
+    n19 --> n16
+    n20 --> n16
+    n21 --> n22
+    n22 --> n32
     n23 --> n24
-    n23 --> n25
-    %% ... and 34 more edges
+    n23 --> n29
+    n24 --> n16
+    n24 --> n25
+    %% ... and 35 more edges
 ```
-
 ````
 
 **Nine files reach `code_loc.rs`, five of them importing it directly.** You now know your blast radius before opening the file - not after CI turns red.
@@ -612,6 +612,71 @@ the call shape a changed signature now takes.
 sephera breaking --path . --from origin/master
 ```
 
+### `diff` — the whole API changelog, additions included
+
+`breaking` only names what breaks consumers. This one names
+everything that changed in the API surface between two refs:
+added, removed, kind-changed, and signature-changed. A new symbol
+breaks nothing, so it never appears in a breaking report — but a
+changelog without additions hides half the release. A symbol that
+moved files reads as a removal plus an addition, because a diff
+that guesses identity is a diff that lies.
+
+```bash
+sephera diff --path . --from origin/master
+```
+
+### `simulate` — dry-run a rename before doing it
+
+A rename is the most common refactor and the one taken on faith:
+the tool renames the declaration and every import it can find,
+and the breakage shows up in CI. This one measures the rename
+beforehand — which files must update their import, and whether
+the new name already exists where it would land (a duplicate
+definition blocks the rename outright; a consumer that already
+owns the name warns instead). Nothing is edited, and even a
+blocked rename exits 0: a blocked rename is an answer, not a
+failure.
+
+```bash
+sephera simulate crates/sephera_graph/src/blast_radius.rs --symbol BlastRadius --to BlastRadiusSim --path .
+```
+
+### `behavior` — the changes that still compile but change behaviour
+
+A compiler catches a broken call. A test suite catches a changed
+result — when it covers the path. This one catches the class
+neither does: a call whose arguments were swapped but still type
+check, and a numeric constant whose value changed while still
+used. It is deliberately narrow — symmetric bodies are skipped,
+string constants are never flagged, and a Rust swap that would
+not type check is a compile error, not a silent change — because
+the general question is undecidable and a detector that guesses
+trains a team to ignore it. There is no `--fail-on`: the
+detector's precision is measured by its corpus, and a gate on an
+unproven detector would punish asking.
+
+```bash
+sephera behavior --path . --from origin/master
+```
+
+### `archaeology` — where a symbol has been
+
+`git log` follows a file, so a rename that also moves the file
+breaks the thread. This one follows the symbol: every rename
+and move, its former names, and who changed it. Identity is
+proven by consumer continuity, never by name similarity — a
+symbol in one commit is the same symbol as one in an older
+commit when exactly one declared symbol there has the same
+direct consumers. A rename that also changes the consumer set
+in the same commit is not proven and ends the trail, and an
+unconsumed symbol's rename cannot be proven at all, so the
+trail stops as ambiguous rather than guessing.
+
+```bash
+sephera archaeology crates/sephera_graph/src/blast_radius.rs --symbol BlastRadius --path .
+```
+
 ### `untested` — the symbols no test exercises, without running anything
 
 Coverage tools answer this by running the tests and watching what
@@ -624,6 +689,39 @@ uncovered-by-a-run, but unreachable from every test in the tree.
 
 ```bash
 sephera untested --path .
+```
+
+### `test-priority` — which untested symbol to test next
+
+`untested` says which symbols no test exercises. This one ranks
+them by what hurts most: downstream × churn × (1 + coupled
+partners), the same product `risk` uses, with file-level dependents
+replaced by symbol-level downstream — the files importing that
+symbol specifically. The ranking lists the full untested set,
+ranked, never filtered: a symbol with zero downstream scores 0 and
+ranks last, but stays listed, because dropping it would hide work.
+The score is a ranking heuristic, not a probability.
+
+```bash
+sephera test-priority --path .
+```
+
+### `merge` — the merge git would complete cleanly but that breaks the build
+
+Git compares lines, so two branches that touch different files merge
+without complaint — even when one side removes a symbol and the other
+side adds a consumer of it. This command compares the fork point
+against both sides and reports each contradiction by symbol: removals
+and kind changes against new consumers, and two sides reshaping the
+same symbol differently, are proven; signature changes against new
+consumers warn, because without call-site shapes the tool cannot prove
+the new call matches the old shape. `--fail-on` counts proven
+conflicts only, and a consumer kept since the fork point is never a
+conflict — it breaks because of the contract change alone, which
+`breaking` already reports.
+
+```bash
+sephera merge --path . --ours HEAD --theirs origin/master
 ```
 
 ### `guard` — a seatbelt for coding agents *(new in 2.0)*
@@ -641,6 +739,23 @@ sephera guard --file crates/sephera_graph/src/blast_radius.rs --path . --max-dep
 The measurements are also MCP tools (`impact`, `affected_tests`, `why`,
 `coupling`), so an agent can ask before editing — `guard` exists for the
 moment before it thinks to ask.
+
+### `skill` — the workflow an agent follows, not just the tools it calls
+
+MCP tools give an agent hands; a skill gives it judgment. This one
+encodes the change-safety workflow: check the blast radius before
+editing and stop at the threshold, re-check every file the change
+newly touches, read the breaking section first before committing,
+fix a break by its suggestion, and gate the merge on breaking
+symbols that still have consumers. Install it into a project and
+any agent with skills support follows it.
+
+```bash
+sephera skill --print
+```
+
+`sephera skill install` copies it into the project's agent-skills
+directory instead of printing.
 
 ### `graph` — dependency structure and blast radius
 

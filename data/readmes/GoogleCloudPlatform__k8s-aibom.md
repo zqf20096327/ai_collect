@@ -160,7 +160,7 @@ The image digest is printed in the release notes. Admission policies can verify 
 
 ### Other install paths
 
-- **NVIDIA AI Cluster Runtime (AICR)** — k8s-aibom is a qualified AICR component (adopted via [ADR-019](https://github.com/NVIDIA/aicr/blob/main/docs/design/019-k8s-aibom-runtime-inventory.md)). Since AICR v0.20.0 the stock `h100-gke-cos-inference` recipe selects it by default (decline at generation time with `aicr recipe --runtime-inventory disabled`); on any other recipe, add a `componentRef` in a custom overlay — see AICR's component catalog for values and health-contract details.
+- **NVIDIA AI Cluster Runtime (AICR)** — k8s-aibom is a qualified AICR component (adopted via [ADR-019](https://github.com/NVIDIA/aicr/blob/main/docs/design/019-k8s-aibom-runtime-inventory.md)). Since AICR v0.20.0 the stock `h100-gke-cos-inference` recipe selects it by default (decline at generation time with `aicr recipe --runtime-inventory disabled`). From AICR v1.0.0, `aicr recipe --runtime-inventory enabled` adds it to any other GKE recipe; on other services, add a `componentRef` in a custom overlay. See AICR's component catalog for values and health-contract details.
 - **Terraform** — GitOps-style deployment: see the [Terraform Automation Guide](terraform/README.md).
 - **Amazon EKS, Azure AKS, OpenShift, on-prem** — identical install; cloud-specific notes in [Installing on EKS, AKS, and other conformant clusters](docs/install-eks-aks.md).
 - **Air-gapped, forks, or development** — see [Building from Source](docs/building-from-source.md).
@@ -172,6 +172,8 @@ The controller is installed cluster-wide but inactive until you opt in at least 
 ```bash
 kubectl label namespace my-ai-namespace aibom.k8saibom.dev/enabled=true
 ```
+
+Until then the controller is running and recording nothing, and it says so: `AIBOMControllerConfig/default` carries a `NamespacesOptedIn` condition that is `False` with this command in its message, and flips to `True` with the count once a namespace matches (`kubectl aibom summary` prints the same hint when it finds no documents). It is informational and never affects `Ready`.
 
 Within about a minute the controller records a `NamespaceObserved` event in the namespace, with how many workloads it considered and how many matched an AI workload signal. Workloads that match none get no `AIBOM`; that is conservative detection, not a fault:
 
@@ -273,6 +275,8 @@ spec:
               key: token
 ```
 
+**GCS object paths:** `pathTemplate` placeholders are `{namespace}`, `{kind}`, `{name}`, `{category}`, `{timestamp}` and `{hash}`. `{kind}` is lowercased (`deployment`), `{timestamp}` is UTC to the millisecond with colons replaced by dashes (`2026-05-10T12-00-00.123Z`), and `{hash}` is the first 12 hex characters of the document's sha256. In the namespace, kind, name and category, `/`, `\`, `.` and line breaks become `_`. The default template, `mlbom/{namespace}/{kind}-{name}/{timestamp}.json`, writes objects such as `mlbom/prod-inference/deployment-vllm-llama3/2026-05-10T12-00-00.123Z.json`.
+
 Configuration changes take effect on the next reconcile, without restarting the controller. Invalid configuration is rejected; the previous good configuration remains in effect, and the failure is surfaced as a condition on the `AIBOMControllerConfig` CR. This is the *last-known-good* property: an operator mistake in the configuration does not break the pipeline.
 
 **Workload-kind allowlist:** `spec.discovery.workloadKinds` lists the kinds the controller inventories, as `Group/Kind` strings (`apps/Deployment`, `nvidia.com/DynamoGraphDeployment`, `leaderworkerset.x-k8s.io/LeaderWorkerSet`, `disaggregatedset.x-k8s.io/DisaggregatedSet`, ...). Absent or empty means every known kind. An entry that is not a known kind is a configuration error (last-known-good retained, the entry named in the condition), never a silent no-op. A kind not in the list gets no documents and its existing ones are deleted; for the third-party kinds the controller also stops watching it. A kind that is switched off stops absorbing the workloads it owns, which are reported on their own again. Changes apply without a restart.
@@ -373,7 +377,7 @@ See [docs/compatibility.md](docs/compatibility.md) for the tested matrix and sup
 
 ## Roadmap
 
-Releases ship on a monthly train ([VERSIONING.md](VERSIONING.md)); delivered work is in the [CHANGELOG](CHANGELOG.md). Latest: **v1.6.0**, the coverage release — NVIDIA Dynamo, NIM Operator, LeaderWorkerSet, llm-d `DisaggregatedSet` and CronJob as reported kinds, ownership roll-up (one workload, one AIBOM), a workload-kind allowlist, the companion CRDs chart, and third-party CRD outages that degrade one kind instead of the controller. Next: **v1.7** aligns the document with CycloneDX 2.0 conventions (one byte-shape transition), adds `InferencePool` membership as a routing fact, and closes the "opted in, nothing matched" observability gap.
+Releases ship on a monthly train ([VERSIONING.md](VERSIONING.md)); delivered work is in the [CHANGELOG](CHANGELOG.md). Who ships and runs it: [ADOPTERS.md](ADOPTERS.md). Latest: **v1.6.0**, the coverage release — NVIDIA Dynamo, NIM Operator, LeaderWorkerSet, llm-d `DisaggregatedSet` and CronJob as reported kinds, ownership roll-up (one workload, one AIBOM), a workload-kind allowlist, the companion CRDs chart, and third-party CRD outages that degrade one kind instead of the controller. Next: **v1.7** aligns the document with CycloneDX 2.0 conventions (one byte-shape transition), adds `InferencePool` membership as a routing fact, and closes the "opted in, nothing matched" observability gap.
 
 Full detail in [docs/roadmap.md](docs/roadmap.md).
 

@@ -25,7 +25,7 @@ OpenQuantum 的核心是一套通用量子科研插件，由 Skills、Tools 和 
 
 **先看实测案例：**[PennyLane Pauli 对易子计算](#pennylane-rust-case)完整调用提速 **5.09 倍**；[QuTiP Wigner 函数计算](#qutip-rust-case)完整调用提速 **5.69 倍**，均保留性能对照、结果核对与复跑记录。
 
-**Desktop 0.8.7：**[Mac Apple Silicon 独立安装包](https://github.com/xi-zhao/OpenQuantum/releases/tag/v0.8.7) · **Codex 插件 0.8.4：**[下载与发布说明](https://github.com/xi-zhao/OpenQuantum/releases/tag/codex-v0.8.4)。以各 Release 附件为准。
+**Desktop 0.8.8：**[Mac Apple Silicon 独立安装包](https://github.com/xi-zhao/OpenQuantum/releases/tag/v0.8.8) · **Codex 插件 0.8.4：**[下载与发布说明](https://github.com/xi-zhao/OpenQuantum/releases/tag/codex-v0.8.4)。以各 Release 附件为准。
 
 - **更容易找到能力：** Tools、MCP、Skills 按 8 类用途分组，支持搜索和状态筛选。
 - **简洁个人桌面：** Mac Apple Silicon 的 `OpenQuantum.app` 自带运行环境；设置包含通用、模型与 OpenQuantum 插件。插件页沿用首页、Skills、MCP 三栏，展开卡片配置环境、账户与工具限制。
@@ -45,7 +45,7 @@ OpenQuantum 的核心是一套通用量子科研插件，由 Skills、Tools 和 
 
 <p align="center">
   <img src="./docs/images/openquantum-desktop-20261013.jpg" width="100%" alt="原版 DSH Desktop 中的 OpenQuantum 工作台：品牌、新会话、量子学习通与自行添加模型的提示" /><br />
-  <sub>早期版本界面参考；0.8.7 简洁版已收拢侧栏和设置。在设置中添加自己的模型服务，即可开始新会话。</sub>
+  <sub>早期版本界面参考；0.8.8 简洁版已收拢侧栏和设置。在设置中添加自己的模型服务，即可开始新会话。</sub>
 </p>
 
 <details>
@@ -169,7 +169,7 @@ Agent 可以帮你阅读材料、编写程序和调用工具。安装 OpenQuantu
 
 本地计算可以从无需量子云账户的任务开始。真实硬件和付费服务按需配置；各方法的输入范围、准备条件与验证状态分别保留在详细目录中。
 
-当前源码为 **111 个 SDK/源码环境**提供完整原生 API 的使用路径，其中 26 项来自本轮[生态扩展](docs/integrations/SDK_ECOSYSTEM_2026-10-14.md)，随 0.8.4 分发。Agent 可以编写自定义程序、组合公开 API 并保存完整结果，研究程序的范围可以超出便捷 Tool 的预设案例。
+当前源码为 **112 个 SDK/源码环境**提供完整原生 API 的使用路径，其中 26 项来自本轮[生态扩展](docs/integrations/SDK_ECOSYSTEM_2026-10-14.md)，随 0.8.4 分发。Agent 可以编写自定义程序、组合公开 API 并保存完整结果，研究程序的范围可以超出便捷 Tool 的预设案例。
 
 各环境需按任务显式准备，平台、账户、许可和可选后端限制仍适用。逐库工程检查及其范围见[完整 SDK 接入记录](docs/integrations/FULL_SDK_ACCESS.md)；这些环境尚未经过真实科研任务验收，科学状态仍为 `not_evaluated`。
 
@@ -298,7 +298,7 @@ Pro 教学任务使用上游应用自己的工具与记录，尚未自动接入�
 
 OpenQuantum 桌面端提供原生窗口、简洁菜单栏与通知，复用科研工作台的模型、量子 Skill、计算工具和执行记录。菜单栏只保留「打开 OpenQuantum」与「退出 OpenQuantum」，跟随中英文设置；Agent 仍可按权限使用终端执行 Tool。
 
-Mac Apple Silicon 使用 OpenQuantum 0.8.7 独立安装包。Intel 和 Windows 暂沿用 0.8.4 能力包及固定的第三方客户端；也可从源码运行。
+Mac Apple Silicon 使用 OpenQuantum 0.8.8 独立安装包。Intel 和 Windows 暂沿用 0.8.4 能力包及固定的第三方客户端；也可从源码运行。
 
 [下载并安装桌面客户端](#桌面安装包) · [从源码启动桌面客户端](#桌面客户端)。
 
@@ -315,7 +315,7 @@ Mac Apple Silicon 使用 OpenQuantum 0.8.7 独立安装包。Intel 和 Windows �
 
 #### 界面语言
 
-恢复后的 0.8.7 桌面在「设置 → 通用设置 → 语言」提供原生简体中文与英语，选择会保存。其余八种语言的 README、译文和审校记录继续保留，暂不开放为桌面选项。
+恢复后的 0.8.8 桌面在「设置 → 通用设置 → 语言」提供原生简体中文与英语，选择会保存。其余八种语言的 README、译文和审校记录继续保留，暂不开放为桌面选项。
 
 [此前十语言版本的界面记录](docs/images/openquantum-languages-20260919.jpg)
 
@@ -355,7 +355,7 @@ https://github.com/xi-zhao/OpenQuantum/blob/codex-v0.8.4/docs/integrations/CODEX
 需要我重载应用时，告诉我具体操作。最后报告实际验证的结果，以及仍需准备的科学计算依赖。
 ```
 
-Codex 插件的公开版本为 **OpenQuantum 0.8.4**；本次 Desktop 0.8.7 不另行发布 Codex 插件。本版 Codex 插件包含 168 个 Skill、87 个科学 Tool，新增 26 个原生 SDK Skill，并统一运行状态、MCP、Skills、服务密钥四个标签；新增的 16 个凭据服务 Tool 默认关闭。发行标签为 `codex-v0.8.4`，实际附件与验证范围以 Release 为准。
+Codex 插件的公开版本为 **OpenQuantum 0.8.4**；本次 Desktop 0.8.8 不另行发布 Codex 插件。本版 Codex 插件包含 168 个 Skill、87 个科学 Tool，新增 26 个原生 SDK Skill，并统一运行状态、MCP、Skills、服务密钥四个标签；新增的 16 个凭据服务 Tool 默认关闭。发行标签为 `codex-v0.8.4`，实际附件与验证范围以 Release 为准。
 
 **[下载 Codex 插件 0.8.4 完整安装包](https://github.com/xi-zhao/OpenQuantum/releases/download/codex-v0.8.4/openquantum-0.8.4-codex-install.zip)**
 （[发布说明与 SHA256SUMS](https://github.com/xi-zhao/OpenQuantum/releases/tag/codex-v0.8.4)）。
@@ -390,8 +390,8 @@ npm run plugin:install
 
 ### 桌面安装包
 
-Mac Apple Silicon 直接安装 **[OpenQuantum 0.8.7 DMG](https://github.com/xi-zhao/OpenQuantum/releases/download/v0.8.7/OpenQuantum-0.8.7-macOS-arm64.dmg)**。
-按 [Release 中的 SHA256SUMS](https://github.com/xi-zhao/OpenQuantum/releases/tag/v0.8.7) 核对文件，打开 DMG，将 `OpenQuantum.app` 拖入「应用程序」。桌面程序、Node / uv 和锁定依赖均已包含，无需另装客户端。
+Mac Apple Silicon 直接安装 **[OpenQuantum 0.8.8 DMG](https://github.com/xi-zhao/OpenQuantum/releases/download/v0.8.8/OpenQuantum-0.8.8-macOS-arm64.dmg)**。
+按 [Release 中的 SHA256SUMS](https://github.com/xi-zhao/OpenQuantum/releases/tag/v0.8.8) 核对文件，打开 DMG，将 `OpenQuantum.app` 拖入「应用程序」。桌面程序、Node / uv 和锁定依赖均已包含，无需另装客户端。
 
 这是基于 DSH Desktop 2.0.0 / Harness 0.1.0-rc.6 的简洁个人桌面，保留对话、工作区、文件、工具执行、安全与历史；模型服务自行配置。安装包采用 ad-hoc 本地签名，尚未取得 Apple 分发签名或公证。首次打开及升级备份步骤见[安装与迁移说明](docs/DESKTOP_INSTALLERS.md)。
 
@@ -775,7 +775,7 @@ Harness 是通用 Agent Runtime，扩展通过 Cordis Plugin 装配。UI、模�
   <a href="#原生量子-tools">原生量子 Tools</a>
 </p>
 
-当前源码分发 **183 个内置 Skill、91 个 MCP 服务连接、5 个原生量子 Tool**。其中 66 个 Skill 来自 quantum-skills 的开源工作流适配，共用现有代码执行工具；其中 49 项提供可运行示例，覆盖 unitarylab_algorithms 的全部 39 个模块。84 个 MCP 服务使用 OpenQuantum 的本地桥接实现。Skill、Tool 和 MCP 连接分别统计。
+当前源码分发 **184 个内置 Skill、91 个 MCP 服务连接、5 个原生量子 Tool**。其中 66 个 Skill 来自 quantum-skills 的开源工作流适配，共用现有代码执行工具；其中 49 项提供可运行示例，覆盖 unitarylab_algorithms 的全部 39 个模块。84 个 MCP 服务使用 OpenQuantum 的本地桥接实现。Skill、Tool 和 MCP 连接分别统计。
 
 当前配置共包含 **282 个可配置 Tool 名称**：258 个由 MCP 服务提供，18 个为 Harness 通用工具，6 个为平台原生工具（上面的 5 个量子动作及 1 个教学生成动作）。这是配置全集；`bash` / `pwsh` 按平台互斥，连接开关、环境和工具范围也会影响实际可调用集合。既有能力的逐项决定见[治理记录](docs/architecture/EXTENSION_GOVERNANCE.md)，新增中性原子动力学见 [Bloqade Analog](docs/integrations/BLOQADE_ANALOG.md)。
 
@@ -786,7 +786,7 @@ Harness 是通用 Agent Runtime，扩展通过 Cordis Plugin 装配。UI、模�
 
 既有条目与治理情况见[治理清单](docs/architecture/EXTENSION_GOVERNANCE.md)；相近入口及大型可选服务的专业工具范围见[能力选择](docs/integrations/CAPABILITY_SELECTION.md)。
 
-这 183 个 Skill 覆盖方法选择、计算实验、结果解释和平台诊断。其中 170 项可由 Agent 自动选择，13 个分类索引保留为用户手动导航；原名称和手动调用均可继续使用。点击名称即可查看完整的 `SKILL.md`；所需工具与连接分别配置。新增算法工作流的参数、安装与开源替换差异见[运行说明](examples/quantum-algorithms/README.md)。
+这 184 个 Skill 覆盖方法选择、计算实验、结果解释和平台诊断。其中 171 项可由 Agent 自动选择，13 个分类索引保留为用户手动导航；原名称和手动调用均可继续使用。点击名称即可查看完整的 `SKILL.md`；所需工具与连接分别配置。新增算法工作流的参数、安装与开源替换差异见[运行说明](examples/quantum-algorithms/README.md)。
 
 下表按**研究方法与用途**介绍能力。各 Tool 提供的模型、参数和输入格式见[计算参数与运行方式](#计算参数与运行方式)。
 
@@ -816,6 +816,7 @@ Harness 是通用 Agent Runtime，扩展通过 Cordis Plugin 装配。UI、模�
 | [`quantumsavory-network`](.agents/skills/quantumsavory-network/SKILL.md) | 量子寄存器、器件状态、链路、网络协议与离散事件模拟 | 宿主代码 Tool；显式准备原生 SDK |
 | [`squlearn-learning`](.agents/skills/squlearn-learning/SKILL.md) | 编码线路、observable、executor、量子核与 sklearn estimator | 宿主代码 Tool；显式准备原生 SDK |
 | [`staq-compilation`](.agents/skills/staq-compilation/SKILL.md) | OpenQASM AST、综合、线路变换、优化与映射 | 宿主代码 Tool；显式准备原生 SDK |
+| [`chromobius-decoding`](.agents/skills/chromobius-decoding/SKILL.md) | 带颜色/基标注的 Stim DEM 与逻辑 observable 解码 | 宿主代码 Tool；显式准备原生 SDK |
 | [`tesseract-decoding`](.agents/skills/tesseract-decoding/SKILL.md) | Stim DEM、syndrome、搜索式解码器与统计 | 宿主代码 Tool；显式准备原生 SDK |
 | [`tqec-compilation`](.agents/skills/tqec-compilation/SKILL.md) | BlockGraph、逻辑计算块、相关面与 Stim 线路生成 | 宿主代码 Tool；显式准备原生 SDK |
 | [`tsim-sampling`](.agents/skills/tsim-sampling/SKILL.md) | Clifford/非 Clifford 线路、噪声、detector 与 observable 采样 | 宿主代码 Tool；显式准备原生 SDK |
@@ -1289,7 +1290,7 @@ docs/                    架构、路线与生态文档
 
 ### 可选上游 Skill
 
-[OriginQ 官方 `pyqpanda3` Skill](https://github.com/OriginQ/pyqpanda3-skill) 提供电路编程、算法模板、迁移与 QCloud 使用指导。它**不计入上面的 183 个内置 Skill，也不会在首次启动时自动安装**；运行 `npm run skill:qpanda:setup` 后，固定审阅版本才会进入项目 Skill 目录。安装这个 Skill 不会自动启用 `qpanda_runtime`，也不会赋予云任务权限。
+[OriginQ 官方 `pyqpanda3` Skill](https://github.com/OriginQ/pyqpanda3-skill) 提供电路编程、算法模板、迁移与 QCloud 使用指导。它**不计入上面的 184 个内置 Skill，也不会在首次启动时自动安装**；运行 `npm run skill:qpanda:setup` 后，固定审阅版本才会进入项目 Skill 目录。安装这个 Skill 不会自动启用 `qpanda_runtime`，也不会赋予云任务权限。
 
 ## 长期发展规划
 

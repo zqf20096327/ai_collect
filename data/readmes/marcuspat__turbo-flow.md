@@ -7,7 +7,7 @@
 
 **Turbo Flow is an open-source project by [Adventure Wave Labs](https://www.adventurewavelabs.space/) (Marcus Patman).** Versions 1–4 (2025–2026) packaged an agentic development environment around Claude Code and Ruflo — at its peak, 215+ MCP tools and 60+ agents. In September 2026 the project pivoted to a thinner, governed approach, and by v5.2 (October 2026) the orchestration stack was fully removed: Turbo Flow is now the rules layer (rig-lite), and the integrated successor, **Turbo Rig**, runs in private beta. Site: [turboflow.online](https://www.turboflow.online/) · full story: [why Turbo Flow became Turbo Rig](https://www.turboflow.online/why-turbo-flow-became-turbo-rig/) · [version history](https://www.turboflow.online/versions/).
 
-![v5](https://img.shields.io/badge/version-5.2.0-blue?style=flat-square) ![gate](https://img.shields.io/badge/gate-fail--closed-4a9d63?style=flat-square) ![tests](https://img.shields.io/badge/self--tests-ALL__PASS-e0a63c?style=flat-square) ![week](https://img.shields.io/badge/audited_week-868_verdicts_%C2%B7_79%25_REVISE-c25550?style=flat-square)
+![v5](https://img.shields.io/badge/version-5.3.0-blue?style=flat-square) ![gate](https://img.shields.io/badge/gate-fail--closed-4a9d63?style=flat-square) ![tests](https://img.shields.io/badge/self--tests-ALL__PASS-e0a63c?style=flat-square) ![week](https://img.shields.io/badge/audited_week-868_verdicts_%C2%B7_79%25_REVISE-c25550?style=flat-square)
 
 ## Bring your own harness
 
@@ -61,6 +61,9 @@ Recorded on the same Codespace: `tf help` shows every subcommand, `tf status` gi
 ## Ten-minute install
 
 ```bash
+# one-liner (stages ./rig-lite from a pinned, checksum-verified release):
+curl -fsSL https://github.com/marcuspat/turbo-flow/raw/main/rig-lite/install.sh | bash
+
 # from any repo you want to govern:
 bash /path/to/turbo-flow/rig-lite/init-repo.sh   # writes AGENTS.md + installs tf, never clobbers
 export PATH="$HOME/.local/bin:$PATH"              # tf lives here (init warns if not on PATH)

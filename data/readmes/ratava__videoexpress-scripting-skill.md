@@ -81,6 +81,10 @@ CHANGELOG.md                         release notes for both skills
 
 Each `references/` folder holds the same files. `SKILL.md` is a short router: the two driving facts, the workflow, the rules that apply to every prompt, and a table of which reference to read for each step. The references are read on demand: `project-intake.md` (design-phase question system), `bible.md` (character, outfit and location blocks, references, start images), `multishot-template.md` (prompt structure and worked example), `camera-and-motion.md` (timing, chaining, camera and motion), `light-sound-dialogue.md` (light, sound, dialogue and lipsync, POV shots), `prompt-rules.md` (how the engine reads a prompt, and the failure → cause → rule table), `browser-workflow.md` (driving VideoExpress in the browser), `changelog.md` (what's new in this version) and `styles/` (an index with demo links plus one sheet per Create Mode preset or custom style; add a style by copying `_TEMPLATE.md` and adding an index row). The [wiki](https://github.com/ratava/videoexpress-scripting-skill/wiki) mirrors the style sheets as browsable pages.
 
+## Support
+
+Questions, tips and help with the skill: join the **[VideoExpress Scripting community chat](https://m.me/ch/p3Ct4_m0slYtKCdB/)** on Facebook Messenger. What to include when asking for help: [Support](https://github.com/ratava/videoexpress-scripting-skill/wiki/Support) (wiki).
+
 ## Notes
 
 This is an independent community skill. It is not affiliated with, endorsed by or supported by VideoExpress or PaulPonna.com. VideoExpress and other product names are trademarks of their respective owners. The guidance reflects hands-on production experience with VideoExpress 3.5 and may need updating as the tool changes.

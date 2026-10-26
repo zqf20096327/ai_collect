@@ -26,7 +26,7 @@ Free and open source. No account. Nothing joins your calls.
 
 [Features](#features) · [Windows & Linux](#windows-and-linux) · [Compare](#how-it-compares) · [Privacy](#privacy) · [Get started](#get-started) · [Models](#local-ai-your-choice) · [Agents & CLI](#for-developers--agents) · [Website](https://www.lokalbot.com/)
 
-<img src="Assets/hero/lokalbot-demo-light.gif" width="920" alt="LokalBot in use, in five looping scenes from one meeting where launch pricing was set. One search for &quot;pricing&quot; finds a pricing sheet and a competitor's pricing page seen on screen, and the meeting. Clicking the decision &quot;$15 per seat, billed annually&quot; opens the transcript at the line where it was said. Asking &quot;What did we decide on pricing?&quot; returns the answer with its sources. In TextEdit, after typing &quot;the Team plan will be $15&quot;, autocomplete suggests &quot;per seat, billed annually.&quot; from the meeting, and Tab accepts it. Then a spoken request, &quot;Write a one-line team update with the launch pricing&quot;, is dictated into TextEdit as an update with the free plan and the $15 price." />
+<img src="Assets/hero/lokalbot-demo-light.gif" width="920" alt="LokalBot in use, in seven looping scenes with fictional demo data. A Quick Recall search for &quot;demo presentation&quot; finds a Keynote deck and a Mail reply seen on screen, and two meetings. In a meeting summary, clicking an action item's citation opens the transcript at the line where it was said. An Ask answer about a holiday shoot links each claim to its source. In TextEdit, autocomplete finishes &quot;the Team plan will be $15&quot; with &quot;per seat, billed annually.&quot; from a meeting, and Tab accepts it. Holding Option-Space for the spoken request &quot;Write a short team update with the launch pricing&quot; writes the update into TextEdit. Timeline opens a work session with its evidence, and People shows what is open with Maya and with Leo. The loop ends on the tagline &quot;Your personal context engine.&quot;" />
 
 <sub>The real app, recorded with fictional demo data.</sub>
 
@@ -206,7 +206,7 @@ Yes, as an alpha. The Windows and Linux app is a native Rust app with the same p
 
 ## Local AI, your choice
 
-Start with the built-in models, then change them in **Settings → Models**. LokalBot supports its bundled llama.cpp runtime, Ollama, OpenAI-compatible servers, and Apple Intelligence on supported Macs running macOS 26 or later. Think can also run on your own ChatGPT plan (Sign in with ChatGPT) or Claude plan (through your signed-in Claude Code), without an API key. Remote servers and plans require approval before receiving context.
+Start with the built-in models, then change them in **Settings → Models**. LokalBot supports its bundled llama.cpp runtime, Ollama, OpenAI-compatible servers, and Apple Intelligence on supported Macs running macOS 26 or later. Think can also run on your own ChatGPT plan (Sign in with ChatGPT) or Claude plan (through your signed-in Claude Code), without an API key, and Agent Mode can run on the ChatGPT plan. Remote servers and plans require approval before receiving context.
 
 Different jobs use different models. These are the Mac defaults on a fresh install, about 9.6 GB of model files if you use every role. They are not a RAM requirement:
 

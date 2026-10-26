@@ -2,7 +2,7 @@
 
 > DeepSeek Harness（DSH）第三方插件精选目录与原生更新命令索引。
 
-[![Catalog Version](https://img.shields.io/badge/catalog-v1.56.8-blue.svg)](plugins.json)
+[![Catalog Version](https://img.shields.io/badge/catalog-v1.56.13-blue.svg)](plugins.json)
 [![Plugins Count](https://img.shields.io/badge/plugins-13%20curated-brightgreen.svg)](plugins.json)
 [![Target Profile](https://img.shields.io/badge/profile-web-orange.svg)](#)
 [![Single Source of Truth](https://img.shields.io/badge/SSOT-plugins.json-blueviolet.svg)](plugins.json)
@@ -28,8 +28,7 @@
 
 | 插件名称 | 版本 | 用途 | 来源 |
 |---|---:|---|---|
-| `dsh-watcher` | 0.7.1 | 会话工作路径观测面板 · 跨会话模型耗时与费用统计 | [daha1216/dsh-watcher](https://github.com/daha1216/dsh-watcher) |
-| `dsh-context` | 0.76.0 | 上下文洞察与管理：跨会话 Context Insights 页面、Context tab / 右侧上下文面板、Fleet 子 Agent 网络页与 `/context` 命令，查看上下文组成、用量与演变 | [bowenliang123/dsh-context](https://github.com/bowenliang123/dsh-context) |
+| `dsh-context` | 0.77.0 | 上下文洞察与管理：跨会话 Context Insights 页面、Context tab / 右侧上下文面板、Fleet 子 Agent 网络页与 `/context` 命令，查看上下文组成、用量与演变 | [bowenliang123/dsh-context](https://github.com/bowenliang123/dsh-context) |
 
 ### 🛠️ 会话管理与效率工具
 
@@ -37,7 +36,7 @@
 |---|---:|---|---|
 | `dsh-retrace` | 0.4.77 | 消息撤回、编辑重发与重新生成，同步回退修改过的文件 | [daha1216/dsh-retrace](https://github.com/daha1216/dsh-retrace) |
 | `@anysearch/anysearch-dsh` | 0.1.8 | 为 Agent 提供网页实时搜索与正文抓取能力 | [anysearch-team/anysearch-dsh](https://github.com/anysearch-team/anysearch-dsh) |
-| `dsh-update-checker` | 0.4.3 | 一键检查已装插件的上游更新（只检查不更新），展示更新内容 | [daha1216/dsh-update-checker](https://github.com/daha1216/dsh-update-checker) |
+| `dsh-update-checker` | 0.7.1 | 一键检查已装插件的上游更新（只检查不更新），可把更新清单填进新对话交给 AI 执行 | [daha1216/dsh-update-checker](https://github.com/daha1216/dsh-update-checker) |
 | `@local/skills-manager` | 0.3.3 | 在设置页新增「技能」管理页：列出 / 查看 / 新建 / 编辑 / 删除本地技能，切换调用策略，一键打开技能目录 | [daha1216/dsh-skills-manager](https://github.com/daha1216/dsh-skills-manager) |
 | `dsh-ops` | 0.4.1 | Rust 原生文件工具集（读 / 搜索 / 修改 / 文档读取 / 工具发现）与随包 MSYS bash；默认常量暴露、其余按需发现，替掉 Windows 下反复失败的原生 shell 调用，省 token 省时间 | [T-Auto/dsh-ops](https://github.com/T-Auto/dsh-ops) |
 | `dsh-client-auto-continue` | 0.17.0 | 请求因网络等非人为原因中断时，自动发送本地化的「继续」提示（Web UI 插件，中英双语） | [HsiangNianian/dsh-auto-continue](https://github.com/HsiangNianian/dsh-auto-continue) |
@@ -46,7 +45,8 @@
 
 | 插件名称 | 版本 | 用途 | 来源 |
 |---|---:|---|---|
-| `dsh-pocket` | 3.0.2 | 手机扫码同步电脑端 DSH，支持移动端操作 | [daha1216/dsh-pocket](https://github.com/daha1216/dsh-pocket) |
+| `dsh-pocket` | 3.0.3 | 手机扫码同步电脑端 DSH，支持移动端操作 | [daha1216/dsh-pocket](https://github.com/daha1216/dsh-pocket) |
+| `dsh-desktop-notify-win` | 0.4.0 | Windows 桌面通知：会话空闲、待审批、提问与出错时弹系统通知，带设置页、实时预览与预设 | [xiaotie3088/dsh-desktop-notify-win](https://github.com/xiaotie3088/dsh-desktop-notify-win) |
 
 ---
 
@@ -114,12 +114,12 @@ bash install.sh --all
 | `dsh-mnemon` | `dsh plugin --profile web add dsh-mnemon` |
 | `dsh-our-free-model` | `dsh plugin --profile web add https://github.com/Ebony-Vinyl/dsh-our-free-model/releases/download/v2.7.1/dsh-our-free-model-2.7.1.tgz` |
 | `dsh-retrace` | `dsh plugin --profile web add dsh-retrace` |
-| `dsh-watcher` | `dsh plugin --profile web add github:daha1216/dsh-watcher` |
 | `dsh-update-checker` | `dsh plugin --profile web add github:daha1216/dsh-update-checker` |
 | `@local/skills-manager` | `dsh plugin --profile web add github:daha1216/dsh-skills-manager` |
 | `dsh-ops` | `npx --yes dsh-ops@latest install --profile web` |
 | `dsh-client-auto-continue` | `dsh plugin --profile web add dsh-client-auto-continue@latest` |
 | `dsh-context` | `dsh plugin --profile web update dsh-context@latest` |
+| `dsh-desktop-notify-win` | `dsh plugin --profile web add github:xiaotie3088/dsh-desktop-notify-win` |
 
 ---
 

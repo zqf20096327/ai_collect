@@ -53,6 +53,10 @@ Blender 白膜锁空间与机位 → 图像编辑写实化首帧 → 图生视�
 白模作为复刻的中间骨架：只留镜头、站位、动作、节奏，再用 `wan2.7-videoedit` 渲染成真人和真实场景，按原片切点拼回。成片里没有原片像素，人物、服装、场景都能换。
 流程与脚本见 `workflows/blockout-replica/`，实测、对比、适用领域与成本见 [docs/BLOCKOUT_REPLICA_2026-10-11.md](docs/BLOCKOUT_REPLICA_2026-10-11.md)。
 
+## Seedance 2.5 复刻（自动白模 → Seedance → 真人成片）
+
+分镜板 provider `seedance`：`scripts/greybox.mjs` 把原片里的人抠成灰色人形作动作参考（视频1），生图模型做的人物图作长相参考（图片1），一次最长 30 秒、整条一次生成。直接拿原片作参考会保留原片真人的脸，所以必须用白模；开头约 0.5 秒的重影用 `--lead 1` 热身吸收。实测、失败模式、成本和各复刻路线的能力对比见 [docs/SEEDANCE_2026-10-26.md](docs/SEEDANCE_2026-10-26.md)。
+
 ## 复刻 Studio（演示界面）
 
 ```bash

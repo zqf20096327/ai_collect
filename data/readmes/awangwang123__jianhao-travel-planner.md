@@ -121,10 +121,10 @@ jianhao-travel-planner/
 
 ## 工具模式（不装 skill，直接用生成工具链）
 
-v1.17 起随包提供完整生成工具链——不想让 AI 走整套技能流程的话，也可以按 `schema.md` 填写 `trip_data.json`（可交给任意 AI 按 schema 代填）。**推荐用随包统一入口一条链跑完**（数据校验 → 生成 → 导览图注入 → 最终成品检查，自动按序执行并计时）：
+v1.17 起随包提供完整生成工具链——不想让 AI 走整套技能流程的话，也可以按 `schema.md` 填写 `trip_data.json`（可交给任意 AI 按 schema 代填）。**推荐用随包统一入口一条链跑完**（数据校验 → 生成 → 导览图注入 → 最终成品检查，自动按序执行并计时）；带 `--visual` 连视觉验收（桌面/手机双视口 + 图渲染逐张确认）一起跑：
 
 ```bash
-py tools/pipeline.py full fixtures/demo/demo_full.json 我的示范册.html
+py tools/pipeline.py full fixtures/demo/demo_full.json 我的示范册.html --visual
 ```
 
 也可分步执行（**顺序重要——导览图注入后必须再做最终成品检查**）：
@@ -140,7 +140,7 @@ py tools/checklist.py 路书.html --visual               # ④ 最终成品检�
 
 | 样本 | 用途 | 成品检查预期 |
 |---|---|---|
-| `fixtures/demo/demo_full.json` | **完整示范：第一次跑通用它**——虚构 3 天册，含导览图与全部板块 | 四步跑完 **FAIL 0** |
+| `fixtures/demo/demo_full.json` | **完整示范：第一次跑通用它**——虚构 3 天册，含导览图、7 张虚构示意配图与全部板块 | 四步（含 `--visual`）跑完 **FAIL 0**，7/7 配图真渲染 |
 | `fixtures/synth/book3/8/10.json` | 最小合成样本：**只用于测试链路**（内容空壳/配图不足属预期） | 内容类 FAIL 属预期，非上手示范 |
 | `fixtures/good_full.json` | 校验演示：演示数据规则（不可渲染生成） | 仅数据闸 |
 | `fixtures/synth_abroad_sample.json` | 出境格式样本（跨日红眼/时区/双币种） | 配合 test_abroad 使用 |
@@ -176,6 +176,7 @@ py tools/checklist.py 路书.html --visual               # ④ 最终成品检�
 
 ## 版本
 
+- **v1.18**（2026-10-26）：修复完整示范样本配图——七张 1×1 占位图替换为标注「虚构示意 · 非真实景点」的示意插画；页尾图源/动线声明改中性缺省（不再自动声称 Pexels/OSRM，数据侧可如实覆盖）；导览图出界检查兼容程序化导览图并三态收紧（查出越界=FAIL、未能完成检查=FAIL 阻断、无图=SKIP 单列）；工具模式统一入口显式带 `--visual`；发布打包防缺件防裹挟
 - **v1.17**（2026-10-24）：**工具链公开化**——生成器/数据校验器/导览图程序化/事实派生等八件工具与 schema/骨架/合成样本随包发布，新增「工具模式」四步机械全链；教程与 README 承诺修正（耗时/助手能力/检查边界/配图边界）
 - **v1.16**（2026-10-24）：修复部分页面无法识别行程时段的问题；未读取到时段时明确报错不漏检；减少餐段重复识别误报；作息默认节奏条文化（默认 09:30—10:00 开始游玩，不写起床细节）。**稳定版下载走 [Releases 页](https://github.com/awangwang123/jianhao-travel-planner/releases)（v1.16 起 zip 随 Release 发布）；主分支为最新开发态，两者可能不同步，以 Releases 为准**
 - **v1.15**（2026-10-21）：问题反馈模板适配双路线——报错单不再绑定 Claude Code，任意 AI 助手用户可顺填报错，新增「你用的 AI 助手」排查字段

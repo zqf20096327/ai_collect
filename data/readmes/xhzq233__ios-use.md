@@ -64,8 +64,8 @@ ln -s "$HOME/.ios-use/skill" .agents/skills/ios-use
 Install a specific release or build from source:
 
 ```bash
-# Install version 2.1.2.
-curl -fsSL https://raw.githubusercontent.com/xhzq233/ios-use/v2.1.2/scripts/install.sh | bash -s -- --version v2.1.2
+# Install version 2.1.3.
+curl -fsSL https://raw.githubusercontent.com/xhzq233/ios-use/v2.1.3/scripts/install.sh | bash -s -- --version v2.1.3
 curl -fsSL https://raw.githubusercontent.com/xhzq233/ios-use/main/scripts/install.sh | bash -s -- --build-from-source
 ```
 
@@ -76,7 +76,7 @@ services on Linux x86_64. Install with the command above, or build from
 source with Swift 6.2+ and standard Linux build tools:
 
 ```bash
-git clone --branch v2.1.2 https://github.com/xhzq233/ios-use.git
+git clone --branch v2.1.3 https://github.com/xhzq233/ios-use.git
 cd ios-use
 bash scripts/build_swift_cli.sh
 ./ios-use start -d phone --connection device-connection.json
@@ -135,6 +135,15 @@ Every Mac session includes Frida. See the
 
 <details>
 <summary>Mac device presets, windows and runtime behavior</summary>
+
+Set the managed App's output gain with `ios-use config --mac --volume 25`
+(0–100), or use `--mute on` / `--mute off`. The default is muted at volume 100;
+use `--mute off` to enable sound. Saved explicit preferences are retained. Audio settings apply immediately,
+persist under `IOS_USE_HOME`, and restore the configured volume on unmute.
+They affect the App's in-process Core Audio PCM output, including AVPlayer,
+AVAudioPlayer, AVAudioEngine and AudioQueue, without changing system volume or
+other processes. Encoded passthrough, remote playback and separate helper
+processes are not controlled. Config reports any observed unsupported formats.
 
 Choose a device preset with `ios-use config --mac --device-model ipad-pro-11`.
 This changes the running Mac App and saves the selection in the current

@@ -1,8 +1,8 @@
 # dsh-memory-context-lab
 
-**当前版本 0.13.1**（单引擎）。
+按 **DSH 会话** 启用的上下文管理插件：基础是**上下文降温**（把执行完的操作沉入隔离冷库、用极小回执替换），0.9.0 起扩展**全历史记忆上下文**（v2）与**计划先行**。安装、会话命令、图形入口与清理卸载的唯一操作说明都在这里。
 
-按 **DSH 会话** 启用的上下文管理插件：基础是**上下文降温**（把执行完的操作沉入隔离冷库、用极小回执替换），0.9.0 起扩展**全历史记忆上下文**与**计划先行**。安装、会话命令、图形入口与清理卸载的唯一操作说明都在这里。
+> **当前源码版本 0.14.0-beta.9（测试版）**：v3 影子线——八层架构、上界回注、影子挂载（v2 零改动）；详见 CHANGELOG。与 0.13.1 的可观察差异见[变更记录](./CHANGELOG.md)与[进展卡（beta.1）](../docs/dev-0.13.2/进展卡.md)、[进展卡（beta.2）](../docs/dev-0.13.2/进展卡-beta.2.md)、[进展卡（beta.3）](../docs/dev-0.13.2/进展卡-beta.3.md)、[进展卡（beta.4）](../docs/dev-0.13.2/进展卡-beta.4.md)、[进展卡（beta.5）](../docs/dev-0.13.2/进展卡-beta.5.md)。命令面**没有变化**；beta.3 起设置页的「全历史记忆上下文」与「保留最近操作」真正生效（此前是空开关）；beta.4 起设置页保存不再抹掉 schema 里其它字段，`/memory-lab set` 的数字参数不再被静默截断；beta.5 起 `set autorestore off` 真正「只停用不恢复」（窗口守卫照常生效），设置页数字框与 `history` 的每页条数不再静默改值。
 
 ## 它做什么、不做什么
 
@@ -12,18 +12,18 @@
 
 ## 缓存纪律
 
-在位置 i 替换内容，会让 i 之后一切按未命中价重算。插件据此**一批做够**（批次数才是代价来源）、**回注只落在批次尾部**、**工具集恒定**。见工作区 `docs/架构与边界.md` 的「前缀缓存纪律」。
+在位置 i 替换内容，会让 i 之后一切按未命中价重算。插件据此**一批做够**（批次数才是代价来源）、**回注只落在批次尾部**、**工具集恒定**。见[架构与边界](../docs/架构与边界.md#前缀缓存纪律)。
 
 ## 已核验范围
 
 | 项目 | 值 |
 |---|---|
 | DSH Desktop | `0.2.0-rc.2` |
-| `dsh-memory`（**可选**） | `0.8.1`；缺席时独立模式运行 |
+| `dsh-memory`（**可选**） | `0.8.1` / `0.9.8` / `0.9.10`（三个版本都做过抑制补丁核验）；缺席或版本不在范围内时独立模式运行，**抑制不启用**并在 `on` 回执与 `status` 里如实说明 |
 | 冷库 | 复合后端：灵枢子进程（T2）/ 本地 Node store（T1） |
 | 会话目录 | `$DSH_HOME/.memory-context-lab/sessions/<session-id 的 sha256 前 24 位>/` |
-| 真实灵枢保护 | 启用期间按会话抑制 `dsh-memory` 的自动读写（不改动工具集） |
-| 依赖的宿主接口 | `agent/pre-step`、`session.surface`、`session.append`、`requestHeader()`、`requestContext()`、`tokenMeter`、`llm`、`sessionProjections`、`commands`；可选 `planMode`（缺失时如实降级）。详见工作区 `docs/架构与边界.md` |
+| 真实灵枢保护 | 启用期间按会话抑制 `dsh-memory` 的自动读写（不改动工具集）；`status` 有独立一行「真实灵枢抑制：已启用 / 未启用（原因）」 |
+| 依赖的宿主接口 | `agent/pre-step`、`session.surface`、`session.append`、`requestHeader()`、`requestContext()`、`tokenMeter`、`llm`、`sessionProjections`、`commands`；可选 `planMode`（缺失时如实降级）。详见[架构与边界](../docs/架构与边界.md) |
 
 冷库不可用不阻止启用（T1 兜底）：归档/回注失败关闭；占用率缺 `requestHeader()` / `tokenMeter.measure` / `contextWindow` 时**失败关闭**，原因见 `status` / `dry-run`。
 
@@ -57,7 +57,7 @@
 **卡片默认不复制正文**：摘录类值渲染成 `（正文摘录未共享）`，只留 entity、属性标签、极性/关系标签、来源 ID 与
 `expand` 入口；结构化属性（退出码、测试摘要、版本号）照常保留。`set sharel2content on` 才放摘录（默认 off、失败关闭）。
 
-**成员级排除**：一条成员被遗忘不再废掉整组——被遗忘者排除出参与集，其余照常压缩；全排除仍整组失败关闭。细节见工作区 `docs/降温模式.md`。
+**成员级排除**：一条成员被遗忘不再废掉整组——被遗忘者排除出参与集，其余照常压缩；全排除仍整组失败关闭。细节见[降温模式](../docs/降温模式.md)。
 
 ### 全历史记忆上下文（v2 模式开关）
 
@@ -69,7 +69,7 @@
 
 **关闭即退出（rc.5）**：`set planfirst off` 同时退出本会话仍处 active/pending 的计划模式。
 
-图形入口与设置：composer 权限控件右侧的「降温」触发器（同一套设置与动作）；**状态、全历史、计划先行三行摘要与最近一次输出**显示在弹层底部。全局默认在 设置 → 组件 → 「记忆上下文」。
+图形入口与设置：composer 权限控件右侧的「降温」触发器（同一套设置与动作）；**状态、全历史、计划先行三行摘要与最近一次输出**显示在弹层底部。全局默认与预设在 设置 → 组件 → 「记忆上下文」。
 
 **停用或归档都会把会话送回正常。** `/memory-lab off` 或面板拨关都走停用路径（先恢复原文，再解除抑制、删隔离目录）；关「全历史」同样先恢复再翻位。恢复放不进窗口时如实拒绝（原文留冷库可回读）；仍有未恢复回执时不删。插件只清理 `$DSH_HOME/.memory-context-lab/` 自有数据，**从不写真实灵枢**，也不改写会话日志与命令审计。
 
@@ -96,14 +96,14 @@
 ## 验证
 
 ```text
-npm run test:all      # 97 套逐套汇总（推荐）
-npm test              # 与 test:all 同一批套件，失败即中断
-npm run probe:host    # 宿主 schema 校验（需 DSH_ASAR；无参数 SKIP）
-npm run probe:revert  # 回退场景，确认对应测试会失败
-npm run probe:lingshu # 隔离灵枢写入健康探测；不可用如实报环境原因
+cd 记忆上下文/plugin && npm run test:all      # 118 套逐套汇总（推荐）
+cd 记忆上下文/plugin && npm test              # 同 test:all，失败即中断
+cd 记忆上下文/plugin && npm run probe:host    # 宿主 schema 校验（需 DSH_ASAR；无参数 SKIP）
+cd 记忆上下文/plugin && npm run probe:revert  # 66 个回退场景，确认对应测试会失败
+cd 记忆上下文/plugin && npm run probe:lingshu # 隔离灵枢写入健康探测；不可用如实报环境原因
 ```
 
-**`npm test` 第一项是 `entry-coverage`**：比对磁盘 `test/*.test.mjs` 与 `scripts.test` 链，防止「写了测试却没接线」。0.13.1 全套 **97 套**（全通过、0 跳过；Node v24.19.0）。
+**`npm test` 第一项是 `entry-coverage`**：比对磁盘 `test/*.test.mjs` 与 `scripts.test` 链，防止「写了测试却没接线」。0.13.2-beta.7 全套 **118 套**（全通过、0 跳过；Node v26.12.1），逐套件范围见[验证与评估](../docs/验证与评估.md)。
 
 > 沙箱宿主里 `%TEMP%` 可能不可写（`mkdtemp` 报 `EPERM`）：环境限制，非缺陷；把 `TEMP`/`TMP`/`TMPDIR` 指到可写目录。
-`FakeSession` 按宿主真实折叠规则实现校验；契约忠实度见工作区 `docs/验证与评估.md`。
+`FakeSession` 按宿主真实折叠规则实现校验；契约忠实度见[验证与评估](../docs/验证与评估.md)。

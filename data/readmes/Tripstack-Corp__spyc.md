@@ -52,6 +52,11 @@ They share focus through a screen-style `^a` chord prefix. The pane is a real
 terminal emulator, [libghostty-vt](https://github.com/ghostty-org/ghostty) (the
 core of Ghostty), so an agent draws just as it would in your own terminal.
 
+One spyc holds several [projects](docs/features/projects.md#projects), each
+with its own columns, tabs and agents: `Space n` opens one, `Space j` moves
+between them, and `Space !` takes you to the agent that needs you, whichever
+project it's in.
+
 Codex, Claude Code, and Antigravity tabs also have an optional [native session strip](docs/config/agent-hud.md#agent-hud--pane-agent_hud):
 `:agent hud compact` shows attention, identity, context and usage below the
 child; `full` adds operating mode and recent tools. It is off by default.
@@ -209,7 +214,7 @@ The essentials. Press `?` in spyc for the full overlay, or see
 | `^a s` | Send picked paths to the pane |
 | `gf` / `gF` | Jump from pane output to a file (+ line) |
 | `F` / `:grep` | Fuzzy filename finder / project content search |
-| `?` / `q` | Full help overlay / quit |
+| `?` / `Q` | Full help overlay / quit (`q` is reserved for macro recording) |
 
 ## Configuration
 

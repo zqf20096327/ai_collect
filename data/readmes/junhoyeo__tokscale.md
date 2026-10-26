@@ -723,6 +723,8 @@ When you log out, Tokscale moves cached usage to `cursor-cache/archive/` so it i
 
 `tokscale cursor sync` downloads each saved account's usage history page by page and gives each account one overall time budget. By default the budget starts at 120 seconds and grows with the number of usage events Cursor reports for the account, up to 1800 seconds (30 minutes). To use a fixed budget instead, pass `--timeout <SECONDS>` for one run, or save `cursor.syncTimeoutSeconds` in `settings.json` (by default `~/.config/tokscale/settings.json`; see [Configuration](#configuration) for Windows, `XDG_CONFIG_HOME` and `TOKSCALE_CONFIG_DIR`). Both take a whole number of seconds from 1 to 86400. If the setting holds any other value, `tokscale cursor sync` run without `--timeout` prints a warning and uses the default budget. The flag takes precedence over the setting, and the setting takes precedence over the default budget.
 
+`tokscale submit` also syncs Cursor usage before uploading. It defaults to a 15-second budget, honors `cursor.syncTimeoutSeconds` from `settings.json` when configured, and accepts `--timeout <SECONDS>` (or `--cursor-timeout <SECONDS>`) to override the budget for that submission.
+
 ```json
 {
   "cursor": {
@@ -859,7 +861,7 @@ tokscale report --workspace my-project --client opencode
 | `codex` | `codex --quiet` | Requires Codex CLI installed and authenticated. |
 | `gemini` | `gemini -p` | Requires Gemini CLI installed and authenticated. |
 | `kiro` | `kiro --non-interactive` | Requires Kiro CLI installed and authenticated. |
-| `minimax` | (HTTP API) | OpenAI-compatible chat-completions API, so no CLI is needed. Set `MINIMAX_API_KEY` or `MINIMAX_API_TOKEN`. Defaults to `MiniMax-M3` on the global endpoint (`https://api.minimax.io/v1`); set `MINIMAX_API_REGION=cn` to use `https://api.minimaxi.com/v1`, and `MINIMAX_MODEL` to select another model (for example `MiniMax-M2.7`). |
+| `minimax` | (HTTP API) | OpenAI-compatible chat-completions API, so no CLI is needed. Set `MINIMAX_API_KEY` or `MINIMAX_API_TOKEN`. Defaults to `MiniMax-M3.1-Flash` on the global endpoint (`https://api.minimax.io/v1`); set `MINIMAX_API_REGION=cn` to use `https://api.minimaxi.com/v1`, and `MINIMAX_MODEL` to select another model (for example `MiniMax-M3`). |
 
 **How it works:**
 
@@ -1022,7 +1024,7 @@ Tokscale stores settings in `settings.json` in its config directory. By default 
 | `light.writeCache` | boolean | `false` | When true, `tokscale --light` overwrites the TUI cache atomically after rendering. CLI flags `--write-cache` / `--no-write-cache` override per-invocation. |
 | `minutelyTabEnabled` | boolean | `false` | Show the per-minute Minutely tab in the TUI and aggregate per-minute usage during data loading. Default-off because minute-granularity is a niche/diagnostic view for most users and the per-minute bucketing has a non-trivial cost on large datasets. |
 | `autosubmit` | object | disabled | Saved `tokscale autosubmit` state: interval, client/date filters, scheduler backend, last run time, and last error. Prefer `tokscale autosubmit enable/status/disable` over editing this object by hand. |
-| `cursor.syncTimeoutSeconds` | number | unset | Overall time budget, in seconds (1-86400), for each account's usage download in `tokscale cursor sync`. When unset, the budget starts at 120 s and grows with the number of usage events Cursor reports, up to 1800 s. `tokscale cursor sync --timeout <SECONDS>` overrides it for one run. See [Cursor IDE Commands](#cursor-ide-commands). |
+| `cursor.syncTimeoutSeconds` | number | unset | Overall time budget, in seconds (1-86400), for each account's usage download in `tokscale cursor sync` and pre-report sync in `tokscale submit`. When unset, the budget starts at 120 s and grows with the number of usage events Cursor reports (15 s default during submit). `tokscale cursor sync --timeout <SECONDS>` and `tokscale submit --timeout <SECONDS>` override it for one run. See [Cursor IDE Commands](#cursor-ide-commands). |
 | `scanner.extraScanPaths` | object | `{}` | Additional per-client scan roots for sessions outside Tokscale's default home-root locations |
 | `scanner.machineLabels` | object | `{}` | Machine label for each folder, as `{ "<folder>": "<label>" }`. Session files under a folder count toward its label in `--group-by machine,model`; the longest matching folder wins. See [Per-machine usage](#per-machine-usage). |
 | `scanner.localMachineLabel` | string | `"local"` | Machine label for session files under no `scanner.machineLabels` folder |
@@ -1592,6 +1594,4 @@ AI coding tools store their session data in cross-platform locations. Most tools
 | Prime Agent | `~/.prime/agent/` | `%USERPROFILE%\.prime\agent\` | Root sessions plus RLM child sessions; configurable via `sessionDir` in `settings.json`, `PRIME_AGENT_CODING_AGENT_DIR`, `PRIME_AGENT_SESSION_DIR`, or legacy `PRIME_AGENT_CODING_AGENT_SESSION_DIR` |
 | Copilot CLI | `~/.copilot/session-store.db`, `~/.copilot/otel/`, `~/.copilot/data.db` | `%USERPROFILE%\.copilot\session-store.db`, `%USERPROFILE%\.copilot\otel\`, `%USERPROFILE%\.copilot\data.db` | CLI usage events from `session-store.db` (no OTEL required); also auto-ingests `COPILOT_OTEL_FILE_EXPORTER_PATH` and Desktop `data.db` |
 | Hermes Agent | `~/.hermes/` | `%USERPROFILE%\.hermes\` | Configurable via `HERMES_HOME` env var ([source](https://github.com/NousResearch/hermes-agent/blob/main/website/docs/developer-guide/session-storage.md)) |
-| Gemini CLI | `~/.gemini/` | `%USERPROFILE%\.gemini\` | Configurable via `GEMINI_CLI_HOME` env var |
-| Amp | `~/.config/tokscale/amp-cache/` (+ legacy `~/.local/share/amp/`) | `%APPDATA%\tokscale\amp-cache\` (+ legacy `%USERPROFILE%\.local\share\amp\`) | Synced via `tokscale amp sync`; legacy path uses `xdg-basedir` like OpenCode |
-| Cursor | API sync | API sync | Data fetched from Cursor A
+| Gemini C

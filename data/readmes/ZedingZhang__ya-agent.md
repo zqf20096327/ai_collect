@@ -51,7 +51,9 @@ Run the command and browser on the same computer. If the browser does not open a
 
 Account sign-in uses the PKCE protocol implemented by [DeepSeek's official Harness](https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/credentials/deepseek-account-platform). Ya receives a platform account grant and sends it to the official Messages API as `x-dsh-auth-token`; it does not request your password. Available access and billing follow your platform account. While signed in, the account takes priority over API keys. Signing out removes the account grant and attempts remote session revocation; existing API keys remain available. A rejected account token prompts you to sign in again.
 
-The account grant is stored as plaintext (unencrypted JSON), separately from settings, at `~/.ya/auth/credentials.json` (or `$YA_HOME/auth/credentials.json`). On Unix, the directory and file use permissions `0700` and `0600`; Windows uses the directory's access controls. These permissions and access controls restrict file access but do not encrypt the grant. Use disk encryption and encrypted backups to protect the stored grant if a disk is lost or a backup is exposed. Keep this user data directory private. The grant is never returned to the desktop renderer or stored in conversation history, and local file tools block reading the credential file.
+On macOS, account grants are stored in Keychain under a service separate from API keys. CLI and GUI share the entry for the same data directory; changing `YA_HOME` selects a separate entry. Existing plaintext records migrate to Keychain and are removed only after a successful save and read-back verification. Account operations share a process lock; if another process is changing the login, Ya reports that storage is busy and you can retry after it finishes. If Keychain access or migration fails, Ya reports an error and retains any existing credential file; unlock Keychain and retry or run `ya logout deepseek` to remove the login.
+
+Linux and Windows store the grant as plaintext (unencrypted JSON), separately from settings, at `~/.ya/auth/credentials.json` (or `$YA_HOME/auth/credentials.json`). On Linux, directory and file permissions are `0700` and `0600`; Windows uses the directory's access controls. These controls restrict access without encrypting the grant. Use disk encryption and encrypted backups, including for any macOS record awaiting migration, and keep the data directory private. Grants are never returned to the desktop renderer or stored in conversation history; local file tools block the credential file.
 
 ## Install the CLI from a release tarball
 
@@ -123,7 +125,7 @@ The portable desktop application is `ya-gui-windows-x64.exe`.
 
 ### Verify downloads
 
-Releases are distributed without publisher code signing or Apple notarization. macOS builds may use ad-hoc signatures for execution, which do not verify the publisher. macOS Gatekeeper and Windows SmartScreen may warn about or block these downloads. See [release signing](docs/release-signing.md) for details. Download `checksums.txt` from the same release and compare the matching SHA-256 value:
+Read each Release's notes for its macOS signing mode. With complete release credentials, the workflow signs the CLI and GUI with Developer ID, enables hardened runtime, and verifies Apple notarization. Without credentials, the GUI uses ad-hoc signatures, which do not identify a publisher; Windows and Linux builds remain without publisher signing. Unsigned or ad-hoc downloads may trigger Gatekeeper or SmartScreen warnings. The existing `v0.8.0` assets predate this conditional workflow. See [release signing](docs/release-signing.md) for setup and verification. Download `checksums.txt` from the same release and compare the matching SHA-256 value:
 
 ```sh
 shasum -a 256 ya-macos-arm64

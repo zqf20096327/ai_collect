@@ -821,7 +821,9 @@ Kevin V. Bigting, Shubhadeep Nag, Yaxin An.
 
 
 
-
+* **Accuracy and Efficiency Benchmarks of Pretrained Machine Learning Potentials for Molecular Simulations** [2026]  
+Peter Eastman, Evan Pretti, Thomas E. Markland.  
+[J. Chem. Theory Comput. (2026)](https://doi.org/10.1021/acs.jctc.6c00130) | [Code](https://github.com/peastman/mlipbenchmarks)  
 
 * **Seamless QM/MM Simulations via a GROMACS-CP2K Interface** [2026]  
 Dmitry Morozov, Christian Blau, Ole Schütt, Vladimir Mironov, Arno Proeme, Holly Judge, Thomas D. Kühne, Berk Hess, Gerrit Groenhof.  
@@ -1036,7 +1038,9 @@ Wang, Han, Linfeng Zhang, Jiequn Han, and E. Weinan.
 
 
 
-
+* **Accuracy and Efficiency Benchmarks of Pretrained Machine Learning Potentials for Molecular Simulations** [2026]  
+Peter Eastman, Evan Pretti, Thomas E. Markland.  
+[J. Chem. Theory Comput. (2026)](https://doi.org/10.1021/acs.jctc.6c00130) | [Code](https://github.com/peastman/mlipbenchmarks)  
 
 * **From Variational Optimization to Flow-Based Transport: Posterior-Geometry Regularization for Ill-Conditioned Data Assimilation** [2026]  
 Siming Liang, Feng Bao, Hristo G. Chipilski, Peter Jan van Leeuwen, Guannan Zhang.  
@@ -1519,11 +1523,4 @@ Nitesh Kumar and Vyacheslav S. Bryantsev.
 [J. Phys. Chem. Lett. (2025)](https://doi.org/10.1021/acs.jpclett.5c01206)  
 
 * **chemtrain: Learning deep potential models via automatic differentiation and statistical physics** [2025]  
-Fuchs, Paul, Stephan Thaler, Sebastien Röcken, and Julija Zavadlav.  
-[Computer Physics Communications (2025)](https://doi.org/10.1016/j.cpc.2025.109512) | [code](https://github.com/tummfm/chemtrain)  
-
-* **Accurate and efficient machine learning interatomic potentials for finite temperature modelling of molecular crystals** [2025]  
-Della Pia, Flaviano and Shi, Benjamin X. and Kapil, Venkat and Zen, Andrea and Alfè, Dario and Michaelides, Angelos.  
-[Chem. Sci. (2025)](https://doi.org/10.1039/D5SC01325A) | [code](https://github.com/water-ice-group/MolCrys-MACE)  
-
-* **Impact of Derivative Observations on Ga
+Fuchs, Paul, Stephan 

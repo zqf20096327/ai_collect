@@ -12,7 +12,11 @@
 [![Store](https://img.shields.io/badge/Store-Merch-E34F26?logo=shopify&logoColor=white)](https://theconsciousness.ai/merch/)
 [![Newsletter](https://img.shields.io/badge/Newsletter-Subscribe-D97757?logo=maildotru&logoColor=white)](https://theconsciousness.ai/subscribe/?utm_source=github&utm_medium=readme)
 
-<img width="1000" height="238" alt="theConsciousness.ai, open source research" src="docs/assets/banner.png" />
+<img width="1000" height="238" alt="theConsciousness.ai, open source research" src="docs/assets/theconsciousness-horizontal-banner-v2-1.png" />
+
+[![Watch the video: The Consciousness Research. Tokens vs. lived stakes](docs/assets/video-thumbnail.jpg)](https://youtu.be/5vOVLxMMIus)
+
+**Video:** [Watch "The Consciousness Research. Tokens vs. lived stakes" on YouTube](https://youtu.be/5vOVLxMMIus)
 
 **The Consciousness AI** is a research framework investigating the emergence of synthetic awareness. Unlike traditional AI that mimics intelligent output, this system generates behavior through an internal struggle for **Emotional Homeostasis** and **Integrated Information**.
 

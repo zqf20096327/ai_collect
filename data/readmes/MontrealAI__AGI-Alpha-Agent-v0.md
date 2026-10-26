@@ -156,6 +156,18 @@ Vincent Boucher · MONTREAL\.AI · 2026-10 · English PDF.
 - **[AGI ALPHA FLYWHEEL](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/agi-alpha-economic-engine-v1.pdf)** · A separately preregistered financial simulation connects useful recorded work, complete business costs, collected proceeds, reserves and bounded capability investment\. It preserves unfavorable paths, idle allocations and failed construction, with distinct source\-inspected USDC and AGIALPHA settlement routes\. Simulated gains, token realization and customer value remain conditional; no live revenue, transaction or self\-acceleration is demonstrated\.
   AGI ALPHA research engineering study · 2026-10-25 · English PDF.
   [Historical experimental companion source and assembly](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/67e664f419511c59f41f426171614d7f425ed67f/studies/agi-alpha-economic-engine-v1/README.md)
+- **[BUILD THE NEXT ADVANTAGE](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/agi-alpha-next-advantage-v1.pdf)** · Example\-derived quote adapters qualify on 96 fresh missions\. Active selection matches the learned recipe and LLM\-assisted constructor; complete costs and simulated financing keep the stronger incumbent and expose the limits\.
+  Vincent Boucher · MONTREAL\.AI · 2026-10-25 · English PDF.
+- **[AGI ALPHA FLYWHEEL: The Autonomous Work Economy](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/agi-alpha-autonomous-work-economy-v1.pdf)** · An independent bounded study delivers 16 local artifacts across four workflow families, retains eight expected refusals, and tests a successor on eight later quote cases\. Complete costs and reinvestment remain conditional models; customer payments, full authenticated execution and self\-acceleration are not established\.
+  Vincent Boucher · MONTREAL\.AI · 2026-10-25 · English PDF.
+- **[THE ADVANTAGE THAT FUNDS THE NEXT](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/agi-alpha-funded-advantage-v1.pdf)** · A versioned release\-inventory intake capability serves the actual Alpha Workbench\. Three strong methods correctly complete 16 fresh comparison requests and 64 representations each\. Complete costs and attention savings remain unmeasured; no material incremental advantage is established\. Financing scenarios bind the exact tested asset, preserve adverse outcomes and leave actual economic admission on HOLD\.
+  AGI ALPHA research engineering study · 2026-10-25 · English PDF.
+  [Historical experimental companion source and assembly](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/33ba0d8a589096cd33fe584fe4ed450bdc3fb729/studies/agi-alpha-funded-advantage-v1/README.md)
+- **[Build an Advantage That Repays Its Cost — The Investment Gate](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/investment-gate.pdf)** · Nine scoped internal requests and eighteen evaluations with overlapping inputs produced eight complete measured local paths, not eight authenticated native missions\. One scope retained its native artifact\-policy refusal\. No productive asset was selected or constructed and no untouched confirmation trial was run\. Full monetary cost, repayment and positive incremental economics remain unestablished\. DISCOVERY/HOLD\.
+  AGI ALPHA Research · MONTREAL\.AI · 2026-10-25 · English PDF.
+- **[The Next Upgrade](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/the-next-upgrade.pdf)** · A consumer\-specific dependency assessment accepted nine of twelve custom\-method scopes versus twelve of twelve for the conventional comparator\. The custom method was rejected; local task support and reuse do not establish cheaper capability construction or commercial success\. Complete monetary costs, repayment and sustained acceleration remain unestablished\. Economic HOLD\.
+  AGI ALPHA Research · 2026-10-26 · English PDF.
+  [Historical experimental companion source and assembly](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/f019a1d2d1c1c678c7363bf9cde61dab6ec0de12/studies/agi-alpha-value-compounds-v1/README.md)
 
 Research proposals and bounded studies, not claims of general autonomous capability or physical deployment.
 [Explore the papers in English or French](https://montrealai.github.io/AGI-Alpha-Agent-v0/#papers)
@@ -1557,82 +1569,4 @@ graph TD
     SUP["📦 Supply‑Chain"]
     RET["🛍️ Retail / Demand"]
     CYB["🛡️ Cyber‑Security"]
-    CLM["🌎 Climate"]
-    DRG["💊 Drug Design"]
-    SMT["⛓️ Smart Contracts"]
-    TLT["🧑‍💼 Talent"]
-
-    %% Derived transversal competences
-    QNT["📊 Quant R&D"]
-    RES["🔬 Research Ops"]
-    DSG["🎨 Design"]
-    OPS["🔧 DevOps"]
-
-    %% Primary value‑creation arcs
-    FIN -->|Price discovery| QNT
-    FIN -->|Risk stress‑test| CLM
-    BIO --> DRG
-    BIO --> RES
-    MFG --> SUP
-    ENE --> CLM
-    RET --> FIN
-    POL --> CYB
-    SMT --> FIN
-
-    %% Cross‑pollination (secondary, dashed)
-    FIN -.-> POL
-    SUP -.-> CLM
-    CYB -.-> OPS
-    DRG -.-> POL
-    QNT -.-> RES
-    RET -.-> DSG
-
-    %% Visual grouping
-    subgraph Core
-        FIN
-        BIO
-        MFG
-        POL
-        ENE
-        SUP
-        RET
-        CYB
-        CLM
-        DRG
-        SMT
-        TLT
-    end
-    classDef core fill:#0d9488,color:#ffffff,stroke-width:0px;
-```
-
-Each agent exports a signed *proof‑of‑alpha* message to the Kafka bus, enabling cross‑breeding of opportunities.
-
-```mermaid
-sequenceDiagram
-    participant User
-    participant ORC as Orchestrator
-    participant FIN as 💰
-    participant GEN as 🧪
-    User->>ORC: /alpha/run
-    ORC->>GEN: new_world()
-    GEN-->>ORC: env_json
-    ORC->>FIN: act(env)
-    FIN-->>ORC: proof(ΔG)
-    ORC-->>User: artefact + KPI
-```
-
----
-
-<a name="4-demo-showcase"></a>
-## 4 · Demo Showcase 🎬
-
-| # | Folder | Emoji | Lightning Pitch | Alpha Contribution | Start Locally |
-|---|--------|-------|-----------------|--------------------|---------------|
-|1|`aiga_meta_evolution`|🧬|Agents *evolve* new agents; genetic tests auto‑score fitness.|Expands strategy space, surfacing fringe alpha.|`cd alpha_factory_v1/demos/aiga_meta_evolution && ./run_aiga_demo.sh`|
-|2|`alpha_agi_business_v1`|🏦|Auto‑incorporates a digital‑first company end‑to‑end.|Shows AGI turning ideas → registered business.|`./alpha_factory_v1/demos/alpha_agi_business_v1/run_business_v1_demo.sh [--pull] [--gpu]` (docs: `http://localhost:8000/docs`)|
-|3|`alpha_agi_business_2_v1`|🏗|Iterates business model with live market data RAG.|Continuous adaptation → durable competitive alpha.|`./alpha_factory_v1/demos/alpha_agi_business_2_v1/run_business_2_demo.sh`|
-|4|`alpha_agi_business_3_v1`|📊|Financial forecasting & fundraising agent swarm.|Optimises capital stack for ROI alpha.|`./alpha_factory_v1/demos/alpha_agi_business_3_v1/run_business_3_demo.sh`|
-|5|`alpha_agi_marketplace_v1`|🛒|Peer‑to‑peer agent marketplace simulating price discovery.|Validates micro‑alpha extraction via agent barter.|`docker compose -f demos/docker-compose.marketplace.yml up`|
-|6|`alpha_asi_world_model`|🌌|Scales MuZero‑style world‑model to an open‑ended grid‑world.|Stress‑tests anticipatory planning for ASI scenarios.|`docker compose -f demos/docker-compose.asi_world.yml up`|
-|7|`cross_industry_alpha_factory`|🌐|Full pipeline: ingest → plan → act across 4 verticals.|Proof that one orchestrator handles multi‑domain alpha.|`./alpha_factory_v1/demos/cross_industry_alpha_factory/deploy_alpha_factory_cross_industry_demo.sh`|
-|8|`era_of_experience`|🏛|Lifelong RL stack blending real & synthetic experience streams.|Showcases sensor-motor tools, grounded rewards & non-human reasoning.|`cd alpha_factory_v1/demos/era_of_experience && ./run_experien
+    CL

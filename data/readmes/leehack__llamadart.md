@@ -39,6 +39,15 @@ Choose [direct llamadart, Genkit, or Flutter Edge AI](https://llamadart.leehack.
 
 ## Requirements
 
+For a model-free desktop setup report, run `dart run llamadart:doctor` or
+`dart run llamadart:doctor --json` on macOS, Linux or Windows. The public
+`collectLlamaRuntimeSetupReport()` API returns the same snapshot. It reports
+pinned publication policy and override presence; native loading, selected
+backend/GPU, emitted assets and model capabilities remain unchecked. Exit 0
+means a report was produced. The collector uses no native initialization or
+network; `dart run` can prepare/download assets through its build hook or fail
+before main. See [setup report scope](https://llamadart.leehack.com/docs/platforms/native-build-hooks#desktop-setup-report).
+
 - Dart SDK `>=3.10.7`
 - Flutter SDK `>=3.38.0` for Flutter apps
 - iOS deployment target `16.4` or newer for Flutter iOS apps. For LiteRT-LM
@@ -59,7 +68,7 @@ For Dart or Flutter apps:
 
 ```yaml
 dependencies:
-  llamadart: ^0.16.2
+  llamadart: ^0.16.4
 ```
 
 Flutter iOS/macOS apps that should link Apple XCFrameworks through Swift
@@ -90,7 +99,7 @@ overrides fail the build; resolve the matching companion and rerun
 
 ```yaml
 dependencies:
-  llamadart: ^0.16.2
+  llamadart: ^0.16.4
   llamadart_llama_cpp_flutter: ^0.16.0 # GGUF / llama.cpp
   llamadart_litert_lm_flutter: ^0.16.2 # Apple .litertlm / LiteRT-LM targets
   llamadart_stable_diffusion_flutter: ^0.16.0 # Apple image generation, opt-in
@@ -213,6 +222,10 @@ requesting an isolate kill alone does not stop an in-flight native call.
 For multi-turn chat, wrap the same engine in `ChatSession` and let it maintain
 history:
 [First chat session](https://llamadart.leehack.com/docs/getting-started/first-chat-session).
+For reproducible Dart-rendered prompt dates, use
+`TemplateTimeChatSession(engine, templateNow: DateTime.utc(2026, 1, 2))`.
+Each request uses one time for budgeting and generation; `null` uses the
+normal clock. Runtime-owned LiteRT-LM templates keep their runtime clock.
 
 ## What It Supports
 
@@ -300,6 +313,15 @@ The profile is your assertion of model compatibility; it does not identify or
 qualify the loaded model. Query and corpus dimensions must match. The default
 raw profile and existing `embed` calls retain their original behavior.
 
+To improve retrieved candidates with a cross-encoder, load a separate rank-pooled
+GGUF with `LlamaReranker.load(model, params: ...)`, or borrow an already
+rank-pooled engine with `LlamaReranker(engine)`. The owning loader verifies a
+classifier head before selecting RANK for BERT/Jina files that omit that metadata. Probe `await reranker.capabilities`, then
+call `reranker.rerank(query, documents)`: results retain original indices,
+all classifier scores and labels. Output zero matches llama-server; choose
+`scoreIndex` explicitly for another class. Native llama.cpp only; scores remain
+model-specific and are never normalized. See [reranking](website/docs/guides/embeddings.md#cross-encoder-reranking).
+
 For ordered image/audio content, use `LlamaEmbeddingInput` with
 `engine.embedContent` / `embedContentBatch` and check
 `await engine.embeddingCapabilities` after loading. Native llama.cpp supports
@@ -337,6 +359,27 @@ models before creating a context. Embedding inputs that need one-pass attention
 or MEAN/CLS pooling must fit `microBatchSize`; larger inputs raise a typed error.
 See [performance tuning](https://llamadart.leehack.com/docs/guides/performance-tuning)
 and [embeddings](https://llamadart.leehack.com/docs/guides/embeddings).
+
+`LlamaBackend.withTextHistory()` opts LiteRT-LM Web into ordered system/user/assistant
+text through the published `@litert-lm/core@0.18.0` conversation APIs. Check
+`(await engine.capabilities).supportsMultiTurnChat` after loading: an older
+runtime that ignores the preface or lacks `getHistory()` rejects history and
+system prompts. Use `engine.create(messages)` or `ChatSession`; each request
+recreates its conversation from the supplied transcript. Stored assistant
+reasoning remains in application history but is omitted from model replay and
+budget accounting. Tool declarations,
+tool/media and user/system thinking message parts, assistant continuation, custom templates,
+explicit thinking switches, template kwargs and template clocks are rejected.
+Automatic tool loops remain unavailable ([#1152](https://github.com/leehack/llamadart/issues/1152)).
+
+For a direct Web backend, use `LiteRtLmBackend.withTextHistory()`.
+Existing `LlamaBackend()` and direct LiteRT constructors keep single-user-text
+routing for LiteRT Web models, reporting multi-turn support false. Custom/GGUF delegate capabilities remain
+unchanged. Text-history session budgets estimate the complete UTF-8 transcript;
+exact JS tokenizer/template counts are unavailable.
+Existing callers, including the Genkit adapter, do not adopt this Web opt-in
+automatically.
+
 After `cancelGeneration()`, LiteRT-LM Web treats only the runtime's exact
 `Task cancelled` error as a normal end. Other runtime failures still surface as
 `LlamaInferenceException`; keep an error handler after stopping.
@@ -421,6 +464,12 @@ before choosing files: a supported container does not imply every model works.
   SDXL-Lightning, FLUX.1-schnell, SD 3.5 Large Turbo and Z-Image-Turbo
   desktop models generate 1024x1024 images and are validated on
   macOS Metal only ([#802](https://github.com/leehack/llamadart/issues/802)).
+- **Lower decode memory:** `TiledImageGenerationRequest(vaeTiling:
+  ImageVaeTiling(), prompt: ...)` decodes in overlapping tiles, trading decode time for a
+  smaller decoder buffer.
+  Measured on SD-Turbo full VAE/TAESD on macOS CPU and Metal; other recipes
+  are bounded by explicit model, decoder and device guards.
+  ([VAE tiling](https://llamadart.leehack.com/docs/next/guides/image-generation#vae-tiling)).
 - **Model licenses differ**, including for commercial use. Check each
   model's license before shipping it; the guide lists each model's license.
 
@@ -467,6 +516,14 @@ Image loads also accept `ImageConditioningCacheParams(capacity: 0)` to
 turn off prompt-conditioning reuse, or a positive entry limit. Unset keeps
 the runtime default of four entries. This does not enable approximate
 sampling caches; see the guide's [conditioning cache](https://llamadart.leehack.com/docs/next/guides/image-generation#conditioning-cache).
+
+For repeatable textures, `SeamlessImageGenerationRequest(circularX: true,
+circularY: true, ...)` enables independent axes. The initial qualified recipe
+is SDXS with its embedded tiny decoder at 512×512 on CPU or Metal, with
+`flashAttention: false` and `vaeDirectConvolution: false`; other recipes
+throw. Both axes default off. Inspect repeated output and see the guide's
+[seamless texture recipe](https://llamadart.leehack.com/docs/next/guides/image-generation#seamless-textures)
+for its measured scope and quality criteria.
 
 ## Choosing a Runtime
 
@@ -517,6 +574,18 @@ regardless of GitHub metadata. Nightly cores use canonical decimal spelling
 (`b0` or a nonzero first digit), and rebuild counters start at 1 without leading
 zeros. The default pin above changes only after the matching artifacts,
 bindings, runtime behavior, and docs have been validated together.
+
+For native CPU Qwen3-0.6B, use the updated
+[LiteRT-LM bundle](https://huggingface.co/litert-community/Qwen3-0.6B/resolve/e6687177e00897731e7716267eebd4eba0dde7c2/Qwen3-0.6B.litertlm)
+(revision `e6687177e00897731e7716267eebd4eba0dde7c2`, SHA-256
+`c5f39b4191926786c3e6668b62af4d6eb15248dfc7a5348252a9b406f33f2108`).
+The older `8414150f` bundle can emit literal byte-level token spellings such
+as `ĠðŁĺĬ` instead of an emoji. A runtime upgrade alone does not repair its
+tokenizer; replace the model artifact. Preserve literal user text rather than
+rewriting these characters. The updated bundle is verified on macOS CPU;
+Linux/Windows CPU qualification runs in the maintained smoke workflow.
+GPU, iOS, Android and Web adoption still need separate validation
+([#554](https://github.com/leehack/llamadart/issues/554)).
 
 Renamed legacy Qwen3 `.litertlm` bundles can opt into native thinking control
 with `ModelParams(chatTemplate: liteRtLmQwen3ChatTemplate)` and

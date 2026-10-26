@@ -44,6 +44,8 @@ https://github.com/user-attachments/assets/6922d183-beeb-4c0b-bea3-2e1aba1eee56
 <sub>The <a href="https://ondocs.vercel.app">live demo</a>: a streamed answer with citations, one opening the section it came from, then the one-line setups.</sub>
 -->
 
+**Live demos:** [Starlight](https://ondocs-starlight.vercel.app), [Docusaurus](https://ondocs-docusaurus.vercel.app) and [VitePress](https://ondocs-vitepress.vercel.app), each a real docs site built with its plugin.
+
 ## What you get
 
 One index, `ask-index.json`, built with your site, feeds three things:
@@ -67,8 +69,6 @@ Search runs in memory inside one function you deploy: BM25 and vectors, merged w
 | Hugo, Jekyll, MkDocs or plain HTML | One script tag; for plain HTML, `init --out <dir>` | [Script tag](https://ondocs.vercel.app/docs/script-tag)     |
 
 Each answers from an endpoint you deploy as one function next to the site, rate-limited by default. `npx ondocs init` writes it for Vercel, Netlify, Cloudflare or GitHub Pages (as a Worker answering with Workers AI, no API key): see [Deploying](https://ondocs.vercel.app/docs/deployment).
-
-**Live demos:** [Starlight](https://ondocs-starlight.vercel.app), [Docusaurus](https://ondocs-docusaurus.vercel.app), [VitePress](https://ondocs-vitepress.vercel.app).
 
 **Starlight.** `npm i ondocs ai @ai-sdk/openai`, then:
 
@@ -131,7 +131,7 @@ npx ondocs init --out public                       # plain HTML needs --out; Hug
 On a GitHub Pages project site, at `https://user.github.io/repo`, add `--base-url /repo` to the index command.
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/ondocs@0.14/dist/embed.global.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/ondocs@0.15/dist/embed.global.js" defer></script>
 ```
 
 **Try it without a key.** `npx ondocs index ./docs -e mock`, then `npx ondocs dev`, serves the ask endpoint and MCP server on localhost, with a mock model that quotes your docs. See [Try it locally](https://ondocs.vercel.app/docs/local-development).
@@ -157,7 +157,7 @@ gemini mcp add --transport http --scope user acme-docs https://docs.acme.dev/api
 
 - **Protocol.** MCP 2026-07-28, and 2025-11-25 back to 2024-11-05 for clients that start with `initialize`, tested with the official TypeScript client.
 - **Tools.** `search` returns ranked sections with a snippet and an anchor URL, and `fetch` a page or section as Markdown, as ChatGPT's connectors expect.
-- **Quality.** On docusaurus.io's docs, keyword search puts the right page in the top three for 22 of 22 agent-style queries we wrote in the docs' terms, and 20 of 22 asked as a person asks: a best case, checked in CI ([the queries](https://github.com/dgesteves/ondocs/blob/main/test/corpus.test.ts)). A reader's own words find it less often.
+- **Quality.** On docusaurus.io's docs, keyword search puts the right page in the top three for 22 of 22 agent-style queries we wrote in the docs' terms, and 20 of 22 asked as a person asks: a best case, checked in CI ([the queries](https://github.com/dgesteves/ondocs/blob/main/test/corpus.test.ts)). A reader's own words find it less often ([real Stack Overflow questions](https://ondocs.vercel.app/docs/quality#real-questions-from-stack-overflow)).
 - **On your docs.** With the plugins' `mcp` option, a page can show an "Add to Cursor / VS Code / Claude" block.
 - **llms.txt.** The plugins write it by default, and the CLI with `--llms-txt <dir>`.
 

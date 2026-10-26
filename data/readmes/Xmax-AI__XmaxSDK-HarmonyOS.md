@@ -187,7 +187,7 @@ official OHPM Registry; both archives must therefore be integrated manually.
 
 Download the following files:
 
-- [`xmaxsdk-1.0.12.har`](https://github.com/XingMai/XmaxSDK-HarmonyOS/releases/download/1.0.12/xmaxsdk-1.0.12.har)
+- [`xmaxsdk-1.0.13.har`](https://github.com/Xmax-AI/XmaxSDK-HarmonyOS/releases/download/1.0.13/xmaxsdk-1.0.13.har)
   from the XmaxSDK GitHub Release
 - The VolcEngine RTC HAR from the
   [HarmonyOS integration guide](https://bytedance.larkoffice.com/docx/VCVzduvzioORCixDKzEcMt9Fnof?from=from_copylink)
@@ -195,7 +195,7 @@ Download the following files:
 Add both files to the application module's `libs` directory:
 
 ```text
-entry/libs/xmaxsdk-1.0.12.har
+entry/libs/xmaxsdk-1.0.13.har
 entry/libs/VolcEngineRTCToB-Release.har
 ```
 
@@ -204,7 +204,7 @@ Declare XmaxSDK in the module-level `oh-package.json5`:
 ```json5
 {
   "dependencies": {
-    "@xmax/sdk": "file:./libs/xmaxsdk-1.0.12.har"
+    "@xmax/sdk": "file:./libs/xmaxsdk-1.0.13.har"
   }
 }
 ```
@@ -388,6 +388,12 @@ the session; an active task remains in `GENERATING`.
 
 <br>
 
+For app-owned capture or decoding, implement `RealtimeExternalVideoSource` and
+pass it to `createExternalVideoStream`. See [external video input](materials/usage.md#external-video-input)
+for the Source + Sink contract and optional PCM audio. XLab's External Capture card
+demonstrates app-owned video and audio decoding, including HDR Vivid to SDR
+conversion, through this API.
+
 ### Listen for events
 
 After creating `realtime`, register the listeners you need before creating the
@@ -398,6 +404,11 @@ input stream or starting generation.
 | `setStateListener` | Observe preparation, preview readiness, connection, generation and failure reasons. |
 | `setNetworkQualityListener` | Monitor uplink and downlink network quality. |
 | `setPerformanceAlarmListener` | Detect device performance limitations or recovery, with a suggested video format when available. |
+
+Use `setUplinkQualityLevel` and `setDownlinkQualityLevel` to select transmission
+levels during generation. Automatic adaptation is enabled by default and can be
+disabled when creating the manager. See the
+[quality control guide](materials/usage.md#adaptive-transmission-quality).
 
 Camera preview enters `READY` after a valid frame and view binding. Disconnect
 returns to `READY` when local media remains available; closing returns to `IDLE`.
@@ -453,7 +464,7 @@ realtime.setStateListener((state) => {
 ## Example Project
 
 A complete example application featuring an ArkUI implementation
-is available in [`examples/XLab`](https://github.com/XingMai/XmaxSDK-HarmonyOS/tree/main/examples/XLab).
+is available in [`examples/XLab`](https://github.com/Xmax-AI/XmaxSDK-HarmonyOS/tree/main/examples/XLab).
 It demonstrates real-time generation using live camera feeds, static images, and
 local video files.
 
@@ -471,7 +482,7 @@ local video files.
 ## Contact us
 
 For bug reports and feature requests, please open a
-[GitHub Issue](https://github.com/XingMai/XmaxSDK-HarmonyOS/issues). For integration
+[GitHub Issue](https://github.com/Xmax-AI/XmaxSDK-HarmonyOS/issues). For integration
 assistance and technical support, contact us at [sdk@xmax.ai](mailto:sdk@xmax.ai).
 
 <br>

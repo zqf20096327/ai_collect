@@ -187,11 +187,35 @@ parsing:
 
 Human attention watches for the agent defeating itself: a **file version loop**
 (a newer version byte-identical to an earlier one — an edit undone) and a
-**command retry loop** (the same command failed twice or more) raise attention
-to *medium*; a change **outside the project** to *low*; an egg **still running**
-after the run ends to *high*. The live attention level also sounds a chime when
-it crosses medium/high, an approval prompt rings when the runtime blocks on your
-decision, and a run-complete chime sounds when a run finishes.
+**command retry loop** (the same command failing over and over); a **failure
+streak** (commands failing back-to-back with no success between them, 3 by
+default) raises `command_failure_streak`; an egg **still running** after the run
+ends, an **unrecovered failure** and a run that **ended in error** are *high*.
+
+**Every reason is individually configurable** in the settings dialog's REPORT
+WARN pane, in five groups:
+
+- **failed commands** — the per-run failure count that raises `command_failed`
+  (default 5), the back-to-back streak count (default 3), and the
+  no-activity window for `activity_stalled` (default 3600 s), each with its
+  own level;
+- **errors** — `unresolved_error` (default high) and `agent_stopped`
+  (default high);
+- **leftover eggs** — `process_left_running`'s level (default high), a minimum
+  lifetime in seconds (0 reports every egg; a longer one skips helpers that were
+  about to exit), and a "never report" list matched against the process name or
+  its command line;
+- **outside the project** — `outside_change`'s level (default low) and ignore
+  globs (`*` within a folder, `**` across them; a pattern with no slash also
+  matches the file name, so `*.log` means every log next door);
+- **loops** — the file-version repeat count (default 1) and level, and the
+  command-retry repeat count (default 2) and level.
+
+A level of *silent* drops that reason from the report entirely (the chimes
+follow the level that actually fires, so it goes quiet too). The live attention
+level also sounds a chime when it crosses medium/high, an approval prompt rings
+when the runtime blocks on your decision, and a run-complete chime sounds when a
+run finishes.
 
 ## Personalization
 
@@ -214,6 +238,10 @@ The `⚙ settings` button in the session bar opens a four-pane dialog:
 - **Sound sets** — upload an audio file per event (`attention` / `complete` /
   `approval`) to replace the synthesised chime; events without a file keep the
   built-in tone. `Apply` activates the set; `Default` restores the synth chimes.
+  The **chimes** switch below is the master mute, **volume** scales every chime
+  (0–100), `run finished` / `approval waiting` can be switched off separately,
+  and **also at low** makes a step into *low* audible — it is silent by default,
+  because most runs sit at low for harmless reasons.
 - **Agent Eggs filter profiles (right)** — a small file manager over named
   profiles of helper command names; the classifier treats a listed name as a
   tool (a `force` option extends this to the command's declared subject, e.g.
@@ -397,15 +425,21 @@ port to the public internet.
   instead: each container becomes a first-class egg under a synthetic pid
   (≥ 10⁹, cannot collide with a real pid), attributed to the command that laid
   it — the containers of `docker run -d` and `docker compose up -d` show up in
-  Agent Eggs and Metrics just like a spawned process. Attribution follows the
-  command window with the command text as a second gate: a container started
-  outside any command window — one the user ran in their own terminal — gets
-  no egg, and a container appearing right after a non-docker command is not
-  credited to it. A container started by `docker start` has no command window;
-  only the one-time adoption at session open reports such containers, always
-  unattributed. With no docker (or `ABSENCE_DOCKER=0`) nothing changes. When
-  commands overlap (`docker ps` while `docker run` is still going), the
-  earliest open window wins — the same rule process eggs follow.
+  Agent Eggs and Metrics just like a spawned process. Attribution reads the
+  command's own words: `docker run -d --name web nginx` predicts a container
+  named `web` with image `nginx`, and a daemon start event is credited only
+  when it matches that prediction — a foreign container landing inside the
+  window at the same moment matches nothing and is not credited. compose is
+  matched through the daemon's project label; a run without `--name` through
+  its image. The window remains only as the fallback for commands whose shape
+  cannot be parsed (scripts, wrappers); a container laid outside any command
+  window gets no egg, so a container the user started in their own terminal —
+  or one left running by an earlier session — never appears in the panel. A
+  resumed session re-attaches to the containers it laid that are still running
+  (same synthetic pid; a restart resets the start time, stats resume); ones that
+  exited or were removed while the session was closed are corrected to `exited`
+  from the daemon's own state. With no docker (or `ABSENCE_DOCKER=0`) nothing
+  changes.
 - The live metrics ring keeps the newest 300 frames in memory. Longer ranges and
   historical sessions are loaded from SQLite; metric retention is 30 days.
 

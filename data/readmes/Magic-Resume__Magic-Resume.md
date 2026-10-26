@@ -1,25 +1,22 @@
 <div align="center">
   <a href="https://magic-resume.cn">
-    <img width="128" alt="Magic Resume" src="./apps/web/public/magic-resume-mark.png">
+    <img width="112" alt="Magic Resume" src="./apps/web/public/magic-resume-mark.png">
   </a>
 
   <h1>Magic Resume</h1>
 
-  <p><strong>The open-source AI resume workbench.</strong><br/>The AI proposes edits in place; you accept or skip each one.</p>
+  <p><strong>An open-source resume editor with a self-hosted AI agent.</strong><br/>Your resumes stay in your browser. The AI runs on your own model key.</p>
 
   <p>
-    <a href="https://magic-resume.cn"><strong>Get Started »</strong></a>
+    <a href="#quick-start"><strong>Quick start</strong></a>
     &nbsp;·&nbsp;
     <a href="./README.zh-CN.md">简体中文</a>
     &nbsp;·&nbsp;
-    <a href="https://magic-resume.cn">Official Site</a>
+    <a href="https://magic-resume.cn">magic-resume.cn</a>
     &nbsp;·&nbsp;
-    <a href="https://github.com/Magic-Resume/Magic-Resume/issues">Feedback</a>
+    <a href="https://github.com/Magic-Resume/Magic-Resume/issues">Report an issue</a>
   </p>
 
-  <!-- SHIELD GROUP -->
-
-  [![][vercel-shield]][vercel-link]
   [![][github-stars-shield]][github-stars-link]
   [![][github-forks-shield]][github-forks-link]
   [![][github-contributors-shield]][github-contributors-link]
@@ -30,228 +27,247 @@
 
 <br/>
 
-![Banner](./apps/web/public/magic-resume-preview.png)
-
-<br/>
+![Polaris, the AI resume assistant: describe what to change, pick a skill, or choose the collaboration mode and model](./docs/images/readme/ai-lab.png)
 
 **Magic Resume is an open-source AI resume workbench: the AI proposes edits in place and you accept or skip each one.** MIT-licensed core, 20 templates, six modes (create, optimize, analyze, translate, interview, export), cloud sync.
 
 > Magic Resume (magic-resume.cn) and the Magic Resume at magicv.art (魔方简历) are two independent open-source projects maintained by different teams.
 
-It pairs a real-time visual editor with multi-model AI — and goes one step further with a native **MCP server** that lets AI coding tools (Claude Code, Cursor, Windsurf) read and safely patch your resumes without ever guessing the data shape.
+This repository is the open-source edition. It contains the editor and **Polaris**, the AI resume assistant, together with the agent service that powers it. There is no account and no resume library on a server: resumes and one conversation per resume live in your browser's IndexedDB, and Polaris calls the model provider you configure with your own key. Interviews and multi-device cloud sync are part of the hosted product at [magic-resume.cn](https://magic-resume.cn).
 
-## Self-hosted vs Cloud
+<details>
+<summary><strong>Table of contents</strong></summary>
 
-Same features either way. The difference is where your data lives and who supplies the AI.
+- [Features](#features)
+- [Quick start](#quick-start)
+- [How Polaris works](#how-polaris-works)
+- [Configuration](#configuration)
+- [Open source and magic-resume.cn](#open-source-and-magic-resumecn)
+- [Repository layout](#repository-layout)
+- [Tech stack](#tech-stack)
+- [MCP](#mcp)
+- [Roadmap](#roadmap)
+- [Contributing](#contributing)
+- [License](#license)
 
-| | Self-hosted (this repo) | Cloud (magic-resume.cn) |
-|---|---|---|
-| License | MIT, free forever | Free tier + paid plans |
-| Account | Not required | Required |
-| Data storage | Your browser's IndexedDB only | Encrypted cloud storage, exportable anytime |
-| Multi-device sync | Not available | On by default |
-| Version history | Local snapshots | Kept in the cloud, restorable |
-| AI | Bring your own API key | Built in, works out of the box |
-| Backend | No backend or database needed | Hosted for you |
-| Templates | 20, identical | 20, identical |
-
-> [!NOTE]
-> The self-hosted build runs entirely in your browser; resume data never leaves your machine. The cloud build syncs across devices by default, with encrypted transport and storage, and a full export available at any time.
-
----
+</details>
 
 ## Features
 
-**Build — visual editing that just works**
+### Editor
 
-- **Real-time preview** — see every change the instant you type.
-- **20 professional templates** — ATS-friendly, with full color, font, and layout control.
-- **Deep customization** — 22+ font styles, spacing, and layout controls.
-- **Version history** — snapshot and restore any previous version.
-- **Sharing** — share via a unique link with Viewer / Commenter / Editor permissions.
+![The editor: content on the left, a live print preview in the middle, template and layout controls on the right](./docs/images/readme/editor.png)
 
-**Analyze — Lighthouse-style resume health**
+- **Live preview at print fidelity.** The page re-renders as you type; exports match what you see.
+- **20 templates.** ATS-friendly, each with its own color, font, density, spacing and layout controls, on A4 or Letter.
+- **Flexible sections.** Add, rename, reorder and hide sections; rich text with Tiptap; custom fields.
+- **Import and export.** Open Magic Resume JSON offline. Export to PDF, PNG or JSON.
+- **Local-first.** Everything is stored in IndexedDB. Nothing leaves the browser unless you use AI.
+- **Light and dark themes, English and Chinese.**
 
-- **Overall score** — a single, honest rating of your resume's impact.
-- **Detailed breakdown** — keyword matching, actionability, and readability.
-- **Actionable fixes** — specific, targeted suggestions, not vague advice.
+### Polaris
 
-**Optimize — tailor to any job**
+- **Proposals, not overwrites.** Every change the AI makes appears as a diff on the canvas, with a reason for each edit. You accept or skip changes one by one; nothing is saved until you accept.
+- **Skills.** Create a resume from scratch, optimize it for a job description, analyze it, score its fit against a role, or translate it. Each skill is a plain Markdown file you can read and change.
+- **Three modes.** *Co-create* proposes edits, *Plan* reads the resume and proposes a plan without changing it, and *Ask* answers general questions without seeing your resume at all. The boundary is enforced by the backend, not only by the prompt.
+- **Asks when it needs to.** When a fact is missing, such as the target role, the agent shows a structured form, pauses, and continues once you answer. The pause survives a page reload or a server restart.
+- **Import any resume.** PDF, Word, images, Markdown or plain text. Scanned documents are read by a vision model.
+- **Your own model.** Any OpenAI-compatible API, with presets for common providers. The key is encrypted in the browser and sent only with each request; the server never stores it.
+- **No made-up experience.** The agent checks every proposed resume against your source material and flags employers, dates, credentials or numbers it cannot find there.
 
-- **JD matching** — AI reads a job description and rewrites content to fit.
-- **Bring your own model** — OpenAI, Google Gemini, Anthropic Claude, DeepSeek, or any OpenAI-compatible API.
+## Quick start
 
-**AI Lab — beyond editing**
+### Docker Compose (recommended)
 
-- **Mock interviews** — practice with AI feedback on your answers.
-- **One-click translation** — translate a resume into any language, formatting preserved.
-
-**Privacy — your data stays yours**
-
-- **Local-first** — stored in IndexedDB by default, no account needed.
-- **Optional cloud sync** — securely sync across devices only if you choose.
-- **Export anywhere** — high-quality PDF or structured JSON.
-
----
-
-## Templates
-
-Twenty hand-crafted, ATS-friendly templates, each fully customizable (color, font, spacing, layout):
-
-`classic` · `azurill` · `bronzor` · `chikorita` · `ditto` · `gengar` · `orange-modern` · `clean-minimal` · `teal-professional` · `red-accent` · `golden-elegant` · `product-ops-focus` · `compact-cn-photo` · `executive-band` · `timeline-pro` · `skills-first` · `serif-minimal` · `slate-sidebar` · `cn-formal-photo` · `blue-line`
-
----
-
-## MCP Integration
-
-Magic Resume ships a native **Model Context Protocol (MCP) server** (`@magic-resume/mcp`) — a first-class integration for AI coding tools.
-
-Configure it once with a personal access token, and your AI assistant can read and patch resumes safely, without touching the raw database:
-
-```bash
-npx -y @magic-resume/mcp config set --api-url "https://your-api.example.com/api" --pat "mr_pat_xxx"
-claude mcp add magic-resume -- npx -y @magic-resume/mcp mcp
-```
-
-| Tool | Description |
-|---|---|
-| `list_resumes` | List all resumes in your account |
-| `get_resume` | Fetch a resume's full content |
-| `get_resume_schema` | Get the JSON schema for validation |
-| `get_resume_editing_guide` | AI-readable guide on how to edit resumes |
-| `preview_resume_patch` | Preview a JSON Patch without applying it |
-| `update_resume_content` | Apply a JSON Patch to update resume content |
-
-> [!TIP]
-> The server is schema-aware and patch-based — AI tools make surgical edits rather than risky full rewrites.
-
----
-
-## Tech Stack
-
-| Layer | Technology |
-|---|---|
-| Monorepo | [Turborepo](https://turbo.build/), [pnpm](https://pnpm.io/) |
-| Framework | [Next.js 15](https://nextjs.org/) (App Router) |
-| Language | [TypeScript](https://www.typescriptlang.org/) |
-| AI / LLM | [LangChain](https://www.langchain.com/), [LangGraph](https://www.langchain.com/langgraph), [Google GenAI](https://ai.google.dev/), [Anthropic](https://www.anthropic.com/) |
-| Auth | [Clerk](https://clerk.com/) (cloud mode only) |
-| Styling | [Tailwind CSS 4](https://tailwindcss.com/) |
-| UI | [Radix UI](https://www.radix-ui.com/), [Lucide](https://lucide.dev/) |
-| Animation | [Framer Motion](https://www.framer.com/motion/), [GSAP](https://gsap.com/) |
-| State | [Zustand](https://zustand-demo.pmnd.rs/) |
-| Storage | [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API) |
-| Editor | [Tiptap](https://tiptap.dev/), [Monaco](https://microsoft.github.io/monaco-editor/) |
-| MCP | [@modelcontextprotocol/sdk](https://modelcontextprotocol.io/) |
-| Schema | [Zod](https://zod.dev/) |
-| i18n | [i18next](https://www.i18next.com/) |
-
----
-
-## Quick Start
-
-Magic Resume runs fully in the browser — no backend, no database, no account.
+Runs the editor and the agent together. Requires Docker with Compose v2.
 
 ```bash
 git clone https://github.com/Magic-Resume/Magic-Resume.git
 cd Magic-Resume
-cp apps/web/.env.example apps/web/.env.local   # set NEXT_PUBLIC_APP_MODE=self-hosted
-pnpm install
-pnpm run dev
+docker compose up --build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) and start building.
+Open [http://localhost:3000](http://localhost:3000), go to **Settings → Model**, choose a provider, enter your API key and model, test the connection and save. Polaris is then ready.
 
----
+The editor listens on `127.0.0.1:3000`. The agent has no published port and is reachable only from the editor container; its sessions are kept in the `agent-data` volume.
 
-## Self-Hosting
+### Local development
 
-**Self-hosted mode** needs nothing but the browser — set `NEXT_PUBLIC_APP_MODE=self-hosted` (or leave it unset) and all data persists in IndexedDB. The open-source self-hosted build sends no product analytics.
+Requires Node.js 22.13 or later and pnpm 10.28.
 
-**Cloud mode** (auth, cloud sync, sharing) deploys in one click:
+```bash
+git clone https://github.com/Magic-Resume/Magic-Resume.git
+cd Magic-Resume
+pnpm install
+cp apps/web/.env.example apps/web/.env.local   # then uncomment AI_BACKEND_URL=http://localhost:4000
+pnpm dev
+```
+
+`pnpm dev` starts the editor on [http://localhost:3000](http://localhost:3000) and the agent on `http://127.0.0.1:4000`. Editing works without the agent; only Polaris needs it.
+
+To point the agent at a model server on your own machine or network (for example a local OpenAI-compatible proxy), start it with `AGENT_ALLOW_PRIVATE_MODEL_HOSTS=true`. This switch is ignored when `NODE_ENV=production`.
+
+### Editor only
+
+The editor is a standard Next.js app and runs without the agent:
+
+```bash
+docker build -f apps/web/Dockerfile -t magic-resume-web .
+docker run -p 3000:3000 magic-resume-web
+```
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FMagic-Resume%2FMagic-Resume)
 
-> [!TIP]
-> For cloud mode, set `NEXT_PUBLIC_APP_MODE=cloud`, `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, and `CLERK_SECRET_KEY` in your Vercel dashboard.
+To enable Polaris later, run the agent somewhere the editor can reach and set `AI_BACKEND_URL` on the editor.
+
+## How Polaris works
+
+```mermaid
+flowchart LR
+  browser["Browser<br/>editor · IndexedDB"] -->|same-origin requests| web["Next.js routes<br/>apps/web"]
+  web -->|AI_BACKEND_URL| agent["Agent<br/>apps/agent"]
+  agent -->|your key| provider["Your model provider<br/>OpenAI-compatible API"]
+  agent --- store[("SQLite<br/>session checkpoints")]
+```
+
+- **The browser owns the resume.** Each request carries a snapshot of the current resume (except in Ask mode). The agent works on a draft and returns proposals; the browser saves what you accept. The draft lives only in the session's checkpoint and is deleted with it.
+- **The agent** (`apps/agent`) is a [DeepAgents](https://github.com/langchain-ai/deepagentsjs) harness on LangGraph with a Fastify HTTP layer. It mounts the skills directory read-only, gives the model a scratch workspace holding the resume draft, and runs a middleware chain that enforces the run budget, mode boundaries, each skill's tool allowlist, resume schema validation and the fabrication check.
+- **Sessions** are LangGraph checkpoints in SQLite, so a paused form, a page reload or a restart resumes where it left off. Idle sessions expire after seven days.
+- **Your key** stays in the request: it is never logged, written to a checkpoint or stored on disk. The agent resolves the provider's address once per request, pins the connection to it, refuses private network addresses and does not follow redirects.
+- **The protocol** between the editor and the agent is documented in [docs/reference/ai-backend.md](./docs/reference/ai-backend.md), and the agent's design in [docs/specs/agent-backend/design.md](./docs/specs/agent-backend/design.md). You can replace the agent with your own implementation of the same contract.
+
+> [!IMPORTANT]
+> The agent has no user accounts. Keep it on a private network, as Docker Compose does, or put authentication in front of it before exposing it to other people.
+
+## Configuration
+
+Model settings (provider, key, base URL, model, output limit, reasoning strength) are configured per browser in **Settings → Model**. Server settings are environment variables; all are optional.
 
 <details>
-<summary><strong>Environment variables</strong></summary>
+<summary><strong>Editor (<code>apps/web</code>)</strong></summary>
 
 <br/>
 
-All variables live in `apps/web/.env.local` (copy from `apps/web/.env.example`). Values prefixed with `NEXT_PUBLIC_` are inlined into the browser bundle — never put secrets behind that prefix.
-
-| Variable | Required in | Default | Purpose |
-|---|---|---|---|
-| `NEXT_PUBLIC_APP_MODE` | both | auto | `self-hosted` or `cloud`. Auto-detected: `cloud` when `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` is set, else `self-hosted`. |
-| `NEXT_PUBLIC_APP_URL` | both | `https://magic-resume.cn` | Canonical base URL for OG tags / SEO. Set to your origin (e.g. `http://localhost:3000` in dev). |
-| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | cloud | — | Clerk publishable key (`pk_...`). |
-| `CLERK_SECRET_KEY` | cloud | — | Clerk secret key (`sk_...`). |
-| `NEXT_PUBLIC_API_URL` | cloud | `http://localhost:3110` | Single NestJS Core gateway for all API and AI routes. |
-
-- **`self-hosted`** — pure browser. No Clerk, no Core API; only `NEXT_PUBLIC_APP_URL` matters.
-- **`cloud`** — requires the two Clerk keys plus `NEXT_PUBLIC_API_URL`; the gateway routes API and AI paths to the appropriate Core service.
+| Variable | Default | Purpose |
+|---|---|---|
+| `AI_BACKEND_URL` | — | Server-only origin of the agent, without `/api`. AI requests return 503 when it is unset. |
+| `NEXT_PUBLIC_APP_URL` | `http://localhost:3000` | Public origin, used for `robots.txt` and page metadata. |
+| `APP_PUBLIC_URL` | — | Same as above, read at request time so one image can serve several domains. |
+| `NEXT_PUBLIC_DOCS_URL` | — | Target of the "Help center" menu item; hidden when unset. |
 
 </details>
 
----
+<details>
+<summary><strong>Agent (<code>apps/agent</code>)</strong></summary>
 
-## Monorepo
+<br/>
 
-This repository is a Turborepo + pnpm monorepo.
+| Variable | Default | Purpose |
+|---|---|---|
+| `HOST` / `PORT` | `127.0.0.1` / `4000` | Listen address. |
+| `AGENT_DATA_DIR` | `./data` | SQLite checkpoints and other runtime state. |
+| `AGENT_SKILLS_DIR` | bundled `skills/` | Directory of skills to mount. |
+| `AGENT_MAX_MODEL_CALLS` / `AGENT_MAX_TOOL_CALLS` | `40` / `60` | Budget per turn, shared with sub-agents. |
+| `AGENT_IDLE_TIMEOUT_MS` | `120000` | Longest silence from the model before a turn fails. |
+| `AGENT_RUN_TIMEOUT_MS` | `900000` | Upper bound for one turn. |
+| `AGENT_SESSION_TTL_HOURS` | `168` | Idle sessions are deleted after this. |
+| `AGENT_ATTACHMENT_TTL_HOURS` | `24` | Uploaded conversation files expire after this many hours. |
+| `AGENT_ATTACHMENT_SECRET` | random at startup | Optional stable HMAC secret, at least 32 characters; read URLs last up to 15 minutes. |
+| `AGENT_MAX_SEARCHES` | `5` | Search calls per turn, within the shared tool budget. |
+| `SEARCH_PROVIDER` | — | Optional `tavily`, `brave` or `searxng`; incomplete settings disable search and research skills. |
+| `SEARCH_API_KEY` | — | Required for Tavily and Brave. |
+| `SEARCH_BASE_URL` | provider default | Optional API base override; required for SearXNG, with no default public instance. Private hosts follow the model opt-in rule. |
+| `AGENT_BODY_LIMIT_BYTES` | `2097152` | Largest accepted JSON request. |
+| `AGENT_RATE_LIMIT_PER_MINUTE` | `300` | Requests per client address per minute; `0` disables the limit. |
+| `AGENT_ALLOW_PRIVATE_MODEL_HOSTS` | `false` | Allow model servers on private networks. Ignored in production. |
 
-| Package | Description |
+See [`apps/agent/README.md`](./apps/agent/README.md) for the full list, how to write a skill, and a smoke test against a real model.
+
+</details>
+
+## Open source and magic-resume.cn
+
+The editor and templates are the same; the hosted product runs the AI for you and adds accounts, sync and interviews.
+
+| | Open source (this repository) | magic-resume.cn |
+|---|---|---|
+| License | MIT | Free tier and paid plans |
+| Account | Not required | Required |
+| Resume storage | Your browser (IndexedDB) | Encrypted cloud storage, exportable at any time |
+| Multi-device sync | — | Yes |
+| AI | Polaris with your own model key, on the bundled agent | Managed models, mock interviews and memory |
+| Templates | 20 | 20 |
+
+## Repository layout
+
+A pnpm and Turborepo monorepo. The shared schema, templates, design system, icons, utilities and the MCP server are published from [magic-resume-kit](https://github.com/Magic-Resume/magic-resume-kit) as `@magic-resume-kit/*` and pinned here by exact version.
+
+| Path | Description |
 |---|---|
-| `apps/web` | Next.js frontend — editor, dashboard, AI Lab |
-| `packages/mcp` | `@magic-resume/mcp` — stdio MCP server and CLI |
-| `packages/resume-schema` | Shared Zod schemas, types, and sample data |
-| `packages/resume-templates` | Template DSL, renderer, and registry |
+| `apps/web` | The editor and Polaris (Next.js) |
+| `apps/agent` | The agent behind Polaris (Fastify, DeepAgents, SQLite) |
+| `apps/agent/skills` | Skills and the agent's standing instructions, as Markdown |
+| `apps/landing` | Marketing site for magic-resume.cn (Astro) |
+| `apps/docs` | Documentation site (Mintlify) |
+| `packages/genui` | Polaris cards and widgets |
+| `packages/tsconfig` | Shared TypeScript configuration |
 
 ```bash
-pnpm install            # install everything
-pnpm run dev            # start all workspaces
-pnpm run lint           # lint
-pnpm run test           # test
-
-# target a single workspace
-pnpm --filter @magic-resume/web dev
-pnpm --filter @magic-resume/mcp build
+pnpm dev                                    # editor and agent
+pnpm build                                  # build every workspace
+pnpm lint                                   # lint and architecture checks
+pnpm test                                   # tests
+pnpm --filter @magic-resume/agent test      # one workspace
 ```
 
----
+## Tech stack
+
+| Area | Technology |
+|---|---|
+| Editor | [Next.js 16](https://nextjs.org/), [React 19](https://react.dev/), [TypeScript](https://www.typescriptlang.org/), [Tailwind CSS 4](https://tailwindcss.com/), [Radix UI](https://www.radix-ui.com/), [Tiptap](https://tiptap.dev/), [Zustand](https://zustand-demo.pmnd.rs/), [i18next](https://www.i18next.com/) |
+| Documents | [React-PDF](https://react-pdf.org/), [PDF.js](https://mozilla.github.io/pdf.js/), [Zod](https://zod.dev/) schemas |
+| Agent | [DeepAgents](https://github.com/langchain-ai/deepagentsjs), [LangGraph](https://langchain-ai.github.io/langgraphjs/), [LangChain](https://js.langchain.com/), [Fastify](https://fastify.dev/), SQLite |
+| Tooling | [pnpm](https://pnpm.io/), [Turborepo](https://turbo.build/), ESLint, Docker |
+
+## MCP
+
+[`@magic-resume-kit/mcp`](./docs/reference/mcp.md) is a Model Context Protocol server that lets AI coding tools such as Claude Code, Codex and Cursor read and edit resumes through schema-aware JSON Patch. It connects to a magic-resume.cn account; the local editor in this repository has no account API for it to reach.
+
+```bash
+npx -y @magic-resume-kit/mcp@1.0.1 --help
+```
+
+## Roadmap
+
+- [x] Local-first editor with 20 templates
+- [x] Polaris on your own model key, with a self-hosted agent
+- [x] Resumable sessions, structured forms and approvals
+- [x] Import from PDF, Word, images and Markdown
+- [x] Attachments in conversations
+- [x] Optional web search with your own search API key, for company and role research
+
+Ideas and requests are welcome in [issues](https://github.com/Magic-Resume/Magic-Resume/issues).
 
 ## Contributing
 
-Contributions of every size are welcome — bug fixes, new templates, docs, translations, or features.
-
-Please read the **[Contributing Guide](./CONTRIBUTING.md)** for local setup, the branch workflow, and the enforced **gitmoji + Conventional Commits** convention. For bugs or ideas, feel free to file an [issue](https://github.com/Magic-Resume/Magic-Resume/issues) first.
+Contributions of every size are welcome: bug fixes, templates, skills, translations, docs and features. Read the [contributing guide](./CONTRIBUTING.md) for local setup, the branch workflow and the commit convention (gitmoji with Conventional Commits). For anything non-trivial, open an issue first to agree on the approach.
 
 <a href="https://github.com/Magic-Resume/Magic-Resume/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=Magic-Resume/Magic-Resume" alt="contributors" />
+  <img src="https://contrib.rocks/image?repo=Magic-Resume/Magic-Resume" alt="Contributors" />
 </a>
 
----
-
-## Star History
+## Star history
 
 <a href="https://star-history.com/#Magic-Resume/Magic-Resume&Date">
-  <img src="https://api.star-history.com/svg?repos=Magic-Resume/Magic-Resume&type=Date" alt="Star History Chart" width="600" />
+  <img src="https://api.star-history.com/svg?repos=Magic-Resume/Magic-Resume&type=Date" alt="Star history chart" width="600" />
 </a>
 
----
+## License
 
-<div align="center">
-
-Copyright © 2026 [Magic Resume Team](https://github.com/Magic-Resume) · [MIT](./LICENSE) licensed.
-
-</div>
+[MIT](./LICENSE) © 2026 [Magic Resume Team](https://github.com/Magic-Resume)
 
 <!-- LINK GROUP -->
 
-[official-site]: https://magic-resume.cn
-[vercel-shield]: https://img.shields.io/badge/vercel-online-55b467?labelColor=black&logo=vercel&style=flat-square
-[vercel-link]: https://magic-resume.cn
 [github-contributors-shield]: https://img.shields.io/github/contributors/Magic-Resume/Magic-Resume?color=c4f042&labelColor=black&style=flat-square
 [github-contributors-link]: https://github.com/Magic-Resume/Magic-Resume/graphs/contributors
 [github-forks-shield]: https://img.shields.io/github/forks/Magic-Resume/Magic-Resume?color=8ae8ff&labelColor=black&style=flat-square

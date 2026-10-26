@@ -380,7 +380,7 @@ click-to-edit inspector and attributed verification need React's internals.
 React design systems are developed against in four shapes, because each one
 exposed a different bug: barrel npm packages (Mantine, Carbon), subpath
 packages (MUI), one package per component (Atlassian), and local source (Radix
-+ Tailwind, and fully custom libraries). A React library shipped without type
+\+ Tailwind, and fully custom libraries). A React library shipped without type
 declarations loses prop knowledge and editable props.
 
 ---
@@ -429,7 +429,7 @@ The server reads `.env` in the directory it is started from.
 | `OPENAI_API_KEY`, `OPENAI_ORG_ID` | OpenAI key and optional organisation. |
 | `GEMINI_API_KEY` or `GOOGLE_API_KEY` | Google key. |
 | `DEFAULT_PROVIDER` | `claude`, `openai` or `gemini`. |
-| `DEFAULT_MODEL` | Model id. Defaults: `claude-opus-5`, `gpt-5.6-sol`, `gemini-3.1-pro`. |
+| `DEFAULT_MODEL` | Model id. Defaults: `claude-opus-5-5`, `gpt-5.6-sol`, `gemini-4-argon`. |
 | `CLAUDE_EFFORT` | `low`, `medium`, `high` (default) or `xhigh`. |
 | `CLAUDE_STREAM_MAX_MS` | Hard cap on one streamed model call. Default 15 minutes. |
 | `PORT` | Server port. Default 4001. |
@@ -440,6 +440,7 @@ The server reads `.env` in the directory it is started from.
 | `STORY_UI_TOKEN`, `STORY_UI_HOST`, `STORY_UI_ALLOW_UNAUTHENTICATED` | Access control; see Security. |
 | `STORY_UI_ALLOWED_ORIGINS` | Extra CORS origins, comma-separated. |
 | `STORY_UI_MAX_BODY` | Request body ceiling. Default `25mb`. |
+| `HTTPS_PROXY`, `HTTP_PROXY`, `NO_PROXY` | Route LLM provider calls through a corporate proxy. Loopback is always direct; the startup log names the proxy in use. |
 | `STORYBOOK_URL`, `STORYBOOK_PORT` | Where verification finds your Storybook. |
 | `STORYBOOK_PROXY_ENABLED`, `STORYBOOK_PROXY_PORT` | Proxy non-API requests to a Storybook dev server (deployments). |
 | `STORY_UI_GATE_ATTEMPTS` | Regeneration attempts before the best is kept. Default 3. |

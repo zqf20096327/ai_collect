@@ -138,16 +138,16 @@ Useful resources and dependencies that are used in Brainwave.
 - [autoprefixer](https://www.npmjs.com/package/autoprefixer): ^10.6.1
 - [eslint-plugin-react-hooks](https://www.npmjs.com/package/eslint-plugin-react-hooks): ^7.1.1
 - [eslint-plugin-react-refresh](https://www.npmjs.com/package/eslint-plugin-react-refresh): ^0.5.7
-- [framer-motion](https://www.npmjs.com/package/framer-motion): ^14.3.0
-- [postcss](https://www.npmjs.com/package/postcss): ^8.5.30
+- [framer-motion](https://www.npmjs.com/package/framer-motion): ^14.6.0
+- [postcss](https://www.npmjs.com/package/postcss): ^8.5.31
 - [react](https://www.npmjs.com/package/react): ^18.3.1
 - [react-dom](https://www.npmjs.com/package/react-dom): ^18.3.1
 - [react-just-parallax](https://www.npmjs.com/package/react-just-parallax): ^3.1.16
 - [react-router-dom](https://www.npmjs.com/package/react-router-dom): ^7.18.4
 - [scroll-lock](https://www.npmjs.com/package/scroll-lock): ^2.1.5
 - [tailwindcss](https://www.npmjs.com/package/tailwindcss): ^3.4.17
-- [typewriter-effect](https://www.npmjs.com/package/typewriter-effect): ^2.22.0
-- [vite](https://www.npmjs.com/package/vite): ^8.3.4
+- [typewriter-effect](https://www.npmjs.com/package/typewriter-effect): ^3.3.0
+- [vite](https://www.npmjs.com/package/vite): ^8.3.5
 
 <!--- DEPENDENCIES_END --->
 

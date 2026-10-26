@@ -172,6 +172,13 @@ You need Git, Docker Engine, and Docker Compose v2.
 ## Use the command-line client
 
 The [Workstream CLI](cli/README.md) is a terminal client for the public API.
+Download published binaries from [GitHub Releases](https://github.com/Flow-Research/workstream/releases)
+and follow the [installation and verification instructions](cli/README.md#install-a-released-binary).
+Linux x86-64, Windows x86-64, Intel Mac and Apple Silicon are supported.
+A successful build or release tag is not a published download: the release
+workflow waits for independent human approval before publishing. A CLI release
+does not deploy the backend or certify the whole service for production.
+
 You can use it to set up projects, find and claim tasks, submit work, read
 authorized task audit context and evidence, and export contribution records.
 It sends your Flow token, from
@@ -295,10 +302,19 @@ no shell or model-selected storage paths. Rebuild the local image after changing
 parser code. Committed original-document readiness runs one compilation and
 stops at findings and proposals; manager review and approval remain separate.
 
+Model-backed POST checkers select OpenAI Responses or OpenRouter Chat Completions
+from their locked project model profile through the shared budgeted proxy.
+Ordinary POST checkers need no model. An OpenRouter-only deployment needs only
+its OpenRouter credential; setup runtime selection does not force POST to use
+OpenAI. See [model runtime operations](docs/operations_checker_models.md) for
+provider bounds, evidence custody and recovery limits.
+
 To compile guides without any model provider, select the manager-authored
 runtime instead. It makes no inference request and allocates no provider
-resources. It uses the same isolated document tools. The hosted release omits
-the provider credential for this exact `none/none/none` configuration:
+resources. It uses the same isolated document tools. With the model proxy
+disabled, the hosted release omits provider credentials for this exact
+`none/none/none` configuration; model-backed POST can independently enable the
+proxy with its selected provider credential:
 
 ```bash
 WORKSTREAM_PROJECT_AGENT_RUNTIME=manager_authored

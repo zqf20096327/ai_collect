@@ -28,7 +28,7 @@ agent that reads `AGENTS.md`. Those agents get the skills and an always-on direc
 the per-turn re-statement, which is a Claude Code hook
 ([per-agent detail](docs/MULTI-AGENT.md)), and no lift has yet been measured through them.
 
-Under the hood: **43 skills (348 files, ~91k lines)** of state-of-the-art 2026
+Under the hood: **43 skills (348 files, ~93k lines)** of state-of-the-art 2026
 practice, each **instruction** file under 500 lines so only the matching rules load —
 the cap applies to `skills/**` alone, never to README/CHANGELOG/`docs/` — every fast-moving
 claim web-verified against a primary source **as of the last full sweep** (the root
@@ -122,7 +122,13 @@ Findings name the control they violate — not just "this looks wrong":
   The nine that existed on 2026-09-24 were each gap-checked against their ecosystem's own
   scanner registry ([LANGUAGE-TIER](docs/LANGUAGE-TIER.md)). Every language also says when an
   unused suppression fails CI, which failures no catch/recover sees, and what silently
-  unfreezes a frozen install, each fact validated against a primary source (2026-10-25)
+  unfreezes a frozen install, each fact validated against a primary source (2026-10-25).
+  Each also says when formal verification applies and which mutation-testing tools fail the build;
+  protocol designs are model-checked before they are built (`sota-architecture` rules/03 §12a)
+- **One rule, one place** — 81 places where duplicated guidance had drifted between skills
+  were reconciled against primary sources (retry policy, severities, workload identity);
+  every numbered rule section and checklist item now cite each other, and every skill has
+  declared routing, so a rule cannot sit where no audit or task reaches it
 - **Supply chain** — SLSA, Sigstore, in-toto, SBOM (CycloneDX/SPDX), NIST SSDF
 - **Cloud & identity** — CIS Benchmarks, NIST 800-207 zero trust, NIST 800-63-4,
   OAuth 2.1, FAPI 2.0, passkeys, SPIFFE
@@ -1217,17 +1223,4 @@ your assistant's own earlier prose about the work rather than from the work — 
 check available. Everything the command asks for is executed against an artifact instead: `git
 diff`, `git log -S`, the file on disk, the command run again. The ordering is load-bearing
 too — retraction comes first because every later step *writes*, and anything still wrong gets
-propagated into a doc, a commit message or a hand-off where the next session reads it as
-established.
-
-## Optional setup & integrations
-
-Beyond the skills themselves — all opt-in, none required to use the library.
-
-### Badge
-
-Built or audited a project with the library? Ship the attribution
-[![Built with SOTA Skills](https://img.shields.io/badge/Built%20with-SOTA%20Skills-2fa45f)](https://github.com/martinholovsky/SOTA-skills):
-
-```md
-[![Built with SOTA Skills](https://img.shields.io/badge/Built%20with-SOTA%20Skills-2fa45f)](https://github.com/marti
+propagated into

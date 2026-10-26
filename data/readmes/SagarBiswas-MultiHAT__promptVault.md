@@ -8,7 +8,7 @@
   &nbsp;
   <a href="https://github.com/SagarBiswas-MultiHAT/promptVault/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/SagarBiswas-MultiHAT/promptVault/ci.yml?branch=main&label=CI%20Build&logo=githubactions&logoColor=white" alt="CI Status" /></a>
   &nbsp;
-  <a href="https://github.com/SagarBiswas-MultiHAT/promptVault/releases"><img src="https://img.shields.io/badge/Release-v2.3.0-F59E0B?logo=semanticrelease&logoColor=white" alt="Version" /></a>
+  <a href="https://github.com/SagarBiswas-MultiHAT/promptVault/releases"><img src="https://img.shields.io/badge/Release-v2.3.1-F59E0B?logo=semanticrelease&logoColor=white" alt="Version" /></a>
   &nbsp;
   <a href="docs/README.md"><img src="https://img.shields.io/badge/Docs-Architecture%20Portal-6366F1?logo=gitbook&logoColor=white" alt="Docs Portal" /></a>
   &nbsp;
@@ -206,7 +206,7 @@ PromptVault includes a native browser extension for Chrome, Brave, Microsoft Edg
 - **In-Chat Quick Picker Overlay**: Press `Alt+P` (or `Option+P` on Mac) inside ChatGPT, Claude, DeepSeek, Google AI Studio, or v0 to search your prompts and inject them into the chat input in one click. Isolated inside a closed Shadow DOM to avoid host CSS pollution.
 - **One-Click Web Clipping**: Select text on any web page, right-click, and choose **Save to PromptVault** to store ideas directly into your vault.
 - **Local & Cloud Sync**: Seamlessly syncs with your desktop vault using `chrome.storage.local` and optional Supabase cloud sync via Google OAuth.
-- **Easy Installation**: Download the pre-built `promptvault-extension-v2.3.0.zip` from [Releases](https://github.com/SagarBiswas-MultiHAT/promptVault/releases/latest), enable Developer Mode in your browser extensions page, and click **Load unpacked**.
+- **Easy Installation**: Download the pre-built `promptvault-extension-v2.3.1.zip` from [Releases](https://github.com/SagarBiswas-MultiHAT/promptVault/releases/latest), enable Developer Mode in your browser extensions page, and click **Load unpacked**.
 
 ---
 

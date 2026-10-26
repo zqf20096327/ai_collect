@@ -1,6 +1,6 @@
 # About
 
-I categorize, annotate and write comments for all research papers I read (550+ papers since 2018).
+I categorize, annotate and write comments for all research papers I read (600+ papers since 2018).
 
 _In June 2023, I wrote the blog post [The How and Why of Reading 300 Papers in 5 Years](https://www.fregu856.com/post/phd_of_reading/) (why I think it’s important to read a lot of papers + how I organize my reading + paper statistics + a list of 30 particularly interesting papers)._
 
@@ -22,6 +22,24 @@ _In June 2023, I wrote the blog post [The How and Why of Reading 300 Papers in 5
 - [Papers Read in 2018](#papers-read-in-2018)
 
 #### Papers Read in 2026:
+
+##### [26-10-26] [paper601]
+- Pan-Cancer Virtual Spatial Transcriptomics From Routine Histology With Phoenix
+ [[pdf]](https://www.biorxiv.org/content/10.64898/2026.04.25.720812v2) [[annotated pdf]](https://drive.google.com/file/d/1Nf6sdePLC5oVCrpfPBE8qQIG8v-IqFTB/view?usp=sharing)
+- `biorxiv, 2026-04`
+- [Computational Pathology]
+```
+Well-written and interesting paper. Took a while to read, and I definitely didn't understand absolutely everything (or am able to judge exactly how interesting/impressive/impactful all these results are), but I'm pretty happy that I read this. The model seems to perform well, in particular the 0.66 Spearman corr for pseudobulk predictions of 373 genes across all 9.5 TCGA samples seems quite impressive indeed to me. The "we concluded that lower sensitivity is the main shortcoming of Xenium 5K Prime" in the Discussion is interesting as well.
+```
+
+##### [26-10-26] [paper600]
+- Nationwide HER2 Testing, Prospective Trastuzumab-Based Therapy, and Deep Visual Proteomics in Esophageal Squamous Cell Carcinoma
+ [[pdf]](https://www.medrxiv.org/content/10.64898/2026.10.14.26365244v1) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Nationwide%20HER2%20Testing%2C%20Prospective%20Trastuzumab-Based%20Therapy%2C%20and%20Deep%20Visual%20Proteomics%20in%20Esophageal%20Squamous%20Cell%20Carcinoma.pdf)
+- `medrxiv, 2026-10`
+- [Computational Pathology]
+```
+Fairly interesting paper. I wanted to learn a bit more about "deep visual proteomics" after the previous paper I read, but this was a bit less interesting. They don't do unsupervised clustering of tile-level PFM (H-optimus-0) features here, but instead use a cell segmentation and classification model, and cluster tiles based on the cell type abundance/proportions in some way.
+```
 
 ##### [26-10-25] [paper599]
 - AI-Powered Deep Visual Proteomics Reveals Critical Molecular Transitions in Pancreatic Cancer Precursors 
@@ -1075,31 +1093,4 @@ A non-technical review paper, fairly interesting. Just 6 pages long, very quick 
 - `EMNLP 2024`
 - [ML for Medicine/Healthcare], [Language Models] 
 ```
-Quite interesting paper, overall a good paper for me to read I think, to get a better sense of how LLMs typically are benchmarked within the medical domain and how well they perform. Section 2 is nice, with all key findings summarized.
-```
-
-##### [25-07-24] [paper482]
-- The Rise and Potential of Large Language Model Based Agents: A Survey
- [[pdf]](https://link.springer.com/article/10.1007/s11432-024-4222-0) [_unfortunately not open access, thus no annotated pdf_]
-- `Science China Information Sciences, 2025`
-- [Language Models]
-```
-Not the type of paper I had expected, basically no technical details at all. Personally, I did not find this useful. Long paper, 30 pages, but I didn't read everything in detail.
-```
-
-##### [25-07-24] [paper481]
-- Application of Large Language Models in Medicine
- [[pdf]](https://www.nature.com/articles/s44222-025-00279-5) [_unfortunately not open access, thus no annotated pdf_]
-- `Nature Reviews Bioengineering, 2025`
-- [ML for Medicine/Healthcare], [Language Models] 
-```
-Well-written paper, and I think this was quite useful for me to read. I think it gives a good overview of things, a good place to start. My main concrete takeaway is that the authors seem to feel quite strongly that we need better benchmarks, that we need to evaluate these models in a better way, which better captures how they actually would perform in real-world medical practice (not just a bunch of Q&As).
-```
-
-##### [25-07-23] [paper480]
-- Aligning, Autoencoding and Prompting Large Language Models for Novel Disease Reporting
- [[pdf]](https://ieeexplore.ieee.org/document/10854911) [_unfortunately not open access, thus no annotated pdf_]
-- `TPAMI, 2025`
-- [ML for Medicine/Healthcare], [Vision-Language Models] 
-```
-Well written and quite interesting paper. I think the method makes sense overall, and they also describe things well. I don't quite understand how the actual report generat
+Quite interesting paper, overall a good paper for me to read I think, to get a better sense of how LLMs typi

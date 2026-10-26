@@ -322,6 +322,18 @@ plans, diffs, and checkpoint recovery. Tauri additionally provides system
 credential storage and automatic local Gateway startup; browser mode connects
 to an already-running Gateway and retains passwords only for the current tab.
 
+Local Desktop startup requires Python 3.10–3.14 (the current Gateway dependencies
+do not support Python 3.15). On Windows, Desktop checks
+the configured Python path and PATH commands, then registered Python installations,
+uv (including `UV_PYTHON_INSTALL_DIR`), standard installation folders, and common
+Conda locations. Python does not need to be on PATH; Microsoft Store placeholders
+and unusable interpreters are skipped. You can also set an executable explicitly
+under **Settings → General → Python path**. Desktop installs its backend into a
+separate environment when needed; it does not install Python itself.
+The VS Code extension uses the same additional Windows discovery sources after
+checking its configured interpreter, Python extension, workspace `.venv`, Conda,
+and PATH. Set `crabcode.pythonPath` to select a particular installation.
+
 Downloadable Desktop DMG/MSI installers and platform/universal VSIXs are built
 through **Actions → Client Packages → Run workflow**. See
 [manual client packaging](CLIENT_PACKAGING.md) for downloads and signing.
@@ -579,6 +591,8 @@ For DeepSeek V4 thinking mode with tool calls, enable reasoning pass-through:
 ### Context Window
 
 CrabCode automatically manages the context window to prevent `400 token limit exceeded` errors.
+
+When importing new models with **Get model list** on a configuration group in Desktop or VS Code, CrabCode saves context and output limits supplied by `/models`. It recognizes Anthropic's `max_input_tokens` / `max_tokens`, OpenRouter's `context_length` / `top_provider.max_completion_tokens`, and common compatible API limit fields, using the smaller limit when several are present. Explicit thinking capability metadata configures the thinking switch; Anthropic thinking budgets are kept below the output limit. Explicit group context overrides, smaller output budgets, and disabled thinking are preserved. Existing model profiles are untouched, and missing metadata continues to inherit settings or use runtime defaults. Temperature, reasoning effort, prices, and image/tool capabilities are not inferred from model names or automatically changed.
 
 **How context window size is resolved** (in priority order):
 

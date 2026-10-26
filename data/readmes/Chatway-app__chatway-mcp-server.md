@@ -403,7 +403,9 @@ complete the Chatway sign-in. Client-specific steps for Codex, Grok, and others 
 
 Details: [Permissions & access](https://developers.chatway.app/mcp/guides.mcp_permissions_and_access) ·
 [Manage connections](https://developers.chatway.app/mcp/guides.mcp_manage_connections) ·
-[Security policy](SECURITY.md)
+[Security policy](SECURITY.md) ·
+[Privacy policy](https://chatway.app/privacy-policy) ·
+[Terms of service](https://chatway.app/terms-of-service)
 
 ## About this repository
 

@@ -74,7 +74,7 @@ also shows how to configure a provider directly in `opencode.json`.
 | 📡 **Dynamic discovery** | Queries `/v1/models` so your OpenCode model picker always reflects your live `model_list`. |
 | ⚡ **Stale-while-revalidate** | A warm disk cache supplies models without a network request. New sessions trigger a background refresh, and cache entries expire after 7 days. |
 | 🏷️ **Smart formatting** | Turns `anthropic/claude-3-5-sonnet` into `Claude 3.5 Sonnet` in the picker — handles versions, sizes, quantizations, and brand-cased names like `gpt-4o`. Set `formatModelNames: false` to keep the raw LiteLLM ids instead. |
-| 🧠 **Modality-aware** | Enriches `/v1/models` entries with `/v1/model/info` (`mode`, token limits, capability flags) and hides embedding / image / audio models from the picker. |
+| 🧠 **Modality-aware** | Enriches `/v1/models` entries with `/v1/model/info` (`mode`, token limits, capability flags) and hides embedding / image / audio models from the picker. Declares `temperature` support only for models whose `supported_openai_params` lists it, so OpenCode applies (and the user can set) a sampling temperature on exactly those models. |
 | 💵 **Real pricing** | Maps `input_cost_per_token` / `output_cost_per_token` (and cache read/write costs) from `/v1/model/info` into OpenCode's `cost` field, so the picker and `/cost` show what the proxy actually bills instead of `$0.00`. Models LiteLLM has no price for are left unpriced, not falsely marked free. |
 | 🧩 **Reasoning-effort variants** | When LiteLLM reports per-model effort support (`supports_low_reasoning_effort`, …), the plugin surfaces each level as a picker variant automatically. |
 | 🧭 **Responses-API routing** | Models LiteLLM reports with `mode: "responses"` are invoked through `/v1/responses` instead of `/v1/chat/completions`, with no extra configuration. OpenCode 2 overrides the runtime package per model; OpenCode 1 gets a `<provider>-responses` sibling. |
@@ -588,6 +588,35 @@ so the picker works as usual; only the background refresh is skipped until
 the proxy is back. With a cold cache (first run, or after the 7-day expiry),
 the plugin logs a warning and you won't see LiteLLM-discovered models until
 the proxy is reachable again.
+</details>
+
+<details>
+<summary><b>Why does the first <code>opencode run</code> fail with <code>Model unavailable: litellm/…</code> on OpenCode 2?</b></summary>
+
+This happens only on OpenCode 2, in a one-shot command (`opencode run`, CI jobs, scripts), when the plugin has no model cache yet. That covers the first run, a cleared or expired cache, and a changed config or credential. OpenCode registers the providers declared under `providers.*` only after plugin setup returns, so the plugin can't discover their models during setup. Discovery starts right after that, but a one-shot command has already resolved its model and fails before the models arrive. With `--standalone`, the process usually exits before discovery reaches the disk cache, so running it again fails the same way. Interactive sessions (TUI, web, desktop) and `opencode serve` aren't affected. This is how the OpenCode host orders startup ([anomalyco/opencode#57421](https://github.com/anomalyco/opencode/issues/57421)), not a plugin bug.
+
+Workarounds:
+
+- **Warm the cache once.** Open an interactive session or run `opencode serve` until the models appear, then stop it. One-shot runs use the cache until it expires (7 days) or the config or credential changes.
+- **Pass the connection as plugin options** for CI and scripts. Plugin options are available during setup, so discovery finishes before the command resolves its model, even with a cold cache:
+
+  ```jsonc
+  {
+    "plugins": [
+      {
+        "package": "opencode-plugin-litellm@latest",
+        "options": {
+          "baseURL": "https://litellm.internal.example.com/v1",
+          "apiKey": "{env:LITELLM_API_KEY}"
+        }
+      }
+    ]
+  }
+  ```
+
+  One plugin entry describes one provider. To [split one proxy into several providers](#splitting-one-proxy-into-multiple-providers-includemodels--excludemodels) in a cold one-shot run, warm the cache first.
+
+The OpenCode feature request for a readiness latch ([anomalyco/opencode#56119](https://github.com/anomalyco/opencode/issues/56119)) would remove the need for either workaround.
 </details>
 
 <details>

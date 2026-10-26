@@ -31,9 +31,9 @@ Hit Enter, and most of the work is already done.
 
 Chat interfaces make the model wait for you to press Enter before it does anything. While you type, the GPU sits idle. When you send, the model first has to *read* your whole message (prefill). Then a reasoning model, like Qwen3 in thinking mode, *thinks* for hundreds of tokens before the first word of its answer. On a mid-range GPU that thinking is the longest wait of all: ten seconds and more on a word problem, minutes on a model larger than the VRAM.
 
-MAFDET uses the time you spend typing for both. It **reads** your message as you write it, so the prefill is done before Enter. And it **thinks ahead**: the model starts reasoning about your message while you are still typing it, and keeps that reasoning when you change the text. On Qwen3-4B, with 24 word problems typed in real time, the mean wait after Enter goes from **12.2 s to 3.2 s**, with the same 24/24 correct answers; on Qwen3-14B, from **108 s to 47 s**.
+MAFDET uses the time you spend typing for both. It **reads** your message as you write it, so the prefill is done before Enter. And it **thinks ahead**: the model starts reasoning about your message while you are still typing it, and keeps that reasoning when you change the text. On Qwen3-4B, with 24 word problems typed in real time, the mean wait after Enter goes from **12.2 s to 3.2 s**, with the same 24/24 correct answers; on Qwen3-14B, from **108 s to 47 s**. On a MacBook Pro M2 Pro, from **18.1 s to 5.6 s** (4B, 24/24 both ways) and from **32.7 s to 12.1 s** (14B).
 
-MAFDET is built for the hardware most people actually own. The reference machine is an **RTX 2060 with 6 GB of VRAM**, and everything also runs on **CPU only**.
+MAFDET is built for the hardware most people actually own. The reference machine is an **RTX 2060 with 6 GB of VRAM**; it also runs on **Apple Silicon Macs** (Metal, measured on an M2 Pro with 16 GB), and everything also runs on **CPU only**. **AMD Radeon** cards run through Vulkan, not measured yet: [help wanted](#help-wanted-benchmarks-on-an-amd-radeon).
 
 > Named after Mafdet, the ancient Egyptian feline goddess known as "the runner", who struck snakes and scorpions before they could attack.
 
@@ -69,6 +69,8 @@ Reading ahead is exact. Thinking ahead is not, because the model reasons on vers
 
 **On Windows, with a double-click.** Download MAFDET (on GitHub, *Code → Download ZIP*, and unzip it; or `git clone https://github.com/TheLastOxygen/mafdet.git`) and double-click **`start_mafdet.bat`**. The first time it creates a Python environment in `.venv` and installs MAFDET in it, which takes about a minute and needs [Python](https://www.python.org/downloads/) 3.10 or later. After that, a double-click opens MAFDET in under a second, and after an update it installs the new libraries by itself. The terminal shows what is being downloaded as it goes: each library, and later llama.cpp and the models you pick in the app, with size, a progress bar, speed and time left.
 
+**On macOS, with a double-click.** The same, with **`start_mafdet.command`** (Python 3.10 or later: from python.org, or `brew install python@3.12`). If the Finder says it cannot verify the file, right-click it, *Open*, then *Open* again; this is needed only the first time.
+
 **From a terminal:**
 
 ```bash
@@ -80,7 +82,7 @@ pip install -e .
 mafdet
 ```
 
-Either way, no PyTorch and no manual downloads: MAFDET asks whether to open the **window** or the **terminal app**, and the first start guides you through the rest. It looks at your machine, installs the right build of llama.cpp by itself (CUDA for an NVIDIA card, CPU otherwise) and downloads the model that runs best on your hardware.
+Either way, no PyTorch and no manual downloads: MAFDET asks whether to open the **window** or the **terminal app**, and the first start guides you through the rest. It looks at your machine, installs the right build of llama.cpp by itself (CUDA for an NVIDIA card, Vulkan for an AMD Radeon, Metal on an Apple Silicon Mac, CPU otherwise) and downloads the model that runs best on your hardware.
 
 <p align="center">
   <img src="assets/screenshots/gui-chat.png" alt="The MAFDET window: the model reasoned ahead while the message was typed (455 of 571 reasoning tokens) and answered 1.6 s after Enter" width="49%">
@@ -96,13 +98,13 @@ The same app comes in two forms, on the same engine:
 | <img src="assets/icons/watch.svg" width="22" alt=""> | `mafdet gui` | **The window**: chat, models, hardware and settings, in English, Italian, French or German |
 | <img src="assets/icons/strike.svg" width="22" alt=""> | `mafdet tui` | **The terminal app**: the same views in the terminal, keyboard first (F1 to F4), on an amber phosphor screen with a boot sequence (Settings, *Cinematic effects*, turns the animations off) |
 | <img src="assets/icons/race.svg" width="22" alt=""> | `mafdet models` | the model catalog for this machine (`--family`, `--download`) |
-| <img src="assets/icons/awaken.svg" width="22" alt=""> | `mafdet doctor` | checks the GPU, memory, llama.cpp and the models; `--install` installs llama.cpp (`--cuda 12`, `13` or `cpu` to pick the build) |
+| <img src="assets/icons/awaken.svg" width="22" alt=""> | `mafdet doctor` | checks the GPU, memory, llama.cpp and the models; `--install` installs llama.cpp (`--build 12`, `13`, `vulkan` or `cpu` to pick the build) |
 
 `mafdet` alone opens the launcher, which can remember your choice (`mafdet --ask` shows it again).
 
 **Chat.** While you type, a status line under the message shows what the model is doing with it: how much it has read, and how many reasoning tokens it has written ahead (the field glows amber while it thinks). On Enter only the tail is left to compute. The reasoning is shown folded above the answer, and every answer ends with its numbers: first word after Enter, tokens read while you typed, reasoning done before Enter, speed.
 
-**Models.** Five families: **Qwen3**, **Llama 3**, **Gemma 3**, **Mistral** and **Phi-4**, from 0.6B to 32B parameters, each in several quantizations. With every model, MAFDET reads your message while you type and, at a pause, writes the answer ahead; Qwen3 also **reasons ahead**, the one family whose reasoning frame was measured. Every model of the catalog comes with what it does on *your* machine, before you download it: whether it fits in VRAM or runs partly on the CPU, how fast it writes and reads, and for Qwen3 how long the answer takes after Enter with and without MAFDET (for the other families, how long a typical answer takes to write). The estimate comes from your hardware (GPU and RAM bandwidth, VRAM, llama.cpp's split of layers between GPU and CPU) and is within 12% of the measured speeds on the reference PC (Qwen3-4B 89.6 estimated / 87.1 measured tok/s, 8B 16.2 / 16.2, 14B 5.1 / 4.9). Once a model is downloaded, **Measure** benchmarks it in half a minute and the real numbers replace the estimate. The model that runs best here is marked *Best for you*, and each family has its own best pick. To add a model, add a line to `tools/build_catalog.py`: it reads the file sizes and the shape of the model from Hugging Face.
+**Models.** Five families: **Qwen3**, **Llama 3**, **Gemma 3**, **Mistral** and **Phi-4**, from 0.6B to 32B parameters, each in several quantizations. With every model, MAFDET reads your message while you type and, at a pause, writes the answer ahead; Qwen3 also **reasons ahead**, the one family whose reasoning frame was measured. Every model of the catalog comes with what it does on *your* machine, before you download it: whether it fits in VRAM or runs partly on the CPU, how fast it writes and reads, and for Qwen3 how long the answer takes after Enter with and without MAFDET (for the other families, how long a typical answer takes to write). The estimate comes from your hardware (GPU and RAM bandwidth, VRAM, llama.cpp's split of layers between GPU and CPU) and is within 12% of the measured speeds on the reference PC (Qwen3-4B 89.6 estimated / 87.1 measured tok/s, 8B 16.2 / 16.2, 14B 5.1 / 4.9) and on an M2 Pro (Qwen3-4B 53 / 57 tok/s). Once a model is downloaded, **Measure** benchmarks it in half a minute and the real numbers replace the estimate. The model that runs best here is marked *Best for you*, and each family has its own best pick. To add a model, add a line to `tools/build_catalog.py`: it reads the file sizes and the shape of the model from Hugging Face.
 
 **Hardware and settings.** The Hardware view shows the GPU, CPU, memory and the llama.cpp runtime, with a button to install or reinstall it. Settings keep the chat options from one start to the next (in `~/.mafdet`, or `$MAFDET_HOME`).
 
@@ -113,9 +115,10 @@ The same app comes in two forms, on the same engine:
 
 ## Requirements
 
-- **Windows**, with an **NVIDIA GPU** and up-to-date drivers (tested target: RTX 2060, 6 GB), or just a CPU. **Linux** has its llama.cpp builds and code paths in place, but has not been tested yet
+- **Windows**, with an **NVIDIA GPU** and up-to-date drivers (tested target: RTX 2060, 6 GB), an **AMD Radeon** through Vulkan (in place, not measured yet: [help wanted](#help-wanted-benchmarks-on-an-amd-radeon)), or just a CPU. **Linux** has its llama.cpp builds and code paths in place, but has not been tested yet
+- **macOS** on Apple Silicon (M1 or later): the models run on the GPU through Metal, in the unified memory (tested: M2 Pro, 16 GB, macOS 26.2; Qwen3-4B reads 593 tokens/s and writes 57). Intel Macs run on the CPU
 - **Python 3.10 or later** (tested with 3.12)
-- Disk space: about 0.7 GB for llama.cpp with CUDA (60 MB without), plus the models, from 0.6 GB (Qwen3-0.6B) to 2.3 GB for the 4B recommended on 6-8 GB cards
+- Disk space: about 0.7 GB for llama.cpp with CUDA (100 MB with Vulkan, 60 MB for the CPU), plus the models, from 0.6 GB (Qwen3-0.6B) to 2.3 GB for the 4B recommended on 6-8 GB cards
 - **16 GB of RAM** recommended for CPU-only runs and for models larger than the VRAM
 
 The app needs no PyTorch: llama.cpp runs the models, and transformers only provides the tokenizers. PyTorch is needed only for the measurements on the PyTorch backend (below): install it first from the CUDA index, then `pip install -e ".[research]"`.
@@ -126,7 +129,7 @@ In the app this is on by default for Qwen3 (Settings, *Reason while I type*); fr
 
 1. **While you type**, the model reasons in short chunks of 32 tokens, on the message as it is at that moment, on whole words (after a space or punctuation, or at a pause).
 2. **When the text changes**, the reasoning is not thrown away. It stays in the prompt as notes, after the new version of the message. Moving it there only costs a prefill: the fast, parallel phase, about 60 times faster than writing the same tokens again for the 14B on the RTX 2060. A new line of the notes names the words just typed, so the model goes on gathering material on them instead of starting over.
-3. **On Enter**, a last sentence tells the model that the message is now complete. It finishes reasoning from where it got to and answers.
+3. **On Enter**, a last sentence tells the model that the message is now complete. It finishes reasoning from where it got to and answers. Rarely (Qwen3-4B: once in the 24 problems on the Mac, once before on the RTX 2060) the model writes its answer among its thoughts and ends its turn without leaving the reasoning: the app then closes the reasoning as Qwen3's template does, and the model writes the answer, a few seconds later instead of an empty one.
 
 The notes are a list of **material for the answer**, started by a frame: *"The user is still typing. I will not wonder what they will ask, nor remark that the text is unfinished. While I wait, I collect material for the answer: for each key term, name or number already written, one line with what it is and the facts I know about it, or a partial result."* followed by one example line from a different message. Each time you type more, a new line names the new words: `- New words "finestra di contesto": `. So from *"Quando finisce la finestra di contesto degli LLM?"* the notes already hold what a context window is and what LLM stands for, and from a word problem the partial results (`3 × 12 = 36`) before the question has been typed.
 
@@ -170,7 +173,7 @@ The typing is not replayed in real time. Each prefill really runs on the model, 
 
 ## Results
 
-All on an RTX 2060 (6 GB), llama.cpp, Q4_K_M models, real-time typing (5 to 8 characters per second, a few natural pauses, Enter right after the last character, no rereading).
+On an RTX 2060 (6 GB) unless stated (the Mac has [its own table](#on-a-mac)), llama.cpp, Q4_K_M models, real-time typing (5 to 8 characters per second, a few natural pauses, Enter right after the last character, no rereading).
 
 **Reasoning ahead, Qwen3-4B** (fits in VRAM, 83 tok/s): 24 word problems with a known numeric answer, typed in Italian (script and data: `research/thinking_ahead.py`).
 
@@ -201,6 +204,23 @@ Same accuracy, less reasoning in total (the material gathered while typing saves
 | Qwen3-14B | no, partly on the CPU | 5 tok/s | about 160 tokens |
 
 Even so, on the 14B (6 word problems typed in real time, 6/6 correct both ways) reasoning ahead halves the mean wait after Enter: **108 s → 47 s**, with 164 reasoning tokens written before Enter on average. Single runs vary a lot (the same problem took 106 s once and 154 s another time), so 6 problems give the order of magnitude, not a precise figure. Reading ahead gains more the larger the model: the 14B reads a 3,000-token pasted document in about 10 s, all of it hidden while you type.
+
+### On a Mac
+
+MacBook Pro M2 Pro, 16 GB, macOS 26.2, llama.cpp with Metal: the same scripts and problems as above.
+
+| M2 Pro | Without reasoning ahead | `mafdet strike` |
+|---|---|---|
+| **Qwen3-4B**, 24 problems: correct answers | 24/24 | 24/24 |
+| Median wait for the first word of the answer | 16.7 s | **4.1 s** |
+| Mean wait | 18.1 s | **5.6 s** |
+| Faster | | in 24 of 24 problems |
+| Reasoning in total / left after Enter | 966 / 966 tokens | **773 / 248 tokens** |
+| **Qwen3-14B**, 6 problems: correct answers | 6/6 | 6/6 |
+| Median wait | 26.5 s | **11.7 s** |
+| Mean wait | 32.7 s | **12.1 s** |
+
+The 4B writes at 54 tok/s on the M2 Pro (83-87 on the RTX 2060), so both waits are longer than on the PC, and reasoning ahead takes about the same share of them away. The 14B is where the Mac differs: Metal may use 12 GB of the 16 GB of unified memory, so the whole model is on the GPU and writes at 18 tok/s (4.5-5 on the RTX 2060, with 62% of it on the CPU). The wait after Enter is 12 s instead of 47 s. The column without reasoning ahead comes from an earlier run of the same day; in that run one answer came out empty (the model ended its turn inside its reasoning, see [Thinking ahead, in detail](#thinking-ahead-in-detail)), which the app now handles, and the column with reasoning ahead is the run after the fix. During the runs the Mac reached thermal pressure *Heavy* for a few minutes (54 → 51 tok/s). Data: `research/data/thinking_ahead_4b_m2pro.json`, `thinking_ahead_4b_m2pro_fixed.json`, `thinking_ahead_14b_m2pro.json`.
 
 **A small model gathering for a large one (`--gatherer`, experimental).** For models larger than the VRAM we tried having a small, fast model (Qwen3-0.6B, also fine-tuned for it with `training/`) write material while you type, for the 14B to read on Enter. On the RTX 2060 it does not beat the 14B reasoning ahead by itself:
 
@@ -235,6 +255,17 @@ The reasoning-ahead column was measured again for this comparison, the same day 
 - `--draft` (Qwen3-0.6B drafting for the 14B): on the GPU it takes VRAM from the 14B, which then runs more of its layers on the CPU (4.8 → 3.5 tok/s); on the CPU it gains 8% with 4-token drafts and halves the reading speed.
 - The reasoning ahead as the draft for speculative decoding after Enter (`--spec-type ngram-simple`: the notes are in the prompt, and after Enter the model works the same steps out again). Replayed offline, prompt lookup would write 1.5 to 1.7 tokens per decoding step on Qwen3-4B, against 1.3 to 1.5 without notes. For real it is no faster on the 4B (73 tok/s either way) and slower on the 14B (5.0 → 3.1 tok/s): checking a 9-token draft costs the 14B 2.4 decoding steps, because its layers on the CPU compute every token of the draft, and only 11% of the drafted tokens were right. Script and data: `research/notes_as_draft.py`.
 
+## Help wanted: benchmarks on an AMD Radeon
+
+MAFDET runs on AMD Radeon cards through llama.cpp's Vulkan build, but nobody has measured it on one yet: the machines here are an RTX 2060 and an M2 Pro. The Vulkan path itself is checked, on the RTX 2060 (Qwen3-4B reads 2,103 tokens/s and writes 83, about as with CUDA; 3/3 word problems correct, reasoning ahead working). What is missing is a Radeon. If you have one (a dedicated card, RX 5000 or later; 8 GB or more is ideal), about half an hour of it would fill this page:
+
+1. Install MAFDET ([Quick start](#quick-start)) and open it once: it should find your card, install llama.cpp *Windows · Vulkan* (or *Linux · Vulkan*) and download Qwen3-4B. `mafdet doctor` shows what it found.
+2. In the app, *Models*, **Measure** Qwen3-4B.
+3. From the MAFDET folder, with its environment active: `python research/thinking_ahead.py radeon_4b.json`. It types 24 word problems in real time, with and without reasoning ahead, and takes about 20 minutes; leave the machine otherwise idle.
+4. [Open an issue](https://github.com/TheLastOxygen/mafdet/issues/new) with the output of `mafdet doctor`, the numbers of *Measure* and `radeon_4b.json`.
+
+If something does not work (the card not found, llama.cpp not starting, the model running on the CPU), an issue with the output of `mafdet doctor` and the `server*.log` files next to llama-server (in `~/.mafdet/llama.cpp`) is just as useful. Integrated Radeons (Ryzen APUs) are not used yet: they keep the CPU build. Any card with a Vulkan driver can try it with `mafdet doctor --install --build vulkan`.
+
 ## Roadmap
 
 - [x] Incremental prefill engine with common-prefix sync and token hold-back
@@ -248,7 +279,9 @@ The reasoning-ahead column was measured again for this comparison, the same day 
 - [x] A small model gathers while you type, a large one answers: tried and measured (no gain on the RTX 2060, see Results)
 - [ ] Reasoning ahead for models larger than the VRAM that beats the large model thinking by itself
 - [ ] Reasoning ahead beyond Qwen3, including the thinking models with their own formats (DeepSeek-R1, gpt-oss): each needs its frame measured
-- [ ] Linux tested; macOS (Metal) and AMD GPUs
+- [x] macOS on Apple Silicon (Metal)
+- [x] AMD Radeon through Vulkan (in place; measured on a Radeon: help wanted, above)
+- [ ] Linux tested
 
 ## Related research
 

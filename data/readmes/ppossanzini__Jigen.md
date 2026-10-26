@@ -113,13 +113,13 @@ var ctx = new Context(new ConnectionOptions { HostName = "localhost", Port = 322
 var articles = new VectorCollection<Article>(ctx);
 
 articles.Add(Guid.NewGuid(), new Article { Title = "..." }, sentence: "text embedded by the server");
-var hits = articles.SearchDense("query text", x => x.Category == "news", top: 5);
+var hits = articles.Search("query text", x => x.Category == "news", top: 5);
 
 // Hybrid: dense query plus sparse weights, fused by reciprocal rank.
 var hybrid = articles.Search(queryEmbedding, new Dictionary<int, float> { [1204] = 1f }, top: 5);
 
 // Hybrid from a sentence: the server embeds it and derives the sparse terms.
-var fromText = articles.Search("how do I reset my password?", top: 5, sparseFromSentence: true);
+var fromText = articles.Search("how do I reset my password?", top: 5);
 ```
 
 ## Documentation
@@ -129,7 +129,7 @@ Full documentation lives in [`docs/`](docs/index.md) (also buildable with MkDocs
 | Section | Contents |
 |---|---|
 | [In-process engine](docs/in-process/overview.md) | [Getting started](docs/in-process/getting-started.md) · [Store options](docs/in-process/store-options.md) · [Collections](docs/in-process/collections.md) |
-| [Indexes](docs/indexes/hnsw.md) | [Brute force](docs/indexes/brute-force.md) · [HNSW](docs/indexes/hnsw.md) |
+| [Indexes](docs/indexes/hnsw.md) | [Brute force](docs/indexes/brute-force.md) · [HNSW](docs/indexes/hnsw.md) · [Sparse](docs/indexes/sparse.md) |
 | [Embeddings](docs/embeddings/overview.md) | [Configuration](docs/embeddings/configuration.md) · [Execution providers (CPU/GPU)](docs/embeddings/execution-providers.md) |
 | [Server](docs/server/overview.md) | [Configuration](docs/server/configuration.md) · [Docker](docs/server/docker.md) · [REST API](docs/server/rest-api.md) · [gRPC API](docs/server/grpc-api.md) |
 | [Client](docs/client/getting-started.md) | [Usage](docs/client/usage.md) |
@@ -140,7 +140,7 @@ The server also ships a web administration UI (Jigen Insight) served on port 132
 ## Building from source
 
 ```bash
-dotnet build Jigen.sln -m:1        # -m:1 required (StaticWebAssets breaks parallel builds)
+dotnet build Jigen.slnx -m:1       # -m:1 required (StaticWebAssets breaks parallel builds)
 dotnet run --project src/Server/Jigen/Jigen.csproj
 ```
 

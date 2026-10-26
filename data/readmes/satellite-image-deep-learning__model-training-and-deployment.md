@@ -87,7 +87,7 @@ A GPU is required for training deep learning models (but not necessarily for inf
 * Advantage that many datasets are already available
 
 # Model deployment
-This section discusses how to get a trained machine learning & specifically deep learning model into production. For an overview on serving deep learning models checkout [Practical-Deep-Learning-on-the-Cloud](https://github.com/PacktPublishing/-Practical-Deep-Learning-on-the-Cloud). There are many options if you are happy to dedicate a server, although you may want a GPU for batch processing. For serverless use AWS lambda.
+This section discusses how to get a trained machine learning & specifically deep learning model into production.
 
 ## Rest API on dedicated server
 A common approach to serving up deep learning model inference code is to wrap it in a rest API. The API can be implemented in python (flask or FastAPI), and hosted on a dedicated server e.g. EC2 instance. Note that making this a scalable solution will require significant experience.
@@ -106,6 +106,7 @@ A common approach to serving up deep learning model inference code is to wrap it
 ## Model serving with GRPC
 GPRC is a framework for implementing Remote Procedure Call (RPC) via HTTP/2. Developed and maintained mainly by Google, it is widely used in the industry. It allows two machines to communicate, similar to HTTP but with better syntax and performance.
 * [deploy-models-with-grpc-pytorch-asyncio](https://github.com/FrancescoSaverioZuppichini/deploy-models-with-grpc-pytorch-asyncio)
+* [Anaximander](https://github.com/microsoft/nxmndr) -> geospatial AI inference server supporting PyTorch, ONNX, Hugging Face and TorchHub models through streaming or batch gRPC and distributed Torch RPC, with model caching and an optional Azure OpenAI proxy.
 
 ## TorchServe
 Note: no longer actively maintained
@@ -139,11 +140,11 @@ The general approaches are outlined in [this article from NVIDIA](https://develo
 
 ## MLOps
 [MLOps](https://en.wikipedia.org/wiki/MLOps) is a set of practices that aims to deploy and maintain machine learning models in production reliably and efficiently.
-* [How to Build MLOps Pipelines with GitHub Actions](https://neptune.ai/blog/build-mlops-pipelines-with-github-actions-guide/)
+* [How to Build MLOps Pipelines with GitHub Actions](https://web.archive.org/web/20231202174932/https://neptune.ai/blog/build-mlops-pipelines-with-github-actions-guide)
 
 ## Model monitoring
 Once your model is deployed you will want to monitor for data errors, broken pipelines, and model performance degradation/drift [ref](https://towardsdatascience.com/deploy-and-monitor-your-ml-application-with-flask-and-whylabs-4cd1e757c94b)
-* [Blog post by Neptune: Doing ML Model Performance Monitoring The Right Way](https://neptune.ai/blog/ml-model-performance-monitoring)
+* [Blog post by Neptune: Doing ML Model Performance Monitoring The Right Way](https://web.archive.org/web/20251006161102/https://neptune.ai/blog/ml-model-performance-monitoring)
 * [whylogs](https://github.com/whylabs/whylogs) -> Profile and monitor your ML data pipeline end-to-end
 
 ## Model tracking, versioning, specification & compilation

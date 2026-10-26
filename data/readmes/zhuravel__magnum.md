@@ -423,10 +423,10 @@ so you do not have to open an editor:
   merges them, so which one to change is not clear.
 - **Usage caps:** `[usage] codex_soft` and `codex_hard`.
 - **Each `[[watch]]`:** `roles`, `auto_approve`, `auto_approve_authors`, `auto_approve_skip_authors`,
-  `manual_repos`, `include_drafts`, `stakes` and `own_min_rereview_interval`.
+  `manual_repos`, `ignore_checks`, `include_drafts`, `stakes` and `own_min_rereview_interval`.
 - **Each repository:** its `[[repo]]` block's `stakes`, `max_simplifications`, `auto_approve_authors`,
-  `auto_approve_skip_authors`, `allow_bot_authors` and `required_checks`. A watched repository without a
-  block gets a minimal one.
+  `auto_approve_skip_authors`, `allow_bot_authors`, `required_checks` and `ignore_checks`. A watched
+  repository without a block gets a minimal one.
 - **Schedule:** `quiet_hours`, `push_quiet_period`, `min_rereview_interval` and
   `own_min_rereview_interval`.
 - **Reviews & agents:** `[pipeline]` `status_comment`, `whiteboard`, `judge_fallback`, `fix_cycles`,
@@ -685,7 +685,8 @@ quiet periods, the re-review interval and the daily cap, counts against no cap a
 a snooze or a mute holds it. One judge check covers each failing check of a head: a rerun that fails the
 same way starts no other, a different check failing later does. A rerun that turns the checks pending,
 or passes, while it waits drops it (`pr.ci_red_dropped`, back to reviewed), and a push supersedes it.
-The poll reads a head's checks again when its CI rollup's state changes, and also when its counts of
+A check `ignore_checks` names is no failure here: it starts no judge check, and its record never names
+it. The poll reads a head's checks again when its CI rollup's state changes, and also when its counts of
 failed or pending checks do (a rollup stays FAILURE while an earlier failure is red); the counts come in
 the same rollup request, with more fields.
 
@@ -1216,5 +1217,4 @@ after the PR was merged are never dismissed, and a dismissal that fails (a missi
 `review_footer` is the footer Magnum appends to every review the identity posts, once the review is
 verified, there for the PR's author (the judge never writes it, and a dry run gets none). Without the key it
 is Magnum's: the reviewed commit, then, collapsed under "About Magnum", that the review is automated, that a
-P0-P2 thread is answered with `fixed`, `not a bug: <why>` or `won't fix: <why>` (the words the reply
-classifier knows; a P3's title says it needs no reply), that simplifications are optional (only when t
+P0-P2 thread is answered with `fixed`, `not a bug: <why>` or `

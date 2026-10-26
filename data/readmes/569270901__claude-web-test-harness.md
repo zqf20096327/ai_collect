@@ -2,34 +2,81 @@
 
 # claude-web-test-harness
 
-A multi-agent UI test automation framework driven by [Claude Code](https://claude.com/claude-code). Drop it into your Web project, tell it "help me test xxx", and it explores the pages, drafts a checklist, writes test cases, writes the code, and runs it — **pausing at the key checkpoints so you confirm before it moves on, instead of guessing on its own.**
+A multi-agent UI testing framework driven by [Claude Code](https://claude.com/claude-code). Drop it into your Web project and hand it a requirement doc (PRD): it breaks the requirement into a checklist, **starts a test ledger web page on your machine and sends you the link**, and you review it by clicking through in the browser. Then it generates the formal test cases, writes the automation, runs it, and writes the results back into the same ledger. **Wherever a decision is yours, it stops and waits — it never guesses on its own.**
 
-> The demo site is [TesterHome](https://testerhome.com) (a QA community forum). The demo flow is entirely **read-only** (browsing, searching, asserting rendered content) — no signup/login/posting is automated.
+> The demo site is [TesterHome](https://testerhome.com) (a QA community forum). The demo flow is entirely **read-only** (browsing the topic list, opening a topic, asserting rendered content) — no signup/login/posting is automated.
+
+---
+
+## What a complete run looks like (with a PRD)
+
+```
+ You: "Design test cases for <feature> from the PRD at <path>" (add mockups if you have them)
+   │
+   ▼
+ ① the agent breaks the PRD into a checklist (7 tables; anything uncertain is flagged as-is)
+   │
+   ▼
+ ② the agent starts the test ledger on your machine and sends you the link  ──►  http://localhost:8900
+   │
+   ▼
+ ③ you review in the browser: only the cards that need YOUR decision; one click saves      ← GATE 0
+   │  say "done reviewing" in the chat
+   ▼
+ ④ the agent writes your answers (and notes) back into the checklist, then generates
+   │  formal test cases + step-by-step actions
+   ▼
+ ⑤ same ledger: read the cases, edit them in place, export to Excel for manual testers     ← GATE 1
+   │  continue if you want automation ↓
+   ▼
+ ⑥ check against the real pages → write code & self-run → review; results flow back into the ledger by case ID
+```
+
+**You never have to type a command**: the agent starts the ledger when it needs your review
+(`python3 tools/qa_console.py ensure 8900`) and gives you the link. Each review card has:
+
+- **one plain-language question**, e.g. "Can a file of exactly 50 MB be uploaded?" — not the agent's internal shorthand
+- **background** plus **the source text** (the PRD section, the changelog row, mockup thumbnails); when two sources
+  disagree, they are shown **side by side**
+- **concrete options** ("50 MB allowed, only larger files rejected" / "must be under 50 MB"), with the agent's working
+  assumption marked "agent default" — click it if you agree
+- "not sure, check after it's built" is always a safe choice; add a note if you need to — the agent follows it when writing back
+- "What are these cards?" (top right) explains conflict / missing / inferred cards and what your answer changes downstream
+
+Two safety nets at the top of the page: a banner when the console code on disk is newer than the running process
+(restart it), and a yellow bar when the checklist doesn't follow the template, so you ask the agent to fix it instead
+of guessing at shorthand.
+
+No PRD, only a website? It still works — step ① is preceded by observing the real pages (see "Preparing inputs").
 
 ---
 
 ## What problem it solves
 
-The real workflow behind writing UI automation breaks down into five steps:
+The real workflow behind UI testing breaks down into these steps:
 
-**Figure out what's on the page → draft a checklist confirming nothing is missed → turn the
-checklist into formal test cases and step-by-step actions, confirm they're correct → generate
-test code and run it → have someone review the code**
+**break the requirement into a checklist and confirm nothing is missed → turn the checklist into
+formal test cases and step-by-step actions, confirm they're correct → (for automation) check them
+against the real pages, generate test code and run it → have someone review the code**
 
-This harness assigns these five steps to 5 roles that hand off work through documents (not
-direct conversation), pausing wherever you need to confirm:
+This harness assigns these steps to a few roles that hand off work through documents (not direct
+conversation), and pauses wherever you need to confirm — waiting for you in the local test ledger:
 
 ```
    you
-   │ describe what to test
+   │ hand over the PRD (+ mockups)
    ▼
-┌────────────┐   ┌──────────────────────────────┐   ┌──────────────┐   ┌────────┐
-│ explore    │ → │ draft checklist (you confirm) │ → │ code & run   │ → │ review │
-│ pages      │   │ → turn into test cases         │   │ tests        │   │        │
-│            │   │   (you confirm)                │   │              │   │        │
-└────────────┘   └──────────────────────────────┘   └──────────────┘   └────────┘
- page map file      checklist → cases + steps           test code          verdict
+┌───────────────────────────┐   ┌───────────────────────────┐   ┌───────────────┐   ┌────────┐
+│ draft checklist            │ → │ formal cases + steps       │ → │ check pages    │ → │ review │
+│ (you review in ledger) G0  │   │ (you review in ledger) G1  │   │ code & run     │   │        │
+└───────────────────────────┘   └───────────────────────────┘   └───────────────┘   └────────┘
+        checklist                       cases + steps            page map + test code   verdict
 ```
+
+**Why the pages come later**: when there is a requirement doc, looking at the pages first biases the cases toward
+"what the system does now" — bugs in the implementation get written into the cases as if they were the spec. So cases
+are derived from the requirement first, reviewed, and only then checked against the real pages, with any mismatch
+handed to you. Observing the pages first is only needed when there is **no** requirement doc.
 
 ### Why draft a "checklist" instead of writing test cases straight away
 
@@ -142,9 +189,10 @@ python -m playwright install chromium
 python -m pytest tests/ -v
 
 # 3. Open Claude Code in this project directory and just say what you want, e.g.:
-#    "Design and write a read-only test suite for the TesterHome homepage and search"
-#    It will automatically dispatch: explore pages → draft checklist (you confirm) →
-#    generate test cases (you confirm) → write code & self-run → review
+#    "Design and write a read-only test suite for the TesterHome homepage (topic list + topic detail)"
+#    The demo has no requirement doc, so it observes the pages first, then drafts the checklist.
+#    When it needs your review, it starts the test ledger on your machine and sends you the link
+#    (http://localhost:8900); review in the browser, then reply "done reviewing"
 ```
 
 While it's running, watch progress live in another terminal:
@@ -226,6 +274,24 @@ rm -rf artifacts/2026-*               # old task archives (keep artifacts/README
 
 ---
 
+## Preparing inputs: requirement docs, design mockups, or just a website
+
+The harness picks its approach from what you have (tiers A / B / C — see [`artifacts/GLOSSARY.md`](artifacts/GLOSSARY.md), Chinese). Just hand over what you've got:
+
+| You have | How to hand it over | Notes |
+|---|---|---|
+| **A requirement doc** (Markdown / md exported from an online doc tool / PDF / Word) | Give the path in chat: "the PRD is at `<path>`". The agent copies it into `artifacts/<task_id>/input/` | Markdown exported from online doc tools often inlines images as base64 (several MB). Run `python3 tools/prd_intake.py <task_id> <file>` first to split it into text + image files, or the text drowns in base64 |
+| **Design mockups** | Export one PNG per screen / dialog (**2x**, so copy text is legible verbatim) into `artifacts/<task_id>/ui_design/` | Include error / empty / hover states if they were designed. Figma: select the frame → Export PNG 2x; if your agent tool has a Figma MCP connected, it can pull frames into that folder for you |
+| **Only a website, no requirement doc** | Nothing to prepare — say "there's no requirement doc; explore `<page>` and design tests for `<feature>`" | It explores first and gathers evidence: field constraints, validation messages, which actions are available in each state. Then it decomposes from what it observed. Make sure the environment is reachable; add a login fixture (Step 2 above) if needed |
+| **A version label** (optional) | Say "this is the v1.4 requirement" | Goes into `state.md` as `version:`; the console groups tasks by it |
+
+A few conventions:
+
+- `input/` and `ui_design/` are gitignored: **requirement docs and mockups stay local and never enter the repo**.
+- With only a website, what gets recorded is how the product behaves **now**, not how it **should** behave. GATE 0 explicitly asks you which observed behaviors are actually bugs.
+- Anything beyond read-only exploration (real submits, deletes) is not triggered during exploration; it is marked "not observed" for you to decide.
+- Confirmed business conclusions are written back to `specs/` (the product knowledge base), so the next task on the same module reuses them.
+
 ## 🚀 Then just drive testing by describing what you want in plain language
 
 This is the core workflow of the whole harness — **once it's plugged in, you never write a line
@@ -236,14 +302,14 @@ After the user logs in, search for a keyword in the product list, add it to the 
 verify the cart's item count and total price.
 ```
 
-It will explore the relevant pages on its own, break this requirement down into a checklist
-(what points this feature needs testing on, what rules each field has, how states transition,
-what business constraints apply, exactly what the user does, whether it could affect other
-features) — **and pause for you to scan it**; once you confirm, it generates the formal test
-cases and step-by-step actions from the checklist — **and pauses again for your confirmation**;
-after both confirmations, it writes the test code and self-runs/self-repairs it.
-**You describe "what to test", it handles "how to test it" and "whether it's fully covered" —
-you just need to nod or correct it at two checkpoints.**
+It breaks this requirement down into a checklist (what points this feature needs testing on, what rules
+each field has, how states transition, what business constraints apply, exactly what the user does,
+whether it could affect other features), then **starts the test ledger on your machine and sends you the
+link** — you review in the browser. Once you're done, it generates the formal test cases and step-by-step
+actions from the checklist and **has you review them in the same ledger**; only after both reviews does it
+check the real pages and write the test code, self-running and self-repairing it.
+**You describe "what to test", it handles "how to test it" and "whether it's fully covered" — you just
+click or correct at two checkpoints.** (See "What a complete run looks like" at the top.)
 
 > 💡 `artifacts/2026-06-23_testerhome_home_search/` in this repo holds one early trial run, but
 > it predates the current two-phase methodology (no decomp.md/GATE 0) and part of what it
@@ -253,17 +319,25 @@ you just need to nod or correct it at two checkpoints.**
 
 ---
 
-## The console — where you do your confirming
+## The test ledger (review console) — where you review
 
-The two confirmation points don't have to happen by reading raw markdown in a terminal. There's
-a small local console (pure standard library, nothing to install) that opens in your browser:
+Both checkpoints (GATE 0 checklist, GATE 1 test cases) happen on this local web page instead of raw markdown in a
+terminal. It's pure standard library — nothing to install. **Normally you don't start it yourself**: when your review
+is needed, the agent starts it with the command below and sends you the link. To open it manually:
 
 ```bash
-python3 tools/qa_console.py            # one port, pick the version → the feature → the view
+python3 tools/qa_console.py ensure 8900   # one port, pick the version → the feature → the view
+# ensure = make sure what's on 8900 runs the CURRENT code: reuse it if fresh, replace it if stale or pre-versioning.
+# Always start the console this way after updating harness code — it is a long-running process and never notices file changes;
+# a banner at the top of the page tells you when the code on disk is newer than what's running
 ```
 
 What it gives you:
 
+- **Every card makes sense on its own.** A plain-language question, background, the source text (conflicting sources
+  side by side, mockup thumbnails), and concrete options with the agent's default marked. No internal codes like `R02`
+  or `DBT-003` — the checklist follows a template, and `python3 tools/gate_review.py check <task_id>` verifies the format
+  before it ever reaches you.
 - **The open questions arrive pre-sorted.** Anything the harness is unsure about gets split into
   "someone has to decide this" and "we'll find out by looking once it's built", and only the
   first kind is put in front of you. This exists because an earlier version pushed all of them at
@@ -275,9 +349,11 @@ What it gives you:
   a review. Every edit is keyed by case ID (not line number, which drifts), snapshots the file
   the first time you touch it, and appends to an audit log recording the previous value — so
   everything is reversible and traceable.
-- **Test results fill themselves in, by case ID.** Add `-p tools.pytest_case_ledger` to your
-  pytest run and every result is matched back to the case it belongs to (it just needs the case
-  ID in the test's docstring — no changes to your existing tests). Automated runs and manual runs
+- **Test results fill themselves in, by case ID.** The ledger plugin is registered in the root
+  `conftest.py`, so just run pytest and every result is matched back to the case it belongs to
+  (it just needs the case ID in the test's docstring — no changes to your existing tests). Known
+  bugs (`xfail`) are recorded as "known defect" rather than mixed in with new failures, and a
+  known-bug case that unexpectedly passes is flagged separately as "possibly fixed — please verify". Automated runs and manual runs
   are kept as **two separate lanes**, and when the two disagree about the same case, that row is
   **highlighted** — a case that passes by hand and fails in CI (or the reverse) is exactly where
   bugs like to hide.
@@ -291,6 +367,78 @@ What it gives you:
 
   The rules live in `configs/compliance-rules.json` — most default to warnings rather than errors
   on purpose, because a scanner that cries wolf just teaches people to suppress it.
+- **Export test cases to Excel for someone else to execute.** Internal columns (`page_ref`,
+  `derived_from`) are dropped, the source column (requirement section / mockup / observed) is kept,
+  and `exec` is translated into plain words:
+
+  ```bash
+  python3 tools/cases_export.py <task_id>                 # → artifacts/<task_id>/cases_export.xlsx
+  python3 tools/cases_export.py <task_id> --only-manual   # only the cases to run by hand
+  python3 tools/cases_export.py <task_id> --csv           # CSV (opens in Excel without mojibake)
+  ```
+
+## Long regressions: resumable batches and fail-fast
+
+Both plugins are registered in the root `conftest.py` and are **off by default**:
+
+```bash
+# Resumable batch: every result is written to disk as soon as it finishes. If the run is killed
+# or the machine sleeps, rerun the exact same command and only the unfinished cases run.
+python -m pytest tests/ --batch nightly
+python -m pytest tests/ --batch nightly --batch-fresh     # wipe this batch's record and start over
+
+# Fail-fast guard: stop the batch when the same locator fails N times, or M cases fail in a row,
+# instead of grinding on for another half hour after the environment has hit a wall
+python -m pytest tests/ --guard --guard-same=2 --guard-consecutive=4
+```
+
+- Resume rules: passed / known-defect / skipped cases are skipped next time; a case during which the machine slept is always rerun. Cases with ordering dependencies should be rerun together.
+- The guard doesn't count known defects (`xfail`); the reason it stopped is written to `artifacts/_runs/guard_last.json`.
+- The plugins are listed in `pytest_plugins` rather than `addopts` in `pytest.ini`, so `--override-ini="addopts="` while debugging doesn't silently disable them.
+
+## Don't touch existing data: write guard, response capture, data footprint
+
+Test environments are usually shared. These three make sure read-only tests really are read-only, assertions really
+assert, and whatever you create can be cleaned up:
+
+```python
+from utils.write_guard import WriteGuard
+guard = WriteGuard(page)          # read-only test: block and record every write request (login / token refresh pass by default)
+...                               # open the dialog, look, click Cancel
+guard.assert_clean()              # passes only if no write went out — even if a redesign turned "Cancel" into "Save"
+
+from utils.response_capture import ResponseCapture, code_field_checker, assert_no_error_responses
+cap = ResponseCapture([page], business_error=code_field_checker()).start()   # attach to EVERY page the test uses
+...
+cap.assert_saw_traffic()          # first prove it captured something — attached to the wrong page it sees nothing and always passes
+assert_no_error_responses(cap)    # HTTP >= 400 and "HTTP 200 + business error code" both fail, with path and msg in the message
+
+from utils.footprint import Footprint
+fp = Footprint(require_prefix="AUTO_")   # only register objects you created (guards against registering existing data)
+fp.created("AUTO_ITEM_1792000000", kind="item", where="...")
+```
+
+- `WriteGuard` doubles as a probe: after clicking submit, look at what was blocked — you learn whether client validation
+  let it through and what would have been sent (`PostRecorder`), without writing anything
+- Leftover cleanup: `python3 tools/cleanup_footprint.py` lists what the ledger says to clean, dry-run by default and **matched by
+  full name only** (someone else's data with the same prefix is never listed). Real deletion needs your project's delete
+  callback (`--deleter module:function --yes`); the harness ships no delete logic
+- Rules and pitfalls: `rule.md` (Chinese), sections on read-only/no-trace work and assertion strength
+
+## Release regression manifests and preflight
+
+```bash
+python -m pytest -m example                   # run one release's regression as listed in data/regression/example.yaml
+python3 tools/preflight.py                    # before a batch, open each page in page_map: landmark present, not bounced to login, no "no permission"
+python -m pytest tests/ --guard --preflight "python3 tools/preflight.py"   # don't start the batch if preflight fails
+```
+
+- Manifest format: `data/regression/<name>.yaml` maps "feature → file / test-function prefix"; matching tests get `-m <name>`
+  at collection time, and an entry that matches nothing prints a hint (usually a renamed file)
+- After a release is accepted: remove `xfail` from bugs that were fixed; turn accepted-as-is deviations into "guard the current
+  behavior" assertions instead of leaving `xfail` around forever
+- When running with branded Chrome (`--browser-channel=chrome`), `tools/pytest_chrome_orphans.py` cleans up orphaned Chrome helper
+  processes that hold the driver open (macOS only) — the fix for "all tests finished but pytest never exits"
 
 ---
 
@@ -300,14 +448,20 @@ What it gives you:
 .claude/agents/               Definitions for the 4 roles (page explorer / checklist+test-case design / test writing / review)
 artifacts/README.md           Overview: document formats, statuses, confirmation points, hard rules, progress log
 artifacts/agents/             Detailed spec for all 5 roles (incl. the dispatcher) + decomposition.md (checklist methodology)
-tools/                        The console (see the section above): review the checklist, edit test cases, record and compare test results
+tools/                        The test ledger (see above), case export, contract check; resume / guard / manifest / Chrome-orphan plugins; preflight, footprint cleanup
+utils/                        Reusable helpers for test code: write_guard, response_capture, footprint, interaction (waits on async
+                              evidence from the page map's dynamics fields), soft_check (soft assertions), auth_state (per-role login-state cache)
+artifacts/templates/          The checklist (decomp.md) template — the single source of its format; the agent copies it first
+data/regression/              Release regression manifests (-m <name> runs one release)
 scripts/                      journal.py (run log), check_compliance.py (hard-rule scanner), install_hooks.sh (installs the git hook)
 configs/                      Rule config for the scanner + console settings — edit these instead of the scripts
 hooks/                        The pre-commit hook itself (installed by scripts/install_hooks.sh)
 page_map/                     Page maps (YAML describing the currently deployed page elements/selectors)
 data/                         Test data
 tests/                        Test code
-CLAUDE.md                     Project conventions (declare your own directories/commands/login here)
+artifacts/GLOSSARY.md         Glossary of internal terms (GATE, tiers, confidence markers, exec…), Chinese
+specs/                        Product knowledge base (confirmed business rules / state transitions / field constraints, one .md per module)
+CLAUDE.md                     Project conventions (declare your own directories/commands/login here); also tells the main conversation it is the dispatcher
 rule.md                       Technical pitfalls to avoid, in three sections: generic engineering lessons / component-library quirks / demo-site-only facts (delete that last one when you plug in your own site)
 ```
 

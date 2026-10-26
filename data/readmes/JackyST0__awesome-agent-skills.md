@@ -145,6 +145,7 @@ Skills work across multiple platforms:
 - [unifapi-agent/skills](https://github.com/unifapi-agent/skills) - Public-data MCP and KOL pricing Skills for Codex, Claude Code, Cursor, and other agents.
 - [youtube-skills](https://github.com/ZeroPointRepo/youtube-skills) - YouTube transcript, video search, channel and playlist skills for Claude Code, OpenClaw, Hermes Agent, and other agent runtimes.
 - [tonone](https://github.com/tonone-ai/tonone) - Claude Code plugin with 100 specialist agents and 429 skills across engineering, product, design, security, legal, and ops; a SessionStart hook loads only the skills relevant to the current repo.
+- [oh-my-agent](https://github.com/first-fluke/oh-my-agent) - 33 skills and 21 workflows kept in one `.agents/skills` folder and symlinked per skill into Claude Code, Codex, Cursor and other runtimes; `oma link --dry-run` previews what it will write.
 
 ## Development Tools
 
@@ -179,6 +180,7 @@ Skills work across multiple platforms:
 - [assay](https://github.com/awss1i/assay/tree/main/plugins/assay/skills/checking-a-page) - Opens a web page in a real browser, drives every control, and reports where the page breaks or contradicts itself. Deterministic, with no tests to write and no LLM.
 - [reverse-engineer-anything](https://github.com/morluto/rea/tree/main/.agents/skills/reverse-engineer-anything) - Inspect shipped binaries and JavaScript/Electron apps using REA CLI/MCP evidence; deep native analysis needs separately installed Hopper, Ghidra, or IDA.
 - [supercov](https://github.com/supercorp-ai/supercov/tree/main/plugins/supercov/skills/supercov) - Measures line, branch and MC/DC coverage of the existing tests and hands the agent the untested code to test next. Coverage runs locally; the optional quality analysis sends source files to TypeSafe when `TYPESAFE_API_KEY` is configured.
+- [write-ai-ready-issue](https://github.com/orbi-build/orbi/tree/main/integrations/claude-plugin/skills/write-ai-ready-issue) - Turns a conversation into a GitHub Issue with Background, testable Acceptance criteria and Out of scope, splitting tasks that have more than one mergeable result. Part of the open-source Orbi coding agent; the skill itself does not need Orbi.
 
 ## Productivity
 
@@ -200,6 +202,7 @@ Skills work across multiple platforms:
 - [job-application-agent](https://github.com/vaibhavarora14/job-application-agent) - Skill + CLI to discover, qualify, complete, and track your own job applications. [Data sharing](https://github.com/vaibhavarora14/job-application-agent/blob/main/job-application-agent/references/ANALYTICS.md): usage analytics and name/email sharing with private PostHog analytics, plus community-registry sharing of confirmed-application and discovery-source metadata, are enabled by default (opt-out). Optional [cloud mode](https://github.com/vaibhavarora14/job-application-agent/blob/main/job-application-agent/references/CLOUD_STATE.md) stores and syncs profile, résumé, application, and outcome state.
 - [universal-exam-cram-coach](https://github.com/ZeKaiNie/universal-examprep-skill) - Exam-prep tutor that teaches from your own slides, notes and past papers with page citations, figure crops, homework-only quizzes and cross-session progress.
 - [tlgr](https://github.com/tlgrcli/tlgr/tree/main/plugin/skills/tlgr) - Read, search and send Telegram messages from your own account and manage chats and contacts through the tlgr CLI, with JSON output.
+- [placecall](https://github.com/voygr-tech/placecall/tree/main/skills/placecall) - Places real phone calls to US businesses for reservations, inquiries and quotes, and returns the outcome and transcript. Uses a hosted API ([network and data](https://github.com/voygr-tech/placecall#network-access)); calls are recorded and kept 90 days.
 
 ## DevOps
 
@@ -208,6 +211,7 @@ Skills work across multiple platforms:
 - [ci-cd](https://claude-plugins.dev/skills/@ahmedasmar/devops-claude-skills/ci-cd) - Design, optimize, and security-scan CI/CD pipelines.
 - [claudekit-skills](https://github.com/mrgoonie/claudekit-skills) - Docker/GCP/Cloudflare deployment and management.
 - [d1v](https://github.com/d1vai/d1v-cli/blob/main/skills/d1v/SKILL.md) - Deploy web projects with verified previews and explicit-confirmation production releases.
+- [cloud-finops-skills](https://github.com/OptimNow/cloud-finops-skills) - Cloud and AI cost management Skill: billing mechanics, commitments, allocation and waste-pattern runbooks for AWS, Azure and GCP.
 
 ## Data Processing
 

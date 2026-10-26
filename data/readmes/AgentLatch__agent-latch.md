@@ -19,7 +19,7 @@
 
 ![Example AgentLatch scan showing detected security findings](docs/assets/gent-latch-scan-example.png)
 
-> **Project status: early proof of concept.** AgentLatch is not a complete vulnerability scanner, runtime protection system, security score, or certification. A clean scan means only that the enabled checks did not report a finding. The runtime proxy records traffic; it does not yet detect attacks or block calls.
+> **Project status: early proof of concept.** AgentLatch is not a complete vulnerability scanner, runtime protection system, security score, or certification. A clean scan means only that the enabled checks did not report a finding. The runtime proxy records traffic and runs one preview gate, ALR04, on MCP tool definitions. It reports findings and does not block calls.
 
 ## Contents
 
@@ -106,7 +106,7 @@ flowchart LR
         proxy --> server["MCP server"]
         proxy --> logs["Masked logs<br/>trace.jsonl · payloads.jsonl"]
         logs --> importer["agent-latch-runtime import-logs"]
-        importer --> events["One event per message<br/>events.csv · normalized.jsonl"]
+        importer --> events["One event per message<br/>events.csv · normalized.jsonl<br/>optional --database (local SQLite)"]
     end
 ```
 
@@ -114,7 +114,7 @@ The scanner never imports or runs the code it checks. The proxy passes every MCP
 
 ## Runtime monitoring for MCP (preview)
 
-`agent-latch-runtime` records what an AI agent asks its MCP tools to do and what comes back, so you can review an agent's tool use after a run. It is a **preview and monitor only**: it records, it does not detect attacks or block calls yet.
+`agent-latch-runtime` records what an AI agent asks its MCP tools to do and what comes back, so you can review an agent's tool use after a run. It is a **preview and monitor only**. It records every message and runs ALR04, which reports a finding when a tool definition contains instruction-like content. It does not block calls. After a run, `agent-latch --runtime-result` prints those findings in the same table as a scan, including a local tool's file and line when the project defines that tool. The report lists findings only.
 
 ### Try it in one command
 
@@ -143,6 +143,16 @@ agent-latch-runtime proxy --trace runtime-logs/trace.jsonl --payloads runtime-lo
 # Terminal 2: one line per message, plus events.csv and normalized.jsonl in runtime-logs/.
 agent-latch-runtime import-logs
 ```
+
+Run both from the repository root, with the repository virtualenv active (`source .venv/bin/activate`). `mcp-server/.venv` does not provide `agent-latch-runtime`.
+
+To also keep a queryable copy, name a local SQLite file. That flag is the choice of store. Leave it off and nothing is written except the CSV and JSONL files. Nothing is uploaded.
+
+```sh
+agent-latch-runtime import-logs --database runtime-logs/runtime.db
+```
+
+SQLite is the first store. The importer calls it through a small `EventStore` interface, so a later destination can be selected the same way without becoming part of the default install. Details: [Store events in SQLite](docs/runtime.md#store-events-in-sqlite).
 
 ```mermaid
 sequenceDiagram
@@ -204,7 +214,7 @@ Rule behavior and known blind spots are documented in [docs/RULES.md](docs/RULES
 
 ## OWASP Agentic Top 10 coverage
 
-How the scanner's rules map to the [OWASP Top 10 for Agentic Applications 2026](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/). The runtime proxy has no detection rules yet, so it adds no coverage here.
+How the scanner's rules map to the [OWASP Top 10 for Agentic Applications 2026](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/). This table is the static scanner. The runtime gate ALR04 also cites ASI01, ASI02, and ASI04 on a finding. That does not add a scanner check.
 
 | ID | Category | Coverage | Rules |
 |---|---|---|---|
@@ -230,7 +240,7 @@ Every scan report ends with the same ASI01–ASI10 summary and marks the uncover
 | [pre-commit and CI](docs/ci.md) | pre-commit hook, GitHub Action inputs and outputs, other CI systems, choosing a threshold |
 | [Detection rules](docs/RULES.md) | What every rule detects, its OWASP mapping, and its known blind spots |
 | [Vulnerable example](examples/vulnerable-agent) | A demo project and the findings it should produce |
-| [Runtime proxy for MCP (preview)](docs/runtime.md) | Install, connecting an app, what is recorded, `import-logs` and `demo`, limits |
+| [Runtime proxy for MCP (preview)](docs/runtime.md) | Install, connecting an app, what is recorded, `import-logs` and `demo`, limits. Optional local SQLite: [Store events in SQLite](docs/runtime.md#store-events-in-sqlite) |
 | [MCP gateway](mcp-server/README.md) | A local MCP gateway for running agents against real tools, with [step-by-step setup](mcp-server/SETUP.md) for Claude Code, Claude Desktop, Cursor, Codex CLI, and HTTP clients, and [live runs through the runtime proxy](mcp-server/SETUP.md#part-4-watch-a-live-agent-run-with-agentlatch) |
 
 ## Why AgentLatch?
@@ -240,8 +250,8 @@ AI agents combine model-generated decisions with tools, credentials, code execut
 The goal is to grow in layers:
 
 1. **Now: local scanner.** Focused checks of Python source, agent manifests, and prompt templates; optional Python dependency advisories; portable reports; and pre-commit and GitHub Action integrations.
-2. **Now, preview: runtime recording for MCP.** A proxy records live MCP tool traffic with secrets masked, and an importer turns it into reviewable events. It never blocks.
-3. **Next: runtime detection.** Checks ("gates") that flag risky events in that recorded traffic, recording findings by default.
+2. **Now, preview: runtime recording for MCP.** A proxy records live MCP tool traffic with secrets masked, and an importer turns it into reviewable events. `--database FILE` optionally keeps those events in a local SQLite file. It never blocks, and it does not upload them.
+3. **Now, preview: one runtime gate.** ALR04 reports a finding when a MCP tool definition (name, description, or schema) contains instruction-like content, and maps that finding to ASI01, ASI02, and ASI04. Calls are not blocked. The report lists findings only.
 4. **Planned: enforcement and adapters.** Blocking only when the operator turns it on in their own policy; framework adapters and broader evaluation checks after that.
 
 These layers will remain clearly distinguished: detecting a risky pattern is not the same as testing agent behavior, and neither alone guarantees runtime enforcement.
@@ -252,7 +262,7 @@ These layers will remain clearly distinguished: detecting a risky pattern is not
 - The one exception is the opt-in dependency audit (`--dependencies`), which sends package names and versions to an advisory service. See [Dependency audit](docs/getting-started.md#dependency-audit).
 - Detected secret values are redacted from evidence, but reports still include paths, line numbers, and code context. Review them before sharing.
 - Every folder and every text file under the target is scanned, and no manifest is required. Only `.git`, installed environments (a folder with `pyvenv.cfg`, or an installed `node_modules`), symlinks, binary files, and files over 1 MB are skipped.
-- The runtime proxy and importer write only to local files and send nothing anywhere. Their logs can hold tool arguments and output: secrets are masked by pattern, which can miss unusual formats, so keep `runtime-logs/` local and private (files are created with mode `0600`).
+- The runtime proxy and importer write only to local files and send nothing anywhere. Their logs can hold tool arguments and output: secrets are masked by pattern, which can miss unusual formats, so keep `runtime-logs/` local and private (files are created with mode `0600`). `--database` adds another local file, SQLite, with the same rule: it can hold payloads, it is created with mode `0600` on macOS and Linux, and it is written only when you pass the flag.
 
 ## Important limitations
 
@@ -262,7 +272,7 @@ These layers will remain clearly distinguished: detecting a risky pattern is not
 - Manifest checks read what the manifest declares; they do not verify that your code enforces it. Source checks always run, and a manifest can only add findings.
 - By default, nothing in the scanned project can hide a finding: its `.agent-latch-ignore`, `pyproject.toml` excludes, and inline ignore comments are not applied. Add `--project-ignores` for your own repositories.
 - OWASP category IDs help organize selected findings; the mapping is not a compliance assessment, OWASP affiliation, or certification.
-- The runtime proxy is a preview. It records only MCP traffic routed through it, does not record every MCP message type yet ([see above](#what-the-proxy-records)), has no detection rules yet, and never blocks or changes a call.
+- The runtime proxy is a preview. It records only MCP traffic routed through it, does not record every MCP message type yet ([see above](#what-the-proxy-records)), and never blocks or changes a call. ALR04 reports findings on tool definitions only.
 
 ## FAQ
 
@@ -272,11 +282,11 @@ Install AgentLatch and run `agent-latch scan /path/to/agent`. It checks Python a
 
 ### How do I monitor the MCP tool calls my AI agent makes?
 
-Put `agent-latch-runtime proxy` in front of the MCP server, either in your app's MCP config or as an HTTP proxy, and run `agent-latch-runtime import-logs` next to it. Every tool list, tool call, result and prompt is recorded with secrets masked, and shown as one event per message. Run `agent-latch-runtime demo` to see the whole flow first. See [Runtime monitoring for MCP](#runtime-monitoring-for-mcp-preview).
+Put `agent-latch-runtime proxy` in front of the MCP server, either in your app's MCP config or as an HTTP proxy, and run `agent-latch-runtime import-logs` next to it from the repository root. Every tool list, tool call, result and prompt is recorded with secrets masked, and shown as one event per message. Add `--database runtime-logs/runtime.db` when you want those events in a local SQLite file as well. Run `agent-latch-runtime demo` to see the whole flow first. See [Runtime monitoring for MCP](#runtime-monitoring-for-mcp-preview).
 
 ### Can AgentLatch block a dangerous MCP tool call?
 
-Not yet. The runtime proxy is monitor only: it passes every message through unchanged. Detection checks on recorded traffic come next, and blocking is planned only as an opt-in the operator turns on in their own policy.
+No. The runtime proxy is monitor only: it passes every message through unchanged. ALR04 records a finding when a tool definition looks hostile. Blocking is planned only as an opt-in the operator turns on in their own policy.
 
 ### Can AgentLatch detect prompt injection?
 

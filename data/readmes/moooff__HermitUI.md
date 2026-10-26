@@ -290,23 +290,44 @@ If HermitUI fails to connect to your local AI server (e.g., a "Network Error"), 
 *   **Ollama:** set `OLLAMA_ORIGINS` before starting, e.g. `OLLAMA_ORIGINS="*" ollama serve`.
 *   **vLLM:** allows all origins out of the box — if you narrowed it, widen `--allowed-origins` (it takes a JSON array, e.g. `'["*"]'`).
 
+### A server on another device (phone, tablet, second PC)
+
+The model can run on one computer and HermitUI on another device, a phone on the same Wi-Fi for example. Two things have to be in place.
+
+**1. The server listens on the network**, not only on `localhost`, and allows browser requests:
+
+| Server | Listen on the network | Allow browser requests (CORS) |
+|---|---|---|
+| llama.cpp | `--host 0.0.0.0` | on by default |
+| Ollama | `OLLAMA_HOST=0.0.0.0` | `OLLAMA_ORIGINS="*"` |
+| LM Studio | "Serve on Local Network" | the CORS toggle |
+| vLLM | `--host 0.0.0.0` | on by default |
+
+The computer's firewall has to let the port through. Anyone on that network can then use the model, so set an API key (`llama-server --api-key …`) if that matters.
+
+**2. The page and the server get past mixed content.** The hosted page (`https://moooff.github.io/HermitUI/`) is served over https, and browsers block an https page from calling a plain `http://` address, except `localhost` on the same device. Three ways around it:
+
+*   **Chrome asks instead of blocking.** It shows a prompt to allow access to devices on your local network (desktop Chrome since version 142); allow it, or later in the site settings. That covers private IP addresses and other names on your network. On Android, Chrome also needs Android's own permission first (Settings → Apps → Chrome → Permissions, "Nearby devices" or "Local network"); without it no address on your network loads in Chrome, not even in a normal tab. Safari and Firefox block the request; use one of the two ways below there.
+*   **Open HermitUI over http, from the server itself.** An http page may call an http server, in every browser. llama.cpp can serve the page: put `hermit-ui-standalone.html` into a folder as `index.html` and start the server with `--path <that folder>`. On the other device, open `http://<server-ip>:<port>/` and set the API URL to `http://<server-ip>:<port>/v1/chat/completions`. For other servers any static file server does, e.g. `python3 -m http.server 8000 --bind 0.0.0.0` in `dist/`; Ollama then needs that page's origin in `OLLAMA_ORIGINS` (or `*`).
+*   **Give the server https.** With [Tailscale](https://tailscale.com/) on both devices, `tailscale serve --bg <port>` publishes the server as `https://<computer>.<tailnet>.ts.net` with a valid certificate: the hosted page works unchanged, and away from home as well. A reverse proxy (Caddy, nginx) with a certificate the device trusts works too.
+
 ## ✨ Features
 
 *   **📦 Zero-dependency setup:** all external libraries (Marked.js, DOMPurify, Highlight.js, KaTeX, Mermaid) and the Inter font are bundled directly into the file. No installation, no build step. (A CDN-linked developer version lives in `dist/hermit-ui-cdn.html`.)
 *   **🔒 Privacy first & ephemeral:** no `localStorage`, `IndexedDB`, or cookies — nothing survives the tab.
 *   **🧠 Thinking-model support:** built-in parser formats `<think>`, `<thought>`, and `<reasoning>` tags as they stream from reasoning models.
 *   **🎚️ Flexible thinking control:** a **🧠 Think** selector beside the persona picker sets reasoning depth — **Off / Low / Medium / High** — for models that support it. Off genuinely stops the reasoning trace rather than shortening it, which is the difference between a 25 s and a 58 s answer on a 27B. It only appears where it can actually do something: for a local GGUF the model's own chat template is scanned for the reasoning variables, and for a remote endpoint **Settings → Check Reasoning Support** reads llama.cpp's `/props` capability flags (or Ollama's template). Levels are validated against the set the template accepts, so a value it would reject is never sent.
-*   **⚡ Real-time streaming** with **📊 live performance stats** — prompt tokens, completion tokens, tokens/second, and total duration.
+*   **⚡ Real-time streaming** with **📊 live performance stats** — prompt tokens, completion tokens, tokens/second, total duration, and a **🧮 context gauge** showing how full the model's context window is (llama.cpp, vLLM and the in-browser model report its size).
 *   **🖼️ Image & vision support:** upload, drag-and-drop, or paste (Ctrl+V) images for vision-capable models, sent as `image_url` content per the OpenAI schema with automatic vision-model detection.
-*   **📝 Rich rendering:** Markdown with per-block copy buttons, syntax highlighting, **🧮 LaTeX math** (`$…$`, `$$…$$`, `\(…\)`, `\[…\]`) rendered via KaTeX to native MathML — no webfonts, works mid-stream and offline — and **📈 Mermaid diagrams** from ```` ```mermaid ```` fences.
+*   **📝 Rich rendering:** Markdown with per-block copy buttons, syntax highlighting, **🧮 LaTeX math** (`$…$`, `$$…$$`, `\(…\)`, `\[…\]`) rendered via KaTeX to native MathML — no webfonts, works mid-stream and offline — **📈 Mermaid diagrams** from ```` ```mermaid ```` fences, and **🖼️ SVG images** from ```` ```svg ```` fences (sanitized and shown as an image, so they can't run scripts); both keep their source one click away.
 *   **🎭 Personas:** switch between preset system prompts (technical, general, writing, tutor) on the fly.
-*   **✏️ Edit & regenerate** any previous message without restarting the conversation.
+*   **✏️ Edit & regenerate** any previous message or reply without losing what it replaces: every version stays one click away (‹ 1/2 ›), in memory only. **⏩ Continue** lets the model carry on with a reply that hit the max-tokens limit or was stopped (llama.cpp, Ollama and the in-browser model support it), and **📄 Raw** shows a reply exactly as the model wrote it.
 
 <details>
 <summary><b>More features</b></summary>
 
 *   **📎 Context attachments:** drag-and-drop or upload text files to inject their contents into your prompt.
-*   **🎛️ Advanced sampling controls:** `temperature`, `max_tokens`, `top_p`, `presence_penalty`, `frequency_penalty`, and `seed` from a collapsible Settings panel. Params are only sent when set, keeping payloads compatible with minimal backends.
+*   **🎛️ Advanced sampling controls:** `temperature`, `max_tokens`, `top_p`, `presence_penalty`, `frequency_penalty`, `seed`, and llama.cpp's `top_k`, `min_p` and `repeat_penalty` from a collapsible Settings panel. Params are only sent when set, keeping payloads compatible with minimal backends. A Settings switch can also leave the model's earlier reasoning out of requests to save context.
 *   **🎨 Modern UI/UX:** clean, responsive design with smooth micro-animations, comprehensive CSS variables for theming, and a glassmorphism feel. Light and dark themes.
 *   **💾 Chat export & import:** download the entire conversation as a formatted Markdown file (📤, `Ctrl+E`), and load one back in later with 📂 (`Ctrl+I`) — messages, system prompt and attached context are restored, and the model picks the conversation up where you left it. The exported file is the only copy: nothing is stored in the browser. Images can't come back, since the export records them as `[N images attached]`.
 *   **⚙️ Customizable settings:** API URL, model name, API key, and system prompt via the on-page settings overlay.

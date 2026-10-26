@@ -120,12 +120,12 @@ See [Reading Workloads →](docs/workload-search.md) and [Reading Logs →](docs
 
 ## Reading the Help Center
 
-`Coolhand.public_content_service` reads the Coolhand help center (the same pages as coolhandlabs.com/help and /updates) with **no API key required**:
+`Coolhand.help_center_service` reads the Coolhand help center (the same pages as coolhandlabs.com/help and /updates) with **no API key required**:
 
 ```ruby
 require 'coolhand'
 
-help_center = Coolhand.public_content_service
+help_center = Coolhand.help_center_service
 
 result = help_center.search_help_articles(query: 'match rate', per_page: 5)
 article = help_center.get_help_article(result.articles.first[:slug]) # full markdown :body
@@ -251,7 +251,7 @@ end
 | `intercept_addresses` | Array | All [supported providers](#supported-libraries) (`DEFAULT_INTERCEPT_ADDRESSES`) | Array of API hosts to monitor (matched by host, optionally pinned to a port and/or path prefix). This is a required allow-list — `[]` is ignored (a warning is logged) rather than disabling capture; use `enabled` or `capture` for that. See [Configuration](docs/configuration.md) |
 | `intercept_path_patterns` | Array | `[":generateContent", ":streamGenerateContent"]` | Path patterns to additionally monitor on Google API hosts — see [Configuration](docs/configuration.md) |
 | `exclude_api_patterns` | Array | `["/batchPredictionJobs/"]` | Deny-list checked after `intercept_addresses`; matching paths are skipped. Unlike `intercept_addresses`, `exclude_api_patterns = []` genuinely disables exclusion. See [Configuration](docs/configuration.md) |
-| `max_captured_body_bytes` | Integer | `1_000_000` | Maximum size of a captured JSON request body — oversized bodies are replaced with a placeholder. Non-JSON bodies (e.g. file/audio uploads) are always skipped regardless of size — see [Advanced Configuration](docs/configuration.md) |
+| `max_captured_body_bytes` | Integer | `1_000_000` | Maximum size of a captured JSON request body or response body — oversized bodies are replaced with a placeholder (`nil` disables the cap). Non-JSON bodies (e.g. file/audio uploads) are always skipped regardless of size — see [Advanced Configuration](docs/configuration.md) |
 | `async_logging` | Boolean | `true` | Send logs to Coolhand from a background thread so a slow Coolhand API never delays your LLM calls. Set to `false` to send inline — see [Advanced Configuration](docs/configuration.md#asynchronous-logging) |
 | `auto_declare` | Array | `[]` | Rails only: `:active_job` and/or `:controller` to declare a workload and template for LLM calls made from jobs and controller actions — see [Declared Workloads](docs/declared_workloads.md#rails-auto-declare) |
 
@@ -273,7 +273,7 @@ client = OpenAI::Client.new(access_token: ENV['OPENAI_API_KEY'])
 
 response = client.chat(
   parameters: {
-    model: "gpt-3.5-turbo",
+    model: "gpt-4o-mini",
     messages: [{ role: "user", content: "These pretzels are making me thirsty!"}],
     temperature: 0.7
   }
@@ -350,7 +350,8 @@ end
 
 **Optional Parameters:**
 - `event_type` - Event type to append to URL (e.g., "post_call_transcription" → `webhook://elevenlabs/post_call_transcription`)
-- `headers` - Request headers (automatically sanitized)
+- `headers` - Request headers (automatically sanitized). Passing Rails `request.headers` is safe: when the input looks like a Rack env (it has a `REQUEST_METHOD` key or a lowercase dotted key such as `rack.input`, or every key is `UPPER_CASE`; in a plain hash use hyphenated or mixed-case names), only `HTTP_*` headers, `CONTENT_TYPE` and `CONTENT_LENGTH` are forwarded, so entries such as `rack.*`, `REQUEST_METHOD`, `QUERY_STRING`, or process env vars (`DATABASE_URL`, ...) are dropped
+- `url` - Optional URL override; credentials in userinfo and sensitive query params are redacted, and any `#fragment` is dropped
 - `conversation_id`, `agent_id`, `metadata` - Custom fields for your tracking needs
 
 **Error Handling:**
@@ -410,7 +411,7 @@ The monitor works with multiple transport layers and Ruby libraries:
 - Google Gemini (`generativelanguage.googleapis.com`)
 - Google Vertex AI (`aiplatform.googleapis.com`) — see the [Vertex AI batch result logging guide](docs/vertex.md) for async batch jobs
 - Azure OpenAI Service, Azure AI Foundry, and Azure Machine Learning managed online endpoints (dedicated hosts, multi-service Azure AI Services hosts, and serverless/MaaS deployments) — see [Configuration](docs/configuration.md) for the full list of covered hosts
-- AWS Bedrock (OpenAI-compatible endpoint)
+- AWS Bedrock (`bedrock-runtime.<region>.amazonaws.com`, plus the `.amazonaws.com.cn`, `.api.aws` dual-stack and `bedrock-runtime-fips.<region>` variants — model invoke, Converse and the OpenAI-compatible endpoint)
 - Cloudflare AI Gateway
 - OpenRouter
 - OpenCode Zen (`opencode.ai`)
@@ -518,7 +519,7 @@ The monitor handles errors gracefully:
 - **[Reading the Help Center](docs/help-center.md)** — Search and read Coolhand's help center articles and list its sections, with no API key required
 - **[Linking Feedback](docs/feedback-links.md)** — Link feedback to an optimization as evidence, singly or in bulk, using the private API key
 - **[Declared Workloads](docs/declared_workloads.md)** — Declare the workload and template of captured LLM calls with `Coolhand.with_context`, and create or rename them with `upsert`
-- **[Anthropic Integration](docs/anthropic.md)** — Official and community Anthropic Ruby gems, streaming, dual gem handling, and troubleshooting
+- **[Anthropic Integration](docs/anthropic.md)** — Official and community Anthropic Ruby gems, streaming, using both gems, and troubleshooting
 - **[ElevenLabs Integration](docs/elevenlabs.md)** — Webhook capture, feedback submission, and Rails integration
 - **[OpenAI Batch Webhook Handler](docs/openai.md)** — Handle OpenAI batch job completion events via webhook interception
 - **[Google Vertex AI Batch Result Logging](docs/vertex.md)** — Log completed Vertex AI batch prediction job results
@@ -526,7 +527,8 @@ The monitor handles errors gracefully:
 
 ## Security
 
-- API keys in request headers are automatically redacted
+- API keys in request headers and credential-like URL query params are automatically redacted (provider rate-limit headers such as `x-ratelimit-remaining-tokens` are kept)
+- Credentials in request and response bodies (MCP `authorization`/`authorization_token`, Realtime ephemeral client secrets, `api_key`, and similar) are redacted; see [Body redaction](docs/configuration.md#body-redaction)
 - No sensitive data is exposed in logs
 - All data is sent via HTTPS to Coolhand servers
 

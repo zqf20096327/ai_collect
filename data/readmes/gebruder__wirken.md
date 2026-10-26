@@ -84,7 +84,7 @@ routes messages to the agent, and serves a WebChat UI at
 `http://127.0.0.1:18790`; log in with `wirken webchat open --browser`:
 
 ```
-  wirken v2.5.1
+  wirken v3.1.0
   ──────
 
   Provider: ollama/llama3.2
@@ -241,14 +241,18 @@ compromise impossible. The honest edges:
   is enforced at the process level; the compile-time `SessionHandle<Channel>`
   API exists and is tested but is not threaded through the production message
   path.
-- **The iMessage adapter has not been verified against a live BlueBubbles
-  server.** Its API calls and webhook check follow BlueBubbles Server's source;
-  no run against a running server has confirmed them. See
-  [docs/channels.md](docs/channels.md#imessage-bluebubbles).
+- **Not verified against the live service:**
+  - **iMessage.** The API calls and webhook check follow BlueBubbles Server's
+    source; no run against a running server has confirmed them. See
+    [docs/channels.md](docs/channels.md#imessage-bluebubbles).
+  - **Discord approvals.** Unit-tested only; no run against a live Discord bot
+    has posted the card or taken a press. See
+    [docs/channels.md](docs/channels.md#discord).
 - **Agents share the gateway's address space.** Channel adapters are separate
   processes; agents are not.
-- **Permissions are per agent, not per user.** A Tier 2 approval granted by
-  one sender applies to every sender on that agent until it expires.
+- **Permissions are per agent and channel, not per user.** A Tier 2 approval
+  granted by one sender applies to every sender on that agent and channel
+  until it expires.
 - **Escape hatches exist.** A handful of environment flags relax defaults.
   Each is documented and warns when engaged; the full inventory is in
   [docs/security-properties.md](docs/security-properties.md#documented-escape-hatches).

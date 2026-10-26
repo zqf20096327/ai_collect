@@ -124,6 +124,8 @@ Configure your LLM server and models in Local LLM Hub, then select a Local LLM H
 
 Streaming chat with your local LLM. Thinking display, file attachments, `@` mentions for vault notes, multiple sessions.
 
+To discuss a note, type `@` and select it, or enter `[[Note]]` / `[[folder/Note.md]]`. Selecting a file inserts a visible wikilink. Sent chat messages retain the original references, including paths with spaces and multiple files. Only the model request adds type and byte size beside each tool-readable reference; file contents and reading instructions are not added to the displayed message. Manually typed `@folder/Note.md` is also supported (use the full vault-relative path). With Vault tools enabled, references are sent as exact vault-relative paths and the model is instructed to use `read_note` to fetch their contents; this requires a model that supports tool calling. The request includes file type and byte size without reading the body. Avoiding automatic full-file expansion prevents large files from consuming excessive tokens; the model can choose partial reads where supported. With Vault tools disabled, or when using AnythingLLM, the referenced text is included directly instead. References do not appear as attachment chips. To supply a note's text directly regardless of Vault tool settings, use the attachment button. PDF text is extracted when available.
+
 The header includes an expand/shrink control for the sidebar and a **Save as note** action. Manual exports use `YYYYMMDD-HHmmss_Chat title.md`, contain compact conversation content without history metadata, and overwrite the same chat's export when saved again.
 
 ![Chat with RAG](docs/images/chat_with_rag.png)
@@ -151,6 +153,8 @@ The header includes an expand/shrink control for the sidebar and a **Save as not
 Models with function calling support (Qwen, Llama 3.1+, Mistral) can directly interact with your vault:
 
 `read_timeline` · `read_note` · `create_note` · `update_note` · `rename_note` · `create_folder` · `search_notes` · `list_notes` · `list_folders` · `get_active_note` · `propose_edit` · `execute_javascript`
+
+For large text files, `read_note` supports inclusive, 1-based `startLine` / `endLine` ranges, for example `{"path":"Notes/Large.md","startLine":100,"endLine":150}`. The result includes the selected range and total line count so the model can request more lines as needed, without sending the entire file to the model. Omitting `startLine` starts at line 1; omitting `endLine` reads to the end. With both omitted, the full text is returned. For PDFs, use `startPage` / `endPage` instead; line and page ranges cannot be combined.
 
 Three modes — **All**, **No Discovery**, **Off** — selectable from the input area.
 

@@ -141,11 +141,14 @@ one side, and Ctrl, or Cmd on macOS, adds to a selection), including
 committing or discarding only part of a brand-new (untracked) file. Partial
 staging is for UTF-8 text; other encodings stage and discard as a whole file.
 Stage or unstage a drag-made selection with `Ctrl`/`⌘`+`Shift`+`Enter`,
-without reaching for the button. Stage, unstage, or discard single files or a
-multi-selection from the context menu (staging and unstaging a selection sit
-in the command palette too); discarding a whole untracked file goes to the
-recycle bin. Commit with title + body, co-authors suggested from history,
-amend, undo, reset, and revert.
+without reaching for the button. Press `Space` on a focused file to stage or
+unstage it. Once the file you're viewing has nothing left to stage, whole or
+line by line, the next file in the list opens (the one above it, at the end of
+a section), and unstaging works the same way in Staged. Stage, unstage, or
+discard single files or a multi-selection from the context menu (staging and
+unstaging a selection sit in the command palette too); discarding a whole
+untracked file goes to the recycle bin. Commit with title + body, co-authors
+suggested from history, amend, undo, reset, and revert.
 
 <picture>
   <source media="(prefers-reduced-motion: reduce)" srcset="site/src/assets/readme/lines-poster.webp">
@@ -985,11 +988,13 @@ GitDesktop tells an **expired-or-revoked session** apart from
 never-signed-in, network blips, and a **GitHub API rate limit** (GitLab's
 too, when its CLI names the limit). An expired session gets a badge with
 one-click **Reconnect**; a rate limit gets its own badge, with the time
-access resumes when GitHub reports it and nothing to reconnect. It also
-**warns before a token lapses**: GitLab and GitHub PAT expiry, plus an
-optional Bitbucket **expiry date** you supply. For GitLab it nudges the
-**browser (OAuth)** option, whose sessions renew themselves instead of
-expiring.
+access resumes when GitHub reports it and nothing to reconnect. While a
+GitHub rate limit is in effect, GitDesktop doesn't send most of the requests
+the limit covers until it lifts, and most actions that need one say so.
+GitDesktop also **warns before a token lapses**: GitLab and GitHub PAT
+expiry, plus an optional Bitbucket **expiry date** you supply. For GitLab
+it nudges the **browser (OAuth)** option, whose sessions renew themselves
+instead of expiring.
 
 ### Coding agent sessions
 

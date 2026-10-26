@@ -202,6 +202,8 @@ Ollama on a laptop, then pip on a GPU, then Docker.
 
 ### On a laptop, with Ollama
 
+**Ollama 0.40.4 and later refuse these listings on `/v1/systemone`** (they work on 0.35.1 through 0.40.3; [details](#ollama)). On a newer Ollama use decisio's own server with MLX ([Mac with MLX](#mac-with-mlx)).
+
 The Gemma listing's smallest tag takes 8.6 GB in Ollama (measured on a 64 GB Mac), and it has not been tried on a smaller machine ([docs/running.md](docs/running.md#ollama)):
 
 ```bash
@@ -236,10 +238,10 @@ Measured on 2026-10-09 on decisio 0.11.0 from PyPI, on one RTX PRO 6000 Blackwel
 ### With Docker
 
 ```bash
-docker run -d --gpus all --shm-size 8g -p 127.0.0.1:8000:8000 -v decisio-data:/data ghcr.io/aminry/decisio@sha256:801790ae6e2ceeaa8ec04ec85ada1f41aa7fc7327fc63707d9e8ae3ed2b80023
+docker run -d --gpus all --shm-size 8g -p 127.0.0.1:8000:8000 -v decisio-data:/data ghcr.io/aminry/decisio@sha256:820bdc4a07395d2e056d1a7745dc764ff05e53d6d9b1bd92e19fd37d9413f962
 ```
 
-That digest is the 0.27.1 image (`ghcr.io/aminry/decisio:0.27.1`); the release notes of every release give theirs, and `gh attestation verify oci://ghcr.io/aminry/decisio@sha256:<digest> --repo aminry/decisio` checks it.
+That digest is the 0.35.0 image (`ghcr.io/aminry/decisio:0.35.0`); the release notes of every release give theirs, and `gh attestation verify oci://ghcr.io/aminry/decisio@sha256:<digest> --repo aminry/decisio` checks it.
 [Docker](#docker) has the compose file.
 The same `curl` as above, with `/v1/systemone` on port 8000 and no `model` field, asks the server you started.
 
@@ -477,7 +479,7 @@ Linux, one NVIDIA card, a driver that supports CUDA 13.0, Python 3.12 and [uv](h
 
 <!-- x-release-please-start-version -->
 ```bash
-git clone --branch v0.32.0 https://github.com/aminry/decisio
+git clone --branch v0.35.0 https://github.com/aminry/decisio
 cd decisio
 uv sync --extra serve --frozen
 uv run python -m decisio.serve.vllm_engine
@@ -519,7 +521,8 @@ ollama pull aminroudaki/decisio-gemma    # the Gemma 4 12B base
 ollama pull aminroudaki/decisio          # the Qwen base
 ```
 
-Requires Ollama 0.35.1 or later.
+Requires Ollama 0.35.1 through 0.40.3.
+These model files work on Ollama 0.35.1 through 0.40.3. Ollama 0.40.4 (2026-10-12) and later answer `/v1/systemone` for them with "was downloaded in a format that is no longer supported" (checked on 0.40.4, 0.40.7 and 0.40.9, and after a fresh `ollama pull`): their decision route takes only models whose GGUF carries Ollama's own decision head. On a newer Ollama, run decisio's own server on the Mac ([Mac with MLX](docs/running.md#mac-with-mlx)).
 The Gemma listing's smallest tag takes 8.6 GB in Ollama (measured on a 64 GB Mac, not tried on a smaller machine); the Qwen listing's is a 23 GB download ([docs/running.md](docs/running.md#ollama)).
 Ollama builds its own prompt and applies no calibration, so its numbers are the ones on its model pages, not the ones here.
 

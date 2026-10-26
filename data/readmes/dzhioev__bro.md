@@ -54,6 +54,7 @@ from bro.datasources.web_search import WebSearch
 from bro.llm.llms import openai
 from bro.mcp import cli, creds, files, man, mount, source
 from bros.bro import Bro
+from bros.triage import spells
 
 SYSTEM_PROMPT = """\
 You triage the issues of this repository: read a report against the code,
@@ -89,7 +90,7 @@ class Triage(Bro):
     source(WebSearch()),
     man(environment),
   ]
-  spells = ('triage.md',)
+  spells = (spells.triage,)
   system_prompt = SYSTEM_PROMPT
 ```
 
@@ -177,7 +178,7 @@ Read the class line by line and nothing is left to configure elsewhere:
 - `may_summon = ('browser', 'devoops')` is whom it may summon on its own authority:
   the built-in browser, which reproduces a report on the live page, and devoops, which probes the deployed service.
   Every other delegate is a launch grant, and a `{{when #may_summon contains …}}` paragraph shows only in a session that may.
-- `spells = ('triage.md',)` names its procedure, `bros/triage/spells/triage.md` beside the class, served as the `spell::triage` tool.
+- `spells = (spells.triage,)` names its procedure, a `SpellFile` over `bros/triage/spells/triage.md`, served as the `spell::triage` tool.
 
 **A command is a tool.**
 `cli('rewind show', 'trail_id')` reads the arguments `rewind show` declares
@@ -423,6 +424,9 @@ the container's network is unrestricted, and `--unboxed` runs as the launching u
 - **Personas.**
   `dev`, `eyebro`, `lead`, `terminal`, `devoops`, and `browser` ship ready to derive from;
   `browser` is the semantic interface to webview missions.
+- **File types.**
+  A persona can mount `bro.files.mcp.toolset` to inspect and read files through sandboxed providers registered in `bro.file_types`.
+  `bro-filetypes` supplies born-digital PDFs with text, link, attachment and form-field views; no published persona opts in by default.
 - **Artifacts.**
   Peers pass files by content-addressed reference, and reach follows the launch tree.
 - **One conditioning model.**
@@ -440,7 +444,7 @@ a boxed session reaches that remote only where it asks for no authentication, an
 ## Read more
 
 - [`AGENTS.md`](AGENTS.md) — the repository map, and the rules every change follows
-- [`bro/reference/extending.md`](bro/reference/extending.md) — how to add a bro, a data source, a toolset, and the entry-point groups they register through
+- [`bro/reference/extending.md`](bro/reference/extending.md) — how to add a bro, a data source, a toolset or a file type (`bro.file_types`), and the entry-point groups they register through
 - [`bro/reference/ride.md`](bro/reference/ride.md) — the runtime: workspaces, credential delivery, summons, recording
 - [`bro/reference/permission_model.md`](bro/reference/permission_model.md) and [`bro/reference/permissions.md`](bro/reference/permissions.md) — the abstract model and the shipped permission system
 - [`bro/reference/conditions.md`](bro/reference/conditions.md) and [`bro/reference/template.md`](bro/reference/template.md) — conditioning in code and in text

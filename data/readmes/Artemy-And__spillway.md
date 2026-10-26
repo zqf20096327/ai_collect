@@ -49,22 +49,33 @@ For a setup you keep, use [Docker Compose](#quick-start).
   OpenRouter from a list, or any OpenAI-compatible API by its URL.
 - **A key per person, device or agent** with daily and monthly dollar limits, and model allowlists
   per team and per key. Prices of well-known models fill in when you add them, and a cloud model
-  without a price is flagged instead of quietly counting as free.
+  without a price is flagged instead of quietly counting as free. A key for a contractor or a trial
+  can have an end date, and a leaked key is replaced in one click without losing its limits and
+  history.
+- **Tight limits that do not stop work.** Someone who uses up the day's limit sees where to ask
+  for more, in Claude Code's status line or in the refusal their app shows. An admin gets a
+  message and approves it with one click; the extra counts for that day only.
 - **The cloud goes down, work does not.** When a provider fails, times out or rate limits, the
   local model answers instead, and the provider shows up under Needs attention.
-- **Team budgets and four routing rules**: switch to the local model at N% of the team budget, keep
+- **Team budgets and five routing rules**: switch to the local model at N% of the team budget, keep
   card numbers, IBANs, US Social Security and UK National Insurance numbers, passport numbers and
-  API keys away from cloud models, rate limit agents, and keep off-hours traffic local. Numbers that
-  need context, like passports, only count next to the word itself, so timestamps and IDs in code
-  never block a request.
+  API keys away from cloud models, rate limit agents, keep off-hours traffic local, and stop a
+  runaway key. Numbers that need context, like passports, only count next to the word itself, so
+  timestamps and IDs in code never block a request.
+- **A brake for runaway agents.** A key without a limit of its own that suddenly spends far more in
+  an hour than in any hour of the two weeks before (by default three times, and at least $20) is
+  stopped: its requests go to the local model until an admin lets it back with one click. An agent
+  stuck in a loop overnight is stopped within the hour instead of burning through the month's
+  budget.
 - **Alerts where you already are.** Slack, Microsoft Teams or email when a team nears or passes
-  its budget, a key hits its limit, or a provider goes down and comes back, plus a Monday summary
-  of spend and savings.
+  its budget, a key hits its limit or is stopped for unusual spending, or a provider goes down and
+  comes back, plus a Monday summary of spend and savings.
 - **An optional response cache.** The same key sending the same request again gets the stored
   answer for free; handy for n8n workflows and re-indexing documents. Off by default, and it never
   keeps prompts with personal data.
 - **Every decision explained.** Each log entry shows the steps the gateway took ("Marketing is at
-  104% of its budget → sent to Qwen Coder · local"), tokens, cost, and money saved.
+  104% of its budget → sent to Qwen Coder · local"), tokens, cost, and money saved. For the books,
+  a monthly spreadsheet shows what each team, person and key spent on each model.
 - **Privacy by default.** Prompts are stored masked, text is dropped after a retention period (the
   numbers stay), storage can be switched off, and provider keys are encrypted at rest.
 - **SSO without an enterprise plan**: Google Workspace, Microsoft Entra ID or any OpenID Connect
@@ -75,7 +86,7 @@ For a setup you keep, use [Docker Compose](#quick-start).
 ## What stays free
 
 Single sign-on, keys, budgets and limits, the routing rules (local fallback, personal data, rate
-limits, off-hours), alerts, the response cache, the request log and all three API formats are free
+limits, off-hours, runaway keys), alerts, the response cache, the request log and all three API formats are free
 and stay in this repository under AGPL-3.0. If paid options come later, they will be new things
 around Spillway, such as a managed instance or support. Nothing on this list will move behind a paywall.
 
@@ -89,7 +100,7 @@ docker compose logs spillway    # prints the setup link
 ```
 
 This pulls the signed image `ghcr.io/artemy-and/spillway` for amd64 or arm64; nothing is built
-on your machine. `latest` follows releases. To pin one, put `SPILLWAY_TAG=0.5.0` in `.env` next
+on your machine. `latest` follows releases. To pin one, put `SPILLWAY_TAG=0.6.0` in `.env` next
 to the compose file (`.env.example` lists every setting). Put Spillway behind your usual reverse
 proxy for HTTPS and set `PUBLIC_URL` to the address people open.
 
@@ -136,8 +147,8 @@ with no long-lived signing key, and carry an SBOM and build provenance. To check
 it:
 
 ```sh
-cosign verify ghcr.io/artemy-and/spillway:0.5.0 \
-  --certificate-identity https://github.com/Artemy-And/spillway/.github/workflows/release.yml@refs/tags/v0.5.0 \
+cosign verify ghcr.io/artemy-and/spillway:0.6.0 \
+  --certificate-identity https://github.com/Artemy-And/spillway/.github/workflows/release.yml@refs/tags/v0.6.0 \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com
 ```
 
@@ -214,16 +225,16 @@ the same Codex can run on Claude or on the local model.
 
 **Overview.** Spend against the budget, the share served by local models, and what needs attention.
 
-![Overview: $179.90 of an $860 budget spent this month, 18% of requests served by local models, Marketing over its budget](docs/overview.png)
+![Overview: $181.47 of an $860 budget spent this month, 18% of requests served by local models, Marketing over its budget](docs/overview.png)
 
 **Where the money goes.** Who spends the most, which apps send the requests, and what the same
 requests would have cost on another model.
 
-![Bottom of Overview: top spenders, requests by app (Claude Code 33%, n8n 32%, other apps 35%) and the month's requests costing about $63.65 on Claude Haiku instead of $179.90](docs/overview-costs.png)
+![Bottom of Overview: top spenders, requests by app (Claude Code 34%, n8n 31%, other apps 36%) and the month's requests costing about $64.61 on Claude Haiku instead of $181.47](docs/overview-costs.png)
 
 **Keys.** One key per person, device or agent, each with its own daily limit.
 
-![Keys: seven keys for people, a device and agents, with today's spend against each daily limit](docs/keys.png)
+![Keys: seven keys for people, a device and agents, with today's spend against each daily limit, and a review bot on a trial until November 30](docs/keys.png)
 
 **Request log.** Who sent each request, where it went, what it cost and why.
 

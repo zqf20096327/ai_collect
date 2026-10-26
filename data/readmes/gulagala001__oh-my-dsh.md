@@ -7,7 +7,7 @@
 <p align="center"><strong>简体中文</strong> · <a href="README_EN.md">English</a></p>
 
 <p align="center">
-  <a href="docs/release-0.104.0.md"><img alt="OMD 0.104.0" src="https://img.shields.io/badge/release-OMD%200.103.0-0969da?style=flat-square"></a>
+  <a href="docs/release-1.0.2.md"><img alt="OMD 1.0.2" src="https://img.shields.io/badge/release-OMD%201.0.2-0969da?style=flat-square"></a>
   <a href="https://github.com/gulagala001/oh-my-dsh/releases"><img alt="GitHub 累计下载量" src="https://img.shields.io/github/downloads/gulagala001/oh-my-dsh/total?style=flat-square&amp;label=GitHub%20downloads&amp;color=0969da"></a>
   <a href="#readme-install"><img alt="DSH 0.2.1-rc.3" src="https://img.shields.io/badge/DSH-0.2.1--rc.3-0969da?style=flat-square"></a>
   <a href="https://github.com/gulagala001/oh-my-dsh/stargazers"><img alt="GitHub Stars" src="https://img.shields.io/github/stars/gulagala001/oh-my-dsh?style=flat-square&amp;color=0969da"></a>
@@ -44,10 +44,10 @@
 打开实际使用的 DSH 实例，在 **插件 → ＋ 添加插件** 中粘贴：
 
 ```text
-https://github.com/gulagala001/oh-my-dsh/releases/download/v0.2.1-rc.3.omd.0.104.0/oh-my-dsh-0.2.1-rc.3.omd.0.104.0.tgz
+https://github.com/gulagala001/oh-my-dsh/releases/download/v0.2.1-rc.3.omd.1.0.2/oh-my-dsh-0.2.1-rc.3.omd.1.0.2.tgz
 ```
 
-等当前任务结束后，按宿主提示启用或完整重启该实例，沿用原 profile 与数据。其他宿主、升级和卸载见[安装指南](docs/install.md) · [SHA256SUMS](https://github.com/gulagala001/oh-my-dsh/releases/download/v0.2.1-rc.3.omd.0.104.0/SHA256SUMS).
+等当前任务结束后，按宿主提示启用或完整重启该实例，沿用原 profile 与数据。其他宿主、升级和卸载见[安装指南](docs/install.md) · [SHA256SUMS](https://github.com/gulagala001/oh-my-dsh/releases/download/v0.2.1-rc.3.omd.1.0.2/SHA256SUMS).
 
 ### 2. 先试这一件事
 
@@ -83,6 +83,9 @@ OMD 组合 **Workflow、Rewind、Persona、Extensions 和 DeepSeek Workbench**�
 
 按需工具发现、文件与网页视图、AST 代码搜索和 CodeGraph 帮助定位材料。历史整理、Auto Compact 与 **Dream** 分别管理上下文和会话／项目／全局记忆；也可选用 Billion Context 管理压缩，Dream、回查、任务、侧问与分支继续协作。
 
+
+工具调用也更高效：代码检索、网页正文读取、原文回查与截图传递减少重复处理；工具结果中的重复内容会被精简，减少上下文占用和 Token 消耗，需要细节时仍可查看完整原文。
+
 [上下文优化与原文](docs/context-optimization.md) · [压缩与 BC](docs/context-workflow.md) · [Dream](docs/dream-memory.md)
 
 ### 让界面和表达方式适合自己
@@ -90,6 +93,19 @@ OMD 组合 **Workflow、Rewind、Persona、Extensions 和 DeepSeek Workbench**�
 **Glyph 动态字符**用立体字符鲸鱼、局部波纹和字符控件组织工作空间。还可选择 DSH 原生、Codex Desktop、iOS Liquid Glass、Claude CLI、Google Material，搭配 **29 套配色**、背景、字体和分区颜色；已有外观选择继续保留。
 
 **人格管理**分为身份与人格、语言风格、沟通方式、回答呈现四个模块，支持多个预设、复制修改、JSON 导入导出和 AI 创作提示词。启用会话人设后，可为不同主会话单独选择、继承全局或关闭人格。
+
+
+两种内置人格预设，按任务选择：
+
+- **精算**：追求省 Token、高效率和快速交付，直达结果，把用量花在有价值的内容上。**作者实测效率提升 50%。**
+- **超频**：追求更深入、完整的回答和交付，愿意为复杂问题投入更多推敲与细节，适合需要充分分析和打磨的任务。
+
+<p align="center">
+  <a href="docs/images/economical-token-usage.png"><img src="docs/images/economical-token-usage.png" alt="精算实测：Token 用量与缓存命中" width="320"></a>
+  <a href="docs/images/economical-yellow-crane-tower.png"><img src="docs/images/economical-yellow-crane-tower.png" alt="精算实测作品：黄鹤楼体素场景" width="320"></a>
+</p>
+
+<p align="center">精算实测展示：用量统计与作品效果</p>
 
 ![外观示例](docs/images/release/themes.jpg)
 
@@ -187,7 +203,7 @@ OMD 组合 **Workflow、Rewind、Persona、Extensions 和 DeepSeek Workbench**�
 | [dsh-ops](https://github.com/T-Auto/dsh-ops) | 增强文件、文档与命令操作，按需加载工具并复用结果；支持普通模式和 PTC，保留原生工具。 |
 | [DSH Intelligent UI](https://github.com/gulagala001/dsh-intelligent-ui) | 在回答中使用交互图表、表单、计算器、模拟和小游戏。 |
 | [Oh My Agents Above All](https://github.com/gulagala001/oh-my-agents-above-all) | 选用 Codex、Claude Code、Grok、Pi 与 ZCode 风格的智能体，沿用 DSH 会话和工具。 |
-| [Subscription Login](https://github.com/V1ki/dsh-plugin-subscriptions) | 直接登录 ChatGPT、Claude、Grok、Copilot 或 Antigravity 订阅，自动发现模型；支持 ChatGPT Fast、订阅额度及生图。 |
+| [Subscription Login](https://github.com/V1ki/dsh-plugin-subscriptions) | 登录 ChatGPT、Claude、Grok、Copilot 或 Antigravity 订阅，自动发现模型；支持 ChatGPT Fast、订阅额度及生图。 |
 | [OpenDesign](https://github.com/omegapaopao/dsh-open-design) | 使用 52 个设计技能、模板和设计系统，技能入口为 open-design。 |
 | [Prompt Optimizer](https://github.com/WestFox-AwA/dsh-prompt-optimizer) | 发送前梳理本轮需求，保留原话，支持审查、自动模式和只读查证；启用后可在输入框选择模式。 |
 | [DSH Market](https://github.com/dsh-market/dsh-market) | 在 DSH 内浏览、搜索和安装社区插件与主题，支持分类筛选、更新管理及配置备份。安装后在设置中打开插件市场。 |

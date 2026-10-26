@@ -25,7 +25,7 @@ Two things it does that a usage dashboard doesn't:
 | --- | --- | --- |
 | **VS Code extension** (also Cursor, Windsurf, VSCodium, …) | [Install from the Marketplace](https://marketplace.visualstudio.com/items?itemName=agentlens.agentlens-dashboard) (listed as `agentlens.agentlens-dashboard` — that's TraceRoost; the id was kept from the rename) | Open the **TraceRoost** view in the Activity Bar |
 | **Desktop app** (macOS, Linux, Windows — no Node.js needed) | [Download from the latest release](https://github.com/traceroost/core/releases/latest) | Open TraceRoost like any other app |
-| **Terminal** (Node.js 24+, or Homebrew on macOS/Linux) | `npx traceroost@latest` — or `brew install traceroost/tap/traceroost`, then `traceroost` | The dashboard opens at <http://localhost:3000> |
+| **Terminal** (Node.js 22+, or Homebrew on macOS/Linux) | `npx traceroost@latest` — or `brew install traceroost/tap/traceroost`, then `traceroost` | The dashboard opens at <http://localhost:3000> |
 
 Each one asks before it sets your agents up. History appears immediately; restart your agents for live traces.
 
@@ -66,9 +66,13 @@ Manage it later with `traceroost service status`, `service stop`, `service unins
 - [Local Mode Options](#local-mode-options)
   - [Native process (recommended for local use)](#native-process-recommended-for-local-use)
   - [Background Service (macOS / Windows / Linux)](#background-service-macos--windows--linux)
+  - [Headless forwarder (servers, VMs, SSH-only boxes)](#headless-forwarder-servers-vms-ssh-only-boxes)
+  - [My dev server needs port 3000](#my-dev-server-needs-port-3000)
   - [Docker (OTel only)](#docker-otel-only-1)
   - [Node.js (from source)](#nodejs-from-source)
   - [Editions](#editions)
+- [Network](#network)
+- [Uninstall](#uninstall)
 - [Automation Prompts File](#automation-prompts-file)
   - [How it works](#how-it-works)
 - [VS Code Commands](#vs-code-commands)
@@ -144,7 +148,7 @@ The general picture above is the same for every agent — OTel is richer, logs a
 Each file is one conversation, and each prompt in it is one trace, keyed by the prompt's own `promptId` — so the OTel copy of the same prompt lands on the same row instead of a second one, and a resumed session updates the turns it copied rather than duplicating them. `assistant` entries carry per-turn token counts (input, output, cache read/write). `user` entries carry the prompt text. Tool calls are embedded in message content blocks. Subagent transcripts (`<session-uuid>/subagents/agent-*.jsonl`) are counted in the prompt that started them, not as traces of their own.
 
 Available from logs: prompt, model, workspace, timestamps, all token counts, tool names, files read/written. Several signals can fire from this log alone (repeated tool calls, edit/revert cycles, runaway steps, hallucinated imports, degraded runaway-cost detection).
-Not in logs: TTFT, per-tool latency, streaming speed, or the signals that need per-tool error/result detail (error recurrence, chronic tool failures, context flooding, failed check submission) — those need OTel. See the in-app Help tab's Signals section for the per-signal breakdown.
+Not in logs: TTFT, per-tool latency, streaming speed, or the signals that need per-tool error/result detail (error recurrence, chronic tool failures, failed check submission) — those need OTel. Context Flooding Risk never fires for Claude Code from either source: Claude Code doesn't report a tool result's full size. See the in-app Help tab's Signals section for the per-signal breakdown.
 
 **OTel** (richer, requires env config) — trace spans via `/v1/traces` and supplemental log records via `/v1/logs`.
 
@@ -255,7 +259,7 @@ The **Traces** tab (Overview sub-tab) and **Analytics** tab surface two categori
 
 | Signal | Fires when | What to do |
 | ------ | ---------- | ---------- |
-| **Tool Call Deadlock** | The same tool call, same arguments, same result, 30+ times in a row with no edit in between (critical at 50+) | Stop the session; tell the agent what the last result said and to change approach. A command whose output changes by itself (a clock, a live log) isn't a loop — Ignore it |
+| **Tool Call Deadlock** | The same tool call (same arguments, same result) ran 30+ times with no file edit in between; other calls in between don't reset the count (critical at 50+) | Stop the session; tell the agent what the last result said and to change approach. A command whose output changes by itself (a clock, a live log) isn't a loop — Ignore it |
 | **Edit Reverted** | A file's edit is exactly undone by a later edit (critical if that revert was the file's last edit) | State the one final result you want, with priorities, rather than iterating; check whether two tests contradict each other |
 | **Repeated Error** | The same error message (temp paths, timestamps and hashes stripped) recurs 3+ times (critical at 5+) | Find the cause yourself and tell the agent what actually exists; after two failed fixes, stop retrying |
 | **Ambiguous Success / Escalating Scope** | More LLM + tool steps than a task of that size should take (45 / 110 / 250 by inferred complexity; critical at 2×) | Add a stopping condition and a scope (files, functions); split the task |
@@ -266,8 +270,8 @@ The **Traces** tab (Overview sub-tab) and **Analytics** tab surface two categori
 | **Unverified Submission** | The session's last tool call ran a test or build and it failed (a "0 failed" summary doesn't count), with nothing after it | Re-run the check and fix it before treating the work as done |
 | **Multi-Step Oscillation** | A 2–5-step tool sequence (run tests → read log → …) repeats 5+ times with no edit (critical at 10+) | Ask what changed between attempts; supply the missing stack trace, value or spec |
 | **Redundant Context Reload** | The same file read 3+ times with no write to it in between (critical at 6+) | Have the agent summarize what it knows; paste small stable files into the prompt; split long sessions |
-| **Avoidable Cache Miss** | A call re-wrote 5%+ and 2,000+ tokens of its prefix instead of reading it from cache (first call per model exempt; critical past 90,000) | Don't switch model, effort, permission mode or MCP servers mid-task; look for a timestamp stamped into the prompt |
-| **Cache TTL Expiry** | A cache miss after a gap longer than the cache's TTL (1 hour assumed; critical at 3+) | Work in bursts; on an API key the cache lives 5 minutes unless you choose the 1-hour TTL. A timing effect, not a prompt problem |
+| **Avoidable Cache Miss** | A call re-saved context to the model's cache instead of reusing the stored copy: at least 2,000 tokens and more than 5% of what it sent. A model's first call doesn't count; critical once the total reaches 90,000 tokens | Don't switch model, effort, permission mode or MCP servers mid-task; look for a timestamp stamped into the prompt |
+| **Cache TTL Expiry** | After a pause longer than the cache keeps a stored copy (1 hour assumed), the context had to be saved again (critical at 3+ such pauses) | Work in bursts; on an API key the cache lives 5 minutes unless you choose the 1-hour TTL. A timing effect, not a prompt problem |
 | **Poor Cache Utilization** | 2+ LLM calls, 2,000+ tokens of real cache activity, and under 30% of input read from cache (critical under 10%) | Find what changes near the top of the prompt turn to turn; see the two cache signals above |
 | **Budget Overrun** | Trace cost exceeds `TRACEROOST_BUDGET_CAP_USD` (critical at 2×; off unless set) | Look for a loop elsewhere in the list; raise the cap if the task needed it |
 | **Model Tier Mismatch** | No edits, 3+ tool calls of which 90%+ are read-only, an Opus-class model (above $3/M input; Sonnet doesn't count), under 300 output tokens per call | Send research to a smaller model (a `model: haiku` subagent in Claude Code); keep the premium model for edits. Warning only — a cost tip, not a fault |
@@ -278,7 +282,7 @@ Not every signal can fire from every source: most need live OpenTelemetry, and t
 
 ### Local (OTel and log files)
 
-The fastest way to get started — run directly on your machine with no install required. Because it runs natively it has full access to your local log files. Requires Node.js 24+.
+The fastest way to get started — run directly on your machine with no install required. Because it runs natively it has full access to your local log files. Requires Node.js 22+.
 
 ```bash
 # One-off — the @latest tag forces a fresh fetch (see note below)
@@ -537,7 +541,7 @@ or `scripts/configure-agents.sh --host <host> --token <token>`. MCP clients: sen
 the same `DATA_DIR` (say, while the background service is running) refuses to start and names the
 running one: its pid, its dashboard URL, and how to stop it. To run a second instance on purpose,
 give it its own data directory and ports, e.g.
-`DATA_DIR=~/traceroost-2 UI_PORT=3001 OTLP_PORT=4319 MCP_PORT=4317 npx traceroost@latest`. The lock
+`DATA_DIR=~/traceroost-2 UI_PORT=3001 OTLP_PORT=4319 MCP_PORT=4320 npx traceroost@latest`. The lock
 (`<data dir>/server.lock`) is removed when the server exits; one left by a crash is taken over
 automatically on the next start. The background service, if blocked this way, waits and starts as
 soon as the other server stops. The VS Code extension keeps its own data and isn't affected.
@@ -706,7 +710,7 @@ it at once.
 
 ### Node.js (from source)
 
-Requires Node.js 24+ and this repository cloned locally.
+Requires Node.js 22+ and this repository cloned locally.
 
 ```bash
 pnpm install

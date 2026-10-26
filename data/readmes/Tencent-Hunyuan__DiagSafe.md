@@ -14,6 +14,7 @@
   [![License](https://img.shields.io/badge/License-CC_BY_4.0-lightgrey.svg)](LICENSE)
   [![arXiv](https://img.shields.io/badge/arXiv-2610.29225-b31b1b.svg)](https://arxiv.org/abs/2610.29225)
   [![Dashboard](https://img.shields.io/badge/Dashboard-Online-0f766e)](https://tencent-hunyuan.github.io/DiagSafe/)
+  [![Dataset](https://img.shields.io/badge/%F0%9F%A4%97%20Dataset-tencent%2FDiagSafe-ffc107)](https://huggingface.co/datasets/tencent/DiagSafe)
 </div>
 
 ---
@@ -207,6 +208,7 @@ the LLM-as-a-judge).
    | `top_p` | Nucleus sampling; `null` sends nothing and leaves it to the server | `null` |
    | `extra_body` | Server-specific fields added to the request body as is, e.g. vLLM's `chat_template_kwargs`, `top_k`, `repetition_penalty` | `{}` |
    | `extra_headers` | Additional HTTP headers, e.g. `X-Request-Id` | `{}` |
+   | `answer_key` | Response field read as the answer: `content`, or `reasoning_content` for servers that return the reply there | `content` |
 
    For vLLM servers, use `configs/judge_vllm.yaml` and `configs/model_vllm.yaml`; their
    `extra_body` already sets `chat_template_kwargs: {enable_thinking: false}`.
@@ -244,7 +246,7 @@ the LLM-as-a-judge).
    | None | Resumes |
    | `--limit` (e.g. 20 → full set) | Resumes and runs only the new prompts |
    | `base_url`, `api_key`, `concurrency`, `timeout`, `max_retries`, `extra_headers` | Resumes |
-   | `model`, `temperature`, `max_tokens`, `top_p` or `extra_body` of the judge or the evaluated model | Stops and lists the changed fields |
+   | `model`, `temperature`, `max_tokens`, `top_p`, `extra_body` or `answer_key` of the judge or the evaluated model | Stops and lists the changed fields |
    | Content of the prompts, rubrics or `--answers` file | Stops |
 
    Use a new `--output` for each new model or configuration.

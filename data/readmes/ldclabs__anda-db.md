@@ -27,20 +27,21 @@ after a release, so pin each crate by reading its own `Cargo.toml`:
 
 | Package                                                                  | Version |
 | ------------------------------------------------------------------------ | ------- |
-| `anda_cognitive_nexus`                                                   | 0.14.4  |
+| `anda_cognitive_nexus`, `anda_kip`, `@ldclabs/kip-do` (npm)              | 0.14.5  |
 | `anda_db`                                                                | 0.14.2  |
-| `anda_db_btree`, `anda_db_tfs`, `anda_kip`                               | 0.14.1  |
-| other Rust crates, the Python binding, `@ldclabs/kip-do` (npm)           | 0.14.0  |
+| `anda_db_btree`, `anda_db_tfs`                                           | 0.14.1  |
+| other Rust crates, the Python binding                                    | 0.14.0  |
 | `cf-tokenizer` (standalone service, own versioning)                      | 1.0.0   |
 
 - Rust 1.95 or newer is required (edition 2024).
-- The KIP protocol version is `2.0`, following KIP `11a82ec`, with the
+- The KIP protocol version is `2.0`, following KIP `c4f3c17`, with the
   bundled `kip://profiles/cognitive-memory@2.0.0` draft Schema Package. KIP
   protocol versions are independent of package versions.
 - Upgrading from 0.13 is breaking for KIP clients and for Spaces activated
   under the earlier CognitiveMemory draft. The first open of a Nexus store by
   0.14.1 or newer upgrades its collection schemas; do not reopen it with
-  0.14.0 afterwards.
+  0.14.0 afterwards. The first open by 0.14.5 replaces the bundled package
+  revisions 0.14.0–0.14.4 installed; do not reopen it with 0.14.4 or earlier.
 
 Read the [changelog](CHANGELOG.md) before upgrading. KIP 1.x stores migrate
 through the [v1 migration guide](docs/kip-v1-migration.md).

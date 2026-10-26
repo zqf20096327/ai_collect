@@ -1171,7 +1171,7 @@ flow names is a step of the plan, like a graph's edge fns.
  :spec        my.sort-spec
  :target      my.sort
  :static      {:ok true}
- :laws        [{:law sorted :status :proved :evidence :proof ...}
+ :laws        [{:law sorted :status :proved :evidence :proof :assumptions-used [...] ...}
                {:law smallest-first :status :tested :evidence :test :trials 100 ...} ...]
  :proof       {:require :tested :proved 6 :tested 1 :laws 7}
  :gaps        []                ; fns the laws don't pin down
@@ -1266,16 +1266,49 @@ hint, the lemmas it may cite, the definitions it reaches (the fns it calls
 and the fns they call, not the rest of the code), the plain data it names,
 the signatures and data types, and writ itself. So a check that changes
 nothing proves nothing again, and editing one fn keeps the results of the
-laws that never reach it. The proof of each law is kept too: when a law's
-key has changed, its last proof is replayed through the checker against
-the code as it is now, and only if the checker rejects it does the search
-run. A replayed proof is marked `:replayed`. Since the checker is what a
-proof rests on, a stale or wrong proof in the cache can't make a law
-proved. The contracts proved for the code are cached
+laws that never reach it. The proof of each law is kept too: on every
+check, a cached success is replayed through the checker against the code
+as it is now, whether the law's key hit or changed, and only if the checker
+rejects it does the search run. A replayed proof is marked `:replayed`;
+`:cached` says a semantic cache entry existed, not that replay was skipped.
+Since the checker is what a proof rests on, a stale, forged or wrong success
+in the cache can't make a law proved. The contracts proved for the code are cached
 apart, in one file per implementation, keyed on the code, its signatures
 and data and writ, so editing a law or the proof namespace keeps them.
+Their traces are kept with them and replayed on every check too: cached
+contract rules are never accepted without a fresh check, and an old cache
+without traces simply proves the contracts again.
 `:cache false` turns it off; `:cache-dir` puts it
 elsewhere. Add `.writ-cache/` to `.gitignore`.
+
+A check can also write a standalone proof bundle:
+
+```clojure
+(spec/check 'my.sort-spec {:bundle "sort-proof.edn"})
+
+(require '[writ.bundle :as bundle])
+(bundle/verify "sort-proof.edn")
+;; => {:ok true, :laws [...], :contracts 2, :assumptions [...]}
+```
+
+The bundle holds the translated prover inputs and proof traces, shared once,
+plus the contracts and the evidence of specs this one uses. Verification
+replays every contract and law through the checker. It does not load the
+project, run tests, or search for a proof or counterexample, and it rejects a
+cited lemma that was not verified earlier or named as an assumption. The
+content id detects edits, but is not itself evidence: a changed bundle with a
+recomputed id still has to replay.
+
+A positional shared-EDN encoding was measured on five real exports in
+`bench/bundle-baseline.edn`. It replayed correctly with comparable
+verification time, but grew the corpus from 59,487 to 137,991 bytes instead of
+meeting the 50% reduction gate, so schema 1 remains the only bundle format.
+
+Assumed signatures and laws are listed as assumptions, not upgraded to proofs.
+Closed or witnessed runtime evidence is listed separately as
+`:runtime-evidence`, not as a replayed proof. `:dependencies` and `:sources`
+make the evidence's origin auditable; verification rests on the bundled
+semantic inputs and traces, not on the current source files.
 
 A report's `:timings` says where the check's time went, in milliseconds:
 `{:static :tests :prover :more-trials :adequacy :graphs :total}`. Each
@@ -1417,6 +1450,20 @@ holds at every value of (an accumulator a fold passes on), `:use` the
 only lemmas and laws a proof may cite, `:strategy` one of `:symbolic`,
 `:induction` or `:rewriting`, and `:fuel` the rewrites one attempt may
 make. A proof a hint leads to is checked like any other.
+
+For this search, the available proved lemmas are indexed by proposition
+shape normalized through the prover itself. `writ.reuse` returns exact
+matches first, then related shapes, and an entry is eligible only when its
+`:assumptions-used` is allowed by the caller. Retrieval is untrusted: a
+candidate becomes evidence only through the ordinary proof and replay
+checker. Suggestions try a ranked pool before the full lemma set and put
+only the lemmas the successful proof actually cited in the hint's `:use`.
+A lemma whose proposition cannot be normalized is left out and recorded as
+`:normalization-failed`, never treated as evidence. With suggestions enabled,
+the report's `:reuse` gives the indexed, lookup and candidate counts and these
+`:quarantined` records; the text report names them too. Each suggestion also
+carries its `:reuse-candidates` count. `{:suggest {:reuse false}}` skips only
+the ranked pool, leaving the other suggestion strategies in place.
 
 `{:suggest true}` (or `{:suggest {:budget 40}}`, the attempts it may
 spend on a law) asks the check to find what would prove each law that
@@ -1578,6 +1625,12 @@ Several things guard the prover itself:
   writ bug.
 - What the spec assumes about code writ does not check is tested on every
   check and named in every report; see [Assumptions](#assumptions).
+
+[The trusted-base inventory](docs/trusted-base.md) names the semantic and
+replay code below these guarantees and the runtime trust outside writ. Its
+`docs/trusted-base.edn` manifest pins the source hashes; changing a listed
+file requires reviewing the semantic effect and updating its hash in the
+same change. The hash makes the change visible; it is not a soundness proof.
 
 The prover covers:
 
@@ -1875,10 +1928,15 @@ writ.spec: my.slug-spec against my.slug: ok
 
 An assumption counts toward no law and judges no stand-in, like a lemma.
 Each is an obligation, `assume.clojure.string/trim` and
-`assume.trim-is-idempotent`, `plan` lists them, and `attest` counts an
-assumption the earlier record did not make, or made differently, as a
-weaker spec. Assume what the dependency documents, not what the proof
-happens to need.
+`assume.trim-is-idempotent`, and `plan` lists them. Every proved law also
+carries `:assumptions-used`: the assumptions its proof actually cites,
+transitively through earlier laws and used specs, not every assumption the
+spec declares. Assumed-law ids are namespace-qualified, for example
+`assume.my.slug-spec/trim-is-idempotent`; a signature's id is
+`assume.clojure.string/trim`. `attest` counts an assumption a law newly
+uses, or uses differently, as weaker evidence. Adding or changing an
+assumption no law uses does not weaken the spec. Assume what the dependency
+documents, not what the proof happens to need.
 
 ### What to ask
 
@@ -1926,14 +1984,16 @@ names. A check's report has `:obligations`, each id with its status:
 
 `(spec/check 'my.spec {:record "path"})` writes a record of the check:
 the spec, target and proof sources by SHA-256, each law as written with
-the evidence it needs and got, the questions and each obligation's status.
-Checks with the same seed write the same record. `(spec/attest old new)`
-compares two records. Each side is a record, a path to one, or a spec
-namespace, which is checked afresh rather than trusted. It reports each
-way the later spec is weaker: a law removed or restated, its requirement
-lowered (`:proved` to `:tested`), its evidence dropped (proved, now only
-tested), another obligation gone, a blocking question no longer blocking,
-a new or changed assumption, or a check that passed and now fails.
+the evidence it needs and got, its `:assumptions-used`, the questions and
+each obligation's status. Checks with the same seed write the same record.
+`(spec/attest old new)` compares two records. Each side is a record, a path
+to one, or a spec namespace, which is checked afresh rather than trusted.
+It reports each way the later spec is weaker: a law removed or restated,
+its requirement lowered (`:proved` to `:tested`), its evidence dropped
+(proved, now only tested), another obligation gone, a blocking question no
+longer blocking, a law's assumption closure added to or changed, or a check
+that passed and now fails. Records from before per-law profiles use the
+older global comparison: any new or changed assumption is weaker there.
 
 ```clojure
 (spec/attest "spec-record.edn" 'my.spec)
@@ -2119,20 +2179,4 @@ strategies won. `--save FILE` keeps the rows, and `--baseline FILE` lists
 the laws a change gained, lost, sped up or slowed down against them. It
 never writes the proof cache. `./bin/bench-trials` runs it over `bench/trials`, the
 four small projects (a room calendar, an order lifecycle, a token bucket,
-a library's lending rules) used to try writ out, against
-`bench/trials-baseline.edn`.
-
-The prover's knobs are one map, `writ.prove/default-config` (the fuel, how
-deep case splits go, the strategy order, ...), which check's `:prover`
-option overrides. `--tune '[{:depth 6} {:fuel 10000}]' DIR --held-out
-DIR2` runs each config on a tuning corpus and a held-out one and reports,
-against the default, the laws it gained and lost and its rewrites and
-time; a config is a candidate for the default only when it loses no law
-on either and costs no more. `cd examples && jolt -M:bench --tune ...
-../test/writ/spec_demo --held-out test/fetch ...` tunes on the demo specs
-and checks on the examples.
-
-`test/writ/spec_demo/` holds the worked example: an insertion sort and a
-binary search tree, each with a spec, one correct implementation and
-several broken ones. Every broken one is rejected with a report that points
-at the fix.
+a library's lending

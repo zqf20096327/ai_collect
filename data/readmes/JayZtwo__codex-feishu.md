@@ -1,0 +1,173 @@
+# codex-feishu
+
+[简体中文](./README.zh-CN.md) | [日本語](./README.ja.md)
+
+`codex-feishu` turns a Feishu/Lark bot into a practical mobile console for Codex.
+
+It is built for real remote coding, not generic chatbot demos. The repository packages the bridge runtime, daemon scripts, Feishu onboarding, approval cards, thread controls, and privacy-safe defaults into one installable Codex skill.
+
+## Why people use it
+
+Most IM bridges stop at "send a message to an LLM". This one is aimed at actual coding workflows:
+
+- Feishu long-connection bridge for Codex
+- optional Rokid Lingzhu custom-agent HTTP/SSE endpoint
+- streaming updates instead of final-answer-only replies
+- inline permission approval cards in Feishu
+- thread listing, card-based switching, and busy-thread follow mode
+- image and file delivery back to Feishu
+- friendly diagnostics with `doctor`
+- isolated runtime state under `~/.codex-feishu`
+
+## What is included
+
+- A Codex skill directory you can install into `~/.codex/skills/codex-feishu`
+- A dedicated daemon with start/stop/status/logs scripts
+- A Feishu-first config template
+- Feishu backend documentation that covers the full two-publish flow
+- Public-safe defaults with no bundled secrets or runtime history
+
+## Feature overview
+
+- Remote coding from Feishu without giving up desktop Codex
+- Busy desktop thread protection with read-only follow mode
+- Approval workflow for commands and file changes
+- Thread-aware continuation instead of stateless chat
+- Feishu card updates tuned for long-running coding tasks
+- thread picker cards with switch and new-thread actions
+- Operational scripts for install, start, stop, logs, and doctor
+
+## Support matrix
+
+- `macOS`: supported. The repo ships the primary daemon flow here, including `launchctl` integration.
+- `Windows`: supported through the PowerShell supervisor and install scripts in [scripts](./scripts).
+- `Codex app / desktop install`: supported when it exposes a compatible `codex` binary.
+- `Codex CLI`: supported when `codex app-server` plus the `config/read`, `thread/start`, and `turn/start` RPCs are available.
+- `VS Code plugin`: not a direct integration target. It works only if that install path also provides a compatible `codex` executable.
+
+## Quick start
+
+1. Clone this repository.
+2. Run:
+
+```bash
+cd codex-feishu
+npm install
+npm run build
+```
+
+3. Copy or symlink the folder into your Codex skills directory:
+
+macOS / POSIX:
+
+```bash
+bash scripts/install-codex.sh
+```
+
+Windows:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\install-codex.ps1
+```
+
+4. Create `~/.codex-feishu/config.env` from [config.env.example](./config.env.example).
+5. Follow the Feishu backend guide in [references/setup-guides.md](./references/setup-guides.md).
+6. Start the bridge:
+
+macOS / POSIX:
+
+```bash
+bash scripts/daemon.sh start
+```
+
+Windows:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\daemon.ps1 start
+```
+
+Or from Codex:
+
+```text
+/codex-feishu start
+```
+
+## What the mobile workflow looks like
+
+- Ask Codex to inspect or modify your project from Feishu
+- Approve risky actions from a permission card when needed
+- Follow an already-running desktop thread without taking it over
+- Switch back to a specific thread from Feishu and continue there
+
+## Rokid Lingzhu glasses trigger
+
+You can optionally expose an HTTP/SSE endpoint for Lingzhu custom-agent import:
+
+```bash
+CODEX_FEISHU_ROKID_ENABLED=true
+CODEX_FEISHU_ROKID_HOST=127.0.0.1
+CODEX_FEISHU_ROKID_PORT=8787
+CODEX_FEISHU_ROKID_PATH=/rokid/agent
+CODEX_FEISHU_ROKID_SECRET=replace-with-a-long-random-token
+CODEX_FEISHU_ROKID_AUTO_ALLOW_PERMISSIONS=true
+```
+
+Point Lingzhu's third-party/custom-agent import flow at a public HTTPS URL that reverse-proxies to `http://127.0.0.1:8787/rokid/agent`. See [references/rokid-lingzhu.md](./references/rokid-lingzhu.md).
+
+Rokid-triggered turns auto-allow Codex permission requests by default because glasses are a poor approval surface. Keep the endpoint behind HTTPS, a long random secret, and an optional allowlist. Set `CODEX_FEISHU_ROKID_AUTO_ALLOW_PERMISSIONS=false` if you want approval to fall back to Feishu or desktop Codex.
+
+## Feishu setup summary
+
+The Feishu side must be done in this order:
+
+1. Create a custom app and get `App ID` / `App Secret`
+2. Add the required scopes
+3. Enable **Bot**
+4. Publish once
+5. Start the bridge
+6. Set **Long Connection**
+7. Add `im.message.receive_v1`
+8. Add `card.action.trigger`
+9. Publish again
+
+If you skip either publish, the bot usually looks "half configured" and fails in confusing ways.
+
+## Main commands
+
+- `/codex-feishu setup`
+- `/codex-feishu start`
+- `/codex-feishu stop`
+- `/codex-feishu status`
+- `/codex-feishu logs`
+- `/codex-feishu doctor`
+
+More detail: [references/usage.md](./references/usage.md)
+
+## Compatibility notes
+
+- `doctor` now probes the real `codex app-server` handshake, not just `codex --version`.
+- Older Codex builds may pass a plain CLI check but still fail here if they do not expose the app-server RPCs this bridge uses.
+- If you keep multiple Codex installs, point `CODEX_FEISHU_CODEX_EXECUTABLE` at the compatible binary you want this bridge to use.
+
+## Repository goals
+
+- Keep the repo focused on Codex + Feishu, with an optional Rokid Lingzhu trigger path
+- Keep secrets, runtime state, and chat history out of git
+- Make setup explicit enough that another user can get working without private context
+
+## Repository layout
+
+- [SKILL.md](./SKILL.md): skill instructions for Codex
+- [src](./src): runtime source
+- [scripts](./scripts): daemon management and install helpers
+- [references](./references): Feishu onboarding, Rokid Lingzhu integration, and troubleshooting docs
+
+## Privacy and safety
+
+- This repository does not include any real Feishu credentials.
+- Runtime data is expected under `~/.codex-feishu`, not in the repository.
+- `config.env`, `node_modules`, `dist`, and runtime artifacts are ignored by git.
+
+## License
+
+MIT. See [LICENSE](./LICENSE).

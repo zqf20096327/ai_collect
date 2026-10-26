@@ -48,16 +48,20 @@ Key properties:
 | `message` | 10  | Messaging — send, edit, sync, read-receipt; search (search/all/files/media/around/groups, in-channel or cross-channel) |
 | `file`    | 4   | Files — upload, download, credentials, presigned URLs          |
 | `event`   | 2   | Event polling — list, ack                                      |
-| `loop`    | 116 | Fleet control plane — tasks, executions, experts, expert teams, workspaces, runtimes, skills, automations, attachments, and related resources |
+| `loop`    | 116 | Fleet control plane — tasks and assignees, Project member rosters, experts, expert teams, workspaces, runtimes, skills, automations, attachments, and related resources |
 
 ## Installation
 
-### npm
+### npm, Bun or pnpm
 
 For Node-based agent runtimes (OpenClaw, etc.):
 
 ```bash
 npm install -g @mininglamp-oss/octo-cli
+
+# Or use the global package manager for your runtime:
+bun install -g @mininglamp-oss/octo-cli
+pnpm add -g @mininglamp-oss/octo-cli
 ```
 
 The npm package resolves the matching platform sub-package, which already
@@ -96,6 +100,33 @@ Windows release archives are `.tar.gz` as well; Windows 10+ includes `tar.exe`.
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Mininglamp-OSS/octo-cli/main/install.sh | sh
 ```
+
+### Upgrade a global package installation
+
+```bash
+octo-cli upgrade --dry-run
+octo-cli upgrade
+```
+
+`upgrade` identifies the npm, Bun or pnpm installation that owns the invoked
+command and updates it to the configured registry's stable `latest` release.
+An equal or newer installed version is a successful no-op. It verifies the
+installed package, platform binary and command before reporting success.
+
+Updates enable optional dependencies for npm/pnpm and explicitly install Bun's
+matching platform package, because its executable is required to run the CLI.
+
+Registry mirrors, scoped registries and authentication use the owning manager's
+native settings: npm's user/global `.npmrc` and environment, Bun's supported
+`.npmrc` and global `.bunfig.toml`, or pnpm's native configuration. The invoking
+project's registry settings do not redirect the upgrade.
+
+Dry run checks local ownership without contacting a registry or installing.
+Upgrade requires no Octo credentials and preserves `--format` / `--jq`.
+Use the original installation method for raw binaries, `go install`, project-local
+or temporary installs. Loop task mode does not allow upgrades. Package-manager
+failures stop the command; an installation failure can leave partially changed
+files, so inspect the structured error before retrying.
 
 ## Quick Start
 
@@ -185,6 +216,25 @@ octo-cli docs members remove doc-123 u-1 --principal-space-id space-2
 
 # Fleet/Loop uses the same gateway under /fleet/api/v1.
 octo-cli loop task list --workspace-id <workspace-uuid>
+# Multica-style assignment: --to accepts a name with an optional leading @; use --to-id for a complete ID.
+# Automatic name/ID lookup reads at most 10 pages per roster; use explicit typed fields for larger rosters.
+octo-cli loop task assign TASK-42 --workspace-id <workspace-uuid> --to "@Alice"
+octo-cli loop task assign TASK-42 --workspace-id <workspace-uuid> --to-id <member-octo-uid-or-actor-uuid> --suppress-run
+octo-cli loop task assign TASK-42 --workspace-id <workspace-uuid> --unassign
+octo-cli loop task create --workspace-id <workspace-uuid> --title "Example" --assignee "Alice"
+octo-cli loop task update TASK-42 --workspace-id <workspace-uuid> --assignee-id <actor-id>
+octo-cli loop task update TASK-42 --workspace-id <workspace-uuid> \
+  --assignee-type member --assignee-octo-uid <member-octo-uid> --suppress-run
+octo-cli loop task list --workspace-id <workspace-uuid> --assignee "Alice"
+# ID filters go directly to Fleet, so historical assignees remain searchable.
+octo-cli loop task list --workspace-id <workspace-uuid> --assignee-id <fleet-actor-uuid>
+octo-cli loop task list --workspace-id <workspace-uuid> --assignee-octo-uid <member-octo-uid>
+# Project members use Fleet authorization, including its verified Bot-owner fallback.
+octo-cli loop workspace member list <project-uuid>
+# Alternatively select the Project with --workspace-id; results are in .data[].
+octo-cli loop workspace member list --workspace-id <project-uuid> --page 2 --page-size 50
+# Existing flags still work for offsets aligned to the page size.
+octo-cli loop workspace member list --workspace-id <project-uuid> --limit 50 --offset 50
 octo-cli docs comments add doc-123 --data '{"body":"looks good"}'
 
 # HTML documents registered in docs-backend use the same search endpoint.

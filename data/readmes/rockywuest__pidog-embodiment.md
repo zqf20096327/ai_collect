@@ -158,6 +158,8 @@ cd pidog-embodiment
 cd body
 # Raspberry Pi OS Bookworm enforces PEP 668 ("externally-managed-environment"):
 pip3 install --break-system-packages -r requirements.txt
+# (keeps numpy < 2 — Bookworm's picamera2 is built against numpy 1.x; with
+#  numpy 2 the camera fails with "numpy.dtype size changed")
 # Generates the systemd units for YOUR user and repo path, creates nox.env:
 sudo ../scripts/install-body.sh
 # Edit body/nox.env (set BRAIN_HOST — 127.0.0.1 if brain and body share one machine), then:
@@ -221,6 +223,9 @@ Every key is documented with examples in the file itself.
 | `NOX_NO_AUTO` | `1` disables autonomous behavior at boot | autonomous on |
 | `WALK_SPEED` | Gait speed (forward/backward/turns), 1–100 | `95` |
 | `BEHAVIOR_USER_HOLD_S` | Seconds autonomy pauses after your movement command (voice/MCP/API) | `60` |
+| `BEHAVIOR_AWAKE_S` | Seconds the pet stays lively after contact (voice, touch, command); otherwise it lies still | `120` |
+| `BEHAVIOR_QUIET_HOURS` | Hours with no autonomous motion, e.g. `21-8`; `off` disables. Direct commands still work | `22-7` |
+| `NOX_AUTO_PATROL` | `1` lets a bored/curious dog start patrolling on its own | off: patrol only via `/behavior/start` |
 
 **Brain — `/etc/default/nox-brain`** (restart: `sudo systemctl restart nox-brain`; verify: `journalctl -u nox-brain | grep Language`)
 
@@ -230,6 +235,7 @@ Every key is documented with examples in the file itself.
 | `OPENAI_URL` + `LLM_MODEL` | Any OpenAI-compatible endpoint — e.g. Ollama on a big PC: `http://<pc>:11434/v1/chat/completions` | OpenAI |
 | `OPENAI_API_KEY` | Only for cloud endpoints | — |
 | `NOX_MODE` | `chat` (LLM answers anything) or `commands` (keyword commands only — deterministic, free, TV-proof) | `chat` |
+| `NOX_FAST_COMMANDS` | In chat mode, a sentence that is only commands ("Nox, sitz!") skips the LLM and moves at once; `0` = LLM for everything | `1` |
 | `NOX_LANG` | Reply language: `auto` (the speaker's) or fixed `de`/`en`/`fr` | `auto` |
 | `ROBOT_NAME` | What the dog calls itself — set it to your wake word | `Nox` |
 | `BATTERY_LOW_V` | Battery warning threshold (volts) | `6.8` |
@@ -328,8 +334,14 @@ sudo systemctl disable nox-body nox-bridge nox-voice
 sudo systemctl enable --now nox-body nox-bridge nox-voice
 ```
 
-Inside Nox mode, the **autonomous behavior engine** (idle / patrol / play) starts
-with the bridge. To keep the dog still unless you command it:
+Inside Nox mode, the **autonomous behavior engine** (idle / play / rest / investigate) starts
+with the bridge. It is lively only for two minutes after someone talks to,
+touches or commands the dog; otherwise it lies still and lets the servos sleep,
+and in the quiet hours (22–7) it does nothing on its own at all (a patrol you
+start explicitly is the exception: you asked for it). Repeated
+noises (a TV) stop turning its head after a few times. It never walks off on its own: patrol starts only on
+`POST /behavior/start {"state": "patrol"}` (or with `NOX_AUTO_PATROL=1`), and
+once it ends (stuck, touched, a person seen, a stop) it stays ended. To keep the dog still unless you command it:
 
 | Scope | How |
 |---|---|
@@ -449,7 +461,9 @@ Text commands via `POST /voice/input` work either way.
 
 Say a wake word (`WAKE_WORD`, several allowed: `milou,tintin`), then your
 command. In `NOX_MODE=chat` (default) the LLM understands **free language** in
-any phrasing and can also just talk; in `NOX_MODE=commands` — and whenever the
+any phrasing and can also just talk — but a sentence made only of the keywords
+below ("Nox, setz dich bitte hin") skips the LLM and moves at once; in
+`NOX_MODE=commands` — and whenever the
 LLM is unreachable — exactly these keywords work (German / English / French),
 several per sentence:
 
@@ -566,7 +580,7 @@ All 31 endpoints the bridge actually serves — see `body/nox_brain_bridge.py`.
 | POST | `/move` | Semantic movement: direction + `distance_cm` / `angle_deg` |
 | POST | `/combo` | Actions + speech + RGB + head in one call |
 | POST | `/expression` | Coordinated emotion: action + LEDs + head pose + sound |
-| POST | `/rgb` | LED strip color and animation |
+| POST | `/rgb` | LED strip color and animation — `{"color": "cyan"}` / `"#00ffff"` or `r`/`g`/`b`, plus `mode` and `bps`; unknown fields are a `400` |
 | POST | `/head` | Head pose (yaw/roll/pitch) |
 | POST | `/look_at` | Head by `direction` (left/right/up/down/center) or `angle`/`tilt` |
 | POST | `/face/register` | Register the face in front of the camera under a name |

@@ -1,10 +1,16 @@
 # Signalbox
 
-> **Turn GitHub's notification firehose into pure signal—100% locally on your Mac.**
+[![Version 1.6.0](https://img.shields.io/badge/version-1.6.0-0969da?style=flat-square)](CHANGELOG.md)
+[![Chrome Manifest V3](https://img.shields.io/badge/Chrome-Manifest%20V3-1f883d?style=flat-square&logo=googlechrome&logoColor=white)](manifest.json)
+[![AI: Local & Cloud / Copilot](https://img.shields.io/badge/AI-Local%20%7C%20GitHub%20Copilot%20%7C%20Cloud-8250df?style=flat-square)](docs/HOW_IT_WORKS.md#4-ai-summarization-pipeline-local-cloud--two-slot-hybrid-routing)
+[![Tests: 188 Passing](https://img.shields.io/badge/tests-188%20passing-1a7f37?style=flat-square)](test/)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-59636e?style=flat-square)](LICENSE)
 
-Signalbox is an unpacked Chrome extension that adds **Priority** and **Subscriptions** views to GitHub notifications, summarizes threads inline across *every* filter view using local AI (Splash, Apple MLX, LM Studio, or Ollama), and sweeps noisy notifications in one click.
+> **Turn GitHub's notification firehose into pure signal—locally on your Mac or with your choice of Cloud / GitHub Copilot models.**
 
-No GitHub token, cloud API key, or build step required.
+Signalbox is an unpacked Chrome extension that adds **Today**, **Priority**, and **Subscriptions** views to GitHub notifications, summarizes threads inline across *every* filter view using local AI (Splash, Apple MLX, LM Studio, or Ollama) or optional cloud models (**GitHub Copilot**, **OpenAI**, **Anthropic**, **Google Gemini**), and sweeps noisy notifications in one click.
+
+No build step required. Keep costs at **$0** with 100% local inference, or mix and match—such as local models for bulk row summaries and a frontier cloud/Copilot model for your once-a-day **Today** executive briefing.
 
 ![Demo of Signalbox](docs/demo.gif)
 
@@ -17,7 +23,7 @@ No GitHub token, cloud API key, or build step required.
 - **Smart `Priority` view (`#priority`):** Ranks notifications (0–100) by direct asks, your team/repo rules, and a 72-hour SLA recency curve. Pins the list for 4 hours so rows never jump around while you work through them.
 - **Deliberate `Subscriptions` view (`#subscriptions`):** Bookmark specific issues, PRs, discussions, releases, or commits from anywhere on GitHub and track them in one calm view across all inbox pages.
 - **Multi-stage thread extraction:** Pulls the exact linked comment or falls back to the issue/PR description, earlier `@mention` comments, and the last 3 timeline updates from GitHub's embedded JSON.
-- **Context-window parallel local AI:** Schedules concurrent summaries up to your local model's token budget (Splash `:8000`, Local MLX `:8080`, LM Studio `:1234`, Ollama `:11434`, plus optional Kev triage on `:8009`), ordered by Priority score.
+- **Context-window parallel AI (Local, Cloud, or Hybrid Two-Slot):** Schedules concurrent summaries up to your model's token budget across local engines (Splash `:8000`, Local MLX `:8080`, LM Studio `:1234`, Ollama `:11434`, plus optional Kev triage on `:8009`) or cloud providers (**GitHub Copilot**, **OpenAI**, **Anthropic**, **Google Gemini**). Route bulk row summaries to a `$0` local model while optionally routing your once-a-day **Today** briefing to a frontier model—or enable **Manual row clicks only** to keep cloud spend near zero.
 - **One-click Quick Sweep (`Read & Done`):** Batch-archive `Review requested`, `Team mentioned`, and `Stale participating` noise directly from the header.
 
 ## Install
@@ -32,9 +38,10 @@ No GitHub token, cloud API key, or build step required.
 
 ## Quick Setup
 
-### 1. Connect a Local Model
+### 1. Connect a Local or Cloud Model
 1. Click the **Signalbox** toolbar icon $\rightarrow$ **Manage list** (or click **Set up local summaries** on `github.com/notifications`).
-2. Pick your **Local server** (**Splash**, **Local MLX**, **LM Studio**, or **Ollama**), click **Connect to local server**, select an installed model, and click **Save summary settings**.
+2. Pick your **Row summaries provider** (**Splash**, **Local MLX**, **LM Studio**, **Ollama**, or **GitHub Copilot** / **OpenAI** / **Anthropic** / **Google Gemini**), click **Connect**, select a model, and click **Save summary settings**.
+3. *(Optional)* Under **Today's Executive Briefing model**, keep **"Same as row summaries model"** or pick a dedicated frontier model (e.g., `copilot:claude-opus-5.5` via `gh auth token`) just for the once-a-day morning synthesis.
 
 ### 2. Customize Priority Rules (Optional)
 Open the extension's **Manage list** page (`manager.html`) and edit **Priority filter rules**—or create a gitignored `priority-config.local.json` in the repo root:
@@ -52,7 +59,8 @@ Open the extension's **Manage list** page (`manager.html`) and edit **Priority f
 
 ## Documentation & Development
 
-- **[How Signalbox Works](docs/HOW_IT_WORKS.md)** — Deep dive into Priority scoring, Splash/MLX/Ollama setup, multi-stage comment extraction, SHA-256 summary caching, local `Caught up` state, and privacy guarantees.
+- **[Changelog & Visual Release History](CHANGELOG.md)** — Version history (`v1.6.0` $\rightarrow$ `v1.3.0`) with feature breakdowns and screenshots.
+- **[How Signalbox Works](docs/HOW_IT_WORKS.md)** — Deep dive into Priority scoring, Splash/MLX/Ollama/Cloud setup, multi-stage comment extraction, SHA-256 summary caching, local `Caught up` state, and privacy guarantees.
 - **[Contributing Guide](CONTRIBUTING.md)** — Design principles and privacy guardrails.
 
 ```bash

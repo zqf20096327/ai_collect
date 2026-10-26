@@ -2,7 +2,36 @@
 
 **A local-first, cinematic desktop assistant for macOS.**
 
+<p align="center">
+  <img src="macos/JARVIS.svg" alt="JARVIS app icon" width="130" />
+</p>
+
+<p align="center">
+  <img src="docs/assets/jarvis-system-overview.svg" alt="Visual overview of the JARVIS local-first desktop system" width="100%" />
+</p>
+
 JARVIS combines a reactive holographic interface with a local Qwen model, offline speech-to-text, optional local neural speech, gesture controls, private memory, and opt-in web research. It is designed to feel like a showpiece while keeping your conversations and device data on your machine by default.
+
+## Live macOS demo
+
+<p align="center">
+  <a href="https://raw.githubusercontent.com/jahajeevan/jarvis/main/docs/assets/demo/jarvis-live-demo.mp4">
+    <img src="./docs/assets/demo/jarvis-live-preview.gif" alt="Animated preview of the real JARVIS macOS interface responding to voice input" width="100%" />
+  </a>
+</p>
+
+<p align="center"><sub>Real macOS capture · local brain online · click the preview to download the 1080p demo with audio.</sub></p>
+
+### Interface states
+
+<p align="center">
+  <img src="./docs/assets/screenshots/01-listening.png" alt="JARVIS listening with the command deck open" width="49%" />
+  <img src="./docs/assets/screenshots/02-private-chat.png" alt="JARVIS responding in the private local interface" width="49%" />
+</p>
+<p align="center">
+  <img src="./docs/assets/screenshots/03-showtime.png" alt="JARVIS in a bright Showtime interface state" width="49%" />
+  <img src="./docs/assets/screenshots/04-winter-arc.png" alt="JARVIS in the Winter Arc interface state" width="49%" />
+</p>
 
 For the installed macOS app, place NVIDIA settings in `~/Library/Application Support/JARVIS/.env.local`; this location is deliberately outside the app bundle and Git checkout. The app reads only `JARVIS_BRAIN`, `JARVIS_NVIDIA_API_KEY`, and `JARVIS_NVIDIA_URL` from that file.
 

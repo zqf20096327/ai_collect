@@ -107,6 +107,7 @@ Steps go to stderr; the status, cost, step count, the reason a run stopped short
 | `--start URL` | the page to open first; worked out from the task when omitted |
 | `--cloud` | force cloud Chrome even when `FASTBROWSE_PROFILE` or `FASTBROWSE_HEADED` is set |
 | `--local` | use local Chrome instead of a Browser Use Cloud browser. Cloud is the default: it passes bot checks a fresh Chrome fails, and prints a URL to watch the run live |
+| `--fetch` | read pages over HTTP and start no browser at all, for a task that only has to read one and needs no clicking, forms or screenshots |
 | `--headed` | show the local Chrome window (implies `--local`) |
 | `--profile DIR` | keep the local Chrome profile in `DIR`, so a site signed into there stays signed in (implies `--local`) |
 | `--cloud-profile ID` | run on a Browser Use Cloud profile, signed in as whoever set it up |
@@ -122,6 +123,7 @@ Steps go to stderr; the status, cost, step count, the reason a run stopped short
 | `--max-steps N`, `--max-dollars N` | optionally bound steps and model spend; defaults are unlimited. Cloud browser charges are added when it stops |
 | `--downloads DIR` | keep downloaded files |
 | `--json` | full result instead of the answer |
+| `--trace FILE` | append the run's trace to `FILE` as JSON lines, or `-` for stderr: each model call with its purpose and timing, which reader answered each read and why, every check's scores and each recovery's reason. It holds ids, scores, redacted addresses, requirement texts and control labels, not page captures. `FASTBROWSE_TRACE` does the same for `serve` and the MCP server |
 | `--record FILE` | save an MP4 of the tab, each step captioned, ending on the answer, time and cost (needs `ffmpeg`; the captions need its libass), e.g. `recordings/demo.mp4`, which git ignores; `demo.plain.mp4` beside it has no captions. It shows what the pages showed, so watch it before sharing |
 | `--cursor` | draw the agent's cursor over a visible Chrome (`--headed`, or one you attach to) with [Cua Driver](https://github.com/trycua/cua), so you can watch where it acts. Off by default. It needs `cua-driver` on `PATH` and an X11 display on Linux, and does nothing without them. It brings the run's tab to the front as `--foreground` does, since the cursor lies over the window's front tab |
 
@@ -270,7 +272,7 @@ without a field-writing generation.
 
 A browser command that remains unanswered for 120 seconds returns `unavailable`, even if the browser
 still answers health checks. Step and dollar limits do not bound total elapsed time. Set `Limits(max_seconds=...)` for a run deadline.
-When investigating a stalled run, enable trace logging and retain the last event alongside the result.
+When investigating a stalled run, write its trace with `--trace FILE` (or `FASTBROWSE_TRACE=FILE` for `serve` and the MCP server) and keep the last event alongside the result.
 
 [Troubleshooting](docs/troubleshooting.md) takes each status a run can stop with: what it means, its common
 causes and the next step.

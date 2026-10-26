@@ -1,4 +1,4 @@
-## Updated on 2026.10.21
+## Updated on 2026.10.26
 > Usage instructions: [here](./docs/README.md#usage)
 
 <details>
@@ -24,7 +24,7 @@
 
 |Year|SLAM|SFM|Visual Localization|Keypoint Detection|Image Matching|NeRF|Gaussian Splatting|3D Reconstruction|World Model|VLA and VLN|
 |---|---|---|---|---|---|---|---|---|---|---|
-|[2026](./docs/archive/2026/README.md)|[181](./docs/archive/2026/SLAM.md)|[104](./docs/archive/2026/SFM.md)|[175](./docs/archive/2026/Visual-Localization.md)|[39](./docs/archive/2026/Keypoint-Detection.md)|[51](./docs/archive/2026/Image-Matching.md)|[114](./docs/archive/2026/NeRF.md)|[10](./docs/archive/2026/Gaussian-Splatting.md)|[10](./docs/archive/2026/3D-Reconstruction.md)|[9](./docs/archive/2026/World-Model.md)|[10](./docs/archive/2026/VLA-and-VLN.md)|
+|[2026](./docs/archive/2026/README.md)|[181](./docs/archive/2026/SLAM.md)|[104](./docs/archive/2026/SFM.md)|[175](./docs/archive/2026/Visual-Localization.md)|[39](./docs/archive/2026/Keypoint-Detection.md)|[59](./docs/archive/2026/Image-Matching.md)|[114](./docs/archive/2026/NeRF.md)|[10](./docs/archive/2026/Gaussian-Splatting.md)|[10](./docs/archive/2026/3D-Reconstruction.md)|[19](./docs/archive/2026/World-Model.md)|[10](./docs/archive/2026/VLA-and-VLN.md)|
 |[2025](./docs/archive/2025/README.md)|[507](./docs/archive/2025/SLAM.md)|[647](./docs/archive/2025/SFM.md)|[1845](./docs/archive/2025/Visual-Localization.md)|[262](./docs/archive/2025/Keypoint-Detection.md)|[1066](./docs/archive/2025/Image-Matching.md)|[366](./docs/archive/2025/NeRF.md)|||||
 |[2024](./docs/archive/2024/README.md)|[317](./docs/archive/2024/SLAM.md)|[163](./docs/archive/2024/SFM.md)|[378](./docs/archive/2024/Visual-Localization.md)|[67](./docs/archive/2024/Keypoint-Detection.md)|[95](./docs/archive/2024/Image-Matching.md)|[693](./docs/archive/2024/NeRF.md)|||||
 |[2023](./docs/archive/2023/README.md)|[79](./docs/archive/2023/SLAM.md)|[75](./docs/archive/2023/SFM.md)|[351](./docs/archive/2023/Visual-Localization.md)|[93](./docs/archive/2023/Keypoint-Detection.md)|[91](./docs/archive/2023/Image-Matching.md)|[583](./docs/archive/2023/NeRF.md)|||||
@@ -238,19 +238,19 @@
 
 > Showing the latest 200 of 1439 papers, see the [archive](#archive) for all.
 
-<p align=right>(<a href=#updated-on-20261021>back to top</a>)</p>
+<p align=right>(<a href=#updated-on-20261026>back to top</a>)</p>
 
 ## SFM
 
 |Publish Date|Title|Authors|PDF|Code|
 |---|---|---|---|---|
 |**2026-10-20**|**CrossFit-GS: Out-of-Fold Pose Estimation for COLMAP-Free 3D Gaussian Splatting**|Zijian Wu et.al.|[2610.28190](http://arxiv.org/abs/2610.28190)|null|
-|**2026-10-18**|**Localization and Neural Splatting on the Edge: An FPGA Scene Memory for Robots**|Que Haohua et.al.|[2610.25068](http://arxiv.org/abs/2610.25068)|null|
+|**2026-10-18**|**Localization and Neural Splatting on the Edge: An FPGA Scene Memory for Robots**|Que Haohua et.al.|[2610.25068](http://arxiv.org/abs/2610.25068)|**[link](https://github.com/WangZhican/physical-ai-serving-radar)**|
 |**2026-10-16**|**Ionic switching between supermagnetic states**|Sumaiyatul Ahsan et.al.|[2610.23829](http://arxiv.org/abs/2610.23829)|null|
-|**2026-10-19**|**RoboCloth: A Large-Scale Real Cloth Material Dataset for Neural Reflectance Reconstruction**|Zhen Li et.al.|[2610.21090](http://arxiv.org/abs/2610.21090)|null|
+|**2026-10-19**|**RoboCloth: A Large-Scale Real Cloth Material Dataset for Neural Reflectance Reconstruction**|Zhen Li et.al.|[2610.21090](http://arxiv.org/abs/2610.21090)|**[link](https://github.com/theialab/robocloth)**|
 |**2026-10-14**|**Why 3D Reconstruction Breaks Down on Under-Ice AUV Video, and How to Predict It**|Ana-Ştefania Kogălniceanu et.al.|[2610.19993](http://arxiv.org/abs/2610.19993)|null|
 |**2026-10-13**|**Benchmarking 3D Reconstruction for Under-Ice Robotic Perception in Arctic Environments**|Klára Orbán et.al.|[2610.19097](http://arxiv.org/abs/2610.19097)|null|
-|**2026-10-10**|**RootSLAM: Square Root Bundle Adjustment for Visual-Inertial SLAM**|Tomás Santucci et.al.|[2610.15157](http://arxiv.org/abs/2610.15157)|null|
+|**2026-10-10**|**RootSLAM: Square Root Bundle Adjustment for Visual-Inertial SLAM**|Tomás Santucci et.al.|[2610.15157](http://arxiv.org/abs/2610.15157)|**[link](https://github.com/Everton-Braz/LidarCamera360)**|
 |**2026-10-08**|**When pose graphs are not enough: a failure analysis of pose-graph-based camera estimation for Gaussian splatting**|Senthil Palanisamy et.al.|[2610.14090](http://arxiv.org/abs/2610.14090)|null|
 |**2026-10-08**|**Inflow-driven galaxy evolution - II: A hierarchy in the scaling relations of star-forming galaxies**|Kai Wang et.al.|[2610.12394](http://arxiv.org/abs/2610.12394)|null|
 |**2026-10-06**|**Image-Space Refraction Correction for Underwater 3D Reconstruction: Warping Flat-Port Views into Pinhole Perspective**|Chelim Lim et.al.|[2610.07788](http://arxiv.org/abs/2610.07788)|null|
@@ -447,7 +447,7 @@
 
 > Showing the latest 200 of 1062 papers, see the [archive](#archive) for all.
 
-<p align=right>(<a href=#updated-on-20261021>back to top</a>)</p>
+<p align=right>(<a href=#updated-on-20261026>back to top</a>)</p>
 
 ## Visual Localization
 
@@ -596,5 +596,4 @@
 |**2026-02-03**|**ObjEmbed: Towards Universal Multimodal Object Embeddings**|Shenghao Fu et.al.|[2602.01753](http://arxiv.org/abs/2602.01753)|null|
 |**2026-02-02**|**Real-Time Loop Closure Detection in Visual SLAM via NetVLAD and Faiss**|Enguang Fan et.al.|[2602.01673](http://arxiv.org/abs/2602.01673)|null|
 |**2026-02-02**|**ReCALL: Recalibrating Capability Degradation for MLLM-based Composed Image Retrieval**|Tianyu Yang et.al.|[2602.01639](http://arxiv.org/abs/2602.01639)|null|
-|**2026-02-01**|**Interacted Planes Reveal 3D Line Mapping**|Zeran Ke et.al.|[2602.01296](http://arxiv.org/abs/2602.01296)|null|
-|**2026-02-04**|**Invariance on Manifolds: Understanding Robust Visual Representations for Place Recogn
+|**2026-02-01**|**Interacted Planes Reveal 3D Line Mapping**|Zeran Ke

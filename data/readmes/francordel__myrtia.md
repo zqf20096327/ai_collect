@@ -37,7 +37,7 @@
 
 Myrtia installs with [uv](https://docs.astral.sh/uv/): clone, then `uv run myrtia`. uv creates
 the environment, downloads the right Python (3.12 — no need to upgrade your system Python) and
-installs everything — all [19 attacks](#what-you-get), not just the council. The default models
+installs everything — all [21 attacks](#what-you-get), not just the council. The default models
 run locally in [Ollama](https://ollama.com), no API key needed.
 
 Copy-paste the block for your OS into a terminal. It installs uv and Ollama, waits for Ollama
@@ -158,13 +158,14 @@ myrtia` starts in seconds. Options: `uv run myrtia --port 8010 --no-browser`.
 
 ### What you get
 
-`uv run myrtia` gives you **19 attacks**, ready to launch. 17 are built into Myrtia; the
-council pair comes from the bundled ARES Council pack, installed by default.
+`uv run myrtia` gives you **21 attacks**, ready to launch. 17 are built into Myrtia; the
+council pair comes from the bundled ARES Council pack, installed by default, plus NVIDIA Garak and Microsoft PyRIT pack adapters.
 
 | Kind | Attacks |
 | --- | --- |
 | Multi-agent council (ARES Council pack) | `council`, `council-crescendo` |
 | Multi-agent / adaptive | `graph` (the visual canvas: council, debate, pipeline, mixture-of-agents…), `crescendo`, `tap` (TAP / PAIR) |
+| External frameworks (pack adapters) | `garak` (NVIDIA garak), `pyrit` (Microsoft PyRIT) |
 | Templates and priming | `contextual-jailbreak`, `human-jailbreak` |
 | Transforms | `obfuscation`, `encoding`, `payload-splitting` |
 | garak-style probes | `promptinject`, `grandma`, `smuggling`, `phrasing`, `latent-injection`, `dan`, `continuation`, `leakreplay` |
@@ -172,8 +173,16 @@ council pair comes from the bundled ARES Council pack, installed by default.
 
 The garak-style probes are Myrtia's own implementations — they don't need the garak library.
 The full **NVIDIA garak** and **Microsoft PyRIT** libraries are optional packs under
-**Plugins** in the console; their adapters are in progress, so they add no attacks yet. See
-[Attacks](#attacks) for what each one does.
+**Plugins** in the console. Installing a pack adds a real attack driven by that library,
+graded 0-5 by the same evaluator as everything else, so it feeds the ASR dashboard and audit
+reports:
+
+- **garak** — run any garak probe's real prompt corpus (`encoding.InjectBase64`,
+  `dan.DanInTheWildFull`, `latentinjection.LatentInjectionResume`, …) against the target.
+- **pyrit** — transform each behaviour with a real PyRIT prompt converter (Base64, ROT13,
+  leetspeak, Morse, Atbash, Caesar, binary, NATO, emoji) and ask the target to decode and comply.
+
+See [Attacks](#attacks) for what each one does.
 
 ### Where your models run
 

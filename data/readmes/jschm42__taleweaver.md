@@ -10,7 +10,7 @@ A self-hosted, local-first generative AI roleplaying studio: combining an omnisc
 cinematic voice acting, comic-style narrative feeds, and deterministic Python event scripting.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-0ea5e9.svg)](LICENSE)
-![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-3776ab?logo=python&logoColor=white)
+![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-3776ab?logo=python&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-backend-009688?logo=fastapi&logoColor=white)
 ![Vue 3](https://img.shields.io/badge/Vue%203-SPA-42b883?logo=vue.js&logoColor=white)
 ![SQLite](https://img.shields.io/badge/SQLite-local%20data-003b57?logo=sqlite&logoColor=white)
@@ -84,7 +84,7 @@ Instead of a static, predefined story, the AI acts as an intelligent, omniscient
 * **Text-Log Discovery System:** Readable objects can contain structured text logs (document, scroll, book, sign) that can be opened directly from scene and inventory interactions.
 
 ### 🎧 The Playable Audiobook & Voice Input (Cinematic Audio)
-* **Next-Gen Voice Acting:** Powered by **Google Gemini 3.5 Flash (TTS)** and **ElevenLabs**, the AI Gamemaster narrates your adventure with cinematic quality and emotional depth.
+* **Next-Gen Voice Acting:** Powered by **Google Gemini 3.5 Flash (TTS)** and **ElevenLabs**, the AI Gamemaster narrates your adventure with cinematic quality and emotional depth. With ElevenLabs, speech streams as it is generated and every character speaks with their own voice (see [Character Voices](#️-character-voices-elevenlabs-voice-list)).
 * **Speech-to-Text & Push-to-Talk (PTT):** True hands-free roleplaying! Hold down the interactive microphone UI button or hotkeys (`V`, `B`, or `T`) to record and speak directly to NPCs and the GM. Releases auto-transcribe and submit immediately.
 * **In-Character Speech Shortcuts:** Hold down `B`, `T`, or `Shift` to automatically prepend `/say ` to your transcription, allowing seamless in-character dialogue.
 * **Background Whisper Model Loading:** Configurable local Whisper model preloads in a background thread to prevent UI blocking, with real-time state logging (idle, loading, active, error).
@@ -246,7 +246,7 @@ Afterwards, start TaleWeaver with the run script. It pulls the latest changes, r
 
 ### Option B: Manual Development Setup
 
-**Requirements:** Python 3.10–3.13, [Poetry](https://python-poetry.org/) 2.x, Node.js 18+
+**Requirements:** Python 3.11–3.13, [Poetry](https://python-poetry.org/) 2.x, Node.js 18+
 
 ```bash
 # 1. Clone & install Python dependencies
@@ -304,6 +304,33 @@ Core server and security settings are configured in `.env` (refer to [`.env.exam
 | `ALLOW_PRIVATE_NETWORK_MODELS` | Permit outbound requests to local LLM/image endpoints (Ollama, SD) | `true` |
 | `ALLOW_REMOTE_SETUP` | Allow non-loopback clients to execute initial root bootstrap | `false` |
 | `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GEMINI_API_KEY` | Optional default provider keys (can also be configured in the UI) | Encrypted at rest |
+
+### 🎙️ Character Voices (ElevenLabs Voice List)
+
+With **ElevenLabs** as speech provider, every NPC and the protagonist speak with their own voice (Gemini TTS reads everything in the narrator voice). The voices come from a curated list, **`backend/core/elevenlabs_voices.json`**. The world builder assigns voices only from this list, automatic casting picks from it (matching gender, never repeating the narrator's or another character's voice), and the editor's voice picker offers it.
+
+**Change the list** by editing the JSON file; the app reloads it automatically when the file changes:
+
+```json
+{
+  "voices": [
+    { "id": "JBFqnCBsd6RMkjVDRZzb", "name": "George", "gender": "male", "age": "middle-aged",
+      "accent": "british", "description": "warm, storyteller", "good_for": ["narrator", "mentor", "wizard"] }
+  ]
+}
+```
+
+| Field | Meaning |
+|---|---|
+| `id` | **Required** – ElevenLabs voice ID (20 characters; in ElevenLabs: *Voices → ⋯ → Copy voice ID*). Entries without a valid ID are skipped. |
+| `name` | Shown in the editor; the world builder may also refer to a voice by name. |
+| `gender` | `female`, `male` or `null` – used to match voices to characters. |
+| `age`, `accent`, `description`, `good_for` | Hints for the world builder and for the editor's voice picker. |
+
+* **Without touching the code:** put your own list at `DATA_DIR/voices/elevenlabs_voices.json` (e.g. `data/voices/…`, or `data-docker/voices/…` with Docker). It replaces the bundled list completely.
+* **Fill the list from your ElevenLabs account:** `poetry run python scripts/sync_elevenlabs_voices.py --dry-run` shows the differences; without `--dry-run` it adds missing account voices (hand-written `good_for` hints are kept), `--prune` also removes listed voices your account does not have, and `--output data/voices/elevenlabs_voices.json` writes the override file instead.
+* **Removing a voice:** characters that used it fall back to the narrator voice until you pick a new one in the editor.
+* **A voice outside the list:** in the editor, choose *Own voice ID…* for a single character. Such voices are always used, whether or not they are in the list.
 
 ---
 

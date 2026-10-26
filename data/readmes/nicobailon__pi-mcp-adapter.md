@@ -8,6 +8,12 @@ Use MCP servers with [Pi](https://github.com/badlogic/pi-mono/) without burning 
 
 https://github.com/user-attachments/assets/4b7c66ff-e27e-4639-b195-22c3db406a5a
 
+## What's new in 7.0
+
+https://github.com/user-attachments/assets/a3fc7834-2540-45b6-a80e-d9c17125a66c
+
+On servers that support MCP Tasks, add `"protocolVersion": "auto"` and slow tools run in the background while the agent keeps working. Tool search can rank tools by meaning and send full schemas only for the ones that fit. And `extract` hands the agent just the values it asked for from a long result. Everything else is in the [changelog](CHANGELOG.md).
+
 ## Why This Exists
 
 Mario wrote about [why you might not need MCP](https://mariozechner.at/posts/2025-11-02-what-if-you-dont-need-mcp/). The problem: tool definitions are verbose. A single MCP server can burn 10k+ tokens, and you're paying that cost whether you use those tools or not. Connect a few servers and you've burned half your context window before the conversation starts.
@@ -39,7 +45,7 @@ The built-in turns `codemode` on by itself; with the adapter, add `"+codemode"` 
 | Saved workflows as tools | No | A workflow you repeat becomes one tool with fixed inputs: a saved script that calls MCP and Pi tools, found by search and called like any other tool (`scriptTools`, [Script tools](https://github.com/nicobailon/pi-mcp-adapter/blob/main/docs/scripting.md#script-tools)) |
 | Executor app tools | Only Executor's own six tools; the model reaches app tools through Executor's `search` and `call` | Each tool of your [Executor](https://executor.sh) apps is a Pi tool, found by search and called by name with Pi's approvals ([Executor app tools](https://github.com/nicobailon/pi-mcp-adapter/blob/main/docs/prompts-and-ui.md#executor-app-tools)) |
 | OAuth tokens | JSON file in `~/.pi/agent` | OS keychain |
-| MCP prompts, elicitation, sampling, Tasks | No | Yes. Long jobs run as Tasks in the background while the agent keeps working, and their results come back on their own; Tasks need `"protocolVersion": "auto"` |
+| MCP prompts, elicitation, sampling, Tasks | No | Yes; Tasks run in the background and need `"protocolVersion": "auto"` |
 | MCP UI apps | Left out | Native window or browser |
 | Add a server | `pi mcp add` in a shell, then `/reload` | Give the agent the URL: `mcp({ action: "install", url })` connects it and checks its tools in the current session; for an OAuth server it opens sign-in first and checks the tools once you approve |
 | Configs from Cursor, Claude Code, Codex, VS Code | Convert by hand | Imported |

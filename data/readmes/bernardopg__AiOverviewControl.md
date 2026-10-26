@@ -7,7 +7,7 @@
 **Every AI quota you pay for, live in your DankBar.**
 
 A [DankMaterialShell](https://github.com/duxlabs-dev/dux-shell) plugin that tracks
-quota, billing, authentication, and local usage for 39 AI providers — locally, honestly,
+quota, billing, authentication, and local usage for 43 AI providers — locally, honestly,
 with no external service.
 
 [![Release](https://img.shields.io/github/v/release/bernardopg/AiOverviewControl?color=8B5CF6&label=release)](https://github.com/bernardopg/AiOverviewControl/releases/latest)
@@ -15,6 +15,7 @@ with no external service.
 [![CI](https://github.com/bernardopg/AiOverviewControl/actions/workflows/ci.yml/badge.svg)](https://github.com/bernardopg/AiOverviewControl/actions/workflows/ci.yml)
 [![Security](https://github.com/bernardopg/AiOverviewControl/actions/workflows/security.yml/badge.svg)](https://github.com/bernardopg/AiOverviewControl/actions/workflows/security.yml)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/bernardopg/AiOverviewControl/badge)](https://scorecard.dev/viewer/?uri=github.com/bernardopg/AiOverviewControl)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/15913/badge)](https://www.bestpractices.dev/projects/15913)
 [![providers](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fbernardopg%2FAiOverviewControl%2Fmain%2Fdocs%2Fbadges.json&query=%24.providers&label=providers&color=8B5CF6)](./docs/providers.md)
 [![languages](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fbernardopg%2FAiOverviewControl%2Fmain%2Fdocs%2Fbadges.json&query=%24.languages&label=languages&color=00BFA5)](./docs/i18n-crowdin.md)
 [![Downloads](https://img.shields.io/github/downloads/bernardopg/AiOverviewControl/total?color=0EA5E9&label=downloads)](https://github.com/bernardopg/AiOverviewControl/releases)
@@ -54,7 +55,7 @@ invented percentages.
 <tr>
 <td width="50%" valign="top">
 
-**📊 One dashboard, 39 providers**<br />
+**📊 One dashboard, 43 providers**<br />
 Quota, balance, analytics, and auth status side by side, with a fleet overview
 of average load, hottest provider, and next reset.
 
@@ -72,16 +73,19 @@ and reset time. Crowded bar? Drop the names and tighten the spacing.
 <td valign="top">
 
 **🤖 Deep local telemetry**<br />
-Claude, 9Router, pi, and Hermes add token, cost, model, and project analytics
-with a seven-day chart — read from data already on your disk. Track several
-Claude accounts side by side, each from its own `CLAUDE_CONFIG_DIR`.
+Claude, Codex, 9Router, pi, and Hermes add token, cost, model, and project
+analytics with a seven-day chart — read from data already on your disk. Track
+several Claude accounts side by side, each from its own `CLAUDE_CONFIG_DIR`.
+Claude and Codex also show credits, extra usage and limit resets, and can
+redeem a held reset after a confirmation.
 
 </td>
 <td valign="top">
 
 **🔔 Quota alerts**<br />
 Desktop notifications at 75, 85, or 95% — or per-provider thresholds — updated
-in place instead of spamming. Click one to open that provider's card.
+in place instead of spamming. Click one to open that provider's card. A
+DankDash card keeps the busiest providers in the overview.
 
 </td>
 </tr>
@@ -150,9 +154,9 @@ Prefer a release archive or a git checkout? See [Installation](./docs/installati
 
 | Coverage           | What you get                             | Examples                                                |
 | ------------------ | ---------------------------------------- | ------------------------------------------------------- |
-| **Quota**          | Real usage % and reset time              | Codex, Copilot, Antigravity, OpenRouter, Z.ai, GLM, xAI |
-| **Balance**        | Remaining prepaid credit                 | Kimi, DeepSeek, Neuralwatt, Cline                       |
-| **Analytics**      | Tokens, cost, and models from local data | Claude, 9Router, pi, Hermes, Cloudflare                 |
+| **Quota**          | Real usage % and reset time              | Codex, Copilot, Antigravity, OpenRouter, Z.ai, GLM, xAI, Gemini CLI |
+| **Balance**        | Remaining prepaid credit                 | Kimi, DeepSeek, Neuralwatt, Cline, Ollama Cloud, Vercel AI Gateway |
+| **Analytics**      | Tokens, cost, and models from local data or spend reports | Claude, 9Router, pi, Hermes, Cloudflare, Anthropic API, OpenAI API |
 | **Authentication** | Credential check, no usage numbers       | Gemini, Mistral, Qwen, Groq, Cohere                     |
 | **Local runtime**  | Local models and sessions                | Ollama, Vertex AI                                       |
 | **Informational**  | A link to the official usage page        | Cursor, Kiro, Warp, Perplexity                          |
@@ -182,6 +186,11 @@ and [protected PR/release rules](./docs/repository-rules.md).
 | [Architecture](./docs/architecture.md)       | Runtime flow and the adapter contract                |
 | [Translations](./docs/i18n-crowdin.md)       | Locales and Crowdin                                  |
 | [Contributing](./CONTRIBUTING.md)            | Local checks and conventions                         |
+| [Governance](./GOVERNANCE.md)                | Decisions, roles, code review, continuity            |
+| [Roadmap](./docs/roadmap.md)                 | What is planned for the next year, and what is not   |
+| [Security model](./docs/security.md)         | Security requirements and assurance case             |
+| [Security policy](./.github/SECURITY.md)     | Reporting vulnerabilities, verifying releases        |
+| [Code of conduct](./CODE_OF_CONDUCT.md)      | Contributor Covenant 2.1                             |
 | [Changelog](./CHANGELOG.md)                  | Release history                                      |
 
 ## 💜 Support the project

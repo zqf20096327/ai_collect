@@ -598,7 +598,7 @@ host 的 warn（完整 URL 可能带签名 query，不记录）。`WINDSURFAPI_A
 主线 100+ 个静态模型 + Windsurf 雲端動態下發（`mergeCloudModels` 啟動時拉取最新）。Cascade 路径下，各账号云端 catalog 同步后，`GET /v1/models` 和 Dashboard 展示活跃账号目录的并集，路由则校验所选账号自己的目录；`DEVIN_CONNECT` 继续使用独立 selector catalog；静态完整列表仍可查看 [GitHub Pages 模型清单](https://dwgx.github.io/WindsurfAPI/#models)（同步生成於 `src/models.js`）。
 
 <details>
-<summary><b>Claude（Anthropic）</b> — 73 个</summary>
+<summary><b>Claude（Anthropic）</b> — 80 个</summary>
 
 claude-3.5-sonnet / 3.7-sonnet / thinking · claude-4-sonnet / opus / thinking · claude-4.1-opus · claude-4.5-haiku / sonnet / opus · claude-sonnet-4.6（含 1m / thinking / thinking-1m） · claude-opus-4.6 / thinking · **claude-opus-4.7-medium** · **claude-opus-4.8 全系**（low / medium / high / xhigh / max + fast） · **claude-5-fable / claude-sonnet-5 / claude-opus-5 全系**（low / medium / high / xhigh / max，opus-5 含 fast） · **claude-fable-5.1 / claude-sonnet-5.5 / claude-opus-5.5 全系**（low / medium / high / xhigh / max）
 
@@ -612,7 +612,7 @@ gpt-4o · gpt-4.1 · gpt-5 全系（含 medium / high / codex） · **gpt-5.1 �
 </details>
 
 <details>
-<summary><b>Gemini（Google）</b> — 22 个</summary>
+<summary><b>Gemini（Google）</b> — 26 个</summary>
 
 gemini-2.5-pro / flash · gemini-3.0-pro / flash（minimal / low / medium / high 4 個 reasoning 等級） · gemini-3.1-pro（low / high） · gemini-3.6-flash（minimal / low / medium / high） · gemini-3.7 / 3.8-flash（low / medium / high） · gemini-4-argon（low / medium / high）
 
@@ -817,18 +817,24 @@ MIT License. See [LICENSE](LICENSE).
 
 ## 发布与密钥边界
 
-发布流程会自动推 Docker 镜像和 GitHub Release。从 v3.10.0 起，每个 Release 为四个发布资产
+发布流程会自动推 Docker 镜像和 GitHub Release。当前发布 **v3.141.592657**；仓库共 227 个
+git tag / 217 份发布说明（2026-10-26）。从 v3.10.0 起，每个 Release 为四个发布资产
 （Windows exe/zip、macOS arm64 二进制/zip）生成 `SHA256SUMS`，并用 **cosign keyless**
-（GitHub OIDC，仓库内没有任何私钥或签名 secret）为四个资产和清单分别发布 `.sig`、`.pem` 与
-`.sigstore.json`。签名证明“这些字节由本仓库的 release workflow 在某个 `v*` tag 上产生”，
+（GitHub OIDC，仓库内没有任何私钥或签名 secret）为四个资产和清单各发布一个
+`.sigstore.json`（签名、Fulcio 证书与 Rekor inclusion proof 合在一个文件里）。从
+v3.141.592657 起，Docker 镜像摘要 `image-digest.txt` 与源码 OTA 来源证明
+`release-attestation.json` 也各带一个 `.sigstore.json`。签名证明“这些字节由本仓库的 release workflow 在某个 `v*` tag 上产生”，
 不证明人工审阅或构建可复现；
 能改写仓库/tag 的人仍能重新签名，因此 tag/commit 的 out-of-band 核对依然重要。下载后先验签再
 校验哈希：`node scripts/verify-release-assets.mjs <下载目录>`（需要 cosign），或按
 [docs/RELEASE-SIGNING.md](docs/RELEASE-SIGNING.md) 用 `cosign verify-blob` 验证
 `SHA256SUMS.sigstore.json` 后再 `sha256sum -c SHA256SUMS`。清单使用**扁平文件名**，把资产
 放在同一目录即可；v3.9.53 的清单带 `dist-windows/` / `dist-macos/` 前缀，v3.10.0 之前的
-Release 没有签名。Dashboard 的 git 自更新与 Docker 更新不下载 Release 资产，cosign 签名不
-覆盖它们（Docker 可用 digest 固定），细节见 docs/RELEASE-SIGNING.md。
+Release 没有签名。Docker 镜像按 digest 签名，摘要发布为 `image-digest.txt`；Dashboard 的
+Docker 更新会先经 daemon 解析 tag，只有与这个签名摘要一致才会 pull/deploy。git 自更新
+不下载二进制，但会校验 Release 的 `release-attestation.json`（tag→commit/tree 与各资产
+SHA-256，cosign 签名）；默认 `WINDSURFAPI_UPDATE_ATTESTATION=warn`，缺失只告警，
+设为 `required` 则拒绝。细节见 docs/RELEASE-SIGNING.md。
 
 **别把 token、API key、cookie、上游账号凭据
 写进 issue、PR、日志或提交的配置文件里。** 如果报告问题必须带上鉴权信息，只贴脱敏后的元数据

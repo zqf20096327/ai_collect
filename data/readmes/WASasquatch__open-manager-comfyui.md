@@ -112,6 +112,10 @@ are set and by which variable.
 The value is the key itself: `set HF_TOKEN=hf_xxx` on Windows, `export HF_TOKEN=hf_xxx` on Linux
 and macOS, in the file that starts ComfyUI. See [Launch files](#launch-files).
 
+Starring needs a GitHub token that may read and change stars: a fine-grained token with the
+**Starring** account permission set to read and write, or a classic token with `public_repo`.
+Without one, a pack page shows its star count only.
+
 ---
 
 ## Packs
@@ -126,13 +130,16 @@ and macOS, in the file that starts ComfyUI. See [Launch files](#launch-files).
 | Licences | Per pack, sortable |
 | Your own repos | By URL or `owner/repo`, kept in `user/` |
 | Any ref | Branch, tag or commit |
+| Optional requirements | Each group a pack offers, or all of them, after it installs or from its page, with the same dependency check as an install; an update that leaves a chosen group short offers it again |
 | Workflow gaps | Missing nodes, and which pack won a duplicate name |
+| Import failures | Each failed pack's error from ComfyUI's log, its traceback a click away |
 | Workflow packs | Each pack the open workflow uses, with node ids to copy |
 | Themes | Gradients, icons, backdrops |
 | Fast sync | Whole registry in seconds |
 
 Findings reword the confirmation. A registry ban blocks Install until *Install versions the
-registry has banned* is on.
+registry has banned* is on. A pack that asks for a ComfyUI major version above yours, such as
+the `>=1.0.0` pyproject templates carry, is not reported as incompatible.
 
 ## Beyond packs
 
@@ -240,9 +247,9 @@ ComfyUI's own manager links, such as the missing-nodes panel's, open the same pl
 instead. Every install it starts is still run by Open Manager. So are the **Install** buttons
 ComfyUI shows for missing nodes, whichever is set.
 
-*Quality of Life Patches* fixes faults in ComfyUI's own interface from Open Manager, each with
-its own switch and links to the issues it answers. A patch that finds ComfyUI changed, or
-already fixed, stands down and says so in the browser console.
+*Quality of Life Patches* fixes faults in, and adds to, ComfyUI's own interface from Open
+Manager, each with its own switch and links to the issues it answers. A patch that finds ComfyUI
+changed, or already fixed, stands down and says so in the browser console.
 
 | Patch | Default | Effect |
 |---|---|---|
@@ -260,13 +267,16 @@ already fixed, stands down and says so in the browser console.
 | Nodes 2.0 widgets on the classic canvas | On | Curves, image compare and crop, video trim and crop, bounding boxes, colour palettes, the resolution preview and LoRA stacks work on the classic canvas, also when promoted to a subgraph. The painter, the compositor and light info show ComfyUI's own editors there. Stands down when [ComfyUI-Nodes2Classic](https://github.com/Nynxz/ComfyUI-Nodes2Classic) is installed |
 | Self-drawn widgets keep their size when zoomed | On | On Nodes 2.0, a widget that draws itself, such as a section header, draws at its node's width when it appears while zoomed in or out |
 | Panels fit their node and scroll | On | On Nodes 2.0, a panel widget that sets its own height, such as a value readout, opens at that height, grows and shrinks with its node, and scrolls |
+| Node error and Enter buttons in the title bar | On | On Nodes 2.0, the Error, Enter subgraph and advanced inputs buttons sit in the node's title bar in place of tabs hanging below the node. A node left with room for the tab shrinks to its content once |
 | Combo lists use the room on screen | On | On Nodes 2.0, a combo's list grows into the space on screen in place of about seven options |
 | Combo lists open folders as submenus | On | On Nodes 2.0, a list of files kept in folders, such as LoRAs, shows each folder as a submenu. Typing in its search box searches every file |
 | Hide Partner nodes | Off | Paid Partner (API) nodes, their templates and the Login button are hidden |
 | Looping animations hold still while a job runs | On | Running spinners and pulses stop redrawing until the queue is empty |
 | Go to Node by ID | On | Opens and frames a node by ID, or by a path such as `12:5` for node 5 inside subgraph node 12. In the canvas menu, and bindable under ComfyUI's keybindings |
 | Middle-click does not paste | On | On Linux, a middle click no longer pastes the last copied nodes |
+| Zip ties | On | Dragging across links with Z held ties them into a ribbon. With Shift held as well the tie is straight: horizontal, vertical or at 45 degrees. Dragging across a tie with Z held, or double-clicking it, removes it. Ties move by dragging, and turn by dragging with Alt held, in 45 degree steps with Shift. A straight or turned tie keeps its angle until *Auto angle* in its right-click menu, where its colour is also set. Links enter a tie in the order they arrive, keep it through every tie after, and cross only past the last one; they reorder as nodes move. After [comfyui-zip-ties](https://github.com/safzanpirani/comfyui-zip-ties), whose saved ties it reads; stands down when that is installed |
 | Hidden links as nubs | On | A hidden link shows a small nub in its type colour on each node's edge, in place of a type label. Hovering a nub shows the label; hovering the label shows the link |
+| Selected nodes show their hidden links | On | While nodes are selected, the hidden links between them and the nodes they connect to are drawn, whether every link is hidden or only some |
 | No frontend_only badge | On | Nodes with no Python side carry no source badge |
 | Running and waiting jobs open as workflows | On | Open as workflow in new tab works on a job still running or waiting in the queue, and on that job once it finishes |
 | API jobs open as workflows | On | Jobs queued with only an API prompt open as a laid-out workflow |
@@ -277,6 +287,42 @@ already fixed, stands down and says so in the browser console.
 | Node search narrows every match | On | In the node search box, a category or the Comfy, Partner or Extensions filter lists every match it holds, not only those among the top 64 |
 | Node search draws only the rows in view | On | Results build as they scroll into view |
 | Node search waits for a pause in typing | On | Slow searches run once typing pauses |
+
+### Link styles
+
+*Link style*, under `Settings -> Open Manager -> Links`, draws the links between nodes on the
+classic canvas, Nodes 2.0 and OM Nodes. Links click, reroute, zip tie and carry their midpoint
+marker as with Solid.
+
+| Style | |
+|---|---|
+| From the theme | The active theme's `links.style`, or Solid. The default |
+| Solid | ComfyUI's own |
+| Energy conduit | A glowing core with pulses running from output to input |
+| Flowing dashes | Dashes running from output to input |
+| Chain | Interlocking links in the link's type colour |
+| Rusty chain | Speckled rust-brown links |
+| Pipes | Shaded pipes with a lip at each end |
+| Fabric cord | A braided cord, its weave pointing from output to input |
+| Rope | Twisted hemp |
+| Beads | Beads on a thread |
+| Electric arc | A flickering bolt |
+
+*Link path* sets where links run, in any style. Clicks, the midpoint marker and zip ties follow
+the drawn path.
+
+| Path | |
+|---|---|
+| Link Render Mode | ComfyUI's Spline, Linear or Straight. The default |
+| Circuit board | Traces with cut corners that run around nodes and each other, never under or over them. Links running close together gather side by side. Routes are laid again a moment after nodes stop moving |
+| Physics | Links hang under gravity and swing when a node moves |
+
+*Ghost links* fades each link along its own length a short way from the slots it joins, under a
+slowly drifting glow. A selected node's links show in full.
+
+*Link motion* runs the moving styles, Physics swings and the ghost glow always, only while a
+workflow runs, or never. They redraw at up to 30 frames a second, less often when drawing takes
+longer, and not while the tab is hidden. Zoomed out, each style draws plainer.
 
 ### Network
 
@@ -325,13 +371,26 @@ The registry address is `BASE_URL` in `open_manager/registry.py`, and `BASE` in
 ### Requirements
 
 `torch`, `torchaudio`, `torchsde` and `torchvision` are never installed from a pack's
-requirements: they carry the build your ComfyUI was set up with. Anything held back is named
-in the install output. To substitute a package, map it in
-`user/open_manager/pip_overrides.json`:
+requirements: they carry the build your ComfyUI was set up with. The check before an install
+reads the `requirements.txt` the install hands to pip. The install policy guards packages
+ComfyUI, an installed package or another pack uses: the default leaves them as they are, and
+the upgrade and downgrade choices let them move one way. A package only the pack itself uses
+changes as it asks under every choice. Anything held back is named in the check and in the
+install's issues, with what uses it.
+
+A requirement whose PyPI release is NVIDIA's wheel stub installs from the index the stub names,
+`pypi.nvidia.com` or `pypi.ngc.nvidia.com`; a stub naming any other index is not followed. An
+install that has to replace a file the running ComfyUI holds open, as a loaded `.dll` is on
+Windows, can be queued for the next start, where it runs before any pack loads.
+
+To substitute a package, map it in `user/open_manager/pip_overrides.json`:
 
 ```json
 { "opencv-python": "opencv-python-headless>=4.9" }
 ```
+
+Optional groups follow the same rules. The groups chosen for each pack are kept in
+`user/open_manager/optional_requirements.json` and forgotten when the pack is removed.
 
 ### Your GitHub list
 
@@ -393,6 +452,45 @@ with it automatically, following
 `workflows/hdr.json` picks up `workflows/hdr.webp`, `.png`, `.jpg`, `.jpeg` or `.gif`, and a
 numbered variant such as `hdr-1.png` counts too. Workflows without one show as a plain row.
 
+### Optional requirements
+
+Optional dependencies need no field. Open Manager reads them from the files Python projects
+already use and offers each group once your pack installs, one at a time or all together, and
+again from the *Optional* tab on your page. Choosing groups shows what they would change before
+anything installs, as a pack install does, and they install under the same rules as
+`requirements.txt`: the install policy, the packages held back to protect ComfyUI, and the
+user's substitutions. When an update leaves a group the user chose short, it is offered again,
+ticked. `requirements.txt` stays the base install.
+
+| Declared as | Group name |
+| --- | --- |
+| `requirements/<group>.txt` | The file name |
+| `requirements-<group>.txt` or `requirements_<group>.txt` beside `requirements.txt` | The part after `requirements` |
+| `[project.optional-dependencies]` in `pyproject.toml` | The extra |
+
+| | |
+| --- | --- |
+| Description | The first paragraph of the comment a file opens with, or the comment beside an extra's name |
+| Package notes | A comment after a package, as pip reads one |
+| `-r` lines in a group | Followed while they stay inside your pack |
+| A file and an extra of one name | The file is the group, and takes the extra's comment when it opens with none |
+| Not offered | Files `requirements.txt` includes, files another group includes, `dev`, `test`, `docs`, `lint` and the like, and `base`, `common`, `core` and the like |
+| Aggregates | A file of only `-r` lines, or a group made only of others, as `all` often is, is not offered: *All* covers it |
+
+```toml
+[project.optional-dependencies]
+llm = ["llama-index-core>=0.14", "httpx"]   # the LLM nodes
+pdf = ["xhtml2pdf"]                         # .pdf on Save DOC
+all = ["my-pack[llm,pdf]"]                  # covered by All, not offered
+```
+
+```text
+# requirements/llm.txt
+# The LLM nodes, on llama-index.
+llama-index-core>=0.14   # documents, indexes and chat
+httpx                    # the web tools agents call
+```
+
 ### Capabilities
 
 Your own account of what your pack does, in fixed words so that two packs describe themselves
@@ -412,7 +510,7 @@ the same way.
 
 A ComfyUI colour palette plus an optional `extras` block: gradient or flat headers per node
 category or class, a title icon, an image behind node bodies, see-through bodies, a graph
-backdrop, shadow colours and a selection glow. For OM Nodes, tokens, named parts and scoped CSS
+backdrop, shadow colours, a selection glow and a link style. For OM Nodes, tokens, named parts and scoped CSS
 restyle every part of a node. Packs ship them, users add them from the pack page.
 
 ```toml

@@ -6,7 +6,22 @@ and redlines for lawyer review. Generated work requires professional review.
 
 ## Start locally
 
-Install Git, clone this repository, then run:
+One command installs Git if it is missing, downloads doc.haus to `~/doc-haus`
+(or `DOCHAUS_DIR`) and starts it. Run it again to start doc.haus later.
+
+```sh
+curl -fsSL https://doc.haus/install.sh | bash
+```
+
+On Windows, run this in PowerShell:
+
+```powershell
+irm https://doc.haus/install.ps1 | iex
+```
+
+These run [scripts/install.sh](scripts/install.sh) and
+[scripts/install.ps1](scripts/install.ps1). To install by hand, install Git,
+clone this repository, then run:
 
 ```sh
 git clone https://github.com/sure-scale/doc-haus.git
@@ -32,6 +47,15 @@ remain subject to the provider's account and organization policies.
 Only Bun is required, and the launcher installs it. The stack starts without
 declined tools, and a declined set is not offered again until another tool goes
 missing. The container includes every tool. See [setup](docs/setup.md).
+
+## Start on Windows
+
+On Windows 10 or 11, install Git for Windows, clone the repository, then run
+`start.cmd` from its folder in Command Prompt or PowerShell (`.\start.cmd`). It
+finds x64 Bun 1.4.0 or newer (Windows on Arm runs it emulated), offers to
+install it when missing, and then starts the stack like `start.sh`. In Git Bash,
+`./start.sh` hands over to `start.cmd`. Press Ctrl+C to stop it. See
+[setup](docs/setup.md#start-on-windows).
 
 ## Local container
 

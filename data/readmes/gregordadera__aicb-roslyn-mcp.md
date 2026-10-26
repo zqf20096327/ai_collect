@@ -20,7 +20,7 @@ analysis and editing.
 > organizations below the [license thresholds](#license-at-a-glance).
 
 This page is a short tour, not the reference. It names 35 of the 54 tools an agent
-sees by default; the three [manuals](#documentation) run to 35 chapters, about 38
+sees by default; the three [manuals](#documentation) run to 35 chapters, about 39
 times the length of this page.
 
 ## See it answer a code question
@@ -176,11 +176,11 @@ is necessary. See [sessions, recall and staleness](https://github.com/gregordade
   MEF export attributes;
   runtime-produced registrations are disclosed as dynamic or unknown rather than
   invented.
-- XAML binding analysis resolves paths only where the source and data type are safe
-  to establish. Unknown scopes are skipped conservatively.
-- A reported side effect is a conservative static contact classification propagated
-  through known call edges. It is not general data-flow, taint or runtime state
-  analysis.
+- A XAML binding is checked only where its data type is known for certain; where it
+  is not, the binding is left unjudged rather than reported as broken.
+- A reported side effect means the method reaches such an operation in its code,
+  itself or through the methods it calls. It tells you that a method can write a
+  file, not which file or when.
 - Responses disclose stale sessions, unresolved projects and capped result sets.
   Read `staleness`, `incompleteProjects`, `totalFound` and `truncated` before treating
   an empty or short answer as proof.
@@ -311,15 +311,15 @@ the .NET 10 SDK, installs the published tool, restores the solution and runs
 written:
 
 ```yaml
-- uses: gregordadera/aicb-roslyn-mcp@v0.5.504.1
+- uses: gregordadera/aicb-roslyn-mcp@v0.5.505.1
   with:
-    version: 0.5.504.1
+    version: 0.5.505.1
     solution: App.sln
     output: artifacts/context.md
     fail-on: "critical>0 OR debt>120min"
 ```
 
-The example pins both halves: `@v0.5.504.1` fixes the action, `version` fixes the package it
+The example pins both halves: `@v0.5.505.1` fixes the action, `version` fixes the package it
 installs. Without `version` the action installs the newest published package, and `@main`
 follows every change to the action, so neither belongs in a build you depend on. A release
 tag can in principle be moved; the full commit SHA of that tag is the immutable form. Further
@@ -648,7 +648,9 @@ Run `aicb <command> --help` for options.
 - Opening a solution runs its MSBuild logic to resolve references, and building its
   compilation runs the source generators its projects reference, as in an IDE or
   `dotnet build`. Analyze only solutions you trust. AICB does not run third-party
-  Roslyn analyzers.
+  Roslyn analyzers, with one opt-in exception: `get_diagnostics` with
+  `runSuppressors: true` runs the projects' diagnostic suppressors, as a real
+  build does.
 
 A small number of explicitly named tools can write configuration or an export;
 their tool descriptions state this. The complete threat model and private
@@ -719,7 +721,7 @@ issues privately as described in [`SECURITY.md`](https://github.com/gregordadera
 ## Documentation
 
 Everything above is the short version. The three manuals below hold the full reference -
-35 chapters, each manual 70,000 to 83,000 words, together about 38 times the length of this
+35 chapters, each manual 70,000 to 88,000 words, together about 39 times the length of this
 README.
 
 - [Getting started](https://github.com/gregordadera/aicb-roslyn-mcp/blob/main/docs/GETTING-STARTED.md) - install, connect and ask the first question

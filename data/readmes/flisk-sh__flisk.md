@@ -81,7 +81,11 @@ Stop my Flisk stack with flisk down and confirm nothing is left running.
 <details>
 <summary>Connect your agent to Flisk as an MCP server</summary>
 
-Add this to your agent's MCP settings:
+Install the CLI, then add the Flisk MCP server to your agent's settings:
+
+```bash
+npm install -g @flisk-sh/flisk
+```
 
 ```json
 {
@@ -116,7 +120,7 @@ You get an orders API and a storefront behind one local gateway, with Postgres a
 
 <p><strong><a href="#quick-start">Quick start</a> · <a href="#why-flisk-cli">Why Flisk</a> · <a href="#examples">Examples</a> · <a href="#installation">Installation</a> · <a href="#faq">FAQ</a> · <a href="#docs">Documentation</a></strong></p>
 
-[Website](https://flisk.sh/) · [Quickstart](https://flisk.sh/docs/quickstart/) · [Examples](https://flisk.sh/docs/examples/) · [Awesome Flisk](https://github.com/flisk-sh/awesome-tdk-framework) · [Demo](https://flisk-sh.github.io/flisk-demo-animation/) · [Report a bug](https://github.com/flisk-sh/flisk/issues)
+[Website](https://flisk.sh/) · [Quickstart](https://flisk.sh/docs/quickstart/) · [Examples](https://flisk.sh/docs/examples/) · [Awesome Flisk](https://github.com/flisk-sh/awesome-flisk-framework) · [Demo](https://flisk-sh.github.io/flisk-demo-animation/) · [Report a bug](https://github.com/flisk-sh/flisk/issues)
 
 <a id="readme-languages"></a>
 
@@ -223,12 +227,9 @@ Fastest way (recommended): open the [Flisk starter](https://github.com/flisk-sh/
 
 </details>
 
-### ⚡ A running stack in about 14 seconds
+### ⚡ A one-backend stack is healthy in about 14 seconds
 
-On a one-backend quickstart with warm image layers, `flisk up` reaches a healthy API in 12.8 to 13.8 seconds ([timing notes](docs/benchmarks/quickstart-timing.md)). An 8-service stack settles in 32 to 42 seconds warm and about 4.5 minutes on its first cold build ([benchmark](docs/benchmarks/results/tdk-up-warm-start-2026-10-11/summary.md)). No vendor lock-in and no hand-written plumbing. Flisk works with:
-* **Runtimes & Frameworks:** Bun, Node, Python, Go, Rust, React, Vue, Svelte, Elysia, Fastify, NestJS
-* **Databases & Tooling:** Prisma, Drizzle, Atlas, Dbmate
-* **Messaging & Gateway:** NATS, Traefik
+On a one-backend quickstart with warm image layers, `flisk up` reaches a healthy API in 12.8 to 13.8 seconds ([timing notes](docs/benchmarks/quickstart-timing.md)). An 8-service stack settles in 32 to 42 seconds warm and about 4.5 minutes on its first cold build ([benchmark](docs/benchmarks/results/tdk-up-warm-start-2026-10-11/summary.md)). No vendor lock-in and no hand-written plumbing.
 
 ### 🤖 Run your AI agents next to your services
 
@@ -311,6 +312,12 @@ See [how `flisk up` works](docs/how-flisk-up-works.md) for the full startup sequ
 | Catch config drift | Compares generated files with what Flisk last wrote | `flisk config verify` |
 | Keep Flisk current | Upgrades the CLI in place | `flisk upgrade` |
 
+Flisk works with:
+
+* **Runtimes & Frameworks:** Bun, Node, Python, Go, Rust, React, Vue, Svelte, Elysia, Fastify, NestJS
+* **Databases & Tooling:** Prisma, Drizzle, Atlas, Dbmate
+* **Messaging & Gateway:** NATS, Traefik
+
 ## Who uses Flisk
 
 Teams that run `flisk up` on their own code (listed with their consent in [ADOPTERS.md](docs/project/ADOPTERS.md)):
@@ -326,23 +333,72 @@ If Flisk saves you time, a ⭐ on [this repo](https://github.com/flisk-sh/flisk)
 
 ## Quick start
 
-There are two ways to get started. Both end with `flisk up <stack>`.
+Get a running local stack in **3 commands**. Works on macOS, Linux, and Windows (via WSL2).
 
-| | Guided scaffolder | Core CLI (manual) |
-| --- | --- | --- |
-| Best for | A first run: pick your services and get a ready project | Full control, or adding Flisk to an existing folder |
-| Package | [`create-microservices`](https://github.com/flisk-sh/create-microservices#readme) | [`@flisk-sh/flisk`](https://www.npmjs.com/package/@flisk-sh/flisk) (this repo) |
+### Prerequisites (install once)
 
-### Option A: guided scaffolder (recommended for beginners)
+| Tool | Version | Install | Install path |
+|------|---------|---------|--------------|
+| **Docker** | Engine 25+, Compose 2.20.2+ | [docker.com](https://www.docker.com/products/docker-desktop/) | All paths |
+| **Tilt** | 0.25+ | `curl -fsSL https://raw.githubusercontent.com/tilt-dev/tilt/master/scripts/install.sh \| bash` | All paths |
+| **Node.js** | 22.12+ | [nodejs.org](https://nodejs.org/) | npm path (`npm install -g @flisk-sh/flisk`) |
+| **Bun** | 1.2+ | `curl -fsSL https://bun.sh/install \| bash` | Bun path (`bun add -g @flisk-sh/flisk`) |
 
-**Prerequisites.** Install these first. The scaffolder checks your machine while it creates the project and stops if something is missing:
+> **Conditional prerequisites**: Node.js is only required when you install Flisk via npm (`npm install -g @flisk-sh/flisk`). Bun is only required when you install via Bun or your project has generated JavaScript services. Docker and Tilt are required for every path.
 
-- Node.js 22.12 or newer, and npm
-- Docker, installed and running (Engine 25+, Compose 2.20.2+)
-- [Tilt](https://docs.tilt.dev/install.html)
-- [Bun](https://bun.sh/) 1.2+
+> **Windows?** Use WSL2 Ubuntu. See the [Windows & WSL2 guide](docs/wsl2.md) for the recommended setup.
 
-Run these commands from the directory where you want the new project folder to be created. The target directory must be new or empty; existing files are never overwritten.
+---
+
+### Fastest path: one-command demo (no manual steps)
+
+```bash
+# 1. Install Flisk
+npm install -g @flisk-sh/flisk
+
+# 2. Run the demo — scaffolds a project, installs deps, boots the stack, opens the frontend
+flisk demo
+```
+
+That's it. The demo clones the starter into `~/.flisk/flisk-demo`, installs dependencies, starts the stack, and opens the frontend in your browser. Press `Ctrl+C` to stop, then run `flisk down` to clean up.
+
+---
+
+### Full control: manual project setup
+
+If you want to build your own service structure:
+
+```bash
+# 1. Install Flisk (skip if already installed)
+npm install -g @flisk-sh/flisk
+
+# 2. Create a project with a backend API
+mkdir my-project && cd my-project
+flisk project --yes
+flisk resource api --type backend --stack main --yes
+
+# 3. Start the stack
+flisk up main
+```
+
+`flisk up` prints the URLs (e.g., `http://api.main.localhost/api/api/health`). Try it:
+
+```bash
+curl http://api.main.localhost/api/api/health
+```
+
+To add a frontend later:
+
+```bash
+flisk resource web --type frontend --stack main --yes
+flisk up main
+```
+
+---
+
+### Alternative: guided scaffolder
+
+Prefer interactive prompts? The `create-microservices` package asks for your service types and generates a ready project:
 
 ```bash
 npm install -g @flisk-sh/flisk
@@ -351,42 +407,60 @@ cd my-project
 flisk up main
 ```
 
-- `npm install -g @flisk-sh/flisk` installs the `flisk` command. Skip it if `flisk --version` already works.
-- `npm init create-microservices my-project` asks how many services to create, then each service's name and type (`backend`, `frontend`, `worker`, or `mcp`).
-- `flisk up main` starts the stack. `main` is the default stack name; if you pass `--stack <name>` to the scaffolder, use that name instead. The scaffolder prints the exact `flisk up` command when it finishes.
-
-The scaffolder creates the project configuration and a skeleton for each service you selected, using Flisk CLI Core. It does not start any containers; `flisk up` does that.
-
-To skip the prompts and get a default `api` (backend) and `web` (frontend):
+To skip prompts and get a default `api` + `web`:
 
 ```bash
 npm init create-microservices my-project -- --yes
 ```
 
-For service types, all options, and non-interactive usage, see the [`create-microservices` README](https://github.com/flisk-sh/create-microservices#readme).
+See the [`create-microservices` README](https://github.com/flisk-sh/create-microservices#readme) for all options.
 
-> [!NOTE]
-> Two similarly named packages exist. [`create-flisk`](https://github.com/flisk-sh/create-flisk) is a landing-page app and does not scaffold projects. [`create-microservices`](https://github.com/flisk-sh/create-microservices#readme) is the project scaffolder used above.
+---
 
-### Option B: core CLI (manual)
+### Verify it works
 
-Use this to create the project and each resource yourself with `flisk`. [Install the CLI](#installation) first. Preview what a stack will start before any container runs:
+After `flisk up`, you'll see output like:
 
-```bash
-flisk up shop --dry-run
+```
+Flisk is up.
+Tilt UI: http://localhost:10350
+Services:
+  ✓ api → http://api.main.localhost/api/api/health
+  ✓ web → http://web.main.localhost
+Stop: flisk down
+Logs: flisk logs <service>
+Next: flisk help  # or visit https://flisk.sh/docs
 ```
 
-Then try the full flow:
+- **Tilt UI**: Open to watch live updates, see logs, and debug
+- **Services**: Click the URLs or curl the health endpoints
+- **Stop**: `flisk down` stops everything; containers persist for inspection
 
-```bash
-mkdir shop && cd shop
-flisk project --yes
-flisk resource orders-api --type backend --stack shop --yes
-flisk up shop
-curl http://api.shop.localhost/api/orders/health
-```
+---
 
-`flisk up` prints the host ports it chose. It uses port 80 when it is free, so URLs carry no port. Otherwise it picks one from 8080-8180, and the URLs it prints include that port (on Linux and WSL2 a non-root user cannot check port 80, so the range is used there). Use the URL `flisk up` prints, or set `FLISK_HTTP_PORT`. A resource named `orders-api` is served at `/api/orders` (a trailing `-api` is dropped); `flisk up` prints the exact URLs.
+### Common next steps
+
+| Goal | Command |
+|------|---------|
+| See running services | `flisk ui` |
+| Check environment health | `flisk doctor` |
+| View service logs | `flisk logs api` |
+| Restart a service | `flisk restart api` |
+| Preview without starting | `flisk up main --dry-run` |
+| Catch config drift | `flisk config verify` |
+| Upgrade Flisk | `flisk upgrade` |
+
+### Troubleshooting
+
+| Issue | Fix |
+|-------|-----|
+| `flisk doctor` fails | Run the fix commands it prints, then retry |
+| Port 80/5432 in use | `flisk doctor` shows the owner; stop it or set `FLISK_HTTP_PORT` |
+| Docker not running | Start Docker Desktop / `systemctl start docker` |
+| Windows native | Use WSL2 Ubuntu; see [Windows guide](docs/wsl2.md) |
+| `flisk up` refuses | Run `flisk doctor` first; it explains what's missing |
+
+Full troubleshooting: [docs/troubleshooting.md](docs/troubleshooting.md)
 
 ### What Flisk writes for you
 
@@ -522,11 +596,11 @@ Runnable examples show Flisk on real stacks. Start with the smallest one:
 | [one-backend-helm](examples/one-backend-helm/README.md) | Working alongside Helm |
 | [byo](examples/byo/README.md) | Bringing your own existing resources |
 | [byo-jobs](examples/byo-jobs/README.md) | Bring-your-own jobs |
-| [tdk-example](examples/tdk-example/README.md) | A full multi-service stack |
+| [flisk-example](examples/flisk-example/README.md) | A full multi-service stack |
 
 ## Use Flisk with your AI agent
 
-The repository ships agent skills for common Flisk work, including `flisk-doctor` (environment checks) and `flisk-troubleshoot` (fixing `flisk` and Tilt errors), under [`.agents/skills`](.agents/skills). Agents working in this repo also follow [AGENTS.md](AGENTS.md). Use these skills to let your agent check your setup and explain failures instead of guessing at Docker or Tilt configuration.
+The repository ships five agent skills for common Flisk work under [`.agents/skills`](.agents/skills): `flisk-doctor` (environment checks), `flisk-up` (preview and start a stack), `flisk-resource` (create a service), `flisk-status` (health and URLs), and `flisk-troubleshoot` (fixing `flisk` and Tilt errors). Agents working in this repo also follow [AGENTS.md](AGENTS.md). Use these skills to let your agent check your setup and explain failures instead of guessing at Docker or Tilt configuration.
 
 ## Installation
 
@@ -574,7 +648,7 @@ Set `FLISK_DEBUG=1` before running `flisk up --verbose` to include Starlark debu
 - [Generated service files and drift checks](docs/generated-files.md)
 - [Runnable one-backend example](examples/one-backend/README.md)
 - [Runnable Python backend example](examples/one-backend-python/README.md)
-- [Full multi-service example](examples/tdk-example/README.md)
+- [Full multi-service example](examples/flisk-example/README.md)
 - [Features and license limits](docs/FEATURES.md)
 - [Tool comparison: docker-compose, Tilt, Skaffold, DevSpace, kind](docs/comparison.md)
 - [Honest comparison and known limits](docs/compare-honest.md)
@@ -598,7 +672,7 @@ published on 21 September 2026. Those dates describe the current repository and 
 
 ## Requirements and support
 
-For the local runtime, install Docker (Desktop, OrbStack, or Colima; Engine 25+, Compose 2.20.2+) and [Tilt](https://docs.tilt.dev/install.html). Bun 1.2+ is used by the default generated services. Flisk selects host ports from bounded fallback ranges for HTTP, HTTPS, and Postgres; set `FLISK_HTTP_PORT`, `FLISK_HTTPS_PORT`, or `FLISK_POSTGRES_PORT` to override them. Dev ports listen on `127.0.0.1` only, so other machines on your network cannot reach them. Set `FLISK_BIND_ADDRESS` (for example `0.0.0.0`, to test from a phone) to change that; `flisk doctor` warns when it is a wildcard address. Flisk supports macOS, Linux, and Windows through WSL2 Ubuntu; native Windows supports CLI inspection only. Run `flisk doctor` to check local readiness (supports `--no-ping` to skip service health checks and `--ping-timeout <ms>`). See [WSL2 setup](docs/wsl2.md).
+For the local runtime, install Docker (Desktop, OrbStack, or Colima; Engine 25+, Compose 2.20.2+) and [Tilt](https://docs.tilt.dev/install.html). Bun 1.2+ is used by the default generated services. Flisk selects host ports from bounded fallback ranges for HTTP, HTTPS, and Postgres; set `FLISK_HTTP_PORT`, `FLISK_HTTPS_PORT`, or `FLISK_POSTGRES_PORT` to override them. Dev ports listen on `127.0.0.1` only, so other machines on your network cannot reach them. Set `FLISK_BIND_ADDRESS` (for example `0.0.0.0`, to test from a phone) to change that; `flisk doctor` warns when it is a wildcard address. Flisk supports macOS, Linux, and **Windows through WSL2 Ubuntu**; native Windows supports CLI inspection only (`flisk --version`, `flisk doctor`, `flisk up --dry-run`). `flisk up` exits with a clear refusal pointing to WSL2. See the **[Windows & WSL2 guide](docs/wsl2.md)** for the recommended setup, prerequisites, verification steps, and troubleshooting.
 
 On native Windows, `flisk --version`, `flisk doctor`, and `flisk up --dry-run` are inspect-only commands. `flisk up` exits 1 with “Landscape startup needs Ubuntu on WSL2. Native Windows is inspect-only.”
 
@@ -612,7 +686,7 @@ On native Windows, `flisk --version`, `flisk doctor`, and `flisk up --dry-run` a
 
 Core stays free. Premium is a separate key for the extras above; no key required to run `flisk up`.
 
-**Ecosystem map:** examples, articles, related tools, and notes live in [awesome-tdk-framework](https://github.com/flisk-sh/awesome-tdk-framework). Star this repo (`flisk`) if the CLI is what you run; use the awesome list to browse the rest.
+**Ecosystem map:** examples, articles, related tools, and notes live in [awesome-flisk-framework](https://github.com/flisk-sh/awesome-flisk-framework). Star this repo (`flisk`) if the CLI is what you run; use the awesome list to browse the rest.
 
 <p align="center">
 
@@ -639,7 +713,7 @@ No. Core CLI is MIT and needs no key to run `flisk up`. Premium extras are optio
 <details>
 <summary><strong>Which platforms are supported?</strong></summary>
 
-macOS and Linux are supported directly. Windows is supported through WSL2 Ubuntu; native Windows supports CLI inspection only (`flisk --version`, `flisk doctor`, and `flisk up --dry-run`). See [Requirements and support](#requirements-and-support) and [WSL2 setup](docs/wsl2.md).
+macOS and Linux are supported directly. Windows is supported through WSL2 Ubuntu; native Windows supports CLI inspection only (`flisk --version`, `flisk doctor`, `flisk up --dry-run`). See [Requirements and support](#requirements-and-support) and the **[Windows & WSL2 guide](docs/wsl2.md)** for the recommended setup, prerequisites, verification steps, and troubleshooting.
 
 </details>
 

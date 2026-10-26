@@ -2,6 +2,10 @@
 
 The Azure Agents Control Plane governs the complete lifecycle of enterprise AI agents: analysis, design, development, testing, learning, and evaluation. It enables enterprise-grade AI agent development where Azure provides centralized governance, observability, identity, and compliance—regardless of agent execution location.
 
+**For Microsoft 365 Copilot (M365 Copilot) and Copilot Studio**
+
+The control plane can manage and secure access to AI services and agents through **Azure API Management (APIM)** even when those agents are built and run in **Copilot Studio on Microsoft Power Platform**.
+
 **Core Principles:**
 
 - **Azure as Enterprise Control Plane** - Centralized governance with single or multi-cloud execution capability
@@ -10,13 +14,39 @@ The Azure Agents Control Plane governs the complete lifecycle of enterprise AI a
 - **Identity-First Security** - Agents can adopt Microsoft Entra Agent IDs with least-privilege access; Azure managed identity remains the default until an explicit credential migration
 - **Continuous Evaluation & Improvement** - The Azure Agents Learning SDK enables in-process reinforcement learning
 
+## Microsoft 365 Copilot, Copilot Studio, and Power Platform
+
+Keep agents where they are built and hosted; use APIM as the shared governance
+boundary for access to enterprise agents, AI services, tools, and data:
+
+- **Microsoft 365 Copilot as a caller:** Connect supported Copilot extensions to
+  agent APIs and tools exposed through APIM, as illustrated in the runtime diagram.
+- **Copilot Studio and Power Platform as the agent host:** Agents built and run
+  in Copilot Studio on Power Platform can call APIM-published APIs or MCP tools
+  through supported integrations, without being rewritten or moved to AKS.
+- **Existing agents and AI services as backends:** Where the hosting platform
+  exposes a supported callable API, place that interface behind APIM to govern
+  incoming access without relocating the agent or service.
+
+APIM provides a common place to configure authentication, authorization, rate
+limits, and request telemetry for these calls. Copilot Studio and Power Platform
+retain their own environment security, permissions, and data policies.
+
+> **Access governance, not a hosting requirement.** APIM policies apply only to
+> traffic routed through the gateway, not to calls that bypass it or to the
+> internal execution of a Copilot Studio agent. This repository deploys an
+> AKS-hosted reference backend; Copilot integrations and additional backends
+> require separate configuration.
+
+## Architecture
+
 The following two animations show the system architecture at runtime and buildtime.
 
 ### Runtime Architecture
 
-Runtime Architecture - Describes the request flow through API Management to AKS, workload identity, connections to AI Foundry, Cosmos DB, AI Search, Storage, the Azure Agents Learning SDK, and Fabric with observability through Monitor and App Insights. Agents 365 is spotlighted as the enterprise agent registry and AI kill switch.
+Runtime Architecture - Shows Microsoft 365 Copilot (M365 Copilot) and other callers accessing the AKS-hosted reference agent through API Management, workload identity, connections to AI Foundry, Cosmos DB, AI Search, Storage, the Azure Agents Learning SDK, and Fabric with observability through Monitor and App Insights. Agents 365 is spotlighted as the enterprise agent registry and AI kill switch.
 
-![Runtime](runtime.svg)
+![Runtime architecture: Microsoft 365 Copilot and other callers access agents through Azure API Management](runtime.svg)
 
 > **Agents 365: registry and AI kill switch.** Agents 365 provides the central
 > inventory for registered agent identities, ownership, access, and governance.
@@ -210,6 +240,20 @@ Empty IDs or failed preflight stop identity-enabled rollout; there is no fallbac
 Private ACR builds require an existing VNet-attached task pool or a connected
 Docker runner; build scripts never temporarily enable public registry access.
 
+### Optional Fabric specialists and OneLake tools (Python)
+
+The Python MCP runtime includes four Fabric specialists (Lakehouse, Warehouse,
+Pipeline, and Semantic Model), an orchestrator, and OneLake file operations.
+Natural language selects a specialist or action; data queries require executable
+SQL, DAX, or MDX rather than automatic natural-language-to-SQL generation.
+
+Fabric remains **disabled in the default deployment**. The post-provision hooks
+do not automatically create workspaces or enable Fabric access. The
+[Fabric Data Agents setup guide](docs/FABRIC_DATA_AGENTS_SETUP_GUIDE.md) covers
+explicit workspace provisioning, managed-identity permissions, runtime opt-in,
+all eight new MCP tools, and offline tests. These additions are not implemented
+by the TypeScript runtime.
+
 ---
 
 ## Verification
@@ -224,6 +268,15 @@ kubectl get svc -n mcp-agents mcp-agents-loadbalancer
 # Run integration tests
 python tests/test_apim_mcp_connection.py --use-az-token
 ```
+
+Run the mocked Fabric/OneLake regression suite locally, without a Fabric tenant
+or Azure credentials (PowerShell provisioning checks use in-memory CLI/API stubs):
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest .\tests\test_fabric_data_agents.py -q
+```
+
+These tests do not establish live Fabric API compatibility or AKS readiness.
 
 ---
 
@@ -241,6 +294,7 @@ python tests/test_apim_mcp_connection.py --use-az-token
 | [AGENTS_AGENT_LEARNING_TEST_RESULTS.md](docs/AGENTS_AGENT_LEARNING_TEST_RESULTS.md)   | Learning SDK test results                        |
 | [AGENTS_EVALUATIONS.md](docs/AGENTS_EVALUATIONS.md)                                   | Agent evaluation framework                       |
 | [AGENTS_TEST_RESULTS.md](docs/AGENTS_TEST_RESULTS.md)                                 | Integration test results                         |
+| [FABRIC_DATA_AGENTS_SETUP_GUIDE.md](docs/FABRIC_DATA_AGENTS_SETUP_GUIDE.md)             | Optional Python Fabric specialists, OneLake setup, MCP tools, and offline tests |
 | [DEFENDER_FOR_CLOUD_TESTING.md](docs/DEFENDER_FOR_CLOUD_TESTING.md)                   | Defender for Cloud deployment and testing guide  |
 | [SECURITY_REVIEW.md](docs/SECURITY_REVIEW.md)                                         | Security review: private networking and identity |
 | [PURVIEW_INTEGRATION.md](docs/PURVIEW_INTEGRATION.md)                                 | Purview data governance and compliance guide     |
@@ -267,6 +321,12 @@ python tests/test_apim_mcp_connection.py --use-az-token
 - [Microsoft Fabric](https://learn.microsoft.com/fabric/)
 - [Microsoft Fabric IQ](https://learn.microsoft.com/fabric/get-started/fabric-iq)
 - [Microsoft Purview](https://learn.microsoft.com/purview/)
+
+### Microsoft Copilot & Power Platform
+
+- [Microsoft 365 Copilot extensibility](https://learn.microsoft.com/microsoft-365/copilot/extensibility/)
+- [Copilot Studio MCP integration](https://learn.microsoft.com/microsoft-copilot-studio/agent-extend-action-mcp)
+- [Microsoft Power Platform](https://learn.microsoft.com/power-platform/)
 
 ### Identity & Security
 

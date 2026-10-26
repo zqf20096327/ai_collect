@@ -1,0 +1,380 @@
+# lintai
+
+[![coverage](https://img.shields.io/endpoint?url=https%3A%2F%2F777genius.github.io%2Flintai%2Fcoverage%2Fcoverage-badge.json)](https://777genius.github.io/lintai/coverage/)
+
+Make AI agent policy reviewable.
+
+`lintai` checks the files that quietly decide what coding agents can run, access, and inherit before merge. It helps you review MCP configs, hooks, permissions, skills, and agent instructions before risky defaults spread through local workflows or CI.
+It can also run an opt-in advisory lane for committed npm lockfiles.
+
+Current release: `v0.1.1`
+
+- Fast local and CI checks
+- Deterministic findings with evidence
+- Helps verify artifacts before use
+
+`lintai` helps raise confidence and find risky patterns. It does not guarantee that an artifact is completely safe.
+
+## Why `lintai` exists
+
+Skills, MCP configs, agent rules, hooks, and plugin manifests are not just docs or metadata. They are trust surfaces that can change agent behavior, launch tools, route network access, and carry risky auth or execution patterns.
+
+`lintai` exists to make those artifacts easier to verify before use, before sharing, and before merge. It is built for fast local runs, repeatable CI checks, and private repositories where offline-first verification matters.
+
+Think of it as a Ruff/Biome-style workflow for agent artifact review: fast, deterministic, and meant to run often.
+
+## Quick Start
+
+```bash
+curl -fsSL https://github.com/777genius/lintai/releases/latest/download/lintai-installer.sh | sh
+"$HOME/.local/bin/lintai" scan .
+```
+
+After `~/.local/bin` is on `PATH`, use `lintai scan .` directly.
+
+Exit codes:
+
+- `0`: no blocking findings
+- `1`: blocking findings were emitted
+- `2`: execution or configuration error
+
+Interpretation:
+
+- `Stable` findings are the release-quality baseline behind the quiet `recommended` default.
+- `Preview` findings are useful deeper-review signals, but not the baseline trust bar.
+- explicit sidecar lanes such as `threat-review`, `compat`, `governance`, and `supply-chain` stay opt-in on purpose.
+
+## What It Scans
+
+Current `v0.1` supported surfaces focus on files that steer agent behavior or launch agent tooling.
+
+### Agent instructions
+
+- `SKILL.md`
+- `CLAUDE.md`
+- `.mdc`
+- `.cursorrules`
+- `.github/copilot-instructions.md`
+
+### MCP and client config artifacts
+
+- `mcp.json`
+- `claude_desktop_config.json`
+- `server.json`
+- supported known client roots discovered by `scan-known` and `inventory-os`
+
+### Plugin and hook surfaces
+
+- Agent Plugins 1.0 `plugin.json`, plus fixed `skills/**/SKILL.md` and `mcp.json` components
+- `.cursor-plugin/plugin.json`
+- `.cursor-plugin/hooks.json`
+- `.cursor-plugin/hooks/**/*.sh`
+- `.cursor-plugin/commands/**/*.md`
+- `.cursor-plugin/agents/**/*.md`
+
+### Opt-in advisory lockfile surfaces
+
+- `package-lock.json`
+- `npm-shrinkwrap.json`
+- `pnpm-lock.yaml`
+
+## Advisory Lane
+
+The dependency advisory lane is intentionally opt-in. Enable it in the target repository root:
+
+```toml
+[presets]
+enable = ["advisory"]
+```
+
+Then run the scan from that repository root so `lintai` picks up the local `lintai.toml`:
+
+```bash
+cd your-repo
+lintai scan .
+lintai explain-config lintai.toml
+```
+
+This lane matches installed versions from committed npm lockfiles against the active offline advisory snapshot, using the bundled dataset by default. It does not guess from `package.json` version ranges and it does not perform live network lookups during scan.
+
+The bundled snapshot can also be inspected or normalized explicitly:
+
+```bash
+lintai advisory-db export-bundled
+lintai advisory-db update --input advisories.json --output advisories.normalized.json
+```
+
+To scan with a custom normalized snapshot instead of the bundled one:
+
+```bash
+cd your-repo
+LINTAI_ADVISORY_SNAPSHOT=/path/to/advisories.normalized.json lintai scan .
+```
+
+If the custom snapshot is unreadable or violates the advisory schema contract, `lintai scan` fails closed: it reports a runtime error and exits with code `2` instead of silently falling back to bundled data.
+
+The advisory lane also fails closed when a committed lockfile records an advisory-tracked package with an invalid installed version string. That prevents false-clean scans when the lockfile data itself is malformed.
+
+## What It Catches
+
+Current `lintai` rules focus on high-signal repository-local risks such as:
+
+- hidden or override-style instructions in agent-facing markdown
+- unsafe shell execution paths in MCP or plugin configs
+- insecure endpoints and TLS bypass patterns
+- credential passthrough and literal secret material
+- dangerous download-and-exec flows
+- mismatches between declared safety claims and actual capabilities
+- opt-in advisory matches between committed npm lockfiles and the active offline advisory snapshot
+
+The full shipped rule catalog lives in [`docs/SECURITY_RULES.md`](docs/SECURITY_RULES.md).
+
+## Trust Signal
+
+`lintai` is designed to support a guarded trust signal, not an absolute one.
+
+- For users: run `lintai` before trusting a skill, MCP config, or plugin artifact.
+- For authors: use `lintai` before publishing or sharing an artifact.
+- For teams: require `lintai` checks in CI for repo-local agent artifacts.
+
+Practical language should be:
+
+- `passed lintai checks`
+- `helps verify`
+- `gives confidence`
+
+Not:
+
+- `guaranteed safe`
+- `fully secure`
+
+## Stable, Preview, and Sidecar Lanes
+
+`lintai` is intentionally precision-first.
+
+- `Stable` rules are the current release-quality baseline and are meant to be deterministic, explainable, and low-noise.
+- `Preview` rules are valuable, but they are still under usefulness and precision review.
+- sidecar lanes such as `compat`, `governance`, `supply-chain`, and `advisory` are useful on purpose, but they are not bundled into the quiet default experience.
+- The goal is not maximal heuristic coverage. The goal is trustworthy findings you can run often.
+
+This is especially important for markdown-like agent surfaces, where some security checks are useful but still more text-sensitive than the strongest structural rules.
+
+## CI, SARIF, and Exit Codes
+
+`lintai` is built for frequent local runs and CI integration.
+
+- Text, JSON, and SARIF output are supported.
+- Findings include stable rule ids and structured evidence.
+- Exit codes are designed for gating workflows cleanly.
+
+Examples:
+
+```bash
+lintai scan .
+lintai scan . --format json
+lintai scan . --format sarif
+```
+
+Agent Plugins installers and registries can use a fixed, non-configurable scan
+policy that ignores package-controlled `lintai.toml` files:
+
+```bash
+lintai scan-agent-plugin ./path/to/package
+```
+
+The command accepts only a root Agent Plugins 1.0 package and always emits its
+versioned integration report as JSON. A clean report is evidence that automated
+checks ran against those package bytes, not a guarantee that the plugin is safe.
+
+## Preset Policy
+
+`lintai` now resolves findings through builtin policy presets declared in `lintai.toml`.
+
+Default behavior:
+
+- if `[presets]` is omitted, `lintai` enables `["recommended"]`
+- `recommended` is the quiet practical default for most teams
+- `base` remains the minimal stable baseline for compatibility-focused setups
+- `preview` is explicit opt-in for deeper review
+- `compat` is explicit opt-in for project policy mismatch rules such as `SEC401`-`SEC403`
+- `governance` is explicit opt-in for workflow-policy review rules such as shared mutation authority and broad bare tool grants that should not read like headline security findings
+
+Example:
+
+```toml
+[presets]
+enable = ["recommended", "preview"]
+
+[categories]
+security = "warn"
+
+[rules]
+SEC201 = "deny"
+```
+
+Builtin preset intent:
+
+- `recommended`: quiet practical default for most teams
+- `base`: stable compatibility baseline
+- `strict`: `recommended` plus stricter preset-level hardening
+- `compat`: transition and project-policy mismatch lane
+- `preview`: deeper review lane with broader and more context-sensitive findings
+- `threat-review`: explicit malicious, credential-bearing, or spyware-like review lane
+- `skills`: instruction and skills markdown overlays
+- `mcp`: MCP and tool/server config overlays
+- `claude`: Claude-specific config overlays
+- `guidance`: advice-oriented guidance lane
+- `governance`: opt-in review lane for shared mutation authority and broad default bare tool grants in checked-in AI-native frontmatter
+- `supply-chain`: sidecar supply-chain hardening lane
+- `advisory`: opt-in offline dependency vulnerability lane for committed npm lockfiles
+
+Important merge rules:
+
+- `[[overrides]]` can change severities for matching files, but cannot change preset membership
+- category overrides do not implicitly activate rules outside the resolved preset set
+- explicit `[rules] SECxxx = "..."` can opt a specific rule in on purpose
+- shipped rule catalogs carry preset membership as source-of-truth metadata, so docs, engine resolution, and explainability stay aligned
+
+For teams evaluating `v0.1`, a good default is:
+
+1. Start with `recommended`.
+2. Add `preview` when you want deeper review.
+3. Add `governance` only when you want shared-authority and least-privilege review.
+4. Keep `diagnostics` separate from findings.
+
+Treat `diagnostics` separately from findings.
+
+## Broad Local Scans
+
+`lintai scan .` is meant for one repository at a time. If you scan a parent directory that contains many repos, scan each repository directly when you want findings for that repository.
+
+To keep broad scans readable, lintai does not descend into nested Git repositories or Git worktrees during directory walks. Direct scans still work:
+
+```bash
+lintai scan claude/_worktrees/some-worktree
+```
+
+Test corpora are project-specific, so lintai does not hide every `corpus/` directory globally. If your repository keeps intentionally malicious fixtures or generated samples, exclude them explicitly in `lintai.toml`:
+
+```toml
+[files]
+exclude = ["corpus/**"]
+```
+
+## Installed Artifact Audit
+
+Repository scans are the primary workflow, but `lintai` can also help audit what your AI clients already have configured.
+
+Use this as a secondary workflow to:
+
+- audit known local client roots
+- inventory discovered agent-related artifacts
+- compare current installed state against a baseline
+
+Examples:
+
+```bash
+lintai scan-known --scope=both
+lintai inventory-os --scope=user
+lintai inventory-os --scope=user --preset base --preset mcp --preset claude
+lintai inventory-os --scope=user --write-baseline .lintai-baseline.json
+lintai inventory-os --scope=user --diff-against .lintai-baseline.json
+lintai policy-os --policy machine-policy.toml --scope=user
+```
+
+`scan-known` and `inventory-os` stay quiet by default and follow the `recommended` lane unless you opt into broader review with repeated `--preset` flags.
+
+`policy-os` keeps a more diagnostic machine-policy default so explicit policy checks still evaluate MCP and Claude machine artifacts even when the main product default stays quiet.
+
+This mode stays inventory-first: it reports what `lintai` can honestly discover and only emits findings for supported surfaces it can actually analyze today.
+
+## Install Details
+
+The public CLI ships through GitHub Release binaries. The optional `lintai-cli` npm package is a thin wrapper: it downloads the matching GitHub Release binary, verifies `SHA256SUMS`, caches it locally, and forwards arguments to `lintai`.
+
+### macOS / Linux
+
+```bash
+curl -fsSL https://github.com/777genius/lintai/releases/latest/download/lintai-installer.sh | sh
+```
+
+The installer downloads the tagged binary archive and `SHA256SUMS` from the same GitHub Release, verifies the checksum, and installs `lintai` into `~/.local/bin` by default.
+
+### npm / npx
+
+```bash
+npx lintai-cli scan .
+```
+
+For a global npm install:
+
+```bash
+npm i -g lintai-cli
+lintai scan .
+```
+
+The npm package does not carry native binaries. It resolves back to the same GitHub Release assets and checksum file used by the curl installer.
+
+### Windows PowerShell
+
+```powershell
+Invoke-WebRequest -Uri https://github.com/777genius/lintai/releases/latest/download/lintai-installer.ps1 -OutFile .\lintai-installer.ps1
+powershell -ExecutionPolicy Bypass -File .\lintai-installer.ps1
+```
+
+### Verify
+
+```bash
+"$HOME/.local/bin/lintai" help
+"$HOME/.local/bin/lintai" config-schema
+"$HOME/.local/bin/lintai" scan .
+```
+
+If `~/.local/bin` is already on `PATH`, `lintai help` works directly.
+
+### From source
+
+This repository pins Rust `1.90.0` in [`rust-toolchain.toml`](rust-toolchain.toml).
+
+```bash
+cargo run -q -p lintai-cli --bin lintai -- help
+cargo run -q -p lintai-cli --bin lintai -- config-schema
+cargo run -q -p lintai-cli --bin lintai -- scan /path/to/target-repo
+```
+
+## Project Status and Docs
+
+Current status:
+
+- Current release: `v0.1.1`
+- Public CLI distribution: GitHub Releases with prebuilt binaries
+- Optional npm wrapper: `npx lintai-cli scan .`
+- No Homebrew or `cargo install` CLI channel in this release
+- Precision-first security checks for supported agent artifact surfaces
+- Best evaluated on real repositories that already contain those surfaces
+- `Stable` findings are the current trust baseline
+- Honest posture: initial public `0.x` tool, not yet a broad `1.0` ecosystem platform
+
+## Current Non-Goals
+
+Not the goal in `v0.1`:
+
+- cloud-managed threat intel
+- broad registry crawling or package reputation services
+- scan-everything coverage across every AI platform from day one
+- aggressive heuristic coverage at the cost of materially more noise
+
+Canonical docs:
+
+- [`docs/POSITIONING_AND_SCOPE.md`](docs/POSITIONING_AND_SCOPE.md): product positioning and non-goals
+- [`docs/PUBLIC_RELEASE.md`](docs/PUBLIC_RELEASE.md): `v0.1.0` release contract
+- [`docs/EXTERNAL_VALIDATION_REPORT.md`](docs/EXTERNAL_VALIDATION_REPORT.md): checked-in release evidence base
+- [`docs/INDEX.md`](docs/INDEX.md): full project doc index
+
+Repo-level orientation:
+
+- [`docs/V0_1_RELEASE_CHARTER.md`](docs/V0_1_RELEASE_CHARTER.md)
+- [`PUBLIC_COMPATIBILITY_POLICY.md`](PUBLIC_COMPATIBILITY_POLICY.md)
+- [`docs/ARCH_GAPS.md`](docs/ARCH_GAPS.md)
+
+`lintai-api` remains the only stable publishable crate. The CLI release supports GitHub Release assets plus the `lintai-cli` npm wrapper; it does not promise Homebrew or `cargo install` distribution for `v0.1.0`.

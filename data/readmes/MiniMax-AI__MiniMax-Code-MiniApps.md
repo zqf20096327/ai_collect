@@ -77,6 +77,10 @@ The MiniMax Code Agent communicates through the host MCP client. Business reques
 | [仓库透视 / Repo X-Ray](plugins/yujiachen-y/repo-xray/) | Understand a codebase from its Git history: a code map you can drill into, hotspots and bug magnets, high-risk files, owners and knowledge loss, commit rhythm and firefighting, and the tech stack. Works with GitHub, GitLab, and local repositories; analysis runs on your machine | [yujiachen-y](https://github.com/yujiachen-y) |
 | [Disk Insight](plugins/zch0227/disk-insight/) | See where disk space went on macOS and Windows with a sunburst space map, find junk files sorted into three safety tiers, large and duplicate files, and how much code repositories and Git worktrees take; ask an Agent about any item, and permanently delete what you select after a confirmation that lists every item. Requires MiniMax Code 3.1.2 or later | [zch0227](https://github.com/zch0227) |
 | [A/时差保安 / Timezone Guard](plugins/liuchen19960902/timezone-guard/) | Check the other side's local time before you message: the target city's clock turns into a green "now is fine", yellow "keep it short", or red "go to sleep" verdict. Requires MiniMax Code 3.1.2 or later | [FineCat](https://github.com/LiuChen19960902) |
+| [AI Node Canvas](plugins/antianqi/ai-node-canvas/) | An infinite-canvas node graph for MiniMax Code: wire text, image, video and audio runs into a graph, let each result flow downstream, and run media tools on any result | [antianqi](https://github.com/antianqi) |
+| [Agent Flow](plugins/huixin615/agent-flow/) | Import this plugin's Hook event file to inspect native task calls and sub-agent lifecycles, with exact task-to-child links when IDs are available. Choose a recorded chat or the latest imported record; no Host session files are opened. Requires MiniMax Code 3.1.4 or later | [Huixin615](https://github.com/Huixin615) |
+| [蹬王之王 · Expiry Guardian](plugins/hylouis233/expiry-guardian/) | Track credit and reset-card expiry from a local ledger you maintain, and get a "spend the card or let the credits burn first" recommendation with the reasoning spelled out | [Hylouis](https://github.com/Hylouis233) |
+| [MiniMax Pet](plugins/minimax-ai/minimax-pet/) | A lightweight companion with appearance, task and settings tabs, visible-session activity, answer-needed reminders and a transparent desktop pet. Requires MiniMax Code 3.1.6 or later | [MiniMax](https://github.com/MiniMax-AI) |
 
 <details>
 <summary>Preview: Token Usage Board</summary>
@@ -109,7 +113,7 @@ The preview uses synthetic data. The app interface is currently in Chinese. See 
 
 ### Requirements
 
-Use a MiniMax Code desktop version that supports MiniApps. Check the app's README for tested client versions, operating systems, configuration, and known limitations. Compatibility is documented per app. Apps that use newer capabilities, such as running Agent tasks or opening in their own window, need MiniMax Code 3.1.2 or later; older versions cannot install them.
+Use a MiniMax Code desktop version that supports MiniApps. Check the app's README for tested client versions, operating systems, configuration, and known limitations. Compatibility is documented per app. Apps that use newer capabilities need a newer client, and older versions cannot install them: running Agent tasks or opening in their own window needs MiniMax Code 3.1.2 or later; reading your conversations, calling your installed tools, or using the microphone needs 3.1.5 or later. From 3.1.5 you can switch off each permission an app declares, one by one, in its plugin details.
 
 ### 1. Download
 

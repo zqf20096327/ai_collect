@@ -94,7 +94,9 @@ npm install
 npm start
 ```
 
-Open [http://localhost:3456](http://localhost:3456) and follow the setup screen. The
+Open [http://localhost:3456](http://localhost:3456). Walnut runs your sessions with Claude Code: when it
+is installed and signed in, you can start right away; otherwise a banner at the top of the page
+offers to install it and says how to sign in. The
 first start downloads the default local embedding model, Qwen3-Embedding-0.6B
 (approximately 640 MB), in the background.
 
@@ -269,11 +271,14 @@ one source does not overwhelm the others.
 
 A plugin App joins the same App Registry as Walnut's own screens, so one `walnut.ui.app` registration gives it a Sidebar entry, the route `/apps/<plugin-id>~<app-id>`, deep links, a badge, and a Command Palette entry. Installing a plugin means trusting its code: a server entry is full Node, and a native web entry shares the console's React tree.
 
-After the author packages reach npm, the whole first authoring loop is one command, which scaffolds, links into the running console, and reloads on every save. They are not published yet; the guide gives the equivalent local-checkout command available today.
+The first authoring loop is one command, which scaffolds, links into the running console, and reloads on every save. The author packages are not on npm yet, so run it from a checkout of this repository:
 
 ```bash
-npx @open-walnut/plugin-cli new my-plugin --dev
+npm run build:plugins
+node packages/plugin-cli/dist/cli.js new my-plugin --dev --no-install
 ```
+
+Once the packages are published, the same loop will be `npx @open-walnut/plugin-cli new my-plugin --dev`.
 
 Read [Plugin development](docs/reference/plugin-development.md) for the full guide, and [examples/plugins/walnut-demo](examples/plugins/walnut-demo) (the Walnut Plugin Demo) for a runnable example of every public capability. The console also ships a guided onboarding page at `/plugins/new`.
 

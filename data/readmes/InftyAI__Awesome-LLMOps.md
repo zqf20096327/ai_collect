@@ -114,6 +114,7 @@
 * **[vLLM Semantic Router](https://github.com/vllm-project/semantic-router)**: Intelligent Mixture-of-Models Router for Efficient LLM Inference  ![Stars](https://img.shields.io/github/stars/vllm-project/semantic-router.svg?style=flat&color=green) ![Contributors](https://img.shields.io/github/contributors/vllm-project/semantic-router?color=green) ![LastCommit](https://img.shields.io/github/last-commit/vllm-project/semantic-router?color=green)
 
 ### AI Gateway
+* **[Cognipeer Console](https://github.com/Cognipeer/console)**: Open-source, self-hosted AI gateway and control plane: OpenAI-compatible LLM routing, RAG, an MCP hub, guardrails and agent tracing for multi-tenant teams. ![Stars](https://img.shields.io/github/stars/Cognipeer/console.svg?style=flat&color=green) ![Contributors](https://img.shields.io/github/contributors/Cognipeer/console?color=green) ![LastCommit](https://img.shields.io/github/last-commit/Cognipeer/console?color=green)
 * **[TrustGate](https://github.com/NeuralTrust/TrustGate)**: Self-hosted Go Agent Gateway (Apache-2.0) — OpenAI-compatible LLM proxy + MCP aggregation with per-consumer auth/audit. ![Stars](https://img.shields.io/github/stars/NeuralTrust/TrustGate.svg?style=flat&color=green)
 
 * **[agentgateway](https://github.com/agentgateway/agentgateway)**: Next Generation Agentic Proxy for AI Agents and MCP servers ![Stars](https://img.shields.io/github/stars/agentgateway/agentgateway.svg?style=flat&color=green) ![Contributors](https://img.shields.io/github/contributors/agentgateway/agentgateway?color=green) ![LastCommit](https://img.shields.io/github/last-commit/agentgateway/agentgateway?color=green)
@@ -354,5 +355,4 @@
 ### Agentic RL
 
 * **[AReaL](https://github.com/inclusionAI/AReaL)**: Lightning-Fast RL for LLM Reasoning and Agents. Made Simple & Flexible. ![Stars](https://img.shields.io/github/stars/inclusionAI/AReaL.svg?style=flat&color=green) ![Contributors](https://img.shields.io/github/contributors/inclusionAI/AReaL?color=green) ![LastCommit](https://img.shields.io/github/last-commit/inclusionAI/AReaL?color=green)
-* **[rLLM](https://github.com/rllm-org/rllm)**: Democratizing Reinforcement Learning for LLMs ![Stars](https://img.shields.io/github/stars/rllm-org/rllm.svg?style=flat&color=green) ![Contributors](https://img.shields.io/github/contributors/rllm-org/rllm?color=green) ![LastCommit](https://img.shields.io/github/last-commit/rllm-org/rllm?color=green)
-* **[slime](https://github.com/THUDM/slime)**: slime is an LLM post-training framework for RL Scaling. ![Stars](https://img.shields.io/github/stars/thudm/slim
+* **[rLLM](https://

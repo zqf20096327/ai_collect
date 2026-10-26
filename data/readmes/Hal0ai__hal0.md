@@ -31,34 +31,29 @@ process to babysit.
 curl -fsSL https://hal0.dev/install.sh | sudo bash
 ```
 
-> **v1.6.5 is the current stable release.** A release on the 1.6 line
-> (2026-10-24): FastFlowLM 1.0.10 run from its runner image, privilege
-> hardening, and fixes, with no config-schema migration and an ordinary
-> `hal0 update` from any 1.4.x or later box; a 1.3.x box hops through 1.5.0
-> first. It removes four CLI spellings that had a second name
-> (`hal0 agent upgrade hermes --to`, `hal0 update owui`,
-> `hal0 agent bootstrap hermes`, `hal0 uninstall --keep-data`/`--clean-slate`);
-> read the 1.6.5 **Breaking** notes for the replacements. With
-> Hermes v0.22.4, a chat opened for a non-default profile and `hermes chat`
-> need the Hermes gateway running. Since 1.4.0, three changes can break a
-> script or a setup: `hal0 update`
-> now restarts slots whose runner image changed and exits 2 while any still
-> run the old one; exposing a user-installed MCP server to Hermes or the
-> brain profile is refused until hal0 enforces its tool policy; and an
-> installed MCP server that would send its secrets over plain `http://` to
-> another host no longer loads. After
-> updating from before 1.6.0, re-run the installer once to pick up the new
-> Hindsight limits, the Open WebUI client key and the Hermes wrappers. Read the
-> 1.6.0 **Breaking** and **Migrations** notes in [CHANGELOG.md](CHANGELOG.md)
-> first. The project has followed semver since v1.0.0; a minor release's
-> **Breaking** notes flag behaviour changes an operator or a script may
-> notice. Upgrades start at 1.4.0; on anything older, read
-> [Upgrading from an older release](#upgrading-from-an-older-release) first.
+> **v1.7.0 is the current stable release** (2026-10-26). It rebuilds image
+> generation around a catalog of image models, with no config-schema
+> migration and an ordinary `hal0 update` from any 1.4.x or later box; a 1.3.x
+> box hops through 1.5.0 first. Run `hal0 slot restart img` once after the
+> update so ComfyUI loads its new GPU gate. 1.7.0 removes
+> `hal0 comfyui orchestrate-models`, `POST /api/comfyui/models/fetch`,
+> `[image].idle_restore_minutes` and the `gen.capabilities` answer-file key,
+> and takes image models out of `hal0 model pull`; read the 1.7.0
+> **Breaking** and **Migrations** notes in [CHANGELOG.md](CHANGELOG.md) for
+> the replacements. Coming from before 1.6.0, read the 1.6.0 notes too; a box
+> that has not re-run the installer since 1.4.0 should do so once to pick up
+> the Hindsight limits, the Open WebUI client key and the Hermes wrappers. The project has followed semver
+> since v1.0.0; a minor release's **Breaking** notes flag behaviour changes an
+> operator or a script may notice. Upgrades start at 1.4.0; on anything older,
+> read [Upgrading from an older release](#upgrading-from-an-older-release)
+> first.
 
-> **What 1.6.0 brings:** Hermes v0.22.4 (`4d043038`) on a uv-managed Python 3.14
-> release layout, every Hermes profile in Open WebUI and any `/v1` client, and a
-> memory engine you can point at a local slot or an upstream model. See
-> [What's new](#whats-new) and [Upgrading to 1.6.0](#upgrading-to-160).
+> **What 1.7.0 brings:** image models installed from a catalog, with a fit
+> check against this box's memory before any download or render; Open WebUI
+> images through hal0's `/v1`; image mode that lasts only while an image
+> renders; and an Image Gen tab with Generate, Models and Engine under a GPU
+> status line. See [What's new](#whats-new) and
+> [Upgrading to 1.7.0](#upgrading-to-170).
 
 > **⚡ The installer is the whole setup.** There is no separate first-run
 > wizard afterwards. `install.sh` asks where models should live, optionally
@@ -101,7 +96,7 @@ curl -fsSL https://hal0.dev/install.sh | sudo bash
 <table>
 <tr>
 <td width="33%"><a href="https://hal0.dev/docs/guides/pull-and-register-models/"><img src="https://hal0.dev/screenshots/models-registry.png" alt="Model registry" width="100%"></a><br><sub><b>Model registry</b> — catalogue with quant chips and pull status.</sub></td>
-<td width="33%"><a href="https://hal0.dev/docs/guides/generate-images/"><img src="https://hal0.dev/screenshots/image-gen-comfyui.png" alt="Image generation" width="100%"></a><br><sub><b>Image generation</b> — ComfyUI queue and GPU gauges.</sub></td>
+<td width="33%"><a href="https://hal0.dev/docs/guides/generate-images/"><img src="https://hal0.dev/screenshots/image-gen-comfyui.png" alt="Image generation" width="100%"></a><br><sub><b>Image generation</b> — install image models, see what fits the box, and generate.</sub></td>
 <td width="33%"><a href="https://hal0.dev/docs/guides/enable-memory/"><img src="https://hal0.dev/screenshots/memory-graph.png" alt="Memory graph" width="100%"></a><br><sub><b>Memory</b> — Hindsight facts and graph extraction.</sub></td>
 </tr>
 <tr>
@@ -153,8 +148,12 @@ curl -fsSL https://hal0.dev/install.sh | sudo HAL0_CHANNEL=preview bash
    slot, so the dashboard's steward chat and its tool calls work out of the
    box. On an interactive terminal only, it then *offers* a larger agent
    model (15–31 GB, size printed first, default **No**).
-6. **ComfyUI share** — creates the bind-mount directories the `img` slot
-   needs and seeds custom nodes.
+6. **Starter image model** — on a box with a ROCm lane for ComfyUI, and on
+   an interactive terminal only, it *offers* the image models the API can
+   render, each with the GB it still has to download and the pick recommended
+   for this box's RAM (default: skip). The first model that lands becomes the
+   `img` model and starts the slot; ComfyUI creates its model tree under the
+   model store.
 7. **Service start** — enables and starts `hal0-api` + `hal0.target`, the
    Hindsight memory engine, OpenWebUI on `:3001`, and the bundled Hermes
    agent. From 1.6.0, Hermes builds its own immutable release under
@@ -173,10 +172,11 @@ Full step list and the complete env-var table:
 | `HAL0_PORT=9090` | Bind the API somewhere other than `:8080` |
 | `HAL0_CHANNEL=preview` | Install from a channel other than `stable` |
 | `HAL0_NONINTERACTIVE=1` | Force flag/env defaults; never prompt, even on a TTY |
-| `HAL0_SKIP_SETUP=1` | Skip first-run seeding **and** both model steps |
+| `HAL0_SKIP_SETUP=1` | Skip first-run seeding **and** the brain, agent and image model steps |
 | `HAL0_SKIP_BRAIN_MODEL=1` | Keep the seeding, skip the brain pull (`brain` stays model-less) |
 | `HAL0_BRAIN_MODEL=<id>` | Force a specific curated brain quant |
 | `HAL0_PULL_AGENT_MODEL=1` / `=0` | Opt in to the big agent pull unattended / force-skip it on a TTY |
+| `HAL0_IMAGE_MODELS=recommended` / `=<id>,<id>` / `=none` | Download starter image models unattended / skip the image step on a TTY |
 | `HAL0_PY_AUTOINSTALL=1` | Let the installer install `python3.12` when the box has no Python in 3.12-3.14 |
 | `HAL0_SKIP_HINDSIGHT=1`, `HAL0_SKIP_OPENWEBUI=1`, `HAL0_SKIP_HERMES=1` | Skip individual companion services |
 | `--no-start` | Provision everything, leave services stopped |
@@ -230,6 +230,37 @@ from zero.
 
 ## What's new
 
+### Shipped in 1.7.0
+
+- **An image-model catalog.** `hal0 comfyui models list|install|remove`, the
+  Image Gen tab's Models view and `/api/comfyui/models` install catalog models
+  with resumable, sha256-checked downloads and remove them again. Image models
+  leave the LLM registry (`hal0 model pull` no longer takes them), and
+  `/v1/images/generations` renders every installed catalog model the API can
+  render plus your own SDXL and SD 1.5 checkpoints, at the model's own size
+  and step count unless the request or the slot's `[image]` table names
+  others.
+- **A fit check before you install or render.** Every catalog model carries a
+  memory fit for this box, the GPU pool and RAM judged at the size you pick.
+  A render that cannot fit answers 422 `image.wont_fit` before any slot
+  unloads. Memory figures come from one owner (ADR-0039), which reads a
+  capped LXC guest's RAM limit and shows other guests on a shared GPU.
+- **Image mode only while an image renders.** Every GPU LLM slot unloads for
+  a render and reloads about 10 seconds after the last one. A chat that
+  arrives mid-render waits up to 120 seconds instead of failing, and a slot
+  still loading, or one whose unload fails, never stays on the GPU beside
+  ComfyUI.
+- **Open WebUI images through `/v1`.** Open WebUI's image engine points at
+  hal0's `/v1/images/generations` with the box's client key, so its images
+  get the same model, defaults and GPU switch as any other client.
+- **The Image Gen tab: Generate, Models and Engine.** A GPU status line says
+  what the GPU is doing and what a render costs chat; Generate follows the
+  switch phase by phase and the render step by step; Models shows install
+  state and fit meters; Engine operates the ComfyUI container and shows its GPU gate.
+- **ComfyUI's GPU gate has its own token**, never the admin key, so images
+  keep working with `hal0 auth require on`. Run `hal0 slot restart img` once
+  after updating.
+
 ### Shipped in 1.6.0
 
 - **Hermes v0.22.4 on Python 3.14.** The bundled agent moves from 0.19.0 to
@@ -278,8 +309,8 @@ from zero.
 - **`sudo hal0 agent upgrade pi`** reruns the pinned pi installer and
   redeploys hal0's two extensions, leaving your own extensions, provider,
   model and theme alone.
-- **Upgrade floor is 1.4.0.** A 1.3.x box runs `hal0 update --target 1.5.0`
-  first, then updates again. See [Upgrading from an older release](#upgrading-from-an-older-release).
+- **Upgrade floor is 1.4.0.** A 1.3.x box steps through 1.5.0 first, then
+  updates again. See [Upgrading from an older release](#upgrading-from-an-older-release).
 
 ### Shipped in 1.5.0
 
@@ -428,9 +459,11 @@ content-addressed, host-redacted archive you can attach anywhere, and
   Journal panel streams per-slot container logs from journald. Live
   telemetry — Power & Thermal (GPU clock/temp/power) and per-slot throughput
   — is on by default. The slots page splits into Inference | Image Gen tabs;
-  the Image-Gen tab operates the ComfyUI container (live GTT/RAM gauges,
-  queue depth, model inventory) with a gated inference ⇄ generation iGPU
-  switchover behind a blast-radius confirm.
+  the Image-Gen tab has Generate, Models and Engine sub-tabs under a GPU status
+  line: it generates, installs image models with a fit meter for this box,
+  shows what a render costs chat, and operates the ComfyUI container, with
+  Hold image mode to pin the iGPU for generation and a confirm before Stop
+  image mode drops a running render.
 - **AI Capabilities page** — one settings surface for TTS, STT, embeddings,
   reranking, image generation and the NPU, with per-panel probe-failure
   surfacing instead of a silent grey Save.
@@ -452,9 +485,10 @@ content-addressed, host-redacted archive you can attach anywhere, and
   OpenWebUI is prewired at `:3001` with zero config; its Services card shows an Agents chip once Hermes profiles
   are wired in.
 - **Image generation, day one** — `POST /v1/images/generations` via ComfyUI
-  in the `img` slot container (ROCm). The installer seeds the `img` slot; the
-  ComfyUI provider creates its model tree under the model store when the slot
-  starts.
+  in the `img` slot container (ROCm), from a catalog of image models you
+  install from the dashboard, `hal0 comfyui models install` or the installer.
+  The installer seeds the `img` slot; the ComfyUI provider creates its model
+  tree under the model store when the slot starts.
 - **Atomic self-update with rollback** — `hal0 update --channel
   stable|preview|nightly`. Cosign-verified tarballs swap a
   `/usr/lib/hal0/current` symlink; `--rollback` reverts. Staging happens in
@@ -861,7 +895,7 @@ daemon, so the same code path runs whether you update from the shell or the
 dashboard. After a successful apply the daemon try-restarts `hal0-api`
 itself.
 
-**`hal0 <version> supports upgrades from >=1.4.0; this box is on <older>`**
+**`hal0 <version> supports upgrades from >=<floor>; this box is on <older>`**
 (`system.update_upgrade_path_unsupported`) — the box is below the upgrade
 floor. See [Upgrading from an older release](#upgrading-from-an-older-release).
 
@@ -903,23 +937,47 @@ One made with `sudo` is owned by root, so archive it with `sudo tar czf`, or
 
 ## Upgrading from an older release
 
-Upgrades start at **1.4.0**. `hal0 update` on an older box stops before it
-downloads anything, and re-running the installer over an older install stops
-before it changes anything. A box on 1.3.x takes one hop: `hal0 update
---target 1.5.0`, then `hal0 update` again. A box older than 1.3.0 first steps
-through 1.3.0 by running its installer in place, which keeps `/etc/hal0` and
-`/var/lib/hal0`, then takes the same hop:
+Upgrades to 1.7.0 start at **1.4.0**; the releases after 1.7.0 start at
+**1.5.0**. `hal0 update` on an older box stops before it downloads anything,
+and re-running the installer over an older install stops before it changes
+anything. A box on 1.3.x or 1.4.x steps through 1.5.0 by running the 1.5.0
+installer in place, which keeps `/etc/hal0` and `/var/lib/hal0`, then
+updates again. `hal0 update --target` cannot make that hop: it only pins the
+version the channel serves now, not an older release.
 
 ```sh
 curl -fsSL https://hal0.dev/install.sh \
-  | sudo env HAL0_RELEASES_URL=https://github.com/hal0ai/hal0/releases/download/v1.3.0/stable.json bash
-hal0 update --target 1.5.0 -y
+  | sudo env HAL0_RELEASES_URL=https://github.com/hal0ai/hal0/releases/download/v1.5.0/stable.json bash
 hal0 update -y
 ```
+
+A box older than 1.3.0 first steps through 1.3.0 the same way (its manifest
+is `.../download/v1.3.0/stable.json`), then takes the 1.5.0 hop.
 
 Or reinstall from scratch with `sudo bash installer/uninstall.sh --purge`,
 which deletes `/etc/hal0` and `/var/lib/hal0`, models included, followed by
 the normal one-liner.
+
+### Upgrading to 1.7.0
+
+1.7.0 follows the same `hal0 update` path from any 1.x box at 1.4.0 or
+later. Before you take it:
+
+- **Run `hal0 slot restart img` once after the update.** `hal0 update` does
+  not restart slots, and the running ComfyUI container keeps the 1.6.x GPU
+  gate until it restarts. That gate lets a prompt through when `hal0-api` is
+  unreachable or refuses it (as it does with auth enforcement on), so an
+  editor prompt can render next to the LLM slots.
+- **Install image models from the catalog.** `hal0 comfyui models list` shows
+  what is installed, the GB still to download and the pick recommended for
+  this box; `hal0 comfyui orchestrate-models`
+  and the image ids in `hal0 model pull` are gone, and the GGUF image models
+  `SD-Turbo-GGUF` and `Flux-2-Klein-9B-GGUF` cannot be installed again.
+- **Image mode no longer holds for an hour.** `[image].idle_restore_minutes`
+  is removed from slot files on update; pin image mode from the Image Gen tab
+  or the API to hold the GPU for ComfyUI's editor.
+- **Toggle the Discovery card once** on the Services page if the box
+  announced services before: that clears ComfyUI's old mDNS announcement.
 
 ### Upgrading to 1.6.0
 
@@ -1063,6 +1121,10 @@ running on your box. Full version at
 - **Hermes release layout on Python 3.14 (1.6)** — immutable,
   health-checked releases with automatic flip-back
 - **Memory engine on any model (1.6)** — the Hindsight engine runs on a local slot or an upstream model through the `hal0/memory` virtual id, switched without a restart
+- **Image-model catalog (1.7)** — image models install, fit-check and
+  render from their own catalog, separate from the LLM registry
+- **Image Gen workspace (1.7)** — Generate, Models and Engine tabs under a
+  GPU status line; image mode lasts only while an image renders
 
 ### Soon
 

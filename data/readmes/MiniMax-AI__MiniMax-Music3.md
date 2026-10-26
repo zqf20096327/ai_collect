@@ -2,7 +2,7 @@
   <img width="100%" src="figures/Music3.png" alt="MiniMax">
 </div>
 <p align="center">
-  <a href="https://agent.minimax.io/" target="_blank"><img src="https://img.shields.io/badge/MiniMax%20Agent-FF6C37?logo=minimax&logoColor=white" alt="MiniMax Agent"></a>
+  <a href="https://agent.minimax.io/" target="_blank"><img src="https://img.shields.io/badge/MiniMax%20Code-FF6C37?logo=minimax&logoColor=white" alt="MiniMax Code"></a>
   <a href="https://platform.minimax.io/docs/guides/text-generation" target="_blank"><img src="https://img.shields.io/badge/API-FF6C37?logo=minimax&logoColor=white" alt="API"></a>
   <a href="https://minimax-ai.github.io/music3-demo/" target="_blank"><img src="https://img.shields.io/badge/Live%20Demo-FF6C37?logo=githubpages&logoColor=white" alt="MiniMax Music 3 Live Demo"></a>
   <a href="https://www.minimax.io" target="_blank"><img src="https://img.shields.io/badge/MiniMax%20Website-FF6C37?logo=minimax&logoColor=white" alt="MiniMax Website"></a>

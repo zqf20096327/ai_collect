@@ -19,7 +19,7 @@
 </div>
 <div align="center" style="line-height: 1.2; font-size:16px;">
   <a href="https://agent.minimax.io/" target="_blank" style="display: inline-block; margin: 4px;">
-    MiniMax Agent
+    MiniMax Code
   </a> | 
   <a href="https://platform.minimax.io/docs/guides/text-generation" target="_blank" style="display: inline-block; margin: 4px;">
     ⚡️ API
@@ -61,7 +61,7 @@ We believe true intelligence should be within reach. M2.1 is our commitment to t
 ## How to Use
 
 - The MiniMax-M2.1 API is now live on the MiniMax Open Platform: https://platform.minimax.io/docs/guides/text-generation
-- Our product MiniMax Agent, built on MiniMax-M2.1, is now publicly available: https://agent.minimax.io/
+- Our product MiniMax Code, built on MiniMax-M2.1, is now publicly available: https://agent.minimax.io/
 - The MiniMax-M2.1 model weights are now open-source, allowing for local deployment and use: https://huggingface.co/MiniMaxAI/MiniMax-M2.1
 
 ## Benchmarks

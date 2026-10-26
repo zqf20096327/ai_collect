@@ -2,29 +2,28 @@
 
 Images, videos with sound, music and 3D models, made on your own computer. Free, private, no account, no subscription, no cloud.
 
-<p align="center"><img src="docs/images/photo-video-king.gif" width="420" alt="A generated portrait becomes a king who says his line, then the camera zooms out to the film set"></p>
-<p align="center"><sub>Made with NVAI-open: a generated portrait becomes a king who speaks, then the camera zooms out to the film set. <a href="docs/videos/photo-video-king.mp4">With sound</a></sub></p>
+<p align="center"><img src="docs/images/photo-to-video-captain.gif" width="420" alt="A generated photo becomes a ship captain in a storm who says his line"></p>
+<p align="center"><sub>Made with NVAI-open: a generated photo becomes a ship captain who speaks in a storm. <a href="docs/videos/photo-to-video-captain.mp4">With sound</a></sub></p>
 
 ## Download
 
 | | |
 |---|---|
-| Windows 10/11, NVIDIA or AMD Radeon | [NVAI-open-Setup-0.5.11.exe](https://github.com/Mantux775/NVAI-open/releases/download/v0.5.11/NVAI-open-Setup-0.5.11.exe) |
-| macOS 15+ on Apple Silicon, signed and notarized | [NVAI-open-0.4.6.dmg](https://github.com/Mantux775/NVAI-open/releases/download/v0.5.11/NVAI-open-0.4.6.dmg) |
+| Windows 10/11, NVIDIA or AMD Radeon | [NVAI-open-Setup-0.5.12.exe](https://github.com/Mantux775/NVAI-open/releases/download/v0.5.12/NVAI-open-Setup-0.5.12.exe) |
+| macOS 15+ on Apple Silicon, signed and notarized | [NVAI-open-0.4.8.dmg](https://github.com/Mantux775/NVAI-open/releases/download/v0.5.12/NVAI-open-0.4.8.dmg) |
 
 Install, open, download a model under "Models", generate. The setup brings everything else along. [Installation details](docs/INSTALL.md) · [All releases](https://github.com/Mantux775/NVAI-open/releases)
 
 ## What's new? / Was gibt's Neues?
 
-October 2026: NVAI-open 0.5.11 for Windows and 0.4.6 for the Mac ([release notes](https://github.com/Mantux775/NVAI-open/releases/tag/v0.5.11))
+October 2026: NVAI-open 0.5.13 for Windows ([release notes](https://github.com/Mantux775/NVAI-open/releases/tag/v0.5.13)), the Mac stays at 0.4.8
 
-- **Restore old photos:** remove damage, colorize, sharpen; "Automatic" picks thorough or gentle by the kind of damage. On the Mac too (thorough, without sharpening)
-- **MOSS-Image:** the fourth recommended image model, lettering and layout under Apache-2.0
-- **Recommended settings:** every tab lists what was measured
-- **Preview and history:** results open full size with a click, the history loads 50 at a time
-- **Mac:** "Generate" with model choice, an image picker with upload and drag and drop, and a large preview
+- **Studio:** a full-screen editor for whole videos, with scenes and prompts, markers, real cuts and an export with your graphics card's encoder ([guide](docs/STUDIO.md))
+- **Lossless copy of every AI video:** the Studio edits and exports from it, so only the export compresses (42.3 instead of 37.7 dB PSNR for a YouTube export)
+- **Export:** YouTube 1080p at 24 Mbit/s, a lossless master (MKV) and ProRes 4444, with a preview in the browser
+- **ACE-Step removed:** music comes from Stable Audio 3 Medium (instrumental, up to 5 minutes)
 
-Neu: **Alte Fotos restaurieren** (Schäden entfernen, einfärben, schärfen; „Automatisch“ wählt nach der Art der Schäden, auf dem Mac gründlich und ohne Schärfen), **MOSS-Image** (Schrift und Layout unter Apache-2.0), **Empfohlene Einstellungen** in jedem Reiter, **Vorschau per Klick**, ein Verlauf, der in 50er-Schritten nachlädt, und auf dem Mac ein neues „Generieren“ mit Modellwahl, Bildauswahl samt Hochladen und Hineinziehen und großer Vorschau. 0.5.10 brachte Krea 2 mit Stilvorlage, 3D mit lesbarer Schrift und Video verlängern ([Notizen](https://github.com/Mantux775/NVAI-open/releases/tag/v0.5.10)).
+Neu: das **Studio**, ein Schnittplatz über den ganzen Bildschirm für ganze Videos mit Szenen und Prompts, Markern, echten Schnitten und einem Export mit dem Encoder deiner Grafikkarte ([Anleitung](docs/de/STUDIO.md)); von jedem KI-Video eine **verlustfreie Kopie**, aus der das Studio schneidet und exportiert (42,3 statt 37,7 dB PSNR bei einem YouTube-Export); **Export** als YouTube 1080p mit 24 Mbit/s, verlustfreier Master (MKV) und ProRes 4444, mit Vorschau im Browser; **ACE-Step** ist raus, Musik kommt von Stable Audio 3 Medium (instrumental, bis 5 Minuten). 0.5.12 brachte AMD Radeon und auf dem Mac Z-Image Turbo und Video ([Notizen](https://github.com/Mantux775/NVAI-open/releases/tag/v0.5.12)).
 
 [English](#english) · [Video](#video) · [Deutsch](#deutsch)
 
@@ -42,7 +41,8 @@ It is tested on my own hardware: Windows with an RTX 5060 Ti (16 GB) and a Mac m
 
 - **Images:** FLUX 3, Qwen-Image-2512, Krea 2, MOSS-Image and many more. Edit with reference images, fill in or extend a picture.
 - **Video with sound:** LTX-2.5 makes the picture and the sound in one pass, speech included, up to 20 s and 1080p.
-- **Music and sounds:** songs with vocals, instrumental music up to 5 minutes, sound effects.
+- **Studio:** compose a whole video from scenes, cut it and export it with your graphics card's encoder.
+- **Music and sounds:** instrumental music up to 5 minutes, sound effects.
 - **3D models:** from an image to a textured model for Unity, Blender or any engine.
 - **Old photos:** remove scratches, tears and water stains, colorize, sharpen.
 - **A few words are enough:** "Expand prompt" writes the full description for you.
@@ -52,7 +52,7 @@ It is tested on my own hardware: Windows with an RTX 5060 Ti (16 GB) and a Mac m
 
 ### From a portrait to a video
 
-![A portrait, the start image from FLUX 3 and three frames of the video from LTX-2.5](docs/images/photo-video-chain.jpg)
+![A photo, the start image from FLUX 3 and two frames of the video from LTX-2.5](docs/images/photo-to-video-captain.jpg)
 
 1. **Generate → Image:** create a portrait, or use a photo of someone who agreed to it.
 2. **Generate → Video:** pick the portrait as the start image.
@@ -60,6 +60,20 @@ It is tested on my own hardware: Windows with an RTX 5060 Ti (16 GB) and a Mac m
 4. **Prompt:** describe what moves, what the camera does and what the person says. LTX-2.5 makes the video with speech and sound.
 
 Step by step with screenshots: [docs/PHOTO_TO_VIDEO.md](docs/PHOTO_TO_VIDEO.md)
+
+### Studio: whole videos from scenes
+
+A full-screen editor for whole videos. At the top you compose: scenes with a prompt on lanes for picture, voice, music and sound, plus markers that say what goes where. At the bottom you edit the real clips: cut, trim, dissolve, set the volume. "Generate scenes" makes every clip, still image and piece of music with your local models, "Conform" puts the takes into the edit, and the export uses the video encoder of your graphics card at YouTube loudness.
+
+![The Studio: media on the left, the monitor in the middle, the project settings on the right, the composition and the edit below](docs/images/studio.jpg)
+
+- **Markers:** a chain marker makes a clip start with the last frame of the one before it, so two shots join seamlessly; transition markers add dissolves; an AI task marker leaves Claude a note in the timeline.
+- **Media:** everything you generated, as a compact list with search. Click a file to play it in the monitor, drag it onto a track, delete it right there.
+- **High-quality 1080p:** video scenes run in the best LTX-2.5 quality, every AI video is also kept losslessly, and only the export compresses: measured 42.3 instead of 37.7 dB PSNR for a YouTube export.
+- **Export:** YouTube 1080p and 4K, Shorts, AV1, a lossless master (MKV) or ProRes 4444 for other editing software.
+- **Claude Code** builds the whole video for you over MCP while you watch it in the Studio.
+
+Step by step: [docs/STUDIO.md](docs/STUDIO.md)
 
 ### Video with sound
 
@@ -88,9 +102,11 @@ Lettering does not survive the mesh stage on its own. "Take the front from the i
 
 ### Images
 
-FLUX 3 Image Klein is fast and edits a picture while keeping the rest intact. Qwen-Image-2512 is best at lettering and at how things are built, and its license (Apache-2.0) allows almost anything. Krea 2 looks the most like a photo and takes about 20 s per image. Same prompt and seed:
+Four models are recommended, each for something else. **Krea 2** looks the most like a photo and is the fastest, about 18 s per image. **MOSS-Image** is strongest at lettering and layout, about 57 s, under Apache-2.0. **Qwen-Image-2512** gets details and construction right, about 100 s, also Apache-2.0. **FLUX 3 Image Klein** takes about 28 s and edits a picture while keeping the rest intact. Same prompt and seed, one image each:
 
-![Explorer, full body: Qwen-Image-2512, FLUX 3 and Krea 2](docs/images/compare-krea2.jpg)
+![An astronaut with a mission patch: Qwen-Image-2512, FLUX 3, Krea 2 and MOSS-Image, same prompt and seed](docs/images/compare-astronaut.jpg)
+
+The patch should read "ARES VII": MOSS-Image wrote it the cleanest, Krea 2 wrote "ARES VIII". In the full comparison, only Qwen-Image-2512 set a pocket watch to ten past ten as asked.
 
 Krea 2 also takes an image as a style template: the lighthouse keeps its content and takes on the watercolor or the woodcut.
 
@@ -98,7 +114,7 @@ Krea 2 also takes an image as a style template: the lighthouse keeps its content
 
 ![Crate with stencilled lettering: FLUX 3 and Qwen-Image-2512](docs/images/compare-crate.jpg)
 
-MOSS-Image writes posters and signs letter-perfect, also under Apache-2.0, in about 51 s per image. With its 50 steps the crate's rope handles pass through drilled holes; with the 25 of ComfyUI's template they hung without a hold in one of three images:
+MOSS-Image writes posters and signs letter-perfect. With its 50 steps the crate's rope handles pass through drilled holes; with the 25 of ComfyUI's template they hung without a hold in one of three images:
 
 ![MOSS-Image: a poster with lettering, a crate with 25 and with 50 steps](docs/images/moss-image-en.jpg)
 
@@ -122,9 +138,9 @@ Make a picture wider or taller, and NVAI-open paints the new border to match. Or
 
 ### Restore old photos
 
-Scratches, dust, tears, stains and fading go, the photo gets color if you like, and SeedVR2 sharpens and enlarges it. "Thorough" redraws the whole photo, which suits overall aging such as water stains and fading; "Gentle" only replaces the damaged spots and keeps sharpness and faces exactly as they are, which suits dust, scratches and tears on an otherwise good photo. "Automatic" (the default) lets the image model look at the photo and choose; it picked the better one on 20 of 21 test photos. Colorizing takes only the color from FLUX 3, brightness and detail stay the photo's. Known colors in the hints make it more accurate. NVAI-open for Mac (0.4.6) restores and colorizes too, always thoroughly and without sharpening. Details: [docs/MODELS.md](docs/MODELS.md#new-in-0511).
+Scratches, dust, tears, stains and fading go, the photo gets color if you like, and SeedVR2 sharpens and enlarges it. "Thorough" redraws the whole photo, which suits overall aging such as water stains and fading; "Gentle" only replaces the damaged spots and keeps sharpness and faces exactly as they are, which suits dust, scratches and tears on an otherwise good photo. "Automatic" (the default) lets the image model look at the photo and choose; it picked the better one on 20 of 21 test photos. Colorizing takes only the color from FLUX 3, brightness and detail stay the photo's. Known colors in the hints make it more accurate. NVAI-open for Mac (0.4.7) does all of it natively on Apple Silicon: "Automatic" with Qwen3.5 4B, sharpening with SeedVR2 3B (on a Mac with 8 GB, doubling a 1 MP photo takes about 9 minutes). Details: [docs/MODELS.md](docs/MODELS.md#new-in-0511).
 
-![Iwo Jima 1945: original and restored and colorized](docs/images/restore-colorize.jpg)
+![An aged test photo, restored and colorized by NVAI-open, next to the color original it was aged from](docs/images/restore-car.jpg)
 
 ### Expand prompt
 
@@ -139,8 +155,9 @@ Every tab in NVAI-open has a **Recommended settings** box with what was measured
 - **Images:** choose the size by the silhouette (standing figure 832 × 1216, vehicle 1216 × 832), write full English sentences with the style first, and make 4 images at once to pick from.
 - **Krea 2:** name the framing ("medium shot from the waist up, his whole head inside the frame"); without it the head was cut off in 3 of 3 test images.
 - **MOSS-Image:** describe the finished picture and put the text in quotation marks with position and typeface; leave it on 50 steps.
-- **Video:** name loud sounds explicitly, sounds described as soft come out almost inaudible. For a fixed shot write "Static camera, a locked-off medium shot".
+- **Video:** name loud sounds explicitly, sounds described as soft come out almost inaudible. For a fixed shot write "Static camera, a locked-off medium shot". Leave "Lossless copy for editing" on if you cut the clips later; it costs about 32 MB per second at 1080p.
 - **3D:** one object on a plain background, without floor or shadow; both would end up in the mesh.
+- **FLUX 3 and LTX-2.5:** accept the license on Hugging Face and store a read token under "Models"; the model card shows whether access works. Step by step: [docs/HUGGINGFACE.md](docs/HUGGINGFACE.md)
 - **Old photos:** leave it on "Automatic"; it chooses "Thorough" for overall aging (water stains, crack networks) and "Gentle" for separate damage on an otherwise good photo (dust, scratches, tears). Put known colors into the hints ("his suit is dark brown") and compare the two variants at full size.
 
 The same list with the measurements, written for Claude Code: [docs/CLAUDE_CODE.md](docs/CLAUDE_CODE.md#recommended-settings-at-a-glance)
@@ -157,13 +174,13 @@ Then just ask: "Make a weathered wooden barrel as a 3D model and put it into Ass
 
 ### Graphics cards and uncensored models
 
-NVAI-open picks the right model versions for your card: NVFP4 on an RTX 50, INT8 on RTX 20, 30 and 40 (on a slow connection such as a riser, NVFP4 where only that fits into the memory). With several cards it uses the strongest one. AMD Radeon works experimentally; testers are very welcome in [#2](https://github.com/Mantux775/NVAI-open/issues/2). Details: [docs/INSTALL.md](docs/INSTALL.md)
+NVAI-open picks the right model versions for your card: NVFP4 on an RTX 50, INT8 on RTX 20, 30 and 40 (on a slow connection such as a riser, NVFP4 where only that fits into the memory). With several cards it uses the strongest one. AMD Radeon works experimentally (PyTorch with ROCm 10; on a Radeon RX 9000 the FP8 and bf16 versions); testers are very welcome in [#2](https://github.com/Mantux775/NVAI-open/issues/2). Details: [docs/INSTALL.md](docs/INSTALL.md)
 
 NVAI-open has no content filter of its own. The model list marks every model as censored, partly censored or uncensored, and uncensored ones such as Chroma, Pony and NoobAI are one click away. More, including LoRAs from Hugging Face and Civitai, under "Models" → "Search models and LoRAs". Respect the law and each model's license; the FLUX 3 license, for example, requires a review of every image before it is published. Overview: [docs/MODELS.md](docs/MODELS.md#censored-or-uncensored)
 
 ### Mac app, PhotoCraft add-on, iOS
 
-- **Mac:** a native app for Apple Silicon with FLUX.2 Klein: generate, refine, fill, reference images, expand prompts.
+- **Mac:** a native app for Apple Silicon with FLUX.2 Klein and Z-Image Turbo: generate, refine, fill, reference images, expand prompts, LoRAs, restore old photos, music and sounds with Stable Audio 3 (30 seconds in about 13 seconds on an M1), and short videos with LTX-Video 2B from text or a start image (2 seconds at 768 × 512 in about 95 seconds on an M1 with 8 GB).
 - **[PhotoCraft](https://github.com/storytold/photocraft) add-on:** select an area in this great open-source photo editor, fill it, rework it or restore it, and the result comes back as a layer. Needs PhotoCraft 0.10.0 or newer. Thanks to the PhotoCraft developers for such a well-scriptable editor.
 - **iOS (closed beta):** a 3D scanner that turns photos of real objects into models. Tell me in an issue if you would use it.
 
@@ -187,6 +204,7 @@ The code is under the [MIT License](LICENSE): do whatever you want with it. Thir
 - [docs/INSTALL.md](docs/INSTALL.md): installing, building from source, the PhotoCraft add-on
 - [docs/MODELS.md](docs/MODELS.md): the models in detail, prompt tips, test results
 - [docs/PHOTO_TO_VIDEO.md](docs/PHOTO_TO_VIDEO.md): from a photo to a video, step by step
+- [docs/STUDIO.md](docs/STUDIO.md): the Studio, whole videos from scenes
 - [docs/CLAUDE_CODE.md](docs/CLAUDE_CODE.md): using NVAI-open from Claude Code
 - [photocraft-addon/](photocraft-addon/): source of the PhotoCraft add-on
 
@@ -216,7 +234,8 @@ Getestet ist sie auf meiner eigenen Hardware: Windows mit RTX 5060 Ti (16 GB) un
 
 - **Bilder:** FLUX 3, Qwen-Image-2512, Krea 2, MOSS-Image und viele weitere. Mit Referenzbildern bearbeiten, Bereiche füllen, Bilder erweitern.
 - **Video mit Ton:** LTX-2.5 macht Bild und Ton in einem Durchgang, samt Sprache, bis 20 s und 1080p.
-- **Musik und Sounds:** Lieder mit Gesang, instrumentale Musik bis 5 Minuten, Soundeffekte.
+- **Studio:** ein ganzes Video aus Szenen komponieren, schneiden und mit dem Encoder der Grafikkarte exportieren.
+- **Musik und Sounds:** instrumentale Musik bis 5 Minuten, Soundeffekte.
 - **3D-Modelle:** aus einem Bild ein texturiertes Modell für Unity, Blender oder jede Engine.
 - **Alte Fotos:** Kratzer, Risse und Wasserflecken entfernen, einfärben, schärfen.
 - **Ein paar Worte reichen:** „Prompt ausbauen“ schreibt die volle Beschreibung für dich.
@@ -226,7 +245,7 @@ Getestet ist sie auf meiner eigenen Hardware: Windows mit RTX 5060 Ti (16 GB) un
 
 ### Vom Porträt zum Video
 
-![Ein Porträt, das Startbild von FLUX 3 und drei Frames aus dem Video von LTX-2.5](docs/images/photo-video-chain-de.jpg)
+![Ein Foto, das Startbild von FLUX 3 und zwei Bilder aus dem Video von LTX-2.5](docs/images/photo-to-video-captain-de.jpg)
 
 1. **Generieren → Bild:** ein Porträt erzeugen oder das Foto eines Menschen nehmen, der damit einverstanden ist.
 2. **Generieren → Video:** das Porträt als Startbild wählen.
@@ -234,6 +253,20 @@ Getestet ist sie auf meiner eigenen Hardware: Windows mit RTX 5060 Ti (16 GB) un
 4. **Prompt:** beschreiben, was sich bewegt, was die Kamera macht und was die Person sagt. LTX-2.5 macht daraus das Video mit Sprache und Ton.
 
 Schritt für Schritt mit Screenshots: [docs/de/FOTO_ZU_VIDEO.md](docs/de/FOTO_ZU_VIDEO.md)
+
+### Studio: ganze Videos aus Szenen
+
+Ein Schnittplatz über den ganzen Bildschirm für ganze Videos. Oben komponierst du: Szenen mit Prompt auf Bahnen für Bild, Sprecher, Musik und Klang, dazu Marker, die sagen, was wohin kommt. Unten schneidest du die echten Clips: schneiden, trimmen, überblenden, Lautstärke. „Szenen erzeugen“ macht alle Clips, Standbilder und Musikstücke mit deinen lokalen Modellen, „Übernehmen“ legt die Takes in den Schnitt, und der Export nutzt den Video-Encoder deiner Grafikkarte, in der Lautheit von YouTube.
+
+![Das Studio: links das Material, in der Mitte der Monitor, rechts die Projekteinstellungen, unten Komposition und Schnitt](docs/images/studio-de.jpg)
+
+- **Marker:** Ein Anschluss-Marker lässt einen Clip mit dem letzten Bild des vorigen beginnen, so gehen zwei Einstellungen nahtlos ineinander über; Übergang-Marker setzen Überblendungen; ein KI-Auftrag hinterlässt Claude eine Notiz in der Zeitleiste.
+- **Material:** alles, was du erzeugt hast, als kompakte Liste mit Suche. Ein Klick spielt die Datei im Monitor ab, auf eine Spur gezogen wird sie zum Clip, gelöscht wird sie direkt dort.
+- **Hochwertiges 1080p:** Videoszenen laufen in der höchsten Qualität von LTX-2.5, jedes KI-Video wird zusätzlich verlustfrei aufbewahrt, und komprimiert wird erst beim Export: gemessen 42,3 statt 37,7 dB PSNR bei einem YouTube-Export.
+- **Export:** YouTube 1080p und 4K, Shorts, AV1, ein verlustfreier Master (MKV) oder ProRes 4444 für andere Schnittprogramme.
+- **Claude Code** baut dir das ganze Video per MCP, während du im Studio zusiehst.
+
+Schritt für Schritt: [docs/de/STUDIO.md](docs/de/STUDIO.md)
 
 ### Video mit Ton
 
@@ -262,9 +295,11 @@ Schrift übersteht den Weg zum Mesh nicht von allein. „Vorderseite aus dem Bil
 
 ### Bilder
 
-FLUX 3 Image Klein ist schnell und bearbeitet ein Bild, ohne den Rest zu verändern. Qwen-Image-2512 ist am besten bei Schrift und Konstruktion, und seine Lizenz (Apache-2.0) erlaubt fast alles. Krea 2 wirkt am ehesten wie ein Foto und braucht rund 20 s je Bild. Gleicher Prompt und Seed:
+Vier Modelle sind empfohlen, jedes für etwas anderes. **Krea 2** wirkt am ehesten wie ein Foto und ist am schnellsten, rund 18 s je Bild. **MOSS-Image** ist am stärksten bei Schrift und Layout, rund 57 s, unter Apache-2.0. **Qwen-Image-2512** trifft Details und Konstruktion, rund 100 s, ebenfalls Apache-2.0. **FLUX 3 Image Klein** braucht rund 28 s und bearbeitet ein Bild, ohne den Rest zu verändern. Gleicher Prompt und Seed, je ein Bild:
 
-![Entdeckerin, ganze Figur: Qwen-Image-2512, FLUX 3 und Krea 2](docs/images/compare-krea2.jpg)
+![Eine Astronautin mit Aufnäher: Qwen-Image-2512, FLUX 3, Krea 2 und MOSS-Image, gleicher Prompt und Seed](docs/images/compare-astronaut-de.jpg)
+
+Auf dem Aufnäher soll „ARES VII“ stehen: MOSS-Image schrieb es am saubersten, Krea 2 schrieb „ARES VIII“. Im ganzen Vergleich stellte nur Qwen-Image-2512 eine Taschenuhr wie verlangt auf zehn nach zehn.
 
 Krea 2 nimmt auch ein Bild als Stilvorlage: Der Leuchtturm behält seinen Inhalt und wird zum Aquarell oder zum Holzschnitt.
 
@@ -272,7 +307,7 @@ Krea 2 nimmt auch ein Bild als Stilvorlage: Der Leuchtturm behält seinen Inhalt
 
 ![Kiste mit Schablonenschrift: FLUX 3 und Qwen-Image-2512](docs/images/compare-crate.jpg)
 
-MOSS-Image schreibt Plakate und Schilder buchstabengenau, ebenfalls unter Apache-2.0, in rund 51 s je Bild. Mit seinen 50 Schritten laufen die Seilgriffe der Kiste durch Bohrungen; mit den 25 aus ComfyUIs Vorlage hingen sie in einem von drei Bildern ohne Halt:
+MOSS-Image schreibt Plakate und Schilder buchstabengenau. Mit seinen 50 Schritten laufen die Seilgriffe der Kiste durch Bohrungen; mit den 25 aus ComfyUIs Vorlage hingen sie in einem von drei Bildern ohne Halt:
 
 ![MOSS-Image: Plakat mit Schrift, Kiste mit 25 und mit 50 Schritten](docs/images/moss-image-de.jpg)
 
@@ -296,9 +331,9 @@ Ein Bild breiter oder höher machen, und NVAI-open malt den neuen Rand passend d
 
 ### Alte Fotos restaurieren
 
-Kratzer, Staub, Risse, Flecken und Ausbleichen verschwinden, auf Wunsch bekommt das Foto Farbe, und SeedVR2 schärft und vergrößert es. „Gründlich“ rechnet das ganze Foto neu, das passt zu flächiger Alterung wie Wasserflecken und Ausbleichen; „Schonend“ ersetzt nur die beschädigten Stellen und lässt Schärfe und Gesichter genau, wie sie waren, das passt zu Staub, Kratzern und Rissen auf einem sonst guten Foto. „Automatisch“ (Vorgabe) lässt das Bildmodell das Foto ansehen und wählen; bei 20 von 21 Testfotos traf es die bessere Art. Beim Einfärben kommt nur die Farbe von FLUX 3, Helligkeit und Detail bleiben die des Fotos. Bekannte Farben in den Hinweisen machen es genauer. NVAI-open für Mac (0.4.6) restauriert und färbt ebenfalls ein, immer gründlich und ohne Schärfen. Mehr dazu: [docs/de/MODELLE.md](docs/de/MODELLE.md#neu-in-0511).
+Kratzer, Staub, Risse, Flecken und Ausbleichen verschwinden, auf Wunsch bekommt das Foto Farbe, und SeedVR2 schärft und vergrößert es. „Gründlich“ rechnet das ganze Foto neu, das passt zu flächiger Alterung wie Wasserflecken und Ausbleichen; „Schonend“ ersetzt nur die beschädigten Stellen und lässt Schärfe und Gesichter genau, wie sie waren, das passt zu Staub, Kratzern und Rissen auf einem sonst guten Foto. „Automatisch“ (Vorgabe) lässt das Bildmodell das Foto ansehen und wählen; bei 20 von 21 Testfotos traf es die bessere Art. Beim Einfärben kommt nur die Farbe von FLUX 3, Helligkeit und Detail bleiben die des Fotos. Bekannte Farben in den Hinweisen machen es genauer. NVAI-open für Mac (0.4.7) kann alles davon nativ auf Apple Silicon: „Automatisch“ mit Qwen3.5 4B, Schärfen mit SeedVR2 3B (auf einem Mac mit 8 GB dauert das Doppelte eines 1-MP-Fotos rund 9 Minuten). Mehr dazu: [docs/de/MODELLE.md](docs/de/MODELLE.md#neu-in-0511).
 
-![Iwo Jima 1945: Original sowie restauriert und eingefärbt](docs/images/restore-colorize-de.jpg)
+![Ein gealtertes Testfoto, von NVAI-open restauriert und eingefärbt, neben der Farbvorlage, aus der es gealtert wurde](docs/images/restore-car-de.jpg)
 
 ### Prompt ausbauen
 
@@ -313,8 +348,9 @@ In jedem Reiter von NVAI-open stehen unter **Empfohlene Einstellungen** die geme
 - **Bilder:** das Format nach der Silhouette wählen (stehende Figur 832 × 1216, Fahrzeug 1216 × 832), ganze englische Sätze mit dem Stil vorn schreiben und 4 Bilder auf einmal zum Auswählen machen.
 - **Krea 2:** den Bildausschnitt nennen („medium shot from the waist up, his whole head inside the frame“); ohne fehlte im Test in 3 von 3 Bildern der Kopf.
 - **MOSS-Image:** das fertige Bild beschreiben und die Schrift in Anführungszeichen mit Ort und Schriftart angeben; bei 50 Schritten lassen.
-- **Video:** laute Geräusche ausdrücklich nennen, leise beschriebene kommen fast unhörbar. Für eine feste Einstellung „Static camera, a locked-off medium shot“ schreiben.
+- **Video:** laute Geräusche ausdrücklich nennen, leise beschriebene kommen fast unhörbar. Für eine feste Einstellung „Static camera, a locked-off medium shot“ schreiben. „Verlustfreie Kopie für den Schnitt“ anlassen, wenn du die Clips später schneidest; kostet rund 32 MB je Sekunde bei 1080p.
 - **3D:** ein Objekt vor schlichtem Hintergrund, ohne Boden und Schatten; beides landet sonst im Mesh.
+- **FLUX 3 und LTX-2.5:** die Lizenz auf Hugging Face annehmen und unter „Modelle“ einen Token mit Leserecht eintragen; die Modellkarte zeigt, ob der Zugriff klappt. Schritt für Schritt: [docs/de/HUGGINGFACE.md](docs/de/HUGGINGFACE.md)
 - **Alte Fotos:** auf „Automatisch“ lassen; es wählt „Gründlich“ bei flächiger Alterung (Wasserflecken, Rissnetze) und „Schonend“ bei einzelnen Schäden auf einem sonst guten Foto (Staub, Kratzer, Risse). Bekannte Farben in die Hinweise („his suit is dark brown“) und die zwei Varianten in voller Größe vergleichen.
 
 Dieselbe Liste mit den Messwerten, geschrieben für Claude Code: [docs/CLAUDE_CODE.md](docs/CLAUDE_CODE.md#recommended-settings-at-a-glance) (englisch)
@@ -331,13 +367,13 @@ Dann einfach sagen: „Mach ein verwittertes Holzfass als 3D-Modell und leg es n
 
 ### Grafikkarten und unzensierte Modelle
 
-NVAI-open wählt die passenden Modellfassungen für deine Karte: NVFP4 auf einer RTX 50, INT8 auf RTX 20, 30 und 40 (an einem langsamen Anschluss wie einem Riser NVFP4, wenn nur das in den Speicher passt). Mit mehreren Karten rechnet die stärkste. AMD Radeon läuft experimentell; Tester sind in [#2](https://github.com/Mantux775/NVAI-open/issues/2) sehr willkommen. Details: [docs/de/INSTALL.md](docs/de/INSTALL.md)
+NVAI-open wählt die passenden Modellfassungen für deine Karte: NVFP4 auf einer RTX 50, INT8 auf RTX 20, 30 und 40 (an einem langsamen Anschluss wie einem Riser NVFP4, wenn nur das in den Speicher passt). Mit mehreren Karten rechnet die stärkste. AMD Radeon läuft experimentell (PyTorch mit ROCm 10; auf einer Radeon RX 9000 die FP8- und bf16-Fassungen); Tester sind in [#2](https://github.com/Mantux775/NVAI-open/issues/2) sehr willkommen. Details: [docs/de/INSTALL.md](docs/de/INSTALL.md)
 
 NVAI-open hat keinen eigenen Inhaltsfilter. Die Modellliste kennzeichnet jedes Modell als zensiert, teilweise zensiert oder unzensiert, und unzensierte wie Chroma, Pony und NoobAI sind einen Klick entfernt. Weitere, auch LoRAs von Hugging Face und Civitai, unter „Modelle“ → „Modelle und LoRAs suchen“. Gesetze und die Lizenz des Modells gelten; die FLUX-3-Lizenz etwa verlangt, jedes Bild vor der Veröffentlichung zu prüfen. Überblick: [docs/de/MODELLE.md](docs/de/MODELLE.md#zensiert-oder-unzensiert)
 
 ### Mac-App, PhotoCraft-Add-on, iOS
 
-- **Mac:** eine native App für Apple Silicon mit FLUX.2 Klein: generieren, überarbeiten, füllen, Referenzbilder, Prompt ausbauen.
+- **Mac:** eine native App für Apple Silicon mit FLUX.2 Klein und Z-Image Turbo: generieren, überarbeiten, füllen, Referenzbilder, Prompt ausbauen, LoRAs, alte Fotos restaurieren, Musik und Klänge mit Stable Audio 3 (30 Sekunden in rund 13 Sekunden auf einem M1) sowie kurze Videos mit LTX-Video 2B aus Text oder einem Startbild (2 Sekunden in 768 × 512 in rund 95 Sekunden auf einem M1 mit 8 GB).
 - **Add-on für [PhotoCraft](https://github.com/storytold/photocraft):** in diesem tollen Open-Source-Bildeditor einen Bereich auswählen, füllen, überarbeiten oder restaurieren, das Ergebnis kommt als Ebene zurück. Braucht PhotoCraft ab 0.10.0. Danke an die PhotoCraft-Entwickler für einen so gut steuerbaren Editor.
 - **iOS (geschlossene Beta):** ein 3D-Scanner, der aus Fotos echter Gegenstände Modelle macht. Schreibt mir gern in einem Issue, wenn ihr ihn nutzen würdet.
 
@@ -361,5 +397,6 @@ Der Code steht unter der [MIT-Lizenz](LICENSE): Jeder darf damit machen, was er 
 - [docs/de/INSTALL.md](docs/de/INSTALL.md): Installation, Bauen aus dem Quelltext, PhotoCraft-Add-on
 - [docs/de/MODELLE.md](docs/de/MODELLE.md): die Modelle im Detail, Prompt-Tipps, Testergebnisse
 - [docs/de/FOTO_ZU_VIDEO.md](docs/de/FOTO_ZU_VIDEO.md): vom Foto zum Video, Schritt für Schritt
+- [docs/de/STUDIO.md](docs/de/STUDIO.md): das Studio, ganze Videos aus Szenen
 - [docs/CLAUDE_CODE.md](docs/CLAUDE_CODE.md): NVAI-open aus Claude Code nutzen (englisch)
 - [photocraft-addon/](photocraft-addon/): Quelltext des PhotoCraft-Add-ons

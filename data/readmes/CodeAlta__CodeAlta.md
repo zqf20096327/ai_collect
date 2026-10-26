@@ -1,6 +1,6 @@
 # CodeAlta [![ci](https://github.com/CodeAlta/CodeAlta/actions/workflows/ci.yml/badge.svg)](https://github.com/CodeAlta/CodeAlta/actions/workflows/ci.yml) [![NuGet](https://img.shields.io/nuget/v/CodeAlta.svg?label=CodeAlta)](https://www.nuget.org/packages/CodeAlta/) [![NuGet](https://img.shields.io/nuget/v/CodeAlta.Tui.svg?label=CodeAlta.Tui)](https://www.nuget.org/packages/CodeAlta.Tui/) [![NuGet](https://img.shields.io/nuget/v/CodeAlta.Cli.svg?label=CodeAlta.Cli)](https://www.nuget.org/packages/CodeAlta.Cli/)
 
-CodeAlta is an open-source workspace for AI coding agents, local code, terminals and Git. It runs on Windows, macOS and Linux, with a desktop app and a terminal UI.
+CodeAlta is an open-source workspace for AI coding agents, local code, terminals and Git. It runs on Windows, macOS and Linux, with a desktop app, a terminal UI and a command line.
 
 **No telemetry:** CodeAlta does not send usage analytics to its developers.
 
@@ -60,7 +60,7 @@ CodeAlta Desktop brings together:
 - **Plugins**: ask agents to build trusted local .NET canvases, dialogs, tools, commands and buttons for one project or the whole workspace.
 - **Local statistics**: track activity, models, tokens, costs, tool use, skills and MCP tools by project, session or sub-agent, all on your computer.
 - **Context usage**: see context pressure as a ring beside the prompt and when the prompt cache expires; inspect the last operation and session-wide token usage and costs.
-- **Spaces**: give each kind of work its own setup: its projects and chats, providers and accounts (a second Claude account too), MCP servers, skills, agent prompts and plugins, and the Git, GitHub, Jira and command line (Azure, AWS, kubectl…) identity its agents use. Switch spaces while agents keep working.
+- **Spaces**: give each kind of work its own setup: its projects and chats, providers and accounts (a second Claude account too), MCP servers, skills, agent prompts and plugins, and the Git, GitHub, Jira and command line (Azure, AWS, kubectl…) identity its agents use. Switch spaces while agents keep working. Inside a space, nested labels group the projects in the Explorer.
 - **Welcome page**: jump back to recent projects and sessions, with useful shortcuts.
 - **Built-in documentation**: read the guide beside your work, or ask an agent to help.
 - **Model choice**: use Claude Code, Codex or GitHub Copilot subscriptions, or APIs, with several accounts of the same provider; choose provider, model and reasoning effort per session.
@@ -68,6 +68,7 @@ CodeAlta Desktop brings together:
 - **Model tiers & fallback**: pick Complex, Standard or Quick instead of a model, and optionally [go on with the next model of the tier](https://codealta.github.io/docs/model-tiers/) when a provider runs out of quota or goes down.
 - **Claude Code with VS Code**: [continue in CodeAlta](https://codealta.github.io/docs/sessions/claude-code/) the Claude Code sessions you started in VS Code or a terminal, and open CodeAlta's in VS Code in one click.
 - **Permissions & visibility**: set each session to ask first, accept edits or run freely, and turn off tools a session should not have, such as the shell; inspect tool inputs, outputs, file changes and live commands.
+- **[Sandbox](https://codealta.github.io/docs/sessions/sandbox/)**: run the commands and file tools of a session in a container of the operating system, built on Microsoft's [MXC](https://github.com/microsoft/mxc), for every session or only for a provider, a model, a space or a project: it writes in its project, reaches the hosts you allow, and never reads your credentials.
 - **Agent prompts**: plan, build, review or define your own roles.
 - **Skills & MCP**: bring in skills, tools and services, and the skills MCP servers publish, loaded once you approve them; the views of [MCP Apps](https://codealta.github.io/docs/plugins/mcp/#views-of-mcp-apps) show in the conversation; the skills used most come first in the prompt, and hundreds of them stay cheap.
 - **Command line**: run a prompt to its end with [`altacli`](https://codealta.github.io/docs/command-line/) from a script, a CI job or a benchmark, with exit codes and a JSON Lines trace in the ACP format, or serve CodeAlta to an editor as an ACP agent; its sessions show in the app as they run.

@@ -1,0 +1,275 @@
+# Abliteration — Complete Handbook
+
+**[Read the complete interactive handbook](https://adybag14-cyber.github.io/Abliteration/handbook/)** — dedicated chapter pages, searchable reference material, visual companions, and source-linked examples. [Website and contribution guide](docs/handbook-site.md).
+
+**Goal:** the most complete abliteration guide on the internet — every major **method**, **setup**, **bleeding-edge technique**, and **runnable script**, from Arditi 2024 through ORBA / COSMIC / SOM / SVD (2025–2026).
+
+Living handbook for **LLM abliteration** (weight-level refusal-direction surgery) plus **agentic security** stacks for factory firmware QA, pentest labs, and [CyberGym](https://cybergym.io) evaluation.
+
+**First hour (no GPU):** download one unique [cxx-nightly](https://github.com/adybag14-cyber/Abliteration/releases/tag/cxx-nightly) archive — Windows `abliterate-cxx-windows-x64-msvc.zip`, Linux `abliterate-cxx-linux-x64-gcc16.tar.gz`, macOS `abliterate-cxx-macos-arm64-llvm.tar.gz` — then Hour 0: `abliterate-cxx guide` → `doctor` → `limits` → `self-check` → `demo`. Hour 0.5: `estimate dim` → `apply orba-directional` → `eval` toys → `recipes`. Walkthrough: [docs/cxx26-researcher-guide.md](docs/cxx26-researcher-guide.md). Paper word → chapter: [docs/paper-term-map.md](docs/paper-term-map.md).
+
+**Then:** [docs/complete-curriculum.md](docs/complete-curriculum.md) · [docs/setup-encyclopedia.md](docs/setup-encyclopedia.md) · [docs/bleeding-edge.md](docs/bleeding-edge.md) · [instructions/method-cookbook.md](instructions/method-cookbook.md)
+
+[![C++26 platform](https://github.com/adybag14-cyber/Abliteration/actions/workflows/cxx26-platform.yml/badge.svg)](https://github.com/adybag14-cyber/Abliteration/actions/workflows/cxx26-platform.yml)
+[![CodeQL](https://github.com/adybag14-cyber/Abliteration/actions/workflows/codeql.yml/badge.svg)](https://github.com/adybag14-cyber/Abliteration/actions/workflows/codeql.yml)
+
+> **New to the subject?** Open the [interactive Abliteration Field Guide](https://adybag14-cyber.github.io/Abliteration/#lab) — PathFinder defaults to the C++26 toy lab with the same unique nightly filenames. Then the six-step checklist, method spider diagram, searchable atlas (DIM / ORBA / COSMIC), and evaluation-gate simulator.
+
+The Pages guide now includes checksum-first commands for Windows, Linux, and macOS plus a searchable [72-record primary-source observatory](https://adybag14-cyber.github.io/Abliteration/#research). Repository policy: [contributing](CONTRIBUTING.md) · [security](SECURITY.md) · [citation](CITATION.cff).
+
+
+## October 2026: adaptive methods and huihui evidence
+
+The [October research map](docs/research-october-2026.md) adds eight late-September/early-October papers, an [adaptive-intervention and ARA guide](methods/adaptive-interventions-2026.md), and [huihui-ai checkpoint evidence](docs/tools/huihui-ai.md) with eight pinned model cards. It separates reported methods, defensive results, stable releases and development code. The older snapshots and measured MiniCPM5 results remain intact.
+
+## September 2026: selective interventions and a measured MiniCPM5 example
+
+The original methods, references, and August 50-paper catalog remain available.
+This edition adds [14 primary records](docs/research-september-2026.md), a
+[selective-method guide](docs/selective-methods-2026.md), and an
+[executed MiniCPM5-1B study](docs/minicpm5-selective-study.md). The
+[shadcn/ui planner](https://adybag14-cyber.github.io/Abliteration/#selective) lets
+researchers select layers and tensor families, inspect parameter budgets, copy
+commands, compare methods, and read measured results with uncertainty.
+
+New tools: `selective-checkpoint.py inspect|plan|apply|verify`,
+`run-research-experiment.py`, and C++26 `select-layers` / `norm-preserving`.
+The example changes four of MiniCPM5's 219 tensors (1.89% of stored parameters),
+including an actual selected-tensor SFT control. Tensor digests verify that the
+remaining weights stay identical. This is not a verified 98% refusal-reduction
+claim or a dense-model reproduction of MoE-specific papers.
+
+Research toolkit: [RESEARCH-TOOLS.md](RESEARCH-TOOLS.md). The existing Heretic
+1.4.0 stable pin was rechecked against GitHub and PyPI; it remains current.
+
+## What is abliteration?
+
+**Abliteration** surgically removes refusal-related directions from transformer weights (Arditi et al., 2024). Result: models that **execute** legitimate security and hardware diagnostics instead of false-refusing `wmic`, `nmap`, firmware analysis, and multi-step agent workflows.
+
+> Model surgery, not fine-tuning. Keep pristine base weights.
+
+## Who this is for
+
+| Use case | Doc |
+|----------|-----|
+| Factory new-hardware acceptance | [docs/use-cases/factory-firmware-qa.md](docs/use-cases/factory-firmware-qa.md) |
+| Pentest / DFIR / firmware analysis (authorized) | [docs/use-cases/pentest-cyber-analysis.md](docs/use-cases/pentest-cyber-analysis.md) |
+| CyberGym agent benchmarking | [docs/use-cases/cybergym-benchmark.md](docs/use-cases/cybergym-benchmark.md) |
+| OSINT / Kali / hashcat tool library | [docs/tools/README.md](docs/tools/README.md) |
+| Full agent stack (Heretic + Jarvis v7) | [instructions/agentic-security-stack.md](instructions/agentic-security-stack.md) |
+
+## Repo layout
+
+```
+abliteration/
+├── README.md
+├── cxx/                         # C++26 platform (estimate / apply / hook / eval)
+│   ├── include/abliteration/    # ops.hpp, eval.hpp — tests + CLI share these
+│   ├── src/main.cpp
+│   ├── tests/test_ops.cpp
+│   └── CMakeLists.txt           # CMAKE_CXX_STANDARD 26; -std=c++26
+├── scripts/
+│   ├── fetch-docs.mjs              # 30+ GitHub/arXiv/HF static targets
+│   ├── fetch-research-papers.mjs   # 10 arXiv PDFs + README snapshots
+│   ├── fetch-web-research.mjs      # DuckDuckGo lite + supplemental pages
+│   ├── fetch-heretic-tools.mjs     # sync pinned Heretic configs from GitHub
+│   ├── fetch-hf-heretic-models.mjs # HF heretic/abliterated registry (Playwright)
+│   ├── build-heretic-models-doc.mjs
+│   ├── export-abliteration-lora.py # ΔW → PEFT adapter safetensors
+│   ├── prepare-contrast-set.py      # deterministic splits + leakage/confound audit
+│   ├── compare-abliteration-evals.py # paired bootstrap/McNemar + deploy gates
+│   ├── experiment-manifest.py       # SHA-256 provenance create/verify
+│   ├── test-advanced-tools.py       # regression tests for advanced tools
+│   ├── abliteration_math.py        # DIM / ORBA / subspace operators
+│   ├── estimate-refusal-direction.py
+│   ├── apply-weight-abliteration.py
+│   ├── inference-hook-ablation.py
+│   ├── eval-refusal-rate.py
+│   ├── ralph-validate.mjs          # handbook integrity checks
+│   ├── ralph-loop.mjs              # validate → refresh → re-validate
+│   ├── ralph-next-task.mjs         # pick next dev task from backlog
+│   ├── ralph-turn-end.mjs          # agent turn hook + autostart
+│   ├── ralph-autostart.mjs         # background validate + dev handoff
+│   ├── ralph-autostart-stop.mjs
+│   ├── ralph-continue-on.mjs       # enable headless multi-turn (grok --max-turns)
+│   ├── ralph-continue-off.mjs
+│   ├── ralph-continue-status.mjs
+│   ├── ralph-continue-watch.mjs    # auto-restart watchdog for continuations
+│   ├── ralph-regress.mjs           # pre-commit regression gate for watch/headless/monitor changes
+│   ├── ralph-monitor.mjs           # seed backlog if empty + auto-start watch if idle (supports --loop)
+│   ├── ralph-seed-backlog.mjs      # append next wave of dev-* tasks (dedupes by title)
+│   ├── count-eval-prompts.mjs      # eval corpus line counts
+│   ├── filter-jarvis-eval.py       # export jarvis-safe-eval.jsonl subset
+│   ├── cybergym-eval-stub.py       # CyberGym eval flow + subset generator
+│   ├── generate-platform-examples.py  # regen platform command/prompt JSONL
+│   ├── hardware-tool-gate.py       # from JARVIS v7 — runtime command gate
+│   ├── check_env.py                # GPU / Python env sanity check
+│   ├── ralph-on-session-start.mjs  # Grok hook — refresh handoff
+│   ├── ralph-on-stop.mjs           # Grok hook — log stop + handoff
+│   └── validate-dataset.py
+├── data/
+│   ├── ralph-backlog.json          # agent development task queue
+│   ├── ralph-agent-handoff.md      # next-task prompt for agents
+│   ├── heretic-models-registry.jsonl
+│   ├── eval/                       # deploy eval corpora (11 files — npm run eval:stats)
+│   └── examples/                   # 2,492 commands, 16,782 prompts (generated)
+├── sources/
+│   ├── heretic-tools/           # immutable Heretic config pins (refresh via npm)
+│   ├── jarvis-pack/             # extracted v7 zip (curated)
+│   ├── research/                # pinned arXiv PDFs + text (see research/README.md)
+│   └── fetched/                 # GitHub/doc snapshots (regenerated)
+├── docs/
+│   ├── tools/                   # OSINT, Kali, Windows, macOS, Zig
+│   ├── hardware-command-catalog.md
+│   ├── use-cases/
+│   ├── context7.md
+│   ├── experiment-provenance.md
+│   └── ...
+├── .grok/skills/
+│   ├── ralph-loop/                  # backlog-driven maintenance
+│   ├── abliteration-experiment/     # guarded experiment workflow
+│   └── handbook-research-refresh/   # primary-source refresh + audit
+├── techniques/  methods/  instructions/
+└── references.md
+```
+
+## Handbook surgery helpers (C++26 platform)
+
+The estimate / bake / hook / eval operators ship as a **C++26** CLI (`cxx/`). Students and researchers do not need Python for those techniques.
+
+```bash
+npm run cxx:build
+npm run cxx:test
+npm run cxx:self-check
+# or: cxx/build/abliterate-cxx self-check
+#     cxx/build/abliterate-cxx estimate --mode projected --bad bad.txt --good good.txt
+```
+
+Full reference: [docs/cxx26-platform.md](docs/cxx26-platform.md) · [cxx/README.md](cxx/README.md)
+
+Optional Python twins (`scripts/estimate-refusal-direction.py`, …) remain for notebooks. `export-abliteration-lora.py` is still Python (PEFT safetensors).
+
+## Improve your local model (beginners)
+
+**Start here** if you use Ollama / LM Studio and want fewer refusals:
+
+1. [techniques/safety-guardrail-abliteration-methodology.md](techniques/safety-guardrail-abliteration-methodology.md) — what guardrail removal is (and is not)
+2. [instructions/beginner-reproduction-methodology.md](instructions/beginner-reproduction-methodology.md) — reproducible procedure + rollback
+3. [instructions/setup-environment.md](instructions/setup-environment.md) — install Python + GPU check
+4. [instructions/beginner-local-model-guide.md](instructions/beginner-local-model-guide.md) — operational Heretic walkthrough (tracks A/B/C)
+5. [instructions/run-locally-ollama-lmstudio.md](instructions/run-locally-ollama-lmstudio.md) — GGUF + Ollama import
+
+Optional: [instructions/quickstart.md](instructions/quickstart.md) — test with hooks before permanent edit.
+
+### Run the interactive guide locally
+
+```bash
+npm install
+npm run dev          # local Vite development server
+npm run test:site    # interaction tests
+npx playwright install chromium  # one-time browser install
+npm run test:e2e     # real Chromium: desktop + mobile + screenshots
+npm run audit:live:puppeteer  # audit the public Pages URL + write PNG/JSON evidence
+npm run build        # static GitHub Pages artifact in dist/
+```
+
+The site uses shadcn-style local components, Radix primitives, CSS-variable theming, accessible motion, and a repository-relative Vite base for GitHub Pages. Playwright stores its HTML report, traces, and inspectable desktop/mobile captures under `artifacts/playwright/`; the independent Puppeteer live audit writes full-page and focused production screenshots plus `audit.json` under `artifacts/puppeteer-live/` (both are gitignored). Publishing is handled by [`.github/workflows/pages.yml`](.github/workflows/pages.yml): Playwright verifies the artifact before deployment, then Puppeteer opens the deployed public URL and retains a second evidence bundle.
+
+**Research map (2024–2026 papers + repo PDFs):** [50-paper 2026 update](docs/research-2026-update.md) · [machine catalog](sources/research/catalog-2026.json) · [beginner map](docs/refusal-research-beginners-guide.md) · [offline corpus](sources/research/README.md) · `npm run fetch:research-papers`
+
+**Leading edge:** [techniques/multi-category-refusal-beginners-guide.md](techniques/multi-category-refusal-beginners-guide.md) — QCRI 2026 · [docs/defenses-against-abliteration.md](docs/defenses-against-abliteration.md) — what resists surgery
+
+## Quick start paths
+
+| Goal | Start here |
+|------|------------|
+| **Entire curriculum (all methods)** | [docs/complete-curriculum.md](docs/complete-curriculum.md) |
+| **OS / VRAM / tool install matrix** | [docs/setup-encyclopedia.md](docs/setup-encyclopedia.md) |
+| **Bleeding-edge 2025–2026** | [docs/bleeding-edge.md](docs/bleeding-edge.md) |
+| **C++26 estimate / bake / hook / eval** | [docs/cxx26-platform.md](docs/cxx26-platform.md) |
+| **Copy-paste every tool** | [instructions/method-cookbook.md](instructions/method-cookbook.md) |
+| **First local model improvement** | [instructions/beginner-local-model-guide.md](instructions/beginner-local-model-guide.md) |
+| Abliterate a model (reference) | [instructions/heretic-workflow.md](instructions/heretic-workflow.md) |
+| **8 GB GPU / low RAM** | [instructions/low-vram-abliteration.md](instructions/low-vram-abliteration.md) |
+| **LoRA / QLoRA techniques** | [techniques/lora-qlora-abliteration.md](techniques/lora-qlora-abliteration.md) |
+| **Advanced methods (projected, MoE, RDO)** | [instructions/advanced-abliteration-workflow.md](instructions/advanced-abliteration-workflow.md) |
+| **Experimental methods (T25–T33)** | [techniques/advanced-experimental-methods.md](techniques/advanced-experimental-methods.md) |
+| **Contrast design + causal diagnostics** | [methods/contrast-set-design.md](methods/contrast-set-design.md) · [methods/direction-diagnostics-and-localization.md](methods/direction-diagnostics-and-localization.md) |
+| **Statistical comparison + provenance** | [docs/evaluation.md](docs/evaluation.md#paired-statistical-comparison) · [docs/experiment-provenance.md](docs/experiment-provenance.md) |
+| Research landscape & papers | [docs/research-landscape.md](docs/research-landscape.md) |
+| Abliteration tools (PEFT, GGUF, SAE, …) | [docs/tools/abliteration-tooling.md](docs/tools/abliteration-tooling.md) |
+| **Heretic pins + HF model registry** | [docs/tools/heretic-tools-reference.md](docs/tools/heretic-tools-reference.md) |
+| **Model family picker (Qwen/Gemma/Llama)** | [instructions/model-family-guide.md](instructions/model-family-guide.md) |
+| **Thinking models (CoT)** | [instructions/thinking-models-guide.md](instructions/thinking-models-guide.md) |
+| **Eval-driven factory deploy** | [instructions/eval-driven-workflow.md](instructions/eval-driven-workflow.md) |
+| **Troubleshooting** | [instructions/troubleshooting-encyclopedia.md](instructions/troubleshooting-encyclopedia.md) |
+| **Safetensors → GGUF → LoRA toolchain** | [docs/toolchain-safetensors-gguf-lora.md](docs/toolchain-safetensors-gguf-lora.md) |
+| Factory QA agent | [instructions/agentic-security-stack.md](instructions/agentic-security-stack.md) |
+| Hardware commands | [docs/hardware-command-catalog.md](docs/hardware-command-catalog.md) |
+| Security tool catalogs | [docs/tools/README.md](docs/tools/README.md) |
+| Evaluate | [docs/evaluation.md](docs/evaluation.md) |
+
+## Refresh upstream docs & Heretic pins
+
+```bash
+npm install
+npx playwright install chromium firefox   # once
+
+npm run fetch:all                         # Heretic pins + docs + research PDFs + web research + HF registry
+npm run fetch:research-papers             # 10 arXiv PDFs + GitHub READMEs → sources/research/
+npm run fetch:web-research              # curated search snapshots (abliteration toolkits)
+# or:
+npm run fetch:heretic
+npm run fetch:docs
+npm run fetch:hf-models:firefox           # HF blocks bare curl on some networks
+```
+
+Pinned Heretic files: [sources/heretic-tools/IMPORT.md](sources/heretic-tools/IMPORT.md) · Model list: [docs/tools/heretic-models-registry.md](docs/tools/heretic-models-registry.md)
+
+**Validate + develop (Ralph loop):**
+
+```bash
+npm run ralph:next        # pick next backlog task — implement before ending turn
+npm run validate          # links, jsonl, pins, python syntax
+npm run ralph             # validate → refresh → re-validate
+npm run eval:stats        # eval corpus line counts
+npm run eval:jarvis-safe  # export jarvis-safe-eval.jsonl
+npm run eval:cybergym     # CyberGym eval stub (--print-flow)
+npm run contrast:prepare -- <input.jsonl> --output-dir <run-dir>
+npm run eval:compare -- <before.jsonl> <after.jsonl> [frozen gates]
+npm run experiment:manifest -- create|verify ...
+npm run test:advanced-tools # leakage, gate-failure, byte-drift regressions
+npm run cxx:build         # C++26 CLI + tests (-std=c++26)
+npm run cxx:test
+npm run cxx:self-check    # planted-direction / bake / hook / eval
+npm run eval:refusal      # optional Python twin of marker scoring
+npm run ralph:turn-end    # log turn + background daemon (blocks if backlog unfinished)
+npm run ralph:regress     # pre-commit gate for watch/headless/monitor output (validate + ralph-ci + evals + py_compile)
+npm run ralph:monitor     # one-shot: print status, seed if empty, auto-start watch; add -- --loop for continuous
+```
+
+**Turn continuations (autonomous multi-turn agent):**
+
+```bash
+npm run ralph:continue:on           # start headless grok --max-turns (chains turns)
+npm run ralph:continue:watch        # watchdog: auto-restart headless until backlog clear
+npm run ralph:continue:status       # show enabled/mode + pending tasks + pid
+npm run ralph:continue:off          # stop + disable
+npm run ralph:monitor -- --loop     # auto-seed backlog + restart watch (unattended)
+npm run ralph:seed                  # seed next improvement wave manually
+npm run ralph:regress               # pre-commit gate (mandatory before commit after automated dev turns)
+```
+
+See [docs/ralph-turn-continuation.md](docs/ralph-turn-continuation.md) for setup (trusted hooks, /loop TUI alt).
+
+→ [docs/ralph-loop.md](docs/ralph-loop.md) · [docs/agent-development-loop.md](docs/agent-development-loop.md)
+
+GitHub-first references: [references.md](references.md) · Context7: [docs/context7.md](docs/context7.md)
+
+## JARVIS Tool Repair Pack v7
+
+Imported from `jarvis-tool-repair-pack-expanded-v7.zip` — tool-use repair data (48k SFT/DPO rows) and `hardware-tool-gate.py`. Safety-guide noise removed; technical catalog kept. See [sources/jarvis-pack/IMPORT.md](sources/jarvis-pack/IMPORT.md).
+
+## License
+
+Code and documentation: Apache-2.0; see [LICENSE](LICENSE). Third-party tools and papers retain their own licenses.

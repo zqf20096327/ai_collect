@@ -9,7 +9,7 @@
 
 **Type legend:** 🟢 public source / open-source · 🔬 research (paper / benchmark / dataset / framework) · 🟠 commercial with open components · ⚠️ restrictive, non-commercial, or unclear/no license — check before use.
 
-GitHub-hosted entries show static **★ stars** and **last-commit** snapshots; refresh them with `python3 scripts/update_github_metrics.py` before release. Most recently refreshed entry: 2026-10-21. Hugging Face model entries show license, access, and artifact metadata. Ordering within a section favors flagship and actively maintained projects.
+GitHub-hosted entries show static **★ stars** and **last-commit** snapshots; refresh them with `python3 scripts/update_github_metrics.py` before release. Most recently refreshed entry: 2026-10-26. Hugging Face model entries show license, access, and artifact metadata. Ordering within a section favors flagship and actively maintained projects.
 
 ---
 
@@ -153,6 +153,9 @@ Securing the AI agents themselves — auditing coding agents (Claude Code, Codex
   - **Related:** [AgentDojo](https://github.com/ethz-spylab/agentdojo) · [HarmBench](https://github.com/centerforaisafety/HarmBench)
 - **[Agent Security Bench (ASB)](https://github.com/agiresearch/ASB)** 🟢🔬 — Official ICLR 2025 benchmark for evaluating attacks and defenses in LLM-based agents across ten scenarios, including direct and indirect prompt injection, memory poisoning, and defensive strategies. — **note:** research benchmark rather than a production control; reproducing evaluations requires configured target and evaluator models. *(★ 312 · updated 2026-09-30)*
   - **Related:** [AgentDojo](https://github.com/ethz-spylab/agentdojo) · [Agent3Sigma-Canary](https://github.com/antgroup/Agent3Sigma-Canary)
+- **[InjecAgent](https://github.com/uiuc-kang-lab/InjecAgent)** 🟢🔬 — ACL Findings 2024 benchmark of indirect prompt injection against tool-integrated LLM agents, with 1,054 cases spanning 17 user tools and 62 attacker tools. — **note:** historical research reference with no default-branch commits since July 2024; evaluates agent responses to simulated tool outputs rather than production enforcement, and reproduction needs compatible local models or hosted-model credentials. *(★ 180 · updated 2024-07-02)*
+  - **Sources:** [InjecAgent paper](https://aclanthology.org/2024.findings-acl.624/)
+  - **Related:** [AgentDojo](https://github.com/ethz-spylab/agentdojo) · [Agent Security Bench (ASB)](https://github.com/agiresearch/ASB)
 - **[Skill-Inject](https://github.com/aisa-group/skill-inject)** 🟢🔬 — Benchmark for measuring prompt-injection vulnerabilities carried by agent skill files across Claude Code, Codex CLI, and Gemini CLI under multiple safety-policy conditions. — **note:** benchmark artifact that executes controlled malicious skill scenarios; run only in an isolated test environment with synthetic data and accounts. *(★ 99 · updated 2026-07-01)*
   - **Related:** [SkillSpector](https://github.com/NVIDIA/SkillSpector) · [AgentDojo](https://github.com/ethz-spylab/agentdojo)
 - **[AI Security Verification Standard (AISVS)](https://github.com/OWASP/AISVS)** 🔬⚠️ — Stable verification standard defining testable security requirements for AI applications across model lifecycle, supply chain, data handling, agentic systems, and MCP integrations. *(OWASP)* — **note:** security standard and checklist, not an executable scanner; share-alike terms apply to adapted material. *(★ 552 · updated 2026-10-09)*
@@ -300,6 +303,8 @@ Tools for securing model artifacts, serialized ML files, AI/ML supply-chain surf
   - **Related:** [modelscan](https://github.com/protectai/modelscan) · [Fickling](https://github.com/trailofbits/fickling)
 - **[AIsbom](https://github.com/Lab700xOrg/aisbom)** 🟢 — AI software bill of materials tooling for AI/ML supply-chain inventory and provenance metadata. *(★ 81 · updated 2026-09-19)*
   - **Related:** [modelscan](https://github.com/protectai/modelscan) · [model-provenance-kit](https://github.com/cisco-ai-defense/model-provenance-kit)
+- **[model-transparency (model-signing)](https://github.com/sigstore/model-transparency)** 🟢 — Python library and CLI for signing and verifying ML model artifact manifests with Sigstore, signing keys, certificates, or PKCS#11-backed keys. *(Sigstore)* — **note:** verification requires a trusted signer identity and issuer, key, or certificate; signatures establish artifact integrity and signer authenticity, not freedom from backdoors or unsafe model behavior. *(★ 249 · updated 2026-10-23)*
+  - **Related:** [OpenSSF Model Signing Specification](https://github.com/ossf/model-signing-spec) · [model-provenance-kit](https://github.com/cisco-ai-defense/model-provenance-kit)
 - **[model-provenance-kit](https://github.com/cisco-ai-defense/model-provenance-kit)** 🟢 — Toolkit for model-family provenance and fingerprinting across model weights, tokenizers, and architecture signals. *(Cisco AI Defense)* *(★ 108 · updated 2026-09-18)*
   - **Related:** [AIsbom](https://github.com/Lab700xOrg/aisbom)
 - **[pickle-fuzzer](https://github.com/cisco-ai-defense/pickle-fuzzer)** 🟢 — Structure-aware fuzzer for pickle scanners, useful for hardening tools such as modelscan, Fickling, and picklescan. *(Cisco AI Defense)* *(★ 17 · updated 2026-08-03)*
@@ -424,13 +429,4 @@ Hyper-specific AI/ML tools for a single offensive-security, recon, or detection 
   - **Related:** [Open-appsec HTTP attachment (requires separate agent/models/configuration; review their terms)](https://github.com/openappsec/attachment)
 - **[DeepSQLi](https://github.com/gatewayd-io/DeepSQLi)** 🟢⚠️ — 🅐 Deep-learning SQL-injection detector with dataset, trained models, and a Flask Prediction API for GatewayD IDS/IPS integration. *(GatewayD)* — **note:** AGPL-3.0 licensed; defensive detector rather than offensive generator. *(★ 7 · updated 2026-02-21)*
 - **[deepsecrets](https://github.com/ntoskernel/deepsecrets)** 🟢 — Semantic secrets scanner using lexing/parsing, entropy checks, and hashed-known-secret matching across 500+ languages. — **note:** useful narrow detector, but not a trained ML model. *(★ 185 · updated 2026-09-28)*
-- **[VLAI Vulnerability Severity Classifier](https://huggingface.co/CIRCL/vulnerability-severity-classification-roberta-base)** 🟢🔬 — RoBERTa-based vulnerability-severity classifier trained on CIRCL vulnerability scores to assist triage before manual CVSS scoring. *(CIRCL)* *license: CC-BY-4.0 · access: open · artifacts: Safetensors.*
-
----
-
-## AI-Powered SAST & Secure Code Review
-
-Static analysis and secure code review enhanced with LLMs.
-
-- **[Symfony Security Auditor](https://github.com/vinceAmstoutz/symfony-security-auditor)** 🟢 — Symfony-aware source-audit package with attacker/reviewer model passes, confidence filtering, baseline deduplication, and budget-bounded partial results. **Caveat:** reviewer-validated findings are model judgments, not confirmed exploitation. Offline-only mode defaults to false, so hosted providers receive selected source; local inference needs separately provisioned models. Requires PHP 8.3+ and a compatible Symfony version. *(★ 97 · updated 2026-10-04)*
-- **[Clearwing](https://github.com/Lazarus-AI/clearwing)** 🟢 — Agent-driven source-security research pipeline that ranks files, coordinates vulnerability hunting and validation, optionally generates patches, and exports SARIF, JSON, and Markdown findings. **Caveat:** can compile untrusted targets and execute generated proofs or exploits; use isolated authorized environments and explicit spending limits. Hosted models receive source context; local providers are supported. Optional OTLP/Phoenix tracing can export run metadata. Findings need independent verification, and releas
+- **[VLAI Vulnerability Severity Classifier](https://huggingface.co/CIRCL/vulnerability-severity-classification-roberta-base)** 🟢🔬 — RoBERTa-based vulnerability-severity c

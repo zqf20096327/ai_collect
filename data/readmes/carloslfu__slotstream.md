@@ -5,50 +5,70 @@
 
 **Run a 105 GB AI model on a Mac that can't hold it.**
 
-Slotstream runs [Qwen3.8-Flash-Next](https://huggingface.co/pipenetwork/Qwen3.8-Flash-Next-MLX-4bit),
-a 125-billion-parameter open model, on Macs with 16 to 64 GB of memory. It
-keeps most of the model on the SSD and loads the parts it needs as it writes.
+Slotstream is a fully native local AI engine for Apple Silicon Macs, written
+in Swift on Apple's MLX and Metal. It streams model experts from SSD and keeps
+the ones it needs in a memory cache, so the model can be much larger than your
+Mac's RAM. Inference runs on your Mac, offline after the download, with no
+Python runtime or cloud account.
+
+The released engine runs [Qwen3.8-Flash-Next](https://huggingface.co/pipenetwork/Qwen3.8-Flash-Next-MLX-4bit),
+a 125-billion-parameter open model, on Macs with 16 to 64 GB of memory.
 Our 48 GB M5 Pro measured **20.91–23.69 tok/s** across three workloads in
 development tests at a 33 GB memory budget, using the original 4-bit model
 ([results and test conditions](#speed)).
+
+[Get started](#install) · [Model](docs/MODELS.md) · [Speed](#speed) · [Get help](#support)
+
+## Available now
+
+The [latest release, v0.2.30](https://github.com/carloslfu/slotstream/releases/tag/v0.2.30),
+ships the engine and command-line tool. Its default is the original
+Qwen3.8-Flash-Next 4-bit model. The installer below downloads this release.
 
 Chat with it, ask it about pictures, or code with it: `slotstream launch claude`
 starts Claude Code on the local model, and Codex, Pi, opencode and Hermes work
 the same way. Developers can connect their own apps through its Ollama-,
 OpenAI- and Anthropic-compatible APIs or its Swift library.
 
-After a one-time download it works offline, with no Python and no cloud
-account. The whole engine is one native Swift program on Apple's MLX and
-Metal; see [Built native](#built-native). Every published number has a
-recorded method, and the experiments that failed stay in the
-[measurements](MEASUREMENTS.md).
+<a id="in-development"></a>
+<a id="fast-and-smart"></a>
 
-The native Slotstream app now offers **Fast** for everyday work and **Smart**
-for harder tasks. Fast is the default for new installs; existing choices stay
-saved. The engine exposes the same `fast` and `smart` aliases. See
-[choosing a model](docs/MODELS.md) for setup and current limits.
+## One maintained model
 
-The development Mac app also has a **Data** browser for its separate Homes,
-with search, field filters, record details and relationships. Its bundled
-`slotstream-home` command, agent skill and local MCP server use those same
-Homes. See [Homes and integrations](docs/SLOTSTREAM-HOMES.md).
+Slotstream focuses on **Qwen3.8-Flash-Next 4-bit**. The work goes into making
+this capable model useful on a Mac that cannot hold all its weights in RAM:
+SSD streaming, memory use, context and tool use.
 
-[Get started](#install) · [Speed](#speed) · [Guides](#guides) · [Get help](#support)
+We maintain one model at a time. A future successor needs evidence from
+complete tasks on the hardware we support. The [model guide](docs/MODELS.md)
+records the current checkpoint and defaults.
+
+<a id="native-mac-app"></a>
+
+## Earlier experiments
+
+The [Fast and Q2 models](experiments/fast-q2/README.md) and the
+[native Mac app](experiments/mac-app/README.md) are archived. Their source,
+licenses, tests and measured results remain available. Current work focuses
+on the engine, CLI, serving APIs and Swift library.
 
 ## Who it's for
 
-Slotstream is built for Macs that cannot hold the model in memory: **16 to
-64 GB**. That is where the engineering, the measurements and the defaults go,
-so that frontier-class intelligence runs on the Macs most people already own.
-It also runs on 96 GB and larger Macs, where the model fits in memory, but it
-is not optimized for them: engines that keep the whole model in memory report
-faster replies there. See
+Slotstream focuses on Macs with **16 to 64 GB** of memory, where running the
+larger model depends on managing what stays in RAM and what comes from SSD.
+The CLI and APIs connect the model to local chat apps and coding agents.
+Developers can also embed the engine through its Swift library.
+
+The original model also runs on 96 GB and larger Macs, but those are outside
+the optimization target: engines that keep it fully resident report faster
+replies there. See
 [related projects](docs/ENGINEERING.md#related-projects) if that is your Mac.
 
 ## Will it run on my Mac?
 
-You need an **Apple Silicon Mac with at least 16 GB of memory, macOS 14 or
-later, and about 110 GB of free SSD space**. Open About This Mac from the
+For the released engine and its default model, you need an **Apple Silicon
+Mac with at least 16 GB of memory, macOS 14 or later, and about 110 GB of free
+SSD space**. Open About This Mac from the
 Apple menu to check your chip and memory. On an 8 GB Mac even the smallest
 memory plan doesn't fit, so Slotstream refuses to start instead of swapping.
 Windows, Linux and Intel Macs are not supported. The
@@ -56,13 +76,17 @@ Windows, Linux and Intel Macs are not supported. The
 
 ## Speed
 
+These measurements and planning ranges describe the **original
+Qwen3.8-Flash-Next 4-bit model**. Every published result links to
+its method; unsuccessful experiments stay in the [measurements](MEASUREMENTS.md).
+
 `tok/s` means tokens per second; a token is a small piece of text, often part
 of a word. These speeds describe reply generation; loading the model and
 processing the prompt take additional time.
 
 **On October 5, 2026, our 48 GB M5 Pro measured 20.91–23.69 tok/s with the
-original 4-bit model at a 33 GB memory budget.** The development build used the Slotstream
-Desktop startup settings and its existing automatic memory ceiling:
+original 4-bit model at a 33 GB memory budget.** These historical development
+tests used the now-archived Mac app's startup settings and automatic memory ceiling:
 
 | Workload | Median generation speed |
 |---|---:|
@@ -104,7 +128,7 @@ range; other apps and memory pressure pull results down.
 
 | Installed RAM | Estimated warm reply speed | Example automatic context window |
 |---|---|---|
-| 8 GB | **Support coming soon.** The current model doesn't fit yet. | Not available yet |
+| 8 GB | Unsupported by the current memory plan | Not available |
 | 16–<24 GB | ~1–6 tok/s | 32,768 tokens |
 | 24–<48 GB | ~5–16 tok/s | 32,768 through 32 GB; 65,536 at 36 GB |
 | 48–<96 GB | ~15–27 tok/s | 32,768 at 48 GB; 131,072 at 64 GB |
@@ -158,8 +182,8 @@ See the [measurement and its limits](db/records/measurements/release-prefill-2k-
 
 ### Memory and context
 
-**Auto mode picks the memory target, cache size, speculative decoding and
-context window for your Mac.** It takes the largest window in the table above
+For the original model, **Auto mode picks the memory target, cache size,
+speculative decoding and context window for your Mac.** It takes the largest window in the table above
 that still leaves room for speculative decoding and a complete conversation,
 given the memory free at startup, without an unmeasured loss of useful
 expert cache. `slotstream doctor` shows the choice and
@@ -176,7 +200,7 @@ for each memory size.
 
 ## Install
 
-Open Terminal and paste this command:
+To install the released engine, open Terminal and paste this command:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/carloslfu/slotstream/main/install.sh | sh
@@ -210,6 +234,7 @@ again. Follow the [step-by-step setup](docs/GETTING-STARTED.md) for more help.
 
 | What would you like to do? | Guide |
 |---|---|
+| Understand the maintained model and defaults | [Model](docs/MODELS.md) |
 | Chat in Open WebUI or another app | [Connect a chat app](docs/CLIENTS.md) |
 | Ask about a picture | [Use an image](docs/GETTING-STARTED.md#ask-about-a-picture) |
 | Start a coding agent on the model, in one command | [Use coding agents](docs/CODING-AGENTS.md) |
@@ -236,12 +261,12 @@ build instructions, and tests. [Release notes](CHANGELOG.md) show what changed.
 
 ## How it works
 
-Qwen3.8-Flash-Next is a *mixture-of-experts* model: generating each piece of
-text uses only a subset of its expert networks. Slotstream keeps shared
+The model uses a *mixture-of-experts* architecture: generating each
+piece of text uses only a subset of its expert networks. Slotstream keeps shared
 weights in memory and reads the needed experts from SSD into a cache.
 Frequently used experts stay in RAM, reducing repeated disk reads.
 
-The whole model stays available even though it doesn't all fit in memory.
+The whole model stays available even when it doesn't all fit in memory.
 Slotstream chooses a memory target for your Mac and adjusts its cache as
 other apps need room. Cache size changes speed without removing experts
 from the model. The [engineering explanation](docs/ENGINEERING.md#how-it-works)
@@ -251,19 +276,17 @@ covers the implementation.
 
 ## Built native
 
-Slotstream is one native Mac program: the command-line tool, the HTTP server,
-the memory planner, the expert cache and the model itself are Swift on Apple's
-MLX framework and Metal, with Slotstream's own Metal kernels compiled at run
-time where a step needed one (the gated-delta recurrence, the selected
-attention, the expert routing). No Python runtime or interpreter sits between
-a request and the GPU.
+Slotstream is fully native. Swift owns the command-line tool, HTTP server,
+model, memory planner, expert cache and request lifecycle. Apple's MLX and
+Slotstream's own Metal kernels execute the tensor operations on the GPU.
+No Python runtime or interpreter sits between a request and the GPU.
 
-That is deliberate. Built around a small maintained set of models on Apple
-Silicon, each layer is tuned for the one below it: expert records are read from the SSD straight
-into the cache slots the GPU computes from, the memory plan is checked against
+That is deliberate. Built around Qwen3.8-Flash-Next on Apple Silicon,
+each layer is tuned for the one below it: experts are read from SSD
+into a bounded cache, the memory plan is checked against
 what the process really uses, and a governor resizes the cache while other apps
-need room. It is also why the engine ships as one file that installs with one
-command, and why the native Mac app can run it in process. The speed on
+need room. The engine installs with one command and exposes the same native
+runtime through its CLI, serving APIs and Swift library. The speed on
 this page comes from measured mechanisms that this control allows, not from
 the language itself; every published number has a recorded method in the
 [measurements](MEASUREMENTS.md). The trade is that the engine runs only on
@@ -271,9 +294,11 @@ Apple Silicon. Windows and Linux are not supported.
 
 ## Status and limits
 
-- **Not optimized for 96 GB and larger Macs**, where the model fits in memory;
+- **The larger model is not optimized for 96 GB and larger Macs**;
   see [Who it's for](#who-its-for).
 - **One generation at a time:** connected apps share the same running model.
+- **One maintained model:** Qwen3.8-Flash-Next 4-bit. The engine supports
+  text, tools and pictures.
 - **Conversation length is limited:** longer histories take more memory and
   time. Auto mode picks a [window for each memory size](#speed-by-memory), and
   the coding agent guides include the larger window agents need.
@@ -297,8 +322,8 @@ state and temporary work grow only when a request needs them. A short request
 can therefore peak well below the target. The startup report shows the budget,
 expert cache, runtime allowances and safety headroom separately.
 
-Without an explicit target, Auto uses a **33 GB** base ceiling, or **34.6 GB**
-with speculative decoding at the 32,768-token window. This measured default
+For the released CLI's original model, Auto uses a **33 GB** base ceiling,
+or **34.6 GB** with speculative decoding at the 32,768-token window. This measured default
 leaves memory for other apps. To use more, stop any running server and preview
 the plan without loading the model:
 
@@ -317,20 +342,21 @@ longer window. Leave room for macOS and other apps. See the
 
 ### Is Slotstream the fastest way to run this model?
 
-On a Mac that cannot hold the model, 16 to 64 GB, it is the way to run it at
-all, and the engineering goes into making that fast. On 96 GB and larger Macs
-the model fits in memory and engines that keep it there report faster replies.
+Slotstream is built to make the larger model useful on a Mac that cannot
+hold it in memory. Speed depends on the model, memory budget, SSD and workload;
+the measurements above describe the cases tested. On 96 GB and larger Macs,
+engines that keep the original model resident report faster replies.
 See [Who it's for](#who-its-for) and
 [related projects](docs/ENGINEERING.md#related-projects).
 
 ### Why is it written in Swift and not Python?
 
-The engine needs direct control of memory, disk reads and the GPU, and it
-has to ship as one file that a Mac app can call in process. Swift on MLX and
-Metal gives that; a Python runtime would put an interpreter and a second
-process in the way. The Python in the repository is tooling (the reference
-model the port is checked against, benchmark drivers, release checks), and
-none of it runs when you use Slotstream. See [Built native](#built-native).
+Swift lets the engine own memory, disk reads and the model lifecycle, and
+lets other native apps use it directly. MLX and Metal provide the GPU work,
+without a Python runtime to install.
+The Python in this repository is development tooling: reference implementations,
+benchmark drivers and release checks. None of it runs on the engine's inference
+path. See [Built native](#built-native).
 
 ### Will this wear out my SSD?
 
@@ -349,9 +375,10 @@ No. The current engine requires Apple Silicon, MLX and Metal.
 
 ### Can I use a different model?
 
-Not with Slotstream today. Its loader and memory planner are built for this
-model. See [related projects](docs/ENGINEERING.md#related-projects) for runtimes
-with different model and hardware support.
+Slotstream maintains Qwen3.8-Flash-Next 4-bit and optimizes the whole stack
+for it. It does not load arbitrary checkpoints. Earlier alternatives are
+[archived experiments](experiments/fast-q2/README.md). See [related projects](docs/ENGINEERING.md#related-projects)
+for runtimes with broader model and hardware support.
 
 ## Why this exists
 
@@ -388,8 +415,7 @@ Thank you for supporting its development.
 
 I'm [Carlos Galarza](https://www.carlosgalarza.com). I build local AI and
 make it run efficiently on the computers people already own. Slotstream is
-written natively for the Mac and tuned as one system. The
-[Slotstream Mac app](docs/SLOTSTREAM-MAC.md) is under development in this repository.
+written natively for the Mac and tuned as one system.
 I also help teams run open models on their own hardware and debug agent
 workflows. For help or consulting, [email me](mailto:carloslfu@gmail.com).
 
@@ -404,6 +430,8 @@ The badge at the top shows the latest star count; this chart is updated weekly.
 
 ## License
 
-Slotstream is [MIT-licensed](LICENSE). The model weights have their own
-[Qwen community license](https://huggingface.co/pipenetwork/Qwen3.8-Flash-Next-MLX-4bit/blob/main/LICENSE).
+Slotstream is [MIT-licensed](LICENSE). Model weights and included third-party
+code retain their own licenses. The released model uses the
+[Qwen community license](https://huggingface.co/pipenetwork/Qwen3.8-Flash-Next-MLX-4bit/blob/main/LICENSE);
+see [third-party notices](THIRD_PARTY_NOTICES.md) for the other components.
 See [credits](docs/ENGINEERING.md#credits) for the model and code this project builds on.

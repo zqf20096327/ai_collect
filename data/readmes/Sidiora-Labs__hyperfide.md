@@ -5,15 +5,18 @@
 <img src="https://supabase.paxeer.app/storage/v1/object/public/paxeer/img_centra_10.svg">
 <a
   href="https://trendshift.io/repositories/267432?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-267432" target="_blank" rel="noopener noreferrer">
-<img src="https://trendshift.io/api/badge/trendshift/repositories/267432/daily?language=C" alt="Sidiora-Labs%2Fcodify | Trendshift" width="250" height="55"/>
+<img src="https://supabase.paxeer.app/storage/v1/object/public/badge/h1k7oizpxntmvp7n8ik.svg" alt="Sidiora-Labs%2Fcodify | Trendshift" width="250" height="55"/>
 </a>
 
 **The agent workflow tool that scales from small, simple projects to large, complex codebases.**
 
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
-[![Language: C11](https://img.shields.io/badge/Language-C11-lightgrey?style=for-the-badge)](#)
-[![CI](https://img.shields.io/badge/CI-passing-brightgreen?style=for-the-badge)](.github/workflows/ci.yml)
+[![badge](https://shieldcn.dev/github/Sidiora-Labs/hyperfide/license.svg?variant=outline&size=lg&font=geist&logo=github&logoColor=dadee6&height=56&padX=15&iconSize=21&gap=4&labelGap=12)](https://github.com/Sidiora-Labs/hyperfide)
+[![badge](https://shieldcn.dev/badge/TYPESCRIPT.svg?variant=outline&size=lg&font=geist&logo=typescript&logoColor=1363e6&labelTextColor=1c3e76&height=56&padX=15&iconSize=28&gap=4&labelGap=12)](#)
+[![badge](https://shieldcn.dev/badge/PYTHON.svg?variant=outline&size=lg&font=geist&logo=python&logoColor=f6d63b&labelTextColor=1c3e76&height=56&padX=15&iconSize=28&gap=4&labelGap=12)](#)
+[![badge](https://shieldcn.dev/badge/LANGUAGE%20C11.svg?variant=outline&size=lg&font=geist&logo=lu%3ACpu&logoColor=f4f4f2&labelTextColor=1c3e76&height=56&padX=15&iconSize=28&gap=4&labelGap=12)](#)
+[![badge](https://shieldcn.dev/badge/SIDIORA%20LABS.svg?variant=outline&size=lg&font=geist&logo=lu%3AGlobe&logoColor=0043e6&labelTextColor=1c3e76&height=56&padX=15&iconSize=21&gap=4&labelGap=12)](https://github.com/org/Sidiora-Labs)
+[![badge](https://shieldcn.dev/github/Sidiora-Labs/hyperfide/ci.svg?variant=outline&size=lg&font=geist&logo=github&logoColor=dadee6&height=56&padX=15&iconSize=21&gap=4&labelGap=12)](https://github.com/Sidiora-Labs/hyperfide/actions)
 </div>
 <div align="center">
 
@@ -790,19 +793,4 @@ vim.lsp.start({ name = "hyperfide", cmd = { "hyperfide", "lsp" },
 - **kvx editing.** Go-to-definition on a `requires` entry jumps to that task; completion offers the keys a task actually understands; the outline lists every requirement and task.
 - **One refresh scheduler.** Every trigger — a pushed event, a spec file changing, a turn ending, a command finishing, a poll — funnels through a single chain of `hyperfide` calls: bursts debounce into one run, a two-second floor sits between runs, and at most one trailing run queues behind a chain in flight. Each chain syncs once inside a three-second freshness window at background priority and never waits on another process's pass. The extension does **not** watch `graph.db` — its own sync writes it, and that watcher used to turn every refresh into the next.
 
-The extension has no dependencies and no build step — including its Language Server client, which is written by hand for exactly that reason.
-
-```sh
-cd editors/vscode
-npx @vscode/vsce package        # produces codify-workflow-2.0.0-dev.vsix
-code --install-extension codify-workflow-2.0.0-dev.vsix --force
-```
-
-The extension displays as Hyperfide Workflow; its package and Marketplace identity keep their historical names (`codify-workflow`, `SidioraLabs.codify-workflow`), and so do its `codify.*` settings and command ids. Every command is also registered under a `hyperfide.*` id, and the binary is found through `hyperfide.binaryPath` (or the legacy `codify.binaryPath`; the two must agree), defaulting to `hyperfide` on `PATH`. See [editors/vscode/README.md](editors/vscode/README.md). Any other editor gets the same navigation by pointing its LSP client at `hyperfide lsp`.
-
-## Development
-
-```sh
-make                     # build ./hyperfide and its byte-identical copy ./cg
-make unit                # C unit tests          (tests/unit/*.c against build/libcg.a)
-make integration         # end-
+The extension has no dependencies and no build step — including its Language Server client, which is written by hand 

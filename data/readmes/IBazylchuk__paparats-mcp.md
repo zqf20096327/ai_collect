@@ -33,6 +33,10 @@ helps your agent see the right code across a sea of repositories.
 
 <sub>📊 The built-in `/ui` operator console — ROI, query quality, cross-project usage, per-user activity, indexer health. <em>Screenshot uses synthetic data (<code>?demo=1</code>) — no real queries, users, or project names.</em></sub>
 
+<a href="docs/module-map.png"><img src="docs/module-map.png" alt="Paparats code map — the server package of this repository folder by folder, one file selected with what it calls and what calls it" width="100%"></a>
+
+<sub>🗺️ <code>/ui/map</code> — a code map: walk a codebase folder by folder, with arrows for who calls whom, files that work together grouped into modules, and a link for every view (this repository shown). The <code>module_map</code> tool gives agents the modules as text plus a Mermaid diagram.</sub>
+
 - ⚡ **One install, one config.** `paparats install` → `paparats add ~/code/repo` → done.
 - 🌳 **AST-aware chunking and symbol extraction.** Tree-sitter parses every supported
   file once and feeds both chunking and the cross-chunk symbol graph (calls /
@@ -101,7 +105,7 @@ AI coding assistants are smart, but they can only see files you open. They don't
 
 - **Semantic code search** — ask "where is the rate limiting logic?" and get exact code ranked by meaning, not grep matches
 - **Automatic freshness** — the indexer notices changed repos within about 10 minutes and reindexes only the changed files; trigger a reindex over HTTP when you need it sooner
-- **Cross-chunk symbol graph** — `find_usages` walks AST-derived edges (calls, called_by, references, referenced_by) so the agent can trace dependencies without re-grepping
+- **Cross-chunk symbol graph** — `find_usages` walks AST-derived edges (calls, called_by, references, referenced_by) so the agent can trace dependencies without re-grepping; `change_impact` follows callers a few steps out before a change, tests listed apart
 - **Token savings** — return only relevant chunks instead of full files to reduce context size
 - **Multi-project workspaces** — search across backend, frontend, infra repos in one query
 - **100% local & private** — Qdrant vector database + local llama-server embeddings. Nothing leaves your laptop
@@ -448,7 +452,7 @@ separate docs pass into the documentation layer (see
 
 ### Search Flow
 
-AI assistant queries via MCP → server detects query type (natural language → code, code → code, technical question) → wraps the query in the matching `bge-code-v1` instruction → expands query (abbreviations, case variants, plurals) → all variants searched in parallel against Qdrant → results merged by max score → only relevant chunks returned with confidence scores and symbol info.
+AI assistant queries via MCP → server detects query type (natural language → code, code → code, technical question) → wraps the query in the matching `bge-code-v1` instruction → searches Qdrant once, adding the chunks that define any class or function the query names → re-ranks (definitions of named identifiers up, test files down unless the query asks about tests, often-changed files slightly up) → only relevant chunks returned with confidence scores and symbol info. Code chunks are embedded with their file path (`Filepath: <path>` above the chunk); results show the plain chunk.
 
 ### Keeping the index fresh
 
@@ -500,6 +504,8 @@ retrieval instruction:
 - Filler removal: `"how does auth work"` → `"auth"`
 
 All variants searched in parallel, results merged by max score. `search_code` searches the query once: on the [retrieval bench](docs/benchmarking.md) the variants added no quality there and cost up to three embedding calls and Qdrant queries per search.
+
+**Ranking** (`search_code`) — when the query names a class or function (`InvoiceTotal`, `charge_card`, `Billing::Invoice`), the chunks that define it join the candidates and rank higher, as do files named after it. Test files rank slightly lower unless the query mentions tests, and files with more commits slightly higher. Only the order changes: the confidence score stays the similarity.
 
 **Confidence scores** — each result includes a percentage score (≥60% high, 40–60% partial, <40% low) to guide AI next steps.
 
@@ -661,6 +667,8 @@ Connect via the **coding endpoint** (`/mcp`):
 | **Navigate unfamiliar code**   | `search_code "authentication middleware"` → exact locations            |
 | **Find similar patterns**      | `search_code "retry with exponential backoff"` → examples              |
 | **Trace dependencies**         | `find_usages {chunk_id, direction: "incoming"}` → callers via the graph |
+| **Check before changing**      | `change_impact {chunk_id}` → callers up to 3 steps out, and the tests that reach the code |
+| **Get the lay of the land**    | `module_map {project}` → main modules, their key files and how they depend on each other |
 | **Explore context**            | `get_chunk <chunk_id> --radius_lines 50` → expand around               |
 | **Manage projects**            | `list_projects` and `delete_project` for index hygiene                 |
 | **Architectural Q&A**          | `arch_context "why X"` → components / decisions / lessons (with age)   |
@@ -864,6 +872,8 @@ projects.
 | `search_code`             | Semantic search across indexed projects. Returns chunks with symbol info and confidence scores.                              |
 | `get_chunk`               | Retrieve a chunk by ID with optional surrounding context.                                                                    |
 | `find_usages`             | Walk the symbol graph from a `chunk_id` — `incoming` (callers/references in), `outgoing` (calls/references out), or `both`.  |
+| `change_impact`           | What depends on a chunk you are about to change: callers, their callers (up to 3 steps) and the tests that reach it, with `[maybe]` on links through a name defined in several places. Callers linked only through a common method name (`add`, `get`, `close`) are listed apart as probably unrelated. `symbol` narrows to one name, `whole_file` takes the whole file. |
+| `module_map`              | Modules of a codebase from the call graph: files that call each other much more than the rest, named by folder, with main files, which modules each uses and is used by, attached tests and shared code. Tests and migrations do not shape the grouping. |
 | `list_projects`           | List indexed projects with chunk counts and detected languages.                                                              |
 | `delete_project`          | Wipe Qdrant chunks + SQLite metadata for a project (`paparats remove` uses the equivalent HTTP endpoint).                    |
 | `health_check`            | Indexing status, chunks per group, running jobs.                                                                             |
@@ -897,6 +907,7 @@ no project deletion.
 | `search_changes`       | Semantic search filtered by last-commit date. Each result shows when it last changed. |
 | `explain_feature`      | Comprehensive feature analysis: locations + recent changes for a question.            |
 | `recent_changes`       | Timeline grouped by date with commits, tickets, affected files. `since` filter.       |
+| `module_map`           | Same as coding endpoint: the main modules of a codebase, their key files and how they depend on each other. |
 | `impact_analysis`      | Blast radius for a natural-language `question`: finds seed chunks, walks the symbol graph 1–2 hops (`max_hops`), groups dependents by service. No code. |
 | `search_docs`          | Same as coding endpoint.                                                               |
 | `get_document`         | Full text of a documentation page found by `search_docs`, section by section, paged at ~40k characters. Support cannot open files, so its excerpts point here. |
@@ -1191,6 +1202,26 @@ running stack for Qdrant and the embedding server; point it at their host ports:
 
 On Linux add `"--add-host", "host.docker.internal:host-gateway"` to the `args`.
 
+### Tell agents when to use it
+
+The server sends its instructions to every client, but a short note in the repository
+itself stays in the agent's context all session. `paparats instructions` writes one into
+the repository's `CLAUDE.md` and `AGENTS.md` (whichever exist; a new `AGENTS.md`
+otherwise):
+
+```bash
+paparats instructions /path/to/repo            # write or refresh the block
+paparats instructions /path/to/repo --print    # show it, write nothing
+paparats instructions /path/to/repo --remove   # take it out again
+```
+
+The block says when to reach for `search_code` and when grep is the better tool, and
+points to `get_chunk`, `find_usages` and `change_impact`. It names the project the server
+indexes the repository as — the `projects.yml` name when the path is registered there,
+the directory name otherwise, or `--project <name>`. It sits between
+`<!-- paparats:begin -->` and `<!-- paparats:end -->`; reruns replace only that part, and
+the rest of the file is left as it was. `--file <name>` picks the file(s) to write.
+
 ### Verify
 
 - `paparats status` — check the stack is up
@@ -1219,6 +1250,8 @@ paparats status                         Stack health: Docker, embed server, serv
 paparats groups [--json]                List groups and their projects.
 paparats doctor                         Diagnostic checks (Docker, embed server, ports, configs).
 paparats update                         Update CLI from npm + pull latest Docker images.
+paparats instructions [dir] [flags]     Write the "paparats or grep" block into the repo's
+                                          CLAUDE.md / AGENTS.md (--print, --remove, --file).
 ```
 
 The legacy per-project commands (`paparats init`, `paparats index`, `paparats watch`) are
@@ -1360,7 +1393,7 @@ paparats-mcp/
 │   │   │   ├── index.ts              # HTTP server bootstrap + graceful shutdown
 │   │   │   ├── app.ts                # Express app + HTTP API routes
 │   │   │   ├── indexer.ts            # Group-aware indexing, single-parse chunkFile()
-│   │   │   ├── searcher.ts           # Search with query expansion, cache, metrics
+│   │   │   ├── searcher.ts           # Vector search, query cache, metrics
 │   │   │   ├── query-expansion.ts    # Abbreviation, case, plural expansion
 │   │   │   ├── task-prefixes.ts      # Query-type detection + bge-code-v1 / Qwen3 instructions
 │   │   │   ├── query-cache.ts        # In-memory LRU search result cache
@@ -1630,10 +1663,10 @@ top-K, so recall matters more than exact ordering.
 > between models is what drives model selection here.
 
 **End-to-end retrieval.** The tables above compare embedders in isolation. `yarn bench`
-scores the whole search path — chunking, instruction prefixes, query expansion — on a
+scores the whole search path — chunking, instruction prefixes, ranking — on a
 hand-labelled query set over this repository, broken down by query type (natural language,
 exact identifiers, error strings, config keys, code snippets, cross-package questions).
-Current dense-only baseline: file-level MRR@10 0.825, chunk-level Recall@10 0.892
+Current baseline (2.12.0): file-level MRR@10 0.900, chunk-level Recall@10 0.942
 ([summary](packages/bench/baselines/paparats-f5b2a75-bge-code-v1.md)). How to run it and
 compare two runs: [docs/benchmarking.md](docs/benchmarking.md).
 
@@ -1760,7 +1793,7 @@ it. Corrections are welcome.
 | Runs locally by default           | ✅ Docker stack                              | ❌ OpenAI + Zilliz Cloud (local setup possible) | ✅                                             | ✅ native binary                                 | ✅                            | ❌ needs a Sourcegraph Enterprise instance |
 | Many repos in one query           | ✅ groups                                    | ❌ one codebase path per search                 | ⚠️ active project; can query other projects    | ⚠️ per project; cross-repo service links         | —                             | ✅                                   |
 | Callers / references              | ✅ AST-derived edges                         | —                                               | ✅ via language server (most precise)          | ✅ call graph with type resolution               | —                             | ✅                                   |
-| Keyword (BM25) search on code     | ❌ dense vectors + query expansion           | ✅                                              | regex search tool                              | ✅                                               | —                             | ✅ keyword search                    |
+| Keyword (BM25) search on code     | ❌ dense vectors + identifier-aware ranking  | ✅                                              | regex search tool                              | ✅                                               | —                             | ✅ keyword search                    |
 | Git history per result            | ✅ commits + ticket refs per chunk           | —                                               | —                                              | ⚠️ git diff → affected symbols                   | —                             | ✅ commit and diff search            |
 | Keeps the index fresh             | ⚠️ change check every 10 min + scheduled full pass | ✅ Merkle-tree sync every 5 min          | n/a (reads live code)                          | ✅ watches the project of an open session        | ⚠️ incremental on re-index    | ✅ server-side                       |
 | Code editing / refactoring tools  | ❌                                           | ❌                                              | ✅                                             | ❌                                               | ❌                            | ❌                                   |
@@ -1837,14 +1870,4 @@ process is described in [docs/releasing.md](docs/releasing.md).
 
 ## Links
 
-- [BAAI/bge-code-v1](https://huggingface.co/BAAI/bge-code-v1) — code embedding model
-- [Qwen3-Embedding-0.6B](https://huggingface.co/Qwen/Qwen3-Embedding-0.6B) — arch/docs text embedding model
-- [Qdrant](https://qdrant.tech) — vector database
-- [llama.cpp](https://github.com/ggml-org/llama.cpp) — local embedding runtime (`llama-server`)
-- [llama-swap](https://github.com/mostlygeek/llama-swap) — model router / lazy loader in front of llama-server
-- [MCP](https://modelcontextprotocol.io) — Model Context Protocol
-- [llms.txt](llms.txt) — a short, machine-readable summary of this project for AI tools
-
----
-
-**Star the repo if Paparats helps you code faster!**
+- [BAAI/bge-code-v1](ht

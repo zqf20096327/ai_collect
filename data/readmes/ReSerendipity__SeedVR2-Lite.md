@@ -41,27 +41,27 @@ SeedVR2-Lite 把字节跳动 Seed 团队与南洋理工大学 S-Lab 联合开源
 
 ### 界面展示
 
-> 以下截图均取自真实 Web UI（浅色主题）。
+> 以下截图均在云端 Linux（无 GPU）真实启动 Web UI 后截取，浅色主题；无 GPU 时界面如实显示降级状态。
 
-**首页仪表盘** —— 一句话定位、入口卡片、当前模型与 GPU 状态、最近任务列表。
+**首页仪表盘** —— 一句话定位、入口卡片与状态角标。本图在无 GPU 云环境启动，角标显示「未检测到可用 GPU · 未加载」；有 GPU 时此处显示设备型号与当前模型。
 
-![首页仪表盘](https://gcore.jsdelivr.net/gh/ReSerendipity/SeedVR2-Lite@main/docs/assets/readme-seedvr2-lite-1-home.png)
+![首页仪表盘](https://gcore.jsdelivr.net/gh/ReSerendipity/SeedVR2-Lite@main/docs/assets/readme-seedvr2-lite-1-home-20261026.png)
 
-**修复工作台** —— 左侧拖拽上传图片/视频，右侧参数面板选择模型、输出分辨率与 VAE，一键「上传并修复」。
+**修复工作台** —— 左侧拖拽上传图片/视频，右侧参数面板选择模型、输出分辨率与 VAE。无 GPU 时顶部提示「需要 NVIDIA CUDA GPU 才能执行修复」，界面与参数仍可完整查看。
 
-![修复工作台](https://gcore.jsdelivr.net/gh/ReSerendipity/SeedVR2-Lite@main/docs/assets/readme-seedvr2-lite-2-workbench.png)
+![修复工作台](https://gcore.jsdelivr.net/gh/ReSerendipity/SeedVR2-Lite@main/docs/assets/readme-seedvr2-lite-2-workbench-20261026.png)
 
 **高级参数** —— 展开 DiT 配置（最大分辨率、色彩校正、块交换数量、批处理大小），并可一键「VRAM 预检 & 推荐参数」。
 
-![高级参数](https://gcore.jsdelivr.net/gh/ReSerendipity/SeedVR2-Lite@main/docs/assets/readme-seedvr2-lite-3-params.png)
+![高级参数](https://gcore.jsdelivr.net/gh/ReSerendipity/SeedVR2-Lite@main/docs/assets/readme-seedvr2-lite-3-params-20261026.png)
 
 **历史记录** —— 表格视图管理已完成任务，支持状态筛选与结果回看。
 
-![历史记录](https://gcore.jsdelivr.net/gh/ReSerendipity/SeedVR2-Lite@main/docs/assets/readme-seedvr2-lite-4-history.png)
+![历史记录](https://gcore.jsdelivr.net/gh/ReSerendipity/SeedVR2-Lite@main/docs/assets/readme-seedvr2-lite-4-history-20261026.png)
 
-**系统状态** —— GPU/显存/利用率、系统内存、模型加载状态与运行信息实时监控。
+**系统状态** —— GPU/显存/利用率与内存监控。本图为无 GPU 云环境：GPU 卡片标记 UNAVAILABLE、显存字段为 `--`；真实 GPU 环境此处显示显卡型号、显存占用与利用率曲线。
 
-![系统状态](https://gcore.jsdelivr.net/gh/ReSerendipity/SeedVR2-Lite@main/docs/assets/readme-seedvr2-lite-5-system-status.png)
+![系统状态](https://gcore.jsdelivr.net/gh/ReSerendipity/SeedVR2-Lite@main/docs/assets/readme-seedvr2-lite-5-system-status-20261026.png)
 
 **整体架构** —— 浏览器/桌面壳 → FastAPI 后端 → 扩散推理引擎（DiT + Video VAE + Block Swap），本地存储模型、历史与输出。
 
@@ -199,27 +199,27 @@ The supported distribution is a **Tauri v2 desktop build** (offline bundle, extr
 
 ### Screenshots
 
-> All screenshots are taken from the real web UI (light theme).
+> All screenshots were taken by actually launching the web UI on a headless cloud Linux box without a GPU (light theme); the degraded no-GPU state is shown honestly.
 
-**Home dashboard** — tagline, entry cards, current model/GPU status and recent tasks.
+**Home dashboard** — tagline, entry cards and status pill. This shot was taken on a GPU-less cloud box, so the pill reads "No GPU detected · model not loaded"; on a GPU box it shows the device name and current model.
 
-![Home dashboard](https://gcore.jsdelivr.net/gh/ReSerendipity/SeedVR2-Lite@main/docs/assets/readme-seedvr2-lite-1-home.png)
+![Home dashboard](https://gcore.jsdelivr.net/gh/ReSerendipity/SeedVR2-Lite@main/docs/assets/readme-seedvr2-lite-1-home-20261026.png)
 
-**Restore workbench** — drag & drop upload on the left; model / output resolution / VAE panel on the right, with one-click "upload & restore".
+**Restore workbench** — drag & drop upload on the left; model / output resolution / VAE panel on the right. With no GPU the top shows "NVIDIA CUDA GPU required to run restoration", yet the UI and parameters remain fully inspectable.
 
-![Restore workbench](https://gcore.jsdelivr.net/gh/ReSerendipity/SeedVR2-Lite@main/docs/assets/readme-seedvr2-lite-2-workbench.png)
+![Restore workbench](https://gcore.jsdelivr.net/gh/ReSerendipity/SeedVR2-Lite@main/docs/assets/readme-seedvr2-lite-2-workbench-20261026.png)
 
 **Advanced parameters** — DiT config (max resolution, color correction, block-swap count, batch size) plus a one-click "VRAM preflight & recommendation".
 
-![Advanced parameters](https://gcore.jsdelivr.net/gh/ReSerendipity/SeedVR2-Lite@main/docs/assets/readme-seedvr2-lite-3-params.png)
+![Advanced parameters](https://gcore.jsdelivr.net/gh/ReSerendipity/SeedVR2-Lite@main/docs/assets/readme-seedvr2-lite-3-params-20261026.png)
 
 **History** — table view of completed tasks with status filters and result review.
 
-![History](https://gcore.jsdelivr.net/gh/ReSerendipity/SeedVR2-Lite@main/docs/assets/readme-seedvr2-lite-4-history.png)
+![History](https://gcore.jsdelivr.net/gh/ReSerendipity/SeedVR2-Lite@main/docs/assets/readme-seedvr2-lite-4-history-20261026.png)
 
-**System status** — real-time GPU/VRAM/utilization, system memory, model load state and runtime info.
+**System status** — GPU/VRAM/utilization and memory monitoring. This is the GPU-less cloud state: the GPU card is marked UNAVAILABLE and VRAM fields read `--`; on a real GPU box it shows the card model, VRAM usage and utilization curves.
 
-![System status](https://gcore.jsdelivr.net/gh/ReSerendipity/SeedVR2-Lite@main/docs/assets/readme-seedvr2-lite-5-system-status.png)
+![System status](https://gcore.jsdelivr.net/gh/ReSerendipity/SeedVR2-Lite@main/docs/assets/readme-seedvr2-lite-5-system-status-20261026.png)
 
 **Architecture** — browser/desktop shell → FastAPI backend → diffusion engine (DiT + Video VAE + Block Swap), with local model/history/output storage.
 

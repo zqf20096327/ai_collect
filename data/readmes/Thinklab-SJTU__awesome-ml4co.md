@@ -587,15 +587,27 @@ We mark work contributed by [Thinklab](http://thinklab.sjtu.edu.cn) with ⭐.
 
 100. **FrontierCO: Real-World and Large-Scale Evaluation of Machine Learning Solvers for Combinatorial Optimization** ICLR, 2026. [paper](https://openreview.net/forum?id=BVprkacwFY), [code](https://github.com/sunnweiwei/FrontierCO)
 
-    *Shengyu Feng, Weiwei Sun, Shanda Li, Ameet Talwalkar, Yiming Yang*
+     *Shengyu Feng, Weiwei Sun, Shanda Li, Ameet Talwalkar, Yiming Yang*
 
 101. **Beyond the Heatmap: A Rigorous Evaluation of Component Impact in MCTS-Based TSP Solvers** ICLR, 2026. [paper](https://openreview.net/forum?id=H6PLJnnK6e), [code](https://github.com/LOGO-CUHKSZ/beyond-heatmap-mcts-tsp)
 
-    *Xuanhao Pan, Chenguang Wang, Chaolong Ying, Ye XUE, Tianshu Yu*
+     *Xuanhao Pan, Chenguang Wang, Chaolong Ying, Ye XUE, Tianshu Yu*
 
-102. **LINC: Decoupling Local Consequence Scoring from Hidden Matching in Constructive Neural Routing** NeurIPS, 2026. [paper](https://arxiv.org/abs/2605.06332), [code](https://github.com/Elaina10172004/LINC)
+102. **⭐Problem Distributions as Tasks: Repurposing Meta Learning for Generative Combinatorial Optimization towards Multi-task Pretraining and Adaptation** ICML, 2026. [paper](https://openreview.net/forum?id=OfxgzjqzeA), [code](https://github.com/Thinklab-SJTU/M2GenCO)
 
-    *Shaofeng Qin, Li Wang*
+     *Wenzheng Pan, Jiale Ma, Nuoyan Chen, Yang Li, Junchi Yan*
+
+103. **LINC: Decoupling Local Consequence Scoring from Hidden Matching in Constructive Neural Routing** NeurIPS, 2026. [paper](https://arxiv.org/abs/2605.06332), [code](https://github.com/Elaina10172004/LINC)
+
+     *Shaofeng Qin, Li Wang*
+
+104. **⭐UECO: A Unified Encoder for Neural Combinatorial Optimization with Iterative Edge-Node Reasoning** NeurIPS (Oral), 2026. [paper](https://openreview.net/forum?id=M2lqt23VO7), [code](https://github.com/Thinklab-SJTU/UECO)
+
+     *Wenzheng Pan, Shuyi Yan, Nuoyan Chen, Yiyang Qu, Jiale Ma, Junchi Yan*
+
+105. **⭐CORectifier: Hierarchically Rectifying Policy Rollouts for Reinforcement Learning in Combinatorial Solvers** NeurIPS, 2026. [paper](https://openreview.net/forum?id=bpt10w03zk), [code](https://github.com/Thinklab-SJTU/CORectifier)
+
+     *Wenzheng Pan, Nuoyan Chen, Jiaxi Liu, Jiale Ma, Junchi Yan*
 
 ### [Job Shop Scheduling Problem](#content)
 
@@ -675,6 +687,10 @@ We mark work contributed by [Thinklab](http://thinklab.sjtu.edu.cn) with ⭐.
 
     *Igor G. Smit, Yaoxin Wu, Pavel Troubil, Yingqian Zhang, Wim P.M. Nuijten*
 
+20. **⭐CORectifier: Hierarchically Rectifying Policy Rollouts for Reinforcement Learning in Combinatorial Solvers** NeurIPS, 2026. [paper](https://openreview.net/forum?id=bpt10w03zk), [code](https://github.com/Thinklab-SJTU/CORectifier)
+
+    *Wenzheng Pan, Nuoyan Chen, Jiaxi Liu, Jiale Ma, Junchi Yan*
+
 ### [Flow Shop Problem](#content)
 
 1. **Preference Optimization for Combinatorial Optimization Problems** ICML, 2025. [paper](https://openreview.net/forum?id=Jwe5FJ8QGx), [code](https://github.com/MingjunPan/Preference-Optimization-for-Combinatorial-Optimization-Problems)
@@ -688,6 +704,10 @@ We mark work contributed by [Thinklab](http://thinklab.sjtu.edu.cn) with ⭐.
 3. **Multi-Action Self-Improvement for Neural Combinatorial Optimization** ICLR, 2026. [paper](https://arxiv.org/abs/2510.12273), [code](https://github.com/LTluttmann/macsim)
 
     *Laurin Luttmann, Lin Xie*
+
+4. **⭐UECO: A Unified Encoder for Neural Combinatorial Optimization with Iterative Edge-Node Reasoning** NeurIPS (Oral), 2026. [paper](https://openreview.net/forum?id=M2lqt23VO7), [code](https://github.com/Thinklab-SJTU/UECO)
+
+    *Wenzheng Pan, Shuyi Yan, Nuoyan Chen, Yiyang Qu, Jiale Ma, Junchi Yan*
 
 ### [Sorting & Ranking](#content)
 
@@ -982,6 +1002,14 @@ We mark work contributed by [Thinklab](http://thinklab.sjtu.edu.cn) with ⭐.
 24. **Projecting Latent RL Actions: Towards Generalizable and Scalable Graph Combinatorial Optimization** Arxiv, 2026. [paper](https://arxiv.org/abs/2605.19721), [code](https://github.com/terranovafr/LaGCO-RL)
 
     *Franco Terranova, Guillermo Bernardez, Albert Cabellos-Aparicio, Nina Miolane, Abdelkader Lahmadi*
+
+25. **⭐Problem Distributions as Tasks: Repurposing Meta Learning for Generative Combinatorial Optimization towards Multi-task Pretraining and Adaptation** ICML, 2026. [paper](https://openreview.net/forum?id=OfxgzjqzeA), [code](https://github.com/Thinklab-SJTU/M2GenCO)
+
+    *Wenzheng Pan, Jiale Ma, Nuoyan Chen, Yang Li, Junchi Yan*
+
+26. **⭐UECO: A Unified Encoder for Neural Combinatorial Optimization with Iterative Edge-Node Reasoning** NeurIPS (Oral), 2026. [paper](https://openreview.net/forum?id=M2lqt23VO7), [code](https://github.com/Thinklab-SJTU/UECO)
+
+    *Wenzheng Pan, Shuyi Yan, Nuoyan Chen, Yiyang Qu, Jiale Ma, Junchi Yan*
 
 ### [Vehicle Routing Problem](#content)
 
@@ -1301,6 +1329,14 @@ We mark work contributed by [Thinklab](http://thinklab.sjtu.edu.cn) with ⭐.
 
     *Shaofeng Qin, Li Wang*
 
+80. **⭐UECO: A Unified Encoder for Neural Combinatorial Optimization with Iterative Edge-Node Reasoning** NeurIPS (Oral), 2026. [paper](https://openreview.net/forum?id=M2lqt23VO7), [code](https://github.com/Thinklab-SJTU/UECO)
+
+    *Wenzheng Pan, Shuyi Yan, Nuoyan Chen, Yiyang Qu, Jiale Ma, Junchi Yan*
+
+81. **⭐CORectifier: Hierarchically Rectifying Policy Rollouts for Reinforcement Learning in Combinatorial Solvers** NeurIPS, 2026. [paper](https://openreview.net/forum?id=bpt10w03zk), [code](https://github.com/Thinklab-SJTU/CORectifier)
+
+    *Wenzheng Pan, Nuoyan Chen, Jiaxi Liu, Jiale Ma, Junchi Yan*
+
 ### [Maximum Independent Set](#content)
 
 1. **Combinatorial Optimization with Graph Convolutional Networks and Guided Tree Search.** NeurIPS, 2018. [paper](https://arxiv.org/abs/1810.10659)
@@ -1455,6 +1491,14 @@ We mark work contributed by [Thinklab](http://thinklab.sjtu.edu.cn) with ⭐.
 
     *Shengyu Feng, Weiwei Sun, Shanda Li, Ameet Talwalkar, Yiming Yang*
 
+39. **⭐Problem Distributions as Tasks: Repurposing Meta Learning for Generative Combinatorial Optimization towards Multi-task Pretraining and Adaptation** ICML, 2026. [paper](https://openreview.net/forum?id=OfxgzjqzeA), [code](https://github.com/Thinklab-SJTU/M2GenCO)
+
+    *Wenzheng Pan, Jiale Ma, Nuoyan Chen, Yang Li, Junchi Yan*
+
+40. **⭐UECO: A Unified Encoder for Neural Combinatorial Optimization with Iterative Edge-Node Reasoning** NeurIPS (Oral), 2026. [paper](https://openreview.net/forum?id=M2lqt23VO7), [code](https://github.com/Thinklab-SJTU/UECO)
+
+    *Wenzheng Pan, Shuyi Yan, Nuoyan Chen, Yiyang Qu, Jiale Ma, Junchi Yan*
+
 ### [Generalization](#content)
 
 1. **It's Not What Machines Can Learn It's What We Cannot Teach** ICML, 2020. [paper](http://proceedings.mlr.press/v119/yehuda20a/yehuda20a.pdf)
@@ -1557,64 +1601,4 @@ We mark work contributed by [Thinklab](http://thinklab.sjtu.edu.cn) with ⭐.
 
     *Jinbiao Chen, Zizhen Zhang, Zhiguang Cao, Yaoxin Wu, Yining Ma, Te Ye, Jiahai Wang*
 
-10. **Rethinking Neural Multi-Objective Combinatorial Optimization via Neat Weight Embedding** ICLR, 2025. [paper](https://openreview.net/forum?id=GM7cmQfk2F)
-
-    *Jinbiao Chen, Zhiguang Cao, Jiahai Wang, Yaoxin Wu, Hanzhang Qin, Zizhen Zhang, Yue-Jiao Gong*
-
-11. **Approximation algorithms for combinatorial optimization with predictions** ICLR, 2025. [paper](https://openreview.net/forum?id=AEFVa6VMu1)
-
-    *Antonios Antoniadis, Marek Elias, Adam Polak, Moritz Venzin*
-
-### [Boolean Satisfiability](#content)
-
-1. **Graph neural networks and boolean satisfiability.** Arxiv, 2017. [paper](https://arxiv.org/pdf/1702.03592)
-
-    *Benedikt Bünz, Matthew Lamm.*
-
-2. **Learning a SAT solver from single-bit supervision.** Arxiv, 2018. [paper](https://arxiv.org/pdf/1903.04671), [code](https://github.com/dselsam/neurosat)
-
-    *Daniel Selsam, Benedikt Bünz Matthew Lamm, Leonardo de Moura Percy Liang, David L. Dill.*
-
-3. **Machine learning-based restart policy for CDCL SAT solvers.** SAT, 2018. [paper](http://www.t-news.cn/Floc2018/FLoC2018-pages/proceedings_paper_477.pdf)
-
-    *Jia Hui Liang, Minu Mathew Chanseok Oh, Chunxiao Li Ciza Thomas, Vijay Ganesh.*
-
-4. **Learning to solve circuit-SAT: An unsupervised differentiable approach.** ICLR, 2019. [paper](https://openreview.net/pdf?id=BJxgz2R9t7), [code](https://github.com/johannaSommer/generalization-neural-co-solvers)
-
-    *Saeed, Sergiy Matusevych Amizadeh, Markus Weimer.*
-
-5. **Learning Local Search Heuristics for Boolean Satisfiability.** NeurIPS, 2019. [paper](https://www.cs.cmu.edu/~eyolcu/papers/learning-local-search-heuristics-sat.pdf), [code](https://github.com/emreyolcu/sat)
-
-    *Emre Yolcu, Barnabas Poczos*
-
-6. **Improving SAT solver heuristics with graph networks and reinforcement learning.** Arxiv, 2019. [paper](https://arxiv.org/pdf/1909.11830)
-
-    *Vitaly Kurin, Shimon Whiteson Saad Godil, Bryan Catanzaro.*
-
-7. **Graph neural reasoning may fail in certifying boolean unsatisfiability.** Arxiv, 2019. [paper](https://arxiv.org/pdf/1909.11588)
-
-    *Ziliang Chen, Zhanfu Yang.*
-
-8. **Guiding high-performance SAT solvers with unsat-core predictions.** SAT, 2019. [paper](https://arxiv.org/pdf/1903.04671)
-
-    *Daniel Selsam, Nikolaj Bjørner.*
-
-9. **G2SAT: Learning to Generate SAT Formulas.** NeurIPS, 2019. [paper](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7138247/), [code](https://github.com/JiaxuanYou/G2SAT)
-
-    *Jiaxuan, Haoze Wu, Clark Barrett, Raghuram Ramanujan You, Jure Leskovec.*
-
-10. **Learning Heuristics for Quantified Boolean Formulas through Reinforcement Learning.** Arxiv, 2019. [paper](https://arxiv.org/pdf/1807.08058), [code](https://github.com/lederg/learningqbf)
-
-    *Gil Lederman, Edward A. Lee Markus N. Rabe, Sanjit A. Seshia.*
-
-11. **Enhancing SAT solvers with glue variable predictions.** Arxiv, 2020. [paper](https://arxiv.org/pdf/2007.02559)
-
-    *Jesse Michael. Han*
-
-12. **Can Q-Learning with Graph Networks Learn a Generalizable Branching Heuristic for a SAT Solver?** NeurIPS, 2020. [paper](http://www.cs.ox.ac.uk/people/shimon.whiteson/pubs/kurinnips20.pdf)
-
-    *Shimon Whiteson*
-
-13. **Online Bayesian Moment Matching based SAT Solver Heuristics.** ICML, 2020. [paper](http://proceedings.mlr.press/v119/duan20c/duan20c.pdf), [code](https://github.com/saeednj/BMMSAT)
-
-    *Haonan, Saeed Nejati, George Trimponias, Pascal Poupart Duan, Vijay Ganesh.*
+10. **Rethinking Neural Multi-Objective Combinatorial Opt

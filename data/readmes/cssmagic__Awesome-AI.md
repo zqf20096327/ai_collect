@@ -182,6 +182,9 @@
 	* [Codex with ChatGPT](https://github.com/XiaoDuoYa/codex-with-chatgpt)：让 ChatGPT 网页版负责代码规划与审查，Codex 负责执行修改和测试，通过只读 MCP 按需读取本地工作区。需配置 ChatGPT 连接器和公网隧道，并自备相关账号。非官方社区项目，MIT 开源。
 	* [CC Switch](https://github.com/farion1231/cc-switch)：AI 编程工具配置管理器，可为 Claude Code、Codex、Gemini CLI 等工具切换 API 供应商，统一管理 MCP、Skills 和提示词。支持 Windows、macOS 和 Linux。MIT 开源，模型服务费用另计。
 	* [Orbi](https://orbi.build/zh/)：面向 GitHub 的 AI 编程交付工具。给 Issue 添加 `ai-ready` 标签后，在独立工作区实现和测试，通过独立 AI 会话评审与修复，并在满足合并条件后自动合并 PR。AGPL-3.0 开源，可自托管；模型服务费用另计，另有提供有限免费试用的付费 Cloud 托管版。
+	* [deed.page](https://deed.page)：面向 AI 编程 Agent 的静态网站托管服务，通过 HTTP API、MCP 或 [Agent Skill](https://github.com/f-o-x11/deed-page-skill) 发布 HTML 页面或静态文件夹，无需注册账号，生成的公开链接默认无到期时间。单次发布请求上限为 4 MB，较大站点需分步上传，详见[文档](https://deed.page/docs)。
+		* 定价：有额度限制的免费套餐及付费订阅。
+	* [agent-qa](https://github.com/vostride/agent-qa)：用自然语言测试网页、Android 和 iOS 应用的 QA Agent，保留运行证据，并通过 memidex 记忆引擎保存和复用已验证的测试经验。提供 CLI、可视化面板、MCP 和 Agent Skills。源码可见，采用限制竞争性用途的 FSL-1.1-ALv2；许可允许的用途无需软件费用，模型及外部浏览器／设备服务费用另计。
 
 
 
@@ -228,7 +231,7 @@
 * [Vidu](https://www.vidu.studio/)：Vidu 是由清华大学朱军教授团队研发的 AI 视频生成器。支持生成高逼真度的 4 秒或 8 秒 1080p 高清视频。亮点包括生成速度快、角色一致性、支持写实和动漫风格、生成效果连续流畅等，可应用于游戏、影视、教育等领域。
 * [Luma Dream Machine](https://lumalabs.ai/dream-machine)：Luma AI 出品的视频生成模型。支持文生视频、图生视频，可生成 5 秒长度的视频。有免费额度。
 * [剪映专业版（国内版）](https://www.capcut.cn/) / [CapCut（海外版）](https://www.capcut.com/)：字节跳动出品的视频编辑工具，支持 Windows/Mac。它集成了大量基于 AI 技术的音视频处理功能，比如生成字幕、生成配音、降噪、变声、数字人、文生视频等等。
-* [pitchboom.io](https://pitchboom.io)：动效设计（motion design）视频广告 AI 制作工具。粘贴产品网址或用两行文字描述，自动撰写脚本、生成可编辑并确认的分镜、配旁白（34 种语言）和背景音乐，支持主流画幅比例，适用于 TikTok、Reels、YouTube Shorts 等平台的视频广告。付费订阅，每月 30 欧元起（不含增值税），无免费版。
+* [pitchboom.io](https://pitchboom.io)：动效设计（motion design）视频广告 AI 制作工具。粘贴产品网址或用两行文字描述，自动撰写脚本、生成可编辑并确认的分镜、配旁白（34 种语言）和背景音乐，支持主流画幅比例，适用于 TikTok、Reels、YouTube Shorts 等平台的视频广告。注册即送 500 积分（每人一次，无需绑卡），之后付费订阅每月 30 欧元起（不含增值税）。
 
 ### 3D 建模
 
@@ -240,6 +243,7 @@
 * [Tripo AI](https://www.tripo3d.ai/)：通过文本或图片生成高质量 3D 模型，可下载。有免费配额。
 * [Genie](https://lumalabs.ai/genie)：Luma AI 出品的一款通过文本生成 3D 模型的 AI 工具。目前依托 Discord 提供服务。
 * [Luma AI](https://lumalabs.ai/dashboard/captures)：通过视频来重建 3D 场景。你只需要有一台手持拍摄设备，按要求对物体进行 360°旋转拍摄。有网页版和 iOS App。
+* [3D-Agent](https://3d-agent.com/blender-ai)：Blender 桌面 AI Agent，用自然语言在当前场景中建模、制作材质、布置灯光、生成动画和渲染，也可对已有模型做重拓扑。支持 macOS 和 Windows，需 Blender 4.2 或更高版本。付费订阅，无免费试用。
 
 ### 数字人 / 语音驱动视频 / TTS
 
@@ -322,6 +326,7 @@
 * [Toolify.ai](https://www.toolify.ai/)：AI 工具分类导航目录。
 * [There's An AI For That (TAAFT)](https://theresanaiforthat.com/)：提问我的需求可以用哪些 AI 工具来实现。
 * [通往 AGI 之路 / WayToAGI](https://www.waytoagi.com/)：AI 工具（包含网站和 GPTs）分类导航目录，也可搜索。
+* [CodeTrendy](https://codetrendy.com/)：包含 AI 工具的产品与 SaaS 导航目录，支持分类浏览、热门榜和替代品查找。提供免费只读 MCP 接口，供 AI 助手搜索条目，无需账号或 API 密钥。可免费提交产品，另有付费推广，付费 Verified 条目在 MCP 搜索中优先展示。
 * [ChandlerAi](https://chandler.bet/)：国内可用的 AI 助手，可调用 GPT-4、Claude 3 Opus、Gemini、DALL·E 等先进模型。需要付费。
 
 ### 图像处理 / 图形设计 / UI 设计
@@ -367,6 +372,7 @@
 
 * [AdIntelli](https://adintelli.ai/)：面向 GPTs 生态的广告联盟（可靠性待验证）。
 * [GPT Wallets](https://gptwallets.co/)：为 GPTs 提供支付和数据分析解决方案。
+* [Pulse](https://pulsecorp.co)：AI 主持的市场调研平台，开展客户访谈并生成带原始访谈引用的调研报告。支持语音、视频、文字聊天、电话和 WhatsApp。可申请最多 10 位参与者的免费调研，启动前需与团队确认范围；另有付费方案。
 
 ### API 聚合平台
 

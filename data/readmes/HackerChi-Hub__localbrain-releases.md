@@ -16,12 +16,32 @@
 <!-- recent-features:start -->
 ## 近期新增与改进（最近 5 项）
 
+- **2.2.0** · 立即压缩前后统一使用内核计量，包含摘要包装；保留原文，恢复不重复执行已完成工具。
+- **2.2.0** · Mac、Windows、Linux内部工具与模型能力统一注册，现有功能入口和用户数据保留；自定义插件安装暂不开放。
+- **2.2.0** · Mac、Windows、Linux内部模块更新先校验再切换，任务占用时延后，失败保留原实现；运行环境一键维护继续可用。
 - **2.1.7** · Windows 修正图像环境已安装却被误报为待修复的问题；识别标准 Lib/site-packages，保留已有 Torch、Diffusers 和模型。
 - **2.1.6** · Mac、Windows、Linux 内嵌 Harness 均适配到0.2.1-rc.3，固定依赖并保留中文增量压缩、旧会话恢复与宿主工具授权。
-- **2.1.6** · 已就绪普通组件隐藏重复安装入口，批量安装只处理可安装项；离线数据库保留明确更新。
-- **2.1.6** · 卸载受依赖保护阻止时立即显示原生说明，列出全部未选依赖，不扩大删除范围。
-- **2.1.5** · Mac 新用户一键准备缺少的系统安装管理器、容器服务和构建工具，按依赖清单确认后继续安装组件。
 <!-- recent-features:end -->
+
+## Windows / Linux 2.2.0：内部模块与文档调用验收
+
+Windows及WSL2 Debian已安装2.2.0，Linux AppImage同步提供，Mac已有2.2.0包保留。八类工具包随软件交付；Windows/Linux当前适用五类，安装版全部1.0.0就绪，自定义插件安装入口和命令仍关闭。模型、页面及运行环境共用能力注册，压缩前后统一内核计量并包含摘要包装；Windows图像环境状态修复保留。已有2B模型完成实际请求，五类随包MCP的35个工具清单一致，真实DOCX创建/读取与Markdown导出通过；模型请求与MCP调用分别验收，不冒称完整自主任务链。初次文档失败定位到旧打包源码副本，最终两平台采用2.2.0提交内的文档实现重新构建。Rust435通过/36忽略、两项真实模块测试通过，TypeScript1638通过/2跳过、适配器14通过，两平台DSH各53通过，完整Python45文件及额外安全7项、打包2项通过。Linux仅WSL2/Xvfb；Windows媒体生成、完整外部Harness8K任务和真实HTB边界仍保留。本批CI限制及批准状态见验收记录，下方Mac段落保留其独立验收范围。
+
+[Windows/Linux verification](VERIFICATION-2.2.0-WIN-LINUX.md) · [Downloads](https://github.com/HackerChi-Hub/localbrain-releases/releases/tag/v2.2.0)
+
+## Mac 2.2.0：内部模块化与上下文计量修正
+
+2026-10-26已正式发布并完成本机安装。作者明确批准本批源码CI付款／支出限制例外；本地检查、签名及实际安装核对通过，不冒称线上源码CI通过。
+
+八类工具纳入内部版本包，模型后端、页面和运行环境共用能力注册；核心继续管理任务、权限、上下文、技能、记忆和用户数据。自定义插件安装仍不开放，原有运行环境的一键安装与维护继续可用。模块更新先校验，任务占用时延后，失败保留原实现。
+
+“立即压缩”前后统一使用内核计量并计入摘要包装，保留原始消息，恢复不重放已执行工具。下图来自同源2.2.0真实功能验收，已裁去控制栏及无关会话；不代表安全靶场完整任务通过。
+
+![2.2.0上下文压缩与原文保留](screenshots/2.2.0-mac/context-compaction.png)
+
+![2.2.0运行环境与诊断](screenshots/2.2.0-mac/runtime-center.png)
+
+本机已有缓存完成代表性对话、文档和多媒体实际调用；网页、SSH、本地证书VPN适配器独立测试通过。三轮原生模型靶场任务最终超时，尚无模型标记核验、模型报告导出及修复后模型复测；真实HTB未验收。实验材料只留本地，不随软件分发。[安装与发布核对](VERIFICATION-2.2.0-MAC.md)。本批只更新Mac，Windows/Linux保持2.1.7；下方版本段落保留历史状态，当前下载以平台表为准。
 
 ## Windows / Linux 2.1.7：修正 Windows 图像环境误报
 
@@ -33,7 +53,7 @@
 
 Windows与WSL2 Debian已升级安装。新版包含运行环境管理、下载暂停/续传及固定0.2.1-rc.3 DSH内核；Node22.23.3、模型与驱动保留。Windows原生环境中心渲染和已有PolyStrata35B的真实只读工具往返通过；两平台各53项DSH回归及旧会话不重放迁移通过。Windows Rust427通过/34忽略，TypeScript1632通过/2跳过、适配器14通过，完整Python45文件及额外安全7项通过。三个安装包更新签名已验证。作者已明确批准本批源码CI付款/额度限制例外；不冒称线上源码CI通过。Linux仅WSL2/Xvfb验收，完整外部Harness8K超限及图片/工具任务边界仍见已知问题。
 
-[Windows/Linux verification](VERIFICATION-2.1.6-WIN-LINUX.md) · [Known issues](KNOWN-ISSUES-DSH-LOCAL-MODELS.md) · [Downloads](https://github.com/HackerChi-Hub/localbrain-releases/releases/tag/v2.1.6)
+[Windows/Linux verification](VERIFICATION-2.1.6-WIN-LINUX.md) · [Known issues](KNOWN-ISSUES-DSH-LOCAL-MODELS.md) · [Downloads](https://github.com/HackerChi-Hub/localbrain-releases/releases/tag/v2.2.0)
 
 以下Mac初次发布与旧Windows/Linux段落保留当时的记录，当前平台状态以本节和下载表为准。
 
@@ -87,7 +107,7 @@ Mac 2.1.5 已正式发布，完成打包、安装及本轮原生界面验收；W
 
 Mac 沿用本地签名，未 Apple 公证。源码仓 GitHub 说明检查因账户付款／支出限制未启动；作者已明确批准本次 Mac 2.1.5 例外发布；本地通过不冒称远端 CI 通过。详见[本轮验收](VERIFICATION-2.1.5-MAC.md)及[新用户依赖步骤](SYSTEM_PREREQUISITES_2.1.5.md)。
 
-[下载 Mac 2.1.5 安装包（Apple Silicon DMG）](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v2.1.5/LocalBrain_2.1.5_aarch64.dmg)
+[下载 Mac 2.2.0 安装包（Apple Silicon DMG）](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v2.2.0/LocalBrain_2.2.0_aarch64.dmg)
 
 
 ## 历史候选记录：Mac 2.1.4 候选：一键补齐运行环境（待发布）
@@ -106,7 +126,7 @@ Mac 沿用本地签名，未 Apple 公证。源码仓 GitHub 说明检查因账�
 
 两张是同一生产组件的布局预览，使用只读库存和明确模拟的变更。修订包已安装，12,995 项文件及链接一致，签名与镜像检查通过；系统原生捕获仍失败，原生点选、全量容器准备与真实卸载未列为通过。见[验收边界](VERIFICATION-2.1.4-MAC.md)及[环境管理说明](RUNTIME_CENTER.md)。模型权重、外部工具、会话、报告与虚拟机保留。内嵌 Harness 仍为 0.2.0-rc.2。安装包仍待发布；Windows/Linux 保留 2.1.3。
 
-Windows/Linux 2.1.3 已公开发布：Windows 修复版及 WSL2 Debian 已安装，Debian/AppImage 的资源、包内 DSH、20秒启动和53条DSH测试通过，三个安装包更新签名已验证。作者已明确批准本批源码 CI 账户限制例外；不冒称远端 CI 通过。Linux 裸机GPU和完整DSH图片/工具任务未验收，PolyStrata 35B的8K桌面超窗仍未解决。见[本批验收与待解决项](VERIFICATION-2.1.3-WIN-LINUX.md)和[正式下载](https://github.com/HackerChi-Hub/localbrain-releases/releases/tag/v2.1.3)。下方先前本机候选与单平台初发段落为历史记录，当前平台状态以本节为准。
+Windows/Linux 2.1.3 已公开发布：Windows 修复版及 WSL2 Debian 已安装，Debian/AppImage 的资源、包内 DSH、20秒启动和53条DSH测试通过，三个安装包更新签名已验证。作者已明确批准本批源码 CI 账户限制例外；不冒称远端 CI 通过。Linux 裸机GPU和完整DSH图片/工具任务未验收，PolyStrata 35B的8K桌面超窗仍未解决。见[本批验收与待解决项](VERIFICATION-2.1.3-WIN-LINUX.md)和[正式下载](https://github.com/HackerChi-Hub/localbrain-releases/releases/tag/v2.2.0)。下方先前本机候选与单平台初发段落为历史记录，当前平台状态以本节为准。
 
 ## Windows 本机修复与 DSH 接入边界（2026-10-24）
 
@@ -148,7 +168,7 @@ Windows/Linux 2.1.3 已公开发布：Windows 修复版及 WSL2 Debian 已安装
 视频演示的是拍摄时的版本；安装包与当前功能以本页正式发行信息为准。视频为中文讲解。
 <!-- evergreen:demos:end -->
 
-## 最新下载：Windows 2.1.7 · Mac 2.1.6 · Linux 2.1.7
+## 最新下载：Windows 2.2.0 · Mac 2.2.0 · Linux 2.2.0
 
 以下 2.1.3 为历史工具接入验收记录。
 
@@ -174,11 +194,11 @@ Windows/Linux 2.1.2 已补齐只读资源注册修复和本版界面改进。Win
 
 | 平台 | 安装包与状态 |
 | --- | --- |
-| Apple Silicon Mac 2.1.6 | [DMG](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v2.1.6/LocalBrain_2.1.6_aarch64.dmg) · 已安装，原生界面验收通过，已发布；系统依赖复用、确认与取消已核对；本地签名、未 Apple 公证 |
-| Windows x64 | [安装程序](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v2.1.7/LocalBrain_2.1.7_x64-setup.exe) · 已安装；本批验收与限制见上方记录|
-| Linux x64 | [Debian](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v2.1.7/LocalBrain_2.1.7_amd64.deb) · [AppImage](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v2.1.7/LocalBrain_2.1.7_amd64.AppImage) · 已安装；本批验收与限制见上方记录|
+| Apple Silicon Mac 2.2.0 | [DMG](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v2.2.0/LocalBrain_2.2.0_aarch64.dmg) · 已安装，原生界面验收通过，已发布；系统依赖复用、确认与取消已核对；本地签名、未 Apple 公证 |
+| Windows x64 | [安装程序](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v2.2.0/LocalBrain_2.2.0_x64-setup.exe) · 2.2.0; 已安装，本批平台验收及限制见上文|
+| Linux x64 | [Debian](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v2.2.0/LocalBrain_2.2.0_amd64.deb) · [AppImage](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v2.2.0/LocalBrain_2.2.0_amd64.AppImage) · 2.2.0; 已安装，本批平台验收及限制见上文|
 
-[Mac 2.1.6 发行说明](https://github.com/HackerChi-Hub/localbrain-releases/releases/tag/v2.1.6) · [Mac 校验值](SHA256SUMS-2.1.6-MAC.txt) · [Windows/Linux 2.1.6 发行说明](https://github.com/HackerChi-Hub/localbrain-releases/releases/tag/v2.1.7)。Mac 拖入应用程序；Debian/Ubuntu 执行 `sudo apt install ./LocalBrain_2.1.7_amd64.deb`。旧发行保留。
+[Mac 2.2.0 发行说明](https://github.com/HackerChi-Hub/localbrain-releases/releases/tag/v2.2.0) · [Mac 校验值](SHA256SUMS-2.1.6-MAC.txt) · [Windows/Linux 2.1.6 发行说明](https://github.com/HackerChi-Hub/localbrain-releases/releases/tag/v2.1.7)。Mac 拖入应用程序；Debian/Ubuntu 执行 `sudo apt install ./LocalBrain_2.1.7_amd64.deb`。旧发行保留。
 
 以下Windows 2.0.1及更早段落保留其发布时的历史状态；当前平台版本以上方下载表为准。
 
@@ -255,10 +275,10 @@ Mac支持已集成MLX、Metal llama.cpp、Splash与Prism；Windows使用适配ll
 
 | 文件 | 散列 |
 | --- | --- |
-| Mac DMG | `5a52f1d0c240e3957d6b62a634267289d3e4d150309f0aa332a026c7466cb776` |
-| Windows安装程序 | `304b9d00203c8cdf94ba7bf210510ee764a01d61f6c67f60a3eeb1e902141a43` |
-| Linux AppImage | `dd51274347276752e36ec42fb9e6fc208387ba08693ad67cf4d6ac0faa76a859` |
-| Linux Debian包 | `07e0d22feab9f4b8d34832bfe3e79832f4b628eefb8bbc8947e6d79e82aee06d` |
+| Mac DMG | `7359df6e13a86b315f1dca71c6484d6dd9718350781825e13c941c3479b7658b` |
+| Windows安装程序 | `9d6baddcacebc4d56bc7bdc8db1f4f15171b0f25c38cd4df8d732993d86c2e73` |
+| Linux AppImage | `9835fda37e88f8b168e053bf3120a594460caaf614194ce3bb41d0c4e4b4d78e` |
+| Linux Debian包 | `9181709955ed9d9bb6dd49c4b34e5e29c550a60ef71150b56318a24bc7af799d` |
 
 本仓提供安装包与说明，不是开发源码目录。专有软件，© HyphenTech · 黑粉科技。
 

@@ -77,7 +77,7 @@ See cost breakdown, efficiency scoring, anti-patterns, and live session tracking
 npm install -g @newrelic/preflight
 ```
 
-> **Using [Smithery](https://smithery.ai)?** Installing Preflight from the Smithery MCP registry wires up the MCP server for you, but Smithery has no mechanism to write Claude Code hooks. After install, ask Claude Code to call the `nr_observe_install_hooks` MCP tool (it will offer to do this automatically once `nr_observe_health` reports `setup_required: true`), then restart Claude Code to activate monitoring.
+> **Using [Smithery](https://smithery.ai)?** Installing Preflight from the Smithery MCP registry wires up the MCP server for you, but Smithery has no mechanism to write Claude Code hooks. After install, either run `preflight install` in a terminal, or set `"allowHeadlessInstall": true` in your Preflight config (or `NEW_RELIC_AI_ALLOW_HEADLESS_INSTALL=true`) and ask Claude Code to call the `nr_observe_install_hooks` MCP tool. The tool refuses by default, because any connected MCP client can call it. With the flag on, it offers to do this automatically once `nr_observe_health` reports `setup_required: true`. Then restart Claude Code to activate monitoring.
 
 ### 2. Run setup
 
@@ -218,6 +218,7 @@ Add `--project` to `install`/`uninstall` to scope changes to the current directo
 - [**SCORECARDS.md**](docs/SCORECARDS.md) — New Relic Scorecard rules for team attribution
 - [**ARCHITECTURE.md**](docs/ARCHITECTURE.md) — Data flow, component reference, and operating modes
 - [**ADAPTERS.md**](docs/ADAPTERS.md) — Per-platform integration mechanism, setup steps, and known gaps
+- [**FLEET_DEPLOYMENT.md**](docs/FLEET_DEPLOYMENT.md) — Roll out the Claude Code plugin to many machines with managed settings and MDM
 - [**TROUBLESHOOTING.md**](docs/TROUBLESHOOTING.md) — Common setup and connection problems, and how to fix them
 - [**CONTRIBUTING.md**](CONTRIBUTING.md) — Development, testing, submitting PRs
 - [**SECURITY.md**](./SECURITY.md) — Security guidelines and best practices

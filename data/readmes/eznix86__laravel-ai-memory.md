@@ -2,240 +2,224 @@
 
 ![Banner](./art/banner.png)
 
-Agentic memory for [Laravel AI SDK](https://github.com/laravel/ai). It keeps your agent in context.
+Long-term memory for agents of the [Laravel AI SDK](https://github.com/laravel/ai), in one PostgreSQL table.
+
+The agent keeps what users tell it about themselves and their work: who they are, what they like, what they work on and how their team works.
+
+- [Requirements](#requirements)
+- [Getting started](#getting-started)
+- [The memory context](docs/memory-context.md)
+- [Injecting memory](#injecting-memory)
+- [Languages](#languages)
+- [Testing](#testing)
+- [Extending the package](#extending-the-package)
+- [Migrating from 1.x to 2.x](docs/upgrading.md)
 
 ## Requirements
 
-- PHP 8.4+
-- Laravel 12+
-- laravel AI SDK
-- A vector compatible database, preferably PostgreSQL with [pgvector](https://github.com/pgvector/pgvector) extension
+- PHP 8.4+, Laravel 12.62+ or 13.15+
+- Laravel AI SDK 1.3+
+- PostgreSQL with [pgvector](https://github.com/pgvector/pgvector). The migration adds the extension, so the database user must have that permission
+- A queue worker
+- An LLM (text model) with structured output, required
+  - extracts the facts after each turn
+  - decides on duplicates
+  - merges memories each week
+- An embedding model, required
+  - stores a vector for each fact
+  - finds the memories for each prompt
+  - searches with `RecallMemory`
+- A classification model, optional
+  - only with `AI_MEMORY_DECIDER=classification` or `AI_MEMORY_PERMISSION_GUARD=classification`
+- An LLM (text model) or a TypeSafe System One model, for evals only
+  - judges the answers in your Pest evals
 
-## Use cases
-* **Personalization**: remember user preferences (tone, language, choices, and more...).
-* **Continuity**: retain prior issues, steps tried, and outcomes.
-* **Workflows**: resume tasks with stored constraints, decisions, and last-known state.
-* **Context**: keep shared conventions, requirements, and decisions for consistent agent behavior.
-* **Multi-agent/tool handoff**: persist facts so different agents/tools can coordinate without repeating context.
-* **Scoped memory**: store only approved, minimal facts instead of full conversation history.
+See [Models](docs/customizing.md#models).
 
+## Getting started
 
-## Installation
+**1. Install and migrate.** If you use Ollama, set `AI_MEMORY_DIMENSIONS` first.
 
 ```bash
 composer require eznix86/laravel-ai-memory
-```
-
-Run the migrations:
-
-```bash
 php artisan migrate
 ```
 
-Optionally publish the config:
+**2. Run a queue worker.** After each turn, a job extracts the facts.
+
+**3. Set the temperature of the memory model to 0.** If you do not, some models return no facts.
 
 ```bash
-php artisan vendor:publish --tag=memory-config
+AI_MEMORY_PROVIDER_OPTIONS='{"openrouter": {"temperature": 0}}'
 ```
 
-## Usage
-
-### AgentMemory Facade
+**4. Add memory to your agent.** Keep your own tools and middleware:
 
 ```php
-use Eznix86\AI\Memory\Facades\AgentMemory;
-
-// Store a memory
-$memory = AgentMemory::store('User prefers dark mode', ['user_id' => $userId]);
-
-// Recall relevant memories (semantic search + reranking)
-$memories = AgentMemory::recall('What are the user preferences?', ['user_id' => $userId], limit: 5);
-
-// Get all memories for a user
-$all = AgentMemory::all(['user_id' => $userId]);
-
-// Delete a specific memory
-AgentMemory::forget($memoryId);
-
-// Delete all memories for a user
-AgentMemory::forgetAll(['user_id' => $userId]);
-```
-
-### Agent Tools
-
-Attach memory capabilities to any Laravel AI agent:
-
-```php
+use Eznix86\AI\Memory\Contracts\HasMemory;
+use Eznix86\AI\Memory\MemoryContext;
+use Eznix86\AI\Memory\Middleware\WithMemory;
+use Eznix86\AI\Memory\Tools\Forget;
 use Eznix86\AI\Memory\Tools\RecallMemory;
-use Eznix86\AI\Memory\Tools\StoreMemory;
-use Laravel\Ai\Contracts\Agent;
-use Laravel\Ai\Contracts\HasTools;
-use Laravel\Ai\Promptable;
+use Eznix86\AI\Memory\Tools\Remember;
 
-class MyAgent implements Agent, HasTools
+class SupportAgent implements Agent, HasMemory, HasMiddleware, HasTools
 {
     use Promptable;
 
     public function __construct(
-        protected array $context = [],
+        protected MemoryContext $context,
     ) {}
 
-    public function instructions(): Stringable|string
+    public function memory(): MemoryContext
     {
-        return 'You are a helpful assistant with memory. Use Store Memory tool to save facts about the conversation.';
+        return $this->context;
     }
 
     public function tools(): iterable
     {
         return [
-            (new RecallMemory)->context($this->context),
-            (new StoreMemory)->context($this->context),
+            // your tools...
+            new Remember($this->context),
+            new Forget($this->context),
+            new RecallMemory($this->context),
         ];
     }
-}
-```
-
-The AI agent will automatically decide when to store and recall memories using these tools.
-
-### WithMemory Middleware
-
-Automatically prepend relevant memories to every agent prompt:
-
-```php
-use Eznix86\AI\Memory\Middleware\WithMemory;
-use Laravel\Ai\Contracts\HasMiddleware;
-
-class MyAgent implements Agent, HasTools, HasMiddleware
-{
-    use Promptable;
-
-    // ... tools() and instructions() ...
-    
 
     public function middleware(): array
     {
         return [
-            new WithMemory($this->context, limit: 5),
+            // your middleware...
+            new WithMemory($this->context),
         ];
     }
 }
 ```
 
-When a user prompts the agent, the middleware will:
-1. Search for relevant memories using the prompt text
-2. Prepend them to the prompt as context
-3. The agent sees them before responding
-
-### Using the Agent
+**5. Prompt the agent** with a context for the current user:
 
 ```php
-$agent = new MyAgent(['user_id' => auth()->id()]);
-$response = $agent->prompt('What do you remember about my preferences?');
+$context = new MemoryContext(user: $request->user());
 
-echo $response->text;
+(new SupportAgent($context))->prompt($request->input('message'));
 ```
 
-## Configuration
+Each user gets their own memories. To share memories with a team, add `owner: $team`. See [The memory context](docs/memory-context.md).
 
-Publish the config file to customize defaults:
+**6. Schedule the weekly clean-up** in `routes/console.php`. It merges memories on the same subject and archives the ones that faded:
+
+```php
+Schedule::command('memory:consolidate')->sundays()->at('02:00');
+```
+
+See [Decay and consolidation](docs/safety.md#decay-and-consolidation).
+
+## Injecting memory
+
+Your app can also give facts to the agent, for example from a settings page or an app event:
+
+```php
+use Eznix86\AI\Memory\Facades\Memories;
+use Eznix86\AI\Memory\MemoryContext;
+
+class RememberTravelMode
+{
+    public function handle(TravelModeEnabled $event): void
+    {
+        Memories::add(new MemoryContext(user: $event->user), [
+            'kind' => 'context',
+            'content' => "The user is travelling in {$event->country} until {$event->until->format('j F')}.",
+            'source' => 'travel-mode',
+            'expires_at' => $event->until,
+        ]);
+    }
+}
+```
+
+The memory ends at `expires_at`. Add `creator: $admin` when a person writes it. See [Adding memories from your application](docs/managing-memories.md#adding-memories-from-your-application).
+
+## Languages
+
+Facts stay in the language of the user. For other languages, use a multilingual embedding model, and translate the short messages that the agent reads:
 
 ```bash
-php artisan vendor:publish --tag=memory-config
+php artisan vendor:publish --tag=memory-lang
 ```
 
-Available options in `config/memory.php`:
-
-| Option                     | Default    | Description                                          |
-|----------------------------|------------|------------------------------------------------------|
-| `dimensions`               | `1536`     | Embedding vector dimensions (must match your model)  |
-| `similarity_threshold`     | `0.5`      | Minimum cosine similarity for recall                 |
-| `recall_limit`             | `10`       | Default max memories returned by `recall()`          |
-| `middleware_recall_limit`  | `5`        | Default memories injected by middleware              |
-| `recall_oversample_factor` | `2`        | Candidates fetched before reranking (limit × factor) |
-| `table`                    | `memories` | Database table name                                  |
-
-You can also set these via environment variables:
-
-```env
-MEMORY_DIMENSIONS=1536
-MEMORY_SIMILARITY_THRESHOLD=0.5
-MEMORY_RECALL_LIMIT=10
-MEMORY_MIDDLEWARE_RECALL_LIMIT=5
-MEMORY_RECALL_OVERSAMPLE_FACTOR=2
-MEMORY_TABLE=memories
-```
-
-## How It Works
-
-1. **Store** — Content is converted to an embedding vector via `Str::of($content)->toEmbeddings()` and saved alongside the text in PostgreSQL with pgvector.
-
-2. **Recall** — The query is embedded, then `whereVectorSimilarTo()` finds candidates by cosine similarity. Results are reranked via `$collection->rerank('content', $query)` for higher relevance.
-
-3. **Middleware** — Before the agent sees the prompt, `WithMemory` recalls relevant memories and prepends them as context.
+Then copy `lang/vendor/memory/en` to a folder for your language, and translate the lines. See [Languages](docs/languages.md).
 
 ## Testing
 
-This package uses [Pest](https://pestphp.com) with [TestContainers](https://testcontainers.com) for PostgreSQL + pgvector integration tests.
-
-```bash
-./vendor/bin/pest
-```
-
-### Testing with `AgentMemory::fake()`
-
-Use `AgentMemory::fake()` to fake all underlying AI services in one call. It uses deterministic embeddings internally, so `store()` → `recall()` just works:
+| Level | Checks | Model calls |
+|---|---|---|
+| Unit | Your code for memory, such as your policy | No |
+| Feature | The connection of your agent to memory, with `Memories::fake()` | No |
+| Eval | Your agent with your real model, with [Pest evals](https://pestphp.com/docs/evals) | Yes |
 
 ```php
-use Eznix86\AI\Memory\Facades\AgentMemory;
+// feature test
+test('the agent stores a preference with Remember', function () {
+    Memories::fake();
+    $context = new MemoryContext(user: User::factory()->create());
 
-test('agent remembers user preferences', function () {
-    AgentMemory::fake();
+    SupportAgent::fake([
+        new ToolCall('call-1', 'Remember', ['kind' => 'preference', 'content' => 'The user wants the weekly report as PDF.']),
+        'Noted.',
+    ]);
 
-    AgentMemory::store('User prefers dark mode', ['user_id' => 'user-123']);
+    (new SupportAgent($context))->prompt('From now on, send me the weekly report as PDF.');
 
-    $memories = AgentMemory::recall('preferences', ['user_id' => 'user-123']);
+    expect(Memories::list($context)->pluck('content'))->toContain('The user wants the weekly report as PDF.');
+});
 
-    expect($memories)->toHaveCount(1)
-        ->and($memories->first()->content)->toBe('User prefers dark mode');
+// eval test, run with ./vendor/bin/pest --evals
+test('a fact told in one conversation is known in the next one', function () {
+    $context = new MemoryContext(user: User::factory()->create());
+
+    (new SupportAgent($context))->prompt('I live in Mauritius. What is a nice place for a weekend walk?');
+
+    expect(new SupportAgent($context))
+        ->prompt('Which country do I live in?')
+        ->toContain('Mauritius');
 });
 ```
 
-When testing agents with the `WithMemory` middleware, `AgentMemory::fake()` handles everything — no need to separately fake `Embeddings` or `Reranking`:
+For all the examples, see [docs/testing.md](docs/testing.md).
 
-```php
-test('agent receives memory context', function () {
-    AgentMemory::fake();
+## Extending the package
 
-    AgentMemory::store('User lives in Mauritius', ['user_id' => 'user-123']);
-
-    $receivedPrompt = null;
-    MyAgent::fake(function (string $prompt) use (&$receivedPrompt) {
-        $receivedPrompt = $prompt;
-        return 'Got it!';
-    });
-
-    $agent = new MyAgent(['user_id' => 'user-123']);
-    $agent->prompt('Where do I live?');
-
-    expect($receivedPrompt)
-        ->toContain('User lives in Mauritius')
-        ->toContain('Where do I live?');
-});
-```
-
-You can also pass custom reranking responses to control the order of recalled memories:
-
-```php
-use Laravel\Ai\Responses\Data\RankedDocument;
-
-AgentMemory::fake([
-    [
-        new RankedDocument(index: 0, document: 'First result', score: 0.9),
-        new RankedDocument(index: 1, document: 'Second result', score: 0.8),
-    ],
-]);
-```
+- [How it works](docs/how-it-works.md): one turn, and the path of a fact through the writer
+- [The memory context](docs/memory-context.md)
+  - [Owners and users](docs/memory-context.md#the-memory-context)
+  - [Kinds](docs/memory-context.md#kinds)
+  - [Subjects](docs/memory-context.md#subjects)
+  - [Tools, middleware and skill](docs/memory-context.md#tools-middleware-and-skill)
+- [Safety, duplicates and decay](docs/safety.md)
+  - [What the writer rejects](docs/safety.md#safety)
+  - [Permission guard](docs/safety.md#permission-guard)
+  - [Duplicates and corrections](docs/safety.md#duplicates-and-corrections)
+  - [Decay and consolidation](docs/safety.md#decay-and-consolidation)
+- [Managing memories](docs/managing-memories.md)
+  - [The API for a memory page](docs/managing-memories.md#managing-memories)
+  - [Adding memories from your application](docs/managing-memories.md#adding-memories-from-your-application)
+  - [Who can edit memories](docs/managing-memories.md#who-can-edit-memories)
+- [Languages](docs/languages.md)
+  - [What works in any language](docs/languages.md#what-works-in-any-language)
+  - [What you set for your languages](docs/languages.md#what-you-set-for-your-languages)
+  - [Translating the messages](docs/languages.md#translating-the-messages)
+  - [Prompts in another language](docs/languages.md#prompts-in-another-language)
+- [Customizing](docs/customizing.md)
+  - [Models](docs/customizing.md#models)
+  - [Prompts and messages](docs/customizing.md#customizing-prompts-and-messages)
+  - [Replacing classes](docs/customizing.md#extending-the-package)
+  - [All settings](docs/customizing.md#configuration)
+- [Testing your application](docs/testing.md)
+  - [Unit tests](docs/testing.md#unit-tests)
+  - [Feature tests](docs/testing.md#feature-tests)
+  - [Eval tests](docs/testing.md#eval-tests)
+- [Migrating from 1.x to 2.x](docs/upgrading.md)
+- [Contributing](CONTRIBUTING.md)
 
 ## License
 
-MIT
+MIT. See [LICENSE](LICENSE).

@@ -14,9 +14,9 @@ Thermite is open-source **autoresearch**: AI agents that run experiments in a lo
 > [!WARNING]
 > **Thermite is under heavy development.** It changes every day, and some parts will break. If you don't want to take every update as it comes, pin a release: install from a tagged release's bundle, whose compose file pins every image by digest, and update when you choose. Most of Thermite can be driven from the dashboard, and its REST API and MCP server work well with coding agents, which can help you set it up, test it and run it.
 
-> **Status:** work is toward v0.1.0, the first public release. The judge, control, agents and supervision are built and pass their acceptance tests. See the [roadmap](https://usethermite.com/project/roadmap/) and, for every detail, the [release plan](docs/plan/release-v0.1.0.md).
+> **Status:** v0.1.0, the first public release, is out: install it from its [release bundle](https://github.com/iammrduncan/thermite/releases/tag/v0.1.0). Work goes on toward v0.1.1: see the [roadmap](https://usethermite.com/project/roadmap/).
 
-![The dashboard's page for one run: its model use, cost and tokens at the top, where the run started, the champion's gains over time, what each lane works on now, and the run's champion and promotion rule](docs/_site/src/assets/screenshots/run.webp)
+![The dashboard's page for one run: its champion's value, its cost and its tokens at the top, where the run started, the champion's gains over time, what each lane works on now, and the run's champion and promotion rule](docs/_site/src/assets/screenshots/run.webp)
 
 ## The idea
 
@@ -32,7 +32,7 @@ Each campaign is one of three kinds, called **modes**:
 | --- | --- | --- | --- |
 | **Hill climb** | Push one number, such as speed, size or accuracy, as far as it goes, with guards so that nothing else gets worse | You stop it | Make a matmul kernel faster without breaking its tests |
 | **Goal** | Meet a list of checks: it builds, it loads the model, its answers match | Every required goal is met, or the evidence shows that they cannot be | Port a library to a new platform: it builds, matches its goldens and meets a speed target |
-| **Research** | Answer a question from sources. Code checks every quote, word for word, against the page it came from | A review panel finds every question answered, or its longest time is up | How do modern memory allocators keep tail latency low? |
+| **Research** | Answer a question from sources. Code checks every quote, word for word, against the page it came from | A review panel finds every question answered, its research stops adding, or its longest time is up | How do modern memory allocators keep tail latency low? |
 
 The modes combine: a hill climb or a goal campaign can read what a research campaign found. [Choose a campaign mode](https://usethermite.com/how-to/campaigns/choose-a-mode/) helps you pick, [campaign modes](https://usethermite.com/explanation/campaign-modes/) explains each, and the [contract reference](https://usethermite.com/reference/contract/) has every field.
 
@@ -63,7 +63,7 @@ flowchart LR
 
 ## What you get
 
-- **It keeps going.** There are no default caps on turns, submissions, failures or wall time. A campaign runs until its goals are met or its questions are answered, its time is up, or you stop it; only the limits you configure apply.
+- **It keeps going.** There are no default caps on turns, submissions, failures or wall time. A campaign runs until its goals are met or its questions are answered, its research stops adding, its time is up, or you stop it; only the limits you configure apply.
 - **Your machines, your models.** Run it on your own computer, on machines with GPUs over SSH, on a Kubernetes cluster, or on a RunPod GPU by the hour. The agents use a free model, a model server of your own, an API key, or a Claude or ChatGPT subscription.
 - **Nothing useful is thrown away.** Every losing attempt is kept with its code and its verdict. Agents keep field notes as they work, and each campaign's records go into a knowledge base that later runs read.
 - **People stay in charge.** One dashboard shows every campaign on every machine, live. You can pause, redirect, message, reset and reassign any run from the dashboard, the REST API or an MCP client, and decide which wins wait for your approval.
@@ -84,10 +84,10 @@ docker compose up -d
 With Podman, write `podman compose` in place of `docker compose`. The first start downloads the images. To check the machine before the first `up`, run `npx thermite doctor` from the [command line](https://usethermite.com/how-to/install/one-machine/#the-command-line), built from the source with Node.js and git: it checks Docker or Podman, compose, the port, disk and the clock, and says how to fix each problem ([Troubleshoot](https://usethermite.com/how-to/operate/troubleshoot/#check-the-machine)). Then:
 
 1. Open <http://127.0.0.1:8800/ui> and sign in with the token in `.dev/secrets/control-admin-token`.
-2. Go to **Rigs › local-1 › Checks** and run **smoke**. The rig builds a small benchmark and submits known changes to its judge: a real speed-up, a no-op, broken builds and attempts to cheat. Each one gets its expected verdict in about ten minutes on a CPU.
+2. Open **Rigs › local-1**, and under **Checks** press **Run it** beside **Judge smoke**. The rig builds a small benchmark and submits known changes to its judge: a real speed-up, a no-op, broken builds and attempts to cheat. Each one gets its expected verdict within a few minutes on a CPU.
 3. Add a model under **Settings › Providers** (any OpenAI-compatible endpoint with tool calling, Anthropic, or OpenCode), then start a campaign from **Campaigns › New campaign**: on the sample project in [`examples/matmul-cpu`](examples/matmul-cpu/README.md), a folder of this repository, or on your own project.
 
-The [quick start](https://usethermite.com/tutorials/first-run/) walks through every step, including taking the winning patch back to your project. To build Thermite from its source code instead, see [Contributing](https://usethermite.com/project/contributing/#set-up).
+The [tutorials](https://usethermite.com/tutorials/first-run/) walk through every step, up to taking the winning patch back to your project ([Your own project](https://usethermite.com/tutorials/your-own-project/)). To build Thermite from its source code instead, see [Contributing](https://usethermite.com/project/contributing/#set-up).
 
 **Just want to look around?** `npm ci && node --experimental-strip-types scripts/dashboard-demo.ts` serves the dashboard with synthetic campaigns and rigs at <http://127.0.0.1:8810/ui>, with no containers. It prints the token to sign in with.
 
@@ -121,7 +121,7 @@ More in [architecture](https://usethermite.com/explanation/how-it-fits-together/
 
 | Read this | To |
 | --- | --- |
-| [Quick start](https://usethermite.com/tutorials/first-run/) | Go from a clean clone to a campaign on your own project |
+| [Quick start](https://usethermite.com/tutorials/first-run/) | Go from the release's compose file to a first verdict, then to agents on your own project |
 | [Write a kit](https://usethermite.com/how-to/campaigns/write-a-kit/) | Teach the judge how to build, run and check your project |
 | [Judging and integrity](https://usethermite.com/explanation/why-agents-never-judge/) | See how results are accepted without trusting the agents |
 | [Known limits](https://usethermite.com/reference/known-limits/) | Know the risks and what is not built yet, before you run it |

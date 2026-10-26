@@ -28,7 +28,16 @@ Secure, enterprise-ready landing zone for deploying AI agent applications on Mic
 
 ## Architecture
 
-![Zero Trust Architecture](media/architecture_zero_trust.png)
+Reference architectures for private-network deployments. Resource selection and
+reuse depend on deployment settings. Select an image to open the full-resolution PNG.
+
+### Standalone
+
+[![Standalone Agent Landing Zone architecture](media/AI-Landing-Zone-without-platform.png)](media/AI-Landing-Zone-without-platform.png)
+
+### With Platform Hub
+
+[![Agent Landing Zone with Platform Hub architecture](media/AI-Landing-Zone-with-platform.png)](media/AI-Landing-Zone-with-platform.png)
 
 ## Deploy
 

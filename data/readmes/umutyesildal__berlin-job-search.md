@@ -6,7 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![skills.sh](https://skills.sh/b/umutyesildal/berlin-job-search)](https://skills.sh/umutyesildal/berlin-job-search)
 
-![Fictional CV and application dashboard](docs/images/hero.png)
+![Demo: searching Berlin recruiter jobs and checking whether German is required](docs/images/demo.gif)
 
 Job hunting in Germany has rules nobody writes down:
 
@@ -74,6 +74,8 @@ git clone https://github.com/umutyesildal/berlin-job-search.git && cd berlin-job
 *Example output with fictional employers.*
 
 ## What it does
+
+![Fictional CV and application dashboard](docs/images/hero.png)
 
 | Stage | You get |
 |---|---|
@@ -155,8 +157,9 @@ your machine through the scripts, and nothing is sent to the author.
 
 ## Contributing
 
-Issues and pull requests are welcome, especially new company boards, cities and fields. See
-[CONTRIBUTING.md](CONTRIBUTING.md). The scripts are Python 3.9+ with the standard library only.
+Issues and pull requests are welcome, especially new company boards, cities and fields. PRs written
+with an AI agent are fine too. See [CONTRIBUTING.md](CONTRIBUTING.md). The scripts are Python 3.9+
+with the standard library only.
 
 ## Credits and license
 

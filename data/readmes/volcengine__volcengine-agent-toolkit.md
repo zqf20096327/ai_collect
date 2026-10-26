@@ -30,7 +30,7 @@ Agent 执行 `ve` 时必须注入 `VE_CALLER_TYPE=ai_agent`、`VE_CALLER_NAME=<a
 <!-- BEGIN GENERATED: plugin-catalog -->
 | Plugin | 产品分类 | Skills | 默认安装 |
 | --- | --- | --- | --- |
-| `volcengine-core` | 核心 | `volcengine-cli`、`volcengine-troubleshooting`、`volcengine-knowledge-search`、`volcengine-find-skills`、`volcengine-feedback` | 是 |
+| `volcengine-core` | 核心 | `volcengine-billing-and-cost-management`、`volcengine-cli`、`volcengine-troubleshooting`、`volcengine-knowledge-search`、`volcengine-find-skills`、`volcengine-feedback` | 是 |
 | `volcengine-storage` | 存储 | `volcengine-tosutil`、`volcengine-tls`、`volcengine-tls-logcollector` | 否 |
 | `volcengine-database` | 数据库 | `volcengine-db-supabase` | 否 |
 | `volcengine-containers-middleware` | 容器与中间件 | `volcengine-vefaas` | 否 |
@@ -49,6 +49,7 @@ Agent 执行 `ve` 时必须注入 `VE_CALLER_TYPE=ai_agent`、`VE_CALLER_NAME=<a
 <!-- BEGIN GENERATED: skill-catalog -->
 | Skill | Plugin | 场景 |
 | --- | --- | --- |
+| [`volcengine-billing-and-cost-management`](./skills/core/volcengine-billing-and-cost-management/SKILL.md) | `volcengine-core` | 分析云费用波动，定位产品、计费项及用量、单价和金额构成的归因。 |
 | [`volcengine-cli`](./skills/core/volcengine-cli/SKILL.md) | `volcengine-core` | 使用 ve 管理火山引擎资源；引导获取 TOS、Ark 技能，并通过 ve tosutil、ve arkcli 执行。 |
 | [`volcengine-troubleshooting`](./skills/core/volcengine-troubleshooting/SKILL.md) | `volcengine-core` | 诊断火山引擎错误、资源状态、配额、指标与 OpenAPI 故障。 |
 | [`volcengine-knowledge-search`](./skills/core/volcengine-knowledge-search/SKILL.md) | `volcengine-core` | 使用 ve docs search/fetch 检索并获取火山引擎官方文档全文，无需登录。 |
@@ -58,7 +59,7 @@ Agent 执行 `ve` 时必须注入 `VE_CALLER_TYPE=ai_agent`、`VE_CALLER_NAME=<a
 | [`volcengine-tls`](./skills/specialized/storage/volcengine-tls/SKILL.md) | `volcengine-storage` | 使用 volclog 操作火山引擎日志服务 TLS：按契约发现/描述/执行，覆盖日志检索、分析、导入、导出与错误恢复。 |
 | [`volcengine-tls-logcollector`](./skills/specialized/storage/volcengine-tls-logcollector/SKILL.md) | `volcengine-storage` | 通过 volclog 设计、校验、部署并排查 Linux 主机或 Kubernetes 上的 TLS LogCollector 日志采集。 |
 | [`volcengine-db-supabase`](./skills/specialized/database/volcengine-db-supabase/SKILL.md) | `volcengine-database` | 管理火山引擎 AI 原生 BaaS Supabase 工作区、SQL、Auth、Realtime 与 Edge Functions。 |
-| [`volcengine-vefaas`](./skills/specialized/containers-middleware/volcengine-vefaas/SKILL.md) | `volcengine-containers-middleware` | 在火山引擎 veFaaS 上部署和管理 Serverless 应用。 |
+| [`volcengine-vefaas`](./skills/specialized/containers-middleware/volcengine-vefaas/SKILL.md) | `volcengine-containers-middleware` | 通过 vefaas CLI 部署 veFaaS 应用和 MCP 服务，管理函数、沙箱并调用 OpenAPI。 |
 | [`volcengine-compliance`](./skills/specialized/security/volcengine-compliance/SKILL.md) | `volcengine-security` | 推荐合规基线、汇总合规态势并编写自定义 Rego 合规规则。 |
 | [`volcengine-cloud-trail`](./skills/specialized/security/volcengine-cloud-trail/SKILL.md) | `volcengine-security` | 查询操作审计日志，并管理跟踪和历史补投任务。 |
 | [`volcengine-landing-zone`](./skills/specialized/identity-access-control/volcengine-landing-zone/SKILL.md) | `volcengine-identity-access-control` | 咨询、搭建和管理火山引擎 Landing Zone 与账号基线，并支持部署方案或蓝图。 |
@@ -113,7 +114,7 @@ python3 plugins/volcengine-core/skills/volcengine-find-skills/scripts/find_skill
 ```bash
 npx skills add volcengine/volcengine-agent-toolkit \
   --global --yes --copy --full-depth \
-  --skill volcengine-cli volcengine-troubleshooting volcengine-knowledge-search volcengine-find-skills volcengine-feedback
+  --skill volcengine-cli volcengine-troubleshooting volcengine-knowledge-search volcengine-find-skills volcengine-feedback volcengine-billing-and-cost-management
 ```
 
 后续可由 finder 调用 `npx skills add --skill` 精确安装单个或多个 skill。如需交互选择仓库内的 skill：
@@ -139,6 +140,7 @@ gemini skills install https://github.com/volcengine/volcengine-agent-toolkit --p
 gemini skills install https://github.com/volcengine/volcengine-agent-toolkit --path skills/core/volcengine-knowledge-search
 gemini skills install https://github.com/volcengine/volcengine-agent-toolkit --path skills/core/volcengine-find-skills
 gemini skills install https://github.com/volcengine/volcengine-agent-toolkit --path skills/core/volcengine-feedback
+gemini skills install https://github.com/volcengine/volcengine-agent-toolkit --path skills/core/volcengine-billing-and-cost-management
 gemini skills list
 ```
 

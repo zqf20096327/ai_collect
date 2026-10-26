@@ -3,8 +3,8 @@
 # 🚗 AlphaAD · Autonomous Driving Research
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Last Update](https://img.shields.io/badge/Last%20Updated-2026--10--25-blue)
-![Total Papers](https://img.shields.io/badge/Papers-1416-green)
+![Last Update](https://img.shields.io/badge/Last%20Updated-2026--10--26-blue)
+![Total Papers](https://img.shields.io/badge/Papers-1414-green)
 ![Auto Update](https://img.shields.io/badge/Auto--Update-Daily-brightgreen)
 
 **A daily, explainable research signal for autonomous driving.**<br>
@@ -20,20 +20,20 @@ Browse one primary topic per paper, then refine the signal with method and resou
 
 ## Browse by topic
 
-All 1416 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
+All 1414 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
 
 | Topic | Papers | Latest | Jump |
 |:--|--:|:--|:--|
-| Perception & Sensor Fusion | 220 | 2026-10-22 | [View papers](#category-perception-sensor-fusion) |
+| Perception & Sensor Fusion | 221 | 2026-10-23 | [View papers](#category-perception-sensor-fusion) |
 | Prediction & World Models | 107 | 2026-10-19 | [View papers](#category-prediction-world-models) |
-| Planning & Decision-Making | 95 | 2026-10-21 | [View papers](#category-planning-decision-making) |
-| Control & Vehicle Dynamics | 57 | 2026-10-21 | [View papers](#category-control-vehicle-dynamics) |
-| Mapping & Localization | 54 | 2026-10-18 | [View papers](#category-mapping-localization) |
+| Planning & Decision-Making | 94 | 2026-10-21 | [View papers](#category-planning-decision-making) |
+| Control & Vehicle Dynamics | 58 | 2026-10-23 | [View papers](#category-control-vehicle-dynamics) |
+| Mapping & Localization | 53 | 2026-10-18 | [View papers](#category-mapping-localization) |
 | End-to-End & VLA | 161 | 2026-10-22 | [View papers](#category-end-to-end-vla) |
-| Safety, Security & Verification | 223 | 2026-10-22 | [View papers](#category-safety-security-verification) |
-| Systems, Deployment & Connectivity | 164 | 2026-10-21 | [View papers](#category-systems-deployment-connectivity) |
+| Safety, Security & Verification | 222 | 2026-10-22 | [View papers](#category-safety-security-verification) |
+| Systems, Deployment & Connectivity | 163 | 2026-10-21 | [View papers](#category-systems-deployment-connectivity) |
 | Human Factors & Policy | 31 | 2026-10-17 | [View papers](#category-human-factors-policy) |
-| Cross-cutting / Other | 304 | 2026-10-21 | [View papers](#category-cross-cutting-other) |
+| Cross-cutting / Other | 304 | 2026-10-22 | [View papers](#category-cross-cutting-other) |
 
 ---
 
@@ -45,14 +45,14 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 | Tag | Papers | Filter |
 |:--|--:|:--|
-| Dataset | 104 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
-| Benchmark | 97 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
-| Simulation | 192 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
-| Synthetic Data | 37 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
-| Cooperative / V2X | 117 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
+| Dataset | 105 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
+| Benchmark | 98 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
+| Simulation | 191 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
+| Synthetic Data | 36 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
+| Cooperative / V2X | 116 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
 | VLA | 91 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
 | World Model | 115 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
-| Reinforcement Learning | 140 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
+| Reinforcement Learning | 138 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
 | Imitation Learning | 31 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Imitation+Learning) |
 | Hardware / Real-Time | 100 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
 | Survey | 27 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Survey) |
@@ -63,7 +63,38 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="category-perception-sensor-fusion"></a>
 
-## Perception & Sensor Fusion · 220 papers
+## Perception & Sensor Fusion · 221 papers
+
+<a id="paper-2610-32612"></a>
+
+### DriveOSS: Dataset and Benchmark for 3D Anomaly Segmentation and Open-set Semantic Segmentation in Autonomous Driving ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Zhiran Yan, Savankumar Bhanderi, Sourabh Lolge, Rui Song, Girdharbhai Paneliya, et al.<br>
+**Published:** 2026-10-23<br>
+**Research tags:** Dataset · Benchmark<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2610.32612) | [PDF](https://arxiv.org/pdf/2610.32612.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** Recent advances in 3D semantic segmentation have significantly improved scene understanding in autonomous driving. However, existing methods are typically developed under a closed-set assumption and...
+
+<a id="paper-2610-32230"></a>
+
+### Towards Effective and Transferable Physical Camouflage against Multi-View BEV-based 3D Perception in Autonomous Driving ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Linye Lyu, Jiawei Zhou, Daojing He, Yu Li<br>
+**Published:** 2026-10-23<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2610.32230) | [PDF](https://arxiv.org/pdf/2610.32230.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** Modern autonomous driving systems widely adopt multi-view Bird's-Eye-View (BEV) based 3D perception models due to their superior performance. Despite their success, the robustness of these models...
+
+<a id="paper-2610-32626"></a>
+
+### Privacy-Preserving Federated Loss Exploration for Vision-Based Perception under Non-IID Data ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Nergiz Yuca, Christian Internò, Nikolay Matyunin, Markus Olhofer, Barbara Hammer, et al.<br>
+**Published:** 2026-10-23<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2610.32626) | [PDF](https://arxiv.org/pdf/2610.32626.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** Vision-based image classification models benefit from Federated Learning (FL) across vehicles, however learning accurate models from distributed vehicular cameras is challenging due to data...
 
 <a id="paper-2610-31186"></a>
 
@@ -142,7 +173,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-25448"></a>
 
-### UBD-Bench: Benchmarking and Analyzing Unimodal Branch Degradation in Multimodal Perception for Autonomous Driving ![New](https://img.shields.io/badge/New-red)
+### UBD-Bench: Benchmarking and Analyzing Unimodal Branch Degradation in Multimodal Perception for Autonomous Driving ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Ang Liu, Xiang Gu, Ruikai Li, Qiyue Wang, Yizhe Fan, et al.<br>
 **Published:** 2026-10-18<br>
@@ -1100,7 +1131,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2607-24224"></a>
 
-### MATS: A novel multi-modality multi-task learning framework for 3D perception in autonomous driving ![Fresh](https://img.shields.io/badge/Fresh-yellow)
+### MATS: A novel multi-modality multi-task learning framework for 3D perception in autonomous driving
 
 **Authors:** Junchen Huo, Wanming Hao, Song Wang, Enqing Chen, Shouyi Yang, et al.<br>
 **Published:** 2026-07-27<br>
@@ -1111,7 +1142,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2607-24431"></a>
 
-### InterOCF: Spatio-Temporal 2D-3D Interaction for Camera-Only 4D Occupancy Forecasting ![Fresh](https://img.shields.io/badge/Fresh-yellow)
+### InterOCF: Spatio-Temporal 2D-3D Interaction for Camera-Only 4D Occupancy Forecasting
 
 **Authors:** Qi Zhang, Xinquan Yu, Kaiyi Zhang, Hui Huang<br>
 **Published:** 2026-07-27<br>
@@ -1639,37 +1670,4 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 **Authors:** Yongqi Zhao, Dong Bi, Paul Kovacevic, Tomislav Mihalj, Martin Schabauer, et al.<br>
 **Published:** 2026-06-15<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2606.16570) | [PDF](https://arxiv.org/pdf/2606.16570.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** Accurate road environment modeling is fundamental to the simulation and validation of automated driving systems. However, constructing road maps in standardized formats such as ASAM OpenDRIVE from...
-
-<a id="paper-2606-20687"></a>
-
-### ARGUSTRACK: A Multi-View Annotation System for Multi-Object Tracking
-
-**Authors:** Hao Vo, Duc Nguyen, Ngan Le<br>
-**Published:** 2026-06-14<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2606.20687) | [PDF](https://arxiv.org/pdf/2606.20687.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** Multi-Camera Multi-Target (MCMT) tracking has emerged as a critical capability for applications ranging from autonomous driving to animal behavior monitoring. While recent advances have yielded...
-
-<a id="paper-2606-16048"></a>
-
-### CloudDiffusion: Diffusion-Based Scene Completion in the Point Cloud Domain
-
-**Authors:** Chidera Agbasiere, Mikhail Sannikov, Faith Ogunwoye, Erik Shaikhiev, Alex Kozinov, et al.<br>
-**Published:** 2026-06-14<br>
-**Research tags:** Hardware / Real-Time<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2606.16048) | [PDF](https://arxiv.org/pdf/2606.16048.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** Reconstructing dense 3D scenes from sparse LiDAR point clouds (LiDAR scene completion) is a fundamental challenge in autonomous driving, where diffusion models offer a promising solution. However,...
-
-<a id="paper-2606-12826"></a>
-
-### DIMOS: Disentangling Instance-level Moving Object Segmentation
-
-**Authors:** Hongxiang Huang, Hongwei Ren, Xiaopeng Lin, Yulong Huang, Zeke Xie, et al.<br>
-**Published:** 2026-06-10<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2606.12826) | [PDF](https://arxiv.org/pdf/2606.12826.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** Moving instance segmentation (MIS) attracts increasing attention due to its broad applications in traffic surveillance, autonomous 
+**Links:** [arXiv abstract](https://arxiv.org/abs/2606.16570) | [PDF](https://arxiv.org/pdf/2606.16570.p

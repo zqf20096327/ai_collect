@@ -137,7 +137,7 @@ README.md · CHANGELOG.md · CONTRIBUTING.md · CODE_OF_CONDUCT.md · SECURITY.m
 .github/CODEOWNERS · PULL_REQUEST_TEMPLATE.md · ISSUE_TEMPLATE/{bug_report.yml, feature_request.yml, config.yml}
 ```
 
-> The threat model lives in `docs/technical/SECURITY_ARCHITECTURE.md`. Root `SECURITY.md` is reserved for GitHub's vulnerability-disclosure policy.
+> The threat model lives in `docs/technical/SECURITY_ARCHITECTURE.md`. Root `SECURITY.md` is reserved for GitHub's vulnerability-disclosure policy. The threat model is built per trust boundary with a design-time threat catalog (only the domains your design actually has are loaded) and also covers incident response, vulnerability management, access governance, vendor risk and a hardening baseline. Once code exists, the handoff recommends a code-level review such as [cloudflare/security-audit-skill](https://github.com/cloudflare/security-audit-skill).
 
 Full catalog with inputs and done-criteria: [`skills/start-from-here/references/document-catalog.md`](skills/start-from-here/references/document-catalog.md).
 
@@ -162,7 +162,7 @@ flowchart LR
 
 ### Small context window? Use session mode
 
-Local LLMs (8–32k), small/flash models, and chat UIs that truncate history can't hold the whole skill plus every upstream doc, so docs come out shallow or the session dies. Say `session mode` (the skill also proposes it automatically): the work is split into work packages — interview, product, architecture, data/API, security/testing, ops/plan, engineering, legal/repo, audit — one per fresh session, connected by `docs/.start-from-here/HANDOVER.md` (decisions, ID registry, open TBDs, next-session prompt). Each session loads only what it needs. See [Small context windows & session mode](docs/USAGE.md#small-context-windows--session-mode).
+Local LLMs (8–32k), small/flash models, and chat UIs that truncate history can't hold the whole skill plus every upstream doc, and even large models drift on a 30–40-doc Enterprise run. Say `session mode` (the skill recommends it by default for Enterprise, more than ~20 docs, small contexts and chat-only tools): the work is split into work packages — interview, product, architecture, data/API, security/testing, ops/plan, engineering, legal/repo, audit — one per fresh session, connected by `docs/.start-from-here/DIGEST.md` (canonical names, ID registry, decisions) and `HANDOVER.md` (open TBDs, quality notes, next-session prompt). Each session loads only what it needs. In every mode the digest is refreshed at each review gate, so you can resume in a fresh chat from any gate. See [Small context windows & session mode](docs/USAGE.md#small-context-windows--session-mode).
 
 Quick commands: `start`, `resume`, `status`, `use your recommendations`, `skip to generation`, `audit docs`, `update <doc>`, `add <doc>`, `explain <term>`, `change tier <…>`, `session mode`, `next session`, `handoff`. See the [User manual](docs/USAGE.md).
 
@@ -256,7 +256,7 @@ docs/technical/IMPLEMENTATION_PLAN.md, with files to create and how each accepta
 criterion will be verified. Do not write code until I approve the plan.
 ```
 
-Work through `IMPLEMENTATION_PLAN.md` one task at a time. When a decision changes, come back and say `update <doc>`, and the skill updates every downstream doc. Run `npx start-from-here@latest check .` at any time to find missing files, leftover placeholders, broken links, and IDs that are referenced but never defined (or defined twice).
+Work through `IMPLEMENTATION_PLAN.md` one task at a time. When a decision changes, come back and say `update <doc>`, and the skill updates every downstream doc. Run `npx start-from-here@latest check .` at any time to find missing files, leftover placeholders, broken links, IDs that are referenced but never defined (or defined twice), and gaps in the threat model (STRIDE coverage, threats without tests).
 
 ## Repository layout
 
@@ -321,3 +321,4 @@ Report vulnerabilities privately through GitHub's private vulnerability reportin
 - The document structure grew out of the author's own reference drafts for pre-development docs: early PRD, architecture, database, design-system, security, testing, and code-style documents, along with notes on the "six documents before vibe coding" idea. This skill generalizes them into a tiered, tech-agnostic, model-agnostic workflow.
 - [Agent Skills specification](https://agentskills.io/specification) and the [AGENTS.md](https://agents.md) convention.
 - [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), [Semantic Versioning](https://semver.org/), [Conventional Commits](https://www.conventionalcommits.org/), [MADR](https://adr.github.io/madr/), [C4 model](https://c4model.com/), [Contributor Covenant](https://www.contributor-covenant.org/), and [Mermaid](https://mermaid.js.org/).
+- **Credits:** the design-time security threat catalog is adapted from [cloudflare/security-audit-skill](https://github.com/cloudflare/security-audit-skill) (MIT, © 2025-2026 Cloudflare, Inc.), rewritten for threat modeling before code exists and not endorsed by Cloudflare. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

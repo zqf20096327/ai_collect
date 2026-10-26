@@ -361,6 +361,7 @@ _DSH's core composition mechanism: a **profile** stacks bundle patch layers, the
 - [gulagala001/oh-my-agents-above-all](https://github.com/gulagala001/oh-my-agents-above-all) — Five selectable agent working modes inside DSH (Codex, Grok Build, Cursor, Pi, ZCode), each with its own source prompts, workflow and theme adaptation; reuses the host's configured models and credentials.
 - [yuanshuoSY/dsh-coder-preset](https://github.com/yuanshuoSY/dsh-coder-preset) — Coder agent preset for DSH bundling 35 Matt Pocock engineering skills scoped to Coder sessions; configuration and Markdown only.
 - [menghuanshiguang/dsh-claudecode-prompt](https://github.com/menghuanshiguang/dsh-claudecode-prompt) — Runs DeepSeek Harness on Claude Code's system prompt — a Cordis bundle that swaps only the assembled system prompt, leaving tools, runtime context and other plugins untouched.
+- [Neptune810/dsh-model-router](https://github.com/Neptune810/dsh-model-router) — Flash-only reasoning-effort routing for DeepSeek Harness: sets the DeepSeek flash model's reasoning effort per step. The model never changes; effort max is opt-in.
 
 ## Harnesses & Runtimes
 
@@ -547,5 +548,4 @@ _DeepSeek-native or DeepSeek-first agent harnesses / coding agents, plus runtime
 - [Moonweave-AI/cantilune](https://github.com/Moonweave-AI/cantilune) — A proposed general-purpose language and control substrate for agent orchestration, coordinating agents, tools, people, services, permissions, sessions, and scarce resources in one inspectable model; carries the `cordis`/`dsh` GitHub topics.
 - [ilharp/dsh-tool-approval](https://github.com/ilharp/dsh-tool-approval) — Manual approval for tool calls (a "manual mode" / "ask mode" for DSH).
 - [blissito/ghostycode](https://github.com/blissito/ghostycode) — DeepSeek V4 terminal coding agent and constitutional harness (Rust TUI with MCP and sub-agents).
-- [bobleer/deepseek-harness-rust](https://github.com/bobleer/deepseek-harness-rust) — Rust implementation of DeepSeek Harness: layered crates for session log, turn/step loop, and DeepSeek SSE adapter.
-- [didclawapp-ai/zagens](https://github.com/didclawapp-ai/zagens) — Open-source
+- [bobleer/deepseek-harness-rust](

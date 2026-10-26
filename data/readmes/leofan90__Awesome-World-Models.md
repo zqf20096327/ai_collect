@@ -73,6 +73,7 @@ Maintainers can use the [arXiv candidate pipeline](docs/arxiv-pipeline.md) to di
 * **`Matrix-Game`**, Matrix-Game: Interactive World Foundation Model. [[Paper](https://arxiv.org/abs/2506.18701)] [[Code](https://github.com/SkyworkAI/Matrix-Game)] 
 * **`Cosmos-Drive-Dreams`**, Cosmos-Drive-Dreams: Scalable Synthetic Driving Data Generation with World Foundation Models. [[Paper](https://arxiv.org/abs/2506.09042)] [[Website](https://research.nvidia.com/labs/toronto-ai/cosmos_drive_dreams)] 
 * **`GAIA-2`**, GAIA-2: A Controllable Multi-View Generative World Model for Autonomous Driving. [[Paper](https://arxiv.org/abs/2503.20523)] [[Website](https://wayve.ai/thinking/gaia-2)]
+* **`Cosmos-Transfer1`**, Cosmos-Transfer1: Conditional World Generation with Adaptive Multimodal Control. [[Paper](https://arxiv.org/abs/2503.14492)] [[Website](https://research.nvidia.com/labs/toronto-ai/cosmos-transfer1/)] [[Code](https://github.com/nvidia-cosmos/cosmos-transfer1)]
 * **`Cosmos`**, Cosmos World Foundation Model Platform for Physical AI. [[Paper](https://arxiv.org/abs/2501.03575)] [[Website](https://www.nvidia.com/en-us/ai/cosmos/)] [[Code](https://github.com/NVIDIA/Cosmos)]
 * **`1X Technologies`**, 1X World Model. [[Blog](https://www.1x.tech/discover/1x-world-model)]
 * **`Runway`**, Introducing General World Models. [[Blog](https://runwayml.com/research/introducing-general-world-models)]
@@ -618,6 +619,4 @@ Agent, and World Models for Reasoning and Planning (LAW)`**. [[Paper](https://ar
 * **AirScape**: "AirScape: An Aerial Generative World Model with Motion Controllability", **`arxiv 2025.07`**. [[Paper](https://arxiv.org/abs/2507.08885)] [[Website]( https://embodiedcity.github.io/AirScape/)]
 * **Geometry Forcing**: "Geometry Forcing: Marrying Video Diffusion and 3D Representation for Consistent World Modeling", **`arxiv 2025.07`**. [[Paper](https://arxiv.org/abs/2507.07982)] [[Website](https://GeometryForcing.github.io)]
 * **Martian World Models**: "Martian World Models: Controllable Video Synthesis with Physically Accurate 3D Reconstructions", **`arxiv 2025.07`**. [[Paper](https://arxiv.org/abs/2507.07978)] [[Website](https://marsgenai.github.io)]
-* "What Has a Foundation Model Found? Using Inductive Bias to Probe for World Models", **`ICML 2025`**. [[Paper](https://arxiv.org/abs/2507.06952)]
-* "Critiques of World Models", **`arxiv 2025.07`**. [[Paper](https://arxiv.org/abs/2507.05169)]
-* "When do World Models Successfully Learn Dynamical Systems?", **`arxiv 2025.07`**. [[Paper](https://arxiv.org/abs/
+* "What Has a Foundation Model Found? Using Inductive Bias to Probe for Wo

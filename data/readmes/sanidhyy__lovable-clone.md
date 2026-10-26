@@ -337,7 +337,7 @@ Useful resources and dependencies that are used in Vibe.
 - [inngest](https://www.npmjs.com/package/inngest): ^4.23.0
 - [lucide-react](https://www.npmjs.com/package/lucide-react): ^1.27.0
 - [mprocs](https://www.npmjs.com/package/mprocs): ^0.9.6
-- [next](https://www.npmjs.com/package/next): 16.3.8
+- [next](https://www.npmjs.com/package/next): 16.4.1
 - [next-themes](https://www.npmjs.com/package/next-themes): ^0.4.6
 - [openai](https://www.npmjs.com/package/openai): ^7.5.0
 - [pg](https://www.npmjs.com/package/pg): ^8.23.1
@@ -363,7 +363,7 @@ Useful resources and dependencies that are used in Vibe.
 - [tw-animate-css](https://www.npmjs.com/package/tw-animate-css): ^1.4.0
 - [typescript](https://www.npmjs.com/package/typescript): ^6.0.3
 - [vaul](https://www.npmjs.com/package/vaul): ^1.1.2
-- [zod](https://www.npmjs.com/package/zod): ^4.5.4
+- [zod](https://www.npmjs.com/package/zod): ^4.6.6
 - [zustand](https://www.npmjs.com/package/zustand): ^5.0.15
 
 <!--- DEPENDENCIES_END --->

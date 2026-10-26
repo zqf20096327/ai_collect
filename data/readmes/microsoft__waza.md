@@ -857,9 +857,26 @@ Append a remote grader preset reference to `eval.yaml`, resolve it with the same
 | `--set key=value` | Add a local override, repeatable (for example, `--set config.threshold=0.9`) |
 | `--allow-exec` | Allow remote program graders without interactive confirmation |
 
-### `waza dev [skill-path]`
+### `waza dev <skill-name | skill-path>`
 
 Iteratively score and improve skill frontmatter in a SKILL.md file.
+
+A single target can be a workspace skill name, a directory, or a `SKILL.md` file,
+using relative or absolute paths. Bare names resolve workspace skills first,
+then fall back to local directories; prefix a directory with `./` (or `.\` on
+Windows) to select that path explicitly.
+
+```bash
+waza dev code-explainer
+waza dev ./skills/code-explainer
+waza dev ./skills/code-explainer/SKILL.md
+waza dev SKILL.md                     # file in the current directory
+waza dev .                            # current skill directory
+```
+
+The same target forms work with `--copilot` and `--scaffold-triggers`.
+Multiple positional targets remain workspace skill names; `--all` processes
+all skills in the workspace.
 
 Use `--copilot` for a non-interactive, single-pass markdown report that:
 1. Summarizes current skill details and token usage
@@ -2036,27 +2053,4 @@ docker run -v $(pwd):/workspace waza:local run eval/eval.yaml
 
 #### Quick Workflow Setup
 
-Copy [`.github/workflows/skills-ci-example.yml`](.github/workflows/skills-ci-example.yml) to your skill repository:
-
-```yaml
-jobs:
-  evaluate-skill:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install waza
-        run: curl -fsSL https://raw.githubusercontent.com/microsoft/waza/main/install.sh | bash
-      - run: waza run eval/eval.yaml --verbose --output results.json
-      - uses: actions/upload-artifact@v4
-        with:
-          name: waza-evaluation-results
-          path: results.json
-```
-
-#### Environment Requirements
-
-| Requirement | Details |
-|-------------|---------|
-| **Go Version** | 1.26 or higher |
-| **Executor** | Use `mock` executor for CI (no API keys needed) |
-| **Copilot Auth** | Required for the default `copilot-sdk` route; set `GITHUB_
+Copy [`.github/workflows/skills-ci-example.yml`](.github/workflows/skills-ci-example.yml) to

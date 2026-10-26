@@ -41,8 +41,7 @@ curl -fsSL https://raw.githubusercontent.com/mard4/meeting-pilot/main/macos/Meet
 <p align="center">
   <a href="https://meetingpilotapp.com/">Website</a> ·
   <a href="docs/SETUP.md">Setup</a> ·
-  <a href="docs/CHANGELOG.md">Changelog</a> ·
-  <a href="docs/DEVELOPMENT.md">Developers</a>
+  <a href="docs/CHANGELOG.md">Changelog</a>
 </p>
 
 
@@ -192,9 +191,7 @@ curl -fsSL https://raw.githubusercontent.com/mard4/meeting-pilot/main/macos/Meet
 Sends the YouTube video you're watching to Meeting Pilot with one click (toolbar button or right-click menu), which downloads, transcribes and summarizes it like any import, and shows how far it got.
 
 1. In Meeting Pilot open **Settings → Browser extension → Set up**. This connects the browsers you have.
-2. **[Add it from the Chrome Web Store](https://chromewebstore.google.com/detail/ipnadmfmihedhmlppdjoldfnjpmjghen)** (also for Edge, Brave and Arc). <sub>Waiting for Google's review: the link works once it is approved.</sub>
-
-Until then, load it by hand: in `chrome://extensions` (`edge://extensions`, `brave://extensions`…) turn on **Developer mode**, click **Load unpacked** and choose the folder Meeting Pilot opened after Set up (`~/Library/Application Support/Meeting Pilot/Browser Extension`); you can drag it into the dialog. Meeting Pilot updates that folder when the app updates.
+2. **[Add it from the Chrome Web Store](https://chromewebstore.google.com/detail/ipnadmfmihedhmlppdjoldfnjpmjghen)** (also for Edge, Brave and Arc).
 
 The extension can only talk to Meeting Pilot on your Mac and reads nothing but the tab you send.
 
@@ -256,10 +253,6 @@ The extension can only talk to Meeting Pilot on your Mac and reads nothing but t
 > [!IMPORTANT]
 > Make sure you're allowed to record the people in your meetings.
 
-## 🛠️ For developers
-
-Run from source, headless CLI, environment config → [DEVELOPMENT.md](docs/DEVELOPMENT.md). Contributing → [CONTRIBUTING.md](.github/CONTRIBUTING.md).
-
 ## 💬 Community
 
 Questions, ideas, bug reports or just want to see what's coming next? [Join the Meeting Pilot Discord](https://discord.gg/3Atx7yvFk).
@@ -270,14 +263,16 @@ Meeting Pilot is free and will stay free. If it saves you time, you can [pay wha
 
 ## License
 
-Copyright (c) 2026 Mardeen · [MIT](LICENSE). Use, study, modify and share, including commercially, as long as the copyright notice is kept.
+Copyright (c) 2026 Mardeen · [All rights reserved](LICENSE). Meeting Pilot is free to download and use, including at work. The source code is not public. Versions up to and including 0.5.4 were released under the MIT License, and stay available under it.
 
-**Trademark:** "Meeting Pilot" and its logo are not covered by the MIT license ([TRADEMARKS.md](TRADEMARKS.md)). Forks must use a different name and icon. Official signed builds come only from this repo's [Releases](https://github.com/mard4/meeting-pilot/releases).
+Bug reports and ideas are welcome in [issues](https://github.com/mard4/meeting-pilot/issues).
+
+**Trademark:** "Meeting Pilot" and its logo belong to Mardeen ([TRADEMARKS.md](TRADEMARKS.md)). Official signed builds come only from this repo's [Releases](https://github.com/mard4/meeting-pilot/releases).
 
 <p align="center">
   <a href="https://github.com/mard4/meeting-pilot/releases/latest"><img src="https://img.shields.io/github/v/release/mard4/meeting-pilot?style=flat-square&color=ef2f49&label=release" alt="Latest release" /></a>
   <img src="https://img.shields.io/badge/macOS-14%2B-111?style=flat-square&logo=apple&logoColor=white" alt="macOS 14+" />
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-111?style=flat-square" alt="MIT" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-free%20to%20use-111?style=flat-square" alt="Free to use" /></a>
   <a href="https://meetingpilot.pages.dev/"><img src="https://img.shields.io/badge/website-meetingpilot.pages.dev-111?style=flat-square" alt="Website" /></a>
 <a href="https://martidan.gumroad.com/l/meetingpilot"><img src="https://img.shields.io/badge/support-Gumroad-ff90e8?style=flat-square&logo=gumroad&logoColor=white" alt="Support on Gumroad" /></a>
 <a href="https://discord.gg/3Atx7yvFk"><img src="https://img.shields.io/badge/discord-join-5865F2?style=flat-square&logo=discord&logoColor=white" alt="Join the Discord" /></a>

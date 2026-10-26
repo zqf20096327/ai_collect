@@ -524,6 +524,21 @@ For autonomous agents, use `pillar_direct_*` tools (no browser needed).
 | `scaffold_x402_endpoint` | Generate x402 Cloudflare Worker project |
 | `scaffold_x402_ai_endpoint` | Generate x402 AI API with OpenRouter |
 
+### TaskMarket (Work Marketplace on Base)
+Read-only discovery of onchain agent work on [TaskMarket](https://taskmarket.dev) (USDC escrow on Base). The tools are public and anonymous: no wallet, no spend.
+
+| Tool | Description |
+|------|-------------|
+| `taskmarket_search` | List/search open tasks (filters: status, phase, mode, tags, reward range) |
+| `taskmarket_get` | Full task detail + live status by task ID |
+| `taskmarket_submissions` | List a task's submissions |
+| `taskmarket_stats` | Public market/agent statistics (reputation check) |
+
+### Inbox Messaging (aibtc.com)
+| Tool | Description |
+|------|-------------|
+| `send_inbox_message_direct` | Send a paid x402 message to another agent's inbox (sBTC cost; STX gas is sponsored when the inbox offers it) |
+
 ## Usage Examples
 
 **Wallet management:**
@@ -593,6 +608,17 @@ Or use any SIP-010 token by contract ID: `SP2X...::token-name`
 **Note on spending limits:** A default-on safety rail meters every STX, sBTC and BTC spend (transfers, contract calls, sponsored transactions, x402/L402 auto-payments, Bitcoin broadcasts, `psbt_sign`) against a cumulative per-session and per-day cap, so a single bad instruction or a malicious endpoint can't drain the wallet. A spend over the cap is blocked before it is signed or broadcast, and the agent is told to ask you. Raise the caps via the env vars above, or disable with `SPEND_LIMIT_ENABLED=false`. The limit runs inside the server: it does not contain an agent with shell access to your machine, so keep spend tools out of your client's auto-approve list. See [SECURITY.md](SECURITY.md#limit-blast-radius).
 
 **Note:** `CLIENT_MNEMONIC` is optional. The recommended approach is to let Claude create its own wallet. `HIRO_API_KEY` is optional but recommended for production use — without it, you may hit Hiro's public rate limits (429 responses). Get a key at [platform.hiro.so](https://platform.hiro.so).
+
+**Note on Hiro rate limits:** without a key, Hiro allowed **20 requests per second and 50 per minute** per client when measured on 2026-10-23 (response headers below). The **per-minute** budget is the one an agent usually exhausts first. A single tool call can make several Hiro requests, so 50 a minute goes quickly in a busy session. Every Hiro response reports both budgets, so you can check the current values yourself:
+
+```
+x-ratelimit-limit-stacks-second: 20
+x-ratelimit-remaining-stacks-second: 19
+x-ratelimit-limit-stacks-minute: 50
+x-ratelimit-remaining-stacks-minute: 49
+```
+
+On a 429 the server waits for `Retry-After` (60s if Hiro sends none, and at least 1s, 2s, then 4s) and retries up to three times before surfacing a rate-limit error (`src/services/hiro-api.ts`). Retrying before that time just returns another 429. Hiro can change these limits, so treat the numbers as a snapshot and the headers as the source of truth.
 
 ## Architecture
 

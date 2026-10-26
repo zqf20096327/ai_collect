@@ -64,7 +64,7 @@ The AI Chat feature provides an interactive conversation interface with Google G
 - **+ button** - New chat
 - **History button** - Load previous chats
 - **Expand / shrink button** - Toggle the sidebar between its normal width and a wider reading layout
-- **Save as note button** - Export the current conversation as compact Markdown. Re-saving the same chat overwrites its exported note
+- **Save as note button** - Export the current conversation as Markdown to the configured manual save folder. Re-saving to the same folder updates the exported note with the current conversation
 
 ## Voice Input and Read-Aloud
 
@@ -102,7 +102,7 @@ Reference files and variables by typing `@`:
 
 - `{selection}` - Selected text
 - `{content}` - Active note content
-- Any vault file - Browse and insert (path only; AI reads content via tools)
+- Vault notes and PDFs - Browse and insert as `[[vault-relative/path]]`
 
 > [!NOTE]
 > **How `{selection}` and `{content}` work:** When you switch from Markdown View to Chat View, the selection would normally be cleared due to focus change. To preserve your selection, the plugin captures it when switching views and highlights the selected area with a background color in the Markdown View. The `{selection}` option only appears in @ suggestions when text was selected.
@@ -110,7 +110,9 @@ Reference files and variables by typing `@`:
 > Both `{selection}` and `{content}` are intentionally **not expanded** in the input area—since the chat input is compact, expanding long text would make typing difficult. The content is expanded when you send the message, which you can verify by checking your sent message in the chat.
 
 > [!NOTE]
-> Vault file @mentions insert only the file path — the AI reads content via tools.
+> Selecting a file with `@` inserts a visible wikilink. Sent chat messages retain the original references, including paths with spaces and multiple files. Only the model request adds type and byte size beside each tool-readable reference; file contents and reading instructions are not added to the displayed message. You can also type `[[Note]]`, `[[folder/Note.md]]`, or `@folder/Note.md` (full vault-relative path). On send, references are resolved to exact paths, with file type and byte size taken from vault metadata without reading the body. With Vault tools enabled, the model is instructed to fetch contents using `read_note`; this requires tool calling support. Avoiding automatic full-file expansion prevents large files from consuming excessive tokens and keeps chat history readable instead of filling messages with long file contents. The model can read text by line range (`startLine` / `endLine`) or PDFs by page range (`startPage` / `endPage`). When Vault tools are disabled or an image generation model is selected, the text is included directly instead. Explicit references outside the allowed vault tool folders are also inlined. References do not appear as attachment chips. Use the attachment button to supply content directly regardless of Vault tool settings.
+
+`read_note` accepts inclusive, 1-based `startLine` / `endLine` ranges for text files, for example `{"fileName":"Notes/Large Note.md","startLine":100,"endLine":150}`. Results include the selected range and total line count so the model can request additional lines as needed. Omitting `startLine` starts at line 1; omitting `endLine` reads to the end. Omitting both preserves full-text reads subject to the configured note character limit. PDFs use `startPage` / `endPage`; line and page ranges cannot be combined.
 
 ## File Attachments
 
@@ -153,7 +155,43 @@ When the AI handles notes in Chat, it uses Vault tools. Control which vault tool
 - **Vault: No search** - Use when you want to search only with RAG, or when you already know the target file. This avoids redundant vault searches, saving tokens and improving response time.
 - **Vault: Off** - Use when you don't need vault access at all.
 
-> **Note:** RAG, Web Search, Vault tools, and MCP can all be used simultaneously via the Interactions API.
+> **Note:** Select either RAG or Web Search. Both can be combined with Vault tools and MCP.
+
+### Web Search
+
+In **Settings → Web search**, select **Gemini Google Search**, **Tavily**, **Brave Search**, or **Disabled**. **Gemini Google Search** is the default. Existing external-provider selections and explicitly disabled settings are preserved. Only the selected provider's settings are displayed. Existing Tavily/Brave Search keys, their selected external provider, and quota displays are retained when switching modes.
+
+Enabling Google Search in Chat asks for confirmation. Approval disables automatic saving for the entire conversation, even if no search is executed. Turning search off or switching providers does not restore automatic saving. A persistent notice remains above the messages; use the header's **Save conversation** button to save a complete snapshot explicitly. Restricted manual saves keep the restriction when reopened and exclude Search Suggestions and opaque search metadata. Manual saves follow **Settings → Chat → Manual chat save folder**, or the vault root when blank. Existing automatic history files remain untouched, including when saving manually. A new conversation starts without the restriction.
+
+Google Search Suggestions are displayed from the original API HTML in a sandbox, separately from source badges. Both GenerateContent and Interactions are supported. A grounded answer without the required display data is not shown. Google Search is limited to the consented Chat view; choose external search for text-only Workflow/Dashboard integrations.
+
+External search uses the selected Tavily or Brave Search function tool and preserves normal automatic history. Tavily uses basic search and both return up to five results. External image-reference retrieval uses a text model with up to three searches; its extra token usage is included in the reported total.
+
+Web search usage: the selected external provider has a usage row below its API key in Settings → Web search. Tavily fetches plan, API-key and pay-as-you-go credits only when **Show remaining credits** is clicked. Brave displays the last observed request quota and timestamp from real searches, without sending an extra search. Values are kept in memory, isolated by API key; they are cleared on plugin reload. Brave quota is a request allowance, not a monetary balance.
+
+#### Free search allowances and costs
+
+External search providers offer monthly free allowances (checked October 26, 2026):
+
+| Provider | Monthly free allowance | Notes |
+| --- | --- | --- |
+| [Tavily](https://docs.tavily.com/documentation/api-credits) | **1,000 credits** | No credit card required. This plugin uses basic search at 1 credit per search request, equivalent to 1,000 searches if used only for basic search. |
+| [Brave Search](https://brave.com/search/api/) | **$5 in Search plan credits**, equivalent to **1,000 search requests** at the current rate | Credit card registration is required. See the [Brave billing FAQ](https://api-dashboard.search.brave.com/documentation/resources/help-feedback) for free-credit and spending settings. |
+
+**In the developer's own usage, some individual questions with Gemini Web Search enabled cost ¥20 or more.** Costs vary with the model, search activity, token usage and exchange rate.
+
+See [Web search and chat storage](docs/web-search-storage.md) for the policy, metadata handling and release-time checks.
+
+#### Google Search terms and storage
+
+Google Search Grounding has additional rules beyond ordinary Gemini responses. The [Gemini API terms — Grounding with Google Search](https://ai.google.dev/gemini-api/terms#grounding-with-google-search) include these requirements (checked October 26, 2026):
+
+- Display grounded answers with their associated Search Suggestions. Google restricts modifications and interference with answers, suggestions and destination links; ordinary source badges are not a substitute.
+- Copying and storage are restricted. Exceptions include grounded-result text retained for up to **two years** for specified purposes, such as letting users view their chat history. This is not blanket permission for permanent PKM storage or reuse.
+- Users may save individual displayed grounded results, subject to restrictions on automated collection and database creation.
+- Google retains grounding prompts, supplied context and output for **30 days** for grounding-related purposes, including debugging/testing. This is separate from local note storage.
+
+Gemini Helper therefore disables automatic saving after approval and requires explicit manual saves. The plugin does not automatically delete notes after two years; consult the current terms when retaining or reusing grounded content. See Google's [grounding documentation](https://ai.google.dev/gemini-api/docs/google-search) for API and display details.
 
 ### AI Folder Access
 
@@ -615,7 +653,7 @@ npm run build
 ![Basic Settings](docs/images/setting_basic.png)
 
 ### Workspace Settings
-- **Automatically save chat history** - Keep restorable chat files in the workspace folder
+- **Automatically save chat history** - Keep restorable chat files in the workspace folder. Conversations with approved Google Search remain excluded regardless of this setting
 - **Maximum saved chat histories** - Delete the oldest automatic histories above the limit. Existing users default to unlimited (`0`); new installs default to `100`
 - **System Prompt** - Additional AI instructions
 - **Folders AI can access automatically** - Optional folder allowlist for automatic AI vault access. Leave empty to allow the whole vault; use Encryption for files the AI should never read
@@ -625,7 +663,8 @@ npm run build
 
 ### Chat Settings
 - **Manual chat save folder** - Vault-relative destination used by the Chat **Save as note** button. Leave blank to save in the vault root
-- Manual exports use `YYYYMMDD-HHmmss_Chat title.md` and contain only compact conversation content, without history frontmatter or restoration metadata
+- Manual exports use `YYYYMMDD-HHmmss_Chat title.md`. Re-saving to the same folder updates the note; changing the folder applies to the next manual save
+- Ordinary conversations export compact content without frontmatter. Google-restricted conversations use restorable Markdown that preserves the saving restriction and excludes Search Suggestions and raw search metadata. Manual saving never restarts automatic saving
 
 ### Encryption
 
@@ -770,7 +809,7 @@ Requires: `pip install cryptography`
 **Data sent to Google:**
 - All chat messages and file attachments are sent to Google Gemini API for processing
 - When RAG is enabled, vault files are uploaded to Google File Search
-- When Web Search is enabled, queries are sent to Google Search
+- When Web Search is enabled, Google mode uses Gemini Google Search Grounding; external mode sends queries to Tavily or Brave Search and supplies results to Gemini as tool context
 
 **Data sent to third-party services:**
 - Workflow `http` nodes can send data to any URL specified in the workflow

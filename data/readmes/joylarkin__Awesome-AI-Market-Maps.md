@@ -55,6 +55,9 @@ OR
 - [MightyBot - AI Agents Market Map 2026: Every Category Mapped - October 2026](https://mightybot.ai/blog/ai-automation-agents-market-maps-gone-wild/?utm_source=awesome-ai-market-maps)
 - [Zentor / Personal Agent Bench - Personal AI agents list: products and evidence - October 2026](https://personalagentbench.com/landscape/?utm_source=awesome-ai-market-maps)
 
+#### AI Chips
+- [Dealroom.co - AI-Native EDA Startups: who owns how much of the chip design stack - October 2026](https://dealroom.co/api/marketmap-render?slug=ai-native-eda-startups&theme=light?utm_source=awesome-ai-market-maps)
+
 #### European AI 
 - [N47 & Sifted - Celebrating the top 100 European AI startups in 2026 - October 2026](https://www.n47.com/insights/celebrating-the-top-100-european-ai-startups-in-2026?utm_source=awesome-ai-market-maps)
 
@@ -81,9 +84,12 @@ OR
 
 #### Everything Else
 - [Nathan Benaich — Air Street Capital - STATE OF AI REPORT - October 2026](https://www.stateof.ai/State-of-AI-Report-2026.pdf?utm_source=awesome-ai-market-maps)
+- [Parvez Siddiqui - AI ROI, Measured - October 2026](https://lnkd.in/p/gcvHHpNX?utm_source=awesome-ai-market-maps)
+- [Various - The Trustworthy AI Map - October 2026](https://trustworthyaimap.org/map=awesome-ai-market-maps)
 - [Cledara - The Real-Time AI Market Map: Tools & Startups - October 2026](https://data.cledara.com/ai-market-map?utm_source=awesome-ai-market-maps)
 - [Will Francis - Is there an AI bubble? The AI circular economy, mapped - October 2026](https://ai-circular-economy.com/?utm_source=awesome-ai-market-maps)
 - [Clement Vouillon — Axomap - Landscape Directory - October 2026](https://axomap.com/maps?utm_source=awesome-ai-market-maps)
+- [The Collective - AI for Fitness Operators - October 2026](https://www.wearethecollective.world/ai-map-fitness-operators?utm_source=awesome-ai-market-maps)
 
 
 ---
@@ -1139,5 +1145,4 @@ OR
 - [Optimist Ventures - Q1'25 Insurtech Market Map - March 2025](https://medium.com/@jp_at_optimist/q125-insurtech-market-map-%EF%B8%8F-aa3ee89bd275?utm_source=awesome-ai-market-maps)
 - [Brighteye Ventures - AI for Enhancing Productivity - learning in the flow of work - March 2025](https://www.brighteyevc.com/post/ai-for-training-the-evolution-of-corporate-training-1?utm_source=awesome-ai-market-maps)
 - [Brighteye Ventures - AI for Training - the evolution of corporate training - March 2025](https://www.brighteyevc.com/post/ai-for-training-the-evolution-of-corporate-training?utm_source=awesome-ai-market-maps)
-- [Brighteye Ventures - AI for Hiring - how AI is transforming talent acquisition - March 2025](https://www.brighteyevc.com/post/ai-for-hiring-transforming-talent-acquisition-with-ai?utm_source=awesome-ai-market-maps)
-- [Florian Seemann — P9 - A First Landscape o
+- [Brighteye Ventures - AI for Hiring - how AI is transforming talent acquisition - March 2025](https://www.brighteyevc.c

@@ -15,11 +15,11 @@
 
 ---
 
-**Polyant** is an open-source platform for building and deploying AI assistants with long-term memory, multi-channel support, and full per-instance customization. It provides a complete runtime for multi-agent systems with an OpenAI-compatible API, a NestJS engine, and a Next.js admin panel — batteries included.
+**Polyant** is an enterprise AI platform by Exelab for putting agents to work in business processes, at scale. It is open source under AGPL-3.0-or-later and provides a complete runtime for multi-agent systems with an OpenAI-compatible API, a NestJS engine, and a Next.js admin panel — batteries included.
 
 ## Release status
 
-Polyant v1.3.3 is the current stable release. Review the [changelog](CHANGELOG.md), the [release notes](docs/releases/v1.3.3.md), and the [GitHub release](https://github.com/polyant-ai/polyant/releases/tag/v1.3.3). Upgrading from 1.1.x to 1.2.0 needs operator action — read the [upgrade guide](docs/UPGRADING.md) first. In a running admin installation, version and release details are available at `/about`.
+Polyant v1.3.4 is the current stable release. Review the [changelog](CHANGELOG.md), the [release notes](docs/releases/v1.3.4.md), and the [GitHub release](https://github.com/polyant-ai/polyant/releases/tag/v1.3.4). Upgrading from 1.1.x to 1.2.0 needs operator action — read the [upgrade guide](docs/UPGRADING.md) first. In a running admin installation, version and release details are available at `/about`.
 
 > The name comes from Hofstadter's *Gödel, Escher, Bach* — specifically the "Ant Fugue" dialogue and the character of Aunt Hillary, an ant colony understood as the archetype of emergent intelligence: individual agents, each one limited, that produce — by coordinating — a collective intelligent behaviour that exceeds the sum of its parts. It is, literally, the thesis we are pitching: fleets of specialised agents that, when orchestrated, generate performance impossible for any single agent. *Poly-* (classical Greek, "many") makes the key concept explicit: coordinated multiplicity.
 >

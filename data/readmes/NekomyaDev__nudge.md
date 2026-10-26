@@ -16,6 +16,7 @@
   <img alt="Platform" src="https://img.shields.io/badge/platform-Linux%20%7C%20macOS%20%7C%20Windows-green">
   <img alt="Target" src="https://img.shields.io/badge/target-Native%20%7C%20Python%20%7C%20TypeScript%20%7C%20WASM-yellow">
   <a href="https://marketplace.visualstudio.com/items?itemName=Nekomya.nudge-lang"><img alt="VS Code" src="https://img.shields.io/badge/VS%20Code-Nudge%20Language-007ACC?logo=visualstudiocode"></a>
+  <a href="https://github.com/NekomyaDev/nudge/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22"><img alt="Good First Issues" src="https://img.shields.io/github/issues/NekomyaDev/nudge/good%20first%20issue?color=7057ff&label=good%20first%20issues"></a>
   <a href="https://snyk.io"><img alt="Snyk Verified" src="https://img.shields.io/badge/Snyk-Verified%20Secure-4C556A?logo=snyk"></a>
 </p>
 
@@ -28,7 +29,9 @@
   <a href="README.ko-KR.md">한국어</a> •
   <a href="README.ru-RU.md">Русский</a> •
   <a href="README.es-ES.md">Español</a> •
-  <a href="README.tr-TR.md">Türkçe</a>
+  <a href="README.tr-TR.md">Türkçe</a> •
+  <a href="README.de-DE.md">Deutsch</a> •
+  <a href="README.fr-FR.md">Français</a>
 </p>
 
 ---
@@ -206,17 +209,21 @@ fn run_pipeline() -> bool uses LLM, Tool, Workspace, Store {
 }
 ```
 
-Nudge defines 10 known effects (`crates/nudgec/src/check.rs`):
+Nudge defines 14 known effects (`crates/nudgec/src/check.rs`):
 - `LLM`: Invokes language model completions or streaming prompts.
 - `Tool`: Invokes external MCP or registered tools.
 - `IO`: Host input/output operations (`print`, `println`).
 - `Decision`: Queries decision models via `decide{}`.
 - `Computer`: Interacts with desktop environments and accessibility trees via `computer.*`.
+- `Browser`: In-house web browser execution, DOM inspection, and automation via `browser.*`.
 - `Workspace`: Scoped read and write operations inside the sandboxed workspace.
 - `WorkspaceDelete`: Destructive file or directory deletion inside the workspace.
 - `Store`: Persistent key-value storage operations via `store.*`.
+- `MemStore`: In-memory volatile key-value storage.
 - `UI`: Creates, mounts, or dispatches events to graphical user interface elements.
 - `Auth`: Accesses authenticated provider resources (supports scoped `Auth(account)`).
+- `FsWatch`: Workspace file watching with bounded timeouts.
+- `Process`: Controlled sub-process execution governed by `NUDGE_PROCESS_GRANTS`.
 
 Functions without a `uses` clause are proven pure at compile time. Unknown effects are rejected with `E0302`.
 
@@ -262,8 +269,8 @@ fn watch_and_rebuild() -> bool uses FsWatch, Process {
 }
 ```
 
-- **File Watching (`fs.watch`, `FsWatch` effect):** watch a workspace path for change events, bounded by a timeout (it never hangs indefinitely) and confined to the workspace root (escapes denied). Undeclared use is typed away (`E0301`).
-- **Controlled Processes (`proc.*`, `Process` effect):** `proc.spawn(cmd, argv, timeout_ms)` / `proc.run(...)` (spawn + await) / `proc.await` / `proc.kill` / `proc.alive`. `cmd` and its `argv` are passed **separately** and executed without a shell (no shell-injection surface). Lifecycle is bounded (`E0921`) with **no orphan processes** (children are reaped on task exit or cancel) and kill-on-cancel. Executing anything is **fail-closed**: denied by default unless authorized by `NUDGE_PROCESS_GRANTS` (`E0920`, workspace confinement `E0922`).
+- **File Watching (`fs.watch`, `FsWatch` effect):** watch a workspace path for change events, bounded by a timeout (it never hangs indefinitely) and confined to the workspace root (path escape denied `E0922`). Undeclared use is typed away (`E0301`).
+- **Controlled Processes (`proc.*`, `Process` effect):** `proc.spawn(cmd, argv, timeout_ms)` / `proc.run(...)` (spawn + await) / `proc.await` / `proc.kill` / `proc.alive`. `cmd` and its `argv` are passed **separately** and executed without a shell (no shell-injection surface). Lifecycle is bounded (`E0921`) with **no orphan processes** (children are reaped on task exit or cancel) and kill-on-cancel. Executing anything is **fail-closed**: denied by default unless authorized by `NUDGE_PROCESS_GRANTS` (`E0920`).
 
 ### Local UI
 

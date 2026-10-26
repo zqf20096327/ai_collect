@@ -79,6 +79,69 @@ partial fills, or delayed jobs cannot rewrite the research history.
 Configuration lives in `autotrader/config.py`. These are research assumptions, not claims
 that the values are optimal.
 
+## Market universe and signal quality (2026-10)
+
+The monitored universe contains **49 liquid US stocks/ETFs** from technology,
+financials, healthcare, consumer, industrials, energy, utilities, materials,
+real estate, communication and broad-market ETFs. These are a fixed watchlist,
+not a survivorship-free index constituent database.
+
+To bound the CPU-only Kronos runtime, all 49 are downloaded/validated daily,
+but **at most 28** reach the forecast model. A deterministic sector-balanced,
+recent dollar-volume screen selects these candidates; existing holdings and
+pending-order symbols have priority. The screen has no predictive claim and
+must not be evaluated as if it were a trained alpha signal.
+
+Portfolio limits remain five positions, 18% per position and at least 10%
+cash. New targets are capped at two positions per broad sector, and already-held
+securities receive a modest 8% tie-breaking score bonus **only if their forecast
+remains eligible**. No fixed holding period or automatic stop-loss has been
+added; those need longer walk-forward evidence. These policies make execution
+more consistent, **not guaranteed more profitable**.
+
+The daily JSON report now includes `universe.configured`, `available`,
+`model_capacity`, `screened_for_model`, `model_forecasts_completed`, and
+`screened_out`. Do not confuse a security being downloaded with it being
+predicted by Kronos. Asset history is not reset and no broker live gate changes.
+
+Research before further changes: compare against the unmodified strategy,
+SPY and a simple momentum baseline using point-in-time data, realistic spreads,
+and multiple out-of-sample market regimes. A 13-observation portfolio is
+insufficient to conclude that diversification or anti-churn improves profits.
+Third-party research optimizers (e.g. PyPortfolioOpt/vectorbt) have **not**
+been added to the production dependency chain without such validation.
+
+## Adaptive market discovery and evidence-based learning
+
+The research paper lane now downloads a validated **current S&P 500 constituent roster**
+from a publicly maintained daily-updated CSV and rotates through **20 additional stocks
+per completed market session** in addition to the 49 curated baseline securities.
+It does *not* pretend to download 500 full price histories daily. Discovery fails
+closed to the baseline watchlist if the external source becomes unavailable.
+The actual number of complete histories is logged on each run; the CPU-only
+Kronos model remains limited to **28** forecasts, including up to three
+liquid exploration candidates and existing/pending positions.
+
+The next market sessions generate new daily candidates automatically; their
+sector mapping is taken from current GICS metadata, so dynamically discovered
+stocks count toward the existing two-per-sector limit. Existing cash,
+position caps and next-session-open execution remain unchanged.
+
+A separate `data/learning.json` archive stores selected forecast predictions
+and grades them only **after five subsequent market sessions** using observed
+adjusted close returns compared with SPY. With fewer than 40 completed signals
+or fewer than 12 observations for a sector, **no adaptation** is applied.
+After reaching both thresholds, Bayesian-smoothed outperformance frequency can
+change a sector's *ranking* weight by **at most 5%**. The Kronos weights are
+never rewritten or retrained, and the learning archive never authorizes trades.
+Each new paper run persists the archive alongside state/report as one Actions artifact.
+
+This does not guarantee an increased return. Small or biased samples, changing
+index membership, and market regime changes can still cause losses. The current
+constituents file is unsuitable for historical backtests due to survivorship bias;
+store dated memberships and use walk-forward validation before increasing risk.
+No live broker authorization is enabled by this feature.
+
 ## Automated workflows
 
 ### Research portfolio

@@ -11,16 +11,16 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 
 ## Features
 
-- **Activities** - list, search, view details, download (FIT/GPX/TCX/KML/CSV), upload, create manual entries (with date), rename, retype, describe, change privacy, mark as favorite, delete, set exercise sets for strength training, list activity types, list pending activities, list, add, edit and delete comments, like and unlike activities and comments
+- **Activities** - list, search, view details, download (FIT/GPX/TCX/KML/CSV), upload, create manual entries (with date), rename, retype, describe, change privacy, mark as favorite, list favorites, trim the start or end and restore the original, change the privacy of all past activities, delete, set exercise sets for strength training, list activity types, list pending activities, list, add, edit and delete comments, like and unlike activities and comments
 - **Exercise Catalog** — browse Garmin's exercise categories and exercises for strength training
-- **Health Data** - daily summaries, steps, heart rate, resting HR, sleep, stress, HRV, SpO2, respiration, body battery (with daily low and high), floors, training readiness, daily and weekly training status, VO2max, fitness age, race predictions, endurance and hill scores with statistics, intensity minutes, lactate threshold, cycling FTP, critical swim speed, power curve, running economy, heat and altitude acclimation, running tolerance, cycling ability, activity progress totals per period
+- **Health Data** - daily summaries, steps, heart rate, resting HR, sleep, stress, HRV, SpO2, respiration, body battery (with daily low and high), Health Snapshot sessions, floors, training readiness, daily and weekly training status, VO2max, fitness age, race predictions, endurance and hill scores with statistics, intensity minutes, lactate threshold, cycling FTP, critical swim speed, power curve, running economy, heat and altitude acclimation, running tolerance, cycling ability, activity progress totals per period
 - **Body Composition** - weight tracking, latest weigh-in, weekly weight summaries, body fat, muscle mass, blood pressure, glucose, FIT file encoding for composition uploads
 - **Workouts** - list, view, download as FIT, upload from JSON, update in place from JSON, create with sport types and targets (pace/HR/power/cadence), schedule (add/list/remove/export), send to a device, list workout types and sport types, view, set and clear strength benchmarks, delete
 - **Courses** — list courses, view favorites, get full course detail, download as FIT/GPX, import GPX files as new courses, send courses directly to a device, delete courses
 - **Segments** - list your segments and favorites, search segments by name or map area, view a segment, its leaderboard and your rank, list the segments that an activity crossed, create a segment from a part of an activity, add and remove favorites, delete segments
 - **Devices** - list registered devices, view settings, solar data, alarms, primary/last-used device, set the primary activity tracker, paired sensors, backup summary and device backups, historical devices, device messages, cancel a pending device message
 - **Gear** — list gear, usage stats, linked activities, defaults per activity type and set or unset them, link/unlink to activities, gear types, search gear brands and models, add, update, retire, unretire and delete gear, list, create, rename and delete gear collections, add gear to a collection and remove it
-- **Goals & Badges** - list, add, update and delete activity goals, set daily goals for steps, floors, intensity minutes and hydration, set and delete the weight goal, earned/available/in-progress badges, badge details, challenges (show, join and leave badge and virtual challenges; create, view, answer, leave and delete ad-hoc challenges and invite people to them), personal records and record candidates, hide or show a record type, delete a personal record
+- **Goals & Badges** - list, add, update and delete activity goals, set daily goals for steps, floors, intensity minutes and hydration, set and delete the weight goal, earned/available/in-progress badges, badge details, challenges (show, join and leave badge and virtual challenges; create, view, answer, leave and delete ad-hoc challenges and invite people to them), personal records and record candidates (accept or dismiss a candidate), hide or show a record type, delete a personal record
 - **Training** - browse, search and view training plans, show a plan's schedule, join and leave a plan, move and delete its workouts, show your active plans, list adaptive coaching workout types
 - **Profile** - user profile and settings, view and change privacy settings, list, add and delete privacy zones, heart rate zones, power zones for all sports or one sport
 - **Hydration** — view and log daily water intake
@@ -28,7 +28,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Events** — list, list upcoming, add, and delete calendar events (races, group rides, etc.) with goals and training priority support
 - **Calendar** - month view of activities, workouts, events and notes, add, update, move and delete calendar notes, turn the iCalendar feed on and off, and change the web calendar preferences
 - **Wellness** - menstrual cycle data and calendar, menstrual daily log (view, set, delete), pregnancy summary, jet lag trips (list, add, update, delete) and status
-- **Social** - notifications (page with a cursor, dismiss and undismiss, unread state), view and change notification preferences, connections, connection requests, followers, following, follow and unfollow, follow requests, mute, user search, newsfeed, groups
+- **Social** - notifications (page with a cursor, dismiss and undismiss, unread state), view and change notification preferences, connections, connection requests, followers, following, follow and unfollow, follow requests, mute, user search, newsfeed, groups (search, show a group with its members, feed, member activities and open challenges, join a public group, leave a group)
 - **Insights** - compare your steps, sleep, floors, VO2 max, speed, power and more with people of your age group and gender (needs Insights turned on in Garmin Connect)
 - **Golf** - scorecards, the courses you played, golf and shot stats (drive, approach, chip, putt), the clubs in your bag, club types and leaderboards
 - **Agent-ready** - ships a bundled agent skill (`skills/gccli/`) that plugs into AI assistants like Claude Code, Codex, Hermes, and OpenClaw so you can drive Garmin Connect in plain language
@@ -228,13 +228,13 @@ gccli activities list
 
 - Default: human-friendly tables on stdout.
 - `--json` / `-j`: JSON on stdout (best for scripting).
-- `--plain`: tab-separated values on stdout, with no header row unless you add `--header`. Only these commands print TSV: `activities list`, `activities search`, `activities types`, `activity summary`, `body weekly`, `courses list`, `courses favorites`, `courses import`, `events list`, `nutrition search`, `nutrition recent`, `nutrition favorites`, `workouts list`, `workouts schedule list` and `exercises list` (without `--category`). Most other commands that return data print the same JSON in all modes, also without `--json`. `activities count` prints a single number. Use `--json` when a script parses the output.
+- `--plain`: tab-separated values on stdout, with no header row unless you add `--header`. Only these commands print TSV: `activities list`, `activities search`, `activities favorites`, `activities types`, `activity summary`, `body weekly`, `courses list`, `courses favorites`, `courses import`, `events list`, `groups search`, `groups members`, `groups activities`, `nutrition search`, `nutrition recent`, `nutrition favorites`, `workouts list`, `workouts schedule list` and `exercises list` (without `--category`). Most other commands that return data print the same JSON in all modes, also without `--json`. `activities count` prints a single number. Use `--json` when a script parses the output.
 - `--header`: with `--plain`, the first line holds the column names. `activity summary` has no column names, so it prints no header line. `--header` without `--plain`, or with `--json`, is a usage error (exit code 2). `GCCLI_HEADER` is not an error: table and JSON output ignore it.
 - Table and `--plain` output escape the characters that would break a row or a column. A backslash prints as `\\`, a tab as `\t`, a newline as `\n`, a carriage return as `\r`, a vertical tab as `\v` and a form feed as `\f`. So each record is one line, and in `--plain` output only real tabs separate the fields. `--json` output does not change.
-- Write commands (the commands that add, create, upload, import, update, set, rename, retype, describe, change, favorite, unfavorite, schedule, send, link, unlink, remove, reload or delete data in Garmin Connect) all follow one rule:
+- Write commands (the commands that add, create, upload, import, update, set, rename, retype, describe, change, favorite, unfavorite, schedule, send, link, unlink, join, leave, remove, reload or delete data in Garmin Connect) all follow one rule:
   - With `--json`, they print the Garmin response on stdout, indented like all JSON output. When Garmin sends an empty response, they print `{"ok": true}`.
   - Without `--json`, they print one message on stderr and nothing on stdout. `courses import` is the only exception. It prints the saved course as a table on stdout (TSV with `--plain`).
-- An empty answer is not an error. When Garmin sends no body, the exit code is 0 and the output follows the shape of the Garmin answer: a command whose answer is a list prints `[]` with `--json`, and a command whose answer is one object prints `{}` in every mode. A list command that prints columns (`activities list`, `activities search`, `activities types`, `body weekly`, `courses list`, `courses favorites`, `events list`, `nutrition search`, `nutrition recent`, `nutrition favorites`, `workouts list` and `workouts schedule list`) prints the header only as a table and nothing with `--plain` (the header line with `--header`); every other list command prints `[]` in every mode. `activity summary` and `exercises list` show one object, so they print `{}` with `--json` and no row otherwise. [`internal/cmd/testdata/answer_shapes.tsv`](internal/cmd/testdata/answer_shapes.tsv) records the shape of the Garmin answer of every command that prints it (`array`, `object` or `unknown`, with the evidence for each; a shape that no Garmin answer confirmed is `unknown` and prints `{}`), and a test keeps the commands in step with it. `activities count` prints `0` (`{"count": 0}` with `--json`). A list answer without its list key gives no rows, and `--json` prints the answer unchanged.
+- An empty answer is not an error. When Garmin sends no body, the exit code is 0 and the output follows the shape of the Garmin answer: a command whose answer is a list prints `[]` with `--json`, and a command whose answer is one object prints `{}` in every mode. A list command that prints columns (`activities list`, `activities search`, `activities favorites`, `activities types`, `body weekly`, `courses list`, `courses favorites`, `events list`, `groups search`, `groups members`, `groups activities`, `nutrition search`, `nutrition recent`, `nutrition favorites`, `workouts list` and `workouts schedule list`) prints the header only as a table and nothing with `--plain` (the header line with `--header`); every other list command prints `[]` in every mode. `activity summary` and `exercises list` show one object, so they print `{}` with `--json` and no row otherwise. [`internal/cmd/testdata/answer_shapes.tsv`](internal/cmd/testdata/answer_shapes.tsv) records the shape of the Garmin answer of every command that prints it (`array`, `object` or `unknown`, with the evidence for each; a shape that no Garmin answer confirmed is `unknown` and prints `{}`), and a test keeps the commands in step with it. `activities count` prints `0` (`{"count": 0}` with `--json`). A list answer without its list key gives no rows, and `--json` prints the answer unchanged.
 - Human-facing messages (errors, warnings, info) go to stderr.
 - Delete commands ask for confirmation in a terminal. Without a terminal (scripts, pipes, agents), they exit with an error unless you pass `--force`. If you answer no, the command prints `Cancelled` on stderr, prints nothing on stdout and exits with 0.
 - Tables, TSV and JSON on stdout have no colors. The messages on stderr use colors. The `--help` text uses bold and faint text when stdout is a terminal, and `--color` does not change this.
@@ -259,7 +259,7 @@ With `--json`, a runtime error goes to stderr as one JSON line. Usage errors sta
 
 ### Units
 
-Seven commands convert units in table and plain output: `activities list`, `activities search`, `activity summary`, `body weekly`, `courses list`, `courses favorites` and `courses import`. They show distances, speeds, paces, elevations and weights in the unit system from your Garmin Connect profile. To read the profile, each of these commands makes one extra request. It does this only in table or plain mode, and only when the unit system is `auto`.
+Eight commands convert units in table and plain output: `activities list`, `activities search`, `activities favorites`, `activity summary`, `body weekly`, `courses list`, `courses favorites` and `courses import`. They show distances, speeds, paces, elevations and weights in the unit system from your Garmin Connect profile. To read the profile, each of these commands makes one extra request. It does this only in table or plain mode, and only when the unit system is `auto`.
 
 | Value | Distance | Speed | Pace | Elevation | Weight |
 | --- | --- | --- | --- | --- | --- |
@@ -360,6 +360,12 @@ gccli activities list --type running
 gccli activities count
 gccli activities search --start 2024-01-01 --end 2024-12-31
 gccli activities pending
+gccli activities favorites --limit 5
+
+# Change the privacy of all past activities, or of past running and cycling activities, and show the progress
+gccli activities privacy set connections
+gccli activities privacy set private --type running,cycling --force
+gccli activities privacy status
 gccli activities stats
 gccli activities stats monthly
 
@@ -388,6 +394,11 @@ gccli activity comments edit <id> <comment-id> "Great run"
 gccli activity comments likes add <comment-id>
 gccli activity comments likes remove <comment-id>
 gccli activity comments delete <id> <comment-id> --force
+
+# Trim an activity to the part from 2 minutes after the start to its end, and undo it
+gccli activity trim <id> --from 2m
+gccli activity trim <id> --from 2m --to 45m
+gccli activity restore <id>
 
 # Download and upload
 gccli activity download <id> --format fit
@@ -435,6 +446,8 @@ gccli health sleep [date]              # Sleep data
 gccli health sleep naps [date]
 gccli health sleep naps add 13:30 13:50   # Add a nap for today (times in your Garmin time zone)
 gccli health sleep naps delete today 13:30  # Delete the nap that starts at 13:30 (with confirmation)
+gccli health sleep note yesterday "Late coffee"  # Set the note of a night
+gccli health sleep note yesterday --clear       # Remove it
 gccli health sleep daily --start 2024-01-01 --end 2024-01-28
 gccli health sleep weekly
 gccli health sleep overall --start 2024-01-01 --end 2024-01-31
@@ -442,6 +455,9 @@ gccli health respiration [date]
 gccli health respiration daily --start 2024-01-01 --end 2024-01-31
 gccli health spo2 [date]               # Blood oxygen
 gccli health hrv [date]                # Heart rate variability
+gccli health snapshots                 # Health Snapshot sessions (--limit, --offset, --until)
+gccli health snapshots show 2026-10-21 <uuid>
+gccli health snapshots epochs <uuid>   # Measurements of one session
 
 # Stress and recovery
 gccli health stress                    # Stress for today
@@ -938,6 +954,12 @@ gccli social mute <display-name>       # Mute a user that you follow
 gccli social unmute <display-name>
 gccli social muted                     # List the users that you muted
 gccli groups list                      # List your groups
+gccli groups search running --limit 10 # Search groups by keyword
+gccli groups members <group-id>        # List the members of a group
+gccli groups activities <group-id>     # List the latest activities of the members
+gccli groups challenges <group-id>     # List the open challenges (members only)
+gccli groups join <group-id>           # Join a public group
+gccli groups leave <group-id>          # Leave a group (asks first, --force skips it)
 ```
 
 `unfollow`, `remove-follower` and `unmute` read the follow status or the muted list first, because Garmin answers 204 whether there is something to remove or not. They exit 1 when there is nothing to remove. `unfollow` and `remove-follower` ask first (`--force` skips the question). Garmin no longer takes new connection requests (410 `API_DEPRECATED`), so gccli has no command to send one.
@@ -1014,10 +1036,17 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `--offset=0`: Number of activities to skip.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli activities favorites [flags]`: List your favorite activities.
+  - `-l, --limit=20`: Maximum number of activities to return.
 - `gccli activities types`: List all activity types supported by Garmin.
 - `gccli activities pending`: List pending activities.
 - `gccli activities stats view`: Show activity totals by activity type. Also runs as `gccli activities stats`.
 - `gccli activities stats monthly`: Show monthly activity totals by activity type.
+- `gccli activities privacy status`: Show the last privacy change of past activities. Also runs as `gccli activities privacy`.
+- `gccli activities privacy set <level> [flags]`: Change the privacy of all past activities, or of past activities of some types.
+  - `<level>`: Who can see the activities: public, private or connections.
+  - `--type=KEY,...`: Top-level activity type key (e.g. running, cycling). Repeat the flag or separate with commas. Default: all activity types.
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli activity summary <id>`: Show activity summary. Also runs as `gccli activity <id>`.
   - `<id>`: Activity ID.
 - `gccli activity details <id> [flags]`: Show full activity details.
@@ -1096,6 +1125,12 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli activity privacy <id> <level>`: Change who can see an activity.
   - `<id>`: Activity ID.
   - `<level>`: Who can see the activity: public, private or connections.
+- `gccli activity trim <id> [flags]`: Trim the start or end of an activity.
+  - `<id>`: Activity ID.
+  - `--from=FROM`: New start, as the time since the activity start (e.g. 2m, 1h5m). Default: the activity start.
+  - `--to=TO`: New end, as the time since the activity start (e.g. 50m, 1h5m). Default: the activity end.
+- `gccli activity restore <id>`: Restore the original of a trimmed activity.
+  - `<id>`: Activity ID.
 - `gccli activity favorite <id>`: Mark an activity as a favorite.
   - `<id>`: Activity ID.
 - `gccli activity unfavorite <id>`: Remove the favorite mark from an activity.
@@ -1160,6 +1195,10 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `<date>`: Date of the nap (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `<start>`: Start time of the nap (HH:MM) in your Garmin time zone.
   - `-f, --force`: Skip confirmation prompt.
+- `gccli health sleep note <date> [<text>] [flags]`: Set or remove the note of a night of sleep.
+  - `<date>`: Date of the sleep (YYYY-MM-DD, today, yesterday, 3d), as 'health sleep' takes it.
+  - `[<text>]`: Note text. It replaces the note of that night.
+  - `--clear`: Remove the note instead of setting a text.
 - `gccli health sleep daily --start=DATE --end=DATE`: Show daily sleep statistics for a date range (at most 28 days).
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
@@ -1185,6 +1224,15 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli health hrv [<date>]`: Show heart rate variability data.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
+- `gccli health snapshots list [flags]`: List Health Snapshot sessions up to a date. Also runs as `gccli health snapshots [flags]`.
+  - `-l, --limit=20`: Maximum number of sessions to return.
+  - `--offset=0`: Number of sessions to skip.
+  - `--until=DATE`: Last date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
+- `gccli health snapshots show <date> <uuid>`: Show the summary of a Health Snapshot session.
+  - `<date>`: Date of the session (YYYY-MM-DD, today, yesterday, 3d).
+  - `<uuid>`: Session UUID (activityUuid.uuid in 'health snapshots list').
+- `gccli health snapshots epochs <uuid>`: Show the measurements of a Health Snapshot session.
+  - `<uuid>`: Session UUID (activityUuid.uuid in 'health snapshots list').
 - `gccli health body-battery view [<date>]`: Show body battery data for a date. Also runs as `gccli health body-battery [<date>]`.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli health body-battery range --start=DATE --end=DATE`: Show body battery data for a date range.
@@ -1639,7 +1687,12 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli records types`: List personal record types.
 - `gccli records activity <id>`: List the personal records set in an activity.
   - `<id>`: Activity ID.
-- `gccli records candidates`: List the personal record candidates that wait for your review.
+- `gccli records candidates list`: List the personal record candidates that wait for your review. Also runs as `gccli records candidates`.
+- `gccli records candidates accept <id>`: Accept a personal record candidate as a personal record.
+  - `<id>`: Candidate ID, as records candidates prints it.
+- `gccli records candidates dismiss <id> [flags]`: Dismiss a personal record candidate. This cannot be undone.
+  - `<id>`: Candidate ID, as records candidates prints it.
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli records hide <type-id>`: Hide a personal record type on the records page.
   - `<type-id>`: Record type ID, as records types prints it.
 - `gccli records unhide <type-id>`: Show a hidden personal record type on the records page again.
@@ -1698,65 +1751,4 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli calendar export enable`: Turn on the calendar feed and show its URL.
 - `gccli calendar export disable [flags]`: Turn off the calendar feed. Its URL then gives an empty answer.
   - `-f, --force`: Skip confirmation prompt.
-- `gccli calendar preferences view`: Show the calendar preferences. Also runs as `gccli calendar preferences`.
-- `gccli calendar preferences set <key> <value>`: Turn a calendar preference on or off.
-  - `<key>`: Preference key, such as showWeeklyTotal. Run gccli calendar preferences to see the keys.
-  - `<value>`: true turns the preference on, false turns it off.
-
-### Social
-
-- `gccli social connections [flags]`: List your connections.
-  - `-l, --limit=20`: Maximum number of connections to return.
-  - `--offset=0`: Number of connections to skip.
-- `gccli social followers [<display-name>]`: List the followers of a user.
-  - `[<display-name>]`: Display name of the user. Defaults to your display name.
-- `gccli social following [<display-name>]`: List the users that a user follows.
-  - `[<display-name>]`: Display name of the user. Defaults to your display name.
-- `gccli social requests`: List pending connection requests.
-- `gccli social feed`: Show your newsfeed.
-- `gccli social follow <display-name>`: Follow a user. A user with a private profile gets a follow request.
-  - `<display-name>`: Display name of the user.
-- `gccli social unfollow <display-name> [flags]`: Stop following a user.
-  - `<display-name>`: Display name of the user.
-  - `-f, --force`: Skip confirmation prompt.
-- `gccli social follow-requests`: List the users who asked to follow you.
-- `gccli social accept <display-name>`: Accept the follow request of a user.
-  - `<display-name>`: Display name of the user, as social follow-requests lists it.
-- `gccli social decline <display-name>`: Decline the follow request of a user.
-  - `<display-name>`: Display name of the user, as social follow-requests lists it.
-- `gccli social remove-follower <display-name> [flags]`: Remove a user from your followers.
-  - `<display-name>`: Display name of the user.
-  - `-f, --force`: Skip confirmation prompt.
-- `gccli social mute <display-name>`: Mute a user that you follow.
-  - `<display-name>`: Display name of the user.
-- `gccli social unmute <display-name>`: Unmute a user.
-  - `<display-name>`: Display name of the user.
-- `gccli social muted`: List the users that you muted.
-- `gccli social search <query> [flags]`: Search Garmin Connect users by name.
-  - `<query>`: Name to search for, at least 2 characters.
-  - `-l, --limit=20`: Maximum number of users to return.
-  - `--offset=0`: Number of users to skip.
-- `gccli groups list`: List your groups. Also runs as `gccli groups`.
-- `gccli notifications list [flags]`: List notifications. Also runs as `gccli notifications [flags]`.
-  - `--limit=50`: Maximum number of notifications to return.
-  - `--cursor=STRING`: Start after this cursor. Use pagination.nextCursor from the JSON output of the last page.
-- `gccli notifications unread`: Show whether there are unread notifications.
-- `gccli notifications dismiss <id>`: Dismiss a notification. Use 'notifications undismiss' to bring it back.
-  - `<id>`: Notification ID (from 'notifications list').
-- `gccli notifications undismiss <id>`: Bring back a dismissed notification.
-  - `<id>`: Notification ID (from 'notifications list').
-- `gccli notifications preferences view`: Show notification preferences. Also runs as `gccli notifications preferences`.
-- `gccli notifications preferences set <key> <value>`: Turn a notification preference on or off.
-  - `<key>`: Preference key, such as allowEmailWeeklySummary. Run gccli notifications preferences to see the keys.
-  - `<value>`: true turns the preference on, false turns it off.
-
-### Insights
-
-- `gccli insights options [flags]`: List the genders, ages, dates, activities and fields for insights compare. Also runs as `gccli insights [flags]`.
-  - `--locale-unit="METRIC"`: Units of the field names: METRIC or STATUTE.
-- `gccli insights compare --activity=STRING --field=STRING --age=FREE-TEXT --year=INT [flags]`: Compare a metric with your age group. Needs Insights on in Garmin Connect.
-  - `--activity=STRING`: Activity as insights options prints it: STEPS, SLEEP, FLOORS, RUNNING, CYCLING, LAP_SWIMMING or OPEN_WATER_SWIMMING.
-  - `--field=STRING`: Field of the activity as insights options prints it: AVG_SPEED, VO2_MAX_VALUE, AVG_POWER, WEEKLY_AVG_DISTANCE, WEEKLY_AVG_DURATION, STEPS, SLEEP, FLOORS or COUNT.
-  - `--age=FREE-TEXT`: Age group as insights options prints it (e.g. 40-44, 75+).
-  - `--gender="ALL"`: Gender: ALL, M or F.
-  - `--year=INT`: Year (e.g
+- `gccli calendar preferences view`: Show the calendar preferences. Also runs as `gccli calendar prefe

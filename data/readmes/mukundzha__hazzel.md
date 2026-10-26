@@ -13,7 +13,7 @@
   <a href="https://github.com/mukundzha/hazzel/actions/workflows/ci.yml"><img src="https://github.com/mukundzha/hazzel/actions/workflows/ci.yml/badge.svg" alt="CI"></a>&nbsp;
   <a href="https://pypi.org/project/hazzel/"><img src="https://img.shields.io/pypi/v/hazzel?cacheSeconds=3600" alt="PyPI"></a>&nbsp;
   <a href="https://pypistats.org/packages/hazzel"><img src="https://img.shields.io/pypi/dm/hazzel" alt="Downloads"></a>&nbsp;
-  <a href="https://github.com/mukundzha/hazzel/actions/workflows/ci.yml"><img src="https://img.shields.io/badge/tests-420%20passing-brightgreen" alt="Tests"></a>&nbsp;
+  <a href="https://github.com/mukundzha/hazzel/actions/workflows/ci.yml"><img src="https://img.shields.io/badge/tests-453%20passing-brightgreen" alt="Tests"></a>&nbsp;
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-green" alt="License"></a>&nbsp;
   <a href="https://github.com/mukundzha/hazzel/stargazers"><img src="https://img.shields.io/github/stars/mukundzha/hazzel?style=social" alt="Stars"></a>
 </p>
@@ -24,7 +24,7 @@
 
 > First external PR merged in v1.5.1 — [good first issues are open](https://github.com/mukundzha/hazzel/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22).
 
-**Recently shipped:** `/allow` per-tool permissions + `glob` path lookup — fewer prompts, fewer model calls (1.6.1) · selective undo — `/undo` keeps your edits, `/redo` reapplies (1.6.0) · compat shim removal — `panels.py` gone, same imports (1.5.7) · dead UI stub removal — smaller surface, same terminal (1.5.6) · background jobs `wait`/`clear` — block until done, drop finished (1.5.5) · ask-once approvals — one y/N ends it, never asked twice (1.5.4) · `NO_COLOR` support — piped logs stay plain (#12, @DYNOSuprovo) · v1.5.3 SEO landing page · confirmation prompts accept `yes` — first external contribution (@Gambit-Checkmate, 1.5.1) · `/review` (1.5.0) — [full changelog](CHANGELOG.md)
+**Recently shipped:** `HAZZEL_CODE_THEME` code-block themes + `HAZZEL_NO_UPDATE_CHECK` startup opt-out (1.6.2) · `/allow` per-tool permissions + `glob` path lookup — fewer prompts, fewer model calls (1.6.1) · selective undo — `/undo` keeps your edits, `/redo` reapplies (1.6.0) · compat shim removal — `panels.py` gone, same imports (1.5.7) · dead UI stub removal — smaller surface, same terminal (1.5.6) · background jobs `wait`/`clear` — block until done, drop finished (1.5.5) · ask-once approvals — one y/N ends it, never asked twice (1.5.4) · `NO_COLOR` support — piped logs stay plain (#12, @DYNOSuprovo) · v1.5.3 SEO landing page · confirmation prompts accept `yes` — first external contribution (@Gambit-Checkmate, 1.5.1) · `/review` (1.5.0) — [full changelog](CHANGELOG.md)
 
 ## Try it in your project
 
@@ -105,7 +105,15 @@ Aider is excellent — this is about fit, not superiority.
 | Extends without lock-in | Minimal MCP stdio client — standard library only, any server via `.hazzel/mcp.json`. `SKILL.md` skills load on demand. Neither needs Hazzel-specific tooling to author. |
 | Shows you the bill | Provider-reported tokens parsed into real dollars, logged locally — not estimated. Live `tokens · $` line every turn; `/usage today\|week\|month --by-model`, `/budget`. |
 | Remembers between sessions | Per-project sessions persist with `/session restore`. `/plan on` explores read-only first; `/think on` buys extended reasoning for hard edits. |
-| Works in a pipeline | `hazzel -p "prompt"` runs one turn and exits — pipe a diff in, get a summary out. `--output-format json` + real exit codes for CI. |
+| Works in a pipeline | `hazzel -p "prompt"` runs one turn and exits — pipe a diff in, get a summary out. `--output-format json` + real exit codes for CI. `hazzel --list-models` prints the built-in model catalog (one line per model) and exits — no key, config, or network needed. |
+
+In `hazzel -p "prompt" --output-format json`, a successful turn emits
+`{"success": true, "response": "...", "model": "...", "usage": {...}}`.
+A missing API key, failed turn, connection failure or cancellation emits one JSON
+object on stdout: `{"success": false, "error": "...", "exit_code": 2}`.
+The error is non-empty and `exit_code` matches the process status: 1 for a failed
+turn, 2 for a missing key, or 130 for cancellation. Human-readable diagnostics
+remain on stderr; text mode is unchanged.
 
 Worked transcripts of `/review`, `/commit`, `@image`, background jobs, and `hazzel -p` live in [docs/EXAMPLES.md](docs/EXAMPLES.md).
 
@@ -124,7 +132,15 @@ Eight providers, one env var each. Set the one you want and skip the in-app prom
 | OpenRouter | `OPENROUTER_API_KEY` | 100+ models behind one key |
 | Ollama | *(none)* | fully local, keyless, `OLLAMA_HOST` override |
 
+Set `HAZZEL_NO_UPDATE_CHECK=1` to skip the interactive startup PyPI check without reading or writing its cache. Leave it unset or blank to keep the daily check.
+
 Switch anytime with `/model`. Nothing is metered by Hazzel — you pay your provider directly, or nothing at all if you're running local.
+
+### Environment variables
+
+- `HAZZEL_CODE_THEME=monokai hazzel` — any installed Pygments style for code blocks.
+- `HAZZEL_CODE_THEME=ansi_light hazzel` — for light terminals.
+- Unset, blank, or unknown values fall back to `github-dark`.
 
 ## Commands at a glance
 
@@ -134,13 +150,14 @@ Switch anytime with `/model`. Nothing is metered by Hazzel — you pay your prov
 | Git        | `/status` · `/diff [--staged]` · `/review [--staged]` · `/commit` · `/log`             |
 | Cost       | `/usage [today\|week\|month\|--by-model]` · `/budget`                                  |
 | Extend     | `/mcp [server [tool]]` · `/skills [name]` · `/init`                                   |
-| Transcript | `/export` · `/copy` · `/retry` · `/jobs` · `/undo [n]` · `/redo` · `/session restore` · `/clear` |
+| Transcript | `/export` · `/copy` · `/retry` · `/jobs` · `/undo [n]` · `/redo` · `/session save\|list\|restore [name]` · `/clear` |
+| Info       | `/version`                                                                                 |
 
 Type `/` to filter live, `@` to attach a file, `/docs` to page the full guide without leaving the terminal — see [docs/EXAMPLES.md](docs/EXAMPLES.md) for worked transcripts.
 
 ## What it's honest about not being
 
-v1.6.1, early-stage. No autonomous PRs, no cloud dashboard, no session sync across machines. It doesn't replace your editor — it sits in the terminal next to it, and it stays small on purpose.
+v1.6.2, early-stage. No autonomous PRs, no cloud dashboard, no session sync across machines. It doesn't replace your editor — it sits in the terminal next to it, and it stays small on purpose.
 
 If you need a heavier, more automated agent, better options exist. If you want to see exactly what's about to happen to your files before it happens, this is built for that.
 
@@ -164,8 +181,6 @@ If Hazzel is useful, the cheapest support costs nothing — use it, report what 
 <p align="center">
   <a href="https://github.com/mukundzha"><img src="https://avatars.githubusercontent.com/mukundzha?v=4&s=80" width="64" alt="mukundzha"/></a>
   &nbsp;&nbsp;
-  <a href="https://github.com/ronaldsterners"><img src="https://avatars.githubusercontent.com/ronaldsterners?v=4&s=80" width="64" alt="ronaldsterners"/></a>
-  &nbsp;&nbsp;
   <a href="https://github.com/Gambit-Checkmate"><img src="https://avatars.githubusercontent.com/Gambit-Checkmate?v=4&s=80" width="64" alt="Gambit-Checkmate"/></a>
   &nbsp;&nbsp;
   <a href="https://github.com/DYNOSuprovo"><img src="https://avatars.githubusercontent.com/DYNOSuprovo?v=4&s=80" width="64" alt="DYNOSuprovo"/></a>
@@ -175,6 +190,12 @@ If Hazzel is useful, the cheapest support costs nothing — use it, report what 
   <a href="https://github.com/binaryCoder-101"><img src="https://avatars.githubusercontent.com/binaryCoder-101?v=4&s=80" width="64" alt="binaryCoder-101"/></a>
   &nbsp;&nbsp;
   <a href="https://github.com/pollychen-lab"><img src="https://avatars.githubusercontent.com/pollychen-lab?v=4&s=80" width="64" alt="pollychen-lab"/></a>
+  &nbsp;&nbsp;
+  <a href="https://github.com/Muhtasim-Munif-Fahim"><img src="https://avatars.githubusercontent.com/Muhtasim-Munif-Fahim?v=4&s=80" width="64" alt="Muhtasim-Munif-Fahim"/></a>
+  &nbsp;&nbsp;
+  <a href="https://github.com/dannyward630"><img src="https://avatars.githubusercontent.com/dannyward630?v=4&s=80" width="64" alt="dannyward630"/></a>
+  <a href="https://github.com/Dikshant-Neupane"><img src="https://avatars.githubusercontent.com/Dikshant-Neupane?v=4&s=80" width="64" alt="Dikshant-Neupane"/></a>&nbsp;&nbsp;
+  <a href="https://github.com/snehaapratap"><img src="https://avatars.githubusercontent.com/snehaapratap?v=4&s=80" width="64" alt="snehaapratap"/></a>&nbsp;&nbsp;
 </p>
 
 <p align="center">

@@ -46,6 +46,9 @@ Papers:
 
 
 # Recent Random Papers
+- [arXiv 2026.10](https://arxiv.org/abs/2610.32977), UniAction: Unified Action Conditioning for World Models
+- [arXiv 2026.10](https://arxiv.org/abs/2610.32177), Ψ-0.6: Adaptive Streams of Thought in a Unified Vision-Language World Model
+- [arXiv 2026.10](https://arxiv.org/abs/2610.31779), FLORA: An Open Model Suite for Scaling Robotics Data Engines
 - [arXiv 2026.10](https://arxiv.org/abs/2610.30814), DRILL: Training World Models to Improve Policies, Not Predict Pixels
 - [arXiv 2026.10](https://arxiv.org/abs/2610.30136), Agentic World Action Models
 - [arXiv 2026.10](https://arxiv.org/abs/2610.29716), SpatialDex: Learning Bimanual Dexterity from RGB-Only Human Videos with Spatial Context
@@ -754,7 +757,4 @@ Papers:
 - arXiv 2023, Segment Anything, [Website](https://segment-anything.com/)
 - ICRA 2023, DribbleBot: Dynamic Legged Manipulation in the Wild, [Website](https://gmargo11.github.io/dribblebot/)
 - arXiv 2023, Alpaca: A Strong, Replicable Instruction-Following Model, [Website](https://crfm.stanford.edu/2023/03/13/alpaca.html)
-- arXiv 2023, VC-1: Where are we in the search for an Artificial Visual Cortex for Embodied Intelligence?, [Website](https://eai-vc.github.io/)
-- ICLR 2022, DroQ: Dropout Q-Functions for Doubly Efficient Reinforcement Learning, [arXiv](https://arxiv.org/abs/2110.02034)
-- arXiv 2023, RoboPianist: A Benchmark for High-Dimensional Robot Control, [Website](https://kzakka.com/robopianist/)
-- ICLR 2021, DDIM: Denoising Diffusion Implicit Models, [arXiv](https://arxiv.org/abs/2010.02502
+- arXiv 2023, VC-1: Where are we in the search for an Artificial Visual Cortex for Embodied Intelligence?, [Website](https://eai-vc.

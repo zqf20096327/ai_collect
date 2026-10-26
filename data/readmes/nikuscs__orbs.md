@@ -4,6 +4,10 @@
 
 Orbs runs a small daemon on your computer. Each bot is a persistent [Pi](https://github.com/earendil-works/pi) agent with its own conversation, tools, skills and memory, and it keeps working when you close the app. Your devices pair with the daemon once, then talk to it over your local network or Tailscale. There are no accounts and no cloud service in between.
 
+## ⬇️ Download
+
+**[Download the latest macOS app](https://github.com/nikuscs/orbs/releases/latest)** (Apple silicon). Unzip it, move **Orbs** to Applications and open it. Choose **This Mac**, then connect a model provider such as Anthropic or OpenAI. The app runs the daemon for you and lives in the menu bar.
+
 ## ✨ Features
 
 - 💬 **Persistent bots.** Give a bot a name, an avatar, instructions and a model. Its conversation survives restarts, and work in progress resumes on its own.
@@ -110,6 +114,8 @@ bun run check       # TypeScript in every package
 bun run lint        # Oxlint, architecture rules and import cycles
 bun run lint:dead   # Unused files, exports and dependencies
 ```
+
+`bun run screenshots:web` regenerates the onboarding screenshots in `apps/web/public/img/onboarding/`. It starts a throwaway daemon with demo bots and a mock model, so no account or key is needed. Run `bunx playwright install chromium` once first.
 
 Agent guidance lives in `AGENTS.md` and `.agents/`. Run `bun run agents:sync` after changing it: it links `CLAUDE.md`, `.claude/` and the worktree configs for Paseo, Orca, Conductor and T3 Code from `.agents/orchestrators/`.
 

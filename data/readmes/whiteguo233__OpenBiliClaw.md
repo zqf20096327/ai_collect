@@ -23,13 +23,22 @@
 
 </div>
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://whiteguo233.github.io/OpenBiliClaw/images/siliconflow-logo-dark.png">
+    <img src="https://whiteguo233.github.io/OpenBiliClaw/images/siliconflow-logo.png" alt="Powered by SiliconFlow" width="260" height="36">
+  </picture>
+  <br>
+  <sub>模型算力支持：感谢 <a href="https://www.siliconflow.cn">硅基流动（SiliconFlow）</a> 提供免费模型额度与推理支持 · <a href="docs/partners.md">合作说明</a></sub>
+</p>
+
 > ### 🆕 重要更新：OpenBiliClaw 现在可以装进 DeepSeek Harness
 >
 > 新增 **DSH 客户端插件** —— 把 OpenBiliClaw 装进 [DeepSeek Harness](https://github.com/deepseek-ai/DeepSeek-Harness)：DSH 界面常驻第四栏（推荐 / 内容库 / 对话 / 画像 / 设置），并注册 22 个 Agent Bridge 工具，让 DSH 里的 Agent 也能读推荐、答探测、闭环学习——边用 DSH 干活，边刷跨平台个性化内容。→ [`github.com/whiteguo233/dsh-openbiliclaw`](https://github.com/whiteguo233/dsh-openbiliclaw)
 >
 > 📱 想要原生 App？Flutter 移动端客户端（Android / iOS / Web / 桌面）在独立仓库 [`OpenBiliClaw-mobile`](https://github.com/whiteguo233/OpenBiliClaw-mobile)：推荐、对话、画像、收藏 / 稍后再看 / 30 天历史一应俱全，连接同一本地后端。
 
-> 🇨🇳 **国内源**：[Gitee v0.3.231 源码](https://gitee.com/whiteguo233/openbiliclaw/tree/openbiliclaw-v0.3.231)已同步至最新主线。安装包请从 [GitHub Release](https://github.com/whiteguo233/OpenBiliClaw/releases/tag/openbiliclaw-v0.3.231) 获取；[123 云盘](https://4001474255.share.123pan.cn/123pan/IxbZMh-90KO3)仍保留 v0.3.213 历史文件，最新版国内安装包镜像待更新。
+> 🇨🇳 **国内源**：[Gitee v0.3.232 源码](https://gitee.com/whiteguo233/openbiliclaw/tree/openbiliclaw-v0.3.232)已同步至最新主线。安装包请从 [GitHub Release](https://github.com/whiteguo233/OpenBiliClaw/releases/tag/openbiliclaw-v0.3.232) 获取；[123 云盘](https://4001474255.share.123pan.cn/123pan/IxbZMh-90KO3)仍保留 v0.3.213 历史文件，最新版国内安装包镜像待更新。
 
 ## 10 秒看懂 OpenBiliClaw
 
@@ -55,13 +64,10 @@
 
 ## 快速开始
 
-MiniMax 配置预设默认使用 `MiniMax-M3.1-Flash`，并保留 `MiniMax-M3` 与已保存的自定义模型。
-推理设置与价格见 [MiniMax text models](docs/modules/llm.md#minimax-text-models)。
-
 普通用户只需四步；Firefox、Docker、脚本和手动部署等备用路径都在 [安装与部署详情](#安装与部署详情)。
 
 1. **装插件** —— [Chrome 应用商店一键安装](https://chromewebstore.google.com/detail/cdfjfkdjjhdaccbldipkjhpibnfbiamg)（自动更新），或从 [Latest Release](https://github.com/whiteguo233/OpenBiliClaw/releases/latest) 下载 zip 手动安装（最新功能先到，商店版可能滞后几天）。
-2. **装后端** —— 从同一个 [Latest Release](https://github.com/whiteguo233/OpenBiliClaw/releases/latest) 下载桌面安装包（macOS `.dmg` / Windows `.exe`，开箱即用、常驻菜单栏/托盘）。每个平台有两种安装包:**精简版**(默认,首启自动下载向量模型 bge-m3)与 **`-with-embedding` 完整版**(已内置 bge-m3 ~1.1GB,离线开箱即用)——网络差 / 想离线的选完整版,其余选精简版。**Gitee 源码已同步至 v0.3.231，最新版安装包见 [GitHub Release](https://github.com/whiteguo233/OpenBiliClaw/releases/tag/openbiliclaw-v0.3.231)。123 云盘当前仍是 v0.3.213 历史文件。** 想改源码或深度定制,就把下面这句话粘给 Claude Code / Codex CLI / Cursor 等 AI 编程助手：
+2. **装后端** —— 从同一个 [Latest Release](https://github.com/whiteguo233/OpenBiliClaw/releases/latest) 下载桌面安装包（macOS `.dmg` / Windows `.exe`，开箱即用、常驻菜单栏/托盘）。每个平台有两种安装包:**精简版**(默认,首启自动下载向量模型 bge-m3)与 **`-with-embedding` 完整版**(已内置 bge-m3 ~1.1GB,离线开箱即用)——网络差 / 想离线的选完整版,其余选精简版。**Gitee 源码已同步至 v0.3.232，最新版安装包见 [GitHub Release](https://github.com/whiteguo233/OpenBiliClaw/releases/tag/openbiliclaw-v0.3.232)。123 云盘当前仍是 v0.3.213 历史文件。** 想改源码或深度定制,就把下面这句话粘给 Claude Code / Codex CLI / Cursor 等 AI 编程助手：
 
    ```text
    请按照 https://raw.githubusercontent.com/whiteguo233/OpenBiliClaw/main/docs/agent-install.md 的说明帮我部署 OpenBiliClaw 后端(务必用 Bash 的 curl 下载这个文档,不要用 WebFetch — 会丢关键指令)
@@ -248,12 +254,12 @@ query inspiration → configured provider chain
 
 ## 最近更新
 
-📌 最新版本：**v0.3.231（2026-10-22）**
+📌 最新版本：**v0.3.232（2026-10-26）**
 
-- **Instagram 与 TikTok 正式可用**：不再标注实验性，默认关闭、需在设置中显式启用。
-- **大肥鱼更会说话了**：通知文案改由人设生成，默认人设更可爱；私信修复后已可真实投递。
-- **Ollama embedding**：不再依赖聊天 SDK，部署更轻。
-- 完整变更详见 [docs/changelog.md](docs/changelog.md)。
+- **抖音发现恢复稳定**：修复跨进程在线判断、热词搜索与轮换，后台任务先静音再加载，失败保留结果并退避。
+- **首屏与封面更快**：减少启动阻塞和重复请求，修复扫码登录、配置保存提示及聊天与插件布局。
+- **搜索灵感更可靠**：新增可选的 Keenable 免费匿名搜索，并修复 Bing 跳转和单后端失败兜底。
+- **模型选择更完整**：可选 Jev 完整评估，MiniMax 文本预设更新为 M3.1 Flash。
 
 完整变更详见 [docs/changelog.md](docs/changelog.md)。
 
@@ -321,7 +327,7 @@ npm run package:firefox        # 额外打成未签名 openbiliclaw-extension-v*
 
 到 [Latest Release](https://github.com/whiteguo233/OpenBiliClaw/releases/latest) 的 `openbiliclaw-v*` 聚合发布页下载对应系统的安装包。这个聚合页会同步展示：
 
-> 🇨🇳 **国内源**：[Gitee v0.3.231 源码](https://gitee.com/whiteguo233/openbiliclaw/tree/openbiliclaw-v0.3.231)已同步至最新主线。安装包请从 [GitHub Release](https://github.com/whiteguo233/OpenBiliClaw/releases/tag/openbiliclaw-v0.3.231) 获取；[123 云盘](https://4001474255.share.123pan.cn/123pan/IxbZMh-90KO3)仍保留 v0.3.213 历史文件，最新版国内安装包镜像待更新。
+> 🇨🇳 **国内源**：[Gitee v0.3.232 源码](https://gitee.com/whiteguo233/openbiliclaw/tree/openbiliclaw-v0.3.232)已同步至最新主线。安装包请从 [GitHub Release](https://github.com/whiteguo233/OpenBiliClaw/releases/tag/openbiliclaw-v0.3.232) 获取；[123 云盘](https://4001474255.share.123pan.cn/123pan/IxbZMh-90KO3)仍保留 v0.3.213 历史文件，最新版国内安装包镜像待更新。
 
 - 当前后端源码 tag：`backend-v*`
 - 当前插件 release：`extension-v*`，并附 `openbiliclaw-extension-v*.zip` / `openbiliclaw-extension-v*-firefox.zip`（Firefox 临时调试）；启用 AMO signing 时还会附 `openbiliclaw-extension-v*-firefox.xpi`（Firefox 正式安装）
@@ -646,6 +652,12 @@ OpenClaw 收到 `interest.probe` 事件（或主动拉取 `next-probe`），发�
 - 🔧 **完全可控** — 同类型 LLM 可配置多个独立渠道，拖拽全局 / 模块故障切换链；也可直接编辑画像、写自定义 Skill
 
 ## 🏛️ 架构概览
+
+扩展在线状态：`runtime-stream → API 原子在线心跳 → data/runtime/extension_presence.json → full/discovery worker → 浏览器任务队列`；空闲连接每 20 秒续约，活动租约 60 秒失效，正常断开保留原宽限。见 [Runtime 模块](docs/modules/runtime.md#presencetracker)。
+
+抖音发现节流：`已领取任务失败 → dy_tasks 持久冷却 → producer 关键词领取前 / client / pending 领取门控`；原生搜索流立即交还网页，仅在有界副本上逐帧采集。有效 partial 与失败同时保留；共用发现客户端与任务队列的路径不能通过重启或 direct fallback 绕过冷却。
+
+抖音热词轮换：`dy_tasks 最近 6 小时的已入队选择 → 每轮新建的 plugin client → 优先未选热词`，避免正式入口因客户端重建而重复选择同一榜单前两词。
 
 桌面静态脚本：`包内桌面/共享脚本 → DesktopAssets（固定依赖顺序、最近两个内容版本、预压缩 gzip）→ /web 一次 defer 请求`。共享源码与原资源入口继续供移动端、插件使用，无需 Node 构建，无安装或配置变化。见[桌面 Web 模块](docs/modules/desktop-web.md)。
 

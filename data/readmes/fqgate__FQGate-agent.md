@@ -135,10 +135,10 @@ FQGate 默认只监听当前电脑的本机地址，Agent 不会连接公网或�
 - QQ 群：[免费 AI 量化数据](https://qm.qq.com/q/ZQSuiYQZ4Q)，群号：`14546787`
 - 问题反馈：[GitHub Issues](https://github.com/fqgate/FQGate-agent/issues)
 
-微信群二维码会定期失效；当前二维码标注为 2026 年 10 月 17 日前有效。如果下方二维码无法使用，请先加入 QQ 群或提交 Issue 提醒维护者更新。
+微信群二维码会定期失效；当前二维码标注为 2026 年 11 月 3 日前有效。如果下方二维码无法使用，请先加入 QQ 群或提交 Issue 提醒维护者更新。
 
 <p align="center">
-  <img src="./assets/community/wechat-agent-group-qr.png" alt="FQGate 平民量化数据网关交流 2 微信群二维码，有效期至 2026 年 10 月 17 日" width="320">
+  <img src="./assets/community/wechat-agent-group-qr.png" alt="FQGate 平民量化数据网关交流 2 微信群二维码，有效期至 2026 年 11 月 3 日" width="320">
 </p>
 
 ## 支持项目
@@ -174,6 +174,15 @@ FQGate 默认只监听当前电脑的本机地址，Agent 不会连接公网或�
 | <img src="./assets/sponsors/adong.jpg" alt="阿东" width="40" height="40"> | 阿东 | 微信 | 188 | 2026-10-3 |
 | <img src="./assets/sponsors/avatar-placeholder.svg" alt="宏渭" width="40" height="40"> | 宏渭 | 微信 | 5 | 2026-10-3 |
 | <img src="./assets/sponsors/9-59.jpg" alt="9.59" width="40" height="40"> | 9.59 | 微信 | 50 | 2026-10-5 |
+| <img src="./assets/sponsors/avatar-placeholder.svg" alt="**波" width="40" height="40"> | \*\*波 | 支付宝 | 58 | 2026-10-11 |
+| <img src="./assets/sponsors/avatar-placeholder.svg" alt="**湘" width="40" height="40"> | \*\*湘 | 支付宝 | 9.9 | 2026-10-12 |
+| <img src="./assets/sponsors/avatar-placeholder.svg" alt="**雨" width="40" height="40"> | \*\*雨 | 支付宝 | 1 | 2026-10-12 |
+| <img src="./assets/sponsors/avatar-placeholder.svg" alt="开心" width="40" height="40"> | 开心 | 微信 | 5.00 | 2026-10-14 |
+| <img src="./assets/sponsors/avatar-placeholder.svg" alt="王云" width="40" height="40"> | 王云 | 微信 | 20 | 2026-10-14 |
+| <img src="./assets/sponsors/avatar-placeholder.svg" alt="**招" width="40" height="40"> | \*\*招 | 支付宝 | 20 | 2026-10-16 |
+| <img src="./assets/sponsors/avatar-placeholder.svg" alt="自己" width="40" height="40"> | 自己 | 微信 | 100 | 2026-10-19 |
+| <img src="./assets/sponsors/avatar-placeholder.svg" alt="*雷" width="40" height="40"> | \*雷 | 支付宝 | 20 | 2026-10-24 |
+| <img src="./assets/sponsors/avatar-placeholder.svg" alt="无名" width="40" height="40"> | 无名 | 微信 | 20 | 2026-10-26 |
 
 
 

@@ -112,7 +112,11 @@ script. Your text reaches model providers only through the first two:
   results of 2,000 characters each) and sends that digest to one seat,
   `codex` unless you pick another. The run directory keeps `digest.md` and
   `prompt.md`, exactly what left the machine, until the mod reads the result
-  and removes it.
+  and removes it. The codex seat runs in that directory under a codex home
+  of its own: your model and effort, a link to your `auth.json` so a token
+  refresh reaches your login (without one, your `CODEX_API_KEY` or
+  `OPENAI_API_KEY` signs codex in), and none of your plugins, hooks,
+  `AGENTS.md`, skills or MCP servers.
 - `bash scripts/seat-info.sh discover`, `model <seat>` or
   `allowlisted <seat>` during `/heads-up setup` and `/heads-up on <seat>`.
   It checks which seats this machine can run and sends nothing.
@@ -156,6 +160,40 @@ use subscriptions; Gemini and OpenAI use their APIs. Kimi is a rate-limit
 fixture. The heads-up animation uses a fake seat and a real Claude Code host.
 [Capture scripts and raw frames](assets/capture/README.md) record how to
 reproduce them.
+
+## What a CLI seat loads
+
+Every CLI seat runs from an empty directory, `$TMPDIR/claude-council-<uid>/seat`,
+where `<uid>` is your numeric user id. The `CLAUDE.md`, `AGENTS.md`, rules,
+skills, hooks and MCP servers of the project you ask from don't reach it. The
+directory doesn't limit what a seat can read: codex, for example, can still
+open any file by its full path.
+
+The directory is read-only. That stops a seat writing a file there, but not a
+seat that changes the mode first. A seat also refuses to start when it finds
+anything in it, and names the path so you can look before you remove it. A file
+that lands while other seats are running can reach them; the next seat to start
+refuses.
+
+The seats below also run under a home of their own, in
+`$TMPDIR/claude-council-<uid>/seat-home`. It links only to what the CLI needs to
+sign in and start. Only you can open either directory, and a seat refuses to
+start when one of them belongs to another user or is a symlink.
+
+| Seat | No longer loads | Still loads |
+|---|---|---|
+| `cursor-cli` | Skills and plugins from `~/.cursor`, `~/.claude`, `~/.codex`, `~/.grok` and `~/.agents`, Cursor and Claude hooks, `~/.cursor/mcp.json` | Team commands from your Cursor dashboard (read from the CLI's bundle, not seen in a run) |
+| `grok-cli` | Claude plugins, `~/.agents` skills, grok's memory across sessions | Your `~/.grok` config and the hooks in `~/.grok/hooks`, since no grok setting turns them off. The seat home links your login keychain (macOS) and `~/.docker/run`, for Docker Desktop's socket |
+| `antigravity` | On macOS: your `~/.gemini` rules, skills, MCP servers and saved conversations | On Linux: everything under `~/.gemini`, because where agy keeps its login there is not confirmed |
+| `opencode` | The `~/.claude` and `~/.agents` skills, agents and `CLAUDE.md` | Your login and session history in `~/.local/share/opencode` |
+| `codex` | Your plugins, hooks, skills, memories and MCP servers. Each question gets its own codex home with your model, your effort and a link to `auth.json` | Nothing. With no `auth.json` and `cli_auth_credentials_store` set to `keyring` or `auto`, your login is in the system keyring, which codex can't read from another home, so the seat runs under your own codex home and the answer starts with a note. An exported `OPENAI_API_KEY` doesn't change that; an exported `CODEX_API_KEY` still signs codex in ahead of any login, as it does when you run codex yourself. Set `cli_auth_credentials_store = "file"` and run `codex login` again to isolate it. With no login at all, the seat stops and says so |
+| `claude-cli` | The git status and commit instructions a repository adds | Admin policy and your organisation's instructions |
+| `kimi-cli`, `copilot-cli` | The project's files | Your home: kimi's hooks in `~/.kimi-code/config.toml`, copilot's skills in `~/.copilot` and `~/.agents` |
+
+Cursor and Antigravity keep the model you picked in their own config: the seat
+reads it from your real home and passes it on. On Windows the seats keep your
+home, because the native CLIs find it through `USERPROFILE`.
+[Seat isolation](docs/ARCHITECTURE.md) has each seat's details.
 
 ## Troubleshooting
 

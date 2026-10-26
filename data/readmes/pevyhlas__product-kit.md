@@ -47,6 +47,11 @@ Product-Kit keeps the answer in one short spec inside the repository: the proble
 
 ## How it works
 
+Product/programme planning discovers features from intent **and** architecture/design together.
+Ready work follows a temporary plan → tasks → analyze → implement → verify flow. Useful context
+and evidence stay on the same PR; execution scratch is discarded. Later runtime findings become
+ordinary fix work, not cleanup PRs. See [feature delivery](docs/feature-delivery.md).
+
 ```mermaid
 flowchart LR
     Y([Product owner]) -->|direction| A{"Agent reads<br/>spec + code"}
@@ -88,7 +93,7 @@ Agent:  Change 012 adds requirement R-04 with the code. Acceptance A1 passes on 
 | **Large products**         | ⚠️ Designed for it (layered spec, agents read only what a change touches), but proven on only a handful of projects |
 | **Agents**                 | ⚠️ Installs for Claude Code, OpenCode, Codex and other `AGENTS.md` readers; [real-agent testing](docs/harnesses.md) is still limited |
 | **Many repos**             | ⚠️ One spec per repo; a shared interface belongs to the repo that provides it                         |
-| **Maturity**               | ⚠️ Experimental: 1.1.1, one maintainer                                                                |
+| **Maturity**               | ⚠️ Experimental: 1.2.0, one maintainer                                                                |
 | **Roadmap**                | ⚠️ Lifecycle stages (Idea → MVP → GA) and which journeys belong to each; no dates or timelines        |
 | **Ticketing**              | ❌ Not a ticket tracker; the work itself lives in git, pull requests and CI                           |
 | **One-off scripts**        | ❌ A spec costs more than it saves                                                                    |
@@ -113,7 +118,7 @@ Agent:  Change 012 adds requirement R-04 with the code. Acceptance A1 passes on 
 
 ```text
 Add Product-Kit (https://github.com/pevyhlas/product-kit) to this repository as a git
-submodule at .product-kit, pinned to tag v1.1.1, and run .product-kit/scripts/init.sh.
+submodule at .product-kit, pinned to tag v1.2.0, and run .product-kit/scripts/init.sh.
 Then adopt it by following .prdkit/workflows/init.md.
 ```
 
@@ -127,7 +132,7 @@ The agent installs the kit, reads your repository, fills in the project constitu
 | ----------------------------- | ---------------------------------------------------------------------- |
 | `/prdkit <outcome>`           | Routes it: answers from the spec, records direction, or opens a change |
 | `/prdkit --explore <idea>`    | Discusses options; edits nothing                                       |
-| `/prdkit --plan <outcome>`    | Writes a change record, no code                                        |
+| `/prdkit --plan <outcome>`    | Records ready scope and a proportional execution plan, no code         |
 | `/prdkit --execute <outcome>` | Runs the bounded change                                                |
 | `/prdkit continue`            | Resumes from the change's State and the actual repository              |
 | `/prdkit-status`              | Shows what's true now, in flight, live, held and waiting on the owner  |
@@ -145,7 +150,7 @@ The agent installs the kit, reads your repository, fills in the project constitu
 
 ```bash
 git submodule add https://github.com/pevyhlas/product-kit .product-kit
-git -C .product-kit checkout v1.1.1
+git -C .product-kit checkout v1.2.0
 bash .product-kit/scripts/init.sh
 ```
 
@@ -243,7 +248,7 @@ L2  specs/parts/<part>.md       one box: why it exists, components, behaviors, i
     code and tests              the exact implementation; tests cite the IDs they prove
 ```
 
-Around it: open changes in `specs/changes/` (deleted when they close), one line per closed change in `specs/log.md`, owner direction and open questions in `specs/inbox.md`, and holds, waivers and deployments in `specs/records.md`. A small project can keep everything in one `specs/SPEC.md`.
+Around it: open changes in `specs/changes/` (implementation records finalize in their own PR), one line per closed change in `specs/log.md`, owner direction and open questions in `specs/inbox.md`, and holds, waivers and deployments in `specs/records.md`. A small project can keep everything in one `specs/SPEC.md`.
 
 <details>
 <summary><b>Example: a product page and a journey</b> (from <a href="examples/request-service"><code>examples/request-service</code></a>)</summary>
@@ -309,7 +314,7 @@ The requester gets the resolution without asking for an update.
 | `/prdkit`           | Turn a request into a change, continue an open change, or answer from the spec |
 | `/prdkit-status`    | Generated view: true now, in flight, live, held, owner queue, longest pole     |
 | `/prdkit-product`   | Shape or edit product intent (L0), with the owner's words quoted               |
-| `/prdkit-target`    | Plan a programme: a parent change with child changes and owner gates           |
+| `/prdkit-target`    | Discover and plan work across product intent and design, with dependencies and gates |
 | `/prdkit-learn`     | Evaluate outcomes against the thesis, qualities and hypotheses                 |
 | `/prdkit-init`      | Adopt the kit, or cut a 0.x project over to the 1.1 layout                     |
 | `/prdkit-configure` | Constitution, action policy, capabilities and settings                         |

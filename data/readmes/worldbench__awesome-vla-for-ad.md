@@ -99,6 +99,7 @@ If you find this work helpful for your research, please kindly consider citing o
 | `DriveZero` | [![arXiv](https://img.shields.io/badge/arXiv-2609.06055-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2609.06055)<br>DriveZero: End-to-End Driving Beyond Human Demonstrations | arXiv 2026 | - | - |
 | `EMPlan` | [![arXiv](https://img.shields.io/badge/arXiv-2609.38862-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2609.38862)<br>Efficient Multi-Modal Planning with Reward-Guided Preference Optimization for Autonomous Driving | arXiv 2026 | - | - |
 | `RADP` | [![arXiv](https://img.shields.io/badge/arXiv-2609.39995-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2609.39995)<br>Learning to Explain While Planning: Rule-Aligned Diffusion Planning for Autonomous Driving | arXiv 2026 | - | - |
+| `TerraTransfer++` | [![arXiv](https://img.shields.io/badge/arXiv-2610.30319-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2610.30319)<br>TerraTransfer++: Demonstration-Free End-to-End Planner | arXiv 2026 | - | - |
 ||
 
 
@@ -369,7 +370,6 @@ If you find this work helpful for your research, please kindly consider citing o
 | `Geo-VLA` | [![arXiv](https://img.shields.io/badge/arXiv-2608.21440-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2608.21440)<br>Geo-VLA: Geometry-Aware Vision-Language-Action Planning via Internalization of Map Semantics | arXiv 2026 | - | - |
 | `RedLight-VLA` | [![arXiv](https://img.shields.io/badge/arXiv-2608.28656-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2608.28656)<br>RedLight-VLA: Models for traffic-rule grounding and behavioral emphasis in driving policies | arXiv 2026 | - | - |
 | `Collab-MMI` | [![arXiv](https://img.shields.io/badge/arXiv-2608.20890-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2608.20890)<br>A Collaborative Multi-Modality Interaction for VLA-based End-to-End Autonomous Driving | arXiv 2026 | - | - |
-| `Drive the Thoughts` | [![arXiv](https://img.shields.io/badge/arXiv-2608.29583-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2608.29583)<br>Drive the Thoughts: Runtime Monitoring of VLA Reasoning-Trajectory Consistency | arXiv 2026 | - | - |
 ||
 | `LMDrive` | [![arXiv](https://img.shields.io/badge/arXiv-2312.07488-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2312.07488)<br>LMDrive: Closed-Loop End-to-End Driving with Large Language Models | CVPR 2024 | [![Website](https://img.shields.io/badge/Link-yellow?style=flat-square&logo=gitbook)](https://hao-shao.com/projects/lmdrive.html) | [![GitHub](https://img.shields.io/github/stars/opendilab/LMDrive)](https://github.com/opendilab/LMDrive) |
 | `BEVDriver` | [![arXiv](https://img.shields.io/badge/arXiv-2503.03074-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2503.03074)<br>BEVDriver: Leveraging BEV Maps in LLMs for Robust Closed-Loop Driving | IROS 2025 | - | - |
@@ -444,4 +444,4 @@ If you find this work helpful for your research, please kindly consider citing o
 | `DriveWLA` | [![arXiv](https://img.shields.io/badge/arXiv-2610.17903-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2610.17903)<br>DriveWLA: Unifying Future Dynamics and Scene Semantics through World-Language-Action Modeling for Autonomous Driving | arXiv 2026 | - | - |
 | `Reflect-VLA` | [![arXiv](https://img.shields.io/badge/arXiv-2610.13453-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2610.13453)<br>Reflect-VLA: Internalizing Reflective Guidance via Dual-Path On-Policy Self-Distillation for Autonomous Driving | arXiv 2026 | - | [![GitHub](https://img.shields.io/github/stars/luo-yc17/Reflect-VLA)](https://github.com/luo-yc17/Reflect-VLA) |
 | `AffordDrive3D` | [![arXiv](https://img.shields.io/badge/arXiv-2610.11060-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2610.11060)<br>AffordDrive3D: Affordance-Aware World-Action Modeling with Spatial Understanding | arXiv 2026 | [![Website](https://img.shields.io/badge/Link-yellow?style=flat-square&logo=gitbook)](https://afforddrive3d.github.io/) | - |
-| `SafeDriveVLA` | [![arXiv](https://
+| `SafeDriveVLA` | [![arXiv](https://img.shields.io/badge/arXiv-

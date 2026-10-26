@@ -112,7 +112,9 @@ clone workflow):
 ~39 tools. Reads accept a **fuzzy** identifier (assetId, alias field, exact
 name, then first keyword match). Write tools require an **exact** identifier
 (assetId, alias field, or exact name) — a typo or an ambiguous match is refused
-rather than mutating the wrong item. Locations are referenced by name or
+rather than mutating the wrong item. An assetId must be in the full
+`000-012` form: a bare `12` is matched as a name or alias, never as asset
+`000-012`. Locations are referenced by name or
 `/`-separated path (e.g. `Garage/Shelf 1`) to disambiguate duplicate names.
 
 ### Read / Q&A
@@ -130,7 +132,7 @@ rather than mutating the wrong item. Locations are referenced by name or
 
 | Tool | Purpose |
 |------|---------|
-| `create_item(name, location?, quantity=1, manufacturer?, model?, serial?, purchase_price?, purchase_date?, purchase_from?, warranty_expires?, notes?, fields?, tags?)` | Create and enrich an item in one call. `fields` is a dict typed by JSON value (string→text, number→number [integer-coerced], bool→boolean); `tags` must already exist. Returns the new assetId. |
+| `create_item(name, location?, quantity=1, manufacturer?, model?, serial?, purchase_price?, purchase_date?, purchase_from?, warranty_expires?, notes?, fields?, tags?)` | Create and enrich an item in one call. `fields` is a dict typed by JSON value (string→text, number→number [integer-coerced], bool→boolean); `tags` must already exist. `location` resolves as in `move_item`: a location name or path, or a container item (name, path or assetId). Returns the new assetId. |
 | `import_csv(csv_text)` | Bulk-create items and locations from a Homebox CSV in one multipart request. `HB.location` **auto-creates** the path hierarchy; recognizes `HB.name`, `HB.tags`, `HB.quantity`, `HB.serial_number`, `HB.model_number`, `HB.manufacturer`, `HB.notes`, `HB.purchase_*`, `HB.warranty_expires`, `HB.field.<name>`. |
 | `create_location(name, parent?, description?)` | Create a location (tote/bin/shelf) to bootstrap a new storage spot; `description` doubles as a contents manifest. |
 | `barcode_lookup(code)` | UPC/EAN → name/manufacturer/model (optional, for boxed goods). |
@@ -145,7 +147,7 @@ touch (a full-body PUT that echoes the rest of the item back — see
 | Tool | Purpose |
 |------|---------|
 | `set_item(identifier, new_name?, description?, notes?, quantity?, purchase_price?, purchase_date?, purchase_from?, insured?, archived?, fields?)` | General item editor: rename, notes, quantity, purchase info, insured/archived flags, custom fields. Quantity-only edits use a partial PATCH. |
-| `move_item(identifier, location)` | Move an item to another location (partial PATCH — nothing else changes). |
+| `move_item(identifier, location)` | Move an item into a location or into another item (e.g. a lens into `Camera Bag`). The destination is a location name or path, as before; only if no location matches is it looked up as an item by exact name or path (e.g. `Office/Camera Bag`), or give the item's assetId. A name matching more than one is refused, and so is a location as the item to move — use `set_location` (partial PATCH — nothing else changes). |
 | `set_warranty(identifier, expires?, lifetime?, details?)` | Set warranty end date, lifetime flag, and terms summary. |
 | `set_identity(identifier, manufacturer?, model_number?, serial_number?)` | Set manufacturer / model / serial (e.g. after a nameplate photo reveals them). |
 | `set_fields(identifier, fields)` | Create or overwrite custom fields (upsert; typed by JSON value type). |

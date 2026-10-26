@@ -12,7 +12,7 @@
 **See what your coding agent actually did. Replay every session as a map and a timeline: what it read, what it edited, what failed, and what it shipped. Local, open source, works across Claude Code, Codex, Cursor, Copilot, OpenCode, Kiro, Gemini CLI and Antigravity CLI.**
 
 ```bash
-uvx agentplay
+uvx agentplay@latest
 ```
 
 That one command finds the agent sessions already on your machine, builds a redacted replay of each one, and opens a local viewer. No account and no API key are required, and your session data never leaves your machine. The only network call is an optional email signup in the viewer, described under [Privacy](#privacy); set `AGENTPLAY_NO_NETWORK=1` to switch it off.
@@ -57,7 +57,7 @@ agentplay makes that data readable. Every session becomes a map of everything it
 You need Python 3.11 or newer. agentplay has **no runtime dependencies** beyond the standard library.
 
 ```bash
-uvx agentplay                 # run without installing (uv: https://docs.astral.sh/uv/)
+uvx agentplay@latest          # run the newest release without installing (uv: https://docs.astral.sh/uv/)
 pipx run agentplay            # same, with pipx
 pip install agentplay         # or install it into an environment
 ```
@@ -133,7 +133,7 @@ Every view is a URL, so a link to a moment in a session reopens it for anyone wh
 
 | Agent | Reads from (defaults) | Subagent lanes | Tokens | Notes |
 |---|---|---|---|---|
-| **Claude Code** | `~/.claude/projects/**/*.jsonl` and `…/subagents/agent-*.jsonl` | yes | per request | Highest fidelity: read straight from the JSONL, including hooks, compactions, stop reasons and latency |
+| **Claude Code** | `~/.claude/projects/**/*.jsonl` and `…/subagents/**/agent-*.jsonl` | yes | per request | Highest fidelity: read straight from the JSONL, including hooks, compactions, stop reasons and latency |
 | **Codex** (CLI, IDE) | `~/.codex/sessions/**/*.jsonl` | main lane only | per turn | |
 | **Cursor** (agent CLI and IDE composer) | `~/.cursor` agent transcripts, `~/.cursor/chats/*/*/store.db`, IDE `state.vscdb` | main lane only | not recorded, see limitations | SQLite stores are copied and decoded locally, read-only |
 | **GitHub Copilot CLI** | `~/.copilot/session-state/**` | main lane only | per turn | |
@@ -194,8 +194,8 @@ agentplay agents      show which agents were found on this machine
 
 | Flag | On | Meaning |
 |---|---|---|
-| `--since 30d` | build, view | only sessions changed in the window (`12h`, `2w`, `2026-09-01`) |
-| `--agents claude-code,codex` | build, view | limit to these agents |
+| `--since 30d` | build, view, list | only sessions changed in the window (`12h`, `2w`, `2026-09-01`); list uses the stored transcript modification time, or the start time when that time is unavailable |
+| `--agents claude-code,codex` | build, view, list | limit to these agents |
 | `--rebuild` | build, view | rebuild even unchanged sessions |
 | `--path-mode dirs_only` | build, view | see [Privacy](#privacy) |
 | `--limit N` | build, view, list | newest N sessions |

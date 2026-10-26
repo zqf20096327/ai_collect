@@ -453,6 +453,9 @@ SmartCall 的成长离不开社区的每一份力量。无论是提交一个 Bug
 
 期待与你一起，让 SmartCall 变得更好。
 
+## 📖 技术文章推荐
+> 更多源码解析与扩展实践，请参阅 [SmartCall 技术博客](https://blog.csdn.net/ding1254646)，持续更新源码解析与扩展实战。
+
 ## 🤝 联系我们
 
 - **官网**：[https://qidiangk.com](https://qidiangk.com)

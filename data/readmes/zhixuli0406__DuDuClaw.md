@@ -20,7 +20,7 @@ All you need is one Rust binary. Channel routing, conversation memory, multi-acc
 </p>
 
 [![CI](https://github.com/zhixuli0406/DuDuClaw/actions/workflows/ci.yml/badge.svg)](https://github.com/zhixuli0406/DuDuClaw/actions/workflows/ci.yml)
-[![Version](https://img.shields.io/badge/version-1.75.0-blue)](https://github.com/zhixuli0406/DuDuClaw/releases)
+[![Version](https://img.shields.io/badge/version-1.76.0-blue)](https://github.com/zhixuli0406/DuDuClaw/releases)
 [![npm](https://img.shields.io/npm/v/duduclaw?logo=npm)](https://www.npmjs.com/package/duduclaw)
 [![Glama MCP server score](https://glama.ai/mcp/servers/zhixuli0406/DuDuClaw/badges/score.svg)](https://glama.ai/mcp/servers/zhixuli0406/DuDuClaw)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
@@ -29,7 +29,7 @@ All you need is one Rust binary. Channel routing, conversation memory, multi-acc
 
 ```bash
 npm install -g duduclaw
-duduclaw run                  # then open http://localhost:18789
+duduclaw run                  # then open http://localhost:18889
 ```
 
 ## Table of contents
@@ -169,7 +169,7 @@ pip install duduclaw
 
   ```bash
   duduclaw run                  # start everything (gateway + channels + scheduler + dispatcher)
-  open http://localhost:18789   # open the dashboard
+  open http://localhost:18889   # open the dashboard
   ```
 
 Either way, the first visit takes you through a wizard: pick an AI backend, create your first agent, then chat with it in the built-in WebChat — no need to run `duduclaw onboard` from a terminal first. Later, paste a bot token on the Channels page to put the same agent on Telegram, LINE, Discord, and the rest, without restarting.
@@ -246,7 +246,7 @@ What you install is fully transparent:
 - **Maintainer**: Dudu Technology Ltd. (registered in Taiwan, tax ID 94139082)
 - **High-risk actions in chat**: an employee asks for approval of a high-risk computer-use step in its channel, and you answer with the request's full ID. An operation whose result is unknown is never re-sent automatically; an Admin settles it in the dashboard. See the [operator guide](docs/guides/durable-channel-decisions.md)
 - **Browser login persistence (unreleased)**: optional encrypted per-employee container snapshots, default off, with reset and handover protection. Final container acceptance is pending. See the [guide](docs/guides/browser-login-state.md).
-- **Team browser viewing (unreleased)**: reporting-line managers can view masked snapshots and stop a subordinate’s human-started container session. Existing direct bindings retain their controls. See the [guide](docs/guides/browser-watch.md).
+- **Team browser viewing (unreleased)**: reporting-line managers can view masked snapshots and stop a subordinate’s human-started container session. Existing direct bindings retain their controls. Session-bound viewing links can return here after sign-in and appear in verified conversations or the matching task/run record. See the [guide](docs/guides/browser-watch.md).
 
 Every release asset ships with three kinds of verification: a SHA-256 checksum, a [cosign](https://github.com/sigstore/cosign) keyless signature, and a minisign Ed25519 signature (the built-in auto-updater enforces this one and refuses unsigned or tampered releases):
 

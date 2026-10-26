@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/weftgo/weft/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/weftgo/weft/actions/workflows/ci.yml)
 [![Go Reference](https://pkg.go.dev/badge/github.com/weftgo/weft.svg)](https://pkg.go.dev/github.com/weftgo/weft)
-[![Version](https://img.shields.io/badge/version-v0.18.3-orange)](https://github.com/weftgo/weft/releases/tag/v0.18.3)
+[![Version](https://img.shields.io/badge/version-v0.19.0-orange)](https://github.com/weftgo/weft/releases/tag/v0.19.0)
 
 A modular framework for building AI agents in Go — designed the way the
 standard library is: small interfaces, `context` everywhere, functional
@@ -10,8 +10,8 @@ options, wrapped errors, and zero required configuration. One `go get`
 is the whole framework; one import path is the loop alone:
 
 ```sh
-go get github.com/weftgo/weft@v0.18.3       # the framework: every package below, one version
-go get github.com/weftgo/weft/core@v0.18.3  # the loop alone: its only dependency is the OTel API
+go get github.com/weftgo/weft@v0.19.0       # the framework: every package below, one version
+go get github.com/weftgo/weft/core@v0.19.0  # the loop alone: its only dependency is the OTel API
 ```
 
 | Package | What it gives you |
@@ -29,7 +29,7 @@ Concurrency is the point, not a feature: a step's tools fan out over
 goroutines, parallelism is a one-line dial, and tool failures never cancel
 their siblings.
 
-> **Status:** v0.18.3 — experimental, pre-1.0, released as one module
+> **Status:** v0.19.0 — experimental, pre-1.0, released as one module
 > (plus `core`; see [Releases](https://github.com/weftgo/weft/releases),
 > `CHANGELOG.md` and, coming from 0.8, [`MIGRATION-0.9.md`](MIGRATION-0.9.md)). The core's three load-bearing contracts — message
 > model, error model, tool contract — are implemented and tested, and
@@ -383,9 +383,10 @@ environment variable one to one (the table below).
 | `weft runs [--agent] [--since 2h\|RFC3339] [--failed] [--limit] [--json]` | One row per run (id, agent, status, started, steps) from `GET /api/runs`; `--limit` defaults to 50 (0 lists all) and says so on stderr when it hid runs; `--json` for scripts. |
 | `weft open <run id> [--open] [--with-token]` | Prints the run's page, `<url>/runs/<id>`, bare — a fixed token may be the panel tokens' signing key, so it stays out of logs; `--with-token` prints the `#token=` fragment too; `--open` hands the browser the link with the token. |
 | `weft export <run id> [--format json\|jsonl\|otlp]` | `GET /api/runs/<id>/export` to stdout. |
-| `weft export <run id> --wefttest ./testdata [--test TestName] [--force]` | The run's wefttest replay fixtures unzipped into `./testdata/<TestName>/` (default: the run id), where `wefttest.Replay(t, "testdata")` reads them; a non-empty target needs `--force`, which replaces its `*.json` fixtures (never merges). |
+| `weft export <run id> --wefttest ./pkg [--force]` | The run's save-as-test tree — the files of Studio's "save as test" zip, byte for byte: `<agent>_replay_test.go` beside `testdata/TestReplay_<run>/*.json`, a test that passes under `go test` (a replay's composes its source's fixtures for the steps it kept); a test file or fixtures already there need `--force`, which replaces the `*.json` fixtures (never merges). |
+| `weft export <run id> --wefttest ./testdata --fixtures-only [--test TestName] [--force]` | The fixtures alone, unzipped into `./testdata/<TestName>/` (default: the run id), where `wefttest.Replay(t, "testdata")` reads them. |
 | `weft doctor` | One line per check of a running Studio, each read from `GET /api/meta`. |
-| `weft mcp [--url] [--token]` | A read-only MCP server over stdio for a coding agent (Claude Code, Cursor) to read runs while you debug: one tool per read route — `runs`, `search`, `run`, `step`, `request`, `events`, `tools`, `diff`, `export` (json/jsonl/otlp; not wefttest), `sessions`, `session`, `meta` — plus `explain_failure <run id>` (run + step + transcript composed: status, error, the failing step's tool calls and results, holes, last assistant text). Every tool is a GET; write verbs (approve, deny, steer, cancel, delete, …) are not offered. Outputs are the route's JSON, cut at `max_bytes` (default 64 KiB) with a note; a 403 is the tool's error. With no `--url`/`WEFT_STUDIO_URL` it reads the discovery file (`WEFT_DISCOVERY=off` skips it). `claude mcp add weft -- weft mcp` (the discovery file finds the running Studio); Cursor: `.cursor/mcp.json` `{"mcpServers":{"weft":{"command":"weft","args":["mcp"]}}}`. To name another Studio add `--url http://127.0.0.1:7331` (`"args":["mcp","--url","http://127.0.0.1:7331"]`). The recipe — setup, which tool answers which question with worked examples, tokens, limits, troubleshooting — is [docs/mcp-recipe.md](docs/mcp-recipe.md); `make mcp-check` runs it end to end against a real Studio. |
+| `weft mcp [--url] [--token]` | A read-only MCP server over stdio for a coding agent (Claude Code, Cursor) to read runs while you debug: one tool per read route — `runs`, `search`, `run`, `step`, `request`, `events`, `tools`, `diff`, `export` (json/jsonl/otlp; not wefttest), `sessions`, `session`, `meta`, `logs`, `spans`, `trace`, `transcript`, `live`, `agents`, `experiments`, `runtimes` — plus `explain_failure <run id>` (the run, every step, its child runs and the transcript composed: status, error, the first error anywhere with the run and step it happened in, a per-step and per-child digest, a decided park as decided, this run's own last assistant text). Every tool is a GET; write verbs (approve, deny, steer, cancel, delete, …) are not offered. Outputs are the route's JSON — compact rows on the list tools and compact spans on `spans`/`trace` (`full: true` as served) — cut at `max_bytes` (default 64 KiB) with a note; a 403 is the tool's error. With no `--url`/`WEFT_STUDIO_URL` it reads the discovery file (`WEFT_DISCOVERY=off` skips it). `claude mcp add weft -- weft mcp` (the discovery file finds the running Studio); Cursor: `.cursor/mcp.json` `{"mcpServers":{"weft":{"command":"weft","args":["mcp"]}}}`. To name another Studio add `--url http://127.0.0.1:7331` (`"args":["mcp","--url","http://127.0.0.1:7331"]`). The recipe — setup, which tool answers which question with worked examples, tokens, limits, troubleshooting — is [docs/mcp-recipe.md](docs/mcp-recipe.md); `make mcp-check` runs it end to end against a real Studio. |
 | `weft version` | The weft version this binary was built from. |
 
 | Flag | Environment | Default |
@@ -448,9 +449,33 @@ The file is a convenience, never a requirement: `WEFT_STUDIO_URL`
 always wins (the file is not read), `WEFT_DISCOVERY=off` turns the read
 off (and the write: `weft studio` and `weft dev` started under it write
 no file and say so in one line), `otel.NoEnv()` ignores it with the rest of the environment, and a
-Studio named in code — `otel.Studio(url, tok)` (which switches the read
-off: explicit > environment > file) or `runtime.Studio(url, tok)` —
+Studio named in code — `otel.Studio(url, tok)` or `runtime.Studio(url, tok)` —
 needs no file.
+
+**When weft/otel reads the file** (the one rule; explicit > environment
+> file): only when the pipeline names neither an `otel.Studio` nor an
+`otel.Local` destination in code (an `otel.OTLP`, `otel.Datadog`,
+`otel.Langfuse` or `otel.Exporters` destination does not switch it off
+— add `otel.NoDiscovery()`), `WEFT_STUDIO_URL` is unset, and
+neither `otel.NoDiscovery()` (this pipeline), `WEFT_DISCOVERY=off`
+(the process) nor `otel.NoEnv()` is set. A pipeline that names its
+store writes only to what it names plus the environment's destinations
+— `otel.Install(otel.Local(path))` never joins a running Studio; to
+write to both, name both: `otel.Install(otel.Local(path),
+otel.Studio(url, tok))`. `otel.NoDiscovery()` skips the file alone and
+keeps `WEFT_STUDIO_URL`, `OTEL_*` and the `WEFT_ENV` gate;
+`otel.NoGlobal()` does not stop the read. `runtime.Install` reads the
+file on its own, when it has no `runtime.Studio` / `runtime.Local` and
+the installed pipeline has neither a Studio nor a Local: beside a
+Local-only pipeline it opens no link and WARNs once (the link would
+register with a Studio its runs never reach) — `runtime.Local(srv)`
+dials the embedded Studio, `runtime.Studio(url, tok)` with
+`otel.Studio(url, tok)` a running one. The rule sees the *installed*
+pipeline only: one started with `otel.Start(otel.Local(p),
+otel.NoGlobal())` is not installed, so `runtime.Install` without
+`runtime.Studio` / `runtime.Local` still joins a discovered Studio,
+whose replays' spans never arrive — name it there: `runtime.Local(srv)`
+or `runtime.Studio(url, tok)`.
 
 Setup A's handler serves `GET <base>/panel-config.json` —
 `{"endpoint", "version", "capabilities"}` — to a loopback (or

@@ -47,6 +47,12 @@ Agent 的 `workdir` 保留项目身份及规则来源；`execution_mode=workspac
 iCloud/非 Git 目录默认 workspace，开发 Git 项目默认 project；总助理不变。
 业务文件工具限制可写目录，Bash/同步子代理继承系统文件沙箱，禁止关闭；Agent 配置不可自改。
 成果目录和可写关联不得位于 Git 仓库，iCloud 失败明确报错，不自动改存源码目录。
+业务 Agent 可在「设置 → 代码仓库」绑定多个 Git 根目录（`repositories`）。每会话自动在
+`~/vococo-workspaces/.repositories/<agent>/<会话哈希>/<仓库哈希>/` 建独立克隆与分支，
+不共享 Git 元数据；原仓库只读。修改、构建和本地提交均使用提示词提供的副本路径，推送/发布保留原有审批。
+副本不含未提交修改、忽略的 `.env` 或依赖，不自动拉取远端；取消绑定从下一轮生效，
+不强行中断当前命令、不删除已有副本。初始化可用 `scripts/bind_business_repositories.py
+--data-dir /实际/data目录 --bind AGENT_ID=/仓库根目录`，默认预览，`--apply` 备份配置并准备主会话副本。
 业务会话不能自行注册/切换 MCP 或创建/修改未沙箱化的脚本 cron；已配置 MCP 与已有固定脚本是主人管理的受信任自动化，不受这次 Bash 沙箱保护。固定脚本保持原目录。
 
 迁移先预览，带 `--apply` 才更新并备份；不会移动历史产物或修改固定脚本：
@@ -60,9 +66,18 @@ uv run python scripts/migrate_business_workspaces.py --data-dir /实际/data目�
 不创建沙箱禁止的伪终端，也不写密码文件；其他 sshpass 参数明确报不支持。
 不放开全部本机端口；显式 `/usr/bin/ssh` 或自行覆盖 PATH 的脚本需要自行使用 SDK 的代理参数。
 
+飞书文档使用内置 `lark_document`（fetch/create/update），由宿主官方 CLI 管理凭据续期与
+Keychain/DPoP/TLS，不在业务 Bash 内运行 `lark-cli`，不关闭沙箱或证书验证。
+写入必须审批，仅接受纯 Markdown 正文；不接收本机路径、XML/HTML、图片或附件，
+不支持表格、权限管理或登录。调用串行，取消回收自有子进程组；超时不自动重试写入。
+读取受 CLI 自身文档权限限制，宿主代理不是每个 Agent 独立的飞书账号隔离。
+旧会话若仍直接执行 `lark-cli docs +fetch/+create/+update`，业务钩子在执行前拒绝并明确提示
+改用 `mcp__vococo__lark_document`，不再等 TLS 失败后让用户手动重试；本地技能阅读、校验及开发会话不受影响。
+
 离线命令级验收（本机假模型，不使用真实模型额度）：
 - `uv run python eval/check_business_sandbox.py`：文件写入边界。
 - `uv run python eval/check_business_network.py`：显式 HTTP 代理、sshpass→SSH 握手与文件写入边界（不代表真实密码认证已验收）。
+- `uv run python eval/check_lark_documents.py 文档token`：真实 SDK 业务沙箱经 MCP 宿主代理读取现有飞书目录（使用本机授权，只读联网；不强制刷新或创建文档）。加 `--legacy-first` 可验证旧命令拒绝提示及后续 MCP 读取（本机脚本模型按预定步骤调用，不代表已验证真实模型的自主选择）。
 
 ## 架构
 
@@ -142,6 +157,28 @@ Web 入口:`serve` 时设 `WEB_ENABLED=1` 即在同进程起网页服务(默认�
 隔离验收：`uv run --extra dev python -m pytest tests/test_delegation.py -q`。
 模型传输与外部 MCP 使用本地夹具，实际经过 gateway、执行器、`stream_turn`、SDK 钩子、
 内置 MCP 和临时 SQLite；不调用付费模型、不操作生产数据。
+
+## 可编辑 PowerPoint 与私有文件成果
+
+- “做一份可编辑 PPT / 修改这份 PPT”触发内置 `editable-pptx` 适配入口，默认加载成熟的 **PPT Master**，由上游负责设计、原生 PPTX 生成和编辑；vococo 只补权限、真实 PPT 渲染与私有交付，不再自建默认设计流程。
+- PPT Master（MIT）独立完整安装在 `~/Desktop/Repos/AI_Skills/ppt-master/`，也可用 `VOCOCO_PPT_MASTER_DIR` 指定；当前核验 6.7.3 / `78759bf62e9a1ef43e926ff9e50afa4cfe9a63cb`，不捆入 vococo wheel。缺安装/校验失败会明确停止，不静默回退。安装边界、路由和可选依赖见 `vococo/plugin/skills/editable-pptx/references/ppt-master.md`。
+- 已移除自建生成器、原生编辑工作台及旧 JSON 协议，不提供旧稿 JSON 兼容入口。保留锁定的 python-pptx，供上游及文件验收使用。
+- 不含网页内 PPT 编辑器；任意第三方动画/SmartArt/扩展不保证无损，先在副本验证。解释器解析见上面的接入文档。
+- 维护者安装与最终文件检查（下面命令在 vococo 源码安装目录运行；业务任务使用安装环境解释器和脚本的绝对路径，cwd 保持在用户工作区）：
+
+  ```sh
+  uv sync --extra dev  # 包含锁定的 python-pptx
+  uv run python vococo/plugin/skills/editable-pptx/scripts/ppt_master_check.py
+  uv run python vococo/plugin/skills/editable-pptx/scripts/check.py 演示-v2.pptx --render 预览-v2
+  ```
+
+  适配层校验/渲染不联网、不自动装包、不覆盖旧预览；上游每次导出须指定新的版本路径，不覆盖原稿。上游联网搜图、生图或 TTS 须另获授权，不代表整个上游流程天然离线。
+  实际预览需要本机 LibreOffice + Poppler（pdftoppm/pdfinfo），核对真实页数并输出逐页 PNG；AI 查看图片、修正后再渲染。输入须在当前工作区；外部获准成果目录可作为 cwd 执行。缺字体/渲染器时明确报告未验证 Office 排版，不把结构检查或另画 HTML 当视觉验收。
+- Web 由 `send_file` 交付持久下载卡片：当前工作目录/业务成果目录内文件、单个 ≤64MB、私有快照、会话绑定、认证下载；拒绝越界、软硬链、敏感文件/不安全压缩包，不公开发布、不进入图片作品库。快照存 SQLite，删除回合同步删除记录，但数据库体积不会自动缩小。
+- 文件交付不依赖 PPT：`send_file` 与 `show_html` 共用受控读取、私有附件存储、会话生命周期和下载卡片。同一轮相同文件名/字节复用快照；HTML 下载保留原字节（含 BOM/换行），不是净化后的预览副本。
+- ≤200KB 的有效 UTF-8 HTML 附件附带静态沙箱预览，禁止脚本和外链；更大或非 UTF-8 HTML 通过 `send_file` 时只提供下载。`show_html` 仍严格拒绝不符合预览条件的文件，目录外读取仍须原审批，不扩大普通附件来源权限。旧 HTML 历史记录继续读取，无需改写生产数据；新 HTML 只在附件表保存一份原文件。
+- CLI/TUI 暂无文件卡片；需明确本机文件位置。PowerPoint/WPS 的实际打开和编辑仍需用户验收。
+- 适配与验收说明见 `vococo/plugin/skills/editable-pptx/`；PPT 定向回归 `uv run --extra dev python -m pytest tests/test_editable_pptx.py tests/test_pptx_render.py tests/test_ppt_master_integration.py -q`。
 
 ## 历史研究
 

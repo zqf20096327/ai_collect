@@ -112,14 +112,14 @@ This workflow leverages Claude Code to automate and streamline software developm
   Prompt in **auto mode**: \
   `/triage-failed-scenarios --grep "SCN-01:|SCN-02:"` to triage specific scenarios, or \
   `/triage-failed-scenarios "failed scenarios in <issue URL>"` to triage the failures listed in an issue raised by a regression pipeline. \
-  Resolves each failure: deletes the scenario if the behaviour was removed, updates the steps and re-records if it changed intentionally, re-records if the spec is stale, or reports a defect if the app is wrong.
+  Keeps the regression suite autonomously maintained: deletes the scenario if the behaviour was removed, updates the steps and re-records if it changed intentionally, re-records if the spec is stale, or reports a defect for human review if the app no longer meets the story.
 
 - **Retrofit BDD scenarios** \
   For code written without scenarios. Prefer planning them from the story — retrofitted scenarios describe what the code does, bugs included, not what it should do. \
   `/retrofit-scenarios @path/to/file.feature "feature description"`, or \
   `/retrofit-scenarios @path/to/file.feature @path/to/source1 @path/to/source2/*`
 
-- **Prepare a pull request for review** \
+- **Prepare the final pull request for review** \
   Prompt in **auto mode**: \
   `/prepare-implementation-review` to prepare the current branch's PR, or \
   `/prepare-implementation-review 123 @path/to/story.md` to prepare a PR by ID, with an optional story markdown for requirement traceability, or \

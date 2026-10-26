@@ -25,7 +25,8 @@
 <h3 align="center">Real Google Search for your AI agent. No API key. Self-hosted. Over MCP.</h3>
 
 Your agent calls `google_search` and gets Google's actual results page as typed JSON: every link resolved to
-its real URL, plus the AI Overview, People also ask and related searches. A real Firefox
+its real URL, plus Google's answer boxes (sports results, top stories, videos), the AI Overview, People
+also ask and related searches. A real Firefox
 ([Camoufox](https://github.com/daijro/camoufox)) runs Google's page as it is, on your own IP or through any
 proxy you already have.
 
@@ -45,7 +46,8 @@ claude mcp add gsearch --scope user -- gsearch-mcp    # or any MCP client, below
 ```
 
 Then just ask: *"Search Google for what asyncio is and give me the top three links"*, *"What do people also
-ask about asyncio?"*, *"Find asyncio pages on python.org from the past year."*
+ask about asyncio?"*, *"Find asyncio pages on python.org from the past year."*, *"Search for the asyncio docs and
+summarize the first result."*
 
 Without a proxy, gsearch uses your own IP, at most 20 searches an hour. For more, add a proxy in any format:
 
@@ -133,7 +135,7 @@ Google's official search API is closed to new customers and shuts down on 1 Janu
   real-device fingerprint and a locale that matches its IP.
 - 🔗 **Real URLs.** Google hides result links behind `/goto` redirects. gsearch resolves every one to the
   page it points to, without loading that page.
-- 🤖 **Built for agents.** One MCP server, two tools, typed JSON. Blocks come back as clear errors with
+- 🤖 **Built for agents.** One MCP server: search, page reading and status, typed JSON. Blocks come back as clear errors with
   `retry_after_s`, never as empty results, and every string is flagged as untrusted web content.
 - 🌍 **Any proxy, any format.** Rotating residential, static VPS or datacenter lists, HTTP, HTTPS or SOCKS5,
   in any common layout. Every byte is counted, with a hard data limit.
@@ -261,14 +263,16 @@ and a 10-minute cache for repeated queries.
 | MCP tool | Arguments | Returns |
 |---|---|---|
 | `google_search` | `query`, and optionally `page` (1–50), `lang` (`en`, `fr`, …), `country` (`us`, …), `time_range` (`h`, `d`, `w`, `m`, `y`), `site` (a domain) | The JSON above plus a short text summary, or an error result on a block. |
+| `fetch_page` | `url` (a public `http`/`https` page) | The page's title, readable text (up to 30,000 characters) and the links in its main content. Goes through your proxy and counts against the data limit. Refuses this machine and private networks. |
 | `google_search_status` | none | Proxy data used against the limit, IPs used and blocked, and the cache. Never contacts Google. |
 
 ```text
 gsearch search "query" [--page N] [--lang xx] [--country xx] [--time-range h|d|w|m|y] [--site domain]
 gsearch search "query" --fixtures fixtures/gecko     answer from saved pages (offline, from a clone of this repo)
+gsearch fetch URL                                    readable text and links of a web page
 gsearch parse page.html                              parse any saved Google results page
 gsearch schema                                       print the JSON Schema
-gsearch identity check                               check the browser's fingerprint matches its IP (no Google traffic)
+gsearch identity check                               home-IP browser's fingerprint matches its IP (no Google traffic)
 gsearch setup                                        download the browser once and print the MCP config
 ```
 
@@ -343,8 +347,8 @@ use the CLI or call it from Python.
   that solving its SearchGuard JavaScript challenge by automated means is circumvention under DMCA §1201.
   gsearch runs that challenge in a real browser and does not forge or alter tokens, but the complaint also
   targets automated browsers. See [docs/DESIGN.md](docs/DESIGN.md) (D-004).
-- **No CAPTCHA solver is shipped, wired in or recommended.** `gsearch_core.captcha` defines an interface only;
-  anything you plug into it, and its legality, is your responsibility.
+- **No CAPTCHA solver is shipped, wired in or recommended.** A CAPTCHA rests the identity and is reported as an
+  error.
 - **Get legal advice** for your jurisdiction and use case before running live searches. The parser
   (`gsearch_parse`) only reads HTML you already have.
 - **Limits are on by default and cannot be bypassed from the CLI or MCP.** Don't use proxies to hammer

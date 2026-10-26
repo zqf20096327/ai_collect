@@ -38,16 +38,18 @@ Start quickly, iterate faster, and manage experiments in one place.
 ---
 
 **Kumo and TabICLv2:** separate Compete algorithms with optional `[tfm]` dependencies
-including the SDM 0.2.1 PyPI backend in the current source checkout. Python 3.11+ required.
-The published alpha uses an older backend; see [installation and usage](docs/docs/features/sdm.md).
+including the SDM 0.2.1 PyPI backend in beta 1. Python 3.11+ required.
+See [installation and usage](docs/docs/features/sdm.md).
+
+Version **1.4.0b1** requires **Python 3.11+** and includes feature discovery
+in the standard installation. Torch-based models and the app runtime remain optional.
 
 ## Table of Contents
 
 Install standard MLJAR with `python -m pip install mljar-supervised`.
 For RealMLP, choose [CPU](docs/docs/install.md#realmlp-on-cpu) or
 [NVIDIA GPU](docs/docs/install.md#realmlp-on-nvidia-gpu) setup, then install the
-`[realmlp]` or `[all]` extra. **RealMLP currently requires installation from source**
-and is available only in `mode="Compete"`.
+`[realmlp]` or `[all]` extra. RealMLP is available only in `mode="Compete"`.
 See the [installation guide](docs/docs/install.md) for copyable commands and
 checks, and the [RealMLP guide](docs/docs/features/realmlp.md) for usage.
 [TabM mini](docs/docs/features/tabm.md) is also available in Compete mode through
@@ -96,6 +98,11 @@ Of course, you can further customize the details of each `mode` to meet the requ
 ## Generate Web Apps for Trained Models
 
 MLJAR AutoML does not stop after training a model. It can automatically generate a web app for your trained model with [Mercury](https://github.com/mljar/mercury). This is useful when you want to share predictions with domain experts, business users, researchers, or other people who do not want to work directly with Python code. 
+
+The base installation can generate app files. With beta 1, install
+`mljar-supervised[apps]==1.4.0b1` to run them, or
+`mljar-supervised[all,apps]==1.4.0b1` for the app runtime and all optional models. Exported requirements include the backends needed by the selected model.
+See the [app guide](docs/docs/features/apps.md) for setup.
 
 After training AutoML, generate the app files with:
 
@@ -567,11 +574,11 @@ When `model_name` is provided, the markdown includes detailed metrics, fairness 
 # Installation  
 
 For standard MLJAR, optional neural models, and Kumo/TabICLv2 CPU/GPU setup, see the
-[installation guide](docs/docs/install.md). Version `1.4.0a1` is an alpha
+[installation guide](docs/docs/install.md). Version `1.4.0b1` is a beta
 release with optional RealMLP, TabM mini, Kumo and TabICLv2 support.
 
 Compatibility:
-- Python `>=3.9`
+- Python `>=3.11` for 1.4.0b1
 - NumPy `>=2.0,<3`
 
 From PyPi repository:
@@ -580,32 +587,37 @@ From PyPi repository:
 pip install mljar-supervised
 ```
 
-To test the alpha release, select its exact version:
+To test the beta release, select its exact version:
 
 ```bash
-python -m pip install "mljar-supervised==1.4.0a1"
+python -m pip install "mljar-supervised==1.4.0b1"
 ```
 
 See the [release notes](https://github.com/mljar/mljar-supervised/blob/master/release.md)
 for changes and optional-model requirements.
 
-To install this package with conda run:
+To install the current source checkout in a conda environment:
 ```
-conda install -c conda-forge mljar-supervised
+conda create -n mljar python=3.12 pip
+conda activate mljar
+python -m pip install .
 ```
+
+Run the last command from the repository root. The conda-forge package is
+maintained separately and may contain an earlier release.
 
 From source code:
 
 ```
 git clone https://github.com/mljar/mljar-supervised.git
 cd mljar-supervised
-python setup.py install
+python -m pip install .
 ```
 
 Installation for development
 ```
 git clone https://github.com/mljar/mljar-supervised.git
-virtualenv venv --python=python3.9
+python3.12 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 pip install -r requirements_dev.txt
@@ -613,7 +625,7 @@ pip install -r requirements_dev.txt
 
 Running in the docker:
 ```
-FROM python:3.9-slim-buster
+FROM python:3.12-slim-bookworm
 RUN apt-get update && apt-get -y update
 RUN apt-get install -y build-essential python3-pip python3-dev
 RUN pip3 -q install pip --upgrade

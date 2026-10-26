@@ -1,14 +1,20 @@
-# Local AI Coding Agent Harness for AMD Strix Halo (Ryzen AI Max+ 395)
+# AI Coding Agent Harness for Any Hardware (Tuned for Strix Halo)
 
-**Run a 125B-parameter coding agent locally.** Qwen3.8 Flash-Next on the Ryzen AI Max+ 395 iGPU
+**Run a coding agent on whatever you have, tuned for AMD Strix Halo.** Works with any OpenAI-compatible engine or cloud
+model. On a Ryzen AI Max+ 395 (Strix Halo) it runs a 125B Qwen3.8 Flash-Next on the iGPU
 with **262k context**, NPU models screening and routing prompts, and a sidecar writing commits and
 summaries. Guided setup for llama.cpp, vLLM, Ollama, LM Studio and more. Built on
 [pi](https://github.com/earendil-works/pi).
 
+> **Not only for Strix Halo, and not only local.** The harness (token-saving extensions, context
+> management, guards, sidecar) runs on any machine, with any OpenAI-compatible engine or a cloud
+> model. Only the NPU tools need Strix Halo, and they're optional. Strix Halo is just the
+> reference setup.
+
 <div align="center">
 
 [![Release](https://img.shields.io/github/v/release/aic0d3r/qwen38-strix-halo-harness)](https://github.com/aic0d3r/qwen38-strix-halo-harness/releases/latest)
-[![Hardware](https://img.shields.io/badge/hardware-Strix%20Halo-orange)](#install)
+[![Hardware](https://img.shields.io/badge/hardware-any%20%7C%20Strix%20Halo%20tuned-orange)](#install)
 [![Cloud](https://img.shields.io/badge/cloud-optional-blueviolet)](docs/ENGINES.md#cloud-models-are-a-supported-hybrid)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
@@ -32,11 +38,11 @@ summaries. Guided setup for llama.cpp, vLLM, Ollama, LM Studio and more. Built o
 
 </div>
 
-![Local AI coding agent on AMD Strix Halo: Qwen3.8 Flash-Next 125B runs on the Ryzen AI Max+ 395 iGPU, the NPU screens and routes prompts, a sidecar writes commits and summaries](docs/brand/hero.png)
+![AI coding agent harness for any hardware, local or cloud, tuned for AMD Strix Halo: Qwen3.8 Flash-Next 125B runs on the Ryzen AI Max+ 395 iGPU, the NPU screens and routes prompts, a sidecar writes commits and summaries](docs/brand/hero.png)
 
 - **Guided setup:** `./setup.sh` detects your engine (halogen, llama.cpp, Strata, vLLM, Ollama,
   LM Studio) and wires pi to it. The NPU tools are Strix Halo only.
-- **Private by default:** no API key, no outbound calls. Cloud models are a supported
+- **Private by default:** no API key. The halogen engine makes no outbound calls; only the DuckDuckGo web-search tool reaches the internet. Cloud models are a supported
   [hybrid](docs/ENGINES.md#cloud-models-are-a-supported-hybrid); screening, search and compaction
   stay on-device either way.
 - **Lean by design:** every layer keeps tokens and calls off the main model. [rtk](https://npm.im/@estebanforge/pi-rtk-optimizer)
@@ -208,8 +214,8 @@ generates on the iGPU with its prompt cache warm; side jobs that need a judgemen
 milliseconds (is this an injection, which of these three is it, which files are near-duplicates) go
 to the NPU instead of the 125B model; sidecars read diffs and transcripts directly so they never
 evict the cached prefix; and search runs on CPU against an index built at first query. Halogen is
-the only engine `setup.sh` launches and manages; every other engine is detected and wired but you
-run it yourself ([what breaks on another engine](docs/ENGINES.md) is measured, too).
+the only engine `setup.sh` launches and manages (`start.sh` can also start gufo and Strata); every
+other engine is detected and wired but you run it yourself ([what breaks on another engine](docs/ENGINES.md) is measured, too).
 
 ### Halogen vs gufo (the best engines for Strix Halo)
 
@@ -224,7 +230,7 @@ Which engine for which hardware:
 | your hardware | engine | why |
 |---|---|---|
 | **Strix Halo** (Ryzen AI Max, 128 GB unified) | **halogen** | fastest measured, plus the NPU tools (guard, triage, dedup) |
-| Strix Halo, want open source | gufo, or Strata | both open, both lose the NPU tools; Strata decodes faster, gufo prefills faster (table below) |
+| Strix Halo, want open source | gufo or Strata | both open, both lose the NPU tools; Strata decodes faster, gufo prefills faster (table below) |
 | **NVIDIA RTX 20-50 / AMD RX 7000-9000, 12 GB+ VRAM** | **[Strata](docs/ENGINES.md#strata-the-pick-for-nvidia-and-amd-desktop-gpus)** | built for it; not measured here, see Strata's own benchmarks |
 | Apple Silicon, anything else | llama.cpp / MLX / Ollama / LM Studio | not measured here |
 
@@ -232,7 +238,7 @@ On Strix Halo, matched measurements on this box (halogen and gufo A/B in one ses
 held; Strata re-run 2026-10-14 with the same `halogen-cmp.py` battery and depth prompts, greedy,
 thinking off, nonce-tagged so nothing is cached; UD-IQ4_XS, 256k ctx):
 
-| | halogen 0.18.5 (default) | Strata 0.1.44.1 (tuned) | gufo 0.12.0 |
+| | halogen 0.18.14 (default; measured on 0.18.5) | Strata 0.1.44.1 (tuned) | gufo 0.12.0 |
 |---|---|---|---|
 | decode, 10-prompt battery (median) | **65 t/s** | 43 t/s | 40 t/s |
 | decode, 2k to 119k context | **47-50 t/s** | 32-36 t/s | 29-32 t/s |
@@ -423,7 +429,7 @@ this harness was last validated on). One command does it safely:
 
 ```sh
 ./setup.sh --halogen-upgrade          # default: latest
-./setup.sh --halogen-upgrade 0.18.0   # or a specific tag
+./setup.sh --halogen-upgrade 0.18.14  # or a specific tag
 ```
 
 `setup.sh` asks once whether `start.sh` should print a one-line notice when a newer engine release exists

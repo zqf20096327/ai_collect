@@ -6,9 +6,9 @@
 
 <div align="center">
 
-[![Version](https://img.shields.io/badge/Version-0.13.16-blue.svg?style=flat-square)](./CHANGELOG.md) [![License](https://img.shields.io/badge/License-Apache%202.0-orange.svg?style=flat-square)](./LICENSE) [![MCP Spec](https://img.shields.io/badge/MCP%20Spec-2026--07--28-8A2BE2.svg?style=flat-square)](https://modelcontextprotocol.io/specification/2026-07-28)
+[![Version](https://img.shields.io/badge/Version-0.13.18-blue.svg?style=flat-square)](./CHANGELOG.md) [![License](https://img.shields.io/badge/License-Apache%202.0-orange.svg?style=flat-square)](./LICENSE) [![MCP Spec](https://img.shields.io/badge/MCP%20Spec-2026--07--28-8A2BE2.svg?style=flat-square)](https://modelcontextprotocol.io/specification/2026-07-28)
 
-[![MCP SDK](https://img.shields.io/badge/MCP%20SDK-^2.3.1-green.svg?style=flat-square)](https://modelcontextprotocol.io/) [![TypeScript](https://img.shields.io/badge/TypeScript-^7.0.2-3178C6.svg?style=flat-square)](https://www.typescriptlang.org/) [![Bun](https://img.shields.io/badge/Bun-v1.4.0%2B-blueviolet.svg?style=flat-square)](https://bun.sh/)
+[![MCP SDK](https://img.shields.io/badge/MCP%20SDK-^2.4.0-green.svg?style=flat-square)](https://modelcontextprotocol.io/) [![TypeScript](https://img.shields.io/badge/TypeScript-^7.0.2-3178C6.svg?style=flat-square)](https://www.typescriptlang.org/) [![Bun](https://img.shields.io/badge/Bun-v1.4.0%2B-blueviolet.svg?style=flat-square)](https://bun.sh/)
 
 [Quick start](#quick-start) · [Capabilities](#what-comes-with-it) · [API reference](#api-overview) · [Examples](#examples)
 
@@ -184,6 +184,7 @@ await createApp({
   resources: allResourceDefinitions,
   prompts: allPromptDefinitions,
   instructions: 'Brief composition hints for the model.', // optional, sent on every `initialize`
+  skills: 'skills', // optional, serves root skills/ over the SEP-2640 Skills extension
 });
 ```
 
@@ -194,7 +195,7 @@ On Cloudflare Workers, `createWorkerHandler()` takes the same definitions from a
 - **Auth and storage:** Declare `auth: ['scope']` on a definition and the scope is checked, under JWT or OAuth, before the handler runs. `ctx.state` is tenant-scoped storage over in-memory, filesystem, Supabase, or Cloudflare D1/KV/R2, chosen by config.
 - **Client interaction:** Return `ctx.requestInput(...)` to ask the user for input, the client's model for a sample, or the client for its roots. The handler runs again with the answers on `ctx.inputs`.
 - **Protocol compatibility:** HTTP serves 2026-07-28 clients (per-request `_meta` envelope) and session-based 2025-era clients. The SDK's compatibility layer handles input requests for the older ones.
-- **Server presentation:** `instructions` gives the model server-wide guidance once, at `initialize`, instead of in every tool description. Identity fields (`title`, `websiteUrl`, `description`, `icons`) populate the client's server info, the `/.well-known/mcp.json` server card, and the HTTP landing page.
+- **Server presentation:** `instructions` gives the model server-wide guidance once, at `initialize`, instead of in every tool description. Identity fields (`title`, `websiteUrl`, `description`, `icons`) populate the client's server info, the `/.well-known/mcp.json` server card, and the HTTP landing page. `skills: 'skills'` serves the Agent Skills the server publishes in root `skills/` through the SEP-2640 Skills extension (`skills/list`, `skills/get`), checked at build time by `lint:packaging`.
 - **Definition checks:** `lint:mcp` checks names, schemas, scopes, annotations, format parity, and JSON Schema portability. It runs at build time, never at startup, so a new rule can't break a deployed server.
 - **DataCanvas:** An optional DuckDB workspace where agents run SQL across staged API results and export CSV, Parquet, or JSON. Agents share a workspace by passing its canvas token. Enable it with `CANVAS_PROVIDER_TYPE=duckdb` and `@duckdb/node-api` (Bun or Node.js only). [brapi-mcp-server](https://github.com/cyanheads/brapi-mcp-server#working-with-dataframes) walks through loading API results into a dataframe and querying it.
 - **Mirror:** The `/mirror` module keeps a persistent local copy of a bulk upstream dataset in embedded SQLite with an optional FTS5 index, so tools query it locally instead of paging the live API on every call. You write the `sync` ingester and the schema; the framework handles storage, resumable initial loads, and incremental refreshes. Bun or Node.js only (`better-sqlite3` is an optional peer on Node). [faa-aircraft-registry-mcp-server](https://github.com/cyanheads/faa-aircraft-registry-mcp-server) serves the full FAA registry this way.
@@ -391,6 +392,7 @@ bun run devcheck       # full gate: lint/format, typecheck, MCP defs, packaging,
 bun run lint:mcp       # validate MCP definitions against spec
 bun run test:all       # rebuild + coverage + Node.js + Workers + integration
 bun run test:package   # pack the tarball and consume it as an external project would
+bun run test:soak      # sustained HTTP load; fails when the server heap grows per request
 ```
 
 ## License

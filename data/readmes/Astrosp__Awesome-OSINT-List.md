@@ -551,7 +551,7 @@ START FOR FREE
 - [The OSINT Vault](https://theosintvault.io/) - Curated collection of OSINT resources and tools.
 - [OSINT Network Events](https://osintnetwork.com/osint-events.html) - Calendar of OSINT conferences, webinars, and training events.
 - [GIJN Deep Internet Research](https://gijn.org/resource/introduction-investigative-journalism-deep-internet-research/) - Guide to investigative journalism and deep internet research.
-- [Tracking Digital Footprints](https://spotlight.ebu.ch/p/tracking-digital-footprints-with) - EBU Spotlight guide on digital footprint tracking.
+- [Tracking Digital Footprints](https://web.archive.org/web/20260109005651/https://spotlight.ebu.ch/p/tracking-digital-footprints-with) - EBU Spotlight guide on digital footprint tracking.
 - [QueryTool](https://github.com/oryon-osint/querytool) - Querytool is an OSINT framework based on Google Spreadsheets. With this tool you can perform complex search of terms, people, email addresses, files and many more.
 - [Investigating the source code of a website](https://www.aware-online.com/en/osint-tutorials/investigating-the-source-code-of-a-website/) - The source code of a website can be seen as the readable text written by a programmer in a programming language. Simply said, the source code consists of a variety of code lines, which together ensure that a website ‘ works ‘ and that a website looks a certain way.
 - [Find open FTP Servers](https://www.aware-online.com/en/osint-tutorials/find-open-ftp-servers/) - find an open ftp server osint
@@ -914,5 +914,4 @@ You are searching 121 billion records.
 - [geosocial footprint](http://geosocialfootprint.com/) - GeoSocial Footprint: A geosocial footprint is the combined bits of location information that a user divulges through social media, which ultimately forms the users location "footprint". For Twitter.com users, this footprint is created from GPS enabled tweets, social check-ins, natural language location searching (geocoding), and profile harvesting.
 - [Twitter Analytics](https://foller.me/) - Looking for someone in the United States? Our free people search engine finds social media profiles, public records, and more!
 - [getdaytrends](https://getdaytrends.com/) - Twitter trends worldwide
-- [Twitter Trending Hashtags and Topics](https://www.trendsmap.com/) - Trendsmap has been providing unique and powerful analytical and visualisation tools to analyse Twitter data. With the demise of Twitter, we are now providing access to over ten years historical data
-- [Socialbear
+- [Twitter Trending Hashtags and Topics](https://www.trendsmap.com/) - Trendsmap has been providing unique and powerful analytical and visualisation tools to analyse Twitter data. With the demise of Twitter, we are now providing access to o

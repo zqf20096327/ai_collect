@@ -38,7 +38,8 @@ built in the open so native speakers and developers can improve it together.
   the scenes, see [docs/AGENT.md](docs/AGENT.md)
 - **Multiple providers, models and keys** — Azure, Groq, OpenRouter, Together, Cerebras,
   Hugging Face, Ollama or MORENA, tried in order; keys rotate and failing keys, models or
-  providers are skipped automatically
+  providers are skipped automatically. Which user data each provider receives, and its
+  retention and training terms: [docs/DATA.md](docs/DATA.md)
 - **WhatsApp bot**: people message your WhatsApp number in any supported language and get
   answers in that language, with memory; plus an endpoint to send messages. See
   [docs/WHATSAPP.md](docs/WHATSAPP.md)
@@ -48,6 +49,7 @@ built in the open so native speakers and developers can improve it together.
 - **Converse** in any supported language; the reply comes back in the target language,
   with optional multi-turn memory (`memory_context`)
 - **Translation cache** (in-memory TTL/LRU) to save quota on repeated phrases
+- **Opt-in feedback** for building an open translation evaluation set
 - **API-key authentication** (`X-API-Key`) and **per-client rate limiting**
 - **Request IDs** (`X-Request-ID`) and timing headers for tracing
 - Input validation, upstream timeouts and consistent JSON error responses
@@ -92,8 +94,12 @@ docker compose up
 ```
 
 Starts the API with Redis, so the cache, rate limits and chat conversations are shared and
-survive restarts. The Redis service also has a 512 MB `volatile-lru` limit as a safety net;
-conversation storage independently enforces `CONVERSATION_MAX_ITEMS`.
+survive API container restarts. The Redis service runs **without persistence** (no RDB
+snapshots, no AOF, no volume): everything it holds is short-lived by design, and we do not
+want chat text written to disk where it would outlive the keys' TTL. For longer-lived
+shared storage, point `REDIS_URL` at an external Redis you manage. The Redis service also
+has a 512 MB `volatile-lru` limit as a safety net; conversation storage independently
+enforces `CONVERSATION_MAX_ITEMS`.
 
 ### Deploy a public demo
 
@@ -127,6 +133,7 @@ All configuration comes from environment variables (see [`.env.example`](.env.ex
 | `DETECTION_PROVIDERS` | no | `azure` + LLM providers except MORENA | Providers used for language detection |
 | `AGENT_PROVIDERS` | no | OpenAI-compatible chat providers | Providers that run the agent (must support tool calling) |
 | `AGENT_MAX_STEPS` | no | `6` | Max model turns per agent request |
+| `AGENT_MAX_TOKENS` | no | `1500` | Max tokens per agent model call (bounds the cost of a multi-step request) |
 | `CONVERSATION_TTL_SECONDS` | no | `86400` | How long chats are remembered after the last message |
 | `CONVERSATION_MAX_ITEMS` | no | `10000` | Maximum conversations kept; the least recently written are evicted first |
 | `CONVERSATION_MAX_MESSAGES` | no | `40` | Messages kept per conversation |
@@ -142,6 +149,8 @@ All configuration comes from environment variables (see [`.env.example`](.env.ex
 | `REQUEST_TIMEOUT` | no | `30` | Upstream timeout in seconds |
 | `REQUEST_DEADLINE_SECONDS` | no | `55` | Whole-request wall-clock budget for JSON responses; retries, fallbacks and agent steps share it (`0` disables) |
 | `STREAM_DEADLINE_SECONDS` | no | `120` | Whole-request budget for streaming responses (`0` disables) |
+| `STREAM_HEARTBEAT_SECONDS` | no | `15` | `/v1/chat/stream` sends an SSE keep-alive comment at most this often, so idle proxies don't cut long streams (`0` disables) |
+| `STREAM_QUEUE_MAXSIZE` | no | `256` | Pending events per stream; a client that reads slowly pauses generation (backpressure) instead of growing memory (`0` removes the bound) |
 | `REQUEST_MAX_UPSTREAM_ATTEMPTS` | no | `20` | Maximum upstream requests per API request, retries and fallbacks included (`0` disables) |
 | `UPSTREAM_MAX_RETRIES` | no | `2` | Retries for upstream `5xx`/connection errors (all providers) and Azure `429`s; `0` disables. LLM `429`s rotate to the next key or model instead |
 | `UPSTREAM_RETRY_BASE_DELAY` | no | `0.5` | First backoff step in seconds; doubles each retry, with full jitter |
@@ -149,16 +158,19 @@ All configuration comes from environment variables (see [`.env.example`](.env.ex
 | `MAX_CONTENT_LENGTH` | no | `5000` | Max characters per message |
 | `MAX_MEMORY_MESSAGES` | no | `20` | Max turns in `memory_context` |
 | `API_KEYS` | no | *(auth disabled)* | Comma-separated client keys accepted in `X-API-Key` |
+| `METRICS_TOKEN` | no | *(off)* | Optional dedicated bearer token for `/metrics` (`Authorization: Bearer ...`), so the monitoring stack needs no API key |
 | `WHATSAPP_*` | no | *(off)* | WhatsApp bot settings, see [docs/WHATSAPP.md](docs/WHATSAPP.md) |
 | `RATE_LIMIT_PER_MINUTE` | no | `60` | Requests per minute per client; `0` disables |
+| `AUTH_FAILURES_PER_MINUTE` | no | `10` | Failed API-key attempts allowed per IP per minute; `0` disables |
 | `CACHE_TTL_SECONDS` | no | `3600` | Translation cache lifetime; `0` disables |
 | `CACHE_MAX_ITEMS` | no | `1000` | Max cached translations |
+| `CACHE_SCOPE` | no | `key` when `API_KEYS` is set, else `global` | `key`: each API key has its own translation cache, so one caller can't tell (from cache timing) whether another caller recently translated a text. `global`: one shared cache for everyone - more quota reuse, no isolation |
 | `MAX_BATCH_SIZE` | no | `25` | Max texts per batch request |
 | `MAX_BATCH_CHARACTERS` | no | `50000` | Max total characters per batch |
 | `MAX_REQUEST_BYTES` | no | `1048576` | Largest request body accepted; bigger requests get `413` |
 | `CORS_ORIGINS` | no | *(disabled)* | Comma-separated allowed origins |
 | `FORWARDED_ALLOW_IPS` | no | `127.0.0.1,::1` | Proxy IPs/CIDRs trusted to set `X-Forwarded-For` |
-| `LOG_LEVEL` | no | `INFO` | Python log level |
+| `LOG_LEVEL` | no | `INFO` | Python log level. Upstream error *bodies* are only logged at `DEBUG` (they can echo user text); `INFO` logs the status, error code and request ID |
 
 \* You need at least one provider. Built-in provider names are `groq`, `openrouter`,
 `together`, `cerebras`, `huggingface`, `openai`, `ollama` and `morena`; any other name works
@@ -203,12 +215,14 @@ only through the proxy.
 |---|---|---|
 | `GET` | `/` | API info and supported languages |
 | `GET` | `/health` | Liveness probe |
-| `GET` | `/health/ready` | Readiness probe (are upstream keys configured?) |
-| `GET` | `/metrics` | Prometheus metrics |
+| `GET` | `/health/ready` | Readiness probe (public status; per-service details require a key) |
+| `GET` | `/metrics` | Prometheus metrics (requires a key or `METRICS_TOKEN` when auth is on) |
 | `GET` | `/v1/languages` | Supported language codes |
+| `GET` | `/v1/usage` | Daily usage for the calling API key (requests, upstream calls, tokens, quota) |
 | `POST` | `/v1/translate` | Translate text |
 | `POST` | `/v1/translate/batch` | Translate up to 25 texts in one request |
 | `POST` | `/v1/detect` | Detect the language of a text |
+| `POST` | `/v1/feedback` | Rate a translation or chat reply (opt-in) |
 | `POST` | `/v1/converse` | Translate and get an LLM reply |
 | `POST` | `/v1/agent` | The assistant without server memory (send `history` yourself) |
 | `POST` | `/v1/chat` | **Chat** with memory: send `message` and `conversation_id` |
@@ -225,15 +239,39 @@ When `API_KEYS` is set, every `/v1/*` endpoint except `/v1/languages` requires a
 `RATE_LIMIT_PER_MINUTE` requests per minute. Responses include `X-RateLimit-Limit` and
 `X-RateLimit-Remaining`; when exceeded you get `429` with a `Retry-After` header.
 
+When `API_KEYS` is set, every request is also counted per API key, and
+`API_KEY_QUOTAS` can impose a daily request quota per key (reset at UTC midnight). Over
+quota, requests are answered with `429` and `Retry-After` set to the reset time, before
+any upstream work happens. `GET /v1/usage` returns the counters for the calling key
+(requests, upstream calls, provider-reported tokens) plus quota status. In `/metrics`,
+per-key labels are SHA-256 hashes of the keys, never the keys themselves.
+
 > By default the cache, rate limiter and chat conversations live in each server process's
-> memory. Set `REDIS_URL` to share them between replicas and keep conversations across restarts
-> (`docker compose up` does this for you).
+> memory. Set `REDIS_URL` to share them between replicas (`docker compose up` does this
+> for you; the compose Redis runs without persistence, so nothing is written to disk).
+> If you point it at an external Redis with persistence enabled, conversation text will
+> be written to that server's disk and backups: you then own its encryption at rest and
+> backup retention.
+
+The translation cache is also shared between callers unless `CACHE_SCOPE=key` (the default
+when `API_KEYS` is set), which gives each API key its own cache. The shared cache reuses
+quota more; the per-key cache stops one caller from inferring, via cache timing, what
+another caller translated recently.
 
 ### Metrics
 
-`GET /metrics` serves Prometheus metrics. Like the health checks, it needs no API key
-and isn't rate limited, so keep it off the public internet (for example, only expose it on
-your internal network or block it at the reverse proxy).
+`GET /metrics` serves Prometheus metrics. When `API_KEYS` is configured, scraping requires a
+valid `X-API-Key` — or, better, a dedicated `METRICS_TOKEN` sent as
+`Authorization: Bearer <token>`, so the monitoring stack holds no key that can call the
+API. Without `API_KEYS` (local development) the endpoint is public. It is never rate
+limited. Scrape example:
+
+```
+http_get:
+  url: http://terngi:8000/metrics
+  headers:
+    Authorization: "Bearer <METRICS_TOKEN>"
+```
 
 | Metric | Labels | Description |
 |---|---|---|
@@ -243,6 +281,11 @@ your internal network or block it at the reverse proxy).
 | `terngi_upstream_request_duration_seconds` | `service` | Upstream latency histogram |
 | `terngi_translation_cache_lookups_total` | `result` (`hit`/`miss`) | Translation cache lookups, one per text |
 | `terngi_rate_limited_requests_total` | — | Requests rejected by the rate limiter |
+| `terngi_auth_failures_total` | `outcome` (`invalid`/`throttled`) | Invalid API keys, and failed attempts throttled by the per-IP limiter |
+| `terngi_api_key_requests_total` | `key` (hash) | Requests handled per API key |
+| `terngi_api_key_upstream_requests_total` | `key` (hash) | Upstream calls per API key |
+| `terngi_api_key_tokens_total` | `key` (hash), `kind` (`prompt`/`completion`) | Provider-reported tokens per API key |
+| `terngi_api_key_quota_exceeded_total` | `key` (hash) | Requests rejected because the key's daily quota was exceeded |
 
 `route` is the route template (e.g. `/v1/translate`), or `unmatched` for unknown paths,
 so label values stay bounded. Metrics are per process, like the cache and rate limiter.
@@ -262,6 +305,31 @@ curl -X POST http://localhost:8000/v1/translate/batch \
   -H 'Content-Type: application/json' -H 'X-API-Key: <your-key>' \
   -d '{"texts": ["Good morning", "Thank you"], "from_language": "en", "to_language": "ig"}'
 ```
+
+### Glossary
+
+Both translation endpoints accept an optional `glossary`: a map of source terms to a
+translation for every target language (`"Terngi": "Terngi"`) or to per-language translations
+(`"mobile money": {"ha": "kudin waya", "yo": "owo alagbeka"}`). A term mapped to itself is
+protected from translation; entries for other target languages are ignored.
+
+```bash
+curl -X POST http://localhost:8000/v1/translate \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "content": "Welcome to Terngi, where you can pay with mobile money",
+    "from_language": "en",
+    "to_language": "ha",
+    "glossary": {
+      "Terngi": "Terngi",
+      "mobile money": {"ha": "kudin waya"}
+    }
+  }'
+```
+
+Azure Translator receives the terms as dynamic-dictionary markup, language models get them in
+the prompt and MORENA uses placeholders around protected terms. The glossary is part of the
+cache key, so the same text with different glossaries is translated and cached separately.
 
 ### Detect language
 

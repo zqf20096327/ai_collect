@@ -6,6 +6,8 @@
 
 **Try your ads, prices, and sales pitch with simulated buyers before spending on a real campaign.**
 
+English · [简体中文](README.zh-CN.md)
+
 **Open source and built for AI agents.** Use it from Claude Code, Codex, Cursor, Gemini, or any MCP-compatible agent. Install the plugin, ask in plain words (*"test these three ads on young parents in India"*), and your agent builds the simulated buyers, runs the test, and shows you the dashboard. Self-hosted: it runs on your computer; only the model calls (to the provider you choose) and optional public research leave it.
 
 [![Open source](https://img.shields.io/badge/Open_source-yes-2ea44f.svg)](https://github.com/DarkWorldCoder/market-mirror)
@@ -579,7 +581,13 @@ The extension adds the MarketMirror MCP server and a short `GEMINI.md` guide. In
 
 ### Any compatible MCP client
 
-Print configuration for your client without overwriting its settings:
+The quickest way is the PyPI package (needs [uv](https://docs.astral.sh/uv/)); it is also listed in the official MCP Registry as `io.github.DarkWorldCoder/market-mirror`:
+
+```json
+{ "mcpServers": { "market-mirror": { "command": "uvx", "args": ["marketmirror"] } } }
+```
+
+Then ask your agent to run `doctor`, and `setup` if the engine is not installed yet. To use a checkout you already have instead, print configuration for your client without overwriting its settings:
 
 ```bash
 ./mm agent-config --client generic

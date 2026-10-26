@@ -10,6 +10,7 @@ Contributions welcome. Please keep entries factual and free of marketing languag
 
 - [Managed memory APIs and services](#managed-memory-apis-and-services)
 - [Open-source frameworks and engines](#open-source-frameworks-and-engines)
+- [Agent memory workflows and templates](#agent-memory-workflows-and-templates)
 - [MCP memory servers](#mcp-memory-servers)
 - [Benchmarks and evaluation](#benchmarks-and-evaluation)
 - [Papers](#papers)
@@ -18,8 +19,10 @@ Contributions welcome. Please keep entries factual and free of marketing languag
 ## Managed memory APIs and services
 
 - [GoodMem](https://goodmem.ai) - Memory layer for agentic AI with owners, roles, scoped API keys and retrieval logging, multi-modal hybrid search with reranking, available as a managed cloud or self-hosted, with SDKs in Python, TypeScript, Java, .NET and Go.
+- [Honcho](https://github.com/plastic-labs/honcho) - Open-source (AGPL-3.0) memory server that stores messages between peers (users and agents) and reasons over them in the background to build a representation of each peer, plus a managed cloud, with SDKs in Python and TypeScript.
 - [Marvnor](https://wendelxia.github.io/marvnor/) - Proprietary hosted API that stores facts as source, relation and target records and answers structured questions against them as TRUE, FALSE or UNKNOWN, flagging conflicting values, with in-place correction and targeted deletion.
 - [Mem0](https://github.com/mem0ai/mem0) - Open-source (Apache-2.0) memory layer that extracts facts from conversations, plus a managed cloud, with many framework integrations.
+- [Membase](https://github.com/unibaseio/membase) - Hosted memory layer with a remote MCP endpoint (OAuth) and MIT-licensed Python and TypeScript SDKs, letting Claude, ChatGPT, Cursor and custom agents share one persistent memory.
 - [Mnemoverse](https://mnemoverse.com) - Managed memory engine for AI agents over MCP, with shared rooms (beta), an MIT local stdio MCP server using an API key, and a remote MCP endpoint with OAuth; rating a recalled memory as helpful or misleading re-ranks what comes back next.
 - [Supermemory](https://github.com/supermemoryai/supermemory) - Memory and context API for AI apps and agents, with fact extraction, user profiles, connectors, and hybrid vector-plus-keyword retrieval.
 - [Zep](https://www.getzep.com/) - Managed memory service built on a temporal knowledge graph (open-source Graphiti engine), offered as cloud, BYOK, and BYOC deployments.
@@ -46,8 +49,15 @@ Contributions welcome. Please keep entries factual and free of marketing languag
 - [memU](https://github.com/NevaMind-AI/memU) - Apache-2.0 agent-memory framework where agents store notes as organized Markdown files, recalled via embedding-based ranked retrieval.
 - [MIRIX](https://github.com/Mirix-AI/MIRIX) - Apache-2.0 multi-agent memory system with six memory types (core, episodic, semantic, procedural, resource, knowledge vault); multimodal.
 - [Off the Wall](https://github.com/toranalytics/off-the-wall) - MIT hooks plugin for Claude Code and Codex that stores the user's past corrections locally and quotes them back to the agent before it answers, with a report of the most-corrected topics.
+- [pulse-path](https://github.com/Inspired-by-Atmosphere/pulse-path) - MIT agent skills and Python standard-library scripts that keep an agent's Markdown memory pointer file and the docs it links to consistent, with a dry-run health check, a link-integrity scan, audit and consolidation reports, and a declarative rule table.
 - [ReasonGraph](https://github.com/bgokden/reasongraph) - MIT graph-memory library that extracts entities and cause-effect relations with small fine-tuned models, answers why-questions by walking causal chains with citations, supports time-travel queries and contradiction handling, with a hosted service (ReasonGraph Cloud).
 - [self-learning-agent-setup](https://github.com/ssap-pa/self-learning-agent-setup) - MIT Postgres schema and TypeScript loop that store each human approve, edit, and reject of an agent draft with pgvector embeddings and retrieve feedback from similar past tasks before the next draft.
+
+## Agent memory workflows and templates
+
+Reusable agent-memory workflows and templates for knowledge practices agents can adopt directly, not general prompt packs.
+
+- [Strata Sample](https://github.com/Zerokool1986/Strata-sample) - Custom license; commercial use and free redistribution with credit allowed, no resale; knowledge system for coding agents that stores typed Markdown entries with status and provenance in a Git repo, keeps superseded entries readable instead of deleting them, and includes templates, a worked example, and a five-question self-test.
 
 ## MCP memory servers
 
@@ -58,15 +68,18 @@ Memory servers exposed through the Model Context Protocol. Client support depend
 - [fidelis](https://github.com/hermes-labs-ai/fidelis) - Apache-2.0, local-first agent memory for Claude Code over MCP: local vector recall by default with an explicit keyword+vector hybrid mode, no generative LLM in retrieval, no cloud at runtime.
 - [Firekeep](https://github.com/kapella-hub/FirekeepHQ) - BUSL-1.1 self-hosted MCP operating layer that shares durable knowledge, working state, cooperative coordination leases, and replay evidence across Claude Code, Codex, Kiro, and OpenCode.
 - [Graphmem](https://github.com/sonic182/graphmem) - Local-first, MIT-licensed MCP server giving Claude Code, Codex, OpenCode, and pi a shared SQLite memory store with local semantic search and linked entities, plus optional code navigation tools.
+- [Honcho MCP](https://github.com/plastic-labs/honcho/tree/main/mcp) - AGPL-3.0 MCP server for Honcho, hosted at mcp.honcho.dev and authenticated with a Honcho API key as a bearer token; the same tools also run locally over stdio or Streamable HTTP, and memories are stored in the user's Honcho workspace.
 - [Hyperconsciousness](https://github.com/louis030195/hyperconsciousness) - MIT-licensed developer-alpha knowledge store with encrypted, append-only records and MCP retrieval through scoped, expiring grants.
 - [Knowledge Graph Memory Server](https://github.com/modelcontextprotocol/servers/tree/main/src/memory) - Reference MCP server from the Model Context Protocol project, published on npm as @modelcontextprotocol/server-memory, that stores entities, relations, and observations as a local knowledge graph in a JSONL file.
 - [Mem0 MCP](https://docs.mem0.ai/platform/mem0-mcp) - Hosted MCP server for the Mem0 Platform, reached over HTTPS with browser sign-in or an API key as a bearer token; memories are stored in the user's Mem0 account.
 - [Memento](https://mementoagi.com) - Hosted MCP memory for coding agents with editable Markdown records, team-shared context, and a web dashboard.
 - [MemoryRouter](https://memoryrouter.ai) - Hosted memory service over a remote Streamable HTTP MCP endpoint with OAuth, where one user-selected vault is shared across connected clients such as ChatGPT, Claude, Codex, and Cursor.
+- [Mnemosyne OS](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/tree/main/packages/mcp) - MIT local stdio MCP server for the Mnemosyne OS desktop app, which keeps memory in vaults built from the user's folders, with vector and local BM25 search; open core, closed-source memory engine.
 - [Mnemoverse](https://github.com/mnemoverse/mcp-memory-server) - Hosted persistent memory with an MIT local stdio MCP server using an API key, plus a remote HTTP MCP endpoint with OAuth for compatible clients.
 - [ReasonGraph Cloud](https://memory.primaxiom.ai) - Hosted graph memory over Streamable HTTP MCP with API-key auth; tools for remembering facts, discovering connections, tracing causes and effects and what-if queries.
 - [Screenpipe](https://github.com/screenpipe/screenpipe) - MCP server for searching screen text and audio transcripts captured by a running Screenpipe instance, with source available under the Screenpipe Commercial License.
 - [Selvedge](https://github.com/masondelan/selvedge) - MIT-licensed local stdio MCP server and CLI that stores coding decisions, reasons, and rejected approaches in SQLite for retrieval across agent sessions.
+- [sqlite-graph-memory](https://github.com/tonydzi/sqlite-graph-memory) - MIT local stdio MCP memory server that gives an agent associative recall over a folder of markdown notes: vector retrieval for entry points, hand-curated wikilinks as the graph, and cross-encoder rerank, with retrieval A/B telemetry in SQLite, plus a Claude Code Stop hook that writes a per-turn ledger to SQLite without LLM calls.
 - [Synapse](https://github.com/anshulyadav1976/synapse) - MIT local stdio MCP memory server that stores imported history, linked wiki pages, and human-approved agent notes as Markdown with a disposable SQLite FTS5 and graph index.
 
 ## Benchmarks and evaluation

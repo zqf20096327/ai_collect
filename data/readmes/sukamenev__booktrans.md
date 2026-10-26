@@ -420,7 +420,7 @@ chunk number.
 At a subscription limit, the chunk goes to **the next model in the chain**.
 The exhausted model is skipped until the provider's reset time. When all are
 unavailable, the pipeline waits for the earliest recovery, including limits
-hit mid-request. The maximum wait defaults to a day; `--wait 0` disables it.
+hit mid-request. The maximum wait defaults to 12 hours; `--wait 0` disables it.
 
 If repeated failures have no recognisable limit message, a short probe
 distinguishes a chunk-specific problem from unavailable model access.
@@ -541,7 +541,7 @@ Bundled profiles live in `profiles/`:
 | `agy` | Antigravity alone: Gemini Flash in front, its Opus rescues refusals |
 | `agy-claude` | the same, with Claude Code's own Opus as the last link |
 | `agy-probe` | Flash — a probe run of the machinery, not for reading |
-| `best-agy-claude` | Gemini translates, Opus edits |
+| `best-agy-claude` | Gemini translates, Opus edits and takes the chunks nobody else would |
 | `best-claude-codex` | Opus translates, Sol edits: a foreign editor catches the calques one's own lets through |
 | `best-codex-claude` | Sol translates, Opus edits |
 | `ultra-claude-codex` | Fable translates, Astra edits: the two flagships, each editing the other's family |
@@ -550,7 +550,7 @@ Bundled profiles live in `profiles/`:
 | `claude-agy` | the same, with Antigravity's models as the last link |
 | `claude-codex` | Claude with Codex models as the last link |
 | `claude-probe` | Sonnet — a probe run of the machinery, not for reading |
-| `good-agy-codex` | the fallback pair: Gemini translates, Sol edits — for when Claude is unavailable |
+| `good-agy-codex` | the fallback pair: Gemini translates, Sol edits and takes the chunks nobody else would — for when Claude is unavailable |
 | `good-claude-agy` | the fallback pair: Opus translates, Gemini edits — for when Sol is unavailable |
 | `good-codex-agy` | the fallback pair: Sol translates, Gemini edits — for when Claude is unavailable |
 | `codex` | Codex alone: Sol translates and edits |
@@ -965,7 +965,7 @@ Hebrew and Arabic tables, plus East Asian `shift_jis`, `euc_jp`, `gb18030`,
 --no-headings         the book really has no chapters, do not stop
 --chunk-words N       chunk size
 --retries N           attempts per chunk on a parsing failure (default 5)
---max-wait SEC        cap on waiting for rate limits (default one day)
+--max-wait SEC        cap on waiting for rate limits (default 12 hours)
 --partial             assemble even with parts untranslated
 --check               check the environment and say what is missing
 ```

@@ -544,6 +544,7 @@ If you find this repository helpful for your research, we would greatly apprecia
 ### Evaluation \& Analysis
 | Time | Title                                                        |  Venue  |                            Paper                             |                             Code                             |
 | ---- | ------------------------------------------------------------ | :-----: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+| 2026.10 | **Policy Is Not Capability: Some Safety Benchmarks Measure Which Definition of "Unsafe" You Trained On** | NeurIPS'26 Workshop | [link](https://arxiv.org/abs/2610.25060) | - |
 | 2026.09 | **AgentShield Benchmark: open 537-case corpus for head-to-head scoring of agent security guardrails across 7 categories, incl. jailbreak and prompt injection (maintained by the Agent Guard team, whose own product currently ranks first on it)** | Toolkit | - | [link](https://github.com/doronp/agentshield-benchmark) |
 | 2026.05 | **guard-eval-harness: CLI-first harness for benchmarking guardrail, moderation, and safety classification models** | Toolkit | - | [link](https://github.com/Virtue-Research/guard-eval-harness) |
 | 2026.05 | **Audio Jailbreaks in Large Audio-Language Models: Taxonomy, Attack-Defense Analysis, and Cost-Aware Evaluation** | arXiv | [link](https://arxiv.org/abs/2605.30031) | - |
@@ -602,5 +603,4 @@ If you find this repository helpful for your research, we would greatly apprecia
 | 2024.05 | **Enhancing Large Language Models Against Inductive Instructions with Dual-critique Prompting (INDust)** |   arXiv    | [link](https://arxiv.org/pdf/2305.13733) |                             [link](https://github.com/DevoAllen/INDust)                               |
 | 2024.05 | **Prompt Injection attack against LLM-integrated Applications** |   arXiv    | [link](https://arxiv.org/pdf/2306.05499) |                             -                               |
 | 2024.05 | **Tricking LLMs into Disobedience: Formalizing, Analyzing, and Detecting Jailbreaks** |   LREC-COLING'24    | [link](https://arxiv.org/pdf/2305.14965) |                             [link](https://github.com/AetherPrior/TrickLLM)                               |
-| 2024.05 | **LLM Jailbreak Attack versus Defense Techniques--A Comprehensive Study** |   NDSS'24    | [link](https://arxiv.org/pdf/2402.13457) |                             -                               |
-| 2024.05 | **Jailbreaking ChatG
+| 2024.05 | **LLM Jailbreak Attack versus Defense Techniques

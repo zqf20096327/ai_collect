@@ -29,13 +29,23 @@ Give your iPhone a task in plain language: inspect a screen, enter text, adjust 
 - **Keep your phone wireless.** Leave the powered bridge on a shelf or in a room corner within Bluetooth range.
 - **Use your normal Wi-Fi.** The phone and bridge share your home or office network. Open Safari to start a task.
 
+<table>
+<tr><th>Order takeaway</th><th>Set an alarm</th></tr>
+<tr>
+<td width="50%" align="center">
+
 https://github.com/user-attachments/assets/7601869f-7cc6-445e-b64d-0073a8bf657d
 
-**AI orders takeaway on an iPhone.** The agent selects MIXUE drinks, sets ice and sugar, and works through checkout. The video ends with the delivered order.
-
-**Set an alarm**
+</td>
+<td width="50%" align="center">
 
 https://github.com/user-attachments/assets/d72669a6-e150-40d7-ba2f-1d9586d9c2ea
+
+</td>
+</tr>
+</table>
+
+**AI orders takeaway on an iPhone.** The agent selects MIXUE drinks, sets ice and sugar, and works through checkout. The video ends with the delivered order.
 
 
 ## ⚙️ How it works
@@ -65,18 +75,18 @@ flowchart LR
 
 ## 🔌 Choose a board
 
-A basic ESP32-C3 board costs roughly **US$2**. Pick your chip in the [browser installer](https://igent.cc/flash), plug it into your computer with a USB data cable, and flash.
+**Recommended development boards: C6, S3 and C3.** Choose a USB board with an onboard antenna. Other brands and models meeting the table’s requirements are supported too.
 
-| Chip | Supported models |
-|---|---|
-| ESP32-C2 | 2 MB minimum · 26/40 MHz crystal detected automatically |
-| ESP32-C3 | All models* |
-| ESP32-C5 | All models* |
-| ESP32-C6 | All models* |
-| ESP32-S3 | All models* |
-| ESP32 (classic) | All models* |
+| Chip | Flash | Board names / search keywords | Reference prices: Taobao / AliExpress / Amazon US |
+|---|---|---|---|
+| **ESP32-C6** | 4 MB+ | `SuperMini` · `Zero` · `DevKitM-1` · `DevKitC-1` · `WROOM-1 N8` | ¥10–15 / US$2–4 / US$14 (3 boards) |
+| **ESP32-S3** | 4 MB+ | `DevKitC-1 N8R2 / N8R8 / N16R8` · `SuperMini` · `Zero` · `WROOM-1 N16R8` | ¥10–25 / US$3–7 / US$19 (3 boards) |
+| **ESP32-C3** | 4 MB+ | `SuperMini` · `MINI` · `Zero` · `DevKitM-1` · `MINI-1 N4` | ¥3–10 / US$2–5 / US$12 (3 boards) |
+| ESP32-C2 | 2 MB+ · auto 26/40 MHz | Also supported | — |
+| ESP32-C5 | 4 MB+ | Also supported | — |
+| ESP32 (classic) | 4 MB+ | Also supported | — |
 
-*The current images for C3, C5, C6, S3 and classic ESP32 use standard SPI flash with at least 4 MB capacity.
+Standard SPI flash (DIO). Search the chip name together with a board name. PSRAM is not required.
 
 ## 🚀 Set up and try it
 

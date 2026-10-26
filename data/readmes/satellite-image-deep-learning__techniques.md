@@ -151,6 +151,10 @@ Classification is a fundamental task in remote sensing data analysis, where the 
 
 - [Hyperspectral-Image-Models](https://github.com/Tanishq251/Hyperspectral-Image-Models) -> code for paper: A PyTorch Library for Hyperspectral Image Models: Technical Report
 
+- [AIS–Sentinel-2 Vessel Type Classification](https://github.com/ahmetcagriustun/ais-sentinel2-shiptype-classification) -> end-to-end pipeline for matching AIS records to cloud-free four-band Sentinel-2 patches and training ResNet vessel-type classifiers
+
+- [Aquaculture Pond Detection under Temporal Domain Shift](https://github.com/jpsicilia/geoai-aquaculture-pond-detection) -> reproducible FAO/ITU challenge solution using domain-invariant temporal satellite features to classify 10 m aquaculture ponds
+
 #
 ## Segmentation
 
@@ -365,6 +369,10 @@ Note that deforestation detection may be treated as a segmentation task or a cha
 
 - [1mCHM forest conservation](https://github.com/mldv/1mCHM-forest-conservation) -> U-Net workflow for predicting pixel-level boreal-forest conservation value from metre-resolution canopy-height models. Paper: Meter-resolution canopy height data alone can be used for predicting the conservation value of Boreal forests
 
+- [PGMpk-dl](https://github.com/friendszc/Plastic-Greenhouse-Mapping-Coupling-Prior-Knowledge-and-Deep-Learning-PGMpkdl) -> prior-knowledge pseudo-labelling and deep-learning pipeline for large-scale plastic-greenhouse extraction from Sentinel-1/2 imagery. Paper: A novel approach: Coupling prior knowledge and deep learning methods for large-scale plastic greenhouse extraction using Sentinel-1/2 data
+
+- [CSA Field Boundary Segmentation](https://github.com/thuanhavan/CSA_Field_Boundary_Segmentation) -> scalable field-boundary extraction workflow combining seasonal Sentinel-2 imagery, Segment Anything, GIS post-processing and accuracy assessment across the Canadian Prairies
+
 ### Segmentation - Water, coastlines, rivers & floods
 
 - [sat-water](https://github.com/busayojee/sat-water) -> Semantic segmentation of water bodies in satellite imagery, producing pixel-wise water masks from remote sensing images using a U-Net–style deep learning pipeline (data preparation, training, inference, and evaluation).
@@ -430,6 +438,12 @@ Note that deforestation detection may be treated as a segmentation task or a cha
 - [utae-water-segmentation](https://github.com/khlaifiabilel/utae-water-segmentation) -> UTAE-PAPS model for water/land segmentation using Sentinel-1 and Sentinel-2 data with IBM Granite flood detection dataset
 
 - [Flood-Mapping](https://github.com/taylor-millin-reade/Flood-Mapping) -> self-contained Sentinel-1, Sentinel-2, and dual-encoder fusion pipelines for training and comparing flood-segmentation models on STURM-Fusion-24.
+
+- [MSSFNet](https://github.com/Harsh-M1/MSSFNet) -> spatial-spectral and multiscale-attention network with the CHN-YE7-FRA dataset for extracting offshore floating-raft aquaculture from Sentinel-2 imagery
+
+- [Prithvi Coastal Habitat Mapping](https://github.com/ClarkCGA/prithvi-coastal-habitat-mapping) -> Prithvi fine-tuning and evaluation under limited-data and domain-shift scenarios for coastal-habitat segmentation. Paper: Assessing the Robustness of Prithvi Geospatial Foundation Model for Coastal Habitat Mapping under Data Availability and Domain Shift Scenarios
+
+- [Prairies Wetland Prediction](https://github.com/thuanhavan/Prairies-Wetland-Prediction) -> workflow for predicting wetland soils across Canadian Prairie croplands from Ducks Unlimited survey labels and Sentinel-1/2, terrain, soil and climate predictors
 
 ### Segmentation - Fire, smoke & burn areas
 
@@ -547,6 +561,8 @@ Note that deforestation detection may be treated as a segmentation task or a cha
 - [SinkSAM](https://github.com/osherr1996/SinkSAM) -> Knowledge-Driven Self-Supervised Sinkhole Segmentation Using Topographic Priors and Segment Anything Model
 
 - [SENSE](https://github.com/kailaisun/GenAI4Urban-Energy/) -> Satellite-based ENergy Synthesis for Sustainable Environment
+
+- [Automatic Mine Segmentation](https://github.com/SimonJasansky/mine-segmentation) -> compares visual foundation models including Clay and SAMGeo with custom-trained models for semantic segmentation of mining areas in Sentinel-2 imagery
 
 ### Segmentation - Roads & sidewalks
 Extracting roads is challenging due to the occlusions caused by other objects and the complex traffic environment
@@ -1166,34 +1182,4 @@ Orinted bounding boxes (OBB) are polygons representing rotated rectangles. For d
 
 - [Rotated-RetinaNet](https://github.com/ming71/Rotated-RetinaNet) -> implemented in pytorch, it supports the following datasets: DOTA, HRSC2016, ICDAR2013, ICDAR2015, UCAS-AOD, NWPU VHR-10, VOC2007
 
-- [OBBDet_Swin](https://github.com/ming71/OBBDet_Swin) -> The sixth place winning solution in 2021 Gaofen Challenge
-
-- [CG-Net](https://github.com/WeiZongqi/CG-Net) -> Learning Calibrated-Guidance for Object Detection in Aerial Images
-
-- [OrientedRepPoints_DOTA](https://github.com/hukaixuan19970627/OrientedRepPoints_DOTA) -> Oriented RepPoints + Swin Transformer/ReResNet
-
-- [yolov5_obb](https://github.com/hukaixuan19970627/yolov5_obb) -> yolov5 + Oriented Object Detection
-
-- [How to Train YOLOv5 OBB](https://blog.roboflow.com/yolov5-for-oriented-object-detection/) -> YOLOv5 OBB tutorial and [YOLOv5 OBB noteboook](https://colab.research.google.com/drive/16nRwsioEYqWFLBF5VpT_NvELeOeupURM#scrollTo=1NZxhXTMWvek)
-
-- [OHDet_Tensorflow](https://github.com/SJTU-Thinklab-Det/OHDet_Tensorflow) -> can be applied to rotation detection and object heading detection
-
-- [Seodore](https://github.com/nijkah/Seodore) -> framework maintaining recent updates of mmdetection
-
-- [Rotation-RetinaNet-PyTorch](https://github.com/HsLOL/Rotation-RetinaNet-PyTorch) -> oriented detector Rotation-RetinaNet implementation on Optical and SAR ship dataset
-
-- [AIDet](https://github.com/jwwangchn/aidet) -> an open source object detection in aerial image toolbox based on MMDetection
-
-- [rotation-yolov5](https://github.com/BossZard/rotation-yolov5) -> rotation detection based on yolov5
-
-- [SLRDet](https://github.com/LUCKMOONLIGHT/SLRDet) -> project based on mmdetection to reimplement RRPN and use the model Faster R-CNN OBB
-
-- [AxisLearning](https://github.com/RSIA-LIESMARS-WHU/AxisLearning) -> Axis Learning for Orientated Objects Detection in Aerial Images
-
-- [Detection_and_Recognition_in_Remote_Sensing_Image](https://github.com/whywhs/Detection_and_Recognition_in_Remote_Sensing_Image) -> This work uses PaNet to realize Detection and Recognition in Remote Sensing Image by MXNet
-
-- [DrBox-v2-tensorflow](https://github.com/ZongxuPan/DrBox-v2-tensorflow) -> tensorflow implementation of DrBox-v2 which is an improved detector with rotatable boxes for target detection in remote sensing images
-
-- [Rotation-EfficientDet-D0](https://github.com/HsLOL/Rotation-EfficientDet-D0) -> A PyTorch Implementation Rotation Detector based EfficientDet Detector, applied to custom rotation vehicle datasets
-
-- [DODet](https://github.com/yanqingyao19
+- [OBBDet_Swin](https://github.com/ming71/OBBDet_Swin) -> The sixth pl

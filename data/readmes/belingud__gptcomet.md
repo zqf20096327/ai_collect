@@ -143,7 +143,7 @@ To use gptcomet, follow these steps:
 -   `provider`: The provider of the language model (default `openai`).
 -   `api_base`: The base URL of the API (default `https://api.openai.com/v1`).
 -   `api_key`: The API key for the provider.
--   `model`: The model used for generating commit messages (default `gpt-4o`).
+-   `model`: The model used for generating commit messages (default `gpt-6.1-sol`).
 
 3.  **Run GPTComet**: Run GPTComet using the following command: `gmsg commit`.
 
@@ -159,6 +159,13 @@ If you are using `openai` provider, and finished set `api_key`, you can run `gms
 
 2. **Interactive Setup**
     - Use the `gmsg newprovider` command for guided setup.
+
+3. **Environment Variables**
+    - If `api_key` is not set in the configuration file, GPTComet falls back to
+      the provider's conventional environment variable, such as
+      `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, `AZURE_API_KEY`,
+      or `<PROVIDER>_API_KEY` for other providers.
+    - The configuration file takes precedence when both are set.
 
 ### Provider Setup Guide
 
@@ -206,8 +213,8 @@ Previous inputs:
   Enter API key: sk-abc*********************************************
   Enter max tokens: 1024
 
-Enter Enter model name (default: gpt-4o):
-> gpt-4o
+Enter Enter model name (default: gpt-6.1-sol):
+> gpt-6.1-sol
 
 
 Provider openai configured successfully!
@@ -227,8 +234,8 @@ Previous inputs:
   Enter API key: AIz************************************
   Enter max tokens: 1024
 
-Enter Enter model name (default: gemini-1.5-flash):
-> gemini-2.0-flash-exp
+Enter Enter model name (default: gemini-3.8-flash):
+> gemini-3.8-flash
 
 Provider gemini already has a configuration. Do you want to overwrite it? (y/N): y
 
@@ -253,7 +260,7 @@ Previous inputs:
   Enter API key: sk-awz*********************************************
   Enter location (e.g., us-central1): us-central1
   Enter max tokens: 1024
-  Enter model name: gemini-1.5-pro
+  Enter model name: gemini-3.8-flash
 
 Enter Enter Google Cloud project ID:
 > test-project
@@ -274,11 +281,11 @@ Previous inputs:
   Enter Azure OpenAI endpoint: https://gptcomet.openai.azure.com
   Enter API key: ********************************
   Enter API version: 2024-02-15-preview
-  Enter Azure OpenAI deployment name: gpt4o
+  Enter Azure OpenAI deployment name: gpt-6.1-sol
   Enter max tokens: 1024
 
-Enter Enter deployment name (default: gpt-4o):
-> gpt-4o
+Enter Enter deployment name (default: gpt-6.1-sol):
+> gpt-6.1-sol
 
 
 Provider azure configured successfully!
@@ -295,8 +302,8 @@ Previous inputs:
   Enter Ollama API Base URL: http://localhost:11434/api
   Enter max tokens: 1024
 
-Enter Enter model name (default: llama2):
-> llama2
+Enter Enter model name (default: qwen3.8:27b):
+> qwen3.8:27b
 
 
 Provider ollama configured successfully!
@@ -321,6 +328,10 @@ Provider ollama configured successfully!
 -   MiniMax
 -   Yi (lingyiwanwu)
 
+Default models are refreshed periodically; see
+[docs/provider-models.md](https://github.com/belingud/gptcomet/blob/master/docs/provider-models.md) for the current defaults and
+the last verification date.
+
 Not supported:
 
 -   Baidu ERNIE
@@ -338,7 +349,7 @@ You can either select one from the list or enter a custom provider name.
 
 Enter provider name: test
 Enter OpenAI API Base URL [https://api.openai.com/v1]:
-Enter model name [gpt-4o]:
+Enter model name [gpt-6.1-sol]:
 Enter API key: ************************************
 Enter max tokens [1024]:
 [GPTComet] Provider test configured successfully.
@@ -383,6 +394,7 @@ The following are the available commands for GPTComet:
     -   `remove <key> [value]`: Remove a configuration key or a value from a list. (List value only, like `fileignore`)
     -   `append <key> <value>`: Append a value to a list configuration.(List value only, like `fileignore`)
     -   `keys`: List all supported configuration keys.
+    -   `validate`: Validate the current configuration and report issues.
 -   `gmsg commit`: Generate commit message by changes/diff.
     -   `--svn`: Generate commit message for svn.
     -   `--dry-run`: Dry run the command without actually generating the commit message.
@@ -456,6 +468,7 @@ Here's a summary of the main configuration keys:
 | `prompt.brief_commit_message`  | The prompt template for generating brief commit messages.  | (See `defaults/defaults.go`)      |
 | `prompt.rich_commit_message`   | The prompt template for generating rich commit messages.   | (See `defaults/defaults.go`)      |
 | `prompt.translation`           | The prompt template for translating commit messages.       | (See `defaults/defaults.go`)      |
+| `prompt.review`                | The prompt template for reviewing code changes.            | (See `defaults/defaults.go`)      |
 
 **Note:** `<provider>` should be replaced with the actual provider name (e.g., `openai`, `gemini`, `claude`).
 
@@ -508,7 +521,7 @@ provider: openai
 openai:
     api_base: https://api.openai.com/v1
     api_key: YOUR_API_KEY
-    model: gpt-4o
+    model: gpt-6.1-sol
     retries: 2
     max_tokens: 1024
     temperature: 0.7
@@ -529,12 +542,12 @@ For example:
 `Openrouter` providers api interface compatible with openai,
 you can set provider to `openai` and set `api_base` to `https://openrouter.ai/api/v1`,
 `api_key` to your api key from [keys page](https://openrouter.ai/settings/keys)
-and `model` to `meta-llama/llama-3.1-8b-instruct:free` or some other you prefer.
+and `model` to `openai/gpt-6.1-sol` or some other you prefer.
 
 ```shell
 gmsg config set openai.api_base https://openrouter.ai/api/v1
 gmsg config set openai.api_key YOUR_API_KEY
-gmsg config set openai.model meta-llama/llama-3.1-8b-instruct:free
+gmsg config set openai.model openai/gpt-6.1-sol
 gmsg config set openai.max_tokens 1024
 ```
 
@@ -668,7 +681,7 @@ provider: "openai"
 openai:
   api_base: "https://api.openai.com/v1"
   api_key: "YOUR_API_KEY"
-  model: "gpt-4o"
+  model: "gpt-6.1-sol"
   retries: 2
 output:
   lang: "en"

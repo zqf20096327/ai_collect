@@ -26,6 +26,7 @@
 - [Quickstart](#quickstart)
 - [Make it your own](#make-it-your-own)
 - [Embedding](#embedding)
+- [For AI assistants](#for-ai-assistants)
 - [Breaking BrowserCode](#breaking-browsercode)
 - [Roadmap](#roadmap)
 
@@ -39,7 +40,8 @@ BrowserCode is a browser-based coding sandbox. It's a working example of [Browse
 - Browser sandbox isolation from the user's operating system
 - Restricted outbound networking: HTTPS only, to an allowlist that includes the npm registry, Yarn 2+, GitHub (`github.com` and `raw.githubusercontent.com`) and the major AI provider APIs
 - Instant previews over URL via BrowserPod's portal function
-- Support for Express.js, Svelte, Next, Nuxt and React (with Wasm overrides)
+- Support for Vite, Express.js, Svelte, Next, Nuxt, React and Vue (with Wasm overrides)
+- Java projects compiled and run in the browser by [CheerpJ](https://cheerpj.com/), available through embeds
 
 BrowserCode started out as a way to run AI coding CLIs entirely client-side. It's since grown into a full IDE: alongside the CLIs, it can boot and preview web frameworks directly in the browser, so you can prototype an agent's output without ever leaving the tab.
 
@@ -78,7 +80,7 @@ Want to run your own copy, customize the CLIs, or contribute? Clone the repo and
    npm run dev
    ```
 
-4. Open the printed local URL in a Chromium-based browser
+4. Open the printed local URL in a [supported browser](#breaking-browsercode)
 
 Other useful scripts:
 
@@ -101,9 +103,16 @@ BrowserCode can run inside another site's page through `/embed`, composed entire
 ></iframe>
 ```
 
-BrowserPod needs `SharedArrayBuffer`, so the embedding page must send `Cross-Origin-Opener-Policy: same-origin` and `Cross-Origin-Embedder-Policy: require-corp`, and the iframe must carry `allow="cross-origin-isolated"`.
+BrowserPod needs `SharedArrayBuffer`, so the embedding page must send `Cross-Origin-Opener-Policy: same-origin` and `Cross-Origin-Embedder-Policy: require-corp`, and the iframe must carry `allow="cross-origin-isolated"`. Java embeds (`runtime=cheerpj`) run on CheerpJ instead of BrowserPod and don't need them.
 
 Parameters, panes and further detail are in [`docs/embedding.md`](docs/embedding.md).
+
+<h2 id="for-ai-assistants">For AI assistants</h2>
+
+If you are an assistant helping someone use BrowserCode, read
+[browsercode.io/llms.txt](https://browsercode.io/llms.txt). One page, no crawling: the URL grammar
+for templates, repo clones and agent sessions, the embed snippet with the headers a host page has
+to send, and the sandbox constraints that decide whether BrowserCode suits a given project at all.
 
 <h2 id="breaking-browsercode">Breaking BrowserCode</h2>
 
@@ -113,7 +122,7 @@ This is BrowserCode beta. Don't be kind to it. Stretch it, bend it, find out wha
 - Pi is installed from npm on its first launch. For Anthropic, pick **Copy code login** in `/login`: the default browser login redirects to a `localhost` callback that can't reach the pod
 - BrowserCode doesn't yet support native binaries. For more information, see the [BrowserPod documentation](https://browserpod.io/docs/guides/working-around-native-npm-dependencies)
 - Outbound connections are HTTPS-only (port 443) and limited to the allowlist: plain HTTP, SSH (so `git@github.com` remotes) and other ports are refused, and so is `localhost` from inside a pod. Portals still expose servers you start in a pod
-- For maximum compatibility, please use a Chromium browser. Safari currently isn't supported
+- Agents and Node.js projects require WebAssembly JSPI: Chrome and Edge 137+, Firefox 153+ or Safari 27+. They also don't run on iOS or iPadOS yet, on any browser. Java projects run on CheerpJ and need neither. For maximum compatibility, please use a Chromium browser on the desktop
 
 <h2 id="roadmap">Roadmap</h2>
 

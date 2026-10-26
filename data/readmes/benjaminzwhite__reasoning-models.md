@@ -641,6 +641,7 @@ Reading list and comments/short reviews around reasoning models, training techni
 - [Automating ML for Science: Can Frontier Agents Climb Scientific Hills in the Wild?](https://arxiv.org/abs/2610.28763) - NeurIPS 2026 evaluation and datasets track; Anthropic
 - [Harness Scaling for Generalizable Agentic Reinforcement Learning](https://arxiv.org/abs/2610.29458)
 - [Recursive Self-Improvement through Multi-Agent Self-Supervision](https://arxiv.org/abs/2610.12176)
+- [EvalResearchBench: Can AI Agents Build Their Own Feedback for Recursive Self-Improvement?](https://arxiv.org/abs/2610.04184) - project page blog is nice also [https://mercury7353.github.io/self-evaluation-bench/blog/when-ai-agents-design-the-test.html](https://mercury7353.github.io/self-evaluation-bench/blog/when-ai-agents-design-the-test.html)
 
 #### Topic - Audio Reasoning
 
@@ -661,8 +662,4 @@ Reading list and comments/short reviews around reasoning models, training techni
 Start with the first-linked survey.
 
 - [A Survey on Parallel Reasoning](https://arxiv.org/abs/2510.12164)
-- [Native Parallel Reasoner: Reasoning in Parallelism via Self-Distilled Reinforcement Learning](https://arxiv.org/abs/2512.07461)
-- [ThreadWeaver: Adaptive Threading for Efficient Parallel Reasoning in Language Models](https://arxiv.org/abs/2512.07843)
-- [Parallel-Probe: Towards Efficient Parallel Thinking via 2D Probing](https://arxiv.org/abs/2602.03845)
-
-#### Topic - Verifier-free RL and approaches
+- [Native Parallel Reasoner: Reasoning in Parallelism 

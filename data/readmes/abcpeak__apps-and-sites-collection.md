@@ -187,6 +187,13 @@ Enjoy 🤩
   - [Distill Web Monitor](https://distill.io) ⭐
   - [Spider_XHS](https://github.com/cv-cat/Spider_XHS) 小红书爬虫数据采集
 
+- Customizable GitHubStar History
+  - ![GitHub Repo stars](https://img.shields.io/github/stars/star-history/star-history) [star-history](https://github.com/star-history/star-history)
+  - [star-chart](https://github.com/leereilly/star-chart)
+  - [GitHub Profile Stats & README Cards](https://ghstats.dev/)
+  - [Custom GitHub Stats Card Generator(https://www.readmecodegen.com/custom-github-card-generator)
+  - [GitHub Badge Generator | Reachism](https://reachism.com/tools/github-badge-generator)
+
 - Programming language 编程语言：JavaScript, C#, php, C++, Java, go...
   - ![GitHub Repo stars](https://img.shields.io/github/stars/facebook/react) [React](https://github.com/facebook/react) 用于构建用户界面的JavaScript框架
     - ![GitHub Repo stars](https://img.shields.io/github/stars/facebook/react-native) [React-native](https://github.com/facebook/react-native) 跨平台移动应用开发框架
@@ -278,7 +285,7 @@ Enjoy 🤩
 - [AWS Amplify](https://aws.amazon.com/amplify)
 - ![GitHub Repo stars](https://img.shields.io/github/stars/GoogleChrome/lighthouse) [Lighthouse](https://github.com/GoogleChrome/lighthouse) 网站性能测试，Chrome的产品
 - [SingleFile](https://chrome.google.com/webstore/detail/singlefile/mpiodijhokgodhhofbcjdecpffjipkle) 网页离线保存工具
-- SEO工具：[serprobot](https://www.serprobot.com/serp-check) 、[Ahrefs站长工具](https://ahrefs.com/zh/webmaster-tools) 、[Google trends](https://trends.google.com/trends/?hl=zh-CN) 、[Wordtracker](https://www.wordtracker.com) 、[Soovle](https://soovle.com) 、[kwfinder](https://mangools.com/kwfinder)、[keywordseverywhere](https://keywordseverywhere.com)、[Meet Keyword Explorer](https://moz.com/explorer)、[keywordtool](https://keywordtool.io)、[answerthepublic](https://answerthepublic.com)
+- SEO工具：[serprobot](https://www.serprobot.com/serp-check), [Ahrefs站长工具](https://ahrefs.com/zh/webmaster-tools), [Google trends](https://trends.google.com/trends/?hl=zh-CN), [Wordtracker](https://www.wordtracker.com), [Soovle](https://soovle.com), [kwfinder](https://mangools.com/kwfinder)、[keywordseverywhere](https://keywordseverywhere.com)、[Meet Keyword Explorer](https://moz.com/explorer)、[keywordtool](https://keywordtool.io)、[answerthepublic](https://answerthepublic.com)
 - 邮件营销：[Convertkit](https://app.convertkit.com)、[Mailchimp](https://mailchimp.com)
 - ![GitHub Repo stars](https://img.shields.io/github/stars/LloydAsp/nfd) [NFD](https://github.com/LloydAsp/nfd) 一个基于cloudflare worker的Telegram消息转发bot，集成了反欺诈功能
 - 站点统计
@@ -320,8 +327,8 @@ Enjoy 🤩
   - [freenom](https://www.freenom.com)
   - [pp.ua](https://pp.ua) Free pp.ua subdomains.
   - [DigitalPlat](https://domain.digitalplat.org) Free dpdns.org subdomains. (Cloudflare接管不支持kg和je域名)⭐
-- 域名价格比较：[domcomp](https://www.domcomp.com) 、[tld-list](https://zh-hans.tld-list.com)
-- 域名交易：[sedo](https://sedo.com/cn) 、[dan](https://dan.com)
+- 域名价格比较：[domcomp](https://www.domcomp.com), [tld-list](https://zh-hans.tld-list.com)
+- 域名交易：[sedo](https://sedo.com/cn), [dan](https://dan.com)
 - SSL 证书：HubSpot, Let’s Encrypt, Comodo, Cloudflare Free SSL/TLS, GoDaddy, GoGetSSL, zerossl, Sectigo(COMODO), google gts, Buypass Go SSL,lookssl
 
 ### CSS framework CSS框架
@@ -447,7 +454,7 @@ Enjoy 🤩
 - ![GitHub Repo stars](https://img.shields.io/github/stars/fishjar/kiss-translator) [KISS Translator](https://github.com/fishjar/kiss-translator) translation extension & Greasemonkey script ⭐
 - ![GitHub Repo stars](https://img.shields.io/github/stars/LibreTranslate/LibreTranslate) [libretranslate](https://github.com/LibreTranslate/LibreTranslate) Free and Open Source Machine Translation API. Self-hosted, offline capable and easy to setup
 - [Trancy](https://www.trancy.org) 翻译插件
-- ![GitHub Repo stars](https://img.shields.io/github/stars/openai-translator/openai-translator) [openai-translator](https://github.com/openai-translator/openai-translator) 2024.8.1
+- ![GitHub Repo stars](https://img.shields.io/github/stars/nextai-translator/nextai-translator) [nextai-translator/nextai-translator](https://github.com/nextai-translator/nextai-translator) 基于 ChatGPT API 的划词翻译浏览器插件和跨平台桌面端应用 - Browser extension and cross-platform desktop application for translation based on ChatGPT API.
 - ![GitHub Repo stars](https://img.shields.io/github/stars/niedev/RTranslator) [RTranslator](https://github.com/niedev/RTranslator) (Android) Offline real-time translation app
 - 🗃️Archived
 	- [Immersive Translate](https://immersivetranslate.com) 沉浸式翻译，非开源，不推荐
@@ -522,7 +529,7 @@ Enjoy 🤩
 - [IINA](https://iina.io) (macOS) 现代媒体播放器
 - [Fig Player](https://zh.okaapps.com/product/1612400976#) (macOS) 的音视频播放器
 - [5kplayer](https://www.5kplayer.com) (Windows, macOS)
-- [nPlayer](https://apps.apple.com/us/app/nplayer/id1116905928) (Android, iOS) (💵)多媒体播放器
+- [nPlayer](https://apps.apple.com/us/app/nplayer/id1116905928) (Android, iOS) 💵多媒体播放器
 - [HEVC Video Extension](https://www.free-codecs.com/download/hevc_video_extension.htm) 播放高效视频编码HEVC视频
 - [MX Player](https://play.google.com/store/apps/details?id=com.mxtech.videoplayer.ad&gl=IN)  (Android)
 - [KMPlayer](https://www.kmplayer.com) KMPlayer64是新开发的软件，和32位版本完全不一样
@@ -531,8 +538,8 @@ Enjoy 🤩
 - ![GitHub Repo stars](https://img.shields.io/github/stars/kingslay/KSPlayer) [KSPlayer](https://github.com/kingslay/KSPlayer) TracyPlayer ![Latest Release Date](https://img.shields.io/github/last-commit/kingslay/KSPlayer)
 - ![GitHub Repo stars](https://img.shields.io/github/stars/xfangfang/wiliwili)  [wiliwili](https://github.com/xfangfang/wiliwili) (Windows, macOS, Linux)第三方B站客户端 ![Latest Release Date](https://img.shields.io/github/release-date/xfangfang/wiliwili)
 - ![GitHub Repo stars](https://img.shields.io/github/stars/TeamNewPipe/NewPipe) [NewPipe](https://github.com/TeamNewPipe/NewPipe) (Android)第三方YouTube客户端 ![Latest Release Date](https://img.shields.io/github/release-date/TeamNewPipe/NewPipe)
-- [Vinegar - Tube Cleaner](https://apps.apple.com/us/app/vinegar-tube-cleaner/id1591303229) (iOS)(💵)picture-in-picture小窗播放
-- [Baking Soda - Tube Cleaner](https://apps.apple.com/us/app/baking-soda-tube-cleaner/id1601151613) (iOS)(💵)
+- [Vinegar - Tube Cleaner](https://apps.apple.com/us/app/vinegar-tube-cleaner/id1591303229) (iOS)💵picture-in-picture小窗播放
+- [Baking Soda - Tube Cleaner](https://apps.apple.com/us/app/baking-soda-tube-cleaner/id1601151613) (iOS)💵
 - ![GitHub Repo stars](https://img.shields.io/github/stars/open-ani/animeko) [animeko](https://github.com/open-ani/animeko) 集找番、追番、看番的一站式弹幕追番平台
 - [Player Xtreme – Video Player](https://apps.apple.com/us/app/player-xtreme-video-player/id6737277424) (iOS)
 - ![GitHub Repo stars](https://img.shields.io/github/stars/yattee/yattee) [Yattee](https://github.com/yattee/yattee) (iOS, tvOS, macOS)
@@ -569,7 +576,7 @@ Enjoy 🤩
 - [DsCloud](https://apps.apple.com/us/app/id6476057278) (iOS, macOS)
 - [Yamby](https://t.me/yamby_release) (Android) 仅能连接Emby使用
 - [Optimus Player](https://www.optimusplayer.com) (macOS) 真正hdr支持，不是mp套壳，纯手动ffmpeg
-- 影音宝软件家族：[iemc](https://apps.apple.com/app/id1467462861) iOS/iPadOS；[EMTV](https://apps.apple.com/us/app/id1671608662) AppleTV；[yyb](https://apps.apple.com/cn/app/yyb/id1468401388) iOS/iPadOS/macOS/AppleTV；[yybx](https://apps.apple.com/cn/app/id1519723194) (💵)
+- 影音宝软件家族(iOS)💵: [iemc](https://apps.apple.com/app/id1467462861), [EMTV](https://apps.apple.com/us/app/id1671608662), [yyb](https://apps.apple.com/cn/app/yyb/id1468401388), [yybx](https://apps.apple.com/cn/app/id1519723194) 
 - [Filebar](https://apps.apple.com/cn/app/fileball/id1558391784) (iOS, AppleTV) 支持hdr，缓存，字幕，webdav可显示歌词，支持lrc歌词，长按播放按钮可跳转Infuse等外部播放器，可导入字幕
 - [网易爆米花](https://bmh.163.com) 来自网易团队
 - [BeeJoy](https://apps.apple.com/us/app/beejoy/id6670792086) (iOS)
@@ -591,13 +598,13 @@ Enjoy 🤩
 
 #### 📺IPTV 直播频道
 
-- IPTV直播源：[eja.tv](https://eja.tv) 、[iptv-org](https://iptv-org.github.io) 、[直播源汇总](https://github.com/imDazui/Tvlist-awesome-m3u-m3u8)、[iptv.shop](https://iptv.shop) 、[直播源搜索引擎](https://www.foodieguide.com/iptvsearch) 、[卫星电视频道的数据库LyngSat](https://www.lyngsat.com)、[iptv-sources](https://github.com/HerbertHe/iptv-sources)
+- IPTV直播源：[eja.tv](https://eja.tv), [iptv-org](https://iptv-org.github.io), [直播源汇总](https://github.com/imDazui/Tvlist-awesome-m3u-m3u8)、[iptv.shop](https://iptv.shop), [直播源搜索引擎](https://www.foodieguide.com/iptvsearch), [卫星电视频道的数据库LyngSat](https://www.lyngsat.com)、[iptv-sources](https://github.com/HerbertHe/iptv-sources)
 - [XPTV](https://apps.apple.com/us/app/xptv/id6459409368) ($7.99)
 - [IPTV Live](https://apps.apple.com/us/app/iptv-player-live-stream-m3u/id1662299469)
 - [X IPTV Player Pro](https://apps.apple.com/us/app/x-iptv-player-pro/id6714469354) (iOS)(🟢)IPTV播放器
 - [IPTV Xtream: TV Smart Player](https://apps.apple.com/us/app/iptv-xtream-tv-smart-player/id6744687571) (iOS)(🟢)
 - [Xtreme IPTV](https://apps.apple.com/us/app/iptv-smarters-xtream-iptv/id1573898785)
-- [APTV](https://apps.apple.com/us/app/aptv/id1630403500) (💵)
+- [APTV](https://apps.apple.com/us/app/aptv/id1630403500) 💵
 - [IPTV Player](https://apps.apple.com/us/app/iptv-m3u8-m3u-player/id1642581892) 带自动字幕
 - ![GitHub Repo stars](https://img.shields.io/github/stars/xiaoyaocz/dart_simple_live) [Simple Live](https://github.com/xiaoyaocz/dart_simple_live) (全平台)
 - [TV Cast for Smart TV +](https://apps.apple.com/cn/app/tv-cast-for-smart-tv/id6450428119) (iOS)(🟢)
@@ -648,8 +655,8 @@ Enjoy 🤩
 - [N26](https://n26.com)
 - [Neverless](https://neverless.com)
 - [iFAST Global Bank](https://www.ifastgb.com)
-- [嘉信 Charles Schwab](https://client.schwab.com)
-- [盈透证券主页 Interactive Brokers LLC](https://www.interactivebrokers.com)
+- [Charles Schwab](https://client.schwab.com) 嘉信理财 证券
+- [Interactive Brokers LLC](https://www.interactivebrokers.com) 盈透证券
 
 ### 🪙Crypto 加密货币 ₿ Blockchain Web3
 
@@ -1127,8 +1134,8 @@ Enjoy 🤩
 - ![GitHub Repo stars](https://img.shields.io/github/stars/babysor/MockingBird) [MockingBird](https://github.com/babysor/MockingBird) 5秒内克隆您的声音
 - [Shutter Encoder](https://www.shutterencoder.com) 视频转换器
 - [Any Video Converter Free](https://www.any-video-converter.com) AVC 免费视频转换器
-- [Vegas](https://www.vegas.com) (💵) 视频剪辑
-- [Adobe Premiere](https://www.adobe.com/products/premiere.html) (💵) 视频剪辑
+- [Vegas](https://www.vegas.com) 💵 视频剪辑
+- [Adobe Premiere](https://www.adobe.com/products/premiere.html) 💵 视频剪辑
 - [Final Cut Pro](https://www.apple.com/final-cut-pro) 视频创作 macOS视频剪辑，苹果店airdrop先到手机再到电脑
 - [Apple Creator Studio](https://www.apple.com/apple-creator-studio)
 - [VivaCut](https://apps.apple.com/tr/app/vivacut-ai-video-editor/id1489090374) (iOS)
@@ -1169,7 +1176,6 @@ Enjoy 🤩
 - [Monica](https://monica.im) (全平台) AI助手
 - ![GitHub Repo stars](https://img.shields.io/github/stars/Bin-Huang/chatbox) [Chatbox](https://github.com/Bin-Huang/chatbox) (全平台)
 - ![GitHub Repo stars](https://img.shields.io/github/stars/CherryHQ/cherry-studio) [Cherry Studio](https://github.com/CherryHQ/cherry-studio)
-
 - [OpenCat](https://opencat.app) (iOS, macOS)
 - ![GitHub Repo stars](https://img.shields.io/github/stars/ChatBot-All/chatbot-app) [ChatBot](https://github.com/ChatBot-All/chatbot-app) (iOS, macOS, Android)
 - ![GitHub Repo stars](https://img.shields.io/github/stars/ChatGPTNextWeb/NextChat) [NextChat](https://github.com/ChatGPTNextWeb/NextChat) (全平台)
@@ -1178,13 +1184,15 @@ Enjoy 🤩
 
 - [Grok](https://grok.com) Grok是由xAI开发的人工智能聊天机器人，xAI是一家由Elon Musk于2023年3月创立的公司 ⭐
 - [ChatGPT](https://chat.openai.com) OpenAI公司研发的Chat Generative Pre-trained Transformer ⭐
+  - ![GitHub Repo stars](https://img.shields.io/github/stars/openai/codex) [Codex](https://github.com/openai/codex) Lightweight coding agent that runs in your terminal
+
 - [Copilot](https://copilot.microsoft.com) Microsoft AI
   - ![GitHub Repo stars](https://img.shields.io/github/stars/microsoft/DeepSpeed) [DeepSpeed](https://github.com/microsoft/DeepSpeed) Microsoft DeepSpeed Chat
   - [Microsoft Azure](https://azure.microsoft.com/zh-cn/products/cognitive-services/text-to-speech/?speed=0&pitch=0#features) Azure AI 语音，微软文本转语音
 - [Perplexity](https://www.perplexity.ai)
 - [Google Gemini](https://gemini.google.com) 谷歌的人工智能Gemini ⭐
   - [Google Cloud Text-to-Speech](https://cloud.google.com/text-to-speech)
-- [Claude](https://claude.ai) Anthropic公司研发，由前OpenAI工程师于2021年创立，谷歌和亚马逊都有投资
+- [Claude](https://claude.ai) Anthropic公司研发，由前OpenAI工程师于2021年创立，谷歌和亚马逊都有投资⭐⭐
 
 - [DuckDuckGo AI](https://duck.ai) Duck.ai can analyze PDFs
 - [Lumo](https://lumo.proton.me) Proton AI
@@ -1256,7 +1264,7 @@ Enjoy 🤩
 - [Microsoft To Do](https://to-do.live.com/tasks/inbox)
 - [Google Tasks](https://tasks.google.com/tasks)
 - [iCloud Reminders](https://www.icloud.com/reminders)
-- [Goblin Tools](https://apps.apple.com/us/app/goblin-tools/id6449003064)
+- [Goblin Tools](https://apps.apple.com/us/app/goblin-tools/id6449003064) (iOS)
 - 🗃️Archived
   - [gTasks Pro for Google Tasks](https://apps.apple.com/us/app/gtasks-pro-for-google-tasks/id672241079)
 
@@ -1269,7 +1277,7 @@ Enjoy 🤩
 - ![GitHub Repo stars](https://img.shields.io/github/stars/marktext/marktext) [Marktext](https://github.com/marktext/marktext) 搜索效率太慢
 - ![GitHub Repo stars](https://img.shields.io/github/stars/laurent22/joplin) [Joplin](https://joplinapp.org) (iOS, Windows, Android) E2EE端到端加密。安卓不支持笔记内搜索，附件管理比较混乱，且数据存储在数据库中，没有回收站，笔记删除或笔记同步丢失无法找回，界面简陋
 - ![GitHub Repo stars](https://img.shields.io/github/stars/toeverything/AFFiNE) [AFFiNE](https://github.com/toeverything/AFFiNE) 集写作、绘画、计划管理与一体的软件，免费10G，不支持国家emoji ⭐
-- ![GitHub Repo stars](https://img.shields.io/github/stars/logseq/logseq) [Logseq](https://logseq.com) 2022年获410万美元首轮融资，数据本地化。稳定性、同步bug较多 ⭐
+- ![GitHub Repo stars](https://img.shields.io/github/stars/logseq/logseq) [Logseq](https://github.com/logseq/logseq) 2022年获410万美元首轮融资，数据本地化。稳定性、同步bug较多 ⭐
 - ![GitHub Repo stars](https://img.shields.io/github/stars/usememos/memos) [memos](https://github.com/usememos/memos) 开源轻量级笔记服务
 - ![GitHub Repo stars](https://img.shields.io/github/stars/zadam/trilium) [Trilium](https://github.com/zadam/trilium) (Windows, Linux) 笔记数据使用SQLite存储
 - ![GitHub Repo stars](https://img.shields.io/github/stars/outline/outline) [Outline](https://github.com/outline/outline) 成长型团队最快的知识库
@@ -1277,7 +1285,4 @@ Enjoy 🤩
 - ![GitHub Repo stars](https://img.shields.io/github/stars/siyuan-note/siyuan) [SiYuan](https://github.com/siyuan-note/siyuan) 思源笔记
 - ![GitHub Repo stars](https://img.shields.io/github/stars/foambubble/foam) [Foam](https://foambubble.github.io/foam)
 - ![GitHub Repo stars](https://img.shields.io/github/stars/vnotex/vnote) [Vnote](https://github.com/vnotex/vnote) 比较原生markdown 不支持扩展语法
-- ![GitHub Repo stars](https://img.shields.io/github/stars/overleaf/overleaf) [overleaf](https://github.com/overleaf/overleaf) A web-based collaborative LaTeX editor
-- ![GitHub Repo stars](https://img.shields.io/github/stars/Zettlr/Zettlr) [Zettlr](https://github.com/Zettlr/Zettlr)
-- ![GitHub Repo stars](https://img.shields.io/github/stars/streetwriters/notesnook) [Notesnook](https://github.com/streetwriters/notesnook) ⭐
-- ![GitHub Repo stars](https://img.shields.io/github/stars/obsidianmd/obsidian-releases) [Obsidian](https://obsidian.md) (macOS, iOS, Windows, Android, Linux) 闭源Freeware，官方同步收费。Obsidian LiveSync同步插件。同步手机端使用频率高不建议用obsidian-git 。remotely-save通过Cloudflare R2 (S3 API)在多个设备同步，免费每月10G。iCloud同步缺点: Linux 不好同步；每次打开都要同步 iCloud，vault 较大时间会很久；Home 等页面出现多文件的情况（如 Home Dashboard 2），原因是
+- ![GitHub Repo 

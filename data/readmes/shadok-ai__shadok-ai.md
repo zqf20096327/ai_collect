@@ -167,11 +167,14 @@ Enter to skip; you can add it later from the web UI).
   a bot may download at 20 MB; past that you get a clear notice instead of
   silence.
 - **Run the command an agent asks you to** — when an agent writes `! cmd` for
-  you to run (typically because it cannot), a ▶ button under its message runs it
-  in the agent's shell after a confirmation showing the exact command. It is
-  refused for anything but your browser, since shell mode sits outside the
-  agent's guardrails. The command and its output stay in the chat, reload
-  included — as does one you typed yourself in the terminal view.
+  you to run (typically because it cannot), a ▶ run button sits right on that
+  command's code block, beside its copy button — so it runs where it was
+  written, not in a list below. (An inline `` `! cmd` `` with no block of its
+  own still gets a button under the message.) It runs in the agent's shell after
+  a confirmation showing the exact command, and is refused for anything but your
+  browser, since shell mode sits outside the agent's guardrails. The command and
+  its output stay in the chat, reload included — as does one you typed yourself
+  in the terminal view.
 - **Files you hand an agent** — paste or drop a file into the composer (an
   image, a PDF, a CSV…) and it becomes a **chip** above the text box: a
   thumbnail for an image, a named tag for anything else, each with a ✕ to
@@ -326,6 +329,20 @@ are what survive `docker restart` **and** `docker rm`+recreate: `~/.shadok-ai`
 (vault, profiles, channels, crons, SSH identity), `~/.claude` (credentials,
 transcripts), `/workspace` (agents' files). A fresh container needs a one-time
 Claude login: `docker exec -it shadok-ai claude`.
+
+**pid 1 reaps.** The image enters through `tini`, and that is load-bearing in the
+long run: agents orphan processes all day (a backgrounded `sleep` loop, an
+abandoned `esbuild`, a killed `gh`), an orphan is re-parented to pid 1, and only
+pid 1 can reap it — which the cockpit's own supervisor never does, since Node
+only waits for the children it spawned itself. A zombie costs no memory and no
+CPU, just a pid slot, so nothing shows until the container's pid budget runs out
+and it can no longer fork anything at all: no new agent, no `git`, no shell.
+Measured on an instance running since August: 79,055 zombies against a 113,098
+pid budget. Two things follow for an existing deployment. If you run an image
+from before this (or any image whose pid 1 is the app), add `--init` and Docker
+supplies the reaper. And either way it is decided when the container is
+**created**: `docker restart` empties the table — pid 1 restarts, the kernel
+drops the lot — but the leak starts over, so a recreate is what makes it stop.
 
 ### Exposing it beyond this machine
 
@@ -512,7 +529,11 @@ On a normal (non-Docker) host this is a **no-op** — shadok never touches your
 ### Configuration
 
 Config lives in `~/.shadok-ai/config.json` (mode 600) and is **authoritative
-over the environment once set** from the GUI. The Telegram token, allowed
+over the environment once set** from the GUI — with two exceptions where the
+environment wins: `SHADOK_GUI_PASSWORD` (a saved `--password` is used only when
+that variable is unset, and nothing in the cockpit can change it — on Docker,
+the password is the one the container was created with) and
+`TELEGRAM_BOT_TOKEN`. The Telegram token, allowed
 chats, and the bridge on/off switch are **per launch directory** — running the
 server from another repo gives you a different cockpit and a different bot. So
 are the channel list and the scheduled prompts.
@@ -525,7 +546,7 @@ machine, which silently shifts every daily prompt on a server running in UTC.
 |---|---|
 | `PORT` | HTTP/WS port |
 | `SHADOK_HOST` | interface to bind (default `127.0.0.1`, this machine only) |
-| `SHADOK_GUI_PASSWORD` | require a password for the GUI |
+| `SHADOK_GUI_PASSWORD` | require a password for the GUI — overrides a password saved by `--password` |
 | `SHADOK_ORIGINS` | extra browser origins allowed, comma-separated (reverse proxy) |
 | `SHADOK_TMUX=0` | force the node-pty transport instead of tmux |
 | `SHADOK_IDLE_MIN` | minutes with no client before a session is reclaimed (60) |

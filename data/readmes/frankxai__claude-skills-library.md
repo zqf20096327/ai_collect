@@ -28,6 +28,13 @@ hooks that block "done" until the evidence exists.
 
 ## Install
 
+> [!IMPORTANT]
+> **Skills that ship with their evals.** The first skill from this library is being packaged with its
+> full promptfoo eval suite and the run output that shows exactly where it fails. If you would pay
+> for skills that arrive proven, say which one should be first and what that is worth to you:
+> **[join the eval-pack list](https://www.frankx.ai/waitlist?intent=claude-skills-library)**. Two
+> steps, every question skippable. Founding members name the next skill to be evaluated.
+
 Three ways in. Pick one.
 
 ```text
@@ -260,6 +267,7 @@ python3 scripts/check_counts.py              # README counts match the tree
 python3 scripts/check_links.py               # no broken internal links
 node scripts/build-catalog.mjs --check       # catalog/skills.json matches the marketplace
 node --test scripts/tests/absorb.test.mjs    # the four absorption gates still refuse
+node --test scripts/tests/harness-e2e.test.mjs # harness end-to-end tests
 ```
 
 Inbound external work runs through [`ABSORPTION.md`](ABSORPTION.md): license, provenance,
@@ -369,6 +377,6 @@ MIT. See [LICENSE](LICENSE). Imported skills retain their upstream licenses, rec
 
 <img src="assets/logo.svg" width="64" alt="Claude Skills Library mark"/>
 
-**[Star the repo](https://github.com/frankxai/claude-skills-library)** · **[Catalog](docs/CATALOG.md)** · **[Issues](https://github.com/frankxai/claude-skills-library/issues)** · **[Discussions](https://github.com/frankxai/claude-skills-library/discussions)**
+**[Join the eval-pack list](https://www.frankx.ai/waitlist?intent=claude-skills-library)** · **[Star the repo](https://github.com/frankxai/claude-skills-library)** · **[Catalog](docs/CATALOG.md)** · **[Issues](https://github.com/frankxai/claude-skills-library/issues)** · **[Discussions](https://github.com/frankxai/claude-skills-library/discussions)**
 
 </div>

@@ -73,9 +73,9 @@ Found something wrong? Open an issue or a pull request — **removal is as valid
 - [Game & Simulation](categories/game-simulation.md) — 28 entries
 - [Robotics & Physical](categories/robotics-physical.md) — 11 entries
 - [Finance & Trading](categories/finance-trading.md) — 10 entries
-- [Compliance & Legal](categories/compliance-legal.md) — 4 entries
-- [Content Moderation](categories/content-moderation.md) — 13 entries
-- [Related Practices / Discussions](categories/related-practices-discussions.md) — 106 entries
+- [Compliance & Legal](categories/compliance-legal.md) — 5 entries
+- [Content Moderation](categories/content-moderation.md) — 14 entries
+- [Related Practices / Discussions](categories/related-practices-discussions.md) — 107 entries
 
 ### Open categories still being seeded
 

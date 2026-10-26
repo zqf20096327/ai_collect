@@ -1,6 +1,6 @@
 # Satyá: Learning Companion 
 <div align="center">
-   <img height="250" width="190" src="https://github.com/user-attachments/assets/1230c5ef-bf67-46e3-a66a-9bc950cbb4e6">
+   <img height="180" width="190" src="https://github.com/user-attachments/assets/1230c5ef-bf67-46e3-a66a-9bc950cbb4e6" alt="SatyA Learning Companion">
 
    [![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/downloads/)
    [![License: PolyForm Noncommercial 1.0.0](https://img.shields.io/badge/License-PolyForm%20Noncommercial%201.0.0-orange.svg)](LICENSE)
@@ -424,6 +424,20 @@ Satya/
 
 ---
 
+## Install for Students (offline, recommended)
+
+Grab two files from [Releases](https://github.com/aa-sikkkk/satya/releases):
+
+1. **`Satya_Student_Offline_Win.zip`** — app + every library bundled as wheels (no internet needed to install or run)
+2. **the Phi-1.5 model asset** — the AI model binary
+
+Unzip, right-click `install_satya.ps1` → *Run with PowerShell*, move the
+model folder into `%USERPROFILE%\Satya\satya_data\models\phi15`, then
+double-click `satya-gui.cmd`. Full details: `QUICKSTART.md` inside the zip.
+
+Developers/PyPI users can also `pip install satya_learning_system` and run
+the `satya` (CLI) or `satya-gui` (window) console commands.
+
 ## Development Setup
 
 ### Prerequisites
@@ -730,6 +744,8 @@ See documentation:
 
 Satya is a nonprofit educational initiative. To ensure this software remains free and accessible to students and educators without commercial exploitation, it is licensed under the **PolyForm Noncommercial License 1.0.0**.
 
+> PolyForm Noncommercial is a **source-available** license: the code is public and free for any noncommercial use, but it is not OSI open-source (that designation would allow commercial reuse). Contributions are welcome under the same terms.
+
 **You are free to:**
 - Use this software for personal, educational, or charitable purposes.
 - Modify and distribute it for non-commercial use.
@@ -743,6 +759,25 @@ See [LICENSE](LICENSE) file for full details.
 **Copyright (c) 2026 Satya Project Contributors**
 
 ---
+
+## Contributors
+
+Credits follow the project's attribution policy
+([CONTRIBUTING.md](docs/CONTRIBUTING.md)): commit authorship credits
+contributors in the commit history and release notes, and automated bot
+accounts are disclosed here and in release notes. Contributions of any kind
+are welcome - code, curriculum content, documentation, translations, bug
+reports, outreach.
+
+| Contributor | Areas | Links |
+| --- | --- | --- |
+| Aashik ([aa-sikkkk](https://github.com/aa-sikkkk)) | Maintainer, code, docs, review, bug fixes | Commits, releases |
+| Dependabot (bot) | Automated dependency PRs | Dependabot PRs, release notes |
+| CodeRabbit (bot) | Automated PR reviews | PR review threads |
+
+Using Satya in research or a classroom? GitHub renders a **Cite this
+repository** panel from `CITATION.cff` - keep its `version`/`release-date`
+fields in sync in every release PR (policy in CONTRIBUTING.md).
 
 ## Acknowledgments
 

@@ -2,7 +2,7 @@
 
 <img src="https://raw.githubusercontent.com/YOLOW92/pagesift/main/assets/logo.png" alt="PageSift Logo" width="300" />
 
-# pagesift 0.70.0
+# pagesift 0.73.0
 
 **High-performance, memory-bounded web scraping and extraction engine built for AI agents and LLM pipelines.**  
 Turn any website, document, or archive into clean Markdown and structured data — one Rust binary, native SDKs, dual Firecrawl v1/v2 & Jina Reader APIs, at a fraction of the memory.
@@ -20,6 +20,83 @@ Turn any website, document, or archive into clean Markdown and structured data �
 **English** · [简体中文](docs/README.zh-CN.md) · [日本語](docs/README.ja.md) · [Español](docs/README.es.md)
 
 </div>
+
+---
+
+## What's New in 0.73.0
+
+**All cores again, hardened inputs, fewer false positives.** 0.73.0 fixes what a three-way code
+review and ~150 adversarial input tests found.
+
+- **Extraction uses every core again.** Since 0.70.0 `scrape`, `crawl` and `serve` extracted on
+  one core; the API server now serves 5–7× more requests per second (16 clients: ~310 → up to
+  2,196 req/s, p50 40 ms → 4.6 ms).
+- **No more crashes or DoS paths found by the review**: a CJK panic in the feed sniffer, UTF-8
+  pages re-decoded into mojibake, quadratic attribute parsing (40,000 attributes: 3 s → 0.02 s),
+  slowloris clients, `javascript:` links from RSS items.
+- **Heuristics narrowed**: short Substack posts were reported as age gates; author widgets,
+  cloaked app roots, `<template>` content and CSS variables (as OpenAI keys) are handled correctly.
+- **API limits and timeouts** on every parameter, with the standard JSON error body everywhere.
+- **Crawl scope decided from evidence** (`--scope auto`, default): `/docs/python` stays in
+  `/docs/python/*`; a leaf seed such as a blog post widens to its section, and says so.
+
+Quality holds or improves (WCXB F1 0.8522 → 0.8533, Firecrawl 0.680 → 0.682, AEB 0.958), and
+extraction is 3–5% faster on real pages. Full detail:
+[**0.73.0 release notes**](docs/releases/0.73.0.md).
+
+## What's New in 0.72.8
+
+**Truthful signals, complete allow-lists, better extraction.** 0.72.8 closes the fourth-round
+audit and the fifth-to-eighth-round field audits.
+
+- 🔤 **Charset headers are verified** — a lying `Content-Type` no longer produces silent
+  mojibake; Pagesift re-decodes the body and reports every correction in
+  `metadata.pagesift.warnings`.
+- 🌐 **`--allow-cidr` everywhere** — `crawl`, `map`, `download`, `session-fetch`, `collect` and
+  `serve` now accept the same private-network allow-list as `scrape`; invalid CIDRs fail loudly.
+- ⚙️ **Default config discovery** — `--config` > `PAGESIFT_CONFIG` > the platform config file
+  (`~/.config/pagesift/pagesift.toml`, `$XDG_CONFIG_HOME`, or `%APPDATA%` on Windows).
+  `PAGESIFT_CONFIG=` disables config files for Docker/CI.
+- 🩺 **`doctor` tells the truth** — it prints the config file that was actually loaded, or the
+  default path to create.
+- 🚦 **No more fake success** — `map` returns the seed error instead of a one-URL result, and
+  `crawl` exits 1 when it collected zero pages and at least one error.
+- 🍪 **Recipes keep the recipe** — content asides such as ingredient lists are no longer pruned;
+  preview blocks (`quickview`/`teaser`) no longer replace the real article.
+- 💻 **GitHub code pages are code again** — line numbers are dropped and code rows are merged
+  into one fenced block.
+- 👥 **Authors survive** — arXiv-style author lists stay in the body, and `citation_author`
+  fills `metadata.author`.
+- 🧱 **Barriers say so** — German/French/Spanish block pages are `ACCESS_BARRIER`, age gates are
+  `interstitial`, and thin extraction emits `thin_content`.
+- 📡 **Feeds are parsed** — RSS/Atom become Markdown item lists; `jsonLd` is passed through.
+- 🖼️ **Image titles and video metadata** — `title` attributes are kept, and video pages fall
+  back to their JSON-LD `VideoObject` instead of returning an empty document.
+
+Full detail: [**0.72.8 release notes**](docs/releases/0.72.8.md).
+
+---
+
+## What's New in 0.71.0
+
+**A bug-fix release for the 0.70.0 field audit.** The extraction engine and API contract are
+unchanged; failures are now reported honestly and authorization applies consistently.
+
+- 🧭 **Crawl scope fixed** — `/index.html`-style seeds cover the whole site instead of one page.
+- 🔐 **Proxy and allow-lists** — `NO_PROXY` is honored; `--allow-cidr` / `allow_hosts` also apply
+  to browser rendering, not just HTTP.
+- 🧾 **Honest content reporting** — binary responses return `UNSUPPORTED_OPTION`, empty pages
+  carry `empty_content`, and bilibili captcha pages return `ACCESS_BARRIER`.
+- 🔒 **TLS errors are classified** — `TLS_CERT_EXPIRED`, `TLS_HOSTNAME_MISMATCH`,
+  `TLS_UNTRUSTED_ROOT` and `TLS_ERROR` replace the generic `NETWORK_ERROR`.
+- 🩺 **Root and auto fallback explained** — `doctor` flags the root sandbox problem, and
+  `--engine auto` prints why rendering was unavailable.
+- 🚦 **Exit codes match page status** — HTTP 5xx and empty 404 responses exit with code 2.
+- 🧹 **Hidden templates filtered** — `x-cloak` and similar pre-hydration templates no longer
+  leak into Markdown.
+- 📚 **Charset handling unified** — `convert` detects local file charsets and accepts `--charset`.
+
+Full detail: [**0.71.0 release notes**](docs/releases/0.71.0.md).
 
 ---
 
@@ -116,7 +193,7 @@ Run the standalone container (includes headless browser renderer):
 
 ```bash
 docker run -d -p 3002:3002 -v pagesift-data:/data \
-  -e PAGESIFT_API_KEYS=sk-test ghcr.io/yolow92/pagesift:0.70.0
+  -e PAGESIFT_API_KEYS=sk-test ghcr.io/yolow92/pagesift:0.73.0
 ```
 
 #### Firecrawl SDK Drop-In Replacement
@@ -200,8 +277,23 @@ cargo install pagesift --locked
 pagesift scrape "https://news.ycombinator.com" --format markdown
 
 # High-concurrency polite crawl with adaptive hardware tuning
-pagesift crawl "https://docs.rs" --limit 5000 --tuning-mode adaptive --output ./data/
+pagesift crawl "https://docs.rs" --limit 5000 --tuning-mode adaptive --out ./data/
+
+# Config is discovered automatically from ~/.config/pagesift/pagesift.toml
+# (or $XDG_CONFIG_HOME / %APPDATA%). PAGESIFT_CONFIG= disables config files.
+pagesift doctor
 ```
+
+### 5. Shared MCP Server for AI Agents
+
+```bash
+# One local service for every agent on the machine (127.0.0.1 only)
+pagesift mcp http --port 3003 --audit-log ~/.local/state/pagesift/audit.jsonl
+claude mcp add --scope user --transport http pagesift http://127.0.0.1:3003/mcp
+```
+
+Shared browsers and cache, an audit line per fetch, HTML snapshots of suspicious results and a
+`pagesift_report_issue` tool. See [Running pagesift as a shared MCP service](docs/mcp-service.md).
 
 ---
 
@@ -263,7 +355,7 @@ If PageSift is useful in research or a product, cite it as:
   author = {YOLOW92},
   year   = {2026},
   url    = {https://github.com/YOLOW92/pagesift},
-  note   = {Version 0.70.0}
+  note   = {Version 0.73.0}
 }
 ```
 

@@ -26,12 +26,27 @@ OpenAI SDK / Claude Code / Continue / Open WebUI
 - **Watch the box** — live request, token, model, upstream, CPU/GPU, update status, and static inference-host inventory in one dashboard.
 - **Manage models** — load/unload models, inspect per-model stats, capabilities, and llama-swap selector routing, view residency history, and edit llama-swap config with validation.
 - **Proxy clients** — expose OpenAI/Anthropic-compatible `/v1/*` endpoints, native llama.cpp `POST /infill`, and llama-swap's `/audiocpp/*` passthrough for local models, peers, direct upstreams, Claude Code, Continue, Open WebUI, and more.
-- **Track requests** — searchable request history with filters, histograms, detail views, attribution metadata, token counts, and cost estimates.
+- **Track requests** — searchable request history with filters, histograms, detail views, attribution metadata, token counts, and cost estimates. Details reuse cached summaries immediately while payloads load; hovering or keyboard-selecting a list row prefetches its metadata.
+  Local llama.cpp prefill/decode timings are shown for streaming and non-streaming responses when provided; new measurements are retained independently of captured bodies. Older logs fall back to their retained response body.
+  Streamed inference requests also record proxy-observed time to first output and the span between first and last output deltas, including OpenAI Responses, chat completions, and Anthropic streams. These are not upstream prefill/decode timings and are available only for newly recorded requests.
+  Adjacent request navigation uses a dedicated SQLite index, created automatically by the startup migration.
+  Scheduled retention cleanup logs its duration, candidate-selection time, and aggregate row counts for operational diagnosis.
+  Key-detail statistics use a key/time index, and key/model request lists avoid loading stored payloads.
 - **Control access** — dashboard login, hashed API keys, per-key RPM/TPM limits, explicit allow-all or restricted model access, unavailable-model cleanup, MCP relay allow-lists, and per-key usage breakdowns.
 - **Enforce policy** — routing rules for model rewrites, rejects, passthrough auth, direct HTTPS upstreams, encrypted credentials, system prompts, and global request size limits.
 - **Test models** — playgrounds for chat, image, speech, and transcription, including article-to-speech extraction.
 - **Export ops data** — raw log streams, retention controls, request auditing, and low-cardinality Prometheus metrics at `/metrics`.
 - **Move fast** — `g`-leader keyboard navigation (`g d` dashboard, `g r` requests, `g l` logs, …), `j`/`k`/`Enter` through the request list, and `H`/`L` between request details.
+  Client navigation briefly reuses the authenticated shell and shows pending feedback during slow route checks; admin APIs always enforce sessions server-side.
+  Navigation reuses the destination's full skeleton, including the request-detail layout, instead of leaving a mostly blank "Opening page" placeholder.
+  Request metadata and captured payloads load independently in parallel, so large bodies do not block the summary; payload failures have their own retry action.
+  Large SSE captures render a measured, virtualized event window while retaining full-payload copy/export.
+  Individual long response values also render in bounded chunks, including raw text and assembled SSE output. Normal JSON keeps syntax highlighting; oversized lines use plain text. Copy/export retains the complete capture.
+  Session lookups are deduplicated within each server request without sharing session or query data across SSR requests.
+  Conditional JSON polling serializes once and uses native hashing; captured-payload responses use `no-store` rather than validators.
+  Interactive request loads take priority over telemetry and speculative metadata prefetches; abandoned request fetches are cancelled.
+  Validator and inactive-payload caches are bounded, and reconnects refresh live data without refetching completed payloads. Live request insertion keeps loaded pages bounded while preserving older-history pagination.
+  Payload loading, failure/retry, and successfully loaded empty captures are distinct states. Implementation ownership is documented in [the loading maintainability notes](./docs/2026_10_26_loading_maintainability.md).
 
 <table>
   <tr>

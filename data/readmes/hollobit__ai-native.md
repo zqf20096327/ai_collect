@@ -4,7 +4,7 @@
 
 전종홍 지음 · 2026
 
-**버전 1.3** · 고친 날 2026-10-23 · 처음 만든 날 2026-03-14
+**버전 1.5.6** · 고친 날 2026-10-26 · 처음 만든 날 2026-03-14
 
 이 책은 새 소식이 나오면 계속 고쳐 펴내는 살아 있는 문서(living document)입니다. 판마다 버전과 고친 날을 아래 [판 이력](#판-이력)과 책의 판권면에 적습니다.
 
@@ -18,7 +18,7 @@
 
 | 형식 | 링크 |
 |---|---|
-| PDF (448쪽, 브라우저에서 바로 열림) | [hollobit.github.io/ai-native/book.pdf](https://hollobit.github.io/ai-native/book.pdf) |
+| PDF (458쪽, 브라우저에서 바로 열림) | [hollobit.github.io/ai-native/book.pdf](https://hollobit.github.io/ai-native/book.pdf) |
 | EPUB (전자책 단말기·앱) | [hollobit.github.io/ai-native/book.epub](https://hollobit.github.io/ai-native/book.epub) |
 | 안내 페이지 | [hollobit.github.io/ai-native](https://hollobit.github.io/ai-native/) |
 
@@ -28,6 +28,11 @@
 
 | 버전 | 고친 날 | 바뀐 점 |
 |---|---|---|
+| [v1.5.6](https://github.com/hollobit/ai-native/releases/tag/v1.5.6) | 2026-10-26 | 교정 및 리뷰 코멘트 반영 — 6부 7·8장 합병, SKILL.md 상자, PDF 책갈피·목차 링크·찾아보기 쪽수 |
+| [v1.5.5](https://github.com/hollobit/ai-native/releases/tag/v1.5.5) | 2026-10-26 | 바깥 용어 별칭 9항목(용어집·찾아보기)과 부록 A '지능망의 일곱 설비' 표 추가 |
+| [v1.5.4](https://github.com/hollobit/ai-native/releases/tag/v1.5.4) | 2026-10-26 | 추가 내용 리뷰 및 보완 조정 — 제7부 3-2장 「지능이 흔해질 때 희소해지는 것: 개인의 준비」 신설, 전 부 중복·교차참조 정리 |
+| [v1.5.3](https://github.com/hollobit/ai-native/releases/tag/v1.5.3) | 2026-10-26 | 제6부 9-2장 「목적과 기억을 맡기는 사회: 비유가 멈춘 자리에서 생기는 것들」 신설 |
+| [v1.5.2](https://github.com/hollobit/ai-native/releases/tag/v1.5.2) | 2026-10-26 | 조판 손질 — 본문 양쪽 맞춤, 표·각주·캡션은 어절 단위 줄바꿈 |
 | [v1.5.1](https://github.com/hollobit/ai-native/releases/tag/v1.5.1) | 2026-10-26 | 전기가 석유를 이기고 진 자리(제1부 2-1장), 바이브 코딩의 전 직군 확산과 궁극 모습(제6부 14장·15장) 보강 |
 | [v1.5](https://github.com/hollobit/ai-native/releases/tag/v1.5) | 2026-10-26 | 지능 전력망의 나머지 설비(저장·중개·전압계)와 운영 설계 보강 — 제2부 4-1장·제7부 3-1장 추가, 하네스 장과 부록 A 표준 표 보강 |
 | [v1.4](https://github.com/hollobit/ai-native/releases/tag/v1.4) | 2026-10-24 | 중복 내용 재편집 및 목차 조정 |

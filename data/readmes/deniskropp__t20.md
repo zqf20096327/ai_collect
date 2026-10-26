@@ -224,6 +224,12 @@ The `runtime/` directory contains the core logic of the T20 system. Here is a br
 | `util.py` | Contains utility functions, like `read_file` and `find_project_root`. |
 
 
+## Canon
+
+Shared concepts (runtime kernel with `Result`/`Error`, `ArtifactStore` with `AddArtifact`/`GetArtifact`, `Orchestrator.AssignAgent`, Task-Agnostic Steps, role IDs, JSON schemas) are defined in [deniskropp/t333](https://github.com/deniskropp/t333) on `main`, the neutral source of truth. Only `canon/` there is normative (see [`canon/SPEC.md`](https://github.com/deniskropp/t333/blob/main/canon/SPEC.md)). This repo references t333 `main` without version pinning ([ADR-0005](https://github.com/deniskropp/t333/blob/main/docs/adr/0005-referenz-auf-main.md)). Repo-specific extensions use the `⫻x-t20/` namespace.
+
+TAS originates here: t20 is the Python reference implementation of Task-Agnostic Steps. The canonical, implementation-neutral definition is [`canon/tas.kl`](https://github.com/deniskropp/t333/blob/main/canon/tas.kl) (t333 ADR-0006); `docs/kl-task-agnostic-steps.md` and `src/t20/assets/prompts/gptase_instructions.txt` / `putase_instructions.txt` are its informative origin. Persona names (e.g. GPTASe, puTASe, Fizz La Metta) bind to the abstract role IDs in [`canon/roles.yaml`](https://github.com/deniskropp/t333/blob/main/canon/roles.yaml).
+
 ## Contributing
 
 We welcome contributions! Please feel free to submit a pull request or open an issue.
@@ -238,7 +244,7 @@ T20 remains the early multi-agent orchestration foundation that informed the Ori
 - TAS extraction (GPTASe / TASe) became a first-class primitive across the ecosystem.
 - Fizz La Metta coordination and related personas continue as living roles in current skills and Spaces.
 - Documentation and protocol density now live primarily in t333 (OCS Substrate), t324 (Unified MetaForge/OCS docs), and the skill layer; this repo preserves the original runtime and agent YAML model.
-- Compatible with current KickLang v4.1+ and OCS v2.1 patterns; used as historical reference and extensible base.
+- Compatible with current KickLang v4.1+ and the OCS canon in t333 `main` (formerly labelled "OCS v2.1"); used as historical reference and extensible base.
 
 Public surface refreshed to reflect current ecosystem context. Active development continues in private/skill layers and related t-series repos.
 

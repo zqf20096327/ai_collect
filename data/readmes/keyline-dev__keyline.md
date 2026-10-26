@@ -108,63 +108,27 @@ There's no GUI, and no plan for one. Every design decision is judged by one ques
 Every release has a `SHA256SUMS` file and build attestations: `gh attestation verify <file> --repo keyline-dev/keyline`. Then add keyline to your client. The command is `keyline-mcp`; if the client can't find it, give its full path (`which keyline-mcp`).
 
 <details>
-<summary><b>Cursor</b></summary>
+<summary><b>Codex (ChatGPT)</b></summary>
 
-[Add to Cursor](https://cursor.com/en/install-mcp?name=keyline&config=eyJjb21tYW5kIjoia2V5bGluZS1tY3AifQ%3D%3D), or add this to `~/.cursor/mcp.json`:
-
-```json
-{ "mcpServers": { "keyline": { "command": "keyline-mcp" } } }
-```
-</details>
-
-<details>
-<summary><b>VS Code</b></summary>
-
-```sh
-code --add-mcp '{"name":"keyline","command":"keyline-mcp"}'
-```
-</details>
-
-<details>
-<summary><b>Codex</b> (OpenAI)</summary>
+Codex is OpenAI's coding agent, included in ChatGPT plans. Its app, CLI and IDE extension share one setting:
 
 ```sh
 codex mcp add keyline -- keyline-mcp
 ```
-</details>
 
-<details>
-<summary><b>Gemini CLI</b> (Google)</summary>
-
-```sh
-gemini mcp add --scope user keyline keyline-mcp
-```
+ChatGPT itself, like grok.com and the xAI API, connects only to remote servers, so it can't start keyline, which runs on your machine.
 </details>
 
 <details>
 <summary><b>Other clients</b></summary>
 
-Most clients take this JSON, in the file below; links go to each client's guide.
+Any client that starts local (stdio) MCP servers works, Cursor, VS Code and Gemini CLI included. Add a server named `keyline` whose command is `keyline-mcp`, in the client's MCP settings or with its `mcp add` command. Most clients take this JSON:
 
 ```json
 { "mcpServers": { "keyline": { "command": "keyline-mcp" } } }
 ```
 
-| Client | Where |
-|---|---|
-| Claude Code, without the plugin (and on Windows) | `claude mcp add --scope user keyline -- keyline-mcp` |
-| Claude Desktop, without the `.mcpb` | Settings → Developer → Edit Config, with the full path (`/opt/homebrew/bin/keyline-mcp`); it doesn't read your shell's PATH |
-| [Devin Desktop](https://docs.devin.ai/desktop/cascade/mcp) (Windsurf) | `~/.config/devin/mcp_config.json`; still named Windsurf: `~/.codeium/windsurf/mcp_config.json` |
-| [Cline](https://docs.cline.bot/mcp/configuring-mcp-servers) | MCP Servers panel → `cline_mcp_settings.json` |
-| [Antigravity](https://antigravity.google/docs/mcp) | `~/.gemini/config/mcp_config.json` |
-| [Kiro](https://kiro.dev/docs/mcp/configuration/) | `~/.kiro/settings/mcp.json` |
-| [JetBrains](https://www.jetbrains.com/help/ai-assistant/configure-an-mcp-server.html) AI Assistant, [Junie](https://junie.jetbrains.com/docs/junie-cli-mcp-configuration.html) | Settings → Tools → AI Assistant → MCP → Add; Junie: `~/.junie/mcp/mcp.json` |
-| [GitHub Copilot CLI](https://docs.github.com/en/copilot/how-tos/use-copilot-agents/use-copilot-cli) | `/mcp add` in Copilot CLI |
-| [Grok Build](https://docs.x.ai/build/features/mcp-servers) | `grok mcp add keyline -- keyline-mcp` |
-| [opencode](https://opencode.ai/docs/mcp-servers/) | `opencode.json`: `"mcp": { "keyline": { "type": "local", "command": ["keyline-mcp"] } }` |
-| [Warp](https://docs.warp.dev/knowledge-and-collaboration/mcp) | Settings → Agents → MCP servers → Add: `{ "keyline": { "command": "keyline-mcp" } }` |
-
-Any client that starts stdio servers works. ChatGPT, grok.com and the xAI API connect only to remote servers, so they can't start keyline, which runs on your machine.
+Claude Code without the plugin (and on Windows): `claude mcp add --scope user keyline -- keyline-mcp`. Claude Desktop without the `.mcpb`: Settings → Developer → Edit Config, with the full path (`/opt/homebrew/bin/keyline-mcp`), since it doesn't read your shell's PATH.
 </details>
 
 ### Then

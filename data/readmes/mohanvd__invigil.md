@@ -44,21 +44,25 @@ The message formats are in the [MQTT contract](docs/contract.md).
 
 ## Status
 
-Invigil is a Grade 12 school capstone and a work in progress. **The hardware is not built yet**, so nothing here has been tested against real devices, and no accuracy or range figure exists yet.
+Invigil is a Grade 12 school capstone and a work in progress. **The sensor unit is built and runs the firmware**, but no calibration, accuracy or range figure exists yet.
 
-What works today, on a laptop with no hardware:
+Working on the real unit (first run 2026-10-26, see [docs/results](docs/results/)):
+
+- **Firmware** (`firmware/`): every self-check passes on the Pico 2 W. The unit scans BLE and the 2.4 GHz band and publishes over Wi-Fi with MQTT, with nothing rejected by the contract. The BTstack address byte order is checked and correct. The timing values are still starting guesses. See [Unit firmware](docs/firmware.md).
+- **Launcher** (`invigil/`): starts the broker, the logger and the dashboard with one command, and runs guided calibration.
+- **Dashboard** in Live mode, reading the unit through Mosquitto.
+
+First latency figure, with the laptop clock checked against NTP: over 10 minutes, every message from the unit reached the laptop within 1.11 s, nothing was dropped ([report](docs/results/2026-10-26-latency/report.md)). The figures from the first boot are not valid, because the laptop clock was off then.
+
+Also working, and testable on a laptop with no hardware:
 
 - **Logger** (`server/logger.py`): subscribes to the unit's topics, checks every message against the contract, and writes valid readings to CSV.
 - **Fake publisher** (`server/fake_publisher.py`): stands in for the unit and publishes readings in the right format. The numbers are placeholders, not physics.
 - **ML pipeline** (`ml/`): turns logged sessions into features, trains both models, and tests them on held-out sessions. It has only been run on synthetic data, which proves the code runs and nothing more.
 - **Dashboard** (`dashboard/`): the web app, with a Demo source that needs no broker and a Live source that reads Mosquitto over WebSockets. Alerts and sessions only exist in Demo so far, and no test results exist at all. See [Dashboard](#dashboard).
-- **Tests** for the contract, the logger, the fake publisher, the ML pipeline and the dashboard's data layer.
+- **Tests** for the contract, the logger, the fake publisher, the ML pipeline, the launcher and the dashboard's data layer.
 
-Written but not tested on hardware:
-
-- **Firmware** (`firmware/`): the unit code for the Pico 2 W. It builds in CI and its hardware-free parts pass host tests, but it has never run on a real board. See [Unit firmware](docs/firmware.md).
-
-Not started: the digital twin.
+Not started: the calibration runs, the real dataset, and the digital twin.
 
 ## Hardware
 
@@ -79,6 +83,8 @@ Prices are store listings from October 2026, before delivery. A laptop on the sa
 ### Wiring
 
 Check each pin against the Pico 2 W pinout before soldering. Physical pins are counted from pin 1 at the USB end, down the left side (1 to 20), then up the right side (21 to 40).
+
+**Use the adapter board.** On the first hardware run, the radio wired bare to 3V3(OUT) never answered, and the same module answered at once on the adapter board ([report](docs/results/2026-10-26-first-boot/report.md)). Wire every pin by the labels printed on the board in your hand, not by a picture. Swapping VCC and GND makes the module hot within seconds: unplug at once if it warms up.
 
 **Bare module**, wired straight to the Pico:
 
@@ -152,6 +158,19 @@ You can run the whole laptop side with fake data and no hardware. These commands
    ```
 
    The score it prints only proves the code runs. Never report it.
+
+### One command for the real unit
+
+When the unit is on the network, the launcher runs the whole laptop side: Mosquitto with `server/mosquitto.conf`, the logger, and the dashboard on `http://127.0.0.1:8080`. It waits for the unit, opens the dashboard in Live mode and shows a status screen (broker, logger session, unit online, last status, message rates, laptop clock offset).
+
+```powershell
+python -m invigil start
+python -m invigil status
+python -m invigil stop
+python -m invigil calibrate
+```
+
+Or double-click `invigil.bat`, and run `python -m invigil shortcut` once to put it on the desktop. It needs the broker setup from [Using the real unit](docs/setup.md#using-the-real-unit) first. `calibrate` records 60 s at each distance from 0.5 to 3.5 m and labels every step. Details are in [The launcher](docs/setup.md#the-launcher-everything-from-one-command).
 
 **Linux and macOS:** use `python3 -m venv .venv` and `source .venv/bin/activate`. Install Mosquitto with your package manager (`sudo apt install mosquitto` or `brew install mosquitto`) and start it with `mosquitto -v` if it is not already running. Every `python -m ...` command is the same.
 
@@ -254,7 +273,8 @@ The hall size and the seat positions on the map are placeholders in `dashboard/s
 
 | Folder | What goes there |
 | --- | --- |
-| `firmware/` | Pico 2 W unit code (Pico SDK, C, CMake). Not started |
+| `firmware/` | Pico 2 W unit code (Pico SDK, C, CMake) |
+| `invigil/` | The launcher: `python -m invigil start`, `stop`, `status`, `calibrate` |
 | `server/` | MQTT logger, fake data publisher, later the dashboard API |
 | `ml/` | `features.py`, `label.py`, `train.py`, `synth.py` |
 | `data/raw/` | Recorded sessions. Gitignored, never committed |

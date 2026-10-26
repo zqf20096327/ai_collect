@@ -1,224 +1,184 @@
-> [!TIP]
-> 🎉 **APX v2 is out, in beta. Try it!** A new desktop app, a phone app and a one-line install for your server,
-> rebuilt from scratch. It brings your v1 projects, agents and chats along.
-> **[Meet APX v2 →](https://agentprojectcontext.github.io/apx/v2/)** · `curl -fsSL https://agentprojectcontext.github.io/apx/v2/install.sh | bash`
-
 <p align="center">
-  <img src="assets/banner.webp" alt="APX — Meet your crew" width="820">
+  <img src="assets/banner.webp" alt="APX v2 — Meet your crew" width="820">
 </p>
 
 <h3 align="center">Meet your crew.</h3>
 
 <p align="center">
-  <b>APX is an open-source Agent OS: your own team of AI agents, running on your machine.</b><br>
-  Give them roles, memory and tools. Talk to them, let them work together, and follow what they do.<br>
-  Research, writing, everyday plans, business operations or code — build a crew around your life and work.
+  <b>APX is an open-source home for your own team of AI agents, running on your machine.</b><br>
+  A super-agent that answers you anywhere, project agents that work with your tools, and a browser they drive<br>
+  while you watch. On your desktop, your phone, your messaging apps and your own server.
 </p>
 
 <p align="center">
-  <a href="https://agentprojectcontext.github.io/apx/"><img src="https://img.shields.io/badge/Website-meet_your_crew-3fb950?style=flat-square" alt="Visit the APX website"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-3fb950?style=flat-square" alt="License: MIT"></a>
-  <a href="https://www.npmjs.com/package/@agentprojectcontext/apx"><img src="https://img.shields.io/npm/dm/%40agentprojectcontext%2Fapx?style=flat-square&label=npm&color=3fb950" alt="APX v1 downloads on npm"></a>
+  <a href="https://agentprojectcontext.github.io/apx/"><img src="https://img.shields.io/badge/Website-APX_v2-3fb950?style=flat-square" alt="APX v2 website"></a>
+  <a href="https://github.com/agentprojectcontext/apx/releases/latest"><img src="https://img.shields.io/github/v/release/agentprojectcontext/apx?style=flat-square&label=Release&color=3fb950" alt="APX latest release"></a>
   <a href="https://github.com/agentprojectcontext/apx/releases"><img src="https://img.shields.io/github/downloads/agentprojectcontext/apx/total?style=flat-square&label=Downloads&color=3fb950" alt="Downloads from GitHub releases"></a>
-  <img src="https://img.shields.io/badge/Node.js-22%2B-3fb950?style=flat-square&logo=nodedotjs&logoColor=white" alt="APX v1 requires Node.js 22+">
+  <a href="https://www.npmjs.com/package/@agentprojectcontext/apx"><img src="https://img.shields.io/npm/dm/%40agentprojectcontext%2Fapx?style=flat-square&label=v1%20on%20npm&color=3fb950" alt="APX v1 downloads on npm"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-3fb950?style=flat-square" alt="License: MIT"></a>
   <a href="https://discord.gg/vxdZuT5WuE"><img src="https://img.shields.io/badge/Discord-join-5865F2?style=flat-square&logo=discord&logoColor=white" alt="Join the community"></a>
 </p>
 
 <p align="center">
-  <b><a href="https://agentprojectcontext.github.io/apx/">See APX working →</a></b> ·
-  <a href="#quick-start">Install v1</a> · <a href="https://agentprojectcontext.github.io/apx/v2/">Try V2 beta</a> ·
-  <a href="README_ES.md">Español</a> · <a href="https://discord.gg/vxdZuT5WuE">Discord</a>
+  <b><a href="https://agentprojectcontext.github.io/apx/">Website →</a></b> ·
+  <a href="#install">Install</a> · <a href="https://agentprojectcontext.github.io/apx/start/introduction/">Docs</a> ·
+  <a href="#coming-from-apx-v1">From v1</a> · <a href="README_ES.md">Español</a> ·
+  <a href="https://discord.gg/vxdZuT5WuE">Discord</a>
 </p>
 
-## See your crew in action
+> **This is APX v2.** It takes over v1's `apx` command and brings your v1 projects, agents and chats in when you
+> ask; v1's files stay where they were. APX v1 is no longer maintained and stays on the
+> [`v1`](https://github.com/agentprojectcontext/apx/tree/v1) branch.
 
 <p align="center">
-  <a href="https://agentprojectcontext.github.io/apx/">
-    <img src="assets/demo-group-chat.gif" alt="Real APX v1 recording: agents working together in a group chat" width="820">
-  </a><br>
-  <sub>A real recording of APX v1 running a demo crew. <a href="https://agentprojectcontext.github.io/apx/">Watch more recorded workflows on the website.</a></sub>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="apps/docs/src/assets/shots/home-hero-dark.webp">
+    <img src="apps/docs/src/assets/shots/home-hero.webp" alt="APX v2: the Inbox with the super-agent's chat, a day summary and the crew's chats by agent" width="900">
+  </picture><br>
+  <sub>The real app, with a demo office (Acme Store). Every screenshot here is in the theme you are reading in.</sub>
 </p>
-
-Each agent gets a **blobo** — its own face — alongside a role, memory, skills and tools.
-Mention one in a conversation and it can pick up the work or ask another agent for help.
-The faces make your crew easy to recognize; the recorded workflows show what it actually does.
 
 ## What you can do
 
-- **Keep a crew for each part of your work.** A researcher, a writer, an organizer or a coding agent: choose the roles you need and group them by project.
-- **Give work to the team.** Start a group chat, mention an agent in a task, and follow its reply. Agents can ask each other for help.
-- **Put recurring work on a schedule.** Daily briefings, reports and check-ins can run as routines while APX stays running.
-- **Reach the same crew from different places.** Use the web panel, Telegram, WhatsApp or your phone; your agents keep their roles and access to their tools.
-- **See the work as it happens.** Conversations show agent actions, and the panel brings chats, tasks, routines and code sessions together.
-- **Bring your models and tools.** Connect model providers, local Ollama models, skills and MCP servers. For coding work, delegate to Claude Code, Codex or another supported CLI.
+- **Talk to one super-agent, everywhere.** It answers you in the app, on your phone, on Telegram, WhatsApp, Discord,
+  Slack or iMessage, does the work itself or hands it to the right agent, and tells you what happened.
+- **Keep a crew per project.** Agents with a role, an area and their own notes, in a project that can be a business,
+  a side project or a codebase. They delegate to each other and you follow every step.
+- **Hand off tasks and commitments.** A task board with who does what and by when; an agent works it in its own chat
+  and you approve what matters.
+- **Put work on a schedule.** Routines run on their own and only speak up when there is something to say.
+- **Let them use the web and your computer.** The desktop app carries a real browser your agents drive in tabs you can
+  watch, and, when you turn it on, they can use your own apps on macOS and Windows. Passwords and payments stay yours.
+- **Get widgets and small apps.** Ask for a chart or a checklist; an agent builds it and you pin it to the board.
+- **Bring your models.** Your ChatGPT plan, Claude, Gemini, OpenAI-compatible APIs or local models; Claude Code and
+  Codex sessions sit beside your chats.
 
-APX runs on your machine. Connected cloud models and services receive the data needed for the requests you send them; local operation does not mean every model runs offline.
-
-## Why APX?
-
-The reason to try APX is the **crew workflow**: recognizable agents, roles organized around your projects,
-shared conversations, delegated work, tasks and routines in one place. A project can be a business, a creative
-project, a personal workspace or a codebase. You do not need a Git repository to start using APX.
-
-If you already use OpenClaw or another agent app, local execution, markdown files and messaging integrations
-alone are not a reason to switch. Compare the experience: does APX make your particular team easier to organize,
-work with and follow? [Watch a real workflow](https://agentprojectcontext.github.io/apx/) and try it with one task
-that matters to you.
-
-For code projects, agent definitions, skills and shared project context can travel with the repository.
-Conversations, sessions, credentials and private runtime memory stay outside it.
-
-## Quick start
-
-**This repository and these installation commands are for APX v1. Requires Node.js 22+ on macOS, Linux or Windows.**
-
-```bash
-npm install -g @agentprojectcontext/apx
-apx setup
-```
-
-The setup wizard helps you choose a provider, a model and your channels, starts APX, and prints your panel address.
-Open **[http://localhost:7430](http://localhost:7430)** in your browser.
-
-Start with one agent and one real task. Add specialists and routines as you need them.
-Cloud providers require their own access or credentials; local models require a configured local provider.
-
-Prefer the terminal? From a project folder:
-
-```bash
-apx init
-apx agent list
-# Replace <agent> with an agent listed above.
-apx exec <agent> "Help me plan the next steps for this project"
-apx run <agent> --runtime claude-code "Review this project and suggest improvements"
-apx run <agent> --runtime codex "Add tests for the parser"
-```
-
-Coding commands require the selected external CLI to be installed and authenticated.
-
-## On your phone
-
-The panel fits your phone too. `apx panel share` gives you a network address;
-`apx panel tailscale on` lets you reach it through your tailnet. Open the panel on your phone and add it to your home screen.
-
-There is also a native **Android app**, with notifications, a floating mascot and Android Auto:
-
-- [Download the Android APK](https://github.com/agentprojectcontext/apx/releases/download/android-latest/apx.apk).
-- Or connect your phone by USB and run `apx android install`.
-- [Read the installation guide](https://agentprojectcontext.github.io/apx/docs/surfaces/install-android/).
-
-The Android app installs from a file, outside Google Play. On iPhone, use the web panel.
-USB access lasts while the cable is connected; LAN access stays within your network; Tailscale connects devices on your tailnet.
-
-## APX V2 is in beta
-
-**V2 is out as a beta.** It takes APX further as a standalone application for your crew: install it from
-[its website](https://agentprojectcontext.github.io/apx/v2/) or the
-[`release/v2` branch](https://github.com/agentprojectcontext/apx/tree/release/v2).
-The v1 commands above install v1, not V2.
+<table>
+  <tr>
+    <td width="50%">
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="apps/docs/src/assets/shots/team-dark.webp">
+        <img src="apps/docs/src/assets/shots/team.webp" alt="A project's crew: agents grouped by area, with their roles">
+      </picture>
+      <p align="center"><sub>A project's crew, by area and role</sub></p>
+    </td>
+    <td width="50%">
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="apps/docs/src/assets/shots/tasks-dark.webp">
+        <img src="apps/docs/src/assets/shots/tasks.webp" alt="Tasks and commitments from every project">
+      </picture>
+      <p align="center"><sub>Tasks and commitments from every project</sub></p>
+    </td>
+  </tr>
+</table>
 
 <p align="center">
-  <img src="assets/apx-v2-preview.png" alt="APX V2 dark-mode demo: main agent delegates to Scout, creates an interactive launch widget and opens the source page in the browser panel" width="1100"><br>
-  <sub>Real V2 interface running a scripted demo with fictional data: agent-to-agent delegation, an interactive widget and a live browser page. <a href="assets/apx-v2-preview-light.png">View the light-mode capture.</a></sub>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="apps/docs/src/assets/shots/crew-demo-dark.webp">
+    <img src="apps/docs/src/assets/shots/crew-demo.webp" alt="One chat, the whole crew: the super-agent hands research to another agent, opens the source page in the browser and builds an interactive launch board" width="900">
+  </picture><br>
+  <sub>One ask: Roby hands the research to Scout, opens the source page in the browser beside the chat and builds a launch board.</sub>
 </p>
 
+## Install
 
-| Experience | APX v1 today | Direction of V2 |
-|---|---|---|
-| Your main agent | A local assistant reached through the panel and channels | A central place to work with the main agent and specialists across personal and project work |
-| Conversations | Chats, group conversations and code sessions | A unified inbox organized by project, agent and channel, alongside external coding sessions |
-| Working on the web | Browser tools through integrations | An embedded desktop browser: watch agents navigate and take over yourself |
-| Following the work | Agent actions, tasks and routines in the panel | Conversations, delegated work, tools, files and apps brought together around the active workspace |
-| Devices | Web panel, messaging, desktop and Android surfaces | Desktop and phone clients connected to the same core, including a core hosted on your own server |
+**Desktop app** (macOS, Windows, Linux): download it from the
+[website](https://agentprojectcontext.github.io/apx/#download) or the
+[latest v2 release](https://github.com/agentprojectcontext/apx/releases?q=v2&expanded=true), open it and follow the setup.
+The apps are not signed yet: the [install guide](https://agentprojectcontext.github.io/apx/start/install/) shows the
+one extra click macOS and Windows ask for.
 
-These are the direction and current development experience, not a promise that every v1 feature has already reached parity.
+**From a terminal** (detects your system; no root, data in `~/.apx/v2`):
 
-### How V2 works
-
-```mermaid
-flowchart TB
-    You[You: desktop, phone or messaging] --> Main[Your main agent]
-    Main <--> Crew[Specialists and project crews]
-    Main --> Core[One APX core]
-    Crew --> Core
-    Core <--> Tools[Models, skills and connected tools]
-    Core <--> Browser[Desktop browser: watch or take over]
-    Core <--> Work[Conversations, tasks, routines and apps]
+```bash
+curl -fsSL https://agentprojectcontext.github.io/apx/install.sh | bash
 ```
 
-One core owns the work and history; the app, phone and messaging channels connect to it.
-Your main agent can work directly or delegate to a specialist. The desktop supplies its browser,
-where you can see the page and take control. This keeps the crew together as you move between devices.
+```powershell
+irm https://agentprojectcontext.github.io/apx/install.ps1 | iex
+```
 
-Follow [the website](https://agentprojectcontext.github.io/apx/) and [Discord](https://discord.gg/vxdZuT5WuE)
-for V2 progress and release news.
+On a new graphical computer this installs and opens desktop setup: choose server or client before a core starts.
+That path does not register a background service. Existing server installations keep updating as servers.
+`apx desktop` also installs and opens the app; `apx open` opens the web panel. Local web users without the app see
+**Install and open**, with download progress and their existing setup. It updates itself: the app offers each new version, for the app and
+for the server it talks to, with one button.
+
+**On a server** (a VPS, a homelab, no screen): use `bash -s -- --server` after the pipe (PowerShell: `-Server`), then
+`apx setup --headless --expose tailscale` (or `--expose lan`) and `apx pair` to connect your desktop and phone. The
+desktop app can also install APX on a server for you over SSH. Guide: [Run APX on a server](https://agentprojectcontext.github.io/apx/devices/server/).
+
+**On your phone**: the Android app is in each [v2 release](https://github.com/agentprojectcontext/apx/releases?q=v2&expanded=true)
+(`APX-<version>-android.apk`); pair it with the code the desktop shows. It installs beside v1's app.
+[Phone guide](https://agentprojectcontext.github.io/apx/devices/phone/).
+
+## Coming from APX v1
+
+Install v2 and the setup finds your v1 install: it brings your projects, agents, skills, chats and channels in, and
+leaves v1's files where they were. The install script stops a v1 daemon and takes over the `apx` command.
+[What carries over](https://agentprojectcontext.github.io/apx/start/from-v1/).
 
 ## Documentation and community
 
-- [Website and recorded demos](https://agentprojectcontext.github.io/apx/)
-- [User documentation](https://agentprojectcontext.github.io/apx/docs/)
+- [Website](https://agentprojectcontext.github.io/apx/) and [documentation](https://agentprojectcontext.github.io/apx/start/introduction/), in English and Spanish
 - [Discord community](https://discord.gg/vxdZuT5WuE)
 - [Report a bug or suggest an improvement](https://github.com/agentprojectcontext/apx/issues)
 
+APX runs on your machine. The cloud models and services you connect receive what each request needs; running locally
+does not mean every model runs offline.
+
 <details>
-<summary>Technical reference: v1 channels and coding runtimes</summary>
+<summary><b>For developers: how v2 is built, and working on it</b></summary>
 
-## Message channels
+### One way to do each thing
 
-Activity belongs to APX runtime state, not `.apc/`. Message storage is local to APX, under
-`~/.apx/`:
+<p align="center"><img src="assets/v1-vs-v2.svg" alt="APX v1 vs v2: one way to do each thing" width="760"></p>
 
-JSONL messages include `type` (`user`, `agent`, `tool`, or `system`) plus `actor_id`, so chat views
-can distinguish Telegram users from APX agents and future subagents.
+v2 is a ground-up rewrite with one rule: one way to do each thing.
 
-A **channel** is the surface a turn arrived on. The canonical list lives in
-`src/core/constants/channels.js`; `voice` is a *mode*, not a channel.
+| What | v1 | v2 |
+|---|---|---|
+| Code paths that run an agent turn | ~23 | **1** — `runTurn()` |
+| Ways to talk to an agent | ~15 in the CLI, ~40 overall | **1** — `threads.send`, tuned per agent, thread or channel |
+| Ways for one agent to talk to another | 12 | **1** — sessions calling sessions |
+| Ways to build the model context | 9 | **1** — one tested context builder |
+| Places where a conversation lives | 10 | **1** — thread + run + steps |
+| API surface | ~378 endpoints | **~260** typed methods; the CLI only speaks the protocol |
 
-| Channel | What it captures |
-|---------|-----------------|
-| `cli` | `apx exec` / `apx run` from the terminal |
-| `telegram` | Telegram bot messages |
-| `api` | Direct daemon HTTP calls |
-| `web` | The admin panel's main chat |
-| `web_sidebar` | The panel's side assistant |
-| `web_code` | The panel's coding surface |
-| `code` | `apx code` sessions |
-| `deck` | The tablet/phone dashboard |
-| `desktop` | The floating voice capsule (always voice mode) |
-| `routine` | Scheduled routine runs |
+### What every model call carries
 
-## Runtimes
+<p align="center"><img src="assets/prompt-size.svg" alt="Tokens per model call on a fresh install: APX v2 8.2k, Hermes 13.0k, APX v1 13.2k (Telegram) and 23.6k (web chat), OpenClaw 13.2k" width="760"></p>
 
-| Runtime | Description |
-|---------|-------------|
-| `claude-code` | Spawns Claude Code CLI with the agent's system prompt injected |
-| `codex` | OpenAI Codex CLI via non-interactive `codex exec --sandbox workspace-write --skip-git-repo-check` |
-| `opencode` | OpenCode CLI |
-| `aider` | Aider CLI |
-| `cursor-agent` | Cursor's headless agent |
-| `gemini-cli` | Google Gemini CLI |
-| `qwen-code` | Qwen Code CLI |
-| `antigravity` | Antigravity CLI |
+Every step of every turn sends the system prompt and the tool definitions again. APX v2 sends the least of the agent
+apps we measured, and a test keeps it under a budget. MCP servers' tools are found with `mcp_search` instead of being
+sent one by one, and the prompt stays identical across calls so the provider's cache keeps it. Method and numbers:
+[`rules/PROMPT_SIZE.md`](rules/PROMPT_SIZE.md).
 
-Global APX skill installation also writes named helper skills for `codex-cli`, `claude-code`,
-`opencode-cli`, and `openrouter`. They are intentionally narrow and should activate only when those
-tools/providers are explicitly mentioned.
+### Layout
 
+```
+apps/core          the daemon: owns all state; HTTP + WS protocol, agents, threads, browser, channels
+apps/terminal      apx, the CLI (speaks only the protocol)
+apps/web           the panel (served by the core; also the desktop window)
+apps/desktop       Electron: the panel plus the embedded browser the agents drive
+apps/mobile        the Expo phone app
+apps/docs          the website and documentation
+packages/protocol  the single contract: methods, events and client
+packages/ui        the design system
+```
+
+### From source
+
+```bash
+pnpm install
+pnpm app        # starts the core on 127.0.0.1:7440 and opens the desktop app
+pnpm preflight  # privacy + schema checks, lint, typecheck, tests
+pnpm verify     # preflight, then end to end (web and desktop) and the lightness budgets
+pnpm package    # this OS's desktop installer and server bundle, in out/ (also package:mac, :linux, :win)
+```
+
+The terminal from a checkout: `alias apx="node $PWD/apps/terminal/src/main.ts"`. Every command is in the
+[CLI reference](https://agentprojectcontext.github.io/apx/reference/cli/). How to work on the code, the rules and
+the checks: [`AGENTS.md`](AGENTS.md) and [`rules/`](rules/).
 
 </details>
-
-## Where APX started
-
-APX began as a way to make **APC — Agent Project Context** work in practice: portable agent definitions,
-skills and project instructions in `AGENTS.md` and `.apc/`. It grew into an application with its own crew,
-conversations, tasks, routines, channels and interfaces. **APX is the product you use today; APC is part of its origin and project-context foundation.**
-
-You do not need to learn the protocol to use APX. If you want the technical background,
-read the [APC specification](https://github.com/agentprojectcontext/agentprojectcontext).
-
-For contributors, start with [AGENTS.md](AGENTS.md). APX v1 has a local daemon, a CLI, a web panel and bridges to external tools.
-Project context can live in the project folder; runtime state lives under `~/.apx/`, outside the repository.
-
-## License
-
-[MIT](LICENSE)

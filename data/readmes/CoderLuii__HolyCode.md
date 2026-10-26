@@ -490,7 +490,7 @@ Prefer Podman? HolyCode uses the same container image there too. The Podman guid
 | eza | 0.23.5 |
 | fzf | 0.74.5 |
 | lazygit / delta | 0.66.2 / 0.20.1, official checksum-verified release binaries |
-| pnpm | 12.14.0 |
+| pnpm | 12.15.0 |
 | Vite | 8.3.5 |
 | ESLint | 10.13.0 |
 | Prettier | 3.9.10 |

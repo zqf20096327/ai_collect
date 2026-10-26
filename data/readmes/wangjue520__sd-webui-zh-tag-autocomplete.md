@@ -1,0 +1,175 @@
+# sd-webui-zh-tag-autocomplete
+
+SD WebUI 中文标签补全扩展：在提示词框里**直接打中文**，弹出对应的 Danbooru 英文标签供选择；也可以把整段中文提示词**一键翻译**成标签。
+
+- 收录 Danbooru 图数 ≥50 的 **125,778** 个标签（2026-10 数据）
+- 每个标签带中文名与多个中文同义词，例如 `black_pantyhose` ← 黑色连裤袜 / 黑丝 / 黑色丝袜 / 黑裤袜…
+- 角色、作品支持译名、简称和社区昵称，例如 `saber_(fate)` ← 吾王 / 呆毛王 / 骑士王
+- 通用标签额外收录口语化说法，例如 `head_out_of_frame` ← 头部出画框 / 头部在画面外 / 没拍到头…；说法不完全一致时也会模糊匹配
+- 字典里没有的中文（包括整句描述）可用谷歌翻译或 DeepSeek 翻译成英文，适合 Anima 这类能理解自然语言的模型
+- 适用于 A1111 系 WebUI：Stable Diffusion WebUI、Forge、Forge Neo
+
+字典数据与制作脚本见 [danbooru-zh-dict](https://github.com/wangjue520/danbooru-zh-dict)。
+
+---
+
+## 安装
+
+**方式一：从网址安装（推荐）**
+
+1. WebUI →「扩展 Extensions」→「从网址安装 Install from URL」
+2. 填入 `https://github.com/wangjue520/sd-webui-zh-tag-autocomplete`，点「安装」
+3. 回到「已安装」页点「应用并重启 UI」，或直接重启 WebUI
+
+**方式二：git**
+
+```bash
+cd stable-diffusion-webui/extensions
+git clone https://github.com/wangjue520/sd-webui-zh-tag-autocomplete
+```
+
+**方式三：压缩包**
+
+在 GitHub 页面点「Code → Download ZIP」，解压到 WebUI 的 `extensions` 目录，确保结构为 `extensions/sd-webui-zh-tag-autocomplete/README.md`（不要多套一层文件夹），然后重启 WebUI。
+
+> 不需要安装任何 Python 依赖。谷歌翻译需要 WebUI 所在机器能访问 Google（可在设置里填代理），也可以改用 DeepSeek。
+
+---
+
+## 使用指南
+
+### 1. 中文补全
+
+在正向/反向提示词框（也包括 ADetailer 等扩展的提示词框）里输入中文：
+
+```
+masterpiece, 1girl, 黑丝
+```
+
+输入法上屏后会弹出候选：
+
+| 分类 | 标签 | 中文 | 命中词 | 图数 |
+| --- | --- | --- | --- | --- |
+| 通用 | black_thighhighs | 黑色过膝袜 | ≈黑丝 | 512.0k |
+| 通用 | black_pantyhose | 黑色连裤袜 | ≈黑丝 | 302.1k |
+
+选择后自动替换为 `black thighhighs, `。
+
+| 按键 | 作用 |
+| --- | --- |
+| ↑ / ↓ | 上下选择 |
+| PageUp / PageDown | 翻 5 项 |
+| Enter / Tab | 插入选中的标签 |
+| Esc | 关闭候选 |
+| 鼠标点击 | 插入该标签 |
+| Ctrl+Enter | 照常生成图片（不被插件拦截） |
+
+- 候选按「完全匹配 → 开头匹配 → 包含 → 模糊匹配」排序，同级按 Danbooru 图数从多到少排列
+- 字典匹配不到或不够准时，会自动请求机器翻译（谷歌或 DeepSeek），出现一条青色「翻译」候选（如 `头部在画面外` → `head out of frame`）；译文正好是某个标签时，该标签会被置顶
+- 分类颜色：蓝 = 通用，绿 = 角色，紫 = 作品，橙 = 元标签，红 = 画师
+- 鼠标悬停在候选上可以看到该标签的中文说明
+- 输入英文也能补全，而且会匹配英文别名，例如 `miku` → `hatsune_miku`（装了 tagcomplete 时默认交给它处理，见下文设置）
+
+### 2. 一键中译英
+
+先用中文把想要的元素写下来，再一次性转换：
+
+```
+黑丝，双马尾、(初音:1.2), 吾王, <lora:xxx:0.8>
+```
+
+点提示词框下方的 **「中→英」** 按钮，或按 **Alt+T**：
+
+```
+black thighhighs, twintails, (hatsune miku:1.2), artoria pendragon \(fate\), <lora:xxx:0.8>
+```
+
+- 中文逗号 `，`、顿号 `、`、英文逗号 `,` 都可以作为分隔
+- 权重 `(xx:1.2)`、`[xx]`、`{xx}` 和 LoRA `<lora:…>` 保持不变
+- 字典匹配不到的中文交给机器翻译，例如 `一个女孩坐在窗边看书` → `a girl sitting by the window reading a book`；关闭机器翻译或网络不通时原样保留，方便手动修改
+- 一个中文词对应多个标签时，取最常用（图数最多）的那个；需要别的标签时请用补全手动选
+
+### 3. 中文预览
+
+提示词框下方会实时显示每个标签的中文，方便核对英文提示词的含义：
+
+- 灰底：已识别的标签，显示中文名（悬停可看说明）
+- 浅橙底：质量 / 分级 / 年代词，如 `masterpiece` → 杰作、`score_8` → 评分8、`year 2025` → 2025年
+- 浅红底：画师，支持 `@画师名` 写法
+- 紫底：LoRA、`BREAK` 以及紧跟在 LoRA 后面的触发词
+- 青底：字典里没有的英文（如自然语言描述），由机器翻译成中文显示
+- 橙底：尚未翻译的中文，显示「中文 → 将转换成的标签」
+
+**预览和提示词双向同步**：
+
+- 点标签右侧的 `×`，会把对应的英文从提示词里删掉（连同多余的逗号），可以 Ctrl+Z 撤销
+- 点标签本身，会在提示词框里选中对应的英文
+- 在提示词框里打字、粘贴、读取图片信息、套用样式等任何修改，预览都会立即更新
+
+---
+
+## 设置
+
+「设置 Settings」→「中文标签补全」：
+
+| 选项 | 默认 | 说明 |
+| --- | --- | --- |
+| 启用中文标签补全 | 开 | 总开关 |
+| 候选数量上限 | 12 | 5–50 |
+| 下划线替换为空格 | 开 | `long_hair` → `long hair`；`^_^` 等颜文字标签保留下划线 |
+| 转义括号 | 开 | `saber_(fate)` → `saber \(fate\)`，避免被当成权重语法 |
+| 插入后自动追加逗号 | 开 | |
+| 输入英文时也弹出补全 | 自动 | 自动：检测到 tagcomplete 时英文交给它，避免两个弹窗抢按键 |
+| 候选中包含画师标签 | 开 | 画师标签只有原名，不翻译 |
+| 显示中文预览 | 开 | |
+| 预览里字典没有的英文用机器翻译 | 开 | 自然语言描述等显示机器翻译的中文，引擎与下面的翻译引擎相同 |
+| 一键翻译快捷键 | Alt+T | 可改为 `Ctrl+Shift+Y` 这类组合 |
+| 字典里没有的中文用机器翻译 | 开 | 由 WebUI 后端请求翻译，浏览器不直接访问 |
+| 翻译引擎 | 谷歌 | 谷歌：免费免 key 的网页接口（非官方，可能被限流）；DeepSeek：国内直连，懂提示词，倾向于直接给出 Danbooru 标签写法（如 `没拍到脚` → `feet out of frame`），按量计费但单次花费极低。DeepSeek 失败时自动改用谷歌 |
+| 谷歌翻译使用的代理 | 空 | 国内网络需填代理，如 `http://127.0.0.1:7890`；留空则使用系统环境变量 `HTTPS_PROXY` |
+| DeepSeek API Key | 空 | 留空则读环境变量 `DEEPSEEK_API_KEY`；Key 会保存在 WebUI 的 `config.json` 里 |
+| DeepSeek 接口地址 / 模型名 | `https://api.deepseek.com` / `deepseek-flash` | 也可填其他 OpenAI 兼容接口 |
+
+---
+
+## 中文输入法说明
+
+插件专门处理了输入法的各种情况：
+
+- **打拼音过程中不弹窗**：文本框里还是拼音时不会搜索，拼写中的 Enter、方向键会留给输入法，上屏后才弹出候选
+- **兼容不同输入法的事件差异**：有的输入法上屏后不触发 input 事件，有的根本不发 composition 事件，插件会在多个时机检查文本变化，上屏后都能触发
+- **拼音残留**：拼到一半切走焦点时，浏览器可能把拼音直接上屏，变成 `chu初音`；插件只用中文部分搜索，选中后连同残留一起替换
+
+如果遇到某个输入法不触发，请提 issue，并写明输入法名称、浏览器和操作步骤。
+
+---
+
+## 常见问题
+
+**没有弹出候选 / 没有「中→英」按钮**
+
+正常时提示词框下方有一行「中→英」按钮和中文预览，先看这一行：
+- **整行都没有**：扩展没被加载。看 WebUI 命令行窗口，启动时应该有一行 `[zh-tag-autocomplete] 已启用，词库 18.4 MB`（2026-10 之前的版本不打印这行，先更新扩展）；没有这行说明扩展不在 `extensions/` 下、在「扩展」页被停用了，或者装完还没重启 WebUI（只刷新页面不会加载新扩展的后端）
+- **显示「词库加载失败（…）」**：点它重试；还不行就按 F12 打开控制台，把括号里的内容和控制台报错一起发 issue
+- **显示「正在加载词库…」**：词库约 18MB，远程访问或网速慢时要等一会儿，加载完会自动消失
+- 按 F12 打开控制台，正常加载时会看到 `[zh-tag-autocomplete] loaded 125778 tags`
+
+**控制台显示 403，插件 JS 加载失败**
+扩展目录必须是 `extensions/` 下的真实文件夹。用目录链接（junction/symlink）指向 WebUI 之外的位置时，Gradio 会拒绝加载。
+
+**和 tagcomplete 同时弹出两个候选框**
+把设置里的「输入英文时也弹出补全」设为「自动」或「关闭」。
+
+**没有「翻译」候选**
+翻译由 WebUI 后端请求。谷歌在国内需要在设置里填代理，或把翻译引擎换成 DeepSeek。失败时 WebUI 的命令行窗口会打印 `[zh-tag-autocomplete] …` 开头的错误信息。
+
+**翻译不准 / 想加自己的叫法**
+字典由大模型辅助生成，热门标签经过抽查，冷门角色可能有错。欢迎到 [danbooru-zh-dict](https://github.com/wangjue520/danbooru-zh-dict) 提 issue 或 PR。
+
+---
+
+## 数据与许可
+
+- 代码：MIT License
+- 字典数据：标签与别名来自 Danbooru（经 licyk/danbooru_tags、DominikDoom/a1111-sd-webui-tagcomplete、newtextdoc1111/danbooru-tag-csv、NSFW-API Danbooru wiki dump）；中文底稿来自 [amenorira/danbooru-tags-data-zh](https://github.com/amenorira/danbooru-tags-data-zh)（MIT）；同义词扩展由大模型生成
+- 字典包含成人内容标签的翻译

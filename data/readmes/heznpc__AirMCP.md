@@ -15,6 +15,12 @@ Messages, Photos, Safari, Finder, and Shortcuts on your machine — your actual
 data, not a copy and not a sandbox. The macOS runtime is available today; the
 iOS runtime is in preview.
 
+> **Release status (2026-10-27 KST):** v2.16.7 is available through npm and
+> the MCPB extension. Its macOS app ZIP is still unavailable because Apple
+> notarization authentication failed. Use the [CLI](#cli-wizard) or
+> [MCPB](docs/mcpb.md) path; see the [release verification record](docs/maintenance-closeout.md)
+> for completed checks and the remaining app-distribution gate.
+
 ```text
 "Brief me on today's calendar, overdue reminders, and unread mail."
 "For my next meeting, pull up the related notes, contacts, files, and reminders."
@@ -101,14 +107,16 @@ Full guide: [docs/mcpb.md](docs/mcpb.md).
 
 ### macOS app (signed + notarized)
 
-Every release from v2.16.5 on ships a Developer-ID-signed, notarized, and
-stapled `AirMCP-<version>.zip` in
-[Releases](https://github.com/heznpc/AirMCP/releases). It is the one artifact
-with the full surface and no build step: the embedded Node runtime, the Swift
+The desktop distribution is a Developer-ID-signed, notarized, and stapled
+`AirMCP-<version>.zip`. Check the selected version's assets in
+[Releases](https://github.com/heznpc/AirMCP/releases) before choosing this path:
+v2.16.6 and v2.16.7 have no app ZIP. The v2.16.7 attempt stopped at Apple
+notarization account authentication; its app distribution is incomplete. The ZIP
+needs no build step: the embedded Node runtime, the Swift
 bridge, the menubar Trust Center, and the generated App Intents (Shortcuts
 actions) and widget are all included.
 
-Install v2.16.5 or later. The v2.16.3 and v2.16.4 releases carry an app ZIP
+Choose v2.16.5 or later with an app ZIP attached. The v2.16.3 and v2.16.4 releases carry an app ZIP
 that signs, notarizes, and staples correctly but crashes on launch before the
 menubar icon appears — a resource-bundle path bug fixed in v2.16.5.
 
@@ -133,7 +141,7 @@ read or changed until you opt in.
 
 For Codex, Claude Code, Cursor, Windsurf, and other stdio clients, use the
 direct runtime, or the app-owned runtime after installing the signed
-`AirMCP-<version>.zip` that ships with each release since v2.16.5:
+`AirMCP-<version>.zip` from a release that includes that asset:
 
 ```bash
 npx airmcp init --no-clients
@@ -184,7 +192,7 @@ More workflow examples live in [docs/workflows.md](docs/workflows.md).
 AirMCP is designed to keep a large local capability surface usable without
 dumping the full catalog into every client context.
 
-The complete generated catalog currently contains 298 tools across 32 modules.
+The complete generated catalog currently contains 293 tools across 32 modules.
 Profiles and progressive exposure keep clients from loading it all at once.
 
 - **Profiles**: `starter`, `communications-safe`, `productivity`, `full`, or
@@ -221,7 +229,7 @@ do not use it as the first-success workflow. Broader diagnostics such as
 The complete generated tool manifest is in
 [docs/tool-manifest.json](docs/tool-manifest.json).
 
-Current generated surfaces: 234 App Intent action types, 86 Interactive Snippet views,
+Current generated surfaces: 230 App Intent action types, 85 Interactive Snippet views,
 15 AppEnum pickers, and an iOS-only provider with 8 read-only App Shortcuts that match the preview runtime. The sessionless discovery card uses MCP schema version
 2025-11-25.
 
@@ -261,8 +269,8 @@ HTTP policy details are in
 
 ## Client Setup
 
-Each release since v2.16.5 includes a runnable signed AirMCP.app ZIP; the
-app-owned desktop pattern keeps one local runtime behind every connected
+Releases that include the signed AirMCP.app ZIP support an app-owned
+desktop pattern with one local runtime behind every connected
 client. A per-install token is created only by an explicit action: **Start
 Local Runtime** in AirMCP.app, or an opted-in app-runtime client connection
 such as `--connect-clients` / `connect-clients`. It is stored at:

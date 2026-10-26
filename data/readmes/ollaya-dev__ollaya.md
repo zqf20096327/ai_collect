@@ -7,9 +7,9 @@
 
 <h1 align="center">ollaya</h1>
 
-<p align="center"><strong>Run open decision models locally, the way Ollama runs LLMs.</strong></p>
+<p align="center"><strong>The decision layer for AI agents.</strong></p>
 
-<p align="center">System 1 for AI agents: fast, typed, calibrated decisions for routing, guardrails, triage and tool approval.</p>
+<p align="center">Ollaya runs open decision models on your own hardware, the way Ollama runs LLMs. Typed questions in, calibrated answers out, in milliseconds: routing, guardrails, triage and tool approval without an LLM call.</p>
 
 <p align="center">
   <a href="https://ollaya.dev">Website</a> ·
@@ -168,7 +168,7 @@ Every model in the library is measured on our own machines and published, with t
 memory on a GPU and a CPU.
 
 <!-- results:bench -->
-Edition 2026.10 ran Ollaya 0.13.0 on an RTX 5090 desktop, and 0.14.0, 0.15.0, 0.17.0 and 0.18.0 added what they changed:
+Edition 2026.10 ran Ollaya 0.13.0 on an RTX 5090 desktop, and 0.14.0, 0.15.0, 0.17.0, 0.18.0 and 0.19.0 added what they changed:
 
 - **Score.** Chance-corrected accuracy over 14 tasks, with 95 % intervals: `pplx-decider:flash` 73.7, `jeb:27b` 69.1 (scored without the 5 tasks it was trained on), `d3:mini` 68.0, `d3:flash` 67.8 and `jeb:9b` 66.0 (scored without the 5 tasks it was trained on). The fastest of these, `jeb:9b`, answers five questions in 111 ms on the RTX 5090.
 - **Calibration.** The lowest calibration errors on the public benchmark are 0.016 (`pplx-decider:flash`), 0.018 (`jeeves:9b`) and 0.020 (`jeb:9b`).

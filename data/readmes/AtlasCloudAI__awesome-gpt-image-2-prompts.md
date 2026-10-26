@@ -150,7 +150,7 @@ When used in Raycast, you can dynamically replace the arguments for quick iterat
 |--------|-------|
 | 📝 Total Prompts | **1145** |
 | ⭐ Featured | **6** |
-| 🔄 Last Updated | **Sunday, October 25, 2026 at 3:04:54 AM UTC** |
+| 🔄 Last Updated | **Monday, October 26, 2026 at 3:04:18 AM UTC** |
 
 </div>
 

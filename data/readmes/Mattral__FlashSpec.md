@@ -11,7 +11,7 @@ Lossless speculative decoding for HuggingFace causal language models, with a sta
 
 ## What it is
 
-FlashSpec wraps an existing HuggingFace causal LM and a smaller drafter that shares its tokenizer: the drafter proposes tokens, your model checks them in one forward pass, and the output is your model's own: the same distribution when sampling, and the same tokens in greedy mode up to fp16 ties ([correctness](https://github.com/Mattral/FlashSpec#correctness)). On one Tesla T4, with `Qwen/Qwen2.5-1.5B-Instruct` verified by `Qwen/Qwen2.5-0.5B-Instruct` at batch 1, it was faster than HuggingFace `generate` compiled the same way in every measured cell, by at least 1.3x on HumanEval and by less on MT-Bench ([results](https://github.com/Mattral/FlashSpec#results)). That is the whole measured scope (one model pair, one GPU, batch 1), and FlashSpec is a single-device library with a small HTTP server, not a serving stack.
+FlashSpec wraps an existing HuggingFace causal LM and a smaller drafter that shares its tokenizer: the drafter proposes tokens, your model checks them in one forward pass, and the output is your model's own: the same distribution when sampling, and the same tokens in greedy mode up to fp16 ties ([correctness](https://github.com/Mattral/FlashSpec#correctness)). On one Tesla T4, with `Qwen/Qwen2.5-1.5B-Instruct` verified by `Qwen/Qwen2.5-0.5B-Instruct` at batch 1, with the default settings, it was faster than HuggingFace `generate` compiled the same way in every measured cell, by at least 1.5x on HumanEval and by less on MT-Bench ([results](https://github.com/Mattral/FlashSpec#results)). That is the whole measured scope (one model pair, one GPU, batch 1), and FlashSpec is a single-device library with a small HTTP server, not a serving stack.
 
 ## When to use it
 
@@ -25,7 +25,7 @@ Not yet:
 
 - **CPU.** Both recorded CPU end-to-end runs were slower than plain decoding ([history](https://github.com/Mattral/FlashSpec/blob/main/docs/benchmarks.md#historical-and-microbenchmark-results)).
 - **Batch > 1.** Larger batches use a generic loop that reads the device several times per step and has not been measured.
-- **First-call latency.** On CUDA the first `generate` compiles and captures CUDA graphs, which can take minutes. `compile=False` skips that, but the eager path was slower than plain HuggingFace `generate` in 3 of the 4 measured cells.
+- **First-call latency.** On CUDA the first `generate` compiles and captures CUDA graphs, which can take minutes. `compile=False` skips that, but in the 0.3.0 run the eager path, while faster than plain HuggingFace `generate` in all 4 cells, was slower than compiled HuggingFace in all 4.
 - **Other GPUs and model pairs.** They have not been measured.
 
 ## Install
@@ -40,7 +40,14 @@ pip install flashspec
 | `flashspec[serve]` | FastAPI, uvicorn, httpx, accelerate | The OpenAI-compatible server (it loads checkpoints with `device_map`, which needs `accelerate`). |
 | `flashspec[asm]` | `flashspec-asm-kernel` (Linux x86-64) | An experimental CPU residual kernel. It does not change end-to-end speed. |
 
-You need Python 3.11 or later, PyTorch 2.2 or later and transformers 4.40 or later. Installing from source, Docker, Windows and macOS notes, and the full requirements table are in [docs/install.md](https://github.com/Mattral/FlashSpec/blob/main/docs/install.md).
+You need Python 3.11 or later, PyTorch 2.2 or later and transformers 4.40 or later. Installing from source, Windows and macOS notes, and the full requirements table are in [docs/install.md](https://github.com/Mattral/FlashSpec/blob/main/docs/install.md).
+
+**Container image (GPU-oriented).** Each release is also published as a server image on GitHub Container Registry. It is built from the PyPI release on CUDA 13.0, with the torch build the GPU results were measured with, and it runs as a non-root user. It needs an NVIDIA GPU and the NVIDIA Container Toolkit; it starts on CPU too, but CPU is not where FlashSpec is faster. The default command serves the measured pair in fp16 on port 8000.
+
+```bash
+docker pull ghcr.io/mattral/flashspec:0.3.1
+docker run --gpus all -p 8000:8000 ghcr.io/mattral/flashspec:0.3.1
+```
 
 ## Quickstart
 
@@ -49,8 +56,7 @@ This loads the measured model pair, decodes greedily, and prints the text and th
 ```python
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from flashspec import BanditConfig, FlashSpecConfig, SamplingConfig, SpeculativeEngine
-from flashspec.bandit import UCB1Selector
+from flashspec import FlashSpecConfig, SamplingConfig, SpeculativeEngine
 from flashspec.engine import HuggingFaceDrafter, TargetModel
 target_id, drafter_id = "Qwen/Qwen2.5-1.5B-Instruct", "Qwen/Qwen2.5-0.5B-Instruct"  # same tokenizer
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -58,15 +64,15 @@ dtype = torch.float16 if device.type == "cuda" else torch.float32
 load = lambda name: AutoModelForCausalLM.from_pretrained(name, torch_dtype=dtype).to(device)
 target = TargetModel(target_id, device, dtype, model=load(target_id))
 drafter = HuggingFaceDrafter(drafter_id, device, dtype, model=load(drafter_id))
-config = FlashSpecConfig(device=str(device), bandit=BanditConfig(n_arms=1),
-                         sampling=SamplingConfig(temperature=0.0))  # greedy
-engine = SpeculativeEngine(config, [drafter], target, UCB1Selector(n_arms=1))
+config = FlashSpecConfig(device=str(device), sampling=SamplingConfig(temperature=0.0))  # greedy
+engine = SpeculativeEngine(config, [drafter], target)
 tokenizer = AutoTokenizer.from_pretrained(target_id)
 prompt = tokenizer("def fibonacci(n):", return_tensors="pt").input_ids.to(device)
 engine.generate(prompt, max_new_tokens=128)  # the first call on CUDA compiles (can take minutes)
 result = engine.generate(prompt, max_new_tokens=128)
 print(tokenizer.decode(result.output_ids[0, : result.n_tokens_generated], skip_special_tokens=True))
 print(f"{result.tokens_per_second:.1f} tok/s, acceptance {result.acceptance_rate:.2f}")
+print("drafter strategy:", engine.drafter_strategy)  # composite-g6-f2 with one model drafter
 ```
 
 `output_ids` has shape `(batch, max_new_tokens)` and pads a row that stopped early with `-1`; `n_tokens_generated` counts the real tokens. `TargetModel` and `HuggingFaceDrafter` take the loaded modules through `model=`; without it, `TargetModel` loads with `device_map`, which needs `accelerate`.
@@ -94,23 +100,24 @@ There are three kinds, and all are lossless:
 
 A composite strategy is one fixed arm (`bandit.n_arms` defaults to 1), runs at batch 1 with `variant` `"rejection"` or `"greedy"` (set explicitly, any other call raises), and verifies at width `max gamma + 1`. Lookup steps use Algorithm 1 with a one-hot draft distribution, so it is lossless; the chi-squared tests cover separate lookup and fallback gammas. The engine logs one line with the strategy it chose and why, and keeps them in `engine.drafter_strategy` and `engine.drafter_strategy_reason`. `drafter_strategy="bandit"` restores the 0.2.0 behaviour.
 
-The default was chosen by a rule fixed before the run (`benchmarks/configs/qwen_t4_composite.yaml`, applied by `scripts/composite_report.py`). In that T4 run (bundle `fdd3be9`), composite-g6-f2 had the higher mixed-workload greedy throughput, was faster than compiled HuggingFace on HumanEval, MT-Bench and HumanEval-edit in greedy and at T=0.7, and matched compiled HuggingFace greedy output except at three fp16 exact ties (HumanEval/53, MT-Bench 81 and 101, the ties the #47 diagnostic found) ([values](https://github.com/Mattral/FlashSpec/tree/main/benchmarks/results/gpu/fdd3be9)). The README tables below are still the 0.2.0 model-drafter run.
+The default was chosen by a rule fixed before the run (`benchmarks/configs/qwen_t4_composite.yaml`, applied by `scripts/composite_report.py`). In that T4 run (bundle `fdd3be9`), composite-g6-f2 had the higher mixed-workload greedy throughput, was faster than compiled HuggingFace on HumanEval, MT-Bench and HumanEval-edit in greedy and at T=0.7, and matched compiled HuggingFace greedy output except at three fp16 exact ties (HumanEval/53, MT-Bench 81 and 101, the ties the #47 diagnostic found) ([values](https://github.com/Mattral/FlashSpec/tree/main/benchmarks/results/gpu/fdd3be9)). The README tables below are the 0.3.0 release run with this default (bundle `3c43e08`).
 
 ```python
+from flashspec import BanditConfig
 from flashspec.engine import NgramDrafter
 
 greedy = SamplingConfig(temperature=0.0)
 composite = FlashSpecConfig(device=str(device), drafter_strategy="composite-g6-f2", sampling=greedy)
-engine = SpeculativeEngine(composite, [drafter, NgramDrafter()], target, UCB1Selector(n_arms=1))
+engine = SpeculativeEngine(composite, [drafter, NgramDrafter()], target)
 result = engine.generate(prompt, max_new_tokens=64)
 print(engine.arms, [step.drafter for step in result.arm_steps])  # drafter used at each step
 
 lookup_only = FlashSpecConfig(device=str(device), drafter_strategy="bandit",  # one arm per drafter
                               bandit=BanditConfig(n_arms=1), sampling=greedy)
-lookup = SpeculativeEngine(lookup_only, [NgramDrafter()], target, UCB1Selector(n_arms=1))
+lookup = SpeculativeEngine(lookup_only, [NgramDrafter()], target)
 ```
 
-Which is fastest depends on the prompts. In the Phase 6 T4 run (greedy, bundle `3e38251`), the fastest fixed choice was the composite at gamma 4 on HumanEval and on the mixed workload, the model drafter at gamma 2 on MT-Bench, and prompt lookup at gamma 6 on code edits ([values](https://github.com/Mattral/FlashSpec/tree/main/benchmarks/results/gpu/3e38251)). Several arms plus a UCB1 or Thompson selector let a bandit choose online; that is experimental, and in the same run it did not beat the best fixed arm ([bandit](https://github.com/Mattral/FlashSpec/blob/main/docs/bandit.md)).
+Which is fastest depends on the prompts. In the Phase 6 T4 run (greedy, bundle `3e38251`), the fastest fixed choice was the composite at gamma 4 on HumanEval and on the mixed workload, the model drafter at gamma 2 on MT-Bench, and prompt lookup at gamma 6 on code edits ([values](https://github.com/Mattral/FlashSpec/tree/main/benchmarks/results/gpu/3e38251)). Several arms plus a selector (`UCB1Selector(n_arms=k)` or `ThompsonSelector(n_arms=k)` from `flashspec.bandit`, passed as `SpeculativeEngine`'s fourth argument) let a bandit choose online; with one arm the engine needs no selector; that is experimental, and in the same run it did not beat the best fixed arm ([bandit](https://github.com/Mattral/FlashSpec/blob/main/docs/bandit.md)).
 
 ### Greedy or sampling
 
@@ -118,8 +125,8 @@ Which is fastest depends on the prompts. In the Phase 6 T4 run (greedy, bundle `
 greedy = SamplingConfig(temperature=0.0)            # same tokens as model.generate(do_sample=False)
 sampled = SamplingConfig(temperature=0.7, seed=0)   # Algorithm 1: same distribution as the target
 drafter.set_temperature(0.7)                        # draft at the target's temperature
-config = FlashSpecConfig(device=str(device), bandit=BanditConfig(n_arms=1), sampling=sampled)
-engine = SpeculativeEngine(config, [drafter], target, UCB1Selector(n_arms=1))
+config = FlashSpecConfig(device=str(device), sampling=sampled)
+engine = SpeculativeEngine(config, [drafter], target)
 result = engine.generate(prompt, max_new_tokens=64)
 ```
 
@@ -128,9 +135,8 @@ The default is `temperature=1.0`, which samples. `temperature=0.0` selects greed
 ### Turn compile off
 
 ```python
-config = FlashSpecConfig(device=str(device), compile=False, bandit=BanditConfig(n_arms=1),
-                         sampling=SamplingConfig(temperature=0.0))
-engine = SpeculativeEngine(config, [drafter], target, UCB1Selector(n_arms=1))
+config = FlashSpecConfig(device=str(device), compile=False, sampling=SamplingConfig(temperature=0.0))
+engine = SpeculativeEngine(config, [drafter], target)
 print(engine.compiled, "|", engine.compile_decision.reason)
 ```
 
@@ -142,6 +148,14 @@ The default `compile="auto"` turns the compiled path on when the device is CUDA 
 pip install "flashspec[serve]"
 python -m flashspec.serve --target Qwen/Qwen2.5-1.5B-Instruct --drafter Qwen/Qwen2.5-0.5B-Instruct \
     --device cuda:0 --dtype float16 --temperature 0
+```
+
+Or with the container image. Arguments replace its default command, so pass `--host 0.0.0.0`. The volume keeps downloaded checkpoints between runs:
+
+```bash
+docker run --gpus all -p 8000:8000 -v flashspec-hf:/home/flashspec/.cache/huggingface ghcr.io/mattral/flashspec:0.3.1 \
+    --target Qwen/Qwen2.5-1.5B-Instruct --drafter Qwen/Qwen2.5-0.5B-Instruct \
+    --device cuda:0 --dtype float16 --temperature 0 --host 0.0.0.0
 ```
 
 ```bash
@@ -169,7 +183,7 @@ class RepeatLast:
     def compute_logprobs(self, input_ids: torch.Tensor, draft_token_ids: torch.Tensor) -> torch.Tensor:
         return torch.nn.functional.one_hot(draft_token_ids, self.vocab_size).float().log()
 
-own = SpeculativeEngine(config, [RepeatLast(target.vocab_size)], target, UCB1Selector(n_arms=1))
+own = SpeculativeEngine(config, [RepeatLast(target.vocab_size)], target)
 result = own.generate(prompt, max_new_tokens=32)
 ```
 
@@ -187,7 +201,7 @@ Generated from the code by `scripts/readme_api.py`; a test fails when it is stal
 | `flashspec.FlashSpecConfig` | Top-level FlashSpec runtime configuration. | fields: `drafter_name: str = "llama3-1b"`, `target_name: str = "meta-llama/Llama-3-8B-Instruct"`, `device: str = "cuda:0"`, `dtype: "float32" \| "bfloat16" \| "float16" = "bfloat16"`, `max_new_tokens: int = 512`, `eos_token_ids: tuple[int, ...] = ()`, `drafter_strategy: "auto" \| "bandit" \| "composite-g4" \| "composite-g6-f2" = "auto"`, `compile: bool \| "auto" = "auto"`, `compile_max_cache_len: int = 1024`, `compile_fixed_shapes: bool = True`, `bandit: BanditConfig = BanditConfig()`, `sampling: SamplingConfig = SamplingConfig()`, `metrics: MetricsConfig = MetricsConfig()` |
 | `flashspec.SamplingConfig` | Configuration for speculative sampling. | fields: `gamma: int = 4`, `temperature: float = 1.0`, `top_p: float = 1.0`, `seed: int \| None = None`, `variant: "rejection" \| "typical" \| "greedy" = "rejection"` |
 | `flashspec.BanditConfig` | Configuration for the online bandit draft selector. | fields: `strategy: "ucb1" \| "thompson" \| "oracle" = "ucb1"`, `window_size: int = 500`, `n_arms: int = 2`, `ucb_exploration_constant: float = 1.0`, `thompson_prior_alpha: float = 1.0`, `thompson_prior_beta: float = 1.0` |
-| `flashspec.SpeculativeEngine` | Adaptive speculative-decoding inference engine. | arguments: `config: FlashSpecConfig`, `drafters: list[DraftModel]`, `target: TargetModel`, `bandit: DraftSelector`, `arms: Sequence[ArmSpec] \| None = None` |
+| `flashspec.SpeculativeEngine` | Adaptive speculative-decoding inference engine. | arguments: `config: FlashSpecConfig`, `drafters: list[DraftModel]`, `target: TargetModel`, `bandit: DraftSelector \| None = None`, `arms: Sequence[ArmSpec] \| None = None` |
 | `flashspec.SpeculativeEngine.generate` | Run the speculative decoding generation loop. | arguments: `input_ids: torch.Tensor`, `max_new_tokens: int \| None = None`, `eos_token_ids: Sequence[int] \| None = None` |
 | `flashspec.GenerationResult` | Result of a single `SpeculativeEngine.generate` call. | fields: `output_ids: torch.Tensor`, `n_tokens_generated: int`, `acceptance_rate: float`, `tokens_per_second: float`, `step_profile: tuple[StepRecord, ...] \| None = None`, `arm_steps: tuple[ArmStep, ...] = ()` |
 | `flashspec.engine.TargetModel` | Wrapper around a HuggingFace CausalLM used as the speculative verifier. | arguments: `model_name_or_path: str`, `device: torch.device`, `dtype: torch.dtype = torch.bfloat16`, `model: Any \| None = None` |
@@ -236,59 +250,63 @@ The full reference is generated from the docstrings: [API reference](https://fla
 ## Results
 
 <!-- BEGIN GENERATED: status (scripts/ingest_gpu_bundle.py) -->
-Measured at git `8d036d7`: `Qwen/Qwen2.5-1.5B-Instruct` verified by `Qwen/Qwen2.5-0.5B-Instruct`, Tesla T4, fp16, batch 1, gamma 4, 10 prompts per set (chat template), 128 new tokens. One model pair, one GPU. Speedups are medians of per-prompt ratios within the same run. The headline baseline is HuggingFace `generate` with a static cache compiled the same way (CUDA graphs); eager HuggingFace and assisted generation are context. Cells are the stored JSON values.
+Measured at git `3c43e08`: `Qwen/Qwen2.5-1.5B-Instruct` verified by `Qwen/Qwen2.5-0.5B-Instruct`, Tesla T4, fp16, batch 1, drafter strategy `composite-g6-f2` (prompt lookup up to 6 tokens when the context has a match, else the model drafter drafts 2; requested `auto`), 10 prompts per set (chat template), 128 new tokens. One model pair, one GPU. Speedups are medians of per-prompt ratios within the same run. The headline baseline is HuggingFace `generate` with a static cache compiled the same way (CUDA graphs); eager HuggingFace and assisted generation are context. Cells are the stored JSON values.
 
 | dataset | mode | FlashSpec tok/s | compiled HF tok/s | **vs compiled HF** | eager HF tok/s | vs eager HF | vs HF assisted | acceptance | c (compiled) | greedy match vs compiled HF | greedy match vs eager HF |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| humaneval | greedy | 73.49117484423093 | 49.27609336228632 | **1.4929247183661758** | 25.272922944874917 | 2.868400153448608 | 2.968039793678412 | 0.7674472295086122 | 0.47651099333876806 | 10/10 | 9/10 |
-| humaneval | T=0.7 | 65.40179447333742 | 49.24821559481592 | **1.326870202978973** | 25.444714453071143 | 2.562178271321323 | 3.06365302315802 | 0.7018560004266362 | 0.4770852877691722 | n/a | n/a |
-| mt_bench | greedy | 55.69633073174627 | 49.99045416467851 | **1.1161741322307486** | 25.20267917967235 | 2.2281081944682457 | 3.0887126152344058 | 0.5310738087770345 | 0.47418886402988414 | 10/10 | 10/10 |
-| mt_bench | T=0.7 | 53.447483345537975 | 49.189297069159096 | **1.0837177249808096** | 25.344508384460696 | 2.119677479254399 | 3.3014455192389267 | 0.5374968568894605 | 0.47562151975963995 | n/a | n/a |
+| humaneval | greedy | 84.15121158912345 | 50.84919550812026 | **1.6703915213699534** | 24.429024644223723 | 3.4316137147436416 | 3.6799192622210697 | 0.3919555827630965 | 0.47814633355546243 | 9/10 | 10/10 |
+| humaneval | T=0.7 | 75.73985864164916 | 50.42612714053795 | **1.5026896386679338** | 24.497491036510233 | 3.066243803639478 | 3.9158860079861073 | 0.3852643082609558 | 0.48198575930759086 | n/a | n/a |
+| mt_bench | greedy | 65.5665446517103 | 51.56689852526201 | **1.2745206859837361** | 24.358718936743088 | 2.6870360558531057 | 3.9853712833572263 | 0.2868673245081164 | 0.4786350054126751 | 8/10 | 8/10 |
+| mt_bench | T=0.7 | 63.11715269934044 | 50.24734945285092 | **1.2630258753083248** | 24.371632087092596 | 2.5801491971418065 | 4.474878921310762 | 0.30095750082855754 | 0.4804902594066257 | n/a | n/a |
 
-Greedy: compiled FlashSpec produced the same tokens as `hf_greedy_compiled`, token for token (per-prompt output hashes are in the JSON), on 10/10 humaneval prompts and 10/10 mt_bench prompts.
-Cold start: not recorded in this bundle. The first compiled call compiles the model and captures CUDA graphs, which can take minutes; the timed numbers above exclude it (warmup prompts absorb it).
+Greedy: compiled FlashSpec produced the same tokens as `hf_greedy_compiled`, token for token (per-prompt output hashes are in the JSON), on 9/10 humaneval prompts and 8/10 mt_bench prompts.
+Cold start: the first compiled FlashSpec call in this run (mt_bench, greedy) took 223225.92456299992 ms including compilation and CUDA-graph capture.
 <!-- END GENERATED: status -->
 
 How to read it: each row is one prompt set and decoding mode; **vs compiled HF** is the median per-prompt speedup over HuggingFace `generate` compiled the same way (above 1 means FlashSpec was faster), and the last two columns count the prompts whose greedy tokens matched.
+
+![Bar chart of tokens per second on a Tesla T4 for compiled FlashSpec, compiled HuggingFace generate and eager HuggingFace generate, on HumanEval and MT-Bench, greedy and T=0.7 (bundle 3c43e08, default settings). The exact values are in the table above.](https://raw.githubusercontent.com/Mattral/FlashSpec/main/docs/images/throughput_3c43e08.png)
+
+The chart is drawn from the same JSON field as the table by `scripts/readme_chart.py`; it adds no number of its own.
 
 The full per-method table for the same run (eager FlashSpec and every HuggingFace baseline):
 
 <!-- BEGIN GENERATED: gpu-results (scripts/ingest_gpu_bundle.py) -->
 #### `Qwen/Qwen2.5-1.5B-Instruct` verified, `Qwen/Qwen2.5-0.5B-Instruct` drafting
 
-GPU Tesla T4 · torch 2.11.0+cu130 · gamma 4 · 20 result files · git `8d036d7`. Prompts: chat_template; n per row: 10. Cells are the stored JSON values, not rounded.
+GPU Tesla T4 · torch 2.11.0+cu130 · drafter strategy `composite-g6-f2` (prompt lookup up to 6 tokens when the context has a match, else the model drafter drafts 2; requested `auto`) · 20 result files · git `3c43e08`. Prompts: chat_template; n per row: 10. Cells are the stored JSON values, not rounded.
 
 | dataset | mode | method | tok/s median | tok/s p25 | tok/s p75 | acceptance | tokens / target fwd | target fwd / token | speedup vs plain HF (median) | speedup vs compiled plain HF (median) | speedup vs hf_assisted (median) | c (step profile) | greedy match | NaN/inf logits | peak GB |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| humaneval | greedy | flashspec_ucb | 26.02536363267037 | 24.113137938821488 | 26.416962512055154 | 0.7748324561339393 | 4.19672131147541 | 0.24609375 | 1.0193827466008485 | 0.5282968591639221 | 1.0318343857730912 | 0.845041661430388 | 10/10 | 0 | 3.9210314750671387 |
-| humaneval | greedy | flashspec_compiled | 73.49117484423093 | 67.66749962983283 | 75.22223233061746 | 0.7674472295086122 | 4.169381107491857 | 0.24765625 | 2.868400153448608 | 1.4929247183661758 | 2.968039793678412 | 0.4937086544815969 | 9/10 | n/a | 3.9358386993408203 |
-| humaneval | greedy | hf_greedy | 25.272922944874917 | 25.064466964565117 | 25.500231713400083 | n/a | 1.0078740157480315 | 1.0 | n/a | n/a | n/a | n/a | n/a | 0 | 3.9280996322631836 |
-| humaneval | greedy | hf_greedy_compiled | 49.27609336228632 | 49.1847500987219 | 49.34777025069719 | n/a | 1.0078740157480315 | 1.0 | n/a | n/a | n/a | n/a | 9/10 | n/a | 3.922210216522217 |
-| humaneval | greedy | hf_assisted | 24.19664417567833 | 22.245649238351376 | 25.200750728941774 | n/a | 7.231638418079096 | 0.14609375 | n/a | n/a | n/a | n/a | 10/10 | 0 | 4.010560035705566 |
-| humaneval | T=0.7 | flashspec_ucb | 23.054835447878503 | 21.110460201553547 | 24.779995491896514 | 0.6882722339966006 | 3.710144927536232 | 0.27734375 | 0.9109461711070447 | 0.46804709580075965 | 1.0736463665588767 | 0.8629833155074336 | n/a | 0 | 3.9422059059143066 |
-| humaneval | T=0.7 | flashspec_compiled | 65.40179447333742 | 59.35656427020519 | 68.5928206976523 | 0.7018560004266362 | 3.764705882352941 | 0.2734375 | 2.562178271321323 | 1.326870202978973 | 3.06365302315802 | 0.49779909081468227 | n/a | n/a | 3.9422059059143066 |
-| humaneval | T=0.7 | hf_sample | 25.444714453071143 | 25.347879588597422 | 25.543325368357564 | n/a | 1.0078740157480315 | 1.0 | n/a | n/a | n/a | n/a | n/a | 0 | 3.9432334899902344 |
-| humaneval | T=0.7 | hf_sample_compiled | 49.24821559481592 | 49.19260891088411 | 49.33891386116446 | n/a | 1.0078740157480315 | 1.0 | n/a | n/a | n/a | n/a | n/a | n/a | 3.936194896697998 |
-| humaneval | T=0.7 | hf_assisted | 20.25776424898342 | 19.350477197434962 | 22.45474429590343 | n/a | 6.037735849056604 | 0.1734375 | n/a | n/a | n/a | n/a | n/a | 0 | 4.024886608123779 |
-| mt_bench | greedy | flashspec_ucb | 19.572806929034726 | 18.512325739597685 | 20.655499375866352 | 0.5868378012374362 | 3.2653061224489797 | 0.3140625 | 0.7776848037196118 | 0.3925474950495035 | 1.1001251488328485 | 0.8672852493814422 | 9/10 | 0 | 3.902125835418701 |
-| mt_bench | greedy | flashspec_compiled | 55.69633073174627 | 52.71416447738182 | 57.00448545307138 | 0.5310738087770345 | 3.18407960199005 | 0.321875 | 2.2281081944682457 | 1.1161741322307486 | 3.0887126152344058 | 0.48626613558395965 | 10/10 | n/a | 3.9118690490722656 |
-| mt_bench | greedy | hf_greedy | 25.20267917967235 | 25.112631097015935 | 25.30654132302575 | n/a | 1.0078740157480315 | 1.0 | n/a | n/a | n/a | n/a | n/a | 0 | 3.9123334884643555 |
-| mt_bench | greedy | hf_greedy_compiled | 49.99045416467851 | 49.59376567557413 | 50.24789576812648 | n/a | 1.0078740157480315 | 1.0 | n/a | n/a | n/a | n/a | 10/10 | n/a | 3.9069666862487793 |
-| mt_bench | greedy | hf_assisted | 19.849014490485814 | 15.136578031686579 | 22.22945913877053 | n/a | 3.8905775075987843 | 0.26484375 | n/a | n/a | n/a | n/a | 10/10 | 0 | 3.9825186729431152 |
-| mt_bench | T=0.7 | flashspec_ucb | 20.18121040233048 | 18.115274461600237 | 21.17643975210253 | 0.5437414602239845 | 3.3333333333333335 | 0.3078125 | 0.7952682871520586 | 0.41020068096677864 | 1.234533396317398 | 0.8612503546546161 | n/a | 0 | 3.9191641807556152 |
-| mt_bench | T=0.7 | flashspec_compiled | 53.447483345537975 | 50.30655289847409 | 59.43461086804307 | 0.5374968568894605 | 3.2989690721649483 | 0.3109375 | 2.119677479254399 | 1.0837177249808096 | 3.3014455192389267 | 0.5416823432691761 | n/a | n/a | 3.923170566558838 |
-| mt_bench | T=0.7 | hf_sample | 25.344508384460696 | 25.114667710180996 | 25.389395380475488 | n/a | 1.0078740157480315 | 1.0 | n/a | n/a | n/a | n/a | n/a | 0 | 3.9262752532958984 |
-| mt_bench | T=0.7 | hf_sample_compiled | 49.189297069159096 | 49.090311507338804 | 49.27322962156904 | n/a | 1.0078740157480315 | 1.0 | n/a | n/a | n/a | n/a | n/a | n/a | 3.9209084510803223 |
-| mt_bench | T=0.7 | hf_assisted | 15.343815220295882 | 9.802755592886559 | 19.533044949645106 | n/a | 3.9751552795031055 | 0.259375 | n/a | n/a | n/a | n/a | n/a | 0 | 4.005769729614258 |
-- forward_cost (humaneval): c eager 0.8840264407247382, c compiled 0.47651099333876806
-- forward_cost (humaneval): c eager 0.8922046962713643, c compiled 0.4770852877691722
-- forward_cost (mt_bench): c eager 0.8978235042101232, c compiled 0.47562151975963995
-- forward_cost (mt_bench): c eager 0.9040499147358744, c compiled 0.47418886402988414
+| humaneval | greedy | flashspec_ucb | 35.695688670935155 | 29.562405679239028 | 38.56945102463008 | 0.3909112890710105 | 2.471042471042471 | 0.4125 | 1.451343369376347 | 0.7066183063738005 | 1.5587746305864147 | 0.8669655800732762 | 10/10 | 0 | 3.9214916229248047 |
+| humaneval | greedy | flashspec_compiled | 84.15121158912345 | 72.74887834456933 | 89.15351141840875 | 0.3919555827630965 | 2.4758220502901356 | 0.41171875 | 3.4316137147436416 | 1.6703915213699534 | 3.6799192622210697 | 0.5669970109881699 | 10/10 | n/a | 3.935239791870117 |
+| humaneval | greedy | hf_greedy | 24.429024644223723 | 24.328362833297252 | 24.54774113031622 | n/a | 1.0078740157480315 | 1.0 | n/a | n/a | n/a | n/a | n/a | 0 | 3.9279322624206543 |
+| humaneval | greedy | hf_greedy_compiled | 50.84919550812026 | 50.817140359183256 | 51.01212214615007 | n/a | 1.0078740157480315 | 1.0 | n/a | n/a | n/a | n/a | 9/10 | n/a | 3.9221267700195312 |
+| humaneval | greedy | hf_assisted | 23.302891492129334 | 21.183524392621223 | 24.424857044996198 | n/a | 7.231638418079096 | 0.14609375 | n/a | n/a | n/a | n/a | 10/10 | 0 | 4.010546684265137 |
+| humaneval | T=0.7 | flashspec_ucb | 28.096687974443004 | 25.489319336463833 | 37.08217864854619 | 0.3852359399073896 | 2.397003745318352 | 0.425 | 1.1429797583795867 | 0.5554736867969583 | 1.5315892372032842 | 0.8643673380226606 | n/a | 0 | 3.942927360534668 |
+| humaneval | T=0.7 | flashspec_compiled | 75.73985864164916 | 66.31949556957646 | 86.96726957235924 | 0.3852643082609558 | 2.401500938086304 | 0.42421875 | 3.066243803639478 | 1.5026896386679338 | 3.9158860079861073 | 0.5533693858522074 | n/a | n/a | 3.943270206451416 |
+| humaneval | T=0.7 | hf_sample | 24.497491036510233 | 24.352074445631605 | 24.59023809444537 | n/a | 1.0078740157480315 | 1.0 | n/a | n/a | n/a | n/a | n/a | 0 | 3.9425158500671387 |
+| humaneval | T=0.7 | hf_sample_compiled | 50.42612714053795 | 50.38888740804433 | 50.596619340479606 | n/a | 1.0078740157480315 | 1.0 | n/a | n/a | n/a | n/a | n/a | n/a | 3.9360790252685547 |
+| humaneval | T=0.7 | hf_assisted | 18.844078044479534 | 18.04090535750411 | 21.24417385471367 | n/a | 6.037735849056604 | 0.1734375 | n/a | n/a | n/a | n/a | n/a | 0 | 4.024676322937012 |
+| mt_bench | greedy | flashspec_ucb | 24.83938465726492 | 22.961833475251858 | 27.021801893823184 | 0.2620603532680512 | 1.9968798751950079 | 0.50859375 | 1.0179685727219971 | 0.4828425422653919 | 1.5451784248202172 | 0.8613753375863016 | 9/10 | 0 | 3.9019665718078613 |
+| mt_bench | greedy | flashspec_compiled | 65.5665446517103 | 59.93265391596037 | 71.89633242799991 | 0.2868673245081164 | 2.022116903633491 | 0.50234375 | 2.6870360558531057 | 1.2745206859837361 | 3.9853712833572263 | 0.5318390145420024 | 8/10 | n/a | 3.9116411209106445 |
+| mt_bench | greedy | hf_greedy | 24.358718936743088 | 24.18066265396688 | 24.491882521750334 | n/a | 1.0078740157480315 | 1.0 | n/a | n/a | n/a | n/a | n/a | 0 | 3.9123830795288086 |
+| mt_bench | greedy | hf_greedy_compiled | 51.56689852526201 | 51.44110439771817 | 51.6446975154745 | n/a | 1.0078740157480315 | 1.0 | n/a | n/a | n/a | n/a | 10/10 | n/a | 3.9070162773132324 |
+| mt_bench | greedy | hf_assisted | 18.834736736908617 | 14.102116189597641 | 20.858267222930852 | n/a | 3.8905775075987843 | 0.26484375 | n/a | n/a | n/a | n/a | 10/10 | 0 | 3.982469081878662 |
+| mt_bench | T=0.7 | flashspec_ucb | 25.26133407738635 | 23.020854972868243 | 28.43236543070436 | 0.2884380538950996 | 2.0611916264090175 | 0.49296875 | 1.0434498871962403 | 0.5027379844644687 | 1.784691816669535 | 0.8687020810505087 | n/a | 0 | 3.9193735122680664 |
+| mt_bench | T=0.7 | flashspec_compiled | 63.11715269934044 | 59.5644483083085 | 69.07556580010277 | 0.30095750082855754 | 2.071197411003236 | 0.490625 | 2.5801491971418065 | 1.2630258753083248 | 4.474878921310762 | 0.5388284128435155 | n/a | n/a | 3.9206857681274414 |
+| mt_bench | T=0.7 | hf_sample | 24.371632087092596 | 24.137529875735552 | 24.643657960930078 | n/a | 1.0078740157480315 | 1.0 | n/a | n/a | n/a | n/a | n/a | 0 | 3.9260549545288086 |
+| mt_bench | T=0.7 | hf_sample_compiled | 50.24734945285092 | 50.13961412887575 | 50.398525858279534 | n/a | 1.0078740157480315 | 1.0 | n/a | n/a | n/a | n/a | n/a | n/a | 3.9206881523132324 |
+| mt_bench | T=0.7 | hf_assisted | 14.341218875882541 | 9.085275562353358 | 18.19088437853941 | n/a | 3.9751552795031055 | 0.259375 | n/a | n/a | n/a | n/a | n/a | 0 | 4.005721092224121 |
+- forward_cost (humaneval): c eager 0.8987917949296391, c compiled 0.48198575930759086
+- forward_cost (humaneval): c eager 0.9153857271517092, c compiled 0.47814633355546243
+- forward_cost (mt_bench): c eager 0.9028193999622582, c compiled 0.4786350054126751
+- forward_cost (mt_bench): c eager 0.9178312220110205, c compiled 0.4804902594066257
 
 Speedups are medians of per-prompt ratios against the method in the same run. NaN/inf counts come from one untimed probe generation per method on the first prompt.
 <!-- END GENERATED: gpu-results -->
 
-Provenance, the earlier bundles, the older 0.1.5 runs, kernel microbenchmarks and how a run is recorded are in [docs/benchmarks.md](https://github.com/Mattral/FlashSpec/blob/main/docs/benchmarks.md). Every number above is a stored JSON value under [benchmarks/results/gpu/8d036d7](https://github.com/Mattral/FlashSpec/tree/main/benchmarks/results/gpu/8d036d7).
+Provenance, the earlier bundles, the older 0.1.5 runs, kernel microbenchmarks and how a run is recorded are in [docs/benchmarks.md](https://github.com/Mattral/FlashSpec/blob/main/docs/benchmarks.md). Every number above is a stored JSON value under [benchmarks/results/gpu/3c43e08](https://github.com/Mattral/FlashSpec/tree/main/benchmarks/results/gpu/3c43e08). The 0.2.0 tables (model drafter, bundle `8d036d7`) are kept in the same folder layout.
 
 ## How it works
 
@@ -305,14 +323,14 @@ With `compile` on, both models run on static KV caches and the fixed-shape decod
 
 - **Sampling is lossless.** Rejection sampling follows Algorithm 1 of Leviathan et al. (2023): a draft token `x` is kept with probability `min(1, p(x)/q(x))`, and a rejection samples from `max(0, p - q)`, normalised. The output then follows your model's distribution for any drafter. CI checks this with chi-squared tests on discrete tokens: [test_output_distribution.py](https://github.com/Mattral/FlashSpec/blob/main/tests/integration/test_output_distribution.py) for model drafters and [test_output_distribution_ngram.py](https://github.com/Mattral/FlashSpec/blob/main/tests/integration/test_output_distribution_ngram.py) for prompt lookup, which also shows that the checks fail on deliberately wrong residuals.
 - **Greedy equals HuggingFace.** At temperature 0 the output is `model.generate(do_sample=False)` token for token. CI checks it in float32 on CPU ([test_greedy_gold.py](https://github.com/Mattral/FlashSpec/blob/main/tests/unit/test_greedy_gold.py)).
-- **The fp16 caveat.** On a GPU in fp16, kernels of different shapes can round an exact tie between the top two tokens differently, so greedy output can differ from HuggingFace at such a tie. A T4 diagnostic found every path token-exact in fp32, and every fp16 divergence at an exact top-2 tie on one side ([diagnostic JSON](https://github.com/Mattral/FlashSpec/blob/main/benchmarks/results/diagnostics/width_gpu_t4_125d1a1.json)). Every greedy GPU result reports how many prompts matched.
+- **The fp16 caveat.** On a GPU in fp16, kernels of different shapes can round an exact tie between the top two tokens differently, so greedy output can differ from HuggingFace at such a tie. A T4 diagnostic found every path token-exact in fp32, and every fp16 divergence at an exact top-2 tie on one side ([diagnostic JSON](https://github.com/Mattral/FlashSpec/blob/main/benchmarks/results/diagnostics/width_gpu_t4_125d1a1.json)). Every greedy GPU result reports how many prompts matched. In the 0.3.0 release run the divergences behind 9/10 (HumanEval) and 8/10 (MT-Bench) are those same three ties: both sides' outputs are token-for-token those of the tie-checked comparison run (bundle `fdd3be9`).
 - `variant="typical"` is lossy. `"rejection"` and `"greedy"` are the lossless variants.
 
 ## Status and limitations
 
-FlashSpec is alpha; the release on PyPI is 0.2.0.
+FlashSpec is alpha, version 0.3.1.
 
-- **Measured scope.** One model pair (`Qwen/Qwen2.5-1.5B-Instruct` verified by `Qwen/Qwen2.5-0.5B-Instruct`), one Tesla T4, fp16, batch 1, 10 MT-Bench and 10 HumanEval prompts, run from `main` at git `8d036d7` with the default `compile="auto"`. No other GPU, model pair or batch size has been measured. Every H100 number in the docs is a design target.
+- **Measured scope.** One model pair (`Qwen/Qwen2.5-1.5B-Instruct` verified by `Qwen/Qwen2.5-0.5B-Instruct`), one Tesla T4, fp16, batch 1, 10 MT-Bench and 10 HumanEval prompts, run from `main` at git `3c43e08` with the defaults `compile="auto"` and `drafter_strategy="auto"` (which ran `composite-g6-f2`). No other GPU, model pair or batch size has been measured. Every H100 number in the docs is a design target.
 - **The first call compiles.** On CUDA the first `generate` compiles the forwards and captures CUDA graphs, which can take minutes; later calls reuse them. The tables exclude that call.
 - **Batch > 1** uses the generic loop: each step forwards only the largest group of rows that share a context length.
 - **Single device.** One process and one GPU or CPU. The server has no streaming, no paged KV cache and no continuous batching.

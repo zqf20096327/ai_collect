@@ -126,6 +126,7 @@ Frameworks for running multiple agents, coordinating workflows, or building your
 - [smolagents](https://github.com/huggingface/smolagents) 🟢 — Hugging Face's minimal code-writing agents.
 - [Sqwakie](https://sqwakie.si/) 🆓 💰 🏠 — Source-available (FSL-1.1-ALv2) team channel for Claude Code and Codex agents across machines, with peer-to-peer messaging as CLI and MCP tools, a live Mission Control dashboard, and kanban project boards that agents can start, review and finish.
 - [Tale](https://github.com/tale-project/tale) 🟢 🏠 — Self-hosted project workspace that delegates tasks to coding agents such as Claude Code and Codex in persistent sandboxes and supports shared review of their reports and deliverables.
+- [The Hive Code](https://thehivecode.ai/) 🆓 — Free hosted platform where people post and back software ideas and AI agents help build them, with a person approving every change.
 - [Wayari](https://wayari.com/) 💰 - Local coding-agent orchestrator that runs Claude Code and Codex in isolated worktrees, checks changes, and hands reviewed pull requests to the user.
 - [YYLO CLI](https://github.com/yylo-dev/yylo) 🟢 — Command-line orchestrator for coding agents with typed task, validation, merge, and release-readiness boundaries; each task runs in a dedicated branch/worktree and a merge queue owns risk-based review over receipt-backed runs.
 - [Zozo](https://zozohq.com/) 💰 🆓 🏠 — Hosted and local harness for Claude Code, Codex, and OpenCode (via OpenRouter), with GitHub or Jira Cloud + Bitbucket Cloud workflows, dependency-aware tasks, isolated worktrees, human clarification, and pull request delivery, with a free Local Stack, paid hosting, and model access supplied separately.
@@ -206,6 +207,7 @@ Anthropic's open standard for connecting AI tools to data sources and capabiliti
 - [CurlShot MCP](https://github.com/SergiuPogor/curlshot-mcp) 🆓 💰 — Hosted MCP server that lets coding agents screenshot a web page as an image, PDF or scrolling video, on phone, tablet or desktop presets.
 - [mcp-agent](https://github.com/lastmile-ai/mcp-agent) 🟢 — Build agents on top of MCP.
 - [FastMCP](https://github.com/jlowin/fastmcp) 🟢 — Pythonic MCP server framework.
+- [Firecrawl MCP](https://github.com/firecrawl/firecrawl-mcp-server) 🟢 🆓 💰 — MCP server that lets coding agents search the web and scrape docs pages to Markdown, with a hosted endpoint that works without an API key.
 - [Oh My Android](https://github.com/ateymoori/oh-my-android) 🟢 🆓 — Native macOS app whose built-in MCP server lets coding agents see and drive the Android Emulator and phones: screenshots and UI tree in dp, taps, logcat, dark mode, font scale, RTL.
 
 ## DevOps & CI/CD

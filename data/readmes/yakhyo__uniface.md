@@ -5,7 +5,7 @@
 <div align="center">
 
 [![PyPI Version](https://img.shields.io/pypi/v/uniface.svg?label=Version)](https://pypi.org/project/uniface/)
-[![Python Version](https://img.shields.io/badge/Python-3.10%2B-blue)](https://www.python.org/)
+[![Python Version](https://img.shields.io/badge/Python-3.11%2B-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Github Build Status](https://github.com/yakhyo/uniface/actions/workflows/ci.yml/badge.svg)](https://github.com/yakhyo/uniface/actions)
 [![PyPI Downloads](https://static.pepy.tech/personalized-badge/uniface?period=total&units=INTERNATIONAL_SYSTEM&left_color=GRAY&right_color=BLUE&left_text=Downloads)](https://pepy.tech/projects/uniface)
@@ -39,10 +39,7 @@ pip install "uniface[gpu]"          # NVIDIA CUDA
 pip install --pre "uniface[cpu]"    # latest pre-release
 ```
 
-<details>
-<summary><b>A first script</b></summary>
-
-<br>
+### A first script
 
 `FaceAnalyzer` runs detection, alignment and recognition in one call. Attribute models are opt-in.
 
@@ -58,8 +55,6 @@ for face in analyzer.analyze(cv2.imread("photo.jpg")):
 
 `bbox`, `confidence`, `landmarks` and `embedding` are always set. Age, sex, race, emotion, quality
 and the face states stay `None` until you pass the predictor that fills them.
-
-</details>
 
 <details>
 <summary><b>All fifteen tasks, and which model does each</b></summary>

@@ -138,7 +138,17 @@ executable accepts the same `serve` commands. `--serve` remains an alias.
 Use this entry point for UDPFS to get the same automatic compatibility engine
 as Desktop; `udpfs_server/udpfs_server.py` is the underlying legacy engine.
 
+For unattended Python Core UDPFS, see the [Alpine/OpenRC service example](packaging/openrc/README.md)
+and [Core troubleshooting guide](docs/UDPFS-CORE-TROUBLESHOOTING.md).
+The startup banner records build identity and effective socket/timeout/write
+settings so a service log can identify the running configuration.
+
 ## External-drive access
+
+The optional Library tab can index root-level and nested images when **Include
+root and subfolders** is selected. Scanning remains top-level `CD/` and `DVD/`
+by default. See [library indexing](docs/LIBRARY-INDEXING.md) for depth/work
+limits, cancellation, unknown media, and console launch limitations.
 
 Select the mounted games folder or image file, then click **Check access** on
 the server card. Results appear in a dialog and the Terminal log. The check

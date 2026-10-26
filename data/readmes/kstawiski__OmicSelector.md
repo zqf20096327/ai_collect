@@ -189,7 +189,7 @@ mlr3::lrn("classif.clr_mlp", backend = "glm", verbose = FALSE)
 
 ```r
 # Install the release described in the accompanying article
-remotes::install_github("kstawiski/OmicSelector@v2.6.7")
+remotes::install_github("kstawiski/OmicSelector@v2.6.9")
 
 # Or install the current development version
 remotes::install_github("kstawiski/OmicSelector")
@@ -197,6 +197,16 @@ remotes::install_github("kstawiski/OmicSelector")
 # Load the package
 library(OmicSelector)
 ```
+
+Version 2.6.9 changes every TabDPT fit with more than 128 features. It removes
+undetermined directions and fixes arbitrary projection signs using
+exact float64 CPU SVD and a positive largest-absolute-loading convention.
+Only numerically determined directions are retained, up to 128. The fitted
+classifier records `projection_rank`, `projection_q`, `projection_rank_tolerance`,
+`projection_min_retained_ratio` and `projection_sign_min_margin`, the smallest gap
+between the two largest absolute loadings in any retained direction. A zero
+margin marks a tie. Fits with at most 128 features, TabPFN and TabICL keep their
+existing paths.
 
 ---
 

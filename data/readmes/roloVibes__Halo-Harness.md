@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/roloVibes/Halo-Harness/releases"><img alt="version 3.2.1.0" src="https://img.shields.io/badge/version-3.2.1.0-5b4bd6"></a>
+  <a href="https://github.com/roloVibes/Halo-Harness/releases"><img alt="version 3.3.0.0" src="https://img.shields.io/badge/version-3.3.0.0-5b4bd6"></a>
   <a href="https://github.com/roloVibes/Halo-Harness/actions/workflows/suites.yml"><img alt="CI" src="https://github.com/roloVibes/Halo-Harness/actions/workflows/suites.yml/badge.svg"></a>
   <img alt="python 3.10+" src="https://img.shields.io/badge/python-3.10%2B-3776ab">
   <img alt="Linux, macOS, Windows" src="https://img.shields.io/badge/platform-Linux%20%7C%20macOS%20%7C%20Windows-2b2b2b">
@@ -56,16 +56,23 @@ Assign specialized agents different models and responsibilities, coordinate para
 Install, then `halo start`:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/roloVibes/Halo-Harness/v3.2.1.0/scripts/install-halo.sh | bash
-halo init        # the wizard: provider, model, permission mode, theme, lineup
-halo start       # the ten-minute start: a lineup, a sample repo, one Orchestra run, its report and coach
+curl -fsSL https://raw.githubusercontent.com/roloVibes/Halo-Harness/v3.3.0.0/scripts/install-halo.sh | bash
+halo init        # opens Halo Studio on Setup: provider, model, permission mode, theme, lineup, checks
+halo start       # the guided first run: its card (models, cost, time, what it writes), then one real Orchestra run
 ```
 
 Windows:
 
 ```powershell
-powershell -ExecutionPolicy ByPass -c "irm https://raw.githubusercontent.com/roloVibes/Halo-Harness/v3.2.1.0/scripts/install-halo.ps1 | iex"
+powershell -ExecutionPolicy ByPass -c "irm https://raw.githubusercontent.com/roloVibes/Halo-Harness/v3.3.0.0/scripts/install-halo.ps1 | iex"
 ```
+
+<a href="docs/media/studio-setup.png"><img alt="Studio's Setup section as halo init opens it: the step rail across the top (Providers current, the steps already set ticked), its line saying set up this box, OpenRouter set from the env file with its last four characters, the default model, the lineup, the permission mode and the last check; the first page, Providers, one card per provider" src="docs/media/studio-setup.png" width="100%"></a>
+
+The first thing after install: `halo init` opens Studio on **Setup**, the page above. It goes one page at a
+time in the wizard's order (Back / Next, a Summary last), each block with its own Save; the rail on top says what is set. Over SSH or on a box with no
+browser it prints the URL (with the port-forward line) and runs the terminal wizard; `halo init --terminal`
+asks for that wizard anywhere.
 
 The installer is fetched from a release tag, never a moving branch, and installs the
 newest tag; `--ref <tag>` (`-Ref` on Windows) pins another. The installer may run
@@ -78,9 +85,13 @@ Windows): it asks first, shows what uv changed, and `--no-modify-path` (`-NoModi
 or `/update` inside the TUI. Offline work boxes, PEP 668 and reproducible installs are
 covered in [docs/INSTALL.md](docs/INSTALL.md).
 
-**Your first ten minutes.** `halo init` asks for a provider key, a default model and a
-permission mode (its last step offers the ten-minute start). `halo start` then walks one
-real piece of work, one screen per step: it copies a shipped lineup into one of yours,
+**Your first run.** In Setup (or the terminal wizard) you paste a provider key, pick a default model
+and a permission mode; its Check block lists the checks it can run (doctor, the model catalog and one
+hello call ticked; the quick gym and the guided first run off), each with what it does,
+costs and takes, and you tick the ones to run (`halo check` runs the same list later).
+`halo start`, the guided first run, opens on a card: the models it will call, an estimated
+cost, the time and what it writes (`halo start --explain` prints only the card). Then it walks
+one real piece of work on your models, one screen per step: it copies a shipped lineup into one of yours,
 writes a small sample repo, gives your agents one Orchestra goal, shows the lead's plan
 for you to approve (or change on Studio's plan canvas), runs the lanes, and ends on the
 report, the coach and where to go next. `halo explain <word>` says what any word means
@@ -103,7 +114,7 @@ OpenAI API, Ollama, Hugging Face, or any OpenAI-compatible server you host), and
 
 ## Halo Studio
 
-`halo studio` opens Studio in your browser. It is one window with seven sections under one
+`halo studio` opens Studio in your browser. It is one window with eight sections under one
 header, and two of them are where you watch your agents: **Session**, the dashboard of everything working
 right now, and **Roles**, your lineup as cards that light up as their agents work.
 
@@ -180,7 +191,7 @@ it; Save writes the lineup's YAML and Apply makes it the lineup new sessions use
 
 ### Six sections, one window
 
-<a href="docs/media/studio-modes.png"><img alt="Halo Studio's seven sections side by side, each under its key: Session (Alt+1), Team (Alt+2), Roles (Alt+3), Fleet (Alt+4), Design (Alt+5), Orchestra (Alt+6) and Packs (Alt+7)" src="docs/media/studio-modes.png" width="100%"></a>
+<a href="docs/media/studio-modes.png"><img alt="Halo Studio's eight sections side by side, each under its key: Session (Alt+1), Team (Alt+2), Roles (Alt+3), Fleet (Alt+4), Design (Alt+5), Orchestra (Alt+6), Packs (Alt+7) and Setup (Alt+8)" src="docs/media/studio-modes.png" width="100%"></a>
 
 `Alt+1` to `Alt+6` switch between **Session**, **Team**, **Roles**, **Fleet**,
 **Design** and **Orchestra**. Each section opens on a Start view that says what it is for,
@@ -192,8 +203,13 @@ The seventh, **Packs** (`Alt+7`), is the Pack Manager: it lists the packs in the
 you trust (the folders and git urls of `packs.sources`, and the Documentation Review pack
 Halo ships), shows what each brings and asks for, and installs, grants, enables, sets up,
 updates and removes them through the same code as `halo pack`. An enabled pack's own
-section comes after it. See [docs/STUDIO-packs.md](docs/STUDIO-packs.md) and
+section comes after the core sections. See [docs/STUDIO-packs.md](docs/STUDIO-packs.md) and
 [docs/PACKS.md](docs/PACKS.md).
+
+The eighth, **Setup** (`Alt+8`, 3.3.0.0), is this box's setup on one page: the terminal wizard's blocks
+(the providers, local models, the default model, the permission mode, the terminal theme, the lineup,
+the Linux fixes when a box needs them, and the five checks) as forms you fill in any order, each saving the
+key `halo init --terminal` and `halo config set` write; `halo init` opens it, and so does a home with no provider set up. See [docs/STUDIO-setup.md](docs/STUDIO-setup.md).
 
 The pictures here are headless-Chrome renders of Studio over fixture data
 (`tools/capture_studio.py`, and `tools/capture_session_anim.py` for the animated ones).
@@ -326,7 +342,7 @@ tool, so check each tool's own docs.
 
 | | |
 |---|---|
-| **Halo Studio** | `halo studio`, or `/studio` in a session: the browser console, seven sections under one header. Loopback only, a per-launch token, no CDN. |
+| **Halo Studio** | `halo studio`, or `/studio` in a session: the browser console, eight sections under one header. Loopback only, a per-launch token, no CDN. |
 | **The Session dashboard** | One live column of every agent's thinking, tool calls (what each runs on, its time, its result), hand-backs and asks; the map of who spawned whom with each agent's model, cost and running tool; the context bar, the spend and each agent's share. |
 | **The Roles glow** | Your lineup as cards in tier boxes. While a session runs, a card glows in its agent's state: working cyan, waiting amber, done green that fades over ten seconds, failed red until you click it. Hover the card and it explains its glow. |
 | **Fleet and missions** | Every harness on one map, one attention queue across all of them, and one goal split into parts by what each harness can do. |
@@ -366,7 +382,7 @@ line on when to read it. The longest docs are split by task; their entry pages b
 | [docs/SLASH-COMMANDS.md](docs/SLASH-COMMANDS.md) | Every slash command in the TUI |
 | [docs/CONFIG.md](docs/CONFIG.md) | Config keys, paths and environment variables |
 | [docs/MODELS.md](docs/MODELS.md) | Model families, effort levels and per-route rules |
-| [docs/LOCAL-MODELS.md](docs/LOCAL-MODELS.md) | Ollama, Hugging Face and the OpenAI API, end to end |
+| [docs/LOCAL-MODELS.md](docs/LOCAL-MODELS.md) | Ollama, Hugging Face and the OpenAI API, end to end; `halo ollama discover` finds the Ollama servers on this machine and the network, adds them and measures their models |
 | [docs/DATABRICKS.md](docs/DATABRICKS.md) | Databricks endpoints, API types and the work matrix |
 | [docs/AGENTS.md](docs/AGENTS.md) | Agent bios and lineups: the 90-second version, then the field reference |
 | [docs/DESIGN.md](docs/DESIGN.md) | Halo Design: the project on disk, a design turn, the craft apps, knobs, systems, exports, the handoff |

@@ -72,6 +72,7 @@ review and idea.
 <a href="https://github.com/lucasholman" title="lucasholman"><img src="https://avatars.githubusercontent.com/u/339287918?s=72" width="72" height="72" alt="lucasholman" /></a>
 <a href="https://github.com/lilianmoraru" title="lilianmoraru"><img src="https://avatars.githubusercontent.com/u/621738?s=72" width="72" height="72" alt="lilianmoraru" /></a>
 <a href="https://github.com/Kn-ut99" title="Kn-ut99"><img src="https://avatars.githubusercontent.com/u/73541663?s=72" width="72" height="72" alt="Kn-ut99" /></a>
+<a href="https://github.com/vanelin" title="vanelin"><img src="https://avatars.githubusercontent.com/u/18135591?s=72" width="72" height="72" alt="vanelin" /></a>
 </p>
 
 Contributions of every kind are welcome: code, bug reports, documentation and

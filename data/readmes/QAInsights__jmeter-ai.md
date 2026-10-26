@@ -69,10 +69,12 @@
 | 🖥️ **AI CLI Terminal** | Run **Claude Code**, **OpenAI Codex**, **OpenCode**, **Antigravity**, or **Grok CLI** directly in JMeter. This interactive terminal is separate from CLI-backed chat providers. |
 | 🎯 **Extract this** | Highlight a value in a View Results Tree response, right-click and pick **Extract this (Feather Wand)**. Feather Wand builds JSON, CSS selector, regex and boundary extractors, runs each one through JMeter's own extractor code against the real response, and offers only the ones that return exactly that value. Pick one, name the variable and it lands under the sampler that produced the response, optionally replacing later hard-coded copies with `${var}`. Works without an API key. |
 | 🧹 **Smart Refactoring** | Right-click in the JSR223 editor to refactor, format, or inject functions with AI. |
-| 🔍 **Context-Aware Commands** | `@this`, `@testplan`, `@optimize`, `@lint`, `@wrap`, `@code`, `@usage`, each tailored to your test plan. |
+| 🔍 **Context-Aware Commands** | `@this`, `@testplan`, `@optimize`, `@lint`, `@wrap`, `@load`, `@fix`, `@code`, `@usage`, each tailored to your test plan. |
+| 📈 **Workload Designer** | Describe sample or message rates, iterations, users and generator hosts. Preview the sampler mix and closed-model load shape, apply JMeter properties and copy a ready CLI command without an AI call. |
 | 🔔 **Audio Chime** | Optional sound notification when AI finishes responding. |
 | 🐾 **Companion Pet** | A draggable animated pet that reacts to your test runs: cheers on success, frowns on failures. Pick from quill, glim, peacock, or monkey. |
 | 🤖 **Agent Mode** | AI autonomously edits your test plan through 21 tools with API-backed Claude, OpenAI, Gemini, DeepSeek, Grok, OpenRouter, Meta Muse, or the ChatGPT/Codex, Claude Code, and OpenCode CLI providers. |
+| 🛠️ **Make it pass** | Run a plan once with one user, let a restricted Agent repair failures, and verify each round with a real JMeter run. |
 | **Jev Smart Routing** | Optional TypeSafe Jev (or OpenAI Decisions, OpenRouter Decisions with Microsoft-Decision-1, or local EmbeddingGemma through Ollama) intent routing gives Agent Mode a focused tool pack, with a visible route/confidence card and automatic full-tool fallback. |
 | 🔧 **Searchable Model Picker** | Search by model or provider, inspect context/cost/capabilities, pin favorites, reuse recent models, and hide non-chat clutter. |
 | ⚙️ **Fully Configurable** | Customize prompts, temperature, tokens, history, CLI timeouts/sandboxing, and more via JMeter properties. |
@@ -650,6 +652,8 @@ Type any of these directly in the chat box. All commands are context-aware and w
 | `@code` | Extract the last AI code block into the JSR223 editor. | `@code` |
 | `@usage` | Show token-usage stats and recent conversation history. | `@usage` |
 | `@sla` | Add SLA assertions (Duration Assertion and response-code Response Assertion) under the selected element. No AI call. | `@sla p95 under 800 ms and no 5xx` |
+| `@load` | Design sample rate, threads, ramp-up and generator setup from a target. No AI call. | `@load 200 rps, 10 min ramp-up, 1 hour soak` |
+| `@fix` | Run the plan with 1 user and fix failures until it passes. | `@fix` |
 | `@prompts` | Browse and insert prompts from the prompt library. | `@prompts analyze` |
 
 ### 📚 Prompt Library
@@ -673,6 +677,21 @@ User prompts live in `~/.jmeter-ai/prompts.json` (unencrypted, so do not save cr
 - **Response time:** "under 800 ms", "below 1.5 s", "max 300ms" add a **Duration Assertion**. If you name a percentile or average (`p95`, `p99`, `avg`), the reply explains that JMeter assertions check each sample, so any single sample over the limit fails. That is stricter than a p95 target; read the percentile itself from the HTML dashboard or Aggregate Report.
 - **Response codes:** "no 5xx", "no 4xx or 5xx", "no errors", "only 2xx" or "status 200" add a **Response Assertion** on the response code with a clear failure message.
 - **Not supported:** run-level targets such as error rate or throughput are listed as "Not added", because a per-sample assertion can't check them. Anything else the parser doesn't recognise is listed back to you, never guessed.
+
+### `@load` Details
+`@load` opens a local workload designer. It parses the command without an AI call or server connection, previews the thread ramp and steady hold, and applies reviewed values to an enabled Thread Group.
+Open it from the toolbar button or Run > Workload Designer..., or type `@load` in chat.
+
+- **Targets and inputs:** samples per second, including requests, queries and messages; `rps`, `tps`, `qps`, `requests per second`, `queries per second`, `transactions per second`, `msg/s` and `messages per second`; iterations or journeys per second, minute or hour; concurrent users or threads; response time, think time, ramp-up, hold duration, generator hosts and maximum threads per generator. Thousands separators and `k`/`m` suffixes are supported. Message targets also ask for messages per sample.
+- **Sizing:** for a sample-rate target, `threads ≈ samples/s × (response time + think time) × 1.5`. Iteration rates are multiplied by the number of enabled samplers in one iteration. The iteration estimate counts each enabled sampler once; If, Loop, Throughput and Transaction (parent sample) controllers change the actual number. A message target is converted to samples per second by dividing by messages per sample. User targets keep the requested thread count and can optionally be capped at a sample rate.
+- **Sampler mix and protocol notes:** the results show enabled HTTP, JDBC, JMS, SMTP, TCP, Kafka, JSR223 and other samplers. A small JDBC pool warns when its connection limit is lower than the threads assigned to that generator. Kafka and JMS notes explain that one sample may carry multiple messages and that a Constant Throughput Timer only approximates a producer's open-model fixed rate. SMTP notes recommend a sandbox server when mail rate limits may apply.
+- **Generator setup:** enter comma-separated hostnames to set the generator count and use those hosts with `-R`. With no hosts, the command uses `agent1..N` placeholders and the dialog explains how to replace them or configure `remote_hosts`. The per-generator capacity warning compares the required generator count with the selected count. Distributed notes cover CSV file paths, RMI SSL, consistent JMeter/Java/plugin versions and the per-generator scope of `-G` properties.
+- **Generator capacity:** optionally enter vCPUs, RAM in GB, a measured maximum thread count from a calibration run, or a samples-per-vCPU estimate. Measured capacity takes precedence. Without a measured value, RAM estimates thread capacity and vCPUs estimate sample-rate capacity. Script-heavy plans use a lower default CPU estimate. With no specification, the thread cap remains 1,000 per generator. These estimates include a heap-over-RAM warning and a reminder to calibrate on one generator.
+- **`remote_hosts`:** when `remote_hosts` in `jmeter.properties` contains a valid non-local host list, the dialog prefills Generator hosts if its count matches the command. Invalid hosts, local-only lists and count mismatches are ignored.
+- **Ask AI:** when a model is available, Ask AI can translate a goal into form values and explain risks. It does not calculate threads, timers or commands. The deterministic calculator remains authoritative. The prompt includes structure counts only, never URLs, hostnames, paths, element names, variable names or script contents.
+- **Applied properties:** the Thread Group receives `ThreadGroup.num_threads`, `ThreadGroup.ramp_time`, `ThreadGroup.scheduler=true`, `ThreadGroup.duration` and infinite loops on its main Loop Controller. Rate targets add or update an enabled Constant Throughput Timer; positive think time adds or updates an enabled Constant Timer. Clearing an `@load` rate or think time disables its managed timer. Values use `${__P(load.*)}` properties by default, with the prefix editable in the dialog. Ctrl+Z in chat restores the prior values and removes timers added by the command.
+- **Heap and CLI:** the dialog shows a per-generator heap rule of thumb, rounds up in 512 MB steps, and generates a command for Bash, Windows cmd or PowerShell. Use `-J` properties for one generator or `-R` and `-G` properties for distributed generators. Heavy listeners, large responses and scripts may need more heap, so confirm the estimate with a short run.
+- **Limits:** only a closed-model ramp-up and steady hold are configured. Spike, step and ramp-down shapes require an Open Model Thread Group or another plugin. Existing timers and controller-driven sample counts are not included in the estimate.
 
 ### `@wrap` Details
 `@wrap` uses pattern matching (not AI) to group related HTTP samplers under Transaction Controllers, preserving child elements and hierarchy. Great for imported or recorded plans.
@@ -710,6 +729,18 @@ All supported providers share the same tool registry, system prompt, safety gate
 
 > 💡 **Thinking in Agent Mode (Claude & Gemini)**: when the Thinking checkbox is on, each agent turn's reasoning accumulates in a collapsed **Thoughts** card next to the tool-activity group. Agent loops pay the thinking budget on *every* iteration; keep the effort at `medium`, or pin an agent-only level with `jmeter.ai.agent.thinking.effort` (empty = follows the toolbar).
 
+### Make it pass
+
+Type `@fix` or click the **Make it pass** offer after a recording or a failed Agent test. Feather Wand backs up the plan, runs a real JMeter check with one user and one loop, and asks the selected Agent provider to repair failures using a restricted set of plan-editing tools. It also detects common soft failures such as an error page returned with HTTP 200, adds title-based response assertions, and installs View Results Tree and Summary Report listeners when missing. After a passing one-user run, it checks two users for two loops and repairs multi-user failures within the same round limit by default. JMeter results decide whether the plan passes. A result card includes a redacted plan diff, remaining failures, and an Open report action. Markdown reports are retained under `~/.jmeter-ai/fix-reports/`, keeping the latest 20.
+
+Before the first run, Feather Wand shows the HTTP sampler and HTTP Request Defaults hosts and asks for confirmation. Host variables are resolved when their values are available; unresolved placeholders remain literal. Confirmed host sets are remembered only for the current JMeter session. The repair agent cannot remove, disable, or move requests; remove or weaken assertions; add or change scripts (JSR223, BeanShell, or `__groovy`-style functions) or non-HTTP samplers; or change Thread Group settings or variables used in hosts. A result card offers **Keep**, **Undo all**, and JMeter's **Save as** action. Undo all asks before discarding edits made after the fix finished. Automatic backups are saved under `~/.jmeter-ai/fix-backups/`; the newest ten are kept.
+
+| Property | Description | Default |
+| --- | --- | --- |
+| `jmeter.ai.fix.max.rounds` | Maximum repair rounds, clamped from 1 to 10 | `5` |
+| `jmeter.ai.fix.timeout.seconds` | Timeout for each JMeter check, clamped from 10 to 900 seconds | `120` |
+| `jmeter.ai.fix.concurrency.check` | Run the final two-user, two-loop check and repair its failures | `true` |
+
 ### Optional Jev Smart Routing
 
 [Jev](https://docs.typesafe.ai/concepts/system-one) is an optional TypeSafe judgment model used only to classify an Agent Mode request before the selected chat model starts. A confident single-purpose classification advertises a focused tool pack; complex requests, low confidence, or service failures receive the complete standard registry. Without a real `typesafe.api.key` Jev stays off entirely: no TypeSafe requests and no Jev card, even if the flags below are `true`.
@@ -732,7 +763,7 @@ When enabled with a real API key, every request shows a dedicated **Jev Smart Ro
 
 With `jmeter.ai.typesafe.agent.routing.expansion.enabled=true`, a focused pack also advertises an `expand_tools` escape hatch: if the model realises it needs a capability outside its pack, it can ask for more tools instead of giving up. Jev re-classifies the request with the model's stated need, the live tool set grows (never shrinks, capped by `expansion.max`, never beyond the full registry), and a second **Jev Expanded Tools** card lists what was added. The grown tool set is re-advertised to the provider on the model's next request, so newly added tools are actually callable for the API-backed models (Claude, OpenAI, Gemini, DeepSeek, Grok, OpenRouter, Meta Muse) and the subscription CLIs, whose tool protocol is re-issued in the next prompt. Newly exposed destructive tools still require the usual confirmation.
 
-With `jmeter.ai.typesafe.agent.triage.enabled=true` (independent of routing), Jev also classifies failures reported by `get_test_results`. Each unique failure signature — sampler label, response code, and a bounded message — gets one Choice judgment into a root-cause bucket (connection, timeout, 4xx/5xx, auth/session, assertion, script, config), capped at `triage.max.failures` signatures per run. The verdicts surface in a **Jev Failure Triage** card grouped by category with a dominant-cause callout, and an advisory summary is appended to the tool result so the chat model diagnoses from a categorized picture. When at least one failure is classified, triage on every backend (Jev, OpenAI Decisions and OpenRouter Decisions) then asks one extra `score` question for the whole run and shows a **severity** of Low, Medium, High or Critical on the card and in the advisory, for example "severity: High (88%)". The score uses the same confidence threshold; a low-confidence or failed score just leaves severity out and keeps the categories. Triage is advisory only: unavailable Jev, a missing key, or a clean run leaves the result untouched.
+With `jmeter.ai.typesafe.agent.triage.enabled=true` (independent of routing), Jev also classifies failures reported by `get_test_results`. Each unique failure signature: sampler label, response code, and a bounded message gets one Choice judgment into a root-cause bucket (connection, timeout, 4xx/5xx, auth/session, assertion, script, config), capped at `triage.max.failures` signatures per run. The verdicts surface in a **Jev Failure Triage** card grouped by category with a dominant-cause callout, and an advisory summary is appended to the tool result so the chat model diagnoses from a categorized picture. When at least one failure is classified, triage on every backend (Jev, OpenAI Decisions and OpenRouter Decisions) then asks one extra `score` question for the whole run and shows a **severity** of Low, Medium, High or Critical on the card and in the advisory, for example "severity: High (88%)". The score uses the same confidence threshold; a low-confidence or failed score just leaves severity out and keeps the categories. Triage is advisory only: unavailable Jev, a missing key, or a clean run leaves the result untouched.
 
 Jev never appears in the model picker, generates the answer, selects tool arguments, executes a tool, or bypasses destructive-operation confirmation. Feather Wand sends TypeSafe only the current request with attachment bodies removed plus, for triage, failure labels/codes/truncated messages; it does not send conversation history, the serialized test plan, element properties, result bodies, headers, cookies, or provider credentials. Leave either feature flag false to make zero TypeSafe requests and preserve the original Agent Mode path.
 
@@ -1194,121 +1225,4 @@ A draggable animated companion that lives on the JMeter canvas and reacts to you
 # Enable the companion pet (off by default)
 jmeter.pet.enable=true
 
-# Which pet to show: quill, glim, peacock, or monkey
-jmeter.pet.name=quill
-
-# Render scale (0.25 - 2.0); 0.5 shows the pet at about 96x104 pixels
-jmeter.pet.scale=0.5
-```
-
-| Property | Description | Default |
-|----------|-------------|---------|
-| `jmeter.pet.enable` | Show the companion pet on the canvas | `false` |
-| `jmeter.pet.name` | Which pet sprite to display (one of `quill`, `glim`, `peacock`, `monkey`) | `quill` |
-| `jmeter.pet.scale` | Render scale, clamped to `[0.25, 2.0]` | `0.5` |
-
-Invalid values never fail; they log a warning and fall back to the defaults above.
-
-### Animation States
-
-Each pet spritesheet is an 8-column × 9-row atlas (192×208 px cells). Frame counts are auto-detected per row by scanning for the first fully transparent cell, so no per-pet frame configuration is needed. The nine rows map to these states:
-
-| Row | State | Loops | When it plays |
-|-----|-------|-------|---------------|
-| 0 | `IDLE` | yes | Resting between runs |
-| 1 | `RUNNING_RIGHT` | yes | Test running (moving right) |
-| 2 | `RUNNING_LEFT` | yes | Test running (moving left) |
-| 3 | `WAVING` | no | Greeting / celebrating a clean run |
-| 4 | `JUMPING` | no | Celebratory jump |
-| 5 | `FAILED` | no | A sampler failed |
-| 6 | `WAITING` | yes | Waiting for the test to progress |
-| 7 | `RUNNING` | yes | General running animation |
-| 8 | `REVIEW` | yes | Reviewing results at the end of a run |
-
-Looping states play continuously; one-shot states play a fixed number of loops and then revert to the animator's base state.
-
-## 💻 Multi-AI CLI Terminal
-
-<div align="center">
-
-<img src="./images/feather-wand-terminal.png" alt="Feather Wand AI CLI Terminal logo" width="140">
-
-</div>
-
-An embedded interactive terminal (JediTerm) that brings agentic AI CLIs directly into JMeter. The same terminal mark appears in the JMeter Run menu, toolbar, and terminal header.
-
-**Supported CLIs:** Claude Code · OpenAI Codex · OpenCode · Antigravity · Grok CLI
-
-**How it works**
-1. Install one or more CLIs on your `PATH`.
-2. Feather Wand auto-detects them on startup.
-3. Pick a CLI from the dropdown in the terminal header.
-4. The terminal receives your open `.jmx` context via an auto-generated `CLAUDE.md`.
-5. Use natural language to run tests, parse JTL files, refactor scripts, and more.
-
-**Buttons**
-- **Reload**: refresh the test plan from disk.
-- **Ctx**: resend the current test-plan context.
-
-**Architecture**
-Built on an Adapter Pattern: `AiCliAdapter` → `BaseCliAdapter` → concrete adapters (`ClaudeCodeCliAdapter`, `OpenAiCodexCliAdapter`, ...). To add a new CLI, implement `AiCliAdapter` and register it in `detectAvailableClis()`.
-
-> ⚠️ **Caution**: AI CLIs can execute commands and modify files. Review each CLI's documentation before enabling.
-
-### CJK / font support
-
-The terminal supports configurable fonts and CJK fallback. By default, `jmeter.ai.terminal.font.cjk.fallback=true` automatically picks the best CJK-capable font on your system. If you prefer a Western monospaced font, set `jmeter.ai.terminal.font.cjk.fallback=false`.
-
-See the [AI CLI Terminal configuration](#ai-cli-terminal) section for the full property table and recommended setups.
-
-## 🗝️ API Configuration
-
-### Quick Setup
-
-| Provider | Steps | Property |
-|----------|-------|----------|
-| **Claude** | Sign up at [anthropic.com](https://www.anthropic.com/) → create API key | `anthropic.api.key` |
-| **OpenAI** | Sign up at [platform.openai.com](https://platform.openai.com/) → create API key | `openai.api.key` |
-| **Gemini** | Sign in at [Google AI Studio](https://aistudio.google.com/) → Get API Key | `google.api.key` |
-| **Ollama** | Install from [ollama.com](https://ollama.com/) → `ollama pull llama3.1` | No key needed |
-| **Grok (xAI)** | Sign up at [console.x.ai](https://console.x.ai/) → create API key | `grok.api.key` |
-| **OpenRouter** | Create an API key at [openrouter.ai](https://openrouter.ai/settings/keys) | `openrouter.api.key` |
-| **AWS Bedrock** | Configure a Bedrock API key or AWS IAM/default credentials in the selected Region | `bedrock.api.key` or IAM properties |
-
-Set `jmeter.ai.service.type=ollama` to switch to a local model. All other providers work side-by-side; just pick the model from the UI dropdown.
-
-### Model Filtering
-
-Feather Wand automatically hides non-chat models so you only see useful options:
-
-- **OpenAI**: shows `gpt-*`, o-series (`o<digit>*`, e.g. `o1`, `o3`, `o4-mini`) and `chat-latest` chat models; hides audio, TTS, whisper, davinci, search, realtime, instruct, embedding, moderation and image models, plus models that only work on `/v1/responses` (`*-pro`, `*codex*`, deep research, computer use).
-- **Claude**: shows only the latest available models.
-- **Gemini**: shows only `gemini-*` and `gemma-*` chat models.
-- **Grok**: shows only `grok-*` chat models.
-- **OpenRouter**: shows only models returned as tool-capable by OpenRouter.
-- **AWS Bedrock**: shows text-capable foundation models and active, account-authorized inference profiles matching `bedrock.model.providers`; unavailable profiles are hidden.
-- **Corporate gateways**: with `openai.base.url` or `anthropic.base.url` set, gateway-specific model names are kept (audio, embedding, moderation, image and other non-chat models are still hidden), or listed verbatim from `openai.models` / `anthropic.models`.
-
-Default models: `claude-sonnet-4-6` · `gpt-4o` · `gemini-3.5-flash` · `deepseek-chat` · `deepseek-r1:1.5b` · `grok-4.5` · `anthropic/claude-sonnet-5.5` · `anthropic.claude-3-5-sonnet-20241022-v2:0`
-
----
-
-## 🔒 Privacy and telemetry
-
-Starting with v3.8.6, Feather Wand sends one small, anonymous usage ping per day. It is **on by default**, and you can [turn it off](#how-to-turn-it-off) at any time. These numbers are the only way we know how many people use Feather Wand, which JMeter versions and providers to keep supporting, and which features are worth improving.
-
-### What is sent
-
-| Field | Example | Notes |
-| --- | --- | --- |
-| Install ID | `3f1c9a2e-7b4d-4e8a-9c1f-2d5e6a7b8c9d` | Random UUID created once and stored in `~/.jmeter-ai/telemetry.json`. It is not derived from your machine, user name, or account. |
-| Plugin version | `3.9.0` | |
-| JMeter version | `5.6.3` | |
-| Java version | `17.0.12` | |
-| OS and CPU architecture | `Mac OS X`, `aarch64` | |
-| AI provider | `anthropic` | The value of `jmeter.ai.service.type` only. |
-| Agent mode enabled | `true` | |
-| Decisions backend | `openrouter:microsoft` | Which backend serves smart routing and failure triage: `none` (off, or its key is blank or a placeholder), `typesafe`, `openai`, `openrouter:` plus the model vendor (the part before `/`), or `ollama` (local embedding routing). |
-| Model | `gpt-4o-mini` | The chat-panel model of your latest Chat or Agent message, or the configured default model before you send one. Only well-known public model ids (GPT, o-series, Claude, Gemini, DeepSeek, Grok, Muse, Llama, Qwen, Mistral and similar) are sent as-is. Fine-tunes, gateway aliases and every other name are sent as `custom`. `unknown` means none is set. |
-| First run | `false` | `true` only on the first ping from a new install. |
-| Feature counts | `{"chat_me
+# Which pet to show: quill, glim, peacock

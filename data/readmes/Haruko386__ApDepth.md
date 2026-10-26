@@ -1,36 +1,23 @@
-<div align="center">
-  <h1><strong>ApDepth</strong></h1>
-  <h2><strong>Aiming for Precise Monocular Depth Estimation Based on Diffusion Models</strong></h2>
-</div>
+# ApDepth: Aiming for Precise Monocular Depth Estimation Based on Diffusion Models
 
-<p align="center">
-  <a href="#news"><img src="doc/badges/v21-version.svg" alt="ApDepth V2.1"></a>&nbsp;
-  <a href="https://haruko386.github.io/research"><img src="doc/badges/v21-website.svg" alt="Project website"></a>&nbsp;
-  <a href="#citation"><img src="doc/badges/v21-paper.svg" alt="Paper and citation"></a>&nbsp;
-  <a href="https://huggingface.co/spaces/developy/ApDepth"><img src="doc/badges/v21-demo.svg" alt="Live demo"></a>&nbsp;
-  <a href="https://huggingface.co/developy/ApDepth"><img src="doc/badges/v21-weights.svg" alt="Model weights"></a>&nbsp;
-  <a href="#training"><img src="doc/badges/v21-training.svg" alt="Training recipes"></a>
-</p>
+This repository is based on [Marigold](https://marigoldmonodepth.github.io), CVPR 2024 Best Paper: [**Repurposing Diffusion-Based Image Generators for Monocular Depth Estimation**](https://arxiv.org/abs/2312.02145)
 
----
+[![Website](https://img.shields.io/badge/Website-ApDepth-64748B?style=flat-square)](https://haruko386.github.io/research)
+[![License](https://img.shields.io/badge/License-Apache--2.0-CBD5E1?style=flat-square)](https://www.apache.org/licenses/LICENSE-2.0)
+[![Hugging Face Model](https://img.shields.io/badge/🤗_Hugging_Face-Model-64748B?style=flat-square)](https://huggingface.co/developy/ApDepth)
+[![Hugging Face Demo](https://img.shields.io/badge/🤗_Hugging_Face-Demo-818CF8?style=flat-square)](https://huggingface.co/spaces/developy/ApDepth)
 
-![ApDepth monocular depth estimation examples](doc/cover.png)
+<!-- [**Haruko386**](https://haruko386.github.io/),
+[Shuai Yuan](https://syjz.teacher.360eol.com/teacherBasic/preview?teacherId=23776),
+[Mingbo Lei](https://github.com/Ltohka), 
+[Yibo Chen](#) -->
 
-We present **ApDepth**, a deterministic, single-step
-monocular depth estimator. It combines a frozen Depth Anything V2 prior with a
-fine-tuned diffusion U-Net to recover accurate scene geometry and crisp object
-boundaries without iterative denoising.
+![cover](doc/cover.png)
 
-> [!IMPORTANT]
->
-> This repository builds on [**Marigold**](https://marigoldmonodepth.github.io), the
-> CVPR 2024 Best Paper [***Repurposing Diffusion-Based Image Generators for
-> Monocular Depth Estimation***](https://arxiv.org/abs/2312.02145).
+> We present **ApDepth**, a deterministic single-step diffusion framework for monocular depth estimation. Built upon Marigold (derived from Stable Diffusion) and fine-tuned on synthetic datasets (Hypersim and Virtual KITTI), ApDepth overcomes the feature representation bottlenecks of standard diffusion models. Ultimately, our framework achieves **highly competitive geometric accuracy** and **exceptional object edge refinement**, all while delivering significantly accelerated inference speeds.
 
 ## 📢 News
-
-- **2026-09-22:** Preparing **ApDepth V2-1** with direct SD2.1 fine-tuning,
-  SDWT and optional FFT refinement.
+- **2026-10-14** The paper was released on [**SSRN**](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=7604741)
 - **2026-04-06:** `ApDepth V2-0` is released!
 - **2026-04-03:** We officially release the code for **ApDepth**! Stage 1 feature-alignment training is maintained in [ApDepth_Stage1](https://github.com/Haruko386/ApDepth_Stage1); this repository provides Stage 2 training, inference and evaluation.
 - **2026-01-15:** We successfully introduce a spatial-preserving **Conv Adapter** and a **Cosine Similarity Loss** to enhance feature alignment, alongside a **Pixel-level $L_1$ Loss** to establish an accurate global metric scale.
@@ -42,19 +29,22 @@ boundaries without iterative denoising.
 
 ## 🚀 Usage
 
-Try ApDepth in the [live demo](https://huggingface.co/spaces/developy/ApDepth),
-browse the [project gallery](https://haruko386.github.io/research), or run it
-locally using the instructions below.
+**We offer several ways to interact with ApDepth**:
+
+1. A free online interactive demo is available here: <a href="https://huggingface.co/spaces/developy/ApDepth"><img src="https://img.shields.io/badge/🤗%20Hugging%20Face-Demo-purple" height="18"></a>
+
+2. If you just want to see the examples, visit our gallery: <a href="https://haruko386.github.io/research"><img src="doc/badges/badge-website.svg" height="16"></a>
+
+3. Local development instructions with this codebase are given below.
 
 ## 🛠️ Setup
+The Model was trained on:
 
-The model was trained on:
+- Ubuntu 22.04 LTS, Python 3.12.9,  CUDA 11.8, `NVIDIA RTX 6000 Ada Generation`
 
-- Ubuntu 22.04 LTS, Python 3.12.9,  CUDA 11.8, **`NVIDIA RTX 6000 Ada Generation`**
+The inference code was tested on:
 
-Inference was tested on:
-
-- Ubuntu 22.04 LTS, Python 3.12.9,  CUDA 11.8, **`NVIDIA GeForce RTX 5090`**
+- Ubuntu 22.04 LTS, Python 3.12.9,  CUDA 11.8, `NVIDIA GeForce RTX 4090`
 
 ### 🪧 A Note for Windows users
 
@@ -73,9 +63,10 @@ git clone https://github.com/Haruko386/ApDepth.git
 cd ApDepth
 ```
 
-#### Conda
+### 💻 Dependencies
 
-Create and activate the project environment:
+ **Using Conda:** 
+    Alternatively, create a Python native virtual environment and install dependencies into it:
 
 ```bash
 conda create -n apdepth python==3.12.9
@@ -104,24 +95,22 @@ docker build -t apdepth:latest .
 
 To utilize GPU acceleration, ensure the NVIDIA Container Toolkit is installed. We recommend mounting your local input and output directories to easily access your inference results:
 
-```bash
+```Bash
 docker run --gpus all -it --rm \
     -v $(pwd)/input:/workspace/ApDepth/input \
     -v $(pwd)/output:/workspace/ApDepth/output \
     apdepth:latest
+Once inside the container, the apdepth conda environment is activated by default, and you can directly execute the inference or training scripts.
 ```
+## 🏃 Testing on your images
 
-Inside the container, the `apdepth` Conda environment is activated automatically.
-
-## 🖼️ Inference on images
-
-### Prepare images
+### 📷 Prepare images
 
 1. Use selected images under `input`
 
 1. Or place your images in a directory, for example, under `input/test-image`, and run the following inference command.
 
-### Paper setting
+### 🎮 Run inference with paper setting
 
 This setting corresponds to our paper. For academic comparison, please run with this setting.
 
@@ -136,7 +125,7 @@ python run.py \
 
 You can find all results in `output/example-1`. Enjoy!
 
-### ⚙️ Inference options
+### ⚙️ Inference settings
 
 The default settings are optimized for the best result. However, the behavior of the code can be customized:
 
@@ -152,7 +141,7 @@ The default settings are optimized for the best result. However, the behavior of
 - `--color_map`: [Colormap](https://matplotlib.org/stable/users/explain/colors/colormaps.html) used to colorize the depth prediction. Default: Spectral. Set to `None` to skip colored depth map generation.
 - `--apple_silicon`: Use Apple Silicon MPS acceleration.
 
-## 🔬 Evaluation
+## 🦿 Evaluation on test datasets <a name="evaluation"></a>
 
 Install additional dependencies:
 
@@ -194,19 +183,9 @@ You can get the result under `output/eval`
 
 ## 🏋️ Training
 
-Three training methods are retained. The mixed SDWT + FFT method is the
-recommended recipe; the SDWT-only method is kept for controlled comparison, and the
-original Stage 1 + legacy FFT workflow remains reproducible.
-
-| Method | Initialization | Objective | Config |
-| --- | --- | --- | --- |
-| 1. Mixed SDWT + FFT (recommended) | Original SD2.1 | MSE + pixel L1 + gradient, then gradual SDWT + low-weight FFT | `config/train_sd2_sdwt_fft.yaml` |
-| 2. SDWT only | Original SD2.1 | MSE + pixel L1 + gradient, then gradual SDWT | `config/train_sd2_sdwt.yaml` |
-| 3. Legacy ApDepth/FFT | Stage 1 U-Net checkpoint | Reconstruction, then the original latent FFT transition | `config/train_apdepth.yaml` |
-
-Methods 1 and 2 are single-run Stage 2 training methods and do not execute or
-load Stage 1. Their implementation details and ablations are documented
-[here](doc/sd2_sdwt_training.md).
+The workflow is **Stage 1 feature alignment → Stage 2 main training → optional
+[VKITTI far-depth post-training](#post-training)**. Complete Stage 2, including
+its FFT refinement, before starting the optional post-training run.
 
 Based on the previously created environment, install extended requirements:
 
@@ -229,62 +208,19 @@ Prepare [Hypersim](https://github.com/apple/ml-hypersim) and [Virtual KITTI 2](h
 
 ------------
 
-### 🥇 Method 1: direct SD2 training with SDWT + FFT (recommended)
+**Stage 1: feature alignment pre-training**
 
-This method starts from the original SD2.1 weights. During iterations 0-8,000,
-it learns the basic depth mapping with latent MSE, pixel L1 and gradient loss.
-From iteration 8,000 to 12,000, SDWT increases from 0 to 1.0 while latent
-FFT increases from 0 to 0.2. The reconstruction losses remain active for the
-rest of training, and the VAE decoder is fine-tuned from iteration 8,000.
-
-SDWT matches local depth distributions with an explicit pixel-displacement
-cost. It subtracts entropic self-costs, evaluates both regular and half-window
-shifted grids, and weights each window by its valid support. These changes keep
-limited tolerance to noisy boundary labels without making the loss invariant to
-arbitrary permutations inside a window.
-
-```bash
-python train.py --config config/train_sd2_sdwt_fft.yaml --no_wandb
-```
-
-Do not pass `--init_checkpoint`. Resume an interrupted run with:
-
-```bash
-python train.py \
-    --resume_run output/train_sd2_sdwt_fft/checkpoint/latest --no_wandb
-```
-
-### 🥈 Method 2: direct SD2 training with SDWT only
-
-This method uses the same original SD2.1 initialization, reconstruction-loss
-schedule and VAE decoder adaptation as Method 1, but leaves latent FFT disabled.
-It is the direct comparison for measuring the contribution of FFT.
-
-```bash
-python train.py --config config/train_sd2_sdwt.yaml --no_wandb
-```
-
-Do not pass `--init_checkpoint`. Resume an interrupted run with:
-
-```bash
-python train.py \
-    --resume_run output/train_sd2_sdwt/checkpoint/latest --no_wandb
-```
-
-For both direct-SD2 methods, `BASE_CKPT_DIR/stable-diffusion-2-1` must contain
-the original SD2.1 Diffusers pipeline. Their checkpoints save both the U-Net and
-the fine-tuned VAE.
-
-### 🥉 Method 3: legacy Stage 1 + ApDepth/FFT training (ApDepth v2-0)
-
-First complete the feature-alignment Stage 1 training. Stage 1 is maintained
-separately in
+Stage 1 is maintained separately in
 [Haruko386/ApDepth_Stage1](https://github.com/Haruko386/ApDepth_Stage1).
 Follow that repository's setup and training instructions. This repository contains
-the legacy Stage 2 trainer, but does not include Stage 1 code or dependencies.
+only the main Stage 2 trainer; it does not include Stage 1 code or dependencies.
 
-Then initialize the legacy Stage 2 from the Stage 1 checkpoint with
-`--init_checkpoint`. This loads the U-Net and a saved VAE if present; optimizer and iteration counters
+------------
+
+**Stage 2: main ApDepth training**
+
+To initialize Stage 2 from an existing Stage 1 checkpoint, start a new run with
+`--init_checkpoint`. This loads only the U-Net; optimizer and iteration counters
 start fresh using the Stage 2 config. `config/train_apdepth.yaml` keeps far-depth
 supervision disabled throughout the main training stage:
 
@@ -296,6 +232,12 @@ python train.py --config config/train_apdepth.yaml \
 The initialization directory must contain
 `unet/diffusion_pytorch_model.safetensors`. `--init_checkpoint` rejects `.bin`
 checkpoints.
+
+To train the main stage directly from the base model without Stage 1 initialization:
+
+```bash
+python train.py --config config/train_apdepth.yaml --no_wandb
+```
 
 The transition to latent frequency loss is controlled by
 `latent_freq_loss.gradual_transition` in `config/train_apdepth.yaml`. When `true`,
@@ -311,30 +253,13 @@ Resume from a checkpoint, e.g.
 python train.py --resume_run output/train_apdepth/checkpoint/latest --no_wandb
 ```
 
-### 🧪 Inference after Method 1 or Method 2
-
-Direct-SD2 checkpoints are training-component checkpoints, so inference combines
-the original SD2.1 pipeline with the saved U-Net and VAE. For Method 1:
-
-```bash
-python run.py --checkpoint "${BASE_CKPT_DIR}/stable-diffusion-2-1" \
-    --training_checkpoint output/train_sd2_sdwt_fft/checkpoint/iter_021000 \
-    --input_rgb_dir input/example-1 --output_dir output/sd2_sdwt_fft \
-    --ensemble_size 1 --processing_res 0
-```
-
-For Method 2, replace `train_sd2_sdwt_fft` with `train_sd2_sdwt` in the checkpoint
-path. `infer.py` also accepts `--training_checkpoint` for dataset evaluation.
-
 ------------
 
-## 🎟️ Optional post-training after Stage 2
+## 🌤️ Optional post-training after Stage 2 <a name="post-training"></a>
 
 **Start this step only after Stage 2 training has finished.** The new VKITTI
 far-depth supervision feature is enabled by `config/train_sky_finetune.yaml` for
-a separate post-training run initialized from a completed checkpoint from any
-of the three methods. For Methods 1 and 2, the saved VAE is loaded and retained
-together with the U-Net.
+a separate post-training run initialized from the completed Stage 2 U-Net.
 
 Measured depths in [80, 655.35] m supply an additional clipped far-depth target
 before VAE encoding; missing depth remains excluded. Evaluation masks and
@@ -355,19 +280,12 @@ If preprocessing replaced the far-plane values with zero, restore the original
 depth files. Zero depth is not treated as sky. Adjust each dataset config's `dir`
 to match the actual layout under `BASE_DATA_DIR`.
 
-Select the corresponding completed checkpoint:
-
-| Method | Example checkpoint |
-| --- | --- |
-| 1. SDWT + FFT | `output/train_sd2_sdwt_fft/checkpoint/iter_021000` |
-| 2. SDWT only | `output/train_sd2_sdwt/checkpoint/iter_021000` |
-| 3. Legacy ApDepth/FFT | `output/train_apdepth/checkpoint/iter_021000` |
-
-Then start a new post-training run, adjusting the path if needed:
+Start a new post-training run from the final Stage 2 checkpoint (adjust the path
+if Stage 2 was saved elsewhere):
 
 ```bash
 python train.py --config config/train_sky_finetune.yaml \
-    --init_checkpoint /path/to/completed/checkpoint/iter_021000 --no_wandb
+    --init_checkpoint output/train_apdepth/checkpoint/iter_021000 --no_wandb
 ```
 
 This resets the optimizer, learning-rate schedule and iteration counter, then
@@ -375,7 +293,7 @@ runs 6000 new optimization steps at LR 5e-6 with 100 warmup steps and saves
 backups every 1000 steps in `output/train_sky_finetune/checkpoint`. It retains the
 90% Hypersim / 10% VKITTI sampling, original batch settings and periodic validation.
 These 6000 steps use latent MSE + pixel L1 reconstruction plus the new far-depth
-loss; the selected Stage 2 objective has already finished. Initialization requires
+loss; the Stage 2 FFT refinement has already finished. Initialization requires
 `unet/diffusion_pytorch_model.safetensors` in the supplied checkpoint directory.
 
 If this post-training run is interrupted, resume its own checkpoint:
@@ -393,13 +311,9 @@ Monitor `train/far_loss`, `train/far_pixel_ratio` and `train/far_latent_ratio`.
 Compare KITTI and NYU against the completed Stage 2 model after post-training; this change
 alone does not establish a metric improvement.
 
-## 🛍️ Evaluating trained checkpoints
+## Evaluating trained checkpoints
 
-The new direct-SD2 recipe saves both U-Net and VAE; use `--training_checkpoint`
-as shown above to load them together. The following instructions apply to legacy
-U-Net-only checkpoints.
-
-Legacy Stage 2 and optional post-training update and save the U-Net. For inference, copy a complete
+Stage 2 and optional post-training update and save the U-Net. For inference, copy a complete
 ApDepth pipeline checkpoint to a new directory, then replace that copy's `unet/`
 folder with the selected training checkpoint's `unet/`. The pipeline's VAE,
 tokenizer, text encoder and scheduler are still required; a training checkpoint
@@ -432,13 +346,11 @@ Please refer to [this](CONTRIBUTING.md) instruction.
 Please cite our paper:
 
 ```bibtex
-@misc{wang2026apdepth,
-  title  = {{ApDepth}: Aiming for Precise Monocular Depth Estimation Based on Diffusion Models},
-  author = {Wang, Jiawei and Lei, Mingbo and Yao, Liang and Li, Jiayi and Lu, Tianyu and Chen, Yibo},
-  year   = {2026},
-  doi    = {10.2139/ssrn.7604741},
-  url    = {https://doi.org/10.2139/ssrn.7604741},
-  note   = {SSRN Preprint}
+@InProceedings{wang26apdepth,
+      title={ApDepth: Aiming for Precise Monocular Depth Estimation Based on Diffusion Models},
+      author={Jiawei Wang, Mingbo Lei, Haoze Shou, Yusu Liang and Yuan Shuai},
+      booktitle = {Arxiv},
+      year={2026}
 }
 ```
 
@@ -446,4 +358,6 @@ Please cite our paper:
 
 This work is licensed under the Apache License, Version 2.0 (as defined in the [LICENSE](LICENSE.txt)).
 
-By downloading and using the code and model you agree to the terms in the [LICENSE](LICENSE.txt).
+By downloading and using the code and model you agree to the terms in the  [LICENSE](LICENSE.txt).
+
+[![License](https://img.shields.io/badge/License-Apache--2.0-929292)](https://www.apache.org/licenses/LICENSE-2.0)

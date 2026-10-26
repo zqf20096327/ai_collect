@@ -26,6 +26,26 @@
   <a href="https://arxiv.org/abs/2610.09139"><b>Paper</b></a>
 </p>
 
+> **New: Recursive's Flint runs in Locals.** Flint is a 40-billion-parameter
+> mixture of experts that uses 2.5 billion per token. Locals runs it with kernels
+> of its own for its router, experts and attention, and in its own tool-call
+> format: `locals code ~/my-project --model flint`. On a MacBook Pro with an
+> M4 Pro and 24 GB, tokens per second that all requests write together (most
+> numbers below are from an M2 Pro with 16 GB):
+>
+> | Requests at once | mlx-lm | Locals | |
+> |---|---|---|---|
+> | 1 | 85 | 117 | 1.37x |
+> | 4 | 177 | 227 | 1.29x |
+> | 8 | 202 | 319 | 1.58x |
+> | 16 | 245 | 354 | 1.45x |
+>
+> Typed tool calls (`--typed-tools`) keep every call to its tool's schema, and
+> 8-bit keys and values (`LOCALS_KV_BITS=8`) take requests of 67,584 tokens on a
+> 24 GB Mac. Flint needs 24 GB or more. [All the measurements](https://github.com/Generated-Computers/Locals/blob/main/docs/benchmarks/README.md#11-recursives-flint-m4-pro-24-gb).
+> It comes to PyPI with the next release; until then, install Locals from GitHub:\
+> `uv tool install --python 3.12 git+https://github.com/Generated-Computers/Locals`
+
 ```bash
 curl -LsSf https://raw.githubusercontent.com/Generated-Computers/Locals/main/install.sh | sh
 ```
@@ -403,7 +423,7 @@ On a Mac with less than 12 GB of memory, the default is Qwen3.5-2B instead
 
 On a Mac with 24 GB or more, Recursive's Flint (40B, 2.5B active per token) runs
 with `--model flint` (`locals/flint` in your editor; 17.8 GB). On an M4 Pro with
-24 GB: 115 tps for one request and 264 with 8 at once, where mlx-lm gives 85 and
+24 GB: 117 tps for one request and 319 with 8 at once, where mlx-lm gives 85 and
 202. A 24 GB Mac gives the GPU 16 GB unless told otherwise; `locals start` says
 how to raise that, until the next restart. For long work, `LOCALS_KV_BITS=8`
 keeps Flint's keys and values in 8 bits: requests up to 67,584 tokens instead of

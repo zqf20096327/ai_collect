@@ -60,8 +60,8 @@ Pure TypeScript. Any AI vendor via the [AI SDK](https://ai-sdk.dev). One-step de
 **Editing**
 
 - **Workspace and clip editor** – source player and clickable transcript on the left, clips streaming in on the right as they render, with score, layout badge, post caption + hashtags copy and download. The editor has a live preview of the source with the clip's framing and captions and a multi-lane timeline (ruler, transcript words, clip range, layout track, layers) with zoom, snapping to words/scene cuts/playhead, nudge buttons, typed timestamps and I/O keys for frame-accurate trims. Split the layout track (⌘/Ctrl+B, the Split button, a double-click or the right-click menu) into sections that are Auto or forced to face/split/stack/fit/centre; drag the picture to re-centre a section; right-click for Set crop… (a box on the source, or `crop` / `crop2` / `contentCrop` on `update_clip`); "Use for all clips…" copies one clip's framing to the project (`apply_framing`). Add, drag and remove transitions; ⌘/Ctrl+Z / ⇧⌘Z undo and redo every edit.
-- **Deletes can be undone** – deleting a project stops its work and hides it, with an Undo in the toast; it stays restorable for `DELETED_RETENTION_DAYS` (7) before its files are removed. Re-picking moments keeps every clip you made or edited (text, bounds, framing, style, intro/outro) and only replaces untouched AI picks, which can be restored too. Single clips can be deleted and restored the same way. The same through MCP (`delete_clip`, `restore_project`, `restore_clip`) and the CLI (`reelsaw deleted`, `restore`, `delete-clip`, `restore-clip`, `purge`).
-- **Command palette and bulk export** – ⌘K searches projects and clips with status, length and age, opens a row's actions (open, export, resume, retry failed clips, re-run refine, re-render, download, delete), takes pasted links (one project each, or opens the existing one) and offers retry-all shortcuts. "Export all" zips every rendered clip with platform-ready metadata: a paste-ready `.txt` (title, description, tags, caption), a `.youtube.json` (YouTube Data API v3 `videos.insert` body, private by default) and a `.tiktok.json` (Content Posting API `post_info`, `SELF_ONLY`) per clip, plus `manifest.json`, `clips.csv` (with rendered duration) and a README. Descriptions carry a timestamped link to the exact moment in the parent video.
+- **Deletes can be undone** – deleting a project or a clip (card ⋯, the selection bar, the editor, ⌘K) stops its work and hides it. The toast always offers **Undo**, **Delete forever**, and **See deletions**. Everything restorable lives on **Deleted** (account menu) as one selectable list: each row says when it was deleted and when it is deleted forever, and a compact bar restores the selection or deletes it forever. Storage still counts until you delete it forever (MCP `list_deleted` plus `purge_project` / `purge_clip` / `purge_asset` / `purge_layer_template`; `reelsaw purge-project`, `purge-clip`, `library purge`, `templates purge`). Minutes, hourly creates and first-video-free are never refunded. Re-picking moments keeps every clip you made or edited (text, bounds, framing, style, intro/outro) and only replaces untouched AI picks, which can be restored too. The same through MCP (`delete_clip`, `delete_clips`, `restore_project`, `restore_clip`, `list_deleted`) and the CLI (`reelsaw deleted`, `restore`, `delete-clip`, `delete-clips`, `restore-clip`, `purge`, `purge-project`, `purge-clip`).
+- **Command palette and bulk export** – ⌘K searches projects and clips with status, length and age, opens a row's actions (open, export, resume, retry failed clips, re-run refine, re-render, download, delete project or clip), takes pasted links (one project each, or opens the existing one) and offers retry-all shortcuts. "Export all" zips every rendered clip with platform-ready metadata: a paste-ready `.txt` (title, description, tags, caption), a `.youtube.json` (YouTube Data API v3 `videos.insert` body, private by default) and a `.tiktok.json` (Content Posting API `post_info`, `SELF_ONLY`) per clip, plus `manifest.json`, `clips.csv` (with rendered duration) and a README. Descriptions carry a timestamped link to the exact moment in the parent video.
 - **SRT / VTT in and out** – every rendered clip's ⋯ menu offers its captions as `.srt` or `.vtt` (the same lines and times as the video, intro included, even when the style has captions off), and "Export all" adds them next to each clip as `clips/NN-title.srt` and `.vtt`; clips rendered before this feature need a re-render first. The project's ⋯ menu ("Transcript files…") downloads the transcript the same way (VTT can carry a timestamp before every word) and imports a subtitle file you already have: right after creating a project (only the video is fetched) or on a done or failed one (it cleans the transcript up and picks clips again). Imported cues become segments and their words are spread over the cue by length; the render re-aligns words to the audio. Also `GET /api/clips/:id/captions.srt|vtt`, `GET /api/projects/:id/transcript.srt|vtt` (`?words=1` for VTT word times), the MCP tools `get_clip_captions`, `get_project_transcript_file` and `import_transcript`, and `reelsaw captions`, `transcript-file` and `import-transcript`.
 
 **Library, layers and templates**
@@ -85,7 +85,7 @@ Pure TypeScript. Any AI vendor via the [AI SDK](https://ai-sdk.dev). One-step de
 
 - **Reliable, resumable, scalable** – every stage is a [pg-boss](https://github.com/timgit/pg-boss) job in Postgres that checkpoints its output, so a crashed or restarted worker picks up where it left off; a worker that stops heartbeating (every 15 s) has its job re-queued by pg-boss within about a minute or two, and a reconciler re-enqueues anything orphaned. Run extra `worker` containers to scale. Every run (first pass, retry, re-render, re-analyze) is recorded with its own timings, and the UI shows elapsed against expected time per stage, learned from your finished projects. The browser gets live updates over a tRPC SSE subscription with automatic reconnect.
 - **Storage and install** – local volume or `s3` (AWS S3, MinIO, Cloudflare R2, Backblaze B2…); superseded renders, expired sources and orphaned files are swept hourly (`reelsaw storage` reports, `reelsaw storage sweep` runs it). One-line installers for macOS/Linux (bash) and Windows (PowerShell), and **Report an issue** saves a zip of a project's data, decisions and logs, with secrets left out.
-- **Observable and fail-fast** – every service is built in `main` and self-checks, so the process exits with a readable reason if a model id is wrong, a key is missing, a binary is absent, the bucket is unreachable or the DB is down. `LLM_TRACE=logs` or `langfuse` captures every prompt/response (tokens, latency, project/clip/stage), and `OTEL_ENABLED=true` turns on OTLP traces and metrics for HTTP, Postgres, pg-boss jobs, AI SDK calls, ffmpeg/yt-dlp and each stage.
+- **Observable and fail-fast** – every service is built in `main` and self-checks, so the process exits with a readable reason if a model id is wrong, a key is missing, a binary is absent, the bucket is unreachable or the DB is down. `LLM_TRACE=logs` or `langfuse` captures every prompt/response (tokens, latency, project/clip/stage), and `OTEL_ENABLED=true` turns on OTLP traces and metrics for HTTP, Postgres, pg-boss jobs, AI SDK calls, ffmpeg/yt-dlp and each stage, with stage, download and transcription time per second of video and per-proxy download health.
 
 ## Contributing
 
@@ -143,6 +143,16 @@ Scale workers:
 ```bash
 docker compose --profile workers up -d --scale worker=2
 ```
+
+Each worker keeps its own scratch copies of the sources and renders it works on. With an S3 store
+they are a cache: idle copies of finished projects are evicted after `SCRATCH_CACHE_HOURS` (24), a
+job short of disk evicts the least recently used ones first, and a worker that still cannot make
+room hands the job to a worker that has it and stops taking media jobs until its disk recovers
+(Settings → System → Workers shows "disk full"). A job leases the scratch it is about to write
+against its volume's live leases before the first byte lands, so two large ingests on one box
+cannot both pass the free-space check and both run out mid-download: the second waits for the
+first. Processes sharing a volume (the app and worker replicas of one host) share one ledger;
+a worker on another host never contends.
 
 Use MinIO for local S3 testing:
 
@@ -310,7 +320,9 @@ them), so a single-user box stays as it is:
   (every model call writes a `llm_usage` row attributed to the project's owner), stored bytes.
 - **Retention**: `SOURCE_RETENTION_DAYS` / `CLIP_RETENTION_DAYS` delete stored files from finished
   projects; rows and history stay, the project page offers "fetch again" and clips re-render.
-  `reelsaw retention` runs a sweep by hand.
+  `reelsaw retention` runs a sweep by hand. With an S3 store, `SCRATCH_CACHE_HOURS` (24) is how long
+  a worker keeps its local copies of stored files once a project is finished and idle; the bucket
+  copy stays and comes back when a job needs it.
 - **History pruning**: `EVENT_RETENTION_DAYS` (90), `LLM_USAGE_RETENTION_DAYS` (180) and
   `ADMIN_EVENT_RETENTION_DAYS` (365) delete old rows in batches once a day (0 keeps everything);
   a project's run skeleton (created, run started, done) is always kept.
@@ -414,18 +426,20 @@ schema say what it returns, whether it runs in the background and which neighbou
 | `get_clip` | Everything about one clip: text, bounds, scores, framing, style, emphasis, own and effective intro/outro, layers (assets, text, sounds), render diagnostics, video/thumbnail/editor links. |
 | `update_clip` | Edit one clip: only the fields you pass change; style, layoutSections and layers replace the whole value (null = project's / none). |
 | `create_clip` | Add a clip from a time range of the source (needs a transcript). |
-| `delete_clip` | Delete one clip of your project; a render in progress stops. |
+| `delete_clip` | Delete one clip of a live project; a render in progress stops. |
+| `delete_clips` | Delete several clips of one live project in one step (the selection bar's Delete); renders in progress stop. |
 | `rerender_clip` | Queue one clip for rendering again (after rerender: false edits, a failure, or an intro/outro change). |
 | `rerender_clips` | Queue several clips of one project for rendering again in one step (after edits or failures). |
 | `export_project` | A download link for a zip of the project's rendered clips with YouTube/TikTok metadata. |
 | `report_issue` | A download link for an issue-report zip (the same file Report an issue in the app saves; admins may include instance-wide diagnostics). |
 | `retry_project` | Resume a failed or stuck project from its furthest completed stage: re-render unfinished clips if there are clips, else pick clips, refine or transcribe again. |
+| `refine_project` | Re-run refine steps on the existing transcript: entities (name spelling), disfluency (filler and repeat cuts), scenes (shot cuts); all three when steps is omitted. |
 | `reanalyze_project` | Pick clips again from the existing transcript (needs one), optionally with new settings. |
 | `search_assets` | Find assets. |
 | `add_asset` | Add from exactly one source: a public url or an uploadId (video, image, GIF, SVG or sound) becomes one of your library uploads; a search_assets catalog / provider hit (provider + externalId) materializes one instance-shared copy (checksum verified, license recorded; not listed in your library). |
-| `update_asset` | Rename one of your own library items, replace its tags, or change how long a still image shows (removed items too; shared catalog and provider items cannot be changed). |
-| `remove_asset` | Remove one of your uploads from the library and from your defaults. |
-| `restore_asset` | Bring one of your removed library items back (the id from remove_asset or `reelsaw library list`); restoring an item that is not removed changes nothing. |
+| `update_asset` | Rename one of your own library items, replace its tags, or change how long a still image shows (deleted items too; shared catalog and provider items cannot be changed). |
+| `delete_asset` | Delete one of your uploads: it leaves the library and your defaults and goes to Deleted. |
+| `restore_asset` | Bring one of your deleted library items back (the id from delete_asset or list_deleted); restoring an item that is not deleted changes nothing. |
 | `asset_usage` | Where a library item is used: as intro, outro, overlay or music on projects and clips (replaced clips left out), and in layer templates. |
 | `set_default_bumper` | Make a library item your default intro or outro for projects you create from now on (assetId null clears it). |
 | `set_project_bumpers` | Set one project's intro and/or outro: "default" (your current default), "none", or a library asset id; a slot left out is untouched, and introSec/outroSec are saved with the project. |
@@ -433,17 +447,22 @@ schema say what it returns, whether it runs in the background and which neighbou
 | `list_layer_templates` | Your layer templates (sets of layers that fit any clip length). |
 | `save_layer_template` | Create a template from exactly one of clipId (that clip's layers: spanning = fill, touching the start = head, touching the end = tail, else anchored to the nearer edge) or layers (each with a timing, see list_layer_templates). |
 | `update_layer_template` | Rename a layer template and/or replace its layers (the whole list, each with a timing); a field left out is untouched. |
-| `remove_layer_template` | Remove a template and drop it from your project defaults; clips that already got its layers keep them. |
-| `restore_layer_template` | Bring back a layer template removed in the last 30 days (the id from list_layer_templates deleted). |
+| `delete_layer_template` | Delete a template (it goes to Deleted) and drop it from your project defaults; clips that already got its layers keep them. |
+| `restore_layer_template` | Bring back a deleted layer template (the id from list_layer_templates deleted or list_deleted). |
 | `apply_framing` | Make one clip's framing the whole project's, for a recording whose layout never changes (a slide deck with a webcam tile, a fixed camera): the clip's section at `at` (else its first framed section) gives the mode and its nudge / subject / crop, which become the project's reframe and reframeAdjust; every clip's own sections are cleared (unless keepOverrides) and the finished clips re-render. |
 | `apply_layer_template` | Write a template's layers onto clips of one project (up to 200 clipIds, or all), fitted to each clip's length. |
 | `delete_project` | Delete one of your projects and all its clips; work in progress stops. |
-| `restore_project` | Bring back a deleted project with its clips and files (find it with list_projects deleted: true); restoring a project that is not deleted changes nothing. |
-| `restore_clip` | Bring back a deleted clip or one a re-analyze replaced (get_project lists them as replacedClips); it goes to the end of the project's clips. |
+| `purge_project` | Permanently remove a deleted project and its files so the storage is freed (find it with list_deleted or list_projects deleted: true). |
+| `restore_project` | Bring back a deleted project with its clips and files (find it with list_deleted or list_projects deleted: true); restoring a project that is not deleted changes nothing. |
+| `restore_clip` | Bring back a deleted clip or one a re-analyze replaced (list_deleted or get_project → replacedClips); it goes to the end of the project's clips. |
+| `list_deleted` | Restorable deletes (the Deleted page): one newest-first list of projects, clips of live projects, library items and templates. |
+| `purge_clip` | Permanently remove a deleted clip of a live project and its rendered file so the storage is freed (find it with list_deleted). |
+| `purge_asset` | Permanently remove an already-deleted library upload and its files so the storage is freed (find it with list_deleted). |
+| `purge_layer_template` | Permanently remove an already-deleted layer template (find it with list_deleted). |
 | `check_for_update` | Admins only: is a newer Reelsaw published? |
 | `list_releases` | Published Reelsaw versions from GitHub (reelsaw.com/releases): tag, date, a short summary and the change notes. |
 | `get_instance_settings` | Admins only: the instance settings in force (sign-up mode, email verification, captcha, legal links, quotas, upload limits, retention, stall watchdog, update check, health details) and where each comes from. |
-| `list_workers` | Admins only: every Reelsaw process that has checked in (API, worker, or a combined app), with CPU, memory, disk (free/total MB; -1 free means unmeasurable), GPU, render slots, the queues it listens on, and the jobs it last reported. |
+| `list_workers` | Admins only: every Reelsaw process that has checked in (API, worker, combined app): CPU, memory, disk (free/total MB, -1 = unmeasurable; diskLeasedMB = free space jobs in flight have claimed on its volume), GPU, render slots, the queues it listens on, and its jobs. |
 | `get_failure` | Admins only: one failed project or clip (title, owner email, stage, full recorded reason, when). |
 | `get_queue` | Admins only: waiting, running and retrying job counts per pipeline stage, plus the jobs currently in flight (project title, attempt, started). |
 | `list_failures` | Admins only: failed projects and clips across the instance (owner email, stage, reason, when). |
@@ -476,15 +495,18 @@ Run as `docker compose exec app reelsaw <command>` (from source: `pnpm --filter 
 | `reelsaw make-admin <email>` | promote an account to admin (approves it first if needed) |
 | `reelsaw set-password <email> [--must-change]` | set an account's password from a prompt (or two stdin lines); `--must-change` requires a new one at next sign-in. Do not put the secret on the command line |
 | `reelsaw retention` | run the retention sweep now (SOURCE_RETENTION_DAYS / CLIP_RETENTION_DAYS) |
-| `reelsaw deleted` | deleted projects that can still be restored, with their purge date |
+| `reelsaw deleted [email]` | restorable deletes as one list with their purge date. No email: projects across the install. With email: that account (the Deleted page / list_deleted) |
 | `reelsaw restore <projectId>` | undo a project delete (same as projects.restore and the restore_project tool) |
 | `reelsaw restore-clip <clipId>` | bring back a deleted clip or one a re-analyze replaced |
 | `reelsaw delete-clip <clipId>` | delete one clip, restorable like a project (same as clips.delete and delete_clip) |
+| `reelsaw delete-clips <projectId> <clipId…>` | delete several clips of one project at once (same as the selection bar, clips.deleteMany and delete_clips) |
+| `reelsaw purge-clip <clipId>` | delete one already-deleted clip forever (same as clips.purge and purge_clip) |
 | `reelsaw captions <clipId> [--format srt\|vtt] [--words]` | print a clip's rendered captions as an SRT or VTT file (same as clips.captions and get_clip_captions) |
 | `reelsaw transcript-file <projectId> [--format srt\|vtt] [--words]` | print a project's transcript as an SRT or VTT file (same as projects.transcriptFile and get_project_transcript_file) |
 | `reelsaw import-transcript <projectId> <file.srt\|file.vtt> [--language xx]` | use a subtitle file as the transcript instead of transcribing (same as projects.importTranscript and import_transcript) |
 | `reelsaw update-project <projectId> [--title t] [--set key=value]… [--clear key]…` | rename a project or change its settings without re-running anything (same as projects.update and update_project); values are JSON or text |
 | `reelsaw purge` | [--dry-run]                     remove deleted projects and replaced clips past DELETED_RETENTION_DAYS now |
+| `reelsaw purge-project <projectId>` | delete one already-deleted project forever (frees storage; minutes stay counted) |
 | `reelsaw machine [--json]` | this box: cpus, memory, disk, GPU, ffmpeg encoder in use and why, where each on-device model runs (same as Settings → System → Overview) |
 | `reelsaw ytdlp-proxies [--json]` | yt-dlp egress pool: operator priority vs circuit (reliability), never URLs |
 | `reelsaw workers [--json]` | every process that has checked in: role, specs, last seen, current jobs (same as Settings → System → Workers) |
@@ -502,19 +524,19 @@ Run as `docker compose exec app reelsaw <command>` (from source: `pnpm --filter 
 | `reelsaw align` | <projectId> <start> <end>       word timestamps from the align model for a source window |
 | `reelsaw hear` | <clipId> [start] [dur]          transcribe a range of the RENDERED clip (what viewers hear) |
 | `reelsaw flags` | <projectId> [from] [to]         transcript flags (entities / disfluencies / collapsed loops) with status |
-| `reelsaw storage [sweep [--dry-run]]` | disk use: unique, scratch-only, duplicate-source, expired-but-present bytes; `sweep` removes leftover files nothing points at (the reconciler's hourly sweep) |
+| `reelsaw storage [sweep [--dry-run] \| reclaim <MB> [--dry-run]]` | disk use: unique, scratch-only, scratch copies of stored files (S3), leased to jobs in flight, duplicate-source, expired-but-present bytes; `sweep` removes leftover files nothing points at and evicts idle cache copies (the reconciler's hourly sweep); `reclaim` evicts least-recently-used copies until that many MB are freed (what a job short of disk does on its own) |
 | `reelsaw stuck` | every unfinished project/clip: age, last event, live jobs, problems |
 | `reelsaw recover <clipId\|projectId>` | clip: re-run the right step (prepare or render); project: reconcile |
 | `reelsaw logs` | <id> [n=60] [--since 2h] [--level debug] [--module render] [--raw] log lines mentioning a project/clip/job/request id from LOG_FILE (survives redeploys) |
 | `reelsaw log-level [<level\|module=level,...>\|reset] [--for 15m]` | show the log levels in force, or set them for a while (e.g. render=debug); all processes follow within ~5 s |
 | `reelsaw scenes <projectId> [--store]` | re-detect shot cuts (adaptive); --store saves them for layout/snapping/overlays |
-| `reelsaw library list [--kind video\|image\|audio] [--q text]` | \| search <q…> [--source library\|catalog\|<provider>] [--kind video\|image\|audio] [--license cc0\|by] \| add <file\|url\|provider:externalId> [--name n] [--tags a,b] [--color #hex] \| update <id> --tags a,b \| rename <id> <name…> \| remove <id> \| restore <id> \| usage <id> \| default <intro\|outro> <id\|none> \| reindex            [--user <email>] the library: intro/outro videos and images, logos, stickers, GIFs, SVGs, music and sound effects. `search` looks in your library, the Reelsaw catalog (default) or an enabled provider (pexels, pixabay, freesound, iconify, openverse, giphy, klipy); `add` takes a file, a link or a search hit (license and credit are recorded). The user is --user, else the only account on this install; otherwise pass --user. `reindex` rebuilds the asset reference table ("used by", purge safety) for every project, to completion |
+| `reelsaw library list [--kind video\|image\|audio] [--q text]` | \| search <q…> [--source library\|catalog\|<provider>] [--kind video\|image\|audio] [--license cc0\|by] \| add <file\|url\|provider:externalId> [--name n] [--tags a,b] [--color #hex] \| update <id> --tags a,b \| rename <id> <name…> \| delete <id> \| restore <id> \| purge <id> \| usage <id> \| default <intro\|outro> <id\|none> \| reindex            [--user <email>] the library: intro/outro videos and images, logos, stickers, GIFs, SVGs, music and sound effects. `search` looks in your library, the Reelsaw catalog (default) or an enabled provider (pexels, pixabay, freesound, iconify, openverse, giphy, klipy); `add` takes a file, a link or a search hit (license and credit are recorded). The user is --user, else the only account on this install; otherwise pass --user. `reindex` rebuilds the asset reference table ("used by", purge safety) for every project, to completion |
 | `reelsaw catalog status\|refresh` | the Reelsaw catalog manifest in force (version, source, last check); refresh asks CATALOG_URL now |
 | `reelsaw project-bumpers <projectId> [--intro default\|none\|<id>] [--outro …] [--intro-sec n] [--outro-sec n] [--rerender]` | a project's intro/outro: the library default, none or a specific item |
 | `reelsaw clip-bumpers <projectId> <clipId…> [--intro inherit\|none\|<id>] [--outro …] [--intro-sec n] [--outro-sec n] [--rerender]` | a clip's own choice (inherit the project's, none or an item); both act as the project's owner; --rerender re-renders only the affected clips |
 | `reelsaw clip-layers <projectId> <clipId> [--set '<json array>' \| --add <assetId> --from <sec> --to <sec> [--x f] [--y f] [--w f] [--opacity f] [--loop\|--no-loop] \| --add-text <text> --from <sec> --to <sec> [--x f] [--y f] [--size f] [--color #RRGGBB] [--font <family>] [--box] [--opacity f] \| --add-sound <assetId> --from <sec> [--to <sec>] [--volume 0-1] [--offset <sec>] [--fade <sec>] [--duck\|--no-duck] [--loop\|--no-loop] \| --remove <layerId> \| --clear] [--rerender]` | everything laid over or played under a clip, one list (source seconds, x/y/w/size as fractions of the 9:16 frame); a sound of 8 s or less, is a one-shot at full level, anything else music (ducked, faded, looped); with no change flag it lists them |
 | `reelsaw apply-framing <clipId> [--at <sec>] [--keep-overrides] [--no-rerender]` | make one clip's framing (its section at --at, else its first framed one: mode plus nudge / subject / crop) the project's default for every clip, clearing the others' own sections and re-rendering the finished ones (same as the editor's "Use for all clips" and apply_framing) |
-| `reelsaw templates list \| show <id> \| save <projectId> <clipId> <name…> \| rename <id> <name…> \| set <id> --layers '<json array>' \| remove <id> \| restore <id> \| apply <templateId> <projectId> [clipId…] [--add] [--rerender]` | layer templates: layers whose timing fits any clip length (head / tail / fill / relative); `save` builds one from a clip's layers, `apply` writes them onto the clips of a project (all of them without clip ids; --add keeps the clip's own layers, default replaces); --rerender re-renders the finished ones. Same procedures as the Templates page and the MCP tools |
+| `reelsaw templates list \| show <id> \| save <projectId> <clipId> <name…> \| rename <id> <name…> \| set <id> --layers '<json array>' \| delete <id> \| restore <id> \| purge <id> \| apply <templateId> <projectId> [clipId…] [--add] [--rerender]` | layer templates: layers whose timing fits any clip length (head / tail / fill / relative); `save` builds one from a clip's layers, `apply` writes them onto the clips of a project (all of them without clip ids; --add keeps the clip's own layers, default replaces); --rerender re-renders the finished ones. Same procedures as the Templates page and the MCP tools |
 | `reelsaw overlays <projectId> [--store]` | scan the source for burned-in captions / watermarks; --store saves them (renders then hide them) |
 | `reelsaw usage` | [--days 30]                     per account: projects, source minutes, clips, model calls / tokens / reported cost, minutes transcribed, stored bytes (same numbers as Users → Usage) |
 | `reelsaw limits <email> [--watermark always\|never\|follow]` | an account's quotas: instance value, plan, override, in force, in use now; --watermark sets the per-user override (same as Users → Limits) |
@@ -671,7 +693,31 @@ OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318   # OTLP/HTTP; traces + m
 OTEL_SERVICE_NAME=reelsaw
 ```
 
-Sentry's OTLP endpoint takes traces and logs (`…/integration/otlp`, plus `OTEL_EXPORTER_OTLP_HEADERS`). Each pino line that passes its level is exported to `/v1/logs`, with the active trace id attached; prompt, transcript and address fields stay in the local log. Sentry does not ingest OTLP metrics. With `SENTRY_DSN` set and `OTEL_METRICS_ENABLED` left on, the server sends Node runtime gauges (memory, CPU, event loop) and a `reelsaw.span.duration` distribution for each pipeline and ffmpeg span through the DSN instead. Set `OTEL_METRICS_ENABLED=false` to keep traces and logs and drop those metrics.
+Sentry's OTLP endpoint takes traces and logs (`…/integration/otlp`, plus `OTEL_EXPORTER_OTLP_HEADERS`). Each pino line that passes its level is exported to `/v1/logs`, with the active trace id attached; prompt, transcript and address fields stay in the local log. Sentry does not ingest OTLP metrics. With `SENTRY_DSN` set and `OTEL_METRICS_ENABLED` left on, the server sends Node runtime gauges (memory, CPU, event loop) and the metrics below through the DSN instead. Set `OTEL_METRICS_ENABLED=false` to keep traces and logs and drop those metrics.
+
+Metrics. Durations are seconds. Attributes are bounded sets (stage, proxy id, model, outcome), never a project, clip or user id. Work grows with the video, so the stage, download and transcription numbers each come with a *realtime factor*: wall seconds per second of media (0.25 = a 1-hour video takes 15 minutes), comparable across a 30-second clip and a 2-hour talk.
+
+| Metric | Unit | Attributes | What it answers |
+| --- | --- | --- | --- |
+| `reelsaw.pipeline.stage.duration` | s | `stage`, `outcome` (ok, error, superseded, gone), `encoder` on render | How long each stage job takes and how often it fails |
+| `reelsaw.pipeline.media.duration` | s | `stage`, `encoder` | Source length per finished job (clip length for prepare and render) |
+| `reelsaw.pipeline.realtime_factor` | 1 | `stage`, `encoder` | Stage seconds per second of media; render excludes the wait for a slot |
+| `reelsaw.ytdlp.download.duration` | s | `proxy`, `outcome`, `fallback` | One link download through the pool, fallbacks and waits included |
+| `reelsaw.ytdlp.download.realtime_factor` | 1 | `proxy` | Download seconds per second of video, by the proxy that served it |
+| `reelsaw.ytdlp.download.throughput` | By/s | `proxy` | Source bytes per second, by proxy |
+| `reelsaw.ytdlp.attempts` | {attempt} | `proxy`, `outcome` (ok, proxy, content, other, abort, busy, circuit_open), `panic` | Which candidate was tried and why it failed: `proxy` faults count against the exit, `content` against the video |
+| `reelsaw.ytdlp.attempt.duration` | s | `proxy`, `outcome` | Wall time of one yt-dlp process through one candidate |
+| `reelsaw.ytdlp.proxy.circuit.changes` | {change} | `proxy`, `state` | Circuit opens (cooling), half-opens and closes |
+| `reelsaw.ytdlp.proxy.healthy` / `.in_flight` / `.success_rate` | gauge | `proxy` | Circuit closed (1) or cooling (0), running downloads, last-20 success rate |
+| `reelsaw.stt.duration` / `.audio.duration` / `.realtime_factor` | s, s, 1 | `provider`, `model`, `outcome` | Transcription time, audio per call, seconds per audio second |
+| `gen_ai.client.operation.duration` | s | `gen_ai.request.model`, `reelsaw.stage`, `reelsaw.call`, `outcome` | Language model latency per pipeline step |
+| `gen_ai.client.token.usage` | {token} | `gen_ai.request.model`, `gen_ai.token.type`, `reelsaw.stage`, `reelsaw.call` | Tokens per call |
+| `reelsaw.llm.cost` | USD | `gen_ai.request.model`, `reelsaw.stage` | Provider-reported cost (AI Gateway) |
+| `reelsaw.render.slots` | gauge | `state` (running, limit) | Renders running in a worker and the limit CPU and memory allow |
+| `reelsaw.worker.jobs.active` | gauge | `queue` | Jobs a worker process is running |
+| `reelsaw.span.duration` | s | `span`, `status` | Every `withSpan`: each stage and each `exec ffmpeg`, `exec ffprobe`, `exec yt-dlp` |
+
+Over OTLP, the auto-instrumentation adds `http.server.request.duration`, and pg-boss adds `messaging.process.duration` and `pgboss.queue.jobs` (backlog by queue and state). A proxy dashboard: `reelsaw.ytdlp.download.realtime_factor` p50/p95 by `proxy`, `reelsaw.ytdlp.attempts` rate by `proxy` and `outcome`, and `reelsaw.ytdlp.proxy.healthy` by `proxy`.
 
 Spans: inbound HTTP (`/api/health` excluded), Postgres queries, outbound fetch to AI vendors, `pipeline.<stage>` per job with `reelsaw.project_id` / `reelsaw.clip_id` / `reelsaw.attempt`, `exec ffmpeg|ffprobe|yt-dlp`, and the AI SDK's own `ai.generateText` / `ai.transcribe` spans (inputs/outputs not recorded). pg-boss propagates trace context from `send()` into the worker span, so one trace follows a project from the create mutation through every stage.
 

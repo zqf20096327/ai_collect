@@ -40,13 +40,13 @@ If this saves you research time, starring the repo helps more builders discover 
 
 | Domain | Researches | Focus |
 | --- | ---: | --- |
-| [🔬 Research](README-research.md) | 65 | AI scientists, deep research, autonomous discovery |
-| [⚙️ Framework](README-framework.md) | 64 | Agent runtimes, memory, tools, orchestration |
-| [🛡️ Security](README-security.md) | 54 | Prompt injection, red teaming, cyber agents, defenses |
-| [🧠 Reasoning](README-reasoning.md) | 25 | Inference, deliberation, cognitive architectures |
-| [🧪 Testing](README-testing.md) | 24 | Benchmarks, harnesses, evaluation methodology |
+| [🔬 Research](README-research.md) | 66 | AI scientists, deep research, autonomous discovery |
+| [⚙️ Framework](README-framework.md) | 65 | Agent runtimes, memory, tools, orchestration |
+| [🛡️ Security](README-security.md) | 55 | Prompt injection, red teaming, cyber agents, defenses |
+| [🧠 Reasoning](README-reasoning.md) | 26 | Inference, deliberation, cognitive architectures |
+| [🧪 Testing](README-testing.md) | 25 | Benchmarks, harnesses, evaluation methodology |
 | [💊 Healthcare](README-healthcare.md) | 16 | Medical agents, diagnosis, pharma, biomedical research |
-| [💻 Software Engineering](README-software-engineering.md) | 15 | Coding agents, debugging, refactoring, code review |
+| [💻 Software Engineering](README-software-engineering.md) | 16 | Coding agents, debugging, refactoring, code review |
 | [⚡ Automation](README-automation.md) | 15 | Process automation and workflow optimization |
 | [📡 Networking](README-networking.md) | 9 | Self-healing networks and routing |
 | [👁️ Vision](README-vision.md) | 8 | Visual agents and multimodal grounding |

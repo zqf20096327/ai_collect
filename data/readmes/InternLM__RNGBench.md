@@ -2,6 +2,8 @@
 
 <p align="center"><strong>RNG-Bench · Reconstructive Non-Markov Games</strong></p>
 
+<p align="center"><strong>Accepted to EMNLP 2026</strong></p>
+
 <p align="center">
   <a href="https://github.com/SYuan03">Shengyuan Ding</a><sup>1,2,3,*</sup> &nbsp;·&nbsp;
   <a href="https://scholar.google.com/citations?user=zxtbqQwAAAAJ">Xilin Wei</a><sup>1,*</sup> &nbsp;·&nbsp;
@@ -33,6 +35,10 @@
 </div>
 
 ## 📣 News
+
+- **[2026.10.26]** RNGBench has been accepted to EMNLP 2026. [Text-and-image materials](promotion/2026-10-26/README.md) introduce the games, paper findings and October model results.
+
+- **[2026.10.14]** Added [verified Matching Pairs evaluations](docs/results/2026-10-models/README.md) for Kimi-K3, DeepSeek-V4.1-Flash and GLM-5.3-Flash: 45 single-player games and 24 duels, with per-game data and thinking settings.
 
 - **[2026.7.7]** Added **Seed-2.1-Pro** to the Main Results — tops single-player Matching Pairs (10×10 image, **64.6%**) and ranks #2 on 3D Maze (13×13, GS **32.0%**). Results table and project page updated.
 - **[2026.6.23]** RNG-Bench is on 🤗 Hugging Face: [Paper](https://huggingface.co/papers/2606.19338) · [Dataset (Game Trajectories)](https://huggingface.co/datasets/internlm/RNGBench-Game-Trajectories) · [Collection](https://huggingface.co/collections/ChrisDing1105/rngbench).
@@ -67,7 +73,7 @@ belief-state tracking rather than rule misunderstanding or action formatting.
   variance and rewarding exploitation of opponent-revealed cards.
 - **Long-context stress test.** The hardest configurations reach ~128K tokens and
   ~350 image inputs per episode, and scale further with size.
-- **Far from saturation.** The best 10×10 image Matching Pairs score is 64.6%
+- **Far from saturation.** The published cohort’s best 10×10 image Matching Pairs score is 64.6%
   (Seed-2.1-Pro); the best 13×13 maze success rate is 50% (Gemini-3.1-Pro).
 
 ---
@@ -110,7 +116,51 @@ No frontier system is close to saturation.
 | <img src="docs/static/images/logos/moonshot.png" alt="" width="16" height="16" style="vertical-align:middle"> Kimi-K2.5      | 37.5 | 5 | 2 | 9 | 18.0 | 1423 |
 | <img src="docs/static/images/logos/bytedance.png" alt="" width="16" height="16" style="vertical-align:middle"> Seed-2.0-Lite  | 15.6 | 2 | 1 | 13 | 12.3 | 1306 |
 
-**Key findings.** Performance drops sharply with scale (Qwen3.5-397B: 90.6% → 0.7% from 4×4 to 12×12). Vision is the bottleneck, not history length — Qwen3.5-397B and Kimi-K2.5 solve Matching Pairs perfectly in text but fall to 38.3% / 43.3% under noise-pattern images. The textual action trace is load-bearing — removing it collapses GPT-5.4 from 62.3% to 15.3% even though every flip is visible in the board image. And there is large headroom: an optimal policy needs only **3.24** responses per matched pair vs. 7.9 for the best model. Full ablations are in the paper.
+### October 2026 model evaluations
+
+Matching Pairs results for Kimi-K3, DeepSeek-V4.1-Flash and GLM-5.3-Flash,
+verified against native game replay and original API responses. Each model has
+15 single-player games: board seeds `0–4` in each of three tries. Scores average
+all five seeds within a try, then average the three try means. The setting is
+10×10, image/noise, with a 250-response budget.
+
+Kimi's three try means are 82.00%, 80.40% and 68.40%: 577 matched pairs out of
+750 across all 15 games. An additional [read-only action replay](docs/results/2026-10-models/kimi-score-recheck.json)
+confirmed every game's score, the absence of oracle memory and ground-truth
+references in model inputs, and agreement with the original game/audit hashes.
+
+| Model | Thinking setting | PF%↓ | IA%↓ | Resp./Score↓ | Score%↑ |
+|---|---|---:|---:|---:|---:|
+| Kimi-K3 | max; complete own thinking history | 0.00 | 0.08 | 6.50 | 76.93 |
+| DeepSeek-V4.1-Flash | provider default; level not pinned | 0.13 | 0.00 | 9.38 | 53.33 |
+| GLM-5.3-Flash | provider default; level not pinned | 1.44 | 0.51 | 9.52 | 52.53 |
+
+The 24-game duel cohort uses 8×10 image/poker, a shared 200-response budget,
+and seeds `0–3` with both starting players: eight games per matchup.
+
+| Matchup | First model wins | Ties | Second model wins | Games |
+|---|---:|---:|---:|---:|
+| DeepSeek-V4.1-Flash vs. GLM-5.3-Flash | 4 | 0 | 4 | 8 |
+| DeepSeek-V4.1-Flash vs. Kimi-K3 | 0 | 1 | 7 | 8 |
+| GLM-5.3-Flash vs. Kimi-K3 | 2 | 1 | 5 | 8 |
+
+Kimi explicitly uses `reasoning_effort=max` and preserves its own complete
+assistant messages, including thinking. DeepSeek and GLM use provider defaults;
+a numeric or named server-side thinking level was not pinned. GLM returned
+45 single-player and 49 duel `length` responses; these remain in the budget and
+metrics. Transport failures were retried without becoming zero-score games.
+
+These runs extend the benchmark under the documented model configurations.
+The complete historical main-table run manifests and equality of weights across
+fallback deployment aliases have not been established, so these tables do not
+claim an exact-setting rerun of the published leaderboard. The new duels cover
+only these three models; their outcomes are not added to the historical Elo pool.
+See the [per-game data, thinking audit and protocol](docs/results/2026-10-models/README.md).
+
+**Key findings (published cohort).** Performance drops sharply with scale (Qwen3.5-397B: 90.6% → 0.7% from 4×4 to 12×12). Vision is the bottleneck, not history length — Qwen3.5-397B and Kimi-K2.5 solve Matching Pairs perfectly in text but fall to 38.3% / 43.3% under noise-pattern images. The textual action trace is load-bearing — removing it collapses GPT-5.4 from 62.3% to 15.3% even though every flip is visible in the board image. And there is large headroom: an optimal policy needs only **3.24** responses per matched pair vs. 7.9 for the best model. Full ablations are in the paper.
+
+See [Seeds and repeats](#seeds-and-repeats) for the published repetition counts
+and the scope of the example launchers.
 
 ---
 
@@ -227,7 +277,7 @@ cd 2_3d_maze
 # 11×11 maze, 3D first-person view
 python run.py --model gpt-5.4 --maze-size 11 --seed 0
 
-# Sweep five seeds
+# Sweep five Maze environment seeds (one episode per seed)
 python run.py --model gpt-5.4 --seeds 0,1,2,3,4 --maze-size 13
 
 # Preview without calling any LLM
@@ -247,12 +297,50 @@ model × config × seed matrix and run it in parallel; everything is overridable
 via env vars, and `PARALLEL` (a thin wrapper over `xargs -P`) is the concurrency
 knob — set it to whatever your API rate limit allows.
 
+### Seeds and repeats
+
+`--seed` / `SEEDS` select the **environment** (board or maze). Model sampling
+seeds, when supported, are configured separately in the model preset.
+
+| Example launcher | Default environment seeds |
+|---|---|
+| [Matching Pairs single-player](1_matching_pairs_new/scripts/run_eval.sh) | `0 1 2` |
+| [Matching Pairs duel](1_matching_pairs_new/scripts/run_duel.sh) | `0 1 2 3` |
+| [3D Maze](2_3d_maze/scripts/run_eval.sh) | `0 1 2 3 4` |
+
+These are overridable **example defaults**. Their relationship to the published
+results is:
+
+- **Maze:** paper §3.3 specifies five seeds per configuration. The explicit
+  `0 1 2 3 4` list above comes from the released Maze launcher.
+- **Matching Pairs single-player:** the released paper and scripts do not state
+  the complete seed list and number of outer repetitions behind the main table.
+  The launcher's three default seeds do not establish that historical protocol.
+- **Matching Pairs image duel:** paper Table 3 uses **two board seeds × both
+  starting orders = four games per model pair**. The table does not name the two
+  seed values. The example below chooses `0 1` and runs both orders explicitly;
+  `run_duel.sh` starts with model A and does not swap the order automatically.
+
+A **try** (or **repeat**) is a fresh run of the full declared seed set for one
+model/configuration. For example, five seeds × three tries means **15 episodes**:
+average the five episode scores within each try, then average the three try
+means. This illustrates aggregation; it does not specify the historical
+single-player main-table protocol. The example launchers have no outer repeat
+loop. Use a separate `OUT_BASE` for each try and report the seed list, repeat
+count, and any incomplete or failed episodes alongside the results.
+
+### Example commands
+
 ```bash
 # Matching Pairs — see 1_matching_pairs_new/scripts/
-MODELS="gpt-5.4 gemini-3.1-pro" GRIDS="8x10 10x10" PARALLEL=4 \
+MODELS="gpt-5.4 gemini-3.1-pro" GRIDS="8x10 10x10" SEEDS="0 1 2" PARALLEL=4 \
   bash 1_matching_pairs_new/scripts/run_eval.sh        # single-player matrix
-MODEL_A=gpt-5.4 MODEL_B=gemini-3.1-pro SEEDS="0 1 2 3" \
-  bash 1_matching_pairs_new/scripts/run_duel.sh        # duel protocol
+
+# Duel example: seeds 0 and 1, both starting orders, four games per pair
+MODEL_A=gpt-5.4 MODEL_B=gemini-3.1-pro SEEDS="0 1" OUT_BASE=results_duel_a_first \
+  bash 1_matching_pairs_new/scripts/run_duel.sh
+MODEL_A=gemini-3.1-pro MODEL_B=gpt-5.4 SEEDS="0 1" OUT_BASE=results_duel_b_first \
+  bash 1_matching_pairs_new/scripts/run_duel.sh
 
 # 3D Maze — see 2_3d_maze/scripts/
 MODELS="gpt-5.4 gemini-3.1-pro" SIZES="9 11 13" SEEDS="0 1 2 3 4" PARALLEL=4 \

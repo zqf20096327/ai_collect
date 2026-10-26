@@ -84,7 +84,7 @@ docker compose --env-file .env -f deploy/docker-compose.yaml up -d --build
 
 ## 与开源同类工具对比
 
-| # | 核心功能 | **TestOPS（本平台）** | 夜莺 Nightingale | Keep | k8sgpt | HolmesGPT |
+| # | 核心功能 | **AIOps（本平台）** | 夜莺 Nightingale | Keep | k8sgpt | HolmesGPT |
 |---|---|---|---|---|---|---|
 | 1 | Agent 一体化采集（指标+探活+断网续传） | ✅ 拉取式，0 入站端口 | ✅ Categraf（推模式） | ❌ | ❌ | ❌ |
 | 2 | 告警引擎（指纹去重 + 静默策略链 + 生效时段） | ✅ | ✅ 强项 | ◐ 告警聚合降噪 | ❌ | ❌ |

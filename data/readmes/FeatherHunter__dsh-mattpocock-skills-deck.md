@@ -29,10 +29,10 @@ npm install -g @deepseek-ai/dsh
 dsh plugin --profile web add dsh-mattpocock-skills-deck     # 用自启 web 服务（dsh web）
 #     或者
 dsh plugin --profile desktop add dsh-mattpocock-skills-deck   # 用 DSH Desktop 桌面应用
-# 锁定最新版更稳（当前 1.9.0-beta.19）：
-dsh plugin --profile web add dsh-mattpocock-skills-deck@1.9.0-beta.19 --registry https://registry.npmjs.org
+# 锁定最新版更稳（当前 1.9.0-beta.22）：
+dsh plugin --profile web add dsh-mattpocock-skills-deck@1.9.0-beta.22 --registry https://registry.npmjs.org
 #     或者
-dsh plugin --profile desktop add dsh-mattpocock-skills-deck@1.9.0-beta.19 --registry https://registry.npmjs.org
+dsh plugin --profile desktop add dsh-mattpocock-skills-deck@1.9.0-beta.22 --registry https://registry.npmjs.org
 ```
 
 > **用 GitHub 后端前的权限前提**：插件替你改 ISSUE，用的是本机 `gh` 已登录账号的权限——建标签、改票需要仓库的 `push` 权限；改指派、流转标签需要 `triage` 权限。账号在该仓库只有 `只读` 权限时，插件会把仓库如实标成只读：改票、打标签与标签流转不可用，浏览与刷新照常。
@@ -203,6 +203,8 @@ DSH侧边栏-总览任务面板全貌。通过插件内置SKILLS的任务拆分�
 | [@arnold117](https://github.com/arnold117) | 🌹🌹 | [#574](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/574) [#575](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/pull/575) |
 | [@xiSage](https://github.com/xiSage) | 🌹🌹 | [#435](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/435) [#436](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/discussions/436) |
 | [@angenet](https://github.com/angenet) | 🌹🌹 | [#262](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/262) [#295](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/295) |
+| [@Niefee](https://github.com/Niefee) | 🌹 | [#1516](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/1516) |
+| [@TangSuann](https://github.com/TangSuann) | 🌹 | [#1505](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/1505) |
 | [@nolifeking0916](https://github.com/nolifeking0916) | 🌹 | [#1504](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/1504) |
 | [@ACGNnsj](https://github.com/ACGNnsj) | 🌹 | [#1498](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/1498) |
 | [@654970](https://github.com/654970) | 🌹 | [#1481](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/1481) |
@@ -248,9 +250,9 @@ DSH侧边栏-总览任务面板全貌。通过插件内置SKILLS的任务拆分�
 
 <a href="https://featherhunter.github.io/dsh-mattpocock-skills-deck/star-history.html">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/FeatherHunter/dsh-mattpocock-skills-deck/main/docs/star-history-dark.svg?v=20261025" />
-    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/FeatherHunter/dsh-mattpocock-skills-deck/main/docs/star-history-light.svg?v=20261025" />
-    <img alt="Star History Chart" src="https://raw.githubusercontent.com/FeatherHunter/dsh-mattpocock-skills-deck/main/docs/star-history-light.svg?v=20261025" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/FeatherHunter/dsh-mattpocock-skills-deck/main/docs/star-history-dark.svg?v=20261026" />
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/FeatherHunter/dsh-mattpocock-skills-deck/main/docs/star-history-light.svg?v=20261026" />
+    <img alt="Star History Chart" src="https://raw.githubusercontent.com/FeatherHunter/dsh-mattpocock-skills-deck/main/docs/star-history-light.svg?v=20261026" />
   </picture>
 </a>
 

@@ -175,6 +175,13 @@ Same loop from an agent: `zot toc scan --json` hands over the evidence, the mode
 decides the hierarchy, `zot toc set --from -` writes it. Writes are guarded by
 `--yes`, previewable with `--dry-run`, and reversible with `zot undo`.
 
+EPUBs get the same treatment from the bundled skill rather than the CLI: a
+stdlib helper reads the navigation (EPUB 3 `nav` or EPUB 2 `toc.ncx`) as a JSON
+tree, validates every target, and writes the reviewed hierarchy into a *copy*.
+A second helper converts the EPUB to PDF through Calibre with that same tree as
+the outline, and fixes on the way what Calibre would get wrong: a page break
+after every section of a chapter, and footnotes left as unlinked plain text.
+
 ### Make a scanned book usable
 
 A book scanned on a flatbed arrives as one landscape page per *pair* of printed

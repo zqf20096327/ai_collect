@@ -127,7 +127,9 @@ Key pieces:
 - **Subagents** — the `Task` tool delegates a self-contained sub-task to an
   agent in its own separate chat (isolated context), which returns only a
   report, so heavy research does not flood the main context. On by default;
-  tune with `browser.subagents` / `browser.maxSubagents`.
+  `browser.subagents` turns it off and `browser.maxSubagents` caps the runs
+  per TASK (default 3). Calls are sequential, not parallel, and the subtype
+  matters: `explore` is read-only, `general` may edit files.
 - **MCP support** — plug in external tool servers (e.g. `@playwright/mcp`).
 - **Scheduling** — `/loop`, `/cron` and `/jobs` repeat tasks on a timer.
 - **Bilingual UI** — Russian / English (`/config lang`).
@@ -287,8 +289,12 @@ The prompt is a small line editor with persistent history:
 - `Ctrl+_` — undo the last edit in the input line (a fat-fingered `Ctrl+U` /
   `Ctrl+K` is recoverable).
 - `Ctrl+U` — clear the line, `Ctrl+K` — delete to end of line, `Ctrl+W` —
-  delete the word before the cursor, `Ctrl+←`/`Ctrl+→` — move by words.
-- `\` + `Enter`, `Ctrl+J`, `Ctrl+Enter` or `Shift+Enter` — insert a newline.
+  delete the word before the cursor, `Ctrl+←`/`Ctrl+→` — move by words,
+  `Ctrl+Delete`/`Alt+Delete` — delete the word after the cursor.
+- `\` + `Enter` and `Ctrl+J` — insert a newline; these two work in
+  every terminal. `Ctrl+Enter` and `Shift+Enter` do it too, but only where the
+  terminal implements the kitty keyboard protocol: without it the terminal
+  sends a PLAIN Enter for Shift+Enter and the message is sent.
 - `/` + `Tab` — slash-command hints and completion.
 - `!command` — run a shell command directly, bypassing the model (like
   Claude Code's bash mode). The same sandbox guard as the `Bash` tool applies,
@@ -302,9 +308,10 @@ selected without leaving the terminal:
   wheel never scrolls the input history — history is arrow keys only.
 - `ui.mouseScroll=false` — the terminal owns the mouse again: normal text
   selection works and the wheel is inert.
-- `PgUp` / `PgDn` — move up/down the dialog half a screen.
-- `Home` / `End` — jump to the very top / bottom of the dialog (only while the
-  input line is empty; with text typed they move the caret as usual).
+- the mouse wheel, `PgUp` / `PgDn` (half a screen) and `Home` / `End` (the very
+  top / bottom) scroll the dialog; the wheel needs `ui.mouseScroll=true` (the default), and
+  Home/End jump only while the input line is empty (with text typed they
+  move the caret as usual).
 - To copy a LARGE block, use `/export` (writes the whole session as Markdown)
   or the transcript file (`/transcript` shows the path) — the terminal's own
   drag-select cannot reach past one screen.
@@ -313,8 +320,8 @@ Set `NO_COLOR=1` to disable colors (a calm default palette is used otherwise).
 
 ### Images and files
 
-You can paste an image or a file into the input line (Ctrl+Shift+V / Shift+Insert
-or the terminal's own paste). zames saves it under `<project>/tmp` and shows a
+You can paste an image or a file into the input line (Shift+Insert or the
+terminal's own paste; for a FILE from the clipboard press Ctrl+V). zames saves it under `<project>/tmp` and shows a
 marker in the line - `[image#1]` for images, `[file#1]` for other files - then
 uploads the real file to the chat together with your message. These are the
 same formats the DeepSeek / Qwen / GLM web chat accepts (PNG, JPEG, GIF, WEBP, BMP,
@@ -384,6 +391,8 @@ The agent has the same style of tools as Claude Code / Codex CLI:
 - **Git** — `GitStatus`, `GitDiff`, `GitLog`, `GitShow`, `GitBranchList`,
   `GitAdd`, `GitCommit`, `GitPush`.
 - **Web** — `WebFetch`, `WebSearch`.
+- **Subagents** — `Task` (delegate a self-contained sub-task to an agent in
+  its own chat; `explore` is read-only, `general` may edit; capped per task).
 - **Operator** — `AskUser` (a modal question with options; skipped in plan
   mode so a plan is never interrupted).
 - **Service** — `respond` (final answer to the operator, ends the task).
@@ -431,8 +440,9 @@ commands (/new or /clear, /sessions, /chats, /resume-id, /last, /chat, /cd,
 - /review [focus] [--staged] — ask the agent to review uncommitted changes
   and report findings (no code changes).
 - /plan [on|off] — plan (read-only) mode. While it is on, the mutating tools
-  (Write/Edit/MultiEdit/ApplyPatch/Bash, GitAdd/GitCommit/GitPush) are removed
-  from the tool set, so the agent can investigate without touching the tree.
+  (Write/Edit/MultiEdit/ApplyPatch/Bash/BashOutput, GitAdd/GitCommit/GitPush,
+  AskUser) are removed from the tool set, and so are MCP tools with a mutating
+  name, so the agent can investigate without touching the tree.
   Start in it with `--plan`.
 - /compact — ask the active backend to compress the current chat into a handover
   summary, then open a NEW chat, resend the system prompt and post the summary
@@ -440,9 +450,10 @@ commands (/new or /clear, /sessions, /chats, /resume-id, /last, /chat, /cd,
 - /goal <condition> — set a **completion condition** (Claude Code parity). The
   agent starts working toward it at once and keeps starting new turns until a
   separate evaluator model judges the condition met. The goal clears itself
-  automatically when it is met (or judged impossible), or with `/goal clear`.
-  The condition is stored in `<project>/.zames-goal` (git-ignored) and restored
-  on the next launch. `/goal` with no argument shows the current state.
+  automatically when it is met (or judged impossible), or with `/goal clear`
+  (or its synonym `/goal off`). The condition is stored in `<project>/.zames-goal`
+  (git-ignored) and restored on the next launch. `/goal` with no argument — or
+  `/goal on` — shows the current state.
 - /loop <interval> <task> — repeat a task periodically (e.g. `/loop 10m run the
 tests`). /cron "<min> <hour> <dom> <month> <dow>" <task> — run on a schedule.
   /jobs [rm <id>|clear] lists and stops them. A fired job is put into the same
@@ -456,8 +467,9 @@ tests`). /cron "<min> <hour> <dom> <month> <dow>" <task> — run on a schedule.
   "Web search" item in the "+" menu.
   These (and /queue, /jobs, /goal, `/config <sub>`) can be used WHILE the agent
   is working — they do not touch the in-flight generation.
-- /queue [clear] — list or clear the messages waiting to be sent after the
-  current task.
+- /queue [list|ls|clear|c|clean] — list (`list`/`ls`) or clear
+  (`clear`/`c`/`clean`) the messages waiting to be sent after the current
+  task.
 
 The token context is also shown live: the status line above the input has the
 spinner/text on the left and the context on the right (e.g. `125k · 13%`). The
@@ -563,8 +575,7 @@ too):
 
 - **Memory** (`@modelcontextprotocol/server-memory`) — a local knowledge graph
   (9 tools) for durable facts across chats. NOTE: zames already has `MEMORY.md`
-
-* `AGENTS.md`; add this only if you want a queryable graph.
+  + `AGENTS.md`; add this only if you want a queryable graph.
 
 Keep the stack SMALL: every server loads its tool definitions into the model's
 context. Add one when you feel its absence, not before.
@@ -580,13 +591,14 @@ You can view and change settings without leaving the agent — use the
 toggle in place; numbers and strings open an input prompt.
 
 ```
-/config                       interactive settings menu
-/config list                  print all editable settings
+/config                       interactive settings menu (alias: menu)
+/config list                  print all editable settings (aliases: show, ls)
 /config get <path>            show a setting
 /config set <path> <value>    change a setting
-/config reset <path>          reset a setting to its default
-/config path                  show config file paths
+/config reset <path>          reset a setting to its default (alias: unset)
+/config path                  show config file paths (alias: paths)
 /config lang <ru|en>          switch interface and agent language
+                              (aliases: language, язык)
 ```
 
 Examples:
@@ -821,7 +833,10 @@ zames не вызывает API модели. Он запускает headless C
 - **Субагенты** — инструмент `Task` поручает самодостаточную подзадачу агенту
   в отдельном чате (изолированный контекст), который возвращает только отчёт,
   так что тяжёлая разведка не засоряет основной контекст. Включены по
-  умолчанию; настраиваются через `browser.subagents` / `browser.maxSubagents`.
+  умолчанию; `browser.subagents` выключает их, а `browser.maxSubagents` ограничивает
+  число запусков на ОДНУ задачу (по умолчанию 3). Вызовы последовательные,
+  не параллельные, и подтип важен: `explore` только читает, `general` может
+  править файлы.
 - **Поддержка MCP** — подключение внешних серверов инструментов (например,
   `@playwright/mcp`).
 - **Планировщик** — `/loop`, `/cron` и `/jobs` повторяют задачи по таймеру.
@@ -980,9 +995,13 @@ zames
 - `Ctrl+_` — отменить последнюю правку строки ввода (случайно нажатые
   `Ctrl+U` / `Ctrl+K` можно вернуть).
 - `Ctrl+U` — очистить строку, `Ctrl+K` — удалить до конца строки, `Ctrl+W` —
-  удалить слово перед курсором, `Ctrl+←`/`Ctrl+→` — переход по словам.
-- `\` + `Enter`, `Ctrl+J`, `Ctrl+Enter` или `Shift+Enter` — вставить новую
-  строку.
+  удалить слово перед курсором, `Ctrl+←`/`Ctrl+→` — переход по словам,
+  `Ctrl+Delete`/`Alt+Delete` — удалить слово после курсора.
+- `\` + `Enter` и `Ctrl+J` — вставить новую строку; эти две
+  работают в любом терминале. `Ctrl+Enter` и `Shift+Enter` тоже вставляют
+  строку, но только там, где терминал поддерживает kitty-протокол
+  клавиатуры: без него Shift+Enter приходит как обычный Enter, и
+  сообщение отправляется.
 - `/` + `Tab` — подсказки и автодополнение слэш-команд.
 - `!команда` — выполнить shell-команду напрямую, минуя модель (как bash-режим
   Claude Code). Действует та же песочница, что и для инструмента `Bash`, так
@@ -996,9 +1015,10 @@ zames
   никогда не листает историю ввода — история только стрелками.
 - `ui.mouseScroll=false` — мышью снова владеет терминал: обычное выделение
   текста работает, колесо инертно.
-- `PgUp` / `PgDn` — вверх/вниз по диалогу на пол-экрана.
-- `Home` / `End` — прыжок в самый верх / низ диалога (только когда строка ввода
-  пуста; при набранном тексте они двигают курсор, как обычно).
+- колесо мыши, `PgUp` / `PgDn` (пол-экрана) и `Home` / `End` (самый верх / низ)
+  прокручивают диалог; колесо работает при `ui.mouseScroll=true` (по умолчанию), а
+  Home/End прыгают только когда строка ввода пуста (при набранном тексте
+  они двигают курсор, как обычно).
 - Чтобы скопировать БОЛЬШОЙ кусок, используйте `/export` (пишет всю сессию в
   Markdown) или файл транскрипта (`/transcript` покажет путь) — собственным
   выделением терминала за пределы одного экрана не выделить.
@@ -1008,8 +1028,8 @@ zames
 
 ### Картинки и файлы
 
-В строку ввода можно вставить картинку или файл (Ctrl+Shift+V / Shift+Insert
-или собственной вставкой терминала). zames сохраняет его в `<project>/tmp` и
+В строку ввода можно вставить картинку или файл (Shift+Insert или
+собственной вставкой терминала; файл из буфера обмена — по Ctrl+V). zames сохраняет его в `<project>/tmp` и
 показывает маркер в строке — `[image#1]` для картинок, `[file#1]` для прочих
 файлов — затем загружает реальный файл в чат вместе с вашим сообщением. Это те
 же форматы, что принимает веб-чат DeepSeek / Qwen / GLM (PNG, JPEG, GIF, WEBP, BMP,
@@ -1079,6 +1099,9 @@ zames --task "..." --output-format jsonl \
 - **Git** — `GitStatus`, `GitDiff`, `GitLog`, `GitShow`, `GitBranchList`,
   `GitAdd`, `GitCommit`, `GitPush`.
 - **Web** — `WebFetch`, `WebSearch`.
+- **Субагенты** — `Task` (делегировать самодостаточную подзадачу агенту в
+  отдельном чате; `explore` только читает, `general` может править; число
+  запусков на задачу ограничено).
 - **Оператор** — `AskUser` (модальный вопрос с вариантами; в режиме плана не
   предлагается, чтобы не прерывать план).
 - **Служебный** — `respond` (финальный ответ оператору, завершает задачу).
@@ -1127,9 +1150,10 @@ zames --task "..." --output-format jsonl \
 - /review [focus] [--staged] — попросить агента проверить незакоммиченные
   изменения и сообщить находки (без правок кода).
 - /plan [on|off] — режим плана (только чтение). Пока он включён, мутирующие
-  инструменты (Write/Edit/MultiEdit/ApplyPatch/Bash, GitAdd/GitCommit/GitPush)
-  убраны из набора, чтобы агент изучал код, не трогая дерево. Стартовать в нём
-  можно с `--plan`.
+  инструменты (Write/Edit/MultiEdit/ApplyPatch/Bash/BashOutput,
+  GitAdd/GitCommit/GitPush, AskUser) убраны из набора вместе с MCP-инструментами
+  с мутирующим именем, чтобы агент изучал код, не трогая дерево. Стартовать в
+  нём можно с `--plan`.
 - /compact — попросить активный бэкенд сжать текущий чат в передаточное резюме,
   затем открыть НОВЫЙ чат, заново отправить системный промпт и положить резюме как
   перенесённый контекст. Используйте, когда контекст разрастается.
@@ -1137,9 +1161,10 @@ zames --task "..." --output-format jsonl \
   сразу начинает работать над ним и продолжает запускать новые ходы, пока
   отдельная модель-оценщик не признает условие выполненным. Цель снимается
   автоматически при достижении (или если оценщик признал её недостижимой),
-  либо командой `/goal clear`. Условие хранится в `<project>/.zames-goal`
-  (git-ignored) и восстанавливается при следующем запуске. `/goal` без
-  аргумента показывает текущее состояние.
+  либо командой `/goal clear` (синоним — `/goal off`). Условие
+  хранится в `<project>/.zames-goal` (git-ignored) и восстанавливается при
+  следующем запуске. `/goal` без аргумента — или `/goal on` —
+  показывает текущее состояние.
 - /loop <interval> <task> — повторять задачу периодически (например,
   `/loop 10m run the tests`). /cron "<min> <hour> <dom> <month> <dow>" <task> —
   запуск по расписанию. /jobs [rm <id>|clear] перечисляет и останавливает их.
@@ -1153,8 +1178,8 @@ zames --task "..." --output-format jsonl \
   в меню «+».
   Их (а также /queue, /jobs, /goal, `/config <sub>`) можно использовать, ПОКА
   агент работает — они не трогают текущую генерацию.
-- /queue [clear] — показать или очистить сообщения, ждущие отправки после
-  текущей задачи.
+- /queue [list|ls|clear|c|clean] — показать (`list`/`ls`) или очистить
+  (`clear`/`c`/`clean`) сообщения, ждущие отправки после текущей задачи.
 
 Контекст в токенах показывается и вживую: в строке статуса над вводом слева
 спиннер/текст, справа — контекст (например, `125k · 13%`). Процент считается от
@@ -1276,13 +1301,14 @@ MCP-браузер и браузер агента подерутся за оди
 enum переключаются на месте; числа и строки открывают ввод.
 
 ```
-/config                       интерактивное меню настроек
-/config list                  показать все изменяемые настройки
+/config                       интерактивное меню настроек (алиас: menu)
+/config list                  показать все изменяемые настройки (алиасы: show, ls)
 /config get <path>            показать настройку
 /config set <path> <value>    изменить настройку
-/config reset <path>          сбросить настройку к дефолту
-/config path                  показать пути файлов конфига
+/config reset <path>          сбросить настройку к дефолту (алиас: unset)
+/config path                  показать пути файлов конфига (алиас: paths)
 /config lang <ru|en>          переключить язык интерфейса и агента
+                              (алиасы: language, язык)
 ```
 
 Примеры:
