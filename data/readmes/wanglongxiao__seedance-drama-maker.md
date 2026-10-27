@@ -2,8 +2,8 @@
 
 简体中文文档。English version: `README.en.md`
 
-- 🌐 在线体验：<https://s0sij5su2u6qe1sds1et0.apigateway-ap-southeast-1.apigw-byteplus.com/>
-- 当前版本：`2.0.0`
+- 🌐 在线体验：<https://sd6npkalgt0sthatn3doa.apigateway-ap-southeast-1.apigw-byteplus.com/>
+- 当前版本：`3.0.0`
 - 技术栈：`FastAPI`、`WebSocket`、多 Agent 协作、`FFmpeg`
 - 产品能力：`TOS`、`Seed-Speech`、`DeepSeek-V4.1-Flash`、`Seed-2.1-turbo`、`SeeDream-5.0-flash`、`SeeDance-2.5`
 - AI 开发工具：`Trae.ai`、`DeepSeek-V4.1-Flash`、`GPT-5.5`
@@ -21,31 +21,18 @@
 
 ## 项目简介
 
-这是一个聚焦于 AI 长视频生成的多 Agent 系统，支持自动模式与手动模式两种工作方式。在保证生成质量的前提下，系统尽量简化人工操作，把用户从繁琐的脚本拆解、角色整理、布景统一、分镜衔接、质量复审和长视频合成中解放出来。
+多 Agent AI 视频制作系统，支持文字、图片或语音输入，自动或手动生成短剧、漫剧与广告，可在本地和云端运行。
 
-项目适用场景包括但不限于：
+流程：需求 → 剧本 → 角色与布景参考图 → 分镜生成与审核 → 合成 → 优化与字幕。
 
-- 社交媒体数分钟广告视频生成
-- 一句话生成短剧 / 漫剧
-- 基于参考图片与语音输入生成连续叙事长视频
-- 多个长视频任务并行运行，开箱即用
+结合 video-use、vlog-auto-edit 规划剪辑，media-use 处理素材，HyperFrames 构建时间线，BytePlus Seed Speech 识别音轨，remotion-captions 组织字幕，FFmpeg 快速合成，remotion-render 支持逐帧导出。支持问题片段剪除、局部补拍、光影校正和成片复审，保留原声，输出视频、字幕与审核报告。
 
-系统会自动协同生成剧本、角色设定、布景设定、对白、音效约束与分镜视频，并结合 AI 质量审核、自动/手动重生成、相邻分镜平滑过渡控制，完成从一句话需求到最终长视频成片的完整链路。
+### 2026-10-28 更新
 
-当前主流程为：
-
-```text
-需求输入 -> 剧本生成 -> 参考图库确认 -> 角色装扮/布景状态变体 -> 分镜视频生成与审核 -> 最终合成
-```
-
-系统重点解决以下问题：
-
-- 剧本、角色设定、布景设定、分镜脚本的统一生成
-- 多参考图协同生成，支持人物/角色与布景分流
-- 自动模式与手动模式下的一致流程控制
-- 视频审核失败后的自动重试与人工接管
-- 多语言前端与多浏览器标签页独立任务隔离
-- 云端交互式请求隔离：上传与录音转文字走独立线程池，避免被生图/生视频长阻塞任务挤占导致网关超时
+- BytePlus ASR 默认开启多语言自动识别（`enable_auto_lang=true`），覆盖日语、韩语、西班牙语、葡萄牙语及中英混合音轨；字幕直接来自实际语音，保留口头词和词/句时间戳。旧识别缓存自动失效，单纯语言标签修正不重复调用 ASR。
+- 局部修复使用 Seedance 2.5 编辑原分镜视频：同镜多个区间合并为一次请求，不同镜头并行。仅独立审核通过的区间回填，保留其他画面和原音轨。时间以未剪辑母片为准，每个区间最多 6 秒。
+- 修复上限耗尽后显示待检查状态与报告，不继续假等待；未完成的分镜生成/审核会阻止合成和优化。结束项目会停止后续处理并删除全部项目资源，请先下载所需成片、字幕与报告。
+- 删除本地 Whisper/PyTorch 模型层、旧参考图补拍路径及过期测试，统一五种界面语言与资源缓存版本。
 
 ## 项目展示
 
@@ -76,9 +63,9 @@
 - `Seed-Speech`
   用于语音转文字，支持通过录音输入视频创作需求。
 - `DeepSeek-V4.1-Flash`
-  用于主对话 Agent 与剧本分镜生成。
+  用于主对话 Agent 与剧本分镜生成；视频审核已实测并切换到 `deepseek-v4.1-flash-1017`，用于分镜与成片视觉审核。
 - `Seed-2.1-turbo`
-  用于分镜视频审核，评估人物/角色一致性、物理规律和脚本语义一致性。
+  原视频审核模型，可通过 `.env` 的 `VIDEO_REVIEW_ENDPOINT` / `VIDEO_REVIEW_API_KEY` 配置使用。
 - `SeeDream-5.0-flash`
   用于人物/角色参考图与布景参考图生成和重生成。
 - `SeeDance-2.5`
@@ -96,7 +83,7 @@
 
 ### 环境要求
 
-- Python `3.9+`
+- Python `3.11`、Node `22+`、Chromium；音轨识别使用 BytePlus Seed Speech
 - 运行环境可执行 `ffmpeg` 与 `ffprobe`（本地、Docker、云端 veFaaS 镜像均需要安装）
 - 网络可访问 BytePlus / ModelArk / Seed-Speech / TOS
 
@@ -157,13 +144,9 @@ ASSET_LIBRARY_REGION=ap-southeast-1
 ASSET_LIBRARY_API_HOST=ark.ap-southeast-1.byteplusapi.com
 ASSET_LIBRARY_PROJECT_NAME=default
 
-# 仅允许明确年满18岁的角色生成半裸/裸体内容
-NSFW_ENABLED=off
 ```
 
 `config.yaml` 中对应字段保留占位符即可，运行时会自动从 `.env` 注入：
-
-`NSFW_ENABLED=on` 时，剧本、角色主图、角色装扮图和分镜视频会统一启用成年角色裸露策略；关闭时这些生成链路会明确要求非露骨穿衣内容。该策略由代码和公共提示词统一实现，不再依赖额外私有提示词目录。
 
 ```yaml
 byteplus:
@@ -220,8 +203,8 @@ models:
 - 生成、改稿与定向修正使用统一校验：检查锁定设定、结构、时长与叙事连贯性；语义审稿发现的问题需经事实复核确认，避免因继承的机位、光源或道具插镜产生误判
 - `script_generation.validation_max_rounds` 默认 `3`，包含首次生成与后续修正；已有效的导演时长计划优先保留，必要时再微调
 - 轮次耗尽后，手动模式暂停后续生成，可选择重新启动整个项目或使用最佳候选剧本继续；刷新页面可恢复待选状态。自动模式直接选择最符合要求的候选继续，按锁定设定、结构可执行性、时长与已确认问题数量排序
-- 分镜中的特殊装扮与发型变化显式写入 `character_outfits`，布景时间/天气状态显式写入 `scene_state`；两者均位于“场景描述”之前，并持久化用于后续生图/生视频
-- 服务端 `INFO` 日志仅记录模型、消息数量、Prompt/请求体长度等摘要；完整 Prompt、请求体、素材轮询结果和心跳仅在 `DEBUG` 级别输出，避免长任务产生超大日志
+- 分镜中的特殊装扮与发型显式写入 `character_outfits`，布景时间/天气状态显式写入 `scene_state`；两者均位于“场景描述”之前，并持久化用于后续生图/生视频
+- 服务端日志记录模型、消息数量、请求体长度、耗时和错误摘要，不输出完整提示词、请求体或模型原文；心跳与素材轮询仅记录 `DEBUG` 元数据
 
 ### 3. 参考图库生成
 
@@ -252,7 +235,6 @@ models:
 
 - 每个项目创建独立素材资产组，维持项目与素材资产组一一对应
 - 项目内所有人物/角色图片，包括上传原图与生成参考图，都会注册为素材资产并记录 `asset_id`
-- 支持 NSFW 素材上传，创建素材时使用 `Moderation.Strategy = Skip` 关闭 Content pre-filter
 - 只有当素材状态轮询到 `GetAsset.Status = Active` 后，才会进入视频生成链路
 
 鉴权说明：
@@ -270,7 +252,7 @@ models:
 - 角色装扮图 = 该分镜的角色装扮描述 + 对应角色主图
 - 布景状态图 = 该分镜的时间/天气状态 + 对应场景主图
 - 多个分镜的装扮图/状态图并行生成，受图片生成并发数（`video_generation.reference_images.max_concurrency`）控制
-- 角色装扮按服饰、裸露层级、发型和伤痕等稳定视觉特征去重；布景状态按时间与天气归一化去重，细微措辞变化不会重复生成
+- 角色装扮按服饰、发型和伤痕等稳定视觉特征去重；布景状态按时间与天气归一化去重，细微措辞变化不会重复生成
 - 每张变体图通过 `scene_numbers` 与一个或多个分镜强绑定，分镜视频优先使用当前编号命中的变体
 - 分镜视频选择装扮图时直接按 `scene_numbers`、精确 `variant_key`、视觉等价描述依次匹配，不会为每个角色重复扫描和重建整份分镜变体计划
 
@@ -301,7 +283,6 @@ models:
 - 自动失败重试次数受 YAML 配置限制（`video_review.max_retries`、`video_generation.scene_total_generate_limit`）
 - 人工点击“重新生成”不计入自动失败预算
 - 视频提示词默认追加“限定：不生成背景音乐”，除非用户需求中明确指定背景音乐风格
-- 当 `NSFW_ENABLED=on` 且角色明确年满 18 岁时，若当前分镜语义表明亲密行为仍在继续，会继承上一分镜的半裸/裸体装扮状态；剧情明确结束后才恢复使用当前分镜指定的其他角色图
 - 分镜编号始终按剧本数组顺序规范为 `1..N`；生成结果同时保存分镜内容指纹，防止编号正确但内容错绑
 - 分镜视频归档名使用可排序格式 `scene_012_attempt_03.mov`
 
@@ -315,15 +296,15 @@ Web UI 新增“结束项目”按钮，并支持在以下场景触发清理：
 
 清理范围：
 
-- 删除本项目在 `TOS` 中的临时文件与临时目录
+- 删除本项目全部 `TOS` 文件，包括母片、成片、字幕、报告与恢复快照
 - 删除本项目虚拟素材库中的素材资产
 - 删除本项目对应的素材资产组
 
-如果项目已经产出最终视频，则保留 `videos/final` 下的最终成片，避免误删导出结果。
+请在结束项目之前下载需要保留的文件。成片复审通过后的自动清理只删除中间素材，保留交付文件和恢复快照；明确结束则删除全部项目资源。单纯 WebSocket 断连或项目失败不会触发资源删除，以便恢复或重试。
 
 ### 4. 视频审核与流程推进
 
-`VideoReviewAgent` 使用 `Seed-2.1-turbo` 做分镜视频审核。
+`VideoReviewAgent` 使用 `.env` 指定的视觉模型做分镜视频审核，当前部署为 `deepseek-v4.1-flash-1017`。同一测试片的快速整片审核中，原模型耗时 16.20 秒，候选模型耗时 5.11 秒，均成功返回结构化报告；这是单片速度对比，不代表通用准确率结论。
 
 审核维度：
 
@@ -335,7 +316,7 @@ Web UI 新增“结束项目”按钮，并支持在以下场景触发清理：
 
 当前默认审核配置：
 
-- `video_review.pass_threshold = 60`
+- `video_review.pass_threshold = 80`
 - `video_review.max_retries = 2`
 - `video_review.default_mode = auto`
 
@@ -423,7 +404,7 @@ Services
 - 项目与浏览器连接绑定，支持多标签页独立运行
 - 后台长任务通过稳定客户端 ID 支持 WebSocket 断线重连后的结果续推
 - 参考图库、视频生成、审核、合成都采用渐进式前端展示
-- 最终视频会在项目结束清理中保留
+- 成片复审通过后自动清理中间素材，保留母片、成片、字幕、报告和恢复状态；明确结束项目会删除全部项目资源
 - 上传、ASR 等实时交互请求使用独立 `interactive` 线程池；生图、生视频、审核、合成等长任务使用 `generation` 线程池，降低云端单实例多项目并发时的排队超时风险
 
 ## 使用说明
@@ -431,8 +412,14 @@ Services
 ### 安装依赖
 
 ```bash
-pip install -r requirements.txt
+uv venv --python 3.11
+uv pip install --python .venv/bin/python -r requirements.txt -r requirements-video-tools.txt
+npm ci --prefix runtime
+mkdir -p ~/.local/share/seedance-drama-maker/video-tools
+cp -R runtime/node_modules ~/.local/share/seedance-drama-maker/video-tools/
 ```
+
+系统安装 FFmpeg/FFprobe 和 Chromium。音轨识别配置 `SPEECH_*`、TOS 与 `ASR_RESOURCE_ID=volc.seedasr.auc`，无需下载本地模型。默认不指定单一语言并开启 `enable_auto_lang`，支持日、韩、西、葡等多语言与中英/粤语混合；保留口头词及原生词/句时间戳。调用 ASRService 时可用 `language` 显式指定语种，字幕优化始终启用自动检测。识别失败会中止字幕生成并报错，真实无语音结果可正常导出无字幕视频。本地 Mac 可使用 Remotion 自动下载的浏览器；Linux 建议设置 `REMOTION_BROWSER_EXECUTABLE=/usr/bin/chromium`。
 
 ### 启动服务
 
@@ -471,7 +458,7 @@ http://localhost:8888
 
 - 最近一次真实 E2E 已成功产出最终视频并上传至 `videos/final`
 - 分镜审核、最终合成、项目结束清理均已在真实调用链路中验证
-- 清理逻辑默认删除临时素材与中间产物，保留最终成片，避免误删导出结果
+- 成片复审通过后仅清理中间素材，保留四项交付与恢复快照；明确结束项目会停止处理并删除全部 TOS 资源，失败或断连项目保留以供重试
 
 ## 仓库清理与安全提交
 
@@ -482,12 +469,55 @@ http://localhost:8888
 - README、`config.yaml`、`.env.example` 只保留占位符示例，不写入真实凭证
 - 提交前请确认测试音频、测试图片、服务日志、临时导出文件没有进入暂存区
 - 临时分享包、压缩导出、密钥文件和本地部署 JSON 均排除在 Git 与镜像上下文之外；发布前检查暂存区和历史记录，扫描只报告文件路径，不输出密钥值
+- 本地监控记录、调试日志、旧测试导出和过期补拍代码按发布清理；仍有效的行为回归测试仅保留本地，运行环境、凭证与部署恢复状态不属于临时文件
 
 ### 云端发布
 
-发布顺序为 `git commit → git push → 重建镜像 → 发布 veFaaS`。镜像基于已提交代码构建，包含 Python、FFmpeg/FFprobe 与字体；真实凭证通过 veFaaS 环境变量注入，禁止使用 Docker `ARG` 或 `ENV` 写入密钥。
+发布顺序为 `git commit → git push → 重建镜像 → 发布 veFaaS`。`Dockerfile` 基于 Python 3.11 与 Node 22，包含 FFmpeg/FFprobe、Chromium、Noto 字体及固定版本 HyperFrames、Remotion 和 captions。音轨识别调用 BytePlus Seed Speech，无需本地语音模型层。所有提示词和有限 skills 参考文件均随镜像发布。启动命令为 `./run.sh`，监听 `_FAAS_RUNTIME_PORT`（默认 8000），单进程 Uvicorn；后台任务状态通过私有 TOS 持久化。
 
 BytePlus `ap-southeast-1` 的 veFaaS 使用常驻最少 `1`、最多 `5` 个实例。新版本就绪后切换全部流量，保留上一版本用于回滚，并验证云端页面、多语言文件、私有 TOS 签名访问与发布状态。
+
+安装官方 [BytePlus CLI](https://github.com/byteplus-sdk/byteplus-cli)，使用 `bp configure --profile seedance-v3` 私下填写 AK/SK 和 region。`.env` 中填写模型、TOS、ASR 配置，以及 `CLOUD_ACCESS_PASSWORD`；部署脚本将其映射为云端 `ACCESS_PASSWORD`，自动生成共享 `ACCESS_SECRET` 并设置 HTTPS Secure Cookie。本地 `ACCESS_PASSWORD` 留空。真实凭证只注入函数环境变量，不进入 Git、构建参数或镜像层。
+
+```bash
+.venv/bin/python scripts/audit_secrets.py
+.venv/bin/python scripts/deploy_byteplus.py \
+  --profile seedance-v3 --region ap-southeast-1 \
+  --gateway-id YOUR_GATEWAY_ID --registry YOUR_CR_REGISTRY \
+  --namespace YOUR_CR_NAMESPACE --builder dmbuilder
+```
+
+脚本从 `git archive HEAD` 构建 `linux/amd64` 镜像，上传后通过 `PrecacheSandboxImages` 完成平台镜像预缓存，再创建独立的 `seedance-drama-maker-v3-web` 普通 `native/v1` 函数与 API 网关服务、VeFaaS upstream 和 `/` 前缀路由，配置 4 vCPU / 8 GiB、900 秒请求超时和 1–5 实例，并保留 1 个非冻结实例。`CpuStrategy=always` 会选择 Sandbox 函数类型，普通 Web 服务保留实例部署不设置该字段。路由 API 使用版本 `2022-11-12`，支持 WebSocket。部署状态保存在被忽略的 `.run/deployment-v3.json`，可重复执行恢复。
+
+若镜像已发布，仅修改部署脚本或文档，可加 `--reuse-published-image` 继续部署。脚本会比较 Dockerfile、应用、skills、静态页面、配置和依赖等构建输入；任何输入发生变化都会拒绝复用。状态分别记录镜像源码 commit 与部署脚本 commit。
+
+仅修改应用代码时，可使用 `--reuse-runtime-layers`：先校验已发布 commit 的 Dockerfile、Python 依赖和 Node runtime 与当前源码一致，再校验镜像配置、构建指令与全部运行时层摘要，直接复用仓库中已发布的运行时层，仅上传新应用、静态文件与配置层。应用层从当前源码完整构建，已删除文件不会残留；依赖变化时拒绝此模式，必须完整重建。它要求 resumable 上传，仍发布当前提交的新镜像，不可与 `--reuse-published-image` 同时使用。
+
+新函数先完成 `Release`，等待状态为 `done`，再设置 `MinInstance=1` / `MaxInstance=5`；平台不允许对尚未发布的函数调整保留实例。
+
+原生镜像同步包含传输与运行时缓存两个阶段；传输的 `EndTime` 已出现时，`ImageCacheStatus` 仍可能为 `Creating`。脚本同时显示两个状态，等待缓存就绪且整体同步成功后才发布函数。
+
+云端环境变量清单：`BYTEPLUS_AK/SK`、`TOS_*`、`MODELARK_*`、五类模型 `*_ENDPOINT` / `*_API_KEY`、`SPEECH_*`、`ASR_RESOURCE_ID`、`ASSET_LIBRARY_*`，以及 `ACCESS_PASSWORD` / `ACCESS_SECRET` / `ACCESS_COOKIE_SECURE`。运行时设置 `VIDEO_SKILLS_ROOT=/app/app/video_skills`、`VIDEO_TOOLS_RUNTIME_DIR=/opt/video-tools`、`VIDEO_OUTPUT_DIR=/tmp/seedance-outputs`、`REMOTION_BROWSER_EXECUTABLE=/usr/bin/chromium`；脚本仅复制配置引用的变量。
+
+`/healthz` 只返回健康状态与版本；登录后的 `/api/runtime` 返回不含密钥的依赖、skills 和 ASR 配置状态，不代表 ASR 连通性已验证。镜像内可用 `python -m app.services.runtime_service --smoke` 验证实际剪辑、字幕渲染、时间线 lint 及音轨/时长，不调用付费 ASR。WebSocket 推送为实例内路由，跨实例通过快照轮询补齐；实例回收后的在途任务重启和跨实例写入仲裁仍需要任务队列与共享锁，TOS 快照本身不是分布式任务队列。
+
+部署脚本显式启用 `RUNTIME_SMOKE_ENABLED=true`，可登录后 `POST /api/runtime/smoke` 在真实云端执行同一套合成测试，使用临时合成媒体并自动清理，不调用付费生成模型。同一实例只允许一项该检查同时运行；设置为 `false` 可关闭此诊断端点。
+
+历史云端验证（2026-10-27，迁移前运行时）：媒体检查耗时 35.89 秒，剪辑与带字幕成片均为 1.52 秒，字幕可见、原声保持一致，时间线无错误；当时的本地语音模型推理也通过。现版本已移除该模型，运行时检查验证媒体工具与 ASR 配置，不调用付费 ASR。五种 UI 语言切换及登录后 WebSocket 曾通过；未登录握手由应用拒绝，平台代理可能转换响应码，但客户端不能升级连接。
+
+同日提速前的云端 Chrome 验证完成 60 秒英语浪漫冒险样片：三段视频首次审核评分 83/86/88；修复轻微问题误触发循环后，优化约 201 秒、仅执行 1 轮，最终审核通过。原片 60.171 秒、优化片 60.200 秒，854×480，浏览器均可播放且无脚本错误。少量可接受的字幕识别偏差保留为建议；本次样片通过不代表所有输入都能自动达到无瑕疵成片。
+
+视频优化默认使用 `video_optimization.subtitle_renderer: ffmpeg`：保留 Remotion 字幕分页与 SRT，静态字幕由 FFmpeg 合成，不再逐帧通过浏览器解码和绘制。需要原逐帧渲染时可设为 `remotion`。同一 60 秒样片、同一字幕输入的本地对比为 112.14 秒 → 4.48 秒，SRT 内容与时间戳一致；完整本地优化实测 79.27 秒，成片复审通过、音轨解码一致、时长保持 60.171 秒。该耗时包含首次分镜下载、语音识别和上传，不能与不同机器或缓存条件下的耗时直接等同比较。
+
+新版云端处理同一 60 秒样片，复用已验证缓存：后台优化耗时 38.24 秒，其中字幕合成 14.38 秒、视频上传 1.27 秒、成片复审 5.24 秒；浏览器从提交到恢复可操作为 77.10 秒。实际下载成片为 60.171 秒、24 fps，解码音轨与原片一致，字幕与报告可下载，最终审核通过。五语言、编辑校验、刷新恢复、播放和手机宽度均通过。后台计时与端到端等待分别记录；缓存条件不同，不能将此前 201 秒当作严格性能对照。
+
+优化报告记录各处理与上传阶段耗时。已验证的分镜时间轴随项目快照复用，签名 URL 续签不使缓存失效；分镜地址、编号、时长或内容标识变化时重新计算，避免重复下载整段视频。字幕合成保留输入帧率与原声；无字幕页时直接复制视频流。横竖屏、五语言字幕、音轨和帧数已有本地媒体回归验证。
+
+2026-10-28 本地日语任务验证：8 个分镜全部首轮通过，成片复审通过；156.421 秒、854×480、24 fps，桌面与手机可播放，四项交付链接返回 200，24 条 SRT 时序有效，母片与字幕版解码音轨一致。少量 ASR 噪声尚未逐句听校，这不代表字幕全文无误。
+
+迁移到 Seed Speech 后的 Dockerfile 与依赖已变化，首次云端发布必须完整重建镜像，不可复用迁移前的运行时层。
+
+默认以 OCI 归档导出镜像，通过 Registry v2 每次 32 MiB 分段上传，持久化已确认分段的进度、自动刷新认证，并跳过已发布的镜像层；服务限制分段大小时自动减半。收到中断信号后完成当前分段再保存进度，已失效的上传状态会重新上传当前层。传输失败仅输出错误类型，不记录令牌或上传签名。`.run/oci-upload-checkpoint.json` 权限为 600，不进入 Git 或镜像。稳定网络可用 `--upload-mode buildx` 切换为普通推送。
 
 ## Prompt 与 Skill 统一管理
 

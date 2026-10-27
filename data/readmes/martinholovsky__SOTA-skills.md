@@ -681,7 +681,9 @@ plainly. Every item below is in the repo, not a claim about it:
   The same lens later caught this repo's **secret scan**: `gitleaks` prints
   `179 commits scanned`, and nobody read it. In a shallow clone it scans **1 of
   179**, prints `no leaks found`, and exits 0 — a green scan over 0.5% of history,
-  with one CI setting the only thing preventing it. CI now asserts the scope.
+  with one CI setting the only thing preventing it. CI now asserts the scope —
+  and since 2026-10-27 counts it against `git rev-list --all`, after a field report showed
+  `gitleaks` skips **merge commits** by default (here 707 of 713 scanned, all clean).
   Two more, both 2026-09-04. **Two releases had shipped and were never tagged** — a
   CHANGELOG entry, a version bump, a merge, and no tag: unreachable by `git tag`, and
   invisible because the one version gate checked only that a tag is never *ahead* of
@@ -1073,7 +1075,7 @@ anything". Three corrections, each re-checked 2026-10-02:
   opt-in Stop hook that refuses "done" on a changed tree until a verification command has
   passed on exactly that tree (router principle 6, enforced). **`scripts/zsh-equals-hook.py`**, on by
   default in the plugin, is a PreToolUse hook that refuses a zsh command carrying an unquoted `=word`, or a `set -- $scalar` zsh will not split, before it runs
-  (`sota-shell-scripting` rules/06 §1), a reflex the written rule did not stop. The git hooks from
+  (`sota-shell-scripting` rules/06 §1), a reflex the written rule did not stop. Since 2026-10-27 it also refuses a variable named `path` or `status`, a spaced literal expanded unquoted as arguments, `PIPESTATUS`/`BASH_REMATCH`, and a `git grep` escape the platform reads as a plain letter (rules/06 §2f). The git hooks from
   `scripts/init-gates.sh` and CI are enforcement on every host, whatever the agent.
 - **The router is not an always-on 43 KB blob.** Only each skill's frontmatter `description`
   is in every turn's listing; the router's body loads when the skill is invoked
@@ -1218,9 +1220,4 @@ with *security* in the name — because a control someone switched off is a stro
 never built. Full procedure: [`sota-threat-modeling`](skills/sota-threat-modeling/) rules/06.
 
 **Why `/sota-close` is a command rather than a habit.** The end of a session is when the
-context has usually been compacted at least once, so "what happened" is reconstructed from
-your assistant's own earlier prose about the work rather than from the work — the weakest
-check available. Everything the command asks for is executed against an artifact instead: `git
-diff`, `git log -S`, the file on disk, the command run again. The ordering is load-bearing
-too — retraction comes first because every later step *writes*, and anything still wrong gets
-propagated into
+context has usually been compacted at least once, so "what happened" is r

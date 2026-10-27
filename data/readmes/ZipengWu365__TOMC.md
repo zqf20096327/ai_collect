@@ -7,7 +7,7 @@
     </tr>
   </table>
 <!-- traffic-status:start -->
-  <p>Cumulative clones · recorded since 2026-10-02 · updated 2026-10-26 UTC. <a href="docs/traffic_metrics.md">Method and updates</a></p>
+  <p>Cumulative clones · recorded since 2026-10-02 · updated 2026-10-27 UTC. <a href="docs/traffic_metrics.md">Method and updates</a></p>
 <!-- traffic-status:end -->
   <p><strong>Found TOMC useful? Click ⭐ Star at the top right to support the project.</strong></p>
   <h1>TOMC Memory</h1>
@@ -18,6 +18,12 @@
 </div>
 
 [Official GitHub home](https://github.com/ZipengWu365/TOMC) · [Plugin downloads](plugins/downloads) · [Installation guide](#install-in-your-assistant)
+
+<!-- community-entry:start -->
+**Try, compare, contribute:** [First-run reports](https://github.com/ZipengWu365/TOMC/issues/11) · [Context-compression evaluation note](https://github.com/ZipengWu365/ZipengWu365/blob/main/notes/2026-10-27-context-compression-checklist.md) · [Contribution guide](CONTRIBUTING.md)
+
+Follow [Zipeng Wu](https://github.com/ZipengWu365) for work across time-series research software and AI task memory. Star this repository to save TOMC; use Watch settings for project notifications. Following or starring is optional and is never required for help.
+<!-- community-entry:end -->
 
 This is the official repository for **TOMC Memory**, with source code, plugin downloads and installation guides.
 

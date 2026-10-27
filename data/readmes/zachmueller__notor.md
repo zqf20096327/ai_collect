@@ -13,11 +13,12 @@ Notor gives you a full AI chat panel inside Obsidian with the ability to read, s
 - **Side-panel AI chat** with streaming responses, conversation history, [model presets](docs/model-presets.md) for quick switching between providers/models, [conversation forking and favorites](docs/export-import.md), [export/import](docs/export-import.md) to HTML or Markdown, find-in-messages search (via command palette), and per-message copy and context menu actions
 - **[Attach notes and files](docs/context.md)** directly to messages — vault notes (with section-level references like `[[Note#Section]]`), external files (including `.docx`), images, and PDFs. Ambient workspace context (open notes, vault structure, OS) is injected automatically.
 - **Auto-compaction** — automatic context summarization when conversations approach the model's context window limit
+- **[Voice mode](docs/voice.md)** (macOS) — hands-free conversation: a local "Hey Notor" wake word (sherpa-onnx), local whisper.cpp speech recognition, LLM clean-up of dictated input, spoken summaries of replies via `say`, and voice commands to approve tool calls or answer questions
 - **Multiple LLM providers** — local OpenAI-compatible endpoints (Ollama, LM Studio), Anthropic, OpenAI, and AWS Bedrock
 
 ### Vault tools
 
-- **[32 built-in tools](docs/vault-tools.md)** — read, write, search, and move notes; manage frontmatter and tags; follow backlinks and outlinks; apply templates (Templater and core Templates); interact with Obsidian's Web Viewer; search the web (DuckDuckGo by default; Tavily, Brave, SerpAPI, Kagi with API keys) and fetch pages; run shell commands; read, write, and import filesystem files and Word documents (`.docx`)
+- **[38 built-in tools](docs/vault-tools.md)** — read, write, search, and move notes; manage frontmatter and tags; follow backlinks and outlinks; apply templates (Templater and core Templates); interact with Obsidian's Web Viewer; search the web (DuckDuckGo by default; Tavily, Brave, SerpAPI, Kagi with API keys) and fetch pages; run shell commands; read, write, and import filesystem files and Word documents (`.docx`)
 - **[Safety-first approval model](docs/safety.md)** — Plan/Act mode toggle, diff previews with per-hunk accept/reject, approval gates for write operations, and automatic checkpoints for rollback
 - **[Sub-agents](docs/sub-agents.md)** — the AI can spawn focused child conversations for vault search, web research, or custom tasks with isolated context and default-deny tool access
 
@@ -25,7 +26,7 @@ Notor gives you a full AI chat panel inside Obsidian with the ability to read, s
 
 - **[Personas](docs/personas.md)** — file-based AI personalities with custom system prompts, model preferences, and per-persona approval overrides
 - **[Workflows](docs/workflows.md)** — reusable step-by-step instruction sets stored as vault notes; run manually, via slash-command, or triggered by vault events and cron schedules
-- **[Orchestration](docs/orchestration.md)** — multi-step, event-driven flows that coordinate LLM "conversation steps" and deterministic "code steps" to a terminal event, with cascading guardrails (depth, iterations, cost, runtime), crash recovery, composition, and a unified run-tree view. Gated behind a feature toggle; off by default.
+- **[Circuits](docs/circuits.md)** (formerly orchestrations) — multi-step, event-driven pipelines that coordinate LLM "conversation steps" and deterministic "code steps" to a terminal event, with cascading guardrails (depth, iterations, cost, runtime), crash recovery, composition, and a unified run-tree view. Circuits can declare [evaluators](docs/circuits.md#evaluating-runs) — LLM judges with rubrics and deterministic code checks — that score finished runs so you can spot regressions and compare models. Gated behind a feature toggle; off by default. Existing orchestrations keep working unchanged.
 - **[Rules](docs/rules.md)** — vault-level instruction files that inject context automatically based on note directory or tag
 - **[Hooks](docs/hooks.md)** — shell commands or workflows that fire at conversation lifecycle events (pre-send, on-tool-call, after-completion) and vault events (note open/save/create, tag changes, cron schedules)
 - **[`<include_note>` tag](docs/include-note.md)** — dynamically inject vault note content into workflow bodies, system prompts, and rule files
@@ -39,6 +40,7 @@ Notor gives you a full AI chat panel inside Obsidian with the ability to read, s
 
 - **[MCP tool servers](docs/mcp-servers.md)** — connect local (stdio) or remote (SSE, Streamable HTTP) MCP servers to extend the AI's tool set with uniform Plan/Act enforcement and approval UI
 - **[User-defined extensions](docs/extensions.md)** — create custom tools and automations as Markdown files in your vault with TypeScript/JavaScript code fences, per-extension settings with auto-generated UI, and full access to Obsidian APIs
+- **[Scripting API](docs/api.md)** — run circuits, workflows, and tools from Templater scripts and other plugins through `app.plugins.plugins.notor.api`, with the same Plan/Act and approval rules as chat
 
 ---
 
@@ -119,12 +121,13 @@ src/
   workflows/           # Workflow discovery, prompt assembly, executor, concurrency management, hook parsing
   include-note/        # <include_note> tag parser and resolver (vault-relative paths and wikilinks)
   rules/               # Vault-level instruction file evaluation
-  shell/               # Shell executor, shell resolver, output buffer (shared by execute_command and hooks)
+  shell/               # Shell executor, shell resolver, output buffer, login-shell PATH (shared by execute_command, hooks, MCP, voice)
+  voice/               # Voice mode: microphone capture, wake-word sidecar, silence detection, whisper.cpp client, speech queue, controller
   mcp/                 # MCP server hub, tool adapter, and type definitions
   sub-agents/          # Sub-agent profile discovery, manager, built-in profiles, preamble, semaphore
   extensions/          # User-defined tool, automation, and chat block runtime: discovery, parsing,
                        #   compilation, settings, built-in scaffolds
-examples/              # Community gallery: extension examples, workflow templates, orchestrations,
+examples/              # Community gallery: extension examples, workflow templates, circuits,
                        #   persona examples, rule examples
   memory/              # Evergreen memory note format, dedup cache, concept resolver
   settings/            # Settings interface, defaults, tab UI, per-section UI components

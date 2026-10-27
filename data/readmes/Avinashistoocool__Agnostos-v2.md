@@ -311,15 +311,38 @@ When a professor says they can't fund you (or can only pay part), `replies` does
 
 **Meeting requests.** Your second message in a thread always asks for a short call (`MEET_MINUTES`, default 20), and so does every funding follow-up. Each request offers three slots on different weekdays. Every slot falls inside the professor's `MEET_THEIR_HOURS` and your own `MEET_MY_HOURS` (in `MEET_MY_TZ`). Slots are never offered to two professors at once and, once Google Calendar is connected, avoid times you're already busy. When the email is sent, each proposed slot is added to your calendar as a tentative "HOLD". Delete the extra holds once the professor picks a time.
 
-**Google Calendar (one-time setup).**
-1. Go to [console.cloud.google.com](https://console.cloud.google.com/), create a project and enable the **Google Calendar API**.
-2. Under **OAuth consent screen**, choose External and add your Gmail as a *test user*.
-3. Under **Credentials**, choose *Create credentials*, then *OAuth client ID*, then **Desktop app**. Download the JSON and save it as `credentials.json` in the repo root (or point `GOOGLE_CLIENT_SECRET` at it).
-4. Run `python -m outreach.cli calendar-auth`. A browser opens once; the token is cached in `output/gcal_token.json`.
+**Google Calendar (one-time setup).** Follow **[CALENDAR.md](CALENDAR.md)**. It covers creating the Cloud project, making the app *External / Testing* (which avoids the common `Error 403: org_internal`), downloading `credentials.json`, running `python -m outreach.cli calendar-auth`, switching accounts, and troubleshooting.
 
 Without the setup, meeting requests still go out. Only the calendar check and the holds are skipped.
 
-### `resend` ? re-deliver the original email from a second account
+### Reading every conversation
+
+Mail sent over SMTP doesn't appear in your mail app's **Sent** folder, so a professor's answer shows up without the email it answers. Two fixes:
+
+```bash
+python -m outreach.cli conversations            # build output/conversations.html and open it
+python -m outreach.cli archive-sent --live      # copy everything already sent into your IMAP Sent folder (one-off backfill)
+```
+
+- **`conversations`** builds one searchable page with every thread in order: your first email (exactly as sent), resends from the second account, the professor's replies, bounces, your replies and follow-ups, and drafts still waiting to go out. You can filter by state (`awaiting you`, `replied`, `bounced`, `draft pending`...). Re-run it any time to refresh.
+- **`archive-sent`** backfills the IITD **Sent** folder (with the original Message-ID and Date) so Outlook/Thunderbird/webmail show full threads. It remembers what it copied (`output/archived_sent.json`), so re-running never duplicates. From now on, every email sent over SMTP is also copied to Sent automatically (`SAVE_TO_SENT=true`; Gmail already does this itself).
+
+### `legacy` — write to the leading researchers in your field
+
+```bash
+python -m outreach.cli legacy --find --include "Neil deGrasse Tyson; Fabiola Gianotti"   # build output/legacy.xlsx
+python -m outreach.cli legacy --draft                     # one aspiring-scientist letter each
+python -m outreach.cli legacy --send                      # dry run
+python -m outreach.cli legacy --send --live               # send approved letters from RESEND_SMTP_* (your Gmail)
+```
+
+`legacy` finds high-impact, still-active researchers in your topics (`--topics`, worldwide by default, `--min-h 60`), plus anyone you name with `--include`. It keeps only physicists and fetches their own small-team papers, so a letter never credits them with a 3,000-author collaboration paper. Addresses come from the same strict finder as `verify`, and an address at an unrelated institution or a non-academic domain is rejected. Public figures with no published address are listed with a note to use their official contact page.
+
+The letter is different from an internship request. It's a short, specific, humble note: one idea of theirs that shaped your thinking, one real project of yours, and a small ask, either a summer visit through a real route (CERN/DESY summer student programmes, DAAD WISE, Mitacs, Charpak, EPFL/ETH summer programmes, Caltech SURF, or their own group) or a pointer to someone who could help. It never invents how you found their work.
+
+Review `output/legacy.xlsx` and set **Approved = yes** for each letter you want to send. `--approve-all` covers only addresses the finder verified; addresses typed in by hand must be approved row by row. Sends are spaced 2-5 minutes apart, 10 per run (`--limit`).
+
+### `resend` — re-deliver the original email from a second account
 
 ```bash
 python -m outreach.cli resend                                   # dry run: who would get it

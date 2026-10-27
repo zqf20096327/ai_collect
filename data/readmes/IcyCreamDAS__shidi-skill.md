@@ -10,11 +10,13 @@
 
 中文 | [English](./README_EN.md)
 
+**从一句兴趣起点出发，发现跨领域证据链的缺口，再形成自己的研究问题。** Shidi 组织检索、原文获取、候选比较与验证方案，交付可继续追问的文件。
+
 > **师兄说想法，师弟跑断腿。** — *You bring the ideas, shidi does the legwork.*
 >
-> shidi 不是填模板的自动化——它是一条跑在 AI IDE 里的完整科研工作流：把脑海中的想法丢给它（文献调研 / 实验方案 / 作图 / 精读 / 数据整理），它在你的机器上跑完脏活累活，交付**真实可用的文件**，数据留在本地，不锁任何平台或模型。
+> shidi 不是填模板的自动化——它是一条跑在 AI IDE 里的完整科研工作流：把脑海中的想法丢给它（文献调研 / 实验方案 / 作图 / 精读 / 数据整理），它在你的机器上跑完脏活累活，交付**真实可用的文件**，产物保存在你的工作目录，不锁任何平台或模型。
 >
-> *shidi is a complete research workflow living inside your AI IDE — not a prompt template. Hand it an idea (literature research / experiment design / figures / paper reading / data chores), and it returns **real deliverable files**. Your data stays local. No platform or model lock-in.*
+> *shidi is a complete research workflow living inside your AI IDE — not a prompt template. Hand it an idea (literature research / experiment design / figures / paper reading / data chores), and it returns **real deliverable files**. Deliverables are saved in your working directory. No platform or model lock-in.*
 
 > **它不是放养型的。** 师弟是一个你一边忙别的、一边顺手使唤的 skill：喊一嗓子"师弟，帮我……"，它该问就问、该跑就跑，跑完把文件递到你手上。
 >
@@ -49,6 +51,7 @@
 
 ## ✨ What's New · 更新日志
 
+- **2026-10-27：Pro / Flash 双模式** — 一次安装包含两套完整流程；默认 Pro，“快速调研 / flash 模式”选择 Flash。已通过 PR 发布到默认 `main` 分支。
 - **2026-10** — 🛡 **发布版自检闭环**：GitHub Actions CI + `validate.py`（版本/链接/脚本编译/必需文件）+ `tests/` 离线单测 · 补上 `verify_refs.py` 引用核验（DOI 解析/撤稿检测/文风 lint）· 修 `render_report.py` 超时 bug 并支持跨平台浏览器探测 · `fetch_pdfs.py` 去掉硬编码邮箱、加指数退避
 - **2026-10** — 🔬 **确定性评分 + 数据 schema + AI4S 示例升级**：`score_papers.py` 七维评分（封顶/一票否决/排序由脚本算，v2 权重下调期刊与人脉）· 文献→配方/性能抽取 schema（测试标准/条件/n/误差/三类标签）· 示例升级（质量分数闭合、ARD 长度尺度、ECI 采集函数、1-2 基准配方校准对比、Pareto 前沿、文献先验边界接口）
 - **2026-08** — 📥 **PDF 批量下载**（OpenAlex/Unpaywall 自动定位 OA 直链，失败分类报告，不静默跳过）· *batch PDF download with honest failure reports*
@@ -125,7 +128,7 @@
 - **ARD 特征相关性**——每个特征的 GP 长度尺度（越小越关键；停在上界 = 数据识别不了）
 - **约束候选用 ECI**——`ECI = EI × P(MFR ≥ 28)`，不做硬阈值截断；另给"仅可行域"排行榜
 - **多目标 Pareto 前沿**——拉伸强度 vs MFR 后验均值的非支配集
-- **质量分数闭合**——玻纤 + 偶联剂 + 润滑剂 + 树脂 = 100 wt%，候选另加 `resin ≥ 40 wt%`
+- **质量分数闭合**——填料 + 添加剂 A + 添加剂 B + 基体 = 100 wt%，候选另加 `matrix ≥ 40 wt%`
 - **文献先验接口**——`priors_template.csv` 把文献边界喂给搜索空间（只约束边界，不注入先验均值）
 - **三类证据标签分开**——`measured` / `predicted` / `exploratory`，结论只允许用 `measured`
 - **硬规则：探索级筛选范围 ≠ 统计置信区间**
@@ -136,7 +139,7 @@ pip install -r requirements.txt && python run_demo.py
 python run_demo.py --priors priors_template.csv   # 用文献先验边界约束搜索空间
 ```
 
-**它不主张什么**：数据是合成的，不能预测真实 PEEK/PAEK 性能；GP 分数不能迁移到真实配方；候选不保证优于工程师的 DOE 直觉；独立单输出 GP 忽略输出相关（拉伸↔弯曲 ≈ 0.9）；1–2 个基准配方校不准批次偏移（正确解法是混合效应 GP）。真实企业配方受 NDA 约束不会进仓库——公开的是**方法**，不是数据。
+**它不主张什么**：数据是合成的，不能预测任何真实材料的性能；GP 分数不能迁移到真实配方；候选不保证优于工程师的 DOE 直觉；独立单输出 GP 忽略输出相关（拉伸↔弯曲 ≈ 0.9）；1–2 个基准配方校不准批次偏移（正确解法是混合效应 GP）。真实企业配方受 NDA 约束不会进仓库——公开的是**方法**，不是数据。
 
 ## 🧭 Flow · 流程图
 
@@ -172,13 +175,24 @@ flowchart TD
 
 ```bash
 git clone https://github.com/IcyCreamDAS/shidi-skill.git
+mkdir -p ~/.claude/skills
 cp -r shidi-skill/skills/shidi ~/.claude/skills/
 ```
 
 然后直接说 / *then just say*：
 
 ```text
-师弟，帮我查一下 XX 主题的文献，要 20 篇
+师弟，帮我详细调研一下 XXX              # Pro
+师弟，请你用 pro 模式给我调研一下 XXX   # Pro
+师弟，帮我快速调研一下 XXX              # Flash
+师弟，请你用 flash 模式给我调研一下 XXX # Flash
+```
+
+**一次下载即包含 Pro 和 Flash 两个完整版本。** 未专门提到“详细”“快速”“pro”或“flash”时，默认 **Pro**：适合完整检索框架、交互确认和深度交付；Flash 适合少确认、快速启动。两种模式改变工作流程，可以使用宿主支持的模型。
+
+其他任务示例：
+
+```text
 师弟，设计一个 XX 实验方案
 师弟，把这个数据画成图
 师弟，帮我把这篇论文精读一下
@@ -189,7 +203,7 @@ cp -r shidi-skill/skills/shidi ~/.claude/skills/
 
 > [!IMPORTANT]
 > ### 这是执行者，不是许愿池 *An executor, not a genie*
-> `harness + model = agent`——师弟只拥有工作流，模型决定天花板。更重要的是：**师弟不替你做决定**——角度选择、参数确认、方向取舍全部返回给你。脏活累活它拿走，但那个"想法"和"判断"，永远是师兄你的。
+> `harness + model = agent`——师弟只拥有工作流，模型决定天花板。Pro 把角度选择和参数确认交还给你；Flash 会给出明确默认建议并减少形式化确认。脏活累活它拿走，但那个"想法"和"判断"，永远是师兄你的。
 > *shidi owns the workflow, the model sets the ceiling. And it never decides for you — angle selection, parameters, trade-offs all bounce back to you. It takes the grunt work; the ideas and judgment stay yours.*
 
 ## 🤖 Persona · 人设

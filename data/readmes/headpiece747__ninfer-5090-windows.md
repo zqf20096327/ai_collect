@@ -8,7 +8,7 @@ Docker. It runs text, image, and video prompts through a local CLI or OpenAI-/An
 HTTP APIs. The runtime is deliberately specialized: one GPU, one resident model, and a
 startup-fixed capacity of one to eight active requests.
 
-Release v1.2.1 ships **eight measured launchers over four Qwen3.8-27B artifact lines**, all
+Release v1.2.2 ships **eight measured launchers over four Qwen3.8-27B artifact lines**, all
 vision-capable at the full 262,144-token context, with DFlash2 or MTP speculative decoding. The
 engine rejects v2 artifacts outright, so a v1.0.x user must download a v3 artifact or
 [upgrade the one they have](docs/weight-conversion.md#upgrade-an-existing-v2-artifact). Details in
@@ -151,7 +151,7 @@ ships, and every profile reaches the full native context. **Three lanes ship `--
 | `start_swift_v3_dflash2_vision.bat` | Swift15 | DFlash2 (7) | yes | 262,144 | **319 tok/s** | 50.9% |
 | `start_swift_v3_mtp4_vision.bat` | Swift15 | MTP (5) | yes | 262,144 | 216 tok/s | 58.0% |
 | `start_nvidia_v3_dflash2_vision.bat` | NVFP4-nvidia | DFlash2 (9) | yes | 262,144 | **314 tok/s** | 44.9% |
-| `start_nvidia_v3_mtp4_vision.bat` | NVFP4-nvidia | MTP (4) | yes | 262,144 | 173 tok/s | 47.7% |
+| `start_nvidia_v3_mtp4_vision.bat` | NVFP4-nvidia | MTP (4) | yes | 262,144 | 173 tok/s | 45.4% |
 
 Context ceilings are measured, not assumed. The engine refuses a profile whose minimum Engine
 runtime reservation plus its 1 GiB automatic headroom does not fit in what remains after
@@ -204,7 +204,7 @@ no error or degradation signal anywhere; the bounds gave **5/5 at 99.1%**. Those
 pre-`b9114396` cache and are kept as the record of why a bounded quota is set at all — the current
 cache has its own accounting and no equivalent re-derivation has been published.
 
-The quota costs nothing measurable in the profile it was measured on (QUASAR DFlash2 with Vision at 262,144). `--kv-capacity auto` sizes each pool from the VRAM left after weights, so every profile's capacity is its own measured ceiling, not a shared number.
+The quota costs nothing measurable in the profile it was measured on (QUASAR DFlash2 with Vision at 262,144). `--context-capacity auto` sizes each pool from the VRAM left after weights, so every profile's capacity is its own measured ceiling, not a shared number.
 The failure mode is silent, so it is worth setting even when a single repeated prompt
 appears to cache perfectly — a lone resident prefix masks it.
 
@@ -296,7 +296,7 @@ The product boundary remains intentionally small:
 - parsed tool calls are returned to the client; NInfer does not execute tools;
 - the in-tree C++ headers are not distributed as an installed SDK.
 
-`--max-context` is each sequence's logical limit. `--kv-capacity` sizes the shared Main Text KV pool
+`--max-context` is each sequence's logical limit. `--context-capacity` (formerly `--kv-capacity`) sizes the shared Main Text KV pool
 used by active requests and retained prefixes; `auto` resolves the largest legal capacity at
 startup from the memory remaining after weights. Both explicit and automatic modes use 1 GiB of
 startup planning headroom. Explicit capacities remain fixed for the process lifetime.

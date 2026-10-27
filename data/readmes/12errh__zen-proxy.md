@@ -126,7 +126,7 @@ zen-proxy sits in front of that gateway and makes your agent's traffic indisting
 |---|---|
 | **Run under Bun.** The gate fingerprints the TLS/HTTP stack — the exact bytes that stream `200` under Bun's fetch get `429 FreeUsageLimitError` from Node's (same second, same session) | `zen-proxy` / `zen-claude` prefer bun; node works with a BYOK key, and the proxy warns at boot under node |
 | The v2 endpoint `https://opencode.ai/inference/openai/v1` | Uses it, and migrates old configs pointing at `/inference/v1` or `/zen/v1` |
-| The v2 wire identity: `x-opencode-client`, `x-opencode-project` (sha1, per-install), `b3`/`traceparent`, affinity pair | Sends all of it, in the CLI's own formats |
+| The v2 wire identity: `x-opencode-client`, `x-opencode-project` (sha1, one half of the caller's minted pair), `b3`/`traceparent`, affinity pair | Sends all of it, in the CLI's own formats |
 | The **OpenCode harness system text** — requests whose system prompt is not the CLI's harness preamble are refused however agent-shaped the rest is (a generic prompt, the opening line, or a ~1.8 KB cut of it are all refused) | Prepends the captured harness preamble (`agent-preamble.txt`) ahead of your agent's own instructions, on every route, idempotently |
 | OpenCode's own tool manifest (the gate refuses a bare `read` stub now) | Attaches the captured v2 manifest (`agent-tools.json`: read/edit/glob/grep/shell/write are the ones whose name your agent maps to) ahead of your tools, renames the mapped calls back to your agent's names, and drops the rest |
 | Streams with `stream_options` and a real `max_completion_tokens` | Mirrors the CLI's shape on health probes, and forwards yours untouched |
@@ -160,20 +160,22 @@ For replies, one rule: a reply may only carry calls your agent can actually run.
 | `host` / `port` | `127.0.0.1` / `8787` | Bind address (restart required) |
 | `upstream` | `https://opencode.ai/inference/openai/v1` | Zen gateway base (v2; discovery stays on `/inference/v1`) |
 | `ua` / `autoUA` | `opencode/latest/2.1.4/cli` / `true` | The v2 CLI's UA format; auto-tracking skips v2-style UAs (npm only carries 1.x) |
-| `clientName` / `projectHash` / `tracing` | `cli` / auto / `true` | The v2 identity headers: `x-opencode-client`, per-install `x-opencode-project` (sha1 of `directory:<cwd>`), `b3`/`traceparent` |
-| `injectSession` | `true` | Mint and send the session header pair + affinity pair |
+| `clientName` / `projectHash` / `tracing` | `cli` / auto / `true` | The v2 identity headers: `x-opencode-client`, `x-opencode-project` (sha1 hex — the install directory's, or the minted pair's project for anonymous callers), `b3`/`traceparent` |
+| `injectSession` | `true` | Mint the session + project pair per caller and rotate both halves together every 30 minutes; a caller's own session/project is forwarded untouched |
 | `agentPreamble` | `""` (= auto) | `""`/`auto` → shipped harness preamble; `off`/`none` → none; other text → used verbatim |
 | `agentTools` | `true` | Attach OpenCode's v2 manifest to every request, ahead of your agent's tools; replies keep only the calls your agent can run — mapped ones renamed back, the rest dropped |
 | `defaultModel` | `""` | Empty = auto-pick the first working free model |
 | `fallbackModels` | *(from [`models.json`](models.json))* | Tried in order on failure. Omit to follow the catalog; save once to pin your own list |
 | `modelAliases` | `{}` | e.g. `{"gpt-4o": "space-bunny-free"}` |
 | `responsesModels` | `["gpt-5*","gpt-6*","grok-*","muse-spark-*"]` | Models served on `/v1/responses`; patterns may end in `*` |
-| `defaultZenKey` | `""` | Your own Zen key instead of anonymous `public` |
-| `proxyKey` | `""` | Require this from clients; also locks the dashboard and `/api/*` |
-| `rateLimitMax` / `rateLimitWindowMs` | `0` (off) / `60000` | Per-client rate limiting |
-| `timeoutMs` / `cacheMs` | `120000` / `30000` | Upstream timeout, `/v1/models` cache TTL |
+| `defaultZenKey` | `""` | Your own Zen key instead of anonymous `public`; a 429 that says the *identity's* free allowance is spent ("Free usage limit reached") retries that same attempt once under this key before walking the chain — the shared-bucket cooldown never escalates |
+| `proxyKey` | `""` | Require this from clients (`Authorization: Bearer` or `x-api-key`); also locks the dashboard and `/api/*`. It is the proxy's own secret — never sent upstream |
+| `rateLimitMax` / `rateLimitWindowMs` | `0` (off) / `60000` | Per-client rate limiting; local callers are split by user-agent family so several agents behind the same address do not share one budget |
+| `timeoutMs` / `cacheMs` | `120000` / `30000` | Upstream *silence* timeout (re-armed on every chunk, so long replies are not cut), `/v1/models` cache TTL |
 | `autoSync` / `autoSyncIntervalMs` | `true` / `3600000` | Runtime discovery of newly-offered free models |
 | `trustForwarded` | `false` | Honour `x-forwarded-for` behind a reverse proxy |
+
+**Caller identity.** Upstream ties free usage to a session+project pair, not to a key: one pair reads as one CLI conversation in one project. The proxy keeps that story coherent instead of stretching a single anonymous session for everyone — each caller bucket (source IP + user-agent family, versions normalized away) gets its own pair, minted together and rotated together on a 30-minute schedule, so two agents on one machine read as two CLI conversations rather than one marathon session. A client that sends its own `x-opencode-session` / `x-opencode-project` keeps them untouched, and `projectHash` pins the project half for anonymous callers. Every forwarded request leaves one `/api/logs` line carrying the session id's head and tail and its injected/client origin, so rotation is observable. This redistributes identical total usage across more honest identities — and it deliberately stops there: caller IPs are never rotated (the free tier is per-IP; `trustForwarded` alone governs how real IPs travel), so per-IP usage accounting is left exactly as opencode counts it.
 
 `HOST` `PORT` `ZEN_URL` `ZEN_UA` `ZEN_CLIENT` `ZEN_PROJECT_HASH` `ZEN_TRACING=0` `INJECT_SESSION=0` `AUTO_UA=0` `UA_REFRESH_MS` `AGENT_TOOLS=0` `AGENT_PREAMBLE=off` `ZEN_PROXY_AGENT_TOOLS` `ZEN_PROXY_AGENT_PREAMBLE` `PROBE_AUTH` `DEFAULT_MODEL` `FALLBACK_MODELS` `MODEL_ALIASES` `RESPONSES_MODELS` `PROXY_KEY` `ZEN_KEY` `TRUST_FORWARDED=1` `TIMEOUT_MS` `CACHE_MS` `RATE_LIMIT_MAX` `RATE_LIMIT_WINDOW_MS` `AUTO_SYNC=0` `AUTO_SYNC_MS` `ZEN_PROXY_CONFIG`
 
@@ -196,9 +198,9 @@ Anonymous `public` access shares a per-IP quota that is sometimes saturated. Set
 | `POST` | `/v1/chat/completions` | OpenAI Chat Completions |
 | `POST` | `/v1/responses` | OpenAI Responses API |
 | `POST` | `/v1/messages` | Anthropic Messages API |
-| `POST` | `/v1/messages/count_tokens` | Anthropic token estimate |
+| `POST` | `/v1/messages/count_tokens` | Anthropic token estimate (needs the proxy key when one is set) |
 | `GET` | `/v1/models` | Available models |
-| `GET` | `/health` | Health check (always open) |
+| `GET` | `/health` | Health check (never calls upstream; reports the last known catalog state) |
 | `GET` | `/` | Dashboard |
 | `GET`/`PUT` | `/api/config` | Read / update configuration |
 | `GET` | `/api/status` | Stats and upstream health |
@@ -206,6 +208,10 @@ Anonymous `public` access shares a per-IP quota that is sometimes saturated. Set
 | `GET` | `/api/logs` | Log tail |
 | `POST` | `/api/sync` | Re-run model discovery |
 | `POST` | `/api/reset` | Reset request statistics |
+
+Mutating `/api/*` routes must be same-origin (loopback `Host`, matching `Origin`)
+and send `content-type: application/json`, so a web page you happen to visit cannot
+rewrite the config and redirect every forwarded key to its own server.
 </details>
 
 <details>

@@ -19,7 +19,7 @@ and managing local OpenCode connections.
 upgrade from Palot 0.11.x. “Palot v2” names the rebuild; the application follows
 the `0.x` SemVer release sequence. OpenCode has its own independent version.
 
-Palot 0.19.0 is open-source pre-release software under active development, with
+Palot 0.21.0 is open-source pre-release software under active development, with
 desktop packaging targets for Linux x64 and macOS Apple Silicon. Available
 packages are experimental, not supported stable releases. macOS downloads are
 ad-hoc signed, not Apple Developer ID signed or notarized. Updates are manual.
@@ -33,30 +33,25 @@ still pre-release and should not be the only protection for important work.
 The 0.12.0 release is source-only. Earlier 0.11.x downloads install the previous
 application, not Palot v2.
 
-### New in 0.19.0
+### New in 0.21.0
 
-- Voice chat (beta): talk with a task through a GPT-Live assistant that hands
-  your requests to its agent and tells you when it finishes or needs approval.
-- Ask about a selected part of a reply in a side question, search messages from
-  the command palette, and retire merged worktrees after a safety review.
-- Composer mention chips, open-files-first `@` suggestions, a Recent outputs
-  picker, and prompt recall per project.
-- Faster code highlighting with Pierre's WebAssembly highlighter, code blocks
-  that follow your code theme, and HTML files that open rendered in Palot Browser.
-- OpenCode 2.1.3 and Electron 45.
+- Chats without a project: start one with "New chat" or Mod+Alt+N, keep it in
+  the Inbox as a Chat, and move it into a project when it turns into real work.
+- Agents find Palot's settle, snooze, pin and archive tools by name, and a task
+  asked to settle itself stays settled after its reply.
 
-### Added in 0.18.0
+### Added in 0.20.0
 
-- Settle idle tasks automatically after a few days, or all at once from the
-  Inbox, and run a project script each time a task settles.
-- A review Guide tab (beta) that tours a pull request in reading order, and
-  pull request filters by repository, organization, review state, and checks.
-- Separate model and reasoning pickers, a queued-message stack, and context
-  tokens and cost beside the composer's context ring.
-- A workbench New tab page, Mod+W and Ctrl+Tab that act on workbench tabs,
-  pinch-zoom image previews, and clearer diff colors.
-- Redesigned Providers and Models settings, a tray and app badge count of tasks
-  waiting for input, and OpenCode 2.0.29.
+- Agents can schedule follow-ups and recurring work, read and wait on other
+  tasks, and organize the Inbox through Palot's own tools, following each
+  task's approvals.
+- Usage limits for OpenCode Go and Console budgets, and failed tasks that can
+  continue on their own when a limit resets.
+- `@` mentions of other tasks as live chips, quoting terminal output into the
+  composer, live-updating file tabs, and settings search in the command palette.
+- MCP server forms, approvals that can start new tasks in Full access, and a
+  fix for settled tasks returning to the Inbox after a restart.
+- OpenCode 2.2.0.
 
 ## Install
 
@@ -143,7 +138,7 @@ bun run dev:focus
 
 Source builds require Bun `1.4.3`, Node.js `24` or later, and Vite+. Stable OpenCode
 **2.x starting at 2.0.7** is supported as an external service; the client and
-release-smoke runtime are pinned to **2.1.3**. V2 betas require explicit consent.
+release-smoke runtime are pinned to **2.2.0**. V2 betas require explicit consent.
 See [runtime compatibility](docs/opencode-runtime.md#compatibility) before upgrading.
 `bun run dev` starts hidden; `bun run dev:visible` shows the window without taking
 focus. Windows is not a qualified installation target.

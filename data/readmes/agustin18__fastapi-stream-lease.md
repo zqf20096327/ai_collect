@@ -7,7 +7,7 @@
 
 Limit **simultaneously active** SSE, LLM token streams, and WebSocket sessions across FastAPI/Starlette workers with Redis. Set a per-user limit, a global limit, or both. An extra connection receives HTTP 429 before streaming begins.
 
-Full guides and API reference: **https://agustin18.github.io/fastapi-stream-lease/**
+Full guides, FAQ, and API reference: **https://agustin18.github.io/fastapi-stream-lease/**
 
 Request rate limiters answer “how many requests arrived this minute?” This package answers “how many streams are open right now?” It is useful when a connection can remain open for seconds or minutes. For a general-purpose distributed semaphore, consider [py-redis-limiters](https://pypi.org/project/redis-limiters/) or [py-redis-semaphore](https://pypi.org/project/py-redis-semaphore/).
 
@@ -104,6 +104,17 @@ curl -N -H 'X-API-Key: local-secret' http://localhost:8000/stream
 ```
 
 The first two requests stream events; the third receives `429` with a `Retry-After` header until a slot is freed. Replace the demo API key with your application's authenticated user or account ID before production use. Never use an unverified request parameter as the user ID.
+
+### Browser demo
+
+The [`demo/`](demo/) app runs a two-panel browser demo with a synthetic SSE stream, a signed session cookie, and the same Redis lease limits. The second tab is rejected by the per-session lease; the per-IP guard is set to `2` so the two-tab demo can reach it. It needs Redis but no LLM credentials:
+
+```bash
+docker compose up --build demo
+# http://localhost:8080
+```
+
+See [`demo/README.md`](demo/README.md) for configuration and endpoints.
 
 ## FastAPI integration
 
@@ -434,6 +445,7 @@ Because `{prefix}:config` is persistent (stored with `SET ... NX` without TTL ex
 
 ## Examples directory
 
+- [`demo/`](demo/): Local browser demo with two panels, synthetic SSE, and a signed session cookie.
 - [`examples/sse_demo.py`](examples/sse_demo.py): Server-Sent Events with API key authentication.
 - [`examples/websocket_demo.py`](examples/websocket_demo.py): WebSocket streams with standard close codes (`1008 Policy Violation`, `1013 Try Again Later`).
 - [`examples/openai_streaming_demo.py`](examples/openai_streaming_demo.py): LLM token streaming with official `openai` SDK and simulated fallback.
@@ -455,6 +467,7 @@ Because `{prefix}:config` is persistent (stored with `SET ... NX` without TTL ex
 ## Stability & Versioning Policy
 
 - **Semantic Versioning (SemVer):** `fastapi-stream-lease` strictly follows SemVer.
+- **Release versioning:** Versions are calculated from Conventional Commits since the previous tag. `feat` requires a minor bump; `feat(demo)` changes limited to demo, docs, tests, and release metadata are the documented patch exception. `python scripts/release_version.py --next` prints the next version, and the publish workflow verifies the tag before upload.
 - **Public API Contract:**
   - Symbols exported from the top-level package (`fastapi_stream_lease`) constitute the public API: `StreamLeaseManager`, `StreamLease`, `LeaseConfig`, circuit breaker configurations (`CircuitBreakerConfig`, `CircuitState`, `BackendFailurePolicy`, `FallbackMode`), and exceptions (`StreamLeaseError`, etc.).
   - `ProtectedStreamingResponse` is an integration implementation detail of `manager.stream(...)` and `lease.as_streaming_response(...)`; while accessible for custom subclassing, standard applications should rely on the high-level manager and lease methods.

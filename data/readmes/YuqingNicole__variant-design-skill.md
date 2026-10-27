@@ -45,7 +45,7 @@ Three variations from a single prompt — each feels like a different studio:
 1. **Detects your scenario** — dashboard, SaaS landing page, editorial, e-commerce, mobile app, creative tool, education, portfolio, food & beverage, fashion & lifestyle
 2. **Loads design system references** — typography, color theory (OKLCH), spatial design, motion, micro-interactions, interaction, responsive, UX writing
 3. **Generates 3 distinct variations** — each expresses a distinct product trade-off with working task controls; visual tokens stay fixed under a brand lock
-4. **Runs mechanical and visual quality gates** — scans generated code, then checks the rendered result for generic AI aesthetic fingerprints
+4. **Runs mechanical and visual quality gates** — scans generated code, checks that the three recorded directions are distinct, recommended but not selected and inside any brand lock (`scripts/delivery-check.mjs`), then checks the rendered result for generic AI aesthetic fingerprints
 5. **Ships working code** — Context-aware output: auto-detects React projects and generates `.tsx` components; generates zero-dependency interactive HTML otherwise. Real content, no lorem ipsum
 6. **Offers variation actions** — push further, polish, critique, swap styles, remix colors, shuffle layouts, add motion, dramatize, make interactive
 
@@ -116,23 +116,37 @@ For Codex, clone into its skills directory (use your configured skills root if d
 git clone https://github.com/YuqingNicole/variant-design-skill.git ~/.codex/skills/variant-design
 ```
 
+Or install into the current project for Claude Code and Codex with the [skills CLI](https://github.com/vercel-labs/skills). It copies the complete repository to `.agents/skills/variant-design` and links it for Claude Code (checked with skills 1.7.4):
+
+```bash
+npx skills add YuqingNicole/variant-design-skill -a claude-code -a codex
+```
+
+The skills CLI reports installs to skills.sh unless `DISABLE_TELEMETRY=1` is set.
+
 For Claude Code or another local agent, install the same complete folder in that agent's skills location, or clone it into your workspace and point the agent to the absolute `SKILL.md` path. For Hermes/OpenClaw `AGENTS.md`, add a pointer to this installed entrypoint rather than pasting its text. The agent needs file access and Node.js for the bundled helpers.
 
 For web projects or API integrations, make the referenced directories available through the environment's file retrieval/execution tools as well as the entrypoint. Prompt text alone cannot provide preview servers or snapshot commands.
 
-The optional release check runs at most once per 24 hours, reports an available release, and never updates automatically.
+The optional release check runs at most once per 24 hours, reports an available release, and never updates automatically. To update, run `git -C <install path> pull --ff-only` for a Git clone, or `npx skills update variant-design` for an `npx skills` install. Projects keep their `variant-output/` history across updates.
 
 ## Generate → compare → choose → refine → export
 
 - Three directions retain the same core task, data, and required functions. Each explains **what it optimizes, what it sacrifices, and when to use it**, followed by a reasoned recommendation.
-- The comparison page opens by default. React output gets three isolated mounts and direct preview URLs; project type checks must include the generated files. Native adapters handle framework-specific dependencies.
+- The comparison page opens by default, with previews first and expandable direction details. React output gets three isolated mounts and direct preview URLs; project type checks must include the generated files. Native adapters handle framework-specific dependencies.
 - `B vary subtle — hero` edits B without selecting it. `pick B` explicitly chooses B. `undo B` restores B's last files and tokens while preserving A/C and the selected winner.
 - Schema v2 stores each direction's files, tokens, version, comparison, and history separately. A durable snapshot precedes every replacement; Git alone is not a snapshot.
 - Precedence: user constraints → product task and existing design system → accessibility → style advice. Report unresolved accessibility conflicts. Brand-locked output retains fonts/tokens; free exploration may vary them. There is no animation quota.
 
-Implementation and verification: [preview and history](references/preview-and-history.md), [context schema](references/project-context.md), [regression tests](tests/README.md). Existing route-first routing, local zones, and Product Integrity Gate remain in place.
+Implementation and verification: [preview](references/workflow/preview.md), [history](references/workflow/history.md), [export and integration](skills/shared/export.md), [context schema](references/workflow/project-context.md), [regression tests](tests/README.md). Existing route-first routing, local zones, and Product Integrity Gate remain in place.
 
 ---
+
+React previews can use an isolated Vite package with `--vite-root` while keeping the project’s own React; portable client components can then open as static HTML. Native Next features still require a framework adapter. See [preview limits and setup](references/workflow/preview.md).
+
+Project integration now requires a prepared source/target baseline before staging; changed source or target files are rejected before writing. See [integration](skills/shared/export.md).
+
+Runtime evidence can use a reusable Playwright check plan for named brand elements, keyboard focus, exercised motion and non-target interactions. Reports track the artifact revision; missing checks remain unverified. See [verification evidence](references/workflow/artifact-verification.md).
 
 ## Usage
 
@@ -161,6 +175,17 @@ reproduce the visual style of [site you described] — dark navy, monospace, swi
 ```
 
 **Tip:** the more constraints you name (direction + palette + layout pattern), the more targeted the output. The more open the prompt, the more divergent the three variations will be.
+
+### Start from a direction card
+
+The [direction library](https://variant-design-skill.vercel.app/) publishes each entry as a card at `/d/<slug>.json`: one brief and its A/B/C directions with what each optimizes, trades off and fits. Point the skill at a card to make your own A/B/C from it:
+
+```
+Use the variant-design skill with direction A from https://variant-design-skill.vercel.app/d/pulse.json.
+Make A/B/C for my weekly report page: A follows this direction, B and C are contrasts.
+```
+
+The skill reads the card with `scripts/direction-card.mjs` and records it as an inspiration reference. Your brand, design system and accessibility outrank the card, and nothing from the card's screenshots or copy is reused. In a sandbox without network, paste the card JSON or save it as a file. See `references/sources/direction-cards.md`.
 
 ### Anatomy of a directed prompt
 
@@ -262,36 +287,38 @@ Generated `.tsx` files go to `variant-output/` — move them to `src/components/
 
 ## Reference library
 
+`references/` is grouped by role: `workflow/` holds the rules every route shares (project context, discovery, history and preview, quality, product integrity), `sources/` the design-reference and direction-card contracts, `domains/` the scenario references below, `design-system/` and `ux/` the craft references, and `tasks/` the standalone presentation, WeChat, Wu Xing color and copywriting guides.
+
 ### Domain references
-Scenario-specific materials (starter prompts, palettes, typography, layouts, real community examples):
+Scenario-specific materials (starter prompts, palettes, typography, layouts, signature details):
 
 | File | Domain |
 |---|---|
-| `references/dashboard.md` | Data dashboards, analytics, monitoring, trading terminals |
-| `references/editorial.md` | Magazines, journalism, long-form, news |
-| `references/saas.md` | SaaS landing pages, B2B, developer tools |
-| `references/ecommerce.md` | E-commerce, consumer apps, fintech cards |
-| `references/education.md` | Learning apps, quizzes, language tools |
-| `references/creative.md` | Generative art, music tools, creative software |
-| `references/mobile.md` | iOS/Android apps, onboarding, home screens |
-| `references/portfolio.md` | Designer portfolios, developer showcases, freelancer sites |
-| `references/food-beverage.md` | Restaurants, recipes, coffee brands, bakeries, cocktail bars |
-| `references/fashion.md` | Fashion brands, streetwear, beauty, interior design, lifestyle |
+| `references/domains/dashboard.md` | Data dashboards, analytics, monitoring, trading terminals |
+| `references/domains/editorial.md` | Magazines, journalism, long-form, news |
+| `references/domains/saas.md` | SaaS landing pages, B2B, developer tools |
+| `references/domains/ecommerce.md` | E-commerce, consumer apps, fintech cards |
+| `references/domains/education.md` | Learning apps, quizzes, language tools |
+| `references/domains/creative.md` | Generative art, music tools, creative software |
+| `references/domains/mobile.md` | iOS/Android apps, onboarding, home screens |
+| `references/domains/portfolio.md` | Designer portfolios, developer showcases, freelancer sites |
+| `references/domains/food-beverage.md` | Restaurants, recipes, coffee brands, bakeries, cocktail bars |
+| `references/domains/fashion.md` | Fashion brands, streetwear, beauty, interior design, lifestyle |
 | `references/palettes.md` | Universal palette library — 40+ palettes across 7+ aesthetic directions, plus 7 attributed community palettes |
 | `references/interactive-patterns.md` | Filtering, drag-and-drop, charts, lightbox, carousels, multi-step forms |
-| `references/ux-heuristics.md` | Nielsen's 10 heuristics · Fitts's Law · Hick's Law · Jakob's Law · severity ratings · evaluation protocol |
-| `references/ux-psychology.md` | Mental models · cognitive load · Gestalt principles · reading patterns · affordances · attention · memory · trust |
-| `references/ux-information-architecture.md` | Navigation patterns · information scent · card sorting · tree testing · labeling rules · search design · IA anti-patterns |
-| `references/ux-accessibility.md` | WCAG 2.1 AA · keyboard navigation · semantic HTML · ARIA usage · color contrast · accessible forms · a11y code scans |
-| `references/ux-research-methods.md` | Usability testing · user interviews · SUS/NPS · A/B testing · analytics · research method selection matrix |
-| `references/ux-mobile-patterns.md` | Touch targets · thumb zones · gesture conventions · iOS vs Android · bottom gesture conflicts · mobile forms |
-| `references/ux-onboarding.md` | Aha moment · empty states · progressive disclosure · signup flow · activation funnel · onboarding anti-patterns |
-| `references/ux-data-visualization.md` | Chart selection · visual encoding hierarchy · dashboard density · color encoding · interactive patterns · data anti-patterns |
-| `references/ux-content-strategy.md` | Content models · taxonomy · multilingual UX · RTL layouts · content lifecycle · multi-surface design |
-| `references/ux-design-tokens.md` | Three-tier token architecture · naming conventions · semantic tokens · multi-brand theming · dark mode · Style Dictionary |
-| `references/ux-component-specs.md` | Button/input/modal/toggle full state machines · spacing specs · ARIA patterns · keyboard interaction |
-| `references/ux-design-critique.md` | Feedback frameworks · taste trap · HiPPO problem · async review · critique vs review · self-critique checklist |
-| `references/ux-conversion-patterns.md` | Trust signals · landing page anatomy · CTA copy · pricing page patterns · form conversion · dark pattern identification |
+| `references/ux/heuristics.md` | Nielsen's 10 heuristics · Fitts's Law · Hick's Law · Jakob's Law · severity ratings · evaluation protocol |
+| `references/ux/psychology.md` | Mental models · cognitive load · Gestalt principles · reading patterns · affordances · attention · memory · trust |
+| `references/ux/information-architecture.md` | Navigation patterns · information scent · card sorting · tree testing · labeling rules · search design · IA anti-patterns |
+| `references/ux/accessibility.md` | WCAG 2.1 AA · keyboard navigation · semantic HTML · ARIA usage · color contrast · accessible forms · a11y code scans |
+| `references/ux/research-methods.md` | Usability testing · user interviews · SUS/NPS · A/B testing · analytics · research method selection matrix |
+| `references/ux/mobile-patterns.md` | Touch targets · thumb zones · gesture conventions · iOS vs Android · bottom gesture conflicts · mobile forms |
+| `references/ux/onboarding.md` | Aha moment · empty states · progressive disclosure · signup flow · activation funnel · onboarding anti-patterns |
+| `references/ux/data-visualization.md` | Chart selection · visual encoding hierarchy · dashboard density · color encoding · interactive patterns · data anti-patterns |
+| `references/ux/content-strategy.md` | Content models · taxonomy · multilingual UX · RTL layouts · content lifecycle · multi-surface design |
+| `references/ux/design-tokens.md` | Three-tier token architecture · naming conventions · semantic tokens · multi-brand theming · dark mode · Style Dictionary |
+| `references/ux/component-specs.md` | Button/input/modal/toggle full state machines · spacing specs · ARIA patterns · keyboard interaction |
+| `references/ux/design-critique.md` | Feedback frameworks · taste trap · HiPPO problem · async review · critique vs review · self-critique checklist |
+| `references/ux/conversion-patterns.md` | Trust signals · landing page anatomy · CTA copy · pricing page patterns · form conversion · dark pattern identification |
 
 ### Design system references (Impeccable)
 Foundational design principles loaded for every generation:
@@ -323,14 +350,15 @@ Foundational design principles loaded for every generation:
 
 ## Contributing
 
-PRs welcome. Each domain reference file follows a consistent 6-section schema:
+PRs welcome. Each domain reference file follows a consistent 5-section schema:
 
 1. Starter Prompts (domain-grouped)
 2. Color Palettes (CSS custom properties)
 3. Typography Pairings
 4. Layout Patterns
 5. Signature Details
-6. Real Community Examples
+
+Worked examples belong in the [direction library](https://variant-design-skill.vercel.app/), not in references: only our own runs or work its authors have licensed, never transcribed copy from other people's designs. `node --test scripts/skill-links.test.mjs` checks that every file the skill names exists and that every reference is reachable from `SKILL.md`.
 
 Design system references follow the Impeccable style structure with principles, code examples, and anti-patterns.
 
@@ -348,7 +376,7 @@ Open any example directly in your browser to see the interactions in action.
 
 ---
 
-Built with [Claude Code Skills](https://claude.ai/code). Design system powered by [Impeccable](https://github.com/tychografie/impeccable).
+Built with [Claude Code Skills](https://claude.ai/code). Design system powered by [Impeccable](https://github.com/pbakaus/impeccable). Component handoff and implementation checks adapt Vercel's [Web Interface Guidelines](https://github.com/vercel-labs/web-interface-guidelines), Anthropic's [knowledge-work-plugins](https://github.com/anthropics/knowledge-work-plugins) design-handoff skill and [Owl-Listener/designer-skills](https://github.com/Owl-Listener/designer-skills).
 
 ## Local MCP server
 

@@ -221,15 +221,17 @@ flowchart TD
 
 ```
 训练池 310 只 = data/hk_broad/universe_310.json（300 冻结池 ∪ 原 49 池）
-      │  CatBoost 5/10/20d 训练
+      │  LightGBM 5/10/20d 训练（rank 标签）
       ▼
-模型 pkl（data/ml_trading_model_catboost_{5,10,20}d.pkl）
+模型 pkl（data/ml_trading_model_lgbm_{5,10,20}d.pkl）
+      │  参数：data/lgbm_best_params.json（生产与 WF 同源）
       │  逐只推理
       ▼
 预测池 30 只 = config.WATCHLIST
 ```
 
 - 训练池文件是**生产依赖**，已入库；缺失时 `config` 直接报错（不静默退回）。
+- **模型月级更新**：日常只加载 pkl 推理，`scripts/monthly_retrain.sh` 每月 1 日重训 5/10/20（D82）。
 - `HK_UNIVERSE_FILE` 仅作实验覆盖入口，生产无需设置。
 - 市场广度按训练池计算；预测只遍历 30 只自选。
 
@@ -383,7 +385,7 @@ rm -rf data/a_stock_cache/*.pkl
 
 ## 12. 依赖 · 许可 · 联系
 
-**依赖**：`yfinance` `catboost` `akshare` `pandas` `scikit-learn` `lightgbm` `jieba` `hmmlearn` `arch` `networkx`
+**依赖**：`yfinance` `lightgbm`（生产）`catboost`（仅研究脚本）`akshare` `pandas` `scikit-learn` `lightgbm` `jieba` `hmmlearn` `arch` `networkx`
 
 **许可**：MIT License
 

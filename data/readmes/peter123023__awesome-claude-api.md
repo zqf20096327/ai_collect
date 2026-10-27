@@ -5,11 +5,13 @@
 ![GitHub License](https://img.shields.io/github/license/peter123023/awesome-claude-api?color=blue)
 ![Last Updated](https://img.shields.io/badge/last%20updated-2026--09-brightgreen)
 
+中文 | [English](README_EN.MD)
+
 精心收集和整理的可靠Claude中转API资源列表，帮助开发者快速找到稳定、高性价比的Claude API服务。所有信息均来自官方网站，确保时效性和准确性。
 
 ## 📊 月访问量数据情况（2026-09） <a id="traffic-note"></a>
 
-本期对比 2026-08 与 2026-09 两个月访问量，共覆盖 22 个渠道（已移除停服的 Unity2.Ai，新增收录 LinkAGI、Kunavo、TokenDos、AI SaaS Go、API 快连 与 AnyAIGC）。数据统一取自 traffic.cv（SimilarWeb 估算，最新快照为 2026-09），8 月值由各站标注的环比倒推，口径前后一致。
+本期对比 2026-08 与 2026-09 两个月访问量，共覆盖 22 个渠道（已移除停服的 Unity2.Ai，新增收录 LinkAGI、Kunavo、TokenDos、AI SaaS Go、API 快连 与 AnyAIGC）。
 
 - **头部稳健**：OpenRouter 22.0M → 21.3M（-3.4%），仍是唯一千万级渠道，头部格局稳定。
 - **涨幅偏大**：API 快连 +7785.8%、Kunavo +2778.2%、LLM 大模型照妖镜 +310.1%、B.AI +78.6%、AIHubMix +12.1%。前三者为低基数新站或工具站。
@@ -19,14 +21,7 @@
 
 ## 📋 目录
 
-- [访问量数据情况](#traffic-note)
-
-- [项目介绍](#intro)
-- [使用说明](#usage)
-- [API列表](#api-list)
-- [检测工具](#tools)
-- [贡献指南](#contributing)
-- [免责声明](#disclaimer)
+[访问量数据情况](#traffic-note) | [项目介绍](#intro) | [使用说明](#usage) | [API列表](#api-list) | [检测工具](#tools) | [贡献指南](#contributing) | [免责声明](#disclaimer)
 
 ## 🚀 项目介绍 <a id="intro"></a>
 
@@ -60,7 +55,7 @@
 | [TokenDos](https://www.tokendos.com/tokendos)<br><sub>www.tokendos.com/tokendos<br>月访问量: 4.9K (2026-08) → 3.5K (2026-09) ▼跌 29.2%</sub> | • 实时按 token 付费，无订阅制<br>• 共享市场定价：聚合提供方闲置 API key，价格显著低于官方直连<br>• Claude Sonnet 5：$0.022 / 百万输入 token、$0.11 / 百万输出 token<br>• Prompt 缓存单独计价：Cache Read $0.0022、Cache Write $0.0275（每百万 token）<br>• GPT-6 Luna 低至 $0.000744 / 百万输入 token、$0.003722 / 百万输出 | • AI API 共享市场模式：连接闲置 API key 的提供方与需求方，把闲置算力变现，同时降低按需调用成本<br>• 双协议端点，可直接替换进现有代码<br>• 模型覆盖 GPT-6 系列（astra / sol / luna）、GPT-5.6（sol / terra）、GPT-5.5、Grok 4.6 / 4.7 及 Claude Sonnet 5<br>• 各模型 Prompt 缓存读 / 写分别计价，长上下文重复读取成本更低<br>• 新站（2026-06 上线），支付方式与团队功能等官方页面暂未公开 | `共享市场` `按量付费` `极低成本` `双协议` `Prompt缓存` `Claude支持` |
 | [AI SaaS Go](https://aisaasgo.org/zh)<br><sub>aisaasgo.org/zh<br>月访问量: 暂无第三方估算数据</sub> | • 人民币按实付金额 1:1 到账（¥1 = $1 额度），¥5–¥1000 可充，无额外赠送<br>• Claude 价格（每百万 token 输入/输出）：Sonnet 5 / 4.6 / 4.5 均 $0.9/$4.5，Opus 5 $1.5/$7.5，Opus 5.5 $2/$10，Fable 5 / 5.1 $3/$15<br>• 输入、输出、缓存写入、缓存读取四列分别精确计量<br>• 支持银行卡与支付宝<br>• GPT 模型单次输入超 272K Token 触发长上下文计费（输入与缓存读取 2 倍、输出 1.5 倍）<br>• 视频 / 音频 / 图片模型独立计费，失败任务不扣费 | • 一个接口接入 OpenAI、Claude、Gemini、Grok、Kimi、DeepSeek 等模型<br>• Claude 覆盖 11 个型号：Fable 5 / 5.1、Opus 5.5 / 5 / 4.8 / 4.7 / 4.6 / 4.5、Sonnet 5 / 4.6 / 4.5<br>• 兼容 OpenAI Responses API（原生 SSE 流式），同时支持 Claude 原生接口（可用 x-api-key 鉴权）<br>• 多模态覆盖：文本、图片（GPT Image、Midjourney）、视频（Seedance）、音频（Suno、Doubao Seed Audio）<br>• 控制台可查 API Key、调用记录、Token 用量与实际消费<br>• 错误码文档完整（401/402/429/5xx 分别对应密钥、余额、限流、临时异常）<br>• 注意：第三方中转站评测曾记录其可用率偏低，生产使用建议先小额验证 | `Claude全系列` `多模态` `价格透明` `人民币充值` `双协议兼容` |
 | [API 快连](https://apikl.ai/)<br><sub>apikl.ai<br>月访问量: 162 (2026-08) → 12.8K (2026-09) ▲涨 7785.8%</sub> | • 预付余额按量扣费，无月费，余额不过期；支付宝 / 微信 / 银行卡（Stripe）均可充值，可小额起充、可开票<br>• 定价口径：官方美元价按 ¥1 = $1 折算后再乘分组倍率，输入 / 输出 / 缓存写入 / 缓存读取四列分别计量<br>• Claude-Max（主推）0.8 倍：Sonnet 5 ¥1.6 / ¥8、Opus 5 ¥4 / ¥20、Fable 5 ¥8 / ¥40（每百万 token 输入/输出）<br>• Claude Code（AWS，官方渠道）3.8 倍：Sonnet 5 约 ¥7.6 / ¥38、Opus 5 约 ¥19 / ¥95<br>• 缓存读取 0.1× 输入价、缓存写入 1.25×、1 小时缓存写入 2× | • 41 个分组全部明码标价，渠道来源写在分组名里：Claude-Max 为 Claude Max 订阅号池、Claude-Plus 为 Kiro 渠道（非官方直连）、Claude Code（AWS）为 AWS 官方渠道，另有明确标注为「蒸馏」的降智分组——想用正版请选 AWS 组<br>• Claude 覆盖 14 个型号（19 个模型 ID，含日期后缀别名）：Fable 5 / 5.1、Opus 4.5 / 4.6 / 4.7 / 4.8 / 5 / 5.5、Sonnet 4.5 / 4.6 / 5 / 5.5、Haiku 4.5 / 5.5<br>• 三协议兼容：Anthropic `/v1/messages`、OpenAI 兼容、Gemini 原生，官方提供 Claude Code / Codex / CC Switch / Gemini CLI 教程，另有不走 CDN 的直连线路 `dc.apikl.ai`<br>• 第三方独立实测（Veridrop，2026-07 至 10 共 149 次）中位 95/100 判「优秀」，149 次无全站严重问题；但 OpenAI 侧 token 计费口径通过率仅 34%、Claude thinking signature 72.4%，成本敏感或强真伪要求场景需自测<br>• 2026-06 上线、域名 2026-07 注册；邮箱 + QQ + 微信 + Telegram 多渠道客服，退款规则与发票政策公开可查 | `多分组明码标价` `双协议兼容` `Claude Code支持` `第三方实测` `人民币充值` `官方渠道可选` `新站` |
-| [AnyAIGC](https://anyaigc.ai/)<br><sub>anyaigc.ai<br>月访问量: 暂无第三方估算数据</sub> | • 按量付费，无订阅；定价接口 `/api/pricing` 公开可查（无需登录），333 个模型含 16 个 Claude 型号，各分组倍率全部列出<br>• Claude 现价（每百万 token 输入/输出，以[模型广场](https://anyaigc.ai/pricing)为准）：Claude-Code-1 组约 2.4 折——Sonnet 5.5 $0.476 / $2.38、Opus 5.5 $0.953 / $4.76、Fable 5.1 $2.38 / $11.9；Kiro-Claude-1 组约 1.2 折——Sonnet 5.5 $0.238 / $1.19<br>• 分组价差极大，选错反而吃亏：AWS-Bedrock-1 约 6 折、AWS-Bedrock-2 约 8 折，而 Anthropic-Claude-1 与 AWS-Claude-3 为 1.49 倍（比官方贵 49%）<br>• 缓存读取 0.05×（Sonnet / Opus）、0.025×（Fable）、0.1×（Haiku），缓存写入 5m 1.25×、1h 2×<br>• 微信、支付宝（两路）、信用卡均可充值，$1 起充，人民币按 6.718 汇率结算，可开票<br>• 无免费额度（签到关闭、无注册赠送），仅邀请返利 5% | • Claude 覆盖 16 个型号：Opus 5.5 / 5 / 4.8 / 4.7 / 4.6 / 4.5 / 4.1 / 4、Sonnet 5.5 / 5 / 4.6 / 4.5、Fable 5.1 / 5、Haiku 5.5 / 4.5<br>• 上游渠道写在分组名里：AWS Bedrock、AWS Claude、Anthropic、Azure、Vertex、Claude-Code、Kiro，均为官方或订阅渠道，未见「逆向 / 反代」分组<br>• Anthropic `/v1/messages` 与 OpenAI `/v1/chat/completions` 双协议，改 base_url 即可用；有 uptime 状态页与接入文档<br>• 品牌自 2026-04-22 连续运营：老站 anyaigc.com 于 2026-08-09 停止注册、2026-09-10 停止充值，官方公告引导用户迁至 anyaigc.ai（迁移原因未公开）；两站与 api.zhongzhuan.chat 解析到同一 IP<br>• 后台为 new-api 代理租户站，配置中声明主站为 openlux.ai——但 openlux.ai 裸域无 DNS 记录、实际无法访问，仅 www 子域可达<br>• 运营活跃：394 条站内公告（最近 2026-10-22），claude-opus-5-5 累计用量 224 亿 token<br>• 待核实项：运营主体未公开（whois 全隐私隐藏），暂无第三方实测评分（Veridrop 仅收录未出快照），成本敏感场景建议先小额实测 | `双协议兼容` `Claude全系列` `分组明码标价` `缓存计费` `微信支付宝` `1美元起充` `可开票` `白标代理站` |
+| [AnyAIGC](https://anyaigc.ai/)<br><sub>anyaigc.ai<br>月访问量: 暂无第三方估算数据</sub> | • 按量付费，无订阅；定价接口 `/api/pricing` 公开可查（无需登录），333 个模型含 16 个 Claude 型号，各分组倍率全部列出<br>• Claude 现价（每百万 token 输入/输出，以[模型广场](https://anyaigc.ai/pricing)为准）：Claude-Code-1 组约 2.4 折——Sonnet 5.5 $0.476 / $2.38、Opus 5.5 $0.953 / $4.76、Fable 5.1 $2.38 / $11.9；Kiro-Claude-1 组约 1.2 折——Sonnet 5.5 $0.238 / $1.19<br>• 分组价差极大，选错反而吃亏：AWS-Bedrock-1 约 6 折、AWS-Bedrock-2 约 8 折，而 Anthropic-Claude-1 与 AWS-Claude-3 为 1.49 倍（比官方贵 49%）<br>• 缓存读取 0.05×（Sonnet / Opus）、0.025×（Fable）、0.1×（Haiku），缓存写入 5m 1.25×、1h 2×<br>• 微信、支付宝（两路）、信用卡均可充值，$1 起充，人民币按 6.718 汇率结算，可开票<br>• 无免费额度（签到关闭、无注册赠送），仅邀请返利 5% | • Claude 覆盖 16 个型号：Opus 5.5 / 5 / 4.8 / 4.7 / 4.6 / 4.5 / 4.1 / 4、Sonnet 5.5 / 5 / 4.6 / 4.5、Fable 5.1 / 5、Haiku 5.5 / 4.5<br>• 上游渠道写在分组名里：AWS Bedrock、AWS Claude、Anthropic、Azure、Vertex、Claude-Code、Kiro，均为官方或订阅渠道，未见「逆向 / 反代」分组<br>• Anthropic `/v1/messages` 与 OpenAI `/v1/chat/completions` 双协议，改 base_url 即可用；有 uptime 状态页与接入文档<br>• 品牌自 2026-04-22 连续运营：老站 anyaigc.com 于 2026-08-09 停止注册、2026-09-10 停止充值，官方公告引导用户迁至 anyaigc.ai，迁移原因为系统升级为美元计价体系（新站全部以美元标价，人民币按 6.718 汇率结算）<br>• 运营活跃：394 条站内公告（最近 2026-10-22），claude-opus-5-5 累计用量 224 亿 token<br>• 待核实项：运营主体未公开（whois 全隐私隐藏），暂无第三方实测评分（Veridrop 仅收录未出快照），成本敏感场景建议先小额实测 | `双协议兼容` `Claude全系列` `分组明码标价` `缓存计费` `微信支付宝` `1美元起充` `可开票` |
 
 ## 🛠️ 检测工具 <a id="tools"></a>
 

@@ -2,20 +2,37 @@
 
 A curriculum and field guide for building, evaluating and operating AI systems.
 
-> **Evidence review: October 9, 2026.** The latest job-data snapshot inspected is September 23, 2026. Review dates and source publication/collection dates are separate. Some long-form legacy claims still need source-level verification; see the [audit](research/audit-2026-10-09.md).
->
-> **Section review: October 17, 2026.** The [AI Evaluation](105_AI-Evaluation/README.md) and [AI Security & Safety](106_AI-Security-Safety/README.md) sections were added with all references verified on that date.
+## New here? Start with this section
 
-## Start here
+**What this repository is:** a free, self-study library for becoming an AI engineer. It has three layers — a **technical curriculum** (sections 101–106, numbered in learning order), **roadmaps** (guided, day-by-day study plans through that same material), and **interview & career material** — all written from first principles so you can start from zero.
 
-- [From foundations to advanced engineering](learning-paths/advanced-engineering.md) — competency stages, real-data projects, measurable exit criteria and expert review questions.
-- [Evidence and real datasets](research/README.md) — a reproduced job-posting analysis, dataset limitations, dated benchmark references and reproduction commands.
-- [Evidence policy](research/evidence-policy.md) — distinguish measurements, source-reported claims, design targets and teaching illustrations.
-- [Repository audit](research/audit-2026-10-09.md) — what was checked, corrected and left unresolved.
+**Prerequisites:** you can already program (Python is the most useful language here). No machine-learning background is required — section 101 teaches every concept from scratch.
 
-The reproduced source contains **8,051 stored job observations across nine scrape folders**, including **1,086 records in the September 23, 2026 folder**. These are counts from a selected job-board dataset, not worldwide demand estimates. Structured skills and role labels are LLM-derived annotations; the [analysis and input fingerprint](research/job-market-summary.json) make the counting reproducible without certifying every annotation.
+### Which part should you open first?
 
-Advanced practice requires a baseline, versioned data, held-out evaluation, failure analysis, authorization checks, measured operating costs and a recovery plan. The curriculum retains its introductory explanations; the advanced path connects them to reviewable engineering artifacts.
+| Your situation | Start here | What it is |
+|---|---|---|
+| "I'm completely new to LLMs and AI engineering" | [101 — LLM Literacy](101_LLM-Literacy/README.md) | The on-ramp: how LLMs work, prompting, context engineering — from zero |
+| "I want a day-by-day plan to become job-ready" | [Accelerated Roadmap (100 days)](roadmap/accelerated-roadmap/README.md) | 6 modules · 100 days · the core ~80% employers expect |
+| "I want full depth, at my own pace" | [Full Roadmap](roadmap/full-roadmap/README.md) | 16 levels · 286 sessions · 100% coverage from software fundamentals to interview prep |
+| "I need to learn one specific topic" | [Curriculum sections 101–106](#technical-curriculum-101106) | Reference knowledge base — open just the section you need |
+| "I'm switching from another engineering role" | [Learning Paths](learning-paths/README.md) | Transition guides from data / backend / frontend / ML engineering, with durations |
+| "I have an interview coming up" | [Interview Preparation](interview/README.md) | The process, 100 answered questions, system design, negotiation |
+
+### The curriculum, in learning order
+
+The six numbered sections build on each other — each assumes roughly what the previous ones taught, so read them in order the first time and use them as reference afterwards:
+
+| # | Section | You will learn… |
+|---|---|---|
+| 101 | [LLM Literacy](101_LLM-Literacy/README.md) | how LLMs actually work — and how to steer them with prompts and context |
+| 102 | [AI Application Development](102_AI-Application-Development/README.md) | building applications: orchestration, vector databases, RAG, memory, fine-tuning |
+| 103 | [Agentic AI](103_Agentic%20AI/README.md) | autonomy: planning loops, tool protocols (MCP), agent frameworks, multi-agent systems |
+| 104 | [LLMOps](104_LLMOps/README.md) | production: deployment, observability, safety guardrails, governance |
+| 105 | [AI Evaluation](105_AI-Evaluation/README.md) | evidence: proving your system works — includes a full 19-lecture course |
+| 106 | [AI Security & Safety](106_AI-Security-Safety/README.md) | defense: threat modeling, prompt-injection defense, red teaming, alignment, responsible AI |
+
+**Roadmaps vs. curriculum:** the [roadmaps](roadmap/README.md) are the guided tours — they tell you what to study and in what order. The curriculum sections are the reference library beneath them — deep notes on each topic. Follow a roadmap as your schedule, and open the matching curriculum section whenever you want the full explanation.
 
 ## Roadmaps (Full + Accelerated 100-Day)
 
@@ -34,7 +51,7 @@ Two complete roadmaps for becoming an AI engineer, plus a full interview-prepara
 - [103 — Agentic AI](103_Agentic%20AI/README.md) — autonomous planning loops, Model Context Protocol (MCP), agentic frameworks, and multi-agent orchestration
 - [104 — LLMOps](104_LLMOps/README.md) — deployment architectures, observability, safety guardrails, governance, and enterprise scaling
 - [105 — AI Evaluation](105_AI-Evaluation/README.md) — evaluation fundamentals, LLM-as-a-Judge, agent benchmarks and the integrity crisis, RAG evaluation practice, eval engineering in CI/CD, [dataset engineering](105_AI-Evaluation/06-evaluation-datasets.md), and [online experimentation](105_AI-Evaluation/07-online-experimentation.md) — plus a complete [19-lecture LLM Evaluations course](105_AI-Evaluation/course/README.md) with full English notes and transcripts, a [glossary](105_AI-Evaluation/course/glossary.md), a [self-assessment quiz](105_AI-Evaluation/course/flashcards.md), and a [cheat sheet](105_AI-Evaluation/course/cheatsheet.md)
-- [106 — AI Security & Safety](106_AI-Security-Safety/README.md) — threat modeling (OWASP LLM + Agentic Top 10), prompt injection defense, red teaming, agent & MCP security, AI alignment, and responsible AI governance
+- [106 — AI Security & Safety](106_AI-Security-Safety/README.md) — threat modeling (OWASP LLM + Agentic Top 10, MITRE ATLAS), prompt injection defense, red teaming, agent & MCP security, AI alignment, responsible AI governance, the [security & safety dataset catalog](106_AI-Security-Safety/07-security-safety-datasets.md), and [worldwide incident databases](106_AI-Security-Safety/08-incident-databases.md)
 
 
 ## The AI Engineer Role
@@ -68,6 +85,7 @@ Two complete roadmaps for becoming an AI engineer, plus a full interview-prepara
 ## Learning Paths
 
 - [General learning path](learning-paths/README.md) — what to learn and in what order
+- [From foundations to advanced engineering](learning-paths/advanced-engineering.md) — competency stages, real-data projects, measurable exit criteria and expert review questions
 - [From Data Engineer](learning-paths/from-data-engineer.md) — smoothest transition, 3-4 months
 - [From Data Scientist](learning-paths/from-data-scientist.md) — evaluation is your superpower, add engineering
 - [From ML Engineer](learning-paths/from-ml-engineer.md) — easiest transition, replace model call with API call
@@ -101,6 +119,22 @@ Supplemental notes on AI engineering careers. Recording, speaker and survey clai
 2. [Defining the AI Engineer Role](webinars/02-defining-the-role.md) — role scope and engineering responsibilities
 3. [The Interview Process](webinars/03-the-interview-process.md) — real hiring trends, technical questions, and live coding challenges
 4. [Take-Home Assignments](webinars/04-take-home-assignments.md) — analyzing real assignments and building production-ready solutions
+
+## Evidence & Verification
+
+How the claims in this guide are sourced, checked, and recorded:
+
+> **Evidence review: October 9, 2026.** The latest job-data snapshot inspected is September 23, 2026. Review dates and source publication/collection dates are separate. Some long-form legacy claims still need source-level verification; see the [audit](research/audit-2026-10-09.md).
+>
+> **Section review: October 27, 2026.** The [AI Evaluation](105_AI-Evaluation/README.md) and [AI Security & Safety](106_AI-Security-Safety/README.md) sections were added with all references verified; the security section was extended on this date with a [dataset catalog](106_AI-Security-Safety/07-security-safety-datasets.md) and [incident databases](106_AI-Security-Safety/08-incident-databases.md), all figures verified against live sources.
+
+- [Evidence and real datasets](research/README.md) — a reproduced job-posting analysis, dataset limitations, dated benchmark references and reproduction commands.
+- [Evidence policy](research/evidence-policy.md) — distinguish measurements, source-reported claims, design targets and teaching illustrations.
+- [Repository audit](research/audit-2026-10-09.md) — what was checked, corrected and left unresolved.
+
+The reproduced source contains **8,051 stored job observations across nine scrape folders**, including **1,086 records in the September 23, 2026 folder**. These are counts from a selected job-board dataset, not worldwide demand estimates. Structured skills and role labels are LLM-derived annotations; the [analysis and input fingerprint](research/job-market-summary.json) make the counting reproducible without certifying every annotation.
+
+Advanced practice requires a baseline, versioned data, held-out evaluation, failure analysis, authorization checks, measured operating costs and a recovery plan. The curriculum retains its introductory explanations; the advanced path connects them to reviewable engineering artifacts.
 
 ## Acknowledgments
 

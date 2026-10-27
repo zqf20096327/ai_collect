@@ -1,8 +1,16 @@
 <p align="center">
-  <img src="./assets/opencode-team.webp" alt="OpenCode Team" width="480" height="240">
+  <img src="./assets/opencode-team.svg" alt="OpenCode Team">
 </p>
 
 <h1 align="center">OpenCode Team</h1>
+
+<p align="center">
+  <a href="https://github.com/sametcelikbicak/opencode-team/actions/workflows/checks.yml"><img src="https://img.shields.io/github/actions/workflow/status/sametcelikbicak/opencode-team/checks.yml?label=checks&branch=main" alt="CI checks"></a>
+  <a href="https://github.com/sametcelikbicak/opencode-team/actions/workflows/docs.yml"><img src="https://img.shields.io/github/actions/workflow/status/sametcelikbicak/opencode-team/docs.yml?label=docs&branch=main" alt="Docs"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="MIT"></a>
+  <a href="https://github.com/sametcelikbicak/opencode-team/stargazers"><img src="https://img.shields.io/github/stars/sametcelikbicak/opencode-team?style=social" alt="Stars"></a>
+  <a href="https://opencode.ai"><img src="https://img.shields.io/badge/OpenCode-1.x-blue?logo=opencode" alt="OpenCode 1.x"></a>
+</p>
 
 A team of AI agents that takes an idea from research to launch — built on [opencode](https://opencode.ai), with no framework and no extra dependencies.
 
@@ -53,7 +61,7 @@ OpenCode Team is a **software team** you install once and use in every project. 
 
 - **14 agent roles** — analyst, pm, po, ux, brand, architect, fe, be, qa, devops, security, marketing, docs, and an orchestrator that routes work between them
 - **12 pipeline stages** — configured in `team.yaml`, not hardcoded, so you can add, remove, or reorder stages freely
-- **13 skills** — one methodology per stage, all local under `skills/team-*`; no external skill is cloned or required
+- **13 skills** — 12 stage methodologies plus `team-memory`, all local under `skills/team-*`; no external skill is cloned or required
 - **19 slash commands** — run a single stage directly, or drive the whole pipeline
 
 The orchestrator is the **default agent**. Open `opencode` anywhere, describe an idea, and the team takes it stage by stage, asking for your approval at each gate.
@@ -61,6 +69,8 @@ The orchestrator is the **default agent**. Open `opencode` anywhere, describe an
 ## Install
 
 Requires OpenCode 1.x (tested on 1.19.0). OpenCode 2 support is planned as a separate release. There is no tagged release yet; `main` is the development branch.
+
+Supported on macOS and Linux. Native Windows is **not supported yet**: `install.sh` is Bash and uses symlinks. WSL is untested.
 
 ```bash
 git clone https://github.com/sametcelikbicak/opencode-team.git
@@ -166,26 +176,35 @@ Pipeline control:
 
 ## The team
 
-| Role         | Agent file               | Model                               | Writes                     |
-| ------------ | ------------------------ | ----------------------------------- | -------------------------- |
-| Orchestrator | `agents/orchestrator.md` | `opencode/deepseek-v4.1-flash-free` | — (routes work)            |
-| Analyst      | `agents/analyst.md`      | `opencode/beam-free`                | `.team/01-research.md`     |
-| PM           | `agents/pm.md`           | `opencode/beam-free`                | `.team/02-prd.md`          |
-| PO           | `agents/po.md`           | `opencode/beam-free`                | `.team/03-backlog.md`      |
-| UX Designer  | `agents/ux.md`           | `opencode/beam-free`                | `.team/04-ux.md`           |
-| Brand        | `agents/brand.md`        | `opencode/deepseek-v4.1-flash-free` | `.team/05-brand.md`        |
-| Architect    | `agents/architect.md`    | `opencode/deepseek-v4.1-flash-free` | `.team/06-architecture.md` |
-| Frontend     | `agents/fe.md`           | `opencode/deepseek-v4.1-flash-free` | `.team/07-build.md`        |
-| Backend      | `agents/be.md`           | `opencode/deepseek-v4.1-flash-free` | `.team/07-build.md`        |
-| QA           | `agents/qa.md`           | `opencode/deepseek-v4.1-flash-free` | `.team/08-qa.md`           |
-| Security     | `agents/security.md`     | `opencode/deepseek-v4.1-flash-free` | `.team/09-security.md`     |
-| Docs         | `agents/docs.md`         | `opencode/deepseek-v4.1-flash-free` | `.team/10-docs.md`         |
-| DevOps       | `agents/devops.md`       | `opencode/deepseek-v4.1-flash-free` | `.team/11-release.md`      |
-| Marketing    | `agents/marketing.md`    | `opencode/nemotron-3-ultra-free`    | `.team/12-launch.md`       |
+| Role         | Agent file               | Writes                     |
+| ------------ | ------------------------ | -------------------------- |
+| Orchestrator | `agents/orchestrator.md` | — (routes work)            |
+| Analyst      | `agents/analyst.md`      | `.team/01-research.md`     |
+| PM           | `agents/pm.md`           | `.team/02-prd.md`          |
+| PO           | `agents/po.md`           | `.team/03-backlog.md`      |
+| UX Designer  | `agents/ux.md`           | `.team/04-ux.md`           |
+| Brand        | `agents/brand.md`        | `.team/05-brand.md`        |
+| Architect    | `agents/architect.md`    | `.team/06-architecture.md` |
+| Frontend     | `agents/fe.md`           | `.team/07-build.md`        |
+| Backend      | `agents/be.md`           | `.team/07-build.md`        |
+| QA           | `agents/qa.md`           | `.team/08-qa.md`           |
+| Security     | `agents/security.md`     | `.team/09-security.md`     |
+| Docs         | `agents/docs.md`         | `.team/10-docs.md`         |
+| DevOps       | `agents/devops.md`       | `.team/11-release.md`      |
+| Marketing    | `agents/marketing.md`    | `.team/12-launch.md`       |
 
 All agents are `mode: all`, so each one is reachable three ways: **Tab / Shift+Tab** to cycle, **`@agent-name`** to mention, and the orchestrator can launch it as a subagent via the `task` tool.
 
-Models are free-tier OpenCode Zen models. The defaults were picked by benchmarking: `deepseek-v4.1-flash-free` was the only model that produced fully working code in the test suite (9.5–10.5/10, supports image input), `beam-free` is fast and text-only, `nemotron-3-ultra-free` writes the best Turkish copy. Override any of them in the agent file.
+Models are free-tier OpenCode Zen models. Agent frontmatter no longer pins a model — each agent uses the session's active model (set in `~/.config/opencode/opencode.json` via `default_model`). To assign a specific model to a single agent, add a `model:` field to that agent's frontmatter, e.g.:
+
+```yaml
+---
+name: marketing
+model: opencode/nemotron-3-ultra-free
+---
+```
+
+Benchmark picks: `deepseek-v4.1-flash-free` (code, image input), `beam-free` (fast, text-only), `nemotron-3-ultra-free` (Turkish copy).
 
 ## Output convention
 
@@ -225,6 +244,7 @@ Project-local agent memory also lives under `.team/`:
 Plain files in a folder. No database, no framework, fully diffable in git, and a human can step in at any stage.
 
 ## Design notes
+
 - [Project-local agent memory](./docs/rfcs/0001-project-memory.md) — accepted RFC for a small `.team/memory/` shared by the orchestrator and every specialist agent.
 
 ## Memory
@@ -267,6 +287,20 @@ OpenCode Team keeps a small, project-local memory in `.team/memory/` so the orch
 
 Full protocol: `skills/team-memory/SKILL.md` and `docs/rfcs/0001-project-memory.md`.
 
+## Documentation
+
+The full documentation site is hosted at [sametcelikbicak.github.io/opencode-team/](https://sametcelikbicak.github.io/opencode-team/). It includes:
+
+- [Install Guide](./docs/install.md) — install, check, uninstall
+- [Pipeline & Gates](./docs/pipeline.md) — how stages and gates work
+- [Agent reference](./docs/reference/agents.md) — all 14 roles
+- [Command reference](./docs/reference/commands.md) — all 19 slash commands
+- [Skill reference](./docs/reference/skills.md) — all 13 skills
+- [Stage reference](./docs/reference/stages.md) — all 12 pipeline stages
+- [Memory](./docs/memory.md) — project-local agent memory
+- [FAQ](./docs/faq.md) — common questions
+
+The site is built from this repository and deployed on every push to `main`.
 
 ## Customising the pipeline
 

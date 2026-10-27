@@ -120,13 +120,15 @@ The plugin provides file locations and actual text so the agent can answer from 
 
 ## Install
 
-MCP needs Node.js 22.19+. Pi needs Pi 0.84.3+ with Node.js 22.19+ or Bun 1.4+. The search engine ships with the package for each supported platform, so no system search tool, shell function or `PATH` setup is required, and a search never downloads anything. Install with optional dependencies enabled.
+MCP needs Node.js 22.19+. Pi needs Pi 0.86.0+ with Node.js 22.19+ or Bun 1.4+. The search engine ships with the package for each supported platform, so no system search tool, shell function or `PATH` setup is required, and a search never downloads anything. Install with optional dependencies enabled.
 
 When upgrading from a release published under an earlier package identity, remove that earlier plugin and MCP registration before installing sift-light. This avoids loading two search tools or enforcement hooks in the same host.
 
 To use your own ripgrep, set `SIFT_LIGHT_RG_PATH` to the absolute path of the executable in the MCP server or Pi process environment, then restart the host. It applies to content, filename and Git-source searches. Paths containing spaces work; aliases, shell functions, relative paths and `~` are not expanded. An unusable value fails explicitly instead of silently choosing another executable. If the bundled engine is missing, sift-light uses an executable `rg` found on `PATH` as a compatibility fallback; otherwise reinstall with optional dependencies enabled or point this setting at your own binary.
 
 ### Pi
+
+Search policy guidance uses a separate prompt section, so models that support tool changes during a conversation can retain cached prefixes when tools are activated.
 
 ```bash
 pi install npm:sift-light
@@ -222,6 +224,9 @@ For conventional search enforcement in other hosts:
 - **Claude Code:** `/plugin marketplace add lightsifter/sift-light`, then `/plugin install sift-light@sift-light`.
 - **Codex:** `codex plugin marketplace add lightsifter/sift-light`, then `codex plugin add sift-light@sift-light`; review and trust the hook in `/hooks`.
 - **Kimi Code:** `/plugins install /absolute/path/plugins/sift-light` using the plugin directory from this repository or installed package, then confirm trust and run `/reload`.
+- **DeepSeek Harness 0.2.1-rc.3:** Install the built package with `dsh plugin --profile web add /absolute/path/to/sift-light`, or use the desktop plugin manager. New sessions can call `sift_light`. Minimal uses a one-shot shell, PTC uses native tool calls, and persistent terminal input and scripted workflows are denied. Ordinary subagent calls remain available. This adapter is pinned to that Harness version and requires an update and verification before upgrading Harness.
+
+The DeepSeek Harness adapter checks built-in `grep`, `glob`, recognized shell search commands, and some file-reading-plus-matching or directory traversal patterns in inline programs such as `node -e` and `python -c`. Inline checks are heuristic: they can reject unrelated code and miss other forms. This is not an OS sandbox: custom scripts, dynamic code, other plugins, and host configuration overrides can bypass these checks, so it cannot guarantee that all local searches use sift-light. Search runs with the host process's permissions. `SIFT_LIGHT_ENFORCE_SEARCH` controls hooks in other hosts and does not change this adapter's restrictions.
 
 Kimi Code's web mode can start plugin MCP servers from its installation directory. If relative MCP searches resolve to the wrong project, keep the native plugin for search enforcement and add a project-local `.kimi-code/mcp.json` entry with the same `sift-light` server and an explicit absolute `cwd` for that project.
 

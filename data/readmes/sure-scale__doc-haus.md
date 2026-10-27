@@ -29,6 +29,18 @@ cd doc-haus
 ./start.sh
 ```
 
+On macOS, the installer adds **doc.haus** to Applications. Clicking it opens
+the running installation or starts it in Terminal when needed, then the launcher
+exits. Chrome-family browsers and Safari can reuse an existing doc.haus tab
+without leaving the matter you have open; macOS asks for Automation permission
+first. Other browsers, denied access, or multiple browser instances use normal
+URL opening. Terminal keeps
+the local services running; if you stop them, click doc.haus to start again.
+The app keeps data-directory and engine, ingest or web port overrides selected
+during installation. Separate copies have separate settings and matters; the app
+does not import another copy's setup. After updating an existing installation,
+run the installer again to refresh an older Mac shortcut.
+
 The launcher checks for Bun 1.4.0 or newer and the document tools (Deno 2,
 Python 3.10+, markitdown, Poppler, Tesseract, LibreOffice Writer and the Carlito
 font). It lists anything missing or out of date and offers to install it; press
@@ -56,6 +68,15 @@ finds x64 Bun 1.4.0 or newer (Windows on Arm runs it emulated), offers to
 install it when missing, and then starts the stack like `start.sh`. In Git Bash,
 `./start.sh` hands over to `start.cmd`. Press Ctrl+C to stop it. See
 [setup](docs/setup.md#start-on-windows).
+
+## Edit in Word
+
+Use **Open in Word** on a document, then **Save to doc.haus** in the Word pane
+and wait for confirmation before closing. The pane checks versions and claims
+editing on the first save; doc.haus blocks competing writes until you finish or
+release the lock. Background sync is best effort and
+can combine saves. The installers offer add-in setup; existing users and firms
+can follow [Word add-in setup](docs/word-addin.md).
 
 ## Local container
 

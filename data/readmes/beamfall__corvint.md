@@ -9,13 +9,14 @@
 
 <p align="center">A <a href="https://github.com/beamfall">Beamfall</a> project.</p>
 
-<p align="center">Corvint gives coding agents context they can cite and gives reviewers changes they can check.</p>
+<p align="center">Corvint tells you which tests a change needs, records that they ran, and gives reviewers changes they can check.</p>
 
 <p align="center">
-  Corvint is a local-first context compiler for coding agents. Before an edit it hands the agent
-  Git-pinned evidence with the reason each item is there. After the edit it binds every diff hunk
-  to cited evidence, an explicit unknown, or a verifiable mechanical exception, in a portable
-  sidecar that CI checks without an LLM.
+  Corvint is a local-first verification layer for agent-written changes. It selects the tests a
+  Git range can reach and widens, with the reason, whenever it cannot prove a narrower set. It
+  records which tests actually ran and passed, against which commit. It binds every diff hunk to
+  cited evidence, an explicit unknown, or a verifiable mechanical exception, in a portable sidecar
+  that CI checks without an LLM.
 </p>
 
 <p align="center">
@@ -46,29 +47,44 @@ prerelease; `1.0.0-rc.2` is the previous candidate. Read
 
 ## Why Corvint
 
-Besides the text relevant to a coding task, an agent needs to know which document governs the
-change, which tests constrain it, and what evidence is missing. A reviewer needs to follow those
-decisions back to their sources.
+In our paired trials, coding agents found the files they needed to edit within one or two steps
+without help. The questions that remain come after the edit. Which tests does this change need?
+Did those tests really run and pass? Can a reviewer check what the change rests on? Corvint answers
+them with evidence, and says so when it cannot.
 
-Corvint makes that evidence inspectable through context receipts and a map beside the diff.
-
-- Each item in a packet carries the Git blob it came from, the path and line, the authority that
-  admitted it, a confidence level, and a plain-language inclusion reason. A reviewer can follow
-  any citation to immutable content.
-- Your repository is the authority. Agent instructions, accepted decisions, and specs you already
-  keep outrank syntax matches, history correlations, and learned traces. Corvint uses the
-  documents you have; it introduces no new spec language.
-- Coverage, omissions, uncertainty, and freshness are fields in the receipt, and a hunk without
-  cited evidence is an explicit unknown. Task-level retrieval abstention is experimental and
-  unqualified; see [Status](#status-stated-plainly).
-- Reviewers get a disposition for every hunk. A Change Evidence Map (CEM) links each textual hunk
-  of a diff to cited evidence, an explicit unknown, or a mechanical exception. The verifier checks
-  patch, hunk, blob, and span identity locally, with no LLM, no index, and no shared service. The
+- **Test selection that fails safe.** `corvint affected` maps a Git range to the test units it can
+  reach across Go, JavaScript/TypeScript (Vitest, Jest, Playwright and more), Python, Ruby, Rust,
+  Swift, Kotlin and .NET. When it cannot prove a narrower set, for example because of an
+  unresolved import, an untracked file or a dynamic configuration, it names the reason and widens
+  instead of silently skipping tests. On 30 real CI failures in Corvint's own pull requests, its
+  selection caught all 30. Selectors built from the import graph alone caught 19 to 22
+  ([evidence](docs/build-log/2026-10-27-value-audit-verification-over-injection.md)).
+- **Your project's declarations count.** A project can declare documentation-only paths, so a
+  docs-only change selects no tests unless a test reads those paths, while a change to a shared fixture still selects every test
+  that imports it.
+- **Receipts that a test ran.** The test providers and `flows ingest` (Playwright JSON, JUnit XML
+  or `go test -json`) turn a run into a receipt pinned to the run, its environment and the source
+  commit. A green run is a
+  fact about that run; Corvint never treats it as proof that the tests are adequate.
+- **A disposition for every hunk.** A Change Evidence Map (CEM) links each textual hunk of a diff
+  to cited evidence, an explicit unknown, or a mechanical exception. The verifier checks patch,
+  hunk, blob, and span identity locally, with no LLM, no index, and no shared service. The
   protocol is Apache-2.0, so anyone can implement or verify it.
-- The core reads Git and prints JSON. Default evidence flows make no network call. `query`,
-  `context`, `impact`, `affected`, and non-executing `prove` modes report `mutates: false`,
-  subject to the private-ledger exceptions above. `record` explicitly retains task outcomes;
-  learning stays local, bounded, secret-screened, and evaluation-gated.
+- **Work that agents cannot collide on.** `corvint-tasks` is a local ticket queue with claims,
+  heartbeats, expiry and gated completion. While a claim is valid, no other agent in the same store
+  can claim that ticket; an expired claim is released, but the former agent is not stopped.
+- **Your repository is the authority.** Agent instructions, accepted decisions, and specs you
+  already keep outrank syntax matches, history correlations, and learned traces. Missing evidence
+  is reported as uncertainty, never filled in. Corvint introduces no new spec language.
+- **Local and read-only by default.** The core reads Git and prints JSON. Default evidence flows
+  make no network call. `query`, `context`, `impact`, `affected`, and non-executing `prove` report
+  `mutates: false`, subject to the private-ledger exceptions above. `record` explicitly retains
+  task outcomes; learning stays local, bounded, secret-screened, and evaluation-gated.
+
+Corvint can also hand an agent a Git-pinned context packet before an edit (`query`, `context`).
+Those commands remain Core, and each item still carries its blob, authority and inclusion reason.
+But paired agent trials found no measurable cost or success effect from injecting them, so they are
+not the reason to adopt Corvint ([Status](#status-stated-plainly)).
 
 ## What Corvint can do
 
@@ -82,19 +98,19 @@ with the code.
 <!-- capability-gate:readme -->
 | Capability | What you get | Try it | Maturity |
 |---|---|---|---|
+| Affected test selection | The tests to run for a branch, the mandatory checks, and an explicit unknown frontier instead of a silent full run | `corvint affected --base FULL_SHA` | core |
+| Change Evidence Map | Every diff hunk bound to cited evidence, an explicit unknown or a checked exception; CI verifies it with no LLM | `corvint cem prepare --base BASE_SHA --target HEAD_SHA` | core |
+| Impact of a change | What a path or a committed range reaches, with uncertainty where a rule is missing | `corvint impact internal/date/parse.go` | core |
+| Tasks | A local ticket store with roadmap, claims, gates and audited completion | `corvint-tasks queue status` | experimental |
+| Documentation corpus | Source-pinned documentation you can build, search and serve to agents | `corvint docs corpus search --artifact corpus.json --query login` | experimental |
+| Application flows | Flows, assertions, coverage and gaps for a web application | `corvint flows --manifest flows.json` | experimental |
+| Agent tools over MCP | Query, impact, status, context, CEM report and flow tools for any MCP host | `corvint-mcp --root /abs/repo --tool-profile task-review` | experimental |
+| Obligation closure and review order | Declared obligations linked to test claims, then a deterministic review queue | `corvint ocm prepare --target HEAD_SHA --intent docs/specs/my-spec.md` | core |
+| Language support | Impact rules for Go, Ruby, JavaScript and TypeScript; affected-test providers for eleven ecosystems from Go to Swift and .NET; everything else is reported as unknown | `corvint affected --base FULL_SHA --full` | core verb; individual language providers are experimental |
 | Governing context first | The instruction file that governs the task, then the minimum context, as one canonical receipt | `corvint query --task "add a retry to the uploader"` | core |
 | Context compilation with pinned evidence | The files to read, each pinned to a Git blob with the relation and reason that admitted it | `corvint context --task "fix the date parser" --subject internal/date/parse.go` | core |
-| Impact of a change | What a path or a committed range reaches, with uncertainty where a rule is missing | `corvint impact internal/date/parse.go` | core |
-| Affected test selection | The tests to run for a branch, the mandatory checks, and an explicit unknown frontier instead of a silent full run | `corvint affected --base FULL_SHA` | core |
 | Falsifiable evidence | Every claimed row of a packet gets a falsifier verdict, so a wrong citation is caught | `corvint prove --task "fix the date parser"` | core |
-| Change Evidence Map | Every diff hunk bound to cited evidence, an explicit unknown or a checked exception; CI verifies it with no LLM | `corvint cem prepare --base BASE_SHA --target HEAD_SHA` | core |
-| Obligation closure and review order | Declared obligations linked to test claims, then a deterministic review queue | `corvint ocm prepare --target HEAD_SHA --intent docs/specs/my-spec.md` | core |
-| Documentation corpus | Source-pinned documentation you can build, search and serve to agents | `corvint docs corpus search --artifact corpus.json --query login` | experimental |
-| Agent tools over MCP | Query, impact, status, context, CEM report and flow tools for any MCP host | `corvint-mcp --root /abs/repo --tool-profile task-review` | experimental |
-| Application flows | Flows, assertions, coverage and gaps for a web application | `corvint flows --manifest flows.json` | experimental |
-| Tasks | A local ticket store with roadmap, claims, gates and audited completion | `corvint-tasks queue status` | experimental |
 | Gated learning | Learned ranking weights reach ranking only after a frozen held-out evaluation admits them | `corvint eval --learn-slot-weights` | experimental |
-| Language support | Impact rules for Go, Ruby, JavaScript and TypeScript; affected-test providers for eleven ecosystems from Go to Swift and .NET; everything else is reported as unknown | `corvint affected --base FULL_SHA --full` | core verb; individual language providers are experimental |
 <!-- /capability-gate:readme -->
 
 ## Sixty seconds on this repository
@@ -190,20 +206,21 @@ optional tools, upgrades and removal.
 
 | When | Ask Corvint to | What you get back |
 |---|---|---|
-| Before an edit | Find the context and the likely impact | Git-pinned paths, governing documents, related tests, and the reason each was included |
-| While working | Show the evidence boundary | Freshness, coverage, omissions, uncertainty, and explicit abstention |
+| Before running tests | Plan the tests a change can reach | Selected test units, mandatory checks, and a named reason whenever the plan widens |
+| After the run | Record what actually ran | A receipt pinned to the run, its environment and the source commit |
 | At review and in CI | Attach a Change Evidence Map to the diff | A disposition for every textual hunk that CI verifies locally |
+| Across agents | Claim work from the Tasks queue | Exclusive claims with heartbeats and expiry within one store |
 
 | Command | Purpose |
 |---|---|
-| `corvint query --task "change session revocation" --budget-bytes 8000` | Find task evidence within a byte budget |
-| `corvint context --task "change session revocation" --subject src/session.py` | Build a packet around a tracked subject |
+| `corvint affected` | Plan Go test packages for the dirty worktree; run none |
 | `corvint impact src/session.py` | Inspect the likely impact of a tracked path |
 | `corvint impact --require-clean src/session.py` | Abstain on a MIXED checkout; otherwise inspect the tracked path |
-| `corvint affected` | Plan Go test packages for the dirty worktree; run none |
+| `corvint review --base FULL_BASE_SHA --max-refs 8` | Prepare immutable-range test advice and bounded branch-overlap hints |
+| `corvint query --task "change session revocation" --budget-bytes 8000` | Find task evidence within a byte budget |
+| `corvint context --task "change session revocation" --subject src/session.py` | Build a packet around a tracked subject |
 | `corvint prove --task "change session revocation"` | Produce a falsifiable packet with freshness and uncertainty |
 | `corvint overview` / `corvint features` | Inspect a clean repository overview or inferred feature candidates |
-| `corvint review --base FULL_BASE_SHA --max-refs 8` | Prepare immutable-range test advice and bounded branch-overlap hints |
 
 Replace `src/session.py` with a path tracked in your repository. Go, Python, and JS/TS have
 reverse-import impact rules; other indexed languages do not all receive equivalent analysis.
@@ -214,9 +231,12 @@ The experimental `features`, `overview`, and `review` commands require a clean t
 inferred scope, omissions, and unsupported cases. They do not accept requirements or execute
 suggested commands. `review` requires a full ancestor base SHA and does not replace CEM or tests.
 
-## Give the agent a useful next step
+## Context packets, when you want them
 
-A context packet can identify a test counterpart and say why it matters. From the
+`query` and `context` stay Core and keep every item pinned and explained, but paired agent trials
+found no measurable effect from injecting them up front ([Status](#status-stated-plainly)). Use
+them when a person or agent wants a cited starting point. A packet can identify a test counterpart
+and say why it matters. From the
 session-revocation fixture (fields omitted; values unchanged):
 
 ```json
@@ -578,6 +598,8 @@ experimental; exact client tuples and outcome/performance floors are unqualified
 | Native release artifact and install lifecycle | Core | rc.3 artifacts, install lifecycle and the N-1 upgrade from rc.2 are `NOT_RUN`, pending rc.3 qualification. Retained rc.2 evidence: darwin/arm64 and linux/amd64 have rc.2 install-lifecycle qualification, in same-bytes mode and as the N-1 upgrade from rc.1 with rollback. darwin/amd64 was tested under Rosetta 2 and linux/arm64 in a container; both remain `FALLBACK`. Windows is unsupported. rc.2 is unsigned, rc.3 will be too, and decision 0433 selects no signing for 1.0 either: `SHA256SUMS` only, publisher identity `NOT_VERIFIED` ([release evidence](docs/RELEASE-NOTES.md#100-rc2-release-candidate)). |
 | Retrieval quality | Core surface, unqualified ranking | Bounded receipts around a named path or subject are the product. Broad task-to-evidence retrieval has not passed held-out evaluation: the retained held-out attempt beat the exact-search baseline on top-5 (0.571 vs 0.343) and met the abstention and latency bars, but returned forbidden results on 7 of 36 must-exclude checks. Do not rely on ranking or abstention. |
 | External benchmarks (ContextBench, SWE-bench Pro) | Not claimed | **Mixed and null.** On the full ContextBench sample (1,132 rows), `corvint query` had the lowest file recall of all arms (0.245, against 0.318 to 0.375 for grep and BM25), with 0.255 file precision. `corvint context` had the highest (0.483), with 15.8 KB mean packets against 0.39 to 1.45 MB of top-20 baseline files. In a preregistered paired SWE-bench Pro trial (10 tasks, OpenCode with Claude Opus 5.5), both arms resolved 9 of 10. The Corvint arm cost 18% more ($3.10 against $2.63), and its agent never called a Corvint tool ([evidence](docs/build-log/2026-10-25-v0415-contextbench-swebench-pro.md)). |
+| Context injection for agents | Not claimed | **Null.** Two paired pilots injected a Corvint context frame into coding agents. Haiku 5.5, 10 pairs: geometric cost ratio 0.997 (95% CI 0.85 to 1.20), resolved 9 against 8. Sonnet 5.5, 20 harder pairs whose prompts do not name the files: ratio 0.987 (0.89 to 1.10), 20 of 20 resolved in both arms. Agents found the files they edited within one or two steps without help. An earlier OpenCode rerun (V1-2717) failed its cost criterion and its agents never called a Corvint tool ([evidence](docs/build-log/2026-10-27-value-audit-verification-over-injection.md)). |
+| Test-selection safety | Core surface, measured on Corvint only | On 30 real CI test failures in Corvint's own pull requests (2026-10-14 to 2026-10-26), `affected`-style selection caught 30 of 30 (Wilson 95% lower bound 0.89); import-graph selectors without Corvint's rules caught 19 to 22. Its selected packages were an estimated median 87% of full-suite cost (from package timings; the shadow planner runs nothing), so on this repository the gain is safety, not time. A mutation replay was `INCONCLUSIVE` (12 killed mutants, below its preregistered 15) ([evidence](docs/build-log/2026-10-27-value-audit-verification-over-injection.md)). |
 | Does CEM help a reviewer? | Not claimed | **Unproven.** A sealed 57-pair three-arm run on Beamfall (one agent reviewer, one model, 2026-10-24) found Δ −0.076 (95% BCa CI −0.146 to −0.004) for the seeded map; the interval excludes a 20% gain. With the map, the agent reviewer missed 0.649 of the base-reachable test or spec files against 0.573 unaided. Corvint's suggestions carried 74% of that evidence, but the agent missed 65% of what it was shown. The empty-worklist map found Δ +0.019 (−0.048 to 0.102), and the seeded map missed more than it did (Δ −0.095, −0.183 to −0.028). A file-name stem baseline missed 0.370. No human study. |
 | Performance | Not claimed | No native performance qualification is claimed for rc.1 or rc.2; rc.3 performance is `NOT_RUN`. Earlier measurements compared against the retired Python runtime and do not qualify the Go-only release. |
 | Host adapters | Core (Codex, Claude Code), companion (Gemini CLI, OpenCode, Pi) | Core lifecycle receipts report `FALLBACK`; formal `FULL` host authority is post-1.0. OpenCode native integration has separate exact-tuple qualification and no execution authority. The VS Code extension is deferred. |

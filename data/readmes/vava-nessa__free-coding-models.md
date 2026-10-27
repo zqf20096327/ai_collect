@@ -6,7 +6,7 @@
 
 <p align="center">
   <strong>Find the fastest free coding model in seconds.</strong><br>
-  Live latency, stability and verdicts for 252 models from 24 free AI providers, then install the one you pick straight into your favorite coding tool.<br><br>
+  Live latency, stability and verdicts for 257 models from 25 free AI providers, then install the one you pick straight into your favorite coding tool.<br><br>
   <strong>Works with:</strong> OpenCode CLI / Desktop / WebUI, OpenClaw, Crush, Goose, Aider, Kilo CLI, Qwen Code, OpenHands, Amp, Hermes, Continue, Cline, Xcode, Pi, ZCode, ForgeCode, Copilot, jcode, Caveman Code and more.
 </p>
 
@@ -24,7 +24,7 @@ free-coding-models
 ```
 
 <p align="center">
-  <sub>Then create a free account on one of the <a href="#-providers">24 providers</a> to grab an API key.</sub>
+  <sub>Then create a free account on one of the <a href="#-providers">25 providers</a> to grab an API key.</sub>
 </p>
 
 <p align="center">
@@ -35,7 +35,7 @@ free-coding-models
 
 ## 💡 Why this tool?
 
-There is a large catalog of free and free-limited coding models (**24 providers / 252 live models**, generated from [`sources.js`](./sources.js)). Which one is fastest *right now*? Which one is actually stable, versus just lucky on the last ping?
+There is a large catalog of free and free-limited coding models (**25 providers / 257 live models**, generated from [`sources.js`](./sources.js)). Which one is fastest *right now*? Which one is actually stable, versus just lucky on the last ping?
 
 `free-coding-models` (FCM) answers that by pinging every model in parallel, showing live latency, and computing a **live Stability Score (0-100)** combining p95 latency, jitter, spike rate and uptime. Average latency alone is misleading: a model that randomly spikes to 6 seconds is not reliable.
 
@@ -87,7 +87,7 @@ free-coding-models --fiable              # print the single most reliable model 
 
 ## 🟢 Providers
 
-**24 active providers / 252 live models**, sorted by live model count. Top 8:
+**25 active providers / 257 live models**, sorted by live model count. Top 8:
 
 | Provider | Models | Best tier | Env var |
 |----------|--------|-----------|---------|
@@ -105,6 +105,37 @@ free-coding-models --fiable              # print the single most reliable model 
 > 📖 **Full table, free-tier limits, env vars, tier scale and provider notes:** [`docs/providers.md`](./docs/providers.md) (generated from `sources.js` by `node scripts/generate-provider-table.mjs`, so counts cannot drift). OpenCode Zen's free models are listed there too.
 
 > ⚠️ Health probes consume provider quota: FCM auto-pauses a provider on `429`, backs off exponentially per failing model, and shows a footer chip while a provider rests. Leave a key empty and anonymous liveness probes still work for most providers.
+
+### 🧩 Your own providers (Ollama, LM Studio, vLLM, private gateways)
+
+Any OpenAI-compatible endpoint can be added to `~/.free-coding-models.json` under `customProviders` (issue #197). Custom models are pinged, scored, filtered, routable through the Smart Router, installable into your coding tools, and visible on the Web Dashboard, exactly like built-in providers:
+
+```json
+{
+  "customProviders": {
+    "ollama-local": {
+      "name": "Ollama Local",
+      "url": "http://localhost:11434/v1/chat/completions",
+      "quota": "Local, unlimited",
+      "quotaCode": "free",
+      "models": [
+        ["qwen3-coder:30b", "Qwen3 Coder 30B", "A", "-", "262k"],
+        ["llama4:70b"]
+      ]
+    },
+    "vllm-gpu": {
+      "url": "https://gpu.internal:8000/v1/chat/completions",
+      "envVar": "VLLM_API_KEY",
+      "models": [["deepseek-v4.1", "DeepSeek V4.1", "S", "-", "128k"]]
+    }
+  }
+}
+```
+
+- `url` (required): any `http(s)` OpenAI-compatible `/chat/completions` endpoint.
+- `models` (required): tuples `[id, label?, tier?, sweScore?, ctx?]` - only the id is mandatory, the rest gets sensible defaults (tier defaults to `B`).
+- `apiKey` / `envVar` (optional): key inline (supports `${VAR}` placeholders) or read from an env var. Omit both for keyless local servers like Ollama or LM Studio - they stay visible and routable without a key.
+- Provider keys must not collide with built-in providers; colliding entries are ignored. Removing a definition from the file removes the provider at the next restart.
 
 ---
 

@@ -1,125 +1,130 @@
-# Stop explaining yourself to every new chat.
+<div align="center">
 
-**One memory for Claude, ChatGPT and Gemini — free and on your computer.**
+<img src="docs/img/brand/logo.svg" width="112" alt="Mnema">
 
-[![release](https://img.shields.io/github/v/release/Pumpetee/Mnema?label=release&color=8b5cf6)](https://github.com/Pumpetee/Mnema/releases/latest) [![tests](https://github.com/Pumpetee/Mnema/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/Pumpetee/Mnema/actions/workflows/tests.yml) [![build](https://github.com/Pumpetee/Mnema/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/Pumpetee/Mnema/actions/workflows/build.yml) [![CodeQL](https://github.com/Pumpetee/Mnema/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/Pumpetee/Mnema/actions/workflows/github-code-scanning/codeql) [![license AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue)](LICENSE) [![last commit](https://img.shields.io/github/last-commit/Pumpetee/Mnema?color=0ea5e9)](https://github.com/Pumpetee/Mnema/commits/main)
+# Mnema
 
-![Windows | macOS | Linux](https://img.shields.io/badge/Windows%20%7C%20macOS%20%7C%20Linux-one%20app-2ea44f) ![AI: Claude, ChatGPT, Gemini, DeepSeek, Ollama](https://img.shields.io/badge/AI-Claude%20%7C%20ChatGPT%20%7C%20Gemini%20%7C%20DeepSeek%20%7C%20Ollama-d97757?logo=anthropic&logoColor=white) ![13 local models, offline](https://img.shields.io/badge/local%20models-13%2C%20offline-orange) ![Consortium: 2–4 AIs debate](https://img.shields.io/badge/consortium-2%E2%80%934%20AIs%20debate-8a2be2) ![MCP: Claude, Cursor](https://img.shields.io/badge/MCP-Claude%20%7C%20Cursor-7c3aed) ![Obsidian: connects, read only](https://img.shields.io/badge/Obsidian-connects%2C%20read%20only-7c3aed?logo=obsidian&logoColor=white) ![Telegram: read only](https://img.shields.io/badge/Telegram-read%20only-229ED9?logo=telegram&logoColor=white) ![Memory: Markdown on your computer](https://img.shields.io/badge/memory-Markdown%20on%20your%20computer-555555?logo=markdown&logoColor=white) ![Encryption: AES-256-GCM](https://img.shields.io/badge/encryption-AES--256--GCM-15803d) ![Account: not needed](https://img.shields.io/badge/account-not%20needed-brightgreen) ![Price: free](https://img.shields.io/badge/price-free-brightgreen) ![10 languages](https://img.shields.io/badge/languages-10-informational) ![Python 3.13](https://img.shields.io/badge/python-3.13-3776ab?logo=python&logoColor=white)
+<img src="https://readme-typing-svg.demolab.com?font=Inter&weight=700&size=26&duration=2600&pause=900&color=A78BFA&center=true&vCenter=true&width=720&height=46&lines=One%20memory%20for%20every%20AI;Free%2C%20on%20your%20computer%2C%20no%20account" alt="One memory for every AI">
 
-Mnema remembers who you are, what you are working on, what you decided and how you like answers. Every AI you talk to gets that context: Claude, ChatGPT, Gemini, DeepSeek or a free model running on your own computer. The memory is a folder of plain Markdown files. There is no cloud and no account.
+<a href="https://github.com/Pumpetee/Mnema/releases/latest"><img src="https://img.shields.io/github/v/release/Pumpetee/Mnema?style=flat-square&color=8b5cf6&label=release" alt="release"></a> <a href="https://github.com/Pumpetee/Mnema/actions/workflows/tests.yml"><img src="https://img.shields.io/github/actions/workflow/status/Pumpetee/Mnema/tests.yml?branch=main&style=flat-square&label=tests" alt="tests"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-0ea5e9?style=flat-square" alt="license"></a> <a href="https://github.com/Pumpetee/Mnema/commits/main"><img src="https://img.shields.io/github/last-commit/Pumpetee/Mnema?style=flat-square&color=ec4899" alt="last commit"></a>
 
-**Download:** [Windows](../../releases/latest/download/Mnema-Setup.exe) · [macOS (Apple Silicon)](../../releases/latest/download/Mnema-macos-arm64.dmg) · [macOS (Intel)](../../releases/latest/download/Mnema-macos-x64.dmg) · [Linux (AppImage)](../../releases/latest/download/Mnema-x86_64.AppImage) · [all files](../../releases)
+<img src="https://img.shields.io/badge/MCP-Claude%20%C2%B7%20Cursor-7c3aed?style=flat-square&logo=modelcontextprotocol&logoColor=white" alt="MCP: Claude · Cursor"> <img src="https://img.shields.io/badge/Obsidian-read%20only-7c3aed?style=flat-square&logo=obsidian&logoColor=white" alt="Obsidian: read only"> <img src="https://img.shields.io/badge/Telegram-read%20only-229ED9?style=flat-square&logo=telegram&logoColor=white" alt="Telegram: read only"> <img src="https://img.shields.io/badge/AES--256-encryption-15803d?style=flat-square" alt="AES-256: encryption"> <img src="https://img.shields.io/badge/Markdown-your%20files-555555?style=flat-square&logo=markdown&logoColor=white" alt="Markdown: your files"> <img src="https://img.shields.io/badge/Python-3.13-3776ab?style=flat-square&logo=python&logoColor=white" alt="Python: 3.13">
 
-[Русская версия](README.ru.md)
+<a href="docs/guide/en.md"><img src="https://img.shields.io/badge/Mnema%20guide-every%20screen%20and%20setting-8b5cf6?style=for-the-badge&logo=gitbook&logoColor=white" alt="Mnema guide"></a>
 
-![Mnema answers from memory: the week plan as a table, with the price and the meeting rule it already knows](docs/img/en/hero.png)
+<a href="https://github.com/Pumpetee/Mnema"><img src="docs/img/brand/qr.svg" width="220" alt="QR: github.com/Pumpetee/Mnema"></a><br><sub>Scan to open the repository · github.com/Pumpetee/Mnema</sub>
 
-You ask «what matters this week?» and get the plan as a table. It includes the agreed price and your rule about meetings, because Mnema already knows both. You never retyped them.
-
-## Try it in a minute
-
-![With and without memory: one question, three AIs, a plain-chat answer and a Mnema answer side by side](docs/img/en/compare.png)
-
-- **With and without memory.** One question to your connected AIs, and each answers twice: as a plain chat that knows nothing about you, and through Mnema. The difference shows at once.
-- **Getting acquainted.** Seven short questions on day one: who you are, what matters now, what you work on, who is around you and how to talk to you. The answers go into memory as ordinary facts and overwrite nothing.
-- **How well Mnema knows you.** A quiz on your own memory: «correct», «not anymore» or «wrong». Every answer fixes the memory: outdated facts are rewritten, wrong ones go to the archive.
-- **Roast.** Hand an idea, a resume, a text or a landing page to several AIs: they find the weak spots, harsh but to the point, and finish with a score out of 10 and three fixes.
-
-![The quiz: a fact from memory and three answers](docs/img/en/quiz.png)
-
-Any result can become a card: a picture with the score or the answer and nothing personal beyond what you see on it. Copy it, save it, or take it with a ready post text. All of this is in the «+» menu under the input and on the Memory page.
-
-![The roast card: 4/10, the verdict and what to fix](docs/img/en/roast.png)
-
-## Memory: it knows you
-
-![Portrait and memory map](docs/img/en/memory.png)
-
-- **A portrait every AI reads first.** It says who you are, what you are building and how you like to work. Mnema writes it from what it learns, and you can fix it by hand.
-- **A memory map.** Each topic is a bubble. Size shows how much Mnema knows, a pulse means it changed recently, and a lock means the topic is hidden from some AIs.
-- **Plain files you own.** Cards, rules, people, decisions and events are ordinary Markdown in your folder. Open them in any editor, sync them however you like, and delete them whenever you want.
-- **Old facts don't pass for new ones.** Every fact carries the date it was said. Mnema asks again about any status older than a month.
-- **Off with one switch.** A new memory starts switched off: Mnema is then a plain chat that remembers nothing, and the dot by the gear turns yellow. One switch in the memory panel turns it on, and every AI gets to know you.
-- **More than one folder.** Add your notes, an Obsidian vault or a team folder as extra memory: only the passages a question needs go to the AI. «Connect Obsidian» finds the vaults on your computer by itself. Mnema only reads connected folders: writing to them is blocked in the program itself. Several memories on one computer switch in the settings, and each can be renamed or deleted (deleting asks twice and waits ten seconds).
-
-![Topics: rules for AI, people, projects, pilot, work, market, health, money](docs/img/en/memory-map.png)
-
-![Connect Obsidian: the vaults on this computer, the ticked ones become memory](docs/img/en/obsidian.png)
-
-## Consortium: several AIs, one answer
-
-![Claude, ChatGPT and Gemini discuss the question; the summary at the end](docs/img/en/consortium.png)
-
-Ask Claude, ChatGPT and Gemini at once. They answer, read each other and argue, and one of them writes the summary: where they agreed, where they differed and what they recommend. All of them see the same memory of you.
-
-| Format | What happens |
-|---|---|
-| Council | each answers, they check each other, one joint answer at the end |
-| Debate | some argue for, others against, a verdict at the end |
-| Brainstorm | ideas without criticism, then the three best |
-| Red team | they hunt for holes in your plan and how to close them |
-| Roast | they take an idea, a resume or a text apart, harsh but to the point, with a score out of 10 |
-
-You can set the number of rounds and step in between them: «Stop» cuts the current AI at once and keeps what it said. Every participant gets the whole conversation with your files, not just the last question. Under any answer, **Argue with different AIs** puts it on trial: you pick the opponents, its author defends it, the rest look for where it is wrong, and a verdict ends it. With a single AI connected, its own models argue, for example Sonnet against Opus.
-
-## Any AI
-
-![Seven ways to connect a model](docs/img/en/models.png)
-
-- **In Mnema's own chat:** every model is equal. Cloud: Anthropic, OpenAI, Gemini, OpenRouter (hundreds of models with one key) by key, or Claude Code by subscription. On your computer: the built-in model or Ollama. You can switch models in the middle of a conversation.
-- **In the programs you already use:** Claude Code, Claude Desktop and Cursor connect over MCP. ChatGPT and Gemini work in Mnema's chat with your key: whatever the AIs can't do themselves, Mnema does on your computer, with no browser extensions.
-- **You decide who sees what.** Every AI has its own access: which parts of memory it sees and which topics are cut out. Money, health and private topics can be hidden from any of them with one click.
-
-![Who sees what: a switch per AI, a tick per part of memory, a lock per topic](docs/img/en/privacy.png)
-
-## Local models: free and offline
-
-![13 models with size, memory needed and download time for this computer](docs/img/en/local.png)
-
-You can choose from 13 models: Gemma 3, Qwen 3, Llama 3, Phi-4 mini, Mistral Small, YandexGPT and others. Mnema measures your computer and shows which models will run smoothly and how long each takes to download. No keys and no subscription are needed, and your text never leaves the machine. If you also use a cloud AI, the local model is the backup for when there's no internet, you hit a limit, or the text must not go out. When the network drops in the middle of a conversation, Mnema switches to it by itself.
-
-## Smart Mnema
-
-**It learns by itself.** While you talk, Mnema understands what is worth keeping:
-
-- A fact it is confident about (80% or more) is written down at once.
-- A fact it is unsure about waits until you say it again.
-- Money, health and private matters get their own tagged cards, which you can hide from any AI.
-
-The «What I understood and why» feed shows each decision with its reason. If you allow it, Mnema also learns from other programs on your computer.
-
-![The learning feed: written, confirmed, waiting for a repeat](docs/img/en/learning.png)
-
-**It reads Telegram and never writes there.** You pick the chats, and Mnema learns about you and the people around you from the conversations. The ban on writing is built into the program: the Telegram client inside Mnema can only read, and any other command is refused before it is sent. The login is stored encrypted on your computer, and Mnema has no servers of its own.
-
-![Telegram: read only, the chats you picked, everything stays on the computer](docs/img/en/telegram.png)
-
-**It works with your files.** In the chat, any model can:
-
-- read, find and edit files, including scans and pictures: their text is recognised on your computer;
-- write notes;
-- make PDF, Word and Excel documents and edit existing Word and Excel files, keeping their formatting;
-- merge, cut, rotate and split PDF.
-
-All of this works in the memory folder and in the work folders you open for it.
-
-There are no questions in the way. Every write goes to the journal and can be undone in Memory → History. If you prefer, one switch makes Mnema ask before each action. It never runs programs.
-
-![«Make this a PDF in Documents» — the document is created, «Show in folder»](docs/img/en/actions.png)
-
-**It saves tokens.** Memory, documents and web pages are read on your computer, and only the parts that matter go to the model. We measured it on a question about a 153,000-character contract. The whole text took 29,643 input tokens. Mnema sent 6,159, almost five times fewer, and only the Mnema version gave the right answer. Under each answer you see how many tokens were saved.
-
-**It is private by default.** Card numbers, passwords, keys and phone numbers are replaced with labels before anything goes to a cloud model. A journal records what was read, what was written and what went out. On any system Mnema can encrypt the memory with your password.
+</div>
 
 ## Languages
 
-Mnema speaks ten languages. The interface, the help and the AI's answers follow the one you pick, even when you write in another. Arabic reads right to left. This README is in English and [Russian](README.ru.md).
+Mnema speaks nine languages. The interface, the help and the AI's answers follow the one you pick, even when you write in another. This README and the Mnema guide exist in each of them.
 
-| <img src="https://flagcdn.com/w80/gb.png" width="40" alt="English"><br><b>English</b><br><sub>English</sub> | <img src="https://flagcdn.com/w80/ru.png" width="40" alt="Russian"><br><b>Русский</b><br><sub>Russian</sub> | <img src="https://flagcdn.com/w80/cn.png" width="40" alt="Chinese"><br><b>中文</b><br><sub>Chinese</sub> | <img src="https://flagcdn.com/w80/es.png" width="40" alt="Spanish"><br><b>Español</b><br><sub>Spanish</sub> | <img src="https://flagcdn.com/w80/in.png" width="40" alt="Hindi"><br><b>हिन्दी</b><br><sub>Hindi</sub> |
-|:---:|:---:|:---:|:---:|:---:|
-| <img src="https://flagcdn.com/w80/sa.png" width="40" alt="Arabic"><br><b>العربية</b><br><sub>Arabic</sub> | <img src="https://flagcdn.com/w80/pt.png" width="40" alt="Portuguese"><br><b>Português</b><br><sub>Portuguese</sub> | <img src="https://flagcdn.com/w80/fr.png" width="40" alt="French"><br><b>Français</b><br><sub>French</sub> | <img src="https://flagcdn.com/w80/de.png" width="40" alt="German"><br><b>Deutsch</b><br><sub>German</sub> | <img src="https://flagcdn.com/w80/jp.png" width="40" alt="Japanese"><br><b>日本語</b><br><sub>Japanese</sub> |
+<table>
+<tr><td align="center" width="10%"><img src="https://flagcdn.com/w80/gb.png" width="36" alt="English"><br><b>✓ English</b><br><sub><a href="README.md">README</a> · <a href="docs/guide/en.md">Guide</a></sub></td><td align="center" width="10%"><img src="https://flagcdn.com/w80/ru.png" width="36" alt="Русский"><br><b>Русский</b><br><sub><a href="README.ru.md">README</a> · <a href="docs/guide/ru.md">Справочник</a></sub></td><td align="center" width="10%"><img src="https://flagcdn.com/w80/cn.png" width="36" alt="中文"><br><b>中文</b><br><sub><a href="README.zh.md">README</a> · <a href="docs/guide/zh.md">指南</a></sub></td><td align="center" width="10%"><img src="https://flagcdn.com/w80/es.png" width="36" alt="Español"><br><b>Español</b><br><sub><a href="README.es.md">README</a> · <a href="docs/guide/es.md">Guía</a></sub></td><td align="center" width="10%"><img src="https://flagcdn.com/w80/in.png" width="36" alt="हिन्दी"><br><b>हिन्दी</b><br><sub><a href="README.hi.md">README</a> · <a href="docs/guide/hi.md">गाइड</a></sub></td></tr>
+<tr><td align="center" width="10%"><img src="https://flagcdn.com/w80/pt.png" width="36" alt="Português"><br><b>Português</b><br><sub><a href="README.pt.md">README</a> · <a href="docs/guide/pt.md">Guia</a></sub></td><td align="center" width="10%"><img src="https://flagcdn.com/w80/fr.png" width="36" alt="Français"><br><b>Français</b><br><sub><a href="README.fr.md">README</a> · <a href="docs/guide/fr.md">Guide</a></sub></td><td align="center" width="10%"><img src="https://flagcdn.com/w80/de.png" width="36" alt="Deutsch"><br><b>Deutsch</b><br><sub><a href="README.de.md">README</a> · <a href="docs/guide/de.md">Handbuch</a></sub></td><td align="center" width="10%"><img src="https://flagcdn.com/w80/jp.png" width="36" alt="日本語"><br><b>日本語</b><br><sub><a href="README.ja.md">README</a> · <a href="docs/guide/ja.md">ガイド</a></sub></td></tr>
+</table>
 
-## Install
+<div align="center">
+
+Mnema remembers who you are, what you are working on, what you decided and how you like answers — and every AI you talk to gets that context. The memory is a folder of plain Markdown files on your computer. No cloud, no account.
+
+<a href="../../releases/latest/download/Mnema-Setup.exe"><img src="https://img.shields.io/badge/Download%20for-Windows-0078D4?style=for-the-badge" alt="Windows"></a> <a href="../../releases/latest/download/Mnema-macos-arm64.dmg"><img src="https://img.shields.io/badge/Download%20for-macOS-111111?style=for-the-badge&logo=apple&logoColor=white" alt="macOS"></a> <a href="../../releases/latest/download/Mnema-x86_64.AppImage"><img src="https://img.shields.io/badge/Download%20for-Linux-E95420?style=for-the-badge&logo=linux&logoColor=white" alt="Linux"></a>
+
+<sub><a href="../../releases">all files</a> · macOS Intel: <a href="../../releases/latest/download/Mnema-macos-x64.dmg">x64.dmg</a></sub>
+
+<img src="docs/img/en/hero.gif" width="880" alt="A question, and the answer comes from memory: the week plan as a table, with the price and the meeting rule it already knows">
+
+<sub>You ask «what matters this week?» — the plan comes as a table, with the agreed price and your rule about meetings. You never retyped them.</sub>
+
+</div>
+
+## ✨ What it does
+
+<table>
+<tr>
+<td width="33%" valign="top"><h3>🧠 Knows you</h3>A portrait every AI reads first, a living memory map, plain files you own.</td>
+<td width="33%" valign="top"><h3>🗣️ Consortium</h3>Claude, ChatGPT and Gemini argue and agree on one answer.</td>
+<td width="33%" valign="top"><h3>🎙️ Meetings</h3>A call becomes a transcript, a summary and tasks with owners.</td>
+</tr>
+<tr>
+<td width="33%" valign="top"><h3>🔐 Private</h3>A password on the memory like KeePass. Secrets never reach the cloud.</td>
+<td width="33%" valign="top"><h3>💻 Offline</h3>13 free models run on your computer, with no keys.</td>
+<td width="33%" valign="top"><h3>📉 Fewer tokens</h3>Only what matters goes to the model: 4.8× fewer tokens on a long contract.</td>
+</tr>
+</table>
+
+## 🧠 It knows you
+
+<p align="center"><img src="docs/img/en/memory.gif" width="860" alt="Portrait and memory map: topics as bubbles, the size is how much Mnema knows"></p>
+
+- **A portrait every AI reads first:** who you are, what you are building, how you like to work. Mnema writes it as it learns, you can fix it by hand.
+- **A memory map:** each topic is a bubble, a pulse means it changed recently, a lock means some AIs don't see it.
+- **Old facts don't pass for new ones:** every fact carries its date, and Mnema asks again about a status older than a month.
+- **More than one folder:** connect an Obsidian vault or a team folder — read only, the program itself blocks writing there.
+
+## 🗣️ Consortium: several AIs, one answer
+
+<p align="center"><img src="docs/img/en/consortium.gif" width="860" alt="Claude, ChatGPT and Gemini discuss the question, one of them sums up"></p>
+
+- **Council, debate, brainstorm, red team, roast** — pick the format and the number of rounds.
+- **Step in at any time:** «Stop» cuts the current AI and keeps what it said.
+- **Argue with different AIs** under any answer: its author defends it, the rest look for where it is wrong.
+
+## 🎙️ Meetings: from a call to tasks
+
+<p align="center"><img src="docs/img/en/meetings.gif" width="860" alt="The way a meeting goes: recording, transcript, summary, memory — each step with its own settings"></p>
+
+- **Two tracks:** your microphone and the computer's sound, so the transcript knows who spoke.
+- **Whisper on your computer for free**, or the cloud Whisper (≈ $0.36 an hour) — silence, made-up phrases and echo are cut out.
+- **The summary:** what was decided, the tasks and who owns them, by any model you pick, a local one included.
+- **Presets:** Private, Balanced, Fast set the whole way at once.
+
+## 🌱 It learns by itself
+
+<p align="center"><img src="docs/img/en/learning.gif" width="860" alt="You mention something in passing, and the feed shows what Mnema read, understood and wrote down, and why"></p>
+
+- **Sure means saved:** a fact it is sure of (80% or more) is written at once, a doubtful one waits to be heard again.
+- **Personal goes apart:** money, health and private matters land in tagged cards you can hide from any AI.
+- **Nothing is hidden from you:** the «What I understood and why» feed shows every decision with its reason.
+
+## ✈️ Reads Telegram, never writes there
+
+<p align="center"><img src="docs/img/en/telegram.gif" width="860" alt="Telegram connected read only: you pick the chats, Mnema learns from them"></p>
+
+- **You pick the chats:** Mnema learns about you and the people around you only from those.
+- **Read only, by design:** the Telegram client inside Mnema can only read; any other command is refused before it is sent.
+- **Stays on your computer:** the login is encrypted in the system's store, and Mnema has no servers of its own.
+
+## 📉 Saves tokens
+
+<p align="center"><img src="docs/img/en/tokens.gif" width="560" alt="A question about a 153,000-character contract: 29,643 input tokens for the whole text, 6,159 with Mnema"></p>
+
+- **Only what matters goes out:** memory, documents and web pages are read on your computer, and the model gets the relevant parts.
+- **Measured:** on a question about a 153,000-character contract the whole text took 29,643 input tokens; Mnema sent 6,159, and only the Mnema answer was right.
+- **Visible every time:** under each answer you see how many tokens were saved.
+
+## 🔐 Private by design
+
+<table><tr><td width="50%" valign="top" align="center"><img src="docs/img/en/lock.gif" alt="First start: a password on the memory, like KeePass"><br><sub>First start: a password on the memory, like KeePass</sub></td><td width="50%" valign="top" align="center"><img src="docs/img/en/privacy.gif" alt="Who sees what: a tick per part of memory, a lock per topic"><br><sub>Who sees what: a tick per part of memory, a lock per topic</sub></td></tr></table>
+
+- **A password on the memory:** AES-256, the key comes from your password, open-source cryptography. Without it the notes can't be read, even copied off the disk. A synced copy stays encrypted too.
+- **Secrets stay with you:** card numbers, passwords, keys and phones become labels before anything goes to a cloud model.
+- **Every AI has its own access:** money, health and private topics are hidden from any of them in one click.
+
+## 🤖 Works with
+
+<div align="center">
+<table><tr><td valign="middle" width="150"><b>Cloud AI</b><br><sub>by key or subscription</sub></td><td align="center" width="92"><img src="docs/img/brand/claude.svg" width="40" alt="Claude"><br><sub><b>Claude</b></sub></td><td align="center" width="92"><img src="docs/img/brand/chatgpt.svg" width="40" alt="ChatGPT"><br><sub><b>ChatGPT</b></sub></td><td align="center" width="92"><img src="docs/img/brand/gemini.svg" width="40" alt="Gemini"><br><sub><b>Gemini</b></sub></td><td align="center" width="92"><img src="docs/img/brand/deepseek.svg" width="40" alt="DeepSeek"><br><sub><b>DeepSeek</b></sub></td><td align="center" width="92"><img src="docs/img/brand/yandex.svg" width="40" alt="YandexGPT"><br><sub><b>YandexGPT</b></sub></td><td align="center" width="92"><img src="docs/img/brand/openrouter.svg" width="40" alt="OpenRouter"><br><sub><b>OpenRouter</b></sub></td></tr><tr><td valign="middle" width="150"><b>On your computer</b><br><sub>free, offline</sub></td><td align="center" width="92"><img src="docs/img/brand/local.svg" width="40" alt="Built-in"><br><sub><b>Built-in</b></sub></td><td align="center" width="92"><img src="https://cdn.simpleicons.org/ollama/ffffff" width="40" alt="Ollama"><br><sub><b>Ollama</b></sub></td><td align="center" width="92"><img src="docs/img/brand/strata.svg" width="40" alt="Strata"><br><sub><b>Strata</b></sub></td><td></td><td></td><td></td></tr><tr><td valign="middle" width="150"><b>In your tools</b><br><sub>over MCP</sub></td><td align="center" width="92"><img src="https://cdn.simpleicons.org/claude/D97757" width="40" alt="Claude Code"><br><sub><b>Claude Code</b></sub></td><td align="center" width="92"><img src="docs/img/brand/cursor.svg" width="40" alt="Cursor"><br><sub><b>Cursor</b></sub></td><td></td><td></td><td></td><td></td></tr><tr><td valign="middle" width="150"><b>Systems</b><br><sub>one app</sub></td><td align="center" width="92"><img src="docs/img/brand/windows.svg" width="40" alt="Windows"><br><sub><b>Windows</b></sub></td><td align="center" width="92"><img src="https://cdn.simpleicons.org/apple/ffffff" width="40" alt="macOS"><br><sub><b>macOS</b></sub></td><td align="center" width="92"><img src="https://cdn.simpleicons.org/linux/FCC624" width="40" alt="Linux"><br><sub><b>Linux</b></sub></td><td></td><td></td><td></td></tr></table>
+</div>
+
+## ⚡ And more
+
+- **Works with your files.** Reads scans, writes notes, makes PDF, Word and Excel, merges and splits PDF. Every write can be undone in Memory → History.
+- **Nine languages.** The interface and the AI's answers follow the one you pick, even when you write in another.
+
+<details>
+<summary><b>Install</b></summary>
 
 Download the file for your system (every version with its number is in [Releases](../../releases)):
 
@@ -137,7 +142,10 @@ The packages are not code-signed yet, so each system warns once:
 
 To check a file, compare its sha256 with the `.sha256` file beside it: `certutil -hashfile <file> SHA256` on Windows, `shasum -a 256 <file>` on macOS, `sha256sum <file>` on Linux.
 
-## Build from source
+</details>
+
+<details>
+<summary><b>Build from source</b></summary>
 
 Windows:
 
@@ -170,7 +178,10 @@ python -m mnema serve                    # http://127.0.0.1:7461
 python -m mnema install claude-code      # shows the plan; add --apply
 ```
 
-## How it is built
+</details>
+
+<details>
+<summary><b>How it is built</b></summary>
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). In short:
 
@@ -190,12 +201,23 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). In short:
 | Text from scans and pictures | `mnema/ocr.py` |
 | Knowledge base the assistant answers from | `mnema/knowledge/mnema.md` |
 
-## Security
+</details>
 
-The local API listens on 127.0.0.1 only, checks the Host header and requires a token. Pages by link and VPN subscriptions are opened only from the internet, never from this computer or the local network. Keys and passwords live in the system's secret store (DPAPI on Windows, the Keychain on macOS, the Secret Service on Linux when there is one), never in the memory folder. The memory itself can be encrypted with a password (AES-256-GCM, the key protected by scrypt). Every request to a cloud model is logged with what was sent and what was hidden. Report vulnerabilities privately to the author.
+<details>
+<summary><b>Security</b></summary>
+
+The local API listens on 127.0.0.1 only, checks the Host header and requires a token. Pages by link and VPN subscriptions are opened only from the internet, never from this computer or the local network. Keys and passwords live in the system's secret store (DPAPI on Windows, the Keychain on macOS, the Secret Service on Linux when there is one), never in the memory folder. The memory itself can be encrypted with a password (AES-256-GCM, the key protected by scrypt); sync of an encrypted memory sends only encrypted files. Every request to a cloud model is logged with what was sent and what was hidden. Report vulnerabilities privately to the author.
+
+</details>
 
 ## License
 
 AGPL-3.0. Free for personal use and for open-source projects. A commercial license and the team edition are available from the author.
 
 © 2026 Anton Sannikov
+
+<div align="center">
+<img src="docs/img/brand/logo.svg" width="40" alt="Mnema">
+
+<sub>If Mnema remembers something useful for you, a ⭐ helps others find it.</sub>
+</div>

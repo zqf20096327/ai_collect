@@ -28,6 +28,12 @@ On every computer, macOS or Linux:
 curl -fsSL https://grid.autonomous.ai/install.sh | bash
 ```
 
+Windows 10 or 11, in PowerShell:
+
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://raw.githubusercontent.com/autonomous-ai/autonomous-grid/main/install.ps1 | iex"
+```
+
 That installs a command called `grid`. Check it with `grid --version`.
 
 > [!TIP]

@@ -24,6 +24,28 @@ To set up Olostep MCP Server, you need to have an API key. You can get the API k
 
 There are multiple ways to connect to the Olostep MCP Server. Choose the one that best fits your workflow.
 
+### One-click install
+
+Connect to the hosted server and sign in with your Olostep account (OAuth). No API key or local setup needed.
+
+[![Install in Cursor](https://img.shields.io/badge/Cursor-Install%20Olostep-000000?style=flat-square&logo=cursor&logoColor=white)](https://cursor.com/en/install-mcp?name=Olostep&config=eyJ1cmwiOiJodHRwczovL21jcC5vbG9zdGVwLmNvbS9tY3AifQ%3D%3D)
+[![Install in VS Code](https://img.shields.io/badge/VS_Code-Install%20Olostep-0098FF?style=flat-square)](https://insiders.vscode.dev/redirect/mcp/install?name=olostep&config=%7B%22type%22%3A%22http%22%2C%22url%22%3A%22https%3A%2F%2Fmcp.olostep.com%2Fmcp%22%7D)
+[![Add to Replit](https://img.shields.io/badge/Replit-Add%20Olostep-F26207?style=flat-square&logo=replit&logoColor=white)](https://replit.com/integrations?mcp=eyJkaXNwbGF5TmFtZSI6Ik9sb3N0ZXAiLCJiYXNlVXJsIjoiaHR0cHM6Ly9tY3Aub2xvc3RlcC5jb20vbWNwIn0=)
+[![Add to Claude](https://img.shields.io/badge/Claude-Add%20Olostep-D97757?style=flat-square&logo=claude&logoColor=white)](https://claude.ai/directory/olostep)
+[![Add to ChatGPT](https://img.shields.io/badge/ChatGPT-Add%20Olostep-10A37F?style=flat-square&logo=openai&logoColor=white)](https://chatgpt.com/plugins/plugin_asdk_app_6a08dfd9b4948191b31c7f26bcfb256d)
+
+Or from the terminal:
+
+```bash
+# Claude Code
+claude mcp add --transport http olostep https://mcp.olostep.com/mcp
+
+# Gemini CLI (prompts for your API key)
+gemini extensions install https://github.com/olostep/olostep-mcp-server
+```
+
+For other clients, see [Client Setup](#client-setup).
+
 ### ☁️ Remote Endpoint (Recommended)
 
 The simplest way — no local installation required. Connect directly to our hosted MCP server:
@@ -297,6 +319,50 @@ Add this to your `.vscode/mcp.json`:
   }
 }
 ```
+
+### GitHub Copilot CLI
+
+Inside Copilot CLI, run `/mcp add` and enter:
+
+- **Name:** `olostep`
+- **Type:** HTTP
+- **URL:** `https://mcp.olostep.com/mcp`
+- **Headers:** leave empty
+
+Save with `Ctrl+S`, then sign in with your Olostep account when prompted (OAuth). Check the connection with `/mcp show olostep`.
+
+This writes the following to `~/.copilot/mcp-config.json`:
+
+```json
+{
+  "mcpServers": {
+    "olostep": {
+      "type": "http",
+      "url": "https://mcp.olostep.com/mcp",
+      "tools": ["*"]
+    }
+  }
+}
+```
+
+### Zed
+
+Add this to your Zed `settings.json`:
+
+```json
+{
+  "context_servers": {
+    "olostep": {
+      "url": "https://mcp.olostep.com/mcp",
+      "headers": {
+        "Authorization": "Bearer YOUR_API_KEY_HERE"
+      }
+    }
+  }
+}
+```
+
+**Alternative (extension):** the [Olostep Zed extension](https://github.com/olostep-api/olostep-zed) runs the local server and asks for your API key in Zed's setup screen.
 
 ### Metorial
 

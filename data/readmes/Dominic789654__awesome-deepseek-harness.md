@@ -362,6 +362,10 @@ _DSH's core composition mechanism: a **profile** stacks bundle patch layers, the
 - [yuanshuoSY/dsh-coder-preset](https://github.com/yuanshuoSY/dsh-coder-preset) — Coder agent preset for DSH bundling 35 Matt Pocock engineering skills scoped to Coder sessions; configuration and Markdown only.
 - [menghuanshiguang/dsh-claudecode-prompt](https://github.com/menghuanshiguang/dsh-claudecode-prompt) — Runs DeepSeek Harness on Claude Code's system prompt — a Cordis bundle that swaps only the assembled system prompt, leaving tools, runtime context and other plugins untouched.
 - [Neptune810/dsh-model-router](https://github.com/Neptune810/dsh-model-router) — Flash-only reasoning-effort routing for DeepSeek Harness: sets the DeepSeek flash model's reasoning effort per step. The model never changes; effort max is opt-in.
+- [NekoDD-wow/dsh-prefill-plugin](https://github.com/NekoDD-wow/dsh-prefill-plugin) — Web-side prefill plugin for DSH: system-prompt rewriting, opening dialogue, automatic per-turn injection retraction, character cards, and whole-preset save / apply.
+- [xiebaiyuan/dsh-lead-mode](https://github.com/xiebaiyuan/dsh-lead-mode) — Lead mode for DSH: an agent preset, a working-method skill, a dependency self-check and two reminders that tell you to enable the official Agent Teams.
+
+- [Cplay00/dsh-diffusion-preset](https://github.com/Cplay00/dsh-diffusion-preset) — Diffusion Mode (扩散模式) agent preset plus a progressive call-directory tool for DSH.
 
 ## Harnesses & Runtimes
 
@@ -545,7 +549,4 @@ _DeepSeek-native or DeepSeek-first agent harnesses / coding agents, plus runtime
 - [sunny0826/dsh-plugin-herdr](https://github.com/sunny0826/dsh-plugin-herdr) — Herdr control-plane plugin for DeepSeek Harness (DSH): observe and drive Herdr — a terminal workspace manager for AI coding agents — from DSH sessions.
 - [shiyi-0x7f/dsh-tool-sysinfo](https://github.com/shiyi-0x7f/dsh-tool-sysinfo) — Read-only `system_info` tool plugin for DeepSeek Harness agents (OS/CPU/memory/network snapshot).
 - [edusrez/dsh-smart-restart](https://github.com/edusrez/dsh-smart-restart) — Wakes the main agent after a DeepSeek Harness (DSH) restart so interrupted work resumes without the user prompting.
-- [Moonweave-AI/cantilune](https://github.com/Moonweave-AI/cantilune) — A proposed general-purpose language and control substrate for agent orchestration, coordinating agents, tools, people, services, permissions, sessions, and scarce resources in one inspectable model; carries the `cordis`/`dsh` GitHub topics.
-- [ilharp/dsh-tool-approval](https://github.com/ilharp/dsh-tool-approval) — Manual approval for tool calls (a "manual mode" / "ask mode" for DSH).
-- [blissito/ghostycode](https://github.com/blissito/ghostycode) — DeepSeek V4 terminal coding agent and constitutional harness (Rust TUI with MCP and sub-agents).
-- [bobleer/deepseek-harness-rust](
+- [Moonwea

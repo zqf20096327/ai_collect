@@ -105,6 +105,7 @@
 
 ## Structural Simulation Software
 
+- [AgentFEM](https://github.com/haoming-luo/agentfem) - Open-source FEniCSx-based finite-element workflows for solid mechanics, thermoelasticity, and vibration, with Python models, command-line runs, and result verification.
 - [Ansys](https://www.ansys.com/) - Multiphysics simulation software.
 - [Abaqus](https://www.3ds.com/products/simulia/abaqus) - Finite element analysis software.
 - [LS-DYNA](https://www.ansys.com/products/structures/ansys-ls-dyna) - Dynamic and nonlinear simulation software.
@@ -273,7 +274,7 @@
 - [Roof Cost Data](https://roofcostdata.com/roof-replacement-cost-calculator) - Free U.S. roof replacement planning calculator using roof size, roofing material, tear-off, and local labor assumptions, with low-to-high installed-cost ranges; no account required.
 - [BuildRefs](https://buildrefs.com) - Free construction calculators for concrete, framing, electrical (NEC), HVAC (Manual J), structural, and earthwork, plus steel section-property tables and code guides. Each tool cites the standard it implements; no login.
 - [Concrete Network Calculator](https://www.concretenetwork.com/concrete/howmuch/calculator.htm) - Concrete quantity calculator for slabs, footings, columns, cubic yards, metric volume, and premix bags.
-- [Concrete Quantity](https://concretequantity.com) - Free concrete calculators: 17 tools for slabs, footings, walls, columns, stairs, block walls, driveways, gravel and mortar, with imperial and metric units, bag counts and cost estimates.
+- [Concrete Quantity](https://concretequantity.com) - Free concrete calculators: 32 tools for slabs, footings, walls, columns, stairs, block walls, driveways, gravel and mortar, with imperial and metric units, bag counts and cost estimates.
 - [Build Quantities](https://buildquantities.com/calculators/) - Free construction quantity calculators for concrete, gravel, sand, rebar, earthwork, drainage, and landscaping, with accepted units, formulas, checked examples, and planning limitations.
 - [Libre Calculator](https://librecalculator.com/calculators/concrete/) - Free concrete slab volume calculator using dimensions and an adjustable allowance, with worked steps and a diagram.
 - [TrueToolCalc](https://truetoolcalc.com/) - Free construction calculators for concrete slab, column and footing volume, premix bag counts, brick, CMU block and mortar, plus flooring, roofing and fencing; each tool shows its formula, a worked example and its limitations.

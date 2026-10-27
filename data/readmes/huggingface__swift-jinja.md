@@ -462,6 +462,27 @@ let template = try Template("""
     """, with: options)
 ```
 
+### Macro Call Depth
+
+A render throws `JinjaError.runtime` when macro and `caller` invocations
+nest deeper than the environment's `maximumCallDepth`, which is 16 by default,
+because Swift can't recover from a stack overflow.
+Threads other than the main thread get a 512 KB stack by default on Apple platforms,
+and debug builds use about 2.7 times as much stack per call as release builds.
+Raise the limit only when you render on a thread with a larger stack:
+
+```swift
+let environment = Environment()
+environment.maximumCallDepth = 64
+
+let thread = Thread {
+    let output = try? template.render(context, environment: environment)
+    // Use the output.
+}
+thread.stackSize = 8 * 1024 * 1024
+thread.start()
+```
+
 ### Value Types
 
 The `Value` enum represents all possible template values:
@@ -608,6 +629,12 @@ if you are looking for a place to start!
 Please ensure your code passes the build and test suite
 before submitting a pull request.
 You can run the tests with `swift test`.
+
+Golden-file tests compare swift-jinja with Jinja2.
+They need a corpus that is built from pinned sources,
+so a plain `swift test` skips them; CI runs them on pull requests.
+To run them locally, or to update the known differences after your change,
+see [Tools/conformance/README.md](Tools/conformance/README.md).
 
 [good-first-issues]: https://github.com/huggingface/swift-jinja/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22good%20first%20issue%22
 

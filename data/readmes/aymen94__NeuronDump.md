@@ -2,6 +2,7 @@
 
 [![crates.io](https://img.shields.io/crates/v/neurondump.svg)](https://crates.io/crates/neurondump)
 [![downloads](https://img.shields.io/crates/d/neurondump.svg)](https://crates.io/crates/neurondump)
+[![npm](https://img.shields.io/npm/v/neurondump.svg)](https://www.npmjs.com/package/neurondump)
 [![docs.rs](https://img.shields.io/docsrs/neurondump-core)](https://docs.rs/neurondump-core)
 [![license](https://img.shields.io/crates/l/neurondump.svg)](LICENSE)
 [![release](https://github.com/aymen94/NeuronDump/actions/workflows/release.yml/badge.svg)](https://github.com/aymen94/NeuronDump/actions/workflows/release.yml)
@@ -21,6 +22,10 @@ ban…) with undo and a before / after comparison, then bake the edits into a ne
 
 **Try it in your browser:** the [browser demo](https://aymen94.github.io/NeuronDump/demo/) inspects a `.gguf` file you
 drop on the page, 100% locally (nothing is uploaded). Inspection only; the rest needs the app.
+
+## Video demo
+
+[▶ Watch the NeuronDump demo (MP4)](https://github.com/aymen94/NeuronDump/blob/main/docs/video/neurondump_demo.mp4)
 
 ## Install
 

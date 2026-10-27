@@ -9,21 +9,20 @@ Images, videos with sound, music and 3D models, made on your own computer. Free,
 
 | | |
 |---|---|
-| Windows 10/11, NVIDIA or AMD Radeon | [NVAI-open-Setup-0.5.12.exe](https://github.com/Mantux775/NVAI-open/releases/download/v0.5.12/NVAI-open-Setup-0.5.12.exe) |
-| macOS 15+ on Apple Silicon, signed and notarized | [NVAI-open-0.4.8.dmg](https://github.com/Mantux775/NVAI-open/releases/download/v0.5.12/NVAI-open-0.4.8.dmg) |
+| Windows 10/11, NVIDIA or AMD Radeon | [NVAI-open-Setup-0.5.15.exe](https://github.com/Mantux775/NVAI-open/releases/download/v0.5.15/NVAI-open-Setup-0.5.15.exe) |
+| macOS 15+ on Apple Silicon, signed and notarized | [NVAI-open-0.4.8.dmg](https://github.com/Mantux775/NVAI-open/releases/download/v0.5.15/NVAI-open-0.4.8.dmg) |
 
 Install, open, download a model under "Models", generate. The setup brings everything else along. [Installation details](docs/INSTALL.md) · [All releases](https://github.com/Mantux775/NVAI-open/releases)
 
 ## What's new? / Was gibt's Neues?
 
-October 2026: NVAI-open 0.5.13 for Windows ([release notes](https://github.com/Mantux775/NVAI-open/releases/tag/v0.5.13)), the Mac stays at 0.4.8
+October 2026: NVAI-open 0.5.15 for Windows ([release notes](https://github.com/Mantux775/NVAI-open/releases/tag/v0.5.15)), the Mac stays at 0.4.8
 
-- **Studio:** a full-screen editor for whole videos, with scenes and prompts, markers, real cuts and an export with your graphics card's encoder ([guide](docs/STUDIO.md))
-- **Lossless copy of every AI video:** the Studio edits and exports from it, so only the export compresses (42.3 instead of 37.7 dB PSNR for a YouTube export)
-- **Export:** YouTube 1080p at 24 Mbit/s, a lossless master (MKV) and ProRes 4444, with a preview in the browser
-- **ACE-Step removed:** music comes from Stable Audio 3 Medium (instrumental, up to 5 minutes)
+- **A folder for every Studio project:** takes, exports and uploads land in the project's own folder on disk, and the folder is renamed with the project. "Save to" in the Generate tab (and `project_id` for Claude) puts start or reference images made for a project there too. In the Studio a folder button next to the upload button shows the folders, ".." goes up, a double-click opens a folder, and switching projects opens its folder; the History also lists what was generated into a folder, with the folder's name, and filters by folder. On the first start, existing projects take in what only they use ([guide](docs/STUDIO.md#media))
+- **Wider media list:** drag the line next to it
+- 0.5.14 brought the Studio editing tools (tools with keys, right-click menus, tracks, speed, transitions), projects as packages and a way to keep a voice ([notes](https://github.com/Mantux775/NVAI-open/releases/tag/v0.5.14))
 
-Neu: das **Studio**, ein Schnittplatz über den ganzen Bildschirm für ganze Videos mit Szenen und Prompts, Markern, echten Schnitten und einem Export mit dem Encoder deiner Grafikkarte ([Anleitung](docs/de/STUDIO.md)); von jedem KI-Video eine **verlustfreie Kopie**, aus der das Studio schneidet und exportiert (42,3 statt 37,7 dB PSNR bei einem YouTube-Export); **Export** als YouTube 1080p mit 24 Mbit/s, verlustfreier Master (MKV) und ProRes 4444, mit Vorschau im Browser; **ACE-Step** ist raus, Musik kommt von Stable Audio 3 Medium (instrumental, bis 5 Minuten). 0.5.12 brachte AMD Radeon und auf dem Mac Z-Image Turbo und Video ([Notizen](https://github.com/Mantux775/NVAI-open/releases/tag/v0.5.12)).
+Neu: **ein Ordner für jedes Studio-Projekt**: Takes, Exporte und Hochgeladenes landen im eigenen Ordner des Projekts auf der Platte, und der Ordner heißt mit dem Projekt mit. „Ablegen in“ im Generator (und `project_id` für Claude) legt Start- oder Referenzbilder für ein Projekt ebenfalls dort ab. Im Studio blendet der Ordner-Knopf neben dem Hochladen-Knopf die Ordner ein, „..“ geht eine Ebene hoch, ein Doppelklick öffnet einen Ordner, und beim Projektwechsel öffnet sich sein Ordner; der Verlauf führt auch, was in einen Ordner erzeugt wurde, mit dem Ordnernamen und filtert nach Ordnern. Beim ersten Start holen bestehende Projekte zu sich, was nur sie nutzen ([Anleitung](docs/de/STUDIO.md#material)). Die **Materialspalte** lässt sich breiter ziehen. 0.5.14 brachte die Schnittwerkzeuge im Studio, Projekte als Paket und eine Stimme halten ([Notizen](https://github.com/Mantux775/NVAI-open/releases/tag/v0.5.14)).
 
 [English](#english) · [Video](#video) · [Deutsch](#deutsch)
 
@@ -67,8 +66,9 @@ A full-screen editor for whole videos. At the top you compose: scenes with a pro
 
 ![The Studio: media on the left, the monitor in the middle, the project settings on the right, the composition and the edit below](docs/images/studio.jpg)
 
-- **Markers:** a chain marker makes a clip start with the last frame of the one before it, so two shots join seamlessly; transition markers add dissolves; an AI task marker leaves Claude a note in the timeline.
-- **Media:** everything you generated, as a compact list with search. Click a file to play it in the monitor, drag it onto a track, delete it right there.
+- **Editing:** selection, razor and magnet with their keys, right-click menus everywhere, several clips at once, video and audio tracks with eye and mute, speed in percent, cross dissolve, dips to black or white and wipes, and a check before "Conform" overwrites anything.
+- **Markers:** a chain marker makes a clip start with the last frame of the one before it, so two shots join seamlessly; transition markers add transitions; an AI task marker leaves Claude a note in the timeline.
+- **Media:** every project has its own folder for what it generates, exports and uploads, next to the general History; a compact list with search across all folders. Click a file to play it in the monitor, drag it onto a track, delete it right there.
 - **High-quality 1080p:** video scenes run in the best LTX-2.5 quality, every AI video is also kept losslessly, and only the export compresses: measured 42.3 instead of 37.7 dB PSNR for a YouTube export.
 - **Export:** YouTube 1080p and 4K, Shorts, AV1, a lossless master (MKV) or ProRes 4444 for other editing software.
 - **Claude Code** builds the whole video for you over MCP while you watch it in the Studio.
@@ -155,7 +155,7 @@ Every tab in NVAI-open has a **Recommended settings** box with what was measured
 - **Images:** choose the size by the silhouette (standing figure 832 × 1216, vehicle 1216 × 832), write full English sentences with the style first, and make 4 images at once to pick from.
 - **Krea 2:** name the framing ("medium shot from the waist up, his whole head inside the frame"); without it the head was cut off in 3 of 3 test images.
 - **MOSS-Image:** describe the finished picture and put the text in quotation marks with position and typeface; leave it on 50 steps.
-- **Video:** name loud sounds explicitly, sounds described as soft come out almost inaudible. For a fixed shot write "Static camera, a locked-off medium shot". Leave "Lossless copy for editing" on if you cut the clips later; it costs about 32 MB per second at 1080p.
+- **Video:** name loud sounds explicitly, sounds described as soft come out almost inaudible. For a fixed shot write "Static camera, a locked-off medium shot"; if the framing has to hold, also give an end image edited from the start image (the prompt alone still pushed in, 3 of 3). For a recognizable person keep the face large (medium shot or closer), make the start image with FLUX 3 from a frontal reference, and don't extend such clips. Let people speak only with their face in the shot and the same voice description, and make a few variants to pick by ear: LTX makes up the voice anew in every clip. A spoken line takes about 2 words per second: 15 words ran past the end of a 6 s shot, 11 fit; leave gestures out (even "a single quick wave" lasted 2.5 s). Write timing out ("For the first two seconds nothing happens: …"). Leave "Lossless copy for editing" on if you cut the clips later; it costs about 32 MB per second at 1080p.
 - **3D:** one object on a plain background, without floor or shadow; both would end up in the mesh.
 - **FLUX 3 and LTX-2.5:** accept the license on Hugging Face and store a read token under "Models"; the model card shows whether access works. Step by step: [docs/HUGGINGFACE.md](docs/HUGGINGFACE.md)
 - **Old photos:** leave it on "Automatic"; it chooses "Thorough" for overall aging (water stains, crack networks) and "Gentle" for separate damage on an otherwise good photo (dust, scratches, tears). Put known colors into the hints ("his suit is dark brown") and compare the two variants at full size.
@@ -260,8 +260,9 @@ Ein Schnittplatz über den ganzen Bildschirm für ganze Videos. Oben komponierst
 
 ![Das Studio: links das Material, in der Mitte der Monitor, rechts die Projekteinstellungen, unten Komposition und Schnitt](docs/images/studio-de.jpg)
 
-- **Marker:** Ein Anschluss-Marker lässt einen Clip mit dem letzten Bild des vorigen beginnen, so gehen zwei Einstellungen nahtlos ineinander über; Übergang-Marker setzen Überblendungen; ein KI-Auftrag hinterlässt Claude eine Notiz in der Zeitleiste.
-- **Material:** alles, was du erzeugt hast, als kompakte Liste mit Suche. Ein Klick spielt die Datei im Monitor ab, auf eine Spur gezogen wird sie zum Clip, gelöscht wird sie direkt dort.
+- **Schneiden:** Auswahl, Schneiden und Magnet mit ihren Tasten, Rechtsklick-Menüs überall, mehrere Clips auf einmal, Video- und Tonspuren mit Auge und Stummschalter, Geschwindigkeit in Prozent, Überblendung, Abblende über Schwarz oder Weiß und Wischblende, und eine Rückfrage, bevor „Übernehmen“ etwas überschreibt.
+- **Marker:** Ein Anschluss-Marker lässt einen Clip mit dem letzten Bild des vorigen beginnen, so gehen zwei Einstellungen nahtlos ineinander über; Übergang-Marker setzen Übergänge; ein KI-Auftrag hinterlässt Claude eine Notiz in der Zeitleiste.
+- **Material:** Jedes Projekt hat einen eigenen Ordner für das, was es erzeugt, exportiert und hochlädt, neben dem allgemeinen Verlauf; eine kompakte Liste mit Suche über alle Ordner. Ein Klick spielt die Datei im Monitor ab, auf eine Spur gezogen wird sie zum Clip, gelöscht wird sie direkt dort.
 - **Hochwertiges 1080p:** Videoszenen laufen in der höchsten Qualität von LTX-2.5, jedes KI-Video wird zusätzlich verlustfrei aufbewahrt, und komprimiert wird erst beim Export: gemessen 42,3 statt 37,7 dB PSNR bei einem YouTube-Export.
 - **Export:** YouTube 1080p und 4K, Shorts, AV1, ein verlustfreier Master (MKV) oder ProRes 4444 für andere Schnittprogramme.
 - **Claude Code** baut dir das ganze Video per MCP, während du im Studio zusiehst.
@@ -348,7 +349,7 @@ In jedem Reiter von NVAI-open stehen unter **Empfohlene Einstellungen** die geme
 - **Bilder:** das Format nach der Silhouette wählen (stehende Figur 832 × 1216, Fahrzeug 1216 × 832), ganze englische Sätze mit dem Stil vorn schreiben und 4 Bilder auf einmal zum Auswählen machen.
 - **Krea 2:** den Bildausschnitt nennen („medium shot from the waist up, his whole head inside the frame“); ohne fehlte im Test in 3 von 3 Bildern der Kopf.
 - **MOSS-Image:** das fertige Bild beschreiben und die Schrift in Anführungszeichen mit Ort und Schriftart angeben; bei 50 Schritten lassen.
-- **Video:** laute Geräusche ausdrücklich nennen, leise beschriebene kommen fast unhörbar. Für eine feste Einstellung „Static camera, a locked-off medium shot“ schreiben. „Verlustfreie Kopie für den Schnitt“ anlassen, wenn du die Clips später schneidest; kostet rund 32 MB je Sekunde bei 1080p.
+- **Video:** laute Geräusche ausdrücklich nennen, leise beschriebene kommen fast unhörbar. Für eine feste Einstellung „Static camera, a locked-off medium shot“ schreiben; muss der Ausschnitt halten, zusätzlich ein aus dem Startbild bearbeitetes Endbild mitgeben (der Prompt allein fuhr trotzdem heran, 3 von 3). Für eine erkennbare Person das Gesicht groß halten (halbnah oder näher), das Startbild mit FLUX 3 aus einer frontalen Vorlage machen und solche Clips nicht verlängern. Personen nur mit Gesicht im Bild und gleich beschriebener Stimme sprechen lassen und ein paar Varianten nach Gehör wählen: LTX erfindet die Stimme in jedem Clip neu. Ein gesprochener Satz braucht rund 2 Wörter je Sekunde: 15 Wörter liefen über das Ende einer 6-s-Szene hinaus, 11 passten; Gesten weglassen (selbst „a single quick wave“ dauerte 2,5 s). Zeiten ausschreiben („For the first two seconds nothing happens: …“). „Verlustfreie Kopie für den Schnitt“ anlassen, wenn du die Clips später schneidest; kostet rund 32 MB je Sekunde bei 1080p.
 - **3D:** ein Objekt vor schlichtem Hintergrund, ohne Boden und Schatten; beides landet sonst im Mesh.
 - **FLUX 3 und LTX-2.5:** die Lizenz auf Hugging Face annehmen und unter „Modelle“ einen Token mit Leserecht eintragen; die Modellkarte zeigt, ob der Zugriff klappt. Schritt für Schritt: [docs/de/HUGGINGFACE.md](docs/de/HUGGINGFACE.md)
 - **Alte Fotos:** auf „Automatisch“ lassen; es wählt „Gründlich“ bei flächiger Alterung (Wasserflecken, Rissnetze) und „Schonend“ bei einzelnen Schäden auf einem sonst guten Foto (Staub, Kratzer, Risse). Bekannte Farben in die Hinweise („his suit is dark brown“) und die zwei Varianten in voller Größe vergleichen.

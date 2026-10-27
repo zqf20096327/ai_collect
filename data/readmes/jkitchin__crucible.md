@@ -1,0 +1,440 @@
+#+TITLE: Crucible: LLM-Compiled Knowledge Base
+#+AUTHOR: John Kitchin
+#+DATE: [2026-04-03 Fri]
+
+[[./crucible.png]]
+
+* Overview
+
+Crucible is a personal knowledge base system where primary sources (papers,
+notebooks, data) are ingested and distilled by an LLM into a structured,
+interlinked org-mode wiki. The wiki is the LLM's domain: you rarely edit it
+directly. Instead, you converse with Claude, and it reads, writes, and
+maintains the wiki on your behalf.
+
+The core idea, inspired by Andrej Karpathy's LLM knowledge base pattern, is
+that raw data from various sources is collected, then compiled by an LLM into
+a wiki of org-mode files, then operated on by various CLI commands to do Q&A
+and to incrementally enhance the wiki. Everything is viewable in Emacs via
+scimax.
+
+Key design principles:
+
+- *Separation of concerns*: primary sources (which may be copyrighted) are
+  kept separate from distilled content (which is shareable).
+- *Org-mode native*: all wiki articles use org-mode with scimax conventions,
+  org-ref citations, properties drawers, and filetags.
+- *Graph database*: a SQLite database tracks the relationships between
+  sources, articles, concepts, and links, enabling structured queries that
+  grep cannot do.
+- *Hybrid search*: combines FTS5 keyword search with ollama vector embeddings
+  for meaning-based retrieval, merged via reciprocal rank fusion.
+- *Interoperability*: multiple crucible instances can be peered for
+  cross-querying via SQLite's separate connection mechanism.
+- *Knowledge evolution*: derivation chains track how articles are synthesized
+  from other articles over time.
+
+* Installation
+
+From PyPI:
+
+#+BEGIN_SRC bash
+pip install crucible-llm
+#+END_SRC
+
+Or from source for development:
+
+#+BEGIN_SRC bash
+git clone https://github.com/jkitchin/crucible.git
+cd crucible
+pip install -e .
+#+END_SRC
+
+Then initialize a new crucible project and wire it into Claude Code:
+
+#+BEGIN_SRC bash
+cd /path/to/your/project
+crucible init --root .
+crucible install    # installs Claude Code skill + CLAUDE.md directive
+#+END_SRC
+
+The =install= command does three things:
+1. Copies the skill into =~/.claude/skills/crucible/=
+2. Generates a manifest summarizing the knowledge base contents
+3. Adds a directive to =~/.claude/CLAUDE.md= so agents know to check the
+   crucible before answering domain-specific questions
+
+To remove: =crucible uninstall=.
+
+** Installing the skill with knowhow
+
+The skill lives in =skills/crucible/SKILL.md= and follows the
+[[https://agentskills.io/specification][Agent Skills specification]], so it can also be installed with
+[[https://github.com/jkitchin/knowhow][knowhow]] (or =npx skills=) for Claude Code and other agents
+(VS Code, Codex, OpenCode, Gemini CLI, Cursor):
+
+#+BEGIN_SRC bash
+uvx knowhow add jkitchin/crucible --skill crucible        # this project
+uvx knowhow add jkitchin/crucible --skill crucible -g     # global
+# or: npx skills add jkitchin/crucible --skill crucible
+#+END_SRC
+
+The skill still needs the =crucible= CLI on your PATH. Installing it this
+way does not generate the manifest or the =~/.claude/CLAUDE.md= directive,
+so run =crucible install= inside your project if you want those too.
+Contributors can check the skill with =uvx knowhow validate .=.
+
+For semantic search, you also need ollama running with an embedding model:
+
+#+BEGIN_SRC bash
+ollama pull nomic-embed-text
+crucible embed
+#+END_SRC
+
+* Directory Layout
+
+#+BEGIN_EXAMPLE
+crucible/
+  readme.org               This file
+  CLAUDE.md                Project conventions for Claude Code
+  pyproject.toml           Python package (click CLI)
+  .gitignore               Excludes sources/external/ and db/
+  sources/
+    external/              Copyrighted material (gitignored)
+      pdfs/                Academic papers, reports
+      web/                 Web clippings
+    notebooks/             Your own ELN entries (shareable)
+    data/                  Your own experimental data (shareable)
+  wiki/
+    index.org              Auto-generated master index
+    MANIFEST.md            Summary for agent discovery
+    concepts/              One topic per file
+    summaries/             One per ingested source
+    comparisons/           Cross-source analysis
+    methods/               Technique and methodology articles
+  db/
+    crucible.db            Wiki graph database (SQLite)
+  src/crucible/            Python source code
+  skills/
+    crucible/
+      SKILL.md             Agent skill definition (Agent Skills spec)
+  docs/                    Usage documentation
+#+END_EXAMPLE
+
+* Quick Start
+
+See [[file:docs/tutorial.org][the tutorial]] for a complete walkthrough. The
+short version:
+
+#+BEGIN_SRC bash
+# Ingest a source
+crucible ingest paper.pdf
+
+# Or from the web
+curl -sL "URL" | pandoc -f html -t org | crucible ingest - -t "Title" --type web
+
+# Or a batch
+crucible ingest "papers/*.pdf"
+
+# Ask Claude to distill it
+# (Claude reads the source, proposes articles, you approve, it writes them)
+
+# Sync the database
+crucible sync
+
+# Generate embeddings for semantic search
+crucible embed
+
+# Search
+crucible search "activation energy"                    # hybrid (auto)
+crucible search "how does temperature affect rate"     # finds by meaning
+crucible search "catalyst" --mode fts                  # keyword only
+
+# Navigate
+crucible concepts                # list all topics
+crucible concept thermodynamics  # articles on a topic
+crucible backlinks wiki/concepts/activation-energy.org
+crucible related wiki/concepts/activation-energy.org
+crucible history wiki/comparisons/synthesis.org        # derivation chain
+
+# Maintain
+crucible lint                    # find problems
+crucible suggest                 # find opportunities
+crucible index                   # regenerate index
+crucible publish                 # export as HTML site
+#+END_SRC
+
+* Documentation
+
+- [[file:docs/tutorial.org][Tutorial]]: step-by-step guide to ingesting your first source and building a wiki
+- [[file:docs/commands.org][Command Reference]]: complete documentation for every CLI command
+- [[file:docs/architecture.org][Architecture]]: database schema, search algorithms, and design decisions
+- [[file:docs/skill.org][Skill Guide]]: how the Claude Code skill works and how to customize it
+
+* Using Crucible with Claude Code
+
+Crucible is designed to be used through [[https://claude.com/claude-code][Claude Code]]. After
+installation, Claude automatically knows about your knowledge base and
+uses it to answer questions, distill sources, and maintain the wiki.
+
+** Setup
+
+Running =crucible install= does three things that wire crucible into
+Claude Code:
+
+1. Copies the crucible skill into =~/.claude/skills/crucible/=, which
+   teaches Claude how to ingest sources, write wiki articles, and navigate
+   the graph database.
+2. Generates =MANIFEST.md=, a summary of the knowledge base contents that
+   Claude reads to decide when the wiki is relevant.
+3. Adds a directive to =~/.claude/CLAUDE.md= that tells Claude to check
+   the crucible before answering domain-specific questions.
+
+The skill triggers automatically when you say things like "ingest this",
+"what do we know about", "search the wiki", "add to crucible", or
+"distill this source". You do not need to invoke it explicitly.
+
+** Typical Session
+
+A typical conversation looks like this:
+
+#+BEGIN_EXAMPLE
+You:    What do we know about activation energies on platinum surfaces?
+Claude: [searches the wiki, reads relevant articles]
+        Based on the wiki, there are three articles covering this topic...
+        [synthesized answer with citations to wiki articles]
+
+You:    Ingest this new paper [attaches PDF]
+Claude: [registers the source, reads it, proposes articles]
+        I found three key findings. I propose:
+        - Update the activation-energy concept article with the new data
+        - Create a summary article for this paper
+        Shall I proceed?
+
+You:    Yes
+Claude: [writes the articles, runs crucible sync]
+        Done. Created wiki/summaries/smith2026.org and updated
+        wiki/concepts/activation-energy.org with the new measurements.
+
+You:    That comparison you just made between the two papers is interesting.
+        Capture that as an article.
+Claude: [writes a comparison article with DERIVED_FROM properties]
+#+END_EXAMPLE
+
+The key insight is that your explorations accumulate. Every question you
+ask, every source you ingest, and every insight you capture makes the
+knowledge base richer for next time.
+
+** Browsing Outside Claude Code
+
+You can also browse the wiki in a web browser:
+
+#+BEGIN_SRC bash
+crucible browse
+#+END_SRC
+
+This launches a local HTTP server that renders org-mode articles as HTML
+with working cross-links, citation tooltips, and a navigable sidebar.
+The about page (=/_about=) shows project paths, statistics, and the
+global registry.
+
+* Use Cases
+
+** Literature Review for a Proposal
+
+When preparing a grant proposal or review paper, you typically need to digest
+dozens of papers and synthesize them into a coherent narrative. Start by
+ingesting a batch of PDFs with =crucible ingest "papers/*.pdf"=, then ask
+Claude to distill each one into summary and concept articles. As the wiki
+grows, =crucible suggest= identifies comparison opportunities where multiple
+summaries share concepts but no cross-source analysis exists yet. You can then
+ask Claude to write comparison articles that synthesize findings across papers,
+and use =crucible search= to quickly find what the wiki knows about specific
+topics. The result is a structured, citation-backed knowledge base you can
+query as you write, rather than a stack of annotated PDFs you have to re-read.
+
+** Lab Notebook as Living Knowledge
+
+Experimental notebook entries often contain insights that only become valuable
+months later when a new experiment connects to an old one. By ingesting
+notebook entries with =crucible ingest entry.org --type notebook=, each
+experiment gets linked to concepts and cross-referenced with prior work. Over
+time, =crucible related= surfaces connections you might not have noticed:
+two experiments six months apart that share a concept, or a measurement that
+contradicts an earlier assumption. Running =crucible viz= produces a
+force-directed graph of your experimental knowledge, making clusters and gaps
+visible at a glance. When you synthesize insights across experiments,
+=crucible history= traces the derivation chain so you can always find which
+raw observations led to which conclusions.
+
+** Research Group Cross-Pollination
+
+In a research group, each member works on their own project but the work often
+overlaps in ways nobody tracks. With crucible, each group member maintains
+their own instance on their own project directory. The PI registers all of
+them with =crucible peer add student-name /path/to/their/crucible=, and can
+then run =crucible search "keyword" --all= to query across every group
+member's knowledge base simultaneously. The results show which crucible each
+hit came from, making it easy to say "talk to Alex, they have three articles
+on that catalyst." Copyrighted sources stay local to each instance (they are
+gitignored), so only the distilled wiki content is visible to peers.
+
+** Preparing for a Student Meeting
+
+Before a one-on-one meeting with a student, a PI can use the student's
+crucible to quickly build context. Running =crucible concepts= shows what
+topics the student has been working on, while =crucible orphans= reveals
+articles that lack connections to the broader knowledge base, often a sign
+of under-explored directions. =crucible lint= flags undigested sources (papers
+the student ingested but never distilled), missing cross-links, and articles
+without proper metadata. =crucible suggest= goes further, recommending new
+concept articles for topics that appear across multiple summaries and
+identifying potential comparison articles. Together, these commands give the PI
+a structured picture of where the student's knowledge base is strong, where
+it has gaps, and what questions to ask.
+
+* How It Works
+
+** The Distillation Loop
+
+The fundamental workflow is a loop:
+
+1. *Ingest*: bring in a primary source (PDF, web article, notebook entry, data)
+2. *Distill*: Claude reads the source and writes org-mode wiki articles
+3. *Sync*: the database is updated from the wiki files
+4. *Query*: search, navigate, and ask questions against the wiki
+5. *Capture*: conversation insights are written back as new articles
+6. *Maintain*: lint, suggest, and index to keep the wiki healthy
+
+Each pass through the loop enriches the knowledge base. Your explorations
+and queries always "add up" in the crucible.
+
+** Source Types
+
+| Type | Storage | Gitignored | Examples |
+|----------+-------------------------+------------+---------------------------|
+| pdf | sources/external/pdfs/ | Yes | Papers, reports |
+| web | sources/external/web/ | Yes | Blog posts, documentation |
+| notebook | sources/notebooks/ | No | Your own ELN entries |
+| data | sources/data/ | No | CSV, JSON, HDF5, images |
+
+** Article Types
+
+| Type | Directory | Purpose |
+|------------+--------------------+------------------------------------|
+| concept | wiki/concepts/ | Single topic or idea |
+| summary | wiki/summaries/ | Distillation of one source |
+| comparison | wiki/comparisons/ | Cross-source analysis |
+| method | wiki/methods/ | Technique or methodology |
+
+** Search Modes
+
+Crucible offers three search modes, with =auto= (hybrid when embeddings
+exist, FTS otherwise) as the default:
+
+- *FTS*: keyword search using SQLite FTS5 with porter stemming. Fast, exact.
+- *Semantic*: vector similarity using ollama embeddings. Finds conceptually
+  related content even without keyword overlap.
+- *Hybrid*: combines both using Reciprocal Rank Fusion (RRF). Articles found
+  by both methods rank highest. This is the default when embeddings exist.
+
+** Peer Crucibles
+
+Multiple crucible instances can be connected for cross-querying:
+
+#+BEGIN_SRC bash
+crucible peer add lab-shared /path/to/shared/crucible
+crucible peer add student /path/to/student/crucible
+crucible search "catalyst design" --all    # searches everywhere
+crucible concepts --all                    # unified concept list
+#+END_SRC
+
+Each peer retains full independence. Queries run against separate database
+connections, so there is no risk of corrupting another crucible's data.
+
+** Knowledge Evolution
+
+When Claude synthesizes insights from existing wiki articles during a
+conversation and you say "capture this as an article", the new article
+includes a =:DERIVED_FROM:= property listing the source articles. This
+creates a derivation chain in the database:
+
+#+BEGIN_SRC bash
+crucible history wiki/comparisons/my-synthesis.org
+# Derived from:
+#   [concept] Activation Energy (wiki/concepts/activation-energy.org)
+#   [summary] Smith 2024 Results (wiki/summaries/smith2024.org)
+#+END_SRC
+
+You can also trace forward: "what has been derived from this article?"
+
+* Version Control
+
+A crucible knowledge base is git-friendly. Commit =.crucible/wiki/=,
+=.crucible/references.bib=, =.crucible/sources/notebooks/=, and
+=.crucible/sources/data/=. The default =.gitignore= written by
+=crucible init= excludes =.crucible/crucible.db= (and its WAL
+sidecars) and =.crucible/sources/external/= (copyrighted material).
+
+** Rebuild on clone
+
+The database is regenerable from the committed wiki files and
+=references.bib=. After cloning a repo that contains a crucible, the
+first command that needs the database rebuilds it automatically:
+
+#+BEGIN_SRC bash
+git clone <repo>
+cd <repo>
+crucible search "some term"
+# crucible: database missing, rebuilding from wiki...
+# <search results>
+#+END_SRC
+
+No =crucible init= is needed on clone. The rebuild creates the
+schema, populates articles and their cross-links from =wiki/*.org=,
+creates =sources= rows from =references.bib=, and regenerates
+=MANIFEST.md= and =index.org=.
+
+** Embeddings are a separate step
+
+Semantic embeddings are not auto-regenerated (they require a local
+ollama server). If you want =crucible related= and semantic search
+to work after a clone, run:
+
+#+BEGIN_SRC bash
+crucible embed
+#+END_SRC
+
+Full-text search (FTS5) and everything else works without embeddings.
+
+** Dropbox + git
+
+If your crucible lives in Dropbox *and* is a git repo, pick one
+machine as the authoritative sync point. SQLite's WAL files do not
+play well with simultaneous access across Dropbox; running
+=crucible sync= from two machines at once can produce =.db=
+conflict files. Git itself is fine in Dropbox.
+
+* Acknowledgments
+
+Crucible draws on several sources of inspiration:
+
+- [[https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f][Andrej Karpathy's LLM Wiki pattern]], which articulated the idea that an LLM
+  should incrementally build and maintain a persistent, interlinked wiki rather
+  than re-synthesizing knowledge from scratch on every query. Crucible
+  implements this pattern with org-mode, a graph database, and hybrid search.
+
+- [[https://github.com/jkitchin/scimax][scimax]], an Emacs starterkit for scientists and engineers built on org-mode.
+  Crucible inherits scimax conventions for org-mode formatting, org-ref
+  citations, and HTML publishing, and uses scimax as a primary viewing and
+  editing environment for the wiki.
+
+- [[https://github.com/jkitchin/litdb][litdb]], an earlier project for managing a literature database with org-mode
+  and SQLite. Crucible extends the ideas in litdb (structured citation
+  management, full-text search over scientific literature) into a broader
+  knowledge base system where the LLM handles the synthesis and cross-linking
+  that was previously manual.
+
+* License
+
+MIT. See [[file:LICENSE][LICENSE]] for details.

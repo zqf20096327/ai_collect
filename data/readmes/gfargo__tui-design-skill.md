@@ -28,7 +28,7 @@ Use it for greenfield builds, design reviews, refactors, library decisions, and 
 
 ## What the skill covers
 
-The skill uses progressive disclosure: its 139-line `SKILL.md` carries the workflow, routing table, and cross-cutting contracts, then loads one authoritative reference per topic on demand. The nine Markdown files total about 4,400 lines, but the agent does not need all of that context for every question.
+The skill uses progressive disclosure: its 139-line `SKILL.md` carries the workflow, routing table, and cross-cutting contracts, then loads one authoritative reference per topic on demand. The ten Markdown files total about 3,800 lines, but the agent does not need all of that context for every question.
 
 **Top-level (`SKILL.md`):**
 - Product classification: one-shot CLI, summon–choose–exit tool, or full-screen session
@@ -39,12 +39,13 @@ The skill uses progressive disclosure: its 139-line `SKILL.md` carries the workf
 
 **References (loaded as needed):**
 - `ecosystem-go.md` — Bubble Tea, Lipgloss, Bubbles, Huh, tview, gocui, Cobra, Wish, gum
-- `ecosystem-rust.md` — Ratatui, Crossterm, color-eyre panic safety, Cursive, clap, cliclack, async with Tokio
+- `ecosystem-rust.md` — Ratatui, Crossterm, color-eyre, terminal lifecycle and panic safety, Cursive, clap, cliclack, async with Tokio
 - `ecosystem-python.md` — Textual (TCSS, reactive, workers, Pilot testing, `textual serve`), Rich, prompt_toolkit, Typer, questionary
 - `ecosystem-typescript.md` — Ink (used by Claude Code, GitHub Copilot CLI, Gemini CLI), @clack/prompts, @inquirer/prompts, OpenTUI, color-library tradeoffs, argument-parser comparison
-- `cli-basics.md` — `clig.dev` / 12-Factor / POSIX / XDG / `sysexits` synthesis for non-TUI CLIs, plus shell integration hooks, shipping/update/telemetry etiquette, and first-run auth flows, and a VHS fallback for demo recordings
-- `visual-patterns.md` — deep dive on the 7 layouts, inline vs alt-screen (and the receipt-pattern exit contract), borders, color tiers, semantic tokens, density, the clutter audit, responsive design (the breakpoint ladder + the floor), tables, status bars, progress, disconnected/timeout states, theming, Nerd Font icon conventions, localization (translation growth, right-to-left text, ambiguous-width characters, locale formatting), and accessibility (what screen readers hear, the plain-mode contract, reduced motion)
-- `interaction-patterns.md` — keybinding philosophies, focus management, forms and settings-screen design, terminal modes and protocols (bracketed paste, kitty keyboard, mouse and focus reporting, synchronized output, cursor and title restore, color queries, and a tmux/screen/Zellij/SSH/Windows environment matrix), OSC 8/52/9 (hyperlinks, clipboard-over-SSH, notifications), the fzf/lazygit/k9s/helix patterns dissected, confirmation friction levels, undo/redo
+- `cli-basics.md` — `clig.dev` / 12-Factor / POSIX / XDG / `sysexits` synthesis for non-TUI CLIs with decisive defaults (exit-code scheme, SIGINT re-raise, `--json` and its errors, completions contract, atomic writes, Windows notes, testing one-shot CLIs), plus shell integration hooks, shipping/update/telemetry etiquette, and first-run auth flows, and a VHS fallback for demo recordings
+- `visual-patterns.md` — deep dive on the 7 layouts (decision table and ASCII thumbnails with 60-column fallbacks), inline vs alt-screen (and the receipt-pattern exit contract), borders, color tiers, semantic tokens, density, the clutter audit, responsive design (the breakpoint ladder + the floor), tables, status bars, progress, a States section (initial, loading, empty, partial, error, stale, too small), theming, Nerd Font icon conventions, localization (translation growth, right-to-left text, ambiguous-width characters, locale formatting), and accessibility (what screen readers hear, the plain-mode contract, reduced motion)
+- `interaction-patterns.md` — keybinding philosophies and modal vs modeless, the Esc/q/Ctrl+C quit ladder, the keys multiplexers and the legacy encoding steal, focus management, scrolling, selection stability and log follow mode, text input, tree views, forms and settings-screen design, the fzf/lazygit/k9s/helix patterns dissected, confirmation friction levels, undo/redo
+- `terminal-protocols.md` — terminal modes and escape sequences in one table (bracketed paste, kitty keyboard, mouse and focus reporting, synchronized output, cursor and title restore, progress, color and theme queries, OSC 8/52/9 for hyperlinks, clipboard-over-SSH, and notifications), plus a tmux/screen/Zellij/SSH/Windows environment matrix
 - `exemplar-apps.md` — case studies of lazygit, k9s, btop, fzf, helix, yazi, atuin, htop, Posting, Harlequin, Claude Code, starship, and others
 
 ---
@@ -157,7 +158,7 @@ cd tui-design-skill
 ./scripts/package-skill.sh        # writes dist/tui-design.skill
 ```
 
-The output is `dist/tui-design.skill`—a deterministic zip containing the exact `tui-design/` allowlist in `scripts/skill-files.txt` (`SKILL.md`, `agents/openai.yaml`, and eight references), which the packager, the validator, and the packaging tests all read, ready to install in a compatible agent. Packaging rejects symlinks, generated files, caches, and undeclared resources. It requires Bash, `zip`, `unzip`, and the common GNU/BSD forms of `find`, `cp`, `chmod`, `touch`, and `mktemp`. Run `./scripts/validate-release.sh` to validate manifests, Codex metadata, the core-size and duplication budgets, Markdown structure, sample markers, eval JSON and harness tests, archive integrity, and repeatable output; that validator also requires Python 3.9 or newer, and CI runs it on Python 3.9 and 3.14.
+The output is `dist/tui-design.skill`—a deterministic zip containing the exact `tui-design/` allowlist in `scripts/skill-files.txt` (`SKILL.md`, `agents/openai.yaml`, and nine references), which the packager, the validator, and the packaging tests all read, ready to install in a compatible agent. Packaging rejects symlinks, generated files, caches, and undeclared resources. It requires Bash, `zip`, `unzip`, and the common GNU/BSD forms of `find`, `cp`, `chmod`, `touch`, and `mktemp`. Run `./scripts/validate-release.sh` to validate manifests, Codex metadata, the core-size and duplication budgets, Markdown structure, sample markers, eval JSON and harness tests, archive integrity, and repeatable output; that validator also requires Python 3.9 or newer, and CI runs it on Python 3.9 and 3.14.
 
 ### Code-sample checks
 
@@ -302,6 +303,7 @@ tui-design-skill/
 │                   ├── cli-basics.md
 │                   ├── visual-patterns.md
 │                   ├── interaction-patterns.md
+│                   ├── terminal-protocols.md
 │                   └── exemplar-apps.md
 ├── evals/                        # versioned prompt/assertion sets and curated results
 │   ├── README.md                 # evidence, privacy, and schema contract
@@ -322,6 +324,12 @@ tui-design-skill/
 │   ├── v180-l10n-environments-evals.json
 │   ├── v180-terminal-modes-evals.json
 │   ├── v180-trigger-evals.json
+│   ├── v182-correction-evals.json
+│   ├── v190-content-evals.json
+│   ├── v190-interaction-evals.json
+│   ├── v190-cli-evals.json
+│   ├── v190-ecosystem-evals.json
+│   ├── v190-routing-evals.json
 │   ├── trigger-evals.json
 │   └── results/                  # reviewed, committed run evidence
 ├── CHANGELOG.md

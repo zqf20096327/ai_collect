@@ -1,314 +1,88 @@
 # AimBuddy
 
-AimBuddy is an AI-based Android aim assistant for real-time screen capture, object detection, target tracking, visual guidance overlays, and optional assisted input.
+An on-device computer vision and control system that helps people aim in touchscreen 3D shooters. It finds people in the game picture with a neural network, outlines them, and can steer the view toward the nearest one with one extra finger. It is built for players with low vision or motor impairments, for whom fast, precise aiming on a touchscreen is the barrier.
 
-## Project in Brief
+Android 11 or newer, arm64. Kotlin and Jetpack Compose for the app, C++17 for detection, tracking and control, NCNN for inference on the CPU or through Vulkan, Shizuku or root for touch access. Free and open source.
 
-- **Platform**: Android (arm64-v8a)
-- **App stack**: Kotlin + Jetpack Compose + native C++ (JNI)
-- **Inference**: NCNN runtime with Vulkan GPU acceleration (YOLOv26n)
-- **Training**: Python pipeline with Ultralytics, PyTorch, and NCNN export
+## What is technically different
 
-## Runtime Modes
+**The aim controller does not know the game's camera, and learns it while it aims.** How far a game's view turns per pixel of finger movement differs between games and sensitivity settings by a factor of ten or more, and the game reacts a frame or two late. A controller that assumes either figure overshoots or circles the target. `AimController` records every move it makes, `GlobalMotion` measures how the whole picture slid between frames, and `ResponseEstimator` fits the camera's gain and delay from the two by least squares. Ordinary aiming is the experiment, and nothing is calibrated by hand. Until the estimate can be trusted, only a little finger travel is allowed to be in flight, so the first move is small and its effect teaches the real figure. The controller aims at where the target will be when its move takes effect, takes its own strength down if the aim starts to swing, and lifts and re-places the finger when the game does not answer it.
 
-| Mode | Backend | Requires | Features |
-|------|---------|----------|----------|
-| Visual Assist | none | - | Screen capture, YOLO inference, target tracking, ESP overlays |
-| Assisted Input (root) | `uinput` virtual touchscreen | Root access | ESP + low-latency touch injection that runs **in parallel with the user's finger** (separate input stream, real touchscreen is never grabbed) |
-| Assisted Input (non-root) | Shizuku `injectInputEvent` | Shizuku service + permission | Same parallel-touch behavior with no root, using a virtual deviceId so the aim contact dispatches alongside physical touches |
+**The camera is read from video.** `GlobalMotion` reduces two frames to 64 by 64 grey values and finds the picture's shift by phase correlation, then polishes the strongest peaks with a few least-squares steps. Parts of the picture that do not move with the camera (the game's buttons and crosshair, the weapon, this app's own overlay) are learned and left out. So are detected people: a large one crossing the middle of the view would otherwise be mistaken for the camera turning.
 
-If neither backend is available, the app stays in Visual Assist Mode and the menu still loads.
+**A second finger on a screen that Android will not share.** The input dispatcher follows one input device at a time in a window, so a second virtual touchscreen next to the real one loses its moves whenever a real finger is down. The touch helper (`libaimtouch.so`, run through Shizuku or root) instead takes over the real touchscreen, passes every event to one virtual copy of it, and adds the assist's finger to that copy as an extra contact. The game sees one screen with the player's fingers plus one. The helper takes the screen only when no finger is on it, needs a heartbeat from the app, gives the screen back when both volume keys are held, and if it is killed the kernel gives the screen back by itself. The merge logic (`TouchMux`) performs no input or output, so it is tested on a computer.
 
-### Feature Highlights
+**Detection on a phone that is also running the game.** The detector reads only a square around the crosshair, copied out of the capture buffer inside the callback. The newest frame wins: a slow phone drops frames instead of falling behind, so a result is never older than one detection. At start the model is timed on the CPU and on the GPU, and the GPU is used only if it is clearly faster, because the game needs it too. CPU work stays on the fast cores, and detection is cut to fewer runs a second when Android reports that the phone is getting hot. The tracker is a Kalman filter with two-pass association in the manner of ByteTrack, and its speed estimate is free of the camera's own movement.
 
-- **Simultaneous user + aim touch** on both backends so you can move and aim at the same time.
-- **Streamer mode** - toggle in the ESP tab sets `FLAG_SECURE` so the overlay disappears from screen recordings, screenshots, and screen mirroring while staying visible on your own screen.
-- **Chinese (中文) UI** language in addition to English. Drop a CJK TTF at `app/src/main/assets/fonts/cjk.ttf` to render glyphs.
-- **Event-driven aim loop** - first touch lands within one inference cycle of target acquisition; no polling.
-- **Velocity lead prediction** scaled to the measured pipeline delay, so running targets are actually led instead of trailed.
-- **Adaptive crop** that shrinks under GPU pressure to keep `< 10ms` inference.
+**An overlay that Android's rules do not break.** From Android 12 the system drops every touch that passes through another app's overlay that is more opaque than 0.8, and it judges a `SurfaceView` by a rule that ignores transparent pixels. The overlay is therefore drawn in a `TextureView` in a window kept just under the limit, and it becomes opaque only while its menu takes touches. A window marked secure is drawn as solid black in every capture that is not secure, and that includes the app's own capture of the screen. So streamer mode draws nothing over the game and makes the window secure only while the menu is open.
 
-## How It Works
+**An app that updates itself, and the models it runs.** The app reads the project's GitHub releases and downloads a newer APK. It installs it only after checking the SHA-256, the package name, that the version is newer, and that the signing certificate is the one already installed. Models come from a static index in this repository: every file is checked against the size and SHA-256 the index gives, a new model replaces the old one only when it is complete, and the default model is also built into the APK so a first run needs no connection. See [model/README.md](model/README.md).
 
-```mermaid
-flowchart LR
-    A[Screen Capture] --> B[Frame Buffer]
-    B --> C[YOLO Inference]
-    C --> D[Target Tracker]
-    D --> E[Aim Controller]
-    E --> F[Touch Injection]
-    C --> G[ESP Overlay]
-    D --> G
+## How a frame becomes a touch
+
+```
+screen capture -> square around the crosshair -> detector (CPU or GPU)
+  -> camera motion (phase correlation) -> tracker (Kalman, two-pass matching)
+  -> aim controller (delay compensated, learns the camera) -> touch helper
+  -> virtual touchscreen with one extra finger
+tracker -> overlay (outlines, drawn a little ahead of now)
 ```
 
-1. **Capture**: MediaProjection captures the game screen at 1280x720.
-2. **Detect**: YOLOv26n runs on the GPU via NCNN to detect enemies.
-3. **Track**: DeepSORT-style tracker maintains target identity across frames.
-4. **Aim**: PD controller steers aim with velocity lead and jitter suppression.
-5. **Render**: ESP overlay draws boxes, snap lines, and an ImGui settings menu.
+[docs/Architecture.md](docs/Architecture.md) follows each step through the code.
 
-## Device Requirements
+## How it is verified
 
-### Runtime (Android Device)
+- `app/src/test/native` holds C++ tests of the parts that perform no input or output: the tracker, camera motion, the touch merger, the detector's decoding and the settings. The aim controller is run against a simulated game with a known camera gain and delay, and has to settle for gains and delays it was not told.
+- `app/src/test/java` holds Kotlin tests of the update logic, the model store and the thermal limits.
+- Debug builds include a stand-in first-person game with a known camera response, used to run the whole loop on an emulator.
 
-| Item | Minimum | Recommended |
-|------|---------|-------------|
-| Android | 11 (API 30) | 13+ |
-| ABI | arm64-v8a | Snapdragon 888+ |
-| Graphics | OpenGL ES 3.1 | OpenGL ES 3.2 + Vulkan |
-| RAM | 6 GB | 8 GB+ |
-| Storage | 2 GB free | 5 GB+ free |
-| Root *or* Shizuku | Not required for ESP | Either one enables aim assist |
+## Install
 
-### Training (Windows PC)
+1. Download the latest APK from [Releases](https://github.com/1337Xcode/AimBuddy/releases) and open it.
+2. Open AimBuddy. It opens on the Models page: tap Get on AimBuddy General, or import a model of your own. The app carries no model, so this comes first.
+3. When it asks, allow display over other apps, notifications and screen capture.
+4. For aim assist, give AimBuddy touch access with [Shizuku](docs/ShizukuSetup.md) (no root needed) or with root. Without either, AimBuddy still outlines people.
+5. Press Start, then switch to your game.
 
-| Item | Minimum | Recommended |
-|------|---------|-------------|
-| OS | Windows 10 64-bit | Windows 11 64-bit |
-| Python | 3.10 to 3.12 | 3.11 |
-| CPU | 4 cores | 8+ cores |
-| RAM | 8 GB | 16 GB+ |
-| Storage | 15 GB free | 30 GB+ free |
-| GPU | CPU-only supported | NVIDIA with CUDA 12.1 |
+The first release that can update itself has to be installed by hand once; after that updates arrive in the app.
 
-## Quick Start
+## Build from source
 
-### 1. Build and Install
+You need JDK 17, the Android SDK 35 with build tools 36, NDK 29.0.13113456 and CMake 3.22.1.
 
-```powershell
-./gradlew.bat clean assembleDebug
-./gradlew.bat installDebug
+```sh
+./gradlew assembleDebug          # app/build/outputs/apk/debug/app-debug.apk
+./gradlew testDebugUnitTest      # Kotlin tests
+sh app/src/test/native/run.sh    # C++ core tests, with a C++17 compiler on the path
 ```
 
-Prerequisites:
-- Android SDK 35
-- Android NDK 29.0.13113456 rc1
-- CMake 3.22.1
-- Java 11+
-
-### 2. First Launch
-
-1. Open AimBuddy on your device.
-2. Grant overlay permission when prompted.
-3. Pick a backend for aim assist (optional):
-   - Approve root access for the `uinput` backend, or
-   - Install Shizuku, start the service, and grant the Shizuku permission for the non-root backend. See [docs/ShizukuSetup.md](docs/ShizukuSetup.md) for a step-by-step beginner guide.
-   - Skip both to run in visual-assist mode (ESP only).
-4. Grant MediaProjection screen capture permission.
-5. The overlay appears with ESP boxes and a floating settings icon.
-
-### 3. Train Your Own Model (Optional)
-
-```powershell
-cd training
-scripts\00_automate.bat
-```
-
-This single command runs: env setup -> frame extraction -> **teacher auto-labelling** -> negative mining (if you've dropped frames into `raw_frames/negatives/`) -> stable train/valid/test split -> dataset validation -> training at `imgsz=640` with strong augmentations -> NCNN export at `imgsz=256` -> deploy to `app/src/main/assets/models/` -> active-learning sweep that surfaces the next batch of frames worth labelling. State checkpoints at each step so re-running resumes from the last failure.
-
-The only manual touch points are:
-1. Drop gameplay video into `training/videos/`.
-2. (Optional) Drop no-enemy frames into `training/raw_frames/negatives/`.
-3. Spot-check `training/dataset/train/labels/` after the auto-label step and delete obviously-wrong boxes (Roboflow / labelImg take minutes vs the hours of from-scratch labelling).
-
-See the [Training Guide](docs/Training.md) for the per-step scripts and the bigger explanation of why this works.
-
-## Build Details
-
-### Debug Build
-
-```powershell
-./gradlew.bat clean assembleDebug
-```
-
-### Release Build
-
-```powershell
-./gradlew.bat clean assembleRelease
-```
-
-Without a configured release keystore this signs with your local debug key and
-prints a warning. Such an APK is fine for local testing but must not be shared.
-See [Release Signing](#release-signing).
-
-### Manual APK Install
-
-```powershell
-adb install -r app/build/outputs/apk/debug/app-debug.apk
-```
-
-If an install fails with **"App not installed as package conflicts with an
-existing package"**, a build of `com.aimbuddy` signed with a *different*
-certificate is still registered on the device. Remove it for every user profile
-and retry:
-
-```powershell
-adb uninstall com.aimbuddy
-adb shell pm uninstall --user 0 com.aimbuddy
-adb shell pm list packages -u | findstr aimbuddy   REM should print nothing
-```
-
-The last command also lists *uninstalled-but-retained* packages, which are the
-usual cause when you are sure the app is not installed.
-
-## Release Signing
-
-Android identifies an installed app by the pair (`applicationId`, signing
-certificate). Every published AimBuddy APK must therefore be signed with one
-fixed key. If the certificate changes between releases, users cannot upgrade
-and the installer reports a package conflict.
-
-Generate the key once and keep it safe (losing it means every user must
-uninstall before their next update):
-
-```powershell
-keytool -genkeypair -v -keystore upload.jks -alias aimbuddy `
-        -keyalg RSA -keysize 4096 -validity 10000
-```
-
-**Local release builds.** Create `keystore.properties` in the repo root
-(git-ignored):
-
-```properties
-storeFile=upload.jks
-storePassword=<store password>
-keyAlias=aimbuddy
-keyPassword=<key password>
-```
-
-**CI.** The workflow feeds the same key to Gradle through
-`AIMBUDDY_KEYSTORE_FILE`, `AIMBUDDY_KEYSTORE_PASSWORD`, `AIMBUDDY_KEY_ALIAS`,
-and `AIMBUDDY_KEY_PASSWORD`, populated from the repository secrets listed below.
-Base64-encode the keystore for the `KEYSTORE_BASE64` secret:
-
-```powershell
-[Convert]::ToBase64String([IO.File]::ReadAllBytes("upload.jks")) | Set-Clipboard
-```
-
-Each release run prints the signer's SHA-256 fingerprint to the job summary.
-Compare it against the previous release. It must be identical.
-
-## Training and Export
-
-From the repository root:
-
-```powershell
-cd training
-scripts\07_run_full_pipeline.bat
-```
-
-This runs environment setup, dataset validation, training, and NCNN export.
-
-Key outputs:
-
-| Output | Location |
-|--------|----------|
-| Reports | `training/outputs/reports/` |
-| Weights | `training/outputs/runs/detect/train/weights/` |
-| NCNN export | `training/outputs/export/` |
-| Deployment target | `app/src/main/assets/models/` |
-
-Individual scripts:
-
-```powershell
-scripts\00_automate.bat          REM End-to-end: videos -> NCNN -> deploy
-scripts\01_setup_environment.bat
-scripts\02_extract_frames.bat
-scripts\03_validate_dataset.bat
-scripts\04_train_adaptive.bat
-scripts\05_train_manual.bat
-scripts\06_export_ncnn.bat
-scripts\07_run_full_pipeline.bat
-scripts\08_auto_label.bat        REM Teacher (yolov8x) labels raw_frames
-scripts\09_mine_negatives.bat    REM Adds empty-label samples
-scripts\10_active_learning.bat   REM Surfaces next-iter review pool
-```
-
-## Releases (CI)
-
-Releases are fully automated by `.github/workflows/release.yml`. The workflow runs whenever a push to `master` modifies `CHANGELOG.md`. It:
-
-1. Reads the top non-Unreleased `## [x.y.z] - YYYY-MM-DD` heading from `CHANGELOG.md`.
-2. Skips if `v<version>` already tagged or if `aimbuddy.versionName` in `gradle.properties` does not match.
-3. Builds the release APK on `ubuntu-latest` with JDK 17, Android SDK 35, NDK 29, CMake 3.22.1, and a Gradle cache.
-4. Signs the APK with the upload keystore. These repository secrets are **required**, and the job fails rather than publishing an unsigned or debug-signed APK that users could not upgrade:
-   - `KEYSTORE_BASE64` (base64-encoded JKS upload keystore)
-   - `KEYSTORE_PASSWORD`
-   - `KEY_ALIAS`
-   - `KEY_PASSWORD`
-5. Verifies the APK signature and prints the certificate SHA-256 to the job summary.
-6. Creates a GitHub Release tagged `v<version>` with the changelog section as release notes and the APK attached.
-
-To cut a release: bump `aimbuddy.versionName` (and `aimbuddy.versionCode`) in `gradle.properties`, add a new `## [x.y.z] - YYYY-MM-DD` heading to `CHANGELOG.md`, push to `master`. The workflow handles everything else.
+Each build generates its own launcher icon from a random seed; `-Paimbuddy.iconSeed=<number>` repeats one. Releases are described in [docs/Releasing.md](docs/Releasing.md).
 
 ## Documentation
 
 | Document | Contents |
 |----------|----------|
-| [Architecture](docs/Architecture.md) | System design, threading, data flow, module reference, input-injection backends |
-| [Shizuku Setup](docs/ShizukuSetup.md) | Step-by-step setup for the non-root touch backend |
-| [Settings Guide](docs/SettingsGuide.md) | Every setting explained, presets, tuning workflow |
-| [Performance](docs/Performance.md) | Pipeline targets, adaptive crop, memory budget, overlay render cap |
-| [Training](docs/Training.md) | Dataset workflow, auto-labelling, active learning, NCNN export |
-| [Troubleshooting](docs/Troubleshooting.md) | Build, runtime, and training issue resolution |
-| [Changelog](CHANGELOG.md) | Versioned history of behavior changes |
-| [Contributing](CONTRIBUTING.md) | Code standards, PR process, validation requirements |
+| [Architecture](docs/Architecture.md) | How the app is put together, from capture to touch |
+| [Settings guide](docs/SettingsGuide.md) | Every setting and what it does |
+| [Shizuku setup](docs/ShizukuSetup.md) | Touch access without root |
+| [Performance](docs/Performance.md) | What costs time, and how to read the numbers |
+| [Training](docs/Training.md) | Training a detector for your game |
+| [Troubleshooting](docs/Troubleshooting.md) | When something does not work |
+| [Releasing](docs/Releasing.md) | Building, signing and publishing, and how updates reach players |
+| [Model store](model/README.md) | How models are published and installed |
+| [Changelog](CHANGELOG.md) | What changed in each release |
+| [Contributing](CONTRIBUTING.md) | Standards and the pull request process |
 
-## Repository Layout
+## Credits
 
-```
-app/                    Android app and native runtime
-    src/main/
-        java/           Kotlin sources (MainActivity, services)
-        cpp/            C++ native code
-            aimbot/     Target tracker, aim controller
-            detector/   YOLO inference (NCNN)
-            input/      Touch injection (uinput)
-            renderer/   ESP overlay, ImGui menu
-            utils/      Settings, math, logging
-        assets/models/  NCNN model files
-training/               Python training pipeline
-    scripts/            Batch scripts for each step
-    config/             Training configuration
-    dataset/            Training data (not committed)
-    outputs/            Reports, weights, exports
-docs/                   Technical documentation
-```
-
-## External Credits
-
-### Android App and Runtime
-- [AndroidX Core/AppCompat](https://developer.android.com/jetpack/androidx)
-- [Material Components for Android](https://github.com/material-components/material-components-android)
-- [Jetpack Compose](https://developer.android.com/jetpack/compose)
-- [AndroidSVG](https://bigbadaboom.github.io/androidsvg/)
-- [NCNN](https://github.com/Tencent/ncnn)
-- [Dear ImGui](https://github.com/ocornut/imgui)
-
-### Training and Export
-- [Ultralytics](https://github.com/ultralytics/ultralytics)
-- [PyTorch](https://pytorch.org/)
-- [TorchVision](https://pytorch.org/vision/stable/index.html)
-- [OpenCV](https://opencv.org/)
-- [NumPy](https://numpy.org/)
-- [ONNX](https://onnx.ai/)
-- [ONNX Runtime](https://onnxruntime.ai/)
-
-See `training/requirements.txt` and `app/build.gradle` for exact dependency versions.
+[NCNN](https://github.com/Tencent/ncnn) runs the model and [Dear ImGui](https://github.com/ocornut/imgui) draws the in-game menu. [Shizuku](https://github.com/RikkaApps/Shizuku) provides touch access without root. The app is built with Jetpack Compose and the Geist font. The detection models are made with [Ultralytics](https://github.com/ultralytics/ultralytics) YOLO. The full list, with licenses, is under Settings, About, Open source notices.
 
 ## License
 
-This project is released under the AimBuddy Community Free Use License v1.0.
+AimBuddy is released under the AimBuddy Community Free Use License v1.0. In short: use it, change it and share it freely; do not sell it; anything you build from it stays free under the same terms and says "Based on AimBuddy" with a link here. See [LICENSE](LICENSE) for the full terms.
 
-Key terms:
-- Free use, modification, and redistribution are allowed.
-- Selling or commercial monetization is not allowed.
-- Derivative works must remain free and use the same license.
-- Attribution to the original project is required.
-- Software is provided as-is with no warranty and no liability.
+The YOLO26 detector that comes with the app is made by Ultralytics and is licensed under AGPL-3.0.
 
-See [LICENSE](LICENSE) for full terms.
+## Legal notice
 
-## Legal and Usage Notice
-
-Use this project only in authorized environments and only where local law, platform policy, and software terms allow such testing.
+AimBuddy is aim assistance software. Use it only where local law, the game's rules and the platform's terms allow it. Some games forbid aim assistance in online play, and using it there can get an account banned. You are responsible for how you use it.

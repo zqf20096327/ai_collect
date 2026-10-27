@@ -1,6 +1,6 @@
 # <a href="https://github.com/KentoNishi/awesome-all-you-need-papers">Awesome <u><strong><i>"all you need"</i></strong></u> papers</a>
 
-![Last Added](https://img.shields.io/badge/Last%20Added-2026--10--21-informational)
+![Last Added](https://img.shields.io/badge/Last%20Added-2026--10--25-informational)
 [![Update Paper List](https://github.com/KentoNishi/awesome-all-you-need-papers/actions/workflows/update.yaml/badge.svg)](https://github.com/KentoNishi/awesome-all-you-need-papers/actions/workflows/update.yaml)
 
 ## About
@@ -531,7 +531,6 @@ This repository is a list of all "all you need" papers. The list is updated dail
 | [Oasis: One Image is All You Need for Multimodal Instruction Data Synthesis](http://arxiv.org/abs/2503.08741v3) | Letian Zhang et al. | 2025-03-11 |
 | [Reasoning is All You Need for Video Generalization: A Counterfactual Benchmark with Sub-question Evaluation](http://arxiv.org/abs/2503.10691v2) | Qiji Zhou et al. | 2025-03-12 |
 | [Reinforcement Learning is all You Need](http://arxiv.org/abs/2503.09512v1) | Yongsheng Lian | 2025-03-12 |
-| [Availability is all you need: achieving optimal regret with minimal information for dynamic matching](http://arxiv.org/abs/2503.09762v3) | Süleyman Kerimov et al. | 2025-03-12 |
 | [VicaSplat: A Single Run is All You Need for 3D Gaussian Splatting and Camera Estimation from Unposed Video Frames](http://arxiv.org/abs/2503.10286v1) | Zhiqi Li et al. | 2025-03-13 |
 | [Relevance Isn't All You Need: Scaling RAG Systems With Inference-Time Compute Via Multi-Criteria Reranking](http://arxiv.org/abs/2504.07104v1) | Will LeVine et al. | 2025-03-14 |
 | [Collaboration is all you need: LLM Assisted Safe Code Translation](http://arxiv.org/abs/2503.11237v1) | Rabimba Karanjai et al. | 2025-03-14 |
@@ -669,4 +668,5 @@ This repository is a list of all "all you need" papers. The list is updated dail
 | [Is GPT-OSS All You Need? Benchmarking Large Language Models for Financial Intelligence and the Surprising Efficiency Paradox](http://arxiv.org/abs/2512.14717v1) | Ziqian Bi et al. | 2025-12-09 |
 | [Attention is All You Need to Defend Against Indirect Prompt Injection Attacks in LLMs](http://arxiv.org/abs/2512.08417v3) | Yinan Zhong et al. | 2025-12-09 |
 | [DB2-TransF: All You Need Is Learnable Daubechies Wavelets for Time Series Forecasting](http://arxiv.org/abs/2512.10051v1) | Moulik Gupta et al. | 2025-12-10 |
-| [Belief Is All You Need: Modeling Narrative Archetypes in Conspiratorial Discourse](http://arxiv.o
+| [Belief Is All You Need: Modeling Narrative Archetypes in Conspiratorial Discourse](http://arxiv.org/abs/2512.10105v3) | Soorya Ram Shimgekar et al. | 2025-12-10 |
+| [Workflow is All You Need: Escaping the "Statistical Smoothing Trap" via High-Entropy Information Foraging and Ad

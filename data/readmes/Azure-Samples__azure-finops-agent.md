@@ -13,7 +13,7 @@ Azure FinOps Agent is an open-source AI agent for Azure. Ask it in plain words h
 
 **[Try it now](https://azure-finops-agent.com)** · [Deploy to your Azure](#deploy-to-your-azure-subscription) · [Slides](https://azure-finops-agent.com/slides)
 
-<img src="src/Dashboard/frontend/public/og-image.png" alt="Azure FinOps Agent: plain answers on AI governance, AI costs and your Azure spend" width="100%">
+<img src="src/frontend/public/og-image.png" alt="Azure FinOps Agent: plain answers on AI governance, AI costs and your Azure spend" width="100%">
 
 ## See it in action
 
@@ -85,6 +85,20 @@ The agent acts with your own delegated permissions, so your Azure roles and the 
 
 The [tool and prompt catalog](docs/tool-catalog.md) documents the agent's 16 tools, the two Microsoft Learn documentation tools it uses, and their limits, and [reliability contracts](docs/agent-reliability.md) describe how answers are verified.
 
+## Feedback
+
+**Have feedback?** in the top bar, the link under the message box and the **Feedback** button under every answer open one form: a type (bug, idea, answer quality, other), a summary and optional details. Feedback about an answer can include the question it answered, and only when the user ticks the box. After a **Poor answer** rating the button asks what went wrong.
+
+The form posts a public GitHub issue labelled `feedback`, so it refuses secrets, IDs, email addresses and IP addresses before anything is sent, and it stops @mentions from notifying anyone. Each browser can create 3 issues in 10 minutes and 10 a day. The server creates issues through a GitHub App. It signs a short-lived token with the app's private key and exchanges it for an installation token limited to *Issues: write* on one repository. Neither the key nor a token reaches the browser. Without a GitHub App, the form opens the repository's [feedback issue form](.github/ISSUE_TEMPLATE/feedback.yml) with the feedback filled in, and users post it with their own GitHub account.
+
+To create issues directly in your deployment:
+
+1. [Register a GitHub App](https://docs.github.com/apps/creating-github-apps/registering-a-github-app/registering-a-github-app) with the repository permission **Issues: Read and write**, no webhook, and generate a private key.
+2. Install it on the repository that should receive the issues.
+3. Run `azd env set GITHUB_FEEDBACK_APP_ID <client-id>`, `azd env set GITHUB_FEEDBACK_PRIVATE_KEY <base64 of the .pem>` and, for a repository other than this sample, `azd env set GITHUB_FEEDBACK_REPOSITORY <owner/name>`, then run `azd provision`. Locally, set `GitHubFeedback:AppId`, `GitHubFeedback:PrivateKey` and `GitHubFeedback:Repository` with `dotnet user-secrets`.
+
+A repository other than this sample needs a copy of `.github/ISSUE_TEMPLATE/feedback.yml` and a `feedback` label, so the fallback link can fill in the form and label the issue.
+
 ## Graded before it ships
 
 Every deployment is blocked until **23 live AI scenarios all pass**: real model calls through the same chat handler and tools users reach, against real Azure APIs, each answer graded by a separate judge model and by hard checks (the right tools, no unrecovered tool failures, time and call budgets). A **report of the ten most important evals beyond it** runs weekly and on demand and shows each one red or green: the start-page questions customers ask most, the cost questions closest to a FinOps team's day, safety guarantees (it never deletes anything, treats instructions hidden in pasted text as data and never reveals tokens) and another language. The run graph is the picture (a plan, four stage boxes and a scoreboard, each green or red), and every result says what the eval checks, what happened, what the judge scored and why. Open the latest run's summary for the heatmap, or download its HTML dashboard from the run's artifacts. See [live evaluations](tests/LiveEvaluations/README.md).
@@ -150,7 +164,7 @@ Your Azure CLI identity also needs **Foundry User** (formerly Azure AI User) on 
 ### Configure
 
 ```powershell
-cd src\Dashboard
+cd src\backend
 dotnet user-secrets set "AzureOpenAI:Endpoint" "https://<account>.services.ai.azure.com/api/projects/<project>"
 dotnet user-secrets set "AzureOpenAI:DeploymentName" "<your-deployment>"
 ```
@@ -165,22 +179,22 @@ Optional settings:
 ### Build and run
 
 ```powershell
-cd src\Dashboard\frontend
+cd src\frontend
 npm ci
 npm run build
 
-cd ..
+cd ..\backend
 $env:ASPNETCORE_ENVIRONMENT = "Development"
 dotnet run --urls http://localhost:5000
 ```
 
-Open [http://localhost:5000](http://localhost:5000). Build the frontend before starting the backend, so the static web root exists at startup. The [contributor guide](CONTRIBUTING.md#regression-tests) covers the backend, Python, frontend and desktop/mobile browser regression tests.
+Open [http://localhost:5000](http://localhost:5000). Build the frontend before starting the backend, so the static web root (`src/backend/wwwroot`) exists at startup. The [contributor guide](CONTRIBUTING.md#regression-tests) covers the backend, Python, frontend and desktop/mobile browser regression tests.
 
 ## For maintainers
 
 - [`/evaluate-sessions`](.github/skills/evaluate-sessions/SKILL.md) exports the last 30 days of real conversations, rates each one from 0 to 10, finds the ten most important issues and their root causes in the code, and asks which to fix before implementing regression-tested local fixes. It never impersonates users, commits customer transcripts or deploys on its own.
 - [`/investigate-logs`](.github/skills/investigate-logs/SKILL.md) triages exceptions in Application Insights.
-- `npm run og-image` in `src/Dashboard/frontend` re-renders the social sharing card from [its HTML source](src/Dashboard/frontend/social/og-image.html).
+- `npm run og-image` in `src/frontend` re-renders the social sharing card from [its HTML source](src/frontend/social/og-image.html).
 
 ## Security
 
@@ -191,6 +205,7 @@ Open [http://localhost:5000](http://localhost:5000). Build the frontend before s
 - Changes through Azure Resource Manager need explicit approval in the app; chat text and scheduled prompts can't approve them.
 - Budget figures can lag billing, and quota or placement evidence doesn't guarantee capacity.
 - Keep production secrets in managed identities, App Service settings or GitHub Actions secrets, never in source control.
+- The feedback form's GitHub App key stays on the server. Each issue uses an installation token limited to *Issues: write* on one repository, and submissions with secrets, IDs, email addresses or IP addresses are refused.
 
 See [SECURITY.md](SECURITY.md) to report a vulnerability and [session management](docs/session-management.md) for how sessions behave.
 
@@ -200,7 +215,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md), [SUPPORT.md](SUPPORT.md) and the [Code o
 
 ## Contact
 
-Questions about this sample or delivering it for your organization: contact the maintainer, [Ali Reza Farahnak on LinkedIn](https://www.linkedin.com/in/alirezafarahnak/). Report bugs and feature requests as [GitHub issues](https://github.com/Azure-Samples/azure-finops-agent/issues).
+Questions about this sample or delivering it for your organization: contact the maintainer, [Ali Reza Farahnak on LinkedIn](https://www.linkedin.com/in/alirezafarahnak/). Report bugs and feature requests with the app's **Have feedback?** button or as [GitHub issues](https://github.com/Azure-Samples/azure-finops-agent/issues).
 
 ## License
 

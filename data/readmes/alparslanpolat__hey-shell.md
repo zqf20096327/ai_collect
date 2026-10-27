@@ -1,6 +1,6 @@
 <h1 align="center"><img src="docs/assets/banner.png" alt="hey-shell" width="640"></h1>
 
-![hey-shell demo: finding which folders use the most space, freeing a port, refining a find command with a # note, and fixing a typo with hsf](docs/assets/demo.gif)
+![hey-shell demo: seven examples, asking in plain words, seeing the risk of a kill command, refining a find command with a # note, fixing a failed command with hsf, explaining with hse, checking a command with hsc and explaining a curl | sudo bash one-liner with hsw](docs/assets/demo.gif)
 
 **Contents**
 
@@ -43,7 +43,7 @@ Works in bash, zsh and fish on Linux, WSL2 and macOS. The commands come from the
 
 ## At a glance
 
-The whole idea fits in one line: **type a request, press Ctrl+G, read the command, press Enter.**
+The whole idea fits in one line: **type a request, press your shortcut, read the command, press Enter.**
 
 | You type | What happens |
 | --- | --- |

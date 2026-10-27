@@ -131,8 +131,10 @@ Fair-Code/
 │   │   └── codeql-config.yml
 │   ├── ISSUE_TEMPLATE/
 │   │   ├── bug_report.yml
+│   │   ├── config.yml
 │   │   ├── new_audit.yml
-│   │   └── new_explainer.yml
+│   │   ├── new_explainer.yml
+│   │   └── tooling.yml
 │   └── workflows/
 │       ├── audits.yml                   # CI: runs all audit scripts on every push/PR
 │       ├── benchmark-diff.yml           # opt-in: reruns the benchmark on a lockfile-bump PR and comments the diff
@@ -793,7 +795,7 @@ features = [
 <details>
 <summary><strong>Show the dataset, before/after code, and results →</strong></summary>
 
-**Dataset:** `tenant-screening-data.csv` - NIJ's Recidivism Challenge Full Dataset, Georgia Dept. of Community Supervision (25,835 records) · [DOJ/NIJ source](https://data.ojp.usdoj.gov/Courts/NIJ-s-Recidivism-Challenge-Full-Dataset/ynf5-u8nk)
+**Dataset:** `tenant-screening-data.csv` - NIJ's Recidivism Challenge Full Dataset, Georgia Dept. of Community Supervision (25,835 records) · [DOJ/NIJ source](https://nij.ojp.gov/funding/recidivism-forecasting-challenge) (the CSV is the challenge's `nij-challenge2021_full_dataset.csv`)
 
 Automated tenant screening is a documented engine of housing discrimination. Real screening products (CoreLogic, TransUnion SmartMove, RealPage) buy criminal-history and recidivism-risk signals and surface them to landlords as a risk flag on rental applicants. There is no clean public per-applicant screening dataset - the industry's scoring data is proprietary - so this audit uses a real, public criminal-justice dataset and treats `Recidivism_Within_3years` as exactly that flag: the output a background-check product hands a landlord to approve or deny a lease. Rows where the original challenge withheld the label are dropped before training.
 
@@ -1500,9 +1502,9 @@ The full public roadmap - with phases, completion status, and content schedule -
 
 | Metric | Count |
 |--------|------:|
-| GitHub Stars | 53 |
-| External Contributors | 54 |
-| Forks | 64 |
+| GitHub Stars | 54 |
+| External Contributors | 57 |
+| Forks | 67 |
 | Watching | 8 |
 | Combined Social Reach (Instagram + LinkedIn) | 30K+ |
 | Countries Reached (Website Visitors) | 20 |
@@ -1523,6 +1525,4 @@ Thanks to everyone who has contributed audits, explainers, or documentation to F
 up to a few days. See [CONTRIBUTORS.md](CONTRIBUTORS.md) for the manually-verified, always-current
 list - it's what to trust if a name here looks missing or out of date.*
 
-To add yourself here, open a PR alongside your contribution. See the full commit-level history on [GitHub](https://github.com/yakew7/Fair-Code/graphs/contributors).
-
----
+To add yourself here, open a PR alongside your contribution. See the full commi

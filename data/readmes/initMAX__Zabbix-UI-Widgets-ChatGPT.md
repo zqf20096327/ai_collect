@@ -13,7 +13,7 @@ Ask about your infrastructure without leaving the board - a server-proxied chat 
 
 <p>
 <img src="./.readme/badge/zabbix.svg" alt="Zabbix 6.0-8.0">
-<img src="./.readme/badge/version.svg" alt="version 2.7.0">
+<img src="./.readme/badge/version.svg" alt="version 2.7.1">
 <img src="./.readme/badge/php.svg" alt="PHP 7.4+">
 <img src="./.readme/badge/free.svg" alt="FREE AGPLv3">
 <img src="./.readme/badge/pro.svg" alt="PRO commercial">
@@ -185,7 +185,7 @@ Then enable it in **Administration → General → Modules**, add an API token u
 
 Choose a provider in the product settings, then one of the models below. _Custom_ accepts any OpenAI-compatible endpoint (you supply the model name)._
 
-- **OpenAI**: GPT-6.1 Sol, GPT-6 Astra, GPT-6 Luna, GPT-6 Sol, GPT-5.6 Luna, GPT-5.6 Sol, GPT-5.6 Terra, GPT-5.5, GPT-5.5 Pro, GPT-5.4, GPT-5.4 Mini, GPT-5.4 Nano, GPT-5.4 Pro
+- **OpenAI**: GPT-6.1 Sol, GPT-6.1 Terra, GPT-6 Astra, GPT-6 Luna, GPT-6 Sol, GPT-5.6 Luna, GPT-5.6 Sol, GPT-5.6 Terra, GPT-5.5, GPT-5.5 Pro, GPT-5.4, GPT-5.4 Mini, GPT-5.4 Nano, GPT-5.4 Pro
 - **Gemini**: Gemini Flash (latest), Gemini Pro (latest), Gemini Flash Lite (latest), Gemini 4 Argon, Gemini 3.8 Flash, Gemini 3.7 Flash, Gemini 3.6 Flash, Gemini 3.5 Flash, Gemini 3.5 Flash Lite, Gemini 3.1 Flash Lite, Gemini 3 Flash, Gemini 2.5 Pro, Gemini Nano Banana 2.1
 - **Claude (Anthropic)**: Claude Opus 5.5, Claude Sonnet 5.5, Claude Haiku 5.5, Claude Fable 5.1, Claude Opus 5, Claude Sonnet 5, Claude Opus 4.8, Claude Sonnet 4.6, Claude Haiku 4.5
 - **Custom**: any OpenAI-compatible endpoint

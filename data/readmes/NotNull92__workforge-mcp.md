@@ -143,6 +143,8 @@ Use `read_text_files` for up to 20 known UTF-8 files in one call, for example `{
 
 `search_files` stops the actual search when it finds an extra match beyond `maxResults`, reaches its output budget, or reaches `timeoutMs` (default 10 seconds, configurable up to 120 seconds). `stoppedBecause` distinguishes `complete`, `result_limit`, `timeout`, `output_limit`, and `error`; `elapsedMs` reports elapsed time. Partial matches remain usable even on errors. Results are not globally sorted, and a JSON record from a very long line can exceed the output budget before a complete match is returned. User ripgrep configuration is ignored so its output format and traversal options cannot override the tool contract.
 
+Path regular expressions use case-insensitive ripgrep syntax; backreferences and lookaround are not supported.
+
 ```text
 "Show me the structure of this project."
 "Find files related to inventory."
@@ -732,7 +734,7 @@ Default read-only exposes 14 tools: write, replace, shell start/cancel, checkpoi
 
 Tool responses apply best-effort credential redaction to structured data, text, and handler errors. Known credential-like environment values are snapshotted at startup (paths excluded; up to256 values,4096 characters each,64KiB total); exceeding values are counted on stderr. Token prefixes, assignments, bearer values, URL passwords, and private-key PEM boundaries are also covered. `_meta.redactionCount` reports substitutions. JSON text is generated from the redacted structured result.
 
-The WORKFORGE_REDACTED bracket marker is not original content: mutation inputs containing it are rejected, including attempts to write it literally. Original hashes, paging offsets, and line numbers remain unchanged; use returned continuation fields. This is not complete secret detection: unknown continuation fragments, internal PEM pages, encoded values, images, and original disk logs are outside coverage. No raw-response override is exposed.
+The WORKFORGE_REDACTED bracket marker is not original content: mutation inputs containing it are rejected, including attempts to write it literally. Hashes and line numbers refer to original content; shell output offsets refer to redacted text. Use returned continuation fields. This is not complete secret detection: unknown continuation fragments, internal PEM pages, encoded values, images, and original disk logs are outside coverage. No raw-response override is exposed.
 
 Use `task_list` to discover checkpoint IDs, `task_resume` to read a reported state and separate shell manifest evidence, and `task_checkpoint` to replace the full state. First save uses `expectedSha256: "absent"`; subsequent saves require the current raw checkpoint hash. Conflicts never silently overwrite. Task IDs are portable lowercase names (reserved Windows devices excluded), checkpoints are bounded to128KiB, and detected secrets/markers are rejected before persistence. Individual field limits may sum beyond the storage budget; size errors include the actual byte count.
 

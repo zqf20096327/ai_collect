@@ -17,8 +17,8 @@
 [![macOS 13.0+](https://img.shields.io/badge/macOS-13.0%2B%20%7C%20Apple%20Silicon-black?style=for-the-badge&logo=apple)](https://developer.apple.com/macos/)
 [![Swift 6](https://img.shields.io/badge/Swift-6.0-F05138?style=for-the-badge&logo=swift&logoColor=white)](https://www.swift.org/)
 [![Apple Silicon](https://img.shields.io/badge/Apple%20Silicon-M3%20%7C%20M4%20%7C%20M5-0071e3?style=for-the-badge)](https://www.apple.com/silicon/)
-[![Version](https://img.shields.io/badge/Version-1.0.9--beta-orange?style=for-the-badge)](https://github.com/hometrix/SplashMonitor/releases/tag/v1.0.9-beta)
-[![Download DMG](https://img.shields.io/badge/Download-DMG%20Installer-success?style=for-the-badge&logo=apple)](https://github.com/hometrix/SplashMonitor/releases/download/v1.0.9-beta/SplashMonitor-1.0.9-beta.dmg)
+[![Version](https://img.shields.io/badge/Version-1.1.0--beta-orange?style=for-the-badge)](https://github.com/hometrix/SplashMonitor/releases/tag/v1.1.0-beta)
+[![Download DMG](https://img.shields.io/badge/Download-DMG%20Installer-success?style=for-the-badge&logo=apple)](https://github.com/hometrix/SplashMonitor/releases/download/v1.1.0-beta/SplashMonitor-1.1.0-beta.dmg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
 [![Author](https://img.shields.io/badge/Author-JMGREP%20Developers%20%7C%20Joan%20Gregorio%20P%C3%A9rez-00205B?style=for-the-badge)](#-autor--author)
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-Donate-yellow?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/hometrix9)
@@ -26,8 +26,8 @@
 <br/>
 
 <div align="center">
-  <img src="screenshots/module-server.png" width="760" alt="Splash Monitor Server and Agents Launcher" />
-  <p><b>🕹️ Servidor de Inferencia Local y Lanzadores de Agentes (Claude Cowork, Claude Code, OpenCode, Codex, Hermes, Pi, DeepSeek Harness)</b></p>
+  <img src="screenshots/es/module-dashboard.png" width="780" alt="Splash Monitor - Dashboard de Inferencia Local en Apple Silicon" />
+  <p><b>⚡ Monitor de Inferencia Local Splash en Apple Silicon (M3/M4/M5) con Métricas en Vivo de Tokens, Velocidad y Memoria Metal</b></p>
 </div>
 
 <br/>
@@ -48,15 +48,15 @@ Hasta ahora, [Splash](https://inco.ai/blog/splash/) solo podía operarse desde l
 
 ---
 
-### 🚀 Novedades de la Versión 1.0.9-beta (Compatibilidad con Splash 1.4.0)
+### 🚀 Novedades de la Versión 1.1.0-beta
 
-- ⚡️ **Compatibilidad Total con Splash 1.4.0**: Soporte nativo para el motor Splash 1.4.0 en Apple Silicon.
-- 🧠 **Contexto Gigante hasta 1M Tokens (Static YaRN)**: Nuevo selector para `--max-context 512K` y `--max-context 1M`, permitiendo cargar repositorios enteros en contexto local sin OOM.
-- 💽 **Streaming de Expertos MoE a SSD (`--expert-memory`)**: Control de presupuesto de RAM de expertos (`Auto`, `off`, `4G`, `8G`, `12G`, `16G`, `24G`), dejando capas activas en memoria y transmitiendo el resto desde SSD.
-- 🎯 **Verificación Especulativa de Filas (`--verify-rows`)**: Modo interactivo para verificación de borradores especulativos en MoE (`auto` con +13% a +42% de ganancia en tok/s, o `all` para determinismo).
-- 🧬 **Soporte de Arquitectura Qwen3.8-Flash-Next**: Detección oficial y descargas optimizadas de modelos Flash-Next (`ISTA-DASLab/Qwen3.8-Flash-Next-GSQ-RCO-GGUF:Q2_0`) con atención dispersa QSA y emparejamiento DFlash2.
-- 📊 **Telemetría de Streaming y Derrame KV en `/status`**: Monitoreo de memoria de expertos, streams activos y métricas de derrame de caché KV.
-- 🔄 **Restauración de Configuración Óptima Actualizada**: Restablece automáticamente `--verify-rows auto` y `--expert-memory auto`.
+- 🌐 **100% Internacionalización Bilingüe (Español / Inglés — Resuelve #5)**: Cobertura total y natural en ambas lenguas para toda la app: controles del servidor, validadores de identificadores de modelos (`ModelIDValidator`), alertas de rechazo accionables, modales de confirmación y notificaciones.
+- ⚡ **Monitor en Vivo del Ciclo de Vida de Inferencia (Resuelve #6)**: Visualización en tiempo real en el Dashboard de las fases del motor: **`PREFILL`** (evaluando KV Cache y prompt en azul) ➔ **`DECODE`** (generación de tokens en verde con medidor tok/s y contador en vivo) ➔ **`IDLE / QUEUED`**.
+- 👁️ **Modalidad Multimodal por Defecto (Visión + Texto)**: Splash arranca por defecto con visión activada sin configuraciones manuales, con auto-fallback inteligente a `--language-only` si un modelo puramente de código carece de proyector visual (`mmproj`).
+- 🔔 **Notificaciones Nativas y Auto-Arranque con macOS**: Alertas del sistema vía `UNUserNotificationCenter` al iniciar el servidor o completar descargas, e integración moderna de inicio de sesión con `SMAppService`.
+- 📌 **Modo Solo Barra de Menú (Resuelve #4)**: Opción para ocultar el ícono del Dock al cerrar la ventana (`Cmd+Q`) manteniendo el monitor en segundo plano.
+- 🤖 **Compatibilidad con Splash 1.4.1**: Soporte oficial para `Ornith-1.5-122B` y `Flint 40B-A2.5B MoE` (~190 tok/s en Apple Silicon).
+- 🛡️ **120 Pruebas Unitarias al 100% Passing**: Protección estricta contra inyección en shell, centinela de memoria Metal (`SystemMemoryPressureSentinel`) y concurrencia segura `@MainActor`.
 
 ---
 
@@ -137,53 +137,53 @@ Cada módulo de **Splash Monitor** está optimizado para la experiencia nativa d
 <div align="center">
 
 #### 1. 🕹️ Servidor y Lanzadores de Agentes (con Claude Cowork y DeepSeek Harness)
-<img src="screenshots/module-server.png" width="850" alt="Servidor y Agentes de Código" />
+<img src="screenshots/es/module-server.png" width="850" alt="Servidor y Agentes de Código" />
 <p><b>Módulo de Control del Servidor:</b> Inicia y detiene el servidor Splash en un solo clic, cambia el modelo en caliente, configura el puerto, estado recurrente GDN en BF16 (-50% RAM), presupuesto de tokens de razonamiento, caché SSD persistente y lanza agentes autónomos: <b>Claude Cowork</b> (activación de app nativa con aliases para evitar errores 404), <b>Claude Code CLI</b>, <b>OpenCode</b>, <b>Codex</b>, <b>Hermes</b>, <b>Pi Agent</b> y <b>DeepSeek Harness (`dsh`)</b>.</p>
 
 <br/>
 
 #### 2. 📊 Dashboard de Tokens y Rendimiento Metal
-<img src="screenshots/module-dashboard.png" width="850" alt="Dashboard de Tokens y Rendimiento Metal" />
+<img src="screenshots/es/module-dashboard.png" width="850" alt="Dashboard de Tokens y Rendimiento Metal" />
 <p><b>Módulo de Rendimiento en Tiempo Real:</b> Monitorea velocidades de generación de tokens (DECODE y PREFILL en tok/s), ratio de acierto y reutilización de KV Cache, deduplicación de tokens, aceptación especulativa DFlash 2, latencias TTFT/ITL y uso de memoria unificada Metal (M3/M4/M5).</p>
 
 <br/>
 
 #### 3. 🔌 Aplicaciones y Clientes Conectados
-<img src="screenshots/module-connectedApps.png" width="850" alt="Apps Conectadas y Clientes Activos" />
+<img src="screenshots/es/module-connectedApps.png" width="850" alt="Apps Conectadas y Clientes Activos" />
 <p><b>Módulo de Clientes Conectados:</b> Inspección automática de conexiones TCP activas contra el puerto de inferencia, reconociendo clientes como <b>Claude Desktop / Cowork</b>, <b>DeepSeek Harness</b>, Cursor IDE, VS Code y Chatbots con sus íconos nativos y estado de transmisión.</p>
 
 <br/>
 
 #### 4. 📖 Guía Rápida de Conexión y Gateway
-<img src="screenshots/module-connectedApps-guide.png" width="850" alt="Guía de Conexión de Clientes" />
+<img src="screenshots/es/module-connectedApps-guide.png" width="850" alt="Guía de Conexión de Clientes" />
 <p><b>Módulo de Guía de Conexión:</b> Pasos y comandos de un clic para configurar el Gateway local en Claude Desktop, Cursor IDE, VS Code (Cline/Continue), Chatbox y scripts Python (OpenAI SDK / LangChain).</p>
 
 <br/>
 
 #### 5. 📦 Gestor de Modelos y Telemetría de Descargas
-<img src="screenshots/module-models.png" width="850" alt="Gestor de Modelos de Hugging Face" />
+<img src="screenshots/es/module-models.png" width="850" alt="Gestor de Modelos de Hugging Face" />
 <p><b>Módulo de Modelos:</b> Control de modelos locales en disco con espacio utilizado, cambio en caliente y exploración del catálogo de Hugging Face con soporte para cuantizaciones oficiales NVIDIA (NVFP4 / FP8), variantes GGUF, guía asistida para repositorios protegidos (403 Gated) y modo <code>--language-only</code> para modelos de código y texto.</p>
 
-<img src="screenshots/module-modelDownload.png" width="850" alt="Telemetría de Descarga en Vivo" />
+<img src="screenshots/es/module-modelDownload.png" width="850" alt="Telemetría de Descarga en Vivo" />
 <p><b>Telemetría de Descarga en Tiempo Real:</b> Medición en vivo de la tasa de transferencia en MB/s (<code>⚡️ 34.8 MB/s</code>), barra de progreso continuo, contador exacto de GB descargados frente al total esperado y detección de fases (acelerador especulativo DFlash2, pesos del modelo y ensamblado Splash).</p>
 
 <br/>
 
 #### 6. 🧪 Test y Diagnóstico de Modelos (Model Lab)
-<img src="screenshots/module-modelTesting.png" width="850" alt="Test y Diagnóstico de Modelos" />
+<img src="screenshots/es/module-modelTesting.png" width="850" alt="Test y Diagnóstico de Modelos" />
 <p><b>Módulo de Test y Diagnóstico:</b> Suite completa de verificación en un clic con Smoke Test (salud del servidor, disponibilidad Metal, plantilla Jinja, OpenAI Chat, Anthropic Messages y llamadas a herramientas/JSON), Benchmarking de velocidad con cálculo del factor de aceleración del KV Cache y Playground interactivo de inferencia local.</p>
 
 <br/>
 
 #### 7. ⚙️ Configuración del Sistema
-<img src="screenshots/module-settings.png" width="850" alt="Configuración del Sistema" />
+<img src="screenshots/es/module-settings.png" width="850" alt="Configuración del Sistema" />
 <p><b>Módulo de Ajustes:</b> Selector de idioma (Español Dominicano 🇩🇴 / English 🇬🇧 / macOS automático), configuración del ícono en la barra de menú superior de macOS y frecuencia de refresco.</p>
 
 <br/>
 
 #### 8. ℹ️ Acerca de Splash Monitor
-<img src="screenshots/module-about.png" width="850" alt="Acerca de Splash Monitor" />
-<p><b>Módulo Informativo:</b> Información de versión (v1.0.9-beta), arquitectura nativa en Swift 6 y Metal, licencia abierta MIT y créditos de autoría de Joan Gregorio Pérez (JMGREP Developers).</p>
+<img src="screenshots/es/module-about.png" width="850" alt="Acerca de Splash Monitor" />
+<p><b>Módulo Informativo:</b> Información de versión (v1.1.0-beta), arquitectura nativa en Swift 6 y Metal, licencia abierta MIT y créditos de autoría de Joan Gregorio Pérez (JMGREP Developers).</p>
 </div>
 
 ---
@@ -237,16 +237,16 @@ curl -fsSL https://raw.githubusercontent.com/hometrix/SplashMonitor/main/scripts
 > ⚡️ Este comando consulta la última publicación en GitHub, descarga el DMG oficial,
 > **verifica su suma SHA-256** contra el fichero `SHA256SUMS` publicado y aborta si no
 > coincide, lo monta, copia la app a `/Applications` y la abre automáticamente.
-> Fija una versión concreta con `SPLASH_MONITOR_TAG=v1.0.9-beta`.
+> Fija una versión concreta con `SPLASH_MONITOR_TAG=v1.1.0-beta`.
 
 ---
 
 #### Opción C — Descarga Manual del DMG
 
 1. **Descarga** el instalador oficial:
-   👉 [**SplashMonitor-1.0.9-beta.dmg**](https://github.com/hometrix/SplashMonitor/releases/download/v1.0.9-beta/SplashMonitor-1.0.9-beta.dmg)
+   👉 [**SplashMonitor-1.1.0-beta.dmg**](https://github.com/hometrix/SplashMonitor/releases/download/v1.1.0-beta/SplashMonitor-1.1.0-beta.dmg)
 
-   Y su suma de verificación: [**SHA256SUMS**](https://github.com/hometrix/SplashMonitor/releases/download/v1.0.9-beta/SHA256SUMS)
+   Y su suma de verificación: [**SHA256SUMS**](https://github.com/hometrix/SplashMonitor/releases/download/v1.1.0-beta/SHA256SUMS)
 
    ```bash
    shasum -a 256 -c SHA256SUMS   # debe imprimir "OK"
@@ -497,15 +497,15 @@ Until now, [Splash](https://inco.ai/blog/splash/) could only be operated from th
 
 ---
 
-### 🚀 What's New in Version 1.0.9-beta (Splash 1.4.0 Compatibility)
+### 🚀 What's New in Version 1.1.0-beta
 
-- ⚡️ **Full Splash 1.4.0 Compatibility**: Native support for the Splash 1.4.0 inference engine on Apple Silicon.
-- 🧠 **Massive Context up to 1M Tokens (Static YaRN)**: New interactive picker options for `--max-context 512K` and `--max-context 1M`, enabling entire codebases to fit into local memory.
-- 💽 **MoE Expert SSD Streaming (`--expert-memory`)**: Configurable RAM budget for MoE experts (`Auto`, `off`, `4G`, `8G`, `12G`, `16G`, `24G`), keeping critical layers in unified memory while streaming dormant experts from SSD.
-- 🎯 **MoE Speculative Draft Verification (`--verify-rows`)**: Direct switch between `auto` mode (+13% to +42% throughput gain on MoE) and `all` mode (deterministic consistency).
-- 🧬 **Qwen3.8-Flash-Next Architecture**: First-class detection and model management for Flash-Next series (`ISTA-DASLab/Qwen3.8-Flash-Next-GSQ-RCO-GGUF:Q2_0`) with QSA sparse attention and automatic DFlash2 draft selection.
-- 📊 **Streaming & KV Spill Telemetry in `/status`**: Parsed telemetry for expert memory usage, active streams, and spilled KV token tracking.
-- 🔄 **Updated Optimal Profile**: One-click "Restore Optimal Configuration" automatically aligns `--verify-rows auto` and `--expert-memory auto` for maximum throughput.
+- 🌐 **100% Bilingual Localization (English / Spanish — Closes #5)**: Complete and natural English phrasing across all views, controls, model validators (`ModelIDValidator`), actionable rejection reasons, confirmation dialogs, and notifications.
+- ⚡ **Live Inference Request Lifecycle Tracker (Closes #6)**: Interactive real-time pipeline in the Dashboard tracking engine stages: **`PREFILL`** (prompt ingestion & KV hit rate in blue) ➔ **`DECODE`** (streaming response generation with live tok/s meter and token count in green) ➔ **`IDLE / QUEUED`**.
+- 👁️ **Multimodal by Default (Vision + Text)**: Splash now starts with Vision + Text enabled out of the box, with smart auto-fallback to `--language-only` for code-only models lacking vision projectors (`mmproj`).
+- 🔔 **Native macOS Notifications & Login Auto-Launch**: Direct `UNUserNotificationCenter` system alerts when the server starts or downloads complete, plus modern login item management via Apple's `SMAppService`.
+- 📌 **Menu Bar Only Mode (Closes #4)**: Option in Settings to hide the Dock icon upon closing the window (`Cmd+Q`), keeping the monitor running lightweight in the macOS menu bar.
+- 🤖 **Splash 1.4.1 Compatibility**: Official support for `Ornith-1.5-122B` and `Flint 40B-A2.5B MoE` (~190 tok/s on Apple Silicon).
+- 🛡️ **120 Automated Unit Tests (100% passing)**: Zero regressions, robust shell injection protection, Metal memory pressure sentinel (`SystemMemoryPressureSentinel`), and actor-isolated `@MainActor` concurrency.
 
 ---
 
@@ -586,53 +586,53 @@ Every module of **Splash Monitor** is designed and optimized for a native Apple 
 <div align="center">
 
 #### 1. 🕹️ Server Controls & Agent Launchers (with Claude Cowork & DeepSeek Harness)
-<img src="screenshots/module-server.png" width="850" alt="Server Controls and Code Agent Launchers" />
+<img src="screenshots/en/module-server.png" width="850" alt="Server Controls and Code Agent Launchers" />
 <p><b>Server Control Module:</b> Start and stop the Splash server with one click, hot-swap models without restarting, configure custom ports, GDN recurrent state format in BF16 (-50% RAM), reasoning token budget, persistent SSD prefix cache, and launch autonomous coding agents: <b>Claude Cowork</b> (native AppKit launch with model aliases to prevent 404 errors), <b>Claude Code CLI</b>, <b>OpenCode</b>, <b>Codex</b>, <b>Hermes</b>, <b>Pi Agent</b>, and <b>DeepSeek Harness (`dsh`)</b>.</p>
 
 <br/>
 
 #### 2. 📊 Real-Time Token & Metal Performance Dashboard
-<img src="screenshots/module-dashboard.png" width="850" alt="Real-Time Token & Metal Performance Dashboard" />
+<img src="screenshots/en/module-dashboard.png" width="850" alt="Real-Time Token & Metal Performance Dashboard" />
 <p><b>Real-Time Performance Module:</b> Live token generation speed telemetry (DECODE and PREFILL in tok/s), KV Cache hit ratio and token reuse, token deduplication metrics, DFlash 2 speculative decoding acceptance rates, TTFT/ITL latencies, and Apple Silicon Metal unified memory usage (M3/M4/M5).</p>
 
 <br/>
 
 #### 3. 🔌 Connected Applications & Active TCP Clients
-<img src="screenshots/module-connectedApps.png" width="850" alt="Connected Applications and Active Clients" />
+<img src="screenshots/en/module-connectedApps.png" width="850" alt="Connected Applications and Active Clients" />
 <p><b>Connected Clients Module:</b> Automatic inspection of active TCP sockets against the inference port, recognizing clients such as <b>Claude Desktop / Cowork</b>, <b>DeepSeek Harness</b>, Cursor IDE, VS Code, and Chatbots with their native macOS application icons and stream state.</p>
 
 <br/>
 
 #### 4. 📖 Client Connection Guide & Local Gateway
-<img src="screenshots/module-connectedApps-guide.png" width="850" alt="Client Connection Guide" />
+<img src="screenshots/en/module-connectedApps-guide.png" width="850" alt="Client Connection Guide" />
 <p><b>Connection Guide Module:</b> Quick setup instructions and one-click copyable configuration snippets for Claude Desktop, Cursor IDE, VS Code (Cline/Continue), Chatbox, and Python scripts (OpenAI SDK / LangChain).</p>
 
 <br/>
 
 #### 5. 📦 Hugging Face Model Manager & Download Telemetry
-<img src="screenshots/module-models.png" width="850" alt="Hugging Face Local Model Manager" />
+<img src="screenshots/en/module-models.png" width="850" alt="Hugging Face Local Model Manager" />
 <p><b>Model Management Module:</b> Disk footprint inspection for local models, hot-swap deployment, and Hugging Face catalog exploration with support for official NVIDIA quantized models (NVFP4 / FP8), GGUF variants, assisted guidance for protected repositories (403 Gated Models), and <code>--language-only</code> mode for Coder/text models.</p>
 
-<img src="screenshots/module-modelDownload.png" width="850" alt="Live Download Telemetry" />
+<img src="screenshots/en/module-modelDownload.png" width="850" alt="Live Download Telemetry" />
 <p><b>Real-Time Download Telemetry:</b> Live transfer speed measurement in MB/s (<code>⚡️ 34.8 MB/s</code>), continuous progress bar, exact GB downloaded counter vs expected total, and phase detection (DFlash2 speculative accelerator, model weights, and Splash engine assembly).</p>
 
 <br/>
 
 #### 6. 🧪 Model Testing & Diagnostics Lab
-<img src="screenshots/module-modelTesting.png" width="850" alt="Model Testing & Diagnostics Lab" />
+<img src="screenshots/en/module-modelTesting.png" width="850" alt="Model Testing & Diagnostics Lab" />
 <p><b>Model Testing Module:</b> Complete one-click verification suite with Smoke Testing (server health, Metal engine readiness, Jinja templates, OpenAI Chat, Anthropic Messages, and Tool Calling/JSON validation), Metal speed benchmarking with KV Cache speedup factor calculation, and an interactive local inference Playground.</p>
 
 <br/>
 
 #### 7. ⚙️ System Preferences & Settings
-<img src="screenshots/module-settings.png" width="850" alt="System Preferences and Settings" />
+<img src="screenshots/en/module-settings.png" width="850" alt="System Preferences and Settings" />
 <p><b>Settings Module:</b> Language selector (Dominican Spanish 🇩🇴 / English 🇬🇧 / macOS auto-sync), customizable macOS menu bar item display modes, and background polling interval controls.</p>
 
 <br/>
 
 #### 8. ℹ️ About Splash Monitor
-<img src="screenshots/module-about.png" width="850" alt="About Splash Monitor" />
-<p><b>About Module:</b> Version information (v1.0.9-beta), native Swift 6 and Metal architecture details, MIT open-source license, and author credits for Joan Gregorio Pérez (JMGREP Developers).</p>
+<img src="screenshots/en/module-about.png" width="850" alt="About Splash Monitor" />
+<p><b>About Module:</b> Version information (v1.1.0-beta), native Swift 6 and Metal architecture details, MIT open-source license, and author credits for Joan Gregorio Pérez (JMGREP Developers).</p>
 
 </div>
 
@@ -687,16 +687,16 @@ curl -fsSL https://raw.githubusercontent.com/hometrix/SplashMonitor/main/scripts
 > ⚡️ This script resolves the latest release, downloads the official DMG, **verifies its
 > SHA-256 checksum** against the published `SHA256SUMS` file (aborting on mismatch),
 > mounts it, installs to `/Applications`, and opens the app automatically.
-> Pin a specific version with `SPLASH_MONITOR_TAG=v1.0.9-beta`.
+> Pin a specific version with `SPLASH_MONITOR_TAG=v1.1.0-beta`.
 
 ---
 
 #### Option C — Manual DMG Download
 
 1. **Download** the official installer:
-   👉 [**SplashMonitor-1.0.9-beta.dmg**](https://github.com/hometrix/SplashMonitor/releases/download/v1.0.9-beta/SplashMonitor-1.0.9-beta.dmg)
+   👉 [**SplashMonitor-1.1.0-beta.dmg**](https://github.com/hometrix/SplashMonitor/releases/download/v1.1.0-beta/SplashMonitor-1.1.0-beta.dmg)
 
-   And its checksum file: [**SHA256SUMS**](https://github.com/hometrix/SplashMonitor/releases/download/v1.0.9-beta/SHA256SUMS)
+   And its checksum file: [**SHA256SUMS**](https://github.com/hometrix/SplashMonitor/releases/download/v1.1.0-beta/SHA256SUMS)
 
    ```bash
    shasum -a 256 -c SHA256SUMS   # must print "OK"

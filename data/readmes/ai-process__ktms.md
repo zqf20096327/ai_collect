@@ -51,6 +51,7 @@ vendor is down, enforces rate and spend limits, and records usage.
 - [API stability](#api-stability)
 - [Operations](#operations)
 - [Development](#development)
+- [Roadmap](#roadmap)
 - [License](#license)
 
 ## How it works
@@ -124,8 +125,9 @@ The response includes canonical observability headers (`X-KTMS-Vendor`, `X-KTMS-
 ### With an AI assistant
 
 In Claude Code, the [plugin](#claude-code-plugin-and-skills) deploys and configures the stack for
-you: install it, then run `/ktms:deploy` for Compose or Helm with Keystone, light-tokenmeter and
-ktms-admin, and `/ktms:integrate` to connect a service.
+you: install it, run `/ktms:assess` to see where Keystone fits your system and what to do first,
+`/ktms:deploy` for Compose or Helm with Keystone, light-tokenmeter and ktms-admin, and
+`/ktms:integrate` to connect a service.
 
 ```bash
 claude plugin marketplace add ai-process/ktms && claude plugin install ktms@ai-process
@@ -280,7 +282,7 @@ kubectl create secret generic ktms-secrets \
   --from-literal=BOOTSTRAP_ADMIN_KEY="$(head -c 24 /dev/urandom | base64 | tr -d '/+=')"
 
 # 2. Install the release
-helm install ktms oci://ghcr.io/ai-process/charts/ktms --version 1.3.5 \
+helm install ktms oci://ghcr.io/ai-process/charts/ktms --version 1.3.6 \
   --set secrets.existingSecret=ktms-secrets \
   --set ingress.enabled=true \
   --set "ingress.hosts[0].host=proxy.example.com" \
@@ -1052,8 +1054,9 @@ Add `"--allow-write"` to `args` to let the assistant plan and apply changes. Ove
 ### Claude Code plugin and skills
 
 [`plugin/`](plugin) is a Claude Code plugin with both MCP servers (`ktms mcp`, `tokenmeter mcp`,
-read-only) and skills for the usual tasks: connecting a service, configuring routing, deploying,
-adding a local node, migrating from LiteLLM, usage reports and a production review.
+read-only) and skills for the usual tasks: seeing how Keystone fits a system, connecting a
+service, configuring routing, deploying, adding a local node, migrating from LiteLLM, usage
+reports and a production review.
 
 ```bash
 claude plugin marketplace add ai-process/ktms && claude plugin install ktms@ai-process
@@ -1539,5 +1542,4 @@ These work and are supported, but may change in a minor release. The change is t
 
 | KTMS | ktms-admin | light-tokenmeter | Notes |
 | --- | --- | --- | --- |
-| 1.x | 1.x | 1.x | With light-tokenmeter's authentication on, set `USAGE_COLLECTOR_TOKEN` to a `write` token. |
-| 1.x | 0.4.x | 0.1.x | W
+| 1.x | 1.

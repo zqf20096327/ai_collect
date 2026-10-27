@@ -51,7 +51,9 @@
   <a href="./CONTRIBUTING.md">Contributing</a>
 </p>
 
-> Alpha · Native macOS (Apple Silicon) and Windows (x64).
+> Alpha · Native macOS (Apple Silicon) and Windows (x64), with Linux (ARM64, x86_64) in beta.
+
+Linux support is in beta from Runner 0.18.2, with signed `.deb` and tarball packages for ARM64 and x86_64 and in-app updates. It has been tried on an Ubuntu 26.04 ARM64 virtual machine; native hardware, x86_64 and other distributions are not yet verified. See [Linux build and install instructions](docs/arch/linux.md) and [validation status](docs/tests/823-linux-support.md).
 
 Runner brings CLI coding agents together in reusable crews, with real terminals and a shared mission feed. Your sessions and history stay on your machine.
 
@@ -60,11 +62,11 @@ Runner brings CLI coding agents together in reusable crews, with real terminals 
 <table>
   <tr>
     <td width="50%" valign="middle">
-      <a href="assets/crews.png"><img src="assets/crews.png" alt="Crew detail page with coder and reviewer slots, a lead badge, per-slot overrides and shared team conventions" width="100%" /></a>
+      <a href="assets/crews.png"><img src="assets/crews.png" alt="Crew detail page with coder and reviewer slots, per-slot overrides and shared team conventions" width="100%" /></a>
     </td>
     <td width="50%" valign="middle">
       <h3>Reusable crews</h3>
-      <p>Compose saved roles into a crew, choose a lead, and define shared team conventions. Review each slot's agent and model, adjust overrides, then launch a mission with the same team whenever you need it.</p>
+      <p>Compose saved roles into a crew and define shared team conventions. Review each slot's agent and model, adjust overrides, then launch a mission with the same team whenever you need it.</p>
     </td>
   </tr>
   <tr>

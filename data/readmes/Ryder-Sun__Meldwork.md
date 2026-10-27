@@ -1,11 +1,3 @@
-<!-- <p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="frontend/public/logos/meldwork-wordmark-v3-dark.svg">
-    <source media="(prefers-color-scheme: light)" srcset="frontend/public/logos/meldwork-wordmark-v3.svg">
-    <img src="frontend/public/logos/meldwork-wordmark-v3.svg" alt="Meldwork" width="360">
-  </picture>
-</p> -->
-
 <p align="center">
   <img src="frontend/public/logos/meldwork-readme-banner-en.png" alt="Meldwork README banner" width="100%">
 </p>
@@ -14,113 +6,93 @@
   <strong>English</strong> · <a href="README.zh-CN.md">简体中文</a>
 </p>
 
-# Meldwork — Local-first multi-agent orchestration for AI coding agents
+# Meldwork — Let Agents collaborate to move tasks forward
 
-**Coordinate Codex, Claude Code, Gemini CLI, and 9 more agent CLIs from one desktop workspace. Stop manually copying context between terminals — Meldwork freezes one task snapshot, sends it to every selected agent, captures their independent findings as evidence, and gates workspace writes behind your approval.**
+**Set the goal. Let Agents work together. Meldwork brings your existing Agents into one working group to share context, discuss approaches, carry out work, and check each other's results — with less relaying, prompting, and stitching outputs together.**
 
-Meldwork is a local-first multi-agent orchestration desktop app for macOS (Apple silicon). It connects the AI coding agent CLIs you already have installed — Codex, Claude Code, Hermes, OpenCode, Gemini CLI, Qwen Code, Kimi Code, MiMo Code, Pi Agent, OpenClaw, OpenCodeReview, and WorkBuddy — into one reviewable workspace where you can run Direct sessions, Concurrent Responses (same task, multiple agents, independent replies), or Auto Discussion V4 (agents propose, challenge, negotiate responsibilities, and verify results across rounds).
+Meldwork is a local-first multi-Agent collaboration workspace for the Agent tools you already use on your Mac. Once you choose the participants, goal, context, and permissions, Agents in Auto Discussion can build on each other's work, request contributions or reviews, and advance the task within the authorized scope. Direct conversations and independent concurrent responses also support research, analysis, writing, planning, review, and implementation.
 
-Unlike terminal multiplexers (tmux, zellij) that show raw output side by side, Meldwork preserves every finding as structured evidence (Finding → Evidence → Decision → Disposition), keeps a human adoption gate before any file changes, and makes multi-agent work inspectable and reusable across sessions.
+You do not need to direct every round, but you still set the goal, grant permissions, and make key decisions. Missing information, permission requests, or tradeoffs may require your input. Workspace writes are opt-in; collaboration history, run state, and deliverables stay local so you can revisit the work and continue it.
 
 <p align="center">
-  <a href="https://github.com/Ryder-Sun/Meldwork/releases/download/Meldwork-V1.0.6/Meldwork-0.1.6-arm64.dmg"><strong>Download Meldwork V1.0.6 for Apple silicon macOS</strong></a>
+  <a href="https://github.com/Ryder-Sun/Meldwork/releases/download/Meldwork-V1.0.8/Meldwork-1.0.8-arm64.dmg"><strong>Download Meldwork V1.0.8 for Apple silicon macOS</strong></a>
   · <a href="architecture.md">Architecture</a>
   · <a href="LICENSE">License</a>
 </p>
 
-## Who it is for
+## What Meldwork is for
 
-Use Meldwork when you:
+Meldwork is useful when several Agents need to advance the same task and you want to spend less time passing context and coordinating next steps. Typical work includes:
 
-- run multiple AI coding agents (Codex, Claude Code, Gemini CLI, Hermes, OpenCode, etc.) and want to coordinate them without manually passing context between terminals;
-- need independent review for code, research, or product analysis before choosing a path;
-- want to compare multiple agents' responses to the same task side by side, with evidence trails and a human approval gate before any workspace writes;
-- need inspectable traces, evidence, and human review for multi-agent coding sessions — so you can resume, audit, and reuse work across sessions.
+- research and information synthesis across local Agent tools and selected knowledge sources;
+- product, market, operational, and technical analysis;
+- writing, planning, review, and structured document work;
+- multimodal work with local documents, images, audio, video, PDFs, and code or configuration files;
+- implementation in an authorized workspace, with other Agents checking the deliverables and requesting revisions.
 
-## Workflow
+## How a task moves through Meldwork
 
-1. **Select** the local Agents and participants.
-2. **Scope** the goal, working directory, context, and permissions.
-3. **Run** Direct, Concurrent Responses, or Auto Discussion V4.
-4. **Review and adopt** the result, evidence, and any Human Gate before changing the workspace.
+1. **Select** the Agents that will work on the task together.
+2. **Scope** the goal, working directory, context, attachments, Skills, knowledge sources, and permissions.
+3. **Collaborate** in Auto Discussion: let Agents discuss approaches, carry out authorized work, and check results. Direct conversations and Concurrent Responses are also available.
+4. **Decide** when the work needs information, permission, or a tradeoff resolved.
+5. **Check the result** and request changes when more work is needed.
 
 ## Collaboration modes
 
 | Mode | What happens | Best for |
 | --- | --- | --- |
-| **Direct** | One selected Agent keeps its conversation and native session when supported. | Focused work with one Agent. |
-| **Concurrent Responses** | Selected Agents receive the same frozen task snapshot and return independent replies in stable order. | Comparing approaches before choosing one. |
-| **Auto Discussion V4** | The first round runs concurrent proposals. Later turns follow the discussion: one Agent can route the next turn with `@Agent`, or several Agents can be selected for a concurrent response. Native Agent sessions continue across rounds. | Multi-round work that benefits from discussion, flexible routing, and review. |
+| **Direct** | One selected Agent keeps its conversation and native session when supported. | Focused research, writing, analysis, or execution. |
+| **Concurrent Responses** | Selected Agents receive the same frozen task snapshot and return independent responses in stable order. | Comparing perspectives before choosing a path. |
+| **Auto Discussion V4** | Agents propose independently, discuss, request peer contributions, carry out authorized work, and check deliverables. A delivery owner judges progress and requests user decisions when needed. Native sessions continue when supported. | Multi-step collaboration with less manual coordination. |
 
-Participants are always selected by the user. Automatic selection from a larger roster is outside the current preview.
+Participants are selected by the user. Automatic selection from a larger roster is outside the current preview.
 
-## How Meldwork differs
+## Revisit the process and continue the work
 
-Meldwork is a local-first multi-agent orchestration desktop app — not a terminal multiplexer, cloud agent fleet, communication network, or programmable orchestration framework. It connects the local Agent CLIs you already use to a decision-ready review workflow and keeps independent findings, evidence, responsibility, and the human adoption decision visible in one local workspace.
+Meldwork keeps task context, Agent replies, run state, and deliverables locally so you can see how work progressed, where it stalled, and what needs attention next. The Run Ledger preserves phase, participant, attempt, artifact, recovery, and Human Gate state. Diagnostic tool output and sensitive runtime details stay behind the Electron main-process boundary.
 
-If you're comparing Meldwork to other multi-agent orchestration tools, here's where it fits:
+These records help you inspect collaboration; they do not establish that every claim has been fact-checked. Peer review does not guarantee correctness, and important deliverables still need acceptance checks appropriate to their use.
 
-| Tool | What it does | What Meldwork adds |
-| --- | --- | --- |
-| tmux / zellij | Terminal multiplexer — run agents in panes, manually copy context between them | Frozen task snapshots, evidence trails, human adoption gate, no manual context passing |
-| Claude Code Agent Teams | Native subagent spawning within Claude Code only | Cross-CLI: mix Codex, Claude Code, Hermes, OpenCode and 8 more in one workspace |
-| Claude Squad / amux / Conductor | Parallel agent runners with git worktree isolation | Evidence-backed review (Finding → Evidence → Decision → Disposition), not just parallel execution |
-| CrewAI / AutoGen / LangGraph | Programmable multi-agent frameworks you build yourself | Ready-to-use desktop workflow — no orchestration code to write |
-| Conductor (conductor.build) | macOS desktop for parallel Claude Code + Codex | Heterogeneous CLI support (12+ agents), evidence trails, human gate before writes |
-| Emdash | Electron desktop for 22+ CLI agents | Decision traceability, evidence-aware runs, structured adoption records |
-| Bernstein | Deterministic orchestrator with pre-merge verification | Human-in-the-loop adoption gate, not just automated CI checks |
-| Buzz / Pragma / Paperclip | Agent communication / workflow / org management | Case-scoped independent judgments with evidence-backed decisions, not identity or org charts |
-| Warp Oz / Devin / Factory / OpenHands Cloud | Cloud-hosted agent execution platforms | Runs locally in your Electron work cell with existing CLIs — no cloud dependency |
+## General Agent catalog
 
-## See it in action
+Meldwork detects and invokes compatible locally installed Agent commands. The catalog currently includes:
 
 <table>
   <tr>
-    <th>Local Agent discovery</th>
-    <th>Multi-agent review</th>
-    <th>Direct multimodal work</th>
+    <td align="center" valign="top"><img src="frontend/public/agent-logos/codex.svg" alt="Codex logo" width="32" height="32"><br><strong>Codex</strong></td>
+    <td align="center" valign="top"><img src="frontend/public/agent-logos/hermes.png" alt="Hermes logo" width="32" height="32"><br><strong>Hermes</strong></td>
+    <td align="center" valign="top"><img src="frontend/public/agent-logos/openclaw-transparent.png" alt="OpenClaw logo" width="32" height="32"><br><strong>OpenClaw</strong></td>
+    <td align="center" valign="top"><img src="frontend/public/agent-logos/workbuddy.png" alt="WorkBuddy logo" width="32" height="32"><br><strong>WorkBuddy</strong></td>
+    <td align="center" valign="top"><img src="frontend/public/agent-logos/zcode.png" alt="Zcode logo" width="32" height="32"><br><strong>Zcode</strong></td>
+    <td align="center" valign="top"><img src="frontend/public/agent-logos/pi.svg" alt="Pi Agent logo" width="32" height="32"><br><strong>Pi Agent</strong></td>
+    <td align="center" valign="top"><img src="frontend/public/agent-logos/kimi.png" alt="Kimi Code logo" width="32" height="32"><br><strong>Kimi Code</strong></td>
   </tr>
   <tr>
-    <td align="center"><a href="assets/meldwork-agent-discovery.png"><img src="assets/meldwork-agent-discovery.png" alt="Meldwork local-first multi-agent workspace detecting Agent CLIs" width="320" height="205"></a></td>
-    <td align="center"><a href="assets/meldwork-multi-agent-review.png"><img src="assets/meldwork-multi-agent-review.png" alt="Meldwork multi-agent collaboration with evidence and human review" width="320" height="205"></a></td>
-    <td align="center"><a href="assets/meldwork-direct-multimodal.png"><img src="assets/meldwork-direct-multimodal.png" alt="Meldwork direct Agent workspace with local files and media" width="320" height="205"></a></td>
+    <td align="center" valign="top"><img src="frontend/public/agent-logos/mimo.svg" alt="MiMo Code logo" width="32" height="32"><br><strong>MiMo Code</strong></td>
+    <td align="center" valign="top"><img src="frontend/public/agent-logos/claude.png" alt="Claude Code logo" width="32" height="32"><br><strong>Claude Code</strong></td>
+    <td align="center" valign="top"><img src="frontend/public/agent-logos/gemini.svg" alt="Gemini CLI logo" width="32" height="32"><br><strong>Gemini CLI</strong></td>
+    <td align="center" valign="top"><img src="frontend/public/agent-logos/opencode.svg" alt="OpenCode logo" width="32" height="32"><br><strong>OpenCode</strong></td>
+    <td align="center" valign="top"><img src="frontend/public/agent-logos/qwen.svg" alt="Qwen Code logo" width="32" height="32"><br><strong>Qwen Code</strong></td>
+    <td align="center" valign="top"><img src="frontend/public/agent-logos/opencodereview.svg" alt="OpenCodeReview logo" width="32" height="32"><br><strong>OpenCodeReview</strong></td>
   </tr>
 </table>
 
-Example: give Codex, Claude Code, and Gemini CLI the same task — review a PR, analyze a bug, or compare implementation approaches. Meldwork freezes the task context, sends it to all three agents simultaneously, captures their independent findings as evidence, and lets you adopt only the result you approve. No manual context copying between terminals.
+Approved Agent Connectors and custom executable Agents use the desktop connector paths. The [desktop guide](desktop/README.md) contains the current adapter, installation, provider, and capability matrix.
 
-## Supported local Agent CLIs
+## Context and local boundaries
 
-Meldwork detects and invokes an installed command when its adapter and the CLI version are compatible:
+Meldwork runs as a local Electron application. Conversations, group configuration, run records, and app-owned attachments stay in the local user data directory. The renderer receives only validated snapshots through a narrow preload API; executable paths, credentials, native session references, Skill paths, and unrestricted shell access remain in the main process.
 
-<table>
-  <tr>
-    <td align="center" valign="top" width="16.66%"><img src="frontend/public/agent-logos/codex.svg" alt="Codex logo" width="32" height="32"><br><strong>Codex</strong></td>
-    <td align="center" valign="top" width="16.66%"><img src="frontend/public/agent-logos/hermes.png" alt="Hermes logo" width="32" height="32"><br><strong>Hermes</strong></td>
-    <td align="center" valign="top" width="16.66%"><img src="frontend/public/agent-logos/openclaw-transparent.png" alt="OpenClaw logo" width="32" height="32"><br><strong>OpenClaw</strong></td>
-    <td align="center" valign="top" width="16.66%"><img src="frontend/public/agent-logos/workbuddy.png" alt="WorkBuddy logo" width="32" height="32"><br><strong>WorkBuddy</strong></td>
-    <td align="center" valign="top" width="16.66%"><img src="frontend/public/agent-logos/pi.svg" alt="Pi Agent logo" width="32" height="32"><br><strong>Pi Agent</strong></td>
-    <td align="center" valign="top" width="16.66%"><img src="frontend/public/agent-logos/kimi.png" alt="Kimi Code logo" width="32" height="32"><br><strong>Kimi Code</strong></td>
-  </tr>
-  <tr>
-    <td align="center" valign="top" width="16.66%"><img src="frontend/public/agent-logos/mimo.svg" alt="MiMo Code logo" width="32" height="32"><br><strong>MiMo Code</strong></td>
-    <td align="center" valign="top" width="16.66%"><img src="frontend/public/agent-logos/claude.png" alt="Claude Code logo" width="32" height="32"><br><strong>Claude Code</strong></td>
-    <td align="center" valign="top" width="16.66%"><img src="frontend/public/agent-logos/gemini.svg" alt="Gemini CLI logo" width="32" height="32"><br><strong>Gemini CLI</strong></td>
-    <td align="center" valign="top" width="16.66%"><img src="frontend/public/agent-logos/opencode.svg" alt="OpenCode logo" width="32" height="32"><br><strong>OpenCode</strong></td>
-    <td align="center" valign="top" width="16.66%"><img src="frontend/public/agent-logos/qwen.svg" alt="Qwen Code logo" width="32" height="32"><br><strong>Qwen Code</strong></td>
-    <td align="center" valign="top" width="16.66%"><img src="frontend/public/agent-logos/opencodereview.svg" alt="OpenCodeReview logo" width="32" height="32"><br><strong>OpenCodeReview</strong></td>
-  </tr>
-</table>
+Selected Agents may send prompts, attachments, or Skills to the model provider configured in their own CLI. Knowledge access is explicit and bounded: the current implementation supports local Obsidian retrieval and CLI-owned Feishu or DingTalk access modes. Local-first describes where Meldwork stores and coordinates work; it does not promise that an Agent's model provider is offline.
 
-Approved Agent Connectors can be added through the [Agent Connector SDK](docs/agent-connector-sdk.md); custom executable Agents use the desktop custom-Agent path. See the [desktop guide](desktop/README.md) for the full adapter and capability matrix.
+## Download V1.0.8
 
-## Quick start
+For Apple silicon macOS, download the [Meldwork V1.0.8 prerelease](https://github.com/Ryder-Sun/Meldwork/releases/tag/Meldwork-V1.0.8) and choose [`Meldwork-1.0.8-arm64.dmg`](https://github.com/Ryder-Sun/Meldwork/releases/download/Meldwork-V1.0.8/Meldwork-1.0.8-arm64.dmg). The release also includes a ZIP archive and SHA-256 manifest. Install at least one supported local Agent CLI before opening the app.
 
-### Apple silicon macOS preview
+The preview artifacts are ad-hoc signed and not notarized with an Apple Developer ID. macOS may require **Open Anyway** under **System Settings → Privacy & Security** on first launch.
 
-Download [`Meldwork-0.1.6-arm64.dmg`](https://github.com/Ryder-Sun/Meldwork/releases/download/Meldwork-V1.0.6/Meldwork-0.1.6-arm64.dmg) from the [official V1.0.6 prerelease](https://github.com/Ryder-Sun/Meldwork/releases/tag/Meldwork-V1.0.6), move Meldwork to Applications, and install at least one supported local Agent CLI. The prerelease is ad-hoc signed and not notarized; macOS may require **Open Anyway** in **System Settings -> Privacy & Security** on first launch.
-
-### Run from source
+## Run from source
 
 Prerequisites: Node.js `22.12+` and npm.
 
@@ -139,27 +111,21 @@ npm --prefix frontend run build:desktop
 npm --prefix desktop test
 ```
 
-## Current boundary
+## V1.0.8
 
-Meldwork is a local Electron desktop app for multi-agent orchestration and review — not a hosted agent fleet or a general agent framework. The current preview does not provide remote/cloud agent execution, automatic participant selection, enterprise SSO/RBAC/governance, or an Outcome Network. Local-first does not mean fully offline: a selected Agent may send prompts, attachments, or Skills to its own CLI credentials' model provider. Workspace writes are opt-in workflow controls, not an operating-system sandbox.
+V1.0.8 keeps Kimi read-only queries in manual approval mode instead of forcing a planning cycle, preserves MiMo's final text chunks, forwards supported native CLI configuration, and retains the selected Auto Discussion mode after sending. Repetitive native output is cancelled with partial replies preserved. Zcode remains before Pi Agent with its official logo and native default configuration; WorkBuddy can reuse a configured desktop model selected in Meldwork.
 
-## V1.0.6
+Real CLI acceptance covered all 13 installed Agents. A five-Agent unlimited discussion completed all 14 native calls through an isolated Magpie hotfix. The installed Magpie version can rewrite `stop` into `tool_calls` when `tool_calls` is null, causing OpenCode, MiMo, and Hermes to continue indefinitely; this Meldwork release does not install or restart Magpie. OpenClaw, Zcode, Gemini, Qwen, and OpenCodeReview also had native configuration or authentication failures in this audit. Detecting an installed CLI does not certify a working model connection. Regression validation includes 1,655 desktop tests, 370 frontend tests, web and desktop builds, and package validation. Unlimited discussion retains stalled-process detection and write permissions remain opt-in.
 
-V1.0.6 improves long-lived Agent recovery, keeps group discussions going through individual failures, and lets conversations run independently even in the same folder. It delivers attachments and knowledge sources to group Agents, restores WorkBuddy's bundled CLI launch, and tightens ACP and WorkBuddy permission checks.
+Electron acceptance with the same isolated gateway also completed a separate five-Agent unlimited discussion: 19 native calls, no failed attempts or retries, about 12 minutes. Auto Discussion and No round limit remained selected after sending, completion, and leaving and reopening the group. This verifies the workflow, not a response-time guarantee or a repair to the user's installed gateway.
 
-The interface starts without waiting for Agent detection, highlights conversations awaiting your decision, explains why an installed Agent is unavailable, and adds General settings with System, Light, and Dark appearance options.
-
-Release verification includes 357/357 frontend tests, 1,603/1,603 desktop tests, six deterministic evaluation cases with 18 results, web and desktop builds, packaging, DMG checksum and ZIP integrity checks, and code-signature verification. The packaged Apple silicon app launched with a fresh profile without main-process faults. Real Agent group execution, cancellation, and restart acceptance were not repeated for this release. The artifacts remain ad-hoc signed and unnotarized; live behavior still depends on the installed Agent CLI version, authentication, Provider, and capabilities.
-
-## Docs
+## Documentation
 
 - [Architecture and product boundary](architecture.md)
 - [Desktop setup and Agent matrix](desktop/README.md)
-- [Agent Connector SDK](docs/agent-connector-sdk.md)
-- [AI discoverability index](docs/ai-discoverability.md)
 - [Contributing](CONTRIBUTING.md)
 - [Security policy](SECURITY.md)
 
 ## License
 
-Meldwork is source-available under the [Meldwork Non-Commercial Source License 1.0](LICENSE). You may inspect, run, modify, and share it for non-commercial purposes. Commercial use requires prior written permission; see [COMMERCIAL_USE.md](COMMERCIAL_USE.md).
+Meldwork is open source under the [Apache License 2.0](LICENSE). Commercial use, private use, modification, and redistribution are permitted under the license terms. No separate commercial authorization or license fee is required. Apache-2.0 does not grant trademark rights; see [COMMERCIAL_USE.md](COMMERCIAL_USE.md).

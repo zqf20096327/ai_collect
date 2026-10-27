@@ -127,6 +127,7 @@ My view on LLM Evaluation: [Deck 24](LLMEvaluation.pdf), and [SF Big Analytics a
 - [SWE Bench ](https://www.swebench.com/)
 - [The Aggregate](https://theaggregate.ai/), an aggregate LLM leaderboard that fits a robust IRT model across public benchmark leaderboards, rates every model on one Elo scale with a standard error, and links each score to its source leaderboard, [methodology](https://theaggregate.ai/how-it-works)
 - [Benchouse](https://benchouse.ai/benchmark), independent leaderboard of analytics agent products (Snowflake Cortex, Databricks Genie, Hex, nao, Lightdash, Supersimple) answering the same 300 questions over a warehouse with withheld ground truth, scored on accuracy, completeness and restraint
+- [Personal Agent Bench](https://personalagentbench.com/), independent benchmark of consumer personal AI agent products (Meta Muse, Instinct, Pine, Town and others): runtime teardowns plus a repeatable task exam, completion rates reported with 95% intervals and sample sizes, no combined score or ranking, [dataset](https://huggingface.co/datasets/personalagentbench/personal-agent-bench)
 - [AlpacaEval leaderboard](https://tatsu-lab.github.io/alpaca_eval/) Length-Controlled AlpacaEval: A Simple Way to Debias Automatic Evaluators, Apr 2024, [arxiv](https://arxiv.org/abs/2404.04475)  [code](https://github.com/tatsu-lab/alpaca_eval)
 - [Open Medical LLM Leaderboard from HF](https://huggingface.co/blog/leaderboard-medicalllm) [Explanation](https://huggingface.co/blog/leaderboard-medicalllm)
 - [Gorilla, Berkeley function calling Leaderboard](https://gorilla.cs.berkeley.edu/leaderboard.html) [Explanation ](https://gorilla.cs.berkeley.edu/blogs/8_berkeley_function_calling_leaderboard.html)
@@ -779,8 +780,4 @@ Agentic Tasks
 - Crumbling Under Pressure: PropensityBench Reveals AI’s Weaknesses, Nov 2025, [arxiv](https://scale.com/blog/propensitybench)
 - AdvancedIF: Rubric-Based Benchmarking and Reinforcement Learning for Advancing LLM Instruction Following, Nov 2025, [arxiv](https://arxiv.org/abs/2511.10507)
 - MCPVerse: An Expansive, Real-World Benchmark for Agentic Tool Use, Oct 2025, [arxiv](https://arxiv.org/abs/2508.16260v1)
-- CookBench: A Long-Horizon Embodied Planning Benchmark for Complex Cooking Scenarios, aug 2025, [arxiv](https://arxiv.org/abs/2508.03232)
-- Establishing Best Practices for Building Rigorous Agentic Benchmarks, Jul 2025, [arxiv](https://arxiv.org/abs/2507.02825)
-- MCPEval: Automatic MCP-based Deep Evaluation for AI Agent Models, Jul 2025, [arxiv](https://arxiv.org/abs/2507.12806)
-- TRAIL: Trace Reasoning and Agentic Issue Localization, May 2025, [arxiv](https://arxiv.org/abs/2505.08638)
-- S
+- CookBench: A Long-Horizon Embodied Planning Benchmark for Complex Cooking Scenarios, aug 2025, [arxiv](h

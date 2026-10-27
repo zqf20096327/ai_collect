@@ -77,40 +77,29 @@ The GUI and CLI share an independent background host and the existing PiX sessio
 
 Interactive mode uses Pi's native terminal editor, Markdown and tool cards, model picker, and searchable tree selector. Type `/` for commands, `/tree` to choose a branch, or `/sessions` to resume.
 
+After installation, open a new terminal in your project directory:
+
 ```sh
-npm run build:cli
-node bin/pix.mjs run "Check the project tests"
-node bin/pix.mjs sessions
-node bin/pix.mjs tree --session <session-id-or-path>
+pix
+pix run "Check the project tests"
+pix sessions
+pix tree --session <session-id-or-path>
 ```
 
-See [CLI documentation](docs/cli.md) for commands, the Node-only package, concurrency, and real agent verification.
+See [CLI documentation](docs/cli.md) for commands, concurrency, and real agent verification.
 
 ## Download
 
 Grab the installer for your platform from [GitHub Releases](https://github.com/huang-sh/PiX/releases):
 
 - **Windows**: `PiX-Setup-x.y.z.exe` (installer) or `PiX-Portable-x.y.z.exe` (portable), x64.
-- **macOS**: `PiX-x.y.z-arm64.dmg` or `PiX-x.y.z-x64.dmg`, zip archives also available.
+- **macOS**: choose the installer that matches your Mac's chip (check ** → About This Mac**):
+  - **Apple silicon** (M1, M2, M3, M4, etc.): `PiX-x.y.z-arm64.dmg`.
+  - **Intel processor**: `PiX-x.y.z-x64.dmg`.
+  - Zip archives are also available; choose `arm64` for Apple silicon or `x64` for Intel.
 - **Linux**: `PiX-x.y.z-x86_64.AppImage` (portable), `PiX-x.y.z-amd64.deb`, `PiX-x.y.z-x86_64.rpm`, plus tar.gz. x64.
 
 Installers are unsigned: if Windows SmartScreen warns, choose "Run anyway"; on macOS, allow the app in System Settings → Privacy & Security on first launch.
-
-<details>
-<summary>Run from source</summary>
-
-Requires Node.js 22.19 or newer.
-
-```bash
-npm install
-npm run dev
-```
-
-`npm run verify` runs the full typecheck, test, and startup smoke suite.
-
-`npm run test:fff` checks bundled file search and Codemode; `npm run test:web` checks the web extension's installed layout (a real npm install, needs network) and page fetching, both with isolated settings. On macOS, `npm run dist:mac` packages the current machine's architecture; on Linux, `npm run dist:linux` packages AppImage, deb, rpm, and tar.gz. CI builds on separate Apple Silicon, Intel, and Ubuntu runners to include the matching native libraries.
-
-</details>
 
 ## Community
 

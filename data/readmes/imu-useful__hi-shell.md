@@ -1,6 +1,6 @@
 <div align="center">
 
-# ✦ hi-shell
+# 👋 hi-shell
 
 **A Material 3 Expressive desktop shell for Hyprland — with Claude AI built in.**
 
@@ -12,7 +12,7 @@ Built on [Quickshell](https://quickshell.org). Colors from your wallpaper, anima
 [![Material You](https://img.shields.io/badge/Material_3-Expressive-7F67BE?style=for-the-badge&logo=materialdesign&logoColor=white)](https://m3.material.io)
 <br>
 [![License: GPL-2.0](https://img.shields.io/badge/License-GPL--2.0-blue?style=for-the-badge)](LICENSE)
-[![Telegram chat](https://img.shields.io/badge/Telegram-tux__emp-26A5E4?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/tux_emp)
+[![Telegram chat](https://img.shields.io/badge/Telegram-hi__shell-26A5E4?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/hi_shell)
 
 [Install](#installation) · [Screenshots](#screenshots) · [Shortcuts](#usage) · [Configuration](#configuration) · [Troubleshooting](#troubleshooting) · [Community](#community)
 
@@ -29,10 +29,13 @@ Built on [Quickshell](https://quickshell.org). Colors from your wallpaper, anima
 | | |
 | --- | --- |
 | 🧭 **Bar** | Configurable widgets (left / center / right), any screen edge, Hug / Float / Islands / M3 styles, hover popups for media, resources, weather, battery and updates, a live audio spectrum |
-| 🚀 **App launcher** | Apps and settings, plus prefixes: `=` calculator, `>` run a command, `<` keybinds, `:` emoji, `;` clipboard, `/` settings |
+| 🚀 **App launcher** | Apps and settings, plus prefixes: `=` calculator (a plain "12*(3+4)" or "10+5=" is answered too, without the prefix), `>` run a command, `<` keybinds, `:` emoji, `;` clipboard, `/` settings |
 | ✨ **Claude AI** | Quick palette (<kbd>Super</kbd>+<kbd>Y</kbd>) and a full chat in the left sidebar through the `claude` CLI: streamed answers, code blocks with copy buttons, model picker, token / cost usage, saved chats |
 | 🪟 **Overlays** | Workspace overview with window previews (drag windows between workspaces), session screen, polkit dialog, region screenshot / OCR / recording, optional dock, rounded screen corners |
 | ⬅️ **Left sidebar** | Greeting, now playing with synced lyrics, weather, Claude chat, translator, clipboard history with image thumbnails |
+| 🎯 **Focus Mode** | Sessions with a minimal bar, Pomodoro cycles, blocked apps and sites, profiles, statistics and achievements |
+| ⏳ **Wait Mode** | A cover for the person while an AI works on the machine: a player or the wallpaper, keyboard and mouse shut out, no sleeping, Esc three times to exit; automation can still see and click what's underneath |
+| 🔋 **Power saving** | One switch turns off animations, blur, transparency, the visualizer and the dancing frame, and puts them back when it's turned off |
 | ➡️ **Right sidebar** | Quick toggles (Android-style pills or classic buttons, editable), volume / brightness / mic, Wi-Fi and Bluetooth pages, per-app volume, notification center, calendar, to-do, focus / stopwatch / countdown timers |
 | 🖼️ **Desktop** | Shape clock, big clock, weather, resources, calendar, media with lyrics, greeting, to-do, notes, world clock, timers, user card, image frame; audio visualizer; drag-to-place edit mode |
 | 🎨 **Theming** | Wallpaper picker (local folders, Wallhaven, Unsplash), Material 3 palette from the wallpaper via matugen, scheme variants, light / dark / auto, shaped wallpaper frame |
@@ -52,9 +55,11 @@ and the audio spectrum is drawn by a single shader.
 | <img src="docs/screenshots/settings.webp" alt="Settings"> | <img src="docs/screenshots/claude.webp" alt="Claude palette"> |
 | **Settings** — every option, searchable from the launcher | **Claude palette** — ask anything, answers stream in |
 | <img src="docs/screenshots/wallpapers.webp" alt="Wallpaper picker"> | <img src="docs/screenshots/display-mode.webp" alt="Display mode"> |
-| **Wallpapers** — local and online, scheme, mode, frame | **Display mode** — duplicate or extend to a second screen |
+| **Wallpapers** — local and online, scheme, mode, 28 frames | **Display mode** — duplicate or extend to a second screen |
 | <img src="docs/screenshots/welcome.webp" alt="Welcome"> | <img src="docs/screenshots/session.webp" alt="Session screen"> |
 | **First-run welcome** — language, look and shortcuts | **Session screen** — lock, log out, suspend, reboot, power off |
+| <img src="docs/screenshots/desktop-edit.webp" alt="Desktop edit mode"> | <img src="docs/screenshots/wait-mode.webp" alt="Wait Mode"> |
+| **Desktop edit mode** — drag, scale and stretch widgets | **Wait Mode** — a locked screen with the player and the queue |
 
 ## Requirements
 
@@ -66,6 +71,8 @@ Arch Linux + Hyprland **0.56+** (the integration file uses the Lua config).
 | `matugen` | Material 3 colors from the wallpaper |
 | `python` | `services/theme_updater.py` and the other helper scripts (stdlib only, no pip packages) |
 | `python-fonttools` (optional) | a ~160 KB copy of the icon font with just the icons the shell uses (`services/icon_font.py`), instead of the full 15 MB one in memory |
+| `polkit` | `pkexec`: asks for your password when a Focus Mode session starts blocking sites |
+| `wtype` | types Ctrl+W into a browser window to close a tab on a blocked site (Focus Mode) |
 | `ttf-material-symbols-variable-git` (AUR) | icons (`Material Symbols Rounded`) |
 | `pipewire`, `wireplumber` | volume control |
 | `networkmanager` | Wi-Fi toggle |
@@ -100,8 +107,14 @@ git clone https://github.com/imu-useful/hi-shell.git ~/Projects/hi-shell
 or without cloning first (the repo goes to `~/.local/share/hi-shell/repo`):
 
 ```sh
-bash <(curl -fsSL https://raw.githubusercontent.com/imu-useful/hi-shell/main/install.sh)
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/imu-useful/hi-shell/main/install.sh)"
 ```
+
+That line works in bash, zsh and fish (fish has no `<(...)`, so the usual `bash <(curl ...)` fails there).
+
+The installer first shows what it can install (packages, the Hyprland hook, the fish / kitty / fastfetch / btop / Dolphin configs, optional apps, starting the shell):
+type the numbers to switch parts on or off, Enter to continue. Then it asks before every action ("Should I ...?"):
+`y` yes, `n` no, `a` yes for all the rest.
 
 The installer:
 
@@ -111,7 +124,10 @@ The installer:
    `~/.config/hypr/hyprland.lua` otherwise (one marked line, with a backup of the file)
 4. starts the shell and warns about other bars or notification daemons that are still running
 
-Options: `--yes` (don't ask), `--no-deps`, `--no-start`. Then tap <kbd>Super</kbd>.
+The optional apps (all off by default): Zen Browser, Telegram, Vesktop, osu!lazer, Steam (needs `[multilib]`), Spotify and Neovim.
+Each one goes through `pacman` if a configured repository has it, otherwise through `paru` / `yay`.
+
+Options: `--yes` (no menu and no questions: installs everything except the optional apps), `--with-apps` (those too), `--no-deps`, `--no-start`, `--no-dots`. Then tap <kbd>Super</kbd>.
 
 ### Update
 
@@ -181,10 +197,10 @@ Stops the shell, removes the line from your Hyprland config and the link. Packag
 | Display key (<kbd>Fn</kbd>+<kbd>F10</kbd> on Lenovo, `XF86Display`) | Display mode: this screen only, duplicate, extend left / right, second screen only; press again for the next, Enter to apply |
 | bar power button | Session screen (lock, log out, suspend, reboot, power off) |
 | <kbd>Super</kbd>+<kbd>R</kbd> | Wallpaper picker |
-| <kbd>Super</kbd>+<kbd>Z</kbd> | Left sidebar (also right click on the bar's ✦ button) |
+| <kbd>Super</kbd>+<kbd>Z</kbd> | Left sidebar (also left click on the bar's ✦ button; right click opens the launcher) |
 | click the clock | Calendar popup |
 | click the system icons | Right sidebar (scroll there to change the volume) |
-| right click the desktop | Edit desktop widgets: drag them (edges and centers snap to other widgets and the screen, with guide lines), toggle them in the toolbar; Esc or Done to finish |
+| right click the desktop | Edit desktop widgets: drag them (edges and centers snap to other widgets and the screen, with guide lines), resize them (corner = size, right edge = width), drag the wallpaper frame, toggle them in the toolbar; Esc or Done to finish |
 | hover a bar widget | Details popup (media controls, resources, weather forecast, battery, updates) |
 | scroll | Every slider (volume, brightness, mic, app volumes, track position, settings); on the bar: system icons = volume, battery = brightness, media = player volume, keyboard layout = switch, workspaces = previous / next; the calendar scrolls through months |
 
@@ -239,7 +255,7 @@ Sections:
   `bar.resources`, `bar.utilButtons`, `bar.updates`; `bar.media.spinArt` spins the cover art like a record while playing (on by default)
 - `sidebar`: `quickToggles.style` (android, classic) and `quickToggles.shown` (order; also editable with the ✎ button
   in the sidebar), night light temperature
-- `desktop`: `focusMode` (with windows open: sharp wallpaper, widgets and frame hidden; on by default), `coverMode` (the playing track's cover instead of the wallpaper, colors included; also a quick toggle and
+- `desktop`: `clockSeconds` (seconds in the big digital clock), `focusMode` (with windows open: sharp wallpaper, widgets and frame hidden; on by default), `coverMode` (the playing track's cover instead of the wallpaper, colors included; also a quick toggle and
   `qs -c hi-shell ipc call coverMode toggle`), draw the `wallpaper`, show `widgets`, `monitor` for them (empty = first screen), `layout` (written by edit
   mode), `worldClocks` (IANA zones), `image` for the image frame, bottom `visualizer`
 - `ai.model`: claude CLI model alias (empty = CLI default, `opus`, `sonnet`, `haiku`; also the picker in the chat)
@@ -271,6 +287,13 @@ Sections:
   (OS, kernel, packages, Hyprland, the hi-shell version, terminal, font, CPU, GPU, memory and disk bars, battery,
   display, uptime). The fish config shows it when a terminal window opens (not in nested shells or over ssh);
   `set -U hi_greeting off` turns that off.
+- **btop** (`dots/btop/btop.conf`): the `hi-shell` theme, which follows the wallpaper like the terminal does:
+  `services/TerminalColors.qml` writes `~/.config/btop/themes/hi-shell.theme` (once `~/.config/btop` exists) and open
+  btops reload it. The terminal's own translucent background stays. To keep your own btop.conf, just set
+  `color_theme = "hi-shell"` in it.
+- **Dolphin**: the installer sets Google Sans Flex (the shell's font) as the file list font in all three view modes by
+  writing only those keys of `dolphinrc` (`kwriteconfig6`, the file is backed up first). The font has to be installed.
+  Menus and the sidebar use the Qt platform theme's font, which is global for Qt apps, so it isn't touched.
 
 Terminal colors follow the wallpaper: `services/TerminalColors.qml` writes `~/.local/state/hi-shell/terminal/`
 (`sequences.txt` with the 16 ANSI colors, text, background and cursor, `colors.fish` for syntax highlighting and
@@ -282,12 +305,120 @@ the palette changes.
 hi-shell locks with hyprlock, using a lock screen it generates from its own look in
 `~/.config/hi-shell/hyprlock.conf`: the current wallpaper blurred, a big clock in the palette's primary color, the date
 and a greeting in the interface language, your avatar (`~/.face`), a Material password field, now playing, battery and
-keyboard layout. It follows wallpaper, palette, font and language changes. Lock from the session menu or
-`qs -c hi-shell ipc call session lock`; for idle and suspend, point hypridle at it:
+keyboard layout. It follows wallpaper, palette, font and language changes.
+
+Settings › Lock screen chooses what shows: the clock, date, greeting, avatar, now playing, battery, keyboard layout and
+the Caps Lock hint can each be switched off. The clock has its own size and format (`date` syntax, e.g. `%I:%M %p`), and
+the wallpaper can be turned off, blurred and dimmed. The password field is always shown. Settings are in
+`~/.config/hi-shell/config.json` under `lock`.
+
+Lock from the session menu or `qs -c hi-shell ipc call session lock`; for idle and suspend, point hypridle at it:
 
 ```ini
 $lock_cmd = pidof hyprlock || hyprlock -c ~/.config/hi-shell/hyprlock.conf || hyprlock
 ```
+
+## Power saving
+
+Settings › Quick › **Power saving mode** turns off what costs the most CPU and GPU: animations, Hyprland's blur, panel
+transparency, the audio visualizer, the dancing wallpaper frame and cover mode. Weather is checked every hour instead of
+every few minutes. The values it changes are kept in `~/.config/hi-shell/config.json` (`powerSaving`), so turning the mode
+off restores them, also after a restart. It's switched on by hand only.
+
+## Spotify
+
+Shuffle and repeat buttons appear in the left sidebar's player for players that support them (Spotify does); from a
+terminal: `qs -c hi-shell ipc call mpris shuffle` and `... mpris repeat`.
+
+The **queue** comes from Spotify's Web API and needs a one-time setup:
+
+1. At [developer.spotify.com/dashboard](https://developer.spotify.com/dashboard) create an app (**Web API**) with the
+   redirect URI `http://127.0.0.1:8888/callback`.
+2. Put its **Client ID** into Settings › Services › Spotify. Only the Client ID is used: sign-in is PKCE, so the client
+   secret is never needed or stored.
+3. In the player's queue button (visible while Spotify plays), choose **Connect Spotify**. The browser opens to sign in; if
+   it can't, the link is shown to copy.
+
+The queue shows what is playing and what's next, with a search to add tracks. It comes from Spotify's servers, which
+know what plays only while the Spotify app reports it: after a track change the answer can lag a few seconds (it's asked
+again), and if the app stops reporting (a network or VPN problem) the queue is hidden with a note instead of showing
+the queue of another track. The token is kept in
+`~/.local/state/hi-shell/spotify-token.json` (mode 600); **Disconnect** deletes it. The Web API only lets you read and add
+to the queue, so tracks can't be removed or reordered here, managing the queue needs **Spotify Premium**, and there is no
+public API for Jam or DJ.
+
+## Wait Mode
+
+A screen for **you** while an AI (or any automation) works on the machine: it hides everything and shuts you out so you
+can't interrupt, while screenshots, `ydotool`, `wtype` and `hyprctl` keep working for the automation. It is a separate
+Quickshell instance (`wait-mode/`) run as a systemd user unit, so restarting hi-shell doesn't touch it.
+
+```sh
+~/.config/quickshell/hi-shell/wait-mode/wait-mode.sh start     # cover the screens
+~/.config/quickshell/hi-shell/wait-mode/wait-mode.sh stop      # end it
+~/.config/quickshell/hi-shell/wait-mode/wait-mode.sh status    # locked / bypass, Esc presses, music, binds
+```
+
+From hi-shell: the **Wait Mode** tile of the right sidebar (hidden by default: open the sidebar's tile editor, the pencil,
+and add it) starts and stops it, and so does `qs -c hi-shell ipc call waitmode start|stop|toggle|status`.
+
+- **The cover:** the player that is playing (cover, title, artist, a progress bar, shuffle / back / play-pause /
+  forward / repeat buttons, and Spotify's queue when hi-shell is signed in to Spotify), or the wallpaper in a frame with
+  "Wait Mode" when nothing plays. Those five are the only buttons that work on the cover. Colors, wallpaper and language come from
+  hi-shell.
+- **Shut out:** the overlay takes the keyboard and the pointer, and Hyprland's key binds are off (the empty `hi-wait`
+  submap in `hypr/hi-shell.lua`, so reload Hyprland after updating: `update.sh` does). Not even a Super tap opens the
+  launcher. The machine doesn't sleep or dim.
+- **Exit:** press **Esc three times** (within a few seconds of each other). If the cover itself ever fails,
+  **Ctrl+Alt+Shift+Esc** stops it, and so does `systemctl --user stop hi-wait-mode` from a terminal or another TTY.
+  However it ends, even a crash, systemd puts the key binds back.
+- **Notifications** show on top of the cover.
+- **For the AI:** the compositor can't tell a person's keyboard from `ydotool`'s virtual one, so the AI asks for a
+  bypass instead: `wait-mode.sh bypass on [seconds]` makes the cover invisible and click-through and gives the
+  keyboard back, so screenshots show the windows underneath and clicks and typing reach them. It comes back by itself
+  after the seconds (30 by default, at most 300) or with `bypass off`. Key binds stay off during a bypass.
+  (`qs -p wait-mode ipc call waitmode bypass true 60` does the same; `HI_WAIT_NO_MUSIC=1` shows the no-music cover while
+  music plays, to try it out.)
+
+## Focus Mode
+
+A focus session: a minimal bar, Pomodoro cycles, and the apps and sites that distract you blocked. Open the settings from
+the launcher (type `focus`) or from the arrow on the **Focus Mode** tile in the right sidebar. **Start** begins a session
+with the active profile; `qs -c hi-shell ipc call focus start` does the same.
+
+- **Profiles:** Study and Work are built in; add your own with a name and an icon. Each one keeps its Pomodoro timer,
+  its wallpaper, its block or allow lists and its exit condition. Tasks come from the shell's to-do list.
+- **Zen mode:** the bar keeps workspaces, system icons and the clock, with the session's timer next to the clock. Desktop
+  widgets, animations, blur and cover mode are off during a session. Settings, the left sidebar and the wallpaper picker
+  are locked; they say so instead of opening.
+- **Pomodoro:** focus periods, short breaks, and a long break after the last cycle. A notification marks each change.
+  Nothing is blocked during breaks.
+- **Exit:** *Manual* has a Stop button. *Timer* has none and ends after the last focus period. *Tasks* has none and ends
+  when the tasks picked for the session are done (a Tasks session can't start without one). From a terminal,
+  `qs -c hi-shell ipc call focus abort` ends any session.
+- **Apps:** blacklisted apps are closed as they open, with their background processes. A whitelist closes every other app.
+  The launcher and the dock don't start a blocked app. A blocked app is closed about a second or two after it opens, so
+  its window can flash for a moment; the launcher and dock are the only paths that stop it before it opens.
+- **Sites:** blacklisted sites go into `/etc/hosts` for the session. The first session that blocks sites asks for your
+  password (`pkexec`). A backup is kept in `/etc/hosts.hi-shell.bak`; the block is lifted at breaks and removed when the
+  session ends. A block left behind by a crash is removed at the next start, or by hand:
+  `pkexec python3 services/focus_hosts.py restore`.
+- **Statistics:** focus time and finished tasks per session, the streak, and achievements. The introduction can be shown
+  again from the Statistics tab.
+
+**Known limitations of site blocking:**
+
+- **HTTPS sites show the browser's connection error, not the Focus Mode page.** A blocked site's HTTPS address
+  (`https://youtube.com`) gets nothing from hi-shell, so Firefox shows "Unable to connect". Only plain `http://` visits
+  get the Focus Mode page, and only when the browser actually uses HTTP. Browsers use HTTPS for many big sites all the
+  time: Firefox has youtube.com built in as HTTPS-only (HSTS), so for it the page never appears even when you type
+  `http://`. A site that is HTTP-only (like `example.com`) shows the page. Showing it on HTTPS would need a certificate
+  for every blocked site, which hi-shell doesn't install.
+- **Browsers with their own DNS over HTTPS skip `/etc/hosts`.** Firefox and Zen with DNS over HTTPS enabled resolve names
+  themselves. For those, hi-shell closes browser tabs whose title names a blocked site, so the block works, but a page
+  whose title mentions a blocked site can be closed too.
+- **Whitelist mode doesn't limit sites.** `/etc/hosts` can only block listed names, not allow a few. Sites are
+  unrestricted in whitelist mode; the Lists tab says so.
 
 ## Notifications
 
@@ -381,7 +512,7 @@ translations/        interface translations (ru.json)
 hypr/hi-shell.lua    Hyprland autostart, keybinds and layer rules
 run.sh               start the shell (Vulkan rendering when available)
 install.sh           install packages, link the repo, hook into Hyprland, offer the configs in dots/
-dots/                terminal configs (fish, kitty, fastfetch)
+dots/                terminal configs (fish, kitty, fastfetch, btop)
 update.sh            pull and restart
 uninstall.sh         unhook and unlink (--purge: settings too)
 ```
@@ -389,7 +520,7 @@ uninstall.sh         unhook and unlink (--purge: settings too)
 ## Community
 
 Questions, screenshots of your setup, ideas and bug reports — join the Telegram chat:
-**[t.me/tux_emp](https://t.me/tux_emp)**
+**[t.me/hi_shell](https://t.me/hi_shell)**
 
 Bugs can also go to [GitHub issues](https://github.com/imu-useful/hi-shell/issues).
 

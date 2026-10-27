@@ -83,7 +83,7 @@ bash run.sh
 
 ## 🏗 系统架构
 
-![系统架构图](./docs/assets/老架构图.png)
+![系统架构图](./QQLore架构参考图.png)
 
 ### 检索与问答数据流
 
@@ -493,8 +493,6 @@ Docker 部署仍受 `data-provider` 的宿主机约束影响：QQ NT 数据库�
 
 ## 📡 API 接口
 
-完整 API 文档：[`docs/接口文档/API文档.md`](./docs/接口文档/API文档.md)
-
 ### 核心接口
 
 | 方法 | 路径 | 说明 |
@@ -520,8 +518,6 @@ Docker 部署仍受 `data-provider` 的宿主机约束影响：QQ NT 数据库�
 | `GET/POST` | `/api/config/base` | 基础配置读写 |
 | `GET/POST` | `/api/config/override` | Override 配置读写 |
 | `POST` | `/api/config/validate` | 配置校验 |
-
-前端开发指引详见 [`docs/接口文档/前端开发指引文档.md`](./docs/接口文档/前端开发指引文档.md)。
 
 ---
 
@@ -576,7 +572,6 @@ QQLore/
 | LLM 框架 | LangChain + LangGraph |
 | 向量模型 | bge-m3 (via Ollama, 1024d) |
 | Agent 框架 | LangGraph StateGraph (ReAct) |
-| 测试 | Vitest |
 | 容器化 | Docker Compose + Nginx |
 
 ---

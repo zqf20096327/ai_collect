@@ -19,6 +19,9 @@
 [![Alfresco](https://img.shields.io/badge/Alfresco_Content_Services-Supported-0090DF.svg?style=flat&logo=alfresco&logoColor=white)](https://www.alfresco.com/)
 [![Alfresco Process Services](https://img.shields.io/badge/Alfresco_Process_Services-26.2.0-0090DF.svg?style=flat&logo=alfresco&logoColor=white)](https://www.alfresco.com/)
 [![OASIS CMIS](https://img.shields.io/badge/OASIS_CMIS-1.0%20%7C%201.1-0052CC.svg?style=flat)](https://www.oasis-open.org/committees/cmis/)
+[![Doxis](https://img.shields.io/badge/Doxis_4-CSB_14.x-00A86B.svg?style=flat)](https://www.doxis.com/en/)
+[![M-Files](https://img.shields.io/badge/M--Files-MFWS_REST-0072CE.svg?style=flat)](https://www.m-files.com/)
+[![SharePoint](https://img.shields.io/badge/SharePoint_Online-Microsoft_Graph_v1.0-0078D4.svg?style=flat)](https://learn.microsoft.com/en-us/graph/api/resources/sharepoint)
 [![Hyland OpenArch](https://img.shields.io/badge/Hyland_OpenArch-Supported-4F46E5.svg?style=flat)](docs/Hyland-OpenArch-Integration.md)
 [![Flowable](https://img.shields.io/badge/Flowable_BPMN-Supported-007ACC.svg?style=flat&logo=flowable&logoColor=white)](https://www.flowable.com/)
 [![Camunda](https://img.shields.io/badge/Camunda_BPM-Supported-E10076.svg?style=flat&logo=camunda&logoColor=white)](https://camunda.com/)
@@ -76,6 +79,8 @@ graph TD
         APS_Conn[Alfresco Process Services - oc-aps-repository-connector]
         CMIS_Conn[OASIS CMIS Repository - oc-cmis-repository-connector]
         Doxis_Repo_Conn[Doxis 4 Repository - oc-doxis-repository-connector]
+        SharePoint_Conn[SharePoint Online Repository - oc-sharepoint-repository-connector]
+        MFiles_Repo_Conn[M-Files Vault - oc-mfiles-repository-connector]
         OpenArch_Repo_Conn[Hyland OpenArch Repository - oc-openarch-repository-connector]
         Iceberg_Conn[Iceberg Repository - oc-iceberg-repository-connector]
         Flowable_Conn[Flowable Repository - oc-flowable-repository-connector]
@@ -197,7 +202,8 @@ docker run --rm --network host ghcr.io/opencrawling/oc-cli:latest system status
 ### 🍺 Homebrew Installation (macOS / Linux)
 ```bash
 brew tap opencrawling/tap
-brew install oc
+brew trust opencrawling/tap   # Required on Homebrew 7+
+brew install opencrawling/tap/oc
 oc --version
 ```
 
@@ -512,7 +518,7 @@ docker compose -f docker/docker-compose.dist.yml -f docker/docker-compose.overri
 - **Apache Ozone 2.2.0**: High-performance distributed object store offloading large document payloads with dual client strategy:
   - **Native Ozone Client (`ofs` / `o3fs`)**: Direct gRPC/RPC transport to DataNodes & Ozone Manager (OM) for maximum throughput.
   - **S3 Gateway Client (`s3g`)**: Standard AWS S3 SDK integration hitting Ozone's S3 Gateway endpoint for maximum cloud versatility.
-- **Repository Connectors**: Multi-source connectors for Filesystem, Alfresco Content Services (ACS), **Alfresco Process Services (APS)**, **OASIS CMIS (1.0/1.1)**, **Doxis 4 (CSB REST)**, **Hyland OpenArch**, Apache Iceberg, Flowable BPMN, Camunda, Apache StormCrawler, and **gRPC Push Ingestion Gateway**.
+- **Repository Connectors**: Multi-source connectors for Filesystem, Alfresco Content Services (ACS), **Alfresco Process Services (APS)**, **OASIS CMIS (1.0/1.1)**, **Doxis 4 (CSB REST)**, **SharePoint Online (Microsoft Graph)**, **M-Files Vault (MFWS REST)**, **Hyland OpenArch**, Apache Iceberg, Flowable BPMN, Camunda, Apache StormCrawler, and **gRPC Push Ingestion Gateway**.
 - **Hyland OpenArch & Parquet Vector Bridging**: Native bidirectional integration supporting paged HXQL harvesting, binary blob offloading via Java 25 Virtual Threads, Parquet vector serialization (`embedding.avsc`), Zero-Trust ACL preservation, and MCP search/fetch tools (`openarch_search`, `openarch_fetch_document`).
 - **pgvector**: High-dimensional vector similarity search in PostgreSQL.
 - **Milvus**: High-performance, distributed vector database for large-scale enterprise vector indexing.
@@ -886,17 +892,72 @@ mvn spring-boot:run -pl oc-runtime -Dspring-boot.run.profiles=dev
 In the Admin UI it is the **Doxis Repository** repository connector. See
 [oc-doxis-repository-connector/README.md](oc-doxis-repository-connector/README.md).
 
-### Option A.8.c: Hyland OpenArch Federated Ingestion & Parquet Vector Bridging
+### Option A.8.c: M-Files Vault Crawling
 
-[![Hyland OpenArch](https://img.shields.io/badge/Hyland_OpenArch-Supported-4F46E5.svg?style=flat)](docs/Hyland-OpenArch-Integration.md)
+[![M-Files](https://img.shields.io/badge/M--Files-MFWS_REST-0072CE.svg?style=flat)](https://www.m-files.com/)
 
-OpenCrawling provides native, bidirectional integration with **Hyland OpenArch**:
+To crawl an [M-Files](https://www.m-files.com/) vault, select the M-Files repository connector and point it at the
+M-Files Web Service (MFWS):
 
-- **Repository Harvesting (`OpenArchRepositoryConnector`)**: Crawls documents and metadata via paged HXQL queries (`/api/query`) or folder traversal (`/api/objects/folder/{id}`), streams binary blobs (`/api/download/{id}`), applies incremental crawl filtering (`sys_modified`), and preserves Zero-Trust permissions using Java 25 Virtual Threads.
-- **Output Connector & Parquet Vector Bridge (`OpenArchOutputConnector`)**: Ingests documents into OpenArch (`/api/upload`), synchronizes Zero-Trust ACLs, and formats dense vectors into Apache Parquet embedding batches conforming strictly to OpenArch's schema (`embedding.avsc`).
-- **Model Context Protocol (MCP)**: Native tools `openarch_search` and `openarch_fetch_document` registered in `McpVectorServer` for Zero-Trust agentic retrieval.
+> **Prerequisites:** you need a licensed M-Files Server with the M-Files Web Service (REST API) enabled, and an M-Files
+> account with read access to the vault (or an OAuth2 / Entra ID client the vault accepts). OpenCrawling doesn't include
+> M-Files or any M-Files licence. See the [full prerequisites](oc-mfiles-repository-connector/README.md#prerequisites)
+> before configuring a crawl.
 
-See the complete [Hyland OpenArch Integration Guide](docs/Hyland-OpenArch-Integration.md) for architectural details and full configuration parameters.
+```bash
+SPRING_OPENCRAWLING_REPOSITORY_CONNECTOR_TYPE=mfiles \
+SPRING_OPENCRAWLING_CONNECTOR_TYPE=mfiles \
+SPRING_OPENCRAWLING_CONNECTOR_MFILES_URL=https://<mfiles-host>/REST \
+SPRING_OPENCRAWLING_CONNECTOR_MFILES_VAULT_GUID="{<vault-guid>}" \
+SPRING_OPENCRAWLING_CONNECTOR_MFILES_USERNAME=<user> \
+SPRING_OPENCRAWLING_CONNECTOR_MFILES_PASSWORD=<password> \
+SPRING_OPENCRAWLING_CONNECTOR_MFILES_CLASS_IDS=14,22 \
+mvn spring-boot:run -pl oc-runtime -Dspring-boot.run.profiles=dev
+```
+
+`MFilesRepositoryConnector` reads objects through the MFWS REST API.
+- **What it crawls:** MFWS searches by object type, class and conditions (`crawl-mode: search` / `all_objects`), an
+  M-Files view (`view`), or the change feed of a Vault Application Framework app (`vaf`).
+- **What each document carries:** the object's typed property values, its file (one OIS document per file for a
+  multi-file document), and its permissions as OIS permissions, deny by default.
+- **Deletes:** deleted objects become `DELETE` tombstones; incremental crawls also purge files an object no longer has.
+- **Sessions:** a scan uses one MFWS session and always ends it.
+
+In the Admin UI it is the **M-Files Repository** repository connector. See
+[oc-mfiles-repository-connector/README.md](oc-mfiles-repository-connector/README.md).
+
+### Option A.8.d: SharePoint Online Repository Crawling
+
+[![SharePoint](https://img.shields.io/badge/SharePoint_Online-Microsoft_Graph_v1.0-0078D4.svg?style=flat)](https://learn.microsoft.com/en-us/graph/api/resources/sharepoint)
+
+To crawl the document libraries of a SharePoint Online site, select the SharePoint repository connector and give it an
+Entra ID app registration:
+
+> **Prerequisites:** a Microsoft Entra ID app registration with a client secret and the admin-consented Microsoft Graph
+> application permission `Sites.Read.All` (or `Sites.Selected` with read access to the site). See the
+> [full prerequisites](oc-sharepoint-repository-connector/README.md#prerequisites) before configuring a crawl.
+
+```bash
+SPRING_OPENCRAWLING_REPOSITORY_CONNECTOR_TYPE=sharepoint \
+SPRING_OPENCRAWLING_CONNECTOR_TYPE=sharepoint \
+SPRING_OPENCRAWLING_CONNECTOR_SHAREPOINT_TENANT_ID=<tenant-id> \
+SPRING_OPENCRAWLING_CONNECTOR_SHAREPOINT_CLIENT_ID=<client-id> \
+SPRING_OPENCRAWLING_CONNECTOR_SHAREPOINT_CLIENT_SECRET=<client-secret> \
+SPRING_OPENCRAWLING_CONNECTOR_SHAREPOINT_SITE_URL=https://<tenant>.sharepoint.com/sites/<site> \
+mvn spring-boot:run -pl oc-runtime -Dspring-boot.run.profiles=dev
+```
+
+`SharePointRepositoryConnector` reads files through Microsoft Graph v1.0.
+- **What it crawls:** every document library of the site, or the ones named in `drive-names`, through Graph delta
+  queries (`crawl-mode: delta`, incremental) or a folder traversal (`crawl-mode: tree`).
+- **What each file carries:** its list item columns, its content, and its Graph permissions as OIS permissions. Files
+  without readers stay closed.
+- **Deletes:** deleted files and folders become `DELETE` tombstones.
+- **Permission-only changes:** a periodic tree crawl picks them up.
+
+In the Admin UI it is the **Microsoft SharePoint (Microsoft Graph API)** repository connector. The
+[Graph mock](oc-sharepoint-repository-connector/graph-mock/README.md) emulates a tenant for local testing. See
+[oc-sharepoint-repository-connector/README.md](oc-sharepoint-repository-connector/README.md).
 
 ### Option A.9: Decoupled Apache SeaTunnel-Based Deployment
 

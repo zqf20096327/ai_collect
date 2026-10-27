@@ -31,7 +31,7 @@ files for every tool._
 
 PromptScript is an open-source compiler for AI coding agent rules. `.prs` sources
 define instructions, project standards, restrictions, skills, agents, MCP servers, hooks, and
-workflows, while `promptscript.yaml` configures targets and extension-compliance policies. The
+workflows, while `promptscript.yaml` configures targets and the policies for skill extensions and prompts. The
 compiler turns them into the native files each AI tool already knows: `CLAUDE.md` for Claude Code,
 `.github/copilot-instructions.md` for GitHub Copilot, `.cursor/rules` for Cursor, and 47 more
 targets.
@@ -425,6 +425,26 @@ filter the values an application puts into a prompt, and it does not enforce out
 the [application prompts guide](https://getpromptscript.dev/guides/application-prompts/) before you
 ship a bundle. Four runnable [application prompt examples](https://getpromptscript.dev/examples/application-prompts/)
 show typed inputs, enum outputs, defaults and citations.
+
+`prs release` stores bundles under their content hash in `.promptscript/releases/` and promotes them
+through the environments you list in `releases.environments`, such as `staging` then `prod`. Every
+promotion is a Git change you review, and
+`prs release status --base refs/remotes/origin/main` checks the label changes of a pull request
+with the rules of the base branch. See the
+[releases guide](https://getpromptscript.dev/guides/releases/).
+
+`prs approve` records that a person approved one exact bundle hash in a role from
+`governance.roles`, as a JSON file under `.promptscript/approvals/`. The record is a claim; the
+review of the pull request that adds it is what binds it. See
+[approvals](https://getpromptscript.dev/guides/releases/#approvals). Promote, rollback and
+`status --base` run the prompt policies as release gates: a `required-approvals` policy refuses a
+version until a committed record approves that hash for the environment. A record binds only with
+code owner review of its role directory. See
+[release gates](https://getpromptscript.dev/guides/releases/#release-gates).
+
+`prs governance codeowners` writes the `governance` section of `promptscript.yaml` into CODEOWNERS:
+prompt files go to their owners, approval directories to their role teams, and the config and
+release files to the admins. See [CODEOWNERS from Governance](https://getpromptscript.dev/guides/codeowners/).
 
 ## Built for Repositories and Organizations
 

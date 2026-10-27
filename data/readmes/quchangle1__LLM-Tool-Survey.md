@@ -429,6 +429,8 @@ If you find our work helps your research, please kindly cite our paper:
   **Graph RAG-Tool Fusion**, Preprint 2025. [[Paper]](http://arxiv.org/abs/2502.07223)
 
   **Retrieval Models Aren't Tool-Savvy: Benchmarking Tool Retrieval for Large Language Models**, Preprint 2025. [[Paper]](http://arxiv.org/abs/2503.01763)
+
+  **TabAgent: Distilling LLM Agent Components into Cheap Classifiers**, Preprint 2026. [[Paper]](https://arxiv.org/abs/2602.16429)
   
 
 - ##### LLM-based Tool Selection
@@ -535,6 +537,8 @@ If you find our work helps your research, please kindly cite our paper:
   **Hephaestus: Improving Fundamental Agent Capabilities of Large Language Models through Continual Pre-Training**, Preprint 2025. [[Paper]](http://arxiv.org/abs/2502.06589)
 
   **Disambiguation-Centric Finetuning Makes Enterprise Tool-Calling LLMs More Realistic and Less Risky**, Preprint 2025. [[Paper]](https://arxiv.org/abs/2507.03336)
+  
+  **Teaching LLMs to Learn Tool Trialing and Execution through Environment Interaction**, Preprint 2026. [[Paper]](https://arxiv.org/abs/2601.12762)
   
 #### Response Generation.
 - ##### Direct Insertion Methods

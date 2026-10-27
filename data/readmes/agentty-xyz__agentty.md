@@ -189,9 +189,10 @@ follow-ups go to the Implementer.
 
 `--experimental-harness` adds a preview **Harness** session type that runs Agentty's
 built-in agent loop against Muse, Kimi, or Qwen using `MODEL_API_KEY`, `KIMI_API_KEY`
-with `KIMI_BASE_URL`, or `DASHSCOPE_API_KEY` with `DASHSCOPE_BASE_URL`. Its edit mode
-runs unsandboxed shell commands. See
-[Harness sessions](https://agentty.xyz/docs/agents/backends/#backends-harness).
+with `KIMI_BASE_URL`, or `DASHSCOPE_API_KEY` with `DASHSCOPE_BASE_URL`, or against a
+local or self-hosted OpenAI-compatible server such as Ollama, llama.cpp, LM Studio, or
+vLLM named by `OPENAI_COMPATIBLE_MODEL`. Its edit mode runs unsandboxed shell commands.
+See [Harness sessions](https://agentty.xyz/docs/agents/backends/#backends-harness).
 
 Session tracing is disabled unless `--otlp-endpoint` supplies a complete OTLP
 HTTP/protobuf traces URL. Authentication headers can come from
@@ -201,7 +202,9 @@ timings, tool identities, available executable names, exit codes, and output siz
 at most 4 KiB each. Common credential markers suppress the entire affected preview;
 arbitrary secrets may still appear. Prompts and reasoning are excluded. See the
 [session tracing documentation](https://agentty.xyz/docs/usage/workflow/#session-traces)
-for provider limitations.
+for provider limitations. A traces URL ending in `/v1/traces` also sends the usage
+events below as OTLP log records to the sibling `/v1/logs` URL, even when PostHog
+telemetry is disabled.
 
 Only one Agentty instance can use a given Agentty root at a time. Close the running
 instance before launching another. Separate `AGENTTY_ROOT` directories can run

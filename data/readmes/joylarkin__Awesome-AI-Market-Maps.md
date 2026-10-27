@@ -51,6 +51,7 @@ OR
 ### October 2026
 
 #### AI Agents
+- [Jay Zhao & LJW & Jenny Xiao — Leonis Capital - The Agent Land Grab - October 2026](https://leonisnewsletter.substack.com/p/the-agent-land-grab?utm_source=awesome-ai-market-maps)
 - [Supplify - The Agentic AI Supply Chain Tech Map 2026 - October 2026](https://getsupplify.com/supply-chain-map/?utm_source=awesome-ai-market-maps)
 - [MightyBot - AI Agents Market Map 2026: Every Category Mapped - October 2026](https://mightybot.ai/blog/ai-automation-agents-market-maps-gone-wild/?utm_source=awesome-ai-market-maps)
 - [Zentor / Personal Agent Bench - Personal AI agents list: products and evidence - October 2026](https://personalagentbench.com/landscape/?utm_source=awesome-ai-market-maps)
@@ -1144,5 +1145,4 @@ OR
 - [a16z - Shopping in 'God Mode' with AI - March 2025](https://a16z.com/ai-shopping-online/?utm_source=awesome-ai-market-maps)
 - [Optimist Ventures - Q1'25 Insurtech Market Map - March 2025](https://medium.com/@jp_at_optimist/q125-insurtech-market-map-%EF%B8%8F-aa3ee89bd275?utm_source=awesome-ai-market-maps)
 - [Brighteye Ventures - AI for Enhancing Productivity - learning in the flow of work - March 2025](https://www.brighteyevc.com/post/ai-for-training-the-evolution-of-corporate-training-1?utm_source=awesome-ai-market-maps)
-- [Brighteye Ventures - AI for Training - the evolution of corporate training - March 2025](https://www.brighteyevc.com/post/ai-for-training-the-evolution-of-corporate-training?utm_source=awesome-ai-market-maps)
-- [Brighteye Ventures - AI for Hiring - how AI is transforming talent acquisition - March 2025](https://www.brighteyevc.c
+- [Brighteye Ventures - AI for Training - the evolution of corporate training - March 2025](https://www.brighteyevc.com/post/ai-for-training-the-evoluti

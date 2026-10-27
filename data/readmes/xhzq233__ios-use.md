@@ -20,9 +20,11 @@
 
 </div>
 
-https://github.com/user-attachments/assets/0d17a651-41fc-4773-9ebf-061518197a69
+https://github.com/user-attachments/assets/2a54aacd-0d94-442d-a91d-75775ee0ff65
 
-<p align="center"><sub>57 seconds · Real iPhone · AX actions · Composable scripts · Mac + Frida</sub></p>
+
+
+<p align="center"><sub>41 seconds · Real iPhone · AX actions · Composable scripts · Mac + Frida</sub></p>
 
 | Fast | Easy | Powerful |
 | --- | --- | --- |
@@ -64,8 +66,8 @@ ln -s "$HOME/.ios-use/skill" .agents/skills/ios-use
 Install a specific release or build from source:
 
 ```bash
-# Install version 2.1.3.
-curl -fsSL https://raw.githubusercontent.com/xhzq233/ios-use/v2.1.3/scripts/install.sh | bash -s -- --version v2.1.3
+# Install version 2.1.4.
+curl -fsSL https://raw.githubusercontent.com/xhzq233/ios-use/v2.1.4/scripts/install.sh | bash -s -- --version v2.1.4
 curl -fsSL https://raw.githubusercontent.com/xhzq233/ios-use/main/scripts/install.sh | bash -s -- --build-from-source
 ```
 
@@ -76,7 +78,7 @@ services on Linux x86_64. Install with the command above, or build from
 source with Swift 6.2+ and standard Linux build tools:
 
 ```bash
-git clone --branch v2.1.3 https://github.com/xhzq233/ios-use.git
+git clone --branch v2.1.4 https://github.com/xhzq233/ios-use.git
 cd ios-use
 bash scripts/build_swift_cli.sh
 ./ios-use start -d phone --connection device-connection.json
@@ -230,8 +232,11 @@ require the actual Duo runtime. Reference: [Design for iPhone Duo](https://devel
 For adaptive App layouts, use `ios-use config --mac --device-model ipad-pro-11 --window-mode resizable`.
 The device screen identity stays fixed while DOM coordinates and screenshots
 follow the actual App window. The App's scene minimum/maximum size preferences
-are preserved, with Catalyst applying its own limits. Phone-only or full-screen
-compatibility Apps may still restrict resizing. Resizable mode hides the device
+are preserved, with Catalyst applying its own limits. Conversion removes
+`UIRequiresFullScreen` and its device-specific overrides from the prepared Mac
+App so full-screen declarations do not block live model changes or resizing.
+The source iOS App is unchanged; App layout code may still restrict adaptation.
+Resizable mode hides the device
 shell and uses native window safe areas, scene orientation and size classes.
 The virtual device screen identity stays separate from this free window.
 It previews App layout; it does not
@@ -249,6 +254,10 @@ iPhone runtime identity and use the estimated safe-area profile above. They do n
 emulate partially folded poses, the iOS 27 side controls, or claim exact Duo hardware metrics.
 
 The Mac backend runs the host macOS UIKit implementation through Catalyst.
+Conversion preserves each source binary's build SDK version so system
+frameworks select the App's intended compatibility behavior. It does not
+replace that version with an older SDK or the host's SDK. After upgrading
+ios-use, rerun `start --mac --app <source.app>` to rebuild an older prepared App.
 Installing a newer iOS SDK changes what can be compiled; it does not replace
 that runtime. Device presets also do not change the runtime's API availability
 or system control implementation. Testing a newer iOS system's actual behavior

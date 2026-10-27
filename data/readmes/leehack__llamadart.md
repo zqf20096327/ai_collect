@@ -48,6 +48,14 @@ means a report was produced. The collector uses no native initialization or
 network; `dart run` can prepare/download assets through its build hook or fail
 before main. See [setup report scope](https://llamadart.leehack.com/docs/platforms/native-build-hooks#desktop-setup-report).
 
+To opt into a separate native check, run
+`dart run llamadart:doctor_native --runtime llama_cpp --json` (or name
+`litert_lm` / `stable_diffusion`). It opens locally declared files in an isolated
+process and checks selected symbols/static ABI markers, without a model or
+device probe. Exit 0 still means a report was produced. It does not establish
+emitted app assets, loaded release identity, production loader behavior or
+inference readiness; see [native check scope](https://llamadart.leehack.com/docs/platforms/native-build-hooks#isolated-native-check).
+
 - Dart SDK `>=3.10.7`
 - Flutter SDK `>=3.38.0` for Flutter apps
 - iOS deployment target `16.4` or newer for Flutter iOS apps. For LiteRT-LM
@@ -68,7 +76,7 @@ For Dart or Flutter apps:
 
 ```yaml
 dependencies:
-  llamadart: ^0.16.4
+  llamadart: ^0.16.5
 ```
 
 Flutter iOS/macOS apps that should link Apple XCFrameworks through Swift
@@ -99,7 +107,7 @@ overrides fail the build; resolve the matching companion and rerun
 
 ```yaml
 dependencies:
-  llamadart: ^0.16.4
+  llamadart: ^0.16.5
   llamadart_llama_cpp_flutter: ^0.16.0 # GGUF / llama.cpp
   llamadart_litert_lm_flutter: ^0.16.2 # Apple .litertlm / LiteRT-LM targets
   llamadart_stable_diffusion_flutter: ^0.16.0 # Apple image generation, opt-in
@@ -243,6 +251,13 @@ fallback when model template metadata is empty. See
 - Gemma 2/3/3n and legacy Mistral tool-result retries fold an immediately
   following user message into the result turn; successfully rendered histories
   stay unchanged ([tool-result rendering](https://llamadart.leehack.com/docs/guides/tool-calling#tool-results-on-templates-without-a-tool-role)).
+- Tool results can carry images in `LlamaToolResultContent.content` (or a
+  handler's `LlamaToolOutput`) on native llama.cpp with a vision projector and a
+  Hermes-style template, qualified on Qwen3-VL; check
+  `LlamaEngineCapabilities.toolResultMedia`. Other runtimes, formats, audio and
+  video throw `LlamaUnsupportedException`, as do image/audio parts beside
+  `LlamaToolResultContent` or on the tool role
+  ([tool-result media](https://llamadart.leehack.com/docs/guides/tool-calling#tool-result-media)).
 - Native Dart and Flutter targets with downloaded runtime assets.
 - Flutter Web through the experimental WebGPU bridge and LiteRT-LM web runtime.
   `dart run llamadart:web_setup` vendors the pinned, checksum-verified bridge
@@ -293,7 +308,12 @@ reports what it supports: image and audio input, embeddings, multi-turn chat,
 tools, structured output and grammars, each sampling control
 (`penalty`, `presencePenalty`, `minP`, `thinkingBudget`), and the speculative
 decoding strategies it runs. Branch on these instead of the model's file
-extension or backend name. Native llama.cpp reports thinking-budget support
+extension or backend name. Native LiteRT-LM can enforce object JSON schemas on macOS arm64 CPU with the
+canonical Qwen3 text template and an admitted native provider. Use
+`enableThinking: false`; tools, media, speculation, caller stops, custom
+templates and schemas beyond scalar properties/required/enum/const are
+rejected. GBNF and LiteRT-LM Web schema constraints remain unsupported.
+Native llama.cpp reports thinking-budget support
 only when the runtime exports its reasoning-budget API. Native LiteRT-LM
 reports `penalty` and `presencePenalty`, which count only the tokens of the
 current send, and a thinking budget for bundles with a thinking channel, such
@@ -420,9 +440,20 @@ experimental and may change, and the runtime is opt-in.
 
 Image models can be GGUF or Safetensors files, including mixed-format
 components; Safetensors does not need conversion to GGUF. Compatible PyTorch
-checkpoints need an explicit role and remain less qualified. See the
+tensor-only checkpoints need an explicit role. Selected complete SD-Turbo F16
+GGUF, Safetensors and PyTorch ZIP/legacy layouts are verified on macOS CPU;
+other layouts and platforms need their own qualification. See the
 [format and layout limits](https://llamadart.leehack.com/docs/next/guides/image-generation#weight-formats-and-layouts)
 before choosing files: a supported container does not imply every model works.
+
+FP8 image weights (`F8_E4M3`/`F8_E5M2` in Safetensors, types 43/44 in
+GGUF) are refused with `LlamaUnsupportedException` on Metal, including
+`ComputeDevice.auto` when it selects Metal, before native context creation.
+Use `ComputeDevice.cpu` or compatible non-FP8 weights. Uninspectable
+GGUF/Safetensors headers and ordinary JSON shard indexes are also refused on
+Metal. This prevents the native abort tracked in
+[#1446](https://github.com/leehack/llamadart/issues/1446); selecting CPU keeps
+native dtype admission and does not qualify arbitrary FP8 models.
 
 - **Opt in** to the runtime (about 40 to 70 MB per target) in the app's
   `pubspec.yaml`, then run `flutter clean` once:
@@ -524,6 +555,38 @@ is SDXS with its embedded tiny decoder at 512×512 on CPU or Metal, with
 throw. Both axes default off. Inspect repeated output and see the guide's
 [seamless texture recipe](https://llamadart.leehack.com/docs/next/guides/image-generation#seamless-textures)
 for its measured scope and quality criteria.
+
+For a complete local sharded checkpoint, use
+`ImageGenerationModel.localSafetensorsSet(path, sha256: trustedPerFileHashes,
+cacheDirectory: appPrivateSetCache)`. The initial recipe is the documented
+SD-Turbo F16/F32 tensor layout on macOS CPU with pinned SD v0.3.0 and explicit
+flash attention/direct VAE convolution off. It accepts the standard local index
+or its directory and verifies every shard into an owned cache before loading.
+Generic Diffusers layouts and editing/tiling/seamless combinations remain
+unsupported. See [local checkpoint sets](https://llamadart.leehack.com/docs/next/guides/image-generation#local-checkpoint-sets)
+and `example/basic_app/bin/local_image_set.dart`.
+
+For image-to-image and binary-mask editing, use `ImageEditingRequest` with
+owned `ImageEditingPixels.rgb` and optional `ImageEditingPixels.mask` inputs.
+Check `(await engine.capabilities).supportsImageEditing`: the bounded recipe
+is an SD 2.x checkpoint with its embedded full VAE on macOS CPU, without
+component overrides, flash attention or direct VAE convolution. SD-Turbo is
+the measured model. White (255) edits; black (0) preserves the latent, with
+possible pixel changes from VAE encode/decode. The caller supplies decoded RGB
+and aligned binary masks; there is no implicit decode, resize or alpha handling.
+See the [editing recipe](https://llamadart.leehack.com/docs/next/guides/image-generation#image-editing)
+and runnable `example/basic_app/bin/image_editing.dart`.
+
+For ControlNet, load an SD 1.x ControlNet as an `ImageModelComponent` next to
+its checkpoint (it is detected as `ImageModelRole.controlNet`) and use
+`ControlNetImageGenerationRequest` with an `ImageControlNetCondition`. Check
+`(await engine.capabilities).supportsControlNet`: the bounded recipe is an
+SD 1.x checkpoint with its embedded full VAE plus an original-layout SD 1.x
+ControlNet on macOS CPU, with flash attention and direct VAE convolution off;
+other recipes are refused at load. The caller supplies the finished control
+map (edges, depth, pose); no preprocessor runs. Qualified on SD 1.5 with
+`control_v11p_sd15_canny` on macOS CPU. See the [ControlNet recipe](https://llamadart.leehack.com/docs/next/guides/image-generation#controlnet)
+and `example/basic_app/bin/image_controlnet.dart`.
 
 ## Choosing a Runtime
 

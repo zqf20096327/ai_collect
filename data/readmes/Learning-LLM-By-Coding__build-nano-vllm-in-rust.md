@@ -148,9 +148,10 @@ One engine — single GPU, text only — built in four arcs:
   management, and survival under pressure — admission control, preemption,
   chunked prefill, prefix caching, zero-leak cancellation.
 
-- **A real service (Day 15):** an Axum server with SSE token streaming,
-  backpressure, metrics, and a reproducible benchmark against Transformers,
-  nano-vllm, and vLLM.
+- **A real service (Day 15):** a hand-written HTTP server with SSE token
+  streaming, backpressure, metrics, and a reproducible benchmark of the
+  service against the engine it wraps — then the model cut two ways
+  (pipeline stages and tensor-parallel shards), ready for many machines.
 
 **Volume 2** (planned): tensor parallelism, custom CUDA kernels,
 quantization, speculative decoding, multimodal inference.
@@ -195,11 +196,11 @@ the per-section breakdown lives in the book's
 | 8&nbsp;✅&#8288;🔒 | The KV cache | Stop redoing old work: keep what earlier tokens computed, and generation gets fast. | 2&nbsp;h |
 | 9&nbsp;✅&#8288;🔒 | Measure it, then GPU it | Time everything honestly first, then move the math to a GPU and measure again. | 2.5&nbsp;h |
 | 10&nbsp;✅&#8288;🔒 | Many requests, one engine | Several prompts share one engine, each with its own settings and place in line. | 2&nbsp;h |
-| 11&nbsp;🔒 | Continuous batching | New requests hop into the running batch as old ones finish — no waiting for a full bus. | 2&nbsp;h |
-| 12&nbsp;🔒 | Paged KV memory | Memory managed like a library: fixed-size pages, checked out, shared, returned. | 2&nbsp;h |
-| 13&nbsp;🔒 | Attention over pages | Attention learns to read from those scattered pages, with the pool sized by real measurement. | 2&nbsp;h |
-| 14&nbsp;🔒 | Survive pressure | Too many requests? Bump, pause, resume, split, cancel — without leaking a byte. | 2.5&nbsp;h |
-| 15&nbsp;🔒 | Turn it into a service | An HTTP server streams tokens as they are born, refuses overload politely, and proves itself in a final benchmark. | 3&nbsp;h |
+| 11&nbsp;✅&#8288;🔒 | Continuous batching | New requests hop into the running batch as old ones finish — no waiting for a full bus. | 2&nbsp;h |
+| 12&nbsp;✅&#8288;🔒 | Paged KV memory | Memory managed like a library: fixed-size pages, checked out, shared, returned. | 2&nbsp;h |
+| 13&nbsp;✅&#8288;🔒 | Attention over pages | Attention learns to read from those scattered pages, with the pool sized by real measurement. | 2.5&nbsp;h |
+| 14&nbsp;✅&#8288;🔒 | Survive pressure | Too many requests? Bump, pause, resume, split, cancel — without leaking a byte. | 2.5&nbsp;h |
+| 15&nbsp;✅&#8288;🔒 | Turn it into a service | An HTTP server streams tokens as they are born, refuses overload politely, and proves itself in a final benchmark; then the model is cut, two ways, for many machines. | 3.5&nbsp;h |
 
 ✅ = finished — the day's chapter and checkpoint tags are in this repository.
 ✅&#8288;🔒 = finished, in the Pro edition — unlocked the moment you join.

@@ -6,11 +6,11 @@
   <img src="https://raw.githubusercontent.com/activeing123/mcptoon/main/docs/assets/lockup-h-split-light.svg" alt="mcptoon" height="88">
 </picture>
 
-<h3 align="center">Zero-Config Token Optimization & Unified Governance for MCP Tools and Agent Skills</h3>
+<h3 align="center">MCP Token Optimization, Tool Discovery &amp; Context Compression — Zero-Config CLI for MCP Tools and Agent Skills</h3>
 
 <p align="center">
   <b>Install 1,000 skills and 1,000 MCP tools locally — and never worry about context flooding.</b><br>
-  Cuts tool context by ~90% (99.2% on 255 tools) with zero config across <b>103+ desktop and CLI agents</b>.
+  A zero-dependency <b>MCP CLI</b> and <b>MCP client</b> for <b>MCP token optimization</b>: <b>tool discovery</b> through a compact name index plus <b>context compression</b>, cutting tool context by ~90% (99.2% on 255 tools) and keeping schemas out of your context window — zero config across <b>103+ desktop and CLI agents</b>.
 </p>
 
 <!-- Primary Status Badges -->
@@ -18,7 +18,7 @@
   <a href="https://pypi.org/project/mcptoon/"><img src="https://img.shields.io/pypi/v/mcptoon?style=flat-square&color=238636&logo=pypi&logoColor=white" alt="PyPI version"></a>
   <a href="https://github.com/activeing123/mcptoon/stargazers"><img src="https://img.shields.io/github/stars/activeing123/mcptoon?style=flat-square&logo=github&color=58a6ff" alt="GitHub Stars"></a>
   <a href="https://github.com/activeing123/mcptoon/actions"><img src="https://img.shields.io/github/actions/workflow/status/activeing123/mcptoon/ci.yml?branch=main&style=flat-square&logo=githubactions&logoColor=white" alt="CI Build"></a>
-  <a href="#contributing"><img src="https://img.shields.io/badge/tests-3010%20passed-success?style=flat-square&logo=pytest&logoColor=white" alt="Tests"></a>
+  <a href="#contributing"><img src="https://img.shields.io/badge/tests-3013%20passed-success?style=flat-square&logo=pytest&logoColor=white" alt="Tests"></a>
   <a href="https://github.com/activeing123/mcptoon"><img src="https://img.shields.io/badge/dependencies-0%20(stdlib%20only)-blue?style=flat-square" alt="Zero Dependencies"></a>
   <a href="https://github.com/activeing123/mcptoon/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-informational?style=flat-square" alt="License"></a>
 </p>
@@ -856,7 +856,7 @@ git clone https://github.com/activeing123/mcptoon.git
 cd mcptoon
 pip install -e . --no-build-isolation
 pip install pytest pytest-cov
-python -m pytest tests/ -v   # 3010 passed, 2 skipped
+python -m pytest tests/ -v   # 3013 passed, 2 skipped
 ```
 
 Three hard rules: zero dependencies (CI-enforced), new behavior ships with tests, Windows
@@ -864,7 +864,7 @@ is a first-class target. New here? Start with
 [CONTRIBUTING.md](https://github.com/activeing123/mcptoon/blob/main/CONTRIBUTING.md) and
 [DEVELOPERS.md](https://github.com/activeing123/mcptoon/blob/main/DEVELOPERS.md).
 
-The codebase: **41,104 lines of Python across 56 modules**, zero third-party dependencies.
+The codebase: **41,144 lines of Python across 56 modules**, zero third-party dependencies.
 
 ---
 

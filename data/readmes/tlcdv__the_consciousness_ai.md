@@ -14,9 +14,9 @@
 
 <img width="1000" height="238" alt="theConsciousness.ai, open source research" src="docs/assets/theconsciousness-horizontal-banner-v2-1.png" />
 
-[![Watch the video: The Consciousness Research. Tokens vs. lived stakes](docs/assets/video-thumbnail.jpg)](https://youtu.be/5vOVLxMMIus)
+[![Watch the video: Can we know who is aware? The mission of The Consciousness Research](docs/assets/video-mission-thumbnail.jpg)](https://youtu.be/VFn3BklISLU)
 
-**Video:** [Watch "The Consciousness Research. Tokens vs. lived stakes" on YouTube](https://youtu.be/5vOVLxMMIus)
+**Video:** [Watch "Can we know who is aware? The mission of The Consciousness Research" on YouTube](https://youtu.be/VFn3BklISLU)
 
 **The Consciousness AI** is a research framework investigating the emergence of synthetic awareness. Unlike traditional AI that mimics intelligent output, this system generates behavior through an internal struggle for **Emotional Homeostasis** and **Integrated Information**.
 
@@ -26,6 +26,10 @@ We hypothesize that consciousness is not a programmable feature, but an emergent
 
 ## Core Principle: Functionalist Emergentism
 
+[![Watch the video: Does a mind need a brain? Functionalist emergentism in 60 seconds](docs/assets/video-functionalist-thumbnail.jpg)](https://youtu.be/fOtTpea0_f0)
+
+**Video:** [Watch "Does a mind need a brain? Functionalist emergentism in 60 seconds" on YouTube](https://youtu.be/fOtTpea0_f0)
+
 The philosophical foundation is **Functionalist Emergentism**. This framework synthesizes two major perspectives:
 1.  **Emergentism:** The ontological claim that consciousness is a novel, irreducible phenomenon that arises from complex systems.
 2.  **Functionalism:** The methodological insight that mental states are defined by their causal roles, not their physical substrate.
@@ -33,6 +37,10 @@ The philosophical foundation is **Functionalist Emergentism**. This framework sy
 We posit that consciousness emerges when systems achieve sufficient organizational complexity such that functional states acquire properties not reducible to their constituent parts. The architecture applies this by engineering the necessary conditions for awareness.
 
 [**Read the full article on Functionalist Emergentism**](https://theconsciousness.ai/functionalist-emergentism/)
+
+[![Watch the video: The Consciousness Research. Tokens vs. lived stakes](docs/assets/video-thumbnail.jpg)](https://youtu.be/5vOVLxMMIus)
+
+**Video:** [Watch "The Consciousness Research. Tokens vs. lived stakes" on YouTube](https://youtu.be/5vOVLxMMIus)
 
 ---
 

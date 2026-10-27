@@ -157,6 +157,7 @@ dsh plugin --profile desktop add dsh-prompt@0.4.38 --registry https://registry.n
 | 贡献者 | 致敬 | 贡献 |
 | --- | --- | --- |
 | [@wqzhellohhwy](https://github.com/wqzhellohhwy) | 🌹🌹🌹 | [#146](https://github.com/FeatherHunter/dsh-prompt/issues/146) [#147](https://github.com/FeatherHunter/dsh-prompt/issues/147) [#148](https://github.com/FeatherHunter/dsh-prompt/issues/148) |
+| [@minevery512](https://github.com/minevery512) | 🌹 | [#179](https://github.com/FeatherHunter/dsh-prompt/issues/179) |
 | [@kBlankii](https://github.com/kBlankii) | 🌹 | [#178](https://github.com/FeatherHunter/dsh-prompt/issues/178) |
 | [@dagangwo](https://github.com/dagangwo) | 🌹 | [#175](https://github.com/FeatherHunter/dsh-prompt/issues/175) |
 | [@jheroy](https://github.com/jheroy) | 🌹 | [#165](https://github.com/FeatherHunter/dsh-prompt/issues/165) |
@@ -178,7 +179,7 @@ dsh plugin --profile desktop add dsh-prompt@0.4.38 --registry https://registry.n
 
 <div align="center">
 
-![星标增长曲线（双轴）：左轴累计星标，右轴每日新增](https://raw.githubusercontent.com/FeatherHunter/dsh-prompt/main/docs/star-history.svg?v=20261026)
+![星标增长曲线（双轴）：左轴累计星标，右轴每日新增](https://raw.githubusercontent.com/FeatherHunter/dsh-prompt/main/docs/star-history.svg?v=20261027)
 
 </div>
 

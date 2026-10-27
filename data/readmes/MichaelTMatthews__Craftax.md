@@ -6,7 +6,7 @@
         <a href= "https://pypi.org/project/craftax/">
         <img src="https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12-blue" /></a>
         <a href= "https://pypi.org/project/craftax/">
-        <img src="https://img.shields.io/badge/pypi-1.6.1-green" /></a>
+        <img src="https://img.shields.io/badge/pypi-1.7.0-green" /></a>
         <a href= "https://pepy.tech/project/craftax">
         <img src="https://static.pepy.tech/badge/craftax" /></a>
        <a href= "https://github.com/MichaelTMatthews/Craftax/blob/main/LICENSE">
@@ -139,6 +139,18 @@ Note that all scores from outside the original Craftax paper are reported and ha
 | E3B       |            2.2 |   [Craftax_Baselines](https://github.com/MichaelTMatthews/Craftax_Baselines/blob/main/ppo.py)   | [E3B](https://arxiv.org/abs/2210.05805) |
 
 
+# 🔤 Language Agents
+Both Craftax and Craftax-Classic also support rendering observation as text for language agents.
+We recommend using the glyph-based rendering from [GlyphBench](https://arxiv.org/pdf/2609.34214) that has been shown to be [successful](https://roger-creus.github.io/blog/astra-craftax-nethack/) on Craftax.
+
+```python
+from craftax.craftax.glyph_renderer import render_craftax_glyphs
+
+print(render_craftax_glyphs(state))
+```
+
+This prints the local view with one glyph per tile, followed by a HUD and a legend of the glyphs on screen.
+
 # 💾 Offline Dataset
 
 A small dataset of mixed-skill human trajectories is available [here](https://drive.google.com/file/d/1wCMdUIsGOWYkNW55Rs0rHkYKUZhaQdtq/view?usp=sharing).
@@ -146,9 +158,10 @@ Once the zip file has been extracted, the trajectories can be loaded with the `l
 `run1` is the only trajectory to complete the game.
 
 # ❌ Errata
-
 - Prior to version 1.5.0 there was a bug that made it hard/impossible for the *first* planted plant to ever grow to ripeness in both Craftax and Craftax-Classic. This should have little effect on results as `EAT_PLANT` is an extremely rare achievement, and this only affected the first plant.
 - Prior to version 1.6.0 there were two minor bugs for reward on death in Craftax-Classic. Firstly, walking into lava did not give the negative health reward. Secondly, the player could incur extra negative health reward on the final timestep as health could become negative. These may cause minor behavioural differences in trained agents.
+- Prior to version 1.7.0 there was a bug in the symbolic renderer where mobs that were off-screen were rendered on-screen. There was also a bug where mobs that were on-screen would very rarely be invisible.
+- Prior to version 1.7.0 there was a bug in Craftax-Classic where the `DO` action could revive dead mobs.
 
 # 🔎 See Also
 - ⛏️ [Crafter](https://github.com/danijar/crafter) The original Crafter benchmark.

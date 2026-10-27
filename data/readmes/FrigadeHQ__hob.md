@@ -12,13 +12,12 @@
 <p align="center">
   <a href="https://hob.chat?utm_source=github&utm_medium=readme&utm_campaign=hob"><b>Visit hob.chat →</b></a> &nbsp;·&nbsp;
   Download for <a href="https://github.com/FrigadeHQ/hob/releases/latest/download/Hob-mac-arm64.dmg">Mac</a> · <a href="https://github.com/FrigadeHQ/hob/releases/latest/download/Hob-windows-x64.exe">Windows</a> · <a href="https://github.com/FrigadeHQ/hob/releases/latest/download/Hob-linux-x86_64.AppImage">Linux</a><br>
-  <sub>Apple silicon Macs, Windows and Linux, with 8 GB of memory or more.</sub>
 </p>
 
 <br>
 
 <p align="center">
-  <img src="docs/assets/screenshot.png" width="980" alt="Hob reading a sales spreadsheet in a project, charting revenue by region and summing up what stands out">
+  <img src="docs/assets/screenshot.png" width="946" alt="Hob reading a sales spreadsheet in a project, charting revenue by region and summing up what stands out">
 </p>
 
 <br>

@@ -216,7 +216,7 @@ ReachAI Embed 将对话入口嵌入原业务系统，Page Bridge 则将当前页
 
 因此，页面自动化依赖已登记的动作契约、页面上下文和后端能力，而非通过 Computer Use 推断坐标并模拟鼠标键盘。
 
-代码与说明：[eafPageBridge.ts](ai-admin-front/src/sdk/eafPageBridge.ts) · [嵌入式对话与页面动作](docs/reference/嵌入式对话与页面动作.md)
+代码与说明：[eafPageBridge.ts](ai-admin-front/src/sdk/eafPageBridge.ts) · [嵌入式对话与页面动作](docs/integration.md#嵌入业务页面)
 
 <p align="center">
   <a href="./docs/images/readme-v2/05-page-actions.png">
@@ -368,7 +368,7 @@ flowchart LR
 | `reachai-runtime-service` | 18604 | Runtime Host：Agent、Workflow、GraphSpec 执行、Trace、RunOps 和调试 |
 | `reachai-capability-service` | 18605 | Capability Catalog：SDK 注册、快照、diff、评审、扫描目录和能力资产 |
 
-第一阶段五个服务共用一个 MySQL 实例，但每张表有唯一 owning service；跨服务协作通过 internal API 或显式 client 完成。边界以 [服务表所有权](docs/architecture/service-table-ownership.md) 为准。
+第一阶段五个服务共用一个 MySQL 实例，但每张表有唯一 owning service；跨服务协作通过 internal API 或显式 client 完成。边界以 [服务表所有权](docs/contracts/tables.md) 为准。
 
 ### 主要技术栈
 
@@ -394,6 +394,20 @@ flowchart LR
 </details>
 
 ## 快速开始
+
+### 10 分钟一键体验（Docker）
+
+只想先看看效果：一条命令拉起 ReachAI 和一个已经接入的开源 ERP（芋道，带演示数据），在 ERP 页面里直接问 AI，或者让自己的 Claude Code / Codex 以员工身份查库存、建客户。
+
+```bash
+cd deploy/quickstart
+cp .env.example .env          # 可选：填大模型 API Key
+docker compose up -d --build
+```
+
+打开 http://localhost:48080（芋道）和 http://localhost:18080（ReachAI 管理台），账号都是 `admin / admin123`。详见 [一键体验说明](deploy/quickstart/README.md)。
+
+下面是开发者从源码分别启动各服务的方式。
 
 ### 环境要求
 
@@ -441,7 +455,7 @@ npm run dev
 
 本地开源模式默认提供 `admin / admin123` 并在登录页预填，方便首次体验。该账号只用于本地开发；生产环境必须设置 `REACHAI_LOCAL_AUTH_ENABLED=false` 和 `REACHAI_BOOTSTRAP_ADMIN_ENABLED=false`，并接入正式身份体系。
 
-更完整的启动、环境变量和服务检查说明见 [五服务边界与本地启动](docs/architecture/service-boundaries.md)。
+更完整的启动、环境变量和服务检查说明见 [五服务边界与本地启动](docs/development.md#构建与启动)。
 
 ## 给 AI 编程工具的入口
 
@@ -449,21 +463,21 @@ Codex、Trae、Cursor、Claude Code 等工具进入仓库后，请按以下顺�
 
 1. [AGENTS.md](AGENTS.md)：项目规则、模块边界、SQL 和验证要求。
 2. [docs/README.md](docs/README.md)：当前五服务拓扑与权威文档导航。
-3. [PROJECT-MEMORY.md](docs/ai-memory/PROJECT-MEMORY.md)：产品定位、模块地图与当前事实。
-4. [WORKING-RULES.md](docs/ai-memory/WORKING-RULES.md)：开发、SQL、验证和协作规则。
+3. [产品](docs/product.md)与[架构](docs/architecture.md)：产品定位、模块地图与当前事实。
+4. [开发与验证](docs/development.md)：开发、SQL、验证和协作规则。
 5. 与任务直接相关的真实代码、接口、SQL 和测试。
 
-接入业务系统时，从 [SDK 与 Embed Chat 快速参考](docs/reference/SDK接入与EmbedChat快速参考.md) 开始；开发 Workflow 时，从 [Workflow AI Coding](docs/reference/Workflow-AI-Coding.md) 开始。不要根据旧截图、旧服务名或历史文档猜测当前实现。
+接入业务系统时，从 [SDK 与 Embed Chat 快速参考](docs/integration.md) 开始；开发 Workflow 时，从 [Workflow AI Coding](docs/ai-coding.md#workflow-api) 开始。不要根据旧截图、旧服务名或历史文档猜测当前实现。
 
 ## 继续阅读
 
 | 文档 | 说明 |
 | --- | --- |
-| [平台定位与架构总览](docs/01-平台定位与架构总览.md) | 产品定位、核心主线和平台页面 |
-| [项目注册与能力资产](docs/02-项目注册与能力资产.md) | SDK、扫描、Capability 快照、diff 与评审 |
-| [Workflow Studio 与 Runtime](docs/03-Workflow-Studio与Runtime.md) | Agent、Supervisor、GraphSpec、Page Bridge 和发布运行 |
-| [运行治理与开放协议](docs/04-运行治理与开放协议.md) | Trace、RunOps、ACL、Guard、MCP、A2A 与 Gateway |
-| [知识、模型与企业资产](docs/05-知识模型与企业资产.md) | Model Gateway、Knowledge / Retrieval 和企业资产 |
+| [平台定位与架构总览](docs/product.md) | 产品定位、核心主线和平台页面 |
+| [项目注册与能力资产](docs/integration.md) | SDK、扫描、Capability 快照、diff 与评审 |
+| [Workflow Studio 与 Runtime](docs/workflow.md) | Agent、Supervisor、GraphSpec、Page Bridge 和发布运行 |
+| [运行治理与开放协议](docs/protocols.md) | Trace、RunOps、ACL、Guard、MCP、A2A 与 Gateway |
+| [知识、模型与企业资产](docs/data.md) | Model Gateway、Knowledge / Retrieval 和企业资产 |
 
 ## License
 

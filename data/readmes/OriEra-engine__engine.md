@@ -143,13 +143,23 @@ npx serve .
 # 浏览器打开 http://localhost:3000
 ```
 
-### Rust 引擎（需要 Rust 1.80+）
+### Rust 引擎（使用当前 Rust stable，与 CI 保持一致）
 
 ```bash
-cargo run -p oriera-pc        # PC 端清屏窗口
+cargo run -p oriera-pc        # PC 端无窗口运行闭环（终端报告）
 cargo test --workspace         # 跑全部单元测试
 cargo clippy --workspace -- -D warnings
 ```
+
+### 库用户（crates.io 接入，5 分钟）
+
+```bash
+cargo add oriera-agent          # L9 认知：NPC 记忆/对话/导演（自动带入 L1-L8）
+cargo run -p oriera-infer --example provider_smoke   # 验活：13 家供应商预设离线自检
+ORIERA_SMOKE_PROVIDER=zhipu cargo run -p oriera-infer --example provider_smoke  # 真 API 行（免费 glm-4-flash）
+```
+
+最小对话三行：见 [docs/EXAMPLES.md](docs/EXAMPLES.md)「代码片段」节。全部开源底座与许可证对照见 [docs/OPEN-MODEL-MATRIX.md](docs/OPEN-MODEL-MATRIX.md)。
 
 ## 贡献与社区
 
@@ -196,3 +206,6 @@ cargo clippy --workspace -- -D warnings
   请给这个仓库一个 ⭐ Star —— 你的关注决定这条开源路线能走多远。</sub><br/><br/>
   <a href="https://github.com/OriEra-engine/engine/stargazers"><img src="https://img.shields.io/badge/给个 Star-⭐-ffc861?style=for-the-badge" alt="Star OriEra" /></a>
 </p>
+
+
+平台支持与验证边界 / Platform support: [docs/PLATFORM-SUPPORT.md](docs/PLATFORM-SUPPORT.md).

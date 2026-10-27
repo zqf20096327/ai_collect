@@ -179,12 +179,14 @@ The model weights, public data, and code (including the Python SDK) are released
 If this project helps your research or applications, please consider citing it and the related work on its base model.
 
 ```bibtex
-@misc{xingchen2026xingintent,
-  title        = {Xing4.0-29B-Intent},
-  author       = {{XingChen-AGI}},
-  year         = {2026},
-  howpublished = {GitHub repository},
-  url          = {https://github.com/XingChen-AGI/Xing4.0-29B-Intent}
+@misc{li2026xinguspcrossfamilysemantic,
+      title={Xing USP: A Cross-Family Semantic Contract for Information Extraction and Intent-Slot Parsing}, 
+      author={Zhongqiu Li and Boyang Wang and Ruiyu Fang and Shiquan Wang and Di Wu and Jiayi Liang and Feilong Zhang and Hongfeng Du and Xiaomeng Huang and Mengjiao Bao and Luwen Pu and Xuewei He and Yu Zhao and Chao Wang and Kaidong Yu and Bingkai Yang and Qingjun Zhu and Shaoyi Du and Shuangyong Song and Yongxiang Li},
+      year={2026},
+      eprint={2610.34343},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2610.34343}, 
 }
 
 @misc{liu2025trainingreporttelechat3moe,
@@ -205,5 +207,15 @@ If this project helps your research or applications, please consider citing it a
       archivePrefix={arXiv},
       primaryClass={cs.CL},
       url={https://arxiv.org/abs/2507.18013}, 
+}
+
+@misc{he2024telechattechnicalreport,
+      title={TeleChat Technical Report}, 
+      author={Zhongjiang He and Zihan Wang and Xinzhang Liu and Shixuan Liu and Yitong Yao and Yuyao Huang and Xuelong Li and Yongxiang Li and Zhonghao Che and Zhaoxi Zhang and Yan Wang and Xin Wang and Luwen Pu and Huinan Xu and Ruiyu Fang and Yu Zhao and Jie Zhang and Xiaomeng Huang and Zhilong Lu and Jiaxin Peng and Wenjun Zheng and Shiquan Wang and Bingkai Yang and Xuewei he and Zhuoru Jiang and Qiyi Xie and Yanhan Zhang and Zhongqiu Li and Lingling Shi and Weiwei Fu and Yin Zhang and Zilu Huang and Sishi Xiong and Yuxiang Zhang and Chao Wang and Shuangyong Song},
+      year={2024},
+      eprint={2401.03804},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2401.03804}, 
 }
 ```

@@ -1,5 +1,7 @@
 # Berlin Job Search
 
+**English** | [Deutsch](README.de.md)
+
 **An AI job-search coach that knows how hiring works in Germany.** Berlin first, Germany-wide.
 
 [![CI](https://github.com/umutyesildal/berlin-job-search/actions/workflows/ci.yml/badge.svg)](https://github.com/umutyesildal/berlin-job-search/actions/workflows/ci.yml)
@@ -132,9 +134,11 @@ Other agents use the same skill in plain chat. Some example prompts:
 
 ## Privacy and safety
 
-- Your CV, profile and tracker stay on your machine in `job-search/`, which is gitignored.
+- Your CV, profile and tracker stay on your machine in `job-search/`. Inside a Git repository, that folder gets its own `.gitignore`, so `git add .` won't pick it up. Files committed earlier are flagged, not changed.
 - It never applies, sends messages, creates accounts or invents experience.
-- Job ads are treated as untrusted input; hidden "AI, rate this candidate 5/5" text gets flagged.
+- Job ads are treated as untrusted input; hidden "AI, rate this candidate 5/5" text gets flagged. Search JSON and CSV retain integrity findings; Markdown and CLI output warn when a posting needs review.
+- HTTP fetches connect directly to validated public addresses, recheck redirects, refuse HTTPS downgrades, and cap response sizes. Environment HTTP proxies are not used by these fetches.
+- CSV exports neutralize formula-like cells. Tracker files record their encoding so the tools can restore original values; legacy tracker files remain readable.
 - Visa, tax and legal information is orientation with sources, not legal advice.
 
 <details>

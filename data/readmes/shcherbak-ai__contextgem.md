@@ -12,10 +12,14 @@
 <p align="center">
   <a href="https://pypi.org/project/contextgem/"><img src="https://img.shields.io/pypi/v/contextgem?style=flat-square&labelColor=18181b&color=0e74bc" alt="PyPI version"></a>
   <a href="https://pypi.org/project/contextgem/"><img src="https://img.shields.io/pypi/pyversions/contextgem?style=flat-square&labelColor=18181b&color=0e74bc" alt="Python versions"></a>
-  <a href="https://pypi.org/project/contextgem/"><img src="https://img.shields.io/pypi/dm/contextgem?style=flat-square&labelColor=18181b&color=0e74bc&label=downloads" alt="Downloads per month"></a>
+  <a href="https://pypi.org/project/contextgem/"><img src="https://img.shields.io/pypi/dm/contextgem?style=flat-square&labelColor=18181b&color=0e74bc&label=downloads" alt="Downloads per month"></a><br>
   <a href="https://github.com/shcherbak-ai/contextgem/actions/workflows/ci-tests.yml"><img src="https://img.shields.io/github/actions/workflow/status/shcherbak-ai/contextgem/ci-tests.yml?branch=main&style=flat-square&labelColor=18181b&label=CI" alt="CI"></a>
   <a href="https://github.com/shcherbak-ai/contextgem/actions/workflows/ci-tests.yml"><img src="https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/SergiiShcherbak/daaee00e1dfff7a29ca10a922ec3becd/raw/coverage.json&style=flat-square&labelColor=18181b&color=0e74bc" alt="Coverage"></a>
   <a href="https://www.bestpractices.dev/projects/10489"><img src="https://img.shields.io/cii/level/10489?style=flat-square&labelColor=18181b&color=0e74bc&label=OpenSSF%20best%20practices" alt="OpenSSF Best Practices"></a>
+</p>
+
+<p align="center">
+  <a href="https://www.producthunt.com/products/contextgem?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-contextgem-1-0"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1294110&theme=dark&t=1793125242160" alt="ContextGem 1.0 on Product Hunt" width="185" height="40"></a>
 </p>
 
 <p align="center">
@@ -486,14 +490,16 @@ Apache 2.0 License - see the [LICENSE](LICENSE) and [NOTICE](NOTICE) files for d
 <!-- markdownlint-disable MD033 -->
 <table>
   <tr>
-    <td width="50%" align="center" valign="top">
-      <a href="https://github.com/shcherbak-ai/licenseal"><img src="assets/licenseal-wordmark.svg" alt="licenseal" width="336"></a><br>
-      License compatibility checks for dependency trees, fast enough for CI.
-    </td>
-    <td width="50%" align="center" valign="top">
-      <a href="https://github.com/shcherbak-ai/tethered"><img src="assets/tethered-wordmark.svg" alt="tethered" width="336"></a><br>
-      Network egress control for CLI tools and agent workflows.
-    </td>
+    <td width="36%" align="center"><a href="https://github.com/shcherbak-ai/licenseal"><img src="assets/licenseal-wordmark.svg" alt="licenseal" width="252"></a></td>
+    <td>License compatibility checks for dependency trees, fast enough for CI.</td>
+  </tr>
+  <tr>
+    <td width="36%" align="center"><a href="https://github.com/shcherbak-ai/tethered"><img src="assets/tethered-wordmark.svg" alt="tethered" width="252"></a></td>
+    <td>Runtime network egress control for Python.</td>
+  </tr>
+  <tr>
+    <td width="36%" align="center"><a href="https://github.com/shcherbak-ai/omerta"><img src="assets/omerta-wordmark.svg" alt="omerta" width="252"></a></td>
+    <td>Catches .env secrets leaking into git: your own values, not lookalikes.</td>
   </tr>
 </table>
 <!-- markdownlint-enable MD033 -->

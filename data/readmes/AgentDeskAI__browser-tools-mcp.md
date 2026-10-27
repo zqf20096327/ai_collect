@@ -1,5 +1,10 @@
 # BrowserTools MCP
 
+**If you are still on 1.x, upgrade.** 1.x is unsupported. It has known critical
+vulnerabilities (remote code execution, unauthenticated access to captured
+data) that were fixed in 2.0 and will not be patched on 1.x. See
+[SECURITY.md](SECURITY.md) and [MIGRATION.md](MIGRATION.md).
+
 Give your AI coding agent eyes on the browser. BrowserTools MCP streams console
 output, network activity, screenshots and Lighthouse audits from **your real
 Chrome session** — the one already logged into your app — to any MCP-compatible
@@ -7,9 +12,7 @@ client: Cursor, Claude Code, Windsurf, Cline, Zed, Gemini CLI, and others.
 
 > **Version 2.0 is a rewrite.** One process instead of three, no unauthenticated
 > local server, credentials scrubbed before they leave the browser, and a real
-> test suite. If you are coming from 1.x, read [MIGRATION.md](MIGRATION.md) —
-> **and upgrade, because 1.2.x has a critical vulnerability.** See
-> [SECURITY.md](SECURITY.md).
+> test suite. Coming from 1.x? Read [MIGRATION.md](MIGRATION.md).
 
 ---
 
@@ -95,7 +98,12 @@ setup and a silent one look the same.
 | `getSelectedElement` | The element selected in the Elements panel |
 | `getPageInfo` | Which page the browser is currently on |
 | `getConnectionStatus` | Whether the extension is connected, and capture counts |
-| `listBrowserTabs` | Every tab with DevTools open, and the id to address it by |
+| `listBrowserTabs` | Tabs with DevTools open, addressed by a DevTools-connected `tabId` |
+| `listTabs` | Tabs `chrome.tabs` returns (not every open tab), addressed by `chromeTabId` |
+| `readTab` | Headings, excerpt, and a snapshot of a `chromeTabId`, without the debugger |
+| `navigateBrowser` | Load a URL in a DevTools-connected tab, without focusing it |
+| `navigateTab` | Load a URL in the background from `listTabs`, visible window only |
+| `softClick` / `softType` | Untrusted click or type. Result is `worked` or `needs a real gesture` |
 | `takeScreenshot` | Screenshot returned **as an image**, plus its file path |
 | `refreshBrowser` | Reloads the inspected tab |
 | `getBrowserStorage` | localStorage, sessionStorage and cookies (values gated) |
@@ -112,6 +120,16 @@ static text in every tool listing.
 All tools declare MCP output schemas, so clients receive structured data rather
 than prose they have to parse, and read-only tools are annotated as such so
 clients can auto-approve them safely.
+
+### Tabs without DevTools
+
+`listTabs`, `readTab`, `navigateTab`, `softClick`, and `softType` use `chrome.tabs` and `chrome.scripting`. They do not attach the debugger, so they do not show the debugging banner, and they do not activate a tab or focus a window.
+
+`chromeTabId` comes from `listTabs`. `tabId` on the other tools comes from `listBrowserTabs`. They are different id spaces. Pass each id only to the tool that issued it.
+
+`listTabs` reports the tabs `chrome.tabs` returns in the windows it returns. Other Arc Spaces, Little Arc, pinned favorites, split-view partners, and slept tabs may be missing. Incognito is skipped. This is not every open tab. Background navigation stays in the visible window until that is measured on Arc.
+
+The popup switch has to be on. Navigation and soft input also need `--allow-input` on `browser-tools-mcp`, or `--allow-actions` on the `browser-tools` CLI. The same origin rules as other input apply. An asleep tab is reported and not reloaded. A soft action says `worked` or `needs a real gesture` and does not claim a failed action worked.
 
 ### Several tabs at once
 
@@ -167,9 +185,11 @@ This tool captures whatever your browser sees, so it treats that data carefully:
 - **The extension never leaves loopback.** 1.x scanned private network ranges
   and adopted whichever host answered with a known string — meaning anyone on
   shared Wi-Fi could receive your logs and screenshots. That scan is gone.
-- **Authenticated.** The HTTP API requires a per-run token. The WebSocket
-  accepts browser-extension origins only, so a web page you visit cannot
-  impersonate the extension.
+- **Authenticated.** The HTTP API requires a per-run bearer token. A token in
+  the URL is refused. The extension WebSocket requires the same token; the
+  extension collects it from a loopback pairing route that answers only a
+  browser-extension origin, and `/.identity` does not reveal it. Pass
+  `--extension-id` to accept one extension and no others.
 - **Credentials are scrubbed** on the way in: `Authorization`, `Cookie` and
   similar headers, plus JWTs, cloud keys and vendor tokens found anywhere in
   captured strings, become `[REDACTED]`.
@@ -177,6 +197,10 @@ This tool captures whatever your browser sees, so it treats that data carefully:
   unless explicitly requested.
 - **Cookie access is an optional permission** you grant from the panel, not
   something the extension holds by default.
+- **The debugger banner stays visible.** Chrome's "started debugging this
+  browser" warning is a safety control. It is intentional, and this project
+  never hides it. A capture path that does not attach the debugger simply
+  does not raise the banner; that is not a way to silence it.
 - **Audits stay off your internal network.** An audit accepts a url, and the
   caller may be a model reading untrusted pages. Link-local and cloud metadata
   addresses are never audited. Pages on localhost or a private network are
@@ -200,8 +224,10 @@ Flags, or the matching `BROWSER_TOOLS_*` environment variables:
 | --- | --- |
 | `--port <n>` | Connector port (default 3025) |
 | `--screenshot-dir <path>` | Where screenshots are written |
-| `--only <a,b>` | Expose only these tools |
-| `--exclude <a,b>` | Hide these tools |
+| `--only <a,b>` | Expose only these tools, on MCP and on the local API |
+| `--exclude <a,b>` | Hide these tools, on MCP and on the local API |
+| `--allow-actions` | Let the local API reload, capture, wipe, change settings and select a tab. Otherwise confirm that in the BrowserTools panel. The MCP tools in the process that embeds the connector are not gated by this |
+| `--extension-id <id>` | Only this extension may pair and connect |
 | `--doctor` | Check the setup and exit |
 | `--verbose` | Print each captured entry as it arrives |
 | `--host <addr>` | Loopback address to bind (default `127.0.0.1`) |
@@ -213,7 +239,9 @@ Flags, or the matching `BROWSER_TOOLS_*` environment variables:
 
 To share one browser session between several MCP clients, start the connector
 once with `npx @agentdeskai/browser-tools-server` and every client will attach to
-it automatically.
+it automatically. The local API uses the `--only`, `--exclude`,
+`--allow-actions` and `--extension-id` of that process. An attached client's
+`--only` / `--exclude` still hide tools from that client.
 
 ## Known limits
 
@@ -227,8 +255,9 @@ it automatically.
   cannot fit, it is written to disk and the tool returns the path instead of
   inlining it.
 - Console capture defaults to the DevTools protocol, which makes Chrome show a
-  "started debugging this browser" banner. Switch the panel's capture mode to
-  **Wrap page console** to avoid it.
+  "started debugging this browser" banner. That banner is intentional and is
+  never hidden. Switch the panel's capture mode to **Wrap page console** to
+  capture the console without attaching the debugger.
 - **Firefox is not verified.** The extension is written cross-browser — a
   `browser`/`chrome` shim, `browser_specific_settings`, and a capture mode that
   does not need `chrome.debugger` — but it has never been loaded in Firefox, and
@@ -246,12 +275,13 @@ it automatically.
 npm install
 npm run build
 npm test           # unit + integration, no browser required
-npm run test:e2e   # real Chromium with the extension loaded
+npm run test:e2e   # real Chromium with the extension loaded (headless)
 ```
 
-`npm test` runs in seconds. The end-to-end suite launches a headed Chromium with
-the extension installed, drives fixture pages, and asserts the whole capture
-path — run `npx playwright install chromium` first.
+`npm test` runs in seconds. The end-to-end suite launches Chromium with the
+extension installed, drives fixture pages, and asserts the whole capture path.
+It runs headless; set `HEADED=1` to open a visible window. Run
+`npx playwright install chromium` first.
 
 ## License
 

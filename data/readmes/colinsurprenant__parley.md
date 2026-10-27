@@ -59,11 +59,14 @@ How it works:
 
 - **Go** 1.25 or newer, to build it.
 - **ergo**, the IRC server `parley server` runs, at the version `parley doctor`
-  names as last verified. `contrib/ergo/README.md` installs it.
+  names as last verified or a newer release of the same major version.
+  `contrib/ergo/README.md` installs it.
 - **Claude Code**, **Codex CLI** and/or **OpenCode**, at the versions `parley
-  doctor` names as last verified. A different version is a warning from
-  `doctor`, not a failure, with one exception: OpenCode must be version 2, and
-  only a line takes it. Install it with `brew install opencode` (Homebrew core)
+  doctor` names as last verified or a newer release of the same major version.
+  `doctor` reports a newer release as ok and names both versions. An older
+  version, or one of a different major version, is a warning from `doctor`, not
+  a failure, with one exception: OpenCode must be version 2, and only a line
+  takes it. Install it with `brew install opencode` (Homebrew core)
   or `npm i -g @opencode/cli`. The legacy 1.x (npm's `opencode-ai`, the
   installer at opencode.ai/install) has no API parley can speak to, and
   `doctor` fails it. Parley was last verified against OpenCode 2.1.0 on a live
@@ -105,9 +108,12 @@ links the three protocol skills, `parley-build`, `parley-table` and
 `parley-line`, into `~/.claude/skills` and `~/.agents/skills`. They are
 symlinks into the checkout, so keep it. `parley doctor` checks ergo, the
 harnesses, the server and those links against the versions on your machine and
-says what to fix. Bare, it checks Claude Code and Codex, so on a machine with
-only one, run `bin/parley doctor --harness claude` (or `--harness codex`) to
-check only that one. OpenCode is checked only when named: `--harness opencode`.
+says what to fix. On this first run it warns that nothing answers at
+`127.0.0.1:6667`. That is expected until `parley server` is running, which step
+1 of the Quickstart does. Bare, it checks Claude Code and Codex, so on a machine
+with only one, run `bin/parley doctor --harness claude` (or `--harness codex`)
+to check only that one. OpenCode is checked only when named:
+`--harness opencode`.
 
 If you want only the binary, `go install
 github.com/colinsurprenant/parley/cmd/parley@latest` builds it, but the skills
@@ -151,12 +157,25 @@ or sharing one, and a nick for yourself.
    order.
    OpenCode loads the skill with its skill tool, so there is no command to type
    there; `line add` prints the check.
-4. Give each session its role, one line each, in the channel:
+4. Once every session has loaded the skill, give each its role: one line per
+   session, posted in the channel under your nick and starting with the
+   session's nick, or typed at the session's own terminal. A role says what the
+   session owns and what it tells the others:
 
    ```
-   plan: you own the plan and the schedule; build will tell you when a phase lands
-   build: you build the phases; tell plan when one lands, pointing to the record
+   plan: you are the long-running planning session. You work out the strategy with me, break the work into phases and write the build plans; once I approve a plan, hand its phases to build and track them as they land
+   build: you are the build session. You carry out the build plans plan hands you, following the repository's branch and PR rules; tell plan when a phase lands, pointing to the PR, and ask plan when a plan is unclear
    ```
+
+   A third session, added the same way, can take operations:
+
+   ```
+   ops: you are the ops session. You are in charge of the infrastructure, live operations, deployments and security; coordinate with plan and build before any change, so that no one's work disrupts another's
+   ```
+
+   A role starts nothing by itself, so tell each session when to begin, for
+   example by giving plan its first goal. A newer role line replaces an older
+   one. `docs/line.md` has more on roles.
 
 5. Work as usual. The sessions poke each other when something changes for the
    other's job, and ask you or each other when a choice comes up. Say in the

@@ -642,6 +642,8 @@ Reading list and comments/short reviews around reasoning models, training techni
 - [Harness Scaling for Generalizable Agentic Reinforcement Learning](https://arxiv.org/abs/2610.29458)
 - [Recursive Self-Improvement through Multi-Agent Self-Supervision](https://arxiv.org/abs/2610.12176)
 - [EvalResearchBench: Can AI Agents Build Their Own Feedback for Recursive Self-Improvement?](https://arxiv.org/abs/2610.04184) - project page blog is nice also [https://mercury7353.github.io/self-evaluation-bench/blog/when-ai-agents-design-the-test.html](https://mercury7353.github.io/self-evaluation-bench/blog/when-ai-agents-design-the-test.html)
+- [RSIHub: A Composable Framework for Agent-Evolution Methods](https://arxiv.org/abs/2610.32253) - NeurIPS 2026 Meta-Agents Workshop
+- [InteractiveWorld: A Verifiable Human-Centric Environment for Building Better Interactive MLLM Assistants](https://arxiv.org/abs/2610.33966)
 
 #### Topic - Audio Reasoning
 
@@ -655,11 +657,4 @@ Reading list and comments/short reviews around reasoning models, training techni
 
 #### Topic - Reasoning in Diffusion Models
 
-- [Video Models Reason Early: Exploiting Plan Commitment for Maze Solving](https://arxiv.org/abs/2603.30043)
-
-#### Topic - Parallel Reasoning
-
-Start with the first-linked survey.
-
-- [A Survey on Parallel Reasoning](https://arxiv.org/abs/2510.12164)
-- [Native Parallel Reasoner: Reasoning in Parallelism 
+- [Video Models Reason Earl

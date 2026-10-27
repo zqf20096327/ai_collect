@@ -24,6 +24,8 @@ curl -sS -X POST http://127.0.0.1:8088/ai/v1/goods/search-plan \
 
 AI 请求/响应样例：[`docs/ai/examples/`](./docs/ai/examples/)。失败分支对照：[`docs/ARCHITECTURE.md` §失败路径](./docs/ARCHITECTURE.md#秒杀主链路失败路径)。
 
+秒杀下单 HTTP 演示（需已起 mall + 种子数据）：[`scripts/flash-order-demo.sh`](./scripts/flash-order-demo.sh) · 验收清单 [`docs/FLASH_DEMO_CHECKLIST.md`](./docs/FLASH_DEMO_CHECKLIST.md) · 代码地图 [`docs/CODE_MAP.md`](./docs/CODE_MAP.md)。
+
 C 端示意流程（原创 UI 示意稿串成，非线上录屏）：
 
 ![C端秒杀流程示意](docs/screenshots/demo.gif "C端秒杀：首页→场次→详情→下单→订单")
@@ -56,6 +58,8 @@ C 端示意流程（原创 UI 示意稿串成，非线上录屏）：
 - **第一期（文档）：** [docs/ai/README.md](docs/ai/README.md) — Agent / Skills / 提示词
 - **架构与是否独立服务：** [docs/ai/ARCHITECTURE.md](docs/ai/ARCHITECTURE.md) — 结论为仓内独立模块 `platform-ai`，mall Feign 调用；秒杀主链路不经过 AI
 - **第二期（已落地）：** 模块 `platform-ai`（8088）+ 门面 `/mall/api/ai/v1/*`；默认规则降级，`AI_ENABLED`+`AI_API_KEY` 后走模型
+
+稳定 Wiki 篇章已迁入 [`docs/wiki/`](./docs/wiki/README.md)（概念 / 演变 / 技术栈 / 部署 / 模块）。
 
 ## 1. 项目说明
 

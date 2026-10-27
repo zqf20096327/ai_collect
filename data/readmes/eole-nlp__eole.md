@@ -30,25 +30,27 @@ compilation waits are omitted; the displayed generation measurements come from
 Eole's inference worker on an RTX 5090. Benchmark numbers measure post-first-token
 decode speed and depend on the prompt, settings and hardware.
 
-## Latest: 0.6.4
+## Latest: 0.6.5
 
-This release adds a browser-first RunPod deployment for Chat, translation and
-PDF/image OCR, with automatic model preparation and switching, optional original
-BF16 Qwen, and an authenticated public gateway. It also fixes DeepSeek-OCR vision
-head dimensions during conversion and CUDA extension verification at image startup.
+This release adds MTP sampling, optional INT8/INT4 vocabulary heads and a head
+precision selector in the workspace. It improves packed Marlin/GDN inference,
+startup preparation and timing. Docker and RunPod bundle GPU kernels, download
+pre-converted showcase models, and prepare Qwen before opening the workspace.
 
-Eole supports **PyTorch >= 2.10 and < 2.15**, including PyTorch 2.14.1. The refreshed
+Eole supports **PyTorch >= 2.14.1 and < 2.15**. The refreshed
 Docker defaults use PyTorch 2.14.1 with CUDA 13.2. Start with the
 [workspace UI](recipes/ui/README.md), [Qwen3.8/MTP recipe](recipes/qwen38/README.md),
-or [Docker guide](docs/docker.md). See the [changelog](CHANGELOG.md#064) for release
+or [Docker guide](docs/docker.md). See the [changelog](CHANGELOG.md#065) for release
 details and remaining limitations.
 
 [![Deploy on RunPod](https://img.shields.io/badge/RunPod-Deploy%20Eole-673AB7?style=for-the-badge)](https://console.runpod.io/deploy?template=e9e19ozt9c&type=gpu)
 
 Browser-based Chat, translation and OCR on a rented GPU. See the
 [RunPod quick start](recipes/runpod/README.md) for password setup, GPU choices and
-the required persistent-volume attachment. The `0.6.4-r2` deployment
-uses prebuilt GPU kernels and pre-converted public Eole checkpoints.
+the required persistent-volume attachment. The `0.6.5` deployment
+uses prebuilt GPU kernels and pre-converted public Eole checkpoints. Maintainers
+publish the new images and update the public template before the button selects
+this release.
 
 ## Choose your workflow
 
@@ -162,7 +164,7 @@ must be measured on the chosen checkpoint.
 ### From source
 
 - Python >= 3.11 (current CI uses Python 3.12).
-- PyTorch >= 2.10 and < 2.15, with a CUDA build compatible with your GPU and driver.
+- PyTorch >= 2.14.1 and < 2.15, with a CUDA build compatible with your GPU and driver.
 - To compile CUDA extensions: the CUDA toolkit (`nvcc`), a compatible C++ compiler,
   and the build dependencies below. The CUDA runtime bundled with PyTorch alone
   does not provide `nvcc`.
@@ -225,11 +227,12 @@ Use a release or wheel compatible with your GPU, Python, PyTorch, and CUDA
 versions. The Qwen3.8 measurements used FlashAttention 2.8.3; installing a newer
 package alone does not reproduce that environment.
 
+The Linux PyTorch 2.14.1 wheel requires Triton 3.8.x; the Docker image pins 3.8.0.
 For Qwen3.5/Qwen3.8 fast gated-delta computation, install
 [FLA kernels (`fla-core`)](https://pypi.org/project/fla-core/):
 
 ```bash
-python -m pip install fla-core
+python -m pip install "fla-core==0.6.0"
 python -c 'from fla.ops.gated_delta_rule import chunk_gated_delta_rule, fused_recurrent_gated_delta_rule; print("FLA gated-delta interfaces loaded")'
 ```
 

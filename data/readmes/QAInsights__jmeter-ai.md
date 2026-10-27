@@ -690,8 +690,11 @@ Open it from the toolbar button or Run > Workload Designer..., or type `@load` i
 - **`remote_hosts`:** when `remote_hosts` in `jmeter.properties` contains a valid non-local host list, the dialog prefills Generator hosts if its count matches the command. Invalid hosts, local-only lists and count mismatches are ignored.
 - **Ask AI:** when a model is available, Ask AI can translate a goal into form values and explain risks. It does not calculate threads, timers or commands. The deterministic calculator remains authoritative. The prompt includes structure counts only, never URLs, hostnames, paths, element names, variable names or script contents.
 - **Applied properties:** the Thread Group receives `ThreadGroup.num_threads`, `ThreadGroup.ramp_time`, `ThreadGroup.scheduler=true`, `ThreadGroup.duration` and infinite loops on its main Loop Controller. Rate targets add or update an enabled Constant Throughput Timer; positive think time adds or updates an enabled Constant Timer. Clearing an `@load` rate or think time disables its managed timer. Values use `${__P(load.*)}` properties by default, with the prefix editable in the dialog. Ctrl+Z in chat restores the prior values and removes timers added by the command.
+- **Shaped application:** Step, Spike, Stress and Custom add a core Open Model Thread Group after the selected standard group, move its children in order, disable the original group and apply the schedule. No group-level throughput timer is added. Managed think time is preserved, user-owned throughput timers are warned about, and Ctrl+Z restores the original tree.
 - **Heap and CLI:** the dialog shows a per-generator heap rule of thumb, rounds up in 512 MB steps, and generates a command for Bash, Windows cmd or PowerShell. Use `-J` properties for one generator or `-R` and `-G` properties for distributed generators. Heavy listeners, large responses and scripts may need more heap, so confirm the estimate with a short run.
-- **Limits:** only a closed-model ramp-up and steady hold are configured. Spike, step and ramp-down shapes require an Open Model Thread Group or another plugin. Existing timers and controller-driven sample counts are not included in the estimate.
+- **Workload shapes:** Load and Endurance use a standard Thread Group. Step, Spike, Stress and Custom use JMeter's core Open Model Thread Group with random or even arrivals, optional ramp-down and per-stage rate properties. Every arrival creates a new thread and runs one iteration. JMeter 5.5 or newer is required on all generators. Existing timers and controller-driven sample counts are not included in the estimate.
+- **Endurance:** defaults to a 4-hour hold. Disable View Results Tree and other heavy listeners, check CSV recycle/EOF behavior, leave heap headroom and estimate results-file disk space.
+- **Step and Stress:** Step ramps through configurable levels. Stress does not stop by itself, so stop when errors or latency break your SLA. Open Model Thread Group does not cap concurrency, and a slow server can cause thread growth.
 
 ### `@wrap` Details
 `@wrap` uses pattern matching (not AI) to group related HTTP samplers under Transaction Controllers, preserving child elements and hierarchy. Great for imported or recorded plans.
@@ -1194,35 +1197,4 @@ jmeter.ai.record.enabled=true
 #jmeter.ai.record.think_time.min.ms=0
 #jmeter.ai.record.think_time.max.ms=10000
 #jmeter.ai.record.tool.output.max.chars=  # empty = 8000 (~2000 tokens)
-#jmeter.ai.record.max.iterations=500       # maximum agent iterations per recording
-```
-
-The recording agent defaults to 500 iterations and can be adjusted with `jmeter.ai.record.max.iterations`.
-
-## 🔔 Response Chime
-
-Get an audible cue when the AI finishes responding so you can multitask across windows.
-
-```properties
-jmeter.ai.response.chime=true
-```
-
-The bundled WAV plays from `src/main/resources/org/qainsights/jmeter/ai/sound/jmeter-chime.wav` with an MP3 fallback.
-
-## 🐾 Pets
-
-A draggable animated companion that lives on the JMeter canvas and reacts to your test runs. The pet gets excited when a test starts, works while samplers run, frowns on sampler failures, and celebrates clean runs. Drag it anywhere on the screen.
-
-<div align="center">
-
-<img src="./images/jmeter-pets.png" alt="Feather Wand pets" width="700">
-
-</div>
-
-**Available pets:** `quill` (default), `glim`, `peacock`, `monkey`
-
-```properties
-# Enable the companion pet (off by default)
-jmeter.pet.enable=true
-
-# Which pet to show: quill, glim, peacock
+#jmeter.ai.record.max.iterations=500       # maximum agent iteratio

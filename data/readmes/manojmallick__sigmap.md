@@ -40,7 +40,7 @@ Zero config. Zero dependencies. Under 10 seconds.
 
 ## What is SigMap?
 
-SigMap builds a **deterministic, auditable signature-and-evidence map** of your codebase — no LLM calls, no embeddings, byte-stable output — so AI agents, CI, and reviewers can *trust and verify* which files and symbols are real before acting. Same repo in, same map out, every time.
+SigMap builds a **deterministic, auditable signature-and-evidence map** of your codebase — no LLM calls, no embeddings, byte-stable output (apart from one trailing timestamp line, and independent of where the repo is checked out) — so AI agents, CI, and reviewers can *trust and verify* which files and symbols are real before acting. Same repo in, same map out, every time.
 
 That map is exactly what agentic grep is worst at: reproducible, auditable context an agent can consume without a copy-paste, and a grounding check that proves an AI answer is anchored to real signatures and line numbers. Token reduction comes for free — but trust is the point.
 
@@ -57,17 +57,17 @@ That map is exactly what agentic grep is worst at: reproducible, auditable conte
 
 **Deterministic and verifiable — the two things an agentic-grep loop can't give you:**
 - **Deterministic** — no LLM calls, no agent loop; the same repo always produces a byte-identical map you can diff, cache, and gate in CI.
-- **Auditable & grounded** — every symbol in the AST and anchored-regex tiers carries a real `:start-end` line anchor; Tier-3 formats (Ruby, R, Lua, Elixir, C/C++, config formats) are listed without anchors, as [KNOWN_LIMITATIONS.md](KNOWN_LIMITATIONS.md) states. `sigmap verify` flags any AI claim that isn't grounded.
+- **Auditable & grounded** — every symbol in the AST and anchored-regex tiers carries a real `:start-end` line anchor; Tier-3 formats (R, Lua, Elixir, config formats) are listed without anchors, as [KNOWN_LIMITATIONS.md](KNOWN_LIMITATIONS.md) states. `sigmap verify` flags any AI claim that isn't grounded.
 - **Zero dependencies** — `npx sigmap` on any machine; no embeddings, no vector DB, no hosted service, fully offline.
 
 **Proof it pays off** (full benchmark below):
 <!--SM:whyMetrics-->
 - **80.4% hit@5** — right file in top 5 results (retrieval corpus, 18 repos)
-- **92.8% vs 40.0% single-shot grep baseline** — 2.32× measured lift on the honest corpus (125 tasks / 19 repos)
-- **55.8% hit@5 on repositories we do not control** — the third-party corpus: 116 of 208 questions over 35 repos, 95% interval 49.0–62.4%, labelled by two language-model annotators before SigMap ran on them. The stricter number to read beside the honest corpus above, which includes this repository
-- **95.7% smaller than the full repository** — the generated map vs every source file, averaged across 21 real repos. A map-size measurement, not a per-call cost saving: an agent's context footprint is not the whole repo
-- **61.9% task-success proxy** — modeled from retrieval tiers, not measured LLM sessions
-- **1.58 prompts per task** — down from 2.84 (44.4% fewer retries, modeled)
+- **92.0% vs 39.2% single-shot grep baseline** — 2.35× measured lift on the honest corpus (125 tasks / 19 repos)
+- **55.3% hit@5 on repositories we do not control** — the third-party corpus: 115 of 208 questions over 35 repos, 95% interval 48.5–61.9%, labelled by two language-model annotators before SigMap ran on them. The stricter number to read beside the honest corpus above, which includes this repository
+- **95.4% smaller than the full repository** — the generated map vs every source file, averaged across 21 real repos. A map-size measurement, not a per-call cost saving: an agent's context footprint is not the whole repo
+- **60.0% task-success proxy** — modeled from retrieval tiers, not measured LLM sessions
+- **1.6 prompts per task** — down from 2.84 (43.7% fewer retries, modeled)
 <!--/SM:whyMetrics-->
 - **<!--SM:languages-->38<!--/SM:languages--> languages supported** — TypeScript, Python, Go, Rust, Java, R, and more
 - **No vendor lock-in** — works with any AI assistant or local LLM
@@ -78,11 +78,11 @@ That map is exactly what agentic grep is worst at: reproducible, auditable conte
 
 ## 🔒 `sigmap verify` — the grounding flagship
 
-The one thing an agentic-grep loop cannot give you: **prove an AI answer is anchored to real signatures and line numbers before you trust it.** Deterministic, offline, no LLM — SigMap indexes your repo *plus the libraries actually installed here* and flags every fabricated file, import, imported name, symbol, test, or npm script.
+A zero-config, offline linter for the claims an AI answer makes about *your* repo: the files and test files it names, its `npm run` scripts, its relative and Python imports and the names it takes from repo modules, the functions it calls in backticks, and the argument counts of top-level calls — each looked up in a fresh SigMap index. Deterministic, no LLM. It **cannot** tell you that a method, an option or a library API exists, so it complements `tsc` / `pyright` rather than replacing them, and every run prints what it checked and what it did not.
 
 ```bash
-sigmap verify answer.md                 # ✓ grounded, or a line-by-line list of fabrications
-sigmap verify answer.md --json          # machine-readable report; exits 1 if any issue (CI gate)
+sigmap verify answer.md                 # a line-by-line list of what the repo does not have, and what was not checked
+sigmap verify answer.md --json          # machine-readable report (CI gate): exit 0 clean · 1 issues · 2 usage · 3 index missing or stale
 sigmap verify answer.md --report        # standalone red/amber/green HTML report
 ```
 
@@ -91,9 +91,12 @@ sigmap verify answer.md --report        # standalone red/amber/green HTML report
   fake-file: 1  fake-test-file: 0  fake-import: 0  fake-import-name: 0  fake-symbol: 1  fake-npm-script: 0
 
   L2  [Fake file]  File not found on disk: src/auth/session-store.js
-         ↳ Did you mean `sig-index-store.js` in src/retrieval/sig-index-store.js?
+         ↳ Did you mean `session-store.test.js` in test/integration/session-store.test.js?
   L2  [Fake symbol]  Symbol not found in repo index: authorize()
-         ↳ Did you mean `summarize()` in src/deps/sbom.js?
+         ↳ Did you mean `summarize()` in scripts/lib/agent-ab.mjs?
+
+  checked 2 claims — 1 file path · 1 backticked call
+  not checked: calls in fenced or raw code · member calls (obj.method()) · library APIs (named imports from, and members of, installed libraries)
 ```
 
 <sub>Real output of `sigmap verify` on a two-line `answer.md` that names a file and a function this repository does not have; the "Did you mean" targets depend on the repository.</sub>
@@ -131,15 +134,15 @@ Ask → Rank → Context → Validate → Judge → Learn
 
 <!--SM:benchmarkBlock-->
 ```
-Benchmark : sigmap-v8.82-main (21 repositories, including R language)
-Date      : 2026-10-23
+Benchmark : sigmap-v8.84-main (21 repositories, including R language)
+Date      : 2026-10-27
 
 Hit@5          : 80.4%   (retrieval corpus, 18 repos)
-Honest vs grep : 92.8% vs 40.0% grep baseline — 2.32× lift (125 tasks / 19 repos)
-Third-party    : 55.8% hit@5 (116 of 208 questions / 35 repos, 95% interval 49.0–62.4%)
-Map vs repo    : 95.7% smaller   (generated map vs all source files, 21 repos — not a per-call cost saving)
-Prompt reduction : 44.4% (2.84 → 1.58 prompts per task, modeled)
-Task success   : 61.9%   (proxy — modeled from retrieval tiers)
+Honest vs grep : 92.0% vs 39.2% grep baseline — 2.35× lift (125 tasks / 19 repos)
+Third-party    : 55.3% hit@5 (115 of 208 questions / 35 repos, 95% interval 48.5–61.9%)
+Map vs repo    : 95.4% smaller   (generated map vs all source files, 21 repos — not a per-call cost saving)
+Prompt reduction : 43.7% (2.84 → 1.6 prompts per task, modeled)
+Task success   : 60.0%   (proxy — modeled from retrieval tiers)
 Repos tested   : 21 (JavaScript, Python, Go, Rust, Java, R, C++, C#, Dart, Swift, Ruby, PHP, Scala, Kotlin, and more)
 ```
 <!--/SM:benchmarkBlock-->
@@ -151,7 +154,7 @@ Measured on 105 coding tasks across 18 real public repos. No LLM API — fully r
 **Resources:**
 - [Full methodology →](https://sigmap.io/guide/methodology.html)
 - [Benchmark suite (GitHub)](https://github.com/manojmallick/sigmap-benchmark-suite) — scripts, tasks, and raw data
-- [Benchmark data (Zenodo)](https://zenodo.org/records/19898842) — archived results for reproducibility
+- [Benchmark data (Zenodo)](https://zenodo.org/records/19898842) — 2026-04-29 snapshot, **known defect:** the `final_tokens` column of its results file is 0 in all 405 rows (and `reduction_percent` is 100 in 395), so do not reload results from it — `benchmarks/reports/` in this repository is the current record
 
 <div align="center">
 <img src="docs/comparison-chart.svg" alt="SigMap benchmark — before vs after across 3 RAG quality metrics" width="700" />
@@ -419,7 +422,7 @@ Not all 38 languages get the same depth — and we say so plainly:
 | Tier | Coverage | Depth |
 |------|----------|-------|
 | **AST** | Python (`python3` on PATH; regex fallback without) | Full parse |
-| **Anchored regex** | 12 brace languages (JS, TS, Go, Rust, Java, Kotlin, Swift, PHP, Scala, Dart, C#, PowerShell) | Declarations + `:start-end` line anchors; doc hints on 7 |
+| **Anchored regex** | 15 block-structured languages (JS, TS, Go, Rust, Java, Kotlin, Swift, PHP, Scala, Dart, C#, PowerShell, Objective-C, Ruby, C/C++) | Declarations + `:start-end` line anchors; doc hints on 7 |
 | **Pattern/heuristic** | Everything else + generic fallback | Line-oriented patterns |
 
 Caps: 25 signatures/file in the context file, up to 200 in the retrieval index · 120 members/class (the extractors' own limit). Full details, known regex gaps, and what they mean for `verify`: **[KNOWN_LIMITATIONS.md](KNOWN_LIMITATIONS.md)**.

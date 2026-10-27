@@ -68,7 +68,7 @@ Most autocomplete tools operate in one editor, and they send your text to a serv
 | <kbd>Tab</kbd> | Accept the next word. With no suggestion on the screen, <kbd>Tab</kbd> operates as usual. |
 | <kbd>⇧Tab</kbd> | Accept all of the suggestion. |
 | <kbd>⌥Tab</kbd> | Fix the selected text. With no selection, fix the last word. You see a preview first. |
-| <kbd>⌥⇧Tab</kbd> | Write a draft of your next message from the conversation on the screen. |
+| <kbd>⌥⇧Tab</kbd> | Write a draft of your next message from the conversation on the screen. In the prompt of an AI agent, from the agent's session. |
 | <kbd>⏎</kbd> / <kbd>Esc</kbd> | Accept or reject a rewrite or a typo fix. |
 | Hold <kbd>⌥</kbd> | Dictate while you hold the key. |
 | <kbd>⌃⌥D</kbd> | Start or stop hands-free dictation. |
@@ -79,16 +79,18 @@ To reject a suggestion, continue to type. You can change the accept key to <kbd>
 
 | Feature | What it does |
 |---|---|
-| **All text fields** | Native apps, Electron apps (VS Code, Slack, Claude Desktop), and web pages. In Terminal, iTerm2, and the VS Code terminal, only the prompts that you type to an AI agent, for example Claude Code. |
+| **All text fields** | Native apps, Electron apps (VS Code, Slack, Claude Desktop), and web pages. In Terminal, iTerm2, and the VS Code terminal, only the prompts that you type to an AI agent, for example Claude Code. There, the file names and the symbols that the agent shows complete at once. |
 | **Typo fixes** | A pill shows above a misspelled word. The macOS spell checker finds the error in the language of the text. |
 | **Rewrites** (<kbd>⌥Tab</kbd>) | The local model fixes grammar, typos, and phrasing. It keeps your tone. The best model fixes 69% of noisy lines exactly. |
-| **Reply drafts** (<kbd>⌥⇧Tab</kbd>) | The local model writes your next message from the conversation on the screen. With the best model, 90% of the replies are on topic. An independent model rates them. |
+| **Reply drafts** (<kbd>⌥⇧Tab</kbd>) | The local model writes your next message from the conversation on the screen. With the best model, 90% of the replies are on topic. An independent model rates them. In the prompt of an AI agent, the draft answers the agent's session. It reads the terminal text and needs no Screen Recording. With **Offer replies in chats** on, the draft comes when the agent finishes its turn. |
 | **Emoji and symbols** | `:shrug:` gives 🤷, `:rocket:` gives 🚀, `:cmd:` gives ⌘. |
 | **Arithmetic** | `12*7=` gives 84. |
 | **Speed** | A suggestion takes 17–81 ms on the local models. |
 | **Your style** | A persona, and a style for each app and each website. Pretype also learns from a local journal. You can clear the journal or disable it. |
 | **Shared app styles** | Styles from the community. One click adds the styles for the apps on your Mac. To share your style, add [one text file](AppStyles/README.md). |
 | **Hosted models** *(optional, off)* | OpenAI, Anthropic, Google Gemini, Groq, Mistral, OpenRouter, DeepSeek, or a local server such as Ollama or LM Studio. Keys stay in your keychain. See [Hosted models](docs/models.md#hosted-models-api). |
+| **One switch for each feature** | Suggestions, fixes, replies and dictation each have a switch in **Settings → General**. Typo fixes, emoji and arithmetic also have their own switches. With suggestions off, Pretype loads a model only for a fix or a reply. |
+| **Words** *(optional)* | Pretype completes only the word that you type, from your own words and the macOS dictionary of the language that you type. No model loads. Select **Words** in **Settings → General → Suggestions**. On a Mac with 8 GB, Words is the default. When memory pressure unloads the model, suggestions use Words for two minutes. |
 | **17 interface languages** | The interface uses the language of macOS. You can change it in **Settings → General**. |
 
 [Choosing a model](docs/models.md) has the measurements for each model.
@@ -96,6 +98,7 @@ To reject a suggestion, continue to type. You can change the accept key to <kbd>
 ### Where Pretype stops
 
 * You can disable Pretype for one app or one website from the menu.
+* To keep only the fixes, disable **Suggestions** in **Settings → General**.
 * Pretype does not operate in password managers, in the shell, or while macOS reports secure input.
 * **Pause on Battery** stops suggestions while the Mac is not connected to power.
 * If you almost never accept the suggestions in an app, Pretype stops in that app. The menu shows a **Resume** item.
@@ -106,6 +109,7 @@ To reject a suggestion, continue to type. You can change the accept key to <kbd>
 * The speech models of macOS transcribe on your Mac. Audio does not go to the disk.
 * A tidy-up pass adds the punctuation and the capital letters.
 * Dictation uses the language of your keyboard layout.
+* **Names.** Names and terms in the field, and in the session of an AI agent, come out as they are written there: "mlx" becomes "MLX", "suggestion controller" becomes "SuggestionController". This also operates with Parakeet. Add your own names and terms in **Settings → Dictation → My words**. Dictation always writes them as you wrote them there.
 * **Voice commands.** Select text and dictate an instruction, for example *"make it shorter"* or *"translate to English"*. Enable this in **Settings → Dictation → Advanced**.
 * **Send.** Pretype can push <kbd>Return</kbd> after a dictation, for example in a chat. To enable this for an app, select **Press Return after Dictation** in the menu.
 * If the focus changes during a capture, Pretype puts the transcript on the clipboard.
@@ -113,7 +117,7 @@ To reject a suggestion, continue to type. You can change the accept key to <kbd>
 | Languages | Speech model |
 |---|---|
 | English, German, Spanish, French, Italian, Japanese, Korean, Portuguese, Chinese | Apple `SpeechTranscriber`. It gives punctuation. |
-| All other languages, **Russian included** | Apple `DictationTranscriber`. It is older and gives no punctuation. You can select **Parakeet** (one download of ~610 MB) instead. On Russian, Parakeet makes less than half the word errors: 5.4% WER against 12.6% on FLEURS. |
+| All other languages, **Russian included** | Apple `DictationTranscriber`. It is older and gives no punctuation. You can select **Parakeet** (one download of ~610 MB) instead, in **Settings → Dictation** when Pretype shows its interface in that language. On Russian, Parakeet makes less than half the word errors: 5.4% WER against 12.6% on FLEURS. |
 | All languages | A hosted speech model, if you select an API provider in **Settings → API**. |
 
 [Architecture → Dictation](docs/ARCHITECTURE.md#dictation) gives the details.

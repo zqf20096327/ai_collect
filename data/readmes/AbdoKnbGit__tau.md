@@ -72,27 +72,6 @@ See the full command list and usage notes in **[COMMANDS.md](COMMANDS.md)**.
 
 ## Features
 
-### Terminal math
-
-LaTeX math renders automatically as compact Unicode in Tau's Markdown views,
-including replies from every provider, expanded thinking, plans, agent messages,
-tables, and previews. Use `$x^2$` or `\(x^2\)` inline, and `$$...$$` or
-`\[...\]` for display equations. For multiline display math, put the opening
-and closing delimiters on their own lines.
-
-Greek letters, operators, fractions, roots, scripts, and common matrix and
-alignment environments are supported without installing TeX. For example,
-`$E=mc^2$` becomes `E=mc²` and `$\frac{a+b}{c}$` becomes `(a+b)⁄c`.
-Equations use ordinary terminal text wrapping; matrices use compact rows
-separated by semicolons. In Markdown table cells, write `\lvert` and `\rvert`
-for vertical bars so they do not become table separators.
-
-Code spans and fences remain literal, as do raw prompts, logs, and tool output.
-Copying or exporting a response retains its original LaTeX. Unknown commands,
-unsupported TeX features, malformed expressions, and formulas beyond the parser's
-size or nesting limits remain readable as source. Full TeX documents, custom
-macros, and pixel typesetting are outside this terminal notation renderer.
-
 ### Multi-provider, natively
 
 30 providers with native adapters. Not a routing layer, not a translation proxy. Each provider speaks its own API through its own adapter. Full streaming, rate-limit handling, and automatic tool-schema sanitization per provider.
@@ -200,6 +179,19 @@ Here a named agent looks for bugs, gets a follow-up task after it has finished, 
   <img src="docs/Agent33.PNG" alt="The agent reporting back with the verified fixes">
 </p>
 
+### Configurable sub-agent model
+
+Choose the model your sub-agents run on in `/config`, then **Sub-agent model**. Only sub-agents change: your main chat keeps its model, effort and cache.
+
+- **Auto** (default): sub-agents work as before, each built-in agent on its usual model tier for your provider.
+- **Same as main model**: every sub-agent runs on the model you are chatting with.
+- **Custom**: pick a model and its effort for each provider, and sub-agents use the one saved for the provider you are on.
+- **Global**: one provider, model and effort for every sub-agent, even when your main chat runs on another provider.
+
+It applies to the built-in agents and to agent files that don't name their own model or provider. A sub-agent keeps its provider and model until it is done, even if you switch providers meanwhile, and keeps them when you send it a new task.
+
+**Why it matters:** sub-agents do most of the reading and searching, so they send most of the requests. Code with Claude Opus, set **Global** to DeepSeek's `deepseek-flash`, and five parallel Explore agents search your codebase for a fraction of the cost while your main chat stays on Opus. Want sub-agents as sharp as your main chat instead? Pick **Same as main model**.
+
 ### Pay only for what you use
 
 Tau thinks about your money and your preferences before anything else. A normal workflow doesn't need skills, agents or MCP servers, so you can leave them off and stay in cheap mode. When you need them, one command turns them on: `/mode normal`. You don't need an MCP server for things like diagrams or browser automation either, because those tools are built into Tau. Switch each of them on or off with `/tools`, so you pay less, or nothing, for what you don't use.
@@ -248,6 +240,13 @@ Tau gets better the more you use it. After a substantial task, or on demand via 
 
 New worktrees start from your current commit by default, including unpushed commits.
 Use `/config` to choose the remote's freshly fetched default branch instead. [Configuration and examples](docs/worktree-base.md).
+
+### Latex native rendering
+
+LaTeX renders automatically as compact Unicode across all providers in replies, thinking, plans, agent messages, tables, and previews.
+For example, `$E=mc^2$` renders as `E=mc²`; inline and display equations work without installing TeX.
+Greek letters, fractions, roots, scripts, and common matrices are supported; code, prompts, logs, and tool output stay literal.
+Copying or exporting preserves the original LaTeX. Unsupported expressions stay readable as source; full TeX documents and custom macros are unsupported.
 
 ---
 

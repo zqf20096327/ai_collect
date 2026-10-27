@@ -16,7 +16,7 @@ model providers and integrations. AxisVela products are not required.
 
 [Documentation](https://axisvela.github.io/praxo-core/) |
 [Quickstart](docs/getting-started/quickstart.md) |
-[Language SDKs](docs/sdks/index.md) |
+[Language Implementations](docs/languages/index.md) |
 [Examples](examples)
 
 ## Start With Go
@@ -67,16 +67,21 @@ Go is the reference implementation. SDKs share a normative contract in
 
 | Runtime | Start here |
 | --- | --- |
-| Go | [Install and quickstart](docs/sdks/go.md) |
-| Python | [Python SDK](https://axisvela.github.io/praxo-core/sdks/python/) |
-| TypeScript / JavaScript | [TypeScript SDK](https://axisvela.github.io/praxo-core/sdks/typescript/), [JavaScript sample](https://axisvela.github.io/praxo-core/sdks/javascript/) |
-| Java / Kotlin / Scala | [Java SDK](https://axisvela.github.io/praxo-core/sdks/java/), [Kotlin](https://axisvela.github.io/praxo-core/sdks/kotlin/), [Scala](https://axisvela.github.io/praxo-core/sdks/scala/) |
-| .NET | [C# SDK](https://axisvela.github.io/praxo-core/sdks/csharp/), [Visual Basic sample](docs/sdks/visual-basic.md) |
-| Other languages | [Complete SDK directory](docs/sdks/index.md) |
+| Go | [Install and quickstart](docs/languages/go.md) |
+| Python | [Python SDK](https://axisvela.github.io/praxo-core/languages/python/) |
+| TypeScript / JavaScript | [TypeScript SDK](https://axisvela.github.io/praxo-core/languages/typescript/), [JavaScript sample](https://axisvela.github.io/praxo-core/languages/javascript/) |
+| Java / Kotlin / Scala / Groovy / Clojure | [Java SDK](https://axisvela.github.io/praxo-core/languages/java/), [Kotlin](https://axisvela.github.io/praxo-core/languages/kotlin/), [Scala](https://axisvela.github.io/praxo-core/languages/scala/), [Groovy](https://axisvela.github.io/praxo-core/languages/groovy/), [Clojure](https://axisvela.github.io/praxo-core/languages/clojure/) |
+| .NET | [C# SDK](https://axisvela.github.io/praxo-core/languages/csharp/), [Visual Basic sample](docs/languages/visual-basic.md), [F# sample](docs/languages/fsharp.md) |
+| C / OpenCL | [C SDK](https://axisvela.github.io/praxo-core/languages/c/), [OpenCL sample](https://axisvela.github.io/praxo-core/languages/opencl/) |
+| OCaml | [OCaml SDK](https://axisvela.github.io/praxo-core/languages/ocaml/) |
+| MATLAB / Octave | [MATLAB/Octave SDK](https://axisvela.github.io/praxo-core/languages/matlab/) |
+| Haskell | [Haskell SDK](https://axisvela.github.io/praxo-core/languages/haskell/) |
+| Delphi / Free Pascal | [Delphi / Free Pascal SDK](https://axisvela.github.io/praxo-core/languages/delphi/) |
+| Other languages | [Complete implementation directory](docs/languages/index.md) |
 
 Source releases, package-registry publication, conformance, and production
 verification are different states. Follow each language's installation
-instructions and [support policy](docs/sdks/support.md); do not infer full Go
+instructions and [support policy](docs/languages/support.md); do not infer full Go
 feature parity or registry availability from a source tag.
 
 ## Examples
@@ -96,20 +101,18 @@ feature parity or registry availability from a source tag.
 | --- | --- |
 | [`pkg/`](pkg) | Public Go framework APIs |
 | [`adapters/`](adapters) | Optional model, protocol, telemetry, and runtime integrations |
-| [`sdk/`](sdk/README.md) | Independent language SDK source, builds, tests, and API references |
+| [`language/`](language/README.md) | Independent language SDK source, builds, tests, and API references |
 | [`bindings/`](bindings/README.md) | Shell and PowerShell runtime bridges |
 | [`spec/`](spec) | Normative wire contract, vectors, and parity inventories |
 | [`examples/`](examples) | Runnable integration examples |
 | [`docs/`](docs) | Public documentation grouped by user task |
 
-Go module paths remain unchanged. Language sources have moved under `sdk/`,
+Go module paths remain unchanged. Language sources have moved under `language/`,
 `bindings/`, and `examples/`; see the [source migration guide](docs/project/repository-layout.md).
 
 ## Framework and Ecosystem
 
-PRAXO-CORE is extracted from PRAXOVELA, but it is a separate MIT-licensed
-framework. PRAXOVELA is an AGPL-3.0 runtime product. The framework never imports
-product code; credentials and tenant data remain with the integrator.
+PRAXO-CORE is an independent MIT-licensed framework.
 
 Connect models, memory, events, retrieval, and policy through your own adapters
 or [optional AxisVela integrations](docs/integrations/ecosystem.md). See the

@@ -1,6 +1,10 @@
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/shanjeevrajendran/cloakroom/main/assets/hero.svg" alt="Cloakroom, a privacy layer for AI coding agents (Claude Code, Codex CLI, Gemini CLI): names, emails, addresses and API keys are swapped for placeholders before the model sees them." width="880">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/shanjeevrajendran/cloakroom/main/assets/title-card-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/shanjeevrajendran/cloakroom/main/assets/title-card-light.svg">
+  <img src="https://raw.githubusercontent.com/shanjeevrajendran/cloakroom/main/assets/title-card-light.svg" alt="Cloakroom: your secrets stay on your machine. A coat-check ticket shows a masked API key on the part that stays on your disk and the placeholder PII_SECRET_1 on the stub the model sees." width="880">
+</picture>
 
 **Cloakroom is free and open source. It masks API keys, passwords and personal data (names, emails, addresses and the like) on your machine before your AI coding agent sees them. Works with Claude Code, Codex CLI and Gemini CLI.**
 
@@ -28,6 +32,15 @@
 
 **Cloakroom swaps your secrets and personal data for placeholders before Claude sees them, and puts the real values
 back in the files Claude writes.**
+
+On test data it hadn't seen before, Cloakroom let through 0 of 1,005 personal details (the other tools we tested let
+through 119 to 992) and 0 of 77 keys and passwords in the formats vendors really issue. Its weak spot is false
+alarms: it masks more harmless text than secret-only tools do. [Results](#results)
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/shanjeevrajendran/cloakroom/main/assets/demo-clip.gif" alt="Claude Code reads .env through Cloakroom: the fake Stripe key on disk is swapped for a placeholder before Claude sees it" width="760">
+  <br><sub>When Claude writes a file, Cloakroom puts the real value back in on your disk.</sub>
+</p>
 
 **Install** (inside Claude Code, one line at a time):
 
@@ -122,11 +135,6 @@ Claude Code plugin updates arrive a few days after each PyPI release (PyPI is th
 - **Scans and photos of documents:** read on your machine (no upload) and masked like any other file.
 - **Learns from you:** when it masks something harmless (a false alarm), mark it once in the dashboard and a rule
   stops it next time.
-
-<div align="center">
-  <img src="https://raw.githubusercontent.com/shanjeevrajendran/cloakroom/main/assets/demo.gif" alt="Claude Code reads a support ticket and .env through Cloakroom: the model sees PII_PERSON_1 and PII_SECRET_1, and reply.md on disk gets the real customer name back" width="820">
-  <br><sub>Claude writes the reply. The customer's name never left your machine.</sub>
-</div>
 
 ## Get started
 

@@ -357,10 +357,12 @@ taken from a README, is in
 Read this before you point it at a mailbox you care about.
 
 **It cannot write.** The generated mbsync configuration for every account
-carries `Sync Pull`, `Create Near`, `Remove None` and `Expunge None` (or,
+carries `Sync Pull`, `Create Near`, `Remove Near` and `Expunge None` (or,
 for an account with `expunge_local` set, `Expunge Near`, which deletes local
 files only), and the program writes that file itself, so nothing in it can
-be edited into a push.
+be edited into a push. `Remove Near` acts on the local side only: when a
+folder is deleted or renamed on the server, its local copy stays with all
+its mail, and only an empty local folder is removed.
 The only IMAP operation in the Go code is `LIST`, issued per account at
 startup and hourly to find the junk and trash folders; an account with
 `exclude_folders` set by hand skips even that. The process has no path that
@@ -429,6 +431,6 @@ order of how much each buys you.
   what they shell out to.
 - [Running it on a server](docs/server.md): install script, hardening, your
   own domain with Caddy.
-- [Upgrading from 0.3.x](docs/upgrading.md).
+- [Upgrading from 0.4.x](docs/upgrading.md).
 - [Design spec](docs/specs/2026-08-19-your-mail-mcp-design.md) and
   [the survey of email MCP servers](docs/research/email-mcp-landscape.md).

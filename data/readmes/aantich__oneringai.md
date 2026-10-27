@@ -305,7 +305,7 @@ Showcasing another amazing "built with oneringai": ["no saas" agentic business t
 - 🧭 **[GPT-6 Astra Responses extensions](./USER_GUIDE.md#gpt-6-astra-responses-extensions)** - Async tools, WebSocket steering, persistent reasoning/compaction state, safety alerts, Decisions, GPT-Live, and custom voices
 - 📞 **[xAI Voice Agent API](./USER_GUIDE.md#xai-realtime-voice-agent-api)** - JSON or binary audio, browser credentials, conversation resumption, reasoning controls, and SIP refer/hangup
 - 🖼️ **Image Generation** - GPT Image 2.5 Sunburst/Flare, Gemini Nano Banana 2.1, Imagen, and Grok Imagine generation/editing
-- 🎬 **Video Generation** - Callable OpenAI Sora 2 (with published retirement metadata), Google Veo/Omni, and Grok Imagine Video 1.5
+- 🎬 **Video Generation** - Google Veo/Omni and Grok Imagine Video 1.5; retired OpenAI Sora APIs report local migration errors
 - 🔢 **Embeddings** - Text and multimodal embedding generation, including Gemini Embedding 2 for text, image, audio, video, and documents
 - 🔍 **Web Search** - Connector-based search with Serper, Brave, Tavily, and RapidAPI providers
 - 🔌 **NextGen Context** - Clean, plugin-based context management with `AgentContextNextGen`
@@ -508,90 +508,38 @@ const googleResult = await googleGen.generate({
 });
 ```
 
+OpenAI image variations were retired with DALL-E 2 on 2026-05-12.
+`createVariation()` now rejects locally with `ProviderError` (status 410).
+Use `imageGen.edit({ image, prompt: 'Create a variation with warmer lighting' })`
+for a prompt-based alternative with the current GPT Image default. Generation
+and editing with explicitly selected `dall-e-2` or `dall-e-3` also reject locally.
+
 ### Video Generation
 
 ```typescript
 import { VideoGeneration } from '@everworker/oneringai';
 
-// OpenAI Sora (deprecated; callable until the Videos API shuts down 2026-09-24)
-const videoGen = VideoGeneration.create({ connector: 'openai' });
+// Use a named Google connector configured with Vendor.Google.
+const videoGen = VideoGeneration.create({ connector: 'google' });
 
-// Start video generation (async - returns a job)
 const job = await videoGen.generate({
   prompt: 'A cinematic shot of a sunrise over mountains',
-  model: 'sora-2',
-  duration: 8,
-  resolution: '1280x720',           // 720x1280 / 1280x720 / 1024x1792 / 1792x1024 (1.4× HD)
-});
-
-// Wait for completion
-const result = await videoGen.waitForCompletion(job.jobId);
-
-// Download the video
-const videoBuffer = await videoGen.download(job.jobId);
-await fs.writeFile('./output.mp4', videoBuffer);
-
-// Google Veo
-const googleVideo = VideoGeneration.create({ connector: 'google' });
-
-const veoJob = await googleVideo.generate({
-  prompt: 'A butterfly flying through a garden',
   model: 'veo-3.1-lite-generate-preview',
   duration: 8,
 });
+
+const result = await videoGen.waitForCompletion(job.jobId);
+const videoBuffer = await videoGen.download(job.jobId);
+await fs.writeFile('./output.mp4', videoBuffer);
 ```
 
-Sora 2/2 Pro are still callable but have published deprecation and retirement
-metadata. Production pickers should show `lifecycle` and `retirementDate`, not
-infer recommendation from `isActive` alone. Google Veo/Omni and xAI Grok
-Imagine Video 1.5 are covered in the [User Guide](./USER_GUIDE.md#video-generation).
-
-#### Sora: extend, remix, edit (OpenAI only)
-
-The Videos API references completed clips by **id** — pass the `jobId` returned
-by `generate()`, not a buffer or URL.
-
-```typescript
-// Extend — generate an additional segment after the source clip.
-const extension = await videoGen.extend({
-  video: job.jobId,           // id of a completed video
-  prompt: 'The camera pulls back to reveal a snow-covered valley',
-  extendDuration: 8,          // length of the *new* segment, snapped to 4/8/12
-});
-
-// Remix — same length, prompt-steered re-generation.
-const remix = await videoGen.remix({
-  videoId: job.jobId,
-  prompt: 'Same composition, but at golden hour',
-});
-
-// Edit — apply a prompt-described change to a completed clip.
-const edited = await videoGen.edit({
-  videoId: job.jobId,
-  prompt: 'Add light snowfall throughout',
-});
-```
-
-#### Sora: reusable characters (OpenAI only)
-
-Upload a reference video to register a character. Note: the unified `generate()`
-does not yet apply the character id — reference the character in your prompt and
-use `getCharacter()` to look it up.
-
-```typescript
-const character = await videoGen.createCharacter({
-  name: 'Hero',
-  video: './reference-shot.mp4', // Buffer | local path | URL
-});
-// → { id: 'char_…', name: 'Hero' }
-
-const scene = await videoGen.generate({
-  prompt: 'Hero walks across a windswept beach at dusk',
-});
-
-// Look up later
-const same = await videoGen.getCharacter(character.id);
-```
+OpenAI retired the Videos API, `sora-2`, and `sora-2-pro` on
+2026-09-24, with no replacement listed. The existing OpenAI video APIs remain
+exported for compatibility and reject locally with `ProviderError` (status 410);
+model discovery returns no OpenAI video models, and cancellation returns `false`.
+Choose a named Google or Grok connector explicitly; credentials and jobs do not
+transfer between vendors. See the [User Guide](./USER_GUIDE.md#video-generation)
+and [OpenAI's retirement notice](https://developers.openai.com/api/docs/deprecations).
 
 ### Embeddings
 
@@ -2253,4 +2201,52 @@ import { getModelInfo, calculateCost, LLM_MODELS, MODEL_REGISTRY_SCHEMA_VERSION,
 const model = getModelInfo('gpt-6-astra');
 console.log(MODEL_REGISTRY_SCHEMA_VERSION); // 2
 console.log(model?.features.input.tokens);  // 1050000 total context-window guardrail
-cons
+console.log(model?.lifecycle);              // 'active'
+
+// Calculate costs
+const cost = calculateCost('gpt-5.6-luna', 50_000, 2_000);
+console.log(`Cost: $${cost}`);  // $0.0124
+
+// With mixed cached and uncached input
+const cachedCost = calculateCost('gpt-5.6-luna', 50_000, 2_000, {
+  cachedInputTokens: 30_000,
+  processingMode: 'batch',
+});
+console.log(`Optimized: $${cachedCost}`); // $0.0035
+```
+
+**Available text/realtime models:**
+- **OpenAI**: GPT-6 Astra, GPT-6.1 Sol, GPT-6 Sol/Luna, GPT-5.6 Cyber/Sol/Terra/Luna, GPT-Rosalind Research, earlier GPT/o-series, Deep Research, audio, Realtime/Live, and open-weight models
+- **Anthropic**: Claude Opus 5.5 and Sonnet 5.5, Fable/Mythos/Opus/Sonnet 5 families, and maintained legacy entries
+- **Google**: Gemini 3.8 Flash/Live, 3.7/3.6 Flash, 3.5/3.1 families, live/image variants, and maintained Gemini 2.5 entries
+- **xAI**: Grok 4.7, 4.6, 4.5, 4.3, Build 0.1, 4.20/4.1 families, and Grok Voice Think Fast 2.0/1.0
+- **DeepSeek (5)**: V4 Flash, V4 Pro, V4 Flash Vision Experimental, and retired compatibility records
+
+See the [complete Model Registry guide](./USER_GUIDE.md#model-registry) and
+[current registry audit](./docs/MODEL_REGISTRY_AUDIT.md) for migration details,
+media registries, API-path changes, and official source links.
+
+### 15. Streaming
+
+Real-time responses:
+
+```typescript
+import { StreamHelpers } from '@everworker/oneringai';
+
+for await (const text of StreamHelpers.textOnly(agent.stream('Hello'))) {
+  process.stdout.write(text);
+}
+```
+
+### 16. OAuth for External APIs
+
+```typescript
+import { OAuthManager, FileStorage } from '@everworker/oneringai';
+
+const oauth = new OAuthManager({
+  flow: 'authorization_code',
+  clientId: process.env.GITHUB_CLIENT_ID!,
+  clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+  authorizationUrl: 'https://github.com/login/oauth/authorize',
+  tokenUrl: 'https://github.com/login/oauth/access_token',
+  storage: new FileStorage({ directory: './tokens', encryptionKey: process.env.OAUT

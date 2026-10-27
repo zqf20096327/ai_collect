@@ -1,3 +1,5 @@
+<p align="center"><img src="assets/banner.png" alt="hermes-skills: open-source skills for Hermes Agent" width="100%"></p>
+
 <p align="center">
   <h1 align="center">hermes-skills</h1>
   <p align="center">Open-source skills library for <a href="https://github.com/NousResearch/hermes-agent">Hermes AI Agent</a> — plug-and-play integrations for finance, web, marketing and more.</p>
@@ -6,17 +8,50 @@
 <p align="center">
   <a href="https://github.com/RobinBeraud/hermes-skills/stargazers"><img src="https://img.shields.io/github/stars/RobinBeraud/hermes-skills?style=flat-square" alt="Stars"></a>
   <a href="https://dev.to/robinberaud"><img src="https://img.shields.io/badge/Dev.to-articles-0a0a0a?style=flat-square&logo=devdotto" alt="Dev.to"></a>
-  <img src="https://img.shields.io/badge/skills-26-blue?style=flat-square" alt="Skills count">
+  <img src="https://img.shields.io/badge/skills-30-blue?style=flat-square" alt="Skills count">
   <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License">
 </p>
 
 ---
+
+## See it in action
+
+<p align="center"><img src="assets/demo.gif" alt="env-secrets-scanner finding leaked secrets before a commit" width="720"></p>
+
+## Install a skill (one command)
+
+Hermes can install any skill straight from this repo, with a security scan and a confirmation prompt:
+
+```bash
+hermes skills inspect RobinBeraud/hermes-skills/security/env-secrets-scanner   # preview, installs nothing
+hermes skills install RobinBeraud/hermes-skills/security/env-secrets-scanner   # install
+```
+
+Replace the path with any skill folder listed below (`<category>/<skill>`).
 
 ## What are Hermes Skills?
 
 Skills are Markdown files that give Hermes contextual knowledge and reusable code patterns to interact with external services. Drop a `SKILL.md` into `~/.hermes/skills/` and your agent knows how to use the service.
 
 ## Available Skills
+
+### 🆕 Latest additions
+| Skill | Description | Added |
+|-------|-------------|-------|
+<!-- LATEST -->
+| [listing-alert-triage](automation/listing-alert-triage/SKILL.md) | Parse real-estate listing alert e-mails (plain text, HTML or .eml), extract price, surface and city, compute price per m2, compare it to ref | 2026-10-27 |
+| [env-secrets-scanner](security/env-secrets-scanner/SKILL.md) | Scan a project folder or git-staged files for leaked secrets (.env files, API keys, private keys, passwords in URLs) before committing, with | 2026-10-26 |
+
+
+### 🔬 Research
+| Skill | Description | Requires |
+|-------|-------------|----------|
+| [Data Intelligence Router](research/data-intelligence-router/SKILL.md) | Route research questions to open APIs (OpenAlex, Crossref, arXiv, World Bank, ECB, NVD, Wikipedia...) through one keyless adapter with normalized JSON and provenance | — |
+
+### 🎨 Media
+| Skill | Description | Requires |
+|-------|-------------|----------|
+| [Note Visual](media/note-visual/SKILL.md) | Hand-drawn style diagrams (compare, 2x2 matrix, funnel, steps) as PNG for Substack Notes / LinkedIn posts, exact text, no image model | Pillow |
 
 ### 💹 Finance
 | Skill | Description | Requires |

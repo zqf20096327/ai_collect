@@ -23,7 +23,9 @@ Nothing leaves your machine, and nothing runs until you act on the result.
 
 The model is [wyat-1 800M](https://huggingface.co/teilomillet/wyat-1-800m).
 It runs with PyTorch on CPU, CUDA or Apple MPS, or with MLX on Apple Silicon.
-Version **0.1.2** downloads its pinned
+Version 0.2.0 also loads [wyat-2 1.4B](https://huggingface.co/wyat-io/wyat-2-1.4b)
+from a downloaded `model/` directory.
+Version **0.2.0** downloads its pinned
 release and verifies every file before loading.
 
 ## Try it
@@ -51,16 +53,18 @@ downloads and verifies wyat-1 800M on first use, then reuses the verified cache.
 Run `uv run wyat download` to fetch it ahead of time. Inference itself never
 uses the network.
 
-On Apple Silicon, use the GPU: `wyat.load(backend="mlx")` with the `mlx` extra,
-or `wyat.load(device="mps")` with PyTorch. Both give the same scores as PyTorch
-CPU, which is several times slower there.
+The default backend is PyTorch on CPU. On Apple Silicon, install the `mlx`
+extra and select `backend="mlx"` in Python or `--backend mlx` on the CLI to use
+the Apple GPU. The examples below do this explicitly.
 
 ## Use it
+
+On Apple Silicon with the `mlx` extra:
 
 ```python
 import wyat
 
-model = wyat.load("teilomillet/wyat-1-800m")  # also the default for wyat.load()
+model = wyat.load("teilomillet/wyat-1-800m", backend="mlx")
 
 decision = model.decide(wyat.Request(
     query="Choose the requested booking action.",
@@ -78,9 +82,13 @@ Load once. Decide many times. The same request and result work in Python,
 JSONL, and HTTP:
 
 ```sh
-uv run wyat decide teilomillet/wyat-1-800m < requests.jsonl > decisions.jsonl
-uv run wyat serve  teilomillet/wyat-1-800m
+uv run wyat decide teilomillet/wyat-1-800m --backend mlx < requests.jsonl > decisions.jsonl
+uv run wyat serve  teilomillet/wyat-1-800m --backend mlx
 ```
+
+For PyTorch with the `inference` extra, use `backend="torch"` in Python or
+`--backend torch` on the CLI. It uses CPU by default; add `device="cuda"` or
+`--device cuda` for CUDA, or `device="mps"` / `--device mps` for Apple MPS.
 
 Besides choosing an option, wyat rates on an ordered scale (`Request.score`)
 and answers yes or no with a probability (`Request.noul`).

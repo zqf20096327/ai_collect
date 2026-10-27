@@ -213,6 +213,8 @@ fences, including unclosed fences, in complete and streamed replies.
 
    Jina fetches support opt-in bounded retries via `max_retries` (default `0`) and `retry_budget_seconds` (default `30`) in the tool configuration. Valid `Retry-After` hints set a minimum wait for HTTP 429/503; 429 without a valid hint stays terminal. Hints that cannot fit the remaining budget stop retries. Local backoff remains randomized. Retries may increase upstream requests and cost; see [Jina fetch retries](backend/docs/CONFIGURATION.md#jina-fetch-retries).
 
+   At DEBUG level, Jina emits one bounded crawl completion summary with attempts, elapsed/backoff seconds, outcome and stop reason. See [diagnostics](backend/docs/CONFIGURATION.md#jina-crawl-diagnostics) for configuration and correlation.
+
    Jina also accepts an opt-in `max_response_bytes` tool setting (positive integer; omitted/null disables it). It stops oversized decoded responses before extraction, with no partial success or retry. This leaves the 4096-character output cap unchanged and does not bound HTTPX decompressor allocations or wire bandwidth; see [response budget](backend/docs/CONFIGURATION.md#jina-response-byte-budget).
 
    Jina can also bound concurrent HTTP attempts and FIFO waiting with the opt-in `request_admission` tool extra. One immutable budget is shared across clients and agent threads in each process; replicas have independent budgets. See [Jina request admission](backend/docs/CONFIGURATION.md#jina-request-admission).
@@ -267,6 +269,14 @@ fences, including unclosed fences, in complete and streamed replies.
    names are generated automatically and remain stable when a model ID changes.
    Newly saved models are enabled and immediately refresh existing chat and Agent
    model selectors, without editing YAML or restarting the Gateway.
+
+   The Moonshot (China) preset recognizes `kimi-k3.1-pro` and
+   `kimi-k3.1-pro-highspeed` with required thinking, image input and native
+   `low` / `high` / `max` reasoning effort (default `max`). Thinking stays on
+   even when a caller requests it off. Requests to the official endpoint omit
+   the unsupported thinking switch and fixed sampling parameters. See the
+   [model registration reference](backend/docs/CONFIGURATION.md#models-registered-through-the-web)
+   for the image-input and parameter constraints.
 
    **Custom OpenAI-compatible** still supports existing/custom base URLs and
    unauthenticated endpoints. **Advanced settings** retains display name, token
@@ -463,6 +473,12 @@ fences, including unclosed fences, in complete and streamed replies.
    TAVILY_API_KEY=your-tavily-api-key
    ```
 
+   `make dev` and `make start` read `.env` as data, never as a shell script, so a
+   value means what the Gateway reads: `$$`, backticks and `$(...)` stay as
+   written, and an unquoted value may contain spaces. `$NAME`, `${NAME}`,
+   `${NAME:-default}` and an unquoted leading `~` still expand, and
+   single-quoted values stay literal.
+
    </details>
 
 For an explicit backend dotenv file, export `DEER_FLOW_ENV_FILE` before startup,
@@ -486,6 +502,13 @@ Custom blob storage backends accept `blob_storage.backend: module.Class` or
 `module:Class`, including a single `.py` module importable by the Gateway.
 The selected class must implement `BlobStore`; backend options go under
 `blob_storage.backend_config`. See [blob storage](backend/docs/blob-storage.md).
+
+Viewed-image artifact URLs can use shared blobs when the serving Gateway lacks
+the local file. This fallback requires an existing thread record accessible to
+the caller; deleting that record revokes access even if checkpoint cleanup fails.
+When blob storage is disabled, a missing local file returns 404 without loading
+checkpoint state. Shared-store failures also return 404 and emit a warning with
+the exception type, without backend error details.
 
 ### Running the Application
 
@@ -540,7 +563,10 @@ apply to the next run without restarting the Gateway. This top-level setting
 applies to Gateway API and IM channel runs. A `recursion_limit` in an IM
 channel's `session.config` takes precedence, and GitHub channel runs keep
 their own floor. Embedded `DeerFlowClient` runs retain their own defaults and
-per-call override paths.
+per-call override paths. A run that reaches its limit stops with a plain message
+that names up to five files it created in `/mnt/user-data/outputs` without
+presenting them; send a message to continue. IM channels reply with the same
+message.
 
 A custom frontend can add an optional `context.client` to a Gateway run request:
 a client name, capabilities such as `artifacts` or `charts`, and display
@@ -1118,14 +1144,4 @@ explicit, model-selected MCP tool path can run alongside the separate automatic
 OpenViking memory backend; it does not replace automatic turn capture or recall. See the
 [OpenViking MCP tools configuration](backend/docs/MCP_SERVER.md#openviking-mcp-tools).
 
-The Gateway can adapt an MCP server's ordinary `submit` / `status` / `cancel` tools into durable background tasks. The Agent sees only the configured submit tool and a DeerFlow-local task ID; remote IDs are persisted before the submit call returns, while status and cancel stay internal to the runtime. Polling uses cross-worker leases, exponential retry backoff, scoped MCP sessions, bounded result storage, and restart recovery. A status-tool `isError` is retained as a bounded diagnostic and retried; servers report a permanent remote-task outcome through a normal structured result with `status: "failed"`. Remote poll hints are finite positive numbers capped at 24 hours, artifact-reference JSON is limited to 64 KiB, and task/server identifiers are validated against their durable SQL column limits before persistence. Input-required and terminal updates wake the current chat through idempotent Agent runs, while `list_background_tasks` and `cancel_background_task` let the Agent manage tasks without asking users for remote handles. Current-thread tasks are available through `GET /api/threads/{thread_id}/mcp-tasks`, its detail endpoint, and `POST /api/threads/{thread_id}/mcp-tasks/{task_id}/cancel`; when the task runtime actually starts, the Web UI exposes the same safe local view from the chat header with live status refresh, cancellation, and on-demand result, artifact, input-request, status-error, and cancellation-retry details. Default-disabled and memory-backend deployments hide that UI and do not poll the task endpoints. A failed remote cancellation remains queued with backoff, and its latest bounded error and attempt count stay visible in the expanded task card. Enable `mcp_tasks` in `config.yaml`, configure `task_toolsets` with exact raw tool names in `extensions_config.json`, and use a SQL database backend (`sqlite` or `postgres`). Task-enabled server connection, authentication, interceptor, timeout, or binding changes require a Gateway restart so Agent tool discovery and background calls cannot use different configuration versions. `input_required` is notification-only for now: DeerFlow can display the request but cannot yet submit the user's answer back to the remote task.
-
-For deployment-level HTTP/SSE servers with `task_toolsets`, discovery, ordinary
-tools, and background task calls share OAuth token state within one Gateway
-process, including across tool-cache resets. Rotated refresh tokens stay in
-memory; they are not written back to configuration or shared across processes.
-After a restart, the configured refresh token must still be valid.
-
-Notification launch and failed Agent-run deliveries use capped exponential backoff with a visible attempt count and stop after five failed attempts. When a bounded ordinary release exceeds its drain deadline, the service retains ownership until it settles. A permanently rejected target such as a deleted chat is dead-lettered immediately instead of retried forever or recreated. Cancellation endpoints return after durably recording the request; the background service owns the potentially slow remote MCP call and its retry schedule.
-
-Notification runs keep their trusted delivery instruction separate from the framed, untrusted remote event payload. The process-started task runtime—not a hot config read—controls w
+The Gateway can adapt an MCP server's ordinary `submit` / `status` / `cancel` tools into durable background tasks. The Agent sees only the configured submit tool and a DeerFlow-local task ID; remote IDs are persisted before the submit call returns, while status and cancel stay internal to the runtime. Polling uses cross-worker leases, exponential retry backoff, scoped MCP sessions, bounded result storage, and restart recovery. A status-tool `isError` is retained as a bounded diagnostic and retried; servers report a permanent remote-task outcome through a normal structured result with `status: "failed"`. Remote poll hints are finite positive numbers capped at 24 hours, artifact-reference JSON is limited to 64 KiB, and task/server identifiers are validated against their durable SQL column limits before persistence. Input-required and terminal updates wake the current chat through idempotent Agent runs, while `list_background_tasks` and `cancel_background_task` let the Agent manage tasks without asking users for remote handles. Current-thread tasks are available through `GET /api/threads/{thread_id}/mcp-tasks`, its detail endpoint, and `POST /api/threads/{thread_id}/mcp-tasks/{task_id}/cancel`; when the task runtime actually starts, the Web UI exposes the same safe local view from the chat header with live status refresh, cancellation, and on-demand result, artifact, input-request, status-error, and cancellation-retry details. Default-disabled and memory-backend deployments hide that UI and do not poll the task endpoints. A 

@@ -17,18 +17,13 @@
   <a href="REFERENCE.md">Reference</a>
 </p>
 
-Frontier models can cost ten times as much as smaller ones, and many tasks do not need them.
-`modelcmp` puts prices and benchmarks side by side and, for each kind of task (coding, agentic
-runs, reasoning, ...), recommends the best model at each price. It reads the harnesses you have
-installed, shows which one has each model, and starts it on the model you pick.
+`modelcmp` puts model benchmarks and prices side by side and recommends the best model at each
+price for each task.
 
-- **You** get a TUI to filter, sort, compare and see recommended models for each task.
-  You can set your favorite model for a task, exclude models you cannot use, write notes, start a
-  harness or download and run a local model.
-- **Your agent** gets a CLI to find the favorite or recommended model for a task,
-  for each price tier. In a multi-agent setup, the CLI allows an orchestrator in one
-  harness (e.g. `Opus 5.5` in `Claude Code`) to find and hand a subtask to a cheaper model in another harness (e.g.
-  `DeepSeek V4 Pro` in `pi`), or even to a local one (e.g. `Qwen3.8 Flash Next` from `llama.cpp`, in `pi`).
+- **You** get a TUI to compare models, set your favorites and see the recommended ones for each task.
+- **Your agent** gets a CLI to find your favorite or the recommended model for each task and price
+  tier. An orchestrator in one harness (e.g. `Opus 5.5` in `Claude Code`) can then hand a subtask to
+  a cheaper model in another (e.g. `GLM-5.3` in `pi`), or to a local one (e.g. `Qwen3.8 27B` in `ollama`).
 
 ![Filtering to the Opus models, sorting them by price and opening a model's details](https://github.com/user-attachments/assets/ec554a4a-0f82-4a77-91fc-ac2d1e5c155b)
 
@@ -65,66 +60,68 @@ cargo install --locked --path .   # or cargo build --release, for target/release
 
 The TUI says when a newer version is out, and `UU` upgrades to it.
 
-## Usage
+To let your agent use it, install the skill too:
 
 ```sh
-modelcmp                                   # start the TUI
-modelcmp recommend                         # best model per price for each task
-modelcmp list --task coding                # best model per price for coding, cheapest first
-modelcmp compare sonnet-5 gpt-5            # side by side, with a verdict
-modelcmp show sonnet-5                     # everything about one model
-modelcmp open sonnet-5 --on openrouter     # its page there, or on models.dev, Hugging Face, ...
-modelcmp fav coding sonnet-5 --tier mid    # set your favorite for coding's mid tier
-modelcmp get gemma-3-4b-it                 # download a model and run it on your machine
+npx skills add danctorres/modelcmp -g
 ```
 
-In the TUI, `R` recommends, `d` picks a tier's model there, `space` selects models, `C` compares
-them, `f` sets your favorite for a task's tiers and `/` filters. `enter` shows everything about a
-model, `o` opens its page on a site like OpenRouter and `t` changes the theme. `x` opens a harness
-on the model, or downloads a local model and runs it with ollama or llama.cpp, installing the
-runner if you have neither, and `H` picks the harness the model runs on, `P` your default one.
-Movement uses vim keys (`hjkl`, `gg`, `G`, counts like `3j`), and the arrows and mouse work too.
-`?` lists every key, and `enter` on one changes it. `qq` quits.
+## Usage
+
+### TUI
+
+```sh
+modelcmp   # start the TUI
+```
+
+Navigate with vim keys, the arrow keys or the mouse. `R` recommends, `/` filters, `space` selects
+models and `C` compares them. `enter` shows everything about a model, `f` makes it your favorite
+for a task and `x` starts it in a harness, or downloads and runs a local one. `?` lists every key,
+and `qq` quits.
 
 ![The model recommended for each task and tier](https://github.com/user-attachments/assets/781a6bce-e79b-4a00-af14-4cdd3c3767c5)
 
 <p align="center"><i>The model recommended for each task and tier.</i></p>
 
-Recommendations come from each task's Pareto frontier of price and score: the models that no
-cheaper or equally priced model beats. Each tier picks the best of them within its price.
+In recommend, the tier header changes a tier's price cap. To add a task of your own, pick
+`+ new task` there or in the grid `f` opens on a model.
 
-Each task has four tiers, `free`, `low`, `mid` and `high`. `free` gets the best free model, `low`
-the best up to $2 per 1M tokens, `mid` the best up to $5 and `high` the best at any price. The tier
-header in recommend, or `modelcmp tier`, changes these caps. A favorite you set for a tier beats
-its pick when it costs no more than the cap.
+To get a local model, press `a` to list every model, then `x` on one and pick its
+`download and run` entry. Via shows how big each download is.
+Models on your machine show as free.
 
-You can add tasks of your own next to the built-in ones. In the TUI, pick `+ new task` in
-recommend or in the grid `f` opens on a model, or use the command line:
+### CLI
+
+```sh
+modelcmp recommend                         # best model per price for each task
+modelcmp list --task coding                # best model per price for coding, cheapest first
+modelcmp compare sonnet-5 gpt-5            # side by side, with a verdict
+modelcmp show sonnet-5                     # everything about one model
+modelcmp fav coding sonnet-5 --tier mid    # set your favorite for coding's mid tier
+modelcmp get gemma-3-4b-it                 # download a model and run it on your machine
+```
+
+A task of your own needs a description in `--about`, and agents choose a task by it:
 
 ```sh
 modelcmp fav debugging opus-5.5 --tier high --about "finding and fixing a bug"   # a new task, with its model
 modelcmp fav debugging gemini-3.7-flash --tier low                               # a cheaper model for its low tier
 ```
 
-Agents choose a task by what you wrote in `--about`, and your tasks show up last in recommend.
+### How recommendations work
 
-To get a local model, press `a` in the TUI to list every model, then `x` on one and pick its
-`download and run` entry, or run `modelcmp get <model>`. Via shows how big each download is, and
-`<` `8` on Via hides the models over 8 GB. Models on your machine show as free, and
-[run as agents in pi](REFERENCE.md#models-on-your-machine) once you add your runner to it.
-A model on your machine takes a tier in recommend when it scores higher. On `all` and among the selected, a model that fits your GPU does too, marked `↓` with its size, as it needs a download first.
+Recommendations come from each task's Pareto frontier of price and score. A model with no
+benchmark score for a task is never recommended for it, but you can still make it your favorite.
+
+Each task has four tiers, `free`, `low`, `mid` and `high`. `free` gets the best free model, `low`
+the best up to $2 per 1M tokens, `mid` the best up to $5 and `high` the best at any price. A
+favorite you set for a tier beats its pick when it costs no more than the cap. Your own tasks show
+up last in recommend.
 
 ## For agents
 
-```sh
-npx skills add danctorres/modelcmp -g                        # install the skill for your agent
-modelcmp pick                                                # what the skill runs: every task and tier, with the command to run
-```
-
-The [skill](skills/modelcmp/SKILL.md) lets an orchestrator agent choose the model for each subtask.
-It runs `modelcmp pick` and starts the subtask on that model, in the harness you chose for it (`H`),
-else in its developer's own (Claude Code for Claude) or whichever has it, even a
-local model from ollama or llama.cpp that you made your favorite.
+The [skill](skills/modelcmp/SKILL.md), set up in [Install](#install), lets an orchestrator agent choose
+a model for each subtask and hand the subtask to it.
 
 ![An agent using the modelcmp skill to pick a free model for the unit tests and the best one for a race condition](https://github.com/user-attachments/assets/d2c5349e-0cc6-475c-b978-9897ca203bdf)
 

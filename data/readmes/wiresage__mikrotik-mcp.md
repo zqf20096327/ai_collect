@@ -5,6 +5,7 @@
 [![MseeP.ai Security Assessment Badge](https://mseep.net/pr/jeff-nasseri-mikrotik-mcp-badge.png)](https://mseep.ai/app/jeff-nasseri-mikrotik-mcp)
 
 [![MCP Toplist](https://mcptoplist.com/badge/io.github.wiresage%2Fmikrotik-mcp.svg)](https://mcptoplist.com/server/io.github.wiresage%2Fmikrotik-mcp)
+[![Audited by AddonAudit](https://addonaudit.com/badges/audited.svg)](https://addonaudit.com/addon/io-github-wiresage-mikrotik-mcp/)
 [![Website](https://img.shields.io/badge/website-mikrotik--mcp.com-007ACC?style=flat-square&logo=googlechrome&logoColor=white)](https://www.mikrotik-mcp.com/)
 [![Build Status](https://img.shields.io/github/actions/workflow/status/wiresage/mikrotik-mcp/publish.yml?branch=master&label=build&style=flat-square&color=%23007ACC)](https://github.com/wiresage/mikrotik-mcp/actions/workflows/publish.yml)
 [![Tests](https://img.shields.io/github/actions/workflow/status/wiresage/mikrotik-mcp/publish.yml?branch=master&label=tests&style=flat-square&color=%2300C853)](https://github.com/wiresage/mikrotik-mcp/actions/workflows/publish.yml)

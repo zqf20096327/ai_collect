@@ -22,11 +22,24 @@ Every piece of text on your screen is one mouse gesture away: select or capture 
 
 ## Introduction
 
-> **Not to be confused with** [Magpie](https://github.com/Blinue/Magpie) (Blinue) — a Windows window upscaler for games. This Magpie (拾趣) is a text tool: select or capture any text on screen and act on it.
-
-**Magpie (拾趣)** is the entry hub for the first text source, triggered by your mouse. Select text or capture the screen in *any* app on macOS or Windows and a floating bar instantly offers translate / explain / summarize with streaming output. Unlike pure selection tools, Magpie covers all visible text with a dual pipeline (selection + OCR capture) — zero-cost capture via Accessibility APIs (macOS) or UI Automation (Windows) with a compatibility-mode fallback that restores the clipboard. Models are BYOK and never locked in; downstream, it connects to the professional tools you already use — **integrate, don't rebuild**.
+**Magpie (拾趣)** is a text-selection AI tool: select text in *any* app on macOS or Windows, or capture a region of the screen, and a floating bar appears on the spot — translate, explain and summarize stream in; URLs, phone numbers and dates are extracted in one step; results go straight into Obsidian or a pre-filled calendar event. It covers more than selectable text: content in images, videos and scans can be recognized and handled the same way. Bring your own model service, with no vendor lock-in; downstream, it connects to the apps you already use — **integrate, don't rebuild**.
 
 **Website**: [demo007x.github.io/Magpie](https://demo007x.github.io/Magpie/) — product intro & screenshots
+
+### Why Magpie
+
+We handle a lot of text with the mouse every day, and every kind of text has its own disconnected path:
+
+- A new word or an English paragraph: copy, switch to a translator, switch back, find where you were
+- Text in images, videos and scans can't be selected — a screenshot or retyping is the only way to keep it
+- A passage you don't follow: copy, open a search box, paste, enter
+- A long article you want summarized, and a blank chat box to start from
+- URLs, phone numbers and event details scattered through a block of text, copied one by one
+- Note-takers reopening the app and hunting for the right file just to save one line
+
+Each step takes seconds, but they all break the same thing: attention. Dozens of app switches, covered windows and rebuilt contexts a day add up to more than lost time — they fragment your train of thought.
+
+Magpie exists to make on-screen text actionable where it is: select to translate, explain or save; capture to recognize; extract information in one step; write results straight into Obsidian. What it replaces is not any one app but the copy → switch → paste → switch-back routine itself, repeated dozens of times a day.
 
 ## Screenshots
 
@@ -51,7 +64,8 @@ Every piece of text on your screen is one mouse gesture away: select or capture 
 - **Global selection capture** — select text in any app to trigger the bar; drag-select or double-click both work
 - **Floating bar** — pops above the mouse cursor, auto edge-clamping, never steals focus; light / dark / follow-system themes; native per-card shadows on Windows
 - **Eleven actions** — Translate / Explain / Summarize (AI-generated, streamed) + Copy / Search / Open Link / Compose Email / Copy Code / Copy Phone + Add to Calendar / Open in Maps; order and visibility configurable in settings
-- **Context-aware actions** — links, emails, verification codes, phone numbers, dates and places in the selected text are detected automatically: a single entity is one click away (open / compose / copy / calendar / maps), multiple entities open a grouped panel for batch operations
+- **Context-aware actions** — links, emails, verification codes, phone numbers, dates and places in the selected text are detected automatically: a single entity is one click away (open / compose / copy / calendar / maps), multiple entities open a grouped panel for batch operations; with a model service configured, dates and places are understood by the AI in context (date ranges, event titles), and calendar events carry the source link, selected text and invitees
+- **Save to Obsidian** — write the selection or OCR result straight into your vault as a daily-note excerpt, a task line or a knowledge card, each with its own template; no Obsidian plugin required
 - **Screen OCR** — a custom global hotkey or the tray menu starts a region capture, on-device OCR reads the text, with one-step OCR translate / explain / summarize; Snipaste-style pinned images can loop back into OCR
 - **Result window** — AI results and recognized text open in a standalone persistent window that can be pinned, dragged, and remembers position & size, with default-size presets in the appearance settings
 - **Custom AI actions** — a name + prompt + icon become capsule buttons (up to 10, ordered with the built-ins), with a try-run preview
@@ -129,7 +143,7 @@ Data flow: platform capture (macOS: CGEventTap + AX · Windows: low-level mouse 
 
 ## Feedback
 
-Run into a problem or have an idea? Scan the QR code (Feishu form, no account needed) or [open it directly](https://tvxjr8zl48.feishu.cn/share/base/form/shrcnF78Kl495G3iUVz8iWvnA6e). The in-app panel (**设置 › 关于 › 反馈问题**) copies your report together with basic diagnostics (version / OS / permission states — never keys or personal data) so you can just paste and submit. Developers may prefer [GitHub Issues](https://github.com/demo007x/Magpie/issues).
+Run into a problem or have an idea? Scan the QR code (Feishu form, no account needed) or [open it directly](https://tvxjr8zl48.feishu.cn/share/base/form/shrcnF78Kl495G3iUVz8iWvnA6e). In the app, **设置 › 关于 › 反馈问题** (also in the tray menu) jumps to the form or to [GitHub Issues](https://github.com/demo007x/Magpie/issues), and **复制日志** copies the run log to paste with your report. A web page can open that panel directly via `magpie://feedback`.
 
 <p>
   <img src="docs/images/feedback-qrcode.png" width="160" alt="Feedback form QR code (Feishu)" />
@@ -137,7 +151,7 @@ Run into a problem or have an idea? Scan the QR code (Feishu form, no account ne
 
 ## Roadmap
 
-See [ROADMAP.md](ROADMAP.md) for the full, self-contained roadmap. Top priorities (M2): **clip-to-collection** into Notion / Obsidian / flomo / Apple Notes (context-rich structured delivery — custom AI actions shipped in v0.1.6), follow-up Q&A in the result window, AI search & Q&A, context-aware selection, and moving API keys to the system keychain. Windows capture (UIA backend) shipped in v0.1.14. Mid-term (M3) converges built-ins, custom actions, integrations, and workflows into one unified action model; long-term (M4) adds hosted models for zero configuration.
+See [ROADMAP.md](ROADMAP.md) for the full, self-contained roadmap. Top priorities (M2): **clip-to-collection** into Notion / flomo / Apple Notes (Obsidian shipped in v0.1.9; custom AI actions in v0.1.6), follow-up Q&A in the result window, AI search & Q&A, context-aware selection, and moving API keys to the system keychain. Windows capture (UIA backend) shipped in v0.1.14. Mid-term (M3) converges built-ins, custom actions, integrations, and workflows into one unified action model; long-term (M4) adds hosted models for zero configuration.
 
 > The architecture already reserves hooks for these capabilities (platform capture backends, the action registry); they will land milestone by milestone.
 

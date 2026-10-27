@@ -24,13 +24,18 @@ OpenAI SDK / Claude Code / Continue / Open WebUI
 ## ✨ What it does
 
 - **Watch the box** — live request, token, model, upstream, CPU/GPU, update status, and static inference-host inventory in one dashboard.
+- **Review usage** — input/output token usage and configurable breakdowns for the last 24 hours or 7, 30, or 90 UTC days. Daily rollups outlive raw request logs; inference rows are retained for at least two days for rolling comparisons. Startup backfill runs one day at a time; historical totals may be incomplete until it finishes. Inference deletion waits for backfill, while payload and MCP relay cleanup can continue.
+  Client attribution recognizes Claude Code's `claude-cli/` user agent for new requests; previously unattributed history is not reclassified.
 - **Manage models** — load/unload models, inspect per-model stats, capabilities, and llama-swap selector routing, view residency history, and edit llama-swap config with validation.
-- **Proxy clients** — expose OpenAI/Anthropic-compatible `/v1/*` endpoints, native llama.cpp `POST /infill`, and llama-swap's `/audiocpp/*` passthrough for local models, peers, direct upstreams, Claude Code, Continue, Open WebUI, and more.
+- **Proxy clients** — expose OpenAI/Anthropic-compatible `/v1/*` endpoints, native llama.cpp `/infill` and `/tts`, and llama-swap's `/audiocpp/*` passthrough for local models, peers, direct upstreams, Claude Code, Continue, Open WebUI, and more.
 - **Track requests** — searchable request history with filters, histograms, detail views, attribution metadata, token counts, and cost estimates. Details reuse cached summaries immediately while payloads load; hovering or keyboard-selecting a list row prefetches its metadata.
+  Model, key, and host filters accept multiple values.
+  Select histogram minutes by click, drag, Shift-click, or Ctrl/Command-click to filter the paginated request list; clear the time filter from the chart header.
   Local llama.cpp prefill/decode timings are shown for streaming and non-streaming responses when provided; new measurements are retained independently of captured bodies. Older logs fall back to their retained response body.
   Streamed inference requests also record proxy-observed time to first output and the span between first and last output deltas, including OpenAI Responses, chat completions, and Anthropic streams. These are not upstream prefill/decode timings and are available only for newly recorded requests.
   Adjacent request navigation uses a dedicated SQLite index, created automatically by the startup migration.
   Scheduled retention cleanup logs its duration, candidate-selection time, and aggregate row counts for operational diagnosis.
+  A partial SQLite index helps retention locate expired captured payloads without scanning already-cleared rows.
   Key-detail statistics use a key/time index, and key/model request lists avoid loading stored payloads.
 - **Control access** — dashboard login, hashed API keys, per-key RPM/TPM limits, explicit allow-all or restricted model access, unavailable-model cleanup, MCP relay allow-lists, and per-key usage breakdowns.
 - **Enforce policy** — routing rules for model rewrites, rejects, passthrough auth, direct HTTPS upstreams, encrypted credentials, system prompts, and global request size limits.

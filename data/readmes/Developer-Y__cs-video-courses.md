@@ -533,7 +533,7 @@ Table of Contents
   - [Algorithms for Big Data - IIT Madras](https://nptel.ac.in/courses/106106142/)
   - [Python Data Science with the TCLab](https://github.com/APMonitor/data_science) ([YouTube](https://www.youtube.com/watch?v=pAgW_bZVo88&list=PLLBUgWXdTBDg1Qgmwt4jKtVn9BWh5-zgy))
   - [Foundations of Data Analysis (Fall 2020)- University of Utah](https://www.youtube.com/playlist?list=PLbuogVdPnkCqB1sx1eheVmLtp2EN7osYt)
-  - [Introduction to Data Science (IDS) - Wil van der Aalst (RWTH Aachen University)](https://www.youtube.com/playlist?list=PLG_1ZxIPXO0vReKHuzL-n--f4iO2JIjcJ) ([2021-2022 edition](PLG_1ZxIPXO0vTTfheRNDhq4vNYAdJBUyC))
+  - [Introduction to Data Science (IDS) - Wil van der Aalst (RWTH Aachen University)](https://www.youtube.com/playlist?list=PLG_1ZxIPXO0vReKHuzL-n--f4iO2JIjcJ) ([2021-2022 edition](https://www.youtube.com/playlist?list=PLG_1ZxIPXO0vTTfheRNDhq4vNYAdJBUyC))
   - [Machine Learning Class (Winter 2019-2020) - UniHeidelberg](https://www.youtube.com/playlist?list=PLuRaSnb3n4kTOLHk3a2ySNujmjan_AcZ1)
   - [Toronto ECE 1513 Introduction to Machine Learning winter 2026, by Ali Bereyhi](https://youtube.com/playlist?list=PLcFgNUo9s_Aj9a8fXwMdqfEk3_h5RtoLs)
 
@@ -728,5 +728,4 @@ Table of Contents
   - [Build a Large Language Model (From Scratch) by Sebastian Raschka](https://www.youtube.com/playlist?list=PLTKMiZHVd_2IIEsoJrWACkIxLRdfMlw11)
   - [Reinforcement Learning of Large Language Models - UCLA](https://www.youtube.com/playlist?list=PLir0BWtR5vRp5dqaouyMU-oTSzaU5LK9r)
   - [WING NUS CS6101 Large Language Models (T2310)](https://www.youtube.com/playlist?list=PLzIZxnJJT7ORSBnYrXJMYBVnYeLryJtl7)
-  - [CS 839: Foundation Models Fall 2025 - UW Madison](https://pages.cs.wisc.edu/~fredsala/cs839/fall2025/schedule.html) ([YouTube playlists](https://www.youtube.com/playlist?list=PLOq_oVZZBJosRA5_S823YxCcKcoyVRto-))
-  - [CS 886: Recent Adv
+  - [CS 839: Foundation Models Fall 2025 - UW Madison](https://pages.cs.wisc.edu/~fredsala/cs839/fall2025/schedule.html) ([YouTube playlists](https://www.youtube.com/playlist?list=PLOq_oVZZBJosRA5_S823Y

@@ -1153,7 +1153,9 @@ python train_grpo.py
 
 > MiniMind 在 GRPO 训练阶段的优化走势
 
-从训练曲线可以看出，GRPO的**reward呈现更加稳定的上升趋势**，达到4左右，说明GRPO本身能更好地利用RLAIF信号。Policy Loss整体下降平稳，相比PPO的双网络优化，GRPO单网络架构训练更稳定且收敛上限更高。
+从训练曲线可以看出，GRPO的**reward呈现更加稳定的上升趋势**，达到4左右，说明GRPO本身能更好地利用RLAIF信号。相比PPO的双网络优化，GRPO单网络架构训练更稳定且收敛上限更高。
+
+需要说明的是，Policy Loss 并不是监督学习里那种“越低越好”的 loss：它是按一阶导等于策略梯度构造的代理目标（TRPO like），并且每一轮都会做组内优势归一化，因此它的绝对值主要取决于当前策略与采样分布的偏离程度，“整体下降平稳”并不等于模型在变好。判断 GRPO 是否收敛，应该看 reward 和实际生成质量。
 
 #### 7.3 [Clipped Importance Sampling Policy Optimization](https://huggingface.co/papers/2506.13585)
 
@@ -1450,4 +1452,546 @@ agent: 17/20 = 85.00%
 
 [Q]: 海水为什么是咸的？
 [A]: 海水的咸度是由海水的重量以及海水的盐度共同作用的结果。这种变化主要是由于海水在阳光照射下会吸收水中的盐分，从而形成咸味。1. **阳光的反射**：当阳光照射到海水表面时，水中的盐分会渗透到海水的表面，而不是海水表面。这种反射的过程称为光的反射。2. **盐水的温度**：海水的盐度与普通海水中的水的温度有关。普通海水中的盐分（即海水的盐度）会逐渐凝结成海水，这个过程称为"光散射"。由于海水的温度变化，这些水中的盐分会逐渐被海水吸收，从而导致海水呈现出咸味。3. **海水的物理性质**：海水在阳光照射下会吸收海水中的盐分，这些盐分会逐渐释放到大气中，进一步凝结成咸味物质。海水中的水的体积相对较小，因此在形成咸味物质时，水中的盐分会被吸收。4. **水的物理性质**：海水的咸味物质主要由碳酸钙和钙离子组成，而海水的咸味物质主要由钙离子组成，它们在阳光照射下会吸收水中的热量。这种现象是海水咸味物质与海水的化学反应的一种体现。5. **海水的物理性质**：海水的盐度分布和性质也会影响海水的咸味物质的分布。例如，一些海水的盐度接近于100%，这可能与海水的盐度非常接近，从而引起了海水咸味物质的形成。总之，海水咸度是由于海水的物理性质、物理性质以及海水的化学成分共同作用的结果。
-[B]: 海水的咸度是由其所含物质的盐分占据的，这一现象可以从几个方面来解释：1. **盐分占据的作用**：咸度是指在一定温度下，部分水分含量的相对量。在正常条件下，咸度较高的水分含量会增加，使得渗透压较小，这部分的水分会减少，使得渗透压相对较低。这是因为咸度的增加使得盐分在水中的浓度增加，盐分的增加意味着渗透压较小，使得渗透压相对较高。2. **淡水的来源**：海水中的淡水主要来源于海水。这些淡水是海洋生态系统的重要组成部分，对于维持海洋生态平衡、调节气候、提供水源、以及支持生物多样性等都至关重要。咸度的提高会减少渗透压，使得渗透压相对较低，从而使得渗透�
+[B]: 海水的咸度是由其所含物质的盐分占据的，这一现象可以从几个方面来解释：1. **盐分占据的作用**：咸度是指在一定温度下，部分水分含量的相对量。在正常条件下，咸度较高的水分含量会增加，使得渗透压较小，这部分的水分会减少，使得渗透压相对较低。这是因为咸度的增加使得盐分在水中的浓度增加，盐分的增加意味着渗透压较小，使得渗透压相对较高。2. **淡水的来源**：海水中的淡水主要来源于海水。这些淡水是海洋生态系统的重要组成部分，对于维持海洋生态平衡、调节气候、提供水源、以及支持生物多样性等都至关重要。咸度的提高会减少渗透压，使得渗透压相对较低，从而使得渗透压相对较高。3. **海水的含量**：海水是地球上所有生物的血液，其中含有大量的盐分。咸度的增加使得渗透压相对较低，这意味着渗透压相对较高。当海水的盐分含量增加时，渗透压相对较低，渗透压相对较高。这种现象不仅对海水的物理性质有影响，也对人类的饮用水安全具有重要意义。4. **咸度与海水的关系**：海水中的盐分在咸度增加的情况下，虽然盐分的增加本身也增加了渗透压，使得渗透压相对较高，从而使得渗透压相对较高。这是因为咸度的增加使得渗透压相对较高，渗透压相对较低，从而使得渗透压相对较高。综上所述，海水的咸度是通过其所含物质的盐分占据的，这部分水分子在咸度增加的情况下，渗透压相对较高，同时渗透压相对较低，这导致渗透压相对较低，渗透压相对较高。
+[C]: 因为水是许多生物的生存所必需的，它能够吸收和释放二氧化碳，释放氧气，维持大气中的水蒸气，以及维持水循环。水中的盐类和化学物质会释放出氧气，使地球上的生物呼吸。此外，水还具有许多其他功能，如保持水循环、维持水循环、调节气候和环境等。水是许多生物生存所必需的，它也是许多自然现象的重要基础。
+[D]: 海水是咸的主要原因是因为其中含有大量的溶解盐类，其中最主要的是氯化钠（NaCl）。氯化钠是一种非常常见的盐类，它存在于地球上的大部分地区，包括海洋、湖泊、河流和地下水。当水从海洋中蒸发时，它会带走一部分盐分，使海水变得咸。此外，海中还含有其他溶解盐类的物质，如硫酸盐、硫酸镁、硫酸钙、硫酸镁盐、硫酸镁钾、硫酸镁钠、硫酸镁钙、硫酸镁镁钙、硫酸镁镁钙、硫酸镁镁钙、硫酸镁镁钠、硫酸镁镁钙、硫酸镁镁镁钙、硫酸镁镁镁钙、硫酸镁镁镁钙、硫酸镁镁镁钙、硫酸镁镁镁钙、硫酸镁镁镁钙、硫酸镁镁镁钙、硫酸镁镁镁钙、硫酸镁镁镁钙、硫酸镁镁镁钙、硫酸镁镁镁镁钙、硫酸镁镁镁镁钙、硫酸镁镁镁镁钙、硫酸镁镁镁镁钙、硫酸镁镁镁镁钙、硫酸镁镁镁镁钙、硫酸镁镁镁镁镁钙、硫酸镁镁镁镁镁钙、硫酸镁镁镁镁镁钙、硫酸镁镁镁镁镁钙、硫酸镁镁镁镁镁镁钙、硫酸镁镁镁镁镁镁钙、硫酸镁镁镁镁镁镁钙、硫酸镁镁镁镁镁镁镁钙、硫酸镁镁镁镁
+
+
+[Q]: 写一段python的快速排序代码
+[A]: 在Python中，快速排序是一种高效的排序算法，它使用分治法（Divide and Conquer）策略来将一个序列分为较小和较大的两个子序列。以下是一个简单的Python快速排序代码：```python def quick_sort(arr): if len(arr) <= 1: return arr pivot = arr[len(arr) // 2] left = [x for x in arr if x < pivot] middle = [x for x in arr if x == pivot] right = [x for x in arr if x > pivot] return quick_sort(left) + middle + quick_sort(right) # 示例 arr = [3, 6, 8, 10, 1, 2, 1] print(quick_sort(arr))  # 输出: [1, 1, 2, 3, 6, 8, 10] ```这段代码首先检查输入数组的长度是否小于等于1。如果是，则直接返回数组。接下来是数组的长度，如果是数组，则直接返回数组。然后是数组中的元素，如果数组长度小于等于1，则直接返回数组。最后是数组中的元素，如果数组包含重复的元素，则不返回任何元素。
+[B]: 快速排序是一种高效的排序算法，采用分治策略来将一个序列分为较小和较大的两个子序列，然后递归地排序这两个子序列。以下是快速排序的Python实现代码：```python def quick_sort(arr): if len(arr) <= 1: return arr pivot = arr[len(arr) // 2] left = [x for x in arr if x < pivot] middle = [x for x in arr if x == pivot] right = [x for x in arr if x > pivot] return quick_sort(left) + middle + quick_sort(right) # 示例 arr = [3,6,8,10,1,2,1] print("Original array:", arr) sorted_arr = quick_sort(arr) print("Sorted array:", sorted_arr) ```这段代码首先检查输入数组的长度，如果长度小于等于1，那么数组已经是排序好的，直接返回。然后选择一个基准值（pivot），将数组分为三部分：小于基准值的元素、等于基准值的元素和大于基准值的元素。接着递归地对小于和大于基准值的元素进行快速排序，并将结果合并。
+[C]: 好的，以下是一段快速排序的Python代码```python sorted_print(sorted(sorted(sorted(sorted_print))```输出结果为：```[1, 2, 3, 4, 5, 6, 7, 8, 9]```
+[D]: 快速排序是一种基于分治思想的高效排序算法，它的时间复杂度为 O(n log n)。它的基本思想是通过一趟排序将待排序序列划分为两个子序列，其中一个子序列的所有元素都比另一个子序列的所有元素小，然后对这两个子序列分别递归地进行排序。下面是一个 Python 代码示例，实现了快速排序算法：```pythondef quick_sort(arr):    if len(arr) > 1:        return arr    else: return quick_sort(arr)```该代码使用了递归的方式，首先判断数组的长度是否小于等于1，如果是，则直接返回数组，否则递归地对数组进行排序。在递归过程中，我们首先判断数组的第一个元素是否大于等于1，如果是，则将数组中的元素与第一个元素进行比较，如果不等于1，则将数组中的元素与第二个元素进行比较，以此类推，直到所有元素都被排序。该代码的时间复杂度为 O(n log n)，是一个非常实用的排序算法。
+
+
+[Q]: 截至2025年2月9日14时31分，电影《哪吒之魔童闹海》累计票房（含预售）突破78.09亿元，超过《星球大战：天行者崛起》的票房成绩，成为首部进入全球票房榜前40的亚洲电影。这一成就不仅标志着中国电影在国际市场的突破，也展示了中国动画电影的巨大潜力和市场吸引力。从这段文字总结20字的摘要给我。
+[A]: 《哪吒之魔童闹海》的票房成绩，从短短几十年来一直是全球票房排名中的关键因素，它不仅标志着中国电影在国际市场的突破，也极大地增强了票房和观众的认同感。以下是对这一成就的简要总结：1. **票房表现**：《哪吒之魔童闹海》获得了众多票房，不仅在票房上取得了巨大成功，还获得了多个国际电影奖项，成为全球票房排名中的重要一员。2. **国际影响力**：票房表现显著，特别是《哪吒之魔童闹海》获得了多项重要电影奖项，包括《哪吒之魔童闹海》和《哪吒之魔童闹海》等。这些电影不仅在国际上获得了巨大成功，也吸引了全球观众的关注。3. **电影艺术价值**：电影不仅展示了中国电影的艺术魅力，还赋予了电影艺术家强大的文化价值和情感深度。《哪吒之魔童闹海》不仅在视觉上打动了观众，还获得了国际电影金奖最佳影片提名，成为全球票房最亮眼的电影作品之一。4. **市场地位**：《哪吒之魔童闘海》获得了众多国际电影奖项，不仅在国内获得了巨大成功，还吸引了来自世界各地的观众。其在国际市场上的影响力也十分强烈。5. **国际影响力**：尽管票房表现优异，但《哪吒之魔童闹海》在国际市场的表现仍然较为突出，成为全球票房排名中的重要一员。6. **国际市场**：电影在国际市场上的知名度和影响力持续增长，尤其是在国际电影节上，许多国际电影节还在进行。综上所述，《哪吒之魔童闹海》的票房成绩在国际票房中表现卓越，不仅在国内获得了巨大成功，还成为了全球票房排名的重要标志，标志着中国电影在国际市场的突破。
+[B]: 20字的摘要：20字的巨大成就是中国电影在国际市场取得的首次突破，标志着中国电影在国际市场的突破。
+[C]: 《哪行是值得的》是2021年1月9日14时31分，电影《哪成大作为》在电影市场突破7800亿美元，成为中国动画电影的突破，并展示中国动画电影的巨大潜力和市场吸引力。
+[D]: 我是一个参数很少的AI模型🥺，知识库较少，无法直接回答您的问题，换个问题试试吧👋
+```
+
+🙋‍直接把以上所有问题和模型的回答丢给 GPT-5.4 Thinking，让它帮忙点评和排名打分：
+
+<details>
+<summary>具体点评</summary>
+
+```text
+### 评分标准：
+
+- **准确性（30分）**：回答中的事实是否正确，是否存在明显的知识性错误或幻觉。
+- **完整性（30分）**：回答是否涵盖了问题的核心要点，展开是否充分。
+- **逻辑性（20分）**：回答是否条理清晰、前后一致，有没有自相矛盾或语义混乱。
+- **代码质量（20分）**：代码是否能正确运行，实现逻辑是否清晰（仅对代码题计分）。
+
+### 逐模型点评：
+
+1. **A模型（minimind-3, 0.06B）**：
+    - **优点**：生成量充足，展开能力在这个参数量下已经不错。代码题给出了结构完整且可运行的快速排序实现，是本轮代码最好的回答之一。珠峰题也基本答对了核心信息。
+    - **缺点**：事实性错误比较密集——万有引力归功于爱因斯坦、长江被描述为"中国的官方名称"、海水咸度的解释完全偏离科学事实（涉及"光散射""阳光反射"等）。摘要题没有遵循20字限制，输出了大段展开。大熊猫回答虽然答对了竹子，但6个要点全是"竹子"的重复变体，信息密度极低。
+    - **总评**：有一定的生成和代码能力，但知识准确性是硬伤，幻觉问题突出，回答中经常出现"看起来像那么回事但细看全是编的"的现象。
+
+2. **B模型（minimind-3-moe, 0.2B-A0.06B）**：
+    - **优点**：回答结构相对清晰，语句通顺度在四个模型中最好。代码题实现正确且附带了示例输出，解释也比较到位。珠峰题回答准确。摘要题虽然超字数，但至少抓住了"中国电影""国际市场突破"两个关键词。
+    - **缺点**：知识性错误同样非常明显——长江被直接描述为"珠穆朗玛峰"，万有引力归于爱因斯坦，大熊猫的食物里出现了"海产品、鱼类、鸟类"等严重事实错误。海水咸度的解释围绕"渗透压"反复绕圈，没有触及核心原因。
+    - **总评**：MoE架构带来了更好的表达流畅度和结构感，但准确性问题与A模型相当。综合来看，它在"写得像不像话"这个维度上领先，但在"写得对不对"上并没有本质优势。
+
+3. **D模型（chatlm-mini-chinese, 0.2B）**：
+    - **优点**：知识问答表现最扎实——长江的描述基本正确（发源地、流经省区、注入东海），万有引力准确归于牛顿并引用了1687年《自然哲学的数学原理》，大熊猫主食竹子也回答正确，海水咸度的解释一开始也是对的（氯化钠、溶解盐类）。整体可读性好，不会出现明显的逻辑断裂。
+    - **缺点**：代码题判断条件写反（`len(arr) > 1: return arr`），导致函数完全无法工作。摘要题直接放弃回答（"我是一个参数很少的AI模型"）。珠峰和海水咸度回答后半段都出现了明显的重复退化现象。
+    - **总评**：知识储备在四个模型中最好，事实性问答明显领先，但代码能力是短板，生成后段容易退化为重复循环。
+
+4. **C模型（baby-llama2-chinese, 0.2B）**：
+    - **优点**：珠峰题回答简洁准确，大熊猫主食竹子也答对了，说明在非常基础的事实问题上还有一定能力。
+    - **缺点**：长江题完全答非所问（"中国是世界上最长的城市"），万有引力虽然提到了牛顿但解释混乱且自我重复，海水题答非所问（在讲水的生物学作用），代码题输出了完全不可用的代码（`sorted_print(sorted(sorted(...)))`），摘要题信息严重错乱（"哪行是值得的""7800亿美元"）。
+    - **总评**：基础语言能力明显不足，大部分回答要么答非所问，要么信息严重失真，在本次评测中整体垫底。
+
+### 总结：
+
+- **B模型**：表达最流畅、代码正确、结构感最好，但知识幻觉严重（长江=珠峰、大熊猫吃海产品），"写得顺"和"写得对"之间落差很大。
+- **D模型**：知识准确性最高，在事实类问答中表现最稳定，但代码能力是明显短板，生成后段容易重复退化。
+- **A模型**：与B风格接近，代码可用，但整体稳定性不如B，知识错误密度也偏高。
+- **C模型**：基础能力不足，多数回答不可用，仅在最简单的事实题上偶尔答对。
+
+```
+
+</details>
+
+| 排名 | 模型 | 准确性 (30分) | 完整性 (30分) | 逻辑性 (20分) | 代码质量 (20分) | 总分 (100分) |
+|----|----|-----------|-----------|-----------|------------|-----------|
+| 1  | B  | 11        | 23        | 16        | 18         | 68        |
+| 2  | D  | 25        | 19        | 15        | 3          | 62        |
+| 3  | A  | 10        | 21        | 13        | 17         | 61        |
+| 4  | C  | 8         | 6         | 5         | 2          | 21        |
+
+
+### 👉 综合评价2
+
+从主观观感而言，会把 `minimind-3-moe` 放第一，`chatlm-mini-chinese` 放在第二，`minimind-3` 放在第三，`baby-llama2-chinese` 第四。`B` 虽然在知识准确性上幻觉严重（大熊猫吃海产品），但胜在表达流畅、结构清晰、代码题实现正确，综合输出质量最高；`D` 的知识储备明显领先（牛顿1687年、长江发源地等全部正确），但代码题条件写反导致完全不可用，摘要题也直接放弃，拖了不少后腿；`A` 和 `B` 风格接近，代码同样可用，但稳定性和知识准确性都不如 `B`，属于"什么都能说两句但细看全在编"的典型；`C` 则在事实性、展开能力和整体可读性上都有明显差距，仅在最简单的事实题上偶尔答对。值得注意的是，`D` 和 `A` 的总分非常接近（62 vs 61），但优劣势分布几乎是互补的：`D` 赢在知识准确性（25 vs 10），`A` 赢在代码能力（17 vs 3）。这其实也反映了小参数模型的一个典型现象——在有限的参数预算下，"说得好"和"说得对"往往很难兼得。
+
+---
+
+## Ⅳ RoPE长度外推
+
+MiniMind 支持通过 YaRN 算法进行 RoPE 位置编码的长度外推，使模型能够更稳定地处理超出训练长度的文本序列。
+
+原生 torch 模型在使用 `eval_llm.py` 进行推理时，只需添加 `--inference_rope_scaling` 参数即可启用 RoPE 外推：
+
+```bash
+python eval_llm.py --weight full_sft --inference_rope_scaling
+```
+
+对于 `Transformers` 格式的模型，则可以在 `config.json` 中添加以下配置实现长度外推：
+
+```json
+"rope_scaling": {
+    "type": "yarn",
+    "factor": 16.0,
+    "original_max_position_embeddings": 2048,
+    "beta_fast": 32.0,
+    "beta_slow": 1.0,
+    "attention_factor": 1.0
+}
+```
+
+下面以 MiniMind 为例，使用不同长度的《西游记》白话文本作为输入，对比启用 RoPE scaling 前后的困惑度（PPL）变化。可以看到，在长文本场景下，启用 YaRN 外推后模型的 PPL 明显下降：
+
+<div align="center">
+<img src="./images/rope_ppl.png">
+</div>
+
+> MiniMind 在不同文本长度下启用 YaRN 前后的 PPL 对比
+
+---
+
+## Ⅴ 客观评测
+
+下面就到喜闻乐见的 `benchmark` 环节，这里选取了一些微型模型进行横评比较，测试集选择 C-Eval、CMMLU、ARC-Easy、PIQA、OpenBookQA、HellaSwag、Social-IQa（除了前 2 个都是英文数据集）。
+
+
+测评框架选择[lm-evaluation](https://github.com/EleutherAI/lm-evaluation-harness)
+
+```bash
+# 安装
+git clone https://github.com/EleutherAI/lm-evaluation-harness
+cd lm-evaluation-harness && pip install -e .
+```
+
+
+
+```bash
+# 启动测试
+# 使用的数据集：ceval-valid/cmmlu/arc_easy/piqa/openbookqa/hellaswag/social_iqa # 查看支持的数据集：lm_eval ls tasks 
+# 对于指令模型，评测时需要加上 --apply_chat_template；对于 gpt2 这类纯基座模型，则不需要。
+HF_ENDPOINT=https://hf-mirror.com lm_eval --model hf --model_args pretrained="/path/to/model",dtype=auto --tasks "task" --batch_size 16 --device cpu --trust_remote_code --apply_chat_template
+```
+
+> 注：这类选择题测评通常不是让模型自由生成完整答案，而是给定题目上下文`y`和若干候选项`x`，直接比较各候选项的条件概率`p(x | y)`，并取概率最大的选项作为预测结果。若候选项只对应单个token，那么直接比较该token的预测概率即可；若候选项会分成多个token，那么更常见的做法是比较整段候选项的条件对数概率之和。这里的候选项并不一定是`A`、`B`、`C`、`D`，有些数据集也可能只有两个选项。因此从结果上看，随机作答的准确率往往就是很强的下界，而这个量级的模型也确实长期徘徊在这个附近。
+
+MiniMind 的数据规模远小于表中其他模型，且训练比例偏向中文，因此英文表现不佳，此外默认没有专门针对这类选择题评测格式做对齐微调，所以表现会相对弱，结果仅供娱乐：
+
+| model name | from | params | zh (ceval / cmmlu) | en (arc / piqa / obqa / hellaswag / siqa) |
+|---|---|---|---|---|
+| minimind-3 | current | 64M | 24.89 / 25.38 | 28.49 / 50.65 / 23.60 / 28.28 / 34.19 |
+| minimind-3-moe | current | 198M | 25.48 / 24.32 | 27.74 / 50.71 / 26.20 / 27.43 / 34.03 |
+| minimind-3-exam | current | 64M | 30.98 / 26.12 | 35.61 / 56.26 / 24.20 / 28.40 / 34.19 |
+| [Steel-LLM](https://huggingface.co/gqszhanshijin/Steel-LLM) | ZhanShiJin | 1121M | 24.89 / 25.32 | 39.69 / 65.13 / 26.00 / 35.73 / 39.15 |
+| [gpt2-medium](https://huggingface.co/openai-community/gpt2-medium) | OpenAI | 360M | 23.18 / 25.00 | 43.60 / 66.38 / 30.20 / 39.38 / 39.10 |
+| [TinyLlama-1.1B](https://huggingface.co/TinyLlama/TinyLlama-1.1B-Chat-v1.0) | TinyLlama | 1100M | 25.71 / 25.03 | 54.80 / 74.43 / 35.60 / 60.38 / 43.09 |
+| [SmolLM2-135M](https://huggingface.co/HuggingFaceTB/SmolLM2-135M-Instruct) | HuggingFace | 135M | 24.44 / 24.71 | 58.50 / 68.17 / 32.80 / 43.15 / 39.46 |
+| [Aquila-135M](https://huggingface.co/BAAI/Aquila-135M-Instruct) | BAAI | 135M | 25.19 / 25.10 | 54.59 / 67.52 / 34.40 / 41.67 / 39.66 |
+
+> **这张表的分辨率**：`lm_eval` 对每个指标都会同时输出一个 `stderr`，它主要由测试集大小决定，因此下面的数值对表中所有模型都近似适用（随准确率略有浮动）：
+>
+> | 数据集 | obqa | ceval | piqa | siqa | arc | hellaswag | cmmlu |
+> |---|---|---|---|---|---|---|---|
+> | 样本量 | 500 | ~1.3k | 1838 | 1954 | 2376 | 10042 | 11582 |
+> | ± 标准误 | **1.9** | 1.2 | 1.2 | 1.1 | 0.9 | 0.5 | **0.4** |
+>
+> 比较两个模型时，差值的标准误约为单项的 `√2` 倍。因此 obqa 上小于约 5 个百分点、ceval / piqa / siqa 上小于约 3 个百分点的差异，都不足以区分两个模型——这也解释了为什么本表中同一量级的模型排序不宜过度解读。
+
+<details>
+<summary><strong>补充说明（来源/无污染/复现）</strong></summary>
+
+minimind-3-exam 不是更大的基座模型，也几乎没有额外注入新知识。它仅基于 minimind-3 在 [lora_exam.jsonl](https://huggingface.co/datasets/jingyaogong/minimind_dataset/blob/main/lora_exam.jsonl) 上做了一次轻量 LoRA 对齐，再将 [lora_exam_768.pth](https://huggingface.co/jingyaogong/minimind-3-pytorch/resolve/main/lora_exam_768.pth) 合并回基模后的结果。这部分数据由 ceval 与 mmlu (英文) 的 test 子集抽样构成，并做了前缀、后缀等格式增强，主要作用是对齐选择题评测中常见的上下文与候选项组织形式，而不是学习题目答案。
+
+本节评估所用的 7 个数据集与上述对齐数据无样本交集，因此可以认为不存在数据污染。相反，若直接在有交集的数据上微调，这类小模型的分数往往会明显失真；例如 minimind-3 在有污染的 ceval / cmmlu 子集上实验跑到过约 97% 准确率，但这种结果没有参考意义。
+
+这个实验想说明的只是：对这类评测，小模型的瓶颈未必完全在知识本身，也可能在于输入格式没有对齐。仅做少量格式对齐后，minimind-3-exam 在上面 7 个任务上平均提升约 2.9 个百分点。
+
+</details>
+
+![benchmark_radar](./images/benchmark_radar.jpg)
+
+# 📌 其他
+
+## 🔧 模型转换
+
+* [./scripts/convert_model.py](./scripts/convert_model.py) 可用于 `torch / transformers` 两种模型格式之间的相互转换。
+* 如无特殊说明，`MiniMind` 主线发布的开源模型通常以 `Transformers` 格式提供；若使用原生 `torch` 权重，请先执行 `torch2transformers` 转换。
+
+
+## 🖥️ 基于 MiniMind 的 API 服务接口
+
+* [./scripts/serve_openai_api.py](./scripts/serve_openai_api.py) 提供了一个兼容 OpenAI API 的轻量聊天服务，便于将自己的模型接入 FastGPT、OpenWebUI、Dify 等第三方 UI。
+* 当前接口额外支持 `reasoning_content`、`tool_calls`、`open_thinking` 等字段，适合直接用于 Tool Calling / Thinking 场景。
+
+* 从 [HuggingFace](https://huggingface.co/collections/jingyaogong/minimind-66caf8d999f5c7fa64f399e5) 下载模型权重后，目录结构示例如下：
+    ```
+    minimind (root dir)
+    ├─<MiniMind-Model-Name>（例如minimind-3）
+    |  ├── config.json
+    |  ├── generation_config.json
+    |  ├── model_minimind.py (可选，取决于模型导出形式)
+    |  ├── pytorch_model.bin or model.safetensors
+    |  ├── special_tokens_map.json
+    |  ├── tokenizer_config.json
+    |  ├── tokenizer.json
+    ```
+
+* 启动服务端
+    ```bash
+    cd scripts && python serve_openai_api.py
+    ```
+* 测试服务接口
+    ```bash
+    cd scripts && python chat_api.py
+    ```
+* API 请求示例（兼容 OpenAI API 格式）
+    ```bash
+    curl http://localhost:8998/v1/chat/completions \
+      -H "Content-Type: application/json" \
+      -d '{ 
+        "model": "model-identifier",
+        "messages": [ 
+          { "role": "user", "content": "世界上最高的山是什么？" }
+        ], 
+        "temperature": 0.7, 
+        "max_tokens": 1024,
+        "stream": true,
+        "open_thinking": true
+    }'
+    ```
+
+## <img src="https://avatars.githubusercontent.com/u/147780389?s=48&v=4" height="28" style="vertical-align: middle;"/> [SGLang](https://github.com/sgl-project/sglang)
+
+SGLang 是高性能大模型推理引擎，支持 RadixAttention、连续批处理等优化技术，能够提供较低延迟与较高吞吐。
+
+> ⚠️ 需要 CUDA 环境，按需使用。也可在 RL 训练脚本中选择 SGLang 作为 rollout / 推理引擎以提升训练吞吐。
+
+以 OpenAI-compatible API server 形式启动模型：
+
+```bash
+python -m sglang.launch_server --model-path /path/to/model --attention-backend triton --host 0.0.0.0 --port 8998
+```
+
+## <img src="https://avatars.githubusercontent.com/u/136984999" height="28" style="vertical-align: middle;"/> [vllm](https://github.com/vllm-project/vllm)
+
+vLLM 是目前非常常用的高效推理框架，适合快速部署大模型，并在显存利用率与吞吐量之间取得较好平衡。
+
+> ⚠️ 需要 CUDA 环境，按需使用。
+
+以 OpenAI-compatible API server 形式启动模型：
+
+```bash
+vllm serve /path/to/model --model-impl transformers --served-model-name "minimind" --port 8998
+```
+
+## <img src="https://user-images.githubusercontent.com/1991296/230134379-7181e485-c521-4d23-a0d6-f7b3b61ba524.png" height="28" style="vertical-align: middle;"/> [llama.cpp](https://github.com/ggerganov/llama.cpp)
+
+llama.cpp 是一个轻量且实用的 C++ 推理框架，可直接在命令行中使用，支持多线程推理，也支持部分 GPU 加速方案。
+
+**目录结构**：建议将 `llama.cpp` 与模型目录放在同级路径下
+
+```
+parent/
+├── project/           # 你的项目目录
+│   ├── minimind 模型路径/      # HuggingFace 格式模型目录
+│   │   ├── config.json
+│   │   ├── model.safetensors
+│   │   └── ...
+│   └── ...
+└── llama.cpp/         # llama.cpp 项目目录
+    ├── build/
+    ├── convert_hf_to_gguf.py
+    └── ...
+```
+
+0、参考 `llama.cpp` 官方文档完成安装（如 `cmake` 等依赖）
+
+1、在 `convert_hf_to_gguf.py` 的 `get_vocab_base_pre` 函数末尾插入：
+
+```python
+# 添加 MiniMind tokenizer 支持（此处可临时复用一个兼容项，如 qwen2）
+if res is None:
+    res = "qwen2"
+```
+
+2、将 HuggingFace 格式的 minimind 模型转换为 GGUF：
+
+```bash
+# 在 llama.cpp 目录下执行，将在模型目录下生成对应的 gguf 文件
+python convert_hf_to_gguf.py /path/to/minimind-model
+```
+
+3、量化模型（可选）
+
+```bash
+./build/bin/llama-quantize /path/to/model/xxxx.gguf /path/to/model/xxxx.q8.gguf Q8_0
+```
+
+4、命令行推理测试
+
+```bash
+./build/bin/llama-cli -m /path/to/model/xxxx.gguf
+```
+
+## <img src="https://ollama.com/public/cloud.png" height="28" style="vertical-align: middle;"/> [ollama](https://ollama.ai)
+
+Ollama 是本地运行大模型的常用工具，支持多种开源 LLM，使用方式简洁，部署门槛较低。
+
+1、通过 Ollama 加载自定义 GGUF 模型
+
+在模型目录下新建 `minimind.modelfile` 文件，并写入如下配置模板：
+
+<details>
+<summary>minimind.modelfile (template)</summary>
+
+```text
+FROM /path/to/model/xxxx.gguf
+
+SYSTEM "你的名字叫MiniMind，你是一个乐于助人、知识渊博的AI助手。请用完整且友好的方式回答用户问题，当被问到名字时请回答MiniMind。"
+
+
+TEMPLATE """{{- if .Tools }}<|im_start|>system
+{{ if .System }}{{ .System }}
+
+{{ end }}# Tools
+
+You may call one or more functions to assist with the user query.
+
+You are provided with function signatures within <tools></tools> XML tags:
+<tools>
+{{- range .Tools }}
+{"type": "function", "function": {{ .Function }}}
+{{- end }}
+</tools>
+
+For each function call, return a json object with function name and arguments within <tool_call></tool_call> XML tags:
+<tool_call>
+{"name": <function-name>, "arguments": <args-json-object>}
+</tool_call><|im_end|>
+{{ else if .System }}<|im_start|>system
+{{ .System }}<|im_end|>
+{{ end }}
+{{- range $i, $_ := .Messages }}
+{{- $last := eq (len (slice $.Messages $i)) 1 -}}
+{{- if eq .Role "user" }}<|im_start|>user
+{{ .Content }}<|im_end|>
+{{ else if eq .Role "assistant" }}<|im_start|>assistant
+<think>
+{{ .Thinking }}
+</think>
+
+{{ .Content }}
+{{- if .ToolCalls }}
+{{- range .ToolCalls }}
+<tool_call>
+{"name": "{{ .Function.Name }}", "arguments": {{ .Function.Arguments }}}
+</tool_call>
+{{- end }}
+{{- end }}
+{{- if not $last }}<|im_end|>
+{{ end }}
+{{- else if eq .Role "tool" }}<|im_start|>user
+<tool_response>
+{{ .Content }}
+</tool_response><|im_end|>
+{{ end }}
+{{- if and (ne .Role "assistant") $last }}<|im_start|>assistant
+{{ if and $.IsThinkSet $.Think -}}
+<think>
+{{ else -}}
+<think>
+
+</think>
+
+{{ end -}}
+{{ end }}
+{{- end }}"""
+
+PARAMETER repeat_penalty 1
+PARAMETER stop "<|im_start|>"
+PARAMETER stop "<|im_end|>"
+PARAMETER temperature 0.9
+PARAMETER top_p 0.9
+PARAMETER num_ctx 8192
+```
+
+</details>
+<br/>
+
+
+2、加载并命名本地模型
+
+```bash
+ollama create -f minimind.modelfile minimind-local
+```
+
+3、启动推理
+
+```bash
+ollama run minimind-local
+```
+
+<details>
+<summary>📤 推送你的模型到 Ollama Hub</summary>
+
+```bash
+# 1. 为本地模型重命名为你的 `ollama-account/minimind` 的 tag
+ollama cp minimind-local:latest your_username/minimind:latest
+
+# 2. 推送模型
+ollama push your_username/minimind:latest
+```
+</details>
+<br/>
+
+⭐️ 也可以直接使用我提供的 Ollama 模型快速启动：
+
+```bash
+ollama run jingyaogong/minimind-3
+>>> 你叫什么名字
+我是一个语言模型...
+```
+
+## <img src="https://avatars.githubusercontent.com/u/1961952?s=48&v=4" height="28" style="vertical-align: middle;"/> [MNN](https://github.com/alibaba/MNN)
+
+MNN 是面向端侧的 AI 推理引擎，支持多种开源 LLM 的轻量化部署与高性能推理。
+
+1. 模型转换
+```bash
+cd MNN/transformers/llm/export
+# 导出 4-bit HQQ 量化的 MNN 模型
+python llmexport.py --path /path/to/模型路径/ --export mnn --hqq --dst_path 模型路径-mnn
+```
+
+2. 在 Mac 或手机端测试
+```bash
+./llm_demo /path/to/模型路径-mnn/config.json prompt.txt
+```
+或者下载 APP 进行测试
+
+> 以上第三方框架的更多用法请参考对应官方文档😊
+
+
+## 👨‍💻 更多内容
+
+* <a href="https://github.com/jingyaogong/minimind/discussions/618">🔗从MiniMind-LLM微调扩散语言模型</a>
+
+* <a href="https://github.com/jingyaogong/minimind/discussions/611">🔗模型的generate方法说明</a>
+
+* <a href="https://github.com/jingyaogong/minimind/discussions/704">🔗从 MiniMind 训练线性注意力模型</a>
+
+# 📌 致谢
+
+> [!NOTE]
+> 如果 `MiniMind` 系列项目对您有所帮助，欢迎在 GitHub 上点亮一个 ⭐<br/>
+> 文档篇幅较长，难免存在疏漏之处，欢迎通过 Issues 交流反馈，或提交 PR 一起改进项目<br/>
+> 您的支持与建议，都是这个项目持续迭代的重要动力！
+
+## 🤝[贡献者](https://github.com/jingyaogong/minimind/graphs/contributors)
+
+<a href="https://github.com/jingyaogong/minimind/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=jingyaogong/minimind" />
+</a>
+
+## 😊鸣谢
+
+感谢以下贡献者在训练记录、数据处理、教程整理与项目拆解等方面提供的帮助与分享：
+
+* [@ipfgao](https://github.com/ipfgao)：[🔗训练步骤记录](https://github.com/jingyaogong/minimind/issues/26)
+
+* [@WangRongsheng](https://github.com/WangRongsheng)：[🔗大型数据集预处理](https://github.com/jingyaogong/minimind/issues/39)
+
+* [@pengqianhan](https://github.com/pengqianhan)：[🔗一个简明教程](https://github.com/jingyaogong/minimind/issues/73)
+
+* [@RyanSunn](https://github.com/RyanSunn)：[🔗推理过程学习记录](https://github.com/jingyaogong/minimind/issues/75)
+
+* [@Nijikadesu](https://github.com/Nijikadesu)：[🔗以交互笔记本方式分解项目代码](https://github.com/jingyaogong/minimind/issues/213)
+
+* [@jaylearnstocode](https://github.com/jaylearnstocode)：[🔗模型结构、注意力机制与训练流程可视化](https://llm-visualization-minimind.vercel.app/)
+
+
+致谢以下优秀的论文与项目：
+
+- [https://github.com/meta-llama/llama3](https://github.com/meta-llama/llama3)
+- [https://github.com/karpathy/llama2.c](https://github.com/karpathy/llama2.c)
+- [https://github.com/DLLXW/baby-llama2-chinese](https://github.com/DLLXW/baby-llama2-chinese)
+- [DeepSeek-V2](https://arxiv.org/abs/2405.04434)
+- [https://github.com/charent/ChatLM-mini-Chinese](https://github.com/charent/ChatLM-mini-Chinese)
+- [https://github.com/wdndev/tiny-llm-zh](https://github.com/wdndev/tiny-llm-zh)
+- [Mistral-MoE](https://arxiv.org/pdf/2401.04088)
+- [https://github.com/Tongjilibo/build_MiniLLM_from_scratch](https://github.com/Tongjilibo/build_MiniLLM_from_scratch)
+- [https://github.com/jzhang38/TinyLlama](https://github.com/jzhang38/TinyLlama)
+- [https://github.com/AI-Study-Han/Zero-Chatgpt](https://github.com/AI-Study-Han/Zero-Chatgpt)
+- [https://github.com/xusenlinzy/api-for-open-llm](https://github.com/xusenlinzy/api-for-open-llm)
+- [https://github.com/HqWu-HITCS/Awesome-Chinese-LLM](https://github.com/HqWu-HITCS/Awesome-Chinese-LLM)
+
+
+## 🫶支持者
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://bytecrank.com/nastyox/reporoster/php/forkersSVG.php?user=jingyaogong&repo=minimind&theme=dark"/>
+  <source media="(prefers-color-scheme: light)" srcset="https://bytecrank.com/nastyox/reporoster/php/forkersSVG.php?user=jingyaogong&repo=minimind"/>
+  <img alt="Fork poster" src="https://bytecrank.com/nastyox/reporoster/php/forkersSVG.php?user=jingyaogong&repo=minimind&theme=dark"/>
+</picture>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=jingyaogong/minimind&type=date&theme=dark&legend=top-left&sealed_token=DK6jy_uvw2AHIK0S4VZLf6snWIQ06jGzz3QiwVmXBGDvickcQgJGSdazdGxjRQZuj8Hr3GfS_REB9ohoK8NWVsmukeOQiT4soChw3_19yyPVwvWzBp66yMYWlvOYy9sv60cMSntByiUTcyp4MrRiMm1JD1MSC8NJ-Z9qhR9uJGl2AU7w-OGlyKQzN7Xa"/>
+  <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=jingyaogong/minimind&type=date&legend=top-left&sealed_token=DK6jy_uvw2AHIK0S4VZLf6snWIQ06jGzz3QiwVmXBGDvickcQgJGSdazdGxjRQZuj8Hr3GfS_REB9ohoK8NWVsmukeOQiT4soChw3_19yyPVwvWzBp66yMYWlvOYy9sv60cMSntByiUTcyp4MrRiMm1JD1MSC8NJ-Z9qhR9uJGl2AU7w-OGlyKQzN7Xa"/>
+  <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=jingyaogong/minimind&type=date&legend=top-left&sealed_token=DK6jy_uvw2AHIK0S4VZLf6snWIQ06jGzz3QiwVmXBGDvickcQgJGSdazdGxjRQZuj8Hr3GfS_REB9ohoK8NWVsmukeOQiT4soChw3_19yyPVwvWzBp66yMYWlvOYy9sv60cMSntByiUTcyp4MrRiMm1JD1MSC8NJ-Z9qhR9uJGl2AU7w-OGlyKQzN7Xa"/>
+</picture>
+
+## 🎉 MiniMind 相关成果
+
+本模型抛砖引玉地促成了一些可喜成果的落地，感谢研究者们的认可：
+
+- ECG-Expert-QA: A Benchmark for Evaluating Medical Large Language Models in Heart Disease Diagnosis [[arxiv](https://arxiv.org/pdf/2502.17475)]
+
+- Binary-Integer-Programming Based Algorithm for Expert Load Balancing in Mixture-of-Experts Models [[arxiv](https://arxiv.org/pdf/2502.15451)]
+
+- LegalEval-Q: A New Benchmark for The Quality Evaluation of LLM-Generated Legal Text [[arxiv](https://arxiv.org/pdf/2505.24826)]
+
+- On the Generalization Ability of Next-Token-Prediction Pretraining [[ICML 2025](https://openreview.net/forum?id=hLGJ1qZPdu)]
+
+- 《从零开始写大模型：从神经网络到Transformer》王双、牟晨、王昊怡 编著 - 清华大学出版社
+
+- FedBRB: A Solution to the Small-to-Large Scenario in Device-Heterogeneity Federated Learning [[TMC 2025](https://ieeexplore.ieee.org/abstract/document/11168259)]
+
+- SKETCH: Semantic Key-Point Conditioning for Long-Horizon Vessel Trajectory Prediction [[arxiv](https://arxiv.org/pdf/2601.18537)]
+
+- A Built-in Crypto Expert for Artificial Intelligence: How Far is the Horizon? [[IACR ePrint 2026](https://eprint.iacr.org/2026/411.pdf)]
+
+- RetryTrigger: Intelligent Inference Duplication for Enhancing LLM Resilience to Hardware Transient Faults [[FITEE 2026](https://ieeexplore.ieee.org/abstract/document/11479682)]
+
+- 进行中...
+
+
+# 🎓 引用
+
+如果 `MiniMind` 对您的研究或工作有所帮助，欢迎引用：
+
+```bibtex
+@misc{minimind,
+  title = {MiniMind: Train a Tiny LLM from Scratch},
+  author = {Jingyao Gong},
+  year = {2024},
+  url = {https://github.com/jingyaogong/minimind},
+  note = {GitHub repository, accessed 2026}
+}
+```
+
+# ⚖️ 开源协议
+
+本项目采用 [Apache License 2.0](LICENSE) 开源协议。

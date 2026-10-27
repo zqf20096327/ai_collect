@@ -252,6 +252,17 @@ gate, or `agent_action_required` state is reached.
 After an agent completes a rail that has no built-in verifier, persist a
 hash-bound stage-evidence manifest and resume with `--stage-evidence`:
 
+An adapter's `gate_rerun_required` result includes `stage_evidence_path` and an
+`owning_gate_argv` / `owning_gate_command` for that durable run. Write the manifest
+at the indicated path, then invoke the owning verifier. It uses the same installed
+runtime and bypasses provider routing while retaining specification and permission
+gates. A configured custom owning command remains authoritative.
+
+Installed projects resolve loop YAML under `QA/loops`; source checkouts can use
+`templates/QA/loops`. If the historical default is absent, the runner can use an
+explicit packaged template path. Valid custom paths are preserved; a missing
+custom workflow is never silently replaced with another one.
+
 ```yaml
 stage_evidence:
   schema_version: 1
@@ -414,3 +425,5 @@ the workflow does not search for keys. TypeSafe checks focused evidence and flag
 uncertainty; it cannot replace peer review or pass a required gate. Shadow mode
 records a comparison without influencing the review. The Python SDK is not needed.
 See [duo-build configuration, invocation and evidence](docs/duo-build.md).
+
+Runtime verification uses accepted native case inventories and owning Jest/Playwright reports. `specflow run verify --run-dir .specflow/runs/<slice>` executes the existing verifier without a provider call. Required skips, missing cases and stale reports block; see [the execution schema](CONTRACT-SCHEMA.md#owning-native-case-execution-te-001006-44). This source-kit capability must be present in the installed package/helpers before use.

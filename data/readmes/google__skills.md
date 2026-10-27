@@ -177,6 +177,7 @@ This command gives you an option to also remove obsolete skills.
   - [**Google Cloud Well-Architected Framework skill for the Sustainability pillar**](./skills/cloud/google-cloud-waf-sustainability)
 - **Security and identity**
   - [**API Gateway Backend Security and Rate Limiting**](./skills/cloud/api-gateway-backend-security-and-rate-limiting)
+  - [**Cloud Armor OWASP Rule Upgrader (CRS 3.0/3.3 -> 4.22)**](./skills/cloud/cloud-armor-crs-rule-upgrader)
   - [**Compliance Environment Assessor Skill**](./skills/cloud/assuredworkloads-environment-assessor)
   - [**Custom Resource Authoring & Synthesis Skill (`assuredworkloads-frameworks-author`)**](./skills/cloud/assuredworkloads-frameworks-author)
   - [**Data Boundary Framework Navigator (`assuredworkloads-frameworks-navigator`)**](./skills/cloud/assuredworkloads-frameworks-navigator)

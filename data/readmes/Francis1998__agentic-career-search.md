@@ -594,6 +594,18 @@ uv run uvicorn autoapply_agent.main:app --reload
 | Progyny/Carrot/Maven egg-freezing benefit planners bury related math in closed UIs | Workers lack a local `offered_days` vs `needed_days` band | `EggFreezingBenefitGapAdvisor` bands offline `offered_days` vs `needed_days` for HITL review and never auto-approves |
 ![EggFreezingBenefitGapAdvisor](assets/demo/egg-freezing-benefit-gap-advisor.gif)
 
+| Rippling/Workday/BambooHR adoption leave top-up planners bury related math in closed UIs | Workers lack a local `offered_days` vs `needed_days` band | `AdoptionLeaveTopUpGapAdvisor` bands offline `offered_days` vs `needed_days` for HITL review and never auto-approves |
+![AdoptionLeaveTopUpGapAdvisor](assets/demo/adoption-leave-top-up-gap-advisor.gif)
+
+
+| Carrot/Progyny/Maven family-building leave planners bury related math in closed UIs | Workers lack a local `offered_days` vs `needed_days` band | `FamilyBuildingLeaveGapAdvisor` bands offline `offered_days` vs `needed_days` for HITL review and never auto-approves |
+![FamilyBuildingLeaveGapAdvisor](assets/demo/family-building-leave-gap-advisor.gif)
+
+
+| Guild/EdAssist/Workday tuition reimbursement annual-cap planners bury related math in closed UIs | Workers lack a local `offered_usd` vs `needed_usd` band | `TuitionReimbursementCapGapAdvisor` bands offline `offered_usd` vs `needed_usd` for HITL review and never auto-approves |
+![TuitionReimbursementCapGapAdvisor](assets/demo/tuition-reimbursement-cap-gap-advisor.gif)
+
+
 ## License
 
 MIT © [Francis1998](https://github.com/Francis1998)

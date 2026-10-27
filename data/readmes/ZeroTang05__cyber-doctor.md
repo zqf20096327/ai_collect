@@ -315,10 +315,10 @@ cyber-doctor/
 
 ## Star History
 
-<a href="https://star-history.dera.page/#warma10032/cyber-doctor&Date">
+<a href="https://star-history.dera.page/ZeroTang05/cyber-doctor">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://star-history.dera.page/svg?repos=warma10032/cyber-doctor&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://star-history.dera.page/svg?repos=warma10032/cyber-doctor&type=Date" />
-   <img alt="Star History Chart" src="https://star-history.dera.page/svg?repos=warma10032/cyber-doctor&type=Date" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://star-history.dera.page/svg?repos=ZeroTang05/cyber-doctor&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://star-history.dera.page/svg?repos=ZeroTang05/cyber-doctor" />
+   <img alt="Star History Chart" src="https://star-history.dera.page/svg?repos=ZeroTang05/cyber-doctor" />
  </picture>
 </a>

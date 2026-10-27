@@ -146,6 +146,8 @@ Skills work across multiple platforms:
 - [youtube-skills](https://github.com/ZeroPointRepo/youtube-skills) - YouTube transcript, video search, channel and playlist skills for Claude Code, OpenClaw, Hermes Agent, and other agent runtimes.
 - [tonone](https://github.com/tonone-ai/tonone) - Claude Code plugin with 100 specialist agents and 429 skills across engineering, product, design, security, legal, and ops; a SessionStart hook loads only the skills relevant to the current repo.
 - [oh-my-agent](https://github.com/first-fluke/oh-my-agent) - 33 skills and 21 workflows kept in one `.agents/skills` folder and symlinked per skill into Claude Code, Codex, Cursor and other runtimes; `oma link --dry-run` previews what it will write.
+- [Arcmira: YouTube Transcript Search](https://github.com/arcmira/mcp/tree/master/plugins/arcmira) - Six research skills for transcript search, timestamped quotes, speaker appearances, sponsors and mention monitors. Requires an Arcmira account; sends questions as JavaScript programs to the hosted MCP service, which records account-linked tool calls for product analytics ([data handling](https://github.com/arcmira/mcp#what-we-log), [privacy](https://arcmira.com/privacy), [terms](https://arcmira.com/terms)). The plugin and bundled skills use [Apache-2.0](https://github.com/arcmira/mcp/blob/master/plugins/arcmira/LICENSE); the separate MCP server is proprietary.
+- [firecrawl/skills](https://github.com/firecrawl/skills) - Official Firecrawl skills for web search, scraping, crawling and browser interaction; they call the Firecrawl API (API key or self-hosted).
 
 ## Development Tools
 
@@ -203,6 +205,7 @@ Skills work across multiple platforms:
 - [universal-exam-cram-coach](https://github.com/ZeKaiNie/universal-examprep-skill) - Exam-prep tutor that teaches from your own slides, notes and past papers with page citations, figure crops, homework-only quizzes and cross-session progress.
 - [tlgr](https://github.com/tlgrcli/tlgr/tree/main/plugin/skills/tlgr) - Read, search and send Telegram messages from your own account and manage chats and contacts through the tlgr CLI, with JSON output.
 - [placecall](https://github.com/voygr-tech/placecall/tree/main/skills/placecall) - Places real phone calls to US businesses for reservations, inquiries and quotes, and returns the outcome and transcript. Uses a hosted API ([network and data](https://github.com/voygr-tech/placecall#network-access)); calls are recorded and kept 90 days.
+- [new-term-radar](https://github.com/zhuyansen/new-term-radar) - Spots new AI model, product and repo names on X, Hugging Face, GitHub and sitemaps, then ranks the search terms behind them by Google Ads volume and DataForSEO Trends (an estimate of Google search interest). Three skills and an MCP server; needs an AIsa API key, and an optional GoAnyAPI key adds Google Trends related queries and country-level trend series.
 
 ## DevOps
 

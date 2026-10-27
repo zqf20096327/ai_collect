@@ -1,8 +1,8 @@
 # 句进 · 雅思写作工作台
 
-> v0.3.0 桌面测试版：修复桌面窗口启动错误，移除 Electron 默认菜单，更新中文软件布局和 Logo。尚未发布正式 Release，请先阅读[桌面测试说明](docs/desktop-test-v0.3.0.md)。
+> v0.4.3：修掉「升级后点一键连接只报接口不存在」——启动脚本会认出还在后台跑的旧版本并自动换成新的；WorkBuddy 一键连接本身保持不变：点一下按钮，页面自己打开官方登录页，登录完自动连上，不用找文件、双击 .cmd、手打 `/login`，连上后直接选模型（23 个，分推荐 / 常用 / 更多三组）。0.4.1 的句式仿写与好词好句前置保持不变。最新发布：[v0.4.3](https://github.com/wang-qingfeng-dev/ielts-writing-studio/releases/tag/v0.4.3)（Windows 免安装版）。
 
-[English](README.en.md) · [下载 v0.2.0](https://github.com/wang-qingfeng-dev/ielts-writing-studio/releases/tag/v0.2.0) · [更新记录](CHANGELOG.md)
+[English](README.en.md) · [下载 v0.4.3](https://github.com/wang-qingfeng-dev/ielts-writing-studio/releases/tag/v0.4.3) · [更新记录](CHANGELOG.md)
 
 **v0.2.0** 支持 Task 1 学术类与培训类、Task 2，以及 DeepSeek、豆包（火山方舟）等在线接口。首次配置自己的 API 密钥，以后直接在应用内批改；不提供共享额度。
 
@@ -19,24 +19,25 @@
 - 分别查看 TA 任务完成度（Task 1）或 TR 任务回应（Task 2），以及 CC 连贯与衔接、LR 词汇资源、GRA 语法四项估分、证据和改进动作。
 - 独立范文接收题型、题目、目标分和必要的原图文字材料，不接收你的作文；真实练习默认折叠范文。
 - 每篇优先解决三个问题，并整理错误、搭配、好句与论证方法。
+- 好词好句与句式仿写：把本篇精修稿与范文里的好句识别成 23 种高频句式之一，给出骨架、原句高亮与中文讲解；同一个句式换三个不同话题各写一句，交卷即判分，并记录一次达标率与已掌握的句式数。
 - 收藏后按 1、3、7、14、30 天复习，保存最多 30 篇练习，导出 Markdown 学习笔记。
-- 右上角选择「自动 / Ollama 本地 / 在线 AI / Codex CLI」，分析或连接测试中禁止切换。
-- 网页提供在线 AI 设置：选择服务商、输入自己的密钥，测试成功后保存；无需编辑配置文件或下载本地模型。
+- 右上角选择「自动 / Ollama 本地 / 在线 AI / WorkBuddy 账号 / Codex CLI」，分析或连接测试中禁止切换。
+- 网页提供在线 AI 设置：按「有免费额度 / 按量付费」分组选择服务商，输入自己的密钥，测试成功后保存；无需编辑配置文件或下载本地模型。
 - 正文与四项评分必须通过完整性检查；无法核实的高亮会省略并明确提示，失败或取消会保留原稿和之前完成的结果。
 
 ## 第一次使用
 
 ### Windows：下载便携版
 
-1. 下载 [句进 v0.2.0 Windows x64 便携版 ZIP](https://github.com/wang-qingfeng-dev/ielts-writing-studio/releases/download/v0.2.0/ielts-writing-studio-v0.2.0-windows-x64.zip)。
+1. 下载 [句进 v0.4.3 Windows x64 免安装版 ZIP](https://github.com/wang-qingfeng-dev/ielts-writing-studio/releases/download/v0.4.3/ielts-writing-studio-v0.4.3-windows-x64.zip)。
 2. **先完整解压**到一个文件夹，不要在压缩包里直接运行。
-3. 双击解压目录中的 `Start Portable.cmd`，打开本机网页。
+3. 双击解压目录中的 `Start Writing Studio.cmd`（或 `Start Portable.cmd`），打开本机网页。
 
 便携版已附带 Node.js，无需单独安装 Node。**不包含 AI 模型**：打开后可以立即体验标明为示例的完整教学内容；批改自己的作文还需要配置下方任意一种 AI 服务。此下载包适用于 Windows x64。
 
 ### Windows：小白一键安装（推荐）
 
-下载 [句进 v0.2.0 一键安装程序](https://github.com/wang-qingfeng-dev/ielts-writing-studio/releases/download/v0.2.0/ielts-writing-studio-v0.2.0-windows-x64-setup.exe)，双击后按中文向导完成安装。安装程序自带 Node.js，不需要打开命令行。
+下载 [句进 v0.3.0 一键安装程序](https://github.com/wang-qingfeng-dev/ielts-writing-studio/releases/download/v0.3.0/ielts-writing-studio-v0.3.0-windows-x64-setup.exe)，双击后按中文向导完成安装。安装程序自带 Node.js，不需要打开命令行。安装版目前最新仍是 v0.3.0；v0.4.x 先只提供免安装版，覆盖解压即升级。
 
 **升级：** v0.1.2 及更早版本没有更新入口，请先关闭旧版并运行这次安装程序，安装到原目录。从 v0.2.0 起，Windows x64 安装版可在页面底部点“检查更新”→“下载、安装并重启”。只在用户点击后联网和下载，校验 SHA-256 后安装；保留同一浏览器、地址和端口的学习记录，以及外部 AI 配置与模型。便携版、源码和 Mac 请下载新包。重要笔记建议先导出。
 
@@ -53,9 +54,22 @@
 3. 确认题目与作文发送、账户额度说明，点击「连接并使用」。程序先发送一条不含作文的测试请求，成功后才保存并切换服务。
 4. 回到写作区点击「开始分析」。以后启动会恢复已保存的配置；可在「管理在线 AI」中修改或删除连接。
 
-预设提供 DeepSeek、豆包（火山方舟）、腾讯混元（已有云账户）、硅基流动、OpenRouter，以及自定义兼容接口。聊天网站登录或会员不能代替 API 授权；腾讯混元不是元宝聊天账号接入。各平台费用和免费额度以其控制台为准，软件不提供共享密钥或无限免费额度。
+预设按「有免费额度 / 按量付费」分组：智谱 GLM Flash（当前免费）、豆包（火山方舟，每日免费额度）、腾讯混元 `hunyuan-lite`（免费）、硅基流动（免费模型池）、OpenRouter（免费路由）都是可以先零成本试的选项；DeepSeek 按量付费。免费档同样需要你在服务商网站注册、实名并创建自己的密钥，规则和额度以对方控制台当前标注为准，软件不提供共享密钥或无限免费额度。
 
 在线批改不依赖本机运行大模型，但仍需要网络和服务商可用额度。连接测试只验证接口能返回基本格式，不保证每篇批改都会成功。自定义接口只接受 HTTPS；本机 localhost、127.0.0.1、::1 可使用 HTTP，并可按服务要求留空密钥。
+
+### 用 WorkBuddy 的账号额度（不买 API 也能用）
+
+WorkBuddy 桌面版自带 `codebuddy`，本应用可以直接调用它，用你已登录账号的额度批改，不需要再单独买 API。整个连接过程只有一步：
+
+1. 右上角下拉里选「WorkBuddy」。
+2. 面板里点「一键连接 WorkBuddy」，浏览器会打开 WorkBuddy 官方登录页。
+3. 登录完回到页面——面板会自动变成「已连接」，不用点确认，也不用输入任何命令。
+4. 在同一个面板里选模型（推荐 / 常用 / 更多三组，共 23 个），选择会记住。
+
+连接方式是：应用在后台启动 WorkBuddy 自带的本地网关（`codebuddy --serve`，随机端口 + 随机密码，只监听 127.0.0.1），用它取回官方登录链接并判断登录结果；网关空闲十分钟自动退出，应用关闭时一起结束。分析本身仍以只读结构化模式运行：禁用全部工具（`--tools ""`）、用 `--json-schema` 约束输出，不读写你的文件。
+
+「已连接」的判断依据是本机出现了 WorkBuddy 的凭证文件（`~/.credentials.json` 等），不采信网关自报的状态。找不到 WorkBuddy 时，把环境变量 `IELTS_WORKBUDDY_PATH` 指向 `resources/app.asar.unpacked/cli/bin/codebuddy` 后重启软件；模型也可以用 `WORKBUDDY_MODEL` 指定默认值。命令行调用会占用你自己的 WorkBuddy 额度。
 
 ### Mac 下载（Apple Silicon / Intel）
 
@@ -99,7 +113,7 @@ OLLAMA_MODEL=qwen3.5:4b
 
 `npm start` 和 Windows 启动器都会加载 `.env`；已有的系统/终端环境变量优先于 `.env`。网页中保存的在线地址、模型和密钥优先用于在线模式，已有 `.env` 兼容接口仍可通过下拉菜单选择。Ollama 和兼容接口的模型分别配置；`AI_MODEL` 保留为旧配置的后备值。
 
-Codex 模式需要你自己安装、登录 CLI，使用你自己的账号额度。自动模式优先检查 Ollama，再使用你明确配置的 API，**不会自动转到 Codex**。已保存网页在线配置时，下拉选择会一并保存，重启后恢复；未保存时，下拉选择仅在本次服务进程中生效，重启后按环境配置选择。
+Codex 和 WorkBuddy 模式都需要你自己安装、登录对应 CLI，使用你自己的账号额度。自动模式优先检查 Ollama，再使用你明确配置的 API，**不会自动转到 Codex 或 WorkBuddy**。已保存网页在线配置时，下拉选择会一并保存，重启后恢复；未保存时，下拉选择仅在本次服务进程中生效，重启后按环境配置选择。
 
 ## 数据与使用边界
 

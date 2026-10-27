@@ -682,6 +682,8 @@ Project documentation currently lives in a few places:
 - [Evidence Model Foundation](./docs/evidence-model.md)
 - [Workflow v2 Schema and Validation](./docs/infra-automation/workflow-schema.md)
 - [Scoped Workflow Lifecycle and Configuration](./docs/infra-automation/workflows.md)
+- [Durable Engine, Run API, and Recovery](./docs/infra-automation/engine.md)
+- [Uploaded Artifact Preflight and Report Linkage](./docs/infra-automation/preflight.md)
 - [CI Guide](./docs/ci.md)
 - [CI Secrets Checklist](./docs/ci-secrets-checklist.md)
 
@@ -705,6 +707,10 @@ tests/        API, CLI, parser, service, frontend, and infra tests
 ### Common Development Commands
 
 Install dependencies:
+
+Use Python 3.11 or newer for the development security-audit tools. The runtime
+lock retains Python 3.10 compatibility; the auditor requires patched dependencies
+available on Python 3.11+. See [dependency maintenance](docs/dependency-maintenance.md).
 
 ```bash
 python -m pip install --require-hashes --only-binary=:all: -r requirements-dev.txt

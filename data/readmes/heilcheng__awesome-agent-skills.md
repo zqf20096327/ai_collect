@@ -512,6 +512,7 @@ Comprehensive SaaS marketing stack skills by [Corey Haines](https://github.com/c
 <summary><strong>Data & Analytics</strong></summary>
 
 - [honeydew-ai/honeydew-ai-coding-agents-plugins](https://github.com/honeydew-ai/honeydew-ai-coding-agents-plugins) - 11 skills + MCP server for building and querying a governed semantic layer over Snowflake, Databricks, and BigQuery from coding agents (Claude Code, Codex, Cursor, Copilot CLI, Gemini CLI). Same trusted model serves BI tools and AI agents. Plugins are Apache 2.0.
+- [exmergo/explore](https://github.com/exmergo/dex/tree/main/skills/explore) - Profile warehouses, verify joins, and map schemas
 <summary><strong>Cloud Storage</strong></summary>
 
 - [backblaze-labs/claude-skill-b2-cloud-storage](https://github.com/backblaze-labs/claude-skill-b2-cloud-storage) - Manage Backblaze B2 storage: list, audit, cleanup, security, lifecycle
@@ -532,6 +533,7 @@ Comprehensive SaaS marketing stack skills by [Corey Haines](https://github.com/c
 - [gooseworks-ai/goose-skills](https://github.com/gooseworks-ai/goose-skills) - 125 growth/GTM skills for ads, lead gen, outreach, and SEO
 - [wgwtest/novel-writing](https://github.com/wgwtest/novel-writing) - Codex skill for fiction planning, drafting, and revision with viewpoint, scene-causality, dialogue, and style-preservation checks
 - [chadboyda/agent-gtm-skills](https://github.com/chadboyda/agent-gtm-skills) - 18 go-to-market skills: pricing, outbound, SEO, ads, retention, and ops
+- [shalintripathi/saas-marketing-agents](https://github.com/shalintripathi/saas-marketing-agents) - 19 B2B SaaS marketing skills and 90 agents, routed by one orchestrator
 </details>
 
 <details>
@@ -559,6 +561,10 @@ Comprehensive SaaS marketing stack skills by [Corey Haines](https://github.com/c
 - [makenotion/skills](https://github.com/makenotion/skills) - Notion API integration, database operations, and content management
 - [smerchek/claude-epub-skill](https://github.com/smerchek/claude-epub-skill) - Converts markdown documents into professional EPUB ebook files
 - [talkstream/ru-text](https://github.com/talkstream/ru-text) - Russian text quality: ~1,040 rules for typography, info-style, editorial, UX writing, business correspondence
+- [kklimuk/docx-cli](https://github.com/kklimuk/docx-cli/tree/main/skills/docx-cli) - Work on Word .docx files in place: tracked changes, comments, forms, tables, styles.
+- [stevyhacker/lokalbot-cli](https://github.com/stevyhacker/lokalbot/tree/master/.agents/skills/lokalbot-cli) - Retrieve recorded meetings and separately authorized screen memory on macOS
+- [arifszn/slide-wright](https://github.com/arifszn/slide-wright) - Turns a topic into a themed HTML slide deck; exports to PowerPoint and PDF
+- [luchasarie/bro-skill](https://github.com/luchasarie/bro-skill) - Re-explains the assistant's last reply or pasted text in plain language
 </details>
 
 <details>
@@ -616,6 +622,8 @@ Comprehensive SaaS marketing stack skills by [Corey Haines](https://github.com/c
 - [rickygao/specrate](https://github.com/rickygao/specrate) - Manage specs and changes in a structured workflow
 - [yshishenya/stitchflow](https://github.com/yshishenya/stitchflow) - Stitch UI generation with local HTML and screenshots
 - [zxkane/aws-skills](https://github.com/zxkane/aws-skills) - AWS development with CDK best practices
+- [LeulAria/Aria-Icons](https://github.com/LeulAria/Aria-Icons/tree/main/skills) - Search 1.4M open-source icons and add them to a project as source files
+- [Grit-77/checking-delivery](https://github.com/Grit-77/done-is-a-claim/tree/main/skills/checking-delivery) - Check delivery at its destination and separate acknowledgements from verified consumer results.
 </details>
 
 <details>
@@ -633,6 +641,7 @@ Comprehensive SaaS marketing stack skills by [Corey Haines](https://github.com/c
 - [qualixar/superlocalmemory](https://github.com/qualixar/superlocalmemory) - Local-first persistent memory for coding agents via MCP, with governed recall
 - [jakedahn/pomodoro](https://github.com/jakedahn/pomodoro) - System Skill Pattern — skills that remember and improve
 - [yzfly/Mind-Cloning-Engineering](https://github.com/yzfly/Mind-Cloning-Engineering) - Mind cloning with LLM skills
+- [JayPokale/Chisle](https://github.com/JayPokale/Chisle/tree/main/skills/chisle) - Cuts agent tokens: terse answers, lean code, trimmed tool output; benchmarked
 </details>
 
 <details>
@@ -644,6 +653,7 @@ Comprehensive SaaS marketing stack skills by [Corey Haines](https://github.com/c
 - [kukapay/crypto-skills](https://github.com/kukapay/crypto-skills) - Cryptocurrency, web3 and blockchain skills
 - [RioTheGreat-ai/agentfund-skill](https://github.com/RioTheGreat-ai/agentfund-skill) - Crowdfunding for AI agents on Base chain - milestone escrow
 - [kybernetwork/kyberswap-skills](https://github.com/kybernetwork/kyberswap-skills) - Token swap quotes and transactions across 18 EVM chains
+- [zhuyansen/daily-alpha-scanner](https://github.com/zhuyansen/daily-alpha-scanner) - Daily on-chain research with OKX OnchainOS: hot tokens, smart money, meme launches, token risk
 </details>
 
 <details>
@@ -664,6 +674,7 @@ Comprehensive SaaS marketing stack skills by [Corey Haines](https://github.com/c
 
 - [danjdewhurst/story-skills](https://github.com/danjdewhurst/story-skills) - 16 skills for planning, tracking, and drafting fiction in markdown (worldbuilding, characters, plot, scenes, chapters, revision, continuity), plus a CLI that checks continuity
 - [Qiuner/birdview](https://github.com/Qiuner/birdview) - Treat architecture and constraints as the enduring work of programming, with reviewable scope, evidence, and verification in standalone HTML
+- [manavmishra/ZeroSlop](https://github.com/manavmishra/ZeroSlop) - Flags stock AI phrasing, guides the edit, checks names, numbers, quotes and links
 </details>
 
 <details>
@@ -693,6 +704,8 @@ Comprehensive SaaS marketing stack skills by [Corey Haines](https://github.com/c
 - [SawyerHood/dev-browser](https://github.com/SawyerHood/dev-browser) - Web browser capability for agents
 - [techgangboss/agentstore](https://github.com/techgangboss/agentstore) - Open-source plugin marketplace with CLI install
 - [transloadit/skills](https://github.com/transloadit/skills) - Media processing: video encoding, image manipulation, OCR
+- [voygr-tech/placecall](https://github.com/voygr-tech/placecall/tree/main/skills/placecall) - Places real phone calls to US businesses and returns the outcome and transcript
+- [MSG91/m91-skill](https://github.com/MSG91/m91-skill) - Ask a human for approval on their phone before risky agent actions
 </details>
 
 <details>
@@ -709,6 +722,8 @@ Comprehensive SaaS marketing stack skills by [Corey Haines](https://github.com/c
 - [sanjay3290/ai-skills](https://github.com/sanjay3290/ai-skills) - Google Workspace (Gmail, Chat, Calendar, Docs, Drive, Sheets, Slides), AI delegation (Jules, Manus, Deep Research), and database skills
 - [uxuiprinciples/agent-skills](https://github.com/uxuiprinciples/agent-skills) - 5 UX/UI skills: evaluate interfaces against 168 research-backed principles
 - [yshishenya/stitchflow](https://github.com/yshishenya/stitchflow) - Cross-agent UI design skill collection for turning briefs and mockups into screens, variants, HTML, and screenshots
+- [KalarisLabs/research-agent-skills](https://github.com/KalarisLabs/research-agent-skills) - 280+ skills covering the full academic research lifecycle, from literature review to peer review
+- [cbrock84/headcount](https://github.com/cbrock84/headcount) - Company-department skills (legal, finance, security, ops), each citing its governing source
 </details>
 
 ---

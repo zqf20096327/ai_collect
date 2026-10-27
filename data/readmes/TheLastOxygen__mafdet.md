@@ -1,14 +1,14 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/mafdet-logo-dark.svg">
-  <img src="assets/mafdet-logo.svg" alt="" width="112">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/TheLastOxygen/mafdet/main/assets/mafdet-logo-dark.svg">
+  <img src="https://raw.githubusercontent.com/TheLastOxygen/mafdet/main/assets/mafdet-logo.svg" alt="" width="112">
 </picture>
 
 <h1>
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/mafdet-wordmark-dark.svg">
-  <img src="assets/mafdet-wordmark.svg" alt="MAFDET" height="30">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/TheLastOxygen/mafdet/main/assets/mafdet-wordmark-dark.svg">
+  <img src="https://raw.githubusercontent.com/TheLastOxygen/mafdet/main/assets/mafdet-wordmark.svg" alt="MAFDET" height="30">
 </picture>
 </h1>
 
@@ -17,11 +17,12 @@
 MAFDET reads your message while you type it, and **starts thinking about it before you send it**.<br>
 Hit Enter, and most of the work is already done.
 
-[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-EEEAE2?labelColor=0E0D0C)](LICENSE)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-EEEAE2?labelColor=0E0D0C)](https://github.com/TheLastOxygen/mafdet/blob/main/LICENSE)
+[![PyPI](https://img.shields.io/pypi/v/mafdet?label=pypi&color=EEEAE2&labelColor=0E0D0C)](https://pypi.org/project/mafdet/)
 [![Runtime: local](https://img.shields.io/badge/runtime-local-D4892A?labelColor=0E0D0C)](#requirements)
 [![Status: prototype](https://img.shields.io/badge/status-prototype-6A655D?labelColor=0E0D0C)](#roadmap)
 
-[Italiano](README.it.md)
+[Italiano](https://github.com/TheLastOxygen/mafdet/blob/main/README.it.md)
 
 </div>
 
@@ -71,7 +72,18 @@ Reading ahead is exact. Thinking ahead is not, because the model reasons on vers
 
 **On macOS, with a double-click.** The same, with **`start_mafdet.command`** (Python 3.10 or later: from python.org, or `brew install python@3.12`). If the Finder says it cannot verify the file, right-click it, *Open*, then *Open* again; this is needed only the first time.
 
-**From a terminal:**
+**From [PyPI](https://pypi.org/project/mafdet/)** (Python 3.10 or later). On macOS with Homebrew's Python, and on recent Ubuntu and Debian, `pip install` outside a virtual environment stops with *externally-managed-environment*: install with [pipx](https://pipx.pypa.io), which gives MAFDET an environment of its own and puts `mafdet` on the PATH.
+
+```bash
+brew install pipx             # Ubuntu/Debian: sudo apt install pipx · Windows: py -m pip install --user pipx
+pipx ensurepath               # then open a new terminal
+pipx install mafdet
+mafdet
+```
+
+On Windows with Python from python.org, `pip install mafdet` works as it is. To update: `pipx upgrade mafdet` (or `pip install -U mafdet`).
+
+**From the source, in a terminal** (also for the measurements in `research/`):
 
 ```bash
 git clone https://github.com/TheLastOxygen/mafdet.git
@@ -85,8 +97,8 @@ mafdet
 Either way, no PyTorch and no manual downloads: MAFDET asks whether to open the **window** or the **terminal app**, and the first start guides you through the rest. It looks at your machine, installs the right build of llama.cpp by itself (CUDA for an NVIDIA card, Vulkan for an AMD Radeon, Metal on an Apple Silicon Mac, CPU otherwise) and downloads the model that runs best on your hardware.
 
 <p align="center">
-  <img src="assets/screenshots/gui-chat.png" alt="The MAFDET window: the model reasoned ahead while the message was typed (455 of 571 reasoning tokens) and answered 1.6 s after Enter" width="49%">
-  <img src="assets/screenshots/gui-models.png" alt="The model catalog: for each model, where it runs on this machine, its speed and the wait after Enter with and without MAFDET" width="49%">
+  <img src="https://raw.githubusercontent.com/TheLastOxygen/mafdet/main/assets/screenshots/gui-chat.png" alt="The MAFDET window: the model reasoned ahead while the message was typed (455 of 571 reasoning tokens) and answered 1.6 s after Enter" width="49%">
+  <img src="https://raw.githubusercontent.com/TheLastOxygen/mafdet/main/assets/screenshots/gui-models.png" alt="The model catalog: for each model, where it runs on this machine, its speed and the wait after Enter with and without MAFDET" width="49%">
 </p>
 
 ## The app
@@ -95,10 +107,10 @@ The same app comes in two forms, on the same engine:
 
 | | Command | What it is |
 |---|---|---|
-| <img src="assets/icons/watch.svg" width="22" alt=""> | `mafdet gui` | **The window**: chat, models, hardware and settings, in English, Italian, French or German |
-| <img src="assets/icons/strike.svg" width="22" alt=""> | `mafdet tui` | **The terminal app**: the same views in the terminal, keyboard first (F1 to F4), on an amber phosphor screen with a boot sequence (Settings, *Cinematic effects*, turns the animations off) |
-| <img src="assets/icons/race.svg" width="22" alt=""> | `mafdet models` | the model catalog for this machine (`--family`, `--download`) |
-| <img src="assets/icons/awaken.svg" width="22" alt=""> | `mafdet doctor` | checks the GPU, memory, llama.cpp and the models; `--install` installs llama.cpp (`--build 12`, `13`, `vulkan` or `cpu` to pick the build) |
+| <img src="https://raw.githubusercontent.com/TheLastOxygen/mafdet/main/assets/icons/watch.svg" width="22" alt=""> | `mafdet gui` | **The window**: chat, models, hardware and settings, in English, Italian, French or German |
+| <img src="https://raw.githubusercontent.com/TheLastOxygen/mafdet/main/assets/icons/strike.svg" width="22" alt=""> | `mafdet tui` | **The terminal app**: the same views in the terminal, keyboard first (F1 to F4), on an amber phosphor screen with a boot sequence (Settings, *Cinematic effects*, turns the animations off) |
+| <img src="https://raw.githubusercontent.com/TheLastOxygen/mafdet/main/assets/icons/race.svg" width="22" alt=""> | `mafdet models` | the model catalog for this machine (`--family`, `--download`, also `--download repository:file.gguf` from Hugging Face) |
+| <img src="https://raw.githubusercontent.com/TheLastOxygen/mafdet/main/assets/icons/awaken.svg" width="22" alt=""> | `mafdet doctor` | checks the GPU, memory, llama.cpp and the models; `--install` installs llama.cpp (`--build 12`, `13`, `vulkan` or `cpu` to pick the build) |
 
 `mafdet` alone opens the launcher, which can remember your choice (`mafdet --ask` shows it again).
 
@@ -106,11 +118,18 @@ The same app comes in two forms, on the same engine:
 
 **Models.** Five families: **Qwen3**, **Llama 3**, **Gemma 3**, **Mistral** and **Phi-4**, from 0.6B to 32B parameters, each in several quantizations. With every model, MAFDET reads your message while you type and, at a pause, writes the answer ahead; Qwen3 also **reasons ahead**, the one family whose reasoning frame was measured. Every model of the catalog comes with what it does on *your* machine, before you download it: whether it fits in VRAM or runs partly on the CPU, how fast it writes and reads, and for Qwen3 how long the answer takes after Enter with and without MAFDET (for the other families, how long a typical answer takes to write). The estimate comes from your hardware (GPU and RAM bandwidth, VRAM, llama.cpp's split of layers between GPU and CPU) and is within 12% of the measured speeds on the reference PC (Qwen3-4B 89.6 estimated / 87.1 measured tok/s, 8B 16.2 / 16.2, 14B 5.1 / 4.9) and on an M2 Pro (Qwen3-4B 53 / 57 tok/s). Once a model is downloaded, **Measure** benchmarks it in half a minute and the real numbers replace the estimate. The model that runs best here is marked *Best for you*, and each family has its own best pick. To add a model, add a line to `tools/build_catalog.py`: it reads the file sizes and the shape of the model from Hugging Face.
 
+**Your own models.** Any GGUF works too, beyond the catalog:
+
+- **Search Hugging Face** (Models view) finds GGUF repositories, the most downloaded first, and lists their files with the same estimate for your machine; a quantization is suggested (Q4_K_M when there is one). The download resumes where it stopped, all parts of a split model together, into `~/.mafdet/models/hf/<owner>/<repo>/`. Gated models (Llama, Gemma) need their license accepted on huggingface.co and `hf auth login` on the machine.
+- **A file downloaded by hand**: put it in `~/.mafdet/models` (any subfolder), or pick it anywhere on disk with **Add a GGUF file** (it stays where it is).
+
+They appear under *Your models*, with the numbers read from the file's header (layers, KV heads, parameters, active experts) and **Measure** as for the catalog. Nothing else is downloaded for them: the tokenizer and the chat template are the GGUF's own, read through llama-server (identical to the Hugging Face tokenizer on Qwen3-4B: ids, special tokens, decoded text, template). A Qwen3 with thinking mode reasons ahead while you type; any other model reads while you type and writes the answer ahead at pauses. The architecture must be one the installed llama.cpp supports.
+
 **Hardware and settings.** The Hardware view shows the GPU, CPU, memory and the llama.cpp runtime, with a button to install or reinstall it. Settings keep the chat options from one start to the next (in `~/.mafdet`, or `$MAFDET_HOME`).
 
 <p align="center">
-  <img src="assets/screenshots/tui-models.png" alt="The terminal app: the model catalog as a table" width="49%">
-  <img src="assets/screenshots/launcher.png" alt="The launcher: window or terminal" width="49%">
+  <img src="https://raw.githubusercontent.com/TheLastOxygen/mafdet/main/assets/screenshots/tui-models.png" alt="The terminal app: the model catalog as a table" width="49%">
+  <img src="https://raw.githubusercontent.com/TheLastOxygen/mafdet/main/assets/screenshots/launcher.png" alt="The launcher: window or terminal" width="49%">
 </p>
 
 ## Requirements
@@ -154,10 +173,10 @@ Reasoning ahead is **not exact**: the model reasons on intermediate versions of 
 
 | | Command | | What it does |
 |---|---|---|---|
-| <img src="assets/icons/hunt.svg" width="22" alt=""> | `mafdet hunt` | the hunt | simulates people typing and measures the wait after sending |
-| <img src="assets/icons/race.svg" width="22" alt=""> | `mafdet race` | the race | benchmarks prefill and decode on your machine |
-| <img src="assets/icons/judge.svg" width="22" alt=""> | `mafdet judge` | the judgement | checks results against a from-scratch computation: must end with 0 errors |
-| <img src="assets/icons/awaken.svg" width="22" alt=""> | `mafdet awaken` | the awakening | checks PyTorch and the GPU, for the PyTorch backend |
+| <img src="https://raw.githubusercontent.com/TheLastOxygen/mafdet/main/assets/icons/hunt.svg" width="22" alt=""> | `mafdet hunt` | the hunt | simulates people typing and measures the wait after sending |
+| <img src="https://raw.githubusercontent.com/TheLastOxygen/mafdet/main/assets/icons/race.svg" width="22" alt=""> | `mafdet race` | the race | benchmarks prefill and decode on your machine |
+| <img src="https://raw.githubusercontent.com/TheLastOxygen/mafdet/main/assets/icons/judge.svg" width="22" alt=""> | `mafdet judge` | the judgement | checks results against a from-scratch computation: must end with 0 errors |
+| <img src="https://raw.githubusercontent.com/TheLastOxygen/mafdet/main/assets/icons/awaken.svg" width="22" alt=""> | `mafdet awaken` | the awakening | checks PyTorch and the GPU, for the PyTorch backend |
 
 They run on llama.cpp with `--backend llama` (no PyTorch needed), or on PyTorch/transformers with the default `--backend hf` (`pip install -e ".[research]"` after installing PyTorch from the CUDA index: from PyPI, on Windows, pip would get the CPU-only build). `mafdet --help` is the full guide, `mafdet <command> --help` the options of one. Add `--device cpu` to any command to measure the no-GPU case. Results are saved as CSV files in `results/` (change it with `--out`).
 
@@ -276,6 +295,7 @@ If something does not work (the card not found, llama.cpp not starting, the mode
 - [x] `mafdet strike`: reasoning ahead while you type, kept across edits; the exact answer ahead at a pause
 - [x] The app: window and terminal, model catalog with estimates for your hardware, automatic llama.cpp setup, guided first start, four languages
 - [x] Five model families: Qwen3, Llama 3, Gemma 3, Mistral, Phi-4
+- [x] Any GGUF: search and download from Hugging Face in the app, or files of your own
 - [x] A small model gathers while you type, a large one answers: tried and measured (no gain on the RTX 2060, see Results)
 - [ ] Reasoning ahead for models larger than the VRAM that beats the large model thinking by itself
 - [ ] Reasoning ahead beyond Qwen3, including the thinking models with their own formats (DeepSeek-R1, gpt-oss): each needs its frame measured
@@ -292,4 +312,4 @@ If something does not work (the card not found, llama.cpp not starting, the mode
 
 ## License
 
-[Apache-2.0](LICENSE)
+[Apache-2.0](https://github.com/TheLastOxygen/mafdet/blob/main/LICENSE)

@@ -69,7 +69,7 @@ pnpm update -g @hostinger/mcp
 
 This package installs the following MCP server commands:
 
-- `hostinger-api-mcp` — unified server over every operation (410 total)
+- `hostinger-api-mcp` — unified server over every operation (418 total)
 - `hostinger-agency-hosting-mcp` — 42 operations for agency-hosting
 - `hostinger-agent-readiness-mcp` — 3 operations for agent-readiness
 - `hostinger-billing-mcp` — 9 operations for billing
@@ -77,9 +77,9 @@ This package installs the following MCP server commands:
 - `hostinger-domains-mcp` — 42 operations for domains
 - `hostinger-ecommerce-mcp` — 29 operations for ecommerce
 - `hostinger-horizons-mcp` — 6 operations for horizons
-- `hostinger-hosting-mcp` — 67 operations for hosting
+- `hostinger-hosting-mcp` — 68 operations for hosting
 - `hostinger-mail-mcp` — 38 operations for mail
-- `hostinger-reach-mcp` — 62 operations for reach
+- `hostinger-reach-mcp` — 69 operations for reach
 - `hostinger-vps-mcp` — 67 operations for vps
 - `hostinger-wordpress-mcp` — 40 operations for wordpress
 
@@ -1284,8 +1284,8 @@ common reason a domain is left awaiting setup. Create one with `Create WHOIS pro
 Some TLDs require `additional_details`. These are validated before setup, so a missing or
 invalid value is rejected without any registration being attempted.
 
-The domain is set up with the default nameservers and without privacy protection. Use
-`Update domain nameservers` and `Enable privacy protection` afterwards to change either.
+The domain is set up with the default nameservers and with privacy protection. Use
+`Update domain nameservers` and `Disable privacy protection` afterwards to change either.
 
 A successful response means the setup request was accepted, not that the domain is already
 registered. Poll `Get domain list` for the outcome, the domain appears in `Get domain details`
@@ -1816,7 +1816,7 @@ interface in the provided website URL.
 
 #### hosting_deploy
 
-Deploy, publish or upload a website to Hostinger web hosting (Shared, Cloud): static HTML, PHP, a nodejs (Node.js) app, a whole WordPress site, or a WordPress plugin or theme, from a local directory, an archive or a GitHub or GitLab repository. It detects what the project is and does the upload, build and Git setup itself: do not call upload or build operations, and do not archive the directory yourself. WARNING: it overwrites the website's contents and cannot be undone; confirm the domain with the user before deploying to a site that already has content. A Node.js build runs on the server: this returns a buildUuid at once, then call hosting_get-deployment until the build state is completed or failed. A plugin or theme goes into the site's WordPress installation, also when WordPress is in a folder of the document root (headless). Static, PHP, plugin and theme deploys are done when this returns; a WordPress site import only starts, and its files are extracted a few minutes later. From Git, pass type (static or nodejs) unless the site already runs a Node.js app or you pass Node.js settings; a static or PHP site deploys the branch now and again on every push; a Node.js site builds the branch now and on every later push, with the settings stored for the site (when none are stored, pass appType and nodeVersion from the project's engines, plus outputDirectory and buildScript if the app has a build step). Git needs GitHub or GitLab connected once in hPanel.
+Deploy, publish or upload a website to Hostinger web hosting (Shared, Cloud): static HTML, PHP, a nodejs (Node.js) app, a whole WordPress site, or a WordPress plugin or theme, from a local directory, an archive or a GitHub or GitLab repository. It detects what the project is and does the upload, build and Git setup itself: do not call upload or build operations, and do not archive the directory yourself. WARNING: it overwrites the website's contents and cannot be undone; confirm the domain with the user before deploying to a site that already has content. A Node.js build runs on the server: this returns a buildUuid at once, then call hosting_get-deployment until the build state is completed or failed. A plugin or theme goes into the site's WordPress installation, also when WordPress is in a folder of the document root (headless). Static, PHP, plugin and theme deploys are done when this returns; a WordPress site import only starts, and its files are extracted a few minutes later. From Git, pass type (static or nodejs) unless the site already runs a Node.js app or you pass Node.js settings; a static or PHP site deploys the branch now and again on every push; a Node.js site builds the branch now and on every later push, with the settings stored for the site (when none are stored, they are detected from the branch's package.json; pass appType, nodeVersion, outputDirectory, buildScript or entryFile to override them). Git needs GitHub or GitLab connected once in hPanel.
 
 - **Method**: `custom`
 - **Path**: `custom`
@@ -1824,6 +1824,13 @@ Deploy, publish or upload a website to Hostinger web hosting (Shared, Cloud): st
 #### hosting_get-deployment
 
 Check deployment status, build status, build logs and why a build failed (failure analysis) for a website's nodejs (Node.js) deployment: the state of its latest build (or of buildUuid), the end of the build log, the failure analysis when the build failed, and the build settings and Git auto-deployment settings stored for the site. Use it after hosting_deploy starts a Node.js build, and to find out why a deployment failed. Poll until the build state is completed or failed, with growing pauses. The log comes back in full; pass fromLine (the lines count from the previous call) to read only new output. A website without Node.js builds returns build: null with an explanation, because static, PHP, plugin and theme deploys are complete when hosting_deploy returns, and a WordPress site import is ready a few minutes after it starts.
+
+- **Method**: `custom`
+- **Path**: `custom`
+
+#### hosting_websites_trigger-event
+
+Tell Hostinger that something happened on this website, so Hostinger services such as hPanel can react to it. `event.name` picks the event and decides which `event.params` it takes. The call changes nothing on the website.
 
 - **Method**: `custom`
 - **Path**: `custom`
@@ -1840,12 +1847,33 @@ installation living in a subdirectory, pass the directory query parameter to cle
 - **Method**: `DELETE`
 - **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/cache/clear`
 
+#### hosting_cache_status
+
+Returns the caching state of the website: whether server-side caching is enabled and whether
+development (cacheless) mode is on. Works for the main domain, addon websites, parked domains
+and subdomains of the account; each reports its own settings and does not inherit them from
+its parent website.
+
+`is_enabled` is the setting changed by `Toggle website cache` and reflects a toggle
+immediately. `is_cacheless_mode_enabled` is true while development mode is on; caching is then
+bypassed even when `is_enabled` is true. `Toggle cacheless mode` is applied in the background,
+so this flag can take a few minutes to follow it.
+
+The domain must be the exact website name as listed on the account, without a `www.` prefix.
+Returns 404 when the domain is not a website on the account.
+
+- **Method**: `GET`
+- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/cache/status`
+
 #### hosting_cache_toggle-cacheless
 
 Turns development (cacheless) mode on or off, based on the enabled flag. When enabled, nothing
 is cached, effectively turning off all caching for the website; use it while actively developing,
 testing changes, debugging issues, or when real-time updates must be visible. Disable it after
 finishing development work to restore the performance benefits of caching.
+
+The change is applied in the background and can take a few minutes. Use `Get cache status` to
+check the current state.
 
 - **Method**: `PATCH`
 - **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/cacheless-mode/toggle`
@@ -1857,7 +1885,8 @@ faster page loads, reduced server load, and improved user experience; recommende
 websites. Disabling may impact performance; to temporarily bypass caching while developing or
 debugging, prefer toggling cacheless mode instead.
 
-Does nothing if caching is already in the requested state.
+Does nothing if caching is already in the requested state. Use `Get cache status` to check the
+current state.
 
 - **Method**: `PATCH`
 - **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/cache/toggle`
@@ -2248,21 +2277,6 @@ to it.
 - **Method**: `POST`
 - **Path**: `/api/hosting/v1/headless/agent-reports`
 
-#### hosting_nodejs_build-settings-from-repository
-
-Determine the build settings for a Node.js application from the package.json file of a branch
-in a Git repository. Use before starting a Git-source build to find out the auto-detected
-settings instead of guessing them.
-
-The repository is read through a Git installation: take `installation_uuid` from
-`List Git installations` and `owner` and `repository` from `List Git installation repositories`.
-
-Returns 422 when the installation is not found, the repository or branch is not found, or
-the branch has no package.json.
-
-- **Method**: `GET`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/nodejs/builds/settings/from-repository`
-
 #### hosting_nodejs_list-environment-variables
 
 Lists the Node.js environment variables currently set for the website. Values are always
@@ -2528,18 +2542,4 @@ Creates a redirect from a URL on the selected website to another URL or IP addre
 
 Permanently deletes the redirect identified by its source URL.
 
-Pass the `from` value exactly as returned by the list redirects endpoint.
-
-- **Method**: `DELETE`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/redirects`
-
-#### hosting_ssl_install
-
-Requests a lifetime SSL certificate for the website. The installation runs in the background;
-`Get SSL status` reports `active` or `failed` when it ends. An `active` lifetime certificate
-does not block the request: a new installation is requested, which is how a certificate is
-reinstalled.
-
-Returns 422 for free subdomains (their certificate is managed by the platform), while an
-installation is `installing` or `waiting_for_retry`, when the website's certificate was
-revoked (it cannot be reissued), and when an uploaded 
+Pass the `from` value exactly 

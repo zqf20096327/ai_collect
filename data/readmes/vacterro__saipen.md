@@ -22,6 +22,15 @@ Project memory lives beside the code in plain files, so a cold agent can resume 
 **One command to resume. Plain-file state. Machine-checked contracts.**
 
 The repository validates itself on every push. Install, state, checks, recovery, and uninstall remain local: no hosted database, daemon, or mandatory cloud service.
+For Claude Code, a local helper starts on the first prompt and exits when idle with no host running.
+
+[![Validation](https://github.com/vacterro/saipen/actions/workflows/validate.yml/badge.svg)](https://github.com/vacterro/saipen/actions/workflows/validate.yml)
+[![Release](https://img.shields.io/github/v/release/vacterro/saipen?sort=semver&label=release)](https://github.com/vacterro/saipen/releases)
+[![License: MIT](https://img.shields.io/github/license/vacterro/saipen?color=blue)](LICENSE)
+
+**v8.1.0** | [Spec](SPEC.md) | [Guide](GUIDE.md) | [Core](saipen/CORE.md) | [Maintenance](saipen/MAINTENANCE.md) | [Style](saipen/STYLE.md) | [UI](saipen/UI.md) | [Conformance](saipen/CONFORMANCE.md) | MIT
+
+**Shortcut keys.** A shortcut is the whole message, never a prefix: `cc` continues, `sss` reports status, `st` stops; Cyrillic twins `сс`, `ссс`, `аа`, `ее`, `еее`, `рр` work too. [Full 19-key map](saipen/CORE.md#110-command-surface). `ff` → `focus`; `xx` → `cut`; `vv` → `build`; `zz` → `undo`.
 
 ```text
 Project
@@ -40,8 +49,6 @@ Project
           v
      next_action -> work -> checkpoint
 ```
-
-**Shortcut keys.** A shortcut is the whole message, never a prefix: `cc` continues, `sss` reports status, `st` stops. [Full key map](saipen/CORE.md#110-command-surface).
 
 ## What persists
 
@@ -70,7 +77,7 @@ session ends.
 ## Quick start
 
 Requires **Git, Python 3.11 or newer**, and a coding agent. No `pip` install,
-account, server, or daemon is needed. Keep the clone until you uninstall;
+SAIPEN account or manually managed server is needed. Keep the clone until you uninstall;
 the installed agent instructions and update checks refer to its location.
 
 **1. Clone once:**

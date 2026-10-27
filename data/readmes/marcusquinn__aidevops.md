@@ -25,7 +25,7 @@ token efficiency, and quality control built in.**
 [![Maintainability](https://qlty.sh/gh/marcusquinn/projects/aidevops/maintainability.svg)](https://qlty.sh/gh/marcusquinn/projects/aidevops)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/2b1adbd66c454dae92234341e801b984)](https://app.codacy.com/gh/marcusquinn/aidevops/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/Version-3.39.74-blue.svg)](https://github.com/marcusquinn/aidevops/releases)
+[![Version](https://img.shields.io/badge/Version-3.39.77-blue.svg)](https://github.com/marcusquinn/aidevops/releases)
 [![npm version](https://img.shields.io/npm/v/aidevops)](https://www.npmjs.com/package/aidevops)
 [![Homebrew](https://img.shields.io/badge/homebrew-marcusquinn%2Ftap-orange)](https://github.com/marcusquinn/homebrew-tap)
 
@@ -86,6 +86,10 @@ aidevops opencode           # launch OpenCode with the Build+ agent
 
 Rerun `aidevops tabby sync` after adding projects in step 4. Profile details:
 [Tabby profiles](.agents/reference/tabby-profiles.md).
+
+For persistent remote tmux tabs across configured SSH hosts, use
+`aidevops tabby sessions new|restore|list|doctor`; see
+[Remote Tabby sessions](.agents/tools/terminal/remote-sessions.md).
 
 ### 3. Connect model providers
 

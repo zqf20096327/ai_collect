@@ -23,9 +23,11 @@ duo --mode step         # incremental queue
 
 Duo runs on macOS, Linux and Windows (Windows 10 1809+ or newer, which is where the ConPTY agent terminals come from) and requires Git plus at least one supported agent CLI. It opens the gotui dashboard; enter a task and press `Enter`. Open `/help` (or press `F1`) for the in-app command and keyboard reference.
 
+On a first run `duo` checks that it can start before it opens the dashboard, and asks before it changes anything. In a directory that is not a Git repository it offers to run `git init`; in a repository with no commit it offers an initial commit; with uncommitted work it offers to commit or stash it. If `~/.duo/config.json` does not exist it offers to create one with English, GOAL mode and the TIMELINE view. With no terminal — a script, CI, `duo run` — it asks nothing and reports the same errors it always did. When none of the four agent CLIs is on `PATH`, Duo refuses to start and names what to install, in a headless round as well.
+
 ## Install
 
-**Latest published release v0.14.3** (macOS/Linux/Windows, amd64, plus arm64 on macOS/Linux):
+**Latest published release v0.14.5** (macOS/Linux/Windows, amd64, plus arm64 on macOS/Linux):
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/atfa/duo/main/scripts/install-release.sh | bash
@@ -71,9 +73,11 @@ Settings can be stored globally in `~/.duo/config.json` or per repository in `.d
 
 The optional LLM observer is disabled by default and advisory only: it cannot message agents, sign gates, or change workflow state. It calls an OpenAI-compatible Chat Completions API. Observer settings are described below; for CLI options, see `duo --help` and `duo mcp-server --help`.
 
+`tuiMode` selects the view a session opens on: `timeline` (the default, one conversation) or `split` (Austin and Tony side by side). `F2` toggles it while running, and the interface records that choice in the repository's `.duo/config.json`. A `tuiMode` in `~/.duo/config.json` is only the default for repositories that have not saved a view of their own, so a repository's saved choice always wins. Any other value is a configuration error rather than a silent fall back to the default.
+
 ### Optional observer
 
-In the gotui dashboard, use `/observer` to open observer settings. Press `Ctrl+E` (or `/reports`) when you want to know what the agents are doing: it opens the status report and asks the observer for a fresh one. If no observer model is configured, `Ctrl+E` opens settings instead. On first run, the settings panel is offered only when the observer has never been configured: no observer section in config, no key file, and no `DUO_OBSERVER*` environment setting. It starts with `http://127.0.0.1:4000/v1` and model `exec`; edit the fields directly, then press `Enter` to save or `Esc` (**Later**) to save `observer: {"enabled": false}` in the project config and prevent the prompt from appearing again. You can open settings at any time afterward.
+In the gotui dashboard, use `/observer` to open observer settings. Press `Ctrl+E` (or `/reports`) when you want to know what the agents are doing: it opens the status report and asks the observer for a fresh one. If no observer model is configured, `Ctrl+E` opens settings instead. The first-run terminal guide asks about the observer before the dashboard opens: answering there saves the settings (or, with **Later**, `observer: {"enabled": false}`) in the project config, so the dashboard does not ask a second time; an observer that was ever configured - an observer section in either config file, a key file, or a `DUO_OBSERVER*` variable - is not asked about at all. Without a terminal the panel is offered on first run only when the observer has never been configured: no observer section in config, no key file, and no `DUO_OBSERVER*` environment setting. It starts with `http://127.0.0.1:4000/v1` and model `exec`; edit the fields directly, then press `Enter` to save or `Esc` (**Later**) to save `observer: {"enabled": false}` in the project config and prevent the prompt from appearing again. You can open settings at any time afterward.
 
 In the settings panel, use `Tab`/`Shift+Tab` to move between fields, `Space` (or `y`/`n`) to toggle Enabled, and `Enter` to save; `Esc` closes without saving. In the first-run prompt, `Esc` saves **Later** instead. `Ctrl+U` clears the current field. Leaving the API key blank keeps the saved key. In the reports panel, `R` asks for a fresh report, `?` asks the observer your own question, `↑`/`↓` scroll and `Esc` closes it.
 

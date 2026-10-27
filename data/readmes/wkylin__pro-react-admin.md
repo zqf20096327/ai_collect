@@ -1,8 +1,8 @@
 # Pro React Admin
 
-React 企业管理应用与组件工作区，基于 React 19、Ant Design 6、React Router 7、Zustand 5、Webpack 5、Vite 8 和 TypeScript 6。提供完整展示应用、精简企业入口、多项目构建、Module Federation Host/Remote，以及独立 UI 包 @w.ui/wui-react。
+供团队复用的 React 管理后台脚手架。安全项目预设提供受保护路由、租户身份、服务端授权、持久化资源与审计；展示应用、双构建器、微前端示例和独立 UI 包可按需选用。基于 React 19、Ant Design 6、React Router 7、Zustand 5 和 TypeScript 6。
 
-先看[线上项目概览](https://pro-react-admin.vercel.app/#/overview)了解能力、目录和交付路径；[工程导览](./docs/architecture/ENGINEERING_OVERVIEW.md)将每项能力对应到源码、验证命令和适用边界。需要进入应用操作时再使用演示账号登录。
+第一次使用建议从下方的安全项目预设开始。[线上项目概览](https://pro-react-admin.vercel.app/#/overview)和[工程导览](./docs/architecture/ENGINEERING_OVERVIEW.md)展示源码、验证命令与交付边界；公开站点使用浏览器演示数据。
 
 ## 线上预览
 
@@ -21,16 +21,21 @@ Pages 的新增示例和全部应用入口以本次 Actions 部署成功为准�
 git clone https://github.com/wkylin/pro-react-admin.git
 cd pro-react-admin
 pnpm install --frozen-lockfile
-pnpm start
+pnpm run project:create myApp --preset enterprise
+PROJECT=myApp pnpm start
 ```
 
-已有仓库只需在根目录安装并启动。访问 http://localhost:8080/#/signin，点击 `admin@test.com` 自动填充当前浏览器生成的演示密码，再点击登录并完成滑块验证；没有统一固定密码。`pnpm start` 同时启动完整展示应用和本地 API（从 5200 起，占用时递增并同步前端代理），开发埋点使用内存，无需 MongoDB。实际端口以终端输出为准。
+安全预设默认使用 Vite，生成独立项目并启动前端与 Enterprise API。首次启动会创建隔离的本地 SQLite 演示租户；访问终端打印的地址，使用登录页提供的本地演示账号。创建结果、可修改范围和生产配置见[多项目与脚手架](./docs/development/MULTI_PROJECT.md)。
 
-演示账号和管理数据由应用内的权限 mock 与 `src/features/administration/api/demoProvider.ts` 提供，不需要额外启动假接口服务；真实租户模式则调用 `api/enterprise/`。
+### 浏览展示应用
+
+只想查看全部演示场景时，在仓库根目录运行 `pnpm start`。访问终端打印的 `/#/signin` 地址，点击 `admin@test.com` 自动填充当前浏览器生成的演示密码，再登录并完成滑块验证；没有统一固定密码。展示应用和本地 API 一起启动，开发埋点使用内存，无需 MongoDB。
+
+演示账号和管理数据由应用内的权限 mock 与 `src/features/administration/api/demoProvider.ts` 提供，不需要额外启动假接口服务；真实租户模式则调用 `server/enterprise/`。
 
 ### Webpack / Vite 构建选择
 
-同一份应用与组件源码支持两套构建器。默认命令仍使用 Webpack；设置 `BUILD_TOOL=vite` 后，`start`、`project:dev`、`project:build`、`mfe:*` 和 `build:pages` 使用 Vite。应用也可在命令后传 `--bundler=vite`，该参数优先于环境变量。
+同一份应用与组件源码支持两套构建器。展示应用与既有示例默认使用 Webpack；新建的安全项目预设默认使用 Vite。设置 `BUILD_TOOL=vite` 后，`start`、`project:dev`、`project:build`、`mfe:*` 和 `build:pages` 使用 Vite。应用也可在命令后传 `--bundler=vite`，该参数优先于环境变量。
 
 ```bash
 pnpm run dev:webpack                 # Webpack 应用与本地 API
@@ -79,20 +84,25 @@ node --input-type=module -e "import fs from 'node:fs'; if (!fs.existsSync('.env.
 | -------------- | ----------------------------------------------------------------------- | ------------------------------ | --------------------------------------------- |
 | 默认应用与 API | `pnpm start`                                                            | Web 从 8080 起、API 从 5200 起 | `admin@test.com` 等演示账号，密码由浏览器生成 |
 | 仅默认前端     | `pnpm run start:web`                                                    | 8080                           | 同上                                          |
-| 企业演示       | `pnpm exec cross-env REACT_APP_USE_MOCK=true pnpm run start:enterprise` | 8080                           | 同上                                          |
+| 企业本地全栈   | `pnpm run start:enterprise` 或 `pnpm run start:enterprise:full`         | Web 从 8080 起、API 从 5200 起 | `demo` / `admin@demo.local` / `DemoAdmin123!` |
+| 企业浏览器演示 | `pnpm exec cross-env REACT_APP_USE_MOCK=true pnpm run start:enterprise` | Web 从 8080 起、API 从 5200 起 | `admin@test.com` 等浏览器演示账号             |
 | 多项目         | `pnpm run project:dev projectA` / `projectB`                            | 默认 8080，可设置 `PORT`       | projectA 使用演示账号；projectB 无需登录      |
 | 微前端         | 分别启动三个 `start:mf:*`，见下文                                       | Shell 8080、Remote 8081/8082   | 公开通信示例，无需登录                        |
 | 本地 lib       | `pnpm run prepare:lib:release`                                          | `packages/wui-react/dist`      | 不适用                                        |
-| 真实租户登录   | 配置并初始化后 `pnpm run start:enterprise:full`                         | Web 从 8080 起、API 从 5200 起 | 初始化时设置的租户 ID、邮箱和自选密码         |
+| 自建租户登录   | 配置并初始化后 `pnpm run start:enterprise`                              | Web 从 8080 起、API 从 5200 起 | 初始化时设置的租户 ID、邮箱和自选密码         |
 
 当前开发机的隔离预览账户另记在 Git 忽略的 `docs/LOCAL_PREVIEW.local.md`；该文件不随仓库分发，预览账号也不是项目默认账号。
 
 ### 默认应用和企业演示
 
-默认应用使用共享 `.env` 中的 `REACT_APP_USE_MOCK=true`；Enterprise 入口需在命令中显式开启 Mock。企业入口包含工作台、用户、角色和审计管理；完整体验使用 `admin@test.com`。其它演示账号为 `manager@test.com`、`business@test.com`、`user@test.com`，可退出登录后切换，对比权限。点击登录页账号会填入该浏览器生成的密码，没有统一固定密码。
+默认应用使用共享 `.env` 中的 `REACT_APP_USE_MOCK=true`。Enterprise 开发入口默认使用仓库内的真实 Node API 和隔离的 SQLite 演示库 `api/data/enterprise-demo.sqlite`；首次本地启动自动创建租户 `demo`、邮箱 `admin@demo.local`、密码 `DemoAdmin123!`，登录页可一键填入。数据会在重启后保留，修改密码后应使用新密码。该演示库和验证器密钥被 Git 忽略；默认演示库被另一实例占用时，新实例会按 API 端口使用独立的 `enterprise-demo-<端口>.sqlite`，终端显示实际路径。配置自建数据库、引导租户或外部 API 时不会自动创建或切换数据库。两个企业启动命令等效，都从 5200 开始寻找 API 空闲端口。前端端口也会自动选择；访问终端打印的 `Open Enterprise` 地址，不要继续使用被其它项目占用的旧标签页。
+
+本地 `demo` 管理员还可使用左侧“租户管理”查看租户 ID 和管理租户，“权限管理”按角色分配权限。自建数据库的平台管理员须由运维人员显式授权，普通租户管理员不能跨租户操作；删除租户采用可恢复的停用方式。配置和权限边界见[企业资源指南](./docs/operations/ENTERPRISE.md#平台租户与权限管理)。
+
+Enterprise 入口若显式开启 Mock，则使用浏览器演示账号。企业入口包含工作台、用户、角色和审计管理；浏览器演示完整体验使用 `admin@test.com`。其它账号为 `manager@test.com`、`business@test.com`、`user@test.com`，可退出登录后切换，对比权限。点击登录页账号会填入该浏览器生成的密码，没有统一固定密码。
 
 ```bash
-# 企业演示：仅前端
+# 企业浏览器演示：同时启动前端和 Node API，企业登录使用 Mock
 pnpm exec cross-env REACT_APP_USE_MOCK=true pnpm run start:enterprise
 ```
 
@@ -261,7 +271,7 @@ pnpm run api:bootstrap
 pnpm run start:enterprise:full
 ```
 
-访问 http://localhost:8080/#/signin，填租户 `acme`、邮箱 `admin@example.com` 和初始化密码。业务数据库默认 `api/data/enterprise.sqlite`，刷新和重启保留数据。演示账号不能用于真实登录。
+访问 http://localhost:8080/#/signin，填租户 `acme`、邮箱 `admin@example.com` 和初始化密码。业务数据库默认 `api/data/enterprise.sqlite`，刷新和重启保留数据。浏览器 Mock 账号和本地 `demo` 租户账号都不属于这个自建租户。
 
 1. 管理员在角色管理添加 `viewer`，授予 `home:read`、`user:read`。
 2. 在用户管理添加真实邮箱和 12..256 字符密码，分配 `viewer`，状态设为启用。
@@ -284,7 +294,7 @@ PROJECT=enterprise pnpm run serve:dist
 
 访问 http://localhost:5000/#/signin。此构建会覆盖企业演示的 `dist-enterprise`；API 需要一直运行。开发和生产本地环境文件分别是 `.env.development.local`、`.env.production.local`，修改后需重启或重新构建。更多配置见[真实模式构建预览](./docs/development/GETTING_STARTED.md#真实模式构建后的本地预览)和[企业资源接入](./docs/operations/ENTERPRISE.md)。
 
-### Vercel 演示登录与 SQLite
+### Vercel 企业登录与数据库
 
 默认站点 `https://pro-react-admin.vercel.app` 的 GitHub 登录接受任意 GitHub 账号，登录后固定为普通演示用户，不关联企业租户。部署需在 Vercel Production 配置 OAuth 凭据和签名密钥，再构建静态应用与一个同源函数：
 
@@ -304,7 +314,7 @@ pnpm run vercel:prepare:enterprise
 vercel deploy --prebuilt --prod
 ```
 
-当前文件型 SQLite 无法持久运行在 Vercel Functions；真实登录使用 **Vercel 前端 + 带持久卷的 SQLite API 主机**。仓库提供 `compose.enterprise.yaml`、API 镜像与 Caddy HTTPS 配置，生产环境模板为 `.env.enterprise.production.local.example`。
+真实登录有两种部署方式：**独立 Vercel Enterprise API + Neon PostgreSQL**（[完整部署指南](./docs/deployment/VERCEL_NEON_ENTERPRISE.md)），或 **Vercel 前端 + 带持久卷的 SQLite API 主机**（[SQLite 部署指南](./docs/deployment/VERCEL_SQLITE.md)）。文件型 SQLite 不放在 Vercel Functions 中。PostgreSQL 路径提供显式建表、连接池、完整 Enterprise API、数据库登录限速和资源轮询；SQLite 路径继续提供单实例 WebSocket 事件。
 
 API 主机初始化并启动后，在开发机部署真实前端：
 
@@ -314,7 +324,7 @@ pnpm run vercel:prepare:enterprise
 vercel deploy --prebuilt --prod
 ```
 
-将示例 API 地址换为自己的 HTTPS 域名，使用真实租户、邮箱和密码登录。CLI 登录/项目关联、服务器完整命令及只读演示用户创建见[Vercel 与 SQLite 部署指南](./docs/deployment/VERCEL_SQLITE.md)。
+将示例 API 地址换为自己的 HTTPS 域名，使用真实租户、邮箱和密码登录。选择 Neon 时，先按 [Vercel + Neon 指南](./docs/deployment/VERCEL_NEON_ENTERPRISE.md)创建独立 API 项目、数据库与表；桌面客户端连接见 [DBeaver 连接指南](./docs/deployment/DBEAVER_NEON_CONNECTION.md)。选择 SQLite 时，服务器完整命令及只读演示用户创建见 [Vercel 与 SQLite 指南](./docs/deployment/VERCEL_SQLITE.md)。
 
 ## 工程能力
 

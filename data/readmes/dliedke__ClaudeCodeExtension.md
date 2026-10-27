@@ -176,6 +176,25 @@ Pull requests for new features are welcome. Bug fixes too — if you find an iss
 
 ## Version History
 
+### Version 275.0
+- The native chat no longer jumps while a code block is streaming in.
+- Code blocks and tool call input and output have a little more room above and below the text, so the sideways scrollbar no longer sits right against the last line. Thanks to [@Gh61](https://github.com/Gh61) (#228).
+
+### Version 274.0
+- Long lines in native chat code blocks stay on one line and the block scrolls sideways instead of wrapping.
+- Very long lines in expanded tool calls no longer wrap at their end.
+- Shift+mouse wheel scrolls code blocks, tool call input and output, and diffs in the native chat sideways. Thanks to [@Gh61](https://github.com/Gh61) (#227).
+
+### Version 273.0
+- The native chat shows strikethrough text.
+- Bold italic text and lines mixing bold, italic, strikethrough and code render correctly instead of turning the rest of the line italic.
+- Table columns in the native chat follow the left, center and right alignment written in the table.
+- A backslash before a markdown character in the native chat shows that character as written instead of formatting with it.
+- Task lists in the native chat show ticked and empty boxes instead of raw brackets.
+- Quotes in the native chat can contain lists, code, tables and nested quotes.
+- The native chat renders underline, subscript, superscript, keyboard keys and line breaks written as HTML tags.
+- Basic HTML formatting (bold, italic, strikethrough, inserted, highlighted and code text) renders in the native chat when an agent slips out of markdown. Thanks to [@Gh61](https://github.com/Gh61) (#226).
+
 ### Version 272.0
 - Native chat text is left-aligned again instead of justified.
 - Code blocks in the native chat can be selected and copied in part again, and starting a selection in one no longer jumps the conversation.

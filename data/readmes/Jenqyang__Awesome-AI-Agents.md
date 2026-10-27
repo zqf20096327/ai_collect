@@ -98,7 +98,9 @@ Open-source Large Language Model (LLM) driven autonomous agent that can automati
 - [mu](https://github.com/qybaihe/mu) - Coding agent (CLI and desktop app) built on pi, where a small judge model answers bounded questions at 38 decision points, such as what enters the context, whether a flagged command was asked for, and whether "done" was verified, with every verdict logged locally. ![GitHub Repo stars](https://img.shields.io/github/stars/qybaihe/mu?style=social)
 - [Skyvern](https://github.com/Skyvern-AI/skyvern) - Automates browser workflows with LLMs and computer vision: logs in to portals, fills out forms, downloads files, and extracts structured data. ![GitHub Repo stars](https://img.shields.io/github/stars/Skyvern-AI/skyvern?style=social)
 - [Mixdog](https://github.com/tribgames/mixdog) - Open-source desktop coding agent with role-based sub-agents, a model per role, and a built-in editor, terminal, and Git workspace; publishes its Terminal-Bench 2.1 runs against Codex CLI. ![GitHub Repo stars](https://img.shields.io/github/stars/tribgames/mixdog?style=social)
+- [sports-video-coach](https://github.com/mariusDing/sports-video-coach) - MIT-licensed Agent Skill and CLI where a coding agent (Claude Code, Codex, any AGENTS.md agent) reviews your own sports video frame by frame and writes a coaching page with clips, narration audio and an explained video; any sport via plugins. ![GitHub Repo stars](https://img.shields.io/github/stars/mariusDing/sports-video-coach?style=social)
 - [JobAppAgent](https://github.com/vaibhavarora14/job-application-agent) - MIT-licensed open-source AI job application agent (Agent Skill and CLI) that matches roles to one verified résumé, fills employer ATS forms within your rules, and tracks confirmed submissions in a local ledger. ![GitHub Repo stars](https://img.shields.io/github/stars/vaibhavarora14/job-application-agent?style=social)
+- [CodeOtter](https://github.com/dharmeshgurnani/CodeOtter) - Self-hosted AI pull request review agent for GitHub, Forgejo and Gitea that scores PRs, enforces merge gates as status checks and posts inline fixes, running on local GGUF models (llama.cpp) or your own API key. AGPL-3.0. ![GitHub Repo stars](https://img.shields.io/github/stars/dharmeshgurnani/CodeOtter?style=social)
 
 ### Multi-Agent Task Solver Projects
 
@@ -146,6 +148,9 @@ Open-source Large Language Model (LLM) driven Multi-Agent that can automatically
 - [Crewly](https://github.com/stevehuang0115/crewly) - Local, MIT-licensed platform that runs a team of role-based coding agents (developer, QA, PM, orchestrator) on Claude Code, Codex, or Gemini CLI, with task delegation, shared persistent memory, and a web dashboard of live agent terminals. ![GitHub Repo stars](https://img.shields.io/github/stars/stevehuang0115/crewly?style=social)
 - [Station](https://github.com/dualverse-ai/station) - Open-source research environment where AI agents run experiments, collaborate and build a shared scientific literature. ![GitHub Repo stars](https://img.shields.io/github/stars/dualverse-ai/station?style=social)
 - [Shikidan](https://github.com/LynchzDEV/shiki) - Simple cockpit for any AI agent: one chat runs Claude Code, Codex, GLM, Grok or any CLI agent in separate git worktrees, with cross-model review and plugins. Self-hostable, MIT. ![GitHub Repo stars](https://img.shields.io/github/stars/LynchzDEV/shiki?style=social)
+- [Sno Station](https://github.com/sno-ai/sno-station) - Local, Apache-2.0 layer that lets Codex, Claude Code, Cursor, Hermes Agent and OpenClaw on one machine work as one team: shared memory and a file-based mailbox, handing a task to another agent with context intact when one hits its usage limit, and reviewing each other's work. ![GitHub Repo stars](https://img.shields.io/github/stars/sno-ai/sno-station?style=social)
+
+- [ANKITA](https://github.com/akyourowngames/A.N.K.I.T.A) - Desktop and CLI workspace with teammate conversations, bounded subagents, browser and file tools, MCP integrations, and persistent project memory. ![GitHub Repo stars](https://img.shields.io/github/stars/akyourowngames/A.N.K.I.T.A?style=social)
 
 ### Agent Society Simulation
 
@@ -160,6 +165,7 @@ Exploring endless possibilities with open-source agent social simulation.
 - [ChatArena](https://github.com/Farama-Foundation/chatarena) - ChatArena is a library that provides multi-agent language game environments and facilitates research about autonomous LLM agents and their social interactions. ![GitHub Repo stars](https://img.shields.io/github/stars/Farama-Foundation/chatarena?style=social)
 - [MiroShark](https://github.com/aaronjmars/MiroShark) - Social-simulation framework in which LLM agents interact across simulated Twitter, Reddit, and a prediction market on an hourly tick. Supports scenario-driven runs, counterfactual branching, and per-agent tool calling via MCP. ![GitHub Repo stars](https://img.shields.io/github/stars/aaronjmars/MiroShark?style=social)
 - [HoC-Republic](https://github.com/hunix/HoC-Republic) - Open-source AI-agent civilization simulation with OpenClaw gateway integration, persistent AI citizens, governance, economy, memory layers, and digital-genome child-agent specialization. ![GitHub Repo stars](https://img.shields.io/github/stars/hunix/HoC-Republic?style=social)
+- [MarketMirror](https://github.com/DarkWorldCoder/market-mirror) - Marketing and sales simulation built on MiroFish and OASIS: interviewed LLM buyer personas scroll social feeds, post, answer surveys and hear sales pitches, then a report recommends go, iterate or no-go. ![GitHub Repo stars](https://img.shields.io/github/stars/DarkWorldCoder/market-mirror?style=social)
 
 ### Advanced Components
 - [Cache-to-Cache](https://github.com/thu-nics/C2C) - Direct semantic communication between LLMs via KV-cache fusion, removing token-by-token latency for multi-agent collaboration. ![GitHub Repo stars](https://img.shields.io/github/stars/thu-nics/C2C?style=social)
@@ -167,10 +173,12 @@ Exploring endless possibilities with open-source agent social simulation.
 - [inspeximus](https://github.com/DanceNitra/inspeximus) - Memory component for long-running agents: a correction retires the old value by key, revert() undoes the correction from a plain instruction, and every write leaves a verifiable receipt. Deterministic, no model in the loop, one zero-dependency file.
 - [LLMSlim](https://github.com/Thanatos9404/llmslim) - Memory component for agents with no model in the loop: stores turns word for word in SQLite or Postgres and returns the ones that answer a query within a token budget, as a Python library or a stdio MCP server. MIT. ![GitHub Repo stars](https://img.shields.io/github/stars/Thanatos9404/llmslim?style=social)
 - [Taasky Negotiation Protocol](https://github.com/taasky/protocol) - Apache-2.0 protocol for two agents, or an agent and a person in a browser, to settle typed terms: each side declares a schema, moves are validated against it, private limits stay with the relay, and agreement is both humans approving the SHA-256 of the same canonical terms. Spec, dependency-free TypeScript reference implementation, JSON Schemas and test vectors. ![GitHub Repo stars](https://img.shields.io/github/stars/taasky/protocol?style=social)
+- [TabAgent](https://github.com/dolev31/TabAgent) - Library that trains a small CatBoost classifier on an agent's own successful traces to replace repeated LLM decisions such as tool shortlisting, skill selection and routing. Apache-2.0. ![GitHub Repo stars](https://img.shields.io/github/stars/dolev31/TabAgent?style=social)
 - [zer0dex](https://github.com/hermes-labs-ai/zer0dex) - Local dual-layer memory pattern for AI agents: a compact, human-readable markdown index paired with semantic retrieval from a local vector store, queried before each message. For cross-project recall where flat memory files or vector-only RAG fall short. ![GitHub Repo stars](https://img.shields.io/github/stars/hermes-labs-ai/zer0dex?style=social)
 
 ### Tools
 
+- [Agent Payment Node](https://github.com/nuanu-ai/agent-payment-node) - Local CLI and stdio MCP payment runtime for AI agents on macOS Apple Silicon, with foreground human approval for signing. ![GitHub Repo stars](https://img.shields.io/github/stars/nuanu-ai/agent-payment-node?style=social)
 - [Solana Pulse](https://github.com/Timothymycompc/solana-pulse-ai-agent-gateway) - MIT-licensed MCP and HTTP server of pre-signing checks for agents on Solana: dry-runs a transaction against live mainnet state and reports each wallet's balance changes, approvals and authority changes, checks that a transfer or swap matches the request, and returns token verdicts with their reasons; missing data is reported as unknown. ![GitHub Repo stars](https://img.shields.io/github/stars/Timothymycompc/solana-pulse-ai-agent-gateway?style=social)
 - [Solaris Dev Shop](https://github.com/Shaisolaris/solaris-dev-shop) - MIT-licensed library of 61 reusable specialist SKILL.md files plus a deterministic, stdlib-only Python intake router that assigns each request to one accountable lead plus supporting specialists; the router performs no work itself. ![GitHub Repo stars](https://img.shields.io/github/stars/Shaisolaris/solaris-dev-shop?style=social)
 - [INAM Protocol](https://github.com/inamprotocol/inam-protocol) - Apache-2.0 reputation layer for AI agents: an agent checks a counterparty's two-party signed work history and x402 payTo wallet before paying it, then records a countersigned Execution Receipt. TypeScript/Python SDKs, MCP server, self-hostable registry. ![GitHub Repo stars](https://img.shields.io/github/stars/inamprotocol/inam-protocol?style=social)
@@ -246,6 +254,7 @@ Exploring endless possibilities with open-source agent social simulation.
 - [agent-chain-doctor](https://github.com/elfovo/agent-chain-doctor) - Read-only shell diagnostic for scheduled AI-agent chains; checks launchd, cron and systemd state and logs for the ways an unattended agent stops silently. ![GitHub Repo stars](https://img.shields.io/github/stars/elfovo/agent-chain-doctor?style=social)
 - [ReevesAgents](https://github.com/mertkayacs/reevesagents) - Local workspace that runs coding-agent CLIs (Claude Code, Codex, OpenCode, Kimi, Qwen, Hermes, Aider, and others) side by side in tmux, driven from a TUI, a loopback-only Web UI, or the CLI, with an opt-in stdio MCP server that lets one agent spawn, read, steer, and stop the others. Apache-2.0. ![GitHub Repo stars](https://img.shields.io/github/stars/mertkayacs/reevesagents?style=social)
 - [Agent Verifier](https://github.com/Aurite-ai/agent-verifier) - MIT-licensed Claude Code skill set that reviews LangGraph, CrewAI, AutoGen, and LangChain agent code for unbounded loops and retries, hallucinated tool references, oversized prompts, and hardcoded secrets; findings are model-generated and each is tagged as pattern-based or heuristic. ![GitHub Repo stars](https://img.shields.io/github/stars/Aurite-ai/agent-verifier?style=social)
+- [Index Agentica MCP](https://github.com/Drudley/indexagentica-mcp) - Self-hostable MCP server and REST mirror for searching a curated directory of agent tools, MCP servers, skills, protocols and APIs, with sources, license and last-verified date per entry. ![GitHub Repo stars](https://img.shields.io/github/stars/Drudley/indexagentica-mcp?style=social)
 
 ## Frameworks
 
@@ -316,7 +325,7 @@ Quickly build and customize agents.
 - [apowerb](https://github.com/apowerb/apowerb) - Open-source platform to build, run and govern AI agents in production on ADK and LiteLLM, with RAG, Text-to-SQL, MCP tools, token quotas and per-session audit. ![GitHub Repo stars](https://img.shields.io/github/stars/apowerb/apowerb?style=social)
 - [CUGA](https://github.com/cuga-project/cuga-agent) - IBM Research's generalist agent harness built on LangGraph; executes tasks over APIs (OpenAPI specs, MCP servers, LangChain tools), the web (Playwright), or both, with policy-based guardrails and human-in-the-loop approval (Intent Guard, Playbook, Tool Approval), multi-agent supervision including remote A2A agents, and agent skills. Python, Apache-2.0. ![GitHub Repo stars](https://img.shields.io/github/stars/cuga-project/cuga-agent?style=social)
 - [LumiBot](https://github.com/Lumiwealth/lumibot) - Python framework for AI trading agents that research markets, run backtests and trade through 12 brokers using the same strategy code. ![GitHub Repo stars](https://img.shields.io/github/stars/Lumiwealth/lumibot?style=social)
-
+- [NOE](https://github.com/HarakaraSite/noe) - Pure-Go JavaScript runtime for building autonomous agents that execute JavaScript and delegate tasks, with CLI and Go embedding. ![GitHub Repo stars](https://img.shields.io/github/stars/HarakaraSite/noe?style=social)
 
 ## Benchmark/Evaluator
 
@@ -327,6 +336,7 @@ Benchmarks to evaluate LLM-as-Agent across a variety of environments.
 - [agentops](https://github.com/AgentOps-AI/agentops) - Python SDK for agent monitoring, LLM cost tracking, benchmarking, and more. Integrates with most LLMs and agent frameworks like CrewAI, Langchain, and Autogen ![GitHub Repo stars](https://img.shields.io/github/stars/AgentOps-AI/agentops?style=social)
 - [langtrace](https://github.com/Scale3-Labs/langtrace) - Langtrace 🔍 is an open-source, Open Telemetry based end-to-end observability tool for LLM applications, providing real-time tracing, evaluations and metrics for popular LLMs, LLM frameworks, vectorDBs and more.. Integrate using Typescript, Python. ![GitHub Repo stars](https://img.shields.io/github/stars/Scale3-Labs/langtrace?style=social)
 - [LiveMCP-101](https://arxiv.org/abs/2508.15760) - Benchmark of 101 real-world MCP tool-use queries with plan-based evaluation highlighting agent orchestration gaps.
+- [RunLedger](https://github.com/runledger/Runledger) - CI harness that records agent tool calls, replays them deterministically, and fails PRs on tool-order, JSON-schema, tool-call-budget, or baseline regressions. ![GitHub Repo stars](https://img.shields.io/github/stars/runledger/Runledger?style=social)
 - [ToolBench](https://github.com/OpenBMB/ToolBench) - An open platform for training, serving, and evaluating large language model for tool learning. ![GitHub Repo stars](https://img.shields.io/github/stars/OpenBMB/ToolBench?style=social)
 - [SWE-bench](https://github.com/Princeton-NLP/SWE-bench) - Benchmark for evaluating LLM systems on real-world GitHub issue resolution tasks. ![GitHub Repo stars](https://img.shields.io/github/stars/Princeton-NLP/SWE-bench?style=social)
 - [Multi-SWE-bench](https://github.com/multi-swe-bench/multi-swe-bench) - Multi-language extension of SWE-bench for evaluating software engineering agents beyond Python repositories. ![GitHub Repo stars](https://img.shields.io/github/stars/multi-swe-bench/multi-swe-bench?style=social)
@@ -378,35 +388,6 @@ Able to connect LLM with the real world.
 - [AgenticOS](https://github.com/vstorm-co/agenticos) - Self-hosted platform for building, sharing and governing AI agents across a company, with skills, document search, MCP tools, schedules, budgets, approvals and run history. Built on Pydantic AI. ![GitHub Repo stars](https://img.shields.io/github/stars/vstorm-co/agenticos?style=social)
 - [Agent Commons](https://github.com/sibi-narendran/common-agent-network) - Open-source public home for independent AI agents: rooms, replies/@mention inbox with webhook pushes, knowledge base, job board, agent directory and a human-help queue over MCP, A2A and REST. Self-hostable on Cloudflare Workers + D1. MIT. ![GitHub Repo stars](https://img.shields.io/github/stars/sibi-narendran/common-agent-network?style=social)
 - [Weave Router](https://github.com/weave-os/router) - Open-source Go proxy for the Anthropic Messages, OpenAI Chat Completions and Gemini APIs that picks a model per request with an on-box embedder, for Claude Code, Codex, opencode and pi. Self-hostable with BYOK provider keys and OTLP traces. Apache-2.0. ![GitHub Repo stars](https://img.shields.io/github/stars/weave-os/router?style=social)
+- [needhave](https://github.com/PrivateAISystems/needhave) - Public need/have list for AI agents: an agent posts what it needs or has, and others reply in public under the post. No accounts and no matcher. Remote MCP server (7 tools) plus JSON API with OpenAPI. Self-hostable on Cloudflare Workers + D1. MIT. ![GitHub Repo stars](https://img.shields.io/github/stars/PrivateAISystems/needhave?style=social)
 
-## Related
-
-### Survey
-
-- [A Survey on Large Language Model based Autonomous Agents](https://github.com/Paitesanshi/LLM-Agent-Survey) <a href='https://arxiv.org/abs/2308.11432'><img src='https://img.shields.io/badge/Paper-PDF-red'></a>
-- [The Rise and Potential of Large Language Model Based Agents: A Survey](https://github.com/WooooDyy/LLM-Agent-Paper-List) <a href='https://arxiv.org/abs/2309.07864'><img src='https://img.shields.io/badge/Paper-PDF-red'></a>
-- [LLM-Based Human-Agent Collaboration and Interaction Systems: A Survey](https://github.com/HenryPengZou/Awesome-LLM-Based-Human-Agent-System-Papers) <a href='https://arxiv.org/abs/2505.00753'><img src='https://img.shields.io/badge/Paper-PDF-red'></a>
-- [Harness Engineering for Language Agents: The Harness Layer as Control, Agency, and Runtime](https://www.preprints.org/manuscript/202603.1756/v2) <a href='https://doi.org/10.20944/preprints202603.1756'><img src='https://img.shields.io/badge/Paper-PDF-red'></a>
-- [LLM Agents: A Survey](https://github.com/js-lee-AI/awesome-llm-agent-papers) <a href='https://www.preprints.org/manuscript/202608.0265/v1'><img src='https://img.shields.io/badge/Paper-PDF-red'></a>
-- [The Agent Loop: A Survey of Control Strategies, Skills, and Harnesses for LLM Agents](https://github.com/js-lee-AI/awesome-agent-loop-papers) <a href='https://ssrn.com/abstract=7186738'><img src='https://img.shields.io/badge/Paper-PDF-red'></a>
-
-### Paper-List Repo
-
-- [Awesome-Papers-Autonomous-Agent](https://github.com/lafmdp/Awesome-Papers-Autonomous-Agent) - A collection of recent papers on building autonomous agent. Two topics included: RL-based / LLM-based agents.
-- [Awesome-AgenticLLM-RL-Papers](https://github.com/xhyumiracle/Awesome-AgenticLLM-RL-Papers) - A comprehensive survey and paper collection on agentic reinforcement learning for LLMs, covering planning, tool use, memory, reasoning, and self-improvement. <a href='https://arxiv.org/abs/2509.02547'><img src='https://img.shields.io/badge/Paper-PDF-red'></a>
-- [LLM-Agents-Papers](https://github.com/AGI-Edgerunners/LLM-Agents-Papers) - A repo lists papers related to LLM based agent
-- [LLM-Agent-Paper-Digest](https://github.com/XueyangFeng/LLM-Agent-Paper-Digest) - papers related to LLM-agent that published on top conferences
-- [awesome-language-agents](https://github.com/ysymyth/awesome-language-agents) - List of language agents based on paper "Cognitive Architectures for Language Agents"
-- [LLMAgentPapers](https://github.com/zjunlp/LLMAgentPapers) - Must-read Papers on LLM Agents.
-
-- [Awesome-Embodied-AI-Safety](https://github.com/x-zheng16/Awesome-Embodied-AI-Safety) - A curated list of 500+ papers on safety in embodied AI, covering risks, attacks, and defenses across perception, cognition, planning, action, and agentic capabilities.
-
-### Blog
-
-- [ossbeat](https://ossbeat.com) - Weekly write-ups tracking release notes and trends across open-source AI coding agent tooling (MCP, coding agent harnesses, agent-to-agent protocols).
-- [LLM Powered Autonomous Agents](https://lilianweng.github.io/posts/2023-06-23-agent/) - Amazing blog by Lilian Weng (OpenAI), Jun 23, 2023.
-- [从第一性原理看大模型Agent技术](https://mp.weixin.qq.com/s/PL-QjlvVugUfmRD4g0P-qQ)
-- [基于大语言模型的AI Agents](https://www.breezedeus.com/article/ai-agent-part3)
-- [ICLR'24 上大型语言模型代理的最新研究进展 | 代理评估重点](https://medium.com/@aminerscholar_39923/latest-research-advancements-on-large-language-model-agents-at-iclr24-agent-evaluation-focus-aed420421365)
-- [8bitconcepts Research](https://8bitconcepts.com/) - Independent research publication on agentic AI accountability, guardrails, handoff intelligence, and enterprise adoption. Papers include *The Agentic Accountability Gap*, *The Guardrails Gap*, *Shift Handoff Intelligence*, and *Beyond the Prompt*.
-- [When not to build an agent](https://loopandretry.github.io/posts/when-not-to-b
+## Re

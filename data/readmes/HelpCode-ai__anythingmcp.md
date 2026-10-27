@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/HelpCode-ai/anythingmcp/badges/banner.png" alt="AnythingMCP turns ERP, e-commerce, REST, SOAP and SQL systems into MCP tools for Claude and ChatGPT: 547 connectors, 25 of them with no API key." width="100%" />
+  <img src="https://raw.githubusercontent.com/HelpCode-ai/anythingmcp/badges/banner.png" alt="AnythingMCP turns ERP, e-commerce, REST, SOAP and SQL systems into MCP tools for Claude and ChatGPT: 560 connectors, 25 of them with no API key." width="100%" />
 </p>
 
 <h1 align="center">AnythingMCP: self-hosted MCP gateway</h1>
@@ -19,7 +19,7 @@
 
 <p align="center">
   <strong>AnythingMCP is an open-source, self-hosted MCP gateway that turns any REST/OpenAPI, SOAP, GraphQL, OData or SQL system into MCP tools for Claude, ChatGPT and Copilot, without writing an MCP server.</strong><br/>
-  It ships 547 ready connectors, among them SAP, Etsy, weclapp and Amazon Seller, and 26 of them need no API key.
+  It ships 560 ready connectors, among them SAP, Etsy, weclapp and Amazon Seller, and 27 of them need no API key.
 </p>
 
 <p align="center">
@@ -103,7 +103,7 @@ Tools register at runtime, without a restart. Per-connector `{{VAR}}` values are
 
 ## Connector catalog
 
-547 adapters, exposing 2,400+ tools. Every one has a setup guide on [anythingmcp.com/guides](https://anythingmcp.com/guides), in seven languages.
+560 adapters, exposing 2,400+ tools. Every one has a setup guide on [anythingmcp.com/guides](https://anythingmcp.com/guides), in seven languages.
 
 | Category | Examples |
 |---|---|
@@ -266,6 +266,7 @@ Install the [e-commerce adapter](#e-commerce--marketplace-connectors) for your s
 - 👥 **Adopters:** [who runs AnythingMCP in production](docs/ADOPTERS.md), and how to add yourself
 - 🔐 **Security:** please do not open a public issue; follow the [security policy](.github/SECURITY.md)
 - 🤖 **For AI agents and crawlers:** [anythingmcp.com/llms.txt](https://anythingmcp.com/llms.txt)
+- 🤖 **Repository documentation for AI agents:** [llms.txt](llms.txt) · [Full text](llms-full.txt)
 - 🏢 Built by [helpcode.ai](https://helpcode.ai) in Freiburg, Germany. AI-assisted development, human-reviewed: [AUTHORS.md](docs/AUTHORS.md) says which parts and how.
 
 ## Contributing

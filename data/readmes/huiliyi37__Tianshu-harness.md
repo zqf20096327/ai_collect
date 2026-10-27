@@ -5,16 +5,25 @@
 <h1 align="center">天枢 Tianshu Harness</h1>
 
 <p align="center">
-  <b>面向编程智能体的认知运行时</b><br>
+  <b>面向编程智能体的终端运行时，把东方的星辰带给世界的每一个开发者。</b><br>
   <sub>目标不漂移 · 完成有证据 · 验证有闭环</sub>
 </p>
 
 <p align="center">
   <a href="https://github.com/huiliyi37/Tianshu-harness/releases/latest"><img src="https://img.shields.io/github/v/release/huiliyi37/Tianshu-harness?color=8B5CF6&label=Release&logo=github" alt="Release"></a>
+  <a href="https://github.com/huiliyi37/Tianshu-harness/releases"><img src="https://img.shields.io/github/downloads/huiliyi37/Tianshu-harness/total?color=181717&label=GitHub%20%E4%B8%8B%E8%BD%BD&logo=github" alt="GitHub Downloads"></a>
   <a href="https://www.npmjs.com/package/tianshu-harness"><img src="https://img.shields.io/npm/v/tianshu-harness?color=CB3837&label=npm&logo=npm" alt="npm"></a>
+  <a href="https://www.npmjs.com/package/tianshu-harness"><img src="https://img.shields.io/npm/d18m/tianshu-harness?color=CB3837&label=npm%20%E4%B8%8B%E8%BD%BD&logo=npm" alt="npm Downloads"></a>
+</p>
+
+<p align="center">
+  <a href="https://trendshift.io/repositories/100440" target="_blank"><img src="https://trendshift.io/api/badge/trendshift/repositories/100440/daily?language=TypeScript" alt="Trendshift: TypeScript repository of the day" width="250" height="55"></a>
+</p>
+
+<p align="center">
   <a href="https://tianshuharness.com"><img src="https://img.shields.io/badge/Website-tianshuharness.com-4285F4?logo=googlechrome&logoColor=white" alt="Website"></a>
   <a href="docs/user-guide.md"><img src="https://img.shields.io/badge/Docs-%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8C-FBBC04" alt="Docs"></a>
-  <a href="https://discord.gg/XjWTATCHB"><img src="https://img.shields.io/badge/Discord-%E4%BA%A4%E6%B5%81%E7%BE%A4-5865F2?logo=discord&logoColor=white" alt="Discord"></a>
+  <a href="https://discord.gg/aNEPzPuYV"><img src="https://img.shields.io/badge/Discord-%E4%BA%A4%E6%B5%81%E7%BE%A4-5865F2?logo=discord&logoColor=white" alt="Discord"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache%202.0-34A853" alt="License"></a>
   <a href="https://github.com/RyanAlberts/best-of-Agent-Harnesses"><img src="https://img.shields.io/badge/%F0%9F%8F%86_Best_of-Agent_Harnesses-5ac4bf" alt="Best of Agent Harnesses"></a>
 </p>
@@ -375,7 +384,7 @@ node dist/cli/entry.js
 
 - **讨论与提问**：[GitHub Discussions](https://github.com/huiliyi37/Tianshu-harness/discussions)
 - **Bug 与功能请求**：[GitHub Issues](https://github.com/huiliyi37/Tianshu-harness/issues)，附上 `tianshu logs --json` 的输出能更快定位
-- **Discord**：[天枢 tianshu-harness 官方交流群](https://discord.gg/XjWTATCHB)
+- **Discord**：[天枢 tianshu-harness 官方交流群](https://discord.gg/aNEPzPuYV) [![Discord](https://img.shields.io/badge/Discord-%E5%8A%A0%E5%85%A5%E4%BA%A4%E6%B5%81%E7%BE%A4-5865F2?logo=discord&logoColor=white)](https://discord.gg/aNEPzPuYV)
 - **QQ 群**：「TUI」，群号 `1017892942`
 - **微信群**：扫码加入，二维码 7 天有效，过期请在 Discussions 留言补码
 

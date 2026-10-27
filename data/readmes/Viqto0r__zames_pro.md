@@ -485,14 +485,15 @@ hidden until the first answer delivers it.
 Like Codex / Claude Code, zames reads project instructions and reusable
 workflows from your repository and from `~/.zames`.
 
-- **AGENTS.md** — project instructions. Put one in the repo root (or in any
-  parent folder of the working directory). Global instructions live in
+- **AGENTS.md** — project instructions, in the repo root (or any parent folder
+  of the working directory); the agent writes it with `/init`. Global
+  instructions live in
   `~/.zames/AGENTS.md` (and `~/.claude/CLAUDE.md`). Run `/init` and the agent
   will explore the project and write an AGENTS.md based on the real build/test
   commands and conventions (use `/init --force` to overwrite an existing file).
 - **MEMORY.md** — durable notes that persist between sessions. The agent
-  appends useful facts here; you can edit it by hand, or add one from the
-  prompt with `/remember <text>`.
+  appends useful facts here as it works; `/remember <text>` adds one from the
+  prompt, and any `/task`-style edit through the agent keeps the file in sync.
 - **Skills** — a folder with a `SKILL.md` file (YAML frontmatter: `name`,
   `description`, optional `allowed-tools`, `user-invokable`) plus any helper
   files. Discovered under `.zames/skills/`, `.claude/skills/`,
@@ -619,6 +620,42 @@ right away (where possible without a restart).
 `/config lang ru` or `/config lang en` switches both the interface language
 (help, messages, spinner) and the language the agent answers you in. The
 locale lives in `ui.locale` in the config file.
+
+### Themes
+
+`/theme` opens a pick list with a LIVE preview: the arrow keys repaint the
+terminal as you move, Enter saves, Esc restores the previous palette.
+`/theme <id>` applies a palette directly, `/theme list` prints every id.
+The switch also works WHILE the agent is generating: `/theme <id>` and
+`/config set ui.theme <id>` neither interrupt the turn nor touch the chat (it is
+a pure terminal repaint); the bare `/theme` pick list is queued instead, because
+it opens a full-screen list.
+The same setting is reachable from the settings side:
+`/config set ui.theme <id>` or the `/config` menu («Terminal color theme»).
+The switch is instant, no restart. `zames` is the default; the bundled palettes
+are ports of well-known editor schemes:
+
+`zames` (default), `one-dark`, `dracula`, `gruvbox`, `nord`, `monokai`,
+`solarized-dark`, `tokyo-night`, `tokyo-storm`, `catppuccin`, `github-dark`,
+`ayu`, `rose-pine`, `everforest`, `kanagawa`, `night-owl`, `material`,
+`palenight`, `zenburn`, `selenized`, `iceberg`, `sonokai`, `aurora`, `cobalt2`,
+plus the LIGHT ones: `one-light`, `github-light`, `solarized-light`,
+`gruvbox-light`, `ayu-light`.
+
+A theme repaints EVERYTHING: the interface, the agent's answers, the code
+highlighting inside them, the status row and the input frame. The terminal's
+BACKGROUND follows too: the theme emits OSC-11 with the palette's `bg`
+(supported by iTerm2, Windows Terminal, kitty, WezTerm, Alacritty, GNOME
+Terminal and others; where it is not supported nothing happens). Opt out with
+`ZAMES_NO_BG=1` or `NO_COLOR`.
+To make the choice
+concrete, a SAMPLE SESSION in that palette is shown before you pick (in `/theme`
+below the list, in `/config` press `p` on the theme row); it is not dumped into
+the chat after a pick. Every one of the 29 themes has a screenshot in
+`docs/shots/`. The frame itself is a separate
+setting: `/config set ui.inputBorder <round|single|double|bold|none>`
+(default `round`; `none` removes it). A multi-line operator message keeps its
+`▌` bar on every row.
 
 Agent data is stored in `~/.zames`: browser profile, logs, undo history, sessions.
 
@@ -1194,14 +1231,15 @@ zames --task "..." --output-format jsonl \
 Как в Codex / Claude Code, zames читает инструкции проекта и переиспользуемые
 процессы из вашего репозитория и из `~/.zames`.
 
-- **AGENTS.md** — инструкции проекта. Положите его в корень репозитория (или в
-  любую родительскую папку рабочей директории). Глобальные инструкции живут в
+- **AGENTS.md** — инструкции проекта, лежит в корне репозитория (или в любой
+  родительской папке рабочей директории); агент создаёт его командой `/init`.
+  Глобальные инструкции живут в
   `~/.zames/AGENTS.md` (и `~/.claude/CLAUDE.md`). Запустите `/init`, и агент
   изучит проект и напишет AGENTS.md на основе реальных команд сборки/тестов и
   соглашений (`/init --force` перезапишет существующий файл).
 - **MEMORY.md** — долговечные заметки, переживающие сессии. Агент дописывает
-  сюда полезные факты; можно править вручную или добавить из промпта через
-  `/remember <text>`.
+  сюда полезные факты по ходу работы; `/remember <text>` добавляет заметку из
+  промпта — файл остаётся согласованным без ручного редактирования.
 - **Навыки** — папка с файлом `SKILL.md` (YAML-фронтматтер: `name`,
   `description`, опционально `allowed-tools`, `user-invokable`) плюс любые
   вспомогательные файлы. Ищутся в `.zames/skills/`, `.claude/skills/`,
@@ -1329,6 +1367,40 @@ enum переключаются на месте; числа и строки от
 `/config lang ru` или `/config lang en` переключает и язык интерфейса
 (справка, сообщения, спиннер), и язык, на котором агент вам отвечает. Локаль
 хранится в `ui.locale` в файле конфига.
+
+### Темы
+
+`/theme` открывает список тем с живым предпросмотром: стрелками перебираете —
+терминал сразу перекрашивается, Enter сохраняет, Esc возвращает прежнюю.
+`/theme <id>` применяет тему сразу, `/theme list` показывает все id.
+Переключение работает и ВО ВРЕМЯ работы агента: `/theme <id>` и
+`/config set ui.theme <id>` не прерывают генерацию и не трогают чат (это чистая
+перекраска терминала); голый `/theme` со списком ставится в очередь, т.к.
+открывает полноэкранный список.
+То же самое доступно и через настройки: `/config set ui.theme <id>` или меню
+`/config`, строка «Цветовая тема терминала». Переключение мгновенное, без
+перезапуска. Тема по умолчанию — `zames`; в комплекте порты известных схем
+редакторов:
+
+`zames` (по умолчанию), `one-dark`, `dracula`, `gruvbox`, `nord`, `monokai`,
+`solarized-dark`, `tokyo-night`, `tokyo-storm`, `catppuccin`, `github-dark`,
+`ayu`, `rose-pine`, `everforest`, `kanagawa`, `night-owl`, `material`,
+`palenight`, `zenburn`, `selenized`, `iceberg`, `sonokai`, `aurora`, `cobalt2`,
+а также СВЕТЛЫЕ: `one-light`, `github-light`, `solarized-light`,
+`gruvbox-light`, `ayu-light`.
+
+Тема перекрашивает ВСЁ: интерфейс, ответы агента, подсветку кода в ответах,
+строку статуса и рамку ввода. ФОН окна терминала тоже перекрашивается: тема
+шлёт OSC-11 с цветом `bg` палитры (поддерживают iTerm2, Windows Terminal,
+kitty, WezTerm, Alacritty, GNOME Terminal и др.; где не поддерживается — просто
+ничего не происходит). Отключить фон: `ZAMES_NO_BG=1` или `NO_COLOR`.
+Чтобы было видно, ЧТО меняется, перед выбором
+показывается образец сессии в этой палитре (в `/theme` — под списком, в
+`/config` — клавиша `p` на строке темы); он не печатается в чат после выбора.
+Все 29 тем есть на скриншотах в `docs/shots/`. Саму рамку можно менять отдельно:
+`/config set ui.inputBorder <round|single|double|bold|none>` (по умолчанию
+`round`, `none` — без рамки). Рамку (маркер `▌`) у многострочного сообщения
+пользователя видно на каждой строке.
 
 Данные агента хранятся в `~/.zames`: профиль браузера, логи, история undo,
 сессии.

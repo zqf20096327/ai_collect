@@ -61,7 +61,7 @@ It needs glibc 2.28 or newer and an NVIDIA driver providing `libcuda.so.1`. Keep
 See the [CUDA runbook](RUNBOOK.md#linux-and-cuda) for runtime libraries and supported GPUs.
 
 ```sh
-V=1.1.6
+V=1.1.7
 case "$(uname -m)" in
   aarch64|arm64) PLATFORM=linux-aarch64 ;;
   x86_64) PLATFORM=linux-x86_64 ;;
@@ -271,9 +271,11 @@ The binary's `capabilities --json` response lists its supported flags and platfo
 | `--name NAME` | Model ID advertised to clients. |
 | `--alias NAME` | Another accepted model ID; repeat for multiple aliases. |
 | `--api-key KEY` | Require a bearer key; repeat for multiple keys. |
-| `--api-key-file FILE` | Read keys from a restricted-permission file. |
+| `--api-key-file FILE` | Read keys from a restricted-permission file; a key can be limited to [some routes](docs/api.md#key-scopes). |
 | `--metrics-open` | Allow `/metrics` without a key when API authentication is enabled. |
 | `--dashboard` | Enable the local `/dashboard` page and `/stats` endpoint. |
+| `--max-inflight N`, `--max-inflight-per-key N` | Refuse model requests past N in progress at once, overall or per key, with 429; 0, the default, is off. See [admission](docs/api.md#admission). |
+| `--requests-per-second N`, `--request-burst N` | Refuse a key's model requests past N a second, after a burst; 0, the default, is off. |
 | `--context N` | Bound prompt plus reply tokens; the model's window and memory checks still apply. Qwen3.8-27B defaults to 32,768 and takes up to 262,144. |
 | `--speed-up FILE` | Rank and link settings for two-Mac Flash Next or GLM serving. |
 | `--max-tokens N` | Default reply limit, 4096; requests can override it. |
@@ -285,6 +287,7 @@ The binary's `capabilities --json` response lists its supported flags and platfo
 | `--thinking-budget N` | Limit reasoning tokens where the engine supports closing the reasoning block. |
 | `--thinking-reserve N` | With thinking on, let reasoning use up to N tokens beyond a request's `max_tokens`, which then limits the answer (lane engines). |
 | `--loop-guard` | Close reasoning that repeats itself verbatim (a short cycle, or a long passage) where the engine supports it. |
+| `--loop-guard-stop` | As `--loop-guard`, but end the reply where the guard fires: the reasoning so far, no answer or tool calls, `finish_reason` `content_filter` and a `reasoning_loop` error ([API](docs/api.md)). |
 | `--no-drafts` | Produce the plain reference through the same engine. |
 | `--drafter DRAFTER` | An external drafter, as a directory or a repo id in the Hugging Face cache, for models that take one: Qwen3.8-27B uses DFlash2 and Gemma 4 31B the drafter named in its recipe. Without one they decode plain. |
 | `--drafter-bits 0\|4` | Drafter weight precision where the model offers a choice: 4 bits (the default), or 0 to keep bf16. Qwen3.8-27B on CUDA takes 4 only. |

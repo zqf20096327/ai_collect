@@ -309,6 +309,7 @@ The default lookup table mirrors all current `Globals.py` defaults. Runtime use 
 - `MODELS_PATH`
 - `ROUTER_URL`
 - `ROUTER_API_KEY`
+- `EZLOCALAI_ROUTER_REQUEST_GZIP`
 - `WORKER_LABEL`
 - `WORKER_HEARTBEAT_INTERVAL`
 - `WORKER_TUNNEL`
@@ -329,6 +330,17 @@ models and aliases report context/quantization, and loaded projectors add persis
 vision capability. See [worker_reporting_README.md](tests/fixtures/worker_reporting_README.md).
 
 When `ROUTER_URL` is set and `ROUTER_MODE` is not true, native starts the same worker-side router client as the Python service: it registers on startup, sends resource/model/slot heartbeats, and deregisters during shutdown. `ROUTER_API_KEY` is used for router auth, falling back to `EZLOCALAI_API_KEY`; `WORKER_LABEL` controls the display label.
+
+`EZLOCALAI_ROUTER_REQUEST_GZIP` defaults to `false`. Set it to `true` in a
+worker's `.env` to let a supporting WorkerRouter compress large direct text
+requests to that worker. Enable it where measured transfer savings outweigh
+codec cost; fast LAN and loopback workers can benefit from leaving it off.
+The worker reports the enabled encoding in every registration and heartbeat.
+Compression preserves the decoded JSON bytes, uses bounded single-member gzip,
+and covers `/v1/chat/completions` and `/v1/completions`; media and reverse tunnels
+retain their existing transport. Authenticated gzip decoding remains available
+independently of this automatic-router opt-in. Recreate the container to apply
+an environment-file change. See the [measured tradeoffs](benchmarks/request-gzip-20261026.md).
 
 Worker capabilities follow the reference enable switches and delegation rules, including embeddings, music, and music video. Model names now use whisper `large-v3-turbo`, Qwen TTS, and the Qwen3 embedding alias by default. Advertising a configured capability does not establish that its local inference implementation is complete; endpoint gaps remain in the manifest.
 
@@ -697,9 +709,13 @@ Swap supplementation is **off by default**. To permit up to 4 GiB of existing fr
 
 The selected ceiling is passed to llama.cpp’s `--cache-ram`. Nonempty string `prompt_cache_key` values now reach the managed engine as conversation hints. The managed patch preserves outgoing named conversations even when their prompts share most of their prefix, restores the longest useful cached prefix, and protects the requested state during bounded eviction. When two states cannot fit, it skips the outgoing save instead of evicting the state being requested. No number of retained conversations is guaranteed beyond the byte budget. Keys do not rewrite prompts or bypass token-prefix matching. Custom llama.cpp revisions keep their own behavior; this patch is qualified against the default pinned revision.
 
+The guarded 1024-token MTP checkpoint path also retains a state at an existing full logical-batch start when that batch jumps into the near-end window. This covers some shortened conversations that precede all tail checkpoints without adding any physical batch split. It requires at least five checkpoint slots, keeps the configured count and cache byte ceiling, and charges the additional state to that budget. See [checkpoint entry-window behavior](patches/llama-checkpoint-entry-window.md) for eligibility and memory costs.
+
 Chat engine requests explicitly set `cache_prompt=true`, including when a caller supplies false. Completion and embedding startup retain their separate cache behavior.
 
 KV precision follows `KV_CACHE_TYPE_<GPU family>` before `KV_CACHE_TYPE`, with the source distinction between empty and whitespace card overrides. Automatic selection is `q4_0`; accepted explicit types are `q4_0`, `q8_0`, `f16` and `f32`. Invalid values fail before launching the engine. `llm_cache_reference` compares 9,111 source-policy/Linux RAM cases and checks managed launch arguments, requested/effective telemetry, chat payloads, restoration, invalid-setting cleanup and matching engine build defaults. Real-model cache reuse, native parameter-range errors, the complete engine constructor and real checkpoint reuse remain unverified.
+
+The managed CUDA engine automatically fuses Q4_0 KV expansion into the existing F16 attention tile loader for a narrowly guarded SM89 three/four-query shape (256 channels, 24 query heads and four KV heads). It preserves the F16 operands and original attention reduction partition. Other shapes and platforms keep their existing path. Set `GGML_CUDA_FATTN_Q4_KV_FUSION=0` in `.env` and restart to disable it; exact `1` enables the same path with diagnostics, while invalid values disable it. Automatic mode has no diagnostic counters or exit log. This targets MTP verification, rather than bulk prompt prefill, and retains the existing workspace allocation. See [the fusion contract](patches/llama-cuda-q4-kv-fusion.md) for eligibility and diagnostic limits.
 
 
 
@@ -876,15 +892,4 @@ Video handoff now unloads idle owned embedding pools and restores them according
 
 `TtsService` now composes the source local buffered/streaming request lifetime with the native pool and voice guard. It handles base64 decoding, gTTS eligibility/invocation through a required transport callback, pre-header loading, consumer lease transfer and source exception/finally precedence. Tests cover 1,036 source scenarios/5,628 operations, twelve native worker cases, and 77 real-Qwen operations with 70 exact output hashes. Local buffered/streamed HTTP is wired to this service; WebSocket and remaining routing/lifecycle integration are still open. See `tests/fixtures/tts_service_README.md`.
 
-`tts_gtts_operations` supplies the native gTTS fallback callback. The C++ implementation matches gTTS 2.5.3 language selection, tokenization, request packaging, audio extraction and error handling across 3,230 source cases. Native curl transport matches 14 loopback scenarios/55 HTTP requests, including redirects, cookies and per-part session isolation; native FFmpeg conversion matches exact WAV outputs and process failures. Both executables must be on PATH; no Python runtime or shell is used. The source dependencies permit other gTTS versions, and exhaustive external Google/proxy/TLS/cookie behavior is not verified. See `tests/fixtures/gtts_README.md` for provenance and remaining limits.
-
-The native executable now serves local `/v1/audio/speech` and `/v1/audio/speech/stream` through the native TTS pool, CTTS worker and gTTS fallback. Streaming loads before sending HTTP 200, transfers the lease to the consumer, and cancels blocked synthesis on disconnect. Source HTTP tests cover 912 scenarios in buffered/deferred modes; four actual worker cases cover disconnect cleanup. The real executable matches two source WAV hashes and 65 stream packet hashes over TCP. Public voice/router/general provider selection now matches 2,124 source scenarios; 94 real source-client HTTP scenarios match 188 native buffered/deferred comparisons, including disabled-router forwarding and partial stream errors. Data-URI pipelines, local voices, model-management and complete cross-modality residency remain partial. See `tests/fixtures/tts_api_README.md` and `tests/fixtures/tts_routing_README.md`.
-
-For an existing native worker and local Qwen model files, set `QWEN_TTS_BIN` to
-the `ezlocalai-tts` executable, `QWEN_TTS_MODEL_FILE` to the talker GGUF, and
-`QWEN_TTS_MMPROJ_FILE` to the tokenizer GGUF before starting `ezlocalai-native`.
-Reference voices are read from the working directory's `voices` folder. These
-are the same worker/model settings used by the native wrapper; automatic
-deployment discovery and packaged voice assets remain incomplete.
-
-`/v1/audio/speech/ws` now uses the native local TTS pool, including when a voice server is configured. It authenticates before upgrade, buffers text without reserving a model, bounds the synthesis queue to four segments and streams validated 24 kHz mono PCM. Source-backed tests cover 3,679 PCM/input cases, 352 lease scenarios, 127 API scenarios over 254 TCP comparisons, seven concurrent sessions and 43 Uvicorn wire captures. Worker tests cover HTTP/WebSocket disconnect and shutdown in four ownership modes; the actual executable also matches 67 real Qwen WebSocket frame hashes. See `tests/fixtures/tts_webs
+`tts_gtts_operations` supplies the native gTTS fallback callback. The C++ implementation matches gTTS 2.5.3 language selection, tokenization, request packaging, audio extraction and error handling across 3,230 source cases. Native curl transport matches 14 loopback scenarios/55 HTTP requests, including redirects, cookies and per-part session isolation; native FFmpeg conversion matches exact WAV outputs and process failures. Both executables must be on PATH; no Python runtime or shell is used. The source dependencies permit other gTTS versions

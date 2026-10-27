@@ -53,13 +53,17 @@ Startup recovers interrupted re-embed swaps, converts libSQL DiskANN indexes to 
 
 On macOS and Linux, multiple OpenCode sessions can share the same `storagePath` via Turso’s experimental `multiprocess_wal` (every process must use the same mode — restart all sessions after upgrading). On Windows the engine rejects that flag, so only one OpenCode session can own the memory databases at a time.
 
+`tursoMultiprocessWal: false` opens in single-owner mode instead: other processes then fail with `database is locked` rather than sharing the store. That is the safer choice if non-plugin tools touch the same files, because a _writing_ foreign SQLite process makes Turso’s WAL index stale and its own next write is silently lost. `tursoAutoHeal` (default `true`) moves a store’s `-shm`/`-tshm` index sidecars into `storagePath/recovery/<db>-<timestamp>/` and retries once when an open fails with a stale WAL index, after verifying a copy of the main database. A non-empty `-wal` is never moved, so committed but uncheckpointed transactions survive; only an absent or 0-byte `-wal` is removed. Concurrent sessions serialise healing through `storagePath/recovery/<db>.lock`.
+
 On first startup after upgrading, opencode-mem automatically migrates existing memory shard databases to native Turso/libSQL vector format:
 
 - Each shard is backed up as `<shard>.db.legacy.bak` before rewrite
 - Progress is tracked per shard in `<shard>.db.turso-migrate.json`
 - A global marker `.turso-migrated` is written only after all shards verify successfully
+- Normal inserts and deletes do not invalidate a completed shard migration; startup still checks that its vectors are readable and match its stored dimensions
 - Do not run multiple OpenCode instances against the same `storagePath` during migration; a lock file (`.turso-migrate.lock`) prevents concurrent migration
 - Manual dimension migrations use `.turso-operation.lock`; other plugin processes reject new memory writes until the migration finishes
+- Locks expire after 30 minutes without a progress timestamp update (or file modification time if the timestamp is unavailable), even if the owning process is alive. This lease uses wall-clock time: a forward clock step greater than 30 minutes can expire a progressing operation early; a backward step or future-dated lock can extend an inert lock's life. Locks carry a unique acquisition id, and stale cleanup only removes the exact file it inspected. Migrations heartbeat as they progress and abort if they discover that ownership was lost. Stale-lock cleanup is logged for diagnosis
 
 If migration is interrupted, the next startup resumes from the backup automatically.
 
@@ -230,6 +234,29 @@ Configure at `~/.config/opencode/opencode-mem.jsonc`:
 **Windows:** `%USERPROFILE%\.config\opencode\opencode-mem.jsonc` (same `.config\opencode` directory as above — not AppData). Default storage resolves to `%USERPROFILE%\.opencode-mem\data` (the `~` form expands to your user home on Windows as well).
 
 The plugin creates a full commented template at this path on first startup. For every setting and comment, see [`opencode-mem.example.jsonc`](opencode-mem.example.jsonc).
+
+### Markdown vault backend (`memoryBackend`)
+
+By default memories live only in Turso under `storagePath`. Optionally set a **generic Markdown folder** as the source of truth (Obsidian/Raneto-compatible plain `.md` files — not an Obsidian-specific integration):
+
+```jsonc
+{
+  "memoryBackend": "markdown",
+  "markdownPath": "~/Documents/LLM-Wiki",
+}
+```
+
+| Key             | Default      | What it does                                                                                                                                       |
+| --------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `memoryBackend` | `"database"` | `"database"` keeps content in Turso. `"markdown"` uses all `.md` files under `markdownPath` as source of truth.                                    |
+| `markdownPath`  | —            | Required when `memoryBackend` is `"markdown"`. Absolute or `~/…` path to the vault folder. No separate memory subfolder — the path _is_ the store. |
+
+When Markdown mode is on:
+
+- Plugin-created memories are written as `{id}.md` with YAML frontmatter + body.
+- Existing notes in the folder (any Markdown page style) are imported/indexed; Turso is only a rebuildable semantic-search index.
+- File adds/edits/deletes are watched and re-indexed; the Web UI shows a **Markdown** sidebar page (status, file list, reindex) only in this mode.
+- Switching to Markdown rebuilds the index from the folder — DB-only rows without a matching file are dropped. Export with `memory export` first if you need to keep old database memories.
 
 ### Chat message capture and injection (`chatMessage`)
 

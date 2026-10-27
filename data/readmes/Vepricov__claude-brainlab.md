@@ -1,0 +1,464 @@
+<p align="center">
+  <img src="docs/assets/banner.svg" alt="claude-brainlab — a research workbench for Claude Code" width="100%">
+</p>
+
+<h3 align="center">A question goes in — knowledge comes out.</h3>
+
+<p align="center">
+  The working setup of <a href="https://github.com/brain-lab-research">BRAIn Lab</a>: Claude Code skills, hooks and rules<br>
+  plus a lab knowledge base that is plain git — GitHub for ideas.
+</p>
+
+<p align="center">
+  <a href="https://vepricov.github.io/claude-brainlab/lab-showcase/"><img alt="Open the atlas" src="https://img.shields.io/badge/%E2%86%97%20open%20the%20atlas-live%20site-B5F35C?style=for-the-badge&labelColor=111"></a>
+</p>
+
+<p align="center">
+  <a href="https://docs.claude.com/en/docs/claude-code"><img alt="Claude Code" src="https://img.shields.io/badge/Claude%20Code-configuration-000?style=flat-square&logo=anthropic&logoColor=white"></a>
+  <a href="SKILLS.md"><img alt="skills" src="https://img.shields.io/badge/skills-67-3FB950?style=flat-square"></a>
+  <a href="commands/"><img alt="slash commands" src="https://img.shields.io/badge/slash%20commands-10-58A6FF?style=flat-square"></a>
+  <a href="agents/"><img alt="agents" src="https://img.shields.io/badge/agents-13-BC8CFF?style=flat-square"></a>
+  <a href="hooks/"><img alt="hooks" src="https://img.shields.io/badge/hooks-9-D29922?style=flat-square"></a>
+  <a href="LICENSE"><img alt="license" src="https://img.shields.io/badge/license-MIT-8B949E?style=flat-square"></a>
+  <a href="https://github.com/Vepricov/claude-brainlab/stargazers"><img alt="stars" src="https://img.shields.io/github/stars/Vepricov/claude-brainlab?style=flat-square&color=E3B341"></a>
+</p>
+
+<p align="center">
+  <a href="#knowledge-engine">Knowledge engine</a> ·
+  <a href="#github-for-ideas">GitHub for ideas</a> ·
+  <a href="#agent-harness">Agent harness</a> ·
+  <a href="#install">Install</a> ·
+  <a href="SKILLS.md">All skills</a>
+</p>
+
+<a href="https://vepricov.github.io/claude-brainlab/lab-showcase/"><img src="docs/assets/atlas-machine.png" alt="The atlas: eight stages of the research loop around the lab GitLab" width="100%"></a>
+
+The repository is the lab's own configuration, packaged so another lab can install it. Claude Code
+runs on the researcher's machine, a server agent keeps runs going overnight, and everything they
+produce lands in one git tree that is at the same time the Obsidian vault and the lab base in GitLab.
+The [atlas](https://vepricov.github.io/claude-brainlab/lab-showcase/) shows the whole loop page by page, in English and Russian; this README follows
+the same three tabs.
+
+## Knowledge engine
+
+Eight stages, one loop, with the lab GitLab at the centre. Each stage is a handful of skills you
+actually type.
+
+| | Stage | What it does | Skills |
+|---|---|---|---|
+| 00 | **Project setup** | a work is one GitLab repository, cloned at the same path in the tree | `create-project`, `code-ingest` |
+| 01 | **Literature** | an arXiv link becomes a Zotero item, a reading note and a BibTeX entry from an external API, never from a model | `paper-ingest`, `paper-search`, `want-2-read` |
+| 02 | **Ideas and hypotheses** | a refutable claim with the condition that would refute it | `research-ideation`, `grill-me` |
+| 03 | **Meetings** | a call transcript turns into claim edits and tasks | `call-notes` |
+| 04 | **Experiments** | runs log to W&B; the code writes the record, nobody retypes numbers | `experiment-runs`, `obsidian-experiment-log`, `handoff-to-jarvis` |
+| 05 | **Results** | runs under a claim form a series with a verdict | `results-analysis`, `results-report` |
+| 06 | **Paper writing and review** | only supportable claims; A\*-grade internal review and evidence-bound rebuttals | `ml-paper-writing`, `astar-paper-review`, `review-response` |
+| 07 | **Share with the community** | posts, talks and posters with one core message | `paper-to-social`, `presentation` |
+
+## GitHub for ideas
+
+<a href="https://vepricov.github.io/claude-brainlab/lab-showcase/#ideas"><img src="docs/assets/atlas-hub.png" alt="GitHub for ideas: a lab work shown as a repository with claims, runs, tasks and proposals" width="100%"></a>
+
+Code has had git for decades: history of every line, branches, review, merge. Ideas had none of it,
+and once agents launch dozens of runs and read hundreds of papers overnight, knowledge without
+versions turns into noise. The base gives research what git gave code: every idea, run and number
+comes with its history, its checks and its author.
+
+The base answers the question a lab loses most often: *has anyone here already tried this, and what
+came out of it?* It is a GitLab group, and everything in it is ordinary git. The knowledge service that
+used to sit in front of it was removed on 07-10-2026 together with its database; there is nothing to
+connect to and nothing to configure.
+
+Two halves, measured on 09-10-2026:
+
+- **What the lab knows** — one repository per work, 29 of them with claims. A claim is a folder,
+  `claims/<CODE>/`, holding the claim itself and the runs, series and derivations under it. Codes such
+  as `H-DYC-007` are stable, so they can be cited in a paper, a call or a message and still resolve a
+  year later.
+- **What the lab has read** — one `literature` repository per research theme, 24 themes and 688 paper
+  pages, each named by its BibTeX key and holding the reading notes plus what the paper claims, quoted
+  from its text.
+
+What makes it work rather than rot:
+
+| | |
+|---|---|
+| **One tree, like GitHub for ideas** | `lab sync` lays out everything you can see in `~/brainlab`, exactly as the paths in GitLab; `lab here <work>` puts one work in its place. The clone in the tree is the answer to "where does this get written", and there is no second copy anywhere else. |
+| **A merge is the write** | `push` to `main` is forbidden for everyone. A change enters as a merge request that a human merges, so nothing lands unread. |
+| **Two gates, one of them reads** | `база` counts what code can count: tree shape, numbers, codes, deletions, vanished records. `lab/проза` judges the text of the change and blocks the merge when it is a diary entry rather than a record. |
+| **Runs are written by code, not retyped** | `lab_run.py` writes the run's own page — hyperparameters, metrics, environment, commit, hardware — and pushes it to a branch. A number that is not in the corpus turns the verdict red, so transcribing by hand does not pass. |
+| **Names before records** | Every work keeps a registry of its internal names: build nicknames, run ids, local protocol names. A record that needs a dictionary nobody wrote is unreadable in a month. |
+| **Nothing is written by accident** | A stop hook ends a turn with one line: what is worth recording and where. The rules it points at live in `rules/checkpoint.md` and `rules/lab.md`, not in the line itself. |
+
+The [`lab-knowledge`](skills/lab-knowledge/SKILL.md) skill carries the rules that hold for everybody; read
+[`docs/llm-providers.md`](docs/llm-providers.md) for which model does which job.
+
+## Agent harness
+
+<a href="https://vepricov.github.io/claude-brainlab/lab-showcase/#setup"><img src="docs/assets/atlas-harness.png" alt="Agent harness: skills, hooks, base rules and agent memory" width="100%"></a>
+
+A harness where the agent loses neither knowledge nor context: hooks fire on their own at every step
+of a turn, memory outlives sessions, and one file tree is both the vault and the base.
+
+| | Count | What it is | Where |
+|---|---|---|---|
+| **Skills** | 67 | the working units: literature, experiments, Obsidian, code, writing, review | [`skills/`](skills/) |
+| **Slash commands** | 10 | `/analyze-results`, `/hypothesize`, `/checkpoint`, … | [`commands/`](commands/) |
+| **Agents** | 13 | `code-reviewer`, `bug-analyzer`, `paper-miner`, `obsidian-hub-creator`, … | [`agents/`](agents/) |
+| **Hooks** | 9 | security guard, citation validator, session start and end, stop hooks, skill activation, old-path guard | [`hooks/`](hooks/) |
+| **Rules** | 11 | coding style, security, lab base, checkpoint, server hygiene, Hermes team, … | [`rules/`](rules/) |
+
+### The vault is the tree
+
+```
+~/brainlab/                                  ← the Obsidian vault root
+├── <area>/<theme>/<work>/                   one GitLab repository per work
+│   ├── claims/<CODE>/{runs,series,theory}/  what goes to the base
+│   ├── paper/  code/  socials/              manuscript, code, public posts
+│   └── notes/  daily/  runs/                local only (git-excluded)
+├── <area>/<theme>/literature/               one repository per theme, one file per paper
+├── journal/  handbook/  servers/            service repositories: direct push to main
+├── ops/<grant|management|education|…>/      obligations, grants, teaching
+├── agents/                                  this toolkit and notes about it
+└── personal/                                operon boards, knowledge, code-library
+```
+
+### What you won't find upstream
+
+The repository started from `claude-scholar` (see [Credits](#credits)); these are the parts that grew
+here. Per-skill detail for all skills is in [`SKILLS.md`](SKILLS.md).
+
+- **`paper-ingest`** — end-to-end pipeline: arXiv URL → BibTeX (external API, never LLM-generated) → PDF → Zotero parent item with PDF child attachment → Obsidian note with 8-section AI Explanation written by Haiku → mandatory final audit.
+- **`want-2-read`** — process a Markdown reading queue with one fan-out agent per paper, each invoking `paper-ingest`, plus a final review agent for quality control.
+- **`paper-search`** — library-aware arXiv shortlists that don't re-suggest already ingested papers.
+- **`astar-paper-review`** — top-venue-grade peer review: reviewer + theoretician (proofs) + literature-scout + experiments-auditor, prompt-injection-safe, one review file per paper.
+- **`paper-to-social`** — turn a paper into copy-paste-ready Telegram / X / Habr posts with arXiv figures, in your own voice.
+- **`code-ingest`** / **`code-library`** — map an external repo into Obsidian Code-library notes (`path:line`, no code copied) and document the whole code workflow.
+- **`create-project`** — set up the private repository and the Obsidian hub. Turning the accumulated project into a work of the shared base is part of `lab-knowledge`: claims as folders in the work's own GitLab repository, entering by a merge request a human merges.
+- **`lab-knowledge`** — the one skill for the shared base. It reads research context from the local clone of a work with plain `git` and `grep` (the service in front of it was removed on 07-10-2026), and a change enters by a merge request a human merges. Private drafts stay in the work's
+  git-excluded `notes/`.
+- **`call-notes`** — keeps the raw meeting narrative in the work's git-excluded `calls/raw/`, publishes approved research records to the base, and files laboratory tasks as issues in the work's own GitLab repository. This replaces the old ad-hoc per-project task file convention.
+- **Obsidian integration** — hard-link rule for the same paper in multiple folders, project-memory bootstrap, experiment log, daily research log, link-graph repair, synthesis maps.
+- **MemPalace integration** — durable conversation memory with auto-save on every turn (off by default for new installs).
+- **`presentation`** — Beamer-first slide skill with a built-in **terminal-style** theme (dark, monospace, bright-green accent). One source of truth for talks, posters and promotion content.
+
+> [!TIP]
+> Everything works without lab access. The base is read and written with ordinary `git`, so without a
+> clone the base-facing skills simply have nothing to act on, and Obsidian-routed skills no-op without
+> a vault.
+
+## Install
+
+```bash
+git clone https://github.com/<you>/claude-brainlab.git
+cd claude-brainlab
+bash install/bootstrap.sh   # interactive — fills .env
+bash install/setup.sh       # backup-aware copy to ~/.claude/
+```
+
+Restart Claude Code afterwards. To roll back: `bash install/uninstall.sh`.
+
+See the prerequisites table below before installing.
+
+When Zotero is configured, the installer checks the existing uv runtime for the
+APIs used by `scripts/zotero_shared.py`. A compatible runtime gets separate stdio
+client sessions backed by one model process per configuration. Library switches
+stay within each client. Missing or older runtimes keep the existing Zotero CLI.
+This check does not import models, install packages, or replace a global launcher.
+
+## Prerequisites
+
+| | Required | Optional |
+|---|---|---|
+| Claude Code | ✓ | |
+| Python 3.10+ | ✓ | |
+| Node.js (for hooks) | ✓ | |
+| `rsync` | ✓ | |
+| Obsidian | | recommended (Obsidian-routed skills no-op without it) |
+| Zotero + zotero-mcp | | recommended for `paper-ingest` / `want-2-read` |
+| MemPalace | | recommended for cross-session memory |
+| Access to the lab GitLab | | needed only to clone a work; the toolkit installs and runs without it |
+
+## Recommended plugins
+
+Two third-party Claude Code plugins pair well with this toolkit. `setup.sh` does not install them. Caveman shrinks what the agent says, ponytail shrinks what it builds, so they do not overlap.
+
+### [caveman](https://github.com/JuliusBrussee/caveman): fewer words
+
+For those who keep running out of tokens. The agent drops the filler and answers only to the point, while code, commands, and errors stay byte-for-byte exact. The upstream benchmark reports about 65% fewer output tokens. Example from the official README:
+
+| Normal agent (69 tokens) | Caveman agent (19 tokens) |
+|---|---|
+| The reason your React component is re-rendering is likely because you're creating a new object reference on each render cycle. When you pass an inline object as a prop, React's shallow comparison sees it as a different object every time, which triggers a re-render. I'd recommend using useMemo to memoize the object. | New object ref each render. Inline object prop = new ref = re-render. Wrap in `useMemo`. |
+
+Only output tokens shrink. Input and reasoning tokens are untouched, and the skill adds about 1 to 1.5k input tokens per turn.
+
+```bash
+claude plugin marketplace add JuliusBrussee/caveman && claude plugin install caveman@caveman
+```
+
+Levels: `/caveman lite|full|ultra`. Say "normal mode" to turn it off.
+
+### [ponytail](https://github.com/DietrichGebert/ponytail): less code
+
+Shrinks the code the agent writes. Before writing code, the agent stops at the first rung that holds:
+
+```
+1. Does this need to exist?   → no: skip it (YAGNI)
+2. Already in this codebase?  → reuse it, don't rewrite
+3. Stdlib does it?            → use it
+4. Native platform feature?   → use it
+5. Installed dependency?      → use it
+6. One line?                  → one line
+7. Only then: the minimum that works
+```
+
+The ladder runs after the agent has read the code the change touches, not instead of it. Trust-boundary validation, data-loss handling, security, and accessibility are never cut.
+
+In Claude Code, send these as two separate prompts (needs `node` on `PATH`):
+
+```
+/plugin marketplace add DietrichGebert/ponytail
+```
+```
+/plugin install ponytail@ponytail
+```
+
+## Customize
+
+Most paths and identifiers are driven by `.env`. To change a hook, skill, or rule, edit it in this repo and re-run `bash install/setup.sh` — your existing `~/.claude` is backed up first. Per-skill customization (Zotero parent keys, vault folder taxonomy, MemPalace wing names) lives in each skill's `SKILL.md`.
+
+## Deep dives
+
+<details>
+<summary><b>Evidence-first paper review and rebuttal</b> — <code>astar-paper-review</code> and <code>review-response</code></summary>
+
+The repository includes two related skills for internal A* conference work. They share the same rule: every important judgment must point to the submitted paper or a verified artifact. Both ship native Codex metadata in `agents/openai.yaml`. The rebuttal skill reuses the audited PDF sanitizer bundled with the review skill, so the two directories should be installed together.
+
+| Skill | Main question | Required inputs | Primary output |
+|---|---|---|---|
+| [`astar-paper-review`](skills/astar-paper-review/) | Is the submitted claim correct, novel, and supported? | Paper, supplement, optional code and annotations | Evidence-backed review with a weakness skeleton, questions, limitations, and calibrated score |
+| [`review-response`](skills/review-response/) | What would actually resolve each reviewer concern? | Frozen submission, reviews, discussion, optional code, configs, logs, and running-job state | Canonical evidence packet, explicit completion status, and a draft or verified final response when the gates permit it |
+
+```mermaid
+flowchart LR
+    P["Paper and optional code"] --> PS["Review sanitizer and visual inspection"]
+    PS --> CL["Claim ledger"]
+    CL --> TA["Theory, literature, and experiment audit"]
+    TA --> RV["Weakness skeleton and calibrated review"]
+
+    R["Frozen submission, reviews, and run state"] --> RS["Rebuttal sanitizers and preflight"]
+    RS --> CO["Atomic concern ledger"]
+    CO --> AD["Grounding, triage, and adjudication"]
+    AD --> QA["Skeptical reviewer and evidence verifier"]
+    QA --> FR["Explicit status and evidence-bounded response"]
+```
+
+The review skill schedules its nested theory coordinator so that the coordinator can spawn two children within a four-slot runtime. The rebuttal skill stages all roles within the same limit and documents a sequential fallback. In both workflows, one coordinator owns the canonical ledger. Specialist agents return structured evidence, not competing final drafts. Load-bearing findings are checked again before they affect a score or response stance.
+
+### `astar-paper-review`
+
+Use `$astar-paper-review` to review an ML paper from the submission PDF, supplement, and optional code. The full procedure is in [`skills/astar-paper-review/SKILL.md`](skills/astar-paper-review/SKILL.md).
+
+#### Intake and claim ledger
+
+The bundled extractor redacts detected high-confidence prompt-injection patterns and flags selected suspicious text before agent fan-out. It preserves page boundaries, reports detections, and recovers user PDF annotations. A page with very little extracted text and embedded images stops with `OCR_REQUIRED`. The skill also requires visual inspection of the first and last pages, low-text pages, and pages with large rasterized text. This is defense in depth, not a guarantee that every hostile instruction will be detected. Local LaTeX sources take precedence when they are available.
+
+The coordinator then records every material theory, empirical, novelty, efficiency, reproducibility, and scope claim. Each ledger row contains the exact paper location, required support, observed evidence, and audit status.
+
+#### Theory audit
+
+Formal claims get a dedicated theory tree:
+
+1. A proof and assumptions auditor reconstructs the load-bearing derivation, checks joint satisfiability, and tests boundary cases.
+2. A rate and prior-art comparator reads the closest primary theorems and normalizes their settings.
+3. The theory coordinator checks the bridge from the proved update to the stated and implemented algorithms.
+
+The comparison matrix includes the submitted theorem, the method with its new mechanism disabled, the closest same-setting theorem, and a canonical baseline such as SGD, momentum SGD, SignSGD, or standard zeroth-order optimization. It aligns objective class, oracle, assumptions, convergence criterion, initialization, dimension, calls per iteration, total query cost, memory, and hidden constants. If the criteria cannot be converted, the results are marked `not directly comparable`.
+
+#### Experimental forensics
+
+The experiments auditor follows the chain:
+
+```text
+claim -> protocol -> configuration -> raw evidence -> reported number
+```
+
+It checks tuning parity, seed protocol, uncertainty, data leakage, selected checkpoints, query or compute budgets, paper-code consistency, and numerical arithmetic. Code execution is optional and isolated. A static config inspection, a smoke test, and an independent reproduction are reported as different evidence levels.
+
+#### Review output
+
+Before prose, the skill shows a short severity-ranked weakness skeleton. The user can remove a weak concern or redirect the audit before scores are assigned. The final review contains:
+
+- a neutral contribution summary
+- specific strengths and grouped weaknesses
+- questions whose answers could change the recommendation
+- acknowledged and unacknowledged limitations
+- a statement of proof coverage, empirical evidence level, and checks not completed.
+
+The skill never converts missing seeds into an accusation of fabrication, calls a smoke test a reproduction, or treats matching Big-O notation under different assumptions as an improvement.
+
+```text
+Use $astar-paper-review to review this submission and audit its theory,
+closest prior work, experiments, and reproducibility.
+```
+
+### `review-response`
+
+Use `$review-response` with the submitted paper, reviewer reports, and any available experiment artifacts. The complete workflow is in [`skills/review-response/SKILL.md`](skills/review-response/SKILL.md).
+
+#### Freeze the submission and map the reviews
+
+The workflow stores the original paper, supplement, code snapshot, reviews, later comments, and experiment state separately from all rebuttal revisions. The PDF and text sanitizers redact detected high-confidence injection patterns. Review-export mode uses narrower rules so legitimate reviewer recommendations remain visible. Raw artifacts are retained for provenance, and sanitized copies become canonical agent input.
+
+Every review is split into atomic IDs such as `R2-C03`. A concern row records:
+
+```text
+reviewer claim -> attacked component -> decision relevance -> paper anchors
+-> existing evidence -> missing evidence -> response stance -> risk -> status
+```
+
+Coverage must reach 100 percent before drafting. Duplicate concerns can share evidence, but none disappears from the ledger.
+
+#### Existing evidence before new experiments
+
+The coordinator inventories completed, running, queued, failed, and cancelled runs before proposing work. Each run records method identity, setting, seeds, artifact paths, verification state, and failure or exclusion reason. This prevents the skill from recommending an expensive run that the team has already finished.
+
+New experiments are chosen by the reviewer's decision test. The preferred test changes one disputed factor and keeps the rest fixed. The plan states the positive, null, and negative interpretation before launch. Broad benchmark expansion is rejected when a smaller causal control or matched baseline answers the concern.
+
+The method-identity gate distinguishes:
+
+- `same-method`, which evaluates the submitted method unchanged
+- `local-fix`, which repairs a narrow bug or missing control and discloses the delta
+- `core-revision`, which changes a defining source, objective, representation, theorem setting, or evaluation contract.
+
+Results from a core revision are quarantined. They may motivate a resubmission, but they cannot silently defend the original paper. A labeled comparator or swap-only ablation may differ from the submission when the submitted arm remains unchanged.
+
+#### Evidence levels
+
+| Level | Evidence available | Safe interpretation |
+|---|---|---|
+| E0 | Proposal without an artifact | Planned work only |
+| E1 | Claim or number in the submission | The paper reports it |
+| E2 | Config, table, log, or reported arithmetic checked | Static artifact confirmation |
+| E3 | Reproducible smoke test or one completed run | Result in this run, without robustness claims |
+| E4 | Frozen paired multi-seed protocol with uncertainty | Repeated evidence within the tested setting |
+| E5 | Independent replication or broad preregistered-style validation | Strong claim within the validated scope |
+
+A one-seed result stays E3. A mean without seed identities, dispersion, or raw outputs is at most E2.
+
+#### Theory, strategy, and drafting
+
+Theory concerns use the same nested proof and rate-comparison structure as the review skill. Empirical concerns go to an experiment triage lead. A response strategist then selects an explicit stance for every concern: correct, clarify, defend, concede locally, narrow, revise, run a test, or state that the issue cannot be resolved.
+
+The draft is composed from the adjudicated ledger. Each major answer follows a compact structure:
+
+```text
+direct answer -> decisive evidence -> exact paper change -> residual limitation
+```
+
+The final pass uses two independent roles. A skeptical reviewer/AC asks what objection remains. An evidence verifier traces every number, theorem statement, citation, and revision promise back to an artifact, then checks cross-review consistency and venue limits.
+
+#### Canonical artifacts
+
+The workflow keeps a resumable packet instead of one opaque response:
+
+- `00-preflight.md` and `00-experiment-registry.md`
+- `01-concern-ledger.md`
+- `02-evidence-plan.md`
+- `03-adjudication.md`
+- `04-rebuttal-draft.md`
+- `05-verification-report.md`
+- `final-rebuttal.md`.
+
+The final status is one of `BLOCKED`, `AWAITING_EXPERIMENT_APPROVAL`, `EVIDENCE_IN_PROGRESS`, `DRAFT_READY`, `VERIFIED_WITH_LIMITATIONS`, or `VERIFIED`. A draft is never presented as final before the adversarial and evidence gates pass.
+
+The skill also distinguishes post-hoc rescoring from optimization under a new reward judge, checks paper-to-code tensor shapes and parameter counts, and requires profiling artifacts before claiming that a requested baseline is infeasible.
+
+```text
+Use $review-response to map these reviews, triage the available runs,
+and prepare an evidence-grounded rebuttal strategy.
+```
+
+Both skills include compact lessons extracted from real laboratory review and rebuttal cases. Those cards preserve reusable diagnostic moves, not conclusions or canned prose. Current submission artifacts, verified primary literature, official venue rules, and verified experiment evidence remain authoritative for the task at hand.
+
+These skills improve scientific coverage and response discipline. They do not promise acceptance or replace the authors' judgment.
+
+</details>
+
+<details>
+<summary><b>The <code>presentation</code> skill</b> — Beamer decks and the terminal-style theme</summary>
+
+A LaTeX Beamer skill for theory talks, mathematical decks, and conference presentations. It enforces:
+
+- **One mathematical chain** — every new formula must be motivated by the previous slide. No fact-bag decks.
+- **Stable notation** across the whole talk; if you reject a notation choice once, the skill keeps the preferred one in later edits.
+- **Russian prose by default** for slide bodies (English for code, method names, file paths). Configurable in `skills/presentation/references/user-presentation-preferences.md`.
+- **Overflow is an error** — `Overfull \hbox/\vbox` and `Frame text is shrunk` warnings are treated as layout failures. The skill cuts text, splits frames, or rebalances columns instead of shrinking aggressively.
+
+### Terminal style (the dark theme)
+
+When you say `terminal style`, the skill applies a custom Beamer theme defined in [`skills/presentation/examples/terminal-style-mini.tex`](skills/presentation/examples/terminal-style-mini.tex). Compile that file to preview the look.
+
+Visual contract (also documented in [`skills/presentation/examples/terminal-style-notes.md`](skills/presentation/examples/terminal-style-notes.md)):
+
+| Element | Value |
+|---|---|
+| Theme base | `\usetheme{metropolis}` |
+| Aspect ratio | 16:9 (`aspectratio=169`) |
+| Background | `#0D1117` |
+| Card / title bar | `#161B22` |
+| Primary accent (titles, frame headers) | `#00FF88` |
+| Secondary accent (subtitles) | `#58A6FF` |
+| Theorem / proof accent | `#FF7B54` |
+| Body text | `#E6EDF3` |
+| Muted text | `#8B949E` |
+| Title font | monospace bold (`\ttfamily\bfseries`) |
+| Frame title font | monospace bold |
+| Theorem/idea blocks | `tcolorbox` with thin colored left rule |
+| Title slide | `// header` line + thin rules + large title + terminal-like `$ run --topic ...` footer |
+| Section dividers | `// 01`, `// 02`, ... + one large title, no other content |
+| Final slide | closing thanks and questions line, same visual language as title |
+
+The `presentation` skill routes `terminal style` requests to this canonical example, so a request for "make me a NeurIPS talk in terminal style" produces a deck with this exact look.
+
+To customize the theme: edit `skills/presentation/examples/terminal-style-mini.tex` (or fork it into your project), rerun `bash install/setup.sh` if you want it propagated to `~/.claude/`.
+
+</details>
+
+## For BRAIn Lab members
+
+This repository is the open half: skills, rules, hooks and the installer. The lab's own half — the
+gate service, the meeting pipeline, and the tests that carry real names — stays in a private repository
+inside the [brain-lab-research](https://github.com/brain-lab-research) organisation. Access comes with
+team membership: if you work at BRAIn Lab, join the
+[GitHub team](https://github.com/orgs/brain-lab-research/teams) for the internal repository.
+
+The base itself lives in the lab's GitLab, and access there is granted per research theme, not per
+lab: the theme tree and the literature are open to everyone with an account, the works are not. Ask
+the lead of the theme you work on.
+
+| | Where |
+|---|---|
+| Canonical repository, issues and pull requests | [Vepricov/claude-brainlab](https://github.com/Vepricov/claude-brainlab) |
+| Organisation fork, kept in sync | [brain-lab-research/claude-brainlab](https://github.com/brain-lab-research/claude-brainlab) |
+| Lab organisation and papers | [github.com/brain-lab-research](https://github.com/brain-lab-research) |
+| Internal half: knowledge service, data, call pipeline | private, granted with team membership |
+
+| Read this | If you want to |
+|---|---|
+| [`lab-knowledge`](skills/lab-knowledge/SKILL.md) | contribute papers or records to the shared base, with or without Obsidian and Zotero |
+| [`docs/llm-providers.md`](docs/llm-providers.md) | know which model does which job, what it costs, and what must never be model-generated |
+| [`docs/reference-setup.md`](docs/reference-setup.md) | copy a configuration that works, including the parts that broke first |
+
+## Credits
+
+- [Galaxy-Dawn/claude-scholar](https://github.com/Galaxy-Dawn/claude-scholar) (MIT) — the starting
+  point: the original skill catalogue, agent set and install pattern. Most of what is here now was
+  written after that fork, but the shape of the installer and the skill layout come from it.
+- [kepano/obsidian-skills](https://github.com/kepano/obsidian-skills) — vendored Obsidian utility skills (`obsidian-markdown`, `obsidian-cli`, `obsidian-bases`, `json-canvas`, `defuddle`). See `skills/obsidian-skills.UPSTREAM-LICENSE.txt`.
+- [MemPalace](https://github.com/MemPalace/mempalace) — the local-first memory MCP this config plugs into.
+
+## License
+
+MIT. See [`LICENSE`](LICENSE).

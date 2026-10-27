@@ -10,7 +10,7 @@
     <img src="https://img.shields.io/badge/Ubuntu-PRoot-E95420?style=for-the-badge&amp;logo=ubuntu&amp;logoColor=white" alt="PRoot Ubuntu" />
   </p>
   <p>
-    <a href="https://github.com/JunWan666/astrbot-for-android/releases/latest"><img src="https://img.shields.io/badge/Version-1.0.0-3867FF?style=flat-square" alt="Version 1.0.0" /></a>
+    <a href="https://github.com/JunWan666/astrbot-for-android/releases/latest"><img src="https://img.shields.io/badge/Version-1.1.0-3867FF?style=flat-square" alt="Version 1.1.0" /></a>
     <img src="https://img.shields.io/badge/Android-8.0%2B-3DDC84?style=flat-square&amp;logo=android&amp;logoColor=white" alt="Android 8.0 and above" />
     <img src="https://img.shields.io/badge/Architecture-ARM64-64748B?style=flat-square" alt="ARM64" />
     <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-18A978?style=flat-square" alt="MIT License" /></a>
@@ -34,7 +34,7 @@
 
 ## 界面预览
 
-当前正式版本为 **v1.0.0**。主分支和下方截图包含开发中的中英文界面、cpolar 扩展与存储提醒调整，相关功能将在后续版本发布。
+**v1.1.0** 界面预览，包含服务管理、人设库、设置、实时日志及两套内置后台。
 
 <table width="100%" align="center">
   <tr>
@@ -74,13 +74,15 @@
 | 双服务管理 | AstrBot / NapCat 独立或一键启停，查看运行、连接和异常状态 |
 | 内置后台 | 直接打开原 WebUI，预填有效的初始凭据，也可使用外部浏览器 |
 | 固定缩放 | 默认 75%，支持 100% / 75% / 50% / 25%，关闭双指缩放 |
-| 本机互联 | 新装准备 `ws://localhost:6199/ws`、空 token 的 OneBot 配对，已有配置保留 |
+| 本机互联 | 新装准备 `ws://127.0.0.1:6199/ws`、空 token 的 OneBot 配对，保留自定义连接 |
 | 局域网访问 | 两套 WebUI 可分别开放局域网访问，显示可复制地址，保留后台鉴权 |
-| 人设库 | 内置 12 款原创预设，支持自行新增、删除（含内置预设）、搜索、分类和默认切换，提供外部人设市场入口 |
+| 人设库 | 内置 4 款参考社区精选整理的预设，注明来源与改编内容；支持自行新增、删除（含内置预设）、搜索、分类和默认切换，提供外部人设市场入口 |
 | 实时日志 | 在服务详情中查看，自动跟随最新输出，可暂停、复制和脱敏导出 |
 | 资源概览 | 显示应用及托管进程内存、手机总内存和占比，单独查看存储使用情况 |
 | 备份与恢复 | 支持本机快照、便携备份和更新回退，自动清理未受保护的旧自动快照 |
 | SSH 扩展 | 默认安装、按需启动，支持修改密码、端口和局域网访问设置 |
+| Ubuntu 终端 | 内置本机交互终端，支持多会话后台运行、长按复制、惯性滚动与快捷字号调整，无需启动 SSH |
+| Ubuntu 桌面 | 按需安装轻量图形桌面，内嵌 noVNC 访问，可单独安装原版 ARM64 QQ，提供终端环境配置与后台进程管理 |
 | cpolar 扩展 | 按需安装，内嵌官方 WebUI 登录与隧道管理，默认提供 SSH、AstrBot、NapCat 三个隧道 |
 | 中英文界面 | 支持跟随系统、简体中文与 English，覆盖管理界面、通知与操作提示 |
 | 后台引导 | 提供通知、电池优化、后台无限制、自启动权限及任务锁定入口 |

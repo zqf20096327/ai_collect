@@ -108,11 +108,11 @@ node scripts/check-doc-numbers.mjs --worktree         # 工作树问责
 | ---- | ---- | ------ |
 | 数据库表 | 608 | `dbTables` |
 | schema 文件 | 235 | `dbSchemaFiles` |
-| API 路由 | 4561 | `apiRoutes` |
-| 路由文件 | 627 | `apiRouteFiles` |
-| AI 服务路由 | 597 | `aiServiceRoutes` |
+| API 路由 | 4564 | `apiRoutes` |
+| 路由文件 | 630 | `apiRouteFiles` |
+| AI 服务路由 | 603 | `aiServiceRoutes` |
 | WebSocket 端点 | 25 | `wsEndpoints` |
-| 入库模型清单 | 101 | `llmModels` |
+| 入库模型清单 | 99 | `llmModels` |
 | 发布平台 | 38 | `publishPlatforms` |
 | 端应用包 | 9 | `appPackages` |
 | 共享包 | 16 | `sharedPackages` |
@@ -121,15 +121,15 @@ node scripts/check-doc-numbers.mjs --worktree         # 工作树问责
 | 语言 | 5 | `i18nLanguages` |
 | i18n 作用域 | 7 | `i18nScopes` |
 | 语言包 JSON | 35 | `i18nMessageFiles` |
-| 测试文件 | 3286 | `testFiles` |
-| CI 工作流 | 50 | `ciWorkflows` |
+| 测试文件 | 3363 | `testFiles` |
+| CI 工作流 | 49 | `ciWorkflows` |
 | Compose 服务 | 14 | `composeServices` |
-| 工程守门 | 285 | `guardianGates` |
+| 工程守门 | 286 | `guardianGates` |
 | — blocking | 261 | `guardianBlocking` |
 | — warn | 27 | `guardianWarn` |
-| 跟踪文件 | 16425 | `trackedFiles` |
+| 跟踪文件 | 16696 | `trackedFiles` |
 
-上表由 `node scripts/gen-doc-numbers.mjs --markdown` 生成,最后核对日期 2026-10-25。
+上表由 `node scripts/gen-doc-numbers.mjs --markdown` 生成,最后核对日期 2026-10-26。
 每个数的来源就写在取数键旁边的实现里(`scripts/gen-doc-numbers.mjs` 的 `SOURCES`),**不得手抄、不得另立第二份**。
 
 <!-- END GENERATED NUMBERS -->
@@ -823,4 +823,4 @@ IHUI-AI 不是要替代任何单一项目,而是把以下 6 类项目的能力**
 |                   | 小程序              | Taro 4.2 + React 18 / **100+ 页面**(Glob 实测)/ **6 平台一套代码**(微信/支付宝/百度/抖音/H5/快手)/ 微信支付原生集成 / 5 语言 i18n(parity)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | **企业级能力**    | 工作空间权限        | 3 模式 + 7 端点运行时拦截 + 60s 审计超时 + workspace-ai-tasks                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 |                   | RBAC + 多租户       | 角色 / 部门 / 组织 / 租户隔离 / 菜单权限 / data-scope 5 级                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-|                   | SSO 单点登录        | OAuth 2.0 / Apple / Google / SSO 中转登录 / PKCE                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+|                   | SSO 单点登录        | OAuth 2.0 / Apple / Google / SSO 中转登录 / PKCE                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      

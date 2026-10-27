@@ -4,7 +4,7 @@
 
 > "What doesn't kill your code makes it stronger."
 
-The anti-AI. Every other tool gives you answers. Nietzschian Debugger **confronts you with questions**.
+**It won't fix your bug. It'll fix you.** Every other tool hands you the answer; Nietzschian Debugger hands the question back.
 
 You paste your bug. It doesn't fix it. Instead, it:
 
@@ -17,21 +17,22 @@ You paste your bug. It doesn't fix it. Instead, it:
 
 AI is making developers weaker. Copy-paste from ChatGPT, ship, repeat. Nobody understands their own code anymore. **Nietzschian Debugger forges stronger developers** — through struggle, not shortcuts.
 
+This isn't anti-AI — it runs on Claude, on purpose. It's anti-*outsourcing-your-thinking*. Every other tool uses the model to hand you the answer; this one uses it to hand the question back.
+
 > "He who has a why to debug can bear almost any how."
 
 ## Installation
 
 ```bash
-# Published release (npm, v0.1.0)
-npx nietzschian-debugger
-
-# Current source (Python 3.10+)
-pip install git+https://github.com/DilawarShafiq/nietzschian-debugger.git
+# Python 3.10+
+pip install nietzschian-debugger
 nietzschian debug "your bug"
 ```
 
+> **Note:** the current tool is the Python package above. The old `npx nietzschian-debugger` serves a stale pre-rewrite build — it has been deprecated in favour of the pip install.
+
 **Requirements:**
-- Node.js >= 20 for the npm release, or Python >= 3.10 for the current source
+- Python >= 3.10
 - An Anthropic API key (BYOK — bring your own key)
 
 ## Setup
@@ -73,43 +74,102 @@ nietzschian debug "Auth fails in ./src/middleware/auth.ts"
 | `nietzsche` | Direct, confrontational, no hand-holding | Daily debugging (default) |
 | `zarathustra` | Brutal, adversarial, hostile to weak reasoning | Seniors who want real pain |
 
+Pick a level with `--intensity` (or `-i`); the default is `nietzsche`:
+
+```bash
+nietzschian debug -i socrates "my bug"
+nietzschian debug --intensity zarathustra "my bug"
+```
+
 ## How a Session Looks
 
 ```
-  Nietzschian Debugger v0.1.0 — intensity: nietzsche
+$ nietzschian debug "login endpoint returns 403, but only for users who signed up before last week; new signups work; same code path; Node/Express"
 
-You: My login endpoint returns 403 for some users
+Nietzschian Debugger [Nietzsche mode]
 
-Nietzschian: You say "some users." That's vague. What separates
-             the ones who fail from the ones who don't?
 
-You: I'm not sure, it seems random
+[Turn 1]
+You said "same code path" — but the data is screaming that something
+changed between last week and today.
 
-Nietzschian: "Random" is the word we use when we haven't looked
-             hard enough. What do the server logs say for the 403
-             responses? Go look. I'll wait.
+What is different about the user record itself between those who signed
+up before last week and those who signed up after?
 
-You: Let me check... oh, they all have expired JWT tokens
+> I assumed the records were identical. Let me actually compare one.
 
-Nietzschian: Now we're getting somewhere. Why would some users
-             have expired tokens while others don't? What changed
-             recently in your auth system?
+[Turn 2]
+"Assumed." There is the word you built a week of debugging on. Stop
+assuming and read two rows side by side.
 
-You: ... oh. We changed the token TTL last week and didn't
-     invalidate existing sessions.
+What field exists on an old account that a new signup was never given?
 
-Nietzschian: There it is. You didn't need me to tell you — you
-             needed to be forced to look.
+> ...the old ones carry a legacy role claim the new ones don't, and the
+  auth middleware rejects any token without it.
 
-Session Complete — 4 questions to root cause (Solved)
+[Turn 3]
+There it is. The bug was never in the code — it was in your certainty
+that "same code path" meant "same data." You stopped looking exactly
+where the difference lived.
+
+> found it
+
+Session Complete -- 3 questions to root cause (Solved)
 
 Your Debugging Profile:
-┣ Assumption-checking    ██████████  strong
+┣ Assumption-checking    ████████░░  strong
 ┣ Evidence-gathering     ██████░░░░  moderate
 ┗ Root cause speed       ████████░░  strong
 
 "Man is something that shall be overcome."
- — Friedrich Nietzsche
+ -- Friedrich Nietzsche
+```
+
+**Or when you call a test "flaky":**
+
+```
+$ nietzschian debug "integration test passes locally but fails in CI — it's flaky, I just rerun until it's green"
+
+Nietzschian Debugger [Nietzsche mode]
+
+
+[Turn 1]
+"Flaky." The word you reach for when a test has found something true and
+you'd rather it hadn't. A test that fails one run in three isn't random —
+it's telling you something is ordered that you assumed was not.
+
+What does CI have, or do in a different order, that your machine does not?
+
+> idk, maybe the database isn't ready yet
+
+[Turn 2]
+"Maybe" — you named a suspect and refused to question it in the same
+breath. A database that wasn't ready would throw a connection error, not a
+wrong answer. Unless your test is reading rows another test wrote.
+
+Do your tests share a database, and are they guaranteed to run in order?
+
+> ...they share one. locally they always run alphabetically
+
+[Turn 3]
+There it is. "Flaky" was the mask on a race you refused to see — two tests
+fighting over the same rows, hidden on your machine by an accident of
+alphabetical ordering that CI parallelizes away. The test was never flaky.
+It was honest, and you were not.
+
+Will you isolate the data, or keep rolling the dice until they fall green?
+
+> oh. found it
+
+Session Complete -- 3 questions to root cause (Solved)
+
+Your Debugging Profile:
+┣ Assumption-checking    ███████░░░  strong
+┣ Evidence-gathering     █████░░░░░  moderate
+┗ Root cause speed       ████████░░  strong
+
+"No victor believes in chance."
+ -- Friedrich Nietzsche
 ```
 
 ## Session Commands

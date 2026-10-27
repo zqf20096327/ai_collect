@@ -15,10 +15,10 @@
 Welcome to the canonical llm.rb repository.
 
 llm.rb is a runtime for building agentic AI applications
-on CRuby. It runs on Ruby's standard library and nothing
-else by default, it supports concurrent and parallel tool
-execution and has a single coherent API that spans 15+
-providers. The README covers a lot of ground and the
+on CRuby. It runs on Ruby's standard library by default,
+it supports concurrent and parallel tool execution and has
+a single coherent API that spans 15+ providers. The README
+covers a lot of ground and the
 [changelog](CHANGELOG.md)
 tracks what has changed between releases.
 
@@ -91,7 +91,7 @@ options = {
   tracer: LLM::Tracer.multi(llm, *[:Logger, :Telemetry].map { LLM::Tracer.const_get(it) }),
   tools:  [GetTime],
   stream: StringIO.new,
-  concurrency: LLM::VERSION.start_with?("18.") ? :ractor : :thread
+  concurrency: LLM::VERSION[0..1].to_i >= 18 ? :ractor : :thread
 }
 
 agent = LLM::Agent.new(llm, options)
@@ -121,7 +121,7 @@ require "llm"
 require "llm/tools"
 
 llm         = LLM.deepseek
-concurrency = LLM::VERSION.start_with?("18.") ? :ractor : :thread
+concurrency = LLM::VERSION[0..1].to_i >= 18 ? :ractor : :thread
 agent       = LLM::Agent.new(llm, concurrency:)
 
 Thread.new do
@@ -174,6 +174,81 @@ agent = LLM::Agent.new(llm, stream: $stdout, concurrency:)
 agent.talk "Find me an interesting Ruby project on GitHub", tools: mcp.tools
 ```
 
+##### files.rb
+
+OpenAI, DeepSeek, Google, and a select few other
+providers provide a Files API that can be used to
+upload a file and then reference it by ID from a
+conversation. This approach can be more efficient
+than embedding an image as a base64-encoded string
+but not every provider has a files API and it is
+a separate step:
+
+```ruby
+require "llm"
+
+llm   = LLM.deepseek
+agent = LLM::Agent.new(llm)
+file  = llm.files.create(file: "rubydev.png")
+agent.talk ["what's this?", file], stream: $stdout
+llm.files.delete(file:)
+```
+
+The files API requires you to manage the files that
+are uploaded. Sometimes it can be easier and more
+simple to embed the file directly in the conversation.
+The image is encoded into a Base64 string and carried
+around in memory until the agent and its messages are
+garbage collected.  This capability varies by provider 
+and model:
+
+```ruby
+require "llm"
+
+llm   = LLM.deepseek
+agent = LLM::Agent.new(llm, stream: $stdout)
+agent.ask "what's this?", with: ["rubydev.png"]
+```
+
+##### stream.rb
+
+The [`LLM::Stream`](https://r.uby.dev/api-docs/llm.rb/LLM/Stream.html) class
+can be notified when the model requests a tool call, and then decide how to
+launch the tool call. The example launches mcp-based tool call(s) on their
+own [Ractor](https://docs.ruby-lang.org/en/4.0/Ractor.html)(s) and other tool
+call(s) on their own
+[Thread](https://docs.ruby-lang.org/en/4.0/Thread.html)(s).
+
+This might seem exotic at first but it is genuinely useful to be able to
+choose between a [Ractor](https://docs.ruby-lang.org/en/4.0/Ractor.html) and
+_something else_. Ractor won't work in all scenarios but that doesn't mean we
+can't use them in the scenarios where they work well:
+
+```ruby
+require "llm"
+
+llm = LLM.deepseek
+mcp = LLM::MCP.http(
+  url: "https://api.githubcopilot.com/mcp/",
+  headers: {"Authorization" => "Bearer #{ENV['GITHUB_RUBYDEV_PAT']}"}
+)
+
+class Stream < LLM::Stream
+  def on_tool_call(tool)
+    if tool.runner.mcp? 
+      puts "spawn #{tool.name} on ractor" 
+      queue << tool.task(:ractor)
+    else
+      puts "spawn #{tool.name} on thread"
+      queue << tool.task(:thread)
+    end
+  end
+end
+
+tools = [*LLM::Tool.subclasses, *mcp.tools]
+agent = LLM::Agent.new(llm, tools:, stream: Stream.new)
+agent.talk("what's happening on r-uby-dev/llm?")
+```
 
 #### Essentials
 
@@ -233,19 +308,19 @@ class Stream < LLM::Stream
 
   ##
   # @note
-  #  This method is called _before_ a transformer runs
-  # @param [LLM::Transformer] transformer
-  #  A transformer
-  def on_transform(transformer)
+  #  This method is called _before_ a filter runs
+  # @param [LLM::MessageFilter] filter
+  #  A filter
+  def on_filter(filter)
     nil
   end
 
   ##
   # @note
-  #  This method is called _after_ a transformer runs
-  # @param [LLM::Transformer] transformer
-  #  A transformer
-  def on_transform_finish(transformer)
+  #  This method is called _after_ a filter runs
+  # @param [LLM::MessageFilter] filter
+  #  A filter
+  def on_filter_finish(filter)
     nil
   end
 
@@ -287,26 +362,6 @@ class Stream < LLM::Stream
   # @param [LLM::RateLimitError] error
   # @param [Integer] attempt
   def on_retry(error, attempt)
-    nil
-  end
-
-  ##
-  # @note
-  #  This method is called _before_ a skill runs
-  # @param [LLM::Skill] skill
-  #  A skill
-  def on_skill_call(skill)
-    nil
-  end
-
-  ##
-  # @note
-  #  This method is called _after_ a skill runs
-  # @param [LLM::Agent] agent
-  #  The agent who ran the skill
-  # @param [LLM::Skill] skill
-  # @param [LLM::Response] res
-  def on_skill_return(agent, skill, res)
     nil
   end
 end
@@ -1179,26 +1234,81 @@ agent.talk "Tell slack channel I'm AFK", stream: $stdout
 ```
 </details>
 <details>
-<summary>Transformers</summary>
+<summary>Filters</summary>
 <br>
 
-It is possible to rewrite outgoing messages before they reach the provider with
-[`LLM::Transformer`](https://r.uby.dev/api-docs/llm.rb/LLM/Transformer.html). Create a subclass and implement `call(message:)` to scrub sensitive data,
-inject context, or normalize content. The transform runs automatically
-on every turn, so you never have to change your prompt code.
+The
+[`LLM::MessageFilter`](https://r.uby.dev/api-docs/llm.rb/LLM/MessageFilter.html)
+class receives a user message
+or tool return _before_ it is
+sent back to the model. A filter
+can modify a message in-place,
+return a new copy of the message
+and/or modify a tool return before
+the model sees it. The most common
+use-case for a filter might be the
+anonymization or redaction of personal
+data but it is the only use-case.
+
+A simple example: <br>
 
 ```ruby
-class RedactEmails < LLM::Transformer
+class EmailFilter < LLM::MessageFilter
   def call(message:)
-    content = message.content.to_s.gsub(/[\w.+-]+@[\w-]+\.[\w.]+/, "[EMAIL]")
-    LLM::Message.new(message.role, content, message.extra)
+    if message.tool_return?
+      ##
+      # 1+ tool returns that includes
+      # an 'email' field that we anonymize
+      # before the model sees it.
+      message.returns.each { it.value[:email].gsub!(regexp, "[EMAIL]") }
+    else
+      ##
+      # A user message that includes
+      # PII that we will anonymize
+      # before the model sees it.
+      message.contents.each { it.gsub!(regexp, "[EMAIL]") }
+    end
+    ##
+    # Don't forget to return the message.
+    # This is important.
+    message
+  end
+
+  private
+
+  def regexp
+    /[\w.+-]+@[\w-]+\.[\w.]+/
   end
 end
 
-llm = LLM.deepseek
-agent = LLM::Agent.new(llm, transformer: RedactEmails)
-agent.talk "Contact support@example.com for help"
+llm   = LLM.deepseek
+agent = LLM::Agent.new(llm, filter: EmailFilter)
+agent.talk ["hello", "reach me at robert@r.uby.dev"]
 ```
+
+
+A multi-filter example. <br>
+
+Multiple filters can be combined
+into a single filter that run in
+a chain. The message returned by
+the previous filter is forwarded
+to the next filter in the chain,
+and this continues until we reach
+the end of the chain. The final
+message that the model receives
+could have been modified by multiple 
+different filters:
+
+```ruby
+require "llm"
+
+llm    = LLM.deepseek
+filter = LLM::MessageFilter.multi(llm, RedactEmail, RedactName, RedactLocation)
+agent  = LLM::Agent.new(llm, stream: $stdout, filter:)
+agent.talk "reach me at robert@r.uby.dev"
+```
+
 </details>
 
 <details>
@@ -1254,46 +1364,6 @@ llm   = LLM.deepseek
 a2a   = LLM::A2A.rest(url: "https://remote-agent.example.com")
 agent = LLM::Agent.new(llm, stream: $stdout, tools: a2a.skills)
 agent.talk "Run the skill"
-```
-</details>
-
-<details>
-<summary>Skills</summary>
-<br>
-
-A skill turns a markdown file into a callable tool. When the model
-calls it, the runtime spawns a subagent with the skill's instructions
-as its system prompt and the skill's own tool set. The subagent runs
-one turn and returns the result, then is discarded. Each call
-is fresh and stateless.
-
-A [LLM::Stream](https://r.uby.dev/api-docs/llm.rb/LLM/Stream.html)
-can be notified as a skill starts and when it returns. The `on_skill_return`
-callback hands back the subagent that ran the skill, so you can inspect
-its conversation, measure its usage, track costs or add a verification
-step (eg `subagent.talk("verify your work")`).
-
-##### summary.md
-
-```markdown
----
-name: summary
-description: Reads recent git history and writes a summary
-tools: all
----
-
-Collect the recent git log, analyze each commit,
-and write a summary to summary.txt.
-```
-
-##### agent.rb
-
-```ruby
-require "llm"
-
-llm   = LLM.deepseek
-agent = LLM::Agent.new(llm, skills: ["summary.md"])
-agent.talk "Summarize the last week of work"
 ```
 </details>
 
@@ -1550,8 +1620,7 @@ the quick start. Each chapter is a topic of its own:
   [Agents](docs/deepdive/fundamentals/agents.md),
   [Tools](docs/deepdive/fundamentals/tools.md),
   [Stream](docs/deepdive/fundamentals/stream.md),
-  [Schema](docs/deepdive/fundamentals/schema.md),
-  [Skills](docs/deepdive/fundamentals/skills.md)
+  [Schema](docs/deepdive/fundamentals/schema.md)
 - **Features**:
   [Built-in tools](docs/deepdive/features/builtin_tools.md),
   [Concurrency](docs/deepdive/features/concurrency.md),
@@ -1566,7 +1635,7 @@ the quick start. Each chapter is a topic of its own:
   [Compaction](docs/deepdive/advanced/compaction.md),
   [Cancellation](docs/deepdive/advanced/cancellation.md),
   [Intercept](docs/deepdive/advanced/intercept.md),
-  [Transformer](docs/deepdive/advanced/transformer.md),
+  [MessageFilter](docs/deepdive/advanced/message_filter.md),
   [Transports](docs/deepdive/advanced/transports.md)
 - **Media**:
   [Images](docs/deepdive/media/images.md),

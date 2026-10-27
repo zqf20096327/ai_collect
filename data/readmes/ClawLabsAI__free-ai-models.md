@@ -34,7 +34,7 @@ No key needed to read any of it. No scraping: only public, official APIs.
 ## Free models (auto-updated daily)
 
 <!-- TABLE_START -->
-> Last updated: **Mon, 26 Oct 2026 09:54:35 UTC** · 17 free chat models · ranked by the [open score](scoring/) in this repo · free-tier limits are the provider's, per account[^or][^poll]
+> Last updated: **Tue, 27 Oct 2026 09:40:38 UTC** · 16 free chat models · ranked by the [open score](scoring/) in this repo · free-tier limits are the provider's, per account[^or][^poll]
 >
 > **6 of today's top 10** are served only by providers that may train on your prompts.
 
@@ -42,21 +42,20 @@ No key needed to read any of it. No scraping: only public, official APIs.
 |---|---|---|---|---|---|---|---|---|---|---|
 | 1 | **Thinking Machines: Inkling** | 68 | benchmarks + Arena | 🔴 may train | 1M | 262K | ✓ | 🖼️ vision, audio | — | [link](https://openrouter.ai/thinkingmachines/inkling:free) |
 | 2 | **Thinking Machines: Inkling Small** | 65 | benchmarks + Arena | 🔴 may train | 1M | 262K | ✓ | 🖼️ vision, audio | — | [link](https://openrouter.ai/thinkingmachines/inkling-small:free) |
-| 3 | **Google: Gemma 4 31B** | 57 | benchmarks + Arena | ✅ no · kept 55 days | 262K | 33K | ✓ | 🖼️ vision, video | ⚠️ degraded | [link](https://openrouter.ai/google/gemma-4-31b-it:free) |
-| 4 | **Google: Gemma 4 26B A4B** | 55 | benchmarks + Arena | ✅ no · kept 55 days | 262K | 33K | ✓ | 🖼️ vision, video | ⚠️ degraded | [link](https://openrouter.ai/google/gemma-4-26b-a4b-it:free) |
-| 5 | **NVIDIA: Nemotron 3 Super** | 46 | benchmarks + Arena | 🔴 may train | 262K | 236K | ✓ | 💬 text | — | [link](https://openrouter.ai/nvidia/nemotron-3-super-120b-a12b:free) |
-| 6 | **NVIDIA: Nemotron 3 Ultra** | 44 | benchmarks | 🔴 may train | 1M | 66K | ✓ | 💬 text | — | [link](https://openrouter.ai/nvidia/nemotron-3-ultra-550b-a55b:free) |
-| 7 | **NVIDIA: Nemotron 3.5 Super VL** | 43 | benchmarks | 🔴 may train | 1M | 131K | ✓ | 🖼️ vision, video | — | [link](https://openrouter.ai/nvidia/nemotron-3.5-super-vl:free) |
-| 8 | **XingChen: Xing4.0 29B A4B** | 24 | estimate (size) | ✅ no · zero retention | 262K | 236K | ✓ | 💬 text | ✅ up | [link](https://openrouter.ai/xingchen-agi/xing4.0-29b-a4b:free) |
-| 9 | **Poolside: Laguna S 2.1** <br><sub>⏳ retiring 2026-10-31</sub> | 24 | estimate (size) | 🔴 may train | 262K | 33K | ✓ | 💬 text | ⚠️ degraded | [link](https://openrouter.ai/poolside/laguna-s-2.1:free) |
-| 10 | **Cohere: North Mini Code** | 23 | benchmarks | ✅ no · kept 30 days | 256K | 64K | ✓ | 💬 text | ✅ up | [link](https://openrouter.ai/cohere/north-mini-code:free) |
-| 11 | **NVIDIA: Nemotron 3.5 Lightning** | 22 | benchmarks | 🔴 may train | 1M | 66K | ✓ | 💬 text | — | [link](https://openrouter.ai/nvidia/nemotron-3.5-lightning:free) |
-| 12 | **Recursive: Flint** | 21 | estimate (size) | ✅ no · retention unknown | 262K | 236K | ✓ | 💬 text | ▶ answering | [link](https://openrouter.ai/recursive/flint-v1.0:free) |
-| 13 | **Poolside: Laguna XS 2.1** <br><sub>⏳ retiring 2026-10-31</sub> | 18 | estimate (size) | 🔴 may train | 262K | 33K | ✓ | 💬 text | ⚠️ degraded | [link](https://openrouter.ai/poolside/laguna-xs-2.1:free) |
-| 14 | **NVIDIA: Nemotron 3 Nano Omni** | 15 | benchmarks | 🔴 may train | 256K | 66K | ✓ | audio, 🖼️ vision, video | — | [link](https://openrouter.ai/nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free) |
-| 15 | **Dots Studio: Dots3-Note Preview** <br><sub>⏳ retiring 2026-12-31</sub> | 13 | estimate (size) | ✅ no · retention unknown | 512K | 461K | ✓ | 🖼️ vision | ✅ up | [link](https://openrouter.ai/dots-studio/dots-3-note-preview:free) |
-| 16 | **LiquidAI: LFM2.5-2.6B** | 9 | benchmarks | 🔴 may train | 66K | 8K | ✓ | 💬 text | — | [link](https://openrouter.ai/liquid/lfm-2.5-2.6b:free) |
-| 17 | **GPT-OSS 20B Reasoning LLM (OVH)** | — | — | — | — | — | — | 💬 text | — | [link](https://pollinations.ai) |
+| 3 | **Google: Gemma 4 31B** | 57 | benchmarks + Arena | ✅ no · kept 55 days | 262K | 33K | ✓ | 🖼️ vision, video | ▶ answering | [link](https://openrouter.ai/google/gemma-4-31b-it:free) |
+| 4 | **Google: Gemma 4 26B A4B** | 55 | benchmarks + Arena | ✅ no · kept 55 days | 262K | 33K | ✓ | 🖼️ vision, video | ✅ up | [link](https://openrouter.ai/google/gemma-4-26b-a4b-it:free) |
+| 5 | **NVIDIA: Nemotron 3 Ultra** | 44 | benchmarks | 🔴 may train | 1M | 66K | ✓ | 💬 text | — | [link](https://openrouter.ai/nvidia/nemotron-3-ultra-550b-a55b:free) |
+| 6 | **NVIDIA: Nemotron 3.5 Super VL** | 43 | benchmarks | 🔴 may train | 1M | 131K | ✓ | 🖼️ vision, video | — | [link](https://openrouter.ai/nvidia/nemotron-3.5-super-vl:free) |
+| 7 | **XingChen: Xing4.0 29B A4B** | 24 | estimate (size) | ✅ no · zero retention | 262K | 236K | ✓ | 💬 text | ✅ up | [link](https://openrouter.ai/xingchen-agi/xing4.0-29b-a4b:free) |
+| 8 | **Poolside: Laguna S 2.1** <br><sub>⏳ retiring 2026-10-31</sub> | 24 | estimate (size) | 🔴 may train | 262K | 33K | ✓ | 💬 text | — | [link](https://openrouter.ai/poolside/laguna-s-2.1:free) |
+| 9 | **Cohere: North Mini Code** | 23 | benchmarks | ✅ no · kept 30 days | 256K | 64K | ✓ | 💬 text | ✅ up | [link](https://openrouter.ai/cohere/north-mini-code:free) |
+| 10 | **NVIDIA: Nemotron 3.5 Lightning** | 22 | benchmarks | 🔴 may train | 1M | 66K | ✓ | 💬 text | — | [link](https://openrouter.ai/nvidia/nemotron-3.5-lightning:free) |
+| 11 | **Recursive: Flint** | 21 | estimate (size) | ✅ no · retention unknown | 262K | 236K | ✓ | 💬 text | ✅ up | [link](https://openrouter.ai/recursive/flint-v1.0:free) |
+| 12 | **Poolside: Laguna XS 2.1** <br><sub>⏳ retiring 2026-10-31</sub> | 18 | estimate (size) | 🔴 may train | 262K | 33K | ✓ | 💬 text | — | [link](https://openrouter.ai/poolside/laguna-xs-2.1:free) |
+| 13 | **NVIDIA: Nemotron 3 Nano Omni** | 15 | benchmarks | 🔴 may train | 256K | 66K | ✓ | audio, 🖼️ vision, video | — | [link](https://openrouter.ai/nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free) |
+| 14 | **Dots Studio: Dots3-Note Preview** <br><sub>⏳ retiring 2026-12-31</sub> | 13 | estimate (size) | ✅ no · retention unknown | 512K | 461K | ✓ | 🖼️ vision | ✅ up | [link](https://openrouter.ai/dots-studio/dots-3-note-preview:free) |
+| 15 | **LiquidAI: LFM2.5-2.6B** | 9 | benchmarks | 🔴 may train | 66K | 8K | ✓ | 💬 text | — | [link](https://openrouter.ai/liquid/lfm-2.5-2.6b:free) |
+| 16 | **GPT-OSS 20B Reasoning LLM (OVH)** | — | — | — | — | — | — | 💬 text | — | [link](https://pollinations.ai) |
 
 3 free models that are not chat models (music, image, audio, classifiers):
 
@@ -244,7 +243,7 @@ unless noted, so `base_url` is the only change.
 |---|---|---|---|---|---|---|
 | [OpenRouter](https://openrouter.ai/keys) | `https://openrouter.ai/api/v1` | Every `:free` model together: 20 RPM, 50 RPD per account (1,000 RPD after $10 in credits) [^or] | No | Depends on who serves the model: see the data-use column above; send `provider.data_collection: "deny"` to refuse providers that may train [^orp] | One daily cap for all free models | 2026-10-22 |
 | [Groq](https://console.groq.com/keys) | `https://api.groq.com/openai/v1` | Per model: 30 RPM, 1,000 RPD, 8,000 tokens/min for `qwen/qwen3.8-27b`, `openai/gpt-oss-120b`, `openai/gpt-oss-20b` [^groq] | No | Not retained by default; may be logged up to 30 days for abuse review; training not mentioned [^groqd] | 8K tokens/min: one long prompt fails. With a card on file the org can be on paid on-demand usage — check Billing | 2026-10-22 |
-| [Google AI Studio](https://aistudio.google.com/app/apikey) | `https://generativelanguage.googleapis.com/v1beta/openai/` | Per model and per project, shown in AI Studio (no numbers in the docs) [^gem] | No | Free tier: used to improve Google products, may be read by human reviewers [^gemt] | Not allowed in apps for users in the EEA, Switzerland or the UK [^gemt] | 2026-10-22 |
+| [Google AI Studio](https://aistudio.google.com/app/apikey) | `https://generativelanguage.googleapis.com/v1beta/openai/` | Per model and per project, shown in AI Studio (no numbers in the docs) [^gem] | No | Free tier: used to improve Google products, may be read by human reviewers — unless you, the developer, are in the EEA, Switzerland or the UK [^gemt] | Not allowed in apps for users in the EEA, Switzerland or the UK [^gemt] | 2026-10-26 |
 | [Cloudflare Workers AI](https://dash.cloudflare.com/profile/api-tokens) | `https://api.cloudflare.com/client/v4/accounts/{id}/ai/v1` | 10,000 Neurons/day across all models, reset 00:00 UTC [^cf] | No | Not used for training; not kept for standard requests [^cfd] | Neurons, not requests: how far they go depends on the model | 2026-10-22 |
 | [Cerebras](https://cloud.cerebras.ai) | `https://api.cerebras.ai/v1` | **Trial, not a free tier**: $5 of credits that expire after 30 days; 5 RPM [^cer] | **Yes** | Not covered on the limits page | API stays inactive until you add a payment method | 2026-10-22 |
 | [Pollinations](https://pollinations.ai) | `https://text.pollinations.ai` | Anonymous tier, rotating model list [^poll] | No key | — | — | 2026-09-23 |
@@ -259,7 +258,7 @@ before putting one behind a product. Plain-language pages per provider:
 [^groq]: Groq, [rate limits](https://console.groq.com/docs/rate-limits). Your organisation's own limits are at console.groq.com/settings/limits.
 [^groqd]: Groq, [your data](https://console.groq.com/docs/your-data).
 [^gem]: Google, [Gemini API rate limits](https://ai.google.dev/gemini-api/docs/rate-limits): per project, vary by model; setting up billing moves the project to a paid tier.
-[^gemt]: Google, [Gemini API additional terms](https://ai.google.dev/gemini-api/terms) (updated 2026-04-28): Unpaid Services, and "You may use only Paid Services when making API Clients available to users in the European Economic Area, Switzerland, or the UK".
+[^gemt]: Google, [Gemini API additional terms](https://ai.google.dev/gemini-api/terms) (updated 2026-04-28): Unpaid Services ("If you're in the European Economic Area, Switzerland, or the United Kingdom", the Paid Services data terms apply to all services, free quota included), and "You may use only Paid Services when making API Clients available to users in the European Economic Area, Switzerland, or the UK".
 [^cf]: Cloudflare, [Workers AI pricing](https://developers.cloudflare.com/workers-ai/platform/pricing/).
 [^cfd]: Cloudflare, [Workers AI data usage](https://developers.cloudflare.com/workers-ai/platform/data-usage/).
 [^cer]: Cerebras, [rate limits](https://inference-docs.cerebras.ai/support/rate-limits): "no permanently free tier".

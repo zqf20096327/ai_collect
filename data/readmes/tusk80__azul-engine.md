@@ -9,14 +9,14 @@ It started as a classic game engine: exact rules, alpha-beta search, and a
 hand-written evaluation tuned by self-play. Then the engine generated 1.5 million
 positions by playing itself, a small neural network learned from them, and in
 3,000 games at equal thinking time **the network beat the hand-tuned evaluation
-it learned from**.
+it learned from**. Then it played itself and got stronger again.
 
 **[Try it in your browser](https://azul.yesil.cc)** · **[Neural vs classic: the benchmark](https://azul.yesil.cc/compare.html)** · [Dev log](https://azul.yesil.cc/blog.html) · [Technical write-up](docs/ML.md)
 
 | Neural network vs hand-tuned evaluation | Result |
 |---|---|
-| Equal thinking time, 40 ms per move | **+112 ± 13 Elo** (66% of points, 3,000 games) |
-| Equal thinking time, 200 ms per move | **+111 ± 36 Elo** (400 games) |
+| Equal thinking time, 40 ms per move | **+174 ± 14 Elo** (73% of points, 3,000 games) |
+| Self-play, against the first network it improved on | **+83 ± 13 Elo** (3,000 games) |
 | Equal positions searched | **+141 ± 13 Elo** (3,000 games, 128 × 32 network) |
 
 ![The analysis board with the neural network's top three moves](docs/screenshot.png)
@@ -41,7 +41,9 @@ it learned from**.
   hashing, and a move generator checked by perft counts.
 - **Search.** Negamax with principal-variation search, iterative deepening, a
   transposition table and move ordering. Later in a round it solves the rest of
-  the round exactly.
+  the round exactly. On several cores it runs Lazy SMP: helper threads share a
+  lock-free table, each skipping depths on its own schedule (4 threads: +37 ± 12
+  Elo at 40 ms per move, three times faster to depth 8).
 - **Two evaluations, one search.**
   - *Classic*: fifteen hand-written terms, tuned by SPSA self-play.
   - *Neural*: a 170 → 64 → 16 → 1 network that predicts the final score margin.
@@ -88,7 +90,9 @@ What made the difference, measured:
 | + the board as if scored now, 128 × 32 | **+141 ± 13** at equal positions |
 | 128 × 32 at equal time, first version | +6 ± 24: knows more, too slow |
 | 64 × 16 at equal time, first version | +64 ± 13 |
-| **64 × 16 at equal time, 3× faster inference** | **+112 ± 13**: the one that ships |
+| 64 × 16 at equal time, 3× faster inference | +112 ± 13 |
+| + one generation of self-play | +148 ± 14 |
+| **+ a fine-tuned second self-play run** | **+174 ± 14**: the one that ships |
 | Target: search value only / outcome only | −127 / −84 (raw board) |
 
 Go and PyTorch, trained on the same data, reach the same validation error
@@ -127,6 +131,10 @@ ml/.venv/Scripts/python ml/train.py --data ml/data.csv --h1 64 --h2 16 --out net
 
 - **Play** by clicking tiles, then a pattern line or the floor. *Score round* and
   *Deal next round* at the end of a round, or edit in the real deal.
+- **Play vs engine**: take the side to move and the engine plays the other,
+  scoring and dealing rounds as it goes.
+- **Review game**: every move graded against the engine's choice (best, good,
+  mistake, blunder) with each player's average points lost per move.
 - **Engine**: the top three moves with their points, floor penalties and bonuses.
   **Brain** picks the neural network (default) or the classic evaluation.
 - **Lines**: click a move to step through the line behind it with ◀ ▶.
@@ -137,10 +145,12 @@ ml/.venv/Scripts/python ml/train.py --data ml/data.csv --h1 64 --h2 16 --out net
 
 ## Browser overlay (buddyboardgames.com)
 
-1. Run the engine (`azul`, or double-click `azul.exe`).
-2. Install [Tampermonkey](https://www.tampermonkey.net/), then open
+1. Install [Tampermonkey](https://www.tampermonkey.net/), then open
    [azul-overlay.user.js](https://raw.githubusercontent.com/tusk80/azul-engine/main/userscript/azul-overlay.user.js)
    and press **Install**.
+2. Optional: run the engine on your computer (`azul`, or double-click
+   `azul.exe`). It is about three times faster. Without it the overlay loads
+   the engine from azul.yesil.cc and runs it as WebAssembly in the tab.
 3. In a 2-player game a panel shows the suggested move on your turn.
    **Alt+A** hides it, **Alt+S** opens the position on the board,
    **Alt+N** switches between the neural and classic brain, and **Alt+C**
@@ -197,6 +207,19 @@ search, an engine pool and per-visitor rate limits.
 - Scores never go below 0.
 - If nobody takes the first-player token, the same player starts the next round.
 - The engine plays to win first, then to maximise the margin.
+
+## Related work
+
+- Mateusz Rzepecki, [*Implementing superhuman AI for Azul board game with a
+  variation of NNUE*](https://jakubkowalski.tech/Supervising/Rzepecki2025ImplementingSuperhuman.pdf),
+  master's thesis, University of Wrocław, 2025. The same recipe in C++:
+  alpha-beta search with a small NNUE-style network, improved by a self-play
+  training loop, and tested against people on Board Game Arena, where it reached
+  first place. Differences here: the network learns the final margin and the
+  search value instead of win/loss only, and the whole engine runs in the browser.
+  Its biggest search gain, MTD(f) at the root, did not carry over here: +9 ± 12
+  at 40 ms and +3 ± 12 at 200 ms per move over 3,000 games each, against this
+  engine's principal variation search.
 
 ## Layout
 

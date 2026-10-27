@@ -168,6 +168,9 @@ uloop skills install --claude
 # Codex and other tools that read .agents/skills
 uloop skills install --agents
 
+# Install at the root of the Git repository that contains the Unity project
+uloop skills install --claude --root git
+
 # Install globally instead of into the project
 uloop skills install --claude --global
 
@@ -240,13 +243,11 @@ That's it! After installing Skills, LLM tools can automatically handle instructi
 
 
 <details>
-<summary>All 23 Bundled Skills</summary>
+<summary>All 21 Bundled Skills</summary>
 
 - `/uloop-launch` - Launch Unity with correct version
-- `/uloop-status` - Check whether Unity can take a command now
-- `/uloop-cancel` - Cancel the command Unity is running now, when BUSY keeps rejecting commands
+- `/uloop-status` - Check whether Unity can take a command now, and cancel the command Unity is running when BUSY keeps rejecting commands
 - `/uloop-compile` - Execute compilation
-- `/uloop-verify-project` - Check .meta files, GUIDs, conflict markers, and the package manifest without Unity
 - `/uloop-get-logs` - Get console logs
 - `/uloop-run-tests` - Run tests
 - `/uloop-hot-reload` - Apply method-body changes to running code instantly, without recompiling
@@ -283,11 +284,8 @@ uloop launch
 # Launch with build target (Android, iOS, StandaloneOSX, etc.)
 uloop launch -p Android
 
-# Kill running Unity and restart
+# Quit running Unity and restart
 uloop launch -r
-
-# Check .meta files, GUIDs, and conflict markers without Unity
-uloop verify-project
 
 # Execute compilation
 uloop compile
@@ -391,8 +389,9 @@ The `.uloop/` directory at the project root stores CLI cache, tool registry, and
 
 | File | Purpose | Git-track? |
 |------|---------|------------|
-| `project-runner-pin.json` | Project runner version contract used by the global dispatcher | Yes |
+| `project-runner-pin.json` | Project runner version contract used by the global dispatcher | Optional |
 | `settings.tools.json` | Per-tool enable/disable preferences | Optional |
+| `settings.skills.json` | Skill install location (Unity project root or Git repository root) | Optional |
 | `tools.json` | Auto-generated CLI tool registry | No |
 | `outputs/` | Runtime outputs (test results, screenshots, hierarchy dumps) | No |
 
@@ -401,12 +400,14 @@ The `.uloop/` directory at the project root stores CLI cache, tool registry, and
 >
 > ```gitignore
 > **/.uloop/*
-> !**/.uloop/project-runner-pin.json
 > !**/.uloop/settings.tools.json
+> !**/.uloop/settings.skills.json
 > ```
 >
-> This ignores auto-generated files and runtime outputs while allowing the dispatcher pin and team-shared configuration to be tracked.
-> Remove the `!` line if you don't need to share tool enable/disable preferences.
+> This ignores auto-generated files and runtime outputs while allowing team-shared configuration to be tracked.
+> Remove a `!` line if you don't need to share that setting (tool enable/disable preferences or the skill install location).
+>
+> `project-runner-pin.json` does not need to be tracked: the Editor rewrites it every time it opens the project, and `uloop` falls back to the pin inside the installed package. Track it (add `!**/.uloop/project-runner-pin.json`) only if you run `uloop` commands that use the pinned runner in a fresh clone that has never been opened in Unity, such as on CI.
 
 ## License
 MIT License

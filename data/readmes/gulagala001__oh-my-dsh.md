@@ -7,13 +7,15 @@
 <p align="center"><strong>简体中文</strong> · <a href="README_EN.md">English</a></p>
 
 <p align="center">
-  <a href="docs/release-1.0.2.md"><img alt="OMD 1.0.2" src="https://img.shields.io/badge/release-OMD%201.0.2-0969da?style=flat-square"></a>
+  <a href="docs/release-1.1.2.md"><img alt="OMD 1.1.2" src="https://img.shields.io/badge/release-OMD%201.1.2-0969da?style=flat-square"></a>
   <a href="https://github.com/gulagala001/oh-my-dsh/releases"><img alt="GitHub 累计下载量" src="https://img.shields.io/github/downloads/gulagala001/oh-my-dsh/total?style=flat-square&amp;label=GitHub%20downloads&amp;color=0969da"></a>
   <a href="#readme-install"><img alt="DSH 0.2.1-rc.3" src="https://img.shields.io/badge/DSH-0.2.1--rc.3-0969da?style=flat-square"></a>
   <a href="https://github.com/gulagala001/oh-my-dsh/stargazers"><img alt="GitHub Stars" src="https://img.shields.io/github/stars/gulagala001/oh-my-dsh?style=flat-square&amp;color=0969da"></a>
 </p>
 
 <p align="center"><a href="#readme-install"><strong>开始使用</strong></a> · <a href="docs/README.md">完整文档</a> · <a href="https://github.com/gulagala001/oh-my-dsh/issues">反馈</a></p>
+
+当前版本：[OMD 1.1.2](docs/release-1.1.2.md)。
 
 <p align="center"><a href="docs/images/omd-hero-zh.png"><img src="docs/images/omd-hero-zh.png" alt="Oh My DSH · 从对话到交付" width="880"></a></p>
 
@@ -44,10 +46,10 @@
 打开实际使用的 DSH 实例，在 **插件 → ＋ 添加插件** 中粘贴：
 
 ```text
-https://github.com/gulagala001/oh-my-dsh/releases/download/v0.2.1-rc.3.omd.1.0.2/oh-my-dsh-0.2.1-rc.3.omd.1.0.2.tgz
+https://github.com/gulagala001/oh-my-dsh/releases/download/v0.2.1-rc.3.omd.1.1.2/oh-my-dsh-0.2.1-rc.3.omd.1.1.2.tgz
 ```
 
-等当前任务结束后，按宿主提示启用或完整重启该实例，沿用原 profile 与数据。其他宿主、升级和卸载见[安装指南](docs/install.md) · [SHA256SUMS](https://github.com/gulagala001/oh-my-dsh/releases/download/v0.2.1-rc.3.omd.1.0.2/SHA256SUMS).
+等当前任务结束后，按宿主提示启用或完整重启该实例，沿用原 profile 与数据。其他宿主、升级和卸载见[安装指南](docs/install.md) · [SHA256SUMS](https://github.com/gulagala001/oh-my-dsh/releases/download/v0.2.1-rc.3.omd.1.1.2/SHA256SUMS).
 
 ### 2. 先试这一件事
 
@@ -73,7 +75,7 @@ OMD 组合 **Workflow、Rewind、Persona、Extensions 和 DeepSeek Workbench**�
 
 会话总览集中展示产出、来源、后台进程、Workflow 和子智能体，点开成员即可继续侧栏对话。**Ultra** 提供 Workflow、Agent Team、自由三种协作方式；**Better Todo** 将原始需求、任务与验证结果关联，保留已完成检查和真实执行回执。
 
-没有项目也能开始：首次发送时创建独立文件目录，后续对话继续复用。输入框的 **✨** 提供轻润色、结构化和步骤规划，可保存要求预设、比较版本、撤销或重做。
+没有项目也能开始：新聊天提前准备独立目录，首条消息命名工作子目录，后续对话继续复用。输入框的 **✨** 提供轻润色、结构化和步骤规划，可保存要求预设、比较版本、撤销或重做。
 
 [日常使用](docs/usage.md) · [Ultra 与 Workflow](docs/workflow.md)
 
@@ -165,7 +167,7 @@ OMD 组合 **Workflow、Rewind、Persona、Extensions 和 DeepSeek Workbench**�
 
 欢迎提交最小复现、文档修订与实际使用示例。[贡献说明](CONTRIBUTING.md) · [开发与构建](docs/development.md)
 
-本仓库包含不同来源的代码与材料，不以统一 MIT 声明覆盖全部文件。请按具体文件和[第三方声明](THIRD_PARTY_NOTICES.md)确认许可。OMD 是社区项目，与界面中提及的产品品牌无官方隶属或背书关系。
+OMD 自有代码采用 [MIT 许可证](LICENSE)。第三方代码、组件和素材继续遵循各自原许可证，详见[第三方声明](THIRD_PARTY_NOTICES.md)。OMD 是社区项目，与界面中提及的产品品牌无官方隶属或背书关系。
 
 ## 文档与支持
 

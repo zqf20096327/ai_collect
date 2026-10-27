@@ -550,6 +550,32 @@ async def main() -> None:
 asyncio.run(main())
 ```
 
+## Streaming responses
+
+We provide support for streaming responses using Server Side Events (SSE).
+
+```python
+from langsmith import Langsmith
+
+client = Langsmith()
+
+stream = client.runs.streaming.query_v2()
+for streaming in stream:
+    print(streaming.items)
+```
+
+The async client uses the exact same interface.
+
+```python
+from langsmith import AsyncLangsmith
+
+client = AsyncLangsmith()
+
+stream = await client.runs.streaming.query_v2()
+async for streaming in stream:
+    print(streaming.items)
+```
+
 ## Using types
 
 Nested request parameters are [TypedDicts](https://docs.python.org/3/library/typing.html#typing.TypedDict). Responses are [Pydantic models](https://docs.pydantic.dev) which also provide helper methods for things like:

@@ -58,7 +58,7 @@ A visitor lands on the [Home](src/app/README.md) page, learns what Maven does, a
 - **Framework:** Next.js 16 (App Router, Turbopack) with React 19 and TypeScript
 - **AI / orchestration:** Vercel AI SDK 7 (AI SDK UI: `useChat` from `@ai-sdk/react` over a UI message stream for generative streamed UI, `streamText` / `generateText` with `Output` for structured data), Google Gemini via `@ai-sdk/google` with Google Search grounding by default; users can switch to their own provider and API key (OpenAI, Anthropic, Gemini, Vercel AI Gateway, OpenRouter, Groq, xAI, DeepSeek, Mistral, Together or any OpenAI-compatible API) from **AI provider** in the chat sidebar, kept in their browser and sent per request. Providers without built-in web search use a Tavily search tool
 - **Web data:** Firecrawl for scraping, Tavily and Serper for external search
-- **Auth:** NextAuth.js (Google, GitHub OAuth)
+- **Auth:** Better Auth (Google, GitHub OAuth) with users and sessions stored in PostgreSQL through its Prisma adapter
 - **Data stores:** PostgreSQL (self-hosted, Neon or compatible) via Prisma ORM with `@prisma/adapter-pg` for chats and all persistent data, Upstash Redis for rate limiting and short-lived session state
 - **UI:** Radix UI primitives, Tailwind CSS 4, Sass, `class-variance-authority`, `next-themes`
 - **Motion:** `motion` (formerly Framer Motion), GSAP, Lenis smooth scroll
@@ -85,7 +85,7 @@ src/
     maven/              # App-specific feature components (chat UI, marketing pages, etc.)
     ui/                 # Shared design-system primitives (shadcn/ui-based)
   lib/                  # Agent tools, orchestrator, data services, types, utilities
-  proxy.ts              # Next.js proxy (formerly middleware): NextAuth route protection
+  proxy.ts              # Next.js proxy (formerly middleware): Better Auth session check for app routes
 ```
 
 ## Getting started
@@ -108,7 +108,7 @@ bun install
 
 Persistent data is modeled in [`prisma/schema.prisma`](prisma/schema.prisma) and accessed with Prisma ORM over the `node-postgres` driver adapter (`@prisma/adapter-pg`), so any PostgreSQL-compatible database works: self-hosted Postgres, Neon, Supabase, RDS and similar. Set `DATABASE_URL` to its connection string (`postgresql://user:password@host:5432/db`; add `?sslmode=require` for hosted providers that need TLS).
 
-`npm install` runs `prisma generate` automatically. Then apply the migrations:
+The Prisma client is generated into the project at `src/generated/prisma` (imported as `@/generated/prisma/client`), not into `node_modules`; it is gitignored and rebuilt by `npm install`, `npm run build` and `npm run db:generate`. Then apply the migrations:
 
 ```bash
 # New database: create all tables
@@ -120,12 +120,18 @@ npx prisma migrate resolve --applied 0_init
 npx prisma migrate deploy
 ```
 
-After changing the schema, create a new migration with `npx prisma migrate dev --name <change>`.
+After changing the schema, create a new migration with `npm run db:migrate -- --name <change>` (`npx prisma migrate dev`).
 
 Chats are stored in PostgreSQL since migration `2_chats`; chats previously kept in Redis are not copied over. Records that referenced them get a placeholder chat (no messages, hidden from the history list) so their links keep resolving.
 
+Authentication data (Better Auth's `users`, `sessions`, `accounts` and `verifications` tables) lives in the same database since migration `3_better_auth`.
+
 | Model (table) | Purpose |
 |---|---|
+| `User` (`users`) | Signed-in people, created by Better Auth on first OAuth sign-in |
+| `Session` (`sessions`) | Better Auth login sessions (cookie token, expiry, IP / user agent) |
+| `Account` (`accounts`) | OAuth provider identities (Google, GitHub) and their tokens, linked to a user |
+| `Verification` (`verifications`) | Short-lived verification values such as OAuth state |
 | `Chat` (`chats`) | A user's conversation; owns its messages and tool, object and markdown records (deleted together) |
 | `ChatMessage` (`chat_messages`) | Ordered AI state messages of a chat (role enum + JSON content) |
 | `ScrapeCache` (`scrape_cache`) | Caches web scraping results by query to avoid redundant requests |
@@ -163,8 +169,8 @@ UPSTASH_REDIS_REST_TOKEN="YOUR_APIKEY"
 DATABASE_URL="postgresql://user:password@localhost:5432/maven"   # any PostgreSQL (self-hosted, Neon, ...)
 
 # Auth
-NEXTAUTH_SECRET="USE_SECURE_STRING_OR_RANDSSL"   # e.g. openssl rand -base64 32
-NEXTAUTH_URL=http://localhost:3000
+BETTER_AUTH_SECRET="USE_SECURE_STRING_OR_RANDSSL"   # e.g. openssl rand -base64 32
+BETTER_AUTH_URL=http://localhost:3000
 AUTH_GITHUB_ID="YOUR_GITHUB_AUTH_ID"
 AUTH_GITHUB_SECRET="YOUR_GITHUB_AUTH_SECRET"
 AUTH_GOOGLE_ID="YOUR_GOOGLE_AUTH_ID"
@@ -172,6 +178,8 @@ AUTH_GOOGLE_SECRET="YOUR_GOOGLE_AUTH_SECRET"
 
 NEXT_PUBLIC_APP_URL=http://localhost:3000   # update for production
 ```
+
+Authentication uses [Better Auth](https://www.better-auth.com) with OAuth callback URLs at `/api/auth/callback/google` and `/api/auth/callback/github` (unchanged from NextAuth). Deployments upgrading from NextAuth can keep `NEXTAUTH_SECRET` / `NEXTAUTH_URL` as fallbacks; users sign in once more after the upgrade, and their chats carry over because records stay keyed by email.
 
 ### Running the application
 
@@ -228,7 +236,7 @@ sudo -u maven npx prisma migrate deploy
 sudo -u maven npm run build
 ```
 
-In `.env`, set `NEXTAUTH_URL` and `NEXT_PUBLIC_APP_URL` to your public URL (e.g. `https://maven.example.com`) and `DATABASE_URL` to the database created above. `NEXT_PUBLIC_APP_URL` is inlined at build time, so rebuild after changing it. Add `https://<your-domain>/api/auth/callback/google` and `.../callback/github` as OAuth redirect URLs.
+In `.env`, set `BETTER_AUTH_URL` and `NEXT_PUBLIC_APP_URL` to your public URL (e.g. `https://maven.example.com`) and `DATABASE_URL` to the database created above. `NEXT_PUBLIC_APP_URL` is inlined at build time, so rebuild after changing it. Add `https://<your-domain>/api/auth/callback/google` and `.../callback/github` as OAuth redirect URLs.
 
 ### 3. Run it with systemd
 
@@ -319,7 +327,7 @@ Licensed under the [Apache License 2.0](LICENSE).
 
 - **App won't start:** double-check environment variables (especially database URLs and API keys) and confirm Postgres/Redis are reachable.
 - **Features not working:** check the browser console for client-side errors and confirm API keys are valid.
-- **Authentication issues:** verify GitHub/Google OAuth app settings and that `NEXTAUTH_URL` matches your current environment.
+- **Authentication issues:** verify GitHub/Google OAuth app settings and that `BETTER_AUTH_URL` matches your current environment.
 - **Database connection problems:** re-check `DATABASE_URL` and confirm the database user has the required permissions.
 
 ## Portfolio summary

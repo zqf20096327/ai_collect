@@ -29,12 +29,33 @@ Keyboard-first, mouse where it earns its keep. Press `h` in-app for the full key
 
 ## Install
 
+Homebrew (macOS and Linux):
+
+```bash
+brew install blushyes/tap/reef
+```
+
+Or use npm:
+
 ```bash
 npx @reef-tui/cli                # one-off
 npm install -g @reef-tui/cli     # or global
 ```
 
 Supported: macOS (arm64, x64), Linux (arm64, x64), Windows (x64). Or `cargo build --release` from source.
+
+Update a Homebrew or global npm installation:
+
+```bash
+reef update
+```
+
+Homebrew installations refresh package metadata and upgrade through the original Homebrew prefix.
+Global npm installations update through their npm launcher. Local npm installations use
+`npm install @reef-tui/cli@latest` in the project; temporary runs use `npx @reef-tui/cli@latest`.
+Source builds and manually downloaded binaries must be rebuilt or replaced using their original
+installation method. Run `reef update --help` for details. To open a path named `update`, use
+`reef ./update` or `reef -- update`.
 
 ```bash
 reef                             # current directory

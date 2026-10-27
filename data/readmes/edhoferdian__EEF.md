@@ -40,10 +40,12 @@ npx eef-install --list                      # list all skill names
 npx eef-install --help
 ```
 
-`--target claude-hooks` installs both ready-made hooks — `fs-guard`
-(`PreToolUse`, blocks recursive searches from `/`, `~` or a drive root) and
-`telemetry` (`SubagentStop`, logs each subagent run locally for re-tiering);
-`--only fs-guard` or `--only telemetry` picks one. It adds a registration to
+`--target claude-hooks` installs the ready-made hooks — `fs-guard`
+(`PreToolUse`, blocks recursive searches from `/`, `~` or a drive root and
+asks before destructive commands), `telemetry` (`PostToolUse` on `Agent`,
+logs each subagent run locally for re-tiering) and `statusline` (plan quota,
+context and subagent count, set only when no `statusLine` exists);
+`--only <name>` picks one. It adds a registration to
 `settings.json` and leaves every other key alone: a hook already registered
 (even by hand) is never added twice, an unparsable file is refused rather
 than rewritten, and the previous file is kept as `settings.json.eef-backup`.
@@ -52,7 +54,9 @@ than rewritten, and the previous file is kept as `settings.json.eef-backup`.
 `eef-install doctor` reports which Claude Code targets (skills, agents,
 rules, hooks) are installed and where, which files differ from this package
 version, whether each hook is registered, and which model profile the
-installed agents match. It changes nothing, and exits non-zero only on real
+installed agents match, plus whether the optional Salak CLI is on PATH (and
+whether it predates 0.3, the version the skills' Salak contract was verified
+on). It changes nothing, and exits non-zero only on real
 breakage (an unparsable `settings.json`, or a registered hook whose file is
 gone). It reads the same `CLAUDE_*_DIR` overrides as the installs.
 
@@ -64,6 +68,13 @@ writes `settings.json`. Each agent keeps the `model`/`effort` it has now, so
 a `--profile` or `--models` choice survives; a new agent takes the profile
 most installed agents match. A file you edited locally also counts as
 "differs" and is overwritten — run `update --dry-run` first to see the plan.
+
+`eef-install stats` summarizes the log the `telemetry` hook writes
+(`~/.claude/eef/subagent-runs.jsonl`): runs per agent, the models they ran
+on, median tokens and duration, and a re-tiering suggestion once an agent
+has enough runs. It is read-only, and every suggestion is a prompt for a
+human decision. Records from the older `SubagentStop` hook carry no model
+or tokens, so they are left out unless you pass `--include-legacy`.
 
 The package bundles the actual skill content (see
 [`package.json`](package.json)'s `files` list) — no separate git clone, no
@@ -257,10 +268,11 @@ npx eef-install --target opencode-agents    # merges into ./opencode.json ($sche
 npx eef-install --target zcode-agents       # adds to ~/.zcode/agents/, your own agents there untouched
 
 npx eef-install --target claude-agents --profile hemat              # pick a cost profile (Claude Code, Codex)
+npx eef-install --target claude-agents --roster inti                # only the isolation agents; skill wrappers removed (Claude Code)
 npx eef-install --target opencode-agents --models ./eef-models.json # your own model ID per tier (required for OpenCode/ZCode, optional override elsewhere)
 ```
 
-- **[.claude/agents/](.claude/agents/)** — Claude Code's own native
+- **[dist/agents/claude/](dist/agents/claude/)** — Claude Code's own native
   subagent format; a straight 1:1 mapping since `AGENT.md` already *is*
   that format. Regenerate: `python scripts/export_agents_claude.py`.
 - **dist/agents/codex/** — one `.toml` per agent in Codex's custom-agent
@@ -508,7 +520,9 @@ npx eef-install --target claude-rules       # ~/.claude/rules/eef/ (or $CLAUDE_R
 
 `scripts/validate_skills.py` keeps them small (≤ 2.5 KB each) and checks
 that every skill they point at exists. The matching mechanical guard for the
-search rule is a Claude Code hook shipped with
+search rule — which also makes every destructive command (`rm -rf`,
+`Remove-Item -Recurse`, `git reset --hard`, …) wait for your approval — is a
+Claude Code hook shipped with
 `safe-execution-edho-ferdian` (`hooks/block-fs-wide-search.js`) — install
 it with `npx eef-install --target claude-hooks --only fs-guard`, or by hand
 per that skill's appendix.
@@ -535,7 +549,7 @@ the harness, and mostly needs no explicit invocation:
   first?** [CATALOG.md](CATALOG.md) lists all of them with a one-line
   purpose and a "use when" — skim it instead of guessing from a folder
   name in `skills/`.
-- **Agents** (the `agents/`/`.claude/agents/` layer) are for delegation,
+- **Agents** (the `agents/`/`dist/agents/claude/` layer) are for delegation,
   not day-to-day use directly — see "Agent orchestration" above for when a
   task is substantial enough to hand off to one instead of just using the
   skill inline.
@@ -543,6 +557,13 @@ the harness, and mostly needs no explicit invocation:
   especially) auto-invoke several others mid-task per their own PLAN →
   IMPLEMENT → REVIEW → VERIFY loop — that's expected, not a sign you
   triggered the wrong one.
+- **Known limit — SEO audit from pasted snippets.** `seo-audit-edho-ferdian`
+  loads when the site's repo is open or you give it a URL. With the HTML
+  pasted straight into the chat, Claude answers in one turn without
+  loading the skill, and four rewordings of its description have not
+  changed that (`evals/triggers/RESULTS.md`, runs 5–7). For a real audit,
+  open the repo or share the URL, or force it with
+  `/seo-audit-edho-ferdian`.
 
 ## Skills
 

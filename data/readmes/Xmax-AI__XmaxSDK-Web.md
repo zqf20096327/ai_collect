@@ -217,14 +217,14 @@ after a user action such as clicking a Start button.
 ```javascript
 import {
   CameraPosition,
+  RealtimeCameraPreset,
   RealtimeConfiguration,
   RealtimeContext,
   RealtimeModel,
-  RealtimeVideoFormat,
   VideoContentMode,
   XmaxClient,
   XmaxConfiguration,
-  XmaxRealtimeVideoView,
+  XmaxRealtimeDualVideoView,
 } from "@xmaxai/web-sdk";
 
 const client = new XmaxClient(
@@ -232,17 +232,17 @@ const client = new XmaxClient(
 );
 
 const realtime = client.createRealtimeManager(
-  new RealtimeConfiguration({ model: RealtimeModel.x2_1_1_preview_cn })
+  new RealtimeConfiguration({ model: RealtimeModel.x2_1 })
 );
 
 const localStream = await realtime.createLocalCameraStream({
-  videoFormat: new RealtimeVideoFormat({ width: 1024, height: 1920, fps: 30 }),
+  preset: RealtimeCameraPreset.resolution1080x1920,
   position: CameraPosition.front,
   useMicrophone: false,
   enableFrameValidation: true, // Optional; waits a fixed 200ms camera warmup before publishing; false skips it.
 });
 
-const videoView = new XmaxRealtimeVideoView({
+const videoView = new XmaxRealtimeDualVideoView({
   localTrack: localStream.videoTrack,
   videoContentMode: VideoContentMode.fill,
 });
@@ -257,7 +257,7 @@ const remoteStream = await realtime.startGeneration({
   localStream,
   context: new RealtimeContext({
     prompt: "视频中角色替换成参考图中角色",
-    referencePath: "https://platform.xmaxai.com/images/source/charx/chatx_image1.jpg",
+    referencePath: "https://cdn.22duck.cn/images/source/charx/chatx_image1.jpg",
   }),
 });
 
@@ -267,8 +267,47 @@ videoView.remoteTrack = remoteStream.videoTrack;
 Add a `video-container` element with an explicit width and height to your page.
 The view displays a local camera preview until the first generated frame arrives.
 
+Provide either `preset` or `videoFormat`, not both. A preset selects a model-supported
+resolution and the model's recommended frame rate. To specify your own frame rate
+or bitrate options, pass a `RealtimeVideoFormat` through `videoFormat` instead.
+Models without fixed presets, such as X2.0, require `videoFormat`.
+
+`RealtimeModel.x2_1` uses Agora and supports 1920×1080, 1080×1920, 1408×1408,
+1152×1536, and 1536×1152. `RealtimeModel.x2_0` uses VeRTC, defaults to 832×1472,
+and resolves other dimensions within its pixel budget. Known models use the realtime
+endpoint for `XmaxEnvironment.china` or `XmaxEnvironment.global`; custom model names
+are sent unchanged to the test endpoint.
+
+Once the camera preview reaches `RealtimeConnectionState.ready`, you can change
+its format before connecting. Presets retain the current frame rate and bitrate options:
+
+```javascript
+import { RealtimeCameraPreset } from "@xmaxai/web-sdk";
+
+await realtime.updateCameraFormat(RealtimeCameraPreset.resolution1408x1408);
+console.log(realtime.currentCameraVideoFormat, realtime.currentCameraPreset);
+```
+
+During generation, select an uplink or downlink quality level directly:
+
+```javascript
+import { RealtimeQualityLevel } from "@xmaxai/web-sdk";
+
+await realtime.setUplinkQualityLevel(RealtimeQualityLevel.l3);
+await realtime.setDownlinkQualityLevel(RealtimeQualityLevel.l2);
+console.log(realtime.uplinkQualityLevel, realtime.downlinkQualityLevel);
+```
+
+Automatic adaptation continues after a manual change on supported RTC providers;
+VeRTC applies manual levels only. L5 scales width and height to 50% of the media
+baseline. The default uplink minimum bitrate is 500 kbps, capped at the selected
+maximum bitrate; explicit bitrate settings take precedence.
+
 Use `updateUplinkVideoFormat` after creating the local camera stream, including during
-generation, to change upstream encoding without reconnecting or restarting the task:
+generation, to change upstream encoding without reconnecting or restarting the task.
+
+Dimensions are rounded down to multiples of four, preserving the exact aspect ratio
+when possible. The local track's `videoFormat` reflects the aligned dimensions.
 
 ```javascript
 await realtime.updateUplinkVideoFormat(new RealtimeVideoFormat({
@@ -285,9 +324,9 @@ await realtime.updateUplinkVideoFormat(new RealtimeVideoFormat({
 ### Generate from a local image
 
 Use `createLocalImageStream` instead of `createLocalCameraStream` to use a local
-image as the video input. It accepts a browser-decodable `File` or `Blob`, fits the
-image into the model's input dimensions without cropping, and continuously sends
-the same frame without audio. No image upload or camera permission is required.
+image as the video input. It accepts a browser-decodable `File` or `Blob`, preserves
+the complete image, and continuously sends the same frame without audio.
+No image upload or camera permission is required.
 
 ```javascript
 const localStream = await realtime.createLocalImageStream({
@@ -306,74 +345,163 @@ TRTC, Agora, and VeRTC use the existing external-video publishing path.
 `disconnect()` retains the image for reconnection; `close()` releases its resources.
 Animated images are captured as a single still frame.
 
-<br>
+For local images and local videos, the SDK reads the actual media dimensions,
+limits the pixel area, and aligns the result to multiples of 4 without enlarging it.
+The `videoFormat` width and height remain accepted for compatibility; frame rate
+and encoding settings are retained. External video tracks use the same size rules;
+pass their original dimensions in `createExternalVideoStream({ videoTrack, videoFormat })`.
+The SDK selects a separate model generation canvas without processing video frames.
+It sends `padding: "contain"` only when the resolved media and canvas aspect ratios
+differ. Requested output dimensions follow the fixed media size and downlink quality
+tier. Uplink quality changes do not change the generation canvas or media baseline.
 
-### Record a generated clip
+Camera, local-image, local-video, and external-track gestures use normalized
+coordinates in `[0, 1]` relative to their media, independent of encoding quality changes.
 
-Recording is off by default. Set `record: true` when starting a new generation
-to record approximately 20 seconds of the original remote video and audio.
-Register the listener before starting:
+### Supply externally captured video and PCM
 
-```javascript
-import { RealtimeRecordingEventType } from "@xmaxai/web-sdk";
+Use `createExternalVideoStream({ source })` to bind a `RealtimeExternalVideoSource`.
+The source declares its original `videoFormat` and optional `hasAudio` (default
+`false`), installs capture/decoder callbacks in `start(sink)`, and removes them in
+`stop()`. Your app continues to own its devices, decoder, and original frames.
 
-realtime.setRecordingListener(event => {
-  if (event.type === RealtimeRecordingEventType.failed) {
-    console.error("Recording failed", event.taskID, event.error);
-    return;
-  }
+```typescript
+import type { RealtimeExternalFrameSink, RealtimeExternalVideoSource } from "@xmaxai/web-sdk";
+import { RealtimeVideoFormat } from "@xmaxai/web-sdk";
 
-  const { blob, hasAudio, reason } = event.result;
-  // Save, upload, or preview blob here. Use blob.type to identify its format.
-  // completed: reached the time limit; interrupted: finalized an earlier end.
-  console.log(event.taskID, blob, hasAudio, reason);
-});
+let input: RealtimeExternalFrameSink | undefined;
+const source: RealtimeExternalVideoSource = {
+  videoFormat: new RealtimeVideoFormat({ width: 1280, height: 720, fps: 30 }),
+  hasAudio: true,
+  async start(sink) {
+    input = sink;
+    // Install your capture/decoder callbacks here. Do not wait for generation.
+  },
+  async stop() {
+    input = undefined;
+    // Remove callbacks here. Keep this safe to call while startup is pending.
+  },
+};
 
-await realtime.startGeneration({
-  localStream,
-  context: new RealtimeContext({ prompt: "Make the scene come alive" }),
-  record: true,
-});
+// Call from a user gesture when supplying audio.
+const local = await realtime.createExternalVideoStream({ source });
+// Bind local.videoTrack to an SDK video view, then connect/startGeneration as usual.
+
+function onCapturedVideo(frame: VideoFrame) {
+  try { input?.pushVideo(frame); } finally { frame.close(); }
+}
+function onDecodedAudio(frame: AudioData) {
+  try { input?.pushAudio(frame); } finally { frame.close(); }
+}
+
+// Once disconnected, detach the source and invalidate its old sink:
+await realtime.disconnect();
+await realtime.stopExternalVideoStream();
 ```
 
-- The timer starts when a remote video frame is available, independently of the
-  attached view. Frame interpolation, interaction effects, and overlays are not recorded.
-- Recording errors do not stop generation. `startGeneration` does not wait for the file.
-- Before delivery, the SDK shortens unusually long video-frame intervals and cuts
-  the same intervals from audio. Cuts align to complete audio-packet boundaries;
-  neither track is re-encoded, and all video frames are preserved. The resulting
-  clip can be shorter than the recording period. Speech during removed intervals
-  is lost, and audio splices can be audible. This does not reconstruct missing
-  motion or smooth visual jumps.
-- Gap removal runs after recording and does not delay RTC cleanup. It requires
-  a supported MP4 or WebM recording; if processing fails or times out, the SDK
-  logs a warning and returns the original clip instead.
-- `record` is ignored on condition updates; it cannot stop or restart a recording.
-- Restarting ends the old recording. `restart: true` with `record: true` reports a
-  recording failure for the new task; generation still restarts normally.
-- An early end returns `interrupted` only if the recorder finalizes a nonempty file
-  without an encoding error. Empty or failed recordings return `failed`.
-- Audio arriving later is included after its arrival. `hasAudio` indicates that an
-  enabled, unmuted remote audio track was observed during recording, not audible speech.
-- Formats depend on browser support; MP4 is not guaranteed. Background scheduling
-  can delay the stop timer, so files are not cropped to exactly 20.000 seconds.
-- Audio processing must be allowed by the browser. TRTC recording on mobile Safari
-  is currently unsupported because playback muting also disables audio reception.
-- Recording buffers are limited to 64 MiB. The SDK does not upload recordings or
-  retain a copy after delivery. Clear the listener with `setRecordingListener(undefined)`.
+- Both timestamps are nonnegative microseconds on one monotonic source timeline.
+  Keep timestamps increasing across loops and seeks; pace submission in real time.
+  Repeated/backward video times and overlapping audio buffers are ignored.
+- Submit video at the declared source dimensions, with rotation/mirroring already
+  applied. The SDK scales to the resolved media size and provides local preview;
+  camera resolution buckets do not apply. `sink.videoFormat` exposes this fixed size.
+- Audio must be decoded PCM (`AudioData`), 8–192 kHz, 1–8 channels, at most one second
+  per packet. Its format must remain fixed during a binding. Samples are copied,
+  downmixed to mono and resampled through AudioWorklet (some browsers expose a
+  two-channel track containing identical mono samples). Browser audio tracks are
+  continuous, so gaps become silence; original PTS cannot be forwarded as native
+  RTC packet timestamps. There is a shared 20 ms scheduling allowance and bounded
+  queuing, not an exact replica of native RTC frame submission.
+- Audio is uploaded only after RTC publication. `disconnect()` flushes queued
+  audio but preserves the source/video preview; reconnection does not replay old
+  audio. No microphone permission is requested and no input audio is played locally.
+- `source.start()` must return when callbacks are installed, without waiting for a
+  first frame or generation. Startup is limited to 10 seconds; `stop()` is called
+  after startup failure/cancellation too. `stopExternalVideoStream()` and `close()`
+  invalidate the sink, clear preview, and release SDK-created tracks. A source error
+  reported via `sink.reportError(error)` ends the connection and local stream.
+- Video input requires `VideoFrame` and Canvas capture. Audio additionally requires
+  a secure context, AudioWorklet and an unlocked AudioContext. This path uses the
+  existing TRTC, Agora and VeRTC external-track adapters; it does not upload files.
+
+The existing `createExternalVideoStream({ videoTrack, videoFormat })` form remains
+video-only and keeps its clone/ownership behavior. Do not combine it with `source`.
+
+<br>
+
+### Observe remote audio and video frames
+
+The SDK does not record or package files. Your app decides when to observe media,
+encode it, and stop recording. Register from a user gesture (for example a button
+click) and await setup before expecting callbacks:
+
+```javascript
+await realtime.setRemoteMediaFrameListener(packet => {
+  if (packet.content.type === "video") {
+    const { frame } = packet.content.frame;
+    try {
+      // Submit synchronously to your encoder, or transfer ownership to your worker.
+      // Both tracks use packet.presentationTimeStamp in microseconds.
+      console.log(packet.streamID, packet.presentationTimeStamp, frame.displayWidth);
+    } finally {
+      frame.close(); // If retained/transferred asynchronously, release it there instead.
+    }
+  } else {
+    const { data, sampleRate, channels, samplesPerChannel } = packet.content.frame;
+    // Owned S16LE, interleaved PCM; data remains valid after this callback.
+    console.log(data, sampleRate, channels, samplesPerChannel);
+  }
+});
+
+// Stop observing at any time, without stopping generation or changing playback:
+await realtime.setRemoteMediaFrameListener(undefined);
+```
+
+- Video is copied from the original remote track, excluding
+  mirroring, cropping, interaction effects, and UI overlays.
+- Audio is taken before playback-volume processing. Muting playback does not mute
+  observed PCM on supported platforms. No synthetic silence is added when no audio
+  track exists; audio published later is observed after subscription.
+- Audio and video share a receiver presentation clock, not sender/source-file
+  timecode. Use one recording origin for both tracks; do not pair packets by
+  callback arrival time. Audio time advances by sample count between discontinuities.
+- A new result binding has a new opaque streamID. The first packet of each track,
+  format/clock changes, and dropped output are marked isDiscontinuous. Your app
+  decides whether to retain gaps, segment, or trim both tracks. The SDK neither
+  compresses timestamps nor imposes a recording-duration limit.
+- Callbacks run on the main thread in delivery order, not cross-track PTS order.
+  Keep them lightweight and move encoding to a worker. Pending SDK delivery is
+  bounded to 256 packets and 32 MiB; already-delivered video frames belong to your
+  app and must be closed. Removing/replacing the listener discards queued output.
+- Requires a secure context, VideoFrame, requestVideoFrameCallback, and AudioWorklet.
+  Registration rejects when setup is unavailable, cancelled, or blocked by audio
+  autoplay policy. TRTC on mobile Safari currently cannot provide PCM independently
+  of playback and is rejected without interrupting generation.
+- Browser frame callbacks can skip frames, especially under main-thread load or
+  in background tabs. This is not a lossless dump of every decoded frame.
+- Without a listener, no observation video, audio graph, or output queue is started.
+  Disconnect preserves the listener for a later connection; close removes it and
+  releases the audio context. Re-register before reusing a closed manager.
 
 <br>
 
 ### Using React
 
-Use `XmaxRealtimeVideo` as your primary React view. Store the local and remote
+`XmaxRealtimeVideoView` displays a single local or remote track;
+`XmaxRealtimeDualVideoView` overlays local and remote tracks and switches between them.
+Their React counterparts are `XmaxRealtimeVideo` and `XmaxRealtimeDualVideo`.
+The dual view exposes `remoteVideoFadeInDuration` in seconds (default `0.3`),
+also available as a React prop. Zero, negative, or nonfinite values disable the
+fade-in animation without skipping rendering warmup. Changes apply to the next fade-in.
+
+Use `XmaxRealtimeDualVideo` as your primary React view. Store the local and remote
 tracks in component state, updating them dynamically as streams become available:
 
 ```jsx
-import { XmaxRealtimeVideo } from "@xmaxai/web-sdk/react";
+import { XmaxRealtimeDualVideo } from "@xmaxai/web-sdk/react";
 import { VideoContentMode } from "@xmaxai/web-sdk";
 
-<XmaxRealtimeVideo
+<XmaxRealtimeDualVideo
   localTrack={localTrack}
   remoteTrack={remoteTrack}
   videoContentMode={VideoContentMode.fill}
@@ -381,12 +509,12 @@ import { VideoContentMode } from "@xmaxai/web-sdk";
 />
 ```
 
-See the [React component](./packages/xmax-sdk/src/react/XmaxRealtimeVideo.tsx) for state binding and the
+See the [React component](./packages/xmax-sdk/src/react/XmaxRealtimeDualVideo.tsx) for state binding and the
 [example project](#example-project) for a complete implementation.
 
 ### Interact with the generated video
 
-`XmaxVideo` and `XmaxRealtimeVideo` support dragging on the remote output with a
+`XmaxRealtimeVideo` and `XmaxRealtimeDualVideo` support dragging on the remote output with a
 mouse, pen, or multiple touch points. Interaction becomes available after generation
 starts. The SDK maps the displayed coordinates to the model input and sends the
 trajectory automatically; local previews do not send interaction events.
@@ -398,6 +526,11 @@ Use `trajectoryRenderer` to supply a `TrajectoryEffectRendering` implementation 
 custom visuals, or leave it undefined to use the default glowing trail. A renderer
 only controls visuals, not sampling or signaling; use a separate instance per view
 and release its animation resources in `reset()`.
+
+`DefaultTrajectoryEffectRenderer` is also exported for shared interaction overlays
+that need the exact SDK visuals. Mount its `element`, feed viewport CSS-pixel
+`TrajectoryPoint` values through `renderBegan` / `renderMoved` / `renderEnded`,
+and call `reset()` before removing it. This visual renderer does not send tracks.
 
 The generated response to dragging depends on the model and generation prompt.
 
@@ -411,9 +544,24 @@ input stream or starting generation.
 | Listener | Purpose |
 | --- | --- |
 | `setStateListener` | Observe pipeline states and termination reasons during real-time generation. |
-| `setLaunchTimingListener` | Monitor camera, connection, first-frame, and total launch timings. |
-| `setLocalVideoStatisticsListener` | Monitor uplink video resolution, frame rate, and bitrate. |
-| `setRemoteVideoStatisticsListener` | Monitor downlink video statistics, packet loss, playback buffer delay, RTT, and estimated RTC end-to-end delay. |
+| `setTimingListener` | Monitor camera, connection, first-frame, and total startup timings. A summary is logged when render warmup completes and performance logging is enabled. |
+| `setNetworkQualityListener` | Monitor `uplink` and `downlink` quality using `RealtimeNetworkQualityLevel`. |
+| `setUplinkVideoStatisticsListener` | Monitor resolution, capture/encode/send frame rates, bitrate, and packet loss. |
+| `setDownlinkVideoStatisticsListener` | Monitor resolution, decode/RTC-render frame rates, bitrate, packet loss, and estimated RTC end-to-end delay. |
+
+Unavailable video metrics are `undefined`, not inferred from another stage's frame
+rate. Both video statistics types use `packetLossPercent` (0–100) and `bitrateKbps`;
+downlink `renderFrameRate` is reported by the RTC provider. Network quality ranges from
+`unknown` to `excellent`, `good`, `poor`, `bad`, `veryBad`, and `down`.
+RTT and playback-buffer diagnostics remain in RTC performance logs rather than
+these public statistics structures. Listeners receive `undefined` when their
+current snapshot is cleared.
+
+Automatic uplink/downlink quality adaptation is enabled by default on supported RTC
+providers. Set `isAdaptiveQualityEnabled: false` in `RealtimeConfiguration` to start
+each connection at L1 without reading or writing quality history. Manual changes
+through `setUplinkQualityLevel` and `setDownlinkQualityLevel` remain available,
+and statistics listeners continue to receive updates.
 
 For example, monitor state changes and errors:
 
@@ -441,7 +589,7 @@ the 1000 ms render warmup are complete, then becomes
 dismiss your loading UI. Without an SDK video view, the state stays `starting`.
 
 At generation start, the SDK sends `params.mirror: true` for the front camera
-and `false` for the rear camera, local files, and network videos. The backend
+and `false` for the rear camera and local files. The backend
 mirrors the input; generated results are not automatically mirrored in the
 browser. The front-camera local preview remains mirrored independently.
 This flag is sent only with `start`: switching cameras during an active generation
@@ -487,6 +635,19 @@ position to the backend.
 A complete example application featuring React is available in
 [`examples/xlab-react`](./examples/xlab-react).
 It demonstrates real-time generation using live camera feeds and reference images.
+
+During generation, click **录制** to record the remote output and click it again to
+stop. A preview/save dialog opens when encoding finishes. The example uses
+`setRemoteMediaFrameListener` and encodes in a Worker; the recorder and its
+`mediabunny` dependency belong to XLab, not the SDK. It prefers MP4 (H.264/AAC),
+with WebM (VP8/Opus) as a fallback. Playback muting does not mute recorded audio on
+supported platforms. Recordings exclude UI overlays, and retain
+the receiver timeline rather than trimming network stalls. Ending a session also
+finishes the current recording. To bound memory, XLab automatically finishes near
+128 MiB of encoded media; overloaded encoders report an error instead of queuing
+unbounded raw frames. Closing/reloading the page discards unsaved recordings.
+Native save-location selection depends on browser support; otherwise the save
+button starts a regular download.
 
 <br>
 

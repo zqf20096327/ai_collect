@@ -20,11 +20,13 @@
 
 ## 🌐 Web & Desktop
 
-- **在线体验**：<https://liguijiang.com> — 对话 / 工作双模式，默认免费模型，也可使用自己的 DeepSeek Key
-- **Windows 桌面版**：<https://liguijiang.com/download.html> — 官网同款界面 + 本地文件工作台（按类型整理、批量重命名、导出对话）
+- **在线体验**：<https://liguijiang.com> — 对话 / 工作 / 文档 / 编程四种模式，默认免费模型，也可使用自己的 DeepSeek Key
+- **Windows 桌面版 v1.2**：<https://liguijiang.com/download.html> — 文档生成 + 编程模式（AI 直接建项目、写代码、装依赖、把服务跑起来）+ 本地文件工作台
 - **源码**：[`web/`](./web)（FastAPI + 前端）、[`desktop/`](./desktop)（Electron）
 
 ![Web](./web/docs/preview-hero.png)
+
+![Desktop](./web/web/assets/img/desktop-preview.png)
 
 由李贵江等人组成的团队开发与维护。
 

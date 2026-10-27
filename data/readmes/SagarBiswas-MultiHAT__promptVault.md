@@ -4,6 +4,8 @@
 
 <!-- Badges Section -->
 <p align="left">
+  <a href="https://microsoftedge.microsoft.com/addons/detail/promptvault-ai-prompt-m/ckhifhpbhebgnfomgcojfakpampkijni"><img src="https://img.shields.io/badge/Microsoft%20Edge%20Add--ons-v2.3.1%20Live-0078D7?logo=microsoftedge&logoColor=white" alt="Microsoft Edge Add-ons: Live" /></a>
+  &nbsp;
   <a href="https://promptvault.multihat.dev/"><img src="https://img.shields.io/website?url=https%3A%2F%2Fpromptvault.multihat.dev&up_message=online&down_message=offline&label=Live%20Demo&color=10B981&logo=vercel" alt="Live Demo" /></a>
   &nbsp;
   <a href="https://github.com/SagarBiswas-MultiHAT/promptVault/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/SagarBiswas-MultiHAT/promptVault/ci.yml?branch=main&label=CI%20Build&logo=githubactions&logoColor=white" alt="CI Status" /></a>
@@ -29,7 +31,7 @@
   &nbsp;
   <img src="https://img.shields.io/badge/Sync-Supabase%20RLS-3ECF8E?logo=supabase&logoColor=white" alt="Supabase Sync" />
   &nbsp;
-  <img src="https://img.shields.io/badge/Extension-Manifest%20V3-0284C7?logo=googlechrome&logoColor=white" alt="Extension: Manifest V3" />
+  <img src="https://img.shields.io/badge/Extension-Manifest%20V3-0284C7?logo=microsoftedge&logoColor=white" alt="Extension: Manifest V3" />
   &nbsp;
   <img src="https://img.shields.io/badge/React-19.0-61DAFB?logo=react&logoColor=black" alt="React 19" />
   &nbsp;
@@ -40,6 +42,7 @@
   <img src="https://img.shields.io/badge/Testing-Playwright%20%2B%20Vitest%20(141%20Tests)-E33D26?logo=playwright&logoColor=white" alt="Testing" />
 </p>
 <p align="left">
+  <strong><a href="https://microsoftedge.microsoft.com/addons/detail/promptvault-ai-prompt-m/ckhifhpbhebgnfomgcojfakpampkijni">🧩 Install on Microsoft Edge</a></strong> &nbsp;•&nbsp;
   <strong><a href="https://promptvault.multihat.dev/">🚀 Launch Live Web App</a></strong> &nbsp;•&nbsp;
   <strong><a href="docs/README.md">📖 Architecture & Docs Portal</a></strong> &nbsp;•&nbsp;
   <strong><a href="diagrams/">🗺️ 300% DPI Architecture Diagrams</a></strong> &nbsp;•&nbsp;
@@ -56,6 +59,7 @@
   - [Docs-as-Code Technical Documentation Portal](#docs-as-code-technical-documentation-portal)
 - [What is PromptVault?](#what-is-promptvault)
 - [What Can It Do? (Features)](#what-can-it-do)
+  - [Browser Extension (Edge & Chromium)](#-browser-extension-microsoft-edge--chromium)
 - [How Does It Compare?](#how-does-it-compare)
 - [Requirements](#what-do-you-need-to-run-it)
 - [Getting Started (Step by Step)](#getting-started-step-by-step)
@@ -201,12 +205,31 @@ Switch between a dark theme (easy on the eyes at night) and a light theme (great
 ### 📱 Works on Mobile Too
 The app is fully usable on phones and tablets. The sidebar slides in and out, buttons are large enough to tap, and the layout adjusts to any screen size.
 
-### 🧩 Chromium Browser Extension (Manifest V3)
-PromptVault includes a native browser extension for Chrome, Brave, Microsoft Edge, and Opera that brings your encrypted prompt vault directly into your daily AI workflows:
-- **In-Chat Quick Picker Overlay**: Press `Alt+P` (or `Option+P` on Mac) inside ChatGPT, Claude, DeepSeek, Google AI Studio, or v0 to search your prompts and inject them into the chat input in one click. Isolated inside a closed Shadow DOM to avoid host CSS pollution.
-- **One-Click Web Clipping**: Select text on any web page, right-click, and choose **Save to PromptVault** to store ideas directly into your vault.
-- **Local & Cloud Sync**: Seamlessly syncs with your desktop vault using `chrome.storage.local` and optional Supabase cloud sync via Google OAuth.
-- **Easy Installation**: Download the pre-built `promptvault-extension-v2.3.1.zip` from [Releases](https://github.com/SagarBiswas-MultiHAT/promptVault/releases/latest), enable Developer Mode in your browser extensions page, and click **Load unpacked**.
+### 🧩 Browser Extension (Microsoft Edge & Chromium)
+
+PromptVault is officially available on the **Microsoft Edge Add-ons Store** and as a cross-browser Manifest V3 package for Chrome, Brave, and Opera. It brings your encrypted prompt vault directly into your daily AI workflows:
+
+<p align="left">
+  <a href="https://microsoftedge.microsoft.com/addons/detail/promptvault-ai-prompt-m/ckhifhpbhebgnfomgcojfakpampkijni">
+    <img src="https://img.shields.io/badge/Get%20it%20from-Microsoft%20Edge%20Add--ons-0078D7?style=for-the-badge&logo=microsoftedge&logoColor=white" alt="Get it from Microsoft Edge Add-ons" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://microsoftedge.microsoft.com/addons/detail/promptvault-ai-prompt-m/ckhifhpbhebgnfomgcojfakpampkijni">
+    <img src="docs/img/Edge%20Add-ons.png" alt="PromptVault Live on Microsoft Edge Add-ons Store" width="850" />
+  </a>
+  <br />
+  <em>Figure: Official PromptVault listing on the Microsoft Edge Add-ons Store (Version 2.3.1). Click the screenshot to open the live store page.</em>
+</p>
+
+- **Official 1-Click Store Installation**: Install directly from the [Microsoft Edge Add-ons Store](https://microsoftedge.microsoft.com/addons/detail/promptvault-ai-prompt-m/ckhifhpbhebgnfomgcojfakpampkijni) with automatic background updates (Store ID: `0RDCK9QZNVBV`, Extension ID: `ckhifhpbhebgnfomgcojfakpampkijni`).
+- **In-Chat Quick Picker Overlay (`Alt+P`)**: Press `Alt+P` (or `Option+P` on Mac) inside ChatGPT, Claude, Google Gemini, DeepSeek, Perplexity, or any webpage to search and inject prompts into the active chat box in one click. Isolated inside a shadow DOM to ensure host CSS isolation.
+- **In-Chat Command Trigger (`/pv`)**: Type `/pv ` directly inside any AI chat input to open an instant prompt suggestion picker without moving your hands from the keyboard.
+- **1-Click Web Clipping**: Select any text on any webpage, right-click, and choose **Save selection to PromptVault** to store prompt snippets directly into your vault.
+- **Offline-First AES-256-GCM Security**: All prompts stay encrypted on your local machine using hardware-backed Web Crypto APIs.
+- **Optional Multi-Device Cloud Sync**: Sign in with Google via `chrome.identity` to sync your encrypted prompt library across multiple computers with Supabase.
+- **Chrome & Brave Sideloading**: Pre-built packages (`promptvault-extension-v2.3.1.zip`) are available under [Releases](https://github.com/SagarBiswas-MultiHAT/promptVault/releases/latest) for side-loading in Developer Mode via `Load unpacked`.
 
 ---
 
@@ -217,6 +240,7 @@ Why choose PromptVault instead of saving prompts in a general note-taking app or
 | Capability | PromptVault | Notion / Docs | Obsidian | Web Prompt Directories |
 | :--- | :--- | :--- | :--- | :--- |
 | **100% Offline-First** | Yes (zero network requirement) | No (cloud-dependent) | Yes (local markdown) | No (cloud-dependent) |
+| **Direct Browser Integration** | Yes (Live Edge Add-on + Alt+P Overlay) | Web clipper only | Third-party plugin | None / Copy-paste |
 | **Client-Side AES-256-GCM Encryption** | Yes (PBKDF2 + recovery key) | No | Community plugins only | No (stored on third-party servers) |
 | **Built-in AI Prompt Refinement** | Yes (Gemini + Groq fallback) | Paid add-on required | Third-party plugin required | Limited or static only |
 | **Variable Template Injection (`{{var}}`)** | Yes (interactive form before copy) | No native support | Templater plugin required | Rare |

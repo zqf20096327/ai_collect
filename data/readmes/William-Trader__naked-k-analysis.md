@@ -4,6 +4,7 @@
 
 [![ci](https://github.com/William-Trader/naked-k-analysis/actions/workflows/ci.yml/badge.svg)](https://github.com/William-Trader/naked-k-analysis/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
+[![version](https://img.shields.io/badge/version-3.0.0-blue.svg)](CHANGELOG.md)
 [![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg)](#engineering)
 [![License: PolyForm Noncommercial 1.0.0](https://img.shields.io/badge/License-PolyForm%20Noncommercial%201.0.0-blue.svg)](LICENSE)
 [![Watermarked](https://img.shields.io/badge/code-watermarked%20(NKA)-orange.svg)](WATERMARK.md)
@@ -11,6 +12,22 @@
 > **许可 / License**: [PolyForm Noncommercial License 1.0.0](LICENSE).
 > **仅供价格行为交易者研究使用；禁止任何商业用途；违法必究。**
 > **For price-action traders and researchers only. Commercial use is prohibited. Violators will be prosecuted.**
+
+---
+
+## 面向需求
+
+> 先看要解决什么，再看有什么功能。
+
+| 需求 | 系统的回答 |
+|---|---|
+| 要**能复核**的判断，不要黑箱 | 每条结论都能追到 `BAR / STRUCT / REGIME / POLICY / PLAN` 行，数字可回查 |
+| 要**可信的价格**，不被单一交易所带偏 | 五源按成交额 × 质量加权，单源上限 60%，偏差 >0.5% 直接告警 |
+| 要**能执行**的计划，不要“注意风险” | `PLAN` 给 entry/stop/target/R:R/仓位/失效/TTL；R:R < 1.5 不出手 |
+| 要**克制**的提醒，不要刷屏 | P0/P1/P2 分级、冷却、30 分钟有效期；P2 只进简报 |
+| 要**可复现**的验证，不要吹收益 | 1h 盘中路径回测、有效样本量、BH 校正；没有正期望就写没有 |
+
+一句话：这套系统面向“拿去做决策”的需求，不面向“看起来专业”的需求。
 
 ---
 

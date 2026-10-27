@@ -60,7 +60,7 @@
 ### 4. 设置触发与角色
 
 - 在「消息触发」分组中修改「触发正则表达式」，改为你希望的触发方式（默认示例为 @ 骰娘，可直接替换）；
-- 在「角色设定」分组中修改「角色设定」，决定 AI 扮演的角色（`roles[].name` 为名称，可用 `.ai role <名称>` 切换；`prompt` 为设定内容）。推荐用[配置生成器](https://error2913.github.io/aiplugin4-config/)生成后粘贴。「上下文」分组可调整「预设上下文」「对话保存轮数」「上下文最大token」等上下文参数。
+- 在「角色设定」分组中修改「角色设定」，决定 AI 扮演的角色（`roles[].name` 为名称，可用 `.ai role <名称>` 切换；`prompt` 为设定内容）。推荐用[配置生成器](https://error2913.github.io/aiplugin4-config/)生成后粘贴。「上下文」分组可调整「预设上下文」「上下文预算」「摘要水位」等上下文参数。
 
 ### 5. 开始对话
 
@@ -102,7 +102,7 @@
     - [后端](#后端)
     - [公开会话](#公开会话)
     - [资源](#资源)
-    - [prompt 模板](#prompt-模板)
+    - [提示词架构（prompt）](#提示词架构prompt)
   - [💻 完整命令手册](#-完整命令手册)
     - [管理员命令](#管理员命令)
     - [基础控制命令](#基础控制命令)
@@ -336,24 +336,17 @@ AI骰娘4 是一款运行在 [SealDice](https://docs.sealdice.com/) 上的智能
 
 ### 上下文
 
+> 上下文采用只追加账本；压缩只生成摘要、不删除原文，模型可用 read_raw 回查。
+
 | 设置项 | 说明 |
 |:---:|:---|
 | 预设上下文 | 每框一条预设上下文，role 按 user / assistant 轮流出现，位于上下文最前面，帮助模型学习对话语气 |
-| 对话保存轮数 | 上下文超过「上下文最大token」后保留的最近真实用户轮数（默认 5）；更早消息会先归档沉淀为观察/长期记忆，原文同时写入归档分片（可用 read_raw kind=user id=arc:序号 回查），再从上下文移除 |
-| 上下文最大token | 持久化上下文 token 上限（默认 1000000）；填 0 / 负数 = **跟随报错探测到的模型真实窗口 × 0.8**（未探测到回退 100 万），显式正数优先；超过后触发上面归档逻辑 |
-| 插入system message间隔轮数 | 需小于「对话保存轮数」的二分之一才能生效，为 0 时不生效，预设上下文不计入轮数 |
-| 消息压缩阈值 | 用户消息（含连续多条合并后）超过该字符数时，使用压缩智能体压缩后存入上下文（仅"热态"即正在对话时；待机时只做纯代码截断）；压缩前原文自动保留，可用 read_raw kind=user 按 msg_id/blk:id 查看（默认 2000） |
-| 冷态窗口字数 | 待机（冷态）下模型可见的最近内容字数（默认 5000）：超出部分折叠为纯代码摘要（不调用模型）；0=不折叠。冷态 = **连续 10 分钟**无相关活动（内置常量，不可配） |
-| 冷态单条截断字数 | 待机（冷态）时单条消息超过该字数则留头留尾（默认 500）；原文仍可用 read_raw 查；0=不截断 |
-| 归档保留原文 | 开启（默认）：归档时把群聊原文写入归档分片（可用 read_raw kind=user id=arc:序号 回查），并调用总结智能体沉淀记忆；关闭：归档**不留原文、不写分片**（省存储），但**仍会调用总结智能体沉淀记忆**——历史依旧进长期记忆，只是之后无法回查原文（关掉它只省存储、不省 LLM） |
-| 窗口上限字数 | 上下文里保留的最近内容字数上界（默认 20000）：超出部分移出到原文分片（session_<会话ID>:raw:<序号>，可用 read_raw kind=user id=raw:序号 回查），使会话存档体积与消息总量解耦；0=不移出 |
-| 结算水位 | 待结算积压达到该 token 数才把窗口外原文总结进长期记忆（默认 3000）；0=关闭自动结算 |
-| 结算最小门槛 | 上下文总量低于该 token 数时不做 LLM 结算（默认 20000），避免短会话也调总结智能体 |
-| 结算空闲门槛 | 距上次相关活动达到该秒数才结算（默认 600）；0=不要求空闲；转冷时也会结算一次 |
-| 单次结算调用上限 | 每次结算最多处理的**分片数**（默认 2）。注意是分片数而非 LLM 调用数：每个分片内部还有失败重试 |
-| 原文分片保留天数 | 原文分片（归档/窗口移出）超过该天数后惰性淘汰（默认 30）；0=不按时间淘汰 |
-| 原文分片上限 | 每个会话的分片数量上限（默认 200）：超出时把最旧的分片置空 |
-| 待机入库配额 | 待机会话每小时最多入库多少条普通群消息（默认 0=不限制）；超出后只计数不入库，用于防极端灌水群 |
+| 上下文预算 | 上下文 token 预算（默认 0）；0 = 跟随报错探测到的模型真实窗口 × 0.8（未探测到回退 100 万），显式正数优先 |
+| 摘要水位 | 后台滚动摘要的积压 token 水位（默认 6000）；0 = 关闭自动摘要 |
+| 待机入库配额 | 待机会话每小时最多入库多少条普通群消息（默认 0=不限制） |
+| 每小时后台压缩上限 | 每小时最多自动压缩次数（默认 6）；0=不限 |
+
+> 旧版「上下文最大token / 对话保存轮数 / 窗口上限字数 / 冷态窗口字数 / 消息压缩阈值 / 结算水位…」等键已不再注册；升级后请按新键重新配置。
 
 ### 消息接收
 
@@ -393,6 +386,11 @@ AI骰娘4 是一款运行在 [SealDice](https://docs.sealdice.com/) 上的智能
 | 图片识别展示截断字数 | 图片识别转文字结果超过该字数时不再压缩，改为仅展示开头部分；完整识别原文保留，可用 `read_raw kind=image` 按图片 ID 阅读（0 为不截断不保留，默认 5000） |
 | 工具产出图片自动类型标签 | 生图/表情包/MCP 图片等工具产出的新图片入库时，按产出者自动打英文类型标签（`ai-generated` / `meme` / `mcp-image` / `tool-image`）；不调用识图模型（默认开） |
 | 自动类型标签每图上限 | 每张工具产出图片最多自动打几个类型标签（1~4，默认 2） |
+| 模型图片单边上限 / 模型图片目标长边 | 模型能接受的单边像素（默认 8192，0=不检查）与交给模型前缩放到的长边（默认 2048）。图床 1.0.16+ 会按目标长边提供 `/m` 模型变体；超限图只保留 `[img:ID]` 文本 |
+| 每轮最多图片数 / 每条工具结果最多升格图片数 | 默认 8 / 4（0=不限）；防止一轮几十张图撑大请求 |
+| 单张内联上限KB / 每轮内联总字节KB / 每轮最多内联图片数 | 下载失败等异常路径改为内联时只允许 `/m` 模型变体，默认单张 1MB、整轮 4MB、最多 4 张，超限只留文本（防 413） |
+| 模型工具结果图片 | 是否允许 tool 消息携带图片块（默认开；部分网关不支持 tool 图可关） |
+| 图片被模型拒绝时自动降级 / 图片降级通知 | 模型报「不支持的图片」时定位并标记该图为模型不可用、改为文本标签重发本轮，可通知骰主；`.ai img unmark <图片ID\|all>` 清除标记 |
 
 ### 工具
 
@@ -439,7 +437,7 @@ AI骰娘4 是一款运行在 [SealDice](https://docs.sealdice.com/) 上的智能
 | 设置项 | 说明 |
 |:---:|:---|
 | 是否启用MCP | MCP 功能总开关，默认关闭；开启后才会解析并连接下方「MCP服务器」中的服务器并注册其工具，未安装对应 MCP 后端时建议保持关闭 |
-| MCP服务器 | **标准 MCP 配置 JSON**（与 Claude Desktop / Cursor 的 `.mcp.json` 顶层结构一致）：`{"mcpServers":{"服务器名":{"type":"http","url":"…","headers":{…}}}}`。键 = 服务器名；`type` 仅支持 `http` / `streamable-http`，stdio（`command`）与 SSE 会被跳过；`platform` 是 aiplugin4 扩展字段（可选平台白名单，`[]` 或省略 = 所有平台）。生成器里用「启用」开关控制是否写入，关闭的服务器不会出现在 JSON 里（不写 `enabled` 字段）。工具名称、描述与参数 schema 连接后经远端 `tools/list` 自动发现并注册（来源分组 = 服务器名），同名冲突自动跳过；服务器 platform 与当前平台不匹配时其工具不可见且调用被拦截。**插件默认空配置（不预置服务器）**，避免没配 MCP 时启动/对话报错；配置生成器的「MCP」页仍保留三台示例：mcp-files-exec（read_file/list_dir/write_file/delete_file/download_file/run_shell/export_file，相对路径与命令工作目录按 AI 会话隔离）、md-html-render（platform: [QQ]，render_markdown/render_html）、mcp-browser（browser_navigate/click/type/snapshot/take_screenshot/wait_for/close 等浏览器操作，按 AI 会话隔离），按需复制使用。格式定义见 [MCP 官方规范](https://modelcontextprotocol.io/specification/latest)；推荐用[配置生成器](https://error2913.github.io/aiplugin4-config/)「MCP」页生成后粘贴 |
+| MCP服务器 | **标准 MCP 配置 JSON**（与 Claude Desktop / Cursor 的 `.mcp.json` 顶层结构一致）：`{"mcpServers":{"服务器名":{"type":"http","url":"…","headers":{…}}}}`。键 = 服务器名；`type` 仅支持 `http` / `streamable-http`，stdio（`command`）与 SSE 会被跳过；`platform` 是 aiplugin4 扩展字段（可选平台白名单，`[]` 或省略 = 所有平台）；`exposeInstructions`（可选，默认 `false`）= 是否把服务器 `initialize` 返回的 `instructions` 以低权威 runtime 段注入提示词（外部清洗、单服务器 ≤1000 字符、合计 ≤2000 字符）。生成器里用「启用」开关控制是否写入，关闭的服务器不会出现在 JSON 里（不写 `enabled` 字段）。工具名称、描述、参数 schema 与 `annotations` 连接后经远端 `tools/list` 自动发现并注册（来源分组 = 服务器名；`destructiveHint=true` 的工具按敏感工具处理），同名冲突自动跳过；服务器 platform 与当前平台不匹配时其工具不可见且调用被拦截。MCP prompts/resources 通过 `.ai mcp prompt list|get` 与 `mcp_list_resources`/`mcp_read_resource` 按需使用，不会自动注入 system prompt。**插件默认空配置（不预置服务器）**，避免没配 MCP 时启动/对话报错；配置生成器的「MCP」页仍保留三台示例：mcp-files-exec（read_file/list_dir/write_file/delete_file/download_file/run_shell/export_file，相对路径与命令工作目录按 AI 会话隔离）、md-html-render（platform: [QQ]，render_markdown/render_html）、mcp-browser（browser_navigate/click/type/snapshot/take_screenshot/wait_for/close 等浏览器操作，按 AI 会话隔离），按需复制使用。格式定义见 [MCP 官方规范](https://modelcontextprotocol.io/specification/latest)；推荐用[配置生成器](https://error2913.github.io/aiplugin4-config/)「MCP」页生成后粘贴 |
 | MCP会话空闲回收分钟 | MCP 会话（含浏览器操作）空闲超过该分钟数后自动回收，释放服务端浏览器状态；设为 0 不回收（默认 10） |
 | MCP每服务器最大会话数 | 每个 MCP 服务器最多同时保留的 AI 会话数，超出后按最近使用时间回收最旧会话；浏览器操作按 AI 会话隔离（默认 3） |
 
@@ -464,9 +462,9 @@ AI骰娘4 是一款运行在 [SealDice](https://docs.sealdice.com/) 上的智能
 
 | 设置项 | 说明 |
 |:---:|:---|
-| 技能列表 | 整份技能配置（JSON v1）：`{"version":1,"skills":[{"name":"技能名","description":"摘要","platform":["QQ"],"content":"技能正文"}]}`。`platform` 省略或 `[]` = 所有平台；`name` 唯一；`description` 省略/为空时自动取正文首段。生成器「技能」页支持直接拖入标准 `SKILL.md`（`---` frontmatter + 正文）转成 JSON，推荐生成后粘贴。默认只含「录卡」技能（Excel 角色卡录入）；SealDice 核心/扩展指令与 OB11 API 的调用帮助已作为默认知识库提供（「知识库」页签默认库：核心指令 / 扩展指令 / ob11-api）。配置修改后下一条消息自动生效（也可用 `.ai skill refresh` 强制重解析） |
+| 技能列表 | 整份技能配置（JSON v1）：`{"version":1,"skills":[{"name":"技能名","description":"摘要","platform":["QQ"],"content":"技能正文"}]}`。`platform` 省略或 `[]` = 所有平台；`name` 唯一；`description` 省略/为空时自动取正文首段。生成器「技能」页支持直接拖入标准 `SKILL.md`（`---` frontmatter + 正文）转成 JSON，推荐生成后粘贴。默认只含 `Character Card Import` 技能（Excel 角色卡录入，摘要/正文为英文）；SealDice 核心/扩展指令与 OB11 API 的调用帮助已作为默认知识库提供（「知识库」页签默认库：`Core Commands` / `Extension Commands` / `ob11-api`）。配置修改后下一条消息自动生效（也可用 `.ai skill refresh` 强制重解析） |
 
-> system prompt 的「可用技能」段只列「当前平台可用且本会话未关闭」的技能摘要（名称 + 描述，1500 字符预算内尽可能多列，单条描述超过 200 字符截断；描述为空自动取正文首段）；技能过多时超出部分用 `skill_list` 查看完整列表、用 `use_skill` 按需获取正文（支持 `offset` 续读超长正文）。`.ai skill list` 可查看当前平台技能与开关状态，`.ai skill on/off <名称>` 按会话开关。配置修改后下一条消息自动生效。
+> system prompt 的「Available skills」段只列「当前平台可用且本会话未关闭」的技能摘要（名称 + 描述，1500 字符预算内尽可能多列，单条描述超过 240 字符截断；描述为空自动取正文首段）；技能过多时超出部分用 `skill_list` 查看完整列表、用 `use_skill` 按需获取正文（支持 `offset` 续读超长正文）。`.ai skill list` 可查看当前平台技能与开关状态，`.ai skill on/off <名称>` 按会话开关。配置修改后下一条消息自动生效。
 
 ### 子代理
 
@@ -478,34 +476,42 @@ AI骰娘4 是一款运行在 [SealDice](https://docs.sealdice.com/) 上的智能
 
 > 委派工具：`subagent`（spawn：子代理看不到本会话历史，任务必须自包含）、`subagent_fork`（fork：继承本会话已完成轮次、看不到当前正在执行的这一轮）。参数：`prompt`（必填）/`description`/`persona`/`run_in_background`（后台执行并返回 job id，用 `job_list` / `job_output` / `job_kill` 收取结果）/`continuable`（建立可续跑子代理并立即返回 id，之后用 `send_message` 续派、`interrupt_agent` 打断、`list_agents` 盘点）。前台调用直接返回最终结论；子代理有独立上下文与工具面（按上面配置收窄），不向聊天发消息。
 >
-> 可续跑子代理结算后以 `[system:子代理]` 只读通知写入主会话上下文，主会话空闲且未待机时自动唤醒一轮补答（受令牌桶/全局待机约束）；单次激活默认最多 8 个模型轮、120 秒护栏；记录与断点落盘，重载 JS 后运行中的子代理标记「已中断·可续」，`send_message` 可继续。管理命令 `.ai subagent`（list / stop <ID|all> / clean）。本会话开启委派工具时（默认开启），system prompt 会注入「子代理委派」指引。
+> 可续跑子代理结算后以 `[system:subagent]` 只读通知写入主会话上下文，主会话空闲且未待机时自动唤醒一轮补答（受令牌桶/全局待机约束）；单次激活默认最多 8 个模型轮、120 秒护栏；记录与断点落盘，重载 JS 后运行中的子代理标记「已中断·可续」，`send_message` 可继续。管理命令 `.ai subagent`（list / stop <ID|all> / clean）。本会话开启委派工具时（默认开启），system prompt 会注入「Sub-agent delegation」指引。
 
 ### 记忆
 
 | 设置项 | 说明 |
 |:---:|:---|
-| 启用长期记忆 | 开启后对话内容会沉淀为长期记忆 |
-| 启用观察记忆 | 开启后上下文超过 token 上限归档删除前，会把旧对话沉淀为观察记忆 |
-| 记忆召回新近度权重 | 检索时给新近记忆的加分权重，0 为关闭（默认 0.4） |
-| 记忆召回新近度半衰期 | 新近度加分半衰期（天），越大旧记忆衰减越慢（默认 60） |
-| 长期记忆条数上限 | 长期记忆超过该条数自动遗忘最不重要的记忆，0 为不限制（默认 100） |
-| 用LLM抽取记忆 | 使用 LLM 从对话中抽取原子事实（实验性，默认关闭） |
-| 用LLM重排召回结果 | 使用 LLM 对召回结果重新排序（较慢，默认关闭） |
-| 用LLM合成观察记忆 | 使用 LLM 合成观察记忆（默认开启） |
-| 用LLM推理记忆 | 使用 LLM 合成心智模型推理答案（.ai memo mm / reflect 使用，默认开启） |
-| 自动维护固定心智模型 | 自动为个人/群聊补建写死的固定心智模型问题（设定/偏好/规则），并固定优先注入；删除后不会自动重建（默认开启） |
-| 巩固后自动刷新心智模型 | 巩固记忆后自动基于最新记忆刷新心智模型（默认开启） |
-| 心智模型刷新最小间隔 | 自动刷新心智模型的最小间隔（分钟），0 为不限制（默认 30） |
-| 心智模型刷新模式 | 新增心智模型的刷新方式：full=基于全部记忆重新推理 / delta=只按新增记忆增量更新（默认 full） |
-| 心智模型刷新排除其它心智模型 | 刷新心智模型时不把其它心智模型作为推理输入，避免互相引用（默认开启） |
-| 心智模型定时刷新间隔 | 每累计该分钟数自动检查并刷新心智模型（仅当有新记忆时实际刷新），0 为关闭（默认 0） |
+| 启用长期记忆 | 开启后对话内容会沉淀为长期记忆并注入 |
+| 启用观察记忆 | 开启后将多条事实巩固为观察记忆（证据/证据数/历史） |
+| 自动记忆抽取 | AI 触发后自动抽取事实；关闭后仅命令/工具写入 |
+| 群聊自动写个人记忆 | 群聊中关于用户的稳定事实写入其个人记忆（隐私敏感，默认关） |
+| 本体自动抽取 | 从助手经验/纠正中抽取全局本体记忆（隐私敏感，默认关） |
+| 启用全局记忆 | 注入/命令使用本体（global）记忆；无数据零成本 |
+| 自动维护固定心智模型 | 为个人/群聊/本体补建固定模板并首次生成（默认开启） |
+| 巩固后自动刷新心智模型 | 巩固后仅对标签重叠且已过期的模型刷新（默认关闭，对齐 Hindsight） |
+| 心智模型刷新模式 | full=全部记忆重新推理（默认）/ delta=只喂新增记忆做类型化编辑 |
+| 心智模型刷新最小间隔 | 同一模型两次自动刷新的最小分钟数；0=不限（默认 0，建议开自动刷新时设 30） |
+| 心智模型失败冷却 | 刷新失败后暂停自动重试的分钟数（默认 30） |
+| 心智模型输出上限 | 单次刷新/合成输出 token 上限（默认 2048） |
+| 增量模型定期重建 | delta 模型定期 full 重建的小时数（默认 48） |
+| 心智模型刷新排除其它心智模型 | 刷新时不把其它心智模型作为输入（默认开启） |
+| 记忆召回新近度权重/半衰期 | 检索新近度加分权重与半衰期（默认 0.4 / 60 天） |
+| 记忆召回语义相似度下限 | 语义通路最低 cosine（默认 0.35） |
+| 长期记忆条数上限 | 安全阀，超过后按失效/覆盖/衰减淘汰，0 不限制（默认 300） |
+| 记忆注入 token 预算 | 单轮注入记忆总预算（默认 3000） |
+| 观察记忆过期天数 | 无新证据超过该天数的观察不注入（不删除，默认 90） |
+| 后台记忆 LLM 每小时上限 | 后台抽取/巩固/刷新每小时最多调用次数；0 不限（默认 20） |
+| 用LLM重排召回结果 / 合成观察 / 推理记忆 | 三个独立回调开关（重排默认关，后两者默认开） |
+
+> 实现细节（三层 bank、可见性矩阵、调度器门控、迁移与排障）见开发者文档 [13-记忆系统](docs/13-记忆系统.md)；命令语法见 [05-命令与配置](docs/05-命令与配置.md)。
 
 ### 知识库
 
 | 设置项 | 说明 |
 |:---:|:---|
 | 启用知识库记忆 | 开启后把知识库内容注入 system prompt，供对话参考 |
-| 知识库配置 | 整份知识库配置（JSON v1）：`{"version":1,"libraries":[{"name":"库名","description":"描述","platform":["QQ"],"content":"Markdown 正文"}]}`。`platform` 省略或 `[]` = 所有平台；`name` 唯一；描述省略时用正文首段兜底。正文支持列表/表格/引用/代码块等标准 Markdown（`#` 一级标题为一个条目，`##`/`###` 为该条目下的小节，超长自动分块）。生成器「知识库」页可直接拖入 `.md` / `.txt` 自动转成 JSON，推荐生成后粘贴。默认三个库：核心指令、扩展指令（各扩展为 `#` 子条目、命令为 `##` 小节）、ob11-api（`platform: [QQ]`，仅 QQ 平台可见与注入）。知识库只读，内容由管理员维护，AI 通过 `knowledge_search` / `knowledge_read` / `knowledge_list` / `knowledge_docs` 工具只读检索（检索范围 = 当前平台可用 + 本会话开启的库）；管理员可用 `.ai kb list/on/off/refresh` 查看与按会话开关。语法定义见 [CommonMark 规范](https://commonmark.org/help/) |
+| 知识库配置 | 整份知识库配置（JSON v1）：`{"version":1,"libraries":[{"name":"库名","description":"描述","platform":["QQ"],"content":"Markdown 正文"}]}`。`platform` 省略或 `[]` = 所有平台；`name` 唯一；描述省略时用正文首段兜底。正文支持列表/表格/引用/代码块等标准 Markdown（`#` 一级标题为一个条目，`##`/`###` 为该条目下的小节，超长自动分块）。生成器「知识库」页可直接拖入 `.md` / `.txt` 自动转成 JSON，推荐生成后粘贴。默认三个库：`Core Commands`、`Extension Commands`（各扩展为 `#` 子条目、命令为 `##` 小节）、`ob11-api`（`platform: [QQ]`，仅 QQ 平台可见与注入）。知识库只读，内容由管理员维护，AI 通过 `knowledge_search` / `knowledge_read` / `knowledge_list` / `knowledge_docs` 工具只读检索（检索范围 = 当前平台可用 + 本会话开启的库）；管理员可用 `.ai kb list/on/off/refresh` 查看与按会话开关。语法定义见 [CommonMark 规范](https://commonmark.org/help/) |
 
 ### 回复
 
@@ -557,15 +563,24 @@ AI骰娘4 是一款运行在 [SealDice](https://docs.sealdice.com/) 上的智能
 | 本地文件路径 | 每框一个本地文件：`文件名=路径`（省略文件名时默认用文件名），供 `list_resources` / `get_resource_path` 查询；发送文件需安装 ob11 网络连接依赖；修改后需重载 JS 生效 |
 | 本地视频路径 | 每框一个本地视频：`视频名=路径`（省略视频名时默认用文件名），供 `list_resources` / `get_resource_path` 查询；发送视频需安装 ob11 网络连接依赖；修改后需重载 JS 生效 |
 
-### prompt 模板
+### 提示词架构（prompt）
 
-6 个 Handlebars 模板（system prompt / 长期记忆 / 观察记忆 / 工具函数 / 图片识别 / 记忆观察）已内置在插件中，不再作为配置项展示，避免误改导致渲染损坏。
+自 4.29.0 起，system prompt 由内置**英文段注册表**组装（不再是一份大模板）：
+
+- 稳定段进 system：身份 / 角色 / 回复语言 / 会话信息 / 消息标记 / 图片与图库 / 回复方式 / 工作方向 / **能力地图** / 工具获取或调用格式 / 可用技能 / 知识库 / 子代理委派；段级缓存 30 秒（技能/知识库/工具开关/角色设定等任一变化即失效）。
+- **能力地图**：按当前会话已开启、平台匹配的工具组列出“能力域 + 用途 + 2 个代表工具”（不含参数），并明确要求“不确定能力时先 list_tools/search_tools，不要直接说做不到”；STATUS 关闭或无可用工具时不出现。MCP 服务器的用途标签取配置 `description`，缺省用 `initialize` 的 `serverInfo.title`，再缺省用服务器名。
+- 易变段走 runtime：当前时间 / 长期记忆以 user 消息 `[system:runtime]…[/system]` 注入，system 前缀跨轮稳定。
+- 内置提示词与代码生成的上下文标记均为英文且**不兼容旧中文标记**（旧会话中的中文标记按普通文本保留）；角色设定、技能正文、知识库正文等用户内容保持原语言，机器人按对话语言回复。
+- 外部插件可注册扩展段：`globalThis.aiplugin4.registerPromptSection({ name: 'ext:xxx:yyy', order: 10000, channel: 'system', build: ctx => '...' })`（限 `ext:` 命名空间、单段 ≤2000 字符、合计 ≤4000 字符、默认外部清洗）；也可用 `onPromptAssemble(fn)` 整体改写 system/runtime。
+- 调试：`.ai prompt` 查看 system + runtime；`.ai prompt sections` 查看段统计（order/name/channel/chars/tokens/cache）与 digest。开发侧可用 `npm run prompt:snapshot` 把 group/private 两种会话的 system/runtime/段统计输出到 `test-reports/prompt-baseline/`，便于重构前后对比。
+- MCP 服务器 `initialize` 返回的 `instructions` 默认不注入；在「MCP服务器」对应条目加 `"exposeInstructions": true` 后以低权威 runtime 段注入（外部清洗、单服务器 ≤1000 字符、合计 ≤2000 字符）。MCP prompts/resources 由 `.ai mcp prompt list|get` 与 `mcp_list_resources`/`mcp_read_resource` 按需使用，不自动进 system prompt。每台服务器可选 `"description": "用途一句话"`（能力地图与 `.ai mcp list` 展示用途；缺省用 initialize 的 `serverInfo.title`）。
+- 发现类工具（`list_tools`/`search_tools`/`list_mcps`/`call_tool`）的模型可见结果与错误为英文；`list_tools` 组头带代表工具与分页提示，`search_tools` 返回完整参数并提示用 `call_tool` 执行。
 
 ---
 
 ## 💻 完整命令手册
 
-根命令为 `.ai`（`AI` 大写同样注册），子命令支持别名（如 `priv→privilege`、`ses→session`、`st→set`、`ck→check`、`clr→clear`、`sb→standby`、`fgt→forget`、`memo→memory`、`tk→token`、`img→image`、`ign→ignore`），列表类命令支持 `--page=<数字>`（别名 `--p`）翻页。
+根命令为 `.ai`（`AI` 大写同样注册），子命令支持别名（如 `priv→privilege`、`ses→session`、`st→set`、`ck→check`、`clr→clear`、`sb→standby`、`memo→memory`、`tk→token`、`img→image`、`ign→ignore`），列表类命令支持 `--page=<数字>`（别名 `--p`）翻页。
 
 ### 管理员命令
 
@@ -576,7 +591,8 @@ AI骰娘4 是一款运行在 [SealDice](https://docs.sealdice.com/) 上的智能
 | `.ai priv st <指令> <权限限制>` | `.ai priv st ai-sb 0-0-0` | 修改具体命令的权限限制，指令用 `-` 连接，权限限制格式为「会话-用户-强触」 |
 | `.ai priv show <指令>` | - | 检查指定指令的权限限制 |
 | `.ai priv reset` | - | 重置所有指令权限为默认 |
-| `.ai prompt` | - | 查看当前 system prompt（骰主） |
+| `.ai prompt` | - | 查看当前 system prompt 与 runtime 段（骰主；过长时仅记录日志） |
+| `.ai prompt sections` | - | 查看提示词段统计（order/name/channel/chars/tokens/cache）与 digest（骰主） |
 | `.ai block add <用户ID/群ID> <原因>` | `.ai block add QQ:1234567890 乱发广告` | 拉黑用户/群（骰主），被拉黑对象无法触发 AI 对话 |
 | `.ai block rm <用户ID/群ID>` | - | 移除黑名单 |
 | `.ai block list` | - | 查看黑名单列表 |
@@ -588,18 +604,21 @@ AI骰娘4 是一款运行在 [SealDice](https://docs.sealdice.com/) 上的智能
 | 命令 | 使用示例 | 说明 |
 |:---:|:---:|:---|
 | `.ai status` | - | 查看当前会话设置 |
-| `.ai ctx` | - | 查看当前会话的上下文成本状态：冷/热状态、窗口与预算、本会话压缩/归档/评分调用次数、归档分片与缓存命中 |
-| `.ai ctxset [window=<字>\|cold=<字>\|truncate=<字>]` / `.ai ctxset clr` | `.ai ctxset cold=8000` | 按本会话覆盖上下文参数：窗口上限字数 / 冷态窗口字数 / 冷态单条截断字数（需邀请者以上）；0 或 `clr` 回到全局值（0 不能用来"关闭"，只是清除覆盖）；只影响本会话 |
+| `.ai ctx` | - | 查看上下文状态：消息数、整理进度与最近一次整理结果 |
+| `.ai ctx archive` | - | 立即生成/刷新滚动摘要；不删原文、不写长期记忆 |
+| `.ai ctx hide [user\|assistant\|all]` | `.ai ctx hide assistant` | 隐藏消息（原文保留，可审计；不影响长期记忆） |
+| `.ai ctx purge --yes` | - | 清除本会话上下文（不可恢复；仅骰主；不影响长期记忆） |
+| `.ai ctx repair` | - | 检查/修复上下文索引 |
+| `.ai ctx set [budget=<token>\|clr]` | `.ai ctx set budget=100000` | 按会话覆盖上下文预算（需邀请者以上）；budget=0 表示跟随模型窗口 |
 | `.ai live` / `.ai live all` | `.ai live` | 查看会话实时运行状态：`.ai live` 查看当前会话(流式/运行/排队/定时器)；`.ai live all` 查看全局活跃会话总览(仅骰主) |
 | `.ai help <子指令>` / `.ai <子指令> help` | `.ai help tool` | 查看子命令帮助；`.ai <子指令> help` 带更多参数时交由子命令自身处理（如 `.ai tool help <函数名>`） |
-| `.ai ctxn status` | - | 查看上下文中的名字与自动修改状态 |
-| `.ai ctxn set [nick/card]` | - | 将上下文中的名字设置为昵称/群名片 |
-| `.ai ctxn mod <0\|1\|2>` | - | 自动修改上下文中的名字：0 不修改，1 昵称，2 群名片 |
+| `.ai ctx name status` | - | 查看上下文中的名字与自动修改状态 |
+| `.ai ctx name set [nick/card]` | - | 将上下文中的名字设置为昵称/群名片 |
+| `.ai ctx name mod <0\|1\|2>` | - | 自动修改上下文中的名字：0 不修改，1 昵称，2 群名片 |
 | `.ai on` / `.ai on --r` | - | 开启 AI：非指令正则触发默认随之开启；`.ai off --r` 仅关闭正则触发，`.ai on` 重新开启 |
 | `.ai on [--r --j --c=<条> --t=<秒> --p=<%> --a=<开始-结束-次数>]` | `.ai on --c=10 --t=60` | 开启 AI：--r 开启非指令正则触发，--j 开启评分触发（评分智能体判断是否插话），--c/--t/--p/--a 开启计数器/计时器/概率/活跃时间段模式，不带参数仅开启非指令正则触发 |
 | `.ai standby [on/off]` | `.ai standby off` | 待机模式：仅录入上下文不主动发言，非指令关键词触发才发言；`off` 仅关闭待机、保留其它触发模式（适合只播报不读群消息） |
 | `.ai off [--r/--j/--c/--t/--p/--a/--sb]` | `.ai off --t` | 关闭 AI（含非指令正则触发），加参数只关闭对应模式（`--sb` 仅关闭待机） |
-| `.ai fgt [assistant/user] [--all]` | `.ai fgt --all` | 遗忘当前上下文；assistant 为遗忘 AI 发言与函数调用，user 为遗忘用户发言与函数返回；`--all` 清空本会话归档/窗口移出原文分片并重置结算水位（**不影响已沉淀的长期记忆**） |
 | `.ai role [<名称>]` | - | 查看 / 切换角色设定 |
 | `.ai model [list\|pull\|<用途> [<模型>]]` | `.ai model chat deepseek-v4-flash` | 查看 / 绑定全局分用途模型（骰主）：无参数查看各用途当前模型与来源（运行时覆盖 / 配置绑定 / 自动）与连接状态；`.ai model list` 读加载/最近一次拉取到内存的模型列表（不联网，按连接序号分组）；`.ai model pull` 立即重拉全部连接并展示（无视 `models` 钉住清单，强制网络）；`.ai model <用途>` 查看指定用途候选（按取用顺序编号）；`.ai model <用途> <模型>` 设为该用途的**运行时覆盖**（支持编号 / 模型 id / 模型名，优先级最高、存插件存储）。模型类型在「模型配置」里用 `kind` 声明（text/vision/embed/gen/tts） |
 | `.ai balance` | - | 并发查询全部（非忽略）连接的账户余额（骰主）：deepseek / moonshot / siliconflow 内置余额接口直接查；其余平台提示控制台入口；one-api/new-api 等网关可在连接的 `request` 里配置 `balance_url` + `balance_json_path` 后查询 |
@@ -612,26 +631,27 @@ AI骰娘4 是一款运行在 [SealDice](https://docs.sealdice.com/) 上的智能
 
 | 命令 | 使用示例 | 说明 |
 |:---:|:---:|:---|
-| `.ai memo status [用户ID]` | - | 查看当前（或指定用户ID的）长期/观察记忆状态 |
-| `.ai memo [p/g] st <内容>` | `.ai memo p st 西瓜` | 设置个人/群聊设定（个人≤20字，群聊≤30字） |
-| `.ai memo [p/g] st clr` | - | 清除设定 |
-| `.ai memo [p/g] del <ID1> <ID2> --关键词` | - | 按 ID 删除记忆，可附带关键词（物理删除不可恢复） |
-| `.ai memo [p/g] list` | - | 展示长期记忆列表，支持 `--page` 翻页 |
-| `.ai memo [p/g] clr` | - | 清除长期记忆（物理删除不可恢复） |
-| `.ai memo obs [on/off]` | - | 开启/关闭观察记忆 |
-| `.ai memo obs list` | - | 展示观察记忆列表，支持 `--page` 翻页 |
-| `.ai memo obs` | - | 立即生成一次观察记忆 |
-| `.ai memo obs view <ID>` | - | 查看观察记忆详情（含证据条数与范围） |
-| `.ai memo obs clr` | - | 清除观察记忆 |
-| `.ai memo cons` | - | 立即巩固一次记忆（合并重复观察、清理过期记忆） |
-| `.ai memo reflect <问题>` | - | 基于记忆推理回答问题（引用心智模型 / 观察记忆 / 长期记忆证据） |
-| `.ai memo mm list [页码]` | - | 展示心智模型列表，支持 `--page` 翻页 |
-| `.ai memo mm view <ID>` | - | 查看心智模型详情 |
-| `.ai memo mm add <问题> [答案]` | - | 添加/更新心智模型：不填答案时基于记忆重新生成并保留旧答案兜底；`--tag=范围`、`--mode=full|delta`、`--auto/--no-auto` 可调 |
-| `.ai memo mm refresh [ID]` | - | 刷新心智模型（基于当前记忆重新推理） |
-| `.ai memo mm del <ID或问题关键词>` | - | 删除心智模型（关键词唯一命中时直接删除） |
+| `.ai memo status` | - | 查看当前范围记忆状态（含 backlog/后台队列/模型状态） |
+| `.ai memo add <内容>` | `.ai memo add 喜欢手冲咖啡 --u` | 添加事实；`--shared` 显式跨群、`--private` 仅本人；范围见下 |
+| `.ai memo list [页码]` | - | 展示事实列表（`#N` 可代替 ID） |
+| `.ai memo update <ID\|#N> <新内容>` | - | 更新事实 |
+| `.ai memo delete <ID\|#N> ... [--关键词] [--hard]` | - | 默认软失效；`--hard` 物理删除仅骰主 |
+| `.ai memo clear --yes` | - | 清除事实/观察/模型（不可恢复） |
+| `.ai memo obs list` | - | 观察记忆列表 |
+| `.ai memo obs view <ID>` | - | 观察详情（证据、证据数、历史） |
+| `.ai memo obs clr --yes` | - | 清除观察并把源事实重置为待巩固 |
+| `.ai memo obs on/off` | - | 会话级观察开关 |
+| `.ai memo obs refresh` | - | 立即抽取当前上下文并巩固（手动） |
+| `.ai memo consolidate` | - | 立即巩固一次 |
+| `.ai memo reflect <问题>` | - | 心智模型优先的推理；`--deep` 强制下探事实 |
+| `.ai memo mm list` | - | 心智模型列表 |
+| `.ai memo mm view <ID>` | - | 查看模型内容/状态/触发方式 |
+| `.ai memo mm add <问题> [答案]` | - | 新建模型；无答案时排队生成；`--tag`/`--mode=full\|delta`/`--auto\|--no-auto` |
+| `.ai memo mm refresh [ID]` | - | 手动刷新（绕过自动门控） |
+| `.ai memo mm clear <ID>` | - | 清空内容并排队 full 重建 |
+| `.ai memo mm del <ID\|关键词>` | - | 删除模型 |
 
-> 个人记忆跨群、群聊记忆仅限本群；group 分支需邀请者以上，`.ai memo obs on/off` 需会话权限 1。
+> 范围参数：默认当前会话；`--u` 本人、`--g` 当前群、`--self` 本体（仅骰主）；`--u=<ID>`/`--g=<ID>` 仅骰主。个人事实默认 `vis:owner`（仅本人私聊），群聊默认 `vis:public`（仅本群）；跨群必须显式 `--shared`。`.ai memo clear` 与 `.ai memo obs clr` 必须带 `--yes`。
 
 ### 工具管理命令
 
@@ -645,7 +665,7 @@ AI骰娘4 是一款运行在 [SealDice](https://docs.sealdice.com/) 上的智能
 | `.ai tool help <函数名>` | `.ai tool help set_timer` | 查看指定工具的详细说明和参数需求 |
 | `.ai tool call <函数名> --参数=值` | `.ai tool call run_ext_command --action=call --extension=fun --command=jrrp` | 试用指定工具函数，输出调用返回信息；参数可尝试 JSON 解析，数字需要引号包裹 |
 
-> 工具组 = 内置工具的 16 个能力分类（基础调度 / 指令 / 定时 / 触发 / 记忆 / 图片 / 多媒体 / OB11 / 资源 / 属性 / 原文检索 / 上下文编辑 / 黑名单 / 网页 / 公开会话 / 子代理；外部插件注册的工具归「外部插件」）+ 每台 MCP 服务器各一组，`.ai tool on/off <服务器名>` 与 `.ai mcp on/off <服务器名>` 等价。技能与知识库不参与工具组维度（其会话开关仍用 `.ai skill on/off`、`.ai kb on/off`），但单工具开关照旧可用（如 `.ai tool off use_skill`）。
+> 工具组 = 内置工具的 17 个能力分类（Dispatch / Commands / Timers / Triggers / Memory / Images / Media / OB11 / Resources / Attributes / Raw search / Context editing / Blocks / Web / Public sessions / Subagents / MCP；外部插件注册的工具归 External plugins）+ 每台 MCP 服务器各一组，`.ai tool on/off <服务器名>` 与 `.ai mcp on/off <服务器名>` 等价。技能与知识库不参与工具组维度（其会话开关仍用 `.ai skill on/off`、`.ai kb on/off`），但单工具开关照旧可用（如 `.ai tool off use_skill`）。
 
 ### MCP 技能 知识库管理命令
 
@@ -654,6 +674,8 @@ AI骰娘4 是一款运行在 [SealDice](https://docs.sealdice.com/) 上的智能
 | `.ai mcp list` | - | 列出当前平台可用的 MCP 服务器及工具开关状态（未启用 MCP 时提示先开启配置） |
 | `.ai mcp on/off [<服务器>]` | `.ai mcp on mcp-browser` | 按会话批量开启/关闭某服务器（或缺省全部当前平台服务器）下的工具；开启时跳过「禁止调用的函数」（on/off 需邀请者以上） |
 | `.ai mcp refresh` | - | 重新解析 MCP 服务器配置并强制重同步工具列表（骰主；MCP 配置修改后无需重载 JS） |
+| `.ai mcp prompt list [<服务器>]` | `.ai mcp prompt list mcp-browser` | 列出 MCP 服务器提供的 prompt 模板（用户手动触发，不会自动注入 system prompt） |
+| `.ai mcp prompt get <服务器> <名称> [--arg k=v ...]` | `.ai mcp prompt get mcp-browser summarize --arg topic=天气` | 取回 prompt 内容并作为普通消息展示（不写系统提示词、不触发 AI 回复） |
 | `.ai skill list` | - | 列出当前平台可用的技能及会话开关状态（名称带 `（平台：…）` 标注） |
 | `.ai skill on/off <技能名>` | `.ai skill off 录卡` | 按会话开启/关闭指定技能（on/off 需邀请者以上） |
 | `.ai skill refresh` | - | 强制重新解析「技能列表」（骰主；平时配置变化下一条消息自动生效） |
@@ -725,7 +747,7 @@ AI骰娘4 是一款运行在 [SealDice](https://docs.sealdice.com/) 上的智能
 
 > 过滤说明：多个过滤条件为交集；至少提供一个条件。`--botid` 与 `--session` 必须传完整 UNI-ID（含平台前缀，如 `--botid=QQ:123`、`--session=QQ-Group:456`），`--platform` 传平台名（如 QQ）；给了哪一级就删除该级目录下全部命中条目。目录只用于感知展示：AI 读写只需准确路径（botId/会话ID），不需要会话先公开到目录。
 >
-> AI 侧对应工具：`pub_read`（目录感知/读任意会话上下文快照）、`pub_send`（向任意会话外发，QQ 系富媒体/其他平台纯文本，成功后写入目标会话 `[system:跨端消息]` 只读背景）。命令默认权限骰主级，可用 `.ai priv` 调整；能力说明见上方[配置手册](#️-配置手册)「公开会话」小节（无新增配置项）。
+> AI 侧对应工具：`pub_read`（目录感知/读任意会话上下文快照）、`pub_send`（向任意会话外发，QQ 系富媒体/其他平台纯文本，成功后写入目标会话 `[system:cross-session]` 只读背景）。命令默认权限骰主级，可用 `.ai priv` 调整；能力说明见上方[配置手册](#️-配置手册)「公开会话」小节（无新增配置项）。
 
 ---
 
@@ -735,22 +757,23 @@ AI骰娘4 是一款运行在 [SealDice](https://docs.sealdice.com/) 上的智能
 
 | 工具组 | 工具函数 |
 |:---:|:---|
-| 基础调度 | `list_tools`（按工具组列出当前平台工具）、`search_tools`（按名称/关键词/工具组发现工具并取参数）、`list_mcps`（列出当前平台可用 MCP 服务器及工具）、`call_tool`（统一执行任意工具） |
-| 指令 | `run_ext_command`（本地执行扩展指令）、`run_core_command`（经核心桥 WebSocket 调用核心指令） |
-| 定时 | `set_timer`、`show_timer_list`、`cancel_timer` |
-| 触发 | `set_trigger_condition` |
-| 记忆 | `memory_add`、`memory_update`、`memory_delete`、`memory_recall`、`memory_clear`、`memory_reflect`、`memory_consolidate`、`memory_mm_list`、`memory_mm_view`、`memory_mm_create`、`memory_mm_refresh`、`memory_mm_delete` |
-| 图片 | `image_to_text`（文字描述，`ids[]`≤3）、`image_view`（多模态直接看，`ids[]`≤4；不支持视觉时降级）、`text_to_image`、`meme_list`、`get_meme_info`、`meme_generator` |
-| 多媒体 | `media_tasks`（查看/取消本会话的语音与图片生成任务队列） |
+| Dispatch | `list_tools`（按工具组列出当前平台工具）、`search_tools`（按名称/关键词/工具组发现工具并取参数）、`list_mcps`（列出当前平台可用 MCP 服务器及工具）、`call_tool`（统一执行任意工具） |
+| Commands | `run_ext_command`（本地执行扩展指令）、`run_core_command`（经核心桥 WebSocket 调用核心指令） |
+| Timers | `set_timer`、`show_timer_list`、`cancel_timer` |
+| Triggers | `set_trigger_condition` |
+| Memory | `memory_recall`、`memory_add`、`memory_update`、`memory_delete`、`memory_consolidate`、`memory_reflect`、`memory_mental_model`（action: list/view/create/refresh/clear/delete） |
+| Images | `image_to_text`（文字描述，`ids[]`≤3）、`image_view`（多模态直接看，`ids[]`≤4；不支持视觉时降级）、`text_to_image`、`meme_list`、`get_meme_info`、`meme_generator` |
+| Media | `media_tasks`（查看/取消本会话的语音与图片生成任务队列） |
 | OB11 | `call_ob11_api`（通过 action 调用消息、查询、管理、文件和合并转发 API；群资料、精华消息等均传入对应 action）、`resolve_special_id`（还原上下文短 ID/句柄为原始字段，用于对接协议 API） |
-| 资源 | `list_resources`、`get_resource_path`（本地资源查询）；`generate_audio`（提交语音生成任务，立即返回任务号，完成后自动通知；传 `path` 时同步解析本地/MCP 音频资源）、`search_music`（返回 music 消息段，不直接发送） |
-| 属性 | `attr_get`、`attr_set` |
-| 原文检索 | `grep_raw`、`read_raw`（按 kind 检索/读取工具、用户消息、图片、事件被截断或压缩前的完整原文） |
-| 上下文编辑 | `context_edit_list`（按序号定位任意会话上下文条目，支持 role/keyword/时间过滤）、`context_edit_replace`（按 scope 批量替换正文文本：字面量/正则、空串删除、原文副本同步、持久化；敏感工具，默认开启，详见下方说明） |
-| 黑名单 | `suggest_block`（AI 建议拉黑，带冷却；默认需骰主确认）、`unblock_user`、`get_block_list` |
-| 网页 | `web_search`（多后端、失败回退）、`web_fetch`（抓取正文、`start_index` 续读）；论坛：`forum_get_posts`、`forum_get_post_detail`、`forum_search`、`forum_create_post`、`forum_manage_comment`、`forum_get_activity`、`forum_manage_post` |
-| 公开会话 | `pub_read`（分级浏览公开会话目录 / 读取其他会话上下文只读快照）、`pub_send`（以目标会话自己的机器人账号身份外发：QQ 系富媒体 / 其他平台纯文本） |
-| 子代理 | `subagent`、`subagent_fork`（委派）、`send_message`、`interrupt_agent`、`list_agents`（可续跑子代理控制）、`job_list`、`job_output`、`job_kill`（后台 job 管理）；默认开启，详见上方「子代理」配置小节 |
+| MCP | `mcp_list_resources`（按服务器列出 resources 目录）、`mcp_read_resource`（按 uri 读取资源内容；resources 是外部数据，不会自动注入提示词） |
+| Resources | `list_resources`、`get_resource_path`（本地资源查询）；`generate_audio`（提交语音生成任务，立即返回任务号，完成后自动通知；传 `path` 时同步解析本地/MCP 音频资源）、`search_music`（返回 music 消息段，不直接发送） |
+| Attributes | `attr_get`、`attr_set` |
+| Raw search | `grep_raw`、`read_raw`（按 kind 检索/读取工具、用户消息、图片、事件被截断或压缩前的完整原文） |
+| Context editing | `context_edit_list`（按序号定位任意会话上下文条目，支持 role/keyword/时间过滤）、`context_edit_replace`（按 scope 批量替换正文文本：字面量/正则、空串删除、原文副本同步、持久化；敏感工具，默认开启，详见下方说明） |
+| Blocks | `suggest_block`（AI 建议拉黑，带冷却；默认需骰主确认）、`unblock_user`、`get_block_list` |
+| Web | `web_search`（多后端、失败回退）、`web_fetch`（抓取正文、`start_index` 续读）；论坛：`forum_get_posts`、`forum_get_post_detail`、`forum_search`、`forum_create_post`、`forum_manage_comment`、`forum_get_activity`、`forum_manage_post` |
+| Public sessions | `pub_read`（分级浏览公开会话目录 / 读取其他会话上下文只读快照）、`pub_send`（以目标会话自己的机器人账号身份外发：QQ 系富媒体 / 其他平台纯文本） |
+| Subagents | `subagent`、`subagent_fork`（委派）、`send_message`、`interrupt_agent`、`list_agents`（可续跑子代理控制）、`job_list`、`job_output`、`job_kill`（后台 job 管理）；默认开启，详见上方「子代理」配置小节 |
 | 外部插件 | 其他海豹插件经 `globalThis.aiplugin4.registerTool` 注册的工具 |
 | 技能（来源分组，不参与工具组开关） | `use_skill`（按需获取正文，支持 `offset` 续读）、`skill_list`（平台受限或本会话已关闭时明确返回不可用提示） |
 | 知识库（来源分组，不参与工具组开关） | `knowledge_search`、`knowledge_read`、`knowledge_list`、`knowledge_docs`（只读检索，范围 = 当前平台可用 + 本会话开启的库；内容由配置维护） |
@@ -805,7 +828,7 @@ AI骰娘4 是一款运行在 [SealDice](https://docs.sealdice.com/) 上的智能
 - 模型不支持 QQ 图床时，把「识别图片时将url转换为base64」设为「总是」或「自动」；
 - 图片转文字依赖视觉模型：先在「模型配置」里给视觉模型显式写 `"kind": "vision"`（⚠️ 视觉**不再**按模型名自动识别），再用 `.ai model image-understanding <模型>` 绑定；
 - **图片直链失效不会再卡死会话**：QQ 直链 rkey 过期时（图床返回 `download url has expired`，后端与模型都拿不到图），插件会把这些图片降级为 `[img:ID]` 文本标签、不再产生 image_url，模型也就不会因「下载图片失败」整轮 400 而静默不回复；日志出现 `图片xxx的URL已确认不可用` 或 `[model-error] 模型无法下载上下文图片` 属正常兜底；
-- 若**历史上下文**里已有坏图片（旧版本遗留）导致该会话一直不回复，执行 `.ai forget` 清上下文即可恢复。
+- 若**历史上下文**里已有坏图片（旧版本遗留）导致该会话一直不回复，执行 `.ai ctx purge --yes` 清除上下文即可恢复。
 
 **HTTP 请求出错**
 
@@ -858,5 +881,3 @@ Permission is hereby granted...
 - QQ交流群: 143412516
 
 > "才、才不是专门给你写的文档呢！只是...只是顺便而已！(///ω///)" —— 正确·改
-
-

@@ -8,7 +8,7 @@
 A curated list of resources dedicated to Python libraries, llms, dictionaries, and corpora of NLP for Japanese
 
 - Listed information on [895 GitHub repositories](https://github.com/taishi-i/awesome-japanese-nlp-resources/blob/main/docs/README.full.md)
-- Listed information on [450 Hugging Face repositories](https://github.com/taishi-i/awesome-japanese-nlp-resources/blob/main/docs/huggingface.md) (models and datasets)
+- Listed information on [441 Hugging Face repositories](https://github.com/taishi-i/awesome-japanese-nlp-resources/blob/main/docs/huggingface.md) (models and datasets)
 - Listed information on [156 multilingual libraries, models, and datasets that also support Japanese](https://github.com/taishi-i/awesome-japanese-nlp-resources/blob/main/docs/multilingual.md)
 
 [English](https://github.com/taishi-i/awesome-japanese-nlp-resources/blob/main/docs/README.en.md) | [日本語 (Japanese) ](https://github.com/taishi-i/awesome-japanese-nlp-resources/blob/main/docs/README.ja.md) | [繁體中文 (Chinese) ](https://github.com/taishi-i/awesome-japanese-nlp-resources/blob/main/docs/README.zh-hant.md) | [简体中文 (Chinese) ](https://github.com/taishi-i/awesome-japanese-nlp-resources/blob/main/docs/README.zh-hans.md)
@@ -51,7 +51,7 @@ The plugin ships four skills:
 
 | Skill | Purpose |
 |---|---|
-| `/awesome-japanese-nlp-resources:search <query>` | Search the bundled 1,200+ resource dataset |
+| `/awesome-japanese-nlp-resources:search <query>` | Search the bundled 1,450+ resource dataset |
 | `/awesome-japanese-nlp-resources:discover <tool-or-topic>` | Given a tool, find alternatives (listed and unlisted); given a topic, find contribution candidates not yet in the list |
 | `/awesome-japanese-nlp-resources:compare <tool-or-topic>` | Compare several libraries/models/datasets across a few criteria as a ○/△/✕ table |
 | `/awesome-japanese-nlp-resources:research <topic>` | Survey the dataset + latest web research for a combined trend + challenges report |
@@ -155,7 +155,7 @@ Libraries that split Japanese text into words or morphemes and assign part-of-sp
 
 |Name|downloads/week|total downloads|stars|last commit|
 -|-|-|-|-
-| 🔗 [SudachiPy](https://github.com/WorksApplications/SudachiPy) | 📥 369k | 📦 76M | ⭐ 443 | 🔴 october 2022|
+| 🔗 [sudachi.rs](https://github.com/WorksApplications/sudachi.rs) | 📥 369k | 📦 76M | ⭐ 489 | 🟢 october|
 | 🔗 [Janome](https://github.com/mocobeta/janome) | 📥 62k | 📦 14M | ⭐ 917 | 🟡 june|
 | 🔗 [mecab-python3](https://github.com/SamuraiT/mecab-python3) | 📥 194k | 📦 43M | ⭐ 580 | 🟡 november 2025|
 | 🔗 [mecab](https://github.com/ikegami-yukino/mecab/tree/master/mecab/python) | 📥 82k | 📦 4M | ⭐ 274 | 🔴 october 2024|
@@ -778,7 +778,7 @@ General-purpose tools supporting Japanese language processing
 | 🔗 [asr](https://github.com/zakuro-ai/asr) | - | - | ⭐ 72 | 🟢 october|
 | 🔗 [neural_ime](https://github.com/yohokuno/neural_ime) | - | - | ⭐ 67 | 🔴 december 2016|
 | 🔗 [neural_japanese_transliterator](https://github.com/Kyubyong/neural_japanese_transliterator) | - | - | ⭐ 179 | 🔴 september 2017|
-| 🔗 [tinysegmenter](https://github.com/SamuraiT/tinysegmenter) | 📥 94k | 📦 182k | ⭐ repo not found | 🔴 november 2015|
+| 🔗 [tinysegmenter](https://github.com/SamuraiT/tinysegmenter) | 📥 375 | 📦 182k | ⭐ 53 | 🔴 november 2015|
 | 🔗 [AugLy-jp](https://github.com/chck/AugLy-jp) | 📥 48 | 📦 33k | ⭐ 7 | 🟢 september|
 | 🔗 [furigana4epub](https://github.com/Mumumu4/furigana4epub) | 📥 40 | 📦 13k | ⭐ 34 | 🔴 september 2021|
 | 🔗 [PyKatsuyou](https://github.com/SmashinFries/PyKatsuyou) | 📥 32 | 📦 24k | ⭐ 13 | 🔴 march 2025|
@@ -1109,4 +1109,4 @@ Supplementary crates for Japanese text and IME processing
 | 🔗 [daachorse](https://github.com/daac-tools/daachorse) | - | 📦 9.4M | ⭐ 285 | 🟢 october|
 | 🔗 [find-simdoc](https://github.com/daac-tools/find-simdoc) | - | 📦 29k | ⭐ 62 | 🔴 march 2025|
 | 🔗 [crawdad](https://github.com/daac-tools/crawdad) | - | 📦 282k | ⭐ 39 | 🟢 august|
-| 🔗 [tokenizer-speed-bench](https://github.com/legalforce-research/token
+| 🔗 [tokenizer-speed-bench](https://github.com/legalforce-research/tokenizer-speed-benc

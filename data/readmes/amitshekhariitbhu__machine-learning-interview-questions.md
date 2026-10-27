@@ -79,7 +79,7 @@ For all AI Engineering Interview – Questions and Answers: Refer to [AI Enginee
 - What are embeddings in Machine Learning?
     - Answer: [Embeddings in Machine Learning](https://www.youtube.com/watch?v=LedXW6xl21s)
 - What is Softmax Activation Function?
-    - Answer: [Softmax Activation Function in Machine Learning](https://www.youtube.com/watch?v=2Zx6x01WwWM)
+    - Answer: [Softmax Activation Function in Machine Learning](https://www.youtube.com/watch?v=2Zx6x01WwWM) and [What are Activation Functions in Neural Networks? Sigmoid, Tanh, ReLU, and Softmax Explained](https://outcomeschool.com/blog/activation-functions)
 - What is Machine Learning?
     - Answer: [What is Machine Learning?](https://outcomeschool.com/blog/machine-learning)
 - Differentiate between Supervised and Unsupervised Learning.
@@ -167,6 +167,7 @@ For all AI Engineering Interview – Questions and Answers: Refer to [AI Enginee
 - How do you approach a dataset with highly imbalanced classes?
 - How do you select features for a model?
 - Why and how do you split data into a train, test, and validation set?
+    - Answer: [Why do we split data into train, validation, and test sets?](https://outcomeschool.com/blog/train-validation-test-split)
 
 ### Optimization
 
@@ -205,9 +206,11 @@ For all AI Engineering Interview – Questions and Answers: Refer to [AI Enginee
 - Can you name and explain a few hyperparameters used for training a neural network?
 - What is the advantage of deep learning over traditional machine learning?
 - What are activation functions, and why are they used?
-    - Answer: [What is a Neural Network and How Does It Work?](https://outcomeschool.com/blog/neural-network)
+    - Answer: [What is a Neural Network and How Does It Work?](https://outcomeschool.com/blog/neural-network) and [What are Activation Functions in Neural Networks? Sigmoid, Tanh, ReLU, and Softmax Explained](https://outcomeschool.com/blog/activation-functions)
 - Explain Sigmoid, Tanh, ReLU, LeakyReLU, and Softmax activation functions with their pros and cons.
+    - Answer: [What are Activation Functions in Neural Networks? Sigmoid, Tanh, ReLU, and Softmax Explained](https://outcomeschool.com/blog/activation-functions)
 - Why are Sigmoid and Tanh not preferred in the hidden layers of a neural network?
+    - Answer: [What are Activation Functions in Neural Networks? Sigmoid, Tanh, ReLU, and Softmax Explained](https://outcomeschool.com/blog/activation-functions)
 - What is dropout, and why is it effective?
     - Answer: [Dropout in Neural Networks](https://outcomeschool.com/blog/dropout-in-neural-networks)
 - What is the effect of dropout on training and inference speed?

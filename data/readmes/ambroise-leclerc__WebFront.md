@@ -266,11 +266,12 @@ ctest --test-dir build --output-on-failure --parallel 4
 
 Configuring with tests enabled downloads, and verifies against their SHA-512, the pinned bootstrap environment and the packages of the test registry; the embedded assets are generated and checked by CMake alone (the `webfront-embedded-assets` target regenerates them). Normal C++ builds use versioned headers. Browser tests require an enabled engine; Linux CEF tests use Xvfb. See [AGENTS.md](AGENTS.md) for contributor commands and [developer environment testing](docs/DEVELOPER_ENVIRONMENT.md#environment-distribution-and-offline-tests-maintainers).
 
-CTest runs up to four tasks at a time; browser ports remain locked and embedded builds run serially.
+CTest runs up to four tasks at a time; independent driver sessions use OS-assigned ports, while
+shared projects and nested builds retain resource locks.
 See [test timings and parallelism](docs/TEST_PERFORMANCE.md) for measurements and constraints.
 `ctest -L fast` runs the unit tests in about a second; [test tiers](docs/TEST_TIERS.md) describes what CI runs on each pull request, weekly and before a merge into `master`.
 
-CI runs one combined C++ / native-browser job per desktop platform on each code change. The Linux job also collects and prints GCC line coverage (no external upload). Linux Clang, sanitizers, fuzzing and CEF compatibility run weekly, on demand and on pull requests into `master`. Manual dispatch with `repeat_desktop_tests=true` also repeats each desktop CTest case three times for stability checks. Workflow concurrency cancels superseded runs; dependency and compiler caches avoid repeated work. Platform badges above identify the configured matrix; the CI badge reports its aggregate status. Execution times depend on cache state and runner availability.
+CI runs one combined C++ / native-browser job per desktop platform on each code change. The Linux job also collects and prints GCC line coverage (no external upload). Linux Clang, sanitizers, fuzzing and CEF compatibility run weekly, on demand and on pull requests into `master`. Manual dispatch with `repeat_desktop_tests=true` also runs the complete desktop CTest suite three times, recreating its fixtures on each pass. Workflow concurrency cancels superseded runs; dependency and compiler caches avoid repeated work. Platform badges above identify the configured matrix; the CI badge reports its aggregate status. Execution times depend on cache state and runner availability.
 
 ## Contracts and limitations
 
@@ -278,6 +279,18 @@ CI runs one combined C++ / native-browser job per desktop platform on each code 
 - JavaScript calls to C++ always return Promises. C++ `ui.jsFunction(name)(...)` is fire-and-forget; `ui.jsFunction<R>(name)(...)` returns `std::future<R>`. Missing functions, exceptions, malformed replies and disconnects fail the typed call.
 - The binary bridge supports scalars, strings, tuples, numeric typed arrays and packed bitsets. Arbitrary objects do not cross it. Strings have a 16-bit encoded length limit.
 - Development project access is explicit and intended for trusted local code. Downloaded tools run with the application's bridge authority, and script permissions frame only the `context` API: neither is a sandbox. Only packages that run in a browser are supported; installation scripts and native add-ons are not executed. Builds transform TypeScript without type checking; `wf check` type-checks with the compiler the project locks.
-- Packaging, accessibility and native-engine deployment still need application-specific work. General DOM abstractions remain future work. See [project status](docs/PROJECT_STATUS.md) for known limitations.
+- Packaging, accessibility and native-engine deployment still need application-specific work. The optional [`ui.document()` API](docs/DOM.md) provides DOM islands, automatically batched writes, event callbacks and grouped sender reads. See [project status](docs/PROJECT_STATUS.md) for known limitations.
+
+## License
+
+WebFront is dual-licensed under **Apache-2.0 OR CECILL-B**, at your option.
+You may use, modify and redistribute WebFront under either license; you do not
+need to comply with both simultaneously. See [LICENSE](LICENSE) for the full
+Apache 2.0 and CeCILL-B version 1 texts, including the French and English
+versions of CeCILL-B.
+
+Third-party components retain their own licenses and notices. The WebFront
+license choice does not replace the licenses of its dependencies or bundled
+third-party code.
 
 [Developer environment reference](docs/DEVELOPER_ENVIRONMENT.md) · [architecture decisions](docs/adr/README.md) · [contributing](.github/CONTRIBUTING.md)

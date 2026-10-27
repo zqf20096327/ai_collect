@@ -25,7 +25,7 @@ exists to replace those guesses with answers you can check.
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="site/assets/readme-fit-dark.svg">
-    <img src="site/assets/readme-fit-light.svg" alt="runner --fit reading the first 16 MB of Granite 4.2 8B on an RTX 3070: FITS, 35 of 40 layers on the GPU" width="560">
+    <img src="site/assets/readme-fit-light.svg" alt="runner --fit (today --info fit) reading the first 16 MB of Granite 4.2 8B on an RTX 3070: FITS, 35 of 40 layers on the GPU" width="560">
   </picture>
 </p>
 <p align="center"><sub>Real output: Runner asked about Granite 4.2 8B on an RTX 3070 (October 2026), shortened to fit. <a href="docs/compat-reports/fit-capture-1.0.2-2026-10-06-rtx3070.md">Full capture</a></sub></p>
@@ -56,8 +56,8 @@ It takes about a minute to try: [quick start](#quick-start).
   and Anthropic APIs, so your apps and coding agents connect without changes.
 - **Measured, not assumed.** Twelve model families have been scored against
   their publishers' own implementations, and Runner is closer to the
-  reference than llama.cpp on 20 of 23 rows with the published 1.5.0 Linux binary,
-  and 19 of 23 with a local Clang build of 1.6.0
+  reference than llama.cpp on 20 of 23 rows with the published 1.6.1 Linux binary,
+  which reads identically to the published 1.5.0 binary at every scored position
   ([build conditions](docs/golden-pass-2026-10-25.md)). A model it does not know is
   refused by name, never guessed at.
 - **Yours.** Free forever under Apache 2.0, built in Sweden, and your prompts
@@ -155,7 +155,7 @@ or follow one of these.
 <a id="runtime-and-hardware"></a>
 ## <img src="site/assets/readme-section.svg" width="8" height="24" alt=""> Know whether a model fits before you download it
 
-On an RTX 3070, `--fit` named the same GPU and CPU split the
+On an RTX 3070, `--info fit` named the same GPU and CPU split the
 loader then used in 70 of 72 cases and was one layer cautious in the other
 two, never optimistic (six models, two context sizes, four cache formats).
 
@@ -170,7 +170,7 @@ arithmetic.
 # fetch only the first 16 MB of a model, then ask
 curl -r 0-16777215 -L -o head.gguf \
   https://huggingface.co/ORG/REPO/resolve/main/MODEL.gguf
-./runner --fit head.gguf -c 16384
+./runner -m head.gguf --info fit -c 16384
 ```
 
 ```console
@@ -179,8 +179,8 @@ curl -r 0-16777215 -L -o head.gguf \
   verdict       FITS — 35 of 40 layers on the GPU, 6.53 GiB of RAM to spare at ctx 16384
 ```
 
-`./runner --caps` says what this machine and build can run, and
-`./runner -m model.gguf --doctor` loads a model, probes it and reports.
+`./runner --info caps` says what this machine and build can run, and
+`./runner -m model.gguf --info doctor` loads a model, probes it and reports.
 [How the verdict is computed](MANUAL.md#deciding-before-you-download)
 
 <a id="models-and-conversion"></a>
@@ -204,11 +204,11 @@ then tells you how far the result drifted from the original.
 
 ```sh
 # keep some tensors sharp and squeeze others, from a plan file
-./runner -m model-Q8_0.gguf --quantize out.gguf --type-plan plan.json
+./runner -m model-Q8_0.gguf --rewrite out.gguf --type-plan plan.json
 # drop the experts a mixture-of-experts model rarely uses
-./runner -m model.gguf --quantize pruned.gguf --prune-experts keep.json
+./runner -m model.gguf --rewrite pruned.gguf --prune-experts keep.json
 # remove one block's attention or feed-forward sublayer
-./runner -m model.gguf --quantize cut.gguf --remove-sublayer attn:48
+./runner -m model.gguf --rewrite cut.gguf --remove-sublayer attn:48
 # then score the result against its parent
 python3 scripts/kld-compare-raw.py --model-a out.gguf --model-b model-Q8_0.gguf \
     --runner ./runner --corpus corpus.txt --max-positions 400 --out fidelity.json
@@ -236,7 +236,7 @@ and shrinks the other half to 4 bits.
 ./runner -m model.gguf --serve -c 32768 --kv q8     # the gentler setting, about half
 ```
 
-`--fit` shows what each setting buys on your machine before you load anything.
+`--info fit` shows what each setting buys on your machine before you load anything.
 [Cache formats and their measured cost](MANUAL.md#long-contexts)
 
 <a id="designed-to-stay-on"></a>
@@ -332,8 +332,8 @@ adapter is written beside a record of what made it.
 **How.**
 
 ```sh
-./runner -m base-Q4_K_M.gguf --train data.jsonl --train-steps 200 \
-  --lora-rank 8 --train-out adapter.gguf
+./runner train data.jsonl -m base-Q4_K_M.gguf --steps 200 \
+  --lora-rank 8 --out adapter.gguf
 ./runner -m base-Q4_K_M.gguf --lora adapter.gguf --serve
 ```
 
@@ -350,185 +350,13 @@ can change them, which is a stated limit, not a promise broken.
 ## <img src="site/assets/readme-section.svg" width="8" height="24" alt=""> Actively validated models
 
 Runner keeps loading every model the [support matrix](MANUAL.md#support-matrix)
-admits; the files below are the ones it re-checks on every release, with one
+admits; the files linked below are the ones it re-checks on every release, with one
 greedy prompt compared byte for byte against a pinned output on the device
-each file names. A release is refused while any of them is missing that
-check, failing it or past its age limit.
+each file names. A release is refused while any of them, on hardware the
+project owns, is missing that check, failing it, or older than 120 days with
+no change on its path re-checked since.
 
-<!-- model-tiers:begin (rendered from docs/model-tiers.json by scripts/model-tiers.py --write-docs; do not edit) -->
-
-✅ *version date*: recorded gate · blank: nobody has run it yet · n/a: declared limit, linked to the manual · failed *version date*: recorded failure · Train: the file's own `--adapt-info` answer, where ✅ means the LoRA backward admits the file, not that training it gives good results. A family's line sums up every file of its models, per backend and for Train: ✅ all recorded · 🟨 *k of n*: k of its n files recorded, a declared limit beside them counted as not run · a hyphen: none run · n/a: a declared limit on every file · failed: a recorded failure on any file. For Train, recorded means the LoRA backward admits the file, and a refusal counts as a declared limit. Each file name links to its envelope.
-
-<details>
-<summary><b>Cloudflare Clef</b>, 1 model: CPU - · CUDA ✅ · Metal n/a · Train ✅</summary>
-<p><b>Cloudflare Clef (clef, on Qwen3.8-27B)</b>, text path only</p>
-<table>
-<thead><tr><th>File</th><th>CPU</th><th>CUDA</th><th>Metal</th><th>Train</th></tr></thead>
-<tbody>
-<tr><td><a href="docs/model-support.md#cloudflare-clef-iq3_m"><code>Cloudflare_clef-IQ3_M.gguf</code></a></td><td></td><td nowrap>✅ 1.5.1<br>2026-10-24</td><td><a href="MANUAL.md#support-matrix">n/a</a></td><td nowrap>✅ 1.5.1<br>2026-10-24</td></tr>
-</tbody>
-</table>
-</details>
-
-<details>
-<summary><b>Qwen3.8</b>, 2 models: CPU 🟨 1 of 5 · CUDA 🟨 4 of 5 · Metal n/a · Train 🟨 3 of 5</summary>
-<p><b>Qwen3.8-27B</b></p>
-<table>
-<thead><tr><th>File</th><th>CPU</th><th>CUDA</th><th>Metal</th><th>Train</th></tr></thead>
-<tbody>
-<tr><td><a href="docs/model-support.md#qwen3.8-27b-ud-q4_k_m"><code>Qwen3.8-27B-UD-Q4_K_M.gguf</code></a></td><td></td><td nowrap>✅ 1.5.1<br>2026-10-24</td><td><a href="MANUAL.md#support-matrix">n/a</a></td><td nowrap>✅ 1.5.1<br>2026-10-24</td></tr>
-<tr><td><a href="docs/model-support.md#qwen3.8-27b-gsq-rco-iq3_s-recovered"><code>Qwen3.8-27B-GSQ-RCO-IQ3_S-recovered.gguf</code></a></td><td></td><td nowrap>✅ 1.5.1<br>2026-10-24</td><td><a href="MANUAL.md#support-matrix">n/a</a></td><td nowrap>✅ 1.5.1<br>2026-10-24</td></tr>
-<tr><td><a href="docs/model-support.md#qwen3.8-27b-mtp-q8_0"><code>Qwen3.8-27B-MTP-Q8_0.gguf</code></a></td><td></td><td nowrap>✅ 1.5.1<br>2026-10-24</td><td><a href="MANUAL.md#support-matrix">n/a</a></td><td nowrap>✅ 1.5.1<br>2026-10-24</td></tr>
-</tbody>
-</table>
-<p><b>Qwen3.8-Flash-Next</b>, experimental</p>
-<table>
-<thead><tr><th>File</th><th>CPU</th><th>CUDA</th><th>Metal</th><th>Train</th></tr></thead>
-<tbody>
-<tr><td><a href="docs/model-support.md#qwen3.8-flash-next-gsq-rco-iq3_s-with-mtp-head"><code>Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-with-MTP-head-00001-of-00004.gguf</code></a> (4 parts)</td><td></td><td nowrap>✅ 1.5.1<br>2026-10-24</td><td><a href="MANUAL.md#support-matrix">n/a</a></td><td>no: hyper-connections (qwen4exp)</td></tr>
-<tr><td><a href="docs/model-support.md#qwen3.8-flash-next-mtp-q8_0"><code>Qwen3.8-Flash-Next-MTP-Q8_0.gguf</code></a></td><td nowrap>✅ 1.5.1<br>2026-10-24</td><td><a href="MANUAL.md#support-matrix">n/a</a></td><td><a href="MANUAL.md#support-matrix">n/a</a></td><td>no: hyper-connections (qwen4exp)</td></tr>
-</tbody>
-</table>
-</details>
-
-<details>
-<summary><b>Gemma 4</b>, 5 models: CPU 🟨 1 of 5 · CUDA 🟨 4 of 5 · Metal 🟨 1 of 5 · Train 🟨 3 of 5</summary>
-<p><b>Gemma 4 12B</b>, text path only</p>
-<table>
-<thead><tr><th>File</th><th>CPU</th><th>CUDA</th><th>Metal</th><th>Train</th></tr></thead>
-<tbody>
-<tr><td><a href="docs/model-support.md#gemma-4-12b-it-qat-q4_0"><code>gemma-4-12b-it-qat-q4_0.gguf</code></a></td><td></td><td nowrap>✅ 1.5.1<br>2026-10-24</td><td></td><td nowrap>✅ 1.5.1<br>2026-10-24</td></tr>
-</tbody>
-</table>
-<p><b>Gemma 4 26B-A4B</b>, text path only</p>
-<table>
-<thead><tr><th>File</th><th>CPU</th><th>CUDA</th><th>Metal</th><th>Train</th></tr></thead>
-<tbody>
-<tr><td><a href="docs/model-support.md#gemma-4-26b-a4b-it-qat-q4_0"><code>gemma-4-26B_q4_0-it.gguf</code></a></td><td></td><td nowrap>✅ 1.5.1<br>2026-10-24</td><td></td><td>no: MoE FFN (gemma-4 dual-branch)</td></tr>
-</tbody>
-</table>
-<p><b>Gemma 4 31B</b>, text path only</p>
-<table>
-<thead><tr><th>File</th><th>CPU</th><th>CUDA</th><th>Metal</th><th>Train</th></tr></thead>
-<tbody>
-<tr><td><a href="docs/model-support.md#gemma-4-31b-it-q4_0"><code>gemma-4-31B-it-Q4_0.gguf</code></a></td><td></td><td nowrap>✅ 1.5.1<br>2026-10-24</td><td></td><td nowrap>✅ 1.5.1<br>2026-10-24</td></tr>
-</tbody>
-</table>
-<p><b>Gemma 4 31B, attention block 48 removed</b>, text path only</p>
-<table>
-<thead><tr><th>File</th><th>CPU</th><th>CUDA</th><th>Metal</th><th>Train</th></tr></thead>
-<tbody>
-<tr><td><a href="docs/model-support.md#gemma-4-31b-it-attn48-removed-q4_0"><code>gemma-4-31B-it-attn48-removed-q4_0.gguf</code></a></td><td></td><td nowrap>✅ 1.5.1<br>2026-10-24</td><td></td><td>no: removed sublayers (--remove-sublayer artifact)</td></tr>
-</tbody>
-</table>
-<p><b>Gemma 4 E2B</b>, text path only</p>
-<table>
-<thead><tr><th>File</th><th>CPU</th><th>CUDA</th><th>Metal</th><th>Train</th></tr></thead>
-<tbody>
-<tr><td><a href="docs/model-support.md#gemma-4-e2b-it-q4_k_m-q4_0-mix"><code>gemma-4-E2B-it-Q4_K_M-Q4_0-mix.gguf</code></a></td><td nowrap>✅ 1.5.1<br>2026-10-23</td><td></td><td nowrap>✅ 1.5.1<br>2026-10-23</td><td nowrap>✅ 1.5.1<br>2026-10-23</td></tr>
-</tbody>
-</table>
-</details>
-
-<details>
-<summary><b>Muse-Glimmer-30B</b>, 2 models: CPU 🟨 1 of 4 · CUDA 🟨 3 of 4 · Metal - · Train ✅</summary>
-<p><b>Muse-Glimmer-30B</b>, text path only</p>
-<table>
-<thead><tr><th>File</th><th>CPU</th><th>CUDA</th><th>Metal</th><th>Train</th></tr></thead>
-<tbody>
-<tr><td><a href="docs/model-support.md#muse-glimmer-30b-kquant"><code>Muse-Glimmer-30B-KQuant-17GB-Q4_K_M.gguf</code></a></td><td></td><td nowrap>✅ 1.5.1<br>2026-10-24</td><td></td><td nowrap>✅ 1.5.1<br>2026-10-24</td></tr>
-</tbody>
-</table>
-<p><b>Muse-Glimmer-30B surgical</b>, text path only</p>
-<table>
-<thead><tr><th>File</th><th>CPU</th><th>CUDA</th><th>Metal</th><th>Train</th></tr></thead>
-<tbody>
-<tr><td><a href="docs/model-support.md#muse-glimmer-30b-surgical-4p75-q4_k"><code>Muse-Glimmer-30B-surgical-4p75-Q4_K.gguf</code></a></td><td></td><td nowrap>✅ 1.5.1<br>2026-10-24</td><td></td><td nowrap>✅ 1.5.1<br>2026-10-24</td></tr>
-<tr><td><a href="docs/model-support.md#muse-glimmer-30b-surgical-6p34-q8_0"><code>Muse-Glimmer-30B-surgical-6p34-Q8_0.gguf</code></a></td><td nowrap>✅ 1.5.1<br>2026-10-24</td><td></td><td></td><td nowrap>✅ 1.5.1<br>2026-10-24</td></tr>
-<tr><td><a href="docs/model-support.md#muse-glimmer-30b-surgical-6p34-q4_k-recovered"><code>Muse-Glimmer-30B-surgical-6p34-Q4_K-recovered.gguf</code></a></td><td></td><td nowrap>✅ 1.5.1<br>2026-10-24</td><td></td><td nowrap>✅ 1.5.1<br>2026-10-24</td></tr>
-</tbody>
-</table>
-</details>
-
-<details>
-<summary><b>Granite-4.2-8B</b>, 1 model: CPU - · CUDA ✅ · Metal - · Train ✅</summary>
-<p><b>Granite-4.2-8B</b></p>
-<table>
-<thead><tr><th>File</th><th>CPU</th><th>CUDA</th><th>Metal</th><th>Train</th></tr></thead>
-<tbody>
-<tr><td><a href="docs/model-support.md#granite-4.2-8b-q4_k_m"><code>granite-4.2-8b-Q4_K_M.gguf</code></a></td><td></td><td nowrap>✅ 1.5.1<br>2026-10-23</td><td></td><td nowrap>✅ 1.5.1<br>2026-10-23</td></tr>
-<tr><td><a href="docs/model-support.md#granite-4.2-8b-q8_0"><code>granite-4.2-8b-Q8_0.gguf</code></a></td><td></td><td nowrap>✅ 1.5.1<br>2026-10-24</td><td></td><td nowrap>✅ 1.5.1<br>2026-10-24</td></tr>
-</tbody>
-</table>
-</details>
-
-<details>
-<summary><b>Trinity Nano</b>, 1 model: CPU ✅ · CUDA n/a · Metal n/a · Train n/a</summary>
-<p><b>Trinity Nano</b></p>
-<table>
-<thead><tr><th>File</th><th>CPU</th><th>CUDA</th><th>Metal</th><th>Train</th></tr></thead>
-<tbody>
-<tr><td><a href="docs/model-support.md#trinity-nano-preview-q8_0"><code>Trinity-Nano-Preview-Q8_0.gguf</code></a></td><td nowrap>✅ 1.5.1<br>2026-10-23</td><td><a href="MANUAL.md#support-matrix">n/a</a></td><td><a href="MANUAL.md#support-matrix">n/a</a></td><td>no: MoE router gating other than softmax</td></tr>
-</tbody>
-</table>
-</details>
-
-<details>
-<summary><b>Xyntetik-Kvist-14B</b>, 1 model: CPU 🟨 1 of 4 · CUDA 🟨 3 of 4 · Metal - · Train ✅</summary>
-<p><b>Xyntetik-Kvist-14B</b></p>
-<table>
-<thead><tr><th>File</th><th>CPU</th><th>CUDA</th><th>Metal</th><th>Train</th></tr></thead>
-<tbody>
-<tr><td><a href="docs/model-support.md#xyntetik-kvist-14b-bf16"><code>Xyntetik-Kvist-14B-BF16.gguf</code></a></td><td nowrap>✅ 1.5.1<br>2026-10-24</td><td></td><td></td><td nowrap>✅ 1.5.1<br>2026-10-24</td></tr>
-<tr><td><a href="docs/model-support.md#xyntetik-kvist-14b-q8_0"><code>Xyntetik-Kvist-14B-Q8_0.gguf</code></a></td><td></td><td nowrap>✅ 1.5.1<br>2026-10-24</td><td></td><td nowrap>✅ 1.5.1<br>2026-10-24</td></tr>
-<tr><td><a href="docs/model-support.md#xyntetik-kvist-14b-q5_0-mix"><code>Xyntetik-Kvist-14B-Q5_0-mix.gguf</code></a></td><td></td><td nowrap>✅ 1.5.1<br>2026-10-24</td><td></td><td nowrap>✅ 1.5.1<br>2026-10-24</td></tr>
-<tr><td><a href="docs/model-support.md#xyntetik-kvist-14b-iq4_nl-mix"><code>Xyntetik-Kvist-14B-IQ4_NL-mix.gguf</code></a></td><td></td><td nowrap>✅ 1.5.1<br>2026-10-24</td><td></td><td nowrap>✅ 1.5.1<br>2026-10-24</td></tr>
-</tbody>
-</table>
-</details>
-
-<details>
-<summary><b>Qwen3</b>, 3 models: CPU 🟨 1 of 4 · CUDA 🟨 3 of 4 · Metal - · Train ✅</summary>
-<p><b>Qwen3-30B-A3B selective precision</b></p>
-<table>
-<thead><tr><th>File</th><th>CPU</th><th>CUDA</th><th>Metal</th><th>Train</th></tr></thead>
-<tbody>
-<tr><td><a href="docs/model-support.md#qwen3-30b-a3b-expq4_0-attnq8_0"><code>Qwen3-30B-A3B-expq4_0-attnq8_0.gguf</code></a></td><td></td><td nowrap>✅ 1.5.1<br>2026-10-24</td><td></td><td nowrap>✅ 1.5.1<br>2026-10-24</td></tr>
-</tbody>
-</table>
-<p><b>Qwen3-4B Runner ToolUse</b></p>
-<table>
-<thead><tr><th>File</th><th>CPU</th><th>CUDA</th><th>Metal</th><th>Train</th></tr></thead>
-<tbody>
-<tr><td><a href="docs/model-support.md#qwen3-4b-runner-tooluse-merged-q8_0"><code>merged-Q8_0.gguf</code></a></td><td></td><td nowrap>✅ 1.5.1<br>2026-10-24</td><td></td><td nowrap>✅ 1.5.1<br>2026-10-24</td></tr>
-<tr><td><a href="docs/model-support.md#qwen3-4b-runner-tooluse-lora"><code>Qwen3-4B-ToolUse-LoRA.gguf</code></a></td><td nowrap>✅ 1.5.1<br>2026-10-24</td><td></td><td></td><td nowrap>✅ 1.5.1<br>2026-10-24</td></tr>
-</tbody>
-</table>
-<p><b>Qwen3-Coder-30B-A3B keep-120</b></p>
-<table>
-<thead><tr><th>File</th><th>CPU</th><th>CUDA</th><th>Metal</th><th>Train</th></tr></thead>
-<tbody>
-<tr><td><a href="docs/model-support.md#qwen3-coder-30b-a3b-instruct-keep120-q4_k_m"><code>Qwen3-Coder-30B-A3B-Instruct-keep120-Q4_K_M.gguf</code></a></td><td></td><td nowrap>✅ 1.5.1<br>2026-10-24</td><td></td><td nowrap>✅ 1.5.1<br>2026-10-24</td></tr>
-</tbody>
-</table>
-</details>
-
-<details>
-<summary><b>NVIDIA Nemotron Nano 9B v2</b>, 1 model: CPU - · CUDA ✅ · Metal n/a · Train n/a</summary>
-<p><b>NVIDIA Nemotron Nano 9B v2</b></p>
-<table>
-<thead><tr><th>File</th><th>CPU</th><th>CUDA</th><th>Metal</th><th>Train</th></tr></thead>
-<tbody>
-<tr><td><a href="docs/model-support.md#nvidia-nemotron-nano-9b-v2-q8_0"><code>NVIDIA-Nemotron-Nano-9B-v2-Q8_0.gguf</code></a></td><td></td><td nowrap>✅ 1.5.1<br>2026-10-24</td><td><a href="MANUAL.md#support-matrix">n/a</a></td><td>no: recurrent architecture (Mamba-2)</td></tr>
-</tbody>
-</table>
-</details>
-
-**Upcoming** (planned, not supported yet): Qwen3.8-35B-A3B, Ornith-1.5-35B-A3B (text path only), MiniCPM-V-4.7-35B-A3B (text path only), Granite-4.2-30B, Nemotron 3.5 Lightning-30B-A3B, Qwen3.6-27B, Cloudflare Clef Flash (clef, on Qwen3.5-9B), Nemotron 3 Nano (30B-A3B), Nemotron 3.5 Bolt-74B-A9B (text path only), Nemotron 3.5 Super VL-120B-A12B (text path only), Kolibri-1 (Aleph Alpha, 78B), Mellum2.1-12B-A2.5B-Thinking (JetBrains).
-
-<!-- model-tiers:end -->
-
-[What each tier promises, every file's full envelope and how to run the check](docs/model-support.md)
+[The validated files by family, what each tier promises, every file's full envelope and how to run the check](docs/model-support.md#overview)
 
 <a id="more"></a>
 ## Also in the box
@@ -540,7 +368,7 @@ check, failing it or past its age limit.
   against it every release. [Endpoints](MANUAL.md#endpoints) ·
   [Coding-agent setup](MANUAL.md#coding-agent-evidence)
 - <a id="structured-output"></a>**Structured output.** `--json`,
-  `--json-schema FILE` or the API's `response_format` guarantee the shape of
+  `--json FILE` or the API's `response_format` guarantee the shape of
   the answer, and `"confirm_below": 0.8` reports whether the model was sure
   enough to skip a human. [Details](MANUAL.md#structured-output)
 - **Rerank without a second model.** `POST /v1/rerank` scores documents
@@ -567,8 +395,8 @@ check, failing it or past its age limit.
 - <a id="desktop-tray"></a>**Desktop tray.** On macOS and Windows an icon
   shows which models are loaded and starts or stops them.
   [Details](MANUAL.md#desktop-tray)
-- **Draft decoding.** `--draft small.gguf`, `--mtp`, `--mtp-file head.gguf`
-  (a NextN/MTP head shipped as a companion file) or `--draft-lookup`.
+- **Draft decoding.** `--draft small.gguf`, `--draft mtp`, `--draft mtp:head.gguf`
+  (a NextN/MTP head shipped as a companion file) or `--draft lookup`.
   [Details](MANUAL.md#runtime-and-hardware)
 - **Pause and resume a generation.** Session images with `--sessions DIR`.
   [Details](docs/session-images.md)
@@ -580,9 +408,10 @@ check, failing it or past its age limit.
   download with `-hf`. Experimental layouts and backend limits are listed
   in the [support matrix](MANUAL.md#support-matrix).
 - **How Runner compares.** Closer to the publisher's reference than
-  llama.cpp on 20 of 23 measured rows with the published 1.5.0 Linux binary;
-  a local Clang build of 1.6.0 reads 19 of 23. Both are level or ahead on the
-  reference's chosen token on 22 of 23. [Build conditions](docs/golden-pass-2026-10-25.md). [Evidence](MANUAL.md#evidence-and-tradeoffs) ·
+  llama.cpp on 20 of 23 measured rows with the published 1.6.1 Linux binary,
+  identical to the published 1.5.0 binary at every scored position; a local
+  Clang build of the same source reads 19 of 23, the compiler's doing. Level or
+  ahead on the reference's chosen token on 22 of 23. [Build conditions](docs/golden-pass-2026-10-25.md). [Evidence](MANUAL.md#evidence-and-tradeoffs) ·
   [Speed tables](docs/benchmarks.md)
 
 <a id="all-commands"></a>
@@ -607,18 +436,18 @@ replays it.
 **How.**
 
 ```sh
-./runner -m model.gguf -p "Say hello in one sentence." -s 42 --transcript run.json
+./runner -m model.gguf -p "Say hello in one sentence." -s 42 --record run.json
 ./runner -m model.gguf --verify run.json     # VERIFIED, DIVERGED or UNVERIFIABLE
 ```
 
-Around that core: signed and chained receipts (`--keygen`, `--sign-key`),
-evidence packs a reviewer checks offline (`--export-pack`, `--check-pack`),
+Around that core: signed and chained receipts (`runner attest keygen`, `--sign-key`),
+evidence packs a reviewer checks offline (`runner attest pack`, `runner attest check-pack`),
 signature checks on the model file itself (`--model-sig`), and a text
-watermark with its detector (`--watermark`, `--detect-watermark`).
+watermark with its detector (`--watermark`, `runner attest detect`).
 
 **Where a model came from.** Each step that makes a model file (quantize,
 train, merge) writes a signed record beside it that names its inputs by
-sha256. `--lineage` walks a file, or a served answer's receipt, back to the
+sha256. `runner attest lineage` walks a file, or a served answer's receipt, back to the
 download it started from, and `--require-eval` refuses a file without a
 passing evaluation made for those exact bytes.
 [Lineage walkthrough](docs/lineage-walkthrough.md) ·
@@ -655,7 +484,7 @@ Ran a file or the engine on your own hardware? Open a
 [result report](https://github.com/Joakimpalm-Zen/xyntetik-runner/issues/new?template=result_report.yml);
 success and failure are both wanted, and each is credited by name in
 [community results](docs/community-results.md). For a problem, include
-`runner --version`, `runner --caps`, the model's exact filename and the load
+`runner --version`, `runner --info caps`, the model's exact filename and the load
 log. [SECURITY.md](SECURITY.md) has the threat model and
 [CONTRIBUTING.md](CONTRIBUTING.md) the correctness gates.
 

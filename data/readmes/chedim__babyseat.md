@@ -5,20 +5,16 @@
 
 babyseat is an AI seat with a memory that learns in real time. Everything you
 and your AI say passes through it, and it learns from every message as it
-happens. Inside lives Blurp, a small self that grows up on that memory, one
-tested skill at a time: Alan Turing's "child machine" idea, taken literally.
-
-- **Works today:** real-time learning, a body, aiming at its own targets.
-- **Still learning:** recognizing itself (its earlier pass was voided and is
-  being rebuilt), inventing new things, writing its own replies, running on an
-  embedding model alone.
+happens. 
 
 ![Membrane](screenshot.png)
+> the new "Decisions Cockpit" UI with Membrane field in the background.
 
-![Membrane](docs/comparison.png)
-
-It runs locally in front of [Ollama](https://ollama.com), on its own or inside
-[Home Assistant](docs/home-assistant.md).
+It runs locally, on its own or inside [Home Assistant](docs/home-assistant.md),
+in front of your models: [Ollama](https://ollama.com) (local or its cloud
+models), OpenAI-compatible cloud APIs, and Claude through the Claude Code engine.
+Any OpenAI, Ollama or MCP client, Claude Code included, can talk to it
+([models and clients](#models-and-clients)).
 
 > **The names.** **babyseat** is the whole project: the seat, its web UI,
 > Blurp, the Home Assistant integration and the Docker image
@@ -31,6 +27,8 @@ It runs locally in front of [Ollama](https://ollama.com), on its own or inside
 ---
 
 ## What makes it different
+
+![Membrane](docs/comparison.png)
 
 Most memory projects give your agent a database to search. membrane is a
 different kind of thing.
@@ -91,8 +89,7 @@ overwritten. Teams can opt into one merged field
 
 No account, no cloud, no telemetry. Chat and embeddings run on your Ollama, the
 field lives on your disk, and a shared bucket is optional: with it down, the
-seat still boots. The license is PolyForm Noncommercial: free for personal, research and
-other noncommercial use ([LICENSE](LICENSE)).
+seat still boots. The license is MIT ([LICENSE](LICENSE)).
 
 ### How it maps to the patterns you've already seen
 
@@ -111,7 +108,9 @@ other noncommercial use ([LICENSE](LICENSE)).
 babyseat runs three ways: standalone, in Docker, or inside Home Assistant. All
 need an [Ollama](https://ollama.com) server with one chat model and one
 embedding model (`ollama pull qwen3:8b && ollama pull mxbai-embed-large`, or
-any cloud model Ollama serves), and 1–3 GB of RAM for the seat.
+any cloud model Ollama serves), and 1–3 GB of RAM for the seat. Chat can also
+run on a cloud API or on Claude ([models and clients](#models-and-clients));
+embeddings always come from Ollama.
 
 ### Standalone: its own web UI
 
@@ -134,6 +133,39 @@ read freely, and they ask once for the seat token before writing
 refused, unless you turn on [JWT mode](docs/auth.md). The microphone needs
 `localhost` (a secure origin), and the first voice use downloads about 65 MB
 of speech models.
+
+### Models and clients
+
+**Models membrane runs on:**
+
+- **Ollama**: any chat model it serves, local or cloud (`glm-5.3-flash:cloud`,
+  `gpt-oss:20b-cloud`, …). Embeddings always come from Ollama.
+- **OpenAI-compatible cloud APIs**: `membrane auth <provider>` stores a key
+  (`anthropic`, `openrouter`, `gemini`, `groq`, `github`, `mistral`, `zen`), and
+  that provider's models become routable rungs beside Ollama's.
+- **Claude, through the Claude Code engine**: `membrane auth claude-agent` adds
+  Claude rungs (`claude-agent:sonnet`, `:opus`, `:haiku`) that run the Claude
+  Agent SDK on your Anthropic API key. Claude Code's built-in tools are off;
+  Claude works through membrane's own tools, and its replies are learned like
+  any model's ([docs/claude-agent.md](docs/claude-agent.md)).
+
+**Clients that can talk to membrane:**
+
+- **OpenAI-compatible clients** at `http://127.0.0.1:11500/v1`
+  (`/v1/chat/completions`, `/v1/models`).
+- **Ollama clients** (Open WebUI, ollama-python, an Ollama provider) at
+  `http://127.0.0.1:11500`: `/api/chat` and `/api/generate` go through the same
+  memory turn, and every other `/api/*` path passes through to Ollama.
+- **MCP clients, Claude Code included**: membrane's tools (recall, learn,
+  entities, methods) over MCP stdio, relayed to the running seat:
+
+  ```bash
+  claude mcp add membrane -- python -m membrane.mcp_server --port 11500
+  ```
+
+  Claude Code keeps its own model; membrane is its memory and its field.
+- **opencode**: `membrane opencode` attaches the opencode TUI to membrane's own
+  serve surface ([First run in a project](#first-run-in-a-project)).
 
 ### Docker
 
@@ -212,7 +244,7 @@ tracks, commands, interfaces, classes, loops, timelines, frame, digest, or
 changes since the last message), `learn` to keep a lesson (with the same guards as any turn),
 `forget` to clean up its mistakes, and the entity tools
 (`entity_add/edit/remove/inherit`, `entity_query`, `entity_tracks`,
-`entities_related`, …) and Cliffhanger's method tools (`method_define/call/each/inspect`). There are no one-shot commands: the model defines a method on an entity, then calls it ([program the field first](docs/cliffhanger.md#program-the-field-first-576-part-f)). Commands compose in **Cliffhanger**, membrane's command
+`entities_related`, …), `code_run` and Cliffhanger's method tools (`method_define/call/each/inspect`). Code the model runs becomes a tree of entities in the field, linked to its executor, and each run ends on its own result entity ([the executor](docs/entity-field.md#the-executor-code-is-a-tree-in-the-field-614)); what it will do again it defines as a method on an entity, then calls ([program the field first](docs/cliffhanger.md#program-the-field-first-576-part-f)). Commands compose in **Cliffhanger**, membrane's command
 language ([its spec](https://github.com/chedim/cliffhanger),
 [how membrane uses it](docs/cliffhanger.md)). Every write is audited with
 where it came from.
@@ -622,11 +654,9 @@ python experiments/variety_toy.py        # the variety toy: the gate's calibrati
 
 A working lab, used every day to build itself: this repo's own field holds
 about 14,000 entities, and its background mind digests, dreams and talks
-about its own work. Version **0.7.2**; API and flag surfaces may still
-move. Licensing: **PolyForm Noncommercial 1.0.0** (see [LICENSE](LICENSE)) —
-free to use, modify and share for any noncommercial purpose (personal, hobby,
-research, education, charities and public institutions); commercial use needs
-the author's written permission — ask.
+about its own work. Version **0.7.3**; API and flag surfaces may still
+move. Licensing: **MIT** from 0.7.3 (see [LICENSE](LICENSE)); releases up to
+0.7.2 stay under PolyForm Noncommercial 1.0.0.
 
 ## Cite
 

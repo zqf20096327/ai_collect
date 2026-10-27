@@ -9,7 +9,7 @@
 <p align="center">
   <a href="https://github.com/cervezagua/lmstudio-agent-toolkit/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/cervezagua/lmstudio-agent-toolkit/actions/workflows/ci.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
-  <img alt="Tests" src="https://img.shields.io/badge/tests-861%20passing-brightgreen">
+  <img alt="Tests" src="https://img.shields.io/badge/tests-934%20passing-brightgreen">
   <img alt="Tested on Windows, macOS and Linux" src="https://img.shields.io/badge/tested%20on-Windows%20%7C%20macOS%20%7C%20Linux-informational">
   <a href="https://lmstudio.ai/cervezagua/agent-toolkit"><img alt="LM Studio Hub" src="https://img.shields.io/badge/LM%20Studio%20Hub-cervezagua%2Fagent--toolkit-7c3aed"></a>
 </p>
@@ -36,6 +36,8 @@
 ```bash
 lms get cervezagua/agent-toolkit
 ```
+
+For long chats, also get its companion: `lms get cervezagua/agent-toolkit-loop`.
 
 Then, in LM Studio:
 
@@ -68,6 +70,9 @@ LM Studio fetches the dependencies itself. Re-run `npm run setup` after `git pul
 
 | Version | What changed |
 |---|---|
+| [**0.7.2**](https://github.com/cervezagua/lmstudio-agent-toolkit/releases/tag/v0.7.2) | With agent-toolkit-loop on, a tool that fails (a script in js-code-sandbox, say) gives the model its error to work with, instead of freezing the chat. If a reply does fail, it ends cleanly with the reason, so Stop is never left greyed out. |
+| [**0.7.1**](https://github.com/cervezagua/lmstudio-agent-toolkit/releases/tag/v0.7.1) | With agent-toolkit-loop on, a tool call that needs your approval shows its Approve and Deny buttons again. In 0.7.0 the reply waited for an approval that couldn't be given. |
+| [**0.7.0**](https://github.com/cervezagua/lmstudio-agent-toolkit/releases/tag/v0.7.0) | **New companion plugin, [agent-toolkit-loop](standalone/agent-toolkit-loop/README.md)**: long chats keep going at small contexts (old tool output is hidden, then summarized), `/btw` side questions, and a model stuck repeating a call is stopped. **Commands**: `/review`, `/test`, `/commit`, `/init`, `/help` and your project's own. **`/rewind`** puts back the files a message changed. Edits get a syntax check, `task_wait` waits out a download or build without spending tokens, and skills load when your message names their trigger. Multi-line commands no longer hang in the PowerShell session. |
 | [**0.6.0**](https://github.com/cervezagua/lmstudio-agent-toolkit/releases/tag/v0.6.0) | Runs on LM Studio SDK 2.1, which fixes a hang with newer LM Studio: model lists in the settings are filled again, and the vision tools no longer wait forever when no vision model is loaded. **Brave Search API Key** moved under Search Backend and is now set per chat: enter your key again there. |
 | [**0.5.2**](https://github.com/cervezagua/lmstudio-agent-toolkit/releases/tag/v0.5.2) | When an edit can't find the text it should replace, the error shows the closest lines in the file, so the model can copy them instead of reading the whole file again. |
 | [**0.5.1**](https://github.com/cervezagua/lmstudio-agent-toolkit/releases/tag/v0.5.1) | A command that prints without end can no longer crash the plugin: output is capped at its first and last 2 million characters. |
@@ -91,9 +96,20 @@ One plugin, six groups. Each group is a switch in the plugin's settings, because
 
 Every tool and setting is in the [full reference](plugin/README.md).
 
-### Just one tool?
+### More plugins
 
-Three of the Web tools also come as small plugins of their own:
+**For long chats: [agent-toolkit-loop](standalone/agent-toolkit-loop/README.md).** Enable it next to agent-toolkit, and a chat keeps going past the model's context limit in the same window:
+- **It hides old tool output first,** and summarizes the earlier conversation only when that isn't enough.
+- **It keeps your own words and a list of what was done,** and the model can search the full transcript.
+- **`/btw` side questions** are answered without derailing the task.
+
+```bash
+lms get cervezagua/agent-toolkit-loop
+```
+
+It takes over LM Studio's reply loop for the chats it's enabled in; switch it off and LM Studio's own loop is back.
+
+**Just one tool?** Three of the Web tools also come as small plugins of their own:
 
 | Plugin | What it adds | Install |
 |---|---|---|
@@ -114,7 +130,14 @@ Small models often know how to call a tool but not when to stop. [**agent-toolki
 - **Write an `AGENTS.md`** in your project: how to run the tests, which folders matter, what not to touch. It's loaded into every new chat automatically, so you stop repeating yourself. `CLAUDE.md` works too.
 - **Ask for plan mode on anything big.** *"Enter plan mode and plan how you'd add X"*: while planning, the file-changing tools disappear until the model presents its plan with `exit_plan_mode`.
 - **Point at the file when you know it.** *"The bug is in `src/parse.ts`"* saves a model several searches and a lot of context.
-- **Tell it to prove its work.** *"…and run the tests to show it passes"* turns a guess into a checked result.
+- **Tell it to prove its work.** *"…and run the tests to show it passes"* turns a guess into a checked result. Or type `/test`.
+- **Use the commands.**
+  - `/review` checks your uncommitted changes without touching them.
+  - `/commit` writes the message for you.
+  - `/init` writes an `AGENTS.md`.
+  - Add your own as `.agent-toolkit/commands/<name>.md`.
+- **Undo a whole message's work with `/rewind`.** It lists your messages that changed files; `/rewind 3` puts the files back to how they were before message 3.
+- **Give skills `triggers:`.** A skill with `triggers: [deploy]` is loaded whenever your message says "deploy". Small models rarely load skills on their own.
 - **Read only the part of a page you need.** *"Fetch the pricing page, just the table"* lets the model pass a CSS selector to `fetch_url` instead of reading the whole page into its context.
 - **Summarise a video instead of watching it.** With yt-dlp installed: *"What does this talk say about caching? <YouTube link>"*.
 - **Ask for research, not a single search.** With **Web** and **Research** on: *"Research what changed in Node 24, with sources"*. It reads several pages and answers with a numbered source after each claim. It works best with SearXNG.
@@ -125,7 +148,7 @@ Small models often know how to call a tool but not when to stop. [**agent-toolki
 
 ### Long chats
 
-- **When a chat gets long, have the model call `save_session_summary`**, then start a new chat. The summary is saved as a memory, and the next chat sees it in its memory index. LM Studio plugins can't shorten the history of a running chat.
+- **Enable [agent-toolkit-loop](standalone/agent-toolkit-loop/README.md) for chats that run long.** It keeps the chat going past the context limit, and you can ask `/btw` side questions without derailing the task. If you'd rather start fresh, have the model call `save_session_summary`, then start a new chat that picks it up from the memory index.
 - **Tell it what to remember.** *"Remember that we deploy from the `release` branch"* saves a memory, which every future chat sees in its memory index and can read in full.
 - **Let it search your earlier chats.** Switch on **Search Past Chats** and ask *"what was the command we used to deploy last week?"*. It's off by default, because those chats hold everything you've typed in LM Studio.
 - **Turn a solved problem into a skill.** Switch on **Let the Model Save Skills**, and after a task say *"save what you just did as a skill"*. You see the whole skill before it's written, and future chats can load it.
@@ -205,7 +228,7 @@ For untrusted projects, switch off **Allow Shell Commands** or run LM Studio in 
 
 ## 🚧 Limitations
 
-- LM Studio plugins can't rewrite earlier chat history, so there's no automatic context compaction. Use `save_session_summary` and a new chat.
+- LM Studio plugins can't rewrite earlier chat history. agent-toolkit-loop works around that by sending the model a compacted prompt, so the chat on screen stays complete, and LM Studio's context meter still counts all of it.
 - A plugin can't add its own button to the chat, so the project folder is set in the plugin's settings rather than with a folder picker.
 - All chats share one browser.
 - Results depend on the model.

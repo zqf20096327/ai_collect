@@ -23,6 +23,24 @@ _In June 2023, I wrote the blog post [The How and Why of Reading 300 Papers in 5
 
 #### Papers Read in 2026:
 
+##### [26-10-27] [paper603]
+- Virtual Spatial Transcriptomics From Histopathology Enables Prognostic and Therapeutic Response Prediction in Cancer
+ [[pdf]](https://www.biorxiv.org/content/10.64898/2026.08.04.742671v1) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Virtual%20Spatial%20Transcriptomics%20From%20Histopathology%20Enables%20Prognostic%20and%20Therapeutic%20Response%20Prediction%20in%20Cancer.pdf)
+- `biorxiv, 2026-08`
+- [Computational Pathology]
+```
+Somewhat interesting paper, but all results are based on very small samples. Why only 79 TCGA-BRCA samlpes for the results in Figure 4? They also mention "liver cancer samples" and "a trastuzumab response cohort" in the Discussion, but these results aren't actually included in the paper? I found this quite interesting and nice to read until the start of 2.3, Figure 1 gives a good overview of their model, and the model makes some sense overall (neat to use both a patch-level and slide-level PFM, for example), but then the results seem rather shaky. Their model is also quite complex with multiple different components, so would have been nice with some kind of ablation, to evaluate whether all these components actually are necessary.
+```
+
+##### [26-10-27] [paper602]
+- Cellular Architecture and Neighborhood-Informed Virtual Spatial Tumor Profiling From Histopathology
+ [[pdf]](https://www.cell.com/cell/fulltext/S0092-8674(26)00590-8) [[annotated pdf]](https://drive.google.com/file/d/1_DJK78GDiIYn8BKDrjhEpg5kIsOxD7Hs/view?usp=sharing)
+- `Cell, 2026`
+- [Computational Pathology]
+```
+Quite interesting paper, but dense and took quite a long time to get through (at least for me). I definitely don't understand everything fully (or am able to judge exactly how interesting/impressive/impactful all these results are), but the overall approach makes some sense and is quite interesting. In the end they have a patch-level classification model with 10 classes + background (classification head on top of the MUSK PFM, they also fine-tune the last two layers of the encoder apparently), trained on ~180k patches. Then they compute 262 features for each WSI based on the predictions, a lot of which are some kind of spatial features, and then use data to select just 13 of these features, and finally fit Cox PH models on these for survival modelling/prediction after immunotherapy.
+```
+
 ##### [26-10-26] [paper601]
 - Pan-Cancer Virtual Spatial Transcriptomics From Routine Histology With Phoenix
  [[pdf]](https://www.biorxiv.org/content/10.64898/2026.04.25.720812v2) [[annotated pdf]](https://drive.google.com/file/d/1Nf6sdePLC5oVCrpfPBE8qQIG8v-IqFTB/view?usp=sharing)
@@ -1075,22 +1093,4 @@ Just 3 pages, very quick to read. Quite interesting, it gave a quick overview wh
 - `Nature Cancer, 2025`
 - [ML for Medicine/Healthcare], [Language Models] 
 ```
-Well written and interesting paper, I enjoyed reading it. Who knows how long it's going to take before an approach like this actually can be used in real-world clinical practice, demonstrated to be safe and effective, I guess I'm still a bit skeptical. But, just from a purely technical standpoint, this is actually really interesting and pretty cool! In particular, I find this really cool: "GPT-4 invoked the MedSAM tool twice to obtain segmentation masks from two images taken at different time points. Subsequently, GPT-4 used the calculator function with the appropriate values from MedSAM to determine that the tumor had grown by a factor of 2.14". I do also think that the agent-based approach makes some sense, as it enables multiple specialized models to be utilized in a really flexible way ("....preventing a singular entity from developing an all-encompassing foundational model. Instead, entities can leverage smaller, specialized models developed by those with direct access to the respective data.... this modular approach allows for individual validation, updating and regulatory compliance of each tool.... this modular approach also offers far superior explainability compared to a large, generalist black-box model, as physicians can investigate the output from each individual tool separately").
-```
-
-##### [25-07-25] [paper484]
-- The Use of Artificial Intelligence for Cancer Therapeutic Decision-Making
- [[pdf]](https://ai.nejm.org/doi/full/10.1056/AIra2401164) [_unfortunately not open access, thus no annotated pdf_]
-- `NEJM AI, 2025`
-- [ML for Medicine/Healthcare], [Language Models] 
-```
-A non-technical review paper, fairly interesting. Just 6 pages long, very quick to read. I tend to find that it's pretty nice/useful to read these types of papers every once in a while, even though I'm not sure there are any major actionable takeaways for me here.
-```
-
-##### [25-07-24] [paper483]
-- Large Language Models Are Poor Clinical Decision-Makers: A Comprehensive Benchmark
- [[pdf]](https://aclanthology.org/2024.emnlp-main.759/) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Large%20Language%20Models%20Are%20Poor%20Clinical%20Decision-Makers%20A%20Comprehensive%20Benchmark.pdf)
-- `EMNLP 2024`
-- [ML for Medicine/Healthcare], [Language Models] 
-```
-Quite interesting paper, overall a good paper for me to read I think, to get a better sense of how LLMs typi
+Well written and interesting

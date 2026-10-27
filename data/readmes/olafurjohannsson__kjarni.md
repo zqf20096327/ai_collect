@@ -279,20 +279,35 @@ Kjarni is a single `.so`/`.dll`/`.dylib` that runs inside your process, with pre
 
 ONNX Runtime is a general-purpose tensor executor and does that job well. Kjarni is task-level: you ask for an embedding or a ranking, not for a graph execution. That is the difference the table is describing.
 
-## Verified against PyTorch
+### Speed, start-up and memory
 
-Kjarni's outputs are tested for numerical parity against PyTorch/HuggingFace golden values, and its GPU path is tested for parity against its own CPU path — encoders, cross-encoders, decoders, RoPE, RMSNorm, and full generation traces:
+Measured against the same models in PyTorch, ONNX Runtime, faster-whisper and
+llama.cpp, on one CPU, with each engine in its own process. Outputs are checked
+against PyTorch's: embeddings agree to within 3e-7.
 
-```
-test models::sentence_encoder::...::test_torch_sentence_encoder_golden_values ... ok
-test models::sequence_classifier::...::test_cross_encoder_rerank_torch_parity ... ok
-test tests::encoder_parity_test::test_encoder_cpu_gpu_parity                   ... ok
-test tests::decoder_parity_test::test_full_text_generation_parity              ... ok
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="bench/charts/encoders-throughput-dark.svg">
+  <img alt="Batch throughput for embeddings, reranking and classification" src="bench/charts/encoders-throughput-light.svg">
+</picture>
 
-test result: ok. 44 passed; 0 failed
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="bench/charts/encoders-load-dark.svg">
+  <img alt="Time to load a model" src="bench/charts/encoders-load-light.svg">
+</picture>
 
-A reimplemented engine is only worth using if it agrees with the reference implementation. These tests are how that claim is kept honest.
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="bench/charts/encoders-memory-dark.svg">
+  <img alt="Memory in use" src="bench/charts/encoders-memory-light.svg">
+</picture>
+
+- **Embeddings, reranking, classification:** faster than PyTorch on every task and level with ONNX Runtime on reranking and classification; ONNX Runtime is 11 to 17% faster on embeddings. Loads 10 to 25 times faster than PyTorch and 4 to 7 times faster than ONNX Runtime.
+- **Same answers as PyTorch:** embeddings, rerank scores and class probabilities agree with PyTorch's to within 4e-6, as closely as ONNX Runtime's do.
+- **Speech to text:** whisper-small transcribes a minute of audio at 11.5× real time, ahead of openai-whisper (8.2×) and faster-whisper at full precision (6.9×); faster-whisper's int8 mode is faster still (13.7×).
+- **Image search:** CLIP indexes 57 images a second against open_clip's 52, and loads in 0.3 s against 3.5 s.
+- **Memory:** a loaded model takes about the size of its weight file, less than the same model elsewhere: Whisper-small 1.1 GB against 1.4 GB in openai-whisper and 1.7 GB in faster-whisper, distilbart 1.3 GB against 1.7 GB, CLIP 0.8 GB against 1.2 GB.
+- **Where it is behind:** text generation runs at 70 to 79% of llama.cpp's speed on the same GGUF files; prompt processing is level with llama.cpp on Qwen2.5 0.5B and at 66% on Llama 3.2 1B. Summarization and translation take 1.1 to 1.4× PyTorch's time, and on short clips openai-whisper transcribes faster.
+
+Method, every number and how to reproduce them: [bench/BENCHMARKS.md](bench/BENCHMARKS.md).
 
 ## What it does
 
@@ -423,6 +438,19 @@ No. Every capability runs on CPU with hand-tuned SIMD kernels (AVX2/FMA on x86, 
 
 ONNX Runtime executes a computation graph; you supply the tokenization, the pooling, the normalization, and an exported `.onnx` file for every model. Kjarni is task-level: `Encode(text)` returns a finished, normalized embedding, and models are referenced by name with no export step. Kjarni also includes indexing, BM25, hybrid fusion, and cross-encoder reranking, which ONNX Runtime leaves to you. If you need to run arbitrary models from arbitrary frameworks, use ONNX Runtime. If you need embeddings and search in a .NET or Go application, Kjarni is considerably less work.
 
+### Can I trust the prebuilt libraries?
+
+The NuGet package, the Go module and the Python wheels ship a native library built by
+this repository's CI from the tagged commit, never uploaded by hand. From 0.2.6 on,
+every release also carries a `SHA256SUMS` file and a signed build-provenance
+attestation for each library, so you can check where a binary came from:
+
+```bash
+gh attestation verify libkjarni_ffi.so --repo olafurjohannsson/kjarni
+```
+
+Or build it yourself: `cargo build --release -p kjarni-ffi` produces the same library.
+
 ### Can I use it as a vector database?
 
 For small to medium corpora, yes — the built-in index handles storage, BM25, vector search, and hybrid fusion with no separate service. It is designed as the SQLite of local semantic search, not as a replacement for a distributed vector store at hundreds of millions of vectors.
@@ -453,9 +481,9 @@ Kjarni does not wrap ONNX, LibTorch, or any external inference engine. The runti
 
 - Hand-tuned SIMD kernels (AVX2/FMA, NEON)
 - Custom WGSL compute shaders for GPU inference
-- Zero-copy model loading via mmap
+- Memory-mapped model files, read straight from the safetensors or GGUF on disk
 - BF16 compute path
-- Quantization: Q4, Q6, Q8
+- Quantized weights from GGUF files: Q4_K, Q6_K, Q8_0, and Q4_0/Q5_0 converted to Q8_0 without loss
 - Single shared library, no runtime linkage beyond libc
 
 ## Project structure

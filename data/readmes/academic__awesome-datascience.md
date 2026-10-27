@@ -200,6 +200,8 @@ How do you learn data science? By doing data science, of course! Okay, okay - th
 - [Train LLM From Scratch](https://github.com/FareedKhan-dev/train-llm-from-scratch) - A straightforward method for training your LLM, from downloading data to generating text.
 - [Machine Learning 101](https://machinelearning101.com) - Free browser-based platform that teaches core machine learning algorithms through hands-on, interactive visualizations with no setup.
 
+- [AgentFEM Simulation-to-Surrogate Mini-Lab](https://haoming-luo.github.io/agentfem/examples/simulation_to_surrogate/) - Compare raw and physics-informed features in a NumPy regression exercise using ten finite-element cases and a held-out split.
+
 ### Free Courses
 **[`^        back to top        ^`](#awesome-data-science)**
 
@@ -1026,7 +1028,4 @@ Below are some Social Media links. Connect with other data scientists!
 
 - [Data](https://www.facebook.com/data)
 - [Big Data Scientist](https://www.facebook.com/Bigdatascientist)
-- [Data Science Day](https://www.facebook.com/datascienceday/)
-- [Data Science Academy](https://www.facebook.com/nycdatascience)
-- [Facebook Data Science Page](https://www.facebook.com/pages/Data-science/431299473579193?ref=br_rs)
-- [Data Science London](https://www.facebook.com/pages/Data-Scienc
+- [Data Science Day](https://www.facebook.com/da

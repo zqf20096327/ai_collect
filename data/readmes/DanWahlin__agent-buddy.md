@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="images/logo.png" alt="Agent Companion logo: a hexagon badge with a smiling screen face and an AI sparkle" width="300">
+  <img src="images/logo.png" alt="Agent Buddy logo: a hexagon badge with a smiling screen face and an AI sparkle" width="300">
 </p>
 
-<h1 align="center">ESP32 Agent Companion</h1>
+<h1 align="center">Agent Buddy</h1>
 
 <p align="center">
   An animated desk companion that shows what your AI coding agents are doing.
@@ -13,17 +13,17 @@
   <a href="https://github.com/DanWahlin/agent-buddy/actions/workflows/build.yml"><img src="https://github.com/DanWahlin/agent-buddy/actions/workflows/build.yml/badge.svg" alt="Build status"></a>
 </p>
 
-ESP32 Agent Companion works with the
+Agent Buddy works with the
 [Waveshare ESP32-S3-Touch-AMOLED-1.75-B or -C](https://www.amazon.com/dp/B0FBWDL117)
 and turns it into a character that reacts to your AI coding agents. When GitHub Copilot,
-Claude Code, Codex CLI, Grok Build, Hermes Agent, or OpenClaw starts working,
+Claude Code, Codex, Grok Build, Hermes Agent, or OpenClaw starts working,
 needs your approval, or finishes, the character shows it, along with a small
 badge for the agent involved.
 
 Everything runs locally. There's no cloud service, account, or subscription, and
 the device works over USB or your local Wi-Fi.
 
-Want it on your screen as well? The [Desktop Agent Companion](#desktop-agent-companion)
+Want it on your screen as well? The [Desktop Agent Buddy](#desktop-agent-buddy)
 puts the same character, with the same animation, in a transparent window on your
 desktop, with or without the device.
 
@@ -50,7 +50,7 @@ desktop, with or without the device.
 - [Update](#update)
 - [Command reference](#command-reference)
 - [Troubleshooting](#troubleshooting)
-- [Desktop Agent Companion](#desktop-agent-companion)
+- [Desktop Agent Buddy](#desktop-agent-buddy)
 - [Develop and customize](#develop-and-customize)
 
 ## Features
@@ -61,10 +61,10 @@ desktop, with or without the device.
   just finished.
 - **Usage:** GitHub Copilot AI credits (`AIC`) and agent tokens, at the bottom
   of the screen.
-- **Six supported agents:** GitHub Copilot, Claude Code, Codex CLI, Grok Build,
+- **Six supported agents:** GitHub Copilot, Claude Code, Codex, Grok Build,
   Hermes Agent, and OpenClaw.
 - **Swappable characters:** the device holds one character pack at a time. It
-  ships with Copilot, and you can install OpenClaw, Claude, or your own pack over USB or Wi-Fi.
+  ships with Copilot, and you can install OpenClaw, Claude, Grok, or your own pack over USB or Wi-Fi.
 - **Settings page:** a local web page for agents, badges, characters, Wi-Fi, the
   connection mode, and the desktop app, with light and dark themes.
 - **Natural motion:** eight looking directions, blinks, touch reactions, and a
@@ -399,7 +399,7 @@ The page runs only on your computer and needs the private link that
 survives restarts, so you can bookmark it.
 
 Some agents need a one-time step before their hooks run, such as approval with
-`/hooks` in Codex, folder trust in Claude Code, or a Gateway restart in OpenClaw.
+`/hooks` in the Codex CLI, folder trust in Claude Code, or a Gateway restart in OpenClaw.
 Desktop setup shows one guide per selected agent. Hermes can request approval
 when each event type first runs; one received event does not approve every hook.
 
@@ -457,12 +457,12 @@ without a touch.
 
 **Press the BOOT button** on the board to open the companion's Settings on your
 computer. This needs the daemon, connected over USB or Wi-Fi (over Wi-Fi, it can
-take up to three seconds). If the [desktop app](#desktop-agent-companion) is
+take up to three seconds). If the [desktop app](#desktop-agent-buddy) is
 running, Settings opens in its window. If not, Settings opens in your browser.
 Don't use the PWR button for this: holding it turns the board off.
 
 Sound plays through the board's two-pin speaker connector. Connect a small speaker
-if your board or enclosure doesn't include one. The [desktop app](#desktop-agent-companion)
+if your board or enclosure doesn't include one. The [desktop app](#desktop-agent-buddy)
 can play the same sounds through your computer; the device's volume does not
 change them.
 
@@ -480,11 +480,50 @@ outdated hooks. The confirmation lists only configuration files that need change
 | Agent | Hook location | One-time step |
 | --- | --- | --- |
 | GitHub Copilot (CLI and app) | `~/.copilot/hooks/agent-companion.json` | None |
-| Claude Code | `~/.claude/settings.json` | Accept Claude's folder-trust prompt if it asks |
-| Codex CLI | `~/.codex/hooks.json` | Approve the hooks in Codex with `/hooks` |
+| Claude Code (CLI, Claude app, and IDEs) | `~/.claude/settings.json` | Accept Claude's folder-trust prompt if it asks |
+| Codex (CLI, ChatGPT app, and VS Code) | `~/.codex/hooks.json` | Approve the hooks with `/hooks` in the Codex CLI |
 | Grok Build | `~/.grok/hooks/agent-companion.json` | None |
 | Hermes Agent | `~/.hermes/config.yaml` (Windows: `%LOCALAPPDATA%\hermes\config.yaml`) | Approve each hook the first time Hermes runs it |
 | OpenClaw | A plugin registered with the `openclaw` CLI | Restart the OpenClaw Gateway |
+
+### Desktop apps
+
+Some desktop apps run an agent with the same settings folder as its CLI, so they
+use the same hooks:
+
+- **ChatGPT app and Codex in VS Code** use `~/.codex`. The ChatGPT app replaced
+  the Codex app. Only the Codex CLI in a terminal can approve hooks. In the
+  ChatGPT app, `/hooks` is sent as a usual chat message. The Agent Buddy hooks
+  run in the background (async hooks), so they need Codex 0.148.0 or later. An
+  older Codex skips them and doesn't show them in `/hooks`. If you don't have
+  such a Codex CLI, the setup guide shows the command for the CLI that the
+  ChatGPT app includes (on Windows, a PowerShell command). If that CLI is also
+  older, the guide tells you to install the Codex CLI
+  (`npm install -g @openai/codex`). Each place approves only its own hooks: for
+  hooks in a WSL distribution, the guide tells you to run `codex` in that
+  distribution. After you approve the hooks, quit and reopen the app. The app
+  reads hook approvals only when it starts. If your Codex CLI, or the Codex that
+  the app includes, is older than 0.148.0, Settings tells you to update it,
+  because it doesn't run the hooks until you do.
+- **Claude app** (the Code tab) uses `~/.claude`. After setup, quit and reopen
+  the app, then start a new session in the Code tab. Cowork, cloud, and SSH
+  sessions don't run the hooks on your computer. If the character doesn't react
+  to a Code tab session, quit and reopen the app: sometimes it starts a session
+  without its hooks
+  ([anthropics/claude-code#87657](https://github.com/anthropics/claude-code/issues/87657)).
+
+Setup also finds these apps and the GitHub Copilot app, so an agent that you use
+only in its app is detected. Settings shows the version of each CLI and app that
+it finds.
+
+| System | Where setup looks | The CLI that the ChatGPT app includes |
+| --- | --- | --- |
+| macOS | `/Applications` and `~/Applications` | `/Applications/ChatGPT.app/Contents/Resources/codex-cli/bin/codex` (in an older app, `/Applications/ChatGPT.app/Contents/Resources/codex`) |
+| Windows | Microsoft Store and MSIX apps, `%LOCALAPPDATA%\Programs`, `%LOCALAPPDATA%\AnthropicClaude`, and `%ProgramFiles%\GitHub Copilot` | `& 'C:\Program Files\WindowsApps\OpenAI.Codex_<version>_<arch>__2p2nqsd0c76g0\app\resources\codex.exe'` (PowerShell) |
+| Linux | `/usr/lib` and `/opt` (`.deb`, `.rpm`, and Arch packages) | `/usr/lib/chatgpt/resources/codex` |
+
+On Linux, setup doesn't find a GitHub Copilot AppImage, and Settings shows the
+Copilot app without a version.
 
 Setup edits only the hook entries it owns. Before it changes a file, it keeps a
 copy beside it: `<file>.bak` holds the file as it was before the first change, and
@@ -494,7 +533,7 @@ changes if a file's `hooks` section is in a format it doesn't understand.
 
 Grok also runs the hooks in Claude's settings. If you use both, Grok can show a
 line such as `PreToolUse hook (global/settings) failed, ignored` for the Agent
-Companion Claude hook. This doesn't change the display, because Grok's own hook
+Buddy Claude hook. This doesn't change the display, because Grok's own hook
 sends the events. To stop the message, add this to `~/.grok/config.toml`. Grok
 then skips all of your Claude hooks, not only this one:
 
@@ -553,8 +592,8 @@ npm run agents uninstall codex     # Remove one hook
 
 Codex links each hook approval to the hook's position in `~/.codex/hooks.json`.
 If removing or reinstalling the companion's hook moves one of your own approved
-Codex hooks, Settings and `npm run agents` show a warning that names it. Open
-Codex, type `/hooks`, and approve it again.
+Codex hooks, Settings and `npm run agents` show a warning that names it. Run
+`codex` in a terminal, type `/hooks`, and approve it again.
 
 Removing a Hermes hook doesn't revoke its approval. To clean that up too, run
 `hermes hooks revoke "<command>"` with the command shown in its config.
@@ -618,7 +657,7 @@ screen:
   include VS Code, the cloud agent, or other computers, so it is not your
   account's bill.
 - **Tokens:** input plus output tokens for Claude Code (`~/.claude/projects/`)
-  and Codex CLI (`~/.codex/sessions/`). Cache reads are not counted. GitHub
+  and Codex (`~/.codex/sessions/`). Cache reads are not counted. GitHub
   Copilot tokens are not counted, because Copilot records them only when a
   session stops cleanly, so the local count is not complete. Copilot has AIC.
 
@@ -644,7 +683,7 @@ usage, but everything else works.
 The device holds one character at a time. The settings page's **Characters** tab
 shows each character you can install, with the current one marked **Installed**.
 
-The app and release archives ship only **Copilot**, **OpenClaw**, and **Claude**.
+The app and release archives ship only **Copilot**, **OpenClaw**, **Claude**, and **Grok**.
 Add-on packs are distributed separately and appear after you add them in Settings.
 
 <p align="center">
@@ -663,6 +702,7 @@ Or switch from the command line:
 npm run character              # List the characters you can install
 npm run character openclaw     # Install OpenClaw
 npm run character claude       # Install Claude
+npm run character grok         # Install Grok
 npm run character copilot      # Switch back to Copilot
 ```
 
@@ -953,7 +993,7 @@ Settings does not delete these. It tells you what to do:
 
 </details>
 
-## Desktop Agent Companion
+## Desktop Agent Buddy
 
 The same character, on your desktop. It's a small transparent window you can
 put anywhere, beside your editor or terminal or on a second screen. Use it with
@@ -1223,5 +1263,5 @@ artwork and agent names belong to their owners. See [TRADEMARKS.md](TRADEMARKS.m
 This is an independent project, not an official GitHub or Waveshare product.
 GitHub Copilot and Claude artwork and product names belong to their respective owners.
 
-The Desktop Agent Companion in [desktop/](desktop/) is by Darren Robinson, a
+The Desktop Agent Buddy in [desktop/](desktop/) is by Darren Robinson, a
 derivative of this project made with Dan Wahlin's approval.

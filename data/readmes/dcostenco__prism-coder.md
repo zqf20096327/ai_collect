@@ -2,10 +2,11 @@
 
 **Give your AI agent memory that lasts — and see the cloud tokens it never had to spend.** Persistent sessions, knowledge graphs, offline tool-routing, and an auditable savings meter. Fully local and free.
 
-> **Current release: v20.22.4 — oMLX setup and local model roles**
-> Install a pinned oMLX server/model pack from the dashboard or CLI, or connect
-> an existing server. Discover installed models and choose coder/reviewer roles
-> for oMLX and Ollama. Controlled oMLX coding remains text-only.
+> **Current release: v20.22.5 — local oMLX images and memory accounting**
+> Choose an independent image model from discovered local inventory. Compatible
+> oMLX servers support controlled PNG image requests with local screening and
+> generation. Image accuracy depends on the model; Ollama image execution remains
+> unavailable for the saved image choice. See the [oMLX guide](docs/omlx.md).
 
 [![npm](https://img.shields.io/npm/v/prism-mcp-server?color=cb0000&label=npm)](https://www.npmjs.com/package/prism-mcp-server)
 [![MCP Registry](https://img.shields.io/badge/MCP_Registry-listed-00ADD8)](https://github.com/modelcontextprotocol/servers)
@@ -187,6 +188,21 @@ or by re-enabling after each run.
 
 <details>
 <summary>Release history (optional)</summary>
+
+## What's New in v20.22.5
+
+- **Independent image model:** Settings exposes a separate image choice from
+  discovered oMLX/Ollama inventory, without changing coder/reviewer assignments.
+- **Controlled local images:** compatible oMLX servers accept inline PNGs after
+  model capability, settings and resource checks. Images and derived content
+  stay local. Transport support does not certify recognition accuracy; selected
+  Ollama image execution remains unavailable.
+- **Memory and model switching:** count macOS free and file-backed pages once,
+  and reclaim eligible idle oMLX models without interrupting active or pinned
+  work. Memory estimates do not guarantee fit.
+- **Reliability:** updated oMLX installer pin, device-key race fixes, dependency
+  and CodeQL remediation, shared idle Factory polling, and the civilian-use
+  policy correction for Syria. Full details are in [CHANGELOG.md](CHANGELOG.md).
 
 ## What's New in v20.22.4
 
@@ -1797,32 +1813,4 @@ prism_infer({ prompt: "My project codename is Nightjar. Reply OK.", mode: "chat"
 prism_infer({ prompt: "What is my codename? One word.", mode: "chat" })
 // → "I don't have that information."      (local model, correct and useless)
 
-// Call 3 — a coding follow-up with no thread
-prism_infer({ prompt: "Now add a timeout parameter to it.", mode: "code" })
-// → guesses what "it" is, or asks         (the host has to redo the work)
-
-// A free plan that sends messages anyway:
-prism_infer({ messages: [/* … */], prompt: "…" })
-// → refused: multi_turn_not_in_plan       (no portal entitlement, no cloud)
-```
-</details>
-
-<details>
-<summary>With multi-turn (paid plan): the thread continues locally, and the screen decides per turn</summary>
-
-```typescript
-// The host keeps the turns it accepted and passes them back.
-prism_infer({
-    messages: [
-        { role: "user",      content: "My project codename is Nightjar. Reply OK." },
-        { role: "assistant", content: "OK" },
-    ],
-    prompt: "What is my codename? One word.",
-    mode: "chat",
-})
-// → "Nightjar"                            (local model, $0; history_turns: 2)
-
-prism_infer({
-    messages: [
-        { role: "user",      content: "We named the helper countActiveUsers(data). Confirm." },
-        { role: "assistant"
+// Call 3 — a coding follow-up with no 

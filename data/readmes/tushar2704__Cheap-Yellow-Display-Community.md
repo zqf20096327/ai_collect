@@ -12,12 +12,47 @@
 
 ---
 
+### 📺 Watch the Tutorials & Custom Builds on YouTube
+[![YouTube IamNotIntoTech](https://img.shields.io/badge/YouTube-@IamNotIntoTech-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtube.com/@IamNotIntoTech)
+[![YouTube Makerrdesigns](https://img.shields.io/badge/YouTube-@Makerrdesigns-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtube.com/@Makerrdesigns)
+
+> 🔔 **Subscribe to our YouTube channels for complete guides and project walkthroughs:**
+> - 🎬 **[@IamNotIntoTech](https://youtube.com/@IamNotIntoTech)** — CYD coding masterclasses, ESP32 firmware deep dives, and hardware tests.
+> - 🖨️ **[@Makerrdesigns](https://youtube.com/@Makerrdesigns)** — 3D design, bespoke CYD snap-fit enclosures, cyberdeck builds, and Fusion 360 tutorials.
+
+---
+
+### 💖 Support the Project & Unlock Secret VIP Projects!
+
+[![Buy Me A Coffee IamNotIntoTech](https://img.shields.io/badge/Buy_Me_A_Coffee-Secret_Projects-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/iamnotintotech)
+[![Patreon](https://img.shields.io/badge/Patreon-Support_%26_Unlock_VIP-F96854?style=for-the-badge&logo=patreon&logoColor=white)](https://www.patreon.com/cw/IamNotIntoTech)
+[![Buy Me A Coffee Makerr](https://img.shields.io/badge/Buy_Me_A_Coffee-Makerr-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/makerr)
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-Support_Makerr-FF5E5B?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/makerrdesigns)
+
+> [!IMPORTANT]
+> ### 🎁 Exclusive Secret Private Projects for Supporters & Donors!
+> Every public firmware build in this repository and our Web Flasher is 100% free. If our work has saved you time or helped your builds, **consider supporting us on Buy Me a Coffee, Patreon, or Ko-fi**.
+> 
+> **When you donate, you unlock access to our private, unreleased CYD firmware vault containing secret projects:**
+> - 🔒 **Secret Unreleased Firmwares**: Private experimental firmwares, custom multi-tasking engines, and secret wireless tools.
+> - 📐 **Native Editable CAD / STEP Files**: Parametric 3D CAD files for custom CYD enclosures and accessories.
+> - 🚀 **Early Access Builds**: Test bleeding-edge releases before public deployment.
+> - 💬 **Direct Creator Access & VIP Support**: Get priority assistance on your CYD projects.
+
+| Platform | Link | Supporter Benefits |
+|---|---|---|
+| ☕ **Buy Me a Coffee (@IamNotIntoTech)** | [**buymeacoffee.com/iamnotintotech**](https://buymeacoffee.com/iamnotintotech) | **Instant Secret Private Projects Access** + VIP Firmware Vault |
+| 🧡 **Patreon (@IamNotIntoTech)** | [**patreon.com/cw/IamNotIntoTech**](https://www.patreon.com/cw/IamNotIntoTech) | Secret Private Projects, VIP Discord Role, Early Firmware Access |
+| ☕ **Buy Me a Coffee (@Makerr)** | [**buymeacoffee.com/makerr**](https://buymeacoffee.com/makerr) | 3D CAD Enclosure Files + Maker Project Support |
+| ☕ **Ko-fi (@Makerrdesigns)** | [**ko-fi.com/makerrdesigns**](https://ko-fi.com/makerrdesigns) | Direct Support + Secret VIP Projects Access |
+
+---
+
 ## ⚡ 1-Click In-Browser Web Flasher
 
 **No Arduino IDE or PlatformIO installation required!** You can flash community firmwares onto your CYD right now using Google Chrome, Edge, or Opera:
 
 👉 **[tushar2704.github.io/Cheap-Yellow-Display-Community/](https://tushar2704.github.io/Cheap-Yellow-Display-Community/)**
-
 
 ---
 
@@ -44,6 +79,8 @@ The name "Cheap Yellow Display" comes from the distinctive **yellow PCB** that t
 Unlike fragmented tutorials and outdated code snippets scattered across the internet, **Cheap Yellow Display Community** is engineered from the ground up as a modern, all-in-one ecosystem:
 
 - ⚡ **1-Click Browser Web Flasher**: Flash ready-to-run firmwares directly from Google Chrome, Edge, or Opera via Web Serial. Zero IDEs, compilers, or driver headaches.
+- 🌐 **CYD-to-CYD Wireless Ecosystem**: Zero-router peer-to-peer applications utilizing sub-5ms ESP-NOW frames for cross-screen physics, shared digital whiteboards, tactical text pagers, and two-player naval warfare between multiple CYDs.
+- ⚡ **True FreeRTOS Dual-Core Multitasking Engine**: Pinned background daemons on Core 0 with zero UI stutter, floating Picture-in-Picture (PiP) widgets, card-style app switchers, and thread-safe queues.
 - 📦 **Unified `CYD_Easy` Library**: A 3-line beginners' library in [`library/CYD_Easy/`](library/CYD_Easy/) providing instant hardware initialization, calibrated touch, audio, RGB LED, and LDR light sensing.
 - 🏠 **ESPHome & Home Assistant Suite**: Turnkey YAML configurations in [`hardware/esphome/`](hardware/esphome/) for smart HVAC thermostats, media player remotes, and active Bluetooth proxies.
 - 🐍 **MicroPython Suite**: Pure Python driver in [`hardware/micropython/`](hardware/micropython/) with real-time WiFi scanning and hardware diagnostics.
@@ -65,6 +102,13 @@ This project is created and maintained by two YouTube channels — follow both f
 |---|---|---|
 | 🎬 **IamNotIntoTech** | Tech projects with humor — CYD tutorials, ESP32 builds, code breakdowns | [▶️ youtube.com/@IamNotIntoTech](https://youtube.com/@IamNotIntoTech) |
 | 🖨️ **Makerrdesigns** | 3D design & printing — CYD enclosures, Fusion 360 tutorials, maker builds | [▶️ youtube.com/@Makerrdesigns](https://youtube.com/@Makerrdesigns) |
+
+### 💖 Support the Creators & Unlock Secret VIP Projects
+If our tutorials and code save you hours of work, consider supporting us. **Supporters unlock access to our private repository of secret firmware projects & CAD files!**
+- ☕ **Buy Me a Coffee (@IamNotIntoTech)**: [buymeacoffee.com/iamnotintotech](https://buymeacoffee.com/iamnotintotech) — Instant secret private project access!
+- 🧡 **Patreon**: [patreon.com/cw/IamNotIntoTech](https://www.patreon.com/cw/IamNotIntoTech) — VIP role, Discord & secret projects!
+- ☕ **Buy Me a Coffee (@Makerr)**: [buymeacoffee.com/makerr](https://buymeacoffee.com/makerr) — Custom CAD enclosures & hardware support!
+- ☕ **Ko-fi**: [ko-fi.com/makerrdesigns](https://ko-fi.com/makerrdesigns) — Direct support & secret project access!
 
 ---
 
@@ -160,6 +204,35 @@ This repository supports **ALL** Cheap Yellow Display variants currently availab
 | 26 | **Air-Gapped Cold Wallet** | Offline crypto signer: BIP39 SegWit derivation, PSBT transaction review & QR emitter | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/26-hardware-crypto-cold-wallet/) |
 | 27 | **Local Voice AI & Smart Speaker** | Voice assistant: wake word detector, audio spectrum visualizer, LLM parser & TTS | ⭐⭐⭐⭐⭐ (5/5) | [Open](projects/advanced/27-ai-voice-smart-speaker-assistant/) |
 | 28 | **Hardware Health & Benchmark** | Diagnostic suite: SPI render benchmark, dead pixel tester, 9-point touch & audio sweep | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/28-hardware-health-benchmark/) |
+| 29 | **CYD MultiTask OS** | Preemptive dual-core OS: Core 0 daemons, card task switcher & floating PiP widget | ⭐⭐⭐⭐⭐ (5/5) | [Open](projects/advanced/29-cyd-multitask-os/) |
+| 30 | **CYD-to-CYD Cross-Screen Pong** | Dual-display ball physics passing across physical screens via sub-5ms ESP-NOW | ⭐⭐⭐⭐⭐ (5/5) | [Open](projects/advanced/30-cyd-to-cyd-cross-screen-pong/) |
+| 31 | **CYD-to-CYD Tactical Messenger** | Off-grid communicator with touch QWERTY keyboard, node discovery & chimes | ⭐⭐⭐⭐⭐ (5/5) | [Open](projects/advanced/31-cyd-to-cyd-tactical-messenger/) |
+| 32 | **CYD-to-CYD Sync Whiteboard** | Real-time shared sketchpad: stylus strokes stream synchronously via ESP-NOW | ⭐⭐⭐⭐⭐ (5/5) | [Open](projects/advanced/32-cyd-to-cyd-collaborative-whiteboard/) |
+| 33 | **CYD-to-CYD Naval Battleship** | Two-player wireless grid warfare with secret armada placement & radar fire | ⭐⭐⭐⭐⭐ (5/5) | [Open](projects/advanced/33-cyd-to-cyd-naval-battleship/) |
+| 34 | **CYD-to-CYD Walkie-Talkie** | Half-duplex acoustic communicator: tactile PTT, spectrum visualizer & call chimes | ⭐⭐⭐⭐⭐ (5/5) | [Open](projects/advanced/34-cyd-to-cyd-walkie-talkie/) |
+| 35 | **CYD-to-CYD Extended Display** | Dual-monitor cockpit rig: Master touch surface streams 40Hz telemetry to Slave HUD | ⭐⭐⭐⭐⭐ (5/5) | [Open](projects/advanced/35-cyd-to-cyd-extended-display/) |
+
+---
+
+### 🌐 Highlight: CYD-to-CYD Wireless Communication Ecosystem
+> **Connect two or more CYDs with zero Wi-Fi routers, zero internet, and sub-5ms latency!**
+
+The CYD Community features a first-of-its-kind suite of **multi-device peer-to-peer firmware** operating via raw 2.4GHz **Espressif ESP-NOW** frames:
+- 🏓 **[30 - Cross-Screen Air Pong](projects/advanced/30-cyd-to-cyd-cross-screen-pong/)**: Place two CYDs next to each other. When an animated ball leaves one screen, it seamlessly enters the partner screen with identical velocity and angle!
+- 💬 **[31 - Tactical P2P Messenger](projects/advanced/31-cyd-to-cyd-tactical-messenger/)**: Off-grid emergency communicator with an on-screen touch QWERTY keyboard, automatic peer discovery, and acoustic chime receipts.
+- 🎨 **[32 - Collaborative Whiteboard](projects/advanced/32-cyd-to-cyd-collaborative-whiteboard/)**: Two people drawing simultaneously on separate CYDs with synchronized vector strokes, palettes, and canvas wipes.
+- ⚓ **[33 - Naval Battleship Combat](projects/advanced/33-cyd-to-cyd-naval-battleship/)**: Two-player wireless grid artillery combat with secret armada placement and live radar targeting.
+- 📻 **[34 - Walkie-Talkie & Tone Intercom](projects/advanced/34-cyd-to-cyd-walkie-talkie/)**: Half-duplex audio communications with push-to-talk, live frequency spectrum visualizer, and custom alert chimes.
+- 🎛️ **[35 - Master-Worker Extended Display & HUD](projects/advanced/35-cyd-to-cyd-extended-display/)**: Turn two CYDs into a flight simulator or automotive cockpit rig with 40Hz telemetry streaming.
+
+---
+
+### ⚡ Highlight: Preemptive FreeRTOS Dual-Core Multitasking Engine
+> **Unlocking the full dual-core power of the ESP32 for 60 FPS lag-free embedded interfaces!**
+
+Most Arduino projects run blocking code in a single loop on Core 1. **[29 - CYD MultiTask OS](projects/advanced/29-cyd-multitask-os/)** introduces a production-grade dual-core architecture:
+- **Core 0 (Background Daemons)**: Dedicated 8-bit chiptune audio sequencer, 2.4GHz RF spectrum sniffer, 12.5Hz sensor sampler, and task CPU load profiler. Never misses a beat or drops audio frames during heavy screen draws!
+- **Core 1 (UI Engine)**: 60 FPS window manager, card-style mobile task switcher, floating Picture-in-Picture (PiP) mini-player widget, and non-blocking slide-down toast notifications via thread-safe FreeRTOS queues.
 
 ---
 

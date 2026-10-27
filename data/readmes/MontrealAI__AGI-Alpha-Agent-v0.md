@@ -168,12 +168,21 @@ Vincent Boucher · MONTREAL\.AI · 2026-10 · English PDF.
 - **[The Next Upgrade](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/the-next-upgrade.pdf)** · A consumer\-specific dependency assessment accepted nine of twelve custom\-method scopes versus twelve of twelve for the conventional comparator\. The custom method was rejected; local task support and reuse do not establish cheaper capability construction or commercial success\. Complete monetary costs, repayment and sustained acceleration remain unestablished\. Economic HOLD\.
   AGI ALPHA Research · 2026-10-26 · English PDF.
   [Historical experimental companion source and assembly](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/f019a1d2d1c1c678c7363bf9cde61dab6ec0de12/studies/agi-alpha-value-compounds-v1/README.md)
+- **[Profitable Work First\. Compounding Capability When Worthwhile\.](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/profitable-work-first.pdf)** · Under declared assumptions, a simulated coordination\-mechanism foundry produces positive mean Beta\-only surplus, including a stricter useful\-receipt\-only sensitivity\. These are conditional model results, not actual customer sales or qualified frontier\-model delivery\. Primary confirmation does not establish a positive additional enterprise benefit from retained Alpha or network sharing; capability compounding remains unproven\.
+  Independent AI\-assisted research edition prepared for MONTREAL\.AI · 2026-10-26 · English PDF.
+  [Historical experimental companion source and assembly](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/ccf0a08d5b46edb135e144fd81b36b819255623a/studies/network-invented-economy-v1/README.md)
+- **[When Paid Work Teaches the Network](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/when-paid-work-teaches-the-network.pdf)** · Competent Beta is profitable under the modeled primary markets, with incomplete service\-quality qualification\. Selected retention policies keep nothing; a cheaper\-retention diagnostic supports useful peer reuse but remains uneconomic as a complete program\. This is not demonstrated profitable autonomy or a positive network flywheel\.
+  Prepared for Vincent Boucher / MONTREAL\.AI; research execution and manuscript prepared with ChatGPT · 2026-10-27 · English PDF.
+  [Read the edition and resources](https://montrealai.github.io/AGI-Alpha-Agent-v0/reports/when-paid-work-teaches-the-network/index.html)
+- **[AGI ALPHA FLYWHEEL — The Network That Learns to Invent](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/network-learns-to-invent-v1.pdf)** · A numerical learning system constructed by the research team develops a reduced basis from thermal work and tests its transfer to fresh diffusion and sensor\-design missions\. Mean raw transfer error falls 26\.3\-fold, but neither raw version passes any of 64 recipient cases; corrected solutions pass\. The competent generalist matches the composition’s identification success\. Under explicit cost and demand assumptions, modeled Beta delivery can be profitable while optional retention is rejected\. Local numerical evidence and simulated economics, not customer sales, autonomous invention, live ENS authentication or specialist superintelligence\.
+  Vincent Boucher · President of MONTREAL\.AI · 2026-10-27 · English PDF.
+  [Read the edition and resources](https://montrealai.github.io/AGI-Alpha-Agent-v0/reports/the-network-that-learns-to-invent/index.html) · [Historical experimental companion source and assembly](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/71d1054dd56a9ef25f19ec5f19e941b1957b02ce/studies/agi-alpha-invention-network-v1/README.md) · [Download complete research source ZIP](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/releases/download/study-network-learns-to-invent-v1-2026-10-27/AGI_Alpha_Invention_Network_v1_Complete_Research.zip) · [View source and evidence](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/releases/tag/study-network-learns-to-invent-v1-2026-10-27)
 
 Research proposals and bounded studies, not claims of general autonomous capability or physical deployment.
 [Explore the papers in English or French](https://montrealai.github.io/AGI-Alpha-Agent-v0/#papers)
 <!-- /featured-research-papers -->
 
-**Current experimental source candidate · 1.44.0.** [Checked planning and repair](docs/agent/RELEASE_NOTES_1.44.0.md). [Configure the bounded Strategy Succession executor](docs/agent/STRATEGY_SUCCESSION.md). Published [1.43](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/releases/tag/v1.43.0) remains preserved.
+**Current experimental source candidate · 1.46.1.** [Exact approved paper readers](docs/agent/RELEASE_NOTES_1.46.1.md). [Protected Flywheel operating boundaries](docs/agent/RELEASE_NOTES_1.46.0.md). [Additive Flywheel flagship](docs/agent/RELEASE_NOTES_1.45.0.md). [Explore the public simulation](https://montrealai.github.io/AGI-Alpha-Agent-v0/flywheel/). [Checked planning and repair](docs/agent/RELEASE_NOTES_1.44.0.md). [Configure the bounded Strategy Succession executor](docs/agent/STRATEGY_SUCCESSION.md). Published [1.43](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/releases/tag/v1.43.0) remains preserved.
 The existing `alpha-agent successor-study` entry point can run an explicitly approved finite operation,
 retain a closed executable source-selection program and test it on later changed inputs. Pause/Stop,
 lease expiry, bounded retries and committed-child recovery keep their existing journal history.
@@ -1459,114 +1468,3 @@ flowchart LR
     POL(📜)
     ENE(🔋)
     SUP(📦)
-    RET(🛍️)
-    CYB(🛡️)
-    CLM(🌎)
-    DRG(💊)
-    SCT(⛓️)
-    TAL(🧑‍💻)
-  end
-  ORC -- A2A --> Agents
-  Agents -- experience --> WM
-  WM -- embeddings --> MEM
-  ORC -- Kafka --> DL[(🗄️ Data Lake)]
-```
-
-* **Orchestrator** auto‑discovers agents (see `backend/agents/__init__.py`) and exposes a unified REST + gRPC facade.  
-* **World‑Model** uses MuZero‑style latent dynamics for counterfactual planning.  
-* **Memory Fabric** = pgvector + Neo4j for dense & causal recall.
-
----
-
-<a name="2-world-model--planner"></a>
-## 2 · World‑Model & Planner 🌌
-
-| Component | Source Tech | Role |
-|-----------|-------------|------|
-| **Latent Dynamics** | MuZero++ | Predict env transitions & value |
-| **Self‑Play Curriculum** | POET‑XL | Generates alpha‑labyrinth tasks |
-| **Meta‑Gradient** | AI‑GA | Evolves optimiser hyper‑nets |
-| **Task Selector** | Multi‑Armed Bandit | Schedules agent ↔ world‑model interactions |
-
----
-
-<a name="3-agent-gallery"></a>
-## 3 · Agent Gallery 🖼️
-
-```mermaid
-flowchart TD
-    ORC["🛠️ Orchestrator"]
-    GEN{{"🧪 Env‑Generator"}}
-    LRN["🧠 MuZero++"]
-
-    subgraph Agents
-        FIN["💰"]
-        BIO["🧬"]
-        MFG["⚙️"]
-        POL["📜"]
-        ENE["🔋"]
-        SUP["📦"]
-        RET["🛍️"]
-        MKT["📈"]
-        CYB["🛡️"]
-        CLM["🌎"]
-        DRG["💊"]
-        SMT["⛓️"]
-    end
-
-    %% message flows
-    GEN -- tasks --> LRN
-    LRN -- policies --> Agents
-    Agents -- skills --> LRN
-
-    ORC -- A2A --> FIN
-    ORC -- A2A --> BIO
-    ORC -- A2A --> MFG
-    ORC -- A2A --> POL
-    ORC -- A2A --> ENE
-    ORC -- A2A --> SUP
-    ORC -- A2A --> RET
-    ORC -- A2A --> MKT
-    ORC -- A2A --> CYB
-    ORC -- A2A --> CLM
-    ORC -- A2A --> DRG
-    ORC -- A2A --> SMT
-    ORC -- A2A --> GEN
-    ORC -- A2A --> LRN
-
-    ORC -- Kafka --> DATALAKE["🗄️ Data Lake"]
-    FIN -.->|Prometheus| GRAFANA{{"📊"}}
-```
-
-| # | Agent | Path | Prime Directive | Status | Key Env Vars |
-|---|-------|------|-----------------|--------|--------------|
-| 1 | **Finance** 💰 | `finance_agent.py` | Multi‑factor alpha & RL execution | **Prod** | `BROKER_DSN` |
-| 2 | **Biotech** 🧬 | `biotech_agent.py` | CRISPR & assay proposals | **Prod** | `OPENAI_API_KEY` |
-| 3 | **Manufacturing** ⚙️ | `manufacturing_agent.py` | CP‑SAT optimiser | **Prod** | `SCHED_HORIZON` |
-| 4 | **Policy** 📜 | `policy_agent.py` | Statute QA & diffs | **Prod** | `STATUTE_CORPUS_DIR` |
-| 5 | **Energy** 🔋 | `energy_agent.py` | Spot‑vs‑forward arbitrage | **Beta** | `ISO_TOKEN` |
-| 6 | **Supply‑Chain** 📦 | `supply_chain_agent.py` | Stochastic MILP routing | **Beta** | `SC_DB_DSN` |
-| 7 | **Retail Demand** 🛍️ | `retail_demand_agent.py` | SKU forecast & pricing | **Beta** | `POS_DB_DSN` |
-| 8 | **Cyber‑Sec** 🛡️ | `cyber_threat_agent.py` | Predict & patch CVEs | **Beta** | `VT_API_KEY` |
-| 9 | **Climate Risk** 🌎 | `climate_risk_agent.py` | ESG stress tests | **Beta** | `NOAA_TOKEN` |
-|10 | **Drug‑Design** 💊 | `drug_design_agent.py` | Diffusion + docking | **Incub** | `CHEMBL_KEY` |
-|11 | **Smart‑Contract** ⛓️ | `smart_contract_agent.py` | Formal verification | **Incub** | `ETH_RPC_URL` |
-|12 | **Talent‑Match** 🧑‍💻 | `talent_match_agent.py` | Auto‑bounty hiring | **Incub** | — |
-
-```mermaid
-%% Legend
-%%  solid arrows  = primary value‑flow
-%%  dashed arrows = secondary / supporting influence
-%%  node emojis   = domain archetypes
-
-graph TD
-    %% Core pillars
-    FIN["💰 Finance"]
-    BIO["🧬 Biotech"]
-    MFG["⚙️ Manufacturing"]
-    POL["📜 Policy / Reg‑Tech"]
-    ENE["🔋 Energy"]
-    SUP["📦 Supply‑Chain"]
-    RET["🛍️ Retail / Demand"]
-    CYB["🛡️ Cyber‑Security"]
-    CL

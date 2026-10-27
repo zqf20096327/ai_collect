@@ -227,6 +227,7 @@ sequenceDiagram
 - [Claude Code](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview) — High-agency agentic command-line tool capable of autonomous directory indexing, running bash commands, handling git diffs, and orchestrating complex multi-file refactors.
 - [Cline](https://github.com/cline/cline) — Autonomous coding agent extension for VS Code that executes terminal commands, inspects local browser previews, and requests human-in-the-loop permission.
 - [Codex CLI](https://github.com/openai/codex-cli) — Command-line interface for OpenAI's coding models optimized for fast in-terminal code modifications and script execution.
+- [Flisk](https://github.com/flisk-sh/flisk) — Agent-first local environment generator and CLI that automatically configures Docker Compose, Tilt, and Traefik stacks from an empty directory so coding agents can focus on application code.
 - [Gemini CLI](https://github.com/google-gemini/gemini-cli) — Google's command-line agent utilizing 1M+ token context windows to ingest entire repositories for refactoring and debugging.
 - [Goose](https://github.com/block/goose) — Open-source, extensible AI agent by Block that automates engineering tasks, script execution, and multi-tool workflows directly from the terminal.
 - [Kilo Code](https://github.com/kilo-code/kilo) — High-performance terminal coding assistant engineered for low latency and zero-cloud local workflow execution.
@@ -242,6 +243,7 @@ Control planes, terminal managers, and orchestrators that run multiple coding ag
 - [Claude Squad](https://github.com/smtg-ai/claude-squad) — Terminal manager for running multiple concurrent coding agent sessions across terminal tabs.
 - [cmux](https://github.com/manaflow-ai/cmux) — Ghostty-based macOS terminal designed with vertical workspaces and desktop notifications for agent fleets.
 - [MulmoTerminal](https://github.com/receptron/mulmoterminal) — Browser-based terminal grid running parallel coding agent sessions with dedicated git worktrees per cell, backed by tmux.
+- [Orkas](https://github.com/Orkas-AI/Orkas) — Local-first desktop AI workforce coordinating specialist agents and external coding CLIs (Claude Code, Codex, OpenCode) with custom model endpoints.
 - [Orca](https://github.com/stablyai/orca) — Autonomous development environment built to orchestrate and execute a fleet of parallel coding agents.
 - [Vibe Kanban](https://github.com/BloopAI/vibe-kanban) — Kanban board dashboard to plan, dispatch, monitor, and review tasks across multiple agent CLIs.
 
@@ -249,9 +251,11 @@ Control planes, terminal managers, and orchestrators that run multiple coding ag
 Open standard protocol connecting coding agents to local developer environments, version control, and system databases:
 - [BrowserTools MCP](https://github.com/agent-tools/browsertools-mcp) — Provides agents with headful/headless browser interaction, console error capture, and network inspection capabilities.
 - [Context7 MCP](https://github.com/context7/context7) — Dynamic context-curation server providing real-time AST symbol definitions and semantic codebase navigation.
+- [Docsy](https://github.com/getremcp/docsy-plugin) — Read-only hosted MCP for library/version lookup and source-linked developer docs; requires OAuth account sign-in.
 - [Filesystem & Git MCP](https://github.com/modelcontextprotocol/servers/tree/main/src/git) — Official reference MCP server enabling agents to inspect git commits, staging areas, branches, and file structures securely.
 - [GitHub MCP Server](https://github.com/modelcontextprotocol/servers/tree/main/src/github) — Integrates GitHub issues, pull requests, repository searches, and commit reviews directly into agent reasoning loops.
 - [Postgres MCP](https://github.com/modelcontextprotocol/servers/tree/main/src/postgres) — Read-only schema inspector and query execution bridge enabling coding agents to validate database migrations and models.
+- [ReMCP](https://github.com/getremcp/remcp) — Hosted OAuth MCP for terminal, file, and browser actions on explicitly paired computers; actions may change device state.
 
 <details>
 <summary>📦 <b>Click to Copy: Ready-to-Use mcp.json Stack (GitHub + Context7 + Postgres + Playwright)</b></summary>
@@ -317,6 +321,7 @@ Match your physical GPU hardware to the largest model that fits fully in VRAM fo
 - [vLLM](https://github.com/vllm-project/vllm) — High-throughput, memory-efficient LLM serving engine featuring PagedAttention for production local deployments.
 
 ### Automated Testing, QA & Code Review
+- [agent-qa](https://vostride.com) — CLI and MCP agent for natural-language Web, Android and iOS testing, with persistent memory and validated self-improvement. Supports local models through OpenAI-compatible endpoints.
 - [CodeRabbit](https://coderabbit.ai/) — AI-driven pull request reviewer providing line-by-line feedback, sequence diagrams, and security vulnerability checks.
 - [Cover-Agent](https://github.com/Codium-ai/cover-agent) — Open-source generative testing tool that iteratively generates unit tests until target coverage is met.
 - [Keploy](https://github.com/keploy/keploy) — Open-source zero-code test generator that captures real network calls and creates automated regression test suites.
@@ -715,6 +720,8 @@ Thank you to all the developers who help maintain and expand this catalog!
 Special thanks to our early community contributors:
 - [@xianyu-sheng](https://github.com/xianyu-sheng) — Added [Xenon](https://github.com/xianyu-sheng/Xenon) verifiable coding agent ([#1](https://github.com/mahmoudsajjadi/awesome-ai-coding-tools/pull/1))
 - [@isamu](https://github.com/isamu) — Contributed the [Running Agents in Parallel](#running-agents-in-parallel) section ([#2](https://github.com/mahmoudsajjadi/awesome-ai-coding-tools/pull/2))
+- [@BlueSkyID666](https://github.com/BlueSkyID666) — Added [Orkas](https://github.com/Orkas-AI/Orkas) desktop multi-agent coordinator ([#4](https://github.com/mahmoudsajjadi/awesome-ai-coding-tools/issues/4))
+- [@odykyi](https://github.com/odykyi) — Added [Flisk](https://github.com/flisk-sh/flisk) agent-first environment generator ([#5](https://github.com/mahmoudsajjadi/awesome-ai-coding-tools/issues/5))
 
 ---
 

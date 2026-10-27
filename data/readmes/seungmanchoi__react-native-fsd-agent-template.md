@@ -41,6 +41,10 @@
   <img src="https://img.shields.io/badge/node-%3E%3D24-339933?style=flat-square&logo=nodedotjs&logoColor=white" />
 </p>
 
+<p align="center">
+  <img src="./docs/images/hero.webp" alt="React Native FSD Agent Template" width="100%" />
+</p>
+
 **English** | [한국어](./README.ko.md)
 
 # React Native FSD Agent Template

@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <strong>Prepare a conversation. Listen to your day. Keep track of your commitments.</strong>
+  <strong>Prepare a conversation. Listen to your day. Step into LIA World.</strong>
 </p>
 
 <p align="center">
@@ -44,7 +44,7 @@
 </p>
 
 <p align="center">
-  <strong>Version 3.7.0</strong> — <strong>Found by name, shared in plain sight.</strong> A first name now reaches the person it designates and a name that fits several is asked about, a skill or a connector says who you shared it with, a kept answer or a generated file comes back into a discussion, a relationship's records line up on one timeline, a WAV, MP3 or M4A recording becomes a meeting with its minutes, each step of an answer says what it did, and a phone call's report shows its cost — 25 October 2026.
+  <strong>Version 4.0.0</strong> — <strong>A world to explore. Your assistant, still yours.</strong> LIA World brings a shared isometric campus, your own home, private access to LIA's everyday functions and multilingual human text into the application. Its spatial interface keeps the same permissions, approval flows and spending controls. This release also refreshes the model catalogue and strengthens uploads, cancellation and log privacy — 27 October 2026.
 </p>
 
 ---
@@ -78,6 +78,8 @@ Its strength is the continuity between those activities. Memory, knowledge space
 
 LIA also helps between conversations: a daily briefing, a personal **Radio**, reminders, routines, proactive suggestions and, when you allow it, a personal discussion it opens itself. You choose the sources and enabled features, and the time windows and channels for proactive help. Chat, rich cards, voice and Live sessions keep this assistance accessible in the same application.
 
+**LIA World** gives that assistance a place. Walk through a shared campus with LIA, open your private workspaces from its rooms, return to your own home or exchange text with other people. The world is shared; your assistant's conversations, documents and home preferences stay private. The operator chooses whether to enable this optional experience.
+
 You can inspect sources, correct remembered information and review prepared drafts. Actions covered by approval flows ask for your decision before execution. Registers expose recorded consultations, action attempts and outcomes; usage and budgets are visible to users and operators.
 
 ### Start with something that would help you
@@ -87,9 +89,10 @@ You can inspect sources, correct remembered information and review prepared draf
 | **A discussion to prepare**   | “Prepare my catch-up with Claire using the project brief, our recent emails and the last meeting notes. Highlight anything that conflicts.”                                                                 |
 | **A promise to follow up**    | Open **Relations** to review recent exchanges, the debrief and open commitments before contacting someone.                                                                                                  |
 | **A message to get right**    | “Draft an email to the supplier asking which delivery date they can commit to. Show me the draft before sending it.”                                                                                        |
-| **A meeting to keep useful**  | Record it, review and correct the minutes, search their full content, then export a PDF. Successfully indexed minutes can be retrieved in a later conversation.                                                                        |
+| **A meeting to keep useful**  | Record it, review and correct the minutes, search their full content, then export a PDF. Successfully indexed minutes can be retrieved in a later conversation.                                             |
 | **A day to listen to**        | Choose personal and news sources in **Radio**, then listen with the programme, transcript and articles beside you.                                                                                          |
 | **People to coordinate with** | “Find a time for dinner with Sam tomorrow evening using the availability shared with me. Show the invitation before sending it.” This uses an accepted connection and its permissions on the same instance. |
+| **A place to work and meet**  | Enter **LIA World**, find LIA in the campus, open your private calendar or meeting records, then exchange a message with another person without sharing your assistant's context.                           |
 
 These examples use the services and permissions enabled on your instance. Generated conclusions and documents remain yours to review.
 
@@ -146,6 +149,17 @@ provenance for future product updates. Release assets include a
 The video is a product demonstration, not a recorded provider session.
 
 ## Screenshots
+
+<p align="center">
+  <a href="docs/assets/screenshot-lia-world.jpg"><img src="docs/assets/screenshot-lia-world.jpg" alt="LIA World — isometric campus, LIA companion, private home and rooms leading to native functions" width="1000" /></a>
+  <br /><em>LIA World — a shared campus and a private place for your assistant.</em>
+</p>
+
+The World illustration above is the owner's supplied French application capture,
+published with this release. It is an unmodified illustration of the current
+interface; its visible account name is part of that supplied image. Its
+[provenance manifest](apps/web/public/screenshots/proof/world-manifest.json)
+distinguishes it from the automated fictional-data captures below.
 
 Explore the real application interface in English and light mode, filled with fictional demonstration data. The geographic maps and walking route use [real Google Maps imagery and geographic data](apps/web/e2e/fixtures/maps/provenance.json), prepared separately and served locally with attribution. The browser captures exercise the actual pages, controls and widgets without model inference, provider calls, connected accounts or external actions. Radio uses a local silent audio fixture. The interactive budget is a custom skill example produced by an executed [Python fixture generator](apps/web/e2e/capture/render_trip_budget.py); its estimates are illustrative and no booking is made.
 
@@ -346,12 +360,42 @@ Every capability below is documented in an architecture decision record (ADR) or
 
 | Explore                                            | What you'll find                                                       |
 | -------------------------------------------------- | ---------------------------------------------------------------------- |
+| [LIA World](#lia-world)                            | A shared campus, your private home and familiar LIA functions          |
 | [Talk to it](#talk-to-it)                          | Chat, voice, live sessions, radio and a companion that feels present   |
 | [Connect your world](#connect-your-world)          | Your accounts, documents, home, health, tools and skills               |
 | [Act, under your control](#act-under-your-control) | Orchestration, approvals, calls, creation, browser work and tickets    |
 | [Anticipate](#anticipate)                          | Timely suggestions, routines, reminders and a daily briefing           |
 | [Remember](#remember)                              | Memory, journals, knowledge, meetings, people and saved work           |
 | [Trust it](#trust-it)                              | Records, spending limits, authentication, data protection and controls |
+
+### LIA World
+
+An isometric campus makes LIA's capabilities places you can visit. Explore its
+rooms and garden with keyboard or touch, use the minimap and camera controls,
+and let LIA accompany you. Daylight, optional cached weather and separately
+controlled sounds give the place atmosphere without calling a model for decoration.
+
+- **Your familiar assistant, in a place:** rooms and the Functions menu open
+  private native panels for conversations, meetings, knowledge, Relations and
+  other enabled activities. Drafts, approval requests, costs and quotas follow
+  the same application rules.
+- **Your own home and appearance:** choose your avatar and your home's colour
+  palette. Home contents and native assistant data do not enter shared presence.
+- **A place to meet:** consent to showing your native account name, see other
+  admitted people and exchange direct or explicitly public text. Translation
+  requires an explicit choice and uses the configured model and spending controls.
+  Coarse presence information is shared with accepted, unblocked connections.
+- **A bounded shared space:** the server admits people, manages the waiting
+  queue and validates movement. Losing authority suspends interaction until
+  reconnection; a second tab cannot silently take control.
+
+World is optional and starts disabled in the minimal installer. An operator
+enables it for the instance, with the native capability policy still applying.
+Live voice with LIA remains its existing feature; direct voice between people
+is a separate proposal. See the [World guide](docs/technical/WORLD_PROTOTYPE.md),
+[architecture decision](docs/architecture/ADR-365-Private-Native-LIA-In-An-Authoritative-Isometric-World.md)
+and [qualification ledger](docs/superpowers/qualification/2026-10-23-world-v1-ledger.md)
+for implementation, evidence and remaining physical-device/provider checks.
 
 ### Talk to it
 
@@ -599,7 +643,7 @@ The home page opens on the date and LIA's living face, then aggregates your sour
 
 #### Knowledge spaces
 
-- Personal document bases in 15+ formats with hybrid search (pgvector cosine + BM25), Google Drive folder sync, a Gmail label as a source, and a system space that indexes the product's own help corpus so LIA can explain itself — drawn from the in-app FAQ, whose 506 questions cover every feature a person can use, in six languages.
+- Personal document bases in 15+ formats with hybrid search (pgvector cosine + BM25), Google Drive folder sync, a Gmail label as a source, and a system space that indexes the product's own help corpus so LIA can explain itself — drawn from the in-app FAQ, whose 518 questions cover every feature a person can use, in six languages.
 - A document that cannot be indexed says why in your language — a scanned PDF without a text layer names its remedy.
 - Any indexed document, paused space or not, attaches to a chat message as a copy from the composer's « + » ([ADR-295](docs/architecture/ADR-295-Knowledge-Documents-As-Message-Attachments.md), [GUIDE_RAG_SPACES](docs/guides/GUIDE_RAG_SPACES.md), [ADR-055](docs/architecture/ADR-055-RAG-Spaces-Architecture.md), [ADR-058](docs/architecture/ADR-058-System-RAG-Spaces.md)).
 
@@ -767,12 +811,12 @@ Nearly **100% of this codebase was written by an AI**, under human direction: a 
 engineering rulebook, blocking automated checks, systematic review, adversarial audits.
 The result is measured, not proclaimed:
 
-|                           |                                           |                                         |                                                                         |
-| ------------------------- | ----------------------------------------- | --------------------------------------- | ----------------------------------------------------------------------- |
-| **58** functional domains | **1,003,000+** source lines (excl. tests) | **67,000+** inventoried automated tests | **362** ADRs                                                            |
-| **289** versions shipped  | **6 languages**, parity enforced in CI    | **635** Prometheus metrics              | [**7.9/10** technical audit, 24 normalized areas](docs/audit/README.md) |
+|                                |                                           |                                         |                                                                         |
+| ------------------------------ | ----------------------------------------- | --------------------------------------- | ----------------------------------------------------------------------- |
+| **60** backend domain packages | **1,038,000+** source lines (excl. tests) | **68,000+** inventoried automated tests | **363** ADRs                                                            |
+| **290** versions shipped       | **6 languages**, parity enforced in CI    | **635** Prometheus metrics              | [**7.9/10** technical audit, 24 normalized areas](docs/audit/README.md) |
 
-Source-line figure: 1,003,000+ physical lines in Python, TypeScript, JavaScript and CSS under `apps/api/src` and `apps/web/src`, excluding test directories and `*.test.*`/`*.spec.*` files (measured 2026-10-22). Test inventory combines backend collection and the frontend suite; release qualification executes the repository's required gates. The published technical audit does not score security.
+Source-line figure: 1,038,000+ physical lines in Python, TypeScript, JavaScript and CSS under `apps/api/src` and `apps/web/src`, excluding test directories and `*.test.*`/`*.spec.*` files (measured 2026-10-26). The domain figure counts backend domain packages. Test inventory combines backend collection and the frontend suite; release qualification executes the repository's required gates. The published technical audit does not score security.
 
 - **The full story** — method, trade-offs, results and what remains to be done, weaknesses included: [lia.jeyswork.com/story](https://lia.jeyswork.com/story)
 - **The audit itself** — 24 normalized areas mapped to ISO/IEC 25010:2023, every score backed by executed evidence, open worksites included, with the protocol and the full standalone report: [docs/audit/](docs/audit/README.md)
@@ -945,22 +989,4 @@ apps/api/src/
 │   └── voice/ skills/ plugins/ user_mcp/ telephony/ document_generation/ image_generation/ …
 └── infrastructure/       # Cross-cutting: cache and Redis key families, LLM factory and providers,
                           # MCP client pool, browser pool, rate limiting, scheduler, startup steps, observability
-apps/web/src/             # Next.js App Router under app/[lng]/, components, hooks, stores, six locales
-apps/mobile/              # Capacitor shells for Android and iOS, loading a self-hosted server
-infrastructure/           # Compose stacks, database seeds, observability config, backups, Caddy
-scripts/                  # Release, audit, deployment and measurement tooling
-docs/                     # Architecture, technical documents, guides, runbooks, ADRs, the public audit
-```
-
-### Key Design Patterns
-
-| Pattern                    | What it buys                                                                                                                                                                                                                                                         |
-| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Five-layer tool system** | A generic connector base with OAuth auto-refresh, a meta-decorator composing metrics + rate limiting + context save, domain formatters, a declarative `ToolManifest`, and a catalogue loader — a tool is a few lines, not a file                                     |
-| **Domain taxonomy**        | One declarative `DOMAIN_REGISTRY` (agents, result key, related domains, priority, routability) feeds catalogue filtering, semantic expansion and the initiative phase — never a second hand-maintained table                                                         |
-| **Data registry**          | Tool results live in an in-memory store decoupled from the message history, so aggressive message windowing never loses a `$steps.X.field` reference                                                                                                                 |
-| **Semantic validator**     | A dedicated LLM, distinct from the planner, inspects every plan for hallucinated capabilities, ghost dependencies, cardinality and scope errors before anything runs                                                                                                 |
-| **Re-plan before running** | Validator issues go back to the planner a bounded number of times, and _panic mode_ retries planning once over a wider catalogue; once a plan has run, a failed step is stated in the answer, never replayed                                                         |
-| **Connector abstraction**  | Python protocols and normalisers make Google, Apple and Microsoft interchangeable behind unified domain models; a resolver guarantees one provider per category                                                                                                      |
-| **Published bounds**       | Whatever a validator can reject, its producer can read: every enforced limit is published to the planner, and what is mechanically repairable is repaired before validation ([ADR-184](docs/architecture/ADR-184-Published-Bounds-And-Non-Prescriptive-Verdicts.md)) |
-| **Exact counts**           | A number shown to a person is exact or it does not exist — aggregates over the whole set, pages of rows, never 
+apps/web/src/       

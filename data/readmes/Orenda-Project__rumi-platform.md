@@ -78,6 +78,13 @@ language rather than by variable name ("where should Rumi keep its memory", not 
 value against the real service as you type it, creates the whole database for you, and saves each answer as
 it goes — so Ctrl+C is safe and running it again picks up where you stopped.
 
+### Or: one click with Pinokio
+
+Prefer not to use a terminal? Paste this repository's URL into [Pinokio](https://pinokio.co) and press
+**Install**. It sets everything up and opens a browser wizard for the same steps — credentials checked as you
+enter them, the database, and the WhatsApp QR as an image. Your fork's URL works too. See
+[pinokio/README.md](pinokio/README.md).
+
 ### Important: you need a second phone number to test from
 
 > ⚠️ By default Rumi links **your own** WhatsApp account, the same way WhatsApp Web does — so Rumi *is* your
@@ -105,7 +112,7 @@ The wizard offers to start Redis locally with Docker if you have it, so that row
 **A Meta WhatsApp Business account is not required** to try Rumi — see [the two ways to run
 it](#the-two-ways-to-run-rumi).
 
-Optional feature keys (Soniox, ElevenLabs, Uplift, Gamma, Kie.ai, Azure, Mistral) unlock the features that
+Optional feature keys (Soniox, ElevenLabs, Uplift, Gamma, Kie.ai, Azure) unlock the features that
 use them, and only those. `rumi setup` offers them at the end and skipping is a real answer — every one can be
 added later by setting its key. Each is documented in [`.env.template`](.env.template).
 
@@ -215,7 +222,7 @@ key(s) that switch it on.
 | 🎬 **[Video Generation](docs/features/video.md)** | A topic → a short narrated educational video | `VIDEO_GENERATION_ENABLED` + `KIE_API_KEY` |
 | ✅ **[Attendance](docs/features/attendance.md)** | Mark a class (teacher) or the staff (head teacher) by voice or by tapping names, approved leave included; get back the month's register, regenerated whole after every mark — on WhatsApp, Slack, Discord and Matrix | _always on (core)_ |
 | 👋 **[Teacher Nudges](docs/features/teacher-nudges.md)** | A teacher who has gone quiet for about a day gets one short, friendly check-in — once per quiet spell, on whichever channel they last used | `TEACHER_NUDGES_ENABLED` |
-| 🧮 **[Exam Checker](docs/features/exam-checker.md)** | Photograph answer sheets → vision OCR + AI grading | `MISTRAL_API_KEY` |
+| 🧮 **[Exam Checker](docs/features/exam-checker.md)** | Photograph answer sheets → vision read + AI grading | *(core LLM key)* |
 | 🚦 **[Public limits](docs/features/public-limits.md)** | Run Rumi on a public link: a per-sender rate limit on every channel, daily caps for accounts that have not finished registration (messages, lesson plans, coaching, quizzes), and a "Rumi is busy" reply with one operator alert when the model budget runs out. See [Running Rumi in public](docs/running-in-public.md) | _always on_ (30 messages, 120 media a minute); daily caps when you set `DAILY_*_CAP_*` |
 | 🔐 **[Rumi Messenger (Matrix)](docs/channels/matrix.md)** | Run Rumi on your own end-to-end-encrypted messenger: same features, numbered menus instead of buttons, no per-message fee ([see it running](https://chat.hellorumi.ai)) | `MATRIX_HOMESERVER_URL` + `MATRIX_ACCESS_TOKEN` |
 | 🌅 **[Morning Brief](docs/features/morning-brief.md)** | Every morning, one thread that tells your team how the programme is doing — registration, lesson plans, coaching, scores, reading, every school worst-first — on WhatsApp, Slack, Discord or Matrix, with a live page | `BRIEF_RECIPIENTS` + a read-only `BRIEF_DATABASE_URL` |
@@ -339,6 +346,7 @@ Start at [`CLAUDE.md`](CLAUDE.md) → it points the way.
 rumi-platform/
 ├── bin/rumi.js             # The `rumi` CLI — setup, start, status, doctor, pair, graduate
 ├── install.sh              # One-time bootstrap: tools, dependencies, .env, the rumi command
+├── pinokio/                # 1-click Pinokio launcher + GUI setup wizard
 ├── bot/                    # WhatsApp bot (Node.js + Express)
 │   ├── whatsapp-bot.js     # Entry point — webhook, inbound routing, message dispatch
 │   ├── shared/
@@ -422,7 +430,7 @@ Guide](docs/agent-customization.md) maps each goal to exact files:
 | Text-to-Speech | ElevenLabs (+ Uplift for Urdu/regional) | Voice replies, reflective questions |
 | PDF | PDFKit / pdfmake / Playwright | Coaching & reading reports |
 | Images / Video | Kie.ai (Nano Banana Pro), FFmpeg | Educational visuals & video |
-| OCR | Mistral vision (+ Chandra, Surya) | Exam-sheet scanning |
+| Vision | Gemini via OpenRouter (any image model) | Exam-sheet reading and grading |
 | Pronunciation | Azure Speech (optional) | Reading-assessment scoring |
 | Hosting | Railway / Docker / any Node host | Deployment |
 | Observability | Console + correlation IDs; Axiom optional | Structured logs + tracing |

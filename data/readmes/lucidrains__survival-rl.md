@@ -118,6 +118,28 @@ For a variant where the time bins compete for a single unit of mass through a so
 from survival_rl import HazardCriticCompetitive as HazardCritic
 ```
 
+## Dwell curriculum
+
+`DwellCurriculum` tracks observed dwell with an EMA and featurizes the dwell condition for the event.
+
+```python
+from survival_rl import DwellCurriculum
+
+curriculum = DwellCurriculum(
+    scale = 12.,
+    std_fraction = 0.5   # target = mean + 0.5 * std
+)
+
+event = curriculum.featurize(goal, torch.tensor([1, 2, 3]))   # int['b'] -> goal + dwell
+event = curriculum.featurize(goal)                            # null dwell, for average event prediction
+event = curriculum.featurize(goal, dwell, drop_prob = 0.1)    # drop dwell during training
+
+target = curriculum.update(dwells)
+target = curriculum.above_mean(0.5)
+```
+
+Set `dwell_feature_dim = 0` to disable dwell features. Null dwells are zero features, so the critic can also produce an average event prediction.
+
 ## Citations
 
 ```bibtex

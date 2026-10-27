@@ -9,8 +9,10 @@
 
 # <img src="https://raw.githubusercontent.com/Parv-01/gpualert/main/assets/logo.png" width="75" align="top" alt="Logo"/> GPUAlert
 
-A CLI for long-running GPU and Slurm jobs that emails you when they finish - with the full
-stdout/stderr logs and any output artifacts attached.
+GPUAlert tells you why your GPU training job failed. Wrap any PyTorch, JAX or Slurm job with
+`gpualert run -- python train.py` and get an email with the failure cause (CUDA out of memory,
+NCCL error, OOM killer, segfault and more), the full stdout/stderr logs and your output files.
+No code changes.
 
 ```bash
 pip install gpualert
@@ -29,6 +31,35 @@ NaN loss, OOMKiller, etc.), and emails you the result with logs attached.
   <img src="https://raw.githubusercontent.com/Parv-01/gpualert/main/assets/demo.gif" alt="GPUAlert Demo"/>
 </p>
 
+## Paper
+
+GPUAlert is described in
+[GPUAlert: A Zero-Instrumentation Process-Boundary Monitor for Diagnosing GPU Training-Job Failures](https://arxiv.org/abs/2607.01409)
+(Agarwal and Ekbal, IIT Patna, 2026). The labelled corpus and evaluation harness are in
+[gpualert-eval](https://github.com/Parv-01/gpualert-eval).
+
+If you use GPUAlert in research, please cite:
+
+```bibtex
+@misc{agarwal2026gpualert,
+  title         = {GPUAlert: A Zero-Instrumentation Process-Boundary Monitor for Diagnosing GPU Training-Job Failures},
+  author        = {Agarwal, Parv and Ekbal, Asif},
+  year          = {2026},
+  eprint        = {2607.01409},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.SE},
+  url           = {https://arxiv.org/abs/2607.01409}
+}
+```
+
+## How it compares
+
+| | Code change needed | Classifies the failure | Emails logs and output files |
+|---|---|---|---|
+| GPUAlert | No | Yes, 15 classes | Yes |
+| [knockknock](https://github.com/huggingface/knockknock) | Yes, a decorator | No | No |
+| `cmd > log 2>&1` or `nohup` | No | No | No |
+
 ## Features
 
 - Wraps any command and emails on completion: success, failure, timeout, or Ctrl+C.
@@ -37,8 +68,10 @@ NaN loss, OOMKiller, etc.), and emails you the result with logs attached.
 - Always attaches logs to failure emails. Non-negotiable.
 - Auto-detects ML metrics in successful runs (`accuracy`, `loss`, `F1`, `mAP`, ...) and surfaces
   them in the email body.
-- Scans the working directory for output artifacts after the job ends; budgets the email and
-  zips the overflow.
+- Attaches the output files your job wrote in its own directory during the run (never another
+  user's, never hidden directories); budgets the email, zips the overflow, and names anything it
+  left out. Two of your own jobs sharing one directory can still pick up each other's outputs, so
+  give parallel runs their own directories.
 - `--dry-run` prints the email it would send without touching SMTP - useful for debugging.
 
 ## Quick start

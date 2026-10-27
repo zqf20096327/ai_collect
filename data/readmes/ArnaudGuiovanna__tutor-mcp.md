@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/banner.svg" alt="Tutor MCP — Self-learning is a superpower." width="100%" />
+  <img src="docs/banner.svg" alt="Tutor-MCP — lifelong learning and learning communities" width="100%" />
 </p>
 
 <p align="center">
@@ -18,6 +18,10 @@
 
 **Tutor MCP is an open-source MCP engine for adaptive learning, self-learning and personalized AI tutoring.** Built on the Model Context Protocol, it brings course creation, a structured learning path and ongoing tutoring into your AI assistant. Choose a subject and a goal — from conversational Spanish to backend engineering — and build a course that evolves with your progress.
 
+**Build a learning community with Tutor ACP.** The Windows client connects Codex or Claude to your institution's learning service. Members find shared programmes in one catalogue, learn at their own pace, and return to their conversations and progress. Owners manage membership and access; authors and authorised trainers maintain programmes from the same application.
+
+- **Share programmes within an institution.** Publish to all institution members or invite named recipients. Contributions follow owner review unless publication without prior review is authorised for that programme. Sharing a personal programme copies its design while keeping conversations and private progress separate.
+- **Learn and manage from one desktop client.** Conversation and Formations bring together tutoring, the programme library, manual or AI-assisted editing, and progress. Dedicated account and settings pages cover agents, institution, members and reading preferences.
 - **Build a curriculum on any subject.** Your AI maps the subject into a skill graph with concepts, prerequisites and goals. Tutor validates and versions that graph as your course develops.
 - **Follow a guided learning journey.** Diagnose your starting point, work through personalized lessons and exercises, revisit weak areas, and test your ability to apply what you learn.
 - **Get ongoing, personalized guidance.** Knowledge estimates, review dates, misconceptions and session memory shape the next activity, across conversations.
@@ -51,26 +55,29 @@ on an unseen debugging scenario, and the outcome is recorded against the frozen 
 
 ## Installation
 
-The repository also contains the [Tutor desktop client](client/README.md), built
-with Tauri for Windows. It connects Codex and Claude through ACP, detects native and WSL2
-installations, and uses the same persistent learning engine locally or remotely.
-Its Windows workflow produces an installer and records the tested runtime.
+**For an institution or learning community, start with [Tutor ACP 0.0.3 for Windows x64](https://github.com/ArnaudGuiovanna/tutor-mcp/releases/download/v0.7.2/Tutor_ACP_0.0.3_windows_x64-setup.exe).** Codex and Claude adapters and their Node.js runtime are included. In **Connection and tools**, connect to your institution’s Tutor service, choose your AI agent and configure its MCP permissions. The [desktop client guide](client/README.md) covers setup, identities and backups, native Windows and WSL2.
+
+The client offers French/English, light/dark/system themes and adjustable reading settings saved per account. MCP tool permissions can be remembered across conversations and restarts for the selected account, server and agent, and changed in Settings. The server controls access and progress; published programmes retain their versions for enrolled learners until an explicit migration.
+
+Version 0.0.3 brings a frameless window with custom controls, refined spacing and typography, and a single connection screen. It retains the [Tutor-MCP graphic charter](ui/charte-tutor-mcp.html) and bundled Inter and JetBrains Mono fonts. **Ctrl+K** opens the command palette to find a conversation, navigate to settings or change the theme from the keyboard.
 
 Choose where your learning data lives. Every profile uses the same learning engine.
 
 | Profile | Best for | Setup |
 |---|---|---|
+| **Institution** | Learning communities, teams and training organizations | A shared catalogue, member access, contribution review and individual learning paths. `--profile institution`, public-key identities, PostgreSQL and separate API/worker/migrator roles. [Institutional setup](docs/installation.md#institutional-deployment) |
 | **Local** | Learning on your own computer | One binary + `--local`. Your MCP client starts it; SQLite stores your history. No account or server setup. [Local setup](docs/installation.md#local-client-configuration) |
-| **Hobby** | A personal VPS or a small group | `--profile hobby`, SQLite and an HTTPS proxy. Invite users over SSH; they sign in with a username and password. [Native installation](docs/installation.md#native-hobby-vps-binary-systemd-and-caddy) · [Docker Compose](docs/installation.md#hobby-vps-with-docker-compose) |
-| **Institution** | An organization running a shared service | `--profile institution`, public-key identities, PostgreSQL and separate API/worker/migrator roles. [Institutional setup](docs/installation.md#institutional-deployment) |
+| **Hobby** | A personal VPS or a small group using MCP clients | `--profile hobby`, SQLite and an HTTPS proxy. Invite users over SSH; they sign in with a username and password. [Native installation](docs/installation.md#native-hobby-vps-binary-systemd-and-caddy) · [Docker Compose](docs/installation.md#hobby-vps-with-docker-compose) |
 
-Binaries target **Linux, macOS and Windows**, on amd64 and arm64. Profiles require **v0.6.0+**; install [v0.7.0](https://github.com/ArnaudGuiovanna/tutor-mcp/releases/tag/v0.7.0) for the current server and the ACP client 0.0.1. See [installation details](docs/installation.md) for installers, service configuration and backups.
+Binaries target **Linux, macOS and Windows**, on amd64 and arm64. Profiles require **v0.6.0+**; install [v0.7.2](https://github.com/ArnaudGuiovanna/tutor-mcp/releases/tag/v0.7.2) for the current server and the ACP client 0.0.3. See [installation details](docs/installation.md) for installers, service configuration and backups.
 
 ## Quickstart
 
 ### 1. Get the binary
 
-Build the current local-mode implementation with Git and [Go 1.26.10 or a newer patched release](https://go.dev/dl/):
+For the institutional desktop experience, [install Tutor ACP for Windows](https://github.com/ArnaudGuiovanna/tutor-mcp/releases/download/v0.7.2/Tutor_ACP_0.0.3_windows_x64-setup.exe). Your organization provides the Tutor server; administrators can follow the [institutional setup](docs/installation.md#institutional-deployment) using the [server release](https://github.com/ArnaudGuiovanna/tutor-mcp/releases/tag/v0.7.2).
+
+For local use or development, build the MCP server from source with Git and [Go 1.26.10 or a newer patched release](https://go.dev/dl/):
 
 ```sh
 git clone --branch main https://github.com/ArnaudGuiovanna/tutor-mcp.git
@@ -82,7 +89,9 @@ This creates `tutor-mcp` (`tutor-mcp.exe` on Windows). Keep its full path for th
 
 ### 2. Connect your AI
 
-For a client using `mcpServers` JSON, such as Claude Desktop, add this to its MCP configuration and replace `command` with the binary's full path:
+**In Tutor ACP**, select Codex or Claude and connect your provider account. In the institution settings, enter your institution's address and connect with an authorised Tutor identity. The [client guide](client/README.md#connexion-à-tutor) explains identity creation, encrypted backups and account recovery. Provider access and any associated costs are separate from Tutor.
+
+**For a local MCP client** using `mcpServers` JSON, such as Claude Desktop, add this to its MCP configuration and replace `command` with the binary's full path:
 
 ```json
 {
@@ -100,6 +109,14 @@ On Windows, use a path such as `C:/tools/tutor-mcp.exe`. Restart your client. It
 [Claude Code](docs/installation.md#claude-code), [Hermes](docs/installation.md#hermes) and [other clients](docs/clients.md) have their own setup instructions. ChatGPT and other cloud clients use a VPS profile with a public HTTPS endpoint.
 
 ### 3. Start learning
+
+In Tutor ACP, open **Formations** to choose a programme from your institution's catalogue, or start a personal programme in **Conversation** when your institution allows it:
+
+> I want to learn Go.
+
+The programme is saved from the first exchange and can be resumed later. Personal learning starts directly in the conversation. If setup is incomplete, the message is kept as **À envoyer** (“To send”) until the connection is ready.
+
+In another MCP client, ask:
 
 > Use Tutor MCP to help me learn Go for backend development. Find out what I already know, create a learning plan, and guide me through a first 20-minute session. Save my progress when we finish.
 
@@ -124,6 +141,7 @@ BKT estimates knowledge, FSRS schedules reviews, and prerequisite checks keep th
 
 | Topic | Read more |
 |---|---|
+| **Tutor ACP** — Windows client, institutional programmes, account and settings | [Desktop client](client/README.md) · [Conversation and formations](docs/tutor-conversation-formations.md) |
 | **Architecture** — diagrams, both layers and every runtime component | [Architecture](docs/architecture.md) |
 | **Algorithms** — knowledge tracing, spaced repetition, prerequisites and activity selection | [Algorithms](docs/algorithms.md) |
 | **MCP tools** — the complete tool catalog, purposes and calling conventions | [MCP tools](docs/mcp-tools.md) |
@@ -134,6 +152,7 @@ BKT estimates knowledge, FSRS schedules reviews, and prerequisite checks keep th
 
 | I want to… | Documentation |
 |---|---|
+| Set up a learning community with the Windows client | [Tutor ACP](client/README.md) · [Institutional setup](docs/installation.md#institutional-deployment) |
 | Connect Claude, ChatGPT, Hermes, Pi or another client | [Client guide](docs/clients.md) |
 | Install on Linux, macOS or Windows | [Installation](docs/installation.md) |
 | Choose a profile or manage hobby accounts | [Profiles and accounts](docs/profiles.md) |

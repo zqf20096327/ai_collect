@@ -85,7 +85,7 @@ Default runs are quiet. Add `-v` to see tool activity:
 ~~~text
 $ dotlink -v -p aw
 
-abird dotlink 0.9.1
+abird dotlink 0.13.0
 ────────────────────────────────────────────────────────
 • Profile    aw
 • Transports openai
@@ -104,7 +104,7 @@ Keys        Ctrl-C: exit · Ctrl-R: restart · v: verbosity
 [10:59:19.194] TOOL read       ← ok  9ms
 ~~~
 
-`-v` starts with TOOL activity; `-vv` starts with TOOL + REQ diagnostics. During an interactive run, press `v` to cycle `quiet → TOOL → TOOL + REQ → quiet` without restarting. Each change emits a compact `LOG verbosity …` line. `Ctrl+R` fully reloads the profile/policy/transports; `Ctrl+C` exits. Runtime key controls are disabled when stdio MCP is active so protocol stdin is never intercepted. File contents, binary payloads, API keys, and raw request bodies are not intentionally logged.
+`-v` starts with TOOL activity; `-vv` starts with TOOL + REQ diagnostics. During an interactive run, press `v` to cycle `quiet → TOOL → TOOL + REQ → quiet` without restarting. Each change emits a compact `LOG verbosity …` line. `Ctrl+R` fully reloads the profile/policy/transports; `Ctrl+C` exits. Runtime key controls are disabled when stdio MCP is active so protocol stdin is never intercepted. File contents, binary payloads, shell command bodies, API keys, and raw request bodies are not intentionally logged.
 
 ## Connect dotlink to ChatGPT
 
@@ -144,9 +144,10 @@ If **Create MCP App** is unavailable, enable **Developer mode** under **Settings
 The tools ChatGPT discovers follow dotlink's local permissions:
 
 ~~~text
-read-only     ls, read, read_binary
-write        + write, edit, write_binary, patch_binary
-shell        + bash (Unix) / powershell (Windows)
+read-only      ls, grep, read, bread
+write          + write, bwrite
+read + write   + edit, patch, bedit
+shell          + bash (Unix) / powershell (Windows)
 ~~~
 
 Never paste a Runtime or Admin API key into ChatGPT. ChatGPT only needs the `tunnel_...` ID.
@@ -167,7 +168,7 @@ Run setup, select **HTTP**, then enable the public ngrok endpoint:
 dotlink --setup
 ~~~
 
-Setup asks for one **owner password** the first time OAuth is needed. The password itself is never stored; dotlink persists only an Argon2id hash in its private state directory.
+Setup asks for one **owner password** the first time OAuth is needed. The password itself is never stored; dotlink persists only an Argon2id hash in its private state directory. Changing the owner password is effective for new authorizations on a running HTTP server without restarting it; previously issued short-lived access tokens still require restart for immediate invalidation.
 
 Set your ngrok account token and start dotlink:
 
@@ -225,17 +226,17 @@ dotlink --http --oauth --http-bind=127.0.0.1:3000 \
   --public-url=https://mcp.example.com
 ~~~
 
-Never derive the OAuth issuer from proxy/Host headers; `--public-url` is the explicit trust boundary.
+Never derive the OAuth issuer from proxy/Host headers; `--public-url` is the explicit trust boundary. Anonymous OAuth work is also bounded by a trusted network requester identity: direct HTTP uses the TCP peer, while built-in ngrok uses authenticated tunnel connection metadata. Forwarded client-IP headers are ignored. A generic reverse proxy therefore shares one requester allowance unless it applies its own edge admission controls.
 
 Public ngrok ingress is OAuth-protected by default. Direct non-loopback HTTP binds are also refused unless OAuth is enabled with an explicit HTTPS public origin. The only way to intentionally expose either form of public ingress without application-layer authentication is the explicit one-run escape hatch:
 
 ~~~bash
 dotlink --http --ngrok --allow-public-no-auth
-# or, for an intentionally unauthenticated LAN listener:
-dotlink --http --http-bind=0.0.0.0:3000 --allow-public-no-auth
+# Or use this machine's concrete LAN interface address (replace as needed):
+dotlink --http --http-bind=192.168.1.50:3000 --allow-public-no-auth
 ~~~
 
-That mode exposes every MCP capability granted to the process to anyone who can reach the endpoint and is not recommended.
+For LAN use, replace the example address with the machine's actual interface address; wildcard binds such as `0.0.0.0`, `::`, and their IPv4-mapped IPv6 forms do not identify that address for Host allowlisting. Conflicting HTTP `Host` and URI/HTTP2 authorities are rejected. This mode exposes every MCP capability granted to the process to anyone who can reach the endpoint and is not recommended.
 
 ## Use dotlink as a local sandboxed MCP server
 
@@ -313,12 +314,83 @@ Capabilities are independent: `--allow-read`, `--allow-write`, `--allow-rw`, `--
 ### Filesystem policy
 
 ~~~text
-read / read_binary / ls       require read
-write / write_binary          require write
-edit / patch_binary           require read + write
+ls / grep / read / bread      require read
+write / bwrite                require write
+edit / patch / bedit          require read + write
 ~~~
 
 Targets are canonicalized before checks; create targets canonicalize their nearest existing ancestor, preventing symlink escapes. The advertised MCP tool list is permission-aware, so unavailable write/shell tools are omitted rather than merely rejected later.
+
+### Tools
+
+| Tool | Needs | What it does |
+| --- | --- | --- |
+| `ls` | read | List entries with `pattern` (glob), `depth`, `kind`, `sort`, `limit` |
+| `grep` | read | Regex search with `content`/`files`/`count` output, context, glob and `.gitignore` filters |
+| `read` | read | Read numbered lines from a UTF-8 file |
+| `write` | write | Create or replace a text file |
+| `edit` | read+write | Apply an ordered `edits[]` array with preflight and per-file atomic commits |
+| `patch` | read+write | Apply a Codex-format patch with strict preflight and per-file atomic commits |
+| `bread` | read | Read binary content as MCP typed content, base64, or hex |
+| `bwrite` | write | Create or replace a binary file |
+| `bedit` | read+write | Apply byte ranges against original-file offsets |
+
+| `bash` / `powershell` | shell | Run a command inside the sandbox |
+
+One glob grammar everywhere (`globset`, `literal_separator`): `*`, `?`, `[...]`,
+`{a,b}` stay within one path segment and `**` recurses without a level cap.
+Every list/search tool has a documented `limit` and reports `truncated`. Walks
+stop after 100,000 visited entries; `scan_incomplete` explicitly marks partial
+results, which are sorted only among the visited entries. `grep` also limits
+file-content work to 32 MiB across at most 4096 candidates per request. When
+`gitignore` is enabled, inaccessible/denied ignore files include
+`ignore_rules` in `incomplete_reasons` (or a neutral text warning), not silently
+interpreted as absent. The singular `incomplete_reason` remains for compatible
+clients; the array preserves simultaneous directory, content, traversal,
+ignore-rule, and unreadable-file causes. Ignore processing is separately bounded to 256 non-absent
+file reads/4 MiB, including partial failed reads, and rejects any file beyond 64 KiB
+or 1024 lines. Narrow `path` or `glob`/`pattern` for large trees. `read` errors
+rather than emitting a misleading line-zero marker if the first complete line
+plus marker cannot fit. Skipping to a distant line offset is separately limited
+to exactly 32 MiB of source I/O per call, including buffered prefetch. Otherwise,
+`read` ends a capped result with a single marker. `ls` and `grep`
+retain the best sorted candidates within the scanned entries in bounded memory.
+Both bound their JSON replies at `max_output_bytes`, keeping the longest prefix
+that fits. `ls` derives its default depth from the pattern (one level per segment,
+unbounded for `**`) so a deep pattern never silently returns nothing, and
+`grep` pages only ever contain whole matching lines. `grep count` reports
+`page_total` for the returned page. `read` streams a line window, so
+`max_read_bytes` bounds the returned window, its marker and one line rather than
+rejecting a large file outright; the page is assembled in one buffer, and lines
+skipped to reach `offset` are scanned rather than buffered, so a long first line
+never blocks a later window; a single returned line larger than the ceiling is
+an error naming it, since cutting it silently would hide content.
+
+Text tools (`grep`, `read`, `write`, `edit`, `patch`) accept UTF-8
+without binary control bytes. Use `bread`, `bwrite`, or `bedit` for
+byte-oriented files.
+
+Every write is atomic: the new bytes go beside the target and are installed only
+at commit, so a failed or interrupted write leaves the old file intact and a
+reader never sees a half-written one. The native filesystem mutators (`write`,
+`bwrite`, `edit`, `patch`, `bedit`) coordinate from snapshot read through
+commit with directory locks on Unix: shared ancestor intent locks and an
+exclusive lock on the deepest existing parent. Missing parent creation is also
+covered; unreadable directories fail closed. Independent subdirectories remain
+concurrent, with no lock service or workspace lockfiles. Shell commands are
+outside that coordination because their write paths are arbitrary. Existing-file writes keep their permission
+bits; create-only writes are absent until commit. `read` with `numbered: false`
+returns the text byte for byte, so a read → write round trip preserves line
+endings, and `patch` uses the target file's line ending for added lines.
+Multi-file calls preflight every file and replace each atomically, but the
+commit sequence is not a transaction.
+
+~~~bash
+dotlink --list-tools
+dotlink --allow-rw --allow-shell --list-tools
+~~~
+
+Tool inspection resolves the effective filesystem permissions without initializing transports, loading Runtime credentials, requiring a live SSH agent or preparing the sandbox. Execution still enforces all those prerequisites.
 
 ### Linux sandbox
 
@@ -367,20 +439,30 @@ The Runtime key is stored separately from JSONC config and follows the selected 
 
 ~~~text
 ~/.config/abird/dotlink/runtime.key
+~/.config/abird/dotlink/runtime.<generation>.key
 ~/.config/abird/dotlink/runtime.work.key
+~/.config/abird/dotlink/runtime.work.<generation>.key
 ~~~
 
 `DOTLINK_CONFIG` may move the JSONC file, but Runtime keys always stay in dotlink's private XDG directory above. The active config and credential directory are control-plane state and are not exposed through dotlink's MCP/filesystem/shell surface.
 
-When OpenAI transport is disabled for a profile, that profile does not require a runtime key.
+When OpenAI transport is disabled for a profile, that profile does not require
+or even read a saved Runtime key. At startup, explicit environment credentials
+and `DOTLINK_API_KEY_FILE` take precedence over a saved key, so a missing
+persisted key never blocks an otherwise valid override.
+If a selected Runtime key is missing, enabled OpenAI execution fails closed;
+`dotlink profile show default` and `dotlink profile edit default` still work
+so you can inspect and replace it. Completed credential rotations prune obsolete
+generations, preserving the selected and immediately prior versions;
+deleting a profile is retryable after an interrupted cleanup.
 
 ### Automatic tunnel recovery
 
 Transient OpenAI poll failures retry with backoff. Normal warnings stay concise; full transport diagnostics are available with `-vv`.
 
-After **10 consecutive transient poll failures**, dotlink stops retrying the same runtime state. It cancels all active transports, gives them up to 5 seconds to shut down cleanly, force-aborts any remaining transport tasks, reloads the profile and permission policy, reconstructs the local MCP runtime, and starts the configured transports again automatically.
+After **10 transient poll failures without an accepted poll**, dotlink stops retrying the same runtime state. Intervening 401/403/404 responses do not falsely reset that health counter. Dotlink cancels all active transports, gives them up to 6 seconds to shut down cleanly, force-aborts any remaining transport tasks, reloads the profile and permission policy, reconstructs the local MCP runtime, and starts the configured transports again automatically.
 
-If a freshly restarted runtime keeps failing, restarts back off from 1 second up to a 30-second cap. Once a runtime has connected successfully, that restart backoff resets. Fatal control-plane errors such as an invalid Tunnel ID or invalid Runtime API key still fail immediately rather than entering a restart loop.
+If a freshly restarted runtime keeps failing, restarts back off from 1 second up to a 30-second cap. Once a runtime has connected successfully, that restart backoff resets. A rejected Tunnel ID or Runtime API key retries for 60 seconds before requiring operator action, so a single auth outage or edge rejection cannot stop the service.
 
 Useful locations:
 
@@ -415,7 +497,7 @@ With `-vv`, transport diagnostics are added:
 [01:06:47.427] REQ  stdio      → tools/call
 ~~~
 
-Logs include safe metadata such as paths, methods, status, and latency; file contents, binary payloads, runtime keys, and raw request bodies are not intentionally logged.
+Logs include safe metadata such as paths, methods, status, and latency. Shell commands (including short ones) and other payload arguments are logged only as byte counts, so inline credentials are not copied into the journal.
 
 Color is automatic on interactive human-facing output, including `--help`. Override with `--color=always`, `--color=never`, or `--color=auto`. Interactive terminal runs also support `v` for live verbosity cycling and `Ctrl+R` for a full runtime restart; stdio keeps stdin protocol-clean and exposes only `Ctrl+C`. In a manual TTY stdio run, dotlink ensures `Ctrl+C` generates an interrupt and restores the terminal state afterward.
 
@@ -511,7 +593,7 @@ DEVELOPER CACHES (discovered paths; bare flag = ro, =rw enables writes)
 
 OUTPUT & DIAGNOSTICS
 --list-tools                    show tools exposed by the effective policy
---print-id                      print configured OpenAI Tunnel ID
+--print-id                      print configured tunnel ID (no Runtime key needed)
 -s, --serialize                 execute MCP tools one at a time (opt-in)
 -q, --quiet                     suppress TOOL activity
 -v, --verbose                   -v TOOL; -vv TOOL + REQ
@@ -618,9 +700,11 @@ See [.agents/docs/nixos-service.md](.agents/docs/nixos-service.md).
 
 ## Parallel tool execution
 
-A single tunnel can dispatch up to eight in-flight MCP requests. On Linux,
+A single tunnel can dispatch up to sixteen in-flight MCP requests. On Linux,
 file tools use descriptor-rooted `openat2` access and Bubblewrap shells run
-independently; **tools execute concurrently by default**. Choose
+independently; **tools execute concurrently by default**. Local HTTP and stdio
+intentionally have **no global admission cap**: the client/model directs
+parallelism. The tunnel maintains its own in-flight limit. Choose
 `dotlink -s` or `dotlink --serialize` if you want one MCP call at a time
 across all transports handled by this process. This is an *ordering preference*,
 not an additional security boundary. It does not serialize separate dotlink
@@ -632,10 +716,12 @@ unless the user has explicitly authorized filesystem root `/`. It requires
 Linux `openat2` (kernel 5.6+); if unavailable, native tool startup fails
 closed rather than falling back to unsafe pathname I/O. Existing safe symlink
 aliases are canonicalized before the final descriptor-relative access.
-On macOS and Windows the previous conservative reader/writer gate remains in
-place until equivalent handle-based operations are available; `-s` serializes
-all tools on those platforms too. Concurrent writers can still overwrite each
-other's work: enabling serialization coordinates calls only within dotlink.
+On macOS, the pinned Unix directory model uses a component-wise
+openat/O_NOFOLLOW walk. On Windows, native tools pin directory handles and
+reject reparse points, while named cross-process mutexes coordinate writers
+to the same path across services and CLI instances. Windows also retains
+its in-process gate; -s opts into global serial execution. External applications
+do not participate in these advisory locks.
 
 ## FAQ
 
@@ -701,7 +787,7 @@ services.dotlink.credentials.runtimeApiKeyFile =
   config.sops.secrets.dotlink-runtime.path;
 ~~~
 
-Omitting this option retains the user's saved Runtime key. `credentials.ngrokAuthTokenFile` works similarly. There are also `instances.<name>` for independent named services, `extraPackages` for shell tools, and `logging.verbosity = "lifecycle" | "tools" | "requests"` (default: lifecycle). The service disables stdio MCP, gracefully handles SIGTERM, and logs to journald:
+Omitting this option retains the user's saved Runtime key. `credentials.ngrokAuthTokenFile` works similarly. There are also `instances.<name>` for independent named services, `extraPackages` for shell tools, and `logging.verbosity = "lifecycle" | "tools" | "requests"` (default: lifecycle). The service disables stdio MCP, gracefully handles SIGTERM, and logs to journald. Exits 2 and 78 stay stopped until fixed and explicitly restarted; exit 6 (`NOTCONFIGURED`, setup still pending) also stays stopped but counts as a clean stop, so an unprovisioned host never fails its own activation; any other termination, including exit 0 or a clean signal outside a systemd stop/restart job, restarts with exponential backoff up to 10 minutes. Explicit `systemctl stop` remains stopped. The module requires systemd 255 or newer and warns on 255–257 because backoff reset notifications require 258:
 
 ~~~bash
 systemctl status dotlink

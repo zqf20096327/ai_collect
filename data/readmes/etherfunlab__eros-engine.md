@@ -20,7 +20,7 @@ The engine has nine foundations:
 - 🧠 **Two-layer memory** — stable facts about the user live alongside shared moments, callbacks, and unfinished threads. → [Memory layers](docs/memory-layers.md)
 - 💞 **Evolving affinity** — six relationship dimensions move on graded, damped writes and decay with time, shaping tone, depth, and even whether the companion replies. → [Affinity model](docs/affinity-model.md) · [Ghost mechanics](docs/ghost-mechanics.md)
 - 🎭 **Persona Decision Engine (PDE)** — before generation, the engine chooses an action and inner state. Rules work out of the box; an optional LLM judge also rates the persona's basic needs and can stream its reasoning to the client. → [Model config](docs/model-config.md)
-- 🧩 **Structured user insight** — the engine builds a queryable profile that downstream products can use for onboarding, personalization, and analysis, and an optional keyset export lets a downstream service keep a read-only mirror. → [API reference](docs/api-reference.md)
+- 🧩 **Structured user insight** — the engine records atomic facts about the user in a ledger and derives a queryable profile from it on a schedule, for onboarding, personalization, and analysis. Optional keyset exports let a downstream service keep read-only mirrors, and one call erases everything the engine derived about a user. → [Insights](docs/insights.md) · [API reference](docs/api-reference.md)
 - ⚡ **A complete chat path** — SSE streaming, image understanding and generation requests, prompt traits, per-task model selection, fallbacks, and call auditing. OpenRouter is the default; additional OpenAI-compatible chat and embedding providers can be configured through `[providers]`. → [API reference](docs/api-reference.md) · [Model config](docs/model-config.md) A downstream can also let its end users bring their own chat endpoint and key per turn. → [BYOK](docs/byok.md) A downstream can also serve characters the engine never stores: each request carries the character card, sealed under a per-instance key. → [BYOC](docs/byoc.md)
 - 🎙️ **A voice turn path built for interruption** — a lean, low-latency turn endpoint on its own channel, with barge-in: the client stops playback and reports what was actually spoken, so history records what the user *heard* rather than what the model produced. A turn lost to a dropped connection can be regenerated instead of stranded. → [API reference](docs/api-reference.md#post-compvoicesession_idturnstream)
 - 🌍 **A simulated world** — personas have an off-screen life. A scheduled world director evolves a shared relationship graph and daily scripts; a feed lets personas post and comment on one another; per-persona stories keep work, romance, and daily living consistent over time. Fully opt-in and layered behind independent switches — an unconfigured deployment runs zero queries and spawns zero sweepers. → [World system](docs/world-system.md)
@@ -42,7 +42,7 @@ This is not a generic agent framework. It is the stateful core for products wher
 │  │ post-process, spawned after reply                    │ │
 │  │   • affinity: graded turn + derived endpoints        │ │
 │  │   • memory:   Voyage embed → pgvector upsert         │ │
-│  │   • insight:  extract facts → JSONB merge            │ │
+│  │   • insight:  facts → ledger → scheduled rebuild     │ │
 │  └──────────────────────────────────────────────────────┘ │
 └───────────────────────────────────────────────────────────┘
 ```
@@ -59,9 +59,9 @@ cargo add eros-engine-core eros-engine-store eros-engine-llm
 
 ```toml
 [dependencies]
-eros-engine-core  = "2.3"
-eros-engine-store = "2.3"   # optional: Postgres + pgvector persistence
-eros-engine-llm   = "2.3"   # optional: model and embedding clients
+eros-engine-core  = "2.5"
+eros-engine-store = "2.5"   # optional: Postgres + pgvector persistence
+eros-engine-llm   = "2.5"   # optional: model and embedding clients
 ```
 
 `eros-engine-server` is not published to crates.io; run it as a Docker image instead.
@@ -71,14 +71,14 @@ eros-engine-llm   = "2.3"   # optional: model and embedding clients
 Multi-architecture images are published to GitHub Container Registry for every `v*` tag:
 
 ```bash
-docker pull ghcr.io/etherfunlab/eros-engine:2.3.1
+docker pull ghcr.io/etherfunlab/eros-engine:2.5.0
 # Or follow the latest tagged release
 docker pull ghcr.io/etherfunlab/eros-engine:latest
 ```
 
 ```bash
 docker run --rm -p 8080:8080 --env-file .env \
-  ghcr.io/etherfunlab/eros-engine:2.3.1 serve
+  ghcr.io/etherfunlab/eros-engine:2.5.0 serve
 ```
 
 Bring your own Postgres and `.env`; the same `docker/Dockerfile` can be deployed to any container host. See [Deploying](docs/deploying.md).
@@ -117,7 +117,7 @@ The server listens on `0.0.0.0:8080` by default, with Scalar API docs at `/docs`
 
 ## API surface
 
-The main flow is simple: start a persona session, then send turns to the SSE streaming endpoint. Voice runs on its own channel — start the session with `channel: "voice"` and use the voice turn endpoint, which carries a leaner prompt and a barge-in call; the two channels never write into each other's sessions. A separate enqueue-only endpoint (`POST /v2/comp/session/{session_id}/message/async`) exists for bot-style callers that cannot hold a stream open; a background worker generates the reply and it lands in history/Realtime instead of a stream frame. The engine also exposes history, session, profile, and affinity routes, group management under `/v2/comp/group*`, and a route that asks for a life event in the persona's day (`POST /v2/comp/session/{session_id}/events`). Authentication uses Supabase JWTs by default and can be replaced through `AuthValidator`; the optional `GET /svc/v1/insights/changes` and `GET /svc/v1/memories/changes` exports are admitted by a shared secret instead and are mounted only when `INSIGHTS_EXPORT_SECRET` is set. See the [API reference](docs/api-reference.md) for paths, payloads, and stream frames.
+The main flow is simple: start a persona session, then send turns to the SSE streaming endpoint. Voice runs on its own channel — start the session with `channel: "voice"` and use the voice turn endpoint, which carries a leaner prompt and a barge-in call; the two channels never write into each other's sessions. A separate enqueue-only endpoint (`POST /v2/comp/session/{session_id}/message/async`) exists for bot-style callers that cannot hold a stream open; a background worker generates the reply and it lands in history/Realtime instead of a stream frame. The engine also exposes history, session, profile, and affinity routes, group management under `/v2/comp/group*`, and a route that asks for a life event in the persona's day (`POST /v2/comp/session/{session_id}/events`). Authentication uses Supabase JWTs by default and can be replaced through `AuthValidator`. Setting `CALLER_SECRET` also requires an `x-caller-secret` header on those routes, so only the deployment's own server can call them, not an end user holding a JWT. The optional `/svc/v1/*` service routes are admitted by shared secrets instead, in three sub-trees that are each mounted only when their own secret is set: `INSIGHTS_EXPORT_SECRET` (the profile and memory exports and the erased-user stream), `FACTS_EXPORT_SECRET` (the fact ledger export) and `USER_ERASE_SECRET` (user erasure). See the [API reference](docs/api-reference.md) for paths, payloads, and stream frames.
 
 ## Configuration
 
@@ -139,6 +139,12 @@ This repository is the conversation, memory, and relationship-state core. Matchm
 The personas in `examples/personas/` are adult character-chat examples. They may flirt or express desire as a relationship develops, while refusing disrespectful or boundary-crossing behavior. Replace them before deployment if your product needs a SFW default.
 
 Per-request behavior can also be adjusted through [`prompt_traits`](docs/prompt-traits.md). The engine treats this text as opaque; your frontend or middleware owns its policy.
+
+## Partners
+
+- **[DemonRoute](https://demonroute.com/etherfun)** — Prepaid, privacy-first gateway to open-weight and uncensored models. No IP logs, prompts never retained. Works through `[providers]` and BYOK → [Model config](docs/model-config.md) · [BYOK](docs/byok.md)
+
+<sub>Partner links may earn eros-engine a referral commission.</sub>
 
 ## Contributing
 

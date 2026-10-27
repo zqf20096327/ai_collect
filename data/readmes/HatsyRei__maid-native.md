@@ -18,8 +18,8 @@ server.
 <tr>
 <td width="25%"><a href="docs/screenshots/chat-multimodal.png"><img src="docs/screenshots/chat-multimodal.png" width="100%" alt="Chat with an image attachment, a Markdown reply and its generation-stats footnote" /></a></td>
 <td width="25%"><a href="docs/screenshots/drawer.png"><img src="docs/screenshots/drawer.png" width="100%" alt="Chat drawer with saved conversations, a New chat action and an overflow menu" /></a></td>
-<td width="25%"><a href="docs/screenshots/settings-endpoint.png"><img src="docs/screenshots/settings-endpoint.png" width="100%" alt="Endpoint, model, sampling and thinking settings" /></a></td>
-<td width="25%"><a href="docs/screenshots/settings-theme.png"><img src="docs/screenshots/settings-theme.png" width="100%" alt="Theme accent, composer background and profile settings" /></a></td>
+<td width="25%"><a href="docs/screenshots/settings-endpoint.png"><img src="docs/screenshots/settings-endpoint.png" width="100%" alt="Endpoint, model, sampling, penalty, tools, MCP and thinking settings" /></a></td>
+<td width="25%"><a href="docs/screenshots/settings-theme.png"><img src="docs/screenshots/settings-theme.png" width="100%" alt="App language, accent, composer background and profile settings" /></a></td>
 </tr>
 <tr>
 <td align="center"><sub><b>Multimodal chat</b></sub></td>
@@ -142,8 +142,10 @@ independently.
   point at a **JDK**, not a JRE — if `./gradlew` is invoked directly with a JRE
   on `PATH` the build fails; `build.sh` handles this for you.
 
-The toolchain is pinned in `gradle/libs.versions.toml`: Gradle 9.8.1,
-AGP 9.4.1, Kotlin 2.4.21, KSP 2.3.12, Compose BOM 2026.09.00. AGP 9 supplies
+Gradle 9.8.2 is pinned by the wrapper in
+`gradle/wrapper/gradle-wrapper.properties`; the rest of the toolchain is pinned
+in `gradle/libs.versions.toml`: AGP 9.4.1, Kotlin 2.4.21, KSP 2.3.12, Compose
+BOM 2026.09.00. AGP 9 supplies
 built-in Kotlin support, so the `org.jetbrains.kotlin.android` plugin is not
 applied; the Kotlin and KSP plugin versions are declared on the root
 `buildscript` classpath instead.
@@ -157,7 +159,7 @@ local toolchain (falls back to `~/.local/jdks/jdk-21` and `~/android-sdk` if
 ```bash
 ./build.sh            # clean + release APK (same as `./build.sh release`)
 ./build.sh debug      # clean + debug APK -> app/build/outputs/apk/debug/
-./build.sh release    # clean + signed release APK (arm64-v8a, minified)
+./build.sh release    # clean + release APK (arm64-v8a, minified; signed if keystore.properties exists)
 ./build.sh test       # clean + unit tests
 ./build.sh install    # clean + release APK + adb install to a connected device
 ```
@@ -167,7 +169,7 @@ Or drive Gradle directly:
 ```bash
 ./gradlew assembleDebug      # debug APK -> app/build/outputs/apk/debug/
 ./gradlew installDebug       # install to a connected device/emulator
-./gradlew assembleRelease    # release APK (minified, arm64-v8a only)
+./gradlew assembleRelease    # unsigned release APK (minified, arm64-v8a only)
 ```
 
 If `ANDROID_HOME` is not exported, create `local.properties`:
@@ -176,17 +178,25 @@ If `ANDROID_HOME` is not exported, create `local.properties`:
 sdk.dir=/home/<you>/android-sdk
 ```
 
-> **Signing note:** the release build is signed with the SDK's auto-generated
-> debug key (`~/.android/debug.keystore`, alias `androiddebugkey`) — see
-> `signingConfig = signingConfigs.getByName("debug")` in `app/build.gradle.kts`.
-> No keystore or credential lives in this repo. Debug and release therefore
-> share one certificate, so you can install one over the other without
-> uninstalling first.
->
-> That key is per-machine, so release APKs built from different clones are not
-> upgrade-compatible, and a debug-signed APK cannot be published to Play. A real
-> release key (path + credentials loaded from a git-ignored `keystore.properties`)
-> would be a prerequisite for distribution.
+### Signing
+
+Gradle always builds the release APK unsigned (which is how F-Droid builds it);
+`./build.sh release` then signs it with `apksigner`, when a git-ignored
+`keystore.properties` exists at the repo root. Copy
+[`keystore.properties.example`](keystore.properties.example) and point it at the
+release keystore. Without it the release APK stays unsigned, and
+`./build.sh install` refuses to run. No keystore or credential lives in this
+repo.
+
+Release APKs are signed with one key, so each updates the last in place. Its
+certificate SHA-256 fingerprint is:
+
+```
+9B:67:9E:75:9B:F8:50:90:53:ED:F2:5B:60:3C:D7:69:1D:4C:77:87:0A:30:2E:D7:4F:26:EE:92:2D:4A:E6:BC
+```
+
+Check a download with `apksigner verify --print-certs app-release.apk`, or with
+AppVerifier on the device.
 
 ## Status
 

@@ -38,6 +38,13 @@ No account needed, no subscription, no “we’ve updated our terms” emails.</
   </tr>
 </table>
 
+> [!NOTE]
+> **The editing engine is still changing.** Rembrandt is young, and how edits are processed (RAW
+> development, colour, tone sliders) may change between versions while it improves. The same
+> edit can look slightly different after an update. Your originals are never modified, and your
+> edits are saved as settings in XMP sidecars, so nothing is lost; check important work after
+> updating before you export it again.
+
 ## Download
 
 | Platform | |
@@ -205,9 +212,10 @@ If Rembrandt disappeared tomorrow, your library and your edits would still be yo
 
 ## How it's built
 
-JavaScript with WebGL2 and WebGPU shaders for the editing engine and on-device AI, in a small Rust
-([Tauri](https://tauri.app)) desktop app. RAW files are decoded by [LibRaw](https://www.libraw.org)
-(C++, compiled to WebAssembly). Every release is built by GitHub Actions from this repository, with
+JavaScript with WebGL2 and WebGPU shaders for the editing engine and on-device AI, in a Rust
+([Tauri](https://tauri.app)) desktop app. RAW files are decoded by [LibRaw](https://www.libraw.org):
+in the desktop apps natively (C++ built for Apple Silicon, x86-64 and ARM), with the conversion for the
+GPU spread over every core; in browsers as WebAssembly. Both give the same pixels. Every release is built by GitHub Actions from this repository, with
 checksums and signed build provenance ([SECURITY.md](SECURITY.md)).
 
 ## Credits

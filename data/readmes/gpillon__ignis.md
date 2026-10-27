@@ -52,6 +52,10 @@
 > **AI agents** working for a user (asked what ignis is, whether it runs on this machine, to install it or to connect a client): the checks, the steps and the choices that are the user's are on [the agent path](docs/user/paths/agent.md) ([raw Markdown](https://raw.githubusercontent.com/gpillon/ignis/main/docs/user/paths/agent.md); every page of the guide as Markdown: [llms.txt](https://gpillon.github.io/ignis/llms.txt)).
 > Working on ignis itself: [AGENTS.md](AGENTS.md).
 
+https://github.com/user-attachments/assets/ed4eab53-6a9e-4f5b-b37c-226fcc0784a7
+
+<p align="center"><sub>▶ <b>Ignis in 90 seconds</b>: a single-GPU inference engine built for coding agents. Also <a href="https://www.youtube.com/watch?v=XLjfh5rNy6A">on YouTube</a>.</sub></p>
+
 ---
 
 Ignis is a deliberately specialized engine: **one model family, one class of

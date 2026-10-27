@@ -96,7 +96,8 @@ If you cloned **this** repository and want to try Botference immediately, run
 it from the repo root with the local launcher:
 
 ```bash
-./botference plan                          # Ink TUI (default)
+./botference                               # Ink TUI council room (the default)
+./botference plan                          # The same room, spelled out
 ./botference plan --claude                 # Solo Claude
 ./botference plan --claude-interactive     # Experimental: mirror interactive Claude through tmux
 ./botference research-plan                 # Structured planning in Ink (experimental)
@@ -122,14 +123,18 @@ From a target project root:
 botference init                            # Create project-local botference/ state (and register it with Discuss)
 botference site                            # Just the Discuss half, for a repo already initialised
 botference init --project-dir=spaceship    # Or create botference-spaceship/ instead
-botference plan                            # Council: you + Claude + Codex (Ink default)
+botference                                 # Council: you + Claude + Codex (Ink default)
+botference plan                            # The same room, spelled out
 botference --project-dir=spaceship plan    # Use botference-spaceship/
 botference plan --claude                   # Solo Claude (no Codex)
 botference plan --claude-interactive       # Experimental interactive-Claude tmux transport
 
-# Building (experimental)
+# Building (experimental). The build loop used to be the default; it now
+# needs its word. -p alone still means the headless build loop, so scripts
+# keep working. A bare number (botference 10) is an error that points here.
 botference build                           # Interactive build loop
-botference -p build                        # Headless build loop
+botference build 10                        # Max 10 iterations
+botference -p build                        # Headless build loop (botference -p also works)
 botference -p build 10                     # Headless, max 10 iterations
 botference -p build --parallel             # Phase-level parallelism
 
@@ -863,6 +868,68 @@ one bridge per open chat, idle ones parked past `COUNCIL_MAX_CHATS`.
 
 ### Discuss your blog draft
 
+**Work directly in your site from any source article.** An owner can set
+`"blog_authoring_root": "/absolute/path/to/site"` in the companion config and
+restart Discuss. The directory must already be a registered, confirmed Jekyll
+site with a local preview origin. Ordinary reading conversations and the site's
+own preview then share one site writer: both main bots and their builders can
+edit the actual posts, assets, CSS and layouts there. This mode implements edits
+directly, reuses existing drafts, and reports changed files; guests can leave
+comments but cannot start the site writer. Other project and site scopes remain
+separate. Network grants are separate, and no git or public deployment is allowed.
+
+**Batch comments on a blog preview.** Highlight a passage, select **Note**, and
+leave the comment; repeat for each point. Press **Send review** to hand all open
+comments over together. In site-authoring mode the agents edit the source and
+reply in each comment's thread. The normal suggestion-card workflow remains
+available when site-authoring mode is off.
+
+**Start a draft from an article you are reading.** In Discuss's page chat or
+a comment thread, type:
+
+```text
+/draft-blog Turn our discussion into an essay, keeping the counterargument.
+/draft-blog
+```
+
+Write a normal request after the command, or use the command alone to draft
+from the discussion. Claude writes by default; an optional `@codex` immediately
+after the command chooses Codex. Discuss uses the article and conversation,
+chooses a title and an unused filename under `_notes/` in your registered Jekyll
+site, starts a local Jekyll preview, and posts its link in the conversation.
+No filename or pipe is required. The original `name | brief` form still works.
+Open it with Discuss to continue: the bots receive the source discussion, and
+you can highlight paragraphs and accept suggested edits as usual. The initial
+drafting turn creates Markdown only when site-authoring mode is off. On the preview page, the bots receive the
+site's asset paths and write scope: ask for images or other assets there using
+the existing blog editing workflow described below.
+
+The new post has `published: false`; an ordinary site build omits it. The local
+preview runs with `--unpublished`. If you already have Jekyll running without
+that flag, restart it with `bundle exec jekyll serve --unpublished` (or
+`jekyll serve --unpublished` if you do not use Bundler). A failed preview keeps
+the draft and reports the problem. A preview started by Discuss stops with the
+companion. Existing files are never replaced and nothing is committed or pushed.
+
+Register the site with `botference site` as below. If more than one confirmed
+Jekyll site is registered, set `"draft_site": "/absolute/path/to/site"` in the
+companion's `.botference/plugin/config.json`. `"draft_dir": "_notes"` is the
+default; another existing, output-enabled Jekyll collection can be selected.
+This first-draft command is owner-only and currently supports Jekyll collections.
+
+When the site has `Templates/baseline.md`, its YAML front matter supplies the
+new post's fields. Discuss fills the title, creation and release dates, an
+`essays` tag, permalink and source URL, forces `published: false`, and preserves
+other template fields and tags. Site-authoring mode also completes these fields
+on newly created posts and touched unpublished or undated essay drafts, preserving
+existing creation/release dates. The template
+itself is never edited. Set `draft_template` to another template path inside
+the site if needed. The site's normal Jekyll layout renders the title and body.
+Local archives can list these dated drafts when Jekyll runs with `--unpublished`;
+normal public builds still omit them. If the companion needs a particular Ruby
+environment, `jekyll_command` can name an argv array such as
+`["/path/to/rvm-exec", "ruby-3.2.1", "bundle", "exec", "jekyll"]`.
+
 You write a post in markdown, run the site locally (`jekyll serve`), and
 read the finished page in the browser. Comment on a paragraph there and
 ask for it to be tightened, and the bots edit the **markdown the page was
@@ -1586,6 +1653,50 @@ Mechanics:
 Turn-based behavior is the degenerate case of free-form: a reply with no
 handoff (no footer, no mention) simply returns the floor to you.
 
+### Pairing builds
+
+Run the council inside a code repo and ask for something to be built, in your
+own words. There is no command: the bots work out from what you say that it
+is a build, spec it between them, and ask you first if the brief is too thin.
+When they start, one says so in a line and marks its footer
+`"build": "building"`. From that turn the thread is a build thread and the
+caps above are lifted for it:
+
+- **No turn or token cap.** The thread ends when a bot's footer says
+  `converged` with `"build": "done"`, when a bot says `blocked`, when you type
+  anything, or after 8 hours (`BOTFERENCE_BUILD_HOURS`, or `"build_hours"` in
+  `botference/project.json`). A thread whose footers never carry `build`
+  keeps the 6 plus 3 caps.
+- **Done means done.** `done` is accepted only when the last build agent in
+  the thread reported success and the project's test command passed. Name it
+  as `"test"` in `botference/project.json` (for example
+  `"test": "pytest tests/ && (cd ink-ui && npm test)"`); it runs from the
+  project root with a 20-minute limit, and the tail of a failing run is shown
+  in the room and given to the bots, who keep going.
+- **Roles by strength.** A summon brief may start with a kind tag:
+  `summon: [ui] …` runs Claude Code on Opus 5.5 (anything a person sees),
+  `summon: [logic] …` runs Codex on the room's Codex model (behaviour:
+  controller code, adapters, parsing, protocols, shell). No tag keeps the
+  summoner's own builder. Change either under `builder.tasks.ui` /
+  `builder.tasks.logic` in `context-budgets.json`.
+- **Review in both directions.** The bot that summoned a builder never judges
+  its report: the floor goes to the other bot, which reads `git diff`, runs
+  the tests and reports in at most ten lines, then summons a fix or marks the
+  task done. One summon per bot per turn, reset every turn.
+- **Tests stay proportionate.** The room and every builder carry one rule:
+  a test only for a stated contract or something just seen failing, one test
+  per behaviour, no snapshot tests, and a reason for more than three.
+- **Long threads stay fresh.** Each bot is relayed (fresh session,
+  structured handoff) after ten of its own turns or when its context passes
+  60 percent; the room does not stop for it.
+- The footer's `"build"` field (`specifying`, `building`, `reviewing`,
+  `done`) is shown in the room at each change of stage.
+
+The thread never commits or pushes unless you asked. A thread is not saved
+mid-run: if botference restarts, the chat comes back as an ordinary chat with
+the whole build on the record, and a reply such as "carry on" lets the bots
+pick it up.
+
 ### Commands
 
 | Command | What it does |
@@ -1617,113 +1728,4 @@ handoff (no footer, no mention) simply returns the floor to you.
 | `/verify [on\|off]` | When the bots mark the thread **converged**, run one more turn before the floor comes back to you: the bot that did *not* write the last claim is handed the claims and the sources the room has — and **not** the discussion — and reports each claim confirmed (with the supporting line), contradicted (with the contradicting line), or not checkable. On by default, per chat; skipped when the final message is too short to be a claim, when the room has no source, or when the other bot is not in the room. See [Adversarial review](#adversarial-review). |
 | `/allow-host [<domain>\|remove <domain>]` | Grant the bots' sandbox **network access** to a site — or take one away with `remove`, defaults included (the built-in list covers GitHub, Wikipedia and the public planetary-science archives: HiRISE, USGS Astrogeology, PDS imaging, NASA images). Grants persist per workspace (persists per workspace in `.botference/allowed-hosts.json`, applies from their next turn — no restart). The sandbox blocks all other hosts by design; the bots are instructed to ask you for this instead of working around a blocked fetch. Bare `/allow-host` lists current grants. |
 | `/watch <url> [question]` | Have **Gemini watch a YouTube video** and post what it saw into the chat, so Claude and Codex (who cannot take video) can read it on their next turn. See [YouTube videos](#youtube-videos). |
-| `/parallel <prompt>` | **Both bots answer at once**, neither seeing the other's reply. The word may sit anywhere in the prompt (`what do you make of this? /parallel`). Each bot has the whole chat up to your prompt; both replies land in the shared history and each sees the other's on its next turn. No bot-to-bot thread follows — the point is two independent readings. A YouTube link is still watched by Gemini first. See [Summoned build agents and /parallel](#summoned-build-agents-and-parallel). |
-| `/lasso <words>` | **Search everything you have already read and said** — the pages you have annotated in the browser, your past council chats, and any folders you have named — and offer the matches. Nothing is attached until you say so. `/lasso <path>` attaches a file of your own directly; `/lasso attach <n>` (or `all`) takes one of the offers; `/lasso detach <n>` takes one off; bare `/lasso` lists what this chat is carrying. See [Lasso](#lasso). |
-| `/help` | Show the command reference. In the browser — the council page and the plugin's Discuss drawer — `/help` (or just `help`) opens a small popup instead: each command with one line saying what it does, and nothing is sent to the bots. Close it with Esc, a click outside, or ×. The council page also has a `?` button in the header that opens the same popup. |
-| `/quit` | Exit without writing files. |
-
-![/help output showing commands, messaging, aliases, and workflow](docs/images/help-commands.png)
-
-**Typical workflow:** discuss (the bots hand each other the floor and
-converge on a writer) → `/draft [rounds]` → iterate with human comments as
-needed → `/finalize`.
-
-### Steering — typing while the bots work
-
-Messages typed during a **Claude** turn are steered into that turn, exactly
-like typing in Claude Code itself: the message is injected into the running
-session and Claude reads it after its current tool call, adjusting course
-without losing in-flight work. Steered messages show as `(↪@claude)` in the
-council and land in the shared transcript, so Codex sees them at its next
-turn too. This works on both transports — the programmatic adapter injects
-over stdin; under `--claude-interactive` the text is pasted into the live
-tmux pane, where Claude Code's own queued-message handling takes over.
-
-Not everything steers: messages `@`-addressed to a bot that isn't currently
-speaking, slash commands, messages with image attachments, and anything
-typed during a **Codex** turn take the normal queue and run as the next
-turn (`codex exec` accepts no input once launched). During bot-to-bot
-free-form threads the same rule applies — steer Claude mid-turn, and
-anything queued pauses the thread at the next turn boundary as before.
-
-### Desktop notifications
-
-Council turns can run for minutes, so botference pings you when it's your
-turn again: after a turn (or bot-to-bot thread) that ran at least ~5 seconds
-finishes, and whenever a bot is blocked waiting on a write-permission
-prompt. Notifications are on by default; `/notify off` disables them.
-
-There is no daemon or OS integration — botference emits a standard terminal
-escape sequence and your terminal posts the native notification, the same
-mechanism Claude Code and Codex use. Ghostty, iTerm2, WezTerm, kitty, foot,
-and Windows Terminal all support it (Ghostty and WezTerm get a titled
-notification via OSC 777; others get OSC 9), and it passes through tmux.
-Most terminals only show the notification while the window is unfocused —
-if you're already looking at the council, nothing pops up. Interrupting a
-turn with Esc also suppresses the ping, since you're clearly at the
-keyboard.
-
-### Attaching images, PDFs, spreadsheets and Word files
-
-Three ways to get files to the bots (all support several at once):
-
-- **Drag files** from Finder into the terminal — the paths are parsed
-  (including escaped spaces in screenshot names, quotes, and `file://`
-  URLs) and become `[image N]` attachments. PDFs, spreadsheets
-  (`.xlsx`/`.xls`/`.csv`), Word documents (`.docx`/`.doc`) and text files
-  (`.md`/`.txt`/`.json`) work the same way and attach as `[file N]`.
-- **Finder Cmd+C → Cmd+V** — copied files paste as paths and attach the
-  same way.
-- **Ctrl+V** — attaches a *raw* image from the clipboard (a screenshot
-  taken with Cmd+Shift+Ctrl+4, or a browser "Copy Image"). Terminals only
-  deliver text through normal paste, so raw image data has its own key.
-
-Only paths that actually exist become attachments; a bad path stays
-visible as text, and any attachment that can't be found at send time is
-reported in the room instead of silently dropped. Claude views attached
-images and reads attached PDFs with its Read tool; Codex receives the
-file path (its CLI cannot view image content mid-session, and reads PDFs
-only as well as its own tooling allows).
-
-### YouTube videos
-
-Neither Claude nor Codex can watch video. Gemini can, so botference has it
-watch for them: paste a **public** YouTube link in a message and the video is
-watched before the message reaches the bots, with the written report — title
-and channel, a summary, timestamped sections, the key claims and numbers,
-quotes word for word, and what is on screen that the narration does not say —
-appended to what they receive. It is labelled as a witness report, not an
-instruction, because it describes a page nobody in the room can check.
-
-- **Set the key once:** put a Google AI Studio key in
-  `~/.botference/gemini-key` (`chmod 600` it) or set `GEMINI_API_KEY`. With no
-  key, a YouTube link is noted once per chat and nothing is watched.
-- **You see what Gemini saw.** Every report is posted as its own message from
-  `gemini` — the header says what was watched, how long it took and by which
-  model — folded after a few lines in the web UI with a "show more". The bots
-  get the same report in their own copy of the turn.
-- **`/watch <url> [question]`** watches on demand, posts the report, and then
-  hands the room to both bots to discuss it — no "so, thoughts?" needed. With a
-  question, Gemini answers it first and the summary follows.
-- **A bot can ask.** Ending a reply with a line of its own reading
-  `watch: <youtube-url>`, `watch: <youtube-url> — <question>` or
-  `ask gemini: <question>` (about the video most recently watched here) has the
-  video watched or the question put; the line stays in the reply. A question
-  gets the asking bot — only that bot — the floor straight back with the answer
-  in front of it, once; and each bot may ask at most two questions per turn, so
-  a video cannot become a conversation the user is not in.
-- **A working light.** While a watch is running, a Gemini mark spins beside the
-  Claude and Codex marks in the web UI's header, shows the outcome for a moment,
-  and then goes — it is a tool the room used, not a third participant.
-- Up to three links per message are watched automatically, reports are cached
-  for 30 days (a re-sent link costs nothing), and `BOTFERENCE_VIDEO_WATCH=off`
-  turns the automatic watching off while leaving `/watch` working.
-
-Only public videos work — private, unlisted and age-restricted ones are
-refused by the API, and that refusal is reported in the room rather than
-swallowed. Google's free tier allows about eight hours of YouTube a day.
-
-### Lasso
-
-The thing that would settle the question is often something you have already
-read or already said — a chat from July, a paper you marked up in the brow
+| `/parallel <prompt>` | **Both bots answer at once**, neither seeing the other's reply. The word may sit anywhere in the prompt (`what do you make of this? /parallel`). Each bot has the whole chat up to your prompt; both replies land in the shared history and each sees the other's on its next turn. No bot-to-bot thread follows — the point is two independent readings. A YouTube link is still watched by Gemini fi

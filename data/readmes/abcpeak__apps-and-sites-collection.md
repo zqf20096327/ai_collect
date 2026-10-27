@@ -798,6 +798,7 @@ Enjoy 🤩
 - [GrowPal](https://apps.apple.com/us/app/growpal-health-fitness/id1560604814)
 - [Nike Run Club](https://apps.apple.com/us/app/nike-run-club-running-coach/id387771637)
 - [Cardiograph Heart Rate](https://apps.apple.com/us/app/cardiograph-heart-rate/id1369890321)
+- ![GitHub Repo stars](https://img.shields.io/github/stars/DuarteSantos8/openGym) [openGym](https://github.com/DuarteSantos8/openGym) (iOS, Android)
 
 ### 💊Medicine 药
 
@@ -1018,6 +1019,7 @@ Enjoy 🤩
 - [Bye Bye Paywall](https://byebyepaywall.com/en)
 - ![GitHub Repo stars](https://img.shields.io/github/stars/manualdousuario/marreta) [Marreta](https://github.com/manualdousuario/marreta)
 - [Medium Unlocker](https://github.com/inulute/medium-unlocker) (Android)
+- [Freedium](https://github.com/birmehto/Freedium) (Android)
 
 ## 📷Photo & Video 摄影与录像
 
@@ -1283,6 +1285,4 @@ Enjoy 🤩
 - ![GitHub Repo stars](https://img.shields.io/github/stars/outline/outline) [Outline](https://github.com/outline/outline) 成长型团队最快的知识库
 - ![GitHub Repo stars](https://img.shields.io/github/stars/VSCodium/vscodium) [VSCodium](https://vscodium.com) VS Code 的自由开源软件二进制文件
 - ![GitHub Repo stars](https://img.shields.io/github/stars/siyuan-note/siyuan) [SiYuan](https://github.com/siyuan-note/siyuan) 思源笔记
-- ![GitHub Repo stars](https://img.shields.io/github/stars/foambubble/foam) [Foam](https://foambubble.github.io/foam)
-- ![GitHub Repo stars](https://img.shields.io/github/stars/vnotex/vnote) [Vnote](https://github.com/vnotex/vnote) 比较原生markdown 不支持扩展语法
-- ![GitHub Repo 
+- ![GitHub Repo stars](https://img.shields.io/github/stars/

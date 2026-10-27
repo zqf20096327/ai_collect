@@ -100,13 +100,15 @@ See also: [Core specification](spec/core/dcp-core.md) | [Profiles overview](spec
 
 ## Quick Start
 
-> **Published packages (26/10/2026).** npm now provides `@dcp-ai/sdk` 2.2.0, `@dcp-ai/wasm` and `@dcp-ai/cli` 2.1.0, and the updated adapters and scaffolders. See the [13-package inventory](docs/NPM_RELEASES.md) and [security upgrade notes](SECURITY.md#supported-versions). These npm versions include the documented verifier fixes and features; Python, Go and Rust releases are separate. To run the repository’s reference CLI and source tests, build the checkout:
+> **Published packages.** The current versions on npm, PyPI, Go modules and crates.io are listed in [Published versions](docs/README.md#published-versions), with [security upgrade notes](SECURITY.md#supported-versions). To run the repository’s reference CLI and source tests, build the checkout:
 >
 > ```bash
 > git clone https://github.com/dcp-ai-protocol/dcp-ai.git
 > cd dcp-ai/sdks/typescript && npm install && npm run build
 > cd ../.. && npm install
 > ```
+
+To produce and verify evidence, use [Option B: SDK directly](#option-b-sdk-directly). Option A is a demo: it includes simulated PQ keys and unsigned records.
 
 ### Option A: CLI wizard (demo)
 

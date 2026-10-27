@@ -641,6 +641,25 @@ mcp_servers:
       - get_cohesivity_documentation
 ```
 
+[deed.page](https://deed.page/docs) MCP lets an NPC publish the HTML or files it
+produces to a public `https://{slug}.deed.page/` URL without an account or API
+key. The first `publish_site` call returns an owner token; pass it as `token`
+to later `update_site` and `delete_site` calls. Published pages are public:
+
+```yaml
+forenpc: assistant
+mcp_servers:
+  - url: https://deed.page/mcp
+    transport: streamable-http
+    headers:
+      User-Agent: npcpy
+    tools:
+      - publish_site
+      - update_site
+      - get_site
+      - delete_site
+```
+
 Remote URLs continue to use SSE when `transport` is omitted.
 
 </details>
@@ -1062,6 +1081,15 @@ Set `OPPER_API_KEY` and use `provider="opper"` with any model ID from the [Opper
 
 ```python
 response = get_llm_response("Say hello in one short sentence.", model="claude-sonnet-4-6", provider="opper")
+print(response["response"])
+```
+
+### Runcrate
+
+Set `RUNCRATE_API_KEY` and use `provider="runcrate"` with any `vendor/model` ID from Runcrate's public model list (`GET https://api.runcrate.ai/v1/models`), for example `deepseek-ai/DeepSeek-V4.1-Flash` or `openai/gpt-oss-120b`. Requests go to the OpenAI-compatible Base URL `https://api.runcrate.ai/v1`; set `RUNCRATE_API_URL` to override it. Open models are free with your GitHub account; keys are created in the [Runcrate dashboard](https://www.runcrate.ai/dashboard/api-keys?utm_source=npcpy&utm_medium=directory&utm_campaign=gpu_pricing).
+
+```python
+response = get_llm_response("Say hello in one short sentence.", model="deepseek-ai/DeepSeek-V4.1-Flash", provider="runcrate")
 print(response["response"])
 ```
 

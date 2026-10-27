@@ -19,7 +19,7 @@ so long-running sessions can pick up from cached history.
 
 [Get started](#build-and-launch) · [Conversation cache](#hicache-and-nixl) ·
 [Performance](#performance) ·
-[3.1.2 release notes](RELEASE_NOTES_3.1.2.md) · [Community results](COMMUNITY-RESULTS.md)
+[3.1.3 release notes](RELEASE_NOTES_3.1.3.md) · [Community results](COMMUNITY-RESULTS.md)
 
 **Penny Royal 3.1:** Flash-Next runs native NEXTN MTP with FR-Spec as the
 maintained default profile, with automatic KV pool sizing replacing the preset
@@ -28,31 +28,11 @@ width routing (block 6 for one request, block 4 for two or more) and
 FlashInfer draft-token verification is an **experimental / alpha** profile,
 fully available to opt into.
 
-**3.1.1 patch:** removes the stale source-hash check that blocked NVMe PLE
-startup in 3.1.0.
-
-**3.1.2 patch:** adds `PENNY_MTP_POLICY`, one setting that selects the
-native-MTP width policy (the unchanged `tiered` default, the v3.0.2 `adaptive`
-policy, or `fixed-w4`); fixes the DFlash2 decode-checkpoint tracking so an
-accepted block that crosses the checkpoint grid is tracked instead of
-dropped; stops the scheduler's idle sleep from delaying encoder-embedding
-handoffs; and labels both DFlash2 profiles experimental / alpha: the draft's
-extra host RAM is an observed, documented addition to the target's budget
-(3.1.2 does not reduce it), and the on-GPU checkpoint resume still awaits
-hardware validation. See the
-[3.1.2 release notes](RELEASE_NOTES_3.1.2.md).
+**3.1.3:** fixes reasoning controls, cache restores, scheduling and `fixed-w4` correctness. [Release notes](RELEASE_NOTES_3.1.3.md).
 
 <a id="dflash2-maturity"></a>
 
-> **DFlash2 maturity.** Penny's DFlash2 integration — both the Flash-Next and
-> 27B profiles — is **experimental / alpha**: available and supported for
-> experimentation, not yet a validated production path. The throughput, prefill
-> and qualification numbers below are specific measured runs, not a correctness
-> guarantee for every configuration. Issue #115 fixes the decode-checkpoint
-> (Mamba `extra_buffer` / `extra_buffer_lazy`) arithmetic and is covered by a
-> CPU regression, but the on-GPU checkpoint resume is not yet verified. The
-> DFlash2 draft also allocates additional host DRAM; see the
-> [configuration reference](CONFIGURATION.md#capacity-and-memory).
+> **DFlash2:** 27B is established and qualified; Flash-Next DFlash2 is alpha. Both need extra host RAM for the draft cache — **24.83 GB extra** in our 27B run. [RAM guidance](CONFIGURATION.md#capacity-and-memory).
 
 <a id="hicache-and-nixl"></a>
 
@@ -113,7 +93,7 @@ images, HiCache RAM prefix caching, and optional NIXL disk caching.
 | Model | Weights | Speculative decoding | Checkpoints |
 |---|---|---|---|
 | **Qwen3.8 Flash-Next** | NVFP4 experts, automatic FP8 dense layers on SM120 | Maintained native NEXTN MTP with FR-Spec is the default, width routed by batch size (block 8 at C1, block 4 at C2+); **experimental / alpha** DFlash2 opt-in profile (separate draft model, FR-Spec, block 6 at C1 / block 4 at C2+) verifies draft tokens with FlashInfer | [Our OrcaRouter ModelOpt conversion](https://huggingface.co/jpezzulli/OrcaRouter-Qwen3.8-Flash-Next-Uncensored-ModelOpt-NVFP4) · [RadixArk](https://huggingface.co/RadixArk/Qwen3.8-Flash-Next-NVFP4) · [Flash-Next DFlash2 draft](https://huggingface.co/incoai/Qwen3.8-Flash-Next-DFlash2) |
-| **Qwen3.8-27B** | FP8 | DFlash2 (**experimental / alpha** integration), with a separate draft model at fixed block 8 | [Qwen FP8](https://huggingface.co/Qwen/Qwen3.8-27B-FP8) · [DFlash2 draft](https://huggingface.co/incoai/Qwen3.8-27B-DFlash2) |
+| **Qwen3.8-27B** | FP8 | DFlash2 (established and qualified integration), with a separate draft model at fixed block 8 | [Qwen FP8](https://huggingface.co/Qwen/Qwen3.8-27B-FP8) · [DFlash2 draft](https://huggingface.co/incoai/Qwen3.8-27B-DFlash2) |
 
 I personally run Flash-Next on **one RTX PRO 6000 at C=6**, with **524,288-token
 context** and the KV pool sized automatically from profiled memory; the final
@@ -209,6 +189,13 @@ The Flash-Next DFlash2 reasoning qualification scored **93.46/100**. See
 [results and measurement settings](RESULTS.md#penny-royal-31)
 for the tool checks, cache restore, sampling details, and earlier results.
 
+[RESULTS.md](RESULTS.md#penny-royal-313-october-27-2026) adds the dated decode
+and time-to-first-token rows measured on the 3.1.3 candidate on both qualified
+profiles, with the launched configuration and interval counts. The Flash-Next
+rows were measured with `adaptive` selected locally while the public width-policy
+default stays `tiered`, so they are not a matched-baseline comparison and carry
+no speed-up claim.
+
 <a id="27b-fp8--dflash2-performance-at-a-glance"></a>
 
 ### Qwen3.8-27B FP8 with DFlash2
@@ -281,7 +268,17 @@ slimmer and easier to download.
 | Profile | Default host cache | Additional model-related host memory |
 |---|---|---|
 | Flash-Next | 32 GB HiCache | About 48 GiB for RAM-backed PLE |
-| 27B/DFlash2 | 96 GB HiCache | Loading and runtime allocations |
+| Flash-Next/DFlash2 | 32 GB HiCache | The draft's own host cache, on top of the target's budget |
+| 27B/DFlash2 | 96 GB HiCache | Draft cache plus loading and runtime allocations |
+
+A DFlash2 draft keeps a host cache of its own that is **additional to** the
+HiCache figure above, so size host RAM from what a boot reports rather than
+from the HiCache setting alone. The recorded 27B launch spent 79.45 GB of
+target KV plus 16.63 GB of Mamba state - the 96 GB target/Mamba budget - and a
+further 24.83 GB of draft sliding-window cache, about 120.91 GB of caches
+before other process memory. This release documents that bill; it does not
+reduce it. See [limitations](LIMITATIONS.md) and the
+[configuration reference](CONFIGURATION.md#capacity-and-memory).
 
 Leave room for the operating system and model loading. You can
 [change the RAM cache size](RUN.md#choose-hicache-ram-size), or move Flash-Next's
@@ -328,7 +325,7 @@ over what was actually worth keeping.
 | Understand the FP8 and SSD options | [Online FP8](FP8.md) · [NVMe PLE](NVME-PLE.md) |
 | See measurements | [Results and history](RESULTS.md) · [Community reports](COMMUNITY-RESULTS.md) |
 | Read the implementation details | [Backends](BACKENDS.md) · [Memory and persistence](MEMORY-AND-PERSISTENCE.md) |
-| Check changes and source lineage | [3.1.2 notes](RELEASE_NOTES_3.1.2.md) · [Machine-readable notes](release-3.1.2.json) · [History](CHANGES.md) · [Provenance](PROVENANCE.md) |
+| Check changes and source lineage | [3.1.3 notes](RELEASE_NOTES_3.1.3.md) · [Machine-readable notes](release-3.1.3.json) · [History](CHANGES.md) · [Provenance](PROVENANCE.md) |
 | Check known issues | [Limitations](LIMITATIONS.md) |
 | Use an AI assistant for setup | [llms.txt](llms.txt) |
 
@@ -368,7 +365,7 @@ components retain their own licenses.
 <a id="scope-and-limitations"></a>
 <a id="documentation-map"></a>
 
-[Current release notes](RELEASE_NOTES_3.1.2.md) · [Benchmark history](RESULTS.md) ·
+[Current release notes](RELEASE_NOTES_3.1.3.md) · [Benchmark history](RESULTS.md) ·
 [Configuration reference](CONFIGURATION.md) · [Known issues](LIMITATIONS.md)
 
 <!-- Compatibility anchors for earlier versions of this guide. -->

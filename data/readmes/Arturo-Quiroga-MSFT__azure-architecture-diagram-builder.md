@@ -76,6 +76,7 @@ Refine your diagram through a natural back-and-forth conversation instead of one
 - Type changes like *"add Azure Front Door with WAF"* → *"now make it zone-redundant"* → *"add a Redis cache between the API and the database"*
 - Each turn reads the **live canvas** as the source of truth, so follow-up requests naturally build on previous ones
 - The assistant replies with a concise summary of what changed (services added/removed)
+- Change a service's **pricing tier or instance count** in chat (*"make API Management Standard v2"*, *"run the App Service on 3 instances"*): the node's price and the total update, and the reply shows the change and its monthly cost (*"API Management: Developer → Standard v2 · +$651.96/mo"*). Unknown tiers are rejected with the valid choices, and tiers, instance counts and custom prices you set with a price badge are kept across every chat change
 - Every change is **auto-saved to version history**, so you can step back at any time
 - Suggestion chips help you get started, and the panel shows which model is active
 
@@ -169,7 +170,7 @@ Features include:
 - **“Prices as of” stamp** — every cost export records the pricing-data refresh date and the selected billing term.
 - **True per-region meters** — pricing is pre-fetched per region from the Azure Retail Prices API (refresh anytime with `npm run pricing:refresh`), including per-region **Microsoft Fabric** capacity (CU) and OneLake storage rates.
 - Color-coded legend (green/yellow/red based on cost thresholds)
-- SKU and tier information for each service
+- SKU and tier information for each service, editable per node from its **price badge** (tier, instance count or a negotiated custom price) or in Guided Chat
 - **Export Costs (CSV)** — per-service cost breakdown spreadsheet for the active region
 - **Export Costs (All Formats)** — downloads a ZIP containing:
   - `README.md` — manifest explaining every file in the bundle
@@ -193,6 +194,9 @@ An in-app **Help** button opens a centered guide so new users can get productive
 
 ### 🎬 Video Tour
 Twelve short narrated videos (a trailer and Episodes 1–11, filmed on the live app) play inside **Help → Video Tour**, with chapters, playlists and shareable links. **Start Here** opens with the trailer, **Watch** chips on feature cards jump to the exact moment a feature is shown, and `/videos?v=<episode>&t=<seconds>` is a shareable page. How it works: **[Video Tour](DOCS/VIDEO-TOUR.md)**.
+
+### 🔗 Share a Link
+Click **Share** to create a link to a read-only copy of your design: the diagram, services, monthly cost, Well-Architected result and request flow, with no sign-in needed to view it. Viewers can **open a copy** to edit in their own browser. Links expire (7, 30 or 90 days), can be updated with your latest design or removed at any time, and the brief is included only if you choose. How it works: **[Shared Designs](DOCS/SHARED-DESIGNS.md)**.
 
 ### 💬 User Feedback
 A built-in feedback widget captures a rating, category, and free-text comment. Submissions persist to **Azure Cosmos DB** (keyless, managed-identity auth). If Cosmos is temporarily unreachable, the comment text is captured in telemetry as a fallback so feedback is never silently lost.
@@ -949,6 +953,7 @@ azure-diagrams/
 - **[Services Pricing](DOCS/services_pricing.md)** - Supported services and tiers
 - **[Icon & Pricing Reference](DOCS/AI_SERVICE_REFERENCE.md)** - Service names, aliases, icons, and pricing support
 - **[Release Notes](DOCS/RELEASE-NOTES.md)** - Recent features, fixes, operations, and verification
+- **[Shared Designs](DOCS/SHARED-DESIGNS.md)** - Share links: access model, privacy defaults, API, storage, validation
 - **[Video Tour](DOCS/VIDEO-TOUR.md)** - How the in-app video tour works: catalog, publishing, media hosting, player, deep links, telemetry and runbooks
 - **[Demo Video Production](DOCS/DEMO-VIDEO-PRODUCTION.md)** - How the demo video series is recorded live with Playwright, narrated and mixed, plus lessons learned
 - **[Authoritative Server Telemetry](DOCS/SERVER-TELEMETRY.md)** - Server event schema, privacy boundary, KQL, and cost allocation

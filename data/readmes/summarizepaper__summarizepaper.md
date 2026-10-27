@@ -15,6 +15,7 @@ A web application that uses AI to summarize academic papers from arXiv, journals
 - Collections of papers, with a comparison table and their open questions (Premium) and chat with a whole collection
 - Premium tools: press kit with a hype check for journalists, "What did I miss?" (arXiv papers close to a draft that it does not cite), scoop watch (an email the day a new paper comes close to a project in progress), bibliography check (retractions, preprints published since, citations their abstract does not support), what changed between two versions of a paper (and an email when a followed paper gets one), who works on a topic (the groups that publish the most on it, OpenAlex), journal club slides, a conference companion (the talks of a program that matter for one's research), citation alerts, the digest read aloud, papers sent to Zotero with their summaries
 - Rising topics on arXiv (term counts week over week) and weekly letters written like magazine articles
+- Saved searches with watches: every new arXiv, bioRxiv and medRxiv paper of the daily announcements that has the words of a search (journals from OpenAlex), ranked by closeness and the user's relevance marks, by email, in the digest or by RSS, kept on the page of the search with what it would have found over two weeks
 
 ## Stack
 
@@ -30,6 +31,7 @@ Django 5.2 served by Daphne (ASGI), Channels websockets over Redis, PostgreSQL o
 | `summarizer/access.py` | Client IP, paid status, quotas (never trusts the browser) |
 | `summarizer/billing.py` | Stripe Checkout, Customer Portal, webhook |
 | `summarizer/digest.py` | Daily digest selection, blurbs and emails |
+| `summarizer/digest_web.py`, `digest_bundle.py` | Web page of each digest email, counted links, saving to a collection, live preview, ORCID/arXiv import; Premium alerts carried by the digest |
 | `summarizer/accounts.py` | Email login links (also activate new accounts), signup bot checks |
 | `summarizer/generated.py` | Model-written results made in a background thread and polled by the page |
 | `summarizer/reading.py`, `presskit.py` | Rewrites for another reader or language; press kit |
@@ -44,6 +46,7 @@ Django 5.2 served by Daphne (ASGI), Channels websockets over Redis, PostgreSQL o
 | `summarizer/scoops.py` | Scoop watch: projects in progress compared with each new announcement |
 | `summarizer/usage.py` | AI tokens and cost by task, model, day and user (admin: usage de l’IA) |
 | `summarizer/audio.py`, `trends.py`, `letters.py` | Digest read aloud; rising topics; weekly letters |
+| `summarizer/saved_searches.py` | Saved searches and their watches over the daily announcements |
 
 ## Local setup :floppy_disk:
 
@@ -229,13 +232,55 @@ budget (and at most ten checks per run). `--dry-run` and `--user` never send sea
 new Heroku Scheduler job. The release migration creates `SavedSearch`; it activates no existing user.
 Validation: `python manage.py test summarizer` and `node --test tests/funnel.test.cjs tests/home-search.test.cjs`.
 
+## Daily digest for researchers
+
+Each paper of a digest gets, in the same model call as its plain-language blurb, a line for researchers
+(contribution, method, main result; `DigestSubscription.level`, researcher by default). Ranking
+(`digest.rank_papers`) works the same for the email, its web page and the live preview of the settings:
+
+- Keywords match whole words with or without a plural `s`; `"quoted words"` match as written; `-word` leaves
+  papers out. Without a research profile they filter; with one they raise the papers that use them.
+- A Premium profile is one embedding per paragraph and per reference paper (`profile_vector` holds the rows,
+  `profile_labels` what they stand for); a paper is scored by the closest row, then by the papers liked,
+  disliked or opened from the emails (`DigestFeedback.source`: `vote` or `click`). Free digests are ranked by
+  their votes and clicks too. Without any of these, the first paper is the most typical of the batch, then each
+  pick is the one least like those already picked.
+- Premium digests may send every paper above a closeness threshold (`volume`: `high`, `medium`, `low` =
+  cosine 0.55, 0.48, 0.42 with `text-embedding-3-small` at 512 dimensions; 50 papers at most per email).
+  These thresholds are a first guess: check them with `digest_stats` and the scores shown on the web pages.
+
+Every email is stored as a `DigestEdition` (announcement days, papers sent and their closeness). Its web page
+(`/digest/e/<token>/`) lists the papers of the email in its order, then every other paper of those
+announcements, ranked, with its closeness and why it is there, for two weeks (`PAGE_DAYS`); only its owner,
+logged in, sees the profile excerpts and liked titles behind a reason. Email links are short signed codes
+(`/digest/l/<code>/`, see `digest.link_code`: an email of 50 papers stays well under Gmail's 102 KB cut).
+An opening link shows a page that goes on to the paper at once and whose script reports the click
+(`DigestClick`, and a light `click` feedback): mail scanners run no script, and four links of one digest
+reported within ten seconds are still set apart. `python manage.py digest_stats` prints the click-through
+rate by rank, votes, stopped digests and, once there are clicks enough, the closeness of the papers opened
+against the ones left, with the thresholds the data would suggest.
+
+`/digest/save/<token>/` saves a paper to a collection from the email. The settings page imports categories,
+reference papers and frequent co-authors from an ORCID iD or an arXiv author identifier, and shows what the
+form's settings would have sent from the latest announcement (`/digest/try/`, 30 per user and 10 minutes; it
+embeds up to 1,000 papers of categories nobody follows yet, kept for everyone). A bundled digest checks its
+reader's scoop projects against the day's announcement before it is sent. Category names are translated. With `bundle_alerts`, a Premium digest carries the scoop, citation, version and
+publication alerts as sections; each module then leaves that user's alerts for it (`digest_bundle`).
+The weekly synthesis cites the papers behind each trend, and picks its notable papers from a shortlist ranked
+by how many research profiles they come close to, rising topics and cross-listing, with a reason for each.
+
 ## Deployment
 
 `git push heroku master`. The `release` phase of the Procfile applies migrations.
 
 - Hourly job (Heroku Scheduler): `python manage.py send_digest`. It sends the digests that are due, then counts the
-  day's terms for the rising topics, writes the weekly topics and letters, and sends scoop alerts, citation alerts, new version alerts and letters
+  day's terms for the rising topics, writes the weekly topics and letters, and sends scoop alerts, citation alerts, new version alerts, letters
+  and, for research placements, the reminders students asked by email and the new papers of the researchers they follow,
   within what is left of the hourly email budget.
+- Research placement ranking: `python manage.py students_calibrate` ranks the people of sample topics in several fields (or
+  `--topic`, `--country`, `--city`, `--full` for readings and notes too) and prints their roles, teams and ORCID. It writes nothing.
+- Scoop watch thresholds: `python manage.py scoop_calibrate` scores sample projects (or `--text file`) against the last
+  announcements and has the model read each closeness band; `--feedback` shows the readers' verdicts. It writes nothing.
 - Stripe: webhook endpoint `https://www.summarizepaper.com/stripe/webhook/` with the events `checkout.session.completed`, `customer.subscription.created`, `customer.subscription.updated` and `customer.subscription.deleted`.
 
 ## Contributors :octocat:

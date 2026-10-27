@@ -48,10 +48,10 @@
 打开桌面应用的**插件**页，点击**添加插件**，在**包名或地址**中填入**带版本号**的包名：
 
 ```text
-dsh-packycode-api@1.4.1
+dsh-packycode-api@1.4.3
 ```
 
-在**安装源**中选择**官方源**，然后点击**安装**。`1.4.1` 是写这份说明时的最新版，当前最新版本号以 [npm 页面](https://www.npmjs.com/package/dsh-packycode-api) 为准。
+在**安装源**中选择**官方源**，然后点击**安装**。`1.4.3` 是写这份说明时的最新版，当前最新版本号以 [npm 页面](https://www.npmjs.com/package/dsh-packycode-api) 为准。
 
 > **一定要带版本号。** 只填 `dsh-packycode-api` 时，安装前的提示显示的是 npm 上的最新版，但 DSH 自带的 pnpm 默认只安装发布满 24 小时的版本，实际装上的可能是好几个版本之前的旧版，而安装提示里看不出这一点。填写精确版本时，pnpm 会直接安装这个版本，并自动把它加入 profile 的 `minimumReleaseAgeExclude`。装好后可以在 **设置 → PackyCode → 插件版本** 核对「当前版本」。
 
@@ -65,14 +65,14 @@ dsh-packycode-api@1.4.1
 
 ### 3. 选择模型
 
-回到对话，在模型选择器里选 `PackyCode` 分组下的模型。十个模型都通过插件内 HTTP 调用；Key 的分组必须覆盖所选模型。
+回到对话，在模型选择器里选 `PackyCode` 分组下的模型。十个模型里，Claude 在 `cc` 分组的 Key 上由本机 Claude Code CLI 执行，其余都通过插件内 HTTP 调用；Key 的分组必须覆盖所选模型。
 
 <details>
 <summary>检查安装 / 其它 profile / 本地目录</summary>
 
 桌面应用的**插件**页可以看到已安装状态与版本，也可以在那里启用、停用或卸载。
 
-**仅用于非 desktop profile：** `dsh plugin --profile <name> add dsh-packycode-api@1.4.1`。不要对 `desktop` 使用它 —— CLI 会直接拒绝（`profile "desktop" is managed exclusively by the Electron application`）。
+**仅用于非 desktop profile：** `dsh plugin --profile <name> add dsh-packycode-api@1.4.3`。不要对 `desktop` 使用它 —— CLI 会直接拒绝（`profile "desktop" is managed exclusively by the Electron application`）。
 
 本地开发要加 `link:` 前缀：`dsh plugin --profile <name> add link:/path/to/dsh-packycode-api`。**不要直接写路径（或 `file:`）** —— 那样的安装会把整个仓库目录（连同 `node_modules`）复制进 profile，之后它会在 profile 内部挡住 DSH 自带的包，插件看起来像没装，见「常见问题」。已经那样装过的话，先卸载再按上面的方式重装。
 
@@ -222,10 +222,10 @@ DSH 自带一个实验性插件「自动授权审查」，默认关闭。开启�
 | --- | --- | --- | --- |
 | `deepseek-flash` | HTTP，Responses，可带图 | 可关；`low` / `high` / `max` | `deepseek-officially`、`deepseek-sale` |
 | `gpt-6.1-sol` | HTTP，Responses，可带图 | 不能关；`low` / `medium` / `high` / `xhigh` / `max` | `codex`、`codex-sale` |
-| `gpt-6-astra` | 同上 | 同上 | 同上 |
+| `gpt-6.1-terra`（GPT-6.1 Terra） | 同上 | 可关；`low` / `medium` / `high` / `xhigh` / `max` | 同上 |
+| `gpt-6-astra` | 同上 | 不能关；`low` / `medium` / `high` / `xhigh` / `max` | 同上 |
 | `gpt-5.6-sol` | 同上 | 同上 | 同上 |
 | `grok-4.7`（Grok 4.7） | HTTP，Responses，可带图；500k 上下文 | 不能关；`low` / `medium` / `high` / `xhigh` | 以设置页从网关读取的 Grok 分组覆盖为准 |
-| `gemini-4-argon`（Gemini 4 Argon） | HTTP，Gemini 原生流式，可带图；1,048,576 上下文，65,536 输出 | 不能关；`low` / `medium` / `high` | `gemini-slb` |
 | `gemini-3.8-flash`（Gemini 3.8 Flash） | HTTP，Gemini 原生流式，可带图；1,048,576 输入，65,536 输出 | 不能关；`low` / `medium` / `high` | `gemini-slb` |
 | `claude-opus-5-5` | Anthropic Messages，可带图和原生工具：`cc` 分组由本机 Claude Code CLI 当 agent，其它分组走 HTTP | 不能关；`low` / `medium` / `high` / `xhigh` / `max` | 以设置页读取的 Claude 分组覆盖为准 |
 | `claude-sonnet-5-5` | 同上 | 同上 | 同上 |
@@ -237,13 +237,15 @@ DSH 自带一个实验性插件「自动授权审查」，默认关闭。开启�
 
 当前目录中的 10 个模型都声明了文字和图像输入。DeepSeek Flash 的识图能力按 [官方图像理解文档](https://api-docs.deepseek.com/zh-cn/guides/vision/) 配置；图片通过 DSH 附件服务读取，再随 Responses 请求发送。
 
-Gemini 的能力与限制来自 Google 官方模型页：[Gemini 4 Argon](https://ai.google.dev/gemini-api/docs/models/gemini-4-argon)、[Gemini 3.8 Flash](https://ai.google.dev/gemini-api/docs/models/gemini-3.8-flash)。两款模型统一使用 Gemini 原生协议，通过 `/v1beta/models/{model}:streamGenerateContent` 流式返回文字、思考和工具调用，图片仍由 DSH 附件服务读取。思考档位通过 `thinkingLevel` 传入。两者均使用单次流式输出上限，不执行超过 65,536 token 的自动续写。可用端点与分组以 [PackyAPI 实时模型目录](https://www.packyapi.com/api/pricing) 为准。
+Gemini 3.8 Flash 的能力与限制来自 Google 官方[模型页](https://ai.google.dev/gemini-api/docs/models/gemini-3.8-flash)。它使用 Gemini 原生协议，通过 `/v1beta/models/{model}:streamGenerateContent` 流式返回文字、思考和工具调用，图片仍由 DSH 附件服务读取。思考档位通过 `thinkingLevel` 传入。它使用单次流式输出上限，不执行超过 65,536 token 的自动续写。可用端点与分组以 [PackyAPI 实时模型目录](https://www.packyapi.com/api/pricing) 为准。PackyCode 自 2026-10-27 起不再提供 Gemini 4 Argon，插件已从目录中移除它。
 
-**Gemini 工具续聊的思维签名：** PackyCode 的 Gemini 原生通道在工具调用场景下不能正确处理思维签名，会返回 HTTP 400 `Invalid thought signature` / `Corrupted thought signature`，原样重发也无济于事（PackyCode 客服的答复）。因此插件对 Gemini 4 Argon 和 Gemini 3.8 Flash 不再回传模型返回的签名，而是按 [Google 文档](https://ai.google.dev/gemini-api/docs/thought-signatures) 在需要签名的位置填入跳过校验的值 `skip_thought_signature_validator`。协议、端点和模型都不变，DSH 的回放记录仍保留原始签名。Google 提示跳过签名可能削弱多步工具调用之间的推理连贯性。Flash 仍保留原有兜底：HTTP 400 签名拒绝且尚未输出任何流事件时，等待 1 秒原样重发一次。这类 400 不会被当作 Key 失效。
+**Gemini 工具续聊的思维签名：** PackyCode 的 Gemini 原生通道在工具调用场景下不能正确处理思维签名，会返回 HTTP 400 `Invalid thought signature` / `Corrupted thought signature`，原样重发也无济于事（PackyCode 客服的答复）。因此插件对 Gemini 3.8 Flash 不再回传模型返回的签名，而是按 [Google 文档](https://ai.google.dev/gemini-api/docs/thought-signatures) 在需要签名的位置填入跳过校验的值 `skip_thought_signature_validator`。协议、端点和模型都不变，DSH 的回放记录仍保留原始签名。Google 提示跳过签名可能削弱多步工具调用之间的推理连贯性。Flash 仍保留原有兜底：HTTP 400 签名拒绝且尚未输出任何流事件时，等待 1 秒原样重发一次。这类 400 不会被当作 Key 失效。
 
 Grok 4.7 的上下文与推理档位来自 [官方文档](https://docs.x.ai/developers/grok-4-7)。官方没有单独限制文字输出长度；插件将输出上限设为上下文大小，并按每次请求的剩余上下文收紧。
 
-Responses 请求只有 GPT 模型保留 `prompt_cache_key`，其他 Responses 模型默认省略。当前网关的 Grok 路由会将这个字段误报成 `Incorrect API key provided`；DeepSeek Flash 不带它也能命中前缀缓存。
+Responses 请求只有 GPT 模型保留 `prompt_cache_key`，其他 Responses 模型默认省略。当前网关的 Grok 路由会将这个字段误报成 `Incorrect API key provided`；DeepSeek Flash 不带它也能命中前缀缓存。GPT 的工具定义还会显式带上 `strict: false`：PackyCode 的 GPT 通道把没写 `strict` 的工具当作严格模式，模型会被迫填满所有可选参数（见「常见问题」）。
+
+GPT-6.1 Terra 的上下文、输出上限和推理档位来自 [OpenAI 模型页](https://developers.openai.com/api/docs/models/gpt-6.1-terra)。它是唯一可以关闭推理的 GPT 模型：关闭时发送 `reasoning.effort: "none"`，网关原样转发，返回时不带思考。GPT-5.6 Sol 的文档虽然也列出 `none`，经 PackyCode 却按 `medium` 回答，所以不能关。
 
 DeepSeek Flash 走网关的 Responses 接口（`/api/pricing` 列出 `openai-response`）。关闭推理时发送 `reasoning.effort: "none"`，网关返回时不带思考；开启时思考内容以 `reasoning_text` 返回，并随同一轮的工具调用一起回传。
 
@@ -268,9 +270,9 @@ DeepSeek Flash 走网关的 Responses 接口（`/api/pricing` 列出 `openai-res
 
 ## 更新与卸载
 
-> **从 1.3.2 或更早版本升级：** 请在插件页填写 `dsh-packycode-api@1.4.1` 安装，不要点旧版设置页里的「更新插件」。旧按钮安装时会绕过 pnpm 的发布冷却期：装到的版本如果发布还不满 24 小时，这个 profile 在它满 24 小时之前就装不了其他插件。装好并重启后，按钮就换成了修好的版本，以后直接点即可。
+> **从 1.3.2 或更早版本升级：** 请在插件页填写 `dsh-packycode-api@1.4.3` 安装，不要点旧版设置页里的「更新插件」。旧按钮安装时会绕过 pnpm 的发布冷却期：装到的版本如果发布还不满 24 小时，这个 profile 在它满 24 小时之前就装不了其他插件。装好并重启后，按钮就换成了修好的版本，以后直接点即可。
 
-**更新：** 打开 **设置 → PackyCode**，有新版本时点「更新插件」。它会在当前 profile 目录里用 DSH 自带的 pnpm 安装精确版本，并读回 `package.json` 确认版本落地。安装遵守 pnpm 的发布冷却策略，不会绕过它：默认情况下 pnpm 会直接装上这个版本，并把它记进 profile 的 `minimumReleaseAgeExclude`；如果你给 pnpm 配了更严格的策略，按钮会提示什么时候可以更新。新版本号是从 npm 读到的，pnpm 却从 profile 配置的安装源下载：刚发布的版本，安装源（尤其是国内镜像）可能还没同步到，这时按钮会提示过几分钟再更新；连不上安装源时，会提示检查网络或代理。本地 `link:` 开发安装不会出现这个按钮。完成后完全退出并重新打开桌面应用。只刷新页面不会重载 Host。也可以在**插件**页重新安装，同样要填写带版本号的包名（例如 `dsh-packycode-api@1.4.1`），否则装上的可能是发布满 24 小时的旧版。
+**更新：** 打开 **设置 → PackyCode**，有新版本时点「更新插件」。它会在当前 profile 目录里用 DSH 自带的 pnpm 安装精确版本，并读回 `package.json` 确认版本落地。安装遵守 pnpm 的发布冷却策略，不会绕过它：默认情况下 pnpm 会直接装上这个版本，并把它记进 profile 的 `minimumReleaseAgeExclude`；如果你给 pnpm 配了更严格的策略，按钮会提示什么时候可以更新。新版本号是从 npm 读到的，pnpm 却从 profile 配置的安装源下载：刚发布的版本，安装源（尤其是国内镜像）可能还没同步到，这时按钮会提示过几分钟再更新；连不上安装源时，会提示检查网络或代理。本地 `link:` 开发安装不会出现这个按钮。完成后完全退出并重新打开桌面应用。只刷新页面不会重载 Host。也可以在**插件**页重新安装，同样要填写带版本号的包名（例如 `dsh-packycode-api@1.4.3`），否则装上的可能是发布满 24 小时的旧版。
 
 **从本地路径安装切回官方源时，必须先卸载。** 「更新」是 `pnpm add`，它只重写包目录里的文件，不会删除更早一次本地路径安装留在包目录内的 `node_modules`；那份旧依赖会继续挡住 DSH 自带的包，插件行加载失败且看不出原因。「卸载」执行的是 `pnpm remove`，会删掉整个包目录，重装才是干净的。用 `node scripts/install-check.mjs` 可以确认当前 profile 是否处于这个状态。
 
@@ -286,7 +288,7 @@ ls ~/.dsh/profiles/desktop/node_modules/dsh-packycode-api/node_modules
 
 有输出就是残留：从 npm 安装的包不会自带 `node_modules`，这一份通常来自更早一次「本地路径」安装（`file:` 或直接写路径，而不是 `link:`）。它位于 profile 目录内部，而 DSH 解析插件导入时优先使用 profile 内的副本，所以插件拿到的仍是那份旧依赖 —— 例如 `@deepseek-ai/schemastery` 3.18.2 没有 `Schema.volatile()`，模块在导入阶段就抛错。导入失败时 Loader 不会为这一行创建 fiber，客户端 bundle 也不会被组合，于是模型路由、RPC 通道和设置页全都不会出现。
 
-修复：到**插件**页**卸载**本插件，再用带版本号的包名重新**安装**（例如 `dsh-packycode-api@1.4.1`），然后完全退出并重新打开桌面应用。卸载执行的是 `pnpm remove`，会删掉整个包目录；直接重装或点「更新」只重写文件，不会清掉这份残留。也可以手动删掉上面那个 `node_modules` 再重启。
+修复：到**插件**页**卸载**本插件，再用带版本号的包名重新**安装**（例如 `dsh-packycode-api@1.4.3`），然后完全退出并重新打开桌面应用。卸载执行的是 `pnpm remove`，会删掉整个包目录；直接重装或点「更新」只重写文件，不会清掉这份残留。也可以手动删掉上面那个 `node_modules` 再重启。
 
 **首次安装后，设置页每张卡片都显示 `transport failure for /packycode-api/…: HTTP 405`？** 实际装上的是 1.1.6 或更早的版本，通常是因为安装时只填了包名：安装提示显示的是最新版，pnpm 实际装的却是发布满 24 小时的旧版（见「安装插件」）。这些旧版要等 DSH 重启、重建它的 `connection` 服务之后，才能注册设置通道。所以首次安装后 `/packycode-api` 通道还不存在，请求落到静态页面，返回 405；模型路由和设置页本身照常加载。1.1.7 起首次安装不需要重启。先确认装上的版本：
 
@@ -297,6 +299,10 @@ grep '"version"' ~/.dsh/profiles/desktop/node_modules/dsh-packycode-api/package.
 处理：完全退出并重新打开桌面应用，旧版即可正常使用。然后在 **设置 → PackyCode → 插件版本** 点「检查更新」→「更新插件」（它会固定安装最新版，不受 24 小时规则限制），再重启一次。
 
 **某个模型不可用，但 Key 是有效的？** 看「账户与 Key」里这个 Key 的分组和 ✓ / ✕：分组不覆盖这个模型时，换一个分组合适的 Key，或在 PackyCode 控制台给 Key 加上对应分组。存了分组合适的 Key 时，插件会自动用它跑这个模型。分组拒绝不会停用 Key。
+
+**GPT 模型改文件时报 `invalid justification: expected a non-empty sentence`？** 这是 1.4.2 及更早版本的问题，更新到 1.4.3 即可。PackyCode 的 GPT 通道把没写 `strict` 的工具当作严格模式，模型被迫填满所有可选参数，把 DSH 的沙箱提权参数填成 `sandbox_permissions: "workspace-write"` 加空的 `justification`，DSH 的 edit / write 于是拒绝这次调用。1.4.3 起 GPT 的工具定义显式带上 `strict: false`。模型通常会换一种方式完成这一步，已有会话不需要处理。
+
+**会话报 `pi-ai provider "packycode" has no configured model "gemini-4-argon"`？** PackyCode 自 2026-10-27 起不再提供 Gemini 4 Argon，网关拒绝这个模型，插件也从目录中移除了它。在模型选择器里给这个会话换一个模型即可。
 
 **Claude 报「只接受官方 Claude Code CLI」或「客户端存在异常」？** 这是网关的客户端政策拒绝，不等于 Key 失效。看这个 Key 下方标的是「Claude 经 HTTP」还是「经官方 CLI」：`cc` 分组的 Key 总是走 CLI，其它分组走 HTTP。cc 分组按请求内容判断是不是 Claude Code 自己在工作；1.4.0 起 cc 会话由 Claude Code 自己完成，正常不会被拒。偶尔仍被拒时重发一次；反复出现时，把错误里的网关原文（含 request id）发给 PackyCode 客服，或改用 `cc-sale` / `cc-expensive` / `claude-officially` 分组的 Key。更新 Claude Code CLI 不能解决这个拒绝。插件不会因此禁用 Key 或切换提供商。
 

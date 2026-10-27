@@ -1,0 +1,290 @@
+<p align="center">
+  <img src="ui/public/logo-wordmark.svg" alt="Control Tower" width="320"><br/>
+  The self-hosted AI gateway that <em>shows</em> you where your agents go — and lets you stop them at the border.<br/>
+  <a href="https://agentcontroltower.app">Website</a> · <a href="docs/README.md">Docs</a> · <a href="#quickstart">Quickstart</a> · <a href="docs/threat-model.md">What is enforced</a> · <a href="CONTRIBUTING.md">Contributing</a> · <a href="SUPPORT.md">Support</a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/joshmaster2165/controltower/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/joshmaster2165/controltower/ci.yml?branch=main&label=CI" alt="CI"></a>
+  <a href="https://github.com/joshmaster2165/controltower/releases/latest"><img src="https://img.shields.io/github/v/release/joshmaster2165/controltower?label=release" alt="Latest release"></a>
+  <a href="https://github.com/joshmaster2165/controltower/pkgs/container/controltower"><img src="https://img.shields.io/badge/image-ghcr.io-2496ED?logo=docker&logoColor=white" alt="Container image on ghcr.io"></a>
+  <a href="docs/install.md#verifying-the-image"><img src="https://img.shields.io/badge/image-signed%20(cosign)-2ea44f?logo=sigstore&logoColor=white" alt="Images signed with cosign"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="License: Apache-2.0"></a>
+  <a href="docs/enterprise.md"><img src="https://img.shields.io/badge/enterprise-ELv2-8a63d2" alt="Enterprise: Elastic License 2.0"></a>
+  <a href="https://agentcontroltower.app/docs/"><img src="https://img.shields.io/badge/docs-agentcontroltower.app-0b7285" alt="Docs"></a>
+</p>
+
+<p align="center">
+  <img src="docs/media/controltower-demo.gif" alt="The Control Tower console: a live map of agents, models, MCP tool servers and APIs; clicking an agent traces its connections; dragging from the agent to a Salesforce tool adds a require-approval gate; the next call holds at the gate and is approved in the Tower." width="100%"><br/>
+  <sub>The real console with the demo fleet: <b>see</b> every flow, <b>trace</b> an agent, <b>draw a gate</b>, <b>approve</b> the held call. Recorded with <code>pnpm demo:gif</code>.</sub><br/>
+  <sub>▶ <a href="https://agentcontroltower.app/#watch"><b>Watch the two-minute tour</b></a>: gates and approvals, every call on record, guardrails, laptops, the audit log and compliance evidence (EU AI Act, NIST AI RMF, ISO/IEC 42001).</sub>
+</p>
+
+---
+
+**Mission:** map and document every agentic dataflow across your environment which agents reach which models, MCP servers, tools and integrations while enforcing permissions and security on those flows and monitoring usage and spend.
+
+**Control Tower** is an open-source AI gateway with a live map of agent traffic. Point your agents at it like you would any OpenAI-compatible endpoint; every model call and every MCP tool call becomes a *flight* on the **Airspace**. Draw **zones** around systems, put **gates** on the boundaries, and require a human to approve a flight before it crosses. It is an enforcement point, not a dashboard: a gate that says *no* returns a 403 to the agent.
+
+- **See it.** Agents, models, MCP servers and their tools on one interactive map. Every connection shows its state — active, idle, unused, holding, blocked — so it stays readable at hundreds of agents. Drag nodes to arrange the map (the arrangement is saved and shared), pan and zoom, and click any node to trace everything it connects to.
+- **Draw the rules.** Lasso stations into a zone, click a boundary, pick *allow / deny / require approval / allow with limits*. Export the result as YAML for review and Git, and apply YAML back with a preview first.
+- **Try before you enforce.** *Simulate* replays the last 24 hours of recorded traffic through a draft gate — "would block 37 requests from 4 agents, hold 12, stop $4.10 of spend" — and highlights the affected paths on the map. On an existing gate, *Impact* shows what it actually changed.
+- **Stop it.** Approvals hold the agent's request at the gate; a human clicks approve in the **Tower** and the flight continues. Unanswered holds turn into a resumable ticket, never a silent timeout.
+- **Follow agents calling agents.** When one agent calls another — through an MCP tool, an HTTP API or the [A2A protocol](docs/a2a.md) — Control Tower hands the called agent a signed delegation token, so its own calls are recorded as made *for* the caller: each call links to the one that led to it, gates can match whom a call is for ("nothing on behalf of support touches finance"), loops stop at the first repeat, and spend counts against the budget of the agent that started the chain. See [Agents calling agents](docs/agent-to-agent.md).
+- **Inspect it.** *Inspect gates* scan what passes along a path — prompts, model replies, MCP tool arguments and tool results — for secrets, personal data, prompt injection or your own keywords, and mask it, block it, or flag it. They can also ask [guardrail services](docs/guardrails.md): Presidio, Lakera Guard, Bedrock Guardrails, Azure AI Content Safety, OpenAI moderation or your own URL.
+- **Hear about it.** Alerts on any gate (*blocked*, *held*, *masked*, *approval misused* …), provider outages and recoveries, failing or slow requests, budgets nearly or fully used, and a daily summary — every time or only when it repeats (e.g. 5× in 10 min). They land in the console inbox and can go to Slack or a signed webhook; a cooldown rolls bursts into one summary. Prometheus metrics at `/metrics`.
+- **Count it.** Per-key, per-team, per-model, per-customer and per-tag spend and tokens with budgets and rate limits — the accounting you'd expect from an LLM gateway, with the map on top — and every call [exported](docs/exports.md) to OpenTelemetry, Datadog, Splunk or S3, as metadata.
+- **Route it.** [Images, audio, rerank and providers' own SDKs](docs/model-apis.md) through the same gateway; keys held to regions, deployments reserved for tags, retries and fallback models, health checks and opt-in caching ([routing](docs/providers-and-models.md#when-a-call-fails-retries-and-fallback-models)).
+
+> Status: **v0.2 preview.** Working today: the OpenAI-compatible and Anthropic-native gateway (OpenAI, Azure, Anthropic, Google Gemini, Google Vertex AI, AWS Bedrock, Groq, Together, Mistral, DeepSeek, xAI, OpenRouter, Ollama, vLLM, any OpenAI-compatible URL) with chat, embeddings, OpenAI's Responses API, images, audio, moderation, rerank and completions, Gemini's and Bedrock's own APIs, API keys with limits and budgets, cost accounting from a vendored price table, the live Airspace (including traffic that bypasses the gateway), zones and gates drawn on the map, human approvals with hold → ticket → grant (also by email and Slack), inspect gates, alerts, simulating a gate on past traffic, the Ledger, data-flow export, policy as YAML, `/metrics`, setup from a config file (`--config`), the MCP tool gateway (tools, resources and prompts), an HTTP gateway for plain REST APIs, an A2A gateway for remote agents, agent-to-agent delegation with on-behalf-of gates, and demo mode. Several instances can share Postgres and Redis; console users are admins, approvers, viewers or team members, signing in with a password or single sign-on (OIDC or SAML), and every change is in a hash-chained audit log. Enterprise adds SCIM, the audit log sent to your SIEM, agents signing in with your identity provider's tokens, Claude Code, Claude Desktop and Codex rolled out to people's laptops by MDM (Jamf, Intune, Kandji) with each person signed in, secret managers and key rotation, organisations and team admins, request metering and a multi-region control plane. Not yet: an egress proxy for traffic that skips the gateway. See the roadmap and [docs/threat-model.md](docs/threat-model.md).
+
+## Quickstart
+
+```bash
+docker run -p 4000:4000 -v controltower-data:/data ghcr.io/joshmaster2165/controltower
+```
+
+Open the link the terminal prints (it carries a one-time setup code, so only someone who can read the server's log sets it up) and set your admin password. The **Get started** guide takes you from there: connect a provider, create a key for your agent (with copy-paste setup and a live "connected" check), and see it on the map — about five minutes, and no code changes for most agents. The terminal prints the same URLs when the server starts.
+
+Just exploring? `CT_DEMO=1` (or *Start the demo fleet* on the Get started page) fills the map with a synthetic fleet — six agents such as `support-triage` and `pr-reviewer`, calling Claude, GPT and Gemini models, Salesforce/GitHub tool servers and a Statuspage API — through the real pipeline. Demo providers are stand-ins: nothing leaves your machine, but models are priced like the real ones. *Stop demo and clear it* removes every demo row and its traffic, and leaves your own setup alone; demo mode refuses to start if your setup already uses one of its model or tool names, so demo traffic can never reach real providers.
+
+### Other ways to run it
+
+- **Kubernetes:** `helm install controltower oci://ghcr.io/joshmaster2165/charts/controltower` — one pod on SQLite, or several on Postgres and Redis. See [docs/kubernetes.md](docs/kubernetes.md).
+- **Docker Compose:** `docker compose -f deploy/docker-compose.yml up -d`
+- **Render, one click:** [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/joshmaster2165/controltower) — the published image on a Starter instance with a 1 GB disk for the database (Render disks need a paid instance). The console is at the `onrender.com` URL Render gives you.
+- **Fly.io:** with [`flyctl`](https://fly.io/docs/flyctl/install/):
+
+  ```bash
+  fly launch --config deploy/fly.toml --copy-config --no-deploy   # pick an app name and region
+  fly volumes create controltower_data --size 1
+  fly deploy --config deploy/fly.toml
+  ```
+- **Railway:** deploy the image `ghcr.io/joshmaster2165/controltower` and attach a volume at `/data` — five clicks, [step by step](docs/install.md#railway).
+- **Anywhere that runs containers:** use `ghcr.io/joshmaster2165/controltower`, mount a volume at `/data`, and send traffic to port 4000 (or the `PORT` the platform sets — the image honours it). Links in alerts use `CT_PUBLIC_URL`; on Render, Fly and Railway it is detected automatically.
+
+Then, in the browser:
+
+1. **Providers** → add OpenAI / Anthropic / Azure / Gemini / Vertex AI / Bedrock / any OpenAI-compatible URL, paste credentials, *Test Connect*.
+2. **Keys** → create a key per agent. The console shows copy-paste setup for OpenAI SDKs, Claude Code, Anthropic SDKs and MCP clients with the key filled in, and turns green when the agent's first request arrives.
+3. Point the agent at Control Tower — usually just two environment variables, no code changes:
+
+   ```bash
+   export OPENAI_BASE_URL=http://localhost:4000/v1      # OpenAI SDKs
+   export OPENAI_API_KEY=ct_sk_…
+   export ANTHROPIC_BASE_URL=http://localhost:4000      # Claude Code: ANTHROPIC_AUTH_TOKEN=ct_sk_…
+   ```
+
+   The OpenAI Agents SDK and Codex use the Responses API: `/v1/responses` is forwarded to OpenAI, Azure OpenAI and OpenAI-compatible providers, with the same keys, gates, approvals and accounting. (Claude and Gemini models don't have a Responses API; call them through `/v1/chat/completions` or `/v1/messages`.)
+
+   Model names stay as they are: the first time an agent asks for a model a connected provider serves (`gpt-4.1-mini`, `claude-sonnet-4-5`, a model on your Ollama…), Control Tower adds it and prices it. Pin a provider with `<provider>/<model>`. **Models** is for extras: renaming, aliases with fallbacks, price overrides.
+4. **MCP servers** → register tool servers; point MCP clients at `http://localhost:4000/mcp` with the same key. Tools a key may not use are not listed.
+5. **Airspace** → *Draw zone*, lasso some stations, click a zone label to add a gate: allow, deny, or require approval. Held flights show up in the **Tower**.
+
+```python
+from openai import OpenAI
+client = OpenAI(base_url="http://localhost:4000/v1", api_key="ct_sk_...")
+client.chat.completions.create(model="gpt-4.1-mini", messages=[{"role": "user", "content": "hello tower"}])
+```
+
+## Documentation
+
+Step-by-step guides with screenshots, in [`docs/`](docs/README.md):
+
+| Start | Set up | Control | Reference |
+|---|---|---|---|
+| [Getting started](docs/getting-started.md) | [Providers and models](docs/providers-and-models.md) | [The Airspace: gates and approvals](docs/airspace.md) | [Configuration](docs/configuration.md) |
+| [Install](docs/install.md) | [Keys, budgets and limits](docs/keys.md) | [Policy as code](docs/policy-as-code.md) | [Config file](docs/config-file.md) |
+| [Connect your agents](docs/connect-agents.md) | [MCP tool servers](docs/mcp.md) | [Alerts](docs/alerts.md) | [All docs](docs/README.md) |
+| [Demo mode](docs/demo.md) | [HTTP APIs and observed traffic](docs/http-apis.md) | [Monitoring](docs/monitoring.md) | [What is enforced](docs/threat-model.md) |
+| [Changelog](docs/changelog.md) | [Architecture](docs/architecture.md) | [Troubleshooting](docs/troubleshooting.md) | [API reference](docs/api.md) |
+
+## Run from source
+
+Requires Node 24 and pnpm.
+
+```bash
+pnpm install
+pnpm --filter @controltower/ui build      # builds the console into ui/dist
+CT_DEMO=1 pnpm dev                        # http://localhost:4000
+```
+
+For UI development with hot reload run `pnpm dev:ui` in a second terminal and open <http://localhost:5173> (it proxies the API to :4000).
+
+## Concepts
+
+| Term | Meaning |
+|---|---|
+| **Airspace** | The live map. Stations are systems; regions are zones; traffic is animated. |
+| **Station** | Agent (API key), model deployment, MCP server / tool, browser, integration, data store. |
+| **Zone** | A region grouping stations, drawn by lasso. |
+| **Lane** | An edge between stations. Solid = enforced by the gateway, dashed = observed only. |
+| **Flight** | One request — an LLM call or a tool call. |
+| **Gate** | A rule on a zone boundary: open, barrier, checkpoint (approval), toll (limits). |
+| **Tower** | The approvals queue. |
+| **Inspect gate** | A guardrail on a path: what to look for, which direction, and whether to mask, block or flag. Runs alongside access gates. |
+| **Alert** | A notification rule on a gate: which outcomes, how often, where to send it. |
+| **Ledger** | Cost, tokens, latency. |
+| **Flight Recorder** | **Replay** past traffic on the map, and *simulate* — what would this rule have done to yesterday's traffic? |
+
+## Document it
+
+- **Export → Map image**: the whole map (every node, not just what's on screen) as a 2× PNG with a title strip — for architecture docs and security reviews.
+- **Inventory** (nav) / **Export → Data-flow inventory**: every agent, model and MCP tool server, and every agent → model/tool path seen in the last 24 h / 7 d / 30 d, with requests, errors, blocked, held and spend — and, per path, what Control Tower does today: the access decision and the gate behind it, the inspect gates that scan it, and whether the agent's key even allows it. Printable, or download as Markdown (`/admin/api/export/dataflow?format=md`) or CSV (`?format=csv`).
+
+## Simulate
+
+In the gate composer, **Simulate on last 24 h** replays recorded flights through the current gates and through the gates with your draft added, and reports only the flights whose outcome changes: how many would be blocked, held for approval or let through, by which agents, to which targets, and the spend that blocked requests accounted for. On an existing gate, **Impact in the last 24 h** compares the gates without it to the gates with it; after changing its effect, **Simulate this change** shows the difference. Affected paths are drawn dashed on the map with their counts until the panel closes.
+
+Limits, shown with each result: tool arguments and bodies are not stored, so argument conditions can't be replayed and inspect gates can't be simulated; held requests count as held, not guessed approved. The replay covers up to 200,000 recent flights and yields to live traffic as it runs. API: `POST /admin/api/policy/simulate`.
+
+## Policy as code
+
+Zones and gates are drawn on the map, and they are also a YAML file. **Airspace → Export → Policy as YAML** downloads it; **Import policy…** applies one, after showing exactly which zones and gates it adds, changes or removes.
+
+```yaml
+zones:
+  - name: AI Labs sandbox
+    members: [agent:labs-prototype]        # agent:, model:, provider:, mcp:, http:, tool:
+gates:
+  - name: AI Labs may not merge code
+    from: AI Labs sandbox
+    target: tool
+    match: { servers: [github], tools: [github__merge_pr] }
+    effect: deny                           # allow | deny | require_approval | allow_with_limits | inspect
+```
+
+Everything is referenced by name, so a file exported from one install applies to another that has the same agents, models and tool servers, and it reads well in a pull request. *Merge* adds and updates by name; *Replace* makes the policy match the file exactly. References that don't resolve stop the import with a list of what to fix. Demo zones and gates are never exported or touched. API: `GET /admin/api/policy/export`, `POST /admin/api/policy/import` with `{yaml, mode, apply}`.
+
+## Inspect gates (guardrails)
+
+Pick **Inspect** when adding a gate. A gate with no agent or destination covers everything and sits on the tower itself.
+
+- **Detectors**: secrets and credentials (AWS, GitHub, Slack, Stripe, OpenAI, Anthropic and Google keys, JWTs, private keys, connection strings with passwords, Control Tower keys); personal data (email, phone, card numbers with a Luhn check, US SSN, IBAN with its checksum, IP address); prompt injection (ignore-your-instructions phrasing, role overrides, system-prompt extraction, chat-template markup, "send the credentials to…"); and your own keywords.
+- **Direction**: what agents send (prompts, tool arguments), what comes back (model replies, tool results), or both. Scanning tool results is where indirect prompt injection and data leaks are caught before the model reads them.
+- **Action**: *mask* replaces the match with a placeholder such as `[EMAIL]` or `[SECRET:AWS_KEY]`; *block* returns `400 content_blocked` with a message the agent can act on (for MCP, an `isError` tool result); *flag* lets it through and records it. Every match shows on the map and can trigger an alert (`blocked`, `masked`, `flagged`).
+- **Honest limits**: detectors are pattern-based and catch well-formed, common cases, not deliberate evasion. Streamed model replies are checked after delivery, so on a stream a match is flagged, never masked or blocked. Findings record which detectors matched and how often — never the matched text.
+
+## Alerts
+
+Click a gate on the Airspace and choose **Add alert**, tick *Alert me* when creating a gate, or use the **Alerts** page (which also holds the inbox and the channels). An alert rule watches one of:
+
+| Kind | Fires on |
+|---|---|
+| Gate | `blocked`, `held`, `approved`, `rejected` (by an approver), `unanswered` (hold or approval expired), `allowed`, `scope_mismatch` (an approval redeemed with different arguments — a security event), `masked` / `flagged` (inspect gates) |
+| Provider outage | `outage`: N upstream timeouts, network errors or 5xx for one model or MCP server within a window (rate limits and 4xx don't count; each deployment has its own window) · `recovered`: the first success after an outage alert |
+| Failed requests | `failed`: requests that still failed after fallbacks, optionally for chosen agents or models |
+| Slow requests | `slow`: requests slower than a threshold (default 30 s) |
+| Budget | `budget_warning` at a percentage (default 80%) and `budget_exceeded`, for every key, team and project budget — once per budget period |
+| Daily summary | `daily`: requests, tokens, spend, blocked / held / masked counts, errors, top spenders, most-failing and slowest models, at a chosen UTC hour; skipped on days without traffic |
+
+- **Condition**: every time, or *N times within M minutes*. After firing, the rule stays quiet for its cooldown and then sends one digest of what happened meanwhile.
+- **Channels**: the console inbox (always, with a nav badge and live toasts), Slack incoming webhooks (also Mattermost / Rocket.Chat), email (SMTP), and generic webhooks. Channel URLs and secrets are encrypted at rest and never returned by the API.
+- **Webhook payload**: `POST` JSON `{ "type": "controltower.alert", "kind", "title", "trigger", "count", "subject": {kind, id, name}, "gate": {id, name, effect}, "agents": [{name, count}], "destinations": [...], "reason", "lines": [...], "flights": [ids], "console_url", ... }`. With a signing secret, `x-ct-signature: t=<unix>,v1=<hex>` where `v1 = HMAC-SHA256(secret, "<t>.<raw body>")`. Delivery retries twice on network errors, 408, 429 and 5xx.
+- **Approvals by email and Slack**: a `held` alert about one request links straight to that approval card (`/#/tower/<approval id>`) — emails are marked *Approval needed* with a *Review & approve* button ([setup](docs/alerts.md#approving-by-email)), Slack gets the same button and a "Decision needed: Approve ONE call to … from …" line; webhooks get `approval: {id, scope, url}`. The link only opens the card: approving is always an authenticated action in the console, never a click on a URL (link unfurlers can't approve anything). If someone already decided, the card says who and when.
+- Alerts carry names and counts only — never prompts, tool arguments or responses. Set `CT_PUBLIC_URL` so links in Slack and webhooks point at your console.
+
+## Metrics
+
+`GET /metrics` serves Prometheus text format. It names agents and shows spend, so it is never anonymous: set `CT_METRICS_TOKEN` and scrape with `Authorization: Bearer <token>` (anyone signed in to the console, and the admin key, can also open it).
+
+```yaml
+scrape_configs:
+  - job_name: controltower
+    authorization: { credentials: <CT_METRICS_TOKEN> }
+    static_configs: [{ targets: ['controltower:4000'] }]
+```
+
+Counters: `controltower_requests_total{agent,team,kind,model,provider,status}`, `controltower_tokens_total{agent,model,type}`, `controltower_spend_usd_total{agent,team,model}`, `controltower_upstream_failures_total{model,code}`, `controltower_fallbacks_total{model}`, `controltower_gate_decisions_total{gate,decision}`, `controltower_approvals_total{outcome}`. Histograms (5 ms … 600 s): `controltower_request_duration_seconds`, `controltower_time_to_first_token_seconds`, plus `controltower_gateway_overhead_seconds`. Gauges: requests in flight, held requests, event backlog, `controltower_deployment_state` (0 healthy, 1 cooling down), `controltower_mcp_server_up`, budget limit / spent / remaining per scope, build info and uptime. Labels are bounded: a model name the gateway doesn't know is reported as `other`, so clients can't create series at will.
+
+## HTTP APIs
+
+Plain REST APIs — a status page, an internal service, a SaaS API without an MCP server — can go through Control Tower too. Register one under **HTTP APIs** (name, base URL, and its credentials, stored encrypted), then point the agent at `/http/<slug>` instead of the API's own host:
+
+```bash
+curl http://localhost:4000/http/statuspage/api/v1/components -H "x-ct-key: $CT_KEY"
+```
+
+- The agent sends only its **own Control Tower key** (`x-ct-key`, or `Authorization: Bearer ct_sk_…`). Control Tower strips it, adds the API's stored credentials and forwards the request, so the agent never holds the API's secret.
+- Every call is a flight named by route — `statuspage › POST /api/v1/incidents`, with record ids folded (`GET /v2/users/:id`) — and each route is a row under the API on the map.
+- Gates work exactly as they do for MCP tools: match an API, a route glob (`statuspage__DELETE *`), or an operation — `GET`/`HEAD` are *read*, `POST`/`PUT`/`PATCH` *write*, `DELETE` *destructive*. Approvals, inspect gates on request and response bodies, rate limits, alerts and the inventory all apply.
+- A held call answers `403` with `x-ct-status: approval_required` and a ticket; retry the same request with `x-ct-approval: <ticket>` once a human approves.
+- Agents can reach only paths under the registered base URL: dot segments and encoded dots are refused before anything is sent. Bodies up to 10 MB each way are relayed; streaming responses are buffered.
+
+On the map, **Bring it inside** on an observed SaaS or HTTP system pre-fills this form with its name and host.
+
+## Traffic that doesn't go through Control Tower
+
+Agents also call databases, SaaS APIs and internal services directly. Report those calls and they appear on the map as **dashed lines straight from the agent to the system — not through the tower** — and in the inventory under *Seen, not enforced*. A model provider called directly (OpenAI, Anthropic, Bedrock, …) is drawn **red**: that traffic is skipping the gateway, its gates and its budgets.
+
+Authenticate with the agent's own Control Tower key.
+
+```bash
+curl -X POST http://localhost:4000/v1/observe \
+  -H "Authorization: Bearer $CT_KEY" -H "content-type: application/json" \
+  -d '{"events":[{"target":"https://api.stripe.com/v1/refunds","operation":"write"},{"target":"postgresql://orders-db:5432/orders","kind":"database","count":12}]}'
+```
+
+Or point any OpenTelemetry SDK at Control Tower — outbound (`CLIENT`/`PRODUCER`) spans become observed calls, using the standard HTTP, database, messaging, RPC and GenAI attributes; calls to Control Tower itself are ignored:
+
+```bash
+OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://localhost:4000/v1/traces
+OTEL_EXPORTER_OTLP_TRACES_PROTOCOL=http/json
+OTEL_EXPORTER_OTLP_TRACES_HEADERS="Authorization=Bearer ct_sk_…"
+```
+
+Only a target name is kept: URLs lose their path and query string, connection strings lose their credentials (`postgresql://app:pw@db/orders` → `postgresql://db/orders`), and no payload is stored. OTLP protobuf is not accepted yet — use `http/json`.
+
+## What is actually enforced
+
+Control Tower only enforces traffic that goes through it. A lane is drawn **solid** only when the gateway is in the path for that hop (LLM calls, MCP tool calls and HTTP API calls routed through Control Tower). Anything learned by observation alone is drawn **dashed**, and a rule existing on an edge never makes it solid. An agent that edits its own `base_url` bypasses the LLM gateway; the MCP gateway's `tools/list` filtering is the stronger control, because a tool the agent cannot see needs no approval. Traffic reported through `/v1/observe` or OpenTelemetry is *seen*, never enforced, and is drawn dashed. An agent can likewise call an HTTP API's own host instead of `/http/<slug>` if it still holds that API's credentials — revoke them once traffic flows through the tower. An egress-proxy sidecar to close these gaps at the network level is on the roadmap. We would rather you know the boundary than believe in one that isn't there.
+
+## Configuration
+
+Everything is configured in the browser. Environment variables exist for operators; the most used are below, and [docs/configuration.md](docs/configuration.md) lists every one:
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `CT_PORT` | `4000` | Listen port (falls back to `PORT`, which most platforms set). `--port` wins. |
+| `CT_CONFIG` | — | [Config file](docs/config-file.md) applied at every start (also `CONFIG_FILE_PATH` or `--config`) |
+| `CT_RETENTION_DAYS` | `30` | Days to keep per-request flights (`0` = forever); daily spend history is always kept. `CT_EVENT_RETENTION_DAYS` (7) for event trails, `CT_AUDIT_RETENTION_DAYS` (365) for the audit log |
+| `CT_POLICY` | — | [Policy file](docs/policy-as-code.md) (zones and gates) applied at every start (also `--policy`); `CT_POLICY_MODE=replace` makes the policy match it |
+| `CT_ADMIN_KEY` | — | Admin key for the admin API and model calls, and the console password for `UI_USERNAME` (default `admin`; `UI_PASSWORD` sets another). `master_key` in the config file works too. |
+| `CT_SETUP_TOKEN` | derived from the master key | The setup code the first-run page asks for; printed in the log at start |
+| `CT_LOGIN_RPM` | `10` | Console sign-in attempts a minute per email (twice that per address) |
+| `CT_SESSION_IDLE_MS`, `CT_SESSION_TTL_MS` | 12 hours, 7 days | A console session ends after this long unused, or this long in all |
+| `CT_DATA_DIR` | `./data` (`/data` in Docker) | SQLite database and the master key |
+| `CT_DATABASE_URL` | — | Postgres instead of SQLite — with `CT_REDIS_URL`, several instances can share it ([docs](docs/scaling.md)) |
+| `CT_REDIS_URL` | — | Redis, keeping several instances in step |
+| `CT_MASTER_KEY` | generated | Base64 32-byte key encrypting provider credentials at rest. Back up `/data/master.key` if you let it generate one. |
+| `CT_DEMO` | `0` | Seed stand-in Anthropic/OpenAI/Gemini providers and demo tool servers, and run a synthetic agent fleet |
+| `CT_AUTO_MODELS` | `1` | Add a deployment the first time a request names a model a connected provider serves; `0` requires every model to be added under Models |
+| `CT_MODE` | `on` | `off` disables policy enforcement (kill switch) |
+| `CT_SMTP_URL`, `CT_SMTP_FROM` | — | Default SMTP server and sender for email alerts and approvals (`smtp://user:pass@host:587`) |
+| `HTTPS_PROXY`, `HTTP_PROXY`, `NO_PROXY` | — | Route Control Tower's own outbound calls through a corporate proxy |
+| `CT_METRICS_TOKEN` | — | Bearer token for Prometheus to scrape `/metrics` |
+| `CT_PUBLIC_URL` | — | Public URL, used for links in alerts, signed approval links and the ingress probe. Detected on Render, Fly.io and Railway |
+| `CT_HOLD_BUDGET_MS` | `20000` | How long a request may wait at a gate for a human before becoming a ticket |
+| `CT_A2A_PUSH_RELAY` | `on` | `off` lets A2A agents send push notifications straight to the caller's webhook instead of through Control Tower |
+| `CT_PUSH_ALLOW_PRIVATE` | — | `1` lets relayed push notifications go to private, loopback and link-local addresses |
+| `CT_MAX_HELD` | `500` | Max concurrently held requests per process |
+| `CT_MODEL_HEALTH_INTERVAL_S` | `300` | How often models are health-checked in the background; `0` turns it off |
+| `CT_HOST`, `CT_LOG_LEVEL` | `0.0.0.0`, `info` | Listen address; `debug`, `info`, `warn` or `error` logs |
+
+## Roadmap
+
+- **v0.1 — see it and stop it**: gateway (`/v1/chat/completions`, `/v1/embeddings`, `/v1/models`, `/v1/messages`), OpenAI-compatible + Anthropic adapters, keys/limits/budgets, pricing and cost, live Airspace, zones + gates + approvals, MCP gateway, demo mode, Docker image.
+- **v0.2 — understand it** (shipped): simulate gates on past traffic ✓, Ledger ✓, allow-with-limits gates ✓, Slack approvals ✓, observed traffic via `/v1/observe` and OTLP ✓, Gemini/Bedrock/Vertex adapters ✓, Prometheus ✓, inspect gates ✓, alerts ✓, policy as YAML ✓, email approvals ✓, Flight Recorder replay ✓.
+- **v0.1.5 — agents calling agents** (shipped): delegation tokens, on-behalf-of gates, call chains and traces, the A2A gateway, MCP resources and prompts as flights, spend rolled up to the origin agent.
+- **v0.1.6 — approvals that keep up, agents that come and go** (shipped): approve the next N calls, approvals that say whom a chained call is for, hide idle agents, expiring and retired keys, allow-with-limits gates, model-checked prompt injection; chains tested with four agent frameworks.
+- **v0.1.7 — run it for a team** (shipped): Postgres and Redis for several instances, people with admin, approver and viewer roles, guardrail services, exporting flights, pass-through image, audio and provider APIs, retries and fallback models, regions and tags, health checks, response caching, and security hardening.
+- **v0.1.8 — ready for procurement** (shipped): signed images with SBOM and provenance, a Helm chart, a support bundle and a support offer.
+- **v0.2.0 — Enterprise** (shipped): single sign-on (OIDC and SAML) with SCIM, a tamper-evident audit log sent to your SIEM, agents authenticating with your identity provider's tokens, secret managers and key rotation, organisations and team admins, request metering, and a multi-region control plane.
+- **Next**: guardrails drawn on the map, custom guardrails written in Control Tower, and MCP 2026-07-28 (approvals as protocol-level multi round-trip requests).
+- **v0.3 — trust it**: Postgres + Redis multi-instance ✓, people and roles ✓, audit log ✓, SSO (OIDC) ✓, egress proxy sidecar, Playwright fixture for browser agents; enterprise: SAML, SCIM, audit shipping to a SIEM.
+
+## License
+
+Apache-2.0 for everything outside directories named `ee`. See [LICENSE](LICENSE); third-party notices for bundled data are in [THIRD_PARTY.md](THIRD_PARTY.md).
+
+Code in `ee` directories (`ee/`, `server/src/ee/`, `ui/src/ee/`) is **Control Tower Enterprise**, under the [Elastic License 2.0](ee/LICENSE): single sign-on, SCIM, the audit log and the other [Enterprise features](docs/enterprise.md) need a license key.
