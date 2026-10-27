@@ -344,7 +344,7 @@
   }
  },
  "langchain-ai/langmem": {
-  "commit_90d": 15,
+  "commit_90d": 11,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -357,10 +357,10 @@
    "Python": 99,
    "Makefile": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261027",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261027",
+   "release": "20261027",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

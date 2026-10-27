@@ -3907,5 +3907,69 @@
    "contrib": "20261026",
    "lang": "20261026"
   }
+ },
+ "anishreddy3/Crack-Semantic-Segmentation": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
+ },
+ "Ta0p1/ResolveLab": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 83,
+   "JavaScript": 8,
+   "CSS": 5,
+   "HTML": 4
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
+ },
+ "explosion/spacy-loggers": {
+  "rel_ver": "v1.0.5",
+  "rel_pub": "2023-09-11",
+  "rel_days": 1142,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
  }
 }

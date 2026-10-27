@@ -2199,13 +2199,16 @@
    "JavaScript": 1,
    "CSS": 0
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261027",
   "dim_ts": {
    "release": "20261021",
    "security": "20261021",
    "contrib": "20261021",
-   "lang": "20261021"
-  }
+   "lang": "20261021",
+   "commit": "20261027"
+  },
+  "commit_90d": 554,
+  "commit_7d": 10
  },
  "vivy-yi/finance-skills": {
   "rel_ver": null,
@@ -4301,6 +4304,60 @@
    "security": "20261025",
    "contrib": "20261025",
    "lang": "20261025"
+  }
+ },
+ "Nitjsefnie/claudit": {
+  "rel_ver": "v0.5.0",
+  "rel_pub": "2026-10-23",
+  "rel_days": 4,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Python": 88,
+   "JavaScript": 10,
+   "PLpgSQL": 1,
+   "CSS": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
+ },
+ "jettoai/tally": {
+  "rel_ver": "v0.85.64",
+  "rel_pub": "2026-10-24",
+  "rel_days": 3,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Swift": 95,
+   "Shell": 2,
+   "Rust": 2,
+   "Python": 1,
+   "C": 0
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
   }
  }
 }

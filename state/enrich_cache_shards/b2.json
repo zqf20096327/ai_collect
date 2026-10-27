@@ -4329,5 +4329,69 @@
    "contrib": "20261026",
    "lang": "20261026"
   }
+ },
+ "emrahaydemir960-ai/daimon-data-agent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
+ },
+ "yurifox123/ai-town-portable": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 74,
+   "TypeScript": 10,
+   "CSS": 9,
+   "HTML": 7,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
+ },
+ "pandastack-io/pandaflow": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 100,
+   "CSS": 0,
+   "JavaScript": 0,
+   "HCL": 0
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
  }
 }

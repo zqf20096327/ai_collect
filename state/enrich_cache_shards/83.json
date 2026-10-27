@@ -1479,13 +1479,16 @@
    "Java": 0,
    "Python": 0
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261027",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261027"
+  },
+  "commit_90d": 582,
+  "commit_7d": 135
  },
  "eunomia-bpf/MCPtrace": {
   "rel_ver": null,

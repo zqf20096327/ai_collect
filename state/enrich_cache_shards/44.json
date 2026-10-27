@@ -4529,5 +4529,71 @@
    "contrib": "20261026",
    "lang": "20261026"
   }
+ },
+ "livetennisapi/livetennisapi-mcp": {
+  "commit_90d": 49,
+  "commit_7d": 4,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 65,
+   "JavaScript": 25,
+   "Shell": 4,
+   "Python": 4,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "commit": "20261027",
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
+ },
+ "markolalovic/tda-digits": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 97,
+   "Asymptote": 3
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
+ },
+ "CloudOpsBench/CloudOpsBench": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Shell": 60,
+   "Python": 40
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
  }
 }

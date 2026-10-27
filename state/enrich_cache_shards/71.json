@@ -1644,13 +1644,16 @@
    "PowerShell": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261027",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261027"
+  },
+  "commit_90d": 72,
+  "commit_7d": 18
  },
  "janetom645-coder/mcd-buddy": {
   "rel_ver": null,

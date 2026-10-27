@@ -3614,5 +3614,72 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "ilyautov/yandex-market-mcp-ru": {
+  "rel_ver": "v0.5.4",
+  "rel_pub": "2026-09-13",
+  "rel_days": 44,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
+ },
+ "keezwus/sketch2naiwa": {
+  "rel_ver": "v1.0",
+  "rel_pub": "2026-10-13",
+  "rel_days": 14,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "Batchfile": 1
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
+ },
+ "Muyan806/localai-boost-starter": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Batchfile": 53,
+   "Shell": 47
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
  }
 }

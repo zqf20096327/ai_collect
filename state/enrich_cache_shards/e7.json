@@ -1402,13 +1402,16 @@
    "JavaScript": 13,
    "Dockerfile": 1
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261027",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261027"
+  },
+  "commit_90d": 38,
+  "commit_7d": 10
  },
  "doublewordai/control-layer": {
   "rel_ver": "v14.3.0",

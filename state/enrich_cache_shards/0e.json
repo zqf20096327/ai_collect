@@ -3749,5 +3749,75 @@
    "contrib": "20261026",
    "lang": "20261026"
   }
+ },
+ "free-cracks/Adobe-Acrobat-Pro": {
+  "commit_90d": 5,
+  "commit_7d": 5,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {},
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "commit": "20261027",
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
+ },
+ "prometeucorp/prometeu": {
+  "rel_ver": "v0.36.0",
+  "rel_pub": "2026-10-26",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Rust": 47,
+   "TypeScript": 44,
+   "CSS": 3,
+   "JavaScript": 3,
+   "HTML": 2
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
+ },
+ "No-Country-simulation/G10-LATAM-equipo10NovaMind": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Python": 48,
+   "TypeScript": 34,
+   "CSS": 17,
+   "PLpgSQL": 1,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
  }
 }

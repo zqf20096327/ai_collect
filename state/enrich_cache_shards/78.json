@@ -4324,5 +4324,32 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "Luxshan2000/ielts-prep": {
+  "rel_ver": "v0.1.0-rc4",
+  "rel_pub": "2026-08-01",
+  "rel_days": 87,
+  "rel_n90": 4,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 52,
+   "TypeScript": 48,
+   "JavaScript": 0,
+   "CSS": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
  }
 }

@@ -213,12 +213,12 @@
   }
  },
  "simonlin1212/TradingAgents-astock": {
-  "commit_7d": 9,
-  "commit_90d": 95,
+  "commit_7d": 1,
+  "commit_90d": 78,
   "rel_ver": "v0.5.21",
   "rel_pub": "2026-10-11",
-  "rel_days": 5,
-  "rel_n90": 12,
+  "rel_days": 16,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -230,10 +230,10 @@
    "Python": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261027",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261027",
+   "release": "20261027",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -1618,13 +1618,16 @@
    "JavaScript": 2,
    "HTML": 2
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261027",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261027"
+  },
+  "commit_90d": 3,
+  "commit_7d": 0
  },
  "NeverSight/NeverD": {
   "rel_ver": "web-product-windows-x64-2026-10-15",
@@ -4670,6 +4673,32 @@
    "security": "20261025",
    "contrib": "20261025",
    "lang": "20261025"
+  }
+ },
+ "Mochamad-Rizky/tradingview-desktop-mcp": {
+  "rel_ver": "v0.1.3",
+  "rel_pub": "2026-10-25",
+  "rel_days": 2,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 99,
+   "JavaScript": 1,
+   "CSS": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
   }
  }
 }

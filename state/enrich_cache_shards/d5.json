@@ -84,12 +84,12 @@
   }
  },
  "Fincept-Corporation/FinceptTerminal": {
-  "commit_7d": 4,
-  "commit_90d": 53,
+  "commit_7d": 3,
+  "commit_90d": 43,
   "rel_ver": "v4.5.1",
   "rel_pub": "2026-10-13",
-  "rel_days": 3,
-  "rel_n90": 5,
+  "rel_days": 14,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -104,10 +104,10 @@
    "Jupyter Notebook": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261027",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261027",
+   "release": "20261027",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4058,6 +4058,33 @@
    "security": "20261025",
    "contrib": "20261025",
    "lang": "20261025"
+  }
+ },
+ "SRX9/UsageAtlas": {
+  "rel_ver": "desktop-v0.2.17",
+  "rel_pub": "2026-10-26",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 79,
+   "JavaScript": 15,
+   "CSS": 6,
+   "HTML": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
   }
  }
 }

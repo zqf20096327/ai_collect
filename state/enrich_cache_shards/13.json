@@ -423,11 +423,11 @@
   }
  },
  "lucidrains/perceiver-pytorch": {
-  "commit_90d": 2,
-  "commit_7d": 0,
+  "commit_90d": 3,
+  "commit_7d": 1,
   "rel_ver": "0.8.8",
   "rel_pub": "2023-08-22",
-  "rel_days": 1152,
+  "rel_days": 1162,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -439,10 +439,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261027",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261027",
+   "release": "20261027",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

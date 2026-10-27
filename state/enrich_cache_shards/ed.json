@@ -289,12 +289,12 @@
   }
  },
  "APIParkLab/APIPark": {
-  "commit_7d": 0,
-  "commit_90d": 7,
-  "rel_ver": "v1.9.6-beta",
-  "rel_pub": "2025-10-26",
-  "rel_days": 356,
-  "rel_n90": 0,
+  "commit_7d": 10,
+  "commit_90d": 17,
+  "rel_ver": "v1.9.8-beta",
+  "rel_pub": "2026-10-26",
+  "rel_days": 1,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -309,10 +309,10 @@
    "JavaScript": 1,
    "Shell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261027",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261027",
+   "release": "20261027",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3814,6 +3814,51 @@
    "security": "20261025",
    "contrib": "20261025",
    "lang": "20261025"
+  }
+ },
+ "cortex1020/EvalLeak": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
+ },
+ "dongzishuo666/longcode-platform": {
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-10-25",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "HTML": 55,
+   "JavaScript": 44,
+   "Shell": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
   }
  }
 }

@@ -4123,5 +4123,55 @@
    "contrib": "20261026",
    "lang": "20261026"
   }
+ },
+ "Cecuro/open-security": {
+  "rel_ver": "v0.1.2",
+  "rel_pub": "2026-08-29",
+  "rel_days": 59,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 87,
+   "JavaScript": 9,
+   "CSS": 3,
+   "HTML": 0
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
+ },
+ "K4N3CO-LABS/JailBreak-Ai": {
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-06-07",
+  "rel_days": 142,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Kotlin": 96,
+   "JavaScript": 4
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
  }
 }

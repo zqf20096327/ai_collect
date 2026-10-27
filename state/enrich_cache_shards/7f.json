@@ -1761,12 +1761,12 @@
   }
  },
  "geekplux/markvis": {
-  "commit_7d": 23,
-  "commit_90d": 362,
-  "rel_ver": "v2.2.0",
-  "rel_pub": "2026-10-19",
-  "rel_days": 1,
-  "rel_n90": 1,
+  "commit_7d": 10,
+  "commit_90d": 372,
+  "rel_ver": "v2.2.1",
+  "rel_pub": "2026-10-22",
+  "rel_days": 5,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1781,10 +1781,10 @@
    "HTML": 2,
    "JavaScript": 1
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261027",
   "dim_ts": {
-   "commit": "20261020",
-   "release": "20261020",
+   "commit": "20261027",
+   "release": "20261027",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020"

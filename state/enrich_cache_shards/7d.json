@@ -1939,13 +1939,16 @@
    "HTML": 1,
    "Shell": 1
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261027",
   "dim_ts": {
    "release": "20261021",
    "security": "20261021",
    "contrib": "20261021",
-   "lang": "20261021"
-  }
+   "lang": "20261021",
+   "commit": "20261027"
+  },
+  "commit_90d": 23,
+  "commit_7d": 0
  },
  "leriomaggio/ppml-tutorial": {
   "rel_ver": "scipy2023",

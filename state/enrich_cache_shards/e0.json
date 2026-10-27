@@ -4004,5 +4004,52 @@
    "contrib": "20261026",
    "lang": "20261026"
   }
+ },
+ "Arvin385/plasma-dynamic-island": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "QML": 63,
+   "Shell": 29,
+   "JavaScript": 5,
+   "Makefile": 3
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
+ },
+ "liuminxin45/star-library": {
+  "rel_ver": "0.0.10",
+  "rel_pub": "2026-10-26",
+  "rel_days": 1,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C": 98,
+   "PowerShell": 2,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
  }
 }

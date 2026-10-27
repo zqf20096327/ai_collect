@@ -1262,13 +1262,16 @@
    "CSS": 1,
    "Dockerfile": 1
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261027",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261027"
+  },
+  "commit_90d": 169,
+  "commit_7d": 14
  },
  "kennethlaw325/awesome-llm-knowledge-systems": {
   "rel_ver": null,
@@ -4009,6 +4012,32 @@
    "security": "20261025",
    "contrib": "20261025",
    "lang": "20261025"
+  }
+ },
+ "caspianchan31/openmuse-standalone": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-10-11",
+  "rel_days": 16,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 29,
+  "lang": {
+   "TypeScript": 99,
+   "Python": 0,
+   "JavaScript": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
   }
  }
 }

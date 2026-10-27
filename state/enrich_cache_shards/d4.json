@@ -53,10 +53,10 @@
    "Shell": 10,
    "Makefile": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261027",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261027",
+   "release": "20261027",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

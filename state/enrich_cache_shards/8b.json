@@ -4952,5 +4952,78 @@
    "contrib": "20261026",
    "lang": "20261026"
   }
+ },
+ "HazelnutParadise/insyra": {
+  "rel_ver": "v0.3.5",
+  "rel_pub": "2026-10-24",
+  "rel_days": 3,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Go": 100
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
+ },
+ "SekiyoKana/minimax-studio-webui": {
+  "rel_ver": "Beta",
+  "rel_pub": "2026-08-20",
+  "rel_days": 68,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 61,
+   "JavaScript": 22,
+   "CSS": 12,
+   "HTML": 4,
+   "Java": 1
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
+ },
+ "cxv117793-blip/dsh-step-pause": {
+  "rel_ver": "v0.4.5",
+  "rel_pub": "2026-10-22",
+  "rel_days": 5,
+  "rel_n90": 10,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
  }
 }

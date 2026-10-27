@@ -196,11 +196,11 @@
   }
  },
  "natolambert/rlhf-book": {
-  "commit_7d": 1,
-  "commit_90d": 45,
+  "commit_7d": 2,
+  "commit_90d": 40,
   "rel_ver": "book/v0.12",
   "rel_pub": "2026-09-11",
-  "rel_days": 36,
+  "rel_days": 46,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -216,10 +216,10 @@
    "Makefile": 3,
    "JavaScript": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261027",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261027",
+   "release": "20261027",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

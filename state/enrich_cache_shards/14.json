@@ -4416,5 +4416,30 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "Hugo0/swarmmemo": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 1,
+  "sec_worst": null,
+  "sec_last": "2026-10-18",
+  "sec_ids": [
+   "GHSA-ph43-3vmr-rrvm(-,medium)"
+  ],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 69,
+   "Python": 18,
+   "JavaScript": 9,
+   "HTML": 2,
+   "CSS": 1
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
  }
 }

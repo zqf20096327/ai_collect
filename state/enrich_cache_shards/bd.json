@@ -3857,5 +3857,35 @@
    "contrib": "20261026",
    "lang": "20261026"
   }
+ },
+ "Kai-Jungsthoefel/SOMA": {
+  "commit_90d": 285,
+  "commit_7d": 32,
+  "rel_ver": "v0.10.2",
+  "rel_pub": "2026-10-24",
+  "rel_days": 3,
+  "rel_n90": 8,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 48,
+   "JavaScript": 24,
+   "Python": 21,
+   "CSS": 4,
+   "HTML": 2
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "commit": "20261027",
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
  }
 }

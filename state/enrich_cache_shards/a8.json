@@ -4605,5 +4605,32 @@
    "contrib": "20261026",
    "lang": "20261026"
   }
+ },
+ "open-anywhere/open-anywhere": {
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-10-25",
+  "rel_days": 2,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Go": 83,
+   "TypeScript": 12,
+   "Python": 2,
+   "CSS": 1,
+   "HTML": 1
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
  }
 }

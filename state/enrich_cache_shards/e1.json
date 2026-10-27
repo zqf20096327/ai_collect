@@ -149,11 +149,11 @@
   }
  },
  "scikit-learn-contrib/hdbscan": {
-  "commit_7d": 0,
-  "commit_90d": 2,
+  "commit_7d": 1,
+  "commit_90d": 4,
   "rel_ver": "release-0.8.44",
   "rel_pub": "2026-06-01",
-  "rel_days": 138,
+  "rel_days": 148,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -169,10 +169,10 @@
    "TeX": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261027",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261027",
+   "release": "20261027",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3055,13 +3055,16 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261022",
+  "enriched_at": "20261027",
   "dim_ts": {
    "release": "20261022",
    "security": "20261022",
    "contrib": "20261022",
-   "lang": "20261022"
-  }
+   "lang": "20261022",
+   "commit": "20261027"
+  },
+  "commit_90d": 1,
+  "commit_7d": 0
  },
  "pranciskus/newsmcp": {
   "rel_ver": "v1.1.1",

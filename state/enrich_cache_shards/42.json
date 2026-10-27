@@ -4399,5 +4399,85 @@
    "contrib": "20261026",
    "lang": "20261026"
   }
+ },
+ "ekzhang/resin": {
+  "commit_90d": 448,
+  "commit_7d": 274,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 73,
+   "Rust": 25,
+   "Jinja": 1,
+   "HTML": 1,
+   "Cuda": 0
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "commit": "20261027",
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
+ },
+ "huggingface/paperswithcode": {
+  "rel_ver": "pwc-cli-0.1.0",
+  "rel_pub": "2026-07-24",
+  "rel_days": 95,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Python": 78,
+   "TypeScript": 14,
+   "PLpgSQL": 3,
+   "HTML": 2,
+   "Rust": 2
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
+ },
+ "AminRezaeeyan/NeuroScan": {
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-10-26",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 81,
+   "Jupyter Notebook": 7,
+   "CSS": 4,
+   "HTML": 3,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
  }
 }

@@ -4233,5 +4233,59 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "Hiruynk/AnifLive-TTS": {
+  "rel_ver": "v1.5.0-beta",
+  "rel_pub": "2026-09-20",
+  "rel_days": 37,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 82,
+   "JavaScript": 8,
+   "HTML": 4,
+   "CSS": 3,
+   "Rust": 2
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
+ },
+ "ai-process/ktms": {
+  "rel_ver": "v1.3.6",
+  "rel_pub": "2026-10-26",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 93,
+   "Shell": 5,
+   "Python": 1,
+   "JavaScript": 0,
+   "HCL": 0
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
  }
 }

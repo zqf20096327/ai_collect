@@ -288,7 +288,7 @@
   "commit_90d": 0,
   "rel_ver": "v1.1.0",
   "rel_pub": "2026-05-01",
-  "rel_days": 169,
+  "rel_days": 179,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -306,10 +306,10 @@
    "JavaScript": 1,
    "Batchfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261027",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261027",
+   "release": "20261027",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3843,6 +3843,51 @@
    "security": "20261026",
    "contrib": "20261026",
    "lang": "20261026"
+  }
+ },
+ "rednafi/rexdiff": {
+  "rel_ver": "v0.3.0",
+  "rel_pub": "2026-10-26",
+  "rel_days": 1,
+  "rel_n90": 10,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Go": 99,
+   "Lua": 1,
+   "Shell": 0,
+   "Ruby": 0
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
+ },
+ "Alpha-Park/genpark-visual-look-virtual-tryon-curator-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
   }
  }
 }

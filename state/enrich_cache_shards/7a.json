@@ -173,8 +173,8 @@
   }
  },
  "raiyanyahya/how-to-train-your-gpt": {
-  "commit_90d": 1,
-  "commit_7d": 0,
+  "commit_90d": 2,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -186,10 +186,10 @@
    "Jupyter Notebook": 89,
    "Python": 11
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261027",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261027",
+   "release": "20261027",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4706,6 +4706,30 @@
    "security": "20261025",
    "contrib": "20261025",
    "lang": "20261025"
+  }
+ },
+ "zouxinhao594-alt/fatfish-qq-bot": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-10-24",
+  "rel_days": 3,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 91,
+   "HTML": 9
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
   }
  }
 }

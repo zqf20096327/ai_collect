@@ -184,7 +184,7 @@
   "commit_90d": 4,
   "rel_ver": "v1.20.0",
   "rel_pub": "2026-08-24",
-  "rel_days": 54,
+  "rel_days": 64,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -197,10 +197,10 @@
    "Python": 87,
    "kvlang": 13
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261027",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261027",
+   "release": "20261027",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4154,6 +4154,49 @@
    "security": "20261026",
    "contrib": "20261026",
    "lang": "20261026"
+  }
+ },
+ "AIPMAndy/safeskill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 80,
+   "HTML": 17,
+   "Makefile": 3
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
+ },
+ "Piyoxz/alvio-ocr": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 97,
+   "PowerShell": 1,
+   "Python": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
   }
  }
 }

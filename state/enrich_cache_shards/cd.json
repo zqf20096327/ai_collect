@@ -294,8 +294,8 @@
   }
  },
  "EgoAlpha/prompt-in-context-learning": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 6,
+  "commit_90d": 6,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -308,10 +308,10 @@
    "HTML": 1,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261027",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261027",
+   "release": "20261027",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3802,13 +3802,16 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261027",
   "dim_ts": {
    "release": "20261024",
    "security": "20261024",
    "contrib": "20261024",
-   "lang": "20261024"
-  }
+   "lang": "20261024",
+   "commit": "20261027"
+  },
+  "commit_90d": 16,
+  "commit_7d": 16
  },
  "Alpha-Park/genpark-personal-sleep-recovery-chronotype-coach-skill": {
   "rel_ver": null,

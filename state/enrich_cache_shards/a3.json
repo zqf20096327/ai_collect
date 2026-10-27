@@ -4296,5 +4296,32 @@
    "contrib": "20261026",
    "lang": "20261026"
   }
+ },
+ "imu-useful/hi-shell": {
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-10-26",
+  "rel_days": 1,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "QML": 92,
+   "Python": 3,
+   "Shell": 2,
+   "JavaScript": 1,
+   "Lua": 1
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
  }
 }

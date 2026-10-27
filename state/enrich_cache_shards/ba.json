@@ -4123,5 +4123,30 @@
    "contrib": "20261026",
    "lang": "20261026"
   }
+ },
+ "XXXzhouhan/dafeiyu-wechat-ai": {
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-10-21",
+  "rel_days": 6,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 93,
+   "PowerShell": 6,
+   "Batchfile": 1
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
  }
 }

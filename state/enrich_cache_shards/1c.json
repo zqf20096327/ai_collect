@@ -4603,5 +4603,32 @@
    "contrib": "20261026",
    "lang": "20261026"
   }
+ },
+ "777genius/lintai": {
+  "rel_ver": "v0.1.3",
+  "rel_pub": "2026-09-05",
+  "rel_days": 52,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 95,
+   "Vue": 4,
+   "TypeScript": 1,
+   "JavaScript": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
  }
 }

@@ -4047,5 +4047,35 @@
    "contrib": "20261026",
    "lang": "20261026"
   }
+ },
+ "Ch1rpys/Mirrai": {
+  "commit_90d": 81,
+  "commit_7d": 81,
+  "rel_ver": "v1.3.0",
+  "rel_pub": "2026-10-25",
+  "rel_days": 2,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 87,
+   "Python": 8,
+   "JavaScript": 2,
+   "PowerShell": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "commit": "20261027",
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
  }
 }

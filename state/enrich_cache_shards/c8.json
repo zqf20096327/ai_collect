@@ -4208,5 +4208,32 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "ralphschuler/orbitpal": {
+  "rel_ver": "v0.14.0",
+  "rel_pub": "2026-10-21",
+  "rel_days": 6,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 53,
+   "TypeScript": 22,
+   "Python": 11,
+   "Svelte": 8,
+   "JavaScript": 4
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
  }
 }

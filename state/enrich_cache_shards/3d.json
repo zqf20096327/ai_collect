@@ -4291,5 +4291,49 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "OFat34764e/InterviewCopilot-rpocket-team": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
+ },
+ "ardana-ai/ardana": {
+  "rel_ver": "v0.3.2",
+  "rel_pub": "2026-10-13",
+  "rel_days": 14,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Rust": 76,
+   "JavaScript": 10,
+   "TypeScript": 10,
+   "CSS": 3,
+   "Python": 1
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
  }
 }

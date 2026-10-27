@@ -4197,5 +4197,57 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "devcristianlopez/lemoria": {
+  "rel_ver": "v0.3.0",
+  "rel_pub": "2026-09-29",
+  "rel_days": 28,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 74,
+   "HTML": 13,
+   "Shell": 9,
+   "QML": 4,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
+ },
+ "ajokhai/computer-use-lite": {
+  "rel_ver": "v0.1.18",
+  "rel_pub": "2026-10-25",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 71,
+   "Rust": 28,
+   "Shell": 1
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
+  }
  }
 }

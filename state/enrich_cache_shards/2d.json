@@ -80,7 +80,7 @@
   "commit_90d": 9,
   "rel_ver": "v0.5.13",
   "rel_pub": "2026-06-29",
-  "rel_days": 109,
+  "rel_days": 120,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -93,10 +93,10 @@
    "Python": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261027",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261027",
+   "release": "20261027",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -3944,6 +3944,26 @@
    "security": "20261026",
    "contrib": "20261026",
    "lang": "20261026"
+  }
+ },
+ "Sfgangloff/writing-rules": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 50,
+   "Shell": 50
+  },
+  "enriched_at": "20261027",
+  "dim_ts": {
+   "release": "20261027",
+   "security": "20261027",
+   "contrib": "20261027",
+   "lang": "20261027"
   }
  }
 }
