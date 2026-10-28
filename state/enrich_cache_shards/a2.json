@@ -4127,5 +4127,53 @@
    "contrib": "20261027",
    "lang": "20261027"
   }
+ },
+ "chandewardnyanesh/kronos-nse-terminal": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 67,
+   "HTML": 32,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
+  }
+ },
+ "muzaffermahi/rumi": {
+  "rel_ver": "v0.5.0",
+  "rel_pub": "2026-10-26",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 52,
+   "TypeScript": 36,
+   "CSS": 10,
+   "PowerShell": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
+  }
  }
 }

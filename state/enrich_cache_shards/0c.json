@@ -4311,5 +4311,78 @@
    "contrib": "20261027",
    "lang": "20261027"
   }
+ },
+ "ishangautam7/Talvio": {
+  "rel_ver": "v2.2.1",
+  "rel_pub": "2026-10-27",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Rust": 58,
+   "TypeScript": 28,
+   "Dart": 7,
+   "MDX": 2,
+   "CSS": 2
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
+  }
+ },
+ "zeokeel/ZeoKeel-Harness": {
+  "rel_ver": "v2.10.0-beta.4",
+  "rel_pub": "2026-10-26",
+  "rel_days": 2,
+  "rel_n90": 4,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 31,
+  "lang": {
+   "TypeScript": 46,
+   "Go": 38,
+   "JavaScript": 14,
+   "Shell": 1,
+   "Python": 0
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
+  }
+ },
+ "DRAG0NM/Pare-DSH": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
+  }
  }
 }

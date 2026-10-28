@@ -4557,5 +4557,83 @@
    "contrib": "20261027",
    "lang": "20261027"
   }
+ },
+ "guilhermeborgesbastos/live-resume": {
+  "commit_90d": 94,
+  "commit_7d": 62,
+  "rel_ver": "v2.1.1",
+  "rel_pub": "2026-10-27",
+  "rel_days": 1,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "TypeScript": 70,
+   "SCSS": 17,
+   "HTML": 7,
+   "JavaScript": 2,
+   "CSS": 1
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "commit": "20261028",
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
+  }
+ },
+ "n0tduck1e/theharbinger": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 80,
+   "Vue": 17,
+   "JavaScript": 1,
+   "Shell": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
+  }
+ },
+ "qingpy/zotero-pdf2md": {
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-09-13",
+  "rel_days": 45,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 93,
+   "HTML": 6,
+   "PowerShell": 1
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
+  }
  }
 }

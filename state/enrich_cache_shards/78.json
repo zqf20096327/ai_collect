@@ -4351,5 +4351,29 @@
    "contrib": "20261027",
    "lang": "20261027"
   }
+ },
+ "adamd1985/articles_materials": {
+  "commit_90d": 16,
+  "commit_7d": 5,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 100,
+   "Python": 0,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "commit": "20261028",
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
+  }
  }
 }

@@ -4320,5 +4320,48 @@
    "contrib": "20261027",
    "lang": "20261027"
   }
+ },
+ "Burakkylmz/llm-token-economics-lab": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
+  }
+ },
+ "liao96312/teleagent-proxy": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 31,
+   "Python": 25,
+   "Go": 21,
+   "JavaScript": 18,
+   "Batchfile": 4
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
+  }
  }
 }

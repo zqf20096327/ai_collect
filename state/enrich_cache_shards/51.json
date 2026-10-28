@@ -247,11 +247,11 @@
   }
  },
  "nasa-jpl/rosa": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 3,
+  "commit_7d": 3,
   "rel_ver": "v1.0.10",
   "rel_pub": "2026-03-17",
-  "rel_days": 214,
+  "rel_days": 225,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -266,10 +266,10 @@
    "Shell": 2,
    "Dockerfile": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261028",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261028",
+   "release": "20261028",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4195,6 +4195,45 @@
    "security": "20261026",
    "contrib": "20261026",
    "lang": "20261026"
+  }
+ },
+ "QwenLM/BabelArena": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Python": 99,
+   "Shell": 1
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
+  }
+ },
+ "faraz-369/rag-agent-failure-catalog": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
   }
  }
 }

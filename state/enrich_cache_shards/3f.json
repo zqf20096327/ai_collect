@@ -269,8 +269,8 @@
   }
  },
  "jingyaogong/minimind-o": {
-  "commit_90d": 4,
-  "commit_7d": 0,
+  "commit_90d": 5,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -283,10 +283,10 @@
    "HTML": 26,
    "Shell": 3
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261028",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261028",
+   "release": "20261028",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

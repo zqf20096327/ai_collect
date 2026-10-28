@@ -80,11 +80,11 @@
   }
  },
  "lealone/Lealone": {
-  "commit_90d": 13,
+  "commit_90d": 14,
   "commit_7d": 1,
   "rel_ver": "lealone-6.0.1",
   "rel_pub": "2024-08-18",
-  "rel_days": 790,
+  "rel_days": 801,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -98,10 +98,10 @@
    "HTML": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261028",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261028",
+   "release": "20261028",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

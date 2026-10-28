@@ -1921,13 +1921,16 @@
    "Python": 10,
    "Assembly": 2
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261028",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261028"
+  },
+  "commit_90d": 35,
+  "commit_7d": 4
  },
  "xiaotonng/lc2mcp": {
   "rel_ver": null,
@@ -4581,6 +4584,46 @@
    "security": "20261026",
    "contrib": "20261026",
    "lang": "20261026"
+  }
+ },
+ "xianyu110/grokbot": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {},
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
+  }
+ },
+ "microsoft/AKS-Lab-GitHubCopilot": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 90,
+   "Dockerfile": 4,
+   "Shell": 3,
+   "Bicep": 3,
+   "Go Template": 0
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
   }
  }
 }

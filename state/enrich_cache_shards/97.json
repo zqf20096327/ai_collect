@@ -2267,11 +2267,11 @@
   }
  },
  "kuberay-project/kuberay": {
-  "commit_90d": 120,
-  "commit_7d": 11,
+  "commit_90d": 115,
+  "commit_7d": 5,
   "rel_ver": "v1.7.1",
   "rel_pub": "2026-09-21",
-  "rel_days": 30,
+  "rel_days": 37,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -2287,10 +2287,10 @@
    "Makefile": 1,
    "HTML": 1
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261028",
   "dim_ts": {
-   "commit": "20261021",
-   "release": "20261021",
+   "commit": "20261028",
+   "release": "20261028",
    "security": "20261021",
    "contrib": "20261021",
    "lang": "20261021"
@@ -4428,6 +4428,29 @@
    "security": "20261027",
    "contrib": "20261027",
    "lang": "20261027"
+  }
+ },
+ "BarioIsCoding/Cloverb": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 54,
+   "C": 26,
+   "TeX": 13,
+   "Shell": 7,
+   "Makefile": 0
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
   }
  }
 }

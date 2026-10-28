@@ -1460,13 +1460,16 @@
    "Makefile": 11,
    "Dockerfile": 6
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261028",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261028"
+  },
+  "commit_90d": 110,
+  "commit_7d": 0
  },
  "Azure-Samples/azure-sql-db-vector-search": {
   "rel_ver": null,
@@ -4193,6 +4196,57 @@
    "security": "20261026",
    "contrib": "20261026",
    "lang": "20261026"
+  }
+ },
+ "JacksonBurns/astartes": {
+  "commit_90d": 5,
+  "commit_7d": 5,
+  "rel_ver": "v1.3.2",
+  "rel_pub": "2025-07-29",
+  "rel_days": 456,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "commit": "20261028",
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
+  }
+ },
+ "gu437/F12x": {
+  "rel_ver": "v0.4.4",
+  "rel_pub": "2026-10-26",
+  "rel_days": 2,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "JavaScript": 85,
+   "CSS": 11,
+   "HTML": 4
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
   }
  }
 }

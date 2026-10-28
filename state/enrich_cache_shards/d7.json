@@ -285,11 +285,11 @@
   }
  },
  "mohitagw15856/pm-claude-skills": {
-  "commit_7d": 96,
-  "commit_90d": 356,
-  "rel_ver": "v83.0.0",
-  "rel_pub": "2026-10-16",
-  "rel_days": 1,
+  "commit_7d": 38,
+  "commit_90d": 325,
+  "rel_ver": "v83.2.0",
+  "rel_pub": "2026-10-23",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -305,10 +305,10 @@
    "Shell": 2,
    "CSS": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261028",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261028",
+   "release": "20261028",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3881,6 +3881,64 @@
    "security": "20261027",
    "contrib": "20261027",
    "lang": "20261027"
+  }
+ },
+ "darwinworks/DangForge": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
+  }
+ },
+ "martrtr/rintawa": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 99,
+   "Shell": 0,
+   "Python": 0,
+   "Nix": 0
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
+  }
+ },
+ "songzhiyin/dsh-local-model": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
   }
  }
 }

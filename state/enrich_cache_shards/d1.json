@@ -1512,13 +1512,16 @@
    "C": 5,
    "Makefile": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261028",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261028"
+  },
+  "commit_90d": 8,
+  "commit_7d": 0
  },
  "huggingface/huggingface-vscode-chat": {
   "rel_ver": null,

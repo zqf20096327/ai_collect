@@ -284,8 +284,8 @@
   }
  },
  "zhihongz/awesome-low-light-image-enhancement": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 1,
+  "commit_90d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -296,10 +296,10 @@
   "lang": {
    "MATLAB": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261028",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261028",
+   "release": "20261028",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4467,12 +4467,110 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261027",
+  "enriched_at": "20261028",
   "dim_ts": {
    "release": "20261027",
    "security": "20261027",
    "contrib": "20261027",
-   "lang": "20261027"
+   "lang": "20261027",
+   "commit": "20261028"
+  },
+  "commit_90d": 49,
+  "commit_7d": 47
+ },
+ "tezra-io/fermix": {
+  "rel_ver": "v0.17.0",
+  "rel_pub": "2026-10-27",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Elixir": 87,
+   "Python": 9,
+   "TLA": 2,
+   "Shell": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
+  }
+ },
+ "Alpha-Park/genpark-ctrip-hotel-corporate-policy-compliance-auditor-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
+  }
+ },
+ "RongShangs/ChatGal": {
+  "rel_ver": "v0.1.6",
+  "rel_pub": "2026-09-22",
+  "rel_days": 36,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Dart": 95,
+   "Python": 4,
+   "Kotlin": 1
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
+  }
+ },
+ "lexmount/lexbench-webfetch": {
+  "rel_ver": "bench-v2.0.1",
+  "rel_pub": "2026-10-23",
+  "rel_days": 5,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100,
+   "Makefile": 0
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
   }
  }
 }

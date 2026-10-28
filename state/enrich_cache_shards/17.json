@@ -64,11 +64,11 @@
   }
  },
  "helloianneo/ian-xiaohei-illustrations": {
-  "commit_7d": 0,
-  "commit_90d": 1,
+  "commit_7d": 1,
+  "commit_90d": 2,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-05-27",
-  "rel_days": 142,
+  "rel_days": 154,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -78,10 +78,10 @@
   "sec_ids": [],
   "contrib_n": 2,
   "lang": {},
-  "enriched_at": "20261016",
+  "enriched_at": "20261028",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261028",
+   "release": "20261028",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4370,6 +4370,36 @@
    "security": "20261027",
    "contrib": "20261027",
    "lang": "20261027"
+  }
+ },
+ "wvlet/wvlet": {
+  "commit_90d": 197,
+  "commit_7d": 25,
+  "rel_ver": "v2026.3.0",
+  "rel_pub": "2026-08-28",
+  "rel_days": 61,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 11,
+  "lang": {
+   "Scala": 92,
+   "TypeScript": 2,
+   "JavaScript": 2,
+   "Python": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "commit": "20261028",
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
   }
  }
 }

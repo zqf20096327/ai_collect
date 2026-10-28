@@ -2575,8 +2575,8 @@
   }
  },
  "deepseek-ai/DeepInfer": {
-  "commit_90d": 4,
-  "commit_7d": 4,
+  "commit_90d": 5,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -2590,10 +2590,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261028",
   "dim_ts": {
-   "commit": "20261021",
-   "release": "20261021",
+   "commit": "20261028",
+   "release": "20261028",
    "security": "20261021",
    "contrib": "20261021",
    "lang": "20261021"
@@ -4667,6 +4667,54 @@
    "security": "20261027",
    "contrib": "20261027",
    "lang": "20261027"
+  }
+ },
+ "ziyouzhiyi666888/PE_SmartFixer": {
+  "rel_ver": "v1.1.1",
+  "rel_pub": "2026-10-27",
+  "rel_days": 1,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 100
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
+  }
+ },
+ "waseemnasir2k26/sitebot-in-a-box": {
+  "rel_ver": "v1.0.13",
+  "rel_pub": "2026-10-26",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Python": 97,
+   "JavaScript": 3,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
   }
  }
 }

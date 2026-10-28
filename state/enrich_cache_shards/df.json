@@ -211,11 +211,11 @@
   }
  },
  "dsphper/lanhu-mcp": {
-  "commit_7d": 3,
-  "commit_90d": 321,
+  "commit_7d": 0,
+  "commit_90d": 253,
   "rel_ver": "v1.8.7",
   "rel_pub": "2026-10-13",
-  "rel_days": 4,
+  "rel_days": 15,
   "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
@@ -230,10 +230,10 @@
    "Shell": 4,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261028",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261028",
+   "release": "20261028",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

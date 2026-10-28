@@ -310,11 +310,11 @@
   }
  },
  "bytedance/Sa2VA": {
-  "commit_7d": 0,
-  "commit_90d": 7,
+  "commit_7d": 1,
+  "commit_90d": 5,
   "rel_ver": "v2",
   "rel_pub": "2025-10-17",
-  "rel_days": 365,
+  "rel_days": 376,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -330,10 +330,10 @@
    "Cuda": 0,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261028",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261028",
+   "release": "20261028",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

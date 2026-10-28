@@ -1389,13 +1389,16 @@
    "Dockerfile": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261028",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261028"
+  },
+  "commit_90d": 0,
+  "commit_7d": 0
  },
  "amazinglvxw/enso-os": {
   "rel_ver": "v0.7.1",
@@ -3062,13 +3065,16 @@
    "Cuda": 13,
    "Shell": 5
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261028",
   "dim_ts": {
    "release": "20261023",
    "security": "20261023",
    "contrib": "20261023",
-   "lang": "20261023"
-  }
+   "lang": "20261023",
+   "commit": "20261028"
+  },
+  "commit_90d": 28,
+  "commit_7d": 28
  },
  "pemiamos/Photo-Aiid-system": {
   "rel_ver": "v3.3.0",
@@ -4179,6 +4185,25 @@
    "security": "20261027",
    "contrib": "20261027",
    "lang": "20261027"
+  }
+ },
+ "RajdipDhar2007/IndicDLP-Live-Layout-Studio": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
   }
  }
 }

@@ -4149,5 +4149,51 @@
    "contrib": "20261026",
    "lang": "20261026"
   }
+ },
+ "Burakkylmz/Encoder-Only-Transformer": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
+  }
+ },
+ "yanbozhang/llm-systems-wiki": {
+  "rel_ver": "v1.0",
+  "rel_pub": "2026-10-24",
+  "rel_days": 4,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 72,
+   "TypeScript": 16,
+   "CSS": 7,
+   "Astro": 5,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
+  }
  }
 }

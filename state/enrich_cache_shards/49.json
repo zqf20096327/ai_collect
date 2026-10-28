@@ -4779,5 +4779,79 @@
    "contrib": "20261027",
    "lang": "20261027"
   }
+ },
+ "ooboqoo/shiping": {
+  "commit_90d": 95,
+  "commit_7d": 2,
+  "rel_ver": "v3.4.0",
+  "rel_pub": "2026-10-17",
+  "rel_days": 11,
+  "rel_n90": 10,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "TypeScript": 84,
+   "JavaScript": 11,
+   "CSS": 5,
+   "HTML": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "commit": "20261028",
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
+  }
+ },
+ "cluster1900/apexo-code": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-10-26",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 88,
+   "JavaScript": 10,
+   "CSS": 2,
+   "HTML": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
+  }
+ },
+ "milimithrandir/ideal-personal-context": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
+  }
  }
 }

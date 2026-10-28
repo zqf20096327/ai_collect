@@ -1796,13 +1796,16 @@
    "Shell": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261028",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261028"
+  },
+  "commit_90d": 11,
+  "commit_7d": 11
  },
  "coxy-proxy/coxy": {
   "rel_ver": null,

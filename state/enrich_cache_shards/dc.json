@@ -34,8 +34,8 @@
   }
  },
  "shareAI-lab/learn-claude-code": {
-  "commit_7d": 0,
-  "commit_90d": 77,
+  "commit_7d": 13,
+  "commit_90d": 71,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -49,10 +49,10 @@
    "CSS": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261028",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261028",
+   "release": "20261028",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2225,13 +2225,16 @@
    "Shell": 0,
    "HTML": 0
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261028",
   "dim_ts": {
    "release": "20261021",
    "security": "20261021",
    "contrib": "20261021",
-   "lang": "20261021"
-  }
+   "lang": "20261021",
+   "commit": "20261028"
+  },
+  "commit_90d": 28,
+  "commit_7d": 0
  },
  "StanfordVL/GibsonEnv": {
   "commit_7d": 2,
@@ -4415,6 +4418,29 @@
    "security": "20261027",
    "contrib": "20261027",
    "lang": "20261027"
+  }
+ },
+ "yiisoft/demo-summarizer": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "PHP": 90,
+   "CSS": 4,
+   "Makefile": 3,
+   "JavaScript": 2,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
   }
  }
 }

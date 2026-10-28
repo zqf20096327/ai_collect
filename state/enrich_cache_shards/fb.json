@@ -57,12 +57,12 @@
   }
  },
  "PawanOsman/OpenCursor": {
-  "commit_7d": 0,
-  "commit_90d": 129,
-  "rel_ver": "0.2.0",
-  "rel_pub": "2026-09-25",
-  "rel_days": 21,
-  "rel_n90": 11,
+  "commit_7d": 9,
+  "commit_90d": 96,
+  "rel_ver": "0.2.1",
+  "rel_pub": "2026-10-26",
+  "rel_days": 2,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -75,10 +75,10 @@
    "JavaScript": 5,
    "CSS": 3
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261028",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261028",
+   "release": "20261028",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -3702,6 +3702,29 @@
    "security": "20261026",
    "contrib": "20261026",
    "lang": "20261026"
+  }
+ },
+ "EimanTahir027/Probability-and-Statistics-for-Machine-Learning-and-Artificial-Intelligence": {
+  "rel_ver": "probability",
+  "rel_pub": "2026-08-09",
+  "rel_days": 80,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
   }
  }
 }

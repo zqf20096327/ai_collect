@@ -244,11 +244,11 @@
   }
  },
  "john-rocky/CoreML-Models": {
-  "commit_7d": 0,
-  "commit_90d": 6,
+  "commit_7d": 1,
+  "commit_90d": 7,
   "rel_ver": "yoloe-v1",
   "rel_pub": "2026-06-01",
-  "rel_days": 138,
+  "rel_days": 149,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -261,10 +261,10 @@
    "Swift": 88,
    "Python": 12
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261028",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261028",
+   "release": "20261028",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3984,6 +3984,33 @@
    "security": "20261025",
    "contrib": "20261025",
    "lang": "20261025"
+  }
+ },
+ "akasecurity/aka-claude-tools": {
+  "rel_ver": "v0.5.4",
+  "rel_pub": "2026-10-24",
+  "rel_days": 4,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Shell": 67,
+   "TypeScript": 23,
+   "JavaScript": 10,
+   "jq": 0,
+   "Ruby": 0
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
   }
  }
 }

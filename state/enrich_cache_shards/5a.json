@@ -229,7 +229,7 @@
   "commit_7d": 0,
   "rel_ver": "v1.10.0",
   "rel_pub": "2026-03-05",
-  "rel_days": 225,
+  "rel_days": 237,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -245,10 +245,10 @@
    "Starlark": 3,
    "Dockerfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261028",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261028",
+   "release": "20261028",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

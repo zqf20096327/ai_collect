@@ -3956,5 +3956,56 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "monkeyteamvip/x-virality-score": {
+  "rel_ver": "v8.0.0",
+  "rel_pub": "2026-10-27",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 51,
+   "Python": 47,
+   "Shell": 2
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
+  }
+ },
+ "jzubielik/grok-mcp": {
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-10-27",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 98,
+   "Shell": 1,
+   "Makefile": 1,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261028",
+  "dim_ts": {
+   "release": "20261028",
+   "security": "20261028",
+   "contrib": "20261028",
+   "lang": "20261028"
+  }
  }
 }
