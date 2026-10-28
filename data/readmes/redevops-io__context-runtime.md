@@ -63,7 +63,7 @@ runtime. Glossary: [agentic-os/docs/GLOSSARY.md](https://github.com/redevops-io/
 # Reference
 
 It optimizes any app with (a) a decision point about what context/config to use and
-(b) a measurable outcome. Eleven example tenants run offline (each number is the
+(b) a measurable outcome. Thirteen example tenants run offline (each number is the
 learned-vs-baseline reward its example in `examples/` prints on a **seeded simulator**; *Illustrative/synthetic*,
 cards in [docs/evidence/](./docs/evidence/)):
 
@@ -72,6 +72,8 @@ cards in [docs/evidence/](./docs/evidence/)):
 | **sidekick** | which skills to recall · budget | drop-in for `SkillStore`; **67% vs 33%** naive baseline acceptance |
 | **redevops-rag** | `pool · limit · threshold · rerank …` per query | `ContextRuntimeRetrieverTuner`; **0.780 vs 0.428** vs fixed default |
 | **edge-sentinel (SOC)** | which sources to pull per alert (CrowdSec · threat-intel · EDR) | tool-using + approval-gated; **0.900 vs 0.800** always-full baseline |
+| **video-ad** | which generation chain (provider · detail · best-of-N) per shot-complexity bucket | learns the cheapest creative path to an *accepted* segment; **0.853 vs 0.777** premium baseline at **4.5× cheaper spend** |
+| **zoning-intelligence** (geospatial) | which evidence bundle (Regrid · ATTOM · official GIS · ordinance) per use-difficulty bucket | deterministic-first + reconciliation; **0.894 vs 0.850** always-thorough at **1.4× cheaper**, and **0 false-permits vs 1** for single-provider (the blocking SLO) |
 | **growth-engine** | which attribution window + source bundle per lead-source query | **7.851 vs 5.282** vs fixed window |
 | **control-tower** | which Metabase query set per "ask anything" question | **5.326 vs 1.643** vs core query set |
 | **agentic-billing** | which usage/invoice/dunning signals to pull per account | **4.122 vs 2.442** vs full-stack |
@@ -83,7 +85,8 @@ cards in [docs/evidence/](./docs/evidence/)):
 
 > **Label: Illustrative/synthetic.** Reward numbers are single-run outputs of each tenant's `examples/` script
 > on simulated environments (the sidekick example simulates the acceptance signal), not production results.
-> Re-run: all eleven rows matched on 2026-10-15 at commit `6e8aa19` (Python 3.12). They can drift with model or
+> Re-run: the eleven rows then listed matched on 2026-10-15 at commit `6e8aa19` (Python 3.12); the video-ad and
+> zoning-intelligence rows were added later and are not covered by that check. They can drift with model or
 > data changes. Units differ per row (acceptance rate, retrieval reward, cumulative reward), so rows are not
 > comparable with each other.
 
@@ -91,6 +94,8 @@ cards in [docs/evidence/](./docs/evidence/)):
 PYTHONPATH=. python examples/sidekick_learning.py   # discrete-strategy bandit
 PYTHONPATH=. python examples/rag_tuning.py          # numeric-knob tuning
 PYTHONPATH=. python examples/soc_triage.py          # tool-using cybersecurity tenant
+PYTHONPATH=. python examples/video_ad.py            # creative-workflow chain optimization
+PYTHONPATH=. python examples/zoning_intelligence.py # geospatial: deterministic-first spatial evidence
 ```
 
 Plus the **ToolPlugin** seam (`context_runtime/tools/` — how plans reach external systems,
@@ -127,11 +132,11 @@ while the core does the domain work:
 | lifecycle | Listmonk | guide | redevops-rag |
 
 Plus **outreach-engine** (Twenty CRM), and **growth-assistant** + **agentic-privacy** (both on ERPNext — leads / contacts, not books), and the **control plane**
-(`agentic_os`: deploy / observe / approve, `/m/<app>` proxy + a module catalog). Most have the offline
+(`context_runtime.control_plane`: deploy / observe / approve, `/m/<app>` proxy + a module catalog). Most have the offline
 reward examples shown above (`examples/<app>.py`); the rest are native realizations without a
 standalone tuner.
 
-The **enterprise line** (a separate repository that is not public) adds a commercial layer that *composes with*
+The **enterprise line** (a separate repository that is not public) adds an enterprise layer that *composes with*
 this optimizer rather than replacing it: **Policy-Constrained Planning** — provider / budget / PII /
 data-residency / mandatory-verification / human-approval predicates define the *feasible* plan set
 **before** the cost model ranks, so every execution can be proven within governance — and
@@ -202,7 +207,7 @@ The six plugin seams and their initial slice; several "real bindings" below are 
 | **Compression** | sidekick `clip` structural pack | LLMLingua-2 semantic (v0.1 optional) |
 | **Verifier** | citation/grounding check | RAGAS / Instructor |
 | **Observability** | in-process `Trace` + JSON | OpenLLMetry → Langfuse |
-| **Plan Cache** | null/always-miss stub | semantic cache (v0.2) |
+| **Plan Cache** | `SnapshotPlanCache` — deterministic replay keyed on source fingerprint (default) | semantic (embedding-match) cache |
 
 ## Also shipped
 
@@ -221,6 +226,22 @@ Beyond the initial slice, in both the Python source-of-truth (a Go port exists i
   the DB EXPLAIN-ANALYZE analogue for the retrieval decision: every candidate arm ranked with its
   quality/cost decomposition, the per-method trace with calibrated `P(relevant)`, served/abstain,
   and reward provenance. Read-only. Visualized at [redevops.io/planner](https://redevops.io/planner).
+- **Freshness-aware routing (sourced from evidence)** — evidence **freshness** is a scored optimizer
+  dimension (a staleness penalty; a fully-fresh plan is unchanged), and — as of v0.2.0 — it is
+  **derived from the retrieved evidence's own source timestamp/version** (via a `FreshnessPolicy`),
+  not a static prior. On the normal `run` serving path a confident plan backed by evidence staler than
+  the policy's bar returns a **`REFRESH`** verdict (distinct from abstain/escalate) instead of serving
+  stale context. Entirely opt-in: with no `FreshnessPolicy` configured, freshness is `1.0` and the
+  path is byte-for-byte the legacy one.
+- **Deterministic-replay Plan Cache** — `SnapshotPlanCache` is the default, keyed on
+  `source_fingerprint` (the pinned source versions): same intent + same pinned evidence ⇒ replay hit; a
+  mutated source version ⇒ miss (re-plan). `NullPlanCache` remains the opt-out (and the online-learning
+  default, so the bandit re-selects every call).
+- **Evidence lineage in EXPLAIN** — the EXPLAIN surface cites the exact evidence revision behind a
+  hit (content-hash / source-version) plus the capability version and freshness. As of v0.2.0 a
+  `Hit` carries that identity from the retriever (the redevops-rag binding supplies it), and
+  `freshness.lineage_from_hits(...)` populates the section from the actual served evidence — the
+  renderer no longer relies on a caller hand-filling the lineage.
 - **LiteLLM model binding** + native cost-tiered routing; **DuckDB** and **Postgres** stores.
 
 ## Benchmarks
@@ -237,6 +258,10 @@ The pollution result needs a FinanceBench corpus that is not in the repository (
 
 ## Architecture
 
+The runtimes use a **functional-core / imperative-shell** design: canonical artifacts and
+deterministic transformations stay value-oriented and side-effect free, while runtime actors, stores,
+and providers sit behind explicit `Protocol` interfaces — see [ARCHITECTURE.md](./ARCHITECTURE.md) §0.
+
 The decision layer is thin; the substrate is reused. See:
 - [ARCHITECTURE.md](./ARCHITECTURE.md) — the layered design and the cost-based optimizer loop
 - [SPEC.md](./SPEC.md) — the normative interface contracts (six plugin seams, IR, trace, plan-cache key)
@@ -245,9 +270,9 @@ The decision layer is thin; the substrate is reused. See:
 ## Test
 
 ```bash
-pip install -e ".[dev]" numpy httpx && pytest   # 349 collected: 338 passed, 11 skipped (2026-10-15); test_conformance.py == SPEC §10
+pip install -e ".[dev]" numpy httpx && pytest   # the full conformance suite (test_conformance.py == SPEC §10)
 ```
 
 ## License
 
-**Source-available, not open source** (the wording of [LICENSE.md](LICENSE.md)): AGPL-3.0-or-later **WITH** the Commons Clause. Self-host freely, including inside a company for its own business. The Clause removes the right to *sell it*: to charge third parties for the software, for hosting it, or for services whose value derives substantially from it. Earlier versions remain available under the terms they were released with; see LICENSE.md.
+**Source-available, not open source** (the wording of [LICENSE.md](LICENSE.md)): AGPL-3.0-or-later (which includes the AGPL's network clause, section 13) **WITH** the Commons Clause. Self-host freely, including inside a company for its own business. The Clause removes the right to *sell it*: to charge third parties for the software, for hosting it, or for services whose value derives substantially from it. Earlier versions remain available under the terms they were released with; see LICENSE.md.

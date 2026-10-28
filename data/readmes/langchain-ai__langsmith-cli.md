@@ -57,6 +57,16 @@ langsmith profiles create prod           # API key, taken from $LANGSMITH_API_KE
 Profiles live in `~/.langsmith/config.json`, written owner-only; the CLI warns
 if it is readable by other users.
 
+To keep an API key out of that file, save where it lives instead. The variable
+is read, or the command run, each time the profile is used:
+
+```bash
+langsmith profiles create prod --api-key-env PROD_LANGSMITH_API_KEY
+langsmith profiles create prod --api-key-cmd 'op read "op://Private/LangSmith/credential"'
+```
+
+`langsmith auth info` shows where the active profile's key comes from.
+
 Other settings can be passed as flags:
 
 ```bash
@@ -237,6 +247,18 @@ langsmith threads list --project my-chatbot --last-n-minutes 120
 
 # Get all turns in a thread
 langsmith threads get <thread-id> --project my-chatbot --full
+```
+
+### `streaming` — Search runs, threads and traces with AI search
+
+`--ai-search` takes a natural-language query and only works on the streaming
+commands. Each SSE event prints as a JSON patch, and `--max-items` counts
+events. These commands take `--project-id` only.
+
+```bash
+langsmith threads streaming query --project-id <project-id> --ai-search "user asks for a refund"
+langsmith traces streaming query --project-id <project-id> --ai-search "tool call failed"
+langsmith runs streaming query-v2 --project-id <project-id> --ai-search "slow LLM calls" --max-items 20
 ```
 
 ### `insights` — Create and query insight reports

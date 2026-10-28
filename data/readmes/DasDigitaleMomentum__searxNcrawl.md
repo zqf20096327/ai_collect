@@ -20,7 +20,6 @@
   <a href="#quick-start">Quick start</a> ·
   <a href="docs/overview.md">Docs</a> ·
   <a href="https://www.searxncrawl.io/developers/">Developers</a> ·
-  <a href="https://www.searxncrawl.io/#cloud">Cloud (planned)</a> ·
   <a href="CHANGELOG.md">Changelog</a>
 </p>
 
@@ -40,7 +39,7 @@
   </tr>
   <tr>
     <td valign="top"><b>Authenticated crawls</b><br>Capture a login session once with <code>crawl-capture</code>, then crawl behind the login.</td>
-    <td valign="top"><b>STDIO and HTTP</b><br>Plug into local MCP clients, or expose an HTTP endpoint with host and CORS guards.</td>
+    <td valign="top"><b>STDIO and HTTP</b><br>Plug into local MCP clients, or run an HTTP endpoint with opt-in Host/Origin checks and configurable CORS.</td>
     <td valign="top"><b>CLI and Python API</b><br><code>crawl</code>, <code>search</code> and <code>crawl-capture</code> on the command line, or import it in Python.</td>
   </tr>
 </table>
@@ -52,6 +51,8 @@ SEARXNG_URL=http://your-searxng:8888 uvx searxncrawl
 <!-- mcp-name: io.github.DasDigitaleMomentum/searxncrawl -->
 
 ## Quick start
+
+Connect your MCP client directly to searxNcrawl over STDIO or its HTTP endpoint.
 
 You need [uv](https://docs.astral.sh/uv/) and, for the `search` tool, at least one search provider: a SearXNG instance with JSON output enabled and/or a You.com API key (`YDC_API_KEY`). No SearXNG yet? [Start one with Docker](docs/usage/installation.md#run-searxng-locally). Crawling works without either.
 
@@ -108,6 +109,9 @@ code --add-mcp '{"name":"searxncrawl","command":"uvx","args":["searxncrawl"],"en
 
 The first crawl downloads Playwright's Chromium once (about 550 MB). For Docker, HTTP transport and other setups see [Installation](docs/usage/installation.md) and [MCP server](docs/usage/mcp-server.md).
 
+- **Claude Desktop bundle:** download `searxncrawl-<version>.mcpb` from [GitHub Releases](https://github.com/DasDigitaleMomentum/searxNcrawl/releases/latest) and open it in Claude Desktop.
+- **Smithery users:** use the direct installation above or the native bundle; see the [Smithery transition](docs/registry.md#smithery-transition).
+
 ### Ask your agent
 
 ```text
@@ -122,7 +126,19 @@ Your agent calls `search`, picks a result and calls `crawl`. It gets back clean 
 ```bash
 uvx --from searxncrawl crawl https://modelcontextprotocol.io/docs/getting-started/intro
 SEARXNG_URL=http://localhost:8888 uvx --from searxncrawl search "model context protocol" --max-results 5
+SEARXNG_URL=http://localhost:8888 uvx --from searxncrawl search "Python documentation" --max-results 3 --include-content
 ```
+
+### Choose how to connect
+
+| Mode | Setup | Hosting |
+| --- | --- | --- |
+| Native MCP over STDIO (default) | `uvx searxncrawl` or `uvx searxncrawl setup` | Runs alongside your MCP client |
+| Native MCP over HTTP | `uvx searxncrawl --transport http` or Docker Compose | You operate the server; see [HTTP configuration](docs/usage/mcp-server.md#start-the-server) |
+| Arcade gateway (optional) | Separate [Arcade adapter](deploy/arcade/README.md) | Requires your own Playwright-compatible worker host and authenticated connection to Arcade |
+
+- Standard installations and releases do not require Arcade.
+- For shared HTTP access, use an authenticated TLS proxy. Enable [Host/Origin checks](docs/usage/mcp-server.md#http-host-and-cors-guards) with `FASTMCP_HTTP_HOST_ORIGIN_PROTECTION=true` before startup; allowlists alone do not enable checks or authenticate callers.
 
 ## How it works
 
@@ -146,11 +162,18 @@ searxNcrawl exposes three MCP tools:
 
 | Tool | What it does |
 | --- | --- |
-| `search` | Queries the configured providers (SearXNG, You.com) in parallel and returns one merged, deduplicated list with the source of each result. Filters: language, time range, safe search, paging; categories and engines for SearXNG. |
+| `search` | Queries the configured providers (SearXNG, You.com) in parallel and returns one merged, deduplicated list with the source of each result. Filters: language, time range, safe search, paging; categories and engines for SearXNG. With `include_content`, also returns the Markdown of each result page in the same call. |
 | `crawl` | Renders one or many URLs in Chromium and returns Markdown or JSON with metadata and references. |
 | `crawl_site` | Follows links from a seed URL within depth, page and timeout limits, tuned for documentation sites. |
 
 Both crawl tools drop sections that repeat within a page's Markdown (`dedup_mode="exact"`), can strip links for a smaller context (`remove_links`), and accept a Playwright `storage_state` for pages behind a login. Full parameters are in the [MCP tools reference](docs/usage/mcp-tools.md).
+
+### Private SearXNG instances
+
+- `SEARXNG_EXTRA_HEADERS` adds headers to SearXNG requests in both CLI and MCP, including access-gateway credentials and a custom User-Agent.
+- Values such as `@~/.config/searxncrawl/cf_secret` load secrets from files; absolute and `~/` paths are supported.
+- Invalid header configuration disables SearXNG with a value-free warning; a configured You.com provider remains available.
+- Setup and JSON examples: [SearXNG configuration](docs/usage/installation.md).
 
 ## Why searxNcrawl
 
@@ -164,7 +187,7 @@ Hosted search and crawl APIs are quick to start with, but every call goes throug
 | Search backend | Your SearXNG (the engines you enable) and/or You.com | Hosted: Firecrawl's search. Self-hosted: SearXNG if configured, otherwise DuckDuckGo | Tavily's search API | Exa's search index |
 | Licence | MIT | AGPL-3.0 | MCP server MIT, API proprietary | MCP server MIT, API proprietary |
 
-Self-hosted Firecrawl can search through SearXNG too; it runs as a multi-service stack (API, Playwright service, Redis, RabbitMQ, PostgreSQL and more), while searxNcrawl is a single Python process with Chromium, plus your SearXNG instance if you use one. A Firecrawl-compatible API for searxNcrawl is [planned](#roadmap).
+Self-hosted Firecrawl can search through SearXNG too; it runs as a multi-service stack (API, Playwright service, Redis, RabbitMQ, PostgreSQL and more), while searxNcrawl is a single Python process with Chromium, plus your SearXNG instance if you use one.
 
 Where the others are a better fit: if you do not want to run a search provider and a browser yourself, a hosted API is less work, and Exa's semantic search index or Firecrawl's extraction features go beyond what searxNcrawl does today. Comparison based on each project's public repository and documentation in October 2026; corrections are welcome. Firecrawl is a trademark of its owner; searxNcrawl is not affiliated with it.
 
@@ -191,7 +214,9 @@ Yes. Capture a session once with `crawl-capture`, then pass the saved `storage_s
 <details>
 <summary><b>Can I run it remotely or share it with a team?</b></summary>
 
-Yes. Start it with `--transport http` (port 8000 by default) or use the Docker Compose stack (port 9555), then point your MCP clients at `http://<host>:<port>/mcp`. Host and Origin allowlists guard the endpoint; see [MCP server](docs/usage/mcp-server.md#http-host-and-cors-guards).
+- Start with `--transport http` (port 8000 by default) or Docker Compose (port 9555).
+- Put shared access behind an authenticated TLS proxy and connect clients to its `/mcp` endpoint.
+- Enable header protection and configure the externally visible [Host and Origin allowlists](docs/usage/mcp-server.md#http-host-and-cors-guards).
 </details>
 
 <details>
@@ -207,17 +232,12 @@ The first crawl downloads Playwright's Chromium (about 550 MB on disk). Later ru
 </details>
 
 <details>
-<summary><b>Is there a hosted version?</b></summary>
+<summary><b>Do I need Arcade?</b></summary>
 
-Not yet. searxNcrawl Cloud is planned; see the [roadmap](#roadmap).
+- No. Connect directly over STDIO or HTTP for the standard setup.
+- The [optional adapter](deploy/arcade/README.md) connects a separately hosted worker to Arcade's authentication and gateway.
+- Arcade Cloud's current runner cannot install Playwright; the worker needs a compatible host.
 </details>
-
-## Roadmap
-
-- **Firecrawl-compatible API** (planned): use searxNcrawl as a drop-in backend for tools built against the Firecrawl API.
-- **searxNcrawl Cloud** (planned): a managed endpoint for teams that do not want to run SearXNG and a browser. [Details and waitlist](https://www.searxncrawl.io/#cloud).
-
-Ideas and votes are welcome in [Discussions](https://github.com/DasDigitaleMomentum/searxNcrawl/discussions).
 
 ## Documentation
 
@@ -231,6 +251,7 @@ Ideas and votes are welcome in [Discussions](https://github.com/DasDigitaleMomen
 | [Output formats](docs/usage/output-formats.md) | Markdown and JSON structure, `CrawledDocument` |
 | [Session capture](docs/usage/session-capture.md) | Authenticated crawling with a saved browser session |
 | [MCP Registry](docs/registry.md) | `server.json` and the publish steps |
+| [Arcade adapter (optional)](deploy/arcade/README.md) | Shared authentication and routing through Arcade; separate deployment |
 | [Architecture](docs/overview.md) | Modules and features for contributors |
 
 ## Contributing

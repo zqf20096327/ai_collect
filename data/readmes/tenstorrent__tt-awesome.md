@@ -55,6 +55,10 @@ A curated directory of projects, tools, models, and research for Tenstorrent har
   by [@aweditya](https://github.com/aweditya) — Direct TT-Metal bringup of modern open-weight LLMs on Blackhole P150 — hand-written compute graphs with no PJRT and no JAX. Covers Qwen3.6-27B, Qwen3.6-35B-A3B MoE, Gemma 4 12B, and Nemotron-3 Nano 30B-A3B, plus a zoo of single-chip Llama / Qwen2.5 / SmolLM ports, backed by custom fused `owned_*` kernels, a continuous-batching engine, an OpenAI-compatible HTTP server, and a wiki documenting each design decision.
   [📦 repo](https://github.com/aweditya/tt-model-bringup) · [📖 HANDOFF.md — current perf and production paths](https://github.com/aweditya/tt-model-bringup/blob/main/HANDOFF.md)
 
+- **[tt-rl](https://github.com/scaleresearch/tt-rl)** ![community](https://img.shields.io/badge/community-27AE60?style=flat-square)
+  by [@antonibertel](https://github.com/antonibertel) — Reinforcement learning trained natively on TT-NN: the networks, gradients, Adam step and device trace all run on the chip, while environments and replay buffers stay on the host. Ships DQN, PPO and SAC with Atari and MuJoCo configs, measured Blackhole results (Pong 17.8, Breakout 144.8, Hopper 3604), data-parallel training with one replica per chip, and export of trained policies to numpy or ONNX so they run on any CPU. Developed on a TT-QuietBox with four Blackhole chips; trained weights are published on Hugging Face.
+  [📦 repo](https://github.com/scaleresearch/tt-rl) · [🌐 Trained policies on Hugging Face (ONNX + numpy)](https://huggingface.co/scaleresearch)
+
 - **[vllm.cpp](https://github.com/localai-org/vllm.cpp)** ![community](https://img.shields.io/badge/community-27AE60?style=flat-square)
   by [@mudler](https://github.com/mudler) — A C++ reimplementation of the vLLM engine (continuous batching, paged KV cache, GGUF loading) with CUDA, CPU, Metal, Vulkan and ROCm backends plus an opt-in Tenstorrent backend under `src/vt/tenstorrent`. The TT backend is a thin adapter over TTNN and TT-Metalium built with `-DVLLM_CPP_TENSTORRENT=ON`, adding paged attention, Qwen3.5 gated-delta-net, trace capture and quant-preserving (`keepquant`) matmul paths. Status is correctness-first on Blackhole: OPT-125m passes a strict token-exact gate, Qwen3-0.6B has committed goldens with a full rerun pending, and 27B GGUF decode is in smoke-measurement stage.
   [📦 repo](https://github.com/localai-org/vllm.cpp) · [📦 Tenstorrent backend](https://github.com/mudler/vllm.cpp/tree/main/src/vt/tenstorrent) · [🌐 Tenstorrent build docs](https://github.com/mudler/vllm.cpp/blob/main/docs/BUILD.md#tenstorrent-build-blackhole)
@@ -693,6 +697,10 @@ The architecture can be mapping to any number of Tensix cores. The build is conf
   by [@marty1885](https://github.com/marty1885) — Mandelbrot Set fractal renderer running on Tenstorrent hardware. A classic demo showcasing parallel compute on Tensix cores.
   [📦 repo](https://github.com/marty1885/ttMandelbrot)
 
+- **[tensixinet](https://github.com/tsingletaryTT/tensixinet)** ![affiliated](https://img.shields.io/badge/affiliated-EC96B8?style=flat-square)
+  by [@tsingletaryTT](https://github.com/tsingletaryTT) — Your Tenstorrent chips, playing in a band: tensixinet reads each chip's telemetry with tt-smi (temperature, clock, power, current, memory temperatures, harvesting, link state, errors) and turns it into music from eleven synthesizers inspired by Ciat-Lonbarde instruments, so a hot chip and a cool chip sound different, a busy chip gets more solos, and uneven memory makes the melody wander. Every mapping is logged with its reason, each run draws a replayable patch, a live mode follows the chips as they heat under a prompted language model, some devices run as TT-Lang kernels on the chips themselves, and a Gradio page draws the band as it plays. Needs no hardware to try: it plays any number of synthetic chips.
+  [📦 repo](https://github.com/tsingletaryTT/tensixinet) · [🌐 Project site: routing diagrams, cable explorer, audio samples](https://tsingletarytt.github.io/tensixinet/) · [🚀 100-second demo with sound: four chips, TT-Lang kernels, tt-toplike alongside](https://tsingletarytt.github.io/tensixinet/assets/kernels.mp4)
+
 - **[tt-bio-demo](https://github.com/tsingletaryTT/tt-bio-demo)** ![affiliated](https://img.shields.io/badge/affiliated-EC96B8?style=flat-square)
   by [@tsingletaryTT](https://github.com/tsingletaryTT) — A turnkey conference-booth demo for tt-bio: watch a protein condense out of noise into its folded structure in real time, computed on the Blackhole chips a few feet away. Native GTK4 and OpenGL, with a cartoon renderer, live per-residue confidence colouring, a Tensix core grid, and a 2×2 quad view running four independent folds on four chips at once.
   [📦 repo](https://github.com/tsingletaryTT/tt-bio-demo) · [🌐 website](https://tsingletarytt.github.io/tt-bio-demo/)
@@ -729,19 +737,4 @@ The architecture can be mapping to any number of Tensix cores. The build is conf
 
 - **Thoughts and Logs After Messing with Tenstorrent Grayskull** ![community](https://img.shields.io/badge/community-27AE60?style=flat-square)
   by Martin Chang — Honest field notes from getting a Grayskull card running and writing first Metalium kernels. Covers setup pitfalls, processor hangs, memory protection quirks, and what makes Metalium compelling despite early rough edges.
-  [📝 clehaxze.tw — June 2024](https://clehaxze.tw/gemlog/2024/06-02-thoughts-and-logs-after-messing-with-tenstorrent-grayskull.gmi)
-
-- **Tenstorrent Architecture — W&M CSCI654 Advanced Computer Architecture** ![community](https://img.shields.io/badge/community-27AE60?style=flat-square)
-  by Yifan & GPU / William & Mary — Lecture 20 from William & Mary's graduate Computer Architecture course. Frames Tenstorrent in the landscape between GPUs and TPUs, draws comparisons to Cerebras and SambaNova, then dives deep into the Wormhole chip and Tensix core: the 5 RISC-V core design, SFPU, NoC, and dataflow execution model.
-  [🎥 Lecture 20 — Tenstorrent Architecture (YouTube)](https://www.youtube.com/watch?v=CixEFPc8oxg)
-
-- **[Tensix Field Guide](https://github.com/OrangeTangy/tensix-field-guide)** ![community](https://img.shields.io/badge/community-27AE60?style=flat-square)
-  by Tanay Anand — A ten-chapter, plain-English tour of Tenstorrent's Tensix architecture written for someone who knows what a CPU and a GPU are and nothing else: the chip-level grid and NoC, the five RISC-V baby cores, the matrix engine and its LoFi/HiFi fidelity trade-off, the SFPU, L1 and circular buffers, and why everything is 32x32 tile-shaped. The goal is to get a newcomer to the point of reading tt-metal kernel code in one sitting. Self-described draft; every claim traces back to tt-metal tech reports, tt-llk docs, or METALIUM_GUIDE.
-  [📦 repo](https://github.com/OrangeTangy/tensix-field-guide)
-
-- **[TT-Metal Mini Template](https://github.com/JushBJJ/TT-Metal-Mini-Template)** ![community](https://img.shields.io/badge/community-27AE60?style=flat-square)
-  by [@JushBJJ](https://github.com/JushBJJ) — Minimal working CMake project template for starting a new TT-Metal project from scratch. Good starting point for community kernel development.
-  [📦 repo](https://github.com/JushBJJ/TT-Metal-Mini-Template)
-
-- **[Minicurso SSCAD 2026: Tenstorrent com TT-Metalium](https://github.com/CESAR-HPC/tt-sscad26)** ![community](https://img.shields.io/badge/community-27AE60?style=flat-square)
-  by [@CESAR-HPC](https://github.com/CESAR-HPC) — Code for the SSCAD 2026
+  [📝 clehaxze.tw — June 2024](https://clehaxze.tw/gemlog/2

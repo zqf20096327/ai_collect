@@ -46,6 +46,10 @@ Papers:
 
 
 # Recent Random Papers
+- [arXiv 2026.10](https://arxiv.org/abs/2610.37666), ThinkWorld: World Imagination Reinforces Chain-of-Dynamics Reasoning
+- [arXiv 2026.10](https://arxiv.org/abs/2610.37219), Vision-Language-Action or World-Action? Just Action Models
+- [arXiv 2026.10](https://arxiv.org/abs/2610.37588), Understanding the limits of latent world models
+- [arXiv 2026.10](https://arxiv.org/abs/2610.37648), Scaling Laws for Tool-Use Agents via Controllable Environment Synthesis
 - [arXiv 2026.10](https://arxiv.org/abs/2610.32977), UniAction: Unified Action Conditioning for World Models
 - [arXiv 2026.10](https://arxiv.org/abs/2610.32177), Ψ-0.6: Adaptive Streams of Thought in a Unified Vision-Language World Model
 - [arXiv 2026.10](https://arxiv.org/abs/2610.31779), FLORA: An Open Model Suite for Scaling Robotics Data Engines
@@ -753,8 +757,4 @@ Papers:
 - arXiv 2023, Grounding DINO: Marrying DINO with Grounded Pre-Training for Open-Set Object Detection, [arXiv](https://arxiv.org/abs/2303.05499) / [GitHub](https://github.com/IDEA-Research/GroundingDINO)
 - arXiv 2023, Zero-1-to-3: Zero-shot One Image to 3D Object, [arXiv](https://arxiv.org/abs/2303.11328)
 - ICLR 2023, Towards Stable Test-Time Adaptation in Dynamic Wild World, [arXiv](https://arxiv.org/abs/2302.12400)
-- CVPR 2023 highlight, Neural Volumetric Memory for Visual Locomotion Control, [Website](https://rchalyang.github.io/NVM/)
-- arXiv 2023, Segment Anything, [Website](https://segment-anything.com/)
-- ICRA 2023, DribbleBot: Dynamic Legged Manipulation in the Wild, [Website](https://gmargo11.github.io/dribblebot/)
-- arXiv 2023, Alpaca: A Strong, Replicable Instruction-Following Model, [Website](https://crfm.stanford.edu/2023/03/13/alpaca.html)
-- arXiv 2023, VC-1: Where are we in the search for an Artificial Visual Cortex for Embodied Intelligence?, [Website](https://eai-vc.
+- CVPR 2023 highlight, Neural Volumetric Memory for Visual Locomotion Control, [Website](https://rchalyang.github.io

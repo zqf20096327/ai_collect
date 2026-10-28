@@ -17,6 +17,12 @@ GEML is **a lightweight markup language with uniform, addressable blocks and sta
 **Easy for humans to read, safe for agents to mutate.**
 In agent-driven development and knowledge work, plain text and Markdown have no deterministic block boundaries: a program and a model trade the whole file in and the whole file back out — at best probing for it with line windows, and restating the original verbatim to rewrite it. Token cost grows with the length of the document, and the operation turns bloated. After a few rounds of rewriting, the copies excerpted elsewhere start to drift.
 
+**Contents:** [What it solves](#problems) · [What an LLM needs](#why-now) · [What's different](#whats-different) ·
+[The format in 1 minute](#one-minute) · [Profiles](#profiles) ·
+[Get hands-on](#hands-on) · [With an LLM](#with-an-llm) ·
+[Maturity & versions](#maturity) · [The design](#challenge) · [Roadmap](#roadmap) · [Take part](#contributing) ·
+[License](#license)
+
 **You can start without changing a thing.** `geml list`, `geml find` and `geml get` address the Markdown you already have — nothing is converted, no new files, your `.md` stays `.md`:
 
 ```sh
@@ -53,89 +59,41 @@ addressable, verifiable, referenceable structure, natively.
 
 Instead of a separate mini-syntax for each kind of content, GEML carries every kind in one container: the typed block. Code is a block. So are tables, diagrams, math, callouts, even metadata — and a run of prose can be one too (`=== text`), whenever you want it addressable. Extending it later is just as plain. The shape is the same every time, which makes the language easy enough to learn that it's hard to get wrong.
 
-```
-=== code {#hello lang=python}
-print("hi")
-===
-```
-
-```sh
-geml get doc.geml '#hello'   # by name, just this block
-```
-
 Blocks have names so the verbs have somewhere to land — the full syntax is in
 [the format in 1 minute](#one-minute).
-
-**Contents:** [What it solves](#problems) · [Why now](#why-now) · [What's different](#whats-different) ·
-[The format in 1 minute](#one-minute) · [Profiles](#profiles) ·
-[Get hands-on](#hands-on) · [With an LLM](#with-an-llm) ·
-[Maturity & versions](#maturity) · [The design](#challenge) · [Roadmap](#roadmap) · [Take part](#contributing) ·
-[License](#license)
 
 <a id="problems"></a>
 ## What it solves
 
 ### Problems solved
 
-1. **Context load and token bloat**
-   * **Status quo**: data formats like JSON/XML carry heavy wrapper tags and syntax symbols; Markdown lacks strict structural metadata and a reference mechanism.
-   * **Approach**: tuned markup density and syntax overhead, reading and writing only the target block — context cost no longer grows with document length, keeping **agent reads and writes lightweight**.
-
-2. **AST-level precision and parsing determinism**
-   * **Status quo**: unstructured text degrades over multiple rounds of LLM reads and writes — broken formatting, semantic drift, parsing hallucinations.
-   * **Approach**: a deterministic grammar that maps directly to an abstract syntax tree (AST), so programs and LLMs perform atomic block-level create/read/update/delete.
-
-3. **Document copy fragmentation**
-   * **Status quo**: multi-agent collaboration and shared pipelines pass content around by copy-paste, leaving multiple disconnected copies.
-   * **Approach**: **Single Source of Truth** by design — standardized module references and data binding eliminate redundant copies and version divergence.
+1. **Context load and token bloat**: JSON/XML carry heavy wrapper syntax, and Markdown lacks structural metadata and references; GEML reads and writes only the target block, so context cost stops growing with document length.
+2. **AST-level precision and parsing determinism**: unstructured text degrades over rounds of LLM reads and writes — broken formatting, semantic drift; GEML's deterministic grammar maps to an AST, so programs and LLMs create, read, update and delete one block at a time.
+3. **Document copy fragmentation**: multi-agent work and shared pipelines pass content around by copy-paste, leaving copies that drift apart; GEML is built around a **single source of truth**, with standard references and data binding in place of copies.
 
 ### Key features
 
-#### 1. AST-level structured operations
-* Uniform node definitions; a document parses directly into a typed document tree (AST).
-* Agents pinpoint the target section, attribute or component; partial patches and idempotent updates replace whole-file rewrites. Writes land as byte splices with whole-document re-validation — the tree serves reading and validation, and every untouched byte is guaranteed unchanged.
-
-#### 2. Low-token reads and writes
-* What is saved is not markup characters — it is the part never read: `#id` hits one semantically complete block, and the rest never enters the context.
-* For the same semantics, markedly lower prompt-token cost: better model throughput, lower inference cost.
-
-#### 3. Single source of truth, modular references
-* Native cross-document, cross-fragment component references.
-* Change the source node once and every reference follows — no version skew.
-
-#### 4. Robust two-way reads and writes
-* One block shape for the whole language — easy to generate and hard to get wrong, a good match for mainstream LLM output distributions.
-* A strict validator with precise error locations and actionable repair feedback.
-
-#### 5. Profile-based domain extensibility
-* Zero dialect chaos: extend domain vocabularies (e.g. design styles, interactive forms, code graphs, media timelines) through declarative `profile` metadata without inventing new syntax or breaking parsers.
-* Static type and constraint checking with safe fallback to standard blocks in unknown environments.
-
-### Comparison
-
-| Dimension | Markdown | JSON / YAML | GEML |
-| :--- | :--- | :--- | :--- |
-| **Context cost (block-wise I/O)** | High (whole file in and out) | High (whole file + syntax noise) | **Minimal (only the target block)** |
-| **Precise AST operations** | Weak (no strict semantic nodes) | Strong | **Strong (built for agent reads and writes)** |
-| **Human readability** | High | Medium | **High** |
-| **Single-source references** | Unsupported | Needs protocol extensions | **Native (modular embeds)** |
-| **Domain extensibility** | Fractured (proprietary syntax hacks) | Schema-dependent | **Native Profiles (zero new syntax + verified)** |
-| **Write safety** | Weak | Medium | **Strong (a bad write is refused before landing + single-block revert)** |
+- **AST-level structured operations**: a document parses into a typed tree; an agent pinpoints its target and patches it in place, idempotently. Writes land as byte splices with whole-document re-validation, and every untouched byte stays as it was.
+- **Low-token reads and writes**: what is saved is not markup characters but the part never read — `#id` hits one semantically complete block, and the rest never enters the context.
+- **Single source of truth, modular references**: native cross-document, cross-fragment references; change the source once and every reference follows.
+- **Robust two-way reads and writes**: one block shape for the whole language, easy to generate and hard to get wrong; a strict validator with precise error locations and repair feedback.
+- **Profile-based domain extensibility**: declare a `profile` in `=== meta` to add a domain vocabulary (design styles, forms, code graphs, media timelines) without new syntax; a declared vocabulary is checked by its own checker, with safe fallback to standard blocks in unknown environments.
 
 ---
 
 <a id="why-now"></a>
-## Why the LLM era needs a brand-new text format
+## What kind of text format does an LLM need?
 
-Because **both the producer and the consumer of a document have changed**.
+Text in the AI era is "produced by models, read by people and models together".
 
-In traditional software engineering, a document was either a static explanation for people to read, or a serialized data file for programs.
+Reading together means readability cannot be traded away; and when models settled on Markdown, it was a compromise made for want of anything better, not the final answer.
 
-Today, people and AI agents collaborate on the same document at high frequency. When the agent becomes the document's "second reader and co-author", the old balance breaks for good:
+A text format built for people and models working together should change what reading and writing feel like for the machine:
 
-1. **Context is scarce compute**: every whole-document read or write burns an agent's limited attention window and reasoning budget;
-2. **Human–machine collaboration needs an isomorphic carrier**: people need to read it at a glance, agents need to read and write it precisely, block by block;
-3. **Knowledge must have a single source of truth**: scattered prompts and copy-pasted Markdown are destined to decay with every iteration.
+- **Fine-grained**: address precisely by block, and by coordinate inside it — no more scanning the whole file;
+- **Structured**: better organized, more flexible in what it holds;
+- **Consistent**: one standard read/write interface, with other modalities extending it naturally;
+- **Zero barrier**: minimal mental load, and a smooth, near-zero-cost migration.
 
 Yet none of our existing text infrastructure was designed for this scene:
 
@@ -147,7 +105,7 @@ The root of all three failures is each tool's own virtue: Markdown's "never erro
 
 ### The answer: **["Doc-as-a-Base"](https://geml-spec.github.io/manifesto)**
 
-GEML invents no heavy new runtime. Borrowing from the **[REST](https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm)** architectural style of Dr. Roy Fielding's dissertation, it gives plain-text documents one standard set of operational semantics:
+GEML is a new format, but the wine is old: enhancing and unifying Markdown-style expression, stripping away HTML-style presentational syntax, and the idea of fenced blocks come from Markdown, `#id`s and embeds from XML and AsciiDoc, inline projection from Obsidian, and the verbs from the **[REST](https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm)** architectural style of Dr. Roy Fielding's dissertation. What is new is one block container for all of them. It is a little like TypeScript to JavaScript — the syntax can't be compatible, but `list`, `get`, `set`, `add` and `delete` already work on the Markdown you have. That container gives plain-text documents one standard set of operational semantics:
 
 | Old pain | The matching capability (the four laws) | What it buys developers and agents |
 | :--- | :--- | :--- |
@@ -156,19 +114,14 @@ GEML invents no heavy new runtime. Borrowing from the **[REST](https://www.ics.u
 | **Bad formats / broken references pollute downstream** | **The Law of Validation** | References and syntax are checked at build time; **a bad write is stopped before it lands**, with no waiting for human review. |
 | **One bad edit forces a whole-file rollback** | **The Law of Rollback** | The companion `.gemlhistory` reverts **a single block atomically** — no tearing down the page; a lightweight version safety net for agents. |
 
-> **A document no longer needs just a format — it needs a set of verbs.** GEML keeps plain-text readability and adds deterministic block-level operations.
-
-> 💡 **Deep Dive:**
-> If you are interested in the dilemma of engineering documents in the LLM era and why we need to redesign a plain-text format from the ground up, read our full article on the blog: [**"Why Do We Need a New Text Format in the Era of LLMs?"**](https://geml-spec.github.io/blog/2026/08/03/why-do-we-need-a-new-text-format-in-the-era-of-llms)
+> **A document no longer needs just a format — it needs a set of verbs.** GEML keeps plain-text readability and adds deterministic block-level operations. The dilemma of engineering documents in the LLM era, and why these old practices belong in one new block container, is argued in full on the blog: [**"Why Do We Need a New Text Format in the Era of LLMs?"**](https://geml-spec.github.io/blog/2026/08/03/why-do-we-need-a-new-text-format-in-the-era-of-llms)
 
 ---
 
 <a id="whats-different"></a>
 ## What's different about GEML
 
-GEML stays small on purpose — the thinking, what it refuses, and what is still open are in [how we thought about the design](#challenge).
-
-The four capabilities were established a chapter ago — addressing, projection, validation, rollback. This chapter is where each format lands against them, and where GEML draws its boundaries.
+Where each format lands on the four capabilities of the last chapter — addressing, projection, validation, rollback — is the table below; GEML stays small on purpose, and what it refuses is in [how we thought about the design](#challenge).
 
 ### How other formats compare
 
@@ -254,7 +207,6 @@ Services,  3,  4,  4,  5
 
 `compute` runs `+ - * / ( )` per row over columns; `summary` adds a foot row from the aggregates `sum / avg / min / max / count` (with arithmetic over them, e.g. weighted ratios); a trailing `[printf]` sets numeric display. `n` above is the row-count idiom — `count` tallies non-empty cells in one column, so a constant column summed is what counts rows.
 
-
 Tables can also pull their data from an external CSV via `src="regions.csv"`.
 
 ### Math
@@ -310,7 +262,6 @@ Every block type names what it holds: `code` a region of code, `table` a grid, `
 {"ts":"09:00","p95":41}
 {"ts":"09:10","p95":58}
 ===
-
 ```
 
 A `jsonl` body holds one record per line, which a program can blind-append at end-of-file. Records can also stay in their own file: `src=ops/latency.jsonl#L900-999` names the file and, optionally, a line window — so the log keeps being appended and tailed as before, while the document is its **verified, addressable, chartable view** of it.
@@ -352,25 +303,21 @@ profile = "geml-style/v1 geml-form/v1"
 
 ### Extension without fragmentation
 
-• 🧩 **Mix & match like Lego bricks**
-The core syntax stays minimal and frozen, while domain capabilities expand infinitely. Call graphs, design tokens, form validation, version history... compose multiple domain vocabularies with one `profile = "..."` line.
-
-• ⚡ **Zero-plugin overhead with instant tooling support**
-Adding a new domain block **requires zero parser forks or custom plugins**. Custom blocks instantly inherit the entire infrastructure: deterministic `#id` addressing, `geml get/set` blockwise mutation, CLI verbs, MCP protocol, and autonomous AI Agent control.
-
-• 🛡️ **Naturally portable, never locked in**
-Extend capabilities without breaking interoperability. In any third-party or unfamiliar processor, documents maintain 100% structural integrity and block-level addressability, ending the nightmare of broken formatting when switching tools.
+- 🧩 **Mix & match like Lego bricks**: the core syntax stays minimal and frozen, while domain vocabularies grow beside it; call graphs, design tokens, form validation, version history... compose several of them with one `profile = "..."` line.
+- ⚡ **No plugin to write, the tooling already there**: adding a new domain block **requires no parser fork and no custom plugin**; it gets the same infrastructure as every other block — deterministic `#id` addressing, `geml get/set` blockwise mutation, CLI verbs, MCP protocol, and autonomous AI Agent control.
+- 🛡️ **Naturally portable, never locked in**: extend capabilities without breaking interoperability; a processor that doesn't know a profile still reads every block and addresses it by its `#id`, so a document keeps its structure when it moves to another tool.
 
 ### Standard Published Profiles
 
-| Profile (guide) | Status | What it's for | Superpowers Admitted | CLI | Live Demo / Example |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| [`geml-codemap/v1`](spec/profiles/geml-codemap/geml-codemap-guide.md) | stable | Generates your codebase's call graph as GEML documents: one block per method, so you can see who calls it and what it calls; front-end and back-end merge into one graph | `code` blocks: `anchor`, `name`, `entry-via` | `geml codemap build\|verify\|serve` | [Interactive Call Graph](https://geml-spec.github.io/playground/) · [`sample.geml`](https://geml-spec.github.io/playground/#ch=visual) |
-| [`geml-media/v1`](spec/profiles/geml-media/geml-media-guide.md) | draft | Describes a video timeline in one document: assets, clips, subtitle and voice tracks; export it as a web player, or render an MP4 with ffmpeg | `media`, `media-asset`, `media-clip`, `media-text` | `geml media build\|export\|lay\|todo` | [Doc-to-Video (Doc to MP4 via ffmpeg)](https://github.com/geml-spec/geml-spec.github.io/blob/main/public/examples/geml-media-demo/README.md) |
-| [`geml-style/v1`](spec/profiles/geml-style/geml-style-guide.md) | draft | Colours, spacing and layout live in a separate stylesheet document whose rules apply to your content; the content document itself stays unchanged | `style-rule`, `style-state`, `style-screen`, `style-frame` | `geml style check` | [GitHub Blob Page 1:1 Replica](https://github.com/geml-spec/geml-spec.github.io/blob/main/public/examples/style-demo/) |
-| [`geml-history/v1`](spec/profiles/geml-history/geml-history-guide.md) | stable | Keeps past versions in a `.gemlhistory` file beside the document: read any old version, put back a single block, or roll back the whole file | `history-revision`, `history-keyframe`, `history-blob` | `geml history save\|get\|restore` | [Atomic Block Rollback Workflow](spec/profiles/geml-history/geml-history-guide.md#everyday-use) |
-| [`geml-form/v1`](spec/profiles/geml-form/geml-form-guide.md) | draft | Describes a form in a document: its fields, their types, which are required, allowed ranges; the browser extension and the playground draw a preview | `form`, `form-field`, `form-group`, `form-options`, `form-note`; constraint attributes `pattern`, `min`, `max`… on `form-field` | — | [Interactive Complex Form Example](spec/proposals/0008-form-block-example/) |
-| [`geml-translator/v1`](spec/profiles/geml-translator/geml-translator-guide.md) | draft | A translation document holds no translated text: it embeds the source and names the target language, and the browser extension machine-translates it on open, so it follows every change to the source | `embed` and `meta` attribute `translate-to` | — | — |
+| Profile (guide) | Status | What it's for | CLI | Live Demo / Example |
+| :--- | :--- | :--- | :--- | :--- |
+| [`geml-codemap/v1`](spec/profiles/geml-codemap/geml-codemap-guide.md) | stable | Generates your codebase's call graph as GEML documents: one block per method, so you can see who calls it and what it calls; front-end and back-end merge into one graph | `geml codemap build\|verify\|serve` | [Interactive Call Graph](https://geml-spec.github.io/demos/codemap) |
+| [`geml-media/v1`](spec/profiles/geml-media/geml-media-guide.md) | draft | Describes a video timeline in one document: assets, clips, subtitle and voice tracks; export it as a web player, or render an MP4 with ffmpeg | `geml media build\|export\|lay\|todo` | [Doc-to-Video (Doc to MP4 via ffmpeg)](https://github.com/geml-spec/geml-spec.github.io/blob/main/public/examples/geml-media-demo/README.md) |
+| [`geml-style/v1`](spec/profiles/geml-style/geml-style-guide.md) | draft | Colours, spacing and layout live in a separate stylesheet document whose rules apply to your content; the content document itself stays unchanged | `geml style check` | [GitHub Blob Page 1:1 Replica](https://github.com/geml-spec/geml-spec.github.io/blob/main/public/examples/style-demo/) |
+| [`geml-history/v1`](spec/profiles/geml-history/geml-history-guide.md) | stable | Keeps past versions in a `.gemlhistory` file beside the document: read any old version, put back a single block, or roll back the whole file | `geml history save\|get\|restore` | [Atomic Block Rollback Workflow](spec/profiles/geml-history/geml-history-guide.md#everyday-use) |
+| [`geml-form/v1`](spec/profiles/geml-form/geml-form-guide.md) | draft | Describes a form in a document: its fields, their types, which are required, allowed ranges; the browser extension and the playground draw a preview | — | [Interactive Complex Form Example](spec/proposals/0008-form-block-example/) |
+| [`geml-translator/v1`](spec/profiles/geml-translator/geml-translator-guide.md) | draft | A translation document holds no translated text: it embeds the source and names the target language, and the browser extension machine-translates it on open, so it follows every change to the source | — | [Translated on Open](https://geml-spec.github.io/demos/translate) |
+| [`geml-statechart/v1`](spec/profiles/geml-statechart/geml-statechart-guide.md) | draft | Writes a state machine as one `diagram` block: states, transitions with their guards and actions, and the variables the guards read; `geml check` finds states nothing reaches and dead ends, `--to html` draws it, `--to md` turns it into Mermaid | — | — |
 
 > 💡 **Want to see Profiles in action?**
 > • **`geml-media` live demo**: One cut document and one command (`geml media build ep01-cut.geml --out ep01.mp4 --burn-subs`) orchestrates ffmpeg to align audio/video, mix tracks, and burn subtitles into a finished video ([see it](https://geml-spec.github.io/demos/media-cut)).
@@ -380,63 +327,32 @@ Extend capabilities without breaking interoperability. In any third-party or unf
 <a id="hands-on"></a>
 ## Next — get hands-on now
 
-▶ **[Try writing GEML in the Playground](https://geml-spec.github.io/playground/)** — edit on the left, rendered live on the right, and the build verdict flips red the moment a reference breaks. No install, nothing to read first.
+▶ **[Try writing GEML in the Playground](https://geml-spec.github.io/playground/)** — edit on the left, rendered live on the right; seven chapters walk from typed blocks and `#id`s to coordinates, data, charts and projection, and a bad edit is flagged on the spot. No install, nothing to read first.
 
 Then, in the order that suits you:
 
 1. **See it render in your browser.** Install the **[extension](https://chromewebstore.google.com/detail/opmhfphgoidpnipphfgkhhjhmnmaenie)** and open a raw `.geml` link *(the raw file, not the GitHub blob page — that one is HTML)*: the **[GEML spec itself](https://raw.githubusercontent.com/geml-spec/geml/main/spec/in_geml_format/GEML-spec.geml)** (dogfood — the spec is a GEML document, rendered at scale), the **[showcase](https://raw.githubusercontent.com/geml-spec/geml-spec.github.io/main/public/examples/showcase.geml)** (a computed table, four charts, a Mermaid flow, and math), or **[playground/sample.geml](https://raw.githubusercontent.com/geml-spec/geml-spec.github.io/main/public/playground/sample.geml)** for the interactive code-graph.
 2. **See a whole *page* laid out from a document.** [The style demo](https://geml-spec.github.io/demos/style) is a 1:1 replica of a GitHub blob page — top bar, file tree, breadcrumb, Preview/Code/Blame, dropdown menus — where `page.geml` holds every string and `github.style.geml` holds every colour and length, and the viewer knows about neither. It opens in any browser — the viewer's own code draws it — with the GEML that makes it right below.
-3. **Run it locally.** `npm i -g @geml/geml` (Node 22+), then `geml check` a document, or point it at your own repo with `geml codemap build`.
-4. **Set up Claude Code — one command.** `npx -y @geml/geml skill install` puts the authoring skill, the CLI and the MCP server in place, user-global, for every project. It edits no settings and installs no hooks. [Details](#with-an-llm).
-5. **Read the grammar.** The **[full spec](spec/GEML-spec.md)** (EN / [中文](spec/GEML-spec_CN.md)) is normative and short enough to read in a sitting.
-6. **Or see it worked through, rule by rule.** **[GEML, illustrated](https://geml-spec.github.io/demos#illustrated-syntax)** (EN and 中文) — eleven self-contained pages, one per block type, per profile, and for the CLI: GEML on the left, what the processor *actually* does on the right (`geml check` diagnostics, `geml list` addresses, `--to html` markup), each rule tagged with its source and status.
+3. **Run it locally.** `npm i -g @geml/geml` (Node 22+), then `geml check` a document, or point it at your own repo with `geml codemap build`; on Claude Code, `npx -y @geml/geml skill install` puts the authoring skill, the CLI and the MCP server in place, user-global, with no settings edited and no hooks installed ([details](#with-an-llm)).
+4. **Read the grammar, or see it worked through rule by rule.** The **[full spec](spec/GEML-spec.md)** (EN / [中文](spec/GEML-spec_CN.md)) is normative and short enough to read in a sitting; **[GEML, illustrated](https://geml-spec.github.io/demos#illustrated-syntax)** (EN and 中文) is eleven self-contained pages, one per block type, per profile, and for the CLI: GEML on the left, what the processor *actually* does on the right (`geml check` diagnostics, `geml list` addresses, `--to html` markup), each rule tagged with its source and status.
 
 <a id="with-an-llm"></a>
 ## Using GEML with an LLM
 
 The goal is one thing: your model **edits a block at a time, and verifies** —
-never re-reads and re-emits a whole file to change one paragraph. Getting there
-takes one step, and which step depends on what you use.
+never re-reads and re-emits a whole file to change one paragraph. One step gets
+you there:
 
-### Using Claude Code, Gemini or Qwen — run this
+| You use | Run |
+| :--- | :--- |
+| **Claude Code, Gemini, Qwen** | `npx -y @geml/geml skill install` — the authoring skill, the CLI and the MCP server, user-global; no `settings.json` edits, no hooks *(or `claude plugin marketplace add geml-spec/geml`, then `/plugin install geml@geml`)* |
+| **Codex** | start it in a checkout of this repo and the plugin is in `/plugins`; without cloning, see [integrations/codex-plugin/](integrations/codex-plugin/) |
+| **DeepSeek Harness** | `dsh plugin --profile web add @geml/dsh-plugin` ([source](integrations/dsh-plugin/)) |
+| **Any MCP client** | `npx -y @geml/geml mcp --root .`, or nothing to install at `https://geml-mcp.supermarket.workers.dev/mcp` — Cursor, VS Code and Claude Desktop setup in [docs/mcp-guide.md](docs/mcp-guide.md) |
 
-```sh
-npx -y @geml/geml skill install
-```
-
-It installs the authoring skill, the `geml` CLI and the MCP server, user-global,
-for every project. No `settings.json` edits, no hooks; re-run after an upgrade.
-*(Prefer plugins? `claude plugin marketplace add geml-spec/geml`, then
-`/plugin install geml@geml` — same skill, MCP server bundled.)*
-
-### Using DeepSeek Harness — add this bundle
-
-The same setup, packaged as a dsh bundle — the geml MCP server plus the authoring and code-graph skills:
-
-```sh
-dsh plugin --profile web add @geml/dsh-plugin   # web = the profile dsh boots by default; use your own profile name if you run another
-```
-
-Listed on [dshmarket](https://dshmarket.com/p/geml-spec/geml--integrations-dsh-plugin/) and [awesome-dsh-plugin](https://awesome-dsh-plugin.com/p/geml-spec/geml--integrations-dsh-plugin/); source in [integrations/dsh-plugin/](integrations/dsh-plugin/).
-
-### Using Codex — install the plugin
-
-The same payload once more, packaged for Codex: both skills, the MCP server, and
-a `SessionStart` hook. Start Codex in a checkout of this repo and it shows up in
-`/plugins` (the marketplace source is committed at
-`.agents/plugins/marketplace.json`); to add it without cloning, the `git-subdir`
-entry is in [integrations/codex-plugin/](integrations/codex-plugin/).
-
-Then say it once in a session, and the project has switched:
-
-> This project uses GEML as its base document format; generate other formats
-> from it as needed.
-
-### Using anything else — paste this, then check the output
-
-A model with no skill to read needs the rules once. Paste the prompt below, and
-keep `geml check` as the gate on whatever it writes back — the CLI is
-`npm i -g @geml/geml` (Node 22+).
+**Anything else** — a model with no skill to read needs the rules once. Paste the
+prompt below, and keep `geml check` as the gate on whatever it writes back (the
+CLI is `npm i -g @geml/geml`, Node 22+):
 
 > Write the document as GEML: every block is `=== type [attributes]` … `===`
 > ([the format in 1 minute](#one-minute) lists the types). Four rules are the
@@ -460,144 +376,38 @@ geml revert doc.geml '#plan' --rev -1                    # roll ONE block back
 geml check  doc.geml                                     # validate only: diagnostics + exit code
 ```
 
-Any section cuts three ways, on `get` and `set` alike: `--head` is the heading
-line, `--intro` what it says before its first subheading, `--body` everything
-under it — so `--body` always contains `--intro`, and equals it when there is no
-subheading. A section's opening can be edited without pulling its subsections
-into context.
-
-Every mutation is re-parsed before it writes and refused if it would break the
-document — which is what makes editing unattended safe. The rest of the verbs
-(`delete`, `rename`, `history`, `--to md|html|geml` conversion, addressing a
-block by type or content hash) are in the
-[parser README](geml-parser/README.md).
-
-### MCP Server
-
-A standard Model Context Protocol server ships with the package, so your agent
-edits **one block at a time** instead of rewriting whole files — on Markdown and
-GEML alike. It runs locally on Windows, macOS, and Linux; `--root` is the
-directory the server is confined to (use `.` or `${workspaceFolder}` to bind to
-the active project).
-
-**Nothing to install** — the same tools run on Cloudflare at
-`https://geml-mcp.supermarket.workers.dev/mcp`. There the document travels in
-each call and a write comes back as text; see
-[the Worker's README](integrations/geml-mcp-worker/README.md).
-
-**Claude Code** — one-command setup (installs skill, CLI, and MCP server):
-
-```sh
-npx -y @geml/geml skill install
-```
-
-*(Or register manually via CLI: `claude mcp add --scope user geml -- npx -y @geml/geml mcp --root .`)*
-
-**Cursor** — add `.cursor/mcp.json` to your project:
-
-```json
-{
-  "mcpServers": {
-    "geml": {
-      "command": "npx",
-      "args": ["-y", "@geml/geml", "mcp", "--root", "${workspaceFolder}"]
-    }
-  }
-}
-```
-
-*(Or in Cursor Settings → Features → MCP: name `geml`, command `npx -y @geml/geml mcp --root .`)*
-
-**VS Code** — nothing to configure: the
-[GEML extension](integrations/vscode/) offers both servers to chat, the hosted
-one and `geml mcp --root .` for each workspace folder. Accept whichever you want
-when the editor asks.
-
-**Claude Desktop** — add to `claude_desktop_config.json`:
-
-```json
-{
-  "mcpServers": {
-    "geml": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@geml/geml",
-        "mcp",
-        "--root",
-        "/absolute/path/to/your/docs"
-      ]
-    }
-  }
-}
-```
-
-Then just ask for the change you want — "fix the Q3 row in the FY26 table" — and
-the agent addresses that one block. You never learn a tool name: each mirrors a
-CLI verb (`geml set` → `geml_set`), so one vocabulary covers the terminal and the
-agent.
-
-Two guarantees make this better than letting a model rewrite the file: a write is
-parsed **before** it reaches disk and refused with its diagnostics if it would
-break the document, and every write first records a `.gemlhistory` revision — so a
-bad edit is both *prevented* and *undoable* (`geml_revert` restores one block, the
-rest of the file byte-identical). Paths stay confined to `--root`, which a client
-cannot widen.
-
-Point `--root` at a repository that has a code graph (`geml codemap build`) and the
-same server also answers "who calls this" — four read-only `geml_codemap_*` tools,
-one client entry instead of two. Every tool and option:
-[docs/mcp-guide.md](docs/mcp-guide.md).
+Over MCP the same verbs are tools (`geml set` → `geml_set`), and two guarantees
+make it better than letting a model rewrite the file: a write is parsed
+**before** it reaches disk and refused if it would break the document, and every
+write first records a `.gemlhistory` revision, so `geml_revert` can undo one
+block. Paths stay confined to `--root`; a root that holds a code graph also
+answers "who calls this". Every verb: the [parser README](geml-parser/README.md);
+every tool: [docs/mcp-guide.md](docs/mcp-guide.md).
 
 <a id="maturity"></a>
 ## Ecosystem and maturity
 
-GEML is a small, young spec — but a **stable** one: **`1.0`** is released and usable for real documents (this repo's own spec is one), with a strict conformance suite, a reference implementation that passes it **(versioned independently of the spec)**, and an open proposal process.
-
-There is **one** specification, and it is bilingual. The `.gemlhistory` sidecar
-is defined by the `geml-history/v1` **profile** — an application layer on top of
-the spec rather than part of it, which is also why it is MIT and the spec is
-CC-BY ([`LICENSE-spec.md`](spec/LICENSE-spec.md) says why):
-
-| Document | English | 中文 |
-|----------|---------|------|
-| The specification | [`GEML-spec.md`](spec/GEML-spec.md) | [`GEML-spec_CN.md`](spec/GEML-spec_CN.md) |
-| `geml-history/v1` profile | [`geml-history-profile.md`](spec/profiles/geml-history/geml-history-profile.md) | [`geml-history-profile_CN.md`](spec/profiles/geml-history/geml-history-profile_CN.md) |
-
-Every profile this project publishes: [`spec/profiles/`](spec/profiles/README.md).
-
-### Versions and compatibility
-
-- **Self-hosting** — [`GEML-spec.geml`](spec/in_geml_format/GEML-spec.geml) is the specification written in GEML, required to parse clean on every test run.
-- **A [conformance suite](geml-parser/test/conformance/)** is what holds separate implementations compatible.
-- **A reference implementation of the parser.** **1,700+** unit tests today, plus the conformance corpus, round-trip serialization and end-to-end CLI runs, with coverage CI-gated at ≥**95%** lines / statements / functions / branches.
-- **Forward compatibility is in the grammar.** A processor must degrade gracefully on constructs it does not recognize (spec §8.2), which is why adding a block type or a diagram format is **not** a breaking change. The type registry is open: an unregistered type name should contain a hyphen (`acme-invoice`), leaving hyphen-free names to future versions of the spec (§8.5).
-- **Claiming conformance.** An implementation may call itself *conformant to GEML 1.0* once it reproduces the conformance suite case for case (§8.5). No permission needed, and no sign-off from this repo.
-- **On the wire.** Extension `.geml` (version sidecar `.gemlhistory`), media type [`text/vnd.geml`](https://www.iana.org/assignments/media-types/text/vnd.geml) — registered with IANA (2026-10-26) in the vendor tree; the standards-tree `text/geml` can be applied for if the spec is ever published through the IETF.
-- A fragment identifier on a `.geml` URL names the block bearing that id (§0.6) — which is not what `#tag` means on an HTML page.
+- **Spec `1.0` is stable**, in [English](spec/GEML-spec.md) and [中文](spec/GEML-spec_CN.md),
+  and is itself [written in GEML](spec/in_geml_format/GEML-spec.geml). [MIME media type](https://www.iana.org/assignments/media-types/media-types.xhtml)
+  [`text/vnd.geml`](https://www.iana.org/assignments/media-types/text/vnd.geml), registered with IANA.
+- **Two implementations** pass the same [conformance suite](geml-parser/test/conformance/)
+  of 800+ cases: the reference parser [`geml-parser/`](geml-parser/) (TypeScript, 2,300+
+  unit tests, coverage gated at 95%) and [`geml-parser-rs/`](geml-parser-rs/) (Rust and
+  WebAssembly, written from the spec and the suite alone).
+- **Forward compatible by grammar**: a processor degrades gracefully on what it doesn't
+  know (§8.2), so a new block type is not a breaking change. Releases: [`CHANGELOG.md`](CHANGELOG.md).
 
 <a id="challenge"></a>
 ## How we thought about the design
 
 ### What the design follows
 
-1. **Human–Agent Isomorphism, Not a Compromise**
-   Instead of splitting the difference between human-readable Markdown and machine-readable JSON, GEML treats human readability and machine determinism as a single, uncompromising constraint. Humans get clean, distraction-free prose; agents get a strongly typed AST—eliminating translation loss between two separate formats.
-
-2. **Doc-as-a-Base, Not a Stream of Characters**
-   Traditional documents are fragile streams of characters where editing one sentence often forces a full-file rewrite. GEML treats a document as an addressable database of structured records with stable primary keys (`#id`). Every block has an independent lifecycle, spatial coordinate, and atomic CRUD interface suited for O(1) agent reads and writes.
-
-3. **One Syntax Primitive, Infinite Domain Vocabularies**
-   Refuse to invent syntax patches for every new kind of content. GEML uses a single **typed-block primitive** (`=== type`) to carry code, data, tables, math, and layout. Domain capabilities expand infinitely through **Profiles** (`profile = "..."`): the grammar stays 100% frozen, while vocabularies remain open—ending dialect fragmentation at the root.
-
-4. **Transclusion over Duplication: Kill the Incentive to Copy**
-   Traditional hyperlinks are signposts pointing elsewhere, encouraging copy-pasting that inevitably causes copies to drift out of sync. GEML references are dynamic viewports (`=== embed`): define once at the source, and project live everywhere. Maintain a single source of truth by removing the motivation to copy.
-
-5. **Compiler-Grade Integrity: Treat Documentation Like Code**
-   Markdown's ethos is "never fail, render something"—the primary breeding ground for agent hallucinations and silent documentation decay. GEML enforces strict build-time static validation. Broken `#id`s, invalid attributes, and cyclic references fail the build with a non-zero exit code. Catch errors before they pollute downstream systems.
-
-6. **Local-First History, Not Cloud Lock-in or Git Overhead**
-   Data belongs on the local filesystem, and versioning belongs at block granularity. GEML refuses to lock version history behind proprietary cloud platforms (like Notion or Google Docs), while avoiding the heavy whole-repo commit overhead of Git for micro-edits. The companion `.gemlhistory` gives plain text **local-first atomic snapshots and surgical rollback** (`geml revert doc.geml '#id'`), ensuring true data sovereignty and safety.
+1. **Human–Agent Isomorphism, Not a Compromise**: rather than splitting the difference between Markdown for people and JSON for machines, GEML treats "readable at a glance" and "operable with certainty" as one constraint — people get clean prose, agents get a strongly typed AST.
+2. **Doc-as-a-Base, Not a Stream of Characters**: a document is a base of structured records with stable primary keys (`#id`); every block has its own lifecycle, coordinate and atomic CRUD interface, so an agent edits one block instead of rewriting the file.
+3. **One Syntax Primitive, Open Domain Vocabularies**: a single **typed-block primitive** (`=== type`) carries code, data, tables, math and layout; domain vocabularies extend it through **Profiles** (`profile = "..."`), the grammar frozen and the vocabularies open, which keeps dialects from splintering it at the root.
+4. **Transclusion over Duplication: Kill the Incentive to Copy**: a hyperlink is a signpost that invites copy-paste and drift; a GEML reference is a live viewport (`=== embed`) — define once at the source, project everywhere.
+5. **Compiler-Grade Integrity: Treat Documentation Like Code**: where Markdown never fails and renders something, GEML validates at build time — a broken `#id` or a reference cycle fails with a non-zero exit, before bad data reaches anything downstream.
+6. **Local-First History, Not Cloud Lock-in or Git Overhead**: versions live at block granularity in a `.gemlhistory` beside the document, with no cloud service and no whole-repo commit for a micro-edit; `geml revert doc.geml '#id'` rolls one block back.
 
 ### What it therefore refuses
 
@@ -611,130 +421,38 @@ Every profile this project publishes: [`spec/profiles/`](spec/profiles/README.md
 <a id="roadmap"></a>
 ## Roadmap
 
-- [x] The GEML `1.0` specification, in English and Chinese, with a conformance suite — plus the `geml-history/v1` profile that defines the `.gemlhistory` sidecar
-- [x] The media type `text/vnd.geml` [registered with IANA](https://www.iana.org/assignments/media-types/text/vnd.geml) (2026-10-26), with the spec as its published specification and the project as change controller
-- [x] Reference implementation `@geml/geml`: parser, CLI, block-level `.gemlhistory` tracking
-- [x] Official MCP server (`geml mcp`) for Claude Code, Cursor, Codex and other MCP hosts
-- [x] codemap — a whole codebase's call graph, written as GEML
-- [x] The VS Code extension published on the Visual Studio Marketplace (publisher `geml`)
+- [x] Spec and implementations: the GEML `1.0` specification, in English and Chinese, with a conformance suite and the `geml-history/v1` profile that defines the `.gemlhistory` sidecar; the reference implementation `@geml/geml` (parser, CLI, block-level `.gemlhistory` tracking); a second implementation, [`geml-parser-rs/`](geml-parser-rs/) — Rust, compiled to WebAssembly, written from the spec and the conformance suite alone, without reading the reference parser
+- [x] The [MIME media type](https://www.iana.org/assignments/media-types/media-types.xhtml) `text/vnd.geml` [registered with IANA](https://www.iana.org/assignments/media-types/text/vnd.geml) (2026-10-26), with the spec as its published specification and the project as change controller
+- [x] Tools: the official MCP server (`geml mcp`) for Claude Code, Cursor, Codex and other MCP hosts; codemap, a whole codebase's call graph written as GEML; the VS Code extension on the Visual Studio Marketplace (publisher `geml`)
 - [x] Ecosystem integrations: VS Code highlighting and reference checking, tree-sitter, Obsidian, Logseq (two-way sync against a live DB graph), the browser viewer, a GitHub Action, LangChain / LlamaIndex, and the agent-harness plugins — Claude Code, Codex, Grok, DeepSeek Harness, plus root manifests for Gemini CLI and Kimi Code
 - [ ] The Logseq plugin listed in the Logseq marketplace ([PR #893](https://github.com/logseq/marketplace/pull/893)) and the Grok plugin listed in `xai-org/plugin-marketplace`
-- [x] A second implementation, [`geml-parser-rs/`](geml-parser-rs/) — Rust, compiled to WebAssembly, written from the spec and the conformance suite alone, without reading the reference parser
-- [ ] Implementations by other hands — Python, or whatever you write in; the spec and the conformance suite are public, and we are glad to help line them up
+- [ ] Implementations by other hands — in whatever language you write; the spec and the conformance suite are public, and we are glad to help line them up
 
 ---
+
+<a id="integrations"></a>
+## Where it runs
+
+The CLI [`@geml/geml`](https://www.npmjs.com/package/@geml/geml) · the browser [Chrome extension](https://chromewebstore.google.com/detail/opmhfphgoidpnipphfgkhhjhmnmaenie) · [VS Code](https://marketplace.visualstudio.com/items?itemName=geml.geml) · [IntelliJ / Android Studio](integrations/intellij+androidstudio-plugin/) (build from source) · a [GitHub Action](integrations/geml-check-action/) · [LangChain / LlamaIndex](integrations/langchain+llamaindex/) (reference implementation) · the [Playground](https://geml-spec.github.io/playground/), with nothing to install.
 
 <a id="contributing"></a>
 ## Take part
 
-GEML is `1.0`, but "stable" means **the rules already there won't shift under you**,
-not that the design is settled. There are two implementations so far, but **one author**
-behind both — so there is still **one set of opinions** behind the spec. Your thinking can still change the spec itself.
-If you want a hand in it:
+`1.0` means the rules already there won't shift under you — not that the design is
+settled, and there is one author behind both implementations so far.
 
-**Come argue about these**, the proposals still in draft:
-
-- [GEP-0008 · A `form` typed block — addressable fields, an inert destination](spec/proposals/0008-form-block.md)
-- [GEP-0010 · Projections along the language axis — a translated document is a view, not a copy](spec/proposals/0010-language-projections.md)
-
-Something else on your mind? [Start a discussion](https://github.com/geml-spec/geml/discussions/new/choose).
-
-<a id="integrations"></a>
-Or **claim a piece**:
-
-| Gap | Where it stands | What it takes |
-|---|---|---|
-| **Skill installation for more agent tools** | Gemini CLI, Qwen Code and AGENTS.md are installed by detection already; the MCP server works with any client | Add the rest the same way: **Cursor**, **GitHub Copilot**, **Cline** — their rule-file conventions move fast, so check the current docs before writing one in |
-| **How well the primer holds on other models** | Only exercised on Claude | Have GPT / Gemini / a local model each write a batch of GEML from the primer, count how many pass `geml check` first time, and report the rules they keep getting wrong — those are the ones the primer should name |
-| **Deeper Obsidian integration** | Renders, but not in the community store yet | Editing at the CodeMirror layer and seamless two-way rendering, plus the store submission itself. Wants someone who knows the Obsidian API. |
-| **The viewer on other browsers** | Chrome works | Firefox / Safari ports. |
-| **Packaging the RAG integrations** | LangChain / LlamaIndex are reference implementations | Publishing to PyPI; and wiring up other frameworks (Haystack, DSPy, …). |
-
-- **Write an implementation of the spec in your language** — a new GEML parser, from the spec alone ([how to write a parser](docs/WRITING-A-PARSER.md)); [`geml-parser-rs/`](geml-parser-rs/) was written that way and is the worked example to compare against
-- **Finding the places where the spec is ambiguous is itself the contribution**, whether or not that parser ever ships.
-
-Or **propose something new**:
-
-- A GEP: the proposal, the spec edit and the conformance cases land together ([process](spec/proposals/README.md))
-
-Or **put it to use**:
-
-| Scenario | Where | State |
-|---|---|---|
-| **From the command line** — validate, convert, edit by block, version history, all in one command | [`@geml/geml`](https://www.npmjs.com/package/@geml/geml) (source [`geml-parser/`](geml-parser/)) | Available |
-| **Read it in the browser** — open any raw `.geml` link and it renders in place: computed tables, charts, Mermaid, math, with diagnostics as a banner | [Chrome Web Store](https://chromewebstore.google.com/detail/opmhfphgoidpnipphfgkhhjhmnmaenie) · [source](integrations/chrome-geml-viewer/) | Available |
-| **Let an agent edit by block** — an MCP server; the agent changes one block instead of rewriting the file, and every write is validated before it reaches disk | [`docs/mcp-guide.md`](docs/mcp-guide.md) | Available |
-| **Use it from DeepSeek Harness** — the geml MCP server plus the authoring and code-graph skills, one installable bundle | [`@geml/dsh-plugin`](https://www.npmjs.com/package/@geml/dsh-plugin) · [dshmarket](https://dshmarket.com/p/geml-spec/geml--integrations-dsh-plugin/) · [source](integrations/dsh-plugin/) | Available |
-| **Use it from Codex** — the same payload again: both skills, the MCP server, and a `SessionStart` hook, installable from `/plugins` | [`integrations/codex-plugin/`](integrations/codex-plugin/) | Available from this repo; not in the public plugin directory yet |
-| **Use it from Grok** — the same payload once more: both skills and the MCP server | [`integrations/grok-plugin/`](integrations/grok-plugin/) | Available from this repo; the `xai-org/plugin-marketplace` PR is not opened yet |
-| **Sync a Logseq graph to plain text** — a Logseq 2.0 DB graph as continuously synced GEML files, addressable and git-friendly, with `restore` as the way back | [`@geml/logseq-sync`](https://www.npmjs.com/package/@geml/logseq-sync) · [source](integrations/logseq/) | Watcher on npm; the plugin installs from a release zip — the marketplace listing ([PR #893](https://github.com/logseq/marketplace/pull/893)) is not merged yet |
-| **Turn a codebase into a document** — the whole call graph as a tree of GEML documents, browsable | `geml codemap build` ([guide](spec/profiles/geml-codemap/geml-codemap-guide.md) · [design](docs/design/specs/geml-codemap/DESIGN-geml-code-graph.md)) | Available |
-| **Write it in your editor** — syntax highlighting + build-time reference checking | [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=geml.geml) · [source](integrations/vscode/) | Available |
-| **Write it in Android Studio / IntelliJ** — highlighting, diagnostics as you type, preview, structure view, block revert from `.gemlhistory` | [`integrations/intellij+androidstudio-plugin/`](integrations/intellij+androidstudio-plugin/) | Built; installs from a zip you build (Install Plugin from Disk), not on the JetBrains Marketplace |
-| **Render it in Obsidian** — the reference parser + the viewer's renderer, the same code path as the web | [`integrations/obsidian/`](integrations/obsidian/) | Built, not in the community store |
-| **Feed a RAG / agent framework** — block-level loaders (one chunk per block, carrying `block_id`) + agent editing tools | [`integrations/langchain+llamaindex/`](integrations/langchain+llamaindex/) | Reference implementation |
-| **Try it without installing anything** — edit on the left, live render on the right | [Playground](https://geml-spec.github.io/playground/) | Available |
-
-Three files to read first: [`GOVERNANCE.md`](GOVERNANCE.md) for how decisions get
-made, [`CONTRIBUTING.md`](CONTRIBUTING.md) for how to send work, and
-[`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md) for the one rule about people —
-disagree with the design as sharply as you like, not with the person.
-
-## Repository layout
-
-```
-spec/                  The specification as .md (EN / 中文) and the CC-BY spec
-                       license, with profiles/ (application layers — geml-history,
-                       geml-codemap, geml-style, geml-form, geml-media,
-                       geml-translator — each a reference beside a one-page usage
-                       guide) and proposals/ (GEPs), both MIT
-spec/in_geml_format/   The dogfood: the specification written in GEML, with its
-                       .gemlhistory sidecar
-geml-parser/           Reference parser, renderer, CLI + codemap toolkit (TypeScript, Node 22)
-geml-parser-rs/        The second implementation: the same spec in Rust, compiled to
-                       WebAssembly, written from the spec and the conformance suite alone
-integrations/          Everywhere GEML plugs in: chrome-geml-viewer (browser extension),
-                       geml-check-action (CI), vscode, intellij+androidstudio-plugin,
-                       obsidian, logseq (two-way vault sync + the watcher), tree-sitter (brief),
-                       langchain+llamaindex (RAG loaders), windows-icon
-                       (Explorer file icons), the agent-harness plugins —
-                       claude-plugin, codex-plugin, grok-plugin, dsh-plugin — and
-                       website (what this repository pushes to the site)
-.agents/, .claude-plugin/   Plugin marketplace manifests, so the plugins show up
-                       from a checkout (Codex `/plugins`, Claude Code `/plugin`)
-docs/                  Guides (MCP, writing a parser), design records, the release
-                       runbook, assets (logos)
-.claude/skills/        Claude skills: GEML authoring, and the code graph
-.github/               CI, security-scan, release and site workflows (npm, MCP
-                       registry, VS Code, viewer, website), issue templates (bug,
-                       GEP, new implementation) and the PR template
-(website)              The homepage, playground, demos, blog, comparisons,
-                       benchmarks, manifesto and illustrated pages live in their
-                       own repository, geml-spec/geml-spec.github.io, which links
-                       here for the spec and guides; the website workflow pushes it
-                       the playground bundle, code graph and logos. What
-                       this repository publishes at geml-spec.github.io/geml/ is
-                       site/ — a forward to the same path on the new site.
-```
+- **Write a parser in your language** — [how](docs/WRITING-A-PARSER.md); finding where
+  the spec is ambiguous is itself the contribution.
+- **Argue with the drafts** — [GEP-0008](spec/proposals/0008-form-block.md) and
+  [GEP-0010](spec/proposals/0010-language-projections.md), or
+  [start a discussion](https://github.com/geml-spec/geml/discussions/new/choose).
+- **Claim a piece** — the open gaps, and the repository layout, are in
+  [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 <a id="license"></a>
 ## License & governance
 
-**Code is MIT** ([`LICENSE`](LICENSE)): everything in this repository —
-`geml-parser/`, `geml-parser-rs/`, all of `integrations/`, `.claude/skills/`, `docs/`,
-the profiles in `spec/profiles/`, the GEPs in `spec/proposals/` — except the specification documents.
-
-**The specification documents are CC-BY-4.0** ([`LICENSE-spec.md`](spec/LICENSE-spec.md),
-which lists them exactly): `spec/GEML-spec*` and `spec/in_geml_format/*`. There is one
-specification; the profiles under `spec/profiles/` are application layers and are MIT.
-A spec is not software, so anyone may build a conformant
-implementation without permission — and call it *conformant to GEML 1.0* once it
-passes the [conformance suite](geml-parser/test/conformance/).
-
-**Using the name.** You need no permission to implement GEML, to name an
-implementation after the format (`geml-rs`, `pygeml`, a `geml` package on your
-language's registry), or to state that your tool reads and writes GEML. Two
-requests, neither of them a legal restriction: call an implementation *conformant to
-GEML 1.0* only once it passes the conformance suite, and don't imply that this
-project wrote, endorses, or maintains it. Attribution for the specification text
-itself is what CC-BY-4.0 already asks for.
+Code is MIT ([`LICENSE`](LICENSE)); the specification documents are CC-BY-4.0
+([`spec/LICENSE-spec.md`](spec/LICENSE-spec.md) lists them). Anyone may build a
+conformant implementation without permission; how decisions are made and how to use
+the name: [`GOVERNANCE.md`](GOVERNANCE.md).

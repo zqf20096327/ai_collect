@@ -324,8 +324,11 @@ role's command with ctrl+c, and the judge's own pass with one ctrl+c, which abor
 the session with its context (two quit Codex, as for a judge that timed out). All of them get their keys
 at once, before Magnum waits for any of them, and then Magnum waits for all of them side by side, so the
 restart waits for the slowest turn, not for each in turn. A shell role's command that still runs 10 seconds
-after its ctrl+c gets another, three in all, and a warning names the role when it runs on, since the
-restart's line would find its pane busy. An agent gets up to a minute after its interrupt to go idle, and a
+after its ctrl+c gets another, three in all, and then Magnum stops it itself (see below). The checkout never
+switches, nor is restored, under a command that still runs, the command of a shell reviewer that timed out
+before the push included: when Magnum cannot stop it, a warning names the role and the round fails with
+that cause. That round costs the PR no attempt and no round of the daily cap, and the PR's next round takes
+it up again. An agent gets up to a minute after its interrupt to go idle, and a
 warning names it when it does not. A claude reviewer still at work 10 seconds after its esc whose
 transcript shows background work it started still running (a test run in the background keeps it at work
 after an interrupt) is told then to stop that work, which is what ends it, rather than at the end of the
@@ -333,6 +336,67 @@ minute; one idle within the 10 seconds gets no message then, only the one about 
 shows once it is idle. A stop that worked is an info event (`round.cut_settled`, with the seconds the agent
 took to go idle), not a warning. When a refusal or a lost judge ends the round instead, the turns still at
 work are stopped the same way.
+
+`codex review` sometimes goes on after its ctrl+c, and its pane stays busy. Two things end it. First,
+`magnum db-lock`, which the built-in shell line runs every command through, passes the interrupt on and
+notes the processes under the command. A command, or one of those processes, that still runs 10 seconds
+later gets SIGTERM, and 5 seconds after that SIGKILL, together with every process under it (a sandbox's child
+in a process group of its own too). db-lock says so on stderr, keeps the lock until those processes are gone
+or SIGKILL went out, and exits with 128 plus that signal. Second, Magnum stops the command itself after the
+restart's last ctrl+c, but only its own run: the shell line's db-lock names the run (`--run <run>`), and
+Magnum keys or signals a pane's command only when that argv names a run of the PR's role in this checkout,
+in the role's own pane, and the run is the one cut or no longer in flight. Its ctrl+c goes only to the
+role's own pane, and only to a command that carries that run's token. A command without a token gets it only
+when the line Magnum typed carried none (a `command` of your own without `{{.DBLockCommand}}`) and herdr still
+shows the pane in the session's checkout, with no other PR's session in it. A run whose line was never typed
+(it still waited for a busy pane) gets nothing at all. Magnum notes the job's processes from
+the process table, each by its pid and start time (a process that moves to another process group stays the
+same process), and before each signal it reads the table and asks herdr again: a process whose identity
+changed gets nothing, and neither does a pane whose job changed. It sends SIGTERM to the job's process group,
+reads the table again, and sends SIGTERM to each of those processes, then SIGKILL the same way 5 seconds
+later. Each wait has one 5-second deadline that every read shares. The stop counts only once the shell is
+idle and every noted process is gone, so a pane that went idle after a ctrl+c is a stop only once the
+processes noted at that ctrl+c are gone too; a process that outlives SIGKILL fails it. When SIGKILL
+leaves the pane busy, Magnum splits a new pane with the session's working directory and environment, moves
+the role there, asks herdr once more and closes the old one. Without a recorded environment the old pane
+closes all the same and the session is lost, so the next round lays a new pane out. Each stop writes
+`pr.shell_stop_begin` (the process group and the processes as pid, group and name, never arguments),
+`pr.shell_stopped` (the step that worked and the seconds) or `pr.shell_stop_failed` (`not_own`, `signal` or
+`close`). A stop never counts a command as yours: nothing during a round starts `human_cooldown` or keeps
+the judge from its prompt. A shell reviewer that timed out, or whose wait failed, gets the same stop before
+its run ends. A shell role whose pane is still busy when its next run starts
+does the same: an earlier run of its own that is over is stopped at once, and the line runs. Anything else
+gets the minute a fresh pane's shell has to start. When the pane is still busy then, Magnum splits a new pane
+with the session's environment, moves the role there (`pr.shell_move_begin`, then `pr.shell_moved` or
+`pr.shell_move_failed`) and runs the line in it. It never sends the busy pane a key, a signal or a close:
+the pane stays on a closed row of the role and closes with the other retired panes once it is an idle shell.
+The new line's db-lock then waits for the lock that the busy command may hold, up to its `--timeout` (20
+minutes) or the role's timeout, rather than failing as busy after a minute. Without a recorded environment
+the run fails as busy, as before.
+
+Nothing switches a slot's checkout while a command still runs in a shell pane of its PR there. Before a
+round checks the PR out, before the fixer starts, before `magnum open` checks a PR out and before a release
+resets the slot, Magnum closes the runs a crashed daemon left open and looks at the PR's shell panes in that
+slot. It asks herdr only when the PR has a shell pane there. A pane herdr shows as another's (another agent,
+or a working directory outside the checkout) is left alone, unless its command carries Magnum's line for
+this checkout. A pane whose working directory herdr does not report stays in the look. An earlier run of
+its own is stopped. A command Magnum did not start (no run token, or another PR's, role's or run's), the
+command of a role of your own without the run token, or one of its own that it cannot stop, holds the
+switch. The hold costs no attempt and no round of the daily cap. Magnum looks again after about 1, 2 and 5
+minutes, then every 10 minutes. It writes one event when the hold starts (`pr.shell_hold`) and one when it ends
+(`pr.shell_hold_ended`), and shows one toast. After 15 minutes of a round's hold the PR shows under
+needs-attention with a plain reason: "a command magnum did not start keeps the shell pane of <slot> busy",
+"the <role> command (no run token) still runs in the shell pane of <slot>", or "magnum cannot stop its own
+command in <slot>: <cause>". The fixer and the other jobs that would switch that checkout see the same hold.
+A hold that one of them meets is looked at again at each reconcile until it ends. The next round's first
+look starts a hold of its own, with its event and its toast, and so does a round's look at a hold that
+nothing looked at for 30 minutes. If herdr cannot say what the panes run, nothing is held: the round tries
+again a minute later, with no event and no toast, and a slot that a failed `magnum fix` or `magnum open`
+reserved still goes back to the pool. The hold never marks you as at work. A shell role whose `command` of
+your own leaves `{{.DBLockCommand}}` out carries no run token: its interrupts are the plain ctrl+c presses it
+always got, Magnum never signals or closes its command, a restart that finds it still running ends the
+round, as above, and the next checkout waits for it.
+
 A push that lands while the judge works lets the round finish: Magnum appends "Reviewed <sha>; N commits arrived during
 the review, re-review follows" (or, for a small delta, "a short check of those commits follows") to the
 posted review and queues the re-review without waiting for `min_rereview_interval`. A PR whose head changed `burst_pushes` times (default 3) within `burst_window`
@@ -1127,94 +1191,14 @@ link that turned up, your note) leaves it. The first line says where the review 
   Re-reviews) reads "Review of `54fc258` posted 18:52 UTC: No problems found. <link>. A full pass follows
   before approval." while its full pass waits; the full pass then shows as "Full pass before approval of
   `54fc258`" with "In progress (full pass) since 18:53 UTC", and its posted line replaces it.
-- A [fix loop](#fixing-your-own-prs) shows as its own line: "Applying automatic fixes, cycle 1 of 3"
-  under the posted line while the fixer works, and "Reviewing the fixes in `b2c3d4e`" for its re-review of
-  what the fixer pushed, from the loop's state (never the fixer's words).
-- One line replaces the list when Magnum will not review the head: "Magnum will not review this head. The
-  operator was told." for a PR muted, ignored, flagged by Codex (with no fallback judge) or parked by a
-  fix loop for your call, with no word of the cause. A PR Magnum's own failure parked for you
-  (needs_attention: a setup or round that failed on every attempt, the agent API overloaded, a judge that
-  reported a blocker or stopped without a review, an identity problem) reads "Magnum failed to finish the
-  review of `54fc258`. The fault is on its side, not in your PR. The operator was told. A new push starts
-  a new review." (a push queues it again); muted, it reads as muted.
-- A review request that comes while the PR is muted or the watch's filters leave it out (a baseline PR
-  included) gets "Magnum is not reviewing this PR. The operator was told.": it opens the comment where none
-  stands, or turns the one there, and names no reason (the repositories are public, and a mute's reason or a
-  filter could tell who is reviewed). The request is someone's, yours included; a draft marked ready is
-  not one. You get one info toast per request that names the reason ("magnum: talkable/example#12: review
-  requested by alice (not reviewed: muted)"; a manual repository's own toast stands for it) and a
-  `pr.request_declined` event. The line holds while that request is the newest and no round served it; an
-  unmute, or a filter change that queues the PR, hands the comment back to its review, and a mute or unmute
-  drops the request (kv `pr.<id>.request_declined`).
-
-Every comment ends on a true line, written at once (the 2-minute spacing below does not hold it) and only
-once: "Closed before the review of `54fc258` posted." for a PR closed without a merge, "Merged before the
-review of `54fc258` posted." for one GitHub merged first, the posted line for one merged or closed after its
-review, and "Not reviewing: the PR is a draft." for a PR that turned into a draft (with `include_drafts =
-false`) while its review was queued. A tick writes it whatever the PR's state, a release included (released
-PRs of the last 24 hours are read for it). After it nothing is written until a new head, a new review
-request, `magnum review`, a reopen or, for a draft, ready for review.
-
-A post-merge review, an eval replay, a dry run (`magnum daemon --dry-run`, `magnum review --no-post`) and a
-watch with the key off get none. A draft gets one only for a review someone asked for (a review request, or
-`magnum review`), which opens it as on a ready PR, and otherwise only keeps one it had; a PR of a manual
-repository gets one once `magnum review` queues it, or the not-reviewing line for a review request. The
-daemon brings the comment in line with the registry at every tick, after it recorded the waits, and edits
-only a changed text, at most once per PR every 2 minutes and 10 comments a tick, so In progress and Posted
-can follow the round by a tick or two. The
-comment never holds a round: a write GitHub refuses records a `pr.status_comment_failed` warning (at most
-one per PR an hour) and a later tick tries again, and each comment posted or edited records a
-`pr.status_comment` event with its stage. A comment someone deleted is posted once more at its next change
-(a last line is not); deleted a second time, the PR gets none until its next push. The kv row
-`pr.<id>.status_comment` keeps the comment's id, the identity that posted it, what it last said and whether
-it ended. An App identity comments with the "Pull requests" write permission its reviews already need.
-
-### Identities: who posts
-
-```toml
-[[identity]]
-name = "me"
-kind = "gh"                        # your gh login
-login = "your-login"
-no_findings_event = "APPROVE"
-# dismiss_own_stale_change_requests = true   # default: false for kind = "gh", true for "app" (see below)
-# review_footer = "_Reviewed {{.Short}} by the team's bot; reply on the thread._"   # a template; default: magnum's (see below); "" = none
-
-[[identity]]
-name = "reviewer-app"
-kind = "app"                       # a GitHub App: reviews appear as <slug>[bot]
-login = "your-app[bot]"
-app_id = 123456
-client_id = "Iv23liXXXXXXXXXXXXXX"
-installation_id = 12345678
-private_key_file = "~/.config/magnum/keys/reviewer-app.pem"
-no_findings_event = "COMMENT"      # never let a bot approval unlock a merge by accident
-```
-
-App tokens are minted from a short-lived JWT and refreshed before they expire; every GitHub call,
-including those, goes through `gh api` by default, so no extra firewall rules are needed (`[github] transport = "direct"` makes the JWT and token calls Go `net/http` requests, which an outbound firewall may block for a rebuilt, unsigned binary). The App needs the repository
-permission Pull requests "Read and write"; Actions, Checks and Commit statuses "Read-only" are
-recommended, since the judge reads the PR's CI with the App's token (without Actions it cannot read why a
-CI job failed). `magnum identities check` verifies the key, the App, the installation, its permissions and
-that `login` is the App's `<slug>[bot]`; a recommended permission the installation lacks is a WARN line
-that does not fail the check. A PR follows its watch's identity. When you move a watch to another
-identity, the next round of each of its PRs posts as the new one (`pr.identity_migrated`): it parks the
-sessions the old identity ran in, reads the old login's reviews and threads as its own history (the
-previous review, the replies to answer, the earlier findings), and once its review is posted dismisses
-what the old identity left standing, its change requests and an App's approvals, with the old identity's
-own credentials. It reads every review of the PR for that (up to 500); a PR with more dismisses nothing
-and says so in a `review.former_dismiss_failed` warning. `magnum review --as <identity>` pins one PR to an
-identity, and a pinned PR never migrates.
-
-`dismiss_own_stale_change_requests` says what happens to an identity's own earlier REQUEST_CHANGES review
-once a newer review of the PR has nothing blocking: `true` dismisses it ("Superseded by the newer Magnum
-review"), `false` leaves it standing, and a standing change request keeps blocking the author's merge until
-a human dismisses it. The default follows the kind: `true` for an `app`, `false` for `gh`, because a `gh`
-identity is your own account and its reviews are yours to withdraw; set it to `true` on a `gh` identity to
-let Magnum do that. A change request you posted by hand (`magnum request-changes`) and any review posted
-after the PR was merged are never dismissed, and a dismissal that fails (a missing permission) only warns.
-
-`review_footer` is the footer Magnum appends to every review the identity posts, once the review is
-verified, there for the PR's author (the judge never writes it, and a dry run gets none). Without the key it
-is Magnum's: the reviewed commit, then, collapsed under "About Magnum", that the review is automated, that a
-P0-P2 thread is answered with `fixed`, `not a bug: <why>` or `
+- **Why no approval came**, on a repository Magnum [approves as you](#approving-as-you): under the posted
+  line of a review that left nothing to fix, one line says why Magnum did not approve the head as
+  `auto_approve_as`, naming its login as plain text (never `@alice`, which would notify it at every edit),
+  in the third person and in fixed words for each kind of reason: "Not approved as alice: the PR changes
+  its own CI workflows or actions, so alice must review and approve it in person." (and the same for a PR
+  that changes the instructions or configuration of the AI review agents, or more files than Magnum can
+  check); "Not approved as alice: one of Magnum's reviewers did not finish on this head, and Magnum
+  approves only a complete review. The next review, or a review by alice, decides."; "Approval as alice
+  waits for the checks of this head to pass." (with "Some fail now." when they fail); "Magnum stopped
+  approving this PR as alice. A review by alice decides." once your review by hand, a dismissal or
+  `magnum

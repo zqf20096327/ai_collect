@@ -185,6 +185,7 @@ This command gives you an option to also remove obsolete skills.
   - [**GKE Platform Security**](./skills/cloud/gke-platform-security)
   - [**GKE Workload Identity Federation Troubleshooting Skill**](./skills/cloud/gke-workload-identity)
   - [**GKE Workload Security**](./skills/cloud/gke-workload-security)
+  - [**Google Cloud Assured Workloads Basics (V1 GA)**](./skills/cloud/assured-workloads-basics)
   - [**Google Cloud Security Command Center Remediation**](./skills/cloud/google-cloud-scc-remediation)
   - [**Google SecOps Case Management Skill for AI Agents**](./skills/cloud/secops-cases)
   - [**Google SecOps Detection Engineering Skill**](./skills/cloud/secops-detection-engineering)

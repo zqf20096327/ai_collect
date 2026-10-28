@@ -183,7 +183,7 @@ The skills are **Orca-specific**. Read this before installing.
 | Orca CLI executable | Resolved the way Orca documents it: `ORCA_CLI_COMMAND`, then the platform binary name, then `orca`. |
 | The Orca `orchestration` guide | The skills tell the coordinator to fetch it with `orca skills get orchestration` and treat the live guide as authoritative over their own prose. |
 | Worker agents | Whatever TUI agents your Orca profile has enabled. The skills read the current default and the current disabled list rather than naming one. |
-| Python 3 | Only for the optional bundled inbox loop (standard library only: POSIX file locks, so macOS/Linux/WSL). |
+| Python 3 | Used by the bundled inbox loop and by the progress recorder/viewer that starts before the first dispatch (standard library only: POSIX file locks and `select`, so macOS/Linux/WSL). |
 
 **Capability boundary.** The planning chain is Matt Pocock's. This repository does not redefine what those skills do. The orchestration verbs are Orca's. The judgements
 — channel selection, gate choice, decision classification — are transferable, and another
@@ -289,7 +289,7 @@ Two manual checks belong beside it, and neither can be automated from inside the
 
 ## Evals
 
-Each language variant ships an `evals/evals.json` with 30 prompt-level scenarios covering channel
+Each language variant ships an `evals/evals.json` with 31 prompt-level scenarios covering channel
 routing, worker-slot resolution, start verification (including `turnStart: observed`, an
 unsupported receipt, and a worker with no terminal), gate choice, review arrangement, send-back
 judgement, decision classification, escalation, the merge exceptions and the wake-then-reinstall
@@ -355,3 +355,72 @@ The planning chain is [Matt Pocock's public engineering skills](https://github.c
 
 [MIT](LICENSE), copyright 2026 whutlichao. Contributions are welcome; see
 [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Local progress dashboard
+
+The dashboard is a non-blocking read-only sidecar: Python 3 standard library, no database, external
+service or credentials. The coordinator explicitly records sanitized Run/task/worker facts; it does
+not poll Orca or consume/ack inbox messages. Worker self reports stay separate from verification;
+implemented, integrated, merged and tracker_closed are independent, initially unverified facts.
+It shows dependencies, blocks, pending decisions, parent/child workers, evidence and the timeline,
+with separate last observation and effective progress timestamps, unknown/lost/stale labels and no
+estimated percentage. Recording errors warn and orchestration continues even if the viewer is down.
+
+**When it starts**: before the first dispatch of every actual orchestration Run, the coordinator
+initializes a REAL progress record in a new directory outside the repository and runs `open`. `open`
+selects a free port, starts the read-only server in the background, attempts to open the default
+browser, and prints the URL and PID as JSON. If the browser cannot open, it warns and the printed
+URL must be opened manually. If startup or recording fails, it warns and the Run continues: the
+dashboard never blocks dispatch, questions, acceptance or the single inbox receiver. Pure Q&A and
+edits to the skill do not start it. The DEMO below instead uses an explicit `serve`, which prints an
+address without opening a browser.
+
+The console orders a Run overview, attention items (blocked, pending decisions, failed and lost
+records), count-based task charts with clickable filters, a static reference workflow with explicit
+per-step evidence, a scrollable actual-dependency graph, tasks and workers, delivery evidence and
+events. Delivery booleans remain independent; no predecessor success is inferred. Chinese/English
+switching, filters, expanded details and graph scroll survive refresh. See the reference for exact
+chart definitions and optional browser checks.
+
+The screenshots below are a local **DEMO** run: a new state directory served on `127.0.0.1`,
+illustrative demo data only — no real repository or personal paths — and the page labels itself
+**DEMO**. Task titles come from that dataset (Chinese); the interface switches between Chinese and
+English. The commands further down reproduce it.
+
+![DEMO progress console in English: header, Run overview, attention items, task counts with a donut chart and the reference flow](docs/demo/progress-console-overview-en.png)
+
+![DEMO progress console in English: dependency graph, and the Tasks & workers panel showing nested workers with verification and self-report badges](docs/demo/progress-console-detail-en.png)
+
+Choose a persistent `AUDIT_ROOT` outside every repository. **DEMO and REAL use separate new directories.**
+From this repository (or adjust script paths to your installed bundle), a reproducible offline demo is:
+
+```bash
+python3 skills/orchestra-auto/scripts/progress-demo.py --state "$AUDIT_ROOT/demo-example" --target-repo "$PWD"
+python3 skills/orchestra-auto/scripts/progress.py --state "$AUDIT_ROOT/demo-example" serve --port 8766
+```
+
+Open **http://127.0.0.1:8766/**. The page says **DEMO** and refreshes every three seconds; demo refuses
+an existing directory. This demo, and any other on-demand viewing, uses an explicit `serve`: it prints
+its address but never opens a browser. For **REAL** recording, initialize a separate directory (safe
+under `set -e`) and use `open`, which is the automatic first-dispatch path:
+
+```bash
+python3 skills/orchestra-auto/scripts/progress.py --state "$AUDIT_ROOT/run-example" init \
+  --event-id init-1 --data "{\"id\":\"run-example\",\"target_repo\":\"$PWD\",\"mode\":\"REAL\",\"status\":\"active\"}" \
+  || printf '%s\n' 'Progress warning; continue orchestration' >&2
+python3 skills/orchestra-auto/scripts/progress.py --state "$AUDIT_ROOT/run-example" open \
+  || printf '%s\n' 'Progress warning; continue orchestration' >&2
+```
+
+`open` prints `{"url": ..., "pid": ..., "browser_opened": ...}`: give the URL to the user. If
+`browser_opened` is false, tell the user to visit that URL manually. To stop the background viewer
+later, run `kill PID` with the printed PID; the snapshot remains. Record updates in another terminal,
+and recording works whether or not the viewer is running. `show` prints a snapshot without a server;
+`serve --port 8765` remains an explicit foreground viewer for on-demand reading.
+
+The page never serves artifact file contents. HTTP(S) references are clickable; other references
+remain text. Local access is trusted; do not forward the port. It can only observe explicitly
+submitted facts, and fetch errors retain the last valid snapshot with an error banner.
+See the [protocol and workflow ownership](skills/orchestra-auto/references/progress-dashboard.md)
+for JSON commands, nested task/dispatch/attempt reports, warning-and-continue wrappers, recovery,
+and the exact dispatch/question/acceptance/merge/tracker/close-out checkpoints.

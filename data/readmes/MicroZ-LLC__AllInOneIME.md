@@ -63,8 +63,8 @@ A new install writes English; to type Chinese (pinyin), French, Korean or Hindi 
 | Space, ⏎ / digits | Once the results are up: insert the highlighted / numbered one; 0 is the original. ⏎ inserts even with a follow-up half typed (it's dropped) |
 | ⇧⏎ | With a follow-up typed after AI results: sends it (the next question of an `@question` conversation, or a refine). While a command is typed, or on AI results with nothing typed: inserts what you typed as is, `@command` included. On other results (`@open`, a reminder …) it inserts the highlighted row, as ⏎ does |
 | ⌘C | Copies the highlighted result (for `@open`, the path); the candidate panel stays open |
-| ⌃V | In a command (e.g. after `@improve `): appends the clipboard text after what you've typed instead of pasting it into the app. Multiple lines become one, up to 2000 characters at a time (`@note` keeps the line breaks and takes up to 20000). Works in any app; without a command, the key goes to the app as usual |
-| ⌘V | Like ⌃V, but some apps handle ⌘V themselves (terminals such as Ghostty, iTerm2 and Terminal, and Notes) and paste into the app as usual; use ⌃V there |
+| ⌃V | Shows [clipboard history](#clipboard-history-new), the text you copied lately, newest first: ⏎ or Tab puts in the one chosen, ↓ ↑ choose, ⇧↓ ⇧↑ choose several (⏎ puts them in one per line, oldest first), → or Esc hides it. ⌃V ⏎ is the ⌃V you had, and ⌃V twice gives ⌃V to the app (vim, the shell). In a command (e.g. after `@improve `) the one you choose is appended after what you've typed instead of being pasted into the app: multiple lines become one, up to 2000 characters at a time (`@note` keeps the line breaks and takes up to 20000). Works in any app, terminals too. With clipboard history off, ⌃V in a command appends the clipboard text at once, and without a command it goes to the app as usual |
+| ⌘V | The app's Paste. In a command it appends the clipboard text at once, no history, except where the app handles ⌘V itself (terminals such as Ghostty, iTerm2 and Terminal, and Notes) and pastes into the app as usual; use ⌃V there |
 | Esc, ⌫ | Back to the sentence to keep editing; typing punctuation or digits after the results continues it. After a refine: back to the results before it |
 | Letters, once AI results are up | A follow-up: after `@question` the next question (see [Conversations](#conversations-with-question-new)), after `@improve` or a prompt command an instruction such as `shorter` (see [Refining the results](#refining-the-results-new)); ⇧⏎ sends it. After `@translate` letters continue the sentence, and ⏎ translates it again |
 | ⌘⏎, ⌘1–⌘9 | In an `@question` conversation: shows where to continue it (the coding agents installed, the one `@agent` hands to first; Claude, ChatGPT, Gemini; or copy it); ⌘1, ⌘2 … pick one |
@@ -81,7 +81,7 @@ commands below start with it (`~improve`), and so does the app's own text that n
 | `@improve` | Polish: 1–3 are three versions in the sentence's own language, 4 onward the rewrite styles (added and ordered in the settings), 0 is the original. No translation; with "@improve also translates" on, it works like `@translate @improve` |
 | `@translate` | Translate into the languages you added (Settings → General → Translate to, drag to reorder), a line each, three versions with only one; the sentence's own language is skipped. `@translate @improve` together translates and rewrites in one request |
 | `@question` | Ask a question; the answer appears in the candidates, ⏎ or Space inserts it, ⌘C copies it. Type on and ⇧⏎ asks a follow-up: the panel becomes a conversation of up to 5 rounds, then offers to continue in Claude or another AI. With nothing typed after it, it lists your last 5 questions, newest first; typing narrows them down (words anywhere in the question, any case, Chinese too). A digit, ↑↓ then ⏎, or a click shows a question's saved answer at once, offline, to insert or copy as usual; ⌘R there asks it again for a fresh answer. With no match, or nothing picked, ⏎ asks what you typed |
-| `@reply` | Writes three replies to the message you're answering, in the other party's language and the tone of the app (casual in chat apps, formal in mail, where each reply is a whole email body; or the first of the app's own rewrite styles, set in an earlier version). Give it the message by selecting it, copying it and pressing ⌃V in the draft, or taking a screenshot (⌃⇧⌘4, or WeChat's own) and pressing ⌃V; what you type after it says what to reply: `@reply politely decline`. ⌘R writes three more; see [Replying](#replying-with-reply-new) |
+| `@reply` | Writes three replies to the message you're answering, in the other party's language and the tone of the app (casual in chat apps, formal in mail, where each reply is a whole email body; or the first of the app's own rewrite styles, set in an earlier version). Give it the message by selecting it, copying it and pressing ⌃V ⏎ in the draft, or taking a screenshot (⌃⇧⌘4, or WeChat's own) and pressing ⌃V ⏎; what you type after it says what to reply: `@reply politely decline`. ⌘R writes three more; see [Replying](#replying-with-reply-new) |
 | `@agent` | Hands the task to a coding agent on your Mac, picked in Settings → Commands → Agent (@agent): Claude Code (the default), Gemini CLI, Kiro CLI, or a command of your own (what you typed is added as its last argument). The page also shows whether each is installed and how it starts. Claude Code runs in the background by default, with a notification when it's done (click it to open the session in Terminal and go on), or see `@tasks`; turn off "Claude Code runs in the background and notifies me" there to open it in Terminal. The other agents open in Terminal with what you typed as their first message. Each uses its own sign-in and settings. In Google Chrome it takes the page along: the address and title, the field you typed in with its form or section (★ marks where you are), the selected text and what's visible in the window — never a password field, never the whole page — so `@agent why doesn't this work` in a sign-in form's username field is about that field, and `@agent why is this blocked` on a pipeline page is about that page; the agent judges which. The page's text goes to the agent as read, marked as coming from the web (not as instructions from you). It needs Accessibility; Chrome builds its page tree for it only while `@agent` is being written there, turned back off after (Settings → Privacy → "@agent and @reply take the Chrome page along" turns it all off). The first time it opens Terminal, macOS asks whether AllInOneIME may control Terminal: click OK. (It was `@claude` before 0.6.4.) |
 | `@tasks` | Lists the background Claude tasks (working / done / waiting for you) with their last replies; ⏎ opens one in Terminal, ⌘C copies the reply |
 | `@settings` | Opens the settings window right away (picking it is enough) |
@@ -139,8 +139,8 @@ terminal. Turn it off under Settings → Advanced → "Use the selected text" if
 then press ⏎:
 
 - **Select it** in the field, then type `@reply` (the reply you pick goes in after it, on a line of its own).
-- **Copy it**, type `@reply` and press ⌃V: the panel shows "Copied message · N characters", and the draft stays as it is.
-- **Take a screenshot** to the clipboard (⌃⇧⌘4, or WeChat's own screenshot), type `@reply` and press ⌃V: the panel
+- **Copy it**, type `@reply` and press ⌃V ⏎ (⌃V shows [clipboard history](#clipboard-history-new), what you copied last chosen first): the panel shows "Copied message · N characters", and the draft stays as it is.
+- **Take a screenshot** to the clipboard (⌃⇧⌘4, or WeChat's own screenshot), type `@reply` and press ⌃V ⏎: the panel
   shows "Screenshot · N lines (read on this Mac)". The screenshot is read on this Mac (Apple's Vision, the first time a
   little slower) and only its text is sent; the image goes nowhere and isn't kept. Lines on the left are the other
   party's and on the right yours, as chat apps show them; the times between messages are left out. Use it for WeChat,
@@ -156,8 +156,8 @@ Privacy → "@agent and @reply take the Chrome page along"). With nothing to rep
 needs. Hiding sensitive information covers the screenshot's text too; during secure input the clipboard isn't read
 and nothing is sent. A custom command you had named `reply` is now `@myreply`.
 
-A screenshot pasted into any other command works too: `@translate` ⌃V translates it (into the caret), `@question what
-does this say` ⌃V asks about it, and commands without AI get its text as if it had been copied (`@note` keeps its lines).
+A screenshot pasted into any other command works too: `@translate` ⌃V ⏎ translates it (into the caret), `@question what
+does this say` ⌃V ⏎ asks about it, and commands without AI get its text as if it had been copied (`@note` keeps its lines).
 With text selected, `@improve` and `@translate` keep working on the selection, and a notice says the screenshot wasn't
 used.
 
@@ -224,7 +224,7 @@ that goes on, replaces the saved one.
 
 ### Notes and reminders
 
-`@note` makes a new note; its first line is the title. After copying some text, ⌃V after `@note ` (or ⌘V, outside terminals) saves it with its line breaks, shown as ↵ in the command.
+`@note` makes a new note; its first line is the title. After copying some text, ⌃V ⏎ after `@note ` (or ⌘V, outside terminals) saves it with its line breaks, shown as ↵ in the command.
 Where it goes is Settings → Commands → Notes (@note) → Save to:
 
 - **Notes** (as before): a new note in the AllInOneIME folder.
@@ -270,7 +270,7 @@ They're kept in `customCommands` in the config file (`~/.config/allinoneime/conf
 | `terminal` | Runs `argv` in a new Terminal window; nothing is inserted |
 | `link` | Puts the text into the web address `url` and opens it in the default browser; nothing is inserted |
 | `snippet` | Inserts `text` at once, with its placeholders filled in (below); no AI, no program |
-| `suggestions` | A source of [suggestions](#suggestions-and-code-new): type its `prefix` in any text field and the items `argv` prints show as rows, Tab inserts one ([below](#suggestions-from-a-program-of-your-own-new)); `@issues` itself only says what it is |
+| `suggestions` | A source of [suggestions](#suggestions-and-code-new): type its `prefix` in any text field and the items `argv` prints show as rows, Tab inserts one ([below](#suggestions-from-a-program-of-your-own-new)). It's not an @ command: it isn't in the command list, and `@issues` is just text; you use it by its prefix |
 
 - `{input}` becomes what you wrote after the command, and it always stays within the one argument it's in: no shell is involved. For a shell, say so, like `sh` above (`zsh -c`).
 - `stdin`: what goes to the program's standard input, with `{input}` replaced too.
@@ -286,11 +286,13 @@ They're kept in `customCommands` in the config file (`~/.config/allinoneime/conf
 
 A `suggestions` command ("Suggestions" in the editor) makes a program of yours a source of suggestions, like a plugin's
 completions but without writing a plugin: type its prefix (`#`, `PROJ-`) in any text field and the rows that match show
-under the caret; Tab inserts one. The program runs as a `run` command's does (in your home folder, with your login
-shell's PATH, never through a shell unless `argv` starts one). Run with no input, it prints every item, one a line,
-`match⇥title⇥url` (a tab between them; title and url may be left out), or the plugins' JSON (`{"items": [...]}`,
-[docs/plugins.md](docs/plugins.md#completions-suggestions)). A line that isn't one (a match with a space, say) is skipped
-on its own. This one lists a GitHub repository's issues with GitHub's `gh` (which keeps its own sign-in):
+under the caret; Tab inserts one. You use it by its prefix alone: it isn't in the @ command list, and `@issues` typed is
+just text, as a name no command has is; you manage it in Settings → Commands → Your Commands. The program runs as a
+`run` command's does (in your home folder, with your login shell's PATH, never through a shell unless `argv` starts
+one). Run with no input, it prints every item, one a line, `match⇥title⇥url` (a tab between them; title and url may be
+left out), or the plugins' JSON (`{"items": [...]}`, [docs/plugins.md](docs/plugins.md#completions-suggestions)). A line
+that isn't one (a match with a space, say) is skipped on its own. This one lists a GitHub repository's issues with
+GitHub's `gh` (which keeps its own sign-in):
 
 ```sh
 #!/bin/sh
@@ -326,7 +328,10 @@ fi
 - Rows, keys, the rows you picked first, the list's cache (`~/Library/Caches/AllInOneIME/suggestions/`, readable only by
   you, deleted with the command), back-off and pause are a plugin's. It's yours: no switch to turn on, it's on while it
   exists; the **Suggestions** switch (Settings → General, the input menu) applies. The editor shows
-  how it's doing (last updated, items, last error) and Refresh Now; the command list shows it too.
+  how it's doing (last updated, items, last error) and Refresh Now, and so does its row in Settings → Commands → Your
+  Commands.
+- Its name is a custom command's as before: letters only, and no other custom command, built-in command or plugin may
+  have it (a script extension of that name stays left out, as before).
 - Custom commands sync through iCloud as they do; a program missing on another Mac is that source's error there. One
   that comes from another Mac runs nothing on this Mac until you allow it here once: Settings → Commands → Your Commands shows it
   as from another Mac, with the program it would run, and **Allow** or **Remove** (a notice says when one comes).
@@ -541,8 +546,8 @@ Settings has seven pages, in this order in the sidebar, and opens on General:
 
 - **General**, from the top: the magic key and the action key; Show in Menu Bar and the interface language; Translate
   to, the rewrite styles, "@improve also translates" and the jargon list (shown with the Jargon style, or once a list
-  is set); Autocomplete (Beta); Suggestions, with Insert and "In these apps"; Sync through iCloud; and Previous per-app
-  settings, only while an app has one.
+  is set); Autocomplete (Beta); Suggestions, with Insert and "In these apps"; Clipboard history, with Keep the last, whether
+  macOS lets it record and Clear History; Sync through iCloud; and Previous per-app settings, only while an app has one.
 - **Input**: the input languages as chips at the top: drag to reorder, ⊗ removes one, Add… adds one; the first is the
   default, and Code comes after them ("Code · Python"). Under the chips, each input has its options in a section under
   its name, always shown, with nothing to click. English has its words; Chinese (pinyin) its language pack and fuzzy
@@ -554,7 +559,8 @@ Settings has seven pages, in this order in the sidebar, and opens on General:
 - **Privacy**: hiding sensitive information before sending, the words to hide, Apps without AI, what `@agent` and
   `@reply` take from Chrome, remembering recent questions (with Forget), and learning English words.
 - **Commands**: your commands, the agent `@agent` hands to, where an `@question` conversation continues, `@note` and
-  `@search`, plugins, script extensions (folders that bring no new commands fold into one row) and extension sources.
+  `@search`, plugins, script extensions (folders that bring no new commands fold into one row) and extension sources. A
+  plugin or script extension command with suggestions has their switch under it, and **Show in the @ list** next to it.
 - **Advanced**: typing results out (speed, typos), the candidate layout, "Use the selected text", the config file and
   the Rime folder.
 - **About**: the version, updates and "Check for updates automatically", Troubleshoot…, Report an Issue… and links.
@@ -699,7 +705,8 @@ the input method starts, every 30 minutes (after a pause in typing) and on Sync 
   extension folders and plugins (paths on each Mac), what the input method learned on this Mac (see Privacy) and the
   recent apps, window state, Autocomplete (its switch and each app's choice: each Mac's own), Suggestions' switches (General's and each app's), the plugins'
   completions turned on and their preferences (`completionSources`, `pluginPreferences`), the custom commands from
-  another Mac still awaiting Allow (`unconfirmedCommands`), and the sync switches themselves (each Mac's own). What a
+  another Mac still awaiting Allow (`unconfirmedCommands`), clipboard history and its settings (`clipboardHistory`,
+  `clipboardHistoryLimit`), and the sync switches themselves (each Mac's own). What a
   suggestion row inserts and Code's language do sync, with the settings.
 - Turning it off stops syncing and leaves everything as it is, on this Mac and in iCloud; **Remove from iCloud…** in the ⋯
   menu (asked first) moves the folder to the Trash and turns sync off on this Mac.
@@ -910,6 +917,7 @@ They take the place of [autocomplete](#autocomplete-beta-new)'s gray text while 
 
 - **Your own program:** a custom command of type `suggestions` is a source too, its prefix and its items yours: a program
   that prints `match⇥title⇥url` lines ([Suggestions from a program of your own](#suggestions-from-a-program-of-your-own-new)).
+  It's used by its prefix alone, never from the @ command list.
 - **Script extensions (0.6.7.1):** a script extension's command can be a source as a plugin's completions are: one line
   in its script, `# @allinoneime.completion {"prefix": "TCK-", "list": true}`, or `"completion"` in its bundle's
   `extension.json`. Its script prints the items, run in the background with `ALLINONEIME_COMPLETION=load` (and, with
@@ -958,15 +966,4 @@ They take the place of [autocomplete](#autocomplete-beta-new)'s gray text while 
   updates and restarts. A plugin update that changes the hosts it reaches, its prefix, whether it looks up what you type
   and from which character on, how it compares (`compare`) or its script turns them off until you turn them on again
   (Settings says so under it); a source an update adds is off until you turn it on. **Suggestions** in the input menu turns them all off
-  or on; an app at Off under "In these apps" has none (see [Per-app settings](#per-app-settings-new)). An app with No AI still has them: no AI is involved (a plugin's lookup still goes to
-  its hosts there). With `#` as the magic key, a source after `#` can't work (Settings says so).
-- **What a row inserts:** what its source says (a plugin's `insert`, per class of app: `@github` puts in `#1234 Fix
-  login` in documents and the link too in chat apps; a custom command's Insert), unless you choose otherwise in Settings
-  → General → **Insert**, under the Suggestions switch, for every source: **Default** (each source's own), **With title**
-  (`#1234 Fix login`), **With title and link** (`#1234 Fix login https://github.com/…/issues/1234`) or **Markdown link**
-  (`[Fix login](https://github.com/…/issues/1234)` in the place of the `#12` you typed; its `{arg}`, `#1234`, in a terminal), the
-  same in every app, terminals and code editors too; an item without a title or a link goes in with what it has. An app can have its
-  own under "In these apps" (Add App…, Remove) or in the input menu's This App, over the one everywhere: links in Slack,
-  titles in Mail; or **Off**, no suggestion rows in that app at all (plugins', Suggestions commands' and Code's). "ID
-  only" (`#1234`) is no longer offered: a config that has it, everywhere or for an app, keeps it,
-  and Settings shows it with Restore Default. Code's rows never change with it, and only what you haven't typed 
+  or on; an app at Off under "In these apps" has none (see [Per-app settin

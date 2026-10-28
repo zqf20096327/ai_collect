@@ -8,12 +8,14 @@
 
 An open-source Android workspace built to run multiple independent accounts on ChatGPT, Claude, Gemini, DeepSeek, Grok, and Perplexity simultaneously without cross-account tracking or session resets.
 
+[![Get from Play](https://img.shields.io/badge/Google_Play-Pending%20Review-414141?style=for-the-badge&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=com.ujwal.colai)
 [![License](https://img.shields.io/badge/License-Apache%202.0-24292e.svg?style=for-the-badge)](LICENSE.md)
 [![Android](https://img.shields.io/badge/Android-8.0%2B-3DDC84.svg?style=for-the-badge&logo=android&logoColor=white)](https://developer.android.com)
 [![Release](https://img.shields.io/github/v/release/Ujwal223/ColAI?style=for-the-badge&color=0969da)](https://github.com/Ujwal223/ColAI/releases)
 [![Downloads](https://img.shields.io/github/downloads/Ujwal223/ColAI/total?style=for-the-badge&color=fa8900)](https://github.com/Ujwal223/ColAI/releases)
 [![Donate](https://img.shields.io/badge/Support-BuyMeMomo-FFDD00.svg?style=for-the-badge&logo=buymeacoffee&logoColor=black)](https://buymemomo.com/ujwal)
 
+<br/>
 </div>
 
 ---
@@ -102,7 +104,14 @@ ColAI is built natively for Android using standard components:
 
 ## Quick Start
 
-### Prerequisites
+### Installation
+
+- **Google Play**: [Get ColAI on Google Play](https://play.google.com/store/apps/details?id=com.ujwal.colai)
+- **Direct APK**: Download the latest release from [GitHub Releases](https://github.com/Ujwal223/ColAI/releases)
+
+### Building from Source
+
+#### Prerequisites
 - Android 8.0+ (API Level 26+)
 - JDK 21
 - Android Studio or Android SDK Command-line Tools

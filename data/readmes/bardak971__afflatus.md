@@ -23,19 +23,15 @@ You keep ComfyUI, your models and your node packs; they do all the rendering. Af
 
 It is one small server and a folder of data, on your PC or in a container.
 
-## What's new in 0.7
+## What's new in 0.8
 
-- **LTX Lip sync on 2.3 and 2.5**, and a recording cut into LTX clips, each as long as its part.
-- **Seamless LTX joins:** the next clip carries on in the clip before's latent, with its sound and colour, and a run-up of 9, 25 or 41 frames.
-- **Any form under a recording:** a clip can be Lip sync, or a Video with audio (H3, LTX) or Wan clip the recording plays over unchanged.
-- **Sound cues:** a part of a sound file pinned at a moment of the clip, on every H3 form and on LTX.
-- **LTX 2.5 with the cast's pictures and voice** (MSR), the face score on LTX and Wan takes, Face refine on LTX 2.5.
-- **Wan carries on** from the clip before through SVI 2.0 Pro instead of restarting on a still frame.
-- **Record a voice from the microphone** into any sound slot, with Trim the silence.
-- **The files of a render checked together** before it runs: another version's VAE, encoder or LoRA said in words.
-- **Each take shows what it was made with**, and Use this take's settings.
+- **Afflatus from outside (MCP):** Claude Code, Claude Desktop or any MCP client drives the studio at `/mcp` with a token of its own: where you are, every form and setting, renders it can look at and improve, timelines, the library, the Prompt kit, models, machines and rented GPUs.
+- **Tokens with scopes and limits:** Look, Make, Spend (rented GPUs, off unless ticked), Manage; renders an hour, a spend cap a month, and each token's activity, in Settings › Access.
+- **Its changes in the page you have open:** the fields it touched ringed with its name, Undo in the toast, never over what you typed since.
+- **A workflow an agent brings waits for your Approve.**
+- **A recording cut on its lyric lines**, and the song under Lip sync clips played as one track (since 0.7.1).
 
-Everything else is in the [changelog](CHANGELOG.md).
+See [docs/mcp.md](docs/mcp.md). Everything else is in the [changelog](CHANGELOG.md).
 
 ## Make
 
@@ -77,6 +73,7 @@ Clips are easy to make. A film is the hard part, and that is what the timeline i
 - **You see where the time went.** Before you press Render, the form says how long it will take, from your past renders on that machine. Afterwards, **Render times** accounts for every minute: GPU time, jobs and video made over any period, how much went to loading models, how far off the estimates were, the queue's waits, VRAM peaks and out-of-memory stops; per model, its share, its usual time and whether it ran slower than usual; a lane per model you can drag to zoom; and flags that name what went wrong and offer the fix, sort the queue by model, open the log. On every machine you run, rented ones included.
 - **And what it cost.** The **Costs** page takes RunPod's own bill and splits it: today, the month, where the month will end at this pace, your balance and how long it lasts. Then where the pod time went, rendering, booting, fetching files, sitting idle, failing, and how much of it made nothing; the spend per day and per GPU; per project; every pod session from its deploy to its end; what a render of each model costs on each machine, your own PC included once you give it a price per kWh; and what would have cost less: a shorter idle wait with the saving counted, fewer deploys, a network volume for files fetched again and again, a cheaper GPU for that model.
 - **Node packs that come by themselves.** An option that needs a node pack the machine lacks (Face refine, Veda, RTX upscaling…) holds its job and says so: **Install and restart** in one click, or set the machine to do it always. ComfyUI is restarted only once nothing renders there, and what cannot come is done without, said on the job.
+- **Afflatus from outside (MCP).** Claude Code, Claude Desktop or any MCP client drives the whole studio at `/mcp` with a token of its own: where you are, every form and setting, renders and takes it can see, timelines, the library, the Prompt kit, models, machines and rented GPUs. Each token has its scopes (Look, Make, Spend, Manage), its renders an hour, its spend cap and its activity; what it changes in the page you have open shows there with Undo. See [docs/mcp.md](docs/mcp.md).
 - **Told when it matters.** A render failed or stuck, the queue empty, a GPU found, a pod stopped, a cap or a low balance reached, a new device signed in: in the browser, on Telegram or on Discord, each kind on or off.
 
 ### A GPU for the afternoon
@@ -160,7 +157,7 @@ No GPU at hand? `corepack pnpm demo` runs the real app against a pretend ComfyUI
 
 </details>
 
-More: [installing on a PC](docs/install-desktop.md) · [setting up ComfyUI](docs/comfyui-setup.md) · [using Afflatus](docs/guide.md) · [configuration](docs/configuration.md) · [troubleshooting](docs/troubleshooting.md)
+More: [installing on a PC](docs/install-desktop.md) · [setting up ComfyUI](docs/comfyui-setup.md) · [using Afflatus](docs/guide.md) · [configuration](docs/configuration.md) · [troubleshooting](docs/troubleshooting.md) · [agents (MCP)](docs/mcp.md)
 
 ## The built-in models
 

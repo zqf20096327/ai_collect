@@ -43,7 +43,7 @@ Godot-MCP is the Godot counterpart of [Unity-MCP](https://github.com/IvanMurzak/
 ## ![Features](https://github.com/IvanMurzak/Godot-MCP/blob/main/docs/img/promo/hazzard-features.svg?raw=true)
 
 - ✔️ **AI agents** — Use the best agents from **Anthropic**, **OpenAI**, **Google**, or any other provider with no vendor lock-in
-- ✔️ **23 built-in Tools** — [MCP Tools](#tools-reference) across 9 families for operating the Godot Editor, led by [RQL](docs/rql.md): one query language for the whole editor
+- ✔️ **24 built-in Tools** — [MCP Tools](#tools-reference) across 9 families for operating the Godot Editor, led by [RQL](docs/rql.md): one query language for the whole editor
 - ✔️ **C# & GDScript** — Read, create, and update both `.cs` and `.gd` scripts, and attach them to nodes
 - ✔️ **Scene & Node control** — Query and edit the scene tree, Godot properties (GDScript variables included), `.tscn` scenes and `.tres`/`.res` resources with RQL — bulk, all-or-nothing, undoable
 - ✔️ **Visual feedback** — Capture viewport, camera, and isolated-node screenshots the LLM can inspect
@@ -128,7 +128,7 @@ That's it. Ask your AI *"Create 3 cubes in a circle with radius 2"* and watch it
 
 # Tools Reference
 
-Godot-MCP ships **23 built-in tools** grouped into **9 families**. The editor's data layer is
+Godot-MCP ships **24 built-in tools** grouped into **9 families**. The editor's data layer is
 [RQL](docs/rql.md) (Reflection Query Language): `rql-query`, `rql-mutate` and `rql-schema` read and change scene
 nodes, Godot properties, resources, files, scenes and editor state in one query instead of one tool per operation
 (they replace the former `node-*`, `scene-*`, `resource-*`, `filesystem-*` and `editor-*` tools; in the editor also
@@ -143,7 +143,7 @@ configuration required. The **runtime-errors**, **console** and **reflection** f
 | --- | --- | --- |
 | **ping** | `ping` | Lightweight readiness probe — echoes a message back, or returns `pong`. Verifies the end-to-end MCP path (editor → SignalR → tool dispatch). **System tool** — reachable over the server's `/api/system-tools/` HTTP surface, not advertised to AI agents in `tools/list`. |
 | **rql** | `rql-query`, `rql-mutate`, `rql-schema` | Query and change the live editor with RQL: `nodes`, `root`, `selection`, `scenes`, `files`, `classes`, `console`, `editor`, `project`, `settings`, `inputActions`, `autoloads`, `groups`, `layers` sources; `godot.find` / `godot.group` / `godot.resources` / `godot.resource` / `godot.callable`; node calls AddChild / InstantiateScene / Duplicate / Reparent / MoveChild / Free / Connect / Disconnect / AddToGroup / RemoveFromGroup; project settings, input map, autoloads, layer names, TileSets, Themes, ShaderMaterial parameters and MeshLibraries; editor calls NewScene / OpenScene / SaveScene / CreateResource / MoveResource / DeleteResource / Reimport. All-or-nothing and undoable. See [docs/rql.md](docs/rql.md) and the `godot-rql` skill. |
-| **script** | `script-read`, `script-create`, `script-update`, `script-delete`, `script-attach-to-node`, `script-validate`, `script-execute` | CRUD on C# (`.cs`) and GDScript (`.gd`) files, attaching a script to a node, validating GDScript, and running C# in the editor ([Code-Exec](https://github.com/IvanMurzak/Code-Exec)). |
+| **script** | `script-read`, `script-create`, `script-update`, `script-delete`, `script-attach-to-node`, `script-validate`, `script-build`, `script-execute` | CRUD on C# (`.cs`) and GDScript (`.gd`) files, attaching a script to a node, validating GDScript, building the project's C# (the result arrives after Godot's assembly reload), and running C# in the editor ([Code-Exec](https://github.com/IvanMurzak/Code-Exec)). |
 | **screenshot** | `screenshot-viewport`, `screenshot-camera`, `screenshot-isolated` | Capture the editor viewport, a specific camera, or an isolated node render, returned as a PNG image the LLM can inspect. |
 | **console** | `console-get-logs`, `console-clear-logs` | In a running game: read and clear the log collector (`GD.Print`/`GD.PushWarning`/`GD.PushError`). In the editor, the RQL `console` source. |
 | **reflection** | `reflection-method-find`, `reflection-method-call` | In a running game: find and call C# methods (static/instance, public/private) across every loaded assembly via ReflectorNet. In the editor, RQL `call` / `CallMethod` and `rql-schema`. |
@@ -174,6 +174,10 @@ configuration required. The **runtime-errors**, **console** and **reflection** f
 - `script-delete` — Delete a script file.
 - `script-attach-to-node` — Attach a script to a node.
 - `script-validate` — Validate GDScript (.gd) files and return structured parse/compile diagnostics.
+- `script-build` — Build the project's C# (`dotnet build`, Debug) so scripts written with `script-create` /
+  `script-update` load. The build runs in the background; when it succeeds Godot reloads the C# assembly, the plugin
+  reconnects and the result (the compiler warnings, or the compiler errors) is delivered after the reload through the
+  request's `requestId`. See [C# assembly reloads](#c-assembly-reloads).
 - `script-execute` — Compile and run C# in the editor (Roslyn, via [Code-Exec](https://github.com/IvanMurzak/Code-Exec)):
   plain statements with the last expression as the result (own `using`s, local classes, `await`), or a class with a
   static method. The game's compiled types are visible; `include` adds helper `.cs` files from
@@ -228,6 +232,15 @@ configuration required. The **runtime-errors**, **console** and **reflection** f
 > [!IMPORTANT]
 > Godot-MCP requires the **mono (C#/.NET)** build of Godot — the standard (GDScript-only) build cannot
 > compile the addon.
+
+> [!NOTE]
+> **C# scripts in a game run from the editor need `<EnableDynamicLoading>true</EnableDynamicLoading>`.** If a game
+> started from the editor (Play) fails to create *every* C# script ("Cannot instantiate C# script because the associated
+> class could not be found", after a `TypeLoadException ... Could not resolve type '<an EditorPlugin class>'`), the
+> project's `.csproj` lacks that property: without it the build does not copy the NuGet package assemblies (Godot-MCP's
+> packages, and the Debug configuration's `GodotSharpEditor` reference) into `.godot/mono/temp/bin/Debug/`. Godot's own
+> C# project template always has it, and `godot-cli install-plugin` / `create-project` set it. Add it to the project's
+> `<PropertyGroup>` (next to `<TargetFramework>`) and rebuild.
 
 # Installation
 
@@ -293,19 +306,21 @@ On a successful load the editor Output panel prints:
 ## Step 2: Add the NuGet packages + the extension catalog embed
 
 Add the six `PackageReference`s **and** the extension-catalog `<EmbeddedResource>` to your project's
-`.csproj` (use these exact pinned versions — they must match the addon's `Godot-MCP.csproj`):
+`.csproj` (use these exact pinned versions — they must match the addon's `Godot-MCP.csproj`), and keep
+`<EnableDynamicLoading>true</EnableDynamicLoading>` in its `<PropertyGroup>` (Godot's C# template has it; without it the
+package assemblies are not copied next to the game assembly):
 
 ```xml
 <ItemGroup>
   <PackageReference Include="com.IvanMurzak.ReflectorNet" Version="5.5.0" />
-  <PackageReference Include="com.IvanMurzak.McpPlugin"   Version="8.13.1" />
+  <PackageReference Include="com.IvanMurzak.McpPlugin"   Version="8.14.0-dev.e8985d5" />
 </ItemGroup>
 
 <!-- Editor-only: exported games (ExportDebug / ExportRelease) ship no RQL and no Roslyn. -->
 <ItemGroup>
-  <PackageReference Include="com.IvanMurzak.Rql"         Version="0.3.0-dev.7dd3b29" Condition="'$(Configuration)' != 'ExportDebug' and '$(Configuration)' != 'ExportRelease'" />
-  <PackageReference Include="com.IvanMurzak.CodeExec"        Version="0.3.1" Condition="'$(Configuration)' != 'ExportDebug' and '$(Configuration)' != 'ExportRelease'" />
-  <PackageReference Include="com.IvanMurzak.CodeExec.Roslyn" Version="0.3.1" Condition="'$(Configuration)' != 'ExportDebug' and '$(Configuration)' != 'ExportRelease'" />
+  <PackageReference Include="com.IvanMurzak.Rql"         Version="0.3.0-dev.2877579" Condition="'$(Configuration)' != 'ExportDebug' and '$(Configuration)' != 'ExportRelease'" />
+  <PackageReference Include="com.IvanMurzak.CodeExec"        Version="0.4.0-dev.2b784e4" Condition="'$(Configuration)' != 'ExportDebug' and '$(Configuration)' != 'ExportRelease'" />
+  <PackageReference Include="com.IvanMurzak.CodeExec.Roslyn" Version="0.4.0-dev.2b784e4" Condition="'$(Configuration)' != 'ExportDebug' and '$(Configuration)' != 'ExportRelease'" />
   <PackageReference Include="Microsoft.CodeAnalysis.CSharp"  Version="4.12.0" Condition="'$(Configuration)' != 'ExportDebug' and '$(Configuration)' != 'ExportRelease'" />
 </ItemGroup>
 
@@ -318,10 +333,10 @@ Add the six `PackageReference`s **and** the extension-catalog `<EmbeddedResource
 | Package | Version | Role |
 | --- | --- | --- |
 | [`com.IvanMurzak.ReflectorNet`](https://www.nuget.org/packages/com.IvanMurzak.ReflectorNet) | `5.5.0` | Reflection / serialization core |
-| [`com.IvanMurzak.McpPlugin`](https://www.nuget.org/packages/com.IvanMurzak.McpPlugin) | `8.13.1` | MCP plugin client (transitively pulls `McpPlugin.Common` + `ReflectorNet`; carries the shared `AgentConfig` module) |
-| [`com.IvanMurzak.Rql`](https://www.nuget.org/packages/com.IvanMurzak.Rql) | `0.3.0-dev.7dd3b29` | RQL, the editor tools' data layer (licensed separately under PolyForm Shield — see [License](#license)) |
-| [`com.IvanMurzak.CodeExec`](https://www.nuget.org/packages/com.IvanMurzak.CodeExec) | `0.3.1` | Code-Exec runtime behind `script-execute` (PolyForm Shield) |
-| [`com.IvanMurzak.CodeExec.Roslyn`](https://www.nuget.org/packages/com.IvanMurzak.CodeExec.Roslyn) | `0.3.1` | Code-Exec's Roslyn adapter, shipped as source (PolyForm Shield) |
+| [`com.IvanMurzak.McpPlugin`](https://www.nuget.org/packages/com.IvanMurzak.McpPlugin) | `8.14.0-dev.e8985d5` | MCP plugin client (transitively pulls `McpPlugin.Common` + `ReflectorNet`; carries the shared `AgentConfig` module) |
+| [`com.IvanMurzak.Rql`](https://www.nuget.org/packages/com.IvanMurzak.Rql) | `0.3.0-dev.2877579` | RQL, the editor tools' data layer (licensed separately under PolyForm Shield — see [License](#license)) |
+| [`com.IvanMurzak.CodeExec`](https://www.nuget.org/packages/com.IvanMurzak.CodeExec) | `0.4.0-dev.2b784e4` | Code-Exec runtime behind `script-execute` (PolyForm Shield) |
+| [`com.IvanMurzak.CodeExec.Roslyn`](https://www.nuget.org/packages/com.IvanMurzak.CodeExec.Roslyn) | `0.4.0-dev.2b784e4` | Code-Exec's Roslyn adapter, shipped as source (PolyForm Shield) |
 | [`Microsoft.CodeAnalysis.CSharp`](https://www.nuget.org/packages/Microsoft.CodeAnalysis.CSharp) | `4.12.0` | Roslyn, the C# compiler `script-execute` runs (its dependencies match .NET 8) |
 
 The four editor-only packages carry a `Condition` that leaves them out of Godot's export builds: only editor
@@ -454,7 +469,8 @@ use the **Local server** row:
   on the port from your **Server URL** (default `http://localhost:8080`), over the `streamableHttp` transport,
   with `plugin-timeout=10000` (the connection timeout) and `tool-timeout=300000`. A server built on McpPlugin 8.11.0+
   sends a tool call to the editor once and lets it run up to 5 minutes (`script-execute` stops a snippet itself after
-  2 minutes). Older servers, including the currently pinned one, ignore `tool-timeout`: they re-send a call every
+  4 minutes, the tool timeout minus a minute: an endless loop returns a `Timeout` error and runaway recursion a
+  "Recursion too deep" error, the editor keeps running). Older servers ignore `tool-timeout`: they re-send a call every
   10 s and give up after about 110 s; the addon runs each re-sent call only once.
 
 > **Version pinning & security.** The download URL is derived **solely** from the addon's pinned
@@ -532,6 +548,42 @@ public partial class Tool_MyFeature
 Return a structured data model (ReflectorNet-serialized) or `void` for side-effect-only ops — never ad-hoc
 string formatting for parseable output. Use `string? optional = null` parameters (nullable + default) to
 mark them as optional for the LLM.
+
+## C# assembly reloads
+
+Godot reloads the project's C# assembly about half a second after the built DLL changes (`script-build`, the
+editor's Build button, or a `dotnet build` in a terminal), whatever the plugin is doing. The plugin is part of that
+assembly, so it is torn down, rebuilt and reconnects (a few seconds). A tool call still running at that moment would
+keep the old assembly alive and Godot's unload would fail, so the plugin gates tool calls around a reload:
+
+- once the rebuilt DLL is on disk, new tool calls are refused with a retryable error ("Godot is about to reload the
+  project's C# assembly … Retry in a few seconds"); calls already running finish first, and Godot's reload waits for
+  them (at most 10 s);
+- when the unload starts, the plugin stops receiving calls, refuses main-thread work still queued for a call instead
+  of running it, and waits for those calls to finish (a call caught there is reported by the server as lost with the
+  connection: retry it too);
+- after the reload the plugin reconnects by itself, and `script-build` delivers its result.
+
+### Known issue: crash or hang on reload with .NET 10
+
+On .NET 10, the editor can crash or hang shortly after a C# assembly reload. This is a .NET runtime bug,
+[dotnet/runtime#135441](https://github.com/dotnet/runtime/issues/135441): when an idle thread-pool thread exits after a
+reload, the runtime can free a handle in the wrong collectible load context and corrupt a static of the newly loaded
+assemblies (the addon's dependencies use thread-static fields, which trigger it). It is fixed on the runtime's main branch
+([dotnet/runtime#134983](https://github.com/dotnet/runtime/pull/134983)); the .NET 10 servicing fix is
+[dotnet/runtime#136481](https://github.com/dotnet/runtime/pull/136481).
+
+Until that servicing release ships, keep idle thread-pool threads alive by setting this environment variable for the
+editor process:
+
+```
+DOTNET_ThreadPool_ThreadsToKeepAlive=-1
+```
+
+Editors started by `godot-cli` (`open`, `open --headless`, `exec`) get it automatically. If you open the editor
+yourself, set it system-wide (Windows: *System Properties → Environment Variables*, or
+`setx DOTNET_ThreadPool_ThreadsToKeepAlive -1`; macOS / Linux: export it in the shell or launcher that starts Godot)
+and restart the editor. Remove it once your .NET 10 runtime includes the fix.
 
 ![AI Game Developer — Godot MCP](https://github.com/IvanMurzak/Godot-MCP/blob/main/docs/img/promo/hazzard-divider.svg?raw=true)
 
@@ -617,6 +669,7 @@ Builder surface (all fluent / chainable):
 | `builder.WithResourcesFromAssembly(Assembly)` | Register every `[AiResourceType]` class in an assembly. Independent of tools/prompts. |
 | `builder.WithResources(params Type[])` | Register specific `[AiResourceType]` classes. |
 | `builder.WithoutMainThreadDispatcher()` | Skip the automatic main-thread-dispatcher bootstrap (only if you install your own autoload dispatcher). |
+| `builder.ConnectWhenRunFromEditor()` | Let `handle.Connect()` connect in a game started from the Godot editor (Play) too. **OFF by default**: see ["Games run from the editor"](#games-run-from-the-editor) below. |
 | `builder.WithRuntimeErrorCapture()` | Capture errors raised in the **running game** (GDScript runtime errors, `push_error`/`push_warning`, shader errors via the Godot 4.5+ engine hook; C# unhandled / unobserved-`Task` exceptions with full stack traces) and register the `runtime-errors-*` tool so an agent can poll them. **OFF by default.** See ["Capturing in-game runtime errors"](#capturing-in-game-runtime-errors) below. |
 | `builder.WithScriptExecute()` | Register `script-execute` **in the game**: the agent's C# is compiled with Roslyn and run on the game's main thread. **OFF by default**, needs the csproj opt-in, arbitrary code execution. See ["Running C# in the game"](#running-c-in-the-game) below. |
 | `builder.Build()` | Finalize; returns a **default-OFF** `GodotMcpRuntimeHandle`. |
@@ -625,6 +678,18 @@ Builder surface (all fluent / chainable):
 > `Initialize().Build()` also guarantees a main-thread dispatcher `Node` in the running `SceneTree` (so
 > tool handlers can marshal Godot API calls onto the engine main thread), unless you opt out with
 > `WithoutMainThreadDispatcher()`. Call it once a `SceneTree` is live (e.g. from an autoload `_Ready`).
+
+### Games run from the editor
+
+A game started from the Godot editor (Play, F5) inherits the editor's environment, `GODOT_MCP_HOST` and
+`GODOT_MCP_TOKEN` included, so its in-game runtime would join the server the editor is connected to. By default
+`handle.Connect()` therefore does nothing in such a game and returns `false` (it logs why); the editor stays the one
+plugin the agent talks to. Exported games and games started outside the editor connect as before. To connect a game
+run from the editor too, opt in with `builder.ConnectWhenRunFromEditor()` or the process environment variable
+`GODOT_MCP_RUNTIME_FROM_EDITOR=1`. A GameDev-MCP-Server with plugin roles then keeps both connections (the game
+connects with the runtime role, the editor with the editor role) and routes tool calls to the editor while it is connected. The editor
+plugin sets `GODOT_MCP_EDITOR_PID` in its process, so every process it starts inherits it; it counts only while that
+editor runs, and the plugin clears it when it unloads.
 
 ## Capturing in-game runtime errors
 
@@ -993,6 +1058,11 @@ natural-language requests and actual Godot operations. When you ask the AI to "c
 "open a scene," it uses MCP Tools to execute the action. Tools have typed, described parameters; return
 structured results; and are thread-aware (main-thread for Godot API calls, background-thread for heavy
 processing).
+
+Each tool, prompt and resource has a **Visible** switch in the dock's Tools / Prompts / Resources windows. It only
+decides whether MCP clients see the item listed (`tools/list`), which keeps their context small; it is not an access
+control: a hidden tool still runs when a client calls it by name. Settings saved by an older version (the switch was
+called *Enabled*) are kept.
 
 ![AI Game Developer — Godot MCP](https://github.com/IvanMurzak/Godot-MCP/blob/main/docs/img/promo/hazzard-divider.svg?raw=true)
 

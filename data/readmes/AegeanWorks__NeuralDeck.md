@@ -1,9 +1,12 @@
 # NeuralDeck 0.2
 
-[![AIKit Integrated](https://img.shields.io/badge/AIKit-integrated-6f42c1)](https://github.com/AegeanWorks/AIKit)
+<!-- aegean:media:start -->
+<p align="center"><img src="assets/social-preview.png" alt="NeuralDeck social preview" width="100%"></p>
+<p align="center"><a href="LICENSE"><img src="https://img.shields.io/badge/license-AL--1.1-2f9e44" alt="License"></a> <a href="https://github.com/AegeanWorks/AIKit"><img src="https://img.shields.io/badge/AIKit-integrated-6f42c1" alt="AIKit Integrated"></a></p>
+<!-- aegean:media:end -->
+
 
 <p align="center">
-  <img src="https://github.com/Aegean-E/NeuralDeck/blob/main/banner.png?raw=true" alt="NeuralDeck Banner" width="1200">
 </p>
 
 <p align="center">
@@ -85,7 +88,6 @@ NeuralDeck/
 ├── debug_llm.py
 ├── requirements.txt
 ├── config.example.json
-├── banner.png
 ├── LICENSE
 ├── LICENSES/                 <- REUSE license texts
 └── REUSE.toml                <- Machine-readable SPDX metadata
@@ -606,6 +608,12 @@ python -m pytest tests/ -v
 <p align="center">
   <sub>Built with ❤️ for learners everywhere</sub>
 </p>
+
+<!-- aegean:brand-assets:start -->
+## 🎨 Brand Assets
+
+> **AI-Generated Brand Artwork.** The banner and logo are **AI-generated brand assets**. They are illustrative and may not literally depict every feature or the full project scope.
+<!-- aegean:brand-assets:end -->
 
 ## 📜 License
 

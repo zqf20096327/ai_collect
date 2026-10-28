@@ -14,8 +14,8 @@ Install the CLI with [uv](https://docs.astral.sh/uv/getting-started/installation
 
 ```bash
 uv tool install --python 3.12 \
-  --overrides https://raw.githubusercontent.com/langchain-ai/smithtune/v0.1.4/overrides.txt \
-  'smithtune[deepagents] @ git+https://github.com/langchain-ai/smithtune.git@v0.1.4'
+  --overrides https://raw.githubusercontent.com/langchain-ai/smithtune/v0.1.6/overrides.txt \
+  'smithtune[deepagents] @ git+https://github.com/langchain-ai/smithtune.git@v0.1.6'
 ```
 
 Install the smithtune skill so your coding agent (Claude Code, Codex, Cursor, and
@@ -250,14 +250,17 @@ smithtune prepare \
   --data-dir "$data_dir"
 ```
 
-Preparation checks each trajectory and the tools available at each assistant turn.
+Preparation checks each trajectory and the tools available at each selected assistant target.
 It assigns about 80% to training, 10% to validation, and 10% to testing. Each source trajectory
 stays in one split; the memberships are also published to the LangSmith dataset.
 
 Recorded system messages are preserved; reasoning is omitted by default. Unsupported
 or overlong trajectories are excluded without truncation and listed in
-`"$data_dir/prepared/rejected.json"`. Each supported assistant answer becomes one
-training target, with its preceding context and the tools available at that call.
+`"$data_dir/prepared/rejected.json"`. By default, each supported assistant message
+becomes one training target, with its preceding context and tools. To keep initial
+assistant history as context only, [choose a supervision scope](docs/datasets.md#choose-assistant-teaching-targets)
+when pulling the dataset. Context-only messages may have unknown tool availability;
+selected targets still require complete tool records.
 See the [preparation reference](https://github.com/langchain-ai/smithtune/blob/main/docs/reference.md#prepare-data) for data requirements,
 reasoning options, and split recovery.
 

@@ -1,10 +1,15 @@
 # MC AI Coding Assistant Tool
+
+> [!IMPORTANT]
+> **你是人类读者 → [人类读本](README_human.md)**（人话版：能干什么、怎么开始 · [English](README_human.en.md)）
+> 本文件是给 AI 执行用的技术契约，长且密；细节让 agent 讲，比你自己翻快。
+
 ## 写在前面的
 ### 如果你是 agent
 本文件是项目总说明。安装与配置 MCP 请读 `AUTO_SETUP.md`；本文的配置章节是同一内容的副本，用于兜底没读 `AUTO_SETUP.md` 的情况。
 
 ### 如果你是人类
-请读[人类读本](README_human.md)；需要细节可以直接让 agent 讲解。
+见文首那条提示：人类读本 = `README_human.md`；需要细节直接让 agent 讲解。
 [English](README.en.md) | **简体中文** · [人类读本](README_human.md)
 
 让 AI 编程助手（Cursor / Claude Code 等）能更好地编写 Minecraft 模组的完整工具包。
@@ -963,7 +968,7 @@ authored/lib-*.md frontmatter（+ library-integration / library-integration-jei-
 | `merge-verified-api.mjs` | **`scripts/`（仓库根）** |
 | `build-api-summaries.mjs` | **`scripts/`（仓库根）** |
 
-数据位置见 [反编译数据产物](#反编译数据产物) 一节。
+数据位置见 [反编译数据产物](#14-反编译数据产物) 一节。
 
 > 两个计数口径（A `verifiedApi` 键 / B 库 API 摘要侧）的**定义、读数与复算纪律一律见** [`CONTRIBUTING.md` §库数据链计数口径](./CONTRIBUTING.md)；两个分母不同、禁止互相顶替。本节只描述数据链结构，不抄读数。
 
@@ -1058,6 +1063,4 @@ jar 未缓存时返回 `CACHE_MISS` 引导（先调 `get_minecraft_source`），
 
 **Java 17+ 前置**：VineFlower 负责反编译、tiny-remapper 负责 remap，两者都是 Java 17+ 工具，按需下到 `<cache>/resources/`；**固定版本与 SHA256 钉在 `mcp-server/src/decompile/downloaders/resources.ts` 的常量里**（哈希不符即失败，不静默换版本），逐件清单与许可见 `THIRD_PARTY_NOTICES.md`。探测顺序固定为 **参数校验 → `MC_SKILL_SKIP_DOWNLOAD` 门 → Java 探测**，所以 CI 里先看到的是 `DOWNLOAD_DISABLED` 而不是 `TOOLCHAIN_MISSING`；`JAVA_HOME/bin/java` 与 PATH 上的 `java` 都会探，取可用的最高 major，都不达标才报 `TOOLCHAIN_MISSING`（进程不崩溃）。`MC_SKILL_SKIP_DOWNLOAD` 只覆盖本族两个会下载的工具；`analyze_mod_jar` / `search_mod_code` 本来就不下载，`download_official_mdk` 不读该变量。
 
-| 工具 | 入参与行为 | 产物 / 关键边界 |
-|---|---|---|
-| `get_minecraft_source` | `{version, className, mapping?: "auto"\|"yarn"\|"mojmap", lines?: [start,end], force?}`。`version
+| 工具 | 入参

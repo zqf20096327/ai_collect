@@ -2,65 +2,100 @@
   <img src="docs/brand/banner.svg" alt="Harness³ — Composable runtime for agent collectives" width="960">
 </p>
 
-<p align="center">
-  <a href="https://github.com/NeoPanic/harness3/actions/workflows/check.yml"><img src="https://github.com/NeoPanic/harness3/actions/workflows/check.yml/badge.svg" alt="CI"></a>
-  <a href="https://www.rust-lang.org"><img src="https://img.shields.io/badge/Rust-1.89%2B-DEA584" alt="Rust 1.89 or newer"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-5BD6C5" alt="MIT license"></a>
-</p>
-
-<p align="center"><a href="README.zh-CN.md">简体中文</a> · <a href="docs/runtime.md">Runtime contracts</a> · <a href="GUIDE.zh-CN.md">中文技术导读</a> · <a href="CONTRIBUTING.md">Contributing</a></p>
-
 # Harness³
 
-**A composable harness platform for agent collectives. Built in Rust.**
+**A shared task board for peer Agents, built on a composable Rust runtime.**
 
-Harness³ gives agents a shared execution foundation: model and tool interfaces, explicit authority, recoverable conversations, and inspectable execution. A host can compose these foundations into larger agent systems while choosing its own models, storage, channels, and coordination strategy.
+Publish a task without choosing an Agent. The control plane selects a Preset and starts an independent instance; that Agent claims work, executes it, and can return smaller tasks to the board. The same cycle provisions the next participants. Every Agent uses the same Harness model/tool loop, specialized by its Preset, with no permanent leader.
 
-This repository contains the **runtime core**. Cluster scheduling, agent-to-agent routing, deployment, provider SDKs, and production storage adapters belong to the host application. There is no hosted service or bundled cluster control plane.
+[简体中文](README.zh-CN.md) · [Documentation](docs/README.md) · [Architecture](docs/managed-agents.zh-CN.md) · [Current status](docs/status.zh-CN.md) · [Contributing](CONTRIBUTING.md)
 
-## Why the cube?
+## See your Agents at work
 
-> 道生一，一生二，二生三，三生万物。
->
-> The Dao gives rise to one; one to two; two to three; three to all things.
+![Harness³ demo workstation with animal-eared Agent crew and neon work terminals](docs/images/agent-workstation.png)
 
-The **³** draws on this passage from chapter 42 of the *Dao De Jing*: simple foundations can generate a multitude. The cube also expresses multiplication: harness × harness × harness, extending to N cooperating harnesses. This is the project's design direction; actual capacity depends on the host and its resources.
+Crew animations follow real execution state: typing, waiting, or sleeping. Select a crew member to inspect its task; switch views to see task dependencies and system structure. Open **Agent 工作现场** in the local console.
 
-Use **Harness³** in prose, `harness³` as its lowercase styling, and **`harness3`** for the repository, Cargo package, and Rust imports. See the [brand assets and usage guide](docs/brand/README.md).
+## Start locally
 
-## What the core provides
-
-| Foundation | Behavior |
-| --- | --- |
-| Composable capabilities | Register models, tools, skills, prompts, policies, and typed services without changing the loop. |
-| Durable session contract | Revision-fenced checkpoints, delivery deduplication, exact request snapshots, replay, and forks. A memory store is included; production persistence is a host adapter. |
-| Controlled execution | Task-scoped tools, ordered policies, cancellation, deadlines, and explicit outbound delivery. |
-| Tool concurrency | Independent read tools can opt into batches of up to four; mutations and policy-controlled execution preserve ordering. |
-| Context management | Budget-aware summarization preserves complete exchanges, receipts, and the current request. |
-| Execution visibility | Ordered observer events and a bounded in-process trace; hosts can attach a trace sink. |
-
-Tools run as trusted in-process Rust code. External writes still require tool-side idempotency or transactions; checkpoints alone cannot guarantee exactly-once effects. Read the [runtime contracts](docs/runtime.md) before implementing durable integrations.
-
-## Run in a minute
-
-Requires **Rust 1.89+**. The example uses a deterministic local model and an in-memory session store; no API keys, network calls, or database are needed after dependencies are installed.
+Requires **Rust 1.89+**. The deterministic Demo needs no model account or API key; Cargo downloads dependencies on the first build.
 
 ```sh
-git clone git@github.com:NeoPanic/harness3.git
+git clone https://github.com/NeoPanic/harness3.git
 cd harness3
+cargo run --locked -p harness3-platform -- up --demo
+```
+
+Open [localhost:7333](http://127.0.0.1:7333) and sign in with the contents of `.harness3/token`. Local state is stored in `.harness3/`.
+
+1. Open **任务板** (Task Board) and publish the work and its acceptance criteria.
+2. Follow Preset selection, instance startup, and the Agent's claim and execution.
+3. Inspect any subtasks returned to the board and their results in **Agent 工作现场**.
+
+The Demo exercises the real control plane with deterministic responses; its outputs are explicitly labeled as demonstrations and do not constitute external research. The [task-board guide](docs/task-board.zh-CN.md) describes routing, claiming, splitting, and current limits. The existing **自主调研** screen remains available as an explicit planning/research/synthesis workflow template.
+
+For real models, configure one of **OpenAI-compatible Chat Completions**, **OpenAI Responses**, or **Anthropic Messages**. See the [getting-started guide](docs/getting-started.zh-CN.md) for configuration, CLI/API/MCP usage, and trusted local process plugins.
+
+## Console example
+
+The local desktop console, shown with Demo data.
+
+![Harness³ desktop console overview](docs/images/console-overview.png)
+
+## What you can use
+
+| Area | Available behavior |
+| --- | --- |
+| Agent definitions | Versioned Presets, pinned inheritance, parameters, model and plugin bindings. |
+| Lifecycle | Independent instances; Agent pools for provisioning, scaling, retirement, and TTL. |
+| Shared task board | Publish unassigned tasks; select Presets, provision instances, claim work atomically, and return subtasks. |
+| Explicit workflows | Existing Goal graphs, candidate-based claiming, bounded delegation, and research templates. |
+| Collaboration | Direct messages, Goal channels, explicit membership, subscribed wake-ups, shared context. |
+| Deliverables | Private workspaces, immutable text/file/JSON snapshots, peer evidence handoffs. |
+| Review | Independent verification, evidence-linked repair, review rounds, human acceptance. |
+| Extension | Prompt packages and local process Tool plugins with pinned versions and health checks. |
+| Access | Desktop Web, HTTP API, CLI, and outward MCP stdio share persistent local state. |
+
+Agent pools manage resources from one Preset. Task-board work starts from a published task and provisions its own participants. Goal workflows provide separate channel, artifact, and review contracts; their capabilities are not automatically implied by a task-board result.
+
+<details>
+<summary>Explore the running Demo: team collaboration and workspace artifacts</summary>
+
+**Team collaboration.** Members, subscriptions, and discussion records remain inspectable after the team retires.
+
+![Team collaboration in the deterministic Demo](docs/images/team-collaboration.png)
+
+**Workspace evidence.** Shared immutable snapshots retain their source Agent and Run; private instance files are listed separately.
+
+![Workspace files and shared evidence](docs/images/workspace-artifacts.png)
+
+</details>
+
+This is a **pre-1.0 local platform for trusted environments**. Local defaults include 256 instances, 8 execution slots, and 64 tasks per Goal; these are configured limits, not measured capacity claims. Distributed scheduling, hosted deployment, strong multi-tenant isolation, and remote MCP plugin loading are not provided. See [current status](docs/status.zh-CN.md) and the [capability/source index](docs/capabilities.zh-CN.md) for precise boundaries.
+
+## Architecture
+
+```mermaid
+flowchart LR
+    Entry[Publish task] --> Board[Shared task board]
+    Board --> Control[Control plane: select Preset]
+    Preset[Versioned Presets] --> Control
+    Control -->|start and manage| A[Agent A: independent Harness]
+    Control -->|start and manage| B[Agent B: independent Harness]
+    A -->|claim / results / subtasks| Board
+    B -->|claim / results / subtasks| Board
+    Board <--> State[SQLite: tasks / claims / Runs]
+```
+
+The control plane manages capacity, Preset selection, and lifecycle. Agents share the claim and split protocol; planning and integration are work that ordinary instances can perform. Task ancestry records dependencies and provenance, without giving an Agent authority over its peers. The independent Harness owns model/tool execution, policies, session checkpoints, cancellation, and execution receipts. Checkpoints do not guarantee exactly-once external effects: tools must supply their own idempotency or transaction contract. See [runtime contracts](docs/runtime.md) and the [target architecture](docs/managed-agents.zh-CN.md).
+
+## Use the runtime independently
+
+```sh
 cargo run --locked --example quickstart
 ```
 
-Expected output:
-
-```text
-Harness³: 8 characters.
-Duplicate delivery reused the settled run: true
-```
-
-The [example](examples/quickstart.rs) registers a source, a model, a character-counting tool, and an agent profile. It runs a model → tool → model cycle, then redelivers the same event to demonstrate session deduplication. Replace the model adapter to connect a real provider.
-
-## Use in your Rust project
+The [offline example](examples/quickstart.rs) runs a model → tool → model cycle, then redelivers the same event to demonstrate session deduplication.
 
 ```toml
 [dependencies]
@@ -73,47 +108,16 @@ use harness3::{Harness, Limits, Registry};
 let harness = Harness::new(Registry::default(), Limits::default());
 ```
 
-Register capabilities before running a request, as shown in the complete example. Use `Harness::run_session` with a `SessionStore` for continuing conversations; `Harness::run` creates an isolated ephemeral conversation. Pin a Git revision for reproducible downstream builds. The dependency above uses Git and makes no crates.io availability claim.
+Register capabilities as shown in the complete example. Pin a Git revision for reproducible builds. API reference: `cargo doc --locked --workspace --no-deps --open`.
 
-Earlier checkouts used the package name `agent-harness` and import `agent_harness`. Update those to `harness3`; the `Harness` type and execution contracts retain their names.
+## Why the cube?
 
-## Architecture
+> 道生一，一生二，二生三，三生万物。 — *Dao De Jing*, chapter 42
 
-```mermaid
-flowchart LR
-    Host[Host: identity, channels, agent coordination] --> Registry[Registry + AgentProfile]
-    Registry --> Harness[Harness: execution loop]
-    Harness <--> Model[Model adapter]
-    Harness <--> Tools[Tools + skills]
-    Harness <--> Sessions[SessionStore]
-    Policies[Policies + prompts] --> Harness
-    Harness --> Trace[Observers + trace]
-```
+The **³** connects the generative meaning of 三 with multiplication: harness × harness × harness, extending to N cooperating harnesses. Use **Harness³** in prose and `harness3` for code and repository identifiers. [Brand assets and usage](docs/brand/README.md).
 
-Each harness supplies an execution boundary. The host defines how agents share work, select capabilities, and exchange results; the core keeps those choices replaceable through traits and `AgentDriver`.
+## Contribute
 
-## Documentation
+See [development checks](CONTRIBUTING.md), [security reporting](SECURITY.md), and the [code of conduct](CODE_OF_CONDUCT.md). The [documentation index](docs/README.md) links setup, design goals, current capabilities, and workflow contracts.
 
-- [中文首页](README.zh-CN.md): positioning, setup, and naming in Chinese.
-- [中文技术导读](GUIDE.zh-CN.md): sequence diagrams, source walkthrough, and design reasoning.
-- [Runtime contracts](docs/runtime.md): recovery, authorization, compaction, delivery, and trace semantics.
-- [Runnable example](examples/quickstart.rs): an offline integration from registration to receipt.
-- API reference: `cargo doc --locked --no-deps --open`.
-- [Contributing](CONTRIBUTING.md), [security reporting](SECURITY.md), and [community conduct](CODE_OF_CONDUCT.md).
-
-## Project status and development
-
-The core is at **0.2.7**, before a stable 1.0 API. This standalone repository does not yet contain the originating application's deterministic behavior suite. CI checks compilation and rustdoc on Rust 1.89 and stable, and runs the offline example; that example is a smoke check, not comprehensive recovery or concurrency coverage.
-
-```sh
-cargo check --locked --all-targets
-cargo test --locked
-cargo run --locked --example quickstart
-RUSTDOCFLAGS="-D warnings" cargo doc --locked --no-deps
-```
-
-Bug reports should include a minimal reproduction and the violated runtime contract. Propose changes to persistence, authority, or cancellation semantics in an issue before implementing them. See [Contributing](CONTRIBUTING.md) for the review workflow.
-
-## License
-
-[MIT](LICENSE). The original copyright notice is retained; see the [brand guide](docs/brand/README.md) for attribution and identity usage.
+[MIT license](LICENSE).

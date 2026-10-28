@@ -17,7 +17,7 @@
 
 **AI Cut is a small, AI-native video editor for your desktop** — cut, caption, voice, mix, and export in one lightweight app, and let an AI agent work in the timeline alongside you.
 
-It is a real editor: a multi-track timeline, a media library, an inspector, text clips, captions, voiceover, audio and video AI tools, and export to MP4, ProRes, or GIF. It is also built to be **operated by a model** — a bundled Skill teaches any AI harness to drive the running app over MCP, so an agent can import media, add tracks, place and trim clips, rewrite text, and read the project back while you watch the UI update.
+It is a real editor: a multi-track timeline, a media library, an inspector, text clips, captions, voiceover, audio and video AI tools, **OpenFX (OFX) effect plugins**, and export to MP4, ProRes, or GIF. It is also built to be **operated by a model** — a bundled Skill teaches any AI harness to drive the running app over MCP, so an agent can import media, add tracks, place and trim clips, rewrite text, and read the project back while you watch the UI update.
 
 Everything runs on your own machine. No account, no uploads, and no API key needed for the editor itself.
 
@@ -95,12 +95,23 @@ Import a file and AI Cut probes it immediately: duration, resolution, frame rate
 - **Text styling** — font, size, colour, spacing, background, stroke, shadow, glow
 - **Project output** — resolution and frame rate changes re-fit clips proportionally
 
+### 🎛️ OFX plugins — Bring your own effects
+
+AI Cut hosts **OpenFX (OFX) 1.5.1** plugins, so the finishing tools you already own come with you: colour correction, blurs, glows, keyers, warps, transitions. A plugin manager browses the [AI Cut OFX Registry](https://github.com/heshengtao/ai-cut-ofx-registry) with SHA-256 verification, and also picks up plugins installed elsewhere on disk.
+
+- **All six OFX contexts** — filter, general, generator, paint and retimer attach to a clip's effect chain; transition attaches to a clip edge
+- **Own UI or parameters** — open the plugin's own interface, or drive its parameters in the dedicated Parameters pane
+- **Preview stays live** — mounting an effect starts a background pre-bake, so video and image previews keep the look during playback
+- **Baked on export** — the render applies every effect at final size (paint is parameter-driven, retimer asks the plugin for `SourceTime`)
+- **Registry + local import** — search, one-click install / update / remove, or point it at a local bundle
+
 ### 🤖 AI & automation — Turn footage into material you can keep editing
 
 The AI features are built for real sessions, not demos. Point them at a clip and they hand back something you can keep editing: a caption track you can correct, a voiceover aligned to its original timing, a cleaner vocal take, separated stems you can rebalance. Local tools run on your own hardware.
 
 - **Captions** — local speech recognition into an editable caption track
 - **Voiceover** — local TTS plus OpenAI, ElevenLabs, Azure, Google, Baidu, MiniMax, Volcengine, or custom HTTP
+- **Smart cut** — Paraformer word-level timestamps find filler words and long pauses and cut them in one pass; the transcript strikes every removed word, one click restores it, and the timeline marks each cut
 - **Audio AI** — loudness matching, denoise, vocal polish, source separation, audio translation
 - **Video AI** — super resolution, frame interpolation, smart reframing, camera tracking
 - **Media probe** — one call returns metadata, motion/cut samples, face/person boxes, and a local transcript
@@ -200,6 +211,10 @@ No. The bundled AI models run on CPU; there is no CUDA or driver setup. Larger m
 ### Which AI models ship with the app?
 
 Small models ship in the bundle so basic features work immediately. Larger models — speech recognition, TTS, source separation, super resolution, and frame interpolation — download on demand from the in-app model manager and are stored outside the source tree.
+
+### Which effect plugin formats are supported?
+
+**OpenFX (OFX) 1.5.1** — all six image-effect contexts (filter, general, generator, paint, retimer, transition). Plugins can come from the built-in registry or from your own disk. Audio-effect formats (VST3 / AU / CLAP) are not hosted: AI Cut's own audio tools cover gain, fades, pitch and mixing.
 
 ### Do I need the app running to let an agent drive it?
 

@@ -31,13 +31,14 @@
 <!--[![GitHub All Releases](https://img.shields.io/github/downloads/Tavris1/ComfyUI-Easy-Install/total.svg)](https://github.com/Tavris1/ComfyUI-Easy-Install/releases)-->
 <!--[![GitHub Downloads Latest](https://img.shields.io/github/downloads/Tavris1/ComfyUI-Easy-Install/latest/total?style=flat&label=⬇+latest&color=orange)](https://github.com/Tavris1/ComfyUI-Easy-Install/releases/latest/download/ComfyUI-Easy-Install.zip)-->
 
-  <p align="center">
-    <a href="#%EF%B8%8F-windows-installation">📥 <strong>INSTALL</strong></a> &nbsp;·&nbsp;
-    <a href="#-features">✨ Features</a> &nbsp;·&nbsp;
-    <a href="https://github.com/Tavris1/ComfyUI-Easy-Install/tree/MAC-Linux">🍎 macOS/Linux</a> &nbsp;·&nbsp;
-    <a href="https://discord.gg/gggpkVgBf3">💬 Pixaroma Discord</a> &nbsp;·&nbsp;
-    <a href="#%EF%B8%8F-support-development">❤️ Support Development</a>
-  </p>
+<p align="center">
+  <a href="#%EF%B8%8F-windows-installation">📥 <strong>INSTALL</strong></a> &nbsp;·&nbsp;
+  <a href="#-features">✨ Features</a> &nbsp;·&nbsp;
+  <a href="#-meet-ezi---the-comic-guide">🎭 Meet EZi</a> &nbsp;·&nbsp;
+  <a href="https://github.com/Tavris1/ComfyUI-Easy-Install/tree/MAC-Linux">🍎 macOS/Linux</a> &nbsp;·&nbsp;
+  <a href="https://discord.gg/gggpkVgBf3">💬 Pixaroma Discord</a> &nbsp;·&nbsp;
+  <a href="#%EF%B8%8F-support-development">❤️ Support Development</a>
+</p>
 
 <!-- Dedicated to the **Pixaroma** community  
 [![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fdiscord.com%2Fapi%2Finvites%2FgggpkVgBf3%3Fwith_counts%3Dtrue&query=%24.approximate_member_count&logo=discord&logoColor=white&label=Pixaroma%20Discord&color=FFDF00&suffix=%20users)](https://discord.com/invite/gggpkVgBf3)
@@ -144,9 +145,41 @@ ComfyUI/frontend versions, UV/PIP caches, and GGUF conversion** from one place.
     - **ComfyUI-Manager Security-Level Config** - *Easy configuration of security_level via EZi Desktop > Menu*
     - **Pinned-Packages-Manager** - *Freeze package versions such as NumPy==1.26.4 via EZi Desktop > Menu*
 
-<div align="center">
 
 ---
+
+## 🎭 Meet EZi - The Comic Guide
+
+New to EZi? Explore this illustrated guide. Click any image to view it full-size.
+
+<table width="100%">
+  <tr>
+    <th width="25%">ComfyUI Made Easy</th>
+    <th width="25%">Install ComfyUI</th>
+    <th width="25%">Meet Your EZi Launcher</th>
+    <th width="25%">Reuse Existing Models</th>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/user-attachments/assets/3f0c82ba-dacf-4b85-ae31-9fc51c807923"><img src="https://github.com/user-attachments/assets/3f0c82ba-dacf-4b85-ae31-9fc51c807923" width="100%" alt="EZi Cover"></a></td>
+    <td align="center"><a href="https://github.com/user-attachments/assets/4ef934b7-2a96-4afc-9d58-2198e5296d56"><img src="https://github.com/user-attachments/assets/4ef934b7-2a96-4afc-9d58-2198e5296d56" width="100%" alt="Install ComfyUI"></a></td>
+    <td align="center"><a href="https://github.com/user-attachments/assets/48aac8a8-b4ee-4ca8-b0fe-d4614d337c7a"><img src="https://github.com/user-attachments/assets/48aac8a8-b4ee-4ca8-b0fe-d4614d337c7a" width="100%" alt="EZi Launcher"></a></td>
+    <td align="center"><a href="https://github.com/user-attachments/assets/ce1264a3-f875-477c-b029-3b17a31ed2af"><img src="https://github.com/user-attachments/assets/ce1264a3-f875-477c-b029-3b17a31ed2af" width="100%" alt="Existing Models"></a></td>
+  </tr>
+  <tr>
+    <th width="25%">Install Add-ons</th>
+    <th width="25%">Update and Restore</th>
+    <th width="25%">Know Your System</th>
+    <th width="25%">Make Yourself at Home</th>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/user-attachments/assets/11aea3a4-3bba-40fa-b62f-af606a3834d3"><img src="https://github.com/user-attachments/assets/11aea3a4-3bba-40fa-b62f-af606a3834d3" width="100%" alt="Install Add-ons"></a></td>
+    <td align="center"><a href="https://github.com/user-attachments/assets/51797556-47e4-47d1-bda5-042d5bcf088c"><img src="https://github.com/user-attachments/assets/51797556-47e4-47d1-bda5-042d5bcf088c" width="100%" alt="Update and Restore"></a></td>
+    <td align="center"><a href="https://github.com/user-attachments/assets/acd9bb56-051f-480f-833a-1f34496b7034"><img src="https://github.com/user-attachments/assets/acd9bb56-051f-480f-833a-1f34496b7034" width="100%" alt="Know Your System"></a></td>
+    <td align="center"><a href="https://github.com/user-attachments/assets/dd275f1f-7c85-4993-afa1-930bb9891591"><img src="https://github.com/user-attachments/assets/dd275f1f-7c85-4993-afa1-930bb9891591" width="100%" alt="Make Yourself at Home"></a></td>
+  </tr>
+</table>
+
+<div align="center">
 
 ## ❤️ Support Development
 

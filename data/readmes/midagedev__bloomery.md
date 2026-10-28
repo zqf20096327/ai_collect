@@ -6,9 +6,9 @@
 </p>
 
 <p align="center">
-  <b>A fast inference engine for mixture-of-experts models that are larger than the GPU.</b><br>
-  Rust from the HTTP server down to the CUDA kernels. NVIDIA cards, and Apple Silicon through Metal.<br>
-  A drop-in <a href="https://github.com/ggml-org/llama.cpp/blob/master/tools/server">llama-server</a>.
+  <b>bloomery is a fast LLM inference server for mixture-of-experts models that are larger than the GPU.</b><br>
+  It runs on NVIDIA cards, the DGX Spark included, and on Apple Silicon through Metal.<br>
+  A drop-in <a href="https://github.com/ggml-org/llama.cpp/blob/master/tools/server">llama-server</a>, in Rust from the HTTP server down to the CUDA kernels.
 </p>
 
 <p align="center">
@@ -20,9 +20,15 @@
 </p>
 
 ```sh
-brew install midagedev/tap/bloomery        # Linux x86-64 with NVIDIA sm_86+, or an Apple Silicon Mac
-bloomery-serve --hf unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF:Q4_K_M --port 8080
+curl -fsSL https://raw.githubusercontent.com/midagedev/bloomery/main/tools/release/install.sh | sh
+~/.local/bin/bloomery-serve --hf unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF:Q4_K_M
 ```
+
+These two commands install the latest release on Linux x86-64 with an NVIDIA GPU (or on Windows inside WSL2) and
+serve Qwen3-30B-A3B on port 8080; [Use](#use) sends it a first request. A DGX Spark or another GB10 installs its own
+archive or Docker image once a release carries them ([DGX Spark](#dgx-spark-and-other-gb10-machines)), and an Apple
+Silicon Mac runs `bloomery-serve-metal` ([Apple Silicon](#apple-silicon)). Homebrew, Docker and the plain tarball are
+under [Install](#install).
 
 ## What it does
 
@@ -33,12 +39,13 @@ bloomery-serve --hf unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF:Q4_K_M --port 8080
   cannot hold the host's share either, Qwen3.8, GLM-5.3-Flash and DeepSeek-V4.1-Flash page the rest from NVMe.
 - **Checkpoint folders as downloaded.** MiniMax-M3.1-Flash loads from its vendor's NVFP4 safetensors folder, and
   Qwen3.8 from its NVFP4 or FP4-Local folder, with no conversion and no requant. Everything else loads from GGUF.
-- **Apple Silicon.** A Metal backend serves Qwen3.6-35B-A3B and Qwen3-30B-A3B on a Mac GPU, from mlx-community's 4-bit
-  folders as downloaded or from Q4_K_M GGUF files (Qwen3.6 also from `UD-Q4_K_XL`), and runs Ornith-1.5-35B and MiniCPM-V 4.7 35B-A3B (Q4_K_M, text only); prompts run
-  in batched passes, and a follow-up turn reads only its new messages ([below](#apple-silicon)).
+- **Apple Silicon.** A Metal backend serves Qwen3.6-35B-A3B and Qwen3-30B-A3B on a Mac GPU. The verified path is
+  mlx-community's 4-bit folders as downloaded. Q4_K_M GGUF files run, unverified (Qwen3.6 also from `UD-Q4_K_XL`).
+  Ornith-1.5-35B and MiniCPM-V 4.7 35B-A3B (Q4_K_M, text only) run, unverified. Prompts run in batched passes, and a
+  follow-up turn reads only its new messages ([below](#apple-silicon)).
 - **llama-server compatible.** The same HTTP API (OpenAI and Anthropic), GGUF files and flag spellings, including the
   placement flags (`-dev`, `-ts`, `-ngl`, `--cpu-moe`, `-ot`, `--fit`) with llama's meaning. Your client works
-  unchanged; Claude Code runs with `ANTHROPIC_BASE_URL=http://localhost:8080`.
+  unchanged ([Use](#use)).
 - **A prompt cache that survives other requests.** Saved prompt states stay in host RAM: a request that shares a prefix
   with an earlier one restores it, even after another request used the slot
   ([recorded on tape](https://tape.midagedev.com/r/u8fnay7pn4djqmy6vvaq)).
@@ -48,39 +55,47 @@ bloomery-serve --hf unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF:Q4_K_M --port 8080
   [cuda-oxide](https://github.com/NVIDIA/cuda-rust); the Metal backend's host side is Rust, its kernels Metal
   Shading Language.
 
-## Status (0.3.10)
-
-Large mixture-of-experts models on one workstation: an RTX A6000 48 GB and an RTX 3090 24 GB (at its 250 W cap),
-32-core AVX2 host, 256 GB of RAM. Serving defaults: `--place` unset (it picks `bp`: the A6000 holds the model's stage,
-the 3090 holds experts, the host runs the rest), every lever unset, no `--parallel`, `--ctx-size 4300`. Means of two
-rounds, tok/s.
-
-| Model | Prompt, 512 tokens | Prompt, 4,096 tokens | Decode at depth 512 | Decode at depth 4,096 |
-|---|---|---|---|---|
-| MiniMax-M3.1-Flash `UD-Q2_K_XL` (GGUF) | 160.16 | 165.92 | 28.63 | 29.41 |
-| MiniMax-M3.1-Flash, NVFP4 folder | 129.08 | 131.56 | 21.12 | 19.53 |
-
-On the RTX 3090 alone, the same GGUF runs at 21.36 tok/s decode at depth 512, and Nanbeige4.3-33B `Q4_K_M` loads whole
-on the card (a 512-token prompt at 745.46 tok/s, decode 24.22). Flint 40B-A2.5B (`UD-Q4_K_XL`) loads whole on the
-RTX A6000. The release notes hold the commits, the release check on the tagged binary, every off cell and the
-contributors' work.
-
 ## Install
 
-### Linux and WSL2 (NVIDIA)
+Every path below installs a prebuilt release: no CUDA toolkit and no Rust toolchain. The installer, the Docker image
+and Homebrew all take the latest release. To build from source instead: [`docs/BUILD.md`](docs/BUILD.md) on Linux,
+[`docs/mac.md`](docs/mac.md#build-from-source) on a Mac.
 
-One binary, no CUDA toolkit and no Rust toolchain: Linux x86-64 with AVX2 and glibc 2.34+, an NVIDIA GPU of compute
-capability 8.6 or newer, driver R580 or newer. On Windows, run it inside WSL2 (`wsl --install`, reboot, then the same
-commands). On a DGX Spark or another GB10 machine (Linux aarch64), the installer takes the GB10 archive
-(`linux-aarch64-cuda-sm121a`, the GB10's FP4 tensor cores) where the release has one; then
-`bloomery-serve -m <folder>` serves NVIDIA's FP4-Local and NVFP4 checkpoints as downloaded.
+### DGX Spark and other GB10 machines
+
+The release after 0.3.10 adds a GB10 archive (`linux-aarch64-cuda-sm121a`, built for the GB10's FP4 tensor cores)
+and a linux/arm64 variant of the Docker image `ghcr.io/midagedev/bloomery`, made from that archive. On a GB10, Docker
+pulls that variant by itself and the installer picks that archive. 0.3.10 has neither, so until that release a GB10
+builds from source: [`docs/contrib/dgx-spark.md`](docs/contrib/dgx-spark.md#21-build), section 2.1.
+
+The machine needs DGX OS 7 (Ubuntu 24.04, glibc 2.39) and an NVIDIA driver of R580 or newer (CUDA 13).
 
 ```sh
-# Homebrew (Linux x86-64)
-brew install midagedev/tap/bloomery
+# Docker (needs the host's NVIDIA Container Toolkit; model downloads live in the bloomery-cache volume)
+docker run --gpus all -p 8080:8080 -v bloomery-cache:/root/.cache/bloomery \
+  ghcr.io/midagedev/bloomery --hf unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF:Q4_K_M
 
-# or the installer: latest release, sha256-checked, symlink into ~/.local/bin
+# or the installer: it checks that every GPU is a GB10 and links bloomery-serve into ~/.local/bin
 curl -fsSL https://raw.githubusercontent.com/midagedev/bloomery/main/tools/release/install.sh | sh
+~/.local/bin/bloomery-serve --hf unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF:Q4_K_M
+```
+
+A 128 GB GB10 holds every routed expert of Qwen3.8-Flash-Next on the GPU. NVIDIA's FP4-Local and NVFP4 checkpoint
+folders serve as downloaded, with no conversion: `bloomery-serve -m <folder>`, or `--hf nvidia/Qwen3.8-Flash-Next-NVFP4`.
+In Docker, mount the folder and name it inside the container, for example
+`-v /path/to/models:/models ... ghcr.io/midagedev/bloomery -m /models/Qwen3.8-Flash-Next-FP4-Local`.
+
+### Linux x86-64
+
+The machine needs an x86-64 CPU with AVX2, FMA and BMI2 (x86-64-v3), glibc 2.34 or newer, an NVIDIA GPU of compute
+capability 8.6 or newer and driver R580 or newer (CUDA 13). An older driver is refused at the start.
+
+```sh
+# the installer: latest release, sha256-checked, symlink into ~/.local/bin
+curl -fsSL https://raw.githubusercontent.com/midagedev/bloomery/main/tools/release/install.sh | sh
+
+# or Homebrew
+brew install midagedev/tap/bloomery
 
 # or Docker (needs the host's NVIDIA Container Toolkit; model downloads live in the bloomery-cache volume)
 docker run --gpus all -p 8080:8080 -v bloomery-cache:/root/.cache/bloomery \
@@ -88,49 +103,64 @@ docker run --gpus all -p 8080:8080 -v bloomery-cache:/root/.cache/bloomery \
 
 # or the plain tarball
 tar -xzf bloomery-0.3.10-linux-x86_64-cuda-sm86.tar.gz && cd bloomery-0.3.10-linux-x86_64-cuda-sm86
-bin/bloomery-serve --hf unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF:Q4_K_M --port 8080
+bin/bloomery-serve --hf unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF:Q4_K_M
 ```
 
 The tarballs are on the [releases page](https://github.com/midagedev/bloomery/releases)
-([0.3.10](https://github.com/midagedev/bloomery/releases/tag/v0.3.10)). From source: [`docs/BUILD.md`](docs/BUILD.md).
+([0.3.10](https://github.com/midagedev/bloomery/releases/tag/v0.3.10)).
+
+The release after 0.3.10 adds an archive for the RTX 50 series (`linux-x86_64-cuda-sm120a`, compute capability 12.0:
+the RTX 5090 and the RTX PRO Blackwell cards), built for the Blackwell FP4 and FP8 tensor cores. The installer takes it
+when every GPU the machine lists is compute capability 12.0, and the `linux-x86_64-cuda-sm86` archive on any other
+machine, or from a release without the new one. Docker and Homebrew stay on the sm_86 archive. No maintainer machine
+has a 12.0 card, so this archive is checked by compiling it and by the users who run it; to take the sm_86 archive on
+such a card, download it by name from the releases page.
+
+### Windows (WSL2)
+
+Run the Linux x86-64 release inside WSL2: `wsl --install` from an administrator PowerShell, reboot, then run the
+Linux x86-64 commands above in the WSL shell. The binary reaches the GPU through the Windows driver.
 
 ### Apple Silicon
 
-macOS 26.2 or newer; the binaries are signed and notarized. Two architectures run: `qwen35moe` and `qwen3moe`. On a
-build after 0.3.10, an mlx-community 4-bit folder opens as downloaded (`--hf mlx-community/<repo>` or `-m <folder>`):
-Qwen3.6-35B-A3B, Qwen3-30B-A3B-Instruct-2507 and Qwen3-Coder-30B-A3B-Instruct (text only; its tool calls do not work yet). 0.3.10 converts the Qwen3.6 folder once with `bloomery-prepare`, which
-still writes one GGUF split for those who want one file. Both models also run from their Q4_K_M GGUF, and Qwen3.6 from
-`UD-Q4_K_XL`. Two more Q4_K_M files with Qwen3.6's shapes run, text only: Ornith-1.5-35B, and MiniCPM-V 4.7 35B-A3B (its
-`mmproj` is not read). Sage-A1.5 has the same shapes and has not been run on a Mac yet. A file the Metal backend cannot
-run is refused by name when it opens. A file whose shapes the kernels take but no build has registered compiles its
-kernels when it opens, and the server says that no gate checked that shape.
+The Mac needs macOS 26.2 or newer; the binaries are signed and notarized. The server is `bloomery-serve-metal`.
 
 ```sh
-# Homebrew, or the same installer as on Linux (bloomery-0.3.10-macos-arm64-metal.tar.gz on the releases page)
+# Homebrew
 brew install midagedev/tap/bloomery
-curl -fsSL https://raw.githubusercontent.com/midagedev/bloomery/main/tools/release/install.sh | sh
+bloomery-serve-metal -m PATH/Qwen3.6-35B-A3B-Q4_K_M.gguf
 
-bloomery-serve-metal --hf mlx-community/Qwen3-30B-A3B-Instruct-2507-4bit --port 8080   # after 0.3.10: fetched once
-bloomery-serve-metal -m PATH/Qwen3.6-35B-A3B-4bit --port 8080                         # after 0.3.10: a folder on disk
-bloomery-serve-metal -m PATH/Qwen3.6-35B-A3B-Q4_K_M.gguf --port 8080
+# or the same installer as on Linux (bloomery-0.3.10-macos-arm64-metal.tar.gz on the releases page)
+curl -fsSL https://raw.githubusercontent.com/midagedev/bloomery/main/tools/release/install.sh | sh
+~/.local/bin/bloomery-serve-metal -m PATH/Qwen3.6-35B-A3B-Q4_K_M.gguf
 ```
 
-On an M4 Pro 48 GB (development loop, three rounds, tok/s): decode 101.2 and a 4,096-id prompt at 1,076.5 on the MLX
-4-bit weights; 85.6 and 1,044.5 on the Q4_K_M file. mlx-lm and llama.cpp ran on the same files in the same sitting:
-[their rows](https://github.com/midagedev/rig-log/blob/main/log/2026-10-25.md#mac-m4pro-xeng). On
-[@avlp12](https://github.com/avlp12)'s machines at 0.3.9's Metal code, a 4,096-id prompt runs at 3,300 tok/s on an M3
-Ultra and 5,972 on an M5 Ultra, whose neural accelerators run the prompt's GEMMs, and decode after 512 ids at 141–142
-and 211–212 tok/s ([#593](https://github.com/midagedev/bloomery/issues/593)). One slot, text only;
-the flags, the limits and every step: [`docs/mac.md`](docs/mac.md).
+Two architectures run, `qwen35moe` (Qwen3.6-35B-A3B and files with its shapes) and `qwen3moe` (Qwen3-30B-A3B), from
+Q4_K_M GGUF files, one slot, text only. On a build after 0.3.10 an mlx-community 4-bit folder also opens as downloaded
+(`--hf mlx-community/<repo>` or `-m <folder>`); 0.3.10 converts it once with `bloomery-prepare`. Every file that runs,
+the flags and the limits: [`docs/mac.md`](docs/mac.md).
 
 ## Use
 
+Start the server with a model, then send it a request from another shell. After the installer, run it as
+`~/.local/bin/bloomery-serve` unless `~/.local/bin` is on your `PATH`.
+
 ```sh
+bloomery-serve --hf unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF:Q4_K_M
+
 curl -s http://127.0.0.1:8080/v1/chat/completions \
   -d '{"messages": [{"role": "user", "content": "Hello"}], "max_tokens": 64}'
 ```
 
-The file's architecture picks the seat (the model family's engine), and `--place` can stay unset on every model.
+The server listens on `127.0.0.1:8080` and is ready when `GET /health` answers 200. The first start downloads the
+model into `~/.cache/bloomery/hf` (`BLOOMERY_CACHE` moves it) and compiles the GPU code for the card once, which takes
+tens of seconds; the GB10 archive carries that code compiled already. `-m PATH` serves a file or folder you already
+have. OpenAI clients take the base URL
+`http://localhost:8080/v1`, and Claude Code runs with `ANTHROPIC_BASE_URL=http://localhost:8080`. In Docker, the
+arguments after the image name go to `bloomery-serve`.
+
+Start with `--place` and the `BLOOMERY_*` variables unset: the load picks the cards and the split onto the CPU itself, and
+its plan line names what it picked. The file's architecture picks the seat (the model family's engine):
 
 | Seat | Serves | One command |
 |---|---|---|
@@ -159,103 +189,69 @@ adaptive residency: [`docs/serving.md`](docs/serving.md).
 
 ## Hardware
 
-| What runs | State |
-|---|---|
-| NVIDIA cards | Compute capability 8.6 or newer, driver R580 or newer (CUDA 13); an older driver is refused at the start. Run here: RTX 3090, RTX A6000, RTX 3060 (WSL2). Run by users: RTX 5090 ([#2](https://github.com/midagedev/bloomery/issues/2)), DGX Spark (GB10: the release's GB10 archive, or from source: [`docs/contrib/dgx-spark.md`](docs/contrib/dgx-spark.md)), one model across several Sparks. Ada (sm_89): no report yet |
-| Apple Silicon | macOS 26.2 or newer, the release's signed binaries (Homebrew, the installer or the tarball); Qwen3.6-35B-A3B, Qwen3-30B-A3B, Ornith-1.5-35B and MiniCPM-V 4.7, one slot, text only ([`docs/mac.md`](docs/mac.md)). Run here: M1 Pro, M4 Pro 48 GB. Run by users: M3 Ultra, M5 Ultra ([#593](https://github.com/midagedev/bloomery/issues/593)). On an M5 the prompt's GEMMs run on the neural accelerators, picked by the device |
-| Host CPU | x86-64 with AVX2 (x86-64-v3), AMD or Intel, for the CUDA build, or a GB10's Arm cores; the Metal build runs on Apple Silicon |
-| OS | Linux x86-64 with glibc 2.34 or newer; Linux aarch64 on a GB10 (DGX OS 7, glibc 2.39); Windows through WSL2; macOS 26.2 or newer on Apple Silicon. AMD GPUs are not supported yet |
+What each platform needs is under [Install](#install), and what each model needs in GPU memory, RAM and disk is in
+[`docs/models.md`](docs/models.md). These machines have run it:
 
-## Numbers
+| What runs | Run here | Run by users |
+|---|---|---|
+| NVIDIA cards | RTX 3090, RTX A6000, RTX 3060 (WSL2) | RTX 5090 ([#2](https://github.com/midagedev/bloomery/issues/2)), DGX Spark (GB10: [`docs/contrib/dgx-spark.md`](docs/contrib/dgx-spark.md)), one model across several Sparks |
+| Apple Silicon | M1 Pro, M4 Pro 48 GB | M3 Ultra, M5 Ultra ([#593](https://github.com/midagedev/bloomery/issues/593)) |
 
-Every number below is a release check or a sitting of the runners in `tools/ref/`, with its machine and conditions.
-The reference engines' rows are on
-[rig-log's bench page](https://github.com/midagedev/rig-log/blob/main/docs/bloomery-bench.md) with their flags,
-measured in the same sitting as ours (the Mac's in [its own log](https://github.com/midagedev/rig-log/blob/main/log/2026-10-25.md#mac-m4pro-xeng)). Conditions: [`docs/performance.md`](docs/performance.md#conditions-of-the-numbers).
+Ada cards (sm_89) have no report yet, and AMD GPUs are not supported yet. On an M5 the device picks the neural
+accelerators for the prompt's GEMMs. What each part of the machine costs in a decode step:
+[`docs/HARDWARE.md`](docs/HARDWARE.md).
 
-**One request at the serving defaults** (every lever unset, no `--parallel`, `--ctx-size 16384`), greedy, thinking
-off, RTX A6000 (+ RTX 3090 for `bp`), one load per row, the release candidate's `bloomery-serve`; the release each row
-was checked at is in its first column. Prompt sizes are the server's prompt tokens.
+## Status (0.3.10)
 
-| Model, place (release) | Long prompt: tokens, prefill tok/s, first token | Decode after it | Short prompt decode |
+Four common machines, one table each, tok/s. Every other record (two cards, older releases, other cards and Macs, the
+reference engines) is in [`docs/numbers.md`](docs/numbers.md), with its machine and conditions.
+
+**One RTX 3090 24 GB**, on our workstation (32-core AVX2 host, 256 GB of RAM, the 3090 at its 250 W cap): the tagged
+0.3.10 tree at the serving defaults (`--place` unset, every lever unset, speculative drafts on where a model has one, no
+`--parallel`, `--ctx-size 4300`). Means of two rounds; four for DeepSeek-V4.1-Flash and Qwen3.8-Flash-Next.
+
+| Model | Where it runs | Prompt, 512 tokens | Prompt, 4,096 tokens | Decode at depth 512 | Decode at depth 4,096 |
+|---|---|---|---|---|---|
+| MiniMax-M3.1-Flash `UD-Q2_K_XL` | card + CPU | 105.16 | 97.56 | 23.41 | 20.40 |
+| Flint 40B-A2.5B `UD-Q4_K_XL` | card + CPU | 879.20 | 750.19 | 87.86 | 85.84 |
+| Nanbeige4.3-33B `Q4_K_M` | the whole model on the card | 745.46 | 693.76 | 24.22 | 23.23 |
+| DeepSeek-V4.1-Flash `Q3_K_M` | card + CPU | 167.41 | 300.46 | 34.73 ¹ | 34.94 |
+| GLM-5.3-Flash `UD-Q4_K_XL` | card + CPU | 178.99 | 204.47 | 30.06 | 26.18 |
+| Qwen3.8-Flash-Next `UD-Q4_K_XL` | card + CPU | 736.66 | 1,662.72 ² | 83.36 | 74.34 |
+| Qwen3.6-35B-A3B `Q4_K_M` | the whole model on the card | 5,123.05 | 6,652.24 | 188.31 | 180.68 |
+
+¹ rounds from 31.90 to 40.67 · ² the first round after a load read 1,440.33, the next three 1,735 to 1,739.
+
+**DGX Spark (GB10, 128 GB)**, measured by [@juliankang4](https://github.com/juliankang4) on their own machine, one
+request at a time, greedy, 128 tokens, median of three rounds. The Qwen3.8-Flash-Next rows are the 0.3.10 release on
+NVIDIA's FP4-Local and NVFP4 folders as downloaded and on `UD-Q4_K_XL`, with the MTP draft from Unsloth's
+`mtp-Qwen3.8-Flash-Next-shared-Q8_0.gguf`; the Qwen3.6 row is 0.3.0's
+([#46](https://github.com/midagedev/bloomery/issues/46#issuecomment-6116080838)).
+
+| Model (release) | ~4,096-token prompt: first token | Decode after it | Short prompt decode |
 |---|---|---|---|
-| Qwen3.8 `UD-Q4_K_XL`, `a` (0.3.0) | 5,673, 1,693, 3.38 s | 75.1 tok/s | 86.3 tok/s |
-| Qwen3.8 `UD-Q4_K_XL`, `bp` (0.3.1) | 5,673, 1,707, 3.35 s | 84.3 tok/s | 94.0 tok/s |
-| Qwen3.6-35B-A3B `UD-Q4_K_XL`, unset → `a` (0.3.1) | 5,673, 7,083, 0.81 s | 115.0 tok/s | 117.5 tok/s |
-| GLM-5.3-Flash `UD-IQ4_XS`, unset → `bp` (0.3.1) | 5,548, 172, 32.3 s | 35.1 tok/s | 35.0 tok/s |
-| DeepSeek-V4.1-Flash `Q3_K_M`, unset → `a` (0.3.1) | 5,642, 403, 14.0 s | 41.9 tok/s | 42.7 tok/s |
-| MiMo-V2.6-Flash `MXFP4`, unset → `a` (0.3.1) | 5,620, 104, 53.9 s | 34.8 tok/s | 36.1 tok/s |
-| Nemotron 3.5 Bolt 74B-A9B `24GB`, unset → `a` (0.3.4) | 5,680, 2,716, 2.10 s | 87.5 tok/s | 88.7 tok/s |
+| Qwen3.8-Flash-Next, FP4-Local folder, MTP on (0.3.10) | 2.05 s code, 2.08 s prose | 54.2 code, 39.9 prose | — |
+| Qwen3.8-Flash-Next, FP4-Local folder, draft off (0.3.10) | 1.98 s code, 2.08 s prose | 30.8 code, 29.8 prose | — |
+| Qwen3.8-Flash-Next, NVFP4 folder, MTP on (0.3.10) | 2.22 s code, 2.19 s prose | 47.9 code, 33.4 prose | — |
+| Qwen3.8-Flash-Next, NVFP4 folder, draft off (0.3.10) | 2.11 s code, 2.07 s prose | 22.7 code, 22.7 prose | — |
+| Qwen3.8-Flash-Next `UD-Q4_K_XL`, MTP on (0.3.10) | 2.80 s code, 2.75 s prose | 50.0 code, 35.2 prose | — |
+| Qwen3.6-35B-A3B `Q4_K_M` (0.3.0) | 0.90 s | 89.8 | 93.5 |
 
-<details>
-<summary><b>One RTX 3090, two cards, and two requests at once</b> (0.3.0)</summary>
+**RTX 5090 32 GB**, measured by [@juliankang4](https://github.com/juliankang4) at 0.3.10 on native Linux with 126 GB of
+RAM, one request at a time at the serving defaults, greedy, 128 tokens, median of three rounds.
 
-Two requests at once (`--parallel 2`, both busy) after a 512-token prompt, decode tok/s of both together, and one
-request's decode at depth 4096. Measured on 0.3.0 (2026-10-12), on a 32-core AVX2 host with 8 DDR4 channels and 256 GB
-of RAM; the 3090 at a 250 W cap; the MTP draft off.
-
-**One RTX 3090 24 GB**
-
-| Model | Where it runs | Two requests, tok/s in total | Decode at depth 4096 | Prompt tok/s (P = 512 / 4096) |
-|---|---|---|---|---|
-| Qwen3-30B-A3B `Q4_K_M` | the whole model on the card | 252.5 | 164.1 | 6,496 / 6,801 |
-| Qwen3.6-35B-A3B `Q4_K_M` | the whole model on the card | 257.3 | 181.8 | 5,766 / 6,685 |
-| Qwen3.8-Flash-Next `UD-Q4_K_XL` | card + CPU | 64.3 ¹ | 51.5 ¹ | 502 / 664 ¹ |
-| GLM-5.3-Flash `UD-Q4_K_XL` | card + CPU | 25.3 ² | 19.5 | 176 / 205 |
-| DeepSeek-V4.1-Flash `Q3_K_M` | card + CPU | 33.5 | 26.9 | 195 / 376 |
-| Nemotron 3.5 Bolt 74B-A9B `24GB` (0.3.4) | the whole model on the card | — ⁴ | 86.9 | 1,773 / 2,047 |
-
-**RTX A6000 48 GB + RTX 3090 24 GB (`--place bp`)**
-
-| Model | Two requests, tok/s in total | Decode at depth 4096 | Prompt tok/s (P = 512 / 4096) |
+| Model | ~4K prompt: prefill tok/s, first token | Decode after it | Short prompt decode |
 |---|---|---|---|
-| DeepSeek-V4.1-Flash `Q3_K_M` | 56.1 | 39.0 | 233 / 398 |
-| GLM-5.3-Flash `UD-Q4_K_XL` | 34.0 | 22.7 | 218 / 262 |
-| Qwen3.8-Flash-Next `UD-Q4_K_XL` | — ³ | 90.5 | — / 1,777 |
+| Qwen3.6-35B-A3B `Q4_K_M`, whole on the card | 14,249, 287 ms code; 14,298, 286 ms prose | 344.1 code, 344.2 prose | — |
 
-¹ with `BLOOMERY_RESIDENCY=mid-p32-s1` · ² 29.1 with `BLOOMERY_RESIDENCY=mid-p0-s1` · ³ under `--place bp` the Qwen3.8
-seat runs two requests in turn, a slot at a time · ⁴ the nemotron seat serves one slot. Bolt's rows are 0.3.4's
-sittings (n=4, prompt at e92fa8bde, decode at 44495f0ba); on one RTX A6000 the same sittings read 87.4 tok/s at depth
-4096 and 2,143 / 2,772 prompt tok/s.
+**M5 Ultra**, measured by [@avlp12](https://github.com/avlp12) at 0.3.9's Metal code
+([#593](https://github.com/midagedev/bloomery/issues/593); conditions in [`docs/mac.md`](docs/mac.md#numbers)).
 
-</details>
+| Model | Prompt, 4,096 ids | Decode after 512 ids |
+|---|---|---|
+| Qwen3.6-35B-A3B | 5,972 | 211–212 |
 
-<details>
-<summary><b>One RTX 3060 12 GB</b> (0.3.0, WSL2)</summary>
-
-One request at the serving defaults (`--ctx-size 16384`, every lever unset), 0.3.0's release tarball, an i7-12700F
-desktop with 32 GB of RAM under WSL2, greedy, thinking off.
-
-| Model | Long prompt: tokens, prefill tok/s, first token | Decode after it | Short prompt decode |
-|---|---|---|---|
-| Qwen3-30B-A3B `Q4_K_M`, card + CPU | 5,619, 103 ¹, 54.4 s | 38.8 tok/s | 40.4 tok/s |
-| Qwen3.8-Flash-Next `UD-Q4_K_XL`, experts paged from NVMe ² | 5,673, 84.9, 66.8 s | 4.5 tok/s | 5.4 tok/s |
-
-¹ 0.3.0's measurement: the prompt ran one row at a time on this load. 0.3.1 runs it in wide units; not re-measured
-here. ² 0.3.1's release candidate with no flags at all: the plan chose one slot of 28,881 positions and pages 75 GB of
-experts from NVMe through a 19 GB RAM arena; a paged plan runs with the MTP draft off. 0.3.0 refused this load at the
-defaults.
-
-</details>
-
-<details>
-<summary><b>Contributors' cards</b>: RTX 5090, DGX Spark (0.3.0, by @juliankang4)</summary>
-
-One request at the serving defaults, measured by [@juliankang4](https://github.com/juliankang4) on their own hardware
-at 0.3.0, greedy, thinking off, 256 tokens. Each row is their measurement on that card; the conditions, logs and tapes
-are in [#46](https://github.com/midagedev/bloomery/issues/46). Their 0.3.9 DGX Spark work (prompts up to about twice
-as fast) is in the [release notes](https://github.com/midagedev/bloomery/releases/tag/v0.3.9#from-our-contributors).
-
-| Card | Model | ~4K prompt: prefill tok/s, first token | Decode after it | Short prompt decode |
-|---|---|---|---|---|
-| RTX 5090 32 GB | Qwen3.6-35B-A3B `Q4_K_M`, whole on the card | 14,937, 276 ms | 345.2 tok/s | 356.1 tok/s |
-| RTX 5090 32 GB | Qwen3.8-Flash-Next `UD-Q4_K_XL` ¹ | 447, 9.12 s | 54.5 tok/s | 47.7 tok/s |
-| DGX Spark (GB10) | Qwen3.6-35B-A3B `Q4_K_M`, whole | 4,576, 899 ms | 89.8 tok/s | 93.5 tok/s |
-| DGX Spark (GB10) | Qwen3.8-Flash-Next `UD-Q4_K_XL`, whole, MTP draft on | 1,038, 4.11 s | 41.6 tok/s | 41.5 tok/s |
-
-¹ with `BLOOMERY_HOST_ROOM=56G` on 64 GB of RAM: 0.3.0 refuses this load at the defaults.
-
-</details>
+The release notes hold the commits, the release check on the tagged binary, every off cell and the contributors' work.
 
 ## Why it is fast
 
@@ -317,6 +313,7 @@ start screen), [@Burntgogi](https://github.com/Burntgogi) (the common owners eve
 | [`docs/evaluating.md`](docs/evaluating.md) | A checklist to run it and compare it fairly; hardware reports |
 | [`docs/serving.md`](docs/serving.md) | llama-server compatibility, flags, seats, concurrent requests, limits |
 | [`docs/models.md`](docs/models.md) | Recommended files and what each model needs |
+| [`docs/numbers.md`](docs/numbers.md) | Every measured table beyond the Status tables: two cards, older releases, other cards and Macs |
 | [`docs/performance.md`](docs/performance.md) | Number conditions, why it is fast, verification, recorded sessions |
 | [`docs/mac.md`](docs/mac.md) | Apple Silicon: build, open an MLX folder, serve, limits |
 | [`docs/BUILD.md`](docs/BUILD.md), [`docs/cuda-oxide.md`](docs/cuda-oxide.md) | Building from source; the kernels in Rust |

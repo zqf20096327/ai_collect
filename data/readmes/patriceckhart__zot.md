@@ -6,7 +6,7 @@
 <br>
 <p align="center">
   <a href="LICENSE"><img alt="license" src="https://img.shields.io/badge/license-MIT-blue"></a>
-  <img alt="Go 1.25+" src="https://img.shields.io/badge/Go-1.25+-00ADD8?logo=go&logoColor=white">
+  <img alt="Go 1.25.5+" src="https://img.shields.io/badge/Go-1.25.5+-00ADD8?logo=go&logoColor=white">
   <img alt="30+ providers" src="https://img.shields.io/badge/providers-30+-34E2EA">
 </p>
 <p align="center">
@@ -82,11 +82,28 @@ The easiest way is to just run `zot` and type `/login`. The TUI opens even witho
 2. provider-specific env var (`ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `KIMI_API_KEY`, `MOONSHOT_API_KEY`, `DEEPSEEK_API_KEY`, `GEMINI_API_KEY`, `GOOGLE_API_KEY`, `GROQ_API_KEY`, `OPENROUTER_API_KEY`, `MISTRAL_API_KEY`, `XAI_API_KEY`, `CEREBRAS_API_KEY`, `TOGETHER_API_KEY`, `HF_TOKEN`, `ZAI_API_KEY`, `XIAOMI_API_KEY`, `MINIMAX_API_KEY`, `FIREWORKS_API_KEY`, `AI_GATEWAY_API_KEY`, `COPILOT_GITHUB_TOKEN`, `GITHUB_COPILOT_TOKEN`, and others for provider-specific backends)
 3. `$ZOT_HOME/auth.json` (API key or OAuth token; mode 0600)
 
-`$ZOT_HOME` defaults to:
+`ZOT_HOME` is an optional environment variable that overrides zot's state directory.
+When it is unset or empty, zot resolves the directory internally:
 - All platforms: `$XDG_STATE_HOME/zot` when `XDG_STATE_HOME` is set
 - macOS fallback: `~/Library/Application Support/zot`
 - Linux fallback: `~/.local/state/zot`
 - Windows fallback: `%LOCALAPPDATA%\zot`
+
+zot does not populate `ZOT_HOME` in your shell. An empty `echo "$ZOT_HOME"`
+is normal and does not mean configuration is missing. Throughout these docs,
+`$ZOT_HOME` is shorthand for the resolved state directory, not a guarantee that
+the environment variable is set.
+
+Before using `$ZOT_HOME` in shell commands, set it to your existing state
+directory. For example, on Linux with the default location:
+
+```sh
+export ZOT_HOME="${XDG_STATE_HOME:-$HOME/.local/state}/zot"
+```
+
+To make that variable available in future shells, add the export to your shell's
+startup file. This is optional for running zot. If you already use a custom state
+directory, use that path instead to avoid switching to a different configuration.
 
 ### API keys from commands
 
@@ -299,7 +316,8 @@ Print-mode stats contain `provider`, `model`, `prompt_tokens`, `reasoning_tokens
 | `--tools <csv>` | Only enable the listed tools. |
 | `--max-steps <n>` | Cap agent loop iterations (default 50). |
 | `-e`, `--ext <path>` | Load an extension from `<path>` for this run (repeatable; wins against installed extensions of the same name). |
-| `--no-ext` | Skip extension discovery for this run. `--ext` still works on top, so `--no-ext --ext ./x` runs only `x`. |
+| `--no-ext` | Skip extension discovery for this run. `--ext` still works on top, so `--no-ext --ext ./x` runs only `x`. Built-in MCP is unaffected. |
+| `--no-mcp` | Skip built-in MCP servers for this run. |
 | `--no-skill` | Disable all skills, including built-ins. No `skill` tool is registered and the system prompt has no skill manifest. |
 | `--no-context-files`, `-nc` | Disable discovery and loading of global and project `AGENTS.md` files. |
 | `--no-yolo` | Confirm every tool call before it runs (interactive TUI only). A dialog shows the tool name and a one-line preview of its args, while edit calls show the proposed diff in the tool panel, with four choices: yes, yes-always-this-tool-this-session, yes-always-this-session, no. Press `/` while the dialog is focused to run a slash command first; closing its input or child dialog returns to the pending confirmation. Ignored with a stderr warning in print / json / rpc modes, where tools still run freely so scripts and automation keep working. |
@@ -396,6 +414,7 @@ Slash command names are case-insensitive in the TUI and messaging backends; argu
 | `/study` | Run the canned prompt "Read and understand everything in the current directory." so the agent has full project context before you start asking targeted questions. Pass a path — typed, drag-dropped, or selected via `@` — to target a specific file or directory instead: `/study [dir:packages/]`, `/study cmd/zot/main.go`. |
 | `/jail` | Confine tools to the current directory. |
 | `/unjail` | Allow tools to touch paths outside again. |
+| `/mcp [add\|reload\|help]` | Open the MCP server manager (list, add, sign in, enable or disable, exposure, tools, reconnect, remove, each with a one-key shortcut). `add` opens the add wizard directly, `reload` reconnects all servers without restarting extensions, `help` prints text status. `reconnect`, `login`, and `logout` with a server name work in every mode. |
 | `/reload-ext` | Hot-reload all extensions (re-read manifests, respawn subprocesses, rebuild tool registry). |
 | `/telegram` | Connect, disconnect, or show status of the Telegram bridge (takes `connect` / `disconnect` / `status` as an optional argument; opens a picker without one). When connected, DMs from the paired user become prompts in the running session and the assistant's replies are mirrored back to Telegram. Alias: `/tg`. |
 | `/settings` | Change persistent settings, including inline images, auto-swarm, and the auto-compact threshold. Saved to `$ZOT_HOME/config.json`; takes effect immediately. |
@@ -445,7 +464,11 @@ Each question runs an isolated agent turn against `system + main transcript + si
 /btw does PUT replace the whole resource?
 ```
 
-Inside the overlay: `enter` sends, `esc` cancels an in-flight call (or closes the overlay if idle), `ctrl+c` closes immediately. Use `@` for file references or `!@` to include text file content or supported images. Escape closes an active file picker before cancelling or closing the chat. Side-chat exchanges never touch the transcript and aren't persisted to the session file.
+Inside the overlay: `enter` sends, `esc` cancels an in-flight call (or closes the overlay if idle), `ctrl+c` closes immediately.
+
+The side-chat conversation grows in the same terminal flow as the main chat, without a separate viewport or height limit. Use your terminal's normal scrollback to read earlier output, no mouse setting is required. `pgup` and `pgdn` browse the combined main and side-chat history. Mouse-wheel and trackpad scrolling stay native to the terminal for both conversations. Scrolling also works while a tool confirmation is pending, without answering it. The shared display does not add side-chat exchanges to the main model context or saved transcript.
+
+Use `@` for file references or `!@` to include text file content or supported images. Escape closes an active file picker before cancelling or closing the chat. Side-chat exchanges never touch the transcript and aren't persisted to the session file.
 
 ### `/swarm`
 
@@ -524,9 +547,7 @@ Opens a dialog with every persistent setting. `up`/`down` to navigate, `enter` o
 - **show reasoning**: off by default. Shows the latest three wrapped lines of readable reasoning in a compact live preview, updated without answer-text pacing. After completion, the same compact tail remains before the assistant reply. Enable in `/settings`, pass `--show-reasoning`, or set `"show_reasoning": true` in `config.json`. Changes apply immediately and persist. Enabling mid-turn displays subsequent available chunks. Enabling also requests `reasoning.summary: "auto"` on Responses/Codex calls and `thinking.display: "summarized"` on native Anthropic calls with thinking enabled, starting with the next model call and without changing effort. Newer Claude models default to omitting readable thinking even at high effort, so the explicit display request is necessary. An already-running request that did not ask for summaries may remain silent until the next call. Each opted-in model call retains at most 8,192 Unicode characters of readable reasoning as display-only metadata on its assistant message. The tail is saved with the session and restored on resume. Disabling the setting hides both live and saved reasoning without deleting saved tails. This is separate from `/reasoning`, which controls effort. Supported streams are OpenAI-compatible `reasoning_content`, Anthropic thinking, Responses/Codex reasoning summaries, Gemini thought text, and Bedrock Converse reasoning text. Providers may expose only summaries or no readable reasoning at all, especially for simple prompts. The live preview is replaced by the saved tail when the completed reply enters the transcript. Failed or cancelled calls retain a tail only if their partial assistant message is kept. For a useful test, set `/reasoning` to `high` and ask a multi-step problem while watching the response. Continuous-host attached views also show the committed live reasoning tail and restore it on reconnect. Saved tails do not add transcript messages or model context. Older sessions show readable replay summaries when available. Sessions that did not retain readable reasoning cannot reconstruct it. Bedrock signatures and redacted blocks are retained only as replay metadata, never displayed. Plain-text output remains unchanged. JSON/RPC streams require an explicit `--show-reasoning` flag and SDK streams require `sdk.Config{ShowReasoning: true}` to emit `reasoning_delta` events. The saved interactive preference does not opt machine clients in, preserving their default event streams.
 - **show loaded resources at startup**: list the active .zot agent (for `zot run`), loaded `AGENTS.md` paths, extensions, and user-installed skills in compact sections above the transcript. Built-in skills are omitted. Off by default. Changes apply immediately and persist to `config.json` as `show_instructions_at_startup`.
 - **TUI settings**: opens a sub-view for input layout and status placement. **Input style** can be `plain` (default prompt line), `lines` (separator lines above and below the input), or `block` (a user-bubble-style input block). **Status position** places model, usage, and working-directory information above or below the input. **Working spinner position** places the busy spinner above or below the input. Changes apply immediately and persist to `config.json` as `tui_input_style`, `tui_status_position`, and `tui_working_position` (`above_input` or `below_input` for the position fields).
-- **TUI settings > click to position cursor**: off by default, saved as `tui_click_to_position`, and applied immediately. A stationary left click in the main input positions its cursor, including wrapped lines and Unicode text. Click-drag selects visible chat or input text without moving the editor cursor. Selected text stays highlighted after release and is not copied automatically. Press `ctrl+c` to copy explicitly without clearing the selection. `ctrl+shift+c` or `cmd+c` also works if your terminal forwards the chord to zot instead of consuming it. Display updates pause until the selection is dismissed so streaming cannot move the selected text, but the agent continues working. Press `esc` to dismiss the selection without cancelling a running turn. A new click, typing, scrolling, resizing, or disabling the setting also clears it. The wheel browses zot's transcript. Mouse input is ignored while a dialog owns input. Requires SGR button-motion reporting, supported by terminals such as Windows Terminal, iTerm2, Ghostty, and VS Code's integrated terminal on their supported operating systems.
-
-  Clipboard copy uses `pbcopy` on macOS, PowerShell on Windows, or `wl-copy`, `xclip`, or `xsel` on Linux. Over SSH, or when local copying fails, zot sends an OSC 52 clipboard request instead. Your terminal or multiplexer must allow it, and zot cannot verify that request succeeded. Selection is limited to the current visible text, excludes inline images, and copies displayed line breaks rather than reconstructing unwrapped source text. Dragging does not auto-scroll or support word selection by double-click. This is zot-managed selection, not native terminal selection. Many terminals still allow Shift-drag for native selection, including scrollback, but the bypass depends on the terminal. Disable the setting to restore all native mouse behavior.
+- **Mouse behavior**: mouse-wheel scrolling, trackpad scrolling, text selection, and copying use the terminal's native behavior. Zot does not enable mouse reporting. The former click-to-position setting has been removed from the settings menu. Existing `tui_click_to_position` values in `config.json` are ignored.
 - **reasoning level**: choose reasoning for supported models: off, minimum, low, medium, high, xhigh, or max. The `max` tier is opt-in and sent natively to GPT-5.6 and adaptive-thinking Claude models; unsupported backends clamp it to their highest accepted effort. The change is persisted to `config.json` and applied to the next model call. Use `/reasoning` to open this selector directly. The selector only shows distinct levels supported by the active model; models without reasoning support only offer `off`.
 - **color theme** — choose the built-in auto/dark/light theme or any JSON theme discovered under `$ZOT_HOME/themes` or a loaded extension. Theme files can override any subset of UI colors, syntax colors, and spinner frames/messages. Changes apply immediately; if a selected theme file is deleted, zot resets to auto. See [docs/themes.md](docs/themes.md).
 - **model shortcuts** — opens a sub-view with nine slots (`model 1` ... `model 9`). `enter` on a slot opens the same `/model` selector and binds the chosen provider/model to that slot; `backspace` clears a slot. Once assigned, press `Ctrl+1` ... `Ctrl+9` from the editor to switch the active model instantly (the same cross-provider swap `/model` performs, transcript and cost carried over). Assigning a shortcut does not change the current model. Shortcuts are skipped while a turn is running.
@@ -1123,9 +1144,4 @@ Interactive shell commands receive model metadata even with `--no-session`; only
 
 ## Program status
 
-In interactive mode, zot reports activity through the Program Status Protocol (OSC 7501). Supporting terminals and dashboards can display these states:
-
-| State | When |
-|---|---|
-| `idle` | Startup or cancellation |
-| `working` | A submitted agent run or shell command is in progress, with the explicit session name when available. Compaction uses "Compacting 
+In interactive mode, zot reports activity through the Prog

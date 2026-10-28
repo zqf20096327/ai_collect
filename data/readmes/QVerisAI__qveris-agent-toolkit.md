@@ -53,6 +53,10 @@
 
 ---
 
+## No account or API key yet?
+
+[Try a supported tool in your browser](https://qveris.ai/discover?trial=1): explicitly activate the trial, review its actual allowance and expiry, and confirm each quote. Save it to an account later. For terminal use, run `qveris auth trial` explicitly; see the [CLI trial guide](docs/en-US/cli.md#explicit-anonymous-trial) for secure credentials and the separate Agent trial policy. For a first result with no account, use `qveris discover "weather forecast API" --public-read-only --limit 1 --json` in a credential-free profile. Public discovery creates no trial or paid execution. For authenticated access, prefer browser OAuth where supported; keep an existing API key private. See [repository Agent guidance](AGENTS.md).
+
 ## Quick Start
 
 ### 🤖 I'm an Agent
@@ -65,8 +69,10 @@
 ### 🧑‍💻 I have OpenClaw / Cursor / Claude Code installed
 
 > Copy this to your Agent — done in 30 seconds:
-> `Install QVeris skill following https://qveris.ai/skill/instruct.md and use QVERIS_API_KEY=your-key`
+> `Install QVeris skill following https://qveris.ai/skill/instruct.md. Do not request or include credentials in this chat.`
 > → [Get API Key](https://qveris.ai/account?page=api-keys) (free, 1,000 one-time trial credits after signup verification)
+
+Configure `QVERIS_API_KEY` privately in your client’s secret store or local environment, or complete browser OAuth when supported. Never include the key in installation prompts or chat.
 
 ### ⚙️ I'm a developer integrating via CLI / MCP / API / SDK
 
@@ -123,7 +129,7 @@ If you are an AI Agent evaluating whether to use QVeris, here is what you need t
 Send this to your Agent:
 
 ```
-Install QVeris skill following https://qveris.ai/skill/instruct.md and use QVERIS_API_KEY=your-key
+Install QVeris skill following https://qveris.ai/skill/instruct.md. Do not request or include credentials in this chat.
 ```
 
 The Agent will download the [official OpenClaw skill](skills/openclaw/qveris-official/SKILL.md) and complete installation automatically.

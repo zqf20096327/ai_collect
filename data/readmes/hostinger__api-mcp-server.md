@@ -69,19 +69,19 @@ pnpm update -g @hostinger/mcp
 
 This package installs the following MCP server commands:
 
-- `hostinger-api-mcp` — unified server over every operation (418 total)
-- `hostinger-agency-hosting-mcp` — 42 operations for agency-hosting
-- `hostinger-agent-readiness-mcp` — 3 operations for agent-readiness
-- `hostinger-billing-mcp` — 9 operations for billing
-- `hostinger-dns-mcp` — 8 operations for dns
-- `hostinger-domains-mcp` — 42 operations for domains
-- `hostinger-ecommerce-mcp` — 29 operations for ecommerce
-- `hostinger-horizons-mcp` — 6 operations for horizons
-- `hostinger-hosting-mcp` — 68 operations for hosting
-- `hostinger-mail-mcp` — 38 operations for mail
-- `hostinger-reach-mcp` — 69 operations for reach
-- `hostinger-vps-mcp` — 67 operations for vps
-- `hostinger-wordpress-mcp` — 40 operations for wordpress
+- `hostinger-api-mcp` — unified server over every operation (413 total)
+- `hostinger-agency-hosting-mcp` — 43 operations for agency-hosting
+- `hostinger-agent-readiness-mcp` — 4 operations for agent-readiness
+- `hostinger-billing-mcp` — 10 operations for billing
+- `hostinger-dns-mcp` — 9 operations for dns
+- `hostinger-domains-mcp` — 43 operations for domains
+- `hostinger-ecommerce-mcp` — 30 operations for ecommerce
+- `hostinger-horizons-mcp` — 7 operations for horizons
+- `hostinger-hosting-mcp` — 62 operations for hosting
+- `hostinger-mail-mcp` — 39 operations for mail
+- `hostinger-reach-mcp` — 71 operations for reach
+- `hostinger-vps-mcp` — 68 operations for vps
+- `hostinger-wordpress-mcp` — 41 operations for wordpress
 
 Every binary exposes the same three tools; a scoped binary only searches and executes its own group's operations. `hostinger-api-mcp` remains the backwards-compatible default.
 
@@ -99,7 +99,7 @@ The server supports two authentication methods:
 
 ### API Token (recommended for CI/scripts)
 
-Set `HOSTINGER_API_TOKEN` in the environment or `.env` file. When present it always takes precedence — no OAuth code runs.
+Set `HOSTINGER_API_TOKEN` in the environment (the MCP client's `env` block). When present it always takes precedence — no OAuth code runs.
 
 ### OAuth 2.0 with PKCE (interactive sign-in)
 
@@ -234,6 +234,13 @@ The operations `search` offers, by binary:
 Operations that newer tools replace are hidden from `search`, and not documented, in every binary that also offers the replacing tool. They keep working through `execute` until they are removed.
 
 ### `hostinger-agency-hosting-mcp`
+
+#### changelog_list-entries
+
+What's new and what's coming at Hostinger: list entries of the public Hostinger changelog (release notes, product updates, recent changes, new features and improvements) and of the public roadmap (upcoming features not released yet). Released entries come newest first; upcoming items come soonest expected release first. Reads released changelog entries by default; pick upcoming for the roadmap or all for both. Filter by product or date. Each entry has its title, summary, product, URL, status (released or upcoming), and plan when the entry states one; released entries have their date, upcoming items their expected release date when set. Needs no API token.
+
+- **Method**: `custom`
+- **Path**: `custom`
 
 #### agency-hosting_deploy-node-static-website
 
@@ -685,6 +692,13 @@ Lists the WordPress core versions available for installation on an Agency Plan w
 
 ### `hostinger-agent-readiness-mcp`
 
+#### changelog_list-entries
+
+What's new and what's coming at Hostinger: list entries of the public Hostinger changelog (release notes, product updates, recent changes, new features and improvements) and of the public roadmap (upcoming features not released yet). Released entries come newest first; upcoming items come soonest expected release first. Reads released changelog entries by default; pick upcoming for the roadmap or all for both. Filter by product or date. Each entry has its title, summary, product, URL, status (released or upcoming), and plan when the entry states one; released entries have their date, upcoming items their expected release date when set. Needs no API token.
+
+- **Method**: `custom`
+- **Path**: `custom`
+
 #### agent-readiness_checks_list
 
 List every check an agent readiness scan runs, with its name, category and weight.\n
@@ -720,6 +734,13 @@ Returns 404 when the domain has never been scanned; use the `Run agent readiness
 - **Path**: `/api/agent-readiness/v1/scans/{domain}`
 
 ### `hostinger-billing-mcp`
+
+#### changelog_list-entries
+
+What's new and what's coming at Hostinger: list entries of the public Hostinger changelog (release notes, product updates, recent changes, new features and improvements) and of the public roadmap (upcoming features not released yet). Released entries come newest first; upcoming items come soonest expected release first. Reads released changelog entries by default; pick upcoming for the roadmap or all for both. Filter by product or date. Each entry has its title, summary, product, URL, status (released or upcoming), and plan when the entry states one; released entries have their date, upcoming items their expected release date when set. Needs no API token.
+
+- **Method**: `custom`
+- **Path**: `custom`
 
 #### billing_catalog_list
 
@@ -835,6 +856,13 @@ Use this endpoint to renew any subscription available in your account.
 
 ### `hostinger-dns-mcp`
 
+#### changelog_list-entries
+
+What's new and what's coming at Hostinger: list entries of the public Hostinger changelog (release notes, product updates, recent changes, new features and improvements) and of the public roadmap (upcoming features not released yet). Released entries come newest first; upcoming items come soonest expected release first. Reads released changelog entries by default; pick upcoming for the roadmap or all for both. Filter by product or date. Each entry has its title, summary, product, URL, status (released or upcoming), and plan when the entry states one; released entries have their date, upcoming items their expected release date when set. Needs no API token.
+
+- **Method**: `custom`
+- **Path**: `custom`
+
 #### dns_snapshots_get
 
 Retrieve particular DNS snapshot with contents of DNS zone records.
@@ -920,6 +948,13 @@ Use this endpoint to verify DNS record validity before applying changes.
 - **Path**: `/api/dns/v1/zones/{domain}/validate`
 
 ### `hostinger-domains-mcp`
+
+#### changelog_list-entries
+
+What's new and what's coming at Hostinger: list entries of the public Hostinger changelog (release notes, product updates, recent changes, new features and improvements) and of the public roadmap (upcoming features not released yet). Released entries come newest first; upcoming items come soonest expected release first. Reads released changelog entries by default; pick upcoming for the roadmap or all for both. Filter by product or date. Each entry has its title, summary, product, URL, status (released or upcoming), and plan when the entry states one; released entries have their date, upcoming items their expected release date when set. Needs no API token.
+
+- **Method**: `custom`
+- **Path**: `custom`
 
 #### domains_verifications_direct
 
@@ -1455,6 +1490,13 @@ Use this endpoint to view which domains use specific contact profiles.
 
 ### `hostinger-ecommerce-mcp`
 
+#### changelog_list-entries
+
+What's new and what's coming at Hostinger: list entries of the public Hostinger changelog (release notes, product updates, recent changes, new features and improvements) and of the public roadmap (upcoming features not released yet). Released entries come newest first; upcoming items come soonest expected release first. Reads released changelog entries by default; pick upcoming for the roadmap or all for both. Filter by product or date. Each entry has its title, summary, product, URL, status (released or upcoming), and plan when the entry states one; released entries have their date, upcoming items their expected release date when set. Needs no API token.
+
+- **Method**: `custom`
+- **Path**: `custom`
+
 #### ecommerce_discounts_list
 
 List a store's discounts. Filter by free text over code and name, or by disabled state.
@@ -1700,6 +1742,13 @@ store currency. Returns the created variant.
 
 ### `hostinger-horizons-mcp`
 
+#### changelog_list-entries
+
+What's new and what's coming at Hostinger: list entries of the public Hostinger changelog (release notes, product updates, recent changes, new features and improvements) and of the public roadmap (upcoming features not released yet). Released entries come newest first; upcoming items come soonest expected release first. Reads released changelog entries by default; pick upcoming for the roadmap or all for both. Filter by product or date. Each entry has its title, summary, product, URL, status (released or upcoming), and plan when the entry states one; released entries have their date, upcoming items their expected release date when set. Needs no API token.
+
+- **Method**: `custom`
+- **Path**: `custom`
+
 #### horizons_websites_clone
 
 Clone a Hostinger Horizons website into a new website.\n
@@ -1814,6 +1863,13 @@ interface in the provided website URL.
 
 ### `hostinger-hosting-mcp`
 
+#### changelog_list-entries
+
+What's new and what's coming at Hostinger: list entries of the public Hostinger changelog (release notes, product updates, recent changes, new features and improvements) and of the public roadmap (upcoming features not released yet). Released entries come newest first; upcoming items come soonest expected release first. Reads released changelog entries by default; pick upcoming for the roadmap or all for both. Filter by product or date. Each entry has its title, summary, product, URL, status (released or upcoming), and plan when the entry states one; released entries have their date, upcoming items their expected release date when set. Needs no API token.
+
+- **Method**: `custom`
+- **Path**: `custom`
+
 #### hosting_deploy
 
 Deploy, publish or upload a website to Hostinger web hosting (Shared, Cloud): static HTML, PHP, a nodejs (Node.js) app, a whole WordPress site, or a WordPress plugin or theme, from a local directory, an archive or a GitHub or GitLab repository. It detects what the project is and does the upload, build and Git setup itself: do not call upload or build operations, and do not archive the directory yourself. WARNING: it overwrites the website's contents and cannot be undone; confirm the domain with the user before deploying to a site that already has content. A Node.js build runs on the server: this returns a buildUuid at once, then call hosting_get-deployment until the build state is completed or failed. A plugin or theme goes into the site's WordPress installation, also when WordPress is in a folder of the document root (headless). Static, PHP, plugin and theme deploys are done when this returns; a WordPress site import only starts, and its files are extracted a few minutes later. From Git, pass type (static or nodejs) unless the site already runs a Node.js app or you pass Node.js settings; a static or PHP site deploys the branch now and again on every push; a Node.js site builds the branch now and on every later push, with the settings stored for the site (when none are stored, they are detected from the branch's package.json; pass appType, nodeVersion, outputDirectory, buildScript or entryFile to override them). Git needs GitHub or GitLab connected once in hPanel.
@@ -1828,123 +1884,33 @@ Check deployment status, build status, build logs and why a build failed (failur
 - **Method**: `custom`
 - **Path**: `custom`
 
+#### hosting_websites_get-settings
+
+Read a website's SSL certificate, HTTPS redirect, CDN and server cache settings in one call. ssl is the SSL status as hosting_ssl_status returns it: the certificate status (active, installing, waiting_for_retry, failed, expired or not_installed) and provider, whether it is a lifetime certificate, whether HTTP is redirected to HTTPS, when it expires and the last installation error. cdn.is_enabled says whether the Hostinger CDN serves the website. cache.is_enabled says whether server-side caching is on, and cache.is_cacheless_mode_enabled whether development (cacheless) mode bypasses it. Use it before hosting_websites_update-settings, and to follow an SSL installation started by hosting_ssl_install: poll until ssl.status is active or failed, with growing pauses. A section that cannot be read comes back as { error } and the others are still returned; cache is null with a cacheNote when cache status is not available. To install or remove a certificate use hosting_ssl_install or hosting_ssl_uninstall. Works for Shared and Cloud hosting websites.
+
+- **Method**: `custom`
+- **Path**: `custom`
+
+#### hosting_websites_update-settings
+
+Change a website's HTTPS redirect, CDN and server cache settings in one call. Pass only the settings to change, at least one. Settings are applied in the order cache, cachelessMode, cdn, httpsRedirect, and the call stops at the first failure. applied lists the settings that were changed. When a setting fails, the call returns an error whose text is the same JSON: failed names the setting and why, and skipped lists the ones not attempted; a multi-execute batch stops there too. Turning httpsRedirect on needs an active SSL certificate: the call checks it first and changes nothing when there is none. Install one with hosting_ssl_install and wait until hosting_websites_get-settings shows ssl.status active. cachelessMode is applied in the background and takes effect within a few minutes; enabling the CDN changes DNS records, so visitors are served through it after a few minutes of propagation. Certificates are not installed or removed here: use hosting_ssl_install and hosting_ssl_uninstall. Read the current values with hosting_websites_get-settings. Works for Shared and Cloud hosting websites.
+
+- **Method**: `custom`
+- **Path**: `custom`
+
+#### hosting_cache_clear
+
+Clear a website's server cache (the hosting server's page cache) and Hostinger CDN cache, so updated content shows at once. By default (scope: all) it clears the server cache and, when the CDN is on, purges the CDN too. scope: cdn purges only the CDN edge cache and leaves the server cache alone; that fails with 422 when the CDN is off. For a WordPress site installed in a subdirectory, pass directory to clear that installation's cache (only with scope all). This does not purge the WordPress LiteSpeed Cache plugin: that is a separate WordPress operation (wordpress_litespeed-cache_purge-lite-speed). To turn caching or the CDN on or off use hosting_websites_update-settings. Works for Shared and Cloud hosting websites.
+
+- **Method**: `custom`
+- **Path**: `custom`
+
 #### hosting_websites_trigger-event
 
 Tell Hostinger that something happened on this website, so Hostinger services such as hPanel can react to it. `event.name` picks the event and decides which `event.params` it takes. The call changes nothing on the website.
 
 - **Method**: `custom`
 - **Path**: `custom`
-
-#### hosting_cache_clear-website
-
-Permanently clears all server-side cache for the website at once. Use it when content was
-updated and needs to be visible immediately, or after making major changes.
-
-Also purges the Hostinger CDN cache when CDN is enabled on the website. To purge only the CDN
-cache and leave the server cache untouched, use `Purge CDN cache`. For a WordPress
-installation living in a subdirectory, pass the directory query parameter to clear its cache.
-
-- **Method**: `DELETE`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/cache/clear`
-
-#### hosting_cache_status
-
-Returns the caching state of the website: whether server-side caching is enabled and whether
-development (cacheless) mode is on. Works for the main domain, addon websites, parked domains
-and subdomains of the account; each reports its own settings and does not inherit them from
-its parent website.
-
-`is_enabled` is the setting changed by `Toggle website cache` and reflects a toggle
-immediately. `is_cacheless_mode_enabled` is true while development mode is on; caching is then
-bypassed even when `is_enabled` is true. `Toggle cacheless mode` is applied in the background,
-so this flag can take a few minutes to follow it.
-
-The domain must be the exact website name as listed on the account, without a `www.` prefix.
-Returns 404 when the domain is not a website on the account.
-
-- **Method**: `GET`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/cache/status`
-
-#### hosting_cache_toggle-cacheless
-
-Turns development (cacheless) mode on or off, based on the enabled flag. When enabled, nothing
-is cached, effectively turning off all caching for the website; use it while actively developing,
-testing changes, debugging issues, or when real-time updates must be visible. Disable it after
-finishing development work to restore the performance benefits of caching.
-
-The change is applied in the background and can take a few minutes. Use `Get cache status` to
-check the current state.
-
-- **Method**: `PATCH`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/cacheless-mode/toggle`
-
-#### hosting_cache_toggle-website
-
-Turns server-side caching for the website on or off, based on the enabled flag. Enable it for
-faster page loads, reduced server load, and improved user experience; recommended for production
-websites. Disabling may impact performance; to temporarily bypass caching while developing or
-debugging, prefer toggling cacheless mode instead.
-
-Does nothing if caching is already in the requested state. Use `Get cache status` to check the
-current state.
-
-- **Method**: `PATCH`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/cache/toggle`
-
-#### hosting_cdn_disable
-
-Turns off the Hostinger CDN for the website domain. Once DNS propagation completes, the
-website content is served directly from the origin server. Repeating the call is safe; when
-CDN is already disabled, it applies the DNS change again.
-
-Returns 422 for platform-managed domains (for example `*.hostingersite.com` and
-`*.app-preview.com`), where CDN cannot be disabled, even when CDN is already off. Also returns
-422 while the account is being moved to another server (retry after the move finishes), or
-when the CDN provider rejects the change. Returns 404 when the domain is not a website on the
-account.
-
-- **Method**: `POST`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/cdn/disable`
-
-#### hosting_cdn_enable
-
-Turns on the Hostinger CDN for the website domain, which speeds up page loads and reduces the
-load on the server. Works for the main domain, parked domains and subdomains of the account.
-
-Enabling changes the domain's DNS records and usually takes a few seconds. After that, DNS
-propagation can take a few more minutes before visitors are served through the CDN.
-
-Repeating the call is safe, for example after a timeout. When CDN is already enabled, it
-applies the DNS change again and refreshes the CDN SSL certificate.
-
-Returns 422 when the account is disabled, while the account is being moved to another
-server (retry after the move finishes), or when the CDN provider rejects the change.
-Returns 404 when the domain is not a website on the account.
-
-- **Method**: `POST`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/cdn/enable`
-
-#### hosting_cdn_purge-cache
-
-Purges the website's content from the Hostinger CDN edge cache only. The origin server cache
-is not touched; to clear both, use `Clear website cache`.
-
-Returns 422 when CDN is not enabled on the website. Returns 404 when the domain is not a
-website on the account.
-
-- **Method**: `DELETE`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/cdn/purge`
-
-#### hosting_cdn_status
-
-Returns whether the Hostinger CDN is enabled for the website domain. Works for the main
-domain, parked domains and subdomains of the account.
-
-The domain must be the exact website name as listed on the account, without a `www.` prefix.
-Returns 404 when the domain is not a website on the account.
-
-- **Method**: `GET`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/cdn/status`
 
 #### hosting_cron-jobs_list
 
@@ -2436,110 +2402,4 @@ nothing: WordPress can be added later through
 (`wordpress_installations_install`) with `type: headless`.
 
 Omit `domain` to set the website up on a generated temporary free subdomain. To know the
-free subdomain before the call, so a timed-out call can be looked up and retried on the
-same domain, generate one through `POST /api/hosting/v1/domains/free-subdomains`
-(`hosting_domains_generate-free-subdomain`) and send it as `domain`. It is accepted for
-24 hours, only from the client that generated it.
-
-When the order has no hosting account yet, the setup creates one first, in the datacenter
-given by `datacenter_code` or the order's default datacenter when it is omitted.
-Returns 404 when the order does not exist or is not accessible to the authenticated
-client, and 409 with a `Retry-After` header while a setup for the same domain is still
-running.
-
-- **Method**: `POST`
-- **Path**: `/api/hosting/v1/orders/{order_id}/onboardings`
-
-#### hosting_orders_list
-
-Retrieve a paginated list of orders accessible to the authenticated client.
-
-Only Web and Cloud hosting orders are listed. Agency Plan orders are listed by
-`GET /api/agency-hosting/v1/orders`.
-
-This endpoint returns orders of your hosting accounts as well as orders
-of other client hosting accounts that have shared access with you.
-
-Use the available query parameters to filter results by order statuses
-or specific order IDs for more targeted results.
-
-- **Method**: `GET`
-- **Path**: `/api/hosting/v1/orders`
-
-#### hosting_php_reset-extensions
-
-Resets all PHP extensions of the website to their default state.
-
-Use it to recover from extension conflicts or restore the original configuration.
-
-- **Method**: `PATCH`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/php/extensions/reset`
-
-#### hosting_php_get
-
-Returns the full PHP configuration for the website: current version, available versions
-(supported and unsupported), enabled/disabled extensions, options with their current value,
-default, type and the plan limit (`max`), and conflicting extension groups.
-
-Use it to check the current PHP setup before updating the version, extensions or options.
-
-- **Method**: `GET`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/php/details`
-
-#### hosting_php_info
-
-Returns the full phpinfo page (HTML) for the website.
-
-Use it to debug PHP issues or inspect the complete PHP environment of the website.
-
-- **Method**: `GET`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/php/php-info`
-
-#### hosting_php_update-extensions
-
-Enables or disables PHP extensions (modules) for the website.
-
-Use the Get PHP details endpoint to check the current extension states before changing them.
-
-- **Method**: `PATCH`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/php/extensions`
-
-#### hosting_php_update-options
-
-Updates PHP options for the website (e.g. `memory_limit`, `max_execution_time`, `upload_max_filesize`).
-Only provide the options you want to change, inside the `options` object.
-
-Values above the account plan limit are silently capped to that limit, so the request can succeed
-with a smaller applied value. Call the Get PHP details endpoint afterwards to read the applied value.
-
-- **Method**: `PATCH`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/php/options`
-
-#### hosting_php_update-version
-
-Changes the PHP version of the website.
-
-Use the Get PHP details endpoint to see the versions available for the website.
-
-- **Method**: `PATCH`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/php/version`
-
-#### hosting_redirects_list-website
-
-Returns a paginated list of redirects configured for the selected website.
-
-- **Method**: `GET`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/redirects`
-
-#### hosting_redirects_create-website
-
-Creates a redirect from a URL on the selected website to another URL or IP address.
-
-- **Method**: `POST`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/redirects`
-
-#### hosting_redirects_delete-website
-
-Permanently deletes the redirect identified by its source URL.
-
-Pass the `from` value exactly 
+free subdomain before the call, so a timed-out

@@ -409,6 +409,7 @@ Diffs the **112 keys shared** between the `ref2va` and `fl2va` weights and store
 | [`TorchTPU + Diffusers`](https://huggingface.co/docs/diffusers/main/optimization/tpu) | — | Native PyTorch TPU inference with eager, `torch.compile` and tensor parallelism. Hugging Face publishes an [H3 video/audio example](https://huggingface.co/blog/hf-torchtpu) on **Cloud TPU v6e-4**, TP=4, bf16, batch 1. [TorchTPU code](https://github.com/google-pytorch/torch_tpu) is Apache-2.0 with third-party notices; model terms apply separately. |
 | [`ddalcu/mlx-serve`](https://github.com/ddalcu/mlx-serve) | — | Native local app/server for **Apple silicon**; [v26.10.3](https://github.com/ddalcu/mlx-serve/blob/main/CHANGELOG.md) adds FastH3 Omni reference-picture video with synchronized audio in **8 steps** and image-aware prompt enhancement. The Mac app requires **macOS 26.2+**. MIT code; model terms apply separately. |
 | [`FlashML-org/FreeVideo`](https://github.com/FlashML-org/FreeVideo) | — | Local ComfyUI workspace and launchers built on **VDN-H3**, with a documented **8 GB VRAM / 16 GB RAM** path, community LoRAs, and Windows/Linux support. [Apple silicon support](https://github.com/FlashML-org/FreeVideo/blob/main/docs/Mac.md) is experimental. Apache-2.0 code; H3 Community model terms apply. |
+| [`drawthingsai/draw-things-community`](https://github.com/drawthingsai/draw-things-community) | 603 | Engine behind the [Draw Things](https://drawthings.ai) app and `draw-things-cli` on **Apple silicon**: a native Swift / Metal implementation. Runs **FL2VA** (T2VA, first frame, first/last frame), **Ref2VA** with image and audio references, and **FastH3 Omni** from converted 8-, 6- and 4-bit weights. It can split work between the GPU and the Neural Engine, and imports H3 LoRAs in diffusers or ComfyUI layout. A [first-party benchmark](https://releases.drawthings.ai/p/harvest-season-new-hardware-new-inference) measures a 1024×512, 124-frame, 20-step clip at **201.87 s** end-to-end on M5 Ultra, vs 246.79 s for the fastest other engine tested — see [Reported environments](#compat-env). GPL-3.0 code; model terms apply separately. |
 
 <a id="nodes"></a>
 <a id="recipes"></a>
@@ -793,14 +794,4 @@ Access is through [fal](https://fal.ai) and through the ComfyUI **Partner Nodes*
 
 ### Dedicated deployment
 
-A private host that runs open H3 weights for one company. Use it when you need full concurrency, your own fine-tuned weights, or data that stays inside one deployment.
-
-| Provider | What it offers |
-| :--- | :--- |
-| [Nuva Lab](https://nuvalab.ai/minimax-h3-dedicated-deployment/) | Dedicated MiniMax H3 and FastH3 hosts. The standard host has 8× RTX PRO 6000; B200, B300 and GB200 hosts on request. Runs customer fine-tuned weights. Holds a MiniMax authorization for H3 deployments that serve US companies. One of the two FastH3-Omni preview launch partners, with Reactor. Cost and speed notes: [self-hosting cost](https://nuvalab.ai/blog/minimax-h3-api-price-vs-self-hosting/), [VRAM and GPU requirements](https://nuvalab.ai/blog/run-minimax-h3-locally-gpu-vram-requirements/). |
-
-<a id="compat"></a>
-
-## Compatibility & Licensing
-
-### ComfyUI INT8
+A private h

@@ -44,6 +44,7 @@ Runs on Alpine, on CentOS 6, and anywhere `npm install` isn't an option.
 - 🛠 **Streaming tool calls** — `read` / `write` / `edit` / `bash`, rendered live in a ratatui TUI
 - 🪝 **Claude Code-protocol hooks** — JSON-on-stdin, exit-2-to-block shell hooks, using PI's event names (`tool_execution_start` / `tool_execution_end` / `input` / …)
 - 🧠 **Agent Skills** — [spec-compliant](https://agentskills.io/specification) `SKILL.md` discovery + `/skill:name` expansion
+- 🎛 **Orchestrator by default** — in the TUI the main agent never does the work itself; it spawns a dedicated agent per job and shows them live under the input box
 
 ## Background — why nanopi exists
 
@@ -205,6 +206,89 @@ nanopi --fork <id>
 | `-C`, `--no-context-files` | false | Disable AGENTS.md / CLAUDE.md discovery |
 | `--system-prompt <text\|path>` | — | Replace the built-in system prompt |
 | `--append-system-prompt <text\|path>` | — | Append to the system prompt (repeatable) |
+
+## Model catalogue (`~/.nanopi/models.json`)
+
+nanopi needs a model's **context window** for two things: the usage bar in the
+status line, and deciding when to auto-compact the conversation. It ships a
+built-in table of ~163 models, but that table is baked into the binary — a model
+released after your build shows `?/128.0k` and auto-compaction falls back to a
+cruder char-count heuristic.
+
+On first interactive run nanopi writes `~/.nanopi/models.json`. Add anything it
+doesn't know to `custom`:
+
+```json
+{
+  "generated_by": "0.14.0",
+  "custom": [
+    { "id": "some-new-model", "vendor": "openai", "context_window": 2000000 }
+  ],
+  "builtin": [ "… the shipped table, for reference …" ]
+}
+```
+
+`custom` wins over `builtin` by id, so it also corrects a wrong window. Lookup is
+a case-insensitive longest-prefix match, so `my-model` also covers
+`my-model-20260101`.
+
+`builtin` is regenerated whenever nanopi's version changes — the previous file is
+copied to `models.json.bak` first, and your `custom` entries carry over untouched.
+That split is what stops the file going stale: upgrade nanopi and you get its newer
+models, while keeping your own. Edits made directly inside `builtin` work until the
+next upgrade replaces them, so put anything you want to keep in `custom`.
+
+A malformed file is never overwritten — nanopi reports the line and falls back to the
+built-in table for that run. `nanopi -p` reads the file but never creates or refreshes
+it, so a scripted run has no side effects.
+
+To refresh the shipped table from source: `python3 scripts/gen-models.py <api.json>`
+(from [models.dev](https://models.dev/api.json)). It unions rather than replaces, so
+an existing entry is never dropped.
+
+## Orchestrator mode
+
+In the TUI, the main agent is an **orchestrator**: it never does concrete
+work itself — not even a quick look at a file. It has no file or shell tools
+at all, only four dispatch tools (`agent`, `list_agents`, `stop_agent`,
+`send_message`). Every job becomes a dedicated agent it briefs, dispatches,
+monitors, and whose report it synthesises for you.
+
+Agents run in the background, so the orchestrator hands work off and gives
+you the turn back rather than blocking on them. Live agents appear in a strip
+at the bottom of the dock, under the footer:
+
+```
+● main  3 agents working · Ctrl+G details
+○ yearning-dump        read raw.json                                 12s
+○ msg-framework-dev    bash cargo test                             1m05s
+○ write release notes  queued                                         0s
+```
+
+Each worker row shows the agent's name, its latest tool call (refreshed about
+once a second), and elapsed time. `Ctrl+G` prints the full detail — activity
+history, turns/tokens, worktree/branch, report path — into scrollback. An
+agent disappears from the strip when it finishes; its report is delivered
+into the conversation, which is where you read results.
+
+Parallel agents that write code can each get their own git worktree
+(`isolation: "worktree"`), merged back automatically, with conflicts
+escalated to you.
+
+To go back to the classic single-agent flow — where the main agent reads,
+edits, and runs commands itself — use `/orchestrator off` in-session, or set
+it at startup:
+
+```toml
+[experimental]
+orchestrator = false
+```
+
+A `⎈ solo` badge in the status line marks that the mode is off; the default
+gets no badge. Caps for the spawned children live under `[agent]` (see
+`config.toml.example`). This is TUI-only: `nanopi -p` ignores the setting
+entirely and always keeps its full tool set, so scripted runs are never
+silently restricted.
 
 ## Skills
 

@@ -16,6 +16,10 @@ https://www.meetup.com/handsonprogrammingevents/
 ___________________________________________________________________________________________________________
 ### ======== 2026 ========   
    
+### Paper for November 3, 2026:   
+Retriever-Free Retrieval: Navigating Documents with Decision Models    
+https://arxiv.org/pdf/2610.35868   
+    
 ### Paper for October 27, 2026:    
 Swarm Telepathy: Prefill-Free KV-Cache Transfer Across Families    
 https://arxiv.org/abs/2610.15095   
@@ -2298,5 +2302,4 @@ Zeeshan's slides are in the folder with his name on it.  Along with his descript
 
 ### February 20, 2017 - Hacker Dojo
 https://arxiv.org/pdf/1506.07285.pdf  - Ask me anything - Socher  
-https://github.com/YerevaNN/Dynamic-memory-networks-in-Theano - Code and implementation notes.  
-https://www.youtube.com/watch?v=FCtpHt6JEI8&t=27s - Socher
+https:/

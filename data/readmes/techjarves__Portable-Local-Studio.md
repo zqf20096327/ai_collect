@@ -94,8 +94,8 @@ Known-good image models available from the Model Manager:
 
 | Name | Filename | Type | Approx. size | Recommended use |
 | :--- | :--- | :--- | :--- | :--- |
-| Juggernaut XL v9 Lightning | `Juggernaut_RunDiffusionPhoto2_Lightning_4Steps.safetensors` | SDXL | 6.6 GB | High-quality photorealism on mid/high tier machines. |
-| DreamShaper XL Lightning | `DreamShaperXL_Lightning.safetensors` | SDXL | 6.6 GB | General SDXL images, fantasy, renders, and illustration. |
+| Juggernaut XL v9 Lightning | `Juggernaut_RunDiffusionPhoto2_Lightning_4Steps.safetensors` | SDXL | 7.1 GB | High-quality photorealism on mid/high tier machines. |
+| DreamShaper XL Lightning | `DreamShaperXL_Lightning.safetensors` | SDXL | 6.9 GB | General SDXL images, fantasy, renders, and illustration. |
 | DreamShaper 8 | `DreamShaper_8_pruned.safetensors` | SD 1.5 | 2.1 GB | Faster, lower-memory image generation. |
 | CyberRealistic V8 | `CyberRealistic_V8_FP16.safetensors` | SD 1.5 | 2.0 GB | Realistic SD 1.5 images and lower-memory systems. |
 | Rev Animated | `rev-animated-v1-2-2.safetensors` | SD 1.5 | 2.0 GB | Stylized/anime SD 1.5 images. |
@@ -230,6 +230,11 @@ Ensure you have a modern web browser installed. Follow the quick guide below for
 <details>
   <summary><strong> Port Conflicts: Default port address already busy</strong></summary>
   <p>The web user interface runs on port <code>1420</code> by default. The GPU backend manager attempts to bind to port <code>8080</code> first, then automatically detects and falls back to a free system port if <code>8080</code> is already occupied.</p>
+</details>
+
+<details>
+  <summary><strong> Opening the studio from another device on your network</strong></summary>
+  <p>The web interface only accepts connections from the computer it runs on, because it has no login. To reach it from another device on purpose, start it with <code>UAIS_HOST=0.0.0.0</code> (for example <code>UAIS_HOST=0.0.0.0 ./linux.sh</code>, or <code>set UAIS_HOST=0.0.0.0</code> before running <code>windows.bat</code>). Anyone on that network can then use it.</p>
 </details>
 
 <details>

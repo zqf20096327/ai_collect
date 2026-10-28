@@ -1,0 +1,17 @@
+# RapidLib
+
+[![GitHub license](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://github.com/mzed/RapidLib/blob/master/LICENSE)
+
+#### main
+![Linux Build](https://github.com/mzed/RapidLib/workflows/Linux+Docs%20Build/badge.svg)  
+![Windows Build](https://github.com/mzed/RapidLib/workflows/Windows%20Build/badge.svg)  
+![MacOS Build](https://github.com/mzed/RapidLib/workflows/Mac%20Build/badge.svg)
+
+#### dev
+[![Linux Build](https://github.com/mzed/RapidLib/actions/workflows/linux-build.yml/badge.svg?branch=dev)](https://github.com/mzed/RapidLib/actions/workflows/linux-build.yml)  
+[![Windows Build](https://github.com/mzed/RapidLib/actions/workflows/windows-build.yml/badge.svg?branch=dev)](https://github.com/mzed/RapidLib/actions/workflows/windows-build.yml)  
+[![Mac Build](https://github.com/mzed/RapidLib/actions/workflows/macos-build.yml/badge.svg?branch=dev)](https://github.com/mzed/RapidLib/actions/workflows/macos-build.yml)
+
+RapidLib is a lightweight library for interactive machine learning. It currently features classification (using kNN), regression (multilayer perceptron), and series classification (using dynamic time warping).
+
+## More at: [https://mzed.github.io/RapidLib/](https://mzed.github.io/RapidLib/)

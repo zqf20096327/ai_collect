@@ -288,6 +288,7 @@ task test-backend       # Backend tests
 task test-frontend      # Frontend tests (Vitest)
 task test-desktop       # Desktop Go sidecar + Tauri Rust shell tests
 task test-e2e           # End-to-end tests (Playwright)
+task test-docker IMAGE=leapmux:latest # Startup and shutdown of a built Docker image
 ```
 
 Run specific tests by passing arguments after `--`:
@@ -550,6 +551,19 @@ Every candidate requires a release timestamp and a release age of at least three
 Every merge requires a human review and the `Required CI` and `NOTICE` checks.
 Renovate never approves or merges a pull request (PR).
 
+PR descriptions contain only `Motivation`, `Modifications`, and `Result`, including the dependency version table.
+Warnings, security advisories, and release notes go into managed PR comments.
+The trusted renderer captures those fragments before GitHub truncates the description.
+Long details use numbered comment parts so the full text remains available.
+Each part closes its code fences and collapsed sections.
+An oversized collapsed section repeats its summary in each continuation comment.
+Later runs update the same bot-owned parts and leave human comments unchanged.
+The native renderer contract is tested before installation tokens are minted.
+`task publish-renovate-details -- --dry-run` previews captured records without publishing them.
+Renovate's full dry-run mode stops before PR rendering and therefore produces no detail captures.
+The capture adapter uses the pinned CLI's Handlebars renderer; its native-engine tests must pass when Renovate is upgraded.
+Dependency commits keep the App's primary author identity and add no co-author trailer or attribution footer.
+
 Dependabot alerts supply vulnerability findings to Renovate.
 Keep the dependency graph and Dependabot alerts enabled.
 Keep Dependabot's automatic security-update PRs disabled.
@@ -655,7 +669,26 @@ It requires one review, dismisses stale approvals, requires approval of the late
 and requires `Required CI` and `NOTICE` from GitHub Actions application ID `15368`.
 Only the repository administrator role may bypass it.
 Preserve the existing deletion, force-push, and linear-history rules.
-Run `task check-renovate-protection` with a read-only App token and read back the effective rules and bypass actors.
+GitHub hides bypass actors from read-only App tokens.
+An administrator captures the verified rulesets in the repository variable `RENOVATE_PROTECTION_SNAPSHOT`:
+
+```bash
+mkdir -p .tmp
+task snapshot-renovate-protection > .tmp/renovate-protection-snapshot.json
+gh variable set RENOVATE_PROTECTION_SNAPSHOT --repo leapmux/leapmux < .tmp/renovate-protection-snapshot.json
+```
+
+The capture command uses the administrator's existing `gh` authentication and makes only API reads.
+It rejects protection that permits a bypass other than repository administrators.
+The snapshot contains configuration metadata, with no credential.
+The App receives no ruleset-write permission.
+
+Before minting a publishing token, `task check-renovate-protection` reads fresh effective rules and every contributing ruleset.
+It compares each ruleset's complete public metadata and revision timestamp with the administrator snapshot before accepting its recorded bypass actors.
+It rejects changed, missing, or additional rulesets and still validates the live review and CI requirements.
+The repository variable is the administrator's attestation; the App cannot update it.
+After any protection change, suspend publication, inspect the effective rules, and refresh the snapshot with the commands above.
+A stale or missing snapshot stops publication before a write token is minted.
 
 Validate and inspect dependencies locally:
 

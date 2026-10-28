@@ -48,7 +48,7 @@ The base types are the documentation: every method starts with tests showing how
 strict Examples/Sum.strict 5 10 20        run on the Strict VM, arguments go to Run
 strict test Examples/Sum.strict           explicitly run this file, including Slow tests, on the VM
 strict test Examples/Sum.strict Run       explicitly run the tests of one method
-strict test Examples/Sum.strict unit      run only unit tests (a folder always runs only unit tests)
+strict test Examples/Sum.strict unit      run only unit tests (a folder on the VM too)
 strict build Examples/Sum.strict          pass cached or current unit tests, then build the executable
 strict build Examples/Sum.strict linux    also the Linux executable (on Windows through WSL)
 strict build Examples/Sum.strict web      .html, .js and .wasm for the browser (Emscripten, installed when missing)
@@ -62,6 +62,7 @@ strict build Games/App/App.strict         a windowed program goes into Games/App
 strict check Examples                     validate a folder (type rules, unused members, limits)
 strict format Examples/Sum.strict         print the file in its canonical form
 strict test Examples/Sum.strict native    build and run the tests natively
+strict test . native --no-recursive       build and run only the root types' tests
 strict test Examples/Sum.strict lines     run the tests natively, then show how often and how long each line ran
 strict test Examples/Sum.strict values    run the tests on the Strict VM, then show the values each line produced
 strict update .                           copy or download the packages of a folder again
@@ -80,11 +81,11 @@ Needed tools: `mlir-opt`, `mlir-translate`, `clang`, `opt` and `llc` of LLVM 22 
 Bootstrap a fresh checkout from the checked-in seed with `Compiler\Bootstrap.cmd` (Windows) or `sh Compiler/bootstrap.sh` (Linux and macOS): it builds `Compiler/NativeCompiler` from the seed, which then builds `strict`. After changing the compiler rebuild both, `strict build Compiler/NativeCompiler.strict` then `strict build Strict.strict`; building twice gives identical output.
 
 ## Unit and functional tests
-Unmarked inline tests are unit tests: each should take under 10 ms, the hard limit is 100 ms on the VM and natively (slow CI machines, parallel runs), including its leading local setup. Exceeding it fails with `TestDurationMustNotExceedHundredMilliseconds`, the expression and its source location; a watchdog stops tests that never return. Shared constants initialize on first use, once per run. The tests of the internal packages `Compiler`, `Runtime`, `Bytecode` and `Expressions` count as Slow: builds skip them, CI and explicit runs test them.
+Unmarked inline tests are unit tests: each should take under 10 ms, the hard limit is 100 ms on the VM and natively (slow CI machines, parallel runs), including its leading local setup. Exceeding it fails with `TestDurationMustNotExceedHundredMilliseconds`, the expression and its source location; a watchdog stops tests that never return. Shared constants initialize on first use, once per run, and native libraries build on their first call: that time does not count for the test that first used them. The tests of the internal packages `Compiler`, `Runtime`, `Bytecode` and `Expressions` count as Slow: builds skip them, CI and explicit runs test them.
 
 Declare a method's return as `Slow(T)` to make its tests functional (file, model or application integration). Like `Mutable(T)`, callers use `T`: `Slow(3)` behaves as a Number. An unmarked test may call a Slow method with a small fixture but still has to fit its budget.
 
-Builds, checks, folder tests, VS Code typing checks and value tracing skip Slow tests and the fixtures only they use. `strict test File.strict` includes them, `strict test File.strict Method` selects one method, `native` or `lines` keep that selection. `strict File.strict` runs all its tests, Slow included, then `Run`. Only automatic unit runs write `.strictbinary`, explicit functional runs execute every time. See `Runtime/README.md` for the VM and `Compiler/README.md` for the build pipeline.
+Builds, checks, folder tests on the VM, VS Code typing checks and value tracing skip Slow tests and the fixtures only they use. `strict test File.strict` and `strict test Folder native` include them, `strict test File.strict Method` selects one method, `native` or `lines` keep that selection. `strict File.strict` runs all its tests, Slow included, then `Run`. Only automatic unit runs write `.strictbinary`, explicit functional runs execute every time. See `Runtime/README.md` for the VM and `Compiler/README.md` for the build pipeline.
 
 ## Rules worth knowing
 - Limits: 120 characters per line, 13 lines per method (header and tests included), 4 parameters, 16 methods, 15 members, nesting depth 5, names 2-50 characters. Files in a `Generated` folder get 10 times as much.
@@ -148,7 +149,7 @@ Members are defined at the top of a type file. A type is composed of its members
 
 A member of type `Generic` makes a type generic, one type argument per `Generic` member: `Couple("a", 2)` with `has first Generic` and `has second Generic` is a `Couple(Text, Number)`. Methods are compiled per instance, so a call on a `Generic` member reaches the concrete type (`Examples/Couple.strict`, `Examples/Holder.strict`).
 
-Any is the basis of every type and gives each one `from`, `to Type`, `to Text`, `to HashCode`, `is(other)` and `Members`. Some base types are tiny:
+Any is the basis of every type and gives each one `from`, `to Type`, `to Text`, `to HashCode`, `is(other)` and `Members`. An options type (members with defaults) gets `Parsed(arguments)` and `Usage` generated: `MossOptions.Parsed(arguments)` reads `--json_output` for `jsonOutput`, numbers, texts, repeated `Texts`, flags and the constant names of an enum member in lower case (`CommandLine.strict`), `Usage` lists every option with its default and the `Help` constant. Some base types are tiny:
 ```
 has number
 from(text)

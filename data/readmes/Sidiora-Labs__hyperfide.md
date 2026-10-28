@@ -2,7 +2,7 @@
 
 # Hyperfide
 
-<img src="https://supabase.paxeer.app/storage/v1/object/public/paxeer/img_centra_10.svg">
+<img src="https://supabase.paxeer.app/storage/v1/object/public/json/hfide.png">
 <a
   href="https://trendshift.io/repositories/267432?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-267432" target="_blank" rel="noopener noreferrer">
 <img src="https://supabase.paxeer.app/storage/v1/object/public/badge/h1k7oizpxntmvp7n8ik.svg" alt="Sidiora-Labs%2Fcodify | Trendshift" width="250" height="55"/>
@@ -793,4 +793,4 @@ vim.lsp.start({ name = "hyperfide", cmd = { "hyperfide", "lsp" },
 - **kvx editing.** Go-to-definition on a `requires` entry jumps to that task; completion offers the keys a task actually understands; the outline lists every requirement and task.
 - **One refresh scheduler.** Every trigger — a pushed event, a spec file changing, a turn ending, a command finishing, a poll — funnels through a single chain of `hyperfide` calls: bursts debounce into one run, a two-second floor sits between runs, and at most one trailing run queues behind a chain in flight. Each chain syncs once inside a three-second freshness window at background priority and never waits on another process's pass. The extension does **not** watch `graph.db` — its own sync writes it, and that watcher used to turn every refresh into the next.
 
-The extension has no dependencies and no build step — including its Language Server client, which is written by hand 
+The extension has no dependencies and no build step — including its Language Server client, which is written by hand for exactl

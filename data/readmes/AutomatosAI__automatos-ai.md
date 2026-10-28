@@ -80,18 +80,18 @@ One workspace and one Auto, with the same agents, Knowledge and Deliverables, wh
   </tr>
 </table>
 
-**Voice.** Hold the microphone button and ask: your browser hears you, the words go to Auto, and the reply is spoken. That works on every plan and in both editions. **Auto Live** is a real-time voice call with Auto, where the server has it set up. Auto says it is an AI: once per browser session for a quick ask, and at the start of each call. The voice button sits in Studio's chat box, and every theme can place it through the theme SDK (Play and HUD do).
+**Voice.** Hold the microphone button and ask: your browser hears you, the words go to Auto, and the reply is spoken. That works on every plan and in both editions. **Auto Live** is a real-time voice call with Auto, where the server has it set up. Auto says it is an AI: once per browser session for a quick ask, and at the start of each call. The voice button sits in Studio's chat box, and every theme can place it through the theme SDK (Play and HUD do). Auto answers in the language you write or speak; a quick ask listens and speaks in your browser's language. Auto's natural voice, which the server runs itself (Kokoro, on CPU), can speak nine languages: the phone and the web's quick ask speak with it where the server runs it, and use the device's or the browser's own voice otherwise. Automatic language detection, for speaking in any of about 100 languages without choosing first, is planned and needs a GPU server: it is not built yet ([PRD-269](docs/PRDS/PRD-269-AUTOMATIC-LANGUAGE.md)).
 
 <p align="center">
   <img src="docs/assets/showcase/hud-1440-voice-listening-arc.png" alt="HUD listening to a question by voice, with Mic live and the AI voice assistant caption" width="720">
 </p>
 
-**Automatos Go** is the phone app ([AutomatosAI/automatos-go](https://github.com/AutomatosAI/automatos-go), iOS first, in beta): chat with Auto, the Command Centre, push notifications for a question, an approval or a review that needs you, and hold-to-talk voice, in three styles: Studio, Play and HUD. By default the app follows the theme you choose in Studio and paints its phone skin: the theme's colours, fonts and mascot.
+**Automatos Go** is the phone app ([AutomatosAI/automatos-go](https://github.com/AutomatosAI/automatos-go), iOS first, in beta): chat with Auto, the Command Centre, push notifications for a question, an approval or a review that needs you, and hold-to-talk voice in English and Portuguese (Brazil), in three styles: Studio, Play and HUD. By default the app follows the theme you choose in Studio and paints its phone skin: the theme's colours, fonts and mascot.
 
 <p align="center">
-  <img src="docs/assets/showcase/go-play-chat-thinking.jpg" alt="Automatos Go in Play: Auto thinking about a request" width="200">
+  <img src="docs/assets/showcase/go-play-chat-laptop.jpg" alt="Automatos Go in Play: Auto's pick of three light laptops for travel" width="200">
   &nbsp;
-  <img src="docs/assets/showcase/go-play-shelf.jpg" alt="Automatos Go in Play: the shelf of Deliverables" width="200">
+  <img src="docs/assets/showcase/go-play-shelf-blog.jpg" alt="Automatos Go in Play: the shelf, with the blog posts Auto wrote" width="200">
 </p>
 
 **Make your own theme** with the [Automatos Design Kit](https://github.com/AutomatosAI/automatos-design-kit) (Apache-2.0): the command line that packs and checks a theme, a browser harness, the guides, and Play and HUD as worked examples. A theme is built against the theme SDK, which Automatos serves at run time (1.2.0; its types install from `https://widgets.automatos.app/theme-sdk/v1/theme-sdk.tgz`), and a version Automatos reviews can carry a signature from the theme-signing key this server ships, checked before it installs. Guides: [themes](docs/themes/_index.md) · [voice](docs/voice/_index.md).
@@ -226,7 +226,7 @@ Upload documents, sync folders from Dropbox and cloud storage (the cloud connect
 | **Multi-Tenancy** | Full workspace isolation in the hosted edition — each team gets their own agents, data, and configuration |
 | **Plugin System** | Extend agents with skills, plugins, and custom tools from the marketplace or your own repos |
 | **Installable themes** | `.autotheme` packages that redraw the web app, each member choosing their own, with looks and a phone skin; built with the [Design Kit](https://github.com/AutomatosAI/automatos-design-kit) |
-| **Voice** | Hold-to-talk quick ask in the browser on every plan and edition; Auto Live real-time calls where the server has them set up |
+| **Voice** | Hold-to-talk quick ask in the browser on every plan and edition; Auto Live real-time calls where the server has them set up; Auto's self-hosted natural voice in nine languages; automatic detection of about 100 spoken languages planned (needs a GPU, not built) |
 
 ---
 

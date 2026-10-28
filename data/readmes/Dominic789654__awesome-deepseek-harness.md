@@ -367,6 +367,8 @@ _DSH's core composition mechanism: a **profile** stacks bundle patch layers, the
 
 - [Cplay00/dsh-diffusion-preset](https://github.com/Cplay00/dsh-diffusion-preset) — Diffusion Mode (扩散模式) agent preset plus a progressive call-directory tool for DSH.
 
+- [lishize20040802-rgb/dsh-deep-ptc-mode](https://github.com/lishize20040802-rgb/dsh-deep-ptc-mode) — Open-source Deep PTC mode agent preset for DeepSeek Harness: PTC's tool surface plus visible progress, confident tool use, early clarification, and DeepSeek's unlimited token budget.
+
 ## Harnesses & Runtimes
 
 _DeepSeek-native or DeepSeek-first agent harnesses / coding agents, plus runtime-level infrastructure (diagnostics, ops, session management, approval policies)._
@@ -547,6 +549,4 @@ _DeepSeek-native or DeepSeek-first agent harnesses / coding agents, plus runtime
 - [NOirBRight/dsh-llm-codex](https://github.com/NOirBRight/dsh-llm-codex) — ChatGPT Codex login, sortable catalog, and Fast models for DeepSeek Harness.
 - [pawaca/dsh-edge](https://github.com/pawaca/dsh-edge) — Run DeepSeek Harness on Cloudflare Workers.
 - [sunny0826/dsh-plugin-herdr](https://github.com/sunny0826/dsh-plugin-herdr) — Herdr control-plane plugin for DeepSeek Harness (DSH): observe and drive Herdr — a terminal workspace manager for AI coding agents — from DSH sessions.
-- [shiyi-0x7f/dsh-tool-sysinfo](https://github.com/shiyi-0x7f/dsh-tool-sysinfo) — Read-only `system_info` tool plugin for DeepSeek Harness agents (OS/CPU/memory/network snapshot).
-- [edusrez/dsh-smart-restart](https://github.com/edusrez/dsh-smart-restart) — Wakes the main agent after a DeepSeek Harness (DSH) restart so interrupted work resumes without the user prompting.
-- [Moonwea
+- [shiyi-0x7f/dsh-tool-sysinfo](https://github.com/shiyi-0x7f/dsh-tool-sysinfo) — Read-only `syste

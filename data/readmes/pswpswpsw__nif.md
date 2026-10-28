@@ -3,250 +3,355 @@
 [![License](https://img.shields.io/github/license/pswpswpsw/nif)](https://github.com/pswpswpsw/nif/blob/main/LICENSE)[![DOI](https://zenodo.org/badge/460537754.svg)](https://zenodo.org/badge/latestdoi/460537754)
 
 <p align="center">
-  <img src="./misc/myimage.gif" alt="animated" />
+  <img src="./misc/myimage.gif" alt="Neural Implicit Flow visualization" />
 </p>
 
-- NIF is a mesh-agnostic dimensionality reduction paradigm for parametric spatial temporal fields. For decades, dimensionality reduction (e.g., proper orthogonal decomposition, convolutional autoencoders) has been the very first step in reduced-order modeling of any large-scale spatial-temporal dynamics. 
-
-- Unfortunately, these frameworks are either not extendable to realistic industry scenario, e.g., adaptive mesh refinement, or cannot preceed nonlinear operations without resorting to lossy interpolation on a uniform grid. Details can be found in our [paper](https://arxiv.org/pdf/2204.03216.pdf).
-
-- NIF is built on top of Keras, in order to minimize user's efforts in using the code and maximize the existing functionality in Keras. 
-
+- NIF is a mesh-agnostic dimensionality reduction paradigm for parametric spatiotemporal fields. Dimensionality reduction is often the first step in reduced-order modeling of large-scale dynamics.
+- NIF represents fields at arbitrary spatial coordinates, including data from adaptive mesh refinement, without requiring interpolation onto a uniform grid. Details can be found in our [paper](https://arxiv.org/pdf/2204.03216.pdf).
+- NIF is implemented in **PyTorch**. A ParameterNet maps time or physical parameters to the weights of a coordinate-dependent ShapeNet.
 
 ## Highlights
 
 <p align="center">
-  <img src="./misc/compare.gif" alt="animated" />
+  <img src="./misc/compare.gif" alt="Comparison of field representations" />
 </p>
 
+### Installation and requirements
 
-- Built on top of **Tensorflow 2.x** with **Keras model subclassing**, hassle-free for many up-to-date advanced concepts and features
+Python 3.10+ and PyTorch 2.6+ are required; CUDA is optional. Install from a local checkout:
 
-    ```python
-    from nif import NIF
-    
-    # set up the configurations, loading dataset, etc...
-    
-    model_ori = NIF(...)
-    model_opt = model_ori.build()
-    
-    model_opt.compile(optimizer, loss='mse')
-    model_opt.fit(...)
-    
-    model_opt.predict(...)
-    ```
+```bash
+python -m pip install -e .
+# Optional: support TensorBoard logging in the standalone training example.
+python -m pip install -e '.[tensorboard]'
+```
 
-- **Distributed learning**: data parallelism across multiple GPUs on a single node
+Choose a suitable PyTorch CUDA wheel for your machine when training on GPU. See [native API and migration notes](docs/PYTORCH_API.md) for optimizer conventions and data formats. The [validation report](docs/PYTORCH_VALIDATION.md) and [comparison records](docs/PYTORCH_TENSORFLOW_PARITY.md) document the measured results and limitations.
 
-    ```python
-    enable_multi_gpu = True
-    cm = tf.distribute.MirroredStrategy().scope() if enable_multi_gpu else contextlib.nullcontext()
-    with cm:
-        
-        # ...
-        model.fit(...)
-        # ...
-    ```
+### Configuring and training NIF
 
-- Flexible training schedule: e.g., first some standard optimizer (e.g., Adam) then **fine-tunning with L-BFGS**
-  
-    ```python
-    from nif.optimizers import TFPLBFGS
-    
-    # load previous model
-    new_model_ori = NIF(cfg_shape_net, cfg_parameter_net, mixed_policy)
-    new_model.load_weights(...)
-    
-    # prepare the dataset
-    data_feature = ... #
-    data_label = ... # 
-    
-    # fine tune with L-BFGS
-    loss_fun = tf.keras.losses.MeanSquaredError()
-    fine_tuner = TFPLBFGS(new_model, loss_fun, data_feature, data_label, display_epoch=10)
-    fine_tuner.minimize(rounds=200, max_iter=1000)
-    new_model.save_weights("./fine-tuned/ckpt")
-    ```
-  
-- Templates for many useful customized callbacks
+The example below fits a one-dimensional traveling wave. The configuration dictionaries set the input/output dimensions, network widths, hidden layers, and activations. Input columns are ordered as `[parameters, coordinates]`.
 
-   ```python
-   # setting up the model
-   # ...
+```python
+import torch
+from nif import NIF
+from nif.demo import TravelingWave
+from nif.optimizers import AdaBeliefOptimizer
 
-   # - tensorboard
-   tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir="./tb-logs", update_freq='epoch')
+shape = dict(input_dim=1, output_dim=1, units=20, nlayers=2, activation="tanh")
+parameter = dict(input_dim=1, latent_dim=2, units=10, nlayers=2, activation="tanh")
+model = NIF(shape, parameter).to("cuda" if torch.cuda.is_available() else "cpu")
+device = next(model.parameters()).device
 
-   # - printing, model save checkpoints etc.
-   class LossAndErrorPrintingCallback(tf.keras.callbacks.Callback):
-   # ....
+data = torch.as_tensor(TravelingWave().data, dtype=torch.float32, device=device)
+x, target = data[:, :2], data[:, 2:3]
+optimizer = AdaBeliefOptimizer(model.parameters(), lr=1e-3)
+for epoch in range(100):
+    optimizer.zero_grad(set_to_none=True)
+    loss = (model(x) - target).square().mean() + model.regularization_loss(x)
+    loss.backward()
+    optimizer.step()
+print(float(loss.detach()))
+```
 
-   # - learning rate schedule
-   def scheduler(epoch, lr):
-       if epoch < 1000:
-           return lr
-       else:
-           return 1e-4
-   scheduler_callback = tf.keras.callbacks.LearningRateScheduler(scheduler)
+The default model uses float32. On supported hardware, `mixed_policy="mixed_bfloat16"` or `mixed_policy="mixed_float16"` enables autocast while retaining float32 trainable parameters. See the API notes for details.
 
-   # - collecting callbacks into model.fit(...)
+### Distributed learning
 
-   callbacks = [tensorboard_callback, LossAndErrorPrintingCallback(), scheduler_callback]
-   model_opt.fit(train_dataset, epochs=nepoch, batch_size=batch_size,
-             shuffle=False, verbose=0, callbacks=callbacks)
-   ```
-   
-- Simple extraction of subnetworks
+Use [DistributedDataParallel](https://docs.pytorch.org/docs/stable/generated/torch.nn.parallel.DistributedDataParallel.html) (DDP) to train one model across multiple GPUs, with one process per GPU. The following example shows the data sharding and synchronized training loop. Save it as `train_wave_ddp.py` in the repository root; it reuses `TrainingObjective` from the [training example](examples/train_pytorch.py) to evaluate MSE and regularization together inside the DDP forward pass.
 
-    ```python
-    model_ori = NIF(...)
-    
-    # ....
-    
-    # extract latent space encoder network
-    model_p_to_lr = model_ori.model_p_to_lr()
-    lr_pred = model_p_to_lr.predict(...)
-    
-    # extract latent-to-weight network: from latent representation to weights and biase of shapenet
-    model_lr_to_w = model_ori.model_lr_to_w()
-    w_pred = model_lr_to_w.predict(...)
-    
-    # extract shapenet: inputs are weights and spatial coordinates, output is the field of interests
-    model_x_to_u_given_w = model_ori.model_x_to_u_given_w()
-    u_pred = model_x_to_u_given_w.predict(...)
-    ```
+```python
+import os
+from pathlib import Path
 
-- Get input-output Jacobian or Hessian.
-    ```python
-    model = ... # your keras.Model
-    x = ... # your dataset
-    # define both the indices of target and source 
-    
-    x_index = [0,1,2,3]
-    y_index = [0,1,2,3,4]
-    
-    # wrap up keras.Model using JacobianLayer 
-    from nif.layers import JacobianLayer
-    y_and_dydx_layer = JacobianLayer(model, y_index, x_index)
-    
-    y, dydx = y_and_dydx_layer(x)
-    
-    model_with_jacobian = Model([x], [y, dydx])
-    
-    # wrap up keras.Model using HessianLayer
-    from nif.layers import HessianLayer
-    y_and_dydx_and_dy2dx2_layer = HessianLayer(model, y_index, x_index)
-    
-    y, dydx, dy2dx2 = y_and_dydx_and_dy2dx2_layer(x)
-    
-    model_with_jacobian_and_hessian = Model([x], [y, dydx, dy2dx2])
-    
-    ```
+import torch
+import torch.distributed as dist
+from torch.nn.parallel import DistributedDataParallel as DDP
+from torch.utils.data import DataLoader, DistributedSampler, TensorDataset
+from nif import NIF
+from nif.demo import TravelingWave
+from examples.train_pytorch import TrainingObjective
 
-- Data normalization for multi-scale problem
+def main():
+    local_rank = int(os.environ["LOCAL_RANK"])
+    use_cuda = torch.cuda.is_available()
+    device = torch.device("cuda", local_rank) if use_cuda else torch.device("cpu")
+    if use_cuda:
+        torch.cuda.set_device(local_rank)
+    dist.init_process_group(backend="nccl" if use_cuda else "gloo")
+    try:
+        torch.manual_seed(42)
+        shape = dict(input_dim=1, output_dim=1, units=20, nlayers=2, activation="tanh")
+        parameter = dict(input_dim=1, latent_dim=2, units=10, nlayers=2, activation="tanh")
+        model = NIF(shape, parameter).to(device)
+        objective = DDP(TrainingObjective(model), device_ids=[local_rank] if use_cuda else None)
 
-    - just simply feed `n_para`: number of parameters, `n_x`: input dimension of shapenet, `n_target`: output dimension of shapenet, and `raw_data`: numpy array with shape = `(number of pointwise data points, number of features, target, coordinates, etc.)`
+        data = torch.as_tensor(TravelingWave().data, dtype=torch.float32)
+        dataset = TensorDataset(data[:, :2], data[:, 2:3])
+        if len(dataset) % dist.get_world_size():
+            raise ValueError("Dataset size must be divisible by the number of processes")
+        sampler = DistributedSampler(dataset, shuffle=True, seed=42)
+        loader = DataLoader(dataset, batch_size=256, sampler=sampler)
+        optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
 
-    ```python
-    from nif.data import PointWiseData
-    data_n, mean, std = PointWiseData.minmax_normalize(raw_data=data, n_para=1, n_x=3, n_target=1) 
-    ```
+        model.train()
+        for epoch in range(20):
+            sampler.set_epoch(epoch)  # Give every epoch a new shared shuffle.
+            for features, targets in loader:
+                features, targets = features.to(device), targets.to(device)
+                optimizer.zero_grad(set_to_none=True)
+                mse, loss = objective(features, targets)
+                loss.backward()  # DDP averages gradients across processes.
+                optimizer.step()
 
-- Large-scale training with tfrecord converter
+        if dist.get_rank() == 0:  # Write one copy of the underlying NIF weights.
+            output = Path("pytorch_outputs/wave-ddp")
+            output.mkdir(parents=True, exist_ok=True)
+            torch.save(model.state_dict(), output / "model.pt")
+            model.save_config(output / "config.json")
+    finally:
+        dist.destroy_process_group()
 
-    - all you need is to prepare a BIG npz file that contains all the point-wise data
-    - `.get_tfr_meta_dataset` will read all files under the searched directory that ends with `.tfrecord`
+if __name__ == "__main__":
+    main()
+```
 
-    ```python
-    from nif.data.tfr_dataset import TFRDataset
-    fh = TFRDataset(n_feature=4, n_target=3)
-    
-    # generating tfrecord files from a single big npz file (say gigabytes)
-    fh.create_from_npz(...)
+On Linux or WSL, launch this snippet with two CUDA GPUs and an NCCL-enabled PyTorch build, or with CPU/Gloo when CUDA is unavailable:
 
-    # prepare some model
-    model = ...
-    model.compile(...)
+```bash
+torchrun --standalone --nproc-per-node=2 train_wave_ddp.py
+```
 
-    # obtaining a meta dataset
-    meta_dataset = fh.get_tfr_meta_dataset(...)
+The complete example also includes a learning-rate schedule, globally reduced metrics, checkpoints, and TensorBoard logging:
 
-    # start sub-dataset-batching
-    for batch_file in meta_dataset:
-        batch_dataset = fh.gen_dataset_from_batch_file(batch_file, batch_size)
-        model.fit(...)
-    ```
-- Save and load models (via Checkpoints only)
-    ```python
-    # save the config  
-    model.save_config("config.json")
-  
-    # save the weights
-    model.save_weights("./saved_weights/ckpt-{}/ckpt".format(epoch)")
-    
-    # load the config
-    with open("config.json", "r") as f:
-        config = json.load(f) 	
-    model_ori = nif.NIF(**config)
-    model = model_ori.model()
-  
-    # load the weights
-    model.load_weights("./saved_weights/ckpt-999/ckpt")
-    ```
-- Network pruning and quantization
+```bash
+torchrun --standalone --nproc-per-node=2 examples/train_pytorch.py --device cuda --epochs 20 --batch-size 256 --output-dir pytorch_outputs/wave-ddp --tensorboard
+```
 
+The batch size is per process: two processes with 256 rows each give a global batch of 512. Equal dataset shards also keep the final batch sizes equal, without padding or dropping samples. The complete example also runs on one device with ordinary `python`; it trains on the same traveling-wave data used above. The L-BFGS example below uses one device. See the [training example validation and requirements](docs/PYTORCH_TRAINING_EXAMPLE.md) for tested platforms and limits.
+
+### Fine-tuning with L-BFGS
+
+After first-order training, refine the same model using a fixed dataset and a closure. This example continues from the model, `x`, and `target` above.
+
+```python
+from nif.optimizers import ReferenceLBFGS
+
+fine_tuner = ReferenceLBFGS(model.parameters(), max_iter=1000)
+def closure():
+    fine_tuner.zero_grad(set_to_none=True)
+    loss = (model(x) - target).square().mean() + model.regularization_loss(x)
+    loss.backward()
+    return loss
+
+fine_tuner.step(closure)
+print("Final loss:", float(fine_tuner.result.objective_value))
+print("Iterations:", int(fine_tuner.result.num_iterations))
+```
+
+### Training schedules and monitoring
+
+Add a [StepLR schedule](https://docs.pytorch.org/docs/stable/generated/torch.optim.lr_scheduler.StepLR.html), TensorBoard scalars, and checkpoints to an explicit PyTorch training loop. This single-device example uses the `model`, `x`, and `target` from the first example and starts a new Adam optimizer. Install the optional TensorBoard dependency shown above.
+
+```python
+from pathlib import Path
+from torch.utils.tensorboard import SummaryWriter
+
+run = Path("pytorch_outputs/wave-monitored")
+run.mkdir(parents=True, exist_ok=True)
+model.save_config(run / "config.json")
+optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.1)
+
+model.train()
+with SummaryWriter(log_dir=str(run / "tensorboard")) as writer:
+    for epoch in range(20):
+        learning_rate = optimizer.param_groups[0]["lr"]
+        optimizer.zero_grad(set_to_none=True)
+        mse = (model(x) - target).square().mean()
+        loss = mse + model.regularization_loss(x)
+        loss.backward()
+        optimizer.step()
+
+        writer.add_scalar("train/mse", mse.item(), epoch + 1)
+        writer.add_scalar("train/objective", loss.item(), epoch + 1)
+        writer.add_scalar("train/lr", learning_rate, epoch + 1)
+        print(f"epoch={epoch + 1} mse={mse.item():.6g} lr={learning_rate:.3g}")
+        scheduler.step()  # Decay the learning rate after the epoch's updates.
+        torch.save({
+            "epoch": epoch + 1,
+            "model_state_dict": model.state_dict(),
+            "optimizer_state_dict": optimizer.state_dict(),
+            "scheduler_state_dict": scheduler.state_dict(),
+        }, run / "checkpoint.pt")
+
+    model.eval()
+    with torch.no_grad():
+        final_mse = (model(x) - target).square().mean().item()
+    writer.add_scalar("eval/mse", final_mse, epoch + 1)
+```
+
+Open these logs with `tensorboard --logdir pytorch_outputs/wave-monitored`. The training scalars above describe each full-batch update; `eval/mse` measures the final weights. Both use the normalized data. The context manager flushes and closes the writer.
+
+For minibatch training with the same schedule and monitoring, run the [complete example](examples/train_pytorch.py) on one CPU:
+
+```bash
+python examples/train_pytorch.py --device cpu --epochs 20 --batch-size 256 --output-dir pytorch_outputs/wave --tensorboard
+tensorboard --logdir pytorch_outputs/wave
+```
+
+For distributed runs, the complete example averages metrics across processes and writes logs and checkpoints on rank zero.
+
+### Extracting subnetworks
+
+Extract the parameter-to-latent, latent-to-weight, and coordinate-to-output subnetworks. These views share the model's tensors and retain their gradient connections.
+
+```python
+parameter_inputs, coordinates = x[:, :1], x[:, 1:2]
+latent = model.model_p_to_lr()(parameter_inputs)
+weights = model.model_lr_to_w()(latent)
+u_pred = model.model_x_to_u_given_w()(coordinates, weights)
+torch.testing.assert_close(u_pred, model(x))
+```
+
+### Input-output Jacobians and Hessians
+
+```python
+from nif.layers import JacobianLayer, HessianLayer
+
+output, jacobian = JacobianLayer(model, y_index=[0], x_index=[1])(x)
+output, jacobian, hessian = HessianLayer(model, y_index=[0], x_index=[1])(x)
+```
+
+The layers return the complete output and selected derivatives, and retain parameter gradients for derivative-based training. See [Tutorial 4](tutorial/4_get_gradients_by_wrapping_model_with_layer_pytorch.ipynb).
+
+### Data normalization
+
+`PointWiseData` keeps parameter, coordinate, and target columns in order and supports min-max or standard normalization. For example, with one parameter, one coordinate, and one output:
+
+```python
+from nif.data import PointWiseData
+
+raw_data = TravelingWave().data_raw
+normalized, mean, scale = PointWiseData.minmax_normalize(
+    raw_data=raw_data, n_para=1, n_x=1, n_target=1
+)
+```
+
+### Large-scale record data
+
+`TFRDataset` converts an NPZ array into record shards and reads them as PyTorch `DataLoader` batches. This small, self-contained IO example uses the `model`, `optimizer`, and `device` defined above:
+
+```python
+from pathlib import Path
+from tempfile import TemporaryDirectory
+import numpy as np
+from nif.data.tfr_dataset import TFRDataset
+
+with TemporaryDirectory() as directory:
+    root = Path(directory)
+    np.savez(root / "wave.npz", data=TravelingWave().data)
+    records = TFRDataset(n_feature=2, n_target=1)
+    records.create_from_npz(
+        num_pts_per_file=1000, npz_path=root / "wave.npz", npz_key="data",
+        tfr_path=root / "record_shards", prefix="wave"
+    )
+    for shard in records.get_tfr_meta_dataset(root / "record_shards", epoch=1):
+        for features, targets in records.gen_dataset_from_batch_file(shard, batch_size=128):
+            features, targets = features.to(device), targets.to(device)
+            optimizer.zero_grad(set_to_none=True)
+            loss = (model(features) - targets).square().mean()
+            loss = loss + model.regularization_loss(features)
+            loss.backward()
+            optimizer.step()
+```
+
+[Tutorial 5](tutorial/5_large_scale_training_on_tensorflow_record_data_pytorch.ipynb) demonstrates the same workflow on a one-million-row dataset.
+
+### Save and load models
+
+```python
+torch.save(model.state_dict(), "model.pt")
+restored = NIF(shape, parameter).to(device)
+restored.load_state_dict(torch.load("model.pt", map_location=device, weights_only=True))
+torch.testing.assert_close(restored(x), model(x))
+model.save_config("config.json")
+```
+
+### Network pruning and quantization
+
+Prune a copy of the trained float32 `NIF` from the first example, then run dynamic int8 inference on CPU. The pruning controller below acts on the final ParameterNet projection kernel, leaving its bias unchanged. This short example uses 20 full-batch updates to demonstrate the schedule; choose the pruning budget and target sparsity for your data.
+
+```python
+import copy
+from torch import nn
+from nif.pruning import PolynomialMagnitudePruning
+
+compressed = copy.deepcopy(model).cpu().float().train()
+features, targets = x.detach().cpu().float(), target.detach().cpu().float()
+projection = compressed.pnet_list[-1].linear
+pruner = PolynomialMagnitudePruning(
+    projection, name="weight", initial_sparsity=0.1, final_sparsity=0.9,
+    begin_step=0, end_step=20, frequency=1,
+)
+pruning_optimizer = torch.optim.Adam(compressed.parameters(), lr=1e-4)
+for epoch in range(20):
+    pruning_optimizer.zero_grad(set_to_none=True)
+    loss = (compressed(features) - targets).square().mean()
+    loss = loss + compressed.regularization_loss(features)
+    loss.backward()
+    pruning_optimizer.step()
+    pruner.on_epoch_end()  # Reapply the mask before checkpointing or inference.
+
+pruner.strip()  # Keep sparse weights; remove pruning hooks before conversion.
+compressed.eval()
+print("Projection sparsity:", (projection.weight == 0).float().mean().item())
+int8_model = torch.ao.quantization.quantize_dynamic(
+    compressed, {nn.Linear}, dtype=torch.qint8, inplace=False
+).eval()
+with torch.no_grad():
+    float_prediction = compressed(features)
+    int8_prediction = int8_model(features)
+    print("Pruned-model MAE:", (float_prediction - targets).abs().mean().item())
+    print("Int8-model MAE:", (int8_prediction - targets).abs().mean().item())
+    print("Quantization MAE:", (int8_prediction - float_prediction).abs().mean().item())
+```
+
+[Dynamic quantization](https://docs.pytorch.org/docs/stable/generated/torch.ao.quantization.quantize_dynamic.html) converts this model's native `nn.Linear` layers in ParameterNet to packed int8 CPU kernels. Custom residual layers and the generated ShapeNet computation remain floating point. All three MAEs use normalized output units; compare them before choosing the compressed model.
+
+[Tutorial 7](tutorial/7_model_pruning_and_quantization_pytorch.ipynb) shows the full multiscale pruning experiment and TorchScript export. Its SIREN projection uses `HyperLinearForSIREN.w`, which the tutorial converts to `nn.Linear` with the original weight orientation preserved before quantization.
 
 ## Google Colab Tutorial
 
-The links below open compatibility copies tested on current Colab. Run each notebook from its first cell to install its pinned dependencies. The original notebooks are preserved in `tutorial/`; see the [runtime guides](tutorial/colab_support/README.md) and [validation results](tutorial/colab_support/VALIDATION.md).
+The notebooks below run the native PyTorch examples. Their scientific workloads are the default; set `NIF_SMOKE=1` before running only for a short development check.
 
-1. **Hello world! A simple fitting on 1D travelling wave** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/pswpswpsw/nif/blob/main/tutorial/1_simple_1d_wave_colab.ipynb)
-    - learn how to use class `nif.NIF`
-    - model checkpoints/restoration
-    - mixed precision training
-    - L-BFGS fine tuning
+1. **Hello world! A simple fitting on a 1D traveling wave** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/pswpswpsw/nif/blob/main/tutorial/1_simple_1d_wave_pytorch.ipynb)
+    - Learn the `nif.NIF` model, its configuration, and training loop.
+    - Save and restore checkpoints; refine the fit with L-BFGS.
 
-2. **Tackling multi-scale data** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/pswpswpsw/nif/blob/main/tutorial/2_multi_scale_NIF_colab.ipynb)
+2. **Tackling multi-scale data** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/pswpswpsw/nif/blob/main/tutorial/2_multi_scale_NIF_pytorch.ipynb)
+    - Use `nif.NIFMultiScale` and compare fits to a high-frequency wave.
 
-    - learn how to use class `nif.NIFMultiScale`
-    - demonstrate the effectiveness of learning high frequency data
+3. **Learning a linear representation** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/pswpswpsw/nif/blob/main/tutorial/3_multi_scale_linear_NIF_pytorch.ipynb)
+    - Use `nif.NIFMultiScaleLastLayerParameterized` on a cylinder-flow dataset from an adaptive mesh.
 
-3. **Learning linear representation** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/pswpswpsw/nif/blob/main/tutorial/3_multi_scale_linear_NIF_colab.ipynb)
-    - learn how to use class `nif.NIFMultiScaleLastLayerParameterized`
-    - demonstrate on a (shortened) flow over a cylinder case from an AMR solver
+4. **Getting input-output derivatives** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/pswpswpsw/nif/blob/main/tutorial/4_get_gradients_by_wrapping_model_with_layer_pytorch.ipynb)
+    - Use `nif.layers.JacobianLayer` and `nif.layers.HessianLayer`.
 
-4. **Getting input-output derivatives is super easy** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/pswpswpsw/nif/blob/main/tutorial/4_get_gradients_by_wrapping_model_with_layer_colab.ipynb)
-    - learn how to use `nif.layers.JacobianLayer`, `nif.layers.HessianLayer`
+5. **Large-scale data training** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/pswpswpsw/nif/blob/main/tutorial/5_large_scale_training_on_tensorflow_record_data_pytorch.ipynb)
+    - Create and stream record shards using `nif.data.tfr_dataset.TFRDataset`.
+    - Train on batches from a one-million-row example dataset.
 
-5. **Scaling to hundreds of GB data** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/pswpswpsw/nif/blob/main/tutorial/5_large_scale_training_on_tensorflow_record_data_colab.ipynb)
-    - learn how to use `nif.data.tfr_dataset.TFRDataset` to create `tfrecord` from `npz`
-    - learn how to perform sub-dataset-batch training with `model.fit`
+6. **Revisit multi-scale data with regularization** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/pswpswpsw/nif/blob/main/tutorial/6_revisit_multi_scale_NIF_with_L1_L2_regularization_pytorch.ipynb)
+    - Compare L1 and L2 regularization of ParameterNet weights and biases.
+    - Inspect training fits and spurious signals on a refined space-time grid.
 
-6. **Revisit NIF on multi-scale data with regularization** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/pswpswpsw/nif/blob/main/tutorial/6_revisit_multi_scale_NIF_with_L1_L2_regularization_colab.ipynb)
-    - learn how to use L1 or L2 regularization for weights and bias in ParameterNet.
-    - a demonstration for the failure of NIF-Multiscale in terms of increasing spatial interpolation when dealing with
-      high-frequency signal.
-        - this means you need to be cautious about increasing spatial sampling resolution when dealing with
-          high-frequency signal.
-    - learn that L2 or L1 regularization does not seem to help resolving the above issue.
+7. **NIF compression** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/pswpswpsw/nif/blob/main/tutorial/7_model_pruning_and_quantization_pytorch.ipynb)
+    - Explore magnitude pruning, dynamic int8 quantization, and exported inference.
 
-7. **NIF Compression** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/pswpswpsw/nif/blob/main/tutorial/7_model_pruning_and_quantization_colab.ipynb)
-    - learn how to use low magnititute pruning and quantization to compress ParameterNet
-
-8. **Revisit NIF on multi-scale data: Sobolov training helps removing spurious signals** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/pswpswpsw/nif/blob/main/tutorial/8_revisit_multi_scale_NIF_with_sobolov_training_colab.ipynb)
-    - learn how to use `nif.layers.JacobianLayer` to perform Sobolov training
-    - learn how to monitor different loss terms using customized Keras metrics
-    - learn that feeding derivative information to the system help resolve the super-resolution issue
-
-## Requirements
-
-```python
-matplotlib
-numpy
-tensorflow-gpu
-tensorflow_probability==0.18.0
-tensorflow_model_optimization==0.7.3
-```
+8. **Revisit multi-scale data with Sobolev training** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/pswpswpsw/nif/blob/main/tutorial/8_revisit_multi_scale_NIF_with_sobolov_training_pytorch.ipynb)
+    - Add spatial-derivative supervision with `nif.layers.JacobianLayer` and compare field and derivative errors.
+    - Inspect how derivative information affects the refined spatial prediction.
 
 ## Issues, bugs, requests, ideas
 
@@ -254,9 +359,9 @@ Use the [issues](https://github.com/pswpswpsw/nif/issues) tracker to report bugs
 
 ## How to cite
 
-If you find NIF is helpful to you, you can cite our JMLR [paper](https://www.jmlr.org/papers/volume24/22-0365/22-0365.pdf) in the following bibtex format
+If you find NIF is helpful, please cite our JMLR [paper](https://www.jmlr.org/papers/volume24/22-0365/22-0365.pdf):
 
-   ```
+```bibtex
 @article{JMLR:v24:22-0365,
   author  = {Shaowu Pan and Steven L. Brunton and J. Nathan Kutz},
   title   = {Neural Implicit Flow: a mesh-agnostic dimensionality reduction paradigm of spatio-temporal data},
@@ -267,13 +372,12 @@ If you find NIF is helpful to you, you can cite our JMLR [paper](https://www.jml
   pages   = {1--60},
   url     = {http://jmlr.org/papers/v24/22-0365.html}
 }
-   ```
+```
 
 ## Contributors
 
 - [Shaowu Pan](http://www.shaowupan.com)
 - [Yaser Afshar](https://github.com/yafshar)
-
 
 ## License
 

@@ -14,9 +14,9 @@
 </p>
 
 <p align="center">
-  <img alt="Status: early alpha" src="https://img.shields.io/badge/status-early%20alpha-orange">
+  <img alt="Status: public beta" src="https://img.shields.io/badge/status-public%20beta-blue">
   <a href="https://upstar.dev/r/jaisurya-dev-art/rigby2d"><img alt="Upstar" src="https://upstar.dev/badge/jaisurya-dev-art/rigby2d.svg"></a>
-  <a href="https://www.youtube.com/watch?v=KK3WT9YzhAE"><img alt="Watch on YouTube" src="https://img.shields.io/badge/watch-75s%20overview-ff0000?logo=youtube&logoColor=white"></a>
+  <a href="https://youtu.be/3StZlHwZeSo"><img alt="Watch the NILA promo on YouTube" src="https://img.shields.io/badge/watch-NILA%20promo-ff0000?logo=youtube&logoColor=white"></a>
   <a href="runtimes/godot/addons/rigby2d/README.md"><img alt="Runtime ready: Godot" src="https://img.shields.io/badge/runtime%20ready-Godot-478cbf?logo=godotengine&logoColor=white"></a>
   <a href="docs/mcp.md"><img alt="MCP server built in" src="https://img.shields.io/badge/MCP-server%20built%20in-7c3aed"></a>
   <a href="#license"><img alt="License: MIT or Apache-2.0" src="https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-blue.svg"></a>
@@ -31,12 +31,13 @@
 </p>
 
 <p align="center">
-  <a href="https://www.youtube.com/watch?v=KK3WT9YzhAE"><img src="docs/video-preview.jpg" alt="Watch the Rigby2D overview on YouTube (75 seconds)" width="800"></a><br>
-  <sub>▶ <a href="https://www.youtube.com/watch?v=KK3WT9YzhAE">Watch the 75-second overview</a>: AutoRig, animation, film, games and AI</sub>
+  <a href="https://youtu.be/3StZlHwZeSo"><img src="docs/images/nila-promo.jpg" alt="Watch Meet NILA on YouTube: the Rigby2D mascot, animated in Rigby2D" width="800"></a><br>
+  <sub>▶ <a href="https://youtu.be/3StZlHwZeSo">Watch <b>Meet NILA</b></a>: our new mascot, rigged, animated, lip-synced and rendered in Rigby2D · Also: <a href="https://www.youtube.com/watch?v=KK3WT9YzhAE">the 75-second overview</a></sub>
 </p>
 
 <p align="center">
-  <img src="docs/screenshot.jpg" alt="Rigby2D editor with the Rigbytron demo: viewport, bone hierarchy, inspector and dopesheet" width="800">
+  <img src="docs/screenshot.jpg" alt="The Rigby2D editor animating NILA: viewport with her rig, bone tree, inspector and dopesheet" width="800"><br>
+  <sub>The editor animating NILA: the head bone selected in the tree, its keys in the dopesheet, its pose in the inspector.</sub>
 </p>
 
 ## Documentation
@@ -49,7 +50,7 @@ runtimes and the MCP server. The pages are also in [`docs/`](docs/).
 | [Installation](https://jaisurya-dev-art.github.io/rigby2d/docs/installation.html) | [Importing art](https://jaisurya-dev-art.github.io/rigby2d/docs/importing-art.html) | [Animating](https://jaisurya-dev-art.github.io/rigby2d/docs/animating.html) | [Export](https://jaisurya-dev-art.github.io/rigby2d/docs/export.html) |
 | [Quick start](https://jaisurya-dev-art.github.io/rigby2d/docs/quick-start.html) | [AutoRig](https://jaisurya-dev-art.github.io/rigby2d/docs/autorig.html) | [Graph editor](https://jaisurya-dev-art.github.io/rigby2d/docs/graph-editor.html) | [Runtimes](https://jaisurya-dev-art.github.io/rigby2d/docs/runtimes.html) |
 | [The interface](https://jaisurya-dev-art.github.io/rigby2d/docs/interface.html) | [Bones and slots](https://jaisurya-dev-art.github.io/rigby2d/docs/bones-and-slots.html) | [Poses and faces](https://jaisurya-dev-art.github.io/rigby2d/docs/poses-and-faces.html) | [Python scripting](https://jaisurya-dev-art.github.io/rigby2d/docs/scripting.html) |
-| [Demo projects](https://jaisurya-dev-art.github.io/rigby2d/docs/demos.html) | [Meshes](https://jaisurya-dev-art.github.io/rigby2d/docs/meshes.html) · [Constraints](https://jaisurya-dev-art.github.io/rigby2d/docs/constraints.html) | [Film](https://jaisurya-dev-art.github.io/rigby2d/docs/film.html) · [Lip-sync](https://jaisurya-dev-art.github.io/rigby2d/docs/lip-sync.html) | [AI assistants (MCP)](https://jaisurya-dev-art.github.io/rigby2d/docs/mcp.html) |
+| [Demo projects](https://jaisurya-dev-art.github.io/rigby2d/docs/demos.html) | [Meshes](https://jaisurya-dev-art.github.io/rigby2d/docs/meshes.html) · [Constraints](https://jaisurya-dev-art.github.io/rigby2d/docs/constraints.html) | [Film](https://jaisurya-dev-art.github.io/rigby2d/docs/film.html) · [Scenes](https://jaisurya-dev-art.github.io/rigby2d/docs/scenes.html) · [Lip-sync](https://jaisurya-dev-art.github.io/rigby2d/docs/lip-sync.html) | [AI assistants (MCP)](https://jaisurya-dev-art.github.io/rigby2d/docs/mcp.html) |
 
 ## Features
 
@@ -60,17 +61,26 @@ runtimes and the MCP server. The pages are also in [`docs/`](docs/).
   skinning, pose library, face controls and retargeting between characters.
 - **Film workspace**: 4K, timecode, an animatable camera, audio tracks, viseme lip-sync with
   on-device Whisper transcription, and renders to PNG sequences, WebM with alpha and MP4.
+- **Scene composition** (new in 0.3): several characters on one stage as actors with NLE-style clips
+  (trim, speed, loops, crossfades, their own audio), painted layers with parallax, and a camera,
+  and they play in games through every runtime. See [Scenes](https://jaisurya-dev-art.github.io/rigby2d/docs/scenes.html).
+- **A focused editor**: Game and Film workspaces, panels you can resize or pop out to a second
+  monitor, *Open recent*, and a searchable shortcut reference with Reference and Blender-like keys.
 - **Python scripting** and custom tools, and a built-in **MCP server** so AI assistants such as
   Claude can inspect, rig and animate your projects.
 - **Lossless skeleton JSON (3.8, 4.2, 4.3) and binary `.skel`** with texture atlases, played by the
   **JavaScript, Rust and Godot runtimes**.
-- Built-in **tutorials** and demo projects (**NILA** and **Rigbytron**).
+- Built-in **tutorials** and demo projects (**NILA**, **Rigbytron**, and a **scene** with both), also on the
+  [Demos page](https://jaisurya-dev-art.github.io/rigby2d/demos/) with their game-ready exports
+  (demo content © Hoverlabs, under its own [demo license](branding/DEMO-LICENSE.md)).
 
 ## Getting started
 
 - **In your browser:** [open the editor](https://jaisurya-dev-art.github.io/rigby2d/editor/), nothing to install.
 - **Windows:** [download the portable editor](https://github.com/jaisurya-dev-art/rigby2d/releases/latest/download/Rigby2D_x64_portable.exe)
   or an installer from [Releases](https://github.com/jaisurya-dev-art/rigby2d/releases).
+  Windows code signing comes from the SignPath Foundation (application under review; see the
+  [code signing policy](https://jaisurya-dev-art.github.io/rigby2d/docs/code-signing.html)).
 - **AI assistants:** install [Rigby2D-AI.mcpb](https://github.com/jaisurya-dev-art/rigby2d/releases/latest/download/Rigby2D-AI.mcpb)
   in Claude Desktop, or see the [MCP guide](https://jaisurya-dev-art.github.io/rigby2d/docs/mcp.html).
 - **From source** (Node.js 20+ and the [Tauri prerequisites](https://tauri.app/start/prerequisites/)):

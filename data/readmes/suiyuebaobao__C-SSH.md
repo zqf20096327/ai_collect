@@ -1,63 +1,113 @@
-# C-SSH 0.9.6 — 修訂3
+# C-SSH 0.9.7
 
-[English](README_EN.md) · [官網](https://c-ssh.com) · [安裝與資料保全](INSTALL.md)
+[English](README_EN.md) · [官网](https://c-ssh.com) · [安装说明](INSTALL.md) · [更新日志](CHANGELOG.md)
 
+本次更新集中改善服务器接入、AI 助手、服务器浏览器、监控采集与云端同步，并同步更新 Windows、macOS、Linux 和 Android 客户端。
 
-面向Windows、M系列Mac、Android及Linux的伺服器運維客戶端。本地SSH／Agent功能不要求Cloud登入。
+## 1. 麒麟与 ARM 服务器适配
 
-只公告與手動下載，不提醒升級、不強制更新。產品版本0.9.6、SQLite26及構建號9006000保持；修訂3使用獨立tag `v0.9.6-r3`，四平台十項，iOS不上传，原0.9.6、修訂2及歷史下載保留。
+完善麒麟高级服务器操作系统 V10 ARM64 适配，支持其 64KiB 内存页环境。改善 Agent 接入、监控采集、文件操作、持久终端与命令执行的兼容性。
+
+修正特定 SSH 环境下首次建立 Agent 通道失败，以及日志量较大时兼容性检测失败的问题。ARM Agent 同步更新至当前版本。
+
+## 2. Agent 接入与多设备使用
+
+更新 Linux x64、Linux ARM64 及 Windows Server Agent。
+
+改善多台电脑、手机接入同一服务器的授权与复用流程，修正部分公钥授权冲突。完善已有 Agent 的识别、能力检测与更新流程，并修正云端同步后主机部署状态未及时刷新的问题。
+
+## 3. 桌面服务器浏览器
+
+Windows、macOS、Linux 支持通过服务器 Agent 使用本机 Chrome 浏览网站。
+
+同一台服务器可建立多个浏览器环境，每个环境独立保存 Cookie、登录状态、浏览数据与固定指纹种子，并可设置显示系统、时区、语言，以及定位、麦克风和摄像头权限。
+
+改善启动速度与首次打开成功率，修正部分网站、安全验证页导致浏览器意外关闭的问题，完善异常退出后的环境恢复，并增加未安装 Chrome 时的提示。
+
+## 4. AI 并发执行与查询效率
+
+增加可设置的 AI 任务并发与排队机制，支持多台主机，以及同一台主机上的独立只读任务同时执行。子 Agent 沿用主 Agent 本次设置的上下文窗口。
+
+优化服务器状态检查流程，减少重复读文件、反复查询及不必要的工具步骤。有依赖关系或涉及修改的操作仍依序处理。
+
+## 5. AI 即时回答、进度与会话恢复
+
+回答随模型返回逐步显示，子任务进度、结果与错误及时更新。
+
+聊天主界面改用精简的进度与结果摘要，完整工具操作可通过“查看详情”展开。
+
+修正插话内容未显示、暂停后无法继续发送，以及中断、异常退出后部分会话无法正常恢复的问题。改善历史保存冲突判断，修正部分 Mac AI 崩溃问题。
+
+## 6. AI 上下文、长会话与用量统计
+
+上下文整理改为依据模型实际窗口，不再采用固定 256K 门槛；工具结果不再一律截取固定字数，大结果可按需分页读取。
+
+长会话采用分块保存与加载，处理原先整份会话 256MiB 限制造成的阻断，减少重新打开长聊天与准备上下文的等待。
+
+新增真实用量统计，显示 **累计使用 Token、上下文用量与缓存命中率**，统一处理不同模型接口的用量字段，并计入子任务。执行期间继续显示上次已确认数据，供应商未提供的缓存数据不再误作零命中。
+
+“累计使用 Token”表示会话历次请求的累计用量；“上下文用量”表示主助手单次请求的输入量，两者分开说明。
+
+## 7. 监控采集与数据传输优化
+
+采集并发上限提高至可设置的 **1,000**，完善排队与调度，改善启动后首轮数据更新及慢主机影响其他主机的情况。
+
+优化本机数据库读写，减少重复操作；较大的监控历史响应采用选择性压缩，降低传输量，小数据维持轻量传输。
+
+## 8. 云端同步与密码验证
+
+同一次程序运行期间，完成一次数据保护密码验证后，切页、检查、上传与下载可沿用验证，减少重复输入。
+
+同步界面增加全选与默认采用云端选项，改善项目排列和操作提示。
+
+修正 Android 首次登录后确认下载失败的问题；已删除且本机也不存在的 AI 账号，不再反复出现在待同步列表中。
+
+## 9. Android 界面与操作修复
+
+同步共享层的 AI、上下文、记忆与用量统计改动，使用底部用量摘要及简洁的三项详情。
+
+修正底部大面积空白、键盘与安全区间距问题。修正从主机功能卡片进入终端时未选中对应主机，以及连接等待期间无法切换主机的问题。
+
+修正 AI 历史对话无法选取、历史模型干扰当前设置，以及切换模型窗口后用量未刷新的问题。
+
+## 10. 桌面界面统一与细节改善
+
+Windows、macOS、Linux 的共用设置与 AI 界面统一调整。设置首页整合为四个分类卡片，子项可直接进入对应设置。
+
+确认弹窗改用 C-SSH 自身样式，改善 Mac 窗口控制、圆角，以及部分深色弹窗文字不清楚的问题。
+
+**更新方式：**本次版本只提供更新提示，请前往官网下载并自行安装；不强制更新，也不自动下载安装。
 
 ## Downloads
 
 | File | Bytes | Download |
 |---|---:|---|
-| C-SSH_0.9.6_x64-setup.exe | 47,912,113 | [Download](https://github.com/suiyuebaobao/C-SSH/releases/download/v0.9.6-r3/C-SSH_0.9.6_x64-setup.exe) |
-| C-SSH_0.9.6_portable-Windows-x64.zip | 43,180,565 | [Download](https://github.com/suiyuebaobao/C-SSH/releases/download/v0.9.6-r3/C-SSH_0.9.6_portable-Windows-x64.zip) |
-| C-SSH_0.9.6_arm64-setup.exe | 46,045,545 | [Download](https://github.com/suiyuebaobao/C-SSH/releases/download/v0.9.6-r3/C-SSH_0.9.6_arm64-setup.exe) |
-| C-SSH_0.9.6_portable-Windows-arm64.zip | 41,861,101 | [Download](https://github.com/suiyuebaobao/C-SSH/releases/download/v0.9.6-r3/C-SSH_0.9.6_portable-Windows-arm64.zip) |
-| C-SSH_0.9.6_macOS-arm64.dmg | 42,822,796 | [Download](https://github.com/suiyuebaobao/C-SSH/releases/download/v0.9.6-r3/C-SSH_0.9.6_macOS-arm64.dmg) |
-| C-SSH_0.9.6_android-arm64.apk | 39,899,610 | [Download](https://github.com/suiyuebaobao/C-SSH/releases/download/v0.9.6-r3/C-SSH_0.9.6_android-arm64.apk) |
-| C-SSH_0.9.6_amd64.deb | 44,271,530 | [Download](https://github.com/suiyuebaobao/C-SSH/releases/download/v0.9.6-r3/C-SSH_0.9.6_amd64.deb) |
-| C-SSH_0.9.6_amd64.AppImage | 117,750,264 | [Download](https://github.com/suiyuebaobao/C-SSH/releases/download/v0.9.6-r3/C-SSH_0.9.6_amd64.AppImage) |
-| C-SSH_0.9.6_arm64.deb | 43,422,970 | [Download](https://github.com/suiyuebaobao/C-SSH/releases/download/v0.9.6-r3/C-SSH_0.9.6_arm64.deb) |
-| C-SSH_0.9.6_aarch64.AppImage | 116,779,528 | [Download](https://github.com/suiyuebaobao/C-SSH/releases/download/v0.9.6-r3/C-SSH_0.9.6_aarch64.AppImage) |
-
-## Added
-
-- 獨立修訂3下載記錄，原0.9.6、修訂2及所有歷史下載保留。
-
-## Fixed
-
-- 新增 Agent 主機時先確認既有 Agent 的相容性；相容者直接復用，不重新上傳、安裝或啟動。缺失才安裝；已確認舊版沿安全升級；未知或未來版本的探測不觸發覆蓋。
-- 將身份採納、READY 確認及憑據保存顯示為各自的真實階段；就緒階段失敗不再誤報為初始 SSH 連線失敗，且不自動重放安装。
-- 部署進度按當次呼叫、主機與操作隔離，拒絕終態後或離頁後的遲到事件。
-- Windows／Mac工作台右上角關閉键與相鄰視窗控件對齊外框、背景及尺寸，保留危险懸停與原退出路徑；Linux繼續使用正常系統標題欄。
-- Windows／Mac／Linux的經典及工作台搜尋入口預設收成放大鏡圖示；點擊開啟原搜尋面板，原快捷鍵保留。窄視窗的終端工具列自動換行，避免搜尋與連線操作重疊。
-
-## Verified
-
-- Windows／Mac／Linux 經典與工作台的搜尋按鈕、原面板、快捷鍵及窄視窗排版完成 170 項直接前端檢查、38 組布局；三端前端構建通過。
-- 十項正式包已完成對應的來源與包體檢查；九項桌面新包確認包含最終搜尋介面，Windows 四包取得新的實際安裝身份與有效簽名。Mac 為 arm64、ad-hoc 簽章，未公證。
-- Agent 實測涵蓋 Mac 三台 Linux 節點、Windows 11 ARM64 的原生 ARM64／相容 x64，以及 Linux 兩架構 VM；本次搜尋修正沿用未變更 Rust 流程的原始證據，不外推為新包全功能重測或 Windows x64 實體機驗收。
-- Android arm64 正式 APK 沿用原簽名，已在 SDK Emulator 經正常介面完成既有 Agent 復用、就緒、憑據保存與監控載入；不外推為真機或一般主機刪除驗收。iOS 僅同步源碼與前端，不上傳。
+| C-SSH_0.9.7_x64-setup.exe | 49,731,494 | [Download](https://github.com/suiyuebaobao/C-SSH/releases/download/v0.9.7/C-SSH_0.9.7_x64-setup.exe) |
+| C-SSH_0.9.7_portable-Windows-x64.zip | 45,010,208 | [Download](https://github.com/suiyuebaobao/C-SSH/releases/download/v0.9.7/C-SSH_0.9.7_portable-Windows-x64.zip) |
+| C-SSH_0.9.7_arm64-setup.exe | 47,816,201 | [Download](https://github.com/suiyuebaobao/C-SSH/releases/download/v0.9.7/C-SSH_0.9.7_arm64-setup.exe) |
+| C-SSH_0.9.7_portable-Windows-arm64.zip | 43,592,452 | [Download](https://github.com/suiyuebaobao/C-SSH/releases/download/v0.9.7/C-SSH_0.9.7_portable-Windows-arm64.zip) |
+| C-SSH_0.9.7_macOS-arm64.dmg | 47,725,501 | [Download](https://github.com/suiyuebaobao/C-SSH/releases/download/v0.9.7/C-SSH_0.9.7_macOS-arm64.dmg) |
+| C-SSH_0.9.7_android-arm64.apk | 45,779,461 | [Download](https://github.com/suiyuebaobao/C-SSH/releases/download/v0.9.7/C-SSH_0.9.7_android-arm64.apk) |
+| C-SSH_0.9.7_arm64.deb | 46,732,072 | [Download](https://github.com/suiyuebaobao/C-SSH/releases/download/v0.9.7/C-SSH_0.9.7_arm64.deb) |
+| C-SSH_0.9.7_aarch64.AppImage | 119,740,936 | [Download](https://github.com/suiyuebaobao/C-SSH/releases/download/v0.9.7/C-SSH_0.9.7_aarch64.AppImage) |
+| C-SSH_0.9.7_amd64.deb | 47,644,200 | [Download](https://github.com/suiyuebaobao/C-SSH/releases/download/v0.9.7/C-SSH_0.9.7_amd64.deb) |
+| C-SSH_0.9.7_amd64.AppImage | 120,789,496 | [Download](https://github.com/suiyuebaobao/C-SSH/releases/download/v0.9.7/C-SSH_0.9.7_amd64.AppImage) |
 
 ## SHA256
 
 | File | SHA256 |
 |---|---|
-| C-SSH_0.9.6_x64-setup.exe | `68c108d74ce246513b87d66a10fb7bd88c2bc729d150394f09b1a1cfdad41de8` |
-| C-SSH_0.9.6_portable-Windows-x64.zip | `67e46eae24524e4478c014aaea660e8ad938dafe5269b9059cc8ed73327c95f2` |
-| C-SSH_0.9.6_arm64-setup.exe | `b3287cbcb86daac82963015d5abedb2786541c2c1f3e60bac6b2c125831eff0c` |
-| C-SSH_0.9.6_portable-Windows-arm64.zip | `ffee1c505cbd0883a20babeb51d9cada3173510c48f3247b897b26bbd85f13f5` |
-| C-SSH_0.9.6_macOS-arm64.dmg | `28d6962f39104739030dc192d513ae00f088e1bf32930a979ec887d5c05bf000` |
-| C-SSH_0.9.6_android-arm64.apk | `a0245a283b45ed9f1a5b4c35091ff419e1cc9bdf3054d4cef3f2488357c5d239` |
-| C-SSH_0.9.6_amd64.deb | `a482d1d7c9e452533c4980790b02f88a6d71bf350bd0a231e47216eeaff76a22` |
-| C-SSH_0.9.6_amd64.AppImage | `60ef49c4a3e9ac2abada6ad5f2baa0a6a43cb4a513ed5cc3f472fd8b2e42f218` |
-| C-SSH_0.9.6_arm64.deb | `117b9915c92af9eecbac46c9c51b37d5414a751fcfe85339f5f32e6be30c4794` |
-| C-SSH_0.9.6_aarch64.AppImage | `6528806c24497e6e696a1a038c0025819295c5cc68b9db959d1376d5f9abff14` |
+| C-SSH_0.9.7_x64-setup.exe | `5d372e069ec70ec43d04e4e7219bb0aae7990c6620a3ec9bc3a996c8321ed269` |
+| C-SSH_0.9.7_portable-Windows-x64.zip | `2d6b8418195887ef62ba3bd7e09ca8886d9bea7126e33a02df9d8bb9ebac6be0` |
+| C-SSH_0.9.7_arm64-setup.exe | `63db71cae80b4f2772ee9c7e8fcc5c96edcc1a982b5a797002b3e342edd69bc6` |
+| C-SSH_0.9.7_portable-Windows-arm64.zip | `834fc184cc0c234f22f5b2acbb8d7bb7d885b3e806da31d79ca83378250a7567` |
+| C-SSH_0.9.7_macOS-arm64.dmg | `8315451283855bf352b786161e4645a01671f8914db73d7c60026708d6f856c9` |
+| C-SSH_0.9.7_android-arm64.apk | `f425c11e4d60f134fc9cef1f099a73c9f8f57bd30e412d9024200f7698b5edae` |
+| C-SSH_0.9.7_arm64.deb | `15285fd9df875da5ce5538e63941840289b7004a2be3cf3313420fa2909181da` |
+| C-SSH_0.9.7_aarch64.AppImage | `15042627ac7499241c49b8ebe56c07690d88973aabf4128e1891475bad044fab` |
+| C-SSH_0.9.7_amd64.deb | `e0f9638ba7123fb07b4a158fd6b3090c4fd07bd6ee930320743b83e8fea01a8a` |
+| C-SSH_0.9.7_amd64.AppImage | `e8f9626789395baf6bccd2d00995f4d91326b6812b2321037184bd0350c4b733` |
 
-## 資料與源碼
+## 数据与源码
 
-本修訂產品版本仍為0.9.6、SQLite26。以對應平台套件於原位置更新並保留既有資料及系統鑰匙圈／密鑰庫；Mac為ad-hoc簽章、未公證。只公告與手動下載，不推送升级提醒或強制更新。
-
-AI對話、原始紀錄、Skills與長期記憶保留在本機，不參與Cloud同步；所選模型上下文會發給對應服務商。公開倉保存說明、安裝包與既有Cloud白名單源码，客戶端／共用核心／AI／Agent源码不公開。
+AI 对话和记忆保存在本机；Cloud 仅同步用户选择的加密配置。本仓库提供公开说明、下载及 Creation Cloud 生产源码镜像，客户端与 Agent 源码不在公开范围。

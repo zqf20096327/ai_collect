@@ -1,0 +1,90 @@
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![POWER8](https://img.shields.io/badge/IBM-POWER8-red)](https://github.com/Scottcjn/power8-projects) [![Linux](https://img.shields.io/badge/Linux-ppc64le-yellow)](https://github.com/Scottcjn/power8-projects)
+[![BCOS Certified](https://img.shields.io/badge/BCOS-Certified-brightgreen?style=flat&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiPjxwYXRoIGQ9Ik0xMiAxTDMgNXY2YzAgNS41NSAzLjg0IDEwLjc0IDkgMTIgNS4xNi0xLjI2IDktNi40NSA5LTEyVjVsLTktNHptLTIgMTZsLTQtNCA1LjQxLTUuNDEgMS40MSAxLjQxTDEwIDE0bDYtNiAxLjQxIDEuNDFMMTAgMTd6Ii8+PC9zdmc+)](BCOS.md)
+
+# PowerElyan Linux
+
+```
+  ██████╗  ██████╗ ██╗    ██╗███████╗██████╗ ███████╗██╗  ██╗   ██╗ █████╗ ███╗   ██╗
+  ██╔══██╗██╔═══██╗██║    ██║██╔════╝██╔══██╗██╔════╝██║  ╚██╗ ██╔╝██╔══██╗████╗  ██║
+  ██████╔╝██║   ██║██║ █╗ ██║█████╗  ██████╔╝█████╗  ██║   ╚████╔╝ ███████║██╔██╗ ██║
+  ██╔═══╝ ██║   ██║██║███╗██║██╔══╝  ██╔══██╗██╔══╝  ██║    ╚██╔╝  ██╔══██║██║╚██╗██║
+  ██║     ╚██████╔╝╚███╔███╔╝███████╗██║  ██║███████╗███████╗██║   ██║  ██║██║ ╚████║
+  ╚═╝      ╚═════╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝
+                              by Elyan Labs
+```
+
+A multi-architecture Linux distribution optimized for AI inference, cryptocurrency mining, and exotic hardware.
+
+## Downloads
+
+**ISO Downloads**: [http://50.28.86.153/powerelyan/](http://50.28.86.153/powerelyan/)
+
+| Edition | ppc64le | x86_64 | aarch64 |
+|---------|---------|--------|---------|
+| Server | ✅ | 🔄 Soon | 🔄 Soon |
+| Workstation (MATE) | ✅ | 🔄 Soon | 🔄 Soon |
+| Full | ✅ | 🔄 Soon | 🔄 Soon |
+| Miner | ✅ | 🔄 Soon | 🔄 Soon |
+
+## Editions
+
+| Edition | Desktop | Size | Use Case |
+|---------|---------|------|----------|
+| **Server** | CLI | ~1.5 GB | Headless, containers, databases |
+| **Workstation** | MATE | ~3 GB | Development, daily use |
+| **Full** | MATE+ | ~4.5 GB | Everything + multimedia |
+| **Miner** | CLI | ~800 MB | RustChain mining node |
+
+## Features
+
+### PSE (Probabilistic Sequence Evolution)
+- **Vec_Perm Non-Bijunctive Collapse** - AI attention in single instruction
+- **mftb Hardware Entropy** - True randomness from POWER8 timebase
+- **RAM Coffers** - NUMA-aware weight banking
+- **L2/L3 Resident Prefetch** - Keep weights hot in cache
+
+### Pre-installed Software
+- llama.cpp with PSE optimizations
+- RustChain miner (Miner edition)
+- Docker & container tools (Server+)
+- Development toolchain (Workstation+)
+- MATE Desktop (Workstation+)
+
+## Quick Start
+
+```bash
+# Write ISO to USB
+# WARNING: Replace /dev/sdX with your actual device (e.g., /dev/sdb). 
+# Be extremely careful: using the wrong device will erase your data!
+sudo dd if=powerelyan-server-1.0-ppc64le.iso of=/dev/sdX bs=4M
+
+# Default login
+Username: powerelyan
+Password: powerelyan
+```
+
+## Documentation
+
+- [BCOS Certification](BCOS.md)
+- [Full Roadmap](docs/POWERELYAN_ROADMAP.md)
+- [Package List](powerelyan-full-packages.txt)
+- [Build Script](scripts/build_powerelyan.sh)
+
+## Cross-Compilers Included
+
+| Target | Toolchain | Location |
+|--------|-----------|----------|
+| powerpc-apple-darwin9 | GCC 10.5.0 | /opt/darwin-ppc/ |
+| x86_64-apple-darwin20 | Clang 12 | /opt/osxcross/ |
+| arm64-apple-darwin20 | Clang 12 | /opt/osxcross/ |
+
+---
+
+**Created by Elyan Labs**
+
+*AltiVec predates CUDA by 7 years*
+---
+### Part of the Elyan Labs Ecosystem
+- [BoTTube](https://bottube.ai) — AI video platform where 119+ agents create content
+- [RustChain](https://rustchain.org) — Proof-of-Antiquity blockchain with hardware attestation
+- [GitHub](https://github.com/Scottcjn)

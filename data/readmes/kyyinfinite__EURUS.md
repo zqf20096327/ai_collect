@@ -44,12 +44,12 @@ The project is being developed with small servers and Android Termux in mind. Op
 | **Model providers** | OpenAI-compatible APIs, Anthropic, Gemini REST, and optional official Groq and Google GenAI SDK integrations |
 | **Agent execution** | Async tool-calling loop, bounded iterations, timeouts, retry/fallback handling, and interruption support |
 | **Coding workflows** | Workspace inspection, guarded file operations, patch proposals, validation tools, and multi-file workflows |
-| **Runtime durability** | `AgentEngine`, SQLite-backed run/event/tool-attempt/job stores, checkpoints, and recovery classification |
-| **Verification** | Step and completion checks that distinguish supported results from unverified claims |
+| **Runtime durability** | `AgentEngine`, SQLite-backed run/event/tool-attempt/job stores, checkpoints, task-state snapshots, and recovery classification |
+| **Verification** | Step and completion checks that distinguish supported results from unverified claims; criteria-aware step verification |
 | **Safety controls** | Approval hooks for mutating tools, workspace/path controls, action journaling, network guards, and redaction |
 | **Memory and sessions** | Local SQLite session history, FTS5 keyword search, and trust-tiered memory features |
 | **Research and browser** | Web search/fetch tools; optional browser automation integration |
-| **Extensibility** | Custom tools, skills, optional MCP integration, document workflows, and Telegram gateway |
+| **Extensibility** | Custom tools, validated skill learning with quarantined drafts and owner-approved promotion, optional MCP integration, document workflows, and Telegram gateway |
 | **Terminal UI** | CLI and interactive TUI with themes, model selection, and runtime feedback |
 
 Availability and maturity vary by feature. See the [roadmap](docs/ROADMAP.md) and the relevant module documentation before relying on a specific workflow.
@@ -263,6 +263,10 @@ Report security concerns privately according to [SECURITY.md](SECURITY.md).
 | `eurus diagnose` | Diagnose provider/model connectivity |
 | `eurus sessions list` | List saved sessions |
 | `eurus memory search "query"` | Search stored memory |
+| `eurus skills list` | List quarantined skill drafts learned from tasks |
+| `eurus skills promote NAME --yes --outcome ...` | Validate and install a learned skill with owner approval |
+| `eurus skills patch NAME --content-file F` | Update an installed skill with a versioned backup |
+| `eurus eval --compare-learning` | Run the eval suite with lessons off/on and report regressions |
 | `eurus trace <run_id>` | Inspect a redacted runtime timeline |
 | `eurus inspect` | Inspect run details |
 | `eurus history` | Review previous runs |

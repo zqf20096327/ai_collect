@@ -29,10 +29,10 @@ Built on [Quickshell](https://quickshell.org). Colors from your wallpaper, anima
 | | |
 | --- | --- |
 | 🧭 **Bar** | Configurable widgets (left / center / right), any screen edge, Hug / Float / Islands / M3 styles, hover popups for media, resources, weather, battery and updates, a live audio spectrum |
-| 🚀 **App launcher** | Apps and settings, plus prefixes: `=` calculator (a plain "12*(3+4)" or "10+5=" is answered too, without the prefix), `>` run a command, `<` keybinds, `:` emoji, `;` clipboard, `/` settings |
-| ✨ **Claude AI** | Quick palette (<kbd>Super</kbd>+<kbd>Y</kbd>) and a full chat in the left sidebar through the `claude` CLI: streamed answers, code blocks with copy buttons, model picker, token / cost usage, saved chats |
-| 🪟 **Overlays** | Workspace overview with window previews (drag windows between workspaces), session screen, polkit dialog, region screenshot / OCR / recording, optional dock, rounded screen corners |
-| ⬅️ **Left sidebar** | Greeting, now playing with synced lyrics, weather, Claude chat, translator, clipboard history with image thumbnails |
+| 🚀 **App launcher** | Apps and settings, plus prefixes: `=` calculator (a plain "12*(3+4)" or "10+5=" is answered too, without the prefix), `>` run a command, `<` keybinds, `:` emoji, `;` clipboard (images with a preview), `/` settings |
+| ✨ **Claude AI** | Quick palette (<kbd>Super</kbd>+<kbd>Y</kbd>) and a full chat in the left sidebar through the `claude` CLI: streamed answers, code blocks with copy buttons, model picker, token / cost usage, saved chats; or any [OpenRouter](https://openrouter.ai) model, the free ones included |
+| 🪟 **Overlays** | Workspace overview with a tile and icon per window (drag windows between workspaces), session screen, polkit dialog, region screenshot / OCR / recording (with system sound or the microphone), optional dock, rounded screen corners |
+| ⬅️ **Left sidebar** | Greeting, now playing with synced lyrics (and the cover blurred behind it, `appearance.coverBackdrop`, off in Settings → Interface), weather, Claude chat, translator, clipboard history with image thumbnails |
 | 🎯 **Focus Mode** | Sessions with a minimal bar, Pomodoro cycles, blocked apps and sites, profiles, statistics and achievements |
 | ⏳ **Wait Mode** | A cover for the person while an AI works on the machine: a player or the wallpaper, keyboard and mouse shut out, no sleeping, Esc three times to exit; automation can still see and click what's underneath |
 | 🔋 **Power saving** | One switch turns off animations, blur, transparency, the visualizer and the dancing frame, and puts them back when it's turned off |
@@ -116,18 +116,21 @@ The installer first shows what it can install (packages, the Hyprland hook, the 
 type the numbers to switch parts on or off, Enter to continue. Then it asks before every action ("Should I ...?"):
 `y` yes, `n` no, `a` yes for all the rest.
 
+It also asks where updates come from: **release** (the latest tagged release, tested and changes less often, the default) or **git** (the latest `main`, the newest features, may break now and then). `--channel=git` or `--channel=release` answers it up front; you can switch later in Settings → About → Updates (`update.channel` in the config).
+
 The installer:
 
 1. installs the packages above with `pacman` and, for the AUR ones, `paru` or `yay` (asks first; `--no-deps` skips it)
 2. links the repo to `~/.config/quickshell/hi-shell`
-3. loads `hypr/hi-shell.lua` from your Hyprland config — `~/.config/hypr/custom/execs.lua` on illogical-impulse dots,
-   `~/.config/hypr/hyprland.lua` otherwise (one marked line, with a backup of the file)
+3. copies the folder `hypr/hi-shell/` to `~/.config/hypr/hi-shell/` (yours to edit) and loads it from your Hyprland config —
+   `~/.config/hypr/custom/execs.lua` on illogical-impulse dots, `~/.config/hypr/hyprland.lua` otherwise (one marked line,
+   with a backup of the file; an earlier install's line is moved to the folder)
 4. starts the shell and warns about other bars or notification daemons that are still running
 
 The optional apps (all off by default): Zen Browser, Telegram, Vesktop, osu!lazer, Steam (needs `[multilib]`), Spotify and Neovim.
 Each one goes through `pacman` if a configured repository has it, otherwise through `paru` / `yay`.
 
-Options: `--yes` (no menu and no questions: installs everything except the optional apps), `--with-apps` (those too), `--no-deps`, `--no-start`, `--no-dots`. Then tap <kbd>Super</kbd>.
+Options: `--yes` (no menu and no questions: installs everything except the optional apps), `--with-apps` (those too), `--no-deps`, `--no-start`, `--no-dots`, `--channel=git|release`. Then tap <kbd>Super</kbd>.
 
 ### Update
 
@@ -135,7 +138,8 @@ Options: `--yes` (no menu and no questions: installs everything except the optio
 ~/.config/quickshell/hi-shell/update.sh
 ```
 
-Pulls the latest version (`git pull --ff-only`, so your local changes are never overwritten), shows what's new,
+Gets the latest version from where you chose at install: on **git** it pulls `main` (`git pull --ff-only`), on **release**
+it moves to the latest tagged release (`v*`). Your local changes are never overwritten. It shows what's new,
 restarts the shell and reloads Hyprland when the keybinds changed.
 
 ### Uninstall
@@ -158,11 +162,15 @@ Stops the shell, removes the line from your Hyprland config and the link. Packag
    ln -s ~/Projects/hi-shell ~/.config/quickshell/hi-shell
    ```
 
-2. Load the Hyprland integration (autostart, keybinds, blur rules) from your config,
-   e.g. `~/.config/hypr/custom/execs.lua` on illogical-impulse or `hyprland.lua` otherwise:
+2. Copy the Hyprland integration (autostart, keybinds, window and layer rules) next to your Hyprland config and load it
+   from there, e.g. from `~/.config/hypr/custom/execs.lua` on illogical-impulse or `hyprland.lua` otherwise:
+
+   ```sh
+   cp -r ~/Projects/hi-shell/hypr/hi-shell ~/.config/hypr/hi-shell
+   ```
 
    ```lua
-   dofile(os.getenv("HOME") .. "/.config/quickshell/hi-shell/hypr/hi-shell.lua")
+   dofile(os.getenv("HOME") .. "/.config/hypr/hi-shell/init.lua")
    ```
 
    It starts `qs -c hi-shell` when Hyprland starts. To run it now without logging out:
@@ -191,7 +199,7 @@ Stops the shell, removes the line from your Hyprland config and the link. Packag
 | <kbd>Super</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd> | Copy text from a region (OCR) |
 | <kbd>Super</kbd>+<kbd>Shift</kbd>+<kbd>T</kbd> | Translate text from a region (OCR into the sidebar translator) |
 | <kbd>Super</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd> | Record a region (press again to stop) |
-| <kbd>Super</kbd>+<kbd>V</kbd> | Clipboard history (Enter copies) |
+| <kbd>Super</kbd>+<kbd>V</kbd> | Clipboard history, images too with thumbnails and a preview of the selected one (Enter copies) |
 | <kbd>Super</kbd>+<kbd>.</kbd> | Emoji picker |
 | <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Delete</kbd> | Session screen |
 | Display key (<kbd>Fn</kbd>+<kbd>F10</kbd> on Lenovo, `XF86Display`) | Display mode: this screen only, duplicate, extend left / right, second screen only; press again for the next, Enter to apply |
@@ -200,11 +208,13 @@ Stops the shell, removes the line from your Hyprland config and the link. Packag
 | <kbd>Super</kbd>+<kbd>Z</kbd> | Left sidebar (also left click on the bar's ✦ button; right click opens the launcher) |
 | click the clock | Calendar popup |
 | click the system icons | Right sidebar (scroll there to change the volume) |
-| right click the desktop | Edit desktop widgets: drag them (edges and centers snap to other widgets and the screen, with guide lines), resize them (corner = size, right edge = width), drag the wallpaper frame, toggle them in the toolbar; Esc or Done to finish |
+| right click the empty part of the bar | Bar settings |
+| right click a notification | Dismiss it (a popup or one in the notification center; swiping it sideways works too) |
+| right click the desktop | Edit desktop widgets (the toolbar can be dragged by its title out of the way): drag them (edges and centers snap to other widgets and the screen, with guide lines), resize them (corner = size, right edge = width), drag the wallpaper frame (it snaps to the screen edges, center and the widgets; its corner resizes it, double click = normal size), toggle them in the toolbar; Esc or Done to finish |
 | hover a bar widget | Details popup (media controls, resources, weather forecast, battery, updates) |
 | scroll | Every slider (volume, brightness, mic, app volumes, track position, settings); on the bar: system icons = volume, battery = brightness, media = player volume, keyboard layout = switch, workspaces = previous / next; the calendar scrolls through months |
 
-Change the keys in `hypr/hi-shell.lua`. Every panel can also be toggled over IPC, e.g. for your own binds or scripts:
+Change the keys in `~/.config/hypr/hi-shell/keybinds.lua` (the other files in that folder hold the startup, window and layer rules; `update.sh` keeps your edits and leaves a new version of a changed file as `<name>.lua.new`; turn on Settings → Hyprland → "Keep my Hyprland files on update", `hyprland.keepFiles` in the config, and updates don't touch that folder at all, they only list what changed upstream). Every panel can also be toggled over IPC, e.g. for your own binds or scripts:
 
 ```sh
 qs -c hi-shell ipc call launcher toggle       # also: ai, sidebarRight, calendar
@@ -242,7 +252,9 @@ qs -c hi-shell ipc call welcome open                  # the first-run welcome ag
 
 Use the settings panel (<kbd>Super</kbd>+<kbd>Escape</kbd>), or edit `~/.config/hi-shell/config.json` (created with
 the defaults on first start; edits apply live). The Hyprland page applies changes at once and keeps them in
-`~/.config/hi-shell/hyprland.lua`, which `hypr/hi-shell.lua` loads at startup; "Reset Hyprland overrides" removes them.
+`~/.config/hi-shell/hyprland.lua`, which `overrides.lua` loads at startup; "Reset Hyprland overrides" removes them.
+A new resolution, orientation or scale for a monitor is tried first: a "Keep these display settings?" card counts down
+15 seconds and puts the old settings back (Revert, Esc or no answer); only Keep saves them.
 Sections:
 
 - `language`: `auto` (from `$LANG`), `en` or `ru`
@@ -259,6 +271,7 @@ Sections:
   `qs -c hi-shell ipc call coverMode toggle`), draw the `wallpaper`, show `widgets`, `monitor` for them (empty = first screen), `layout` (written by edit
   mode), `worldClocks` (IANA zones), `image` for the image frame, bottom `visualizer`
 - `ai.model`: claude CLI model alias (empty = CLI default, `opus`, `sonnet`, `haiku`; also the picker in the chat)
+- `ai.provider`: `claude` or `openrouter` (the button next to the history button in the chat switches it); `ai.openrouterKey`: your key from openrouter.ai/keys; `ai.openrouterModel`: the model id (the chat's picker lists OpenRouter's free models)
 - `translator`: target language and the quick-pick list
 - `clipboard.watch`: start `wl-paste --watch cliphist store` with the shell (skipped if already running)
 - `weather`: `city` (or `latitude`/`longitude`; empty = locate by IP, which a VPN will skew), `imperial`, refresh interval
@@ -267,8 +280,9 @@ Sections:
 - `updates`: check interval, include AUR (via `yay` or `paru`)
 - `tray.hidden`: tray item ids to hide
 - `dock`: enabled (off by default), auto-hide, magnify, icon size, pinned app ids
-- `capture`: OCR languages (`auto` = every installed tesseract language, or e.g. `eng+rus`), record audio
+- `capture`: OCR languages (`auto` = every installed tesseract language, or e.g. `eng+rus`); `recordSound` for screen recordings: `off`, `system` (what plays through the speakers) or `mic` (also the buttons under the mode switcher in Record mode)
 - `appearance.screenCorners`: rounded screen corner radius (0 = off)
+- `appearance.contextMenu`: `material` (the shell's own Material You menus for the tray, default) or `standard` (the system's menus); also in Settings › Interface
 - `apps.terminal`: terminal for terminal apps and the system upgrade
 
 ## Terminal configs
@@ -367,7 +381,7 @@ and add it) starts and stops it, and so does `qs -c hi-shell ipc call waitmode s
   "Wait Mode" when nothing plays. Those five are the only buttons that work on the cover. Colors, wallpaper and language come from
   hi-shell.
 - **Shut out:** the overlay takes the keyboard and the pointer, and Hyprland's key binds are off (the empty `hi-wait`
-  submap in `hypr/hi-shell.lua`, so reload Hyprland after updating: `update.sh` does). Not even a Super tap opens the
+  submap in `hypr/hi-shell/wait-mode.lua`, so reload Hyprland after updating: `update.sh` does). Not even a Super tap opens the
   launcher. The machine doesn't sleep or dim.
 - **Exit:** press **Esc three times** (within a few seconds of each other). If the cover itself ever fails,
   **Ctrl+Alt+Shift+Esc** stops it, and so does `systemctl --user stop hi-wait-mode` from a terminal or another TTY.
@@ -504,12 +518,13 @@ modules/             Bar, Desktop, DesktopVisualizer, DisplayMode, Settings, Wel
 common/              singletons (Config, Appearance, Colors, Theme, ShellState, Translation, Paths)
 common/widgets/      widget kit (StyledText, MaterialIcon, Card, Chip, SegmentedButton, M3Switch, ListRow,
                      StyledPopup, StyledFlickable, PanelLoader, Spectrum, animations, buttons, slider)
-common/widgets/shaders/  spectrum.frag (+ compiled .qsb) for the audio spectrum
+common/widgets/shaders/  spectrum.frag, dimming.frag (+ compiled .qsb) for the audio spectrum and the region selector
 common/shapes/       Material 3 Expressive shapes (MaterialShape, ShapeImage) with morphing
 services/            QML services (Mpris, Weather, Battery, Brightness, NetworkSpeed, Notifications, Tray,
                      Updates, SystemStats, Calendar, Presets) and scripts: theme_updater.py (matugen), presets.py
 translations/        interface translations (ru.json)
-hypr/hi-shell.lua    Hyprland autostart, keybinds and layer rules
+hypr/hi-shell.lua    a stub for configs that still load the old single file (it loads the folder below)
+hypr/hi-shell/       Hyprland autostart, keybinds, Super tap, window and layer rules, Wait Mode submap (installed to ~/.config/hypr/hi-shell)
 run.sh               start the shell (Vulkan rendering when available)
 install.sh           install packages, link the repo, hook into Hyprland, offer the configs in dots/
 dots/                terminal configs (fish, kitty, fastfetch, btop)

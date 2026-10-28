@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/leancodepl/tandem/raw/main/doc/imgs/logo.png" alt="tandem: a robot and Dash riding a tandem bike" width="400">
+  <img src="https://github.com/leancodepl/tandem/raw/main/doc/imgs/logo.svg" alt="tandem: a pixel-art tandem bike, the agent pedalling behind and the user steering in front" width="400">
 </p>
 
 <br>
@@ -23,17 +23,19 @@ Run `dart run skills@ add leancodepl/tandem --skill tandem --agent claude`, then
 
 In a new session, `/tandem` does the same. Tandem is tested with Claude Code only. Cursor and Codex should work the same way, but you set them up on your own: use `--agent cursor` and `.cursor/skills/tandem/SKILL.md`, or `--agent codex` and `.agents/skills/tandem/SKILL.md`.
 
-Pick a screen. Its state class lists what an AI agent may see and which of its methods the agent may call. The agent then works on that screen together with the user, through the methods your buttons already call, and the important ones wait for the user's approval. The rest of the app stays as it is.
+Pick a screen. Its state class lists what an AI agent may see and which of its methods the agent may call. The agent then works on that screen together with the user, through the methods your buttons already call, and the important ones wait for the user's approval. Where you put a `TandemView`, the agent can also draw for the user, such as a summary of the order with a button that places it. The rest of the app stays as it is.
 
 ## How it works
 
-![The Flutter app with tandem sends the agent backend the user's message, what the agent sees and what it may call, over AG-UI. The backend keeps the API key, asks the model, and sends back replies and calls to the app's methods. On iOS and macOS 26, OnDeviceAgent does the same with Apple's on-device model, without a backend or an API key.](https://github.com/leancodepl/tandem/raw/main/doc/imgs/how-it-works.svg)
+![The Flutter app with tandem sends the agent backend the user's message, what the agent sees and what it may call, over AG-UI. The backend keeps the API key, asks the model, and sends back replies, calls to the app's methods and views in A2UI, which TandemView draws. On iOS and macOS 26, OnDeviceAgent does the same with Apple's on-device model, without a backend or an API key.](https://github.com/leancodepl/tandem/raw/main/doc/imgs/how-it-works.svg)
 
-With a remote agent, your backend calls the model and keeps the API key. The app talks to it over [AG-UI](https://docs.ag-ui.com), an open protocol between agents and apps. Google ADK, LangChain, CrewAI, Mastra and many other agent frameworks support it.
+With a remote agent, your backend calls the model and keeps the API key. The app talks to it over [AG-UI](https://docs.ag-ui.com), an open protocol between agents and apps. Tandem is checked with Google ADK, LangGraph and Pydantic AI, and works with any AG-UI backend.
 
 On iOS and macOS 26, the experimental `OnDeviceAgent` can run [Apple's on-device model](#apples-on-device-model) instead, without a backend or an API key, for the simplest tasks. The screen, its capabilities and approvals stay the same.
 
 In a debug build, [your coding agent](#your-coding-agent), such as Claude Code, calls the same methods through `TandemBridge`, with the same checks and approvals.
+
+The in-app agent can also draw a view for the user in [A2UI](https://a2ui.org), an open protocol for views that agents draw. The view comes as a call of Tandem's tool `tandem_show_view`, and [`TandemView`](#views-the-agent-draws) draws it from the screen's data, with buttons that call the screen's methods.
 
 Your state class lists what the agent may do:
 
@@ -142,6 +144,14 @@ Requires Dart 3.13 (Flutter 3.47) or newer.
 > [!TIP]
 > `/tandem` from the prompt above walks your coding agent through these steps. `dart run skills@ get --package tandem --all` installs the skills of your version of Tandem: the base steps, the coding agent and the in-app agent.
 
+## Try it without a key
+
+https://github.com/user-attachments/assets/c25184ad-aa7c-4159-bb89-db4033f4d2ce
+
+The [example](https://github.com/leancodepl/tandem/blob/main/example/README.md) runs an order desk on Android, iOS and macOS with a scripted agent, without a backend or an API key. It can also talk to the example's agent backend, which has a scripted model too. On a Mac or an iPhone with Apple Intelligence, the [invoice list](https://github.com/leancodepl/tandem/blob/main/example/README.md#smart-invoice-input-with-apples-on-device-model) above runs on Apple's on-device model, a real model that needs no key.
+
+The order desk enables `TandemBridge`, so your coding agent can fill the order too. To try your own screen without a backend, give `TandemScope.connected` a `ScriptedAgent`, as [the order desk](https://github.com/leancodepl/tandem/blob/main/example/lib/desk/order_desk_agent.dart) does.
+
 ## Your coding agent
 
 `TandemBridge.enable()` registers two VM service extensions in a debug build. `ext.tandem.describe` gives the open screens, with what the agent sees and may call. `ext.tandem.call` calls one of the listed methods. A profile or release build registers nothing.
@@ -151,7 +161,6 @@ A coding agent reaches them with the `vm_service` tool of the Dart MCP server (`
 - The coding agent sees what an in-app agent would see, and calls only the listed methods, with the same checks.
 - A call goes to the front screen: the only open `TandemScope`, or else the only one on the current route. When there are several, the call names one.
 - A `.callsWithApproval` method waits until the user approves it in the app, as `approvals:` of the scope asks. `TandemBridge.enable(autoApprove: true)` lets the coding agent approve its own calls, for a scripted run.
-- Claude Code waits up to 30 minutes for a call through the Dart MCP server. The request keeps waiting in the app, and `describe` shows its outcome in `lastApproval`, so the coding agent does not call the method twice.
 
 ## An in-app agent
 
@@ -180,6 +189,8 @@ Tandem has no chat widget, so the chat has your app's texts, language and look. 
 <!-- example/lib/agent_chat.dart -->
 ```dart
   Widget build(BuildContext context) => switch (item) {
+    // A message of session.wake is for the agent, not the user.
+    UserMessage(fromApp: true) => const SizedBox.shrink(),
     UserMessage(:final text) => _Bubble(text, fromUser: true),
     AgentMessage(:final text, :final stopped) => _Bubble(
       text,
@@ -197,38 +208,49 @@ Tandem has no chat widget, so the chat has your app's texts, language and look. 
 
 [`AgentChat`](https://github.com/leancodepl/tandem/blob/main/example/lib/agent_chat.dart) in the example is the whole chat in one file, ready to copy. Its field calls `session.send(text)`, and its button switches on [the status](#session-status). The skill `tandem-in-app-agent` builds the chat, or a button, with your coding agent.
 
-## Try it without a key
+## Views the agent draws
 
-https://github.com/user-attachments/assets/c25184ad-aa7c-4159-bb89-db4033f4d2ce
+`TandemView` shows what the in-app agent draws for the user, such as a card with the order and its total, or a table of its lines. Put it below the scope, next to the screen or in place of a part of it. The order desk of the example puts it below its form, in at most half of the height:
 
-The [example](https://github.com/leancodepl/tandem/blob/main/example/README.md) runs an order desk on Android, iOS and macOS with a scripted agent, without a backend or an API key. It can also talk to the example's agent backend, which has a scripted model too. On a Mac or an iPhone with Apple Intelligence, the [invoice list](https://github.com/leancodepl/tandem/blob/main/example/README.md#smart-invoice-input-with-apples-on-device-model) above runs on Apple's on-device model, a real model that needs no key.
-
-The order desk enables `TandemBridge`, so your coding agent can fill the order too. To try your own screen without a backend, give `TandemScope.connected` a `ScriptedAgent`, as [the order desk](https://github.com/leancodepl/tandem/blob/main/example/lib/desk/order_desk_agent.dart) does.
-
-## Apple's on-device model
-
-> [!WARNING]
-> Experimental. Apple's on-device model is small, so use it for the simplest tasks, such as one sentence that becomes one call. It is not part of what Tandem checks before a release.
-
-`OnDeviceAgent.apple()` runs Apple's system model on the device, with the same screen, capabilities, chat and approvals as a remote agent. Pass it to `TandemScope.connected`. It returns the same connection on every call, so `build` may call it.
-
-The invoice list of the example runs on it:
-
-<!-- example/lib/main_apple.dart -->
+<!-- example/lib/desk/ui/order_desk_screen.dart -->
 ```dart
-void main() => runApp(InvoiceApp(connection: OnDeviceAgent.apple()));
+        const Expanded(child: OrderForm()),
+        ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: constraints.maxHeight / 2),
+          child: const SingleChildScrollView(
+            padding: .fromLTRB(12, 0, 12, 12),
+            child: TandemView(),
+          ),
+        ),
 ```
 
-Build with Xcode 26 or newer. To generate, the app needs iOS or macOS 26 on an eligible device, with Apple Intelligence on and its model ready. `await OnDeviceAgent.apple().availability()` says which of these is missing. Other platforms answer `unsupportedPlatform` and keep using remote connections. Native registration works with Swift Package Manager and CocoaPods.
+<p align="center">
+  <img src="https://github.com/leancodepl/tandem/raw/main/doc/imgs/examples/drawn-summary.png" alt="The order desk on an iPad: the order draft, and below it the summary that the agent drew, with its lines, a Remove button for each, the total and Place order." width="400">
+</p>
 
-How it differs from a remote agent:
+While `TandemView` is on the screen, every run offers the agent the tool `tandem_show_view`, whose description teaches it seven A2UI components: Text, Column, Row, List, Card, Divider and Button. There are no form fields.
 
-- The text comes whole when the model finishes, not streamed. Stop waits for that answer and runs none of its calls; disposing the session cancels the run.
-- The model proposes calls; Tandem runs them with the usual approvals and sends their real results back. When one call of a batch is not a current tool, repeats an ID or has arguments that are not an object, none of the batch runs and the run fails. A remote agent's turn would run its other calls.
-- Nothing shortens the history. When it no longer fits the model, the run fails with `OnDeviceErrorCode.contextWindowExceeded`, and `if (event case RunFailed(code: OnDeviceErrorCode.contextWindowExceeded)) session.startOver();` in `onEvent` goes on without it.
-- Tool parameters can be scalars, objects, arrays, string enums, optional properties and nullable ones. A `DateTime` parameter fails the run with `OnDeviceErrorCode.unsupportedSchema`, because the model cannot keep its `format`. Integer arguments beyond 2^53 - 1 fail it with `OnDeviceErrorCode.unsupportedArguments`, because Apple keeps numbers as `double`.
+- The texts show only what `.sees` lists, by path, so the view follows the screen without the agent.
+- A button calls a method the screen lists, with the same checks and approvals as the agent's calls, and `caller: Caller.view` in `AgentCall` and `ApprovalRequest`. A button of a `.callsWithApproval` method is enabled only while the session is `Idle`, and a button waits for its own call to answer. A press wakes no agent: the agent reads what the method answered in `app_notes` with its next run, and `onEvent` may call [`session.wake()`](#notes-from-the-app).
+- A view that does not fit the screen, such as one with a path that `.sees` does not have, is refused with what to fix, and the agent fixes it in the same turn. The last view stays. After three refused views in a row, the last refusal tells the agent to answer in text, and no run offers `tandem_show_view` until the next message.
+- While the agent draws, the status is `Thinking(drawing: true)`.
+- Drawing needs a strong remote model, such as Gemini, behind an AG-UI backend that puts `context` into the prompt. A small local model or Apple's on-device model rarely writes valid A2UI.
+- `TandemView` has no texts of its own, takes no space before the agent draws and does not scroll.
 
-The model can still pick the wrong call, so keep the same validation and approvals as for a remote model. The Swift side has not had a human review yet ([AI](#ai)). [Design and tested limits](https://github.com/leancodepl/tandem/blob/main/doc/design.md#apple-on-device-connection).
+Once the user placed the order from the summary, the order desk's `onEvent` lets the agent answer:
+
+<!-- example/lib/desk/ui/order_desk_screen.dart -->
+```dart
+void wakeOnPlacedOrder(
+  BuildContext context,
+  TandemEvent event,
+  TandemSession session,
+) {
+  if (event case AgentCall(tool: 'place_order', caller: .view)) {
+    session.wake();
+  }
+}
+```
 
 ## Session status
 
@@ -241,6 +263,8 @@ final class const StatusLine({super.key}) extends StatelessWidget {
   Widget build(BuildContext context) =>
       switch (TandemSessionScope.of(context).status) {
         Idle() => const SizedBox.shrink(),
+        Thinking(:final backendTool?) => Text('Using $backendTool…'),
+        Thinking(drawing: true) => const Text('Drawing a view…'),
         Thinking() => const LinearProgressIndicator(),
         Calling(:final tool) => Text('Running $tool…'),
         AwaitingApproval(:final request) => Text(
@@ -251,11 +275,26 @@ final class const StatusLine({super.key}) extends StatelessWidget {
 }
 ```
 
+`Thinking` names the tool of the agent's backend that runs now, such as `search_catalog`, from its `TOOL_CALL_START` until its result or the agent's next text or call, so a long turn can say what the agent does.
+
 Stop is available while the status is `Thinking`, or `Calling` a method the user did not approve. An approved method runs to its end.
 
 ## Approvals
 
 A method listed with `.callsWithApproval` runs only after the user approves it. The approval covers what the agent saw when it asked, so list everything the method depends on with `.sees`. When a value listed with `.sees` changes, Tandem invalidates the request for good and the agent has to ask again. This holds from the start of the agent's run: a change made by the agent's own calls of that turn invalidates the turn's requests before they show. A change outside `.sees`, such as a selected tab, leaves it pending.
+
+The agent hears of an invalidated request with its next run, which starts with the user's next message. For the agent to ask again on its own, call [`session.wake()`](#notes-from-the-app) once the screen is still. The order desk wakes it a second after the last edit, so a few taps on + end in one new request, and only while this holds:
+
+<!-- example/lib/desk/ui/order_desk_screen.dart -->
+```dart
+bool agentMustAskAgain(TandemSession session) => switch ([
+  for (final item in session.items)
+    if (item is ApprovalRequest || item is UserMessage) item,
+].lastOrNull) {
+  ApprovalRequest(status: .invalidated, caller: .inAppAgent) => true,
+  _ => false,
+};
+```
 
 `approvals:` on the scope says how the screen asks:
 
@@ -296,7 +335,7 @@ The dialog shows the draft from the Cubit, because the approval covers what `.se
 - Several approvals of one turn show one at a time. A rejection cancels the rest, and the agent plans again.
 - `approve` and `reject` either decide or throw `ApprovalNotPending`. The same decision twice does nothing, so a double tap is harmless. `session.isPending(request)` tells whether a request still waits.
 - A message the user sends while a request waits cancels it. A request the callback leaves undecided waits until then.
-- A request of a [coding agent](#your-coding-agent) shows the same way, while the in-app agent does nothing.
+- A request of a [coding agent](#your-coding-agent) shows the same way, while the in-app agent does nothing. `request.caller` says who asked, so an invalidated card can say whom to ask again.
 
 ## Events
 
@@ -320,9 +359,46 @@ void showOrderMessages(
 }
 ```
 
-`AgentCall` comes after a listed method returned, with its `tool`, `arguments` and `result`. `RunFailed` and `ConnectionLost` also add a `ChatNotice` to `session.items`, and a stop adds one or marks the last message `stopped`.
+`AgentCall` comes after a listed method returned, with its `tool`, `arguments`, `result` and `caller`: `Caller.inAppAgent`, `Caller.codingAgent` or `Caller.view`, a press on a button of a [drawn view](#views-the-agent-draws). `RunFailed` and `ConnectionLost` also add a `ChatNotice` to `session.items`, and a stop adds one or marks the last message `stopped`.
 
 `RunFailed` has the error's `code` when it has one, a `RunErrorCode` that a pattern such as `RunFailed(code: .unsupportedOutcome)` matches. When the history no longer fits the model, `session.startOver()` sends the next message to a new thread without it. The chat keeps its items and adds a `startedOver` notice. It does nothing while a run is open.
+
+## Notes from the app
+
+`session.note(text)` tells the agent what happened in the app outside the chat, such as what the user did on the screen. Every run gives the agent the latest five notes in one `context` entry, `app_notes`, split into what is new since its last turn and what came earlier. The chat shows nothing.
+
+`session.wake()` lets the agent take a turn on it. It sends a short message that says it comes from the app: a `UserMessage` with `fromApp` set, which the chat above hides. It never decides for the user: while a run is open or a request waits, it waits, and after a Stop it goes with the user's next message.
+
+## Agent state
+
+`session.agentState` is the state that the agent's backend keeps of the thread, such as the step it works on, as AG-UI streams it: a `STATE_SNAPSHOT` replaces it and a `STATE_DELTA` patches it with JSON Patch. It changes during a run, so a widget that reads it can show what the agent does before it calls a method. From a test of the example:
+
+<!-- example/test/order_cubit_test.dart -->
+```dart
+final class const _AgentStep() extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) =>
+      switch (TandemSessionScope.of(context).agentState) {
+        {'step': final String step} => Text(step),
+        _ => const SizedBox.shrink(),
+      };
+}
+```
+
+- Its shape is the backend's. Google ADK sends the state of its session, with keys of its own that start with `_ag_ui_`. LangGraph sends the output keys of the graph, with the history in `messages`. Pydantic AI sends only what a tool returns as a `StateSnapshotEvent` or `StateDeltaEvent`, and reads it back with `StateDeps`.
+- Every run sends it back as the AG-UI `state`, as `@ag-ui/client` does, so a backend that keeps no state between runs has it again. The app only reads it: what happens in the app goes to the agent as a [note](#notes-from-the-app).
+- A new thread starts it empty. A snapshot that is not a JSON object, or a delta that does not apply, is reported and leaves it as it was, and the run goes on.
+- In a test, `AgentStep.stateSnapshot` and `AgentStep.stateDelta` of `ScriptedAgent` play it.
+
+## Keep the conversation
+
+Each session starts a new conversation, unless the scope gets one. To go on with it when the screen opens again, keep a `TandemThread` above the screen, such as in the `State` of the page that pushes it, and pass it as `thread:` to `TandemScope`. The next session shows its chat, and the agent gets its history and its state. `session.thread.id` is the id of the AG-UI thread.
+
+- One session goes on with a thread at a time: the newest. A screen that still had it, such as one that animates out, lets it go as if it closed. A conversation across screens is not supported yet.
+- A thread goes on only with the screen it left. When what `.sees` lists differs from what it was when the screen closed, such as when the screen's state object was made anew, the session starts the thread over before its first message, with a `startedOver` notice. Keep the state object as long as the thread to keep both.
+- A screen closed while a run is open or an approved method runs starts the thread over too, since the backend may finish that run in a history that the app never sees. A screen closed while an approval waits cancels it, and the agent hears `cancelled` with the next message.
+- With another `agent`, the scope's next session takes the thread, its history and its agent state to that backend. Give it another `TandemThread` to start fresh.
+- The thread lives in memory. Tandem does not save it yet.
 
 ## Any state library
 
@@ -415,18 +491,39 @@ Every turn of the script is one run. `agent.requests` holds the body of every ru
 
 ## The agent backend
 
-Any AG-UI endpoint works. The backend has to:
+Any AG-UI endpoint works. [`example/agents`](https://github.com/leancodepl/tandem/tree/main/example/agents) has an agent to copy from on each framework that Tandem is checked with: Google ADK, LangGraph and Pydantic AI. The backend has to:
 
-- Put the AG-UI `context` into the model's prompt. ag-ui-adk does not, so its agent needs an instruction provider that adds it.
-- Accept `tools` on every run. Tandem always sends it, an empty list when no method is listed.
+- Put the AG-UI `context` into the model's prompt. None of the three does it on its own: the README of each agent shows how.
+- Accept `tools` on every run, and give the model only those. Tandem always sends it, an empty list when no method is listed.
+- Read the conversation from the messages that each run brings, or keep its own copy and add the messages it has not seen.
 - On the web, allow the app's origin with CORS.
 - Treat the `tools`, their descriptions and the `context` as untrusted input: they come from the app, and anyone can send a run with other ones.
 
-To send the user's token, give `HttpAgentConnection` an `http.Client` that adds it, and pass the connection to `TandemScope.connected`. Keep the connection in a field: a new one starts a new session. A sandboxed macOS app needs the `com.apple.security.network.client` entitlement to reach the agent. [`example/agent`](https://github.com/leancodepl/tandem/tree/main/example/agent) is a Google ADK agent to copy from.
+To send the user's token, give `HttpAgentConnection` an `http.Client` that adds it, and pass the connection to `TandemScope.connected`. Keep the connection in a field: a new one starts a new session. A sandboxed macOS app needs the `com.apple.security.network.client` entitlement to reach the agent.
+
+## Apple's on-device model
+
+> [!WARNING]
+> Experimental. Apple's on-device model is small, so use it for the simplest tasks, such as one sentence that becomes one call. It is not part of what Tandem checks before a release.
+
+`OnDeviceAgent.apple()` runs Apple's system model on the device, with the same screen, capabilities, chat and approvals as a remote agent. Pass it to `TandemScope.connected`. It returns the same connection on every call, so `build` may call it.
+
+The invoice list of the example runs on it:
+
+<!-- example/lib/main_apple.dart -->
+```dart
+void main() => runApp(InvoiceApp(connection: OnDeviceAgent.apple()));
+```
+
+Build with Xcode 26 or newer. To generate, the app needs iOS or macOS 26 on an eligible device, with Apple Intelligence on and its model ready. `await OnDeviceAgent.apple().availability()` says which of these is missing. Other platforms answer `unsupportedPlatform` and keep using remote connections. Native registration works with Swift Package Manager and CocoaPods.
+
+Unlike a remote agent, the text comes whole when the model finishes. Nothing shortens the history: once it no longer fits the model, the run fails with `OnDeviceErrorCode.contextWindowExceeded`, and [`session.startOver()`](#events) goes on without it. A `DateTime` parameter fails the run with `OnDeviceErrorCode.unsupportedSchema`. [The design](https://github.com/leancodepl/tandem/blob/main/doc/design.md#apple-on-device-connection) has the other limits and how they were tested.
+
+The model can still pick the wrong call, so keep the same validation and approvals as for a remote model. The Swift side has not had a human review yet ([AI](#ai)).
 
 ## Project status
 
-Not supported yet: AG-UI interrupts, several state objects on one screen, and a conversation that goes on across screens. A run that ends with an interrupt fails, and the next message starts a new conversation.
+Not supported yet: AG-UI interrupts, several state objects on one screen, a conversation that goes on across screens, and saving a conversation. A run that ends with an interrupt fails, and the next message starts a new conversation.
 
 ## AI
 

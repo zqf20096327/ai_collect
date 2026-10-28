@@ -109,11 +109,11 @@ Choreon is a local studio, not a hosted service. Read [SECURITY.md](SECURITY.md)
 ## How a video is made
 
 1. **Project** — a brand (`brand/`: `motion.md`, `DESIGN.md`, `brand.json`, layered SVG logo, fonts), a library, UI kits, videos.
-2. **Framing** — the director turns the brief into decisions; you answer, pick an option or let it decide.
+2. **Framing** — the director turns the brief into decisions; you answer, pick an option or let it decide. Edit the brief later and the director re-derives what it had inferred from the old text; your own answers stay.
 3. **Storyboard** — generated from the brief and decisions; annotate, revise, approve.
 4. **Voice and animatic** — record the voice-over in one take; the shots are cut to its words (or, once the shots are animated, each line moves into its shot); watch the animatic (frames over the voice) and fix story or timing while it costs nothing.
 5. **Build** — the animator writes each shot and checks its own stills; the studio renders the MP4. Shots are built in parallel (4 by default).
-6. **Critique** — scores per axis with thresholds; auto-fix below the bar, capped rounds.
+6. **Critique** — scores per axis with thresholds; auto-fix below the bar, capped rounds. A run that fails (a usage limit, a crash) can be retried from its log with the same input, so the loop resumes at the round it reached.
 7. **Production** — the edit plays as one film (click a shot to play from it, double-click to open it, heard with the edit's sound), frame-by-frame player, notes on the exact frame and region, surgical fixes.
 8. **Assembly and sound** — best render of each shot, then sound design in the chosen dosage, mixed under the voice.
 

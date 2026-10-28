@@ -26,6 +26,7 @@ BuildSpace gives you two layers of CI/CD automation:
   - [TypeScript Service Release](#typescript-service-release)
   - [TypeScript Monorepo Release](#typescript-monorepo-release)
   - [Go Binary Release](#go-binary-release)
+  - [Swift Stage and Promote](#swift-stage-and-promote)
   - [Swift Release](#swift-release)
   - [Package Release](#package-release)
   - [Package PR Build](#package-pr-build)
@@ -71,6 +72,8 @@ BuildSpace gives you two layers of CI/CD automation:
 | Single TypeScript / JavaScript package | [`typescript-service-release`](#typescript-service-release) | PR label `release` |
 | TypeScript monorepo (multiple packages) | [`typescript-monorepo-release`](#typescript-monorepo-release) | PR label `release` |
 | Go binary | [`go-binary-release`](#go-binary-release) | PR label `release` |
+| Swift macOS `.pkg`, staged on staging Macs and promoted to production and Jamf | [`swift-stage` + `swift-promote`](#swift-stage-and-promote) | Push to main; promotion by dispatch and approval |
+| SwiftPM library, released by tags | [`swift-stage` + `swift-promote`](#swift-stage-and-promote) with `library: true` | Push to main; promotion by dispatch and approval |
 | Swift macOS `.pkg` (release) | [`swift-release`](#swift-release) | PR label `release` or `prerelease` |
 | macOS `.pkg` without binary (payload/scripts only) | [`pkg-release`](#package-release) | PR label `release` |
 | macOS `.pkg` PR build (no binary) | [`pkg-release-pr`](#package-pr-build) | Every PR commit |
@@ -326,9 +329,11 @@ Kargo ship images: every main commit is built and tested once, and production
 receives exactly the files that staging tested. Internal Rust crates built from
 the same commit are staged and promoted with them.
 
-Each main push packs the caller's packages twice from the same checkout: a
-staging build `X.Y.Z-staging.<run id>.<attempt>`, published under the `staging`
-dist-tag, and the production candidate `X.Y.Z`. Both are attested and attached to
+Each main push computes the build's version `X.Y.Z` from the pull requests merged
+since the latest production release (see **Versions** below), then packs the
+caller's packages twice from the same checkout: a staging build
+`X.Y.Z-staging.<run id>.<attempt>`, published under the `staging` dist-tag, and
+the production candidate `X.Y.Z`. Both are attested and attached to
 a GitHub prerelease, `<repository>-staging-<staging version>`, with a
 `release-manifest.json` holding their checksums and source commit. Promotion
 publishes a build's stored candidates under `latest` after an environment
@@ -349,10 +354,12 @@ jobs:
       actions: read
       attestations: write
       id-token: write
+      pull-requests: read
     with:
       ci-workflow: ci.yml
       verify: pnpm verify
       pack: pnpm release:pack
+      paths: packages/adapter scripts/pack.mjs # optional: what counts toward the version
       crates: photon-adapter # optional: Rust crates released with the packages
       downstream: fusor-v2 base-bffs
     secrets:
@@ -389,15 +396,16 @@ signed by the old stage workflow can't be.
 
 To promote, run the promote workflow from `main` (Actions, or
 `gh workflow run promote.yml -f staging-version=1.4.0-staging.123456789.1`). Its
-first job shows what will be published and the commits since the current
-`latest`, then the run waits for the `production` environment's reviewers. After
-approval it publishes the candidates, creates the `vX.Y.Z` tag and Release on the
+first job shows what will be published, its version and the changes that version
+was computed from, then the run waits for the `production` environment's
+reviewers. After approval it publishes the candidates, creates the `vX.Y.Z` tag and Release on the
 source commit, and moves `latest`.
 
 - **The `pack` script** is the caller's. It runs twice, with `RELEASE_CHANNEL`
-  (`staging` or `production`), `RELEASE_SUFFIX` (`-staging.<run id>.<attempt>`,
-  or empty) and `PACK_DESTINATION`. It must write one `.tgz` per package to
-  `PACK_DESTINATION`, each versioned `<package.json version>$RELEASE_SUFFIX`, and
+  (`staging` or `production`), `RELEASE_VERSION` (the build's `X.Y.Z`),
+  `RELEASE_SUFFIX` (`-staging.<run id>.<attempt>`, or empty) and
+  `PACK_DESTINATION`. It must write one `.tgz` per package to
+  `PACK_DESTINATION`, each versioned `$RELEASE_VERSION$RELEASE_SUFFIX`, and
   test what it packed. It must leave tracked files unchanged; the job fails
   otherwise. `verify` runs once before both packs. Both run with
   `NODE_AUTH_TOKEN` able to read packages.
@@ -406,7 +414,12 @@ source commit, and moves `latest`.
   `INSTALL_TOKEN` secret and use it in `install`, for example
   `install: pnpm install --frozen-lockfile --config.//registry.example/:_authToken="$INSTALL_TOKEN"`.
   Only the install script sees it; `verify` and `pack` do not.
-- **Several packages** from one repository are staged and promoted together.
+- **npm-only repositories.** Set `setup-pnpm: false` and `install: npm ci`.
+  Node supplies npm; the workflow skips pnpm's package-manager-field check.
+  Existing callers still set up their pinned pnpm by default, and `bun-version`
+  continues to select Bun in its place.
+- **Several packages** from one repository are staged and promoted together, all
+  at the build's version, so dependencies between them pin `$RELEASE_VERSION`.
   They are published in dependency order, and the build is named after
   `package` (default `@<owner>/<repository>`), which must be one of them.
   `tag-prefix` overrides the staging tag prefix.
@@ -414,7 +427,9 @@ source commit, and moves `latest`.
   to the stage workflow, in one run, with their own `package`, `tag-prefix`,
   `production-tag-prefix` and `artifact-name`, and their own promote workflow.
   A workflow that promotes several of them in one run, in dependency order,
-  gives each promote call its own `artifact-name` as well.
+  gives each promote call its own `artifact-name` as well. Give each its own
+  `paths` too, usually the paths its push trigger filters on, so a change to one
+  package, or to a service beside them, does not version the others.
   The calls share the run's staging suffix, so a later one (`needs:` the
   earlier) can depend on the staging version the earlier one publishes.
 - **A repository whose `vX.Y.Z` tags already name something else**, such as a
@@ -485,18 +500,48 @@ source commit, and moves `latest`.
   (pin the staging tag to try a staging build). After `verify`, the build job runs
   `cargo package --locked --no-verify --exclude-lockfile` for each crate (Cargo
   1.87+, clean checkout); the `.crate` records its source commit and is attested
-  and attached to both releases. Promotion refuses a crate whose version is not
-  newer than in the latest production release, unless its packaged files are
-  unchanged, and one whose normal or build dependencies from the owner's GitHub
-  repositories, inherited ones included, are not pinned to a `vX.Y.Z` tag with an
-  exact `=X.Y.Z` version. An npm package still names each release, and the job
+  and attached to both releases. Cargo reads a crate's version from its source at
+  the tag, so the version stays the one in `Cargo.toml`; the build's bump says
+  how far it must move. Promotion refuses a crate whose packaged files changed
+  since the latest production release unless its version rose by at least the
+  bump's level (a patch when no change counted), for example `0.4.0` after
+  `0.3.2` for a minor bump. It also refuses one whose normal or build
+  dependencies from the owner's GitHub repositories, inherited ones included,
+  are not pinned to a `vX.Y.Z` tag with an exact `=X.Y.Z` version. An npm package still names each release, and the job
   token reads only the calling repository, so a crate whose build fetches another
   private repository cannot be staged yet.
-- **Versions.** Bump a package's `package.json` version, or a crate's
-  `Cargo.toml` version, before promoting changed contents again; the staging run
-  warns when a candidate cannot be promoted. A package released earlier with
-  byte-identical contents (for example an unchanged sibling in a multi-package
-  repository) is left as it is.
+- **Versions.** A separate read-only job computes the build's version before
+  any caller code runs; `package.json` versions are not read. It starts from the highest stable `<production-tag-prefix>X.Y.Z` tag and
+  reads every first-parent commit on `main` since then that touches `paths`
+  (default: the whole repository). Each commit counts once per merged pull
+  request, by the pull request's title and description, whether it was squashed,
+  merged or rebased; a commit pushed without one counts by its own message.
+  - The largest change decides the bump, by
+    [Conventional Commits](https://www.conventionalcommits.org): `type!:` or a
+    `BREAKING CHANGE:` footer is major, `feat` minor, and anything else a patch,
+    including a title that does not parse, which the run warns about. Below
+    1.0 a breaking change releases `1.0.0`.
+  - Merges between promotions do not add up: from `v1.26.0`, a `fix` stages
+    `1.26.1`, a later `feat` `1.27.0`, a later `docs` still `1.27.0`, and
+    promoting that build makes `v1.27.0` the next starting point.
+  - A `Release-As: X.Y.Z` line in a description raises the version to at least
+    `X.Y.Z`, for an intended major or a line's first version; one at or below the
+    latest release is ignored with a warning. A line with no release yet starts at
+    `0.1.0`, and one with no change since its release keeps its version.
+  - The staging release, the version job's summary and the promotion summary
+    list each change with the release it asks for. The version job reads pull
+    requests, so the stage call needs `pull-requests: read`.
+  - A package released earlier with byte-identical contents is left as it is.
+    When a build's contents changed but no change inside `paths` counted, the
+    staging run warns that it cannot be promoted: widen `paths` or merge a
+    `Release-As`.
+- **Moving to computed versions.** Builds staged before it keep the version
+  their `package.json` gave them and still promote. A caller moving its pins
+  grants `pull-requests: read` to the stage call, passes the paths its push
+  trigger filters on as `paths`, and packs at `$RELEASE_VERSION` instead of the
+  `package.json` version. Where `package.json` is ahead of the latest release
+  with an unpromoted bump, the moving pull request's description carries
+  `Release-As: <that version>` so the bump is kept.
 - **Retries.** Every publish step accepts its own earlier work: a version already
   published with the same integrity, a tag on the same commit, an existing
   release missing assets. Anything else stops before writing. Channel tags never
@@ -509,7 +554,7 @@ source commit, and moves `latest`.
 - `downstream` repositories receive an `internal-package-published` dispatch after
   each publication, using the `APP_ID` and `APP_PRIVATE_KEY` GitHub App.
 
-Local validation: `node --test test/package-release.test.mjs` (after
+Local validation: `node --test test/package-release.test.mjs test/release-version.test.mjs` (after
 `npm ci --prefix .github/package-release`) and `python3 -m unittest discover -s test`
 (the crate packaging test runs when `cargo` is installed).
 
@@ -842,11 +887,172 @@ jobs:
 
 ---
 
+### Swift Stage and Promote
+
+`.github/workflows/swift-stage.yml` and `.github/workflows/swift-promote.yml` release
+Swift macOS `.pkg` packages, and SwiftPM libraries, the way
+[Package Stage and Promote](#package-stage-and-promote) releases npm packages.
+For a package, every main commit is built once, into a staging package that
+staging Macs run and a production candidate from the same checkout, and
+promotion releases that candidate without rebuilding it. A library builds
+nothing: stage tags the commit with a manifest-only prerelease, and promotion
+tags `vX.Y.Z` on it (see **Libraries** below). Versions follow the same rule
+(see **Versions** there) under `vX.Y.Z` tags.
+
+Each main push, after `ci-workflow` passes on that commit:
+
+1. A read-only job computes `X.Y.Z` from the pull requests merged since the
+   latest `vX.Y.Z`.
+2. A macOS job builds the package twice from one checkout and build directory:
+   the staging build at `X.Y.Z-staging.<run id>.<attempt>` and the production
+   candidate at `X.Y.Z`. Each compiles with a `.env` of `VERSION`,
+   `BUILD_ENVIRONMENT=production`, `RELEASE_CHANNEL` (`staging` or
+   `production`) and `SECRET_ENV_VARS`, and `pkgbuild` packages it at its
+   version.
+3. A separate job attests both packages and publishes the GitHub prerelease
+   `vX.Y.Z-staging.<run id>.<attempt>`. It holds the staging `<package-name>.pkg`,
+   the candidate as `<package-name>-X.Y.Z.pkg.candidate` and
+   `release-manifest.json`. GitGate and the Astrolabe self-updater install the
+   first `.pkg` of the newest release on the prerelease channel, so staging Macs
+   pick up every main commit, and the candidate's name keeps them off it.
+
+Promotion, dispatched from `main` (a dispatch from another branch fails), proves
+where the candidate came from and waits for the `production` environment's
+reviewers. After approval it tags
+`vX.Y.Z` on the source commit, publishes the release with the candidate as
+`<package-name>.pkg`, and uploads that package to Jamf Pro when `jamf-url` is
+set, building the uploader from the same pinned `jamf-package-updater` commit.
+Nothing is rebuilt.
+
+```yaml
+# .github/workflows/release.yml
+name: Stage
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        type: boolean
+        default: true
+jobs:
+  stage:
+    uses: photon-hq/buildspace/.github/workflows/swift-stage.yml@<reviewed-commit-sha>
+    permissions:
+      contents: write
+      actions: read
+      attestations: write
+      id-token: write
+      pull-requests: read
+    with:
+      package-name: macrocosm-astrolabe
+      identifier: codes.photon.macrocosm-astrolabe
+      ci-workflow: ci.yml # optional: a push workflow that must pass first
+      private-deps: true # optional: a dependency is one of the owner's private repositories
+      dry-run: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+    secrets:
+      APP_ID: ${{ secrets.APP_ID }}
+      APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
+      SECRET_ENV_VARS: ${{ secrets.SECRET_ENV_VARS }}
+```
+
+```yaml
+# .github/workflows/promote.yml
+name: Promote to production
+on:
+  workflow_dispatch:
+    inputs:
+      staging-version:
+        description: Staging build to promote; blank promotes the newest
+        default: ''
+jobs:
+  promote:
+    uses: photon-hq/buildspace/.github/workflows/swift-promote.yml@<reviewed-commit-sha>
+    permissions:
+      contents: write
+      actions: read
+      attestations: read
+    with:
+      package-name: macrocosm-astrolabe
+      staging-version: ${{ inputs.staging-version }}
+      jamf-url: ${{ vars.JAMF_URL }} # optional
+      private-deps: true # optional: a dependency is one of the owner's private repositories
+    secrets:
+      APP_ID: ${{ secrets.APP_ID }}
+      APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
+      JAMF_CLIENT_ID: ${{ secrets.JAMF_CLIENT_ID }}
+      JAMF_CLIENT_SECRET: ${{ secrets.JAMF_CLIENT_SECRET }}
+```
+
+- **Inputs.** `package-name`, `identifier`, `scripts-path`, `payload-path`,
+  `resource-bundles`, `entitlements` and `private-deps` (with the `APP_ID` and
+  `APP_PRIVATE_KEY` secrets) work as in [Swift Release](#swift-release).
+  `paths`, `ci-workflow`, `ci-wait-minutes`, `environment` (default `staging`)
+  and `dry-run` work as in `package-stage`. The promote call names the same
+  `package-name` and `library`, and sets `private-deps` (with the same
+  secrets) when a dependency is one of the owner's private repositories.
+- **Dependencies.** Production depends only on production. Promotion reads the
+  source commit's `Package.resolved` and `Package.swift` from GitHub, never
+  running them, and checks every dependency fetched from one of the owner's
+  GitHub repositories. A package is held to the pins of its committed
+  `Package.resolved`, which the build resolved from and could not change:
+  each must be a stable `X.Y.Z` (not a branch, a bare revision or a staging
+  version) whose `vX.Y.Z` or `X.Y.Z` tag is a published, non-prerelease
+  release still naming the pinned commit. A library, whose consumers resolve
+  its requirements themselves, and a package that commits no
+  `Package.resolved` are held to the requirements in `Package.swift`
+  instead: each must be a version requirement written as string literals,
+  with no branch, revision or prerelease bound, and its lowest version must be
+  such a release. Reading a private repository's releases takes
+  `private-deps`. The reviewer's summary lists each release it checked: the
+  pinned version from `Package.resolved`, or the lowest version
+  `Package.swift` requires, which SwiftPM may resolve higher.
+- **Libraries.** `library: true` builds nothing. Stage waits for CI, then tags
+  `vX.Y.Z-staging.<run id>.<attempt>` with a prerelease that holds only the
+  manifest, and promotion tags `vX.Y.Z` on the same commit. SwiftPM resolves
+  only stable versions for a requirement such as `from: "1.2.0"`, so a staging
+  tag reaches only a consumer that pins it exactly.
+- **The version in the binary.** The staging build reports
+  `X.Y.Z-staging.<run id>.<attempt>` as `VERSION` and the candidate `X.Y.Z`.
+  Both keep `BUILD_ENVIRONMENT=production`, as release builds always have, so
+  staging Macs' telemetry keeps its environment; `RELEASE_CHANNEL` tells the
+  two builds apart.
+- **Staging Macs after a promotion.** GitGate's prerelease channel installs the
+  most recently published release, and a promotion publishes `vX.Y.Z`. A
+  staging Mac running a later staging build of a GitGate package returns to
+  `vX.Y.Z` until the next main push stages again. The Astrolabe self-updater
+  compares versions and refuses that downgrade.
+- **Promotion refuses** a build whose tag no longer names its commit, whose
+  commit is not on `main`, whose candidate fails its checksum or its
+  attestation (signer `photon-hq/buildspace/.github/workflows/swift-stage.yml`,
+  the caller repository, `refs/heads/main` and the source commit), whose
+  version is not newer than the latest `vX.Y.Z`, or that depends on the
+  owner's repositories other than through production releases (see
+  **Dependencies**), and it refuses unless the
+  `production` environment requires a reviewer. A build already released as
+  `vX.Y.Z` from the same commit has nothing to publish.
+- **Trust boundaries.** Only the build job runs caller code, and it can read but
+  not write. `SECRET_ENV_VARS` and the dependency token reach only its build
+  step. Promotion's own read-only dependency token reaches only its resolve
+  step, which runs no caller code. The staging publish job rebuilds every
+  manifest claim from the files, its own run and the version job's output.
+- **Moving from `swift-release`.** The `release` and `prerelease` labels and
+  `OPENAI_API_KEY` are no longer used. The first staged version follows the
+  latest stable `vX.Y.Z`; `-rc.N` tags are ignored, and a repository without a
+  stable tag starts at `0.1.0` unless the moving pull request carries
+  `Release-As`.
+
+Local validation: `node --test test/swift-release.test.mjs` (Node 24+, after
+`npm ci --prefix .github/package-release`) and
+`python3 -m unittest discover -s test -p 'test_swift*'` (requires PyYAML 6.0.3).
+
+---
+
 ### Swift Release
 
 **File:** `.github/workflows/swift-release.yml`
 
-Complete release pipeline for macOS `.pkg` distribution packages: checks PR labels, generates version and release notes with AI, builds the Swift binary, creates a `.pkg`, creates a GitHub Release, and optionally uploads stable releases to Jamf Pro. A `prerelease` label or input creates an `-rc.N` GitHub pre-release and skips Jamf upload.
+The label-driven pipeline that Swift Stage and Promote replaces. Complete release pipeline for macOS `.pkg` distribution packages: checks PR labels, generates version and release notes with AI, builds the Swift binary, creates a `.pkg`, creates a GitHub Release, and optionally uploads stable releases to Jamf Pro. A `prerelease` label or input creates an `-rc.N` GitHub pre-release and skips Jamf upload.
 
 #### Inputs
 
@@ -1238,6 +1444,13 @@ Individual building blocks that the workflows above are assembled from. Use thes
 
 Decides whether a PR should trigger a release based on its labels. Works on both PR events and push events (looks up the merged PR).
 
+On a push or manual run, it paginates the commit's associated pull requests and
+selects the merged result matching that commit and base branch. API errors and
+ambiguous owning matches fail without emitting labels. Other associations
+supply no labels, leaving explicit manual release overrides to the caller.
+`default-on-push` applies only when GitHub confirms an empty association list,
+never when lookup fails or the owning pull request has no labels.
+
 #### Inputs
 
 | Input | Type | Required | Default | Description |
@@ -1270,6 +1483,11 @@ Decides whether a PR should trigger a release based on its labels. Works on both
 **Path:** `.github/blocks/check-readme/action.yaml`
 
 Uses AI to read the project's `README.md` alongside the PR's changed files and determine whether the documentation needs updating. Returns a boolean verdict and a one-sentence explanation. This is the block that powers the [Check README workflow](#check-readme).
+
+The README and skills checks read every changed-file page and compare the result
+with the PR's file count. An incomplete or capped list fails the check. Both
+checks require a complete verdict and a nonempty reason; empty or malformed
+model output fails without emitting a clean result or clearing an existing warning.
 
 #### Inputs
 
@@ -1746,14 +1964,19 @@ Builds and publishes one owner-scoped npm package to GitHub Packages. It uses an
 
 **Path:** `.github/blocks/comment-on-pr/action.yaml`
 
-Posts or updates a single comment on a pull request. When a `comment-key` is provided, subsequent calls with the same key update the existing comment instead of creating a new one.
+Posts, updates, or removes a marked comment on a pull request. With a
+`comment-key`, it searches every comment page and updates the first matching
+comment. Other markers and later duplicates remain unchanged. Without a pull
+request payload, it skips without making API calls.
+Without a key, the default `present` state creates an unmarked comment.
 
 #### Inputs
 
 | Input | Type | Required | Default | Description |
 |-------|------|----------|---------|-------------|
-| `message` | string | Yes | — | Comment body (markdown supported) |
+| `message` | string | No | `""` | Comment body for the default `present` state (markdown supported) |
 | `comment-key` | string | No | `""` | Unique key to find and update an existing comment |
+| `state` | string | No | `present` | `present` creates or updates; `absent` removes the first matching comment and requires a nonempty key |
 
 #### Usage
 

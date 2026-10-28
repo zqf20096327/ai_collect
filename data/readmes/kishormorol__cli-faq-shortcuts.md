@@ -11,13 +11,17 @@
 repeating, and turns each one into a short command, like `/sent` or `/project billing`.
 It works in Claude Code, Codex and Cursor.
 
-The extractor uses only Python's standard library: no packages, API keys, or network
-access are needed. Intent grouping happens in your coding agent.
+- **Built from what you actually typed.** On one real project, a single ask had been
+  typed 127 times in different words. You see the counts and pick which become shortcuts.
+- **Secrets stay out.** API keys, tokens, and passwords you pasted into old prompts are
+  replaced with `[REDACTED]` before your agent reads the list.
+- **Nothing to install but the skill.** The extractor is standard-library Python: no
+  packages, API keys, or network calls. Intent grouping happens in your coding agent.
 
 ![24-second walkthrough: repeated requests become a proposed /sent shortcut, which the user chooses and then uses to check newsletter delivery. All prompts, counts, and output are synthetic.](docs/media/faq-shortcuts-demo.gif)
 
 [Watch or download the 24-second video](https://github.com/kishormorol/cli-faq-shortcuts/releases/download/v1.2.0/faq-shortcuts-demo.mp4)
-· [What's new in v1.2.0](https://github.com/kishormorol/cli-faq-shortcuts/releases/tag/v1.2.0)
+· [What's new in v1.3.0](https://github.com/kishormorol/cli-faq-shortcuts/releases/tag/v1.3.0)
 
 The demo illustrates the workflow with synthetic data; it is not a live agent recording.
 
@@ -186,7 +190,8 @@ to read one tool only, and `--since 2026-01-01` to skip older prompts.
 
 ```text
 python scripts/extract_asks.py [project_dir] [--source all|claude|codex|cursor]
-                              [--since YYYY-MM-DD] [--max-len N] [--format tsv|jsonl]
+                              [--since YYYY-MM-DD] [--max-len N] [--min-words N]
+                              [--format tsv|jsonl] [--no-redact]
 ```
 
 | Option | Default | Behavior |
@@ -195,6 +200,8 @@ python scripts/extract_asks.py [project_dir] [--source all|claude|codex|cursor]
 | `--source` | `all` | Read one supported tool or all three. |
 | `--since` | No cutoff | Include the given UTC date and later; exclude prompts with unknown dates. |
 | `--max-len` | `400` | Skip prompts longer than this positive character limit, before whitespace cleanup. |
+| `--min-words` | `1` | Skip prompts with fewer words. `3` drops replies like "ok", "yes" and "push"; the skill uses it. |
+| `--no-redact` | off | Print pasted secrets as typed. By default they become `[REDACTED]`. |
 | `--format` | `tsv` | Emit tab-separated lines or one JSON object per line. |
 
 JSONL records have `date`, `source`, and `prompt` fields. Both formats collapse prompt
@@ -247,9 +254,14 @@ and [OpenAI Codex](https://openai.com/codex/).
 
 ## Privacy
 
-The extractor only reads local files and makes no network calls. Your prompts can contain
-names, emails and tokens, so the skill writes the list to a scratch folder, never into
-your repo. Your agent then reads that list the same way it reads any file you show it.
+The extractor only reads local files and makes no network calls. Before it prints
+anything, it replaces secrets pasted into prompts with `[REDACTED]`: API keys
+(Anthropic, OpenAI, GitHub, Slack, AWS, Google, Hugging Face, Stripe, Resend, Supabase,
+Kaggle), JWTs, bearer tokens, `password=`-style values, passwords in URLs such as
+`postgresql://user:pass@host`, Discord and Slack webhooks, and any other bare token of 30+
+mixed-case letters and digits. Matching is by pattern, so treat it as a safety net, not a
+guarantee. Your prompts can still contain names and emails, so the skill writes the list
+to a scratch folder, never into your repo. Your agent then reads that list the same way it reads any file you show it.
 
 That agent may send the prompts to its configured model provider. Review your agent's
 settings before using sensitive history. Do not attach raw history, extractor output,

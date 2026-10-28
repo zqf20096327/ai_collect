@@ -1,4 +1,4 @@
-# Enterprise Scale AI Factory - submodule
+# Enterprise Scale Azure Factory - submodule
 ![Header](documentation/v2/10-19/images/header.png)
 
 ![](./documentation/v2/10-19/images/14-eslz-full-1.png)
@@ -23,7 +23,7 @@ Governed Microsoft Foundry, Azure Machine Learning and +35 other Azure resources
 </tr>
 <tr>
 <td width="50%" valign="top">
-<a href="./documentation/v2/10_index.md#38-how-to-guide-llmops--rag-chat-agent"><img src="./documentation/v2/10-19/images/concepts/dataops-rag.gif" width="100%" alt="GenAIOps: DataOps and retrieval-augmented generation with permitted, cited evidence"></a><br>
+<a href="./usecase_code/40-agent-factory/readme.md"><img src="./documentation/v2/10-19/images/concepts/dataops-rag.gif" width="100%" alt="GenAIOps: DataOps and retrieval-augmented generation with permitted, cited evidence"></a><br>
 <sub><b>GenAIOps</b> · governed knowledge, grounded answers</sub>
 </td>
 </tr>
@@ -32,6 +32,7 @@ Governed Microsoft Foundry, Azure Machine Learning and +35 other Azure resources
 - **One governed lifecycle.** Create a factory, add scale sets and projects, update or delete them through one reviewed API: CLI, Python SDK, wizards or an Azure Function.
 - **Private by design.** Hub-spoke or Virtual WAN, private endpoints and DNS, isolation per team, Bicep through GitHub Actions or Azure DevOps.
 - **Operating models included.** DataOps, MLOps and GenAIOps templates that run on the secure infrastructure.
+- **Subscription vending (auto).**: Choose 1 team per Subscription/LZ or Multiple teams (e.g.Hackathons,Sandbox)
 
 <p align="center">
 <a href="./documentation/v2/20-29/24-end-2-end-setup.md"><b>Set up</b></a> &nbsp;·&nbsp;
@@ -47,7 +48,7 @@ Governed Microsoft Foundry, Azure Machine Learning and +35 other Azure resources
 
 # Welcome
 
-Welcome to the official `Enterprise Scale AI Factory` repository.<br>
+Welcome to the official `Enterprise Scale Azure Factory` repository.<br>
 This AI landing zone, est 2019, and is WAF aligned. It has been designed and used since 2019 for Azure Public Cloud but can be leveraged in the Azure Government and Sovereign Cloud, by configuration. This is an application landingzone that works both with VWAN Hub or a traditional Hub/Spoke<br>
 
 It is an enterprise scale solution for deploying AI Foundry with related services to create End-2-End agentic scenarios, into multiple isolated environments (Dev,Stage,Prod) with private networking in Azure. You may optionally add/remove services such as Azure Machine learning, AI Search or other services.
@@ -64,16 +65,50 @@ The deployed features follow [Microsoft's Well-Architected Framework WAF](https:
 The *AI Factory project* can have 1 or many resources *ENABLED=True* to get a *GenAI* with *Machine Learning* baseline architecture automated in 10 minutes with resources: **AI Foundry, AI Services, AI Search, Azure Machine Learning, Databricks** + 2 Storage accounts, Keyvault, Monitoring, Dashboards, Private networking - optionally hybrid mode with public user access. <br>
 Via *AI Factory feature flags* you can add optional resources, re-run the Github action workflow (or Azure Devops pipeline) - to incrementally build your solution (e.g start without front-end in PoC). 
 
-The resources that can be added in packages of configs, such as **ARCHITECTURES** seen in the image below: 
+# + 35 Azure resources (on top of all platform related) for project teams
+The +35 resources a team can add via "enable" config, such as **ARCHITECTURES** seen in the image below: 
 - **AI related**: Microsoft Foundry, Azure OpenAI (standalone), Azure Machine Learning, Azure Databricks Bing Grounding, AI Search (on/off), Azure Speech, Azure Vision
 - **Front end/Backend hosting**: Azure ContainerApps, Azure Webapp/function, AKS (fully private, and Azure Arc enabled)
-- **Data & Databases**: Azure Cosmos DB, MongoDB, Azure SQL Database, PostgreSQL Flexible server, Azure cache for Redis
+- **Data & Databases**: Azure Cosmos DB, Elastic search, MongoDB, Azure SQL Database, PostgreSQL Flexible server, Azure cache for Redis, Azure Managed Redis (AMR)
 - **Integration & ELT/ETL/Streaming**: Logic Apps, Azure Datafactory, Databricks, EventHubs, APIM - AI Gateway Hub(integration & IaC), Microsoft Onelake (integration: Snowflake, S3, etc)
-
-[How-to SETUP AI Factory](./documentation/v2/20-29/24-end-2-end-setup.md)<br>
 - **Includes two setup modes:** *Fully private AI factory* or *Standalone AI Factory* (VPN, IP whitelist, Bastion, or Hybrid access)
 - **Supports both Github Actions or Azure Devops** as orchestrator to kick-off network calculation and the IaC (BICEP)
-- [**AI Factory Configuration Wizard**](./environment_setup/install_config_wizard/readme.md) Setup in minutes, intelligent workflow-drivern setup Wizard.
+
+Besides above, resources for **connevity & security** is also OPTINALLY added:
+
+- **Protect**: Defender, Defender for AI, Application Gateway (WAF)
+- **Connect**: Private Endpoints, Private DNS Resolver, Private DNS Zones, Azure VPN Gateway,APIM
+- Native Azure Dashboards
+- Custom Azure Dashboards (workbooks)
+
+Besides above, optionally, automation exists for
+- Factory Agent Chat
+- Factory MCP Server
+- Factory UX: Configuration Wizard, Governance, Observability
+- Azure AI gateway (new SKU) integration
+
+
+<p align="center">
+<a href="./documentation/v2/20-29/24-end-2-end-setup.md"><b>Set up Factory</b></a> &nbsp;·&nbsp;
+<a href="./documentation/v2/20-29/26-update-AIFactory.md"><b>Update</b></a> &nbsp;·&nbsp;
+<a href="./environment_setup/install_config_wizard/readme.md"><b>Configure</b></a> <br>
+<a href="./documentation/v2/10-19/10-factory-onion-architecture.md"><b>Architecture</b></a> &nbsp;·&nbsp;
+<a href="./documentation/v2/10-19/22-lifecycle-azure-function.md"><b>Lifecycle API</b></a> &nbsp;·&nbsp;
+<a href="./usecase_code/40-agent-factory/readme.md"><b>Agent Factory</b></a> &nbsp;·&nbsp;
+<a href="./usecase_code/50-ml-factory/readme.md"><b>ML Factory</b></a><br>&nbsp;·&nbsp;
+<a href="./documentation/readme.md"><b>Documentation - Full</b></a>
+<a href="https://jostrm.github.io/azure-enterprise-scale-ml/"><b>Documentation - Quick</b></a>
+</p>
+
+![AI Factory architectures](./documentation/v2/10-19/images/10-two-architectures-v2.png)
+*Figure*: Each team in the AI Factory, have their own *floor* with 1-35 resources, optinally to get above architectures. Each team can own multiple floors. You may *turn ON/OFF* Azure resources to remove cost. Easy to turn on again.
+
+> [!TIP]
+> **Tip**: Use the AIFactory Github Template repository to get a bootstrapped repo quickly (as a mirror repo, or "bring your own repo"). [AIFactory Template Repo](https://github.com/azure/enterprise-scale-aifactory). This bootstrap repo becomes your repo - using this as a submodule repo.
+>
+
+<details>
+### Ensure only an existing factory's self-hosted runner
 
 The wizard's `scaling-mode` accepts `own-subscriptions` (`172.16.XX.0/20`, Dev/Stage/Prod `0/16/32`) or `shared-subscriptions` (default: `172.16.XX.0/18`, `0/64/128`). Each environment resolves to a network-aligned, non-overlapping VNet so the address ranges permit peering. Consecutive `61/62/63` works for `/24`, not `/18`. JSON/YAML use `scaling-mode`; environment/pipeline exports use `SCALING_MODE`. Canonical templates use the peerable shared defaults; existing user configurations are not migrated. Preflight rejects overlapping or misaligned ranges. “Up to 8 projects” is an address-budget target, not a deployment guarantee: the aligned-gap allocator's offline fixture fits nine full subnet profiles per `/18`, or two per `/20`, with four early common `/26`s and a final gateway `/27`; other reservations and fragmentation reduce capacity. Changing draft configuration never provisions subscriptions or moves deployed subnets. The separate scale-set CLI accepts a resolved `/20` through `AIF_DEV_VNET_CIDR`, not an `XX` template or a wizard-config import.
 
@@ -86,21 +121,6 @@ uses free gaps; it does not execute the old append-only PowerShell path. Both ro
 require the reviewed, pinned source rather than stale consumer/API snapshots. See the
 [topology and runner details](./documentation/gh-io/docs/orchestrators/gh.md).
 Do not silently change an integrated selection to external to bypass a blocker.
-
-[How-to UPDATE AI factory](./documentation/v2/20-29/26-update-AIFactory.md) - When a new feature arrives, or fix for breaking changes in a product?
-- See RELEASES - for Latest, recommended version.
-
-[Quickstart Documentation - Setup | Parameters](https://jostrm.github.io/azure-enterprise-scale-ml/)
-
-[Full Documentation - Concepts | Networking | Diagrams](./documentation/readme.md) 
-
-![AI Factory architectures](./documentation/v2/10-19/images/10-two-architectures-v2.png)
-*Figure*: Each team in the AI Factory, have their own *floor* with either architecture 01 or 02, and each team can own multiple floors. You may *turn ON/OFF* services, and add them later via feature flags & re-run pipeline.
-
-> [!TIP]
-> **Tip**: Use the AIFactory Github Template repository to get a bootstrapped repo quickly (as a mirror repo, or "bring your own repo"). [AIFactory Template Repo](https://github.com/azure/enterprise-scale-aifactory). This bootstrap repo becomes your repo - using this as a submodule repo.
->
-### Ensure only an existing factory's self-hosted runner
 
 The isolated `runner` action is available on `ADO-azurefactory.sh`,
 `GHA-azurefactory.sh` and both `*-create-new-aifactory-scaleset.sh` wrappers:
@@ -185,7 +205,7 @@ before self-hosted project execution; `--prepare-only` is not runner readiness.
 
 ---
 
-<details>
+
   <summary><b>This accelerator: Main purpose</b></summary>
 
 ## This accelerator: Main purpose: 
@@ -203,7 +223,6 @@ before self-hosted project execution; `--prepare-only` is not runner readiness.
     - `Same GenAIOps/MLOps` - if data scientists chooses to work from Azure Databricks, Microsoft Fabric or Azure Machine Learning - same template can be leveraged [Read more](#iac--mlops-templates-2019-templates-for-pipelines-in-project-type-esml)
     - `Common way of working, common toolbox, a flexible one`: A toolbox with a LAMBDA architecture with tools such as: Azure Datafactory, Azure Databricks, Azure Machine Learning, Eventhubs, AKS
 5) `Enterprise scale & security & battle tested`: Used by customers and partners with MLOps since 2019 (see LINKS) to accelerate the development and delivery of AI solutions, with common tooling & marrying multiple best practices. Private networking (private endpoints), as default.
-
 </details>
 
 ## Public links - AI Factory in CAF, WAF and customer examples
@@ -220,6 +239,7 @@ before self-hosted project execution; `--prepare-only` is not runner readiness.
 -   `AI factory` - Technical BLOG
     - https://techcommunity.microsoft.com/t5/ai-machine-learning-blog/predict-steel-quality-with-azure-automl-in-manufacturing/ba-p/3616176
 
+<details>
 ## AI Factory: Enterprise Scale Landing Zones Context (VWan option)
 There are **3 AIFactory AI landingzones: Dev, Stage, Production**, depicted in the image below, where AI Factory projects are deployed.
 - **AI Factory architectures**: Currently there are 2 architectures, template architectures (ESML, GenAI) that lives inside of the AIFactory landingzones. 
@@ -228,7 +248,7 @@ There are **3 AIFactory AI landingzones: Dev, Stage, Production**, depicted in t
 
 ![](./documentation/v2/10-19/images/14-eslz-full-1.png)
 
-## AI Factory architectures: ESML, GenAI-1
+## AI Factory template architectures (optional)
 These are the two 2 architectures, template architectures (ESML, GenAI) optionally automated partly or fully (IaC) as AI Factory projects (AI Landingzone with 1 or both) for a use case, team, or business unit, on its own Azure Subscription.
 - **ESML**: Enterprise Scale Machine Learning
 - **GenAI**: Enterprise Scale GenAI
@@ -247,11 +267,14 @@ The services that can be added on top of the **BASELINE** can be seen in the ima
 
 ![AI Factory architectures](./documentation/v2/10-19/images/10-two-architectures-v2.png)
 
-## ESML with FABRIC flavour
-You can optionally setup the ESML project type with Microsoft Fabric, as below:
+
+
+## Architeture with FABRIC flavour
+You can optionally setup an arhcitecture with Microsoft Fabric, as below:
 
 ![ESML flavour](./documentation/v2/10-19/images/11-services-highlevel-esml_fabric.png)
 
+</details>
 
 <details>
   <summary><b>Documentation</b></summary>

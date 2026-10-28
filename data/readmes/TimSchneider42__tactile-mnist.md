@@ -1,6 +1,6 @@
 # The Tactile MNIST Active Perception Benchmark Suite
 
-<table style="border-collapse: collapse; border: none;">
+<table style="border-collapse: collapse; border: none; font-size: 12px;">
     <tr style="border: none;">
         <td align="center" style="border: none; padding: 10px;">
             <img src="docs/img/env/TactileMNIST-v0.webp" alt="TactileMNIST-v0" width="180px"/><br/>
@@ -28,7 +28,7 @@
         </td>
     </tr>
 </table>
-<table style="border-collapse: collapse; border: none;">
+<table style="border-collapse: collapse; border: none; font-size: 12px;">
     <tr style="border: none;">
         <td align="center" style="border: none; padding: 10px;">
             <img src="docs/img/env/TactileMNISTCenterOfMass-v0.webp" alt="TactileMNISTCenterOfMass-v0" width="180px"/><br/>
@@ -56,7 +56,7 @@
         </td>
     </tr>
 </table>
-<table style="border-collapse: collapse; border: none;">
+<table style="border-collapse: collapse; border: none; font-size: 12px;">
     <tr style="border: none;">
         <td align="center" style="border: none; padding: 10px;">
             <img src="docs/img/env/TactileMNISTVolume-v0.webp" alt="TactileMNISTVolume-v0" width="180px"/><br/>
@@ -172,6 +172,11 @@ Below is an overview of the datasets provided in this package:
     3. **Synthetic Tactile Starstruck**: a dataset of synthetic tactile images generated from a [static version](https://huggingface.co/datasets/TimSchneider42/tactile-mnist-starstruck) of the _Starstruck_ dataset with the Taxim simulator.
 
 A detailed description of the datasets can be found in the [Dataset documentation](docs/datasets.md).
+
+## Baseline Data
+
+The learning curves of the baselines on all benchmark tasks (returns, prediction losses, accuracies and errors over training, 5 seeds each) are available as CSV files in [baseline-data](baseline-data).
+The format of these files is described in [baseline-data/README.md](baseline-data/README.md).
 
 ## Troubleshooting
 

@@ -131,7 +131,7 @@ npx ondocs init --out public                       # plain HTML needs --out; Hug
 On a GitHub Pages project site, at `https://user.github.io/repo`, add `--base-url /repo` to the index command.
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/ondocs@0.15/dist/embed.global.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/ondocs@0.16/dist/embed.global.js" defer></script>
 ```
 
 **Try it without a key.** `npx ondocs index ./docs -e mock`, then `npx ondocs dev`, serves the ask endpoint and MCP server on localhost, with a mock model that quotes your docs. See [Try it locally](https://ondocs.vercel.app/docs/local-development).
@@ -169,7 +169,7 @@ See [MCP server](https://ondocs.vercel.app/docs/mcp) and [llms.txt and Markdown 
 - **An agent's search costs** no model call, or one embedding call with an `embeddingModel`.
 - **Rate limits are on by default**: 10 questions and 60 tool calls a minute per client IP, per server instance. Name your platform's client IP header outside Vercel.
 - **`budget`** caps questions and model tokens per UTC day for the whole endpoint, **`answerCache`** answers repeated questions without a model call, and **`challenge`** adds an optional Turnstile bot check.
-- **Requests** must be JSON and bodies are capped; model errors are masked, and answers render as text, never HTML, with links allow-listed.
+- **Requests** must be JSON and bodies are capped; model errors are masked; answers render as text, never HTML, and by default link only to their sources.
 - **Set a spend limit with your model provider.** It is the only hard cap. See [Rate limits and security](https://ondocs.vercel.app/docs/security).
 
 ## How it compares

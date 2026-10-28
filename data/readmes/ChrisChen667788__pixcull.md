@@ -91,6 +91,63 @@ https://github.com/user-attachments/assets/69eddc6b-24d3-406a-ace5-2ed3a5b44e67
 
 ## What's new
 
+**v3.98** — Does a taste profile learned from some shoots predict another?
+The owner's blind labels now cover five shoots, 728 photographs, so this
+learns on four and tests on the fifth. It does not generalise. In the
+profile's own test it lowers keep-F1 by 0.027 on average (0.009 if two
+portrait blocks three days apart count as one shoot) and by 0.178 across
+three portrait shoots. In the product's decision its learned threshold shift
+keeps more on every split, because it compares the photographer's keep rate
+with a fixed 65% rather than with what the machine already keeps; this
+photographer is stricter than the machine, so the profile is pushed the wrong
+way. keep-F1 rewards that, and the culls the tool exists to find slip
+through: cull recall falls from 7.7% to 3.6%. The profile active on the
+author's machine takes cull recall on all 728 photographs from 12.4% to 1.7%.
+Whether to reset it, change the formula, or stop a profile switching itself
+on are left to the owner. `pixcull personalize learn` now reports cull recall
+beside keep-F1 and says when a profile scores higher by keeping more, and
+`scripts/measure_generalisation.py` reruns the measurement. Item 15 below no
+longer says the profile improves silently as you label.
+
+**v3.97** — In three of four blocks of photographs the owner labelled blind,
+a frame with no near-duplicate was culled more often than one inside a
+burst; in the fourth it was not. The explanation left open in September was
+that the scene classifier had widened the clustering window there and
+diluted the singletons. Its first test was withdrawn because it read the
+CLIP search vectors instead of the DINOv2 vectors the clusters are built
+from, and the two files have the same layout. Rerun on the right vectors,
+after checking that each block's recorded clusters reproduce from them, the
+premise held and the mechanism did not. The exception block, from a portrait
+shoot, was classified landscape on 119 of 150 frames, but the wrong label
+made more singletons, not fewer, and correcting it sharpened the exception:
+under portrait thresholds none of its 45 singletons was culled, against 15 of
+105 frames in bursts. The explanation is ruled out, the exception stands,
+and no rule is built on three blocks of four. A vector file that is not the
+one the clusters came from is now refused when read, and
+`scripts/measure_singletons.py` reruns the measurement.
+
+**v3.96** — The personalisation figure this project published from real
+photographs, a held-out keep-F1 of 0.801 against 0.799 for the generic
+decision, was computed over 608 labels, and 408 of them were recorded while
+the system's verdict was on screen. v3.29 had taught the taste profile to
+leave two kinds of correction out and asked what keeping them did to that
+figure. Neither kind occurs in any label set here, so that difference is
+zero. A split of the same 608 rows says more: the published result reproduces
+exactly, its four folds run from −0.018 to +0.018, and redrawing the folds
+moves it only between −0.005 and +0.005, so it showed no measurable effect
+rather than a small one. On the 408 endorsed rows personalisation scores
+below generic however the folds are drawn (−0.008 to −0.016). On the 200
+rows with real disagreements it scores above (+0.069 to +0.126). The
+owner's 158 blind labels give no stable answer: +0.041 as the file happens
+to be sorted, −0.048 on average over 200 redraws, anywhere from −0.279 to
++0.065. A first draft reported that +0.041 as a result; review caught it.
+These are small samples and show a direction, not a size.
+`pixcull personalize learn` now says how many corrections it left out and
+why, and prints the spread across folds beside the mean;
+`scripts/measure_label_provenance.py` reruns all of it with the spread
+under redrawn folds. The two documents that quoted 0.801 now say what it
+was computed over.
+
 **v3.95** — The check that refuses to measure accuracy against the model's own
 output could not read the labels it exists to accept. `pixcull m3 label` saves
 a blind pass as one JSON object holding a map of verdicts, and the audit read
@@ -131,98 +188,6 @@ test added for 5.19.0. That one release is now excluded
 (`transformers!=5.20.0`); the fix is upstream in
 [huggingface/transformers#49652](https://github.com/huggingface/transformers/pull/49652),
 and later releases are accepted as before.
-
-**v3.94.2** — Every report [@gxfc9867](https://github.com/gxfc9867) made
-(#2, #3 and PR #4) was re-checked against `main` by running it. Three fixes
-from PR #4 had not fully landed.
-
-The watermark that PR #4 taught to find a Chinese font still drew boxes for
-Korean on a Mac, whose first CJK font has no Hangul; for any Chinese, Japanese
-or Korean in the Docker image, which had no CJK font; and on the contact-sheet
-PDF, whose font list never had one. Each font was taken because it opened. A
-font is now used only if it draws every character of the text, measured by
-comparing each glyph with the font's missing-glyph box. When no installed font
-can, `pixcull proof-sheet` names the characters that will be boxes and the
-package that fixes it. The Docker image carries that font now
-(`fonts-wqy-microhei`, 5 MB, Chinese, Japanese and Korean), and CI installs
-it so the real-font tests run on Linux too.
-
-The draggable buckets toggle never showed the grab cursor: a later rule for
-the same button said `pointer` and won the cascade, which the test, reading
-the first rule it found, could not see. And in the light theme the
-accessibility toggle's "on" state, left alone by PR #4 to keep its accent,
-measured 4.0:1 for an 11px label; it is 9.1:1 now, checked in a real browser.
-
-The contact sheet had a worse fault of its own. Since v2.56.2 every cell said
-"(image unavailable)": `ImageOps` was imported inside another function, the
-NameError landed in the cell's `except`, and the only test of that path
-checked that a *missing* image was handled. A test now asks ruff for
-undefined names across the package. It found one more: `pixcull m3 eval
---review` crashed before reading a single verdict.
-
-**v3.94.1** — On Windows, Python 3.13 could not install 3.94.0 without a C++
-compiler. A dependency nothing in the package used, `imagededup` (declared
-for duplicate detection, which has been CLIP and DINOv2 for a long time),
-ships wheels up to Python 3.12 only and has a mandatory C++ extension, so on
-3.13 every install compiled it, and so did every install on Linux ARM. Every
-CI runner has a compiler, so no lane saw it. Resolved for Windows and Python
-3.13 with binaries only, 3.94.0 stops at "No matching distribution found for
-imagededup". It is gone, and `scipy`, which the package imports and only
-imagededup's dependency tree had been guaranteeing, is now declared.
-
-Two checks hold it. A test fails a dependency nothing imports, and an import
-nothing declares. A new CI job resolves the whole dependency tree for Windows,
-Apple Silicon and Linux on Python 3.11, 3.12 and 3.13 with binaries only, and
-builds any dependency that ships only source to prove it is pure Python.
-Holding the README to that list found its platform badge claiming Intel Macs,
-for which torch has published nothing since 2.2; it says Apple Silicon now.
-
-The aesthetic axis had been missing from fresh installs. pyiqa builds both of
-its models on openai-clip, whose first lines import `pkg_resources`;
-setuptools 82 removed that module on 8 February, and since torch 2.13 (8 July)
-requires a recent setuptools, every fresh install has brought in 82 or newer,
-every install from PyPI among them, whichever earlier release. So `import
-clip` failed, the scorer caught the error, and runs went on with five axes and
-a warning telling you to install pyiqa, which was installed. An environment in
-which `python -c "import pkg_resources"` fails was affected; one with
-setuptools older than 82 was not. PixCull now
-supplies the one name openai-clip takes from `pkg_resources` while it imports,
-then removes it, and the warning names the import that failed. The new offline
-test for that axis caught it: in CI it failed on `import clip` before it
-reached for any weights.
-
-Also in this release: a Linux machine with no desktop needs `libgl1` and
-`libglib2.0-0` for OpenCV, and the README says so; and the test that loads
-cached models with every connection refused covers DINOv2 and the aesthetic
-axis's two pyiqa models, not only CLIP.
-
-**v3.94** — Python 3.13 installs. `requires-python` stopped at 3.12 because
-the review server parsed uploads with `cgi.FieldStorage`, and 3.13 removed the
-`cgi` module. That turned out to be the only obstacle. Measured on a 3.13
-interpreter, every dependency installs, MediaPipe included (its wheels are
-tagged for any Python 3), and with `cgi` replaced the whole suite passes. The
-parser is now `multipart`, one of the two replacements the Python
-documentation's `cgi` deprecation note gives for request bodies (the other,
-`email.message`, does not stream). Its part limit is raised from 128 to the
-server's file limit,
-because an upload may carry 500 files.
-
-CI runs the install check on 3.11, 3.12 and 3.13, and the whole suite on 3.12
-at the torch floor and on 3.13. The upload path had never been tested over
-HTTP. It is now, with real multipart bodies, a 3 MB file, Windows paths and a
-200-file upload.
-
-The torch floor is 2.7 now, up from 2.5. transformers 5.19.0 came out twenty
-minutes before this release's CI ran. It declares `torch>=2.5` and accepts 2.5
-at import, then calls `torch.accelerator.current_accelerator()`. torch 2.5 has
-no such function, and torch 2.6 raises from it on a machine with no
-accelerator (no CUDA device, no Apple MPS), such as a CPU-only Linux server;
-from 2.7 it returns nothing and transformers falls back to the CPU. On 2.5, and
-on 2.6 without an accelerator, no model class can be imported. The CI lane
-pinned to the floor exists to catch exactly this, and it went red twice: the
-first fix, 2.6, was checked on a Mac, where MPS counts as an accelerator and
-2.6 does not raise. The floor moved in the
-package, both pinned CI lanes, the Docker image and the Studio together.
 
 Earlier releases are in [`CHANGELOG.md`](CHANGELOG.md).
 
@@ -342,8 +307,9 @@ PixCull is the alternative that flips all three:
     LLM-spend ledger follow you between studio &amp; laptop.
 15. **Active-learning queue.** The next photos most worth labeling,
     ranked by rescorer disagreement + uncertainty + threshold-
-    proximity. Your personalized model improves silently as you
-    label.
+    proximity. What you label feeds the personal profile; measured
+    on the author's five blind-labelled shoots (v3.98), that profile
+    has not yet improved the verdict on a shoot it had not seen.
 16. **Multi-user profiles.** Studio with two shooters? Each user has
     their own verticals + face library; shared team verticals for
     house style.
@@ -1271,8 +1237,9 @@ PixCull 把这三件事全部翻过来:
     NAS —— 人脸库 + 细分领域 + LLM 花费账本跟着你在工作室 ↔ 笔记本之间
     切换。
 15. **主动学习队列 (P2.4)。** 按 rescorer 分歧度 + 不确定度 + 阈值附
-    近度 排序的 "下一张最值得标的照片"。你的个性化模型在你标注的过程
-    中静默改进。
+    近度 排序的 "下一张最值得标的照片"。你标注的照片会进入个人口味档案;
+    但在作者自己五场盲标拍摄上实测(v3.98),这份档案还没有让没见过的
+    那一场判得更好。
 16. **多用户 profile (V28)。** 工作室里两个二摄?各有自己的 vertical +
     人脸库;共享 team vertical 用于工作室主基调。
 

@@ -1,18 +1,18 @@
 <p align="center">
-  <img src="crates/voff/assets/logo.gif" width="180" alt="voff logo">
+  <img src="https://raw.githubusercontent.com/orhun/voff/main/assets/logo.gif" width="180" alt="voff logo">
   <br>
   <b>Workflow builder for coding agents 🐶</b>
   <br><br>
-  <a href="https://github.com/voffsh/voff/releases"><img src="https://img.shields.io/github/v/release/voffsh/voff?include_prereleases&style=flat&labelColor=1C1C1D&color=FA5D00&logo=github&logoColor=white" alt="GitHub release"></a>
-  <a href="LICENSE-MIT"><img src="https://img.shields.io/badge/license-MIT%20or%20Apache--2.0-FA5D00?style=flat&labelColor=1C1C1D" alt="MIT or Apache-2.0 license"></a>
+  <a href="https://github.com/voffsh/voff/releases"><img src="https://img.shields.io/github/v/release/voffsh/voff?include_prereleases&style=flat&labelColor=17253C&color=466C98&logo=github&logoColor=white" alt="GitHub release"></a>
+  <a href="LICENSE-MIT"><img src="https://img.shields.io/badge/license-MIT%20or%20Apache--2.0-466C98?style=flat&labelColor=17253C" alt="MIT or Apache-2.0 license"></a>
   <br>
-  <a href="https://crates.io/crates/voff"><img src="https://img.shields.io/crates/v/voff?style=flat&labelColor=1C1C1D&color=FA5D00&logo=Rust&logoColor=white" alt="Crate release"></a>
-  <a href="https://github.com/voffsh/voff/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/voffsh/voff/ci.yml?branch=main&style=flat&labelColor=1C1C1D&color=FA5D00&logo=GitHub%20Actions&logoColor=white&label=CI" alt="Continuous Integration"></a>
-  <a href="https://github.com/voffsh/voff/actions/workflows/cd.yml"><img src="https://img.shields.io/github/actions/workflow/status/voffsh/voff/cd.yml?branch=main&style=flat&labelColor=1C1C1D&color=FA5D00&logo=GitHub%20Actions&logoColor=white&label=CD" alt="Continuous Deployment"></a>
+  <a href="https://crates.io/crates/voff"><img src="https://img.shields.io/crates/v/voff?style=flat&labelColor=17253C&color=466C98&logo=Rust" alt="Crate release"></a>
+  <a href="https://github.com/voffsh/voff/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/voffsh/voff/ci.yml?branch=main&style=flat&labelColor=17253C&color=466C98&logo=GitHub%20Actions&logoColor=white&label=CI" alt="Continuous Integration"></a>
+  <a href="https://github.com/voffsh/voff/actions/workflows/cd.yml"><img src="https://img.shields.io/github/actions/workflow/status/voffsh/voff/cd.yml?branch=main&style=flat&labelColor=17253C&color=466C98&logo=GitHub%20Actions&logoColor=white&label=CD" alt="Continuous Deployment"></a>
 </p>
 
 <p align="center">
-  <img src="crates/voff/assets/demo.gif" alt="Voff demo">
+  <img src="https://raw.githubusercontent.com/orhun/voff/main/assets/demo.gif" alt="Voff demo">
 </p>
 
 Watch tasks move from plan to implementation with coordinated coding agents! 🦴
@@ -113,45 +113,15 @@ Available tools depend on the agent:
 
 ## Configuration
 
-After setup, Voff saves the team to `.voff/config.toml` and this file can be edited to customize the team.
-
-The following is an example configuration:
-
-```toml
-workspace = ".."
-
-[[agent]]
-name = "Lead"
-provider = "codex_cli"
-model = "default"
-prompt = "Plan the work, delegate tasks, and review the results."
-max_output_tokens = 32768
-
-[[agent]]
-name = "Implementer"
-provider = "claude_cli"
-model = "default"
-prompt = "Implement the assigned task and report changes and checks."
-reports_to = "Lead"
-max_output_tokens = 16384
-
-[[agent]]
-name = "Reviewer"
-provider = "ollama"
-model = "qwen2.5-coder"
-prompt = "Review the implementation against its acceptance criteria."
-reports_to = "Lead"
-
-[setup_prompts]
-scan_workspace = "Inspect this project and suggest a useful agent team."
-build_from_description = "Create a team for the user's project description."
-```
+After setup, Voff saves the team to `.voff/config.toml`; edit this file to
+customize your team. See [`config/example.toml`](config/example.toml) for an
+example you can copy to `.voff/config.toml` and adapt.
 
 ## Logo
 
 Meet **Pasha** 🧡 Voff's mascot and unofficial moral supporter.
 
-<img src="crates/voff/assets/pasha.png" width="360" alt="Pasha, Voff's mascot">
+<img src="https://raw.githubusercontent.com/orhun/voff/main/assets/pasha.png" width="360" alt="Pasha, Voff's mascot">
 
 ## License
 

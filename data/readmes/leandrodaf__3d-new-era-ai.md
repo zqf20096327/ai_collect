@@ -69,7 +69,8 @@ once:
   `xattr -dr com.apple.quarantine "/Applications/3D New Era AI.app"`.
 - **Linux:** `tar xzf newera-linux-x64.tar.gz && ./newera/newera`. Run
   `./newera/install-desktop.sh` to add the menu entry, the icon and the `.newera` file
-  type (`--uninstall` undoes it).
+  type (`--uninstall` undoes it). It needs glibc 2.35 or newer: Ubuntu 22.04, Debian 12,
+  Fedora 36 or any later release.
 
 The one-line installers skip these prompts.
 </details>
@@ -368,6 +369,10 @@ through the same endpoint, so installing from source counts like any other insta
 `cargo build` on a clone and CI count nothing. The hosted service keeps only what it needs:
 your email, your projects and usage, never the conversation. See the
 [privacy policy](https://3dneweraai.com/privacy/).
+
+Apart from that switch, the desktop app asks GitHub's public API for the latest release when it
+opens, sending nothing about the installation, and says in its status bar when a newer one is
+out.
 
 ## Support the project
 

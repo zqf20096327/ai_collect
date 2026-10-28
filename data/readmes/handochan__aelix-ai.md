@@ -36,8 +36,12 @@ existing stack — DuckDB, an internal SDK, a warehouse client — directly, in-
 It sends nothing about you anywhere; there is no telemetry. It does make a few requests for
 itself, and they are the whole list: a once-a-day release check (interactive sessions only —
 headless runs never check, and `/settings` → **Check for updates** turns it off from the
-next launch), the first-use `ripgrep`/`fd` download, and the extension-catalog fetch.
-`--offline` turns those off.
+next launch), the model catalog check (models published between releases: at launch, when
+a model picker opens, on a `/model` that matched nothing and after `/login`, at most every
+4 hours, and whenever you run `aelix update --models`; it sends the aelix version;
+`/settings` → **Check model catalogs** leaves only the command), the
+first-use `ripgrep`/`fd` download, and the extension-catalog fetch. `--offline` turns those
+off.
 
 ## Install
 
@@ -287,7 +291,10 @@ money until it finishes or you stop it. `Esc`, the 600 s `bash` *default* timeou
 real backstops; none of them bounds spend
 ([#14](https://github.com/handochan/aelix-ai/issues/14),
 [#6](https://github.com/handochan/aelix-ai/issues/6),
-[#52](https://github.com/handochan/aelix-ai/issues/52)).
+[#52](https://github.com/handochan/aelix-ai/issues/52)). A delegated agent has no
+time limit either: it runs until it finishes or you stop it — `Esc` or `Ctrl+C`,
+during a turn and during `/agents run`
+([#604](https://github.com/handochan/aelix-ai/issues/604)).
 
 **Headless mode auto-approves mutating tools.** `--print`, `--mode json` and
 `--mode rpc` have no terminal for an approval dialog, so `write`, `edit`, `bash` and

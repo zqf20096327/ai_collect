@@ -19,7 +19,7 @@
 
 # What is PortPy? <a name="What"></a>
 
-<img src="./images/Linac.gif" align="right" alt="Radiotherapy 101" width="30%" height="30%" margin-right="10px">
+<img src="./images/Linac.gif" align="right" alt="Radiotherapy 101" width="50%" height="50%" margin-right="10px">
 
 **PortPy**, short for **P**lanning and **O**ptimization for **R**adiation **T**herapy, is an initiative aimed at creating an open-source Python library for cancer radiotherapy treatment planning optimization. Radiotherapy is a key treatment for over half of all cancer patients, either alone or alongside surgery, chemotherapy, and immunotherapy. It works by directing high-energy radiation beams at tumors to kill cancerous cells. Given that each patient has a unique anatomy, it is essential to customize the radiation beams' shape, angle, and intensity. The goal is to maximize damage to the tumor while minimizing exposure to healthy surrounding tissues. This process involves solving complex, large-scale mathematical optimization problems tailored to each individual patient. PortPy aims to accelerate research in this interdisciplinary field by offering tools, benchmark algorithms, and datasets.
 
@@ -167,6 +167,8 @@ PortPy equips researchers with a robust benchmark patient dataset, sourced from 
 Currently, this set includes lung (2Gy×30) and prostate (26Fx, 5Gy×5Fx) protocols, and will be expanded in the future to more protocols as well as TCP/NTCP evaluation functions.  
 
 The dataset is hosted on Hugging Face: [PortPy_Dataset](https://huggingface.co/datasets/PortPy-Project/PortPy_Dataset).
+
+Pretrained models and reference optimization solutions are published separately in [PortPy-Project/artifacts](https://github.com/PortPy-Project/artifacts) and can be fetched with `pp.download_artifact(...)`.
 ## Downloading the PortPy Dataset
 
 PortPy datasets are large (GBs per patient) and are **not bundled** with the Python package. Download them either from the command line (recommended) or from Python.

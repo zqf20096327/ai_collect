@@ -217,7 +217,7 @@ cookie operations, and validation-only replay. Query `tools/list` instead of
 depending on a hard-coded count; the authoritative registration is
 [`src/mcp/server.rs`](./src/mcp/server.rs).
 
-**Tip:** use `selector="main"` (or `main_content`/`main_contents`/`main-content`/`main-contents`/`main content`/`main contents`/`main_region`/`main_regions`/`main-region`/`main-regions`/`main region`/`main regions`) to strip nav/footer, `selector="interactive"`
+**Tip:** use `selector="main"` (or `main_content`/`main_contents`/`main-content`/`main-contents`/`main content`/`main contents`/`main_region`/`main_regions`/`main-region`/`main-regions`/`main region`/`main regions`) to strip nav/footer, `selector="sidebar"` (or `aside`/`asides`/`sidebars`) to isolate complementary content, or `selector="interactive"`
 to return only actionable elements, `selector="h1"` through `selector="h6"`
 (or `heading1` through `heading6`) to isolate a heading level, or an action selector such as `selector="click"`
 (the equivalent `selector="action:click"` also works), `selector="type"`,
@@ -253,6 +253,12 @@ Table selectors include `table`/`tables`, `data_table`/`data_tables`, and
 hyphenated and space-separated forms accepted too).
 Use `selector="media"` to keep images and media-capable grouped elements
 such as audio, video, and canvas while removing unrelated page content.
+Source-specific media selectors are also available: `audio_item`/`audio-item`/
+`audioitem`, `video_item`/`video-item`/`videoitem`, and
+`canvas_item`/`canvas-item`/`canvasitem` (including their plural forms) target
+only the corresponding native media elements. Use
+`canvas` when you want every canvas element, or `canvas_item` when filtering a
+mixed media page down to canvas elements only.
 HTML text-input type names are also accepted as selectors, including
 `text`, `search_input`/`search-input`, `search_control`/`search-control`,
 `search_field`/`search-field`, `search_box`/`search-box`, `query`,

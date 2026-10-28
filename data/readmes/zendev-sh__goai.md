@@ -43,7 +43,7 @@ Inspired by the [Vercel AI SDK](https://sdk.vercel.ai). The same clean abstracti
 ## Features
 
 - **8 core functions**: `GenerateText`, `StreamText`, `GenerateObject[T]`, `StreamObject[T]`, `Embed`, `EmbedMany`, `GenerateImage`, `GenerateVideo`
-- **25+ providers**: OpenAI, Anthropic, Google, Bedrock, Azure, Vertex, Mistral, xAI, Groq, Cohere, DeepSeek, MiniMax, Fireworks, Together, DeepInfra, OpenRouter, Requesty, Perplexity, Cerebras, Ollama, vLLM, RunPod, Cloudflare Workers AI, FPT Smart Cloud, NVIDIA NIM, Heabsy, Opper, llama.cpp, + generic OpenAI-compatible
+- **25+ providers**: OpenAI, Anthropic, Google, Bedrock, Azure, Vertex, Mistral, xAI, Groq, Cohere, DeepSeek, MiniMax, Fireworks, Together, DeepInfra, OpenRouter, Requesty, Perplexity, Cerebras, Ollama, vLLM, RunPod, Runcrate, Cloudflare Workers AI, FPT Smart Cloud, NVIDIA NIM, Heabsy, Opper, llama.cpp, + generic OpenAI-compatible
 - **Auto tool loop**: Define tools with `Execute` handlers, set `MaxSteps` for `GenerateText` and `StreamText`
 - **Structured output**: `GenerateObject[T]` auto-generates JSON Schema from Go types via reflection
 - **Streaming**: Real-time text and partial object streaming via channels
@@ -478,6 +478,7 @@ result, err := goai.GenerateText(ctx, model, goai.WithPrompt("Hello"))
 | Ollama     | local models                                                 | local models                                               | -             | none                                                                                               | Unit | `provider/ollama`     |
 | vLLM       | local models                                                 | local models                                               | -             | Optional auth via `WithAPIKey` / `WithTokenSource`                                                 | Unit | `provider/vllm`       |
 | RunPod     | any vLLM model                                               | -                                                          | -             | `RUNPOD_API_KEY`, TokenSource                                                                      | Unit | `provider/runpod`     |
+| Runcrate   | open models (e.g. `deepseek-ai/DeepSeek-V4.1-Flash`)         | -                                                          | -             | `RUNCRATE_API_KEY`, `RUNCRATE_BASE_URL`, TokenSource                                               | Unit | `provider/runcrate`   |
 | Cloudflare | `@cf/meta/*`, `@cf/openai/gpt-oss-*`, `@cf/qwen/*`           | `@cf/baai/bge-*`                                           | -             | `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_BASE_URL`, TokenSource                | Unit | `provider/cloudflare` |
 | FPT Cloud  | `Qwen3-*`, `Llama-*`, `gpt-oss-*`, `GLM-*`, `gemma-*`        | `bge-*`, `gte-*`, `multilingual-e5-*`                      | -             | `FPT_API_KEY`, `FPT_REGION` (`global`/`jp`), `FPT_BASE_URL`, TokenSource                           | Unit | `provider/fptcloud`   |
 | NVIDIA NIM | `nvidia/llama-*`, `nvidia/nemotron-*`                        | `nvidia/nv-embed-*`                                        | -             | `NVIDIA_API_KEY`, `NVIDIA_BASE_URL`, TokenSource                                                   | Full | `provider/nvidia`     |
@@ -882,9 +883,9 @@ goai/                       # Core SDK
 │   ├── cohere/             # Cohere (Chat v2 + Embed)
 │   ├── minimax/            # MiniMax (Anthropic-compatible API)
 │   ├── compat/             # Generic OpenAI-compatible
-│   	└── ...                 # 20 OpenAI-compatible provider implementation files
+│   	└── ...                 # 21 OpenAI-compatible provider implementation files
 ├── internal/
-│   ├── openaicompat/       # Shared codec for 20 OpenAI-compatible provider implementation files
+│   ├── openaicompat/       # Shared codec for 21 OpenAI-compatible provider implementation files
 │   ├── gemini/             # Schema sanitization (Vertex, Google)
 │   ├── sse/                # SSE line parser
 │   └── httpc/              # HTTP utilities

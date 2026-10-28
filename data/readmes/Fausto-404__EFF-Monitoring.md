@@ -33,6 +33,7 @@ EFF-Monitoring（Efficient Monitoring，高效监控）是一款面向安全运�
 + **统一解析**：将不同设备、不同格式的原始日志转换为标准研判字段。
 + **资产关联**：统一化管理并关联资产、威胁情报、黑白名单、告警信息等内容。
 + **协作闭环**：内置监测组、研判组、处置组协作流程，支持认领、释放、强制解锁、状态流转和消息提醒。
++ **可控联动封堵**支持在封禁类告警流转时按需触发设备联动，二次确认后由独立低权限容器执行；设备确认成功才自动闭环，失败或状态未知不自动重试。
 + **AI 增强**：AI 中心支持威胁分析、通用问答、报告生成三类 Agent，并提供快速 / 思考两种问答复杂度；告警详情内置智能研判引擎，统一输出研判标签、结论、置信度、风险等级和证据链。
 + **可追踪**：每条告警都有独立 `alert_hash`，用于生命周期跟踪、搜索、审计和复盘。
 + **可复盘**：闭环告警可沉淀为 STE 经验，后续 AI 研判可检索并复用相似经验。
@@ -41,7 +42,7 @@ EFF-Monitoring（Efficient Monitoring，高效监控）是一款面向安全运�
 + **可迁移恢复**：系统管理提供备份与还原能力，备份包携带版本和字段结构，适合升级、迁移和灾备。
 
 ## 适用场景
-+ 攻防演练期间快速同步、研判和分发安全事件。
++ 攻防演练期间快速同步、研判、分发和处置安全事件。
 + SOC 值守人员统一处理来自态势感知、WAF、NDR、IPS 等设备的告警。
 + 需要把告警与资产、负责人、区域、重要性和处置结果打通的企业安全团队。
 + 需要积累可复用研判经验，并让 AI 持续吸收闭环结果的团队。
@@ -52,8 +53,7 @@ EFF-Monitoring（Efficient Monitoring，高效监控）是一款面向安全运�
 <img width="1672" height="941" alt="Agent架构设计图" src="https://github.com/user-attachments/assets/80fb66ac-429e-4fe8-8ebf-b50d977ba9fd" />
 
 ### 2、告警闭环与分组协作机制
-<!-- 这是一张图片，ocr 内容为： -->
-![](https://cdn.nlark.com/yuque/0/2026/png/28328372/1779764135445-c1674106-9e43-4d6c-bf4c-debd1a56694e.png)
+<img width="2916" height="1652" alt="image" src="https://github.com/user-attachments/assets/74463d27-0c54-4fef-9308-7446b5d1c2a1" />
 
 ### 3、日志到告警的完整数据链路
 <!-- 这是一张图片，ocr 内容为： -->
@@ -65,6 +65,9 @@ EFF-Monitoring（Efficient Monitoring，高效监控）是一款面向安全运�
 <img width="2936" height="1508" alt="image" src="https://github.com/user-attachments/assets/16d726ca-a2f2-47ac-8ffd-956564bc332f" />
 1.2、关联威胁情报、资产等信息
 <img width="2834" height="1530" alt="image" src="https://github.com/user-attachments/assets/b0609e34-f443-411c-8174-e1470a63ce9c" />
+1.3、自定义python脚本一键联动封禁
+<img width="2546" height="1072" alt="image" src="https://github.com/user-attachments/assets/3c9709b7-7809-4f02-ae10-41cf460ed7b0" />
+
 ### 2、Agent自主规划并调用工具
 2.1、具备规划、调用、反思等全链路思考的Agent
 <img width="2964" height="1518" alt="image" src="https://github.com/user-attachments/assets/ea8cb3e7-dbcc-4173-b09d-1684faa648ab" />
@@ -110,15 +113,16 @@ EFF-Monitoring/
 ```
 
 ## 快速启动
+
 ### Docker 一键部署
 
 #### 方式一：Git 一条命令部署（推荐）
 
 ```bash
-git clone --depth 1 --branch v2.2.1 https://github.com/Fausto-404/EFF-Monitoring.git && cd EFF-Monitoring && ./install.sh
+git clone --depth 1 --branch v2.2.2 https://github.com/Fausto-404/EFF-Monitoring.git && cd EFF-Monitoring && ./install.sh
 ```
 
-`install.sh` 会检测 CPU 架构：ARM64 自动下载 `eff-monitoring-v2.2.1-images-arm.tar`，amd64/x86_64 自动下载 `eff-monitoring-v2.2.1-images-amd.tar`，然后导入镜像并自动生成安全密码。
+`install.sh` 会检测 CPU 架构：ARM64 自动下载 `eff-monitoring-v2.2.2-images-arm.tar`，amd64/x86_64 自动下载 `eff-monitoring-v2.2.2-images-amd.tar`，校验 Release 中对应的 SHA-256 文件后导入镜像并自动生成安全密码。默认使用独立的 `eff-monitoring-v2-2-2` Compose 项目及数据卷；从旧版升级前请先导出备份，再在新版中还原。
 
 脚本会在启动前检查 Docker、磁盘空间、CPU 架构和端口；默认使用 8000（API）和 8080（前端），端口被占用时会自动选择下一个可用端口，也可以手动指定：
 
@@ -126,14 +130,14 @@ git clone --depth 1 --branch v2.2.1 https://github.com/Fausto-404/EFF-Monitoring
 ./install.sh --api-port 8001 --web-port 8081
 ```
 
-离线镜像包需要与目标机器 CPU 架构一致。Release 中应同时上传 `arm` 和 `amd` 两个架构的镜像包。
+离线镜像包需要与目标机器 CPU 架构一致。Release 同时提供 `arm` 和 `amd` 两个架构的镜像包。
 
 #### 方式二：已有离线镜像包部署
 
 如果已经将镜像包下载到本地：
 
 ```bash
-./deploy.sh --offline /path/to/eff-monitoring-v2.2.1-images.tar
+./deploy.sh --offline /path/to/eff-monitoring-v2.2.2-images-arm.tar
 ```
 
 该方式不会下载任何镜像，也不会执行镜像构建。
@@ -168,8 +172,8 @@ docker compose up -d --build
 发布制作者可按目标机器架构制作离线包：
 
 ```bash
-./scripts/export-images.sh --platform linux/amd64 --output ./eff-monitoring-v2.2.1-images-amd.tar
-./scripts/export-images.sh --platform linux/arm64 --output ./eff-monitoring-v2.2.1-images-arm.tar
+./scripts/export-images.sh --platform linux/amd64 --output ./eff-monitoring-v2.2.2-images-amd.tar
+./scripts/export-images.sh --platform linux/arm64 --output ./eff-monitoring-v2.2.2-images-arm.tar
 ```
 
 打包脚本会在导出前校验镜像架构，普通用户不需要执行。
@@ -216,17 +220,16 @@ npm run dev
 | :--- | :--- |
 | 运营总览 | 告警总量、状态趋势、平均处置耗时、最近告警和运营统计 |
 | 内容解析 | 原始日志解析、资产命中、IP 名单检测、模板输出、保存告警 |
-| 告警工作台 | Hash 搜索、认领机制、状态流转、智能研判、威胁情报、资产上下文、闭环反馈、手动/自动刷新、服务端分页、CSV 导出 |
+| 告警工作台 | Hash 搜索、认领机制、状态流转、智能研判、威胁情报、资产上下文、闭环反馈、可选一键联动封堵、手动/自动刷新、服务端分页、CSV 导出 |
 | AI 中心 | 威胁分析 / 通用问答 / 报告生成 Agent、快速 / 思考模式、Markdown 对话、会话记忆、执行链路/证据包查看、STE 经验库、AI 经验提取、AI 生成消息模板 |
 | 资产中心 | 个体资产、网段资产、Excel 导入导出、资产指纹、负责人和区域维护 |
 | 消息中心 | 工作流消息、未读提醒、按告警 Hash 快捷跳转 |
 | 报告中心 | 报告新建、编辑、复制、导出 MD、删除，支持从模板和规则一键生成 |
 | 规则中心 | 元规则、自定义规则、正则测试、设备规则适配、规则生成 |
 | 模板中心 | 消息模板、Excel 模板、CSV 模板 |
-| IP 名单 | 白名单、黑名单、CIDR/IP 范围检测、表格化维护、批量导入、名单导出 |
+| IP 名单 | 白名单、黑名单、待排查主机、CIDR/IP 范围检测、表格化维护、批量导入、名单导出 |
 | 能力配置 | AI 模型网关、威胁情报、消息通知、浏览器插件接入的全员配置与个人配置，支持连通性测试、模型列表获取和插件 PAT 管理 |
-| 系统管理 | 成员、设备、时间同步、备份与还原、审计日志、后台任务、历史导入 |
-
+| 系统管理 | 成员、设备（含联动封堵脚本配置）、时间同步、备份与还原、审计日志、后台任务、历史导入 |
 
 ## 界面预览
 ### 运营总览
@@ -284,7 +287,7 @@ npm run dev
 ![](https://cdn.nlark.com/yuque/0/2026/png/28328372/1779763048331-8fbc06d0-c817-4df4-9bdd-2f8ae67a150a.png)
 
 ## 角色与协作
-平台内置五类角色：
+平台内置五类角色（单个账号可配置多个角色）：
 
 + `admin` 管理员：拥有系统管理、强制解锁、重新指派、删除、全员配置等权限。
 + `monitor` 监测组：负责同步告警。
@@ -326,6 +329,20 @@ ENABLE_DEMO_DATA=true
 ## 更新记录
 
 <details>
+<summary><strong>v2.2.2</strong></summary>
+
+- 告警工作台列表改为轻量查询与传输，点击时再加载完整详情；搜索增加防抖和过期请求取消。
+- 备份导出改为后台任务，支持进度、跨页面查看和完成后下载；API/Worker 共用持久化备份卷。
+- 系统管理新增备份任务管理列表，支持按状态筛选、分页、刷新和删除已结束任务；删除会同时清理服务器备份文件，操作前请先下载留存。
+- 白名单 IP 的封禁联动改为保留白名单、加入待排查主机名单并广播“疑似失陷”；非白名单 IP 仍进入黑名单。
+- 新增可选的一键联动封堵：封禁设备可配置管理员专用 Python 脚本；单条告警经二次确认后交由独立低权限容器执行，成功自动闭环，失败或状态未知不自动重试。
+- 插件建单增加请求标识幂等与失败重试保护，降低连接正常但工单未创建、重试造成重复工单的风险。
+- 升级前端依赖并清除已知 npm 安全告警；锁文件改用 npm 官方仓库地址。
+- IP 名单、检测和告警/资产标签展示待排查状态；Nginx 开启 JSON 压缩，上传上限调整为 1g。
+
+</details>
+
+<details>
 <summary><strong>v2.2.1</strong></summary>
 
 ### 修复
@@ -335,6 +352,7 @@ ENABLE_DEMO_DATA=true
 - **资产 IP 名单展示**：告警详情显示源资产和目的资产的白名单/黑名单匹配状态。
 - **表格列宽调整**：支持拖拽调整告警工作台列宽。
 - **分页支持 1000 条/页**：方便批量查看和导出告警。
+- **告警数据合并**：支持从 CSV 文件导入 136 条告警数据到备份内容。
 
 ### 性能优化
 

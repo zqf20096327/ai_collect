@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/readme/hero.svg" width="100%" alt="Argo 阿尔戈：给 Agent 用的搜索与深度研究工具，277 个搜索源，按域按语言选路，输出可吸收的证据">
+  <img src="assets/readme/hero.svg" width="100%" alt="Argo 阿尔戈：给 Agent 用的搜索与深度研究工具，284 个搜索源，按域按语言选路，输出可吸收的证据">
 </p>
 
 <p align="center">
@@ -24,18 +24,20 @@
 <p align="center">
   <img alt="license" src="https://img.shields.io/badge/license-Apache_2.0-blue">
   <img alt="python" src="https://img.shields.io/badge/python-3.9+-green">
-  <img alt="version" src="https://img.shields.io/badge/version-2.9.9-informational">
-  <img alt="engines" src="https://img.shields.io/badge/engines-277-orange">
+  <img alt="version" src="https://img.shields.io/badge/version-2.10.0-informational">
+  <img alt="engines" src="https://img.shields.io/badge/engines-284-orange">
   <img alt="mcp" src="https://img.shields.io/badge/MCP-19%20tools-purple">
 </p>
 
-> **这是踏雪寻仙 DeepSeek Harness 插件系列的一员**（[dsh-files](https://github.com/taxueseek/dsh-files) 39★ · [dsh-models](https://github.com/taxueseek/dsh-models) 模型选择 + 子代理路由 + 推理层级）。同作者完整技能系列：[session-digger](https://github.com/taxueseek/session-digger) 29★ · [taxue-invest](https://github.com/taxueseek/taxue-invest) 21★ · [taxueskills](https://github.com/taxueseek/taxueskills) 23★ · [taxue-creative-style](https://github.com/taxueseek/taxue-creative-style) 12★
+> **taxueseek 系列 skill 的一员**，负责「搜索与深度研究」。同系列技能：[plainspoken-writing](https://github.com/taxueseek/plainspoken-writing) 68★（去 AI 味写作）· [session-digger](https://github.com/taxueseek/session-digger) 33★（跨环境会话挖掘）· [taxue-invest](https://github.com/taxueseek/taxue-invest) 28★（投资分析）· [taxueskills](https://github.com/taxueseek/taxueskills) 24★（踏雪决策系统）· [taxue-creative-style](https://github.com/taxueseek/taxue-creative-style) 13★（创意风格插画）。
+>
+> Argo 同时是 DeepSeek Harness 插件，一行命令装好（见下文「DSH 插件」）。同作者的 DSH 插件精品：[dsh-files](https://github.com/taxueseek/dsh-files) 41★（文件夹上传 + 文档解析）· [plugin-fast-adapt](https://github.com/taxueseek/plugin-fast-adapt) 7★（插件升级适配）· [dsh-plugin-guard](https://github.com/taxueseek/dsh-plugin-guard) 2★（装前审计）。
 
 # Argo 阿尔戈：给 Agent 用的搜索与深度研究工具
 
 ## 这是什么
 
-**Argo 是一个装在 Agent 里的搜索与深度研究工具，也可以获取相关网页的信息。背后连着 277 个搜索源，覆盖 97 个业务领域，同时支持本地文件的基础搜索能力。在开源搜索项目里，具备非常强大的搜索能力。**
+**Argo 是一个装在 Agent 里的搜索与深度研究工具，也可以获取相关网页的信息。背后连着 284 个搜索源，覆盖 99 个业务领域，同时支持本地文件的基础搜索能力。在开源搜索项目里，具备非常强大的搜索能力。**
 
 支持配置 API Key 提升搜索质量（配了 Key 的源质量通常更好，没配则自动跳过），也支持免费引擎和本地引擎自动保底。覆盖中英日韩等 18 种语言，支持金融、学术、影视、体育、代码、宏观等垂直场景。
 
@@ -106,7 +108,7 @@ dsh plugin --profile web add "github:taxueseek/argo"      # GitHub main
 
 **密钥安全**：写入 DSH 凭证库（与 Models 页同一处），不写进插件配置、不打日志、不回显明文。凭证服务优先级为**存储文件层 > 启动环境 > 项目 .env > 家目录 .env**：在面板（或 Models 页）保存即覆盖启动环境里的旧值，argo 子进程下一跳新连接用新 key；「清除」只删凭证库里的值，环境变量或 `.env` 提供的 key 会重新露出。设置页只是凭证域的写入口，读取仍由宿主在每次调用时完成。
 
-**DeepSeek 官方 key 原生供给**：argo 的 `deepseek_search` 引擎（官方 `api.deepseek.com/v1/tools/search`，结果自带 authority 权威分级 / rerank_score 排序分 / 发布时间）与 DSH 官方搜索后端**共用同一把 key**。插件经 DSH 原生凭证 seam 取用，不需要任何手工配置：解析路径 `ctx.get('credentials').resolve('DEEPSEEK_API_KEY')`，逐次解析——在 web Models 页轮换 key 后，下一跳新连接即生效，无需重启插件。插件不读 key 文件、不落盘、不打日志；key 值只经内存进入 argo 子进程 env，任何输出与错误信息都不含它。旧宿主无 credentials 服务时静默跳过：argo 侧该引擎按缺 key 停用，其余 271 个源不受影响。
+**DeepSeek 官方 key 原生供给**：argo 的 `deepseek_search` 引擎（官方 `api.deepseek.com/v1/tools/search`，结果自带 authority 权威分级 / rerank_score 排序分 / 发布时间）与 DSH 官方搜索后端**共用同一把 key**。插件经 DSH 原生凭证 seam 取用，不需要任何手工配置：解析路径 `ctx.get('credentials').resolve('DEEPSEEK_API_KEY')`，逐次解析——在 web Models 页轮换 key 后，下一跳新连接即生效，无需重启插件。插件不读 key 文件、不落盘、不打日志；key 值只经内存进入 argo 子进程 env，任何输出与错误信息都不含它。旧宿主无 credentials 服务时静默跳过：argo 侧该引擎按缺 key 停用，其余源不受影响。
 
 **web seam 的 pin 必读**（漏配会打挂 `web_fetch`）：宿主 `dsh-web` 的 provider 选择规则是「配置 id 优先；都没有且恰好一个可用则选它；**多个可用直接报 `WEB_PROVIDER_AMBIGUOUS`**」。web profile 默认挂着官方 http fetch provider（免 key、永远可用），本 bundle 再注册一个就是两个可用——**不 pin 的话 `web_fetch` 整个挂掉**（`web_search` 同理，若 profile 里另有搜索 provider）。故启用 web seam 的 profile 必须在 web 服务行显式指定：
 
@@ -123,7 +125,7 @@ dsh plugin --profile web add "github:taxueseek/argo"      # GitHub main
 
 ## 核心优势
 
-**277 个源，240 个免密钥开箱可用。** 不配任何 API Key 就能跑，免费引擎和本地引擎自动保底。配了 Key 的源质量通常更好，没配则自动跳过。一次安装，全场景可用。
+**284 个源，241 个免密钥开箱可用。** 不配任何 API Key 就能跑，免费引擎和本地引擎自动保底。配了 Key 的源质量通常更好，没配则自动跳过。一次安装，全场景可用。
 
 **本地搜索 + 联网搜索一体。** 这是 Argo 独一份的能力。本机文件搜索底层是 rg、mdfind 那套开发者日常工具，搜代码符号、文件名、文档全文、文件结构。加一个开关，本机命中会并进同一次网络搜索结果里，结果上标着来源是本机文件。写东西时记得自己半年前记过一段话但忘了在哪，用这个搜比翻文件夹快。
 
@@ -145,7 +147,7 @@ dsh plugin --profile web add "github:taxueseek/argo"      # GitHub main
 # 方式一：一键脚本（推荐本机长期用）
 curl -fsSL https://raw.githubusercontent.com/taxueseek/argo/main/scripts/install.sh | bash
 
-# 方式二：npm / npx（已支持，当前 2.9.9；按 tag 发布，版本固定）
+# 方式二：npm / npx（已支持，当前 2.10.0；按 tag 发布，版本固定）
 npm install -g argo-search      # 全局安装 CLI
 npx -y argo-search              # 或即用即走，不装
 npx -y github:taxueseek/argo    # 要跟 main 最新提交时用这条
@@ -209,10 +211,10 @@ Agent 干活的量级变了，检索的玩法跟着变了五件事，每一件 A
 1. **检索从「给链接」变成「给证据」。** Agent 不看网页排版，它要能排序、能复核、不撑爆上下文的结构化材料——所以 Argo 交付的是带可信度分解的 JSON，而不是 SERP 清单。
 2. **上下文成为第一成本。** 一次网页抓取动辄上万 token，Agent 的窗口烧不起。Argo 的 Agent 档单次约 3.7KB，字段集合与字节预算都有检查卡着，升级不会悄悄变胖。
 3. **网站开始为 AI 备料。** llms.txt 标准与 `.md` 直出在头部文档站快速铺开——Argo 抓取链第零级自动探测这些 AI 友好变体，命中即跳过整条反爬链；HTTP/TLS 都失败还有 r.jina.ai 阅读器级保底。
-4. **免费开放生态够用了。** 政府、学术、标准、安全机构的开放 API + 免 key 引擎，已经能覆盖大多数领域（240 个免配置源）；稀缺免费额度（firecrawl 1000 credits/月、stackexchange 300 次/天）做了「日常补位、关键顶上」的分层，订阅墙不是唯一解。
+4. **免费开放生态够用了。** 政府、学术、标准、安全机构的开放 API + 免 key 引擎，已经能覆盖大多数领域（241 个免配置源）；稀缺免费额度（firecrawl 1000 credits/月、stackexchange 300 次/天）做了「日常补位、关键顶上」的分层，订阅墙不是唯一解。
 5. **检索质量从「感觉」到「度量」。** 排序有金标（MRR/nDCG 地板）、融合有增益消融检查、路由有负向控制矩阵——「这版比上版好吗」从此是数字问题，不是玄学。
 
-> 以上五项已经在 v2.9.x 系列里全部落地：277 个源、98 个领域、240 个免配置开箱。逐项细节见 [docs/为什么选择argo.md](docs/为什么选择argo.md) 与 [发布说明](docs/RELEASE_NOTES_v2.9.0.md)。
+> 以上五项已经在 v2.9.x 系列里全部落地：284 个源、99 个领域、241 个免配置开箱。逐项细节见 [docs/为什么选择argo.md](docs/为什么选择argo.md) 与 [发布说明](docs/RELEASE_NOTES_v2.9.0.md)。
 
 ---
 
@@ -282,7 +284,7 @@ freshness  ≈ 发布时间（会忽略「2015 年以来」这类历史对比年
 
 ## 快速开始
 
-任选一种即可。**npm 安装已支持，当前版本 2.9.9**，与 GitHub 同为本仓库发布。npm 路线用 `npm install -g argo-search` 或 `npx -y argo-search`，按 tag 发布、版本固定、下载体积更小；GitHub 路线用 `install.sh` / `install.ps1` 或 `npx github:taxueseek/argo`，跟 main 走。之后每次打 tag，CI 会把两个 npm 包和 GitHub Release 一起发出；registry 上更早的 v1.0.1 是历史版本，不要锁定到它。
+任选一种即可。**npm 安装已支持，当前版本 2.10.0**，与 GitHub 同为本仓库发布。npm 路线用 `npm install -g argo-search` 或 `npx -y argo-search`，按 tag 发布、版本固定、下载体积更小；GitHub 路线用 `install.sh` / `install.ps1` 或 `npx github:taxueseek/argo`，跟 main 走。之后每次打 tag，CI 会把两个 npm 包和 GitHub Release 一起发出；registry 上更早的 v1.0.1 是历史版本，不要锁定到它。
 
 **零配置就能跑**：不配 API Key 时走免费引擎 + 本地 `local_*` 引擎；配了 Key 的源质量通常更好，没配则自动跳过。
 
@@ -435,7 +437,7 @@ python3 -m pytest tests/test_unit.py -q             # 单测（可选）
 
 **1. 通用搜索 + 垂直搜索，双管齐下**
 
-日常问题走通用网页搜索；一问到行情、影视、体育、宏观这类「有标准答案」的问题，自动切到垂直源直接给答案，而不是扔给你一堆链接。目前 277 个源（240 个免密钥开箱可用）、98 个业务域，金融 / 宏观 / 影视 / 体育 / 地理 / 组织 / 媒体 / 化学 / 学术 / 代码等都有专门的路。
+日常问题走通用网页搜索；一问到行情、影视、体育、宏观这类「有标准答案」的问题，自动切到垂直源直接给答案，而不是扔给你一堆链接。目前 284 个源（241 个免密钥开箱可用）、99 个业务域，金融 / 宏观 / 影视 / 体育 / 地理 / 组织 / 媒体 / 化学 / 学术 / 代码等都有专门的路。
 
 **2. 缓存：不重复花冤枉钱**
 
@@ -496,13 +498,15 @@ python3 -m pytest tests/test_unit.py -q             # 单测（可选）
 | `deep` | 调研、综述 | 质量优先，可多用引擎 |
 | `budget` | 额度紧 | 配额控制，用完降级 |
 
-### 当前大致能力（v2.9.9）
+### 当前大致能力（v2.10.0）
 
 Argo 干的事，一句话能说完：把一个问题按领域和语言分给合适的源，取回结果后按可信度排个序，交回给 Agent 的是能排序、能复核的材料。搜索、抓取、核验、本机文件检索走同一条管线，19 个 MCP 工具和 CLI 命令一一对应，装哪种形态都不缺能力。另有几个单点命令随用随取：argo tweet 打包 X 帖子，argo auth 管登录态，argo job 聚合招聘信息。
 
 装成 DSH 插件后，这些能力直接变成宿主的原生工具：高频的搜索与抓取默认就开，长尾取证能力在设置页里按需勾选，argo 本体的 28 个行为开关（缓存、重排、去重、守卫、代理、TTL 等）也从环境变量搬进了面板。密钥写进宿主凭证库，明文不回显，改完即生效。
 
 最近几个版本各修了一类问题。
+
+v2.10.0 扩的是能力面。源从 272 增到 284：秘塔五档（学术、文库、图片、视频、播客）、Sciverse 外文题录、NCPSSD 中文社科，加上 DSH 插件目录三源与技能索引两源，技能类源第一次带安装量。视频从查询到抓取一条线走通：新增 video 域与 --video，按时长筛，抓取时 B 站取字幕、YouTube 取 timedtext。抓取链重写了前沿质控与礼貌节奏，同主机限速、429 退避，watch 的差异判断能分清噪声与实质改动。通用层选源改为实测排序，英文通用查询接入 DeepSeek 条件对冲；响应体统一解码并补上 JSON-LD。安装器改走 venv 主路，PEP 668 环境下不再装完仍缺依赖。
 
 v2.9.9 做的是安全与交付质量。内容安全引擎原先只评分不拦截，高风险注入页照样进上下文；现在评分过阈值就隔离，用清洗后的正文替换原文，也不再进核验证据。网络出口补了两道纵深：重定向逐跳校验，DNS 解析结果钉死在当次连接上。调度侧，早停弃置的慢源交付不再丢弃：转后台收割，三秒内完成的照常交付并记进学习器。路由上，六族真实场景扫描收了五类误路由，A 股财务查询、企业尽调/开票/人查公司、民事实务、药品说明书、论文写作 howto 各归其位。另有 argo engine add 一键接入新引擎，DSH 设置页新增路由观测卡片与工具推荐组合。
 
@@ -523,7 +527,7 @@ v2.9.4 修的是显式选引擎的场景。用 --engine X 指定引擎时，缓�
 
 ## 引擎与路由
 
-当前配置 **272** 个源（**235** 个免密钥开箱可用）、**97** 个业务域（以 `config.yaml` 与 `--list-engines` 为准）。
+当前配置 **284** 个源（**241** 个免密钥开箱可用）、**99** 个业务域（以 `config.yaml` 与 `--list-engines` 为准）。
 
 ### 直连与垂类（节选）
 
@@ -773,6 +777,14 @@ argo/
 
 只列最近三个版本。完整历史见[版本记录](#版本记录)，逐版详情见 [Releases](https://github.com/taxueseek/argo/releases)。
 
+### v2.10.0：源到 284 + 视频检索与抓取 + 抓取前沿质控
+
+- **源 272→284**：秘塔五档（学术/文库/图片/视频/播客，均显式专用）、Sciverse 外文题录（年份/期刊/作者/学科可筛）、NCPSSD 中文社科（CLI 桥），加上 DSH 插件目录三源与技能索引两源（带安装量）
+- **视频一条线走通**：新增 `video` 域与 `--video` 强制路由，`--min-duration`/`--max-duration` 按时长筛；抓取时 B 站取简介与字幕、YouTube 取 oEmbed/timedtext，可选 `ARGO_VIDEO_ASR_CMD` 兜底
+- **抓取前沿质控**：URL 归一与资产过滤、正文哈希去重、同主机礼貌节奏与 429 指数退避、robots Crawl-delay；`argo watch` 的块级 diff 区分噪声与实质改动。实测抓 10 页 12.1s、正文 2000 字（原 500）
+- **选源与成本**：通用层改为实测排序 + 覆盖地板 + 语言门（issue #23），DeepSeek 英文对冲常驻第二位（`ARGO_PAID_HEDGE_DEFER` 可降），权威等级回填与权威早停
+- **装得上、发得出**：安装器 venv 主路 + `.venv` 自动发现；新增 `release_check.py` 发布一致性预检与 MCP Registry 清单 `server.json`
+
 ### v2.9.9：安全纵深 + 慢源交付不丢 + 五类误路由收口
 
 - **高风险正文进不了上下文**：内容安全引擎从「只评分」升级为「隔离+清洗替换」，`risk_score ≥ 0.5` 的正文被清洗后正文替换、不进证据分；默认开，`ARGO_CONTENT_RISK_GATE=0` 应急放行
@@ -791,20 +803,13 @@ argo/
 - **本机配置覆盖层 `config.local.yaml`**：本机调优不再写进公共配置
 - **DSH 设置页新增「引擎」分区**：28 个行为开关从环境变量搬进面板
 
-### v2.9.7：架构收口 + 宿主网页抓取交给 argo + License 转 Apache-2.0
-
-- **License 变更**：MIT → Apache License 2.0，专利授权明示，使用方式不变
-- **宿主抓不到的网页现在能抓到**：短链跳转、协议升级、跳转壳与 Cloudflare / JS 挑战页交给 argo 的抓取链（HTTP 优先，遇反爬自动升级浏览器）；默认开启，`fetchProviderEnabled` 可关
-- **auto 档不会再误调付费引擎**：18 个「只接受显式指定」的引擎从路由候选池剔除，只有 `--engine` 点名才走
-- **换新 key 下一跳就恢复**：配额耗尽的引擎不再等恢复窗口到点，路由缓存同步重算
-- **crawl / research / MCP 里跑 JS 不再崩**
-
 ---
 
 ## 版本记录
 
 | 版本 | 说明 |
 |------|------|
+| **v2.10.0** | **源到 284 + 视频检索与抓取 + 抓取前沿质控**：新增秘塔五档、Sciverse、NCPSSD 与 DSH/技能索引五源；`video` 域与 `--video`/`--min-duration`/`--max-duration`，B 站字幕与 YouTube timedtext、可选 ASR；crawl 前沿质控与 `argo watch` 噪声 diff；通用选源实测排序 + DeepSeek 英文对冲 + 权威早停；安装器 venv 化。详见 [发布说明](docs/RELEASE_NOTES_v2.10.0.md) |
 | **v2.9.9** | **安全纵深 + 慢源交付不丢 + 五类误路由收口**：高风险正文隔离+清洗替换（不进证据分）、逐跳重定向校验与 DNS 重绑定封堵；早停弃置的慢源转后台收割（`ARGO_TAIL_COMPLETE_S`），学习器记真实成绩；六族真实场景扫描收口学术/财务/企业/法律/医药误路由；`argo engine add` 一键接引擎、场景分桶学习、ZCode 插件包。详见 [发布说明](docs/RELEASE_NOTES_v2.9.9.md) |
 | **v2.9.8** | **路由精度审计 + issue #18/#19 修复 + 测试态隔离**：回放真实查询收窄 16 类误触发（品牌名/产品名/字段名/ASCII 子串），SERP 覆盖率门与 CJK 交叉验证落地；nightly 空日志、people_daily 默认 feed、缓存命中守卫一并收口；全量测试按用例隔离 adaptive/熔断状态。感谢 @wpp666 的复现与定位。详见 [发布说明](docs/RELEASE_NOTES_v2.9.8.md) |
 | **v2.9.7** | **架构收口 + DSH web_fetch 占位 + License 转 Apache-2.0**：宿主 web_fetch 改走 argo 抓取链，JS 挑战页与跨源跳转从失败变成功；18 个 explicit_only 引擎从路由候选池剔除，堵住 auto 档误调付费引擎扣费；熔断、记账、配额恢复与路由缓存一批状态契约收口。 |
@@ -876,3 +881,5 @@ Apache License 2.0 © 2026 [taxueseek](https://github.com/taxueseek)
 invest-cli 通过 `info`（`invest-cli info <词> --engine eastmoney`）与 `intent macro` 直接复用 argo 的财经 / 宏观 / 资讯取数，用于环节配额、低成本、多源数据，与 invest-cli 的结构化数据层（Wind / 盈米 / 东财 / yfinance / 天天基金）协同。
 
 > 最新版已完成 argo 数据与 invest 系列技能（v2.0.5）的集成。
+
+<!-- mcp-name: io.github.taxueseek/argo -->

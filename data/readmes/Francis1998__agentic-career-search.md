@@ -606,6 +606,18 @@ uv run uvicorn autoapply_agent.main:app --reload
 ![TuitionReimbursementCapGapAdvisor](assets/demo/tuition-reimbursement-cap-gap-advisor.gif)
 
 
+| Rippling/Workday/BambooHR climate-resilience leave planners bury related math in closed UIs | Workers lack a local `offered_days` vs `needed_days` band | `ClimateResilienceLeaveGapAdvisor` bands offline `offered_days` vs `needed_days` for HITL review and never auto-approves |
+![ClimateResilienceLeaveGapAdvisor](assets/demo/climate-resilience-leave-gap-advisor.gif)
+
+
+| Wellthy/Cariloop/Torchlight caregiving leave top-up planners bury related math in closed UIs | Workers lack a local `offered_days` vs `needed_days` band | `CaregivingLeaveTopUpGapAdvisor` bands offline `offered_days` vs `needed_days` for HITL review and never auto-approves |
+![CaregivingLeaveTopUpGapAdvisor](assets/demo/caregiving-leave-top-up-gap-advisor.gif)
+
+
+| Guild/LinkedIn Learning/Workday professional-development stipend planners bury related math in closed UIs | Workers lack a local `offered_usd` vs `needed_usd` band | `ProfessionalDevelopmentStipendGapAdvisor` bands offline `offered_usd` vs `needed_usd` for HITL review and never auto-approves |
+![ProfessionalDevelopmentStipendGapAdvisor](assets/demo/professional-development-stipend-gap-advisor.gif)
+
+
 ## License
 
 MIT © [Francis1998](https://github.com/Francis1998)

@@ -1,27 +1,51 @@
 # Open Walnut
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![CI](https://github.com/EvanZhang008/open-walnut/actions/workflows/ci.yml/badge.svg)](https://github.com/EvanZhang008/open-walnut/actions)
-[![Node.js](https://img.shields.io/badge/Node.js-%3E%3D22-green.svg)](https://nodejs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue.svg)](https://www.typescriptlang.org/)
 [![GitHub stars](https://img.shields.io/github/stars/EvanZhang008/open-walnut?style=social)](https://github.com/EvanZhang008/open-walnut)
 
-[![Open Walnut demo](docs/assets/demo-video-thumb.png)](https://youtu.be/uN4WCZ-n2mw)
+**Replace Notion and your Claude Code terminals with one open-source app where AI agents
+run your work like a small company.** You talk to one CEO agent (Main, in the app), and
+each project gets its own lead that runs Claude Code sessions and workers for it.
 
-<p align="center"><b><a href="https://youtu.be/uN4WCZ-n2mw">Watch the demo (6 min)</a></b></p>
+Install on macOS or Linux with one line (it needs nothing else, not even Node), then open
+[localhost:3456](http://localhost:3456):
 
-Open Walnut runs Claude Code on your laptop and on your remote dev boxes, and shows
-every session in one web page. A small daemon on each host owns the `claude`
-processes, so a session on a dev box keeps working when your SSH connection drops or
-your laptop sleeps. No tmux. Walnut installs that daemon over SSH for you, and each session gets
-its own diff of every file it changed.
+```bash
+curl -fsSL https://github.com/EvanZhang008/open-walnut/releases/latest/download/install.sh | sh
+~/.local/bin/walnut web
+```
 
-Next to the sessions sit your tasks, notes, and long-term memory, and a personal AI
-that can plan work, find context, and start sessions for you. Open Walnut is
-self-hosted, local-first, and has no telemetry.
+Or with Homebrew, `brew install evanzhang008/tap/open-walnut && walnut web`, or get the Mac app:
+[Apple silicon](https://github.com/EvanZhang008/open-walnut/releases/latest/download/Walnut-arm64.dmg) ·
+[Intel](https://github.com/EvanZhang008/open-walnut/releases/latest/download/Walnut-x64.dmg).
+Walnut runs its agents on [Claude Code](https://docs.anthropic.com/en/docs/claude-code), signed in once.
+
+![The Org page on 0.6.19: the org chart, a lead per area, and the one question that needs you, answered where it waits](docs/assets/org/org.gif)
+
+<p align="center"><sub><b>USED BY ENGINEERS AT</b></sub></p>
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo-amazon-white.svg" />
+    <img src="docs/assets/logo-amazon-dark.svg" alt="Amazon" height="26" />
+  </picture>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo-doordash-white.svg" />
+    <img src="docs/assets/logo-doordash-dark.svg" alt="DoorDash" height="26" />
+  </picture>
+</p>
+
+Next to the org sit your tasks, Markdown notes, calendar, and long-term memory, and every
+coding session in one web page: Claude Code, Codex, Gemini, OpenCode, and Goose, on your
+laptop or on a remote dev box over SSH. Plugins add your own apps. Open Walnut is
+self-hosted, local-first, MIT licensed, and has no telemetry.
 
 ## What Open Walnut Does
 
+- **An org that runs your work**: Main, your CEO agent, sees every project. Each project
+  has a lead that plans the work and hands it to workers, each one its own Claude Code
+  session. The Org page shows what needs you, and you answer right where the question
+  waits.
 - **Personal AI**: Ask Walnut to manage tasks, find information, write and search
   notes, start coding sessions, and run scheduled routines.
 - **Claude Code workspace**: Run and monitor multiple Claude Code sessions side by side
@@ -30,9 +54,11 @@ self-hosted, local-first, and has no telemetry.
   any configured SSH host.
 - **Durable sessions**: Sessions keep running across browser disconnects, dropped SSH
   connections, and Walnut server restarts.
+- **Every coding agent**: Claude Code by default, and Codex, Gemini, OpenCode, and Goose
+  sessions in the same columns (install their CLIs first).
 - **Change review**: Inspect a per-session diff, comment on individual lines, and send
   the review back to the same session.
-- **Tasks and projects**: Organize work as `Project -> Task -> Subtask`, with an Inbox
+- **Tasks and projects**: Organize work as `Project -> Folder -> Task -> Subtask`, with an Inbox
   for tasks that do not belong to a project.
 - **Notes and memory**: Keep Markdown notes with wiki links and search them together
   with task, session, and memory data.
@@ -43,11 +69,12 @@ self-hosted, local-first, and has no telemetry.
 
 ### Requirements
 
-- macOS or Linux. The one-line installer and Homebrew bring their own Node; the npm and
-  checkout routes need Node.js 22 or newer (`curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash` then `nvm install 22`).
-- git, only for the checkout route below (macOS: `xcode-select --install`, Ubuntu: `sudo apt install git`)
-- Linux: a C library from 2019 or later (glibc 2.29+: Ubuntu 20.04+, Debian 11+, AL2023, Fedora). Older distros compile one native module and need a newer Python and GCC first; `npm start` prints the exact commands, and [Getting Started](GETTING_STARTED.md#older-linux-glibc-before-229) has them too.
-- [Claude Code](https://docs.anthropic.com/en/docs/claude-code), signed in once (`npm install -g @anthropic-ai/claude-code`, then run `claude`)
+- macOS 12 or newer, or Linux with glibc 2.28 or newer, on arm64 or x64. Walnut carries everything it runs on: the
+  one-line installer, Homebrew and the Mac app need nothing installed first, and the npm
+  package needs Node 22 or newer. Alpine (musl) builds start with the release after 0.6.19;
+  there, add the C++ runtime first: `apk add libstdc++ libgcc`.
+- git and [Bun](https://bun.sh) 1.4.4 or newer, only for the checkout route below, and nothing else (git: `xcode-select --install` on macOS, `sudo apt install git` on Ubuntu; Bun: `curl -fsSL https://bun.sh/install | bash`)
+- [Claude Code](https://docs.anthropic.com/en/docs/claude-code), signed in once (`curl -fsSL https://claude.ai/install.sh | bash`, then run `claude`)
 
 That is the whole AI setup. Every AI turn Walnut runs is a Claude Code session: Ask Walnut (the Walnut agent), your coding sessions, scheduled routines, and the agents a session hook dispatches all use the `claude` you already have, however it signs in (Anthropic account, Bedrock, or Vertex). An Anthropic API key or AWS Bedrock credentials are optional, and they change only where the small single calls go (session titles, summaries, voice cleanup, quick parses): by default those also go through your Claude Code login, and Settings → Ask Walnut Provider points them at a provider instead.
 
@@ -57,12 +84,21 @@ One command on macOS or Linux. It needs nothing installed first, not even Node:
 
 ```bash
 curl -fsSL https://github.com/EvanZhang008/open-walnut/releases/latest/download/install.sh | sh
-walnut web
+~/.local/bin/walnut web
 ```
 
-It downloads the newest release for your machine, with its own Node inside, checks it
-against the release's checksums, puts it in `~/.local/share/open-walnut` and links `walnut`
-into `~/.local/bin`. Running it again installs the newest release over the old one.
+When `~/.local/bin` is not on your PATH yet (it is not by default on macOS), the script adds
+it in your shell's rc file (`~/.zshrc`, `~/.bash_profile` or `~/.bashrc`, fish's `conf.d`,
+else `~/.profile`) and says so, so a new terminal runs plain `walnut web`. The terminal you
+installed from keeps its old PATH, which is why the command above names the full path.
+`OPEN_WALNUT_MODIFY_PATH=0` leaves your rc files alone.
+
+It downloads the newest release's archive for your machine, checks it against the release's
+`SHA256SUMS`, unpacks it into `~/.local/share/open-walnut/app` (0.6.19 carries its own Node
+there), and links `walnut` into `~/.local/bin`. Running it again replaces that install with
+the newest release. From the release after 0.6.19, each version gets its own folder and the
+one before stays for a rollback
+([Getting Started](GETTING_STARTED.md#updating-and-rolling-back)).
 
 With Homebrew:
 
@@ -78,7 +114,7 @@ or install it with `brew install --cask evanzhang008/tap/walnut`. It carries Wal
 its first launch sets Walnut up in `~/.local/share/open-walnut` with no download, and it keeps
 itself up to date: a new release downloads in the background and installs on "Restart to update".
 
-With Node 22 or newer, the npm package (nothing to build either):
+With npm (Node 22 or newer):
 
 ```bash
 npm install -g open-walnut
@@ -90,15 +126,16 @@ To work on Walnut itself, run it from a checkout instead:
 ```bash
 git clone https://github.com/EvanZhang008/open-walnut.git
 cd open-walnut
-npm install
-npm start
+bun install
+bun run start
 ```
 
 Open [http://localhost:3456](http://localhost:3456). Walnut runs your sessions with Claude Code: when it
-is installed and signed in, you can start right away; otherwise a banner at the top of the page
-offers to install it and says how to sign in. The
+is installed and signed in, you can start right away; otherwise System attention, at the bottom
+of the task panel, offers to install it and says how to sign in. The
 first start downloads the default local embedding model, Qwen3-Embedding-0.6B
-(approximately 640 MB), in the background.
+(approximately 640 MB), and on Apple silicon and Linux the local voice model, Qwen3-ASR
+(about 1 to 2.5 GB, sized to the machine), in the background.
 
 For provider options, remote hosts, and troubleshooting, see
 [Getting Started](GETTING_STARTED.md).
@@ -107,13 +144,15 @@ For provider options, remote hosts, and troubleshooting, see
 
 Walnut checks npm once a day for a newer release and shows it in the notification panel
 (System) and at the bottom of Settings, with the one command that updates your install.
-Restarting applies it, however you installed it (the one-line installer and Homebrew
-update with their own Node): `open-walnut web` installs a newer published version before it
-starts (Settings > General > `Install updates on start`, or `updates.auto: false` in
-config.yaml, or `WALNUT_NO_AUTO_UPDATE=1`, to turn that off). `open-walnut update` does the
-same right away, `open-walnut update --check` only reports, and `open-walnut doctor` carries
-the same line. A checkout you run from source is never asked to update (pull and build it
-yourself), and `WALNUT_NO_UPDATE_CHECK=1` turns the check off.
+Restarting applies it: `walnut web` installs a newer published version before it starts,
+the way it was installed (the one-line installer's next version goes beside the current
+one, an npm install updates through npm), and Settings > General > `Install updates on
+start`, `updates.auto: false` in config.yaml, or `WALNUT_NO_AUTO_UPDATE=1` turn that off. A
+new version that cannot start is gone back from on its own, and skipped until a newer one.
+`walnut update` does the same right away, `walnut update --check` only reports, and
+`walnut doctor` carries the same line. Homebrew updates with `brew upgrade open-walnut`, the
+Mac app with its own "Restart to update". A checkout you run from source is never asked to
+update (pull and build it yourself), and `WALNUT_NO_UPDATE_CHECK=1` turns the check off.
 
 Two channels are published: `nightly` is the newest commit on `main` that CI passed, every six
 hours, and `latest` is a tagged release, promoted each day from a nightly that has been out a
@@ -130,11 +169,27 @@ Set up Open Walnut for me: read and run the skill at
 https://github.com/EvanZhang008/open-walnut/blob/main/skills/setup-walnut/SKILL.md
 ```
 
-The skill mirrors your existing provider setup, installs dependencies, starts Walnut,
+The skill mirrors your existing provider setup, installs Walnut, starts it,
 and verifies the connection with a real model request. Review the
 [setup skill](skills/setup-walnut/SKILL.md) for the exact steps.
 
 ## Product Tour
+
+### Main and a Lead for Each Project
+
+The Org page is where you run the company. Main is pinned on top with every lead under
+it; each lead's row says what it is working on or what it asks you. The org chart shows
+every project's lead and the workers under it, and dragging a task onto another makes it
+that task's worker.
+
+![The org chart: Main on top, a lead per project, and the workers under each task](docs/assets/org/org-chart.png)
+
+### Sessions That Draw
+
+Rich mode is on by default: a session can answer with a diagram, a table, or a laid-out
+page instead of a wall of text, and it draws in as the answer streams.
+
+![A Claude Code session drawing how a web request reaches a server, live](docs/assets/org/rich-mode-draw.gif)
 
 ### Start a Session from a Prompt
 
@@ -159,10 +214,10 @@ between planning, execution, and review without rebuilding context in another ap
 
 ### Set Your Active Work
 
-Move pinned tasks between Focus, Satellite, and Wait to show what needs attention now,
-what can run in parallel, and what is blocked.
+Move pinned tasks between Focus, Satellite, and Parked to show what needs attention now,
+what can run in parallel, and what is waiting.
 
-![Pinned task tiers for Focus, Satellite, and Wait](docs/assets/gifs/03-focus-tiers.gif)
+![Pinned task tiers for Focus, Satellite, and Parked](docs/assets/gifs/03-focus-tiers.gif)
 
 ### Search Notes and Memory
 
@@ -233,8 +288,8 @@ Tasks are the main unit of work in Open Walnut.
 
 - Projects group related tasks; unassigned tasks stay in the Inbox.
 - Tasks can contain subtasks, priorities, due dates, dependencies, tags, and notes.
-- Session activity updates task progress, while final completion remains a human
-  decision.
+- Session activity updates task progress, and a lead can close its workers' tasks once
+  it has checked their work.
 - The task board supports search, filters, bulk actions, and drag-and-drop ordering.
 - Optional plugins provide two-way sync with Microsoft To-Do and Jira.
 
@@ -265,17 +320,17 @@ one source does not overwhelm the others.
   skills from the web app.
 - **Task integrations**: Sync Microsoft To-Do and Jira through built-in plugins.
 - **Custom plugins**: Install trusted Git or npm Plugins that add server logic, a native React App, Tools, Skills, Commands, Hooks, Agents, Providers, routes, and task sync without changing Walnut.
-- **Notifications**: Send optional Slack notifications for important events.
+- **Notifications**: The inbox, and push notifications on the iPhone app, tell you when a task needs you.
 
 ### Writing a plugin
 
-A plugin App joins the same App Registry as Walnut's own screens, so one `walnut.ui.app` registration gives it a Sidebar entry, the route `/apps/<plugin-id>~<app-id>`, deep links, a badge, and a Command Palette entry. Installing a plugin means trusting its code: a server entry is full Node, and a native web entry shares the console's React tree.
+A plugin App joins the same App Registry as Walnut's own screens, so one `walnut.ui.app` registration gives it a Sidebar entry, the route `/apps/<plugin-id>~<app-id>`, deep links, a badge, and a Command Palette entry. Installing a plugin means trusting its code: a server entry runs as full code inside Walnut, and a native web entry shares the console's React tree.
 
 The first authoring loop is one command, which scaffolds, links into the running console, and reloads on every save. The author packages are not on npm yet, so run it from a checkout of this repository:
 
 ```bash
-npm run build:plugins
-node packages/plugin-cli/dist/cli.js new my-plugin --dev --no-install
+bun run build:plugins
+bun packages/plugin-cli/dist/cli.js new my-plugin --dev --no-install
 ```
 
 Once the packages are published, the same loop will be `npx @open-walnut/plugin-cli new my-plugin --dev`.
@@ -308,7 +363,7 @@ switching works, and [Cloud sync](docs/reference/cloud-sync.md) for the companio
 - Open Walnut does not include telemetry or require an Open Walnut account.
 - Model prompts are sent only to the provider you configure.
 - Remote sessions connect only to hosts you configure.
-- Cloud access, task integrations, Slack, and Git remotes are optional.
+- Cloud access, task integrations, and Git remotes are optional.
 - Private plugins stay outside the repository.
 
 ## Web Pages
@@ -316,6 +371,7 @@ switching works, and [Cloud sync](docs/reference/cloud-sync.md) for the companio
 | Route | Purpose |
 |---|---|
 | `/` | Walnut, tasks, and Claude Code session columns |
+| `/org` | Main and the project leads, with the org chart |
 | `/tasks` | Project and task workspace |
 | `/tasks/:id` | Task details, subtasks, sessions, notes, and dependencies |
 | `/notes` | Markdown notes workspace |
@@ -363,7 +419,7 @@ providers, search, integrations, repositories, session hosts, usage, and other a
 options.
 
 Open Walnut supports Anthropic, AWS Bedrock, OpenAI-compatible APIs, Google Generative
-AI, and Ollama. See [Getting Started](GETTING_STARTED.md#provider-configuration) for
+AI, and Ollama. See [Getting Started](GETTING_STARTED.md#provider-configuration-optional) for
 provider examples.
 
 ## Project Structure
@@ -390,25 +446,30 @@ Read [Architecture](ARCHITECTURE.md) for the system design and the
 
 ## Development
 
+A checkout installs with Bun: `bun install` installs the exact versions in `bun.lock`
+(and `web/bun.lock`) and applies `patches/`. Commit a changed `bun.lock` with the
+`package.json` change that made it.
+
 ```bash
-npm run build                       # Build the server and session daemon
-cd web && npx vite build            # Build the web app
-npm run dev                         # Watch the server
-cd web && npx vite                  # Run the web app with hot reload
-npm run test:quick                  # Run the default fast test suite
-npm run test:focus -- <test-path>   # Run focused tests
-npm run lint                        # Type-check the server
+bun install                         # Install dependencies (root and web/)
+bun run build                       # Build the server and session daemon
+cd web && bun x vite build          # Build the web app
+bun run dev                         # Watch the server
+cd web && bun x vite                # Run the web app with hot reload
+bun run test:quick                  # Run the default fast test suite
+bun run test:focus -- <test-path>   # Run focused tests
+bun run lint                        # Type-check the server
 ```
 
 The backend development server and Vite can also be started together with:
 
 ```bash
-npm run web:dev
+bun run web:dev
 ```
 
 ## Tech Stack
 
-- Node.js, Express, TypeScript, and SQLite
+- Bun, Express, TypeScript, and SQLite
 - React, Vite, and TypeScript
 - Anthropic Claude and other configurable model providers
 - Claude Code CLI with stream-JSON I/O

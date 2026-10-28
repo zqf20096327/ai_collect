@@ -965,6 +965,7 @@ Table of Contents
 - [criware](http://www.criware.cn/)
 - [artlist](https://artlist.io/)
 - [SFXMint](https://sfxmint.com/) CC0 game and UI sound effects (AI-generated or procedurally synthesized), WAV/MP3 downloads without signup, no-key API and MCP. CC0 游戏/UI 音效库，免注册下载
+- [DailySounds](https://dailysounds.org/?ref=aboutgame) Free sound effects for games (UI clicks, footsteps, doors, impacts, ambience, horror), MP3/WAV/OGG downloads without signup, commercial use allowed, credit optional. 免费游戏音效库，免注册下载 MP3/WAV/OGG，可商用，署名可选
 - [native-audio](https://assetstore.unity.com/packages/tools/audio/native-audio-107067) unity-plugin
 - [Audio-Manager-for-Unity](https://github.com/microsoft/Audio-Manager-for-Unity) microsoft Audio-Manager-for-Unity
 - https://github.com/IvanMurzak/Unity-AudioLoader
@@ -978,6 +979,7 @@ Table of Contents
 - https://github.com/man572142/Bro_Audio
 - https://github.com/CyberAgentGameEntertainment/AudioConductor
 - https://github.com/Yunasawa/YNL-Audio
+- [Online Tone Generator](https://theaudiostuff.com/tools/signal-generator/) Free browser tone, noise and sweep generator (sine, square, triangle, saw; white, pink, brown noise) with WAV export, no signup. 免费在线音频信号发生器，可导出 WAV。
 #### Music-Tool/Editor
 - https://www.image-line.com/
 - https://www.goldwave.com
@@ -1696,9 +1698,4 @@ Table of Contents
 - [ntg-unity](https://github.com/hayden-donnelly/ntg-unity)
 - [simple-wall-collider-307337](https://assetstore.unity.com/packages/tools/utilities/simple-wall-collider-307337)
 - [ColliderMeshTool](https://github.com/SinlessDevil/ColliderMeshTool)
-- https://github.com/JohannHotzel/UnityRuntimeTerrain
-#### Procedurally-Generation
-- [real-ivy-2-procedural-ivy-generator](https://assetstore.unity.com/packages/tools/modeling/real-ivy-2-procedural-ivy-generator-181402) unity-plugin
-- [Multi-Terrain-Generator](https://github.com/benjamin-wiemann/Multi-Terrain-Generator)
-- [games.noio.planter](https://github.com/noio/games.noio.planter) The plant simulation from Cloud Gardens as a Unity package for level design.
-- [hedera](https://github.com/radiatoryang/hedera)  paint 3D
+- https://github.com/JohannHotzel/UnityRun

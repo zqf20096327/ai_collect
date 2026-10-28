@@ -136,6 +136,14 @@ The rest of this README is the plumbing — configuration, deployment, troublesh
 - `fleet-bridge` — RabbitMQ relay
 - `fleet-dashboard` — web UI at http://localhost:3700
 
+## Stock OpenShell integration (manual opt-in)
+
+The [manual stock whole-agent profile](docs/openshell-stock.md) connects outside enrollment,
+verified memory and broker control/completion to a non-root Codex daemon/native-client path.
+It is a bounded, experimental profile, not automatic provisioning or a general rollout.
+Each deployment needs explicit operator enrollment and its own exact-build runtime qualification;
+CI and source fixtures do not establish that qualification.
+
 ## Platform support
 
 | Platform | Provider | Status |
@@ -382,3 +390,10 @@ MIT — see [LICENSE](LICENSE).
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+### Saved sandbox policies
+
+The dashboard can save/list immutable stock policy versions and select an agent's desired
+runtime/version and API-key reference. Saving does not activate or migrate a runtime, change
+applied bindings, or grant service access. Managed apply is unavailable in this release.
+See [saved policies and errors](docs/openshell-stock.md#saved-managed-policies-no-activation).

@@ -1,7 +1,7 @@
 
 # Machine Learning & Deep Learning Tutorials [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/sindresorhus/awesome)
 
-- This repository contains a topic-wise curated list of Machine Learning and Deep Learning tutorials, articles and other resources. Other awesome lists can be found in this <b><code>524778⭐</code></b> <b><code>&nbsp;37759🍴</code></b> [list](https://github.com/sindresorhus/awesome)).
+- This repository contains a topic-wise curated list of Machine Learning and Deep Learning tutorials, articles and other resources. Other awesome lists can be found in this <b><code>525887⭐</code></b> <b><code>&nbsp;37825🍴</code></b> [list](https://github.com/sindresorhus/awesome)).
 
 - If you want to contribute to this list, please read [Contributing Guidelines](https://github.com/correia-jpv/fucking-Machine-Learning-Tutorials/blob/master/contributing.md).
 
@@ -57,7 +57,7 @@
 
 - 🌎 [Machine Learning Course by Andrew Ng (Stanford University)](www.coursera.org/learn/machine-learning)
 
-- <b><code>&nbsp;17436⭐</code></b> <b><code>&nbsp;&nbsp;2119🍴</code></b> [AI/ML YouTube Courses](https://github.com/dair-ai/ML-YouTube-Courses))
+- <b><code>&nbsp;17438⭐</code></b> <b><code>&nbsp;&nbsp;2121🍴</code></b> [AI/ML YouTube Courses](https://github.com/dair-ai/ML-YouTube-Courses))
 
 - 🌎 [Curated List of Machine Learning Resources](hackr.io/tutorials/learn-machine-learning-ml)
 
@@ -65,17 +65,17 @@
 
 - [An Introduction to Statistical Learning](http://www-bcf.usc.edu/~gareth/ISL/)
 
-- <b><code>&nbsp;72236⭐</code></b> <b><code>&nbsp;&nbsp;8458🍴</code></b> [List of Machine Learning University Courses](https://github.com/prakhar1989/awesome-courses#machine-learning))
+- <b><code>&nbsp;72327⭐</code></b> <b><code>&nbsp;&nbsp;8463🍴</code></b> [List of Machine Learning University Courses](https://github.com/prakhar1989/awesome-courses#machine-learning))
 
-- <b><code>&nbsp;28878⭐</code></b> <b><code>&nbsp;&nbsp;6144🍴</code></b> [Machine Learning for Software Engineers](https://github.com/ZuzooVn/machine-learning-for-software-engineers))
+- <b><code>&nbsp;28878⭐</code></b> <b><code>&nbsp;&nbsp;6143🍴</code></b> [Machine Learning for Software Engineers](https://github.com/ZuzooVn/machine-learning-for-software-engineers))
 
-- <b><code>&nbsp;11378⭐</code></b> <b><code>&nbsp;&nbsp;1862🍴</code></b> [Dive into Machine Learning](https://github.com/hangtwenty/dive-into-machine-learning))
+- <b><code>&nbsp;11375⭐</code></b> <b><code>&nbsp;&nbsp;1862🍴</code></b> [Dive into Machine Learning](https://github.com/hangtwenty/dive-into-machine-learning))
 
-- <b><code>&nbsp;74659⭐</code></b> <b><code>&nbsp;15683🍴</code></b> [A curated list of awesome Machine Learning frameworks, libraries and software](https://github.com/josephmisiti/awesome-machine-learning))
+- <b><code>&nbsp;74675⭐</code></b> <b><code>&nbsp;15691🍴</code></b> [A curated list of awesome Machine Learning frameworks, libraries and software](https://github.com/josephmisiti/awesome-machine-learning))
 
-- <b><code>&nbsp;&nbsp;4440⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;477🍴</code></b> [A curated list of awesome data visualization libraries and resources.](https://github.com/fasouto/awesome-dataviz))
+- <b><code>&nbsp;&nbsp;4443⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;478🍴</code></b> [A curated list of awesome data visualization libraries and resources.](https://github.com/fasouto/awesome-dataviz))
 
-- <b><code>&nbsp;30241⭐</code></b> <b><code>&nbsp;&nbsp;6690🍴</code></b> [An awesome Data Science repository to learn and apply for real world problems](https://github.com/okulbilisim/awesome-datascience))
+- <b><code>&nbsp;30249⭐</code></b> <b><code>&nbsp;&nbsp;6694🍴</code></b> [An awesome Data Science repository to learn and apply for real world problems](https://github.com/okulbilisim/awesome-datascience))
 
 - [The Open Source Data Science Masters](http://datasciencemasters.org/)
 
@@ -101,7 +101,7 @@
 
 - <b><code>&nbsp;&nbsp;&nbsp;&nbsp;24⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;25🍴</code></b> [TheAnalyticsEdge edX Notes and Codes](https://github.com/pedrosan/TheAnalyticsEdge))
 
-- <b><code>&nbsp;&nbsp;5118⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;530🍴</code></b> [Have Fun With Machine Learning](https://github.com/humphd/have-fun-with-machine-learning))
+- <b><code>&nbsp;&nbsp;5117⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;530🍴</code></b> [Have Fun With Machine Learning](https://github.com/humphd/have-fun-with-machine-learning))
 
 - [Twitter's Most Shared #machineLearning Content From The Past 7 Days](http://theherdlocker.com/tweet/popularity/machinelearning)
 
@@ -127,7 +127,7 @@
 
 ## Artificial Intelligence
 
-- <b><code>&nbsp;16728⭐</code></b> <b><code>&nbsp;&nbsp;2570🍴</code></b> [Awesome Artificial Intelligence (GitHub Repo)](https://github.com/owainlewis/awesome-artificial-intelligence))
+- <b><code>&nbsp;16737⭐</code></b> <b><code>&nbsp;&nbsp;2570🍴</code></b> [Awesome Artificial Intelligence (GitHub Repo)](https://github.com/owainlewis/awesome-artificial-intelligence))
 
 - [UC Berkeley CS188 Intro to AI](http://ai.berkeley.edu/home.html), [Lecture Videos](http://ai.berkeley.edu/lecture_videos.html), 🌎 [2](www.youtube.com/watch?v=W1S-HSakPTM)
 
@@ -231,7 +231,7 @@
 
 - 🌎 [Adam Geitgey](medium.com/@ageitgey/machine-learning-is-fun-80ea3ec3c471#.f7vwrtfne) - Easiest Introduction to machine learning
 
-- <b><code>&nbsp;&nbsp;3502⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;672🍴</code></b> [Ethen's Notebook Collection](https://github.com/ethen8181/machine-learning)) - Continuously updated machine learning documentations (mainly in Python3). Contents include educational implementation of machine learning algorithms from scratch and open-source library usage
+- <b><code>&nbsp;&nbsp;3502⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;671🍴</code></b> [Ethen's Notebook Collection](https://github.com/ethen8181/machine-learning)) - Continuously updated machine learning documentations (mainly in Python3). Contents include educational implementation of machine learning algorithms from scratch and open-source library usage
 
 <a name="quora" />
 
@@ -274,7 +274,7 @@
 - [Probability Cheat Sheet](http://static1.squarespace.com/static/54bf3241e4b0f0d81bf7ff36/t/55e9494fe4b011aed10e48e5/1441352015658/probability_cheatsheet.pdf),
 [Source](http://www.wzchen.com/probability-cheatsheet/)
 
-- <b><code>&nbsp;&nbsp;8044⭐</code></b> <b><code>&nbsp;&nbsp;1327🍴</code></b> [Machine Learning Cheat Sheet](https://github.com/soulmachine/machine-learning-cheat-sheet))
+- <b><code>&nbsp;&nbsp;8043⭐</code></b> <b><code>&nbsp;&nbsp;1327🍴</code></b> [Machine Learning Cheat Sheet](https://github.com/soulmachine/machine-learning-cheat-sheet))
 
 - 🌎 [ML Compiled](ml-compiled.readthedocs.io/en/latest/)
 
@@ -418,9 +418,9 @@ Elastic Net](web.stanford.edu/~hastie/Papers/elasticnet.pdf)
 
 - [fast.ai - Cutting Edge Deep Learning For Coders](http://course.fast.ai/part2.html)
 
-- <b><code>&nbsp;29097⭐</code></b> <b><code>&nbsp;&nbsp;6349🍴</code></b> [A curated list of awesome Deep Learning tutorials, projects and communities](https://github.com/ChristosChristofidis/awesome-deep-learning))
+- <b><code>&nbsp;29103⭐</code></b> <b><code>&nbsp;&nbsp;6348🍴</code></b> [A curated list of awesome Deep Learning tutorials, projects and communities](https://github.com/ChristosChristofidis/awesome-deep-learning))
 
-- **<b><code>&nbsp;39593⭐</code></b> <b><code>&nbsp;&nbsp;7253🍴</code></b> [Deep Learning Papers Reading Roadmap](https://github.com/floodsung/Deep-Learning-Papers-Reading-Roadmap/blob/master/README.md))**
+- **<b><code>&nbsp;39595⭐</code></b> <b><code>&nbsp;&nbsp;7251🍴</code></b> [Deep Learning Papers Reading Roadmap](https://github.com/floodsung/Deep-Learning-Papers-Reading-Roadmap/blob/master/README.md))**
 
 - [Lots of Deep Learning Resources](http://deeplearning4j.org/documentation.html)
 
@@ -521,7 +521,7 @@ Elastic Net](web.stanford.edu/~hastie/Papers/elasticnet.pdf)
         
         - [DBNs using Theano](http://deeplearning.net/tutorial/DBN.html#dbn)
         
-        - <b><code>&nbsp;&nbsp;4150⭐</code></b> <b><code>&nbsp;&nbsp;2110🍴</code></b> [All Codes](https://github.com/lisa-lab/DeepLearningTutorials))
+        - <b><code>&nbsp;&nbsp;4149⭐</code></b> <b><code>&nbsp;&nbsp;2110🍴</code></b> [All Codes](https://github.com/lisa-lab/DeepLearningTutorials))
         
         - <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?🍴</code></b> [Deep Learning Implementation Tutorials - Keras and Lasagne](https://github.com/vict0rsch/deep_learning/))
 
@@ -549,11 +549,11 @@ Elastic Net](web.stanford.edu/~hastie/Papers/elasticnet.pdf)
     - TensorFlow
         - [Website](http://tensorflow.org/)
         
-        - <b><code>&nbsp;43747⭐</code></b> <b><code>&nbsp;14618🍴</code></b> [TensorFlow Examples for Beginners](https://github.com/aymericdamien/TensorFlow-Examples))
+        - <b><code>&nbsp;43744⭐</code></b> <b><code>&nbsp;14614🍴</code></b> [TensorFlow Examples for Beginners](https://github.com/aymericdamien/TensorFlow-Examples))
         
         - 🌎 [Stanford Tensorflow for Deep Learning Research Course](web.stanford.edu/class/cs20si/syllabus.html)
         
-            - <b><code>&nbsp;10373⭐</code></b> <b><code>&nbsp;&nbsp;4229🍴</code></b> [GitHub Repo](https://github.com/chiphuyen/tf-stanford-tutorials))
+            - <b><code>&nbsp;10373⭐</code></b> <b><code>&nbsp;&nbsp;4228🍴</code></b> [GitHub Repo](https://github.com/chiphuyen/tf-stanford-tutorials))
             
         - <b><code>&nbsp;&nbsp;3165⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;436🍴</code></b> [Simplified Scikit-learn Style Interface to TensorFlow](https://github.com/tensorflow/skflow))
         
@@ -561,7 +561,7 @@ Elastic Net](web.stanford.edu/~hastie/Papers/elasticnet.pdf)
         
         - <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?🍴</code></b> [Benchmark TensorFlow GitHub](https://github.com/soumith/convnet-benchmarks/issues/66))
         
-        - <b><code>&nbsp;17532⭐</code></b> <b><code>&nbsp;&nbsp;2956🍴</code></b> [Awesome TensorFlow List](https://github.com/jtoy/awesome-tensorflow))
+        - <b><code>&nbsp;17532⭐</code></b> <b><code>&nbsp;&nbsp;2957🍴</code></b> [Awesome TensorFlow List](https://github.com/jtoy/awesome-tensorflow))
         
         - <b><code>&nbsp;&nbsp;4429⭐</code></b> <b><code>&nbsp;&nbsp;1171🍴</code></b> [TensorFlow Book](https://github.com/BinRoot/TensorFlow-Book))
         
@@ -708,13 +708,13 @@ Elastic Net](web.stanford.edu/~hastie/Papers/elasticnet.pdf)
 
     - 🌎 [An Intuitive Explanation of Convolutional Neural Networks](ujjwalkarn.me/2016/08/11/intuitive-explanation-convnets/)
     
-    - <b><code>&nbsp;11193⭐</code></b> <b><code>&nbsp;&nbsp;2764🍴</code></b> [Awesome Deep Vision: List of Resources (GitHub)](https://github.com/kjw0612/awesome-deep-vision))
+    - <b><code>&nbsp;11190⭐</code></b> <b><code>&nbsp;&nbsp;2763🍴</code></b> [Awesome Deep Vision: List of Resources (GitHub)](https://github.com/kjw0612/awesome-deep-vision))
     
     - [Intro to CNNs](http://deeplearning4j.org/convolutionalnets.html)
     
     - [Understanding CNN for NLP](http://www.wildml.com/2015/11/understanding-convolutional-neural-networks-for-nlp/)
     
-    - [Stanford Notes](http://vision.stanford.edu/teaching/cs231n/), [Codes](http://cs231n.github.io/), <b><code>&nbsp;11086⭐</code></b> <b><code>&nbsp;&nbsp;4178🍴</code></b> [GitHub](https://github.com/cs231n/cs231n.github.io))
+    - [Stanford Notes](http://vision.stanford.edu/teaching/cs231n/), [Codes](http://cs231n.github.io/), <b><code>&nbsp;11088⭐</code></b> <b><code>&nbsp;&nbsp;4177🍴</code></b> [GitHub](https://github.com/cs231n/cs231n.github.io))
     
     - [JavaScript Library (Browser Based) for CNNs](http://cs.stanford.edu/people/karpathy/convnetjs/)
     
@@ -736,15 +736,15 @@ Elastic Net](web.stanford.edu/~hastie/Papers/elasticnet.pdf)
     
     - [Network Representation Learning Papers](https://github.com/thunlp)
     
-    - <b><code>&nbsp;&nbsp;1526⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;240🍴</code></b> [Knowledge Representation Learning Papers](https://github.com/thunlp/KRLPapers))
+    - <b><code>&nbsp;&nbsp;1527⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;240🍴</code></b> [Knowledge Representation Learning Papers](https://github.com/thunlp/KRLPapers))
     
-    - <b><code>&nbsp;&nbsp;5107⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;783🍴</code></b> [Graph Based Deep Learning Literature](https://github.com/naganandy/graph-based-deep-learning-literature))
+    - <b><code>&nbsp;&nbsp;5108⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;782🍴</code></b> [Graph Based Deep Learning Literature](https://github.com/naganandy/graph-based-deep-learning-literature))
 
 <a name="nlp" />
 
 ## Natural Language Processing
 
-- <b><code>&nbsp;&nbsp;2227⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;289🍴</code></b> [A curated list of speech and natural language processing resources](https://github.com/edobashira/speech-language-processing))
+- <b><code>&nbsp;&nbsp;2226⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;289🍴</code></b> [A curated list of speech and natural language processing resources](https://github.com/edobashira/speech-language-processing))
 
 - [Understanding Natural Language with Deep Neural Networks Using Torch](http://devblogs.nvidia.com/parallelforall/understanding-natural-language-deep-neural-networks-using-torch/)
 
@@ -860,9 +860,9 @@ Elastic Net](web.stanford.edu/~hastie/Papers/elasticnet.pdf)
 <a name="vision" />
 
 ## Computer Vision
-- <b><code>&nbsp;23622⭐</code></b> <b><code>&nbsp;&nbsp;4436🍴</code></b> [Awesome computer vision (github)](https://github.com/jbhuang0604/awesome-computer-vision))
+- <b><code>&nbsp;23621⭐</code></b> <b><code>&nbsp;&nbsp;4436🍴</code></b> [Awesome computer vision (github)](https://github.com/jbhuang0604/awesome-computer-vision))
 
-- <b><code>&nbsp;11193⭐</code></b> <b><code>&nbsp;&nbsp;2764🍴</code></b> [Awesome deep vision (github)](https://github.com/kjw0612/awesome-deep-vision))
+- <b><code>&nbsp;11190⭐</code></b> <b><code>&nbsp;&nbsp;2763🍴</code></b> [Awesome deep vision (github)](https://github.com/kjw0612/awesome-deep-vision))
 
 
 <a name="svm" />
@@ -1017,7 +1017,7 @@ Elastic Net](web.stanford.edu/~hastie/Papers/elasticnet.pdf)
 
 ## Random Forest / Bagging
 
-- <b><code>&nbsp;&nbsp;1256⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;331🍴</code></b> [Awesome Random Forest (GitHub)**](https://github.com/kjw0612/awesome-random-forest))
+- <b><code>&nbsp;&nbsp;1257⭐</code></b> <b><code>&nbsp;&nbsp;&nbsp;331🍴</code></b> [Awesome Random Forest (GitHub)**](https://github.com/kjw0612/awesome-random-forest))
 
 - 🌎 [How to tune RF parameters in practice?](www.kaggle.com/forums/f/15/kaggle-forum/t/4092/how-to-tune-rf-parameters-in-practice)
 
@@ -1158,7 +1158,7 @@ Elastic Net](web.stanford.edu/~hastie/Papers/elasticnet.pdf)
 
 ## Bayesian Machine Learning
 
-- <b><code>&nbsp;28185⭐</code></b> <b><code>&nbsp;&nbsp;7909🍴</code></b> [Bayesian Methods for Hackers (using pyMC)](https://github.com/CamDavidsonPilon/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers))
+- <b><code>&nbsp;28197⭐</code></b> <b><code>&nbsp;&nbsp;7912🍴</code></b> [Bayesian Methods for Hackers (using pyMC)](https://github.com/CamDavidsonPilon/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers))
 
 - [Should all Machine Learning be Bayesian?](http://videolectures.net/bark08_ghahramani_samlbb/)
 
@@ -1168,7 +1168,7 @@ Elastic Net](web.stanford.edu/~hastie/Papers/elasticnet.pdf)
 
 - [Bayesian Statistics Made Simple](http://greenteapress.com/wp/think-bayes/)
 
-- <b><code>&nbsp;19451⭐</code></b> <b><code>&nbsp;&nbsp;4539🍴</code></b> [Kalman & Bayesian Filters in Python](https://github.com/rlabbe/Kalman-and-Bayesian-Filters-in-Python))
+- <b><code>&nbsp;19455⭐</code></b> <b><code>&nbsp;&nbsp;4539🍴</code></b> [Kalman & Bayesian Filters in Python](https://github.com/rlabbe/Kalman-and-Bayesian-Filters-in-Python))
 
 - 🌎 [Markov Chain Wikipedia Page](en.wikipedia.org/wiki/Markov_chain)
 
@@ -1222,4 +1222,4 @@ Elastic Net](web.stanford.edu/~hastie/Papers/elasticnet.pdf)
 - For a collection of Data Science Tutorials using Python, please refer to <b><code>&nbsp;&nbsp;5832⭐</code></b> <b><code>&nbsp;&nbsp;1536🍴</code></b> [this list](https://github.com/ujjwalkarn/DataSciencePython)).
 
 ## Source
-<b><code>&nbsp;18312⭐</code></b> <b><code>&nbsp;&nbsp;3968🍴</code></b> [ujjwalkarn/Machine-Learning-Tutorials](https://github.com/ujjwalkarn/Machine-Learning-Tutorials))
+<b><code>&nbsp;18317⭐</code></b> <b><code>&nbsp;&nbsp;3968🍴</code></b> [ujjwalkarn/Machine-Learning-Tutorials](https://github.com/ujjwalkarn/Machine-Learning-Tutorials))

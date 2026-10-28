@@ -13,6 +13,8 @@ what is inference, and what the fix does not cover.
 
 | | |
 |---|---|
+| **New - [Long waits and the 1-hour cache](rules/long-wait-cache-ttl.md)** | An agent waiting on CI, pipeline tests or training waits at most 50 minutes, then checks live progress. The 1-hour prompt cache never goes cold, and a hung job gets noticed as a side effect. Also sets `subagentPromptCacheTtl: "1h"`: subagents default to 5 minutes, and sessions that spawn dozens of agents burned usage on repeated cache writes. Source and cost trade-off included. |
+| **New - [Evidence-backed visual workflow](docs/harness-improvement-pilot.md#candidate-evidence-backed-visual-workflow)** | What we take from [OpenVLHarness](https://github.com/uclanlp/OpenVLHarness) and what we leave. We take typed evidence with addressable crops and masks, degradation as a receipt rather than a silent fallback, and a run manifest. We leave host-side execution of model-written Python ("execution timeout is not a sandbox") and the GPU stack. Value gets proved through the bounded pilot, not taken from benchmark numbers. |
 | **New - [Output legibility](docs/output-legibility.md)** | Karpathy's readability ladder (STE-style text, diagram, HTML, video) plus `scripts/term_drift_check.py`: a glossary-driven check for terminology drift and overlong sentences that works in Russian too, with three-state exit codes. Also a dead-code sweep method for agents in the `refactoring-safely` skill. |
 | **New - [Bounded harness-improvement pilot](docs/harness-improvement-pilot.md)** | A read-only evaluator for one frozen baseline and one candidate harness change. It accepts only a strict metric improvement with unchanged-or-better task outcomes, full candidate safety checks, and held-out coverage; it never edits active skills, hooks, or permissions. |
 | **New - [Skills that hand the task to each other](docs/development-skill-routing.md)** | The development skills now route to each other: four "moment" skills (start, will it hold, while writing, already too big) each name the other three, a delivery chain carries a bug or change from frozen plan to verified candidate, and the route follows the task into every subagent. The audit behind it found three phrasings the skills promised and the router never delivered; all three are fixed with failing cases first. Ships as [`keyword-skill-router.py`](hooks/keyword-skill-router.py) + [`agent-skill-contract.py`](hooks/agent-skill-contract.py) + [`root-cause-delivery`](skills/development/root-cause-delivery/SKILL.md). |
@@ -36,8 +38,14 @@ Three paths depending on what you need:
 ### Option 1: Claude Code plugin (fastest)
 
 ```bash
-claude plugin install https://github.com/AnastasiyaW/codex-claude-code-config
+claude plugin marketplace add AnastasiyaW/codex-claude-code-config
+claude plugin install harness@aw-harness
 ```
+
+The plugin brings the skills, agents, workflows, the safe-default hooks, and an
+index of `rules/` injected at session start. Team distribution with pinned
+versions and auto-update, and the one-command Codex update, are in
+[docs/team-plugin.md](docs/team-plugin.md).
 
 Then in your Claude Code chat:
 
@@ -109,6 +117,7 @@ offered? Nothing raises an error when that happens — see
 - **Tests feel repetitive or a specialized gate blocks smoke?** Use the universal candidate-state sequence: focused slice, risk-based review, one full matrix, then only the relevant immutable-candidate compatibility proof ([testing strategy](docs/research/2026-08-testing-and-agent-evals.md))
 - **Need to improve a prompt/skill/config?** Automated Read-Change-Test loop ([Autoresearch](principles/03-autoresearch.md))
 - **Need proof before adopting one harness change?** Compare a frozen baseline and candidate without live mutation ([bounded pilot](docs/harness-improvement-pilot.md))
+- **Session waits on CI or training for an hour and the cache goes cold?** Cap each wait at 50 minutes and give subagents a 1-hour cache ([long waits](rules/long-wait-cache-ttl.md))
 - **Agent output too long to read, terms keep changing?** Glossary-driven drift check and the readability ladder ([output legibility](docs/output-legibility.md))
 - **LLM skips steps in complex workflows?** Shell scripts for mechanical tasks, one step at a time ([Deterministic Orchestration](principles/04-deterministic-orchestration.md))
 - **Wrong debugging conclusions?** Structured Premises-Trace-Conclusions format ([Structured Reasoning](principles/05-structured-reasoning.md))
@@ -170,7 +179,7 @@ See [docs/rtk-integration.md](docs/rtk-integration.md) and
 | [dependency-currency-guard](hooks/dependency-currency-guard.py) | `PreToolUse` | Blocks a manifest edit that names a package which does not exist, is too new or too little used to be a real recall (the slopsquat profile), or pins a fast-moving library far behind current |
 | [dependency-provenance-guard](hooks/dependency-provenance-guard.py) | `PreToolUse` | Blocks direct wheels/archives/Git sources and extra indexes; requires lock/hash-aware installs, fails closed on registry outages, and checks exact registry versions plus artifact digests |
 | [dependency-alternatives](scripts/dependency-alternatives.py) | On demand | Searches official PyPI/npm metadata and returns only stable, age- and digest-verified candidate packages; never edits or installs |
-| [pre-push-public-repo-scan](hooks/pre-push-public-repo-scan.py) | git `pre-push` | Two independent scans — regex and semantic — of a push to a PUBLIC repo; either one alarming blocks it. Private repos skip. Host and script names load from a local list, never from this file |
+| [pre-push-public-repo-scan](hooks/pre-push-public-repo-scan.py) | git `pre-push` | Two independent scans — regex and semantic — of a push to a PUBLIC repo; either one alarming blocks it. Every pushed commit, commit and tag message and binary blob is scanned, bounded by what the remote itself advertises. Private repos skip. Host and script names load from a local list, never from this file |
 | [shape_common](hooks/shape_common.py) | *(library)* | Not a hook: the one definition of "what shape is this file in", shared by `module-shape-advisor` and `scripts/architecture_audit.py` so the two cannot answer differently |
 | [harness-load-advisor](hooks/harness-load-advisor.py) | `Stop` | Notices when a closing message reports a high-cost or specialized gate (signing, VM/GPU/OS/browser/performance) blocking lower-risk work, and says so. A feedback guard, not a bypass — it never lifts the gate |
 | [outward-claim-evidence-guard](hooks/outward-claim-evidence-guard.py) | `Stop` | Blocks a narrow set of externally measurable claims (hash, filename-derived hash, size, version, deploy) when the final report lacks a probe/result line. It enforces reporting discipline, not truth by itself. |
@@ -181,6 +190,7 @@ See [docs/rtk-integration.md](docs/rtk-integration.md) and
 | [unbuffered-progress-advisor](hooks/unbuffered-progress-advisor.py) | `PreToolUse` | A backgrounded Python run with no `-u` block-buffers its stdout, so a stall looks exactly like slowness — twice worth half an hour. Advisory, gated on the harness's own `run_in_background` rather than on parsing the command text: the text-matching version fired 459 times on real history, all false (never blocks) |
 | [live-tree-guard](hooks/live-tree-guard.py) | `PreToolUse` | The primary checkout receives finished work; it is not where work is done. Blocks editing a **tracked** file in the primary tree of a repo that opted in with `.claude/live-tree` — a lock says "please do not", a separate worktree means there is nothing to overwrite. Exempt: linked worktrees, append-only per-session artifacts, untracked new files. See [live-tree-is-receive-only](rules/live-tree-is-receive-only.md) |
 | [shared-branch-guard](hooks/shared-branch-guard.py) | `PreToolUse` | In a repo opted in with `.claude/shared-branch`, blocks any `git reset` and pathless `git commit`; these commands can rewrite or publish another worker's staged state. |
+| [publish-bypass-guard](hooks/publish-bypass-guard.py) | `PreToolUse` | Blocks publishing routes that skip the global pre-push leak scan: `git push --no-verify`, `-c core.hooksPath`, `GIT_CONFIG*` env on a push, `git send-pack`, a push from a repo whose local hooks folder has no pre-push chaining to the scan (unless the target is private), `gh repo edit --visibility public`, `gh repo create --public`, public gists, `gh api` content writes, `gh release` on a public or unknown repo. A repo-local pre-push must be byte-identical to [hooks/pre-push-chain.sh](hooks/pre-push-chain.sh). The owner's latest chat message naming the action unblocks it. Threat model: [docs/publish-bypass-guard.md](docs/publish-bypass-guard.md). |
 | [pre-push-personal-email-guard](hooks/pre-push-personal-email-guard.py) | *(git pre-push)* | Refuses to publish commits authored with a personal email address — commit metadata in a public repo is readable through the API without cloning, and an address plus proven activity is a ready-made phishing target |
 | [activity-journal-guard](hooks/activity-journal-guard.py) | `PreToolUse` | Enforces the shared activity journal — blocks a mutating command on a tracked shared resource that does not log to its journal |
 | [coord-claim-guard](hooks/coord-claim-guard.py) | `PreToolUse` | Claim-before-edit gate for multi-session / coord-enabled repos (blocks editing a file without an active claim) |
@@ -408,6 +418,7 @@ These work well alongside the principles:
 - **[hookify](https://github.com/AstroMined/hookify)** - git hooks generator for Claude Code
 - **[Semgrep](https://semgrep.dev/)** - static analysis, pairs with deep-review
 - **[task-orchestrator](https://github.com/jpicklyk/task-orchestrator)** - MCP task orchestration with dependency ordering
+- **[awesome-claude-code-hooks](https://github.com/loqimean/awesome-claude-code-hooks)** - curated list of Claude Code hooks and hook resources
 
 ---
 

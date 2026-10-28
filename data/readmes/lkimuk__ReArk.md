@@ -12,8 +12,8 @@ Download the installer for your computer from [Latest release](https://github.co
 
 | OS | Requirements | Direct links |
 | :---: | --- | --- |
-| <img src="https://raw.githubusercontent.com/devicons/devicon/v2.17.0/icons/windows8/windows8-original.svg" width="44" height="44" alt="Windows"><br>Windows | Windows 10+<br>x64 | [![Setup x64](https://img.shields.io/badge/Setup-x64-0078D4?style=flat-square)](https://github.com/lkimuk/ReArk/releases/download/v1.0.0/ReArk-1.0.0-windows-x64-setup.exe) |
-| <img src="https://raw.githubusercontent.com/devicons/devicon/v2.17.0/icons/apple/apple-original.svg" width="44" height="44" alt="macOS"><br>macOS | macOS 14.0+<br>Apple Silicon | [![DMG Apple Silicon](https://img.shields.io/badge/DMG-Apple_Silicon-000000?style=flat-square&logo=apple&logoColor=white)](https://github.com/lkimuk/ReArk/releases/download/v1.0.0/ReArk-1.0.0-macos-arm64.dmg) |
+| <img src="https://raw.githubusercontent.com/devicons/devicon/v2.17.0/icons/windows8/windows8-original.svg" width="44" height="44" alt="Windows"><br>Windows | Windows 10+<br>x64 | [![Setup x64](https://img.shields.io/badge/Setup-x64-0078D4?style=flat-square)](https://github.com/lkimuk/ReArk/releases/download/v1.2.0/ReArk-1.2.0-windows-x64-setup.exe) |
+| <img src="https://raw.githubusercontent.com/devicons/devicon/v2.17.0/icons/apple/apple-original.svg" width="44" height="44" alt="macOS"><br>macOS | macOS 14.0+<br>Apple Silicon | [![DMG Apple Silicon](https://img.shields.io/badge/DMG-Apple_Silicon-000000?style=flat-square&logo=apple&logoColor=white)](https://github.com/lkimuk/ReArk/releases/download/v1.2.0/ReArk-1.2.0-macos-arm64.dmg) |
 | <img src="https://raw.githubusercontent.com/devicons/devicon/v2.17.0/icons/linux/linux-original.svg" width="44" height="44" alt="Linux"><br>Linux | x64<br>System requirements to be announced | Coming in the next release |
 
 ## Feature Highlights
@@ -58,6 +58,16 @@ Download the installer for your computer from [Latest release](https://github.co
 - Work with fullscreen or detached mirroring windows
 
 Available analysis views and device actions depend on the package format, operating system version, and device capabilities. ABC evidence tools and HarmonyOS re-signing are specific to HarmonyOS packages.
+
+## What's new in 1.2.0
+
+- Added dynamic analysis and runtime workflows with Frida instrumentation, CPU emulation, memory dumping, and dynamic debugging
+- Added bounded APK modification, repackaging, alignment, signing, and signature verification
+- Added Reproduction Mode for detecting application cracking and tampering risks
+- Added permission management and dynamic model switching from the chat composer
+- Added image attachments and previews, `llama-server` support, and MCP Server integration for external tools such as REA
+- Improved Android embedded ELF analysis and Agent access to native artifacts
+- Added compatibility with legacy IPA plist formats and improved tool, runtime, and model diagnostics
 
 ## Screenshots
 

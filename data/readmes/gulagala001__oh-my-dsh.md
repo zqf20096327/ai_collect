@@ -7,7 +7,7 @@
 <p align="center"><strong>简体中文</strong> · <a href="README_EN.md">English</a></p>
 
 <p align="center">
-  <a href="docs/release-1.1.2.md"><img alt="OMD 1.1.2" src="https://img.shields.io/badge/release-OMD%201.1.2-0969da?style=flat-square"></a>
+  <a href="docs/release-1.2.1.md"><img alt="OMD 1.2.1" src="https://img.shields.io/badge/release-OMD%201.2.1-0969da?style=flat-square"></a>
   <a href="https://github.com/gulagala001/oh-my-dsh/releases"><img alt="GitHub 累计下载量" src="https://img.shields.io/github/downloads/gulagala001/oh-my-dsh/total?style=flat-square&amp;label=GitHub%20downloads&amp;color=0969da"></a>
   <a href="#readme-install"><img alt="DSH 0.2.1-rc.3" src="https://img.shields.io/badge/DSH-0.2.1--rc.3-0969da?style=flat-square"></a>
   <a href="https://github.com/gulagala001/oh-my-dsh/stargazers"><img alt="GitHub Stars" src="https://img.shields.io/github/stars/gulagala001/oh-my-dsh?style=flat-square&amp;color=0969da"></a>
@@ -15,11 +15,11 @@
 
 <p align="center"><a href="#readme-install"><strong>开始使用</strong></a> · <a href="docs/README.md">完整文档</a> · <a href="https://github.com/gulagala001/oh-my-dsh/issues">反馈</a></p>
 
-当前版本：[OMD 1.1.2](docs/release-1.1.2.md)。
+当前版本：[OMD 1.2.1](docs/release-1.2.1.md)。
 
-<p align="center"><a href="docs/images/omd-hero-zh.png"><img src="docs/images/omd-hero-zh.png" alt="Oh My DSH · 从对话到交付" width="880"></a></p>
+<p align="center"><a href="https://raw.githubusercontent.com/gulagala001/oh-my-dsh/main/docs/images/omd-hero-zh.png"><img src="https://raw.githubusercontent.com/gulagala001/oh-my-dsh/main/docs/images/omd-hero-zh.png" alt="Oh My DSH · 从对话到交付" width="880"></a></p>
 
-<p align="center"><a href="docs/images/glyph-animation.gif"><img src="docs/images/glyph-animation.gif" alt="Glyph 动态字符鲸鱼与界面交互演示" width="600" height="438"></a></p>
+<p align="center"><a href="https://raw.githubusercontent.com/gulagala001/oh-my-dsh/main/docs/images/glyph-animation.gif"><img src="https://raw.githubusercontent.com/gulagala001/oh-my-dsh/main/docs/images/glyph-animation.gif" alt="Glyph 动态字符鲸鱼与界面交互演示" width="600" height="438"></a></p>
 
 <a id="quickstart"></a>
 <a id="desktop"></a>
@@ -46,10 +46,10 @@
 打开实际使用的 DSH 实例，在 **插件 → ＋ 添加插件** 中粘贴：
 
 ```text
-https://github.com/gulagala001/oh-my-dsh/releases/download/v0.2.1-rc.3.omd.1.1.2/oh-my-dsh-0.2.1-rc.3.omd.1.1.2.tgz
+https://github.com/gulagala001/oh-my-dsh/releases/download/v0.2.1-rc.3.omd.1.2.1/oh-my-dsh-0.2.1-rc.3.omd.1.2.1.tgz
 ```
 
-等当前任务结束后，按宿主提示启用或完整重启该实例，沿用原 profile 与数据。其他宿主、升级和卸载见[安装指南](docs/install.md) · [SHA256SUMS](https://github.com/gulagala001/oh-my-dsh/releases/download/v0.2.1-rc.3.omd.1.1.2/SHA256SUMS).
+等当前任务结束后，按宿主提示启用或完整重启该实例，沿用原 profile 与数据。其他宿主、升级和卸载见[安装指南](docs/install.md) · [SHA256SUMS](https://github.com/gulagala001/oh-my-dsh/releases/download/v0.2.1-rc.3.omd.1.2.1/SHA256SUMS).
 
 ### 2. 先试这一件事
 
@@ -75,7 +75,7 @@ OMD 组合 **Workflow、Rewind、Persona、Extensions 和 DeepSeek Workbench**�
 
 会话总览集中展示产出、来源、后台进程、Workflow 和子智能体，点开成员即可继续侧栏对话。**Ultra** 提供 Workflow、Agent Team、自由三种协作方式；**Better Todo** 将原始需求、任务与验证结果关联，保留已完成检查和真实执行回执。
 
-没有项目也能开始：新聊天提前准备独立目录，首条消息命名工作子目录，后续对话继续复用。输入框的 **✨** 提供轻润色、结构化和步骤规划，可保存要求预设、比较版本、撤销或重做。
+没有项目也能开始：新聊天提前准备独立目录，首次发送及后续对话始终复用；聊天标题与文件夹位置分开管理。输入框的 **✨** 提供轻润色、结构化和步骤规划，可保存要求预设、比较版本、撤销或重做。
 
 [日常使用](docs/usage.md) · [Ultra 与 Workflow](docs/workflow.md)
 
@@ -92,7 +92,7 @@ OMD 组合 **Workflow、Rewind、Persona、Extensions 和 DeepSeek Workbench**�
 
 ### 让界面和表达方式适合自己
 
-**Glyph 动态字符**用立体字符鲸鱼、局部波纹和字符控件组织工作空间。还可选择 DSH 原生、Codex Desktop、iOS Liquid Glass、Claude CLI、Google Material，搭配 **29 套配色**、背景、字体和分区颜色；已有外观选择继续保留。
+**Glyph 动态字符**用立体字符鲸鱼、局部波纹和字符控件组织工作空间。还可选择 DSH 原生、Codex Desktop、iOS Liquid Glass、Claude Desktop、Claude CLI、Google Material，搭配 **30 套配色**、背景、字体和分区颜色；已有外观选择继续保留。
 
 **人格管理**分为身份与人格、语言风格、沟通方式、回答呈现四个模块，支持多个预设、复制修改、JSON 导入导出和 AI 创作提示词。启用会话人设后，可为不同主会话单独选择、继承全局或关闭人格。
 
@@ -103,13 +103,13 @@ OMD 组合 **Workflow、Rewind、Persona、Extensions 和 DeepSeek Workbench**�
 - **超频**：追求更深入、完整的回答和交付，愿意为复杂问题投入更多推敲与细节，适合需要充分分析和打磨的任务。
 
 <p align="center">
-  <a href="docs/images/economical-token-usage.png"><img src="docs/images/economical-token-usage.png" alt="精算实测：Token 用量与缓存命中" width="320"></a>
-  <a href="docs/images/economical-yellow-crane-tower.png"><img src="docs/images/economical-yellow-crane-tower.png" alt="精算实测作品：黄鹤楼体素场景" width="320"></a>
+  <a href="https://raw.githubusercontent.com/gulagala001/oh-my-dsh/main/docs/images/economical-token-usage.png"><img src="https://raw.githubusercontent.com/gulagala001/oh-my-dsh/main/docs/images/economical-token-usage.png" alt="精算实测：Token 用量与缓存命中" width="320"></a>
+  <a href="https://raw.githubusercontent.com/gulagala001/oh-my-dsh/main/docs/images/economical-yellow-crane-tower.png"><img src="https://raw.githubusercontent.com/gulagala001/oh-my-dsh/main/docs/images/economical-yellow-crane-tower.png" alt="精算实测作品：黄鹤楼体素场景" width="320"></a>
 </p>
 
 <p align="center">精算实测展示：用量统计与作品效果</p>
 
-![外观示例](docs/images/release/themes.jpg)
+![外观示例](https://raw.githubusercontent.com/gulagala001/oh-my-dsh/main/docs/images/release/themes.jpg)
 
 [外观设置](docs/skins.md) · [人格与设置](docs/usage.md#人格预设与自定义身份)
 

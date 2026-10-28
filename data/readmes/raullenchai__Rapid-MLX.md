@@ -656,8 +656,10 @@ non-quantized tensors as FP16 for chips without accelerated BF16 matrix
 multiplication. The regular `qwen3.8-27b-4bit` alias remains unchanged for M3
 and newer Macs; Rapid does not silently swap checkpoint precision.
 
+The pinned `ornith-1.5-122b-a10b-4bit` alias offers the publisher’s 122B hybrid MoE checkpoint on Macs with at least 96 GB unified memory. Install the `[vision]` runtime for its checkpoint loader; this alias qualifies text chat, streaming, tools, and thinking controls. Its download is about 69.6 GB. See the [October 27 qualification record](docs/engineering/performance/2026-10-27-trending-models.md) for results and the two excluded candidates.
+
 → [Full RAM tier map + serve flags per tier](https://rapidmlx.com/docs/hardware-tiers.html)
-→ [Every alias, quant, and family (215 text + 13 image + 10 video + 44 audio aliases, 282 total)](https://rapidmlx.com/docs/aliases.html) · interactive at [models.rapidmlx.com](https://models.rapidmlx.com/)
+→ [Every alias, quant, and family (216 text + 13 image + 10 video + 44 audio aliases, 283 total)](https://rapidmlx.com/docs/aliases.html) · interactive at [models.rapidmlx.com](https://models.rapidmlx.com/)
 
 ---
 
@@ -886,7 +888,15 @@ approvals expire after 120 seconds; noninteractive input denies them.
 `terminal` and `execute_code(language="python", code=...)` run noninteractively
 in the workspace, with a 120-second default timeout (maximum 600) and 8 KiB of
 head/tail output. Python uses `python3` on PATH, falling back to the bundled
-interpreter. Pattern checks are heuristics, **not an OS sandbox**; scripts and
+interpreter. Terminal processes inherit only PATH, HOME, USER, LOGNAME, LANG,
+LC_*, TERM, SHELL and TMPDIR; PWD is set to the workspace. To pass other
+non-secret variables, set
+`RAPID_MLX_HARNESS_TERMINAL_ENV` in the owner environment to a comma-separated
+list of exact names before starting the owner. Names containing KEY, SECRET,
+TOKEN, PASSWORD, PASSWD, CREDENTIAL or AUTH, AWS_* and DATABASE_URL are always
+excluded, as are values containing URL userinfo. This limits accidental
+inheritance; commands can still access files and resources available to the user.
+Pattern checks are heuristics, **not an OS sandbox**; scripts and
 programs run with your local account's access. Use
 `RAPID_MLX_CHAT_APPROVALS=always` or `--approvals always` to approve every action;
 `RAPID_MLX_CHAT_ACTION_TOOLS=0` or `--no-action-tools` disables all four tools.

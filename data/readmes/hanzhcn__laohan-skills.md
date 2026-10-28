@@ -25,7 +25,7 @@
 > **不必全装**——挑你要的技能单独装，避免装一堆用不上的。完整单装命令见「[按需安装](#按需安装)」。
 
 ```bash
-# 一键全装（22 个技能，需要 Claude Code、Codex 或 OpenClaw）
+# 一键全装（23 个技能，需要 Claude Code、Codex 或 OpenClaw）
 npx skills add hanzhcn/laohan-skills --agent claude-code -g -y   # Codex/OpenClaw 用户把 claude-code 换成对应 agent 名
 
 # 单装一个（推荐：按需挑）
@@ -44,7 +44,7 @@ npx skills add hanzhcn/laohan-skills -a codex --skill laohan-chushicodex -y
 
 不必全装。挑你要的，复制对应命令（前提：已装 [Claude Code](https://docs.anthropic.com/en/docs/claude-code)、[Codex](https://developers.openai.com/codex/) 或 OpenClaw）：
 
-**内容创作（12 个）**
+**内容创作（13 个）**
 ```bash
 npx skills add hanzhcn/laohan-skills --skill laohan-xuanti           # 🔥 选题决策（热点+达人库+抖音验证）
 npx skills add hanzhcn/laohan-skills --skill laohan-xuanti --skill laohan-chuangzuo # ✍️ 统一创作引擎（5 输入→口播稿）
@@ -56,6 +56,7 @@ npx skills add hanzhcn/laohan-skills --skill laohan-fenjingtishici   # 🎬 分�
 npx skills add hanzhcn/laohan-skills --skill laohan-notebooklm       # 📑 幻灯片图片
 npx skills add hanzhcn/laohan-skills --skill laohan-luping           # 🎥 录屏自动化
 npx skills add hanzhcn/laohan-skills --skill laohan-daoyan           # 🎬 V5.1 导演初稿+终审（同一 director-state）
+npx skills add hanzhcn/laohan-skills --skill laohan-motion           # 🤖 数字人×Motion模板出片（路线④总入口）
 npx skills add hanzhcn/laohan-skills --skill laohan-donghua          # 🎞️ B-roll 动画（历史 episode / 双渲染器）
 npx skills add hanzhcn/laohan-skills --skill laohan-duopingtai       # 🔄 抖音/小红书/公众号改写
 ```
@@ -82,7 +83,7 @@ npx skills add hanzhcn/laohan-skills --skill laohan-yunying          # 📈 发�
 
 ---
 
-## 内容创作（12 个）
+## 内容创作（13 个）
 
 > 从选题到成片，全流程覆盖。每一步都有对应技能，说一句就能触发。
 
@@ -181,6 +182,7 @@ laohan-xuanti → laohan-chuangzuo → laohan-weigui → laohan-jiaozhun → lao
 | 📑 **laohan-notebooklm** | 口播稿 → 幻灯片图片（NotebookLM，剪映直接用） | "做 PPT" |
 | 🎥 **laohan-luping** | 录屏自动化（ffmpeg 物理屏 + Playwright 浏览器 → 1080p MP4） | "录屏" |
 | 🎬 **laohan-daoyan** | V5.1 导演预制（初稿 + 终审共用 director-state，停在等素材） | "做导演初稿" |
+| 🤖 **laohan-motion** | 数字人×Motion模板制作总入口：锁定稿→配音→口型→全库选型→门链→异模型复核→交付 | "创作 motion 视频" | 方法真源在视频项目 motion/mastery/，skill 是路由入口 |
 | 🔄 **laohan-duopingtai** | 多平台改写（口播稿 → 抖音 / 小红书 / 公众号三版本） | "多平台改写" |
 
 ---

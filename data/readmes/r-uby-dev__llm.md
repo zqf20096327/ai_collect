@@ -226,16 +226,17 @@ can't use them in the scenarios where they work well:
 
 ```ruby
 require "llm"
+require "llm/tools"
 
 llm = LLM.deepseek
 mcp = LLM::MCP.http(
   url: "https://api.githubcopilot.com/mcp/",
-  headers: {"Authorization" => "Bearer #{ENV['GITHUB_RUBYDEV_PAT']}"}
+  headers: {"Authorization" => "Bearer #{ENV['GITHUB_PAT']}"}
 )
 
 class Stream < LLM::Stream
   def on_tool_call(tool)
-    if tool.runner.mcp? 
+    if tool.mcp? 
       puts "spawn #{tool.name} on ractor" 
       queue << tool.task(:ractor)
     else

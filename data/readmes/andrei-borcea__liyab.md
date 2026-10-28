@@ -61,6 +61,8 @@ Temperature, context length and OS activity affect throughput. The [measurement 
 keeps the configurations, alternating A/B runs, single-run caveats and per-phase timings.
 Stage-1 phone validation remains deferred; these figures come from earlier device runs.
 
+**M4 Pro, 48 GiB RAM:** Qwen3.8-27B Q4_K_M reached **4.69–4.72 tok/s** with all 64 blocks resident after Metal SiLU FFN fusion. An earlier 13,000 MiB cap run reached **2.54 tok/s** with block streaming. Both used 16-token decode and a 512-token context; prompts differed. [Conditions, A/B runs and phase times](docs/guide/benchmarks.md#m4-pro-dense-27b-development-check).
+
 <a id="charts"></a>
 
 ### Decode speed
@@ -181,8 +183,9 @@ gates, tiny checkpoints, smoke runs, failed controls and incomplete variants.
 
 **Export caveats:** OLMo, StarCoder, EXAONE 3.5, InternLM 3 and Ministral have documented tokenizer/template
 metadata conflicts. Check the [source/export notes](docs/guide/models.md) before choosing a file.
-Full heterogeneous Gemma 4, DeepSeek-V4 and the [stage-2 combinations](docs/model-coverage-stage1.md#stage-2-and-later-work)
-remain incomplete.
+[`liyab-compat`](docs/liyab-compat.md) adds heterogeneous Gemma 4 text/MoE and DeepSeek-V4 text execution,
+including expert output scales folded into weights, checked against generated upstream checkpoints. Trained quality, production tokenizer/export checks and the
+[remaining combinations](docs/model-coverage-stage1.md#stage-2-and-later-work) need further validation.
 
 <a id="architecture"></a>
 
@@ -200,7 +203,7 @@ remain incomplete.
 | Layer | Responsibility |
 | :--- | :--- |
 | C++ / C ABI / JNI / Swift / Dart FFI | Engine access from applications |
-| Architecture registry + block plans | Metadata and present tensors select mixers, norms, projections and FFNs |
+| [`liyab-compat`](docs/liyab-compat.md) | Load-time metadata/tensor adaptation, architecture facts, validation and block plans |
 | Context manager | KV pages, recurrent state, saved contexts, prefix reuse and sequence scheduling |
 | Storage | Mapped GGUF tensors, dense block pipeline and bounded expert cache |
 | Backends | Per-operation routing, with CPU fallback for unsupported accelerator operations |
@@ -219,7 +222,7 @@ remain incomplete.
 
 | Feature | Behavior | Details |
 | :--- | :--- | :--- |
-| Models larger than RAM | Streaming starts above 80% of available memory or the configured budget | [Dense / MoE streaming](docs/guide/memory-and-serving.md#models-larger-than-ram) |
+| Models larger than RAM | Dense weights stream when the GGUF exceeds available memory or the app budget after a 1 GiB runtime reserve; the desktop scheduler checks the actual block layout before growing its cap | [Dense / MoE streaming](docs/guide/memory-and-serving.md#models-larger-than-ram) |
 | Expert cache | LFU eviction, next-block router prediction, overlapping I/O and compute | [Memory planning and estimates](docs/guide/memory-and-serving.md#models-larger-than-ram) |
 | Conversations | Reuse prior tokens; restore saved contexts and shared prefixes; keep recurrent snapshots | [Context and persistence](docs/guide/memory-and-serving.md#context-memory-and-serving) |
 | Concurrent sequences | Per-request contexts and adapters; shared decoding passes | [Scheduling and cancellation](docs/guide/memory-and-serving.md#context-memory-and-serving) |
@@ -348,7 +351,7 @@ Build with `-DLIYAB_ENABLE_EXPERIMENTAL=ON`. The app build includes these module
 
 | Area | Current limit |
 | :--- | :--- |
-| Model coverage | Full heterogeneous Gemma 4, DeepSeek-V4 and several stage-2 compositions remain incomplete |
+| Model coverage | Gemma 4 / DeepSeek-V4 text have synthetic conformance; trained quality, production exports and other stage-2 combinations remain unverified |
 | Export metadata | Some published tokenizer / template metadata needs a corrected copy |
 | GPU behavior | Thermal CPU rerouting can change rounding; BF16 Metal matrix work falls back to CPU |
 | Vulkan | Per-token prefill matvec; resident tensors copied to GPU memory; MoE experts on CPU |

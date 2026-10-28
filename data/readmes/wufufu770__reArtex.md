@@ -1,28 +1,72 @@
 <div align="center">
 
-# ARTEX
+# reArtex
 
-AI 自主渗透测试系统（Go 后端 + Next.js 前端）
+AI 自主渗透测试系统（Go 后端 + Next.js 前端）· ARTEX 的安全加固分支
 
-🌐 **在线 Demo**： [https://artex-demo.vercel.app/](https://artex-demo.vercel.app/)
+> **reArtex = ARTEX 的安全加固分支，独立发布线。** 本仓库在上游基础上修了一批 agent
+> 越权与失效开放（fail-open）缺陷，核心是把安全约束从「可热改的 DB / settings」移到
+> 「代码常量 + 编译期」。
+>
+> | | |
+> |---|---|
+> | **上游** | [wufufu770/ARTEX](https://github.com/wufufu770/ARTEX)（原作者仓库）—— reArtex **不向它推送任何改动** |
+> | **本仓库的发布线** | 镜像 `ghcr.io/wufufu770/reartex`、二进制 [Releases](https://github.com/wufufu770/reArtex/releases) |
+> | **更新策略** | 页面「一键更新」只跟随 **reArtex 自己的 Release**；上游的后续变更按需择取回合，**不自动同步** |
+> | **安装** | 见 [安装](#安装)（Compose 拉镜像 / 下载预编译二进制 / 一键脚本 / 源码编译） |
+> | **改了什么** | 见 [重点改了什么](#重点改了什么) 与 [与原版的区别](#这是什么--与原版-artex-的区别) |
+> | **为什么改** | 见 [为了达到什么目的](#为了达到什么目的) |
+> | **接下来** | 见 [未来打算改什么](#未来打算改什么) |
 
-> **reArtex = ARTEX 安全加固分支。** 本仓库在上游基础上修了一批 agent 越权与失效开放（fail-open）缺陷，核心是把安全约束从「可热改的 DB / settings」移到「代码常量 + 编译期」。改动清单与验证证据见下方 [安全加固](#安全加固)。
+上游的在线 Demo（**非** reArtex 本体）：[artex-demo.vercel.app](https://artex-demo.vercel.app/)
 
 </div>
 
 ---
 
-## 安全加固
+## 这是什么 · 与原版 ARTEX 的区别
 
-本仓库相对上游的改动。
+上游 ARTEX 是一套完整的 AI 自主渗透测试系统：Go 后端 + Next.js 前端，通过规则拦截、
+模型判官审批、steer 纠偏等机制约束 agent 的工具调用。reArtex **不是重写**，而是**在它
+之上做安全加固**的一支。
 
-### 为什么改
+具体差别：
 
-原实现里，**决定 agent 能做什么的那几张表和设置项，本身可被持有 JWT 的人改**——`settings.intercept_enabled_tools` 决定哪些工具进拦截器，`intercept_rules` 是规则本身。一次 `PUT /api/settings` 或一条 `DELETE` 就能把整套防线整体关闭，且无审计留痕。
+| 维度 | 原版 ARTEX | reArtex |
+|---|---|---|
+| **安全边界的载体** | 决定 agent 能做什么的表与设置项（`settings.intercept_enabled_tools`、`intercept_rules`）**本身可被持有 JWT 的人改** —— 一次 `PUT /api/settings` 或一条 `DELETE` 就能把整套防线整体关闭，且无留痕 | 关键约束写进 **Go 源码常量**，关闭途径只剩编译期开关 + 重启；DB 规则降级为「可调参数」而非「安全边界」 |
+| **判官 / 审批失效时** | 判官超时、报错、输出不可解析 → 回落 `allow`（**fail-open**）；ask 类规则默认无超时，可无限等待 | 一律回落 `deny`（**fail-closed**）；ask 规则**强制**带超时（默认 60s，到点 deny） |
+| **平台凭据** | `ARTEX_PG_DSN`、`ANTHROPIC_API_KEY` 等留在进程 exec 期环境块里，同 UID 的 agent 子进程可从 `/proc/<pid>/environ` 读走 | 控制面凭据读入即从进程环境抹除；DSN 可改走一次性文件（读入即清零删除）；启动自检给出「未残留/仍残留」结论 |
+| **拦截动作的留痕** | 短路表的 deny 只落内存切片（上限 2000、进程退出即失） | 写入 `intercept_pending` 已决行（页面可查），并有 **digest 链**逐条串联、被篡改可定位到第几条 |
+| **工具白名单故障** | `ListTools` 失败 → 打条日志 → 照常返回完整工具面（DB 一抖动，agent 立刻拿到全部工具） | 沿用上一份已验证快照；冷启动无快照时**拒绝创建新 run**（白名单未知时开工等于无边界放行） |
+| **工程门禁** | 无测试 CI：发布 workflow 只编译，测试只能本地跑 | CI 门禁：编译 + vet + **全量测试（真实 Postgres，排除项为零）** + 前端构建 + **lint 棘轮门**；tag 发布前也必须过门 |
+| **交付链** | 镜像与产物的来源指向原作者命名空间（fork 无权推），产物校验与"装进去的是不是刚编出来的那个"无人把关 | 交付源全部指向本仓库；镜像构建期**必填版本校验**（装错旧二进制会构建失败），发布后**冒烟**核对版本 |
+| **更新源** | 上游 Release | **本仓库自己的 Release**（一键更新只跟随它） |
+
+**没有改的**：agent 的执行模型、任务编排、探索引擎、前端交互骨架、资产同步
+（ScopeSentry）与对外 API 形态。reArtex 改的是**边界与门禁**，不是功能面。
+
+---
+
+## 为了达到什么目的
+
+先说清**为什么要动它**。原实现里，**决定 agent 能做什么的那几张表和设置项，本身可被持有 JWT 的人改** —— `settings.intercept_enabled_tools` 决定哪些工具进拦截器，`intercept_rules` 是规则本身。一次 `PUT /api/settings` 或一条 `DELETE` 就能把整套防线整体关闭，且无审计留痕。
+
+于是加固落在三条目标上：
+
+| 目标 | 手段 | 达成后的效果 |
+|---|---|---|
+| **① 边界不可被持有者自行放宽** | 关键约束从 DB / settings 移到 Go 源码常量；DB 规则只当参数 | 关掉防线只能改代码 + 重编译 —— 那是另一道门（能读仓库/能推镜像） |
+| **② 任何「判定失效」都不得放行** | 判官超时/报错/输出不可解析 → 统一 `deny`；ask 强制超时；工具表读不到 → 拒绝开工 | 让判官、让 DB、让审批「失效」不再等于「放行」；故障方向从"开到关" |
+| **③ 动作要留痕、边界要可验** | 判定写入已决行可查 + digest 链防篡改；平台凭据不落进程环境块；CI 门禁与交付链校验 | 出事后能定位到具体某一条；发布出去的东西能被证明是「刚编出来的」 |
 
 所以加固的第一原则是：**安全边界不能挂在任何可热改的存储上**。本仓库所有新增约束都写进 Go 源码，关闭途径只剩编译期开关 + 重启。
 
-### 修复的缺陷
+---
+
+## 重点改了什么
+
+### 第一批 · 安全边界与失效开放
 
 以下 9 项均已直读源码逐条验证属实（非推测），编号沿用《ARTEX限制强化方案-终版V2》。
 
@@ -37,6 +81,36 @@ AI 自主渗透测试系统（Go 后端 + Next.js 前端）
 | G-09 | steer 消息无上限 | 纠偏消息直入 worker 上下文且不过闸，队列无界 | 限 2000 字符、队列 cap 10 |
 | G-04①② | 模型兜底审批 fail-open | 判官超时、报错或输出不可解析时回落 `allow` —— 让判官失效即可绕过全部规则；ask 类规则默认无超时，审批可无限等待 | 失败/超时一律回落 `deny`；ask 规则强制带超时（默认 60s，到点 `deny`）；前端表单初值与后端默认对齐，避免保存一次就把 `allow` 写回 |
 | G-17 | 拦截动作无留痕 | 短路表的 deny 只落内存切片（上限 2000、进程退出即失），且与 DB 规则/模型判定混作一谈 | 短路表 deny 写入 `intercept_pending` 已决行，「审批记录」页与任务拦截列表可查；来源标识区分 `rule` / `model` / `shortcircuit` |
+
+### 第二批 · 凭据治理、审计链、门禁与交付链
+
+| 编号 | 缺陷 | 原行为 | 现行为 |
+|---|---|---|---|
+| G-02①-a | 平台凭据残留在进程环境块 | `ARTEX_PG_DSN` 与平台 API key 留在 exec 期环境块，同 UID 的 agent 子进程可从 `/proc/<pid>/environ` 读走 | 控制面凭据读入即从进程环境抹除；DSN 另可走 `ARTEX_PG_DSN_FILE`（一次性文件，读入即清零删除）；启动自检读 `/proc/self/environ` 给出明确结论，`ARTEX_REQUIRE_ENV_SCRUB=1` 时残留即拒绝启动 |
+| G-17′ | 已决判定无法防篡改 | 短路表 deny 只落内存切片（上限 2000、进程退出即失），与 DB 规则/模型判定混作一谈 | 判定写入 `intercept_pending` 已决行（页面可查），来源标识区分 `rule` / `model` / `shortcircuit`；另加 **digest 链**：每条把上一条的 digest 算进自己的 digest，`VerifyAuditChain` 能报出被改动的位置 |
+| 类别五 | 无测试 CI | 发布 workflow 只编译五个平台，测试只能本地跑；仓库现有 lint 基线本身是红的，全量设为门等于永久失败 | `ci.yml`：编译 + vet + **全量测试（真实 Postgres，排除项为零）** + 前端构建 + **lint 棘轮门**（只查相对基线改动的文件）；tag 发布前也须过门 |
+| — | 测试套件不可重复 | 各测试包共用一个库，前一个包留下的数据让后一个包的用例随机挂（基线上一次挂 10 个、一次挂 16 个，**测试名都不同**），门只能开成红的 | 每个测试包用**自己派生的库**（`internal/testdb`），互不可见；顺带测试不再往开发库灌数据。`llm_usage` 这类不在 `schema.sql` 里、由应用启动时单独建表的，也一并补上 |
+| 类别六 | 交付源 404 / 产物无校验 | 镜像与产物指向原作者命名空间（fork 无权推）；「装进镜像的是不是刚编出来的那个」无人把关 | 交付源全部指向本仓库；镜像构建**必填** `--build-arg ARTEX_BINARY_VERSION`，构建时跑一次装进去的二进制核对版本（旧产物 → **构建失败**）；release 的 docker job **发布后冒烟**，把刚推上去的镜像拉回来真跑一次 |
+| 类别四 | norma SDK 上游缺陷 | `go.mod` 锁 v0.4.3，原样传导三个缺陷（流解析丢 input usage、丢 Gemini thought_signature、长任务/大输出边角） | 升至 **v0.4.4**，上游已修并自带回归测试 |
+| — | `graph_overview` 不展开公司范围 | 返回的 `coverage.scope` 只有任务自身范围 | 展开 `company_scope` 的 domain/ip/cidr/icp/keyword 规则与 `company_keywords`（取值用 `raw` 原文而非规范化列） |
+
+### 第三批 · W-A 波次（分级审核、路径解析、凭据供给面、密钥加密）
+
+这一批做的是把**已登记的活路径**逐条闭合或如实降级。功能面（执行模型、任务编排、探索引擎、对外 API）仍保持上游原样。
+
+| 编号 | 缺陷 | 原行为 | 现行为 |
+|---|---|---|---|
+| G-01①′ | 平台工具一律要人工确认 | 7 件平台工具全部 ask —— 连「新建技能文件」这种日常操作也要打断 | **三档**：2 件 `deny`（MCP 注册）、4 件 `ask`（改可执行面 / 改既有行为 / 删证据库）、**1 件显式 allow**（新建技能）。显式 allow 是代码常量**主动判定放行**、仍插在判定最前 → 不重开「平台工具绕白名单」的原洞；allow 档判定也进审计链 |
+| G-04①②′ | DB 规则的 ask 类可无限等待 | 种子规则照抄 `timeout_enabled=false` → 审批挂着不回来，人不在时该面永远卡住 | 命中 ask 的规则自动补 **60s 超时且超时即拒**（判官侧「不可用即拒」本就是默认值，第一批表里已成立） |
+| G-09④⑥ | 审批无防疲劳机制 | 同一 agent 反复请求审批时，人只能一次次点 —— 疲劳点 allow 等于无限循环 | 计数维度 (agent, 工具, 时间窗)，**仅超阈值才**自动拒绝（默认 5 次 / 600 秒，可热改）；单次或少量请求**完全不受影响**；计数失败不升级（宁可多问一次人，不误拒正常任务） |
+| G-02①-a′ | 入参路径只做字符串预筛 | `cat $(realpath ../../../jwt.key)` 这类经 shell 展开才现形的路径绕得过短路表 | 入参里的路径片段**按工具工作目录解析成真实路径**再判秘密清单（相对回溯 / 命令替换 / 软链 / 父目录软链都覆盖）；判定点仍在工具策略层（Stage 1 Deny，任何 permission mode 绕不过） |
+| — | 工具层拒绝不留痕 | 工具层（Stage 1）早于 `PreToolUse` hook 求值 → hook 根本不跑 → 拿不到短路表那条留痕路径 | 由 server 注入的记录器把工具层拒绝写进审计链（顺带补上 Read/Write/Edit 面既有的老缺口） |
+| — | 容器配置面暴露数据库口令 | `docker inspect` 能看到 environment 里的 DSN | 口令改由 **docker secret 文件**供给（`/run/secrets/pg_dsn`），配置面只剩文件路径；`/run/secrets` 进平台秘密清单 |
+| — | 平台秘密只靠一次性自检 | 「进程环境块里没有秘密」是一次性结论，没有门守着 | 固化成**发布阻断门**（`verify-secret-env.sh` 进 release 冒烟，每次发布都验） |
+| — | LLM key 明文存库 | 拿到数据库口令即可读出全部 LLM key | 改为 **AES-256-GCM 加密落库**（明文列置空），主密钥由文件供给（不进环境块、不进库；放数据目录内拒绝启动），历史明文行启动时自动迁移；AAD 绑定行名 → 改名触发重加密 |
+| — | 运行时端到端验证缺失 | 单测覆盖了函数逻辑，但没在真实链路里验过 | 真实装配 → 判定 → 拒绝 → 审计链整条链有回归用例，并做过**反证**（撤掉判定后该用例确实变红） |
+
+> **这一批新查实的两件事**（都写进了口径）：① 工具层（Stage 1）**早于** `PreToolUse` hook 求值 → 工具层的拒绝拿不到短路表那条留痕路径，故须另有留痕通道；② **`cap_drop: [SYS_PTRACE]` 是空操作** —— Docker 默认能力集本就不含它，而**同 UID 的 ptrace 并不需要该能力**，实测容器内读同 UID 进程的已映射内存依然成功。故「`/proc/<pid>/mem`」这条残留**仍然开放**（见下）。
 
 ### 改动清单
 
@@ -90,7 +164,40 @@ m  server/server.go               +14/-0    启动自检调用点
 m  server/assembly.go             +1/-1     计量链路传入 skill 目录
 ```
 
-被转人工审批的 7 件平台工具：`create_mcp`、`update_mcp`、`create_custom_tool`、`update_custom_tool`、`create_skill`、`update_skill_file`、`delete_assets_by_host`（60 秒不确认即拒绝）。**这是有意的行为变更**——auto agent 不再能自主建 MCP / skill。
+第三批（W-A 波次）：31 files changed, 1553 insertions(+), 38 deletions(-)
+
+```
+a  pathguard/tokens.go             +145/-0   入参路径片段提取与解析（新文件）
+a  pathguard/tokens_test.go        +123/-0
+a  config/masterkey.go             +77/-0    主密钥加载与位置校验（新文件）
+a  config/masterkey_test.go        +91/-0
+a  db/crypto.go                    +77/-0    AES-256-GCM 加解密，AAD 绑定行名（新文件）
+a  db/crypto_test.go               +85/-0
+a  db/llmkey_migration.go          +54/-0    历史明文 key 迁移（新文件）
+a  db/llmkey_test.go               +166/-0
+a  server/toolpolicy_e2e_test.go   +71/-0    端到端回归：装配→拒绝→审计链（新文件）
+a  verify-secret-env.sh            +45/-0    环境块洁净性发布门（新文件）
+a  verify-ptrace-blocked.sh        +42/-0    ptrace 封闭诊断（该条未闭合，供自查）（新文件）
+a  init-pg-dsn-secret.sh           +35/-0    由 .env 生成 secret 文件（新文件）
+m  db/config.go                    +123/-22  profile 读写密文化 + 改名重加密
+m  config/config.go                +39/-2    只读 secret 供给容忍 + 错误信息如实化
+m  agent/toolpolicy_test.go        +95/-0
+m  agent/toolpolicy.go             +18/-0    接入入参路径判定 + 拒绝留痕
+m  agent/assembly.go               +11/-0    工具层留痕注入缝
+m  server/assembly.go              +16/-0    留痕接线（audit 链写入）
+m  server/manager.go               +14/-0    主密钥位置校验 + 迁移调用
+m  docker-compose.yml              +18/-1    secret 供给 + cap_drop
+m  .github/workflows/release.yml   +16/-1    冒烟改 secret 供给 + 环境块洁净性门
+m  Dockerfile                      +6/-1     两个验收脚本进镜像
+m  guard/shortcircuit_test.go      +14/-0    三档断言
+m  pathguard/pathguard_test.go     +9/-0     /run/secrets 秘密清单断言
+m  db/schema.sql                   +3/-0     api_key_cipher 列
+m  .gitignore                      +3/-0     secrets/
+m  guard/shortcircuit.go           +2/-0     allow 档
+m  pathguard/pathguard.go          +1/-0     /run/secrets 进秘密清单
+```
+
+**平台工具的三档归属**（第三批调整后）：`create_mcp` / `update_mcp` = **硬拦**（凭据汇，无人工放行路径）；`create_custom_tool` / `update_custom_tool` / `update_skill_file` / `delete_assets_by_host` = **转人工审批**（60 秒不确认即拒绝）；`create_skill` = **代码级显式放行**（新建技能不覆盖既有行为，日常操作不再被打断）。相对第二批的变化：建 MCP 仍是硬拦，但**建技能从「人工审批」放宽为「显式放行」** —— 这是**有意的行为变更**（用覆盖面换日常可用性），且「显式放行」仍是代码常量在判定最前主动求值，不是漏判。
 
 ### 审计过程中额外发现并修掉的三个问题
 
@@ -100,16 +207,19 @@ m  server/assembly.go             +1/-1     计量链路传入 skill 目录
 
 ### 已知残留（未做）
 
-- **短路表是入参字符串预筛，不是路径解析级强制。** `cat $(realpath ../../../jwt.key)` 这类经 shell 展开后才现形的路径仍可绕过。真正闭合需要执行前的 `realpath` 校验与环境变量白名单。
-- **平台环境块规则同样是字符串预筛。** 运行时才成形的路径（`find /proc -name environ -exec cat {} \;`）仍能绕过。闭合靠的是供给侧 —— 凭据根本不进进程环境块，见下一节的 `ARTEX_PG_DSN_FILE`。
-- **`/proc/<pid>/mem` 读父进程内存仍可取到 DSN 字符串**（需 ptrace 权限）。本批未处理。
-- **`docker inspect` 仍可见容器配置里的 DSN**（需宿主 / docker socket 权限）。同理 `docker exec` 拉起的进程会继承容器配置面的 env —— 但 agent 的 Bash 是 artex 的子孙进程，继承的是 artex 的（干净的）环境块，不在此列。
+- **平台环境块规则是字符串预筛。** 运行时才成形的路径（`find /proc -name environ -exec cat {} \;`）仍能绕过。闭合靠的是供给侧 —— 凭据根本不进进程环境块，见下一节。
+- **`/proc/<pid>/mem` 读同 UID 进程的内存仍可做到**（实测在容器里能读）。这里有个容易想错的点：**同 UID 的 ptrace 不需要 `CAP_SYS_PTRACE`**，所以 `cap_drop: [SYS_PTRACE]`（Docker 默认能力集本就不含它）**挡不住这条**。真正的闭合要让工具进程与 artex **不同 UID**（属 per-task 隔离那一档），或让内存里不留明文秘密。镜像里留了 `verify-ptrace-blocked.sh` 供运维自查（它**故意不进发布门**，因为这条尚未闭合）。
 - **平台环境块规则作用在整个工具入参 JSON 上**，故「把含 `/proc/…/environ` 字样的内容写进文件」也会被拦。
-- **`llm_profiles.api_key` 仍以明文存于数据库**（需数据库读权限才能取到）。
-- G-17 的审计事件骨架与 digest 链（需改表结构）仍未做 —— 短路表 deny 已落库可查，但只有结论与理由，没有 digest 链式的防篡改。
-- G-09 ask 队列治理（需 per-agent 聚合计数）。
-- **CI 里有两个已知断测被单独排除**：`TestGraphOverviewExpandsAssociatedCompanyScope`（断言 `graph_overview` 的 `coverage.scope` 含公司范围展开，而生产代码尚未接线该字段 —— 测试超前于实现）与 `TestSideUsageRecordedOnceOnConsumerCancellation`（llmrec 包内测试互相干扰：单独跑通过、整包跑失败）。两条在基线上同样失败。排除项与理由写在 workflow 里，修好后应去掉排除。
-- **尚未做运行时端到端验证**：单测覆盖了函数逻辑，但未通过真实 agent 会话发起工具调用确认短路表在链路中生效。
+- **产物无独立签名**：Release 的 `SHA256SUMS` 与二进制同源（同一个 Release），能篡改 Release 的人可以同时替换两者。当前信任模型是「信任 GitHub Release」。
+- **lint 棘轮门是「按文件」判定的**：碰到带着既有 lint 债的文件会让门变红（触碰过的文件已清干净）。这不是 bug 而是该门的语义 —— **碰了脏文件就得顺手清干净**。
+
+本批已闭合（原先也登记在上面，现已消解）：
+
+- ~~短路表是入参字符串预筛~~ → 入参里的路径片段现在**按工具工作目录解析成真实路径**再判定（`pathguard.CheckInputPaths`），`cat $(realpath ../../../jwt.key)` 这类经 shell 展开才现形的路径已被拒；判定点仍在工具策略层（Stage 1 Deny，任何 permission mode 绕不过）。**剩余边界**：运行时才成形的路径（编码/拼接/下载内容决定）仍在射程外，容器内 root 的读取也不在本层覆盖内。
+- ~~`docker inspect` 仍可见容器配置里的 DSN~~ → 口令改由 **docker secret 文件**供给，`docker inspect` 的 Env 里只有文件路径。
+- ~~`llm_profiles.api_key` 明文存库~~ → 改为 **AES-256-GCM 加密落库**，主密钥由文件供给（不进环境块、不进库），历史明文行在启动时自动迁移。详见[加密落库的 LLM key](#加密落库的-llm-key)。
+- ~~G-09 ask 队列治理未做~~ → 已做：计数维度 (agent, 工具, 时间窗)，**只在同一 agent 反复请求同一高危面超阈值时**才自动拒绝（默认 5 次 / 600 秒，可热改）；单次或少量请求完全不受影响。
+- ~~尚未做运行时端到端验证~~ → 已做：真实装配（`AugmentTools`）→ 工具层判定 → 拒绝 → 审计链留痕整条链有回归用例，并做过反证（撤掉判定后用例确实变红）。
 
 ### 应急回滚
 
@@ -124,7 +234,20 @@ ARTEX_DISABLE_SHORT_CIRCUIT=1 docker compose up -d
 
 ### 平台凭据不出现在进程环境块
 
-`ARTEX_PG_DSN` 经容器环境变量下发时，会留在进程的 exec 期环境块里，而 `/proc/<pid>/environ` 对同 UID 的 agent 子进程可读。若希望凭据不出现在环境块，改用 `ARTEX_PG_DSN_FILE` 指向一次性文件：
+`ARTEX_PG_DSN` 经容器环境变量下发时，会留在进程的 exec 期环境块里，而 `/proc/<pid>/environ` 对同 UID 的 agent 子进程可读；更要紧的是它**还留在容器的配置面**（`docker inspect` 能看到）。
+
+**推荐形态（v0.4.1+）**：口令走 **docker secret 文件**，容器配置面里根本没有口令：
+
+```bash
+./init-pg-dsn-secret.sh   # 由 .env 生成 secrets/pg_dsn（0600，不进版本库）
+docker compose up -d
+```
+
+secret 以只读方式挂到 `/run/secrets/pg_dsn`，`/run/secrets` 已在平台的秘密清单里
+（agent 读不到）。**只读挂载的文件删不掉也清不掉**，所以这条路径不适用「读入即销毁」；
+它靠的是「不在 environment 里、不在 agent 工作区内」这两点。
+
+若不使用 compose（比如裸跑二进制），可用 `ARTEX_PG_DSN_FILE` 指向一次性文件：
 
 ````yaml
 services:
@@ -155,7 +278,53 @@ services:
 
 ---
 
-## 截图预览
+## 加密落库的 LLM key
+
+`llm_profiles.api_key` 可以用主密钥加密后落库（拿到数据库口令的人，没有主密钥就读不出 key）。**默认不启用** —— 不配主密钥时行为与从前完全一致（明文落库），只是没有这层保护。
+
+启用方式：
+
+1. 生成主密钥，放到**数据目录之外**（数据目录是 agent 的工作区根，放进去等于没加密）：
+
+   ```bash
+   mkdir -p /run/artex
+   openssl rand -hex 32 > /run/artex/master.key
+   chmod 600 /run/artex/master.key
+   ```
+
+2. 在 compose 的 `artex.environment` 里加一行（**只放路径，不放密钥本身**）：
+
+   ```yaml
+   ARTEX_MASTER_KEY_FILE: /run/artex/master.key
+   ```
+
+3. 重启后，历史明文行会在启动时自动迁移成密文（日志里会打印迁移了几行）。
+
+四点说明：
+
+- **主密钥文件放错位置会被拒绝启动**（在数据目录内即报错），因为那等于把钥匙挂在 agent 够得着的地方。
+- **丢了主密钥 = 所有已加密的 LLM key 都解不开**（只能重新填）。请备份该文件。
+- 密文的 **AAD 绑定行名**：不同 profile 的密文不能互换（有库写权限的人不能把 A 行的 key 挪到 B 行再配上自己可控的 `base_url` 把 key 送出去）。因此**改名会触发重加密**。
+- 平台**不会**把主密钥写进环境块或数据库，只留在进程内存里。
+
+---
+
+## 未来打算改什么
+
+按「还欠着什么」排，不承诺时间。每项都对应上文或[已知残留](#已知残留未做)里登记的东西。
+
+| 计划 | 目的 | 现状 |
+|---|---|---|
+| **运行时权限边界**（可信授权 + 统一入口 + 任务隔离 + 强制网络出口） | 现在的硬边界主要靠**代码常量**与**凭据不落环境块**；真正的"每个任务一个受限身份、出网只走允许的通道"还没建。计划形态：per-task runner + 最小 env/netns + 默认拒绝直连 | **进行中**：执行层收口已落地（入参路径按工作目录解析并留痕、口令走 secret 文件不进配置面、平台工具分级审核），但 per-task 隔离与净网未做 —— 工作量最大的一项 |
+| **产物签名与来源证明** | Release 的 `SHA256SUMS` 与二进制同源，能改 Release 就能同时换掉两者。计划：产物签名（cosign / minisign）+ SBOM + 校验 buildx provenance | 规划中 |
+| **测试隔离下沉到用例级** | 现在是**每包一个独立库**，包内用例仍共享一个库（顺序敏感）。计划：按用例隔离或补统一的清理钩子，让用例可任意顺序、可并行 | 规划中 |
+| **发布后冒烟扩到多架构 + 不可变标签** | 现在冒烟只验 amd64；Compose 默认用 `latest` 这个可变标签。计划：冒烟覆盖 arm64、Compose 默认改用不可变 tag 或 digest | **部分**：发布冒烟已加**环境块洁净性**阻断门（每次发布都验），arm64 冒烟与不可变标签未做 |
+| **上游择取回合的可重复流程** | reArtex **不自动同步**上游（更新只跟自己的 Release），但上游后续仍有变更。计划：把"评估一个上游提交要不要回合"做成有据可依的固定流程，而不是临时手工挑 | 规划中 |
+| **生态补齐**（skills 同步 / 更新即重启 / 回滚数据 / 复测导出） | 上游登记的部署与生态类问题：多端 skill 同步、页面更新后的容器换装、数据回滚、复测结果导出 | 规划中 |
+
+一个刻意的选择：**这一批只做边界与门禁，不动功能面**。agent 的执行模型、任务编排、探索引擎与对外 API 形态都保持上游原样 —— 加固应当让系统更可被信任，而不是更难用。
+
+---
 
 > 完整交互见[在线 Demo](https://artex-demo.vercel.app/)。
 
@@ -209,8 +378,66 @@ services:
 ## 安装
 
 > 依赖数据库 **PostgreSQL**；探索需配置 **LLM**（`ANTHROPIC_API_KEY` 或 `OPENAI_API_KEY`，也可在 UI 里配）。
+>
+> 下面所有产物都来自 **reArtex 自己的发布线**（`ghcr.io/wufufu770/reartex` 与本仓库的
+> Releases），不跟上游 ARTEX 的发布。
 
-### 方式一：一键安装脚本（推荐）
+### 方式一：Docker Compose（推荐）
+
+```bash
+git clone https://github.com/wufufu770/reArtex.git
+cd reArtex
+cp .env.example .env          # 填 POSTGRES_PASSWORD、可选 ANTHROPIC_API_KEY
+./init-pg-dsn-secret.sh       # 由 .env 生成数据库连接串 secret（0600，不进版本库）
+docker compose up -d          # 拉取 ghcr.io/wufufu770/reartex 镜像 + postgres
+# → http://localhost:8787
+```
+
+镜像已含常用工具（ripgrep/curl/vim/npm/nmap…）；`./skills` 与 `./data` 以绑定挂载持久化。
+
+> **`init-pg-dsn-secret.sh` 不能省**：数据库口令走 **docker secret 文件**供给
+> （`/run/secrets/pg_dsn`），这样 `docker inspect` 看不到口令 —— 口令留在容器的
+> `environment` 里就等于把它摊开给任何能看容器配置的人。该脚本从 `.env` 拼出连接串
+> 写进 `secrets/pg_dsn`（权限 0600，`secrets/` 已被 .gitignore 排除）。
+> 该形态需要 **v0.4.1 及以后**的镜像（更早的镜像不认只读 secret 挂载）。
+
+指定版本：`.env` 里设 `ARTEX_TAG=v0.4.1`（不设则用 `latest`）。**建议固定版本**，不要用
+可变的 `latest` —— 出了问题没法确定跑的是哪一版。
+
+> **想要拉取的那个 tag 还没发布时**：本仓库的 Release 随 `v*` tag 生成，ghcr 镜像与之同批
+> 推送。若你要的版本尚未发布，镜像就还不存在，上面那条 `docker compose up -d` 会拉取失败。
+> 两条走法：
+>
+> - **等发布**：打 tag 时 release workflow 会自动构建多架构镜像推上 ghcr.io，并生成带
+>   `SHA256SUMS` 的 GitHub Release；届时上面的命令直接可用。
+> - **先本地构建**（需要 Go ≥ 1.26、Node ≥ 20、rsync、zip）：
+>   ```bash
+>   ./build-image.sh                                  # 编前端 + 编二进制 + 构建镜像 artex:local
+>   echo "image: artex:local" > docker-compose.override.yml
+>   docker compose up -d
+>   ```
+>
+>   `build-image.sh` 会在构建期核对镜像里的二进制版本与本次构建是否一致，
+>   装错旧二进制会直接构建失败，不会让你拿到一个"看着新、其实是旧"的镜像。
+
+远程 MCP 可在系统设置中选择 `http`（Streamable HTTP）或 `sse`（旧版 SSE）。
+旧版 SSE 服务通常使用 `GET /sse` 建立事件流，再通过服务返回的
+`/message?sessionId=...` 接收 JSON-RPC 请求；配置时将 URL 填为 `/sse`，请求头按
+`Authorization=Bearer <token>` 填写。
+
+### 方式二：下载预编译二进制（reArtex Releases）
+
+到 [Releases](https://github.com/wufufu770/reArtex/releases) 下载对应平台的 zip，解压后得到 `artex` + `start.sh`（Windows 为 `start.bat`）+ `skills/` + `config.example.json`：
+
+```bash
+cp config.example.json config.json   # 填好 database 连接
+./start.sh                           # → http://localhost:8787
+```
+
+> 请用 `start.sh` / `start.bat` 启动，而不是直接跑 `./artex`。它是个守护脚本：程序退出后按退出码决定是否重新拉起，**页面上的[一键更新](#方式一页面一键更新推荐)靠它完成换装**。直接运行 `./artex` 时更新完就不会被拉起了。
+> 后台常驻：`nohup ./start.sh >artex.log 2>&1 &`。
+
+### 方式三：一键安装脚本
 
 ```bash
 git clone https://github.com/wufufu770/reArtex.git
@@ -224,35 +451,6 @@ cd reArtex
 - **② 本地运行**：选数据库（连已有 / 用 Docker 起一个）→ 生成 `config.json` → `go` 编译内嵌单二进制 → 启动。
 
 装好后打开 **http://localhost:8787**（首次进入 `/setup` 设置管理员密码）。
-
-### 方式二：Docker Compose（手动）
-
-```bash
-git clone https://github.com/wufufu770/reArtex.git
-cd reArtex
-cp .env.example .env          # 填 POSTGRES_PASSWORD、可选 ANTHROPIC_API_KEY
-docker compose up -d          # 拉取 ghcr.io/wufufu770/reartex 镜像 + postgres
-# → http://localhost:8787
-```
-
-镜像已含常用工具（ripgrep/curl/vim/npm/nmap…）；`./skills` 与 `./data` 以绑定挂载持久化。
-
-远程 MCP 可在系统设置中选择 `http`（Streamable HTTP）或 `sse`（旧版 SSE）。
-旧版 SSE 服务通常使用 `GET /sse` 建立事件流，再通过服务返回的
-`/message?sessionId=...` 接收 JSON-RPC 请求；配置时将 URL 填为 `/sse`，请求头按
-`Authorization=Bearer <token>` 填写。
-
-### 方式三：下载预编译二进制（Releases）
-
-到 [Releases](https://github.com/wufufu770/reArtex/releases) 下载对应平台的 zip，解压后得到 `artex` + `start.sh`（Windows 为 `start.bat`）+ `skills/` + `config.example.json`：
-
-```bash
-cp config.example.json config.json   # 填好 database 连接
-./start.sh                           # → http://localhost:8787
-```
-
-> 请用 `start.sh` / `start.bat` 启动，而不是直接跑 `./artex`。它是个守护脚本：程序退出后按退出码决定是否重新拉起，**页面上的[一键更新](#方式一页面一键更新推荐)靠它完成换装**。直接运行 `./artex` 时更新完就不会被拉起了。
-> 后台常驻：`nohup ./start.sh >artex.log 2>&1 &`。
 
 ### 方式四：从源码编译单二进制
 
@@ -272,7 +470,7 @@ CGO_ENABLED=0 go build -tags embedui -o artex ./cmd/artex
 
 ```bash
 ./build.sh --release
-# 产物：dist/artex-0.3.3-*.zip
+# 产物：dist/artex-0.4.0-*.zip
 ```
 
 UPX 自解压二进制可能与部分 Linux 内核、虚拟化环境或安全策略不兼容，因此默认不启用。可用 `ARTEX_TARGETS` 自定义目标；确认目标运行环境兼容时，可显式传入 `--upx` 进一步缩小二进制：
@@ -286,6 +484,9 @@ ARTEX_TARGETS=linux/amd64,windows/amd64 ./build.sh --release
 
 ## 更新升级
 
+> **更新源只有本仓库自己的 Release**（`wufufu770/reArtex`）—— 不跟上游 ARTEX 的发布线。
+> 拉到的包会先比对同批 Release 的 `SHA256SUMS`，再冒烟测试、换装；失败自动回滚。
+>
 > 升级只换程序、不动数据：Postgres 数据卷 `pgdata`、`./data`（jwt.key / SQLite 等）、`./skills` 都会保留。**数据库迁移无需手动执行**——`artex` 每次启动会幂等重跑 `schema.sql`（含 `ADD COLUMN` / `CREATE INDEX IF NOT EXISTS`），即“重启即迁移”。升级前仍建议先备份 `./data` 与数据库。
 
 ### 方式一：页面一键更新（推荐）

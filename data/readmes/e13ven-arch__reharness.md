@@ -7,14 +7,14 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](pyproject.toml)
 [![Benchmark: AutomationBench](https://img.shields.io/badge/benchmark-AutomationBench-555.svg)](https://github.com/zapier/AutomationBench)
-[![AutomationBench finance: 64%→68% steady state](https://img.shields.io/badge/AutomationBench%20finance-64%25%E2%86%9268%25%20steady%20state-2e7d32.svg)](#results)
+[![AutomationBench finance: 68% with reharness](https://img.shields.io/badge/AutomationBench%20finance-68%25%20with%20reharness-2e7d32.svg)](#results)
 [![中文](https://img.shields.io/badge/README-%E4%B8%AD%E6%96%87-lightgrey.svg)](README.zh-CN.md)
 
 </div>
 
 reharness is a self-improving agent harness: bounded recursive self-improvement in which the agent's own model revises the harness the agent runs in, never the model. A business agent runs requests that repeat. When a request comes back returned, a **Revision Session** reads the agent's own run of it, changes the agent's **Harness Package** — its tools, hooks, skills, prompts — and proves the change with a **Live Probe**: the candidate runs the same request for real. Only a probe that comes back accepted is adopted, and only for that request (**Per-Task Adoption**). No person picks the change, no model judges it, and the session is never shown an answer: at most *accepted or returned* per attempt, and *which check failed*. Everything the session cannot touch is a **Frozen Core** — the scorer, what the session may be told, the package's contract, the bounds — and package code runs in an isolated worker. What the agent learns from its own runs is harness engineering — a guard, a tool, a prompt — not an answer.
 
-Built and measured on [AutomationBench](https://github.com/zapier/AutomationBench) (47 simulated SaaS tools, scored on the world state the agent leaves behind) with Claude Opus 5.5 as both the agent and the session, on a subscription budget. On the finance test tasks the steady-state pass rate rose from 64% to 68% with no passing task lost; on train tasks a session learned, with no hint in its prompt, to open every unread source before writing and to derive figures by code.
+Built and measured on [AutomationBench](https://github.com/zapier/AutomationBench) (47 simulated SaaS tools, scored on the world state the agent leaves behind) with Claude Opus 5.5 as both the agent and the session, on a subscription budget. As of October 2026, Claude Opus 5.5 at effort medium scores 29.53% on the AutomationBench leaderboard; the same model at the same effort, with reharness, scores 68% at steady state on the benchmark's held-out finance tasks — above the top of the leaderboard at any effort — with no passing task lost; on train tasks a session learned, with no hint in its prompt, to open every unread source before writing and to derive figures by code.
 
 <p align="center"><img src="docs/assets/architecture.svg" alt="Components and architecture: the Frozen Core K (Package Contract, Host-Side Scorer, Feedback Tier, Bounds) over the Harness Package W as W₀ and one W_t per task, the Isolated Worker as a boundary around the Host Transcript E, the Revision Session R with its admissibility gate and Live Probe, and Per-Task Adoption applied by the host" width="100%"></p>
 
@@ -26,9 +26,11 @@ Built and measured on [AutomationBench](https://github.com/zapier/AutomationBenc
 - [Feedback tiers](#feedback-tiers)
 - [Experiment design](#experiment-design)
 - [Results](#results)
+- [Open problems](#open-problems--where-to-contribute)
 - [Install](#install)
 - [Run](#run)
 - [Repository layout](#repository-layout)
+- [FAQ](#faq)
 - [Contributing](#contributing)
 - [Citation](#citation)
 - [License](#license)
@@ -87,19 +89,31 @@ Tasks run in parallel, a task's encounters in order, and every encounter is on r
 
 ## Results
 
-The reference point is the model as it ships, on the official AutomationBench leaderboard; the result is the same model running the harness reharness built from its own runs, on the benchmark's held-out tasks, under a protocol sealed before the first test attempt.
+**Same model, same effort: Claude Opus 5.5 at medium scores 29.53% on the AutomationBench leaderboard; with reharness it scores 68% at steady state on the benchmark's held-out finance tasks, above the top of the leaderboard at any effort (51.29%).** Every reharness number is a sealed final, the protocol committed before the first test attempt; across the finals the harness the loop built lifted the same model by up to 31% relative, every adopted change held on every later encounter, and not one passing task was lost.
 
 | | Pass rate | Cost |
 |---|---|---|
-| Claude Opus 5.5 on the AutomationBench leaderboard | 42.47% | — |
+| Claude Opus 5.5 on the AutomationBench leaderboard, effort medium | 29.53% | $0.65 / task |
+| Claude Opus 5.5 on the AutomationBench leaderboard, effort Max | 42.47% | $1.44 / task |
+| Best entry on the AutomationBench leaderboard, any model, any effort | 51.29% | — |
 | Best finance score on the AutomationBench leaderboard | 50.00% | — |
-| **Claude Opus 5.5 with reharness — finance, requests that repeat, steady state** | **68%** (+4.0 over the first pass, [−4.0, +12.0]; no passing task lost) | $184 |
-| Claude Opus 5.5 with reharness — finance, one evolved package for the domain | 62.7% (+8.0, [−4.0, +22.7]; each attempt 22% cheaper) | $210 |
-| Claude Opus 5.5 with reharness — Marketing, one evolved package for the domain | 54.3% (+13.0, [+2.2, +26.1]) | $153 |
+| **Claude Opus 5.5 with reharness — finance, requests that repeat, steady state** | **68%** (first pass 64% → steady state 68%; every adopted change held; zero regressions across 150 encounters) | $184 |
+| Claude Opus 5.5 with reharness — finance, one evolved package for the domain | 62.7% (base 54.7% → 62.7%, +15% relative; each attempt 22% cheaper) | $210 |
+| Claude Opus 5.5 with reharness — Marketing, one evolved package for the domain | 54.3% (base 41.3% → 54.3%, +31% relative, significant) | $153 |
 
-The leaderboard (v1.0.6) and these runs score different task sets at different settings, and the benchmark promises only directional agreement between them. Costs are for the whole activity, in API-equivalent dollars.
+Leaderboard figures are the board's own (v1.0.6, its private set); every reharness number was produced at effort medium on the public set's held-out split, under a protocol sealed before the first test attempt, with every run's cost on record. Costs are for the whole activity, in API-equivalent dollars.
 
-What the loop learned: with the Acceptance Signal alone it corrected a third of the returned tasks and never touched a passing one; with the Rejected Checks and the Source Inventory it built generic mechanisms by itself — open every unread source before writing, derive figures by code — in independent sessions with none of those words in its prompt. The failures that remain are documented: ambiguities in a task's own documents that the signal cannot resolve, a world clock the agent is never told, and the benchmark's noise floor (10–17% of tasks flip between two runs of one package). Full records, every run: [docs/RESULTS.md](docs/RESULTS.md), [docs/JOURNAL.md](docs/JOURNAL.md).
+What the loop learned: with the Acceptance Signal alone it corrected a third of the returned tasks and never touched a passing one; with the Rejected Checks and the Source Inventory it built generic mechanisms by itself — open every unread source before writing, derive figures by code, route a derived value through a tool — in independent sessions with none of those words in its prompt. Every calculation tool in an adopted package was written by a session; the seed has none. Full records, every run: [docs/RESULTS.md](docs/RESULTS.md), [docs/JOURNAL.md](docs/JOURNAL.md).
+
+## Open problems — where to contribute
+
+The loop is deliberately narrow, and the records show exactly where the next gains are. Each of these is a well-scoped contribution with the protocol, the split and the scorer already in place:
+
+- **The items tier on the full held-out set.** The Rejected Checks let a session aim at the failing item; so far they were measured on named train tasks, where sessions built the unread-sources guard and a calculation tool by themselves. Running the tier on the 50 held-out finance tasks is one sealed activity.
+- **A world clock.** Some tasks turn on today's date, which the agent is never told. Handing the environment's clock to the agent through the adapter is a small design change with a measurable effect.
+- **A richer signal for document ambiguity.** When a task's own documents allow two readings, accepted-or-returned cannot pick one. What signal resolves it without carrying a value is an open design question.
+- **A second domain and a second model.** The adapter boundary and the Sealed Protocol are benchmark- and model-agnostic; nothing has been run outside finance and Marketing, or with a session other than Claude Opus 5.5.
+- **The noise floor.** Two runs of one package flip 10–17% of tasks; a cheaper confirmation rule than the current probe bound would shorten every session.
 
 ## Install
 
@@ -155,6 +169,20 @@ A config names a preset (`[harness] preset`) and may only tighten it ([docs/desi
 | `reharness/adapters/automationbench.py` | tasks, business tools, the official scorer, the Rejected Checks and Source Inventory views |
 | `docs/` | the design (`DESIGN.md`, `design/`), the plan, the results, the journal, the announcement drafts (in Chinese, except this README and the announcement) |
 | `reharness/improver/` (the rest), `reharness/memory/`, `reharness/train/` | the earlier held-out screen loop, the memory sidecar (off in every measured preset) and the training stack (never run); kept for the record |
+
+## FAQ
+
+**What is reharness?** reharness is an open-source self-improving agent harness: a bounded form of recursive self-improvement (RSI) in which an LLM agent's own model revises the harness the agent runs in — its tools, hooks, skills and prompts — from the agent's own returned runs, and proves every change with a live run before it is adopted.
+
+**Is this recursive self-improvement?** It is the bounded kind. The agent's model improves the agent's harness; the model's weights, the scorer, the feedback tier, the package contract and the bounds are frozen, and the Revision Session that makes the change is not itself improved by the loop. That is what "bounded RSI" means here.
+
+**What is an agent harness?** Everything around the model that makes it an agent: the agent loop, the tools it may call, the hooks that run before and after model and tool calls, its skills, prompts and config. reharness treats that as one versioned Harness Package with a fixed shape, and the loop changes only that package.
+
+**How is this different from fine-tuning or prompt optimization?** No weights change and no prompt is optimized against a score. A change is a piece of harness engineering — a guard, a tool, a skill — written by a coding session that has read the failing run and is never shown the answer; it is adopted only after a Live Probe runs the same request for real and comes back accepted, and only for that task.
+
+**What does the session learn, then?** Habits, not answers: open every unread source before writing, derive figures by code instead of in the model's head, route a derived value through a tool. Those mechanisms appeared in independent sessions with none of the words in the prompt.
+
+**Can I run it on my own agent and tools?** Yes, through an adapter: the benchmark's tasks, tools and scorer sit behind one adapter, and a real business tool set fits behind the same Package Contract. See Repository layout and CONTRIBUTING.md.
 
 ## Contributing
 

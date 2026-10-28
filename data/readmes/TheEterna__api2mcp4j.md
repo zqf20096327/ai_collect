@@ -4,11 +4,13 @@
 
 ```xml
 <dependency>
-  <groupId>com.ai.plug</groupId>
+  <groupId>io.github.theeterna</groupId>
   <artifactId>server2mcp-starter-webmvc</artifactId>
-  <version>1.1.4-SNAPSHOT</version>
+  <version>1.2.0</version>
 </dependency>
 ```
+
+<!-- Reactive (WebFlux) users swap the artifactId to `server2mcp-starter-webflux` — same protocol surface. -->
 
 [![Java](https://img.shields.io/badge/Java-17%2B-blue)](https://www.java.com)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1.0-brightgreen)](https://spring.io/projects/spring-boot)
@@ -41,7 +43,7 @@ public class OrderController {
     public Order getOrder(@PathVariable Long id) { ... }
 }
 
-// Becomes an MCP tool: orders_get_order
+// Becomes an MCP tool: OrderController_getOrder
 // With auto-generated description from Swagger / Javadoc / Spring MVC / Jackson / Spring AI
 ```
 
@@ -75,9 +77,19 @@ mvn clean install -DskipTests
 
 ```xml
 <dependency>
-  <groupId>com.ai.plug</groupId>
+  <groupId>io.github.theeterna</groupId>
   <artifactId>server2mcp-starter-webmvc</artifactId>
-  <version>1.1.4-SNAPSHOT</version>
+  <version>1.2.0</version>
+</dependency>
+```
+
+Reactive (Spring WebFlux) applications use the WebFlux starter instead — identical protocol surface, reactive transport:
+
+```xml
+<dependency>
+  <groupId>io.github.theeterna</groupId>
+  <artifactId>server2mcp-starter-webflux</artifactId>
+  <version>1.2.0</version>
 </dependency>
 ```
 
@@ -89,8 +101,9 @@ plugin:
     enabled: true
     scope: interface   # 'interface' = auto-register all controllers; 'custom' = @ToolScan only
     parser:
-      des:    SWAGGER3, JAVADOC, TOOL, JACKSON, SWAGGER2
+      des:    MCPTOOL, JAVADOC, TOOL, JACKSON, SWAGGER3, SWAGGER2
       param:  MCPTOOL, JAVADOC, TOOL, SpringMVC, JACKSON, SWAGGER2, SWAGGER3
+      strict: false   # true = a misspelled parser name aborts startup (default: warn only)
 ```
 
 ### 4. Start & test
@@ -245,7 +258,7 @@ api2mcp4j/
 ├── server2mcp-autoconfigure           # Spring Boot auto-configuration
 ├── server2mcp-spring-boot-starters/
 │   ├── server2mcp-starter-webmvc      # ✅ Full endpoint wiring (JSON-RPC + SSE + HTTP)
-│   └── server2mcp-starter-webflux     # ⚠️ Framework core only (no endpoint wiring yet)
+│   └── server2mcp-starter-webflux     # ✅ Reactive endpoint wiring — full protocol parity with WebMVC
 └── server2mcp-test                    # ✅ Demo app + 21/21 e2e verification
 ```
 
@@ -315,8 +328,8 @@ Before submitting a PR, please read:
 - [x] MRTR multi-round state machine + 8-round guard
 - [x] SSE long-poll with Last-Event-ID resume
 - [x] W3C traceparent auto-mint
-- [ ] WebFlux starter endpoint wiring (parity with WebMVC)
-- [ ] Publish to Maven Central
+- [x] WebFlux starter endpoint wiring (parity with WebMVC) (2026-10-27)
+- [ ] Publish to Maven Central — artifacts built, signed, and audited; awaiting Central Portal credentials
 - [ ] OTel SDK real instrumentation (currently wire-format only)
 - [ ] Multi-tenant isolation (`@McpTool(tenant = "...")`)
 - [ ] SDK ≥ 3.0.0 native router migration (tracked by `scripts/trigger-phase3.sh`)

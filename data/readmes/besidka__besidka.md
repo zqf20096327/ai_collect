@@ -221,7 +221,7 @@ snyk code test
         <img src="public/carousel/any-model.webp" width="100%" alt="Besidka on desktop and on a phone, labelled desktop and mobile, installable PWA and push notifications, with a push notification saying the response is ready." />
       </td>
       <td>
-        <img src="public/carousel/projects.webp" width="100%" alt="A project page with project instructions marked Active and project memory synthesized from the project's chats." />
+        <img src="public/carousel/projects.webp" width="100%" alt="A project page with a Project knowledge panel listing two notes, a text file and a PDF under a capacity meter, next to the Project memory card with entries grouped as Essentials, Areas and Topics." />
       </td>
     </tr>
     <tr>
@@ -229,12 +229,20 @@ snyk code test
         <img src="public/carousel/code-and-diagrams.webp" width="100%" alt="A light-theme chat answer with a syntax-highlighted TypeScript snippet and a rendered sequence diagram of a Worker reading from KV and falling back to D1." />
       </td>
       <td>
-        <img src="public/carousel/web-search-prices.webp" width="100%" alt="Search provider settings with prices per 1,000 searches for Brave, Exa and the built-in search of Gemini, Anthropic, OpenAI and DeepSeek." />
+        <img src="public/carousel/web-search-prices.webp" width="100%" alt="Search provider settings with prices per 1,000 searches for Brave, Exa Lite, Auto and Deep, and the built-in search of Gemini, Anthropic, OpenAI and DeepSeek." />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <img src="public/carousel/memory.webp" width="100%" alt="The Memory page with Use memory on, Generate memory from chats off and Search and reference chats on, next to What Besidka remembers with a Tell Besidka what to remember or change box and entries grouped as You and Topics." />
+      </td>
+      <td>
+        <img src="public/carousel/chat-search.webp" width="100%" alt="A chat answer with a Searched your chats step listing two earlier chats with their dates, and the answer built from what they said." />
       </td>
     </tr>
     <tr>
       <td colspan="2">
-        <img src="public/carousel/exa-search-levels.webp" width="100%" alt="The web search menu with Exa selected and its three search levels, Lite $4/1k, Auto $7/1k and Deep $12/1k with Deep active, next to the message info cards for a Lite answer (~$0.004) and a Deep answer (~$0.012)." />
+        <img src="public/carousel/exa-search-levels.webp" width="100%" alt="The chat tools menu with Web search set to Exa and its depth row, Lite $4/1k, Auto $7/1k and Deep $12/1k with Deep active, next to the message info cards for a Lite answer (~$0.004) and a Deep answer (~$0.012)." />
       </td>
     </tr>
   </tbody>

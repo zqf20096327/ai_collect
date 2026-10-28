@@ -9,6 +9,9 @@ session history.
 Yardlet is written in Swift and SwiftUI; it is not a web view. It does not replace the agents or
 proxy their accounts: it starts the CLI you already use, with the account you already signed in to.
 
+Most of us will end up with an agent workbench of our own. Yardlet began as one, built for working with
+several agents and accounts every day, and it is shared for anyone who doesn't have one yet.
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/main-dark.png">
   <img alt="A Codex task in Yardlet: the conversation, with the changes, pull request checks, progress and settings beside it" src="docs/images/main-light.png">
@@ -34,6 +37,9 @@ proxy their accounts: it starts the CLI you already use, with the account you al
   with one sign-in. A connector set up once is offered to the agents you run, and can be turned off
   per task.
 - **Built-in browser.** A Chromium panel the agents can drive through browser tools while you watch.
+- **Personal agents.** Chat with your existing ChatGPT dots alongside coding tasks, with saved drafts
+  and native file previews. The account stays with its Codex runtime; no browser needs to stay open
+  (see [Personal agents](docs/PERSONAL_AGENTS.md) for current limits).
 - **Scheduled tasks** that run while Yardlet is open, and session tools that let one task read,
   message or start another.
 
@@ -107,6 +113,14 @@ through a connector is sent to that agent's provider under your account with it.
 check asks `yardlet.app` for the appcast with Yardlet's and Sparkle's versions in its user agent and
 sends no system profile; updates download from GitHub Releases. See the
 [privacy policy](https://yardlet.app/privacy.html).
+
+## Roadmap and feedback
+
+What's being worked on and what comes next is on the [roadmap](https://github.com/users/zzunkie/projects/1),
+and each release gathers its work in a [milestone](https://github.com/zzunkie/yardlet/milestones).
+Report bugs and ideas in [issues](https://github.com/zzunkie/yardlet/issues/new/choose), ask questions in
+[Discussions](https://github.com/zzunkie/yardlet/discussions), and see [CONTRIBUTING.md](CONTRIBUTING.md)
+to send a pull request.
 
 ## License
 

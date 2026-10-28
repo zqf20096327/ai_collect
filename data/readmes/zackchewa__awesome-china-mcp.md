@@ -26,7 +26,7 @@ In the West, [Composio](https://composio.dev), [Nango](https://nango.dev) and fr
 
 ## How to use / 如何使用
 
-Point any MCP client at these servers — an [OpenClaw Launch](https://openclawlaunch.com) bot, OpenClaw/Hermes, Claude Desktop, Cursor, Cline, VS Code, or any MCP-speaking framework.
+Configure an MCP-compatible client for the servers below — Claude Desktop, Cursor, Cline, VS Code, or an agent runtime with MCP support. Transport, authentication and local dependencies vary by entry. Entries explicitly labelled API, CLI or Agent Skill use their own integration path.
 
 ```jsonc
 // Example: Claude Desktop / Cursor mcp config
@@ -40,9 +40,9 @@ Point any MCP client at these servers — an [OpenClaw Launch](https://openclawl
 
 > ⚠️ **BYO credentials.** Most Chinese-platform APIs (微信 / 支付宝 / 钉钉 / 电商 / 券商) require your own registered app credentials and, for the big ones, enterprise (营业执照) verification. These servers connect the API — you supply the keys.
 
-> 🧩 **Also in here:** a [gap map](#gap-map) of 78 Chinese services that have an official API but **no MCP server yet** — pick one and build it.
+> 🧩 **Also in here:** a [gap map](#gap-map) recording 78 official-API services from the 2026-10-10 survey, plus separately labelled [official Skills and APIs](#official-skills-and-apis). An API or Skill is not automatically an MCP server.
 
-> 🗓️ Links, stars & archive status checked **2026-10-10** · catalog updated **2026-10-10** · gap map last re-swept **2026-10-10**.
+> 🗓️ Full links, stars & archive survey: **2026-10-10** · selected catalog additions and official documentation checked **2026-10-27** · gap map last re-swept **2026-10-10**. The latest update is a documentation review, not an authenticated end-to-end test of every service.
 
 ### Legend
 `🏢` official / first-party · `👥` community · `⭐` GitHub stars (approx, drift over time) · `🌐` hosted / docs link (not a repo)
@@ -131,6 +131,10 @@ The deepest official coverage in the whole ecosystem — Alibaba Cloud alone shi
 
 | App | Server | Notes |
 |---|---|---|
+| MinerU 文档解析 | 🏢 [`opendatalab/MinerU-Ecosystem/mcp`](https://github.com/opendatalab/MinerU-Ecosystem/tree/main/mcp) | PDF, Office and image parsing to Markdown; stdio / Streamable HTTP; documents go to MinerU cloud, with anonymous Flash mode or own API token |
+| 滴答清单 Dida | 🏢 [official MCP guide](https://help.dida365.com/articles/7438132116019216384) — `https://mcp.dida365.com` | Tasks, lists, habits and focus records; Streamable HTTP, OAuth or API token; includes write operations |
+| 飞书项目 Feishu Project | 🏢 [official MCP connection guide](https://project.feishu.cn/b/helpcenter/1ykiuvvj/wzb3ycsc) | Project/work-item queries and updates; enable MCP access in the product; HTTP OAuth, `X-Mcp-Token` or stdio setup; capabilities depend on edition and permissions |
+| Doc2X 文档解析 | 🏢 [`NoEdgeAI/doc2x-mcp`](https://github.com/NoEdgeAI/doc2x-mcp) | PDF/image parsing, formula/table extraction, document export & layout JSON; MIT stdio server, own API key required, cloud API usage billed |
 | 飞书 / Lark | 🏢 [`larksuite/lark-openapi-mcp`](https://github.com/larksuite/lark-openapi-mcp) ⭐838 · 👥 [`ztxtxwd/open-feishu-mcp-server`](https://github.com/ztxtxwd/open-feishu-mcp-server) ⭐87 | docs, sheets, IM, calendar |
 | 语雀 Yuque | 🏢 [`yuque/yuque-mcp-server`](https://github.com/yuque/yuque-mcp-server) ⭐248 (server) · [`yuque/yuque-ecosystem`](https://github.com/yuque/yuque-ecosystem) ⭐230 (server+skills+plugin bundle) · 👥 [`yehuoshun/yuque-ai-mcp`](https://github.com/yehuoshun/yuque-ai-mcp) ⭐7 (62 tools; 17 need a browser session cookie) | knowledge base CRUD, search, boards, statistics, recycle |
 | 钉钉 DingTalk | 👥 [`hykfft/mcp-dingtalk-doc`](https://github.com/hykfft/mcp-dingtalk-doc) ⭐56 (docs) · [`keithyt06/quick-dingtalk-mcp`](https://github.com/keithyt06/quick-dingtalk-mcp) ⭐8 (user identity, wraps the official `dws` CLI) · [`Shawyeok/mcp-dingding-bot`](https://github.com/Shawyeok/mcp-dingding-bot) ⭐12 (群机器人) | docs, personal identity, group robot |
@@ -157,6 +161,7 @@ The deepest official coverage in the whole ecosystem — Alibaba Cloud alone shi
 
 | App | Server | Notes |
 |---|---|---|
+| Sealos | 🏢 [official MCP guide](https://sealos.io/docs/AI/mcp/) | Regional Streamable HTTP services for DevBox, databases, billing and observability; workspace KubeConfig authentication; infrastructure operations may write or incur costs |
 | Gitee | 🏢 [`oschina/mcp-gitee`](https://github.com/oschina/mcp-gitee) ⭐66 | repos, issues, PRs |
 | Apifox | 🏢 [official MCP](https://docs.apifox.com/apifox-mcp-server) | API specs into agents |
 | GitCode | 👥 [`Trenza1ore/GitCode-API`](https://github.com/Trenza1ore/GitCode-API) ⭐7 | GitCode REST SDK + CLI shipping MCP / agent tool definitions |
@@ -221,6 +226,7 @@ The deepest official coverage in the whole ecosystem — Alibaba Cloud alone shi
 
 | Provider | Server | Notes |
 |---|---|---|
+| LifeVerse | 🏢 official remote MCP — `https://lifeverse.gufreelancer.com/api/mcp` ([guide](https://lifeverse.gufreelancer.com/mcp)) · 🏢 [`lifeversegu/lifeverse-mcp`](https://github.com/lifeversegu/lifeverse-mcp) | discover, search and recommend 11 public LifeVerse AI products; Streamable HTTP, anonymous, read-only |
 | MiniMax | 🏢 [`MiniMax-AI/MiniMax-MCP`](https://github.com/MiniMax-AI/MiniMax-MCP) ⭐1.6k · [JS](https://github.com/MiniMax-AI/MiniMax-MCP-JS) ⭐130 | TTS, voice clone, image & video gen |
 | 魔搭 ModelScope | 🏢 [`modelscope/modelscope-mcp-server`](https://github.com/modelscope/modelscope-mcp-server) · 🌐 [MCP 广场 1400+](https://modelscope.cn/brand/view/MCP) | models + biggest CN MCP hub |
 | 智谱 Zhipu (GLM) | 🏢 official remote MCP ×3 — `https://open.bigmodel.cn/api/mcp/{web_search_prime,web_reader,zread}/mcp` ([docs](https://docs.bigmodel.cn/cn/coding-plan/mcp/search-mcp-server); needs a GLM Coding Plan key) · 👥 [`wnzzer/zhipu-tools-coding-plan`](https://github.com/wnzzer/zhipu-tools-coding-plan) · [`NanguangChou/zhipu_image_mcp`](https://github.com/NanguangChou/zhipu_image_mcp) | web search, page reader, Zread (read any GitHub repo's docs, tree and files), image gen |
@@ -228,12 +234,18 @@ The deepest official coverage in the whole ecosystem — Alibaba Cloud alone shi
 | 可灵 AI Kling (快手) | 👥 [`199-mcp/mcp-kling`](https://github.com/199-mcp/mcp-kling) ⭐43 · 🌐 [official API docs](https://klingai.com/document-api/apiReference/commonInfo) | text-to-video / text-to-image; the vendor ships a REST API only — the MCP layer is community |
 | LibTV 哩布哩布 | 🏢 [`libtv-labs/libtv-skills`](https://github.com/libtv-labs/libtv-skills) | image / video gen, inpainting, short drama — official Agent Skill, not an MCP server |
 | Flova | 🏢 [official Skill on ClawHub](https://clawhub.ai/flova/skills/flova-video-generator) | script → storyboard → footage → export video agent; official Agent Skill, not an MCP server |
+| Meshy | 🏢 [`meshy-dev/meshy-mcp-server`](https://github.com/meshy-dev/meshy-mcp-server) · [official guide](https://docs.meshy.ai/en/api/ai) | Text/image-to-3D, texturing, rigging and task queries; own Meshy API key; generation consumes credits |
+| Tripo3D | 🏢 [`Tripo-Developer/tripo-mcp`](https://github.com/Tripo-Developer/tripo-mcp) · [official guide](https://www.tripo3d.ai/blog/cursor-tripo-mcp-tutorial) | Alpha MCP for generating 3D assets and importing them into Blender; requires Blender, Tripo add-on and API key; API credits apply |
+| Hyper3D / Rodin | 🏢 [official remote MCP](https://hyper3d.ai/features/mcp) — `https://api.hyper3d.com/api/mcp` | 3D generation, progress queries and result links; browser authorization selects the billing workspace; plan, credits and permissions apply |
+| Mureka | 🏢 [`SkyworkAI/Mureka-mcp`](https://github.com/SkyworkAI/Mureka-mcp) | Lyrics, songs and instrumental music; own API key and credits; upstream setup targets international `api.mureka.ai`, while Launch's API connection uses the China service |
 | DeepSeek / Moonshot Kimi | model providers (OpenAI-compatible) — add via your client's model config | — |
 
 ## 🧰 实用工具 · Utilities
 
 | Tool | Server | Notes |
 |---|---|---|
+| AntV 图表 | 🏢 [`antvis/mcp-server-chart`](https://github.com/antvis/mcp-server-chart) | Chart generation; stdio / SSE / Streamable HTTP; default public renderer needs no key and receives chart data; private renderer configurable |
+| 秘塔AI搜索 Metaso | 🏢 [official API portal](https://metaso.cn/search-api/playground) · [MCP guide](https://www.modelscope.cn/mcp/servers/metasota/metaso-search) — `https://metaso.cn/api/mcp` | Multi-source search, webpage reading and RAG Q&A; remote HTTP MCP; own Bearer API key and quota |
 | 中国数据核验 | 👥 [`CCCpan/Gebaini`](https://github.com/CCCpan/Gebaini) ⭐165 | ID / 企业 / 车辆 / OCR / risk |
 | 工商企业大数据 | 👥 [`handaas/mcp-server`](https://github.com/handaas/mcp-server) ⭐12 · [`handaas/enterprise-mcp-server`](https://github.com/handaas/enterprise-mcp-server) | 工商信息 / 风险 / 股权 / 知识产权 (旷湖) |
 | 企查查 Qichacha | 🏢 official remote MCP ×10 — `https://agent.qcc.com/mcp/{company,risk,ipr,operation,history,executive,regulation,case,tender,document}/stream` ([guide](https://agent.qcc.com/guide)) | 工商 / 风险 / 知识产权 / 司法 / 招投标; Bearer API key or OAuth, billed per call |
@@ -249,6 +261,27 @@ The deepest official coverage in the whole ecosystem — Alibaba Cloud alone shi
 | 博查 AI 搜索 Bocha | 🏢 [`BochaAI/bocha-search-mcp`](https://github.com/BochaAI/bocha-search-mcp) ⭐185 | Chinese web search — pages, news, images; the practical way to give a CN agent fresh sources |
 | TextIn 合合信息 (IntSig) | 🏢 [`intsig-textin/textin-mcp`](https://github.com/intsig-textin/textin-mcp) ⭐29 | document parsing: PDF / image → Markdown, preserving headings, tables and layout |
 | 多平台通知推送 | 👥 [`aahl/mcp-notify`](https://github.com/aahl/mcp-notify) ⭐28 | one server pushes to Bark / 微信 / 钉钉 / 飞书 / Telegram |
+| Everything2MCP 本地/私网协议聚合 | 👥 [`shcdwz1234/Everything2MCP`](https://github.com/shcdwz1234/Everything2MCP) | OpenAPI/gRPC/MQTT/queues; hot-reload; business writes disabled by default; experimental, limited 飞书/钉钉/企业微信 adapters; `npx everything2mcp` |
+
+---
+
+<a id="official-skills-and-apis"></a>
+
+## 🧩 官方 Skills 与 API · Official Skills & APIs
+
+These complement the MCP catalog. The linked integrations below are Skills, CLIs or HTTP APIs; they are not presented as MCP servers, nor as evidence that no MCP implementation exists. Upstream capabilities can differ from the subset available in a hosted product.
+
+这些条目补充官方 Skill、CLI 和 HTTP API 接入方式，不计入 MCP Server 或下方历史空缺清单。上游功能与托管产品实际开放的操作范围可能不同。
+
+| Service | Official source | Integration and requirements |
+|---|---|---|
+| ima | 🏢 [official Skill and credentials](https://ima.qq.com/agent-interface) | Search/read/create notes and query/import knowledge-base content; own ima API credentials; official Agent Skill |
+| 百度文库 AI PPT | 🏢 [personal PPT Skill](https://github.com/baidu-netdisk/bdpan-storage/tree/main/skills/baidu-wenku-aippt-personal) | Generate a presentation from a topic with the bdpan CLI and return a preview link; personal Baidu authorization and account quota apply |
+| 中国移动云盘 | 🏢 [official platform](https://open.yun.139.com/) · [cm-cloud-manage Skill](https://skillhub.cn/skills/org-vt43r0t0/cm-cloud-manage) | File search, browsing and management with account authorization; upstream includes writes, while Launch's reviewed integration currently exposes read-only file queries |
+| AiPPT | 🏢 [official Skill guide](https://open.aippt.cn/docs/zh/claw/docs.html) · [API access](https://open.aippt.cn/docs/zh/guide/access.html) | PPT generation and download; official guide links `huiyuan1234/aipptskill`; platform application and enterprise verification for App Key / Secret Key |
+| 美图 / MeituHub | 🏢 [official API and CLI guide](https://www.meituhub.com/zh-cn/docs?id=150) | Image/video creative APIs and meitu-cli; OpenAPI uses AK/SK request signing; usage consumes account credits |
+| PicWish / 佐糖 | 🏢 [China API docs](https://picwish.cn/background-removal-api-doc) · [API plans](https://picwish.cn/api-pricing) | Background removal and image enhancement; China-site API key and developer API credits |
+| LiblibAI 哩布哩布 | 🏢 [official API platform](https://www.liblib.art/apis) | Model/workflow image generation; API credits are separate from website membership credits; model and workflow licensing applies |
 
 ---
 
@@ -264,7 +297,7 @@ The deepest official coverage in the whole ecosystem — Alibaba Cloud alone shi
 >
 > 🛠️ **Build one and it moves up.** Ship an MCP server for any row here, open a PR, and the row graduates into the main list above with your repo on it. Know of one we missed? Same thing — PR it, we'd rather be corrected than tidy.
 >
-> 💡 **Need it working today?** An agent can call any of these over plain HTTP with your own credentials. If you'd rather not write the plumbing, [OpenClaw Launch 的 /zh/china-apps](https://openclawlaunch.com/zh/china-apps) wraps most of this table behind a hosted proxy (credentials stay server-side, encrypted) — that is where this table comes from.
+> 💡 **Related product catalog:** [OpenClaw Launch 的 /zh/china-apps](https://openclawlaunch.com/zh/china-apps) offers selected managed connections through MCP, HTTP APIs, mail protocols and reviewed agent Skills. Proxy credentials are encrypted server-side; some Skills authorize inside the selected bot. Check each card for supported actions, account requirements and availability. This GitHub directory and the product catalog are maintained separately; a listing here does not mean Launch supports every upstream capability.
 
 ### 💬 消息通知 / 群机器人 · Messaging & Push
 
@@ -477,6 +510,7 @@ Directories to *find* servers (not app connectors themselves):
 | Hub | What |
 |---|---|
 | [魔搭 ModelScope MCP 广场](https://modelscope.cn/mcp) | 1400+ servers, biggest Chinese MCP community, SSE / local |
+| [腾讯 SkillHub](https://skillhub.cn/) · [`Tencent/skillhub`](https://github.com/Tencent/skillhub) | Agent Skill discovery, versions and downloads through the official public API; a Skill registry, not an MCP server; review third-party packages before installing |
 | [mcp.so](https://mcp.so) | global "app store", 10,000+ servers, STDIO + SSE |
 | [AIbase MCP 资源站](https://www.aibase.com/zh/repos/topic/mcp) | 400+ production servers, Chinese tutorials, beginner-friendly |
 | [Glama — Awesome MCP Servers (中文)](https://glama.ai/mcp/servers) | curated 200+ ready-to-use servers, categorized |
@@ -490,7 +524,7 @@ Where you *run* MCP servers — connect any entry above to one of these:
 
 | Tool | What |
 |---|---|
-| [OpenClaw Launch](https://openclawlaunch.com) | deploy a hosted AI agent that uses these MCP tools in one click |
+| [OpenClaw Launch](https://openclawlaunch.com) | hosted OpenClaw / Hermes agents with selected Chinese-app connections; supported actions and setup vary by catalog entry |
 | [Cherry Studio](https://github.com/CherryHQ/cherry-studio) ⭐52.5k | 国产 desktop AI client, visual MCP config + auto-install |
 | Cursor / Cline / VS Code | dev tools — add servers via `mcp.json` |
 | [扣子 Coze](https://www.coze.cn) / [Trae](https://www.trae.ai) | ByteDance agent builder + AI IDE, both with MCP markets |
@@ -511,4 +545,4 @@ Know a Chinese-app MCP server that's missing — especially an **official** one?
 
 ---
 
-<p align="center"><sub>Maintained by <a href="https://openclawlaunch.com">OpenClaw Launch</a> — deploy an AI agent that connects to all of these in one click. · 星标 ⭐ 让更多人发现这个清单。</sub></p>
+<p align="center"><sub>Maintained by <a href="https://openclawlaunch.com">OpenClaw Launch</a> — hosted OpenClaw and Hermes agents with selected Chinese-app integrations. · 星标 ⭐ 让更多人发现这个清单。</sub></p>

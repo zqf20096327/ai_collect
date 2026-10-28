@@ -155,6 +155,15 @@ Notes:
 
 ### Run
 
+Check the install without a database:
+
+```bash
+cubrid-mcp-server --help
+cubrid-mcp-server --version
+```
+
+Both flags exit 0 and print to stderr. They do not read `CUBRID_*` or start the MCP loop.
+
 ### Run from PyPI
 
 Use [`uvx`](https://docs.astral.sh/uv/guides/tools/) to run directly from PyPI:

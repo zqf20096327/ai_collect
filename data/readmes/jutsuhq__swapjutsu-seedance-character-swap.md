@@ -4,7 +4,7 @@
 
 # Swapjutsu
 
-**Open-source character swap for video, native on macOS.**
+**Free, open-source app to swap a character in a video on Mac. No watermark.**
 
 Put any character into any clip. The camera, the moves and the timing stay; the person changes.
 Everything up to the render runs on your Mac, for free.
@@ -168,6 +168,16 @@ Guides on jutsustudio.com:
 - [Face swap vs character swap](https://jutsustudio.com/blog/face-swap-vs-character-swap/)
 - [Higgsfield Genjutsu alternatives, free and paid](https://jutsustudio.com/blog/genjutsu-alternatives/)
 - [Seedance 2.5 guide: modes, limits and cost](https://jutsustudio.com/blog/seedance-2-5-guide/)
+
+## Related
+
+- [Jutsu Studio](https://github.com/jutsuhq/jutsu-studio): the open-source Higgsfield desktop app for Mac
+- [Kawarimi](https://github.com/jutsuhq/kawarimi-local-character-swap): the same character swap on Windows and Linux, local on your own NVIDIA GPU with Wan 2.2 Animate
+- [Content Factory](https://github.com/jutsuhq/content-factory): open-source faceless video generator for Shorts, TikTok and Reels
+- [EdgeTAM Core ML](https://github.com/jutsuhq/edgetam-coreml): EdgeTAM video segmentation in Core ML, on the Apple Neural Engine
+- [Higgsfield Gateway](https://github.com/jutsuhq/higgsfield-gateway): a budget-capped Higgsfield API gateway on Cloudflare Workers
+- [AI video API prices](https://github.com/jutsuhq/video-api-prices): what one second of AI video costs at 30+ providers, updated daily
+- [awesome-higgsfield](https://github.com/jutsuhq/awesome-higgsfield): tools, SDKs, agent skills and apps for Higgsfield
 
 ## Disclaimer
 

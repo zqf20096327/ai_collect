@@ -100,13 +100,13 @@ Fresh 2026 work that is already drawing attention.
 - **🧱 Part I: Core Components**
   - [🧠 Planning & Reasoning (55)](#planning)
   - [💾 Memory (60)](#memory)
-  - [🔧 Tool Use (49)](#tools)
+  - [🔧 Tool Use (51)](#tools)
   - [🤝 Multi-Agent Systems (57)](#multi-agent)
 - **🌍 Part II: Agents in Context**
   - [🌐 Interactive Environments (60)](#environments)
   - [🚀 Applications (58)](#applications)
 - **⚖️ Part III: Cross-Cutting Concerns**
-  - [📊 Evaluation & Benchmarks (57)](#evaluation)
+  - [📊 Evaluation & Benchmarks (58)](#evaluation)
   - [🛡️ Safety & Alignment (62)](#safety)
 
 ## 🧭 Background
@@ -392,11 +392,11 @@ Fresh 2026 work that is already drawing attention.
 <sub><a href="#contents">↑ Back to Contents</a></sub>
 
 <a id="tools"></a>
-### 🔧 Tool Use (49)
+### 🔧 Tool Use (51)
 *Corresponds to §6 (Tool Use and Action Execution).*
 
 <details>
-<summary><b>Show 49 papers</b></summary>
+<summary><b>Show 51 papers</b></summary>
 
 - **[TALM: Tool Augmented Language Models](https://arxiv.org/abs/2205.12255)** (Parisi et al., arXiv 2022) - *Early, influential formulation of self-supervised bootstrapping for tool use in LMs, directly anticipating Toolformer's self-supervised approach.*
 - **[API-Bank: A Comprehensive Benchmark for Tool-Augmented LLMs](https://arxiv.org/abs/2304.08244)** (Li et al., EMNLP 2023) - *One of the earliest and most cited dedicated benchmarks for evaluating and training tool-augmented dialogue LLMs.* [[code](https://github.com/AlibabaResearch/DAMO-ConvAI)]

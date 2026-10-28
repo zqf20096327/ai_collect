@@ -36,7 +36,7 @@ Score the content a Web Fetch tool returns against explicit task requirements.
 | `access-restrictions` | 100 | URLs with previously observed access restrictions |
 | `articles` | 100 | Article bodies, initial comments and post collections |
 
-The catalog contains 550 task entries across five suites. Public definitions include task instructions and acceptance rules; complete frozen reference inputs must be obtained separately. See [data and access](docs/data.md) and [article requirements](src/lexbench_webfetch/definitions/evaluation/articles/README.md).
+The catalog contains 550 task entries across five suites. Public definitions include task instructions and acceptance rules; complete frozen reference inputs must be obtained separately. See [sample composition and scoring coverage](docs/data.md#dataset-composition-and-scoring-coverage), [data and access](docs/data.md) and [article requirements](src/lexbench_webfetch/definitions/evaluation/articles/README.md).
 
 ## Quickstart
 
@@ -61,6 +61,8 @@ uv run --frozen lexbench-webfetch export \
 ```
 
 Export verifies the input hashes and writes the declared files to a new directory. Required reference files and access are described in the [data guide](docs/data.md).
+
+Reviewed scoring corrections are selected explicitly with `--revision`; external review evidence is optional via `--review-source`. Missing evidence is reported as unverified, not passed. See [annotation revisions and scoring details](docs/data.md) and the [550-case rule revision](docs/review-550-decisions.md). These revisions do not certify historical scores.
 
 ## Score an answer
 
@@ -107,7 +109,8 @@ Project citation: [CITATION.cff](CITATION.cff).
 ```bibtex
 @software{lexbench_webfetch_2026,
   author = {{LexBench Web Fetch contributors}},
-  title = {LexBench Web Fetch},
+  title = {Browser Eval: Benchmarking Browsers and Web Tools for AI Agents},
+  note = {Web Fetch benchmark component},
   year = {2026},
   url = {https://github.com/lexmount/lexbench-webfetch}
 }

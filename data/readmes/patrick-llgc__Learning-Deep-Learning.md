@@ -45,6 +45,14 @@ This session contains quick notes (like git-gist) to my future self.
 - [Compute Hardware](gist/compute_hardware.md)
 - [Attention masks](gist/attention_mask.md)
 
+## 2026-10 (0)
+- [MEM: Multi-Scale Embodied Memory for Vision Language Action Models](https://arxiv.org/abs/2603.03596) [physical intelligence]
+
+## 2026-06 (0)
+- [VLM3: Vision Language Models Are Native 3D Learners](https://arxiv.org/abs/2605.30561) [Meta]
+- [Vision Banana: Image Generators are Generalist Vision Learners](https://arxiv.org/abs/2604.20329)
+- [3D-MIX for VLA: A Plug-and-Play Module for Integrating VGGT-based 3D Information into Vision-Language-Action Models](https://arxiv.org/abs/2603.24393) [tons of ablation study]
+
 
 ## 2026-04 (1)
 - [VLASH: Real-Time VLAs via Future-State-Aware Asynchronous Inference](https://arxiv.org/abs/2512.01031) [[Notes](paper_notes/vlash.md)] [Async infer, Song Han, Zhijian Liu]
@@ -747,6 +755,4 @@ Crosswalk Behavior](http://openaccess.thecvf.com/content_ICCV_2017_workshops/pap
 - [Learning Lightweight Lane Detection CNNs by Self Attention Distillation](https://arxiv.org/abs/1908.00821) <kbd>ICCV 2019</kbd>
 - [StixelNet: A Deep Convolutional Network for Obstacle Detection and Road Segmentation](http://www.bmva.org/bmvc/2015/papers/paper109/paper109.pdf) <kbd>BMVC 2015</kbd>
 - [StixelNetV2: Real-time category-based and general obstacle detection for autonomous driving](http://openaccess.thecvf.com/content_ICCV_2017_workshops/papers/w3/Garnett_Real-Time_Category-Based_and_ICCV_2017_paper.pdf) [[Notes](paper_notes/stixelnetv2.md)] <kbd>ICCV 2017</kbd> [DS]
-- [Real-Time Single Image and Video Super-Resolution Using an Efficient Sub-Pixel Convolutional Neural Network](https://arxiv.org/abs/1609.05158) [[Notes](paper_notes/subpixel_conv.md)] <kbd>CVPR 2016</kbd> [channel-to-pixel]
-- [Car Pose in Context: Accurate Pose Estimation with Ground Plane Constraints](https://arxiv.org/abs/1912.04363) [mono3D]
-- [Self-Mono-SF: Self-Supervised Monocular Scene Flow Estimation](https://arxiv.org/abs/2004.04143) [[Notes](paper_notes/self_mono_sf.md)] <kbd>CVPR 2020 oral</kbd> [scene-flow, Stereo inp
+- [Real-Time Single Image and Video Super-Resolution Using an Efficient Sub-Pixel Convolutional Neural Network](https://arxiv.org/abs/1609.05

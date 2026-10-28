@@ -103,6 +103,7 @@ The best features come from real workflows. If you're using AdLoop and find your
 | `get_negative_keyword_list_keywords` | List the keywords inside a specific shared negative keyword list |
 | `get_negative_keyword_list_campaigns` | List which campaigns a shared negative keyword list is attached to |
 | `get_recommendations` | Google's auto-generated recommendations with type, estimated impact, and campaign context |
+| `get_recommendation_subscriptions` | Which recommendation types Google applies automatically (auto-apply), with status and last change; flags any that are on |
 | `get_pmax_performance` | Performance Max campaign metrics with network breakdown + asset group ad strength |
 | `get_pmax_assets` | Per-asset details for PMax — field type, serving status, content |
 | `get_asset_group_signals` | A PMax asset group's search themes and audience signal, plus the audiences available for it |
@@ -120,6 +121,7 @@ The best features come from real workflows. If you're using AdLoop and find your
 | `get_brand_list_brands` | List the brands inside a list, with the Commercial KG MID and the criterion ID for removals |
 | `get_brand_list_campaigns` | Which campaigns a brand list is attached to, and whether each attachment excludes or targets |
 | `get_ai_max_settings` | AI Max knobs per campaign and ad group — `enable_ai_max`, `bundling_required`, the full `asset_automation_settings` list and each ad group's `disable_search_term_matching` |
+| `get_campaign_settings` | One flat record per Search campaign — networks, location option, campaign-level broad match, bidding, budget, URL options and AI Max — with the settings that widen reach flagged |
 | `get_custom_conversion_goals` | Custom conversion goals with their actions, plus one campaign's goal config |
 | `run_gaql` | Arbitrary GAQL queries for anything else |
 
@@ -268,12 +270,12 @@ All write operations follow a **draft → preview → confirm** workflow. Nothin
 
 | Tool | What It Does |
 |------|-------------|
-| `draft_campaign` | Create a full campaign structure — budget + campaign (PAUSED) + ad group + optional keywords. Supports Search partners, display expansion, and `max_cpc` for either MANUAL_CPC initial ad-group bids or TARGET_SPEND (Maximize Clicks) CPC caps. |
+| `draft_campaign` | Create a full campaign structure — budget + campaign (PAUSED) + ad group + optional keywords. Supports Search partners, display expansion, the location option (presence vs presence or interest), campaign URL options (tracking template, final URL suffix, custom parameters), and `max_cpc` for either MANUAL_CPC initial ad-group bids or TARGET_SPEND (Maximize Clicks) CPC caps. |
 | `draft_shopping_campaign` | Create a Standard Shopping campaign for a linked Merchant Center feed — budget, campaign (PAUSED), product ad group, Shopping ad and an "All products" group in one atomic request. Manual CPC, Maximize clicks or target ROAS. |
 | `draft_asset_group_assets` | Add and remove Performance Max assets (text, images incl. uploads, YouTube videos) in one change, so replacing an asset never drops a group below Google's minimums |
 | `draft_asset_group_signals` | Add search themes or set the audience signal of a PMax asset group |
 | `draft_pmax_product_exclusions` | Exclude products from a retail PMax asset group by item id, brand or custom label |
-| `update_campaign` | Modify existing campaign settings — bidding, budget, geo/language targeting, Search partners, display expansion, and TARGET_SPEND (Maximize Clicks) `max_cpc` caps. |
+| `update_campaign` | Modify existing campaign settings — bidding, budget, geo/language targeting, the location option, campaign URL options, Search partners, display expansion, and TARGET_SPEND (Maximize Clicks) `max_cpc` caps. |
 | `draft_ad_group` | Create a paused SEARCH_STANDARD ad group inside an existing campaign, with optional MANUAL_CPC `max_cpc`. |
 | `update_ad_group` | Update an ad group name and/or MANUAL_CPC `max_cpc`. Use `pause_entity` / `enable_entity` for ad-group status changes. |
 | `draft_responsive_search_ad` | Create RSA preview (3-15 headlines ≤30 chars, 2-4 descriptions ≤90 chars). Warns if headline/description count is below best practice. |
@@ -306,6 +308,8 @@ All write operations follow a **draft → preview → confirm** workflow. Nothin
 | `draft_update_custom_conversion_goal` | Rename a custom conversion goal and/or replace its action list (list replace, not append) |
 | `draft_assign_custom_conversion_goal` | Point a campaign at a custom conversion goal (`goal_config_level = CAMPAIGN`) |
 | `draft_clear_custom_conversion_goal` | Put a campaign back on the account-level goals (rollback) |
+| `draft_dismiss_recommendations` | Dismiss Google recommendations you won't take, so they stop reappearing (Google can show them again later) |
+| `draft_recommendation_subscriptions` | Pause auto-apply for recommendation types, so Google stops changing the account without a preview. Switching auto-apply back on stays in the Google Ads UI |
 | `pause_entity` | Pause a campaign, ad group, ad, keyword or PMax asset group |
 | `enable_entity` | Re-enable a paused entity |
 | `remove_entity` | Permanently remove an entity (irreversible — prefers pause). Supports keywords, negative keywords, ads, ad groups, campaigns. |
@@ -495,8 +499,8 @@ adloop install-rules
 
 This writes a managed block to `~/.claude/CLAUDE.md` and copies the slash commands (prefixed `adloop-*`) into `~/.claude/commands/`. The block is delimited by sentinel comments so it's safe to run multiple times — re-running just refreshes the content. Two install modes:
 
-- **inline** (default) — full rules embedded in `~/.claude/CLAUDE.md`. Reliable but adds ~10K tokens to every Claude Code session.
-- **lazy** (`adloop install-rules --lazy`) — small directive in `CLAUDE.md` pointing at `~/.claude/rules/adloop.md`. Cheaper baseline cost; the LLM reads the rules file only when AdLoop tools are in scope.
+- **inline** (default for `install-rules`) — full rules embedded in `~/.claude/CLAUDE.md`. Reliable, but they load into every Claude Code session in every repository, about 30K tokens, whether AdLoop is connected or not.
+- **lazy** (`adloop install-rules --lazy`, and the default in `adloop init`) — a short directive in `CLAUDE.md` pointing at `~/.adloop/rules/adloop.md`. The LLM reads the rules file only when AdLoop tools are in scope, so sessions without AdLoop stay almost free. The file sits outside `~/.claude/` on purpose: Claude Code loads everything in `~/.claude/rules/` into every session.
 
 To refresh after upgrading AdLoop: `adloop update-rules`. To remove cleanly: `adloop uninstall-rules` — only the managed block and `adloop-*` commands are touched, never your own content.
 

@@ -1,15 +1,18 @@
 # Contenox
 
-**An agent harness for policy-bound, vendor-agnostic AI-assisted software engineering.**
+**A desktop app for demanding work — and the people accountable for it.**
+
+An open-source, vendor-neutral harness for policy-enforced AI agent orchestration.
 
 Contenox runs authored agent workflows as a local process. The policy that gates
 each tool call is a file the operator wrote, enforced by the harness before
 anything runs. Backends are configuration; sessions, approvals and per-step
 records stay on disk.
 
-The harness is the product. One binary serves the CLI and a local cockpit,
-editors attach over ACP, and the model named in a request is the model that
-serves it — or the run stops with the candidates it could have used.
+Contenox ships as a desktop app with a bundled runtime. The app is the cockpit:
+sessions, missions, approvals, projects and backends. The runtime serves the CLI,
+the HTTP API and ACP; editors attach over ACP; and the model named in a request
+is the model that serves it — or the run stops with the candidates it could have used.
 
 > **What Contenox is not:** it is not an autonomous coding employee, not a hosted
 > autopilot, and not a vendor's harness. It is a local runtime for AI-assisted
@@ -36,51 +39,47 @@ The core issue is not that agents can act; it is agents acting outside a boundar
 
 ## Install
 
-```bash
-curl -fsSL https://contenox.com/install.sh | sh
+**Desktop app:** download the installer for your platform from **[contenox.com](https://contenox.com)** —
+Linux (`.deb`, `.rpm`), macOS (`.dmg`, `.zip`), Windows (`.exe`, `.zip`). Every release ships a
+`SHA256SUMS` file and a detached GPG signature; the RPM is signed.
 
-```
-
-### Inspect Before Installing
-
-If you prefer to audit the installation script first:
-
-```bash
-curl -fsSLO https://contenox.com/install.sh
-less install.sh
-sh install.sh
-
-```
-
-*Pre-built release downloads and source builds are also available on the [releases page](https://github.com/contenox/harness/releases).*
+**Runtime only (CLI, servers, CI):** the runtime is its own repository,
+[contenox/runtime](https://github.com/contenox/runtime). Its
+[releases](https://github.com/contenox/runtime/releases) carry `contenox-runtime-<os>-<arch>`
+binaries, `SHA256SUMS` and a signed manifest; the desktop app pins one of these versions in
+`runtime.lock.json`.
 
 ---
 
 ## Quick Start
 
-<!-- TAG=v0.36.0 -->
+Contenox installs two commands:
+
+- `contenox` — the desktop app. `contenox .` opens the folder you are standing in; `Ctrl/Cmd+O` switches workspace at any time.
+- `contenox-runtime` — the runtime CLI: chat, sessions, backends, `serve`, and ACP.
 
 ```bash
-contenox setup                    # Choose a provider/model for this machine
-contenox "say hello world in python"    # Query directly from the CLI
-contenox chat -e                         # Open $EDITOR to compose a rich prompt
+contenox .                        # Open this folder in the desktop app
+contenox-runtime setup                    # Choose a provider/model for this machine
+contenox-runtime "say hello world in python"    # Query directly from the CLI
+contenox-runtime chat -e                         # Open $EDITOR to compose a rich prompt
 
 ```
 
-Manage past contexts effortlessly using `contenox session list` and `contenox session switch <name>`.
+Manage past contexts effortlessly using `contenox-runtime session list` and `contenox-runtime session switch <name>`.
 
-### Smart Dual-Model Routing
+### Separate Model Roles
 
-Inline autocomplete runs on a dedicated model separate from the main chat. This ensures editor ghost text stays entirely local and ultra-low latency, while complex chat queries can leverage larger frontier models:
+Chat and completion are separate roles, each with its own provider and model. A frontier model can serve chat while a small local model serves completion requests:
 
 ```bash
 # Rich chat routed to a hosted model
-contenox config set default-provider          openai
-contenox config set default-model             gpt-5-mini
+contenox-runtime config set default-provider          openai
+contenox-runtime config set default-model             gpt-5-mini
 
 # Ghost text routed to a small, fast model
-contenox config set default-autocomplete-provider ollama
-contenox config set default-autocomplete-model    qwen2.5-coder:7b
+contenox-runtime config set default-autocomplete-provider ollama
+contenox-runtime config set default-autocomplete-model    qwen2.5-coder:7b
 
 ```
 
@@ -95,7 +94,6 @@ Contenox excels when workflows are specific, repeatable, and require explicit gu
 * **Wrapping Internal APIs:** Safely expose subsets of OpenAPI specs while masking sensitive tenant/environment arguments and requiring authorization for mutating calls.
 * **Automating Repo Chores:** Ingest an issue tracking item, generate a patch, run local validation checks, and draft the PR description.
 * **Inspecting Live Operations:** Query diagnostic dashboards, shell scripts, or Model Context Protocol (MCP) tools via tightly scoped policies rather than broad, persistent credentials.
-* **Edge Autocomplete:** Offload editor suggestions to local workstation models while maintaining high-powered reasoning in chat.
 
 The exact same Chain runs seamlessly across the **Terminal, Zed, JetBrains, AionUi,** or any standard ACP client.
 
@@ -135,15 +133,15 @@ Any asset accessible via an OpenAPI spec, a shell command, or an MCP server can 
 
 ```bash
 # Connect any Model Context Protocol (MCP) server
-contenox mcp add notion https://mcp.notion.com/mcp --auth-type oauth
+contenox-runtime mcp add notion https://mcp.notion.com/mcp --auth-type oauth
 
 # Wrap an internal HTTP API using its OpenAPI specification
-contenox tools add erp_billing \
+contenox-runtime tools add erp_billing \
   --url https://erp.internal.example.com \
   --spec ./billing-subset.yaml
 
 # Bind the local shell under a strictly defined Chain policy
-contenox --shell "check Proxmox and flag anything red"
+contenox-runtime --shell "check Proxmox and flag anything red"
 
 ```
 
@@ -162,7 +160,7 @@ Add the following snippet to your `~/.config/zed/settings.json`:
   "agent_servers": {
     "Contenox": {
       "type": "custom",
-      "command": "contenox",
+      "command": "contenox-runtime",
       "args": ["acp"]
     }
   }
@@ -174,7 +172,7 @@ Tool invocations render dynamically as interactive UI cards showing the underlyi
 
 ### Other Environments
 
-* **Web Interface:** Running `contenox serve` mounts your active sessions, chains, and backends locally inside **Beam**, the bundled web UI.
+* **Desktop app:** the cockpit shows your sessions, missions, approvals, projects and backends for the runtime it bundles. `contenox-runtime serve` exposes the same HTTP API and ACP WebSocket for other local clients.
 
 *Step-by-step guides:* [Zed](https://contenox.com/docs/integrations/editors/zed/) | [JetBrains](https://contenox.com/docs/integrations/editors/jetbrains/) | [AionUi](https://contenox.com/docs/integrations/editors/aionui/).
 
@@ -186,43 +184,77 @@ Routing rules are treated as system configuration, not application logic. Add ho
 
 ```bash
 # Private infrastructure & local inference
-contenox backend add ollama --type ollama
-contenox backend add myvllm --type vllm --url http://gpu-host:8000
+contenox-runtime backend add ollama --type ollama
+contenox-runtime backend add myvllm --type vllm --url http://gpu-host:8000
 
 # Commercial cloud providers
-contenox backend add openai    --type openai    --api-key-env OPENAI_API_KEY
-contenox backend add anthropic --type anthropic --api-key-env ANTHROPIC_API_KEY
-contenox backend add gemini    --type gemini    --api-key-env GEMINI_API_KEY
+contenox-runtime backend add openai    --type openai    --api-key-env OPENAI_API_KEY
+contenox-runtime backend add deepseek  --type deepseek  --api-key-env DEEPSEEK_API_KEY
+contenox-runtime backend add anthropic --type anthropic --api-key-env ANTHROPIC_API_KEY
+contenox-runtime backend add gemini    --type gemini    --api-key-env GEMINI_API_KEY
+
+# ChatGPT subscription: device login, no API key
+contenox-runtime backend add chatgpt --type openai-codex
+contenox-runtime backend login chatgpt
 
 # Set global operational routing defaults
-contenox config set default-model     qwen2.5:7b
-contenox config set default-provider  ollama
+contenox-runtime config set default-model     qwen2.5:7b
+contenox-runtime config set default-provider  ollama
 
 ```
+
+The same providers appear in the app's Setup wizard and in Backends → Cloud Providers, where the ChatGPT subscription signs in with a device code and DeepSeek takes an API key.
 
 ---
 
 ## Building From Source
 
-### Prerequisites
+This repository is the desktop app and its cockpit (Electron, React). The runtime is
+[contenox/runtime](https://github.com/contenox/runtime) (Go).
 
-* **Go 1.25+**
+### Desktop app
+
+* **Node.js 22+** and npm
 
 ```bash
-# Clone the repository
-git clone https://github.com/contenox/harness
+git clone https://github.com/contenox/contenox-v0
+cd contenox-v0
+make ci                   # install, build, typecheck, lint, test
+make runtime-fetch        # download and verify the pinned runtime
+make desktop-package-dir  # unpacked desktop app for this host
+make desktop-package      # host installers
+```
+
+### Runtime
+
+* **Go 1.26+**
+
+```bash
+git clone https://github.com/contenox/runtime
 cd runtime
-
-# Build the main core CLI
-make build-contenox
-
+make build                # bin/contenox-runtime
+make test-unit
 ```
 
 ---
 
 ## Core Dependencies
 
-The `contenox` core CLI is written entirely in pure Go. Go dependencies are maintained standardly in `go.mod`.
+The runtime is pure Go; its dependencies live in `go.mod` of [contenox/runtime](https://github.com/contenox/runtime). The desktop app is Electron with a React cockpit; its dependencies live in the `package-lock.json` files of `desktop/` and `packages/*`.
+
+---
+
+## Roadmap
+
+Planned, in the order we expect to use them:
+
+* **Stay in flow:** find any file or text in your project and move through it without leaving the keyboard.
+* **Agents that react:** a file changes, a commit lands, and the right agent picks up the work without being asked.
+* **Review on your terms:** see what an agent changed, side by side, and accept it piece by piece.
+* **Your machines, not just this one:** run agents on your own servers and VMs and work with them from here.
+* **Later:** agents that know your whole codebase, completion as you type, and your existing agent definitions working here unchanged.
+
+Small releases, no dates.
 
 ---
 

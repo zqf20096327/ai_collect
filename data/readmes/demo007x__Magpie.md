@@ -171,6 +171,11 @@ Design documents are written in Simplified Chinese:
 
 Issues and PRs are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) (written in Simplified Chinese) for the contribution process, local verification standards, and engineering conventions.
 
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/chart?repos=demo007x/magpie&type=date&legend=top-left)](https://www.star-history.com/?repos=demo007x%2Fmagpie&type=date&legend=bottom-right)
+
 ## License
 
 Released under the [MIT](./LICENSE) license.

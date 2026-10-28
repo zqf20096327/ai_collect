@@ -1,13 +1,14 @@
 # contextsearch
 
 [![CI](https://github.com/inboxpraveen/context-search-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/inboxpraveen/context-search-engine/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/inboxpraveen/Context-Search-Engine)](https://github.com/inboxpraveen/Context-Search-Engine/releases)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](pyproject.toml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 contextsearch is a self-hosted search engine for your own documents. Point it at a folder of PDFs, Word and PowerPoint files, text, Markdown or HTML, and it indexes them, watches them for changes and answers queries with the page, the exact passage and the reasons a result ranked where it did. It combines keyword search (BM25) with semantic search (embeddings), fuses the two, and can rerank the top candidates with a cross-encoder. There is no language model rewriting anything: what you see is what the retrieval found.
 
 <p align="center">
-  <img src="docs/images/search-evidence.jpg" alt="Search results with the evidence panel open" width="900" />
+  <img src="assets/Header.png" alt="contextsearch: files are indexed and watched, keyword and semantic results are fused with RRF, and every result comes back with its passage and the reasons it ranked" width="800" />
 </p>
 
 ## What it does
@@ -52,6 +53,10 @@ Or open the UI, go to Sources, add a folder, and start typing.
 
 ## How a search works
 
+<p align="center">
+  <img src="docs/images/search-pipeline.png" alt="A search request: keyword and semantic retrieval in parallel, fusion, optional cross-encoder rerank, then hits with their evidence" width="900" />
+</p>
+
 1. The query goes to FTS5 as a keyword search (stemmed, quoted phrases kept, common words dropped) and to each embedding model as a vector. Each retriever returns its top candidates.
 2. The candidate lists are fused. Reciprocal rank fusion is the default: it needs no score calibration and a chunk both retrievers like reliably rises to the top.
 3. Optionally, a cross-encoder reads the query together with each of the top candidates and rescores them. This is the most precise stage and the most expensive one, so it is off by default and a toggle in the UI.
@@ -60,6 +65,10 @@ Or open the UI, go to Sources, add a folder, and start typing.
 [docs/SEARCH.md](docs/SEARCH.md) covers the strategies, the fusion maths, how confidence is computed and how to calibrate it, and which models to pick.
 
 ## What a result looks like
+
+<p align="center">
+  <img src="docs/images/search-evidence.jpg" alt="Search results with the evidence panel open" width="900" />
+</p>
 
 Abbreviated from a real response on the bundled examples (`text`, `also_matched` and a few fields left out):
 
@@ -164,7 +173,7 @@ with Engine.open("./data", embedding_models="BAAI/bge-small-en-v1.5") as engine:
 
 ## Contributing
 
-Bug reports, fixes and new readers or embedders are welcome. [CONTRIBUTING.md](CONTRIBUTING.md) explains the setup, the tests and the writing conventions.
+Bug reports, fixes and new readers or embedders are welcome. [CONTRIBUTING.md](CONTRIBUTING.md) explains the setup, the tests and the writing conventions. If contextsearch runs in your team's workflow, sponsoring the project through the Sponsor button on GitHub helps keep it maintained.
 
 ## License
 

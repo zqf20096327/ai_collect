@@ -142,6 +142,60 @@ The helper copies an exact source span and digest into the authoring contract. `
 numbered source lines; `record` emits JSON without changing the contract. Existing evidence IDs
 cannot be silently repointed. Someone must still review whether the span supports the claim.
 
+## Business operating picture
+
+```bash
+python examples/operating-picture/demo.py --serve   # then open http://127.0.0.1:8765/business
+```
+
+One screen joins domain skills to the system map: which business actions are at
+risk and why, which objects depend on a failing system, open review questions,
+and how far each rule's evidence was checked. Health is the source-reported status
+of operator-linked systems, not proof that an action works. The demo data is
+synthetic. See [operating picture](docs/operating-picture.md).
+
+For your own project, the installed skill includes the business screen. After onboarding
+a workflow, ask your agent:
+
+```text
+/ontology-extraction Show my business screen for this repository. Suggest which systems
+run each code binding and let me confirm the links.
+```
+
+For the wider business story (users, journeys, money flows, and where they can break),
+the **Business X-Ray** preview compiles authored, source-linked blueprints into one offline
+page. See [Business X-Ray](business/README.md).
+
+Live health comes from real telemetry: `feeds.py` receives OpenTelemetry traces and
+polls Prometheus and HTTP health checks (`python examples/operating-picture/live.py`).
+See [live feeds](docs/live-feeds.md).
+
+The same jobs also run on an optional Rust engine: live feeds with about 18× the
+trace throughput in a fifth of the memory, and repository discovery about 15× faster,
+with answers CI checks against Python on every change. Install prebuilt binaries
+with `python ontology-extraction/scripts/fetch_engine.py`. See [Rust engine](docs/rust-engine.md).
+
+Optional decision models (Jev or Clef) speed up the proposal steps: source selection,
+link routing, review triage, conflict candidates, wording checks, and an **Ask** box that
+routes questions to the right view. They never make the proven decisions. See
+[decision models](docs/decision-models.md).
+
+Links are suggested from names and paths and applied only when a person confirms
+them. The health rollup, grade ladder, and link decisions are implemented in Python
+and Rust, proven in Lean and Bend, and cross-checked in CI. See
+[business verification](docs/business-verification.md).
+
+## Grades, wording, and queries
+
+- **Evidence grades:** `evidence_grade.py` reports an ordinal G0–G4 grade per rule from
+  recorded review and behavior-check events. No numbers, no approvals; nothing reaches G4
+  until a tool observes fresh-agent use. See [evidence grades](ontology-extraction/references/evidence-grades.md).
+- **Rule wording:** `statement_lint.py` gives advisory, STE-style warnings for statements that
+  can be read two ways. See [rule wording](ontology-extraction/references/rule-wording.md).
+- **SPARQL:** `rdf_export.py` exports declarations, evidence, rules, unknowns, and conflicts
+  as N-Triples; `examples/sparql/` has queries tested with the optional sparq engine.
+  See [RDF interchange](docs/rdf-interop.md).
+
 ## Existing compiler and four-layer method
 
 The original method remains intact in [METHOD.md](ontology-extraction/METHOD.md):
@@ -170,6 +224,21 @@ Source text is untrusted data. Secret-name filtering is not an exhaustive secret
 Fingerprints are not signatures; session files and trial folders are not an OS security sandbox.
 Keep private snapshots out of commits and use proper isolation for untrusted execution.
 
+## Experimental: traces → ontology candidates
+
+OntologyEX now includes a bounded, offline prototype to extract **observed** object types,
+actions, tool relationships and evidence lineages from normalized agent spans. These are
+**unreviewed candidates**, not independently confirmed policy or operational authorization.
+
+```bash
+python ontology-extraction/scripts/trace_extract.py \
+  examples/trace-to-ontology/demo.jsonl --out build/trace-ontology-draft
+```
+
+See [the trace format, privacy boundary and roadmap](ontology-extraction/references/trace-to-ontology.md).
+Raw prompt/tool inputs and outputs are forbidden; neither agents nor source files are executed.
+The prototype does not interpret natural-language transcripts automatically or grant execution rights.
+
 ## Contributing and verification
 
 ```bash
@@ -189,18 +258,3 @@ Useful for your agent stack? Star the repo to follow worked examples and release
 
 [MIT](LICENSE) © 2026 New1Direction. The optional cachetools case preserves upstream MIT attribution
 and verifies the upstream files against the pinned commit listed in its provenance manifest.
-
-## Experimental: traces → ontology candidates
-
-OntologyEX now includes a bounded, offline prototype to extract **observed** object types,
-actions, tool relationships and evidence lineages from normalized agent spans. These are
-**unreviewed candidates**, not independently confirmed policy or operational authorization.
-
-```bash
-python ontology-extraction/scripts/trace_extract.py \
-  examples/trace-to-ontology/demo.jsonl --out build/trace-ontology-draft
-```
-
-See [the trace format, privacy boundary and roadmap](ontology-extraction/references/trace-to-ontology.md).
-Raw prompt/tool inputs and outputs are forbidden; neither agents nor source files are executed.
-The prototype does not interpret natural-language transcripts automatically or grant execution rights.

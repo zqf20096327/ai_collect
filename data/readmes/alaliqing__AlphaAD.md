@@ -3,8 +3,8 @@
 # 🚗 AlphaAD · Autonomous Driving Research
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Last Update](https://img.shields.io/badge/Last%20Updated-2026--10--27-blue)
-![Total Papers](https://img.shields.io/badge/Papers-1418-green)
+![Last Update](https://img.shields.io/badge/Last%20Updated-2026--10--28-blue)
+![Total Papers](https://img.shields.io/badge/Papers-1421-green)
 ![Auto Update](https://img.shields.io/badge/Auto--Update-Daily-brightgreen)
 
 **A daily, explainable research signal for autonomous driving.**<br>
@@ -20,20 +20,20 @@ Browse one primary topic per paper, then refine the signal with method and resou
 
 ## Browse by topic
 
-All 1418 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
+All 1421 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
 
 | Topic | Papers | Latest | Jump |
 |:--|--:|:--|:--|
-| Perception & Sensor Fusion | 222 | 2026-10-26 | [View papers](#category-perception-sensor-fusion) |
+| Perception & Sensor Fusion | 222 | 2026-10-27 | [View papers](#category-perception-sensor-fusion) |
 | Prediction & World Models | 108 | 2026-10-26 | [View papers](#category-prediction-world-models) |
-| Planning & Decision-Making | 96 | 2026-10-25 | [View papers](#category-planning-decision-making) |
-| Control & Vehicle Dynamics | 59 | 2026-10-26 | [View papers](#category-control-vehicle-dynamics) |
-| Mapping & Localization | 53 | 2026-10-18 | [View papers](#category-mapping-localization) |
-| End-to-End & VLA | 160 | 2026-10-22 | [View papers](#category-end-to-end-vla) |
-| Safety, Security & Verification | 221 | 2026-10-24 | [View papers](#category-safety-security-verification) |
-| Systems, Deployment & Connectivity | 164 | 2026-10-25 | [View papers](#category-systems-deployment-connectivity) |
+| Planning & Decision-Making | 98 | 2026-10-27 | [View papers](#category-planning-decision-making) |
+| Control & Vehicle Dynamics | 58 | 2026-10-26 | [View papers](#category-control-vehicle-dynamics) |
+| Mapping & Localization | 52 | 2026-10-18 | [View papers](#category-mapping-localization) |
+| End-to-End & VLA | 160 | 2026-10-27 | [View papers](#category-end-to-end-vla) |
+| Safety, Security & Verification | 222 | 2026-10-26 | [View papers](#category-safety-security-verification) |
+| Systems, Deployment & Connectivity | 163 | 2026-10-27 | [View papers](#category-systems-deployment-connectivity) |
 | Human Factors & Policy | 29 | 2026-10-17 | [View papers](#category-human-factors-policy) |
-| Cross-cutting / Other | 306 | 2026-10-25 | [View papers](#category-cross-cutting-other) |
+| Cross-cutting / Other | 309 | 2026-10-27 | [View papers](#category-cross-cutting-other) |
 
 ---
 
@@ -47,16 +47,16 @@ Each paper has one primary topic and may carry several method or resource tags. 
 |:--|--:|:--|
 | Dataset | 104 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
 | Benchmark | 96 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
-| Simulation | 190 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
+| Simulation | 191 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
 | Synthetic Data | 36 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
-| Cooperative / V2X | 117 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
-| VLA | 90 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
+| Cooperative / V2X | 116 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
+| VLA | 89 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
 | World Model | 115 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
-| Reinforcement Learning | 138 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
-| Imitation Learning | 29 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Imitation+Learning) |
+| Reinforcement Learning | 139 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
+| Imitation Learning | 30 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Imitation+Learning) |
 | Hardware / Real-Time | 102 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
 | Survey | 28 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Survey) |
-| Explainability | 120 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
+| Explainability | 119 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
 | Human Interaction | 17 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Human+Interaction) |
 
 ---
@@ -64,6 +64,16 @@ Each paper has one primary topic and may carry several method or resource tags. 
 <a id="category-perception-sensor-fusion"></a>
 
 ## Perception & Sensor Fusion · 222 papers
+
+<a id="paper-2610-37153"></a>
+
+### FastBEVFusion: Simple Multi-Modal Fusion for 3D Object Detection at 50 FPS ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Tom Sanitz, Emre Gülsoylu, Simone Frintrop, Christian Wilms<br>
+**Published:** 2026-10-27<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2610.37153) | [PDF](https://arxiv.org/pdf/2610.37153.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** Reliable real-time 3D object detection based on LiDAR and camera data is critical for safety in autonomous driving, where systems must accurately perceive their surroundings with minimal latency....
 
 <a id="paper-2610-35630"></a>
 
@@ -171,7 +181,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-28508"></a>
 
-### Deep Learning-Based Road Lane Quality Assessment from Egocentric Dashcam Video ![New](https://img.shields.io/badge/New-red)
+### Deep Learning-Based Road Lane Quality Assessment from Egocentric Dashcam Video ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Shaif Chowdhury, Akhila Yeruvasu, Moshiur Rahman Tonmoy, Ayush Goyal, Dunren Che<br>
 **Published:** 2026-10-20<br>
@@ -182,7 +192,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-27617"></a>
 
-### Provisioning Robust and Efficient LiDAR Perception for Autonomous Driving ![New](https://img.shields.io/badge/New-red)
+### Provisioning Robust and Efficient LiDAR Perception for Autonomous Driving ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Tingxu Han, Zijie Shen, An Guo, Lyuke Wang, Chunrong Fang, et al.<br>
 **Published:** 2026-10-20<br>
@@ -1130,7 +1140,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2607-27058"></a>
 
-### Object Detection for Autonomous Driving in Chinese Rural Scenes: An Experimental Study on Real-Synthetic Data Mixing and Model Evaluation ![Fresh](https://img.shields.io/badge/Fresh-yellow)
+### Object Detection for Autonomous Driving in Chinese Rural Scenes: An Experimental Study on Real-Synthetic Data Mixing and Model Evaluation
 
 **Authors:** Danning Zhu, Ziyan Lin, Jing Wu<br>
 **Published:** 2026-07-29<br>
@@ -1659,15 +1669,4 @@ Each paper has one primary topic and may carry several method or resource tags. 
 ### EventDrive: Event Cameras for Vision-Language Driving Intelligence
 
 **Authors:** Dongyue Lu, Rong Li, Ao Liang, Lingdong Kong, Wei Yin, et al.<br>
-**Published:** 2026-06-16<br>
-**Research tags:** Benchmark<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2606.18242) | [PDF](https://arxiv.org/pdf/2606.18242.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** Event cameras sense the world through asynchronous brightness changes with microsecond latency and high dynamic range, offering motion fidelity far beyond frame-based sensors and capturing temporal...
-
-<a id="paper-2606-17562"></a>
-
-### Anywhere, Any-Stymie: Remote Activation of Trojan Malware on LiDAR with Modulated Signals
-
-**Authors:** R. Spencer Hallyburton, Miroslav Pajic<br>
-**Publishe
+**Published:** 2026-06-16<br

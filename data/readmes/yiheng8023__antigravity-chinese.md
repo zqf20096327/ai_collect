@@ -15,7 +15,7 @@
   <a href="README.md">简体中文</a> | <a href="README.en.md">English</a>
 </p>
 
-专为 **Google Antigravity** 全生态（桌面客户端 2.0、独立 IDE 与第三方 IDE 扩展、CLI 命令行工具）打造的高性能、可逆式中文本地化套件与生命周期管理器（当前版本 **v3.3.26**，全面深度适配 Antigravity **v2.26.0** 客户端升级，攻克跨内联元素语序自愈，并深度加固 DOM 热路径闭包、ASAR 512KB 流式扫描与 VS Code 微代理防泄漏）。
+专为 **Google Antigravity** 全生态（桌面客户端 2.0、独立 IDE 与第三方 IDE 扩展、CLI 命令行工具）打造的高性能、可逆式中文本地化套件与生命周期管理器（当前版本 **v3.3.29**，深度适配 Antigravity **v2.28.0** 客户端架构演进，全量补齐 Script Jail 脚本安全沙箱隔离异常提示与 Webview 连接安全状态监控，专项攻坚会话轮次大纲导航轨（时间轴卡片、轮次计数、总轮次定位与多图片附件说明）、快捷键偏好全量汉化、本地工作树检出、此电脑、后台命令动态计数与内置浏览器设置等实测漏项，对齐底层运行时环境契约至 Node >= 18 并扩展 Windows / macOS / Ubuntu 三端 CI 矩阵至 Node 18/20/22 全谱系，严格恪守零提权、零 ACL 污染与纯净用户态安全工程规范）。
 
 ---
 
@@ -173,7 +173,7 @@ node cli.js install --path "你的 Antigravity 安装目录或 app.asar 路径"
 
 ## 🧪 自动化测试与质量保证 (Testing & Verification)
 
-本项目引入极其严苛的端到端自动化回归测试与跨平台 CI 矩阵（Windows / macOS / Ubuntu x Node 18/20），避免人工经验验证带来的遗漏：
+本项目引入极其严苛的端到端自动化回归测试与跨平台 CI 矩阵（Windows / macOS / Ubuntu x Node 18/20/22），避免人工经验验证带来的遗漏：
 
 ```bash
 # 运行全套自动化测试（聚合 9 大全真测试套件，共 390+ 项真理断言）

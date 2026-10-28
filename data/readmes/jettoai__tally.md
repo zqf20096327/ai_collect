@@ -8,6 +8,10 @@
 <h3 align="center">Every Claude and Codex subscription you pay for, in one glance from your menu bar.<br>Every new session starts on the account with the most room left.</h3>
 
 <p align="center">
+Tally is a free, open-source macOS menu bar app that shows the 5-hour, weekly and top-model usage limits of every Claude (Pro, Max) and OpenAI Codex account on your Mac side by side, and starts each new Claude Code or Codex session on the account with the most quota left. It reads usage through the official <code>claude</code> and <code>codex</code> CLIs: read-only, on your own paid subscriptions.
+</p>
+
+<p align="center">
   <a href="https://github.com/jettoai/tally/releases/latest/download/Tally.dmg"><img alt="Download for macOS" src="assets/download-macos.svg" width="300"></a>
 </p>
 
@@ -32,7 +36,7 @@ https://github.com/user-attachments/assets/75a92cf0-4724-4ffd-bd2b-8db5e10ba8dd
 
 ## Why Tally
 
-If you pay for two Claude Max seats and a Codex plan, the question all day is "which account still has room?" Single-account meters answer it for one account at a time. Tally answers it for all of them at once, then acts on the answer.
+If you pay for two Claude Max seats and a Codex plan, the question all day is "which account still has room?" Tally answers it for all of them at once, then acts on the answer.
 
 ### 1. Every account, side by side
 
@@ -78,6 +82,21 @@ Usage is read through the providers' own official CLIs (`claude -p "/usage"` and
 
 ## Install
 
+Paste this to your AI agent. It installs Tally and shows you the result:
+
+```text
+Download https://github.com/jettoai/tally/releases/latest/download/Tally.dmg,
+copy Tally.app from it into /Applications and launch it. If macOS blocks the
+app, stop and tell me to open it once from Finder. Then create /usr/local/bin if
+it is missing and link the bundled CLI onto my PATH with
+`ln -s /Applications/Tally.app/Contents/Helpers/tally /usr/local/bin/tally`.
+Wait about 10 seconds, run `tally` and show me the result. If it shows no
+accounts, tell me to sign in to Claude or Codex first. If a step needs my
+password, stop and tell me which command to run.
+```
+
+Or install it yourself:
+
 ```sh
 curl -fsSLO https://github.com/jettoai/tally/releases/latest/download/Tally.dmg && open Tally.dmg
 ```
@@ -105,7 +124,7 @@ Your other Macs and Linux boxes are sitting idle while this one grinds through a
   combined weekly budget, the total in accounts' worth ("2.9/5 left"), and the next staggered
   refill. A forecast estimates how long the pool lasts at your recently measured pace, counting
   the quota each reset brings back: "runs dry in about 4d 10h" when you are outspending the refill
-  cycle, "won't run dry at this pace ✓" when you are not. Single-account meters have nothing to pool.
+  cycle, "won't run dry at this pace ✓" when you are not.
 - **The usage advisor.** Do you need another account? One line per provider under the gauges: a
   filled pip per account you own, a hollow one when your measured pace asks for another, and the
   running weekly demand as the figure to read ("5.8 acct/wk"). A fleet on two plans reads per tier
@@ -477,16 +496,37 @@ Keep each PR to one intent, and put the why in the description.
 
 ## FAQ
 
+**How do I see usage limits for several Claude Max accounts in the macOS menu bar?**
+Sign each account in to Claude Code under its own config directory (for example
+`CLAUDE_CONFIG_DIR=~/.claude2 claude`, then log in). Tally finds every `~/.claude*` login and
+every Codex install, shows each account's 5-hour, weekly and top-model windows on its own row, and
+pools each provider's accounts into one budget in the menu bar.
+
+**Is Tally a proxy or an account-sharing tool?**
+No. Tally does not sit between Claude Code and Anthropic, and it does not proxy, share or resell
+access. It reads each account's usage through the official CLIs, and `tally claude` starts the
+official CLI with the config directory of the account that has the most room. Every account is
+your own paid subscription on your own Mac.
+
 **How is Tally different from ccusage or other usage trackers?**
 Tools like [ccusage](https://github.com/ryoppippi/ccusage) are terminal CLIs that estimate token
-spend from local logs, and most menu bar meters watch a single account. Tally is a native GUI
-that shows the quota windows the vendors actually enforce (5-hour, weekly, top-model), across
-multiple Claude and Codex accounts at once, and adds a launcher that acts on those numbers. The
+spend from local logs. Tally is a native menu bar app that shows the quota windows the vendors
+actually enforce (5-hour, weekly, top-model) for every Claude and Codex account at once, and adds a
+launcher that acts on those numbers. The
 Tokens view covers the "how much did I burn, and on what" question too, per project, straight
 from the local transcripts, with no dollar guessing. And the session board goes a level deeper
-than ccusage and single-account meters: every running session as a card, who is blocked waiting on you, and what each
+than ccusage and other usage meters: every running session as a card, who is blocked waiting on you, and what each
 one is costing the machine, down to the process holding the memory. Read-only, on your own paid
 subscriptions.
+
+**How is Tally different from CodexBar, Claude Usage Tracker or Usage4Claude?**
+As of October 2026 they are all native menu bar meters, and several of them now show more than one
+account. What Tally adds: usage is read only through the official `claude` and `codex` CLIs, so
+there is no session key or browser cookie to provide; each provider's accounts are pooled into one
+budget with a forecast of when it runs dry at your pace; and `tally claude` picks the account for
+each new session by remaining quota and reset time, then resumes the same conversation on the next
+account if one hits its cap. CodexBar covers more providers (Cursor, Copilot, Gemini and others),
+so if you use one account across many AI tools it may fit you better.
 
 **How does Tally handle Keychain access?**
 Usage comes through official CLIs, and account discovery probes attributes only. The Claude login

@@ -5,7 +5,7 @@ Check an image-text dataset before the training run: find broken records, then s
 [![CI](https://github.com/crown-sports/vlm-data-doctor/actions/workflows/ci.yml/badge.svg)](https://github.com/crown-sports/vlm-data-doctor/actions/workflows/ci.yml)
 [Python 3.10+](pyproject.toml) · [v0.3.1 preview](https://github.com/crown-sports/vlm-data-doctor/releases/tag/v0.3.1) · [MIT](LICENSE)
 
-[简体中文](README.zh-CN.md) · [Quick start](#try-the-report) · [Checks](docs/checks.md) · [LlamaFactory](docs/integrations/llamafactory.md)
+[简体中文](README.zh-CN.md) · **[Live sample reports — no install](https://crown-sports.github.io/vlm-data-doctor/)** · [Quick start](#try-the-report) · [Checks](docs/checks.md) · [LlamaFactory](docs/integrations/llamafactory.md)
 
 A missing image or a misplaced `<image>` marker is easier to fix before a job starts.
 Data Doctor checks local SFT exports and gives you an HTML report with the row,

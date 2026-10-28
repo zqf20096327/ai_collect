@@ -327,6 +327,71 @@ python -m eval.risk.run --specs routerbench --encoder openai-community/gpt2 \
     --dim 768 --train-steps 500 --limit 4000 --out-dir data/risk_routerbench
 ```
 
+**Benefit-aware эскалация (цена вызова).** Порог уверенности и бюджет ошибок
+отвечают на вопрос «насколько модель уверена / какова вероятность ошибки», но не
+на вопрос «стоит ли платить за внешнюю модель». Benefit-политика сравнивает
+ожидаемую полезность двух действий: при `p` — вероятности, что локальное решение
+верно, `q` — точности внешней модели на этом вопросе, `D` — цене ошибки и `C` —
+цене эскалации (в единицах «верный ответ = 1») эскалация выгодна, когда
+`p < q - C / (1 + D)`. Порог получается из измеренной точности внешней модели, а
+не из константы; если внешняя модель на вопросе слабее локальной, каскад не
+эскалирует вовсе.
+
+`q` меряют **на отложенном срезе домена**, а не на том же test, где считается
+выигрыш:
+
+```bash
+# точность внешней модели по вопросам на train-срезе (n=200)
+python -m eval.competitors.fit_remote_accuracy --specs public --limit 200 \
+    --remote clef-flash=http://127.0.0.1:8091 \
+    --out data/competitors_real/public_clef-flash_accuracy.json
+```
+
+```bash
+DECISION_BACKEND=cascade \
+DECISION_CASCADE_POLICY=benefit \
+DECISION_CASCADE_REMOTE_ACCURACY=data/competitors_real/public_clef-flash_accuracy.json \
+DECISION_CASCADE_REMOTE_ACCURACY_BOUND=lower \
+DECISION_CASCADE_ESCALATION_COST=0.05 \
+DECISION_CASCADE_ERROR_COST=1.0 \
+DECISION_CASCADE_FALLBACK_URL=http://127.0.0.1:30000 \
+  uvicorn api.server.main:app --port 8000
+```
+
+`REMOTE_ACCURACY_BOUND=lower` берёт нижнюю границу Уилсона: на срезе в 200
+примеров точечная точность гуляет на ±0.07, и завышенная `q` гонит каскад в
+эскалации, которые ухудшают ответ (см. `docs/competitor-benchmark.md`).
+Причина эскалации в `usage` — `"benefit"`.
+
+**Обновление `q` по обратной связи.** Срез, снятый при развёртывании, стареет,
+поэтому `q` уточняется реальными ответами внешней модели через тот же
+`POST /v1/feedback`. Каскад помнит отпечатки решений, которые ушли наружу, и
+учитывает фидбэк только по ним (ответы локальных голов качество внешней модели не
+характеризуют). Оценка сдвигается плавно:
+
+```text
+q_new = (q_prior * W + верных) / (W + всего),  W = DECISION_CASCADE_FEEDBACK_SHRINKAGE (50)
+```
+
+```bash
+DECISION_BACKEND=cascade DECISION_CASCADE_POLICY=benefit DECISION_CASCADE_REMOTE_ACCURACY=data/public_laya_accuracy.json DECISION_CASCADE_FEEDBACK_SHRINKAGE=50 DECISION_CASCADE_FALLBACK_URL=http://127.0.0.1:30000   uvicorn api.server.main:app --port 8000
+
+curl -s -X POST http://127.0.0.1:8000/v1/feedback -H 'Content-Type: application/json' \
+  -d '{"examples": [{"question": "topic",
+        "decision": {"type": "choice", "choice": "Business",
+                     "probabilities": {"World": 0.02, "Sports": 0.01,
+                                       "Business": 0.93, "Sci/Tech": 0.04},
+                     "confidence": 0.93},
+        "correct": true}]}'
+# -> {"questions": [{"question": "topic", "examples": 1,
+#                    "retrained": false, "remote_accuracy": 0.9577, ...}]}
+```
+
+`retrained = false` — модель не переобучается, меняется только оценка качества
+внешней модели; новое `q` сразу применяется к следующим решениям. `W` — это
+сколько наблюдений нужно, чтобы сдвинуть оценку: 50 (по умолчанию) — поток
+фидбэка меняет политику за десятки ответов, пара случайных — нет.
+
 **Подстройка под новый вопрос (`POST /v1/feedback`).** На новом вопросе
 коэффициенты, снятые с других вопросов, работают хуже — модель нужно переобучать
 на примерах этого вопроса. Сервис принимает обратную связь: вы повторяете решение,
@@ -814,8 +879,9 @@ SFTTrainer(heads, lr=0.1).fit(
 `checkpoints/packs/<dataset>-<model>/`, пригодный как `DECISION_CHECKPOINT_DIR`:
 
 ```bash
-# {support, public} x {gpt2, distilgpt2, gpt2-medium}. Переопределяется окружением:
-# SUPPORT_N/SUPPORT_STEPS/SUPPORT_RLCD, PUBLIC_LIMIT/PUBLIC_STEPS/PUBLIC_RLCD,
+# {support, public, routerbench} x {gpt2, distilgpt2, gpt2-medium}. Переопределяется
+# окружением: SUPPORT_N/SUPPORT_STEPS/SUPPORT_RLCD, PUBLIC_LIMIT/PUBLIC_STEPS/PUBLIC_RLCD,
+# ROUTERBENCH_LIMIT/ROUTERBENCH_STEPS/ROUTERBENCH_RLCD/ROUTERBENCH_SHOT,
 # PACKS_ROOT, DECISION_DEVICE, DECISION_DTYPE.
 bash training/recipe/train_weight_packs.sh
 ```
@@ -852,6 +918,40 @@ RLCD-калибровка `noul`-голов на реальных признак
 | `public-gpt2` | gpt2 | 768 | AG News, n=4000 | 0.880 |
 | `public-distilgpt2` | distilgpt2 | 768 | AG News, n=4000 | 0.879 |
 | `public-gpt2-medium` | gpt2-medium | 1024 | AG News, n=4000 | 0.873 |
+| `routerbench-gpt2` | gpt2 | 768 | RouterBench 0-shot, n=4000 | 0.548 |
+
+Пак `routerbench-gpt2` собирается тем же рецептом
+(`--specs routerbench --limit 4000 --train-steps 500 --rlcd-steps 200`) и в
+архив `v0.2.0` не входит — это следующий релиз. На нём же снято сравнение с
+Clef-Flash и Laya: 0.542 против 0.442 и 0.312 (n=200, см.
+`docs/competitor-benchmark.md`). Метка `escalate` в RouterBench
+контрфактическая, поэтому абсолютные числа низкие у всех участников: 0.775 —
+тривиальная константа «всегда да».
+
+После обучения пак калибруется по температуре (`--specs` и тот же
+`--checkpoint-dir`): `T` подбирается по NLL на val, делит логиты перед
+softmax/sigmoid и **не меняет** argmax, то есть accuracy остаётся прежней, а
+вероятности становятся честными. Без этого головы переуверены (`confidence ≈
+1.0`), и каскад не эскалирует вовсе.
+
+```bash
+.venv/bin/python -m training.recipe.calibrate_temperature --specs routerbench \
+  --encoder openai-community/gpt2 --dim 768 --limit 4000 \
+  --checkpoint-dir checkpoints/packs/routerbench-gpt2
+# -> temperature.json + heads.pt с полем temperature
+```
+
+Температура хранится в чекпоинте (`"temperature"` рядом с `state_dict`),
+поэтому сервер и замерный харнесс применяют её автоматически; старые
+чекпоинты без этого поля читаются как `T = 1.0`. Значение никогда не
+опускается ниже 1.0 — калибровка только смягчает вероятности. Перед сохранением
+работает гейт «не навреди»: `T` применяется, только если ECE на val улучшился и
+Brier не ухудшился, иначе остаётся `T = 1.0` (так `business` в public-паках
+остаётся неоткалиброванным). На
+`routerbench-gpt2` это снижает ECE с 0.547 до 0.024 (`route`), на
+`public-gpt2` — с 0.144 до 0.024 (`topic`); после неё каскад даёт +3.4 п.п. на
+`support` и +1.7 п.п. на `public` (подробности — в
+`docs/competitor-benchmark.md`).
 
 ```bash
 tar -xzf v0.2.0-weights.tar.gz               # -> v0.2.0-weights/<pack>/

@@ -5,7 +5,7 @@
 <p align="center">
   <a href="https://github.com/trafficflowhq/ohmail/stargazers"><img src="https://img.shields.io/github/stars/trafficflowhq/ohmail?style=flat&amp;label=%E2%98%85&amp;color=a3461c" alt="GitHub stars" /></a>
   <a href="https://github.com/trafficflowhq/ohmail/releases"><img src="https://img.shields.io/github/downloads/trafficflowhq/ohmail/total?style=flat&amp;color=a3461c" alt="Total downloads across all releases" /></a>
-  <a href="https://github.com/trafficflowhq/ohmail/releases/latest"><img src="https://img.shields.io/badge/download-v0.30.9-a3461c" alt="Latest release" /></a>
+  <a href="https://github.com/trafficflowhq/ohmail/releases/latest"><img src="https://img.shields.io/badge/download-v0.30.11-a3461c" alt="Latest release" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-a3461c?style=flat" alt="License: AGPL-3.0" /></a>
   <img src="https://img.shields.io/badge/macOS%20%7C%20Windows%20%7C%20Linux%20%7C%20Android-a3461c?style=flat" alt="Platforms: macOS, Windows, Linux and Android" />
 </p>
@@ -192,7 +192,7 @@ On a server with a public domain, also set `OHMAIL_BIND=0.0.0.0` in `.env`. Preb
 
 ## Privacy
 
-There is no telemetry and no analytics. In local mode on the desktop, only these leave the machine: the connections to your mail server, the signed update check, pictures in a message you open, one-click unsubscribes, lookups of the keys senders sign mail with, and, if you turn it on, requests to your model provider. [Where your mail is, and what the app talks to →](docs/how-it-works.md#where-your-mail-is-and-what-the-app-talks-to)
+There is no telemetry and no analytics in the apps. ohmail Cloud keeps one record of its own about connecting a mailbox ([ohmail.app/privacy](https://ohmail.app/privacy)); a self-hosted server and the desktop app keep none. In local mode on the desktop, only these leave the machine: the connections to your mail server, the signed update check, pictures in a message you open, one-click unsubscribes, lookups of the keys senders sign mail with, and, if you turn it on, requests to your model provider. [Where your mail is, and what the app talks to →](docs/how-it-works.md#where-your-mail-is-and-what-the-app-talks-to)
 
 ## Community & support
 

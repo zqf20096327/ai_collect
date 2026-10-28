@@ -1,0 +1,245 @@
+<div align="center">
+
+<img src="build/icon.png" alt="Fate UI" width="76" height="76">
+
+# Fate UI
+
+### Your coding agent. A workspace you control.
+
+A local-first desktop workspace for the real [Pi coding agent](https://github.com/earendil-works/pi).<br>
+Keep conversations, agents, browser context, files, Git, and terminals in one place.
+
+[![Platforms](https://img.shields.io/badge/Windows%20%C2%B7%20macOS%20%C2%B7%20Linux-Desktop-333a46?style=flat-square)](#download)
+[![License](https://img.shields.io/badge/License-Apache--2.0-6f63ff?style=flat-square)](LICENSE)
+[![Build and package](https://github.com/Master0fFate/pi-fategui/actions/workflows/cross-platform.yml/badge.svg)](https://github.com/Master0fFate/pi-fategui/actions/workflows/cross-platform.yml)
+
+[**Download**](https://github.com/Master0fFate/pi-fategui/releases) · [**Get started**](#get-started-in-60-seconds) · [**Skins**](#skins-and-themes) · [**Documentation**](docs/README.md) · [**Contribute**](CONTRIBUTING.md)
+
+</div>
+
+<picture>
+  <source media="(prefers-color-scheme: light)" srcset="screenshots/fate-ui-light.png">
+  <img src="screenshots/fate-ui-dark.png" alt="Fate UI: a coding conversation beside project navigation and a Git diff" width="100%">
+</picture>
+
+<p align="center"><sub>Actual Electron interface. Screenshots use a local demonstration project and illustrative agent messages.</sub></p>
+
+## Built for the whole coding session
+
+An agent should not turn your workspace into a black box. Fate UI brings the conversation and the evidence together: see the tools running, inspect the changes, follow delegated work, and decide what happens next.
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+### Delegate with clear ownership
+
+Run individual agents or dependency-based workflows through one execution engine. Choose each agent’s model, reasoning effort, tools, and skills. Use shared checkouts or isolated Git worktrees, with explicit review before integration.
+
+[Agents →](docs/agents.md) · [Agent orchestration →](docs/agent-orchestration.md)
+
+</td>
+<td width="50%" valign="top">
+
+### Give the agent useful context
+
+Browse inside the workspace, select page elements, and attach browser annotations to the conversation. Add files, images, and saved-session references without losing your place.
+
+[Browser and session context →](docs/features.md)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+### Review the work, not just the answer
+
+Inspect file changes with Monaco diffs, browse Git history, and use the activity timeline to investigate tool actions. A separate manual terminal stays available for your own commands.
+
+[Files, Git, and activity →](docs/features.md)
+
+</td>
+<td valign="top">
+
+### Keep longer tasks accountable
+
+GoalMax pairs an objective with completion criteria, progress evidence, and verification. Durable tasks and editable queues make the next steps visible; recovered drafts are not silently resent.
+
+[Goals and durable work →](docs/goalmax.md)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+### Restyle the workspace
+
+**Default**, **Angelcore**, or **M3 Expressive**. Independent palettes and fonts. Import a skin pack, or drop in an image that Fate dithers locally behind the conversation.
+
+[Skins and themes →](#skins-and-themes)
+
+</td>
+<td valign="top">
+
+### Voice, images, and memory
+
+Optional local voice transcription, image generation, and ambient audio. Reviewed Memory Learning stores global preferences and project notes you actually accept.
+
+[Memory Learning →](docs/project-learning.md)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+### Let the agent use your computer
+
+Turn on computer use for a Full access session and the agent can see your screen and use the mouse and keyboard. An overlay shows only while it acts and goes away when it is done; its Stop button or Alt+Shift+Esc stops Pi from anywhere. It is off by default and relaunches Fate UI elevated.
+
+[Computer use →](docs/features.md#computer-use)
+
+</td>
+<td valign="top">
+
+### Run Fate where the code lives
+
+Keep the agent running on another machine with the Node companion. Work on it from the desktop app over SSH or from a browser, with one controller at a time and an explicit permission ceiling.
+
+[Remote hosts →](docs/v2/current-status.md)
+
+</td>
+</tr>
+</table>
+
+## Skins and themes
+
+<img src="screenshots/fate-ui-angelcore.png" alt="Fate UI with the Angelcore skin, Monochrome palette, and a locally dithered conversation background" width="100%">
+
+<p align="center"><sub>Angelcore, Monochrome, and a personal dithered background. Same conversation and Git diff, different chrome.</sub></p>
+
+You can change how Fate UI looks without changing how it works. Skins restyle the chrome. Colors, fonts, and a background stay independent, so Angelcore can sit on Monochrome, Default can keep a Pi theme, and an imported pack does not rewrite models, permissions, or the session.
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+### Skins
+
+**Default** is the established workbench. **Angelcore** is the compact terminal-style surface: text actions, a command composer, labeled transcript entries, and a numeric context gauge. **M3 Expressive** uses a continuous tonal shell, shaped navigation, and a floating composer; its matching dark palette is selected independently. All three remain the same GUI underneath — browser, Monaco, trust prompts, and the manual terminal. See [M3 Expressive design and screenshots](docs/m3-expressive.md).
+
+Import a pack from **Settings → Skins**. Packs can restyle owned surfaces, bundle fonts, and ship a still background. They cannot add scripts, remote assets, or new privileges.
+
+[Skins →](docs/skins.md)
+
+</td>
+<td valign="top">
+
+### Color, type, and background
+
+Pick a built-in palette, a custom `themes.json`, or a Pi theme from a trusted project. Interface font and code font are separate.
+
+Drop in a PNG, JPEG, or WebP. Fate converts it on this machine to a still, palette-tinted dither behind the conversation. The original image is not uploaded or kept.
+
+[Themes →](docs/themes.md)
+
+</td>
+</tr>
+</table>
+
+## Download
+
+Get installers and `SHA256SUMS` from [GitHub Releases](https://github.com/Master0fFate/pi-fategui/releases).
+
+| Platform | Architecture | Installer |
+| :-- | :-- | :-- |
+| Windows | x64 | `.exe` |
+| macOS | Apple Silicon · Intel | `.dmg` or `.pkg` |
+| Linux | x64 | `.AppImage` or `.deb` |
+
+> [!IMPORTANT]
+> **Installers are currently unsigned; macOS builds are not notarized.** Windows SmartScreen and macOS Gatekeeper may warn or block launch. Download from this repository’s Releases page and verify the artifact against its `SHA256SUMS`. Checksums detect mismatched downloads; they do not replace publisher code signing.
+
+## Get started in 60 seconds
+
+### 1. Install Fate UI
+
+- **Windows:** run the installer. Keep **Add Fate UI to PATH** selected for the `fate` command, then open a new terminal.
+- **macOS:** choose your architecture. The `.pkg` installs the app and the `fate` launcher; the `.dmg` lets you copy the app to Applications.
+- **Linux:** install the `.deb`, or make the AppImage executable and launch it. Use the **actual published filename** from Releases; a source-tree version does not mean its installer exists.
+
+```bash
+# Debian / Ubuntu (replace VERSION with the downloaded release number)
+sudo apt install ./Fate-UI-VERSION-Linux-x64.deb
+
+# Portable AppImage (same downloaded version)
+chmod +x Fate-UI-VERSION-Linux-x64.AppImage
+./Fate-UI-VERSION-Linux-x64.AppImage
+```
+
+### 2. Connect your provider
+
+Choose **Connect your AI**, or use `/login` in an open project. Sign in using a supported provider’s OAuth flow or API key, then select a model.
+
+You can also add providers from the live **models.dev** catalog. Fate UI keeps provider credentials in the main process; raw keys are not exposed to renderer state.
+
+**No separate Pi terminal installation is required.** Fate UI embeds the Pi SDK directly. Switching from Pi Terminal? Fate shares your Pi sessions, user settings, skills, prompts, and global extensions. It copies provider files on first use; if you already used Fate, open **Settings → MCP → Switch from Pi Terminal** to import missing provider entries and compatible global MCP servers. Keep `~/.pi/agent` and any third-party server runtimes when you uninstall the Pi command. [Migration checks and limits →](docs/mcp.md#existing-pi-agent-mcp-setups)
+
+### 3. Open a project and start working
+
+Use **Open project**, or launch from your terminal:
+
+```bash
+cd /path/to/project
+fate
+# Or: fate /path/to/project
+```
+
+Review the project trust decision, choose the agent’s permission level, and send a prompt. Inspect tool activity and Git changes as the work progresses.
+
+```text
+Inspect this repository and propose a focused plan.
+Implement the change, run the relevant checks, and show me what changed.
+Preserve existing behavior outside the requested scope.
+```
+
+Later `fate` launches reuse the running workspace. **File → New Window** opens another synced view. In the current V2 candidate, `--new-instance` selects a separate Chromium profile slot, but startup is refused while another core owns the same canonical Fate data root. Independent shared-data runtimes remain an unresolved ownership requirement. [Sessions and processes →](docs/sessions-and-processes.md) · [V2 candidate status →](docs/v2/current-status.md)
+
+## Local-first, with explicit boundaries
+
+Projects, session history, settings, and credentials are stored locally. **Prompts and selected context are sent to the AI provider you configure.** Browser pages, provider discovery, optional downloads, and other network-enabled features also use the network; local-first does not mean offline-only.
+
+| Boundary | What it means |
+| :-- | :-- |
+| Project trust | Choose **Trust**, **Open without Pi**, or **Cancel** when opening a project. |
+| Read only | Fate's governed project-write and shell tools are unavailable. |
+| Edit files | Default for new trusted sessions. Agent file operations remain project-confined. |
+| Full access | Explicitly unsandboxed access with your account’s permissions. Use deliberately. |
+| Computer use | Off by default. Needs Full access, relaunches Fate UI elevated, and lets the agent see the screen and use the mouse and keyboard. The overlay shows only while the agent acts; its Stop button stops the session. |
+| Agent worktrees | Isolated Git checkouts, **not security sandboxes**. Integration is a separate action. |
+| Local credentials | Fate’s provider store is separate from Pi Terminal’s; existing credentials copy on first run, and missing entries can be imported later without replacing Fate values. |
+
+Saved per-session permissions restore only within the host's current limit. Missing records use Edit files; unreadable or corrupt permission storage blocks agent execution until repaired. Permission changes must be saved before increased authority takes effect. An incomplete write leaves a blocking intent record; do not delete it without repairing or reviewing the grant file. The manual terminal and trusted user extensions are separate host capabilities, not a general sandbox.
+
+Keep important work backed up and review changes before merging or deploying. Activity links and local hash records aid investigation; they are not tamper-proof proof of authorship. [Architecture and security →](docs/architecture.md)
+
+Fate UI is an independent community project, not an official Pi distribution.
+
+## Explore the documentation
+
+| You want to… | Start here |
+| :-- | :-- |
+| Understand the workspace | [Features](docs/features.md) |
+| Talk to an Agent that runs work in your projects | [Agents](docs/agents.md) |
+| Delegate and review agent work | [Agent orchestration](docs/agent-orchestration.md) |
+| Run goals and manage queued work | [GoalMax](docs/goalmax.md) · [Sessions](docs/sessions-and-processes.md) |
+| Customize the interface | [Skins](docs/skins.md) · [Themes](docs/themes.md) |
+| Review and save useful project knowledge | [Memory Learning](docs/project-learning.md) |
+| Build or stage a release | [Development and release](docs/development.md) |
+| Evaluate the V2 desktop/web/remote candidate | [Status and support matrix](docs/v2/current-status.md) · [Setup](docs/v2/quickstart.md) · [Limits](docs/v2/security-and-limits.md) |
+| Report a security issue | [Security policy](SECURITY.md) |
+
+## Build with us
+
+Found a bug or have a focused feature idea? [Open an issue](https://github.com/Master0fFate/pi-fategui/issues). For code contributions, start with [CONTRIBUTING.md](CONTRIBUTING.md). Report vulnerabilities privately through [GitHub Security Advisories](https://github.com/Master0fFate/pi-fategui/security/advisories/new).
+
+Fate UI is licensed under [Apache-2.0](LICENSE). Distribution requirements and third-party attribution are documented in [NOTICE](NOTICE), [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md), and [FONT_LICENSES.md](FONT_LICENSES.md). The license does not grant trademark rights; see [TRADEMARKS.md](TRADEMARKS.md).

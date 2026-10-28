@@ -8,6 +8,8 @@ OpenCode Goal Plugin adds Codex-style long-running goal mode to OpenCode. It giv
 
 If you are searching for an OpenCode goal plugin, goal mode for OpenCode, or a way to keep an OpenCode AI coding agent focused on a long-running task, this package is the npm plugin for that workflow.
 
+Also check out [OpenCode Loop Plugin](https://github.com/prevalentWare/opencode-loop-plugin), which works well alongside Goal. Goal keeps the agent focused on an objective; Loop adds recurring checks for things that change over time, such as CI results, deployments, and PR reviews.
+
 Links:
 
 - npm package: [`@prevalentware/opencode-goal-plugin`](https://www.npmjs.com/package/@prevalentware/opencode-goal-plugin)
@@ -42,6 +44,8 @@ Common use cases:
 - Preserve the current goal when OpenCode summarizes or compacts a long conversation.
 
 ## Install
+
+Direct Node.js hosts require Node 22.13.0 or later in the 22.x line, or Node 23.4.0 and later, for built-in SQLite coordination. Bun hosts use `bun:sqlite` and do not require a separate Node runtime to run the plugin.
 
 Choose the instructions that match the CLI you run:
 
@@ -202,6 +206,7 @@ Defaults:
   the OS/JavaScript runtime locale. Unsupported explicit locales fall back to English.
 - `register_command`: `true`; registers `/goal`, `/pause_goal`, and `/resume_goal`.
 - `command_name`: `"goal"`; renames the main goal command only. The reserved names `pause_goal` and `resume_goal` fall back to `goal` so the standalone controls remain available.
+- `wait_for_command`: defaults to `true` for ACP and `false` for other OpenCode clients. It controls whether a V2 goal command stays pending across automatic continuations. Set it explicitly to override the client default; enabling it for Desktop or Web can restore their 60-second command request timeout.
 - `restricted_agents`: `["plan"]`; agents (matched case-insensitively) treated as planning-only for goal execution.
 - `allow_goal_execution_from_plan`: `false`; when `true`, disables Plan-mode goal restrictions entirely.
 - `max_objective_chars`: `100000`; maximum Unicode code-point length of the submitted goal objective, completion evidence,
@@ -265,6 +270,10 @@ If `XDG_DATA_HOME` is not set, the default is:
 ```
 
 Set `OPENCODE_GOAL_STATE_PATH` to use a custom file.
+
+Writers coordinate through an adjacent `goals.json.coord.sqlite` file; goal data remains in JSON. Ownership survives a paused process and is released automatically when that process exits. A writer that cannot acquire ownership within ten seconds reports a failure without changing the JSON. Keep the coordination file in place while plugin instances are running, and restart older instances after upgrading so every writer uses the same protocol.
+
+Configure every writer with the same state-file target path. Directory symlink aliases are supported; a symlink to the JSON file itself is replaced by atomic publication and does not remain an alias of its target.
 
 The state file is written atomically through a same-directory temp file: the final path is only ever replaced by a fully-flushed file, so after a crash the state is the previous or the new valid version, never a torn one. The file is created with owner-only permissions where the host filesystem supports them, and the temp name is a random UUID opened exclusively so concurrent writers cannot collide.
 
@@ -339,7 +348,7 @@ The goal sidebar shows the current status, elapsed time, token usage, auto-conti
 
 Cancelling an active goal from an ACP client is durable when OpenCode emits the user-cancellation events described above. The plugin prevents subsequent goal continuations, including callbacks still preparing a prompt when cancellation arrives. OpenCode owns cancellation of in-flight model requests, tools, subprocesses, and already submitted prompts; the plugin cannot guarantee process termination if the host does not abort them or does not publish a cancellation signal. It does not interpret ordinary idle events, provider-error text, or completed tool calls as user cancellation.
 
-Registered `/goal <objective>` and `/resume_goal` commands use the host's public session-wait API to remain pending across automatic continuations until the goal stops, completes, reaches a safety limit, or auto-continuation is disabled. Hosts without that API keep their previous admission behavior. The ACP adapter must also stream each execution owned by the command: an adapter that ends its event consumer after the first execution can still hide later work. The [OpenCode command-lifetime integration](https://github.com/anomalyco/opencode/pull/53913) fixes that adapter behavior and supplies explicit interruption hooks. Ordinary prompts retain their host-defined turn lifetime.
+On ACP, registered `/goal <objective>` and `/resume_goal` commands use the host's public session-wait API to remain pending across automatic continuations until the goal stops, completes, reaches a safety limit, or auto-continuation is disabled. Desktop, Web, and TUI return after the goal prompt is admitted; their goal continuations still follow execution events. Hosts without the wait API also return after admission. The `wait_for_command` option overrides the client default, but enabling it for Desktop or Web can expose their 60-second command request timeout. The ACP adapter must also stream each execution owned by the command: an adapter that ends its event consumer after the first execution can still hide later work. The [OpenCode command-lifetime integration](https://github.com/anomalyco/opencode/pull/53913) fixes that adapter behavior and supplies explicit interruption hooks. Ordinary prompts retain their host-defined turn lifetime.
 
 ### Persistent plans and ACP
 

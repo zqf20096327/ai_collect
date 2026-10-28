@@ -53,6 +53,15 @@ Install the public release from PyPI:
 ```bash
 pip install specless-astro
 ```
+To verify the installed package version: 
+
+```bash
+python -m pip show specless-astro
+```
+To verify the installed package version:
+
+```bash
+python -m pip show specless-astro
 
 The two classifiers can then be imported with:
 
@@ -220,6 +229,7 @@ SpecLess/
 │       ├── activity/
 │       └── resources/
 ├── tests/
+├── examples/
 ├── validation/
 │   ├── model1/
 │   └── model2/

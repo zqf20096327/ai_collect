@@ -24,10 +24,11 @@
 
 ***
 
-<details>
 <summary><h1>Must-have MIDI dataset</h1></summary>
 
 This list contains a wide variety of MIDI datasets, from massive, processed corpora designed for machine learning to smaller, thematic collections for specific research or hobbies. The descriptions below are based on the content of each provided link. You'll notice a few different "types" of datasets:
+
+<details>
 
 * **Massive, Curated Datasets (e.g., Discover, Godzilla, Meta):** These are enormous collections (often millions of files) that have been aggregated, de-duplicated, normalized, and enriched with extensive metadata and pre-computed features. They are typically designed for large-scale Music Information Retrieval (MIR) and training symbolic music AI models, and often come with their own tooling for search and analysis.
 * **Specialized Research Datasets (e.g., MAESTRO, GiantMIDI, POP909):** These are smaller, high-quality datasets created for specific research tasks. They often feature precise alignments (e.g., note to performed audio), expert annotations (e.g., emotion, structure), or a focus on a particular genre or instrumentation.
@@ -86,6 +87,9 @@ This dataset contains 26k+ MIDI songs with SongFormer‑generated structural seg
 
 ## [Bad MIDI](https://huggingface.co/datasets/projectlosangeles/badmidi)
 This dataset contains 25k+ select bad MIDIs from [Discover MIDI Dataset](https://huggingface.co/datasets/projectlosangeles/Discover-MIDI-Dataset) which are very useful for MIDI classification, filtering and quality assesment.
+
+## [Gangqinpu](https://huggingface.co/datasets/Wayne42/gangqinpu)
+Fantastic aligned MIDI scores/performances dataset by [Wei Zeng](https://github.com/wei-zeng98) containing 18,786 piano score–performance pairs, covering 1,007.1 hours of source audio, with automatically transcribed performance MIDI, score MIDI, note-level alignments, and beat/downbeat annotations.
 
 ## [ATEPP](https://github.com/BetsyTang/ATEPP)
 The Aligned Tracks with Expressive Performance (ATEPP) dataset. It focuses on **expressive piano performance**, providing MIDI data that captures the nuances of human playing, such as timing and velocity variations, which are often lost in quantized MIDI files.
@@ -277,9 +281,9 @@ This Internet Archive page hosts "The Nuker Series," a collection of **Black MID
 
 ***
 
-<details>
-
 <summary><h1>Hugging Face Miscellaneous MIDI Datasets</h1></summary>
+
+<details>
 
 ## [experiment_dataset](https://huggingface.co/datasets/rasta3050/experiment_dataset)
 ## [midi](https://huggingface.co/datasets/foldl/midi)
@@ -307,9 +311,9 @@ This Internet Archive page hosts "The Nuker Series," a collection of **Black MID
 
 ***
 
-<details>
-
 <summary><h1>Zenodo Miscellaneous MIDI Datasets</h1></summary>
+
+<details>
 
 ## [CP-WTC](https://zenodo.org/records/21693024)
 ## [PawChorale](https://zenodo.org/records/21777039)
@@ -319,11 +323,11 @@ This Internet Archive page hosts "The Nuker Series," a collection of **Black MID
 
 ***
 
-<details>
-
 <summary><h1>Must-have Audio-MIDI datasets</h1></summary>
 
 The datasets below are a crucial complement to the previous MIDI-only datasets. They provide **paired audio and MIDI data**, which is essential for tasks like automatic music transcription (AMT), source separation, and performance analysis. They range from solo piano to multi-instrument ensembles.
+
+<details>
 
 ## [MusicNet](https://doi.org/10.5281/zenodo.5120004)
 A collection of **330 freely-licensed classical music recordings** (primarily chamber music) with **over 1 million annotated labels**. It provides precise time-aligned annotations for each note, including the instrument playing it and its position in the metrical structure. Labels were acquired by aligning musical scores to recordings and verified by trained musicians, with an estimated error rate of just 4%. The dataset includes the audio (`.wav`), label files (`.csv`), and the reference MIDI files used to construct the annotations, making it a robust benchmark for supervised music transcription.
@@ -383,20 +387,30 @@ A large-scale, curated dataset of 27.8 hours of violin performances with automat
 
 ***
 
-# Additional Tegridy MIDI datasets on Hugging Face
+<summary><h1>Additional Tegridy MIDI datasets on Hugging Face</h1></summary>
+
+<details>
 
 ## [Project Los Angeles Hugging Face](https://huggingface.co/projectlosangeles/datasets)
 ## [Alex Hugging Face](https://huggingface.co/asigalov61/datasets)
 
+</details>
+
 ***
 
-# Curated list of GitHub repos with MIDIs
+<summary><h1>Curated list of GitHub repos with MIDIs</h1></summary>
+
+<details>
 
 ## [awesome midi repos](https://github.com/asigalov61/awesome-midi-repos)
 
+</details>
+
 ***
 
-# Must-have software:
+<summary><h1>Must-have software</h1></summary>
+
+<details>
 
 ## The one and only open-source MIDI editor! Its awesome :)
 ## [midieditor](https://github.com/markusschwenk/midieditor)
@@ -410,25 +424,39 @@ A large-scale, curated dataset of 27.8 hours of violin performances with automat
 ## [soundfonts4u](https://huggingface.co/datasets/projectlosangeles/soundfonts4u)
 ## [Internet Archive 500 Sound Fonts Collection](https://archive.org/details/500-soundfonts-full-gm-sets)
 
+</details>
+
 ***
 
-# Awesome Music & MIDI AI Tools
+<summary><h1>Awesome Music & MIDI AI Tools</h1></summary>
+
+<details>
 
 A curated list of online demos, colab notebooks, and software for audio processing and MIDI manipulation.
 
-## Audio separation
+<summary><h2>Audio separation</h2></summary>
+
+<details>
 
 - **[Online] [Vocal Separation 2025](https://huggingface.co/spaces/ahk-d/Spleeter-HT-Demucs-Stem-Separation-2025)** - A Hugging Face Space for isolating vocals from a mixed audio track using deep learning models. This new space includes Piano separation with Spleeter 2025.
 - **[Online] [Vocal Separation](https://huggingface.co/spaces/JacobLinCool/vocal-separation)** - A Hugging Face Space for isolating vocals from a mixed audio track using deep learning models.
 - **[Model] [Facebook Demucs](https://github.com/facebookresearch/demucs)** - Demucs is a state-of-the-art music source separation model, currently capable of separating drums, bass, and vocals from the rest of the accompaniment.
 
-## Audio captioning
+</details>
+
+<summary><h2>Audio captioning</h2></summary>
+
+<details>
 
 - **[Online] [Music Flamingo](https://huggingface.co/spaces/nvidia/music-flamingo)** - An NVIDIA demo that generates natural language descriptions (captions) for music audio clips.
 - **[Online] [Sonic Verse](https://huggingface.co/spaces/amaai-lab/SonicVerse)** - A tool from AMAAI lab for generating textual descriptions or understanding the narrative within audio scenes.
 - **[Online] [GAMA IT](https://huggingface.co/spaces/sonalkum/GAMA-IT)** - A demo for generating captions for audio, likely focusing on general audio events and music.
 
-## Audio to MIDI transcription
+</details>
+
+<summary><h2>Audio to MIDI transcription</h2></summary>
+
+<details>
 
 - **[Online] [SOTA Kyutai and Mirelo MuScriptor Multi_Instrumental Audio-to-MIDI Transcription](https://muscriptor.kyutai.org/)** - SOTA open-source multi-instrumental music transcription model developed by Kyutai and Mirelo, that has been trained on a large scale dataset of 170k songs from classical music to heavy metal.
 - **[Online] [SOTA Kyutai and Mirelo MuScriptor Multi_Instrumental Audio-to-MIDI Transcription](https://huggingface.co/spaces/hugging-apps/muscriptor-music-transcription)** - MuScriptor Hugging Face Space Mirror
@@ -443,26 +471,41 @@ A curated list of online demos, colab notebooks, and software for audio processi
 - **[Model] [ROSVOT Singing Voice to MIDI Transcription](https://github.com/RickyL-2000/ROSVOT)** - A robust automatic singing voice transcription (AST) to MIDI model that serves singing voice synthesis (SVS). 
 - **[Colab] [tsumugi](https://github.com/anime-song/tsumugi)** - Transcribe any instrument to MIDI. One instrument-agnostic model powered by a Neural Semi-CRF.
 
-## Audio annotation
+</details>
+
+<summary><h2>Audio annotation</h2></summary>
+
+<details>
 
 - **[Model] [ASLP-lab SongFormer](https://huggingface.co/ASLP-lab/SongFormer)** - Music segmentation/annotation model which can be used to annotate MIDIs as well by rendering them to audio first.
 - **[Model] [LinTO AI Whisper Timestamped](https://github.com/linto-ai/whisper-timestamped)** - Multilingual Automatic Speech Recognition with word-level timestamps and confidence which works well with singing voice/songs.
 
+</details>
 
-## MIDI conversion
+<summary><h2>MIDI conversion</h2></summary>
+
+<details>
 
 - **[Online] [DuET](https://huggingface.co/spaces/Wayne42/DuET-demo)** - Solo Piano Audio/MIDI performance to MIDI score conversion model.
 - **[Github] [DuET](https://github.com/wei-zeng98/DuET)** - Same as above but CLI/programmatic.
 - **[Github] [PianistTransformer](https://github.com/yhj137/PianistTransformer)** - Brand new Solo Piano MIDI score to expressive MIDI performance conversion model.
 - **[Github] [SyMuPe/PianoFlow](https://github.com/ilya16/SyMuPe)** - Solo Piano MIDI score to MIDI performance conversion model.
 
-## MIDI captioning
+</details>
+
+<summary><h2>MIDI captioning</h2></summary>
+
+<details>
 
 - **[Online] [Ultimate MIDI Captioner](https://huggingface.co/spaces/projectlosangeles/Ultimate-MIDI-Captioner)** - Ultimate MIDI captioner and analyzer
 - **[Online] [MIDI MOSS Music 8B Thinking](https://huggingface.co/spaces/projectlosangeles/midi-moss-music-8b-thinking)** - SOTA open-source music understanding model (~9.1B params) from the OpenMOSS team adapted for MIDI. The model can determine MIDI mood, genre, instrumentation, chords, tempo, structure, and more using chain-of-thought musical analysis.
 - **[Online] [MIDI Music Flamingo](https://huggingface.co/spaces/projectlosangeles/MIDI-music-flamingo)** - AI model that generates textual descriptions for MIDI files, similar to image or audio captioning but for symbolic music.
 
-## MIDI rendering
+</details>
+
+<summary><h2>MIDI rendering</h2></summary>
+
+<details>
 
 - **[Online] [Advanced MIDI Renderer](https://huggingface.co/spaces/projectlosangeles/Advanced-MIDI-Renderer)** - A sophisticated online tool for rendering MIDI files to high-quality audio using soundfonts.
 - **[Online] [Audio to MIDI and Advanced Renderer](https://huggingface.co/spaces/avans06/Audio-To-MIDI-And-Advanced-Renderer)** - A combined tool that first transcribes audio to MIDI and then renders the resulting MIDI file to audio.
@@ -470,7 +513,11 @@ A curated list of online demos, colab notebooks, and software for audio processi
 - **[GitHub] [SpessaSynth](https://github.com/spessasus/SpessaSynth)** - A modern, web-based MIDI synthesizer and player written in JavaScript, capable of running in browsers.
 - **[GitHub] [midirenderer](https://github.com/ryzhakar/midirenderer)** - A Python command-line tool for batch rendering MIDI files to WAV audio using FluidSynth.
 
-## MIDI visualization
+</details>
+
+<summary><h2>MIDI visualization</h2></summary>
+
+<details>
 
 - **[Software] [MIDITrail](https://github.com/wdmss/MIDITrail)** - A 3D MIDI visualization software that displays notes falling down a "trail," providing an immersive view of the music's structure.
 - **[Software] [midis2jam2](https://github.com/wyskoj/midis2jam2)** - A 3D visualizer that animates instruments and notes from a MIDI file, creating a fun and engaging music video.
@@ -479,42 +526,74 @@ A curated list of online demos, colab notebooks, and software for audio processi
 - **[GitHub] [euphony](https://github.com/qiao/euphony)** - A web-based, interactive 3D MIDI visualizer that runs in the browser using Three.js.
 - **[GitHub] [midi picasso](https://github.com/Elvenson/midi_picasso)** - A creative tool that generates static visual art pieces based on the data and structure of a MIDI file.
 
-## MIDI identification
+</details>
+
+<summary><h2>MIDI identification</h2></summary>
+
+<details>
 
 - **[Online] [MIDI Identification](https://huggingface.co/spaces/asigalov61/MIDI-Identification)** - A tool that analyzes a MIDI file to identify its key, time signature, tempo, and other musical attributes.
 
-## MIDI search
+</details>
+
+<summary><h2>MIDI search</h2></summary>
+
+<details>
 
 - **[Online] [Los Angeles MIDI Dataset Search](https://huggingface.co/spaces/asigalov61/Los-Angeles-MIDI-Dataset-Search)** - A search engine for exploring and finding MIDI files within the large Los Angeles MIDI Dataset.
 - **[Online] [LAKH MIDI Dataset Search](https://huggingface.co/spaces/asigalov61/LAKH-MIDI-Dataset-Search)** - A search interface for the extensive Lakh MIDI Dataset, allowing users to find MIDI files by name or other criteria.
 - **[Online] [Advanced MIDI Search](https://huggingface.co/spaces/asigalov61/MIDI-Search)** - A general-purpose search tool for finding MIDI files based on musical content like chord progressions or note patterns.
 - **[Online] [Karaoke MIDI Search](https://huggingface.co/spaces/asigalov61/Karaoke-MIDI-Search)** - A specialized search engine for finding MIDI files suitable for karaoke, likely focusing on those with melody and lyric tracks.
 
-## MIDI classification
+</details>
+
+<summary><h2>MIDI classification</h2></summary>
+
+<details>
 
 - **[Online] [MIDI Genre Classifier](https://huggingface.co/spaces/asigalov61/MIDI-Genre-Classifier)** - A tool that predicts the musical genre of a given MIDI file.
 - **[Online] [Ultimate MIDI Classifier](https://huggingface.co/spaces/asigalov61/Ultimate-MIDI-Classifier)** - An advanced classifier that likely categorizes MIDI files by multiple attributes, such as genre, mood, or instrumentation.
 - **[Online] [Advanced MIDI Classifier](https://huggingface.co/spaces/asigalov61/Advanced-MIDI-Classifier)** - Another robust tool for classifying MIDI files, potentially with more granular categories or different underlying models.
 
-## MIDI comparison
+</details>
+
+<summary><h2>MIDI comparison</h2></summary>
+
+<details>
 
 - **[Online] [Orpheus MIDI Comparator](https://huggingface.co/spaces/projectlosangeles/Orpheus-MIDI-Comparator)** - A tool from Project Los Angeles for analyzing and quantifying the differences between two MIDI files.
 - **[Online] [Intelligent MIDI Comparator](https://huggingface.co/spaces/asigalov61/Intelligent-MIDI-Comparator)** - A smart tool for comparing MIDI files, likely focusing on musical similarities and differences rather than just raw data.
 
-## MIDI repair
+</details>
+
+<summary><h2>MIDI repair</h2></summary>
+
+<details>
 
 - **[Online] [MIDI Doctor](https://huggingface.co/spaces/asigalov61/MIDI-Doctor)** - An online utility that automatically detects and fixes common issues in MIDI files, such as overlapping notes, incorrect tempos, or corrupted data.
 
-## MIDI alignment
+</details>
+
+<summary><h2>MIDI alignment</h2></summary>
+
+<details>
 
 - **[Online] [MIDI Aligner](https://huggingface.co/spaces/asigalov61/MIDI-Aligner)** - A tool for synchronizing a MIDI file with an audio performance, correcting timing offsets to align the two.
 
-## MIDI bridging/infilling
+</details>
+
+<summary><h2>MIDI bridging/infilling</h2></summary>
+
+<details>
 
 - **[Online] [Orpheus Bridge Music Transformer](https://huggingface.co/spaces/projectlosangeles/Orpheus-Bridge-Music-Transformer)** - An AI model that generates a musical bridge to connect two separate MIDI segments.
 - **[Online] [Orpheus Pitches Inpainter](https://huggingface.co/spaces/projectlosangeles/Orpheus-Pitches-Inpainter)** - A tool that fills in missing or "masked" notes within a MIDI sequence (inpainting), harmonically completing the musical phrase.
 
-## MIDI mixing
+</details>
+
+<summary><h2>MIDI mixing</h2></summary>
+
+<details>
 
 - **[Online] [Orpheus MIDI Loops Mixer](https://huggingface.co/spaces/projectlosangeles/Orpheus-MIDI-Loops-Mixer)** - A tool for intelligently combining and arranging different MIDI loops to create a coherent musical piece.
 - **[Online] [Orpheus MIDI Mono Melodies Mixer](https://huggingface.co/spaces/projectlosangeles/Orpheus-Mono-Melodies-Mixer)** - A tool designed to mix two or more monophonic (single-note) MIDI melodies into a harmonized polyphonic output.
@@ -522,23 +601,43 @@ A curated list of online demos, colab notebooks, and software for audio processi
 - **[Online] [MIDI Loops Mixer](https://huggingface.co/spaces/asigalov61/MIDI-Loops-Mixer)** - A tool for layering and combining multiple MIDI loops, likely with automatic key and tempo matching.
 - **[Online] [MIDI Chords Mixer](https://huggingface.co/spaces/asigalov61/MIDI-Chords-Mixer)** - A tool for intelligently combining and reharmonizing chord progressions from different MIDI sources.
 
-## MIDI morphing
+</details>
+
+<summary><h2>MIDI morphing</h2></summary>
+
+<details>
 
 - **[Online] [Orpheus Morpheus](https://huggingface.co/spaces/projectlosangeles/Orpheus-Morpheus)** - Morph any MIDI into a similar variation
 
-## MIDI splitting
+</details>
+
+<summary><h2>MIDI splitting</h2></summary>
+
+<details>
 
 - **[Online] [MIDI Splitter](https://huggingface.co/spaces/asigalov61/MIDI-Splitter)** - A tool for splitting any MIDI into individual voices parts
 
-## MIDI segmentation
+</details>
+
+<summary><h2>MIDI segmentation</h2></summary>
+
+<details>
 
 - **[Online] [Orpheus Music Segmentator](https://huggingface.co/spaces/projectlosangeles/Orpheus-Music-Segmentator)** - An AI model that segments any MIDI into coherent separate parts
 
-## MIDI humanization
+</details>
+
+<summary><h2>MIDI humanization</h2></summary>
+
+<details>
 
 - **[Online] [Orpheus Humanizing Transformer](https://huggingface.co/spaces/projectlosangeles/Orpheus-Humanizing-Transformer)** - An AI model that adds expressive timing and velocity variations to a "perfect" but robotic-sounding MIDI file to make it sound more human-performed.
 
-## Miscellaneous MIDI applications
+</details>
+
+<summary><h2>Miscellaneous MIDI applications</h2></summary>
+
+<details>
 
 - **[Online] [Awesome Drums Transformer](https://huggingface.co/spaces/projectlosangeles/Awesome-Drums-Transformer)** - An AI model for generating realistic and creative drum patterns in MIDI format.
 - **[Online] [Godzilla Piano Chords Texturing Transformer](https://huggingface.co/spaces/projectlosangeles/Godzilla-Piano-Chords-Texturing-Transformer)** - A tool that generates accompaniment patterns or "textures" (like arpeggios, broken chords) from a given piano chord progression.
@@ -551,30 +650,51 @@ A curated list of online demos, colab notebooks, and software for audio processi
 - **[Online] [MuseCraft Chords Progressions](https://huggingface.co/spaces/projectlosangeles/MuseCraft-Chords-Progressions)** - A chord progression generator from the MuseCraft suite, focused on crafting harmonic foundations.
 - **[Online] [MuseCraft AlgoPOP](https://huggingface.co/spaces/projectlosangeles/MuseCraft-AlgoPOP)** - A generative tool from MuseCraft designed to create pop-music-inspired structures and melodies.
 
-## Lyrics applications
+</details>
+
+<summary><h2>Lyrics applications</h2></summary>
+
+<details>
 
 - **[Online] [MIDI to Lyrics](https://huggingface.co/spaces/asigalov61/MIDI-to-Lyrics)** - Cross-modal AI lyrics recommendations for any MIDI
 - **[Online] [Lyrics Morpher](https://huggingface.co/spaces/projectlosangeles/Lyrics-Morpher)** - A creative tool for transforming or "morphing" input lyrics into new variations, potentially for songwriting inspiration.
 
-## Miscellaneous MIDI and music applications
+</details>
+
+<summary><h2>Miscellaneous MIDI and music applications</h2></summary>
+
+<details>
 
 - **[Online] [Amazing Music Spaces](https://huggingface.co/collections/projectlosangeles/amazing-music-spaces)** - A large collection of very useful HQ MIDI and music Hugging Face spaces.
 
+</details>
+
+</details>
+
 ***
 
-## Awesome MIDI music related websites
+<summary><h1>Awesome MIDI music related websites</h1></summary>
+
 NOTE: Most of these require registration for limited access or a subscription for full access.
+
+<details>
 
 - **[Musopen](https://musopen.org)** - Recordings, sheet music, and textbooks to the public for free, without copyright restrictions.
 - **[MuseScore](https://musescore.com)** - Sheet music and MIDIs.
 - **[Mirelo AI Studio](https://mirelo.ai/studio/transcriptor)** - Pro version of MuScriptor AMT which outperforms open-source versions. Turn any recording into an editable musical transcription.
 - **[MVSEP](https://mvsep.com/)** - MVSEP performs separation of audio on voice and music parts.
 
+</details>
+
 ***
 
-## Music Papers
+<summary><h1>Music Papers</h1></summary>
+
+<details>
 
 - **[Qwen Deep Research Music Papers](https://github.com/asigalov61/Qwen-Deep-Research-Music-Papers)** - Stay on top of things! Follow latest Project Los Angeles research here.
+
+</details>
 
 ***
 

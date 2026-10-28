@@ -1,327 +1,505 @@
 # ComfyUI-MOSS-Storyboard
 
-🌐 **中文** · [English (condensed)](README_EN.md)
+🌐 **English** · [中文](README_ZH.md)
 
-给 **MOSS-Image** 用的**布局节点包**：在画布上摆元素（人物 / 物体 / 文字），输出一张图（宫格或单张）。
+![MOSS Storyboard for ComfyUI: the visual layout editor, one generated 4-panel grid, and the four panel crops](assets/hero-storyboard.png)
 
-两种用法，同一套机制：
+- **What it is** — layout nodes for MOSS-Image: place elements (characters / objects / text) on a canvas, get one image — a panel grid or a single poster.
+- **What it does not do** — the boxes you draw are **a hint, not a bullseye**. Each box becomes one line of text in the prompt, and the model decides where things land: it can overshoot, drift, merge two boxes into one, or ignore them. See [Bounding boxes are a hint](#bounding-boxes-are-a-hint-not-a-bullseye).
+- **Where to find it** — after install and restart, all seven nodes sit under the **`moss/storyboard`** category.
+- **First example** — [`examples/moss-layout-editor-storyboard.json`](examples/moss-layout-editor-storyboard.json): a complete 4-panel storyboard graph, open and queue.
 
-- **故事板宫格** —— 一张图整齐分成 **3、4、6、8 或 9 格**，每格一段描述，同时把每格裁出来。
-- **海报 / 封面 / 产品图** —— 主体、文字块各占一块区域，文字直接指定要渲染的字。
+**What this pack guarantees:** canvas size, per-panel coordinates, crop rectangles, grid-line position — arithmetic, aligned to the pixel.
+**What it does not guarantee:** what ends up inside the panels, where elements land, or that the same face survives across panels. Sampling decides those.
 
-> 「故事板」也常被叫作分镜图、宫格图、漫画格。本包做的是同一件事。
+**Two uses:** a **storyboard / comic page** — one canvas split into equal panels, one caption per panel, one crop per panel · a **poster / cover / product shot** — subject and text blocks each get a region, and text is rendered verbatim.
 
-| 项 | 值 |
+| Item | Value |
 |---|---|
-| 版本 | **0.2.2** |
-| 许可 | **MIT**（第三方出处见 [`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md)） |
-| 宿主 | **ComfyUI ≥ 0.42.0**（MOSS-Image 原生支持自 PR #17095 起） |
-| 依赖 | **零**额外 pip 依赖（`torch` / `comfy*` 由宿主提供） |
+| Version | **0.3.0** |
+| License | **MIT** (credits in [`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md)) |
+| Host | **ComfyUI ≥ 0.42.0** (native MOSS-Image support landed in PR #17095) |
+| Dependencies | **None** beyond host-provided `torch` / `comfy*` |
 
 ---
 
-## 先看这三条，能省掉大多数误解
+## Three things that prevent most misunderstandings
 
-1. **默认一次生成整张画布；也可以选「逐格」：每格独立采样再拼版。**
-   默认整张快；逐格跨格角色更一致、每格可给更高采样分辨率，代价约 N 倍耗时。
-   格数越多，默认整张每格像素越少（8 格约 496×272）；逐格时每格按 `sample_edge` 采样。
-2. **默认「复绘宫格线」开：解码后按同一份坐标重画线和缝，位置与线宽确定。**
-   关掉这一项才会让模型自己画线（可能歪、可能断）。
-3. **布局框的遵循度没有量化评分。** MOSS 的布局能力官方标 *experimental*，
-   **不保证严格照办**；本包只保证几何/接线/裁切，实际构图需目检。
-   文字渲染另有小样本实测（见「已知边界」）。
+1. **Layout boxes are a hint, not a bullseye.** A box becomes one line of text holding coordinates, and that text goes into the prompt; the model decides where to draw. There is no mask and no regional conditioning behind a box. The next section covers what boxes can and cannot do.
+
+2. **By default the whole board is generated in one sampling pass.** The optional `逐格` mode — that literal Chinese label is the value shown in the widget, meaning "per panel" — samples every panel on its own and then assembles the board. The default is faster, and the same face is more stable across panels. Per-panel gives each panel more pixels (more detail) and lets you rework one panel later, and it is slower — one sampling pass per panel. Panel size is set by `panel_edge` and does not shrink as you add panels: 512×288 at the factory default, 496×272 in the shipped example. What grows with the panel count is the canvas — and the VRAM that comes with it.
+
+3. **Grid lines are redrawn after decoding (`reborder` on by default).** The lines are drawn from the same cell coordinates that the crops use, so a line and a crop edge always agree. Turn it off only if you want the model to draw the lines itself — those lines may wobble or break.
 
 ---
 
-## 核心功能
+## Bounding boxes are a hint, not a bullseye
 
-| 能力 | 说明 |
+This is the most over-estimated part of the pack. If your requirement is "draw exactly inside the box", this pack cannot do it — and neither can any other node built on the same MOSS mechanism.
+
+### What the model actually receives
+
+You draw a box; the pack turns it into **one line of text with coordinates**:
+
+```
+{"caption": "a person on a bicycle", "bbox": [y0, x0, y1, x1]}
+```
+
+That line goes into `CLIPTextEncode` together with everything else, so it becomes **an ordinary text condition**:
+
+- no mask;
+- no regional conditioning;
+- no separate layout channel, and nothing crops attention to those coordinates while sampling.
+
+The official MOSS template, KJ's layout node and this pack all work this way. It is not a shortcut taken here — it is how MOSS works today.
+
+### What that means in practice
+
+- elements come out **larger or smaller** than the box, and **slightly off**;
+- **two boxes can merge** — you place the person and the table apart, the model puts the person on the table;
+- the model can **ignore the boxes entirely** and cram everything into one panel;
+- **small boxes are ignored first**: small text and small objects disappear before anything else;
+- the same prompt with a different seed follows the boxes differently.
+
+### What the boxes do buy you
+
+**They shift roughly where things go and roughly how big they are. They do not place anything precisely.**
+
+In one controlled comparison a box was moved from outside the frame to the lower-left corner with nothing else changed: the bicycle went from "cropped out" to "fully visible, lower left", reproducible across 3 seeds (36 images; see [Known limits](#known-limits-read-before-filing-a-bug)).
+
+That is a **directional** change — presence, side, rough size. It is not coordinate-level placement: the model does not honour where the box edge falls to the pixel.
+
+### What they are good for
+
+- **separating regions** in a multi-element image, which clearly reduces elements invading each other;
+- making sure an element **exists** and is **roughly over there** — more reliable than prose alone;
+- **in grid mode, each panel's box and its crop rectangle come from the same arithmetic.** That is *geometric* precision — crops line up to the pixel. It is not *pictorial* precision. The two are constantly confused.
+
+### Do not use boxes for
+
+| Not possible | Why |
 |---|---|
-| **3 / 4 / 6 / 8 / 9 格** | 格数是输入（`panels`），排法与画布尺寸自动算，宽高全部对齐 16 |
-| **每格单独描述** | 提示词里按 `[PANEL 1]`…`[PANEL n]` 分段，自动转成 MOSS 原生布局框 |
-| **可视化布局** | 节点内嵌画布：拖框决定每个元素占哪块区域，右侧填描述。文字元素单独填「要渲染的字」 |
-| **8 种布局预设** | 宫格 / 左右 / 上下 / 标题+主体+正文 / 三等分 / 居中 / 层叠 / 空白，一键出起点 |
-| **文字海报** | 中文、英文、中英混排、两行均有小样本实测（结论与样本量见「已知边界」） |
-| **宫格线确定** | 默认 `reborder=开`；解码后按坐标重绘，白缝位置与生成时一致 |
-| **逐格裁切** | 行优先输出，与整图画布逐像素对齐；`spec` 一根线传完几何，下游不会错位 |
-| **中英双语界面** | 每个本包节点上有「中 / EN」按钮，只改显示、不改存档 |
-| **零 GPU 机检** | 12 套自动断言（见 [`CONTRIBUTING.md`](CONTRIBUTING.md)） |
+| pinning eyes, fingers or a small prop to a spot | a box is coordinates inside text; nothing crops attention to it |
+| guaranteeing a text box never overflows by a pixel | box height does not control type size — a 43 px tall box rendered ~130 px tall text in our runs (see [Text](#text-what-works-what-does-not)) |
+| keeping two elements from overlapping | boxes carry no mutual constraint; the model may paint them into each other |
+| keeping the same face across panels | identity is not a box problem, and this pack does not promise it (see [Not possible](#not-possible-in-this-version)) |
 
-**五个节点。做故事板最小工作流只需要「生成」一个** —— 它自带全套几何参数。
-「布局编辑器」是另一个入口：不写提示词段落，改在画布上摆框，适合海报、封面、产品图。
-「宫格几何」是可选的前置：用来先看宫格形状，或把几何固化成一根 `spec` 传给多个下游。
-
-| 节点（中文界面显示） | 代码名 | 必需？ | 作用 |
-|---|---|---|---|
-| 🎬 布局编辑器 | `MossLayoutEditor` | 可选（做海报/自定义布局时用） | 画布上摆元素，出布局提示词 + 采样尺寸。**不加载模型**，秒出 |
-| 🎬 故事板 · 生成 | `MossStoryboardSampler` | **必需**（故事板） | `模型 + 文本编码器 + VAE + 正面提示词` → 整图 + 逐格。没接 `spec` 时用**自己**的格数参数算几何 |
-| 🎬 故事板 · 宫格几何 | `MossStoryboardLayout` | 可选（推荐） | 算尺寸和每格坐标，出布局提示词与宫格模板图。**不加载模型**，秒出 |
-| 🎬 故事板 · 裁格 | `MossStoryboardCrop` | 可选 | 只裁格。接 `spec` 就与生成时逐像素一致，也能切已有的宫格图 |
-| 🎬 故事板 · 贴回 | `MossStoryboardPaste` | 可选 | 把改好的单格按 `spec` 贴回宫格，输出改好的整图。改一格不用重跑整张 |
-
-> 节点名在**英文界面**下是 `MOSS Layout Editor` / `MOSS Storyboard Layout` / `Sampler` / `Crop` / `Paste`。
-> **接了 `spec` 就以 `spec` 为准**，「生成」节点上的格数等几何参数会被忽略——这是最常踩的坑。
+**For pixel-level control you need a model or a ControlNet with masks or regional conditioning — that is outside this pack.** What this pack does: write the prompt correctly, compute the canvas, cut the panels, and paste an edited panel back.
 
 ---
 
-## 环境依赖
+## What this adds over the official MOSS-Image layout
 
-| 依赖 | 必需 | 放哪 |
+The official ComfyUI template already supports **layout boxes on one canvas**. This pack builds the repeatable multi-panel workflow around that capability.
+
+**Let us be precise about the pitch**: this pack does **not** sell "control over composition" — as the previous section shows, boxes are hints and nobody can do better on this mechanism. What it sells is **removing the manual work**: canvas size, per-panel coordinates, crops and pasting back are arithmetic, and this pack gets that arithmetic right. What the picture contains is still up to the model.
+
+| | Official MOSS layout | This pack |
 |---|---|---|
-| ComfyUI **≥ 0.42.0** | ✅ | 更低版本没有 `moss_image` 这个文本编码器类型 |
-| `moss_image_sft_bf16.safetensors` | ✅ | `models/unet/`（或 `models/diffusion_models/`） |
+| Single image with layout boxes / text | ✅ native | ✅ visual editor + 8 presets |
+| Multi-panel storyboard in one canvas | — | ✅ 3 / 4 / 6 / 8 / 9 |
+| Per-panel captions → layout boxes | draw each box by hand | ✅ `[PANEL n]` blocks |
+| One crop per panel | manual crop math | ✅ `spec`-driven |
+| Reusable layout state | per-node fields | ✅ v3 state + undo/redo |
+| Queue from the editor | — | ✅ one click |
+| External planner JSON | — | ✅ elements-v1 + CLI |
+| Extra pip dependencies | — | none |
+
+**Not a fit if** you only make single-subject images with one or two boxes — the official template is simpler. **A good fit if** you need repeatable multi-panel pages, per-panel captions, or panel crops for downstream editing.
+
+---
+
+## Features
+
+| Capability | Notes |
+|---|---|
+| **3 / 4 / 6 / 8 / 9 panels** | Panel count is an input (`panels`); layout and canvas size are derived, then rounded up to a multiple of 16 |
+| **Per-panel captions** | `[PANEL 1]`…`[PANEL n]` blocks become MOSS layout boxes |
+| **Visual layout** | A canvas inside the node: drag boxes to say **roughly** which region each element occupies, then fill in its description. Boxes become coordinates in the prompt — **a hint, not a promise** (see [Bounding boxes](#bounding-boxes-are-a-hint-not-a-bullseye)). Text elements also take the literal string to render |
+| **8 layout presets** | grid / split vertical / split horizontal / title + subject + body / three columns / centered subject / stacked / free (blank canvas) |
+| **Text posters** | Chinese, English, mixed and two-line text have small-sample measurements (see Known limits) |
+| **Deterministic grid lines** | Redrawn from the cell coordinates after decoding (`reborder` on by default) |
+| **Per-panel crops** | Row-major, cut at the same integers that define the cells; `spec` carries all geometry in one wire |
+| **Official prompt-enhancer bridge** | Paste a draft from OpenMOSS's MOSS-Image Prompt Enhancer skill: get a validated MOSS prompt, and for layout drafts a state v3 for the Layout Editor |
+| **Bilingual UI (zh / en)** | A 中 / EN button on each of our nodes; display-only, never touches saved values |
+| **Zero-GPU self-checks** | All offline assertions; the list and how to run them are in [`CONTRIBUTING.md`](CONTRIBUTING.md) |
+
+**Six nodes, one entry point.** The shipped example wires the full storyboard path. A minimal graph needs only the Sampler, which carries every geometry parameter. The Layout Editor is the other entry point: in its **single mode** there are no `[PANEL n]` blocks — you place boxes instead, which suits posters, covers and product shots. (Its grid mode does compile `[STYLE]` + `[PANEL n]`; the table in the Layout Editor section lists both modes.) Storyboard · Grid Layout is an optional front end: preview the grid shape, or freeze the geometry into one `spec` that several downstream nodes can share. Prompt · Draft Compiler is the bridge to the official prompt skill: paste the official draft, get a MOSS prompt, and for layout drafts a second state you can import into the Layout Editor.
+
+| Node (English / 中文) | Type | Required? | Role |
+|---|---|---|---|
+| 🎬 Layout Editor / 布局编辑器 | `MossLayoutEditor` | Optional (posters / free layouts) | Canvas + elements → layout prompt + sampling size. **No model loaded** |
+| 🎬 Storyboard · Generate / 故事板 · 生成 | `MossStoryboardSampler` | **Yes** (storyboards) | `model + clip + vae + positive` → grid + panels. Computes geometry from its own parameters when `spec` is absent |
+| 🎬 Storyboard · Grid Layout / 故事板 · 宫格几何 | `MossStoryboardLayout` | Optional (recommended) | Geometry + layout JSON + grid template. **No model loaded** |
+| 🎬 Storyboard · Split Panels / 故事板 · 裁格 | `MossStoryboardCrop` | Optional | Crops only; feed `spec` to cut the panels that were generated |
+| 🎬 Storyboard · Paste Panel / 故事板 · 贴回 | `MossStoryboardPaste` | Optional | Pastes a corrected panel back at the `spec` coordinates, returning the full corrected board |
+| 🎬 Prompt · Draft Compiler / 提示词 · 草稿编译 | `MossPromptCompiler` | Optional (official skill bridge) | Prompt-enhancer draft → MOSS prompt + editor state. **No model loaded** |
+| 🎬 Storyboard · Face Swap / 故事板 · 换脸 | `MossStoryboardFaceSwap` | Optional | Reference face → one panel (or a single image) via vision + img2img. **Loads a model** |
+
+> Node labels switch with the UI language.
+> **When `spec` is connected it wins.** The Sampler's `panels` / `panel_edge` / `gutter` / `margin` widgets are still there but no longer take effect, and its `report` says so in the first line. That is the most common trap.
+
+---
+
+## Requirements
+
+| Dependency | Required | Where |
+|---|---|---|
+| ComfyUI **≥ 0.42.0** | ✅ | older versions lack the `moss_image` text-encoder type |
+| `moss_image_sft_bf16.safetensors` | ✅ | `models/unet/` or `models/diffusion_models/` |
 | `qwen3.5_9b_int8_convrot.safetensors` | ✅ | `models/clip/` |
 | `flux2-vae.safetensors` | ✅ | `models/vae/` |
-| 额外 pip 包 | ❌ | 无 |
+| pip packages | ❌ | none |
 
-模型权重**不随包分发**。可选的 4 步蒸馏 LoRA 也**不是**本包的一部分：
-交付工作流里预置了 `LoraLoaderModelOnly` 节点但**默认旁路**，没装不影响跑，
-装了就选中它按 `Ctrl+B` 取消旁路。
+Weights are **not** bundled. For download links and the exact folder names, follow the official ComfyUI MOSS-Image tutorial: <https://docs.comfy.org/tutorials/image/moss-image/moss-image>.
 
-> **宿主版本还会影响显存。** 修正提交是 `d07dff4`（2026-10-23）。包含它的宿主按「新版」列估算；
-> 更早的版本（含 **v0.42.1 及更早**）按「旧版」列估算。用 git 装的话 `git pull` 一次即可；
-> 不确定就以旧版列留余量。差多少、怎么判断 → [显存要多少](#显存要多少)。
+The optional 4-step distilled LoRA is **not** part of this pack. The shipped workflow contains a `LoraLoaderModelOnly` node **bypassed by default**. The shipped graph uses the **MOSS-Image-SFT model card settings — 50 steps / cfg 3 / euler / sgm_uniform**. Un-bypass the node (`Ctrl+B`) once you have the file, then set `steps` to **4** and `cfg` to **1.0**.
+
+> **Host version also changes VRAM.** The fix is commit `d07dff4` (2026-10-23). As of 2026-10-24 it is **not in any tagged release** — so pip / desktop / portable builds, and `git clone`s that have not pulled since 2026-10-23, use the **Old** column. A recent `git pull` uses the **New** column. If unsure, budget for Old.
+> Numbers, and how to tell which column you are in → [How much VRAM](#how-much-vram).
 
 ---
 
-## 安装
+## Install
+
+**ComfyUI Manager (recommended)**
+Search for **MOSS Storyboard** → Install → restart ComfyUI.
+
+**ComfyUI CLI** (if your install ships the `comfy` command)
 
 ```bash
-cd <你的 ComfyUI>/custom_nodes
+comfy node install moss-storyboard
+```
+
+**git**
+
+```bash
+cd <your ComfyUI>/custom_nodes
 git clone https://github.com/ZenHG/ComfyUI-MOSS-Storyboard
 ```
 
-重启 ComfyUI。节点菜单 **`moss/storyboard`** 下出现五个节点，启动日志里有一行：
+Restart ComfyUI. Six nodes appear under **`moss/storyboard`**, and the startup log shows a line like this (`<version>` is whatever you installed):
 
 ```
-[MOSS SB] v0.2.2 已加载｜节点 5 个（出口 v3）｜3/4/6/8/9 宫格
+[MOSS SB] v<version> 已加载｜节点 7 个（出口 v3）｜3/4/6/8/9 宫格
 ```
 
-**没这行 = 包没加载**，这比任何配置检查都直接。
-要退回旧的 V1 接口：设环境变量 `MOSSSB_NODE_API=v1`。
+> That is Chinese for "v`<version>` loaded | 7 nodes (v3 exit) | 3/4/6/8/9 grids".
+
+**No such line = the pack did not load** — that check is more direct than any setting. To fall back to the legacy V1 node API, set the environment variable `MOSSSB_NODE_API=v1`.
 
 ---
 
-## 5 分钟跑通
+## Quick start
 
-**① 接线**
+**Fastest path — open the shipped graph**
 
-| 节点 | 填什么 |
-|---|---|
-| `UNETLoader` | `moss_image_sft_bf16.safetensors` |
-| `CLIPLoader` | `qwen3.5_9b_int8_convrot.safetensors`，**`type` 必须选 `moss_image`** |
-| `VAELoader` | `flux2-vae.safetensors` |
+1. Install the pack and the three model files above.
+2. **Drag** [`examples/moss-layout-editor-storyboard.json`](examples/moss-layout-editor-storyboard.json) **into the ComfyUI window** (or `Workflow → Open`). Everything is already wired.
+3. Queue. Outputs: a **1024×576** grid and four **496×272** panels.
 
-**② 选格数**：在「🎬 故事板 · 生成」上改 **格数**（`panels`）。出厂默认 8，
-仓库里那份示例工作流设成了 4。画布尺寸会自动算——**不用手填宽高**。
+> **Where do the images go?** This pack does not save anything itself. The shipped graph wires `SaveImage`, so files land in `output/moss/storyboard/` under your ComfyUI root — `grid_*.png` and `panel_*.png`. **With no save node attached, the image only exists in memory and is gone when the run ends**, so remember to add one when you wire your own graph.
 
-> 想先确认宫格形状对不对，再在「🎬 故事板 · 宫格几何」上连一根 `spec` 过来：
-> 它的 `template` 输出是一张预览图，看得见每格在哪、缝多宽。
+**Text-only path — one Sampler node**
 
-**③ 写提示词**：填在「🎬 故事板 · 生成」的 **正面提示词**（`positive`）里：
+1. `UNETLoader` → `moss_image_sft_bf16.safetensors`
+2. `CLIPLoader` → `qwen3.5_9b_int8_convrot.safetensors`, with **`type` set to `moss_image`**.
+3. `VAELoader` → `flux2-vae.safetensors`.
+4. Add 🎬 Storyboard · Generate and wire `model` / `clip` / `vae`.
+5. **Set `panels` to 4.** ⚠ The factory default is **8**. The script below has **4** `[PANEL]` blocks, and a caption count that does not match the panel count **raises an error before sampling starts**. Change the count first, then queue.
+
+   Canvas size follows automatically — never type width / height by hand.
+6. Paste the script into **`positive`** on Storyboard · Generate:
 
 ```
-雨夜咖啡店，单一画布分成严格对称的 4 格，细白线分隔；
-苏晚：黑发低马尾、米白高领针织衫；陈屿：深灰外套、黑衬衫；
-35mm 胶片、真实演员、自然皮肤纹理、浅景深
+Rainy-night cafe, one canvas divided into a strict grid of 4 panels, thin white dividers;
+35mm film, real actors, natural skin texture, shallow depth of field
 
-[PANEL 1]: 中景，两人对坐，她把柠檬水杯推向正中
-[PANEL 2]: 特写，她的眼睫与玻璃雨痕
-[PANEL 3]: 过肩，他抬眼看向窗外
-[PANEL 4]: 桌面特写，两只手停在杯沿
+[PANEL 1]: medium shot, two people across a table, she pushes the lemonade glass to center
+[PANEL 2]: close-up, her lashes against rain-streaked glass
+[PANEL 3]: over-the-shoulder, he looks out the window
+[PANEL 4]: tabletop close-up, two hands resting on the rim
 ```
 
-**④ 跑**。输出端两路：`grid`（整张宫格）+ `panels`（逐格，数量 = 格数）。
+7. Queue. Then wire the outputs — **both are images and neither is saved for you**:
 
-> 也可以直接用现成工作流：`examples/moss-storyboard-4panels-ui.json`，拖进 ComfyUI 即可
-> （已分好组、带画布内说明）。
+| Output | What it is | Wire to |
+|---|---|---|
+| `grid` | the whole canvas | `SaveImage` (write to disk) or `PreviewImage` (look only) |
+| `panels` | one image per panel | `SaveImage` — writes N files in one go |
+
+A ready-made plain graph is in `examples/moss-storyboard-4panels-ui.json`.
+Editor examples: `examples/moss-layout-editor-poster.json` (poster) and `examples/moss-layout-editor-storyboard.json` (4-panel storyboard).
+Draft compiler (no model, no GPU): `examples/moss-prompt-compiler.json` — paste an official prompt-enhancer draft, get a prompt plus an editor state. The three outputs go to three of the host's `PreviewAny` nodes (displayed as *Preview as Text*); nothing else is in the graph.
+Face swap: `examples/moss-faceswap-ui.json` — a 4-panel board in, panel 0 swapped, the whole board out (needs the DMD2 distil LoRA **and** the Moss-Image-Edit LoRA).
+
+> **The four model examples carry the host's `LazyCache` node** (defaults: `reuse_threshold 0.2` / `start 0.15` / `end 0.95`), sitting between the LoRA and the sampler. It is **not part of this pack** — it is ComfyUI core (`comfy_extras/nodes_easycache.py`), marked experimental, filed under `advanced/debug`, and it lets the sampler reuse steps. **Bypass it (`Ctrl+B`) or delete it before comparing anything against the numbers in this page**: with it on, the sampler is not doing the work those numbers were measured on. If your host build predates the node, ComfyUI reports a missing node type — delete it and the graph runs. The compiler example loads no model, so it has no `LazyCache`.
+
+> To check the grid shape before spending a run, wire `spec` out of 🎬 Storyboard · Grid Layout: its `template` output is a picture of where each panel sits and how wide the gutters are.
+
+**The other path: poster / cover / product shot**
+
+No `[PANEL n]` blocks — place boxes instead:
+
+1. Add 🎬 Layout Editor and pick a preset (e.g. `title-body`, shown as *title + subject + body*).
+2. Drag boxes on the canvas: one for the title, one for the subject, one for the subtitle.
+3. Fill each box's **caption**; text boxes also get the **literal string**.
+4. Wire `prompt` → `CLIPTextEncode.text`, `width` / `height` → `EmptyFlux2LatentImage`.
+5. Follow with a plain `KSampler` — MOSS-Image-SFT model card settings are 50 steps / cfg 3 / euler.
+
+> **Single mode now emits a 1-panel `spec`.** Wire the editor's `spec` into the Sampler and the two correspond: canvas from the editor, one image out, prompt sent as layout JSON. Before 0.3.0 that `spec` was an empty string, so the wire was effectively dead and the Sampler silently fell back to its own `panels` — you picked a poster preset and still got a 4-panel board. A plain `KSampler` still works too.
 >
-> 编辑器示例：`examples/moss-layout-editor-poster.json`（单张海报）与
-> `examples/moss-layout-editor-storyboard.json`（4 格故事板）——拖进去即可改框。
-
-**另一条路：海报 / 封面 / 产品图**
-
-不写 `[PANEL n]` 段落，改在画布上摆：
-
-1. 加「🎨 布局编辑器」，选一个预设（例如「标题+主体+正文」）。
-2. 画布上拖框：标题一块、人物一块、副标一块。
-3. 右侧填每个框的**描述**；文字框另填**要渲染的字**。
-4. `prompt` 接 `CLIPTextEncode` 的 `text`，`width`/`height` 接 `EmptyFlux2LatentImage`。
-5. 后面接普通 `KSampler`（4 步 + 4-step 蒸馏 LoRA，或官方模型 30–50 步 / cfg 3–5）。
-
-> ⚠ 单张模式**不要**接「故事板 · 生成」——那个节点走宫格路线，会把已经是 JSON 的提示词
-> 再当段落解析一遍。单张就用普通 `KSampler`。
+> (Related but different: if you skip the editor and just want one non-grid image, set `panels = 1` on the Sampler. That path sends prompt text, not JSON, so the warning above does not apply.)
 
 ---
 
-## 提示词怎么写
+## When something goes wrong
 
-**规则只有三条**
+**Match the error text first.** Every row below is copied verbatim from a `ValueError` in the source. Note that **the error messages themselves are in Chinese** — paste a few characters into a search here to find your row.
 
-1. 第一个 `[PANEL …]` **之前**的内容，全部算**全局描述**（角色长相、场景、画风、相机）。
-   写不写 `[STYLE]:` 都行——它只是个便于阅读的标签，程序按位置算。
-2. `[PANEL n]` 后面跟**这一格**的描述：景别 + 主体 + 动作。
-3. **编号决定顺序：按编号升序与格子配对。** 可以缺号，但不要写乱序；建议从 1 连续写到 N。
+| Error text (Chinese, verbatim) | What it means | Fix |
+|---|---|---|
+| `提示词有 4 段 [PANEL]，但布局是 8 格` | the script has a different number of blocks than there are panels | add blocks to match, set `panels` to the block count, or switch `init` to `plain` |
+| `全局段写「恰好 4 个面板」，但布局是 8 格` | the count written inside the global section disagrees with the real panel count | change that number to the real count, or delete the phrase |
+| `图像 1024x576 不能被 3x3 整除` | the crop node has no `spec`, so it can only divide by columns × rows | connect `spec` (recommended), or use a canvas that divides evenly |
+| `draft 为空：请粘贴官方 prompt-enhancer 的 caption/layout 草稿 JSON。` | the Draft Compiler received nothing | paste the **draft**, not the compiler's own output |
+| `元素 3 没有描述（caption 不能为空）` | a box on the canvas has an empty caption | give it a caption, or delete the box |
+| `label 只能是 object/character/text（收到 'xxx'）` | a hand-edited state or draft used another type | only those three values are allowed |
 
-**合法的写法都长这样**
+**No error, but the result is wrong:**
 
-| 你写的 | 结果 |
+| Symptom | Check first |
 |---|---|
-| `[PANEL 1]: …` `[PANEL 2]: …` | 2 段描述 → 前 2 格有描述 |
-| `[画面 1]: …` `[分镜 1]: …` | 一样有效（中英文标记都认） |
-| 不写任何 `[PANEL]` | 整段当普通提示词，**不生成布局框**（等于纯文生图，`report` 会告诉你） |
-| 8 格只写了 4 段 | 前 4 格有描述，后 4 格没有（不是报错） |
-| 一格写了好几行 | 合并成一段，不影响 |
+| All black | mismatched recipe: a 4-step distilled LoRA with 50 steps / cfg 3, or no LoRA with 4 steps / cfg 1.0 |
+| Right panel count, everything crammed into one panel | the model ignored the boxes (see [Bounding boxes](#bounding-boxes-are-a-hint-not-a-bullseye)); shorten each caption to one shot |
+| Canvas shape differs from the preview | is `spec` connected? When it is, the Sampler's panel-count widgets are ignored |
+| Can't find the nodes | category `moss/storyboard`; searching `故事板`, `storyboard` or `宫格` also works |
 
-**两条经验**
-
-- 角色在不同格里不一致，**先改全局描述那一段**——它的权重最大。
-- 一格只写一个镜头。写"中景 + 特写"这种复合描述，模型会自己挑一个。
+The rest of the Q&A (OOM, the 中 / EN button, negative prompts) is in [FAQ](#faq) at the end.
 
 ---
 
-## 格数 → 画布尺寸
+## Prompt rules (three, no more)
 
-下表是**单格 16:9、单格长边 496、缝 8、外边距 8**（交付工作流的 1024 档）：
+1. Everything **before the first `[PANEL …]`** is the **global description** (character look, scene, style, camera). Writing `[STYLE]:` is optional — it is only a readable label; the parser goes by position.
+2. Each `[PANEL n]` block describes **that panel**: shot size + subject + action.
+3. **Panel numbers are an ordering key, not a cell slot.** Captions are sorted by number and paired with cells in that order: the first caption goes to the first cell, the second to the second, and so on. Gaps and out-of-order blocks are accepted; the numbers do not pick a cell (a lone `[PANEL 6]` still lands in cell 1).
 
-| 格数 | 排列形状 | 画布 | 百万像素 | 每格大小 |
+**The block count must equal the panel count.** In whole-canvas mode the node compares the two and refuses to run when they differ. The error states both numbers and offers the way out.
+
+| You write | Result |
+|---|---|
+| `[PANEL 1]: …` `[PANEL 2]: …` with `panels = 2` | Two captions → panels 1 and 2 |
+| `[画面 1]: …` `[分镜 1]: …` | Also valid (Chinese markers are recognised) |
+| No `[PANEL]` at all, `init = plain` | The whole text is a plain prompt; **no layout boxes** are compiled (`report` says so). The canvas is still the grid canvas — see the note in the FAQ |
+| 4 panels and 4 captions | Normal case |
+| 8 panels but only 4 captions | **Error.** Add four more blocks, set `panels = 4`, or switch `init` to `plain` |
+| One caption spread over several lines | Merged into a single caption; no effect |
+
+**Two rules of thumb**
+
+- If a character drifts between panels, **fix the global description first** — it carries the most weight.
+- One shot per panel. A compound caption such as "medium shot + close-up" makes the model pick one.
+
+---
+
+## Panels → canvas
+
+`canvas = panel size × count + gutters + margins`, then **rounded up to the next multiple of 16**. The extra 0–15 px goes **only into the right and bottom margin** (same colour as the grid lines, so it is invisible). Panel sizes are never touched — otherwise every panel coordinate would drift.
+
+**Why 16 matters**: MOSS's VAE downscales by 16, so a width or height that is not a multiple of 16 misaligns. The node aligns everything for you.
+
+Numbers below: panel 16:9, long edge 496, gutter 8, margin 8 — the shipped workflow's settings (4 panels come out 1024 wide, hence "the 1024 tier"). **The factory default is 512**, two notches larger, with a correspondingly larger canvas. Any table using one of the two says which.
+
+| Panels | Shape | Canvas | MP | Panel size |
 |---|---|---|---|---|
-| 3 | **竖条**（上下 3 格） | 512 × 848 | 0.43 | 496 × 272 |
-| 4 | **田字**（2 × 2） | **1024 × 576** | 0.59 | 496 × 272 |
-| 6 | **横条**（上 2 行、每行 3 格） | 1520 × 576 | 0.88 | 496 × 272 |
-| 8 | **横条**（上 2 行、每行 4 格） | 2032 × 576 | 1.17 | 496 × 272 |
-| 9 | **九宫格**（3 × 3） | 1520 × 848 | 1.29 | 496 × 272 |
+| 3 | **vertical strip** (3 stacked) | 512 × 848 | 0.43 | 496 × 272 |
+| 4 | **quad** (2 × 2) | **1024 × 576** | 0.59 | 496 × 272 |
+| 6 | **wide** (2 rows of 3) | 1520 × 576 | 0.88 | 496 × 272 |
+| 8 | **wide** (2 rows of 4) | 2032 × 576 | 1.17 | 496 × 272 |
+| 9 | **3 × 3** | 1520 × 848 | 1.29 | 496 × 272 |
 
-8/9 格落在 MOSS 的 1–2 百万像素训练区间；3/4/6 格低于该区间（仍可用，但属于外推）。
+Panel size does not change between 3 and 9 panels. Only the canvas grows. `panels` also accepts any count from 1 to 12; other counts are factored into `columns × rows` automatically.
 
-**换成竖构图（单格 9:16）**：整体转 90°——3 格变横条（848 × 512），6 格变 2 列 × 3 行（576 × 1520），
-8 格变 2 列 × 4 行（576 × 2032），4 格与 9 格不变。
+8 and 9 panels land in MOSS's 1–2 MP training range; 3 / 4 / 6 are below it — usable, but outside the range the model was trained on. Portrait panels (`panel_aspect = 9:16`) rotate the whole layout by 90°: 3 panels become a horizontal strip (848 × 512), 6 become 2 × 3 (576 × 1520), 8 become 2 × 4 (576 × 2032); 4 and 9 are unchanged.
 
-**三个可调项**
-
-| 想改什么 | 调哪个 | 说明 |
+| Knob | Widget | What it does |
 |---|---|---|
-| 每格大一点 | **单格长边**（`panel_edge`） | 128–2048，步进 16。画布自动跟着变，不用手算 |
-| 强行换排法 | **列数**（`columns`） | 填想要的列数，行数（`rows`）留 0 自动补齐；两者相乘必须等于格数 |
-| 只要横排 3 格 | **列数** = 3 | 3 格默认是竖条：横排 3 个 16:9 会让画布变成 1520 × 288（约 5.3:1），超出包内 4:1 的容忍线 |
-
-**为什么尺寸都能被 16 整除**：MOSS 的 VAE 把图缩小 16 倍，宽高不是 16 的倍数就会错位。
-节点自动对齐；多出来的 0–15 像素**只加在右边和下边的外边距**（和宫格线同色，看不出来），
-**绝不改动单格尺寸**——否则每格坐标会漂。
+| Bigger panels | **panel long edge** (`panel_edge`) | 128–2048, step 16. The canvas follows. `panel_aspect` accepts 10 ratios: `16:9` `3:2` `4:3` `1:1` `4:5` `3:4` `2:3` `9:16` `21:9` `2.39:1` |
+| Force a layout | **columns** (`columns`) | Set the column count and leave `rows = 0` to fill it in. `columns × rows` must equal the panel count |
+| Three panels in a row | **columns** = 3 | Three 16:9 panels in a row would make a 1520 × 288 canvas (≈5.3:1), past this pack's 4:1 tolerance — so 3 panels default to a vertical strip |
 
 ---
 
-## 显存要多少
+## How much VRAM
 
-这条链路里最吃显存的一步是 **VAE 解码**，不是采样。同一个画布，宿主版本不同，
-解码时申请的显存能差 **4 倍**——旧版把预估写死成了实际的 4 倍。
+VAE decode — not sampling — is the memory peak. The same canvas can differ by up to **4×** depending on your host version (the old build reserved 4× what it actually needs).
 
-| 画布 | 格数 | 新版宿主 | 旧版宿主 |
+| Canvas | Panels | New host | Old host |
 |---|---|---|---|
-| 1024 × 576 | 4 | 约 0.6 GB | 约 2.4 GB |
-| 2032 × 576 | 8 | 约 1.2 GB | 约 4.8 GB |
-| 1520 × 848 | 9 | 约 1.3 GB | 约 5.2 GB |
-| 2096 × 608 | 8（512 档） | 约 1.3 GB | 约 5.2 GB |
+| 1024 × 576 | 4 | ~0.6 GB | ~2.4 GB |
+| 2032 × 576 | 8 | ~1.2 GB | ~4.8 GB |
+| 1520 × 848 | 9 | ~1.3 GB | ~5.2 GB |
+| 2096 × 608 | 8 (factory 512 px edge) | ~1.3 GB | ~5.2 GB |
 
-**你属于哪一档**：修正提交是 `d07dff4`（2026-10-23）。以宿主实际版本为准：包含它的按「新版」，否则按「旧版」。
+The first three rows use the shipped workflow's 496 px panel edge; the last row is the factory 512 px default.
 
-| 你的安装方式 | 落在哪一列 |
+**Which column are you in?** The fix is commit `d07dff4` (2026-10-23). Check whether your host build contains it; if unsure, use the **Old** column.
+
+| How you installed | Column |
 |---|---|
-| 桌面版 / 便携包 / pip | 取决于版本；**不确定按旧版** |
-| `git clone` 且 2026-10-23 之后 `git pull` 过 | **新版** |
-| `git clone` 但很久没 pull | **旧版** |
+| Desktop / portable / pip | Depends on the build; if unsure, **Old** |
+| `git clone` + `git pull` after 2026-10-23 | **New** |
+| `git clone` but not pulled recently | **Old** |
 
-**显存不够会怎样**：宿主先按整图解码试一次，失败后自动退回**分块解码**。
-分块可能在画布上留下接缝，而接缝正好会穿过你的格子。日志里出现
-`retrying with tiled VAE decoding` 就说明发生了这件事。
+**Measured tiers on a single 12 GB card, whole-canvas mode** (50 steps / cfg 3.0 / euler + sgm_uniform / 16:9). ⚠ This set ran **with the 4-step distil LoRA attached**, so it is not the same operating point as the 50/3 rows elsewhere — use it for headroom, not for quality.
 
-**怎么办**（代价从低到高）：
+⚠ **The raw data only records peak VRAM and whether the run OOMed** (all six runs: `success`). **Nobody graded the images.** "It fit" does not mean "the picture was right", and this combination — 4-step LoRA with 50 steps — is one of the mismatched recipes the FAQ lists as a common cause of black output. Do not read this table as a recommended recipe.
 
-1. `git pull` 更新宿主——旧版宿主上这是收益最大的一步
-2. 把 `panel_edge` 调小：边长减半，解码显存降到 **1/4**
-3. 少用几格：8 格换 4 格，画布面积减半，解码显存跟着减半
+| panels × `panel_edge` | canvas | MP | peak MB |
+|---|---|---|---|
+| 4 × 512 | 1056×608 | 0.64 | 11359 |
+| 4 × 544 | 1120×640 | 0.72 | 11176 |
+| 6 × 512 | 1568×608 | 0.95 | 11250 |
+| 6 × 544 | 1664×640 | 1.07 | 11267 |
+| 8 × 512 | 2096×608 | 1.27 | 11269 |
+| 8 × 544 | 2224×640 | 1.42 | 11298 |
 
-> ⚠ **VAE 精度要是 fp16 或 bf16 才走上面「新版」这一列。** 加了 `--fp32-vae`
-> 或宿主因故把 VAE 跑成 fp32，省显存的那条路径会静默失效（不报错，只是变回旧版）。
+> Numbers only — this pack publishes no speed numbers (timing depends on your machine and goes stale). Across 0.64–1.42 MP the peak sits at 11.2–11.4 GB: **≈0.9 GB of headroom for the whole canvas**. The worst point measured anywhere — per-panel, 8 × 544 — leaves **0.7–0.8 GB**. So a 12 GB card runs these tiers, **but it can still OOM when the desktop is already holding VRAM**. Do not read this as "12 GB is enough".
+> Data [`docs/data/g1-results.json`](docs/data/g1-results.json); per-run log and caveats [`docs/data/g1-report.md`](docs/data/g1-report.md).
+
+**When memory runs short**, the host tries the full-image decode first, then falls back to **tiled decode**. A tile border may fall inside a panel, and a seam can appear there. Look for `retrying with tiled VAE decoding` in the log. Whether a seam actually cuts a panel is mechanism, not measured here.
+
+**Fixes, cheapest first**: ① `git pull` the host; ② lower `panel_edge` (half the edge → ¼ the decode memory); ③ use fewer panels (8 → 4 halves the canvas area).
+
+> ⚠ The saving only applies when the VAE runs in fp16 or bf16. `--fp32-vae`, or a host that falls back to fp32, silently disables it.
 
 ---
 
-## 节点与参数
+## Bilingual UI
 
-### 🎨 布局编辑器（`MossLayoutEditor`，不加载模型）
+Each of **our** nodes has a **中 / EN** button switching titles, labels, combo display and tooltips. The default follows the host locale.
 
-**做海报、封面、产品图，或者想要自由布局的故事板，从这个节点开始。**
+- **Only our nodes** are touched — never official or third-party nodes.
+- **Display only, never the graph**: only `label` / `title` / `tooltip` / `placeholder` change; widget `name`s and values never do, so execution and saved values are unaffected.
+- **Hard-refresh the browser (F5) after upgrading** — restarting the ComfyUI process is not enough.
+- **It works without the frontend too**: the backend's default readable strings are Chinese. If the JS fails to load you lose the 中 / EN switch and the editor, but the nodes still run on their defaults. API submissions (`/prompt`) never needed the button.
 
-节点上直接是一块画布：左边摆框，右边填描述。框在哪，元素就画在哪。
+---
 
-输出：`prompt` `width` `height` `spec` `template` `report`
+## Node reference
 
-> 单张模式下 `spec` 是空串（没有宫格可裁），`template` 是一张纯色占位图。
-> 宫格模式下两者都可用，`spec` 能接「裁格」「贴回」。
+### 🎬 Layout Editor (`MossLayoutEditor`, no model)
 
-| 参数 | 说明 |
+**Start here for posters, covers, product shots, or any free-form layout.**
+
+The node is a canvas: place boxes on the left, fill in descriptions on the right. **A box is a hint, not a bullseye.** Boxes are compiled into layout JSON and handed to the model as text through `CLIPTextEncode` — there is no `area`, no mask and no conditioning channel behind them. A box steers roughly where an element appears; it cannot pin it there. The model can overshoot, drift or ignore it entirely (see [Bounding boxes](#bounding-boxes-are-a-hint-not-a-bullseye)).
+
+Outputs (7): `prompt` `width` `height` `spec` `template` `report` `negative`
+
+- **`negative`** — non-empty only in **single mode with *Blend into one* on**: a few anti-collage words the pack supplies for you. Empty in grid mode, and empty in single mode with blending off. Wire it into a negative input, or ignore it.
+- In single mode `spec` is an empty string (there is no grid to cut) and `template` is a flat placeholder image. In grid mode both are usable, and `spec` can feed Crop and Paste.
+
+| Input | Notes |
 |---|---|
-| **布局状态** `editor_state` | **不用手填**。这是画布的存档，改画布时自动更新。手改也行，但必须是 v3 JSON，格式错了会报错并指出哪个字段 |
+| `editor_state` | **Do not type here.** This is the canvas save file and it updates itself. Hand-editing works, but it must be valid v3 JSON; a bad field is rejected and the error names the field |
+| `prompt` | Optional, wired. Takes over the **text** only: the global description plus each panel's caption and shot size. See below |
 
-两种模式，用预设切换：
+**What happens when you wire an external prompt**
 
-| 模式 | 预设 | 出什么 | 接到哪 |
+- Panels covered by the wired script lose the editor caption (including preset copy), and the caption field becomes read-only. Unplug to edit by hand again.
+- Fewer segments than panels: the remaining panels keep the editor caption. More segments than panels: the extras are dropped. No `[PANEL n]` at all: only the global description changes.
+- A segment with no shot size does not inject one for that panel.
+- **Canvas, panel count and panel coordinates always come from the editor.** The wired script cannot change geometry.
+- Single mode has no panels, so the wired script only takes the global description.
+
+The **Final prompt** box shows the **merged** result — exactly what gets sent. If the upstream node computes its text at runtime, the box says so instead of pretending the editor content is final.
+
+Two modes, switched by preset:
+
+| Mode | Presets | Output | Wire to |
 |---|---|---|---|
-| **单张** | `左右` `上下` `标题+主体+正文` `三等分` `居中` `层叠` `空白` | 一个多元素 layout JSON，**一次采样整张** | `CLIPTextEncode` 的 `text`，再接普通 `KSampler` |
-| **宫格** | `宫格` | `[STYLE]` + 逐格 `[PANEL n]` | 「生成」节点的 `positive` + `spec`；默认 `mode=整张`，要跨格一致时切 `逐格` |
+| **Single** | split vertical / split horizontal / title + subject + body / three columns / centered subject / stacked / free | One multi-element layout JSON, **one sampling pass** | `CLIPTextEncode.text`, then a plain `KSampler` |
+| **Grid** | `grid` | `[STYLE]` + `[PANEL n]` | the Sampler's `positive` + `spec`; default `整张` (whole canvas), switch to `逐格` (per panel) when you want to rework panels one by one or need more pixels per panel |
 
-> 单张模式下 `prompt` 输出的是**已经是布局 JSON**，直接喂 `CLIPTextEncode` 就行，
-> 不要再套「生成」节点（它会再解析一次段落）。
-> `width` / `height` 接 `EmptyFlux2LatentImage` 的尺寸。
+> In single mode the `prompt` output is **already layout JSON** — feed it straight to `CLIPTextEncode`. Do **not** chain the storyboard Sampler there; it would parse the JSON as caption blocks again.
 
-**画布怎么用**
+**Blend into one** is a checkbox above the canvas and **exists only in single mode**. It joins neighbouring boxes at their mid-line, snaps boxes near the canvas edge, adds a "one continuous image" clause to the prompt, and fills the `negative` output. Grid mode has no such switch, and its `negative` is always empty.
 
-| 操作 | 结果 |
+**Canvas controls**
+
+| Action | Result |
 |---|---|
-| 在空白处拖 | 画一个新框（一个新元素） |
-| 拖框 / 拖四角 | 移动 / 缩放 |
-| 点框 | 右侧面板改**类型**（物体 / 人物 / 文字）、**描述**、**坐标** |
-| 拖到接近其他框的边、画布中线、三分线 | 自动吸附 |
-| `Delete` / 方向键 / `Ctrl+D` | 删除 / 微移 / 复制 |
-| `Ctrl+Z` / `Ctrl+Shift+Z`（或 `Ctrl+Y`） | 撤销 / 重做（工具栏 `↶` `↷` 同效） |
+| Drag on empty space | Draw a new box (a new element) |
+| Drag a box / its corners | Move / resize |
+| Click a box | Edit type (object / character / text), description, coordinates on the right. In grid mode only **shot size + caption** are shown — type, text and palette are not compiled into a grid prompt |
+| Grid shot-size dropdown | The eight tiers are **presets**; pick Custom… to write your own framing, or Unspecified to send the caption alone. **The UI shows Chinese labels, but the prompt emits an English framing clause** (MOSS is trained mostly on English) |
+| Final prompt box (below the canvas) | Paste an external storyboard script and hit **Apply** to parse `[PANEL n]` back into panels; **Revert** restores the compiled text. The wheel scrolls the text instead of zooming the graph |
+| Drag near another box's edge, the canvas centre line, or the rule-of-thirds lines | Snaps |
+| `Delete` / arrow keys / `Ctrl+D` | Delete / nudge / duplicate |
+| `Ctrl+Z` / `Ctrl+Shift+Z` (or `Ctrl+Y`) | Undo / redo (same as the `↶` `↷` toolbar buttons) |
+| Import / Export | Import elements-v1 (0–1000 bbox) or state v3 JSON; export elements-v1 (a grid cannot be exported) |
+| Raise / Lower + 6-way align | Change stacking (array order = z) or align to canvas edges / centre; size is kept |
+| Queue | Queue the current workflow; changes no values |
 
-**文字元素有两个框，别填混**
+> An external planner's element JSON imports directly as editable items. The CLI validator / converter is in [`docs/12`](https://github.com/ZenHG/ComfyUI-MOSS-Storyboard/blob/main/docs/12-interop.md) and does not need ComfyUI.
 
-| 字段 | 填什么 | 例子 |
+**A final-prompt strip sits under the canvas** (between the status line and the property panel, no scrolling needed). It shows the text handed to the model for the current state: `[STYLE]` + `[PANEL n]` per panel in grid mode, native layout JSON in single mode. Read-only, copyable, and it updates as you edit. It is compiled with the same rules as the backend (a differential test compares them), so it is not a paraphrase.
+
+**Preset placeholders get flagged.** If you queue without editing preset copy such as `标题文字` ("Title") or `第 3 格画面` ("Panel 3"), the text fields get rendered letter by letter and the panels come out alike. The status bar counts them, the Queue button asks once, and the node's `report` says the same thing for API-only users.
+
+**Text elements have two separate fields — do not mix them**
+
+| Field | What goes in | Example |
 |---|---|---|
-| **描述** `caption` | 这个字**长什么样** | 粗体无衬线大标题，浅金色，轻微描边 |
-| **文字** `text` | **实际要渲染的字** | 示例标题 |
+| **caption** | what the text **looks like** | bold sans-serif title, pale gold, slight outline |
+| **text** | the **literal characters to render** | LEGEND |
 
-填反了模型会去画"粗体金色"这几个字。`text` 是唯一会被逐字渲染的字段。
+Swap them and the model will try to draw the words "bold pale gold". Only `text` is rendered verbatim.
 
-> ⚠ **文字框不要贴边。** 实测：框顶距画布边缘 5% 时，文字向上溢出会被裁掉。
-> 预设留的是 10%，但这只比 5% 保守，**不代表 10% 已验证安全**。
+> ⚠ **Keep text boxes away from the canvas edge.** Measured: with the box top at 5% of the canvas height, the glyphs overflow upward and get clipped. Presets use 10%, but that is only a more conservative start than 5% — **10% is not verified as safe**.
 
 ---
 
-### 🎬 故事板 · 宫格几何（`MossStoryboardLayout`，不加载模型）
+### 🎬 Prompt · Draft Compiler (`MossPromptCompiler`, no model)
 
-输出：`width` `height` `columns` `rows` `spec` `layout_json` `template` `report` `elements`
+Bridges OpenMOSS's [MOSS-Image Prompt Enhancer skill](https://github.com/OpenMOSS/MOSS-Image/tree/main/skills/moss-image-prompt-enhancer) to this pack. Paste the skill's **draft** (not its compiled output) and get:
 
-| 参数 | 说明 |
+**Input** — a single multiline box, `draft`. Two shapes: a **caption** draft (`{"caption": "…"}`) compiles to plain text; a **layout** draft (the fields listed below) compiles to one-line native layout JSON. An empty draft raises an error instead of emitting an empty prompt.
+
+- **`prompt`** (output 1) — a ready-to-paste MOSS prompt (plain caption, or one-line native layout JSON). Wire it into `CLIPTextEncode.text` or the Sampler's `positive`.
+- **`report`** (output 2) — type, canvas, item counts, and any field that could not be represented in state.
+- **`state`** (output 3) — for layout drafts, a state v3 JSON you can paste into the Layout Editor import box. The canvas must be 64–4096 px; larger or smaller drafts still compile to `prompt`, and `report` explains why `state` was skipped.
+
+`report` is the **second** socket and `state` the **third** — sockets are wired by position, so check the order before you drag.
+
+Draft requirements (the official schema): `width` / `height` positive multiples of 16; `bbox_coord_space="abs"`; `bbox_format="xyxy"`; `summary.caption` and a non-empty `items` array. Each item is `object` / `character` / `text`; text items must carry the literal `text`. Unknown fields, duplicate keys, NaN/Infinity and out-of-bounds boxes are rejected. The pack adds a **256-item** cap and a 1 MB draft cap.
+
+The skill itself is external Apache-2.0 content and is **not bundled**; the compiler is an independent implementation of the documented schema. Details, limits and the offline confidence check: [prompt-enhancer doc](https://github.com/ZenHG/ComfyUI-MOSS-Storyboard/blob/main/docs/13-prompt-enhancer.md).
+
+---
+
+### 🎬 Storyboard · Grid Layout (`MossStoryboardLayout`, no model)
+
+Outputs nine: `width` `height` `columns` `rows` `spec` `layout_json` `template` `report` `elements`.
+
+- **`width` / `height`** (INT) — canvas size. Wire to `EmptyFlux2LatentImage`.
+- **`columns` / `rows`** (INT) — the layout actually used. Wire them into Split Panels / Paste and those nodes do not need `spec`.
+- **`template`** (IMAGE) — a picture of the grid (flat colours + gutters) for eyeballing where the panels sit. **Never enters the sampler.**
+
+| Input | Notes |
 |---|---|
-| **格数** `panels` | 3 / 4 / 6 / 8 / 9（也接受 1，见常见问题） |
-| **单格比例** `panel_aspect` | 10 种：`16:9` `3:2` `4:3` `1:1` `4:5` `3:4` `2:3` `9:16` `21:9` `2.39:1` |
-| **单格长边** `panel_edge` | 每格长边像素，默认 512 |
-| **缝宽** `gutter` / **外边距** `margin` | 宫格线宽度 / 画布到第一格的距离 |
-| **提示词** `prompt` | **留空是对的**：这个节点只算尺寸。填了也只是给 `layout_json` 和 `elements` 用 |
+| Panel count `panels` | 1–12; 3 / 4 / 6 / 8 / 9 are the usual ones, other values are factored automatically |
+| Panel aspect `panel_aspect` | 10 ratios: `16:9` `3:2` `4:3` `1:1` `4:5` `3:4` `2:3` `9:16` `21:9` `2.39:1` |
+| Panel long edge `panel_edge` | long edge of one panel in pixels, default 512 |
+| Gutter `gutter` / margin `margin` | grid-line width / distance from the canvas edge to the first panel |
+| Prompt `prompt` | **Leaving it empty is correct**: this node only computes geometry. If you do fill it, the text only feeds `layout_json` and `elements` |
 
-几个输出值得单独说：
+- **`spec`** — one string carrying all geometry. Feed it downstream and nothing can drift.
+- **`layout_json`** — same format as the host's native `MOSS-Image Layout Prompt` (`summary` + `items`; bboxes are absolute pixels measured from the canvas centre).
+- **`elements`** — the canvas **element** format (`{type, desc, bbox}`, bbox **normalized to 0–1000**, `[y0, x0, y1, x1]`). Feed it to the `bboxes` input of the host's `Create Bounding Boxes` to see the cells and edit each cell's description there. `bboxes` is a MultiType input — this string is one of the three kinds it accepts.
 
-- **`spec`**：一串文字，把格数、画布、每格坐标全带上（`MOSS-SB1 panels=4 w=1024 h=576 cols=2 …`）。
-  接给下游节点，就绝不会和生成时错位。
-- **`layout_json`**：和宿主原生 `MOSS-Image Layout Prompt` **同格式**
-  （`summary` + `items`，bbox 是**画布中心原点的绝对像素**）。直接接 `CLIPTextEncode`。
-- **`elements`**：画布的**元素**格式（`{type, desc, bbox}`，bbox 是 **0–1000 归一化**、
-  `[y0, x0, y1, x1]`）。接到宿主 `Create Bounding Boxes` 的 `bboxes`（字符串输入），
-  就能在画布上看格子、改每格描述。坐标已验证与实际格子逐像素吻合。
-
-  接的时候**必须接三条线**，少一条框就全错：
+  Wire **all three** lines. Missing one silently corrupts every box:
 
   ```
   width    → Create Bounding Boxes · width
@@ -329,328 +507,304 @@ git clone https://github.com/ZenHG/ComfyUI-MOSS-Storyboard
   elements → Create Bounding Boxes · bboxes
   ```
 
-  原因：`elements` 的 bbox 是 0–1000 归一化，画布节点要用 `width`/`height` 把它换成像素。
-  画布节点的默认值是 1024×1024；8 格横条画布是 2032×576 ⇒ 不接线就是**静默错框**。
+  Why: the bbox is normalized 0–1000, and the canvas node needs `width` / `height` to convert it to pixels. That canvas defaults to 1024×1024; an 8-panel strip is 2032×576, so leaving them unwired misplaces every box without any error.
 
-  ⚠ **两套格式不通用。** `elements` 是画布元素（归一化 0–1000）；`layout_json` 是完整布局
-  JSON（`summary` + `items`，绝对像素）。互相替换都不能直接读。
+  Coordinates are rounded to 0–1000 integers on the way back, so a box need not land on the same pixel. The tests assert the format, not pixel equality.
 
-  ⚠ **画布上拖框改不了出图。** 「逐格」模式下每格独立采样，框只决定拼版位置；
-  「整张」模式下框才参与构图。两种模式的差别见 `docs/07`。
-- **`report`**：给人看的一行总结——格数、画布、像素数、提示词对齐了几段、有没有超像素警告。
+  ⚠ **`elements` is a one-way output.** It is there so you can look at the cells and edit descriptions in the host node. **Nothing you change there comes back into this pack** — the Sampler has no `elements` input. Sampling geometry comes from `spec` and the `[PANEL n]` blocks.
 
-### 🎬 故事板 · 生成（`MossStoryboardSampler`）
+  ⚠ **The two formats are not interchangeable.** `elements` is canvas elements (normalized 0–1000); `layout_json` is the full layout JSON (`summary` + `items`, absolute pixels).
 
-输出：`grid`（整图）`panels`（逐格）`latent` `spec` `prompt_used` `report`
+  ⚠ **The grid's `elements` output only describes panel slots**: one `{"type":"obj"}` item per cell, with that cell's caption as `desc`. It carries no text elements, font size or colour. For in-image text use the editor's text elements or the host `MOSSImageLayoutPrompt` path.
 
-下表是**节点的出厂默认值**。仓库里那份交付工作流已经调好了 4 格 / 4 步 / 单格长边 496，
-照它跑不用逐项改。
+- **`report`** — human-readable summary (panels, canvas, MP, caption alignment, warnings).
 
-| 参数 | 出厂默认 | 说明 |
+### 🎬 Storyboard · Generate (`MossStoryboardSampler`)
+
+Outputs `grid` `panels` `latent` `spec` `prompt_used` `report` `prompts_json` — **seven**.
+
+- **`prompt_used`** — the **script you typed**, passed straight through. It is **not** what the model saw: the per-panel text actually sent lives in `prompts_json`. Use `prompt_used` to check "what did I write", `prompts_json` to check "what did the model read".
+- **`latent`** — whole-canvas mode: the full-canvas latent; per-panel mode: a batch of N single-panel latents (`{"samples": [N,C,h,w]}`, row-major = panels 1..N, **not** a spatial stitch). Wire it to `VAEDecode` to decode the batch panel by panel.
+- **`prompts_json`** — the text handed to the model, as a JSON array: one entry in `整张` mode, one entry per panel in `逐格` mode (global paragraph included, multi-panel wording stripped). Wire it to a text file if you want to audit prompts later.
+
+Factory defaults below. The shipped workflow uses **4 panels / panel edge 496** and ships at the **MOSS-Image-SFT model card settings — 50 steps / cfg 3 / euler / sgm_uniform**.
+
+| Parameter | Factory default | Notes |
 |---|---|---|
-| **正面提示词** `positive` | 空 | 故事板稿，写法见上一节 |
-| **生成方式** `mode` | 整张 | `整张` 一次采样出整张；`逐格` 每格独立采样再拼版。见下表 |
-| **格数** `panels` | 8 | 没接 `spec` 时生效 |
-| **单格比例** `panel_aspect` | `16:9` | 没接 `spec` 时生效（10 种比例可选） |
-| **单格长边** `panel_edge` | 512 | 没接 `spec` 时生效 |
-| **画布比例** `canvas_aspect` | `auto` | 没接 `spec` 时生效：`auto` 会挑最接近的排法 |
-| **缝宽** `gutter` / **外边距** `margin` | 8 / 8 | 没接 `spec` 时生效 |
-| **步数** `steps` | 35 | 配 4 步蒸馏 LoRA 时改成 **4**。两种配错都会出糊图或黑图 |
-| **CFG** `cfg` | 1.0 | 实测配方。调到 >1 才需要负面提示词（负面在「高级」里） |
-| **锁定方式** `init` | `auto` | 见下表 |
-| **降噪强度** `denoise` | 1.0 | 留 1.0。采样器**没有图像输入**：调 <1 不会参考任何图，只会让宿主按 `int(步数/降噪)` 截断 sigma（等于少跑几步），`report` 打印「名义 / 实际」 |
-| **复绘宫格线** `reborder` | 开 | 解码后重画线。关掉就只能指望模型把线画直 |
-| **采样边长** `sample_edge` | 1024 | 只在 `逐格` 模式生效，见下 |
-| **负面提示词** `negative` | 空 | 在**「高级」**折叠区里。`cfg=1.0` 时填了也不生效（见下） |
+| Positive prompt `positive` | empty | See prompt rules above |
+| Generation mode `mode` | `整张` | `整张` (whole canvas) = one sampling pass for the whole board; `逐格` (per panel) = sample every panel on its own and assemble. See below |
+| Panel count `panels` | 8 | used when `spec` is absent |
+| Panel aspect `panel_aspect` | `16:9` | used when `spec` is absent (10 ratios) |
+| Panel long edge `panel_edge` | 512 | used when `spec` is absent |
+| Canvas aspect `canvas_aspect` | `auto` | used when `spec` is absent |
+| Gutter `gutter` / margin `margin` | 8 / 8 | used when `spec` is absent |
+| Steps `steps` | 50 | MOSS-Image-SFT model card value (the Base card gives the same 50). Set **4–8 only** with the 4-step distilled LoRA. Mixing bands does not raise an error, but results degrade (sometimes fully black) — see Known limits and the FAQ |
+| CFG `cfg` | 3.0 | MOSS-Image-SFT model card value (official Base range: 3–6). Only **exactly 1.0** disables the negative prompt |
+| Sampler / scheduler | `euler` / `sgm_uniform` | `euler` is the model card sampler; `sgm_uniform` comes from the official OpenMOSS ComfyUI plugin workflow (the model card does not specify a scheduler). **The scheduler list is read from the host** (`comfy.samplers.SCHEDULER_NAMES`), so new host schedulers appear automatically |
+| Init mode `init` | `auto` | see below |
+| Denoise `denoise` | 1.0 | Keep 1.0. The sampler has **no image input**: below 1 references no image, it only makes the host truncate sigma by `int(steps/denoise)` (equivalent to fewer steps); `report` prints nominal vs. effective |
+| Redraw grid lines `reborder` | on | redraw grid lines after decode |
+| Sample edge `sample_edge` | 1024 | per-panel mode only, see below |
+| Negative prompt `negative` | empty | in the **Advanced** fold, optional. At **exactly `cfg = 1.0`** the host skips the negative branch entirely; any other value, including 1.01, evaluates it |
+| Random seed `seed` | 0 | 0–4294967295. **The same seed plus the same settings is the only way to reproduce an image.** Changing it changes the composition — and how closely the boxes are followed |
 
-**`mode`（生成方式）两个选项**
+> Why `negative` is folded away: it is an **optional** input that defaults to empty. The model card's `cfg = 3` is above 1, so anything you type does reach the negative branch. Folding it under **Advanced** only stops it from looking required.
 
-| 选项 | 实际做什么 | 什么时候用 |
+**`mode` (how the panels are produced)**
+
+> ⚠ **Two similar terms, opposite meanings.** **Single mode** = the Layout Editor's one-image, no-panel layout (posters, covers). **`整张`** = this node's whole-canvas option: one canvas split into N panels, generated in one pass. The table below is about the latter.
+
+| Option | What it does | Pick it when |
 |---|---|---|
-| `整张` | **默认**。一次采样出整张宫格，快 | 只想看个大概、格数多（8/9 格）时 |
-| `逐格` | 每格**独立采样**再按坐标拼版，慢 N 倍 | **同一角色要跨格统一**时 |
+| `整张` (whole canvas) | **Default.** One sampling pass for the whole board: faster, and the same face is more stable across panels | You want the board in one go, or many panels (8/9) |
+| `逐格` (per panel) | Every panel is **sampled on its own**, then assembled by coordinates — one sampling pass per panel, so it is slower | You need to **rework one panel** later, or want more pixels per panel |
 
-> **为什么逐格更一致**：整张生成时模型把全局描述摊薄到 N 个区域，每格各"想象"一遍，
-> 于是同一角色在不同格里帽子颜色、脸型会飘。逐格时每格独立完整地读一遍全局描述，
-> 角色特征明显统一。
->
-> **实测（4 格 / 16:9 / 8 步 / cfg 1.0 / 同一提示词）**：同一角色的红帽在四格中的
-> 出现比例方差，整张 `0.0036` → 逐格 `0.00004`（统一约 90 倍）；红帽本身也更实。
->
-> **代价**：耗时约 N 倍（4 格 27s → 60s），显存峰值由单格 `sample_edge` 与画布尺寸决定。
+**The same face: measured.** ArcFace cosine over three pairs of the same woman — whole canvas `0.553` **>** per panel `0.479` (one scene, one seed; the same ruler, so only the relative order means anything here). 35% of the positive pairs had no detectable face, so **we report the number, we do not use it as a pass/fail gate, and we set no threshold.** Absolute cut-offs do not transfer between domains: images this model produces of *different* East Asian women already score around `0.52`, so the usual "above 0.5 means the same person" rule is wrong in both directions here. This page therefore gives relative only, never a pass mark.
 
-**`sample_edge`（采样边长）**
+**Caliber.** Those numbers come from the current default **50 steps / cfg 3.0** run ([`docs/data/g2-50-3.json`](docs/data/g2-50-3.json), 2026-10-27). The older 8-step / cfg 1.0 / distil-LoRA set is **not this caliber and cannot be compared across** — it is kept as history in `docs/07` §2.3 only.
 
-逐格模式最大的优势在这里：单格的**采样**分辨率不受整张宫格尺寸约束。
-`1024` = 每格按 1024×N 采样，再缩回最终格子 ⇒ 每格更清晰。
+**Per-panel detail: structural.** In `逐格` each panel is sampled at `sample_edge`, which can be larger than the final cell, then downscaled into it. That is the mechanism behind the extra detail — mechanism, not measured, and this pack publishes no sharpness numbers.
 
-给的是**绝对像素**而不是倍数，与宿主 `Empty Flux 2 Latent` 的心智一致；
-也让「画质需求」（采样多大）和「排版需求」（格子多大）互不绑架。
+**We promise no cross-panel consistency.** Our own whole-canvas vs per-panel metrics (prop-share variance, tone spread, inter-panel difference) change direction between the human and the animal scene, so we name no winner from them. The certain gain of per-panel is that **you can redo a single panel without re-running the board**.
 
-> 实测（4 格 / 16:9 / 8 步）：`496` 偏糊 → `992` 最优（清晰度 +45%）→
-> `1984` **反而变松**（构图变散）。所以不是越大越好，`1024` 是稳妥默认。
+> Mechanism, not measured: in one pass the model spreads the global description over N regions and may settle on one face; per panel each pass re-reads the whole description and rolls the face again. That is the likely reason for the ArcFace gap, not a measured cause.
 
-代价是显存与耗时按像素平方涨。`整张` 模式忽略这个参数。
+> Also: **for whole-canvas mode the global caption must declare the grid** — see [`docs/15`](https://github.com/ZenHG/ComfyUI-MOSS-Storyboard/blob/main/docs/15-recipe-contract.md).
 
-> ⚠ **单格分辨率才是画质瓶颈**。MOSS 训练在 1–2MP，而 9 格 1:1 时每格只分到
-> **0.26MP**——整图看着正常，每格却明显糊。节点的 `report` 会同时报这两个数字。
-> 格数多、比例接近 1:1 时，优先用 `逐格` 模式。
+**`sample_edge` (sampling long edge)**
 
-**`init`（送提示词的方式）三个选项**
+The advantage of per-panel mode: a panel's **sampled** resolution is not bound by the board size. `1024` samples each panel at a 1024-pixel long edge and downscales it into its final cell. It is an **absolute pixel count**, not a multiplier — matching the host's `Empty Flux 2 Latent`, and keeping the quality knob independent of the layout knob.
 
-| 选项 | 界面显示 | 实际做什么 |
+> One local scan, 4 panels / 16:9: `496` came out soft, `992` sharper, `1984` looser (composition drifts apart). The scan did not include `1024`, and the sample size is not recorded. So the factory `1024` is a starting point, not a measured optimum — [`docs/07`](https://github.com/ZenHG/ComfyUI-MOSS-Storyboard/blob/main/docs/07-consistency.md) records "1024–1408 sharp but tone drifts".
+
+VRAM scales with the pixel count. Ignored in whole-canvas mode.
+
+> ⚠ **Per-panel resolution is where quality usually breaks first.** MOSS trains at 1–2 MP, while a 1:1 nine-panel board gives each panel only **0.26 MP** — the canvas looks fine, every panel is visibly soft. The node's `report` prints both numbers. With many panels and a near-square ratio, try `逐格`.
+> In `逐格` that warning reads the **per-panel sampling canvas** (`sample_edge`) instead of the final cell size — the assembled grid is never fed to the model.
+
+`init` values: `auto` / `layout` = panel captions become layout boxes (default); `plain` = no layout boxes. In **whole-canvas** mode that is the raw full prompt; in **per-panel** mode each cell gets the global caption (multi-panel wording stripped) plus that cell's caption — not the raw full prompt, so cross-panel anchors survive.
+
+> **No img2img in this pack.** The latent always starts empty; keep `denoise` at 1.0. Template-latent initialisation was measured and does not work: 35 steps / denoise 0.85 → fully black; 12 steps / 0.6 and 4 steps / 0.5 → template ghosting. The template image is only an `IMAGE` output of `MossStoryboardLayout` for eyeballing the grid geometry — it never enters the sampler.
+> To rework an **existing** image, see **🎬 Storyboard · Paste Panel** below — that path works, and it does not require re-running the whole board.
+
+### 🎬 Storyboard · Split Panels (`MossStoryboardCrop`)
+
+**Inputs** — only `image` must be connected; everything else can stay at its default:
+
+| Input | Default | Notes |
 |---|---|---|
-| `auto` | 自动（纯布局） | **默认**。把每格描述转成布局框，纯生成。等价于 `layout` |
-| `layout` | 纯布局 | 同上，显式写法 |
-| `plain` | 原样提示词 | 整段提示词直接送模型，不转布局框。等于普通文生图 |
+| `image` | — | **required.** the full board (`KSampler → VAEDecode`) |
+| `spec` | empty | from Generate or Grid Layout ⇒ crops land exactly where the board was generated. **Without it you must fill `columns` / `rows`** |
+| `columns` / `rows` | 0 / 0 | **required when there is no `spec`**; leaving them at 0 raises instead of guessing |
+| `index` | -1 | `-1` outputs every panel; a 0-based number outputs that one panel and emits the number on the `index` output |
+| `shave` | 0 | pixels trimmed from each side of a panel, to eat an overflowing gutter. If you change it, use the same value in Paste |
+| `resize_edge` | 0 | `0` keeps the original size (recommended); `>0` scales each panel's long edge to that value |
+| `target_aspect` | `keep` | keeps the panel's own ratio (no resampling); a specific ratio centre-crops |
+| `padding_mode` | `crop` | `crop` trims the excess; `pad` adds black bars (loses nothing) |
+| `show_guides` | off | advanced. draws red crop lines on `preview` for eyeballing |
 
-> **本包不做图生图。** 起点恒为空 latent，`denoise` 留 1.0。
-> 实测过模板 latent 起点这条路：35 步 / 降噪 0.85 → 纯黑；12 步 / 0.6 与 4 步 / 0.5 → 模板残影。
-> 只要降噪真的截断了 sigma，模型就不改动 latent。模板图只作为 `MossStoryboardLayout` 的一路
-> `IMAGE` 输出，用来肉眼核对格子位置，不进采样器。
-> 想改一张**已有图**的内容，看下一节「只改一格」——那条路是通的，而且不用重跑整张。
+**Outputs** `panels` (per-panel images), `preview` (the full canvas as-is), `report`, `index` (the panel number).
 
-> 为什么 `negative` 默认收起来：MOSS 实测用 `cfg=1.0`，而 ComfyUI 在 `cfg=1` 时
-> **直接跳过负面分支**，那段根本不进计算图。摆在明面上只会让人以为"写了就生效"。
-> 想用负面：把 `cfg` 调到 >1，再展开节点上的「高级」。
+With `spec` → no resampling: the crop uses the same integers that generated the board. Without `spec` → `columns × rows` must divide the image evenly, and the node **raises** otherwise.
 
-### 🎬 故事板 · 裁格（`MossStoryboardCrop`）
+`index` left at -1 (the default) outputs every panel. A 0-based panel number outputs just that one and emits it on the `index` output — wire that into Paste and you never type a panel number by hand.
 
-输出：`panels`（逐格 `IMAGE`）`preview`（带裁切线的整图）`report`（切了几格、每格坐标）`index`（格号）
+### 🎬 Storyboard · Paste Panel (`MossStoryboardPaste`)
 
-- 接 `spec` ⇒ 与生成时逐像素一致。
-- 不接 `spec` ⇒ 按**列数 × 行数**整除图像；除不尽**直接报错**，不会凑出差 1 像素的格子。
-- **`index` 填 -1（默认）= 输出全部格子**，行为与之前一致。填 0 起的格号 = 只输出那一格，
-  同时把格号送到 `index` 输出上 —— 接给「贴回」节点就不用手打格号。
+**Inputs**
 
-### 🎬 故事板 · 贴回（`MossStoryboardPaste`）
-
-输入：`grid`（整张宫格）`panel`（改好的那一格）`index`（贴到第几格）
-输出：`grid`（改好的整张宫格）`marked`（调试用，把贴回区域框红）`report`
-
-**用途：只改一格，不重跑整张。** 宫格采样一次要几十秒到几分钟，而某一格不对时重跑会把
-所有格的种子一起动掉。正确的做法是：把那一格裁出来 → 用你习惯的编辑方式改好 → 用本节点
-按 `spec` 的坐标贴回去。
-
-- **`index` 从 0 起、行主序**（从左到右、从上到下）。接了裁格的 `index` 输出就以它为准，
-  不会和"裁的是哪一格"对不上。
-- **只动目标格的内容区**：缝和外边距一个字节都不碰，宫格线保持原样，其它格完全不变。
-- **`shave` 必须与裁格时一致**。裁的时候内缩了 s 像素，贴回就要写在缩过的矩形里，
-  不一致会让内容整体偏移 s 像素 —— 而且不报错，所以请照 report 核对。
-- **输入尺寸和格子不一致时会重采样**，并在 report 里出声。要逐像素一致：
-  裁格的 `resize_edge=0`、`target_aspect=keep`、`shave` 与本节点相同。
-- **想改多格就串联多个本节点**：第一个的输出 `grid` 接第二个的输入 `grid`，各改各的格。
-
-> 现成工作流：`examples/moss-storyboard-4panels-edit.json`（需要 `Moss-Image-Edit` LoRA / 编辑节点；节点内有说明）。
-
-**推荐接法**（格号全程不用手打）：
-
-```
-裁格（index 填要改的那格）─panel─→ 你的编辑流程 ─→ 贴回
-裁格 ──index──────────────────────────────→ 贴回
-生成 ──grid────────────────────────────────→ 贴回
-生成 ──spec────────────────────────────────→ 贴回 / 裁格
-```
-
-#### 「你的编辑流程」怎么搭（可选，本包自身不需要任何 LoRA）
-
-本包只负责几何：裁出来、贴回去。**中间那一步编辑用什么，随你**——可以用任何你熟悉的
-工具（其它节点包、外部修图、甚至手改后重新载入）。
-
-如果你想直接用 MOSS 自己的指令编辑，宿主的官方节点就能做，不需要装第三方节点包：
-
-```
-裁格(index) ──→ Text Encode MOSS-Image Edit ──→ KSampler ──→ VAEDecode ──→ 贴回
-                     ↑ 需要下面这个 LoRA
-```
-
-做法：
-
-1. 下载社区编辑 LoRA **Moss-Image-Edit**（约 285 MB，bf16，rank 64）——
-   两个源任选，文件相同：
-   - Hugging Face：<https://huggingface.co/chinoll/Moss-Image-Edit>
-   - 魔搭 ModelScope：<https://www.modelscope.cn/models/ChenkinLab/Moss-Image-Edit>
-2. 把 `adapter_model.safetensors` 和 `adapter_config.json` 放到
-   **`models/loras/Moss-Image-Edit/`**（新建这个子目录，两个文件放一起）。
-3. 工作流里用宿主的 **`Text Encode MOSS-Image Edit`** 节点：
-   - `clip` 接你的 CLIPLoader（`type=moss_image`）
-   - `images` 接裁出来的那一格
-   - `edit_format` 选 `Moss-Image-Edit`
-   - **`vae` 可以不接**：不接时参考图只进文本编码器，更省显存，也不会把参考图的空间结构
-     强加到结果上。接了就会额外用参考 latent，构图保持更强但更吃显存。
-4. 后面接普通 `KSampler`（建议 30 步 / cfg 4）→ `VAEDecode` → 本包的「贴回」。
-
-**它能做什么、不能做什么**（实测）：改颜色、服装、光照、季节、风格——这些指令服从度好；
-保持构图的能力来自参考图本身，不接 `vae` 时构图保持会减弱。**它不擅长"换个机位重新画"**，
-那还是得走布局提示词重新生成。
-
-⚠ **它不是跨格一致性方案。** 拿它把某一格往其它格靠，会让景别趋同 ——
-每格越来越像同一张图，而故事板要的是「同一角色、不同景别」。
-跨格一致性只走**逐格独立采样 + 全局段锚定**（见 [`docs/07`](docs/07-consistency.md)）。
-这个 LoRA 的定位是**单格微调**：改一格的颜色、服装、光线，改完贴回。
-
-> **许可与边界**：这个 LoRA 是第三方社区权重，**不随本包分发**，也不由本包维护。
-> 其模型卡标注代码部分为 GPLv3，权重许可以模型卡为准。本包只在使用文档里指向它，
-> 不复制、不修改、不分发任何权重文件。本包自身（MIT）不依赖它——不下载也能完整使用
-> 故事板生成与贴回。
-
----
-
-## 节点中英切换
-
-每个**本包节点**的标题栏上有一个「**中 / EN**」按钮。点一下，本包五个节点的
-标题、参数标签、下拉框显示、悬浮提示一起切换。默认跟随 ComfyUI 的语言设置。
-
-- **只改本包节点**，官方和别人的节点一个字节都不动。
-- **只改显示，不改图**：只动标签、标题、提示、输入框占位文字；参数名和下拉框的**值**从不改
-  ⇒ 工作流 JSON 一个字节都不变。你自己改过的节点标题也会保留。
-- **升级后必须刷新浏览器页面（F5）**。重启 ComfyUI 进程不算——前端是单页应用，
-  页面开着就一直跑旧 JS。
-- **不用前端也能用**：后端文案是英文，JS 加载失败只是没有中文，不会报错；
-  API 提交（`/prompt`）本来就用不上按钮。
-
-看不到按钮、或者想改词表：见 [`docs/04`](docs/04-i18n-and-widgets.md)（含三行诊断命令）。
-
----
-
-## 已知边界（报 bug 前先看这里）
-
-### 实测通过的
-
-**下表除第一行外，全部叠加了蒸馏 LoRA。** 只用官方底模、30–50 步的配置另见文末说明。
-
-| 项 | 配置 | 结论 | 抽查 |
-|---|---|---|---|
-| 3/4/6/8/9 格 · 横竖 · 无缝 · 粗缝 · 小画布 · `plain` | 官方底模 + 4 步 LoRA / **4 步** | 尺寸与理论值逐像素一致 | 15 次 |
-| 宫格线 | 同上 | 复绘后缝与外框纯白 | 每例 |
-| 随机种子 | 同上 | 换种子 → md5 不同 | 2 次 |
-| **元素框限定构图** | 官方底模 + 4 步 LoRA / **4 步**；官方底模 + 8 步 LoRA / **8 步** | 只换框：自行车从"被裁掉"变成"完整在左下角"；3 个 seed 复现 | 36 张（docs/08 §八） |
-| **文字四字**（1024×576） | 官方底模 + 8 步 LoRA / **8 步** | 四字中文标题全对 | 1 张 |
-| **文字四字**（2048×1152） | 官方底模 + 4 步 LoRA / **4 步** | 全对，笔画略软 | 1 张 |
-| **文字四字**（2048×1152） | 官方底模 + 8 步 LoRA / **8 步** | 全对，笔画锐利 | 2 张 |
-| **中英混排 / 两行 / 指定颜色** | 官方底模 + 8 步 LoRA / **8 步** | 全对；换行被尊重；红色生效 | 3 张 |
-
-> **只用官方底模、不叠 LoRA 的配置**：跑过一张 2048×1152 / 30 步 / cfg 3.5 的对照，
-> 出图正常，但**没有逐字核对文字**，所以不作为结论。这一档需要你自己验证。
-
-### 文字：能到哪、到不了哪
-
-| 项 | 结论 | 配置 |
+| Input | Default | Notes |
 |---|---|---|
-| 分辨率 | 1024×576 已够；2048 只是笔画更锐 | 8 步 LoRA / 8 步 |
-| 步数 | 4 步可用但边缘软；8 步明显更锐；16 步没有进一步收益 | 对应 LoRA |
-| 字号 | 框高到画布 1/20（约 43px）仍全对 | 1536×864 与 2048×1152 |
-| 换行 | `text` 里的 `\n` 被尊重，两行各自成型 | 2048×1152 / 8 步 |
-| 颜色 | `palette: ["#d92b2b"]` 生效 | 2048×1152 / 8 步 |
-| **框高控不住字号** | 43px 高的框，实际字高约 130px，**字会溢出框**。要控字号，靠框的**宽度**和文案长度 | — |
-| **贴边会被裁** | 框顶距边缘 5% 时，字向上溢出被画布切掉，2 个 seed 都出现 | 2048×1152 / 8 步 |
+| `grid` | — | **required.** the full board (Generate's `grid`, or the previous Paste's output) |
+| `panel` | — | **required.** the corrected panel (a single image). Feeding Split Panels' one-panel output is the safest |
+| `index` | 0 | which panel to write, **0-based, row-major**. Wiring Split Panels' `index` output overrides it, so they cannot disagree |
+| `shave` | 0 | **must match the value used when cropping** — see below |
+| `spec` | empty | exact placement needs it; without it, fill `columns` / `rows` |
+| `columns` / `rows` | 0 / 0 | required when there is no `spec` |
+| `show_guides` | off | advanced. frames the pasted region in pure red on `marked` |
 
-> 样本量很小（每项 1–2 张）。「四字全对」在多组配置下重复出现，但**不作保证**；
-> 「贴边被裁」只在红色那组复现过，**其他颜色没测**，保守做法是一律留边。
-> 预设把文字框留在 10%，**10% 是否足够安全同样没验证** —— 它只是比 5% 更保守的起点。
+**Outputs** `grid` (the corrected board), `marked` (debug), `report`.
 
-### 这一版做不到的
+**Purpose: fix one panel without re-running the whole board.** Re-running moves the seed of every panel at once. Instead: cut the panel out, correct it however you like, then paste it back at the `spec` coordinates.
 
-- 🔴 **不做图生图。** 本包只从空白画布生成。要拿参考图改已有画面，用宿主的
-  `Text Encode MOSS-Image Edit`（见「改一格」一节），那是另一条链路。
-- ⚠ **步数与 cfg 要按「有没有叠 LoRA」分两档配。** 官方模型（不叠 LoRA）建议 30–50 步 /
-  cfg 3–5；叠加 4 步蒸馏 LoRA 建议 4–8 步 / cfg 1.0——蒸馏 LoRA 就是按 cfg 1 蒸的，
-  调高会破坏蒸馏效果。两档混搭（例如叠了 LoRA 却用 35 步）不会报错，只是白跑。
-- ⚠ **`denoise` 请留 1.0。** 它没有任何图像可参考，调低只会截断 sigma（少跑几步）；
-  `report` 会打印「名义 / 实际」，以实际值为准。
-- **每格画什么只是"大体照办"。** MOSS 的布局能力官方标 *experimental*，本包没做成片评分。
-- **8/9 格每格只有约 496×272。** 小字、细纹理最先糊——这是分辨率账，不是节点 bug。
+- `index` is 0-based, row-major (left to right, top to bottom). Wiring Crop's `index` output overrides the widget, so it cannot disagree with the panel you actually cut.
+- Only the target panel's content area is touched: gutters, margins and every other panel stay identical, and the grid lines are preserved.
+- `shave` must match what you used on Crop. Both nodes inset each cell by `shave`; a mismatch makes the incoming panel size differ from the target rectangle, so it is **bicubically resampled** (scaled, with a different border) — not shifted by s pixels. `report` states the resample explicitly; check it.
+- For a round trip with no resampling, use Crop with `resize_edge=0`, `target_aspect=keep`, and the same `shave`.
+- To fix several panels, chain Paste nodes: the first `grid` output feeds the next `grid` input.
 
-### 硬约束
+> Ready-made graph: `examples/moss-storyboard-4panels-edit.json` (needs the `Moss-Image-Edit` LoRA / edit node; the node contains instructions).
 
-- 画布与单格的宽高必须是 **16 的倍数**（节点已强制；手改 `spec` 会被拒绝）。
-- 整图超过 2 百万像素会提示，超过 4 百万像素会强提示：MOSS 训练在 1–2 百万像素，官方外推约 4 百万。
-- **VAE 的解码精度由 ComfyUI 决定，不由权重文件决定。** 宿主加载 VAE 时会把它统一转到
-  `fp16`（或你的 GPU 不支持时退到 `bf16`/`fp32`），所以 `flux2-vae.safetensors`（F32）
-  和 `flux2-vae_BF16.safetensors`（BF16）**跑起来是同一精度、速度几乎相同**——文件里的
-  dtype 在加载时就被归一化了，只剩磁盘占用和加载内存的差别。想要真正的 fp32 解码，
-  用宿主的启动参数 `--fp32-vae`，本包不做第二套精度逻辑（那会和宿主的 `VAEDecode` 行为分叉）。
-  另外一个通用的绕法：本包「生成」节点有 `latent` 输出，接你自己的 `VAEDecode` 节点，
-  用什么 VAE、什么精度都随你。
-
----
-
-## 常见问题
-
-**Q：跑到 VAE 解码就 OOM，或者出图有淡淡的横向接缝。**
-两者是同一件事：显存不够 → 宿主退回分块解码 → 分块边界留下接缝。先看日志有没有
-`retrying with tiled VAE decoding`。有的话按 [显存要多少](#显存要多少) 处理；
-最省事的一步是 `git pull` 更新宿主（旧版把 VAE 解码显存算成了实际的 4 倍）。
-
-**Q：跑出来一片黑。**
-先看 `report` 的「降噪 名义/实际」和步数。最常见的原因是**两档配错了**：装了 4 步蒸馏 LoRA
-却用了 35 步 / cfg 3，或者没装 LoRA 却用了 4 步 / cfg 1.0。按「这一版做不到的」里那张两档表配。
-
-**Q：格子数量对，但内容串了 / 全挤在一格里。**
-布局框只是"建议"，模型可能不照办。先把每格描述写短、写具体（一个镜头一句话），
-再检查 `report` 里"解析了几段面板描述"是否等于格数。
-
-**Q：生成出来的图和预览的宫格形状不一样。**
-检查是否同时接了「宫格几何」的 `spec`；接了就以 `spec` 为准，采样器上的格数参数会被忽略。
-
-**Q：找不到节点。**
-节点在 `moss/storyboard` 分类下。搜索框打 `故事板`、`storyboard`、`宫格` 都能找到
-（本包注册了中英搜索别名）。还是找不到，先看启动日志有没有 `[MOSS SB]` 那行。
-
-**Q：没有「中 / EN」按钮。**
-① 刷新浏览器（F5）；② 确认只有本包节点上才有按钮，官方节点不会有；
-③ 控制台看有没有 `[MOSS SB] i18n: 就绪`，细节见 [`docs/04`](docs/04-i18n-and-widgets.md)。
-
-**Q：能不能用我自己的负面提示词？**
-能，但要先把 `CFG` 调到 >1，再在节点的「高级」里展开「负面提示词」。`cfg=1.0` 时它不进计算图。
-
-**Q：能不能只生成一张普通图，不分格？**
-用「布局编辑器」的单张模式（推荐），或在「生成」上把 `panels` 设为 1。
-`init=plain` 只改提示词送法，不取消宫格几何。
-
----
-
-## 目录结构
+Recommended wiring (no manual panel numbers anywhere):
 
 ```
-ComfyUI-MOSS-Storyboard/
-├── __init__.py            加载入口（V3 默认，V1 一行回退）
-├── nodes.py               节点定义（参数表的唯一来源）
-├── core/                  纯 Python 内核：几何 / 提示词 / 像素 / 采样
-├── v3/                    V3 接口外壳
-├── web/                   前端扩展（中英切换 + 布局编辑器）
-├── tests/ tools/          自动机检与开发脚本
-├── examples/              4 份用户示例（机检夹具在 tests/fixtures/）
-├── docs/                  机理与实测记录
-└── pyproject.toml         元数据 + 宿主版本要求
+Crop (index set) ──panel──→ your edit chain ──→ Paste
+Crop ──index──────────────────────────────────→ Paste
+Sampler ──grid────────────────────────────────→ Paste
+Sampler ──spec────────────────────────────────→ Paste / Crop
 ```
 
+#### How to build "your edit chain" (optional — this pack needs no LoRA at all)
+
+This pack only does geometry: cut a panel out, paste it back. **What you edit with is up to you** — any node pack you already like, external retouching, or even hand-editing the file and reloading it.
+
+If you want MOSS's own instruction editing, the host's official nodes are enough — no third-party node pack required:
+
+```
+Crop (index) ──→ Text Encode MOSS-Image Edit ──→ KSampler ──→ VAEDecode ──→ Paste
+                     ↑ needs the LoRA below
+```
+
+Steps:
+
+1. Download the community edit LoRA **Moss-Image-Edit** (~285 MB, bf16, rank 64) — either source, same files:
+   - Hugging Face: <https://huggingface.co/chinoll/Moss-Image-Edit>
+   - ModelScope: <https://www.modelscope.cn/models/ChenkinLab/Moss-Image-Edit>
+2. Put `adapter_model.safetensors` and `adapter_config.json` into **`models/loras/Moss-Image-Edit/`** (create the subdirectory, both files together).
+3. Use the host's **`Text Encode MOSS-Image Edit`** node:
+   - `clip` → your CLIPLoader (`type=moss_image`)
+   - `images` → the panel you cut out
+   - `edit_format` → `Moss-Image-Edit`
+   - **`vae` may be left unwired**: then the reference only reaches the text encoder, which costs less VRAM. Wiring it adds reference latents, which costs more memory.
+4. Follow it with a plain `KSampler` → `VAEDecode` → this pack's Paste. This path is driven by a community LoRA, so the official base defaults do not apply: **30 steps / cfg 4** was measured here; with the 4-step distilled LoRA stacked, **8 steps / cfg 1.0** was the more stable of the two in our runs.
+
+**What it can and cannot do**: colour, outfit, lighting and style instructions were followed well in our runs. **"Re-shoot from another angle" is a documented weak spot** of the model — that still belongs to the layout-prompt route. Whether leaving `vae` unwired weakens composition preservation is untested here; the host only says the reference then reaches the text encoder alone. Mechanism, not measured.
+
+⚠ **It is not a cross-panel consistency solution.** Our own note records one risk: with `vae` wired (reference latents), shot sizes converge — every panel drifts toward the same image, while a storyboard needs "same character, different shot sizes". Whether that also happens with `vae` unwired is untested. This pack promises no cross-panel consistency either way (see the [cross-panel consistency doc](https://github.com/ZenHG/ComfyUI-MOSS-Storyboard/blob/main/docs/07-consistency.md)).
+
+This LoRA is a **single-panel touch-up** tool: fix one panel's colour, outfit or light, then paste back.
+
+> **Licensing and scope**: that LoRA is third-party community weights, **not distributed with this pack** and not maintained by it. Its model card marks the code portion as GPLv3; the weight licence is whatever the card states. This pack only links to it — it does not copy, modify or redistribute any weight file. This pack itself (MIT) does not depend on it: storyboard generation and Paste work fully without downloading anything.
+
 ---
 
-## 许可与出处
+### 🎬 Storyboard · Face Swap (`MossStoryboardFaceSwap`)
 
-- 本包代码 **MIT**。
-- 思路参考与代码归属见 [`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md)（**未复制**任何第三方代码）。
-- 模型权重（MOSS-Image / Qwen3.5 / FLUX.2 VAE）不随包分发，请遵守各自许可。
-- 宿主 ComfyUI 为 GPL-3.0，本包只在进程内 `import`，不复制其源码。
+Reference face → **one panel** (or a single image). MIT, like the rest of the pack.
 
----
-
-## 文档索引
-
-| 文档 | 内容 |
+| | |
 |---|---|
-| [`docs/01`](docs/01-layout-and-panels.md) | 宫格几何数学、`spec` 格式、旧实现 11 项缺陷 |
-| [`docs/02`](docs/02-e2e-matrix.md) | 端到端矩阵实测记录（每条用例的参数与产物） |
-| [`docs/03`](docs/03-open-source-readiness.md) | 开源就绪度自查（覆盖了什么、没覆盖什么） |
-| [`docs/04`](docs/04-i18n-and-widgets.md) | 中英切换与控件机理（维护者向） |
-| [`docs/05`](docs/05-local-development.md) | 本地开发与维护：单一副本、两件"重载"、改动验证顺序、写作规范 |
-| [`docs/06`](docs/06-vae-memory.md) | VAE 解码显存账：公式、宿主版本分水岭、各档画布复算表（维护者向） |
-| [`docs/07`](docs/07-consistency.md) | 跨格一致性：三条机理、实测矩阵、提示词纪律、旋钮边界（维护者向） |
-| [`docs/08`](docs/08-visual-editor-plan.md) | 布局编辑器的设计与实测：bbox 三层性质、36 张元素框实测（维护者向） |
-| [`docs/09`](docs/09-layout-breadth.md) | 广度：六类用途、七种定位范式、原子+预设机制、文字实测（维护者向） |
-| [`docs/10`](docs/10-contract.md) | state v3 冻结契约（实现、示例与测试的唯一真相源） |
-| [`docs/11`](docs/11-editor-ui.md) | 编辑器前端实现：挂载、吸附、预设表（维护者向） |
-| [`AGENTS.md`](AGENTS.md) | **本仓开发规范**：改动入口、铁律、验收清单 |
-| [`CONTRIBUTING.md`](CONTRIBUTING.md) | 怎么跑机检、提交前必须过哪几条 |
-| [`CHANGES.md`](CHANGES.md) | 变更记录 |
+| `ref` → vision channel | decides **who**. `vision_megapixels` default `1.05` (at the host default `0.147` the reference scores about `0.008`, i.e. nothing) |
+| `image` + `prompt` → img2img | decides **what is drawn**. The prompt must mention the reference (`in Picture 1`); the node adds the prefix |
+| `spec` + `index` | only that panel changes — gutters, margins and the other panels stay pixel-identical (measured `max|Δ| = 0`) |
+| `auto_mask` | **On by default.** insightface finds the face and builds the mask for you — no drawing. Needs `pip install insightface onnxruntime`; missing → it says so instead of guessing |
+| `face_pick` | When a panel has several people: `largest` / `left` / `right`. `report` prints how many faces were found and which one was used |
+| `mask` | Optional manual override (**white = repaint**). A wired mask wins over `auto_mask` |
+
+**The mask is the difference between a retouch and a re-render.** With it the palette cannot drift (measured `0.40/255` outside); without it the whole panel is repainted and the grade always shifts (`R +24 … +53`). Keep `auto_mask` on unless you are wiring your own — and if you do wire one, do **not** take it from `LoadImage`'s MASK output (that is the alpha channel; a grey PNG without alpha comes back as 64×64 zeros and the mask silently does nothing) — use `ImageToMask(channel="red")`. Full recipe: [`docs/17`](https://github.com/ZenHG/ComfyUI-MOSS-Storyboard/blob/main/docs/17-faceswap-recipe.md).
+
+Recipe: 8-step DMD2 LoRA **then** the Moss-Image-Edit LoRA · 8 steps / cfg 1.0 / euler + simple · **one** reference image (two views measured worse).
+
+**Known limits**: two people in one panel, pose changes, and chaining two swaps do not work. No identity score is published — the ruler has no discriminating power in this domain. Knobs that were tried and why they stay at their defaults: [`docs/16`](https://github.com/ZenHG/ComfyUI-MOSS-Storyboard/blob/main/docs/16-faceswap-refactor.md).
+
+Example: `examples/moss-faceswap-ui.json`.
+
+---
+
+## Common errors
+
+Our error text is **Chinese** — that is what the node raises, quoted verbatim below, with a short English gloss.
+
+| Error text (verbatim) | Cause | Fix |
+|---|---|---|
+| `提示词有 4 段 [PANEL]，但布局是 8 格。` ("4 caption blocks, but the layout has 8 panels") | `panels` and the number of `[PANEL n]` blocks differ, whole-canvas mode | Set `panels` to 4, write 8 blocks, or set `init` to `plain` |
+| `逐格模式需要 [PANEL n] 分段描述（现在只有全局描述）。` ("per-panel mode needs `[PANEL n]` blocks; only the global paragraph is present") | `mode = 逐格` with no blocks | Add one block per panel |
+| `逐格模式要求每格都有一句描述：提示词只有 4 段，布局有 8 格。` ("every panel needs a caption: 4 blocks, 8 panels") | `mode = 逐格` with fewer blocks than panels | Match the counts; per-panel never fills empty cells |
+| `没接 spec 时必须填 columns 和 rows（都 >0），否则无法确定裁切框` ("without `spec`, `columns` and `rows` must both be > 0") | Crop or Paste with `spec` empty and `columns` / `rows` at 0 | Wire `spec`, or set `columns × rows` |
+| `图像 1024×576 不能被 3×2 整除：会得到差 1px 的格子，下游拼接必崩。…` ("the image is not divisible by the grid; cells would differ by 1 px") | Crop without `spec` on a size that does not divide evenly | Wire `spec`, or feed a canvas that divides |
+| `index=5 越界：共 4 格（0 起）` ("index 5 out of range: 4 panels, 0-based") | Panel number past the last panel | Use 0…3, or wire Crop's `index` output |
+| `宫格尺寸 1024×1152 与布局 1024×576 不一致` ("grid size differs from the layout") | Paste got a board that is not the `spec` canvas | Feed the board the Sampler produced with that `spec` |
+| `draft 为空：请粘贴官方 prompt-enhancer 的 caption/layout 草稿 JSON。` ("draft is empty") | Draft Compiler run with an empty draft | Paste the skill's draft JSON |
+
+---
+
+## Known limits (read before filing a bug)
+
+### Verified
+
+Every row states its LoRA and step configuration.
+
+| Item | Config | Result | Sample |
+|---|---|---|---|
+| 3/4/6/8/9 panels · landscape/portrait · no gutter · thick gutter · small canvas · `plain` | base + 4-step LoRA / **4 steps** | sizes match the canvas formula exactly | 16 cases (the end-to-end matrix) |
+| Grid lines | same | pure white after redraw | per case |
+| Random seed | same | different seed → different md5 | 2 controls |
+| **Element boxes steer composition** | base + 4-step LoRA / **4 steps**; base + 8-step LoRA / **8 steps** | boxes only changed: the bicycle went from cropped out to fully visible with its front wheel in the lower-left. Reproduced on 3 seeds | 36 images |
+| **Four Chinese characters** (1024×576) | base + 8-step LoRA / **8 steps** | all correct | 2 seeds |
+| **Four Chinese characters** (2048×1152) | base + 4-step LoRA / **4 steps** | all correct, softer strokes | 2 seeds |
+| **Four Chinese characters** (2048×1152) | base + 8-step LoRA / **8 steps** | all correct, sharp strokes | 2 seeds |
+| **Mixed zh/en · two lines · explicit colour** | base + 8-step LoRA / **8 steps** | all correct; line break honoured; colour applied | 2 seeds per item |
+
+> **Base model only, no LoRA**: one control run at 2048×1152 / 30 steps / cfg 3.5 (before the defaults were aligned with the official template) produced a normal image, but its text was **not checked character by character**, so it is not a result. Verify it yourself.
+
+### Text: what works, what does not
+
+| Item | Result | Config |
+|---|---|---|
+| Resolution | 1024×576 is enough; 2048 only sharpens strokes | 8-step LoRA / 8 steps |
+| Steps | 4 steps: correct but soft. 8 steps: visibly sharper. 16 steps: close to 8, diminishing returns | matching LoRA |
+| Size | Still correct with the box at 1/20 of canvas height (≈43 px at 1536×864) | 1536×864 and 2048×1152 |
+| Line breaks | `\n` inside `text` is honoured; two lines form separately | 2048×1152 / 8 steps |
+| Colour | `palette: ["#d92b2b"]` takes effect | 2048×1152 / 8 steps |
+| **Box height does not control size** | A 43 px box produced ≈130 px glyphs — **text overflows its box**. Our probe found no reliable knob: two text boxes with identical width, height and character count came out one sharp, one faint | 1536×864 probe |
+| **Edge-adjacent boxes get clipped** | Box top at 5% → glyphs overflowed and the canvas cut them, both seeds | 2048×1152 / 8 steps |
+
+> Sample size is small (2 seeds per item; 19 of 20 images in one group were correct). "Four characters correct" repeated across several configs, but it is **not a guarantee**. Clipping was only reproduced in the red-colour group — **other colours were not tested**. Presets keep text boxes at 10%, but **10% is not verified as safe** either; it is only a more conservative starting point than 5%.
+
+### Not possible in this version
+
+- 🔴 **No img2img.** This pack always starts from an empty canvas. To edit an existing image with a reference, use the host's `Text Encode MOSS-Image Edit` (see **🎬 Storyboard · Paste Panel**) — a separate path.
+- ⚠ **Steps and cfg follow the official model card for the checkpoint you load.** SFT (the shipped checkpoint) and Base both use **50 steps / cfg 3 / euler** on the model card (SFT: [ModelScope card](https://www.modelscope.cn/models/openmoss/MOSS-Image-SFT); Base: official CFG range 3–6). The card also specifies shift 5 (built into the native ComfyUI model) and negative-branch skipping at layer 22 (wire the host's `SkipLayerGuidanceDiTSimple`, `single_layers` `22`; the shipped examples do not include it). The native ComfyUI template uses different values (25 steps / cfg 2.5 / er_sde, Comfy-Org's choice) — it is not the model-card recipe. With a 4-step distilled LoRA: **4–8 steps / cfg 1.0** — the LoRA was distilled at cfg 1, so raising it breaks the distillation. Mixing a distilled LoRA with the base recipe (e.g. LoRA loaded but 50 steps / cfg 3) will not error, it just wastes the run.
+- ⚠ **Keep `denoise` at 1.0.** There is no image to reference; lowering it only truncates sigma (fewer steps). `report` prints nominal vs. effective — trust the effective value.
+- **Per-panel composition is only approximate.** Boxes are a hint, not a bullseye — see [Bounding boxes](#bounding-boxes-are-a-hint-not-a-bullseye). MOSS's layout capability is *experimental*; this pack does no quality scoring.
+- **No character-identity consistency. A face-swap tool, not a guarantee.** Whether the same face survives across panels is still decided by sampling; this pack does not promise it. What it does ship is a **tool**: 🎬 Storyboard · Face Swap puts a reference face into **one panel** at a time, driven by that reference image (see its section). That is **not** the "pin one character card, then derive every panel from it" workflow — that one still needs a separate node pack, which is not part of this one and is not installed with it.
+- **No cross-panel consistency promise.** Our whole-canvas vs per-panel metrics change direction between the human and the animal scene. The certain gain of per-panel is that one panel can be redone on its own.
+- **At 8/9 panels each panel is small** — about 496×272 with the shipped 496 px edge (512×288 at the factory default). Small text and fine texture degrade first — a resolution budget, not a node bug.
+
+### Hard constraints
+
+- Canvas and panel dimensions must be multiples of **16** (enforced; a hand-edited `spec` is rejected).
+- >2 MP warns, >4 MP warns loudly: MOSS trains at 1–2 MP, official extrapolation ≈4 MP.
+- **VAE decode precision is decided by ComfyUI, not by the weight file.** The host casts the VAE to `fp16` at load time (falling back to `bf16` / `fp32` only if your GPU cannot do fp16), so `flux2-vae.safetensors` (F32) and `flux2-vae_BF16.safetensors` (BF16) run at the **same precision** — the file's dtype is normalised away on load, leaving only disk usage and load-time RAM as the difference. We have not measured their speed, so we give no speed claim. For true fp32 decoding use the host flag `--fp32-vae`; this pack deliberately does not implement a second precision path, which would diverge from the host's own `VAEDecode`. An escape hatch also exists: the Sampler node has a `latent` output, so you can wire your own `VAEDecode` with whatever VAE and precision you like.
+
+---
+
+## FAQ
+
+**OOM during VAE decode, or faint horizontal seams in the output.** Likely the same cause: not enough memory → the host falls back to tiled decode → a seam at a tile border. Check the log for `retrying with tiled VAE decoding`, then follow [How much VRAM](#how-much-vram). The cheapest fix is `git pull` on the host.
+
+**All black.** Check `report` for nominal vs. effective denoise, and the step count. The most common cause is **mismatched bands**: a 4-step distilled LoRA loaded but 50 steps / cfg 3 used, or no LoRA but 4 steps / cfg 1.0. Match the recipes listed under "Not possible".
+
+**Right panel count, wrong content / everything crammed into one panel.** Layout boxes are hints, and the model may ignore them (see [Bounding boxes](#bounding-boxes-are-a-hint-not-a-bullseye)). Shorten each caption to one shot, and check that `report` parsed as many captions as there are panels.
+
+**The canvas shape differs from the preview.** Check whether `spec` is connected: when it is, the Sampler's `panels` / `panel_edge` / `gutter` / `margin` widgets are ignored, and its `report` says so.
+
+**Can't find the nodes.** Look under `moss/storyboard`. Searching `故事板`, `storyboard` or `宫格` also works (search aliases are registered).
+
+**No 中 / EN button.** Refresh the browser (F5). The button only exists on our nodes. Console diagnostics: look for the `[MOSS SB] i18n: 就绪` line; if it is missing, confirm the `web/` files (especially `moss_sb_i18n_ui.js`) are served under `/extensions/ComfyUI-MOSS-Storyboard/`.
+
+**Can I use my own negative prompt?** Yes. The default `cfg` 3.0 is already above 1 — expand **Advanced** and fill it in. Only at **exactly `cfg = 1.0`** does the host skip the negative branch; `1.01` already works.
+
+**Can I generate a plain (non-grid) image?** Use the Layout Editor's single mode (recommended), or set `panels = 1` on the Sampler. `init = plain` only changes how the prompt is sent; it does not remove the grid geometry.
+
+---
+
+## License
+
+MIT for this pack. See [`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md) — no third-party code was copied. Model weights are not distributed. The host ComfyUI is GPL-3.0 and is only `import`ed at runtime.
+
+## Documentation
+
+Selected deep dives live in the GitHub repo's [`docs/`](https://github.com/ZenHG/ComfyUI-MOSS-Storyboard/tree/main/docs) (**written in Chinese**):
+[`06`](https://github.com/ZenHG/ComfyUI-MOSS-Storyboard/blob/main/docs/06-vae-memory.md) VAE memory budget ·
+[`07`](https://github.com/ZenHG/ComfyUI-MOSS-Storyboard/blob/main/docs/07-consistency.md) cross-panel consistency ·
+[`10`](https://github.com/ZenHG/ComfyUI-MOSS-Storyboard/blob/main/docs/10-contract.md) state v3 frozen contract ·
+[`12`](https://github.com/ZenHG/ComfyUI-MOSS-Storyboard/blob/main/docs/12-interop.md) elements-v1 interchange ·
+[`13`](https://github.com/ZenHG/ComfyUI-MOSS-Storyboard/blob/main/docs/13-prompt-enhancer.md) official prompt-enhancer bridge ·
+[`14`](https://github.com/ZenHG/ComfyUI-MOSS-Storyboard/blob/main/docs/14-top-level-design.md) top-level design: what each of the seven nodes owns ·
+[`15`](https://github.com/ZenHG/ComfyUI-MOSS-Storyboard/blob/main/docs/15-recipe-contract.md) recipe contract: what a verified recipe must contain ·
+[`16`](https://github.com/ZenHG/ComfyUI-MOSS-Storyboard/blob/main/docs/16-faceswap-refactor.md) face swap, before and after: what changed and what deliberately did not ·
+[`17`](https://github.com/ZenHG/ComfyUI-MOSS-Storyboard/blob/main/docs/17-faceswap-recipe.md) face-swap recipe: which path actually worked, how the mask is computed, what the pass criteria are.
+Contributor guide: [`CONTRIBUTING.md`](CONTRIBUTING.md) · release history: [`CHANGES.md`](https://github.com/ZenHG/ComfyUI-MOSS-Storyboard/blob/main/CHANGES.md).
+
+`docs/`, `CHANGES.md` and `RELEASE-NOTES.md` are not shipped in the install package (see `.comfyignore`); the links above point to the GitHub repo.

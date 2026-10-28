@@ -13,7 +13,7 @@
 
 <p align="center"><sub><b>Windows 10 / 11</b> only (for now) · runs on your existing Claude subscription — no API key</sub></p>
 
-https://github.com/user-attachments/assets/498f9f03-1ded-4177-93a4-60fe406b16c9
+https://github.com/user-attachments/assets/f47fb39d-68f5-42ba-b2be-5442812838d8
 
 **Claude Overlay** is a frameless, always-on-top chat window that floats over
 everything you do. Ask a question, and Claude looks at your **real
@@ -32,6 +32,9 @@ so it uses your **existing Claude subscription — no API key, no metered billin
 
 ### ✨ Why you'll want it
 
+- 🔀 **New in 1.25 — Codex mode.** One click on the titlebar's **Claude | Codex** switch
+  puts OpenAI's Codex behind the same window, on your own `codex` login, with Codex's own
+  models, look and allowance — same screen-aware overlay, your pick of agent.
 - 👁️ **It sees what you see.** Auto-captures each monitor on every message and
   labels primary vs. secondary — just ask *"what's wrong here?"* and it looks.
 - 🪟 **Never breaks your flow.** Always-on-top and frameless; it collapses to a
@@ -170,6 +173,16 @@ If it says "command not found", the CLI isn't installed / on PATH yet.
 python --version
 ```
 
+### 4. Codex CLI — for Codex mode (optional)
+The titlebar's **Claude ⇄ Codex** switch puts OpenAI's Codex behind the same window, on
+**your own** `codex` login. `setup.cmd` installs it (with npm, offering Node.js if that's
+missing too — per-user, no admin, with winget as the fallback); by hand:
+```
+npm install -g @openai/codex
+codex login
+```
+**Verify:** `codex --version` and `codex login status`. Claude mode doesn't need it.
+
 ---
 
 ## Install
@@ -179,7 +192,8 @@ Pick whichever you like — all three end with the overlay ready to run.
 ### 🖱️ One double-click — `setup.cmd` (recommended)
 
 Get the repo, then double-click **`setup.cmd`**. It checks Python,
-**auto-installs the `claude` CLI if it's missing** (and offers to log you in), and
+**auto-installs the `claude` CLI if it's missing** (and offers to log you in), does the same
+for the **`codex` CLI** (Codex mode; skipped without fuss if npm can't be had), and
 installs the Python packages — so even a fresh machine is one double-click from ready.
 
 ```
@@ -245,6 +259,23 @@ It pulls `main` from `upstream` if your clone has that remote and from `origin` 
 a **fork** gets the release rather than its own stale copy. It updates only a clean clone
 sitting on `main`: on another branch, or with uncommitted changes, it says so and stops
 instead of merging a release into work in progress.
+
+### Updating to 1.25 — turning on Codex mode
+
+1.25 adds the titlebar's **Claude | Codex** switch, which drives the Codex CLI. **The update
+sets it up for you** (since 1.25.1): `update.cmd` — and the overlay's one-click Update —
+asks to install the Codex CLI (Node.js too if there's no npm — into your user folder, no
+admin needed, since 1.25.2; winget's admin-approved install is the fallback) and then offers
+`codex login`. Say no and it won't ask again on later updates. Claude mode works exactly as
+before either way.
+
+Skipped it, or it didn't finish? If the setup was tried and failed, the update's window stays
+open on the reason and the overlay says so when it restarts. Click **Codex** in the titlebar: while the CLI is missing
+(or signed out) the overlay offers a one-click **Install Codex CLI & sign in** button — a
+console window shows the progress — and Codex is clickable the moment it's done, no
+restart. By hand it's `npm install -g @openai/codex` (needs Node.js 18+), then
+`codex login`; re-running **`setup.cmd`** does both too. If you already use the Codex app
+you're probably signed in — it shares the CLI's login.
 
 ### 🛠️ By hand
 
@@ -373,6 +404,7 @@ script here *scans* that folder and uses whatever runs, no matter how it got the
 | New conversation | **Clear** |
 | Compact the conversation (free up context) | **Compact** — summarizes older turns, keeps going |
 | Copy a reply | click **⧉ Copy** under the message |
+| Switch between Claude and Codex | the **Claude \| Codex** pill in the titlebar — swaps the agent *and* the look in place (Codex's blue-violet on cool whites — or slate in the dark theme — its `>_` mark, an indigo send button), no restart. It only switches an **empty** conversation — once something has been asked, Clear first (one agent can't continue the other's); what you've typed but not sent comes along, and the choice is remembered for the next launch. If only one of the two CLIs is installed, the other side of the pill is struck through and clicking it says how to install it. Everything else works the same in Codex mode, with Codex's own pieces behind it: the model menu lists **your** Codex models, ⚡ offers the levels the current model supports (Auto = that model's own default), the ring and the allowance notices/auto-retry run on Codex's allowance (re-read every minute), Past conversations lists your Codex threads (✕ archives one), a signed-out Codex is announced and holds your message, PDFs go along as their text, the overlay's MCP settings apply, and the one-click CLI update updates Codex. When Codex wants to step outside its sandbox an **Allow / Allow for this session / Deny** card appears in the chat. Claude skills are Claude-only. The collapsed orb stays Clawd either way |
 | Name this overlay | click the title (**Claude**) — handy with several open |
 | Collapse to a Claude orb | **–**, or double-click the title bar |
 | Expand from the orb | click the orb (drag it to move) |

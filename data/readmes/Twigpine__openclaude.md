@@ -223,6 +223,19 @@ then `d` again to delete it; any other key in between cancels. Deleting removes
 the transcript and its sidecar files from disk and cannot be undone. The
 session you are currently in is not listed and cannot be deleted.
 
+In `/resume`, type a search query, then press Down and Enter on **Search deeply
+using a background model** to search conversation contents with the background
+search model, which can differ from the active chat model. This explicit action
+sends transcript excerpts and session metadata to the model provider, including
+from loaded sessions that do not match the query locally. Ordinary filtering
+stays local. Deep search considers up to 100 loaded sessions within the active
+filters, so older history may not be included. Transcript extraction uses up to
+100 messages (the first 50 and last 50 for longer sessions), then keeps only the
+first 2,000 extracted characters. Matches outside that excerpt may be missed.
+Results remain available as more history loads; changing the query or active
+filters clears the previous search. If a search fails, the picker shows an error
+and lets you retry the same query.
+
 ### Background sessions
 
 Run long non-interactive prompts detached from the current terminal:
@@ -454,11 +467,15 @@ See [Agent Routing and Step Limits](docs/agent-routing.md) for the full guide.
 /search test         # run a test search
 /search anysearch    # select AnySearch (works without a key)
 /search key anysearch # optionally add an AnySearch API key in the hidden input
+/search keenable     # select Keenable (works without a key)
+/search key keenable # optionally add a Keenable API key in the hidden input
 ```
 
 Other backends in the auto chain that you configure with a key (Tavily, Brave, Firecrawl, …) run before the Exa free tier, and DuckDuckGo is the last-resort fallback. When the active provider is Ollama, OpenClaude uses the signed-in local Ollama Web Search endpoint ahead of the free tier. Set `OLLAMA_API_KEY` to enable the hosted Ollama endpoint as a fallback. Set `EXA_FREE_TIER=0` if searches should never go to Exa without a key. See [Web Search Providers](src/tools/WebSearchTool/README_SEARCH_PROVIDERS.md) for every backend and option.
 
 AnySearch is available as an explicit backend with `/search anysearch` or `WEB_SEARCH_PROVIDER=anysearch`. `ANYSEARCH_API_KEY` is optional; anonymous access has lower service limits. Set `ANYSEARCH_MAX_RESULTS` to an integer from 1 to 10 (default 10) to control the requested result count. AnySearch does not change the `auto` search order.
+
+Keenable is available as an explicit backend with `/search keenable` or `WEB_SEARCH_PROVIDER=keenable`. `KEENABLE_API_KEY` is optional; keyless access is rate-limited per IP. Keenable does not change the `auto` search order.
 
 > **Note:** DuckDuckGo fallback works by scraping search results and may be rate-limited, blocked, or subject to DuckDuckGo's Terms of Service.
 

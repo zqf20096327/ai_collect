@@ -16,6 +16,8 @@ cut from the recording.*
 **Current release: 2.6 — Field Notes.** What changed and when: [CHANGELOG.md](CHANGELOG.md) ·
 what is next: [ROADMAP.md](ROADMAP.md).
 
+<a href="https://alternativeto.net/software/kowalski/about/?utm_source=badge&utm_medium=referral"><img src="https://alternativeto.net/static/badges/badge-compact-color.svg" alt="Kowalski | AlternativeTo" width="164" height="53"></a>
+
 ---
 
 ## Install
@@ -223,6 +225,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 |---|---|
 | [**tableski**](https://github.com/yarenty/tableski) | Every spreadsheet is a table: Excel, CSV and Parquet as SQL over MCP. Local binary or hosted at tableski.io. |
 | [**emperor-mcp**](https://github.com/yarenty/emperor-mcp) | The MCP server framework first-party servers are built on (stateless HTTP, credential forwarding, output framing). |
+| [**Paperclip**](https://github.com/paperclipai/paperclip) | Hire a horde as an employee in a Paperclip company: assign it an issue, the answers come back in the thread ([guide](docs/guide/09-paperclip.md)). |
 
 New first-party MCP servers get their own repositories on `emperor-mcp`; this repository stays
 the runtime.

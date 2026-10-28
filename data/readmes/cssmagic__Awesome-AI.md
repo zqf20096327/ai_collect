@@ -15,19 +15,16 @@
 
 
 
-## 大型语言模型 <a name="index--llm">&nbsp;</a>
+## 大型语言模型 <a name="index--llm"></a>
 
-### OpenAI GPT / ChatGPT <a name="gpt">&nbsp;</a>
+### OpenAI GPT / ChatGPT <a name="gpt"></a>
 
 * 简介：OpenAI 的 GPT 系列模型是全球最先进的大型语言模型之一。GPT 的原义是 “生成式预训练变换器”。目前全球最火的 AI 应用产品 ChatGPT 就是基于 GPT 模型实现的。
 * 官网：https://openai.com/api/
-* Playground：（不是免费的，会消耗你的 API 调用额度）
-	* Chat 模式：https://platform.openai.com/playground?mode=chat
-	* Assistants 模式：https://platform.openai.com/playground?mode=assistant
 * API：
 	* 定价：https://developers.openai.com/api/docs/pricing
 	* 官方文档：https://platform.openai.com/docs/overview
-* Web 产品（ChatGPT）： <a name="chatgpt">&nbsp;</a>
+* Web 产品（ChatGPT）： <a name="chatgpt"></a>
 	* 简介：ChatGPT 是目前全球最热门的 AI 应用产品，是一款能以自然语言对话进行交互的 AI 助手。除了对话之外，它还集成了绘画、代码解释器等功能。2022 年 11 月 30 日上线，2023 年 11 月推出 GPTs（自定义 ChatGPT），2024 年 1 月推出 GPTs 商店，持续引领 AI 领域的热潮。
 	* 入口：https://chatgpt.com/
 	* 定价（部分常用套餐，美元）：
@@ -35,9 +32,6 @@
 		* ChatGPT Plus：$20 / 月。
 		* ChatGPT Business：年付折合 $20 / 月 / 人，至少 2 人；月付 $25 / 月 / 人。
 		* 完整套餐、功能和使用额度见[官方说明](https://learn.chatgpt.com/docs/pricing)。ChatGPT 订阅与 API 调用单独计费。
-	* 相关资料：
-		* [ChatGPT 定制化进阶：四步成为 AI 对话高手](https://www.cssmagic.net/blog/wx/60)
-		* [买了 ChatGPT 会员却没用过 “代码解释器”？亏了，快看这三个案例](https://www.cssmagic.net/blog/wx/72)
 
 ### Claude
 
@@ -50,7 +44,7 @@
 	* [API 文档](https://docs.anthropic.com/en/api/getting-started)
 	* [anthropic-cookbook](https://github.com/anthropics/anthropic-cookbook)：Anthropic 官方提供的案例演示
 
-### Google Gemini <a name="gemini">&nbsp;</a>
+### Google Gemini <a name="gemini"></a>
 
 * 简介：Google 开发的原生多模态大模型。不同模型的能力与适用场景见[官方模型列表](https://ai.google.dev/gemini-api/docs/models)。
 * 官网：https://ai.google.dev/
@@ -60,7 +54,7 @@
 * API 文档：https://ai.google.dev/tutorials/rest_quickstart
 * Web 产品（原 Bard 已更名为 Gemini）：https://gemini.google.com/app
 
-### 深度求索 / DeepSeek <a name="deepseek">&nbsp;</a>
+### 深度求索 / DeepSeek <a name="deepseek"></a>
 
 * 简介：深度求索推出的大模型系列，提供推理、代码生成和工具调用等能力。API 支持 OpenAI 和 Anthropic 兼容格式；其中 Flash 模型支持图片描述、截图文字识别和图表分析。
 * 官网：https://www.deepseek.com/
@@ -69,7 +63,7 @@
 	* 定价：https://api-docs.deepseek.com/zh-cn/quick_start/pricing/
 * Web 产品：https://chat.deepseek.com/
 
-### 智谱 GLM / ChatGLM（智谱清言） <a name="chatglm">&nbsp;</a>
+### 智谱 GLM / ChatGLM（智谱清言） <a name="chatglm"></a>
 
 * 简介：清华智谱团队推出的大模型。有开源版本，可私有化部署。
 * 官网：https://models.aminer.cn/glm-130b/
@@ -84,10 +78,6 @@
 * API 文档：https://platform.moonshot.cn/
 	* 定价：https://platform.moonshot.cn/pricing
 * Web 产品（Kimi 智能助手，原 Kimi Chat）：https://kimi.moonshot.cn/
-* 更多介绍：
-	* [性能超出预期！神秘的国产大模型 Kimi 开放 API](https://www.cssmagic.net/blog/wx/68)
-	* [解答 Kimi API 常见问题，顺便探讨 AI 应用开发的那些事儿](https://www.cssmagic.net/blog/wx/69)
-	* [Kimi API 还没用起来？请看这篇无门槛快速入门指南](https://www.cssmagic.net/blog/wx/70)
 
 ### 更多
 
@@ -127,9 +117,11 @@
 
 
 
-## AI 编程 <a name="index--programming">&nbsp;</a>
+## AI 编程 <a name="index--programming"></a>
 
-### Codex <a name="codex">&nbsp;</a>
+> AI 编程范式已经由 “辅助编程 / 副驾驶 / Copilot” 逐渐演进为 “Vibe Coding / 氛围编程” 和 “Agentic Coding / 智能体编程”。
+
+### Codex <a name="codex"></a>
 
 * 简介：OpenAI 的 AI 编程服务，可理解代码库、实现功能、修复问题、运行命令和审查改动。提供 CLI、桌面客户端、IDE 插件及云端任务等多种使用方式，适合从日常代码修改到持续跟进项目任务。
 * 产品形态与入口：
@@ -142,7 +134,7 @@
 	* Pro：有 $100、$200、$500 / 月三个档位，包含 Plus 功能，并提供更多使用额度。
 	* Business：年付折合 $20 / 月 / 人，至少 2 人；月付 $25 / 月 / 人。提供团队工作区和管理能力；Enterprise、Edu 另行联系销售。
 
-### Claude Code <a name="claude-code">&nbsp;</a>
+### Claude Code <a name="claude-code"></a>
 
 * 简介：Anthropic 的 AI 编程服务，可理解项目、规划并实现多文件修改、修复问题、运行测试和处理 Git 工作流。提供 CLI、桌面客户端、IDE 插件和网页版，可通过同一 Claude 订阅使用多个入口。
 * 官网：https://claude.com/product/claude-code
@@ -157,7 +149,7 @@
 	* Max 20x：$200 / 月，会话使用额度为 Pro 的 20 倍。两档 Max 均按月订阅，详见[Max 套餐说明](https://support.claude.com/en/articles/11049741-what-is-the-max-plan)。
 	* Claude Free 不包含 Claude Code；团队可选择 Team 或 Enterprise，席位与用量规则见定价页。上述价格不含适用税费。
 
-### GitHub Copilot <a name="gitub-copilot">&nbsp;</a>
+### GitHub Copilot <a name="gitub-copilot"></a>
 
 * 简介：GitHub 的 AI 编程助手，覆盖 VS Code、JetBrains IDE 等编辑器、终端 CLI、桌面应用和 GitHub 云端 Agent。支持代码补全、代码库问答、多文件修改和代码审查，可从 Issue 发起任务并通过 PR 交付修改。
 * 官网：https://github.com/features/copilot
@@ -178,6 +170,7 @@
 * AI 编辑器 / 编辑器插件：
 	* [Windsurf](https://codeium.com/windsurf)：Codeium 出品的一款代码编辑器，基于 VS Code 内核，集成了 Agent 能力，支持各种高级的 AI 辅助编程功能。新用户可获得 2 周的专业版套餐试用期。
 	* [Cline（原名 Claude Dev）](https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev)：VS Code 插件，融合了 Agent 思维，通过对话生成（或修改）项目代码。需自备 LLM API。[已开源](https://github.com/cline/cline)。
+	* [Kilo Code](https://kilo.ai/)：开源 AI 编程工具，提供 VS Code、JetBrains 插件及 CLI，也提供云端 Agent 和代码审查。支持在任务中切换模型，并提供规划、编程、调试等模式。[源码仓库](https://github.com/Kilo-Org/kilocode)截至 2026 年 10 月已有 2.7 万余 Star，是较受关注的开源编程工具之一。MIT 开源，模型服务另行计费。
 	* [Trae](https://www.trae.ai/)：字节跳动出品的 AI 代码编辑器，产品形态类似 Cursor 和 Windsurf，面向海外市场。提供有额度限制的免费套餐和付费套餐，详见[定价页](https://www.trae.ai/pricing)。支持 macOS、Windows 和 Linux，详见[下载页](https://www.trae.ai/download)。
 	* [CodeGeeX](https://codegeex.cn/)：智谱旗下的智能编程助手。支持 20 多种编程语言，适配 VS Code 和 JetBrains IDE 等主流开发工具。个人用户免费。企业用户可选择私有化部署服务。
 	* [TRAE Plugin（原 MarsCode）](https://www.trae.cn/plugin)：字节跳动旗下的智能编程助手。提供智能补全、智能预测、智能问答等能力，适配 VS Code 和 JetBrains IDE 等主流开发工具。个人用户免费。
@@ -192,15 +185,21 @@
 	* [Amazon CodeWhisperer](https://aws.amazon.com/codewhisperer/)：编辑器插件，支持 VS Code 和 JetBrains IDE 等。
 		* 定价：个人版（代码建议 + 参考跟踪 + 安全扫描）：免费
 * 终端编程 Agent：
+	* [OpenCode](https://opencode.ai/)：开源 AI 编程 Agent，可在终端、桌面应用和编辑器中理解项目、修改代码、执行命令。支持多家模型服务及本地模型，不绑定单一厂商。[源码仓库](https://github.com/anomalyco/opencode)截至 2026 年 10 月已有 22 万余 Star，是开源编程 Agent 中的热门项目。MIT 开源，软件免费，所接入的模型服务可能另行收费。
+	* [Pi](https://pi.dev/)：Mario Zechner 发起的极简编程 Agent，也提供可嵌入其他应用的 SDK。通过扩展、Skills 和提示词模板定制工作流，支持多家模型与本地模型。它也是 OpenClaw 集成的 Agent 底座之一，因精简、可扩展的设计在开发者社区受到关注。[源码](https://github.com/earendil-works/pi)采用 MIT 许可，模型服务费用另计；与 Inflection 的同名聊天助手是不同产品。
+	* [Aider](https://aider.chat/)：开源的终端 AI 结对编程工具，利用代码库地图理解项目，可跨文件修改代码，并与 Git 提交、差异检查和撤销操作结合。是较早流行的终端 AI 编程工具之一，项目积累了大量[开发者使用评价](https://github.com/Aider-AI/aider#kind-words-from-users)。Apache-2.0 开源，可连接云端或本地模型，模型费用另计。
 	* [Qwen Code](https://github.com/QwenLM/qwen-code)：开源编程 Agent，支持终端、编辑器插件及桌面应用，可连接多家模型 API 或本地模型。支持 MCP、Skills 和代码审查。Apache-2.0 开源，需自行配置模型服务，费用与额度取决于所接入的服务。
 	* [Antigravity CLI](https://antigravity.google/product/antigravity-cli)：Google Antigravity 的终端入口，支持自然语言编程、后台多 Agent 协作，以及插件、MCP、Skills 和 Hooks。Gemini CLI 面向个人的免费服务及 Google AI Pro / Ultra 接入已停止服务，官方建议转用此产品，详见[官方说明](https://developers.googleblog.com/an-important-update-transitioning-gemini-cli-to-antigravity-cli/)。
 	* [Trae Agent](https://github.com/bytedance/trae-agent)：字节跳动开源的命令行编程 Agent，支持多家模型、文件编辑、Shell 执行和操作轨迹记录。架构模块化，适合研究和定制编程 Agent；它与 Trae 编辑器是不同项目。MIT 开源，需配置模型服务。
 * 网页设计与生成工具：
 	* [Bolt.new](https://bolt.new/)：StackBlitz 出品的 AI 编程工具，可在线生成、编辑、运行、部署全栈网站，一站式解决网站开发需求。支持多种基于 JS 的前后端技术栈。
+	* [Lovable](https://lovable.dev/)：通过对话创建和修改网站、全栈应用，可视化调整界面，并提供后端、身份认证和部署能力。是 Vibe Coding（用自然语言描述需求来编程）的热门产品；[Zapier 的实测对比](https://zapier.com/blog/lovable-vs-bolt/)尤其认可其界面观感和面向非技术创业者的易用性。
+	* [Replit Agent](https://replit.com/products/agent)：集成在 Replit 云端开发平台中的 AI Agent，可通过对话创建应用，并在同一环境中运行、调试和部署。与 Lovable、Bolt 同为 Vibe Coding 热门工具；[实测对比](https://zapier.com/blog/lovable-vs-bolt/)认为它支持的应用类型和基础设施控制更灵活，但上手门槛也更高。Agent 用量和云资源按相应套餐计费。
 	* [v0.dev](https://v0.dev/)：Vercel 出品的 AI 网页设计开发工具。通过对话生成网页，可一键发布。主力支持 shadcn/ui (React) + Tailwind 技术栈，后续会支持更多前端技术栈。有免费配额。
 	* [Wegic](https://wegic.ai/)：AI 驱动的网页 UI 设计和开发工具。通过自然对话快速生成网站，可通过对话持续修改，可一键发布。
 	* [OpenUI](https://github.com/wandb/openui)：开源项目，AI 自动生成前端代码。可根据描述生成 UI 界面，且可以持续输入描述进行修改，可输出 HTML、React、Vue 组件等格式。支持输入中文描述。[在线演示](https://openui.fly.dev/)。
 * 其他工具：
+	* [OpenHands（原 OpenDevin）](https://openhands.dev/)：开源软件工程 Agent 平台，可读写代码、执行命令和使用浏览器，另提供 Agent Canvas，集中管理本地、远程或云端的编程任务与自动化。是开源软件工程 Agent 领域较有影响力的项目，[源码仓库](https://github.com/OpenHands/OpenHands)截至 2026 年 10 月已有 9 万余 Star。核心项目 MIT 开源，可自托管；模型和托管服务费用另计。
 	* [Augment Code](https://www.augmentcode.com/product)：基于代码库上下文的 AI 编程平台，提供 CLI 和 Cosmos 云端 Agent 等产品形态。Standard 套餐 $20 / 月，含每月 $20 使用额度，团队共享；具体套餐和用量规则见[定价页](https://www.augmentcode.com/pricing)。
 	* [CopyCoder](https://copycoder.ai/)：把网页设计稿、原型图转换成适合 AI 编程工具处理的提示词，适合与 Cursor、Windsurf、Bolt.new、v0.dev 等工具配合使用。
 	* [Devin](https://www.cognition-labs.com/introducing-devin)：Cognition Labs 推出的 AI 编程机器人，有很强的自主学习和工作能力。已开放使用，套餐与使用额度见[定价页](https://devin.ai/pricing)。
@@ -214,36 +213,56 @@
 	* [deed.page](https://deed.page)：面向 AI 编程 Agent 的静态网站托管服务，通过 HTTP API、MCP 或 [Agent Skill](https://github.com/f-o-x11/deed-page-skill) 发布 HTML 页面或静态文件夹，无需注册账号，生成的公开链接默认无到期时间。单次发布请求上限为 4 MB，较大站点需分步上传，详见[文档](https://deed.page/docs)。
 		* 定价：有额度限制的免费套餐及付费订阅。
 	* [agent-qa](https://github.com/vostride/agent-qa)：用自然语言测试网页、Android 和 iOS 应用的 QA Agent，保留运行证据，并通过 memidex 记忆引擎保存和复用已验证的测试经验。提供 CLI、可视化面板、MCP 和 Agent Skills。源码可见，采用限制竞争性用途的 FSL-1.1-ALv2；许可允许的用途无需软件费用，模型及外部浏览器／设备服务费用另计。
+	* [npmscan](https://github.com/salemalem/npmscan-mcp-plugin)：npm 依赖安全检查的 MCP 服务器与 Claude Code 插件，让 AI 编程 Agent 在推荐、安装或升级 npm 包之前，先检查恶意包、已知漏洞（OSV、GitHub Security Advisories、NVD）、仿冒包名、维护者变更、安装脚本和发布来源证明，也可审计整个 package.json / lockfile。远程 MCP 地址为 `https://npmscan.com/api/mcp`，只读、免费，无需注册或 API Key，每个 IP 限速 30 次／分钟。插件和 Skills 为 MIT 开源，服务端不开源；查询的包名和依赖清单会发送到 npmscan.com。
 
 
 
-## AI 绘画 / 音频视频创作 <a name="index--art">&nbsp;</a>
+## AI 绘画 / 音频视频创作 <a name="index--art"></a>
 
 ### AI 绘画
 
-* [Midjourney](https://www.midjourney.com/home)<a name="midjourney">&nbsp;</a>：是一款热门的 AI 绘画工具，早期依托 Discord 平台提供服务，现已推出独立网页版应用。它易于入门，作品风格华丽，适合初学者探索 AI 艺术创作，创造独特的视觉作品。
+* [Midjourney](https://www.midjourney.com/home)<a name="midjourney"></a>：是一款热门的 AI 绘画工具，早期依托 Discord 平台提供服务，现已推出独立网页版应用。它易于入门，作品风格华丽，适合初学者探索 AI 艺术创作，创造独特的视觉作品。
 	* 定价：
 		* 基础版套餐（3.3h Fast Time）：$10 / 月
 		* 标准版套餐（15h Fast Time + Unlimited Relax Time）：$30 / 月
 		* 专业版套餐（30h Fast Time + Unlimited Relax Time）：$60 / 月
 		* 至尊版套餐（60h Fast Time + Unlimited Relax Time）：$120 / 月
 
-* [OpenAI 图像生成 / GPT Image](https://developers.openai.com/api/docs/guides/image-generation)<a name="dall-e">&nbsp;</a>：OpenAI 的图像生成与编辑模型，可通过提示词创建图片或修改现有图片。开发者可通过 Images API 或 Responses API 接入，API 单独计费。
+* [OpenAI 图像生成 / GPT Image](https://developers.openai.com/api/docs/guides/image-generation)<a name="dall-e"></a>：OpenAI 的图像生成与编辑模型，可通过提示词创建图片或修改现有图片。开发者可通过 Images API 或 Responses API 接入，API 单独计费。
+	* [GPT Image 2](https://developers.openai.com/api/docs/models/gpt-image-2) / ChatGPT Images 2.0：2026 年 4 月推出，支持灵活尺寸和高保真参考图输入。文字排版、多语言文字和复杂指令跟随是这一代的主要看点，发布时受到设计与营销类媒体的关注，见[相关报道](https://www.tomsguide.com/ai/chatgpt-launched-images-2-0-and-its-the-first-one-designers-might-actually-use)。API 模型名为 `gpt-image-2`；同系列后续已有 2.5 模型，接入时以官方文档为准。
 	* 历史模型：DALL·E 2 和 DALL·E 3 的 API 已于 2026 年 5 月 12 日停用，详见[官方弃用公告](https://developers.openai.com/api/docs/deprecations)。
 
-* [Stable Diffusion](https://stability.ai/stable-image)<a name="sd">&nbsp;</a>：是一款先进的人工智能图像生成模型，由 Stability AI 开发。可本地部署。因其开源特性，发展迅速，已经成长为一个庞大的生态，广泛应用于艺术创作、设计和多媒体制作等领域。
+* [Nano Banana / Gemini 图像生成](https://deepmind.google/models/gemini-image/)：Google 的图像生成与编辑模型系列，可通过对话改图、融合参考图，并在连续编辑中保持人物和物体的一致性。初代于 2025 年 8 月因图像编辑效果走红，见[当时的报道](https://www.axios.com/2025/08/26/nano-banana-google-ai-images)。可在 [Gemini](https://gemini.google.com/) 中使用，开发者可通过 Google AI Studio 和 API 接入。
+
+* [Ideogram](https://ideogram.ai/)：图像生成与编辑平台，擅长带文字的海报、封面、标志和商品设计。以图片中的英文文字生成能力出名，[Contra Labs 的设计师评测](https://contralabs.com/research/ideogram-v4-typography-leader)认可其文字排版和成稿表现；复杂文字仍需人工校对。提供网页版和 API。
+
+* [Stable Diffusion](https://stability.ai/stable-image)<a name="sd"></a>：是一款先进的人工智能图像生成模型，由 Stability AI 开发。可本地部署。因其开源特性，发展迅速，已经成长为一个庞大的生态，广泛应用于艺术创作、设计和多媒体制作等领域。
 	* 扩展：
 		* ComfyUI：https://github.com/Comfy-Org/ComfyUI
 			* 中文学习社区：https://www.comflowy.com/zh-CN
 
 * [FLUX](https://bfl.ai/)：Black Forest Labs 的图像生成与编辑模型系列，支持文生图、参考图编辑和多图组合。提供[官方 API](https://docs.bfl.ai/quick_start/introduction)与部分开放权重模型；自部署与商用条件依具体模型及[许可](https://bfl.ai/licensing)而定。
 
-* [Seedream AI Studio](https://seedream4.video/)：字节跳动旗下多模型 AI 图像生成平台，集成 Seedream 5.0/4.5/4.0 模型，支持一键图生视频（Kling 2.1 驱动）。有免费基础版。
+* [Qwen-Image / 通义千问图像模型](https://github.com/QwenLM/Qwen-Image)：阿里的图像生成与编辑模型系列，以中文文字、多行排版和精确改图见长。开放权重版本已形成包含 ComfyUI、Diffusers 和推理加速项目的社区生态，适合希望本地部署和定制工作流的用户。可在 [Qwen Chat](https://chat.qwen.ai/) 体验；开放权重范围与许可需按具体版本确认。
+
+* [Seedream](https://seed.bytedance.com/en/seedream5_0_pro)：字节跳动 Seed 团队的图像生成与编辑模型系列。文字密集的信息图、多语言海报、参考图编辑是主要看点；5.0 Pro 还支持根据框选、草图等标注修改图片和分离图层。可通过[即梦 AI](https://jimeng.jianying.com/ai-tool/home)创作，开发者可通过火山方舟等官方平台接入。
+
+* [Recraft](https://www.recraft.ai/)：面向设计师的 AI 图像生成与编辑平台，可生成插画、品牌素材，也能直接生成可编辑的 SVG 矢量图。2024 年 V3 曾以 “red_panda” 代号登上 Artificial Analysis 图像竞技场榜首，见[当时的发布介绍](https://blog.fal.ai/announcing-red_panda-by-recraft/)。提供网页版和 API，适合需要继续编辑、缩放的图形素材。
+
+* [Adobe Firefly](https://www.adobe.com/products/firefly.html)：Adobe 的生成式创作平台及模型系列，提供文生图、图像编辑和生成式填充，并整合进 Photoshop 等设计工具。专业设计场景中，它以 Adobe 工作流整合及自有模型的训练素材授权路线受到关注，见[行业报道](https://www.digitalcameraworld.com/tech/software/photoshop-can-now-use-third-party-ai-for-generative-fill-but-what-is-each-model-best-for-and-when-should-you-switch-from-firefly-to-nano-banana-or-flux)。平台也接入第三方模型，相关条件需分别查看。
 
 * [Rao Edits](https://raoedits.top/)：面向创作者的在线 AI 图像生成与参考图编辑平台，适用于社交媒体、营销视觉和产品概念图。
 
 ### AI 视频生成
 
+* [Seedance](https://seed.bytedance.com/en/seedance2_5)：字节跳动 Seed 团队的视频生成模型系列，支持结合文本、图片、音频和视频参考素材生成有声视频。2.0 在 2026 年 2 月因电影感短片广泛传播，也引发影视业的版权争议，见[相关报道](https://www.axios.com/2026/02/20/hollywood-seedance-intellectual-property)。后续 2.5 支持单次生成最长 30 秒视频及更精细的参考控制、视频编辑。
+	* 使用入口：[即梦 AI](https://jimeng.jianying.com/ai-tool/home)；模型开放范围依产品、地区和套餐而定。
+* [MiniMax 视频模型 / 海螺 AI](https://hailuoai.video/)：MiniMax 的视频生成模型及创作产品，Hailuo 系列支持文生视频、图生视频，[Hailuo 2.3](https://www.minimax.cn/news/minimax-hailuo-23)以人物动作、微表情和动态镜头为主要看点。此前 Hailuo 02 在 2025 年 6 月因 “猫咪跳水” 等短片走红，见[相关报道](https://www.techradar.com/computing/artificial-intelligence/forget-virtual-pets-the-next-ai-video-craze-is-cats-doing-olympic-diving-and-its-all-thanks-to-this-new-google-veo-3-rival)。提供网页创作和官方 API。
+	* 后续模型：[MiniMax H3](https://www.minimax.io/blog/minimax-h3)支持多模态参考与编辑、原生立体声音频，以及最长 15 秒的 2K 视频生成。
+* [Google Veo](https://deepmind.google/models/veo/)：Google DeepMind 的视频生成模型，可结合文本或参考图生成视频、对白、环境声和音效。是原生音视频生成的代表性产品，可在 [Gemini](https://gemini.google.com/) 和 [Flow](https://labs.google/flow/) 等产品中使用，适合短片、广告和分镜创作。
+	* API：Gemini API 中的 Veo 3.1 预览模型已于 2026 年 10 月 22 日关闭；开发者应按[官方迁移说明](https://ai.google.dev/gemini-api/docs/video)选择 Gemini Omni Flash 或企业平台中的正式版模型。
+* [通义万相 / Wan](https://wan.video/)：阿里的视频生成模型及在线创作平台。开放权重的 [Wan2.2](https://github.com/Wan-Video/Wan2.2)支持文生视频、图生视频，也提供声音驱动、角色动画等模型，可结合 ComfyUI 和 Diffusers 本地运行。已形成较丰富的社区工作流，是本地视频生成领域较有影响力的模型系列；在线服务与开放权重版本的能力、许可需分别查看。
+* [LTX / LTX-2](https://ltx.io/)：Lightricks 的视频创作平台及音视频生成模型系列，支持同步生成画面与声音，并提供开放权重、本地推理、LoRA 训练及 API。是开放权重音视频生成领域的代表性项目，ComfyUI 也为其版本发布提供[原生接入支持](https://blog.comfy.org/p/ltx-23-day-0-supporte-in-comfyui)。[源码和模型入口](https://github.com/Lightricks/LTX-2)，商用与部署条件依具体版本许可而定。
 * [Runway](https://runway.com/)：云端 AI 创作平台，可在同一工作区生成和编辑视频、图片与音频。提供自有及第三方创作模型，另有面向开发者的 API。免费版提供一次性 125 credits，付费套餐与额度见[定价页](https://runway.com/pricing)。[开始创作](https://app.runwayml.com/)。
 * [HunyuanVideo-1.5](https://github.com/Tencent-Hunyuan/HunyuanVideo-1.5)：腾讯混元的视频生成模型，支持文生视频与图生视频，代码和模型权重已公开，可本地部署，并提供 ComfyUI 与 Diffusers 接入方式。官方原生部署面向 Linux + NVIDIA GPU，开启模型卸载时最低需 14GB 显存。
 * [Pika](https://pika.art/)：视频生成领域的热门产品，典型功能为图生视频。新版本主打趣味视频生成功能。有免费额度。
@@ -333,7 +352,22 @@
 
 
 
-## 常用 AI 网站 / 工具 <a name="index--tools">&nbsp;</a>
+## 常用 AI 网站 / 工具 <a name="index--tools"></a>
+
+### 个人助理 / 通用智能体 <a name="personal-agent"></a>
+
+> 这类工具可以调用浏览器、文件、终端和外部服务，持续执行多步骤任务。与单次问答相比，重点是记忆、工具使用和后台工作；实际能力取决于所接入的模型、工具与账号权限。
+
+* 本地运行 / 自行部署：
+	* [OpenClaw（原 Clawdbot / Moltbot）](https://openclaw.ai/)：开源个人 AI 助手，可从 WhatsApp、Telegram、Slack、Discord 等聊天渠道交办任务，支持记忆、工具扩展和自动化，可在自己的电脑或服务器上运行。2026 年初走红，[GitHub 在同年 8 月称其为平台历史上增长最快的项目](https://github.blog/open-source/maintainers/openclaw-went-viral-meet-the-maintainers-building-and-securing-it/)。[源码](https://github.com/openclaw/openclaw)采用 MIT 许可，软件免费，所接入的模型和外部服务可能收费。
+	* [Hermes Agent](https://hermes-agent.nousresearch.com/)：Nous Research 的开源通用 Agent，可在本地或服务器运行，通过终端、桌面应用或聊天平台使用。主要特点是长期记忆，以及把完成任务的经验保存为可复用 Skills；[媒体对比](https://www.techradar.com/pro/how-to-automate-workflows-using-open-source-ai-agents)将它与 OpenClaw 并列为热门开源个人 Agent，并认可其围绕重复任务积累经验的设计。[源码](https://github.com/NousResearch/hermes-agent)采用 MIT 许可，模型服务费用另计。
+	* [goose](https://goose-docs.ai/)：由 Block 发起的开源通用 Agent，提供桌面应用、CLI 和 API，可通过 MCP 扩展连接浏览器、数据库和办公工具，处理编程、研究、数据分析与自动化。是较早投入 MCP 生态的代表项目，并成为 Linux 基金会 Agentic AI Foundation 的[创始捐赠项目之一](https://www.linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation)。Apache-2.0 开源，支持云端和本地模型。
+	* [Hermit Agent](https://github.com/swaylq/hermit-agent)：基于 Claude Code 或 Codex CLI 搭建 Telegram 个人助理，提供角色设定、长期记忆和定时任务。需自行部署并配置相应 CLI 和 Telegram 机器人。MIT 开源，所用模型服务费用另计。
+* 云端托管：
+	* [Muse AI](https://muse.ai/)：Meta 的个人 AI Agent，在专属云端虚拟机中使用浏览器和应用，处理邮件、日程、购物及长期目标，可从 Muse 应用或 WhatsApp 交办任务。2026 年 9 月推出后受到关注，[媒体体验](https://www.techradar.com/ai-platforms-assistants/i-tried-metas-new-muse-ai-agent-its-incredibly-useful-but-handing-it-my-digital-life-felt-deeply-uncomfortable)既认可代办日常事务的实用性，也对交出个人数据和账号权限表示顾虑。按[官方发布说明](https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/)，首发面向美国市场，其他地区以实际开放范围为准。
+	* [Grok Bot](https://x.ai/bot)：可长期保留记忆与工作环境的云端 AI Agent，每个 Bot 有独立的浏览器、文件系统和终端，支持跨应用任务、多 Bot 协作、示范学习和定时执行。2026 年 8 月上线测试，早期用户[认可其代办工作能力](https://www.reddit.com/r/cursor/comments/1vvx2fg/is_grok_bot_worth_it/)，也有[用量成本偏高的反馈](https://www.reddit.com/r/GrokAiDiscussion/comments/1w7vosc/grok_bot_is_expensive/)。支持的平台、订阅与账号接入条件见[官方文档](https://docs.x.ai/grok-bot/overview)。
+	* [Manus](https://manus.im/)：通用 AI Agent，可在云端执行研究、数据分析、网站开发和文档制作，也提供桌面、移动端及自动化功能。2025 年 3 月因自主执行复杂任务的演示走红，是推动通用 Agent 出圈的代表产品，见[当时的报道](https://www.axios.com/2025/03/10/manus-chinese-ai-agent-deepseek)。[Manus 2.0](https://manus.im/blog/introducing-manus-2-0)进一步整合文档、表格、幻灯片、网站和视频工作区；服务额度与云端资源按套餐计费。
+	* [Genspark](https://www.genspark.ai/)：以通用 Agent 为核心的 AI 工作空间，可进行研究、生成幻灯片与表格，并连接外部工具执行任务。2025 年 Super Agent 以“一句话交办完整任务”和代打电话等演示受到关注，见[产品与应用案例](https://www.genspark.ai/blog/genspark-less-control-more-tools)。另提供 [Genspark Claw](https://www.genspark.ai/genspark-claw)，把常驻云端电脑、记忆和聊天渠道结合为个人助手。
 
 ### 综合平台
 
@@ -355,6 +389,7 @@
 * [RespawnStack](https://respawnstack.com/)：面向游戏开发者的精选 AI 工具目录。
 * [通往 AGI 之路 / WayToAGI](https://www.waytoagi.com/)：AI 工具（包含网站和 GPTs）分类导航目录，也可搜索。
 * [CodeTrendy](https://codetrendy.com/)：包含 AI 工具的产品与 SaaS 导航目录，支持分类浏览、热门榜和替代品查找。提供免费只读 MCP 接口，供 AI 助手搜索条目，无需账号或 API 密钥。可免费提交产品，另有付费推广，付费 Verified 条目在 MCP 搜索中优先展示。
+* [Creati.ai](https://creati.ai/)：AI 工具与智能体分类导航目录，收录 28,000+ 款，支持 9 种语言，提供每日 AI 资讯和月度排行。主动提交产品需付费。
 * [ChandlerAi](https://chandler.bet/)：国内可用的 AI 助手，可调用 GPT-4、Claude 3 Opus、Gemini、DALL·E 等先进模型。需要付费。
 
 ### 图像处理 / 图形设计 / UI 设计
@@ -364,8 +399,7 @@
 * [Magnific AI](https://magnific.ai/)：图片放大，增强细节。
 * [igly.ai](https://igly.ai)：在线 AI 图片编辑平台，支持去背景、局部重绘、高清放大、生成式填充等功能，适合快速处理商品图、设计素材和社媒图片。
 * [Photoroom](https://www.photoroom.com/zh)：在线 AI 图片处理工具。免费用户可使用抠图、擦除、照片优化功能。
-* 抠图：
-	* [四款免费的 AI 抠图工具，最后一个不敢相信！](https://www.cssmagic.net/blog/wx/56)
+* AI 抠图工具：[四款免费的 AI 抠图工具，最后一个不敢相信！](https://www.cssmagic.net/blog/wx/56)
 
 ### 写作 / PPT 幻灯片
 
@@ -417,7 +451,6 @@
 * [Devv.AI](https://devv.ai/)：一款面向程序员的 AI 搜索引擎，为编程问题提供快速准确的答案。
 * [PromptPerfect](https://promptperfect.jina.ai/)：帮你优化提示词（Prompt）。比如把你的笼统需求拆解为多步骤的任务，以提高模型输出的准确性；又比如根据给定的文章主题生成大纲并撰写长文。
 * [AppAgent](https://appagent-official.github.io/)：腾讯研究团队的开源项目，基于大语言模型的手机端多模态智能代理，帮用户自动执行复杂任务。适用于 Android 手机和模拟器。可粗略类比为手机端的按键精灵。
-* [Hermit Agent](https://github.com/swaylq/hermit-agent)：基于 Claude Code 或 Codex CLI 搭建 Telegram 个人助理，提供角色设定、长期记忆和定时任务。需自行部署并配置相应 CLI 和 Telegram 机器人。MIT 开源，所用模型服务费用另计。
 * [无线麦 SayAll](https://github.com/HD838A/remote-mic-app)：macOS 语音输入配套工具，把小米蓝牙遥控器 2 / 2 Pro 变成无线麦克风，配合豆包、微信输入法等外部工具完成语音转文字。另提供语音历史只读 MCP，仍待完整验收。macOS 代码采用 GPL-3.0-only，部分功能需买断。
 * [ProctorAI](https://github.com/jam3scampbell/ProctorAI)：AI 监工，号称 “拖延症终结者”。开源项目，本地应用程序，通过定时截图来检查你是否在摸鱼，并发出警告，支持语音提醒。可以设置详细的监督规则。底层调用了 GPT-4o 等多模态模型。
 * [llm_aided_ocr](https://github.com/Dicklesworthstone/llm_aided_ocr)：LLM 辅助 OCR，通过大模型来提升 OCR 的准确性。
@@ -448,9 +481,9 @@
 
 ---
 
-## 常见问题 <a name="faq">&nbsp;</a>
+## 常见问题 <a name="faq"></a>
 
-### 有什么简便的方式可以使用 Codex 和 ChatGPT 高级功能？ <a name="help">&nbsp;</a>
+### 有什么简便的方式可以使用 Codex 和 ChatGPT 高级功能？ <a name="help"></a>
 
 为了获得最完整的 Codex 体验，建议购买官方的 ChatGPT Plus 套餐。
 

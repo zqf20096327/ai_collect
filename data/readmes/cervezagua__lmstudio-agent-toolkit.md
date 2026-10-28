@@ -9,7 +9,7 @@
 <p align="center">
   <a href="https://github.com/cervezagua/lmstudio-agent-toolkit/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/cervezagua/lmstudio-agent-toolkit/actions/workflows/ci.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
-  <img alt="Tests" src="https://img.shields.io/badge/tests-934%20passing-brightgreen">
+  <img alt="Tests" src="https://img.shields.io/badge/tests-985%20passing-brightgreen">
   <img alt="Tested on Windows, macOS and Linux" src="https://img.shields.io/badge/tested%20on-Windows%20%7C%20macOS%20%7C%20Linux-informational">
   <a href="https://lmstudio.ai/cervezagua/agent-toolkit"><img alt="LM Studio Hub" src="https://img.shields.io/badge/LM%20Studio%20Hub-cervezagua%2Fagent--toolkit-7c3aed"></a>
 </p>
@@ -70,6 +70,11 @@ LM Studio fetches the dependencies itself. Re-run `npm run setup` after `git pul
 
 | Version | What changed |
 |---|---|
+| [**0.8.3**](https://github.com/cervezagua/lmstudio-agent-toolkit/releases/tag/v0.8.3) | **`/doctor`** checks the chat's setup and says what to fix: how much of the context the tools take, tools offered twice, whether agent-toolkit-loop runs the reply, the Project Folder, and the programs the enabled groups need. |
+| [**0.8.2**](https://github.com/cervezagua/lmstudio-agent-toolkit/releases/tag/v0.8.2) | On a small context, agent-toolkit-loop summarizes earlier messages only when that makes the prompt smaller; otherwise it just hides old tool output. |
+| [**0.8.1**](https://github.com/cervezagua/lmstudio-agent-toolkit/releases/tag/v0.8.1) | Long tasks fit a small context better: agent-toolkit-loop leaves the model's earlier thinking out of the prompt, asks a reply cut off by a full context to go on in smaller steps, and keeps one big tool result (a web page, say) from overflowing the context. **write_file** can append, to write a long file in parts. |
+| [**0.8.0**](https://github.com/cervezagua/lmstudio-agent-toolkit/releases/tag/v0.8.0) | **`/handoff`** writes down where the work stands, and **`/resume`** carries it into a new chat, for when a long chat gets slow. |
+| [**0.7.3**](https://github.com/cervezagua/lmstudio-agent-toolkit/releases/tag/v0.7.3) | agent-toolkit-loop follows LM Studio's **Always allow**, carries on a reply that a full context cut off, and follows up a reply that ended inside the model's thinking. The file tools can no longer change LM Studio's own settings, and errors from the toolkit's tools are checked for secrets before the model sees them. |
 | [**0.7.2**](https://github.com/cervezagua/lmstudio-agent-toolkit/releases/tag/v0.7.2) | With agent-toolkit-loop on, a tool that fails (a script in js-code-sandbox, say) gives the model its error to work with, instead of freezing the chat. If a reply does fail, it ends cleanly with the reason, so Stop is never left greyed out. |
 | [**0.7.1**](https://github.com/cervezagua/lmstudio-agent-toolkit/releases/tag/v0.7.1) | With agent-toolkit-loop on, a tool call that needs your approval shows its Approve and Deny buttons again. In 0.7.0 the reply waited for an approval that couldn't be given. |
 | [**0.7.0**](https://github.com/cervezagua/lmstudio-agent-toolkit/releases/tag/v0.7.0) | **New companion plugin, [agent-toolkit-loop](standalone/agent-toolkit-loop/README.md)**: long chats keep going at small contexts (old tool output is hidden, then summarized), `/btw` side questions, and a model stuck repeating a call is stopped. **Commands**: `/review`, `/test`, `/commit`, `/init`, `/help` and your project's own. **`/rewind`** puts back the files a message changed. Edits get a syntax check, `task_wait` waits out a download or build without spending tokens, and skills load when your message names their trigger. Multi-line commands no longer hang in the PowerShell session. |

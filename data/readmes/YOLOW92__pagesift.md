@@ -2,7 +2,7 @@
 
 <img src="https://raw.githubusercontent.com/YOLOW92/pagesift/main/assets/logo.png" alt="PageSift Logo" width="300" />
 
-# pagesift 0.80.1
+# pagesift 0.80.10
 
 **High-performance, memory-bounded web scraping and extraction engine built for AI agents and LLM pipelines.**  
 Turn any website, document, or archive into clean Markdown and structured data — one Rust binary, native SDKs, dual Firecrawl v1/v2 & Jina Reader APIs, at a fraction of the memory.
@@ -21,6 +21,23 @@ Turn any website, document, or archive into clean Markdown and structured data �
 **English** · [简体中文](docs/README.zh-CN.md) · [日本語](docs/README.ja.md) · [Español](docs/README.es.md)
 
 </div>
+
+---
+
+<!-- perf-glance -->
+## Performance at a glance (0.80.9)
+
+Measured on 2026-10-28 with pagesift 0.80.9 on one machine (i7-10700 8C/16T, 15 GB, GTX 1070), same inputs, same worker count, one tool at a time on a quiet machine; default settings for every tool. Only the rows where PageSift is fastest are listed here; where it is behind, see [How PageSift compares](#how-pagesift-compares) and the [full report](benchmarks/mix/v2/results/report-2026-10-28.md). 0.80.10 does the same work as 0.80.9 (instruction counts: HTML extraction on 394 real pages +0.05 %, PDF and CSV unchanged; `benchmarks/history/0.80.10/`), so these speed numbers carry over; its extraction-quality changes were not re-measured here.
+
+| Workload | Workers | PageSift (↑ items/s) | Fastest competitor (↑ items/s) | Speed-up | Peak MB per worker (↓, PageSift / competitor) |
+|---|---|---|---|---|---|
+| PDF, 144 olmOCR-bench pages | 1 | **190.0** (resident `serve`) | pdf_oxide 100.6 | **×1.9** | 198 / 29 |
+| PDF, 144 olmOCR-bench pages | 16 | **543.4** | pdf_oxide 501.7 | **×1.08** | 16 / 11 |
+| Office & e-books, 81 files | 1 | **63.3** (resident `serve`) | Kreuzberg 19.5 | **×3.2** | 308 / 231 |
+| Office & e-books, 81 files | 16 | **178.4** | Kreuzberg 34.5 | **×5.2** | 70 / 219 |
+| Main-content extraction, 269 random pages | 16 | **573.6** | Resiliparse 559.3 | **×1.03** | 17 / 43 |
+| PDF vs layout-model tools (MinerU, Docling), same 144 pages | 1 | **190.0** (resident `serve`) | Docling (GPU, cu126) 1.3 | **×148.4** | 198 / 2638 |
+<!-- /perf-glance -->
 
 ---
 
@@ -81,6 +98,73 @@ Measured with 0.70.0, not re-run for later versions.
 
 ---
 
+## What's New in 0.80.10
+
+**An adaptive page limit.** `crawl --query … --adaptive` no longer needs `--limit`: the crawl keeps
+going while pages add new relevant content and stops when they stop doing so, or when nothing
+relevant can be found (`no_relevant_pages`); the limit is only a cap (500 when not given). On 69
+universities in five directions the adaptive crawl found 4,208 pages squarely on the query
+against 645 with `--limit 12` and 1,856 with `--limit 100` (0.80.9), and a larger share of
+its pages was useful (25.7% against 20.0% and 17.2%). Discovery: foreign-language main
+sites no longer take the budget of an English query, and `/about/housing/` is content, not an
+"about" page. Extraction: press-release teasers, news sidebars and relative links in uploads
+(`/v2/parse` takes a `url` field). Details: [0.80.10 release notes](docs/releases/0.80.10.md).
+
+## What's New in 0.80.9
+
+**The last 0.80 release.** Focused crawling was checked on 69 universities in five directions
+(international, graduate admission, housing, computer science, library): pages squarely on the query
+2.6% → 19.0%, on or near it 18.4% → 49.6% against 0.80.0; queued links are now re-scored as term
+weights are learned, and one page reached under several URLs is delivered once. PDFs include the
+text of filled-in form fields, notes, stamps and signatures (hard pdf.js test files: 53 → 61 of 100).
+`scrape` starts lighter when run once per file (CPU per call 6.3 → 4.3 ms). `doctor` starts every
+engine and warns when one cannot run; engines outside `PATH` and in Playwright's cache are found;
+`crawl`/`map` take `--ignore-robots`. Accordion and FAQ headers stay in extracted content. Every
+benchmark stays within 2% of 0.80.0. There were no 0.80.6–0.80.8. Details:
+[0.80.9 release notes](docs/releases/0.80.9.md).
+
+## What's New in 0.80.5
+
+**Results that look fine but are not now say so.** Warnings that mean a result is incomplete or
+wrong (lost PDF pages or content, thin or partial text, truncated output, a shell render …) now fill
+Firecrawl's `data.warning`, so Firecrawl clients see them; `crawl --out` adds `summary.json`. Age
+gates inside a big site frame (Steam's `/agecheck/`) and HTML block pages labelled as PDF are
+reported as `ACCESS_BARRIER` instead of content. Word, Excel, PowerPoint, CSV and EPUB stop at 16 MB
+of text with `output_truncated` (a 408 KB DOCX used to expand into 84 MB of Markdown). PDF damage
+warnings count against the document's real page count and name half-lost pages. Rendering waits up
+to 1.5 s more for pages that are still an empty shell when the network goes quiet. Misspelled
+`--engine`/`--format`/`--sitemap` values are errors. Every benchmark stays within 2% of 0.80.0.
+There was no 0.80.4. Details: [0.80.5 release notes](docs/releases/0.80.5.md).
+
+## What's New in 0.80.3
+
+**Focused crawling, checked on real university sites.** The same 38 university home pages were
+crawled by 0.80.0 and 0.80.3 with `crawl --query "international students admission tuition
+scholarship visa" --adaptive --limit 12`. On the 32 sites both reached: useful pages 29.6% →
+66.1%, international-student pages 6.3% → 38.9%, median useful pages per site 1.5 → 8 (graded
+automatically by URL and title; scripts and raw results in `benchmarks/history/0.80.3/`). Query
+crawls now cover the whole site, refund failed fetches to the page budget, find the English site
+through `hreflang` and English subdomains, and stop treating menus as lists. A PDF that lost a
+page's content to truncation now says which page (`content_missing`). Details:
+[0.80.3 release notes](docs/releases/0.80.3.md).
+
+## What's New in 0.80.2
+
+**The focused crawl finds the pages it was asked for.** A tester ran `crawl --query` over 159
+university sites (*international students admission tuition scholarship visa*, 12 pages each) and
+got 25.6% useful pages. The link scoring, scheduling and stopping rule are rewritten: anchor text
+for every link (navigation included), query terms weighted by how rare they are on the site, news
+and about pages demoted, sections taken in turn, subdomains in scope, error pages excluded, and an
+adaptive stop that only counts relevant pages. On the synthetic 8-site gate that reproduces the
+report's failure patterns, useful pages went from 7.3% to 82.6%, and two synthetic sites from other
+domains (a developer portal, a city services site) with their own queries keep the rules honest;
+**real sites were not reachable from the development container, so those numbers are synthetic
+only.** New: `attachments` fetches
+the PDFs and Office documents linked from relevant pages; every result carries a crawl trace
+(`depth`, `parent`, `score`, `attachmentOf`). PDF follow-ups: a title under section-only bookmarks
+is no longer empty; a linearized PDF cut before its page tree root is converted instead of
+rejected. Details: [0.80.2 release notes](docs/releases/0.80.2.md).
+
 ## What's New in 0.80.1
 
 Fixes from the 0.80 review (HTML extraction is untouched; PDF output changes only where a raised
@@ -134,7 +218,7 @@ Run the standalone container (includes headless browser renderer):
 
 ```bash
 docker run -d -p 3002:3002 -v pagesift-data:/data \
-  -e PAGESIFT_API_KEYS=sk-test ghcr.io/yolow92/pagesift:0.80.1
+  -e PAGESIFT_API_KEYS=sk-test ghcr.io/yolow92/pagesift:0.80.10
 ```
 
 #### Firecrawl SDK Drop-In Replacement
@@ -293,7 +377,7 @@ If PageSift is useful in research or a product, cite it as:
   author = {YOLOW92},
   year   = {2026},
   url    = {https://github.com/YOLOW92/pagesift},
-  note   = {Version 0.80.1}
+  note   = {Version 0.80.10}
 }
 ```
 

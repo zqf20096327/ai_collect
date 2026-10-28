@@ -95,6 +95,7 @@ Linux + NVIDIA GPU 機（例: **NVIDIA DGX Spark**）でも動作します。
 | `ssh-app/` | Web SSH 端末（オプション・`profiles: ["ssh"]`。詳細は [`docs/ssh.md`](docs/ssh.md)） |
 | `sengoku-app/` | 戦国国取り（お遊びのシミュレーションゲーム。オプション・`profiles: ["sengoku"]`。詳細は [`docs/sengoku.md`](docs/sengoku.md)） |
 | （profile `worldmonitor`） | ワールドモニター（上流タグからビルド。ソースは同梱しない。詳細は [`docs/worldmonitor.md`](docs/worldmonitor.md)） |
+| （web 同梱） | 紙面（文字・図形・画像を組む。詳細は [`docs/shimen.md`](docs/shimen.md)） |
 | `procuretech-spec-app/` | 調達仕様書の生成/合成（オプション・`profiles: ["procuretech-spec"]`） |
 | `seaweedfs/` | 成果物配信用 S3 互換ストレージ設定 |
 | `scripts/` | 運用スクリプト（契約終了時の完全削除・報告書生成 等） |
@@ -1227,4 +1228,109 @@ S3_PUBLIC_ENDPOINT=https://files.example.lg.jp
 
 | exApp | 用途 |
 | --- | --- |
-| 監査ログ参照 | 利用状況・内容ログ
+| 監査ログ参照 | 利用状況・内容ログの検索・閲覧 |
+| 利用者一括管理 | CSV による Keycloak 利用者の作成・更新・削除 |
+| モデル利用制御 | グループ／チーム別の利用可能モデル設定 |
+| 入力制限 | 禁止語・カスタム正規表現、添付警告／ナレッジ検知／NER のトグル、マイナンバー検査 |
+| プロンプトテンプレート | 標準／個人／グループ共有テンプレートの管理 |
+
+## 入力制限と個人情報検知（添付・ナレッジ）
+
+禁止語ブロックに加え、**氏名・住所・電話番号・マイナンバー**を種別付きで検知できます。
+匿名化は行わず、**警告／ラベル表示のみ**（アップロードやナレッジ登録自体は止めません）。
+実装の中核は `shared/pii_scan.py` です。
+
+### 動作概要
+
+| 経路 | タイミング | 利用者向けの見え方 |
+| --- | --- | --- |
+| チャット等の添付 | `PUT /files` 保存と同時（同期）。先頭 `PII_NER_MAX_CHARS`（既定 8,000）文字まで NER | 添付行に種別と検知箇所の抜粋付き警告。送信は可能 |
+| ナレッジ登録 | 非同期ジョブ内で索引化のあと検知（`PII_KNOWLEDGE_NER_MAX_CHARS` 既定 200,000） | `/knowledge` のドキュメント一覧に `pii_labels` 等を表示 |
+| プロンプト本文 | 従来どおり禁止語・カスタム正規表現・マイナンバー検査 | ヒット時はブロック（従来仕様） |
+
+管理者向け **入力制限** exApp で次を切り替えられます。
+
+- 添付アップロード時の個人情報警告（`warn_attachments`）
+- ナレッジ登録時の個人情報検知（`scan_knowledge_pii`）
+- 氏名・住所の NER 検知（`check_pii_ner`。GiNZA 未導入時は実質オフ）
+- マイナンバー検査・禁止ワード・カスタム正規表現（従来どおり）
+
+### 検知方式
+
+| 種別 | 方式 | 備考 |
+| --- | --- | --- |
+| 電話番号 | 正規表現 | イメージへの GiNZA 導入不要 |
+| マイナンバー | 検査用数字（総務省令） | 単なる 12 桁数字では検知しない |
+| 住所 | 都道府県＋市区町村などのパターン ＋ 任意の NER | NER は GiNZA 導入時 |
+| 氏名 | 任意の NER（GiNZA / spaCy） | 未導入なら氏名 NER はスキップ。明らかな誤検知はフィルタ |
+
+### GiNZA（spaCy）のセットアップ
+
+氏名 NER と住所 NER 強化には、**spaCy 系の日本語モデル GiNZA**（`ginza` + `ja-ginza`）を
+`backend` / `rag-app` イメージに入れます。既定ビルド（`PII_INSTALL_NER=0`）では入れず、
+電話・マイナンバー・住所パターンだけが動きます（イメージを軽量に保つため）。
+
+Dockerfile（`backend/Dockerfile` / `rag-app/Dockerfile`）はビルド引数で分岐します。
+
+```dockerfile
+ARG PII_INSTALL_NER=0
+RUN if [ "$PII_INSTALL_NER" = "1" ]; then \
+      pip install --no-cache-dir 'ginza>=5.1.3' 'ja-ginza>=5.1.3'; \
+    fi
+```
+
+Compose は `.env` / `.env.prod` の `PII_INSTALL_NER` を build args に渡します。
+
+```bash
+# --- 開発 ---
+# .env に PII_INSTALL_NER=1 を設定してから再ビルド（またはコマンド先頭で渡す）
+PII_INSTALL_NER=1 docker compose up -d --build backend rag-app
+
+# --- 本番 ---
+# .env.prod に PII_INSTALL_NER=1 を設定してから:
+PII_INSTALL_NER=1 docker compose -f docker-compose.prod.yml --env-file .env.prod \
+  up -d --build backend rag-app
+# backend 再作成直後に proxy が一時的に名前解決に失敗する場合は:
+docker restart open-genai-proxy
+```
+
+確認の目安:
+
+- コンテナ内で `python -c "import spacy; spacy.load('ja_ginza'); print('ok')"` が通る
+- 入力制限で「氏名・住所の NER 検知」を「する」にしたうえで、氏名を含むテキスト添付で警告が出る
+- GiNZA 読込に失敗してもサービスは起動し、電話・マイナンバー等は継続動作する（ログに `[pii_scan] GiNZA 読込失敗`）
+
+| 変数 | 既定 | 役割 |
+| --- | --- | --- |
+| `PII_INSTALL_NER` | `0` | ビルド時に GiNZA を入れるか（`1` で有効） |
+| `PII_NER_MAX_CHARS` | `8000` | 同期添付経路の NER 対象文字数上限 |
+| `PII_KNOWLEDGE_NER_MAX_CHARS` | `200000` | ナレッジ非同期経路の NER 対象文字数上限 |
+
+注意:
+
+- GiNZA 導入でイメージサイズとビルド時間が増えます（初回は依存取得のためネットワークが必要。閉域では事前に依存をキャッシュ／ミラーしてください）
+- `ja-ginza-electra` は既定では入れません（より重い）。必要なら Dockerfile の `pip install` 行を拡張してください
+- 検知は補助であり、**網羅や誤検知ゼロを保証しません**。運用では警告を確認し、本番文書での誤検知を見てトグルやフィルタを調整してください
+
+## 制限事項（ローカル版）
+
+- 画像生成は源内 Web の **「画像を生成」**（`/image`）を利用します。ホストで A1111 互換 SD サーバ（または `scripts/mock-sd-server.py`）が必要です。
+- AI アプリの呼び出しは、Dify チャットフローが NDJSON ストリーミング、それ以外（ワークフロー / フォーム実行型）は同期形式（非同期のポーリング形式は未対応）
+- 添付のうち **動画** はローカル LLM が直接扱えないため未対応（画像・ドキュメントは対応）
+- 認証は SAML（Keycloak）で行います。開発用は HTTP・既定パスワードです。
+  **閉域・本番**では `docker-compose.prod.yml`、TLS 証明書、`INTERNAL_SIGNING_SECRET`、
+  `S3_*`、SSRF 許可ホスト等を必ず見直してください（`.env.prod.example` 参照）
+
+## 貢献・セキュリティ
+
+- 貢献の進め方: [CONTRIBUTING.md](CONTRIBUTING.md)
+- 行動規範: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
+- 脆弱性報告: [SECURITY.md](SECURITY.md)（GitHub Security Advisories を優先。公開 Issue も可だが詳細・PoC は禁止）
+
+## ライセンス
+
+- 本プロジェクト独自のコード（`backend/`, `rag-app/`, `whisper-app/`, `shared/`,
+  `docker-compose.yml` 等）は **MIT License**（ルート [`LICENSE`](LICENSE)）。
+- 同梱の `genai-web/` の出自・第三者通知は [`NOTICE`](NOTICE) および
+  `genai-web/LICENSE`・`genai-web/THIRD-PARTY-NOTICES.txt` を参照してください。
+- 本リポジトリはデジタル庁とは無関係の非公式フォークです（上部の免責を参照）。

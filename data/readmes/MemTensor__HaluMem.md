@@ -8,6 +8,9 @@
 <a href="https://github.com/MemTensor/HaluMem/issues">
     <img alt="GitHub Issues" src="https://img.shields.io/github/issues/MemTensor/HaluMem?color=blueviolet">
 </a>
+<a href="https://aclanthology.org/2026.emnlp-main.220/" target="_blank">
+    <img src="https://img.shields.io/badge/EMNLP%202026-Main-B31B1B?style=flat-square" alt="EMNLP 2026" style="height: 20px;">
+</a>
 <a href="https://arxiv.org/abs/2511.03506">
      <img src="https://img.shields.io/badge/arXiv-Paper-B31B1B?style=flat-square&logo=arxiv&logoColor=white">
 </a>
@@ -981,13 +984,28 @@ The **HaluMem dataset** was built through a **six-stage, carefully controlled pi
 
 ## Citation
 ```
-@misc{chen2025halumemevaluatinghallucinationsmemory,
-      title={HaluMem: Evaluating Hallucinations in Memory Systems of Agents}, 
-      author={Ding Chen and Simin Niu and Kehang Li and Peng Liu and Xiangping Zheng and Bo Tang and Xinchi Li and Feiyu Xiong and Zhiyu Li},
-      year={2025},
-      eprint={2511.03506},
-      archivePrefix={arXiv},
-      primaryClass={cs.CL},
-      url={https://arxiv.org/abs/2511.03506}, 
+@inproceedings{chen-etal-2026-halumem,
+    title = "{H}alu{M}em: Evaluating Hallucinations in Memory Systems of Agents",
+    author = "Chen, Ding  and
+      Niu, Simin  and
+      Kehang, Li  and
+      Liu, Peng  and
+      Zheng, Xiangping  and
+      Tang, Bo  and
+      Li, Xinchi  and
+      Xiong, Feiyu  and
+      li, Zhiyu",
+    editor = "Lee, Hung-Yi  and
+      Dev, Sunipa  and
+      Li, Jessy  and
+      Elliott, Desmond",
+    booktitle = "Proceedings of the 2026 Conference on Empirical Methods in Natural Language Processing",
+    month = oct,
+    year = "2026",
+    address = "Budapest, Hungary",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2026.emnlp-main.220/",
+    pages = "5073--5108",
+    ISBN = "979-8-89176-459-0"
 }
 ```

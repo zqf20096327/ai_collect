@@ -10,7 +10,7 @@
     <img src="https://img.shields.io/badge/Ubuntu-PRoot-E95420?style=for-the-badge&amp;logo=ubuntu&amp;logoColor=white" alt="PRoot Ubuntu" />
   </p>
   <p>
-    <a href="https://github.com/JunWan666/astrbot-for-android/releases/latest"><img src="https://img.shields.io/badge/Version-1.1.0-3867FF?style=flat-square" alt="Version 1.1.0" /></a>
+    <a href="https://github.com/JunWan666/astrbot-for-android/releases/latest"><img src="https://img.shields.io/badge/Version-1.2.0-3867FF?style=flat-square" alt="Version 1.2.0" /></a>
     <img src="https://img.shields.io/badge/Android-8.0%2B-3DDC84?style=flat-square&amp;logo=android&amp;logoColor=white" alt="Android 8.0 and above" />
     <img src="https://img.shields.io/badge/Architecture-ARM64-64748B?style=flat-square" alt="ARM64" />
     <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-18A978?style=flat-square" alt="MIT License" /></a>
@@ -32,9 +32,11 @@
 
 应用采用 Kotlin 与 Jetpack Compose 构建原生管理界面，支持简体中文与英文，通过内置 WebView 访问 AstrBot 和 NapCat 的 WebUI，在手机端完成 QQ 登录、模型接入与插件配置，并提供人设管理、局域网访问、SSH 终端与 cpolar 内网穿透扩展。
 
+当前版本为 **1.2.0**。本轮改善终端滚动、选字和快捷键，增加最近任务隐藏与后台凭据重置，简化 App 更新流程，并完善 Linux QQ 与 Ubuntu 的运行兼容性。完整变化见[更新记录](docs/CHANGELOG.md)。
+
 ## 界面预览
 
-**v1.1.0** 界面预览，包含服务管理、人设库、设置、实时日志及两套内置后台。
+以下为 **v1.1.0** 的基础界面示例，包含服务管理、人设库、设置、实时日志及两套内置后台；截图尚未更新到 1.2.0。
 
 <table width="100%" align="center">
   <tr>
@@ -81,14 +83,14 @@
 | 资源概览 | 显示应用及托管进程内存、手机总内存和占比，单独查看存储使用情况 |
 | 备份与恢复 | 支持本机快照、便携备份和更新回退，自动清理未受保护的旧自动快照 |
 | SSH 扩展 | 默认安装、按需启动，支持修改密码、端口和局域网访问设置 |
-| Ubuntu 终端 | 内置本机交互终端，支持多会话后台运行、长按复制、惯性滚动与快捷字号调整，无需启动 SSH |
-| Ubuntu 桌面 | 按需安装轻量图形桌面，内嵌 noVNC 访问，可单独安装原版 ARM64 QQ，提供终端环境配置与后台进程管理 |
+| Ubuntu 终端 | 内置本机交互终端，支持多会话、平滑触摸滚动、方向键与粘贴回车；Android 9 及以上支持选字放大镜 |
+| Ubuntu 桌面 | 按需安装轻量桌面与通用编译工具，内嵌 noVNC，可独立安装或更新原版 ARM64 QQ，保留登录数据 |
 | cpolar 扩展 | 按需安装，内嵌官方 WebUI 登录与隧道管理，默认提供 SSH、AstrBot、NapCat 三个隧道 |
 | 中英文界面 | 支持跟随系统、简体中文与 English，覆盖管理界面、通知与操作提示 |
-| 后台引导 | 提供通知、电池优化、后台无限制、自启动权限及任务锁定入口 |
-| 更新管理 | App、AstrBot、NapCat 分别检查和更新，下载校验后确认安装 |
+| 后台引导 | 提供通知、电池优化、后台无限制、自启动权限及任务锁定入口，可选择在最近任务中隐藏 |
+| 更新管理 | App 更新统一为检查、查看说明、下载校验后进入系统安装；AstrBot、NapCat 独立更新 |
 
-首页和设置采用固定布局，小窗口分页；人设与日志区域支持滚动。进入服务详情后，底部导航切换为该服务的概览、连接、凭据和日志。
+首页和多数设置采用固定布局，小窗口分页；后台运行设置集中在可滚动的单页，人设与日志区域支持滚动。进入服务详情后，底部导航切换为该服务的概览、连接、凭据和日志，凭据页可重置忘记的后台密码或口令。
 
 ## 开始使用
 
@@ -123,7 +125,7 @@ cpolar 在“设置 → 扩展组件”中单独下载安装，客户端不打�
 
 ## 更新
 
-“设置 → 关于 → 检查更新”管理 App 安装包，AstrBot 与 NapCat 各有独立的程序更新入口。兼容的组件新版无需重新安装 App。更新支持签名校验、断点续传、安装前快照和失败回退，下载完成后由用户确认安装。
+“设置 → 关于 → 检查更新”管理 App 安装包：发现新版后弹窗显示说明，点击下载后自动校验，再进入系统安装器；缺少安装权限时引导授权，返回后继续。当前已是适用的最新版本时会明确提示。AstrBot 与 NapCat 各有独立的程序更新入口。更新保留签名校验、断点续传、安装前快照和组件失败回退，APK 安装由系统确认。
 
 默认接入本项目的 GitHub 签名更新通道：**Releases 存放安装包和 AstrBot 程序包，`updates` 分支托管签名目录，NapCat 直接下载上游官方 Shell 包**。只有 QQ、Python 或底层依赖变化时，才需要匹配的运行环境升级。配置方式见[更新与分发](docs/更新与分发.md)。
 

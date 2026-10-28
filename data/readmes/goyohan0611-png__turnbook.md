@@ -7,7 +7,7 @@
 
 ### Your AI forgets everything when the session ends. This one remembers, and it never calls an LLM to do it.
 
-**88.8% on LongMemEval. Zero model tokens spent saving memory. Runs on your own PC.**
+**88.8% on LongMemEval ([measured on 0.9.9](#does-it-work)). Zero model tokens spent saving memory. Runs on your own PC.**
 
 [![][license-shield]][license-link]
 [![][python-shield]][python-link]
@@ -88,7 +88,12 @@ that answer the question.
   memory keeps which app and session it came from.
 - **Remembers conversations word for word**, on your own PC. Saving is a database write: no model
   call, no tokens. When a question depends on the past, the agent gets back the few thousand
-  tokens that answer it. Korean and English.
+  tokens that answer it.
+- **Holds up as memory piles up.** In a memory of 205,000 turns the answer is still among the
+  first 30 found for 79.7% of questions (82.8% at 6,000), and a search takes about 0.4 s.
+  [As the memory grows](#as-the-memory-grows)
+- **Any language, across languages.** The search model is multilingual: ask in Korean about
+  something said in English, or the other way round. [In Korean](#in-korean)
 - **One memory across your PCs.** Run `turnbook folder share`, then `turnbook folder <code>` on
   the other PC (the AI tells you the command; it never moves your memory by itself, so a web page
   cannot either). Office network or [Tailscale](https://tailscale.com), over TLS, every line
@@ -137,6 +142,15 @@ flowchart LR
 - **The model you already use does the thinking.** Turnbook hands it evidence; it answers.
   When models get better, the answers get better without changing the memory.
 
+## Beyond agent memory
+
+Underneath, Turnbook is a retrieval engine for conversations: it stores every turn verbatim at no
+model cost and finds the few that answer a question by words, meaning and time (when it was said,
+what changed since), re-ranked by a small learned score. That is RAG over chat history, and the
+same engine could serve a chatbot that remembers each of its users, a support bot that recalls
+past tickets, or a team's searchable decision log. Today it ships as a personal, local memory;
+a Python API and multi-user server mode are not built yet. Interested? Open an issue.
+
 ## Does it work?
 
 [LongMemEval](https://github.com/xiaowu0162/LongMemEval) is the public benchmark for long-term
@@ -148,7 +162,7 @@ answer model (gpt-5-mini), the same prompt and the official gpt-4o judge; only t
 | **Turnbook** | **88.8%** (all 500) | **0** | **3.4k tokens** |
 | agentmemory | 80.4% (same 499) | — | ~16.5k tokens |
 | MemPalace 3.10.0 | 57.5% (40 questions) | 0 | — |
-| Mem0 2.2.1 (open source) | 52.5% (40 questions) | ~640,000 per question | — |
+| Mem0 2.2.1 (open source, default fact extraction) | 52.5% (40 questions) | ~640,000 per question | — |
 
 On agentmemory's 499 Turnbook scored 89.0%; on the 40, 85.0%. Retrieval alone, on agentmemory's own measure
 (an answer session among the first 5 retrieved): Turnbook 98.5%, agentmemory 95.2%.
@@ -165,7 +179,27 @@ points now (83.5% → 80.4%). Each conversation was scored with weights learned 
 the added conversations are other people's, likely easier to tell apart than one person's own
 history. On LongMemEval the same change took the answer reaching the model from 97.5% to 98.3%.
 
+0.9.47 adds more to that score (how rare the shared words are, how much of one past conversation was
+found) and looks at 100 candidates per search instead of 50. With LoCoMo inside a memory grown to
+205,000 turns, the answer turn is among the first 30 found for 79.7%
+of questions, against 73.0% with the fixed blend of 0.9.45; a search takes about 0.4 s there.
+
+<p align="center"><img src="https://raw.githubusercontent.com/goyohan0611-png/turnbook/main/demo/scale-large.png" alt="Answer turn among the first 30 from 6k to 205k turns: 82.8 to 79.7 percent with 0.9.47, 76.8 to 73.0 percent with plain rank fusion" width="720"></p>
+
 <p align="center"><img src="https://raw.githubusercontent.com/goyohan0611-png/turnbook/main/demo/scale.png" alt="Recall at 1x, 4x and 10x memory: 83.5 to 80.4 percent with learned re-ranking, 82.5 to 76.9 percent before" width="720"></p>
+
+### In Korean
+
+Four LoCoMo conversations translated into Korean (582 questions). Share of questions whose answer
+turn is among the first 30 found:
+
+| | Korean | Korean, memory 4× | English (same conversations) |
+|---|---|---|---|
+| 0.9.46 | 74.4% | 71.8% | 83.8% |
+| **0.9.47** | **77.5%** | **76.8%** | **84.7%** |
+
+Word search now finds "콩이" in "콩이를" (Korean particles), and the re-ranker was trained on two
+benchmarks instead of one. [research/runs/graph-v9.21-korean](research/runs/graph-v9.21-korean)
 
 Every question, answer and verdict is in [`research/runs/`](research/runs); method, failures and
 how to rerun it: [docs/benchmarks.md](docs/benchmarks.md).
@@ -189,7 +223,8 @@ wrote, one app at a time. Turnbook keeps every turn as it was said and shares it
 app and model on the PC.
 
 **Korean?** Yes: Korean and English conversations, and questions in either language. A Korean
-question about something said only in English is found most of the time, not always.
+question about something said only in English is found most of the time, not always. Korean
+recall still trails English by about 7 points: [In Korean](#in-korean).
 
 **How do I remove it?** `turnbook-uninstall` disconnects every app and stops the service; the
 memory stays in `~/.graph-mind` unless you add `--purge`.

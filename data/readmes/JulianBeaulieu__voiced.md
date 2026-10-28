@@ -19,7 +19,7 @@ for local speech services.
 
 The recording's timings are curl fetching a WAV, slower than the streamed benchmark (94 ms median first audio on the same Apple M1 Max, 64 GB; see [Benchmarks](#benchmarks)).
 
-voiced 0.5.0 is the current release. It transcribes with Parakeet TDT 0.6B
+voiced 0.5.1 is the current release. It transcribes with Parakeet TDT 0.6B
 v3 and speaks with Kokoro-82M. Other models are a download away, from the
 menu bar app or `voiced models download`: Qwen3-ASR for files and languages
 beyond Parakeet's, the streaming Nemotron ASR, Moonshine on the CPU, and
@@ -62,8 +62,9 @@ password ([docs/operations.md](docs/operations.md#the-menu-bar-app)). With
 Homebrew, `brew update` and `brew upgrade --cask voiced` work too: from
 0.5.0 on the services keep running and Homebrew asks for no password; on
 its next launch the app offers **Update voiced**, which asks for none
-either. 0.5.0 is the first version that updates itself: install it by hand
-once, with Homebrew or the DMG; later versions arrive in the app.
+either. 0.5.0 was the first version that updates itself, and 0.5.1 the
+first update it delivers: an app of 0.4.0 or earlier is updated by hand
+once, with Homebrew or the DMG, and later versions arrive in the app.
 
 Updating from 0.4.0 or earlier asks for a password once more, the last
 time: those releases installed the services as system-wide LaunchDaemons,
@@ -73,7 +74,10 @@ needed)", and if you cancel, the services keep running the old way until
 you accept. With `brew upgrade --cask voiced`, Homebrew asks instead, since
 it runs the old version's uninstall step, which removes the old services;
 voiced is then down until you open the app, which installs the new
-services without asking.
+services without asking. From a terminal, `voiced install` prints the line
+that removes them; the install that follows needs you logged in at the Mac
+(Screen Sharing counts, SSH alone does not), so over SSH plan it with
+someone at the Mac.
 
 Moving the app to the Trash, or `brew uninstall --cask voiced`, leaves the
 services running: to remove voiced, use Settings > About > Uninstall
@@ -97,10 +101,15 @@ voiced install
 ```
 
 `voiced install` downloads the configured models and starts the services
-as your LaunchAgents, with no `sudo`;
+as your LaunchAgents, with no `sudo`. On a headless Mac, someone has to be
+logged in at it (Screen Sharing counts): over SSH alone the install stops
+before it changes anything.
 [docs/operations.md](docs/operations.md#commands) says what it does. Both
 the cask and the formula come from the
-[tap](https://github.com/JulianBeaulieu/homebrew-voiced).
+[tap](https://github.com/JulianBeaulieu/homebrew-voiced). After
+`brew upgrade voiced` from 0.5.0, run `voiced install` once more: from
+0.5.1 launchd opens the services' stdout and stderr logs, and only the
+files `voiced install` writes tell it to ([docs/operations.md](docs/operations.md#homebrew)).
 
 Check the services from the terminal. The formula puts `voiced` on your
 `PATH`; after an install by the app, the command is `~/.voiced/bin/voiced`.
@@ -812,8 +821,10 @@ trailing silence and 105 ms median at the last word
 ## Troubleshooting
 
 Start with `voiced doctor`. It checks Apple Silicon, the macOS version,
-Python, espeak-ng, ffmpeg, memory, port conflicts, whether voiced starts
-after a reboot, the installed LaunchAgents, the firewall when voiced is on
+Python, espeak-ng, ffmpeg, memory, port conflicts, whether you are logged
+in at the Mac, whether voiced starts after a reboot, the installed
+LaunchAgents (loaded, and their plists
+what `voiced install` writes), the firewall when voiced is on
 the network, and Metal access, including from a LaunchAgent as the services
 run it with `voiced doctor --metal-probe`.
 
@@ -834,16 +845,20 @@ run it with `voiced doctor --metal-probe`.
 | Streamed transcript repeats a short word after a pause | A known limit of streaming with Parakeet around one-second pauses; batch transcription of the same audio is not affected. |
 | A service exits at startup with `unknown stt engine` or `unknown tts engine` | `engine` in the config names an engine that is not installed; the message lists the installed ones. |
 | ERROR log line `ASGI callable returned without completing response` | Expected; see [Logs](docs/operations.md#logs). |
-| `voiced install`, `status` or `doctor` prints a `sudo /bin/sh -c '/bin/launchctl bootout system/...'` line | voiced 0.4.0 or earlier installed the services as LaunchDaemons, which only an administrator can remove. Run that line once (the last time voiced needs a password), then `voiced install`. |
+| `voiced install`, `status` or `doctor` prints a `sudo /bin/sh -c '/bin/launchctl bootout system/...'` line | voiced 0.4.0 or earlier installed the services as LaunchDaemons, which only an administrator can remove. Run that line once (the last time voiced needs a password), then `voiced install`, logged in at the Mac (Screen Sharing counts, SSH alone does not). |
+| `voiced install` says "Not logged in at this Mac" | You are connected over SSH with nobody logged in at the Mac, and the services load only into a login session. Log in at the Mac, in person or with Screen Sharing, and run `voiced install` again; nothing was changed. |
 | `voiced install`, `stop`, `start` or `uninstall` refuses to run under `sudo` | The services are your LaunchAgents, and under `sudo` the command would address root's. Run it as yourself, without `sudo`. |
 | Home Assistant does not discover voiced | `bind` is still `127.0.0.1`, mDNS does not cross your VLAN, or macOS keeps the services' Bonjour announcements on the Mac (`voiced doctor`: Discovery). Add the integrations by the Mac's address and port; see [docs/home-assistant.md](docs/home-assistant.md). |
+| `voiced doctor` says an agent's plist is out of date | An upgrade kept the plist of an earlier release, or `[server] log_dir` changed since the install. Run `voiced install` once; it reloads the agents whose plists changed. If doctor says the plist runs another state directory or config, follow its message instead. |
+| `voiced doctor` fails an agent: launchd "probably could not open" a log file | launchd does not start a service whose stdout or stderr file it cannot open. Make `[server] log_dir` a directory you can write, then `voiced stop <service>` and `voiced start <service>`. |
 | Services do not come up after a reboot | They start when you log in; without FileVault or automatic login the Mac waits at the login window. See [voiced runs while you are logged in](#voiced-runs-while-you-are-logged-in). |
 | Home Assistant cannot reach voiced on the network, with the firewall on | The firewall's question for `python3.12` was answered Deny, or not at all. Allow it in System Settings > Network > Firewall > Options; `voiced doctor` names the file. |
 | Port already in use | Another program owns 8880, 8881, 10200 or 10300. `voiced doctor` names it; change the port in the config. |
 | Services stopped after `brew uninstall voiced` | `~/.voiced/bin/voiced` points at the removed formula, so launchd no longer starts them. Reinstall it, or finish removing voiced: [docs/operations.md](docs/operations.md#homebrew). |
 | `voiced settings set` says `is not downloaded` | voiced refuses to switch to a model that is not in the cache; run the `voiced models download` it names first. |
 
-Logs live under `~/Library/Logs/voiced/`. More in
+Logs live under `~/Library/Logs/voiced/`; new ones are created readable
+only by you (0600). More in
 [docs/operations.md](docs/operations.md).
 
 ## Roadmap

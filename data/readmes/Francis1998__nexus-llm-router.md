@@ -1,6 +1,6 @@
 # nexus-llm-router
 
-![Tests](https://img.shields.io/badge/tests-1813%20passing-brightgreen) ![Python](https://img.shields.io/badge/python-3.11%2B-blue) ![CI](https://github.com/Francis1998/nexus-llm-router/actions/workflows/ci.yml/badge.svg)
+![Tests](https://img.shields.io/badge/tests-1828%20passing-brightgreen) ![Python](https://img.shields.io/badge/python-3.11%2B-blue) ![CI](https://github.com/Francis1998/nexus-llm-router/actions/workflows/ci.yml/badge.svg)
 
 
 > Intelligent multi-LLM routing middleware with task-aware model selection, cost optimization, fallback safety, and a drop-in OpenAI-compatible API.
@@ -822,6 +822,27 @@ Offline HITL `fragmentation_ratio` bands. Gap vs vLLM/SGLang/TGI paged-attention
 ![SpeculativeDraftStarveBandAdvisor](assets/demo/speculative-draft-starve-band-advisor.gif)
 
 Offline HITL `starve_ratio` bands. Gap vs vLLM/SGLang/TGI speculative draft-starve monitors. Distinct from `SpeculativeTreeDepthBlowupAdvisor` / `SpeculativeAcceptanceEntropyBandAdvisor`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+
+
+### LoraHotSwapStallBandAdvisor
+
+![LoraHotSwapStallBandAdvisor](assets/demo/lora-hot-swap-stall-band-advisor.gif)
+
+Offline HITL `stall_ratio` bands. Gap vs vLLM/SGLang/TGI LoRA hot-swap stall monitors. Distinct from `PagedAttentionFragmentationBandAdvisor` / `KvBlockStealStormBandAdvisor`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+
+
+### TensorParallelSkewBandAdvisor
+
+![TensorParallelSkewBandAdvisor](assets/demo/tensor-parallel-skew-band-advisor.gif)
+
+Offline HITL `skew_ratio` bands. Gap vs vLLM/SGLang/TGI tensor-parallel skew monitors. Distinct from `DisaggPrefillDecodeSkewBandAdvisor` / `TokenizerVocabSkewBandAdvisor`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+
+
+### ContinuousBatchTokenBubbleBandAdvisor
+
+![ContinuousBatchTokenBubbleBandAdvisor](assets/demo/continuous-batch-token-bubble-band-advisor.gif)
+
+Offline HITL `bubble_ratio` bands. Gap vs vLLM/SGLang/TGI continuous-batch token-bubble monitors. Distinct from `ChunkedPrefillBubbleBandAdvisor` / `DecodePreemptionPingPongBandAdvisor`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 
 
 ## License

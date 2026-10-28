@@ -17,6 +17,10 @@ Built to operate entirely in memory with zero local disk persistence, `oxllm` is
 * **&lt;2ms Routing Overhead**: Lock-free concurrency across routing loop, counters, and probe permits. Verified by CI benchmark.
 * **Adaptive Circuit Breaker**: Strict `HalfOpen` state machine with lock-free `probe_in_flight` atomic check-and-set. Rate limits and server errors trip per-provider circuits with exponential backoff. Idle-based penalty decay automatically rehabilitates providers.
 * **Tiered Failover**: Configure fallback chains across multiple providers. If the primary returns 429 or 5xx, the proxy transparently cascades to the next.
+* **Routing Policies**: Per-virtual-model `priority` (configuration order), `fastest` (lowest measured time-to-first-byte), or `cheapest` (lowest configured cost) selection among healthy candidates.
+* **Session Affinity**: Requests carrying a session key stay on one provider while it is healthy, keeping upstream prompt-prefix caches warm. Bounded LRU, idle TTL, automatic break-and-re-pin on failure.
+* **Optional Inbound Auth**: `server.api_keys` gates the public `/v1/*` routes behind constant-time `Authorization: Bearer` checks. Admin routes are always localhost-only.
+* **Raw Completions Route**: `POST /v1/completions` (with SSE streaming) for fill-in-the-middle clients such as editor autocomplete.
 * **Hot Config Reloading**: `SIGHUP` signal or `POST /reload` HTTP endpoint — parses updated `config.toml` and hot-swaps the provider pool via `tokio::sync::watch` without dropping connections.
 * **Local Stats Dashboard**: Every provider tracks request count, success count, token volumes, and last request time via lock-free atomics. Query via `oxllm status` or `curl /status` — no external collector needed.
 * **OOM-Proof Telemetry**: Bounded OTel event channel (1024 cap) with non-blocking `try_send` drops. If `otelite` is offline, telemetry degrades gracefully and the proxy keeps running.
@@ -29,6 +33,25 @@ Built to operate entirely in memory with zero local disk persistence, `oxllm` is
   SDKs, including browser-based usage.
 
 ---
+
+## 🔐 Authentication
+
+Outbound provider credentials live in each provider's `api_key`. Inbound auth is
+opt-in: set `server.api_keys` to a list of keys and the public `/v1/*` routes will
+require a matching `Authorization: Bearer <key>` header, compared in constant time.
+
+```toml
+[server]
+host = "127.0.0.1"
+port = 8080
+otel_endpoint = "http://127.0.0.1:4318"
+api_keys = ["${OXLLM_CLIENT_KEY}"]   # empty list (default) leaves the proxy open
+```
+
+Leaving it empty is appropriate for loopback-only deployments. Administrative
+routes (`/status`, `/reload`, `/health`, `/admin/*`) are localhost-restricted
+regardless of this setting, and a request rejected for a bad key never reaches an
+upstream provider.
 
 ## 🌐 CORS Support
 
@@ -149,6 +172,11 @@ curl -X POST http://127.0.0.1:8080/v1/embeddings \
   -H "Content-Type: application/json" \
   -d '{"model": "basic", "input": "hello world"}'
 
+# Raw completions (fill-in-the-middle, e.g. editor autocomplete)
+curl -X POST http://127.0.0.1:8080/v1/completions \
+  -H "Content-Type: application/json" \
+  -d '{"model": "basic", "prompt": "def add(a, b):\n    ", "max_tokens": 16}'
+
 # Live dashboard (no external collector needed)
 curl http://127.0.0.1:8080/status
 ```
@@ -172,7 +200,7 @@ oxllm serve --config config-local-test.toml
 
 ### Provider Definition
 
-Each provider requires `name`, `enabled`, `base_url` (with trailing `/v1/`), `api_key` (or `${VAR}` env reference), and `models` list.
+Each provider requires `name`, `enabled`, `base_url` (with trailing `/v1/`), `api_key` (or `${VAR}` env reference), and `models` list. Optional per-provider keys: `upstream_timeout_secs` (overrides `server.upstream_timeout_secs`, so a fast-failing local provider can fail over sooner than a slow global timeout) and `cost_per_mtok` (cost weight used by the `cheapest` policy).
 
 ### Virtual Models (Fallback Chains)
 
@@ -189,7 +217,7 @@ smart = [
 
 ### How the Routing Algorithm Works
 
-1. When a request arrives, the proxy iterates the virtual model's provider list in order.
+1. When a request arrives, the proxy iterates the virtual model's provider list in order (or by measured latency — see **Routing Policies** below).
 2. For each provider, it checks: **circuit breaker state** (Closed? Open? HalfOpen?), **rate-limit window** (cooling down?), **manual override** (admin-disabled?).
 3. The first healthy provider is selected for the request.
 4. On success: circuit resets to Closed, failure count drops to 0.
@@ -197,6 +225,51 @@ smart = [
 6. On 5xx: increments failure counter. After 3 failures, circuit opens for **60 × 2^(failures-3)** seconds.
 7. **HalfOpen probes**: After cooldown expires, a single probe request is allowed. Only one concurrent probe — others bypass via atomic `compare_exchange`.
 8. **Idle decay**: Every 5 minutes without a request, failure count decreases by 1. Below 3 failures, Open circuits automatically rehabilitate to Closed.
+
+### Routing Policies
+
+By default a virtual model uses `priority`: strict configuration order with the
+health checks above. Alternatives, set per virtual model:
+
+```toml
+[policies]
+smart = "fastest"     # lowest measured EWMA time-to-first-byte
+budget = "cheapest"   # lowest cost_per_mtok, latency breaking ties
+```
+
+Under `fastest`, each provider's time-to-first-byte is tracked as an EWMA and
+candidates are ordered by it in 20% bands — a provider must be meaningfully
+faster to move up, so near-ties keep their configured order and do not flap on
+noise. Every 20th request rotates the order so a demoted provider is still
+sampled, and unmeasured providers sort first so a newly added one is tried
+immediately rather than starved. Health checks (circuit breaker, rate limits,
+manual overrides) apply before ordering in all cases.
+
+### Session Affinity
+
+Requests that carry a session key stick to one provider while it stays
+healthy, so upstream prompt-prefix caches stay warm (a cold provider re-pays
+prompt processing on every turn). The key is taken from the `x-session-id`
+header (configurable via `server.session_affinity_header`, or `""` to disable
+header affinity) with the request body's `prompt_cache_key` as fallback. Pins
+expire after 15 minutes idle (`session_affinity_ttl_secs`) and the table is
+bounded (`session_affinity_capacity`, default 1024, LRU eviction). When the
+pinned provider's circuit trips, the session re-routes by policy immediately
+and re-pins to whatever serves it. Keyless traffic is unaffected and keeps
+rotating by policy.
+
+### Status & Metrics
+
+`oxllm status` prints per-virtual-model routing tables, a per-route rollup with
+latency distributions (p50/p95/p99 of total latency and time-to-first-byte), and
+per-provider totals. Traffic is attributed per `(provider, model)` pair, so two
+virtual models sharing one provider do not show each other's traffic, and
+`cached_tokens` (upstream prompt-cache reuse) is reported per route so warm-vs-cold
+latency differences can be explained. Tables
+drop optional columns to fit the terminal width (`$COLUMNS`, or `--width`), and
+`--json` emits the raw `/status` payload for scripting. The same counters feed
+the OpenTelemetry spans (`gen_ai.usage.*`, `proxy.attempts_required`) and
+metrics exported to the configured OTLP endpoint.
 
 ### Example Configs
 

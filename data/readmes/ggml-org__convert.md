@@ -43,6 +43,12 @@ bash hf-job.sh --owner <org>
 
 # Run via HF Jobs with a custom hardware flavor
 bash hf-job.sh --owner <org> --hardware cpu-basic
+
+# Create a collection on Hugging Face (prints the collection slug, private by default)
+bash create-collection.sh --owner <org> --name <name> [--public] [--no-hash] [--description <text>]
+
+# Look up the slug of an existing collection from its name
+bash create-collection.sh --lookup --owner <org> --name <name>
 ```
 
 ## Notes
@@ -57,3 +63,5 @@ bash hf-job.sh --owner <org> --hardware cpu-basic
 
 - A maintainer from the [ggml-org/hf](https://github.com/orgs/ggml-org/teams/hf) team can start the workflow manually from the [Actions pane](https://github.com/ggml-org/convert/actions/workflows/main.yml)
 - The conversion uses the latest `master` of [llama.cpp](https://github.com/ggml-org/llama.cpp) unless `--llama-commit` is set
+- If a model's [config.sh](models/) sets `COLLECTION`, the collection must already exist (e.g. created with `create-collection.sh`)
+- Collection names case-sensitive

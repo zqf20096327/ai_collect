@@ -18,6 +18,7 @@
 - [awesome-claude-fable-5](https://github.com/Anil-matcha/awesome-claude-fable-5) — Predecessor use-case index and clearly labeled Claude Fable 5 baseline archive.
 - [awesome-gpt-6-astra](https://github.com/Anil-matcha/awesome-gpt-6-astra) — Cross-model companion covering evidence-backed GPT-6 Astra workflows, API patterns, evaluations, and safety notes.
 - [awesome-gemini-4-pro](https://github.com/Anil-matcha/awesome-gemini-4-pro) — Evidence-led Gemini frontier-model use cases, prompts, evaluations, and release tracking.
+- [awesome-gemini-4-carbon](https://github.com/Anil-matcha/awesome-gemini-4-carbon) — Source-linked tracker for Google's Gemini 4 Carbon: cyber and coding benchmarks, pricing, restricted-access status.
 - [muapi-cli](https://github.com/SamurAIGPT/muapi-cli) — Command-line access to MuAPI models, useful when Fable 5.1 becomes available there.
 - [muapi-skills](https://github.com/SamurAIGPT/muapi-skills) — Schema-driven agent skills for image, video, and audio workflows through MuAPI.
 - [awesome-generative-ai-apps](https://github.com/Anil-matcha/awesome-generative-ai-apps) — Production-ready AI SaaS templates for turning model workflows into applications.
@@ -1987,4 +1988,3 @@ But the way I now spend my weekends has completely changed because of this new c
 
 And I need to share it with you all.
 - This is an actual leap. The jump from "4.8" anything to "5" anything just sounds small, but the functionality shift I felt is big. Within my first few prompts, I went, "Oh, this is it."
-- Your work is no longer 9-5. No chance. We have high performing models that can run for 100+ hours. How are you giving complex goal-oriented prompts to these systems? How are you deciding what to kick

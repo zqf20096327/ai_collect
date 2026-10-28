@@ -107,7 +107,8 @@ switches, tool calls, streaming, `/v1/messages` and `/v1/responses` worked, no s
 | agent | point it at | turn off | setup |
 |---|---|---|---|
 | pi, omp | `http://127.0.0.1:8096/v1` (`openai-completions`) | `"compaction": {"enabled": false}` | [T1 step 6](#t1--a-real-model-on-cpu), [omp](#pi-hermes-continue--chat-completions) |
-| Hermes, Continue, other Chat Completions clients | `http://127.0.0.1:8096/v1` | the client's own context compaction | [Chat Completions](#pi-hermes-continue--chat-completions) |
+| Hermes Agent | `http://127.0.0.1:8096/v1` (custom provider) | `compression.enabled: false` | [Hermes setup and test notes](docs/hermes-agent.md) |
+| Continue, other Chat Completions clients | `http://127.0.0.1:8096/v1` | the client's own context compaction | [Chat Completions](#pi-hermes-continue--chat-completions) |
 | Claude Code | `ANTHROPIC_BASE_URL=http://127.0.0.1:8096` (no `/v1`) | `DISABLE_AUTO_COMPACT=1` | [Claude Code](#claude-code-anthropic-messages) |
 | Codex | `base_url = "http://127.0.0.1:8096/v1"`, `wire_api = "responses"` | no switch: `model_auto_compact_token_limit = 100000000` | [Codex](#codex-openai-responses) |
 | any MCP client (Claude Code, Codex, Hermes) | `mnemonic-mcp --db ./data/archive.sqlite` (read-only search of the archive) | — | [MCP](#mcp-recall-server-claude-code-codex-hermes) |
@@ -351,28 +352,68 @@ mnemonic-proxy --upstream http://127.0.0.1:8095 --port 8096 --data ./data --conf
 with `config.json` = `examples/config.llama-server.json` and `slot_dir` = the same `/path/to/slots` (see
 [Configuration](#configuration) for the recommended fields). With an engine that has no saved state (vLLM, online
 APIs) the proxy runs in base mode (window: see [Install](#install)). The measurements in
-[One session, measured](#one-session-measured) (35B-A3B MoE, 128K window) come from
+[One session, measured](#one-session-measured) (Qwen3.8 Flash Next IQ3_XXS, 128K window) come from
 Strata (our session-files build, 0.1.38 + PR #668) on a 12 GB RTX 4070 Ti — see [Engines](#engines); they say nothing about
 other hardware.
 
 The proxy recognises the engine at startup and turns off, with a warning, whatever the engine cannot do
 (`--engine auto|strata|llama.cpp|ds4|openai` forces it). `ctxproxy` is kept as an alias of `mnemonic-proxy`.
 Optional: `--tokenizer` (a Hugging Face `tokenizer.json`, or a Strata pack `tokenizer/` folder; needs
-`pip install 'mnemonic-proxy[exact]'`) for exact token counts
-instead of a chars/3.5 estimate; with llama-server, `"engine_tokenize": true` counts through its `/tokenize`. A
+`pip install 'mnemonic-proxy[exact]'`) for exact token counts.
+If `--tokenizer` is explicitly supplied but cannot be loaded (missing `tokenizers`, bad path or invalid format),
+startup fails before contacting the engine; it never silently switches that run to estimated counting. Install
+`mnemonic-proxy[exact]` in the same environment as the proxy and check the path. Omit the option only when an
+estimated guard is intended. Without a tokenizer, the proxy uses a chars/3.5 estimate;
+with llama-server, `"engine_tokenize": true` counts through its `/tokenize`. A
 systemd user unit is in [examples/mnemonic-proxy.service](https://github.com/lastreload/mnemonic-proxy/blob/main/examples/mnemonic-proxy.service).
 
-**Window guard.** No request the proxy sends to the engine is larger than the window: before every call (answer,
-recall rounds, handoff notes, retries) the proxy checks `prompt + max_tokens + window_margin ≤ window` and, if it
-does not fit, lowers `max_tokens`, removes what the recall loop added (by value per token: results become one-line
-receipts, old reasoning becomes its conclusion line, recallable by id) or, as a last resort, returns HTTP 400 to
-the client instead of sending. With `--tokenizer` the count is the engine's own, so the guarantee is exact
-(`window_guard` events in the journal carry `guarantee=exact`). Without it the count is the calibrated chars/3.5
-estimate and the guarantee is only as good as that estimate (`guarantee=estimated`): on text with many digits or
-symbols the real count can be well above it, so use `--tokenizer` (or raise `window_estimate_slack`, e.g. `0.3`)
-when the window is small. On generic engines (Ollama, LM Studio, any OpenAI-compatible) without `--tokenizer` the
-slack is 0.15 by default (0.3.8); Strata, llama.cpp and ds4 keep 0. `"window_guard": false` restores the 0.3.2
-behaviour.
+**Window guard.** Before every call (answer, recall rounds, handoff notes, seal, anchor and retries), the proxy
+checks `counted_prompt + max_tokens + window_margin ≤ window`. If it does not fit, it lowers `max_tokens`, removes
+what the recall loop added (by value per token: results become one-line receipts, old reasoning becomes its
+conclusion line, recallable by id) or returns HTTP 400 instead of sending. Both output-limit aliases are kept in
+sync. A prompt that cannot be counted with a loaded tokenizer is refused rather than silently estimated.
+
+With `--tokenizer`, the final guard and planning total now load an adjacent `chat_template.jinja`
+(from the pack directory, or beside a supplied HF tokenizer file). This matters for fine-tunes such as Tiel:
+its Sharp template adds instructions and tool-error warnings that the built-in Qwen renderer does not write.
+Install/update `mnemonic-proxy[exact]` for both the tokenizer and sandboxed Jinja renderer. A discovered template
+that cannot load or render is never silently replaced by the built-in one. Current pack-template counting is
+text-only: image requests are refused locally rather than claiming to know dynamic image patch counts.
+Without that file, the historical built-in Qwen rendering remains (`template=builtin-qwen` at startup);
+use it only with a matching server template. Per-message planning costs remain Qwen approximations; the full
+pack-rendered total and final guard are what enforce the window.
+
+A matching tokenizer/template still does not validate hidden server settings. Recent Strata/PolyStrata encode special-token spellings
+quoted inside content (for example `</think>`) as ordinary text, not single special tokens. The guard reserves an
+additional conservative byte-BPE bound for these literals, including tool schemas and decoded call arguments;
+`window_guard` events carry `guarantee=tokenizer_bound` and `literal_slack` when this reserve is nonzero
+(`guarantee=exact` otherwise). This may lower the output ceiling slightly more than necessary. Arbitrary templates,
+a tokenizer for another model, and server-side prompt additions are not covered by a local exact-count claim.
+
+Without a tokenizer the count is the calibrated chars/3.5 estimate (`guarantee=estimated`): on text with many digits
+or symbols the real count can be well above it, so use the correct `--tokenizer` (or raise `window_estimate_slack`,
+e.g. `0.3`) when the window is small. On generic engines (Ollama, LM Studio, any OpenAI-compatible) without
+`--tokenizer` the slack is 0.15 by default (0.3.8); Strata, llama.cpp and ds4 keep 0. This 15% is not an extra reserve
+on top of a loaded tokenizer. `"window_guard": false` explicitly disables the protection.
+
+**Context diagnostics.** The CLI prints startup/version/window/template and concise runtime events to **stderr**:
+`window_guard` (including every checked call, clamp, count failure, local refusal and engine-count mismatch),
+`response_clamped`, `mask`, `switch`, `switch_skipped`, and `client_disconnected`. No prompt/notes/error-body text
+is printed by this summary. Capture it with `2> proxy-events.log` (or use your service manager's journal).
+The full structured log stays at `<--data>/journal.jsonl`; recent events are also available at
+`GET /v1/strata/journal`. The optional [dashboard](#dashboard-optional-needs-the-git-clone-ui-in-italian) reads the data directory; do not confuse its
+port with the proxy's. `where=answer|recall_round|final|notes|seal|anchor|answerfix` identifies the upstream phase;
+a client continuation is a new answer request, not a distinct server-side phase. `seal` and `anchor` deliberately
+request one token to establish saved state; this differs from a client answer clamped to one token.
+
+If PolyStrata rejects a request *before generation* with its explicit context/count error, the proxy records
+both counts and retries **once**, unchanged except for lower output/reasoning limits derived from that engine
+count. An engine-counted prompt with no answer room becomes a local `window_guard` error without a retry.
+Unrelated 400s, transport errors and errors after streaming starts are not retried. This is a safety net, not
+proof that the first request always fits arbitrary server-side modifications (for example restored hidden
+reasoning or an effort instruction moved by the server). `fit_max_tokens=true` is an additional engine-side
+output safety net, but cannot make an already oversized prompt fit. `window_margin` applies in tokenizer mode;
+`window_estimate_slack` does not. Increasing the margin is not a substitute for the correct template.
 
 Disable the agent's own auto-compaction in every client below, otherwise two context managers fight over the same
 history.
@@ -680,7 +721,7 @@ provider).
 
 ## One session, measured
 
-A real coding session — a canvas tower-defense game built from scratch by a 35B-A3B MoE model on a single 12 GB
+A real coding session — a canvas tower-defense game built from scratch by Qwen3.8 Flash Next (IQ3_XXS) on a single 12 GB
 RTX 4070 Ti — with the proxy in between.
 
 <p align="center">
@@ -1035,8 +1076,8 @@ without either field, `default_response` is used (16384 by default). These value
 switch segments. After masking and any necessary switch, the proxy caps the response to
 `window - estimated_prompt - reserve - 8` and sends the reduced limit to the engine (both fields are synchronized
 when present). The final window guard may reduce it further for its margin and estimate slack; it refuses a
-prompt with no space for even one generated token. Exact guarantees require `--tokenizer`; otherwise counts are
-estimates, not proof of the engine's actual token usage.
+prompt with no space for even one generated token. Tokenizer-based bounds require the current model's tokenizer
+and matching template/settings (see Window guard above); estimates are not proof of actual engine token usage.
 
 A genuinely large prompt still triggers a segment switch when there is not enough room for a useful response:
 `max(response_floor, min(requested_output, default_response))`, bounded to at least one token and at most a quarter
@@ -1044,6 +1085,18 @@ of the window. A floor never raises the actual output ceiling requested by the c
 `response_clamped` in `journal.jsonl` (requested and sent limits, prompt estimate, window and reserve), plus one
 warning per conversation in the process log, remembered across restarts. No new option is required; for example,
 a client ceiling of 120000 in a 131072 window no longer causes a switch on every short turn.
+
+**Small windows (including Strata/PolyStrata at 32K).** Unset thresholds scale when `window` is read from the
+engine's `/v1/status` (`context.native` / `max_positions`). Oversized explicit `response_floor` and
+`notes_max_tokens` are capped at one quarter of the window at startup, with warnings also shown by `check`.
+With masking anchors enabled below 128K, `anchor_min_tokens` is capped at `24000 * window / 131072` (6000 at 32K)
+so a 128K anchor threshold does not prevent useful anchors on a small window. A Strata `window` override larger
+than its reported context is lowered to that context with a warning (`check` reports the mismatch).
+These are budget/threshold adaptations, not token-count repairs; the final guard still handles every call.
+For 32K, prefer removing these three overrides to get scaled defaults, or start conservatively with
+`"response_floor": 4096, "notes_max_tokens": 2048, "anchor_min_tokens": 6000`. Keep `window` unset when discovery
+works, and check the startup log for `window from engine n_ctx: 32768`. The 128K recommendations below are not
+32K settings. Existing values within these bounds are unchanged.
 
 `--config` takes a JSON object with any field of `ctxproxy.core.Config`. Defaults below are the real ones in the
 code. Most features are off by default so that 0.1 behaviour is unchanged; the last column is what we recommend

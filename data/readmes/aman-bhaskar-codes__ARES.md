@@ -12,7 +12,7 @@ A research workspace for exploring questions, working with documents, and tracin
 
 <img src="ares_banner.jpg" alt="ARES — Autonomous Research & Evidence System" width="800" />
 
-[Getting started](#getting-started) · [Model providers](#model-providers) · [Architecture](#architecture) · [Development](#development) · [Security](#security-and-release-status)
+[Watch the demo](#product-tour) · [Getting started](#getting-started) · [Model providers](#model-providers) · [Architecture](#architecture) · [Development](#development) · [Security](#security-and-release-status)
 
 </div>
 
@@ -22,18 +22,73 @@ ARES brings source discovery, document retrieval, and cited answer generation in
 
 Use the keyless demo to explore the interface, or configure live research with Google Gemini or a local Qwen model through Ollama.
 
-> **Release status:** ARES is under active development. The current audit identified unresolved security, dependency, packaging, and production startup issues. Local evaluation is the recommended starting point; this checkout is not yet qualified for public hosting. See [Security and release status](#security-and-release-status).
+> **Release status:** ARES is an actively developed research application. Start with the local demo or a configured live provider. The release hardening pass disables generated-code execution and strengthens packaging and database provisioning. Local checks do not certify a public deployment; see [Security and release status](#security-and-release-status).
 
 ## What you can do
 
 - **Research a question:** discover web and academic sources through SearXNG, OpenAlex, Crossref, and arXiv adapters.
 - **Work with documents:** upload files, extract supported content, and retrieve passages for research. Scanned PDFs and richer media require optional parsing capabilities.
-- **Choose a writer:** generate answers with Gemini or a configured local Ollama model.
+- **Choose a writer:** switch between Gemini and local Qwen in the model menu. Ask for a brief answer or a detailed explanation; ARES adapts its writing instructions while retaining source citations. Smaller local models may produce shorter answers after evidence checks.
 - **Inspect the evidence:** follow citations, review source passages, and inspect research activity and visualizations.
 - **Resume research:** persist conversations, run events, assets, and research memory.
 - **Connect other agents:** use the project's Model Context Protocol integration to access research capabilities.
 
 Capabilities depend on the execution mode, enabled settings, provisioned models, and external service availability. Demo results use fixtures rather than live research.
+
+## Product tour
+
+Watch the **2-minute 58-second narrated tour**: ask a real question, explore its cited answer and suggested follow-ups, inspect sources and research activity, upload a PDF, and discover Library, Memory, model selection, and research preferences.
+
+https://github.com/user-attachments/assets/6bd8e1ba-4136-4ac9-8ec5-9f08817c91b3
+
+[Download subtitles](docs/media/ARES-Complete-Tour.srt)
+
+The tour uses synthetic narration and recorded application interactions. Retrieval waiting time is shortened for presentation; available tools depend on the configured runtime.
+
+<details>
+<summary>Read the narration transcript</summary>
+
+Meet Ares. A research workspace built for curiosity, and for answers you can explore.
+
+You can start with a suggested question, or simply ask what's on your mind.
+
+Choose how you'd like the answer generated: Gemini in the cloud, or Qwen running locally.
+
+Then set the depth of your research. Search for a quick exploration, or choose Research. You can look across the web, academic sources, software references, and your own documents.
+
+There are optional tools, too. Fast retrieval uses a smaller research budget. Cross-checking asks the system to compare claims across sources.
+
+Let's try a real question. How does retrieval augmented generation work, and what are its limitations?
+
+This is a real research run. We've shortened the waiting time for this tour.
+
+Here's the answer. An explanation built from retrieved evidence, with citations alongside the paragraphs. You can read how the process works, and where its limitations begin.
+
+When you want to look closer, open a citation. You'll find the supporting passage and details about its original source.
+
+The Sources workspace brings that evidence together. Search for a passage, or narrow the list with filters.
+
+And the conversation doesn't have to end there. Ares suggests questions to explore next. You can write your own follow-up, or export the answer to revisit later.
+
+Activity shows the steps behind the research, whenever you want that extra context.
+
+Compare is where evidence-linked visual artifacts appear, when the research provides suitable data.
+
+Diagnostics offers a closer look at the run's reported quality and checks.
+
+You can also bring your own material. Use the plus button beside Search to upload a document. Here, we're adding a real PDF.
+
+Once it's ready, you'll find it in Library, together with your other uploaded files.
+
+Memory gives your research its own space. Review previous research and saved facts in separate views, and manage what you'd like to keep.
+
+In Preferences, you can set research depth, tone, preferred domains, and personal instructions. Small choices that help shape how you work.
+
+Settings shows the current runtime and tool capabilities, including what's ready, and what's turned off.
+
+That's Ares. Ask a question. Explore the evidence. And follow your curiosity.
+
+</details>
 
 ## Getting started
 
@@ -67,7 +122,7 @@ make migrate
 
 ### 3. Start the application
 
-Run each command in a separate terminal from the repository root:
+Run each command in a separate terminal from the repository root. `make worker` defaults to the combined profile so uploaded files and research runs are both processed:
 
 ```bash
 # Terminal 1 — API
@@ -75,7 +130,7 @@ make api
 ```
 
 ```bash
-# Terminal 2 — background worker
+# Terminal 2 — research and document-ingestion worker
 make worker
 ```
 
@@ -198,21 +253,21 @@ pnpm --filter @ares/web test
 pnpm --filter @ares/web build
 ```
 
-`make check` aggregates additional checks, migrations, schema generation, and release verification. Some targets generate or update files. The current release verifier has known gaps; a successful aggregate command alone is not production qualification.
+`make check` aggregates additional checks, migrations, schema generation, and release verification. Some targets generate or update files. Skipped browser checks are explicitly reported as preflight only. A successful aggregate command alone is not production qualification. Run `make verify-m11-release` with a running app and the required `ARES_E2E_*` fixture identifiers for the existing three-browser gate.
 
-The 23 October 2026 audit of commit `5212be3` recorded **290 passing backend tests, 8 skipped backend tests, and 28 passing frontend tests**, plus a successful frontend build and static checks. These are a dated baseline, not a live CI badge. Deterministic offline evaluations do not establish real-provider answer quality. Fresh Gemini/Qwen browser E2E and production deployment qualification remain required.
+The 27 October 2026 hardening pass recorded **299 passing backend tests, 8 skipped backend tests, and 28 passing frontend tests**, plus static checks and a successful frontend build. The seven PostgreSQL-specific tests were also run separately and passed. Real document-grounded queries completed with both Gemini and Qwen, and browser checks covered answer rendering, PDF upload, and direct chat deletion. These are a dated local baseline, not a live CI badge or public-hosting certification. Deterministic offline evaluations do not establish general real-provider answer quality.
 
 ## Security and release status
 
 ARES includes controls for authentication, request limits, outbound fetching, upload processing, and database tenant isolation. Their effectiveness depends on deployment configuration and enabled capabilities.
 
-The release audit identified issues that must be resolved before public hosting or distributing a release archive:
+The release hardening changes include:
 
-- **Code execution:** the Code tool runs generated Python without a dedicated security sandbox. Do not enable it in an untrusted environment.
-- **Archive contents:** the release archive builder can include ignored private files. Review packaging rules and the full archive inventory before distributing an archive.
-- **Production startup:** the documented database bootstrap passes a SQLAlchemy URL to `psql`; the connection scheme needs correction and a real startup test.
-- **Release metadata:** version and schema metadata are inconsistent, and verification can report success without mandatory E2E evidence.
-- **Dependencies:** the audited backend lockfile contains affected certifi, OpenTelemetry API, and Pillow versions. Upgrade and recheck security advisories before release.
+- **Code execution disabled:** generated Python is never executed on the worker. The Code tool is removed from run admission and the composer until an isolated runner exists.
+- **Tracked-file packaging:** source archives use Git's tracked-file inventory and exclude private environment files, keys, backups, runtime data, and symlinks.
+- **Database provisioning:** the bootstrap normalizes the SQLAlchemy URL for `psql` and grants runtime roles access to the newer schema tables.
+- **Accurate release metadata:** version and migration head are derived from source. Missing browser evidence fails the full gate; skipped checks are explicitly preflight only.
+- **Security dependency updates:** the lockfile updates certifi, OpenTelemetry API, Pillow, fastembed, pypdf, and filelock. Recheck advisories when preparing each release.
 
 Keep development services on loopback. Public hosting requires configured authentication, reviewed secrets and network exposure, tested migrations, and fresh end-to-end verification. See [SECURITY.md](SECURITY.md) for reporting guidance.
 

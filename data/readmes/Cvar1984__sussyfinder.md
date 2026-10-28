@@ -14,6 +14,7 @@ It combines token-based pattern matching, statistical anomaly detection (Shannon
 * **Token-based detection** – scans PHP tokens for known obfuscation, shell execution, file I/O, and credential-related functions (method names like `$pdo->exec()` and text inside strings/comments are ignored)
 * **Structural detection** – catches what name matching can't: calls through variables or superglobals (`$_GET['a']($_GET['b'])`), function names hidden in strings (`'ba'.'se64_decode'`, `"\x73ystem"`), `preg_replace` with `/e`, backtick shell execution, payloads after `__halt_compiler()`, and giant single-line blobs
 * **MD5 hash whitelist & blacklist** – skip known-good files (e.g., from common frameworks) and auto-delete known-bad files
+* **Vendor checksums** – a file byte-identical to an official release (WordPress core and wordpress.org plugins through WordPress's checksum APIs, and release files of 57 CMSs, frameworks and libraries in `checksums.txt`) is shown as **VERIFIED** and its threat score held below half the anomaly bar; an injected shell changes the hash, so nothing can hide this way ([details](#vendor-checksums))
 * **Shannon entropy calculation** – per-file byte entropy detects heavily obfuscated or encoded content
 * **Tiny ML model**: a 4 KB logistic regression over hashed token features, run in the browser. Its score adds points to the threat score, so it can lift a file the rules underrate; it never lowers a score.
 * **Client-side statistical analysis** – computes robust (median/MAD) Z-scores for size, mtime, tokens, suspicious token count, entropy and the ctime–mtime gap, plus residuals and file-owner rarity, to flag outliers
@@ -189,7 +190,7 @@ Example token weights include:
 
 | Category           | Example                         | Weight |
 | ------------------ | ------------------------------- | -----: |
-| Critical RCE       | `eval`, `exec`, `system`        |   10.0 |
+| Critical RCE       | `eval`, `exec`, `system`, `pcntl_exec`          |   10.0 |
 | Obfuscation        | `base64_decode`, `gzinflate`    |    5.0 |
 | Suspicious I/O     | `move_uploaded_file`, `$_FILES` |    2.0 |
 | User input         | `$_GET`, `$_POST`, `$_COOKIE`   |    0.5 |
@@ -200,18 +201,20 @@ Structural signals appear among the matched tokens with an `@` prefix (no real P
 | Signal          | Meaning                                                  | Weight |
 | --------------- | -------------------------------------------------------- | -----: |
 | `@input_call`   | Calls a superglobal element: `$_GET['a']($_GET['b'])`    |   10.0 |
+| `@assert_exec`  | `assert()` of a string or request value: `assert("eval(…)")`, `assert($_POST['c'])` | 10.0 |
 | `@foreign_code` | ASP, JSP or Perl CGI code in a PHP-named file with no PHP |   10.0 |
 | `@preg_e`       | `preg_replace` with the `/e` (eval) modifier             |   10.0 |
 | `@callback_exec`| An execution function named as a string for a callback: `array_map('assert', …)` | 10.0 |
 | `@input_include`| `include`/`require` of a request value: `include $_GET['f']` (file inclusion) | 10.0 |
 | `@wrapper_include`| `include`/`require` of a `php://` or `data:` stream: `include('php://input')` | 10.0 |
+| `@com_exec`     | `new COM('WScript.Shell')` / `new DOTNET(…)`: Windows OLE command execution | 10.0 |
 | `` ` ``         | Backtick operator (shell execution)                      |   10.0 |
 | `@concat_name`  | Function name hidden in a string (the name is added too) |    5.0 |
 | `@halt_payload` | Over 1 KiB of data after `__halt_compiler()`             |    5.0 |
 | `@dyn_call`     | Call through a variable or expression: `$f()`, `(...)()` |    2.0 |
 | `@long_line`    | A line over 5000 characters                              |    2.0 |
 
-`@input_call`, `@preg_e`, `@foreign_code`, `@callback_exec`, `@input_include`, `@wrapper_include` and the backtick count as Critical RCE tokens; `@concat_name` and `@halt_payload` as obfuscation.
+`@input_call`, `@assert_exec`, `@preg_e`, `@foreign_code`, `@callback_exec`, `@input_include`, `@wrapper_include`, `@com_exec` and the backtick count as Critical RCE tokens; `@concat_name` and `@halt_payload` as obfuscation. `pcntl_exec` is Critical because it replaces the process with a program. `assert` runs its argument as PHP, but only when that argument is a string or a request value: `assert("eval(…)")` and `assert($_POST['c'])` raise `@assert_exec` and count Critical, while a plain `assert($x === 3)` test assertion — the overwhelming benign use — keeps its low weight.
 
 A function name counts as a call only where it is one — a global call like `system(...)`, including `\system(...)`. The same name as a class (`new System()`, `System::run()`), a namespace segment (`namespace App\System;`, `use Vendor\Exec;`) or a member (`$db->exec(...)`) is not a match. `@callback_exec` recovers the names that reach a callback instead of being written as a call, for the few functions almost never passed as a plain string (`assert`, `create_function`, `shell_exec`, `passthru`, `proc_open`, `popen`); common strings like `'system'` or `'exec'` are left to the other signals, as they are everywhere in legitimate configuration.
 
@@ -297,13 +300,13 @@ Last, the ML model's score $P_{\mathrm{ML}}$ (see [ML Model](#ml-model)) adds po
 
 $$
 \text{Score}' = \text{Score} + \left\lbrace \begin{array}{ll}
-0 & P_{\mathrm{ML}} \leq 0.6 \\
-8 \cdot \displaystyle\frac{P_{\mathrm{ML}} - 0.6}{0.9 - 0.6} & 0.6 < P_{\mathrm{ML}} < 0.9 \\
-8 + 2 \cdot \displaystyle\frac{P_{\mathrm{ML}} - 0.9}{1 - 0.9} & P_{\mathrm{ML}} \geq 0.9
+0 & P_{\mathrm{ML}} \leq 0.4 \\
+8 \cdot \displaystyle\frac{P_{\mathrm{ML}} - 0.4}{0.8 - 0.4} & 0.4 < P_{\mathrm{ML}} < 0.8 \\
+8 + 7 \cdot \displaystyle\frac{P_{\mathrm{ML}} - 0.8}{0.95 - 0.8} & P_{\mathrm{ML}} \geq 0.8
 \end{array} \right.
 $$
 
-A file the model scores 0.9 or more reaches the anomaly / HIGH RISK bar of 8 on the ML alone, and a moderate ML score can lift a file with some rule evidence over it. Each row shows the split (`rules 3.2 + ML 4.0`) and an **ML +x** badge when the model contributed.
+The floor (`ML_FLOOR` 0.4) and the bar (`ML_THRESHOLD` 0.8) are set for recall: a missed webshell costs more than a false positive, so the model is believed sooner. Held out, lowering the bar from 0.9/0.6 to 0.8/0.4 caught 26 more of 1,581 standalone shells and lifted injected-shell detection from 85% to 91%, for benign false positives rising from 1.4% to 1.9% (`test/run train` reports the sweep). A file the model scores 0.8 or more reaches the anomaly / HIGH RISK bar of 8 on the ML alone, and a moderate ML score can lift a file with some rule evidence over it. Above the bar the points keep climbing, reaching the critical bar of 15 at 0.95 (`ML_CRITICAL`) and 17.3 at 1.0: the rule score grows with file size, one weight per matched needle, so a large CMS file collects points a small shell never does, and a confident model should outrank that. Held out, this puts 95.9% of standalone shells in critical instead of 72.9% (injected 72.8% to 84.9%), for benign files in critical rising from 0.3% to 0.6%; which files are flagged at all doesn't change. Each row shows the split (`rules 3.2 + ML 4.0`) and an **ML +x** badge when the model contributed.
 
 The final score is rounded to two decimal places.
 
@@ -341,7 +344,7 @@ File size (`Z_size`), the suspicious-token count Z-score (`Z_suspicious`) and th
 
 ### Threat Matrix
 
-The first chart plots the two parts of the threat score against each other. Its y-axis is the rule score on a log scale, because it runs from 0 to the thousands and the anomaly bar at 8 must stay visible. Its x-axis is the ML score. The dashed lines are the scanner's own bars (`ANOMALY_SCORE` 8 and `ML_THRESHOLD` 0.9), so each quadrant says which detector flags a file. Each dot is coloured by the file's verdict, as in the table: critical, anomaly or not flagged. Without a model, the x-axis shows the share of a file's tokens that are needles.
+The first chart plots the two parts of the threat score against each other. Its y-axis is the rule score on a log scale, because it runs from 0 to the thousands and the anomaly bar at 8 must stay visible. Its x-axis is the ML score. The dashed lines are the scanner's own bars (`ANOMALY_SCORE` 8 and `ML_THRESHOLD` 0.8), so each quadrant says which detector flags a file. Each dot is coloured by the file's verdict, as in the table: critical, anomaly or not flagged. Without a model, the x-axis shows the share of a file's tokens that are needles.
 
 On held-out data, most shells land in the top right, where both detectors agree, and almost no legitimate files do. Most of the rules' false positives sit in the top left, so a file there is worth reading before acting on it. `test/run train` prints the current split of shells and legitimate files per quadrant, scored by models that never saw the file.
 
@@ -460,11 +463,12 @@ test/run all              # unit + bench + ui, with a summary: run before a comm
 * `test/run matrix`: the same on every PHP version (`test/run matrix --help` lists the defaults; `--php all` adds PHTest's legacy builds) under each php.ini profile, in Docker:
   * `default`: the image's own php.ini
   * `hardened`: shared-hosting style, with no exec family, no cURL and no remote fopen
-  * `minimal`: no `json_encode` and no cURL
+  * `minimal`: no `json_encode`, no `json_decode` and no cURL (as on PHP < 5.2)
 
   Each also gets a page/AJAX check. It ends with a table and lists files that match differently than on the newest PHP. `test/run setup --docker` pulls the images.
-* `test/run ui`: drives the page in headless Chrome with real mouse and keyboard events. It covers chart selection, hover linking, filters, the threshold control, zoom, HiDPI sizing and resizing, and checks that a file named `a');alert(1);('.php` runs no script. It scans a temporary copy of the samples with the whitelist and blacklist off, so nothing is deleted. It finds Chrome or Chromium on `PATH` or through `CHROME_BIN`, and skips when there is none (`--require-browser` makes that a failure).
+* `test/run ui`: drives the page in headless Chrome with real mouse and keyboard events. It covers chart selection, hover linking, filters, the threshold control, zoom, HiDPI sizing and resizing, and checks that a file named `a');alert(1);('.php` runs no script and that a file on a local checksum list scans as verified. It scans a temporary copy of the samples with the whitelist and blacklist off, so nothing is deleted. It finds Chrome or Chromium on `PATH` or through `CHROME_BIN`, and skips when there is none (`--require-browser` makes that a failure).
 * `test/run train`: see [Accuracy](#accuracy).
+* `test/run checksums`: builds `checksums.txt` from the benign corpora (see [Vendor Checksums](#vendor-checksums)); `--write` saves it. Rerun it after retraining the model or changing the rules, since which release files come near the anomaly bar depends on both.
 
 ## Requirements
 
@@ -499,14 +503,15 @@ define('_ML_MODEL_URL_', '/srv/ml-model.json');  // offline copy of the model
 |---|---|---|
 | `_WHITELIST_`, `_BLACKLIST_` | `true` | use the known-good / known-bad MD5 lists |
 | `_MHR_` | `true` | Malware Hash Registry lookups |
+| `_CHECKSUMS_` | `true` | show files identical to an official release as verified, their score held down ([Vendor Checksums](#vendor-checksums)) |
 | `_MHR_USER_`, `_MHR_PASS_` | empty | MHR account, used when the page sends none |
 | `_ML_` | `true` | ML second opinion |
-| `_WHITELIST_URL_`, `_BLACKLIST_URL_`, `_ML_MODEL_URL_` | this repository | where the lists and the model come from (the model may be a local file) |
+| `_WHITELIST_URL_`, `_BLACKLIST_URL_`, `_ML_MODEL_URL_` | this repository | where the lists and the model come from (each may be a local file) |
 | `_MHR_URL_` | `https://hash.cymru.com/v2/submitHashes` | MHR endpoint |
+| `_CHECKSUMS_URL_`, `_WP_CORE_CHECKSUMS_URL_`, `_WP_PLUGIN_CHECKSUMS_URL_` | this repository, `api.wordpress.org`, `downloads.wordpress.org` | where the vendor checksums come from; the WordPress ones are templates with `{version}`, `{locale}`, `{slug}` (each may be a local file) |
 | `TIME_LIMIT` | `3600` | seconds a request may run |
 | `HTTP_CONNECT_TIMEOUT`, `HTTP_TIMEOUT` | `10`, `30` | download timeouts in seconds |
 | `MHR_BATCH` | `1000` | hashes per MHR request |
-| `LIST_CACHE_SECONDS` | `900` | how long the requests of a scan share the downloaded hash lists (`0`: download for every request) |
 | `LONG_LINE_BYTES`, `HALT_PAYLOAD_BYTES` | `5000`, `1024` | thresholds of the `@long_line` and `@halt_payload` signals |
 
 Which files are scanned (`$pattern`), the needles and their weights (`$tokenTiers`), and how they combine in the threat score (`$tokenRoles`) follow the settings. The page's scoring reads the weights and roles from the server, so they are defined in one place.
@@ -523,9 +528,25 @@ By default, both lists are fetched from:
 * `https://raw.githubusercontent.com/Cvar1984/sussyfinder/main/whitelist.txt`
 * `https://raw.githubusercontent.com/Cvar1984/sussyfinder/main/blacklist.txt`
 
-You can turn either list off by setting `_WHITELIST_` or `_BLACKLIST_` to `false` (see [Configuration](#configuration)). Each scan downloads them once when it starts and keeps them in its own PHP session (cookie `SUSSYFINDER`) for `LIST_CACHE_SECONDS`, so the batches that follow reuse them. They stay on the server, so the browser can't substitute its own blacklist; without a session the batches download them again. Downloads use verified TLS, because the blacklist deletes files: a host without a CA bundle gets a warning and scans without the lists rather than trusting an unverified source.
+You can turn either list off by setting `_WHITELIST_` or `_BLACKLIST_` to `false` (see [Configuration](#configuration)). Nothing is cached: every batch of a scan downloads the lists it needs again (gzip-compressed when the host's cURL or PHP 5.4+ can decode it: whitelist, blacklist and `checksums.txt` are 0.6 MB a batch instead of 1.5 MB), so each batch uses the lists as they are now. A bigger chunk size means fewer downloads; on a host that should not fetch them at all, point the URL settings at local copies. They stay on the server, so the browser can't substitute its own blacklist. Downloads use verified TLS, because the blacklist deletes files: a host without a CA bundle gets a warning and scans without the lists rather than trusting an unverified source.
 
 > **Note:** The provided whitelist is harvested from common frameworks and libraries. It is up to you to trust or modify it. For blacklist contributions, please provide source files when creating a pull request.
+
+## Vendor Checksums
+
+Most false positives are vendor code: framework and CMS files that legitimately use `eval`, `exec`, `base64_decode` or dynamic calls. Rules and the model judge content, so they can't tell those apart from a shell; a checksum can. A file whose MD5 equals the one an official release ships at that path gets a **VERIFIED** badge naming the release, beside its other badges and matched tokens. Its threat score is held below half the anomaly bar: it saturates as $4 \cdot s/(s+4)$ of what its content scored ($s$), so a verified file is never flagged or critical, and verified files keep their order among themselves (7 becomes 2.55, 466 becomes 3.97). Its statistical triggers (entropy, dates, owner) don't count either, since its bytes are the vendor's. The blacklist and MHR still win: either lifts the file to 100. The badge's tooltip shows what the content scored.
+
+The sources, in the order they are checked:
+
+* **WordPress core**: each install is found by walking up to `wp-includes/version.php`, whose `$wp_version` and `$wp_local_package` pick that version's checksums from `api.wordpress.org` (falling back to `en_US`). These APIs return JSON, read with `json_decode()` (PHP 5.2+, like the MHR lookup); an older PHP skips them and uses `checksums.txt` alone.
+* **wordpress.org plugins**: for a file under `wp-content/plugins/<slug>/`, the plugin's `Version:` header picks its checksums from `downloads.wordpress.org`. A premium plugin isn't there (a 404, asked once per scan) and is scanned as usual. Themes have no official checksums.
+* **`checksums.txt`** in this repository: release files of 57 platforms (Drupal, Joomla, Magento, PrestaShop, Laravel, Symfony and more), built by `test/run checksums --write` from the releases in the test corpora. It lists only the release files the scanner comes near flagging (flagged, or a threat score of at least 4): 14,217 files, 1.24 MB, so it downloads quickly; every other release file isn't flagged anyway. A file's path must end the way it does in the release (`…/vendor/laravel/framework/src/Illuminate/…`), so the release can be installed anywhere.
+
+Why this can't hide a shell: injecting a shell into a vendor file changes its MD5; a shell dropped anywhere else isn't in any release; and making a file match an existing MD5 takes a second preimage, which is out of reach even for MD5 (its known weakness, collisions, needs the attacker to create both files). MD5 rather than SHA-256 because PHP 4.3 has no `hash()`. No MD5 that also occurs in the webshell corpora or the blacklist is ever listed.
+
+What it doesn't cover: modified files, custom themes and code, premium plugins, and release versions no list has hashed; those are scanned as usual. What it does trust: an official release that was itself backdoored (hijacked or sold plugins have shipped malware). The badge names the release, so such a file is easy to look up.
+
+Both WordPress sources are rows of `$checksumSources` in `main.php`'s configuration: a marker file that identifies an install, where the version (and locale) are read, the manifest URL and the label. A platform that publishes per-file MD5s in the same JSON shape needs only another row. The checksums are downloaded by each batch that needs them, like the hash lists. A host that doesn't answer is warned about once, and the scan carries on without that source. Turn it off with `_CHECKSUMS_` set to `false`, or point the URLs at local copies on an offline host.
 
 ## Screenshots
 

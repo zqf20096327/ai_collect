@@ -32,6 +32,10 @@ claude plugin install varg@varg
 
 Or inside Claude Code: `/plugin marketplace add vargHQ/skills`, then `/plugin install varg@varg`.
 
+### Kiro power
+
+[`powers/varg-how-to`](powers/varg-how-to) connects the keyless varg how to MCP (`https://api.varg.ai/v2/skills/mcp`) in Kiro: Powers panel → **Add Custom Power** → **Import power from GitHub** → `https://github.com/vargHQ/skills/tree/main/powers/varg-how-to`.
+
 ### Claude Code (manual)
 
 ```bash
@@ -61,23 +65,47 @@ npx skills add vargHQ/skills --yes
 
 ## Available Skills
 
-**Find the right skill:** not sure which skill fits a video request? Start with [video-skills](./video-skills/). It searches the varg Skills catalog ([skills.varg.ai](https://skills.varg.ai)) for the format and lists the options to offer before anything is generated.
+**How to make any AI video:** not sure which skill fits a video request? Start with [how-to-make-ai-video](./how-to-make-ai-video/). It searches varg how to ([varg.ai/how-to](https://varg.ai/how-to)), 2,000+ checked video skills and step-by-step tutorials, and lists the options to offer before anything is generated. No key needed. The same search is available as a public MCP server: `claude mcp add --transport http varg-how-to https://api.varg.ai/v2/skills/mcp`.
+
+**Publish your own skill:** connect the varg MCP (`claude mcp add --transport http varg https://mcp.varg.ai/mcp`) and ask your agent to "publish this skill to varg how to" (install [varg-publish-skill](./varg-publish-skill/) so every listing gets the same card). It reads the skill, shows you the card and sends it with `publish_skill`; the varg team reviews it and it becomes searchable at [varg.ai/how-to](https://varg.ai/how-to). No agent: the form at [varg.ai/how-to/publish](https://varg.ai/how-to/publish). Skills that join this repo go through a pull request (see the README of each skill and [vargHQ/skills-marketplace](https://github.com/vargHQ/skills-marketplace) → *Adding a skill*).
 
 | Skill | Description | ClawHub Slug |
 |-------|-------------|--------------|
 | [varg-ai](./varg-ai/) | AI video, image, speech, and music generation | `vargai` |
 | [varg-previz](./varg-previz/) | Plan multi-shot AI videos: story, anchors, a three.js grey-box previz with auto cameras, Seedance video-to-video packs | — |
+| [varg-video-editing](./varg-video-editing/) | Which service to edit existing footage with, job by job (cuts, talking-head cleanup, Shorts, captions, AI restyle and swaps, dubbing, upscaling, QA, handing off to Resolve/Premiere/Final Cut), plus the rules that keep cuts frame-accurate and in sync | — |
+| [varg-video-edit-library](./varg-video-edit-library/) | 206 named edits for footage you already have, each with the look, when to use it, the common mistake, timings and a recipe for FFmpeg, HyperFrames, Remotion and CapCut: cuts and pacing (J/L cuts, match cuts, speed ramps), transitions (CapCut-style, every FFmpeg xfade, Remotion TransitionSeries, HyperFrames and GL shaders), headlines, quotes, end cards, UI walkthroughs, cursors, device mockups, code and terminal, AI agent flows, numbers and charts, logo walls, grids and backdrops | — |
 | [media-download](./media-download/) | Save videos/audio by link from X, YouTube, Instagram, Facebook, TikTok and 1800+ sites (yt-dlp), and Pinterest images by pin, board or search (gallery-dl). Local, no API key | — |
+| [short-form-ffmpeg-cookbook](./short-form-ffmpeg-cookbook/) | Short-form FFmpeg cookbook: copyable commands for Reels. Crop to 9:16, burn captions (SRT/ASS), trim and join, music with ducking; every command tested. Local, no API key | — |
 | [paper-shaders](./paper-shaders/) | Frame-exact Paper Shaders backgrounds, textures and logo stings for HyperFrames and Remotion videos | `paper-shaders` |
-| [video-skills](./video-skills/) | Finds the right skill for any AI video, image, voice or music job in the varg Skills catalog and shows the options before anything is generated | — |
+| [how-to-make-ai-video](./how-to-make-ai-video/) | How to make AI video skills for Claude Code and AI agents: one search over varg how to gives the best skill with its install command, the options to show (with example videos) and the steps; also lists a skill you built on varg how to | — |
+| [varg-publish-skill](./varg-publish-skill/) | Turn your agent skill into a varg how to listing: checks it against the standard, fills the one card format every listing uses, shows it to you and publishes it for review through the varg MCP | — |
+| [video-skills](./video-skills/) | Finds the right skill for any AI video, image, voice or music job on varg how to and shows the options before anything is generated | — |
 | [varg-music-video](./varg-music-video/) | Direct an AI music video for a song: beat grid, cast and references, storyboard on downbeats, stills first, Seedance shots, lip-sync pass, lyrics in code, platform masters | — |
 | [varg-character-keynote](./varg-character-keynote/) | A 9:16 "character on stage" video in one render: a custom character delivers a punchy line at a keynote with native voice and applause | — |
 | [varg-consistent-characters](./varg-consistent-characters/) | Multi-scene ads where the same actors, outfits and location stay consistent: profile cards, location card, stills for approval, native-audio clips, captions and QA | — |
+| [varg-character-design](./varg-character-design/) | How to make characters people remember: definition, details, clothing, character card, a sheet that stays consistent, reuse in Nano Banana, Kling 4 and Seedance 2.5; moderation-safe wording and famous looks without IP names | — |
+| [varg-character-grandma](./varg-character-grandma/) | Grandma and grandpa characters: age vs behaviour, real wrinkles, a loud signature outfit | — |
+| [varg-character-big-guy](./varg-character-big-guy/) | Big guy characters: size shown with visible cues, a small delicate job, played straight | — |
+| [varg-character-cringe](./varg-character-cringe/) | Cringe deadpan characters: bizarre but believable, one outfit, one repeated action (the Jean Phil format) | — |
+| [varg-character-beautiful-woman](./varg-character-beautiful-woman/) | Very beautiful women who look like real models: casting details, real skin, fashion and swimwear styling, wording that passes filters | — |
+| [varg-character-fitness](./varg-character-fitness/) | Fitness characters: real muscle, a signature colour, catalog wording that gets sports bras past false blocks | — |
+| [varg-character-absurd](./varg-character-absurd/) | Absurd characters and mascots: food or object + animal + one human detail, in 3D, clay or photoreal looks | — |
+| [varg-character-cartoon](./varg-character-cartoon/) | Original characters in famous cartoon looks (yellow sitcom, 3D family film, anime, paper cut-out, clay, puppet), described without IP names | — |
 | [varg-podcast-video](./varg-podcast-video/) | Podcast and two-character dialogue videos: studio set, wide master shot, close-ups and cutaways from it, 5 s scenes with native dialogue audio, stitched episode | — |
+| [varg-product-hook](./varg-product-hook/) | The first 5-15 s of a product video: find a hook that already sells this kind of product, then remake the idea as realistic phone or security-cam footage with Seedance 2.5 from your product photos (backyard camera, torture test, problem → solution, satisfying close-up, gift reaction) | — |
+| [varg-dropship-reel](./varg-dropship-reel/) | The 60-second faceless dropshipping guide reel end to end: product hook, laptop on a zigzag tablecloth with a hand pointing a marker at cost, price and demand, the steps, a night-skyline iPhone ending with "Comment GUIDE", word-by-word lime captions and the comment-to-DM funnel; scripts cut and caption the reel | — |
+| [ecommerce-video-ads](./ecommerce-video-ads/) | Ecommerce video ad skills for Claude Code and AI agents: the plan and the rules for product videos that sell on TikTok, TikTok Shop, Reels and Meta: four questions, angle, hook, format, casting, second-by-second script, product fidelity, platform rules (AI labels, Shop bans, FTC), cost gate, variants | — |
+| [product-video-hooks](./product-video-hooks/) | Turn a product into scroll-stopping video hooks: three agreeing layers (frame, line, text), 70-line hook bank, claim checks, one MP4 per hook | — |
+| [tiktok-shop-video](./tiktok-shop-video/) | Turn a product link into a TikTok Shop video: Shop styles, 18–35 s script, phone shot list, and the 2025–2026 rules (real presenter, no AI voice, no slideshow, no mismatched prices) | — |
+| [ai-ugc-ad-video](./ai-ugc-ad-video/) | Open-source alternative to Arcads: AI UGC ads with an AI actor holding your real product, face, voice and label locked, phone-real prompts, no AI testimonials | — |
+| [product-photo-to-video](./product-photo-to-video/) | Turn a product photo into a product video ad: truth sheet, cut-out, storyboard sheet, Seedance PRODUCT LOCK, repair pass, real packshot on the last second; ASMR unboxing, macro, 360° loop, try-on | — |
+| [ad-creative-testing](./ad-creative-testing/) | Turn one winning ad into a creative testing plan: decode the winner, concepts Meta and TikTok treat as different, how many and when to judge, funnel diagnosis, kill/scale rules, naming | — |
+| [ecommerce-video-edit](./ecommerce-video-edit/) | Turn raw product footage into a TikTok ad with FFmpeg: hook moved to second 0, dead air cut, text hook and CTA in the safe zone, -14 LUFS, one MP4 per hook, 4:5 cut; tested commands, local, no API key | — |
 
 ## Requirements
 
-- `VARG_API_KEY` (get at [varg.ai](https://varg.ai)) or the hosted varg MCP (`https://mcp.varg.ai/mcp`) -- required for varg-ai, varg-previz and the format skills (varg-music-video, varg-character-keynote, varg-consistent-characters, varg-podcast-video); media-download, paper-shaders and video-skills need no key
+- `VARG_API_KEY` (get at [varg.ai](https://varg.ai)) or the hosted varg MCP (`https://mcp.varg.ai/mcp`) -- required for varg-ai, varg-previz and the format skills (varg-music-video, varg-character-keynote, varg-consistent-characters, varg-character-design and its category recipes, varg-podcast-video, varg-product-hook, varg-dropship-reel, ecommerce-video-ads, ai-ugc-ad-video, product-photo-to-video); media-download, short-form-ffmpeg-cookbook, paper-shaders, how-to-make-ai-video, varg-publish-skill (publishes with a varg login or key, no credits), video-skills, varg-video-edit-library, varg-video-editing, ecommerce-video-edit, ad-creative-testing, product-video-hooks (written hooks) and tiktok-shop-video (scripts) need no key (varg-video-editing uses varg only for the paid edits it recommends)
 - **Cloud mode**: curl only (zero dependencies)
 - **Local mode**: bun runtime + ffmpeg
 - **paper-shaders**: Node 22 and ffmpeg for HyperFrames (`npx hyperframes`), or a Remotion 4 project

@@ -128,7 +128,8 @@ Project citation: [CITATION.cff](CITATION.cff).
 ```bibtex
 @software{lexbench_websearch_2026,
   author = {{LexBench Web Search contributors}},
-  title = {LexBench Web Search},
+  title = {Browser Eval: Benchmarking Browsers and Web Tools for AI Agents},
+  note = {Web Search benchmark component},
   year = {2026},
   url = {https://github.com/lexmount/lexbench-websearch}
 }

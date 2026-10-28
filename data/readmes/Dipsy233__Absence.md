@@ -239,9 +239,9 @@ The `⚙ settings` button in the session bar opens a four-pane dialog:
   `approval`) to replace the synthesised chime; events without a file keep the
   built-in tone. `Apply` activates the set; `Default` restores the synth chimes.
   The **chimes** switch below is the master mute, **volume** scales every chime
-  (0–100), `run finished` / `approval waiting` can be switched off separately,
-  and **also at low** makes a step into *low* audible — it is silent by default,
-  because most runs sit at low for harmless reasons.
+  (0–100), and `run finished` / `approval waiting` can be switched off
+  separately. A step into *low* is always silent: most runs sit at low for
+  harmless reasons, so only medium/high attention rings.
 - **Agent Eggs filter profiles (right)** — a small file manager over named
   profiles of helper command names; the classifier treats a listed name as a
   tool (a `force` option extends this to the command's declared subject, e.g.
@@ -440,8 +440,16 @@ port to the public internet.
   exited or were removed while the session was closed are corrected to `exited`
   from the daemon's own state. With no docker (or `ABSENCE_DOCKER=0`) nothing
   changes.
-- The live metrics ring keeps the newest 300 frames in memory. Longer ranges and
-  historical sessions are loaded from SQLite; metric retention is 30 days.
+- The live metrics ring keeps the newest 300 frames in memory and is only the
+  freshest tail: every range reads SQLite as well, and the two are merged, so a
+  session closed and reopened later still shows its whole curve. Time nothing
+  sampled is a hole in the chart, not a straight line across it. The machine's
+  own CPU and memory are persisted next to the eggs (`host_metric_chunks`) and
+  drawn as the dashed reference line. Metric retention is 30 days.
+- "Change project" leaves the session: the server stops its metrics sampler and
+  process watcher (an in-flight sample is dropped rather than written), flushes
+  what it has, and keeps the archive, so reopening the session restores its
+  history instead of appending to a watcher nobody is looking at.
 
 ## Documentation
 
@@ -451,6 +459,8 @@ port to the public internet.
   setup.
 - [docs/TESTING.md](docs/TESTING.md) — the acceptance check scripts and what
   each one pins down.
+- [docs/TESTING-STRATEGY.md](docs/TESTING-STRATEGY.md) — why there is no unit-test
+  framework, the four check tiers, and what each gate is for.
 - [docs/RELEASING.md](docs/RELEASING.md) — how a release is cut: the
   `Release` workflow (manual dispatch or a `v*` tag), what it builds for
   Windows and Linux, and where the release notes come from.

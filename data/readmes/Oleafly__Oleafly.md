@@ -61,7 +61,9 @@ Share a project to your lab's Oleafly Server and everyone edits the same files a
 - Edits you make offline merge when you reconnect. If they overlap with someone else's, Oleafly shows you both and asks before it applies anything.
 - AI edits, Zotero citations, renames, deletes and figures all travel too. If two people replace the same figure at once, both versions are kept.
 - The main file, compiler, spelling language and Typst options are shared, so the whole team compiles the project the same way.
-- Each project has an owner, editors and viewers. Guests invited by email see only the projects they were invited to.
+- Each project has an owner, editors, reviewers, commenters and viewers. Reviewers' edits become suggestions, and owners and editors can switch to Suggesting too. Guests invited by email see only the projects they were invited to.
+- Each shared project has a chat, and a history where you can compare versions, restore one or give it a name.
+- Co-authors can open a shared project in their browser when the server has browser access on, and read the PDF from the latest compile.
 
 ### Run the server yourself
 
@@ -84,6 +86,8 @@ Read the [server guide](https://github.com/Oleafly/oleafly-server) for setup, ba
 ## Cloud sync across your computers
 
 Turn on cloud sync and your library projects and app settings follow you from one computer to the next. Every download is checked against its record before it replaces a file, and a file you have open with unsaved changes is never overwritten.
+
+You can sync to Dropbox, to Google Drive, or to a bucket of your own on Amazon S3, Google Cloud Storage, MinIO or another S3-compatible service.
 
 <p align="center">
   <img src="docs/assets/readme/cloud-sync-dropbox.png" alt="Oleafly Cloud sync settings with the Dropbox card and a list of what syncs" width="100%" />
@@ -165,6 +169,7 @@ Tectonic, Typst and Pandoc ship with the app, so a new project compiles without 
 - Completion and live diagnostics for labels, citations, commands, environments and file paths across the whole project.
 - Spelling and grammar checks run locally and are tuned for academic writing.
 - XeLaTeX, LuaLaTeX, and upLaTeX or pLaTeX for Japanese documents.
+- Quarto and Calepin documents run their R, Python or Julia code once you allow code for the project. Oleafly can download either tool for you.
 
 ## Citations, figures, checks and templates
 

@@ -94,7 +94,7 @@ Open-weight models you can download and run. Scores are as reported by each proj
 - [NeoHorse-Jev-4B](https://huggingface.co/TokenRhythm/NeoHorse-Jev-4B) - TokenRhythm's Apache-2.0 4B decision model on NeoHorse-1-4B: text or a single image with text, prefill-only inference, served at `/v1/systemone`
 - [WaterSheep](https://github.com/SamratDuttaOfficial/WaterSheep) - Apache-2.0 open-weight decision model for text: Noul, Choice, Score, and multi-label questions get a calibrated probability for every option, served by a local `/v1/systemone` server that TypeSafe's Python SDK works with unchanged
 - [Wald-4B](https://huggingface.co/org2ai/Wald-4B) - Apache-2.0 4B decoder trained in full from Qwen3.5-4B-Base, with optional thinking, calibrated option probabilities, and a self-hosted `/v1/systemone` server for CUDA GPUs ([GitHub](https://github.com/org2AI/wald-4b))
-- [Valen](https://github.com/Liuziyu77/Valen) - Apache-2.0 multimodal System One models (0.8B, 2B, 4B): text, images, and video in, probabilities over the supplied candidates out, with training code, training data, and an online demo
+- [Valen](https://github.com/Valen-Team/Valen) - Apache-2.0 multimodal System One models (0.8B, 2B, 4B): text, images, and video in, probabilities over supplied candidates out, with training code, training data, and a [free demo and API](https://valen-team.github.io/)
 - [Dwight 4B](https://huggingface.co/zime-ai/dwight-4b) - Zime AI's Apache-2.0 decision model for sales call transcripts, fine-tuned from Qwen3-4B-Instruct-2507: a yes/no, choice, or 0-10 score question gets a single option token with a probability for every option, plus a separate mode that writes JSON insights with verbatim quotes. Self-hosted with vLLM, with community GGUF builds; English B2B calls only
 
 ## Inference Techniques
@@ -339,6 +339,9 @@ Leaderboards first, then single-task studies and evaluation tooling. Most studie
 - [LangWatch Jev benchmark](https://langwatch.ai/compare/jev-benchmark) - Jev against seven open models under 1B on 15 decision tasks, with 95% intervals, latency, and contamination checks
 - [Decision Models as Guardrails](https://dm-as-guardrails.raxitlabs.com) - raxIT Labs' benchmark of 18 decision models (Jev, Kev, Laya, Clef, Strands Deciders, and the Perplexity and OpenAI Decisions APIs) and Amazon Bedrock Guardrails on the same 9,975 labelled guardrail checks, with one fixed 0.5 block threshold for every system; reports balanced accuracy with 95% intervals, cost per 1,000 checks, and per-row results
 
+- [System 1 Decision Benchmark](https://github.com/etsabary/system-1-decision-benchmark) - Independent comparison of hosted and local decision models plus no-reasoning LLM references on 1,342 text questions, with per-category accuracy, response times, cost, and route details
+- [Visual Decision Benchmark](https://github.com/etsabary/visual-decision-benchmark) - Independent comparison of decision models on 200 image-grounded questions across 20 categories, with accuracy, latency, cost, and image provenance
+
 ### Studies
 
 - [typesafe-ai-benchmark](https://github.com/iammrduncan/inference-benchmarks) - Side-by-side of Jev vs Qwen 3.8 27B on Cerebras for the same System One questions. Video: [Shannon](https://x.com/iamMrDuncan/status/2100467548298899918).
@@ -357,6 +360,7 @@ Leaderboards first, then single-task studies and evaluation tooling. Most studie
 
 ### Tooling
 
+- [JevalKit](https://github.com/Valen-Team/JevalKit) - Open-source evaluation toolkit for Jev-like decision models, with unified model interfaces, prepared text/image/video benchmarks and a [leaderboard](https://huggingface.co/spaces/Valen-Team/JevalKit-Leaderboard) distinguishing full evaluations from smoke tests and imported predictions
 - [System One Playground](https://github.com/goodboybeau/system-one-playground) - Local Apple Silicon workbench comparing Laya, Decider, Kev, Jev, and other engines side by side, with public-dataset benchmarks for accuracy and calibration, input-truncation diagnostics, latency, memory, and load tests
 - [Jev DSPy Lab](https://github.com/jmanhype/jev-dspy-lab) - Unofficial DSPy companion that records and replays TypeSafe calls while measuring calibration, selective risk, confidence-gated abstention, latency, tokens, and modeled cost.
 - [jevcal](https://github.com/abhixhek/jevcal) - Unofficial CLI that fits a per-question confidence threshold to a target accuracy on your own labeled data, verifies it on a held-out split, shows how much traffic still needs an LLM fallback, and fails CI when a Jev update breaks the locked thresholds

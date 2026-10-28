@@ -29,8 +29,8 @@ service-account authentication for self-hosted automation.
 
 | Item | Current state |
 |---|---|
-| Version in `server.json` | `1.12.3` |
-| Transport | MCP Streamable HTTP |
+| Version in `server.json` | `1.13.0` |
+| Transport | MCP Streamable HTTP, or stdio for local service-account use |
 | Runtime tools | 64 GTM tools by default; 94 with `GTM_TOOL_GROUPS=all`, plus 2 utility tools |
 | MCP resources | 8 resource definitions |
 | MCP prompts | 6 prompts |
@@ -407,6 +407,37 @@ granted to the configured Google service account.
 OAuth and service-account mode can run together. Requests with the configured
 API key use the service account; OAuth users keep their own Google identity and GTM permissions.
 
+### Stdio mode
+
+For a single local MCP client, the server can run over stdin/stdout instead of
+HTTP. The client starts the process when it needs GTM and stops it when the
+session ends, so no long-running server or API key is required. Stdio mode
+always uses service-account credentials:
+
+```sh
+GOOGLE_APPLICATION_CREDENTIALS=/path/to/sa.json gtm-mcp-server --stdio
+```
+
+Claude Code example (`.mcp.json`):
+
+```json
+{
+  "mcpServers": {
+    "gtm": {
+      "command": "/usr/local/bin/gtm-mcp-server",
+      "args": ["--stdio"],
+      "env": {
+        "GOOGLE_APPLICATION_CREDENTIALS": "/path/to/sa.json",
+        "GTM_TOOL_GROUPS": "all"
+      }
+    }
+  }
+}
+```
+
+`MCP_TRANSPORT=stdio` is equivalent to the `--stdio` argument. Logs go to
+stderr; stdout carries only MCP messages.
+
 ## Self-hosting
 
 ### Requirements
@@ -472,6 +503,8 @@ When using the named volume, set `TOKEN_STORE_PATH=/data/tokens.json` in
 |---|---|---|
 | `PORT` | `8080` | HTTP listen port |
 | `BASE_URL` | `http://localhost:8080` | Canonical public URL used by OAuth metadata and callbacks |
+| `MCP_TRANSPORT` | `http` | `http` (Streamable HTTP) or `stdio`; the `--stdio` argument overrides it |
+| `MCP_STATELESS_HTTP` | `true` | Disable in-memory MCP HTTP sessions; required for MCP `2026-07-28` |
 | `DASHBOARD_ENABLED` | `false` | Expose the public connection setup page at `/dashboard/` |
 | `GOOGLE_CLIENT_ID` | empty | Google OAuth web-client ID |
 | `GOOGLE_CLIENT_SECRET` | empty | Google OAuth web-client secret |
@@ -487,6 +520,14 @@ When using the named volume, set `TOKEN_STORE_PATH=/data/tokens.json` in
 
 If OAuth and service-account credentials are both absent, the server starts in
 open mode. Use open mode only for isolated local development.
+
+Streamable HTTP is stateless by default: the server keeps no in-memory MCP
+session and ignores `Mcp-Session-Id`, so requests can reach any replica or
+survive a restart. This is required for MCP `2026-07-28` tool requests; legacy
+MCP `2025-11-25` clients remain supported. Stateless mode does not disable
+authentication: send credentials on every MCP request. Set
+`MCP_STATELESS_HTTP=false` only if a client depends on HTTP sessions or the
+GET event stream; this server makes no server-to-client requests.
 
 `TRUST_PROXY=true` is appropriate only when a trusted reverse proxy overwrites
 or appends `X-Forwarded-For`. The implementation uses the rightmost value. With

@@ -182,6 +182,12 @@ Yes, for personal study and research, and for universities, schools, research in
 
 ## Changelog
 
+- **0.5.17** (2026-10-28): inline formulas look as printed: formulas set in the text's fonts (Greek letters, italic variables, hats and tildes, signs) are taken from the original page instead of being set again, which gave “θ ˜”, blanks or boxes; the same in the exported PDF.
+- **0.5.16** (2026-10-28): paragraphs of manuscripts (exported from Word, double-spaced) no longer stay in English: lines with a highlight behind them are translated, double-spaced paragraphs are translated whole instead of line by line, and figure legends after the references are translated.
+- **0.5.15** (2026-10-28): formula symbols in Elsevier journals are no longer garbled: Greek letters, ≤, ∀, ≠ and hatted letters (Ŝ, q̂) no longer show up as plain letters, and a superscript set high no longer jumps to the line above.
+- **0.5.14** (2026-10-28): fixed some known formatting errors.
+- **0.5.13** (2026-10-28): formulas no longer come out garbled: display equations with fractions and sums are kept whole instead of being translated piece by piece over themselves, and inline sums, square roots and widely spaced lines of formulas no longer break their sentence apart.
+- **0.5.12** (2026-10-27): journal papers come out more accurately: lines of statistics, numbered subsection headings, sentences running on into the next column, Greek letters such as χ², accented names and minus signs in tables are no longer garbled; the exported translated PDF has even letter spacing. Special thanks to momo on RedNote for the suggestions.
 - **0.5.11** (2026-10-27): pseudo-code is translated line by line, keeping its line numbers, indentation and keywords; tables are found more reliably, their cells stay in the original and only titles and notes are translated, so they no longer come out jumbled; sums within a sentence no longer go missing from the translation.
 - **0.5.10** (2026-10-27): translation through an online API: if your computer struggles with the local models, pick Use an API in the model choice to use OpenAI, Claude, DeepSeek, Qwen, Kimi, GLM, Doubao or any OpenAI-compatible service; the local model list folds away when you do.
 - **0.5.9** (2026-10-26): fixed existing problems.

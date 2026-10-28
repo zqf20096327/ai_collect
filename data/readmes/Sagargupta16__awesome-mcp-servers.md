@@ -111,6 +111,7 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | [Atlassian MCP (Jira + Confluence)](https://github.com/sooperset/mcp-atlassian)                        | Jira and Confluence integration                                              | Python     |
 | [Azure DevOps MCP](https://github.com/microsoft/azure-devops-mcp)                                      | Official Azure DevOps repos, pipelines, work items and wikis                 | TypeScript |
 | [Buildkite MCP](https://github.com/buildkite/buildkite-mcp-server)                                     | Official Buildkite pipelines, builds, jobs and test runs                     | Go         |
+| [Carbon Forge](https://carbonforge.dev/docs/p/guides/mcp-anonymous-access)                             | Source control and a shared record for agents, with lanes instead of clones  | Remote     |
 | [Chrome DevTools MCP](https://github.com/ChromeDevTools/chrome-devtools-mcp)                           | Official Chrome DevTools for coding agents - debug, trace and inspect pages  | TypeScript |
 | [CircleCI MCP](https://github.com/CircleCI-Public/mcp-server-circleci)                                 | Official CircleCI workflow integration                                       | TypeScript |
 | [Codapult Guard](https://github.com/codapult/codapult-guard)                                           | Architecture guardrails for AI coding agents                                 | TypeScript |
@@ -129,6 +130,7 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | [Mac MCP](https://github.com/bulutarkan/mac-mcp)                                                       | Control macOS apps, files and browser tabs from MCP clients                  | Python     |
 | [MartinLoop MCP](https://github.com/Keesan12/martin-loop/tree/main/packages/mcp)                       | Governed agent runtime with budget caps, verifier gates and inspectable runs | TypeScript |
 | [MCP Context Forge](https://github.com/IBM/mcp-context-forge)                                          | Official IBM MCP gateway federating MCP, A2A and REST tools                  | Python     |
+| [mcp-probe-kit](https://github.com/mybolide/mcp-probe-kit)                                             | Spec-driven dev workflow with converge gate and session history              | TypeScript |
 | [mcp-proxy](https://github.com/sparfenyuk/mcp-proxy)                                                   | Bridge between Streamable HTTP and stdio MCP transports                      | Python     |
 | [mcp-remote](https://github.com/punkpeye/mcp-remote)                                                   | Bridge stdio-only MCP clients to remote HTTP or SSE servers                  | TypeScript |
 | [mcpo](https://github.com/open-webui/mcpo)                                                             | MCP-to-OpenAPI proxy that exposes MCP servers as REST endpoints              | Python     |
@@ -298,6 +300,7 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | [Financial Modeling Prep MCP](https://github.com/imbenrabi/Financial-Modeling-Prep-MCP-Server) | FMP market data and fundamentals                                              | TypeScript |
 | [Invoice MCP](https://github.com/theluckystrike/mcp-invoice-generator)                         | Create PDF invoices with VAT lines, sequential numbering and overdue tracking | JavaScript |
 | [Invompt](https://github.com/Invompt/invompt-mcp)                                              | Create and review invoices from an AI assistant                               | TypeScript |
+| [Lava](https://github.com/dustinliang666-blip/lava-mcp) | Read-only A-share news-flow heat via remote MCP/REST | TypeScript |
 | [Massive.com (Polygon.io) MCP](https://github.com/massive-com/mcp_massive)                     | Official Massive.com (formerly Polygon.io) market data for stocks and crypto  | Python     |
 | [PayPal Agent Toolkit](https://github.com/paypal/agent-toolkit)                                | Official PayPal toolkit with an MCP server for payments and invoicing         | TypeScript |
 | [QuickBooks MCP](https://github.com/intuit/quickbooks-online-mcp-server)                       | Official Intuit QuickBooks Online                                             | TypeScript |
@@ -420,6 +423,7 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | [Google Maps MCP](https://github.com/cablate/mcp-google-map)                   | Google Maps API with LLM processing                                             | TypeScript |
 | [Mapbox MCP](https://github.com/mapbox/mcp-server)                             | Official Mapbox geocoding, POI search, directions, and isochrones               | TypeScript |
 | [MAQAMI Travel](https://github.com/negm17111995/mcp-server)                    | Search 3M+ hotels and flights with live rates, then check out on book.maqami.co | JavaScript |
+| [Orizn Visa](https://github.com/MattJeff/orizn-mcp-server)                     | Visa and entry rules for 49,750 passport-destination pairs, official sources    | TypeScript |
 | [Pumperly MCP](https://github.com/GeiserX/pumperly-mcp)                        | Fuel prices, nearby stations and route planning via Pumperly                    | Go         |
 | [Rolês em SP](https://rolesemsp.com.br/connect.md)                             | Discover cultural outings, events, and leisure activities across São Paulo      | Remote     |
 | [SkyAccess](https://github.com/sky-access/skyaccess-mcp)                       | Search 5,000+ live empty leg flights, get charter estimates and booking links   | Remote     |
@@ -505,6 +509,7 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | [Neither](https://github.com/stonianua/neither-mcp)                         | Selected project notes/docs for Cursor and Claude Desktop via stdio MCP          | TypeScript |
 | [Obsidian MCP](https://github.com/MarkusPfundstein/mcp-obsidian)            | Obsidian via REST API community plugin                                           | Python     |
 | [Obsidian MCP (alt)](https://github.com/StevenStavrakis/obsidian-mcp)       | Simple MCP server for Obsidian                                                   | TypeScript |
+| [SQLite Graph Memory](https://github.com/tonydzi/sqlite-graph-memory)       | Graph RAG over Obsidian or markdown notes -- wikilinks as edges, SQLite store    | Python     |
 | [Zotero MCP](https://github.com/54yyyu/zotero-mcp)                          | Search and read your Zotero reference library                                    | Python     |
 
 ## Frameworks & Libraries

@@ -49,6 +49,8 @@
 
 已验证兼容 DSH `0.2.1-rc.4`（`next` 通道），继续支持 `0.2.1-rc.3` 和 `0.2.1-rc.2`，最低支持 `0.1.7-rc.2`；更早的 DSH 请先升级。
 
+另支持预览宿主 `0.2.2-alpha.2`；范围与验收边界见[兼容性记录](docs/dsh-022-alpha2-compatibility.md)。
+
 本插件支持软件包元数据中记录的最新版 DeepSeek Harness，并需要一个当前具有 Codex 使用资格的 ChatGPT 账户。
 
 <details>
@@ -68,7 +70,7 @@
 2. 在 **包名或地址** 输入框中粘贴下面的包名（已带版本号）：
 
    ```text
-   dsh-codex-subscription@3.1.9
+   dsh-codex-subscription@3.2.1
    ```
 
 3. 点击 **安装**，等待安装完成；按页面提示操作，需要重启时先保存工作。
@@ -85,7 +87,7 @@
 <summary>终端安装（已能运行 dsh 命令）</summary>
 
 ```sh
-dsh plugin --profile web add dsh-codex-subscription@3.1.9
+dsh plugin --profile web add dsh-codex-subscription@3.2.1
 ```
 
 安装完成后按提示重启 DSH，再到 **设置 → Codex 订阅** 登录。插件页面和终端均由 DSH 管理安装。
@@ -98,7 +100,7 @@ dsh plugin --profile web add dsh-codex-subscription@3.1.9
 先在 Web 中完成登录并选择一次 Codex 模型，再把同一个插件安装到 Headless profile：
 
 ```sh
-dsh plugin --profile headless add dsh-codex-subscription@3.1.9
+dsh plugin --profile headless add dsh-codex-subscription@3.2.1
 dsh --profile headless "只回复：ok"
 ```
 
@@ -115,9 +117,16 @@ dsh --profile headless "只回复：ok"
 </details>
 
 <details>
+<summary>模型设置：默认模型、输入预测与回答风格</summary>
+
+<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/ui-models-zh-dark.png"><img src="docs/assets/ui-models-zh-light.png" width="640" alt="模型设置：可恢复 DSH 默认模型，详细说明在悬浮提示中查看"></picture></p>
+
+</details>
+
+<details>
 <summary>输入框：模型、速度、权限与额度</summary>
 
-<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/ui-composer-zh-dark.png"><img src="docs/assets/ui-composer-zh-light.png" width="760" alt="输入框：权限、草图、剩余额度、闪电标识的 Fast 模式和模型选择"></picture></p>
+<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/ui-composer-zh-dark.png"><img src="docs/assets/ui-composer-zh-light.png" width="760" alt="输入框：工作区权限、剩余额度和模型选择"></picture></p>
 
 </details>
 
@@ -241,7 +250,7 @@ Agent 先在画板绘制可编辑草图，再以该草图为参考调用订阅�
 <details>
 <summary>配对设置与已配对手机</summary>
 
-<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/ui-remote-zh-dark.png"><img src="docs/assets/ui-remote-zh-light.png" width="560" alt="设置里的手机远程控制：开关、配对二维码和手动码、已配对的手机"></picture></p>
+<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/ui-remote-zh-dark.png"><img src="docs/assets/ui-remote-zh-light.png" width="560" alt="设置里的手机远程控制：开关、连接状态、配对二维码和手动码"></picture></p>
 
 </details>
 
@@ -356,7 +365,7 @@ Agent 先在画板绘制可编辑草图，再以该草图为参考调用订阅�
 <summary>终端方式</summary>
 
 ```sh
-dsh plugin --profile web update dsh-codex-subscription@3.1.9
+dsh plugin --profile web update dsh-codex-subscription@3.2.1
 ```
 
 仅在需要卸载时运行：

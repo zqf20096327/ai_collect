@@ -21,6 +21,16 @@
 
 ---
 
+### 本地可视化工作台
+
+自然语言对话在外部 Agent 中进行；工作台显示当前服务模型的表面属性、二维轮廓和 Zemax 原生实光线。支持文件导入、真实视场与波长选择、滚轮缩放、左键拖动和一键复位，以及深浅主题。
+
+在 `frontend` 目录执行 `npm ci`、`npm run build`，回到项目根目录运行 `python -B workbench.py --model <已有文件路径>`，然后打开 <http://127.0.0.1:8765/>。安装、Agent 桥接和支持范围见 [工作台说明](frontend/README.md)。
+
+原生追迹需要 OpticStudio API 许可、有效模型归属及当前项目已确认的提案。导入文件创建独立工作副本；当前服务不自动跟随磁盘原件或其他 Zemax 窗口。像质分析面板尚未接入。
+
+---
+
 <a name="english"></a>
 ## 🌐 English
 
@@ -373,10 +383,13 @@ Add the server to your MCP client configuration, for example Claude Desktop or C
 }
 ```
 
-#### Run the integration tests (requires OpticStudio)
+#### Run offline regression tests
 ```powershell
-python tests/test_zemax_tools.py
+python -B -m unittest discover -s tests -p 'test_workbench*.py'
+python -B tests/regression_stage_two.py
+python -B tests/regression_stage_three.py
 ```
+These tests use fake native objects; they do not open or modify an OpticStudio model.
 
 #### Repository Layout
 ```text
@@ -384,7 +397,7 @@ server.py        FastMCP entry point (tools, resources, prompt)
 core/            ZOS-API session and .NET converters
 domain/          Design templates, Zemax rules, operand knowledge base, expert manual
 tools/           Tool implementations (system, setup, surfaces, optimization, analysis, validation, CAD)
-tests/           Integration test suite
+tests/           Offline regression tests
 assets/          README figures and logo
 output/          Per-project workspaces (git-ignored)
 ```
@@ -741,10 +754,13 @@ git remote set-url origin https://github.com/zhaopeizhao41-ops/optiforge.git
 }
 ```
 
-#### 运行集成测试（需要本机安装 OpticStudio）
+#### 运行离线回归测试
 ```powershell
-python tests/test_zemax_tools.py
+python -B -m unittest discover -s tests -p 'test_workbench*.py'
+python -B tests/regression_stage_two.py
+python -B tests/regression_stage_three.py
 ```
+这些测试使用模拟原生对象，不会打开或修改 OpticStudio 模型。
 
 ---
 

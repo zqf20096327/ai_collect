@@ -1,34 +1,41 @@
 # Ollama RAG + Reranker (CLI)
 
-Simple Retrieval-Augmented Generation system using:
+A command-line experiment for comparing retrieval with and without reranking on a small text corpus. It uses:
 
 - **Ollama** for embeddings and chat generation
 - **HNSWVectorDB** for vector search
-- **FlagEmbedding** reranker (optional)
+- **FlagEmbedding** for reranking (selectable in the CLI)
 
 ![RAG Flow](assets/cli.png)
 
 ## Quick Start
 
+Requires Python 3.11+, uv, and a running Ollama server. Run from the repository root:
+
 ```bash
+git clone https://github.com/00200200/ollama-rag-reranker.git
+cd ollama-rag-reranker
+
 # Install dependencies
 uv sync
 
-# (Optional) Make sure Ollama models are available locally
-# ollama pull hf.co/CompendiumLabs/bge-base-en-v1.5-gguf:Q4_K_M
-# ollama pull hf.co/bartowski/Llama-3.2-1B-Instruct-GGUF:Q4_K_M
+# Download the models configured in src/rag/ (once)
+ollama pull hf.co/CompendiumLabs/bge-base-en-v1.5-gguf:Q4_K_M
+ollama pull hf.co/bartowski/Llama-3.2-1B-Instruct-GGUF:Q4_K_M
 
 # Run interactive CLI
-uv run --active python main.py
-
-# The app builds the index on first run automatically
+uv run python main.py
 ```
+
+The CLI indexes `data/cat-facts.txt` at each startup. It also loads the
+`BAAI/bge-reranker-base` model on import, even in `none` mode; the first load may
+download model weights. Selecting `none` skips reranking, not model loading.
 
 ## How it Works
 
 - `src/rag/embedding.py`: Embeds text with Ollama.
 - `src/db/db_handler.py`: HNSW index for `TextDoc`, search + convenience helpers.
-- `src/rag/rerank.py`: Lazy-loaded reranker (`BAAI/bge-reranker-base`) to rescore candidates.
+- `src/rag/rerank.py`: Reranker (`BAAI/bge-reranker-base`) to rescore candidates.
 - `src/rag/llm.py`: Generates the final answer from context using an Ollama chat model.
 
 ## Project Structure
@@ -50,12 +57,14 @@ ollama-rag-reranker/
 
 ## Interactive CLI
 
-Menu-driven, clean output with colors:
+The CLI lets you change the number of context passages and compare `none`,
+`rerank`, and `both` modes. The following is an abbreviated example of the output
+in `both` mode, not a measured comparison of answer quality:
 
 ```
-$ uv run --active python main.py
+$ uv run python main.py
 ========================================
-       RAG MENU | k=6 | mode=none
+       RAG MENU | k=6 | mode=both
 ========================================
   1) Ask question
   2) Change k

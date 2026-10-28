@@ -1,0 +1,452 @@
+# GenerateBlocks Skills
+
+[![Buy me a coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-FFDD00?style=flat&logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/gauravtiwari)
+
+LLM-optimized skill documentation and development resources for the [GenerateBlocks](https://generateblocks.com/) WordPress plugin.
+
+**Documentation:** [Wiki](https://github.com/wpgaurav/generateblocks-skills/wiki) · [Getting started](https://github.com/wpgaurav/generateblocks-skills/wiki/Getting-Started) · [Installation](https://github.com/wpgaurav/generateblocks-skills/wiki/Installation) · [Latest release](https://github.com/wpgaurav/generateblocks-skills/releases/latest)
+
+**Verified on GenerateBlocks 2.5.0 and Pro 2.8.0** in a live WordPress 7.1.3 editor (October 27, 2026), connected through [Site Agent](skills/generateblocks-layouts/references/mcp-publishing.md#11-site-agent-workflow-tested). The bundled `build_css()` compiler now matches the native 2.5 Styles Builder byte for byte: 1,453 generated style objects checked, including 800 from a seed it was never tuned on. The design-system workflow (Design Tokens, Style Book, shared selectors, portable kits) was first tested on 2.5.0-beta.1 / 2.8.0-beta.1.
+
+**Styling defaults:** local block styles. The skills prompt before introducing
+shared Global Styles or Design Tokens and add them only when the user explicitly
+opts in. Existing references are preserved during edits.
+
+**Native authoring:** GenerateBlocks/Pro and appropriate core blocks only.
+Styling stays in editable block attributes; interactions use native blocks.
+Scripts Manager, custom HTML/CSS/JavaScript, and other builders require an
+explicit request. Accordion checks include padded questions and answers,
+expanded states, and mobile layouts.
+
+## Compact loading
+
+Start with the selected skill, the shared [authoring contract](skills/generateblocks-layouts/references/authoring-contract.md), and the [router](skills/generateblocks-layouts/references/_index.md). Familiar static layouts do not require the full recovery, CSS, and breakpoint manuals. Load a diagnostic or mapping reference when the task needs it; keep native editor and preflight validation. Standalone converter bundles carry their layout dependency in `references/generateblocks-layouts/`.
+
+## What the skills can build
+
+- **Static sections** — heroes, pricing, cards, FAQs, CTAs, full landing pages
+- **Dynamic content** — query loops (blog grids, related posts, archives), 27 dynamic tags with exact syntax
+- **Custom fields** — ACF text/image/link/group fields, repeater loops, options pages, meta queries
+- **Motion** — native transitions, hover/focus feedback and reduced-motion guards; unsupported effects are simplified unless external code is explicitly requested
+- **Conditions** — GB Pro block/menu conditions, form-field conditions, free-plugin alternatives
+- **GB Pro blocks** — accordion, tabs, carousel, navigation, site header, overlays/mega menus, the 2.6 Forms system
+- **Full-site templates** — GeneratePress Elements (loop templates, page heroes, hooks, display rules), FSE block themes
+
+## Reusable design-system kit
+
+[Paper and Ink product-page kit](skills/generateblocks-layouts/examples/beta-design-system/README.md): 19 tokens, 23 shared styles, six reusable sections, native query/accordion/form blocks, and two brand presets. Both 65-block pages survived real editor reload/save with byte-identical content. Imports, collision preservation, CSS parser/compiler parity, responsive layout, and local form behavior were checked.
+
+## Quick Install
+
+Install skills for your AI coding assistant with one command:
+
+```bash
+git clone https://github.com/wpgaurav/generateblocks-skills.git
+cd generateblocks-skills
+chmod +x install.sh
+./install.sh
+```
+
+This launches an interactive installer that sets up skills for your preferred tools.
+
+### Supported Tools
+
+| Tool | Install Location | Format |
+|------|-----------------|--------|
+| **Claude Code** | `~/.claude/skills/` | Skill directories |
+| **Cursor** | `~/.cursor/skills/` | Skill directories |
+| **Windsurf** | `~/.windsurf/rules/` | Combined markdown |
+| **OpenAI Codex CLI (legacy installer output)** | `~/.codex/instructions.md` | Combined markdown; see native installation below |
+| **Gemini CLI** | `GEMINI.md` (project root) | Combined markdown |
+| **GitHub Copilot** | `.github/copilot-instructions.md` | Combined markdown |
+| **Cline / Roo Code** | `.clinerules` (project root) | Combined markdown |
+| **Aider** | `CONVENTIONS.md` (project root) | Combined markdown |
+
+This table describes files written by the installer, not a guarantee of automatic
+loading by every client version. For current Codex skill-directory installation,
+see the [wiki installation guide](https://github.com/wpgaurav/generateblocks-skills/wiki/Installation#codex).
+Combined rule files reference this checkout and replace their target files;
+preserve unrelated instructions before installing over them.
+
+### Install Options
+
+```bash
+./install.sh              # Interactive mode (choose tools)
+./install.sh --all        # Install for all tools
+./install.sh claude       # Claude Code only
+./install.sh cursor codex # Multiple tools at once
+./install.sh --help       # Show help
+```
+
+---
+
+## Alternative: Manual Setup
+
+If you prefer not to use the installer, you have two options:
+
+### Option A: Upload a Skill File
+
+Download a `.skill` or `.zip` archive and use your assistant's supported skill or
+file workflow. Archive support, persistent installation and script execution vary
+by client. If it cannot inspect the archive, extract it and provide access to the
+complete folder. See [Installation](https://github.com/wpgaurav/generateblocks-skills/wiki/Installation).
+
+| Skill | Download |
+|-------|----------|
+| **GenerateBlocks Layouts** | [.skill](importable/generateblocks-layouts.skill) |
+| **HTML to GenerateBlocks** | [.skill](importable/html-to-generateblocks.skill) |
+| **Elementor to GenerateBlocks** | [.skill](importable/elementor-to-generateblocks.skill) |
+| **Figma to GenerateBlocks** | [.skill](importable/figma-to-generateblocks.skill) |
+
+### Option B: Point Your AI to the Skill File
+
+With Claude Code, Cursor, or Windsurf, just reference the skill directly:
+
+```
+Read skills/generateblocks-layouts/SKILL.md and create a testimonial slider with 3 cards
+```
+
+Direct links to skill files:
+- [`skills/generateblocks-layouts/SKILL.md`](skills/generateblocks-layouts/SKILL.md)
+- [`skills/html-to-generateblocks/SKILL.md`](skills/html-to-generateblocks/SKILL.md)
+- [`skills/elementor-to-generateblocks/SKILL.md`](skills/elementor-to-generateblocks/SKILL.md)
+- [`skills/figma-to-generateblocks/SKILL.md`](skills/figma-to-generateblocks/SKILL.md)
+
+---
+
+## Validated Examples
+
+Use the compact examples inside
+[`skills/generateblocks-layouts/examples/`](skills/generateblocks-layouts/examples/).
+They cover buttons, containers, an interactive card, a restrained hero, a V2
+Query/Looper grid, and SVGs. Every file passes the bundled `preflight.py`.
+
+Before inserting one into WordPress:
+
+1. identify the destination theme and plugin versions; resolve the record if one exists;
+2. use the real post ID if available, otherwise a random four-digit layout scope;
+3. replace example URLs/content/media;
+4. inherit the destination's design system and registered at-rules;
+5. run `preflight.py <file> --id-scope <SCOPE>`; resolve the actual record separately before an authorized write.
+
+The root [`examples/`](examples/) gallery contains older exploration and
+production exports. Treat it as historical visual/structural reference, not as
+recovery-safe copy-paste markup. It predates the current CSS Mode parity,
+post-scoped ID, and anti-slop gates.
+
+---
+
+## What's Included
+
+```
+generateblocks-skills/
+├── install.sh                 # Multi-tool skill installer
+├── CLAUDE.md                  # Claude Code project instructions
+├── AGENTS.md                  # Universal LLM instructions
+├── skills/                    # Skill source files
+│   ├── generateblocks-layouts/
+│   │   ├── SKILL.md           # Main entry point (slim — depth in references/)
+│   │   ├── references/        # Routed reference files (see map below)
+│   │   └── examples/          # Basic, compound, layout, SVG examples
+│   ├── html-to-generateblocks/
+│   ├── elementor-to-generateblocks/
+│   └── figma-to-generateblocks/
+├── importable/                # .skill and .zip files for upload
+├── examples/                  # Historical exploration/exports; not current copy-paste fixtures
+├── generateblocks/            # Plugin source (2.5.0) for reference
+└── generateblocks-pro/        # Pro plugin source (2.8.0; git-ignored) for reference
+```
+
+### Skills
+
+| Skill | Purpose |
+|-------|---------|
+| **GenerateBlocks Layouts** | Build anything with GB V2: static sections, query loops, dynamic tags, ACF data, animations, conditions, Pro forms/interactive blocks, full-site templates |
+| **HTML to GenerateBlocks** | Convert HTML/CSS to GenerateBlocks block markup |
+| **Elementor to GenerateBlocks** | Migrate Elementor layouts to clean GB blocks |
+| **Figma to GenerateBlocks** | Convert Figma designs to GB blocks |
+
+### Reference map (generateblocks-layouts/references/)
+
+| File | Covers |
+|------|--------|
+| `_index.md` | Task router — which file to load for which job |
+| `authoring-contract.md` | Compact required authoring, scope, serialization, styles, and validation contract |
+| `recovery-rules.md` | Every known cause of "Attempt Recovery" errors + exact fixes |
+| `field-notes.md` | Real-conversion lessons: escaping workflow, validation scripts |
+| `block-types.md` | Element/Text/Media/Shape verified attribute schemas |
+| `dynamic-tags.md` | Canonical catalog of all 27 dynamic tags + exact syntax |
+| `query-block.md` | Query/Looper/Loop-Item + Pro query extensions |
+| `acf-and-custom-fields.md` | ACF fields, repeater loops, options pages, Meta Box |
+| `conditions.md` | Pro block/menu/form conditions + free alternatives |
+| `template-authoring.md` | Full sites: GeneratePress Elements, FSE, archive templates |
+| `animations.md` | Hover, keyframes, scroll-driven animation, reduced motion |
+| `gb-pro.md` | Pro feature map (27 blocks, global classes, Editor Access, version timeline) |
+| `pro-forms.md` | Pro Forms (2.6+): fields, validation, ESP integrations, Turnstile |
+| `pro-interactive.md` | Accordion, Tabs, Carousel, Navigation, Site Header, Overlays |
+| `design-systems-beta.md` | Pro 2.8 tokens, Style Book, selectors, managed-root API, native imports, tested example |
+| `css-mode.md` | CSS Mode, CSS Properties, selectors, supported at-rules, `styles`/`css` parity |
+| `design-quality.md` | GenerateBlocks-specific anti-slop and responsive implementation gate |
+| `mcp-publishing.md` | Pushing blocks to a live site over MCP or REST: server choice, round trip, transport hazards |
+| `css-patterns.md` · `svg-icons.md` · `responsive.md` | Durable styling patterns |
+| `global-styles.md` · `patterns.md` · `performance.md` · `migrations.md` · `troubleshooting.md` | Supporting guides |
+
+### Importable Formats
+
+The `importable/` folder contains two formats for each skill:
+- **`.skill`** — Skill archive for clients that support this format
+- **`.zip`** — Compressed skill with references included
+
+After editing any skill, regenerate all bundles with `./build-bundles.sh`.
+
+---
+
+## GenerateBlocks V2 Quick Reference
+
+Four core blocks plus the query family:
+
+```
+generateblocks/element    → Containers (div, section, nav, figure, a, ul/ol/li, dl/dt/dd)
+generateblocks/text       → Text (h1-h6, p, span, div, a, button, figcaption, li)
+generateblocks/media      → Images (img only — static and dynamic)
+generateblocks/shape      → SVG icons
+generateblocks/query      → Dynamic lists (+ looper, loop-item, query-no-results, query-page-numbers)
+```
+
+**The rules that matter most:**
+
+- Use `generateblocks/element` (NOT `/container`), `generateblocks/text` (NOT `/headline` or `/button`)
+- `htmlAttributes` is a plain object (`{"href":"https://example.com/about/"}`) — never an array
+- **Links**: element `<a>` wrapping a text `span` child. Text `<a>` strips its href on save; element `<a>` with raw text triggers recovery
+- JSON attribute order follows each block's `block.json` declaration order, `className` last
+- `styles` is the editable source; compile the same states/selectors/at-rules into local `css`
+- Native Mobile is `@media (max-width:767px)` in 2.4.1 and 2.5.0; preserve deliberate custom queries
+- Pro CSS Mode has no `cssMode` markup attribute
+
+Block format (Option A — the plugin auto-injects the id-class):
+
+```html
+<!-- wp:generateblocks/element {"uniqueId":"hero-1173976-1","tagName":"section","styles":{...},"css":"...","className":"gb-element"} -->
+<section class="gb-element-hero-1173976-1 gb-element">
+    <!-- content -->
+</section>
+<!-- /wp:generateblocks/element -->
+```
+
+**Dynamic tags** — space after the tag name, pipe-separated options, no quotes:
+
+```
+{{post_title link:post}}
+{{post_permalink}}
+{{featured_image size:large}}
+{{post_excerpt length:25}}
+{{post_date dateFormat:M j, Y}}
+{{term_list tax:category|sep:, }}
+{{post_meta key:my_acf_field}}
+{{post_meta key:repeater.0.subfield}}
+```
+
+`{{post_url}}`, `{{featured_image_url}}`, `{{post_terms}}`, `{{acf}}`, and any `key="quoted"` form **do not exist** — they save fine and render as literal text. The full catalog is in [`references/dynamic-tags.md`](skills/generateblocks-layouts/references/dynamic-tags.md).
+
+---
+
+## Example Prompts
+
+> "Create a hero section with headline, subheadline, two CTA buttons, and a 4-stat bar"
+
+> "Build a 3-column pricing table with a highlighted middle tier"
+
+> "Build a related-posts section: 3 posts from the same category, current post excluded"
+
+> "Loop my ACF repeater team_members into a 3-column team grid"
+
+> "Build an archive loop template for GeneratePress Elements that inherits the query"
+
+> "Add a scroll-reveal animation to this section with a reduced-motion fallback"
+
+> "Convert this HTML to GenerateBlocks: [paste HTML]"
+
+---
+
+## Limitations
+
+- **No external URLs** — Provide HTML, screenshots, or descriptions
+- **No custom JavaScript** — interactions are CSS-only, plus GB Pro's built-in
+  JS blocks (accordion, tabs, carousel, overlays, instant pagination)
+- **Placeholder images** — Replace with real images after generation
+- **Hover inference** — Interactive states inferred from static designs
+- **UI-managed settings** — condition rules, form actions, overlay triggers,
+  and display rules are configured in wp-admin, not in block markup; the
+  skills list these as manual steps
+- **Version-dependent features** — always inspect the target. Editor Access
+  requires Pro 2.7+ with free 2.4+; CSS Mode and Forms require Pro 2.6+
+
+---
+
+## Development
+
+```bash
+cd generateblocks
+
+npm run build          # Production build
+npm run start          # Watch mode
+npm run test:unit      # Jest unit tests
+npm run test:e2e       # Playwright E2E
+npm run wp-env:start   # Local WordPress
+```
+
+---
+
+## Push generated blocks into a live WordPress site
+
+The skills generate block markup as a string. There are two ways to get that
+string into a real record: paste it by hand into the block editor's **Code
+editor**, or automate the read-splice-write loop with an MCP server or plain
+REST.
+
+### Paste by hand: use the Code editor, not the visual canvas
+
+For a single section or page, no server is needed.
+
+1. Open the page, post, template, or GP Element in the block editor.
+2. Switch to the Code editor: **Options** (the ⋮ menu, top right) →
+   **Code editor**, or press `Ctrl+Shift+Alt+M` (`⌘⇧⌥M` on Mac).
+3. Put the cursor on an empty line between two top-level blocks: after one
+   block's closing `<!-- /wp:... -->` comment and before the next
+   `<!-- wp:... -->` opener. On an empty page, click into the empty field.
+4. Paste the whole generated snippet, from the first
+   `<!-- wp:generateblocks/... -->` comment through its matching closer.
+   Don't trim or reformat it.
+5. Click **Exit code editor**. WordPress parses the text back into blocks.
+6. Confirm none of the new blocks shows *"This block contains unexpected or
+   invalid content"*, then save.
+
+Why not the visual canvas? Pasting there sends the clipboard through the
+editor's paste handler, which guesses what you meant from the clipboard format
+and the cursor position. Select and copy from a rendered code block (a chat
+window, GitHub, a syntax-highlighted editor) and the clipboard often carries
+formatted HTML with the comment delimiters escaped. The editor then converts it
+as HTML instead of parsing it as blocks, and the markup lands as literal text
+in Paragraph, Preformatted, or Code blocks. Paste with the cursor inside a text
+block and it can land inline or split that block. The Code editor is a plain
+text field: what you paste is exactly what gets parsed.
+
+Two things to watch:
+
+- **Paste as a user with `unfiltered_html`** (Administrators and Editors on a
+  single site, Super Admins only on multisite). WordPress runs content saved by
+  other users through `wp_kses`, which strips inline SVG and other markup the
+  blocks depend on, and GenerateBlocks 2.4+ refuses new dynamic tags from them.
+- **Don't click "Attempt Block Recovery."** It rebuilds the block from whatever
+  the editor could parse and drops the rest. Undo, fix the markup, and paste
+  again. Common causes are catalogued in
+  [`references/recovery-rules.md`](skills/generateblocks-layouts/references/recovery-rules.md).
+
+### Automate it: MCP server or REST
+
+To read the current page, splice a section in, and write it back without
+opening the editor, pair this repo with an MCP server that exposes a WordPress
+write surface, or use plain REST.
+
+Read [`references/mcp-publishing.md`](skills/generateblocks-layouts/references/mcp-publishing.md)
+before the first write. A write that returns `200` can still corrupt the block:
+GenerateBlocks markup is validated by re-serializing it and string-comparing
+against what was stored, so anything in the path that runs `parse_blocks()`,
+`wpautop`, or `wp_kses` over the payload breaks it silently.
+
+**The one requirement for any server: it must read and write raw
+`post_content` as an opaque string.**
+
+**Start with [Site Agent](https://gauravtiwari.org/product/site-agent/?utm_source=github&utm_medium=readme&utm_campaign=generateblocks-skills).**
+It's my free WordPress MCP plugin, and it's the route these skills were
+verified through on GenerateBlocks 2.5.0 and Pro 2.8.0. Two reasons it fits
+GenerateBlocks better than a generic server:
+
+- **It ships this skill.** Site Agent bundles the GenerateBlocks references, so
+  the agent calls `get-skill` and reads the authoring rules from your own site
+  before it writes a single block.
+- **It writes raw markup and checks it.** `get-content` returns the exact
+  `post_content`, and `save-content` refuses the write unless the content hash
+  still matches your last read. Edits to a published page land as an autosave
+  you review in the editor, not on the live page.
+
+It signs your client in through WordPress with OAuth (Claude, ChatGPT, Claude
+Code, Codex, Cursor, VS Code, Gemini, Zed), and PHP execution, WP-CLI and file
+writes stay off until you switch them on.
+
+| Route | What it is | Licence / cost | Write happens |
+|-------|------------|----------------|---------------|
+| [**Site Agent**](https://gauravtiwari.org/product/site-agent/?utm_source=github&utm_medium=readme&utm_campaign=generateblocks-skills) (recommended) | Free plugin by the author of these skills. Streamable HTTP MCP at `/wp-json/site-agent/v1/mcp`, OAuth sign-in, raw `get-content`/`save-content` with a hash guard, bundled GenerateBlocks skill, staged edits on live posts, opt-in developer tools. WP 6.9+, PHP 8.0+. | GPL-2.0-or-later, free | Your server |
+| [**WordPress MCP Adapter**](https://github.com/WordPress/mcp-adapter) | Official bridge from the Abilities API to MCP. Successor to the archived `Automattic/wordpress-mcp`. | GPL-2.0-or-later, free | Your server |
+| [**Novamira**](https://github.com/use-novamira/novamira) | Self-hosted plugin + MCP server: PHP execution, WP-CLI, filesystem, block editor workflows. Direct client-to-site connection. | AGPL-3.0-or-later, free; paid Pro tier | Your server |
+| [**WPVibe**](https://wordpress.org/plugins/vibe-ai/) (SeedProd) | Free plugin plus a hosted MCP service. One-click auth from wp-admin, builder skills, approval gates. | Plugin free; hosted service has a free daily allowance | Cloud service brokers the call |
+| [**Respira**](https://github.com/respira-press/respira-wordpress-mcp) | Plugin + MCP server with builder-native adapters; lists GenerateBlocks among 17 supported builders. Snapshots, approval gates, rollback. | Commercial, trial available | Your server |
+| **Plain REST** | `GET/POST /wp-json/wp/v2/pages/{id}` with an Application Password. No plugin, no abstraction to audit. | Built in | Your server |
+
+Whichever route you pick, verify the read-back rather than trusting the status
+code:
+
+```bash
+python3 skills/generateblocks-layouts/scripts/verify_roundtrip.py \
+  --local hero-section.html --remote fetched-raw.html
+```
+
+It names the specific corruption — reversed `\u002d\u002d` escapes, attribute
+key-order drift from a `parse_blocks()` round trip, `wpautop` artifacts,
+`wp_kses`-stripped SVG — instead of leaving you to diff by hand.
+
+Typical pairing:
+
+```
+Read skills/generateblocks-layouts/SKILL.md, then generate a testimonial
+grid with 3 cards and insert it as a new section at the top of /about on
+my staging site.
+```
+
+Staging first, always. Novamira's PHP-execution surface in particular is
+scoped by its own docs to dev and staging — an agent with arbitrary PHP does
+not belong on a production site. The same goes for Site Agent's PHP and file
+tools, which is why they ship switched off.
+
+---
+
+## Tools that pair well with these skills
+
+The skills are free and work without any of this. These are products I build,
+and each one fills a gap the skills leave on purpose.
+
+| You want to | Use | Why it fits |
+|-------------|-----|-------------|
+| Let the agent write to the site, not just the chat | [**Site Agent**](https://gauravtiwari.org/product/site-agent/?utm_source=github&utm_medium=readme&utm_campaign=generateblocks-skills) (free) | Bundles this skill, writes raw block markup with a hash guard, stages edits to live pages. See [Automate it](#automate-it-mcp-server-or-rest). |
+| Give every layout the same look | [**Design Systems Library**](https://gauravtiwari.org/product/design-systems-library/?utm_source=github&utm_medium=readme&utm_campaign=generateblocks-skills) | Agent-ready design systems: tokens, a `DESIGN.md` rulebook, components, fonts and live demos. When you opt into Global Styles or Design Tokens, the agent takes the values from one system instead of inventing a palette per section. |
+| Sell subscriptions or licenses from a WooCommerce store | [**Stackless for WooCommerce**](https://gauravtiwari.org/product/stackless-for-woocommerce/?utm_source=github&utm_medium=readme&utm_campaign=generateblocks-skills) ([free Lite](https://gauravtiwari.org/product/stackless-lite-for-woocommerce/?utm_source=github&utm_medium=readme&utm_campaign=generateblocks-skills)) | Subscriptions, Stripe, PayPal, Paddle, licensing, multi-currency and invoices in one plugin on core WooCommerce. Switched-off modules load no code. |
+| Sell digital downloads with Easy Digital Downloads | [**Stackless for EDD**](https://gauravtiwari.org/product/stackless-for-edd/?utm_source=github&utm_medium=readme&utm_campaign=generateblocks-skills) ([free Lite](https://gauravtiwari.org/product/stackless-lite-for-edd/?utm_source=github&utm_medium=readme&utm_campaign=generateblocks-skills)) | The same idea for EDD: subscriptions, licensing, gateways, multi-currency and invoices without the add-on stack. |
+| Keep the finished pages fast | [**GT Performance**](https://gauravtiwari.org/product/gt-performance/?utm_source=github&utm_medium=readme&utm_campaign=generateblocks-skills) (free) | Page cache, Cloudflare Free integration, unused CSS removal and Redis, with safeguards for cart and checkout pages. |
+| Drop in a hand-coded section GenerateBlocks shouldn't own | [**Page Blocks Builder**](https://gauravtiwari.org/product/gt-page-blocks-builder/?utm_source=github&utm_medium=readme&utm_campaign=generateblocks-skills) (free) | Sections in your own HTML, CSS and JavaScript. These skills keep GenerateBlocks native by default; this is the clean place for the custom-code exceptions, and Site Agent can draft them too. |
+| Get more skills like this one | [**AI Skills Library**](https://gauravtiwari.org/product/ai-skills-library/?utm_source=github&utm_medium=readme&utm_campaign=generateblocks-skills) or [**All-Access Pass**](https://gauravtiwari.org/product/all-access/?utm_source=github&utm_medium=readme&utm_campaign=generateblocks-skills) | Writing and visual skills for Claude Code, Codex and Cursor. All-Access adds the Design Systems Library and Notion templates in one yearly pass. |
+
+### More open-source skills
+
+- [Bricks Builder skill](https://github.com/wpgaurav/bricks-skills): paste-ready Bricks JSON, verified against the Bricks source
+- [Kadence skills](https://github.com/wpgaurav/kadence-skills): Kadence Blocks markup for Gutenberg templates
+- [WordPress skills](https://github.com/wpgaurav/WordPress-skills): 125+ skills for WordPress, design, SEO and marketing
+- [Claude Code skills](https://github.com/wpgaurav/claude-code-skills): stop-slop, red-pen, polish and other anti-slop skills
+
+## Other LLMs
+
+For non-Claude assistants (GPT, Gemini, etc.), see **`AGENTS.md`** for universal instructions — or just run `./install.sh` to set up your tool automatically.
+
+## Support This Project
+
+These skills are free and open source but keeping them accurate takes time. When GenerateBlocks ships an update, I go through the plugin source again and check the skills against it, so the markup you generate still passes block validation.
+
+If the skills saved you from rebuilding a layout by hand or from a round of "Attempt Block Recovery," you can buy me a coffee.
+
+<a href="https://buymeacoffee.com/gauravtiwari"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy me a coffee" height="50"></a>
+
+A star on the repo helps too, and so does opening an issue with the snippet whenever a skill gives you markup that breaks in the editor.
+
+## License
+
+- Plugin source code: GPL-2.0-or-later
+- Skill documentation: MIT

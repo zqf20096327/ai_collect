@@ -1038,6 +1038,13 @@ Wang, Han, Linfeng Zhang, Jiequn Han, and E. Weinan.
 
 
 
+
+
+
+* **uMOF: A Universal Database, Benchmark, and Machine Learning Interatomic Potentials for Metal-Organic Frameworks** [2026]  
+Théo Jaffrelot Inizan, Prathami Divakar Kamath, Alin Marin Elena, Kristin A. Persson.  
+[arXiv:2608.28100(2026)](https://doi.org/10.48550/arXiv.2608.28100) | [code](https://github.com/ddmms/ml-peg)  
+
 * **Accuracy and Efficiency Benchmarks of Pretrained Machine Learning Potentials for Molecular Simulations** [2026]  
 Peter Eastman, Evan Pretti, Thomas E. Markland.  
 [J. Chem. Theory Comput. (2026)](https://doi.org/10.1021/acs.jctc.6c00130) | [Code](https://github.com/peastman/mlipbenchmarks)  
@@ -1518,9 +1525,4 @@ Pietro Novelli, Giacomo Meanti, Pedro J. Buigues, Lorenzo Rosasco, Michele Parri
 Philip Klunzinger, Thomas Hehre, Bernard Deppmeier, William Ohlinger, Warren Hehre.  
 [Computer Physics Communications (2025)](https://doi.org/10.1002/jcc.70129)  
 
-* **Structure and Dynamics of CO2 at the Air–Water Interface from Classical and Neural Network Potentials** [2025]  
-Nitesh Kumar and Vyacheslav S. Bryantsev.  
-[J. Phys. Chem. Lett. (2025)](https://doi.org/10.1021/acs.jpclett.5c01206)  
-
-* **chemtrain: Learning deep potential models via automatic differentiation and statistical physics** [2025]  
-Fuchs, Paul, Stephan 
+* **Structure and Dynamics of CO2 at the

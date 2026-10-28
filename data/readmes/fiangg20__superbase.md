@@ -2,11 +2,17 @@
   <img src="assets/icon.png" alt="Superbase" width="256">
 </p>
 
-<h1 align="center">Superbase - New Update Incoming and Previews</h1>
+<h1 align="center">Superbase</h1>
 
 <p align="center">
   <strong>Let an AI assistant debug your live Roblox game.</strong>
 </p>
+
+<div align="center">
+
+[![Verified by M8ven](https://m8ven.ai/badge/mcp/fiangg20-superbase-1nmxtn)](https://m8ven.ai/verified?check=https%3A%2F%2Fgithub.com%2Ffiangg20%2Fsuperbase)
+
+</div>
 
 Superbase is a local [Model Context Protocol](https://modelcontextprotocol.io) (MCP) server that connects AI assistants to running Roblox sessions through your executor. The AI can read the console and script errors, explore the instance tree with CSS-like selectors, read and search script sources, spy on remote calls, operate the GUI, take screenshots, change properties and run Lua. It always knows whether Roblox is actually connected, and you can watch everything in a local web dashboard.
 
@@ -43,6 +49,8 @@ Superbase is a local [Model Context Protocol](https://modelcontextprotocol.io) (
 - [Development](#development)
 - [Troubleshooting](#troubleshooting)
 - [FAQ](#faq)
+- [License](#license)
+- [Credits](#credits)
 
 ## How it works
 
@@ -743,6 +751,8 @@ superbase/
 │   ├── lua.test.js
 │   ├── lua-runtime.test.js
 │   └── lua/                Mock of the Roblox API for the snippet tests
+├── LICENSE
+├── package-lock.json
 ├── package.json
 └── README.md
 ```
@@ -811,4 +821,13 @@ It works wherever your executor can run scripts. Some games detect or block exec
 **Is it affiliated with Roblox?**
 No. Superbase is an independent project.
 
-[![M8ven Score](https://m8ven.ai/badge/mcp/fiangg20-superbase-1nmxtn?v=66217098fa518e7a66a609905ea7ba9d)](https://m8ven.ai/mcp/fiangg20-superbase-1nmxtn?s=readme)
+## License
+
+Superbase is released under the [MIT License](LICENSE). You may use, copy, modify and distribute it, including in commercial projects, as long as the copyright notice and the license text stay with it. The software comes without any warranty. You are responsible for where and how you use it, see [Security](#security).
+
+## Credits
+
+- Built by [Bases](https://github.com/fiangg20) ([@fyandevelopers](https://www.roblox.com/users/5349151666/profile))
+- MCP implementation inspired by the [Model Context Protocol](https://modelcontextprotocol.io)
+
+Superbase is an independent project and is not affiliated with Roblox.

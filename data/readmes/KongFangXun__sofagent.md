@@ -47,7 +47,7 @@
 <details>
 <summary>🧩 三因子口径（点开，术语见〈<a href="#什么是-fde-harness">什么是 FDE Harness</a>〉）</summary>
 
-> sofagent 是**自带 Harness 的 FDE 交付物治理层**——工程层（FDEing）与治理层（harness）已交付，判定层（S1M，把判定从生成里分出来的决策模型）排期 v1.6.0–v1.9.0 建设、v2.0.0 宣告。三层各司其职、不互替。
+> sofagent 是**自带 Harness 的 FDE 交付物治理层**——工程层（FDEing）与治理层（harness）已交付，判定层（S1M，把判定从生成里分出来的决策模型）排期 v1.6.0–v1.9.0 建设、v2.0.0 宣告（阶段一/二已交付）。三层各司其职、不互替。
 > 身份公式定稿 **FDEing × S1A（S1A = S1M + Harness）**，口径 SSOT = [PHILOSOPHY · 身份口径](./docs/PHILOSOPHY.md)。
 
 </details>
@@ -70,9 +70,9 @@ sofagent 不造 Agent——交付的是让任何 Agent 被管住的那一层（�
 
 </details>
 
-**30 秒–2 分钟轻量试用**（首次含 npx 拉包（网络依赖），复跑秒级；单次引擎审计约 1.1 秒，口径见下）：`npx -y -p sofagent sofagent audit`（任意 git 仓库，密钥泄漏当场拦截）。
+**30 秒–2 分钟轻量试用**（首次含 npx 拉包（网络依赖），复跑秒级；引擎本体约 1.1s / 单入口 CLI 总耗时（含路由层）实测 4-5s，双口径见下）：`npx -y -p sofagent sofagent audit`（任意 git 仓库，密钥泄漏当场拦截）。
 
-> 💡 npm 通道只有伞包一个形态：`npm i -g sofagent` 装的就是**完整依赖树**（602 包口径见下）——不存在更小的「轻量包」。要更小安装面，用 npx 临时形态（`npx -y -p sofagent sofagent audit`，用完即弃不常驻；能力面见 [LIMITATIONS](./docs/LIMITATIONS.md)）。
+> 💡 npm 通道只有伞包一个形态：`npm i -g sofagent` 装的就是**完整依赖树**（依赖包数见下，口径以当轮 npm ls 实测为准）——不存在更小的「轻量包」。要更小安装面，用 npx 临时形态（`npx -y -p sofagent sofagent audit`，用完即弃不常驻；能力面见 [LIMITATIONS](./docs/LIMITATIONS.md)）。
 
 > 💡 试用时提交消息请写 **≥6 字符**（如 `initial audit test`）——A19 质量规则（编号对照见 [SECURITY 规则清单](./SECURITY.md#28-条审计规则完整清单文档级-ssot)）对超短消息（`init`/`add`）判红属设计意图（防无意义提交信息），不是故障。
 
@@ -120,7 +120,7 @@ sofagent 不造 Agent——交付的是让任何 Agent 被管住的那一层（�
 - 🤖 **部署 AI 节点**——三层交付物（文档层 + Skill 层 + 运行层），装进你已有的 AI 工具，从"你干活"变"你派活"
 - 📦 **判断冻结成交付物**——每个节点带「做好标准（merge_criteria）· 谁拍板（approver）」，机器可判定、跨阶段共享
 
-**判定层 · S1M**（System One Model——判断与生成分离的决策模型；**排期 v1.6.0–v1.9.0 施工、v2.0.0 宣告，尚未交付**——本版只声明身份与路线，不声称能力实装；口径锚定 [S1M-DECISION-POINTS](./FDE/S1M-DECISION-POINTS.md) 与 [v2.0.0 §一](./docs/changelog/v2.0/v2.0.0.md)。已交付落点是既有判定与举证面）：
+**判定层 · S1M**（判断与生成分离的决策模型；**v1.6.0–v1.9.0 施工·v2.0.0 宣告——阶段一/二已交付，阶段三因一致率未达阈暂缓（见 [CHANGELOG](./CHANGELOG.md)·修补位见 [ROADMAP](./docs/ROADMAP.md)）**——本版只声明路线；锚定 [S1M-DECISION-POINTS](./FDE/S1M-DECISION-POINTS.md)，已交付落点是既有判定与举证面）：
 
 - 🔎 **判定留痕**——decision-log 因果链记录每个可问责决策（谁拍板、依据什么、为何这么做），供 auto-PR 解释块与 daemon 周报消费
 - 🔗 **判定可举证**——审计历史落 HMAC 链，`--verify-chain` 可离线复算链完整性，结论能被第三方复核
@@ -128,7 +128,8 @@ sofagent 不造 Agent——交付的是让任何 Agent 被管住的那一层（�
 **治理层 · harness**（离场 · 驻留判断——「harness 治理」，按交付物 7×24 执行，进化时写回）：
 
 - 🏠 **离场后常驻**——FDE 能力留下巡检、审计、优化（daemon 巡检需安装时显式确认，默认不装；QUICK_MODE / 非交互安装自动跳过），commit 时触发审计，人离场治理不离开
-- 🔍 **零配置审计**——`npx -y -p sofagent sofagent audit`，任何 git 仓库秒级审计最近一次 commit（quick 约 1.1s、5 万行 diff 约 6.1s，口径见 [HANDBOOK](./docs/HANDBOOK.md)）
+- 🔍 **零配置审计**——`npx -y -p sofagent sofagent audit`，任何 git 仓库秒级审计最近一次 commit（quick 1.1s、5 万行 diff 6.1s，见 [HANDBOOK](./docs/HANDBOOK.md)）
+
 - 🧱 **规则与安全面：28 条审计规则**——密钥泄漏、越界编辑、注入防御、权限红线，违规当场拦截；fail-fast（critical 命中后其余跳过）、默认非 fail-closed（配置可被篡改、hook 可经 `--no-verify` 跳过——绕过面见 [LIMITATIONS §三](./docs/LIMITATIONS.md#三安全与信任模型局限)）
 - 🔧 **工具与能力面：104 个 MCP tool + 证据分档**——28 条规则中 22 条基于 git diff（本地生效、零 token）、4 条 hybrid（diff + Agent 日志）、1 条 filesystem 扫描、1 条走 decision-log（清单见 [SECURITY](./SECURITY.md#28-条审计规则完整清单文档级-ssot)）。其中 commons_invoke 为 dry-run 预检语义（返回能力元数据与调用计划，真实执行由 Agent runtime 注入 executor；见 LIMITATIONS）
 - 🛡️ **自动快照回溯**——每次审计后自动存档，出事一键回到任意快照
@@ -162,9 +163,9 @@ sofagent 不造 Agent——交付的是让任何 Agent 被管住的那一层（�
 
 | 档位 | 平台 | 约束注入 | 挂载方式 |
 |---|---|---|---|
-| **深度结合** | DeepSeek Harness | ✅ **逐工具调用可拦** | 6 款原子 `cordis-plugin-sofagent-*` 挂进运行时（另有 1 款聚合可选）——`tools/pre-execute` 等 7 个生命周期事件（词汇表见 `engine/dsh-plugins/SEAMS.md`） |
+| **深度结合** | DeepSeek Harness | ✅ **逐工具调用可拦** | 7 款原子 `cordis-plugin-sofagent-*` 挂进运行时（另有 1 款聚合可选）——`tools/pre-execute` 等 7 个生命周期事件（词汇表见 `engine/dsh-plugins/SEAMS.md`） |
 | **完整挂载** | OpenClaw | ✅ **每会话注入一次** | Hook 注入四层约束 + 断路器 + 4 款 OpenClaw 插件 |
-| **标准挂载** | Claude Code / Cursor | ⚠️ Skill 自觉加载 | Skill 目录 symlink + 平台规则文件 + 拦截配置（内容为提交级 28 规则，非调用级拦截） |
+| **标准挂载** | Claude Code / Cursor | ⚠️ Skill 自觉加载 | Skill 目录 symlink + 平台规则文件 + 拦截配置（Claude Code 档 PreToolUse 覆盖 Bash/Write/Edit 调用级；Cursor 提交级） |
 | **薄挂载** | WorkBuddy / Codex / Gemini CLI / Hermes | ⚠️ Skill 自觉加载 | Skill 目录 symlink（Codex 走 `AGENTS.md` 挂载点）+ git hook 审计 |
 
 - **别假设能力对齐——档位差的是注入强度，不是「有没有」**：DSH 逐工具调用可拦，OpenClaw 每会话注入一遍，其余宿主靠 Agent 自觉读 Skill 文本。「支持某平台」= 约束资产在该平台可用，**≠ 强度与他平台相同**；跨宿主迁移前先看目标宿主落在哪档，矩阵见 [加载链 HOOK](./engine/hooks/sofagent-load-chain/HOOK.md)
@@ -181,11 +182,11 @@ sofagent 不造 Agent——交付的是让任何 Agent 被管住的那一层（�
 
 | 能力 | 一句话 | 触达方式 |
 |---|---|---|
-| **RLCD 严格适当评分训练** | 三原语分派损失（noul 对数分数 / choice 对数+球面 / score RPS 序利用）+ 极端口径非对称惩罚 + RLOO/KL 锚/降权三防线；概率目标断言（硬标签拒载）+ 三档加权 + 可复现清单 | CLI：`sofagent train rlcd --data <数据集> [--dryrun]` |
-| **分桶温度校准** | choice/score/noul 三原语分别拟合 · score 保序 · 独立校准集隔离断言（同判据跨侧拒载，违规拒出读数）· 校准制品纯 JSON 独立于权重 | SDK 面 |
-| **校准纪律门禁** | 决策路径消费的置信度/概率阈值须带校准依据或显式 `uncalibrated`——未标注不得上线路（check-calibration-claims 接入发布链） | 门禁 · SDK 面 |
-| **弃权第四态** | 弃权与 pass/warn/fail 并列（三源留痕：低置信/OOD/判据缺失）· 门槛按原语分档 · ECE 未达阈时弃权不可关 | SDK 面 |
-| **三态对照与双达阈判定** | 零样本/训练后/校准后并列对照 · 一致率 ≥0.70（中英分列）与 ECE ≤0.10（分原语分语言）两线独立判定，not-measured 不得记达标；实测：ECE 17/18 格达线、一致率未达 ⇒ 阶段三暂缓（如实裁决） | SDK 面 · `sofagent audit --criteria` 判据列示 CLI 可达 |
+| **RLCD 严格适当评分训练** | 三原语分派损失 + 非对称惩罚 + RLOO/KL/降权三防线；概率目标断言 + 三档加权 + 可复现清单 | CLI：`sofagent train rlcd --data <数据集> [--dryrun]` |
+| **分桶温度校准** | 三原语分立拟合 · score 保序 · 校准集隔离断言 · 制品纯 JSON 无权重 | SDK 面 |
+| **校准纪律门禁** | 决策路径的置信度阈值须带校准依据或显式 `uncalibrated` | SDK 面 · 发布链 |
+| **弃权第四态** | 与 pass/warn/fail 并列（三源留痕）· 门槛按原语分档 · ECE 未达阈不可关 | SDK 面 |
+| **三态对照与双达阈判定** | 零样本/训练后/校准后对照 · 一致率 ≥0.70（中英分列）与 ECE ≤0.10 两线独立判定；实测：ECE 17/18 达线、一致率未达 ⇒ 阶段三暂缓 | SDK 面 · `sofagent audit --criteria` 判据列示 CLI 可达 |
 
 ## FDE Harness 两阶段
 
@@ -219,11 +220,14 @@ sofagent 不造 Agent——交付的是让任何 Agent 被管住的那一层（�
 npx -y -p sofagent sofagent audit
 ```
 
-> 💡 quick 跑 17 条默认（A1–A11 + A18–A23；其中 A3 任务范围 / A9 commit-msg 注入检测——读最近一次 commit 消息，无消息时按无输入跳过）；`--init` 的 hook 默认同样 17 条，完整 28 条需在 `.sofagent/config.yml` 开 `extendedRulesEnabled: true`——详见 [LIMITATIONS §三](./docs/LIMITATIONS.md#三安全与信任模型局限)。
+> 💡 quick 跑 17 条默认（A1–A11 + A18–A23；其中 A9 commit-msg 注入检测——读最近一次 commit 消息，无消息时按无输入跳过（A3 无task跳过））；`--init` 的 hook 默认同样 17 条，完整 28 条需在 `.sofagent/config.yml` 开 `extendedRulesEnabled: true`——详见 [LIMITATIONS §三](./docs/LIMITATIONS.md#三安全与信任模型局限)。
 
 > ⚠️ 这一步是**一次性审计**（当次进程内），不装 git hook——之后 commit 不会被自动拦。要长期守护请跑 `sofagent audit --init`（见下方完整安装）。
 
-拦截特定格式密钥泄漏时是这样的（真实输出；A2（编号对照见 [SECURITY 规则清单](./SECURITY.md#28-条审计规则完整清单文档级-ssot)）检测 AWS AKIA/Secret、OpenAI sk-*、GitHub ghp_、Google AIza、Slack xox*-、JWT、PEM 私钥等已知格式——sk- 形态需 ≥29 字符（主体 ≥27，厂商专属 sk-ant/sk-proj 等 ≥40），Stripe 下划线前缀 ≥24；更短/非标形态暂不覆盖——保守设计防误报，详见 [LIMITATIONS §三 A2](./docs/LIMITATIONS.md#三安全与信任模型局限)）：
+> 📌 版本徽章 = 裸名总包 `sofagent`（npm 安装入口）；下载徽章 = 实体包 `@sofagent/audit`（下载量主体）——`npm i -g sofagent` 装的是总包（含完整依赖树），两徽章是同一分发面的两个观测位。
+
+拦截特定格式密钥泄漏时是这样的（真实输出；A2（编号对照见 [SECURITY 规则清单](./SECURITY.md#28-条审计规则完整清单文档级-ssot)）检测 AWS AKIA/Secret、OpenAI sk-*、GitHub ghp_、Google AIza、Slack xox*-、JWT、PEM 私钥等已知格式——sk- 形态需 ≥29 字符（主体 ≥27，厂商专属 sk-ant/sk-proj 等 ≥40），Stripe 下划线前缀 ≥24；
+更短/非标形态暂不覆盖——保守设计防误报，详见 [LIMITATIONS §三 A2](./docs/LIMITATIONS.md#三安全与信任模型局限)）：
 
 ```text
 $ npx -y -p sofagent sofagent audit
@@ -300,7 +304,7 @@ sofagent audit --doctor    # 验证环境（可选）
 > | 完整安装（含 daemon / dashboard） | `bootstrap.sh` / `install.sh`（见上） |
 >
 > - **旧命令已退役**：12 个旧 bin 兼容期已满**移除**，统一走单入口。
-> - ⚠️ **`npm i -g sofagent` 带来完整依赖树**（含 orchestrator/mcp/train 等能力包；传递依赖实测 602 包（`npm ls --all --parseable` 口径：`npm i sofagent@1.5.8` 时点实测 · npm 11.19.0 / Node v24.21.0 / Darwin arm64 / 2026-10-10），5 个含原生模块——新版 npm 不执行未审阅 install script，其编译**静默跳过**）。
+> - ⚠️ **`npm i -g sofagent` 带来完整依赖树**（含 orchestrator/mcp/train 等能力包；传递依赖 602 包（`npm ls --all --parseable` · @1.5.8 时点 2026-10-10 实测；^1.7.0 约含 672——以当轮实测为准），5 个含原生模块——新版 npm 不执行未审阅 install script，其编译**静默跳过**）。
 >   **只要审计 CLI**（接受完整依赖树取舍）：`npm i -g sofagent` 后用 `sofagent audit`；不想常驻依赖树则用 `npx -y -p sofagent sofagent audit` 临时形态。
 > - **已下架的旧代理包**：npm 上的 `sofagent-audit`（裸名、无 scope）是旧代理包，**已于 2026-09-26 下架**——不要安装。
 
@@ -323,8 +327,9 @@ npx -y -p sofagent sofagent audit --ruleset security   # 加载安全规则集
 
 ## 生态与文档索引
 
-**Featured in**（社区收录 · 7 项已收录）：
+**Featured in**（社区收录 · 13 项已收录）：
 
+[![Awesome AI Agents](https://img.shields.io/badge/Awesome_AI_Agents-featured-2ea44f)](https://github.com/NipunaRanasinghe/awesome-ai-agents)
 [![Glama](https://img.shields.io/badge/Glama-indexed-4A90D9)](https://glama.ai/mcp/servers/KongFangXun/sofagent)
 [![awesome-dsh-plugin](https://img.shields.io/badge/awesome--dsh--plugin-listed-brightgreen)](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin)
 [![awesome-ai-agents (Jenqyang)](https://img.shields.io/badge/awesome--ai--agents-listed-brightgreen)](https://github.com/Jenqyang/Awesome-AI-Agents)
@@ -332,9 +337,13 @@ npx -y -p sofagent sofagent audit --ruleset security   # 加载安全规则集
 [![awesome-deepseek-harness (0xsline)](https://img.shields.io/badge/awesome--deepseek--harness%20%280xsline%29-listed-brightgreen)](https://github.com/0xsline/awesome-deepseek-harness)
 [![awesome-deepseek-harness (Dominic)](https://img.shields.io/badge/awesome--deepseek--harness%20%28Dominic%29-listed-brightgreen)](https://github.com/Dominic789654/awesome-deepseek-harness)
 [![awesome-mcp-servers](https://img.shields.io/badge/awesome--mcp--servers-listed-brightgreen)](https://github.com/punkpeye/awesome-mcp-servers)
+[![awesome-mcp-zh](https://img.shields.io/badge/awesome--mcp--zh-listed-brightgreen)](https://github.com/yzfly/Awesome-MCP-ZH)
+[![awesome-ai-agents-2026](https://img.shields.io/badge/awesome--ai--agents--2026%20%28ARUNAGIRINATHAN--K%29-listed-brightgreen)](https://github.com/ARUNAGIRINATHAN-K/awesome-ai-agents-2026)
+[![awesome-ai-governance](https://img.shields.io/badge/awesome--ai--governance-listed-brightgreen)](https://github.com/agentrust-io/awesome-ai-governance)
+[![awesome-auditable-ai](https://img.shields.io/badge/awesome--auditable--ai-listed-brightgreen)](https://github.com/yzhao062/awesome-auditable-ai)
+[![loop-engineering](https://img.shields.io/badge/loop--engineering-listed-brightgreen)](https://github.com/cobusgreyling/loop-engineering/blob/main/docs/adopters.md)
 
 **收录申请中（PR open）**：
-
 [![awesome-harness-engineering](https://img.shields.io/badge/awesome--harness--engineering-PR%20open-orange)](https://github.com/ai-boost/awesome-harness-engineering/pull/227)
 [![awesome-ai-agents (e2b)](https://img.shields.io/badge/awesome--ai--agents%20%28e2b%29-PR%20open-orange)](https://github.com/e2b-dev/awesome-ai-agents/pull/1471)
 
@@ -343,7 +352,7 @@ npx -y -p sofagent sofagent audit --ruleset security   # 加载安全规则集
 - `SKILL/`——给 Agent 读的行为约束文件系统（SKILL.md 主入口 / harness/ 约束层 / agents/ Sub Agent），新 Skill 放这里
 - `FORGE/`——自迭代工具链（内部工具，外部用户可忽略），产物落 `~/.sofagent/data/forge-runs/`
 
-**上游与插件入口**：DSH 上游 <https://github.com/deepseek-ai/deepseek-harness> · Cordis 运行时 <https://github.com/cordiverse/cordis> · 7 款 `cordis-plugin-sofagent*` 源码 [engine/dsh-plugins/](./engine/dsh-plugins/)
+**上游与插件入口**：DSH 上游 <https://github.com/deepseek-ai/deepseek-harness> · Cordis 运行时 <https://github.com/cordiverse/cordis> · 8 款 `cordis-plugin-sofagent*` 源码 [engine/dsh-plugins/](./engine/dsh-plugins/)
 
 | 你想了解 | 看哪里 |
 |---|---|
@@ -352,9 +361,11 @@ npx -y -p sofagent sofagent audit --ruleset security   # 加载安全规则集
 | 架构设计与 28 条规则 | [ARCHITECTURE](./docs/ARCHITECTURE.md) |
 | 每个版本做了什么 | [CHANGELOG](./CHANGELOG.md) |
 | 安全声明 · 已知局限 | [SECURITY](./SECURITY.md) · [LIMITATIONS](./docs/LIMITATIONS.md) |
+| 社区参与 · 行为准则 | [COMMUNITY](./docs/COMMUNITY.md) |
+| 外部验证与行业对照 | [VALIDATION](./docs/VALIDATION.md) |
 
-> 🧪 **工程可信度**（当前口径）：6512 测试 / 13 模块包 + 11 插件（7 DSH + 4 OpenClaw）· 28 条审计规则 · fresh-eyes 独立审查（见 [review-system](./docs/guides/review-system.md)）。
-> **包数口径**（消歧）：workspace 27 = 13 模块包 + load-chain + dsh-plugin-kit + umbrella + 7 DSH 插件 + 4 OpenClaw 插件（见 [WIKI §六](./docs/WIKI.md#六当前状态)）；**测试计数口径** = 13 模块包（含 test script 的 workspace 共 25 个，插件与工具包不计）——非同一集合。
+> 🧪 **工程可信度**（当前口径）：6593 测试 / 14 包（`tools/check/test-count.sh` 实测口径）+ 12 插件（8 DSH + 4 OpenClaw）· 28 条审计规则 · fresh-eyes 独立审查（见 [review-system](./docs/guides/review-system.md)）。
+> **包数口径**（消歧）：主读数口径 = 14 包（test-count.sh 实测；下述两口径为集合定义）——workspace 29 = 13 模块包 + `engine/corpus`（`@sofagent/rsi-corpus` 语料管道，版本线独立）+ load-chain + dsh-plugin-kit + umbrella + 8 DSH 插件 + 4 OpenClaw 插件（见 [WIKI §六](./docs/WIKI.md#六当前状态)）；**测试计数口径** = 13 模块包（含 test script 的 workspace 全量实测 27 个——活读数见 `tools/check/test-count.sh` 头注的口径说明，插件与工具包不计）——非同一集合。
 > 测试数二口径：**发版时点值**（各版本 `4805→4903` 增量账）与**当前实测值**（上方行）；权威值以 `tools/check/check-test-count.sh` 实跑为准；性能数据为单机参考值。
 
 ---

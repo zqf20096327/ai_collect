@@ -19,7 +19,7 @@ sensitivity checks and reporting.
 refers to and builds upon the underlying `DoubleML` Python package published by
 [doubleml.org](https://docs.doubleml.org).*
 
-![The HTML report of a run on simulated retail data: total incremental KPI and ROI of a discount, model metrics and the incremental-KPI time series with its 95% band](img/hero_total.png)
+![The HTML report of a run on simulated retail data: total incremental KPI and ROI of a discount, model metrics and the incremental-KPI time series with its 95% band](img/hero_total_v2.png)
 
 *   📦 `pip install doubleml-pipeline`
 *   🚀 [Quick start](#quick-start) — a dozen lines of code
@@ -333,6 +333,27 @@ the ROI breakdowns under `roi_output/<treatment>/` — and run the validation
 checks (ignorability, heterogeneity, positivity) described in the
 [User Guide](docs/guide.md) before acting on the numbers.
 
+### Analyzing results with AI agents
+
+The repository bundles a lightweight Agent Skill
+([`skills/causal-insights`](skills/causal-insights/SKILL.md)) that teaches AI
+agents how to read any completed `output_dir` with exact metric definitions
+([`metric_formulas.md`](skills/causal-insights/references/metric_formulas.md)),
+causal interpretation rules, diagnostics checks, and mandatory
+**Fact / Inference / Hypothesis** tagging. No extra dependencies beyond Python,
+`numpy`, and `pandas` are required.
+
+Install from GitHub with the Agent Skills CLI:
+
+```bash
+npx skills add google/doubleml-pipeline
+```
+
+Then ask your agent, for example:
+*"Analyze `./causal_results` and summarize which treatments paid back, where and
+when they worked best, whether the estimates pass diagnostics, and how budget
+should shift."*
+
 --------------------------------------------------------------------------------
 
 ## How it works
@@ -393,6 +414,10 @@ once per treatment and learner (`hparam_policy="global"`). Both are described in
     estimates an ATE while DML reports a CATE).
 *   **Reports** — CSVs ([schema](docs/output_csv_schema.md)), publication-ready
     charts and a self-contained HTML report.
+*   **Agent Skills** —
+    [`skills/causal-insights`](skills/causal-insights/SKILL.md) equips AI agents
+    with pipeline-accurate metric formulas, causal trust checks and a structured
+    report template over any `output_dir`.
 
 --------------------------------------------------------------------------------
 

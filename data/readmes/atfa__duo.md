@@ -27,15 +27,19 @@ On a first run `duo` checks that it can start before it opens the dashboard, and
 
 ## Install
 
-**Latest published release v0.14.5** (macOS/Linux/Windows, amd64, plus arm64 on macOS/Linux):
+**Latest published release v0.15.0** (macOS/Linux/Windows, amd64, plus arm64 on macOS/Linux):
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/atfa/duo/main/scripts/install-release.sh | bash
 ```
 
+The release installer installs both `duo` and `xduo`. Releases through v0.14.5 do not include xduo.
+
 On Windows, download `duo_windows_amd64.tar.gz` from the release with `tar -xzf` or any archive tool and put `duo.exe` and `duo-plugin-*.exe` on `PATH` (or in `%USERPROFILE%\.duo\plugins`). The shell installer is a POSIX script and does not run there; `duo upgrade` does, and it replaces the running `duo.exe` in place.
 
 `duo upgrade` installs the same release without the script: it downloads this platform's archive, verifies it against the release's published `SHA256SUMS`, and refuses an archive the release does not account for. It also reads the release tag's session schema before replacing anything, so a new binary that could not read your sessions is refused instead of installed. `duo upgrade --dry-run` reports what it would install; the running process keeps the old binary either way, and the new one takes effect on the next start.
+
+`duo upgrade` replaces only `duo`; it does not update `xduo` or the driver binaries. Use the installer to update those separately.
 
 Or install from source (Go 1.24+; the script runs the Go test suite):
 
@@ -43,7 +47,86 @@ Or install from source (Go 1.24+; the script runs the Go test suite):
 ./scripts/install.sh
 ```
 
+This builds and installs both `duo` and `xduo` to `~/.local/bin`, along with the driver binaries and bridges. Add that directory to PATH.
+
 Restart running Pi or OpenCode processes after installing their bridges.
+
+## xduo: multiple Duo instances
+
+On Linux, xduo manages independent Duo terminals with Git and tmux 3.2 or newer. Build both programs from this repository:
+
+```bash
+go build -o duo ./cmd/duo
+go build -o xduo ./cmd/xduo
+./xduo -duo /absolute/path/to/duo
+```
+
+The `-duo` option is optional; without it xduo looks for `duo` on PATH. Launch `xduo` from an interactive terminal. It creates or connects to the dedicated `xduo-manager` tmux session; inside tmux it switches the current client without nesting. The status bar in each Duo session shows the tmux prefix followed by `Shift+L` to return to the previous session while keeping Duo running (or use the prefix then `s` to choose a session). When Duo exits, tmux switches to the most recently active remaining session, normally the xduo manager. xduo installs no custom key bindings.
+
+| Key | Action |
+|---|---|
+| ↑ / ↓ | Select an instance |
+| Enter | Switch to its original Duo terminal |
+| n | Enter a Git project path and start an instance |
+| x | Close the selected instance; confirm with y if running |
+| r | Refresh |
+| q | Quit the panel without stopping Duo instances |
+
+The toolbar's **Server** button (or `S`) toggles the browser terminal on port `8787` (all IPv4 interfaces). It starts off; gray means off, green means running, and red means startup failed. When enabled, the local address, a fresh `ABCD-E7K9` access code, a **COPY** button and an available LAN address appear to the right of Server. COPY copies the eight characters without the hyphen. The browser accepts either spelling and inserts the hyphen automatically while typing or pasting. Open `http://127.0.0.1:8787/` directly on the host without a password. Other devices open the LAN or tunnel address and enter the displayed code. Browser login is remembered for the server's lifetime; stopping/restarting Server invalidates the old login and generates a new code. Tunnel requests are treated as remote when they preserve the external Host or supply forwarding headers; proxies must preserve the browser's Host for same-origin HTTP/WebSocket requests. HTTP/WS and HTTPS/WSS are supported. TLS is handled by the chosen tunnel/reverse proxy; the optional Tunnel button can manage a configured Cloudflare connector.
+
+The page includes xterm.js, connection status, Reconnect and Fullscreen; all assets are bundled in xduo, with no CDN or frontend build needed. One browser can connect at a time. Closing or refreshing the tab disconnects only its tmux client; the manager and Duo instances keep running. Turning Server off closes the listener and browser connection.
+
+When a browser connects to the terminal, other local xduo tmux clients are locked independently of the shared dashboard. Their terminal shows only a centered **STOP SERVER** button; mouse click or Enter stops the browser server (and its managed tunnel), disconnects the browser and restores local input. Closing a browser tab alone keeps this local lock in place until Server is stopped. Browser refresh/reconnect remains available.
+
+The **Tunnel** button (or `T`) immediately opens a loading panel and starts a named Cloudflare Tunnel in the background. Repeated clicks while starting reopen the same panel. Once connected it shows `https://<hostname>/<random-entry>` and the access code, with **OK** and **Copy room code** buttons. Closing the panel does not stop startup. It automatically starts Server if needed. Click Tunnel again to stop only the connector. Configure your own Cloudflare hostname/tunnel in `~/.duo/xduo/tunnel.json` (credentials stay on the host):
+
+```json
+{
+  "hostname": "desktop.example.com",
+  "tunnel": "your-cloudflare-tunnel-id",
+  "credentialsFile": "/absolute/path/to/tunnel-credentials.json"
+}
+```
+
+Users without configuration are directed to [desktop.xduo.dev/setup](https://desktop.xduo.dev/setup), a public setup guide that stays available independently of the desktop tunnel. Downloading the binaries does not automatically register a computer with `desktop.xduo.dev`; that domain is the maintainer's configured endpoint.
+
+The hostname must already route to that named tunnel; `cloudflared` must be installed. Each host/domain can use the same feature with its own configuration. The entry path changes when Server restarts; it is an entry link, while the access code provides login. Connector output is saved in `~/.duo/xduo/tunnel.log`. Existing external tunnel services are left running.
+
+The browser's single top toolbar contains **Models (Alt+M)**, **Austin (Ctrl+A)**, **Tony (Ctrl+T)**, **Back to Duo (Ctrl+])** and **Quit Duo (Ctrl+Q)**. These controls appear only while that browser is inside a Duo instance, including its native agent terminals, and hide when returning to the xduo manager. They send the same keys to the current terminal. The xduo TUI shows only workspace-management controls.
+
+Selecting `[+]` opens a directory picker at the manager's launch directory. Use `Tab` / `Shift+Tab` to move between the path input, directories, recent projects, Confirm and Cancel; use arrow keys and `Enter` within a list. Clicking a directory opens it, clicking a recent project selects it, and Confirm starts Duo in the chosen directory. `Esc` cancels. The latest ten successfully created or opened projects are stored separately in `~/.duo/xduo/recent-projects.json`.
+
+Duo instances launched by xduo show a **Back to xduo** button at the top right. Clicking it returns to the manager while keeping Duo and its agents running.
+
+Select an exited instance and press `Enter` (or click its card) to resume its recorded Duo session. This reuses the same card; it does not create a fresh Duo session. If no session was recorded, create a new instance instead. If resume fails, the terminal keeps the error and exit code visible until you press Enter to return to xduo. Sessions closed before any task was submitted may have been cleaned up by Duo and cannot be resumed.
+
+Finished and exited instances can be closed without confirmation. Closing first sends Duo Ctrl+Q and waits up to five seconds, then terminates the tmux session if needed. The registry is `~/.duo/xduo/instances.json`; each instance has `~/.duo/xduo/instances/<id>/status.json` and `pairing.json`. Removing an instance removes its directory. Each Duo owns its Remote connection and pairing; xduo supplies `DUO_REMOTE_PAIRING_FILE` and does not handle remote messages.
+
+Duo publishes status approximately once per second through `XDUO_STATUS_FILE`. The panel shows `idle` before a task starts, or `playing`, `pause`, or `stop`, along with the separate workflow phase and tmux liveness: DONE does not imply the process has exited. A live instance without a snapshot is `Starting`; a snapshot older than five seconds is `Unknown`. The panel refreshes automatically and on return.
+
+Only the Linux tmux backend is supported. Multiple xduo panels must not write the same registry concurrently. The manager inherits the tmux server environment, which may differ from the shell that attached to it. Without the two environment variables, standalone Duo retains its normal status and Remote behavior.
+
+Duo's dashboard actions also have slash commands, so browser-reserved shortcuts are optional:
+
+| Shortcut | Slash command |
+| --- | --- |
+| Ctrl+M / Alt+M | `/model` |
+| Ctrl+S / Alt+S | `/mode` |
+| Ctrl+A / Alt+A | `/austin` |
+| Ctrl+T / Alt+T | `/tony` |
+| Ctrl+R / Ctrl+Y | `/restart austin` / `/restart tony` |
+| Ctrl+O / Alt+O | `/overview` |
+| Ctrl+E | `/reports` |
+| Ctrl+P | `/preview` |
+| Ctrl+G | `/timestamps` |
+| Ctrl+X | `/copy` |
+| Ctrl+F | `/search` |
+| Ctrl+V | `/paste` (image from the host clipboard) |
+| Ctrl+L | `/clear` |
+| Ctrl+/ / Alt+H | `/help` |
+| Ctrl+Q / Ctrl+D | `/quit` or `/exit` |
+
+These commands are entered in Duo's composer; native agent terminals keep their own input handling. Use **Back to Duo (Ctrl+])** in the browser toolbar to leave a native terminal without stopping the agent. Slash commands typed inside a native terminal go to the agent, not Duo.
 
 ## Agent drivers
 

@@ -151,7 +151,7 @@ A curated list of awesome platforms, tools, practices and resources that helps r
 - [Step-5-Preview](https://huggingface.co/collections/stepfun-ai/step-5-preview) - StepFun's flagship model for agentic work
 - [Occamy-1.0](https://huggingface.co/Accio-Lab/occamy-1.0) - a compact agentic model purpose-built for real-world co-work
 - [MiniCPM5](https://huggingface.co/collections/openbmb/minicpm5) - a collection of SOTA on-device LLMs, small yet powerful
-- [LFM2.5](https://huggingface.co/collections/LiquidAI/lfm25) - a family of hybrid models designed for on-device deployment
+- [LFM3](https://huggingface.co/collections/LiquidAI/lfm3) - a family of models from LiquidAI designed for specialized on-device intelligence 
 
 [Back to Table of Contents](#table-of-contents)
 
@@ -191,7 +191,6 @@ A curated list of awesome platforms, tools, practices and resources that helps r
 - [Vidi](https://huggingface.co/collections/bytedance-research/vidi) - a collection of models for multimodal video understanding and creation
 - [FastVLM](https://huggingface.co/collections/apple/fastvlm-68ac97b9cd5cacefdd04872e) - a collection of VLMs with efficient vision encoding from Apple
 - [MiniCPM-V 4.7](https://huggingface.co/collections/openbmb/minicpm-v-47) - a collection of models with single-image, multi-image, and video understanding capabilities
-- [LFM2.5-VL](https://huggingface.co/collections/LiquidAI/lfm25-vl) - a collection of vision-language models, designed for on-device deployment
 
 [Back to Table of Contents](#table-of-contents)
 

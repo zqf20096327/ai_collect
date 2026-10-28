@@ -395,7 +395,7 @@ Send, track, and automate email workflows with the [Telnyx Email API](https://te
 </details>
 
 <details open>
-<summary><h2>AI Assistants</h2> <em>(173 examples)</em></summary>
+<summary><h2>AI Assistants</h2> <em>(174 examples)</em></summary>
 
 Create, manage, and chat with [Telnyx AI Assistants](https://telnyx.com/ai-assistants) - LLM-powered agents for voice and messaging automation.
 

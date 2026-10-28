@@ -94,8 +94,8 @@ to phones and tablets without routing its data through a separate service.
   from GitHub Releases. It is built with Kotlin and Jetpack Compose, and its
   [source code](https://github.com/xusenlin/workavera-android) is open.
 - **[Get Workavera for iOS on the App Store](https://apps.apple.com/app/workavera/id6794339518).**
-  The native SwiftUI app supports iPhone and iPad; its source is not public yet
-  and will be open-sourced later.
+  The native SwiftUI app supports iPhone and iPad, and its
+  [source code](https://github.com/xusenlin/workavera-ios) is open.
 
 Both apps are early previews; features may be incomplete or trail the web app
 while development continues.
@@ -144,6 +144,12 @@ By default it listens on <http://127.0.0.1:8090>. Pass `--http=0.0.0.0:8090` to 
 
 The demo user is seeded only when the `users` collection is empty, so upgrades do not add or overwrite an account in an existing workspace.
 
+### Memory for file conversion
+
+Resources converts uploaded documents with an embedded WebAssembly module that is compiled to native code once and cached in `anydoc_cache/` next to `pb_data`. That compilation briefly needs about **550 MB** of memory and runs in the background right after startup: on first deployment, after an upgrade, on a new CPU, and after a container is rebuilt. Size the host for that peak, not for the near-zero usage while idle; each conversion in progress then needs up to about 100 MB. If the compilation cannot run, the rest of Workavera still works and only resource uploads are unavailable. The cache holds no user data and is safe to delete, which only costs one recompilation.
+
+Download links the assistant creates for resources are only issued when the server's Application URL (PocketBase settings) uses HTTPS.
+
 ## Product areas
 
 One line each; the [product documentation](#product-documentation) below carries the detail.
@@ -153,12 +159,13 @@ One line each; the [product documentation](#product-documentation) below carries
 - **Calendar** combines personal events and visible Board deadlines in one view, with recurrence and in-app reminders.
 - **Chat** is where you work with the model: durable streaming conversations that survive browser disconnects, with visible reasoning and tool calls, automatic compaction of long conversations, and optional long-term memory that is off by default.
 - **Reading** saves external links and notes with projects, tags, read state, and AI summaries.
+- **Resources** keeps the files you upload (PDF, Office, OpenDocument, RTF, EPUB, CSV, HTML, text, and JSON) and their extracted text, so Chat can attach them with `+` or `#` and the assistant can search and read them.
 - **Contacts** provides a searchable team contact list with personal favorites.
 - **Dashboard, Notifications, and Settings** cover the workspace overview, the in-app notification inbox, model configuration and sharing, appearance, and profile.
 
 ## Development
 
-Only needed when contributing or building from source. Requires Go 1.26.5+, Node.js with [pnpm](https://pnpm.io/), and [Task](https://taskfile.dev/) 3+.
+Only needed when contributing or building from source. Requires Go 1.27.2+, Node.js with [pnpm](https://pnpm.io/), and [Task](https://taskfile.dev/) 3+.
 
 ```bash
 cd frontend && pnpm install && cd ..   # once
@@ -182,6 +189,8 @@ All tasks are defined in [`Taskfile.yml`](./Taskfile.yml); frontend-only command
 | Chat | [Chat PRD and Fantasy architecture](./doc/chat-fantasy-plan.md) | [Chat PRD 与 Fantasy 架构](./doc/chat-fantasy-plan.zh-CN.md) |
 | Chat Memory | [Chat Memory PRD](./doc/chat-memory-prd.md) | [Chat 记忆 PRD](./doc/chat-memory-prd.zh-CN.md) |
 | Docs | [Docs PRD](./doc/docs-prd.md) | [Docs PRD](./doc/docs-prd.zh-CN.md) |
+| MCP Client | [MCP Client Integration PRD](./doc/mcp-client-prd.md) | [MCP 客户端集成 PRD](./doc/mcp-client-prd.zh-CN.md) |
+| Resources | [Resources PRD](./doc/resources-prd.md) | [Resources PRD](./doc/resources-prd.zh-CN.md) |
 
 ## Changelog
 

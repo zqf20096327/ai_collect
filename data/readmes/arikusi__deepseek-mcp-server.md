@@ -104,7 +104,7 @@ gemini mcp add deepseek npx @arikusi/deepseek-mcp-server -e DEEPSEEK_API_KEY=you
 - **Remote Endpoint**: Hosted at `deepseek-mcp.tahirl.com/mcp` — BYOK (Bring Your Own Key), no install needed
 - **HTTP Transport**: Self-hosted remote access via Streamable HTTP with `TRANSPORT=http`
 - **Docker Ready**: Multi-stage Dockerfile with health checks for containerized deployment
-- **Tested**: 366 tests, ~92% line coverage
+- **Tested**: 368 tests, ~92% line coverage
 - **Type-Safe**: Full TypeScript implementation
 - **MCP Compatible**: Works with any MCP-compatible CLI (Claude Code, Gemini CLI, etc.)
 
@@ -197,7 +197,7 @@ Chat with DeepSeek AI models with automatic cost tracking and function calling s
 - `tools` (optional): Array of tool definitions for function calling (max 128)
 - `tool_choice` (optional): "auto" | "none" | "required" | `{type: "function", function: {name: "..."}}`
 - `thinking` (optional): Toggle thinking mode, `{type: "enabled"}` to reason or `{type: "disabled"}` for a fast answer (non-thinking is the default)
-- `reasoning_effort` (optional): "high" (default) or "max", applies only while thinking mode is active
+- `reasoning_effort` (optional): "low", "high" (default) or "max", applies only while thinking mode is active
 - `json_mode` (optional): Enable JSON output mode (supported by both models)
 - `response_schema` (optional): A JSON Schema to validate the model output against. Implies JSON output. The server validates the parsed result and, on failure, issues up to `RESPONSE_SCHEMA_MAX_RETRIES` repair retries (default 2, set 0 to disable) that feed the validation error back to the model. Schema regex patterns are screened for ReDoS and an unsafe pattern is rejected up front.
 - `session_id` (optional): Session ID for multi-turn conversations. Previous context is automatically prepended.

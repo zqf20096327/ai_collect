@@ -498,6 +498,13 @@
 
 ## Data Preparation
 
+- **Trajectory2Gym: Decision-Grounded Compositional Interaction Synthesis for Tool-Use Agents** (2026.10) \
+  **Description**: Trajectory2Gym constructs executable tool-use interactions to cover underrepresented multi-step dependencies and supervises only decisions justified by the agent's visible history. Structural-support selection and parent-normalized SFT improve the mean score across Tau1, Tau2, and BFCL by 16.9–29.8 percentage points across five Qwen3 scales. \
+  <a href="https://arxiv.org/abs/2610.33568"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
+  <a href="https://yihaohu0118.github.io/Trajectory2Gym-page/"><img src="assets/icons/project.svg" alt="Project" width="20"></a>
+  <a href="https://github.com/yihaohu0118/Trajectory2Gym"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
+  <a href="https://huggingface.co/datasets/mis2/Trajectory2gym"><img src="assets/icons/huggingface.svg" alt="Hugging Face" width="20"></a>
+
 - **GraphForge: Training Working Agents with Graph-Anchored Workspace Synthesis** (2026.09) \
   **Description**: GraphForge synthesizes training tasks for working agents from real-file workspaces, using an evidence graph to ground both task requirements and verification rubrics. It checks executability and revises tasks before collecting trajectories, improving downstream agent performance through fine-tuning. \
   <a href="https://arxiv.org/abs/2609.38923"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
@@ -832,12 +839,4 @@
   <a href="https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Distill-Qwen-9B"><img src="assets/icons/huggingface.svg" alt="Hugging Face" width="20"></a>
 
 - **Agent-Reflex: Teaching Language Agents to Act Reflectively** (2026.10) \
-  **Description**: Agent-Reflex trains tool-using agents to reflect proactively and recover from noisy tool feedback and user corrections by mining reusable reflection skills and converting them into reflective supervised fine-tuning data. Its On-Policy Reflective Policy Optimization combines agentic RL under noisy interactions with reflection-guided on-policy distillation, improving long-horizon tool use and robustness to noise. \
-  <a href="https://arxiv.org/abs/2610.17953"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
-  <a href="https://github.com/RUC-NLPIR/Agent-Reflex"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
-  <a href="https://huggingface.co/collections/dongguanting/agent-reflex"><img src="assets/icons/huggingface.svg" alt="Hugging Face" width="20"></a>
-
-- **SafeEvolve: Harness-Policy Co-Evolution from Agent Experience for Safety Alignment** (2026.09) \
-  **Description**: SafeEvolve uses safety evidence from on-policy agent trajectories to co-evolve runtime safety prompts, hierarchical skills, and the policy. It combines bounded, auditable harness updates with harness-use SFT and harness-augmented RL using verifier-decomposed rewards, improving the balance between safety and task utility during multi-step interactions. \
-  <a href="https://arxiv.org/abs/2609.02786"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
-  <a h
+  **Description**: Agent-Reflex trains tool-using agents to reflect proactively and recover from noisy tool feedback and user corrections by mining reusable reflection skills and converting them into reflective supervised fine-tuning data. Its On-Policy Reflective Policy Optimization combines agentic RL under noisy interactions with reflection-guided on-policy distillation, improving long-horizon tool use and robustness to n

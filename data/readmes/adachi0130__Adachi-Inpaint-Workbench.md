@@ -39,7 +39,9 @@ English and Simplified Chinese interfaces follow the ComfyUI language setting. T
 
 ### Paint directly on the graph
 
-Upload, drop or paste a source image and paint on **Inline Mask** itself. Mask strokes stay in the browser and are saved with the workflow; painting does not require a disk save/load round-trip for every stroke.
+Upload, drop or paste a source image and paint on **Inline Mask** itself. In Mask mode, uploading an image automatically fills the connected inpaint dimensions; a replacement of the same size keeps the mask, while a different-sized image starts with a fresh mask. Mask strokes stay in the browser and are saved with the workflow; painting does not require a disk save/load round-trip for every stroke.
+
+While a source image uploads, a progress bar reports the bytes actually sent and then shows when the image is loading. On platforms requiring a special authentication fallback, the indicator stays indeterminate rather than showing an estimated percentage.
 
 - Brush, soft edges, hardness, opacity, pen pressure, temporary erasing and shape tools.
 - A compact **↑ upload / ⛶ fit / pin** toolbar, with a mode selector at the upper right. Enable the pin (**Keep**) to keep the image fitted and centered; plain wheel then navigates the workflow, while `Ctrl` + wheel still changes brush size and `Shift` + wheel changes hardness.
@@ -72,7 +74,7 @@ In Crop & Blend mode, choose one of six 64-aligned presets spanning 512–2048 p
 
 Generate, inspect the result in **Image Compare**, then click **Adopt this result** to return it. There is no feedback wire and generation does not automatically replace the editor image. Use the inpaint node's **image** output for comparison; its `crop` output is the sampling canvas and can have a different size. [Open the ready-wired example](examples/05-inline-crop-blend.json).
 
-After adoption, **◐ blend layers** shows the original under the new result. Paint to keep new pixels, hold **Alt** to restore original pixels, and use soft brush edges to blend seams. This layer mask is independent of the repaint mask and is kept for another pass at the same coordinates. Before merging, **hold the right mouse button** to preview the original; release it to restore the workspace without changing either mask or the selection. **✓** merges the visible layers. Once merged, right-click releases the selection, then the next left-click locks a new region. The **↶ Undo** button sits to the right of ✓ and undoes mask strokes in the active mask or blend layer. Hover the bottom controls for instructions; canvas tooltips follow the current editing stage. There is no crop version timeline. For a generated batch, choose the desired result in Image Compare before adopting it. A result tagged with an older crop is rejected after selecting another region.
+After adoption, the result appears in the selected area and the editor returns to the repaint mask, ready for another pass. Select **◐ blend layers** to paint the layer mask: brush keeps new pixels, **Alt** restores original pixels, and soft edges blend seams. The blend mask is independent of the repaint mask. While editing the blend mask, **hold the right mouse button** to preview the original and release it to return to the workspace. To select a new region, switch to **◌ repaint mask** and right-click (or press Escape); the visible result is merged before the selection is released. Left-click places the next region. The **↶ Undo** button undoes strokes in the active mask. Hover the bottom controls for instructions. For a generated batch, select the desired result in Image Compare before adopting it. A result tagged with an older crop is rejected after selecting another region.
 
 ### Inpaint the whole image or just the masked region
 
@@ -90,6 +92,8 @@ The panel includes mask inside/outside, original/fill/noise/zero-latent content,
 Move the pointer over **Image Compare**: **result on the left, original on the right**. Leave the picture to see the full result. The divider stays thin, the image stays fitted, and scrolling navigates the workflow background.
 
 Results accumulate within an editing round, with the newest selected automatically. Each result retains its matching original; replayed preview notifications are not counted twice.
+
+Use the **↓** button to download the latest generated result at its original resolution, even when an older result is selected in the list. For a batch, it downloads the last image in that batch.
 
 Click **Adopt this result** to replace the inline source while preserving its mask and current-session undo/redo history. The comparison list resets to **1/1**; the next generation starts a new round. Failed adoption leaves the list intact. Adoption never queues a generation automatically.
 
@@ -125,7 +129,7 @@ git clone https://github.com/adachi0130/Adachi-Inpaint-Workbench.git
 
 ### Other installation options
 
-- **ComfyUI Manager:** use its Git URL installation option, if available, with this repository's URL. Git URL installation and visibility in Manager's search index are separate; see the [publishing notes](registry/README.md).
+- **ComfyUI Manager:** search for `Adachi-Inpaint-Workbench` in the Registry-backed Manager. Version availability depends on Registry validation; check the [Registry listing](https://registry.comfy.org/nodes/adachi-inpaint-workbench). You can also use the Manager's Git URL installation option with this repository's URL.
 - **ZIP:** [download the repository](https://github.com/adachi0130/Adachi-Inpaint-Workbench/archive/refs/heads/main.zip), extract it, and place the plugin folder at `ComfyUI/custom_nodes/Adachi-Inpaint-Workbench/`. Keep `web/`, `backend.py` and `__init__.py` together.
 - **Windows installer:** from the extracted plugin folder, run the following, pointing to the ComfyUI directory containing `main.py`:
 
@@ -189,8 +193,8 @@ For modular sampling: `Prepare.pixels → VAE Encode → Set Latent Noise Mask �
 | Temporary eraser | Hold `Alt`; release to return to the previous tool |
 | Brush size | `Ctrl` + wheel, or `[` / `]` |
 | Brush hardness | `Shift` + wheel |
-| Preview original before merging | Hold right mouse button; release to restore the workspace |
-| Release crop selection | After merging with ✓ (or with no adopted layer), right-click, then left-click to select a new region |
+| Preview original while blending | In **◐ blend layers**, hold right mouse button; release to restore the workspace |
+| Release crop selection | In **◌ repaint mask**, right-click or press Escape; left-click to select a new region |
 | Undo / redo | `Ctrl+Z` / `Ctrl+Shift+Z`, or `Ctrl+Y` |
 | Image zoom / pan, when unpinned | Wheel / Space + drag, middle-button drag, or the pan tool (`H`) |
 | Keep the image fitted | Pin beside **Fit**; click again to unlock |
@@ -218,7 +222,7 @@ Drag a JSON file into ComfyUI:
 - **Crop layers:** the fusion mask and crop coordinates are saved in the workflow; the latest layer is a relative image reference under `input/adachi-inpaint-layers/`. Include that file when moving an unmerged edit between machines, or merge layers and embed the source first.
 - **Sharing:** masks are embedded in saved workflows. Source images use a relative `input/` path by default; enable **Embed source in workflow** to include the picture too. Embedded images increase JSON size. If an embedded source would exceed browser draft storage when loading a workflow, uploading an image, changing modes or enabling embedding, the plugin first uploads an exact source copy and switches to an input-file reference, preserving masks and layers. To intentionally keep a very large source embedded, disable ComfyUI browser workflow persistence before embedding; exported files are not subject to the browser draft quota. If the page already reports draft failures on every edit, save with **Ctrl+S**, then reload with **Ctrl+F5** to reset ComfyUI's disabled draft-storage state.
 - **Adoption:** source and result dimensions must match to preserve mask coordinates. Undo/redo commands survive adoption in the current session; saving/reloading retains the mask, not the command history.
-- **Temporary previews:** comparison history stores preview references. ComfyUI temp cleanup may expire them; adopted images are stored under `input/adachi-inpaint/`.
+- **Comparison previews:** new originals and results are held in server memory instead of temporary image files. The default cache is 512 MiB; set `ADACHI_COMPARE_MEMORY_MIB` to 64–4096 before starting ComfyUI to change it. Cache eviction or server restart expires old comparisons and their download references; rerun the workflow to refresh them. A single batch larger than the limit reports an error. Previous disk-based preview references remain supported while available, and expired old plugin preview files are still cleaned up. Images adopted into the editor are saved separately under `input/adachi-inpaint/` or `input/adachi-inpaint-layers/`.
 - **Scope:** this is an original WebUI-style implementation. It does not promise identical WebUI pixels, scripts or extension behaviour. Extra soft-edge feathering is not WebUI's full Soft Inpainting algorithm.
 
 <details>

@@ -5,7 +5,7 @@
   </picture>
 </p>
 
-<p align="center"><b>Run several Claude Code and Codex sessions on one repo.<br>They don't do the same work twice, and each one hears when another's commit changes its code.</b></p>
+<p align="center"><b>Parallel coding agents, merged without breaking main.<br>Each branch passes on its own, then the merge fails. fanout catches that before you merge.</b></p>
 
 <p align="center">
   <a href="https://github.com/Breadstick-Crumbs/fanout/actions/workflows/test.yml"><img src="https://github.com/Breadstick-Crumbs/fanout/actions/workflows/test.yml/badge.svg" alt="tests"></a>
@@ -18,13 +18,14 @@
 <p align="center"><img src="assets/demo.svg" alt="fanout demo: night-theme is told dark-mode already has the same work and builds nothing; receipt is told another session changed formatPrice and builds on the new version" width="100%"></p>
 <p align="center"><sub>Recorded with <code>fanout demo</code>: real Claude Code sessions, with nothing about fanout in their tasks.</sub></p>
 
-You open a second session to get more done. An hour later, both have built a dark mode, or one renamed a function the other was calling and the merge breaks. fanout sits underneath your sessions and stops that as it happens.
+You run several agents, each in its own worktree and branch. Every branch passes its tests. Then you merge, and the build goes red: one agent renamed a function another was calling, or two built the same feature. fanout runs underneath your sessions and catches that before main, while the agents are still working, so you don't pay for the work twice.
 
 ## Highlights
 
-- **The same task, in other words, is done once.** A session about to build what another already has is stopped before its first change, and says which session has it. A model compares the tasks, so "add a dark mode toggle" and "users want a night theme" count as the same work. It got 40 of 40 held-out pairs right.
-- **Each session hears about changes it needs.** When another session commits a change to code yours has read or edited, it gets the diff and builds on the new version.
-- **Nothing to set up.** Install the plugin and keep working. It switches on when two sessions share a repo.
+- **Branches that pass alone but break together are caught before main.** fanout merges every session's branch, runs your tests, and sends any failure back to the agent that caused it. On our benchmark: 0 merge conflicts and 0 repair commits on `main`, against 2 conflicts and 4 repair commits in every run without it.
+- **Each session hears about changes it needs, while it works.** When another session commits a change to code yours has read or edited, it gets the diff and builds on the new version, instead of finding out when the build fails.
+- **The same task, in other words, is done once.** A session about to build what another already has is stopped before its first change, and says which session has it. "Add a dark mode toggle" and "users want a night theme" count as the same work: 40 of 40 held-out pairs right.
+- **Works with what you already use.** Worktrees, orchestrators and Claude's session messaging keep working; fanout adds the checks they don't do. Nothing to set up: install the plugin and it switches on when two sessions share a repo.
 - **Claude Code, Codex, or both,** plus any agent that reads `AGENTS.md`.
 - **One big job split across agents,** when you want it: `fanout run` gives each agent its own files, freezes shared interfaces, and tests every branch merged together before anything reaches `main`.
 - **No dependencies.** Node 18+ and git.
@@ -191,7 +192,7 @@ How sessions you open yourself (any agent, any worktree) keep out of each other'
 **In Claude Code, nothing to run:**
 - **At start,** a session is told what the other sessions are doing.
 - **On its first edit,** its task is claimed for it: what you asked it to do, taken from the conversation.
-- **The same work is refused.** A new claim is compared with every live one by a Sonnet call (about $0.012, once per session; the first edit waits for it, about 15 seconds, longer when many sessions are busy). The claim is visible to other sessions while it's being checked, and of two claims for the same work the newer one yields, so two sessions that start together don't both go ahead. If it's the same work, whatever the wording ("add a dark mode toggle" and "users want a night theme they can turn on"), the session is stopped and says which session already has it. Work in the same area isn't the same work ("add tax to checkout" and "add discount codes to checkout"). On 40 labelled pairs written by a separate agent and never used to tune it, the check got all 40 right; matching words got 20 ([results](bench/RESULTS.md#claims-telling-the-same-task-from-different-work-v023)).
+- **The same work is refused.** A new claim is compared with every live one by a Sonnet call (about $0.012, once per session; it starts in the background when you send the request, so the first edit usually finds the answer ready; a session that edits straight away waits for the rest, about 15 seconds at most). The claim is visible to other sessions while it's being checked, and of two claims for the same work the newer one yields, so two sessions that start together don't both go ahead. If it's the same work, whatever the wording ("add a dark mode toggle" and "users want a night theme they can turn on"), the session is stopped and says which session already has it. Work in the same area isn't the same work ("add tax to checkout" and "add discount codes to checkout"). On 40 labelled pairs written by a separate agent and never used to tune it, the check got all 40 right; matching words got 20 ([results](bench/RESULTS.md#claims-telling-the-same-task-from-different-work-v023)).
 - **Shared files aren't blocked.** When another session is also changing a file (`package.json`, a shared stylesheet), the agent is told who, the first time, and carries on. A file someone claimed by name (`fanout claim <name> "<task>" <files>`) is locked for everyone else.
 - **Told when another session's commit changes your code.** When another session (or `main`) commits a change to a file this session has read or edited, the session gets the diff and is asked to build against the new version. In a test where ignoring the change meant a certain break, sessions told this way adapted 3 times out of 3; with no notice the merged code failed every time ([results](bench/RESULTS.md#notices-between-sessions-v026)). `FANOUT_NOTICES=off` or `git config fanout.notices false` turns notices off.
 - **Edits through the shell count too.** Sessions that edit with shell commands (the desktop app's auto mode does) are claimed and checked after each command, not only through Edit and Write.
@@ -296,7 +297,7 @@ Even when you don't split the work, `rehearse` and the edit guard cost nothing t
 - Evidence so far comes from the project's own fixtures, a few runs each, and one real project. `fanout log` keeps the record from real use so it can be checked.
 - Tested on Linux, macOS and Windows in CI.
 - It keeps sessions' work apart, not their environments: ports and database servers are shared. Gitignored files like `.env` reach fanout's own checkouts only when listed in `.worktreeinclude`.
-- A session's first edit waits about 15 seconds for the same-work check.
+- The same-work check takes about 15 seconds. It runs while a session reads the code, so a session that edits straight away waits for what's left.
 - Two sessions on the same branch count as one session.
 - Codex can't commit from a worktree inside its own sandbox, so the commit-time checks only apply where it can commit.
 
@@ -326,7 +327,7 @@ No. The plan is the only file, and your agent writes it. The defaults are the on
 Agent teams start teammates from one lead session and coordinate them from there; `claude -w` gives a session its own worktree. fanout is for the sessions you open yourself, whenever you open them, in Claude Code, Codex or anything that reads `AGENTS.md`. It refuses the same work described in other words, tells a session when another one's commit changes code it uses, and tests the branches merged together before `main`. They combine: a `claude -w` session is one more worktree to fanout.
 
 **Does it get in the way of normal work?**
-With one session, no: claims stay off and `fanout run` only acts on branches named `fanout/*`. With two or more sessions active in a repo, claims switch on. Each session's first edit waits about 15 seconds for the same-work check, and a hook runs after each tool call: about 0.2s when nothing has changed, on Windows. `git config fanout.claims false` turns claims off for a repo. In your main checkout `fanout run` commits only its own files (the contracts and regenerated files), so another session's uncommitted work stays out; the checkout has to be clean when a run starts.
+With one session, no: claims stay off and `fanout run` only acts on branches named `fanout/*`. With two or more sessions active in a repo, claims switch on. The same-work check runs in the background from the moment you send a request, and a hook runs after each tool call: about 0.2s when nothing has changed, on Windows. `git config fanout.claims false` turns claims off for a repo. In your main checkout `fanout run` commits only its own files (the contracts and regenerated files), so another session's uncommitted work stays out; the checkout has to be clean when a run starts.
 
 **What does it run, and what leaves my machine?**
 - **Hooks (Claude Code):** before an edit (the guard), after a tool call (claims for shell edits, and notices), and at session start. Each is `node fanout.mjs <hook>` on your machine, reading git.

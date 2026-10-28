@@ -10,7 +10,7 @@ to 1M tokens.
 
 This repository is everything needed: patches against two public upstream commits, a
 setup script that builds them, a launcher that reads the machine it runs on, and tests.
-It is a snapshot against those commits as of October 2026 (SGLang main at `66f79f1a`,
+It is a snapshot against those commits as of October 2026 (SGLang main at `5d8e90a0`,
 KTransformers `95009ea`, torch 2.14.1 with CUDA 13 wheels, FlashInfer 0.7.2, CUDA toolkit
 13.1); later upstream versions are not tracked.
 
@@ -20,11 +20,30 @@ MODEL=/models/dsv41-1017 ./setup.sh
 MODEL=/models/dsv41-1017 ./serve.sh
 ```
 
+Or all of it in one command:
+
+```
+./run.sh
+```
+
+`run.sh` runs `setup.sh`, downloads the checkpoint into `./models/` when it is not there, and starts `serve.sh`.
+`MODEL=<dir>` uses a checkpoint already downloaded.
+It remembers the directory in `state/run.env`, so the next `./run.sh` only starts the server.
+
 `MODEL=/models/dsv41-1017 tools/check.sh` starts the server once, sends one short request,
 checks that an answer comes back, and stops the server: the one command that says a setup works.
 
 The server speaks SGLang's OpenAI-compatible API on `127.0.0.1:8080`, one request at a
-time. To serve other machines, set `SGLANG_HOST=0.0.0.0` and `SGLANG_API_KEY=<key>`
+time by default. `SGLANG_MAX_RUNNING_REQUESTS=4` runs up to four at once.
+
+- Four streams of Japanese prose decode at 74 tok/s together (18.5 each), against 42.7 for one.
+  Their routes gather on the same experts.
+- Four streams of different kinds of text (Japanese, Chinese, JSON, Python) stay at 47 tok/s together.
+  The CPU reads every expert any of them routes to.
+- A long prompt holds the others while it prefills: the prefill lends the GPU's weights and free KV
+  pages to itself. Three running answers waited 62 s for a 131K-token prompt.
+
+To serve other machines, set `SGLANG_HOST=0.0.0.0` and `SGLANG_API_KEY=<key>`
 (clients then send `Authorization: Bearer <key>`). The same setup also serves the earlier
 DeepSeek-V4.1-Flash release: point `MODEL` at it.
 
@@ -86,13 +105,13 @@ pages on the GPU. If the server runs out of memory at launch, a shorter context
 
 ## What setup.sh does
 
-1. Clones sgl-project/sglang at `66f79f1a` on its main branch and applies the SGLang patches
+1. Clones sgl-project/sglang at `5d8e90a0` on its main branch and applies the SGLang patches
    up to `TIER` (default 2), each tier on top of the ones below it:
 
    | `TIER` | patch | what it adds |
    |---|---|---|
-   | 0 | `sglang-tier0/` (twelve patches, one concern each) | what 1017 needs to run correctly on the KTransformers hybrid MoE: the FP8 step below, the SwiGLU clamp passed to the CPU experts, the expert mask kt-kernel takes, `-1` ids kept out of the Marlin MoE, zero GPU experts, a configurable load barrier, the V4.1 indexer on its torch path on SM12x (RTX 50, RTX PRO Blackwell, DGX Spark), which has no DeepGEMM build, its torch scoring done in place, the routed experts scaled by `routed_scaling_factor` once, V4.1's own KV cache formats on SM120 (below), the KV pool sized by those formats' own entry bytes, and an automatic [SM89 attention fallback](docs/sm89.md) |
-   | 1 | `sglang-tier1/` (one patch per feature, [docs/tier1.md](docs/tier1.md); `SGLANG_FEATURES` picks some) | streamed prefill, the lends, hot experts and placement, the KV pool on remappable memory, the GPU MoE and FP8 kernels (the streamed prefill needs SM89 or newer) |
+   | 0 | `sglang-tier0/` (eleven patches, one concern each) | what 1017 needs to run correctly on the KTransformers hybrid MoE: the FP8 step below, the SwiGLU clamp passed to the CPU experts, the expert mask kt-kernel takes, `-1` ids kept out of the Marlin MoE, zero GPU experts, a configurable load barrier, the V4.1 indexer on its torch path on SM12x (RTX 50, RTX PRO Blackwell, DGX Spark), which has no DeepGEMM build, its torch scoring done in place, the routed experts scaled by `routed_scaling_factor` once, V4.1's own KV cache formats on SM120 (below), and an automatic [SM89 attention fallback](docs/sm89.md) |
+   | 1 | `sglang-tier1/` (one patch per feature, [docs/tier1.md](docs/tier1.md); `SGLANG_FEATURES` picks some) | streamed prefill (its experts through llama.cpp's MMQ), the lends, hot experts and placement, the KV pool on remappable memory, the GPU MoE and FP8 kernels (the streamed prefill needs SM89 or newer) |
    | 2 | `sglang-tier2-no-p2p.patch` | all-reduce through pinned host memory, for two GPUs without peer access |
 
    Below tier 1 a long prompt's experts run on the CPU (about 40 tok/s of prefill here, decode
@@ -180,7 +199,7 @@ The earlier release did not have this step; 1017's weights were made with it.
   checkpoint's own `inference/model.py`. The step therefore turns on for 1017 (block
   32) and stays off for the earlier release.
 - `patches/sglang-dsv4-o-fp8-qdq.py` installs the same step in another SGLang tree on
-  its own. It applies to SGLang main at `66f79f1a` unmodified.
+  its own. It applies to SGLang main at `5d8e90a0` unmodified.
 
 It works the same at any tensor-parallel size. Its 32-value blocks lie inside a head
 (512 values), so splitting heads across GPUs never cuts a block.
@@ -244,19 +263,19 @@ The compressed KV is 720 bytes a token; at 1M tokens, 0.70 GiB of RAM.
 
 2 × AMD EPYC 7452 (Zen 2, AVX2), 512 GB DDR4, 2 × RTX 5070 Ti 16 GB, the checkpoint on
 NVMe; built from this repository and run with the `serve.sh` defaults (1M-token context,
-one request at a time), measured with `tools/bench.py` at tag `2026-10-25-1121` (SGLang main 65633129), every table from one launch.
+one request at a time), measured with `tools/bench.py` at tag `2026-10-28-1714` (SGLang main 65505981), every table from one launch.
 
 Decode, 1,024 tokens a reply (`--other-text` for the rows below the first):
 
 | text | tok/s |
 |---|---|
-| Japanese prose (median of four prompts) | 46.5 |
-| Chinese prose | 41.1 |
-| math | 39.3 |
-| English prose | 38.0 |
-| JSON | 36.9 |
-| English technical prose | 34.8 |
-| Python code | 34.4 |
+| Japanese prose (median of four prompts) | 46.4 |
+| Chinese prose | 41.3 |
+| math | 39.2 |
+| English prose | 38.2 |
+| JSON | 36.6 |
+| Python code | 35.3 |
+| English technical prose | 35.1 |
 
 One expert a layer always stays on the GPU, and as many more as the free GPU memory holds
 sit in the KV pool's free pages and the driver's idle memory (15-16 a layer here). All of
@@ -271,10 +290,10 @@ Prefill, one prompt of random token ids:
 
 | prompt (tokens) | tok/s | time |
 |---|---|---|
-| 35,000 | 1,254 | 28 s |
-| 131,072 | 1,447 | 1.5 min |
-| 524,288 | 1,137 | 7.7 min |
-| 1,000,000 | 871 | 19 min |
+| 35,000 | 1,758 | 20 s |
+| 131,072 | 1,873 | 1.2 min |
+| 524,288 | 1,421 | 6.1 min |
+| 1,000,000 | 1,067 | 16 min |
 
 Longer prompts run in smaller chunks: the prompt's own KV and the attention's working
 memory grow with its length, leaving less GPU memory for a chunk, and every chunk streams
@@ -284,7 +303,7 @@ experts than real text, so these figures are lower than with text.
 ### One GPU
 
 The same machine with `CUDA_VISIBLE_DEVICES=0`: one RTX 5070 Ti 16 GB (tensor parallel 1),
-the CPU experts on both sockets, `serve.sh` defaults, measured at tag `2026-10-23-1513`,
+the CPU experts on both sockets, `serve.sh` defaults, measured at tag `2026-10-28-1714`,
 every row from one launch.
 
 The KV pool covers the whole 1M-token context. Its compressed KV, 0.70 GiB, sits in host
@@ -295,18 +314,18 @@ most of its routes on the CPU.
 | text | tok/s |
 |---|---|
 | Japanese prose (median of four prompts) | 31.6 |
-| English prose | 29.0 |
-| math | 28.8 |
-| Chinese prose | 28.4 |
+| math | 28.7 |
+| English prose | 28.6 |
+| Chinese prose | 28.3 |
 | English technical prose | 28.2 |
-| JSON | 28.0 |
+| JSON | 28.1 |
 | Python code | 27.7 |
 
 | prompt (tokens) | tok/s | time |
 |---|---|---|
-| 35,000 | 776 | 45 s |
-| 65,536 | 863 | 76 s |
-| 1,000,000 | 670 | 25 min |
+| 35,000 | 1,050 | 33 s |
+| 65,536 | 1,282 | 51 s |
+| 1,000,000 | 806 | 21 min |
 
 ## Accuracy
 
@@ -314,13 +333,13 @@ The served model is scored against the checkpoint's own reference implementation
 DeepSeek's `inference/model.py`, run one layer at a time on one 16 GB GPU
 ([tools/ref-nll.py](tools/ref-nll.py)). Both score the same 24 pieces of 480 tokens, taken
 from two public-domain texts in [tools/nll-text/](tools/nll-text/), one Japanese and one
-English, teacher-forced. `serve.sh` defaults; two GPUs at tag `2026-10-25-1121`, one GPU at `2026-10-23-1702`:
+English, teacher-forced. `serve.sh` defaults, both at tag `2026-10-28-1714`:
 
 | run | mean NLL | minus the reference (SE over the 24 pieces) |
 |---|---|---|
 | reference (`inference/model.py`) | 0.7185 | |
 | served, two GPUs | 0.7192 | +0.0007 (0.0041) |
-| served, one GPU (KV past the GPU in host memory) | 0.7194 | +0.0008 (0.0050) |
+| served, one GPU (KV past the GPU in host memory) | 0.7224 | +0.0039 (0.0040) |
 | served, one RTX 4080 SUPER 32 GB (SM89), against its own reference run (0.7141) | 0.7151 | +0.0010 (0.0041) |
 
 The texts are well known, so the model predicts them closely and the NLL is low. They

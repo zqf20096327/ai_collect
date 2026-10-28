@@ -28,7 +28,7 @@
 
 **核心功能：**
 
-- 完整正文的后端关键词搜索，返回相关度排序与命中摘要（仅 Agent API，不向前端暴露）
+- 关键词搜索：完整正文分词检索，返回相关度排序与命中摘要（web 的「搜索」界面调用）
 - 自动查询路由（档案检索 vs 受限的直接处理）
 - 查询优化与语义搜索
 - 基于LLM的文档相关性评分
@@ -69,9 +69,10 @@ sample overlay 额外绑定 `127.0.0.1:18001`，可用 `SAMPLE_AGENT_PORT` 修�
 | `GET`  | `/transcripts/{doc_id}` | 按 URI 返回单篇阅读器投影                        |
 | `GET`  | `/health`               | Agent 就绪状态及选中的快照                       |
 
-**关键词搜索仅在后端提供。** web 不代理 `/search` 或 `/api/search`，也没有搜索界面。
-现有聊天与文稿路由见[前端端点文档](frontend/README.md#端点)。参数、响应和错误码见
-[Agent API 参考](agent/README.md#api-参考)，实现依据见[已完成的搜索后端设计](docs/designs/20261018_keyword-search-backend.md)。
+**关键词搜索：** web 的「搜索」界面把查询交给 `/api/search`，由 web 代理到
+agent 的 `/search`（该端点本身仅内部网络可达）。界面路由见[前端端点文档](frontend/README.md#端点)。
+参数、响应和错误码见 [Agent API 参考](agent/README.md#api-参考)，实现依据见
+[已完成的搜索后端设计](docs/designs/20261018_keyword-search-backend.md)。
 
 ## 快速开始
 
@@ -277,65 +278,6 @@ git tag v0.1.0 && git push origin v0.1.0
 
 - **PostgreSQL 数据**（RAG 快照、注册表、审计日志）：绑定挂载到 `./storage/postgres/volume`
 - **服务日志**：Indexer 的运行日志在 Docker 命名卷 `bedtimenews_indexer_logs`（数据层）中；Agent 与 Web 只输出到 stdout（`docker compose logs`）。`bedtimenews_agent_logs`（每个应用项目各一个）只在仓库路径不可写时保存 `eval_retriever` 的评估结果
-
-## 项目结构
-
-```plaintext
-BedtimeNews-Agent/
-├── .github/workflows/  # CI（ruff、compose 配置、pytest）、发布、Dependabot 自动合并
-├── agent/              # LangGraph 智能RAG服务
-│   ├── src/
-│   ├── tests/
-│   ├── eval_results/   # 检索评估历史（eval_retriever）
-│   ├── pyproject.toml
-│   ├── Dockerfile
-│   ├── README.md
-│   ├── README.en.md
-│   └── README.es-ES.md
-├── frontend/           # 自定义 Web UI（静态 + FastAPI）
-│   ├── server.py       # FastAPI：静态界面、服务端渲染页面、/chat SSE 与文稿 API 代理、robots/sitemap/短链接、/healthz 与 /readyz
-│   ├── starters.py     # 示例提问数据
-│   ├── static/         # index.html、styles.css、app.js、markdown-it、logo、Bing 站点验证
-│   ├── tests/
-│   ├── pyproject.toml
-│   ├── Dockerfile
-│   ├── README.md
-│   ├── README.en.md
-│   └── README.es-ES.md
-├── indexer/            # 文稿 embedding 流水线
-│   ├── src/
-│   ├── tests/
-│   ├── data/           # 默认的 INDEXER_DATA_DIR：文稿仓库克隆与运行锁
-│   ├── index_config.yml         # 选择要索引的文稿文件
-│   ├── index_config.sample.yml  # 固定的本地小样本
-│   ├── pyproject.toml
-│   ├── Dockerfile
-│   ├── README.md
-│   ├── README.en.md
-│   └── README.es-ES.md
-├── scripts/            # localhost 样本关键词搜索 API 验证
-├── docs/
-│   ├── designs/        # 设计文档
-│   └── diagrams/       # SVG 架构图与工作流图
-├── storage/
-│   └── postgres/       # init.sh（启用 pgvector）；migrations/ 仅作历史参考
-├── docker-compose.yml  # 总入口：包含两层（自托管、开发）
-├── compose.data.yml    # 数据层：postgres + indexer（原地升级）
-├── compose.app.yml     # 应用层：agent + web（每个实例一个项目）
-├── docker-compose.sample.yml  # 仅限本地的小样本覆盖文件
-├── config.yml          # 应用与密钥配置（不在 git 中，由 example 复制）
-├── config.example.yml  # 应用配置模板
-├── .env                # 部署布线配置（不在 git 中，由 .env.example 复制）
-├── .env.example        # 部署布线模板
-├── pyproject.toml      # uv workspace 根（开发工具、ruff 配置）
-├── uv.lock
-├── conftest.py         # 在仓库根目录按组件分别运行 pytest
-├── LICENSE
-├── THIRD_PARTY_NOTICES.md  # 第三方组件许可证
-├── README.md           # 默认自述文件（中文，本文件）
-├── README.en.md        # 英文版自述文件
-└── README.es-ES.md     # 西班牙语版自述文件
-```
 
 ## 许可证
 

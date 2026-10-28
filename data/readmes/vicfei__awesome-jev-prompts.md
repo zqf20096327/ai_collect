@@ -108,7 +108,7 @@ const result = await client.systemOne({
 
 *(Quick-start example adapted from [Anil-matcha/awesome-jev-by-typesafe](https://github.com/Anil-matcha/awesome-jev-by-typesafe), MIT.)*
 
-## The library — 51 entries in 9 categories
+## The library — 60 entries in 10 categories
 
 Every entry gives the question template, threshold/wiring guidance, known failure modes, and sources.
 
@@ -122,7 +122,8 @@ Every entry gives the question template, threshold/wiring guidance, known failur
 | [Context compaction](categories/context-compaction.md) | 3 | Keep-or-drop, summarize-or-quote, tool-result pruning |
 | [Anti-patterns](categories/anti-patterns.md) | 10 | The ten ways Jev questions go wrong, with fixes |
 | [Calibration & eval](categories/calibration-and-eval.md) | 5 | Thresholds from logs, versioned questions, shadow mode, System Two handoff |
-| [Embodied & multimodal](categories/embodied-multimodal-patterns.md) | 8 | Consult gating, capability sheets, mission contracts, multimodal state binding, per-axis control |
+| [Embodied & multimodal](categories/embodied-multimodal-patterns.md) |
+| [Structured-state patterns](categories/structured-state-patterns.md) | When your state is a table: tabular FM routing, column semantics, cross-paradigm calibration | 3 | 8 | Consult gating, capability sheets, mission contracts, multimodal state binding, per-axis control |
 
 **The one rule that generates most of the others:** *questions describe judgments; code owns composition, thresholds, and side effects.*
 
@@ -150,6 +151,8 @@ Every entry cites its sources, and sources come in three kinds — read them bef
 ## Ecosystem notes
 
 The question-design approach in this list transfers across System One models. Notable developments:
+
+- **2026-10-28 — decision models enter the trading-agent mainstream.** [TradingAgents](https://github.com/TauricResearch/TradingAgents) (117k★, multi-agent LLM financial trading, arXiv:2412.20138) ships optional Jev screening of social posts (v0.5.1): a Noul gate deciding whether a post is signal or noise before analysts read it. [ai-hedge-fund](https://github.com/virattt/ai-hedge-fund) (64k★, AI hedge fund team) lists TypeSafe (Jev) as a first-class model provider for its investor agents — the same tier as Anthropic, OpenAI, and DeepSeek. Combined 181k★ of trading infrastructure now treats decision models as a native component: LLM agents propose, Jev judges, code composes the trade. Design impact: the [signal-vs-noise screening](categories/guardrails-and-verification.md#signal-vs-noise-screening) and [research conviction scoring](categories/score-patterns.md#research-conviction-scoring) patterns below are the question-design layer those integrations need.
 
 - **2026-10-27 — hyperscalers arrive; decision models become a category.** Five weeks after Jev's launch, the category has a market name and entrants at every tier. First-party verified: AWS open-sourced [Strands Decider 2B](https://huggingface.co/StrandsAgents) (weights, training data and scripts), and [Perplexity shipped pplx-decider](https://huggingface.co/perplexity-ai) (27B + flash, open weights). Per [Kai Waehner's category timeline](https://www.kai-waehner.de/blog/2026/10/20/how-decision-models-became-a-new-ai-category-after-jev), the wave also includes OpenAI's Decisions API (GPT-6 Luna behind a decision interface), Microsoft Decision-1 (Qwen3.5-9B post-trained), Liquid d1, and Snowflake Decision — while TypeSafe raised $870M at a $7.5B valuation. The telling detail for this list: **the request schema the fast followers copied is TypeSafe's** — question design is now a cross-vendor skill, and with every vendor winning on its own benchmark, independent protocols are where comparisons survive. Design impact: the patterns here apply to Decision-1, pplx-decider, and whatever ships next; thresholds stay per-engine.
 
@@ -188,6 +191,35 @@ python scripts/lint_questions.py questions.json --json
 
 Errors (E\*) are violations; warnings (W\*) are judgment calls for the reviewer. Tests run in CI.
 
+## Ask the same question on every engine
+
+The wire format is converging (see the ecosystem notes below): one question set, many engines. The same ticket-triage trio — `team` (Choice), `urgent` (Noul), `severity` (Score) — against the state `"I was charged twice for order #4411 and the app still shows it as unpaid."`:
+
+| Engine | Endpoint / transport | Notes |
+|---|---|---|
+| **Jev** (TypeSafe, hosted) | `POST /v1/systemone` — [Python SDK](https://github.com/typesafe-ai/typesafe-sdk-python) or plain HTTP | The reference format; also via OpenRouter (`typesafe/jev-1.13`, per-Mtok pricing, output free) |
+| **StartLux** (hosted free / self-host) | `POST /v1/systemone` — [bamboonode](https://bamboonode.dev/) hosts 27B AutoThink free; own vLLM/llama.cpp/MLX engine | Jev-compatible wire format; AutoThink reasons only on uncertain questions (`think_mode`/`gate`) |
+| **SGLang** (any chat model) | `POST /v1/decisions` — [decision models docs](https://docs.sglang.io/docs/supported-models/decision_models) | No special checkpoint: any Jinja-template chat model; per-request checks (single-token labels); validated on Qwen3.8-27B / Qwen3.5-35B-A3B |
+| **Clef** (Cloudflare) | Jev-compatible on Workers AI; Apache-2.0 weights ([clef](https://huggingface.co/Cloudflare/clef), [clef-flash](https://huggingface.co/Cloudflare/clef-flash)) | Vision + 64k context; flash median ~39ms |
+| **vllm-jev** (local, open checkpoints) | `vllm-jev serve <model>` → `POST /v1/systemone` — [repo](https://github.com/mode-io/vllm-jev) | 24+ open checkpoints (Laya, Kev, Decider…); Linux/Mac; CPU paths on Windows |
+
+```json
+{
+  "state": {"ticket": "I was charged twice for order #4411 and the app still shows it as unpaid."},
+  "questions": {
+    "team":     {"type": "choice", "instructions": "Which team should handle this ticket?",
+                 "criteria": {"billing": "Payments and refunds", "technical": "Software bugs",
+                              "unknown": "Not decidable from the ticket; escalate"}},
+    "urgent":   {"type": "noul", "instructions": "Does this need an answer today?",
+                 "criteria": {"true": "Page the on-call.", "false": "Queue for business hours."}},
+    "severity": {"type": "score", "instructions": "How bad is it for the customer?",
+                 "criteria": ["minor", "major", "critical"]}
+  }
+}
+```
+
+Portability notes: engines differ in **option caps** (26 letters per single pass is the common A–Z bound; beyond it engines knock out in groups or reject), **none-of-the-above handling** (opt-in extra option vs hidden check), **thinking modes** (Jev none; StartLux AutoThink optional; SGLang refuses inside reasoning blocks), and **calibration drift** — thresholds fitted on one engine do not transfer; re-fit per engine (the [Calibration & eval](categories/calibration-and-eval.md) category). Coming as their request formats land in docs: [d3](https://huggingface.co/vllm-sr) (vLLM Semantic Router), [pplx-decider](https://huggingface.co/perplexity-ai) (Perplexity).
+
 ## Using this with the skills
 
 The pattern library is the drafting layer of a small toolbox — the community skills cover the neighboring steps:
@@ -196,6 +228,10 @@ The pattern library is the drafting layer of a small toolbox — the community s
 2. **Check** — lint the draft and test whether it discriminates: [VBS2004/jev-questions-skill](https://github.com/VBS2004/jev-questions-skill)'s `lint_questions.py` + `spread.py` (stdlib, no API calls).
 3. **Fit** — unsure Jev belongs in this code path at all? [abhisheksharma001/jev-skill](https://github.com/abhisheksharma001/jev-skill)'s `fit_check.py` gives a deterministic go / no-go.
 4. **Chained** — [jev-pipeline-skill](https://github.com/vicfei/jev-pipeline-skill) runs find → fit → draft → lint as one CLI (and installs as an agent skill on Claude Code, Codex, OpenCode, and ClawHub).
+
+## Related
+
+- [awesome-ai-quant](https://github.com/vicfei/awesome-ai-quant) — the bridge from AI engineering to quantitative finance; covers trading agents, factor mining, and the decision-model × finance intersection documented in this list's financial patterns.
 
 ## Official resources
 
@@ -210,15 +246,15 @@ The pattern library is the drafting layer of a small toolbox — the community s
 <!-- related-lists:start -->
 | List | Focus | Stars |
 |---|---|---:|
-| [yibie/awesome-jev](https://github.com/yibie/awesome-jev) | General list, highest-frequency updates | 2,480 |
-| [heyjunpenn/awesome-jev](https://github.com/heyjunpenn/awesome-jev) | 900+ project catalog with companion site | 982 |
-| [v-modal/awesome-jev-tools](https://github.com/v-modal/awesome-jev-tools) | Tools list with inclusion criteria | 750 |
-| [logicrw/awesome-jev-projects](https://github.com/logicrw/awesome-jev-projects) | Ecosystem radar web app, auto GitHub sync | 700 |
-| [AnotiaWang/awesome-decision-models](https://github.com/AnotiaWang/awesome-decision-models) | Classic minimal list (renamed from awesome-jev), open replicas & benchmarks | 667 |
+| [yibie/awesome-jev](https://github.com/yibie/awesome-jev) | General list, highest-frequency updates | 2,492 |
+| [heyjunpenn/awesome-jev](https://github.com/heyjunpenn/awesome-jev) | 900+ project catalog with companion site | 983 |
+| [v-modal/awesome-jev-tools](https://github.com/v-modal/awesome-jev-tools) | Tools list with inclusion criteria | 749 |
+| [logicrw/awesome-jev-projects](https://github.com/logicrw/awesome-jev-projects) | Ecosystem radar web app, auto GitHub sync | 701 |
+| [AnotiaWang/awesome-decision-models](https://github.com/AnotiaWang/awesome-decision-models) | Classic minimal list (renamed from awesome-jev), open replicas & benchmarks | 672 |
 | [AbdelStark/awesome-typesafe-jev](https://github.com/AbdelStark/awesome-typesafe-jev) | Field guide with platform routing & evals | 607 |
 | [kydlikebtc/awesome-jev](https://github.com/kydlikebtc/awesome-jev) | Machine-readable catalog by decision pattern | 593 |
-| [cobanov/awesome-jev](https://github.com/cobanov/awesome-jev) | Curated list with dated review notes | 586 |
-| [walidboulanouar/awesome-jev-use-cases](https://github.com/walidboulanouar/awesome-jev-use-cases) | Demos ranked by social metrics, limits & cost | 460 |
+| [cobanov/awesome-jev](https://github.com/cobanov/awesome-jev) | Curated list with dated review notes | 587 |
+| [walidboulanouar/awesome-jev-use-cases](https://github.com/walidboulanouar/awesome-jev-use-cases) | Demos ranked by social metrics, limits & cost | 462 |
 | [yzfly/awesome-jev-zh](https://github.com/yzfly/awesome-jev-zh) | Chinese-language curated list with an independent, skeptical voice | 87 |
 | [Anil-matcha/awesome-jev-by-typesafe](https://github.com/Anil-matcha/awesome-jev-by-typesafe) | Use cases, starter code, design rules | 2 |
 <!-- related-lists:end -->
@@ -236,5 +272,5 @@ Found a pattern that works, or an anti-pattern that bit you? PRs and issues welc
 **Disclaimer:** this is an independent community resource. It is not affiliated with or endorsed by TypeSafe AI. Facts (pricing, limits, behavior) are cited from public sources and can change — always verify against the [official docs](https://docs.typesafe.ai/).
 
 <!-- last-checked:start -->
-*Last checked: 2026-10-27*
+*Last checked: 2026-10-28*
 <!-- last-checked:end -->

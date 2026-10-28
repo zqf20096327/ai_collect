@@ -2,6 +2,8 @@
 
 # Holographic Memory
 
+**Hybrid search, graph indexing, and vector-symbolic memory.**
+
 **Local memory for agents and apps: full-text and vector search, a memory API and a vector-symbolic fact store in one embeddable Rust engine that makes no network calls.**
 
 [![CI](https://img.shields.io/github/actions/workflow/status/writerslogic/holographic-memory/ci.yml?branch=main&label=CI)](https://github.com/writerslogic/holographic-memory/actions/workflows/ci.yml)
@@ -14,6 +16,7 @@
 [![OpenSSF Scorecard](https://img.shields.io/ossf-scorecard/github.com/writerslogic/holographic-memory)](https://securityscorecards.dev/viewer/?uri=github.com/writerslogic/holographic-memory)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13977/badge)](https://www.bestpractices.dev/projects/13977)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](#license)
+[![Holographic Memory MCP MCP server – quality and maintenance score on Glama](https://glama.ai/mcp/servers/writerslogic/holographic-memory/badges/score.svg)](https://glama.ai/mcp/servers/writerslogic/holographic-memory)
 
 [![Bemula forgetting score, DeepSeek backbone](https://img.shields.io/badge/Bemula%20forgetting%2C%20DeepSeek%20backbone-32.2%20vs%2031.0%20best%20published-blue)](benchmarks/results/bemula_v1.json)
 [![LongMemEval dev, gpt-4o reader and judge](https://img.shields.io/badge/LongMemEval%20dev%2C%20gpt--4o%20reader-89.75%25%20mean%20of%204%20runs-blue)](benchmarks/results/longmemeval_official_dev_summary.json)
@@ -23,6 +26,7 @@
 [Website](https://holographic-memory.com) ·
 [Docs](https://docs.holographic-memory.com/) ·
 [Get started](#get-started-in-60-seconds) ·
+[Standards and provenance](docs/reference/standards.md) ·
 [Results](#headline-results) ·
 [Why "holographic"?](#why-is-it-called-holographic) ·
 [Capabilities](#what-ships-today) ·

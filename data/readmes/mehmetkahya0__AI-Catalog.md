@@ -42,7 +42,7 @@
 <div align="center">
   <strong>⭐ If you find this catalog helpful, please consider giving it a star! ⭐</strong>
   <br><br>
-  <i>Last updated: October 21, 2026 | Next goal: 500 stars 🎯</i>
+  <i>Last updated: October 28, 2026 | Next goal: 500 stars 🎯</i>
   <br><br>
   <i>🤖 Thanks to Claude Sonnet 4 for write .sh files! </i>
 </div>
@@ -109,7 +109,7 @@ Welcome to the most comprehensive AI tools catalog! This repository contains **5
 ### 📊 Quick Stats
 - **Total Tools**: 500+
 - **Categories**: 40+
-- **Last Updated**: October 21, 2026
+- **Last Updated**: October 28, 2026
 - **Contributors**: Open for PRs!
 - **Next Goal**: ⭐️ 500 stars
 
@@ -170,6 +170,8 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 
 #### 🆕 Specialized Tools
 - **[ArtImageHub](https://artimagehub.com/old-photo-restoration)** 🔄 - AI old photo restoration that fixes scratches, fading and water damage
+- **[APPLORE](https://applore.app/ai-app-icon-generator)** 🔄 - AI app icon generator for iOS and Android using App Store icons as style references
+- **[Cutout.Free](https://cutout.free/)** 🆓 - Free browser background remover that exports transparent PNG, no account needed
 - **[Plykit](https://plykit.ai/kdp/coloring-book-maker)** 🔄 - Generate coloring pages and assemble KDP books with covers and PDF export
 - **[Recraft AI](https://app.recraft.ai)** 🔄 - Vector and brand-focused generation
 - **[Krea AI](https://krea.ai)** 🆕🔄 - Real-time image generation
@@ -180,6 +182,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Skybox Lab](https://skybox.blockadelabs.com)** 🔄 - 360° skybox generation
 - **[RestorePhoto](https://restorephoto.org/)** 🔄 - Restores facial clarity in old and blurry photos
 - **[UpRes](https://upres.ai)** 🆕🔄 - AI image and video upscaling to 4K/8K with 14 models, REST API, and CLI
+- **[FontVibe](https://fontvibe.ai)** 🔄 - Text effect and lettering designs for logos, posters and thumbnails
 
 #### 📱 Browser/Extension Tools
 - **[Canva AI](https://canva.com)** 🔄 - Integrated design platform with Dream Lab
@@ -410,6 +413,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[OpenAI Codex](https://openai.com/codex)** 💰 - Code generation API
 - **[Aider](https://aider.chat)** 🆕🆓 - Terminal-based pair programming
 - **[YYLO](https://github.com/yylo-dev/yylo)** 🆓 - Command-line orchestrator for coding agents with typed task, validation, and merge boundaries
+- **[Sqwakie](https://sqwakie.si)** 🆕🔄 - Live dashboard for team Claude Code and Codex agents that talk over MCP
 
 #### 💻 Code Assistants
 - **[GitHub Copilot](https://github.com/features/copilot)** 💰 - AI pair programmer from GitHub
@@ -441,6 +445,10 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - Context
 - [BuyWhere](https://buywhere.ai) - Real-time Singapore e-commerce pricing API and MCP server for AI agents
 - **[Latchkey](https://latchkey.dev)** 💰 - Self-healing GitHub Actions runners with AI diagnosis
+- **[deed.page](https://deed.page)** 🔄 - MCP server and API that let AI agents publish HTML to a permanent URL
+- **[UI Verify](https://uiverify.ai)** 🔄 - Visual regression testing with an AI judge that triages UI diffs
+- **[BetterToken](https://bettertoken.ai)** 💰 - LLM API gateway: one key for Claude, GPT, DeepSeek, Qwen, Kimi and GLM
+- **[Scalekit](https://scalekit.com)** 🔄 - AI agent integration platform: 600+ connectors, 35,000+ tools, per-user OAuth
 
 
 
@@ -518,7 +526,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Hotel Lobby AI](https://hotellobbyai.top/)** 🆕🔄 - Two uploaded photos become a cinematic duet clip on a staged hotel lobby
 - **[UGCFast](https://ugcfast.ai)** 💰 - Persona-matched AI UGC video ads for Meta and TikTok from a product URL
 - **[AI Baby Dance](https://aibabydance.com)** 🔄 - Turn baby photos into short AI dance videos
-- **[pitchboom.io](https://pitchboom.io)** 🆕💰 - Turns a product URL or brief into motion-design video ads
+- **[pitchboom.io](https://pitchboom.io)** 🆕🔄 - Turns a product URL or brief into motion-design video ads
 
 #### 🆕 Emerging Platforms
 - **[Haiper AI](https://haiper.ai)** 🆕🔄 - Fast video generation
@@ -527,7 +535,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Pika 2.0](https://pika.art)** 🆕🔄 - Scene manipulation features
 - **[Vidnoz](https://vidnoz.com)** 🔄 - AI video generator
 - **[Deepshot AI](https://deepshot.ai)** 🔄 - Video reshooting tool
-- **[SeedanceCheap](https://seedancecheap.com/)** 💰 - Independent studio and API for Seedance 2.0 and 2.5 video generation
+- **[SeedanceCheap](https://seedancecheap.com/)** 💰 - Independent Seedance 2.5 video studio and API
 - **[TubeTube](https://www.tubetube.io)** 🆕🔄 - Lyrics or story to a multi-scene video with consistent characters
 ## 3D
 - Meshy
@@ -619,6 +627,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - Voyager
 - GPT games
 - Chess
+- **[ScanChess](https://scanchess.com)** 🔄 - Chess OCR: turn board photos into FEN, scoresheets into PGN
 - Siege GPT
 - Human Or Not
 - Ludo
@@ -734,6 +743,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Anthropic Computer Use](https://anthropic.com)** 🆕💰 - GUI-based computer control
 - **[Manus AI](https://manus.ai)** 🆕🔄 - Cloud-based autonomous system
 - **[Drevon](https://www.drevon.dev)** 🆓 - Mac app that turns Claude Code or Codex into a go-to-market operator
+- **[Deacon](https://heydeacon.com)** 🆕🔄 - AI support agent for websites that answers from your own docs
 
 #### 🆓 Open Source Agents
 - **[Orkas](https://github.com/Orkas-AI/Orkas)** 🆓 - Local-first desktop AI workforce coordinated by a Commander through one chat
@@ -754,6 +764,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - [Clipdrop](https://clipdrop.co)
 - [insightface.ai](https://insightface.ai)
 - **[PixPurge](https://pixpurge.com)** 🔄 - AI text remover for images: erase text, watermarks, and date stamps automatically.
+- **[Klaruvo](https://www.powersoftware.app/en-US/product/detail/klaruvo)** 🔄 - Local offline AI image editor: watermark & object removal, cutout, upscaling
 
   
 ## Chrome AI Extensions
@@ -772,6 +783,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - [Ai resume builder](http://Kickresume.com)
 - [ResumeAI](https://withresumeai.com/)
 - **[CareJobs.Now](https://carejobs.now)** 🆓 - AI job search matching US healthcare workers to open hospital jobs
+- **[ArtiGram](https://artigram.cafeboon.com)** 🆓 - Publish AI-made HTML, React or SVG as live pages, with a remote MCP server
 
 ## Landing Page Generator
 - [aipage.dev](https://www.aipage.dev)
@@ -837,6 +849,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[LogNorm](https://lognorm.com)** 🔄 - Hosted MCP server that sends your SEO/GEO backlog to Claude Code, Codex and Cursor
 - **[Kamply](https://kamplyapp.com)** 💰 - Mac marketing crew that builds posts, reels, ads and decks with Claude Code or Codex
 - **[Pulse](https://pulsecorp.co)** 💰 - AI-moderated market research platform that runs customer interviews at scale
+- **[BulkPublish](https://www.bulkpublish.com)** 🔄 - Social media scheduler for 15 platforms with AI captions and an MCP server
 
 ## AI Productivity
 > AI tools to enhance personal and professional productivity
@@ -846,6 +859,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Remio](https://remio.ai/)** 🔄 - Local-first AI knowledge base for personal context retrieval
 - **[Todoist](https://todoist.com)** 🔄 - Task management with AI assistance
 - **[Motion](https://usemotion.com)** 💰 - AI calendar and task planner
+- **[NeverApply](https://neverapply.co)** 🔄 - AI job-search agent: matches jobs, tailors resumes, and applies with your approval.
 - **[Reclaim.ai](https://reclaim.ai)** 🔄 - AI calendar scheduling
 
 #### 📧 Communication

@@ -178,9 +178,10 @@ $ adamixture-supervised \
     --data_path all_samples.bed \
     --labels labels.txt \
     --save_dir supervised_out/ \
-    --name supervised_run \
-    -k 8
+    --name supervised_run
 ```
+
+K is the number of distinct population names in the labels file, so `-k` is not passed.
 
 ## Other options
 
@@ -190,13 +191,17 @@ All hyperparameters and flags can be explored with:
 $ adamixture --help
 ```
 
+The help groups the options by purpose (required arguments, number of populations, general, input filtering, optimization, initialization and plotting).
+
 Key arguments:
 
 | Argument &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Default | Description |
 |---|---|---|
+| `--algorithm` | `brqn` | Solver: SQP + ZAL quasi-Newton (`brqn`) or Adam-EM (`adamem`). |
 | `--init` | `als` | Initialization method: SVD+ALS (`als`) or random EM priming (`em`). |
 | `--tol` | `0.1` | Convergence tolerance for log-likelihood changes. |
-| `--max_iter` | `10000` | Maximum optimization iterations. |
+| `--max_iter` | `10000` | Maximum solver iterations (BR-QN or Adam-EM). |
+| `--patience` | `3` | Iterations without log-likelihood improvement before stopping. |
 | `-t` | `1` | Number of CPU threads. |
 | `-s` | `42` | Random seed. |
 | `--device` | `cpu` | Device to use: `cpu`, `gpu`, or `mps`. |
@@ -220,6 +225,7 @@ Common issues and platform notes:
 - **macOS**: Install `libomp` via Homebrew (`brew install libomp`) before compiling.
 - **Windows**: Pre-compiled wheels are provided on PyPI (`pip install adamixture`). If compiling from source (`pip install -e .`), install [Build Tools for Visual Studio](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2022) with **Desktop development with C++**.
 - **CUDA**: Set `CUDA_HOME` or install `nvcc` via Conda (`conda install -c nvidia nvcc`).
+- **Adam-EM options**: only relevant with `--algorithm adamem`, so they are hidden from `--help`; list them with `adamixture --help-adam` (or `adamixture-supervised --help-adam`).
 
 → [Full documentation](docs/troubleshooting.md)
 

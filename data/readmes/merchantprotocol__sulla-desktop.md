@@ -9,7 +9,7 @@
       <img src="https://img.shields.io/github/v/release/merchantprotocol/sulla-desktop?label=Latest&color=3d7fa0" alt="Latest Release" />
     </a>
     <a href="LICENSE">
-      <img src="https://img.shields.io/badge/License-Fair--code-blue.svg" alt="Sulla Fair-Code License" />
+      <img src="https://img.shields.io/badge/License-GPL--2.0--or--later-blue.svg" alt="GPL-2.0-or-later" />
     </a>
     <a href="https://github.com/merchantprotocol/sulla-desktop/stargazers">
       <img src="https://img.shields.io/github/stars/merchantprotocol/sulla-desktop?style=flat&color=yellow" alt="GitHub Stars" />
@@ -31,10 +31,6 @@
 > Have Node.js 18+? One command downloads, installs and opens it:
 > ```bash
 > npx sulla-desktop
-> ```
-> Installing Sulla Server on Linux? The same package launches its guided Docker/Kubernetes setup:
-> ```bash
-> npx sulla-desktop server
 > ```
 > Or grab an installer from the [latest release](https://github.com/merchantprotocol/sulla-desktop/releases/latest).
 
@@ -102,6 +98,10 @@ Anything you ask Sulla to do twice is a candidate for an automation, and Sulla w
 - **Your data stays home.** Memory, workflows, files and credentials live on your machine. The text of each request goes to the AI provider you connect so it can be processed.
 - **Locks with you.** Log out and the assistant, vault and stored credentials stay locked until you sign back in.
 
+## Extending Sulla
+
+Build skills, functions, workflows, recipes, integrations, and local agents without changing core. Follow the [Build your first Sulla add-on](docs/extensions/build-first-addon.md) guide, then use the hello-world bundles in [`examples/extensions/`](examples/extensions/). Add-ons are validated locally and reviewed before they appear in the marketplace.
+
 ## Get started
 
 1. **Install Sulla.** Use the one-line installer above or download from [Releases](https://github.com/merchantprotocol/sulla-desktop/releases/latest). The installer handles macOS Gatekeeper for you.
@@ -162,12 +162,10 @@ Sulla runs on your machine, so scheduled work runs while it's on. It prevents sl
 
 ## License
 
-Sulla is **fair-code**: source-available under the [Sulla Fair-Code License](LICENSE). It is not open source.
+Sulla Desktop is **free and open source** under the [GNU General Public License v2.0 or later](LICENSE), the same license as WordPress.
 
-**In short:** You can read, run, modify and share Sulla for free for your own company, team or personal use. You **cannot** resell it, rebrand or white-label it, run it as a hosted service for others, charge people to use it, or remove or bypass its license-key checks. Sulla Server is free up to a set number of users; beyond that it needs a paid license key. See the [Trademark Policy](TRADEMARK.md) for branding requirements.
+**In short:** you can use, study, change and share Sulla, including commercially. You can charge for setting it up, hosting it, supporting it, or selling add-ons built for it. If you distribute a modified version, you have to share its source under the same license.
 
-Portions that come from Rancher Desktop remain under the [Apache License 2.0](LICENSES/Apache-2.0.txt). See [NOTICE.md](NOTICE.md).
+**The name is not part of the license.** "Sulla" and the Sulla logo are trademarks. A fork must use its own name and logo. See the [Trademark Policy](TRADEMARK.md).
 
-Original Rancher Desktop copyright: © Rancher Labs, Inc. and contributors.
-
-— Jonathon Byrdziak, Coeur d'Alene, Idaho · Founder, Sulla Desktop
+Sulla Server is a separately distributed product. This repository contains the GPL-licensed Desktop application and shared service cores only.

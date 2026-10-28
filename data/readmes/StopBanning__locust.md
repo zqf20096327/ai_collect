@@ -15,22 +15,29 @@ accounts. You watch every step, approve what matters, and keep a record of
 everything they did. Free and open source (MIT), with no Locust account and no
 telemetry.
 
+**From your phone, or any browser.** Pair your phone once, or sign in with
+GitHub at [app.locust.lol/desk](https://app.locust.lol/desk/), and your team is
+there wherever you are, while Locust runs on your computer. What goes between
+them is sealed end to end: the relay in the middle cannot read it.
+
 **[Download for Windows, Mac or Linux](https://locust.lol)** ·
 [Releases](https://github.com/StopBanning/locust/releases) ·
 [What's new](CHANGELOG.md)
 
+If Locust is useful to you, a star on this repository helps other people find it.
+
 <table>
 <tr>
-<td><img src="docs/assets/shots/01-home.png" alt="Locust home: a team of six, each teammate on its own AI and model, and Connected accounts: 7 ready"><br><sub>Your team of six, each teammate on its own AI and model. Connected accounts: 7 ready.</sub></td>
-<td><img src="docs/assets/shots/02-model-picker.png" alt="The model picker, grouped by agent, with Opus 5.5 marked active and Antigravity, Claude Code and other agents’ models listed"><br><sub>One picker for the models your own accounts offer, grouped by agent, with the one in use marked.</sub></td>
+<td><img src="docs/assets/shots/01-home.png" alt="Locust home: a team of six, each teammate on its own AI and model, and Connected accounts: 8 ready"><br><sub>Your team of six, each teammate on its own AI and model. Connected accounts: 8 ready.</sub></td>
+<td><img src="docs/assets/shots/02-model-picker.png" alt="The model picker, grouped by agent, with Opus 5.5 on Claude Code marked active and Antigravity’s models listed above it"><br><sub>One picker for the models your own accounts offer, grouped by agent, with the one in use marked.</sub></td>
 </tr>
 <tr>
-<td><img src="docs/assets/shots/03-run-in-progress.png" alt="A teammate working in Edit mode with a three-step plan card, step 1 under way"><br><sub>A run in progress: a three-step plan, step 1 under way, the live line naming the step and its time.</sub></td>
-<td><img src="docs/assets/shots/04-approval.png" alt="An Approve each card showing the exact command, where it runs, and four answers"><br><sub>Approve each: before a command runs you see the exact command, where it runs, and what Locust can and cannot tell about it.</sub></td>
+<td><img src="docs/assets/shots/03-run-in-progress.png" alt="A teammate working in Edit mode with a four-step plan card, step 1 under way"><br><sub>A run in progress: a four-step plan, step 1 under way, the live line naming the step and its time.</sub></td>
+<td><img src="docs/assets/shots/04-approval.png" alt="An Approve each card showing the exact command, where it runs, and Approve once, Always allow this session or Deny"><br><sub>Approve each: before a command runs you see the exact command, where it runs, and what Locust can and cannot tell about it.</sub></td>
 </tr>
 <tr>
 <td><img src="docs/assets/shots/05-hand-off.png" alt="A hand-off chain: Atlas on Codex reads the code and writes VERDICT: APPROVED on Wren’s diagnosis"><br><sub>A hand-off chain: Wren (OpenCode) diagnosed the bug; Atlas (Codex) read the code himself and wrote VERDICT: APPROVED.</sub></td>
-<td><img src="docs/assets/shots/06-finished.png" alt="The finished run: plan 3 of 3 done, two files edited, four tests passing"><br><sub>The finished fix: 2 files edited, a test added, four tests passing, in 1m 01s.</sub></td>
+<td><img src="docs/assets/shots/06-finished.png" alt="The finished run: 4 of 4 steps, two files edited, four tests passing"><br><sub>The finished fix: 2 files edited, a test file added, four tests passing, in 33 s on a free model.</sub></td>
 </tr>
 <tr>
 <td><img src="docs/assets/shots/07-blind-compare.png" alt="A blind compare: Model A and Model B answer the same ask side by side with names hidden, and a judge model can be asked"><br><sub>Blind compare: two models on the same ask, names hidden until you keep one. A judge model can be asked which it would keep.</sub></td>
@@ -38,7 +45,7 @@ telemetry.
 </tr>
 </table>
 
-<sub>Screenshots from the packaged app on a fresh demo profile (0.619.0): real runs, no mocks, taken by `_tools/drive-promo-shots.mjs`. The models shown are what that machine’s accounts offer; yours come from your own accounts.</sub>
+<sub>Screenshots from the packaged app on a fresh demo profile (0.838.0; the hand-off chain and the Blind compare from 0.619.0): real runs, no mocks, taken by `_tools/drive-promo-shots.mjs`. The models shown are what that machine’s accounts offer; yours come from your own accounts.</sub>
 
 **Locust** puts Claude Code, Codex, Cursor, OpenCode, GitHub Copilot,
 Antigravity, Muse Code and, in Preview, Kilo side by side under one roof. You give a teammate a

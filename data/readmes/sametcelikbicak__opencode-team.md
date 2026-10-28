@@ -70,13 +70,25 @@ The orchestrator is the **default agent**. Open `opencode` anywhere, describe an
 
 Requires OpenCode 1.x (tested on 1.19.0). OpenCode 2 support is planned as a separate release. There is no tagged release yet; `main` is the development branch.
 
-Supported on macOS and Linux. Native Windows is **not supported yet**: `install.sh` is Bash and uses symlinks. WSL is untested.
+Supported on macOS, Linux, and native Windows (Windows PowerShell 5.1 or PowerShell 7; verified with OpenCode 1.19.4). WSL is untested.
+
+On macOS or Linux:
 
 ```bash
 git clone https://github.com/sametcelikbicak/opencode-team.git
 cd opencode-team
 ./install.sh
 ```
+
+On Windows, clone the repository and run the PowerShell installer from an **Administrator PowerShell**:
+
+```powershell
+git clone https://github.com/sametcelikbicak/opencode-team.git
+cd opencode-team
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\install.ps1
+```
+
+PowerShell 7 with Windows Developer Mode enabled can create the symlinks without elevation. The process-scoped `-ExecutionPolicy Bypass` does not change your machine policy. See the [Windows installation guide](docs/install.md#windows) for checks, optional OpenCode installation, and troubleshooting.
 
 If OpenCode is not on your PATH, install it first, or let the installer run the official OpenCode 1.x installer:
 
@@ -100,13 +112,20 @@ Restart opencode. That's it — the setup is global, so it works in every projec
 
 The repo stays in git; the config directory holds symlinks. Edit a file in the repo and it takes effect immediately.
 
-The installer never modifies `opencode.json`. If `default_agent` is not set to `orchestrator`, it prints the recommended snippet and leaves the file alone.
+Neither installer modifies `opencode.json`. If `default_agent` is not set to `orchestrator`, it prints the recommended snippet and leaves the file alone. On Windows the default directory is `%USERPROFILE%\.config\opencode`; both installers honor `OPENCODE_CONFIG_DIR`.
 
 Check or remove the install:
 
 ```bash
 ./install.sh --check
 ./install.sh --uninstall
+```
+
+Windows equivalents (use the same elevated shell or Developer Mode setup):
+
+```powershell
+.\install.ps1 -Check
+.\install.ps1 -Uninstall
 ```
 
 `--check` exits non-zero when a symlink is missing. A missing `default_agent` setting is shown as a hint, not a failure. `--uninstall` removes only symlinks that point into this repo.
@@ -178,15 +197,15 @@ Pipeline control:
 
 | Role         | Agent file               | Writes                     |
 | ------------ | ------------------------ | -------------------------- |
-| Orchestrator | `agents/orchestrator.md` | — (routes work)            |
+| Orchestrator | `agents/orchestrator.md` | `.team/07-build.md` (aggregation) |
 | Analyst      | `agents/analyst.md`      | `.team/01-research.md`     |
 | PM           | `agents/pm.md`           | `.team/02-prd.md`          |
 | PO           | `agents/po.md`           | `.team/03-backlog.md`      |
 | UX Designer  | `agents/ux.md`           | `.team/04-ux.md`           |
 | Brand        | `agents/brand.md`        | `.team/05-brand.md`        |
 | Architect    | `agents/architect.md`    | `.team/06-architecture.md` |
-| Frontend     | `agents/fe.md`           | `.team/07-build.md`        |
-| Backend      | `agents/be.md`           | `.team/07-build.md`        |
+| Frontend     | `agents/fe.md`           | `.team/07-build-fe.md`     |
+| Backend      | `agents/be.md`           | `.team/07-build-be.md`     |
 | QA           | `agents/qa.md`           | `.team/08-qa.md`           |
 | Security     | `agents/security.md`     | `.team/09-security.md`     |
 | Docs         | `agents/docs.md`         | `.team/10-docs.md`         |
@@ -226,6 +245,8 @@ Every stage writes a markdown artifact:
   12-launch.md
 ```
 
+The build stage also writes intermediate `.team/07-build-fe.md` and `.team/07-build-be.md`; the orchestrator consolidates them into `07-build.md`.
+
 Project-local agent memory also lives under `.team/`:
 
 ```
@@ -239,6 +260,17 @@ Project-local agent memory also lives under `.team/`:
     YYYY-MM-DD-<slug>.md         # immutable decision records
   archive/
     <role>-YYYY-MM.md            # compacted old log lines
+```
+
+Run state sits next to memory:
+
+```
+.team/runs/
+  current                         # latest run id
+  <run_id>/
+    run.json                      # run id, profile, stage, session ids
+    events/                       # append-only task start/finish events
+    approvals/                    # human gates tied to artifact hashes
 ```
 
 Plain files in a folder. No database, no framework, fully diffable in git, and a human can step in at any stage.
@@ -287,6 +319,18 @@ OpenCode Team keeps a small, project-local memory in `.team/memory/` so the orch
 
 Full protocol: `skills/team-memory/SKILL.md` and `docs/rfcs/0001-project-memory.md`.
 
+## Run checkpoints
+
+The orchestrator records each run and task attempt in `.team/runs/`, so a compaction or restart does not repeat completed work or skip unfinished work.
+
+- `run.json` — unique run id, profile, stage and session ids.
+- `events/` — one append-only JSON file per start or finish event.
+- `approvals/` — human gate records tied to the artifact SHA-256.
+
+At session start or after compaction the orchestrator runs `run_state.py status` from `skills/team-memory/` and resolves running, failed or completed attempts before dispatching. A completed task is not rerun; an artifact on disk is not approval.
+
+Full protocol: [`docs/runs.md`](./docs/runs.md).
+
 ## Documentation
 
 The full documentation site is hosted at [sametcelikbicak.github.io/opencode-team/](https://sametcelikbicak.github.io/opencode-team/). It includes:
@@ -298,6 +342,7 @@ The full documentation site is hosted at [sametcelikbicak.github.io/opencode-tea
 - [Skill reference](./docs/reference/skills.md) — all 13 skills
 - [Stage reference](./docs/reference/stages.md) — all 12 pipeline stages
 - [Memory](./docs/memory.md) — project-local agent memory
+- [Run checkpoints](./docs/runs.md) — resume after compaction or interruption
 - [FAQ](./docs/faq.md) — common questions
 
 The site is built from this repository and deployed on every push to `main`.

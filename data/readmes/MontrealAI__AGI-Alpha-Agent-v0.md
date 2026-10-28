@@ -177,12 +177,20 @@ Vincent Boucher · MONTREAL\.AI · 2026-10 · English PDF.
 - **[AGI ALPHA FLYWHEEL — The Network That Learns to Invent](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/network-learns-to-invent-v1.pdf)** · A numerical learning system constructed by the research team develops a reduced basis from thermal work and tests its transfer to fresh diffusion and sensor\-design missions\. Mean raw transfer error falls 26\.3\-fold, but neither raw version passes any of 64 recipient cases; corrected solutions pass\. The competent generalist matches the composition’s identification success\. Under explicit cost and demand assumptions, modeled Beta delivery can be profitable while optional retention is rejected\. Local numerical evidence and simulated economics, not customer sales, autonomous invention, live ENS authentication or specialist superintelligence\.
   Vincent Boucher · President of MONTREAL\.AI · 2026-10-27 · English PDF.
   [Read the edition and resources](https://montrealai.github.io/AGI-Alpha-Agent-v0/reports/the-network-that-learns-to-invent/index.html) · [Historical experimental companion source and assembly](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/71d1054dd56a9ef25f19ec5f19e941b1957b02ce/studies/agi-alpha-invention-network-v1/README.md) · [Download complete research source ZIP](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/releases/download/study-network-learns-to-invent-v1-2026-10-27/AGI_Alpha_Invention_Network_v1_Complete_Research.zip) · [View source and evidence](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/releases/tag/study-network-learns-to-invent-v1-2026-10-27)
+- **[The Enterprise That Invents Its Next Advantage](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/agi-alpha-enterprise-implementation-v1.pdf)** · Versioned offerings and bounded enterprise decisions connect to the existing executor, optional Gym, protected capabilities and A/B/C ledger\. A finite internal artifact and twelve fresh checks execute; admission is rejected, funds are held and an adjacent offering remains a hypothesis\. A separate fictional\-authority relay tests protected invocation\. No live frontier advantage, actual revenue or complete\-cost profit is established\.
+  Vincent Boucher · President of MONTREAL\.AI · 2026-10-27 · English PDF.
+- **[The Enterprise That Invents Its Next Advantage · Corrected Edition](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/agi-alpha-enterprise-implementation-v2.pdf)** · Corrected implementation edition: dispatch rechecks every decision and offering evidence reference; interrupted launch finalization recovers only from the exact terminal failed receipt and complete accounting\. Versioned offerings, bounded decisions, twelve fresh finite cases and fictional protected relay remain inspectable\. Admission is rejected, funds held and adjacent demand unmeasured\. No live Alpha, customer revenue or complete\-cost profit established\.
+  Vincent Boucher · President of MONTREAL\.AI · 2026-10-27 · English PDF.
+- **[The Enterprise That Invents Its Next Advantage · Production Evidence Edition](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/agi-alpha-enterprise-implementation-v3.pdf)** · Current implementation edition checks commercial evidence when authorizing an offering, selecting production and dispatching a mission\. Withdrawn forecasts lead to holding funds and block previously selected work\. The connected technical relay remains a bounded hybrid study: twelve fresh finite checks, rejected Alpha admission, a hypothetical adjacent offering and explicitly fictional peer authority\. No actual customer revenue or complete\-cost profit is established\.
+  Vincent Boucher · President of MONTREAL\.AI · 2026-10-27 · English PDF.
+- **[The Enterprise That Invents Its Next Advantage · Capacity Evidence Edition](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/agi-alpha-enterprise-implementation-v4.pdf)** · Current implementation separates per\-offering occupied slots from the enterprise global ceiling, keeps production bound to current commercial evidence and preserves intent\-bound failure recovery\. Two\-offering and withdrawal regressions complement the connected internal placement/Gym/protected\-relay study\. Twelve fresh finite checks pass; Alpha admission is rejected and funds held\. No actual customer revenue, complete\-cost profit or growing network advantage is established\.
+  Vincent Boucher · President of MONTREAL\.AI · 2026-10-27 · English PDF.
 
 Research proposals and bounded studies, not claims of general autonomous capability or physical deployment.
 [Explore the papers in English or French](https://montrealai.github.io/AGI-Alpha-Agent-v0/#papers)
 <!-- /featured-research-papers -->
 
-**Current experimental source candidate · 1.46.1.** [Exact approved paper readers](docs/agent/RELEASE_NOTES_1.46.1.md). [Protected Flywheel operating boundaries](docs/agent/RELEASE_NOTES_1.46.0.md). [Additive Flywheel flagship](docs/agent/RELEASE_NOTES_1.45.0.md). [Explore the public simulation](https://montrealai.github.io/AGI-Alpha-Agent-v0/flywheel/). [Checked planning and repair](docs/agent/RELEASE_NOTES_1.44.0.md). [Configure the bounded Strategy Succession executor](docs/agent/STRATEGY_SUCCESSION.md). Published [1.43](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/releases/tag/v1.43.0) remains preserved.
+**Current experimental source candidate · 1.47.0.** [Connected discovery and operating boundaries](docs/agent/RELEASE_NOTES_1.47.0.md). [Exact approved paper readers](docs/agent/RELEASE_NOTES_1.46.1.md). [Protected Flywheel operating boundaries](docs/agent/RELEASE_NOTES_1.46.0.md). [Additive Flywheel flagship](docs/agent/RELEASE_NOTES_1.45.0.md). [Explore the public simulation](https://montrealai.github.io/AGI-Alpha-Agent-v0/flywheel/). [Checked planning and repair](docs/agent/RELEASE_NOTES_1.44.0.md). [Configure the bounded Strategy Succession executor](docs/agent/STRATEGY_SUCCESSION.md). Published [1.43](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/releases/tag/v1.43.0) remains preserved.
 The existing `alpha-agent successor-study` entry point can run an explicitly approved finite operation,
 retain a closed executable source-selection program and test it on later changed inputs. Pause/Stop,
 lease expiry, bounded retries and committed-child recovery keep their existing journal history.
@@ -1382,89 +1390,4 @@ optional hook dependencies are installed. When working offline, pass
 `pre-commit` isn't found or the version differs, install it with
 `pip install pre-commit==4.2.0`.
 
-When editing the web UI, preserve existing ARIA labels so the interface
-remains accessible.
-
-### Development Setup
-Install the Python dependencies with the helper script:
-
-```bash
-scripts/setup_env.sh
-```
-The script checks for Python 3.11–3.13 (<3.14) and installs `requirements.txt` and
-`requirements-dev.txt`.
-
-When preparing an offline environment, build a wheelhouse on a machine with
-internet access:
-
-```bash
-./scripts/build_offline_wheels.sh
-```
-
-Copy the resulting `wheels/` directory to the target host and set
-`WHEELHOUSE=$(pwd)/wheels` before running `check_env.py` or the tests so
-packages install from the local cache. The repository does not ship these
-prebuilt wheels.
-
-## 📜 Table of Contents
-0. [Design Philosophy](#0-design-philosophy)  
-1. [System Topology 🗺️](#1-system-topology)  
-2. [World‑Model & Planner 🌌](#2-world-model--planner)  
-3. [Agent Gallery 🖼️ (12 agents)](#3-agent-gallery)  
-4. [Demo Showcase 🎬 (14 demos)](#4-demo-showcase)
-5. [Memory & Knowledge Fabric 🧠](#5-memory--knowledge-fabric)
-6. [5‑Minute Quick‑Start 🚀](#6-5-minute-quick-start)
-6.1. [Running Tests 🧪](#61-running-tests)
-6.2. [Marketplace Demo Example 🛒](#62-marketplace-demo-example)
-6.3. [Offline Mode](#63-offline-mode)
-    - Set `LLAMA_MODEL_PATH` to the downloaded `.gguf` weight
-    - `AGI_INSIGHT_BROADCAST=0` disables blockchain broadcasting
-    - Example:
-      ```bash
-      AGI_INSIGHT_OFFLINE=1 AGI_INSIGHT_BROADCAST=0
-        python -m alpha_factory_v1.demos.alpha_agi_insight_v1.src.interface.cli
-        simulate --offline --energy 2.0 --entropy 0.5 \
-        --mut-rate 0.1 --xover-rate 0.5 \
-        --llama-model-path "$LLAMA_MODEL_PATH"
-      ```
-7. [Deployment Recipes 🍳](#7-deployment-recipes)
-7.1. [Deploying securely 🚀](#71-deploying-securely)
-8. [Governance & Compliance ⚖️](#8-governance--compliance)  
-9. [Observability 🔭](#9-observability)
-10. [Safety & Security 🛡️](#10-safety--security)
-11. [Extending the Mesh 🔌](#11-extending-the-mesh)
-12. [Troubleshooting 🛠️](#12-troubleshooting)
-13. [Roadmap 🛣️](#13-roadmap)
-14. [Credits 🌟](#14-credits)
-15. [License 📝](#15-license)
-
----
-
-<a name="0-design-philosophy"></a>
-## 0 · Design Philosophy
-
-> “We have shifted from *big‑data hoarding* to **big‑experience compounding**.” — *Era of Experience*.
-
-* **Experience‑First Loop** — Sense → *Imagine* (MuZero‑style latent planning) → Act → Adapt.  
-* **AI‑GA Autogenesis** — The factory meta‑evolves new agents and curricula inspired by Clune’s *AI‑Generating
-  Algorithms*.
-* **Graceful Degradation** — GPU‑less? No cloud key? Agents fall back to distilled local models & heuristics.  
-* **Zero‑Trust Core** — SPIFFE identities, signed artefacts, guard‑rails, exhaustive audit logs.  
-* **Polyglot Value** — Everything is normalised to a common *alpha Δ∑USD* lens.
-
----
-
-<a name="1-system-topology"></a>
-## 1 · System Topology 🗺️
-```mermaid
-flowchart LR
-  ORC([🛠️ Orchestrator])
-  WM[(🌌 World‑Model)]
-  MEM[(🔗 Vector‑Graph Memory)]
-  subgraph Agents
-    FIN(💰)
-    BIO(🧬)
-    MFG(⚙️)
-    POL(📜)
-    ENE(🔋)
-    SUP(📦)
+When editing the 

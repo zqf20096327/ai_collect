@@ -7,7 +7,7 @@ HTTP + WebSocket 反向代理：把局域网端口转发到本地 DSH 服务 `12
 
 ## DSH 插件版（推荐 · dsh-proxy）
 
-**推荐 DSH（DeepSeek Harness）用户使用**：把代理作为插件装进 web profile，**随 `dsh web` 启停**，无需单独进程、无需下载可执行文件，带完整设置页面。
+**推荐 DSH（DeepSeek Harness）用户使用**：把代理作为插件装进 `web` 或 `desktop` profile，**随 `dsh web` / 桌面应用启停**，无需单独进程、无需下载可执行文件，带完整设置页面。
 
 - 与独立版相同的原生 **Basic Auth**（浏览器弹窗）与 HTTP + WebSocket 全协议转发
 - **设置页面**（DSH 设置 → 局域网代理）：状态红绿灯、启动/停止、改代理监听端口、用户名密码与免 token 登录开关（表单回写当前值，留空即设为空）
@@ -20,19 +20,47 @@ HTTP + WebSocket 反向代理：把局域网端口转发到本地 DSH 服务 `12
 
 ### 安装
 
-**在线安装（推荐）**——直接从 GitHub 安装（无需下载仓库）：
+插件按 profile 安装，Web 端与桌面端相互独立：只对谁生效就装谁，两边都用就各装一次。
+
+**① Web 端（`dsh web`，命令行安装）**
+
+npm 安装（推荐）——版本固定在 registry 上，不依赖 GitHub：
+
+```bash
+dsh plugin --profile web add @smanx/dsh-proxy
+```
+
+从 GitHub 安装（跟随 master 最新代码）：
 
 ```bash
 dsh plugin --profile web add github:smanx/dsh-proxy#master
 ```
 
-**本地安装**（仓库已克隆/下载到本机）：
+本地安装（仓库已克隆/下载到本机）：
 
 ```bash
 dsh plugin --profile web add file:C:/mydata/codes/dsh-proxy
 ```
 
-重启 `dsh web` 后，访问 `http://<局域网IP>:3081` 即弹 Basic Auth 登录框。详细说明见 [`dsh-proxy/README.zh.md`](dsh-proxy/README.zh.md)。
+核对与卸载走同一命令：把 `add <spec>` 换成 `ls` 或 `remove @smanx/dsh-proxy`。
+
+> 国内网络下 `dsh plugin` 按 pnpm 配置的注册表拉取，npmmirror 对新发布的同步有分钟级延迟：刚发的版本装不到就稍后重试，或把 pnpm 的 registry 指向官方源后再装。
+
+**② 桌面端（DeepSeek Harness 桌面应用）——在应用内安装**
+
+桌面应用左侧栏的 **「插件」面板** → **「添加插件」**，在输入框里填入：
+
+- npm 安装（推荐）：`@smanx/dsh-proxy`
+- 从 GitHub（跟随 master）：`github:smanx/dsh-proxy#master`
+- 本地安装（仓库已克隆/下载到本机）：`C:/mydata/codes/dsh-proxy`
+
+该输入框接受包名、Git 地址、压缩包和本地绝对路径。安装完成后**完全退出桌面应用再重新打开**即生效；核对与卸载都在同一个面板（**「已安装」**列表里应出现 `@smanx/dsh-proxy`）。
+
+> 桌面端**不要**用终端命令安装：`desktop` profile 由 Electron 独占持有，npm 版 `dsh` 会直接拒绝它的插件管理请求（`error: profile "desktop" is managed exclusively by the Electron application`），只能走上面的图形界面。
+
+桌面应用的内置服务端口由应用分配，插件默认 `upstreamPort: 0` 自动跟随实际端口，无需手动配置；设置入口与 Web 端相同（设置 → 局域网代理）。
+
+重启 `dsh web`（桌面端则重启应用）后，访问 `http://<局域网IP>:3081` 即弹 Basic Auth 登录框。详细说明见 [`dsh-proxy/README.zh.md`](dsh-proxy/README.zh.md)。
 
 ## 独立可执行版本（go/ 与 node/）
 
@@ -99,12 +127,29 @@ node -e "const ws=new WebSocket('ws://127.0.0.1:3091/api/events.mux',{headers:{A
 
 ## 自动发布
 
-推送 `v*` 标签（如 `v1.1.0`）即触发 GitHub Actions，**同时构建 Node 版和 Go 版**
-并发布到 GitHub Release（含 SHA256SUMS.txt 校验和）；也可在 Actions 页面手动触发：
+推送 `v*` 标签会同时触发两条独立的工作流，各自成败、互不依赖：
+
+| 工作流 | 产出 | 触发条件 |
+|---|---|---|
+| `.github/workflows/release.yml` | Node 版 + Go 版共 10 个单文件程序，发到 GitHub Release（含 SHA256SUMS.txt） | `v*` 标签，或 Actions 页面手动触发 |
+| `.github/workflows/npm-publish.yml` | 插件包 `@smanx/dsh-proxy` 发到 npm（带 provenance） | `v*` 标签，或手动触发 |
+
+发布 npm 前需要在仓库 **Settings → Secrets and variables → Actions** 里配一个名为 `NPM_TOKEN` 的 Secret：npmjs 上生成的 **Granular Access Token**（只授予本包 Read/Write）或 Automation token，它能绕过账号 2FA。
+
+版本号以仓库里的清单为准，工作流**只核对不改写**：标签 `v0.1.5` 必须与根 `package.json` 和 `dsh-proxy/package.json` 的 `version` 三者一致，否则直接失败——这是为了防止根清单与插件清单版本漂移（发布读的是根清单，`main` 指向 `dsh-proxy/lib/index.cjs`）。发布前工作流还会跑 `pnpm install --frozen-lockfile && pnpm run check`（typecheck + 测试 + 重建 `lib/`），**打包用的是刚重建出来的产物**，所以发布内容一定与该标签的源码一致。仓库里已提交的 `dsh-proxy/lib/` 只是 `github:` / `file:` 直装路径的便利产物；它与 Linux 上的重建结果不必逐字节相同（实测差异在 `index.cjs` 与两个 `.map`），不一致时工作流只给出警告，不拦发布。
 
 ```bash
-git tag v1.1.0
-git push origin v1.1.0
+# 一次完整发版
+pnpm run check                                   # 在 dsh-proxy/ 下，绿了再往下
+npm version 0.1.5 --no-git-tag-version           # 根清单；同时手动同步 dsh-proxy/package.json
+git commit -am "build: release 0.1.5" && git push
+git tag v0.1.5 && git push origin v0.1.5         # 两条工作流同时开始
 ```
 
-工作流见 `.github/workflows/release.yml`。
+已发布过的版本不会被重复发布（npm 不允许覆盖同一版本），重跑会跳过。发布成功后即可用包名安装：
+
+```bash
+dsh plugin --profile web add @smanx/dsh-proxy
+```
+
+桌面端在应用内「插件 → 添加插件」填 `@smanx/dsh-proxy`。注意插件管理器先问**它配置的注册表**，国内镜像对新版本有同步延迟，装不到时在安装对话框的「安装源」里改用 npm 官方源。

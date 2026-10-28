@@ -1,7 +1,7 @@
 # Semantic Signal — an LLM trading agent that reads charts and remembers its closed trades
 
 [![Python 3.13](https://img.shields.io/badge/python-3.13-blue?logo=python&logoColor=white)](https://www.python.org)
-[![Tests](https://img.shields.io/badge/tests-2%2C514-brightgreen)](tests)
+[![Tests](https://img.shields.io/badge/tests-2%2C700-brightgreen)](tests)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE.md)
 
 **Read this in:** [English](README.md) · [Polski](https://www.readme-i18n.com/qrak/LLM_trader?lang=pl) · [中文](https://www.readme-i18n.com/qrak/LLM_trader?lang=zh) · [日本語](https://www.readme-i18n.com/qrak/LLM_trader?lang=ja) · [한국어](https://www.readme-i18n.com/qrak/LLM_trader?lang=ko) · [Español](https://www.readme-i18n.com/qrak/LLM_trader?lang=es) · [Deutsch](https://www.readme-i18n.com/qrak/LLM_trader?lang=de) · [Português](https://www.readme-i18n.com/qrak/LLM_trader?lang=pt) · [Русский](https://www.readme-i18n.com/qrak/LLM_trader?lang=ru)
@@ -19,7 +19,7 @@ Paper trading by default; no real funds are involved.
 |---|---|
 | Live dashboard | [semanticsignal.qrak.org](https://semanticsignal.qrak.org) |
 | Showcase site | [qrak.org](https://qrak.org) — source: [qrak/semantic-signal-site](https://github.com/qrak/semantic-signal-site) |
-| Result ledger | [docs/RESULTS.md](docs/RESULTS.md) |
+| Result ledger | [the ledger below](#results) |
 | Agent rules | [AGENTS.md](AGENTS.md) |
 
 ![A tour of the Brain, Statistics and Console tabs](docs/assets/dashboard-tour.gif)
@@ -33,31 +33,32 @@ Paper trading by default; no real funds are involved.
 
 | metric | bot | buy & hold |
 |---|---|---|
-| Return | **+0.14%** (+$13.95) | **−1.83%** |
+| Return | **+0.14%** (+$13.95) | **−1.49%** |
 | Closed trades | 12 | — |
 | Win rate | 41.7% (5W / 5L) | — |
 | Profit factor | 1.41 | — |
 | Sharpe / Sortino | 0.19 / 0.36 | — |
 | Max drawdown | −0.25% | — |
 | Best / worst trade | +4.06% / −2.60% | — |
-| Inference cost | $6.00 (8.1M in / 3.8M out tokens) | — |
-| Net after inference | **+$7.95** | — |
+| Inference cost | $6.02 (8.1M in / 3.8M out tokens) | — |
+| Net after inference | **+$7.93** | — |
 | Analyses | 48 cycles, median 266 s, $0.0121 each | — |
 
 ![Bot vs buy-and-hold over the same window](docs/assets/results-vs-btc.png)
 
-Over those 36 days the bot returned +0.14% while the underlying fell 1.83%. Two percentage points on
-twelve trades is not evidence of an edge. The paper book records zero fees, so the number is gross of
-trading costs; at a 0.15% round trip the gain would be roughly erased. Two trades are excluded from
-the statistics because their sandbox fills diverged from the real market. Method, per-trade table and
-the reproduction command: [docs/RESULTS.md](docs/RESULTS.md).
+Over those 36 days the bot returned +0.14% while the underlying fell 1.49%. That is ~1.6 percentage
+points on twelve trades — not evidence of an edge. The paper book records zero fees, so the number is
+gross of trading costs; at a 0.15% round trip the gain would be roughly erased. Two trades are
+excluded from the statistics because their sandbox fills diverged from the real market. The numbers
+above are the 2026-10-26 measurement; the inference cost and cycle totals move with every cycle the
+bot runs. Method, per-trade table and the reproduction command: `python scripts/results_report.py`.
 
 ## Quick start
 
 ```bash
 git clone https://github.com/qrak/LLM_trader.git && cd LLM_trader
 python -m venv .venv && source .venv/bin/activate  # Windows: .venv\Scripts\Activate.ps1
-pip install -r requirements.txt -c constraints.txt
+pip install --no-compile -r requirements.txt -c constraints.txt
 cp keys.env.example keys.env  # or export one provider key; `provider = local` needs none
 python start.py               # dashboard at http://localhost:8000
 ```
@@ -75,8 +76,8 @@ Windows quirks and the full secret table: [docs/SETUP.md](docs/SETUP.md).
 | Claim validation | Model-reported trend strength is compared with the computed ADX, pattern quality is replaced by a deterministic scorer, and the EV framework is computed from the bot's own closed trades. |
 | Risk pipeline | Guard chain, an R/R floor the brain can only raise, and dynamic SL/TP. With the executor live, the stop runs against the real market; the exchange leg is a backstop. |
 | RAG news | RSS + Crawl4AI + CoinGecko/DeFiLlama/Alternative.me, relevance-scored locally and capped by the prompt budget. |
-| Multi-provider | DeepSeek primary, with Google, OpenRouter, LM Studio and BlockRun as fallbacks inside the same cycle. |
-| Tests | 2,514 collected tests covering LLM output corruption, async races, rate-limit backoff, closed-loop feedback and spot/futures wiring, with real temporary SQLite and ChromaDB. |
+| Multi-provider | A configurable chain: `provider = all` walks Google → DeepSeek → LM Studio → OpenRouter → BlockRun (a chart goes Google → DeepSeek → OpenRouter → BlockRun), and a failed provider degrades to the next one inside the same cycle. This deployment runs `provider = deepseek`. |
+| Tests | 2,700 collected tests (2,666 run outside the `integration` marker) covering LLM output corruption, async races, rate-limit backoff, closed-loop feedback and spot/futures wiring, with real temporary SQLite and ChromaDB. |
 
 Long version, with the file that implements each of them: [docs/FEATURES.md](docs/FEATURES.md).
 
@@ -115,7 +116,7 @@ flowchart TB
 ## Testing
 
 ```bash
-python -m pytest tests -q          # 2,514 tests, ~145 s
+python -m pytest tests -q          # 2,666 tests (2,700 collected), ~130 s
 ruff check src scripts start.py    # clean
 pyright src start.py               # 0 errors
 ```
@@ -136,7 +137,6 @@ deployed from its own repository.
 | [`docs/FEATURES.md`](docs/FEATURES.md) | Every feature in detail, with the implementing file |
 | [`docs/SETUP.md`](docs/SETUP.md) | Requirements, platform scripts, secrets, dashboard deploy |
 | [`docs/CONFIGURATION.md`](docs/CONFIGURATION.md) | Every config key, prompt budget, billing windows, executor handoff |
-| [`docs/RESULTS.md`](docs/RESULTS.md) | The ledger, the benchmark, the caveats, the reproduction command |
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | Branches, releases, test gates, changelog rules |
 | [`CHANGELOG.md`](CHANGELOG.md) | Every change, dated, with the run that verified it |
 

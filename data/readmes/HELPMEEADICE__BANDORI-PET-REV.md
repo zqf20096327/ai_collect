@@ -30,6 +30,7 @@ QQ群：1033517952
 - ⚡ **自研 LuaJIT 渲染核心** — 基于 [Live2D-v2-Lua](https://github.com/EasyLive2D/Live2D-v2-Lua)（作者 [@HELPMEEADICE](https://github.com/HELPMEEADICE)），纯 LuaJIT 实现，性能相较原 live2d-py 提升 **6 倍+**（30fps → 180fps+），支持头部追踪、拖拽移动、点击互动，老婆会跟着你的鼠标转头！
 - 💬 **LLM 角色扮演 + 好感度记忆系统** — 接入大语言模型，每个角色都有专属 System Prompt，支持中日英多语言 + 动作标签。交互越多角色越了解你，好感度影响情绪和回复风格，支持人设方案保存/切换。
 - 🎨 **像素风桌面宠物** — 也可以切成像素小人的形态，CPU 友好，可爱不减！
+- 🎵 **节奏蹦迪** — 在“设置 → 显示设置”开启，角色就会跟随 Windows 默认播放设备的音乐像弹簧一样纵向压缩、拉伸，重拍压扁、拉伸回弹带余振；宽度与窗口位置不变，支持 Live2D 和像素模式，拖动时暂停，安静后恢复原比例。默认关闭，无需额外依赖。
 - 🌓 **Fluent Design 设置面板** — 暗色/亮色主题切换，图形化选角选装界面。支持简中、繁中、英文、日文、葡萄牙语、西班牙语、法语、德语、俄语 i18n 国际化。
 - 📌 **始终置顶 + 无边框** — 趴在你的窗口上方，赶都赶不走（误）。
 - 🔔 **系统托盘** — 右键一键切角色 / 开设置 / 优雅退场。
@@ -283,19 +284,19 @@ python setup.py build_msi
 - 发布 GitHub Release（包括预发布版）后自动构建，全部成功后将安装包上传到该 Release。
 - 在 **Actions → Build installers → Run workflow** 中选择分支或标签手动构建；
   完成后在该次运行底部 **Artifacts** 按原始文件名分别下载所需安装包，例如
-  `BandoriPet-<版本>-win64.zip`、`BandoriPet-<版本>-win64.msi` 和
-  `BandoriPet-<版本>-winamd64-setup.exe` 是三个独立文件。全部 18 个安装包均
+  `BandoriPet-<版本>-win-x86_64.zip`、`BandoriPet-<版本>-win-x86_64.msi` 和
+  `BandoriPet-<版本>-win-x86_64-setup.exe` 是三个独立文件。全部 18 个安装包均
   单独上传，不再按架构合并压缩；`SHA256SUMS.txt` 也可独立下载。产物保留 30 天。
 
-所有版本号来自 `app_info.py` 的 `APP_VERSION`，必须为 `主版本.次版本.修订号`；
+所有版本号来自 `bandori_core/app_info.py` 的 `APP_VERSION`，必须为 `主版本.次版本.修订号`；
 Release 标签应为同一版本号或加 `v` 前缀（例如 `v3.2.1`）。手动构建使用所选
 分支或标签中的版本号，不会自动创建 Release。
 
 | 平台 | x86_64 文件名 | aarch64 文件名 |
 |---|---|---|
-| Windows 便携包 | `BandoriPet-<版本>-win64.zip` | `BandoriPet-<版本>-winarm64.zip` |
-| Windows MSI | `BandoriPet-<版本>-win64.msi` | `BandoriPet-<版本>-winarm64.msi` |
-| Windows Inno Setup 6 | `BandoriPet-<版本>-winamd64-setup.exe` | `BandoriPet-<版本>-winarm64-setup.exe` |
+| Windows 便携包 | `BandoriPet-<版本>-win-x86_64.zip` | `BandoriPet-<版本>-win-arm64.zip` |
+| Windows MSI | `BandoriPet-<版本>-win-x86_64.msi` | `BandoriPet-<版本>-win-arm64.msi` |
+| Windows Inno Setup 6 | `BandoriPet-<版本>-win-x86_64-setup.exe` | `BandoriPet-<版本>-win-arm64-setup.exe` |
 | Linux | `BandoriPet-<版本>-linux-x86_64.{AppImage,deb,rpm,tar.gz}` | `BandoriPet-<版本>-linux-aarch64.{AppImage,deb,rpm,tar.gz}` |
 | macOS | `BandoriPet-<版本>-macos-x86_64.{dmg,zip}` | `BandoriPet-<版本>-macos-arm64.{dmg,zip}` |
 
@@ -360,7 +361,7 @@ python -m pytest tests -q
 | MSI 安装包 | 从 GitHub Release 下载最新 `.msi`，启动安装器完成升级 |
 | macOS App | 按 CPU 架构下载 `.dmg` 或 `.zip`，替换当前 `.app`、重新签名并重启 |
 
-发布新版本时请同步修改 `app_info.py` 中的 `APP_VERSION`，并在 GitHub Release 上传匹配当前平台的资产，例如：
+发布新版本时请同步修改 `bandori_core/app_info.py` 中的 `APP_VERSION`，并在 GitHub Release 上传匹配当前平台的资产，例如：
 
 ```text
 BandoriPet-3.0.1-WIN-AMD64.zip
@@ -373,7 +374,7 @@ BandoriPet-3.0.1-macos-x86_64.dmg
 
 Release 标签必须高于旧版 `APP_VERSION`；不要只替换同一版本 Release 的资产，否则已安装客户端会判定为无更新。
 
-如果你要从自己的仓库发布更新，请把 `app_info.py` 里的 `APP_REPOSITORY` 改成发布 Release 的仓库名。
+如果你要从自己的仓库发布更新，请把 `bandori_core/app_info.py` 里的 `APP_REPOSITORY` 改成发布 Release 的仓库名。
 
 ---
 

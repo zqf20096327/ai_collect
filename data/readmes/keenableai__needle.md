@@ -58,7 +58,8 @@ across engines. Per-engine tuning uses env vars: `TAVILY_DEPTH`, `LINKUP_DEPTH`,
 (default `claude-sonnet-5`), `NEEDLE_CHATGPT_SEARCH_MODEL` (default `gpt-5.5`); the engine
 entry fixes Keenable's, Exa's, Parallel's and Perplexity's modes and Brave's
 endpoint (`keenable` = pro, `keenable-realtime` = realtime, `exa` = auto,
-`exa-instant` = instant, `parallel` = advanced, `parallel-turbo` = turbo,
+`exa-instant` = instant, `exa-lite` = lite,
+`parallel` = advanced, `parallel-turbo` = turbo,
 `perplexity` = the default `web` search type, `perplexity-fast` = `fast`,
 `brave` = `/web/search`, `brave-llmcontext` = `/llm/context`). The mean skips queries whose
 search or judging failed
@@ -252,8 +253,11 @@ when its gold file is missing. Each bench is its own job and publishes its
 own run, so a slow daily bench never delays the hourly news result. Each
 run appends summary rows
 (`history.jsonl`), engine-pair URL overlap (`overlap.jsonl`), and per-engine
-unique-URL counts (`uniqueness.jsonl`) to `gh-pages`; the dashboard at
-<https://keenableai.github.io/needle/> renders them. Each run also
+unique-URL counts (`uniqueness.jsonl`) to `gh-pages`, and rewrites
+`independence.json` with their all-runs and last-7-days totals; the dashboard at
+<https://keenableai.github.io/needle/> renders `history.jsonl` and
+`independence.json`. Raw per-query latency samples (`lat_ms`) stay in
+`history.jsonl` for 7 days only. Each run also
 archives full artifacts to the HF dataset
 [`keenable-ai/needle-results`](https://huggingface.co/datasets/keenable-ai/needle-results)
 (a slim `<bench>.json` per run plus `<bench>/<engine>.json` with each
@@ -263,6 +267,21 @@ the queries evaluated by runs from the last 24 hours
 (`scripts/daily_queries.py`; `backfill` rebuilds it from the archive). The
 workflow needs repo secrets `OPENROUTER_API_KEY`, `HF_TOKEN`, and the
 per-engine keys.
+
+The deployed site also serves the results page at
+<https://keenableai.github.io/needle/results/> with `results.csv`,
+`results.json`, `results.md` and `results.pdf`, rebuilt on every deploy,
+plus a `sitemap.xml` that lists the dashboard and the results page.
+[`snapshot.yaml`](.github/workflows/snapshot.yaml) runs on the 1st of each
+month and saves the month before as it stood at its end (the 7-day mean to
+its last day) under `history/` on `gh-pages`:
+`needle-results-YYYY-MM.{csv,json,md}` and
+`needle-overall-YYYY-MM.{webp,png}`. It renders the gh-pages state from
+just before the next month's first run with the browser clock set to the
+month's end, and it never overwrites a month that already exists. The
+results page lists the months in its History section; add a month's blog
+post to [`dashboard/history_posts.json`](dashboard/history_posts.json) as
+`{"YYYY-MM": "https://..."}`.
 
 ## Development
 
@@ -285,4 +304,7 @@ uv run pytest   # deterministic, no network
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+Code: MIT — see [LICENSE](LICENSE). Benchmark results data (the dashboard
+data, the results page files, the monthly snapshots and the
+[`keenable-ai/needle-results`](https://huggingface.co/datasets/keenable-ai/needle-results)
+dataset): [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).

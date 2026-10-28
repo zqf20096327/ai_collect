@@ -11,7 +11,7 @@
   <a href="https://playwright.dev"><img alt="Playwright | Cypress" src="https://img.shields.io/badge/Playwright_%7C_Cypress-supported-2EAD33?style=flat-square&labelColor=black&logo=playwright&logoColor=white"></a>
   <a href="#merged-upstream-fixes"><img alt="Merged PRs" src="https://img.shields.io/badge/merged_PRs-15-1FC07C?style=flat-square&labelColor=black&logo=github"></a>
   <a href="https://github.com/vercel-labs/skills#supported-agents"><img alt="Runs in 55+ agents" src="https://img.shields.io/badge/runs_in-55%2B_agents-37B0E6?style=flat-square&labelColor=black"></a>
-  <a href="https://www.skills.sh/voidmatcha/e2e-skills"><img alt="Installs on skills.sh" src="https://img.shields.io/badge/skills.sh_installs-700%2B-1FC07C?style=flat-square&labelColor=black"></a>
+  <a href="https://skills.sh/voidmatcha/e2e-skills"><img alt="Installs on skills.sh" src="https://img.shields.io/badge/skills.sh_installs-700%2B-1FC07C?style=flat-square&labelColor=black"></a>
   <a href="https://www.kimi.ai/resources/software-testing-skills"><img alt="Listed in Kimi testing skills" src="https://img.shields.io/badge/%F0%9F%8E%89_listed_in-Kimi_testing_skills-8B5CF6?style=flat-square&labelColor=black"></a>
   <a href="./LICENSE"><img alt="License" src="https://img.shields.io/github/license/voidmatcha/e2e-skills?style=flat-square&labelColor=black&color=37B0E6"></a>
 </p>
@@ -42,7 +42,7 @@ A passing test can still miss a broken feature. `e2e-skills` helps check whether
 | Review Playwright/Cypress tests or PR/diff changes | [`e2e-reviewer`](skills/e2e-reviewer/SKILL.md) | Problems ranked by severity, with evidence and suggested fixes; for changes, whether each problem is new, worsened, or pre-existing |
 | Debug a failed Playwright run | [`playwright-debugger`](skills/playwright-debugger/SKILL.md) | Likely cause, supporting evidence, and a suggested fix |
 | Debug a failed Cypress run | [`cypress-debugger`](skills/cypress-debugger/SKILL.md) | Likely cause, supporting evidence, and a suggested fix |
-| Run a deterministic local scan | `skills/e2e-reviewer/scripts/scan.sh` | Possible code problems without installing the target project’s packages |
+| Run a deterministic local scan | `e2e-skills scan` | Possible code problems without installing the target project’s packages |
 
 Review results use P0/P1/P2 for severity: P0 means a test can pass despite a broken feature, P1 concerns reliability or diagnosis, and P2 concerns maintenance. Debuggers use F1–F15 to label 15 failure categories, such as timing, selectors, and authentication.
 
@@ -101,7 +101,7 @@ test('shows the welcome message', async ({ page }) => {
 The bundled scanner catches the false-green assertions without project configuration. Here is the relevant output:
 
 ```console
-$ /bin/bash -p skills/e2e-reviewer/scripts/scan.sh tests/
+$ npx --yes --package=@voidmatcha/e2e-skills-scanner@3.3.1 e2e-skills scan tests/
 
 [P0][CONFIRMED] #4f Static finding (2 hits)
   "login.spec.ts":5: #4f
@@ -112,7 +112,7 @@ AST-origin total: 2 hit(s); retained findings, not ast-grep execution.
 Summary: 2 total hit(s), 2 P0, 0 P1/P2 heuristic, 0 LLM-triage, 0 P0 candidate; 2 AST-origin hit(s), canonical retained findings.
 ```
 
-Because this run reports P0 findings, `scan.sh` exits 1.
+Because this run reports P0 findings, `e2e-skills scan` exits 1.
 
 `eslint-plugin-playwright` also flags this shape via `no-unnecessary-assertions`; enable it so commit-time lint owns what it can and the scanner fills the gaps.
 
@@ -138,53 +138,58 @@ Starting with cases where tests pass despite bugs, the talk covers combining lin
 
 ### Install with your coding agent (recommended)
 
-To include test generation, paste the prompt below into Claude Code or Codex and identify your existing local Playwright project:
+Paste the prompt below into Claude Code or Codex. For test generation, name your existing local Playwright project; for reviewing and debugging only, the agent installs without project setup.
 
 ```text
-Install https://github.com/voidmatcha/e2e-skills using its install.sh for my current host and Playwright project. Run the printed --check command when authorized for that exact command, then verify generator_write_test is available in this session. If a restart is needed, tell me how to resume verification afterward. Report installation, server tools, session tools, and approval separately; do not claim readiness until the required session tools are visible. Respect host trust and tool permissions; do not edit global configuration or restart the host automatically.
+Install e2e-skills for my current host and Playwright project with `npx --yes --package=@voidmatcha/e2e-skills-scanner@3.3.1 e2e-skills install --host <codex|claude> --project <path>`, previewing it with `--dry-run` first. If I only want review or debugging, omit `--project`. Then run `e2e-skills doctor` with the same arguments and `--check-server` when authorized for that exact command, and verify generator_write_test is available in this session. If a restart is needed, tell me how to resume verification afterward. Report installation, server tools, session tools, and approval separately; do not claim readiness until the required session tools are visible. Respect host trust and tool permissions; do not edit global configuration or restart the host automatically.
 ```
 
-1. Tell your agent which existing local Playwright project to use. The installer prepares the skills, dedicated agents, official Playwright agents and project MCP configuration, then prints a diagnostic command.
-2. Authorize that exact command in a trusted project: `bash install.sh --host codex --project /path/to/playwright-project --check` (use `--host claude` for Claude Code). It skips installation and configuration writes, starts the configured local MCP server and checks `initialize` and `tools/list` only. It executes project code/configuration, without calling tools, opening a browser or running tests.
-3. If needed, restart your coding agent yourself, complete host trust/approval, and ask it to resume verification. It must see `generator_write_test` in the active session before proceeding with generation.
-
-The diagnostic verifies server tools only; it cannot establish active session tool availability or approval. A missing tool alone does not prove an approval problem.
-
-After this setup, you do not need to repeat the manual installation steps. Use the [installation guide](docs/installation.md) only for prerequisites, conflicts or manual setup.
-
-**Only reviewing or debugging?** Tell the agent to install the skills and dedicated agents only, without Playwright generator setup. Official Playwright agents and the `playwright-test` MCP server are required for generation, not for reviewing or diagnosing existing Playwright/Cypress tests.
-
-### Install directly with the CLI
-
-Install without a repository clone. Replace `codex` with `claude` for Claude Code; add `--dry-run` to preview changes. See the [installation guide](docs/installation.md#cli-installer) for diagnosis, prerequisites and conflicts.
-
-```bash
-npx --yes --package=@voidmatcha/e2e-skills-scanner@3.2.1 e2e-skills install --host codex --project /path/to/playwright-project
-```
+The agent runs the `e2e-skills` installer, which sets up the four skills, two dedicated subagents and, with a project, the official Playwright test agents and project MCP configuration. If a restart is needed, restart your agent yourself and approve the project's MCP server; generation can start once the active session shows `generator_write_test`. Using another agent such as Cursor or Gemini CLI? Install the skills with skills.sh below.
 
 <details>
-<summary>Other installation methods: skills.sh and plugins</summary>
+<summary>Other installation methods: skills.sh, the CLI and plugins</summary>
 
-### Install skills with skills.sh
+Choose by what you need. Reviewing and debugging work in any agent. Test generation also needs the official Playwright test agents and a project MCP server, which the installer sets up for Claude Code and Codex.
 
-For all hosts supported by [skills.sh](https://skills.sh/voidmatcha/e2e-skills), install the four skills with one command:
+| You want to | Agents | Install | You get | Not included |
+| --- | --- | --- | --- | --- |
+| Review and debug existing Playwright/Cypress tests | Any [supported agent](https://github.com/vercel-labs/skills#supported-agents) | [skills.sh](#review-and-debug-install-the-skills) | The four skills | The two dedicated subagents (optional: the skills reach the same verdicts inline) and generator setup |
+| Also generate new Playwright tests | Claude Code, Codex | [e2e-skills installer](#test-generation-claude-code-and-codex) | The four skills, two dedicated subagents, official Playwright test agents and project MCP configuration | Nothing needed for generation |
+
+### Review and debug: install the skills
+
+Install the four skills with [skills.sh](https://skills.sh/voidmatcha/e2e-skills):
 
 ```bash
 npx --yes skills@1.5.21 add voidmatcha/e2e-skills -g --all
 ```
 
-This installs skills only; dedicated agents and Playwright generator setup are separate. To target one host, replace `--all` with `-a <agent>` from the [supported agents](https://github.com/vercel-labs/skills#supported-agents). The CLI version is pinned.
+To target one agent, replace `--all` with `-a <agent>` from the [supported agents](https://github.com/vercel-labs/skills#supported-agents). The CLI version is pinned. This installs the four skills only. To check, list your agent's skills (for example `/skills` in Claude Code) and look for `e2e-reviewer`, `playwright-debugger`, `cypress-debugger` and `playwright-test-generator`.
+
+### Test generation: Claude Code and Codex
+
+Run these from any directory, naming your existing local Playwright project. Replace `codex` with `claude` for Claude Code. The installer needs Node.js 22.20+.
+
+```bash
+npx --yes --package=@voidmatcha/e2e-skills-scanner@3.3.1 e2e-skills install --host codex --project /path/to/playwright-project --dry-run
+npx --yes --package=@voidmatcha/e2e-skills-scanner@3.3.1 e2e-skills install --host codex --project /path/to/playwright-project
+npx --yes --package=@voidmatcha/e2e-skills-scanner@3.3.1 e2e-skills doctor --host codex --project /path/to/playwright-project
+```
+
+`--project` runs the official `playwright init-agents --loop=codex` (or `--loop=claude`) setup for that project and writes its MCP configuration; rerun the install after upgrading Playwright. Without `--project`, the installer adds only the four skills and two dedicated subagents. For a trusted project, add `--check-server` to `doctor` to start the configured MCP server and check `initialize` and `tools/list`; it executes project code, without calling tools, opening a browser or running tests. That check covers the server only. If needed, restart your agent yourself and approve the project's MCP server; generation can start once the active session shows `generator_write_test`.
+
+See the [installation guide](docs/installation.md) for prerequisites, conflicts and manual setup.
 
 ### Claude Code
 
-Alternatively, install the plugin, which includes the four skills and two dedicated agents:
+Alternatively, install the plugin, which includes the four skills and two dedicated subagents:
 
 ```text
 /plugin marketplace add voidmatcha/e2e-skills
 /plugin install e2e-skills@voidmatcha
 ```
 
-For generation, use the all-in-one setup above or follow the [installation guide](docs/installation.md).
+For generation, use the installer above or follow the [installation guide](docs/installation.md).
 
 ### Codex
 
@@ -195,9 +200,9 @@ codex plugin marketplace add voidmatcha/e2e-skills
 codex plugin add e2e-skills@voidmatcha
 ```
 
-The plugin does not install the two dedicated agents. For those, run `bash scripts/dev/install-codex-agents.sh` from this checkout. Review and debugging also work inline without them.
+The plugin does not install the two dedicated subagents. To add them, run `bash scripts/dev/install-codex-agents.sh` from a checkout of this repository. Review and debugging also work inline without them.
 
-For generation, use the all-in-one setup above or follow the [installation guide](docs/installation.md#codex).
+For generation, use the installer above or follow the [installation guide](docs/installation.md#codex).
 
 </details>
 
@@ -240,7 +245,7 @@ Version history and the previous generator workflow are documented in [CHANGELOG
 
 ## Check whether generated tests catch bugs
 
-The official Playwright agents handle generation. The generator skill then runs the `e2e-reviewer` scanner when installed, fixes P0/P1 findings in at most three passes, and runs the project's tests. Missing or skipped checks are reported as incomplete. Request `e2e-reviewer` separately for a semantic review of the generated tests.
+The official Playwright agents handle generation. The generator skill then runs the `e2e-reviewer` scanner when installed and fixes P0/P1 findings in at most three passes. It stops if issues remain or scanning is incomplete; otherwise, it runs new specs only with either the approved project test command or the existing official `test_run` tool, with exact approved `locations` and projects (or the sole project confirmed). It uses one execution method and reports native passed/failed/skipped counts. Missing or skipped checks are reported as incomplete. Request `e2e-reviewer` separately for a semantic review of the generated tests.
 
 Start with a regular `e2e-reviewer` review of whether the tests check the intended behavior. When a specific question needs runtime evidence, add a probe for only that assertion or behavior. You choose where to spend the extra tokens and execution time; mutation and app-fault probes do not run automatically on every review:
 
@@ -250,6 +255,8 @@ Start with a regular `e2e-reviewer` review of whether the tests check the intend
 For example: “Check whether this test catches a broken save operation.” The reviewer examines the local project and proposes a check. Execution requires a trusted, prepared local environment and your approval of the commands. Results apply to the selected assertion or bug; they do not prove that every bug will be caught.
 
 See the [execution procedure and requirements](skills/e2e-reviewer/references/runtime-probes.md) and [two OSS workflow examples](https://huggingface.co/datasets/voidmatcha/e2e-skills-benchmarks/blob/2992d57564bb5b0d7eae0650a64f392481211d41/snapshots/git-93afd3b105b869b15589634c88676230c7d92254/benchmarks/release-readiness-v1/README.md#portable-integration).
+
+Optionally, to have agents also test failure paths when they write tests, paste the [test-authoring memo](docs/test-authoring-memo.md) unchanged into your project's `CLAUDE.md` or `AGENTS.md`. No skill loads it; read its measured effect and limits first. The optional [test-failure policy](docs/test-failure-policy.md) is a separate snippet for the same files that asks agents not to rewrite a failing test without a named requirement. Instead of pasting, `e2e-skills guidance --host claude|codex --project PATH --memo --policy` writes either or both unchanged between HTML comment markers, only when asked; see [installation](docs/installation.md#optional-memo-and-failure-policy).
 
 ## Evidence and limits
 
@@ -360,16 +367,12 @@ The debuggers classify product regressions separately from brittle tests and ret
 Run the code scanner directly without asking an AI agent. It reports possible problems for review; it does not run your tests or decide whether they prove the intended behavior.
 
 ```bash
-npx --yes --package=@voidmatcha/e2e-skills-scanner@3.2.1 e2e-skills-scan --scan path/to/tests --format text
+npx --yes --package=@voidmatcha/e2e-skills-scanner@3.3.1 e2e-skills scan path/to/tests --format text
 ```
 
-Requires Node.js 22 or newer; the TypeScript parser is bundled. npx downloads the package and its dependencies if they are not already cached. Scanning does not execute tests or project configuration. Use `--format json` for structured output or `--report-file <new-file>` to save a full report without overwriting an existing file.
+Requires Node.js 22 or newer; the TypeScript parser is bundled. npx downloads the package and its dependencies if they are not already cached. The scanner itself does not download tools or load executable project configuration, and it does not execute tests. Use `--format json` for structured output or `--report-file <new-file>` to save a full report without overwriting an existing file.
 
-The reviewer already includes an offline copy of the scanner; no npm installation is needed. By default, this bundled scanner does not download tools or load project configuration. From an installed skill or source checkout, use:
-
-```bash
-/bin/bash -p skills/e2e-reviewer/scripts/scan.sh path/to/tests
-```
+The reviewer includes the same Node scanner and runs it without a separate npm installation. For its offline launcher and runtime requirements, see the [scanner guide](packages/scanner/README.md#installed-scanner).
 
 Scanning does not start assertion mutation or fault injection. Those checks require a trusted, prepared project; see the [CLI and probe guide](packages/scanner/README.md).
 
@@ -414,9 +417,9 @@ Point `e2e-reviewer` at the relevant spec directory. It combines deterministic c
 <summary>Review coverage and execution safety details</summary>
 
 <!-- README-I18N-CONTRACT:CORE-SAFETY:START -->
-The `e2e-reviewer` skill reviews all 24 catalog patterns with stable IDs and P0/P1/P2 severity. Its standalone `scan.sh` scanner covers only a deterministic mechanical subset. Scanner matches are candidates, not final findings; the skill checks intent and surrounding code before reporting a verdict.
+The `e2e-reviewer` skill reviews all 24 catalog patterns with stable IDs and P0/P1/P2 severity. Its standalone `e2e-skills scan` scanner covers only a deterministic mechanical subset. Scanner matches are candidates, not final findings; the skill checks intent and surrounding code before reporting a verdict.
 
-The debuggers classify failures against the stable F1–F15 taxonomy. They execute target-controlled code only after you trust the repository and approve the exact command, including its environment and flags. The generator runs only the reviewer scanner and the project's own test command on the specs it wrote.
+The debuggers classify failures against the stable F1–F15 taxonomy. They execute target-controlled code only after you trust the repository and approve the exact command, including its environment and flags. The generator runs the reviewer scanner, then executes only the specs it wrote using one approved method: the project's test command or the existing official `test_run` tool with exact approved `locations` and projects (or the sole project confirmed).
 
 For non-public benchmark runs, `--isolation-wrapper` is a required hook, not proof of isolation. Continuous integration (CI) validates the wrapper contract but does not attest filesystem, process, or network isolation.
 <!-- README-I18N-CONTRACT:CORE-SAFETY:END -->
@@ -436,6 +439,8 @@ Yes, when you provide the local report artifacts or a supported GitHub Actions r
 - [How to review AI-generated Playwright and Cypress E2E tests](docs/review-ai-generated-e2e-tests.md)
 - [24 Playwright and Cypress E2E test smells](docs/e2e-test-smells.md)
 - [Benchmark status and negative results](benchmarks/STATUS.md)
+- [Optional test-authoring memo](docs/test-authoring-memo.md) and its [evidence record](docs/benchmarks/test-authoring-memo-v1.md)
+- [Optional test-failure policy](docs/test-failure-policy.md) and its [measurement summary](docs/benchmarks/test-failure-policy-v1.md)
 
 <details>
 <summary>More references</summary>
@@ -447,9 +452,9 @@ Yes, when you provide the local report artifacts or a supported GitHub Actions r
 - [Historical AI reviewer pilot](docs/ai-reviewer-benchmark.md)
 - [Debugger benchmark protocol](docs/debugger-benchmark/README.md)
 - [Framework scope](docs/framework-scope.md)
-- [Local E2E rule bridge and recommended lint](docs/recommended-lint.md)
+- [Local E2E rule bridge and recommended lint](docs/installation.md#optional-project-lint)
 - [Roadmap](docs/roadmap.md)
-- [Reviewer evidence execution plan and optional Jev experiment](docs/plans/reviewer-evidence-next-steps.md)
+- [Archived reviewer evidence plan](https://huggingface.co/datasets/voidmatcha/e2e-skills-benchmarks/blob/a8279e972f2ae5b7628ac9ec8ccfc4cdac380a1d/releases/v3.3.1/docs-archive-20261028/README.md)
 
 </details>
 

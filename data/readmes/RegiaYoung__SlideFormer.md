@@ -5,7 +5,8 @@
 <h3>An Efficient Heterogeneous Co-Design for Fine-Tuning on a Single GPU</h3>
 
 <p>
-  <a href="https://arxiv.org/pdf/2603.16428"><img src="https://img.shields.io/badge/Paper-arXiv%202603.16428-b31b1b" alt="Paper"></a>
+  <a href="https://dl.acm.org/doi/10.1145/3770743.3804125"><img src="https://img.shields.io/badge/Published%20paper-DAC%20%2726-blue" alt="Published paper: DAC '26 (ACM Digital Library)"></a>
+  <a href="https://arxiv.org/pdf/2603.16428"><img src="https://img.shields.io/badge/Author%20version-arXiv%202603.16428-b31b1b" alt="Author version: arXiv 2603.16428"></a>
   <a href="https://doi.org/10.1145/3770743.3804125"><img src="https://img.shields.io/badge/DOI-10.1145%2F3770743.3804125-blue" alt="DOI"></a>
   <a href="https://63dac.conference-program.com/presentation/?id=RESEARCH1286&sess=sess110"><img src="https://img.shields.io/badge/DAC%202026-Presentation-4c8eda" alt="DAC 2026 Presentation"></a>
   <a href="https://github.com/RegiaYoung/SlideFormer/stargazers"><img src="https://img.shields.io/github/stars/RegiaYoung/SlideFormer?style=social" alt="GitHub stars"></a>
@@ -286,20 +287,26 @@ SlideFormer/
 If you use SlideFormer, its code, or its design ideas in your research, please
 cite our DAC 2026 paper.
 
-- Paper: [An Efficient Heterogeneous Co-Design for Fine-Tuning on a Single GPU](https://arxiv.org/pdf/2603.16428)
+- Published paper: [ACM Digital Library](https://dl.acm.org/doi/10.1145/3770743.3804125)
+- Author version: [arXiv:2603.16428](https://arxiv.org/abs/2603.16428)
 - DAC 2026 presentation: [63rd ACM/IEEE Design Automation Conference](https://63dac.conference-program.com/presentation/?id=RESEARCH1286&sess=sess110)
 - DOI: [10.1145/3770743.3804125](https://doi.org/10.1145/3770743.3804125)
 - ISBN: `979-8-4007-2254-7`
 
 ```bibtex
-@misc{yang2026efficientheterogeneouscodesignfinetuning,
-      title={An Efficient Heterogeneous Co-Design for Fine-Tuning on a Single GPU},
-      author={Ruijia Yang and Zeyi Wen},
-      year={2026},
-      eprint={2603.16428},
-      archivePrefix={arXiv},
-      primaryClass={cs.DC},
-      url={https://arxiv.org/abs/2603.16428},
+@inproceedings{yang2026efficientheterogeneouscodesignfinetuning,
+  author    = {Yang, Ruijia and Wen, Zeyi},
+  title     = {An Efficient Heterogeneous Co-Design for Fine-Tuning on a Single {GPU}},
+  booktitle = {Proceedings of the 63rd ACM/IEEE Design Automation Conference},
+  series    = {DAC '26},
+  year      = {2026},
+  publisher = {Association for Computing Machinery},
+  isbn      = {9798400722547},
+  articleno = {472},
+  pages     = {1--7},
+  numpages  = {7},
+  doi       = {10.1145/3770743.3804125},
+  url       = {https://dl.acm.org/doi/10.1145/3770743.3804125}
 }
 ```
 

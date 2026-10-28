@@ -13,11 +13,13 @@ Pictide is a local generative image explorer that learns your preferences. No pr
 ### Quick start
 
 1. Download and extract the portable package for your system from [GitHub Releases](https://github.com/Lykr/pictide/releases).
-2. Launch Pictide and follow the in-app tour to start roaming.
+2. Launch Pictide, wait for vocabulary and recommendation resources to download on first use, then follow the in-app tour to start roaming.
 
 On Windows, first-launch setup can install ComfyUI and a recommended model. On macOS and Linux, have ComfyUI or another image generation API ready.
 
 Startup help: [Windows](docs/guides/setup/windows.md#portable-edition) · [Linux](docs/guides/setup/linux.md#portable-edition) · [macOS](docs/guides/setup/macos.md#portable-edition).
+
+For a server or NAS, [deploy with Docker Compose](docs/guides/setup/docker.md): download `compose.yaml` from the release and run `docker compose up -d`. Prebuilt images support Linux amd64 and arm64.
 
 ### Feature overview
 

@@ -112,7 +112,7 @@ npx skills add https://liki.hk
 - Skill 与服务端不做版本兼容检查；未知工具会返回明确错误。
 - 镜像由本地构建，按 commit sha 部署。
 - 敏感问题走关怀优先（support-first）的安全策略。
-- 未命中内置城市表时，`city_coords` 可能把城市名发送到 Nominatim（OSM）完成地理编码；自部署可用 `LIKI_EXTERNAL_GEOCODING=off` 关闭。
+- 城市查询只使用内置 WGS-84 地理表，不做外部地理编码请求。
 
 ### 诚实声明：边界本身就是可靠性的一部分
 
@@ -154,7 +154,7 @@ Skill 会追问，或使用真实事件进入考时流程。证据不足时明�
 
 ## 许可与声明
 
-MIT。命理结论为传统文化视角的参考性解读，不构成医疗、法律、投资或重大人生决策建议。
+代码采用 MIT。命理结论为传统文化视角的参考性解读，不构成医疗、法律、投资或重大人生决策建议。内嵌地理数据不由 MIT 重新授权，第三方声明见 [NOTICE](./NOTICE.md)。
 
 完整使用说明见[用户指南](./docs/USER_GUIDE.md)；参与贡献见 [CONTRIBUTING](./CONTRIBUTING.md)，变更历史见 [CHANGELOG](./CHANGELOG.md)。
 

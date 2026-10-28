@@ -76,6 +76,22 @@ Enter to skip; you can add it later from the web UI).
 - **Channels** — one `claude` process each, running in parallel. Renaming,
   grouping, and closing all sync live between the browser and Telegram: it's
   one list, server-owned, not two copies.
+- **Groups column** — once you create a group, on a desktop the groups get a
+  column of their own, left of the agents (with no group there is no column, just
+  the single agents list): pick a group and the agents column shows only its
+  agents (*Ungrouped* holds the rest, the home agent included unless you file
+  it). Each
+  group has an icon — drawn at random, double-click it to pick another: choose
+  from the grid, type any emoji, or **type a word** (`rocket`, `bug`, `money`…)
+  to search for a matching one — and a **＋** that creates the new agent straight
+  into that group.
+  A single click on a group (its icon or its row) selects it; this matters once
+  **«** folds the column to its icons, where the icon is the whole row.
+  Dragging an agent onto a group still files it there, and dragging groups
+  reorders them. Double-click a name to rename it. A group you are not looking at
+  carries the same signal its agents do — the row lights up (and breathes) when
+  one is working, waiting for you, or has an unread answer, the way a channel
+  does. On a phone nothing changes: the agents sheet still lists every group.
 - **Worktree isolation** — spawned agents get their own git worktree and branch
   by default, so parallel agents never collide. Work is never auto-discarded:
   an empty worktree is reclaimed on close, anything with changes or commits
@@ -114,12 +130,16 @@ Enter to skip; you can add it later from the web UI).
   trigger to you, a product agent that writes the spec instead of the change,
   and three go-to-market roles (paid, organic, support). Each one is yours to
   edit, and a role you delete stays deleted.
-- **Which account, and when it expires** — the version menu also shows the
-  Claude login this cockpit runs on (its email and subscription) and when its
-  sign-in **expires** — i.e. when a re-login will be needed. The timestamp is
-  read from Claude Code's own credentials store, never the token itself; the
-  short-lived access token refreshes on its own, so the figure shown is the
-  session deadline, not that rotation.
+- **Which account, and when it expires — and re-login before it does** — the
+  version menu shows the Claude login this cockpit runs on (its email and
+  subscription) and when its sign-in **expires** — i.e. when a re-login will be
+  needed. The timestamp is read from Claude Code's own credentials store, never
+  the token itself; the short-lived access token refreshes on its own, so the
+  figure shown is the session deadline, not that rotation. A **↻ Re-login to
+  Claude** button right there signs you in again without waiting for the lapse,
+  and in the last **48 hours** (or once it has lapsed) a reminder **banner**
+  carries the same one-click re-login — so your agents never quietly start
+  hitting `401` because nobody renewed the session.
 - **Secret vault** — stored under `~/.shadok-ai`, never in your repo, injected
   as env vars into the agents that need them. Add or **update** a secret from the
   panel, tick the **profiles** it should feed right there, and reload the running
@@ -172,6 +192,13 @@ Enter to skip; you can add it later from the web UI).
   the audio was left unheard — ask and the agent can listen. Telegram caps what
   a bot may download at 20 MB; past that you get a clear notice instead of
   silence.
+- **Link to a message** — every message (yours and the agent's) has a 🔗 link
+  button beside copy. It copies a URL like `…/#agent=<session>&msg=<id>`;
+  whoever opens it — someone who already has access to this cockpit, after the
+  usual sign-in — lands on that agent, scrolled to that message, highlighted.
+  The link lives in the URL's `#` part, so it never reaches the server or a
+  proxy log. A message older than the history shown (the last 100 turns), or an
+  agent that was closed, says so instead of opening somewhere else.
 - **Run the command an agent asks you to** — when an agent writes `! cmd` for
   you to run (typically because it cannot), a ▶ run button sits right on that
   command's code block, beside its copy button — so it runs where it was
@@ -228,7 +255,7 @@ Enter to skip; you can add it later from the web UI).
   folds away while you type). Fields are 16px, which is what stops Safari from
   zooming in on focus. The agents column is replaced by a channel selector in
   the channel bar.
-- **Tweak Shadok-AI** — a card pinned at the bottom of the agents column. One
+- **Tweak Shadok-AI** — a card pinned at the bottom of the agents column, with the running version in grey beside its title (the code a tweak starts from). One
   click clones shadok-ai's own source into `~/.shadok-ai/self/shadok-ai` and
   starts an agent on it in its own worktree; that agent delivers its change as a
   **pull request** — a fork under your GitHub account, since you need no rights
@@ -284,6 +311,9 @@ Enter to skip; you can add it later from the web UI).
 - **Self-update** — polls npm and can update and reload itself in place.
 
 ### Telegram (optional)
+
+The Telegram panel (header icon) carries a folded *How to set it up, step by step*
+guide, open until a token is saved and a group is bound.
 
 Add your bot to a group with **Topics** enabled, make it an admin with *Manage
 topics* (and *Delete messages* so `/secret` can scrub values), then in the group:
@@ -362,7 +392,7 @@ know before opening it up:
 - **That password is the `admin` account.** With it set, the login page gains a
   user field — leave it blank to sign in as the admin. An admin can then invite
   other people from the **Users** panel: each invitation is a single-use link,
-  valid 7 days, on which the invitee chooses their own password, so the admin
+  valid 48 hours, on which the invitee chooses their own password, so the admin
   never learns it — and redeeming the link signs them in straight away. The ⋯
   menu names who you are and lets you sign out. Two roles: `admin` manages
   accounts, `member` does everything
@@ -384,11 +414,30 @@ know before opening it up:
     new device, sign in with the password, choose *use a code*, register. A
     password alone never registers a passkey — that is what stops a stolen
     password from enrolling the thief's phone.
-  - **Lost password or lost device**: another admin clicks *reset access* on your
-    row (confirming with their own passkey). Your password and every passkey are
-    removed and they hand you a fresh invitation link, on which you choose a new
-    password and register the device you have. Nobody can reset themselves. An
-    admin can also hand a member a *device code* directly.
+  - **Lost something**: another admin opens *recover access…* on your row and
+    picks what you lost (always confirming with their own passkey). Nobody can
+    recover themselves.
+    - *lost password* — one admin; you get a link (48 h), choose a new password,
+      then confirm with one of your passkeys, which are all kept;
+    - *lost passkey* — a **second admin approves** from their Security panel; you
+      then get a device code (48 h) to register a new device;
+    - *lost everything* — password and passkeys are wiped **24 hours** later, or
+      as soon as a second admin approves; you, the asker or any admin can cancel
+      it meanwhile.
+    Making or unmaking an admin also needs a second admin's approval. A device
+    code for someone who has no passkey yet is still one admin's act. Every
+    session opened before a recovery stops working — including one on the lost
+    device; removing a passkey or demoting an admin does the same.
+  - While it is on, inviting, deleting an account and changing a role also ask
+    the admin for their passkey.
+  - **Security panel** (🛡 in the header, a badge when something is new): what
+    was done to your account — invited, made admin, reset, a passkey added or
+    removed, a recovery asked about you — and, for admins, the whole log, the
+    requests waiting for their approval, and their own requests with the link or
+    code to hand over once done. On anything you don't recognise,
+    **This wasn't me** ends your other sessions, removes a passkey you did not
+    add, and flags it to every admin. There is no mail yet: this panel is the
+    channel, so keep an eye on its badge.
   - While it is on, the instance password (`admin`) **cannot sign in to the
     browser** — it lives in every agent's environment and no one could reset it;
     use a named account. Agents, Telegram and peers keep working (they never use

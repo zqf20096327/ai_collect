@@ -60,7 +60,7 @@ Other backends need [their own packages](#backend-packages).
 # npm: downloads the prebuilt binary from the matching release and checks its sha256
 npm install -g @agent-sh/agent-workspace-linux
 
-# cargo: builds from git and installs only the binary (add --tag v0.6.0 to pin)
+# cargo: builds from git and installs only the binary (add --tag v0.6.1 to pin)
 cargo install --git https://github.com/agent-sh/agent-workspace-linux
 ```
 
@@ -114,6 +114,8 @@ agent-workspace-linux workspace stop
 ```
 
 Through an MCP host you don't run these by hand. The agent calls the matching tools, routed by the [bundled skill](#the-skill).
+
+Use `--id NAME` to name a workspace. The name `viewers` is reserved for the shared viewer registry and is excluded from workspace listing and stale cleanup.
 
 ## Desktop backends
 

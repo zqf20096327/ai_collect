@@ -230,6 +230,7 @@ Tools for Image/Audio/Video/Doc reconnaissance
 - [ivre](https://github.com/ivre/ivre) - Network recon framework to build alternatives to Shodan/ZoomEye/Censys.
 - [Findomain](https://github.com/Findomain/Findomain) - Fast domain recognition tool with screenshotting, port scan, and subdomain monitoring.
 - [pureip.app](https://pureip.app/) - Free IP address checker: purity and risk score, WHOIS/RDAP, reverse DNS, IPv6 lookup, IP blacklist status, plus availability checks for ChatGPT, Claude and Gemini across cloud providers.
+- [RedAmon](https://github.com/samugit83/redamon) - Self-hosted AI penetration testing framework whose recon pipeline runs 40+ tools in parallel (subdomains, ports, services, URLs; passive sources only in stealth mode) and maps the target's attack surface into a Neo4j graph.
 <br>
 
 [⇧ Top](#index)
@@ -913,5 +914,4 @@ You are searching 121 billion records.
 - [Getdewey.co](https://getdewey.co/) - Save your favorite X (Twitter) and Bluesky bookmarks in one place
 - [geosocial footprint](http://geosocialfootprint.com/) - GeoSocial Footprint: A geosocial footprint is the combined bits of location information that a user divulges through social media, which ultimately forms the users location "footprint". For Twitter.com users, this footprint is created from GPS enabled tweets, social check-ins, natural language location searching (geocoding), and profile harvesting.
 - [Twitter Analytics](https://foller.me/) - Looking for someone in the United States? Our free people search engine finds social media profiles, public records, and more!
-- [getdaytrends](https://getdaytrends.com/) - Twitter trends worldwide
-- [Twitter Trending Hashtags and Topics](https://www.trendsmap.com/) - Trendsmap has been providing unique and powerful analytical and visualisation tools to analyse Twitter data. With the demise of Twitter, we are now providing access to o
+- [getdaytrends](https://getdaytren

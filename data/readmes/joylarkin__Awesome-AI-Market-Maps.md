@@ -69,6 +69,7 @@ OR
 - [CB Insights - Anthropic's IPO filing maps the AI safety startup market - October 2026](https://www.cbinsights.com/research/newsletter-october-1-2026/?utm_source=awesome-ai-market-maps)
 
 #### AI Security
+- [Lightspeed & Fortune - Cyber60 CISO Survey - October 2026](https://lsvp.com/cyber60-2026-2027/?utm_source=awesome-ai-market-maps)
 - [TechOperators - The Cyber × AI Map - October 2026](https://www.techoperators.com/landscape?utm_source=awesome-ai-market-maps)
 
 #### Consumer AI
@@ -91,6 +92,7 @@ OR
 - [Will Francis - Is there an AI bubble? The AI circular economy, mapped - October 2026](https://ai-circular-economy.com/?utm_source=awesome-ai-market-maps)
 - [Clement Vouillon — Axomap - Landscape Directory - October 2026](https://axomap.com/maps?utm_source=awesome-ai-market-maps)
 - [The Collective - AI for Fitness Operators - October 2026](https://www.wearethecollective.world/ai-map-fitness-operators?utm_source=awesome-ai-market-maps)
+- [Devtoolwatch Board - AI Developer Tools Ranked by GitHub Stars and npm/PyPI Download Growth - October 2026](https://index.devtoolwatch.com/?utm_source=awesome-ai-market-maps)
 
 
 ---
@@ -1144,5 +1146,4 @@ OR
 #### AI Everything Else
 - [a16z - Shopping in 'God Mode' with AI - March 2025](https://a16z.com/ai-shopping-online/?utm_source=awesome-ai-market-maps)
 - [Optimist Ventures - Q1'25 Insurtech Market Map - March 2025](https://medium.com/@jp_at_optimist/q125-insurtech-market-map-%EF%B8%8F-aa3ee89bd275?utm_source=awesome-ai-market-maps)
-- [Brighteye Ventures - AI for Enhancing Productivity - learning in the flow of work - March 2025](https://www.brighteyevc.com/post/ai-for-training-the-evolution-of-corporate-training-1?utm_source=awesome-ai-market-maps)
-- [Brighteye Ventures - AI for Training - the evolution of corporate training - March 2025](https://www.brighteyevc.com/post/ai-for-training-the-evoluti
+- [Brighteye Ventures - AI for Enhancing Productivity - learni

@@ -8,13 +8,25 @@
 [![Release](https://img.shields.io/github/v/release/i098/Crewship?style=for-the-badge&logo=github&label=&color=2563eb)](https://github.com/i098/Crewship/releases/latest)
 [![License: FSL-1.1-Apache-2.0](https://img.shields.io/badge/FSL--1.1--Apache--2.0-0d9488?style=for-the-badge)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/i098/Crewship?style=for-the-badge&logo=github&color=d97706)](https://github.com/i098/Crewship/stargazers)
-[![Sponsor](https://img.shields.io/badge/Sponsor-db61a2?style=for-the-badge&logo=githubsponsors&logoColor=white)](https://github.com/sponsors/i098)
+[![Website](https://img.shields.io/badge/Website-crewship.si-2563eb?style=for-the-badge)](https://crewship.si)
 
 [Docs](#more-docs) · [Install](#quick-start) · [Changelog](CHANGELOG.md) · [Discussions](https://github.com/i098/Crewship/discussions)
 
 </div>
 
 ## Quick start
+
+For agent-assisted setup, give your coding agent this instruction:
+
+```text
+Ask whether I already have a server for Crewship first.
+If yes, check its details and start setup on that server.
+If no, recommend a server for my expected load and wait for purchase confirmation.
+Follow https://github.com/i098/Crewship/blob/main/SETUP.md
+```
+
+<details>
+<summary>Manual setup</summary>
 
 Do you already have a server for Crewship?
 
@@ -45,14 +57,7 @@ Then check or resume setup **on the server**, from any directory:
 Follow the printed commands and the [manual sign-in steps](SETUP.md#1-sign-in-to-github).
 See [Setup checks](docs/configuration.md#commands) for the command's scope and limits.
 
-For agent-assisted setup, give your coding agent this instruction:
-
-```text
-Ask whether I already have a server for Crewship first.
-If yes, check its details and start setup on that server.
-If no, recommend a server for my expected load and wait for purchase confirmation.
-Follow https://github.com/i098/Crewship/blob/main/SETUP.md
-```
+</details>
 
 To update, run the same install command again.
 See [Install, update and migrate](docs/install.md) for other launchers and options.
@@ -97,7 +102,7 @@ For how a host gets set up, see the [setup flow](SETUP.md#setup-flow). This is w
 
 - [`blueprint/`](blueprint/): what provisions a host: the Ansible playbook, seeds, skills, and guards.
 - [`apps/`](apps/): services Crewship runs: crew board, iMessage bridge, and secrets Worker.
-- [`tools/`](tools/): stand-alone helpers: the `crewship` launcher and schedule viewer, `herdr-patch`, and `dia-debug`.
+- [`tools/`](tools/): stand-alone helpers: the `crewship` launcher and schedule viewer, `herdr-patch`, `dia-debug`, and the `lavish-tui` board view with `lavish-keep`.
 - [`scripts/`](scripts/): the `ship.sh` CLI code, the release artifact build, and secrets helpers.
 - [`site/`](site/): the crewship.si landing page.
 - [`docs/`](docs/): the guides.

@@ -15,6 +15,8 @@
 &nbsp;&nbsp;
 [![arXiv](https://img.shields.io/badge/arXiv-2609.30199-b31b1b)](https://arxiv.org/abs/2609.30199)
 &nbsp;&nbsp;
+[![Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Demo%20Worlds-ffd21e)](https://huggingface.co/datasets/tencent/ExplorationBench)
+&nbsp;&nbsp;
 [![Leaderboard](https://img.shields.io/badge/Leaderboard-10%20frontier%20systems-ffc107)](https://explorationbench.com/#leaderboard)
 &nbsp;&nbsp;
 [![Blog](https://img.shields.io/badge/Blog-EN%20%7C%20%E4%B8%AD%E6%96%87-624aff)](https://explorationbench.com/blog/)
@@ -25,12 +27,15 @@
 
 <p align="center">
     🖥️&nbsp;<a href="https://explorationbench.com"><b>Official Website</b></a>&nbsp;&nbsp;|&nbsp;&nbsp;
+    🤗&nbsp;<a href="https://huggingface.co/datasets/tencent/ExplorationBench"><b>Hugging Face</b></a>&nbsp;&nbsp;|&nbsp;&nbsp;
     📮&nbsp;<a href="#-evaluate-your-model"><b>Evaluate Your Model</b></a></p>
 
 ---
 
 ## 🔥 News
 
+- **2026.10.28**: 🤗 The two public demo worlds are released as a dataset on Hugging Face. [[Dataset]](https://huggingface.co/datasets/tencent/ExplorationBench)
+- **2026.10.20**: 📰 Synced (机器之心) covers ExplorationBench. [[Article]](https://finance.sina.com.cn/tech/roll/2026-10-20/doc-inivvsvr7593820.shtml)
 - **2026.10.13**: 📣 Tencent AI features ExplorationBench on X. [[Post]](https://x.com/TencentAI_News/status/2109904850708512825)
 - **2026.10.08**: 💻 This repository goes public with the evaluation code and the two public demo worlds.
 - **2026.09.30**: 📣 Tencent Hy announces ExplorationBench on X. [[Post]](https://x.com/TencentHunyuan/status/2105288808929558891)
@@ -129,6 +134,8 @@ A world whose rules are public measures recall instead of exploration, so the ru
 |---|---|---|
 | AlienCode | 5 discovery targets · 4 worked examples · 5 held-out tasks | 31 discovery targets · 70 held-out tasks |
 | AlienLogic | 3 side conditions · 5 worked examples · 5 held-out theorems (1 unprovable) | 24 patched rules · 70 held-out theorems (23 unprovable) |
+
+The demo worlds are also available as a dataset on [Hugging Face](https://huggingface.co/datasets/tencent/ExplorationBench).
 
 To evaluate a model on the private worlds, see [Evaluate Your Model](#-evaluate-your-model).
 

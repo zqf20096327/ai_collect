@@ -138,6 +138,7 @@ Reading list and comments/short reviews around reasoning models, training techni
 - [DeepSeek-V4.1-Flash: Pushing the Limits of KV Cache Compression](https://arxiv.org/abs/2609.19969) - DeepSeek technical report
 - [MiMo-V2.6: Scaling Reinforcement Learning Towards Self-Improvement](https://arxiv.org/abs/2610.11959)
 - [A team of Gemini 4 Argon agents beats Minecraft](https://arxiv.org/abs/2610.22319)
+- [h1: A Taste of the Bitter Lesson in Automated Theorem Proving](https://arxiv.org/abs/2610.35962)
 
 #### Topic - General or unsorted
 
@@ -653,8 +654,4 @@ Reading list and comments/short reviews around reasoning models, training techni
 
 - [When to Reason: Semantic Router for vLLM](https://arxiv.org/abs/2510.08731)
 - [TCAndon-Router: Adaptive Reasoning Router for Multi-Agent Collaboration](https://arxiv.org/abs/2601.04544)
-- [ThinkRouter: Efficient Reasoning via Routing Thinking between Latent and Discrete Spaces](https://arxiv.org/abs/2602.11683)
-
-#### Topic - Reasoning in Diffusion Models
-
-- [Video Models Reason Earl
+- [ThinkRouter: Efficient Reasoning via Routing Thinking between Latent and Discrete Spaces](https:

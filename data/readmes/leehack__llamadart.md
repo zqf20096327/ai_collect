@@ -269,7 +269,8 @@ fallback when model template metadata is empty. See
   budgets, tool-call parsing
   and a `ChatSession.sendWithTools` loop that runs tool handlers,
   multimodal GGUF projectors, structured JSON output, embeddings, next-token
-  log-probabilities, LoRA, state persistence, per-request token usage and
+  log-probabilities, LoRA, state persistence with build and context identity
+  checks, per-request token usage and
   timings, operation observers for tracing and metrics, and runtime
   diagnostics where the active backend supports them.
 - Experimental typed speech recognition through `SpeechToTextEngine.load`
@@ -351,7 +352,7 @@ and iOS, and on macOS Metal); expanded inputs must fit one micro-batch. Web
 llama.cpp also accepts image/audio content with bridge assets v0.1.64+ and an
 API-version-1 embedding modality probe. The default pin is qualified with
 EmbeddingGemma-2 on Chrome CPU wasm memory64 against native CPU/Metal; repeated
-media batches require memory64. Hardware WebGPU remains unqualified. LiteRT-LM
+media batches are qualified only on memory64. Hardware WebGPU remains unqualified. LiteRT-LM
 supports text, image and audio embeddings on macOS arm64, iOS arm64 and Android
 arm64 CPU (Android verified on a Galaxy S24 without SME and on arm64 emulators) with `LiteRtLmModelParams(embeddingEngine: true)`. Select
 `ComputeDevice.cpu`; native GPU, Linux, Windows, Android x86_64 and all LiteRT-LM
@@ -447,13 +448,16 @@ other layouts and platforms need their own qualification. See the
 before choosing files: a supported container does not imply every model works.
 
 FP8 image weights (`F8_E4M3`/`F8_E5M2` in Safetensors, types 43/44 in
-GGUF) are refused with `LlamaUnsupportedException` on Metal, including
-`ComputeDevice.auto` when it selects Metal, before native context creation.
-Use `ComputeDevice.cpu` or compatible non-FP8 weights. Uninspectable
-GGUF/Safetensors headers and ordinary JSON shard indexes are also refused on
-Metal. This prevents the native abort tracked in
-[#1446](https://github.com/leehack/llamadart/issues/1446); selecting CPU keeps
-native dtype admission and does not qualify arbitrary FP8 models.
+GGUF) load on Metal with the pinned stable-diffusion-native `v0.3.0-1`, which
+converts them to F16 there: they need twice their file size in memory, which
+`ImageModelParams.checkMemory` counts. A runtime without that fix, told apart
+by its exports, aborts on them instead
+([#1446](https://github.com/leehack/llamadart/issues/1446)): with it, FP8
+weights, uninspectable GGUF/Safetensors headers and ordinary JSON shard
+indexes are refused with `LlamaUnsupportedException` on Metal, including
+`ComputeDevice.auto` when it selects Metal, before native context creation;
+use `ComputeDevice.cpu` there. FP8 re-encodings of SD-Turbo are measured on
+macOS arm64 CPU and Metal; arbitrary FP8 models are not qualified.
 
 - **Opt in** to the runtime (about 40 to 70 MB per target) in the app's
   `pubspec.yaml`, then run `flutter clean` once:
@@ -548,6 +552,13 @@ turn off prompt-conditioning reuse, or a positive entry limit. Unset keeps
 the runtime default of four entries. This does not enable approximate
 sampling caches; see the guide's [conditioning cache](https://llamadart.leehack.com/docs/next/guides/image-generation#conditioning-cache).
 
+On a GPU, `ImageGenerationEngine.load(placement: ImageModelPlacement(...))`
+keeps the text encoders or the VAE on the CPU, caps the GPU memory the runtime
+uses (`maxGpuMemoryGiB`, which outside Metal needs a discrete GPU) or turns
+off its automatic fit; a placement on a CPU engine or the Web throws
+`LlamaUnsupportedException`. See the guide's
+[module placement](https://llamadart.leehack.com/docs/next/guides/image-generation#module-placement-and-gpu-memory).
+
 For repeatable textures, `SeamlessImageGenerationRequest(circularX: true,
 circularY: true, ...)` enables independent axes. The initial qualified recipe
 is SDXS with its embedded tiny decoder at 512×512 on CPU or Metal, with
@@ -559,7 +570,7 @@ for its measured scope and quality criteria.
 For a complete local sharded checkpoint, use
 `ImageGenerationModel.localSafetensorsSet(path, sha256: trustedPerFileHashes,
 cacheDirectory: appPrivateSetCache)`. The initial recipe is the documented
-SD-Turbo F16/F32 tensor layout on macOS CPU with pinned SD v0.3.0 and explicit
+SD-Turbo F16/F32 tensor layout on macOS CPU with pinned SD v0.3.0-1 and explicit
 flash attention/direct VAE convolution off. It accepts the standard local index
 or its directory and verifies every shard into an owned cache before loading.
 Generic Diffusers layouts and editing/tiling/seamless combinations remain
@@ -588,6 +599,25 @@ map (edges, depth, pose); no preprocessor runs. Qualified on SD 1.5 with
 `control_v11p_sd15_canny` on macOS CPU. See the [ControlNet recipe](https://llamadart.leehack.com/docs/next/guides/image-generation#controlnet)
 and `example/basic_app/bin/image_controlnet.dart`.
 
+For a hires fix, use `HiresFixImageGenerationRequest` with an
+`ImageHiresFix`: the request's size is the first pass, which the runtime
+enlarges in latent space (`ImageHiresFix.scale` or `ImageHiresFix.size`, at
+most twice each side and 1024x1024) and samples again before decoding.
+Check `(await engine.capabilities).supportsHiresFix`: the bounded recipe is
+an SD 1.x or SD 2.x checkpoint with its embedded full VAE on macOS CPU or
+Metal; other recipes throw `LlamaUnsupportedException`. Qualified on SD 1.5
+and SD-Turbo. See the [hires-fix recipe](https://llamadart.leehack.com/docs/next/guides/image-generation#hires-fix)
+and `example/basic_app/bin/image_hires_fix.dart`.
+
+To edit an image as a prompt describes, use `ReferenceImageEditingRequest`
+with `ImageReferenceEditingRecipe.fluxKontext` and one decoded RGB reference
+at the output size (at most 1024x1024; crop or resize it first). Check
+`(await engine.capabilities).supportsReferenceImageEditing`: the bounded
+recipe is the FLUX.1 Kontext [dev] transformer with `ae`, CLIP-L and T5-XXL
+on macOS Metal; other models, devices and reference counts throw
+`LlamaUnsupportedException`. See the [reference-editing recipe](https://llamadart.leehack.com/docs/next/guides/image-generation#reference-image-editing)
+and `example/basic_app/bin/image_reference_editing.dart`.
+
 ## Choosing a Runtime
 
 | Model format | Typical use | Runtime |
@@ -603,6 +633,19 @@ throws `LlamaUnsupportedException` for a field set that the model's runtime
 does not apply, before any download when the format is known. See
 [Runtime Parameters](https://llamadart.leehack.com/docs/configuration/runtime-parameters)
 for the full list.
+`await engine.checkLoad(model, params: params)` returns the same verdict, and
+the runtime and device the load would use, as a `LlamaLoadCheckReport` without
+downloading or starting a runtime; see
+[Check a load before it runs](https://llamadart.leehack.com/docs/guides/backend-selection#check-a-load-before-it-runs).
+
+On native llama.cpp, `gpuDevices` loads a model on chosen GPUs of one backend,
+by their `LlamaEngine.listGpuDevices` index, and `tensorSplit` sets each
+GPU's share. Decision heads and multimodal projectors of the model run on a
+listed GPU. Indices the host lacks, a split of another length and the Web or
+LiteRT-LM throw `LlamaUnsupportedException`. Validated on one Metal GPU only:
+multi-GPU loads have no hardware evidence yet, and CUDA is not
+hardware-qualified. See
+[Runtime Parameters](https://llamadart.leehack.com/docs/configuration/runtime-parameters).
 
 Native llama.cpp with `device: ComputeDevice.auto`, `splitMode: ModelSplitMode.none`
 and `mainGpu: -1` reports its CPU placement in backend diagnostics and zero resolved GPU layers.
@@ -612,13 +655,20 @@ Decision heads follow this CPU placement and report `CPU` in
 The WebGPU bridge ignores negative `mainGpu` values; `device: ComputeDevice.gpu`
 still requires a WebGPU adapter and active GPU layers after load.
 
+For Mixture-of-Experts GGUF models, native llama.cpp can keep expert weights in
+host memory with `cpuMoeLayers` and cache recently used experts on a Metal or
+CUDA GPU with an experimental `moeCacheBytes` budget; a budget on other
+backends throws `LlamaUnsupportedException`. Validated on Metal only; CUDA and
+multi-GPU hosts have no hardware evidence yet. See
+[Runtime Parameters](https://llamadart.leehack.com/docs/configuration/runtime-parameters).
+
 Current default runtime pins:
 
 | Runtime | Pin |
 | --- | --- |
-| Native llama.cpp / GGUF | `leehack/llamadart-native@v0.7.0-2` |
+| Native llama.cpp / GGUF | `leehack/llamadart-native@v0.7.0-3` |
 | Native LiteRT-LM / `.litertlm` | `leehack/litert-lm-native@v0.18.1-4` |
-| Web llama.cpp / GGUF | `leehack/llama-web-bridge-assets@v0.1.73` |
+| Web llama.cpp / GGUF | `leehack/llama-web-bridge-assets@v0.1.76` |
 | Web LiteRT-LM / `.litertlm` | `@litert-lm/core@0.18.0` |
 
 Native overrides accept stable `vMAJOR.MINOR.PATCH` releases and preserve

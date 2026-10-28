@@ -33,6 +33,8 @@ npx rust-doctor@latest setup
 
 This detects Claude Code, Codex and Cursor from their commands on `PATH` and their project directories, then writes the skill for each, the git pre-commit hook, and the end-of-turn hook of Claude Code or Cursor, from the binary rather than the network. It prints the plan and checks every file before writing any (`--dry-run` stops there), never writes over a file it did not create, and merges the end-of-turn hook into an existing agent settings file, keeping every other key. `skill install` installs the skill alone.
 
+The end-of-turn hook runs `cargo clippy`, so the build scripts and procedural macros of the tree the agent wrote execute at the end of every turn, with your account's authority. `rust-doctor hook install claude --no-clippy` (or `cursor`) installs one that compiles nothing: every Clippy rule is off, whatever `rust-doctor.toml` says.
+
 The pre-commit hook scans what the commit records, in `--scope lines`, and refuses a commit that adds a warning, the level the end-of-turn hook blocks on too. `git commit --no-verify` skips it, and a scan that cannot run lets the commit through, saying it was not judged.
 
 For a one-off handoff instead, the report sends the findings straight to an agent, with the rules, their spans, and the scan scope already written into the prompt.
@@ -51,9 +53,35 @@ Rust Doctor reviews every pull request and reports only the issues your change i
 rust-doctor ci install --comment
 ```
 
-This writes `.github/workflows/rust-doctor.yml` at the top of your git repository, scanning the Cargo workspace below it when there is one (`src-tauri/`, `backend/`), pinned to the version that wrote it and to the toolchain it was validated on, and never overwrites a file it did not write (`--update` rewrites its own). Pull requests fail only on what they introduce, at the level `--blocking` sets; pushes to your default branch report without failing. `--comment` also posts the result as one sticky comment per pull request, edited on each push; a pull request from a fork gets a read-only token, and a warning instead.
+This writes `.github/workflows/rust-doctor.yml` at the top of your git repository, scanning the Cargo workspace below it when there is one (`src-tauri/`, `backend/`), pinned to the version that wrote it and to the toolchain it was validated on, and never overwrites a file it did not write (`--update` rewrites its own). Pull requests fail only on what they introduce, at the level `--blocking` sets; pushes to your default branch report without failing. `--comment` also posts the result as one sticky comment per pull request, edited on each push, from a second job that holds `pull-requests: write` and runs none of the pull request's code; a pull request from a fork gets a read-only token, and a warning instead.
 
-To compose your own workflow, use the Action: `uses: arthjean/rust-doctor@v0`, with the outputs `score`, `authoritative`, `introduced`, `fixed` and `exit-code`, and the same sticky comment unless you pass `comment: false` (`comment-on-clean: false` skips it on a clean pull request). It fails only a pull request on its findings: a push reports without failing. Check out with `fetch-depth: 0`, since a pull request scan needs the base's history; from a shallow checkout the Action fetches the base itself when the token allows it.
+To compose your own workflow, use the Action, `uses: arthjean/rust-doctor@v0`, with the outputs `score`, `authoritative`, `introduced`, `fixed` and `exit-code`. Grant its job `contents: read` only: it builds the pull request's code, build scripts included. The sticky comment comes from `arthjean/rust-doctor/comment@v0` in a second job, the only one holding `pull-requests: write`, which checks nothing out and reads the report the scan uploaded (`comment-on-clean: false` skips it on a clean pull request):
+
+```yaml
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: arthjean/rust-doctor@v0
+
+  comment:
+    needs: scan
+    if: always() && github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: arthjean/rust-doctor/comment@v0
+```
+
+The Action fails only a pull request on its findings: a push reports without failing. Check out with `fetch-depth: 0`, since a pull request scan needs the base's history; from a shallow checkout the Action fetches the base itself when the token allows it.
 
 The binary still opens no network connection: the comment is posted by the workflow's own GitHub token.
 

@@ -1,6 +1,7 @@
 # Rapyd Admin
 
 <a href="https://github.com/zofe/rapyd-admin/actions/workflows/run-tests.yml"><img src="https://github.com/zofe/rapyd-admin/actions/workflows/run-tests.yml/badge.svg" alt="Build Status"></a>
+<a href="https://github.com/zofe/rapyd-admin/actions/workflows/fresh-install.yml"><img src="https://github.com/zofe/rapyd-admin/actions/workflows/fresh-install.yml/badge.svg" alt="Fresh install"></a>
 <a href="https://packagist.org/packages/zofe/rapyd-admin"><img src="https://img.shields.io/packagist/dt/zofe/rapyd-admin" alt="Total Downloads"></a>
 <a href="https://packagist.org/packages/zofe/rapyd-admin"><img src="https://img.shields.io/packagist/v/zofe/rapyd-admin" alt="Latest Stable Version"></a>
 
@@ -24,16 +25,37 @@ Requires PHP 8.2+, Laravel 12 or 13 and Livewire 4.
 
 ```bash
 composer create-project laravel/laravel myapp && cd myapp
-composer require zofe/rapyd-admin:^9 -W
+composer require zofe/rapyd-admin:^9
 php artisan rpd:make:setup     # .env, database, configs, migrations, admin user, home page
 php artisan serve
 ```
 
 `rpd:make:setup` creates the first admin, `admin@laravel`, and prints a random password once: log in with it and
 change it. Set `RAPYD_ADMIN_PASSWORD` in `.env` to choose it yourself. You get a sidebar with Users, Companies,
-Roles & Permissions and Logs, a landing page, and an `app/Modules` folder ready for your own modules.
+Roles & Permissions and Logs, a landing page, a dashboard with what is left to set up, and an `app/Modules`
+folder ready for your own modules.
 
-> `-W` lets Composer downgrade Guzzle to 7 on Laravel 13: `laravel/socialite` still requires it through `league/oauth1-client`.
+Working with an AI agent? With [Laravel Boost](https://laravel.com/docs/boost), `php artisan boost:install` also
+brings the Rapyd Admin guideline and skills to it (`boost.json` lists the package already); without Boost,
+`php artisan rpd:ai` does the same. Details in [docs/AI.md](docs/AI.md).
+
+Not sure the installation is in order — after a `composer update`, say? `php artisan rpd:doctor` checks it and
+says what to do.
+
+## Online in ten minutes
+
+```bash
+php artisan rpd:deploy           # Dockerfile, compose.yml, .dockerignore — yours to edit
+docker compose up -d --build     # the app on :8080, with its queue worker, scheduler and database
+```
+
+One image does the three jobs (web, `queue:work`, `schedule:work`), on [serversideup/php](https://serversideup.net/open-source/docker-php/):
+at start it migrates and caches config, routes and views. On **Coolify**, make an Application from the repository
+with the Dockerfile build pack, add a database resource and the variables (`APP_KEY`, `APP_URL`, `DB_*`, `MAIL_*`);
+the queue and the scheduler are the same image with their command. On **Forge** or any server with PHP 8.3 there is
+no Docker to speak of: nginx on `public/`, `composer install --no-dev`, `php artisan migrate --force`, a queue
+worker and the scheduler in cron. Either way, `php artisan rpd:doctor` first.
+
 > Google sign-in appears on the login page as soon as `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` are set, see [docs/AUTH.md](docs/AUTH.md).
 
 ## What's included
@@ -56,21 +78,35 @@ Details in [docs/MODULES.md](docs/MODULES.md).
 ## Your first module in two minutes
 
 ```bash
-php artisan rpd:make Articles Article --module=Blog --fields="title,body:text,published_at:datetime"
+php artisan rpd:make Articles Article --module=Blog --fields="title,body:text,published_at:datetime" --seed --icon=newspaper
 ```
 
-creates `app/Modules/Blog` with a table, a detail page and a form for `Article`, its routes and a sidebar entry;
-when the model does not exist yet it is created with its migration from `--fields`, and migrated. No prompts:
+creates `app/Modules/Blog` with a table, a detail page and a form for `Article`, its routes and a sidebar entry (with
+the icon you name, a circle otherwise);
+when the model does not exist yet it is created with its migration from `--fields` (`name:type`, `:nullable` for an
+optional column, `category_id:belongsTo` for a relation — foreign key, `category()` on the model, a dropdown in the
+form, the category's name in the list), migrated, and — with `--seed` — filled with ten records from the generated
+factory, so the table opens with something in it. The form's rules follow the columns: required or nullable,
+`email` / `url` / `date` / `integer` / `exists` by type and name. No prompts:
 
 ```
 app/Modules/Blog/
 ├── Livewire/ArticlesTable.php   ArticlesView.php   ArticlesEdit.php   (authorization and scoping built in)
 ├── Views/articles_table.blade.php   articles_view.blade.php   articles_edit.blade.php   menu.blade.php
-├── Models/Article.php           uuid key, ShortId
+├── Models/Article.php           uuid key, ShortId, HasFactory
+├── Database/Migrations/…        Factories/ArticleFactory.php   Seeders/ArticleSeeder.php   values guessed from the columns
 ├── Authorizations/ArticleAuth.php   Limits/ArticleLimit.php   record check and data scoping, yours to restrict
 ├── config.php                   layout, menu entry, permissions (view / edit articles, given to operator)
 └── routes.php                   behind auth
+tests/Feature/Modules/Blog/ArticlesTest.php   the list behind auth, the form saves, operator in, plain user out
 ```
+
+`php artisan test` runs that test straight away: an agent that changes the module has something to run before
+it says it is done.
+
+Add `--company` and the module is multi-tenant: `company_id` on the model, each user sees and opens the records of
+their own company (and its children), a new record takes the user's company, and the generated test proves it with
+two companies and an operator in each.
 
 The views are short because the work is done by the components:
 
@@ -112,6 +148,7 @@ RAPYD_SIDEBAR_TEXT="#f8fafc"
 
 **Brand**: `RAPYD_BRAND`, `RAPYD_LOGO_SIDEBAR`, `RAPYD_LOGO_LOGIN`, `RAPYD_FAVICON`, `RAPYD_CUSTOM_CSS`.
 `RAPYD_THEME=<name>` activates an installed theme, `RAPYD_THEME_SWITCH=true` lets each visitor pick one from the navbar (see `docs/THEMES.md`).
+`RAPYD_REGISTRATION=true` opens registration: closed by default, an admin panel adds its users itself; a SaaS that signs people up turns it on (the Register links appear with the route).
 `RAPYD_AUTH_LINKS=false` hides the Login / Register links of the frontend navbar (the routes stay, e.g. a public site whose login is reached from `/login`).
 
 **A different look**: the admin shell is a theme, a folder of Blade layouts plus compiled assets activated with

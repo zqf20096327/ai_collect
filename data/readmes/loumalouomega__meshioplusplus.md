@@ -150,6 +150,8 @@ meshioplusplus ascii      input.msh              # convert to ASCII format
 meshioplusplus merge      a.vtu b.vtu out.vtu    # merge meshes (optional --weld)
 
 meshioplusplus transform  in.vtu out.vtu --translate 1,2,3   # affine transform
+meshioplusplus mirror     half.vtu whole.vtu --keep-original  # reflect, cells right side out
+meshioplusplus extrude    profile.vtu slab.vtu --num-layers 4  # sweep a surface into a volume
 meshioplusplus clean      in.vtu out.vtu --weld              # weld / prune / de-dup
 meshioplusplus crop       in.vtu out.vtu --bbox 0,0,0,1,1,1  # subset by region
 meshioplusplus crop       in.vtu out.vtu --where "d<0"       # ... or by a data predicate
@@ -346,6 +348,8 @@ annotated = meshioplusplus.attach_quality(mesh)   # metrics as cell_data
 
 `meshioplusplus.check_quality(mesh, "scaled_jacobian >= 0.2; aspect_ratio <= 5 @ 1%")` turns the metrics into a pass/fail gate tested per cell, and the `check` CLI verb exits 1 when it fails and 2 when it could not run — what a CI job over meshes scripts; every report verb of both CLIs also takes `--json` with one shared, strictly valid shape. See `doc/mesh_quality.md` and `doc/cli.md`.
 
+`meshioplusplus.check_conformity(mesh)` reports the hanging nodes, T-junctions and partly overlapping or unwelded facets of a mesh, flags the hanging points in `conformity:hanging`, and says which `find_interface` mode suits it; the `check-conformity` CLI verb exits 1 when the mesh is not conforming. See `doc/check_conformity.md`.
+
 #### Reordering / renumbering
 
 `meshioplusplus.reorder` renumbers nodes and elements to reduce sparse-matrix bandwidth (Reverse Cuthill–McKee) or improve cache locality (Morton / Hilbert space-filling curves). It is a pure permutation — geometry and all data preserved — and returns the applied node/cell permutations so external arrays can be remapped. `compute_bandwidth` measures the before/after connectivity bandwidth. See `doc/reorder.md`.
@@ -441,6 +445,7 @@ welded = meshioplusplus.merge([left, right], weld=True, atol=1e-8)  # fuse the s
 A bundle of dependency-free mesh-editing utilities:
 
 - **`meshioplusplus.transform`** — apply an affine transform (translate / scale / rotate / 4×4 matrix / unit-scale) to the points; connectivity and data are carried through. See `doc/transform.md`.
+- **`meshioplusplus.mirror`** — reflect across a plane with every cell right side out (a reflecting `transform` leaves them inverted); `keep_original=True` makes a whole model from a half, the points on the plane shared. See `doc/mirror.md`.
 - **`meshioplusplus.clean`** — weld coincident points (spatial hash), drop degenerate and duplicate cells, and remove orphaned points, in one toggleable pass. See `doc/clean.md`.
 - **`meshioplusplus.crop`** — extract the part of a mesh inside a bounding box or half-space, pruning unused points (`mode="all"`/`"any"`). See `doc/crop.md`.
 - **`meshioplusplus.split`** — partition a mesh into several by cell type, connected component (flood-fill), region (`cell_sets` / integer tag), or one piece per named Cell region (`by="regions"`, cross-binding, not a partition — overlapping regions overlap). See `doc/split.md`. `meshioplusplus regions` (CLI) / `read_metadata(...)["regions"]` lists a mesh's regions cheaply, without a full read where possible.
@@ -630,7 +635,7 @@ Every uncut lattice tet has a dihedral angle from a small, mesh-size-independent
 
 #### Volume meshes on an octree (graded tetrahedra fitted to a skin)
 
-**`meshioplusplus.octree_mesh`** meshes the inside of any skin (STL, OBJ, a volume mesh's boundary; holes and self-intersections are tolerated through the fast winding number) on a 2:1-balanced octree whose leaves follow a size field (curvature, sharp features, thin gaps, a user array). The default output is a conforming graded tetrahedral mesh: a graded BCC lattice cut to the skin by isosurface stuffing, sharp corners and edges snapped, then optimised under a guard that never worsens the extreme dihedral angles; `skin_grading="uniform"` gives Labelle and Shewchuk's 10.7°–164.8° bound. `output="castellated"` gives the inside leaves as hexahedra with the `surrogate_boundary` side region and `sdf:distance`/`sdf:closest_point`, for embedded and Shifted Boundary Method solvers. The same operation is in C++, C, Fortran, Julia, R, WASM, both CLIs (`octree-mesh`), the pipeline (`OctreeMesh`) and MCP. See `doc/octree_mesh.md`.
+**`meshioplusplus.octree_mesh`** meshes the inside of any skin (STL, OBJ, a volume mesh's boundary; holes and self-intersections are tolerated through the fast winding number) on a 2:1-balanced octree whose leaves follow a size field (curvature, sharp features, thin gaps, a user array). The default output is a conforming graded tetrahedral mesh: a graded BCC lattice cut to the skin by isosurface stuffing, sharp corners and edges snapped, then optimised under a guard that never worsens the extreme dihedral angles; `skin_grading="uniform"` gives Labelle and Shewchuk's 10.7°–164.8° bound. `output="castellated"` gives the inside leaves as hexahedra with the `surrogate_boundary` side region and `sdf:distance`/`sdf:closest_point`, for embedded and Shifted Boundary Method solvers. `output="hex"` gives hexahedra only, on one grid at the skin's size, or with `hex_grading="graded"` the all-hexahedral dual of the graded octree, conforming through the transition schemes of Livesu, Pitzalis and Cherchi (ported from CinoLib). The same operation is in C++, C, Fortran, Julia, R, WASM, both CLIs (`octree-mesh`), the pipeline (`OctreeMesh`) and MCP. See `doc/octree_mesh.md`.
 
 <!--pytest-codeblocks:skip-->
 
@@ -655,6 +660,8 @@ print(report["num_failed"], report["num_open_edges"], report["min_angle_deg"])
 
 **`meshioplusplus.boundary_layer`** grows prismatic layers from a triangle and quad surface: `num_layers` layers of wedges and hexahedra along the most normal normals (Aubry and Löhner 2009), the first `first_height` thick and growing by `growth`, stopped short of the surface across a gap and where the last layer's front would cross itself or the surface (`front_check`), and halved, then collapsed into pyramids and tetrahedra (or, with `collapse="layers"`, grown fewer layers) where a cell would fold. See `doc/boundary_layer.md`.
 
+**`meshioplusplus.extrude`** and **`meshioplusplus.revolve`** sweep a surface into a volume, or a curve into a surface, along a vector (graded layers) or around an axis (the cells on the axis collapsing into pyramids, tetrahedra and wedges): the swept cells only, with `bottom`/`top` (`start`/`end`) and `side` regions, the input's regions and data carried; extruding `rectangle` gives `box` exactly. See `doc/extrude.md`.
+
 **`meshioplusplus.tetrahedralize`** fills a closed triangle surface (a `mesh_cad_surface` result, a boundary layer's cap) with tetrahedra, nested shells becoming regions and `cad:face` side regions: through its native octree backend in every build (isosurface stuffing, the boundary fitted within a reported distance), or through Netgen's nglib, an optional backend that keeps the surface's triangles exactly (LGPL-2.1, linked dynamically when built with `-DMESHIOPLUSPLUS_WITH_NETGEN=ON`; `backend="auto"` takes it when present). See `doc/tetrahedralize.md`.
 
 **`meshioplusplus.error_size`** turns `estimate_error`'s per-cell indicator into a per-point size by Zienkiewicz and Zhu's adaptive procedure, a `background` for `mesh_cad_surface`, so an adaptation re-meshes from the CAD model. See `doc/error_size.md`.
@@ -663,6 +670,8 @@ print(report["num_failed"], report["num_open_edges"], report["min_angle_deg"])
 
 ```python
 layers, report = meshioplusplus.boundary_layer(surface, 1e-3, num_layers=8, growth=1.25, return_report=True)
+slab = meshioplusplus.extrude(meshioplusplus.rectangle(dims=(8, 4)), (0.0, 0.0, 0.5), num_layers=6, ratio=1.2)
+body = meshioplusplus.revolve(meshioplusplus.rectangle(dims=(4, 8)), angle=270.0, num_layers=12)
 back = meshioplusplus.project_to_cad(meshioplusplus.smooth(surface, iterations=10), meshioplusplus.read("part.cad.json"))
 volume, report = meshioplusplus.tetrahedralize(surface, max_size=0.1, return_report=True)  # Netgen if built, else octree
 ```
@@ -795,9 +804,9 @@ report[0]["regions"]                         # the same, independently, per name
 
 Six operations built for the physics-ML surface, each with its own CLI verb, MCP tool, and Python-API and doc page: **`meshioplusplus.compute_curvature`** (per-vertex mean/Gaussian curvature by the angle defect and cotangent Laplace-Beltrami operator — `doc/curvature.md`), **`meshioplusplus.compute_normals`** (point/cell normals with an optional crease split — `doc/normals.md`), **`meshioplusplus.repair`** (fixes a surface's orientation, holes and pinched vertices, the defects `clean` does not touch — `doc/repair.md`), **`meshioplusplus.shrinkwrap`** (projects a mesh's points onto a target surface in one pass — `doc/shrinkwrap.md`), and **`meshioplusplus.sobolev_deform`** (moves points by a raw displacement field filtered through the mesh's own P1 operators — `doc/sobolev_deform.md`). **`meshioplusplus.voxelize`**/**`compute_sdf`** build a regular grid around or over a surface, filled by occupancy or signed distance — `doc/grids.md` and `doc/sdf.md`.
 
-#### Parametric primitives (rectangle, box, disk, spheres, cylinder, reference cells)
+#### Parametric primitives (grids, disks, spheres, tori, cones, balls, shells, curves, point clouds, reference cells)
 
-Thirteen generators build a shape from parameters, so a test, a notebook or a demo needs no fixture file: `meshioplusplus.rectangle`, `box`, `disk`, `uv_sphere`, `icosa_sphere`, `cylinder`, the planar domains `reference_triangle`, `ngon`, `annulus` (or a sector of one, with a seam pair), `lshape`, `plate_with_hole` and `honeycomb` (a ragged `polygon` block of hexagons), and `reference_cells` (one cell of each type in its reference coordinates). Surfaces come out oriented outward, volumes positive, the boundary as named side regions (`xmin` … `zmax`, `rim`, `side`/`top`/`bottom`, `inner`/`outer`, `hole`), and `order=2` places the mid-edge nodes on the exact geometry, so a quadratic sphere or cylinder is genuinely curved. The same generators are on every surface — C, Fortran, Julia, R, WASM, both CLIs (`meshioplusplus generate box block.vtu --dims 8,8,8 --cell-type tetra`), MCP and the pipeline (`{"Op": "Generate", ...}`, which needs no `Input`). See [parametric primitives](doc/primitives.md).
+Thirty-four generators build a shape from parameters, so a test, a notebook or a demo needs no fixture file: `meshioplusplus.rectangle`, `box`, `disk`, `uv_sphere`, `icosa_sphere`, `cylinder`, the planar domains `reference_triangle`, `ngon`, `annulus` (or a sector of one, with a seam pair), `lshape`, `plate_with_hole` and `honeycomb` (a ragged `polygon` block of hexagons), `reference_cells` (one cell of each type in its reference coordinates), the curves and point clouds `line`, `circle`, `helix`, `sphere_points` (a Fibonacci lattice) and `box_points` (seeded, the same cloud on every platform), the surfaces `tetra_sphere`, `octa_sphere`, `cube_sphere`, `geo_sphere`, `torus`, `moebius` (non-orientable), `tube`, `cone`, `capsule`, `box_surface` and `platonic`, and the solids `ball` (the seven-block butterfly), `spherical_shell` and `pipe` (graded walls), `fichera` and `solid_torus`. Surfaces come out oriented outward, volumes positive, the boundary as named side regions (`xmin` … `zmax`, `rim`, `side`/`top`/`bottom`, `inner`/`outer`, `hole`), and `order=2` places the mid-edge nodes on the exact geometry, so a quadratic sphere or cylinder is genuinely curved; `complete=True` gives the full-Lagrange `quad9`, `hexahedron27` and `wedge18`, and `order` 3 to 10 the `VTK_LAGRANGE_*` family, every node on the geometry too. The same generators are on every surface — C, Fortran, Julia, R, WASM, both CLIs (`meshioplusplus generate box block.vtu --dims 8,8,8 --cell-type tetra`), MCP and the pipeline (`{"Op": "Generate", ...}`, which needs no `Input`). See [parametric primitives](doc/primitives.md).
 
 ```python
 block = meshioplusplus.box(dims=(4, 4, 4), cell_type="tetra", order=2)   # tetra10, six side regions
@@ -1012,31 +1021,4 @@ pandas.read_parquet("cells.parquet").head()
 meshioplusplus data export bracket.msh cells.parquet --location cell
 ```
 
-Multi-component arrays keep their shape wherever the target can hold it — Arrow `fixed_size_list` columns, polars `pl.Array` columns — while `to_pandas` (whose columns are one-dimensional) flattens them into suffixed columns `v_0`/`v_1`/`v_2` with the grouping recorded in `df.attrs`. The mesh's counts, cell types and region names travel in the Arrow schema metadata / `df.attrs`. This is a **data** export, not a mesh format — it does not round-trip geometry and is deliberately not in the format registry.
-
-PyVista, trimesh, pyarrow, pandas and polars are Python-only optional extras (`pip install meshioplusplus[interop]`, or one at a time with `[pyvista]` / `[trimesh]` / `[arrow]` / `[pandas]` / `[polars]`). They are kept out of `[all]`, which means "the optional dependencies the *formats* need". None of them reaches the C++/WebAssembly/C/Fortran core, which stays dependency-free.
-
-Meshes also hand off to the GPU through the standard exchange protocols — DLPack as the primary export (which covers host arrays too), `__cuda_array_interface__` consumed on the way back:
-
-<!--pytest-codeblocks:skip-->
-
-```python
-gpu = meshioplusplus.to_cupy(mesh)            # one host→device transfer per array
-gpu.point_data["T"] *= 2.0                    # any CuPy / RAPIDS kernel
-meshioplusplus.write("out.vtu", meshioplusplus.from_cupy(gpu))
-```
-
-The host→device move is always a bus transfer — what this removes is the file round-trip and every *extra* copy around it. `to_dlpack(mesh)` exports host arrays any DLPack consumer (PyTorch, JAX, Numba, …) adopts in place. There is deliberately no `[gpu]` extra: CuPy wheels are CUDA-version-specific, so install the one matching your toolkit (e.g. `pip install cupy-cuda13x` for CUDA 13.x, `cupy-cuda12x` for 12.x).
-
-And for machine-learning pipelines, meshes become graphs, feature matrices, datasets and framework tensors directly:
-
-<!--pytest-codeblocks:skip-->
-
-```python
-ei = meshioplusplus.edge_index(mesh)                  # (2, E) int64 — PyG/DGL layout
-fm = meshioplusplus.feature_matrix(mesh, "point")     # (N, F) float64 + recorded columns
-meshioplusplus.write_dataset("out_*.vtu", "dataset/") # mesh_id-keyed partitioned Parquet
-t = meshioplusplus.to_torch(mesh)                     # torch tensors, adopted zero-copy
-```
-
-`feature_matrix`'s column order is a stated, versioned contract recorded in the returned schema
+Multi-component arrays keep their shape wherever the target can hold it — Arrow `fixed_size_list` col

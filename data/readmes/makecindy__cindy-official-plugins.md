@@ -46,6 +46,7 @@ permission gate.
 | <img src="./opendesign-trial/assets/icon.png" width="22" alt=""> | OpenDesign | [`opendesign-trial`](./opendesign-trial) | Session-owned HTML design previews, element annotations and manual editing using Cindy’s conversation model |
 | <img src="./cindy-github/assets/icon.png" width="22" alt=""> | GitHub | [`cindy-github`](./cindy-github) | Full GitHub workflow: issues / PRs / code review / Actions / releases |
 | <img src="./cindy-gitlab/assets/icon.png" width="22" alt=""> | GitLab | [`cindy-gitlab`](./cindy-gitlab) | GitLab (gitlab.com and self-hosted) issues / MRs / repository operations |
+| <img src="./gitea/assets/icon.png" width="22" alt=""> | Gitea | [`gitea`](./gitea) | Self-hosted Gitea repos, files, issues, PRs, Actions runs and logs, releases; writes ask for confirmation; opt-in, needs your own instance and token |
 | <img src="./cindy-mermaid/assets/icon.jpg" width="22" alt=""> | Mermaid | [`cindy-mermaid`](./cindy-mermaid) | Mermaid diagram source normalization and common syntax fixes |
 | <img src="./cindy-ping/assets/icon.png" width="22" alt=""> | Cindy Ping | [`cindy-ping`](./cindy-ping) | Configurable desktop emote wheel and project, conversation or companion delivery; macOS 14+; manual install |
 | <img src="./cindy-notion/assets/icon.png" width="22" alt=""> | Notion | [`cindy-notion`](./cindy-notion) | Read/write Notion pages, databases, and knowledge bases |
@@ -64,6 +65,7 @@ permission gate.
 | <img src="./baguette-simulator/assets/icon.png" width="22" alt=""> | Device Simulator | [`baguette-simulator`](./baguette-simulator) | Cindy's official Device Simulator (built on open-source Baguette) with a private device set and live sidebar control; replaces the retired embedded simulator; marketplace install |
 | <img src="./ios-simulator/assets/icon.png" width="22" alt=""> | iOS Simulator | [`ios-simulator`](./ios-simulator) | Host-owned embedded workflow; Host-authorized fallback hands off the exact task and device to a named external workflow; staged rollout |
 | <img src="./x-manager/assets/icon.png" width="22" alt=""> | X Manager | [`x-manager`](./x-manager) | Search X (Twitter) and post to it — xAI x_search with Grok-subscription / API-key fallback, posting via the official X API v2; currently in a targeted rollout |
+| <img src="./ntfy/assets/icon.png" width="22" alt=""> | ntfy | [`ntfy`](./ntfy) | Push notifications to your phone or desktop through your own ntfy server; the access token is stored by Cindy and sent only to that server; opt-in |
 
 Missing a plugin you want? [Propose it](#submit-your-plugin) — or build it
 yourself and submit it here.
@@ -213,7 +215,7 @@ cindy-github/
 cindy-art/
 ├── ghost.json
 ├── main.js
-└── panel.*         # (optional) Custom panel UI
+└── settings.html   # Art-owned image/video model settings
 ```
 
 `provisioning.json` at the repository root declares, per plugin, which audience

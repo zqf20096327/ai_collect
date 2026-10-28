@@ -51,6 +51,7 @@ Full IDEs and forks built around AI as a first-class feature.
 - [Void](https://voideditor.com/) 🟢 — Open-source Cursor alternative. Bring your own model.
 - [Trae](https://trae.ai/) 💰 — ByteDance's AI IDE with Builder/Chat modes.
 - [PearAI](https://trypear.ai/) 🟢 — Open-source AI editor fork.
+- [Volt](https://github.com/LeulAria/volt) 🟢 🆓 — Open-source agentic workspace on the VS Code core that drives Claude Code, Codex and local Ollama models, with hunk-level review of agent edits and Git checkpoints.
 
 ## In-Editor Assistants & Completion
 
@@ -113,6 +114,8 @@ Frameworks for running multiple agents, coordinating workflows, or building your
 - [AgentBridge](https://github.com/raysonmeng/agent-bridge) 🟢 🆓 — Local CLI that keeps Claude Code and Codex as live peers in one session for mid-turn review and quota-boundary handoff.
 - [Agentlas OS](https://github.com/agentlas-ai/Agentlas-OS) 🟢 🏠 — Apache-2.0 local-first environment for building portable coding-agent teams and routing them across supported hosts with MCP/A2A and verification gates.
 - [Aura](https://github.com/Naridon-Inc/aura) 🟢 — Open-source VCS layer for reviewing AI-agent code changes with semantic diffs and provenance.
+- [Carbon Forge](https://carbonforge.dev/) 🆓 💰 — Hosted source control for coding agents working in parallel: each agent opens a lane over the trunk instead of a worktree, lands its change as one all-or-nothing changeset, and reads and writes the record over MCP.
+- [DevIntern](https://devintern.com/) 🆓 💰 🏠 — Source-available (FSL-1.1-ALv2) self-hosted worker that picks up ready Jira, Linear, GitHub Issues, Trello, Asana, Azure DevOps or markdown tickets, runs Claude Code, Codex, Cursor or OpenCode with your own keys, and opens pull requests that take review comments as follow-up commits.
 - [FlowDeck Studio](https://flowdeck.studio/) 💰 - Native macOS workspace that runs Claude Code, Codex and Cursor sessions in parallel on iOS and macOS projects, each in its own Git worktree and simulator so agents can build, run and test the app themselves.
 - [Superagent](https://github.com/pungme/superagent-desktop) 🟢 🏠 — MIT-licensed macOS desktop app that gives Claude Code and Codex a real browser to drive, an iOS Simulator to install and screenshot apps in, and a phone companion app for remote monitoring.
 - [LangGraph](https://github.com/langchain-ai/langgraph) 🟢 — Stateful multi-agent graphs from LangChain.

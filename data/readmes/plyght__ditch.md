@@ -89,6 +89,7 @@ Useful flags (all also settable in `config.lua`; see `ditch --help`):
 | `--max-ram 12GB`, `--time-limit 90m`, `--scratch-dir DIR` | memory budget, clean stop, spill location |
 | `--expert-cache 6GB`, `--expert-selection ranked\|random\|broad` | warp mode and MoE editing |
 | `--n-directions K`, `--no-early-stop`, `--warm-start study.jsonl` | search extensions |
+| `--config presets/context-bias.lua`, `--config presets/ccp-refusal.lua` | remove a context bias or political refusals instead (see "Context bias") |
 | `--fast-search`, `--direction-method separating`, `--direction-range auto`, `--ablate-inputs`, `--kl-tokens T`, `--select auto` | algorithm options (see "How it works") |
 | `--export-format hf\|gguf\|both`, `--gguf-dtype f16\|q8_0\|...` | output format |
 | `--checkpoint-action`, `--trial-index`, `--model-action`, `--save-directory` | answer the menus non-interactively |
@@ -99,11 +100,11 @@ Useful flags (all also settable in `config.lua`; see `ditch --help`):
 ## Supported models
 
 Families are described by Lua model definitions (`src/models/*.lua`, compiled
-in), one per Hugging Face `model_type`. **93 families** are defined, from GPT-2,
+in), one per Hugging Face `model_type`. **99 families** are defined, from GPT-2,
 GPT-NeoX and BLOOM to Llama, Qwen, Gemma, Phi, GLM, Mistral, Granite, Kimi K3
 and DeepSeek V4.1 — dense and mixture-of-experts, Mamba and linear-attention
 hybrids, and quantised checkpoints. Every one has a fixture test against a
-NumPy reference forward pass (`tools/make_fixture.py`). **80** are also
+NumPy reference forward pass (`tools/make_fixture.py`). **86** are also
 verified on a released checkpoint (whole, or cut to its first layers) against
 transformers or the release's own code in float32; 2 more (`internlm2`,
 `minicpm`) on real weights against a re-implementation of their own code; the
@@ -139,6 +140,29 @@ layers; exports preserve every tensor name and layout.
 A dataset is a Hugging Face dataset ID (rows come from the datasets-server API,
 so it must be viewable on the Hub) or a text file with one prompt per line.
 Defaults are Heretic's: `mlabonne/harmless_alpaca`, `mlabonne/harmful_behaviors`.
+With `system_separator = "\t"` a row reads `system<TAB>user`, so one set can mix
+system-prompt personas.
+
+## Context bias
+
+Some open-weight models answer the same request differently depending on who
+it is for. Studies by CrowdStrike, Booz Allen and Hirundo found more vulnerable
+code for a US government or defense customer, and for Tibet, Falun Gong, Uyghur
+or Hong Kong groups. Mostly this is not a refusal, so a refusal count cannot
+see it. [`presets/context-bias.lua`](presets/context-bias.lua) takes the
+direction from the same coding tasks under trigger vs. neutral customers
+(`datasets/context-bias/`). It optimises a `context_divergence` scorer: the
+divergence between the base model's answer to the neutral request and the
+edited model's answer to the trigger request.
+[`presets/ccp-refusal.lua`](presets/ccp-refusal.lua) removes refusals and
+state-line answers on CCP-sensitive topics.
+
+`ditch bias <model>` measures the bias directly, before and after an edit. The
+model writes the same small web app many times for each customer. ditch runs
+every app and attacks it, then reports how many working apps are hackable per
+customer, with a significance test. It needs Node.js.
+[docs/bias.md](docs/bias.md) covers the findings, the method, how to check a
+result and the limits.
 
 ## Configuration
 

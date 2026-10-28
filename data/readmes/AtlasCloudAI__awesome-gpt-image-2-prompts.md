@@ -150,7 +150,7 @@ When used in Raycast, you can dynamically replace the arguments for quick iterat
 |--------|-------|
 | 📝 Total Prompts | **1145** |
 | ⭐ Featured | **6** |
-| 🔄 Last Updated | **Tuesday, October 27, 2026 at 3:04:32 AM UTC** |
+| 🔄 Last Updated | **Wednesday, October 28, 2026 at 3:04:02 AM UTC** |
 
 </div>
 
@@ -1791,4 +1791,4 @@ A humorous geopolitical meme illustration showing USA and Iran countryballs conf
 #### 📝 Prompt
 
 ```
-A detailed satirical countryball meme illustration of the {argument name="waterway name" default="Strait of Hormuz"} as a very narrow sea passage between two steep rocky cliffs, painted in a polished digital cartoon style with dramatic shading and textured stone. In the center foreground, exactly 2 countryballs block each other in the tight channel so that only one can pass. On the left is a USA countryball with angry narrowed eyes, painted with the American flag, wearing a dark navy baseball cap labeled "USA" in large white letters. On the right is an Iran countryball with angry narrowed eyes, painted with the Iranian flag and emblem, wearing a green-and-white headband tied on the side; the headband contains Korean text that reads "저항은 우리의 권리". Above each ball is exactly 1 white speech bubble with thick black outline, for a total of 2 speech bubbles, and both say {argument name="speech text" default="길!"} in large bold Korean lettering, as if neither side will yield. Show the two balls facing each other nose-to-nos
+A detailed satirical countryball meme illustration of the {argument name="waterway name" default="Strait of Hormuz"} as a very narrow sea passage between two steep rocky cliffs, painted in a polished digital cartoon style with dramatic shading and textured stone. In the center foreground, exactly 2 countryballs block each other in the tight channel so that only one can pass. On the left is a USA countryball with angry narrowed eyes, painted with the American flag, wearing a dark navy baseball cap labeled "USA" in large white letters. On the right is an Iran countryball with angry narrowed eyes, painted with the Iranian flag and emblem, wearing a green-and-white headband tied on the side; the headband contains Korean text that reads "저항은 우리의 권리". Above each ball is exactly 1 white speech bubble with thick black outline, for a total of 2 speech bubbles, and both say {argument name="speech text" default="길!"} in large bold Korean lettering, as if neither side will yield. Show the two balls facing each other nose-to-n
