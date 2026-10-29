@@ -3146,10 +3146,10 @@
    "Shell": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261022",
+  "enriched_at": "20261029",
   "dim_ts": {
-   "commit": "20261022",
-   "release": "20261022",
+   "commit": "20261029",
+   "release": "20261029",
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
@@ -4631,6 +4631,50 @@
    "security": "20261027",
    "contrib": "20261027",
    "lang": "20261027"
+  }
+ },
+ "b14ckPanther/darb-scouter": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 46,
+   "TypeScript": 40,
+   "CSS": 9,
+   "JavaScript": 4,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "27painter/dsh-sw-cad": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 43,
+   "PowerShell": 32,
+   "JavaScript": 25
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
   }
  }
 }

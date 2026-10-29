@@ -4762,5 +4762,71 @@
    "contrib": "20261028",
    "lang": "20261028"
   }
+ },
+ "dapr/dapr-agents": {
+  "commit_90d": 312,
+  "commit_7d": 25,
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-10-27",
+  "rel_days": 2,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 41,
+  "lang": {
+   "Python": 100,
+   "Makefile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "commit": "20261029",
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "Scottcjn/shaprai": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 18,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "tarikurrahmann/Human-Detector": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
  }
 }

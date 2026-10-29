@@ -4886,5 +4886,32 @@
    "contrib": "20261028",
    "lang": "20261028"
   }
+ },
+ "russrimm/InfiniAIBook": {
+  "rel_ver": "Productivity",
+  "rel_pub": "2026-09-24",
+  "rel_days": 35,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 92,
+   "Python": 3,
+   "HTML": 3,
+   "Bicep": 1,
+   "CSS": 1
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
  }
 }

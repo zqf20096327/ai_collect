@@ -4128,5 +4128,48 @@
   },
   "commit_90d": 17,
   "commit_7d": 17
+ },
+ "mithilai/stair-toc-retrieval": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Python": 99,
+   "Shell": 1
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "qstoffe/cost-guard": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 92,
+   "JavaScript": 6,
+   "CSS": 1,
+   "HTML": 0,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
  }
 }

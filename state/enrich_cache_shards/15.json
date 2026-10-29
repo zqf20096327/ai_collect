@@ -4145,5 +4145,32 @@
    "contrib": "20261028",
    "lang": "20261028"
   }
+ },
+ "AymenJeddou/hireshere": {
+  "rel_ver": "data-latest",
+  "rel_pub": "2026-10-08",
+  "rel_days": 21,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 39,
+   "Astro": 25,
+   "TypeScript": 22,
+   "CSS": 9,
+   "JavaScript": 4
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
  }
 }

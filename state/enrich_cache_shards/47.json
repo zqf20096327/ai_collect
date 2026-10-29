@@ -2448,16 +2448,16 @@
    "JavaScript": 8,
    "HTML": 8
   },
-  "enriched_at": "20261028",
+  "enriched_at": "20261029",
   "dim_ts": {
    "release": "20261028",
    "security": "20261021",
    "contrib": "20261021",
    "lang": "20261021",
-   "commit": "20261022"
+   "commit": "20261029"
   },
-  "commit_90d": 4,
-  "commit_7d": 4,
+  "commit_90d": 108,
+  "commit_7d": 107,
   "rel_pub": "2026-10-27",
   "rel_days": 1,
   "rel_n90": 1,
@@ -4451,6 +4451,79 @@
    "security": "20261028",
    "contrib": "20261028",
    "lang": "20261028"
+  }
+ },
+ "wq2012/SpectralCluster": {
+  "commit_90d": 17,
+  "commit_7d": 17,
+  "rel_ver": "v0.2.4",
+  "rel_pub": "2021-09-27",
+  "rel_days": 1858,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 99,
+   "Shell": 1
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "commit": "20261029",
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "Alpha-Park/genpark-agentic-commerce-sponsored-placement-router-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "tokenismcp/tokenis-mcp": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-10-11",
+  "rel_days": 18,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 75,
+   "HTML": 15,
+   "Rust": 8,
+   "TypeScript": 1,
+   "Go Template": 0
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
   }
  }
 }

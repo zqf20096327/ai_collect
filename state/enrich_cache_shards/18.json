@@ -461,11 +461,11 @@
   }
  },
  "soda-inria/tabicl": {
-  "commit_90d": 14,
-  "commit_7d": 0,
+  "commit_90d": 15,
+  "commit_7d": 1,
   "rel_ver": "v2.2.0",
   "rel_pub": "2026-09-02",
-  "rel_days": 45,
+  "rel_days": 57,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -478,10 +478,10 @@
    "Python": 97,
    "Shell": 3
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261029",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261029",
+   "release": "20261029",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

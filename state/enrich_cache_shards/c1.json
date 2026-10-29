@@ -4161,5 +4161,78 @@
    "contrib": "20261028",
    "lang": "20261028"
   }
+ },
+ "Alpha-Park/genpark-agentic-commerce-a2m-bargaining-negotiator-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "Pro-GenAI/Agent-RT": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-10-27",
+  "rel_days": 2,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 60,
+   "TypeScript": 23,
+   "JavaScript": 15,
+   "HTML": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "Kaminyou/FullTilt": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-10-20",
+  "rel_days": 9,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 85,
+   "Cuda": 12,
+   "C++": 2,
+   "Shell": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
  }
 }

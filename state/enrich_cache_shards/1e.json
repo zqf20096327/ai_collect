@@ -2867,8 +2867,8 @@
   }
  },
  "openai/php2shell-checker": {
-  "commit_90d": 7,
-  "commit_7d": 7,
+  "commit_90d": 8,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -2879,10 +2879,10 @@
   "lang": {
    "JavaScript": 100
   },
-  "enriched_at": "20261022",
+  "enriched_at": "20261029",
   "dim_ts": {
-   "commit": "20261022",
-   "release": "20261022",
+   "commit": "20261029",
+   "release": "20261029",
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
@@ -4258,6 +4258,79 @@
    "security": "20261028",
    "contrib": "20261028",
    "lang": "20261028"
+  }
+ },
+ "Agentic-System-Lab/agent-loop-visualizer": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 96,
+   "CSS": 3,
+   "JavaScript": 1,
+   "Just": 0,
+   "TypeScript": 0
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "Sector-F-Labs/reservoir": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 68,
+   "CSS": 12,
+   "Shell": 8,
+   "Python": 7,
+   "Makefile": 2
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "llmrelay/relay": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-07-20",
+  "rel_days": 101,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 99,
+   "HTML": 1,
+   "Dockerfile": 0,
+   "Python": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
   }
  }
 }

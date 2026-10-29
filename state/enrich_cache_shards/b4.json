@@ -2566,12 +2566,12 @@
   }
  },
  "Ephemeral-AI-Lab/layerfs": {
-  "commit_90d": 4074,
-  "commit_7d": 913,
-  "rel_ver": "v1.0.0",
-  "rel_pub": "2026-10-21",
-  "rel_days": 1,
-  "rel_n90": 10,
+  "commit_90d": 4233,
+  "commit_7d": 189,
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-10-24",
+  "rel_days": 5,
+  "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -2586,10 +2586,10 @@
    "Shell": 1,
    "TypeScript": 1
   },
-  "enriched_at": "20261022",
+  "enriched_at": "20261029",
   "dim_ts": {
-   "commit": "20261022",
-   "release": "20261022",
+   "commit": "20261029",
+   "release": "20261029",
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
@@ -4281,13 +4281,16 @@
    "Shell": 0,
    "Lua": 0
   },
-  "enriched_at": "20261027",
+  "enriched_at": "20261029",
   "dim_ts": {
    "release": "20261027",
    "security": "20261027",
    "contrib": "20261027",
-   "lang": "20261027"
-  }
+   "lang": "20261027",
+   "commit": "20261029"
+  },
+  "commit_90d": 377,
+  "commit_7d": 162
  },
  "borovetsav/edu-filter": {
   "rel_ver": "v1.12.1",
@@ -4311,6 +4314,79 @@
    "security": "20261028",
    "contrib": "20261028",
    "lang": "20261028"
+  }
+ },
+ "Scottcjn/claude-code-g4": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-01-02",
+  "rel_days": 300,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "C": 89,
+   "JavaScript": 9,
+   "Python": 1,
+   "Makefile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "alphaparkinc/genpark-reasoning-backtracking-counterfactual-auditor-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "KrasimirKralev/harvest-hollow": {
+  "rel_ver": "v1",
+  "rel_pub": "2026-10-19",
+  "rel_days": 10,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 95,
+   "CSS": 5,
+   "HTML": 1,
+   "Python": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
   }
  }
 }

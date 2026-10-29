@@ -4287,5 +4287,32 @@
    "contrib": "20261028",
    "lang": "20261028"
   }
+ },
+ "qsumm/AIOps": {
+  "rel_ver": "v1.8.1-oss",
+  "rel_pub": "2026-10-28",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Python": 77,
+   "JavaScript": 17,
+   "CSS": 4,
+   "Shell": 2,
+   "HTML": 1
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
  }
 }

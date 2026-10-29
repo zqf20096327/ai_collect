@@ -172,8 +172,8 @@
   }
  },
  "mistralai/cookbook": {
-  "commit_7d": 1,
-  "commit_90d": 195,
+  "commit_7d": 0,
+  "commit_90d": 129,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -188,10 +188,10 @@
    "JavaScript": 0,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261029",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261029",
+   "release": "20261029",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3832,6 +3832,61 @@
    "security": "20261025",
    "contrib": "20261025",
    "lang": "20261025"
+  }
+ },
+ "microsoft/forge-lab": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "ashishpatel26/agent-harness-engineering-pattern": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "bytebymanas/Sift-AI": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 100
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
   }
  }
 }

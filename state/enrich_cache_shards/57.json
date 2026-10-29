@@ -4420,5 +4420,56 @@
    "contrib": "20261028",
    "lang": "20261028"
   }
+ },
+ "MiniMax-AI/mcode-stack": {
+  "commit_90d": 7,
+  "commit_7d": 7,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 61,
+   "HTML": 29,
+   "JavaScript": 9
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "commit": "20261029",
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "lWoHvYe/unicorn": {
+  "rel_ver": "v4.8.3-chi",
+  "rel_pub": "2026-08-08",
+  "rel_days": 82,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 35,
+  "lang": {
+   "Java": 86,
+   "Kotlin": 8,
+   "PLpgSQL": 3,
+   "FreeMarker": 2,
+   "HTML": 0
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
  }
 }

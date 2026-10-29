@@ -4366,5 +4366,59 @@
    "contrib": "20261028",
    "lang": "20261028"
   }
+ },
+ "DavidDingXu/hello-llm": {
+  "rel_ver": "v0.1.0-rc.1",
+  "rel_pub": "2026-10-25",
+  "rel_days": 4,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 85,
+   "Python": 10,
+   "JavaScript": 5,
+   "CSS": 0,
+   "TypeScript": 0
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "DotNetAge/govector": {
+  "rel_ver": "v0.1.4",
+  "rel_pub": "2026-03-27",
+  "rel_days": 216,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 75,
+   "Shell": 9,
+   "Python": 8,
+   "C": 4,
+   "Makefile": 2
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
  }
 }

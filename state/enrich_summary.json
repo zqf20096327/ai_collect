@@ -1,1 +1,1 @@
-{"tiers": ["head", "mid", "tail"], "dims": "per-tier", "counts": {"done": 0, "failed": 0, "gone": 0}, "windows": 0, "waits": 0, "elapsed_min": 0.0, "stop_reason": null, "quarantined": []}
+{"tiers": ["head", "mid", "tail"], "dims": "per-tier", "counts": {"done": 430, "failed": 0, "gone": 0}, "windows": 1, "waits": 0, "elapsed_min": 22.7, "stop_reason": null, "quarantined": []}

@@ -226,11 +226,11 @@
   }
  },
  "rsxdalv/TTS-WebUI": {
-  "commit_90d": 7,
+  "commit_90d": 6,
   "commit_7d": 0,
   "rel_ver": "v1.5.2",
   "rel_pub": "2026-08-31",
-  "rel_days": 47,
+  "rel_days": 59,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -246,10 +246,10 @@
    "Shell": 2,
    "Batchfile": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261029",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261029",
+   "release": "20261029",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4194,6 +4194,36 @@
    "security": "20261028",
    "contrib": "20261028",
    "lang": "20261028"
+  }
+ },
+ "wpgaurav/generateblocks-skills": {
+  "commit_90d": 17,
+  "commit_7d": 5,
+  "rel_ver": "v2026.10.27.2",
+  "rel_pub": "2026-10-27",
+  "rel_days": 2,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "PHP": 78,
+   "Python": 10,
+   "HTML": 8,
+   "JavaScript": 3,
+   "Shell": 2
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "commit": "20261029",
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
   }
  }
 }

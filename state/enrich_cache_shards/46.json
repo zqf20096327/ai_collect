@@ -3798,5 +3798,50 @@
    "contrib": "20261027",
    "lang": "20261027"
   }
+ },
+ "datarobot/airflow-provider-datarobot": {
+  "rel_ver": "v1.0.2",
+  "rel_pub": "2025-07-08",
+  "rel_days": 478,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 16,
+  "lang": {
+   "Python": 99,
+   "Makefile": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "alessandrolattao/FastFlowLM": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Makefile": 72,
+   "Shell": 28
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
  }
 }

@@ -3884,5 +3884,32 @@
   },
   "commit_90d": 201,
   "commit_7d": 144
+ },
+ "carbon-design-system/Carbon-Monitor": {
+  "rel_ver": "v1.4.0",
+  "rel_pub": "2026-10-18",
+  "rel_days": 11,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 95,
+   "Shell": 3,
+   "SCSS": 2,
+   "Dockerfile": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
  }
 }

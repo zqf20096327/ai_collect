@@ -4482,5 +4482,72 @@
    "contrib": "20261027",
    "lang": "20261027"
   }
+ },
+ "ChrisVip001/joyczl-agent": {
+  "commit_90d": 73,
+  "commit_7d": 14,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 74,
+   "TypeScript": 17,
+   "Python": 5,
+   "Shell": 2,
+   "CSS": 1
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "commit": "20261029",
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "mzed/RapidLib": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "C++": 76,
+   "JavaScript": 22,
+   "C": 1,
+   "CMake": 1
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "smirk-dev/kavi-gpt": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
  }
 }

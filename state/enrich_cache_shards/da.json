@@ -3796,5 +3796,30 @@
    "contrib": "20261027",
    "lang": "20261027"
   }
+ },
+ "BlaiseLabs/GuessWithKanji": {
+  "rel_ver": "v0.1.2",
+  "rel_pub": "2026-10-26",
+  "rel_days": 3,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 93,
+   "HTML": 5,
+   "Shell": 1
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
  }
 }

@@ -3969,5 +3969,59 @@
    "contrib": "20261028",
    "lang": "20261028"
   }
+ },
+ "shawn-tangsc/MacroBay": {
+  "rel_ver": "v0.2.2",
+  "rel_pub": "2026-10-28",
+  "rel_days": 1,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 97,
+   "CSS": 3,
+   "HTML": 0,
+   "JavaScript": 0,
+   "NSIS": 0
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "jysvai/JYSV-HERA": {
+  "rel_ver": "v0.3.0",
+  "rel_pub": "2026-10-29",
+  "rel_days": 0,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 96,
+   "JavaScript": 2,
+   "CSS": 2,
+   "Python": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
  }
 }

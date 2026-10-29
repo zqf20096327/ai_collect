@@ -4481,5 +4481,59 @@
    "contrib": "20261028",
    "lang": "20261028"
   }
+ },
+ "Scottcjn/llama-cpp-tigerleopard": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-01-02",
+  "rel_days": 300,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "C++": 58,
+   "C": 13,
+   "Python": 9,
+   "Cuda": 6,
+   "Metal": 2
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "MarcelRoozekrans/Minos.NET": {
+  "rel_ver": "v1.6.0",
+  "rel_pub": "2026-10-28",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "C#": 96,
+   "Python": 3,
+   "PowerShell": 0,
+   "JavaScript": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
  }
 }

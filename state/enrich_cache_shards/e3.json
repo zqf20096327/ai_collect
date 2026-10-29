@@ -3795,13 +3795,16 @@
    "CSS": 14,
    "JavaScript": 4
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261029",
   "dim_ts": {
    "release": "20261024",
    "security": "20261024",
    "contrib": "20261024",
-   "lang": "20261024"
-  }
+   "lang": "20261024",
+   "commit": "20261029"
+  },
+  "commit_90d": 214,
+  "commit_7d": 90
  },
  "kaist-cvml/PLUME": {
   "rel_ver": null,
@@ -4174,6 +4177,33 @@
    "security": "20261027",
    "contrib": "20261027",
    "lang": "20261027"
+  }
+ },
+ "amaze-labs/MazeDNS": {
+  "rel_ver": "0.141.3",
+  "rel_pub": "2026-10-26",
+  "rel_days": 3,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Go": 67,
+   "TypeScript": 27,
+   "CSS": 6,
+   "Shell": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
   }
  }
 }

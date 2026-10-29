@@ -4709,13 +4709,16 @@
    "Shell": 2,
    "TypeScript": 0
   },
-  "enriched_at": "20261026",
+  "enriched_at": "20261029",
   "dim_ts": {
    "release": "20261026",
    "security": "20261026",
    "contrib": "20261026",
-   "lang": "20261026"
-  }
+   "lang": "20261026",
+   "commit": "20261029"
+  },
+  "commit_90d": 44,
+  "commit_7d": 15
  },
  "BANG404/openagent": {
   "rel_ver": "v0.89.0-beta.1",
@@ -4742,6 +4745,48 @@
    "security": "20261028",
    "contrib": "20261028",
    "lang": "20261028"
+  }
+ },
+ "aleibovici/ollama-gpu-calculator": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-10-28",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "JavaScript": 84,
+   "CSS": 15,
+   "HTML": 1
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "fgsdg7590-sys/-CoreGold---Enterprise-Virtual-Visa-Mastercard-Infrastructure-for-Ad-Scaling-Cross-Border-Ops": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
   }
  }
 }

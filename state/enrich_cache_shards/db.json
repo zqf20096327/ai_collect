@@ -4186,5 +4186,30 @@
    "contrib": "20261028",
    "lang": "20261028"
   }
+ },
+ "FurryXinkong/FurAgent": {
+  "rel_ver": "v26.10.39475",
+  "rel_pub": "2026-10-27",
+  "rel_days": 2,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Kotlin": 99,
+   "PowerShell": 1,
+   "Python": 0
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
  }
 }

@@ -4262,12 +4262,15 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261028",
+  "enriched_at": "20261029",
   "dim_ts": {
    "release": "20261028",
    "security": "20261028",
    "contrib": "20261028",
-   "lang": "20261028"
-  }
+   "lang": "20261028",
+   "commit": "20261029"
+  },
+  "commit_90d": 6,
+  "commit_7d": 6
  }
 }

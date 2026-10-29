@@ -145,11 +145,11 @@
   }
  },
  "rasbt/reasoning-from-scratch": {
-  "commit_90d": 15,
-  "commit_7d": 0,
+  "commit_90d": 14,
+  "commit_7d": 1,
   "rel_ver": "v1.0",
   "rel_pub": "2026-05-18",
-  "rel_days": 151,
+  "rel_days": 164,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -163,10 +163,10 @@
    "Python": 32,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261029",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261029",
+   "release": "20261029",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -3635,6 +3635,29 @@
    "security": "20261027",
    "contrib": "20261027",
    "lang": "20261027"
+  }
+ },
+ "VAST-AI-Research/TripoSplat": {
+  "commit_90d": 1,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 95,
+   "HTML": 5
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "commit": "20261029",
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
   }
  }
 }

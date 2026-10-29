@@ -233,11 +233,11 @@
   }
  },
  "argmaxinc/argmax-oss-swift": {
-  "commit_90d": 23,
-  "commit_7d": 2,
+  "commit_90d": 19,
+  "commit_7d": 0,
   "rel_ver": "v1.1.1",
   "rel_pub": "2026-10-08",
-  "rel_days": 8,
+  "rel_days": 21,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -252,10 +252,10 @@
    "Python": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261029",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261029",
+   "release": "20261029",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4812,6 +4812,77 @@
    "security": "20261028",
    "contrib": "20261028",
    "lang": "20261028"
+  }
+ },
+ "Scottcjn/rpi-inference": {
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-03-28",
+  "rel_days": 215,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "C": 45,
+   "TeX": 29,
+   "Python": 25,
+   "Makefile": 1
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "PaddlePaddle/HALOps": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Cuda": 59,
+   "Python": 39,
+   "C++": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "microsoft/copilot-studio-gallery": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 14,
+  "lang": {
+   "C#": 38,
+   "TypeScript": 26,
+   "Python": 21,
+   "Astro": 10,
+   "CSS": 4
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
   }
  }
 }

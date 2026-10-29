@@ -4109,5 +4109,32 @@
    "contrib": "20261028",
    "lang": "20261028"
   }
+ },
+ "qxchuckle/lattice": {
+  "rel_ver": "v1.29.0",
+  "rel_pub": "2026-10-21",
+  "rel_days": 8,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 89,
+   "JavaScript": 5,
+   "Astro": 3,
+   "CSS": 2,
+   "Less": 1
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
  }
 }

@@ -3751,5 +3751,59 @@
    "contrib": "20261027",
    "lang": "20261027"
   }
+ },
+ "directionally-local/hotcell": {
+  "rel_ver": "v0.1.33",
+  "rel_pub": "2026-10-28",
+  "rel_days": 1,
+  "rel_n90": 10,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 83,
+   "Go": 5,
+   "Shell": 5,
+   "Python": 3,
+   "Swift": 2
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "lpnovi/Orbit-Assistant": {
+  "rel_ver": "v0.8.5.0-beta.1",
+  "rel_pub": "2026-10-17",
+  "rel_days": 12,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Java": 100,
+   "Python": 0,
+   "PowerShell": 0,
+   "AIDL": 0,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
  }
 }

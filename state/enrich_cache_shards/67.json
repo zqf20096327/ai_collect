@@ -93,8 +93,8 @@
   }
  },
  "MiniMax-AI/MiniMax-H3": {
-  "commit_7d": 0,
-  "commit_90d": 42,
+  "commit_7d": 2,
+  "commit_90d": 46,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -106,10 +106,10 @@
    "Python": 91,
    "Shell": 9
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261029",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261029",
+   "release": "20261029",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

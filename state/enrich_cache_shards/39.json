@@ -4568,5 +4568,86 @@
    "contrib": "20261028",
    "lang": "20261028"
   }
+ },
+ "herdodp/snapgent-connector": {
+  "rel_ver": "V3.4",
+  "rel_pub": "2026-10-29",
+  "rel_days": 0,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 83,
+   "Python": 8,
+   "CSS": 6,
+   "Shell": 1,
+   "PowerShell": 1
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "KlaraGraff/XL_Translator": {
+  "rel_ver": "v10.4.0",
+  "rel_pub": "2026-10-28",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 82,
+   "TypeScript": 14,
+   "CSS": 2,
+   "Rust": 1,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "stuffbucket/accidental-info": {
+  "rel_ver": "specs-and-reviews-v0.5.0",
+  "rel_pub": "2026-10-23",
+  "rel_days": 6,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 76,
+   "HTML": 18,
+   "TypeScript": 2,
+   "Astro": 2,
+   "CSS": 1
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
  }
 }

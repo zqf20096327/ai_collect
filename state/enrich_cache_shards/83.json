@@ -4469,5 +4469,31 @@
    "contrib": "20261028",
    "lang": "20261028"
   }
+ },
+ "Scottcjn/legend-of-elya-n64": {
+  "commit_90d": 95,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "C": 57,
+   "Python": 36,
+   "C++": 2,
+   "Makefile": 2,
+   "Assembly": 2
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "commit": "20261029",
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
  }
 }

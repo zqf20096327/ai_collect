@@ -456,7 +456,7 @@
   }
  },
  "JourniOne-ai/JourniOne-Planning-Skills": {
-  "commit_7d": 1,
+  "commit_7d": 0,
   "commit_90d": 3,
   "rel_ver": null,
   "rel_none": true,
@@ -468,10 +468,10 @@
   "lang": {
    "JavaScript": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261029",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261029",
+   "release": "20261029",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

@@ -2450,13 +2450,16 @@
    "NSIS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261029",
   "dim_ts": {
    "release": "20261021",
    "security": "20261021",
    "contrib": "20261021",
-   "lang": "20261021"
-  }
+   "lang": "20261021",
+   "commit": "20261029"
+  },
+  "commit_90d": 123,
+  "commit_7d": 20
  },
  "JoasASantos/Malvex": {
   "rel_ver": null,
@@ -4536,6 +4539,26 @@
    "security": "20261028",
    "contrib": "20261028",
    "lang": "20261028"
+  }
+ },
+ "brass-lang/brass": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100,
+   "Shell": 0
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
   }
  }
 }

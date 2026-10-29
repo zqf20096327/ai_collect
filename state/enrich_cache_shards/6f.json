@@ -303,8 +303,8 @@
   }
  },
  "patrick-llgc/Learning-Deep-Learning": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 3,
+  "commit_7d": 3,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -315,10 +315,10 @@
   "lang": {
    "Jupyter Notebook": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261029",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261029",
+   "release": "20261029",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4214,6 +4214,72 @@
    "security": "20261028",
    "contrib": "20261028",
    "lang": "20261028"
+  }
+ },
+ "yakshcore/LeadHunter-AI": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "elRadix/daikin_cycle_ml": {
+  "rel_ver": "v1.13.2",
+  "rel_pub": "2026-10-28",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "Shell": 1
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "mayukh4/jansky": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 65,
+   "JavaScript": 17,
+   "Shell": 11,
+   "CSS": 6,
+   "HTML": 1
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
   }
  }
 }

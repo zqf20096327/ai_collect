@@ -33,12 +33,12 @@
   }
  },
  "danielmiessler/LifeOS": {
-  "commit_7d": 0,
-  "commit_90d": 21,
-  "rel_ver": "v7.40.4",
-  "rel_pub": "2026-08-14",
-  "rel_days": 63,
-  "rel_n90": 2,
+  "commit_7d": 2,
+  "commit_90d": 18,
+  "rel_ver": "v8.761.0",
+  "rel_pub": "2026-10-27",
+  "rel_days": 2,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -53,10 +53,10 @@
    "CSS": 2,
    "Python": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261029",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261029",
+   "release": "20261029",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -549,8 +549,8 @@
   }
  },
  "decodingai-magazine/building-a-coding-agent-from-scratch-course": {
-  "commit_90d": 128,
-  "commit_7d": 0,
+  "commit_90d": 65,
+  "commit_7d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -564,10 +564,10 @@
    "Shell": 2,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261029",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261029",
+   "release": "20261029",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3859,6 +3859,52 @@
    "security": "20261028",
    "contrib": "20261028",
    "lang": "20261028"
+  }
+ },
+ "google-deepmind/hope": {
+  "rel_ver": "v1.0",
+  "rel_pub": "2026-10-27",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "syntropyai-hq/syntropy": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 97,
+   "Python": 2,
+   "C": 0,
+   "Shell": 0,
+   "Assembly": 0
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
   }
  }
 }

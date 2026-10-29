@@ -4235,5 +4235,55 @@
    "contrib": "20261027",
    "lang": "20261027"
   }
+ },
+ "Pumpetee/Mnemai": {
+  "rel_ver": "v2.3.0",
+  "rel_pub": "2026-10-28",
+  "rel_days": 1,
+  "rel_n90": 11,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 62,
+   "JavaScript": 22,
+   "CSS": 15,
+   "HTML": 1,
+   "Inno Setup": 0
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "iniesohidham/idea-to-blueprint": {
+  "rel_ver": "v1.1.1",
+  "rel_pub": "2026-09-30",
+  "rel_days": 29,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
  }
 }

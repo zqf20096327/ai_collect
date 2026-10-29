@@ -4572,5 +4572,32 @@
    "contrib": "20261028",
    "lang": "20261028"
   }
+ },
+ "apelabs-dev/sur9e": {
+  "rel_ver": "v0.5.0",
+  "rel_pub": "2026-08-29",
+  "rel_days": 61,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 71,
+   "JavaScript": 19,
+   "CSS": 9,
+   "Shell": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
  }
 }

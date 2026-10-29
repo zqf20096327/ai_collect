@@ -1802,13 +1802,16 @@
    "JavaScript": 2,
    "Dockerfile": 0
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261029",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261029"
+  },
+  "commit_90d": 609,
+  "commit_7d": 50
  },
  "Ayush-Deore/Autonomous-Car-Simulation": {
   "rel_ver": null,
@@ -4320,13 +4323,16 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261027",
+  "enriched_at": "20261029",
   "dim_ts": {
    "release": "20261027",
    "security": "20261027",
    "contrib": "20261027",
-   "lang": "20261027"
-  }
+   "lang": "20261027",
+   "commit": "20261029"
+  },
+  "commit_90d": 79,
+  "commit_7d": 0
  },
  "MasterBhuvnesh/agentic-design-patterns": {
   "rel_ver": null,
@@ -4346,6 +4352,33 @@
    "security": "20261028",
    "contrib": "20261028",
    "lang": "20261028"
+  }
+ },
+ "open-infra-ai/cuda-foundations": {
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-10-25",
+  "rel_days": 4,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "C++": 59,
+   "Cuda": 30,
+   "TypeScript": 5,
+   "CMake": 4,
+   "Python": 1
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
   }
  }
 }

@@ -5544,5 +5544,59 @@
    "contrib": "20261027",
    "lang": "20261027"
   }
+ },
+ "ichikuruma22-star/switchyard": {
+  "rel_ver": "v0.1.1",
+  "rel_pub": "2026-10-15",
+  "rel_days": 14,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Rust": 79,
+   "JavaScript": 18,
+   "CSS": 3,
+   "HTML": 0,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "xavidop/tobira": {
+  "rel_ver": "v1.6.0",
+  "rel_pub": "2026-10-29",
+  "rel_days": 0,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Go": 99,
+   "Astro": 1,
+   "JavaScript": 0,
+   "CSS": 0,
+   "TypeScript": 0
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
  }
 }

@@ -2009,13 +2009,16 @@
    "Shell": 0,
    "HTML": 0
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261029",
   "dim_ts": {
    "release": "20261021",
    "security": "20261021",
    "contrib": "20261021",
-   "lang": "20261021"
-  }
+   "lang": "20261021",
+   "commit": "20261029"
+  },
+  "commit_90d": 233,
+  "commit_7d": 45
  },
  "NVIDIA/TensorRT-RTX-EP-ABI": {
   "rel_ver": "v0.5.0",
@@ -3891,6 +3894,77 @@
    "security": "20261028",
    "contrib": "20261028",
    "lang": "20261028"
+  }
+ },
+ "thisisfine/thisisfine": {
+  "rel_ver": "release-me",
+  "rel_pub": "2018-07-25",
+  "rel_days": 3018,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "NoHarry/android-agent-runtime": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Kotlin": 95,
+   "Python": 5,
+   "Java": 0
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "Hejunlong27/SoloDrama": {
+  "rel_ver": "v0.5",
+  "rel_pub": "2026-10-20",
+  "rel_days": 9,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 87,
+   "JavaScript": 11,
+   "CSS": 2,
+   "HTML": 1,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
   }
  }
 }

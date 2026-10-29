@@ -4113,12 +4113,95 @@
    "Shell": 1,
    "Batchfile": 0
   },
-  "enriched_at": "20261027",
+  "enriched_at": "20261029",
   "dim_ts": {
    "release": "20261027",
    "security": "20261027",
    "contrib": "20261027",
-   "lang": "20261027"
+   "lang": "20261027",
+   "commit": "20261029"
+  },
+  "commit_90d": 113,
+  "commit_7d": 26
+ },
+ "Scottcjn/beacon-skill": {
+  "commit_90d": 21,
+  "commit_7d": 0,
+  "rel_ver": "v2.16.1",
+  "rel_pub": "2026-06-08",
+  "rel_days": 143,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 63,
+  "lang": {
+   "Python": 95,
+   "JavaScript": 2,
+   "HTML": 2,
+   "CSS": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "commit": "20261029",
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "OpenDocBot/OpenDocBot": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 96,
+   "JavaScript": 4,
+   "HTML": 0,
+   "CSS": 0,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "stoyan-stoyanov/wavefunction": {
+  "rel_ver": "v0.1.1",
+  "rel_pub": "2026-10-28",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 57,
+   "TypeScript": 38,
+   "CSS": 2,
+   "JavaScript": 1,
+   "Rust": 1
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
   }
  }
 }

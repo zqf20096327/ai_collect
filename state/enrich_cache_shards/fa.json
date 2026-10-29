@@ -3859,5 +3859,32 @@
    "contrib": "20261025",
    "lang": "20261025"
   }
+ },
+ "BrainDriveAI/BrainDrive": {
+  "rel_ver": "26.7.23",
+  "rel_pub": "2026-07-23",
+  "rel_days": 98,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 58,
+   "HTML": 22,
+   "Rust": 10,
+   "Shell": 5,
+   "PowerShell": 4
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
  }
 }

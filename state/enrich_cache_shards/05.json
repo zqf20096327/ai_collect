@@ -1483,13 +1483,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261019",
+  "enriched_at": "20261029",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261029"
+  },
+  "commit_90d": 90,
+  "commit_7d": 7
  },
  "jolie-z/Auto-JobHunter": {
   "rel_ver": null,
@@ -4588,6 +4591,30 @@
    "security": "20261028",
    "contrib": "20261028",
    "lang": "20261028"
+  }
+ },
+ "DoodzDev/AcouZ": {
+  "rel_ver": "v1.0.2",
+  "rel_pub": "2026-04-11",
+  "rel_days": 201,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 98,
+   "Inno Setup": 2
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
   }
  }
 }

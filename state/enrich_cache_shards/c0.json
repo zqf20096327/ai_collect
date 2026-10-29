@@ -3973,5 +3973,29 @@
    "contrib": "20261028",
    "lang": "20261028"
   }
+ },
+ "LocalKinAI/kincode": {
+  "rel_ver": "v0.10.0",
+  "rel_pub": "2026-05-05",
+  "rel_days": 177,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Go": 99,
+   "Shell": 1
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
  }
 }

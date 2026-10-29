@@ -4428,5 +4428,62 @@
    "contrib": "20261028",
    "lang": "20261028"
   }
+ },
+ "nodecode-ai/nodecode": {
+  "commit_90d": 97,
+  "commit_7d": 97,
+  "rel_ver": "v0.1.3",
+  "rel_pub": "2026-10-28",
+  "rel_days": 1,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Common Lisp": 95,
+   "Python": 3,
+   "Shell": 2,
+   "PowerShell": 0,
+   "Just": 0
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "commit": "20261029",
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
+ },
+ "HTMLGuyLLC/NoActually": {
+  "rel_ver": "v0.2.1",
+  "rel_pub": "2026-10-28",
+  "rel_days": 1,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 56,
+   "TypeScript": 34,
+   "CSS": 4,
+   "Shell": 3,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
+  }
  }
 }

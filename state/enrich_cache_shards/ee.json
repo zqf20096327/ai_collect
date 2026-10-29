@@ -228,11 +228,11 @@
   }
  },
  "agentbay-ai/wuying-agentbay-sdk": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 1,
+  "commit_7d": 1,
   "rel_ver": "v0.22.0",
   "rel_pub": "2026-06-03",
-  "rel_days": 136,
+  "rel_days": 148,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -248,10 +248,10 @@
    "Go": 15,
    "JavaScript": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261029",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261029",
+   "release": "20261029",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4242,6 +4242,27 @@
    "security": "20261027",
    "contrib": "20261027",
    "lang": "20261027"
+  }
+ },
+ "bernard357/duckdb-vectors": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 93,
+   "Makefile": 4,
+   "Shell": 3
+  },
+  "enriched_at": "20261029",
+  "dim_ts": {
+   "release": "20261029",
+   "security": "20261029",
+   "contrib": "20261029",
+   "lang": "20261029"
   }
  }
 }
