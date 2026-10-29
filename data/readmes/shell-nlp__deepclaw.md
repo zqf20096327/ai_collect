@@ -120,7 +120,7 @@ checkpoint 统一持久化，前端构建产物由同一个进程静态托管。
 | Web 框架 | FastAPI + Uvicorn |
 | 智能体 | LangGraph, LangChain, DeepAgents, ag-ui-langgraph |
 | 协议 | AG-UI（HTTP + SSE） |
-| RAG | PostgreSQL + pgvector + pg_search，或 Elasticsearch（Dense Vector + BM25）；Graph RAG 支持 Elasticsearch / PostgreSQL，Graph DB 支持 Neo4j / NetworkX |
+| RAG | PostgreSQL + pgvector + pg_search，或 Elasticsearch（Dense Vector + BM25），检索统一走 BM25 + 向量 + RRF 混合检索；Graph DB 支持 Neo4j / NetworkX |
 | 状态存储 | LangGraph checkpoint（PostgreSQL / 内存）、Run/Thread 事件表（PostgreSQL / SQLite / 内存）、AsyncPostgresStore / InMemoryStore |
 | 前端 | Next.js 15, React 19, TypeScript, CSS Modules |
 | 执行后端 | Local Shell, Store Backend, OpenSandbox（Docker 容器沙箱） |
@@ -135,7 +135,7 @@ deepclaw/
 ├── deepclaw/
 │   ├── agent_registry.py    # Agent 基类与自动发现注册表
 │   ├── agents/              # 智能体实现：general/ 通用智能体、rag/ 知识库智能体
-│   ├── common/              # 向量库、Graph DB / Graph RAG、Docling 解析与文本切分
+│   ├── common/              # 向量库、Graph DB、Docling 解析与文本切分
 │   ├── middleware/          # 业务开关、MCP、图表、NL2SQL、记忆、Python 执行、沙箱等
 │   ├── patch/               # 第三方库补丁与适配
 │   ├── sandbox/             # OpenSandbox 执行后端
@@ -239,6 +239,7 @@ uv sync --dev --extra oracle        # Oracle DDL fetcher
 uv sync --dev --extra opensandbox   # sandbox 执行后端
 uv sync --dev --extra feishu        # 飞书长连接
 uv sync --dev --extra phoenix       # Phoenix 可观测性
+uv sync --dev --extra object-storage # MinIO / S3 对象存储
 ```
 
 > 知识库上传文档依赖 `pdf` extra。缺少时上传会返回
@@ -270,6 +271,14 @@ VECTOR_STORE_BACKEND=pgsql
 # ES_URL=http://localhost:9200
 # ES_URSR=elastic
 # ES_PWD=elastic@2024
+
+# 知识库文件对象存储：默认本地，也可切换 MinIO
+OBJECT_STORAGE_PROVIDER=local
+# LOCAL_STORAGE_ROOT=.deepclaw/workspace/object_storage
+# OBJECT_STORAGE_PROVIDER=minio
+# MINIO_ENDPOINT_URL=http://localhost:9000
+# MINIO_ACCESS_KEY=minioadmin
+# MINIO_SECRET_KEY=minioadmin
 ```
 
 > 只有配置了 `PG_DATABASE_URL`，Run / Thread / 检查点才会落到共享库，多实例部署才能共享会话状态；
@@ -514,7 +523,7 @@ curl -X POST http://localhost:7869/api/agui/runs/run-demo-1/resume \
 
 ### 知识库问答
 
-`index_name` / `graph_name` 取自知识库详情的 `passage_index` 与 `index_prefix`：
+`index_names` 是知识库详情中 `passage_index` 组成的列表，可一次传入多个知识库一起检索：
 
 ```bash
 curl -X POST http://localhost:7869/api/agui/runs \
@@ -525,8 +534,7 @@ curl -X POST http://localhost:7869/api/agui/runs \
     "threadId": "rag-thread",
     "runId": "rag-run-demo-1",
     "state": {
-      "index_name": "kb_xxx_passages",
-      "graph_name": "kb_xxx",
+      "index_names": ["kb_xxx_passages", "kb_yyy_passages"],
       "deep_thinking": false
     },
     "messages": [
@@ -585,6 +593,9 @@ curl http://localhost:7869/api/agui/threads/demo-thread/state -H "Authorization:
 | `VECTOR_STORE_BACKEND` | 向量库后端：`pgsql`（PostgreSQL + pgvector）或 `elasticsearch`，默认 `elasticsearch` |
 | `ES_URL` | `VECTOR_STORE_BACKEND=elasticsearch` 时的 Elasticsearch 地址 |
 | `ES_URSR` / `ES_PWD` | Elasticsearch 用户名与密码 |
+| `OBJECT_STORAGE_PROVIDER` | 知识库文件对象存储：`local`（默认）或 `minio` |
+| `LOCAL_STORAGE_ROOT` | 本地对象存储根目录，默认 `.deepclaw/workspace/object_storage`；实际路径为 `root/bucket_name/file_path` |
+| `MINIO_ENDPOINT_URL` / `MINIO_ACCESS_KEY` / `MINIO_SECRET_KEY` | `OBJECT_STORAGE_PROVIDER=minio` 时必填 |
 
 ### 常用可选环境变量
 
@@ -601,6 +612,7 @@ curl http://localhost:7869/api/agui/threads/demo-thread/state -H "Authorization:
 | `AUTH_ADMIN_EMAIL` / `AUTH_ADMIN_PASSWORD` | 首次启动时自举的管理员账号 |
 | `AUTH_TOKEN_EXPIRE_DAYS` | 访问令牌有效期天数，默认 `1` |
 | `AGUI_RUN_RETENTION_SECONDS` | Run 与事件的保留时长，默认 `3600` |
+| `AGUI_THREAD_RETENTION_SECONDS` | Thread 索引保留时长；默认 `0` 表示不自动过期 |
 | `AGUI_RUN_MAX_EVENTS` | 单个 Run 的事件数量上限，默认 `2000` |
 | `AGUI_RUN_CLEANUP_INTERVAL_SECONDS` | 过期清理任务间隔，默认 `60` |
 | `AGUI_RUN_POLL_INTERVAL_SECONDS` | 事件流轮询间隔，默认 `0.5` |

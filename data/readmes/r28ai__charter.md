@@ -2,7 +2,9 @@
 
 <img src="https://raw.githubusercontent.com/r28ai/charter/main/docs/images/charter-mark-144.png" alt="" width="72" height="72">
 
-<h3>Decide what your agent sees, sends and gets back, in every API it touches.</h3>
+<h3>Your agent's access to customer accounts, enforced per field, diffed in review.</h3>
+
+<p>Answer "what can your agent access?" straight from the code that runs.</p>
 
 <p>
 <a href="https://docs.r28.ai/charter/start/quickstart">Quickstart</a> ·
@@ -24,9 +26,12 @@
 
 # Charter
 
-Charter is an open-source Python tool-definition layer for agents. It lets you control every
-aspect of your tools, and checks each call before it's sent. It works for any HTTP API,
-public or private.
+Charter is an open-source Python library for agents that act in your customers' accounts
+through APIs. Each tool is a Pydantic model that mirrors the API field by field, with your
+rules on top, and every call is checked against it before it's sent. Your app says whose
+account each call is for, and the model can't change it. The same declarations list
+everything each tool can reach, for code review and for your customer's security team. It
+works for any HTTP API, public or private.
 
 A library, not a service.
 Runs in your process. No proxy, no per-call pricing, no telemetry.
@@ -41,14 +46,79 @@ Requires Python 3.10+. The only dependencies are `pydantic` and `httpx`.
 
 ## Quickstart
 
-You write rules as an annotated Pydantic model that mirrors the API field by field, so your
-[coding agent](https://github.com/r28ai/charter/blob/main/skills/declaring-charter-tools/SKILL.md) can check it against the docs for drift.
+An agent acting for one customer looks up two orders. A rule like "only this customer's
+orders" needs to know whose account the call is for, and that has to come from your app, not
+from the model. Mark the field `FromContext()` and pass its value per call:
 
-Then you can add your own rules on top of the API's, in Pydantic too, using any check you can
-write in Python.
+```python
+from typing import Annotated
 
-Unlike a plain Pydantic model, yours also marks each field as path, query or body, and Charter
-builds the request from it. Unit tests can check every rule without anything reaching the API.
+from pydantic import BaseModel, model_validator
+
+from charter import FromContext, Path, ToolValidationError, api_key_tool_factory, format_egress_map
+
+OWNERS = {"ord_1": "cus_42", "ord_2": "cus_7"}  # from your database
+
+
+class GetOrder(BaseModel):
+    order_id: Annotated[str, Path()]
+    customer_id: Annotated[str, FromContext()]  # your app's, per call
+
+    @model_validator(mode="after")
+    def _their_own(self) -> "GetOrder":
+        if OWNERS.get(self.order_id) != self.customer_id:
+            raise ValueError("That order belongs to another customer.")
+        return self
+
+
+shop = api_key_tool_factory(
+    pack="shop",
+    base_url="https://httpbin.org/anything/",  # stands in for your API
+    api_key_headers={"Authorization": "Bearer sk_test_123"},
+)
+get_order = shop(
+    name="orders_get",
+    description="Get one of the customer's orders.",
+    method="GET",
+    url_template="v1/orders/{order_id}",
+    args_schema=GetOrder,
+)
+
+for order_id in ("ord_1", "ord_2"):
+    try:
+        get_order.invoke({"order_id": order_id}, context={"customer_id": "cus_42"})
+        print(order_id, "sent")
+    except ToolValidationError as refused:
+        print(order_id, "refused:", refused.errors[0]["msg"])
+
+print(format_egress_map([get_order]))
+```
+
+```
+ord_1 sent
+ord_2 refused: Value error, That order belongs to another customer.
+shop_orders_get  (GET v1/orders/{order_id})
+  visible to the model (1):
+    + order_id
+  withheld (1):
+    - customer_id  [context] <- context['customer_id']
+```
+
+The model fills in `order_id` and nothing else. A model talked into naming another customer's
+order is refused before anything is sent, and so is a call your app made without saying whose
+it is. The map comes from the same declarations the runtime executes: commit it, and a change
+to what your agent can reach is a diff in review, the list your customer's security team asks
+for. [`14_act_for_one_customer.py`](https://github.com/r28ai/charter/blob/main/examples/basics/14_act_for_one_customer.py)
+runs it, and [per-call context](https://docs.r28.ai/charter/tools/wire-contract#per-call-context)
+has the rest.
+
+## Your rules on any field
+
+Each tool mirrors the API field by field, so your
+[coding agent](https://github.com/r28ai/charter/blob/main/skills/declaring-charter-tools/SKILL.md)
+can check it against the API's docs. Your own rules go on the same fields: a limit, an allowed
+list, or any check you can write in Python. Charter builds the request from the model, and a
+unit test can check every rule without anything reaching the API.
 
 ```python
 from typing import Annotated, Literal
@@ -112,34 +182,35 @@ Validation error:
 
 It can fix the call or stop; Charter never improvises.
 
-## What your agent sees, sends and gets back
+## What else Charter does
 
 | | What Charter does | Measured |
 |---|---|---|
 | **Sees** | Cuts a tool down to the fields the job needs | Google Docs' write tool has 33 kinds of edit; cut to the 3 a job needs, its schema goes from 7,336 tokens to 1,553 ([details](https://docs.r28.ai/charter/tools/projections#why-the-tool-is-shaped-this-way)) |
-| **Sends** | Builds wire formats like MIME, base64 and GraphQL, so the model fills in plain fields | Over 534 runs, a raw HTTP tool sent 32 malformed GraphQL documents and tried 10 calls to endpoints never declared; Charter did neither ([details](#control-what-goes-out)) |
+| **Sends** | Builds wire formats like MIME, base64 and GraphQL, so the model fills in plain fields | Over 534 runs, a raw HTTP tool sent 32 malformed GraphQL documents and tried 10 calls to endpoints never declared; Charter did neither ([details](#control-what-goes-out)). Of six calls that break the vendor's own documented rules, Charter refused all six before sending; the APIs' own or most-starred MCP servers let four of five through ([details](https://docs.r28.ai/charter/guarantees/benchmarks#the-same-calls-through-each-tool-layer)) |
 | **Gets back** | Trims responses, and raises when a `200` is really a failure | GitHub sends 346.6 KB, the model gets 10.7 KB ([details](#control-what-comes-back)) |
 
 ## Who it's for
 
 | If you're... | Charter gives you |
 |---|---|
+| Facing a security review | What the agent can see and send, enforced in code and diffed in review: whose account a call acts in, set by your app per call ([`FromContext`](https://docs.r28.ai/charter/reference/markers#fromcontext)), values it can't see or change ([`pin`](https://docs.r28.ai/charter/tools/projections#pin)), fields per pricing tier or region ([`Mode`](https://docs.r28.ai/charter/boundary/mode-system)), OAuth scopes worked out from the tools you hand out ([`scopes_for`](https://docs.r28.ai/charter/auth/permissions)), and a list of everything each tool can reach ([`egress_map`](https://docs.r28.ai/charter/reference/observability#egress_map)) |
 | A SaaS adding an agent that works in your users' Gmail, Stripe or Notion | [Per-user OAuth](https://docs.r28.ai/charter/auth/your-users) with your app's name on the consent screen, and [ready-made tools](https://docs.r28.ai/charter/packs/overview) |
-| On Composio or Zapier | Tools you own, with no per-call fees, and your users' data stays on your servers ([how it compares](#how-charter-compares)) |
-| Writing tool glue by hand | Catches the bugs hand-written glue lets through: a bad argument is [refused before it's sent](#quickstart), and an [`Envelope`](https://docs.r28.ai/charter/reference/envelopes-and-pagination#envelope) raises when a `200` is really a failure |
+| On Composio or Zapier | Tools you own, and your users' tokens and data stay on your servers ([how it compares](#how-charter-compares)) |
+| Writing tool glue by hand | Catches the bugs hand-written glue lets through: a bad argument is [refused before it's sent](#your-rules-on-any-field), and an [`Envelope`](https://docs.r28.ai/charter/reference/envelopes-and-pagination#envelope) raises when a `200` is really a failure |
 | Running a small or open model | Tools cut down to the fields the job needs ([`derived`](https://docs.r28.ai/charter/tools/projections)), and a one-line hint on the exact field it keeps getting wrong ([`Gloss`](https://docs.r28.ai/charter/reference/markers#gloss)) |
-| Facing a security review | What the agent can see and send, enforced in code and diffed in review: values it can't see or change ([`pin`](https://docs.r28.ai/charter/tools/projections#pin)), fields per pricing tier or region ([`Mode`](https://docs.r28.ai/charter/boundary/mode-system)), OAuth scopes worked out from the tools you hand out ([`scopes_for`](https://docs.r28.ai/charter/reference/oauth#scopes_for)), and a list of everything each tool can reach ([`egress_map`](https://docs.r28.ai/charter/reference/observability#egress_map)) |
 
 ## Examples
 
-[`examples/basics/`](https://github.com/r28ai/charter/tree/main/examples/basics) has thirteen
+[`examples/basics/`](https://github.com/r28ai/charter/tree/main/examples/basics) has fourteen
 short scripts, numbered in reading order, and none of them needs a key or an account.
 
 | Example | Shows |
 |---|---|
 | [`03_errors_for_the_model.py`](https://github.com/r28ai/charter/blob/main/examples/basics/03_errors_for_the_model.py) | A bad argument refused before sending, with a fix the model can apply |
-| [`08_many_tools.py`](https://github.com/r28ai/charter/blob/main/examples/basics/08_many_tools.py) | 613 tools in one session, starting from 4,476 tokens |
+| [`08_many_tools.py`](https://github.com/r28ai/charter/blob/main/examples/basics/08_many_tools.py) | 687 tools in one session, starting from 5,009 tokens |
 | [`11_one_tool_per_plan.py`](https://github.com/r28ai/charter/blob/main/examples/basics/11_one_tool_per_plan.py) | One tool with a different field set per plan |
+| [`14_act_for_one_customer.py`](https://github.com/r28ai/charter/blob/main/examples/basics/14_act_for_one_customer.py) | Your app says whose account each call is for: another customer's order is refused |
 | [`use_a_pack.py`](https://github.com/r28ai/charter/blob/main/examples/connect/use_a_pack.py) | A shipped tool, with your GitHub token: GitHub sends 346.6 KB, the model gets 10.7 KB |
 | [`openai_loop.py`](https://github.com/r28ai/charter/blob/main/examples/frameworks/openai_loop.py) | Tools in Charter's own agent loop, with any OpenAI-compatible model (needs a model key) |
 | [`connect/`](https://github.com/r28ai/charter/tree/main/examples/connect) | Your own account and your users', by OAuth or API key |
@@ -232,7 +303,7 @@ tool instead ([methodology](https://docs.r28.ai/charter/guarantees/measured-resu
 from charter.auth import scopes_for
 from charter.packs import gmail
 
-scopes_for([gmail.messages_list])    # ['https://www.googleapis.com/auth/gmail.modify']
+scopes_for([gmail.messages_list])    # ['https://www.googleapis.com/auth/gmail.readonly']
 scopes_for([gmail.threads_delete])   # ['https://mail.google.com/']
 ```
 
@@ -274,28 +345,26 @@ tools = to_openai_tools(session)  # function definitions for any chat-completion
 
 ## Ready-made tools
 
-613 tools across sixteen APIs ship with Charter, from Gmail and Slack to Stripe and Linear
+687 tools across seventeen APIs ship with Charter, from Gmail and Slack to Stripe and Linear
 ([full list](https://docs.r28.ai/charter/packs/overview#coverage)). You can extend them with
 your own tools, [request a pack](https://github.com/r28ai/charter/issues), and [contributions are welcome](https://github.com/r28ai/charter/blob/main/CONTRIBUTING.md).
 
 ## How Charter compares
 
-If you're connecting an agent to your users' Gmail, Stripe or Notion, there are usually
-two ways to go.
+Identity and access layers for agents (Keycard, Arcade, Permit, WorkOS and others) decide
+which token, scope or tool an agent gets. Charter works one level down, inside each call:
+which fields the model can set, which values it sends, and whose account the call is for.
+`gmail.readonly` lets an agent read every email; Charter decides which query it may send.
+The two stack: the token layer narrows the grant, and Charter narrows each call made with it.
 
-You can use each vendor's own library and wire it up yourself. That's direct and it's
-yours, but every API comes with its own client, its own auth and its own plumbing to
-write and keep up.
+Hosted tool platforms like Composio run each call on their own servers. Charter runs in your
+process, so your users' tokens and data never pass through a third party, and a call costs
+what the API does. In [our benchmark](https://docs.r28.ai/charter/guarantees/benchmarks#time-and-money-per-call),
+Composio added about 0.7 s per call.
 
-Or you can use a platform like Zapier or Composio. Easy too, but your users see
-"Authorize Zapier" instead of your product's name, right when they're deciding whether to
-connect. You pay for every tool call and get rate-limited on top. And your users' data
-goes through someone else's servers.
-
-Charter works like going direct. You register your own app with Google, Stripe or Notion,
-and your users authorize you. It's as direct as the vendors' own libraries, without the
-platform's downsides: no per-call billing, no remote
-server, all yours.
+Guardrail frameworks like NeMo Guardrails, Guardrails AI and Parlant work on the conversation:
+what goes into the prompt, or the text going in and out, often checked by another model.
+Charter checks the call itself, in code, so a rule holds the same on every model.
 
 It's not an agent framework either. LangChain, the OpenAI SDK or an MCP client runs the
 loop, and Charter is the tools it calls.

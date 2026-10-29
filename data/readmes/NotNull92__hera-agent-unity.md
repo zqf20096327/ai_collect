@@ -236,6 +236,16 @@ Measured low-token baselines for `list --compact` are **about 93 estimated token
 
 `T` is a simple `ceil(UTF-8 bytes / 4)` estimate for Hera's CLI payload only. It is not provider billing telemetry. Full methodology: [token-reduction benchmark](docs/benchmarks/token-reduction/README.md).
 
+### Developer Mode on Unity 2022.3
+
+Connector 0.3.0 compiles on Unity 2022.3, but dispatched requests are refused by default with `DEVELOPER_MODE_REQUIRED`. Enable **Developer Mode (Unity 2022.3)** in Hera Settings or run `hera-agent-unity asset-config developer-mode on`; use `off` to disable it. `asset-config developer-mode` shows the value and `asset-config --json` includes `developer_mode` (read-only).
+
+The setting applies to every Unity 2022.3 project on this machine. Unity 6.6+ ignores it. A missing file/key defaults to off; malformed or locked configuration reads keep the last good value until a successful refresh. Changes need no domain reload. Status and ping still work while locked; cached local-only catalog queries and validation can also succeed, but dispatched requests are refused.
+
+This is an unsupported opt-in line. On 2022.3.62f2, scoped paths for TMP 3.0.7, Timeline 1.7.7, Input System 1.14.0 and AI Navigation 1.1.6 passed independent verification; the package-present Hera suite passed 51/51. Keyboard and mouse delivery matched the same probe on 6000.6.6f1 with Input System 1.20.0. See [versions, paths and evidence](docs/handoffs/unity-2022-3-independent-gates-20261029.md). `unity_docs` uses the 6000.6 corpus: both its `unity_version` and `docs_version` describe documentation, so compare them with the Editor version in `status`. With test-framework older than 1.4.0, cancel cannot stop a run whose callback is active in this domain; it preserves its pending record until completion. Stale records without an active callback can still be released.
+
+All other Editor lines (including 2023.x and 6000.0–6000.5) hit an explicit `#error`. This stops normal project compilation, and other compiler errors may appear alongside it. Remove the package or use one of the two allowed lines.
+
 ### Compatibility is checked across Unity generations
 
 Supported Unity versions are Unity 6.6+ (`6000.6` minimum). The release compile gate installs the Connector's exact source as a normal UPM dependency in a disposable blank project of the representative Editor and requires a clean compile, a green release-gate suite, and zero console errors:
@@ -244,7 +254,9 @@ Supported Unity versions are Unity 6.6+ (`6000.6` minimum). The release compile 
 |:---|:---|:---:|
 | 6000.6+ | 6000.6.6f1 | PASS |
 
-The floor states what is actually verified: a single representative Editor, with no compatibility claim for any other Unity line. `AgentConnector/package.json` carries the `6000.6` floor, so Package Manager refuses the Connector on an older Editor instead of failing later at compile time.
+Connector 0.3.0 at `925e020` passed the required 6000.6.6f1 gate independently: clean normal/testables imports, unchanged catalog, and 48 tests passed with 0 failed and 1 Timeline skip in the blank template. [Gate evidence](docs/handoffs/unity-2022-3-independent-gates-20261029.md). The released 0.3.0, which also carries the 0.2.14 scene save and Input System fixes, passed again: on 6000.6.6f1, 0 errors, no new warnings, unchanged catalog, 49 passed / 0 failed / 1 Timeline skip; on 2022.3.62f2 with Developer Mode on, 52/52 with the same input delivery. [Release evidence](docs/handoffs/merged-main-0.3.0-verification-20261029.md).
+
+Unity 6.6+ remains the supported line. Connector 0.3.0 also compiles on Unity 2022.3 behind the opt-in Developer Mode gate below. Its uGUI dependency resolves to the Editor's built-in version; the compile-time allow-list rejects other Editor lines. The package minimum alone does not enforce this boundary for git installs.
 
 CLI and Connector versions are intentionally separate.
 
@@ -365,7 +377,7 @@ To pin an existing Connector tag:
 The current released Connector pin is:
 
 ```text
-https://github.com/NotNull92/hera-agent-unity.git?path=AgentConnector#connector-0.2.13
+https://github.com/NotNull92/hera-agent-unity.git?path=AgentConnector#connector-0.3.0
 ```
 
 ### Step 3. Open Unity and check the connection
@@ -472,7 +484,13 @@ hera-agent-unity call input --json '{"action":"replay","path":"Library/HeraAgent
 
 Keyboard, mouse, bounded sequence, recording capture, and replay require Play Mode. Recordings use the bounded `hera.input-recording/1` JSON format under the project or system temp directory; replay validates the complete file before mutation and reuses sequence-owned cleanup. Hera resolves the package at runtime, never creates devices, and releases any held controls when Play Mode exits.
 
+Input System response values describe the player-side state at the end of the input update that applied the request's last change, preserved through `settle_frames`. `press`/`click` report the release update (`pressed_after=false`); `down` reports true. Each change waits up to 2000 ms for its configured update. Manual mode requires your project's own `InputSystem.Update()` pump; Hera does not pump it or change input policy. A missing update returns `INPUTSYSTEM_INVOCATION_FAILED`, while pause/exit use their existing Play Mode errors. When Unity is in the background with Run In Background off, player updates stop and `INPUTSYSTEM_INVOCATION_FAILED` results; focus Unity or enable Run In Background. See the [Unity verification evidence and scope](docs/handoffs/scene-save-and-inputsystem-readback-20261029.md).
+
+Sequence and replay group consecutive instantaneous steps connected by `settle_frames=0` into one configured player input update, applying them in order and capturing once. `press`/`click` are group boundaries and keep their hold/release behavior. Nonzero settle counts still mean Editor updates, including the gaps loaded from recordings; they do not promise player-frame timing.
+
 ### Automate repetitive Scene work
+
+`scene save` rejects a dirty untitled Scene with `SCENE_UNSAVED` instead of opening a Save dialog. Save it once from the Editor, or create it with `scene create <Assets/...unity>` before editing. A clean Scene remains a no-op. Explicit generic `menu`/`exec` calls can still open modal dialogs.
 
 You can ask an agent to:
 
@@ -696,7 +714,8 @@ A long Test Runner job can outlive a normal request window. Hera stores durable 
 | Unity version | Status | Representative verification |
 |:---|:---|:---|
 | 6000.6+ | Supported | `6000.6.6f1` release gate |
-| Older than 6000.6 | Not supported | Minimum is Unity 6.6 (6000.6) |
+| 2022.3 | Developer Mode (opt-in, unsupported) | Representative `2022.3.62f2`; separate verification |
+| Other Editor lines | Not supported | Explicit compile-time error |
 
 Version-specific behavior is checked against live Editors rather than assumed from one Unity version.
 
@@ -743,9 +762,9 @@ New features require a reproduced failure. See [Contributing](CONTRIBUTING.md).
 
 ## Current release
 
-- CLI / GitHub Release: **v0.3.23** with five native binaries
-- npm: **0.3.23** (`latest`)
-- Unity Connector: **0.2.13** (pin with `#connector-0.2.13`)
+- CLI / GitHub Release: **v0.3.25** with five native binaries
+- npm: **0.3.25** (`latest`)
+- Unity Connector: **0.3.0** (pin with `#connector-0.3.0`)
 - License: **Apache-2.0**
 
 The npm publish is chained to the GitHub Release, so `npm install -g hera-agent-unity` and the GitHub binaries stay in step.
@@ -758,6 +777,8 @@ What's new since v0.2.17:
 
 | Version | Change |
 |---|---|
+| v0.3.25 / 0.3.0 | Opt-in Developer Mode for Unity 2022.3: the Connector compiles on 2022.3.62f2 and refuses requests with `DEVELOPER_MODE_REQUIRED` until you run `asset-config developer-mode on` or enable it in Hera Settings. Unity 6.6+ behavior is unchanged and remains the supported line. Update the Connector to 0.3.0 as well. |
+| v0.3.24 / 0.2.14 | `scene save` returns `SCENE_UNSAVED` for a dirty untitled scene instead of opening a Save dialog. Input System keyboard/mouse responses report the player-side state, scroll and delta reach the player for one frame, `settle_frames=0` sequence/replay steps apply in the same update, and a missing player update fails within 2000 ms with a focus/Run In Background hint. Help and agent rules updated. Update the Connector to 0.2.14 as well. |
 | v0.3.23 / 0.2.13 | Legacy NavMesh changes mark the active scene dirty without saving unrelated assets. Save the scene to keep them; writes during Play Mode are rejected. No CLI behavior change. Update the Connector to 0.2.13. |
 | v0.3.22 / 0.2.12 | Asset edits save only changed asset files; manage_assets delete moves to the OS trash. Query one action with list --tool --action. Shorter tool descriptions and a budget for the complete compact Light rules output. Update the Connector to 0.2.12 as well. |
 | v0.3.21 / 0.2.11 | Windows PATH cleanup preserves its original form; uninstall removes the actual state folder; update verifies SHA-256. Tool JSON stays compact (`--compact-json` is for compatibility), with nine more help topics. Hera's own tool failures no longer add console errors, repeated hints are shorter, and Restricted exec blocks screenshot and profiler file writes. Update the Connector to 0.2.11 as well. |

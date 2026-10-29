@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <code>199 tools</code> &bull;
+  <code>200 tools</code> &bull;
   <code>7 platforms</code> &bull;
   <code>Graph API v21.0</code>
 </p>
@@ -26,7 +26,7 @@
   <a href="#quick-start">Quick Start</a> &bull;
   <a href="#install-with-mcpb">MCPB Download</a> &bull;
   <a href="#what-you-can-do">What You Can Do</a> &bull;
-  <a href="#complete-tool-reference">All 199 Tools</a> &bull;
+  <a href="#complete-tool-reference">All 200 Tools</a> &bull;
   <a href="#configuration">Configuration</a> &bull;
   <a href="#architecture">Architecture</a>
 </p>
@@ -41,9 +41,13 @@ Every tool returns actionable error messages — not cryptic API codes. Token ex
 
 ## Quick Start
 
+Requires Node.js 20 or newer.
+
 ### Install with MCPB
 
 For Claude Desktop and other MCPB-compatible clients, download the local bundle from the [v2.0.2 release](https://github.com/oliverames/meta-mcp-server/releases/tag/v2.0.2):
+
+That desktop bundle remains on 2.0.2. The npm/source version targets 3.0.0 with the security updates and Node 20 minimum.
 
 [Download `meta-mcp-server-2.0.2.mcpb`](https://github.com/oliverames/meta-mcp-server/releases/download/v2.0.2/meta-mcp-server-2.0.2.mcpb)
 
@@ -65,7 +69,7 @@ Add to your MCP client config:
 }
 ```
 
-That's it. Your AI assistant now has access to 199 Meta tools.
+That's it. Your AI assistant now has access to 200 Meta tools.
 
 > Need a token? Go to the [Graph API Explorer](https://developers.facebook.com/tools/explorer), select your app, and generate one. See [Configuration](#configuration) for details.
 
@@ -87,11 +91,11 @@ npm install && npm run build
 
 ### Publish everywhere
 
-Post to Facebook Pages (text, photo, video, Reels, Stories), Instagram (photos, reels, stories, carousels), and Threads (text, images, video, GIFs, links). Schedule content in advance or cross-post to multiple platforms in one call.
+Post to Facebook Pages (text, photo, video, Reels, Stories), Instagram (photos, reels, stories, carousels), and Threads (text, images, video, GIFs, links). Schedule Facebook Page content in advance or cross-post to multiple platforms in one call.
 
 ```
 > Post our holiday hours to the Facebook page
-> Schedule an Instagram carousel for tomorrow at 9am
+> Schedule tomorrow's Facebook post for 9am
 > Cross-post this photo to both Facebook and Instagram
 > Publish a GIF to Threads with reply controls
 > Create a Facebook Reel from this video
@@ -238,7 +242,7 @@ Debug tokens, check permissions, monitor rate limits, verify pixel health, and m
 
 ## Complete Tool Reference
 
-### Facebook Pages — 52 tools
+### Facebook Pages — 53 tools
 
 Everything a brand needs to manage their Facebook presence, messaging, and live broadcasts.
 
@@ -258,6 +262,7 @@ Everything a brand needs to manage their Facebook presence, messaging, and live 
 | `meta_get_promotable_posts` | Get posts eligible for ad promotion |
 | `meta_get_visitor_posts` | Get posts made by visitors on the page |
 | `meta_get_post_comments` | Get comments on a post with pagination |
+| `meta_create_post_comment` | Create a new top-level comment on a post |
 | `meta_reply_post_comment` | Reply to a comment as the page |
 | `meta_delete_comment` | Delete a comment |
 | `meta_hide_comment` | Hide or unhide a comment (non-destructive moderation) |
@@ -299,17 +304,17 @@ Everything a brand needs to manage their Facebook presence, messaging, and live 
 
 ### Instagram — 37 tools
 
-Full Instagram Business API — publishing with scheduling, DMs, broadcast channels, engagement, discovery, and analytics.
+Full Instagram Business API — publishing, DMs, broadcast channels, engagement, discovery, and analytics.
 
 | Tool | Description |
 |:---|:---|
 | `meta_list_instagram_accounts` | List Instagram business accounts linked to your Facebook Pages |
 | `meta_get_instagram_media` | Get recent media for an Instagram account with pagination |
 | `meta_get_instagram_single_media` | Get a single media object by ID |
-| `meta_publish_instagram_photo` | Publish a photo with optional alt text and scheduling |
-| `meta_publish_instagram_reel` | Publish a reel with auto-polling and optional scheduling |
+| `meta_publish_instagram_photo` | Publish a photo with optional alt text |
+| `meta_publish_instagram_reel` | Publish a reel with auto-polling |
 | `meta_publish_instagram_story` | Publish a story (image or video with auto-polling) |
-| `meta_publish_instagram_carousel` | Publish a carousel (2–10 items, parallel processing, schedulable) |
+| `meta_publish_instagram_carousel` | Publish a carousel (2–10 items, parallel processing) |
 | `meta_publish_instagram_container` | Publish a pre-created media container |
 | `meta_check_instagram_container` | Check container processing status with actionable messages |
 | `meta_get_instagram_account_insights` | Account-level analytics with demographic breakdowns |
@@ -644,7 +649,7 @@ src/
 │   ├── api.ts            MetaApiClient — dual Graph + Threads API
 │   └── utils.ts          Error handling, formatting, shared schemas
 └── tools/
-    ├── pages.ts          52 Facebook Page tools
+    ├── pages.ts          53 Facebook Page tools
     ├── instagram.ts      37 Instagram tools
     ├── ads.ts            62 Ads Manager tools
     ├── threads.ts        22 Threads tools
@@ -677,7 +682,7 @@ Targets **Meta Graph API v21.0** and **Threads API v1.0**.
 | API | Status |
 |:---|:---|
 | Facebook Pages API | **Comprehensive** — posts, comments, messaging, insights, events, media, Stories, Reels, Live Video, automated responses |
-| Instagram Graph API | **Comprehensive** — publishing, scheduling, comments, DMs, broadcast channels, hashtags, business discovery, insights |
+| Instagram Graph API | **Comprehensive** — publishing, comments, DMs, broadcast channels, hashtags, business discovery, insights |
 | Marketing API | **Comprehensive** — campaigns, ad sets, ads, creatives, targeting, audiences, pixels, CAPI, A/B testing, Advantage+ |
 | Threads API | **Comprehensive** — publishing (text, image, video, GIF, carousel, link), reply controls, location, insights |
 | Commerce API | **Supported** — product catalog CRUD, product sets |

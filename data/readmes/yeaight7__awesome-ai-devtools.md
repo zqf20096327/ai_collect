@@ -8,7 +8,7 @@
 
 <p align="center">Window-shop coding agents, IDE assistants, MCP tooling, evals, observability, security, and self-hosted AI dev stacks.</p>
 
-<p align="center"><code>386 tools</code> <code>298 reviewed</code> <code>88 draft</code> <code>18 active reviewed shelves</code></p>
+<p align="center"><code>388 tools</code> <code>300 reviewed</code> <code>88 draft</code> <code>18 active reviewed shelves</code></p>
 
 ## Why this exists
 
@@ -74,7 +74,7 @@ No rankings. No launch hype. Just a clean storefront for discovering tools worth
 
 ### Extend agents
 
-[MCP servers](#mcp-servers) (21) · [MCP clients](#mcp-clients) (7) · [MCP tooling](#mcp-tooling) (19) · [Agent skill packs](#agent-skill-packs) (28)
+[MCP servers](#mcp-servers) (23) · [MCP clients](#mcp-clients) (7) · [MCP tooling](#mcp-tooling) (19) · [Agent skill packs](#agent-skill-packs) (28)
 
 ### Operate agents
 
@@ -90,7 +90,7 @@ No rankings. No launch hype. Just a clean storefront for discovering tools worth
 
 ## Comparison Matrix
 
-_Showing a curated top 50 tools. See [docs/COMPARISON.md](docs/COMPARISON.md) for the full matrix of all 298 reviewed tools._
+_Showing a curated top 50 tools. See [docs/COMPARISON.md](docs/COMPARISON.md) for the full matrix of all 300 reviewed tools._
 
 | Tool | Main shelf | OSS | Local | Self-hosted | CLI | IDE | MCP | Links |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -124,6 +124,7 @@ _Showing a curated top 50 tools. See [docs/COMPARISON.md](docs/COMPARISON.md) fo
 | [LocalAI](https://localai.io) | Local LLM developer tools | Yes | Yes | Yes | Yes | No | No | [Website](https://localai.io) / [Docs](https://localai.io/docs) / [Repo](https://github.com/go-skynet/LocalAI) |
 | [vLLM](https://vllm.ai) | Local LLM developer tools | Yes | No | Yes | Yes | No | No | [Website](https://vllm.ai) / [Docs](https://docs.vllm.ai/en/stable/serving/openai_compatible_server.html) / [Repo](https://github.com/vllm-project/vllm) |
 | [Athenaeum](https://github.com/herakles-dev/athenaeum#readme) | Self-hosted AI dev stacks | Yes | Yes | Yes | No | No | Yes | [Docs](https://github.com/herakles-dev/athenaeum#readme) / [Repo](https://github.com/herakles-dev/athenaeum) |
+| [Agent Notifications](https://agent-notifications.com/) | MCP servers | Yes | Yes | No | Yes | No | Yes | [Website](https://agent-notifications.com/) / [Docs](https://github.com/777genius/agent-notifications/blob/main/docs/INSTALLATION.md) / [Repo](https://github.com/777genius/agent-notifications) |
 | [Atomic Agent](https://atomicagent.io) | Terminal agents | Yes | Yes | No | Yes | No | Yes | [Website](https://atomicagent.io) / [Docs](https://atomicagent.io/docs) / [Repo](https://github.com/AtomicBot-ai/atomic-agent) |
 | [ax](https://github.com/Necmttn/ax) | Agent observability | Yes | Yes | No | Yes | No | Yes | [Repo](https://github.com/Necmttn/ax) |
 | [Gemini CLI](https://developers.google.com/gemini-code-assist/docs/gemini-cli) | Coding agents | Yes | Yes | No | Yes | No | Yes | [Docs](https://developers.google.com/gemini-code-assist/docs/gemini-cli) / [Repo](https://github.com/google-gemini/gemini-cli) |
@@ -143,7 +144,6 @@ _Showing a curated top 50 tools. See [docs/COMPARISON.md](docs/COMPARISON.md) fo
 | [SandBase CLI](https://github.com/sandbaseai/cli) | MCP tooling | Yes | Yes | No | Yes | No | Yes | [Docs](https://github.com/sandbaseai/cli#readme) / [Repo](https://github.com/sandbaseai/cli) |
 | [Self-hosted AI Starter Kit (n8n)](https://docs.n8n.io/hosting/starter-kits/ai-starter-kit/) | Self-hosted AI dev stacks | Yes | Yes | Yes | Yes | No | No | [Docs](https://docs.n8n.io/hosting/starter-kits/ai-starter-kit/) / [Repo](https://github.com/n8n-io/self-hosted-ai-starter-kit) |
 | [Sillage](https://github.com/MarlBurroW/sillage) | Coding agents | Yes | No | Yes | Yes | No | Yes | [Repo](https://github.com/MarlBurroW/sillage) |
-| [Smithery CLI](https://smithery.ai) | MCP tooling | Yes | Yes | No | Yes | No | Yes | [Website](https://smithery.ai) / [Docs](https://smithery.ai/docs/concepts/cli) / [Repo](https://github.com/smithery-ai/cli) |
 
 <p align="center"><img src="assets/awesome-ai-devtools-social-preview.gif" alt="Awesome AI Devtools ecosystem map" width="100%"></p>
 
@@ -282,6 +282,7 @@ Model Context Protocol servers that expose tools, resources, or prompts.
 
 | Tool | Good for | Experience | Links |
 | --- | --- | --- | --- |
+| [Agent Notifications](https://agent-notifications.com/) | Local notification plugin and MCP server that sends desktop attention and progress alerts from Claude Code and Codex workflows. | CLI · MCP · Skill Pack · Local | [Website](https://agent-notifications.com/) / [Docs](https://github.com/777genius/agent-notifications/blob/main/docs/INSTALLATION.md) / [Repo](https://github.com/777genius/agent-notifications) |
 | [Agent QA](https://vostride.com/docs/agent-qa) | TypeScript QA agent that authors, runs, and repairs natural-language web and mobile tests through a CLI, dashboard, MCP server, and agent skills. | CLI · MCP · Skill Pack · Web · Local | [Website](https://vostride.com/docs/agent-qa) / [Docs](https://vostride.com/docs/agent-qa/quickstart) / [Repo](https://github.com/vostride/agent-qa) |
 | [Anki MCP Server](https://ankimcp.ai) | MCP server that lets AI assistants interact with Anki flashcards and spaced-repetition workflows. | MCP · Local | [Website](https://ankimcp.ai) / [Repo](https://github.com/ankimcp/anki-mcp-server) |
 | [ArXiv MCP Server](https://github.com/blazickjp/arxiv-mcp-server) | MCP server for searching arXiv papers and exposing academic paper content to AI assistants. | MCP · Local | [Repo](https://github.com/blazickjp/arxiv-mcp-server) |
@@ -297,6 +298,7 @@ Model Context Protocol servers that expose tools, resources, or prompts.
 | [MCP Bundles (MCPB)](https://modelcontextprotocol.io/docs/develop/build-with-agent-skills) | CLI tool for packaging local MCP servers into installable .mcpb files. | CLI · Local | [Docs](https://modelcontextprotocol.io/docs/develop/build-with-agent-skills) / [Repo](https://github.com/modelcontextprotocol/mcpb) |
 | [Next.js DevTools MCP](https://github.com/vercel/next-devtools-mcp) | MCP server for exposing Next.js development tools and diagnostics to coding agents. | MCP · Local | [Repo](https://github.com/vercel/next-devtools-mcp) |
 | [Oh My Android](https://royan.se/work/oh-my-android/) | macOS app with a stdio MCP server that lets AI agents control Android emulators and phones over adb, including screenshots, UI tree in dp, taps, and logcat. | Desktop · MCP · Local | [Website](https://royan.se/work/oh-my-android/) / [Docs](https://github.com/ateymoori/oh-my-android#readme) / [Repo](https://github.com/ateymoori/oh-my-android) |
+| [PlaceCall](https://voygr.tech/placecall/) | Remote MCP server and REST API that let AI agents phone US businesses and return the call outcome and transcript. | API · MCP · Hosted | [Website](https://voygr.tech/placecall/) / [Docs](https://api.voygr.tech/docs) / [Repo](https://github.com/voygr-tech/placecall) |
 | [Playwright Code Runner](https://playwright.dev) | MCP-related tool for running Playwright code as part of browser automation workflows. | MCP · Local | [Website](https://playwright.dev) / [Repo](https://github.com/exe-language/playwright-mcp) |
 | [Playwright MCP Server](https://playwright.dev/docs/getting-started-mcp) | MCP server that uses Playwright to let AI agents interact with web pages through accessibility snapshots. | MCP · Local | [Docs](https://playwright.dev/docs/getting-started-mcp) / [Repo](https://github.com/microsoft/playwright-mcp) |
 | [SandBase CLI](https://github.com/sandbaseai/cli) | Local CLI and MCP bridge connecting 25 AI clients to 2,000+ models and APIs with OAuth onboarding, diagnostics, and rollback. | CLI · MCP · Local | [Docs](https://github.com/sandbaseai/cli#readme) / [Repo](https://github.com/sandbaseai/cli) |
@@ -512,6 +514,4 @@ Tools that help developers run or integrate local models in coding workflows.
 | [GPT4All](https://gpt4all.io) | Local LLM desktop client and Python library with optional OpenAI-compatible API server on localhost. | API · Desktop · Library · Local | [Website](https://gpt4all.io) / [Docs](https://docs.gpt4all.io) / [Repo](https://github.com/nomic-ai/gpt4all) |
 | [Haystack](https://github.com/deepset-ai/haystack) | Open-source framework for building RAG pipelines, agents, and semantic search over private data. | API · Framework · Local | [Docs](https://docs.haystack.deepset.ai) / [Repo](https://github.com/deepset-ai/haystack) |
 | [Intel Neural Compressor](https://github.com/intel/neural-compressor) | Open-source compression toolkit supporting quantization and pruning for deep learning and LLM workloads. | Library · Local | [Docs](https://intel.github.io/neural-compressor) / [Repo](https://github.com/intel/neural-compressor) |
-| [KoboldCpp](https://koboldcpp.com) | Single-file local LLM server and web UI for GGUF models with Kobold-style API and OpenAI-like integrations. | API · CLI · Web · Local | [Website](https://koboldcpp.com) / [Docs](https://github.com/LostRuins/koboldcpp/wiki) / [Repo](https://github.com/LostRuins/koboldcpp) |
-| [llama-cpp-python](https://llama-cpp-python.readthedocs.io) | Python bindings and OpenAI-compatible web server for llama.cpp, exposing local models via HTTP and Python APIs. | API · CLI · Library · Self-hosted | [Docs](https://llama-cpp-python.readthedocs.io) / [Repo](https://github.com/abetlen/llama-cpp-python) |
-| [llama.cpp](https://github.com/ggml-org/llama.cpp/tree/master/examples) | C/C++ LLM inference library and tools for running quantized models on CPUs and GPUs with optional HTTP and OpenAI-style serve
+| [KoboldC

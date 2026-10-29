@@ -2,7 +2,7 @@
 
 <img src="https://raw.githubusercontent.com/YOLOW92/pagesift/main/assets/logo.png" alt="PageSift Logo" width="300" />
 
-# pagesift 0.80.10
+# pagesift 0.81.2
 
 **High-performance, memory-bounded web scraping and extraction engine built for AI agents and LLM pipelines.**  
 Turn any website, document, or archive into clean Markdown and structured data — one Rust binary, native SDKs, dual Firecrawl v1/v2 & Jina Reader APIs, at a fraction of the memory.
@@ -25,67 +25,53 @@ Turn any website, document, or archive into clean Markdown and structured data �
 ---
 
 <!-- perf-glance -->
-## Performance at a glance (0.80.9)
+## Performance at a glance (0.81)
 
-Measured on 2026-10-28 with pagesift 0.80.9 on one machine (i7-10700 8C/16T, 15 GB, GTX 1070), same inputs, same worker count, one tool at a time on a quiet machine; default settings for every tool. Only the rows where PageSift is fastest are listed here; where it is behind, see [How PageSift compares](#how-pagesift-compares) and the [full report](benchmarks/mix/v2/results/report-2026-10-28.md). 0.80.10 does the same work as 0.80.9 (instruction counts: HTML extraction on 394 real pages +0.05 %, PDF and CSV unchanged; `benchmarks/history/0.80.10/`), so these speed numbers carry over; its extraction-quality changes were not re-measured here.
+PageSift 0.81 was re-measured on 2026-10-29; competitor numbers are the recorded 2026-10-21/22/27/28 data and were not re-run. One row per workload, best PageSift configuration; memory is a column, not a separate rank.
 
-| Workload | Workers | PageSift (↑ items/s) | Fastest competitor (↑ items/s) | Speed-up | Peak MB per worker (↓, PageSift / competitor) |
-|---|---|---|---|---|---|
-| PDF, 144 olmOCR-bench pages | 1 | **190.0** (resident `serve`) | pdf_oxide 100.6 | **×1.9** | 198 / 29 |
-| PDF, 144 olmOCR-bench pages | 16 | **543.4** | pdf_oxide 501.7 | **×1.08** | 16 / 11 |
-| Office & e-books, 81 files | 1 | **63.3** (resident `serve`) | Kreuzberg 19.5 | **×3.2** | 308 / 231 |
-| Office & e-books, 81 files | 16 | **178.4** | Kreuzberg 34.5 | **×5.2** | 70 / 219 |
-| Main-content extraction, 269 random pages | 16 | **573.6** | Resiliparse 559.3 | **×1.03** | 17 / 43 |
-| PDF vs layout-model tools (MinerU, Docling), same 144 pages | 1 | **190.0** (resident `serve`) | Docling (GPU, cu126) 1.3 | **×148.4** | 198 / 2638 |
+
+### Far ahead
+
+| Domain | Workload | Metric | PageSift 0.81 | Fastest rival | Rival | Gap | Peak MB/worker (PageSift / rival) |
+|---|---|---|---|---|---|---|---|
+| PDF → Markdown | olmOCR-bench 1,269 pages, per page (single thread) | ms/page | **2.2** | pypdf | 50.0 | **×22.32** | — |
+| HTML → Markdown | 600 generated documents, per page | ms/page | **0.24** | Turndown | 1.9 | **×8.24** | — |
+| Main content | Firecrawl 597 pages, single thread | p50 ms/page | **1.0** | crw | 7.4 | **×7.23** | — |
+| Publication dates | htmldate 1,000 pages, date search | ms/page | **0.31** | htmldate (fast) | 2.0 | **×6.45** | — |
+| Office / e-books | B4 81 files, in-process | files/s | **94.1** | Kreuzberg | 19.5 | **×4.82** | 38 / 231 |
+| RAG chunking | 5 corpora, 1.4 MB | total ms | **11** | chonkie recursive | 35 | **×3.24** | — |
+| PDF → Markdown | B1 144 pages, 1 worker | files/s | **258.5** | pdf_oxide | 100.6 | **×2.57** | 163 / 29 |
+| RAG query filter | 472 questions, default settings | answer recall | **0.929** | Crawl4AI BM25 | 0.673 | **+0.256** | — |
+| Wild crawl | polite, 40 sites × 60 pages, coverage | coverage | **0.740** | Crawl4AI (HTTP) | 0.529 | **+0.211** | — |
+| Wild crawl | fast, 40 sites × 60 pages, coverage | coverage | **0.685** | Crawl4AI (HTTP) | 0.499 | **+0.186** | — |
+| Office / e-books | B4 hold-out 39 files, structure kept | structure kept | **0.988** | Kreuzberg | 0.816 | **+0.172** | — |
+| PDF → Markdown | olmOCR-bench 1,269 pages | official score | **0.628** | pymupdf4llm | 0.484 | **+0.144** | — |
+
+
+### Ahead
+
+| Domain | Workload | Metric | PageSift 0.81 | Fastest rival | Rival | Gap | Peak MB/worker (PageSift / rival) |
+|---|---|---|---|---|---|---|---|
+| PDF → Markdown | B1 144 pages, 16 workers | files/s | **580.6** | pdf_oxide | 501.7 | **×1.16** | 14 / 11 |
+| Main content | A2 269 random pages, 16 workers | pages/s | **630.0** | Resiliparse | 559.3 | **×1.13** | 17 / 54 |
+| HTML → Markdown | 600 generated documents, fidelity | mean F1 | **1.000** | markdownify | 0.936 | **+0.064** | — |
+| Main content | WCXB test split, 150 pages | F1 | **0.866** | Readability + Turndown | 0.848 | **+0.018** | — |
+
+
+*A2 was re-fetched on 2026-10-29; its absolute times are not directly comparable with the 10-28 A2.*
+
+
+[Full report](benchmarks/history/0.81/results/20261029-102426/report.md)
+
 <!-- /perf-glance -->
 
 ---
 
 ## How PageSift compares
 
-Measured on 2026-10-27 with the 0.80.0 release binary against three tools per domain (one Rust
-project and two widely compared ones), default settings, on one machine (i7-10700, 15 GB). Samples
-were drawn with fixed seeds after the rules were frozen; nothing was hand-picked. Every row links to
-the method, versions, sample counts and raw results.
+**Still behind:** A2 replay, 269 pages, 1 worker 3.1 pages/s in the 0.81.2 local replay (2.4 in the 0.81 report) vs spider 156.6 pages/s; fast, 40 sites × 60 pages, time 16.6 seconds vs spider 1.4 seconds; B5 134 pages, completion 0.112 vs Docling (GPU) 1.000.
 
-### Far ahead
-
-| Domain | Metric (direction) | PageSift 0.80 | Strongest competitor | Evidence |
-| :--- | :--- | :--- | :--- | :--- |
-| Office & e-books (docx, xlsx, pptx, epub, csv) | Structure kept, held-out ↑ | **0.988** | MarkItDown 0.717 | [§4](benchmarks/mix/results/report-2026-10-27.md) |
-| PDF, olmOCR-bench born-digital (1,269 pages) | Official score ↑ | **0.626** | pymupdf4llm 0.484 | [§3](benchmarks/mix/results/report-2026-10-27.md) |
-| Hard web pages (166 adversarial) | Completion ↑ / timeouts ↓ | **0.723** / 0 | crw 0.590 / 27 | [§1](benchmarks/mix/results/report-2026-10-27.md) |
-| Office & e-books speed (81 files, 1 worker) | Files/s ↑ | **57.4** | extractous 9.9 | [§4](benchmarks/mix/results/report-2026-10-27.md) |
-
-### Ahead
-
-| Domain | Metric (direction) | PageSift 0.80 | Strongest competitor | Evidence |
-| :--- | :--- | :--- | :--- | :--- |
-| Main-content extraction, WCXB | F1 ↑ | **0.866** | Readability 0.848 | [§1](benchmarks/mix/results/report-2026-10-27.md) |
-| Main-content extraction, AEB | F1 ↑ | **0.956** | trafilatura 0.950 | [§1](benchmarks/mix/results/report-2026-10-27.md) |
-| Main-content extraction speed (269 pages, 16 workers) | Pages/s ↑ | **614** | crw 387 | [§1](benchmarks/mix/results/report-2026-10-27.md) |
-| PDF speed (144 files, 1 worker) | Files/s ↑ | **114** | pdf_oxide 94 | [§3](benchmarks/mix/results/report-2026-10-27.md) |
-
-### Behind but close — actively being worked on
-
-| Domain | Metric (direction) | PageSift 0.80 | Strongest competitor | Evidence |
-| :--- | :--- | :--- | :--- | :--- |
-| PDF vs a layout model (144-page subset) | olmOCR score ↑ | 0.650 | Docling (CPU) 0.696 | [§3](benchmarks/mix/results/report-2026-10-27.md) |
-| Random real PDFs (71) | Text completeness ↑ | 0.936 | pdf_oxide 0.962 | [§3](benchmarks/mix/results/report-2026-10-27.md) |
-| Fetching, 269 random pages (local replay) | Completion ↑ | 0.937 | Scrapy 0.981 | [§2 — pagesift refuses captcha/block pages](benchmarks/mix/results/report-2026-10-27.md) |
-| Main-content extraction, Firecrawl set | Truth recall ↑ | 0.477 | crw 0.511 | [§1](benchmarks/mix/results/report-2026-10-27.md) |
-| Hard PDFs (100 pdf.js test files) | Completion ↑ | 0.560 | pymupdf4llm 0.680 | [§3 — the largest gap](benchmarks/mix/results/report-2026-10-27.md) |
-
-### Behind
-
-| Domain | Metric (direction) | PageSift 0.80 | Strongest competitor | Evidence |
-| :--- | :--- | :--- | :--- | :--- |
-| Fetching speed (269 pages, 1 worker) | Pages/s ↑ | 2.7 | spider 153 | [§2 — default auto engine, p95 1.5 s](benchmarks/mix/results/report-2026-10-27.md) |
-| PDF speed (144 files, 16 workers) | Files/s ↑ | 142 | pdf_oxide 526 | [§3 — one process per file scales poorly](benchmarks/mix/results/report-2026-10-27.md) |
-
-Results for the other domains (dates, Markdown fidelity, RAG chunking, crawling at scale) — each with its direction, version and date — are in
-[docs/benchmarks.md](docs/benchmarks.md); scripts and raw results per domain are under
-[benchmarks/](benchmarks/).
+[Full report](benchmarks/history/0.81/results/20261029-102426/report.md).
 
 ---
 
@@ -97,6 +83,35 @@ Results for the other domains (dates, Markdown fidelity, RAG chunking, crawling 
 Measured with 0.70.0, not re-run for later versions.
 
 ---
+
+## What's New in 0.81.2
+
+**Zero content loss for adaptive upgrades.** A bare client-side redirect with no HTTP content now
+captures its target's DOM as soon as main-frame text appears, instead of waiting for
+`DOMContentLoaded` or network idle. The wait is bounded relative to the page's HTTP time and the
+caller's timeout. On the 269-page A2 replay, 0.81.0's 110.7 s / 21.9 s (1/16 workers) becomes
+88.0 s / 13.5 s, with **zero pages losing content** and 174 more extracted characters. Details:
+[0.81.2 release notes](docs/releases/0.81.2.md).
+
+## What's New in 0.81.1
+
+**Adaptive browser upgrades.** `engine: auto` now stops a browser upgrade when the extracted main
+content stops improving, using online distributions of navigation and settle times instead of fixed
+seconds. On the 269-page A2 replay this cuts 16-worker wall time from 28.4 s to 10.5 s (9.5 → 25.7
+pages/s) and 1-worker time from 119.2 s to 77.3 s, with 301 fewer extracted characters over the
+whole set. Pages whose HTTP extraction was empty still get the full render time. Details:
+[0.81.1 release notes](docs/releases/0.81.1.md).
+
+## What's New in 0.81.0
+
+**Relevance by facet, and faster everywhere.** Focused crawls score how much a page is *about* each
+facet of the query (query words, plus adjacent query words the site uses as a phrase, such as
+*computer science*; title, URL and headings count more than the body; each facet weighted by its
+rarity on the site), all estimated from the crawl's own pages. On 1,833 pages judged by content,
+separating useful from useless pages improves from AUC 0.79 to 0.86 on held-out universities.
+Speed: an allocator cache per thread and NUMA node, inline glyph strings for PDF, a linear title
+check for HTML, contiguous tables for CSV and xlsx, fat LTO and profile-guided release builds; output
+is byte-identical to 0.80.10. Details: [0.81.0 release notes](docs/releases/0.81.0.md).
 
 ## What's New in 0.80.10
 
@@ -218,7 +233,7 @@ Run the standalone container (includes headless browser renderer):
 
 ```bash
 docker run -d -p 3002:3002 -v pagesift-data:/data \
-  -e PAGESIFT_API_KEYS=sk-test ghcr.io/yolow92/pagesift:0.80.10
+  -e PAGESIFT_API_KEYS=sk-test ghcr.io/yolow92/pagesift:0.81.2
 ```
 
 #### Firecrawl SDK Drop-In Replacement
@@ -377,7 +392,7 @@ If PageSift is useful in research or a product, cite it as:
   author = {YOLOW92},
   year   = {2026},
   url    = {https://github.com/YOLOW92/pagesift},
-  note   = {Version 0.80.10}
+  note   = {Version 0.81.2}
 }
 ```
 

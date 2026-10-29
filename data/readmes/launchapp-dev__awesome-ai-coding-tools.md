@@ -180,6 +180,7 @@ Tools that review pull requests, suggest improvements, or gate merges.
 Prompt-to-app tools — for prototyping or full apps.
 
 - [v0](https://v0.app/) ⭐ 💰 🆓 — Vercel's UI generator. React + Tailwind output.
+- [AppWizzy](https://appwizzy.com/) 🆓 💰 — AI web app builder with dedicated cloud development VMs, runtime templates, and Git-based source editing.
 - [Bolt.new](https://bolt.new/) 🆓 💰 — StackBlitz's full-stack web app builder.
 - [Lovable](https://lovable.dev/) 💰 🆓 — End-to-end app generator with deploy.
 - [Replit Agent](https://replit.com/agent) 💰 — In-browser app generation + hosting.
@@ -218,6 +219,7 @@ Anthropic's open standard for connecting AI tools to data sources and capabiliti
 - [Animus](https://github.com/launchapp-dev/animus-cli) 🟢 — Daemon-driven AI workflows in CI.
 - [d1v](https://github.com/d1vai/d1v-cli) 🟢 — CLI deployment workflow for AI-built web projects with verified previews and explicitly confirmed production releases.
 - [deed.page](https://deed.page) 🆓 💰 — Static hosting a coding agent can publish to with one HTTP PUT or a remote MCP call, live at `<slug>.deed.page` with no signup on the free plan.
+- [Ironheights](https://github.com/Frank-Masciopinto/ironheights) 🟢 🆓 — Open-source CLI that scans coding-agent skills (OpenClaw/ClawHub `SKILL.md` bundles) for prompt injection, credential reads and remote-exec installers, with JSON/SARIF output and exit codes to gate skill installs in CI.
 - [Sweep](https://github.com/sweepai/sweep) 🟢 — AI assistant that opens PRs from issues.
 - [SourceLevel](https://sourcelevel.io/) 💰 — AI metrics and review automation.
 
@@ -247,6 +249,7 @@ Frontier and open-weight models with strong code performance.
 - [SWE-bench](https://www.swebench.com/) — Benchmark for resolving real GitHub issues.
 - [Aider Leaderboards](https://aider.chat/docs/leaderboards/) — Real-world coding benchmark by model.
 - [NextReset](https://nextreset.ai/) — Independent, source-linked public Codex reset history and official AI service incident reference; personal timer stays in the browser.
+- [Vibe-coding security checklist](https://aivibecheck-site.vercel.app/checklist) 🆓 — Ten checks for AI-built apps and coding agents (planted AGENTS.md files, unknown MCP servers in agent configs, per-tool API keys, sandbox network reach, pinned agent versions), each linked to the incident or release it came from.
 
 ## Related Lists
 

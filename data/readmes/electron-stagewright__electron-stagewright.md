@@ -56,15 +56,15 @@ binary with Electron's `install-electron` bin, then run `doctor`, which reports 
 exits 0 when every required check passes:
 
 ```bash
-npx -y --prefix ~/ --package @electron-stagewright/core@0.7.0 \
+npx -y --prefix ~/ --package @electron-stagewright/core@0.8.1 \
   --package playwright@1.63.0 --package electron@42.11.10 install-electron
-npx -y --prefix ~/ --package @electron-stagewright/core@0.7.0 \
+npx -y --prefix ~/ --package @electron-stagewright/core@0.8.1 \
   --package playwright@1.63.0 --package electron@42.11.10 electron-stagewright doctor --json
 ```
 
 ```bash
 claude mcp add electron-stagewright -- \
-  npx -y --prefix ~/ --package @electron-stagewright/core@0.7.0 \
+  npx -y --prefix ~/ --package @electron-stagewright/core@0.8.1 \
   --package playwright@1.63.0 --package electron@42.11.10 \
   electron-stagewright --tool-profile essential
 ```
@@ -110,7 +110,7 @@ Shared project `.mcp.json` shape:
         "--prefix",
         "~/",
         "--package",
-        "@electron-stagewright/core@0.7.0",
+        "@electron-stagewright/core@0.8.1",
         "--package",
         "playwright@1.63.0",
         "--package",
@@ -200,7 +200,7 @@ option; diagnostics go to stderr (stdout is reserved for the JSON-RPC protocol c
 | Flag                                        | Effect                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `--allow-eval[=main\|renderer]`             | Register the `electron_eval_main` / `electron_eval_renderer` tools, which run arbitrary JavaScript in the main / renderer process. Default off — the eval tools are hidden and uncallable. Bare `--allow-eval` enables both; `--allow-eval=renderer` (or `=main`) grants only that target for least privilege. Also gates plugin tools that call eval seams directly, such as IPC main-process tools (`main`) and storage IndexedDB tools (`renderer`).                                                                                                                                                   |
-| `--app-root <dir>`                          | Confine host paths to within `<dir>`: `electron_launch`'s `main`, `executablePath`, and `cwd`, plus the files read by `electron_set_files` / `electron_drop_file`. Default unset (no confinement). Set it to your app/project root so a tool call cannot launch a binary from elsewhere on the host, nor read a file outside the project into the app under test. It also enables `electron_launch({ main, runtime: "project" })`, which resolves Electron only from that operator-configured root; an explicit `executablePath` remains authoritative.                                                   |
+| `--app-root <dir>`                          | Confine host paths to within `<dir>`: `electron_launch`'s `main`, `executablePath`, and `cwd`, plus the files read by `electron_set_files` / `electron_drop_file`. Default unset (no confinement). Set it to your app/project root so a tool call cannot launch a binary from elsewhere on the host, nor read a file outside the project into the app under test. It also makes `electron_launch({ main })` use the Electron installed in that operator-configured root by default (`runtime: "server"` opts out); an explicit `executablePath` remains authoritative.                                    |
 | `--screenshot-dir <dir>`                    | Default directory `electron_screenshot` writes into when the call gives no explicit path. Default: the OS temp dir.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | `--operation-timeout-ms <n>`                | Per-dispatch backstop timeout (ms); a handler that never settles resolves as a retryable `OPERATION_TIMEOUT` instead of hanging the agent on a frozen app. Default 120000; `0` disables it.                                                                                                                                                                                                                                                                                                                                                                                                               |
 | `--tool-profile <profile>`                  | Select the core tool surface: `essential` (the focused launch/snapshot/interact/assert path), `testing` (broader test-driving tools plus screenshot evidence capture), `debug` (attach/inspect/diagnostics), or `full`. Default: `full`, preserving the complete core catalog. Eval authorization and explicitly loaded plugins compose independently.                                                                                                                                                                                                                                                    |

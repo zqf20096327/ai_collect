@@ -99,27 +99,47 @@ See [QUICKSTART.md](QUICKSTART.md) for the complete setup flow.
 
 ## Visual preview
 
-### Main chat interface
+### Native Windows app
+
+#### Chat
+
+![InferBridge native chat with live inference stats](screenshots/native_chat.png)
+
+#### Model library
+
+![InferBridge native model library](screenshots/native_models.png)
+
+#### System Doctor
+
+![InferBridge native System Doctor](screenshots/native_doctor.png)
+
+#### Local API
+
+![InferBridge native Local API connection hub](screenshots/native_api.png)
+
+### Browser UI
+
+#### Main chat interface
 
 ![InferBridge chat interface](screenshots/chat_preview.png)
 
-### System Doctor hardware diagnostics
+#### System Doctor hardware diagnostics
 
 ![InferBridge System Doctor](screenshots/system_doctor.png)
 
-### Settings and system information
+#### Settings and system information
 
 ![InferBridge settings](screenshots/settings_preview.png)
 
-### First-run model flow
+#### First-run model flow
 
 ![InferBridge empty state](screenshots/empty_state.png)
 
-### Light theme
+#### Light theme
 
 ![InferBridge light theme](screenshots/light_theme.png)
 
-### Responsive layout
+#### Responsive layout
 
 ![InferBridge responsive preview](screenshots/responsive_preview.png)
 
@@ -154,6 +174,7 @@ See [QUICKSTART.md](QUICKSTART.md) for the complete setup flow.
 - [Model preparation cancellation](docs/model-cancellation.md)
 - [Model preparation recovery](docs/MODEL_RECOVERY.md)
 - [Context budget visibility](docs/CONTEXT_BUDGET.md)
+- [Context and memory: larger context, KV cache precision, NPU limits, contributing benchmarks](docs/CONTEXT_AND_MEMORY.md)
 
 ### Data, diagnostics, and support
 

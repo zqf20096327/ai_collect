@@ -337,7 +337,7 @@ Leaderboards first, then single-task studies and evaluation tooling. Most studie
 - [JevBench](https://github.com/fstandhartinger/jevbench) - MIT-licensed harness and leaderboard of 534 English decisions with public and sealed tiers, reporting accuracy, latency, and price together. Discussion: [Show HN](https://news.ycombinator.com/item?id=49800574).
 - [Jevals.com](https://jevals.com/) - Independent benchmark of hosted Jev and six LLMs on the same Noul, Choice and Score questions, graded against human labels (PubMedQA, Banking77, HelpSteer2), with per-decision logs as open data
 - [LangWatch Jev benchmark](https://langwatch.ai/compare/jev-benchmark) - Jev against seven open models under 1B on 15 decision tasks, with 95% intervals, latency, and contamination checks
-- [Decision Models as Guardrails](https://dm-as-guardrails.raxitlabs.com) - raxIT Labs' benchmark of 18 decision models (Jev, Kev, Laya, Clef, Strands Deciders, and the Perplexity and OpenAI Decisions APIs) and Amazon Bedrock Guardrails on the same 9,975 labelled guardrail checks, with one fixed 0.5 block threshold for every system; reports balanced accuracy with 95% intervals, cost per 1,000 checks, and per-row results
+- [Decision Models as Guardrails](https://dm-as-guardrails.raxitlabs.com) - raxIT Labs' benchmark of 29 decision models (Liquid d1-ultra and d1.1, Jev, Kev, Laya, Clef, Strands Deciders, Microsoft-Decision-1, Drex, Mercury Decide, Solar Decide, Span-02, and the Perplexity and OpenAI Decisions APIs) and Amazon Bedrock Guardrails on the same 9,975 labelled guardrail checks, with one fixed 0.5 block threshold for every system; reports balanced accuracy with 95% intervals, cost per 1,000 checks, and per-row results
 
 - [System 1 Decision Benchmark](https://github.com/etsabary/system-1-decision-benchmark) - Independent comparison of hosted and local decision models plus no-reasoning LLM references on 1,342 text questions, with per-category accuracy, response times, cost, and route details
 - [Visual Decision Benchmark](https://github.com/etsabary/visual-decision-benchmark) - Independent comparison of decision models on 200 image-grounded questions across 20 categories, with accuracy, latency, cost, and image provenance
@@ -358,6 +358,8 @@ Leaderboards first, then single-task studies and evaluation tooling. Most studie
 
 - [minimind-jev](https://github.com/vicfei/minimind-jev) - Train-your-own tiny Jev for Chinese reranking: frozen bge-small-zh + a from-scratch 660K decision head, 3 minutes on a laptop GPU, $0 API. Evaluated via [jev-rag-zh-benchmark](https://github.com/vicfei/jev-rag-zh-benchmark) on T2Reranking hard negatives (n=100, 95% paired CIs): nDCG@5 0.488 — not separable from hosted Jev-1.13 at this n, significantly above BM25. Also documents a distillation negative result (teacher soft labels lost to gold binary labels) and releases the teacher-judgments dataset ([cnfeichen/t2reranking-4level-judgments](https://huggingface.co/datasets/cnfeichen/t2reranking-4level-judgments)). Checkpoint: [cnfeichen/minimind-jev-v0.1](https://huggingface.co/cnfeichen/minimind-jev-v0.1).
 
+- [ProbabilityBench](https://github.com/ishida-lab/ProbabilityBench) - Evaluates Jev, Perplexity Decider, and other models against exact instance-level class probabilities in three simulated text domains (peer review, covert information transfer, and credit risk), using KL divergence to measure probability quality; includes evaluation code and a [paper](https://arxiv.org/abs/2610.17016)
+
 ### Tooling
 
 - [JevalKit](https://github.com/Valen-Team/JevalKit) - Open-source evaluation toolkit for Jev-like decision models, with unified model interfaces, prepared text/image/video benchmarks and a [leaderboard](https://huggingface.co/spaces/Valen-Team/JevalKit-Leaderboard) distinguishing full evaluations from smoke tests and imported predictions
@@ -365,6 +367,7 @@ Leaderboards first, then single-task studies and evaluation tooling. Most studie
 - [Jev DSPy Lab](https://github.com/jmanhype/jev-dspy-lab) - Unofficial DSPy companion that records and replays TypeSafe calls while measuring calibration, selective risk, confidence-gated abstention, latency, tokens, and modeled cost.
 - [jevcal](https://github.com/abhixhek/jevcal) - Unofficial CLI that fits a per-question confidence threshold to a target accuracy on your own labeled data, verifies it on a held-out split, shows how much traffic still needs an LLM fallback, and fails CI when a Jev update breaks the locked thresholds
 - [jevals](https://github.com/openlayer-ai/jevals) - Openlayer's agent evals and guardrails as decision-model questions: tool choice, grounding, relevancy, and injection checks for a trace go out in one request, to Jev or locally to Kev, Laya, or Eikos. `pip install jevals`.
+- [s1kit](https://github.com/Eliot5566/s1kit) - Unofficial Python CLI that runs one YAML suite of labelled cases against any `/v1/systemone` server (Jev, Laya, Kev, llama.cpp, Ollama) side by side, picks a per-question confidence cutoff for a target precision, and routes cheapest-first with escalation below it.
 
 ## Papers
 

@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://gcore.jsdelivr.net/gh/Canvixel-Eloweny/ai-bot-groupmate@main/assets/logo-v3.png" alt="Estrella Bot" width="140">
+<img src="https://gcore.jsdelivr.net/gh/Canvixel-Eloweny/ai-bot-groupmate@main/assets/logo-v4.svg" alt="Estrella Bot" width="140">
 
 # Estrella Bot · QQ-BOT-Creative
 
@@ -10,7 +10,7 @@ It chimes in, picks up running jokes, lurks, and occasionally speaks up on its o
 OneBot v11 · NapCat · a local model or DeepSeek / Zhipu / Qwen · a zero-build web console
 
 <p>
-  <b>English</b> · <a href="./README.zh-CN.md">简体中文</a>
+  <b>English</b> · <a href="./docs/README.zh-CN.md">简体中文</a>
 </p>
 
 <p>
@@ -28,15 +28,15 @@ OneBot v11 · NapCat · a local model or DeepSeek / Zhipu / Qwen · a zero-build
 
 <p>
   <a href="./README.md#3-four-brain-presets"><img alt="AI" src="https://img.shields.io/badge/AI-OpenAI--compatible-6f42c1?style=for-the-badge"></a>
-  <a href="./CHANGELOG.md"><img alt="Release" src="https://img.shields.io/badge/release-v0.1.4-e05d44?style=for-the-badge"></a>
+  <a href="./docs/release/CHANGELOG.md"><img alt="Release" src="https://img.shields.io/badge/release-v0.1.4-e05d44?style=for-the-badge"></a>
   <a href="https://github.com/Canvixel-Eloweny/ai-bot-groupmate/commits/main"><img alt="Last commit" src="https://img.shields.io/github/last-commit/Canvixel-Eloweny/ai-bot-groupmate?logo=git&logoColor=white&style=for-the-badge"></a>
 </p>
 
 <hr>
 
-<p><sub><b>Console preview</b> · 控制台预览画面 — the same console in light and dark</sub></p>
+<p><sub><b>Console preview</b> · 控制台预览画面 — run overview, persona, glass lab and persona studio</sub></p>
 
-<p><img src="https://gcore.jsdelivr.net/gh/Canvixel-Eloweny/ai-bot-groupmate@main/assets/panel-themes-v2.jpg" alt="The console in light theme and dark theme, side by side" width="880"></p>
+<p><img src="https://gcore.jsdelivr.net/gh/Canvixel-Eloweny/ai-bot-groupmate@main/assets/panel-preview-v3.jpg" alt="The console: run overview, persona, glass lab and persona studio" width="880"></p>
 
 <hr>
 
@@ -62,7 +62,7 @@ npm start                      # run the bot
 
 Two things you always supply yourself: an **OneBot v11 implementation** (in practice NapCatQQ) and a
 **model** — a local one, or an API key. Step-by-step instructions, including what to do when a step
-fails: [`USER-GUIDE.md`](./USER-GUIDE.md).
+fails: [`USER-GUIDE.md`](./docs/guides/USER-GUIDE.md).
 
 ---
 
@@ -87,12 +87,12 @@ QQ alt ──► NapCat (Docker, OneBot v11) ──► bridge src/index.js ─�
 > **`Estrella Bot` is the name of the software.** The former name in the title is kept in exactly one
 > place so that existing links, bookmarks and search results still land here — it is not used anywhere
 > else. The project began as `qq-bot` and was renamed twice (2026-09-17, then 2026-10-11); the full
-> history is in [`CHANGELOG.md`](./CHANGELOG.md). The GitHub slug stays `ai-bot-groupmate` on purpose.
+> history is in [`CHANGELOG.md`](./docs/release/CHANGELOG.md). The GitHub slug stays `ai-bot-groupmate` on purpose.
 > The launcher is `Estrella-Bot.app`.
 > **This English README is the default. The Chinese edition lives in
-> [`README.zh-CN.md`](./README.zh-CN.md) and is the authoritative one when the two differ.**
+> [`README.zh-CN.md`](./docs/README.zh-CN.md) and is the authoritative one when the two differ.**
 >
-> **Just want it running?** Start with the **[User Guide](./USER-GUIDE.md)** — install, sign in,
+> **Just want it running?** Start with the **[User Guide](./docs/guides/USER-GUIDE.md)** — install, sign in,
 > configure, start. Written for people who don't want to read the source first.
 
 ---
@@ -117,7 +117,7 @@ node scripts/check-onebot.js  # liveness probe + list joined groups (get group i
 npm start                     # run the bridge
 ```
 
-Full steps: [`INSTALL-DOCKER.md`](./INSTALL-DOCKER.md).
+Full steps: [`INSTALL-DOCKER.md`](./docs/guides/INSTALL-DOCKER.md).
 
 **Route B: native macOS — currently blocked.** NapCat's Mac installer only whitelists QQ builds
 `6.9.82-40768` … `6.9.93-47354`, while current QQ is past that; Tencent does not archive old versions.
@@ -139,7 +139,7 @@ Installing NapCat, opening the two channels, the **nine platform differences** (
 before scanning / keep the NapCat window alive / no local model / memory card / instance count /
 the Docker step / the console window), and what to report back from your first real-machine run:
 
-👉 **Full install steps: [`USER-GUIDE.md` · section 9](./USER-GUIDE.md#9-windows-users)**
+👉 **Full install steps: [`USER-GUIDE.md` · section 9](./docs/guides/USER-GUIDE.md#9-windows-users)**
 
 ## 3. Four brain presets
 
@@ -284,21 +284,24 @@ than a frontier cloud model).
 
 ```
 estrella-bot/
-  README.md / README.zh-CN.md  # English (default) + Chinese (authoritative)
-  INSTALL-DOCKER.md            # container install manual (incl. rollback)
+  README.md / docs/README.zh-CN.md  # English (default) + Chinese (authoritative)
+  docs/guides/INSTALL-DOCKER.md # container install manual (incl. rollback)
   Estrella-Bot.app             # double-click launcher: bring up Docker + open the console
   config.json                  # your config (pre-filled, gitignored)
   config.example.json          # sanitised template generated from a real config
   docker-compose.yml           # NapCat container
   persona/qq-chat.md           # persona
   plugins/                     # extensions, deterministic kind (capabilities / hooks) — none ship by default
-  skills/                      # extensions, LLM kind (register tools) — none ship by default
+  skills/                      # extensions, skill kind (tools + optional prompt.sections) — none ship by default
                                #   (the 13 built-in packages were removed on 2026-10-17; the host still loads
                                #    any package you drop here, subject to the allow-list below)
                                #   this on-disk skills/ is NOT src/skills.js: one is code on disk,
-                               #   the other is data inside config.json. The host scans, validates,
-                               #   reports, and only loads packages named in the allow-list
-                               #   (config.json custom.plugins.enabled), which requires a restart.
+                               #   the other is data inside config.json. Both kinds share one host/loader;
+                               #   `kind` only decides the default semantics. A pure-prompt skill still
+                               #   needs index.js (may be `export {}`). See docs/SKILLS.md.
+                               #   The host scans, validates, reports, and only loads packages named in
+                               #   custom.extensions.plugins.enabled / custom.extensions.skills.enabled
+                               #   (legacy custom.plugins is derived), which requires a restart.
                                #   Third-party packages you drop into these directories are NOT
                                #   committed (see the per-package exceptions in .gitignore).
   panel/
@@ -414,7 +417,7 @@ one-person project and priorities follow real pain.
 
 ## 12. Contributing
 
-Start with [`CONTRIBUTING.md`](./CONTRIBUTING.md). Three things to know before writing code:
+Start with [`CONTRIBUTING.md`](./.github/CONTRIBUTING.md). Three things to know before writing code:
 
 1. **The gates are four layers** — `check-wb` structural contracts, `smoke` behaviour regression, and the
    sandboxed `presets` and panel self-checks. Run the whole thing with `npm run verify`.
@@ -424,14 +427,14 @@ Start with [`CONTRIBUTING.md`](./CONTRIBUTING.md). Three things to know before w
    noticed, so the real numbers live in exactly one place: the output of `npm run verify`. If you are tempted
    to write "N assertions" here again — that sentence is the reason you should not.
 
-Also read [`CHANGELOG.md`](./CHANGELOG.md) and [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md).
+Also read [`CHANGELOG.md`](./docs/release/CHANGELOG.md) and [`CODE_OF_CONDUCT.md`](./.github/CODE_OF_CONDUCT.md).
 
 ## 13. Contact
 
 | Channel | Use |
 |---|---|
 | [Issues](../../issues) | **Preferred.** Questions, bugs, feature requests — public discussion is searchable by the next person; a DM is not |
-| [`SECURITY.md`](./SECURITY.md) | Report vulnerabilities **privately**; do not open a public issue |
+| [`SECURITY.md`](./.github/SECURITY.md) | Report vulnerabilities **privately**; do not open a public issue |
 
 Two things to do first: **redact real QQ numbers / group ids / chat logs** before posting, and run
 `npm run verify` and paste the output — a minimal reproduction beats a long description.
@@ -440,8 +443,8 @@ Two things to do first: **redact real QQ numbers / group ids / chat logs** befor
 
 | Item | Value |
 |---|---|
-| License | **Apache-2.0** — full text in [`LICENSE`](./LICENSE), attribution notice in [`NOTICE`](./NOTICE) |
-| Third-party notices | [`THIRD-PARTY-NOTICES.md`](./THIRD-PARTY-NOTICES.md) |
+| License | **Apache-2.0** — full text in [`LICENSE`](./LICENSE), attribution notice in [`NOTICE`](./docs/legal/NOTICE) |
+| Third-party notices | [`THIRD-PARTY-NOTICES.md`](./docs/legal/THIRD-PARTY-NOTICES.md) |
 | Runtime dependencies | Only `ws` (MIT). Zero build, no other third-party runtime dependency |
 
 **Apache-2.0 in three sentences.** ① Use it freely: read, run, modify, ship it — even closed-source, no
@@ -459,12 +462,14 @@ and follow its licence.
 (5 deterministic + 8 LLM kind) were removed on 2026-10-17. The host still loads any package you drop
 into either directory, subject to the allow-list below. Third-party packages *you* add are **not**
 committed (see the per-package exceptions in `.gitignore`). Which of them actually load is decided by
-`custom.plugins.enabled` in `config.json` — ⚠️ there is **no hot-plug**: changing the allow-list needs a
-restart (the console says so when you do). Also not distributed: `napcat/` (the protocol side) and the data
-directories extensions write at runtime — see `THIRD-PARTY-NOTICES.md` §3.
+`custom.extensions.plugins.enabled` / `custom.extensions.skills.enabled` in `config.json` (the legacy
+`custom.plugins.enabled` is derived for old configs) — ⚠️ there is **no hot-plug**: changing the
+allow-list needs a restart (the console says so when you do). See `docs/SKILLS.md` for the two kinds.
+Also not distributed: `napcat/` (the protocol side) and the data
+directories extensions write at runtime — see `docs/legal/THIRD-PARTY-NOTICES.md` §3.
 
 ---
 
 <div align="center">
-  <sub><b>English</b> · <a href="./README.zh-CN.md">简体中文</a></sub>
+  <sub><b>English</b> · <a href="./docs/README.zh-CN.md">简体中文</a></sub>
 </div>

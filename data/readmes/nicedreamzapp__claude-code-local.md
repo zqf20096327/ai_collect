@@ -40,6 +40,7 @@ Matt Macosko wrote the glue that makes local models usable inside Claude Code. T
 - 🏎️ **[`agent/agent.py`](agent/agent.py)**: the Native Engine, a one-file terminal coding agent with a short fixed system prompt so the cache survives every turn. [`bench/agent_bench.py`](bench/agent_bench.py) reproduces its cache numbers.
 - 🔋 **[`bin/keepgoing`](bin/keepgoing)** + [`bin/keepgoing.py`](bin/keepgoing.py): finds your last Claude Code conversation in this folder and resumes it on a free cloud or local model.
 - 🚀 **[`install.sh`](install.sh)**, **[`setup.sh`](setup.sh)** and **[`scripts/doctor.sh`](scripts/doctor.sh)**: check the Mac, pick a model that fits its memory, install everything and make a Desktop launcher.
+- 🩺 **Doctor**: checks the core (Claude Code, model server, model files, Python, llama.cpp) and every add-on you installed. Mac or Linux: `bash scripts/doctor.sh`. Windows: `powershell -ExecutionPolicy Bypass -File scripts\doctor.ps1`. Add `--fix` / `-Fix` to restart your own service that is down or recreate a missing symlink (it never deletes anything), and `--report` / `-Report` for a privacy-safe block to paste into a bug report.
 - 🎮 **[`launchers/`](launchers/)** with the shared [`launchers/lib/claude-local-common.sh`](launchers/lib/claude-local-common.sh): the double-click modes below.
 
 **Upstream, not mine:** [Claude Code](https://github.com/anthropics/claude-code) (Anthropic), [MLX and mlx-lm](https://github.com/ml-explore/mlx-lm) (Apple), and the models themselves (Google, Qwen, Nous Research and the others credited [below](#-good-builds-from-other-people)). Contributors who fixed things are named at the bottom.
@@ -146,6 +147,44 @@ bash setup.sh
 Setup picks your model, downloads it, installs the server, and puts **`Claude Local.command`** on
 your Desktop. **Double-click it** and you're coding locally. 🎉
 
+### 🧰 The full kit
+
+The local model is the brain. The add-ons give it ears, a voice, hands and reach, and one command
+installs all of it:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/nicedreamzapp/claude-code-local/main/install.sh | bash -s -- --with all
+```
+
+| Add-on | What it gives you | Mac | Windows |
+|---|---|:---:|:---:|
+| `voice` | [NarrateClaude](https://github.com/nicedreamzapp/NarrateClaude): talk to Claude Code and hear it answer | ✅ | ✅ |
+| `moonstone` | [Moonstone](https://github.com/nicedreamzapp/moonstone): every session on every machine in one window, push to talk | ✅ | ✅ |
+| `browser` | [browser-agent](https://github.com/nicedreamzapp/browser-agent): agents use your real, logged in browser, each in its own tab | ✅ | ✅ |
+| `phone` | [claude-screen-to-phone](https://github.com/nicedreamzapp/claude-screen-to-phone): drive Claude Code from your iPhone over iMessage | ✅ | |
+| `remote` | [FiaOS](https://github.com/nicedreamzapp/FiaOS): your screen and a real terminal from any browser | ✅ | ✅ |
+| `failover` | [claude-failover](https://github.com/nicedreamzapp/claude-failover): background agents keep working on the local model when you hit your Claude limit | ✅ | |
+| `terminal` | [Trinidad Head](https://github.com/nicedreamzapp/trinidad-head): a glowing terminal with a color per window | | ✅ |
+
+Every piece is its own repo with its own one-line installer and uninstaller, so you can take one
+and leave the rest.
+
+**Add-ons (macOS).** After the model is set up, setup offers a menu of add-ons. Each is its own repo,
+installed by that repo's own one-line installer: `voice` ([NarrateClaude](https://github.com/nicedreamzapp/NarrateClaude)),
+`browser` ([browser-agent](https://github.com/nicedreamzapp/browser-agent)), `phone` ([claude-screen-to-phone](https://github.com/nicedreamzapp/claude-screen-to-phone)),
+`remote` ([FiaOS](https://github.com/nicedreamzapp/FiaOS)), `moonstone` ([Moonstone](https://github.com/nicedreamzapp/moonstone))
+and `failover` ([claude-failover](https://github.com/nicedreamzapp/claude-failover)). Skip the menu:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/nicedreamzapp/claude-code-local/main/install.sh | bash -s -- --with voice,browser,phone
+curl -fsSL https://raw.githubusercontent.com/nicedreamzapp/claude-code-local/main/install.sh | bash -s -- --with all
+bash ~/claude-code-local/scripts/addons.sh menu      # add more later
+```
+
+With no terminal to ask on and no `--with`, no add-ons are installed.
+
+**Uninstall:** `bash ~/claude-code-local/uninstall.sh` (add `--with phone,remote` or `--all` to remove add-ons too, `--purge` to delete their data).
+
 > 🐛 **Asked to sign in to a Claude account?** Your `claude` is too old. Update it:
 > `npm install -g @anthropic-ai/claude-code`
 
@@ -205,6 +244,17 @@ irm https://raw.githubusercontent.com/nicedreamzapp/claude-code-local/main/insta
 
 You need **git**, **Python 3**, and **Claude Code** installed. When it finishes, run **`claude-local`**
 (Linux) or double-click **Claude Local** on your Desktop (Windows).
+
+On Windows the installer then offers the add-ons that run there, each installed by its own repo's
+installer: **moonstone** ([Moonstone](https://github.com/nicedreamzapp/moonstone)), **browser**
+([browser-broker](https://github.com/nicedreamzapp/browser-agent)), **remote**
+([FiaOS](https://github.com/nicedreamzapp/FiaOS)), **terminal**
+([Trinidad Head](https://github.com/nicedreamzapp/trinidad-head)) and **voice**
+([NarrateClaude](https://github.com/nicedreamzapp/NarrateClaude)). To skip the menu, set
+`$env:CCL_WITH = "all"` (or `"moonstone,terminal"`, or `"none"`) before the one-liner. Uninstall
+(set `$env:CCL_WITH = "all"` first to remove the add-ons too; models and user data are kept unless
+`$env:CCL_PURGE = "1"`):
+`irm https://raw.githubusercontent.com/nicedreamzapp/claude-code-local/main/uninstall.ps1 | iex`
 
 It picks the strongest vision model that fits and tells you why, for example:
 
@@ -311,7 +361,7 @@ on your hardware. If Claude Code on your own Mac was the part you wanted, this i
 | | Project | What it does |
 |---|---|---|
 | 🌊 | **[Trinidad Head](https://github.com/nicedreamzapp/trinidad-head)** | A terminal for Mac and Windows, written from scratch in Rust, that gives every window its own glow color and puts your own prompts in a bubble so they are easy to find |
-| 🎤 | [NarrateClaude](https://github.com/nicedreamzapp/NarrateClaude) | A hands-free voice loop for Claude Code on macOS that turns your speech into text on the Mac, types it into the Terminal running `claude`, and reads the replies aloud |
+| 🎤 | [NarrateClaude](https://github.com/nicedreamzapp/NarrateClaude) | A hands-free voice loop for Claude Code on macOS, Linux and Windows that turns your speech into text locally with whisper.cpp, types it into `claude`, and reads the replies aloud with a local Piper voice |
 | 🌐 | [browser-agent](https://github.com/nicedreamzapp/browser-agent) | An agent that takes a task in plain English and carries it out in your real Brave browser and your shell, with the model running on your Mac |
 | 🚦 | [browser-broker](https://github.com/nicedreamzapp/browser-broker) | A local proxy on Chrome's debug port that gives each AI agent its own tab in your real, logged-in browser, so agents can't grab each other's tabs or yours |
 | 📱 | [claude-screen-to-phone](https://github.com/nicedreamzapp/claude-screen-to-phone) | macOS scripts that let you text commands from your iPhone into a Claude Code session on your Mac and get text, images and video back in iMessage |

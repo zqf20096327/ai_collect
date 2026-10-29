@@ -6,6 +6,13 @@ Welcome to the Awesome Industrial Datasets repository! This project aims to simp
 
 If you find this repository useful, please consider giving it a ⭐ to show your support!
 
+## 🏭 From the Same Author
+
+> [!TIP]
+> **[PlantCraft](https://plantcraft.io)** is an open-source, LLM-first software suite for process plants (historian, analytics, alarms, models, dashboards) that you install on your own infrastructure.
+>
+> 👉 Try the **[live demo](https://demo.plantcraft.io)** or see it **[on GitHub](https://github.com/PlantCraft/PlantCraft)**.
+
 ## 📊 Dataset Statistics
 
 <!-- STATS_START -->

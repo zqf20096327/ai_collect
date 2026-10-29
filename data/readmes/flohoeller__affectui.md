@@ -3,7 +3,7 @@
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="./.github/assets/banner-dark.png">
       <source media="(prefers-color-scheme: light)" srcset="./.github/assets/banner-light.png">
-      <img alt="affectUI: React components with calm motion. Free and open source, install with shadcn." src="./.github/assets/banner-light.png" width="100%">
+      <img alt="affectUI: UI for AI agents. React components for what agents do, and for the rest of your app." src="./.github/assets/banner-light.png" width="100%">
     </picture>
   </a>
 </p>
@@ -12,7 +12,7 @@
   <a href="./LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-111111?style=flat-square"></a>
   <a href="https://www.affectui.com/docs"><img alt="shadcn registry" src="https://img.shields.io/badge/shadcn-registry-111111?style=flat-square"></a>
   <img alt="React 19" src="https://img.shields.io/badge/React-19-111111?style=flat-square">
-  <img alt="57 free items" src="https://img.shields.io/badge/free%20items-57-2f6bff?style=flat-square">
+  <img alt="40 free items" src="https://img.shields.io/badge/free%20items-40-2f6bff?style=flat-square">
   <a href="https://github.com/flohoeller/affectui/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/flohoeller/affectui?style=flat-square&color=111111"></a>
 </p>
 
@@ -28,83 +28,90 @@
   <a href="https://www.affectui.com/pricing"><b>Pro</b></a>
 </p>
 
-affectUI is a library of handcrafted React components, illustrations and motion effects for AI products and modern SaaS apps. Every item is **one `.tsx` file with its styles inside**: no Tailwind, no CSS setup, no animation library. Install it with the shadcn CLI or copy the file, and it is source you own.
+**UI for AI agents.** affectUI is a library of React components for what agents do – runs, tool calls, traces, handoffs, approvals and context – and for the rest of your app: inputs, menus, charts, screens, illustrations and motion. Every item is **one `.tsx` file with its styles inside**: no Tailwind, no CSS setup, no animation library. Install it with the shadcn CLI, or let Claude Code, Cursor or Codex add it through the MCP server, and it is source you own.
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./.github/assets/trust-dark.png">
+    <img alt="Used by developers at Teamworks, RedNote, Cloudforce, Moonshot AI, Terminal49, Meitu and Beacons" src="./.github/assets/trust-light.png" width="100%">
+  </picture>
+</p>
 
 ## Showcase
 
-A few favorites, recorded live from [affectui.com](https://www.affectui.com). Items marked <sup>Pro</sup> are part of [affectUI Pro](https://www.affectui.com/pricing) and are not in this repository; everything else installs from here for free.
+Agent components, recorded live from [affectui.com](https://www.affectui.com). Items marked <sup>Pro</sup> are part of [affectUI Pro](https://www.affectui.com/pricing) and are not in this repository; everything else installs from here for free.
 
 <table>
 <tr>
 <td width="50%" valign="top">
-<a href="https://www.affectui.com/illustrations/agent-team"><picture>
-<source media="(prefers-color-scheme: dark)" srcset="./.github/assets/showcase/agent-team-dark.webp">
-<img alt="Agent Team: A prompt types itself and branches out into three agents, each with a role and overlapping tool logos" src="./.github/assets/showcase/agent-team-light.webp" width="100%">
+<a href="https://www.affectui.com/components/agent-tree"><picture>
+<source media="(prefers-color-scheme: dark)" srcset="./.github/assets/showcase/agent-tree-dark.webp">
+<img alt="Agent Tree: Who started whom – an orchestrator and its sub-agents as a live tree, with status, cost and time on every card, costs rolling up each branch, and branches that fold to one line" src="./.github/assets/showcase/agent-tree-light.webp" width="100%">
 </picture></a>
-<br><a href="https://www.affectui.com/illustrations/agent-team"><b>Agent Team</b></a><br>
-<sub>A prompt types itself and branches out into three agents, each with a role and overlapping tool logos</sub>
+<br><a href="https://www.affectui.com/components/agent-tree"><b>Agent Tree</b></a> <sup><a href="https://www.affectui.com/pricing">Pro</a></sup><br>
+<sub>Who started whom</sub>
 </td>
 <td width="50%" valign="top">
-<a href="https://www.affectui.com/components/reaction-bar"><picture>
-<source media="(prefers-color-scheme: dark)" srcset="./.github/assets/showcase/reaction-bar-dark.webp">
-<img alt="Reaction Bar: Like, comment, repost and share in one pill – icons pop and fill, counts roll in digit by digit" src="./.github/assets/showcase/reaction-bar-light.webp" width="100%">
+<a href="https://www.affectui.com/components/tool-call-card"><picture>
+<source media="(prefers-color-scheme: dark)" srcset="./.github/assets/showcase/tool-call-card-dark.webp">
+<img alt="Tool Call Card: An agent's tool call in one line – live timer, status and summary, folds open to highlighted arguments and result with copy, retry on errors and a group that sums them up" src="./.github/assets/showcase/tool-call-card-light.webp" width="100%">
 </picture></a>
-<br><a href="https://www.affectui.com/components/reaction-bar"><b>Reaction Bar</b></a><br>
-<sub>Like, comment, repost and share in one pill – icons pop and fill, counts roll in digit by digit</sub>
-</td>
-</tr>
-<tr>
-<td width="50%" valign="top">
-<a href="https://www.affectui.com/illustrations/team-invite"><picture>
-<source media="(prefers-color-scheme: dark)" srcset="./.github/assets/showcase/team-invite-dark.webp">
-<img alt="Team Invite: Connected teammates – a cursor drags a new one into the empty slot, the line turns solid and they go online" src="./.github/assets/showcase/team-invite-light.webp" width="100%">
-</picture></a>
-<br><a href="https://www.affectui.com/illustrations/team-invite"><b>Team Invite</b></a><br>
-<sub>Connected teammates – a cursor drags a new one into the empty slot, the line turns solid and they go online</sub>
-</td>
-<td width="50%" valign="top">
-<a href="https://www.affectui.com/components/command-menu"><picture>
-<source media="(prefers-color-scheme: dark)" srcset="./.github/assets/showcase/command-menu-dark.webp">
-<img alt="Command Menu: Search and run anything from one field – tool actions with logos and ⌘1–⌘5, everyday commands with icons" src="./.github/assets/showcase/command-menu-light.webp" width="100%">
-</picture></a>
-<br><a href="https://www.affectui.com/components/command-menu"><b>Command Menu</b></a> <sup><a href="https://www.affectui.com/pricing">Pro</a></sup><br>
-<sub>Search and run anything from one field – tool actions with logos and ⌘1–⌘5, everyday commands with icons</sub>
+<br><a href="https://www.affectui.com/components/tool-call-card"><b>Tool Call Card</b></a><br>
+<sub>An agent's tool call in one line</sub>
 </td>
 </tr>
 <tr>
 <td width="50%" valign="top">
-<a href="https://www.affectui.com/components/progress-tracker"><picture>
-<source media="(prefers-color-scheme: dark)" srcset="./.github/assets/showcase/progress-tracker-dark.webp">
-<img alt="Progress Tracker: Onboarding checklist with an animated progress bar, ticks that draw themselves and auto play" src="./.github/assets/showcase/progress-tracker-light.webp" width="100%">
+<a href="https://www.affectui.com/components/trace-waterfall"><picture>
+<source media="(prefers-color-scheme: dark)" srcset="./.github/assets/showcase/trace-waterfall-dark.webp">
+<img alt="Trace Waterfall: Where the time and money of an agent run go – every LLM call, tool call and sub-agent as a bar on a live timeline, with tokens and cost per step, the slowest call marked and branches that fold into their parent" src="./.github/assets/showcase/trace-waterfall-light.webp" width="100%">
 </picture></a>
-<br><a href="https://www.affectui.com/components/progress-tracker"><b>Progress Tracker</b></a><br>
-<sub>Onboarding checklist with an animated progress bar, ticks that draw themselves and auto play</sub>
+<br><a href="https://www.affectui.com/components/trace-waterfall"><b>Trace Waterfall</b></a> <sup><a href="https://www.affectui.com/pricing">Pro</a></sup><br>
+<sub>Where the time and money of an agent run go</sub>
 </td>
 <td width="50%" valign="top">
-<a href="https://www.affectui.com/components/kpi-chart"><picture>
-<source media="(prefers-color-scheme: dark)" srcset="./.github/assets/showcase/kpi-chart-dark.webp">
-<img alt="KPI Chart: Metric card with a multi-line chart and a tooltip that follows the pointer" src="./.github/assets/showcase/kpi-chart-light.webp" width="100%">
+<a href="https://www.affectui.com/components/decision-inbox"><picture>
+<source media="(prefers-color-scheme: dark)" srcset="./.github/assets/showcase/decision-inbox-dark.webp">
+<img alt="Decision Inbox: Open decisions with two quick answers each – answered ones confirm and fold away" src="./.github/assets/showcase/decision-inbox-light.webp" width="100%">
 </picture></a>
-<br><a href="https://www.affectui.com/components/kpi-chart"><b>KPI Chart</b></a> <sup><a href="https://www.affectui.com/pricing">Pro</a></sup><br>
-<sub>Metric card with a multi-line chart and a tooltip that follows the pointer</sub>
+<br><a href="https://www.affectui.com/components/decision-inbox"><b>Decision Inbox</b></a><br>
+<sub>Open decisions with two quick answers each</sub>
 </td>
 </tr>
 <tr>
 <td width="50%" valign="top">
-<a href="https://www.affectui.com/illustrations/model-wheel"><picture>
-<source media="(prefers-color-scheme: dark)" srcset="./.github/assets/showcase/model-wheel-dark.webp">
-<img alt="Model Wheel: AI model names on a turning drum – the rows bend away at the edges and each model lands on a soft gray fill" src="./.github/assets/showcase/model-wheel-light.webp" width="100%">
+<a href="https://www.affectui.com/components/agent-inbox"><picture>
+<source media="(prefers-color-scheme: dark)" srcset="./.github/assets/showcase/agent-inbox-dark.webp">
+<img alt="Agent Inbox: All your background agent tasks in one calm list – live clocks and status tags, filter tabs with rolling counts, rows that unfold to the last steps with Approve, Reject, Retry or Open, and glide to their new place" src="./.github/assets/showcase/agent-inbox-light.webp" width="100%">
 </picture></a>
-<br><a href="https://www.affectui.com/illustrations/model-wheel"><b>Model Wheel</b></a><br>
-<sub>AI model names on a turning drum – the rows bend away at the edges and each model lands on a soft gray fill</sub>
+<br><a href="https://www.affectui.com/components/agent-inbox"><b>Agent Inbox</b></a> <sup><a href="https://www.affectui.com/pricing">Pro</a></sup><br>
+<sub>All your background agent tasks in one calm list</sub>
 </td>
 <td width="50%" valign="top">
-<a href="https://www.affectui.com/illustrations/logo-cluster"><picture>
-<source media="(prefers-color-scheme: dark)" srcset="./.github/assets/showcase/logo-cluster-dark.webp">
-<img alt="Logo Cluster: Your mark on a white disc in the middle – company logos bounce out of it and settle around it" src="./.github/assets/showcase/logo-cluster-light.webp" width="100%">
+<a href="https://www.affectui.com/components/thinking-loader"><picture>
+<source media="(prefers-color-scheme: dark)" srcset="./.github/assets/showcase/thinking-loader-dark.webp">
+<img alt="Thinking Loader: A small working pill for AI replies – an eight-ray spinner and a shimmering label that rolls through phases and settles on a check" src="./.github/assets/showcase/thinking-loader-light.webp" width="100%">
 </picture></a>
-<br><a href="https://www.affectui.com/illustrations/logo-cluster"><b>Logo Cluster</b></a><br>
-<sub>Your mark on a white disc in the middle – company logos bounce out of it and settle around it</sub>
+<br><a href="https://www.affectui.com/components/thinking-loader"><b>Thinking Loader</b></a><br>
+<sub>A small working pill for AI replies</sub>
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+<a href="https://www.affectui.com/components/context-map"><picture>
+<source media="(prefers-color-scheme: dark)" srcset="./.github/assets/showcase/context-map-dark.webp">
+<img alt="Context Map: What fills an agent's context window, as a living treemap – system prompt, tools, memory, every file, the chat and tool results as tiles that glide as it grows, the free space dashed, and compaction squeezing old turns into a summary" src="./.github/assets/showcase/context-map-light.webp" width="100%">
+</picture></a>
+<br><a href="https://www.affectui.com/components/context-map"><b>Context Map</b></a> <sup><a href="https://www.affectui.com/pricing">Pro</a></sup><br>
+<sub>What fills an agent's context window, as a living treemap</sub>
+</td>
+<td width="50%" valign="top">
+<a href="https://www.affectui.com/components/agent-handoff"><picture>
+<source media="(prefers-color-scheme: dark)" srcset="./.github/assets/showcase/agent-handoff-dark.webp">
+<img alt="Agent Handoff: A task passed from agent to agent like a relay – at every handoff what went along to the next one, and what got lost on the way" src="./.github/assets/showcase/agent-handoff-light.webp" width="100%">
+</picture></a>
+<br><a href="https://www.affectui.com/components/agent-handoff"><b>Agent Handoff</b></a> <sup><a href="https://www.affectui.com/pricing">Pro</a></sup><br>
+<sub>A task passed from agent to agent like a relay</sub>
 </td>
 </tr>
 </table>
@@ -125,6 +132,8 @@ A few favorites, recorded live from [affectui.com](https://www.affectui.com). It
 
 ## Why affectUI
 
+- **Made for agents.** Components for what agents actually do: trees of sub-agents, tool calls, traces with cost per step, handoffs, approvals and the context window – live states, not static mockups.
+- **Agent-ready.** An MCP server and `llms.txt` let Claude Code, Cursor, Codex or v0 find and add items for you.
 - **One file each.** Every component is a single `.tsx` file with its styles inside. Nothing to configure, no CSS framework required.
 - **Motion that feels finished.** Morphs, staggered reveals, rolling numbers and smooth state changes, and all of it respects `prefers-reduced-motion`.
 - **Dark mode built in.** Each item switches when an ancestor has the class `dark` or `data-theme="dark"`.
@@ -198,82 +207,65 @@ Other clients: add `{ "mcpServers": { "affectui": { "url": "https://www.affectui
 
 | Name | What it is | Install |
 | --- | --- | --- |
-| [Button](https://www.affectui.com/components/button) | Primary, secondary, ghost and destructive buttons with icons, sizes and a shimmering loading state | `npx shadcn@latest add https://www.affectui.com/r/button.json` |
-| [Button (Clean)](https://www.affectui.com/components/button-clean) | Primary, secondary, ghost and destructive buttons with icons, sizes and a shimmering loading state | `npx shadcn@latest add https://www.affectui.com/r/button-clean.json` |
-| [Change Summary](https://www.affectui.com/components/change-summary) | What moved since last time – one metric per row with a colored trend | `npx shadcn@latest add https://www.affectui.com/r/change-summary.json` |
-| [Change Summary (Clean)](https://www.affectui.com/components/change-summary-clean) | What moved since last time – one metric per row with a colored trend | `npx shadcn@latest add https://www.affectui.com/r/change-summary-clean.json` |
-| [Comment Thread](https://www.affectui.com/components/comment-thread) | One comment with replies – an assistant reports what it did, folds open details and answers @mentions | `npx shadcn@latest add https://www.affectui.com/r/comment-thread.json` |
-| [Comment Thread (Clean)](https://www.affectui.com/components/comment-thread-clean) | One comment with replies – an assistant reports what it did, folds open details and answers @mentions | `npx shadcn@latest add https://www.affectui.com/r/comment-thread-clean.json` |
-| [Decision Inbox](https://www.affectui.com/components/decision-inbox) | Open decisions with two quick answers each – answered ones confirm and fold away | `npx shadcn@latest add https://www.affectui.com/r/decision-inbox.json` |
-| [Decision Inbox (Clean)](https://www.affectui.com/components/decision-inbox-clean) | Open decisions with two quick answers each – answered ones confirm and fold away | `npx shadcn@latest add https://www.affectui.com/r/decision-inbox-clean.json` |
-| [Email Draft](https://www.affectui.com/components/email-draft) | Agent-written email for review – switch recipient and tone, edit inline, remove the attachment, send or discard with undo | `npx shadcn@latest add https://www.affectui.com/r/email-draft.json` |
-| [Email Draft (Clean)](https://www.affectui.com/components/email-draft-clean) | Agent-written email for review – switch recipient and tone, edit inline, remove the attachment, send or discard with undo | `npx shadcn@latest add https://www.affectui.com/r/email-draft-clean.json` |
-| [Filter Menu](https://www.affectui.com/components/filter-menu) | Grouped filters with removable chips, collapsible checkbox groups, Clear all and full keyboard control | `npx shadcn@latest add https://www.affectui.com/r/filter-menu.json` |
-| [Filter Menu (Clean)](https://www.affectui.com/components/filter-menu-clean) | Grouped filters with removable chips, collapsible checkbox groups, Clear all and full keyboard control | `npx shadcn@latest add https://www.affectui.com/r/filter-menu-clean.json` |
-| [Message Actions](https://www.affectui.com/components/message-actions) | The quiet bar under an AI message – copy turns into a check, regenerate spins and unfolds a version switcher, thumbs pop and ask why, read aloud becomes a tiny equalizer | `npx shadcn@latest add https://www.affectui.com/r/message-actions.json` |
-| [Message Actions (Clean)](https://www.affectui.com/components/message-actions-clean) | The quiet bar under an AI message – copy turns into a check, regenerate spins and unfolds a version switcher, thumbs pop and ask why, read aloud becomes a tiny equalizer | `npx shadcn@latest add https://www.affectui.com/r/message-actions-clean.json` |
-| [Notification Stack](https://www.affectui.com/components/notification-stack) | Notice cards stacked behind each other – dismiss the front one to reveal the next | `npx shadcn@latest add https://www.affectui.com/r/notification-stack.json` |
-| [Notification Stack (Clean)](https://www.affectui.com/components/notification-stack-clean) | Notice cards stacked behind each other – dismiss the front one to reveal the next | `npx shadcn@latest add https://www.affectui.com/r/notification-stack-clean.json` |
-| [OTP Input](https://www.affectui.com/components/otp-input) | The verification code field done right – a gliding focus ring, paste and SMS autofill, a calm shake on errors and a morph into Verified | `npx shadcn@latest add https://www.affectui.com/r/otp-input.json` |
-| [OTP Input (Clean)](https://www.affectui.com/components/otp-input-clean) | The verification code field done right – a gliding focus ring, paste and SMS autofill, a calm shake on errors and a morph into Verified | `npx shadcn@latest add https://www.affectui.com/r/otp-input-clean.json` |
-| [Profile Menu](https://www.affectui.com/components/profile-menu) | Account card with the signed-in user, menu actions and profile setup progress | `npx shadcn@latest add https://www.affectui.com/r/profile-menu.json` |
-| [Profile Menu (Clean)](https://www.affectui.com/components/profile-menu-clean) | Account card with the signed-in user, menu actions and profile setup progress | `npx shadcn@latest add https://www.affectui.com/r/profile-menu-clean.json` |
-| [Progress Tracker](https://www.affectui.com/components/progress-tracker) | Onboarding checklist with an animated progress bar, ticks that draw themselves and auto play | `npx shadcn@latest add https://www.affectui.com/r/progress-tracker.json` |
-| [Progress Tracker (Clean)](https://www.affectui.com/components/progress-tracker-clean) | Onboarding checklist with an animated progress bar, ticks that draw themselves and auto play | `npx shadcn@latest add https://www.affectui.com/r/progress-tracker-clean.json` |
-| [Reaction Bar](https://www.affectui.com/components/reaction-bar) | Like, comment, repost and share in one pill – icons pop and fill, counts roll in digit by digit | `npx shadcn@latest add https://www.affectui.com/r/reaction-bar.json` |
-| [Reaction Bar (Clean)](https://www.affectui.com/components/reaction-bar-clean) | Like, comment, repost and share in one pill – icons pop and fill, counts roll in digit by digit | `npx shadcn@latest add https://www.affectui.com/r/reaction-bar-clean.json` |
-| [Segmented Control](https://www.affectui.com/components/segmented-control) | Switch between two to six options – a raised pill or underline that glides, stretches a little and can be dragged across, with icons, counts and badges | `npx shadcn@latest add https://www.affectui.com/r/segmented-control.json` |
-| [Segmented Control (Clean)](https://www.affectui.com/components/segmented-control-clean) | Switch between two to six options – a raised pill or underline that glides, stretches a little and can be dragged across, with icons, counts and badges | `npx shadcn@latest add https://www.affectui.com/r/segmented-control-clean.json` |
-| [Smart Recommendation](https://www.affectui.com/components/smart-recommendation) | Suggestion card with a confidence signal, alternatives to switch to and accept with undo | `npx shadcn@latest add https://www.affectui.com/r/smart-recommendation.json` |
-| [Smart Recommendation (Clean)](https://www.affectui.com/components/smart-recommendation-clean) | Suggestion card with a confidence signal, alternatives to switch to and accept with undo | `npx shadcn@latest add https://www.affectui.com/r/smart-recommendation-clean.json` |
-| [Thinking Loader](https://www.affectui.com/components/thinking-loader) | A small working pill for AI replies – an eight-ray spinner and a shimmering label that rolls through phases and settles on a check | `npx shadcn@latest add https://www.affectui.com/r/thinking-loader.json` |
-| [Thinking Loader (Clean)](https://www.affectui.com/components/thinking-loader-clean) | A small working pill for AI replies – an eight-ray spinner and a shimmering label that rolls through phases and settles on a check | `npx shadcn@latest add https://www.affectui.com/r/thinking-loader-clean.json` |
-| [Tips Panel](https://www.affectui.com/components/tips-panel) | Grid of short tips with one action each – taken tips turn into a done state | `npx shadcn@latest add https://www.affectui.com/r/tips-panel.json` |
-| [Tips Panel (Clean)](https://www.affectui.com/components/tips-panel-clean) | Grid of short tips with one action each – taken tips turn into a done state | `npx shadcn@latest add https://www.affectui.com/r/tips-panel-clean.json` |
-| [Tool Call Card](https://www.affectui.com/components/tool-call-card) | An agent's tool call in one line – live timer, status and summary, folds open to highlighted arguments and result with copy, retry on errors and a group that sums them up | `npx shadcn@latest add https://www.affectui.com/r/tool-call-card.json` |
-| [Tool Call Card (Clean)](https://www.affectui.com/components/tool-call-card-clean) | An agent's tool call in one line – live timer, status and summary, folds open to highlighted arguments and result with copy, retry on errors and a group that sums them up | `npx shadcn@latest add https://www.affectui.com/r/tool-call-card-clean.json` |
+| [Button](https://www.affectui.com/components/button) | Primary, secondary, ghost and destructive buttons with icons, sizes and a shimmering loading state | `npx shadcn@latest add https://www.affectui.com/r/button-clean.json`<br><sub>Classic style: `npx shadcn@latest add https://www.affectui.com/r/button.json`</sub> |
+| [Change Summary](https://www.affectui.com/components/change-summary) | What moved since last time | `npx shadcn@latest add https://www.affectui.com/r/change-summary-clean.json`<br><sub>Classic style: `npx shadcn@latest add https://www.affectui.com/r/change-summary.json`</sub> |
+| [Comment Thread](https://www.affectui.com/components/comment-thread) | One comment with replies | `npx shadcn@latest add https://www.affectui.com/r/comment-thread-clean.json`<br><sub>Classic style: `npx shadcn@latest add https://www.affectui.com/r/comment-thread.json`</sub> |
+| [Decision Inbox](https://www.affectui.com/components/decision-inbox) | Open decisions with two quick answers each | `npx shadcn@latest add https://www.affectui.com/r/decision-inbox-clean.json`<br><sub>Classic style: `npx shadcn@latest add https://www.affectui.com/r/decision-inbox.json`</sub> |
+| [Email Draft](https://www.affectui.com/components/email-draft) | Agent-written email for review | `npx shadcn@latest add https://www.affectui.com/r/email-draft-clean.json`<br><sub>Classic style: `npx shadcn@latest add https://www.affectui.com/r/email-draft.json`</sub> |
+| [Filter Menu](https://www.affectui.com/components/filter-menu) | Grouped filters with removable chips, collapsible checkbox groups, Clear all and full keyboard control | `npx shadcn@latest add https://www.affectui.com/r/filter-menu-clean.json`<br><sub>Classic style: `npx shadcn@latest add https://www.affectui.com/r/filter-menu.json`</sub> |
+| [Message Actions](https://www.affectui.com/components/message-actions) | The quiet bar under an AI message | `npx shadcn@latest add https://www.affectui.com/r/message-actions-clean.json`<br><sub>Classic style: `npx shadcn@latest add https://www.affectui.com/r/message-actions.json`</sub> |
+| [Notification Stack](https://www.affectui.com/components/notification-stack) | Notice cards stacked behind each other | `npx shadcn@latest add https://www.affectui.com/r/notification-stack-clean.json`<br><sub>Classic style: `npx shadcn@latest add https://www.affectui.com/r/notification-stack.json`</sub> |
+| [OTP Input](https://www.affectui.com/components/otp-input) | The verification code field done right | `npx shadcn@latest add https://www.affectui.com/r/otp-input-clean.json`<br><sub>Classic style: `npx shadcn@latest add https://www.affectui.com/r/otp-input.json`</sub> |
+| [Profile Menu](https://www.affectui.com/components/profile-menu) | Account card with the signed-in user, menu actions and profile setup progress | `npx shadcn@latest add https://www.affectui.com/r/profile-menu-clean.json`<br><sub>Classic style: `npx shadcn@latest add https://www.affectui.com/r/profile-menu.json`</sub> |
+| [Progress Tracker](https://www.affectui.com/components/progress-tracker) | Onboarding checklist with an animated progress bar, ticks that draw themselves and auto play | `npx shadcn@latest add https://www.affectui.com/r/progress-tracker-clean.json`<br><sub>Classic style: `npx shadcn@latest add https://www.affectui.com/r/progress-tracker.json`</sub> |
+| [Reaction Bar](https://www.affectui.com/components/reaction-bar) | Like, comment, repost and share in one pill | `npx shadcn@latest add https://www.affectui.com/r/reaction-bar-clean.json`<br><sub>Classic style: `npx shadcn@latest add https://www.affectui.com/r/reaction-bar.json`</sub> |
+| [Segmented Control](https://www.affectui.com/components/segmented-control) | Switch between two to six options | `npx shadcn@latest add https://www.affectui.com/r/segmented-control-clean.json`<br><sub>Classic style: `npx shadcn@latest add https://www.affectui.com/r/segmented-control.json`</sub> |
+| [Smart Recommendation](https://www.affectui.com/components/smart-recommendation) | Suggestion card with a confidence signal, alternatives to switch to and accept with undo | `npx shadcn@latest add https://www.affectui.com/r/smart-recommendation-clean.json`<br><sub>Classic style: `npx shadcn@latest add https://www.affectui.com/r/smart-recommendation.json`</sub> |
+| [Thinking Loader](https://www.affectui.com/components/thinking-loader) | A small working pill for AI replies | `npx shadcn@latest add https://www.affectui.com/r/thinking-loader-clean.json`<br><sub>Classic style: `npx shadcn@latest add https://www.affectui.com/r/thinking-loader.json`</sub> |
+| [Tips Panel](https://www.affectui.com/components/tips-panel) | Grid of short tips with one action each | `npx shadcn@latest add https://www.affectui.com/r/tips-panel-clean.json`<br><sub>Classic style: `npx shadcn@latest add https://www.affectui.com/r/tips-panel.json`</sub> |
+| [Tool Call Card](https://www.affectui.com/components/tool-call-card) | An agent's tool call in one line | `npx shadcn@latest add https://www.affectui.com/r/tool-call-card-clean.json`<br><sub>Classic style: `npx shadcn@latest add https://www.affectui.com/r/tool-call-card.json`</sub> |
 
 ## Blocks
 
 | Name | What it is | Install |
 | --- | --- | --- |
-| [Logo Marquee](https://www.affectui.com/blocks/logo-marquee) | The endless “Trusted by” strip – a seamless loop that eases to a stop on hover, scrubs with inertia and lifts the hovered logo to colour | `npx shadcn@latest add https://www.affectui.com/r/logo-marquee.json` |
-| [Testimonial Wall](https://www.affectui.com/blocks/testimonial-wall) | The landing-page wall of quotes – columns that scroll endlessly in opposite directions, ease to a stop on hover and scrub with inertia | `npx shadcn@latest add https://www.affectui.com/r/testimonial-wall.json` |
+| [Logo Marquee](https://www.affectui.com/blocks/logo-marquee) | The endless “Trusted by” strip | `npx shadcn@latest add https://www.affectui.com/r/logo-marquee.json` |
+| [Testimonial Wall](https://www.affectui.com/blocks/testimonial-wall) | The landing-page wall of quotes | `npx shadcn@latest add https://www.affectui.com/r/testimonial-wall.json` |
 
 ## Illustrations
 
 | Name | What it is | Install |
 | --- | --- | --- |
 | [Agent Team](https://www.affectui.com/illustrations/agent-team) | A prompt types itself and branches out into three agents, each with a role and overlapping tool logos | `npx shadcn@latest add https://www.affectui.com/r/agent-team.json` |
-| [Cover Flow](https://www.affectui.com/illustrations/cover-flow) | Browse covers in 3D – drag, flick or scrub the row, it springs to the nearest cover; images drift in their frames over a soft reflection | `npx shadcn@latest add https://www.affectui.com/r/cover-flow.json` |
+| [Cover Flow](https://www.affectui.com/illustrations/cover-flow) | Browse covers in 3D | `npx shadcn@latest add https://www.affectui.com/r/cover-flow.json` |
 | [DACH Region](https://www.affectui.com/illustrations/region-dach) | DACH map with fading neighbours and a pastel band along the border, switchable to the US, China, India, Brazil or Japan | `npx shadcn@latest add https://www.affectui.com/r/region-dach.json` |
 | [Empty Calendar](https://www.affectui.com/illustrations/empty-calendar) | Stack of calendar cards marked empty, fanning out on hover | `npx shadcn@latest add https://www.affectui.com/r/empty-calendar.json` |
 | [Enrichment Orbit](https://www.affectui.com/illustrations/enrichment-orbit) | Grok tile inside two rings with comets and data nodes orbiting around it | `npx shadcn@latest add https://www.affectui.com/r/enrichment-orbit.json` |
-| [Frost Cloud](https://www.affectui.com/illustrations/frost-cloud) | A frosted white cloud with eyes cut out of it, on a red-orange or blue sky – it floats, turns to look around, blinks, follows the pointer and bounces with a wink when clicked | `npx shadcn@latest add https://www.affectui.com/r/frost-cloud.json` |
+| [Frost Cloud](https://www.affectui.com/illustrations/frost-cloud) | A frosted white cloud with eyes cut out of it, on a red-orange or blue sky | `npx shadcn@latest add https://www.affectui.com/r/frost-cloud.json` |
 | [Ghosted Chat](https://www.affectui.com/illustrations/ghosted-chat) | Unanswered chat messages marked as read, with a thumbs-down reply on hover | `npx shadcn@latest add https://www.affectui.com/r/ghosted-chat.json` |
-| [Glow Cloud](https://www.affectui.com/illustrations/glow-cloud) | A glowing cloud with eyes in blue or red-orange – it floats, turns to look around, blinks, follows the pointer and bounces with a wink when clicked | `npx shadcn@latest add https://www.affectui.com/r/glow-cloud.json` |
-| [Integration Beam](https://www.affectui.com/illustrations/integration-beam) | Your product between the tools it connects – light pulses flow along curved beams, hover to focus a tool, click to pause it | `npx shadcn@latest add https://www.affectui.com/r/integration-beam.json` |
+| [Glow Cloud](https://www.affectui.com/illustrations/glow-cloud) | A glowing cloud with eyes in blue or red-orange | `npx shadcn@latest add https://www.affectui.com/r/glow-cloud.json` |
+| [Integration Beam](https://www.affectui.com/illustrations/integration-beam) | Your product between the tools it connects | `npx shadcn@latest add https://www.affectui.com/r/integration-beam.json` |
 | [Integration Grid](https://www.affectui.com/illustrations/integration-grid) | Honeycomb-like wall of integration logos around a bright centre tile with your product mark, fading out toward the edges | `npx shadcn@latest add https://www.affectui.com/r/integration-grid.json` |
-| [Layer Stack](https://www.affectui.com/illustrations/layer-stack) | Isometric stack of five layers with a list beside it – the chosen entry lifts its layer out in color | `npx shadcn@latest add https://www.affectui.com/r/layer-stack.json` |
+| [Layer Stack](https://www.affectui.com/illustrations/layer-stack) | Isometric stack of five layers with a list beside it | `npx shadcn@latest add https://www.affectui.com/r/layer-stack.json` |
 | [Lead Sourcing](https://www.affectui.com/illustrations/lead-sourcing) | ChatGPT tile linked to Gmail and Grok, with a shine running along the connection | `npx shadcn@latest add https://www.affectui.com/r/lead-sourcing.json` |
-| [Logo Cluster](https://www.affectui.com/illustrations/logo-cluster) | Your mark on a white disc in the middle – company logos bounce out of it and settle around it | `npx shadcn@latest add https://www.affectui.com/r/logo-cluster.json` |
-| [Model Wheel](https://www.affectui.com/illustrations/model-wheel) | AI model names on a turning drum – the rows bend away at the edges and each model lands on a soft gray fill | `npx shadcn@latest add https://www.affectui.com/r/model-wheel.json` |
+| [Logo Cluster](https://www.affectui.com/illustrations/logo-cluster) | Your mark on a white disc in the middle | `npx shadcn@latest add https://www.affectui.com/r/logo-cluster.json` |
+| [Model Wheel](https://www.affectui.com/illustrations/model-wheel) | AI model names on a turning drum | `npx shadcn@latest add https://www.affectui.com/r/model-wheel.json` |
 | [Side Folder](https://www.affectui.com/illustrations/side-folder) | Glassy blue folder on its side, documents sliding out to the right as the pocket swings open on hover | `npx shadcn@latest add https://www.affectui.com/r/side-folder.json` |
 | [Tab Overload](https://www.affectui.com/illustrations/tab-overload) | Overlapping browser windows where the highlight follows the hovered tab | `npx shadcn@latest add https://www.affectui.com/r/tab-overload.json` |
-| [Team Invite](https://www.affectui.com/illustrations/team-invite) | Connected teammates – a cursor drags a new one into the empty slot, the line turns solid and they go online | `npx shadcn@latest add https://www.affectui.com/r/team-invite.json` |
+| [Team Invite](https://www.affectui.com/illustrations/team-invite) | Connected teammates | `npx shadcn@latest add https://www.affectui.com/r/team-invite.json` |
 
 ## Motion
 
 | Name | What it is | Install |
 | --- | --- | --- |
 | [Grid Background](https://www.affectui.com/motion/grid-background) | A fine line grid that drifts slowly behind your content and fades out towards the edges | `npx shadcn@latest add https://www.affectui.com/r/grid-background.json` |
-| [Number Ticker](https://www.affectui.com/motion/number-ticker) | Odometer-style numbers – every digit rolls to its new value and counts in from zero when it scrolls into view | `npx shadcn@latest add https://www.affectui.com/r/number-ticker.json` |
+| [Number Ticker](https://www.affectui.com/motion/number-ticker) | Odometer-style numbers | `npx shadcn@latest add https://www.affectui.com/r/number-ticker.json` |
 | [Shimmer Loader](https://www.affectui.com/motion/shimmer-loader) | Skeleton blocks that share one soft light sweep, plus shimmering text for “Thinking…” states | `npx shadcn@latest add https://www.affectui.com/r/shimmer-loader.json` |
-| [Text Reveal](https://www.affectui.com/motion/text-reveal) | Text that arrives word by word or letter by letter – each piece rises out of a soft blur as it scrolls into view | `npx shadcn@latest add https://www.affectui.com/r/text-reveal.json` |
+| [Text Reveal](https://www.affectui.com/motion/text-reveal) | Text that arrives word by word or letter by letter | `npx shadcn@latest add https://www.affectui.com/r/text-reveal.json` |
 
 ## affectUI Pro
 
-134 more components, screens, blocks and illustrations, including the Command Menu, the Chat Composer, the KPI Chart, the Pricing Plans block and full app screens, are part of [affectUI Pro](https://www.affectui.com/pricing): a one-time purchase with lifetime updates. Their source is not in this repository.
+88 more components, screens, blocks and illustrations, including the agent components above (Agent Tree, Agent Inbox, Trace Waterfall, Context Map, Agent Handoff and more), full app screens and blocks, are part of [affectUI Pro](https://www.affectui.com/pricing): a one-time purchase with lifetime updates. Their source is not in this repository.
 
 ## Contributing
 

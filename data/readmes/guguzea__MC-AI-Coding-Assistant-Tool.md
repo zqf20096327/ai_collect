@@ -35,7 +35,7 @@ MC_skill/
 ├── REPORT-FORMAT.md             # 交付底稿全量表单（agent 用：判档 / 主档四块 / 维护档六块 / 硬约束）
 ├── DELIVERY_LOG.md              # 每轮交付底稿正文（滚动，最新在上；聊天只给人看三件）
 ├── THIRD_PARTY_NOTICES.md       # 第三方文档 / 映射数据许可说明
-├── LICENSE                      # 本仓库代码：MIT
+├── LICENSE                      # 本仓库代码：PolyForm Noncommercial 1.0.0 + 强 Copyleft 附加条款（非商业、署名、衍生须同许可开源）
 ├── Minecraft 社区常用库模组全览（2026 版）.md  # 跳转指针；正文在 community_knowledge/authored/library-catalog-2026
 │
 ├── forge/                       # Forge 规则 / skills / scaffold / knowledge（多版本）
@@ -1061,6 +1061,4 @@ jar 未缓存时返回 `CACHE_MISS` 引导（先调 `get_minecraft_source`），
 
 **缓存与并发**：布局是 `<cache>/{jars,mappings,remapped,decompiled,decompiled-mods,registry,resources,locks}/` + `cache.db`（`node:sqlite`；`mdk/` 由 MDK 工具按需另建）。锁粒度、`meta`/`artifacts` 两表的字段与实现口径见 `mcp-server/README.md` §T2 反编译工具族；同版本/同产物目录并发时抢不到锁立即回 `CACHE_LOCK_BUSY` / `LOCK_BUSY`，不排队、不复用别人的半成品。
 
-**Java 17+ 前置**：VineFlower 负责反编译、tiny-remapper 负责 remap，两者都是 Java 17+ 工具，按需下到 `<cache>/resources/`；**固定版本与 SHA256 钉在 `mcp-server/src/decompile/downloaders/resources.ts` 的常量里**（哈希不符即失败，不静默换版本），逐件清单与许可见 `THIRD_PARTY_NOTICES.md`。探测顺序固定为 **参数校验 → `MC_SKILL_SKIP_DOWNLOAD` 门 → Java 探测**，所以 CI 里先看到的是 `DOWNLOAD_DISABLED` 而不是 `TOOLCHAIN_MISSING`；`JAVA_HOME/bin/java` 与 PATH 上的 `java` 都会探，取可用的最高 major，都不达标才报 `TOOLCHAIN_MISSING`（进程不崩溃）。`MC_SKILL_SKIP_DOWNLOAD` 只覆盖本族两个会下载的工具；`analyze_mod_jar` / `search_mod_code` 本来就不下载，`download_official_mdk` 不读该变量。
-
-| 工具 | 入参
+**Java 17+ 前置**：VineFlower 负责反编译、tiny-remapper 负责 remap，两者都是 Java 17+ 工具，按需下到 `<cache>/resources/`；**固定版本与 SHA256 钉在 `mcp-server/src/decompile/downloaders/resources.ts` 的常量里**（哈希不符即失败，不静默换版本），逐件清单与许可见 `THIRD_PARTY_NOTICES.md`。探测顺序固定为 **参数校验 → `MC_SKILL_SKIP_DOWNLOAD` 门 → Java 探测**，所以 CI 里先看到的是 `DOWNLOAD_DISABLED` 而不是 `TOOLCHAIN_MISSING`；`JAVA_HOME/bin/java` 与 PATH 上的 `java` 都会探，取可用的最高 major，都不达标才报 `TOOLCHAIN_MISSING`（进程不崩溃）。`MC_SKILL_SKIP_DOWNLOAD` 只覆盖本族两个会下载的工具；`analyze_mod_jar` / `searc

@@ -1,29 +1,33 @@
 # Paveo
 
-**One set of rules for every AI coding agent your team runs.**
+**Paveo finds the dangerous commands your AI coding agent's guard lets through, and checks it again on every change.**
 
-Claude Code, Codex and Cursor ask Paveo before they run a shell command or
-write a file. `rm -rf`, `git push --force`, `DROP TABLE` and the obvious ways of
-editing the guard itself are refused, the agent is told why and tries something
-else, and every decision goes into a hash-chained record your security team can
-verify. It matches patterns, so it is a seatbelt, not a sandbox. The Cursor
-guard has not been tried in a real session yet, and by Cursor's documentation it
-may refuse every call ([details](#coding-agents-claude-code-codex-and-cursor)).
+Coding agents write the same dangerous command many ways: `rm -r -f`, `find
+-delete`, `sh -c '...'`. Many guards match text and catch only the ways their
+author tried. `uvx paveo test` sends your Claude Code guard
+68 spellings of five dangerous actions, the way Claude Code sends a call, and
+names each one that gets past it; `uvx paveo test codex` does the same for Codex, by Codex's rules (66
+spellings, since Codex has no Read tool, and as if each hook were trusted in
+Codex's `/hooks`, without which Codex runs none). In CI,
+`--expect` fails the build the day a guard stops stopping one
+([details](#test-the-hooks-you-already-have), [Codex](#codex-hooks)). (`uvx`
+comes with [uv](https://docs.astral.sh/uv/) and fetches a suitable Python
+itself.) For Claude Code, `uvx paveo doctor` names the hooks that cannot work as
+written, such as guards that can never block.
+
+Paveo also ships a guard of its own: Claude Code, Codex and
+Cursor ask it before they run a shell command or write a file. `rm -rf`, `git push
+--force`, `DROP TABLE` and the obvious ways of editing the guard itself are
+refused, the agent is told why, and every decision goes into a hash-chained record
+your security team can verify. It matches patterns, so it is a seatbelt, not a
+sandbox. The Cursor guard has not been tried in a real session yet, and by
+Cursor's documentation it may refuse every call
+([details](#coding-agents-claude-code-codex-and-cursor)).
 
 **Nothing leaves your machine.** Paveo runs on each engineer's machine, opens no
 network sockets (a test fails the build if it does), and installs no other package.
 It is open source under Apache-2.0, except the paid audit evidence export
 ([licence](#licence)), and free for up to three agents per policy.
-
-**First, check the guards you already have:** `uvx paveo doctor`, run in any
-project with Claude Code hooks, names the ones that cannot work as written, such
-as guards that can never block. (`uvx` comes with
-[uv](https://docs.astral.sh/uv/) and fetches a suitable Python itself.) Then
-`uvx paveo test` sends those hooks 68 spellings of five dangerous actions, the
-way Claude Code sends a call, and names each spelling that gets past them; in CI,
-`--expect` makes the build fail the day a guard stops stopping one
-([details](#test-the-hooks-you-already-have)). `uvx paveo test codex` does the
-same for a project's Codex hooks, by Codex's rules ([details](#codex-hooks)).
 
 ```
 pip install paveo            # Python 3.11+ (python3 --version), macOS or Linux
@@ -408,7 +412,7 @@ for a machine; the Action puts the report in the job summary):
 
 ```yaml
 - uses: actions/checkout@v7
-- uses: paveo-dev/paveo@v0.1.12
+- uses: paveo-dev/paveo@v0.1.13
   with:
     expect: force-push delete hard-reset clean
 ```
@@ -706,14 +710,17 @@ And for budgets:
   10% regional-processing uplift on the ten models eligible for it (it depends
   on your endpoint or project region), and 1,000 tokens whenever you pass tools,
   for the formatting OpenAI adds and does not publish.
-- **OpenAI's 12-hour cache writes are not priced yet.** On GPT-5.6 and later
-  OpenAI bills a 12-hour cache write at 2.5× input, beside the 30-minute write at
-  1.25×. Paveo charges every OpenAI cache write at 1.25×, so a 12-hour write
-  would be under-charged. OpenAI documents the 12-hour lifetime for its
-  Responses API, and Paveo's OpenAI adapter measures Chat Completions, but it
-  does not stop a request from asking for a longer `prompt_cache_retention`.
-  Until this is priced, don't count on Paveo's ceiling for long-lived OpenAI
-  caching.
+- **OpenAI cache writes are charged at the 30-minute rate** (1.25× input on
+  GPT-5.6 and later), the only cache lifetime OpenAI's SDK lists as supported
+  (its generated types as updated on 28 Oct 2026); a request asking for another
+  lifetime, or a `prompt_cache_retention` OpenAI does not list, is refused. If a response reports cache writes some way Paveo does
+  not read, Paveo charges them at the highest rate and stops allowing calls until
+  it is upgraded, rather than under-charge. On an OpenAI model, a response with no
+  write count at all (a proxy can drop it) is charged as if every uncached token
+  were a write; on a model whose price your policy declares, as plain input, the
+  price you declared. The
+  one case no reader can tell apart: a proxy that writes a false `0` there makes
+  writes look like plain input, 0.25× under.
 - **Prices are the Claude API's own.** On Amazon Bedrock and Google Cloud the
   cloud provider sets the price, and a Google Cloud model id would be priced at
   Claude API rates, which can be lower than what you pay there.

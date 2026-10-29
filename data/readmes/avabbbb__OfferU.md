@@ -17,8 +17,7 @@
   <strong>English</strong> ·
   <a href="#watch-the-videos">Videos</a> ·
   <a href="./README_ZH.md">简体中文</a> ·
-  <a href="./QUICKSTART.md">Quickstart</a> ·
-  <a href="./docs/PLAN.md">Plan</a> ·
+  <a href="./docs/DEVELOPMENT.md">Quickstart</a> ·
   <a href="./docs/PRD.md">PRD</a> ·
   <a href="./docs/README.md">Docs</a>
 </p>
@@ -47,7 +46,7 @@
 <p align="center"><sub>Click a cover to play the 1080p video.</sub></p>
 
 <p align="center">
-  <em>Internal Beta — source available, signed installer not yet released. See <a href="./KNOWN_ISSUES.md">Known issues</a>.</em>
+  <em>Internal Beta — source available, signed installer not yet released. See <a href="./docs/KNOWN_ISSUES.md">Known issues</a>.</em>
 </p>
 
 <table>
@@ -356,9 +355,7 @@ See [SECURITY.md](./SECURITY.md) for the current security status.
 
 OfferU is not yet published as a signed consumer installer. For source development and internal testing:
 
-- [DEVELOPMENT.md](./DEVELOPMENT.md) — environment and dev setup
-- [QUICKSTART.md](./QUICKSTART.md) — fastest local path
-- [Project plan](./docs/PLAN.md) — PRs and how each is accepted
+- [DEVELOPMENT.md](./docs/DEVELOPMENT.md) — environment and dev setup
 
 The intended public user path is:
 
@@ -385,9 +382,8 @@ Download
 OfferU uses evidence-backed release gates rather than treating a successful build as production readiness.
 Current status, validation evidence, known issues and quality scores live in:
 
-- [RELEASE_CHECKLIST.md](./RELEASE_CHECKLIST.md)
-- [KNOWN_ISSUES.md](./KNOWN_ISSUES.md)
-- [Project plan](./docs/PLAN.md)
+- [RELEASE_CHECKLIST.md](./docs/RELEASE_CHECKLIST.md)
+- [KNOWN_ISSUES.md](./docs/KNOWN_ISSUES.md)
 
 Suggested developer checks:
 
@@ -422,8 +418,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 - [PRD](./docs/PRD.md) — users, scope and acceptance
 - [System design](./docs/DESIGN.md) — data, tools, agents and undo
-- [Project plan](./docs/PLAN.md) — daily plan and PR acceptance
-- [DEVELOPMENT.md](./DEVELOPMENT.md) — development setup
+- [DEVELOPMENT.md](./docs/DEVELOPMENT.md) — development setup
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
@@ -431,7 +426,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for what the main repository accepts, including the rule on third-party integrations.
+See [CONTRIBUTING.md](./docs/CONTRIBUTING.md) for what the main repository accepts, including the rule on third-party integrations.
 
 ---
 

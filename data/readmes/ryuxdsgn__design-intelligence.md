@@ -1,5 +1,6 @@
 <p align="center">
-  <a href="https://www.npmjs.com/package/@ryuxdsgn/design-intelligence"><img src="https://img.shields.io/badge/version-early__access%20v2.19-1f6feb" alt="Version: early access v2.19"></a>
+  <a href="https://www.npmjs.com/package/@ryuxdsgn/design-intelligence"><img src="https://img.shields.io/npm/v/@ryuxdsgn/design-intelligence?label=npm&color=14756f" alt="npm version"></a>
+  <a href="#use-it"><img src="https://img.shields.io/badge/works%20with-Claude%20Code%20%C2%B7%20Codex%20%C2%B7%20Cursor%20%C2%B7%20Gemini%20CLI%20%C2%B7%20%2B6-555" alt="Works with Claude Code, Codex, Cursor, Gemini CLI, and 6 more agents"></a>
   <a href="https://github.com/ryuxdsgn/design-intelligence/actions/workflows/ci.yml"><img src="https://github.com/ryuxdsgn/design-intelligence/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-2ea44f" alt="MIT License"></a>
 </p>
@@ -24,30 +25,27 @@ Same brief, same model, a fresh agent per side: food delivery order tracking, de
 DESIGN.md: RYUX wrote one from the brief and two references (Airbnb's look, a ride-hailing motion study), asked,
 then designed. Both phones play each run's own Figma frames through the same scenario; the motion is made for the video.
 
-<a href="docs/benchmarks/food-delivery-figma/"><img src="docs/benchmarks/food-delivery-figma/see-the-difference.gif" alt="Animation: the brief; the no-skill agent designs straight away while RYUX writes DESIGN.md, asks, and explores three layouts; two Android phones play both Figma pages through an unavailable item, a late order, and the way to the door, the left showing a reply timer with an auto-pick, an instant refund, a late voucher, tips, and a rating, the right waiting for the customer's choice, keeping it after a failed send, and tagging every undecided rule on screen; then the numbers" width="100%"></a>
+<a href="docs/benchmarks/food-delivery-figma/"><img src="https://github.com/ryuxdsgn/design-intelligence/releases/download/media/benchmarks--food-delivery-figma--see-the-difference.gif" alt="Animation: the brief; the no-skill agent designs straight away while RYUX writes DESIGN.md, asks, and explores three layouts; two Android phones play both Figma pages through an unavailable item, a late order, and the way to the door, the left showing a reply timer with an auto-pick, an instant refund, a late voucher, tips, and a rating, the right waiting for the customer's choice, keeping it after a failed send, and tagging every undecided rule on screen; then the numbers" width="100%"></a>
 
 Both sides look finished. The difference is in what the agent decided on your behalf:
 
-| | No skill | With RYUX |
-| --- | :-: | :-: |
-| **Policies made up, shown as real** (fewer is better) | 8 | 1 |
-| **Asked before designing** | no | yes |
-| **A DESIGN.md before designing** | none | written by RYUX: users, job, evidence, patterns, how to evaluate |
-| **Undecided rules on screen** | shown as fact | tagged "Prototype rule, not decided yet" |
-| **Screens** | 8 | 24, with loading, no courier, offline, and map failed |
-| **The food on screen** | grey boxes | real photos, credited |
-| **Cost of the run** | $2.16 | $9.46 |
+- **It made up less.** Without a skill, the agent invented 8 policies (a late voucher, automatic refunds, an
+  auto-pick if you don't answer in time, tips…) and showed them as real. RYUX invented 1 and tagged the rest
+  "Prototype rule, not decided yet".
+- **It asked first, and designed for when things go wrong:** no courier, offline, a map that failed to load.
+- **It cost more:** about four times as much for this run.
 
-Without a skill, the agent made up a late voucher, automatic refunds, an auto-pick if you don't answer in time, a
-free-cancellation countdown, tips, and a courier rating. RYUX left those open and tagged them on screen.
+The video shows RYUX's frames after four rounds of owner feedback on a copy; the points above are the runs as
+they left them. One run per side, not yet rated by designers. Brief, method, every frame, and the numbers:
+[food delivery in Figma](docs/benchmarks/food-delivery-figma/).
 
-What RYUX missed: "Contact courier" sat on screen untagged, a checkout total implied fees with no line for them, and
-the run cost about four times as much. The video shows the frames after four owner-requested rounds on a copy
-(that fix, the illustrations twice, a critique's fixes), $33.16 in all; the counts above are the runs as they left them.
+## Made with RYUX
 
-One run per side, by choice: what they did, not a rate, and not rated by designers yet. Brief, method, and every
-frame: [food delivery in Figma](docs/benchmarks/food-delivery-figma/). The same brief built as code:
-[food delivery](docs/benchmarks/food-delivery-designmd/round-2/) and [the 2.19.4 repeat](docs/benchmarks/food-delivery-designmd/round-3/).
+Mancing, an app for finding fishing spots and logging catches, designed with RYUX in Figma after a few rounds of
+the owner's feedback. The motion was added afterwards for the video.
+
+<a href="https://github.com/ryuxdsgn/design-intelligence/releases/download/media/showcase--mancing-flow.mp4"><img src="https://github.com/ryuxdsgn/design-intelligence/releases/download/media/showcase--mancing-poster.png" alt="Five phone screens from Mancing: a map of fishing spots, logging a catch, a spot's best hours today, the catch journal, and a badge unlocked. Links to the video." width="100%"></a>
+
 More briefs are under All benchmarks below.
 
 ## Why
@@ -133,6 +131,7 @@ outputs. Counts come from a few runs on one model: what those runs did, not rate
 | Benchmark | The question it answers | RYUX | Runs |
 | --- | --- | --- | --- |
 | [Food delivery in Figma](docs/benchmarks/food-delivery-figma/) | Designed in Figma instead of code: is it cheaper, and does the difference still show in the frames? A pilot | 2.19.4 | 1 + 1 |
+| [Illustration](docs/benchmarks/illustration/) | Icons, empty states, a mascot, an editorial picture: do they say what they mean, in one style? Rated blind by an AI rater the owner approved | 2.20.0, 2.21.0 | 8 + 8 + 8 |
 | [Food delivery, DESIGN.md by RYUX](docs/benchmarks/food-delivery-designmd/) | With no DESIGN.md given, does RYUX write one from a brief and references that answers the five questions, then build that direction without inventing policy? Three rounds | main before 2.19.4, 2.19.4 | 1 + 1 + 1 new + 3 |
 | [Billing page in an existing repo](docs/benchmarks/billing-dashboard/) | Does a new page fit a real repo, keep checks passing, and invent no billing rule? | 2.19.3 | 3 + 3 |
 | [Wallet, expressive direction](docs/benchmarks/wallet-expressive/) | With a DESIGN.md that asks for character and motion, does it build that direction and still ask first and invent no money rule? | 2.19.3 | 3 new + 3 |
@@ -167,7 +166,7 @@ docs/             design rules, showcase, benchmarks
 pnpm install && pnpm typecheck && pnpm test
 ```
 
-Issues and pull requests are welcome. Rules and skills are generated from `packages/cli/src`; run
+Issues and pull requests are welcome; start with [CONTRIBUTING.md](./CONTRIBUTING.md). Rules and skills are generated from `packages/cli/src`; run
 `pnpm sync:skills` after changing them. Designers who want to rate the next blind round: open an issue. To
 report a vulnerability, see [SECURITY.md](./SECURITY.md).
 
@@ -175,7 +174,7 @@ report a vulnerability, see [SECURITY.md](./SECURITY.md).
 
 ## Status and license
 
-RYUX 2.19, early access. Available now: the skill, the CLI with `scan`, skills.sh, and the Claude Code
+RYUX 2.21, early access. Available now: the skill, the CLI with `scan`, skills.sh, and the Claude Code
 plugin. Coming: an optional MCP with reference screens from real products. RYUX works fully without it; the
 reference data is private and not in this repository.
 

@@ -228,6 +228,14 @@ Add `jvm-mcp` to your `claude_desktop_config.json`:
 
 *(If running from the repository fat JAR directly: `"command": "java", "args": ["-jar", "/path/to/jvm-mcp-server-1.1.1.jar", "serve"]`)*
 
+> [!TIP]
+> **Single-Target Mode (`--attach` and `--actuator`)**: If your AI pair-programming workflow focuses on a specific local application or remote service, pass defaults directly in `args`:
+> ```json
+> "args": ["serve", "--attach", "45231"]
+> ```
+> or `"args": ["serve", "--actuator", "http://localhost:8080"]`.
+> When configured, the server marks `pid` and `url` as optional in tool schemas, so AI assistants can call tools without needing to pass or ask for target parameters every time. Explicit arguments in tool calls continue to take precedence.
+
 ### Cursor / Windsurf
 
 1. Open **Settings > Features > MCP**.
@@ -254,8 +262,8 @@ jvm-mcp list
 # Inspect memory pools, GC pauses, and heap histogram
 jvm-mcp memory <pid>
 
-# Diagnose thread states and detect deadlock cycles
-jvm-mcp threads <pid>
+# Diagnose thread states and detect deadlock cycles (add --virtual for Loom virtual thread summary)
+jvm-mcp threads <pid> [--virtual]
 
 # Inspect Spring Boot ApplicationContext beans
 jvm-mcp beans <pid> --filter "*Service*"
@@ -265,6 +273,9 @@ jvm-mcp pg --url "jdbc:postgresql://localhost:5432/mydb" --action missing-indexe
 
 # Query remote Spring Boot Actuator endpoints
 jvm-mcp actuator --url "http://localhost:8080" metrics
+
+# Run MCP stdio server with optional defaults (making pid or url optional in tool schemas)
+jvm-mcp serve [--attach <pid>] [--actuator <url>]
 ```
 
 ---
@@ -278,17 +289,38 @@ The server exposes 14 diagnostic tools to AI assistants:
 | `list_jvms` | Lists running JVMs with PID, display name, and detected framework (Spring Boot, Quarkus, Micronaut). | *None* |
 | `get_memory_summary` | Live heap/non-heap regions, GC pauses, and memory pressure. | `pid` (number) |
 | `get_heap_histogram` | Top class instance counts and memory consumption via `jcmd`. | `pid` (number), `limit` (number, optional) |
-| `get_thread_diagnostics` | Thread states breakdown and deadlock detection (inspects platform and mounted virtual threads; unmounted virtual threads tracked in #10). | `pid` (number) |
+| `get_thread_diagnostics` | Thread states breakdown, deadlock detection, and opt-in virtual threads summary (Java 21+). | `pid` (number), `includeVirtualThreads` (boolean, optional, default `false`) |
 | `get_thread_dump` | Full formatted thread dump with lock stack traces. | `pid` (number) |
-| `list_spring_beans` | Instantiated beans in Spring ApplicationContext via JMX/Actuator. | `pid` (number), `filter` (string, optional) |
+| `list_spring_beans` | Paginated Spring beans by context via JMX/Actuator, with `totalBeans` and `truncated`; `summary` returns per-context counts and top 10 packages instead. | `pid` (number), `filter` (string, optional), `limit` (integer, optional, default 200, max 2000), `offset` (integer, optional, default 0), `summary` (boolean, optional) |
 | `get_bean_detail` | Detailed metadata, autowired dependencies, and scope of a bean. | `pid` (number), `beanName` (string) |
-| `list_hikari_pools` | HikariCP pool metrics, active/idle connections, and leak warnings. | `pid` (number) |
+| `list_hikari_pools` | HikariCP pool metrics, active/idle connections, and leak warnings. Returns a note when no HikariCP MBeans are registered. | `pid` (number) |
 | `inspect_pg_schema` | PostgreSQL table schema, columns, row estimates, and foreign keys. | `url` (string), `schema` (string, optional) |
 | `find_missing_indexes` | High sequential scan tables with low index usage via `pg_stat_user_tables`. | `url` (string), `schema` (string, optional), `minTableSizeMb` (integer, optional) |
 | `find_slow_queries` | Slow query execution profiles from `pg_stat_statements`. | `url` (string), `limit` (integer, optional) |
 | `get_actuator_health` | Recursively parsed Spring Boot `/actuator/health` component status. | `url` (string) |
 | `get_actuator_metrics` | Batch or individual diagnostic metric values from `/actuator/metrics`. | `url` (string), `metrics` (string, optional) |
 | `get_actuator_startup` | Startup timeline and slowest beans from `/actuator/startup`. | `url` (string) |
+
+`list_spring_beans` sorts contexts by id and beans by name, then applies `offset` and
+`limit` across all contexts. Out-of-range values are clamped to the allowed range.
+
+`get_bean_detail` matches literal bean names and aliases, preferring exact case-sensitive
+matches and using a case-insensitive fallback only when unambiguous. Its report builder
+retains only matching candidates across contexts. HTTP discovery still downloads and
+parses the full Actuator payload; unrelated bean-detail records are not constructed.
+
+When Spring bean discovery fails (e.g. Spring Boot JMX MBeans are disabled and Actuator HTTP endpoints are unreachable), `list_spring_beans` returns `{ "isError": true, "content": [...] }` with an actionable diagnostic remediation guide instead of returning an empty list as a successful result.
+
+`list_hikari_pools` returns a `pools` array plus an optional `note`. When HikariCP MBeans are not registered (the Spring Boot default), `pools` is empty and `note` explains how to expose them:
+
+```json
+{
+  "pools": [],
+  "note": "No HikariCP MBeans registered. Enable spring.datasource.hikari.register-mbeans=true or use get_actuator_metrics with hikaricp.connections.*"
+}
+```
+
+When pools are available, `pools` contains the existing per-pool metrics and `note` is `null`.
 
 Missing-index analysis defaults to a minimum table size of 1 MiB (1,048,576 bytes).
 Set `minTableSizeMb` to `0` to include smaller tables, or choose a higher whole-number
@@ -332,10 +364,10 @@ jvm-mcp pg --url "jdbc:postgresql://localhost:5432/mydb" --action slow-queries -
 
 | Runtime Environment | Architecture / Vendor | Status | Operational Notes |
 | :--- | :--- | :--- | :--- |
-| **Linux** | x86_64, aarch64 | Supported | Standard HotSpot Attach API. If `yama/ptrace_scope` is >= 1, non-child attach requires matching UID or `CAP_SYS_PTRACE`. |
+| **Linux** | x86_64, aarch64 | Supported | Standard HotSpot Attach API. If `yama/ptrace_scope` is >= 1, non-child attach requires matching UID or `CAP_SYS_PTRACE`. Resolves relative JAR paths via `/proc/<pid>/cwd` when available. |
 | **macOS** | Apple Silicon (aarch64), Intel (x86_64) | Supported | Native `jlink` minimal runtime distribution. |
 | **Windows** | x86_64 | Supported | Self-contained `.exe` image via `jpackage`. |
-| **OpenJDK / HotSpot** | Temurin, Corretto, Zulu, Oracle, Liberica | Full Support | Standard `jdk.attach` implementation with dynamic local management agent. |
+| **OpenJDK / HotSpot** | Temurin, Corretto, Zulu, Oracle, Liberica, GraalVM | Full Support | Standard `jdk.attach` implementation with dynamic local management agent. Inactive connectors cleanly recycled on failure; Java version inferred from executable path. |
 | **IBM Semeru / OpenJ9** | OpenJ9 / IBM J9 | Experimental | OpenJ9 uses `com.ibm.tools.attach`. Use Actuator HTTP mode if Attach API fails. |
 | **Docker Containers** | Isolated namespaces | Conditional | Cross-namespace attach requires `--pid=host` or running `jvm-mcp` inside the container. Alternatively use Actuator mode. |
 
@@ -344,7 +376,7 @@ jvm-mcp pg --url "jdbc:postgresql://localhost:5432/mydb" --action slow-queries -
 ## Known Limitations and Trade-offs
 
 - **Container Boundaries:** Direct host attachment across isolated Docker container namespaces fails due to separate PID and IPC namespaces. Attach from within the container namespace, use `--pid=host`, or use Actuator HTTP mode (`jvm-mcp actuator --url ...`).
-- **Virtual Threads Visibility (Project Loom):** Current thread diagnostics leverage the standard JVM `ThreadMXBean`. In Java 21, unmounted virtual threads resting in continuation queues are not surfaced by `ThreadMXBean`. Comprehensive virtual thread inspection using HotSpot thread dumps / JVMTI is tracked under issue [#10](https://github.com/oscarbol09/jvm-mcp/issues/10).
+- **Virtual Threads Visibility (Project Loom):** Standard platform thread metrics leverage `ThreadMXBean`. For Java 21+, opt-in virtual thread count summaries are available via `jvm-mcp threads <pid> --virtual` and `get_thread_diagnostics(includeVirtualThreads: true)`, which parse HotSpot diagnostic thread dumps bounded at 16 MB. Full continuous carrier thread mapping and JVMTI state tracing are tracked under issue [#10](https://github.com/oscarbol09/jvm-mcp/issues/10).
 - **Jlink / Jpackage Bundling:** GraalVM Native Image was evaluated and rejected because `jdk.attach` dynamically loads HotSpot C++ native libraries (`libattach.so` / `attach.dll`), violating Closed-World AOT assumptions. We distribute minimal bundles containing a stripped modular JRE via `jlink` (Linux/macOS) and `jpackage` app images (Windows), maintaining cross-platform parity with startup times under 150ms.
 
 ---

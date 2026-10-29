@@ -48,10 +48,12 @@ Contributions welcome. Please keep entries factual and free of marketing languag
 - [MemOS](https://github.com/MemTensor/MemOS) - Memory operating system for LLMs; a unified API to add, retrieve, and manage graph-structured, multi-modal long-term memory.
 - [memU](https://github.com/NevaMind-AI/memU) - Apache-2.0 agent-memory framework where agents store notes as organized Markdown files, recalled via embedding-based ranked retrieval.
 - [MIRIX](https://github.com/Mirix-AI/MIRIX) - Apache-2.0 multi-agent memory system with six memory types (core, episodic, semantic, procedural, resource, knowledge vault); multimodal.
+- [Mnemosyne](https://github.com/28naem-del/mnemosyne) - MIT TypeScript memory engine for agents that keeps each memory with its source provenance in one local SQLite file and retires memories recorded as depending on a source when that source is corrected, with exact replay and bisect in the 3.0 pre-release; exposed as a stdio MCP server, CLI, SDK, and HTTP API.
 - [Off the Wall](https://github.com/toranalytics/off-the-wall) - MIT hooks plugin for Claude Code and Codex that stores the user's past corrections locally and quotes them back to the agent before it answers, with a report of the most-corrected topics.
 - [pulse-path](https://github.com/Inspired-by-Atmosphere/pulse-path) - MIT agent skills and Python standard-library scripts that keep an agent's Markdown memory pointer file and the docs it links to consistent, with a dry-run health check, a link-integrity scan, audit and consolidation reports, and a declarative rule table.
 - [ReasonGraph](https://github.com/bgokden/reasongraph) - MIT graph-memory library that extracts entities and cause-effect relations with small fine-tuned models, answers why-questions by walking causal chains with citations, supports time-travel queries and contradiction handling, with a hosted service (ReasonGraph Cloud).
 - [self-learning-agent-setup](https://github.com/ssap-pa/self-learning-agent-setup) - MIT Postgres schema and TypeScript loop that store each human approve, edit, and reject of an agent draft with pgvector embeddings and retrieve feedback from similar past tasks before the next draft.
+- [Sno Station](https://github.com/sno-ai/sno-station) - Apache-2.0 shared memory engine for coding agents, with encrypted local SQLite storage, project/global recall and corrections that retain superseded records; memory processing can run locally or use configured model and optional Sno cloud services.
 
 ## Agent memory workflows and templates
 
@@ -84,6 +86,7 @@ Memory servers exposed through the Model Context Protocol. Client support depend
 - [Selvedge](https://github.com/masondelan/selvedge) - MIT-licensed local stdio MCP server and CLI that stores coding decisions, reasons, and rejected approaches in SQLite for retrieval across agent sessions.
 - [sqlite-graph-memory](https://github.com/tonydzi/sqlite-graph-memory) - MIT local stdio MCP memory server that gives an agent associative recall over a folder of markdown notes: vector retrieval for entry points, hand-curated wikilinks as the graph, and cross-encoder rerank, with retrieval A/B telemetry in SQLite, plus a Claude Code Stop hook that writes a per-turn ledger to SQLite without LLM calls.
 - [Synapse](https://github.com/anshulyadav1976/synapse) - MIT local stdio MCP memory server that stores imported history, linked wiki pages, and human-approved agent notes as Markdown with a disposable SQLite FTS5 and graph index.
+- [Throughline](https://getthroughline.ai/) - Hosted MCP service for persistent AI identity and memory across supported clients, with MIT-licensed Claude Code and Codex plugins and verifiable history exports.
 
 ## Benchmarks and evaluation
 

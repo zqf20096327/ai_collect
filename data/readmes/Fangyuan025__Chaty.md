@@ -24,7 +24,7 @@ on open models running entirely on your own Mac or PC. No account, no cloud, no 
 
 <picture>
   <source media="(prefers-color-scheme: light)" srcset="docs/screenshots/shot-code-light.jpg" />
-  <img src="docs/screenshots/shot-code.jpg" width="900" alt="Chaty's Code mode: a task plan, tool steps, a real diff and the files the turn changed" />
+  <img src="docs/screenshots/shot-code.jpg" width="900" alt="Chaty's Code mode: the agent saying what it is doing between folded tool calls, one group opened on a real diff, and the files the turn changed" />
 </picture>
 
 <sub>Code mode: the agent found the upstream fix, patched the parser, added a test and ran the suite — on a model running on the same laptop.</sub>
@@ -62,7 +62,7 @@ A chat that shows its work. Reasoning streams into a panel you can fold away; on
 
 ## Code
 
-A coding agent for the model you can actually run. Switch to **Code**, open a folder, describe the task. The agent reads, searches, edits and runs commands in your project — each step shown as it happens, each edit as a real diff — and ends the turn with a card listing every file it changed, each one undoable.
+A coding agent for the model you can actually run. Switch to **Code**, open a folder, describe the task. The agent reads, searches, edits and runs commands in your project and tells you what it is doing as it goes — its tool calls fold into a line each, opened to show every step and every edit as a real diff — and ends the turn with a card listing every file it changed, each one undoable.
 
 - **You stay in charge** — a live task plan and five permission modes: by default routine work goes ahead and anything hard to take back — deleting, pushing, publishing — waits for you; or have it plan first, ask before every change, or let it all run. File access is confined to the workspace; on macOS its shell runs in the system sandbox.
 - **Commands that keep running** — dev servers and watchers move to the background; a command that asks a question (`[y/N]`, `Password:`, a REPL, a scaffolder's menu) gets a terminal to answer in.
@@ -99,7 +99,7 @@ Load a text-to-image model and the whole app becomes an image studio: sessions t
 
 <sub>Straight out of Chaty, unedited, on an Apple M4 Pro with 48 GB.</sub>
 
-- **The families that matter** — Z-Image and Z-Image Turbo, Qwen-Image 2.1, FLUX.1 dev and schnell, Chroma, Stable Diffusion 1.x, 2.x, XL and 3.x.
+- **The families that matter** — Z-Image and Z-Image Turbo, Qwen-Image 2.1, FLUX.2 [klein] 4B and 9B, FLUX.1 dev and schnell, Chroma, Stable Diffusion 1.x, 2.x, XL and 3.x.
 - **The other files, found** — a text-to-image GGUF is only the denoiser; Chaty finds its VAE and text encoder beside it, or downloads the missing ones in one click.
 - **Keep going from a picture** — start the next round from any image; models that edit take it as a reference and change only what you ask.
 - **Saved with its recipe** — PNGs carry the prompt and settings inside, filed by date.
@@ -162,6 +162,7 @@ Any GGUF runs on llama.cpp (Metal, or Vulkan on NVIDIA, AMD and Intel); on Apple
 | K2 Horizon · MoVA | Its effort ladder and `<ifm\|arg_key>` tool calls, on both engines |
 | GLM-4.5 · 4.6 · 4.7 | Its `<tool_call>name<arg_key>…` tool calls |
 | Llama 3 · Muse-Glimmer | Vision, and Muse-Glimmer's four-rung effort ladder |
+| LFM3 · LFM3-VL | Thinking on or off; vision on LFM3-VL |
 | MiniCPM5 · LFM 2.5 | Each family's own tool-call format |
 | [Chaty · Qwen3.5-4B design](https://huggingface.co/stevenpr/chaty-qwen3.5-4b-design-GGUF) | Our own fine-tune for single-file web pages — one click at first launch |
 

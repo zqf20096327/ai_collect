@@ -160,6 +160,10 @@ Automatically surface exact-URL duplicates and AI-detected near-duplicates (same
 
 Background scans detect broken links (`404`) and silently changed pages. Filter, review, and clean up stale bookmarks before they pile up.
 
+#### ✅ Bulk Bookmark Actions
+
+Turn on selection mode and act on many bookmarks at once. A **Select all** button picks up every bookmark currently in view and flips to **Deselect all** once they are all selected, `Shift`-click extends a range, and `Cmd`/`Ctrl`-click adds or removes single items. The bulk bar can move bookmarks to another category, delete them, remove them from a collection, or turn the selection into a new collection.
+
 #### 🌐 Knowledge Graph
 
 Visualize your entire library as an interactive network. Nodes connect via shared tags, collections, and AI semantic similarity. Click any node to jump directly to that bookmark.
@@ -247,9 +251,13 @@ Twelve elegant themes (*Midnight*, *Ocean*, *Graphite*, *Sunset*, *Obsidian*, *A
 
 ### 📄 License
 
-Linkit is **MIT licensed** — free, no paywalls and no ads. Use it
-personally, at work, or as the base for your own **self-hosted bookmark manager**
-deployment.
+Linkit is free software under the MIT license that covers the files in this
+repository — no paywalls, no ads. Use it personally, at work, or as the base for
+your own **self-hosted bookmark manager** deployment.
+
+> **Source availability:** Linkit ships as prebuilt binaries for macOS, Windows,
+> and Linux. This repository contains the README, screenshots, install scripts,
+> and the Homebrew tap — the application source is not published here.
 
 [**MIT License**](LICENSE) · Copyright © 2026 blue-idea
 
@@ -258,6 +266,6 @@ deployment.
 ### 🔗 Links
 
 - **Releases & downloads** — <https://github.com/blue-idea/linkit/releases>
-- **Latest release (v0.4.7)** — <https://github.com/blue-idea/linkit/releases>
+- **Latest release (v0.5.5)** — <https://github.com/blue-idea/linkit/releases>
 - **Report an issue** — <https://github.com/blue-idea/linkit/issues>
 - **Feature request** — <https://github.com/blue-idea/linkit/issues/new>

@@ -138,6 +138,51 @@ idea, applied to running AI instead of sharing files.)
 - **Every part is checked.** Model parts are verified when they arrive and
   every time they load, so a bad copy is caught and replaced.
 
+## How fast is it?
+
+<!-- speeds:begin, reviewed for 0.3.261-alpha. Refreshed at every release: .claude/rules/completeness.md § "README speeds" -->
+Speed here is **tokens a second**. A token is a word or part of one, and most
+people read about 5 a second. Every figure below comes from this project's
+test computer, a laptop with an 8 GB NVIDIA RTX 3070 graphics card and an
+8-core AMD Ryzen 7 5800H processor, alone or teamed up with others, and names
+the version it was measured on.
+
+<!-- release-check:begin -->
+**On one computer**: the v0.3.261 release check, run on the downloaded release. Each
+model reads a 1,800-token document and writes 128 tokens about it.
+
+| Model | Runs on | Writing (tokens a second) | Reading (tokens a second) |
+|---|---|---|---|
+| Qwen2.5 Coder 7B | the graphics card | 56–57 | 1,430–1,780 |
+| Qwen2.5 14B | card and processor together (too big for the card) | 12.5–12.8 | 480–520 |
+| Qwen3 30B-A3B (2-bit) | card and processor together (a mixture of experts, too big for the card) | 18.5–19.6 | 220–230 |
+| Llama 3.2 3B | the processor only | 13.9–14.4 | 60–70 |
+<!-- release-check:end -->
+
+**Across computers**: the same laptop in Thailand, teamed up with volunteers'
+computers: one with an RTX 3060 card in Australia, about 400–460 ms there and
+back, a laptop with an RTX 4050 card in Europe, about 220–240 ms, and for the
+70B asked again also a second computer in Thailand and one in Italy. A small
+model guesses the next few words and the big one checks them all at once.
+
+| Model, and how it is shared | Speed | Version |
+|---|---|---|
+| Qwen2.5 14B, about half on this laptop and half in Australia | 16–29 writing code, 6.1–10 writing prose | v0.3.261 |
+| Qwen2.5 14B, the same, set to "Start and finish on this computer" | 17–20 writing code, 7.4–8.3 writing prose | v0.3.261 |
+| Qwen2.5 14B, split three ways: this laptop, the laptop in Europe and the computer in Australia | 12–14 writing code, 4.4–4.9 writing prose | v0.3.261 |
+| Llama 3.3 70B, this laptop and the computer in Australia, new questions | 2.0–2.3 | v0.3.261 |
+| Llama 3.3 70B, four computers in Thailand, Australia and Italy, a question asked again | 1.9–2.0 | v0.3.255 |
+
+On code, two computers on different continents were faster than this laptop
+running the same 14B alone (12–14 tokens a second): code is easy to guess, so
+the guesses keep the long connection busy. Prose is harder to guess, so it
+gains less. A third computer in the middle made it slower: measured side by
+side, two computers wrote 16–21 tokens a second of code and 6.1–7.3 of prose,
+three wrote 12–14 and 4.4–4.9, because every check then crosses three long
+links and fewer guesses are in flight at once. Each range spans several runs;
+the across-computer rows were measured on builds of the named version ([how](docs/plans/faster_than_local.md)).
+<!-- speeds:end -->
+
 ## Help build the swarm
 
 How big a model the swarm can run is set by who is online. The 70B took the
@@ -316,7 +361,7 @@ SwarmLLM is built by a human developer working with Claude Code, an AI
 programming assistant: the human sets the direction, tests and reviews, and
 Claude writes the code. We say so openly so you can judge the project on its
 merits. Every change is checked by thousands of automated tests
-(4056 lib tests + 80 integration tests) before it ships, and regular
+(4077 lib tests + 80 integration tests) before it ships, and regular
 automated audits are logged in the repository. Scrutiny and contributions are
 welcome.
 

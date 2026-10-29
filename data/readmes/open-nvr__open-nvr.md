@@ -55,7 +55,7 @@ Open the URL, accept the self-signed certificate, paste the token, add a camera.
 | Your LAN IP changed | `./start.sh refresh-certs` *(Linux/macOS)* |
 | Stop everything | `./start.sh down` |
 | Tail live logs | `./start.sh logs` |
-| Pick up new images after an upgrade | `docker compose pull && ./start.sh up` |
+| Upgrade to a new release | back up, check out the tag, set `CORE_TAG`/`ADAPTER_TAG`, `./start.sh up`: [step by step](DOCKER_QUICKSTART.md#upgrading-to-a-new-release) |
 
 Unattended installs: `cp .env.example .env && ./scripts/generate-secrets.sh --write && ./start.sh up`. Retention, hardening and every compose file: [`DOCKER_QUICKSTART.md`](DOCKER_QUICKSTART.md).
 </details>
@@ -125,6 +125,8 @@ A new model, an adapter, an app, an alert, on the box you already have. The fall
 | Apple Silicon | As above, with the LLM on the host via Metal |
 
 Detection using too much CPU is almost always video decode, not the model. Store the camera's substream URL, check `DETECT_FPS`, attach a hardware decoder with `DETECT_HWACCEL`. The full strategy is [`docs/DETECT_CPU.md`](docs/DETECT_CPU.md).
+
+**Runs on what you have.** The same images come in hardware flavours: plain CPU on x86-64 and arm64, and `-intel`, where the iGPU decodes the cameras and the Tier-0 detector runs on the NPU or iGPU through OpenVINO, with NVIDIA next. One line in `.env`, `OPENNVR_ACCEL=auto`, picks the flavour from the hardware it finds, and every fallback to CPU is logged and exported rather than silent. The support matrix and benchmark protocol are in [`docs/HARDWARE.md`](docs/HARDWARE.md).
 
 ## Built to scale, built to be built on
 

@@ -61,7 +61,8 @@ request. It ends its answer with one verdict line, `ALLOW: <why>` or
 high risk proceeds only when your instructions authorize it. A reply without
 a verdict is asked again up to three times; a reviewer failure, or still no
 verdict, denies the action rather than letting it run. Denials are shown in the editor transcript with the specific
-reason, and every decision is logged to stderr with its rationale.
+reason. Stderr logs the stable approval id and outcome; reviewer rationale is
+kept in the editor transcript rather than copied into routine logs.
 
 ```mermaid
 flowchart TD
@@ -177,6 +178,10 @@ Both commands are safe to re-run: they preserve existing agent entries, write a
 `.bak` backup, and replace the settings file atomically. Use `--dry-run` to
 preview an edit.
 
+On Unix, a newly created settings file is owner-only (`0600`). When an existing
+file is replaced, its permissions are preserved so values such as `--env`
+secrets do not become more broadly readable.
+
 Any other ACP client can launch `muse-acp` directly over stdio.
 
 ## Editor setup
@@ -282,7 +287,12 @@ run on a second `muse serve` that `muse-acp` starts with `--disable-write
 --disable-shell` the first time it is needed. Through Muse 1.4.2, Muse
 answers a write with "tool policy denied filesystem write"; from 1.4.3 it
 does not offer write or shell tools in those sessions at all. MCP tools are
-not covered by those flags; their calls still go through approvals.
+not covered by those flags. Client-supplied MCP servers remain available in
+Read-only and Plan, and those servers can write files, run commands, or use
+the network. Read-only and Plan are therefore not a sandbox for MCP tools and
+do not guarantee that no external tool has side effects. Their calls still go
+through the host's approval policy, so use `promptUnmatched` or
+`denyUnmatched` when that approval boundary must be enforced.
 
 Muse lets only one host hold a session, and releases it only when that host
 exits. Changing the mode of an open session therefore restarts the host that
@@ -299,6 +309,14 @@ resume later comes back in the same mode. A fork keeps its source's mode.
 The approval policy has its own **Approval Mode** selector (`approval_mode`).
 Clients that still send an approval mode such as `promptUnmatched` to the
 `mode` selector, or to `session/set_mode`, keep setting the approval mode.
+
+If `MUSE_APPROVAL_MODE` is unset, the adapter inherits the host's saved
+default and logs a warning when that effective mode is `allowAll`. In
+`allowAll`, Muse runs shell commands, file writes, network access, and MCP
+tools without a permission request, so neither the editor prompt nor
+Auto-review sees the action. That posture is appropriate only when the session
+should have unrestricted host access. Harness deployments should set
+`MUSE_APPROVAL_MODE=promptUnmatched` (or `denyUnmatched`) explicitly.
 
 ### Approval-profile compatibility
 
@@ -914,6 +932,12 @@ muse-acp --support    # redacted support bundle, safe to paste into a report
 compatibility table, and reports whether the configured Muse CLI can be invoked
 (`cli-ready` or `cli-unready`). It exits `0` even when Muse is not installed, so
 you can collect output on a machine that is still being set up.
+
+The current vendored SDK surface is Muse 1.4.14
+(`sha256:c94c3d1f2f51e6424074b9ec43eac3eedcf532d3dcd77351ec1383a87d3049c6`).
+The adapter and standalone MSP client live suites pass against
+`1.4.14-R7309.1`, and the 1.4.14 Linux, macOS, and Windows artifacts are pinned
+in the nightly matrix.
 
 At startup the adapter logs whether the host can enforce its sandbox, as
 reported by Muse 1.4.7+ on `initialize`:

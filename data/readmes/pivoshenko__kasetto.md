@@ -33,7 +33,7 @@ Kasetto is a **community-first** project that solves a different problem: **decl
 
 - **Declarative**: skills, commands, MCPs, instructions, and agents in one YAML file. Apply globally or scope to a project; configs compose with `extends`, so org, team, and project stay in sync
 - **Enterprise & private repositories**: pull from GitHub, GitLab, Bitbucket, Codeberg, Gitea, and self-hosted instances, public or private. Onboard a new engineer with one command; everyone gets the same environment, zero drift
-- **Multi-agent**: write once, ship everywhere. Claude Code, Cursor, Codex, Windsurf, Copilot, Gemini CLI, and [many more](#supported-agents). One sync keeps them all current
+- **Agent-agnostic**: use Claude Code, Cursor, Codex, Windsurf, Copilot, Gemini CLI, or [any supported agent](#supported-agents), and switch without rebuilding your setup. The environment belongs to you and your team, not to one editor
 - **Skills, Commands, MCPs & Instructions**: four asset kinds from one source, instruction files included (`CLAUDE.md`, `.cursor/rules`, `AGENTS.md`, ...). Everything is transformed into each agent's native format, and auto-merged. Distribute instructions, tools, and prompts by sharing a repository link
 - **Secrets management**: put `${kst_...}` placeholders in your configs instead of real tokens. At sync time Kasetto pulls the value from your environment, a credentials file, or a secret manager you already use (1Password, Vault, AWS, GCP, Azure, KeePassXC, pass, macOS Keychain) and injects it into the agent's settings only
 - **Speed**: built in Rust. It hashes content and diffs a lock file so only what changed gets touched, and full syncs finish in seconds
@@ -138,8 +138,9 @@ kst doctor                  # version, paths, last sync status
 | `kst lock`                | Re-resolve every source and pin it into `kasetto.lock` without installing           |
 | `kst sync`                | Install skills, MCPs, commands, and instructions into agent dirs, honoring the lock |
 | `kst list`                | Print a table of installed assets from the lock file                                |
+| `kst audit`               | Security verdicts for installed skills (skills.sh) and MCPs (OSV, deps.dev)         |
 | `kst doctor`              | Local diagnostics: version, paths, last sync status, broken skills                  |
-| `kst clean`               | Remove tracked skills, commands, MCP configs, and instructions for the given scope  |
+| `kst clean`               | Remove tracked skills, commands, MCPs, and instructions for a scope; clear caches   |
 | `kst self update`         | Fetch the latest release, verify SHA256, replace the binary in place                |
 | `kst self uninstall`      | Remove installed assets, data, and the binary                                       |
 | `kst completions <shell>` | Emit a shell completion script (`bash`/`zsh`/`fish`/`powershell`)                   |
@@ -296,7 +297,7 @@ Set the `agent` field and Kasetto figures out where to put things.
 
 </details>
 
-Pi's preset syncs skills, prompt templates, `AGENTS.md`, and MCP servers (`~/.pi/agent/mcp.json`
+Pi's preset syncs skills, prompt templates, `AGENTS.md`, and MCPs (`~/.pi/agent/mcp.json`
 globally, `.pi/mcp.json` per project).
 
 Don't see your agent? Use the `destination` field to point at any path.

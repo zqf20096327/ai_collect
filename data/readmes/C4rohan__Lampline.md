@@ -5,18 +5,19 @@
   </picture>
 </p>
 
-<h3 align="center">Open-source, self-hosted voice agents.</h3>
+<h3 align="center">Test and run phone agents on your own machine.</h3>
 
 <p align="center">
-  Bring your agents over from <b>Dialogflow CX</b> and <b>CX Agent Studio</b>, or start fresh.<br>
-  Build, test and run them on your own machine or servers, in one command,<br>
-  for about $0.02–0.17 a call instead of $0.50.
+  Write conversation tests for your phone agents, including <b>Dialogflow CX</b> and <b>CX Agent Studio</b> agents,<br>
+  run them from <b>Claude Code</b> or CI, and have real phone calls graded by an AI caller.<br>
+  Open source, and free to run with no API keys.
 </p>
 
 <p align="center">
   <a href="https://github.com/C4rohan/lampline/actions/workflows/ci.yml"><img src="https://github.com/C4rohan/lampline/actions/workflows/ci.yml/badge.svg?branch=dev" alt="CI"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="Apache-2.0"></a>
-  <img src="https://img.shields.io/badge/imports-Dialogflow_CX_%C2%B7_CX_Agent_Studio-2f6fb0" alt="Imports Dialogflow CX and CX Agent Studio">
+  <img src="https://img.shields.io/badge/tests-Dialogflow_CX_%C2%B7_CX_Agent_Studio-2f6fb0" alt="Tests Dialogflow CX and CX Agent Studio agents">
+  <img src="https://img.shields.io/badge/Claude_Code-plugin-d97757" alt="Claude Code plugin">
   <img src="https://img.shields.io/badge/models-20_providers-f2b84b" alt="20 model providers">
   <img src="https://img.shields.io/badge/runs-local_%26_on--prem-15212b" alt="Runs local and on-prem">
   <a href="https://codespaces.new/C4rohan/lampline"><img src="https://github.com/codespaces/badge.svg" alt="Open in GitHub Codespaces" height="20"></a>
@@ -24,6 +25,7 @@
 
 <p align="center">
   <a href="#-quick-start"><b>🚀 Quick start</b></a> &nbsp;·&nbsp;
+  <a href="#-use-it-from-claude-code-cursor-or-codex">🤖 From Claude Code</a> &nbsp;·&nbsp;
   <a href="#-test-any-phone-agent-for-free">📋 Free phone evals</a> &nbsp;·&nbsp;
   <a href="#-bring-your-dialogflow-cx-and-cx-agent-studio-agents">🔁 Import from Google</a> &nbsp;·&nbsp;
   <a href="#-a-quick-tour">👀 Tour</a> &nbsp;·&nbsp;
@@ -41,12 +43,32 @@
   <br><sub>Import a Dialogflow CX agent, test it, and grade a real phone call to it. Sample agent and made-up data; replies from Lampline's test model.</sub>
 </p>
 
-Lampline imports your Dialogflow CX and CX Agent Studio agents, flows, pages,
-playbooks, forms and tools included, and runs them on hardware you control. It gives
-you a drag-and-drop builder where LLM steps and scripted pages mix in one agent, a test console that lights up each step as the call moves, HTTP and
-MCP tools, records and document search of its own, and phone calls over Twilio,
-Telnyx or any SIP trunk through jambonz. Built on
-[Pipecat](https://github.com/pipecat-ai/pipecat).
+**Test.** An agent's tests are plain YAML: what the caller says (or a model
+playing the caller), and what must happen: which steps the call reaches, what
+the agent must or must never say, which tools it calls. `vk test` runs them on
+Lampline, or against a live Dialogflow CX or CX Agent Studio agent, and tells
+you exactly what went wrong:
+
+```text
+$ vk test agents/front-desk
+PASS  billing question goes to the billing team  (2 turn(s), 0.8s)  Greeting → Router → Billing → Transfer to staff
+PASS  emergency gets the 911 instruction  (1 turn(s), 0.7s)  Greeting → Router
+FAIL  caller asks about Saturday hours  (1 turn(s), 0.8s)  Greeting → Router
+      - expected to reach 'Hours and location'; steps were Greeting → Router
+      - expected the agent to say 'noon'
+```
+<sub>A starter template run against Lampline's stand-in test model, which is why one test fails.</sub>
+
+**Fix and review from your coding agent.** Lampline ships skills for Claude
+Code, Cursor and Codex that build an agent with tests, fix failing tests
+without breaking passing ones, test your Dialogflow agents, and review a change
+before it goes live ([set up](#-use-it-from-claude-code-cursor-or-codex)).
+
+**Run it.** The same agents take real calls on hardware you control: a
+drag-and-drop builder where LLM steps and scripted pages mix, HTTP and MCP
+tools, records and document search, and phone calls over Twilio, Telnyx or any
+SIP trunk through jambonz. Import from Dialogflow CX and CX Agent Studio, or
+export back, whenever you like. Built on [Pipecat](https://github.com/pipecat-ai/pipecat).
 
 <table>
   <tr>
@@ -81,6 +103,7 @@ Dialogflow CX, CX Agent Studio, Vapi, Retell, or your IVR.
 - **Tough callers.** Background noise, accents, interruptions, long pauses, hesitant or rambling speech.
 - **The agent's speed, as callers hear it.** Typical and p95 response time, phone line included.
 - **Bring your test scripts.** Paste Hammer, Cyara or spreadsheet tests and they become runnable cases. Replay any failed call.
+- **Improve an agent from its failures.** Lampline runs your test cases as text chats, rewrites the prompts of the steps where checks failed, and keeps a change only if more checks pass and nothing that passed breaks. You review the before and after, then apply.
 
 [How to run evals →](docs/EVALS.md)
     </td>
@@ -89,6 +112,47 @@ Dialogflow CX, CX Agent Studio, Vapi, Retell, or your IVR.
 
 Only call agents you own or are allowed to test. You press Call yourself:
 Google Voice doesn't allow automated dialing.
+
+## 🤖 Use it from Claude Code, Cursor or Codex
+
+Lampline agents are plain files (`agent.yaml` and `prompts/*.md`), and `vk`
+lints and tests them from the terminal, so a coding agent can build, test and
+review a phone agent for you. Four skills teach it how:
+
+- **voice-agent-builder:** asks what the agent should do, writes the tests
+  first, builds the folder, and runs `vk lint` and `vk test` until they pass
+- **voice-agent-fixer:** makes failing tests pass by changing only the
+  prompts or routes behind them, and keeps a change only if more tests pass
+  and none breaks
+- **dialogflow-tester:** writes tests for an existing Dialogflow CX or CX
+  Agent Studio agent and runs them against it live, or side by side with its
+  Lampline copy
+- **voice-agent-reviewer:** checks a change before it goes live: lint, the
+  diff, the tests, and a privacy review, then asks you to approve
+
+**Claude Code**, from the plugin marketplace in this repo:
+
+```
+/plugin marketplace add C4rohan/lampline
+/plugin install lampline@lampline
+```
+
+On Claude Code 2.1.275 or later, one line does both:
+`/plugin install lampline --marketplace C4rohan/lampline`.
+
+**Cursor, Codex and other agents** read [`AGENTS.md`](AGENTS.md). To copy the
+skills into a project instead, run `vk skills install --target claude`
+(or `--target agents`, `--target gemini`).
+
+**Claude Desktop, Cursor and other MCP clients:** `vk mcp` serves your agent
+folders as tools: list, lint, run tests, read and change a step's prompt, and
+see which real calls failed their checks
+([set up](cli/README.md#mcp-server)).
+
+Then ask, for example: *"Build a phone agent for a dental office that books
+cleanings, with tests"*, *"Make the failing tests in agents/front-desk pass"*,
+*"Write regression tests for my Dialogflow CX agent"*, or *"Review my change
+to agents/front-desk before it goes live"*.
 
 ## 🔁 Bring your Dialogflow CX and CX Agent Studio agents
 
@@ -302,7 +366,7 @@ vk templates install front-desk     # start from a ready-made agent
 vk lint agents/front-desk           # graph checks + a scan for real-looking patient data
 vk test agents/front-desk           # runs tests/*.yaml conversations on the engine
 vk import dfcx export.zip           # bring an agent over from Dialogflow CX or CX Agent Studio
-vk skills install --target claude   # builder + reviewer skills for Claude Code
+vk skills install --target claude   # the four coding-agent skills (or install the Claude Code plugin, above)
 ```
 
 Details in [cli/README.md](cli/README.md). The engine itself, its builder,
@@ -324,6 +388,7 @@ tools, data and knowledge: [engine/README.md](engine/README.md).
 - [x] Test a phone agent for free from your laptop ([docs/PHONE-TESTING.md](docs/PHONE-TESTING.md))
 - [x] Evals: real phone calls through Google Voice, played by a Test Caller and graded ([docs/EVALS.md](docs/EVALS.md))
 - [x] Import Hammer, Cyara or spreadsheet test scripts as eval test cases ([docs/EVALS.md](docs/EVALS.md#import-test-scripts))
+- [x] Improve an agent from its failing test cases ([docs/EVALS.md](docs/EVALS.md#improve-an-agent))
 - [ ] Evals placed by Lampline through Twilio, for unattended runs
 - [x] Call history and optional recordings, on this computer ([engine/README.md](engine/README.md#call-history))
 - [ ] Published benchmarks

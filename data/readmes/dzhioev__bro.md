@@ -51,7 +51,7 @@ from bro.base.condition import when
 from bro.bro import feature
 from bro.datasources.references import environment
 from bro.datasources.web_search import WebSearch
-from bro.llm.llms import openai
+from bro.openai import declaration as openai
 from bro.mcp import cli, creds, files, man, mount, source
 from bros.bro import Bro
 from bros.triage import spells
@@ -173,7 +173,7 @@ Read the class line by line and nothing is left to configure elsewhere:
   the card of a bro it is about to hand work to, and the run a report cites.
   How a command becomes a tool is below.
 - `source(WebSearch())` and `man(environment)` are read-only connectors whose summaries land in the prompt: web search and the reference manual.
-- `llm_spec` is the model it runs on by default;
+- `llm_spec` optionally declares its model recipe; a native launch without one must name a provider;
   any launch may name another.
 - `may_summon = ('browser', 'devoops')` is whom it may summon on its own authority:
   the built-in browser, which reproduces a report on the live page, and devoops, which probes the deployed service.
@@ -251,7 +251,7 @@ $ bro show triage
 - `brave`
 - `brog`
 - `github`
-- `openai` — optional (used if present)
+- `mu` — optional (used if present)
 - `openai` — LLM key
 - _session baselines (`trails`) added per-surface_
 …
@@ -299,7 +299,7 @@ the whole of `dev` and `eyebro`
 
 ```python
 # bros/fixer/__init__.py
-from bro.llm.llms import openai
+from bro.openai import declaration as openai
 from bros.dev import Dev
 
 
@@ -434,7 +434,7 @@ the container's network is unrestricted, and `--unboxed` runs as the launching u
 
 ## Status
 
-Two harnesses and one native provider today, footnoted above;
+Two harnesses and two native providers today, footnoted above;
 installs pin a commit of this repository, with a package index still to come;
 the native loop's third-party skill loader exists with nothing loaded yet.
 A session's git authentication covers github.com alone:
@@ -445,6 +445,7 @@ a boxed session reaches that remote only where it asks for no authentication, an
 
 - [`AGENTS.md`](AGENTS.md) — the repository map, and the rules every change follows
 - [`bro/reference/extending.md`](bro/reference/extending.md) — how to add a bro, a data source, a toolset or a file type (`bro.file_types`), and the entry-point groups they register through
+- [`bro/reference/llm_providers.md`](bro/reference/llm_providers.md) — how to adopt a provider or model, including wire contracts, client installation and live probes
 - [`bro/reference/ride.md`](bro/reference/ride.md) — the runtime: workspaces, credential delivery, summons, recording
 - [`bro/reference/permission_model.md`](bro/reference/permission_model.md) and [`bro/reference/permissions.md`](bro/reference/permissions.md) — the abstract model and the shipped permission system
 - [`bro/reference/conditions.md`](bro/reference/conditions.md) and [`bro/reference/template.md`](bro/reference/template.md) — conditioning in code and in text
@@ -457,5 +458,7 @@ Apache-2.0 — see [LICENSE](LICENSE) and [NOTICE](NOTICE).
 [^harness]: Today a bro runs under Claude Code or under bro's own loop.
 The harness seam is one class, and more harnesses are coming.
 
-[^llm]: Today bro's own loop runs OpenAI models, and a Claude Code session runs Anthropic's.
-A provider is a recipe module plus a client, and more are coming.
+[^llm]: Model providers are installed plug-ins: the native loop runs recipes whose wire has a client; the Claude Code harness runs Anthropic's recipes.
+OpenAI runs on the Responses wire and DeepSeek on Chat Completions.
+A provider supplies recipes, credentials and pricing; its wire supplies the client and record decoding.
+See [running a child on another provider](bro/reference/permissions_cheatsheet.md#run-a-child-on-another-provider).

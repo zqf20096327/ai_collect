@@ -14,7 +14,7 @@ scripts and no framework — AI reasoning, browser/device commands, and QA heuri
 
 ## Requirements
 
-- **Node.js >= 22.4** (`node --version`)
+- **Node.js >= 22.12** (`node --version`)
 - **Claude Code** — the skills run as slash commands inside it
 - `playwright-cli` ships as a dependency of this package; nothing extra to install for the
   web path. Mobile needs the iOS/Android toolchains — see [docs/MOBILE-SETUP.md](docs/MOBILE-SETUP.md).
@@ -65,8 +65,9 @@ claude plugin install qualiow@qualiow
 ```
 
 The repository is its own marketplace (`.claude-plugin/marketplace.json`), so those two
-commands are the whole install. For development against a local checkout, point Claude Code
-at the directory instead:
+commands are the whole install. The marketplace entry is pinned to the latest release tag and
+its commit, so an install gets the published release, not whatever `main` holds that day. For
+development against a local checkout, point Claude Code at the directory instead:
 
 ```bash
 claude --plugin-dir /path/to/qualiow-exploratory-testing-skills
@@ -107,7 +108,7 @@ from the shell.
 | Command | Flags | What it does |
 |---------|-------|--------------|
 | `qualiow init` | `--include-examples` `--force` `--dry-run` `--hooks` | Install skills, sub-agents, data, `qa/bin/` and the output tree into the current project. Idempotent. `--hooks` also copies the guard scripts to `qa/hooks/` and merges the hook and permission entries into `.claude/settings.json` |
-| `qualiow explore [url]` | `-t <target>` `-c <context>` `--time-box 45m` `--dry-run` | **Pre-flight only.** Validates the inputs, creates the session directory skeleton, and prints the `/qa-explore … --session <dir>` command to paste into Claude Code. It does not drive a browser |
+| `qualiow explore [url]` | `-t <target>` `-c <context>` `--time-box 45m` `--dry-run` | **Pre-flight only.** Validates the inputs, warns about a missing `playwright-cli`, browser, guard hooks or allow rules (no network call), creates the session directory skeleton (refusing one that exists), and prints the `/qa-explore … --session <dir>` command to paste into Claude Code. It does not drive a browser |
 | `qualiow validate` | `--targets` `--domains` `--knowledge` `--kb` `--all` | Validate configs against their schemas; exits 1 on any failure. `--all` also checks a project-local `qa/target.yml` and cross-checks the knowledge base against its manifest |
 | `qualiow list <type>` | `sessions` \| `knowledge` \| `targets` \| `domains`; for `knowledge` also `--domain` `--tag` `--type` `--entry <id>` `--changelog` `--stats` | List what is installed or recorded. `list knowledge --entry <id>` prints that entry's YAML; `--changelog` and `--stats` read the knowledge changelog and the manifest counts |
 | `qualiow report` | `-s <id>\|latest` `-f md\|html\|json\|jira` `-o <file>` `--stdout` | Export an existing session. `-o` is confined to `output/` (relative paths resolve inside it; `..` is refused). `md` writes `session-summary.md`; html/json/jira carry the confidentiality header and pass through redaction |
@@ -119,7 +120,7 @@ from the shell.
 | `qualiow session list` | — | The session listing, same as `list sessions` |
 | `qualiow session archive <dir>` | `--remove` | Tar the session directory; `--remove` also deletes it and marks its INDEX row archived |
 | `qualiow session delete <dir>` | `--yes` | Remove a session directory and its index rows. Dry-run until `--yes` |
-| `qualiow session prune` | `--older-than <days>` `--yes` | The same, for every session older than N days |
+| `qualiow session prune` | `--older-than <days>` `--yes` `--force` | The same, for every session older than N days; a session whose `progress.json` is not complete is skipped unless `--force` |
 | `qualiow judge triage <claim-file>` | `--target <id>` `--out <dir>` `--evidence-max-lines <n>` `--dry-run` `--mock <json>` `--provider typesafe\|laya` `--endpoint <url>` | **Opt-in, advisory.** Asks a decision model typed questions about one claim card and records the answers beside the judge's verdict. Sends nothing unless the target sets `verification.mode: triage-shadow` and lists the provider; exit 2 = not enabled (nothing sent), 3 = unavailable |
 | `qualiow --version` | — | Print the package version |
 
@@ -212,7 +213,7 @@ Three `PreToolUse` hooks enforce what the delegation and security rules ask for.
 write guards are scoped to qualiow-owned paths; the bash guard sees every `Bash` command but
 only acts on the few patterns below, so ordinary coding in the same project is unaffected:
 
-- **`read-guard.mjs`** (matcher `Read`) fires only for `data/knowledge/manifest.yml`,
+- **`read-guard.mjs`** (matcher `Read|Grep|Glob`) fires only for `data/knowledge/manifest.yml`,
   `data/knowledge/releases/**`, `output/sessions/*/phase-*.md` and
   `output/sessions/*/snapshots/*`. A whole-file read of one of those over
   `QUALIOW_READ_MAX_LINES` lines (default 300) is denied, with the cheaper route named in the
@@ -435,7 +436,7 @@ bin/doctor-mobile.sh          # or --ios / --android / --quiet
 ```
 
 Read-only. Installs nothing; prints `✓`/`✗` with the exact fix command for each gap, and
-checks Node >= 22.4, python3, Maestro >= 2.6.0 and `ios-webkit-debug-proxy`.
+checks Node >= 22.12, python3, Maestro >= 2.6.0 and `ios-webkit-debug-proxy`.
 
 ### 3. Pick a target template
 
@@ -484,7 +485,7 @@ Exit codes: `0` ok · `1` command failed · `2` usage · `3` stale/unknown ref (
 `snapshot`) · `4` no device or app set.
 
 iOS Safari web targets also get real JS/DOM access through the WebKit bridge (needs
-`ios-webkit-debug-proxy`, `python3` and Node >= 22.4; `WK_IOS_PORT` overrides the port):
+`ios-webkit-debug-proxy`, `python3` and Node >= 22.12; `WK_IOS_PORT` overrides the port):
 
 ```bash
 bin/wk-ios 'document.title'
@@ -656,7 +657,7 @@ qualiow-exploratory-testing-skills/
   agents/                     # generated mirror
   .claude-plugin/
     plugin.json               # Claude Code plugin manifest
-    marketplace.json          # the repo is its own marketplace (source: "./")
+    marketplace.json          # the repo is its own marketplace (entry pinned to a release tag + sha)
   hooks/
     hooks.json                # PreToolUse registrations (plugin default discovery path)
     scripts/                  # read-guard.mjs, write-guard.mjs, bash-guard.mjs, secret-patterns.mjs
@@ -713,7 +714,7 @@ my-project/
 | Claude Code | AI reasoning and session orchestration |
 | Playwright CLI (`@playwright/cli`) | browser control for the web path |
 | Maestro + `xcrun simctl` / `adb` | device control for the mobile path |
-| TypeScript / Node.js >= 22.4 | CLI, formatters, schemas |
+| TypeScript / Node.js >= 22.12 | CLI, formatters, schemas |
 | Zod | runtime schema validation |
 | Commander | CLI argument parsing |
 | Handlebars | HTML report templating |

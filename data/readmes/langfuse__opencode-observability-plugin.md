@@ -47,11 +47,37 @@ Create `~/.config/opencode/opencode-langfuse.json` with your Langfuse credential
   "secretKey": "sk-lf-...",
   "baseUrl": "https://cloud.langfuse.com",
   "environment": "development",
-  "userId": "your-user-id"
+  "userId": "your-user-id",
+  "tags": ["app:my-app"]
 }
 ```
 
 Only `publicKey` and `secretKey` are required. If `baseUrl` is not set, the plugin uses `https://cloud.langfuse.com`. If `environment` is not set, it uses `development`.
+
+`tags` sets Langfuse trace tags on every trace. It accepts an array of non-empty strings and can also be provided as a plugin option in the OpenCode config, which takes precedence over the config file:
+
+```json
+{
+  "plugins": [
+    {
+      "package": "@langfuse/opencode-observability-plugin",
+      "options": {
+        "tags": ["app:my-app"]
+      }
+    }
+  ]
+}
+```
+
+For OpenCode 1, use the same option under `plugin`:
+
+```json
+{
+  "plugin": [
+    ["@langfuse/opencode-observability-plugin", { "tags": ["app:my-app"] }]
+  ]
+}
+```
 
 You can also set credentials with environment variables:
 
@@ -63,7 +89,7 @@ export LANGFUSE_ENVIRONMENT="development"
 export LANGFUSE_USER_ID="your-user-id"
 ```
 
-If both `LANGFUSE_PUBLIC_KEY` and `LANGFUSE_SECRET_KEY` are set, the plugin uses environment variables instead of reading the config file. Optional values can be supplied either way.
+If both `LANGFUSE_PUBLIC_KEY` and `LANGFUSE_SECRET_KEY` are non-empty, the plugin uses environment variables instead of reading the config file, so config-file `tags` are ignored too. To set tags when using environment credentials, provide `tags` as a plugin option in the OpenCode config. There is no environment variable for tags.
 
 ## Contributing
 

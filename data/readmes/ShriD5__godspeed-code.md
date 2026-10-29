@@ -6,6 +6,8 @@
 
 <p align="center">One native app for every AI coding agent. Rust + GPUI.</p>
 
+<p align="center"><a href="https://godspeed-code.pages.dev"><b>Website</b></a> · <a href="https://github.com/ShriD5/godspeed-code/releases/latest/download/Godspeed-macos-arm64.dmg">Download for macOS</a></p>
+
 <p align="center">
   <a href="https://github.com/ShriD5/godspeed-code/actions/workflows/ui-tests.yml"><img src="https://github.com/ShriD5/godspeed-code/actions/workflows/ui-tests.yml/badge.svg" alt="CI"></a>
   <a href="https://github.com/ShriD5/godspeed-code/releases/latest"><img src="https://img.shields.io/github/v/release/ShriD5/godspeed-code" alt="Latest release"></a>
@@ -66,7 +68,8 @@ Releases from 0.3.0 on are signed with a Developer ID and notarized by Apple, so
 normally. (0.1.0 and 0.2.0 were unsigned; for those, use System Settings → Privacy & Security →
 **Open Anyway**.)
 
-There is no auto-update yet. Download new releases from the
+Godspeed updates itself: it checks for new releases, verifies the download (sha256, code signature,
+Gatekeeper) and offers to restart into it. Release notes are on the
 [releases page](https://github.com/ShriD5/godspeed-code/releases).
 
 ## iPhone app

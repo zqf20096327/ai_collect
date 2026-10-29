@@ -29,9 +29,9 @@ edit to production.
 > **TypeScript and JavaScript projects** built with npm, pnpm, Yarn, or Bun. Support for more
 > languages is planned. The CLI and configuration may change before `1.0`.
 
-| Language | Build tools | Frameworks Ward recognizes | Quality tools |
+| Language | Build tools | Frameworks | Quality tools |
 |---|---|---|---|
-| Java / Kotlin | Maven, Gradle | Spring Boot | Compiler, JUnit, JaCoCo, Checkstyle, PMD, SpotBugs, PIT, ArchUnit |
+| Java / Kotlin | Maven, Gradle | Any. Spring Boot, Quarkus, Micronaut, Helidon, Dropwizard, Javalin, and Ktor are labeled when detected | Compiler, JUnit, JaCoCo, Checkstyle, PMD, SpotBugs, PIT, ArchUnit |
 | TypeScript | npm, pnpm, Yarn, Bun | Vue, Svelte, Astro, Angular (others are checked with the same gates) | `tsc`, Vitest / Jest / `bun test`, ESLint or Biome, Prettier, Stryker, dependency-cruiser |
 | JavaScript | npm, pnpm, Yarn, Bun | Same as TypeScript | Same as TypeScript, without `tsc` |
 
@@ -187,7 +187,7 @@ Cline, Factory Droid, and Amp. See [integrations](https://ricardorb.github.io/wa
 
 ## Project status
 
-**Alpha** (`0.2.0`). Runs as a native binary on Linux x86_64, macOS (Apple Silicon and Intel), and
+**Alpha** (`0.2.1`). Runs as a native binary on Linux x86_64, macOS (Apple Silicon and Intel), and
 Windows x86_64, or as a JAR on JDK 25. Only the latest release receives fixes.
 
 **Roadmap:**

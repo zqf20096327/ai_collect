@@ -86,7 +86,7 @@
   - 每个子代理节点独立配置 system prompt、LLM 模型、思考强度、工具组合及 ReAct 迭代上限、回流重试上限；父代理亦可自由选择模型与调度模板，满足精细化编排需求。
 
 ✦ **定时触发**  
-  - 工作台内置定时任务，选择工作流模板配置执行窗口与触发策略，自动创建实例并运行，错过窗口自动挂起/续跑，支持错峰调用 api。
+  - 工作台内置定时任务，选择工作流模板配置执行窗口与触发策略，自动创建实例并运行，错过窗口自动挂起/续跑，支持错峰调用 api；可为任务挂载条件脚本，每个触发点先运行脚本，最后一行输出 true 才创建实例。
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/GZX2211/dsh-Visual-Workflow/main/assets/images/定时任务管理.png" width="100%" />
@@ -314,11 +314,11 @@ dsh plugin --profile web remove dsh-visual-workflow
 
 ## 快速开始
 
-了解项目架构？请看 [架构文档](docs/architecture.md)
-参与贡献？请看 [贡献](docs/CONTRIBUTING.md)
-了解如何使用插件？请看 [用户使用手册](docs/USER_GUIDE.md)
-二次开发？请看 [项目开发规范](AGENTS.md)
-如何安装以及项目概览？本文件[README.md](README.md)
+- 了解项目架构？请看 [架构文档](docs/architecture.md)
+- 参与贡献？请看 [贡献](docs/CONTRIBUTING.md)
+- 了解如何使用插件？请看 [用户使用手册](docs/USER_GUIDE.md)
+- 二次开发？请看 [项目开发规范](AGENTS.md)
+- 如何安装以及项目概览？本文件[README.md](README.md)
 
 ---
 
@@ -386,3 +386,11 @@ pnpm check          # 类型检查 + 测试 + 构建 + smoke
 ## 许可
 
 [MIT](LICENSE) © GZX2211。欢迎提 Issue / PR。社区项目，界面形态参考 [dsh-deepseek-flow](https://github.com/kanghelyu/dsh-deepseek-flow)。
+
+## 加入交流群
+
+<p>
+  <img src="https://raw.githubusercontent.com/GZX2211/dsh-Visual-Workflow/main/assets/images/群二维码.jpg" width="30%" />
+</p>
+
+> 可以进来玩玩，讨论交流~

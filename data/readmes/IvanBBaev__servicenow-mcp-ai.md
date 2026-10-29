@@ -1,0 +1,1319 @@
+# servicenow-mcp-ai — ServiceNow MCP Server
+
+| [![npm version](https://img.shields.io/npm/v/servicenow-mcp-ai?style=flat-square&logo=npm&logoColor=white&label=npm)](https://www.npmjs.com/package/servicenow-mcp-ai) | [![npm downloads](https://img.shields.io/npm/dm/servicenow-mcp-ai?style=flat-square&logo=npm&logoColor=white&label=downloads)](https://www.npmjs.com/package/servicenow-mcp-ai) | [![node](https://img.shields.io/node/v/servicenow-mcp-ai?style=flat-square&logo=nodedotjs&logoColor=white&label=node)](https://www.npmjs.com/package/servicenow-mcp-ai) | [![tools](https://img.shields.io/badge/tools-100-blue?style=flat-square)](https://github.com/IvanBBaev/servicenow-mcp-ai#tools) | [![License: GPL-3.0](https://img.shields.io/npm/l/servicenow-mcp-ai?style=flat-square&color=blue&label=license)](LICENSE) |
+| :--: | :--: | :--: | :--: | :--: |
+| [![CI](https://img.shields.io/github/actions/workflow/status/IvanBBaev/servicenow-mcp-ai/ci.yml?branch=main&style=flat-square&logo=githubactions&logoColor=white&label=CI)](https://github.com/IvanBBaev/servicenow-mcp-ai/actions/workflows/ci.yml) | [![coverage](https://img.shields.io/codecov/c/github/IvanBBaev/servicenow-mcp-ai/main?style=flat-square&logo=codecov&logoColor=white&label=coverage)](https://codecov.io/gh/IvanBBaev/servicenow-mcp-ai) | [![last commit](https://img.shields.io/github/last-commit/IvanBBaev/servicenow-mcp-ai?style=flat-square&logo=git&logoColor=white&label=last%20commit)](https://github.com/IvanBBaev/servicenow-mcp-ai/commits/main) | [![MCP](https://img.shields.io/badge/MCP-server-orange?style=flat-square)](https://modelcontextprotocol.io) | [![Known Vulnerabilities](https://snyk.io/test/npm/servicenow-mcp-ai/badge.svg)](https://snyk.io/test/npm/servicenow-mcp-ai) |
+| [![GitHub stars](https://img.shields.io/github/stars/IvanBBaev/servicenow-mcp-ai?style=flat-square&logo=github&logoColor=white&label=stars)](https://github.com/IvanBBaev/servicenow-mcp-ai/stargazers) | [![VS Code Marketplace](https://img.shields.io/visual-studio-marketplace/v/ivanbbaev.servicenow-mcp-ai?style=flat-square&logo=visualstudiocode&logoColor=white&label=VS%20Code)](https://marketplace.visualstudio.com/items?itemName=ivanbbaev.servicenow-mcp-ai) | [![VS Code installs](https://img.shields.io/visual-studio-marketplace/i/ivanbbaev.servicenow-mcp-ai?style=flat-square&logo=visualstudiocode&logoColor=white&label=installs)](https://marketplace.visualstudio.com/items?itemName=ivanbbaev.servicenow-mcp-ai) | [![VS Code rating](https://img.shields.io/visual-studio-marketplace/r/ivanbbaev.servicenow-mcp-ai?style=flat-square&logo=visualstudiocode&logoColor=white&label=rating)](https://marketplace.visualstudio.com/items?itemName=ivanbbaev.servicenow-mcp-ai&ssr=false#review-details) | [![Listed on mcpservers.org](https://mcpservers.org/badge.svg)](https://mcpservers.org/servers/ivanbbaev/servicenow-mcp-ai) |
+
+📖 **[Documentation site →](https://ivanbbaev.github.io/servicenow-mcp-ai/)**
+
+A [Model Context Protocol](https://modelcontextprotocol.io) server that lets an
+MCP client (VS Code, Claude Desktop, etc.) run commands against a **ServiceNow**
+instance through its REST APIs — Table, Aggregate, Attachment, Import Set, Batch
+and CMDB, plus the Service Catalog, Change Management and Knowledge plugin APIs.
+Credentials are kept in a local env file and can be updated at runtime through a tool.
+
+> **Upgrading from 2.x?** 3.0 has breaking defaults (plan tokens for destructive applies,
+> protected system tables, a smaller default tool set). Run
+> `npx servicenow-mcp-ai migrate --write` once: it carries your env file and MCP client
+> config over and adds `SN_COMPAT=2`, which keeps every 2.x default you have not set.
+> See the [CHANGELOG](CHANGELOG.md) → "Migration at a glance" for each change.
+
+> **Upgrading from 1.x?** v2.0 makes writes **plan-by-default**: `create`/`update`/`delete`
+> and the other record-write tools return a non-mutating preview unless you pass
+> `apply: true` (or set `SN_WRITE_MODE=apply` to restore the v1 "execute immediately"
+> behaviour). See the [CHANGELOG](CHANGELOG.md) → 2.0.0 for the full migration note.
+
+**Contents:** [Quick demo](#quick-demo) · [Features](#features) ·
+[Requirements](#requirements) · [Setup](#setup) ·
+[Configure credentials](#configure-credentials) · [Run / debug](#run--debug) ·
+[Develop](#develop) · [Tools](#tools) · [Resources](#resources) ·
+[Prompts](#prompts) · [Project structure](#project-structure) ·
+[Security notes](#security-notes) · [Project documentation](#project-documentation) ·
+[Support](#support)
+
+_Built and maintained in my own time — if it helps, a
+[GitHub Sponsors](https://github.com/sponsors/IvanBBaev) tip keeps it going.
+Full [Support](#support) options are near the end._
+
+## Quick demo
+
+Three things the platform makes hard, one call each. Point your MCP client at an
+instance ([Setup](#setup)) and ask:
+
+**1. "Where is this field actually used?"** — every script, business rule, client
+script, UI policy/action and ACL that touches it, as JSON or a Mermaid graph. The
+IDE-grade _find usages_ ServiceNow has no button for:
+
+```jsonc
+// servicenow_where_used
+{
+  "kind": "field", // "table" | "field" | "script"
+  "name": "u_cost_center",
+  "mermaid": true, // also render a reference graph
+}
+```
+
+**2. "What runs when I save this record?"** — the full automation chain in
+execution order (display → before → after → async business rules, then flows,
+workflows and notifications), each with its condition — a logical test that runs
+**nothing**:
+
+```jsonc
+// servicenow_trace_table_event
+{
+  "table": "incident",
+  "operation": "update", // insert | update | delete | query
+}
+```
+
+**3. "What drifted between dev and prod?"** — a Markdown diff of tables, columns,
+scripts (matched by sys_id then name, with a unified diff of every changed script)
+and plugins between two configured profiles — plus, on request, properties, choices,
+ACLs, notifications, flows, catalog items and roles — with a CI-friendly exit code
+so a pipeline can block a risky deploy:
+
+```bash
+servicenow-mcp-ai drift dev prod   # report on stdout; exit 1 on drift, 0 if clean
+```
+
+All three are **read-only** and work against any instance — including a free PDI —
+with the model and client of your choice.
+
+## Features
+
+- Full **Table API**: query, read, create, update and delete records on **any**
+  table, with encoded queries, field selection and pagination.
+- Extra ServiceNow APIs: **Aggregate** (Stats), **Attachment**
+  (list/upload/download/delete), **Import Set**, **Batch** (many REST calls in a
+  single request), plus table/column **metadata** (`sys_db_object`,
+  `sys_dictionary`).
+- Process & plugin APIs: **CMDB** (class-aware CI CRUD + meta, relationship
+  reads from `cmdb_rel_ci`, IRE identify-and-reconcile with an identify-only
+  plan),
+  **Service Catalog** (browse/order items), **Change Management** (typed
+  creation + conflict detection) and **Knowledge** (article search).
+  Plugin-scoped APIs report clearly when not active on the instance.
+- **Script intelligence**: read and search the instance's own code (business
+  rules, script includes, client scripts, UI policies/actions, scheduled jobs,
+  transform/REST scripts, ACLs, Service Portal widgets, UI pages/scripts/macros, processors, email/fix/
+  validation scripts, script actions, data sources, REST message functions,
+  transform maps/entries, catalog client scripts and dictionary calculations /
+  defaults) and get a table's full automation picture — all read-only over the
+  Table API. `servicenow_search_code` returns every matching line per artefact
+  (up to 20, with a line of context either side) and, like
+  `servicenow_where_used`, takes an optional application `scope`.
+  `servicenow_where_used` also finds structural references — dictionary
+  reference fields, list and form layouts, catalog variables, flow inputs and
+  reports — in a separate `structural` section.
+- **Flow tracing & code checking** (Phase 8): deterministically trace what a
+  table operation runs (`flows` package — business rules, flows, workflows and
+  notifications, in order, with a Mermaid flowchart), read Flow Designer flows
+  and run history, explain Process Automation Designer playbooks
+  (`servicenow_explain_flow` with `kind: "playbook"` — lanes as Mermaid
+  subgraphs, activities, triggers, variants), and lint scripts against a local rule set with an aggregate
+  code-health report (`codecheck`; `domains: true` adds the flow, Service
+  Portal and legacy-workflow analysers). Run ATF tests via the CI/CD API (`atf`,
+  opt-in, non-default — the run tools execute on the instance).
+- **Journal-based undo** (`revert`): list the local write journal and revert
+  one applied create/update/delete — with a drift check against later edits.
+- **Generic artifact reads** (`artifacts`, opt-in): list and read any
+  registered artifact type — UI policies with their actions, portal pages with
+  their layout, flows, catalog items and more — with scope and SDK-managed
+  status.
+- **Update-set awareness** (`updatesets`, opt-in): list update sets, summarise
+  one set per artefact, compare it with another profile or a snapshot — and
+  bind applied Table writes to a named update set (`update_set` /
+  `SN_UPDATE_SET`), restoring the user's current set afterwards.
+- **Operations and data health** (`ops`, opt-in): bounded "why is it slow"
+  reads of the system log, the scheduler queue, the outbound email queue, the
+  event queue and semaphores, plus `servicenow_check_data_health` — duplicate
+  keys, orphaned and stale references for one table, from Aggregate API counts.
+- **Operations reads** (opt-in): a record's change history from `sys_audit` and
+  `sys_journal_field` (`history` — including the comments and work notes the
+  Table API reads back empty), system properties with masked secrets and a
+  journaled, revertible set (`properties`), and user / group / role lookups
+  with memberships (`directory`). ATF runs can wait for their result
+  (`wait_seconds`), and Import Set inserts report the transform run and maps.
+- **Self-documentation**: a local Markdown knowledge base (read/write/search) plus
+  deterministic Mermaid generators (ER diagrams from references, record-lifecycle
+  flowcharts from business rules) so the server builds durable, reusable context.
+- **Prompts**: ready-made workflows (incident triage, change impact analysis,
+  document a table, diagnose a slow instance, safe write, drift review, schema
+  impact, instance discovery) that orchestrate the tools; every plugin skill
+  has a prompt twin for clients without the plugin.
+- **Tool packages**: load only the tool groups you need via `SN_TOOL_PACKAGES`
+  (default profile `discovery`; `all` enables everything).
+- **Basic** or **OAuth 2.0** authentication over HTTPS; the password/token is
+  never echoed back.
+- Least-privilege controls: table allow/deny lists and a global read-only mode.
+- Resilience: per-request timeout, retry with backoff and `Retry-After`, SSRF
+  guard, and a result-size guard.
+- MCP **tool annotations** and **resources**, structured error payloads, and
+  structured logging on stderr.
+- Credentials in an env file (project, `~/.config`, or `SN_ENV_FILE`), updatable
+  at runtime via `servicenow_set_credentials`.
+
+## Requirements
+
+- Node.js 22.12+ (enforced: `engines` + a runtime guard with a clear message;
+  the project targets the version in `.nvmrc`).
+
+## Setup
+
+From source (for development):
+
+```bash
+npm install
+npm run build
+```
+
+Or run the published package directly, without cloning:
+
+```bash
+npx servicenow-mcp-ai
+```
+
+### Install in your MCP client
+
+Every client launches the same stdio command, `npx -y servicenow-mcp-ai` (Node.js 22.12+),
+under the server name `servicenow`. The one-click links and snippets below carry **no
+credentials**: keep them in the env file (`~/.config/servicenow-mcp-ai/.env`, see
+[Configure credentials](#configure-credentials)), run the one-time
+`npx servicenow-mcp-ai login` for OAuth, or ask the assistant to call
+`servicenow_set_credentials` once the server is connected. A real environment variable
+set in a client config **overrides** the env file, so only add an `env` block when you
+mean it — and never put `SN_PASSWORD` or other secrets into a client config you share
+or commit (see [SECURITY.md](SECURITY.md)).
+
+[![Install in VS Code](https://img.shields.io/badge/VS_Code-Install_ServiceNow_MCP-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect?url=vscode%3Amcp%2Finstall%3F%257B%2522name%2522%253A%2522servicenow%2522%252C%2522command%2522%253A%2522npx%2522%252C%2522args%2522%253A%255B%2522-y%2522%252C%2522servicenow-mcp-ai%2522%255D%257D)
+[![Install in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install_ServiceNow_MCP-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect?url=vscode-insiders%3Amcp%2Finstall%3F%257B%2522name%2522%253A%2522servicenow%2522%252C%2522command%2522%253A%2522npx%2522%252C%2522args%2522%253A%255B%2522-y%2522%252C%2522servicenow-mcp-ai%2522%255D%257D)
+[![Install in Cursor](https://img.shields.io/badge/Cursor-Install_ServiceNow_MCP-000000?style=flat-square&logo=cursor&logoColor=white)](https://cursor.com/en/install-mcp?name=servicenow&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsInNlcnZpY2Vub3ctbWNwLWFpIl19)
+
+| Client | One line | Config file |
+| --- | --- | --- |
+| VS Code (Copilot Chat) | Button above, or `code --add-mcp` (below) — or the **ServiceNow MCP** extension | `.vscode/mcp.json` (`servers`) |
+| VS Code Insiders | Button above, or `code-insiders --add-mcp` (below) | `.vscode/mcp.json` (`servers`) |
+| Claude Code | `claude mcp add servicenow -- npx -y servicenow-mcp-ai`, or the plugin | `.mcp.json` (`mcpServers`) |
+| Claude Desktop | — (edit the config file) | `claude_desktop_config.json` (`mcpServers`) |
+| Cursor | Button above, or the `cursor://` deeplink (below) | `~/.cursor/mcp.json` or `.cursor/mcp.json` (`mcpServers`) |
+| Windsurf | — (edit the config file) | `~/.codeium/windsurf/mcp_config.json` (`mcpServers`) |
+| Cline | — (MCP Servers → Configure MCP Servers) | `cline_mcp_settings.json` (`mcpServers`) |
+| Zed | — (edit settings) | `settings.json` (`context_servers`) |
+| JetBrains AI Assistant | — (Settings → Tools → AI Assistant → Model Context Protocol) | JSON dialog (`mcpServers`) |
+| Gemini CLI | — (edit settings) | `~/.gemini/settings.json` (`mcpServers`) |
+| Codex CLI | `codex mcp add servicenow -- npx -y servicenow-mcp-ai` | `~/.codex/config.toml` (`[mcp_servers.servicenow]`) |
+
+<details>
+<summary><strong>VS Code / VS Code Insiders</strong></summary>
+
+The zero-config route is the **ServiceNow MCP** extension from the Marketplace
+(`code --install-extension ivanbbaev.servicenow-mcp-ai`); it registers the server in
+Copilot Chat (agent mode) automatically, no `mcp.json`. Source: [extension/](extension/).
+
+Without the extension, add the server from a terminal (user profile):
+
+```bash
+code --add-mcp '{"name":"servicenow","command":"npx","args":["-y","servicenow-mcp-ai"]}'
+code-insiders --add-mcp '{"name":"servicenow","command":"npx","args":["-y","servicenow-mcp-ai"]}'
+```
+
+The raw deeplinks behind the buttons (paste into a browser address bar):
+
+```text
+vscode:mcp/install?%7B%22name%22%3A%22servicenow%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22servicenow-mcp-ai%22%5D%7D
+vscode-insiders:mcp/install?%7B%22name%22%3A%22servicenow%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22servicenow-mcp-ai%22%5D%7D
+```
+
+Or a workspace file, `.vscode/mcp.json`:
+
+```json
+{
+  "servers": {
+    "servicenow": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "servicenow-mcp-ai"]
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary><strong>Claude Code</strong></summary>
+
+**Plugin** (zero-config — installs the server wired up):
+
+```bash
+/plugin marketplace add IvanBBaev/servicenow-mcp-ai
+/plugin install servicenow-mcp-ai
+```
+
+The plugin also ships eight workflow skills, two read-only subagents and three
+hooks — see [Plugin skills](#plugin-skills).
+
+**CLI** — `--scope user` makes it available in every project; `--env` sets a
+non-secret variable (the instance host) and leaves the secrets in the env file. A value set
+this way wins over the env file, so drop `--env` if you switch instances with
+`servicenow_set_credentials`:
+
+```bash
+claude mcp add servicenow --scope user --env SN_INSTANCE=your-instance.service-now.com -- npx -y servicenow-mcp-ai
+```
+
+</details>
+
+<details>
+<summary><strong>Claude Desktop</strong></summary>
+
+`claude_desktop_config.json` — macOS `~/Library/Application Support/Claude/`, Windows
+`%APPDATA%\Claude\` (Settings → Developer → Edit Config):
+
+```json
+{
+  "mcpServers": {
+    "servicenow": {
+      "command": "npx",
+      "args": ["-y", "servicenow-mcp-ai"]
+    }
+  }
+}
+```
+
+Restart Claude Desktop after saving.
+
+</details>
+
+<details>
+<summary><strong>Cursor</strong></summary>
+
+Use the button above, or open the deeplink directly:
+
+```text
+cursor://anysphere.cursor-deeplink/mcp/install?name=servicenow&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsInNlcnZpY2Vub3ctbWNwLWFpIl19
+```
+
+Or edit `~/.cursor/mcp.json` (global) / `.cursor/mcp.json` (project) with the same
+`mcpServers` block as Claude Desktop.
+
+</details>
+
+<details>
+<summary><strong>Windsurf, Cline, JetBrains AI Assistant</strong></summary>
+
+All three take the Claude Desktop `mcpServers` block unchanged:
+
+- **Windsurf** — `~/.codeium/windsurf/mcp_config.json` (Cascade → MCP servers → View raw
+  config), then refresh the server list.
+- **Cline** — MCP Servers icon → _Configure MCP Servers_ opens `cline_mcp_settings.json`.
+- **JetBrains AI Assistant** — Settings → Tools → AI Assistant → Model Context Protocol
+  (MCP) → Add → _As JSON_, paste the block.
+
+```json
+{
+  "mcpServers": {
+    "servicenow": {
+      "command": "npx",
+      "args": ["-y", "servicenow-mcp-ai"]
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary><strong>Zed</strong></summary>
+
+In Zed's `settings.json` (Zed → Settings → Open Settings):
+
+```json
+{
+  "context_servers": {
+    "servicenow": {
+      "source": "custom",
+      "command": "npx",
+      "args": ["-y", "servicenow-mcp-ai"],
+      "env": {}
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary><strong>Gemini CLI</strong></summary>
+
+`~/.gemini/settings.json` (user) or `.gemini/settings.json` (project):
+
+```json
+{
+  "mcpServers": {
+    "servicenow": {
+      "command": "npx",
+      "args": ["-y", "servicenow-mcp-ai"]
+    }
+  }
+}
+```
+
+Check it with `/mcp` inside a Gemini CLI session.
+
+</details>
+
+<details>
+<summary><strong>Codex CLI</strong></summary>
+
+```bash
+codex mcp add servicenow --env SN_INSTANCE=your-instance.service-now.com -- npx -y servicenow-mcp-ai
+```
+
+Or `~/.codex/config.toml`:
+
+```toml
+[mcp_servers.servicenow]
+command = "npx"
+args = ["-y", "servicenow-mcp-ai"]
+# Optional, non-secret only — secrets stay in ~/.config/servicenow-mcp-ai/.env:
+# env = { SN_INSTANCE = "your-instance.service-now.com" }
+```
+
+</details>
+
+Prefer a global install (`npm install -g servicenow-mcp-ai`)? Replace
+`"command": "npx", "args": ["-y", "servicenow-mcp-ai"]` with
+`"command": "servicenow-mcp-ai"` in any snippet. The
+[MCP Inspector](https://github.com/modelcontextprotocol/inspector) works the same way:
+`npx @modelcontextprotocol/inspector npx -y servicenow-mcp-ai`.
+
+The one-click links are generated from `package.json` by `scripts/install-links.mjs`
+(`node scripts/install-links.mjs` prints them); `test/install-links.test.js` fails if
+this README or the docs site drift from the generated strings.
+
+### Install via MCP bundle (.mcpb)
+
+An [MCP bundle](https://github.com/modelcontextprotocol/mcpb) is one `.mcpb` file with the
+server and its dependencies; Claude Desktop (or any MCPB host) installs it in one click, with
+no `npm` / `npx`. Its form asks for the connection keys (only `SN_INSTANCE` is required) and
+`SN_TOOL_PACKAGES`; secrets are marked sensitive (kept in the OS keychain). An empty field
+falls back to the env file. Every GA release attaches `servicenow-mcp-ai-<version>.mcpb` to
+its [GitHub Release](https://github.com/IvanBBaev/servicenow-mcp-ai/releases/latest) —
+download it and open it with Claude Desktop. To build it yourself: `npm run mcpb:pack`
+(`dist/mcpb/`; `-- --validate` runs the official validator).
+
+### Docker
+
+The repository ships a multi-stage `Dockerfile` (distroless Node 22 runtime, non-root
+uid 65532). The image contains exactly what `npm pack` publishes plus production
+dependencies, and starts the **HTTP transport** on `0.0.0.0:3000` by default. No image
+is published to a registry yet — build it locally:
+
+```bash
+docker build -t servicenow-mcp-ai .
+
+# Secrets as files (Docker / Kubernetes secrets), mounted read-only
+mkdir -p secrets && printf '%s' 'your-password' > secrets/sn_password
+openssl rand -hex 32 > secrets/sn_http_token
+
+docker run --rm -p 127.0.0.1:3000:3000 \
+  -e SN_INSTANCE=your-instance.service-now.com -e SN_USER=your.user \
+  -e SN_PASSWORD_FILE=/run/secrets/sn_password \
+  -e SN_HTTP_TOKEN_FILE=/run/secrets/sn_http_token \
+  -v "$PWD/secrets:/run/secrets:ro" -v sn-data:/data \
+  servicenow-mcp-ai
+```
+
+- **`SN_HTTP_TOKEN` is required for any non-loopback bind.** The image binds `0.0.0.0`
+  so the published port works; without a token (or OAuth) the server refuses to start
+  (3.0, B6). `SN_HTTP_REQUIRE_TOKEN=0` lets it start with a warning, and then every
+  client that reaches the port drives your instance with the configured credentials.
+  Clients send `Authorization: Bearer <token>`; terminate TLS in front of the container.
+- **OAuth instead of a shared token (N-17):** set `SN_HTTP_OAUTH_ISSUER` (your OIDC
+  provider) and `SN_HTTP_OAUTH_RESOURCE` (this server's public URL, e.g.
+  `https://mcp.example.com/mcp`). Clients discover the issuer from
+  `/.well-known/oauth-protected-resource` and send its JWT access tokens; the token must
+  name the resource as its audience. Optional: `SN_HTTP_OAUTH_SCOPES`,
+  `SN_HTTP_OAUTH_AUDIENCE`, `SN_HTTP_OAUTH_JWKS_URI`. For an issuer that hands out opaque
+  tokens, set `SN_HTTP_OAUTH_INTROSPECTION_URI` plus its client id and secret (RFC 7662). By
+  default the instance is still called with the configured service account.
+- **Per-user ServiceNow access (N-17 phase 2):** add `SN_HTTP_OAUTH_USER_TOKENS=true`, a
+  32-byte `SN_HTTP_OAUTH_TOKEN_KEY` (base64 or hex, e.g. `openssl rand -base64 32`) and an
+  OAuth client on the instance (`SN_OAUTH_CLIENT_ID` / `SN_OAUTH_CLIENT_SECRET`, refresh
+  tokens enabled) whose redirect URL is `/oauth/servicenow/callback` on the
+  `SN_HTTP_OAUTH_RESOURCE` origin. The first call from a user returns a link to the
+  instance's sign-in page (URL elicitation; a 2025 session gets `-32042`, a client without
+  URL elicitation and a background task get an error carrying the link). After
+  the user signs in, the server checks that the account's `sys_user` field matches the
+  token's claim (`SN_HTTP_OAUTH_USER_MATCH`, default `email=email`), keeps the refresh token
+  AES-256-GCM encrypted in `SN_HTTP_OAUTH_TOKEN_STORE`, and from then on calls the instance as
+  that user, so ServiceNow ACLs apply per user. A user drops their own links with
+  `DELETE /oauth/servicenow/link` (their bearer token; answers `{ unlinked, revoked }`); the
+  refresh tokens are also revoked on the instance, best effort. Replicas behind one
+  `SN_HTTP_OAUTH_RESOURCE` can each complete a link when they share `SN_HTTP_OAUTH_TOKEN_KEY`
+  and the store. Limit: requests authorized with `SN_HTTP_TOKEN` still use the shared
+  credential.
+- `/data` holds the docs directory (`SN_DOCS_DIR=/data/docs`) and the env file
+  (`SN_ENV_FILE=/data/.env`); mount a volume there to keep them.
+- Every `<KEY>_FILE` secret source is described in [Secrets from files](#secrets-from-files).
+- For an MCP client that spawns the container over stdio, pass `-i -e SN_TRANSPORT=stdio`
+  (`docker run --rm -i -e SN_TRANSPORT=stdio -e SN_INSTANCE=… servicenow-mcp-ai`).
+- The `HEALTHCHECK` is a TCP liveness probe. `GET /healthz` (liveness) and `GET /readyz`
+  (credentials configured) answer without the token for orchestrator probes;
+  `GET /readyz?probe=1` also calls the instance and sits behind the token, like every
+  MCP route. Set `SN_HTTP_ALLOWED_HOSTS` to the name clients use so the Host header is
+  checked on a `0.0.0.0` bind.
+- `smithery.yaml` describes the same image for [Smithery](https://smithery.ai) (stdio,
+  config keys mapped to the `SN_*` settings).
+
+### HTTP transport: sessions, probes and shutdown
+
+With `SN_TRANSPORT=http` every MCP session (one `initialize`) gets its own server:
+
+- **Per-session state.** Enabled packages, the MCP logging level, list-changed
+  notifications, plan tokens, tasks and write caps belong to the session. Connection
+  pools, OAuth tokens and the schema cache are shared and keyed by profile + host.
+- **`servicenow_use_instance` is session-scoped over HTTP.** It switches the profile of
+  the calling session only; other sessions keep theirs and nothing is written. Pass
+  `persist: true` to also write `SN_ACTIVE_PROFILE` to the env file (journaled) — that
+  changes the default for sessions that have not switched. Over stdio the switch lasts
+  until the process exits; `persist: true` writes it there too (3.0, B12).
+- **Lifetime.** A session ends on `DELETE` or after `SN_HTTP_SESSION_TTL_SEC` idle
+  (default 30 min); a request with an ended session id gets 404 and the client
+  re-initializes. At most `SN_HTTP_MAX_SESSIONS` (64) are open at once.
+- **DNS-rebinding protection.** The `Host` header must match `SN_HTTP_ALLOWED_HOSTS`
+  (default: the loopback names on a loopback bind) and a browser `Origin` must match
+  `SN_HTTP_ALLOWED_ORIGINS` (default: loopback origins); otherwise 403.
+- **Probes.** `GET /healthz` → `200 {"status":"ok"}` while serving. `GET /readyz` →
+  200 when credentials are configured, 503 otherwise. Both answer without the token.
+  `GET /readyz?probe=1` (behind the token) also reads one `sys_user` row and returns
+  503 when the instance is unreachable; the result is cached for 5 s.
+- **Shutdown.** On SIGTERM / SIGINT the listener stops accepting connections, new
+  requests get 503, in-flight tool calls get up to 5 s to finish, then every session is
+  closed and the process exits 0.
+- **Keep-alive.** Open SSE streams get a comment every `SN_HTTP_KEEPALIVE_MS` (25 s).
+
+### Quickstart
+
+The fastest path is three lines of Basic auth — set these (in the env file or the
+real environment) and you are connected:
+
+```dotenv
+SN_INSTANCE=dev12345.service-now.com
+SN_USER=your.username
+SN_PASSWORD=your-password
+```
+
+Everything else is optional tuning; see the full
+[Environment variables](#environment-variables) reference for the rest.
+
+> **Past a quick try, prefer OAuth over a stored password.** For anything shared or
+> long-lived, run the one-time `npx servicenow-mcp-ai login` instead — it stores a
+> refresh token, not your password. See
+> [Configure credentials](#configure-credentials) → _OAuth 2.1_.
+
+### Verify your setup
+
+Once the three variables are set, confirm the connection before you start:
+
+1. Run the `servicenow_test_connection` tool — it reads one `sys_user` record and
+   reports `ok`, HTTP status and latency.
+2. Run `servicenow_check_capabilities` — it previews which admin-restricted `sys_*`
+   tables the connected user can actually read.
+
+Or do both from the shell in one shot:
+
+```bash
+npx servicenow-mcp-ai doctor   # checks credentials, reachability and capabilities
+```
+
+Prefer to be asked? `npx servicenow-mcp-ai init` prompts for the instance, the
+auth method and the credentials, writes the env file and runs `doctor` — see
+[Command-line interface](#command-line-interface).
+
+## Configure credentials
+
+Credentials live in `~/.config/servicenow-mcp-ai/.env` (or the file `SN_ENV_FILE` names):
+
+```dotenv
+SN_INSTANCE=your-instance.service-now.com
+SN_USER=your.username@example.com
+SN_PASSWORD=your-password
+```
+
+`SN_INSTANCE` accepts `dev12345`, `dev12345.service-now.com` or a full `https://` URL.
+
+You can also set or change them at runtime by calling the
+`servicenow_set_credentials` tool — the new values are written straight back to the env file.
+Moving a configured profile to a different instance requires `user` and `password` in the same
+call (the stored secrets are never sent to another host), and the change must be confirmed by
+the client — clients without elicitation support are refused unless
+`SN_ALLOW_UNCONFIRMED_CREDENTIAL_CHANGE=1` is set.
+
+The tool also sets the auth method (`auth`), the OAuth client id (`oauth_client_id`) and grant
+(`oauth_grant`). Secrets — the API key and the OAuth client secret — are never tool arguments:
+list them in `request_secrets` and the server asks for them through an elicitation prompt, so
+they never appear in a logged tool call, the result or the write journal. A client without
+elicitation support is refused (the opt-out above does not apply to secrets); set those keys in
+the env file instead. The instance-change rule follows the resulting auth method: an API-key
+profile needs a new API key, an OAuth `client_credentials` profile a new client secret, the
+OAuth `password` grant user, password and client secret, Basic / `none` user and password;
+bearer-token, `refresh_token` and `jwt_bearer` profiles cannot be moved with this tool.
+
+`servicenow_get_status` (`authWarnings`), `servicenow_list_instances` and `doctor` evaluate each
+profile against its own auth method — an API-key profile needs no password — and report the
+method, the OAuth grant, the refresh-token state and the write mode, never a secret value. When
+the refresh-token grant returns a rotated refresh token, it is written back to the env key it
+was read from; if the env file cannot be written, the new token is kept in memory (lost on
+restart) and a warning is logged and shown by `get_status` / `doctor`. Values the server writes
+keep Windows paths literal (backslashes are single-quoted) and a CRLF env file stays CRLF. On
+Windows the env file inherits its folder's ACL — restrict it yourself (for example
+`icacls .env /inheritance:r /grant:r "%USERNAME%:F"`); the server only warns, it never runs
+`icacls`.
+
+The env file is resolved in this order: `SN_ENV_FILE`, then
+`~/.config/servicenow-mcp-ai/.env` (XDG). A project-root `.env` is deprecated (3.0, B5):
+if one exists while neither of the two is in use, it is still read and startup warns where to move it.
+A global/`npx` install therefore writes to your user config rather than into
+`node_modules`. Real environment variables always take precedence over the file.
+
+### First run: the model configures itself
+
+At `initialize` the server sends `instructions` built from the live configuration: the enabled
+packages and tool count, the write mode, the active profile and, when nothing is configured,
+what is missing and how to fix it — plus pointers to the prompts, the reference resources
+and large-result handling (paging, `format "file"`). Until then every instance tool fails with
+`code: "NOT_CONFIGURED"` and a hint naming `servicenow_set_credentials`. A first session
+with an empty env file looks like this (abridged):
+
+```text
+instructions  Credentials: NOT configured (missing instance, user, password). Instance tools
+              fail with code NOT_CONFIGURED until fixed. To configure: ask the user for
+              the instance and credentials, call servicenow_set_credentials, then
+              servicenow_test_connection. Never guess or echo a password.
+user          How many open P1 incidents do we have?
+model         Which instance, user and password should I connect with?
+user          dev12345, admin, ••••••
+tool call     servicenow_set_credentials { instance: "dev12345", user: "admin", password: … }
+tool result   { message: "Credentials saved", profile: "default", configured: true, password: "***" }
+tool call     servicenow_test_connection {}
+tool result   { ok: true, … }
+tool call     servicenow_aggregate { table: "incident", query: "active=true^priority=1" }
+model         There are 7 open P1 incidents.
+```
+
+`servicenow_get_status` then shows the live state: server version, uptime and transport,
+`policy.summary`, limits, redaction, the docs directory, write counters, the profile source and
+`profileDetails` (per-profile auth mode, write mode and missing keys) — never a secret value.
+
+### OAuth 2.1 (Authorization Code + PKCE) — recommended
+
+Register an **Authorization Code** OAuth API endpoint in ServiceNow with a
+loopback redirect URL (e.g. `http://localhost:53682/callback`), set
+`SN_OAUTH_CLIENT_ID` (and `SN_OAUTH_CLIENT_SECRET` for a confidential client),
+then run the one-time interactive login:
+
+```bash
+npx servicenow-mcp-ai login
+```
+
+It opens the browser, you approve, and the obtained **refresh token** is stored
+in your env file. The server then runs non-interactively (refresh_token grant) —
+no password is ever stored. PKCE (S256) is always used.
+
+> The OAuth 2.0 **password grant (ROPC) is deprecated** in OAuth 2.1 and disabled
+> on many instances; prefer `login`. `client_credentials` and `refresh_token`
+> grants remain supported for service accounts. See [.env.example](.env.example).
+
+### Supported authentication methods
+
+Every inbound REST auth method ServiceNow offers is covered:
+
+| Method | `SN_AUTH` | Set | Notes |
+| ------ | --------- | --- | ----- |
+| Basic | `basic` | `SN_USER` / `SN_PASSWORD` | Default. |
+| OAuth 2.1 — Authorization Code + PKCE | `oauth` | `npx servicenow-mcp-ai login` | **Recommended.** Interactive, stores a refresh token. |
+| OAuth — Client Credentials | `oauth` | `SN_OAUTH_GRANT=client_credentials` | Service-to-service. |
+| OAuth — Refresh Token | `oauth` | `SN_OAUTH_GRANT=refresh_token` + `SN_OAUTH_REFRESH_TOKEN` | Set by `login`. |
+| OAuth — JWT Bearer | `oauth` | `SN_OAUTH_GRANT=jwt_bearer` + `SN_OAUTH_JWT_KEY` | RS256 assertion; no password. |
+| OAuth — Password (ROPC) | `oauth` | `SN_OAUTH_GRANT=password` | **Deprecated.** |
+| API Key | `apikey` | `SN_API_KEY` | `x-sn-apikey` header. |
+| Bearer token | `token` | `SN_BEARER_TOKEN` or `SN_TOKEN_FILE` | Pre-obtained token, used verbatim. A rejected token (401) re-reads `SN_TOKEN_FILE` once, else fails with `AUTH_EXPIRED`. |
+| Mutual TLS (client cert) | `none` (or layered) | `SN_TLS_CLIENT_CERT` / `_KEY` | Cert maps to a user; needs optional `undici`. |
+
+### Environment variables
+
+All settings are read from the env file (`SN_ENV_FILE`, else
+`~/.config/servicenow-mcp-ai/.env`) or the real process environment, which takes
+precedence. Only the first three are required; the rest are optional tuning knobs.
+See [.env.example](.env.example) for a template. Every value is validated at
+startup: an invalid one stops the server with an error that names every offending key
+(3.0, B5), or — with `SN_STRICT_SETTINGS=0` — is logged as a warning and the setting keeps
+its default.
+
+<!-- GENERATED:ENV:BEGIN (npm run docs:env) -->
+
+_These tables are generated from the settings manifest
+(`src/core/settings-manifest.ts`) — edit the manifest, then run
+`npm run docs:env`._
+
+#### Connection and authentication
+
+The instance and its credentials. Only SN_INSTANCE is always required; the auth method is auto-detected from the keys present (API key -> bearer token -> OAuth -> Basic) unless SN_AUTH names it.
+
+| Variable | Required | Default | Since | Description |
+| -------- | :------: | ------- | ----- | ----------- |
+| `SN_INSTANCE` | yes | — | 1.0.0 | Instance name, host, or `https://` URL (`dev12345`, `dev12345.service-now.com`). |
+| `SN_USER` | yes | — | 1.0.0 | ServiceNow username for Basic auth. |
+| `SN_PASSWORD` | yes | — | 1.0.0 | ServiceNow password. Never logged or returned by any tool. |
+| `SN_AUTH` | no | auto | 1.1.0 | Auth method: `basic`, `oauth`, `apikey`, `token` or `none` (cert-only mTLS). Auto-detected from the keys present (API key → bearer → OAuth → Basic). |
+| `SN_API_KEY` | no | — | 1.1.0 | ServiceNow Inbound API Key, sent as the `x-sn-apikey` header (enables `apikey` mode). |
+| `SN_BEARER_TOKEN` | no | — | 1.1.0 | A pre-obtained bearer token, sent verbatim as `Authorization: Bearer …` (enables `token` mode). |
+| `SN_TOKEN_FILE` | no | — | next | File holding the bearer token (enables `token` mode; wins over `SN_BEARER_TOKEN`). Re-read once when the instance rejects the token with 401, so an external issuer can rotate it; otherwise the call fails with `AUTH_EXPIRED`. |
+| `SN_TOKEN_EXPIRES_AT` | no | — | next | ISO 8601 expiry of the bearer token. `get_status` / `doctor` warn when less than 24 h remain, when it has passed, or when it cannot be parsed. |
+| `SN_OAUTH_CLIENT_ID` | no | — | 1.1.0 | OAuth client id (its presence enables OAuth). |
+| `SN_OAUTH_CLIENT_SECRET` | no | — | 1.1.0 | OAuth client secret. |
+| `SN_OAUTH_GRANT` | no | `password` | 1.1.0 | OAuth grant: `password` (**deprecated** — ROPC), `client_credentials`, `refresh_token` or `jwt_bearer`. The `login` command sets this to `refresh_token` for you. Any other value fails every OAuth request. |
+| `SN_OAUTH_REFRESH_TOKEN` | no | — | 1.1.0 | Refresh token for the `refresh_token` grant. Obtained automatically by `npx servicenow-mcp-ai login` (Authorization Code + PKCE). |
+| `SN_OAUTH_REDIRECT_URI` | no | http://localhost:53682/callback | 1.1.0 | Loopback redirect URL for the PKCE `login` flow. Must match the redirect registered on the OAuth endpoint. |
+| `SN_OAUTH_SCOPE` | no | — | 1.1.0 | Optional OAuth scope requested during `login`. |
+| `SN_OAUTH_JWT_KEY` | no | — | 1.1.0 | PEM private key for the `jwt_bearer` grant (or `SN_OAUTH_JWT_KEY_FILE`); the public certificate is registered on the ServiceNow JWT provider. |
+| `SN_OAUTH_JWT_KEY_FILE` | no | — | 1.1.0 | Path to the PEM private key for the `jwt_bearer` grant. |
+| `SN_OAUTH_JWT_ISS` | no | client id | 1.1.0 | `iss` claim of the JWT-bearer assertion. |
+| `SN_OAUTH_JWT_SUB` | no | `SN_USER` | 1.1.0 | `sub` claim (the user) of the JWT-bearer assertion. |
+| `SN_OAUTH_JWT_AUD` | no | `https://<host>/oauth_token.do` | 1.1.0 | `aud` claim of the JWT-bearer assertion. |
+| `SN_OAUTH_JWT_KID` | no | — | 1.1.0 | `kid` header of the JWT-bearer assertion, when the provider requires one. |
+| `SN_OAUTH_JWT_EXP_SEC` | no | `300` | 1.1.0 | Lifetime of the JWT-bearer assertion in seconds. |
+| `SN_ALLOW_UNCONFIRMED_CREDENTIAL_CHANGE` | no | `false` | next | H-2: operator opt-out — lets `servicenow_set_credentials` proceed on MCP clients without elicitation support (no confirmation prompt, no live server). An explicit decline is still refused. Off by default. |
+
+#### Secrets from files
+
+Container secrets (D-5): <KEY>_FILE=/path loads <KEY> from that file at startup (one trailing newline is trimmed). Setting both <KEY> and <KEY>_FILE is a startup error; so is an unreadable or empty file. A value loaded this way is never written back to the env file. Per profile: SN_PROFILE_<NAME>_<KEY>_FILE for the ServiceNow secrets.
+
+| Variable | Required | Default | Since | Description |
+| -------- | :------: | ------- | ----- | ----------- |
+| `SN_PASSWORD_FILE` | no | — | next | D-5: read `SN_PASSWORD` from this file (Docker / Kubernetes secrets). |
+| `SN_API_KEY_FILE` | no | — | next | D-5: read `SN_API_KEY` from this file (Docker / Kubernetes secrets). |
+| `SN_BEARER_TOKEN_FILE` | no | — | next | D-5: read `SN_BEARER_TOKEN` from this file (Docker / Kubernetes secrets). Read once at startup (`SN_TOKEN_FILE`, re-read on a 401, still wins). |
+| `SN_OAUTH_CLIENT_SECRET_FILE` | no | — | next | D-5: read `SN_OAUTH_CLIENT_SECRET` from this file (Docker / Kubernetes secrets). |
+| `SN_OAUTH_REFRESH_TOKEN_FILE` | no | — | next | D-5: read `SN_OAUTH_REFRESH_TOKEN` from this file (Docker / Kubernetes secrets). A rotated refresh token is then kept in memory only (update the file yourself). |
+| `SN_HTTP_TOKEN_FILE` | no | — | next | D-5: read `SN_HTTP_TOKEN` from this file (Docker / Kubernetes secrets). |
+| `SN_HTTP_OAUTH_INTROSPECTION_SECRET_FILE` | no | — | next | D-5: read `SN_HTTP_OAUTH_INTROSPECTION_SECRET` from this file (Docker / Kubernetes secrets). |
+| `SN_HTTP_OAUTH_TOKEN_KEY_FILE` | no | — | next | D-5: read `SN_HTTP_OAUTH_TOKEN_KEY` from this file (Docker / Kubernetes secrets). |
+
+#### Profiles and the env file
+
+The bare SN_INSTANCE / SN_USER / SN_PASSWORD keys are the 'default' profile. More instances live under SN_PROFILE_<NAME>_* keys; switch with SN_ACTIVE_PROFILE or the servicenow_use_instance tool.
+
+| Variable | Required | Default | Since | Description |
+| -------- | :------: | ------- | ----- | ----------- |
+| `SN_PROFILE_<NAME>_*` | no | — | 1.1.0 | Named connection profiles: `SN_PROFILE_DEV_INSTANCE` / `_USER` / `_PASSWORD` define profile `dev`. The bare `SN_INSTANCE`/`SN_USER`/`SN_PASSWORD` keys are the `default` profile. The auth, policy, write-mode, `ENV`, `PROD_WRITES` and `UPDATE_SET` settings take the same prefix. Example: `SN_PROFILE_DEV_INSTANCE=dev12345.service-now.com`, `SN_PROFILE_DEV_USER=admin`, `SN_PROFILE_DEV_PASSWORD=dev-password`. |
+| `SN_ACTIVE_PROFILE` | no | `default` | 1.1.0 | Which profile tools use. Switch at runtime with `servicenow_use_instance` (written to the env file only with `persist: true`). |
+| `SN_ENV_FILE` | no | `~/.config/servicenow-mcp-ai/.env` | 1.1.0 | Explicit path to the env file to read/write. Otherwise the server uses `$XDG_CONFIG_HOME/servicenow-mcp-ai/.env` (`~/.config/…`). A project-root `.env` next to the installed package is still read when neither is in play, as a deprecated fallback (B5) with a startup warning naming where to move it. `doctor` prints the chosen file and why. |
+
+#### Network, TLS and resilience
+
+Timeouts, retries, the host allow-list, the outbound proxy, mutual TLS and the per-host queue and circuit breaker. They govern every REST client of the server. The proxy and mutual TLS need the optional undici package.
+
+| Variable | Required | Default | Since | Description |
+| -------- | :------: | ------- | ----- | ----------- |
+| `SN_TIMEOUT_MS` | no | `30000` | 1.1.0 | Per-request timeout in milliseconds. |
+| `SN_MAX_RETRIES` | no | `2` | 1.1.0 | Retries for transient failures (429/5xx, network errors). Non-idempotent writes are only retried on connect errors. |
+| `SN_RETRY_AFTER_MAX_MS` | no | `60000` | next | Upper bound honoured for a `Retry-After` header on 429/503; a larger value is clamped so a misbehaving upstream cannot park the client for minutes. |
+| `SN_DEADLINE_MS` | no | max(120000, 2 × `SN_TIMEOUT_MS`) | next | Total wall-clock budget for one logical request across retries, backoff, queue wait and OAuth re-auth. A retry that cannot fit into the remaining budget is not attempted — the call fails with code `DEADLINE_EXCEEDED`. |
+| `SN_ALLOWED_HOSTS` | no | — | 1.1.0 | Comma-separated allow-list of permitted hosts (for custom or sovereign-cloud domains). When set, only matching hosts are contacted. When unset, only `*.service-now.com` instances are allowed and internal/loopback hosts are blocked (SSRF guard). An entry may carry a port (`host:8443`) or be a bracketed IPv6 literal (`[2001:db8::1]`); an explicit non-443 port or an IPv6 literal in the instance value is accepted only when such an entry matches it — never under the default policy. |
+| `SN_MAX_BODY_BYTES` | no | `52428800` | next | Largest response body (bytes) read into memory; a larger declared or streamed body fails with `RESPONSE_TOO_LARGE`. Redirects are never followed — a 3xx fails with `REDIRECT_BLOCKED` naming the target host. |
+| `SN_HTTPS_PROXY` | no | — | next | Outbound HTTPS proxy URL (`http://user:pass@proxy:3128`) for all ServiceNow and OAuth traffic; needs the optional `undici` package. When unset, the ambient `HTTPS_PROXY` / `HTTP_PROXY` variables are honoured together with `NO_PROXY`; `SN_HTTPS_PROXY` itself is explicit and ignores `NO_PROXY`. Proxy credentials are never logged. |
+| `SN_USER_AGENT_SUFFIX` | no | — | next | Extra token appended to the `User-Agent` sent on every request (`servicenow-mcp-ai/<version> (node/<major>; <transport>; <client>)`), e.g. a team or ticket id for correlation in the instance's transaction log. Printable ASCII, up to 80 characters. |
+| `SN_TLS_CLIENT_CERT` | no | — | 1.1.0 | Client certificate (PEM) for **mutual TLS** (or `SN_TLS_CLIENT_CERT_FILE`). With `SN_TLS_CLIENT_KEY` it presents a client cert; ServiceNow's mutual-auth profile maps it to a user. Needs the optional `undici` package (`npm i undici`). Cert and key must be set together — only one of them is a configuration error. |
+| `SN_TLS_CLIENT_CERT_FILE` | no | — | 1.1.0 | Path to the client certificate (PEM) for mutual TLS. |
+| `SN_TLS_CLIENT_KEY` | no | — | 1.1.0 | Private key (PEM) for the client certificate (or `SN_TLS_CLIENT_KEY_FILE`). |
+| `SN_TLS_CLIENT_KEY_FILE` | no | — | 1.1.0 | Path to the private key (PEM) for the client certificate. |
+| `SN_TLS_CA` | no | — | 1.1.0 | Optional CA bundle (PEM) to trust (or `SN_TLS_CA_FILE`) — applied with or without a client certificate; needs the optional `undici` package. |
+| `SN_TLS_CA_FILE` | no | — | 1.1.0 | Path to the CA bundle (PEM) to trust. |
+| `SN_TLS_REJECT_UNAUTHORIZED` | no | `true` | 1.1.0 | `false` disables TLS certificate verification (not recommended; warned once at startup). |
+| `SN_MAX_CONCURRENT` | no | `4` | 1.1.0 | Maximum parallel HTTP requests to the instance (simple in-process semaphore). |
+| `SN_MAX_QUEUE` | no | `64` | next | Maximum requests waiting per host for a free slot beyond `SN_MAX_CONCURRENT`. Overflow fails immediately with code `BUSY` instead of piling up. Diagnostics (`servicenow_test_connection`, `doctor`) bypass the queue so they still answer while it is stalled. |
+| `SN_QUEUE_TIMEOUT_MS` | no | `SN_TIMEOUT_MS` | next | Longest a request waits for a slot before failing with code `BUSY`. Wait time is not billed to the per-attempt timeout, only to `SN_DEADLINE_MS`. |
+| `SN_BREAKER_THRESHOLD` | no | `0` (off) | next | Opt-in per-host circuit breaker: after this many consecutive failed requests (transport error, deadline, 5xx) further requests fail fast with code `CIRCUIT_OPEN` until `SN_BREAKER_RESET_MS` passes. Diagnostics are never blocked. |
+| `SN_BREAKER_RESET_MS` | no | `30000` | next | How long an open circuit breaker rejects requests before letting a trial request through; the first failure re-opens it, the first success closes it. |
+
+#### Tool packages
+
+Which tools are registered. The admin tools (set_credentials, get_status, use_instance) are always on.
+
+| Variable | Required | Default | Since | Description |
+| -------- | :------: | ------- | ----- | ----------- |
+| `SN_TOOL_PACKAGES` | no | `discovery` | 1.0.0 | Comma/space-separated tool packages or profiles to enable. Profiles: `discovery` (default; `core`, the 2.x default, adds `attachment`), `all` and the presets `reader` \\| `developer` \\| `admin` (see [Presets](#presets)). Packages: `table`, `schema`, `aggregate`, `attachment`, `importset`, `batch`, `catalog`, `change`, `knowledge`, `cmdb`, `scripts`, `flows`, `codecheck`, `docs`, `instance`, `email`, `atf`, `revert`, `artifacts`, `updatesets`, `cicd`, `access`, `ops`, `history`, `properties`, `directory`, `ui`. The admin tools are always on. `atf` runs tests on the instance — enable it only on a non-production instance. `cicd` previews and commits retrieved update sets. `access` grants and revokes one non-privileged role for one user. |
+| `SN_PACKAGES_DENY` | no | — | 1.0.0 | Comma/space-separated packages to exclude even if enabled by `SN_TOOL_PACKAGES`. The only way to block plugin APIs (catalog, change, knowledge…) — the table policy does not see them. |
+| `SN_PACKAGES_READONLY` | no | — | 1.0.0 | Comma/space-separated packages whose write tools are not registered; their read tools stay. Per-package complement to the global `SN_READONLY`. |
+| `SN_CODESEARCH` | no | `false` | 1.1.0 | Opt in to the Code Search API (`sn_codesearch`) for `servicenow_search_code` (FT-7). When `true` and the plugin is active it replaces the LIKE iteration; falls back to LIKE on any failure. |
+| `SN_EXPERIMENTAL_TASKS` | no | `0` | next | M-9, **experimental**: `1` adds an optional `run_as_task:true` argument to `snapshot_instance`, `compare_instances`, `run_atf`, `check_code_health`, `document_app`, `document_instance` and `query_table` (`format:"file"` only). Such a call returns an MCP task handle at once (`_meta["io.modelcontextprotocol/related-task"]`); the client polls `tasks/get`, reads `tasks/result` (kept 1 h, redacted) or stops it with `tasks/cancel`. Off: schemas unchanged. Built on the SDK's experimental task API. |
+| `SN_MCP_APPS` | no | `0` | next | N-50, MCP Apps (SEP-1865): `1` registers four self-contained `ui://servicenow-mcp/…` HTML views (`text/html;profile=mcp-app`: plan diff, Mermaid diagram, flow explainer, UI Builder page tree) and links the write tools with `apply`, the Mermaid generators, `explain_flow` and `explain_ui_experience` to them through `_meta.ui.resourceUri` — only for a client that advertises the `io.modelcontextprotocol/ui` extension. The views render the tool's own result (no network: a strict CSP in the document and an empty `_meta.ui.csp` on the resource). Off: `tools/list`, resources and every result unchanged. |
+| `SN_LEGACY_TOOL_NAMES` | no | `0` | next | M-7 (B2), **deprecated bridge for one minor cycle**: every tool name renamed by the v3 naming convention is an alias of its new name — it dispatches to the new tool, accepts the old parameter names, and logs a one-time deprecation warning. Off (the default): the aliases still answer `tools/call` but are left out of `tools/list`. `1` also lists them and accepts the old parameter names on the new tool names. See the rename table in the README. |
+
+#### Access policy and write safety
+
+Least-privilege table policy, plan-and-apply writes, destructive-write confirmation, per-session caps, prod profiles, update-set binding and the upload / email / SDK-managed-scope guards.
+
+| Variable | Required | Default | Since | Description |
+| -------- | :------: | ------- | ----- | ----------- |
+| `SN_TABLES_ALLOW` | no | — | 1.1.0 | Comma-separated table allowlist; when set, only these tables are reachable. |
+| `SN_TABLES_DENY` | no | — | 1.1.0 | Comma-separated table denylist; always wins over the allowlist. |
+| `SN_READONLY` | no | `false` | 1.1.0 | When truthy, refuse every create/update/delete. |
+| `SN_WRITE_MODE` | no | `plan` | 2.0.0 | `plan` (default) previews a write as a before/after diff without mutating; `apply` executes; passing `apply:true` forces a single call. |
+| `SN_COMPAT` | no | `3` | next | Upgrade bridge (owner, 2026-10-14): `2` keeps the 2.x defaults for every one of these settings left unset — `SN_PROTECTED_TABLES_WRITE=allow`, `SN_DESTRUCTIVE_CONFIRM=off`, `SN_BATCH_UNMAPPED=allow`, `SN_LEGACY_TOOL_NAMES=1` and `SN_TOOL_PACKAGES=core` (discovery plus `attachment`) — and an invalid value warns and keeps its default instead of stopping the server (`SN_STRICT_SETTINGS=0`). A setting you set yourself always wins. `servicenow-mcp-ai migrate` adds it when it converts a 2.x env file. `3` (the default) uses the 3.0 defaults. Meant for the migration, not as a permanent setting. |
+| `SN_DESTRUCTIVE_CONFIRM` | no | `token` | next | H-3: confirmation for a destructive `apply:true` (`delete_record`, `delete_attachment`, a writing `batch`, `send_email`, `order_catalog_item`, `revert_write`, `upsert_artifact`, `check_change_conflicts` with `calculate:true`) in plan mode. `token` (the 3.0 default, B4): the plan preview returns a single-use `plan_token` and the apply must pass it back with the same arguments — an apply with no token returns that preview and its token instead (nothing runs), a wrong, used or expired one is `PLAN_REQUIRED`; `elicit`: `token` plus a confirmation prompt on clients with elicitation (a decline is `CONFIRM_DECLINED`, journaled as refused). `SN_WRITE_MODE=apply` bypasses it, except on a profile marked `prod` (`SN_ENV`), which is always at least `elicit` and is confirmed in apply mode too. `off` is the explicit opt-out (the pre-3.0 behaviour). |
+| `SN_PLAN_TOKEN_TTL_SEC` | no | `600` | next | H-3: lifetime of a `plan_token` in seconds (30–86400). Tokens live only in the server process and are used up by the apply. |
+| `SN_BATCH_UNMAPPED` | no | `deny` | next | H-4: a `servicenow_batch` sub-request whose REST path no tool package owns: `deny` (the 3.0 default, B8) refuses it (so a new plugin API cannot pass `SN_PACKAGES_DENY` / `SN_PACKAGES_READONLY` inside a batch); `allow` is the opt-out and checks it against the table and read-only axes only. A nested batch is always refused. |
+| `SN_BATCH_MAX_REQUESTS` | no | `50` | next | H-4: most sub-requests one `servicenow_batch` call may carry (1–1000; 50 since 3.0), checked before anything is sent. |
+| `SN_PROTECTED_TABLES_WRITE` | no | `confirm` | next | H-11: writes to the built-in protected tables (identity, roles, ACLs, `sys_properties`, OAuth, scripts, LDAP, certificates, data sources, REST messages, table and column definitions — `servicenow_explain_policy` lists them). `confirm` (the 3.0 default, B11) runs one only when the tool call itself passes `apply: true` — under `SN_WRITE_MODE=apply` a call without it is refused with `POLICY_DENIED` and a hint to re-run; `deny` refuses them all; `allow` is the 2.x behaviour. An exact `SN_TABLES_ALLOW` entry lifts the rule for one table. Reads are unaffected. |
+| `SN_IMPORT_SET_TABLES` | no | `u_*,imp_*` | next | H-11: patterns (`*`, `?`) the import-set staging table must match (3.0 default `u_*,imp_*`); `*` is the opt-out (any table the table policy allows). |
+| `SN_MAX_WRITES_PER_SESSION` | no | 500 per HTTP session, none on stdio | next | H-11: most applied instance writes per session (the process on stdio, one MCP session over HTTP; a batch counts its write sub-requests). Past it, writes fail with `WRITE_CAP` before any request; `get_status.writes.caps` shows the usage. Unset = 500 per HTTP session and no cap on stdio (3.0 default); `0` = no cap. |
+| `SN_MAX_DELETES_PER_SESSION` | no | `100` | next | H-11: most applied deletes per session (`WRITE_CAP`; 100 since 3.0). `0` = no cap. |
+| `SN_MAX_BATCH_WRITES` | no | `50` | next | H-11: most write (non-GET) sub-requests in one `servicenow_batch` (`WRITE_CAP`; 50 since 3.0). `0` = no cap. |
+| `SN_ENV` | no | — | next | H-11: marks the default profile `prod`, `test` or `dev` (`SN_PROFILE_<NAME>_ENV` for others). A `prod` profile stays in plan mode even when apply is configured unless `SN_PROD_WRITES` (`SN_PROFILE_<NAME>_PROD_WRITES`) is `I_UNDERSTAND`; its destructive applies are always confirmed (at least `SN_DESTRUCTIVE_CONFIRM=elicit`, also in apply mode — `CONFIRM_REQUIRED` for a client without elicitation); results carry `_meta.environment`; `use_instance` warns. `SN_PROFILE_<NAME>_WRITE_MODE` sets the write mode per profile. |
+| `SN_PROD_WRITES` | no | — | next | H-11: `I_UNDERSTAND` lets a `prod` default profile run in apply mode. |
+| `SN_UPDATE_SET` | no | — | next | S-6: update set (sys_id or exact name) that applied Table-tool writes (create / update / upsert / delete) land in; a per-call `update_set` overrides it. The plan names the set; the user's current update set is switched for the write and restored after it. Data-row tables are written unchanged. |
+| `SN_EMAIL_ALLOWED_DOMAINS` | no | — | next | Recipient domains `servicenow_send_email` may address (to/cc/bcc; a domain covers its subdomains, `*` allows any). When unset, every recipient must be the email of a user in the instance's own `sys_user` table; anything else fails with `RECIPIENT_NOT_ALLOWED`. |
+| `SN_MAX_UPLOAD_BYTES` | no | `10485760` | next | Largest attachment upload, checked on the base64 length before decoding, or on the file size for a `file_path` source (`PAYLOAD_TOO_LARGE`). |
+| `SN_UPLOAD_MIME_ALLOW` | no | — | next | Optional allow-list of upload content types (exact, or `type/*`); others fail with `MIME_NOT_ALLOWED`. |
+| `SN_SDK_MANAGED_SCOPES` | no | — | next | P-3: comma/space-separated application scopes (namespace such as `x_acme_app`, or the `sys_scope` sys_id) you declare as managed by a ServiceNow SDK (Fluent) project. The highest source of authority for SDK-managed detection; listed in `get_status` / `check_capabilities` under `sdkManaged`. |
+| `SN_SDK_MANAGED_WRITES` | no | `warn` | next | P-22: writes into an SDK-managed scope (a record whose `sys_scope` P-3 detects as SDK-managed) from `create_record`, `update_record`, `upsert_record`, `delete_record`, `set_property`, `revert_write`, `upsert_artifact` (every record of the plan) and the Table API write sub-requests of `batch`; a create without `sys_scope` on a `sys_metadata` table is judged by the session's current application (`apps.current_app` preference; unreadable = a `sdkScopeWarning`, never a crash): `warn` previews and applies with an `sdkManaged` block naming the Fluent alternative; `deny` refuses the apply with `SDK_MANAGED_SCOPE` (the plan says `would_refuse`); `allow` skips the check. Runs after the table policy and costs nothing unless `SN_SDK_MANAGED_SCOPES` or `SN_SDK_PROJECT_DIRS` is set. |
+| `SN_SDK_PROJECT_DIRS` | no | — | next | P-3: directories (separated by commas or the platform path delimiter) scanned read-only for SDK projects: each `now.config.json` declares its `scope` / `scopeId` as SDK-managed. Bounded (depth 4, 2000 directories, 100 config files, 256 KiB per file), never follows symbolic links, skips hidden, `node_modules` and build folders, and reads nothing but `now.config.json`. |
+
+#### Results, redaction and exports
+
+Result size budgets, output shaping, redaction of record values, the write journal and CSV export safety.
+
+| Variable | Required | Default | Since | Description |
+| -------- | :------: | ------- | ----- | ----------- |
+| `SN_MAX_RECORDS` | no | `10000` | 1.1.0 | Hard cap on records returned by a `fetchAll` query. |
+| `SN_MAX_RESULT_CHARS` | no | `48000` | 1.1.0 | Character budget for a tool result (48,000 since O-21 (b), under Claude Code's 50,000 threshold). A larger result goes to a file while `SN_OVERSIZE_TO_FILE` is on; otherwise it is shrunk with a note naming `format:"file"`, and a snapshot, compare or diagram result is returned in full with a `note`. |
+| `SN_OVERSIZE_TO_FILE` | no | `true` | next | S-11 / N-61 (default on since O-21 (b)): write a `query_table` (JSON lines), snapshot, compare or diagram result over `SN_MAX_RESULT_CHARS` to a file under `SN_DOCS_DIR` (`<profile>/exports/`, `<profile>/diagrams/`) and return `{path, bytes, preview}` instead. |
+| `SN_RESULT_SIZE_HINTS` | no | `true` | next | N-65 (default on, O-21 (c)): the large readers (`document_*`, `snapshot_instance`, `compare_*`, `get_script`) carry `_meta["anthropic/maxResultSizeChars"]` = `SN_MAX_RESULT_CHARS` in `tools/list`. Set `false` to drop the hints. |
+| `SN_STRUCTURED` | no | `true` | next | N-39 (default on, O-21 (d)): tools with an output shape publish `outputSchema` in `tools/list` and answer with `structuredContent` next to the JSON text. Set `false` to drop both: every result then carries its payload once, as text, and `tools/list` is smaller. |
+| `SN_INCLUDE_REF_LINKS` | no | `false` | 1.1.0 | Reference fields come back without their `link` URLs by default (token savings). Set `true` to include them. |
+| `SN_RESULT_PRETTY` | no | `false` | 1.1.0 | Tool results are compact JSON by default (pretty-printing ~doubles tokens). Set `true` for indented output. |
+| `SN_REDACT_FIELDS` | no | — | 2.0.0 | DF-5: mask these field values before records reach the model (comma/space-separated). |
+| `SN_REDACT_PII` | no | `false` | 2.0.0 | DF-5: also mask email/phone/national-id patterns inside string values. Since H-5 both redaction settings apply deeply to every tool result (success and error) and to the write journal. |
+| `SN_JOURNAL_MAX_BYTES` | no | `20971520` | next | H-5: size (bytes, default 20 MiB) at which `write-journal.jsonl` rotates to `write-journal.<ISO-time>.jsonl`; the hash chain continues across files. |
+| `SN_CSV_FORMULA_GUARD` | no | `true` | next | H-5: prefix CSV text cells that start with `=`, `+`, `-`, `@`, tab or CR with `'` so spreadsheets never evaluate them (a text `-5` exports as `'-5`). `0` opts out. |
+| `SN_CSV_BOM` | no | `true` | next | H-5: prepend a UTF-8 BOM to `format:"csv"` exports so Excel decodes non-ASCII text. `0` opts out. |
+
+#### Caching
+
+The schema reads cache and the capability / plugin-API probes.
+
+| Variable | Required | Default | Since | Description |
+| -------- | :------: | ------- | ----- | ----------- |
+| `SN_RECORD_WATCH_INTERVAL_MS` | no | `30000` | next | N-10: poll interval of a record-watch subscription (`servicenow://profiles/<profile>/records/<table>/<sys_id>`); each poll reads `sys_updated_on` / `sys_mod_count`. Floor 30000. |
+| `SN_RECORD_WATCH_MAX_PER_SESSION` | no | `10` | next | N-10: record-watch subscriptions one client session may hold; one more is refused with `WATCH_LIMIT`. |
+| `SN_RECORD_WATCH_MAX` | no | `50` | next | N-10: record-watch subscriptions across the process (every session); one more is refused with `WATCH_LIMIT`. |
+| `SN_SCHEMA_CACHE_TTL_SEC` | no | `300` | 1.1.0 | TTL for the near-static schema reads cache (`list_tables`, `describe_table`, `get_cmdb_meta`). `0` disables caching. |
+| `SN_SCHEMA_CACHE_MAX` | no | `256` | next | Maximum entries in the schema reads cache; when full, the least-recently-used entry is evicted. Counters (`size`, `hits`, `misses`, `evictions`) appear in `get_status` under `schemaCache`. |
+| `SN_CAPABILITY_TTL_MS` | no | `600000` | next | How long a successful capability probe is cached — the `servicenow_check_capabilities` matrix and the plugin-API availability (CI/CD, Code Search, Batch…). Pass `refresh: true` to re-probe sooner. |
+| `SN_PLUGIN_NEGATIVE_TTL_MS` | no | `60000` | next | How long a failed capability probe (HTTP 401/403/404/5xx) or a missing plugin API is cached before it is tried again. Transport errors are never cached. |
+
+#### Docs store and diagrams
+
+The local Markdown docs store (also home of the write journal — keep it out of version control) and the generated Mermaid diagrams.
+
+| Variable | Required | Default | Since | Description |
+| -------- | :------: | ------- | ----- | ----------- |
+| `SN_DOCS_DIR` | no | `docs/instance` | 1.0.0 | Directory the `docs` package reads/writes Markdown in. Relative paths resolve against the working directory. It also holds the per-profile write journal — add `docs/instance/` to `.gitignore` in any repository you run the server from. |
+| `SN_DOCS_MAX_FILE_BYTES` | no | `5242880` | next | Per-file size cap for the docs tools: larger writes are refused, reads return the first bytes with `truncated: true`, search skips the file. |
+| `SN_DOCS_STALE_DAYS` | no | `30` | next | `servicenow_list_docs` flags a generated document `stale` when its `sn_generated_at` is older than this many days. |
+| `SN_DOCS_SEARCH_MAX` | no | `200` | next | Most matches `servicenow_search_docs` returns; past it the result carries `truncated: true`. |
+| `SN_DIAGRAM_MAX_NODES` | no | `200` | next | Node cap for the generated Mermaid diagrams (table flow, event trace, where-used; tables in a detailed ER diagram). Nodes past it fold into one `+N more` node. |
+
+#### HTTP transport
+
+stdio (default, one local client) or Streamable HTTP for remote and agent clients. Securing the HTTP endpoint (TLS, auth, network) is the operator's job.
+
+| Variable | Required | Default | Since | Description |
+| -------- | :------: | ------- | ----- | ----------- |
+| `SN_TRANSPORT` | no | `stdio` | 2.0.0 | DF-6: `stdio` (default) or `http` (Streamable HTTP for remote/agent clients). |
+| `SN_PORT` | no | `3000` | 2.0.0 | DF-6: TCP port for the http transport. |
+| `SN_HTTP_HOST` | no | `127.0.0.1` | 2.0.0 | DF-6: bind address for the http transport (loopback by default). |
+| `SN_HTTP_TOKEN` | no | — | 2.0.0 | DF-6: when set, http requests must send `Authorization: Bearer <token>`. **Required** whenever `SN_HTTP_HOST` is not loopback (e.g. `0.0.0.0` in the Docker image) — without it every client that reaches the port is accepted, and a warning is logged. |
+| `SN_HTTP_OAUTH_ISSUER` | no | — | next | N-17: issuer of the OAuth 2.1 / OpenID Connect authorization server whose JWT access tokens the http transport accepts (signature checked against its JWKS; `iss`, `aud`, `exp`, `nbf` and scopes enforced). Enables RFC 9728 metadata at `/.well-known/oauth-protected-resource`. Requires `SN_HTTP_OAUTH_RESOURCE`; `SN_HTTP_TOKEN` is still accepted next to it. |
+| `SN_HTTP_OAUTH_RESOURCE` | no | — | next | N-17: this server's canonical public URI (RFC 8707 resource indicator). A token is accepted only when its `aud` names it (or an `SN_HTTP_OAUTH_AUDIENCE` value). |
+| `SN_HTTP_OAUTH_AUDIENCE` | no | — | next | N-17: extra `aud` values accepted besides `SN_HTTP_OAUTH_RESOURCE`, for an authorization server that issues its own audience identifiers. |
+| `SN_HTTP_OAUTH_JWKS_URI` | no | — | next | N-17: the issuer's JWKS URI. Unset = discovered from the issuer's OpenID Connect or RFC 8414 metadata. |
+| `SN_HTTP_OAUTH_INTROSPECTION_URI` | no | — | next | N-17: the issuer's RFC 7662 introspection endpoint. Set = opaque (non-JWT) access tokens are accepted when it answers `active` with this resource in `aud`, a `sub`, an `exp` and the required scopes; an active answer is reused for up to 60 s. Unset = JWT access tokens only. Requires `SN_HTTP_OAUTH_INTROSPECTION_CLIENT_ID` and `SN_HTTP_OAUTH_INTROSPECTION_SECRET`. |
+| `SN_HTTP_OAUTH_INTROSPECTION_CLIENT_ID` | no | — | next | N-17: this server's client id at the introspection endpoint (HTTP Basic, `client_secret_basic`). |
+| `SN_HTTP_OAUTH_INTROSPECTION_SECRET` | no | — | next | N-17: this server's client secret at the introspection endpoint. |
+| `SN_HTTP_OAUTH_SCOPES` | no | — | next | N-17: scopes every request's token must carry; published as `scopes_supported` and in the `WWW-Authenticate` challenge. A token without them gets 403 `insufficient_scope`. |
+| `SN_HTTP_OAUTH_USER_TOKENS` | no | off | next | N-17: call ServiceNow as the OAuth subject instead of the shared profile credential. Each subject links its own ServiceNow account once (Authorization Code + PKCE through a URL elicitation, callback at `/oauth/servicenow/callback` on the `SN_HTTP_OAUTH_RESOURCE` origin) with the profile's `SN_OAUTH_CLIENT_ID` / `SN_OAUTH_CLIENT_SECRET`; the refresh token is kept encrypted in `SN_HTTP_OAUTH_TOKEN_STORE`. Requires `SN_HTTP_OAUTH_ISSUER` and `SN_HTTP_OAUTH_TOKEN_KEY`. |
+| `SN_HTTP_OAUTH_USER_MATCH` | no | `email=email` | next | N-17: `<token claim>=<sys_user field>` — a linked ServiceNow account is accepted only when its `sys_user` field equals the subject's claim (case-insensitive), so nobody can link someone else's account. |
+| `SN_HTTP_OAUTH_TOKEN_KEY` | no | — | next | N-17: the AES-256-GCM key (32 bytes, base64 or hex) that encrypts the per-user refresh tokens at rest. Rotating it drops every link. |
+| `SN_HTTP_OAUTH_TOKEN_STORE` | no | `oauth-user-tokens.json` next to the env file | next | N-17: the encrypted per-user token store (written 0600, its directory 0700). |
+| `SN_HTTP_REQUIRE_TOKEN` | no | on | next | H-7 / B6: refuse to start the http transport on a non-loopback `SN_HTTP_HOST` without `SN_HTTP_TOKEN` or OAuth. Set `0` to log a warning and accept every client instead. |
+| `SN_HTTP_SESSION_TTL_SEC` | no | `1800` | next | H-7: idle TTL of an http session in seconds; an idle session is closed and its runtime disposed. `0` keeps sessions until the client sends DELETE. |
+| `SN_HTTP_MAX_SESSIONS` | no | `64` | next | H-7: cap on concurrent http sessions; a new session beyond it is refused with 503. |
+| `SN_HTTP_KEEPALIVE_MS` | no | `25000` | next | H-7: interval of the SSE keep-alive comment on an open stream (below common proxy idle timeouts). `0` disables it. |
+| `SN_HTTP_ALLOWED_HOSTS` | no | — | next | H-7: `Host` header values the http transport accepts (DNS-rebinding guard); an entry without a port matches any port. Unset = loopback names on a loopback bind, no check otherwise (warned). |
+| `SN_HTTP_ALLOWED_ORIGINS` | no | — | next | H-7: browser `Origin` values the http transport accepts (`*` = any). Unset = loopback origins only; a request without an Origin header is never refused by this check. |
+| `SN_METRICS` | no | off | next | E-5: HTTP transport only — serve Prometheus metrics at `GET /metrics`, behind `SN_HTTP_TOKEN` (disabled when no token is set). |
+
+#### Logging
+
+The stderr log, the optional log file and the log lines mirrored to the MCP client.
+
+| Variable | Required | Default | Since | Description |
+| -------- | :------: | ------- | ----- | ----------- |
+| `SN_LOG_LEVEL` | no | `info` | 1.1.0 | Log verbosity on stderr: `error`, `warn`, `info`, `debug`. The legacy `LOG_LEVEL` is read when this is unset. Also read as `LOG_LEVEL`. |
+| `SN_LOG_FORMAT` | no | `json` | next | E-5: stderr log line format — `json` (one object per line) or `text` (`HH:MM:SS level message key=value`). |
+| `SN_LOG_FILE` | no | — | next | E-5: also append every log line (JSON Lines, redacted, mode 0600) to this file, with size-based rotation (`<file>.1` … `<file>.5`). Stderr keeps working. |
+| `SN_LOG_FILE_MAX_BYTES` | no | `10485760` | next | E-5: rotation threshold for `SN_LOG_FILE` (bytes). |
+| `SN_LOG_NOTIFY_RATE` | no | `20` | next | M-8: log notifications per second and client session over the MCP logging capability (burst 50, or the rate if larger). Lines over it are counted and reported in one "N log messages suppressed" warning per minute; stderr is never throttled. `0` = no limit. |
+| `SN_OTEL` | no | off | next | N-55: map the tool-call and HTTP `diagnostics_channel` events to OpenTelemetry spans (MCP / GenAI semantic conventions). Needs the optional peer dependency `@opentelemetry/api` and an OpenTelemetry SDK registered in the process (e.g. `node --import`); without the package one warning is logged and nothing else changes. |
+| `SN_OTEL_PROPAGATE` | no | off | next | N-55: send W3C `traceparent` / `tracestate` headers on outbound ServiceNow REST requests — the HTTP client span's context when `SN_OTEL` is on, otherwise the context the client sent in `params._meta`. Off: trace ids never leave the server. |
+
+#### Settings validation
+
+Every setting is validated at startup. An invalid safety value is a startup error; an invalid tuning value is logged as a warning and the setting keeps its default (see `SN_STRICT_SETTINGS`).
+
+| Variable | Required | Default | Since | Description |
+| -------- | :------: | ------- | ----- | ----------- |
+| `SN_STRICT_SETTINGS` | no | safety settings only | next | E-4 / B5: which invalid setting values (a non-number, an unknown enum value, an out-of-range port…) stop the server with a startup error that names every offending key. Unset: only safety settings — connection, profiles, packages, policy, transport and the trust / privacy keys (`SN_ALLOWED_HOSTS`, `SN_TLS_*`, `SN_REDACT_*`, `SN_CSV_FORMULA_GUARD`); an invalid tuning value (timeouts, caps, caches, logging) logs a warning and keeps its default, as in 2.x. `1`: every invalid value is an error. `0`: none is (the default under `SN_COMPAT=2`). Unknown `SN_*` keys stay warnings. |
+
+#### Standard variables
+
+Conventional variables outside the SN_ namespace that the server also honours.
+
+| Variable | Required | Default | Since | Description |
+| -------- | :------: | ------- | ----- | ----------- |
+| `HTTPS_PROXY` | no | — | next | Standard proxy for HTTPS traffic, honoured when `SN_HTTPS_PROXY` is unset (with `NO_PROXY`). Also read as `https_proxy`. |
+| `HTTP_PROXY` | no | — | next | Fallback proxy when `HTTPS_PROXY` is unset. Also read as `http_proxy`. |
+| `NO_PROXY` | no | — | next | Hosts that bypass `HTTPS_PROXY` / `HTTP_PROXY` (never `SN_HTTPS_PROXY`). Also read as `no_proxy`. |
+| `XDG_CONFIG_HOME` | no | `~/.config` | 1.1.0 | Base directory of the default env file (`$XDG_CONFIG_HOME/servicenow-mcp-ai/.env`). |
+
+<!-- GENERATED:ENV:END -->
+
+### Secrets from files
+
+Every secret setting can be read from a file, the convention of Docker, Compose / Swarm and Kubernetes secrets: set `<KEY>_FILE` to a path and the server loads `<KEY>` from it at startup. This covers `SN_PASSWORD`, `SN_API_KEY`, `SN_BEARER_TOKEN`, `SN_OAUTH_CLIENT_SECRET`, `SN_OAUTH_REFRESH_TOKEN` and `SN_HTTP_TOKEN`, plus the per-profile forms (`SN_PROFILE_PROD_PASSWORD_FILE`, `SN_PROFILE_PROD_API_KEY_FILE`, …).
+
+- One trailing newline is trimmed, so `echo secret > file` works; other whitespace is kept.
+- Setting both `<KEY>` and `<KEY>_FILE` is a startup error that names the pair — the server never picks one silently.
+- An unreadable or empty file is a startup error that names the setting and the reason, never the content.
+- A value loaded from a file is never written back to the env file: `servicenow_set_credentials` and OAuth refresh-token rotation refuse to persist it (a rotated refresh token stays in memory with a warning) — update the file.
+- The existing file settings keep their meaning: `SN_TOKEN_FILE` (bearer token re-read on a 401), `SN_OAUTH_JWT_KEY_FILE` and the `SN_TLS_*_FILE` PEM paths are paths the server reads itself, not `<KEY>_FILE` sources.
+
+### Two-axis access policy
+
+Access is controlled on **two independent axes**: tables and tool packages.
+
+| Axis         | Enable / deny / read-only                                | Example                                                                       |
+| ------------ | -------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| **Tables**   | `SN_TABLES_ALLOW` / `SN_TABLES_DENY` / `SN_READONLY`     | `SN_TABLES_DENY=change_request` blocks the Table API **and** (since H-4) the Change tools, which check their backing table. |
+| **Packages** | `SN_TOOL_PACKAGES` / `SN_PACKAGES_DENY` / `SN_PACKAGES_READONLY` | `SN_PACKAGES_DENY=change` removes the Change Management tools and blocks the `sn_chg_rest` plugin API, also inside a batch. |
+
+Since H-4 the plugin-backed tools (Change, Catalog, Knowledge, Email, ATF) and
+attachments (through the parent record's table) obey the table axis too; the
+package axis still removes whole surfaces. See [Security notes](#security-notes)
+for the full model (including how the Batch API obeys both axes).
+
+**List syntax:** table lists (`SN_TABLES_ALLOW` / `SN_TABLES_DENY`) are
+comma-separated; package lists (`SN_TOOL_PACKAGES`, `SN_PACKAGES_DENY`,
+`SN_PACKAGES_READONLY`) accept commas **or** whitespace. Surrounding spaces are
+trimmed in both, and table matching is case-insensitive — so
+`SN_TABLES_DENY=Change_Request, sys_user` works. Since H-11 a table entry may be
+a pattern (`*` any run, `?` one character): `SN_TABLES_DENY=sys_*` blocks
+`sys_user` and leaves `incident` alone. The order is: an exact deny, an exact
+allow, a pattern deny, the protected tables (writes; since 3.0 they need the
+call's own `apply: true` — `SN_PROTECTED_TABLES_WRITE=confirm`; `deny` refuses
+them, `allow` lifts the rule), then the allowlist's
+patterns. Ask
+`servicenow_explain_policy({table, action})` which rule decides, or read
+`servicenow://policy`.
+
+## Run / debug
+
+- **VS Code**: open the Command Palette and start the server defined in
+  [.vscode/mcp.json](.vscode/mcp.json), then use it from Chat.
+- **MCP Inspector**: `npm run inspector`
+- **Directly**: `npm start`
+
+### Observability
+
+- **Status.** `servicenow_get_status` carries an `observability` block: per-tool
+  `{count, errors, p50, p95, totalMs}` (percentiles in ms over each tool's last 256
+  calls — memory stays bounded) plus result sizes `{bytesTotal, textBytes,
+  structuredBytes, bytesP50, bytesP95}` (UTF-8 bytes of the text blocks and of
+  `structuredContent`, the wire cost of each tool), schema-cache hits/misses, per-host retry counters,
+  queue limits and occupancy, circuit-breaker state and the last `X-RateLimit-*`
+  headers each host sent. It never calls the instance.
+- **Logs.** Logs go to stderr only (stdout is the MCP protocol). `SN_LOG_FORMAT=text`
+  switches from JSON lines to a human-readable format; `SN_LOG_FILE` also appends
+  JSON lines to a size-rotated file. Credential-named fields (`password`, `token`,
+  `authorization`, …) are masked in every sink, and the `SN_REDACT_FIELDS` /
+  `SN_REDACT_PII` rules and the secret-column masking apply on top.
+- **Tracing hooks.** Every tool call and the request loop publish on
+  [`node:diagnostics_channel`](https://nodejs.org/api/diagnostics_channel.html), so an
+  OpenTelemetry (or any) subscriber can attach without a dependency on this server.
+  Messages are built only while a channel has a subscriber:
+
+  | Channel                             | When                                           | Message fields                                                                                                        |
+  | ----------------------------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+  | `servicenow-mcp:mcp.tool.call.start` | a tool call begins | `id`, `tool`, `package`, `requestId`, and `sessionId` / `traceparent` / `tracestate` when known |
+  | `servicenow-mcp:mcp.tool.call.end` | it returned a successful result | the start fields plus `profile`, `outcome` (`ok`), `ms`, `resultBytes` |
+  | `servicenow-mcp:mcp.tool.call.error` | it returned an error result or threw | the start fields plus `profile`, `outcome` (`error` / `cancelled`), `ms`, and `code` / `resultBytes` or `errorName` |
+  | `servicenow-mcp:http.request.start` | a logical request begins                       | `id`, `system`, `method`, `host`, `telemetryKey`, `url`, and `profile` / `requestId` / `sessionId` / `tool` / `callId` / `traceparent` / `tracestate` in a call |
+  | `servicenow-mcp:http.request.end`   | it resolved with an OK response                | the start fields plus `status`, `attempts`, `ms`                                                                      |
+  | `servicenow-mcp:http.request.error` | it failed                                      | the start fields plus `attempts`, `ms`, `status`, `code`, `errorName`, `errorMessage`                                 |
+  | `servicenow-mcp:http.request.retry` | an attempt is replayed (backoff, 401 re-auth) | `id`, `system`, `method`, `host`, `url`, `attempt`, `reason`, `waitMs`                                               |
+
+  `url` never includes the query string; headers, bodies and credentials are never
+  published, and `errorMessage` passes through the redaction rules.
+
+  Tool arguments and results are never published (only the result's byte count).
+  `callId` on an HTTP message is the `id` of the tool call that made it.
+  `traceparent` / `tracestate` are the W3C Trace Context the client sent in the call's
+  `params._meta`; a malformed value is dropped.
+
+- **OpenTelemetry spans.** `SN_OTEL=1` maps those channels to spans through
+  [`@opentelemetry/api`](https://www.npmjs.com/package/@opentelemetry/api), an optional
+  peer dependency (`npm install @opentelemetry/api` next to the server, plus your SDK
+  and exporter registered with `node --import`). Without the package the server logs one
+  warning and runs without spans; with `SN_OTEL` off the package is never loaded.
+  - Each tool call is a `SERVER` span named `tools/call <tool>`, a child of the client's
+    `traceparent` when it sent one. Attributes: `mcp.method.name`,
+    `gen_ai.operation.name` (`execute_tool`), `gen_ai.tool.name`, `jsonrpc.request.id`,
+    `mcp.session.id`, `network.transport`, `error.type`, plus `servicenow_mcp.package`
+    / `.profile` / `.outcome` / `.result.bytes`.
+  - Each outbound request is a `CLIENT` span named after the method, a child of its tool
+    span: `http.request.method`, `server.address`, `url.full` (no query string),
+    `http.response.status_code`, `http.request.resend_count`, `error.type`, and one
+    `retry` event per replay.
+  - The MCP and GenAI semantic conventions are still in development, so these names
+    are provisional and may follow the spec when it changes.
+  - `SN_OTEL_PROPAGATE=1` (off by default) also sends `traceparent` / `tracestate`
+    headers on requests to the ServiceNow instance: the HTTP span's context when
+    `SN_OTEL` is on, otherwise the client's context unchanged. It is opt-in because it
+    hands trace ids to the instance; the OAuth token endpoint never gets them.
+
+- **Prometheus.** With the HTTP transport, `SN_METRICS=1` and `SN_HTTP_TOKEN` set,
+  `GET /metrics` (same bearer token) serves the same figures in the Prometheus text
+  format (`servicenow_mcp_*` families, labelled by `tool` / `host` only). Without a
+  token the endpoint stays off and a warning is logged.
+
+### Command-line interface
+
+The published `servicenow-mcp-ai` binary (run it directly, or via
+`npx servicenow-mcp-ai`) starts the MCP server when it is given no command, and
+otherwise runs one of the commands below and exits. Connection settings come from
+environment variables / the env file (see [Environment variables](#environment-variables)).
+`servicenow-mcp-ai --help` lists everything; `--version` prints the version. An
+unknown command or option prints the usage on stderr and exits `2` — it never
+starts the server.
+
+| Command                                         | Options                                  | What it does                                                                                                                         | Exit codes                                                  |
+| ----------------------------------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------- |
+| `servicenow-mcp-ai`                             | _(none)_                                 | Starts the MCP server. The transport (`stdio` default, or `http`) is chosen by `SN_TRANSPORT`; runs until `SIGINT`/`SIGTERM`. stdout is the protocol channel. | `0` clean shutdown · `1` fatal startup error                |
+| `servicenow-mcp-ai init`                        | `--profile <name>`, `--skip-doctor`      | Interactive setup: asks for the instance, the auth method and its credentials (secrets through a hidden prompt), writes the env file, then runs `doctor`. | the `doctor` exit code · `0` with `--skip-doctor` · `2` refused / invalid answers |
+| `servicenow-mcp-ai doctor`                      | `--json`, `--ascii`, `--profile <name>`  | Health check: credentials, a live connectivity probe and the capability preflight. The first line names the env file that was used. | `0` healthy · `1` degraded or unreachable · `2` not configured |
+| `servicenow-mcp-ai login`                       | `--profile <name>`                       | One-time OAuth 2.1 Authorization Code + PKCE login: opens the browser, captures the loopback redirect, stores a refresh token.      | `0` success · `1` login failed                              |
+| `servicenow-mcp-ai drift <profileA> <profileB>` | _(none)_                                 | DF-3 CI drift gate: compares the two instances and writes a Markdown diff report.                                                  | `0` no drift · `1` drift found · `2` usage / error          |
+| `servicenow-mcp-ai support-bundle`              | `--out <file>`, `--profile <name>`       | Writes one JSON file for a bug report and prints its path on stdout.                                                               | `0` written · `1` write failed                              |
+| `servicenow-mcp-ai migrate`                     | `--write`, `--from <file>`, `--v3-defaults` | Carries 2.x settings (env file, MCP client `env` blocks) over to 3.x and prints every change; a dry run unless `--write`.         | `0` done or nothing to do · `1` refused / write failed       |
+| `servicenow-mcp-ai skills install`              | `--target <agent>`, `--global`, `--force` | Copies the bundled Agent Skills into an agent's skills folder — see [Using the skills with other agents](#using-the-skills-with-other-agents). | `0` installed · `1` copy failed · `2` usage error            |
+
+**`init`** writes through the same atomic, owner-only (`0600`) env-file writer as
+`servicenow_set_credentials`, to the file `doctor` names (by default
+`~/.config/servicenow-mcp-ai/.env`). It asks, in order: the instance (`dev12345`
+or a full host; a custom domain needs `SN_ALLOWED_HOSTS`), the auth method
+(`basic` / `oauth` / `apikey` / `token`), then that method's settings — for
+`oauth` the grant (`client_credentials`, `password`, or `authorization_code`,
+which ends with a hint to run `login`). Secrets are never echoed or logged; the
+summary lists key names only. With `--profile qa` the keys are written as
+`SN_PROFILE_QA_*`. An existing profile is overwritten only after a `y`. The
+answers can be piped, one per line, which is how CI and tests drive it:
+
+```bash
+printf 'dev12345\nbasic\nalice\n%s\n' "$SN_PASSWORD" | npx servicenow-mcp-ai init
+```
+
+Without a terminal and without piped answers, `init` refuses (exit `2`) and
+writes nothing.
+
+**`doctor`** prints plain ASCII (`[ok]` / `[x]` instead of check marks) with
+`--ascii`, when stdout is not a terminal, and on Windows outside Windows Terminal.
+`--json` prints one JSON document instead: `envFile`, `status`, `summary`,
+`checks[]` (`name`, `ok`, `detail`), `config`, `connection`, `capabilities` and
+`serverStatus` (the `servicenow_get_status` payload) — for example
+`servicenow-mcp-ai doctor --json | jq .checks`. The exit codes are the same.
+
+**`support-bundle`** collects the `doctor --json` payload, every `SN_*` setting
+with secrets masked as `***`, `npm ls --omit=dev` (best effort), the tool
+manifest summary (version, tool and package counts, active tools) and the last
+200 lines of `SN_LOG_FILE` when one is set. Every masked value is also scrubbed
+from the whole file. The default path is
+`./servicenow-mcp-ai-support-<timestamp>.json` (mode `0600`). Instance and user
+names are **not** masked — review the file before you attach it to an issue.
+
+**`migrate`** upgrades the settings of a 2.x install. It reads the env file the
+server resolves (or `--from <file>`) without loading it, so a file 3.x would refuse
+still migrates, and keeps every key, value and comment except:
+
+- a project-root `.env` (deprecated, B5) or the `--from` file is copied to
+  `~/.config/servicenow-mcp-ai/.env` (or `SN_ENV_FILE`); the original stays;
+- a profile named `capabilities`, `docs`, `policy`, `profiles`, `reference`,
+  `schema` or `status` (reserved, B13) becomes `<name>_v2`, with all its
+  `SN_PROFILE_<NAME>_*` keys and `SN_ACTIVE_PROFILE`, and its docs and
+  write-journal folder `<SN_DOCS_DIR>/<name>` is renamed with it (a relative
+  `SN_DOCS_DIR` resolves against the directory you run `migrate` in; an existing
+  `<name>_v2` folder is never overwritten);
+- a value 3.x rejects at startup (B5) is commented out, so the default applies,
+  as it did in 2.x;
+- a `KEY: value` line (accepted by the 2.x parser, skipped by 3.x) becomes
+  `KEY=value`;
+- `SN_COMPAT=2` is appended unless the file sets it or `--v3-defaults` is given.
+
+Settings in an MCP client's `env` block reach the server ahead of the env file,
+so `migrate` also looks for this server in the Claude Desktop, Claude Code
+(`~/.claude.json`, `.mcp.json`), Cursor, VS Code (user and `.vscode/mcp.json`)
+and Windsurf config files, and applies the same rules to an `env` block that sets
+`SN_*` keys (an invalid value is removed). A file with comments is reported, not
+rewritten; a VS Code `envFile` is named so you can run `migrate --from` on it.
+Restart the client after a rewrite.
+
+With `--write` each file rewritten in place is first copied to `<file>.v2.bak`
+(`0600`); an env file is `0600` too, a client file keeps its mode. Run it once
+after the upgrade:
+
+```bash
+npx servicenow-mcp-ai migrate          # review the plan
+npx servicenow-mcp-ai migrate --write  # apply it
+```
+
+**`login`** operates on the active profile (`SN_ACTIVE_PROFILE`, default
+`default`) and reads, for that profile:
+
+- `SN_INSTANCE` — **required**; the target instance.
+- `SN_OAUTH_CLIENT_ID` — **required**; client id of an Authorization Code OAuth API endpoint.
+- `SN_OAUTH_CLIENT_SECRET` — optional; for a confidential client.
+- `SN_OAUTH_REDIRECT_URI` — optional; loopback URL, default `http://localhost:53682/callback`. Must match the redirect registered on the endpoint.
+- `SN_OAUTH_SCOPE` — optional; requested OAuth scope.
+
+On success it writes `SN_AUTH=oauth`, `SN_OAUTH_GRANT=refresh_token` and
+`SN_OAUTH_REFRESH_TOKEN` back to the env file (profile-prefixed when the profile
+is not `default`). The authorization URL is printed on stderr in case the browser
+does not open automatically.
+
+**`drift`** takes two positional profile names; each must resolve to a configured
+profile (`SN_PROFILE_<NAME>_*`, or the bare `SN_INSTANCE` / `SN_USER` /
+`SN_PASSWORD` keys for `default`). The Markdown report is written to **stdout**
+(capture it as a CI artifact); a one-line drift summary goes to stderr.
+
+### CI drift gate (DF-3)
+
+Compare two configured profiles and **fail a pipeline on configuration drift**:
+
+```bash
+servicenow-mcp-ai drift dev prod   # report on stdout; exit 1 on drift, 0 if clean, 2 on error
+```
+
+The report shows each changed script as a `diff` block. The CLI compares tables,
+columns, scripts, plugins and apps; record sections (`sections` on
+`servicenow_compare_instances`) are opt-in, so the exit codes are unchanged.
+
+`servicenow_snapshot_instance` writes the same material to the docs folder, one
+file per section, at most four sections at a time. An interrupted run is marked
+`partial` in `index.json`; rerun it with `resume: true` to skip every section whose
+files are unchanged.
+
+## Develop
+
+```bash
+npm run check     # full gate: build, lint, format check, coverage-gated tests, tarball guard, footprint record, prod audit
+npm test          # unit tests only (node:test; needs a prior npm run build)
+npm run lint      # ESLint (flat config + typescript-eslint)
+npm run format    # format with Prettier
+```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the conventions (one commit per
+task, tests ship with the change, generated docs).
+
+## Tools
+
+The full reference — every parameter, the output fields, how each tool writes, and the error codes — is in [docs/tools/](docs/tools/README.md), one page per package. [docs/llms-full.txt](docs/llms-full.txt) bundles this README, SECURITY.md and that reference in one file for LLM context.
+
+Every `inputSchema` and `outputSchema` in `tools/list` is written in JSON Schema 2020-12, the MCP default dialect, without a `$schema` field. The server supports no other dialect and never reads a schema from the client.
+
+<!-- GENERATED:TOOLS:BEGIN (npm run docs:readme) -->
+
+_This table is generated from the tool registrations — edit the tool
+definitions in `src/tools/`, then run `npm run docs:readme`. Every tool
+name carries the `servicenow_` prefix, left out below._
+
+| Package | Default `discovery` | Read tools | Write tools |
+| ------- | :-----------------: | ---------- | ----------- |
+| [`table`](docs/tools/table.md) | yes | `query_table`, `get_record` | `create_record`, `update_record`, `upsert_record`, `delete_record` |
+| [`schema`](docs/tools/schema.md) | yes | `list_tables`, `describe_table` | — |
+| [`aggregate`](docs/tools/aggregate.md) | yes | `aggregate` | — |
+| [`attachment`](docs/tools/attachment.md) | no | `list_attachments`, `get_attachment`, `download_attachment` | `upload_attachment`, `delete_attachment` |
+| [`importset`](docs/tools/importset.md) | no | `get_import_set_row` | `insert_import_set_row` |
+| [`batch`](docs/tools/batch.md) | no | — | `batch` |
+| [`catalog`](docs/tools/catalog.md) | no | `list_catalogs`, `list_catalog_categories`, `list_catalog_items`, `get_catalog_item` | `order_catalog_item` |
+| [`change`](docs/tools/change.md) | no | `list_changes`, `get_change` | `create_change`, `update_change`, `check_change_conflicts` |
+| [`knowledge`](docs/tools/knowledge.md) | no | `search_knowledge`, `get_knowledge_article`, `get_knowledge_highlights` | — |
+| [`cmdb`](docs/tools/cmdb.md) | no | `list_cis`, `get_ci`, `get_cmdb_meta`, `list_ci_relations` | `create_ci`, `update_ci`, `identify_reconcile` |
+| [`scripts`](docs/tools/scripts.md) | no | `list_scripts`, `get_script`, `search_code`, `describe_table_logic`, `where_used` | — |
+| [`flows`](docs/tools/flows.md) | no | `trace_table_event`, `list_flows`, `get_flow`, `get_flow_runs`, `explain_flow` | — |
+| [`codecheck`](docs/tools/codecheck.md) | no | `lint_script`, `lint_table` | `check_code_health` |
+| [`docs`](docs/tools/docs.md) | no | `list_docs`, `read_doc`, `search_docs`, `generate_er_diagram`, `generate_table_flow` | `write_doc`, `document_table`, `document_app`, `document_instance` |
+| [`instance`](docs/tools/instance.md) | no | `review_upgrade` | `snapshot_instance`, `compare_instances` |
+| [`email`](docs/tools/email.md) | no | `get_email` | `send_email` |
+| [`atf`](docs/tools/atf.md) | no | `list_atf`, `get_atf_result` | `run_atf` |
+| [`revert`](docs/tools/revert.md) | no | `list_writes` | `revert_write` |
+| [`artifacts`](docs/tools/artifacts.md) | no | `list_artifacts`, `get_artifact`, `explain_artifact`, `get_artifact_dependencies` | `upsert_artifact` |
+| [`updatesets`](docs/tools/updatesets.md) | no | `list_update_sets`, `get_update_set`, `compare_update_set` | — |
+| [`cicd`](docs/tools/cicd.md) | no | — | `commit_update_set` |
+| [`access`](docs/tools/access.md) | no | — | `change_access` |
+| [`ops`](docs/tools/ops.md) | no | `read_ops`, `check_data_health` | — |
+| [`history`](docs/tools/history.md) | no | `get_record_history`, `get_task_context` | — |
+| [`properties`](docs/tools/properties.md) | no | `get_properties` | `set_property` |
+| [`directory`](docs/tools/directory.md) | no | `lookup_directory`, `explain_access` | — |
+| [`ui`](docs/tools/ui.md) | no | `explain_portal`, `explain_ui_experience` | — |
+| [`admin`](docs/tools/admin.md) | yes | `list_instances`, `explain_policy`, `get_status`, `test_connection`, `check_capabilities`, `list_packages`, `find_tools` | `set_credentials`, `use_instance`, `enable_package`, `disable_package` |
+
+<!-- GENERATED:TOOLS:END -->
+
+All tools carry MCP annotations (`readOnlyHint`, `destructiveHint`,
+`idempotentHint`) so clients can apply the right confirmation UX.
+
+### Tool names (v3)
+
+Every tool is named `servicenow_<verb>_<noun>`. Parameters follow one
+vocabulary: `sys_id` is a record id, `table` is a table name (the CMDB tools
+still accept `class_name` as a deprecated alias), `fields` is the list of
+columns to return, and `values` is a write payload. Version 3.0 renamed these
+tools:
+
+<!-- GENERATED:TOOL-RENAMES:BEGIN (npm run docs:readme) -->
+
+_Generated from `TOOL_RENAMES` in `src/mcp/naming.ts` — run
+`npm run docs:readme` after changing it._
+
+| v2 name                            | v3 name                                | Why                                       |
+| ---------------------------------- | -------------------------------------- | ----------------------------------------- |
+| `servicenow_artifact_dependencies` | `servicenow_get_artifact_dependencies` | No verb.                                  |
+| `servicenow_change_conflicts`      | `servicenow_check_change_conflicts`    | No verb.                                  |
+| `servicenow_code_health`           | `servicenow_check_code_health`         | No verb.                                  |
+| `servicenow_data_health`           | `servicenow_check_data_health`         | No verb; parallels check_code_health.     |
+| `servicenow_docs_list`             | `servicenow_list_docs`                 | Noun before verb.                         |
+| `servicenow_docs_read`             | `servicenow_read_doc`                  | Noun before verb.                         |
+| `servicenow_docs_search`           | `servicenow_search_docs`               | Noun before verb.                         |
+| `servicenow_docs_write`            | `servicenow_write_doc`                 | Noun before verb.                         |
+| `servicenow_knowledge_highlights`  | `servicenow_get_knowledge_highlights`  | No verb.                                  |
+| `servicenow_list_atf_suites`       | `servicenow_list_atf`                  | Merged with list_atf_tests (kind: suite). |
+| `servicenow_list_atf_tests`        | `servicenow_list_atf`                  | Merged with list_atf_suites (kind: test). |
+| `servicenow_ops_read`              | `servicenow_read_ops`                  | Noun before verb.                         |
+| `servicenow_run_atf_suite`         | `servicenow_run_atf`                   | Merged with run_atf_test (kind: suite).   |
+| `servicenow_run_atf_test`          | `servicenow_run_atf`                   | Merged with run_atf_suite (kind: test).   |
+| `servicenow_table_logic`           | `servicenow_describe_table_logic`      | No verb.                                  |
+
+<!-- GENERATED:TOOL-RENAMES:END -->
+
+A 2.x client keeps working: every old name still answers `tools/call` as a
+hidden, deprecated alias of its new tool and accepts the old parameter names,
+at no `tools/list` cost. Set `SN_LEGACY_TOOL_NAMES=1` for one minor release to
+also list the aliases in `tools/list` and accept the old parameter names (`attachment_sys_id`, `item_sys_id`,
+`catalog_sys_id`, `test_sys_id`, `suite_sys_id`, `staging_table`, `fields` as
+a write payload, `attributes`) are accepted. Each use logs one deprecation
+warning. The tool manifest lists the renames (`toolRenames`) and each tool's
+accepted aliases.
+
+To keep every 2.x default while you migrate, set `SN_COMPAT=2`: unset
+settings then behave as in 2.x (protected tables writable, no plan token,
+unmapped batch rows allowed, old names listed, the `core` package set). An
+explicit setting still wins.
+
+### Tool packages
+
+Tools are grouped into packages so you can expose only what a given client needs
+(fewer tools keep the model focused). Set `SN_TOOL_PACKAGES` to a comma/space
+separated list of profiles or package names:
+
+- `discovery` (default) — `table`, `schema`, `aggregate`, plus the always-on
+  admin tools; `servicenow_find_tools` names the package for anything else.
+  `core`, the 2.x default, is discovery plus `attachment` (B20).
+- `all` — every package below.
+- Individual packages: `table`, `schema`, `aggregate`, `attachment`,
+  `importset`, `batch`, `catalog`, `change`, `knowledge`, `cmdb`, `scripts`,
+  `flows`, `codecheck`, `docs`, `instance`, `email`, `atf`, `revert`,
+  `artifacts`, `updatesets`, `ops`, `history`, `properties`, `directory`, `ui`.
+
+The admin tools (`servicenow_set_credentials`, `servicenow_get_status`,
+`servicenow_enable_package` and the rest of the admin package) are always
+registered, regardless of the active packages. Unknown names are ignored.
+`servicenow_get_status` reports the resolved `enabledPackages`.
+
+```dotenv
+# Only table + batch tools (plus the always-on admin tools)
+SN_TOOL_PACKAGES=table,batch
+```
+
+#### Presets
+
+If you would rather not curate the list yourself, three named presets cover the
+common roles. The admin tools are always on, so they are not listed. Each preset
+also has a one-word alias — `SN_TOOL_PACKAGES=reader|developer|admin` — that
+expands to the same package set.
+
+| Preset      | `SN_TOOL_PACKAGES=…`                                   | For whom                                                        |
+| ----------- | ----------------------------------------------------- | -------------------------------------------------------------- |
+| `reader`    | `table,schema,aggregate`                              | First contact, analysts, a PDI play — read and query only.     |
+| `developer` | `table,schema,aggregate,scripts,flows,codecheck,docs` | The core segment: script intelligence, flow tracing, linting, docs and diagrams. |
+| `admin`     | `all`                                                 | Everything, including the plugin and write-heavy packages.     |
+
+The `developer` preset builds on the `reader` set; the `docs` package includes the
+Mermaid diagram generators. Use the alias for brevity or spell the packages out to
+add or drop one.
+
+#### Switching packages at runtime
+
+A client can widen or narrow its surface without a restart:
+`servicenow_list_packages` shows every package with its state for this
+session (enabled, configured, denied, read-only, tool count), and
+`servicenow_enable_package` / `servicenow_disable_package` toggle one. The
+server announces the change with `notifications/tools/list_changed` (and the
+prompts / resources equivalents when those change too), one per list per toggle.
+A toggle never exceeds the policy axes: a package in `SN_PACKAGES_DENY` is
+refused (`PACKAGE_DENIED`), a package in `SN_PACKAGES_READONLY` brings only its
+read tools, and the admin tools cannot be disabled. Toggles last for the
+session; an HTTP session that closes returns to `SN_TOOL_PACKAGES`. Nothing
+changes unless a client calls these tools.
+
+The server also declares `resources.subscribe`: after `servicenow_use_instance`
+or `servicenow_set_credentials` it sends `notifications/resources/list_changed`
+and, to subscribers, `notifications/resources/updated` for
+`servicenow://status`.
+
+### Upsert by key
+
+`servicenow_upsert_record({table, key, fields})` creates or updates one record
+matched by `key`, an exact match on one or more field/value pairs (for example
+`{"u_external_id": "A-17"}`; an empty string matches an empty field). No match
+creates a record with the key and the fields, exactly one match updates it, and
+more than one match is refused with `AMBIGUOUS_KEY` — so is a match the user
+cannot read, since creating another would duplicate it.
+
+The action is decided in the plan: without `apply:true` the tool returns
+`create` or `update` (with the `sys_id` and the `before` values) plus
+`apply_with: {expected_action, expected_sys_id}`. Pass those back with
+`apply:true`; if the key now resolves differently (the record appeared, went
+away or is another one) the call fails with `STALE_RECORD` and writes nothing.
+The applied write is journaled as a create or an update, so
+`servicenow_revert_write` undoes it like a direct `create_record` /
+`update_record`.
+
+### Undo a write (journal-based revert)
+
+Every applied write is recorded in the local, hash-chained write journal
+(`<SN_DOCS_DIR>/

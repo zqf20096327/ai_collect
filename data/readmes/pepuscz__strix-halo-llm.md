@@ -6,59 +6,45 @@ A **BOSGAME M5 / Ryzen AI Max+ 395** with **two RX 7900 XTX cards** runs DeepSee
 
 ## Dual RX 7900 XTX setup
 
-Both models run on the same hardware ([list below](#hardware)):
-- **Two RX 7900 XTX cards**, 48 GB of VRAM together, each on its own PCIe 4.0 ×4 M.2-to-OCuLink link.
-- **The M5's Radeon 8060S**, which computes the routed experts the cards can't hold from a pool in system RAM.
-- **An NVMe over USB4**, from which the rest of the model streams when a prompt or an answer needs it.
+Both models use **two RX 7900 XTX cards** (48 GB VRAM), the M5's **Radeon 8060S and 128 GiB RAM**, and an **NVMe over USB4**. Each external GPU has its own PCIe 4.0 ×4 M.2-to-OCuLink link. [Full hardware list](#hardware).
 
-Each model runs one conversation with up to **512K tokens of context**. Values are tokens per second, and every retrieval prompt found all five values.
+Each setup supports **one conversation at up to 512K context**. Speeds are tokens per second: **decode** writes the answer; **prefill** reads the input. Tests use thinking off. Quality covers 10 coding and 20 maths cases; every retrieval prompt found all five values.
 
 ### DeepSeek-V4.1-Flash-1017 GSQ-RCO IQ2_XS (production)
 
-**Maya DS4 HIP GSQ-RCO IQ2_XS dual RX 7900 XTX** runs [ISTA-DASLab's GSQ-RCO IQ2_XS quant](https://huggingface.co/ISTA-DASLab/DeepSeek-V4.1-Flash-1017-GSQ-RCO-GGUF) (155 GB, MIT) with the Maya-S recipe's settings, on Maya v1.1.28 with the [issue #510](https://github.com/mw00/project-maya/issues/510) changes. Its dense matrices are converted from Q5_K to Q8_0 at install (8 GB), since the engine reads them as BF16 / Q8_0 only. The smaller experts leave about 20 GB fewer outside the cards, so answers are written about 50 % faster than with Maya-S at the same prompt reading speed.
+**Maya DS4 HIP GSQ-RCO IQ2_XS dual RX 7900 XTX** uses [ISTA-DASLab's GSQ-RCO quant](https://huggingface.co/ISTA-DASLab/DeepSeek-V4.1-Flash-1017-GSQ-RCO-GGUF) and Maya v1.1.37 with serving fixes. [Ansible recipe](ansible/releases/maya-ds4-gsq-dual-xtx-512k.yml).
 
-It passed **29/30 quality cases** (math_10 ran into its 4,096-token cap) at a perplexity 1.6 % above Maya-S's, found all five phrases at every length up to 491,520 input tokens, and all five values in a 520,000-token deep-needle test. Measured on the installed release at 524,288 tokens:
+**Quality: 30/30. Perplexity: 7.3686** (23 × 2,048 tokens). **520K needle: 5/5.** All rows use a 524,288-token allocation.
 
 | Test | Decode | Prefill |
 |---|---:|---:|
-| `maya.py --bench` (three 256-token answers; 2K / 8K prompts) | **56.8** | **201 / 532** |
-| Public five-phrase prompt, 2K (2,040 input tokens) | 52.9 | 235 |
-| 32K (30,720) | 50.8 | 1,098 |
-| 128K (122,879) | 50.5 | 1,535 |
-| 480K (491,520) | 47.8 | 1,170 |
-| Real code, 130,048 tokens: cold / prompt cached | **48.3 / 55.6** | **1,387** |
+| `maya.py --bench` (three 256-token answers; 2K / 8K prompts) | **59.0** | **203 / 535** |
+| Public five-phrase prompt, 2K (2,040 input tokens) | 53.0 | 254 |
+| 32K (30,720) | 55.0 | 1,109 |
+| 128K (122,879) | 53.6 | 1,567 |
+| 480K (491,520) | 51.1 | 1,184 |
+| Real code, 130,048 tokens: cold / prompt cached | **53.1 / 60.8** | **1,390** |
 
 ### DeepSeek-V4.1-Flash-1017 Maya-S IQ2_XXS (alternative)
 
-**Maya DS4 HIP Maya-S IQ2_XXS dual RX 7900 XTX** (`STRIX_SYSTEM=maya-ds4-dual-xtx`) runs the 178 GB model with these settings:
-- the two cards as one tensor-parallel group;
-- a 95 GB expert pool on the 8060S;
-- the DSpark drafter's blocks split across the cards.
+**Maya DS4 HIP Maya-S IQ2_XXS dual RX 7900 XTX** uses the 178 GB Maya-S quant and Maya v1.1.21 with engine patches. [Ansible recipe](ansible/releases/maya-ds4-dual-xtx-512k.yml).
 
-It passed **30/30 quality cases**, found all five phrases at every length up to 491,520 input tokens, and found all five values in a 520,000-token deep-needle test. Measured on the installed release at 524,288 tokens:
+**Quality: 30/30. 520K needle: 5/5.** All rows use a 524,288-token allocation.
 
 | Test | Decode | Prefill |
 |---|---:|---:|
-| `maya.py --bench`, Project Maya's speed test (three 256-token answers; 2K / 8K prompts) | **41.3** | **180 / 482** |
+| `maya.py --bench` (three 256-token answers; 2K / 8K prompts) | **41.9** | **177 / 474** |
 | Public five-phrase prompt, 2K (2,040 input tokens) | 29.7 | 212 |
 | 32K (30,720) | 31.7 | 1,053 |
 | 128K (122,879) | 31.8 | 1,514 |
 | 480K (491,520) | 29.9 | 1,164 |
-| Real code, 130,048 tokens: cold / prompt cached | **36.2 / 46.1** | **1,291** |
-
-Decode on the five-phrase prompts is one cold 64-token answer, so it is noisy; `--bench` and the real-code prompt are the steadier decode figures.
-
-The release's engine changes are proposed to Project Maya in [issue #510](https://github.com/mw00/project-maya/issues/510). The `--bench` and real-code rows are that issue's measurements, the changes ported to Maya v1.1.28. They matched the release's own engine within 2 % when the two ran side by side.
-
-A 1,048,576-token allocation also works. Measured on the engine before its decode trims, it found five of five values in a 1,040,000-token prompt and read it at 779 tok/s. Answers there are about 7 % slower than at 524,288, so 512K is the qualified setting.
+| Real code, 130,048 tokens: cold / prompt cached | **36.1 / 44.6** | **1,278** |
 
 ### GLM-5.3-Flash Maya-M IQ2_S
 
-**Maya HIP Maya-M IQ2_S dual RX 7900 XTX** runs the model with these settings:
-- its layers split across the cards;
-- the model's own MTP layer drafting.
+**Maya HIP Maya-M IQ2_S dual RX 7900 XTX** uses the Maya-M quant with MTP drafting. [Ansible recipe](ansible/releases/maya-glm-dual-xtx-512k.yml).
 
-It passed **28/30 quality cases** (two maths misses). Each row below is one cold request; input tokens are GLM's own counts of the same prompt bytes.
+**Quality: 28/30** (two maths misses). Input lengths below are GLM token counts.
 
 | Test | Decode | Prefill |
 |---|---:|---:|
@@ -67,9 +53,7 @@ It passed **28/30 quality cases** (two maths misses). Each row below is one cold
 | 128K (114,093), on the installed 512K service | **54.9** | **891** |
 | Real code, the 130,048-token DeepSeek prompt (124,103 GLM tokens): cold / prompt cached | **54.2 / 55.4** | **652** |
 
-The 2K and 32K rows ran at a 131,072-token allocation; the rest at the release's 524,288. Our measurements on more prompt lengths, parallel requests and quality are in [issue #458](https://github.com/mw00/project-maya/issues/458).
-
-[Pinned snapshot of the public 2K/32K/128K results](benchmarks/project-maya-issue-458.json)
+The 2K and 32K rows use a 131,072-token allocation; the remaining rows use 524,288.
 
 ### Hardware
 
@@ -84,11 +68,9 @@ The 2K and 32K rows ran at a 131,072-token allocation; the rest at the release's
 | [AXAGON EEM2-40G USB4 40 Gbps enclosure](https://www.alza.cz/axagon-eem2-40g-m-2-nvme-ssd-enclosure-usb-c-40gbps-armored-aluminum-d13390080.htm) | 1 | Holds the Samsung SSD |
 | Swissten USB 4.0 USB-C 240W 0.5 m cable | 1 | Connects the enclosure to the M5 |
 
-The two GPUs occupy M.2 connections through OCuLink; the external SSD connects over USB4. The exact card, SSD, enclosure, power-supply and cable models come from the owner's order list.
+### Performance curves
 
-### Our recorded dual-card measurements
-
-Our chart retains the full cold five-phrase retrieval curves for DeepSeek (both quantizations) and GLM. The models read the same text, but their tokenizers count different numbers of tokens; their speeds are **not** a matched model-to-model comparison. Comparisons with Project Maya's own releases are in [issue #510](https://github.com/mw00/project-maya/issues/510) (DeepSeek) and [issue #458](https://github.com/mw00/project-maya/issues/458) (GLM); the chart below records our installation and context-scaling runs, including a different context allocation for the 512K GLM service.
+Cold five-phrase retrieval, one request per point. Both models read the same text; token counts vary by model. DeepSeek uses a 512K allocation throughout; GLM uses 128K–512K, as recorded in the [measurement details](docs/BENCHMARKS.md).
 
 ![GLM-5.3-Flash and DeepSeek-V4.1-Flash-1017 reading and answer-writing speeds with two RX 7900 XTX cards and a Radeon 8060S helper](docs/benchmark-dual-xtx.svg)
 
@@ -96,7 +78,7 @@ Our chart retains the full cold five-phrase retrieval curves for DeepSeek (both 
 
 ### Install
 
-The recipes use the same service name and port; install one at a time. Select the DeepSeek GSQ-RCO recipe below, `STRIX_SYSTEM=maya-ds4-dual-xtx` for DeepSeek on the Maya-S quant, or `STRIX_SYSTEM=maya-glm-dual-xtx` for GLM.
+Install one recipe at a time. The commands below select the production GSQ-RCO setup.
 
 ```bash
 git clone https://github.com/pepuscz/strix-halo-llm.git
@@ -111,13 +93,19 @@ bin/strixctl install --allow-reboot
 bin/strixctl verify
 ```
 
-The [GLM recipe](ansible/releases/maya-glm-dual-xtx-512k.yml) needs about 240 GB free; the [DeepSeek GSQ-RCO recipe](ansible/releases/maya-ds4-gsq-dual-xtx-512k.yml) about 335 GB (155 GB of shards, the 111 GB Engram file, the 8 GB drafter, an 8 GB file of its dense matrices converted to Q8_0 at install, and the release folder) and the [DeepSeek Maya-S recipe](ansible/releases/maya-ds4-dual-xtx-512k.yml) about 470 GB. Both use kernel `7.0.0-38-generic`, isolated ROCm 7.2.4 userspace, and a rocBLAS build with the [mixed-architecture Tensile fix](https://github.com/ROCm/rocm-libraries/pull/4781). The installer verifies the hardware and pinned artifacts, builds the runtime, and enables `strix-halo-inference.service` on `127.0.0.1:18109`.
+| Setup | `STRIX_SYSTEM` | Free disk needed |
+|---|---|---:|
+| **DeepSeek GSQ-RCO** | `maya-ds4-gsq-dual-xtx` | ~335 GB |
+| DeepSeek Maya-S | `maya-ds4-dual-xtx` | ~470 GB |
+| GLM Maya-M | `maya-glm-dual-xtx` | ~240 GB |
+
+The installer verifies the hardware and artifacts, builds the runtime, and enables `strix-halo-inference.service` on `127.0.0.1:18109`. Dual-card recipes use ROCm 7.2.4; pinned build details are in [SOURCES.md](docs/SOURCES.md).
 
 ## BOSGAME M5 only
 
-These measurements record Qwen3.8-Flash-Next and DeepSeek-V4-Flash-0731 on the M5's Radeon 8060S and 128 GiB RAM, without the external cards. They use **different models, quantizations and hardware** from the dual-card GLM and DeepSeek-V4.1 results above, so the speeds are not a before/after comparison.
+These setups run Qwen3.8-Flash-Next and DeepSeek-V4-Flash-0731 on the M5's Radeon 8060S and 128 GiB RAM, without external GPUs.
 
-The speed test hides five labelled phrases in a long input and asks the model to return them. Every plotted request found all five. Each point is one request; the chart shows input-reading speed above answer-writing speed. A **slot** is capacity for one active conversation. Quality uses 10 coding and 20 maths questions.
+Each plotted point is one five-phrase retrieval request, scoring 5/5. Quality covers 10 coding and 20 maths questions. A **slot** holds one active conversation.
 
 | Model | Stack | Conversation limit | Quality | Recipe / measurement settings |
 |---|---|---|---:|---|

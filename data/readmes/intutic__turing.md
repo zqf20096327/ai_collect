@@ -3,7 +3,7 @@
 **Serve Frontier 70B+ Models on a Single Consumer GPU (24GB) or Mac Workstation with 75% Less Memory.**
 
 [![Docs: Live](https://img.shields.io/badge/Documentation-intutic.github.io%2Fturing-blue.svg)](https://intutic.github.io/turing/)
-[![Release: v1.0.0](https://img.shields.io/badge/Release-v1.0.0-blue.svg)](https://github.com/intutic/turing/releases/tag/v1.0.0)
+[![Release: v1.5.0](https://img.shields.io/badge/Release-v1.5.0-blue.svg)](https://github.com/intutic/turing/releases/tag/v1.5.0)
 
 
 
@@ -12,7 +12,7 @@
 
 
 [![License: BSL 1.1](https://img.shields.io/badge/License-BSL%201.1-green.svg)](LICENSE)
-[![Tests: 280/280 Passing](https://img.shields.io/badge/Tests-280%2F280%20Passing-brightgreen.svg)](https://github.com/intutic/turing/actions)
+[![Tests: 327/327 Passing](https://img.shields.io/badge/Tests-327%2F327%20Passing-brightgreen.svg)](https://github.com/intutic/turing/actions)
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/intutic/turing/blob/master/demo/turing_quickstart_colab.ipynb)
 
@@ -98,7 +98,7 @@ Turing Engine natively ingests, compresses, and serves open weights directly fro
 | :--- | :--- | :--- |
 | **DeepSeek** | `deepseek-r1-distill` (`1.5b`–`70b`), `deepseek-v4-flash`, `deepseek-v4-pro` (1.6T MoE) | **1x 8GB–24GB GPU + Host RAM** |
 | **Meta AI** | `llama-4-scout`, `llama-4-maverick`, `muse-glimmer-30b`, `llama-3.3-70b` | **1x 8GB–24GB GPU / Mac** |
-| **Alibaba Qwen** | `qwen-2.5-coder` (`7b` & `32b`), `qwen-3.8-27b`, `qwen3.8-max` (MoE) | **1x 12GB–24GB GPU / Mac** |
+| **Alibaba Qwen** | `qwen-2.5-coder` (`7b` & `32b`), `qwen-3.8-27b`, `qwen3.8-max` (MoE), [`nvidia/Qwen3.8-2.4T-A95B-NVFP4`](docs/qwen_2_4t_nvfp4_guide.md) (2.4T MoE) | **1x 12GB–24GB GPU + NVMe Tier / Mac** |
 | **Google** | `gemma-2-27b`, `gemma-2-9b`, `gemma-4-26b` (MoE) | **1x 8GB–16GB GPU / Mac** |
 | **Mistral AI** | `mistral-large-3`, `mistral-small-4` (24B), `mistral-small-24b` | **1x 8GB–24GB GPU / Mac** |
 | **Zhipu / Moonshot** | `glm-5.3-flash` (320B-A18B MoE / 1M Ctx), `glm-5.3-730b`, `kimi-k3` (2.8T MoE), `kimi-k2.6` | **1x 24GB GPU + Host RAM** |
@@ -163,14 +163,35 @@ Turing Engine auto-discovers and accelerates inference on all major silicon arch
 6. **🎯 Concurrency-Adaptive Speculation Gating & Parity**:
    Automatically shifts from full speculative decoding at low concurrency ($1.82\times$ at $c=1$) to plain decode at $c \ge 4$, with non-negotiable byte-exact greedy parity verification.
 
-7. **🍏 Universal Hardware Support (Apple Silicon & NVIDIA CUDA)**:
+7. **🏎️ Split-K Paged Flash-Decode & Micro-Scaling (1.36× Faster Decode)**:
+   Auto-dispatches parallel 16-block sequence reductions ($13,966\text{ tok/s}$) and NVFP4-style sub-block scaling ($gs=32/64$) preserving $99.999\%$ signal fidelity with $-75.0\%$ VRAM footprint.
+
+8. **⚡ Exact Fed-Token Prefix Bypass (94.1% Prompt Compute Saved)**:
+   $O(1)$ SIMD common prefix matcher evaluating multi-turn dialogue history in $<155\,\mu\text{s}$ and bypassing prompt prefill compute on recurring turns.
+
+
+9. **🍏 Universal Hardware Support (Apple Silicon & NVIDIA CUDA)**:
    Automatically auto-dispatches between NVIDIA CUDA (Triton GPU kernels), Apple Silicon Metal (`mps`), and bare-metal C++20 AVX2 SIMD CPU routines.
 
-8. **🏎️ 6-Tier High-Velocity Cold Ingestion Engine (GPUDirect Storage & `io_uring`)**:
+10. **🏎️ 6-Tier High-Velocity Cold Ingestion Engine (GPUDirect Storage & `io_uring`)**:
    Features a unified 6-tier storage hierarchy (`TuringIngestEngine`) spanning Linux `io_uring` multi-queue rings, kernel DMA readahead (`MADV_WILLNEED`), Subspace wire compression (-75% bytes), and NVIDIA GPUDirect Storage (`cuFile` PCIe DMA) with layer pipelining ($45.2\text{ ms}$ cold start Time-to-Ready).
 
-9. **⚡ Fused GPU Kernels & Bare-Metal C++20 SIMD Acceleration**:
-   Eliminates Python GIL contention and GPU-to-CPU `.item()` pipeline stalls with In-VRAM speculative candidate verification, fused $k$-slot attention gating ($-85\%$ DRAM traffic), C++20 SIMD Safetensors header parsing ($<100\,\mu\text{s}$), and sub-microsecond AI traffic QoS routing (**$8.80\times$ faster**, $2.77\,\mu\text{s}$).
+11. **⚡ Fused GPU Kernels & Bare-Metal C++20 SIMD Acceleration (v5.0 & v6.0)**:
+   Eliminates Python GIL contention and GPU-to-CPU `.item()` pipeline stalls with:
+   * **Batched Continuous Paged Decode GEMV (`triton_paged_decode_gemv.py`)**: Slashes memory traffic over 2D block tables, accelerating batched generation up to **8.86× (30,057 tok/s at $B=32$)**.
+   * **Single-Step Linear Recurrent Attention (`triton_linear_recurrence_step.py`)**: Fuses decay and output projection directly in SRAM (**5.13× speedup**, $57.76\,\mu\text{s}$).
+   * **Direct Pointer Memory Tensor Hashing (`csrc/turing_fast_hash_tensor.hpp`)**: 256-bit AVX2 SIMD pointer scanning at **8.18 GB/s (23.00× faster)** without intermediate byte copies.
+   * **C++20 Zero-Copy Streaming Reasoning Scanner (`csrc/turing_reasoning_scanner.hpp`)**: State-machine tag filter running at **2.47M tok/s**.
+   * **In-VRAM Speculative Verification & Sub-Microsecond AI Traffic QoS Routing**: $O(1)$ admission manager handling **1.18M requests/sec**.
+
+12. **🌐 Learned MoE Hot-Expert Pinning, LFRU Hysteresis & Vectorized Batch-Union**:
+    Features persistent historical activation tracking (`RoutingHistoryTracker`) to eliminate cold-start misses (**$92.53\%$ vs $39.14\%$ hit rate**), LFRU eviction with $25\%+4$ hysteresis gating (**$95.10\%$ thrashing reduction**), PILOT one-layer-ahead PCIe streaming, and vectorized PyTorch `index_add_` batch-union accumulation (**up to $16.92\times$ prefill acceleration**, $113\text{k tok/s}$).
+
+13. **🌐 Elastic Multi-Model Pipeline Serving & In-SRAM Fused Segment Pooling (v7.0)**:
+    Orchestrates 5+ models (Docling OCR $\to$ GLiNER NER $\to$ BGE Embeddings $\to$ BGE Reranker $\to$ Qwen LLM) on a single 24GB GPU in **$167.34\text{ ms}$ total** on **$7.42\text{ GB}$ VRAM** with fused variable-length segment pooling (**$65.40\times$ faster on NVIDIA L4**, $179\text{M tok/s}$) and compute-cost adaptive batching (**-67.43% token padding waste eliminated**).
+
+14. **🧠 Hybrid Gated Softmax Anchoring & Chunkwise Learned Decay (v8.0)**:
+    Eliminates the 84% associative recall collapse of linear attention/SSMs on RAG tasks by dynamically anchoring high-entropy factual tokens into a compact Softmax KV cache while streaming ambient context through $O(1)$ constant-memory learned-decay recurrence (**$25.00\%$ exact recall**, $\sim 16\times$ above chance floor, with **$1.61\times$ faster chunkwise prefill** and **$48.84\,\mu\text{s}$ decode latency**).
 
 ---
 
@@ -278,13 +299,13 @@ Explore the complete documentation at [**intutic.github.io/turing**](https://int
 
 ---
 
-## 📦 Pre-Built Binary Wheels (v1.0.0)
+## 📦 Pre-Built Binary Wheels (v1.5.0)
  
-Pre-compiled binary wheels with native C++20 AVX2 SIMD optimizations are published on [GitHub Releases v1.0.0](https://github.com/intutic/turing/releases/tag/v1.0.0):
+Pre-compiled binary wheels with native C++20 AVX2 SIMD optimizations are published on [GitHub Releases v1.5.0](https://github.com/intutic/turing/releases/tag/v1.5.0):
  
 ```bash
 # Install directly from release wheel:
-pip install https://github.com/intutic/turing/releases/download/v1.0.0/turing_engine-1.0.0-cp311-cp311-macosx_15_0_arm64.whl
+pip install https://github.com/intutic/turing/releases/download/v1.5.0/turing_engine-1.5.0-cp311-cp311-macosx_15_0_arm64.whl
 ```
 
 

@@ -14,7 +14,7 @@
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="License: Apache-2.0"></a>
   <a href="https://www.npmjs.com/package/@mottyjs/core"><img src="https://img.shields.io/npm/v/%40mottyjs%2Fcore?label=npm&color=cb3837" alt="@mottyjs/core on npm"></a>
-  <img src="https://img.shields.io/badge/runtime-Bun-f472b6" alt="Runtime: Bun">
+  <img src="https://img.shields.io/badge/runtime-Bun%20%7C%20Workers-f472b6" alt="Runtime: Bun, Workers">
   <img src="https://img.shields.io/badge/TypeScript-strict-3178c6" alt="TypeScript: strict">
 </p>
 
@@ -143,7 +143,8 @@ test("a short question without tools goes to the quick tier", async () => {
 ## What the code can do
 
 - **Read the whole request.** The messages, the tools, the options, the caller's headers and who
-  the caller is are all there.
+  the caller is are all there. `said(message)` is what the caller wrote, whether the message came
+  as `text` or as parts.
 - **Call any model, more than once and in any order.** `race`, `fallback`, `retry` and `timeout`
   compose, and a decision model such as Jev or Laya can pick.
 - **Answer without a model.** An answer can be written by hand.
@@ -185,14 +186,14 @@ and go as low as a provider's own options on one call, or your own adapter, auth
 
 | Package | Kind | Holds |
 | --- | --- | --- |
-| [`@mottyjs/core`](packages/core) | Core | The builder, model calls, `fallback`, `race`, `retry`, `timeout`, answers, error classes, types |
+| [`@mottyjs/core`](packages/core) | Core | The builder, model calls, `fallback`, `race`, `retry`, `timeout`, answers, `said`, error classes, types |
 | [`@mottyjs/store`](packages/store) | Plugin | Key-value storage that outlives a request |
 | [`@mottyjs/decision`](packages/decision) | Plugin | Decision models and their questions |
 | [`@mottyjs/auth`](packages/auth) | Plugin | A part that requires an identified caller |
 | [`@mottyjs/settings`](packages/settings) | Plugin | Typed settings a host may override |
 | [`@mottyjs/test`](packages/test) | Test kit | Scripted models, in-memory storage, `run` |
 | [`@mottyjs/serve`](packages/serve) | Host side | `serve`, `mount` and the three wire APIs. Never in a bundle |
-| [`@mottyjs/adapters`](packages/adapters) | Host side | Model providers, Redis storage, and auth by `jwt`, `bearer` or the host's own object with a `verify` function |
+| [`@mottyjs/adapters`](packages/adapters) | Host side | Model providers, Redis and Durable Object storage, and auth by `jwt`, `bearer` or the host's own object with a `verify` function |
 
 Only the core has no dependencies. Plugins compile into the motty's bundle, and the host side
 never does. The reasons behind the design, and what was rejected, are in
@@ -238,11 +239,36 @@ taking turns in one process. Cold start is the median of five runs of 21 starts,
 process and taken before the timed calls. Run `bun gates/bench/rivals/compare.ts` to measure it
 yourself.
 
+### Storage
+
+Each storage adapter is timed against the least its server does for the same call. For Redis
+that is Bun's own client sending one command, and for Workers a bare Durable Object making plain
+key-value calls. A gate runs the comparison on every change and fails when an adapter call takes
+1.5 times the bare one. One more round trip in a call reads 2.0.
+
+| Call | Redis | Share of the bare client | Durable Object | Share of the bare object |
+| --- | ---: | ---: | ---: | ---: |
+| Get | 0.24 ms | 1.00× | 21 µs | 1.06–1.09× |
+| Set with an expiry | 0.24 ms | 1.00× | 25 µs | 1.05–1.06× |
+| Increment with an expiry | 0.25 ms | 1.04× | 61–86 µs | 1.10–1.11× |
+
+With 100 calls in flight the Redis adapter makes 226,000 gets, 181,000 sets and 131,000
+increments a second. With 50 in flight the Durable Object makes 46,000 gets a second, and 13,000
+to 17,000 increments of one key. Increments made at once all count, and none is lost.
+
+The figures were measured on 2026-10-29 on an Apple M4 Max with Bun 1.4.4, against Valkey 9.1.2
+in a local container and a Durable Object in workerd 2026-10-25 on the same machine. A time is the
+median of 5,000 calls made one after another, with a value of 512 bytes. A share is the median
+over 200 rounds the two take in turn, and the range is over five runs. On Cloudflare the trip to
+the object costs more than any figure here. Run `bun test gates/test/storage.test.ts` with
+`REDIS_URL` set to measure the shares yourself.
+
 ## Status
 
 The packages are on npm under the `@mottyjs` scope, all at one version. Until `1.0.0` a minor
-version may break an API. The SDK runs on Bun only, since `serve`, the adapters, the bundler and
-the test runner are Bun's.
+version may break an API. The SDK runs on Bun and Cloudflare Workers. `serve` and the Redis
+adapter are Bun's. On Workers a host serves a motty with `mount` and stores with the `cloudflare`
+adapter, a Durable Object of the host's own Worker.
 
 - Images, files and audio are carried inside a chat request where the upstream takes them. The
   embeddings, images, audio, files and batches endpoints are not served.
@@ -263,7 +289,9 @@ bun run typecheck
 bun test
 ```
 
-- The storage adapter is tested against a real server, or not at all. Start one with
+- The Durable Object adapter is tested in workerd, which its tests start on their own.
+- The Redis adapter is tested against a real server, or not at all. The server is Valkey 9,
+  and any that speaks the Redis protocol from Redis 6 on works too. Start one with
   `podman compose up -d --wait`, or the same with `docker`, and run the tests with
   `REDIS_URL=redis://127.0.0.1:6379`.
 - `bun run test:live` makes real calls that cost money. It needs provider keys in `.env`, and a

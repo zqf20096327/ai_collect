@@ -6,7 +6,7 @@ StableCraft is a companion app for PhotoCraft: draw a lasso around an area, desc
 the change, and the result arrives as a **new masked layer**. Everything runs locally
 on your own GPU, with ComfyUI as the generation engine.
 
-![Version](https://img.shields.io/badge/version-0.2.4-3b82f6)
+![Version](https://img.shields.io/badge/version-0.2.5-3b82f6)
 ![Status](https://img.shields.io/badge/status-working%20MVP-22c55e)
 ![Platform](https://img.shields.io/badge/platform-Windows%20x64-6b7280)
 ![License](https://img.shields.io/badge/license-MIT-8b5cf6)
@@ -217,6 +217,22 @@ selection gives cleaner results than an irregular lasso. The session's `base.png
 remains the original image: switching back to EDIT on the same layer always uses that
 scene, never the previous T2I image. To use the T2I image as a new scene, draw a new
 lasso.
+
+### Sampler, scheduler and denoise
+
+- **Sampler** and **Scheduler** are available in **Settings**. The values come from
+  ComfyUI (`KSampler`), and the default per profile is read from `config.toml`
+  (`sampler` / `scheduler`). `euler` + `simple` is the recommended baseline for the
+  distilled profiles; other combinations are allowed.
+- **Denoise** is shown in **EDIT** only, and is only applied to **FLUX.2 Klein 9B**:
+  that profile starts sampling from the source crop latent, so a value below 1.0 keeps
+  more of the original image. `1.0` = full edit; `0.8–1.0` is a reasonable range.
+- For the other profiles, and for every T2I run, denoise is forced to **1.0**: they
+  sample from an empty latent (used only for its shape), so a partial denoise would
+  start from partially noised zeros and produce artifacts. The field is disabled with
+  an explanation.
+- Sampler, scheduler and denoise are stored per generation in `session.json` and
+  restored with the layer; changing them invalidates duplicate detection.
 
 ### Regenerate and gallery
 

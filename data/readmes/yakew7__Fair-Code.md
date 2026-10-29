@@ -1288,12 +1288,19 @@ faircode benchmark --out results/ --n-resamples 2000 --n-permutations 2000
 faircode benchmark COMPAS/audit.yaml                # run a subset explicitly
 faircode benchmark --root ~/audits                  # search ~/audits/*/audit.yaml instead of the current directory
 faircode benchmark --no-plots                       # CSVs only: no figures/ and matplotlib is not needed
+faircode benchmark --quiet                          # suppress per-combination progress on stderr
+faircode benchmark --merge COMPAS/audit.yaml        # replace selected audits in an existing verified result set
 ```
 
 `--root PATH` is the directory searched for `*/audit.yaml` (one level down; default: the current
 directory), so the harness can run from outside the repository. It is ignored when you pass manifest
 paths. `--no-plots` skips the `figures/*.png` files; `results_fairness.csv`, `results_performance.csv`
 and `summary.csv` are still written.
+By default, progress is written to stderr after each audit/strategy/model combination completes.
+`--quiet` suppresses those progress lines; the existing final summary and warnings remain on stderr.
+`--merge` replaces rows only for the audits passed to that run, preserves other audits and prior run records,
+and refreshes the provenance hashes. It requires a complete existing output with valid `PROVENANCE.json`;
+legacy or inconsistent output is left untouched and rejected.
 
 Writes `results_fairness.csv`, `results_performance.csv`, `summary.csv`, and one
 `figures/<audit>_strategies.png` per audit (300 dpi, rendered by `faircode/figures.py` straight from
@@ -1508,21 +1515,4 @@ The full public roadmap - with phases, completion status, and content schedule -
 | Watching | 8 |
 | Combined Social Reach (Instagram + LinkedIn) | 30K+ |
 | Countries Reached (Website Visitors) | 20 |
-| Code Audits Published | 7 |
-| Explainers Published | 114 |
-
-Tracked weekly in [METRICS.md](METRICS.md).
-
----
-
-## Contributors
-
-Thanks to everyone who has contributed audits, explainers, or documentation to Fair Code.
-
-[![Contributors](https://contrib.rocks/image?repo=yakew7/Fair-Code&excludeBots=true)](https://github.com/yakew7/Fair-Code/graphs/contributors)
-
-*The grid above is auto-generated from GitHub's contributors graph, which can lag a merged PR by
-up to a few days. See [CONTRIBUTORS.md](CONTRIBUTORS.md) for the manually-verified, always-current
-list - it's what to trust if a name here looks missing or out of date.*
-
-To add yourself here, open a PR alongside your contribution. See the full commi
+| Code Audits Published |

@@ -1,18 +1,80 @@
+---
+AIGC:
+    Label: "1"
+    ContentProducer: 001191440300708461136T1XGW3
+    ProduceID: dde0bd45bc80f76ab27dc0d7783eab7c_3e18870fd39a11f19fe5525400638852
+    ReservedCode1: yiznI6slvFUlNrXnKAFQWPXeqbPaQhFYVjL7WJAYOWv43xpzZdTnz3kIpfJHaERasKaD1MSI5iKCD/h1SH3uY7WH6QufYQzdRQb44APlFTk6syC47+PZDF/8S5qgF5dI69LHwvILBGdUQocvA5nrc0/vOG4nvlK1RUwM2x7QhM4OJqoDg4C/xBz7t6k=
+    ContentPropagator: 001191440300708461136T1XGW3
+    PropagateID: dde0bd45bc80f76ab27dc0d7783eab7c_3e18870fd39a11f19fe5525400638852
+    ReservedCode2: yiznI6slvFUlNrXnKAFQWPXeqbPaQhFYVjL7WJAYOWv43xpzZdTnz3kIpfJHaERasKaD1MSI5iKCD/h1SH3uY7WH6QufYQzdRQb44APlFTk6syC47+PZDF/8S5qgF5dI69LHwvILBGdUQocvA5nrc0/vOG4nvlK1RUwM2x7QhM4OJqoDg4C/xBz7t6k=
+---
+
+
+
+
+
 <div align="center">
 
-[English](README.md) | [中文](README.zh-CN.md)
-
-</div>
-
----
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/logo.png">
+  <img src="docs/logo-light.png" width="96" height="96" alt="Nyral logo">
+</picture>
 
 # Nyral
 
-> **Completed (2026-10-16)** — the project concluded on October 16, 2026; later changes are just post-completion improvisation: no roadmap, no release schedule. The 54-day build retrospective: [END.md](./END.md).
+### An open-source personal agent that lives on your Android phone
 
-> Privacy-first · BYO model · Open source · No root · No account
+**Chat · on-device long-term memory · SSH remote ops · an agent that drives its own browser**
+
+[English](README.md) | [中文](README.zh-CN.md)
+
+![license](https://img.shields.io/badge/license-MIT-blue)
+![platform](https://img.shields.io/badge/Android-10%2B%20%C2%B7%20arm64-3DDC84)
+![release](https://img.shields.io/badge/release-v2.8.16-brightgreen)
+
+[**Download APK**](../../releases/latest) ｜ [Quick start](#quick-start) ｜ [What it does](#what-it-does) ｜ [Project status](#project-status)
+
+</div>
+
+<p align="center"><img src="docs/screen-home.jpg" width="420" alt="Nyral home screen"></p>
+
+<p align="center">
+  <img src="docs/demo-chat.gif" width="238" alt="Nyral chat and tool-call demo">
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="docs/demo-sidebar.gif" width="238" alt="Sidebar: sessions and tasks in one place">
+</p>
+
+<p align="center"><sub>Left: chat &amp; tool calls &nbsp;|&nbsp; Right: sidebar — sessions, tasks and safe mode in one place</sub></p>
+
+
+---
+
+> **One thing to get out of the way: local-first does **not** mean on-device model.**
+> Nyral does not run a multi-GB LLM on your phone. Chats, memory and files stay in a local SQLite database; inference goes to the API key you provide (any OpenAI-compatible endpoint, cloud or self-hosted). No account, no telemetry.
+
+## What it does
+
+| Capability | Details |
+| --- | --- |
+| **On-device long-term memory** | bge-small ONNX embeddings + keyword recall over SQLite; remembers across sessions, text never leaves the phone |
+| **21 built-in tools** | Web search/fetch, SSH with jump hosts, local shell, file read/write, video frame extraction, accessibility control of other apps |
+| **Built-in agent browser** | The agent opens pages, clicks, fills forms and reads them; captchas are handed back to you in one tap |
+| **Any model, your key** | MiMo / DeepSeek / GLM / any OpenAI-compatible endpoint, switchable per chat |
+
+## Quick Start
+
+1. Install the APK, open Settings → Model Config, and enter the **Base URL + API Key** of any OpenAI-compatible endpoint (without this it cannot chat)
+2. (Optional) Add remote hosts in SSH Config: password or private key (ED25519 supported via the built-in BC), proxy jumps supported
+3. Start chatting; the AI calls tools on demand, with tool-call progress shown collapsed inside bubbles
+4. Long-term memory archives automatically; saying "remember xxx" archives immediately
+
+---
+
+## Overview
 
 Nyral is an open-source personal agent for Android: LLM chat, long-term local memory, SSH remote operations, web tools, and voice/attachment multimodality in a single app. Data stays on your device by default — no account, no behavioral tracking, no analytics or ad SDKs; model and tools are fully under your control, bring your own API key or self-host an endpoint.
+
+> Privacy-first · BYO model · Open source · No root · No account
 
 ## Key Features
 
@@ -56,6 +118,12 @@ Nyral is an open-source personal agent for Android: LLM chat, long-term local me
 </details>
 
 
+**MCP (Model Context Protocol)**
+- Client: connect any Streamable HTTP MCP server (protocol `2025-06-18`, `Authorization: Bearer`); 4 presets (DeepWiki / Context7 / Microsoft Learn / GitHub), test-before-save, delete with confirmation
+- Token-friendly: top 4 tools stay resident, the rest are indexed and pulled in on demand via the built-in `tool_detail`
+- Server: Nyral itself is a read-only MCP server (`/mcp` on the debug port) exposing `phone_status` / `phone_memory_search` / `phone_screen`, so a desktop agent can query the phone
+- Loopback / LAN only, token-authenticated, no cloud relay — see [docs/MCP.md](docs/MCP.md)
+
 **Security**
 - Secondary confirmation for dangerous operations: confirm-then-execute; same params exempted for 5 minutes; rejection stops immediately with a receipt; timeout auto-rejects; full audit trail (allow/deny/timeout) persisted
 - SSRF protection (redirect-target validation for web_fetch/web_download) + log redaction (non-2xx API response bodies and SSH private-key contents never logged in plaintext)
@@ -85,13 +153,6 @@ git clone https://github.com/aixtin/nyral.git
 Requires JDK 17, Gradle 8.13, Android SDK 36. The repo ships `gradlew` (pinned to Gradle 8.13); a system Gradle 8.13 works too. `settings.gradle.kts` includes Aliyun mirror config for faster builds in mainland China — remove the `maven(...)` lines if you are elsewhere.
 
 > Release-signed builds: `./gradlew assembleRelease` (self-managed keystore read from `keystore.properties`; both keystore and properties are gitignored — prepare your own keys).
-
-## Quick Start
-
-1. Install the APK, open Settings → Model Config, and enter the Base URL + API Key of any OpenAI-compatible endpoint
-2. (Optional) Add remote hosts in SSH Config: password or private key (ED25519 supported via the built-in BC), proxy jumps supported
-3. Start chatting; the AI calls tools on demand, with tool-call progress shown collapsed inside bubbles
-4. Long-term memory archives automatically; saying "remember xxx" archives immediately
 
 ## Directory Layout
 
@@ -153,7 +214,9 @@ android-agent-app/
 
 
 ## Changelog
-- **[Latest] v2.8.14 (2026-10-27, versionCode 97)**: Fix for long-answer finish ANR on low-end devices — crash logs pinpointed the "freezes right after a tool call" complaint: the entire reply body was parsed and laid out in a single frame at stream finish, and re-breaking thousands of dense CJK glyphs in one pass blew past the ANR threshold on weaker hardware (4~74s main-thread blocks measured on a nubia NX741J; users force-closed the app, perceiving it as a crash). Three fixes: oversized text blocks are now split into multiple TextViews at paragraph boundaries (per-view layout cost is capped; unbroken no-newline text such as PDF extracts falls back to hard splits), finished text switches from Editable/DynamicLayout to immutable SpannedString/StaticLayout, and the finish reveal is staggered (at most 2 blocks per frame, 40ms apart), visually a fast section-by-section fade-in.
+- **[Latest] v2.8.16 (2026-10-29, versionCode 99)**: Blurred dialog backdrops + quieter ANR watchdog — every custom dialog now gaussian-blurs the chat behind it so focus lands on the dialog itself; the watchdog now records only genuine main-thread stalls, filtering out false ANRs caused by whole-device freezes (system-level sleep / debugger suspend): the heartbeat probe keeps running during a freeze and a recovered device no longer produces a late report — 0 false positives in both the 40s screen-off and 10s SIGSTOP stress tests.
+
+- **v2.8.14 (2026-10-27, versionCode 97)**: Fix for long-answer finish ANR on low-end devices — crash logs pinpointed the "freezes right after a tool call" complaint: the entire reply body was parsed and laid out in a single frame at stream finish, and re-breaking thousands of dense CJK glyphs in one pass blew past the ANR threshold on weaker hardware (4~74s main-thread blocks measured on a nubia NX741J; users force-closed the app, perceiving it as a crash). Three fixes: oversized text blocks are now split into multiple TextViews at paragraph boundaries (per-view layout cost is capped; unbroken no-newline text such as PDF extracts falls back to hard splits), finished text switches from Editable/DynamicLayout to immutable SpannedString/StaticLayout, and the finish reveal is staggered (at most 2 blocks per frame, 40ms apart), visually a fast section-by-section fade-in.
 
 - **v2.8.13 (2026-10-26, versionCode 96)**: Full UI theming + stability fixes — new custom-drawn themed SwitchView (capsule track transitions with the theme primary color + animated white thumb), replacing all 5 stock Switches whose track color was overridden at runtime by OEM skins (MIUI/HyperOS); Markdown heading/link/quote-bar/list-bullet colors now follow the injected theme, fixing unreadable dark-blue headings and black bullets in dark themes; status colors across Permissions/TimerTask/ModelConfig/Audit and other pages converged to semantic colors (Ui.OK/Ui.DANGER), removing a dozen hardcoded greens/reds. Earlier rounds included: full-page theming for TimerTask/Audit, 8 stock AlertDialogs replaced with the unified rounded dialog, and hardcoded colors fixed in the main drawer / voice bar / jump FAB. Also includes fixes since v2.8.9: video frame extraction switched from ImageReader to SurfaceTexture + PixelCopy, fixing native SIGABRT crashes (UNEXPLAINED_EXIT) on some MTK devices; vision-model images sent inline, audio-model audio sent inline with automatic 400 fallback, oversized Office documents readable via attach_read chunked text extraction, and animated emoji no longer misdetected as video.
 
@@ -205,9 +268,9 @@ For model responses, the App sends your message content to the model service pro
 See [PRIVACY.md](PRIVACY.md) for details.
 
 
-## Maintainer
+## Development Collaboration
 
-This project is designed, implemented and maintained by [aixtin](https://github.com/aixtin).
+This project is designed and validated by aixtin, with implementation assisted by Marvis, an AI coding assistant. See [COLLABORATION.md](COLLABORATION.md) for the division of work.
 
 ## License
 
@@ -237,3 +300,14 @@ Runtime dependencies and their licenses (full license texts live in each compone
 | junit / org.json / hamcrest-core (test-only, not packaged) | 4.13.2 / 20231013 / 1.3 | EPL-2.0 / JSON License / BSD-3-Clause |
 
 MPL-2.0 (rhino) and UnRAR license (junrar) notices are preserved inside the shipped jars; junrar is used for extraction only, never to build RAR-compatible compressors.
+
+
+---
+
+## Project status
+
+> **Completed (2026-10-16)** — the project concluded on October 16, 2026; later changes are just post-completion improvisation: no roadmap, no release schedule. The 54-day build retrospective: [END.md](./END.md).
+
+- Latest: v2.8.16 (2026-10-29, versionCode 99)
+- Built solo from 2026-08-24; core complete in 54 days (see [END.md](./END.md))
+- Maintained as a personal project, not commercially; issues are welcome, schedules are not promised.

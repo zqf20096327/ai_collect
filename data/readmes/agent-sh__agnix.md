@@ -14,7 +14,7 @@
 
 > Running open models for your company? [**Tiyuvta**](https://tiyuvta.ai/services/) helps with model choice, deployment and optimization, and fine-tuning on your hardware or cloud account.
 
-<p align="center">Catch broken agent configs before your AI tools silently ignore them.<br>702 rules across Claude Code, Codex CLI, OpenCode, Cursor, Copilot, and more -<br>validating CLAUDE.md, SKILL.md, hooks, MCP configs, and other agent files.</p>
+<p align="center">Catch broken agent configs before your AI tools silently ignore them.<br>757 rules across Claude Code, Codex CLI, OpenCode, Cursor, Copilot, and more -<br>validating CLAUDE.md, SKILL.md, hooks, MCP configs, and other agent files.</p>
 
 <p align="center"><strong>Auto-fix</strong> | <strong><a href="https://github.com/marketplace/actions/agnix-ci">GitHub Action</a></strong> | <strong><a href="https://marketplace.visualstudio.com/items?itemName=avifenesh.agnix">VS Code</a> + <a href="https://plugins.jetbrains.com/plugin/30087-agnix">JetBrains</a> + <a href="https://github.com/agent-sh/agnix.nvim">Neovim</a> + <a href="https://zed.dev/extensions?query=agnix">Zed</a></strong></p>
 
@@ -39,7 +39,7 @@
 
 **Bad patterns get amplified.** AI assistants don't ignore wrong configs - they [learn from them](https://www.augmentcode.com/guides/enterprise-coding-standards-12-rules-for-ai-ready-teams).
 
-agnix validates all of it - 702 rules sourced from official specs, academic research, and real-world breakage patterns. Auto-fix included.
+agnix validates all of it - 757 rules sourced from official specs, academic research, and real-world breakage patterns. Auto-fix included.
 
 > **Want to try it first?** [Open the playground](https://agent-sh.github.io/agnix/playground) - paste any agent config, see diagnostics instantly. No install, runs in your browser.
 
@@ -122,8 +122,25 @@ Kiro permission YAML templates at `.kiro/settings/permissions.yaml` are lintable
 
 ## Supported Tools
 
+Maintenance priorities:
+
+| Tier | Tools |
+|------|-------|
+| S | Claude Code, Codex CLI |
+| A | Kiro, OpenCode, Pi |
+| B | Antigravity CLI, Grok Code |
+| C | Muse Code, Kimi Code |
+| D | GitHub Copilot, Cline, Cursor, legacy Gemini CLI |
+
+Pi, Antigravity CLI and Grok Code have native static validators and automated release tracking. Muse Code and Kimi Code validation remains pending. See the [coverage and monitoring inventory](knowledge-base/RESEARCH-TRACKING.md) and [native contracts](knowledge-base/NATIVE-TOOL-CONTRACTS.md) for supported formats and qualified versions.
+
+Implemented validators:
+
 | Tool | Rules | Count | Config Files |
 |------|-------|-------|--------------|
+| [Pi](https://pi.dev) | PI-\* | 17 | .pi/settings.json, ~/.pi/agent/, models, keybindings, MCP, packages, themes and prompts |
+| [Antigravity CLI](https://antigravity.google/docs/getting-started?tab=cli) | AGY-\* | 18 | CLI settings, mcp_config.json, hooks, plugins, rules, registries and agents |
+| [Grok Code](https://docs.x.ai/build/cli/reference) | GRK-\* | 20 | .grok/config.toml, sandbox, requirements, roles, personas, hooks, plugins, LSP, agents and skills |
 | [Agent Skills](https://agentskills.io) | AS-\*, XP-SK-\* | 26 | SKILL.md |
 | [Claude Code](https://code.claude.com/docs) | CC-\* | 170 | CLAUDE.md, .claude/rules/\*.md, settings.json, hooks, agents, skills, output styles, plugins, marketplace.json, .mcp.json |
 | [GitHub Copilot](https://docs.github.com/en/copilot) | COP-\*, CP-SK-\* | 35 | .github/copilot-instructions.md, .github/instructions/\*.instructions.md, .github/agents/, .github/prompts/, .github/hooks/\*.json, copilot-setup-steps.yml, plugin.json, .github/skills/ |
@@ -135,8 +152,8 @@ Kiro permission YAML templates at `.kiro/settings/permissions.yaml` are lintable
 | [AGENTS.md](https://agents.md) | AGM-\*, XP-\* | 13 | AGENTS.md, AGENTS.local.md, AGENTS.override.md |
 | [Cline](https://docs.cline.bot) | CLN-\*, CL-SK-\* | 16 | .clinerules/, .cline/rules/, .cline/workflows/, .cline/hooks/, .clineignore, cline_mcp_settings.json, .cline/skills/ |
 | [Gemini CLI](https://github.com/google-gemini/gemini-cli) | GM-\* | 35 | GEMINI.md, .gemini/settings.json, gemini-extension.json, extension hooks and agents, .gemini/commands/\*.toml, policies, .gemini/agents/, .geminiignore |
-| [Windsurf / Devin Desktop](https://docs.devin.ai) | WS-\* | 17 | .devin/rules/, .devin/workflows/, .devin/hooks.json (and the legacy .windsurf/ layout), .windsurfrules, global_rules.md, .windsurf/skills/ |
-| [Amp](https://ampcode.com) | AMP-\* | 12 | .agents/checks/\*.md, .amp/settings.json(c), skills and skill mcp.json |
+
+Continue, Aider, Amazon Q, Tabnine, Codeium, Devin/Windsurf and Amp are outside active support and monitoring. Shipped Amp and Windsurf/Devin validators remain available for legacy compatibility. Roo Code support was removed in 0.59.0.
 
 ## Architecture
 

@@ -7,10 +7,12 @@
 <p align="center"><b>一句话描述需求，AI 直接生成可运行、可迭代、可部署的网页应用</b></p>
 
 <p align="center">
+  <b>简体中文</b> ·
+  <a href="README.en.md">English</a> ·
   <a href="http://www.icodeplay.site">在线体验</a> ·
   <a href="#快速开始">快速开始</a> ·
   <a href="#桌面端">桌面端</a> ·
-  <a href="https://github.com/20223309-zhou/ai-code-platform-frontend">前端仓库</a> 
+  <a href="https://github.com/20223309-zhou/ai-code-platform-frontend">前端仓库</a>
 </p>
 
 <p align="center">
@@ -59,19 +61,19 @@
 ## 界面预览
 
 <p align="center">
-  <img src="assets/img.png" alt="首页：输入需求开始生成" width="100%" />
+  <img src="assets/首页.png" alt="首页：输入需求开始生成" width="100%" />
   <br />
   <sub>首页 —— 输入需求、上传参考资料、选择生成类型与模型</sub>
 </p>
 
 <p align="center">
-  <img src="assets/image-20261005171201280.png" alt="应用对话页：左侧对话，右侧实时预览" width="100%" />
+  <img src="assets/对话页.png" alt="应用对话页：左侧对话，右侧实时预览" width="100%" />
   <br />
   <sub>对话页 —— 左侧与 AI 对话迭代，右侧实时预览生成结果</sub>
 </p>
 
 <p align="center">
-  <img src="assets/image-20261005171217525.png" alt="模板广场" width="100%" />
+  <img src="assets/模板广场.png" alt="模板广场" width="100%" />
   <br />
   <sub>模板广场 —— 浏览精选模板并一键复用</sub>
 </p>

@@ -32,19 +32,27 @@
 
 ## Installation  :wrench:
 
-```py
+```bash
 pip install stemflow
 ```
 
-To install the latest beta version from github:
+For optional memory monitoring (psutil) and tuning (XGBoost and Optuna):
 
-```py
-pip install stemflow@git+https://github.com/chenyangkang/stemflow.git
+```bash
+pip install "stemflow[monitoring,tuning]"
+```
+
+Use `stemflow[monitoring]` or `stemflow[tuning]` to install either separately.
+
+To install the latest version from GitHub:
+
+```bash
+pip install "stemflow @ git+https://github.com/chenyangkang/stemflow.git"
 ```
 
 Or using conda:
 
-```py
+```bash
 conda install -c conda-forge stemflow
 ```
 
@@ -130,9 +138,10 @@ For more information, please see [an introduction to stemflow](https://chenyangk
 
 ## Usage :star:
 
-Use Hurdle model as the base model of AdaSTEMRegressor:
+Use Hurdle model as the base model of AdaSTEMRegressor. This example uses XGBoost, so install the `tuning` extra shown above:
 
 ```py
+import numpy as np
 from stemflow.model.AdaSTEM import AdaSTEM, AdaSTEMClassifier, AdaSTEMRegressor
 from stemflow.model.Hurdle import Hurdle
 from xgboost import XGBClassifier, XGBRegressor
@@ -172,7 +181,7 @@ model = model.fit(X_train.reset_index(drop=True), y_train)
 ## predict
 pred = model.predict(X_test)
 pred = np.where(pred<0, 0, pred)
-eval_metrics = AdaSTEM.eval_STEM_res('hurdle',y_test, pred_mean)
+eval_metrics = AdaSTEM.eval_STEM_res('hurdle', y_test, pred)
 print(eval_metrics)
 ```
 
@@ -180,6 +189,23 @@ Where the `pred` is the mean of the predicted values across ensembles.
 
 See [AdaSTEM demo](https://chenyangkang.github.io/stemflow/Examples/01.AdaSTEM_demo.html) for further functionality.<br>
 Besides, `stemflow` also support [lazy loading](https://chenyangkang.github.io/stemflow/Examples/08.Lazy_loading.html) and [database query](https://chenyangkang.github.io/stemflow/Examples/09.Database_query.html) to reduce memory load during parallel computing.
+
+The execution rewrite adds a Pandas-friendly database helper and optional shared training arrays:
+
+```py
+from stemflow.lazyloading import make_training_databases
+
+X_path, y_path = make_training_databases(X_train, y_train, "data/training")
+model.fit(X_path, y_path, temporal_window_prequery=True,
+          training_data_backend="memmap", inner_max_num_threads=1,
+          max_concurrent_ensembles=4)
+```
+
+Native Pandas, DuckDB or Parquet execution remains the default; memory-mapped execution is optional. See the [parallel execution guide](https://chenyangkang.github.io/stemflow/Tips/Tips_for_parallel_execution.html) and [executed example](https://chenyangkang.github.io/stemflow/Examples/10.Execution_and_memory.html) for compatibility, scratch-space requirements and complete-job memory trade-offs. The repository also contains reproducible benchmarks in `scripts/00_benchmarks/` and measured comparisons in `resources/REWRITE.md`.
+
+For optional live wall timings and parent/worker memory, install `stemflow[monitoring]` and wrap fitting and prediction in `with model.monitor_execution(output_path="data/execution_monitor.json") as monitor:`. The monitor reports sampled process-tree peaks, named stages and optional flushed log updates. Its plain report remains available as `model.execution_monitor_` and survives model saving/loading; it retains summaries by default. RSS uses a portable psutil reader, with optional platform-specific USS/PSS/footprint measurements. See the [monitoring guide](https://chenyangkang.github.io/stemflow/Tips/Tips_for_parallel_execution.html#monitor-a-running-workflow) for interpretation and target-machine checks.
+
+Mean predictions now support streaming ensemble aggregation. Optional [calibration and tuning wrappers](https://chenyangkang.github.io/stemflow/Tips/Local_calibration_and_tuning.html) can be used independently or together, inside or outside AdaSTEM. The [pipeline report](https://github.com/chenyangkang/stemflow/blob/main/resources/PIPELINE_OPTIMIZATION.md) compares timings, peak memory, calibration diagnostics and compatibility limits.
 
 -----
 

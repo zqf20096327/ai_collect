@@ -310,6 +310,114 @@ re-encrypted nine files, so after a passphrase change the others could no
 longer be decrypted and silently read back as empty. Backups written while
 a passphrase is set are encrypted too (see "Automatic Backups").
 
+## Time Blocks, Objectives, Recipes & Trips
+
+Five more stores plus three read-only helpers, all local, per profile,
+encrypted with the rest of your data when encryption is on, and covered by
+backup, restore, export and the doctor.
+
+```
+"block 9 to 10:30 tomorrow for deep work"   "when am I free for 45 minutes?"
+"schedule the report task this week"        "how did I spend my week?"
+"objective for Q4: run 100 km"              "I ran 12 km today"
+"save my lentil soup recipe"                "plan soup for dinner on Friday"
+"make a shopping list from the meal plan"   "trip to Rome Nov 1 to Nov 4"
+"what triggers my headaches?"               "find everything about Rome"
+```
+
+- **Time blocks** (`add_time_block`, `get_day_plan`, `update_time_block`,
+  `delete_time_block`, `finish_time_block`, `find_free_time`, `schedule_task`,
+  `get_time_allocation`): put work on the clock. Overlaps are refused, the day
+  plan shows blocks and free gaps (07:00 to 22:00), `find_free_time` lists the
+  first free slots, `schedule_task` places a task in the first slot that fits
+  and the allocation report shows where the hours went by category. Finishing a
+  block can complete its task. A block starting within 15 minutes is nudged.
+- **Objectives and key results** (`add_objective`, `add_key_result`,
+  `record_key_result`, `get_okrs`, `update_okr`, `delete_okr`): an objective for
+  a week, month, quarter (`2026-Q4`) or year with measurable key results
+  (upward or downward targets). Progress is compared with the share of the
+  period that has passed: ahead of pace, on track, slightly behind or behind.
+  Objectives ending within a week below 70% are nudged and shown in the agenda.
+- **Recipes and meal plan** (`add_recipe`, `get_recipes`, `get_recipe`,
+  `update_recipe`, `delete_recipe`, `suggest_recipes`, `plan_meal`,
+  `get_meal_plan`, `clear_meals`, `log_planned_meal`, `shopping_from_plan`):
+  recipes scale to any serving count, `suggest_recipes` surfaces what you have
+  not cooked lately, planned meals can repeat on several days, logging a
+  planned meal creates the meal entry, and `shopping_from_plan` adds the
+  combined ingredients to your shopping list (skipping what is already there).
+- **Trips** (`add_trip`, `get_trips`, `get_trip`, `update_trip`, `delete_trip`,
+  `add_packing_items`, `pack_items`, `remove_packing_items`,
+  `add_itinerary_item`, `remove_itinerary_item`): dates, budget, a packing list
+  from a template (basic, documents, flight, city, beach, hiking, winter,
+  business) and a day-by-day itinerary. A trip within three days with unpacked
+  items is nudged; an ongoing trip shows today's plan in the agenda.
+- **Symptom triggers** (`get_symptom_triggers`): compares your symptom days with
+  sleep, stress, water, caffeine, alcohol, nicotine and workouts of the day
+  before, plus triggers you named yourself. Patterns in your own data, not
+  causes and not medical advice.
+- **Search everything** (`search_everything`): one search over tasks, notes,
+  lists, people, subscriptions, savings, debts, countdowns, supplies, symptoms,
+  recipes, the meal plan, trips, objectives, time blocks, reminders, habits and
+  goals, with the id to use next to every hit.
+- **Closing summary** (`get_closing_summary`): an end-of-day or end-of-week
+  review of what got done, what was logged, what is still open and what is next.
+- **Repair suggestions** (`get_repair_suggestions`): for each problem the doctor
+  finds in planner data, the exact tool call that fixes it. Read-only.
+
+The proactive nudges and `get_today_agenda` include the new sources, and the
+doctor checks the five new stores (blocks, objectives, recipes and planned
+meals it cannot read, trips with unusable dates, shared ids).
+
+## Chores, Expiry Dates, Routines, Gift Ideas & Decisions
+
+Five more stores and a combined calendar, all local, per profile, encrypted
+with the rest of your data when encryption is on, and covered by backup,
+restore, export, rekey and the doctor.
+
+```
+"water the plants every week"            "I watered them"
+"my passport expires 2027-03-01"         "I renewed my insurance for 12 months"
+"morning routine: water, stretch, journal"  "tick stretch"
+"a poetry book for Ayse"                 "I bought the scarf"
+"I chose the standing desk, review in a month"  "how did the desk decision turn out?"
+"what is coming up this week?"
+```
+
+- **Chores** (`add_chore`, `complete_chore`, `get_chores`, `update_chore`,
+  `delete_chore`): anything that repeats on a schedule (every 10 days, weekly,
+  every 3 months, yearly). The next due date counts from the day it was
+  done, so a late chore never piles up. Overdue and due-today chores are
+  nudged and shown in the agenda.
+- **Expiry dates** (`add_expiry`, `get_expiries`, `renew_expiry`,
+  `update_expiry`, `delete_expiry`): a passport, a licence, insurance, a
+  warranty. Each has a reminder window (30 days by default); inside it the item
+  is nudged and listed in the agenda. Renewing moves the date forward (a new
+  date, or a number of months) and keeps a history.
+- **Routines** (`add_routine`, `get_routines`, `check_routine_step`,
+  `update_routine`, `delete_routine`): named checklists with their own
+  schedule (daily, weekdays, weekends or chosen days). Tick steps per day (or
+  `all`), see the streak of fully done days (days a routine is not scheduled
+  do not break it) and find unfinished routines in the agenda.
+- **Gift ideas** (`add_gift_idea`, `get_gift_ideas`, `update_gift_idea`,
+  `delete_gift_idea`): ideas per person with price and occasion, marked idea,
+  bought or given. Names from your people list link to their birthday: the list
+  shows birthdays with no gift bought yet, and a birthday within a week with
+  saved ideas but nothing bought is nudged.
+- **Decisions** (`add_decision`, `get_decisions`, `review_decision`,
+  `update_decision`, `delete_decision`): the options, the choice, why, what you
+  expect and how confident you are, with a review date (30 days by default).
+  When it arrives Hermes asks how it went; reviewed decisions show how your
+  confidence compares with the outcomes.
+- **Week ahead** (`get_week_ahead`): one calendar for 1 to 14 days over due
+  tasks, time blocks, planned meals, birthdays, renewals, debts, countdowns,
+  chores, expiry dates, trips and decisions to review, with overdue items first.
+
+`search_everything` now covers the five new stores, the closing summary shows
+chores and decisions that are waiting, and `get_repair_suggestions` and the
+doctor check them (a chore interval it cannot read, an expiry date or review
+date that is not a date, a routine without steps, an unknown gift status,
+shared ids).
+
 ## Project Structure
 
 ```mermaid
@@ -1947,6 +2055,44 @@ phrased as a nudge, nothing more.
 
 ## What's New
 
+**v1.46.0 - Chores, Expiry Dates, Routines, Gift Ideas, Decisions**
+- New **chores**: `add_chore`, `complete_chore`, `get_chores`, `update_chore`,
+  `delete_chore` for anything that repeats, counted from the last time it was done.
+- New **expiry dates**: `add_expiry`, `get_expiries`, `renew_expiry`,
+  `update_expiry`, `delete_expiry` with a reminder window and renewal history.
+- New **routines**: `add_routine`, `get_routines`, `check_routine_step`,
+  `update_routine`, `delete_routine` with per-day ticks and streaks.
+- New **gift ideas**: `add_gift_idea`, `get_gift_ideas`, `update_gift_idea`,
+  `delete_gift_idea`, linked to birthdays in the people list.
+- New **decision journal**: `add_decision`, `get_decisions`, `review_decision`,
+  `update_decision`, `delete_decision` with confidence versus outcome.
+- New **`get_week_ahead`**: one calendar over everything with a date.
+- Due chores, expiring documents, gifts to buy and decisions to review appear in
+  the proactive nudges and in `get_today_agenda`; routines still to finish are
+  in the agenda too. The closing summary, `search_everything`, the doctor and
+  `get_repair_suggestions` cover the five new stores; backup, restore, export
+  and rekey do as well.
+- 379 new tests - suite grew from 4319 to 4698.
+
+**v1.45.0 - Time Blocks, Objectives, Recipes, Trips**
+- New **time blocks**: `add_time_block`, `get_day_plan`, `update_time_block`,
+  `delete_time_block`, `finish_time_block`, `find_free_time`, `schedule_task`,
+  `get_time_allocation`.
+- New **objectives and key results**: `add_objective`, `add_key_result`,
+  `record_key_result`, `get_okrs`, `update_okr`, `delete_okr` with pace.
+- New **recipes and meal plan**: `add_recipe`, `get_recipes`, `get_recipe`,
+  `update_recipe`, `delete_recipe`, `suggest_recipes`, `plan_meal`,
+  `get_meal_plan`, `clear_meals`, `log_planned_meal`, `shopping_from_plan`.
+- New **trips**: `add_trip`, `get_trips`, `get_trip`, `update_trip`,
+  `delete_trip`, `add_packing_items`, `pack_items`, `remove_packing_items`,
+  `add_itinerary_item`, `remove_itinerary_item`.
+- New **`get_symptom_triggers`**, **`search_everything`**,
+  **`get_closing_summary`** and **`get_repair_suggestions`**.
+- Upcoming blocks, objectives about to end and trips appear in the proactive
+  nudges and in `get_today_agenda`; the doctor checks the five new stores;
+  backup, restore, export and rekey cover them.
+- 665 new tests - suite grew from 3654 to 4319.
+
 **v1.44.0 - Income, Debts, Countdowns, Supplies**
 - New **income** tracker: `log_income` and `get_cash_flow` (income vs logged
   spending per month: net, savings rate, average, sources). Income works with
@@ -2102,167 +2248,4 @@ phrased as a nudge, nothing more.
   `resume_reminder`, `get_todays_reminders`. Times are normalized to
   24-hour `HH:MM` (`9am`, `9:30pm`), and `create_reminder` now tells the
   user when a time cannot be scheduled.
-- New budget tools: `get_budget_forecast` (month-end projection and
-  per-day allowance), `get_budget_history` (last N completed months) and
-  `get_unbudgeted_spending` (spending outside any budget).
-- Over-budget and nearly-used-up budgets now appear in the proactive
-  nudge check and `get_nudges`.
-- **Fix:** spending categories now match budgets case-insensitively. An
-  expense logged as "Food" was previously not counted against a "food"
-  budget.
-- 151 new tests - suite grew from 1354 to 1505.
-
-**v1.36.0 - Budgets & Reminders**
-- New **Budget Layer** (`demo/budgets.py`, `set_budget`/
-  `get_budget_status`/`list_budgets`/`delete_budget`): the project's
-  first forward-looking money tool, alongside the existing
-  retrospective spending features. A per-category monthly limit is
-  compared against real spending logged so far this calendar month
-  (via `load_spending`), flagging categories that are over budget.
-- New **Reminders Layer** (`demo/reminders.py`, `create_reminder`/
-  `list_reminders`/`delete_reminder`): user-defined reminders with an
-  optional time hint and days of the week, finally giving a person a
-  way to define their own reminder beyond `scheduler.py`'s hardcoded
-  schedule. Scoped to storage/CRUD only in this round - not yet wired
-  into `run_scheduler()` or live notification delivery.
-- 51 new tests - suite grew from 1303 to 1354.
-
-**v1.35.0 - List, Delete Habits & Goals**
-- New **`list_habits`**: shows every habit regardless of streak status
-  - fills a real blind spot where a brand-new or fully-reset habit
-  (0-day streak, no past best) was invisible to
-  `get_habit_milestones`, `get_habit_pb_progress`, and the health
-  dashboard, all of which only cover habits with an active or past
-  streak.
-- New **`delete_habit`** and **`delete_goal`**: basic CRUD completion -
-  previously there was no way to remove a habit or goal at all once
-  created, only `delete_entry` for individual memory entries.
-- 10 new tests - suite grew from 1293 to 1303.
-
-**v1.34.0 - Habit-Linked Goals & Quick-Log Templates**
-- New **Habit-Linked Goals**: `update_goal` now accepts `linked_habit`
-  + `target_streak` as a third progress-tracking mode alongside manual
-  and metric-linked - a goal like "hit a 30-day meditation streak" now
-  auto-tracks itself from the habit's real current streak via new
-  `compute_habit_goal_progress()`. `check_goal_progress` refreshes
-  these the same way it already refreshes metric-linked goals.
-- New **Quick-Log Templates** (`demo/templates.py`,
-  `save_log_template`/`use_log_template`/`list_log_templates`/
-  `delete_log_template`): save a named shortcut for a specific `log_*`
-  tool call with fixed parameters and replay it later with one call.
-  Restricted to `log_*` tools only, so a template can never trigger
-  anything beyond adding a new log entry.
-- 36 new tests - suite grew from 1257 to 1293.
-
-**v1.33.0 - Life Review Conversational, Two More Matplotlib Crash Fixes**
-- **Bug fix**: found the same matplotlib-crash bug fixed in `wrapped.py`
-  last release in two more places - `demo/dashboard.py` and
-  `demo/life_review.py` both imported matplotlib at module level and
-  called `sys.exit(1)` if it was missing. Both now use a shared,
-  lazily-evaluated `_get_pyplot()` helper that raises a normal
-  `ImportError` only when a chart is actually being rendered.
-  `build_dashboard_data()` and `build_life_review_data()` need no
-  plotting library at all now; the CLIs' behavior is unchanged.
-- New **`get_life_review`**: a text version of `demo/life_review.py`'s
-  full period review (life score trend, best/toughest day, correlation
-  insights, retrospective comparison, badges earned), via a new
-  `format_life_review_summary()` - the deeper counterpart to
-  `get_wrapped`'s quick recap.
-- 9 new tests - suite grew from 1248 to 1257.
-
-**v1.32.0 - Proactive Nudges & Wrapped, Now Conversational**
-- New **`get_nudges`**: exposes the scheduler's existing deterministic
-  anomaly and off-track-goal checker (`demo/nudges.py`) on demand,
-  instead of only running on a schedule.
-- New **`get_wrapped`**: a text version of `demo/wrapped.py`'s
-  "Spotify Wrapped"-style period recap, via a new
-  `format_wrapped_summary()` alongside the existing image-rendering
-  `render_wrapped_image()`.
-- **Bug fix**: `wrapped.py` used to import matplotlib at module level
-  and call `sys.exit(1)` if it was missing - harmless for a CLI
-  script, but it would have crashed the whole bot/API process the
-  first time `get_wrapped` ran anywhere without matplotlib installed.
-  The import is now lazy (inside `render_wrapped_image()` only) and
-  raises a normal `ImportError`; the CLI's `main()` still exits
-  cleanly with the same message as before.
-- 10 new tests - suite grew from 1238 to 1248.
-
-**v1.31.0 - Correlation Refactor, Reading Mood Impact, Insights Digest**
-- **Refactored** Habit Mood Impact, Substance-Sleep Impact, Social
-  Mood Impact, and Workout Mood Impact to share one implementation in
-  new `demo/correlation_utils.py`, instead of four nearly-identical
-  same-calendar-day comparison implementations. Public functions,
-  return shapes, and wording are all unchanged - verified by the full
-  existing test suite for all four passing unmodified.
-- New **Reading Mood Impact** (`demo/reading_correlation.py`,
-  `get_reading_mood_impact`): the same day-vs-day mood comparison, for
-  reading sessions - made cheap to add by the refactor above.
-- New **Insights Digest** (`demo/insights_digest.py`,
-  `get_insights_digest`): runs every correlation check at once and
-  surfaces only the findings with a meaningful difference, instead of
-  needing to call seven-plus separate correlation tools to find out if
-  anything stands out.
-- 25 new tests - suite grew from 1213 to 1238.
-
-**v1.30.0 - Workout Mood Impact, Conversational Export & Backup**
-- New **Workout Mood Impact** (`demo/workout_correlation.py`,
-  `get_workout_mood_impact`): compares average mood on workout days
-  versus non-workout days.
-- New **Conversational Export & Backup** (`demo/export_tool.py`,
-  `export_data` and `backup_now`): exposes the existing
-  `data_export.py` (JSON/CSV/Markdown) and `backup.py` (rotating
-  backups) CLI scripts as ordinary dispatch_tool calls, so they can be
-  triggered from chat instead of only from the command line. Picks a
-  sensible default output path under the active profile's `exports/`
-  or `backups/` directory.
-- README badge fix: swapped the PyPI Downloads badge from
-  shields.io's `pypi/dm` (which depends on pypistats.org and
-  intermittently shows "rate limited by upstream service") to
-  pepy.tech's own badge service.
-- 22 new tests - suite grew from 1191 to 1213.
-
-**v1.29.0 - Social Insights, Social Mood Impact, Medication Streak**
-- New **Social Insights** (`demo/social_insights.py`,
-  `get_social_insights`): recent social interactions broken down by
-  who they were with - time spent, average quality, and the most
-  frequent contact.
-- New **Social Mood Impact** (`demo/social_correlation.py`,
-  `get_social_mood_impact`): compares average mood on days with a
-  logged social interaction versus days without one.
-- New **Medication Streak** (`demo/medication_streak.py`,
-  `get_medication_streak`): current and longest consecutive-day streak
-  of taking a specific medication/supplement, complementing the
-  existing overall-percentage Medication Adherence.
-- Also refreshed the README badge row: added PyPI downloads, dynamic
-  Python-versions (from PyPI metadata instead of a static "3.10+"),
-  GitHub stars, and last-commit badges alongside the existing
-  Tests/PyPI-version/License badges.
-- 28 new tests - suite grew from 1163 to 1191.
-
-**v1.28.0 - Reading Pace, Spending Trends, Substance-Sleep Impact**
-- **Enhanced `log_reading`**: now accepts an optional `total_pages`
-  for a book, enabling a real finish estimate.
-- New **Reading Pace** (`demo/reading_pace.py`, `get_reading_pace`):
-  pages/day for a specific book, and an estimated finish date once a
-  total page count has been logged for it.
-- New **Spending Trends** (`demo/spending_trends.py`,
-  `get_spending_trends`): compares spending per category between a
-  recent window and the equal-length window before it - which
-  categories are trending up or down, complementing the existing
-  single-window Spending Summary.
-- New **Substance-Sleep Impact** (`demo/substance_correlation.py`,
-  `get_substance_sleep_impact`): compares average sleep hours on days
-  a substance was logged versus days it wasn't.
-- 39 new tests - suite grew from 1124 to 1163.
-
-**v1.27.0 - Habit Consistency, Mood Impact, and Overview**
-- **Enhanced `update_habit`**: every check-in (done, missed, or
-  protected with a freeze) is now also recorded as a
-  `habit_completion` entry in the shared memory log, giving Hermes a
-  real per-check-in history to analyze instead of only the current
-  streak counters in `habits.json`.
-- New **Habit Consistency** (`demo/habit_consistency.py`,
-  `get_habit_consistency`): percentage of successful check-ins per
-  habit, a different and sometimes more honest signal than the current
-  streak alone.
-- New **Habit Mood Impact**
+- New budget tools: `get_budget_

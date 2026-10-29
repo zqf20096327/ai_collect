@@ -14,7 +14,7 @@
   <img src="docs/badges/device.svg" alt="Runs on iPhone and iPad">
   <img src="docs/badges/languages.svg" alt="22 languages">
   <img src="docs/badges/pro.svg" alt="Pro is a one-time $14.99 purchase">
-  <img src="docs/badges/version.svg" alt="Version 1.1.5, build 48">
+  <img src="docs/badges/version.svg" alt="Version 1.1.7, build 55">
 </p>
 
 <p align="center">
@@ -27,11 +27,19 @@
   <a href="docs/"><code>Docs</code></a> &nbsp;
   <a href="#screenshots"><code>Screenshots</code></a> &nbsp;
   <a href="CHANGELOG.md"><code>Changelog</code></a> &nbsp;
+  <a href="release-notes/"><code>Release Notes</code></a> &nbsp;
+  <a href="PROVIDERS.md"><code>Providers</code></a> &nbsp;
   <a href="#support"><code>Support</code></a> &nbsp;
   <a href="README.zh-CN.md"><code>简体中文</code></a>
 </p>
 
 **The official BayesChat repo** — news, docs and a changelog for every release.
+
+**Providers can be listed in BayesChat from this repo.** The built-in provider
+list is a public catalogue: if your endpoint speaks OpenAI Chat Completions or
+Anthropic Messages, one pull request adds it to the app's *Choose Provider* list
+— no App Store release, no code. See [`PROVIDERS.md`](PROVIDERS.md) for the rules
+and the submission steps (BayesChat 1.1.7 or later).
 
 ---
 
@@ -55,6 +63,21 @@ Nothing is hardcoded — if an endpoint speaks a supported protocol, it works.
 - **Live model lists** — the picker shows what your key can actually call, not a
   hardcoded table
 - Keys live in the **Keychain**, never in plain files
+
+## Add your provider
+
+The list behind *Choose Provider* is a public catalogue, not a build-time
+constant: one pull request adds a row (and a mark), and it reaches people who
+already have the app — no App Store release.
+
+- [`PROVIDERS.md`](PROVIDERS.md) is the contract: the file format, the logo
+  rules, and what cannot be expressed as data.
+- Run `node scripts/check-providers.mjs` before opening the pull request; CI runs
+  the same check.
+- Requires **BayesChat 1.1.7 or later**. Older builds ship their own copy of the
+  list and never download it, so a newly added provider will not appear there.
+
+[Open a pull request →](https://github.com/fan3cn/bayeschat/compare)
 
 ## MCP: Plug in your AI into the real world
 
@@ -195,7 +218,8 @@ The product promise is verifiable, not just stated.
 - **Bugs and questions:** [open an issue](https://github.com/fan3cn/bayeschat/issues) — that's the main channel
 - **Email:** <bayeschat@gmail.com>, for anything you'd rather not post publicly
 - **Privacy policy:** [bayeschat.xyz/privacy.html](https://bayeschat.xyz/privacy.html) is the canonical page ([why this repo only links to it](docs/privacy.md))
-- **What changed in each release:** [CHANGELOG.md](CHANGELOG.md)
+- **What changed in each release:** [CHANGELOG.md](CHANGELOG.md) — the technical record, commit by commit
+- **What's new, in a release's own words:** [release-notes](release-notes/) — the App Store copy, English and Chinese
 - **How it compares:** [BYOK AI chat clients for iOS compared](https://bayeschat.xyz/blog/posts/2026-09-18-best-byok-ai-chat-clients-ios.html)
 
 When reporting a problem, please include the app version, your device model, the

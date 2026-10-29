@@ -25,6 +25,7 @@ If you find this repository helpful, please consider giving a star and citing:
 ```
 
 ## 🔥 News
+- [2026-10-28] 📦 [3DCrack](https://drive.google.com/file/d/11iXdDS49GPim5nrRvXY9WR1aZmSLUrU1/view?usp=sharing) is now also available on [Zenodo](https://zenodo.org/records/23681508) and [Hugging Face](https://huggingface.co/datasets/THiNK327/3DCrack)
 - [2026-07-20] 🚀 We released a dataset for DL-based crack detection [3DCrack](https://drive.google.com/file/d/11iXdDS49GPim5nrRvXY9WR1aZmSLUrU1/view?usp=sharing)
 - [2025-12-30] 🧑‍💻 We released a codebase for DL-based crack detection [GT-CrackSeg](https://github.com/GT-SCI/GT-CrackSeg)
 - [2025-08-14] 📢 Check out our comprehensive review paper [Deep Learning for Crack Detection: A Review of Learning Paradigms, Generalizability, and Datasets](https://arxiv.org/abs/2508.10256)
@@ -817,4 +818,4 @@ If you find this repository helpful, please consider giving a star and citing:
 
 1. **Adaptive Cross-Scenario Few-Shot Learning Framework for Structural Damage Detection in Civil Infrastructure**, *Journal of Construction Engineering and Management*, 2023.  [[Paper Link](https://ascelibrary.org/doi/full/10.1061/JCEMD4.COENG-13196)]
 
-   - this paper proposes a novel framework for structural damage detection with large scope of cross-task learning capability that incorporates Bayesian estimation and variational inference into the de
+   - this paper proposes a novel framework for structural damag

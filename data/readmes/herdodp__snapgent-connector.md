@@ -8,7 +8,7 @@
 
 [![License](https://img.shields.io/badge/LICENSE-GPL--3.0-FACC15?style=flat-square&labelColor=111111&logo=opensourceinitiative&logoColor=FACC15)](LICENSE)
 [![Manifest](https://img.shields.io/badge/MANIFEST-V3-FACC15?style=flat-square&labelColor=111111&logo=googlechrome&logoColor=FACC15)](https://developer.chrome.com/docs/extensions/develop/migrate/what-is-mv3/)
-[![Release](https://img.shields.io/badge/RELEASE-V3.3-FACC15?style=flat-square&labelColor=111111&logo=semanticrelease&logoColor=FACC15)](https://github.com/herdodp/snapgent-connector/releases/tag/V3.3)
+[![Release](https://img.shields.io/badge/RELEASE-V3.7-FACC15?style=flat-square&labelColor=111111&logo=semanticrelease&logoColor=FACC15)](https://github.com/herdodp/snapgent-connector/releases/tag/V3.7)
 [![MCP](https://img.shields.io/badge/PROTOCOL-MCP-FACC15?style=flat-square&labelColor=111111&logo=modelcontextprotocol&logoColor=FACC15)](https://modelcontextprotocol.io/)
 
 </div>
@@ -34,6 +34,9 @@ snapgentV3 is a browser extension plus a local bridge that connects a normal AI 
 
 - **Installation:** [Watch Installation Video](https://youtu.be/eo3sdtPSBso)
 - **Demo:** [Watch Demo Video](https://youtu.be/HY0YWsHLp34)
+
+- **MCP support**
+<img src="assets/mcpsupport.jpeg" width="300" alt="Logo Project">
 
 <table>
 <tr>
@@ -100,7 +103,7 @@ VS Code's MCP server is configured locally by `start.bat`; it detects the open V
 
 **① Load the extension**
 
-1. Download and extract the [latest SnapgentV3 release](https://github.com/herdodp/snapgent-connector/releases/tag/V3.3).
+1. Download and extract the [latest SnapgentV3 release](https://github.com/herdodp/snapgent-connector/releases/tag/V3.7).
 2. Open `edge://extensions` (Edge) or `chrome://extensions` (Chrome).
 3. Enable **Developer mode**.
 4. Click **Load unpacked** and select the `snapgent-extension` folder.
@@ -217,7 +220,7 @@ snapgent-full/
 ├── Linux_Start.sh             # Linux bridge launcher
 ├── bridge.exe                 # Windows local bridge
 ├── bridge.py                  # Cross-platform Python MCP bridge
-├── vscode_mcp.exe             # Default VS Code MCP server (24 workspace tools)
+├── vscode_mcp.exe             # Default VS Code MCP server (28 workspace tools)
 ├── vscode_mcp.py              # VS Code MCP server source
 ├── test_bridge.py             # MCP bridge protocol tests
 ├── test_setup_config.py       # MCP setup helper tests
@@ -241,6 +244,6 @@ snapgent-full/
 
 **Built for creators who want to spend more time making.**
 
-[Latest release V3.3](https://github.com/herdodp/snapgent-connector/releases/tag/V3.3) · [Issues](https://github.com/herdodp/snapgent-connector/issues) · [License](LICENSE)
+[Latest release V3.7](https://github.com/herdodp/snapgent-connector/releases/tag/V3.7) · [Issues](https://github.com/herdodp/snapgent-connector/issues) · [License](LICENSE)
 
 </div>

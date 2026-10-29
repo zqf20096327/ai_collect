@@ -47,7 +47,7 @@
 
 ## 准备 DSH
 
-已验证兼容 DSH `0.2.1-rc.4`（`next` 通道），继续支持 `0.2.1-rc.3` 和 `0.2.1-rc.2`，最低支持 `0.1.7-rc.2`；更早的 DSH 请先升级。
+已验证兼容 DSH `0.2.1-rc.5`，继续支持 `0.2.1-rc.3` 和 `0.2.1-rc.2`，最低支持 `0.1.7-rc.2`；更早的 DSH 请先升级。
 
 另支持预览宿主 `0.2.2-alpha.2`；范围与验收边界见[兼容性记录](docs/dsh-022-alpha2-compatibility.md)。
 
@@ -152,7 +152,7 @@ dsh --profile headless "只回复：ok"
 
 语音对话默认关闭，在 **手机与更多** 开启后可从输入框发起。Linux 等原生窗口不支持 WebRTC 时，会提供在浏览器中继续同一会话的入口；音色试听仍可使用，继续使用现有订阅，无需 API Key。
 
-**模型感知上下文**跟随账号模型目录，刷新不会覆盖未保存的草稿。额度分组以服务端实际返回为准，包括 Spark 等独立额度。
+**模型感知上下文**跟随账号模型目录，刷新不会覆盖未保存的草稿。设置显示原始窗口，对话预算按官方系数预留安全空间（目录未提供时为 5%），再由 DSH 管理输出预留和压缩，无需手动扣除。额度分组以服务端实际返回为准，包括 Spark 等独立额度。
 
 订阅请求失败时会明确报错，不会静默切换到其他付费路由。
 
@@ -430,6 +430,7 @@ dsh plugin --profile web remove dsh-codex-subscription
 - 本项目的问题反馈请使用[使用问题表单](https://github.com/WSL043/dsh-codex-subscription/issues/new?template=install-problem.yml)；
 - 明确的产品建议请使用[功能建议表单](https://github.com/WSL043/dsh-codex-subscription/issues/new?template=feature-request.yml)；
 - 欢迎提交聚焦的修复和兼容性改进，具体要求见 [CONTRIBUTING.md](CONTRIBUTING.md)；
+- 欢迎[共同维护与开发](CONTRIBUTING.md#help-maintain)：长期负责某个模块、跟进相关问题或参与代码审查，可以[开个 Issue 聊聊](https://github.com/WSL043/dsh-codex-subscription/issues/new?template=help-maintain.yml)；
 - DSH 插件交流可前往 [DeepSeek Harness Discussions](https://github.com/deepseek-ai/deepseek-harness/discussions)。
 - 敏感问题请先阅读 [SECURITY.md](SECURITY.md)。
 

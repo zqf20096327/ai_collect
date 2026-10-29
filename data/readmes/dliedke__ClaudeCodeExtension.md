@@ -56,16 +56,16 @@ Enjoying the extension? [Buy me a coffee](https://www.buymeacoffee.com/dliedke) 
 
 - **Detach / attach terminal** — Pop the terminal into a separate VS tab and bring it back at any time. State persists across sessions.
 
-- **Theme aware** — Follows VS dark/light theme automatically, or force dark, light, or a custom background color via *⚙ → Settings → Theme*. Prompt zoom is persisted across sessions, and native chat zoom (Ctrl+Scroll, Ctrl+0 resets it) is too; set the terminal's console font and size via *⚙ → Settings → Terminal* (Ctrl+Scroll zoom applies for the current session).
+- **Theme aware** — Follows VS dark/light theme automatically, or force dark, light, or a custom background color via *⚙ → Settings → Appearance*. Prompt zoom is persisted across sessions, and native chat zoom (Ctrl+Scroll, Ctrl+0 resets it) is too; set the terminal's console font and size via *⚙ → Settings → Terminal* (Ctrl+Scroll zoom applies for the current session).
 
-- **20 languages support**: English, Simplified Chinese, Japanese, Portuguese (Brazil), Spanish, Korean, German, French, Russian, Traditional Chinese, Indonesian, Turkish, Vietnamese, Polish, Italian, Ukrainian, Arabic, Hindi, Thai and Dutch. Pick one under *⚙ → Settings → Layout → Chat language*, or leave it on Automatic to follow the Visual Studio language.
+- **20 languages support**: English, Simplified Chinese, Japanese, Portuguese (Brazil), Spanish, Korean, German, French, Russian, Traditional Chinese, Indonesian, Turkish, Vietnamese, Polish, Italian, Ukrainian, Arabic, Hindi, Thai and Dutch. Pick one under *⚙ → Settings → Appearance → Language*, or leave it on Automatic to follow the Visual Studio language.
 
 - **Persistent settings** — Layout, provider choice, model, flags, and font sizes all saved to `%LocalAppData%\ClaudeCodeExtension\claudecode-settings.json`.
 
 
 ## Native Mode
 
-The default chat experience for new installs — turn it off via *⚙ → Settings... → Terminal → Use native mode* to go back to the embedded terminal. Lost the chat tab? *💬 Show Chat* in the panel or *View → Other Windows → Claude Code Chat* brings it back.
+The default chat experience for new installs — switch to the embedded terminal via *⚙ → Settings... → Terminal → Use the terminal*. Lost the chat tab? *💬 Show Chat* in the panel or *View → Other Windows → Claude Code Chat* brings it back.
 
 <!-- Images are served from this repository's raw URLs, which the VS Marketplace can also reach — the
      overview is rendered from this file with no repo context, so relative paths would not resolve there.
@@ -140,7 +140,7 @@ Then choose it via *⚙ → Settings... → Terminal*.
 - Pick an AI provider, *Configure Visible Code Agents...*
 - Provider-specific flags: Claude *Skip Permissions* and *Start in Plan Mode*, Codex *Approval Never*, Cursor *Yolo Mode*, Devin *Dangerous Mode*, Antigravity *Skip Permissions*, Qwen Code *Yolo Mode*, Grok *Always Approve*
 - *Hide Prompt Input Box*, *Configure Custom Commands...*, *Settings...*, About
-- *Settings...* opens the consolidated dialog with tabs for On Agent Finish, Prompt (send key, large prompts, clipboard, selection as reference, last prompt, font size, @ file picker), Automation (auto-open Changes, track agent changes for review, pull before sending, TFVC checkout, auto-send build and runtime errors, Install Caveman, Install latest OpenPets), Layout (prompt panel position, prompt box, usage bars, subagent count), Terminal (native mode, terminal type, encoding, fonts), Theme, Toolbar, CLI Paths (including extra launch arguments), and Backup (save/load all settings to a file)
+- *Settings...* opens the consolidated dialog with tabs for On Agent Finish, Prompt (send key, large prompts, clipboard, selection as reference, last prompt, font size, @ file picker, usage bars), Automation (auto-open Changes, track agent changes for review, pull before sending, TFVC checkout, auto-send build and runtime errors, Install Caveman, Install latest OpenPets), Terminal (prompt panel position, prompt box, terminal type, encoding, fonts), Native mode (chat tabs, chat window, chat display, icons, chat font), Toolbar (incl. subagent count, ☰/⚡/⚙ position), Appearance (language, theme), CLI Paths (including extra launch arguments), and Backup (save/load all settings to a file)
 
 **☰ Tools dropdown**: Holds *Update Code Agent*, *Restart Code Agent*, *Detach/Attach Terminal*, *View Code Changes*, *Session History*, *Show Usage*, *Set Working Directory...*, *Send Build Errors to Agent*, *Generate Commit Message*, *Generate Commit Message, Commit and Push*, *Recommend AI Model*, and *GitHub Issues*. Promote any of these to one-click toolbar buttons — and reorder them by dragging — via *⚙ → Settings... → Toolbar*; promoted features leave the dropdown, which hides once they all become buttons.
 
@@ -175,6 +175,51 @@ Pull requests for new features are welcome. Bug fixes too — if you find an iss
 - The extension's original developer reviews the PR and publishes the new version to the Marketplace.
 
 ## Version History
+
+### Version 281.0
+- *Hide Prompt Input Box* is now a terminal-mode option only: it no longer shows in the ⚙ menu in native mode, where the prompt box follows the chat tab instead.
+
+### Version 280.0
+- Settings has a new *Native mode* tab next to *Terminal*: each mode's settings live on its own tab, a banner shows which mode is in use, and its button switches to the other one.
+- The *Layout* tab is gone: its options moved to *Terminal*, *Native mode*, *Prompt* (usage bars) and *Toolbar* (subagent count), and the language to *Appearance* (formerly *Theme*).
+- The Settings window can be resized, a disabled font list no longer turns into a white box, and switching tabs no longer makes the page jump.
+- *Settings → Toolbar* can now move ☰ Tools, ⚡ Custom Commands and ⚙ Settings like the other buttons, hide ☰ Tools, and open *Configure Custom Commands* from the ⚡ row.
+- The chat's 🕘 and the Session History button are now the same toolbar button, with the clock icon everywhere; it stays on for everyone who had it.
+- Every menu of the extension — ☰ Tools, ⚡, 🤖, ⚙, 📎, the prompt box's Cut/Copy/Paste, the chat's ▾ and Copy menus, Session History and On Agent Finish — now has the same modern look as the chat's dropdowns, with the same light shadow, and the effort and usage pop-ups open instantly like the menus.
+- The Claude Code effort slider has *Auto* again as its first stop, which leaves the effort to Claude Code's own default.
+- Thanks to [@Gh61](https://github.com/Gh61) for this release (#235).
+
+### Version 279.0
+- A resumed conversation in the native chat now shows up to 1000 earlier messages (was 200), with full cards for the last 200 tool calls (was 40).
+- A resumed conversation shows the agent's earlier thinking again, collapsed like during the live reply.
+- Thanks to [@Gh61](https://github.com/Gh61) for this release (#234).
+
+### Version 278.0
+- The release notes now credit the contributor behind version 276.0.
+
+### Version 277.0
+- Reopening the previous chat tabs when a solution opens is now off by default for everyone, including existing installs; turn it on in *Settings → Terminal → Reopen chat tabs when the solution opens*.
+- "Resume Last Session" is back in Session History and reopens the newest conversation, whatever the search or sort shows.
+- The "Renamed only" filter is back in Session History and lists only the conversations you named yourself, leaving out the automatic titles.
+- A name you give a chat shows again above the conversation in full; click it to rename the chat or use its dot to change the color.
+- The "Open failed tool calls automatically" setting is now translated into every supported language.
+
+### Version 276.0
+- Typing "@" in a very large project no longer freezes Visual Studio (or the whole PC): the file list is built within fixed time and memory limits. New "Show the @ file picker" option in Settings → Prompt turns the picker off (on by default).
+- New "Show all chats in one window" option in Settings → Layout (off by default, applies after restarting Visual Studio): every chat opens as a tab inside a single Claude Code window that stays where you dock it, also while debugging; closing it only hides it and the chats keep running.
+- In that window, switch chats with a click or Ctrl+PageUp/PageDown, drag tabs to reorder them, start a new chat with +, and right-click a tab to rename it, change its color or close it; a ▾ button lists every chat when they no longer fit.
+- The title bar above the conversation was removed: the chat's title is already shown on its tab.
+- New Claude Code chats are named automatically with the AI title, so the name shows in Session History and in Claude Code's own resume list.
+- Session History groups conversations by date, shows each one's git branch and a cleaner preview, and looks like a Visual Studio dialog (themed title bar and scrollbars, search box, rounded buttons); the "Renamed only" filter was removed.
+- Session History keeps Resume and Close as buttons, with View, Rename, Delete and Refresh in a menu beside them; "Resume Last Session" was removed, since the latest conversation is already selected.
+- Resuming a conversation already open in a chat tab switches to that tab, and when the current tab holds a conversation you choose between a new tab and the current one.
+- New "Resume Today's Sessions" button in Session History reopens all of today's conversations, each in its own tab.
+- "View as Text" opens the conversation as a read-only document inside Visual Studio instead of Notepad.
+- The native chat's welcome card lists the workspace's recent conversations, resumable with one click (tips stay one click away), and a Session History button sits beside the chat's Settings gear.
+- Answered question cards list each question with its answer and note underneath, and mark questions left blank as "No answer".
+- Command cards show the command as it was run instead of escaped JSON, and a new "Open failed tool calls automatically" setting (on by default) lets failed tool cards stay closed.
+- The live token count shows again in every chat tab, and the usage popup keeps showing when its figures were last updated while they refresh.
+- Thanks to [@ClaudioCas](https://github.com/ClaudioCas) for this release (#232).
 
 ### Version 275.0
 - The native chat no longer jumps while a code block is streaming in.

@@ -2,6 +2,12 @@
 
 [Русская версия: README.ru.md](README.ru.md)
 
+> **Free base version · Commercial license by subscription** — https://snodrod.github.io/AstraForge/
+>
+> - **Free:** [AstraForge-Setup.exe](https://github.com/Snodrod/AstraForge/releases/latest) (0.4.3, *Quick* ≈ 30 GB or *Full* ≈ 95 GB). Personal, educational and other **noncommercial** use only, no updates — [PolyForm Noncommercial 1.0.0](LICENSE-0.4.2.md).
+> - **Subscription — $5/month or $49/year:** use AstraForge and everything you make with it **commercially**, and get every update on release day — [subscription license](COMMERCIAL-LICENSE.md). [Subscribe](https://snodrod.github.io/AstraForge/#subscribe).
+> - The source code in this repository is the older version 0.3.0 under the MIT License ([LICENSE](LICENSE)). Versions 0.4.2+ are distributed under the licenses above.
+
 AstraForge is a Windows app that turns a picture or a text prompt into a game-ready 3D asset on your own machine: concept → geometry → editor → rig and animation → effects → export (GLB, OBJ, WebM, PNG, isometric sprite sheets, Godot packages). The server listens on `127.0.0.1` only. The UI is available in English and Russian (English by default, switch in the app).
 
 ## Requirements
@@ -65,7 +71,7 @@ API keys for OpenAI, Anthropic and Tripo are optional. Enter them in the app's *
 2. Double-click **Install AstraForge.cmd** and answer the wizard's questions. It scans your PC, shows what is missing with sizes and licences, and downloads everything into this same folder (`runtime\`, `data\models\`). An interrupted download continues on the next run. A desktop shortcut **AstraForge** is created at the end.
 3. Start the studio with **Start.cmd**.
 
-No git? Download **AstraForge-Setup-0.3.0.exe** from [Releases](https://github.com/Snodrod/AstraForge/releases/latest), run it and choose a folder: it unpacks the app and starts the same wizard. The file is not code-signed, so Windows SmartScreen may warn you: click *More info → Run anyway*.
+No git? Download **AstraForge-Setup-&lt;version&gt;.exe** from [Releases](https://github.com/Snodrod/AstraForge/releases/latest), run it and choose a folder: it unpacks the app and starts the same wizard. The file is not code-signed, so Windows SmartScreen may warn you: click *More info → Run anyway*.
 
 The installer writes the paths it finds to `config\paths.json`, and `Start.cmd` reads them from there. Command-line options of `installer\Install.ps1`:
 

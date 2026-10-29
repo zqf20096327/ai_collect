@@ -645,6 +645,7 @@ Reading list and comments/short reviews around reasoning models, training techni
 - [EvalResearchBench: Can AI Agents Build Their Own Feedback for Recursive Self-Improvement?](https://arxiv.org/abs/2610.04184) - project page blog is nice also [https://mercury7353.github.io/self-evaluation-bench/blog/when-ai-agents-design-the-test.html](https://mercury7353.github.io/self-evaluation-bench/blog/when-ai-agents-design-the-test.html)
 - [RSIHub: A Composable Framework for Agent-Evolution Methods](https://arxiv.org/abs/2610.32253) - NeurIPS 2026 Meta-Agents Workshop
 - [InteractiveWorld: A Verifiable Human-Centric Environment for Building Better Interactive MLLM Assistants](https://arxiv.org/abs/2610.33966)
+- [Truncate or Not? A Scaling Study of Looped Transformers with Truncated Backpropagation](https://arxiv.org/abs/2610.26030)
 
 #### Topic - Audio Reasoning
 
@@ -653,5 +654,4 @@ Reading list and comments/short reviews around reasoning models, training techni
 #### Topic - Routing
 
 - [When to Reason: Semantic Router for vLLM](https://arxiv.org/abs/2510.08731)
-- [TCAndon-Router: Adaptive Reasoning Router for Multi-Agent Collaboration](https://arxiv.org/abs/2601.04544)
-- [ThinkRouter: Efficient Reasoning via Routing Thinking between Latent and Discrete Spaces](https:
+- [TCAndon-Router: Adaptive Reasoning Router for Multi-Agent Collaboration](https://

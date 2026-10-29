@@ -38,6 +38,7 @@ LowNotes is an **open-source, local-first Markdown note-taking app** for Windows
 - **Connect your computers.** Pair devices for encrypted P2P sync and real-time collaborative editing.
 - **Build a knowledge base.** Use folders, search, wikilinks, a connection map and Mermaid diagrams.
 - **Choose your assistant.** Use local models through Ollama or LM Studio, or configure a remote provider. Remote requests send the prompt and selected context to that provider. The Research skill sends search terms (never notes) to the web search services you enable; only DuckDuckGo is on by default.
+- **Bring your own AI app.** Claude Desktop, Claude Code, Cursor and other MCP clients can search and read the open vault while LowNotes sits in the tray. It is read-only and off by default.
 - **Recover and share your work.** Review local history and trash, then export notes to Word or PDF.
 
 | Day to day | When you need more |
@@ -91,6 +92,7 @@ On Linux, updates follow the installation format. Arch, DEB and RPM packages sho
 ### Notes and organization
 
 - Editable Markdown with preview, tasks, tables, footnotes, syntax extensions and Mermaid diagrams.
+- Hand-drawn diagrams with [Excalidraw](https://excalidraw.com): **Drawing** in the editor toolbar adds one at the cursor and opens a full-screen canvas. The drawing lives inside the note as an `excalidraw` code block, so it syncs, collaborates and keeps history like the rest of the note; strokes from another device merge into an open drawing. Click a drawing in the preview to edit it. Pictures cannot be pasted into drawings, and Chinese, Japanese and Korean text in drawings uses system fonts.
 - Check or uncheck tasks directly in **Split** or **Preview** view. The matching `[ ]` / `[x]` marker is edited in the Markdown, autosaved and synchronized through the editor's collaborative history. Each toggle is a separate local undo step; code examples and checkboxes in assistant responses stay read-only.
 - **Ctrl + click** a Markdown link, image URL or plain web URL in the editor to open it in your default browser (**Cmd + click** on macOS). Regular clicks continue to edit the note; local image references stay in the vault.
 - **Ctrl + F** (**Cmd + F** on macOS) opens a floating finder in the upper-right corner of the note area. Editor mode searches Markdown, Preview mode searches rendered text, and Split mode searches both panes and scrolls them together when navigating results. Use Enter / Shift + Enter, F3 / Shift + F3 or Ctrl + G / Ctrl + Shift + G to move between matches; Esc closes the finder. Case, whole-word and regular-expression options are available, with Markdown replacement in Editor and Split modes.
@@ -106,7 +108,7 @@ On Linux, updates follow the installation format. Arch, DEB and RPM packages sho
 - Local recovery data is kept forever by default. Under **History and trash → Retention**, optional day limits are checked at startup and every 15 minutes while the vault is active. A cleanup preview shows expired versions/archives and protected items before manual removal. Deletion archives awaiting acknowledgement from a paired device, external recovery files and unsafe/incomplete archives stay protected. The structural deletion history and immutable image blobs are retained.
 - Long editor lines wrap visually by default, preserving the file's line breaks and numbering. Disable **Visual line wrapping** in **Settings → General** to use horizontal scrolling.
 - Folders, note search, `[[links between notes]]` and local Markdown links. The link map combines relations written in notes with relations added manually or by the assistant.
-- Export notes and drafts to Word (`.docx`) and PDF using the same Markdown dialect as the preview. Rich text, lists, tasks, aligned tables, links and footnotes are preserved; Mermaid diagrams and images are embedded as visuals. PDF text remains selectable and Word text remains editable. Images can come from the vault, HTTP(S) addresses or data URLs.
+- Export notes and drafts to Word (`.docx`) and PDF using the same Markdown dialect as the preview. Rich text, lists, tasks, aligned tables, links and footnotes are preserved; Mermaid diagrams, drawings and images are embedded as visuals. PDF text remains selectable and Word text remains editable. Images can come from the vault, HTTP(S) addresses or data URLs.
 - Settings gathered on one screen: general preferences, themes, AI, providers, web search sources and app information.
 
 ### Optional assistant
@@ -116,6 +118,10 @@ The assistant can chat, query notes, create documents and plans, edit existing n
 Vault search selects snippets by words, phrases and headings **on your own computer**; it uses no vector database or external indexing service. When calling a remote model, the request and the selected snippets are sent to the chosen provider. In web search, only the query terms go to the search source; the selected model remains responsible for the answer.
 
 Under **Settings → Web search**, Firecrawl, Keenable, Exa, DuckDuckGo and a public SearXNG instance come enabled without a key. The app rotates the initial source and tries the next one on failure. Brave and Parallel can be enabled with your own key; Firecrawl, Keenable and Exa also accept an optional key. Public services may enforce limits or change availability.
+
+### AI apps over MCP
+
+**Settings → MCP server** lets AI apps on this computer that speak the Model Context Protocol, such as Claude Desktop, Claude Code and Cursor, list, search and read the notes of the open vault and follow its links. They cannot change notes. Apps launch the `lownotes-mcp` program installed next to LowNotes, which authenticates with a token kept in the system credential store. Only vaults you share are served, and what an app reads goes to that app and its AI provider. See [docs/MCP.md](docs/MCP.md) for setup, the available tools and the safety notes.
 
 ## How it works
 

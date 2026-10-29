@@ -284,6 +284,7 @@
     - [Shadcn UI](https://ui.shadcn.com/) - Tailwind CSS 기반의 접근성 높은 구성 요소를 유연하게 커스터마이징할 수 있는 현대적인 UI 라이브러리
     - [Ant Design](https://ant.design/) - 웹, 앱 디자인을 위한 React UI 프레임워크
     - [Storybook <sub>EN,F,O</sub>](https://storybook.js.org/) - UI 컴포넌트를 체계적이고 효율적으로 구축할 수 있는 UI 컴포넌트 개발 도구로, UI 컴포넌트 라이브러리의 문서화 또는 디자인 시스템을 개발하기 위한 플랫폼 등으로 활용
+    - [qodesign-free <sub>EN,F,O</sub>](https://github.com/teodoravadani/qodesign-free) - Tailwind CSS와 Motion으로 만든 MIT 라이선스 React 애니메이션 컴포넌트(Toast Stack, Pricing Switch, Upload Dropzone, Day/Night Toggle)와 대시보드(Orbit, Ledger). shadcn CLI로 설치하거나 단일 HTML 파일로 사용
 
   - <span id="programming-language">Programming Language</span>
     - [Kotlin Docs](https://kotlinlang.org/docs/home.html) - 코틀린 공식 문서
@@ -405,6 +406,7 @@
     - [InfoQ <sub>EN</sub>](https://www.infoq.com) - 개발 팀이 새로운 기술과 관행을 채택할 수 있도록 도움
     - [Techcrunch <sub>EN</sub>](https://techcrunch.com) - TechCrunch. 기술, 스타트업, 벤처캐피탈 펀딩, 실리콘밸리 사업 보고
     - [개발자스럽다 <sub>KR</sub>](https://blog.gaerae.com/) - 블로그와 SNS에서 주기적으로 기술 정보를 찾고 분류하여 가치를 더해 공유
+    - [테크곳간 <sub>KR</sub>](https://www.techgotgan.co.kr/?utm_source=site_for_developers&utm_medium=resource_list&utm_campaign=developer_discovery_2026w44) - 여러 회사의 기술 블로그 글을 검색하고 주제·블로그별로 다시 찾는 공개 아카이브. 검색하다 탭만 수확하는 일을 줄여줍니다
     - [요즘IT <sub>KR</sub>](https://yozm.wishket.com/magazine/list/develop/) - 개발 관련 실무 경험과 기술 콘텐츠
     - [GeekNews <sub>KR</sub>](https://news.hada.io/) - 개발 뉴스, 기술 관련 새소식, 스타트업 정보와 노하우, 세상의 재미난 것들을 좋아하는 사람들을 위한 뉴스 사이트. 이메일 뉴스레터/트위터/슬랙 봇으로 구독 가능
 
@@ -676,6 +678,7 @@
   - <span id="other-tool">Other</span>
     - [TTSMaker](https://ttsmaker.com/ko) - 음성 UI 프로토타입이나 테스트용 음성 자료 제작에 활용할 수 있는 텍스트 음성 변환 도구. 음성별 이용 조건 확인 필요
     - [URL Encode and Decode](https://www.urlencoder.org/) - URL 인코딩·디코딩을 확인하는 개발 보조 도구
+    - [Benchvale URL Encoder <sub>EN, F</sub>](https://benchvale.com/dev/url-encode) - 입력한 텍스트를 브라우저 안에서 퍼센트 인코딩·디코딩하고, encodeURI, encodeURIComponent, 폼 인코딩(application/x-www-form-urlencoded) 세 결과를 나란히 보여주는 도구. 입력 텍스트는 서버로 전송되지 않으며, 사이트 방문 통계에 Google Analytics 4를 사용
     - [IT Tools](https://it-tools.tech) - 개발할 때 유용한 Crypto, Converter, Parser 기능이 있는 웹사이트
     - [HexEd.it](https://hexed.it/) - 브라우저 기반의 Hex Editor
     - [Let's Encrypt](https://letsencrypt.org/ko/) - 무료 SSL/TLS 인증서 발급 사이트

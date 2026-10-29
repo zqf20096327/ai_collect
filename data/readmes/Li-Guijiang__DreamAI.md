@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/ee933985-63ed-4930-9e59-c5168d431c28" alt="Dream AI — animated orbital hero" width="900">
+  <img src="https://cdn.jsdelivr.net/gh/Li-Guijiang/DreamAI@main/assets/brand/hero-900.webp" alt="Dream AI — animated orbital hero" width="900">
 </p>
 
 <h1 align="center">Dream AI</h1>
@@ -11,7 +11,7 @@
 
 <p align="center">
   <a href="https://liguijiang.com"><img src="https://img.shields.io/badge/在线体验-liguijiang.com-5b8cff?style=flat-square" alt="Live demo"></a>
-  <a href="https://liguijiang.com/download.html"><img src="https://img.shields.io/badge/桌面版-Windows_1.2-7c9cff?style=flat-square" alt="Desktop"></a>
+  <a href="https://liguijiang.com/download.html"><img src="https://img.shields.io/badge/桌面版-Windows_1.4-7c9cff?style=flat-square" alt="Desktop"></a>
   <a href="./docs/README.md"><img src="https://img.shields.io/badge/文档-索引-9d7cff?style=flat-square" alt="Docs"></a>
 </p>
 
@@ -59,7 +59,7 @@ Three deliverables share one design language and one set of `DREAMAI_*` conventi
 |---|---|---|---|
 | Command-line package | `python -m dream_ai` · [`dream_ai/`](./dream_ai) | `0.4.0` | Local scripts, automation, extending the core |
 | Web service | <https://liguijiang.com> · [`web/`](./web) | `2.0.0` | Open and use, nothing to install; full cosmic motion system + animated docs at `/docs.html` |
-| Windows desktop app | [Download](https://liguijiang.com/download.html) · [`desktop/`](./desktop) | `1.2.0` | Local file workbench, document generation, coding mode |
+| Windows desktop app | [Download](https://liguijiang.com/download.html) · [`desktop/`](./desktop) | `1.4.0` | Local file workbench, document generation, coding mode, full-access consent mode, in-app update |
 
 The three version numbers are independent by design, not by drift: see the [version cross-reference](./docs/README.md#3-version-cross-reference) and [ADR 0001](./docs/adr/0001-three-deliverables-one-repository.md).
 
@@ -75,7 +75,7 @@ The three version numbers are independent by design, not by drift: see the [vers
 
 | Home | Chat |
 |---|---|
-| ![Home](https://github.com/user-attachments/assets/b377efc9-3f0f-4225-a92e-210b02aa980d) | ![Chat](https://github.com/user-attachments/assets/5ae723c7-dfa7-49d9-a5ca-61d496ba7bf7) |
+| ![Home](https://github.com/user-attachments/assets/c07d93e8-915c-4483-9ffc-8d1d67af874e) | ![Chat](https://github.com/user-attachments/assets/5ae723c7-dfa7-49d9-a5ca-61d496ba7bf7) |
 
 | Work mode | Desktop |
 |---|---|
@@ -85,7 +85,7 @@ The three version numbers are independent by design, not by drift: see the [vers
 
 ### A site that moves
 
-<p align="center"><img src="https://github.com/user-attachments/assets/5b9a894c-ffae-400c-bba1-3282a9107dfa" alt="Animated Dream AI orrery banner" width="720"></p>
+<p align="center"><img src="https://cdn.jsdelivr.net/gh/Li-Guijiang/DreamAI@main/assets/brand/banner-web.webp" alt="Animated Dream AI orrery banner" width="720"></p>
 
 The web surface is now a living cosmic interface: a starfield that follows the
 pointer, a warp intro, a greeting that types and deletes itself, a terminal
@@ -105,6 +105,9 @@ live thinking spinner and `/motion` to turn it off mid-session.
 | Capability | What it does | Phase |
 |---|---|---|
 | **Replaceable backend** | Any OpenAI-compatible endpoint (OpenAI, DeepSeek, Zhipu, Ollama, LM Studio); the core never assumes a vendor | v0.1 |
+| **Multiple key vaults** | Web settings keep a separate key per provider for DeepSeek, OpenAI, 智谱 GLM, Moonshot/Kimi, 通义千问 and OpenRouter; keys stay in the browser | web 2.0 |
+| **Agent trace** | Coding mode shows an expandable timeline of plans, files written, commands, exit codes, outputs and repair loops | desktop 1.3 |
+| **Full computer access** | Desktop 1.4 “电脑” mode: explicit session consent plus a native confirmation for every command, with an expandable trace | desktop 1.4 |
 | **Session memory** | History persisted as JSON and restored on restart; offline placeholder replies are filtered out | v0.2 |
 | **Long-term preferences** | `/remember` writes into the system message, so it survives restarts | v0.2 |
 | **Tool layer** | Registry with JSON Schema, risk level, and a confirmation gate; calculator, clock, sandboxed file access, web search | v0.3 |
@@ -322,6 +325,6 @@ for file in web/web/assets/js/*.js; do node --check "$file"; done
 ---
 
 <p align="center">
-  <sub>MIT License · Copyright (c) 2026 Li Guijiang · Built and maintained by Li Guijiang and the Dream AI team</sub><br>
+  <sub>MIT License · Copyright (c) 2026 Li Guijiang · Designed, built and maintained by Li Guijiang</sub><br>
   <sub><i>From a shared dream to a world that understands itself — one step at a time.</i></sub>
 </p>

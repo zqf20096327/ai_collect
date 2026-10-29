@@ -83,7 +83,7 @@ The npm package includes an optional [browser-attach skill](skills/browser-attac
 1. `browser_discover(kind="browsers")` → `browser_discover(kind="tabs")` to confirm the browser, tab title and URL.
 2. `browser_claim_tab` with the `tab_id` from `discover(kind="tabs")` (optional `expected_url` / `expected_title` exact guards) to take control and receive this connection's `tab_handle`.
 3. `browser_snapshot` to get element `ref`s, then click, fill or run other actions.
-4. Observe again after each action, and finish with `browser_tab_control(action="release")`.
+4. Observe when the next decision needs new state, and finish with `browser_tab_control(action="release")`. Use `snapshot(diff_since="latest")` or action `observe:{diff_since:"latest"}` for page changes; inspect `mode/reset_reason` and finish pagination. A full-page refresh is not required after every action.
 
 When titles change often, omit `expected_title` and check the identity returned by claim instead. Elements may be addressed by `ref` or by a `selector` re-resolved on every call; design trade-offs: [architecture notes](docs/ARCHITECTURE.md#设计取舍).
 
@@ -99,7 +99,7 @@ Claiming and ordinary input never activate a tab or window; call `browser_tab_co
 | `browser_fetch` | Read one HTTP(S) URL in a temporary background tab using the profile's sign-in; `text`/`html`/`json`, optional HTTP status and cursor continuation |
 | `browser_snapshot` / `browser_read_text` | AX snapshot, literal name/value query with actionable refs, and page text |
 | `browser_read_control` | Control state, related popups and active/selected options; preserves existing refs |
-| `browser_wait` | Read-only wait for presence/absence, visibility, actionability, rendered text, exact field value, checked/selected/expanded state, URL or network idle |
+| `browser_wait` | Read-only checks with uniform expected/actual, pass/fail/unavailable and safe read retry; one top-level condition or `checks[]` |
 | `browser_click` / `browser_hover` / `browser_drag` / `browser_select_option` / `browser_type` / `browser_fill` / `browser_press_key` / `browser_scroll` | Native/DOM input, pointer hover and drag, option selection, character typing and scrolling |
 | `browser_batch` | Run 1–30 click/fill/type/press_key/hover/scroll/select_option/wait steps in one queue; stops on the first failure and returns partial results |
 | `browser_navigate` | HTTP(S)/file navigation, back/forward and load waiting; local destinations require file access |

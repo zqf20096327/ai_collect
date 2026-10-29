@@ -229,6 +229,7 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | [MarkItDown MCP](https://github.com/microsoft/markitdown/tree/main/packages/markitdown-mcp) | Convert PDF, Office, HTML and audio files to Markdown for LLMs                 | Python     |
 | [Meilisearch MCP](https://github.com/meilisearch/meilisearch-mcp)                           | Official Meilisearch index server                                              | Python     |
 | [Perplexity MCP](https://github.com/perplexityai/modelcontextprotocol)                      | Official Perplexity search API                                                 | TypeScript |
+| [Recall Kitchen](https://github.com/Recall-Kitchen/rk-mcp)                                 | Search U.S. CPSC, FDA, USDA and NHTSA product recalls by keyword or UPC        | Remote     |
 | [Ref MCP](https://github.com/ref-tools/ref-tools-mcp)                                       | Token-efficient search over public and private technical docs                  | TypeScript |
 | [ReMCP](https://github.com/getremcp/remcp)                                                  | OAuth access to paired computers; terminal, files, browser and desktop control | Remote     |
 | [Scento Perfume API](https://github.com/Scento-com/perfume-mcp-server)                      | Perfume notes, families and similar scents for 1,400+ perfumes, no API key     | JavaScript |
@@ -254,6 +255,7 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | [SendRaven MCP](https://github.com/CommonNinja/sendraven-mcp-server)    | Official SendRaven email sending, inbound reply threads and per-key send limits | TypeScript |
 | [Telegram Archive MCP](https://github.com/GeiserX/telegram-archive-mcp) | Search and read archived Telegram history from a Telegram-Archive instance      | Go         |
 | [Telegram MCP](https://github.com/chigwell/telegram-mcp)                | Telegram messaging                                                              | Python     |
+| [TextKit](https://jointextkit.com/docs/mcp)                             | Send and receive SMS, verify phone numbers, buy US and Canada numbers           | Remote     |
 | [Zulip MCP](https://github.com/zulip/zulipmcp)                          | Official Zulip streams, messages and mentionable bot agents                     | Python     |
 
 ### File Systems & Storage
@@ -355,12 +357,13 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 
 ### Testing & QA
 
-| Server                                                         | Description                                            | Language   |
-| -------------------------------------------------------------- | ------------------------------------------------------ | ---------- |
-| [Appium MCP](https://github.com/appium/appium-mcp)             | Official Appium mobile app test automation             | TypeScript |
-| [Axe MCP](https://github.com/dequelabs/axe-mcp-server-public)  | Official Deque accessibility testing + AI remediation  | TypeScript |
-| [BrowserStack MCP](https://github.com/browserstack/mcp-server) | Official BrowserStack cross-browser and device testing | TypeScript |
-| [Playwright MCP](https://github.com/microsoft/playwright-mcp)  | Official Microsoft Playwright browser automation       | TypeScript |
+| Server                                                         | Description                                             | Language   |
+| -------------------------------------------------------------- | ------------------------------------------------------- | ---------- |
+| [Appium MCP](https://github.com/appium/appium-mcp)             | Official Appium mobile app test automation              | TypeScript |
+| [Axe MCP](https://github.com/dequelabs/axe-mcp-server-public)  | Official Deque accessibility testing + AI remediation   | TypeScript |
+| [BrowserStack MCP](https://github.com/browserstack/mcp-server) | Official BrowserStack cross-browser and device testing  | TypeScript |
+| [Oh My Android](https://github.com/ateymoori/oh-my-android)    | Android Emulator control panel with built-in MCP server | Swift      |
+| [Playwright MCP](https://github.com/microsoft/playwright-mcp)  | Official Microsoft Playwright browser automation        | TypeScript |
 
 ### Security
 
@@ -435,6 +438,7 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | Server                                                                          | Description                                                                      | Language   |
 | ------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | ---------- |
 | [Amazon MCP](https://github.com/rigwild/mcp-server-amazon)                      | Search and purchase Amazon products                                              | TypeScript |
+| [BestPrice Shopping](https://github.com/TheBestCo/bestprice-mcp)                | Read-only Greek shopping decisions, product search, offers, and price history    | Remote     |
 | [BirkinBagStock](https://birkinbagstock.com/mcp)                                | Search Hermès Birkin resale listings, asking prices and auction results          | Remote     |
 | [brianbooms-mcp](https://github.com/brianbooms/brianbooms-mcp)                  | Buy digital products with USDC micropayments on Base, via x402                   | Python     |
 | [BuyWhere MCP](https://github.com/BuyWhere/buywhere-mcp)                        | Hosted shopping MCP for product search and price comparison across 80+ countries | Remote     |

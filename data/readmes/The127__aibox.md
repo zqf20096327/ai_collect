@@ -1,6 +1,7 @@
 # aibox
 
 [![ci](https://github.com/The127/aibox/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/The127/aibox/actions/workflows/ci.yml)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/The127/aibox/badge)](https://scorecard.dev/viewer/?uri=github.com/The127/aibox)
 
 Let [Claude Code](https://code.claude.com) work on your project without
 giving it your whole computer.
@@ -56,6 +57,9 @@ change its own config.
 
 - `aibox run` starts Claude Code in your project folder, and you work with
   it like you always do.
+- `aibox run --mode clone` is the same, but on a clone of the last commit
+  instead of your project folder. When you quit, you get Claude Code's
+  commits back as a branch to fetch.
 - `aibox task` hands Claude Code a job to do on its own. It works on a clone
   of the last commit, or of any branch, tag or commit you name, and you get
   its commits back to review. The VM is deleted afterwards. You can give it

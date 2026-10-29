@@ -12,13 +12,13 @@ repeating, and turns each one into a short command, like `/sent` or `/project bi
 It works in Claude Code, Codex and Cursor.
 
 - **Built from what you actually typed.** On one real project, a single ask had been
-  typed 127 times in different words. You see the counts and pick which become shortcuts.
+  typed 230 times in different words. You see the counts and pick which become shortcuts.
 - **Secrets stay out.** API keys, tokens, and passwords you pasted into old prompts are
   replaced with `[REDACTED]` before your agent reads the list.
 - **Nothing to install but the skill.** The extractor is standard-library Python: no
   packages, API keys, or network calls. Intent grouping happens in your coding agent.
 
-![24-second walkthrough: repeated requests become a proposed /sent shortcut, which the user chooses and then uses to check newsletter delivery. All prompts, counts, and output are synthetic.](docs/media/faq-shortcuts-demo.gif)
+![24-second walkthrough: repeated requests become a proposed /sent shortcut, which the user chooses and then uses to check newsletter delivery. All prompts, counts, and output are synthetic.](https://raw.githubusercontent.com/kishormorol/cli-faq-shortcuts/v1.2.0/docs/media/faq-shortcuts-demo.gif)
 
 [Watch or download the 24-second video](https://github.com/kishormorol/cli-faq-shortcuts/releases/download/v1.2.0/faq-shortcuts-demo.mp4)
 · [What's new in v1.3.0](https://github.com/kishormorol/cli-faq-shortcuts/releases/tag/v1.3.0)
@@ -63,8 +63,8 @@ python3 "$E" . | awk -F'\t' 'split($3,w," ")>=4 {print tolower($3)}' \
 ```
 
 The last one counts exact repeats only, and it undercounts. On one real project, the most
-repeated exact request appeared 4 times. Grouped by intent, however it was worded, the top
-ask had been typed **127 times**. That grouping is the agent's job in `/faq-shortcuts`.
+repeated exact request appeared 14 times. Grouped by intent, however it was worded, the top
+ask had been typed **230 times**. That grouping is the agent's job in `/faq-shortcuts`.
 
 ## What you get
 
@@ -226,7 +226,8 @@ in a pipeline. Exit codes: `0` when a source is available (even if filters match
 | You see | Do this |
 |---|---|
 | The agent doesn't know `/faq-shortcuts` | Start a new session. Skills load when a session starts. Check that `ls ~/.claude/skills/faq-shortcuts/SKILL.md` finds the file. |
-| `no session history at …` | Run it from the project folder you actually worked in. History is stored per folder, so a subfolder counts as a different project. |
+| `checked, nothing for this folder (…)` | Run it from the project folder you actually worked in. History is stored per folder, so a subfolder counts as a different project. |
+| Claude Code asks to allow `python3 …extract_asks.py` | Allow it. The script reads your history under `~/.claude` (and Codex, Cursor) and makes no network calls. In headless runs (`claude -p`) nobody can answer that prompt, so pass `--add-dir ~/.claude --allowedTools "Bash(python3:*)"`. |
 | Very few prompts found | History is read only for the project folder you actually worked in. Cursor chats opened without a folder aren't tied to any project, so they're skipped. |
 | `fatal: destination path … already exists` | It's already installed. Run the update command instead. |
 | No output after `--since` | Check the date and project folder. No matching prompts is a successful empty result; try without the date filter. |

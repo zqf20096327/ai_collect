@@ -73,6 +73,10 @@ Made something cool? Tap **Share** and Acornix builds a card with **your app run
 <img src="docs/screenshots/ai-ideas.jpg" width="300" alt="App and game ideas suggested by the AI">
 </p>
 
+### 🌍 Community apps
+
+**Explore** apps and games other people made with Acornix: search them, filter by category or by whether they need your AI, see the request that created each one, **try them without installing**, install them with one tap or **remix** them with your own AI. Every app is reviewed before it's published, shows what it uses (your AI, the camera, the internet…) and gets updates from its author. They live in [acornix-apps](https://github.com/gonzaroman/acornix-apps), under the MIT license.
+
 ### 🧬 Functionalities: apps that use your phone
 
 Functionalities are apps that talk to your device through a built-in JavaScript bridge, `window.Acornix`. They can vibrate, switch the flashlight on, speak out loud, read the battery, send notifications, share, copy, open other apps and even **ask the AI** from inside the app. Some examples: a big SOS button, a battery dashboard, a pocket translator that speaks, a Pomodoro timer that vibrates.
@@ -147,7 +151,7 @@ Each app runs on its own isolated origin, so apps never see each other's data.
 
 - **Full backup**: one ZIP with all your apps, their versions, data and files. Save it to Google Drive or anywhere else from the system picker, and restore it on any phone.
 - **Android backup**: your apps and data are also included in your Google account backup.
-- **Import** ZIPs shared by friends, including apps made with the original Termux version of acornix. Before installing one, **Review it with AI**: your AI reads its code and tells you if it sends data away, asks for passwords, hides code or abuses your AI.
+- **Import** ZIPs shared by friends, including apps made with the original Termux version of acornix. If you already have an app with that name, install it as a copy or put it in place of yours, keeping your data. Before installing one, **Review it with AI**: your AI reads its code and tells you if it sends data away, asks for passwords, hides code or abuses your AI.
 
 ### 📋 Manual studio: no API key needed
 
@@ -171,12 +175,12 @@ A **tour of everything Acornix can do** (Settings › Discover Acornix), **phone
 
 ## 🎮 Games and apps included
 
-Acornix comes with fourteen example apps. Eight were rebuilt for 2.0: they all work offline, adapt to any screen in portrait or landscape, and save their data with `Acornix.db`.
+Acornix comes with twelve example apps. Six were rebuilt for 2.0: they all work offline, adapt to any screen in portrait or landscape, and save their data with `Acornix.db`.
 
-| | | | |
-|:---:|:---:|:---:|:---:|
-| <img src="docs/screenshots/app-calculator.jpg" width="170" alt="Calculator app included in Acornix"><br>**Calculator**<br><sub>History saved, proper operator precedence</sub> | <img src="docs/screenshots/app-bmi.jpg" width="170" alt="BMI calculator app included in Acornix"><br>**BMI**<br><sub>Gauge, healthy range and progress chart</sub> | <img src="docs/screenshots/app-drummer.jpg" width="170" alt="Drum machine app included in Acornix"><br>**Drummer**<br><sub>8 pads, 16-step sequencer, saved beats</sub> | <img src="docs/screenshots/app-matrix.jpg" width="170" alt="Matrix camera app included in Acornix"><br>**Matrix Camera**<br><sub>Live Matrix / ASCII / halftone camera</sub> |
-| <img src="docs/screenshots/app-bowling.jpg" width="170" alt="Bowling game included in Acornix"><br>**Bowling**<br><sub>Swipe to throw, hook spin, real scoring</sub> | <img src="docs/screenshots/app-piano.jpg" width="170" alt="Piano app included in Acornix"><br>**Piano**<br><sub>4 instruments, multitouch, recordings</sub> | <img src="docs/screenshots/app-castle.jpg" width="170" alt="Castle defense game included in Acornix"><br>**Castle Defense**<br><sub>Waves, bosses and an upgrade shop</sub> | <img src="docs/screenshots/app-superm.jpg" width="170" alt="Platformer game included in Acornix"><br>**Super M**<br><sub>Platformer with endless levels</sub> |
+| | | |
+|:---:|:---:|:---:|
+| <img src="docs/screenshots/app-calculator.jpg" width="170" alt="Calculator app included in Acornix"><br>**Calculator**<br><sub>History saved, proper operator precedence</sub> | <img src="docs/screenshots/app-bmi.jpg" width="170" alt="BMI calculator app included in Acornix"><br>**BMI**<br><sub>Gauge, healthy range and progress chart</sub> | <img src="docs/screenshots/app-drummer.jpg" width="170" alt="Drum machine app included in Acornix"><br>**Drummer**<br><sub>8 pads, 16-step sequencer, saved beats</sub> |
+| <img src="docs/screenshots/app-bowling.jpg" width="170" alt="Bowling game included in Acornix"><br>**Bowling**<br><sub>Swipe to throw, hook spin, real scoring</sub> | <img src="docs/screenshots/app-piano.jpg" width="170" alt="Piano app included in Acornix"><br>**Piano**<br><sub>4 instruments, multitouch, recordings</sub> | <img src="docs/screenshots/app-castle.jpg" width="170" alt="Castle defense game included in Acornix"><br>**Castle Defense**<br><sub>Waves, bosses and an upgrade shop</sub> |
 
 The other six were made with AI on a phone, each from a single request and one improvement, for our step-by-step videos, and they are included exactly as they came out. Reef Aquarium loads its 3D engine from the internet.
 
@@ -297,7 +301,7 @@ app/src/main/java/com/gonzaroman/acornix/
 ├── agent/     Assistant tools and conversation loop
 ├── web/       Full-screen app runner, per-app origins, window.Acornix bridge
 └── ui/        Jetpack Compose screens (Material 3)
-app/src/main/assets/sample_apps/   The fourteen example apps
+app/src/main/assets/sample_apps/   The twelve example apps
 ```
 
 **Tech:** Kotlin, Jetpack Compose and Material 3, OkHttp, kotlinx.serialization, DataStore, SQLite, AndroidX WebKit, Coil, and the official Anthropic Java SDK.

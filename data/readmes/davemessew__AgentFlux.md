@@ -167,7 +167,6 @@ shared/       Workflow rules and templates
 examples/     Sample local program export
 scripts/      Docker release checks
 docs/         Usage, operations and screenshots
-website/      Project website
 ~~~
 
 For local development: Node.js 24+, pnpm 11.25.0, <code>pnpm install --frozen-lockfile</code>, then <code>pnpm dev</code>.

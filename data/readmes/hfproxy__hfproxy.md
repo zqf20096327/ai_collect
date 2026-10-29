@@ -37,14 +37,16 @@ The provided Compose setup is intended for development on a trusted machine. It 
     cp .env.example .env
     docker compose up --build -d
 
-Create the first administrator. Put the password in a protected file or send it on stdin; it is never passed as a process argument.
+Create the first administrator. The simplest way is the console: open the service, read the setup code that hfproxy prints when it starts (`docker compose logs hfproxy`), and fill in the form. See [First start](docs/operations.md#first-start).
+
+From a shell instead, put the password in a protected file or send it on stdin; it is never passed as a process argument.
 
     mkdir -p .secrets
     umask 077
     # Write the password to .secrets/admin-password using your secrets manager.
     docker compose exec -T hfproxy hfproxy admin create-user --username admin --password-file - < .secrets/admin-password
 
-If the admin account already exists and you need to change its password, use `reset-password`. This keeps the database and other settings; existing web sessions for that admin are revoked.
+If the admin account already exists and you need to change its password, use `reset-password`. This keeps the database and other settings; its web sessions and access tokens are revoked.
 
     docker compose exec -T hfproxy hfproxy admin reset-password --username admin --password-file - < .secrets/admin-password
 
@@ -70,7 +72,9 @@ When `HFPROXY_ANONYMOUS_PUBLIC_READ=true`, clients can read repositories registe
 
 ### Administration console
 
-The console is served by the Go service at `/` and is available after creating the first administrator. Open **Settings** to configure the Hugging Face Hub URL, optional upstream token and HTTP, HTTPS, SOCKS4, or SOCKS5 proxy, Garage or another S3-compatible endpoint/bucket/credentials, cache limits, public URL, and session lifetimes. Changes are validated and applied immediately; the Hub and S3 settings have connection checks. Credentials are write-only in the API and encrypted in PostgreSQL with AES-GCM.
+The console is served by the Go service at `/`. On a new instance it first offers to create the first administrator (see [First start](docs/operations.md#first-start)). Open **Settings** to configure the Hugging Face Hub URL, optional upstream token and HTTP, HTTPS, SOCKS4, or SOCKS5 proxy, Garage or another S3-compatible endpoint/bucket/credentials, cache limits, public URL, and session lifetimes. Changes are validated and applied immediately; the Hub and S3 settings have connection checks. Credentials are write-only in the API and encrypted in PostgreSQL with AES-GCM.
+
+The console is available in English (the default), French, Spanish, German, Portuguese, Simplified Chinese and Japanese. Use the language selector on the sign-in page or in the header; the choice is remembered in the browser and the page reloads in that language. Dates and numbers follow the chosen language. The text of API errors returned by the service, and the server-rendered `/login` page, stay in English. See [Translating the console](ui/README.md#translating-the-console) to fix a translation or add a language.
 
 The Angular source is in `ui/`. For frontend development, start the Go service on port 8080, then run `nvm use && npm ci && npm start` from `ui/`; `.nvmrc` pins Node 24.22.1. Angular serves the UI on port 4200 and proxies API requests to Go. The Docker build compiles and embeds the production UI.
 
@@ -78,7 +82,7 @@ The database URL, listen address, and `SESSION_SECRET` remain bootstrap settings
 
 For a fresh installation that should configure S3 only through the console, leave `HFPROXY_S3_BUCKET` unset in the environment. hfproxy will serve the sign-in and setup pages, while `/readyz` stays unavailable until a valid bucket is saved. PostgreSQL and `SESSION_SECRET` are still needed at startup. The provided Compose setup preconfigures a single-node Garage instance and its default bucket for local use.
 
-Local username/password authentication is enabled by default. OIDC/SSO and LDAP are optional and remain disabled until configured in **Settings**. OIDC requires an issuer, client ID, client secret, and callback URL; LDAP requires an LDAPS or StartTLS URL and a search base/filter. The first administrator must still be created with the CLI; additional local users and their roles can be managed in **Users**.
+Local username/password authentication is enabled by default. OIDC/SSO and LDAP are optional and remain disabled until configured in **Settings**. OIDC requires an issuer, client ID, client secret, and callback URL; LDAP requires an LDAPS or StartTLS URL and a search base/filter. The first administrator is created from the console on first start, or with the CLI; additional local users and their roles can be managed in **Users**.
 
 ## Commands
 
@@ -93,9 +97,12 @@ Local username/password authentication is enabled by default. OIDC/SSO and LDAP 
     hfproxy cache inspect|purge|verify
     hfproxy cache pin|unpin|pins
     hfproxy config validate
+    hfproxy config show --source
     hfproxy version
 
 `cache purge` is a dry run by default; execution requires `--execute --yes`. `cache verify` reads the objects and checks their SHA-256 hashes. Secrets can be supplied through `HFPROXY_*_FILE`. `config validate` does not reveal configuration values.
+
+**Settings precedence.** Once settings are saved from the console they take precedence over the matching `HFPROXY_*` variables (environment-only settings such as `STAGING_DIR` are never overridden). At startup the server logs the names of the settings that the console overrides. `hfproxy config show --source` prints every setting with its origin (`environment` or `console`); secrets are never printed. To keep a setting under GitOps control, list it in `HFPROXY_LOCKED_SETTINGS` (comma-separated console setting names such as `s3_bucket,cache_max_total_size`, or `all`): saved values are then ignored for it, the console shows the field read-only, and an attempt to change it through the API is refused with 409. Misspelled names stop the server from starting. To go back to the environment values for the others, reset the saved settings from the console.
 
 ## Configuration
 
@@ -103,8 +110,11 @@ Environment variables use the `HFPROXY_` prefix. Common settings for local Compo
 
 | Area | Main variables |
 | --- | --- |
-| HTTP and database | LISTEN_ADDR, PUBLIC_URL, DATABASE_URL, AUTO_MIGRATE, LOG_LEVEL |
-| Hugging Face | HF_BASE_URL, HF_PROXY_URL, HF_TOKEN, HF_ALLOWED_REDIRECT_HOSTS, HF_TIMEOUT |
+| HTTP and database | LISTEN_ADDR, PUBLIC_URL, DATABASE_URL, AUTO_MIGRATE |
+| Logging | LOG_LEVEL (`debug`, `info`, `warn`, `error`; also editable in the console, see [Logging](docs/operations.md#logging)) |
+| First start | SETUP_TOKEN or SETUP_TOKEN_FILE (optional fixed setup code, 16–256 characters; see [First start](docs/operations.md#first-start)) |
+| Download limits | DOWNLOAD_MAX_CONCURRENT_PER_USER, DOWNLOAD_RATE_LIMIT, DOWNLOAD_DAILY_QUOTA (all off by default; also in the console, see [Download limits](docs/operations.md#download-limits)) |
+| Hugging Face | HF_BASE_URL, HF_PROXY_URL, HF_TOKEN, HF_ALLOWED_REDIRECT_HOSTS, HF_ALLOWED_PRIVATE_CIDRS (a mirror on a private network; see [Network access](docs/production.md#upstream-addresses)), HF_TIMEOUT |
 | S3 | S3_ENDPOINT, S3_REGION, S3_BUCKET, S3_PREFIX, S3_FORCE_PATH_STYLE, S3_SERVER_SIDE_ENCRYPTION, S3_ACCESS_KEY, S3_SECRET_KEY |
 | Authentication | AUTH_MODE=local or oidc, SESSION_SECRET, SESSION_SECRET_PREVIOUS, SESSION_IDLE_TTL, SESSION_ABSOLUTE_TTL, ANONYMOUS_PUBLIC_READ |
 | OIDC | OIDC_ISSUER, OIDC_CLIENT_ID, OIDC_CLIENT_SECRET, OIDC_REDIRECT_URL, OIDC_AUTO_PROVISION |
@@ -124,8 +134,9 @@ Capacity and retention settings come from the environment, except the cache size
 - `CACHE_FILL_CONCURRENCY` (default `4`): how many files may be fetched from the Hub at once. Further requests wait up to 15 seconds, then receive `503` with `Retry-After`.
 - `STAGING_DIR` (default: the system temporary directory): where files are staged before upload. Size it for `CACHE_FILL_CONCURRENCY` times your largest file; a fill that does not fit in the free space is refused with `507`. `hfproxy_staging_free_bytes` and `hfproxy_staging_reserved_bytes` show the room left.
 - `STAGING_MIN_FREE_BYTES` (default `0`, off): when set, `/readyz` answers `503` with `"reason":"staging_space"` while the staging directory has less free space than this. Use it when several instances share traffic, so a full disk takes that instance out of rotation; with a single instance it would also stop cache hits, so leave it off and alert on the gauge instead.
+- `AUTH_CACHE_TTL` (default `5s`, `0` turns it off) and `DOWNLOAD_LOG_QUEUE` (default `1024`, `0` writes synchronously): keep database writes and lookups off the request path. A token or session lookup is reused for `AUTH_CACHE_TTL` (a measured 359 µs lookup against a local PostgreSQL becomes 3 µs); revoking a token, ending a session or changing a user clears it at once on every replica: the instance that makes the change (or the CLI, for `admin token revoke` and `admin reset-password`) sends a PostgreSQL notification that each replica listens for on a connection of its own, and the TTL is only the bound if a notification is lost (the listener reconnects by itself and empties the cache when it does). Cache-hit download events are queued and written in batches; when the queue is full the request writes its own event, so none is lost, and the queue is flushed at shutdown.
 - `RETENTION_DOWNLOADS` (default `2160h`) and `RETENTION_AUDIT` (default `8760h`): Go durations after which download events and audit events are deleted; `0` keeps them. Expired sessions are always purged.
-- `METRICS_ADDR` (for example `127.0.0.1:9090`): serve metrics on a dedicated listener instead of the public port.
+- `METRICS_ADDR` (for example `127.0.0.1:9090`): serve metrics on a dedicated listener instead of the public port. That listener has no authentication and must stay on an internal network. Without it, `/metrics` is served on the public port and requires an operator or administrator: send a token with write scope as a bearer token (`authorization: {credentials: ...}` in the Prometheus scrape config).
 
 When `CACHE_MAX_TOTAL_SIZE` is set, files you cannot afford to lose can be **pinned**. A pin covers every revision of a repository, one commit, or a branch or tag, and eviction never touches what a pin covers:
 
@@ -156,6 +167,12 @@ OIDC uses Authorization Code, PKCE S256, state, nonce, and ID token validation. 
 
 LDAP supports LDAPS or LDAP with StartTLS. The user filter must contain `{username}`; the value is escaped before the search. The proxy searches for a single entry, then binds with the supplied password. It does not retain that password. LDAP auto-provisioning is disabled by default; when enabled, new accounts receive the reader role.
 
+LDAP identity and directory state:
+
+- The link between a directory entry and its local account uses a stable identifier (`entryUUID`, or `objectGUID` on Active Directory) rather than the DN, so moving or renaming a user in the directory does not break it. Accounts linked by DN before this change are moved to the stable identifier at their next sign-in; directories that expose neither attribute keep using the DN.
+- An account the directory marks as disabled or locked (`userAccountControl` flag 2, `nsAccountLock: true`, `pwdAccountLockedTime`) cannot sign in. Sessions and tokens issued earlier stay valid until they expire or an administrator disables the local account, which revokes them.
+- `HFPROXY_LDAP_GROUP_SYNC=true` mirrors the user's directory groups into hfproxy groups with source `ldap` at every sign-in (`HFPROXY_LDAP_GROUP_BASE_DN`, default the user base; `HFPROXY_LDAP_GROUP_FILTER`, default `(member={dn})`, where `{dn}` is the escaped user DN; the group name is its `cn`). Memberships in local groups are never changed, and a group read failure leaves memberships as they were.
+
 OIDC and LDAP provide sign-in to the same local role model (`admin`, `operator`, `reader`). Groups can be managed locally and granted access through allowlist policies.
 
 ## Hub API and compatibility
@@ -181,7 +198,7 @@ A cache hit never bypasses authorization. Anonymous reads apply only to reposito
 
 ## Containers and operations
 
-The multi-stage Dockerfile builds a static binary and runs the final image as UID 65532. `docker-compose.yml` is a local development environment with PostgreSQL and single-node Garage; it binds the proxy port to loopback only. Garage's single-node development setup has no redundancy and is not a production storage deployment. `docker-compose.example.yml` demonstrates secret injection and TLS termination by a reverse proxy.
+The multi-stage Dockerfile builds a static binary and runs the final image as UID 65532. `docker-compose.test.yml` adds a Keycloak, a Prometheus and a Grafana to try sign-in and monitoring locally (see [docs/testing-stack.md](docs/testing-stack.md)). `docker-compose.yml` is a local development environment with PostgreSQL and single-node Garage; it binds the proxy port to loopback only. Garage's single-node development setup has no redundancy and is not a production storage deployment. The development compose file has no built-in credentials: it needs the `.env` created from `.env.example`. `docker-compose.example.yml` (with `Caddyfile.example`) demonstrates secret injection through `*_FILE`, PostgreSQL with `sslmode=verify-full`, `HFPROXY_TRUSTED_PROXIES` and TLS termination by a reverse proxy. The server refuses to start with the published development secrets unless it is bound to loopback.
 
 For production:
 

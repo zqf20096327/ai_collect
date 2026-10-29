@@ -2,99 +2,90 @@
 
 # 🐍 Python to AI Engineering Journey
 
-<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=22&duration=3000&pause=1000&color=3776AB&center=true&vCenter=true&width=700&lines=From+Python+Fundamentals+to+AI+Engineer;Machine+Learning+%E2%86%92+Deep+Learning+%E2%86%92+GenAI;LLMs+%E2%86%92+RAG+%E2%86%92+AI+Agents+%E2%86%92+Agentic+AI;DSA+%E2%86%92+System+Design+%E2%86%92+Interview+Ready" alt="Typing SVG" />
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=30&duration=2500&pause=800&color=00FF88&center=true&vCenter=true&width=1000&height=80&weight=700&lines=Python+to+AI+Engineering;Machine+Learning+%E2%86%92+Deep+Learning+%E2%86%92+GenAI;LLMs+%E2%86%92+RAG+%E2%86%92+AI+Agents+%E2%86%92+Agentic+AI;DSA+%E2%86%92+System+Design+%E2%86%92+Interview+Ready" alt="Python to AI Engineering" />
 
 **A complete, open-source learning path from absolute zero to production AI systems.**
 Fully structured courses, real projects and interview preparation, all in one repo.
 
-[![Stars](https://img.shields.io/badge/⭐_Stars-25-yellow?style=for-the-badge)](https://github.com/waleedkhokar/python-ai-engineering-journey/stargazers)
-[![Forks](https://img.shields.io/badge/🍴_Forks-32-blue?style=for-the-badge)](https://github.com/waleedkhokar/python-ai-engineering-journey/network/members)
-[![Contributors](https://img.shields.io/badge/👥_Contributors-28-green?style=for-the-badge)](https://github.com/waleedkhokar/python-ai-engineering-journey/graphs/contributors)
+[![Stars](https://img.shields.io/badge/⭐_Stars-30-yellow?style=for-the-badge)](https://github.com/waleedkhokar/python-ai-engineering-journey/stargazers)
+[![Forks](https://img.shields.io/badge/🍴_Forks-40-blue?style=for-the-badge)](https://github.com/waleedkhokar/python-ai-engineering-journey/network/members)
+[![Contributors](https://img.shields.io/badge/👥_Contributors-35-green?style=for-the-badge)](https://github.com/waleedkhokar/python-ai-engineering-journey/graphs/contributors)
 [![Commits](https://img.shields.io/github/commit-activity/t/waleedkhokar/python-ai-engineering-journey?style=for-the-badge&color=orange&cacheSeconds=300)](https://github.com/waleedkhokar/python-ai-engineering-journey/commits/main)
 
-**📘 10 Sections · 🚀 50+ Projects · 🎯 Beginner → Advanced · 💯 100% Free**
 
 </div>
 
 ---
 
-## 👋 About This Repo
+## About This Repo
 
-**🎓 Are you a student, or do you want to learn a new tech skill?** This repo is built for you.
+A practical learning journey from Python fundamentals to AI engineering.
 
-It is a **fully structured course**, from scratch to advanced, covering Python, Data Science, Machine Learning, Deep Learning, Generative AI, AI Agents, DSA, Cloud and SQL. Every section has:
+This repository brings together **10 structured sections**, covering Python, Machine Learning, Generative AI, AI Agents, Agentic AI, DSA, DevOps, and databases.
 
-📖 Clear notes  ·  💻 Practice code  ·  🚀 Real projects  ·  🎤 Interview questions
-
-No need to jump between 10 different tutorials. Start at folder 01 and move up one step at a time.
-
-🎯 **Goal:** Build a strong foundation and move toward production-ready AI systems.
+Each section includes notes, code examples, and hands-on projects to help you learn by building.
 
 ---
 
 ## 🗺️ Learning Path
 
-```text
-Python → Data Science → Machine Learning → Deep Learning
-   ↓
-Generative AI → AI Agents → Agentic AI
-   ↓
-DSA → LeetCode → Interview Preparation
-   ↓
-Cloud / DevOps → System Design → SQL & Databases
-   ↓
-Become a Full-Stack AI Engineer
-```
+<div align="center">
 
----
+[![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](./01%20Python-Beginner-to-Advanced)
+[![Data Science](https://img.shields.io/badge/Data_Science-2E8B57?style=for-the-badge)](./02%20Data-Science-Job-Ready)
+[![Machine Learning](https://img.shields.io/badge/Machine_Learning-F7931E?style=for-the-badge&logo=scikitlearn&logoColor=white)](./03%20Machine-Learning)
+[![Deep Learning](https://img.shields.io/badge/Deep_Learning-8A2BE2?style=for-the-badge)](./04%20Deep-Learning)
+[![Generative AI](https://img.shields.io/badge/Generative_AI-00A67E?style=for-the-badge)](./05%20Generative-AI)
+[![AI Agents](https://img.shields.io/badge/AI_Agents-FF6F61?style=for-the-badge)](./06%20AI-Agents-and-Automation)
+[![Agentic AI](https://img.shields.io/badge/Agentic_AI-6C63FF?style=for-the-badge)](./07%20Agentic-AI-Engineering)
 
-## 📚 What's Inside
+[![DSA](https://img.shields.io/badge/DSA-0077B5?style=for-the-badge)](./08%20Data-Structures-and-Algorithms)
+[![LeetCode](https://img.shields.io/badge/LeetCode-FFA116?style=for-the-badge&logo=leetcode&logoColor=black)](./08%20Data-Structures-and-Algorithms)
+[![Interview Prep](https://img.shields.io/badge/Interview_Preparation-198754?style=for-the-badge)](./08%20Data-Structures-and-Algorithms)
+[![Cloud](https://img.shields.io/badge/Cloud-2496ED?style=for-the-badge)](./09%20Cloud-DevOps-and-System-Design)
+[![DevOps](https://img.shields.io/badge/DevOps-326CE5?style=for-the-badge&logo=docker&logoColor=white)](./09%20Cloud-DevOps-and-System-Design)
+[![System Design](https://img.shields.io/badge/System_Design-7952B3?style=for-the-badge)](./09%20Cloud-DevOps-and-System-Design)
+[![SQL & Databases](https://img.shields.io/badge/SQL_&_Databases-336791?style=for-the-badge&logo=postgresql&logoColor=white)](./10-Master-SQL-and-Database-for-AI-World)
+
+</div>
+
+## 📚 What You Will Learn Inside This Reposotiory
 
 ### 🧱 Part 1: Foundations to AI
 
-| # | Section | What you'll learn |
-|:-:|---------|-------------------|
-| 01 | [🐍 **Python**](./01%20Python-Beginner-to-Advanced) | Variables, Strings, Lists, Dictionaries & JSON, Loops, Functions, Exception Handling, File Handling, OOP, Iterators, Generators, Decorators, Real-World Projects |
-| 02 | [📊 **Data Science**](./02%20Data-Science-Job-Ready) | NumPy, Pandas, Matplotlib, Seaborn, Data Cleaning, EDA, Feature Engineering, Statistics, Data Pipeline Automation |
-| 03 | [🤖 **Machine Learning**](./03%20Machine-Learning) | Regression, Classification, Random Forest, XGBoost, Clustering, PCA, Model Evaluation, Hyperparameter Tuning, Time Series, Recommendation Systems, NLP, ML Pipelines, MLflow, Model Deployment |
-| 04 | [🧠 **Deep Learning**](./04%20Deep-Learning) | Neural Networks, Backpropagation, Optimizers, CNN, RNN, LSTM, Transformers, Transfer Learning, Autoencoders, GANs, Computer Vision, NLP, Deploying DL Models |
-| 05 | [✨ **Generative AI**](./05%20Generative-AI) | LLM APIs, Prompt Engineering, Structured Outputs, Embeddings, Vector Databases, RAG & Advanced RAG, LangChain, Tool Calling, Guardrails, Fine-Tuning (LoRA/QLoRA), Multimodal AI |
+| # | Section | Key Topics |
+|:-:|---|---|
+| 01 | [🐍 **Python**](./01%20Python-Beginner-to-Advanced) | Fundamentals, Functions, OOP, File Handling, Advanced Python |
+| 02 | [📊 **Data Science**](./02%20Data-Science-Job-Ready) | NumPy, Pandas, Data Cleaning, Visualization, Statistics |
+| 03 | [🤖 **Machine Learning**](./03%20Machine-Learning) | Regression, Classification, Clustering, Model Evaluation, ML Pipelines |
+| 04 | [🧠 **Deep Learning**](./04%20Deep-Learning) | Neural Networks, CNNs, RNNs, Transformers, Computer Vision |
+| 05 | [✨ **Generative AI**](./05%20Generative-AI) | LLMs, Prompt Engineering, Embeddings, RAG, Fine-Tuning |
 
 ### 🚀 Part 2: Advanced AI to Production
 
-| # | Section | What you'll learn |
-|:-:|---------|-------------------|
-| 06 | [🦾 **AI Agents & Automation**](./06%20AI-Agents-and-Automation) | Agent Architecture, Tool Calling, Memory & State, ReAct Planning, LangGraph, CrewAI, Workflow Automation, Browser & Computer Use, Agent Evaluation, Security, Production Agents |
-| 07 | [🧭 **Agentic AI Engineering**](./07%20Agentic-AI-Engineering) | State Graphs, Orchestration, Multi-Agent Systems, MCP & Agent Protocols, Context Engineering, Human-in-the-Loop, Agentic RAG, Guardrails, Observability, Scaling to Production |
-| 08 | [🧮 **DSA, LeetCode & Interview Prep**](./08%20Data-Structures-and-Algorithms) 🔜 | Big O, Arrays, Linked Lists, Trees, Graphs, Heaps, Dynamic Programming, Backtracking, LeetCode Easy → Hard, Company Questions, Interview Patterns |
-| 09 | [☁️ **Cloud, DevOps & System Design**](./09%20Cloud-DevOps-and-System-Design) 🔜 | Linux, Docker, Kubernetes, CI/CD, AWS, Terraform, System Design, MLOps, Monitoring, Security |
-| 10 | [🗄️ **SQL & Databases for AI**](./10-Master-SQL-and-Database-for-AI-World) | Joins, CTEs, Window Functions, Transactions, Indexing & Performance, Database Design, Row-Level Security, SQL + Python, Text-to-SQL, pgvector |
+| # | Section | Key Topics |
+|:-:|---|---|
+| 06 | [🦾 **AI Agents & Automation**](./06%20AI-Agents-and-Automation) | Tool Calling, Memory, Planning, LangGraph, Automation |
+| 07 | [🧭 **Agentic AI Engineering**](./07%20Agentic-AI-Engineering) | Orchestration, Multi-Agent Systems, MCP, Context Engineering, Observability |
+| 08 | [🧮 **DSA & Interview Preparation**](./08%20Data-Structures-and-Algorithms) 🔜 | Big O, Data Structures, Algorithms, LeetCode, Interview Patterns |
+| 09 | [☁️ **Cloud, DevOps & System Design**](./09%20Cloud-DevOps-and-System-Design) 🔜 | Linux, Docker, Kubernetes, AWS, CI/CD, MLOps |
+| 10 | [🗄️ **SQL & Databases**](./10-Master-SQL-and-Database-for-AI-World) | SQL, Joins, Indexing, Database Design, Transactions, pgvector |
+
 
 ---
+
+## 🎯 Goal:
+**Develop strong programming fundamentals lojic building with interview preparations and build production-ready AI applications.**
 
 ## 🚀 Projects
 
 **50+ real-world projects across every section — beginner to advanced.**
 
-⭐ **Star and fork this repo to get them all.**
+## ⭐ Star 
+**this repo then fork to get them all.**
 
 ---
 
-## 📸 Screenshots
-
-| AI ChatBot | VS Code Overview |
-| :---: | :---: |
-| ![Screenshot 1](01%20Python-Beginner-to-Advanced/01-Python-Introduction-and-Foundations/1.png) | ![Screenshot 2](01%20Python-Beginner-to-Advanced/01-Python-Introduction-and-Foundations/2.png) |
-
-| ATS Job Analyzer | AI/ML Model |
-| :---: | :---: |
-| ![Screenshot 3](01%20Python-Beginner-to-Advanced/01-Python-Introduction-and-Foundations/3.png) | ![Screenshot 4](01%20Python-Beginner-to-Advanced/01-Python-Introduction-and-Foundations/4.png) |
-
-| Enterprise AI Business Assistant | Dashboard |
-| :---: | :---: |
-| ![Screenshot 5](01%20Python-Beginner-to-Advanced/01-Python-Introduction-and-Foundations/5.png) | ![Screenshot 6](01%20Python-Beginner-to-Advanced/01-Python-Introduction-and-Foundations/6.png) |
-
----
 
 ## 🛠️ Technical Stack
 
@@ -114,11 +105,15 @@ Become a Full-Stack AI Engineer
 ![Hugging Face](https://img.shields.io/badge/Hugging_Face-FFD21E?style=flat-square&logo=huggingface&logoColor=black)
 ![LLMs](https://img.shields.io/badge/LLMs-8B5CF6?style=flat-square&logo=openai&logoColor=white)
 ![RAG](https://img.shields.io/badge/RAG-0EA5E9?style=flat-square&logo=databricks&logoColor=white)
+![Prompt Engineering](https://img.shields.io/badge/Prompt_Engineering-7C3AED?style=flat-square)
+![Embeddings](https://img.shields.io/badge/Embeddings-0EA5E9?style=flat-square)
 ![LangChain](https://img.shields.io/badge/LangChain-1C3C3C?style=flat-square&logo=langchain&logoColor=white)
 ![LangGraph](https://img.shields.io/badge/LangGraph-1C3C3C?style=flat-square&logo=langchain&logoColor=white)
 ![AI Agents](https://img.shields.io/badge/AI_Agents-7C3AED?style=flat-square&logo=probot&logoColor=white)
 ![Agentic AI](https://img.shields.io/badge/Agentic_AI-9333EA?style=flat-square&logo=openai&logoColor=white)
 ![MCP](https://img.shields.io/badge/MCP-000000?style=flat-square&logo=modelcontextprotocol&logoColor=white)
+![n8n](https://img.shields.io/badge/n8n-EA4B71?style=flat-square&logo=n8n&logoColor=white)
+![AI Automation](https://img.shields.io/badge/AI_Automation-FF6D00?style=flat-square)
 ![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white)
 
 ![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=nextdotjs&logoColor=white)
@@ -136,35 +131,36 @@ Become a Full-Stack AI Engineer
 
 </div>
 
----
 
 ## 🤝 Learn & Contribute
 
-**🎓 Learn:** Start at folder 01 and move up one section at a time.
+**Learn:** you can learn any topic form beginer to advaced with intervies quesitons and with free projects.
 
-**⏱️ Contribute in 10 minutes:** Star first ⭐ then 🍴 Fork → ➕ Add your project → 📤 Open a Pull Request → 🌟 Your name appears below
+**Contribute:** Have something useful to share? you can contribute from even 10 minutes.
 
-> ⭐ **Star** if it helps you · 🍴 **Fork** to start learning · 📤 **Share** with a friend
-### 👥 Our Contributors
+- ✅ **Star the repository** — first of all start this repo to learn any topic or need any project
+- ✅ **Fork it to your GitHub account** — fork if you want to contribute
+- ✅ **Make your changes.** — you Add a project, improve the notes, or fix an issue/project.
+- ✅ **Submit a Pull Request** — then after approving your name will be added in contributors.
 
-<div class="contrib-strip">
-  <div class="contrib-track">
-    <img src="https://contrib.rocks/image?repo=waleedkhokar/python-ai-engineering-journey&max=12&columns=12" alt="Contributors" />
-    <img src="https://contrib.rocks/image?repo=waleedkhokar/python-ai-engineering-journey&max=12&columns=12" alt="Contributors" />
-  </div>
+Every useful contribution helps make this learning journey better for everyone.
+
+
+
+### 👥 Resent Contributors
+
+<div align="center">
+  <table>
+    <tr>
+      <td>
+        <img src="https://contrib.rocks/image?repo=waleedkhokar/python-ai-engineering-journey&max=30&columns=30" alt="Contributors" />
+      </td>
+    </tr>
+  </table>
 </div>
 
-<style>
-.contrib-strip { overflow: hidden; }
-.contrib-track { display: flex; width: max-content; animation: contrib-scroll 20s linear infinite; }
-@keyframes contrib-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-</style>
-
----
 
 ## 👨‍💻 About Me
-
-<img src="https://avatars.githubusercontent.com/u/130039979" width="100" align="left" style="border-radius:50%; margin-right:15px;" alt="Waleed Khokhar" />
 
 ### Waleed Khokhar
 
@@ -172,10 +168,7 @@ Become a Full-Stack AI Engineer
 **Full-Stack AI Engineer** with **1+ year of experience and 20+ projects delivered**, building scalable Web Applications and Mobile Apps (Android & iOS) with AI-powered features.
 
 I specialize in **Machine Learning, Deep Learning, Generative AI, LLMs, RAG, Agentic AI, and AI Agents**. I build intelligent AI solutions, automations, and products that solve real-world problems.
-
 <br clear="left" />
-
-
 
 ### 📫 Let's Connect
 
@@ -190,14 +183,11 @@ I specialize in **Machine Learning, Deep Learning, Generative AI, LLMs, RAG, Age
 
 ---
 
-<div align="center">
+<div align="left">
 
 ## 📈 Journey
 
 This is not a finished course. It's an **ongoing record of growth**, and I keep adding concepts, experiments and projects as I learn.
-
-**Keep learning. Keep building.** 💪
-
-⭐ *If this repo helped you, a star means a lot!*
-
 </div>
+
+**⭐ If this repo helped you** *Give it a star and share it with other learners*

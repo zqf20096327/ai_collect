@@ -22,7 +22,7 @@ preference falls back to CPU with a warning. See the
 [device limitations](https://llamadart.leehack.com/docs/platforms/support-matrix#known-limitations).
 
 
-Choose [direct llamadart, Genkit, or Flutter Edge AI](https://llamadart.leehack.com/docs/next/integrations/choosing-an-api) for your application. Genkit remains a [separate package](https://github.com/leehack/llamadart/tree/main/packages/genkit_llamadart); the Flutter Edge AI connector is an upstream source integration.
+Choose [direct llamadart, Genkit, or Flutter Edge AI](https://llamadart.leehack.com/docs/integrations/choosing-an-api) for your application. Genkit remains a [separate package](https://github.com/leehack/llamadart/tree/main/packages/genkit_llamadart); the Flutter Edge AI connector is an upstream source integration.
 
 ## Start Here
 
@@ -33,7 +33,7 @@ Choose [direct llamadart, Genkit, or Flutter Edge AI](https://llamadart.leehack.
 | Build chat history | [First chat session](https://llamadart.leehack.com/docs/getting-started/first-chat-session) |
 | Check runtime support | [Platform & backend matrix](https://llamadart.leehack.com/docs/platforms/support-matrix) |
 | Read API reference | [pub.dev API docs](https://pub.dev/documentation/llamadart/latest/) |
-| Upgrade from 0.15.x | [0.16 migration guide](MIGRATION.md#015x-to-0160-upgrade-guide) |
+| Upgrade from 0.16.x | [0.17 migration guide](MIGRATION.md#016x-to-0170-upgrade-guide) |
 | Try the Flutter demo | [Hosted chat app](https://leehack-llamadart.static.hf.space) |
 | Generate images on device (Preview) | [Image generation](https://llamadart.leehack.com/docs/guides/image-generation) |
 
@@ -60,7 +60,7 @@ inference readiness; see [native check scope](https://llamadart.leehack.com/docs
 - Flutter SDK `>=3.38.0` for Flutter apps
 - iOS deployment target `16.4` or newer for Flutter iOS apps. For LiteRT-LM
   this is a declared floor, not a tested one: on a device it has run only on
-  iOS 18.3.2 ([#831](https://github.com/leehack/llamadart/issues/831))
+  iOS 18.3.2 ([#514](https://github.com/leehack/llamadart/issues/514))
 - macOS deployment target `14.0` or newer for Flutter macOS apps
 - Windows: nothing extra for llama.cpp and LiteRT-LM, which bundle the
   Visual C++ runtime DLLs they need. Machines that run the opt-in
@@ -76,14 +76,15 @@ For Dart or Flutter apps:
 
 ```yaml
 dependencies:
-  llamadart: ^0.16.5
+  llamadart: ^0.17.0
 ```
 
 Flutter iOS/macOS apps that should link Apple XCFrameworks through Swift
 Package Manager should also add the runtime companion packages they need:
 
-Use companion `0.16.0` with core `0.16.x`, or `0.15.2` with core
-`>=0.15.6 <0.16.0`, for llama.cpp `v0.7.0-2`.
+Use companion `0.17.0` with core `0.17.x` for llama.cpp `v0.7.0-3`; core
+`0.17.x` rejects earlier llama.cpp companions. Use `0.16.0` with core `0.16.x`,
+or `0.15.2` with core `>=0.15.6 <0.16.0`, for llama.cpp `v0.7.0-2`.
 Locked `0.15.0`/`0.15.1` companions keep `v0.7.0-1` and work with core `0.15.6`
 with an upgrade warning, or pair with core `0.15.0` to `0.15.5`.
 Pair companion `0.14.0` with core `0.14.x` for llama.cpp `v0.7.0`.
@@ -107,15 +108,16 @@ overrides fail the build; resolve the matching companion and rerun
 
 ```yaml
 dependencies:
-  llamadart: ^0.16.5
-  llamadart_llama_cpp_flutter: ^0.16.0 # GGUF / llama.cpp
-  llamadart_litert_lm_flutter: ^0.16.2 # Apple .litertlm / LiteRT-LM targets
-  llamadart_stable_diffusion_flutter: ^0.16.0 # Apple image generation, opt-in
+  llamadart: ^0.17.0
+  llamadart_llama_cpp_flutter: ^0.17.0 # GGUF / llama.cpp
+  llamadart_litert_lm_flutter: ^0.17.0 # Apple .litertlm / LiteRT-LM targets
+  llamadart_stable_diffusion_flutter: ^0.17.0 # Apple image generation, opt-in
 ```
 
-Use `llamadart_stable_diffusion_flutter` `0.16.0` with core `0.16.x` for SD
-`v0.3.0`; core `0.16.x` rejects earlier SD companions, and `0.15.x` cores
-reject `0.16.0`. Use `0.15.2` with core `>=0.15.2 <0.16.0` for `v0.2.0-4`.
+Use `llamadart_stable_diffusion_flutter` `0.17.0` with core `0.17.x` for SD
+`v0.3.0-1`; core `0.17.x` rejects earlier SD companions. Use `0.16.0` with core
+`0.16.x` for `v0.3.0`, which `0.15.x` cores reject, and `0.15.2` with core
+`>=0.15.2 <0.16.0` for `v0.2.0-4`.
 Locked `0.15.0`/`0.15.1` SD companions keep their older runtime and work with core
 `0.15.2` with an upgrade warning. Pair `0.14.0` with core `0.14.x`,
 `0.13.0` with core `0.13.x`, and
@@ -126,8 +128,9 @@ ignore it. Adding it opts iOS and macOS builds into the image generation
 runtime (about 37 MB per Apple target), so leave it out unless the app uses
 `ImageGenerationEngine`.
 
-Use LiteRT-LM companion `0.16.2` with core `>=0.16.2 <0.17.0` for native
-`v0.18.1-4`. Companion `0.16.1` pins `v0.18.1-2`, which fixes nondeterministic
+Use LiteRT-LM companion `0.17.0` with core `0.17.x` for native `v0.18.1-4`.
+Companion `0.16.2` pins the same runtime for core `>=0.16.2 <0.17.0`,
+`0.16.1` pins `v0.18.1-2`, which fixes nondeterministic
 CPU output and slow Gemma 4 CPU decode on SME2 CPUs, and `0.16.0` pins
 `v0.18.1`; core `0.16.2` builds both with a macOS upgrade warning. Use `0.15.2` with
 core `>=0.15.6 <0.16.0` for `v0.18.0-3`. All three load dedicated ASR
@@ -253,7 +256,8 @@ fallback when model template metadata is empty. See
   stay unchanged ([tool-result rendering](https://llamadart.leehack.com/docs/guides/tool-calling#tool-results-on-templates-without-a-tool-role)).
 - Tool results can carry images in `LlamaToolResultContent.content` (or a
   handler's `LlamaToolOutput`) on native llama.cpp with a vision projector and a
-  Hermes-style template, qualified on Qwen3-VL; check
+  Hermes-style template (smoke-tested on macOS CPU and Metal with Qwen3.5-0.8B
+  weights, a `qwen3vl_merger` projector and the Qwen3-VL template); check
   `LlamaEngineCapabilities.toolResultMedia`. Other runtimes, formats, audio and
   video throw `LlamaUnsupportedException`, as do image/audio parts beside
   `LlamaToolResultContent` or on the tool role
@@ -444,7 +448,7 @@ components; Safetensors does not need conversion to GGUF. Compatible PyTorch
 tensor-only checkpoints need an explicit role. Selected complete SD-Turbo F16
 GGUF, Safetensors and PyTorch ZIP/legacy layouts are verified on macOS CPU;
 other layouts and platforms need their own qualification. See the
-[format and layout limits](https://llamadart.leehack.com/docs/next/guides/image-generation#weight-formats-and-layouts)
+[format and layout limits](https://llamadart.leehack.com/docs/guides/image-generation#weight-formats-and-layouts)
 before choosing files: a supported container does not imply every model works.
 
 FP8 image weights (`F8_E4M3`/`F8_E5M2` in Safetensors, types 43/44 in
@@ -479,8 +483,9 @@ macOS arm64 CPU and Metal; arbitrary FP8 models are not qualified.
 - **Flutter iOS/macOS apps** should add the
   `llamadart_stable_diffusion_flutter` companion (see [Install](#install)),
   which links the runtime through Swift Package Manager and selects it without
-  the entry above. Use companion `0.16.0` with core `0.16.x` for SD `v0.3.0`,
-  or `0.15.2` with core `>=0.15.2 <0.16.0` for SD `v0.2.0-4`. Pair `0.14.0`
+  the entry above. Use companion `0.17.0` with core `0.17.x` for SD
+  `v0.3.0-1`, `0.16.0` with core `0.16.x` for SD `v0.3.0`, or `0.15.2` with
+  core `>=0.15.2 <0.16.0` for SD `v0.2.0-4`. Pair `0.14.0`
   with core `0.14.x`, `0.13.0` with core
   `0.13.x`, `0.0.3` with core `0.12.2`, `0.12.1` and `0.12.0`, and `0.0.2`
   with core `0.11.1` and `0.11.0`.
@@ -504,7 +509,7 @@ macOS arm64 CPU and Metal; arbitrary FP8 models are not qualified.
   smaller decoder buffer.
   Measured on SD-Turbo full VAE/TAESD on macOS CPU and Metal; other recipes
   are bounded by explicit model, decoder and device guards.
-  ([VAE tiling](https://llamadart.leehack.com/docs/next/guides/image-generation#vae-tiling)).
+  ([VAE tiling](https://llamadart.leehack.com/docs/guides/image-generation#vae-tiling)).
 - **Model licenses differ**, including for commercial use. Check each
   model's license before shipping it; the guide lists each model's license.
 
@@ -550,21 +555,21 @@ checks and known limits.
 Image loads also accept `ImageConditioningCacheParams(capacity: 0)` to
 turn off prompt-conditioning reuse, or a positive entry limit. Unset keeps
 the runtime default of four entries. This does not enable approximate
-sampling caches; see the guide's [conditioning cache](https://llamadart.leehack.com/docs/next/guides/image-generation#conditioning-cache).
+sampling caches; see the guide's [conditioning cache](https://llamadart.leehack.com/docs/guides/image-generation#conditioning-cache).
 
 On a GPU, `ImageGenerationEngine.load(placement: ImageModelPlacement(...))`
 keeps the text encoders or the VAE on the CPU, caps the GPU memory the runtime
 uses (`maxGpuMemoryGiB`, which outside Metal needs a discrete GPU) or turns
 off its automatic fit; a placement on a CPU engine or the Web throws
 `LlamaUnsupportedException`. See the guide's
-[module placement](https://llamadart.leehack.com/docs/next/guides/image-generation#module-placement-and-gpu-memory).
+[module placement](https://llamadart.leehack.com/docs/guides/image-generation#module-placement-and-gpu-memory).
 
 For repeatable textures, `SeamlessImageGenerationRequest(circularX: true,
 circularY: true, ...)` enables independent axes. The initial qualified recipe
 is SDXS with its embedded tiny decoder at 512×512 on CPU or Metal, with
 `flashAttention: false` and `vaeDirectConvolution: false`; other recipes
 throw. Both axes default off. Inspect repeated output and see the guide's
-[seamless texture recipe](https://llamadart.leehack.com/docs/next/guides/image-generation#seamless-textures)
+[seamless texture recipe](https://llamadart.leehack.com/docs/guides/image-generation#seamless-textures)
 for its measured scope and quality criteria.
 
 For a complete local sharded checkpoint, use
@@ -574,7 +579,7 @@ SD-Turbo F16/F32 tensor layout on macOS CPU with pinned SD v0.3.0-1 and explicit
 flash attention/direct VAE convolution off. It accepts the standard local index
 or its directory and verifies every shard into an owned cache before loading.
 Generic Diffusers layouts and editing/tiling/seamless combinations remain
-unsupported. See [local checkpoint sets](https://llamadart.leehack.com/docs/next/guides/image-generation#local-checkpoint-sets)
+unsupported. See [local checkpoint sets](https://llamadart.leehack.com/docs/guides/image-generation#local-checkpoint-sets)
 and `example/basic_app/bin/local_image_set.dart`.
 
 For image-to-image and binary-mask editing, use `ImageEditingRequest` with
@@ -585,7 +590,7 @@ component overrides, flash attention or direct VAE convolution. SD-Turbo is
 the measured model. White (255) edits; black (0) preserves the latent, with
 possible pixel changes from VAE encode/decode. The caller supplies decoded RGB
 and aligned binary masks; there is no implicit decode, resize or alpha handling.
-See the [editing recipe](https://llamadart.leehack.com/docs/next/guides/image-generation#image-editing)
+See the [editing recipe](https://llamadart.leehack.com/docs/guides/image-generation#image-editing)
 and runnable `example/basic_app/bin/image_editing.dart`.
 
 For ControlNet, load an SD 1.x ControlNet as an `ImageModelComponent` next to
@@ -596,7 +601,7 @@ SD 1.x checkpoint with its embedded full VAE plus an original-layout SD 1.x
 ControlNet on macOS CPU, with flash attention and direct VAE convolution off;
 other recipes are refused at load. The caller supplies the finished control
 map (edges, depth, pose); no preprocessor runs. Qualified on SD 1.5 with
-`control_v11p_sd15_canny` on macOS CPU. See the [ControlNet recipe](https://llamadart.leehack.com/docs/next/guides/image-generation#controlnet)
+`control_v11p_sd15_canny` on macOS CPU. See the [ControlNet recipe](https://llamadart.leehack.com/docs/guides/image-generation#controlnet)
 and `example/basic_app/bin/image_controlnet.dart`.
 
 For a hires fix, use `HiresFixImageGenerationRequest` with an
@@ -606,7 +611,7 @@ most twice each side and 1024x1024) and samples again before decoding.
 Check `(await engine.capabilities).supportsHiresFix`: the bounded recipe is
 an SD 1.x or SD 2.x checkpoint with its embedded full VAE on macOS CPU or
 Metal; other recipes throw `LlamaUnsupportedException`. Qualified on SD 1.5
-and SD-Turbo. See the [hires-fix recipe](https://llamadart.leehack.com/docs/next/guides/image-generation#hires-fix)
+and SD-Turbo. See the [hires-fix recipe](https://llamadart.leehack.com/docs/guides/image-generation#hires-fix)
 and `example/basic_app/bin/image_hires_fix.dart`.
 
 To edit an image as a prompt describes, use `ReferenceImageEditingRequest`
@@ -615,7 +620,7 @@ at the output size (at most 1024x1024; crop or resize it first). Check
 `(await engine.capabilities).supportsReferenceImageEditing`: the bounded
 recipe is the FLUX.1 Kontext [dev] transformer with `ae`, CLIP-L and T5-XXL
 on macOS Metal; other models, devices and reference counts throw
-`LlamaUnsupportedException`. See the [reference-editing recipe](https://llamadart.leehack.com/docs/next/guides/image-generation#reference-image-editing)
+`LlamaUnsupportedException`. See the [reference-editing recipe](https://llamadart.leehack.com/docs/guides/image-generation#reference-image-editing)
 and `example/basic_app/bin/image_reference_editing.dart`.
 
 ## Choosing a Runtime
@@ -642,9 +647,9 @@ On native llama.cpp, `gpuDevices` loads a model on chosen GPUs of one backend,
 by their `LlamaEngine.listGpuDevices` index, and `tensorSplit` sets each
 GPU's share. Decision heads and multimodal projectors of the model run on a
 listed GPU. Indices the host lacks, a split of another length and the Web or
-LiteRT-LM throw `LlamaUnsupportedException`. Validated on one Metal GPU only:
-multi-GPU loads have no hardware evidence yet, and CUDA is not
-hardware-qualified. See
+LiteRT-LM throw `LlamaUnsupportedException`. Validated on one Metal GPU and on a Vulkan Tesla T4, with Mesa lavapipe as
+the second device for two-device lists and splits; two-GPU hardware has no
+evidence yet, and CUDA is not hardware-qualified. See
 [Runtime Parameters](https://llamadart.leehack.com/docs/configuration/runtime-parameters).
 
 Native llama.cpp with `device: ComputeDevice.auto`, `splitMode: ModelSplitMode.none`
@@ -775,7 +780,7 @@ includes a runnable OpenTelemetry adapter and Langfuse/Grafana recipes.
 
 Repository checks, validation commands, and PR expectations are in
 [AGENTS.md](https://github.com/leehack/llamadart/blob/main/AGENTS.md) and the
-[maintainer docs](https://llamadart.leehack.com/docs/next/maintainers/docs-site#validating-changes).
+[maintainer docs](https://llamadart.leehack.com/docs/maintainers/docs-site#validating-changes).
 
 ## License
 

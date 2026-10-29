@@ -61,11 +61,9 @@ Code-Graph-RAG parses a multi-language codebase with Tree-sitter, sharpened by c
 ## Latest News 🔥
 
 <!-- SECTION:latest_news -->
-- **Security Enhancements**: Incorporates an OSS Scanner build image and threat model.
-- **Data Export**: Ensures all node properties within the graph are exported.
-- **SQL Fixes**: Addresses several SQL-related issues including grammar errors and dead-code roots.
-- **Rust Fixes**: Improves indexing of methods and handling of types in Rust code.
-- **Build Fixes**: Repairs build issues related to eMudhra root certificates and distrusted components.
+- **Dependencies Updated**: Several dependencies have been updated to the latest versions, including neo4j, qdrant-client, and transformers, bringing in bug fixes and new features.
+- **CLI Improvements**: The `change_signature` operation is now accessible through the CLI and MCP, with updated documentation.
+- **Graph-RS Fuzzing**: Expanded fuzz testing for the graph-rs component with new targets for procedures, bulk writing, and input decoding.
 <!-- /SECTION:latest_news -->
 
 See [NEWS.md](NEWS.md) for the full history.

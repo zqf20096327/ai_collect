@@ -3,7 +3,7 @@
 [![PyPI](https://img.shields.io/pypi/v/datris-mcp-server)](https://pypi.org/project/datris-mcp-server/)
 [![MCP Registry](https://img.shields.io/badge/MCP_Registry-io.github.datris%2Fdatris-blue)](https://registry.modelcontextprotocol.io/servers/io.github.datris/datris)
 [![Docker Hub](https://img.shields.io/docker/v/datrisai/datris-server?label=Docker%20Hub)](https://hub.docker.com/u/datrisai)
-[![License](https://img.shields.io/badge/license-AGPL--3.0-blue)](LICENSE)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 
 [datris.ai](https://datris.ai) · [Documentation](https://docs.datris.ai) · [MCP Registry](https://registry.modelcontextprotocol.io/servers/io.github.datris/datris) · [PyPI](https://pypi.org/project/datris-mcp-server/)
 
@@ -26,13 +26,13 @@ https://github.com/user-attachments/assets/ba3de886-1413-4d92-92bb-99018cfaff38
 
 Your agents already acquire, validate, and load data. Without a control plane, they do it badly. Datris puts that work behind one governed surface:
 
-- **One MCP door** — 79 tools behind a single MCP server. Claude, Cursor, and any MCP-compatible agent learn one interface instead of 79 integrations
+- **One MCP door** — 88 tools behind a single MCP server. Claude, Cursor, and any MCP-compatible agent learn one interface instead of 88 integrations
 - **Vault-brokered credentials** — the agent references a secret by name and never holds a key; agent-written code runs in an isolated container with no keys inside
 - **Scoped keys, approval gates, audit log** — each agent gets its own API key limited to the capabilities you grant; an [agent policy](https://docs.datris.ai/agent-policy) decides per action whether an agent runs it, waits for a person to approve, or is refused; an [audit log](https://docs.datris.ai/audit-log), once you turn it on (`USE_AUDIT_LOG=true`), records who did what, best effort by default and without loss in [strict mode](https://docs.datris.ai/audit-log#strict-mode)
 - **Every run recorded** — job state and row counts for every run, provenance on its rows with stamping on; every generated script versioned in git
 - **Durable state** — pipelines and sync bookmarks live in the platform, not the chat, so regenerating a script never loses its place
 - **The operating loop** — Acquire (AI-generated taps) → Validate (plain-English rules) → Land (multi-destination pipelines) → Observe (provenance and job state) → Explain & Repair (AI error explanation), with the same audit trail every time once the audit log is on (see [strict mode](https://docs.datris.ai/audit-log#strict-mode))
-- **Self-host anywhere** — on-prem, any cloud, or your laptop; 100% open-source infrastructure (MinIO, PostgreSQL, MongoDB, Kafka, Vault), AGPL-3.0, no managed service
+- **Self-host anywhere** — on-prem, any cloud, or your laptop; 100% open-source infrastructure (MinIO, PostgreSQL, MongoDB, Kafka, Vault), Apache-2.0, no managed service
 
 ## Quick Start
 
@@ -129,7 +129,7 @@ brew install datris
 datris ingest data.csv --dest postgres
 datris ingest sales.csv --ai-validate "prices > 0" --ai-transform "convert dates to YYYY/MM/DD"
 datris query "SELECT * FROM sales"
-datris search "quarterly revenue" --store pgvector
+datris search "quarterly revenue" --store pgvector --collection financial_docs
 datris tap create "Fetch S&P 500 daily prices from yfinance" --pipeline stocks
 datris taps
 datris doctor               # operational self-check; prints the fix for every finding
@@ -154,7 +154,7 @@ Source (Tap / File Upload / MinIO Event / Database Pull / Kafka)
 
 | Feature | Description |
 |---------|-------------|
-| **MCP Server** | 79 tools for AI agents — pipeline CRUD, upload, query, search, profiling, taps, catalogs, provenance |
+| **MCP Server** | 88 tools for AI agents — pipeline CRUD, upload, query, search, profiling, taps, catalogs, provenance |
 | **Taps** | Describe a source in plain English — AI generates a Python script that fetches it on demand or on a schedule, run in an isolated container |
 | **Assistant** | Conversational tap and pipeline creation, operations, and configuration in the UI |
 | **AI Data Quality** | Plain English validation rules — AI generates and runs a validation script |
@@ -172,7 +172,7 @@ CSV, JSON, XML, Excel, PDF, Word (DOCX), PowerPoint, HTML, email, EPUB, plain te
 
 ### AI Providers
 
-Anthropic Claude (Fable 5.1 default for chat, Opus 5.5 for CodeGen) · OpenAI (GPT-5.6 Sol default for chat and CodeGen) · Azure OpenAI (bring your Azure resource; models by deployment name) · Amazon Bedrock (Claude through your AWS account — IAM auth, AWS billing, IAM-role support with zero stored keys) · Grok (xAI's models through their OpenAI-compatible API) · Ollama (local models, optional). Embeddings via OpenAI `text-embedding-3-small` (recommended when you have an OpenAI key), Azure OpenAI, the bundled TEI sidecar (BAAI/bge-m3 — fully local, no API key), or Ollama.
+Anthropic Claude (Opus 5.5 default for chat and CodeGen) · OpenAI (GPT-5.6 Sol default for chat and CodeGen) · Azure OpenAI (bring your Azure resource; models by deployment name) · Amazon Bedrock (Claude through your AWS account — IAM auth, AWS billing, IAM-role support with zero stored keys) · Grok (xAI's models through their OpenAI-compatible API) · Ollama (local models, optional). Embeddings via OpenAI `text-embedding-3-small` (recommended when you have an OpenAI key), Azure OpenAI, the bundled TEI sidecar (BAAI/bge-m3 — fully local, no API key), or Ollama.
 
 ## Architecture
 
@@ -195,4 +195,4 @@ Full documentation at [docs.datris.ai](https://docs.datris.ai) or locally at `do
 
 ## License
 
-[AGPL-3.0](LICENSE)
+[Apache License 2.0](LICENSE). See [NOTICE](NOTICE) for attribution.

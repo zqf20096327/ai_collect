@@ -1,0 +1,47 @@
+# DeepLearning
+
+Collection of scripts I use in Classroom
+
+
+## Setup
+
+```bash
+python -m venv .venv
+source ./.venv/bin/activate       # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+python -m ipykernel install --user --name deeplearning
+```
+
+## Run in VS Code
+
+1. Open this folder in VS Code, install the **Jupyter** and **Python** extensions.
+2. Open `*.ipynb`.
+3. Select the `deeplearning` kernel (or `.venv`) via the kernel picker (top-right).
+4. Run cells with `Shift+Enter`, or **Run All**.
+
+
+## Collections
+
+| SN | Topic | Script |
+| --- | ---| ---|
+|1 | Introduction to Pytorch (with toy example) | [GO](pytorch_toy_example.ipynb) |
+|2 | Dataset splits, Overfit/Underfit and Dropout/L1/L2 regularization | [GO](overfit_underfit_regularization.ipynb) |
+|3 | Limitation of Gradient Descent | [GO](limitation_of_gradient.ipynb) |
+|4 | Adaptive Learning Rates: AdaGrad, RMSProp, Adam | [GO](adaptive_learning_rates.ipynb) |
+|5 | Why do we need CNNs? DNN limitations vs. Convolutions (FashionMNIST) | [GO](need_for_cnn.ipynb) |
+|6 | AlexNet: basic idea, architecture, building in PyTorch, and training on a small subset (CIFAR-10) | [GO](alexnet_image_classification.ipynb) |
+|7 | Why do we need Batch Normalization? Training dynamics, learning-rate sensitivity, and internal covariate shift, for both an MLP and a CNN (FashionMNIST) | [GO](batch_normalization.ipynb) |
+|8 | Representation Learning: a simple autoencoder, reconstruction, visualizing the learned code, and transferring it to classification with very few labels (MNIST) | [GO](autoencoder_representation_learning.ipynb) |
+|9 | Word2Vec as an autoencoder: skip-gram encoder-decoder, nearest neighbours and a word map, and using the word vectors for document classification with few labels (20 Newsgroups) | [GO](word2vec_autoencoder.ipynb) |
+|10 | Embedding-based retrieval: a frozen EmbeddingGemma encoder, sentence embeddings in a Python dict, cosine nearest-neighbour search, keyword (TF-IDF) comparison and cross-lingual Nepali queries (news corpus) | [GO](embedding_retrieval.ipynb) |
+|11 | Why do we need sequence models? Truncation, padding and averaging (bag of words / frames) vs. a pure recurrent model (GRU) on variable-length text and speech | [GO](need_for_sequence_models.ipynb) |
+|12 | Neural N-Gram language model (Bengio et al., 2003): count-based trigram vs. neural trigram, unseen contexts, next-word prediction, text generation, learned embeddings and the fixed-window limitation (toy corpus) | [GO](neural_ngram_language_model.ipynb) |
+
+
+
+## Representation Learning
+The Encoder/Decoder model related notebooks are in [Rep-Learning](rep-learning) directory.
+
+
+---
+__Note__: This list will gradually grow.  Hopefully in 2-3 months :-)

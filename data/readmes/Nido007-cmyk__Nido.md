@@ -37,7 +37,8 @@ device, encrypted. There are no accounts, no cloud and no analytics.
   (llama.cpp through `llama.rn`).
 - **Remembers for you**: facts, notes and reminders, stored in a database
   encrypted with SQLCipher. The key lives in the Android Keystore.
-  Birthdays you tell it get a reminder every year.
+  Birthdays you tell it get a reminder every year. An 8:00 daily summary is
+  available if you turn it on (it's off by default).
 - **Acts on your requests**: reminders (once, or every day, week, month or
   year), countdowns, notes, calendar events, unit conversions, arithmetic,
   opening links. Anything with an effect outside the app asks for your
@@ -47,17 +48,26 @@ device, encrypted. There are no accounts, no cloud and no analytics.
 - **Answers from your documents**: import `.txt`, `.md`, `.csv`, `.json` or
   `.pdf` files and NIDO indexes them on the phone.
 - **Knows things offline**: a built-in knowledge base plus an optional
-  Wikipedia pack (about 116,000 articles). With multilingual search on, you
+  Wikipedia pack (about 50,000 articles). With multilingual search on, you
   can ask in Spanish, Portuguese or English, and answers show the articles
-  they come from; when nothing in the base really matches, no source is shown.
+  they come from, with a line that counts which sentences come from them and
+  which come from the model with no source; when nothing in the base really
+  matches, no source is shown.
 - **Talks to another NIDO over Bluetooth**: encrypted messages between two
   paired phones, with no internet and no server. Pairing is done in person
   with a QR code.
 - **Has an Emergency tab**: your country's emergency numbers, checked
-  against official sources (23 countries in the NIDO Local pack), each with
+  against official sources (32 countries in the NIDO Local pack), each with
   its source and date. "Call" opens the dialer with the number typed in.
   Quick guides (CPR, bleeding, choking, burns, earthquake, hurricane) and
-  "describe what's happening" write the question into the chat.
+  "describe what's happening" write the question into the chat. First aid
+  questions are answered with the NIDO Essentials guide exactly as written,
+  with no AI model in between, even when you ask for a short version (you
+  get the start of the guide as written). Describing carbon monoxide
+  symptoms near a heater, generator or stove gets a fixed warning to get
+  outside and call for help. When a
+  newer version of the pack exists, the one you have keeps working offline
+  and the app says an update is available.
 - **Five sections one tap away**: Chat, Emergency, Library, NIDO and
   Settings, in a bottom bar. Settings is grouped and has a search box.
 - **Shows its network use**: every download the app makes is logged and

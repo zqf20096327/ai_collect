@@ -37,7 +37,15 @@
 
 **FAF defines. AGENTS.md instructs. AI codes.**
 
-## v2.2.0 — The Instructions Edition
+## v2.2.2 — The Instructions Edition
+
+**Cleanup: removes leftover two-way sync wording.** Two-way sync was dropped by design long ago: project.faf pushes structured data out, and prose doesn't come back. The last strings that still said two-way now match. `faf_bi_sync` still works as the old name for `faf_sync`.
+
+### v2.2.1
+
+**One rule for project questions: read project.faf first.** New line 2 of the server instructions: "For questions about the project (stack, goal, commands), read project.faf first and answer from it." The same rule in faf-mcp moved Grok Build from 0 of 3 to 2 of 3 runs reading project.faf first, on a repo where project.faf and package.json disagree (3-run pilot). 715 characters.
+
+### v2.2.0
 
 **grok-faf-mcp now tells Grok how its tools fit together, context and memory: server instructions in initialize (615 characters), plus faf-cli 8.5.0, which knows a skills repo when it sees one.**
 
@@ -264,8 +272,7 @@ bunx grok-faf-mcp
 
 | Tool | Purpose |
 |------|---------|
-| `faf_sync` | Sync .faf → CLAUDE.md |
-| `faf_bi_sync` | Bi-directional .faf ↔ platform context |
+| `faf_sync` | Write CLAUDE.md, AGENTS.md, .cursorrules and GEMINI.md from project.faf. One way: it never writes project.faf. (`faf_bi_sync`, the old name, still works.) |
 | `faf_trust` | Validate .faf integrity |
 
 **Read & Write**

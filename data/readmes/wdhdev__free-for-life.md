@@ -115,6 +115,7 @@ A huge list of great stuff you can get for free!
 | [Perplexity.ai](https://perplexity.ai) | OpenAI GPT-model powered AI chatbot that's connected to the web. Find articles or ask for current info. |
 | [Phind](https://phind.com) | AI chatbot built for developers in a chat-like form. |
 | [Poe](https://poe.com) | Poe is chat-based AI. Uses GPT-3.5. |
+| [YYLO](https://yylo.dev) | YYLO is an open-source command-line orchestrator for AI coding agents, repeatable workflows and receipt-backed repository changes. It works with agents such as Claude Code, Codex and Pi, running task boards, worktrees and typed merge flows in your Git repositories. Free and open source under the MIT license. |
 
 <!-- BaaS.md -->
 ## BaaS
@@ -266,6 +267,7 @@ A huge list of great stuff you can get for free!
 | [PostgreSQL](https://www.postgresql.org) | PostgreSQL is a powerful, open source object-relational database system with over 35 years of active development that has earned it a strong reputation for reliability, feature robustness, and performance. |
 | [Prisma Postgres](https://www.prisma.io/postgres) | Managed PostgreSQL with a free plan of 1.01 GB storage, 200,000 operations per month and up to 50 databases, no credit card required. |
 | [Redis](https://redis.io) | The open source, in-memory data store used by millions of developers as a database, cache, streaming engine, and message broker. |
+| [ReviveDB](https://revivedb.dev) | Automatic Supabase backups of your whole project: data, user accounts, files and server code, stored in the EU. Every database backup is restore-tested. The free plan covers one project up to 1 GB with a weekly backup and keeps the last three. |
 | [SQLable](https://sqlable.com/) | SQLable is a suite of database tools, including SQL and CSV utilities, test data generation, and sandboxes for SQLite, MySQL, and PostgreSQL. |
 | [SQLite](https://www.sqlite.org) | SQLite is a C-language library that implements a small, fast, self-contained, high-reliability, full-featured, SQL database engine. |
 | [Supabase](https://supabase.com) | Supabase is an open source Firebase alternative for building secure and performant Postgres backends with minimal configuration. |
@@ -277,7 +279,9 @@ A huge list of great stuff you can get for free!
 | Website | Description |
 |:-:|-|
 | [AI to UI](https://ai2ui.co) | Easily generate great looking UI components using artificial intelligence. Supports multiple frameworks including React, Next.js, and standard HTML. |
+| [APPLORE App Icon Generator](https://applore.app/app-icon-generator) | Upload one image and download every iOS, Android, macOS and web app icon size in one ZIP. Free, no account needed. |
 | [ArtboardLab](https://artboardlab.com) | Free browser-based design tools including an Adobe Illustrator `.ai` viewer and `.ai` to SVG, PNG and PDF converters, plus image compression and format conversion. Files are processed in the browser and never uploaded, and no account is needed. |
+| [BatchSet](https://batchset.com) | Bulk image converter that runs in the browser, so files are never uploaded. Converts JPG, PNG, WebP, AVIF, GIF, HEIC and TIFF to WebP, JPG or PNG, compresses to a target size in KB, resizes, crops and strips EXIF. No account for the first 1,000 conversions, unlimited with a free account. |
 | [BeginThings](https://beginthings.com) | 96+ free browser-based tools for developers and freelancers — JSON formatter, Base64 encoder, image compressor, QR code generator, regex tester, and more. No login required. |
 | [Calculora](https://calculora.net) | 259+ free calculator tools, no signup required. |
 | [Canva](https://canva.com) | Free online design tool to create visual content. |
@@ -285,6 +289,7 @@ A huge list of great stuff you can get for free!
 | [Color Hunt](https://colorhunt.co) | Discover the newest hand-picked color palettes of Color Hunt. Get color inspiration for your design and art projects. |
 | [ColorKit](https://colorkit.co) | Create color palettes online or get inspiration from top palettes. |
 | [CSS Gradient Generator](https://www.css-gradient.com) | Free tool to easily generate custom cross-browser CSS gradients. In RGB and HEX format. |
+| [Design Details](https://designdetails.io) | A free curated library of live websites with great motion, sorted by sections like hero, navigation and footer, and filterable by type and color. |
 | [Dribbble](https://dribbble.com) | A designer community for showcasing work and gaining inspiration. |
 | [Eggradients](https://www.eggradients.com) | Ready to use collection of gradients which can be used in UI designs and elements |
 | [Emote Resizer](https://emoteresize.com) | Free browser-based emote resizer for Twitch, Discord, 7TV, Slack, and custom sizes, with batch ZIP downloads and animated GIF support. Files are processed locally without an account. |
@@ -371,6 +376,7 @@ A huge list of great stuff you can get for free!
 | [Takeout](https://takeout.bysourfruit.com) | A constantly updated email service that makes sending emails extremely easy. 500 transactional emails/month free. |
 | [Tempail](https://tempail.com) | Free temporary/disposable email for 1 hour per session with qr codes to regain the session. |
 | [Temp Mail](https://temp-mail.org) | Free temporary/disposable email per session. |
+| [TempMail10min](https://temp-mail10min.online) | Free disposable temporary email generator with 5, 10, 15, and 30-minute auto-destruct inboxes for fast OTP verification. |
 | [Tutanota](https://tutanota.com) | An email service that prioritizes privacy. The free plan has restrictions such as a maximum of 1gb of storage, 1 calendar per account, and only 1 email per account with a 48 hour verification period to prevent abuse. |
 | [Verimail](https://verimail.io) | Bulk and API email verification service. 100 free verifications/month. |
 | [Zoho Email](https://www.zoho.com/mail) | Free for 5 users. 5GB/user & 25 MB attachment limit, 1 domain. |
@@ -507,6 +513,7 @@ A huge list of great stuff you can get for free!
 | Website | Description |
 |:-:|-|
 | [anvil.works](https://anvil.works) | Web app development with nothing but Python. Free tier with unlimited apps. |
+| [BrewPage](https://brewpage.app) | Hosting for HTML, Markdown, files, multi-file static sites, JSON documents and key-value data through a web page or a REST API, no account needed. Free with no paid plan; content expires after 15 days by default (up to 30 days, or 90 with an optional free account). |
 | [Codename One](https://www.codenameone.com) | Open source, limited to $5 or 500 hours of usage monthly available for free. |
 | [configure.it](https://www.configure.it) | Mobile app development platform, 1,000 free API calls/month, 1,000 requests per day, and 100 GiB data transfer per month. |
 | [deed.page](https://deed.page) | Static hosting built for AI agents: publish HTML or a folder of files to a permanent HTTPS URL with one PUT or POST, no account needed. Free plan includes 25 sites, 25 MB per site and 1 custom domain. |

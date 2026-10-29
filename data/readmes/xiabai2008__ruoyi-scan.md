@@ -25,6 +25,13 @@ pip install ruoyi-scan
 > 不知道什么时候该用它？先看 [使用指导](docs/promo/ruoyi-scan-usage-guide.txt)（六个真实场景 + 20 条实战技巧）；
 > 全部命令见 [操作命令手册](docs/promo/ruoyi-scan-command-manual.txt)，能覆盖哪些漏洞见 [插件清单](docs/promo/ruoyi-scan-plugins.txt)。
 
+> **⚠️ 成熟度声明与共建邀请**
+> Ruoyi-Scan 目前以**内置签名靶场与真实版本栈**为主要验证环境，尚未经过大规模实战项目检验，
+> 因此**不对漏洞检出率（产出率）、漏报率与误报率做任何承诺** —— 拿不准的项一律如实标注 UNKNOWN，不凑数。
+> 项目会保持小步快跑的迭代节奏，判定质量逐版本持续收敛。
+> 欢迎共建：提交 [Issue](https://github.com/xiabai2008/Ruoyi-Scan/issues/new/choose) 或 [PR](https://github.com/xiabai2008/Ruoyi-Scan/pulls)；
+> 也欢迎自行 fork 二次开发 —— 基于 MIT License，衍生作品**标注原版出处（XIABAI / Ruoyi-Scan）**即可。
+
 ---
 
 ## 演示
@@ -158,6 +165,14 @@ pip install ruoyi-scan
 | 合规映射 | — | — | 等保 2.0 / OWASP **报告级章节** |
 | 安服交付物 | — | 部分 | 7 种格式 + **docx 模板引擎 + 整改复测** |
 | nuclei 模板 | 原生 | 不支持 | **兼容执行**（http 协议子集 + 安全白名单） |
+| **模板存量** | **数千个社区模板** | 内置规则库 | **54 个专项 POC**（数量级劣势） |
+| **跨框架广度** | **数十种框架** | 通用 Web | **若依 / Spring Boot / JeecgBoot**（仅 Java 生态） |
+| **社区规模** | **数千贡献者** | 活跃社区 | **单人维护**（响应与迭代速度受限） |
+
+> **把话说全**：模板存量、跨框架广度、社区规模这三项我们**明确落后** —— nuclei 数千个模板的存量与
+> 多框架覆盖是真护城河，本项目短期内追不上，也不打算追。我们做的是**另一件事**：
+> 在若依生态里给出「这个漏洞确实存在 / 确实不存在 / 无法判定」的判定与可交付报告。
+> 两者是互补关系：先用通用工具铺开广度，再对疑似目标用本工具做深度确认与合规交付。
 
 **一句话**：通用扫描器告诉你「这里可能有东西」；Ruoyi-Scan 告诉你「这个漏洞确实存在 / 确实不存在 / 无法判定」，并直接产出可交付的报告。
 
@@ -188,7 +203,7 @@ pip install ruoyi-scan
 ## 项目定位
 
 - **作者**：XIABAI
-- **版本**：1.5.1
+- **版本**：1.5.2
 - **仓库**：https://github.com/xiabai2008/Ruoyi-Scan
 - **技术栈**：Python 3.8+ / requests / FastAPI / Docker
 - **许可**：MIT License
@@ -496,7 +511,7 @@ docker compose down
 | 参数 | 说明 |
 |------|------|
 | `--serve` | 启动 Web API 服务（FastAPI + WebSocket + Web 控制台） |
-| `--host <addr>` | API 服务监听地址（默认 0.0.0.0） |
+| `--host <addr>` | API 服务监听地址（默认 127.0.0.1，仅本机可访问；对外监听需显式指定 0.0.0.0） |
 | `--port <n>` | API 服务监听端口（默认 8000） |
 | `--api-key <key>` | API Key 鉴权 |
 | `--cors-origins <o>` | 允许的 CORS 源（逗号分隔） |
@@ -676,7 +691,6 @@ Ruoyi-Scan/
 ├── core/                    # 核心引擎层
 │   ├── orchestrator.py      # 扫描编排器（CLI 与 Web API 共用）
 │   ├── engine.py            # 并发编排+令牌桶限速
-│   ├── models.py            # 数据模型（三态判定）
 │   ├── loader.py            # 插件动态发现
 │   ├── fingerprint.py       # 指纹识别
 │   ├── router.py            # 指纹→插件路由
@@ -684,6 +698,10 @@ Ruoyi-Scan/
 │   ├── chain.py             # 漏洞利用链引擎
 │   ├── report.py            # 报告渲染（HTML/JSON/CSV）
 │   └── ...                  # 更多核心模块
+├── common/                  # 共享基础层
+│   ├── models.py            # 数据模型（三态判定）
+│   ├── console.py           # 控制台编码处理
+│   └── logger.py            # 日志配置
 ├── plugins/                 # 插件系统
 │   ├── base.py              # PluginBase 抽象基类
 │   ├── ruoyi/               # 若依 20 个插件（含 2 个 Plus 变体专属）
@@ -735,6 +753,10 @@ python tests/regression_spring.py
 
 > 贡献 POC 前请先在自建靶场（`lab/`）或授权目标上复现，确保判定特征真实可靠。
 
+**自行二次开发**：欢迎 fork 后按自己的场景改造（加私有 POC、换判定规则、接入内部系统）。
+本项目采用 MIT License，**唯一要求是衍生作品中标注原版出处**（XIABAI / Ruoyi-Scan，附仓库链接即可），
+不需要额外申请授权，也不限制商用或闭源分发。改造后如果对社区有价值，欢迎回提 PR。
+
 ---
 
 ## 安全与合规
@@ -763,4 +785,4 @@ MIT License © 2026 XIABAI
 
 ---
 
-我是雪山盟成员，师从雪山乘客，他是转子女神的作者，[Rotor-Goddess](https://github.com/Snow-Mountain-Passengers/Rotor-Goddess)。
+作者背景与致谢见 [AUTHOR.md](AUTHOR.md)。

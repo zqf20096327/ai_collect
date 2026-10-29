@@ -10,6 +10,7 @@
   <img alt="Renoise 3.5" src="https://img.shields.io/badge/Renoise-3.5-111111">
   <img alt="Native Rust runtime" src="https://img.shields.io/badge/runtime-native%20Rust-555555">
   <a href="LICENSE.md"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue"></a>
+  <a href="https://discord.gg/F3js89Rcxf"><img alt="Discord" src="https://img.shields.io/badge/Discord-join-5865F2?logo=discord&amp;logoColor=white"></a>
 </p>
 
 <p align="center">
@@ -41,7 +42,7 @@ Follow Kumi's guided setup.
 Next time, open a terminal and type `kumi`, then open your DAW (Live, REAPER or Renoise, before or after Kumi): Kumi connects to the one that's open.
 
 > [!NOTE]
-> Kumi runs in a terminal window, but you don't need to know any commands. After the install line, it's a chat. Drag across text to select it, then press Ctrl-C to copy.
+> Kumi runs in a terminal window, but you don't need to know any commands. After the install line, it's a chat. Drag across text to copy it, or double-click a word.
 
 ## What can I ask it?
 
@@ -112,8 +113,8 @@ Audio is analysed locally; the model gets the measurements. Your library and mus
 
 ## Status
 
-- Kumi 1.24.11 is currently supported for Ableton Live 12.4.15b4 (beta) and above on macOS and Windows. You may run into issues on lower versions. If you do, **please file an issue!**
-- 1.24.11 is tested with Live on macOS. On Windows, installing and updating are tested; using it with Live there is still new. Please send a `kumi report` when something breaks.
+- Kumi 1.24.30 is currently supported for Ableton Live 12.4.15b4 (beta) and above on macOS and Windows. You may run into issues on lower versions. If you do, **please file an issue!**
+- 1.24.30 is tested with Live on macOS. On Windows, installing and updating are tested; using it with Live there is still new. Please send a `kumi report` when something breaks.
 - REAPER 7.82 and Renoise 3.5.4 are tested on macOS. On Windows and Linux, CI tests putting Kumi's extension and tool in place and loading the extension; using them with REAPER and Renoise there is new.
 
 ## Development

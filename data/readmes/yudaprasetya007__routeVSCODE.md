@@ -75,22 +75,44 @@ sequenceDiagram
 
 ---
 
-## 🚀 Instalasi Cepat
+## ⚡ Instalasi 1-Klik (One-Click Installer)
 
-### 🪟 Windows (Satu Perintah)
-Buka Terminal atau Command Prompt di folder project:
-```cmd
-scripts\setup.bat
+### 🪟 Windows (Paling Mudah)
+Cukup **klik dua kali (Double-Click)** file:
 ```
-Atau via npm:
+📁 INSTALL.bat
+```
+*(Atau jalankan di PowerShell / CMD: `.\INSTALL.bat` atau `.\install.ps1`)*
+
+Skrip otomatis mendeteksi Node.js, mencari VSCode, memasang 9Router, menginstall extension `.vsix`, dan langsung membuka Web Dashboard!
+
+---
+
+### 🐧 Linux & Ubuntu
+Buka Terminal di folder project dan jalankan:
+```bash
+chmod +x install.sh
+./install.sh
+```
+
+Atau instalasi instan 1-baris langsung via curl:
+```bash
+curl -fsSL https://raw.githubusercontent.com/yudaprasetya007/routeVSCODE/master/install.sh | bash
+```
+
+---
+
+### 🍎 macOS
+```bash
+chmod +x install.sh
+./install.sh
+```
+
+---
+
+### 📦 Via Node.js / NPM (Semua OS)
 ```bash
 npm run setup
-```
-
-### 🐧 Linux / 🍎 macOS
-```bash
-chmod +x scripts/setup.sh
-./scripts/setup.sh
 ```
 
 ---

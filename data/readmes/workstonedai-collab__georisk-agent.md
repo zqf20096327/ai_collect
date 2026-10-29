@@ -2,7 +2,7 @@
 
 从一个国际问题出发，查资料、理清事件与各方立场，形成带来源的分析，再接着跟踪会改变判断的新进展。
 
-GeoRisk Agent · [English guide](#english-guide) · [中文完整说明](README.zh-CN.md) · [先跑示例](#try-it-in-two-minutes) · [正式版本 / Release](https://github.com/workstonedai-collab/georisk-agent/releases/tag/v0.13.0)
+GeoRisk Agent · [English guide](#english-guide) · [中文完整说明](README.zh-CN.md) · [先跑示例](#try-it-in-two-minutes) · [正式版本 / Release](https://github.com/workstonedai-collab/georisk-agent/releases/tag/v0.14.0)
 
 [![CI](https://github.com/workstonedai-collab/georisk-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/workstonedai-collab/georisk-agent/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
@@ -24,6 +24,12 @@ GeoRisk Agent · [English guide](#english-guide) · [中文完整说明](README.
 **利益影响与风险观察：把事件放回与你有关的处境里。** 新闻每天都有，难的是判断哪条与你有关：一项制裁是否涉及合作方，一次港口限制会不会影响交付，一场局势升级是否已经触及当地团队。提供相关人员、资产、航线、项目或其他利益后，可以围绕影响路径、关键条件和下一次观察信号展开分析。事件与某项业务的关联不明时，报告应保留这个条件。
 
 ## 把研究接着做下去
+
+第一次配置时，可以在网页填写模型设置、单独测试连接，再选择要添加的官方来源。日常使用时，查看持续运行进程的最近心跳与检查记录；已保存报告可直接导出带标题、列表的可编辑 Word，不额外调用模型。原有 OfficeCLI 和 MCP 入口继续保留。[配置与日常使用](docs/setup-and-use.md)
+
+报告和快报保存后，可以留下是否有用、是否重复或需要怎样纠正的反馈，再决定是否调整持续关注。“经验与技能”也能查看某个版本何时被带进后续任务、关联报告收到了什么反馈，便于决定继续使用、停用或回退。[反馈与技能记录](docs/feedback-and-skills.md)
+
+研究做过几轮后，可以从项目页的研究档案找回报告、未解决的问题、已有判断和来源。知识库支持部分机构与术语的中英文别名匹配、发布日期筛选和匹配片段阅读；从报告打开引用时，仍使用当时的文件版本。另提供少量可选择登记的官方来源配置。[在一个项目里接着研究](docs/project-research.md)
 
 例如，持续研究某个国际组织中的立场变化时，可以把历次声明、研究笔记和背景报告整理成一个知识库，选入当前任务，再结合允许检索的公开资料比较各方解释。报告保存后，把仍需观察的问题设为持续关注；新材料到来时，接着原来的问题研究，回看哪些依据或判断需要调整。
 
@@ -47,7 +53,7 @@ GeoRisk Agent · [English guide](#english-guide) · [中文完整说明](README.
 
 **开放范围与交流：** 国区评分配方、分项权重、贡献计算与通用研究步骤已公开。部分进一步的研究方法、专用提示词和相关知识内容暂未开源。如有需要或希望进一步交流，欢迎[联系作者](https://github.com/workstonedai-collab)或提交[项目 Issue](https://github.com/workstonedai-collab/georisk-agent/issues/new)；私人资料请勿直接发布在公开 Issue。
 
-当前正式版本为 **v0.13.0**。可自行部署，项目仍处于 Alpha 阶段；离线演示无需模型密钥，真实研究需配置模型与来源。
+当前正式版本为 **v0.14.0**。可自行部署，项目仍处于 Alpha 阶段；离线演示无需模型密钥，真实研究需配置模型与来源。
 
 <a id="english-guide"></a>
 
@@ -91,6 +97,12 @@ py -3.11 -m venv .venv
 See the [Windows installation, model configuration and troubleshooting guide](docs/windows.md). CI exercises Python 3.11–3.13 on Windows, macOS and Linux, plus a clean PowerShell installation. The package is installed from this repository or its release wheel; no PyPI publication is claimed.
 
 ## Background and open scope
+
+Configure the chosen model in the workspace, test it explicitly, and select official sources. Inspect worker heartbeats and completed checks during everyday use. Saved reports can download as editable Word with headings and lists without another model call; explicit OfficeCLI and existing MCP paths remain available. [Setup and everyday use](docs/setup-and-use.md).
+
+Saved reports and digests accept explicit feedback. Review suggested watch adjustments before changing and confirming settings. The skills page records which versions entered later task contexts and the feedback on related reports, helping you decide what to keep or roll back. [Feedback and skill records](docs/feedback-and-skills.md).
+
+The project desk brings saved reports, open questions, judgments and sources together. Private libraries add limited bilingual name matching, publication-date filters and readable matching excerpts; report citations reopen the document version used by that task. Small official-source packs remain opt-in. [Continue project research](docs/project-research.md).
 
 Build named private knowledge collections from your files, then select them for a project task. Draft and preview a watch, confirm its scope, criteria and check/digest cadence, and run a separate worker. Optional procedural learning turns completed tool paths and explicit corrections into private, versioned skills; activation and rollback remain visible. Model distillation has its own opt-in daily budget. [Setup and limits](docs/continuous-research.md).
 
@@ -378,12 +390,13 @@ Code is MIT licensed. World Bank observations retain their own attribution and t
 
 ## Release and evaluation history
 
-[当前正式版本 v0.13.0](https://github.com/workstonedai-collab/georisk-agent/releases/tag/v0.13.0) · [完整更新记录](RELEASE_NOTES.md) · [报告案例与实际限制](docs/report-quality.md)
+[当前正式版本 v0.14.0](https://github.com/workstonedai-collab/georisk-agent/releases/tag/v0.14.0) · [完整更新记录](RELEASE_NOTES.md) · [报告案例与实际限制](docs/report-quality.md)
 
 Recent releases connect incoming material, everyday research tools and continued project work:
 
 | Release | What changes in use | Guide |
 |---|---|---|
+| v0.14.0: continued project research and everyday use | Read dossiers and cited file versions, leave explicit feedback, inspect skill-context records, configure the workspace and export editable Word | [Setup and use](docs/setup-and-use.md) |
 | v0.13.0: private libraries, watches and procedural skills | Import files, preview and confirm monitoring, and choose whether to generate, activate or roll back private skills | [Setup, recovery and limits](docs/continuous-research.md) |
 | v0.12.0–v0.12.1: Office files and task entry points | Choose a task, optionally import Office material or export a complete Word report; Windows test cleanup waits for file handles to close | [Office and tasks](docs/office-and-tasks.md) |
 | v0.11.0: tool integration and question branches | Read saved research through MCP, explicitly enable task execution, and investigate separate questions within the original task budget | [MCP](docs/mcp.md) · [Research branches](docs/research-depth.md) |

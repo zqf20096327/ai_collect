@@ -127,9 +127,10 @@ AITER_BF16_FP8_MOE_BOUND=0 python -m sglang.launch_server \
 `AITER_BF16_FP8_MOE_BOUND=0` makes SGLang's decode run the routed experts on
 MXFP8 activations, as the kernels do.
 
-For MoRI PD, enable monokernels only on the TP8 decode server
-(`--disaggregation-mode decode --disaggregation-transfer-backend mori`). Leave the
-flag off on prefill; both peers must use the same fp8 unified-KV layout.
+For MoRI PD, enable monokernels only on the decode server
+(`--disaggregation-mode decode --disaggregation-transfer-backend mori`): TP8 for
+DeepSeek-V4-Pro, TP2 or TP4 for DeepSeek-V4.1-Flash. Leave the flag off on prefill;
+both peers must use the same KV layout.
 
 If the model, GPU or configuration is not supported, the server refuses to start and lists every reason.
 

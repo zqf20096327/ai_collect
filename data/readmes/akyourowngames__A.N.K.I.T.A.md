@@ -14,6 +14,8 @@ OpenAI-compatible provider.
  · [Contributing](CONTRIBUTING.md)
  · [MIT license](LICENSE)
 
+> How it was built: [How I built a 4-tier approval gate for my AI companion: a heuristic that can never say no](https://dev.to/krish_verma_77e28d3fd63ca/how-i-built-a-4-tier-approval-gate-for-my-ai-companion-a-heuristic-that-can-never-say-no-2k7o) — the write-up behind Ankita's safety model.
+
 ## Desktop, companion and terminal
 
 | Surface | Use it for |
@@ -25,6 +27,39 @@ OpenAI-compatible provider.
 They use the same agent runtime and tools. Desktop teammates have separate
 threads, personas and drafts; assign a project to give a teammate its working
 folder and shared context.
+
+## Voice delegation (source build)
+
+Speak a Hinglish or English request in terminal `/voice`, or choose **Voice** in
+an app conversation. Sarvam handles speech and a voice-only Baseten Meta planner
+handles the work. The desktop panel and floating island share one session, a
+smooth dark-pearl orb, short captions and individual task controls.
+
+Give another request while earlier work runs. Independent voice jobs can work in
+parallel; conflicting file and app actions wait for shared access. **End voice**
+stops audio while delegated work continues. **Stop** cancels the chosen job.
+`/task` lists saved requests and `/task <id>` shows their steps and result.
+
+Interrupting a report leaves it suspended while the planner interprets your next
+request. Ask naturally to continue, repeat, skip speech or hear another ready
+result. Completed sentences are retained; the unfinished sentence may restart.
+Speech recognition and planner intent choices can still be wrong.
+
+| Already existed before this build | Added during 27–29 October |
+| --- | --- |
+| Mic recording, pause detection, playback and barge-in | Sarvam recognition and speech generation for Hinglish |
+| Agent tools, approvals and typed chat | Separate Meta voice planning and saved request records |
+| Process jobs and scheduled work | Parallel voice workers, shared-access guards and observed spoken updates |
+| Desktop and floating island | Shared voice panel, state animation, captions and contextual report controls |
+
+This feature is available from source through
+[PR #70](https://github.com/akyourowngames/A.N.K.I.T.A/pull/70); it is not included
+in the existing 2.7.1 installer. Generated-audio checks do not replace physical
+headset/echo testing or the three clean workspace takes required before filming.
+See the [voice guide](docs/guides/voice-delegation.md) for setup and limits and the
+[dated plan](docs/plans/voice-delegation-hackathon-plan.md) for evidence. Existing
+providers remain available; earlier voice infrastructure is not claimed as new
+hackathon work.
 
 ## What's new in 2.6.0
 
@@ -362,6 +397,7 @@ Third-party companion attribution ships in
 
 - [Desktop workspace](docs/guides/desktop-workbench.md)
 - [Companion, file drops and webpage capture](docs/guides/desktop-companion.md)
+- [Phone pairing](docs/guides/phone-pairing.md)
 - [Browser connections and permissions](docs/guides/browser-use.md)
 - [Browser lab fixes and remaining limits](docs/browser-lab-FINDINGS.md)
 - [Browser request cost and A/B evidence](docs/browser-lab-token-research.md)

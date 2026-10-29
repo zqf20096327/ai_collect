@@ -44,18 +44,18 @@ The full verbatim system prompts behind the most popular chatbots in the world. 
 
 | What | Date | Link |
 |------|------|------|
+| **Kagi Assistant (updated)** | October 29, 2026 | [Kagi assistant system prompt](Misc/kagi-assistant.md) |
+| **Perplexity Computer (updated) + Model Council** | October 29, 2026 | [Perplexity Computer system prompt](Perplexity/perplexity-computer.md) · [Model Council skill](Perplexity/skills/model-council/SKILL.md) |
+| **MiniMax M3 (Mavis / MiniMax Agent)** | October 29, 2026 | [MiniMax Agent system prompt and tools](MiniMax/minimax-m3-mavis.md) |
+| **LM Studio Bionic** | October 29, 2026 | [LM Studio Bionic system prompt and tools](Misc/lm-studio-bionic.md) |
+| **GPT-Live-1.1 voice** | October 29, 2026 | [ChatGPT and Codex voice system prompts (frontend, backend, task coordinator)](OpenAI/gpt-live-1.1.md) |
+| **Antigravity IDE and CLI (Gemini 4 Argon)** | October 29, 2026 | [Antigravity IDE system prompt (Gemini 4 Argon)](Google/antigravity/gemini-4-argon-antigravity-ide.md) · [CLI](Google/antigravity/gemini-4-argon-antigravity-cli.md) · [skills](Google/antigravity/skills/) |
 | **Grok Bot (updated)** | October 24, 2026 | [Grok Bot system prompt](xAI/grok-bot/grok-bot.md) · [skills](xAI/grok-bot/skills/) |
 | **Perplexity search** | October 23, 2026 | [Perplexity search system prompt](Perplexity/perplexity-search.md) |
 | **Claude Motion** | October 21, 2026 | [Motion type skill](Anthropic/artifact-types/motion/SKILL.md) · [references](Anthropic/artifact-types/motion/artifact-type/reference) |
 | **ZCode Desktop (GLM-5.3)** | October 20, 2026 | [ZCode Desktop system prompt and tools](GLM/zcode-desktop.md) · [skills](GLM/skills/) · [agents](GLM/agents/) |
+| **Cursor Cloud Agents** | October 20, 2026 | [Cursor Cloud Agents prompt sections and subagents](Cursor/cloud-agents/) |
 | **Claude artifact types (Slides, Dashboard, Design, Docs)** | October 9, 2026 | [Slides](Anthropic/artifact-types/slides/SKILL.md) · [Dashboard](Anthropic/artifact-types/dashboard/SKILL.md) · [Design](Anthropic/artifact-types/design/SKILL.md) · [Design System](Anthropic/artifact-types/design-system/SKILL.md) · [Docs](Anthropic/artifact-types/docs/SKILL.md) · [all types](Anthropic/artifact-types/) |
-| **Claude Haiku 5.5** | October 7, 2026 | [Claude Haiku 5.5 system prompt](Anthropic/claude-haiku-5.5.md) |
-| **Haiku 5.5 Claude Code** | October 7, 2026 | [Claude Code system prompt (Haiku 5.5)](Anthropic/claude-code/claude-code-haiku-5.5.md) |
-| **ChatGPT Dots** | October 5, 2026 | [Dreamer system prompt](OpenAI/dots/dreamer.md) · [Voice](OpenAI/dots/voice.md) · [all prompts](OpenAI/dots/) · [skills](OpenAI/dots/skills/) |
-| **Muse Spark 1.3 Muse Code** | October 4, 2026 | [Muse Code system prompt (Muse Spark 1.3)](Meta/muse-code/muse-spark-1.3-muse-code.md) · [skills](Meta/muse-code/skills/) · [prompts](Meta/muse-code/prompts/) |
-| **Meta Muse agent (VM files)** | October 3, 2026 | [Muse agent system prompt](Meta/muse-agent/workspace/system/system_prompt.md) · [all VM files](Meta/muse-agent/) |
-| **Grok 4.7** | October 3, 2026 | [Grok 4.7 system prompt (grok.com)](xAI/grok-4.7.md) |
-| **GPT-6.1-Sol Codex** | September 29, 2026 | [GPT-6.1-Sol Codex system prompt](OpenAI/Codex/gpt-6.1-sol.md) · [ChatGPT Work local](OpenAI/Codex/gpt-6.1-sol-chatgpt-work-local.md) |
 
 ---
 ## Anthropic — Claude
@@ -136,6 +136,7 @@ The full verbatim system prompts behind the most popular chatbots in the world. 
 | ChatGPT Atlas | [ChatGPT Atlas system prompt](OpenAI/chatgpt-atlas.md) |
 | ChatGPT 4.5 | [ChatGPT 4.5 system prompt](OpenAI/chatgpt-4.5.md) |
 | ChatGPT 4o | [ChatGPT 4o system prompt](OpenAI/gpt-4o.md) · [Deprecation preparedness](OpenAI/chatgpt-4o-deprecation-preparedness-prompt.md) |
+| **GPT-Live-1.1** | [**ChatGPT and Codex voice system prompts (frontend, backend, task coordinator)**](OpenAI/gpt-live-1.1.md) |
 | Voice modes | [ChatGPT advanced voice mode system prompt](OpenAI/gpt-4o-advanced-voice-mode.md) · [Legacy voice mode](OpenAI/gpt-4o-legacy-voice-mode.md) |
 | **ChatGPT Dots** | [**Dreamer system prompt**](OpenAI/dots/dreamer.md) · [Voice](OpenAI/dots/voice.md) · [Tools](OpenAI/dots/tools.md) · [Available skills](OpenAI/dots/available-skills.md) · [28 skills](OpenAI/dots/skills/) |
 | Personalities | [ChatGPT personality instructions](OpenAI/chatgpt-personality-instructions.md) |
@@ -145,14 +146,10 @@ The full verbatim system prompts behind the most popular chatbots in the world. 
 
 | Model | Prompt |
 |-------|--------|
-| **GPT-6.1 Codex** | [**GPT-6.1-Sol Codex system prompt**](OpenAI/Codex/gpt-6.1-sol.md) · [ChatGPT Work local](OpenAI/Codex/gpt-6.1-sol-chatgpt-work-local.md) |
-| **GPT-6 Codex** | [**GPT-6-Astra Codex system prompt**](OpenAI/Codex/gpt-6-astra.md) · [Sol](OpenAI/Codex/gpt-6-sol.md) · [Luna](OpenAI/Codex/gpt-6-luna.md) · [ChatGPT Work local](OpenAI/Codex/gpt-6-astra-chatgpt-work-local.md) |
+| **GPT-6.1 Codex** | [**GPT-6.1-Sol Codex system prompt**](OpenAI/Codex/gpt-6.1-sol.md) · [Terra](OpenAI/Codex/gpt-6.1-terra.md) · [ChatGPT Work local](OpenAI/Codex/gpt-6.1-sol-chatgpt-work-local.md) |
+| **GPT-6 Codex** | [**GPT-6-Astra Codex system prompt**](OpenAI/Codex/gpt-6-astra.md) · [Sol](OpenAI/Codex/gpt-6-sol.md) · [Luna](OpenAI/Codex/gpt-6-luna.md) |
 | GPT-5.6 Codex | [Codex GPT-5.6 system prompt (Terra/Luna)](OpenAI/Codex/gpt-5.6.md) |
-| GPT-5.5 Codex | [Codex GPT-5.5 system prompt](OpenAI/Codex/gpt-5.5.md) · [Full prompt](OpenAI/Codex/codex-full.md) · [Friendly](OpenAI/Codex/personality_friendly_gpt-5.5.md) · [Pragmatic](OpenAI/Codex/personality_pragmatic_gpt-5.5.md) |
-| GPT-5.4 Codex | [Codex GPT-5.4 system prompt](OpenAI/Codex/gpt-5.4.md) · [Mini](OpenAI/Codex/gpt-5.4-mini.md) |
-| Codex Spark | [Codex Spark system prompt](OpenAI/Codex/gpt-5.3-codex-spark.md) |
-| Codex modes | [Plan mode](OpenAI/Codex/plan_mode.md) · [Auto-review](OpenAI/Codex/codex-auto-review.md) · [Computer use](OpenAI/Codex/computer-use.md) · [Control Chrome](OpenAI/Codex/control-chrome.md) · [In-app browser](OpenAI/Codex/control-in-app-browser.md) |
-| Personas | [Friendly](OpenAI/Codex/personality_friendly.md) · [Pragmatic](OpenAI/Codex/personality_pragmatic.md) |
+| Codex modes | [Plan mode](OpenAI/Codex/plan-mode.md) · [Auto-review](OpenAI/Codex/auto-review.md) |
 
 ### API-injected prompts
 
@@ -180,9 +177,9 @@ The full verbatim system prompts behind the most popular chatbots in the world. 
 
 | Model | Prompt |
 |-------|--------|
+| **Gemini 4 Argon** | [**Antigravity IDE system prompt**](Google/antigravity/gemini-4-argon-antigravity-ide.md) · [Antigravity CLI](Google/antigravity/gemini-4-argon-antigravity-cli.md) · [skills](Google/antigravity/skills/) · [API (AI Studio)](Google/gemini-4-argon-api-ai-studio.md) |
 | **Gemini 3.8 Flash** | [**Gemini 3.8 Flash system prompt**](Google/gemini-3.8-flash.md) |
 | **Gemini 3.1 Pro** | [**Gemini 3.1 Pro system prompt**](Google/gemini-3.1-pro.md) · [API](Google/gemini-3.1-pro-api.md) |
-| **Antigravity CLI** | [**Antigravity CLI system prompt**](Google/antigravity-cli.md) |
 | Gemini 3.7 Flash | [Gemini 3.7 Flash system prompt](Google/gemini-3.7-flash.md) |
 | Gemini 3.5 Flash | [Gemini 3.5 Flash system prompt](Google/gemini-3.5-flash.md) · [AI Studio](Google/gemini-3.5-flash-ai-studio.md) |
 | Nano / Banana 2 | [Nano Banana 2 system prompt](Google/nano-banana-2-api.md) |
@@ -220,6 +217,7 @@ The full verbatim system prompts behind the most popular chatbots in the world. 
 | Grok 4.2 | [Grok 4.2 system prompt](xAI/grok-4.2.md) |
 | Grok Expert | [Grok Expert system prompt](xAI/grok-expert.md) |
 | Grok Bot | [Grok Bot system prompt](xAI/grok-bot/grok-bot.md) |
+| Grok Translator (X) | [Grok translator system prompt](xAI/grok-translator.md) |
 
 <details><summary>Older versions</summary>
 
@@ -247,7 +245,7 @@ The full verbatim system prompts behind the most popular chatbots in the world. 
 | Model | Prompt |
 |-------|--------|
 | **Perplexity** | [**Perplexity search system prompt**](Perplexity/perplexity-search.md) · [no-search mode](Perplexity/perplexity-no-search.md) |
-| **Perplexity Computer** | [**Perplexity Computer system prompt**](Perplexity/perplexity-computer.md) |
+| **Perplexity Computer** | [**Perplexity Computer system prompt**](Perplexity/perplexity-computer.md) · [Model Council skill](Perplexity/skills/model-council/SKILL.md) · [May 2026](Perplexity/old/perplexity-computer.md) |
 | **Deep Research** | [**Perplexity Deep Research system prompt**](Perplexity/deep-research.md) |
 | Comet Browser | [Comet browser assistant system prompt](Perplexity/comet-browser-assistant.md) |
 | Voice Assistant | [Perplexity voice assistant system prompt](Perplexity/voice-assistant.md) |
@@ -257,6 +255,7 @@ The full verbatim system prompts behind the most popular chatbots in the world. 
 | Product | Prompt |
 |---------|--------|
 | Cursor | [Cursor system prompt](Cursor/cursor.md) |
+| Cursor Cloud Agents | [Cursor Cloud Agents prompt sections and subagents](Cursor/cloud-agents/) |
 
 ## Mistral
 
@@ -297,6 +296,13 @@ The full verbatim system prompts behind the most popular chatbots in the world. 
 | **Qwen 3.8 Max** | [**Qwen 3.8 Max system prompt**](Qwen/qwen3.8-max.md) |
 | Qwen 3.6 Plus | [Qwen 3.6 Plus system prompt](Qwen/qwen3.6-plus.md) |
 
+## MiniMax
+
+| Product | Prompt |
+|---------|--------|
+| **MiniMax M3 (Mavis / MiniMax Agent)** | [**MiniMax Agent system prompt and tools**](MiniMax/minimax-m3-mavis.md) |
+| MiniMax M2.5 | [MiniMax M2.5 system prompt](MiniMax/minimax-m2.5.md) |
+
 ## Microsoft — Copilot
 
 | Product | Prompt |
@@ -316,6 +322,8 @@ The full verbatim system prompts behind the most popular chatbots in the world. 
 | Devin CLI | [Devin CLI system prompt](Misc/devin-cli.md) |
 | Docker Gordon AI | [Docker Gordon AI system prompt](Misc/docker-gordon-ai.md) |
 | ElevenLabs Voice Agent | [ElevenLabs voice agent system prompt](Misc/elevenlabs-voice-agent.md) |
+| Emergent.sh | [Emergent greeting agent system prompt](Misc/emergent.sh.md) |
+| **LM Studio Bionic** | [**LM Studio Bionic system prompt and tools**](Misc/lm-studio-bionic.md) |
 | Reddit Answers | [Reddit Answers system prompt](Misc/reddit-answers.md) |
 | Warp 2.0 Agent | [Warp 2.0 agent system prompt](Misc/warp-2.0-agent.md) |
 | Zed AI | [Zed AI system prompt](Misc/zed.md) |
@@ -332,8 +340,7 @@ The full verbatim system prompts behind the most popular chatbots in the world. 
 | Gizmo AI | [Gizmo AI system prompt](Misc/gizmo-ai.md) |
 | Hermes | [Hermes system prompt](Misc/hermes.md) |
 | Indus AI | [Indus AI system prompt](Misc/indus-ai.md) |
-| Kagi Assistant | [Kagi assistant system prompt](Misc/kagi-assistant.md) |
-| MiniMax M2.5 | [MiniMax M2.5 system prompt](Misc/minimax-m2.5.md) |
+| Kagi Assistant | [Kagi assistant system prompt](Misc/kagi-assistant.md) · [July 2025](Misc/old/kagi-assistant.md) |
 | Pi (Inflection) | [Pi system prompt](Pi/instructions.md) |
 | Proton Lumo AI | [Proton Lumo AI system prompt](Misc/proton-lumo-ai.md) |
 | Raycast AI | [Raycast AI system prompt](Misc/raycast-ai.md) |

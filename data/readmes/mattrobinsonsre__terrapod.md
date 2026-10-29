@@ -4,7 +4,7 @@
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](LICENSE)
 [![Latest release](https://img.shields.io/github/v/release/mattrobinsonsre/terrapod?sort=semver&include_prereleases&label=release)](https://github.com/mattrobinsonsre/terrapod/releases/latest)
 
-**A free, open-source, self-hosted alternative to Terraform Enterprise and Terraform Cloud (HCP Terraform)** — a **TACOS** (Terraform Automation and Collaboration Software) platform for teams standardizing on `terraform`, OpenTofu (`tofu`), or Terragrunt. Not a fork of either engine; it orchestrates them.
+**A free, open-source, self-hosted alternative to Terraform Enterprise and Terraform Cloud (HCP Terraform)** — a **TACOS** (Terraform Automation and Collaboration Software) platform for teams standardizing on `terraform`, OpenTofu (`tofu`), or Terragrunt — which also runs **Pulumi** programs and **Ansible** playbooks through that same workspace, RBAC, policy and audit model. Not a fork of any engine; it orchestrates them.
 
 - **Point your existing `cloud` block at it.** Terrapod implements the slice of the [TFE V2 API](https://developer.hashicorp.com/terraform/enterprise/api-docs) that `terraform` and `tofu` actually consume — the `cloud`/`remote` backend protocol, as the CLI speaks it via [`go-tfe`](https://pkg.go.dev/github.com/hashicorp/go-tfe) — so CLI runs and CI/CD usually move across with zero code changes. That slice is the compatibility target: everything beyond it is Terrapod's own API rather than a reimplementation of the full TFE V2 surface.
 - **Your state and secrets never leave your boundary.** Versioned remote state in your Postgres and object store, cloud credentials via Kubernetes workload identity — nothing long-lived, nothing vendor-held.
@@ -207,7 +207,7 @@ Everything below is implemented and shipped today.
 | Interactive Slack app | Outbound Socket Mode app — `/terrapod` account linking + opt-in per-workspace run notifications with RBAC-checked Approve/Discard buttons; multiple deployments can share one Slack workspace |
 | Run tasks | Webhook hooks for external validation at three boundaries — `pre_plan`, `post_plan` and `pre_apply`. A mandatory `post_plan` failure can be overridden by an admin; `pre_plan` and `pre_apply` verdicts are final |
 | Execution hooks | **Custom execution steps** — admin-managed shell run in the runner Job at pre_init / pre_plan / post_plan / pre_apply / post_apply, associated with workspaces (`pre_init` is the setup/tooling/auth slot; custom runner images cover heavier needs) |
-| Service catalog | No-code self-service provisioning over the module registry |
+| Service catalog | No-code self-service provisioning over the module registry — including **Ansible-first** instances, where a blessed module declares the inventory and ships the playbook |
 | Cost estimation | Monthly cost of managed infrastructure — a per-plan delta on every run and the current total on a workspace; data via a native cost engine, on by default; optional AI layer estimates the resources the engine can't price + savings advisories + a grounded cost chat |
 | Impact graph | Interactive dependency + blast-radius view of a plan on the run page — module-clustered, click a resource to light up its transitive downstream impact |
 | Estate topology | Whole-estate dependency graph — workspaces + modules wired by run-triggers, remote-state, and module links; group by any label / pool / name prefix; RBAC-filtered; accessible table fallback |

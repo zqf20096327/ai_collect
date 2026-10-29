@@ -1,4 +1,5 @@
 [![Crates.io](https://img.shields.io/crates/v/pmetal.svg)](https://crates.io/crates/pmetal)
+[![Docs](https://img.shields.io/badge/docs-API-blue.svg)](https://epistates.github.io/pmetal/pmetal/)
 [![Rust](https://img.shields.io/badge/rust-1.95+-orange.svg)](https://www.rust-lang.org)
 [![License](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue.svg)](LICENSE-MIT)
 [![Platform](https://img.shields.io/badge/platform-macOS%2014%2B%20(Apple%20Silicon)-lightgrey.svg)](https://www.apple.com/macos)
@@ -335,8 +336,8 @@ brew install epistates/tap/pmetal
 **Prebuilt binary.** Download the `pmetal-<version>-aarch64-apple-darwin.tar.gz` asset from the [Releases](https://github.com/Epistates/pmetal/releases) page. It holds the `pmetal` binary and the `mlx.metallib` it was built with:
 
 ```bash
-tar xzf pmetal-v0.7.0-aarch64-apple-darwin.tar.gz
-sudo install -m 755 pmetal-v0.7.0-aarch64-apple-darwin /usr/local/bin/pmetal
+tar xzf pmetal-v0.7.1-aarch64-apple-darwin.tar.gz
+sudo install -m 755 pmetal-v0.7.1-aarch64-apple-darwin /usr/local/bin/pmetal
 pmetal --version
 ```
 

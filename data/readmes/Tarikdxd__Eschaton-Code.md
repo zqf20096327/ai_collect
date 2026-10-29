@@ -1,126 +1,136 @@
-<div align="center">
+# Eschaton Code
 
-# ⚡ Eschaton Code
+A terminal coding agent. Point it at your own API key or at a model running on your machine,
+then describe what you want and it reads, edits and runs code in the current directory.
 
-**Production-Grade Multi-Agent Orchestration Framework & Autonomous Terminal Coding Agent**
+There is no account, no hosted backend and no quota system. The agent talks directly to the
+provider you choose.
 
-[![npm version](https://img.shields.io/badge/npm-v1.0.1-cb3837?style=flat-square&logo=npm)](https://github.com/Tarikdxd/Eschaton-Code/packages)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE)
-[![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Stars](https://img.shields.io/github/stars/Tarikdxd/Eschaton-Code?style=flat-square&color=yellow)](https://github.com/Tarikdxd/Eschaton-Code)
+## Install
 
-*Build autonomous AI agent teams that collaborate in real time, or launch an interactive terminal coding agent right in your command line with a single command.*
-
----
-
-</div>
-
-## 🚀 Quick Terminal Launch (CLI Agent)
-
-You don't need complex configurations to start. Run **Eschaton Code** instantly just like Claude Code:
-
-### Option 1: Zero-Install Instant Run (via `npx`)
 ```bash
-npx @tarikdxd/eschaton-code
+npm install -g eschaton-code
 ```
 
-### Option 2: Global Installation (Recommended)
+Requires Node.js 20 or newer.
+
+## Connect a model
+
+Either a hosted provider with your own key:
+
 ```bash
-npm install -g @tarikdxd/eschaton-code
+export DEEPSEEK_API_KEY=sk-...        # DeepSeek platform
+export OPENROUTER_API_KEY=sk-or-...   # OpenRouter
+export GROQ_API_KEY=gsk_...           # Groq
 ```
 
-Once installed, simply launch your autonomous terminal agent anywhere by typing:
+or a local server, which needs no key:
+
 ```bash
+ollama pull deepseek-r1:7b
+```
+
+LM Studio works too: load a model, start the local server, and Eschaton Code finds it on port
+1234. Local servers are detected on startup.
+
+To save a key once instead of exporting it:
+
+```bash
+eschaton login openrouter sk-or-...
+```
+
+That writes `~/.eschaton/config.json` with mode 0600. Environment variables take precedence over
+the file.
+
+## Usage
+
+```bash
+cd ~/my-project
 eschaton
 ```
 
-```text
-╔══════════════════════════════════════════════════════════════════════╗
-║                    ⚡ ESCHATON CODE CLI AGENT                        ║
-║          Autonomous Multi-Agent Terminal Orchestration Engine        ║
-║                       Developer: @Tarikdxd                           ║
-╚══════════════════════════════════════════════════════════════════════╝
-
-eschaton> /team Build an authenticated REST API with SQLite and JWT
-[⚡ OTONOM AJAN TAKIMI BAŞLATILDI]
--> [Planner] Decomposing goals into topological DAG tasks...
--> [Researcher] Analyzing dependencies and schemas...
--> [Coder] Generating modular source files and tests...
--> [Reviewer] Auditing security, syntax, and zero-leak compliance...
-[✓] Task Completed Successfully!
+```
+› explain how the auth middleware works
+› add a test for the token refresh path
+› why does the build fail on Windows
 ```
 
----
+In a session:
 
-## 🛠️ CLI Interactive Command Matrix
+| Command | Description |
+| --- | --- |
+| `/help` | List commands |
+| `/mode [name]` | `build`, `plan`, `review` or `fast`; cycles when no name is given |
+| `/model [name]` | Show or change the model for the active provider |
+| `/providers [n]` | List providers, or switch to one |
+| `/clear` | Forget the conversation |
+| `/exit` | Leave |
 
-| Command | Action | Description |
-| :--- | :--- | :--- |
-| `eschaton` | **Launch Agent** | Opens interactive terminal REPL agent session |
-| `/agent <task>` | **Single Agent** | Runs a dedicated autonomous agent with file/bash execution tools |
-| `/team <goal>` | **Multi-Agent Team** | Spawns a full team (*Planner*, *Researcher*, *Coder*, *Reviewer*) resolving DAG tasks |
-| `/tools` | **Inspect Tool Matrix** | Lists built-in tools (`bash`, `file_read`, `file_write`, `file_edit`, `grep`) |
-| `/exit` | **Terminate** | Safely shuts down agent session and saves memory |
+Modes change the instructions the agent works under. `Build` edits and runs code, `Plan` and
+`Review` are read-only, `Fast` answers with as few tool calls as possible.
 
----
+The agent can read and write files, run shell commands, list directories and search code. It
+asks for one tool call at a time and feeds the result back into the conversation.
 
-## 📦 Programmatic SDK Usage (Library)
+## Providers
 
-If you're building your own autonomous AI agent systems in Node.js / TypeScript:
+| Provider | Key variable | Default model |
+| --- | --- | --- |
+| DeepSeek | `DEEPSEEK_API_KEY` | `deepseek-chat` |
+| OpenRouter | `OPENROUTER_API_KEY` | `deepseek/deepseek-chat-v3-0324:free` |
+| Groq | `GROQ_API_KEY` | `deepseek-r1-distill-llama-70b` |
+| Ollama | none | first installed model, DeepSeek preferred |
+| LM Studio | none | first loaded model, DeepSeek preferred |
+| Any OpenAI-compatible endpoint | `OPENAI_API_KEY` + `OPENAI_BASE_URL` | `OPENAI_MODEL` |
+
+Set `ESCHATON_MODEL` to override the model used for a hosted provider. When a provider returns an
+error or a rate limit, the next one is tried and the failing provider is skipped for a minute.
+
+Free tiers have their own limits. If a provider returns HTTP 429, that is the provider's quota,
+not something this tool can reset.
+
+## Configuration
+
+| Variable | Purpose |
+| --- | --- |
+| `DEEPSEEK_API_KEY` | DeepSeek platform key |
+| `OPENROUTER_API_KEY` | OpenRouter key |
+| `GROQ_API_KEY` | Groq key |
+| `OPENAI_BASE_URL` | Base URL of any OpenAI-compatible endpoint |
+| `OPENAI_API_KEY` | Key for that endpoint |
+| `OPENAI_MODEL` | Model name for that endpoint |
+| `ESCHATON_MODEL` | Overrides the model of the selected provider |
+| `NO_COLOR` | Disables ANSI colours |
+
+Local endpoints probed at startup:
+
+- Ollama: `http://127.0.0.1:11434/v1`
+- LM Studio: `http://127.0.0.1:1234/v1`
+
+## Development
+
+The CLI sources are TypeScript and the published bundle is built with esbuild.
 
 ```bash
-npm install @tarikdxd/eschaton-code
+npm install
+npm run dev              # bun src/cli.ts
+npm test                 # provider and agent tests
+npm run build            # writes dist/eschaton.js
 ```
 
-### 1. Single Agent Workflow
-```typescript
-import { OpenMultiAgent } from '@tarikdxd/eschaton-code'
+## Limitations
 
-const orchestrator = new OpenMultiAgent({ defaultModel: 'claude-sonnet-4-6' })
+- Tool calls are parsed from JSON blocks in the model output. Weak models sometimes emit
+  malformed JSON, in which case the agent reports the parse failure instead of guessing.
+- The agent keeps a single conversation in memory; there is no session persistence yet.
+- Complex refactors across many files are better handled by the larger hosted models.
 
-const result = await orchestrator.runAgent(
-  {
-    name: 'coder',
-    model: 'claude-sonnet-4-6',
-    tools: ['bash', 'file_write', 'file_read'],
-  },
-  'Refactor the authentication middleware to support JWT refresh rotation.',
-)
+## Relationship to upstream
 
-console.log(result.output)
-```
+This repository contains code derived from the Codebuff project; see [NOTICE](NOTICE). Freebuff
+sources live under `freebuff/`. Eschaton Code is an independent fork and is not affiliated with
+Codebuff, OpenCode or DeepSeek.
 
-### 2. Multi-Agent Team with DAG Scheduling
-```typescript
-import { OpenMultiAgent } from '@tarikdxd/eschaton-code'
+## License
 
-const orchestrator = new OpenMultiAgent()
-
-const team = orchestrator.createTeam('engineering-dept', {
-  name: 'engineering',
-  agents: [
-    { name: 'architect', model: 'claude-sonnet-4-6', systemPrompt: 'You design modular system architectures.' },
-    { name: 'developer', model: 'gpt-4o', tools: ['file_write', 'file_read'], systemPrompt: 'You implement clean code.' },
-    { name: 'security',  model: 'claude-sonnet-4-6', systemPrompt: 'You audit code for vulnerabilities and leak risks.' }
-  ],
-  sharedMemory: true
-})
-
-const result = await orchestrator.runTeam(team, 'Design and implement an encrypted rate-limiter middleware.')
-```
-
----
-
-## ✨ Core Framework Architecture
-
-- 🧩 **Topological DAG Task Scheduling:** Tasks declare dependencies. Independent tasks execute concurrently; dependent tasks wait automatically.
-- 🔄 **Model-Agnostic Engine:** Mix Claude 3.7 / 3.5 Sonnet and GPT-4o within the same collaborative agent team.
-- 🪶 **In-Process High Performance:** Zero container or subprocess overhead. Pure Node.js async event loop execution.
-- 💾 **Shared Memory & Event Bus:** Real-time inter-agent messaging and shared state synchronization.
-
----
-
-## 📄 License
-
-Distributed under the [MIT License](LICENSE). Developed by [Tarık Tozlu (@Tarikdxd)](https://github.com/Tarikdxd).
+Apache License 2.0. See [LICENSE](LICENSE).

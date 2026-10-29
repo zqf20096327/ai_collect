@@ -189,7 +189,6 @@ Base URL: `https://api.kilo.ai/api/gateway`
 | `xingchen-agi/xing4.0-29b-a4b:free`                  | 262K    | 235K       | Text                       | 200 req/hr |
 | `nvidia/nemotron-3.5-super-vl:free`                  | 1M      | 131K       | Multimodal                 | 200 req/hr |
 | `reflection/beam-free`                               | 1M      | 131K       | Text                       | 200 req/hr |
-| `nvidia/nemotron-3-super-120b-a12b:free`             | 262K    | 235K       | Text                       | 200 req/hr |
 | `stealth/glyph-cluster`                              | 256K    | 256K       | Text (code)                | 200 req/hr |
 | `nvidia/nemotron-3.5-content-safety:free`            | 128K    | 8K         | Text + Vision (moderation) | 200 req/hr |
 
@@ -232,19 +231,6 @@ Base URL: `https://integrate.api.nvidia.com/v1`
 | `openai/gpt-oss-20b`                | 131K    | 131K       | Text                                   | 40 RPM, 10,000 RPD |
 | + 92 more models                    | Varies  | Varies     | Text, Image, Video, Speech, Embeddings | 40 RPM, 10,000 RPD |
 
-### [Ollama Cloud](https://ollama.com/settings/keys) 🇺🇸
-
-Free plan with a starter amount of usage credits for a smaller set of starter models, reset monthly from the sign-up date. 1 concurrent request. OpenAI SDK-compatible via https://ollama.com/v1. [^3]
-
-Base URL: `https://ollama.com/api`
-
-| Model Name             | Context | Max Output      | Modality | Rate Limit                                    |
-| ---------------------- | ------- | --------------- | -------- | --------------------------------------------- |
-| `gpt-oss:120b`         | 128K    | Model-dependent | Text     | 1 concurrent request, monthly starter credits |
-| `gpt-oss:20b`          | 128K    | Model-dependent | Text     | 1 concurrent request, monthly starter credits |
-| nemotron-3-ultra       | 256K    | Model-dependent | Text     | 1 concurrent request, monthly starter credits |
-| + other starter models | Varies  | Varies          | Text     | 1 concurrent request, monthly starter credits |
-
 ### [OpenRouter](https://openrouter.ai/keys) 🇺🇸
 
 17 free models (marked with `:free` suffix). OpenAI SDK-compatible. [^4]
@@ -268,7 +254,6 @@ Base URL: `https://openrouter.ai/api/v1`
 | `nvidia/nemotron-3.5-super-vl:free`                  | 1M      | 131K       | Text + Image + Video         | 20 RPM, 50 RPD |
 | `nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free` | 256K    | 65K        | Text + Image + Audio + Video | 20 RPM, 50 RPD |
 | `thinkingmachines/inkling-small:free`                | 1M      | 262K       | Text + Image + Audio         | 20 RPM, 50 RPD |
-| `nvidia/nemotron-3-super-120b-a12b:free`             | 262K    | 235K       | Text                         | 20 RPM, 50 RPD |
 | `nvidia/nemotron-3.5-content-safety:free`            | 128K    | 8K         | Text + Image (moderation)    | 20 RPM, 50 RPD |
 
 ### [OVHcloud AI Endpoints](https://www.ovhcloud.com/en/public-cloud/ai-endpoints/catalog/) 🇫🇷
@@ -317,9 +302,8 @@ Know a free tier that's missing? [Open a PR](contributing.md). Include the provi
 
 [^1]: The Gemini API free tier is available to developers in the EU, UK, and Switzerland; the [available regions](https://ai.google.dev/gemini-api/docs/available-regions) page lists these regions. The [terms](https://ai.google.dev/gemini-api/terms) still require you to use only Paid Services when you make an API Client available to users in the European Economic Area, Switzerland, or the UK. Google no longer publishes per-model free-tier rate limits; check your quotas in [AI Studio](https://aistudio.google.com/). Free-tier prompts may be used by Google to improve products, except for users in the EEA, Switzerland and the UK, where the paid-services data terms also govern the unpaid quota, so those prompts are not used to improve Google products. `gemini-3.1-flash-lite` is on the [deprecation schedule](https://ai.google.dev/gemini-api/docs/deprecations), with a shutdown date of May 7, 2027 and `gemini-3.5-flash-lite` as its replacement; the row stays because the model is live and free today.
 [^2]: Groq shut down qwen/qwen3.6-27b on September 14, 2026 (replaced by qwen/qwen3.8-27b) and groq/compound and groq/compound-mini on September 21, 2026 ([deprecations](https://console.groq.com/docs/deprecations)). Free-plan limits vary by model; the chat models listed get 1,000 RPD ([rate limits](https://console.groq.com/docs/rate-limits)).
-[^3]: Ollama Cloud's Free plan includes a starter amount of usage for a smaller set of starter models. Buying credits unlocks all models ([pricing](https://ollama.com/pricing)). Free usage resets monthly from the sign-up date. Free allows 1 concurrent request, and extra requests are queued. Models outside the Free plan answer HTTP 402. Cloud models are also served through Ollama's OpenAI-compatible endpoint at ollama.com/v1.
 [^4]: Free models allow 20 requests per minute and 50 requests per day, counted across all free models. Accounts that bought at least 10 credits get 1,000 requests per day ([limits](https://openrouter.ai/docs/api-reference/limits)). OpenRouter also offers a [Free Models Router](https://openrouter.ai/docs/guides/routing/routers/free-router) (`openrouter/free`) and [model fallbacks](https://openrouter.ai/docs/guides/routing/model-fallbacks) for chaining models in priority order. Free providers may log prompts for training.
-[^5]: Kilo Code's free pool changes frequently, and the /api/gateway/models catalog can lag what is actually served: probe results have confirmed models absent from the catalog still answering. Rows through liquid/lfm-2.5-2.6b:free answered a live request between 2026-08-19 and 2026-08-21; the rows after it were added on 2026-10-05 (through dots-studio/dots-3-note-preview:free) 2026-10-23 and 2026-10-25 from the catalog, where they are priced at $0, and have not been probed. The catalog describes reflection/beam-free as served through Vercel AI Gateway and notes that prompts may be retained for training. Free models are reachable with no API key, at 200 requests per hour per IP ([authentication](https://kilo.ai/docs/gateway/authentication)). The kilo-auto/free router picks a model from the free pool, and Kilo's docs warn it "may route your requests to providers that log prompts and outputs". The NVIDIA free endpoints carry NVIDIA's own condition, quoted on Kilo's [models page](https://kilo.ai/docs/gateway/models-and-providers): "Trial use only - do not submit personal or confidential data. Your use is logged for security purposes and to improve NVIDIA products and services."
+[^5]: Kilo Code's free pool changes frequently, and the /api/gateway/models catalog can lag what is actually served: probe results have confirmed models absent from the catalog still answering. Rows through liquid/lfm-2.5-2.6b:free answered a live request between 2026-08-19 and 2026-08-21; the rows after it were added on 2026-10-05 (through dots-studio/dots-3-note-preview:free), 2026-10-23 and 2026-10-25 from the catalog, where they are priced at $0, and have not been probed. The catalog describes reflection/beam-free as served through Vercel AI Gateway and notes that prompts may be retained for training. Free models are reachable with no API key, at 200 requests per hour per IP ([authentication](https://kilo.ai/docs/gateway/authentication)). The kilo-auto/free router picks a model from the free pool, and Kilo's docs warn it "may route your requests to providers that log prompts and outputs". The NVIDIA free endpoints carry NVIDIA's own condition, quoted on Kilo's [models page](https://kilo.ai/docs/gateway/models-and-providers): "Trial use only - do not submit personal or confidential data. Your use is logged for security purposes and to improve NVIDIA products and services."
 [^6]: API-Inference is free for registered users. Current published limits are 2,000 requests/day per user (total across models), with per-model daily quotas dynamically adjusted and capped at 500; concurrency is also dynamically rate-limited. Requires Alibaba Cloud account binding and real-name verification ([limits](https://modelscope.cn/docs/model-service/API-Inference/limits), [intro](https://modelscope.cn/docs/model-service/API-Inference/intro)). This entry is based on ModelScope's documentation. It cannot be tested from outside mainland China.
 [^7]: OVHcloud AI Endpoints offers a permanent free anonymous tier (2 requests per minute per IP, per model) with no signup or API key required. Higher rate limits (400 RPM per Public Cloud project per model) require an API key and are billed pay-as-you-go per token; new Public Cloud accounts get up to $200 in free trial credits. Models are hosted in EU data centers. The catalog lists an end of life on November 4, 2026 for Mistral-Small-3.2-24B-Instruct-2506 and Mistral-Nemo-Instruct-2407.
 [^9]: SiliconFlow requires real-name identity verification to use free models (effective May 15, 2026, per the [release notes](https://api-docs.siliconflow.cn/docs/release-notes/overview)). Verification supports mainland-Chinese documents; international users must contact support. This entry is based on SiliconFlow's [pricing page](https://siliconflow.cn/pricing), which marks these models free. It cannot be tested from outside mainland China.

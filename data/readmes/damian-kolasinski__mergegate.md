@@ -80,7 +80,7 @@ The hub is the only stateful component and the only part that talks to GitHub, u
 
 ## Which coding agents does mergegate support?
 
-Any agent that can run a shell command. mergegate ships one [Agent Skill](crates/skill/mergegate/SKILL.md), the `SKILL.md` format that Claude Code, OpenAI Codex, opencode and Cursor load natively, so there are no per-agent plugins. The skill tells the agent to submit through `mg` instead of `git push` or `gh pr create`, how to wait for feedback in the cheapest way its environment allows, and how to answer every comment. It also keeps agents out of the review UI and the hub's API: the UI is yours.
+Any agent that can run a shell command. mergegate ships one [Agent Skill](crates/skill/mergegate/SKILL.md), the `SKILL.md` format that Claude Code, OpenAI Codex, opencode and Cursor load natively, so there are no per-agent plugins; `mg skill setup` puts it in place for Claude Code, Codex and opencode. The skill tells the agent to submit through `mg` instead of `git push` or `gh pr create`, how to wait for feedback in the cheapest way its environment allows, and how to answer every comment. It also keeps agents out of the review UI and the hub's API: the UI is yours.
 
 The CLI is built for agents: every command takes `--json`, nothing ever prompts, and exit codes are stable. When a command needs a decision only you can make, it exits with a `needs_decision` question that the agent puts to you.
 
@@ -108,15 +108,10 @@ mergegate is agent-operated: you ask your agent, and it runs the commands. You r
 
 ```sh
 mg hub start        # run the hub as a user service (launchd or systemd)
-mg skill install    # write the agent skill and print where it is
+mg skill setup      # set up Claude Code, Codex and OpenCode, whichever are installed
 ```
 
-Link the printed skill folder into wherever your agent loads skills from, so each `mg skill install` updates it in place:
-
-```sh
-ln -sfn ~/.mergegate/skill/mergegate ~/.claude/skills/mergegate   # Claude Code
-ln -sfn ~/.mergegate/skill/mergegate ~/.codex/skills/mergegate    # Codex
-```
+`mg skill setup` puts a small skill where each agent loads skills from, which reads its guide from the installed `mg`, so upgrading `mg` updates what agents are told; nothing needs running again. In Claude Code and Codex it also adds a session hook that tells each session in a mergegate repo which item is open on its branch and how that agent should wait for your review. Codex runs a new hook once you trust it with `/hooks`. The inbox offers the same setup with one click, `mg skill status` shows what's installed, and `mg skill remove` takes it out again. For another agent, `mg skill install` writes the whole skill folder for you to link where it loads skills from.
 
 Then, in a repository, tell your agent:
 
@@ -140,21 +135,28 @@ The commands an agent uses most:
 
 The hub keeps local operational telemetry in `~/.mergegate/telemetry/` (or
 `$MERGEGATE_HOME/telemetry/`). Five rotating JSONL files hold up to 10 MiB each.
-While the hub runs, maintenance removes records older than seven days once per
-minute, including from active files. Extraction always excludes expired records
+While the hub runs, maintenance removes records older than seven days once an
+hour, including from active files. Extraction always excludes expired records
 and returns at most the newest 2,048 records. A bounded background
 writer drops records rather than blocking hub requests when it cannot keep up;
 subsequent records include the dropped count. Nothing is uploaded automatically.
 
 Operational telemetry contains run and request IDs, timestamps, module/line locations,
-request route templates, status codes, durations, stable error codes, and worker
-lifecycle events. Default exports exclude free-form messages, request/response
-bodies, repository content, credentials, and subprocess output. Private local
-records also retain bounded, sanitized warning/error and panic text for debugging;
+request route templates, status codes, durations, stable event and error codes,
+and worker lifecycle events. Requests a client polls (`/api/health`, the inbox,
+name lookups) are recorded only when they fail or take over a second; a request
+that waits for news, such as `mg wait`'s, is recorded as a long poll, and one
+whose client goes away first as cancelled. Default exports exclude free-form
+messages, request/response bodies, repository content, credentials, and
+subprocess output. Private local records also retain each event's bounded,
+sanitized message and panic text for debugging;
 `mg diagnostics logs --details --json` explicitly includes it so relevant
 excerpts can be selected. Free-form redaction is heuristic. Failed CLI
 requests print a request ID that can be matched to the recorded events.
-Existing `hub.log` files are not included in diagnostic exports.
+
+The hub also writes its readable log, without per-request records, to stderr,
+which the hub's service sends to `~/.mergegate/hub.log`. That file is not
+included in diagnostic exports.
 
 ```sh
 mg diagnostics logs --since 30m --json

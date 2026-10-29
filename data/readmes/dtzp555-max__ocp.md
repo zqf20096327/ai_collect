@@ -195,7 +195,12 @@ Every drop increments `/health`'s `stats.toolRequestsDropped` and logs `openai_t
 
 The tools the bridge grants run on the **client**, so this works in every auth mode, including `AUTH_MODE=multi`: a guest calling its own tool touches nothing on the OCP host. What the model can do on the host itself is a separate question, governed by `--allowedTools` and `OCP_LOCAL_TOOLS` below — and when a request declares client tools, the host-side built-ins are emptied for that spawn so there is exactly one way to do each thing.
 
-**What this means for choosing OCP (workload fit).** LAN/multi-device OCP is built for **chat-class** workloads — Q&A, translation, scripting against the API, chat frontends, home-automation backends — where text in/text out is the whole job. It is **not** the right tool for a coding agent running on a *client* machine that needs the AI to read and edit *that machine's* files: tools execute on the OCP host, so the model can never touch the client's filesystem. For that workload, run `claude` (or a local OCP) directly on the machine where the code lives.
+**What this means for choosing OCP (workload fit).** A coding agent on a *client* machine can use a LAN OCP when it **declares its tools in the request** (OpenAI `tools`). The model's calls come back as `tool_calls`, and the client runs them against its own files. (Before v3.34.0 this paragraph said the opposite, and it was true then: OCP dropped `tools`, and only the host's own tools existed.)
+
+Two things still describe the **host**, not the client:
+
+- **The CLI's own environment section.** `claude` writes the spawn's working directory (on an isolated spawn, the default, `~/.ocp/spawn-home`; otherwise the server's own directory), platform, shell and OS version into the system prompt itself, and no supported CLI flag removes it when OCP supplies the system prompt. Some models carry that path into the client's tool calls. Measured on 2026-10-29 with CLI 2.1.310: `claude-haiku-4-5` emitted a `write_file` call whose path was under the host's directory in 10 of 10 requests even when the client's own system message stated its working directory, while `claude-sonnet-5-5` used the client's directory. A sentence in OCP's prompt saying the section describes the host was tried and **not** shipped: it helped one case and made `claude-opus-4-6` worse in another (#532). If your agent depends on absolute paths, state its working directory in its system prompt, check which path the model you use actually follows, or have the agent resolve paths relative to its own root.
+- **Host-side tools.** `OCP_LOCAL_TOOLS`, the TUI lane and the CLI's built-ins on a request *without* `tools` (outside `AUTH_MODE=multi`, which empties them) all act on the OCP host. For a coding agent that relies on those rather than on its own declared tools, run `claude` (or a local OCP) on the machine where the code lives.
 
 ## Available Models
 
@@ -820,14 +825,4 @@ OCP runs under a small set of binding documents so contributions stay aligned wi
 - **[`AGENTS.md`](./AGENTS.md)** — guidelines any AI coding agent (Claude Code / Cursor / Copilot / Codex / Gemini) should read before touching this repo.
 - **[`docs/governance/b2-response-keys.json`](./docs/governance/b2-response-keys.json)** — a per-release record of every grandfathered Class B.2 endpoint's response key set, taken from the wire rather than from prose, and enforced by `npm test`. Adding a field to `/health`, `/status`, `/cache/stats` or any other B.2 response fails the suite until the snapshot is updated and the addition is authorized under [ADR 0012](./docs/adr/0012-additive-fields-on-grandfathered-b2.md). Replaces the CHANGELOG grep that used to serve this role; see [ADR 0012](./docs/adr/0012-additive-fields-on-grandfathered-b2.md) and `CLAUDE.md` § `governance_audits`.
 - **[`models.json`](./models.json)** — single source of truth for the model registry. See [ADR 0003](./docs/adr/0003-models-json-spot.md).
-- **[`docs/adr/`](./docs/adr/)** — architecture decision records explaining why current structure exists.
-
-If you want to contribute: read `ALIGNMENT.md` first, then classify the change before writing anything — Class A (the `cli.js`-mirror surface) needs a `cli.js:NNNN` line citation; Class B.1 (`/v1/chat/completions`, `/v1/models`) needs the relevant OpenAI specification section plus ADR 0006; Class B.2 (`/health`, `/dashboard`, `/logs`, `/status`, `/settings`, `/api/keys*`, `/api/usage`, `/cache*`) needs the endpoint's authorizing ADR. See `CLAUDE.md` § "Classify the change first" for the full table.
-
-## Support OCP
-
-OCP has been **open source from day one** — not a freemium tool, not a commercial product turned open, just open. It will stay that way forever. No paid tiers, no premium features, no "Pro" version locked behind a paywall.
-
-I built it because my family and I needed it. We use OCP every day across our own machines and IDEs — keeping one Claude Pro/Max subscription powering everything, saving the per-token API cost we'd otherwise pay. It's been quietly heartwarming to hear from users online who say OCP has saved them money the same way it saves ours. That's the whole point.
-
-Behind every version are hundreds of hours that don't show up in commits: building it from scratch, adding new features as the Claude Code
+- **[`docs/adr/`](./docs/adr/)** — architecture decision records explaining why current structure

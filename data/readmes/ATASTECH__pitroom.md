@@ -72,7 +72,7 @@ Pitroom uses your worker CLI's default model: a free tier, a local MLX/Ollama mo
 
 ### Any worker CLI
 
-OpenCode, Codex CLI, Claude Code, Gemini CLI, Qwen Code, Kilo Code and Antigravity CLI (beta on Linux and Windows).
+OpenCode, Codex CLI, Claude Code, Gemini CLI, Qwen Code, Kilo Code, Antigravity CLI and Cursor CLI (the last two beta on Linux and Windows).
 
 One group can mix them, and a fallback chain can cross them ([how adapters work](docs/backends.md)).
 
@@ -439,6 +439,10 @@ pitroom run -w "Rename getUserById to findUserById in src/ and fix imports"
 pitroom run --continue last "Now handle the empty-page case too"
 ```
 
+**A failed check goes back to the worker.** With `--verify CMD` on a change (`-i` or `-w`), a check that fails is not the end of the run: its output (the last 120 lines) goes back to the same worker, in its own session, to fix the cause, and the check runs again. One round by default, up to three (`verifyFix`, `--verify-fix N`; `0` turns it off), and the worker is told not to weaken or skip the check. The report says `✔ passed after 1 fix round` or `✘ failed, also after 1 fix round`; the answer keeps what each round did and the receipt counts every round. A check that could not run (exit 127) or was killed is not sent back, nor anything once the daily budget is spent; a round that ends badly (a rate limit, a timeout) leaves the work before it, and the check run on the files decides.
+
+**A map for the worker.** With `--map` (or `"repoMap": true`), a new run's prompt starts with a map of the project: the files git sees in the run's directory by folder, with the names each source file declares at its top level (exports in TypeScript and JavaScript, `def` and `class` in Python, `func` and `type` in Go, `pub` items in Rust, classes in Java, Kotlin, C#, Swift, Ruby and PHP). A free model otherwise spends its first steps listing folders and grepping for where things are. The map keeps to a budget however big the project (`repoMapTokens`, 1,500 tokens by default) and spends it where the task is: the files whose paths and names share the task's words, each word weighed by how rare it is in the project, keep their names and their folder's file list; the rest gives detail up, the least useful first (tests, docs and assets, then deep folders, then shallow ones), down to one line per subtree with its counts, and the folders off the task's path fold into a line of their own. With a task to focus on, what is not about it is cut to 60% of the budget even when it would fit. Every part of the project keeps at least a line, so an 8,000-file monorepo comes out as an overview with the task's corner in full, never a list cut short. Names are read once per file content and kept, so a big repository is read once (a few seconds) and later maps take well under a second. Secret-looking and git-ignored files are not in it, and follow-ups, audits and reviews never get one. `pitroom map --task "…"` shows the map a task would get.
+
 Long jobs: `--bg` returns immediately; `pitroom wait <id>` blocks for up to 9 minutes (made for agents with 10-minute tool limits; exit code 75 means "call wait again").
 
 ---
@@ -470,6 +474,18 @@ Tiers map plan tasks to workers: `"tiers": {"cheap": "opencode", "standard": "co
 </details>
 
 ---
+
+### On pull requests
+
+The repository is also a GitHub Action: on each push to a pull request a worker you choose reviews the new commits (`pitroom review --range base..head`, read-only), and the review goes to the job summary and to one comment, updated on every push. `fail-on: critical` makes it a required check. [The workflow and its inputs](docs/github-action.md).
+
+```yaml
+- uses: actions/checkout@v4
+  with: { fetch-depth: 0, persist-credentials: false }
+- run: npm install --global opencode-ai
+- uses: ATASTECH/pitroom@v0.29.0
+  with: { worker: "opencode:opencode/big-pickle", fail-on: critical }
+```
 
 ## Audits
 
@@ -553,6 +569,10 @@ RUN                   STATE  MODE  TIME  STEPS  WORKER                    NOW / 
 
 Humans get the same table live with `pitroom watch -g NAME`; `pitroom wait -g NAME --brief` prints one line per worker, `pitroom show <run>` the full answer.
 
+**One question, split by part.** `pitroom crew --over src/auth,src/billing,src/uploads "Find missing input validation in {scope}. file:line for each."` runs the task once per part (`{scope}` is filled in) and tells each worker that its part is the only one it reads, or in an `-i` crew the only one it changes. A pattern in the last part of a path makes one part per match, hidden ones left out (`--over "packages/*/"`: one per folder). Parts must exist and must not overlap (`src` with `src/auth` is refused): two workers that read the same files hand your agent two answers about the same code to reconcile, and when they disagree it opens the files itself.
+
+**One change, raced.** `pitroom run -i --race 3 --verify "npm test" "Fix the off-by-one in paginate()"` gives the same change to three workers at once (your worker and its fallbacks in turn, or `-W` three times: free models answer differently each time), each in an isolated copy of its own. When all have ended the best one wins: it ended well, its check passed, it changed something, its references held, then the smallest diff and the lowest cost. The others' copies are discarded (their patches stay: `pitroom show RUN --patch`, even `pitroom apply RUN`), and you get the places and the winner's report. Nothing reaches your tree until you apply the winner. `--bg` returns at once; `pitroom wait -g race-…` names the winner.
+
 For changes, `pitroom crew -i …` gives every worker its own isolated copy of your current state and `pitroom apply -g NAME` lands the patches in order, stopping at the first conflict. Up to `maxParallel` workers (default 20, at most 30) run at once, the rest queue; only one `--write` run per repository is allowed. `pitroom stop -g NAME` stops running and queued workers.
 
 ---
@@ -589,9 +609,12 @@ For changes, `pitroom crew -i …` gives every worker its own isolated copy of y
 <summary>All commands and exit codes</summary>
 
 ```text
-pitroom run [-r|-w|-i] [-W WORKER] [-m MODEL] [-d DIR] [-f FILE]… [-t 30m] [--verify CMD] [--link a,b] [--bg] "task"
+pitroom run [-r|-w|-i] [-W WORKER] [-m MODEL] [-d DIR] [-f FILE]… [-t 30m] [--verify CMD [--verify-fix N]] [--max-cost USD] [--link a,b] [--bg] "task"
+pitroom run -i --race N [--verify CMD] "task"     N workers (2 to 5) make the same change; the best one wins
+pitroom map [-d DIR] [--task TEXT] [--tokens N] [--fresh]   the project map a run's prompt gets with --map
 pitroom run --continue <run|last> "follow-up"
 pitroom crew [-i] [-g NAME] "task 1" "task 2" …   (or --task-file with --- separators)
+pitroom crew [-i] [-g NAME] --over src/a,src/b "task about {scope}"   (one worker per part; "src/*/": one per folder)
 pitroom run -i --plan PLAN --step N [--tier T] ["notes"]
 pitroom review [run | --range A..B [--plan PLAN]] [--tier T | -W T] [--bg]
 pitroom audit RUN [-W worker]
@@ -685,6 +708,7 @@ pitroom run -W gemini:gemini-3.8-flash "…"               # Gemini CLI (beta; n
 pitroom run -W qwen:qwen3-coder-plus "…"                 # Qwen Code (beta; your provider from ~/.qwen/settings.json)
 pitroom run -W kilo:kilo/<model> "…"                      # Kilo Code's CLI (beta; any model from `kilo models`)
 pitroom run -i -W antigravity "…"                         # Antigravity CLI (your Google account, models from `agy models`; beta on Linux and Windows)
+pitroom run -W cursor:composer-2.5 "…"                    # Cursor CLI (your Cursor plan, models from `cursor-agent models`; beta on Linux and Windows)
 pitroom run -m nvidia/z-ai/glm-5.3 "…"                   # another model on the preferred worker
 ```
 
@@ -697,6 +721,7 @@ pitroom run -m nvidia/z-ai/glm-5.3 "…"                   # another model on th
 | Qwen Code | beta | `--approval-mode plan`; edits only inside the working directory, the rest declined | tokens only | checked against Qwen Code 0.25 with a scripted model, not yet with a real provider; uses your sign-in and model from `~/.qwen/settings.json` (any OpenAI-compatible provider, DashScope, a local model); `--safe-mode` keeps your QWEN.md, hooks, skills and MCP servers out and stops the CLI writing memories of the run; reads `.env` if asked, so a read run with secret-looking files reads a [clean snapshot](#modes); see [the notes](docs/backends.md#qwen-code-notes) |
 | Kilo Code | beta | per-run permission rules (OpenCode's profiles) | reported | the CLI of `@kilocode/cli` (an OpenCode fork): the same `pitroom-read`/`pitroom-write` profiles through `KILO_CONFIG_CONTENT`, your sign-in and providers as they are; workers use a private state folder so a running `kilo daemon` (which would ignore the profiles) is never attached to; checked against Kilo 7.8.8 with a scripted model, not yet with a real provider; see [the notes](docs/backends.md#kilo-code-notes) |
 | Antigravity CLI | macOS; beta on Linux and Windows | a read-only [snapshot](#modes) of its own for every read run (agy has no read-only mode for headless runs) | tokens only | checked against agy 1.4.7 on macOS (`scripts/check-worker.mjs`), not yet on Linux or Windows; use `-i` for changes, not `-w` (its deny rules are patterns, a layer on top of the git guard and the isolated copy); runs with a home of its own per workspace (agy reads its settings only from `~/.gemini`), so its commands do not see your dotfiles; an answerless run (a refused command can end its turn with no answer and exit 0) is a failure; your Google account sign-in (the one Gemini CLI now refuses); shell in agy's terminal sandbox (macOS, Linux); no web access for these workers; give it a fallback, its quota is per account; see [the notes](docs/backends.md#antigravity-cli-notes) |
+| Cursor CLI | macOS; beta on Linux and Windows | ask mode, in a read-only [snapshot](#modes) of its own; no shell in a read | tokens only | `cursor-agent login`; checked against Cursor CLI 2026.10.22 on macOS (`scripts/check-worker.mjs`: 8 of 8); changes run in its sandbox (writes only in the workspace and the temp folder; an edit elsewhere is refused; the network stays reachable) with Pitroom's deny rules; workers run in a home of their own per workspace, so your `~/.cursor` MCP servers, hooks and plugins are not loaded; your account's User Rules on cursor.com still apply (they can change the answer's language), and so do the project's own hooks (`.cursor/hooks.json`: Cursor has no switch to turn them off), so keep it to code whose hooks you would run yourself |
 
 ### Models, costs and effort
 
@@ -773,6 +798,9 @@ Or put defaults in `~/.config/pitroom/config.json` (flags and env still win); `p
 - `rankWorkers`: order the worker and its fallbacks by their record of the last 30 days on the same kind of work (a question, a change or a review: a model can answer well and still leave changes unfinished): the share of runs that ended well (rate limits left out), times the share of checked work that held up, with 3 checks or more (for an answer its audits, for a change the reviews of it that found the spec met and nothing to fix). Only workers with 5 runs or more of that kind move, among the places such workers hold, in steps of 10%; a worker you name (`-W`, `-m`, a tier) is never reordered, and the run says when the first worker changed (default `false`; `PITROOM_RANK_WORKERS=1`).
 - `autoFallback`: with no `fallback` of yours, fall back to the other workers your config already names (its `tiers`, its `models` and its `worker`), the ones installed here, cheapest first by `costs` (those without a cost after, in the order named), at most four; never the worker itself at another effort level (default `false`; `PITROOM_AUTO_FALLBACK=1`). Pitroom still picks no model you did not name: it only reuses your own choices. Your `fallback` list, when you have one, and `--no-fallback` win; `pitroom doctor` says when the chain came from it.
 - `countRateLimits`: whether runs that failed on a rate limit or quota count in `pitroom history stats` and the dashboard's Stats (default `false`: they are left out of the run counts, success rates, times and tokens and shown apart as rate-limited, since they say nothing about the worker's work; `true` counts them as not ok).
+- `verifyFix`: how many times a failed `--verify` check of a change goes back to its worker, with the check's output, to fix it (default `1`, at most `3`, `0` = off; `PITROOM_VERIFY_FIX`; `--verify-fix N` per run). See [Modes](#modes).
+- `maxCost`: what one run's workers may cost, in USD (as their CLIs report it, or estimated from `workerPrices` and the price catalog; a worker a limit stopped and fix rounds included). The cost is checked every second while the worker runs; at the cap the worker is stopped, no fallback takes over, and the run fails saying so, with what it changed until then in its changes. A worker whose cost cannot be told (no reported cost, no price) is not stopped, and the run says the cap could not be checked. `0` stops a worker at its first cost (a free one runs on). Default: none (`PITROOM_MAX_COST`; `--max-cost USD` per run).
+- `repoMap`: put a map of the project (files by folder, with the names each source file declares) in a new run's prompt, detailed where the run's task is (default `false`; `PITROOM_REPO_MAP=1`; `--map`, `--no-map` per run; `pitroom map --task "…"` shows it). `repoMapTokens`: its budget, 300 to 8000 (default 1500; `PITROOM_REPO_MAP_TOKENS`). See [Modes](#modes).
 
 </details>
 

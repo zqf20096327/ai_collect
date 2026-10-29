@@ -185,6 +185,9 @@ Vincent Boucher · MONTREAL\.AI · 2026-10 · English PDF.
   Vincent Boucher · President of MONTREAL\.AI · 2026-10-27 · English PDF.
 - **[The Enterprise That Invents Its Next Advantage · Capacity Evidence Edition](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/agi-alpha-enterprise-implementation-v4.pdf)** · Current implementation separates per\-offering occupied slots from the enterprise global ceiling, keeps production bound to current commercial evidence and preserves intent\-bound failure recovery\. Two\-offering and withdrawal regressions complement the connected internal placement/Gym/protected\-relay study\. Twelve fresh finite checks pass; Alpha admission is rejected and funds held\. No actual customer revenue, complete\-cost profit or growing network advantage is established\.
   Vincent Boucher · President of MONTREAL\.AI · 2026-10-27 · English PDF.
+- **[AGI ALPHA FLYWHEEL — From Verified Criticism to Executable Repair · Reader 1](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/main/docs/papers/agi-alpha-invention-automation-v1-20261029.pdf)** · A bounded corrective\-constraint compiler accepts 36/36 modeled schedules; the complete conventional LP also accepts 36/36 with lower measured deployment compute\. The recovered instrument ledger records −8\.574947 SIM USD operating profit and zero unrestricted earned funds\. Exploratory software and simulated accounts do not establish a real same\-cohort profit crossing, learning advantage, hostile\-program isolation or a completed invention flywheel\.
+  Vincent Boucher · President of MONTREAL\.AI · 2026-10-29 · English PDF.
+  [Historical experimental companion source and assembly](https://github.com/MontrealAI/AGI-Alpha-Agent-v0/blob/ca8e1b95bf4ce6d5e22b80c419211b3d8247b8cc/studies/invention-automation-research-20261029/README.md)
 
 Research proposals and bounded studies, not claims of general autonomous capability or physical deployment.
 [Explore the papers in English or French](https://montrealai.github.io/AGI-Alpha-Agent-v0/#papers)
@@ -1368,26 +1371,4 @@ is installed, install the hooks and run a full check:
 ```bash
 # Install the exact version if the setup script didn't already
 pip install pre-commit==4.2.0
-pre-commit install
-pre-commit run --all-files   # verify hooks after setup
-pre-commit run --files <paths>   # before each commit
-```
-Run `pre-commit run --all-files` once after the setup script to confirm
-everything is formatted correctly. These commands mirror the steps in
-[AGENTS.md](AGENTS.md) and keep commits consistent.
-After editing `.github/workflows/ci.yml`, run:
-
-```bash
-pre-commit run --files .github/workflows/ci.yml
-python tools/update_actions.py
-```
-to validate the workflow with actionlint before committing.
-Before opening a pull request, run `pre-commit run --all-files` to ensure
-all hooks succeed.
-Run `python check_env.py --auto-install` before invoking these commands so
-optional hook dependencies are installed. When working offline, pass
-`--wheelhouse <dir>` or set `WHEELHOUSE` to install from a local cache. If
-`pre-commit` isn't found or the version differs, install it with
-`pip install pre-commit==4.2.0`.
-
-When editing the 
+pre-c

@@ -33,6 +33,29 @@ Let's get started: [AI Engineering Explained: LLM, RAG, MCP, Agent, Fine-Tuning,
 
 ---
 
+## How does an LLM work?
+
+In this blog, we will learn about how an LLM works. We will also see how text is turned into tokens and embeddings, how the Transformer and attention work, how an LLM generates an answer word by word, how it is trained, what the context window and hallucination are, and where it is used in the real world.
+
+We will cover the following:
+
+* What is an LLM?
+* What does it really do? (Predicting the next word)
+* How a computer turns words into numbers (Tokens)
+* How a token becomes meaning (Embeddings)
+* The Transformer
+* Attention
+* How an LLM generates a full answer, word by word
+* How an LLM is trained
+* Pretraining and Fine-tuning
+* The Context Window
+* Why an LLM sometimes makes things up (Hallucination)
+* Real-World Applications
+
+Let's get started: [How does an LLM work?](https://outcomeschool.com/blog/large-language-model-llm)
+
+---
+
 ## Tokenization in Large Language Models (LLMs)
 
 In this video, we will learn about Tokenization and why they are essential for Large Language Models.

@@ -10,6 +10,8 @@
 
 **[Help center](https://dj-huang.github.io/LeafLoom/docs/en/)** · Searchable guides for notes, attachments, Design Studio, AI connections and recovery.
 
+**[New in 0.1.5: attachment servers, resumable sync and presenter mode](docs/en/RELEASE_NOTES_0.1.5.md)**
+
 Turn scattered notes, project docs and saved webpages into a connected knowledge base. **LeafLoom is an open-source, local-first knowledge management workspace and personal wiki** for Markdown and HTML, with source-linked search, a knowledge graph, MCP, Skills, AI Chat and ChatGPT integration.
 
 Your files and search indexes live on your computer. Browse, write and search locally; connect AI when you want your knowledge in the conversation.
@@ -32,6 +34,7 @@ Check [supported systems and signing status](#get-started) before installing.
 | **Game screens you can edit** | Use [Design Studio](docs/DESIGN_STUDIO.md) to organize projects and assets, combine reusable pages/components, add scripts and animation, undo human or AI edits, and export portable HTML. |
 | **Answers you can trace** | Use keyword search, Wiki navigation and optional local BGE-M3 semantic retrieval. Follow results back to the original notes. |
 | **AI in your workflow** | Connect MCP clients, install the bundled `wiki-search` Skill, or use AI Chat beside your notes. The built-in chat previews edits; authorized MCP clients can save directly with history. |
+| **AI-ready assets** | Search existing local/NAS asset metadata, inspect real previews and deliver originals to a stable local path for your AI to use. Optional local semantic ranking stays separate from note search. [Workflow](docs/ASSET_WORKFLOWS.md). |
 | **Your knowledge in ChatGPT** | Connect the desktop app through its built-in Tunnel client to search and read local notes from a ChatGPT conversation. |
 
 Keep a research library, build a project wiki, collect reading notes, or give your AI assistant a source it can actually cite.
@@ -179,3 +182,5 @@ The desktop installer supports the platforms above. This is not cloud sync, univ
 MIT © 2026 DJ. Dependencies and models keep their own licenses. [License](LICENSE)
 
 Technical compatibility: `vault-rag`, `VAULT_RAG_HOME`, `.vault-rag/`, HTTP MCP `/mcp`.
+
+Organize Markdown notes as local databases with table, list, board, gallery and draggable timeline views. [Database guide](docs/en/GUIDE.md#note-databases).

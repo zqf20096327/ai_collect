@@ -6,7 +6,7 @@
 
 *Mia, the interviewer in the [InterviewCoach demo](samples/express/public/demos/interview/), asking her first question. Recorded from a stock clone of this repo. ([MP4](docs/demo.mp4))*
 
-📘 [Developer Handbook](https://connect.perxona.ai) · 💬 [Discussions](https://github.com/XRSPACE-Inc/perxona-connect-kit/discussions) · 🎭 [Showcase](https://showcase.perxona.ai)
+📘 [Developer Handbook](https://connect.perxona.ai) ([Markdown mirror](docs/en/) · [llms.txt](llms.txt)) · 💬 [Discussions](https://github.com/XRSPACE-Inc/perxona-connect-kit/discussions) · 🎭 [Showcase](https://showcase.perxona.ai)
 
 ## Quick start (5–15 minutes)
 
@@ -22,12 +22,16 @@ npm run dev            # open http://localhost:8083
 
 Create both keys in the console: open the avatar menu (top right), then **Management → Integration → Connect API keys**. Full steps in [`samples/express/README.md`](samples/express/README.md).
 
+**No laptop setup?** Deploy the same sample to Vercel. It asks for the two keys and gives you a public URL in about a minute.
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FXRSPACE-Inc%2Fperxona-connect-kit&root-directory=samples%2Fexpress&project-name=perxona-connect-kit&repository-name=perxona-connect-kit&env=PERXONA_CONNECT_SECRET_KEY%2CPERXONA_CONNECT_PUBLISHABLE_KEY&envDescription=Two%20Connect%20API%20keys%20from%20the%20Perxona%20Console%3A%20open%20the%20avatar%20menu%20%28top%20right%29%2C%20then%20Management%2C%20Integration%2C%20Connect%20API%20keys.%20Leave%20the%20secret%20key%27s%20domain%20list%20empty.&envLink=https%3A%2F%2Fgithub.com%2FXRSPACE-Inc%2Fperxona-connect-kit%2Fblob%2Fmain%2Fsamples%2Fexpress%2FREADME.md%23getting-a-connect-account&demo-title=Perxona%20Connect%20Kit&demo-description=A%20talking%203D%20AI%20avatar%20with%20lip-sync%20in%20your%20web%20app%2C%20with%20the%20Studio%2C%20Embed%20and%20InterviewCoach%20demos.)
+
 ## What you can build
 
 Best fit: products where the avatar **is** the product, not a widget on the side.
 
 - **Practice and training**: mock interviews, customer-service drills, exam and language practice. See [InterviewCoach](samples/express/public/demos/interview/), built on this kit.
-- **Reception and concierge**: hotel check-in, clinic front desk, store greeter, answering from your own knowledge file in Japanese, English or 繁體中文.
+- **Reception and concierge**: hotel check-in, clinic front desk, store greeter, answering from your own knowledge file in Japanese, English or 繁體中文. See [Maker](samples/maker/), an event concierge built on this kit.
 - **A face for your agent**: your chat endpoint in, `present()` out. Give an existing LLM agent a voice and a face in about thirty lines.
 - **Characters**: VTuber-style or companion characters from your own `.vrm` file ([VRM uploader](tools/vrm-uploader/)).
 
@@ -44,6 +48,8 @@ Connect Kit sign-ups start on the Perxona Console **Free Plan**. See [pricing](h
 - [`samples/express/public/demos/interview/`](samples/express/public/demos/interview/) — **InterviewCoach**, a
   mock-interview practice app built on the starter: app-driven emotions, a purpose-built chatbot created from
   code, three languages with per-language voices. Built in about 18 minutes from this repo and the handbook.
+- [`samples/maker/`](samples/maker/) — **Maker**, a live 3D matchmaker for community events, by Angie Chen.
+  Try it: https://perxona-maker.onrender.com
 
 ## Tools
 

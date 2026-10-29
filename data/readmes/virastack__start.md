@@ -1,21 +1,17 @@
 <div align="center">
 
 <a href="https://github.com/virastack/start" target="_blank" rel="noreferrer">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/virastack/start/main/assets/logo-dark.png">
-    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/virastack/start/main/assets/logo-light.png">
-    <img src="https://raw.githubusercontent.com/virastack/start/main/assets/logo-light.png" alt="ViraStack Start" height="120" style="max-width: 100%;" />
-  </picture>
+  <img src="https://raw.githubusercontent.com/virastack/start/main/assets/logo.png" alt="ViraStack Start" height="120" style="max-width: 100%;" />
 </a>
 
 *Scaffolding CLI for Next.js and TanStack Start: ViraStack tools and AI rules in one command*
 
-[![ViraStack Start](https://img.shields.io/badge/ViraStack-Start-%2300bba7)](https://virastack.com/start/)
-[![npm version](https://img.shields.io/npm/v/virastack?color=blue)](https://www.npmjs.com/package/virastack)
+[![ViraStack Start](https://img.shields.io/badge/ViraStack-Start-%2300c950)](https://virastack.com/start/)
+[![npm version](https://img.shields.io/npm/v/virastack)](https://www.npmjs.com/package/virastack)
 [![npm downloads](https://img.shields.io/npm/dt/virastack)](https://www.npmjs.com/package/virastack)
-[![Node](https://img.shields.io/badge/node-%3E%3D20.9-339933?logo=node.js&logoColor=white)](package.json)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![@virastack](https://img.shields.io/badge/-%40virastack-black?logo=x&logoColor=white)](https://x.com/virastack)
+[![Node](https://img.shields.io/node/v/virastack)](package.json)
+[![License: MIT](https://img.shields.io/github/license/virastack/start)](LICENSE)
+[![@virastack](https://img.shields.io/badge/-%40virastack-555?logo=x&logoColor=white)](https://x.com/virastack)
 
 </div>
 
@@ -26,10 +22,10 @@
 ## Features
 
 - **Interactive CLI:** Interactive prompts for template selection, project naming, and ecosystem tool integration.
-- **Production-Ready Foundations:** Scaffolds Next.js or TanStack Start projects with pre-configured feature-sliced architecture.
+- **Production-Ready Foundations:** Scaffolds Next.js or TanStack Start projects with a pre-configured feature-based architecture.
 - **Built-in AI Protocols:** Asks which AI coding tools you use (Claude Code, Cursor) and sets up [**ViraStack AI**](https://github.com/virastack/ai) for them — architecture rules in each tool's native format, `AGENTS.md`, and design skills from [**Emil Kowalski**](https://github.com/emilkowalski/skills) and [**Jakub Krehel**](https://github.com/jakubkrehel/skills) — giving your coding agents a strict "constitution" from day one.
 - **End-to-End Type Safety:** Strict TypeScript rules, Zod validation, and native package manager alignment (pnpm, npm, yarn, bun).
-- **Ecosystem Integration:** Add optional ViraStack tools (`@virastack/mask`, `@virastack/password`) seamlessly.
+- **Ecosystem Integration:** Add optional ViraStack tools (`@virastack/mask`, `@virastack/password`, `@virastack/address`) seamlessly.
 
 ## Quick Start
 
@@ -68,6 +64,7 @@ Would you like multi-language (i18n) support?
 Which ViraStack tools would you like to include?
   [ ] @virastack/mask
   [ ] @virastack/password
+  [ ] @virastack/address
 ```
 
 Select none to get plain rules in `.agents/rules/` that any agent can read through `AGENTS.md`.
@@ -87,19 +84,20 @@ Select none to get plain rules in `.agents/rules/` that any agent can read throu
 
 | Tool | Description |
 | :--- | :--- |
-| `@virastack/ai` | Pre-configured AI layer and coding rules for modern AI assistants (included in templates by default) |
-| `@virastack/mask` | Input masking and formatting (Phone, IBAN, etc.) |
-| `@virastack/password` | Accessible password field hook: show/hide, NIST-style strength, confirmation and server validation |
+| `@virastack/ai` | Architecture rules for Claude Code, Cursor and AGENTS.md (included in templates by default) |
+| `@virastack/mask` | Input masks for React Hook Form: phone, card, date, currency |
+| `@virastack/password` | Accessible password hook: show/hide, strength, server checks |
+| `@virastack/address` | Turkish address hook: province, district, neighbourhood and postal code |
 
 ## Commands and options
 
 | Command / flag | Description |
 | :--- | :--- |
 | `init [name]` | Create a new project (default; also runs with no command) |
-| `add <tool>` | Add a tool to an existing project (`mask`, `password`, `ai`) |
+| `add <tool>` | Add a tool to an existing project (`mask`, `password`, `address`, `ai`) |
 | `--name <name>` | Project name (or pass as positional / `.`) |
 | `--template <name>` | `nextjs` or `tanstack` |
-| `--tools <list>` | Comma-separated tools (`mask,password`) |
+| `--tools <list>` | Comma-separated tools (`mask,password,address`) |
 | `--agent <list>` | AI coding tools: `claude`, `cursor` (comma separated) or `none`. Default with `--yes`: both |
 | `--i18n` / `--no-i18n` | Enable or disable the i18n template |
 | `--yes`, `-y` | Non-interactive mode (flags + defaults) |
@@ -112,6 +110,7 @@ Select none to get plain rules in `.agents/rules/` that any agent can read throu
 ```bash
 pnpm dlx virastack add mask
 pnpm dlx virastack add password
+pnpm dlx virastack add address
 pnpm dlx virastack add ai
 pnpm dlx virastack add ai --agent cursor
 ```
@@ -140,7 +139,7 @@ Ideas and bug reports are welcome — open an [issue](https://github.com/virasta
 
 ## Ecosystem
 
-Part of the [ViraStack](https://virastack.com) ecosystem: [Academy](https://github.com/virastack/academy) · [AI](https://github.com/virastack/ai) · [Mask](https://github.com/virastack/mask) · [Password](https://github.com/virastack/password) · [Guide](https://github.com/virastack/guide)
+Part of the [ViraStack](https://virastack.com) ecosystem: [Academy](https://github.com/virastack/academy) · [AI](https://github.com/virastack/ai) · [Mask](https://github.com/virastack/form/tree/main/packages/mask) · [Password](https://github.com/virastack/form/tree/main/packages/password) · [Address](https://github.com/virastack/form/tree/main/packages/address) · [Guide](https://github.com/virastack/guide)
 
 ## License
 

@@ -142,6 +142,12 @@ Then ask naturally:
 - Huashu Design 3.0 organizes work by output module and starts new visual designs with six thumbnails and three complete directions for selection. Pure exports and mechanical edits are exempt.
 - Kimi WebBridge skill 2.0.24 documents tab attachment and paginated ARIA snapshots. These features require a matching daemon and browser extension; syncing this repository only updates the skill files.
 
+### Upstream Migration Notes (2026-10-29)
+
+- Planning with Files 3.26.0 adds explicit plan-format validation (`check-complete.sh --validate` / `check-complete.ps1 -Validate`). New plans must retain native phase headings and status markers; existing plans are reported without being rewritten. `PWF_SKIP_SUBAGENTS=1` optionally skips subagent tool-hook injection.
+- REA skill version 55 adds AgentEnv bundles, more artifact/runtime workflows, and separate recovery guidance for plugin-owned and setup-owned MCP registrations. Use the capabilities advertised by the installed REA runtime; syncing the skill does not upgrade it.
+- `imagegen-frontend-web` moved to [`Leonxlnx/imagegen-skills`](https://github.com/Leonxlnx/imagegen-skills/tree/main/skills/imagegen-frontend-web). Its skill name and vendored content are unchanged.
+
 ## Common Prerequisites
 
 - Some skills assume `gh` is installed and authenticated.
@@ -172,7 +178,7 @@ Then ask naturally:
 | [reverse-engineer-anything](reverse-engineer-anything/SKILL.md) | Investigate shipped applications and binaries when source code does not explain behavior; use REA's CLI/MCP to gather evidence and compare versions. | [morluto/rea](https://github.com/morluto/rea/tree/main/.agents/skills/reverse-engineer-anything) |
 | [find-skills](find-skills/SKILL.md)                                 | Discover existing skills when users need specialized capabilities.                                                                                                                      | [vercel-labs/skills](https://github.com/vercel-labs/skills/tree/main/skills/find-skills)                                       |
 | [huashu-design](huashu-design/SKILL.md)                           | Create high-fidelity HTML prototypes, interactive demos, slide decks, motion design, design variants, video exports, and critiques.                                                       | [alchaincyf/huashu-design](https://github.com/alchaincyf/huashu-design)                                                       |
-| [imagegen-frontend-web](imagegen-frontend-web/SKILL.md) | Generate premium frontend reference images, one horizontal image per section, with strong art direction. | [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill/tree/main/skills/imagegen-frontend-web) |
+| [imagegen-frontend-web](imagegen-frontend-web/SKILL.md) | Generate premium frontend reference images, one horizontal image per section, with strong art direction. | [Leonxlnx/imagegen-skills](https://github.com/Leonxlnx/imagegen-skills/tree/main/skills/imagegen-frontend-web) |
 | [get-api-docs](get-api-docs/SKILL.md)                               | Fetch current third-party API or SDK docs before writing code.                                                                                                                          | [andrewyng/context-hub](https://github.com/andrewyng/context-hub/tree/main/cli/skills/get-api-docs)                            |
 | [grilling](grilling/SKILL.md)                               | Reusable design-tree interview loop for direct grill sessions.                                                                                                 | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/productivity/grilling)                                |
 | [teach](teach/SKILL.md) | Teach a user a skill or concept through a stateful workspace of missions, resources, lessons, and learning records. | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/productivity/teach) |

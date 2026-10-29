@@ -299,6 +299,9 @@ Recent news of this GitHub repo are listed as follows.
     - ***MuLan:*** Adapting Multilingual Diffusion Models for Hundreds of Languages with Negligible Cost [[Paper]](https://raw.githubusercontent.com/mlresearch/v267/main/assets/xing25d/xing25d.pdf) [[Code]](https://github.com/mulanai/MuLan)
     - Improving Compositional Generation with Diffusion Models Using Lift Scores [[Paper]](https://raw.githubusercontent.com/mlresearch/v267/main/assets/yu25e/yu25e.pdf) [[Project]](https://chenningyu.com/complift/)
     - Minimalist Concept Erasure in Generative Models [[Paper]](https://raw.githubusercontent.com/mlresearch/v267/main/assets/zhang25ai/zhang25ai.pdf)
+  - **SIGGRAPH**
+    - ***Be Decisive:*** Noise-Induced Layouts for Multi-Subject Generation [[Paper]](https://dl.acm.org/doi/pdf/10.1145/3721238.3730631)
+    - ***InstanceGen:*** Image Generation with Instance-level Instructions [[Paper]](https://dl.acm.org/doi/pdf/10.1145/3721238.3730613)
   - **AAAI**
     - ***AGFSync:*** Leveraging AI-Generated Feedback for Preference Optimization in Text-to-Image Generation [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/32168)
     - ***Adaptive Guidance:*** Training-free Acceleration of Conditional Diffusion Models [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/32192)
@@ -542,6 +545,9 @@ Recent news of this GitHub repo are listed as follows.
     - ***TextCenGen:*** Attention-Guided Text-Centric Background Adaptation for Text-to-Image Generation [[Paper]](https://raw.githubusercontent.com/mlresearch/v267/main/assets/liang25i/liang25i.pdf) [[Code]](https://github.com/tianyilt/TextCenGen_Background_Adapt)
     - ***RealRAG:*** Retrieval-augmented Realistic Image Generation via Self-reflective Contrastive Learning [[Paper]](https://raw.githubusercontent.com/mlresearch/v267/main/assets/lyu25c/lyu25c.pdf) [[Project]](https://qc-ly.github.io/RealRAG-page/)
     - Learning Vision and Language Concepts for Controllable Image Generation [[Paper]](https://raw.githubusercontent.com/mlresearch/v267/main/assets/xie25g/xie25g.pdf)
+  - **SIGGRAPH**
+    - ***FashionComposer:*** Compositional Fashion Image Generation [[Paper]](https://dl.acm.org/doi/pdf/10.1145/3721238.3730663)
+    - ***IP-Composer:*** Semantic Composition of Visual Concepts [[Paper]](https://dl.acm.org/doi/pdf/10.1145/3721238.3730624)
   - **AAAI**
     - ***VersaGen:*** Unleashing Versatile Visual Control for Text-to-Image Synthesis [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/32240)
     - ***Muses:*** 3D-Controllable Image Generation via Multi-Modal Agent Collaboration [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/32280)
@@ -687,10 +693,7 @@ Recent news of this GitHub repo are listed as follows.
     - Zero-Shot Adaptation of Parameter-Efficient Fine-Tuning in Diffusion Models [[Paper]](https://raw.githubusercontent.com/mlresearch/v267/main/assets/farhadzadeh25a/farhadzadeh25a.pdf)
     - Event-Customized Image Generation [[Paper]](https://raw.githubusercontent.com/mlresearch/v267/main/assets/wang25ar/wang25ar.pdf)
     - ***EasyRef:*** Omni-Generalized Group Image Reference for Diffusion Models via Multimodal LLM [[Paper]](https://raw.githubusercontent.com/mlresearch/v267/main/assets/zong25a/zong25a.pdf) [[Code]](https://github.com/TempleX98/EasyRef)
-  - **AAAI**
-    - ***CustomContrast:*** A Multilevel Contrastive Perspective for Subject-Driven Text-to-Image Customization [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/32210)
-    - ***DynASyn:*** Multi-Subject Personalization Enabling Dynamic Action Synthesis [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/32259)
-    - ***Dis²Booth:*** Learning Image Distribution with Disentangled Features for Text-to-Image Diffusion Models [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/32279)
-    - Resolving Multi-Condition Confusion for Finetuning-Free Personalized Image Generation [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/32386)
-    - ***PersonaMagic:*** Stage-Regulated High-Fidelity Face Customization with Tandem Equilibrium [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/32529)
-    - ***RealisID:*** Scale-Robust and Fine-Controllable Identity Customization via Local and Global Complementation [[Paper]]
+  - **SIGGRAPH**
+    - ***Nested Attention:*** Semantic-aware Attention Values for Concept Personalization [[Paper]](https://dl.acm.org/doi/pdf/10.1145/3721238.3730634)
+    - ***TokenVerse:*** Versatile Multi-concept Personalization in Token Modulation Space [[Paper]](https://dl.acm.org/doi/pdf/10.1145/3730843)
+    - ***IP-Prompter:*** Training-Free Theme-Specific Image Generation via Dynamic Visual P

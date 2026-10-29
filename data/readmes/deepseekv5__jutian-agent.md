@@ -9,8 +9,8 @@
 [English](README_EN.md) | **简体中文**
 
 [![CI](https://img.shields.io/github/actions/workflow/status/deepseekv5/jutian-agent/ci.yml?branch=main&style=for-the-badge&label=CI&labelColor=0a0a0b)](https://github.com/deepseekv5/jutian-agent/actions/workflows/ci.yml)
-[![Version](https://img.shields.io/badge/v11.6.0-10a37f?style=for-the-badge&labelColor=0a0a0b)](https://github.com/deepseekv5/jutian-agent/releases)
-[![Platform](https://img.shields.io/badge/macOS%20·%20Windows-3b82f6?style=for-the-badge&labelColor=0a0a0b)](https://github.com/deepseekv5/jutian-agent/releases)
+[![Version](https://img.shields.io/badge/v13.3.0-10a37f?style=for-the-badge&labelColor=0a0a0b)](https://github.com/deepseekv5/jutian-agent/releases)
+[![Platform](https://img.shields.io/badge/macOS%20·%20Windows%20·%20Linux%20·%20Android-3b82f6?style=for-the-badge&labelColor=0a0a0b)](https://github.com/deepseekv5/jutian-agent/releases)
 [![Docs](https://img.shields.io/badge/docs-12%20篇-8b5cf6?style=for-the-badge&labelColor=0a0a0b)](#docs)
 [![License](https://img.shields.io/badge/MIT-10a37f?style=for-the-badge&labelColor=0a0a0b)](./LICENSE)
 
@@ -48,7 +48,7 @@
 
 **01 — 说人话,它动手**
 
-38 个内置工具直连真实终端与文件系统。你说目标,它拆步骤、调工具、验证、给结果。不是建议,是执行。
+50 个内置工具直连真实终端与文件系统。你说目标,它拆步骤、调工具、验证、给结果。不是建议,是执行。
 
 **02 — 代码模式**
 
@@ -64,7 +64,7 @@
 
 **05 — 一切皆插件**
 
-LY HARNESS 插件中心:38 个工具逐个开关、MCP 服务即插即用、Skills 按消息挂载。工具 schema 单一来源,桌面 / 手机 / 服务端三方同步。
+LY HARNESS 插件中心:50 个工具逐个开关、MCP 服务即插即用、Skills 按消息挂载。工具 schema 单一来源,桌面 / 手机 / 服务端三方同步。
 
 **06 — 越用越懂你**
 
@@ -118,6 +118,45 @@ LY HARNESS 插件中心:38 个工具逐个开关、MCP 服务即插即用、Skil
 Markdown 全渲染、工具调用全展示、子代理进度实时同步。
 
 → **完整文档**:[手机远程](docs/guide/remote.md)
+
+<br>
+
+<a id="standalone"></a>
+
+## ✦ 手机独立运行 — 不需要电脑
+
+安卓提供两个安装包，按需选一个：
+
+| 安装包 | 体积 | 说明 |
+|---|---|---|
+| **jutian-local-*.apk** | ~40MB | **本地版**：内置 Node 运行时与完整前端，装一个 APK 就能在手机上跑完整 Agent，不依赖电脑，数据存手机本地 |
+| jutian-remote-*.apk | ~60KB | 远控版：轻量界面壳，连电脑或 Termux 上的服务 |
+
+本地版跑的是与桌面完全同一份后端与前端：对话、50 个工具、技能市场、记忆、语音全在。首次启动自动解压运行时，约 10-30 秒进入界面。
+
+另有 Termux 独立部署包 `jutian-mobile-*.zip`：解压后 `bash install.sh`，Node 22+ 上使用内置 SQLite（真 SQL，知识库可用）。
+
+<br>
+
+<a id="skills"></a>
+
+## ✦ 技能市场 — 真实来源,一键安装
+
+接入 Anthropic 官方 Agent Skills 仓库(18 万 star)与 Superpowers 社区技能集,30+ 个专业级技能:PDF/PPT 处理、前端设计、品牌规范、MCP 构建、算法艺术、系统化调试……
+
+安装前可预览完整 SKILL.md 说明;安装走白名单仓库目录递归拉取,不依赖 git,手机端同样可用。安全边界:目录名白名单、扩展名白名单(拒绝二进制载荷)、单文件与总量限额。
+
+<br>
+
+<a id="rich"></a>
+
+## ✦ 富文本渲染 — 图表 · 公式 · 网页预览
+
+- **Mermaid 图表**:` ```mermaid ` 块自动渲染成流程图/时序图/甘特图,图形与源码一键切换
+- **数学公式**:KaTeX 排版,同时支持 `$..$` 与 `\(..\)` 两种写法
+- **HTML Artifacts**:Agent 生成的完整网页,代码块头部一键「预览」,iframe 沙箱隔离
+
+三者全部按需加载:不用图表和公式的会话零开销,主程序包仅增 0.4 KB。
 
 <br>
 

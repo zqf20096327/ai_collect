@@ -160,7 +160,20 @@ cross-filesystem transfer copies the memory instead.
 `clone` returns after the VM resumes. Run `net SANDBOX --configure` to apply
 the clone's hostname and allocated NIC settings in the guest, or use
 `clone --wait-network` to include that step before the command returns. The
-default path renews guest entropy and machine ID in a detached process.
+default path waits for guest entropy and machine-ID renewal to finish.
+The daemon setting `sandbox.machine_id_sync` defaults to `true`, including an
+explicit machine-ID `fsync` before acknowledging the clone. Setting it to `false`
+still waits for initialization, but leaves identity persistence to normal guest
+writeback; a crash or force stop before writeback can lose that identity update.
+Older guest agents ignore this option and retain synchronous persistence.
+Updated initramfs scripts preserve a private machine ID across stop/start while
+clearing image-baked identities on first boot; rebuild older images for this behavior.
+
+`create`, `run` and `clone` accept `--cow-io auto|direct|buffered`. Automatic mode
+preserves direct I/O. Clones inherit the snapshot's mode unless overridden; the
+choice persists across stop/start and subsequent snapshots. Buffered mode uses
+the host page cache and retains guest flushes and ext4 write barriers. It can
+reduce XFS reflink write contention, but should be measured for your workload.
 
 Host and guest artifacts are a matched release pair. Pin a versioned guest tag
 such as `24.04-v0.1.0`, or an OCI digest, when reproducibility matters.
@@ -333,7 +346,7 @@ Recursive removal requires `--recursive`, does not follow final symlinks, and
 rejects the root directory. These operations run with the guest agent's authority
 and can access mounts shared into the guest. SDK/HTTP file endpoints are unchanged.
 
-On a Linux/KVM host, test an imported Ubuntu/systemd image containing the current agent with:
+On a Linux/KVM host, test an imported runtime image containing the current agent with:
 
 ```bash
 sudo python3 tests/e2e/guest_operations.py \
@@ -375,24 +388,84 @@ wait
 sudo kumabox ps
 ```
 
-The published Ubuntu guest is intentionally minimal. To bake in your own
-toolchain (Python, Node, browsers), extend
-[`oci-images/ubuntu/Dockerfile`](oci-images/ubuntu/Dockerfile),
-which already installs the matching `kumabox-agent`, kernel and initramfs.
+Source-built guests use one boot chain throughout:
 
-For latency-sensitive Linux guests that do not need loadable kernel modules,
-build the optional single-layer fast-boot image from the same source tree:
+```text
+boot: dedicated kernel + static native initramfs
+  -> base: Ubuntu userland + boot artifacts + matching guest agent
+    -> rt: the same filesystem flattened into one OCI layer
+```
+
+The default profile is `native-v1`: Rust `kumabox-init` stays PID 1 after
+assembling the overlay root, mounts the runtime filesystems, configures static
+networking/DNS, and starts the Go agent as its child. It reaps adopted orphans,
+handles ACPI shutdown, and restarts a crashed agent at most three times in a
+30-second window. Before restarting, it terminates the old guest tasks because
+the replacement agent cannot recover their in-memory process records. Console
+access opens a root shell and requires host access to the VM.
+
+The base contains minimal Ubuntu/glibc userland, certificates and diagnostic
+commands. It does not install systemd, udev, networkd, resolved, a distribution
+kernel or initramfs-tools. Host VM quotas are unchanged; guest cgroup2 is mounted
+for applications that need their own process resource groups. Extend
+[`oci-images/base/24.04/Dockerfile`](oci-images/base/24.04/Dockerfile) for your
+toolchain, then flatten the result with
+[`oci-images/rt/24.04/Dockerfile`](oci-images/rt/24.04/Dockerfile).
+The native init uses built-in drivers and virtio serials; the small initramfs
+is uncompressed. Loadable kernel modules are not part of this guest profile.
 
 ```bash
-docker build -f oci-images/ubuntu/Dockerfile -t kumabox/ubuntu:24.04 .
-docker build -f oci-images/fastboot/Dockerfile.boot -t kumabox/boot:fast .
-docker build -f oci-images/fastboot/Dockerfile.image -t kumabox/ubuntu:fast .
-docker save kumabox/ubuntu:fast -o /tmp/kumabox-ubuntu-fast.tar
+sh scripts/build-guest.sh
+docker save kumabox/rt:24.04 -o /tmp/kumabox-ubuntu-fast.tar
 sudo kumabox image import ubuntu-fast /tmp/kumabox-ubuntu-fast.tar --format docker
 ```
 
-The fast profile has its own built-in kernel and initramfs; use the general
-Ubuntu image for workloads that require kernel modules or passthrough drivers.
+The script builds boot, base and rt in order and reuses BuildKit's caches.
+Use `--skip-boot --boot-image <pinned-image>` to consume an existing boot
+artifact; this deliberately does not rebuild native init or the kernel.
+Historical release images keep their original contents and performance.
+
+Agent readiness means its command listener is available; no service-manager
+boot or tmpfiles cleanup remains. `/run`, `/tmp` and `/dev/shm` are tmpfs mounts.
+Files outside these temporary mounts persist on the private writable disk across
+stop/start. Normal shutdown signals tasks, gives them three seconds to exit,
+then kills remaining tasks and syncs guest filesystems before poweroff.
+
+Build languages separately from the runtime; each final workload is flattened:
+
+```bash
+docker build -f oci-images/python/3.12/Dockerfile -t kumabox/python:3.12 .
+docker build -f oci-images/node/22/Dockerfile -t kumabox/node:22 .
+```
+
+These consume `kumabox/rt:24.04`; override `RUNTIME_IMAGE` to pin a runtime digest.
+Python 3.12 includes pip/venv. Node 22 uses the official Node distribution;
+`NODE_IMAGE` can pin its source digest too. Browser dependencies belong in a
+separate workload image. Create a golden snapshot for each image and resource
+shape only after the agent and required application are ready. Old snapshots
+retain their original image/boot artifacts; rebuilding a tag does not convert
+them to the native profile. Existing image-digest and VMM validation still apply.
+The native profile requires static networking (the eBPF backend supplies it);
+legacy systemd guests retain their existing DHCP support.
+Service units and udev rules are not executed in the native profile. Applications
+run through the agent; diagnostics go directly to the console. Device nodes
+come from devtmpfs and boot-time virtio serial aliases are prepared by init.
+
+Verify PID 1, console, PTYs, orphan reaping, agent restart, normal shutdown and
+snapshot/restore on a Linux/KVM host:
+
+```bash
+sudo python3 tests/e2e/native_boot.py \
+  --image my-updated-image --commit "$(git rev-parse --short HEAD)"
+```
+
+After importing the two workload images, verify their interpreters and that a
+prewarmed HTTP application keeps serving after a golden clone:
+
+```bash
+sudo python3 tests/e2e/workloads.py \
+  --python-image my-python-image --node-image my-node-image
+```
 
 ## Experimental TAP/eBPF networking
 
@@ -420,7 +493,7 @@ shared firewall rules rather than one rule per sandbox. It does not yet implemen
 an eBPF SNAT session table, tenant network policy, TAP pooling or IPv6. Existing
 CNI and bridge modes remain available. The host requires bpffs and TC eBPF support;
 normal builds embed the compiled BPF object and do not require Clang. To regenerate
-it on Linux, install Clang/libbpf headers and run `go generate ./network/tap`.
+it on Linux, install Clang/libbpf headers and run `go generate ./internal/network/tap`.
 
 The default host endpoint subnet is `10.89.0.0/16`; select an unused private range
 with `KUMABOX_NETWORK_EBPF_SUBNET`. When changing the subnet or installation scope,

@@ -2,10 +2,9 @@
 
 **For the first time, your own ChatGPT and Claude apps work together on your phone — one tap, free.** **Poly Duo — ChatGPT + Claude on iPhone; a free pair of AIs on Android.** Nothing like this exists on phones yet: ChatGPT and Claude work as a pair, each answers on its own and then the answers are compared, on the accounts you already have. Free ones are enough. No card, no computer. You can run the strongest models of two companies together, and a paid plan adds no extra fee.
 
-<!-- Poster: when video 2 is live on YouTube, point this link at the video instead of polyhelper.ai/duo. -->
-[![Watch Duo run — open polyhelper.ai/duo](docs/img/duo-hook-en-horizontal.jpg)](https://polyhelper.ai/duo/)
+[![Watch Duo run on YouTube](https://img.youtube.com/vi/Oj8ZQ_rVtQc/hqdefault.jpg)](https://youtu.be/Oj8ZQ_rVtQc)
 
-**Install:** [iPhone — add the Duo shortcut](https://www.icloud.com/shortcuts/b980622a51cf445abc2025ab3e820347) · [Android — Poly Duo on Google Play](https://play.google.com/store/apps/details?id=ai.polyhelper.a1) · [other languages](#install-in-60-seconds) · [polyhelper.ai/duo](https://polyhelper.ai/duo/)
+**Install:** [iPhone — add the Duo shortcut](https://www.icloud.com/shortcuts/9baa76c3d00e4c08ae1380c8ee3eb1c1) · [Android — Poly Duo on Google Play](https://play.google.com/store/apps/details?id=ai.polyhelper.a1) · [other languages](#install-in-60-seconds) · [polyhelper.ai/duo](https://polyhelper.ai/duo/)
 
 ## Install in 60 seconds
 
@@ -17,17 +16,17 @@
 
 | Language | Duo | Trio |
 |---|---|---|
-| English | [Duo](https://www.icloud.com/shortcuts/b980622a51cf445abc2025ab3e820347) | [Trio](https://www.icloud.com/shortcuts/ca730c3d887648a0a380dc397ede7ab7) |
-| Español | [Duo](https://www.icloud.com/shortcuts/d35cf24d559d4ffdad8f16ba61ff34af) | [Trio](https://www.icloud.com/shortcuts/3180a49b17e64b35b9b7c3b445ba98e9) |
-| Português | [Duo](https://www.icloud.com/shortcuts/caa63f68b26b4f07afc03eef4a96307c) | [Trio](https://www.icloud.com/shortcuts/29cace07d31f4033aa0cf26a2d1f9bb1) |
-| Русский | [Duo](https://www.icloud.com/shortcuts/847ba306d5924132add7bac9fe607a71) | [Trio](https://www.icloud.com/shortcuts/aaeeb82334154966b6c5fa6c8b6fdd3d) |
-| Українська | [Duo](https://www.icloud.com/shortcuts/3cb46b5c641e4151807493c76f12831a) | [Trio](https://www.icloud.com/shortcuts/2ee4ec0be50e4e2c85c10626bd5adf01) |
-| Deutsch | [Duo](https://www.icloud.com/shortcuts/9c523202f57b4cad93230818ff6cd979) | [Trio](https://www.icloud.com/shortcuts/3deb89385a604743925a2683faa0a216) |
-| Français | [Duo](https://www.icloud.com/shortcuts/156e0fc3a1f341ffaf2c617b8d9050bd) | [Trio](https://www.icloud.com/shortcuts/5debce283e1b4e4a90403959dbd8b748) |
-| हिन्दी | [Duo](https://www.icloud.com/shortcuts/e8e5e5098f5c4d6d97e1a81aee52eca5) | [Trio](https://www.icloud.com/shortcuts/8524e67391be4ced90d6bfddfc5fd271) |
-| 日本語 | [Duo](https://www.icloud.com/shortcuts/d8b35ecacee549e99f21b7c7e1cd18ec) | [Trio](https://www.icloud.com/shortcuts/c0988a5ff0f242cb8458f2991eef5b7f) |
-| 한국어 | [Duo](https://www.icloud.com/shortcuts/dc693203e7fd406c9aa6e2f93dc94d10) | [Trio](https://www.icloud.com/shortcuts/0df9f941045d4c3a8e43bef02c01c35b) |
-| 中文 | [Duo](https://www.icloud.com/shortcuts/eb3028a9b50443af98fe428d39dde95d) | [Trio](https://www.icloud.com/shortcuts/8c7639cf0be9421e884b075ee9b794e4) |
+| English | [Duo](https://www.icloud.com/shortcuts/9baa76c3d00e4c08ae1380c8ee3eb1c1) | [Trio](https://www.icloud.com/shortcuts/ca730c3d887648a0a380dc397ede7ab7) |
+| Español | [Duo](https://www.icloud.com/shortcuts/e24c2d192350498f8684ce51d950bb20) | [Trio](https://www.icloud.com/shortcuts/3180a49b17e64b35b9b7c3b445ba98e9) |
+| Português | [Duo](https://www.icloud.com/shortcuts/92ebfac5dee9458e9c5ffae6fd13e5b8) | [Trio](https://www.icloud.com/shortcuts/29cace07d31f4033aa0cf26a2d1f9bb1) |
+| Русский | [Duo](https://www.icloud.com/shortcuts/aeac0108bfa241dbb08cff78091f8e3d) | [Trio](https://www.icloud.com/shortcuts/aaeeb82334154966b6c5fa6c8b6fdd3d) |
+| Українська | [Duo](https://www.icloud.com/shortcuts/9af937cd07a544e493b9db9f63a9e283) | [Trio](https://www.icloud.com/shortcuts/2ee4ec0be50e4e2c85c10626bd5adf01) |
+| Deutsch | [Duo](https://www.icloud.com/shortcuts/b4f412abf5e74d4280b16df3bc8e93f5) | [Trio](https://www.icloud.com/shortcuts/3deb89385a604743925a2683faa0a216) |
+| Français | [Duo](https://www.icloud.com/shortcuts/520f75fadd134ccf856c6f76ce25b96d) | [Trio](https://www.icloud.com/shortcuts/5debce283e1b4e4a90403959dbd8b748) |
+| हिन्दी | [Duo](https://www.icloud.com/shortcuts/b2d06f9be9dc478eaf78051bbfc3bbb8) | [Trio](https://www.icloud.com/shortcuts/8524e67391be4ced90d6bfddfc5fd271) |
+| 日本語 | [Duo](https://www.icloud.com/shortcuts/c1790f70f9d147dfa87bffa8be08046f) | [Trio](https://www.icloud.com/shortcuts/c0988a5ff0f242cb8458f2991eef5b7f) |
+| 한국어 | [Duo](https://www.icloud.com/shortcuts/4b2ce35771db4235a1771fb3646108aa) | [Trio](https://www.icloud.com/shortcuts/0df9f941045d4c3a8e43bef02c01c35b) |
+| 中文 | [Duo](https://www.icloud.com/shortcuts/47912cf4201949b899497f4f22d9069e) | [Trio](https://www.icloud.com/shortcuts/8c7639cf0be9421e884b075ee9b794e4) |
 
 **Backup: the signed file.**
 
@@ -35,7 +34,7 @@
 2. Tap **`Duo.shortcut`** (or **`Trio.shortcut`**) → **Add**.
 3. Run it once and tap **Always Allow** each time it asks about ChatGPT, Claude and the clipboard (4–6 times on the first run).
 
-The same signed files are on [polyhelper.ai/duo](https://polyhelper.ai/duo/) (Duo 6.3.1) and in the [`releases/`](releases) folder of this repository (the same files that `releases/SHA256SUMS` lists). The [GitHub releases](https://github.com/vadimchernets/poly-duo/releases) page does not carry the current files: its only attached files, in v1.0.0–v1.0.4, are the old 1.0 builds named `Duo-en.shortcut` and so on. Do not use them: the name becomes the shortcut's name, and Siri and «another mode — same question» then cannot find it. Keep the file name
+The same signed files are on [polyhelper.ai/duo](https://polyhelper.ai/duo/) (Duo 6.4) and in the [`releases/`](releases) folder of this repository (the same files that `releases/SHA256SUMS` lists). The [GitHub releases](https://github.com/vadimchernets/poly-duo/releases) page does not carry the current files: its only attached files, in v1.0.0–v1.0.4, are the old 1.0 builds named `Duo-en.shortcut` and so on. Do not use them: the name becomes the shortcut's name, and Siri and «another mode — same question» then cannot find it. Keep the file name
 `Duo.shortcut`: the name in Shortcuts comes from it, and Siri and «another mode — same question»
 find the shortcut by that name.
 
@@ -54,7 +53,7 @@ Duo is free, and so is **Trio** (Duo plus a third voice, below). The code is ope
 
 Have ChatGPT and Claude? Start right away. Have one? It helps you install the other. Have neither? Gemini (Google) or Meta AI (WhatsApp, Facebook) helps you install both, free.
 
-[![Watch the 18-second demo](https://img.youtube.com/vi/xljOlD4z1K4/hqdefault.jpg)](https://youtu.be/xljOlD4z1K4)
+[![Watch Duo run on YouTube](https://img.youtube.com/vi/Oj8ZQ_rVtQc/hqdefault.jpg)](https://youtu.be/Oj8ZQ_rVtQc)
 
 [![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 ![iOS 18+](https://img.shields.io/badge/iOS-18%2B-lightgrey.svg)
@@ -354,7 +353,7 @@ answer in the last frame is the real output of the run shown, copied from the ph
 both menu levels, the finale menu, the result screen, clipboard delivery, the journal and the
 permission flow. That was one phone in two of the eleven languages; the other nine are built from
 the same sources and machine-checked against them, and the old Tasker path for Android has never been run on a phone (the Poly A1 Android Duo was run on an emulator on 2026-10-01). Duo was also run end to end on free ChatGPT and Claude accounts (free Claude, Sonnet 5.5) on 2026-10-01.
-`tools/verify.py` unpacks each signed shortcut and compares its prompts and texts with the open source files in `locales/`; it checks that the file matches the sources, not that the AIs answer well. Verified in the live run: Duo and Trio of 2026-10-01 (before Duo 5 / Trio 4); a fresh run on current iOS and app versions is still to be done and dated here. The blind Critique of Duo 6 / Trio 5 (2026-10-26) has not been run on a phone yet. Everything known to be unverified is in Limitations above and in the [FAQ](docs/en/faq.md).
+`tools/verify.py` unpacks each signed shortcut and compares its prompts and texts with the open source files in `locales/`; it checks that the file matches the sources, not that the AIs answer well. Verified in the live run: Duo and Trio of 2026-10-01 (before Duo 5 / Trio 4); Duo 6.3.1 was run on a live iPhone on 2026-10-28: Critique mode, both answers arrived, the journal was written and the menu worked. Duo 6.4 was run on a live iPhone on 2026-10-29 from its release link (en): Critique, both answers and the comparison, the journal and «What next?»; also the resume after a run cut off after ChatGPT, «Claude alone» after a stop before ChatGPT answered, and a run with every permission answered «Allow Once». Other versions and modes are as dated above. Everything known to be unverified is in Limitations above and in the [FAQ](docs/en/faq.md).
 
 Own check of the pair (26 Oct 2026, command-line models, blind grading against a reference): the Claude review made a correct ChatGPT draft wrong in 0 of 66 cases (95% CI 0-6%) and fixed ChatGPT's error in 18 of 18 cases on a set chosen for those errors; the blind variant against the earlier Critique: no difference established. Data and limits: [evidence/pair-check-2026-10-26/](evidence/pair-check-2026-10-26/README.md).
 

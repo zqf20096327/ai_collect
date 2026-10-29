@@ -5,6 +5,8 @@
 
 <p align="center">
   <a href="https://xingjianbai.com/reactive-optimizers/">Blog post</a> ·
+  <a href="https://arxiv.org/abs/2610.33826">Paper</a> ·
+  <a href="https://www.alphaxiv.org/abs/2610.33826">alphaXiv</a> ·
   <a href="https://github.com/xingjian-bai/opal/blob/main/docs/GUIDE.md">Guide</a> ·
   <a href="#start-with-your-coding-agent">Start with your agent</a> ·
   <a href="https://github.com/xingjian-bai/opal/blob/main/examples/README.md">Examples</a>
@@ -201,7 +203,7 @@ Code CLI against a local mock.
 
 ## Status and limitations
 
-v0.3.8, under active development. Tested on one GPU and on DDP within one node (NCCL, eager and `torch.compile`).
+v0.3.9, under active development. Tested on one GPU and on DDP within one node (NCCL, eager and `torch.compile`).
 Multi-node, FSDP and DeepSpeed are not supported. Accelerate works if you wrap after `accelerator.prepare`, without
 fp16 GradScaler or Accelerate's gradient accumulation; the HF Trainer works through `opal.hf.OpalTrainer`. Both are
 tested on CPU. Lightning should work through `opt.observe(loss)` but we have not tried it. The agent can make a run
@@ -210,12 +212,14 @@ worse: it cannot restart or roll back training, it can only fix its programs at 
 ## Citation
 
 ```bibtex
-@misc{bai2026reactive,
-  title  = {Reactive Optimizers},
-  author = {Bai, Xingjian and Liang, Jia-Hao and Teoh, Jayden and Sitzmann, Vincent},
-  year   = {2026},
-  month  = {oct},
-  note   = {Blog post}
+@misc{bai2026reactiveoptimizers,
+      title={Reactive Optimizers},
+      author={Xingjian Bai and Jia-Hao Liang and Jayden Teoh and Vincent Sitzmann},
+      year={2026},
+      eprint={2610.33826},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2610.33826},
 }
 ```
 

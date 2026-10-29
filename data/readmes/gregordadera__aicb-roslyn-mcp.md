@@ -140,13 +140,13 @@ back quickly, and the context tools pick and render the part of the code a task
 needs. This does **not** mean that every possible answer or runtime relationship is
 known in advance.
 
-Each `aicb mcp` process keeps its own live sessions; a second server process
-analyzes on its own. The desktop app, CLI and MCP server give their answers
-from the same engine and can share configuration and saved snapshots through the
-local database, but each keeps its own live analysis. After you edit source files,
-the next refresh usually updates only what changed, without loading the solution
-again; `force: true` loads it completely. Callers that ask for a refresh at the same
-time share one.
+Every agent session that starts `aicb mcp` gets its own analysis, and the desktop
+app, the CLI and the server answer alike and can share configuration and saved
+snapshots. After you edit source files, the next refresh picks up what changed,
+usually without loading the solution again (`force: true` loads it completely). A
+client that gives up waiting for a long first analysis can simply ask again: the
+analysis finishes anyway, and a retry with the same arguments gets it from the
+cache.
 
 ### Live sessions, snapshots and persistent codebase memory
 
@@ -193,7 +193,7 @@ short or apparently definitive result, inspect the accompanying signals:
 | Signal | Meaning | Typical response |
 |---|---|---|
 | `staleness` | Saved source changed after the analysis, or an automatic refresh ran or failed | Save the files and refresh if the response is not current |
-| `incompleteProjects` or `verdict: "inconclusive"` | Project references could not be resolved well enough for a complete semantic graph | Restore or build, then call `refresh_session(force: true)` |
+| `incompleteProjects` or `verdict: "inconclusive"` | Project references could not be resolved well enough for a complete semantic graph | Restore, then call `refresh_session`; after a build, `refresh_session(force: true)` |
 | `totalFound` and `truncated` | More matches exist than were returned | Narrow the scope, paginate or raise the documented cap |
 | Bundle manifest or leading omission note | A token budget removed surrounding types, tests or sibling implementations | Increase the budget or request the missing axis explicitly |
 | `mergedNamesakes`, ambiguity or multiple candidates | A name did not resolve to one unique symbol | Repeat the query with a qualified symbol name |
@@ -205,7 +205,7 @@ The MCP profile controls automatic refresh. `Off` only discloses drift,
 setting, while `Proactive` starts analysis after saved edits settle. Automatic
 refresh never sees unsaved editor buffers. Staleness is also different from
 reference incompleteness: the first needs a refresh; the second normally needs a
-restore or build followed by a forced refresh.
+restore followed by a refresh (after a build, a forced one).
 
 AICB also distinguishes **unknown** from **verified absent**. Tools such as
 `assert_absence` return `confirmed`, `refuted` or `indeterminate` rather than
@@ -311,15 +311,15 @@ the .NET 10 SDK, installs the published tool, restores the solution and runs
 written:
 
 ```yaml
-- uses: gregordadera/aicb-roslyn-mcp@v0.5.505.1
+- uses: gregordadera/aicb-roslyn-mcp@v0.5.510.1
   with:
-    version: 0.5.505.1
+    version: 0.5.510.1
     solution: App.sln
     output: artifacts/context.md
     fail-on: "critical>0 OR debt>120min"
 ```
 
-The example pins both halves: `@v0.5.505.1` fixes the action, `version` fixes the package it
+The example pins both halves: `@v0.5.510.1` fixes the action, `version` fixes the package it
 installs. Without `version` the action installs the newest published package, and `@main`
 follows every change to the action, so neither belongs in a build you depend on. A release
 tag can in principle be moved; the full commit SHA of that tag is the immutable form. Further

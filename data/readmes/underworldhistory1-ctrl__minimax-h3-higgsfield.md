@@ -1,6 +1,32 @@
 # H3 Higgsfield
 
-**Current release: 2.5.6 · native INT8 acceleration and render recovery**
+**Current release: 2.6.0 · verified installation and adapter readiness**
+
+### Start a scene directly
+
+Production opens immediately, with no manual project requirement. **Save scene** or **Generate** creates its own named workspace when needed. **New scene** saves the previous working setup before opening clean defaults. Use the top **Save scene to** picker to copy the current setup into a new scene/shot in an existing project; existing scenes and takes remain intact. Choosing Automatic detaches the current setup for independent saving. Continuation sources must be cleared before switching ownership between projects.
+
+Opening the plain Studio link starts with an empty setup, including when a browser copies another tab's session storage. Each new page gets its own render identity, so separate pages can submit independent jobs to the server queue. Refreshing the same tab keeps its inputs, project and render tracking. Click the H3 logo to refresh that tab. Explicit project, Reuse and job links still open the requested saved work; the last project is never selected implicitly from shared browser storage.
+
+**Clear setup**, inside More scene tools, resets the working inputs/settings and checkpoints the reset on this device. It preserves saved project setups and output files. Project management and advanced scene/shot tools are collapsed until needed. **Download** is available directly on video and image cards. Generations search matches all entered words across recorded prompts, filenames and settings within the chosen library scope.
+
+[Scene workspace verification](docs/SCENE_WORKSPACE_2026_10_29.md) records tests and limits.
+
+[2.6 release verification](docs/RELEASE_2_6.md) records code, installation and current-server GPU test boundaries.
+
+### Updates and ComfyUI
+
+The shared video/image header opens the ComfyUI node editor in a separate tab. Updates shows a numbered badge when a new official revision is available and checks again while Studio is in use. Checks compare official source, installed interface/backend files and the code observed by the running worker. An incomplete copy or missing restart reports installation attention; a failed check cannot keep an older up-to-date claim. This checks Studio code; model/LoRA files are separate prerequisites. The update sheet preserves generation and recovery guards; installation still requires an idle queue and a manual ComfyUI restart.
+
+[Community request review](docs/COMMUNITY_REVIEW_2026_10_29.md) records existing features, implemented improvements and options that still need validation.
+
+### Project elements and image replacement
+
+A collapsed image Reference card has **Replace** beside Remove. It changes that shot's image while keeping the mention name, role and position. Save scene to retain this shot change on the server. **Replace image** in Elements replaces the reusable element and its editable saved shot bindings, retaining its display name, identifier, category and notes. Historical takes keep their original image; those archived originals remain in project exports and can still be reused or copied.
+
+Corrupt images and failed uploads retain the original. Revision checks reject stale edits; a lost replacement response is reconciled by reading the exact saved operation, without resubmitting it. Project creation requests also retain one identity across retries in the active tab. Catalog names and shot mention names remain separate; case collisions and ambiguous display mentions cannot silently choose another reference. Large element libraries render 60 items at a time while search covers all elements.
+
+[Project and Elements verification](docs/PROJECT_ELEMENTS_PLAN_2026_10_29.md) records the failure cases and test boundaries.
 
 ### Reference names and native tags
 
@@ -18,7 +44,7 @@ With the matching LTX `studio_shared_gpu` custom node installed, set `STUDIO_SHA
 
 Click **Reuse** to reload directly into Production using a link to the selected output. The saved prompt, references, adapter strengths and render settings are copied into an independent workspace inside the original project's automatic **Reuse** folder. Reuse of a reused result stays with that same original project, including after renaming it. The library groups these setups under a folder card and an original-project **Reuse (count)** shortcut; searching also finds individual setups. A request retry reopens the same workspace without overwriting subsequent edits. The final URL identifies the restored project and survives refresh. The source take and any backend render remain intact. Missing original files are reported in Production; Reuse does not invent missing inputs or start generation automatically.
 
-**New project** in Production and **Create project** in the library share one creation flow: save the current setup, then start with clean defaults. **Save setup** uses the guarded workspace save, and **Project tools → Export project ZIP** saves the latest setup before downloading. A scene with no shot retains its local editor checkpoint when leaving; explicit Save/Export asks you to create or select a shot first.
+**New project** in Production and **Create project** in the library share one creation flow: save the current setup, then start with clean defaults. **Save scene** uses the guarded workspace save, and **More scene tools → Export project ZIP** saves the latest setup before downloading. A scene with no shot retains its local editor checkpoint when leaving; explicit Save/Export asks you to create or select a shot first.
 
 ## Direct the shot. Keep the whole workflow in view.
 

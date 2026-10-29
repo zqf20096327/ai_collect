@@ -87,7 +87,7 @@
 </tr>
 <tr>
 <td><b>提示词组合</b><br><code>PromptCombiner</code></td>
-<td>组合两段提示词并输出，内置英文逗号分隔，每段可独立启用或禁用。支持接入 LoRA 堆加载器的 <b>触发词</b> 端口并前置合并到输出。注释通过节点顶部「✎ 注释」按钮编辑，悬停输入框即可查看对应注释。
+<td>组合两段提示词并输出，内置英文逗号分隔，每段可独立启用或禁用。支持接入 LoRA堆加载器的 <b>触发词</b> 端口并前置合并到输出。注释通过节点顶部「✎ 注释」按钮编辑，悬停输入框即可查看对应注释。
 
 <br>
 <div align="left">
@@ -183,22 +183,6 @@
 <div align="left">
 <a href="images/Text Switch Dual Mode.jpg" target="_blank">
 <img src="images/Text Switch Dual Mode.jpg" alt="文本切换器(双模式)" width="45%"/>
-</a>
-</div>
-</td>
-</tr>
-<tr>
-<td><b>优先级文本切换</b><br><code>PriorityTextSwitch</code></td>
-<td>优先级文本切换节点：当同时接入文本A和文本B端口时，优先输出B端口；如果B端口为空或未连接，则输出文本A端口；如果两个端口都为空，则返回空字符串。
-
-<b>特点</b>：
-- <b>优先级控制</b>：文本B端口优先级高于文本A端口
-- <b>智能切换</b>：自动检测输入状态，空值时回退到A或输出空文本
-
-<br>
-<div align="left">
-<a href="images/Priority Text Switch.jpg" target="_blank">
-<img src="images/Priority Text Switch.jpg" alt="优先级文本切换" width="45%"/>
 </a>
 </div>
 </td>
@@ -542,21 +526,6 @@
 </div>
 </td>
 </tr>
-<tr>
-<td><b>优先级图像切换</b><br><code>PriorityImageSwitch</code></td>
-<td>智能优先级图像切换节点，当同时接入图像A和图像B端口时，优先输出B端口的内容；如果B端口无输入，则输出图像A端口的内容；如果两个端口都无输入，则弹出提示要求至少连接一个输入端口。
-
-<b>特点</b>：
-- <b>优先级控制</b>：图像B端口优先级高于图像A端口
-- <b>智能切换</b>：自动检测输入状态，无缝切换输出，减少手动切换操作
-
-<br>
-<div align="left">
-<a href="images/优先级图像切换.jpg" target="_blank">
-<img src="images/优先级图像切换.jpg" alt="优先级图像切换" width="45%"/>
-</a>
-</div></td>
-</tr>
 </table>
 
 ### 🎞️ 电影后期处理类节点
@@ -765,13 +734,14 @@
 </td>
 </tr>
 <tr>
-<td><b>LoRA 堆加载器</b><br><code>LoraStackLoader</code></td>
+<td><b>LoRA堆加载器</b><br><code>LoraStackLoader</code></td>
 <td>
 
 以列表方式管理多个 LoRA，按行顺序依次叠加到 MODEL。
 
 <b>核心功能</b>：
-- <b>行内管理</b>：拖动排序、启用/禁用、◀▶ 按 0.05 步进调强度、直接输入权重（范围 -50 到 50）、点击行选中、在「更多设置」中更换模型、删除
+- <b>行内管理</b>：拖动排序、启用/禁用、◀▶ 按 0.05 步进调强度、直接输入权重（默认范围 -10 到 10，可在设置中自定义或一键恢复默认）、点击行选中、在「更多设置」中更换模型、删除
+- <b>节点设置</b>：标题栏齿轮按钮可开启/关闭批量添加（默认关闭，勾选多个 LoRA 一键载入，已存在条目自动跳过）、开关模型选择器的预览缩略图（默认开启），并自定义权重范围
 - <b>模型选择器</b>：搜索、缩略图与大图预览，无预览图时显示占位
 - <b>预置触发词</b>：每行「更多设置」内填写，随工作流保存、可一键复制，不输出端口
 - <b>配方保存</b>：整套 LoRA 结构可存为配方随时载入

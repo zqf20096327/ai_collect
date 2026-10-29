@@ -4,12 +4,12 @@
 
 <p align="center">
   <a href="https://releaseszn.com/p/kiteva"><img src="https://releaseszn.com/badge/kiteva.svg" alt="releaseszn"></a>
-  <a href="https://github.com/delexw/kiteva/releases/latest"><img src="https://img.shields.io/github/v/release/delexw/kiteva" alt="Latest release"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/github/license/delexw/kiteva" alt="MIT license"></a>
-  <a href="https://github.com/delexw/kiteva/actions/workflows/native-windows.yml"><img src="https://github.com/delexw/kiteva/actions/workflows/native-windows.yml/badge.svg" alt="Native Windows CI"></a>
+  <a href="https://github.com/delexw/motion-graphics-agent/releases/latest"><img src="https://img.shields.io/github/v/release/delexw/motion-graphics-agent" alt="Latest release"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/delexw/motion-graphics-agent" alt="MIT license"></a>
+  <a href="https://github.com/delexw/motion-graphics-agent/actions/workflows/native-windows.yml"><img src="https://github.com/delexw/motion-graphics-agent/actions/workflows/native-windows.yml/badge.svg" alt="Native Windows CI"></a>
 </p>
 
-<h1 align="center">kiteva</h1>
+<h1 align="center">Kiteva — AI Motion Graphics Agent</h1>
 
 <p align="center">
   <b>A personal creative room where an idea turns into a short motion-graphics film.</b><br>
@@ -33,6 +33,35 @@ Switch the interface instantly with **EN / 中文**; see [interface language](do
 ## Recent updates
 
 Dates below use New Zealand time.
+
+<details>
+<summary>2026-10-30</summary>
+
+- **v1.0.0 source release:** publish the production workflow improvements below under the renamed `motion-graphics-agent` repository. See the [changelog](CHANGELOG.md#100--2026-10-30).
+
+- **Production Desk and inline storyboard:** open both viewers inside centered, nearly full-window dialogs. Desk provides read-only playback, seeking, zoom, clip inspection and real audio waveforms; its larger preview leaves tracks below. Saved production metadata is available during generation, before the agent returns its accepted response. See [Production Desk](docs/production-desk.md).
+- **Separate audio sources:** new full builds retain music-only and individual SFX files with timed placements and gains in a shared `audioTracks` manifest. The agent still prepares the final music/SFX mix through the existing renderer handoff; Desk inspects the separate sources rather than treating the merged soundtrack as music-only. Application-owned narration mixing is unchanged, and legacy projects keep their fallback.
+- **Playback synchronization:** move the Desk cursor with CSS transforms using the media clock, without frame-by-frame React updates or repeated layout positioning. Opening Desk pauses background audio; shared video players prevent competing audible playback while leaving silent previews running.
+- **Ming narration:** add the local Ming 3.0 TTS 0.5B provider, its supported-language voice catalog and neutral voice controls. Retire both Qwen providers, retain the original narrator reference for Ming cloning, and normalize saved legacy speech selections. Narration guidance now asks for a connected story with natural chapter transitions. See [Ming TTS](docs/ming-tts.md).
+- **Shared project workspace:** centralize artifact, asset, diagnostic and runtime paths for build agents, correctors, capture, narration, exports and cache recovery. Render inputs stay under artifacts; logs and task context remain separate. Existing workspaces and recovery checkpoints use explicit layout compatibility. See [project workspace](docs/project-workspace.md).
+- **Cache evidence and correction outcomes:** replace the Haiku change-summary step with bounded factual evidence for JEV, preserving hash checks and concrete cache-restore reporting. Corrections return structured fixed/refused/unresolved outcomes, escalate non-repairs to the main model and retain reasons for narrowly scoped bypasses. Renderer execution uses native defaults. See [cache recovery](docs/render-cache-recovery.md) and [correction outcomes](docs/video-correction-outcomes.md).
+- **Consistent project controls:** recover from a broken brief without losing the option to remove its draft, copy style metadata, and name downloads from the normalized style and version. Storyboard actions use matching icons and lowercase labels; activity grouping and render progress keep their task hierarchy.
+- **Credential boundaries and verification:** share credential environment names across SDK configuration, child processes and provider tests; deny credential access in agent shell tools while retaining required SDK authentication. Codebase tests clear provider credentials and block real external API calls. A separate live 10-second project verified the model-created music/SFX mix, saved source clips and Desk waveforms.
+
+</details>
+
+<details>
+<summary>2026-10-29</summary>
+
+- **Refinement continuity and versions:** preserve earlier requests, question/answer history and image references; allow excluding prior requests before submission. Resume verified build sessions, including cancelled versions, without letting helper sessions replace them. Versions can be deleted with confirmation, and their numbers are never reused. See [video refinement](docs/video-refinement.md).
+- **Activity history on demand:** expand any parent to load its immediate children through one recursive component and shared grouping logic. Remove manual paging buttons, load more siblings on scroll, release collapsed branches, virtualize long lists and use consistent indentation. Finished jobs no longer leave unresolved entries spinning while another version runs. See [activity history](docs/activity-history.md).
+- **Shared loading and result UI:** reuse loading indicators with visible text; group revisions in one card with wrapping version controls, overlay playback controls, generated timestamps and consistent icon actions. Conversation shows narration providers/voices and uses shared image/document attachment previews.
+- **Language and subtitle controls:** global selected languages govern matching narration and subtitle tracks, with one voice configuration per language and global subtitle visibility. Timed script items inherit these choices; subtitle generation reports progress in cues. See [video languages](docs/video-languages.md).
+- **Rendering and capture recovery:** accept video duration within five seconds of the requested target, preserve eligible render cache across repairs, and exclude runtime/dot-folder noise from change summaries. Separate chapter timing retries from planning, retain capture diagnostics and keep cancellation scoped to owned dependencies. See [render cache recovery](docs/render-cache-recovery.md).
+- **Portable style assets:** Production Theatre metadata includes its canonical crew CSS and role markup, without imports from application source. A JPEG logo is available alongside the existing brand assets.
+- **Governance and local configuration:** expose combination and render-cache decisions, keep Claude SDK costs and incremental Codex estimates distinct, and use `TYPESAFE_API_KEY` as the single JEV key. Tests use local fixtures/mocked transports and block external provider requests; downloaded agent skills remain outside Git.
+
+</details>
 
 <details>
 <summary>2026-10-28</summary>
@@ -374,8 +403,8 @@ On macOS, [install.sh](install.sh) installs missing system prerequisites, locked
   It is used for generated style directions and visual/audio capability selection. Manually selecting Motion Graphics skips style ranking, while capability decisions remain separate.
 
 ```sh
-git clone https://github.com/delexw/kiteva.git
-cd kiteva
+git clone https://github.com/delexw/motion-graphics-agent.git
+cd motion-graphics-agent
 ./install.sh
 # Edit the created .env.local: add TYPESAFE_API_KEY and provider keys if needed.
 npm start                       # open http://127.0.0.1:4317

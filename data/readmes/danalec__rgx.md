@@ -13,6 +13,10 @@ That is the whole difference from [rga](https://github.com/phiresky/ripgrep-all)
 formats by shelling out to a helper per file:
 here there is nothing to spawn
 
+## See it work
+
+[![rgx -- a demo on YouTube](https://img.youtube.com/vi/R-td9S8gBn4/hqdefault.jpg)](https://www.youtube.com/watch?v=R-td9S8gBn4)
+
 ## rgy or rgx?
 
 **If you just want to find things, use [rgy](https://github.com/danalec/rgy).**
@@ -88,11 +92,18 @@ The feature is named after the string the adapter itself reports — the one
 `format-grib` is GRIB, `format-stl` is the binary STL and `format-stl-ascii`
 is the ASCII renderer.
 
+**The engine is `no_std`.** `rgx-core` is `#![no_std]` + `alloc`, and the
+`std` feature turns on the typed error chain, the profiler map and the
+`f64` JSON parser — nothing else that matters. So the engine above is the
+crate an embedder links: a router or a NAS that wants to search its own
+files can take it without the standard library, and still reach the same
+AVX2 kernels the full build uses.
+
 `rgx --version` prints the formats the build actually carries, read from the
 features themselves, so the list cannot drift away from the binary.
 
-The full binary is 9 346 048 bytes. A build with three formats (zip, pdf,
-grib) is 4 004 352 and the engine alone is 3 493 376 — 57 % and 63 % smaller.
+The full binary is 9 340 416 bytes. A build with three formats (zip, pdf,
+grib) is 4 014 592 and the engine alone is 3 516 416 — 57 % and 62 % smaller.
 
 ## Try it
 
@@ -116,12 +127,12 @@ lzma fixtures, from one command line:
 
 +122% more hits. ripgrep calls those archives binary and moves on; rgx unpacks
 them in-process. Full table and the gate that produced it:
-[`benchmark/status.md`](https://github.com/danalec/rgx/blob/main/benchmark/status.md).
+[`benchmark/status.md`](benchmark/status.md).
 
 ## What it reads
 
 The families, the formats of each one, what each of them gives and what
-each of them refuses are in [**FORMATS.md**](https://github.com/danalec/rgx/blob/main/FORMATS.md) -- eighteen
+each of them refuses are in [**FORMATS.md**](FORMATS.md) -- eighteen
 families, from the archive to the e-mail, and the gaps of each.
 
 ### Searching by what a file is
@@ -285,7 +296,7 @@ same question.
 Every row below sits behind a match-count gate: a row whose counts disagree
 against ripgrep is withheld, not printed with a ratio. Per-row timings, corpus
 digests and the ±3% spawn floor are in
-[`benchmark/status.md`](https://github.com/danalec/rgx/blob/main/benchmark/status.md).
+[`benchmark/status.md`](benchmark/status.md).
 
 - **One large file, the matcher alone** — **1.33×–2.14×** faster than ripgrep,
   9 of 9 patterns won (246 MB file, `-j1`).
@@ -298,7 +309,7 @@ digests and the ±3% spawn floor are in
 **And the other half of it:** those are one machine's numbers. The same
 byte-identical corpus on a second host (Linux, Ryzen 7 255) puts rgx *behind*
 ripgrep on six of the nine patterns
-([`benchmark/status-linux-ryzen7-255.md`](https://github.com/danalec/rgx/blob/main/benchmark/status-linux-ryzen7-255.md)).
+([`benchmark/status-linux-ryzen7-255.md`](benchmark/status-linux-ryzen7-255.md)).
 Quote a ratio with its host, or don't quote it.
 
 ## The extraction cache
@@ -349,7 +360,7 @@ Four additions are worth knowing:
 - **`.rgxrc`** — read *before* argv, so a CLI flag always wins. If rgx seems to
   ignore a flag you passed, look here first.
 
-Full reference: [`MANUAL.md`](https://github.com/danalec/rgx/blob/main/MANUAL.md).
+Full reference: [`MANUAL.md`](MANUAL.md).
 
 ## Scripts
 
@@ -384,23 +395,30 @@ the pack-store harnesses `tv-vs-rg.sh`, `tv-matrix.sh`, `tv-threads.sh`,
 
 | | |
 |---|---|
-| [`FORMATS.md`](https://github.com/danalec/rgx/blob/main/FORMATS.md) | what each format gives, and what it refuses |
-| [`MANUAL.md`](https://github.com/danalec/rgx/blob/main/MANUAL.md) | every flag, environment variable and exit code |
-| [`benchmark/status.md`](https://github.com/danalec/rgx/blob/main/benchmark/status.md) | per-row timings, corpus digests, the gate, both hosts |
-| [`benchmark/findings.md`](https://github.com/danalec/rgx/blob/main/benchmark/findings.md) | the ledger — what was tried, and what it was worth |
+| [`FORMATS.md`](FORMATS.md) | what each format gives, and what it refuses |
+| [`MANUAL.md`](MANUAL.md) | every flag, environment variable and exit code |
+| [`benchmark/status.md`](benchmark/status.md) | per-row timings, corpus digests, the gate, both hosts |
+| [`benchmark/findings.md`](benchmark/findings.md) | the ledger — what was tried, and what it was worth |
 | [`COPYING`](COPYING) | the licence the whole tree is under, and what it does not cover |
 
 ## License
 
-**Apache-2.0**, and nothing else. Every file in this repository carries an
-SPDX header, and a test reads the file list out of git and fails on the
-first file that says otherwise — so the claim is per file, not per
-paragraph. Where a file implements a layout learned from somebody else's
-implementation — the borg segment, the PostgreSQL custom dump, the Redis
-RDB table, the LMDB meta page, the ACIS SAT records — what came across is
-the layout, and the code is rgx's own; every upstream is named in
-[`NOTICE`](NOTICE). A distributed `rgx` binary is Apache-2.0 code plus the
-Rust dependencies it links, each of which carries its own permissive
-licence. See [`COPYING`](COPYING).
+**Apache-2.0**, and nothing else — per file: every file in this repository
+carries an SPDX header, and a test reads the file list out of git and fails
+on the first file that says otherwise. A distributed `rgx` binary is
+Apache-2.0 code plus the Rust dependencies it links, each of which carries
+its own permissive licence.
 
-Full text: `LICENSE-APACHE`. Provenance and notices: [`NOTICE`](NOTICE).
+The full text is `LICENSE-APACHE`. What is not rgx's code is named in
+[`NOTICE`](NOTICE), and the reasoning — why the tree has one licence and
+what it does not cover — is in [`COPYING`](COPYING).
+
+## Star history
+
+<a href="https://star-history.com/#danalec/rgx&Date">
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=danalec/rgx&type=Date&theme=dark">
+<source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=danalec/rgx&type=Date">
+<img alt="Star History Chart" src="https://api.star-history.com/svg?repos=danalec/rgx&type=Date">
+</picture>
+</a>

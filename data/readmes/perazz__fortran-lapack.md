@@ -3,9 +3,60 @@ This package provides precision-agnostic, high-level linear algebra APIs for `re
 
 A full and standardized implementation of the present library has been integrated into the [Fortran Standard Library](http://stdlib.fortran-lang.org/), and as such, most users should seek to access the functionality from `stdlib`. The present library is kept in place for those who seek a compact implementation of it.
 
+# Precision kinds and fpm features
+
+`sp` (32-bit) and `dp` (64-bit) are always built. The wider kinds are fpm features, so a build pays
+only for the precisions it asks for:
+
+| feature | kind | BLAS/LAPACK initials | in the `default` profile |
+|---|---|---|---|
+| `quad` | `qp`, 128-bit | `q` real, `w` complex | yes |
+| `xdp` | `xdp`, 80-bit extended | `x` real, `y` complex | no |
+
+`quad` is part of the `default` profile, so `fpm build`, `--profile debug` and `--profile release`
+carry `sp`, `dp` and `qp`, as every earlier release did. The named profiles select the other
+combinations:
+
+```bash
+fpm test                       # sp, dp, qp
+fpm test --profile lean        # sp and dp only, a third fewer source lines
+fpm test --profile allkinds    # sp, dp, xdp, qp -- x86_64 only
+fpm test --profile external    # sp, dp, qp, against the reference BLAS and LAPACK
+```
+
+80-bit extended precision is a property of x86 hardware rather than of the language: on aarch64
+`selected_real_kind(18)` returns the 128-bit kind, so a build that asks for `xdp` there stops in
+`la_constants` instead of compiling a second copy of the quadruple-precision code.
+
+From a consumer's manifest:
+
+```toml
+[dependencies]
+# default: sp, dp, qp -- nothing to write
+fortran-lapack = { git = "https://github.com/perazz/fortran-lapack" }
+
+# sp and dp only
+fortran-lapack = { git = "https://github.com/perazz/fortran-lapack", profile = "lean" }
+
+# add 80-bit extended precision
+fortran-lapack = { git = "https://github.com/perazz/fortran-lapack", features = ["quad", "xdp"] }
+```
+
+`features = [...]` replaces the default set instead of adding to it, so a consumer that wants `xdp`
+as well as `qp` lists both.
+
+`la_constants` declares `sp`, `dp`, `xdp` and `qp` whether or not the build carries them: a kind
+left out is `-1`, so `use la_constants, only: qp` keeps compiling. The logical parameters
+`la_with_qp` and `la_with_xdp` say which of the two are real.
+
+Outside fpm, the same choice is made with the preprocessor: the generated sources under `src/` are
+`.F90`, the tests under `test/` carry cpp directives too, so the whole tree wants `-cpp`, with
+`-DLA_WITH_QP` for quadruple precision and `-DLA_WITH_XDP` for extended precision.
+
 # Browse API
 
-All procedures work with all types (`real`, `complex`) and kinds (32, 64, 128-bit floats).
+All procedures work with all types (`real`, `complex`) and kinds (32, 64, 128-bit floats, and the
+80-bit extended floats of the `xdp` feature).
 
 ## [chol](@ref la_cholesky::chol) - Cholesky factorization of a matrix (function).
 
@@ -133,6 +184,7 @@ The computation supports both `real` and `complex` matrices. If requested, eigen
 - If computing real eigenvalues, an error is returned if eigenvalues have nonzero imaginary parts.
 - This routine is based on LAPACK's [GEEV](@ref la_lapack::geev) and [GGEV](@ref la_lapack::ggev) routines.
 - Overwriting `A` or `B` can improve performance but destroys the original matrix data.
+- This subroutine is `pure`.
 
 ## [eigh](@ref la_eig::eigh) - Eigendecomposition of a real symmetric or complex Hermitian matrix.
 
@@ -177,6 +229,7 @@ The computation supports both real and complex matrices, and the eigenvectors, i
 - Eigenvalues are real for symmetric or Hermitian matrices.
 - This routine is based on LAPACK's [SYEVD](@ref la_lapack::syevd) and [HEEVD](@ref la_lapack::heevd) routines.
 - Overwriting the matrix `A` can improve performance but destroys the original matrix data.
+- This subroutine is `pure`.
 
 ## [eigvals](@ref la_eig::eigvals) - Eigenvalues of a square matrix (interface).
 
@@ -228,8 +281,9 @@ The function returns an array of eigenvalues computed for the input matrix \f$A\
 ### Notes
 
 - The eigenvalues are returned in a complex array, even for real matrices.
-- For the generalized eigenvalue problem, matrix \f$B\f$ must be provided and will be modified in-place.
+- For the generalized eigenvalue problem, matrix \f$B\f$ must be provided. Neither \f$A\f$ nor \f$B\f$ is modified.
 - This routine is based on LAPACK's [GEEV](@ref la_lapack::geev) and [GGEV](@ref la_lapack::ggev) routines.
+- The form without `err` is `pure`, so it can be used inside `pure` procedures and `do concurrent` blocks.
 
 ## [eigvalsh](@ref la_eig::eigvalsh) - Eigenvalues of a real symmetric or complex Hermitian matrix.
 
@@ -277,6 +331,7 @@ The user can specify whether to use the upper or lower half of the matrix \f$A\f
 
 - The eigenvalues are returned in a `real` array, with the same kind as the input matrix `a`.
 - This routine is based on LAPACK's [SYEV](@ref la_lapack::syev) and [HEEV](@ref la_lapack::heev) routines.
+- The form without `err` is `pure`, so it can be used inside `pure` procedures and `do concurrent` blocks.
 
 ## [solve](@ref la_solve::solve) - Solve a linear matrix equation or a linear system of equations.
 
@@ -499,6 +554,7 @@ The solution is written into `x`.
 ### Notes
 
 - [`lstsq`](@ref la_least_squares::lstsq) is this subroutine with the solution allocated for the caller.
+- This subroutine is `pure`.
 
 
 ## [weighted_lstsq](@ref la_least_squares::weighted_lstsq) - Weighted least squares solution (function).
@@ -568,6 +624,7 @@ The solution is written into `x`.
 ### Notes
 
 - The weights are applied to a copy of `a` unless `overwrite_a` is set, so `a` is unchanged by default.
+- This subroutine is `pure`.
 
 
 ## [constrained_lstsq](@ref la_least_squares::constrained_lstsq) - Equality-constrained least squares solution (function).
@@ -638,6 +695,7 @@ The solution is written into `x`.
 ### Notes
 
 - Without `overwrite_matrices`, all four inputs are copied, so none of them is changed.
+- This subroutine is `pure`.
 
 
 ## [constrained_lstsq_space](@ref la_least_squares::constrained_lstsq_space) - Workspace size for the constrained least squares solver.
@@ -665,6 +723,7 @@ This subroutine asks LAPACK for the optimal size of the workspace array that [`s
 ### Notes
 
 - The size returned is the optimal one, not the minimum one.
+- This subroutine is `pure`.
 
 
 ## [det](@ref la_determinant::det) - Determinant of a scalar or rectangular matrix.
@@ -810,6 +869,7 @@ The inverse is then obtained by solving \\( A X = I \\) using the LU factors.
 - The determinant of `a` can be computed before inversion using [det](@ref la_determinant::det) to check for singularity.
 - The computational complexity is \\( O(n^3) \\), making it expensive for large matrices.
 - It is recommended to use matrix factorizations (e.g., LU or QR) for solving linear systems instead of computing the inverse explicitly, as it is numerically more stable and efficient.
+- Both forms are `pure`.
 
 
 ## [operator(.inv.)](@ref la_inverse::operator(.inv.)) - Compute the inverse of a square matrix.
@@ -852,6 +912,7 @@ This operator is functionally equivalent to [inv](@ref la_inverse::inv) but prov
 - This operator internally calls LAPACK's LU decomposition routine [GETRF](@ref la_lapack::getrf) followed by [GETRI](@ref la_lapack::getri).
 - The chaining property allows for concise expressions but requires caution: if any intermediate inversion fails, subsequent operations may propagate errors due to empty matrix results.
 - If strict error handling is required, use [inv](@ref la_inverse::inv) instead.
+- The operator is `pure`, so it can be used inside `pure` procedures and `do concurrent` blocks.
 
 ## [pinv](@ref la_pseudoinverse::pinv) - Moore-Penrose pseudo-inverse of a matrix (function).
 
@@ -942,6 +1003,7 @@ where \f$ \Sigma^+ \f$ is the inverse of the nonzero singular values in \f$ \Sig
 - This operator internally calls [pinv](@ref la_pseudoinverse::pinv) and behaves identically.
 - The pseudo-inverse is computed using LAPACK's SVD decomposition routine [GESVD](@ref la_lapack::gesvd).
 - This operator is a convenient shorthand for calling the functional interface `pinv(a)`.
+- The operator is `pure`, so it can be used inside `pure` procedures and `do concurrent` blocks.
 
 ## [svd](@ref la_svd::svd) - Singular Value Decomposition (SVD) of a matrix
 
@@ -989,6 +1051,7 @@ The SVD of matrix \f$ A \f$ is returned in the corresponding output arguments, w
 
 - This subroutine computes the Singular Value Decomposition using LAPACK's [GESDD](@ref la_lapack::gesdd) algorithm.
 - If `overwrite_a` is enabled, the input matrix `a` may be overwritten during computation.
+- This subroutine is `pure`.
 
 ## [svdvals](@ref la_svd::svdvals) - Singular Values Computation (function).
 
@@ -1033,6 +1096,84 @@ where:
 - This function only computes the singular values and does not compute the full SVD (i.e., matrices \f$ U \f$ and \f$ V \f$ are not computed).
 - The singular values are returned as a vector, sorted in decreasing order.
 - The function uses LAPACK's [GESDD](@ref la_lapack::gesdd) routine for singular value computation.
+
+## [expm](@ref la_matrix_functions::expm) - Exponential of a square matrix (function).
+
+### Syntax
+
+`e = expm(a [, order])`  
+`e = expm(a [, order], err)`
+
+### Description
+
+This function computes the exponential \f$ e^{A} \f$ of a real or complex square matrix by scaling and squaring with a Padé approximant. Without `err` it is `pure`, so it can be called from `do concurrent` and from other `pure` procedures; with `err` it returns errors instead of stopping, and is not `pure`.
+
+### Arguments
+
+- `a`: A `real` or `complex` square matrix of size \f$ [n,n] \f$. It is not modified.
+- `order` (optional, default = 10): The order of the Padé approximant. It must not be negative.
+- `err` (optional): A [type(la_state)](@ref la_state_type::la_state) variable that receives the error state.
+
+### Return value
+
+The matrix exponential, of the same kind and size as `a`. The exponential of an empty matrix is an empty matrix.
+
+### Errors
+
+- Raises [LINALG_VALUE_ERROR](@ref la_state_type::linalg_value_error) if `a` is not square or `order` is negative.
+- Raises [LINALG_ERROR](@ref la_state_type::linalg_error) if the denominator of the Padé approximant is singular.
+- If `err` is not present, exceptions trigger an `error stop`.
+
+### Notes
+
+- The algorithm is the one of the Fortran standard library: the matrix is scaled by a power of two until its infinity norm is below one half, the Padé approximant is solved with LAPACK's [gesv](@ref la_lapack::gesv), and the result is squared back.
+- [matrix_exp](@ref la_matrix_functions::matrix_exp) is the subroutine form.
+
+## [matrix_exp](@ref la_matrix_functions::matrix_exp) - Exponential of a square matrix (subroutine).
+
+### Syntax
+
+`call matrix_exp(a [, order] [, work] [, iwork] [, err])`  
+`call matrix_exp(a, e [, order] [, work] [, iwork] [, err])`
+
+### Description
+
+The subroutine form of [expm](@ref la_matrix_functions::expm). The first form overwrites `a` with its exponential; the second writes the exponential into `e` and leaves `a` unchanged. Both forms are `pure`. With `work` and `iwork` present they allocate no work arrays, so repeated calls on matrices of the same size can reuse the same storage.
+
+### Arguments
+
+- `a`: A `real` or `complex` square matrix of size \f$ [n,n] \f$. In the first form it is an `intent(inout)` argument, overwritten with \f$ e^{A} \f$.
+- `e` (second form): A matrix of the same kind and size as `a`, which receives \f$ e^{A} \f$.
+- `order` (optional, default = 10): The order of the Padé approximant. It must not be negative.
+- `work` (optional): A contiguous rank-1 array of the same type and kind as `a`, of size at least the `lwork` returned by [expm_space](@ref la_matrix_functions::expm_space), \f$ 4n^2 \f$. It holds the four \f$ [n,n] \f$ work matrices. This is an `intent(inout)` argument.
+- `iwork` (optional): A contiguous rank-1 `integer(ilp)` array of size at least the `liwork` returned by [expm_space](@ref la_matrix_functions::expm_space), \f$ n \f$. It holds the pivots of the Padé solve. This is an `intent(inout)` argument.
+- `err` (optional): A [type(la_state)](@ref la_state_type::la_state) variable.
+
+### Errors
+
+- Raises [LINALG_VALUE_ERROR](@ref la_state_type::linalg_value_error) if `a` or `e` is not square, if their sizes differ, if `order` is negative, or if `work` or `iwork` is too small.
+- Raises [LINALG_ERROR](@ref la_state_type::linalg_error) if the denominator of the Padé approximant is singular.
+- If `err` is not present, exceptions trigger an `error stop`.
+
+## [expm_space](@ref la_matrix_functions::expm_space) - Workspace size for the matrix exponential.
+
+### Syntax
+
+`call expm_space(a, lwork, liwork)`
+
+### Description
+
+This subroutine returns the sizes of the working arrays that [matrix_exp](@ref la_matrix_functions::matrix_exp) needs for a matrix of the size of `a`, so that it performs no internal allocation.
+
+### Arguments
+
+- `a`: A `real` or `complex` square matrix of size \f$ [n,n] \f$. Only its size is read.
+- `lwork`: An `integer` returning the minimum size of `work`, \f$ 4n^2 \f$.
+- `liwork`: An `integer` returning the minimum size of `iwork`, \f$ n \f$.
+
+### Errors
+
+- This subroutine is `pure` and cannot fail: it reads the size of `a` and nothing else.
 
 ## [diag](@ref la_eye::diag) - Diagonal matrix.
 
@@ -1560,6 +1701,7 @@ The Schur decomposition matrices \f$ T \f$ and optionally \f$ Z \f$ are returned
 - This subroutine computes the Schur decomposition using LAPACK's Schur decomposition routines ([GEES](@ref la_lapack::gees)).
 - Sorting options for eigenvalues can be requested, utilizing LAPACK's eigenvalue sorting mechanism.
 - If `overwrite_a` is enabled, the input matrix `a` will be modified during computation.
+- This subroutine is `pure`.
 
 
 ## [schur_space](@ref la_schur::schur_space) - Workspace size for Schur decomposition.
@@ -1593,6 +1735,7 @@ The workspace size \f$ lwork \f$ that should be allocated before calling the Sch
 
 - This subroutine is useful for preallocating memory for Schur decomposition in large systems.
 - It is important to ensure that the workspace size is correctly allocated before proceeding with Schur decomposition to avoid memory issues.
+- This subroutine is `pure`.
 
 
 
@@ -1676,6 +1819,18 @@ building or installing the package never needs fypp. After editing a template, r
 python3 scripts/fypp_deploy.py           # rewrite src/ and test/ from the templates
 python3 scripts/fypp_deploy.py --check   # verify the committed tree matches the templates
 ```
+
+The cpp fences that keep the optional precisions out of a build that did not ask for them are
+written into the templates by a script of their own, so a new template gets them for free:
+
+```bash
+python3 scripts/guard_kinds.py           # fence every kind loop, and mirror the qp interface entries
+python3 scripts/guard_kinds.py --check   # verify every template is fenced
+```
+
+The script fences kind loops only. Code that names `qp` or `xdp` outside a loop, such as a test
+written out once per kind, goes inside `#ifdef LA_WITH_QP` or `#ifdef LA_WITH_XDP` by hand; the
+`lean` continuous-integration cell is what fails when one is missing.
 
 `--check` is what continuous integration runs; it prints the templates it does not own yet and the reason for each.
 `la_blas` and `la_lapack` are umbrella modules that re-export 57 topic modules, ten for BLAS and 47 for LAPACK; the

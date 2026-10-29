@@ -27,7 +27,7 @@ Portuguese, Spanish and French.
 | **[Hosted connector](https://3dneweraai.com/connector/)** | Add `https://mcp.3dneweraai.com/mcp` to Claude or ChatGPT and design from the chat, with projects kept in your account. | email sign-in |
 
 The desktop app and the browser editor are free, open source and need no account. The
-hosted connector is free within a quota; see [pricing](https://3dneweraai.com/pricing/).
+hosted connector is free too, with no limits.
 
 ## Install
 
@@ -49,6 +49,10 @@ The installers work for your user only, with no administrator password: the app 
 in the Start menu or Launchpad, `newera` goes on your `PATH`, the MCP server is registered
 in Claude Code and Codex if you have them, and running the same command again updates it.
 Uninstall with `install-macos.sh --uninstall`, or from *Settings → Apps* on Windows.
+
+On Windows, it is also in the Microsoft Store:
+
+[![Get it from Microsoft](https://3dneweraai.com/microsoft-store.svg)](https://apps.microsoft.com/detail/9MT55M4M7B76)
 
 Prefer a plain download?
 
@@ -336,7 +340,7 @@ crates/
   newera-editor-web  the editor in the browser (WebGPU or WebGL)
   newera-web         lightweight WebAssembly viewer
   newera-relay       lets an AI reach the editor in a browser tab
-  newera-cloud       the hosted service: accounts, OAuth, cloud projects, billing
+  newera-cloud       the hosted service: accounts, OAuth, cloud projects
   newera-telemetry   crash reports and usage notes
   newera             the binary that wires everything together
 ```
@@ -376,9 +380,9 @@ out.
 
 ## Support the project
 
-Everything above is free and stays free. If it saves you time, the
-[Supporter plan](https://3dneweraai.com/pricing/) (US$ 5/month or US$ 48/year) raises the
-cloud quotas for your account and pays for the server.
+Everything above is free, with no limits, and stays free. There is no paid plan. If it saves
+you time, a [donation on Buy Me a Coffee](https://buymeacoffee.com/leandrodaf) helps pay for
+the server; it unlocks nothing extra. See [support](https://3dneweraai.com/pricing/).
 
 ## Contributing
 

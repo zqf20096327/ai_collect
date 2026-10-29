@@ -76,22 +76,18 @@ Enter to skip; you can add it later from the web UI).
 - **Channels** — one `claude` process each, running in parallel. Renaming,
   grouping, and closing all sync live between the browser and Telegram: it's
   one list, server-owned, not two copies.
-- **Groups column** — once you create a group, on a desktop the groups get a
-  column of their own, left of the agents (with no group there is no column, just
-  the single agents list): pick a group and the agents column shows only its
-  agents (*Ungrouped* holds the rest, the home agent included unless you file
-  it). Each
-  group has an icon — drawn at random, double-click it to pick another: choose
-  from the grid, type any emoji, or **type a word** (`rocket`, `bug`, `money`…)
-  to search for a matching one — and a **＋** that creates the new agent straight
-  into that group.
-  A single click on a group (its icon or its row) selects it; this matters once
-  **«** folds the column to its icons, where the icon is the whole row.
-  Dragging an agent onto a group still files it there, and dragging groups
-  reorders them. Double-click a name to rename it. A group you are not looking at
-  carries the same signal its agents do — the row lights up (and breathes) when
-  one is working, waiting for you, or has an unread answer, the way a channel
-  does. On a phone nothing changes: the agents sheet still lists every group.
+- **Groups** — on a desktop the groups live in their own **left column**: pick
+  one to narrow the agents pane to it, and the global tools (Profiles, Ledger,
+  Secrets, Users, Security, Telegram, Sound) stay in the header at the top. Each
+  agent is a round avatar with a presence dot (green ready, red working, hollow
+  offline). A group's icon opens the icon picker: choose from the grid, type any
+  emoji, or **type a word** (`rocket`, `bug`, `money`…) to search for one; its
+  **＋** creates the new agent straight into that group. Dragging an agent onto a
+  group files it there, dragging groups reorders them, and double-clicking a name
+  renames it. A question the agent asks shows as an *Approval requested* card. The
+  whole cockpit is skinned like Microsoft Teams (grey light mode / near-black dark
+  mode, the Shadok mark in the header). On a phone the tools sit in the ⋯ menu and
+  the agents sheet lists every group.
 - **Worktree isolation** — spawned agents get their own git worktree and branch
   by default, so parallel agents never collide. Work is never auto-discarded:
   an empty worktree is reclaimed on close, anything with changes or commits
@@ -109,7 +105,12 @@ Enter to skip; you can add it later from the web UI).
   disable it are ignored by them — a toggle would change nothing.
 - **Agent profiles** — a named bundle of role prompt, permission guardrails
   (e.g. forbid `git commit`), model, and which secrets to inject. Applied at
-  spawn, remembered across resume.
+  spawn, remembered across resume. A profile can also carry **MCP servers**
+  (JSON, the CLI's `--mcp-config` shape): write a token as `${NAME}` and tick
+  `NAME` under its secrets — the CLI expands it from the agent's env, so the
+  value is never in the profile, in argv or in `~/.claude.json`. Put references
+  in `env` or `headers`, not `args`: an expanded arg shows in the MCP server's
+  own command line. Pasting a vault value instead of its name is refused.
 - **A model per agent** — the creation form picks the model this one agent runs
   on, overriding its profile's, with a **long context (1M)** tick beside it.
   Pick a family (Opus, Sonnet, Haiku, Fable) and it follows Claude Code's
@@ -151,6 +152,11 @@ Enter to skip; you can add it later from the web UI).
   secret to its own profile** and reload itself to pick it up — but only a
   secret it stored itself: a value you typed, or one another role stored, stays
   yours to attach from the panel.
+- **OAuth sign-ins from another machine** — an MCP or CLI sign-in ends on
+  `http://localhost:PORT/…`, which your browser cannot reach when the agents run
+  in a container or on a remote box. Paste that failed address under *Finish a
+  sign-in* in the Secrets panel (`POST /oauth-relay`, web UI only): the cockpit
+  opens it on the agents' machine. Loopback http addresses with a port only.
 - **Scheduled prompts** — give a channel a recurring prompt (every N minutes, or
   daily at HH:MM in a time zone you choose) for monitoring and reporting. Each
   schedule can carry a **deterministic guard command** that runs *without the
@@ -208,8 +214,15 @@ Enter to skip; you can add it later from the web UI).
   browser, since shell mode sits outside the agent's guardrails. The command and
   its output stay in the chat, reload included — as does one you typed yourself
   in the terminal view.
-- **Files you hand an agent** — paste or drop a file into the composer (an
-  image, a PDF, a CSV…) and it becomes a **chip** above the text box: a
+- **Provide the variable an agent asks for** — when an agent names a missing
+  credential in code (`` `HUBSPOT_TOKEN missing from the environment` ``), a
+  **+** sits right after it: one click opens the secret vault with the name
+  filled in and the agent's profile ticked, so you only paste the value (then
+  reload the agent when offered — a value reaches a process at spawn). Only
+  names that look like a credential or a connection setting get one (`…_TOKEN`,
+  `…_KEY`, `…_URL`, `…_ID`…), never `NODE_ENV` nor shadok's own `SHADOK_*`.
+- **Files you hand an agent** — paste or drop a file into the composer, or pick
+  one with the 📎 button beside it (an image, a PDF, a CSV…), and it becomes a **chip** above the text box: a
   thumbnail for an image, a named tag for anything else, each with a ✕ to
   remove it. On send, an image shows **inline in your own message bubble**;
   under the hood the agent still receives it as an `[Attached …: path]` line,
@@ -249,6 +262,18 @@ Enter to skip; you can add it later from the web UI).
   not a recomputation that would quietly show today's profile. Also on the ⋯
   menu of each channel. It says plainly that it is shadok's half: Claude Code
   adds its own context, which shadok never sees.
+- **Reload-to-apply indicator** — an agent's context is fixed **at spawn**, so a
+  long-lived one can drift behind the cockpit: the pilot prompt or its guardrails
+  changed, a new skill was seeded, its injected auth token aged past a week
+  (so its own calls start failing silently), or Claude Code itself updated. The
+  cockpit detects this by **comparing what the running process actually got
+  against what a fresh spawn would give it** — a content comparison, not a
+  version number, so a release that changed nothing relevant raises nothing, and
+  a profile edit that bumped no version still does. A `↻` lights up on the agent
+  (hover for the reasons) and the **version menu** shows *Reload N agents to
+  apply changes*; a reload respawns each one in place, keeping its history.
+  Agents started before a given update stay on the old context until reloaded —
+  this is how you spot the ones still running it.
 - **Phone layout** — the cockpit is a fixed chassis that never pans sideways,
   sized on the *visual* viewport so the composer stays clear of the browser's
   own bar and, when the keyboard opens, sits right above it (the instrument bar
@@ -594,6 +619,55 @@ file *before* starting the container (`docker create` → `docker cp` →
 `docker start`). That ordering is no longer necessary: shadok writes the file
 itself, before any session spawns.
 
+### Running on a self-hosted model
+
+shadok drives Claude Code, and Claude Code can talk to any server that speaks
+the Anthropic Messages API: Ollama, llama.cpp's `llama-server`, vLLM, or a
+LiteLLM proxy in front of anything else. Point it there with
+`ANTHROPIC_BASE_URL`, and agents on that backend need **no Claude sign-in** and
+are **never held by the quota guard** (they don't spend your subscription).
+
+Three ways to do it:
+
+- **From the cockpit — the easy one.** The sign-in card a fresh instance opens
+  has a second side, **Another model**: pick a provider (Ollama, a llama.cpp
+  server, DeepSeek, Z.ai/GLM, Moonshot/Kimi, or any Anthropic-compatible
+  server), the address and model are pre-filled, the models a local server
+  serves are listed for you, and **Test** sends one real request before
+  anything is saved. The lead agent starts as soon as you save. Change it later
+  from the version menu, **⚙ Model backend…** (which also offers to go back to
+  the subscription). The choice is stored per launch directory in
+  `~/.shadok-ai/config.json` and takes precedence over the environment; running
+  agents keep the model they were started with until they are reloaded.
+- **The whole instance, from the environment.** Launch shadok with the variables:
+
+  ```bash
+  ANTHROPIC_BASE_URL=http://localhost:11434 ANTHROPIC_AUTH_TOKEN=ollama ANTHROPIC_MODEL=qwen3-coder:30b SHADOK_CONTEXT_WINDOW=64k npx shadok-ai
+  ```
+
+- **One role.** Store the same names as vault secrets and attach them to a
+  profile: agents on that profile use the local model, the rest stay on the
+  subscription. A profile's secrets win over the instance's environment.
+
+| Variable | Meaning |
+|---|---|
+| `ANTHROPIC_BASE_URL` | The server. Anything that is not `*.anthropic.com` counts as a custom backend. |
+| `ANTHROPIC_AUTH_TOKEN` | Sent as a bearer token. Any value when the server checks none. Prefer it to `ANTHROPIC_API_KEY`, which makes Claude Code ask for confirmation. |
+| `ANTHROPIC_MODEL` | The model to run. Also fills every unset `ANTHROPIC_DEFAULT_{OPUS,SONNET,HAIKU}_MODEL` and `ANTHROPIC_SMALL_FAST_MODEL`, so the model picker and Claude Code's background calls reach it too. |
+| `SHADOK_CONTEXT_WINDOW` | The window the context gauge measures against (`64000`, `64k`, `1m`). Without it the gauge assumes Claude's 200k. |
+
+Hugging Face Inference, Together, Groq and the other **OpenAI-only** APIs are
+not in the list on purpose: Claude Code speaks only the Anthropic format, so
+they need a translating proxy (LiteLLM, claude-code-router) in front — then
+point *Another Anthropic-compatible server* at the proxy. The Test button tells
+the two cases apart and says so.
+
+Two things are on you. The model needs **reliable tool calling and a long
+context**: Claude Code's own prompt and tool list take ~15–20k tokens before
+your first word. And the server must actually *serve* that context: Ollama's
+default is a few thousand tokens, so set `OLLAMA_CONTEXT_LENGTH` (64k is a sane
+floor) or the agent will lose its instructions without any error.
+
 ### SSH identity in Docker
 
 When shadok-ai runs **in a container** it gives itself an SSH key on first boot
@@ -836,20 +910,33 @@ cockpit's name, per launch directory: click the header brand to rename it, so
 several cockpits stay apart in the tab bar; an empty PUT reverts to the default),
 `/theme` (GET/PUT — the cockpit's colour palette, per launch directory: an accent
 key picked from the ⋯ menu, e.g. `emerald`; unknown/`amber` reverts to default.
+The default palette (stored key `amber`, labelled *Shadok*) is the Teams purple in
+light mode and an indigo in dark mode; light mode follows Microsoft Teams, dark
+mode a neutral near-black.
 Light/dark **mode** is an orthogonal, **per-browser** choice in the same menu
 (default dark; stored in `localStorage`, applied before first paint) and needs no
 endpoint — the accent is the instance's shared identity, the mode is personal),
-`/profiles`, `/secrets`, `/telegram`, `/defaults`, `/first-agent` (GET —
+`/profiles`, `/secrets`, `/secrets/audit` (GET, **admin only** — the secret
+audit log: who created/updated/deleted a secret, which profile it was attached
+to, and which agent **received** it at spawn or in a cron guard, with the person
+or door that caused it; names only, never a value; filters `secret`, `action`,
+`actor`, `agent`, `since`, `limit`. Also in the vault panel → *Audit log*, and
+🕘 on each secret), `/telegram`, `/defaults`, `/first-agent` (GET —
 `{pending, reason}`: whether this instance's lead agent is being started
 right now), `/version`, `/autoupdate`,
 `/update-channel` (POST `{channel}` — `alpha` or `beta`), `/permission-mode`, `/tweak/prepare` (POST — clone/refresh shadok-ai's own source,
 returns the cwd to start the tweak agent in), `/media/<name>` (GET — serves a
 pasted/dropped or Telegram attachment back for inline display; sandboxed, basename
 only), and the sign-in group: `/auth` (GET
-— `{loggedIn, email?, subscriptionType?, tokenExpiresAt?, accessExpiresAt?}`;
-the expiries come from the credentials store, never a token value), `/auth/login`
+— `{loggedIn, email?, subscriptionType?, tokenExpiresAt?, accessExpiresAt?, backend?, backendModel?}`;
+the expiries come from the credentials store, never a token value; `backend:
+"custom"` when the instance runs on another model), `/auth/login`
 (POST — start a flow, returns `{url}`; DELETE — cancel it), `/auth/code`
-(POST `{code}`).
+(POST `{code}`); and the model-backend group (admin, browser only for writes):
+`/backend` (GET — the backend in use without its key, plus the presets; PUT —
+`{baseUrl, model, authToken?, contextWindow?}` or `{clear: true}`),
+`/backend/test` (POST — one real `/v1/messages` round trip) and
+`/backend/models` (POST — the models a server offers).
 
 ## Library
 

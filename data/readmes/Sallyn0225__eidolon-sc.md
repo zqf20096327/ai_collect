@@ -131,7 +131,7 @@ Eidolon-SC 让你以 **283 事务所制作人**的身份，和原作中的偶像
 
 **部署和运营**
 
-- 👥 **对公众开放**：Google 或 GitHub 登录，按用户限流，记忆互相隔离；用户可以彻底删除自己的数据，数据库每天加密备份到异地。
+- 👥 **对公众开放**：Google 或 GitHub 登录，也可以只让拿到邀请链接的人注册；按用户限流，记忆互相隔离；用户可以彻底删除自己的数据，数据库每天加密备份到异地。
 - 📦 **数据包**：对话、照片、记忆和制作人档案导出成一个 zip，在别的部署导入后接着用；好感度、礼物、日程和酒吧的光顾记录不随行（[ADR-0025](docs/adr/0025-data-packages-leave-affinity-and-gifts-behind.md)）。
 - 🔑 **自带密钥**：用户可以填自己的 LLM、语音合成、语音识别和生图密钥，用自己的额度，满足条件时不占限额（[配置指南](docs/configuration.md#自带密钥)）。密钥只存在浏览器里（[ADR-0017](docs/adr/0017-own-api-keys-stay-in-the-browser.md)）。
 - 🛠️ **后台**：看用量、花费和进行中的通话，改模型和限额不用重启，封禁用户、发公告；看不到任何人的对话和记忆。
@@ -141,7 +141,22 @@ Eidolon-SC 让你以 **283 事务所制作人**的身份，和原作中的偶像
 
 ## 🚀 快速开始
 
-需要 Docker 与 Docker Compose，以及一个支持流式输出和工具调用的对话模型。
+### 让 Agent 帮你部署
+
+不熟悉 Docker 和各种 API key 也没关系：把下面这段话发给你用的编程 Agent（Claude Code、Codex、Cursor 等都行），它会照仓库里的[部署说明](docs/agents/deploying.md)一步步带你做，碰到报错也会帮你查。
+
+```text
+帮我部署 Eidolon-SC（https://github.com/Sallyn0225/eidolon-sc）。先把仓库克隆下来，
+再照仓库里 docs/agents/deploying.md 带我一步步做。要我注册账号、申请 key 的地方告诉我怎么做；
+key 我自己填进 .env，不贴给你。
+```
+
+> [!NOTE]
+> **为什么部署好了没有剧情、通话里也没有立绘？** 剧情文本和立绘素材的版权不属于本项目，不随仓库分发，仓库里只有同步工具。部署后自己同步一次就有了，Agent 会带你做（见部署说明的「剧情库」「立绘」）。同步之前，角色只凭人设回复，通话里只显示背景图。
+
+### 自己动手
+
+需要 Docker 与 Docker Compose，以及一个支持流式输出和工具调用的对话模型。不想装 Docker（比如在 Windows 上），也可以用 uv 和 Node.js 直接跑前后端，见下面的「开发」和[部署说明](docs/agents/deploying.md)的「三种跑法」。
 
 ```sh
 git clone https://github.com/Sallyn0225/eidolon-sc.git && cd eidolon-sc
@@ -163,6 +178,8 @@ docker compose up --build
 | 立绘、招呼与酒吧的音乐 | `EIDOLON_STAND_ASSETS_URL` 和存放素材的存储桶 |
 
 每项怎么配、配了以后有什么效果，见 **[配置指南](docs/configuration.md)**；所有环境变量的说明见 [`.env.example`](.env.example)。
+
+配好以后运行 `docker compose run --rm backend eidolon doctor`（直接跑时在 `backend/` 下 `uv run --env-file=../.env eidolon doctor`），它会逐项试一次各项服务，说明哪一项连不上、key 不对或者要走代理。
 
 ## 🧩 架构
 

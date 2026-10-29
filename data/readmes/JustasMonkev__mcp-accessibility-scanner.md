@@ -210,6 +210,20 @@ npx --allow-scripts=re2 mcp-accessibility-scanner list-tools
 
 > **Note:** Tool names like `browser_navigate` and `scan_page` are MCP tool identifiers (and REPL commands in interactive mode). They are not shell subcommands -- you cannot run `npx mcp-accessibility-scanner browser_navigate`.
 
+## Programmatic API
+
+`createConnection` returns an MCP `Server` directly, not a wrapper with a `server`
+property. Its type is the SDK's `Server` from `@modelcontextprotocol/server`. Connect it
+with `server.connect(transport)` and release it with `await server.close()`.
+
+```ts
+import { createConnection } from 'mcp-accessibility-scanner';
+import { StdioServerTransport } from '@modelcontextprotocol/server/stdio';
+
+const server = await createConnection({ browser: { isolated: true } });
+await server.connect(new StdioServerTransport());
+```
+
 ## Configuration
 
 Here's the Claude Desktop configuration:
@@ -322,14 +336,30 @@ Create a `config.json` file with the following options:
 - `timeouts.defaultTimeout`: Default timeout for Playwright operations in milliseconds (default: `5000`)
 - `timeouts.settle`: How long to wait after every action for triggered work to settle before responding (default: `500`). An action that finishes quietly is first watched for up to 100ms (or the settle delay, whichever is shorter) so scheduled network work can still be awaited before the settle delay.
 - `timeouts.idle`: Release the default browser context after this many idle milliseconds (default: `0`, disabled). Accepts integers from `0` to `2147483647`.
-- `network.allowedOrigins`: List of origins to allow (blocks all others if specified)
-- `network.blockedOrigins`: List of origins to block
+- `network.allowedOrigins`: List of host patterns to allow (blocks other HTTP(S) requests and page WebSockets when nonempty), for example `example.com` or `*.example.com`. Include the port for nondefault ports.
+- `network.blockedOrigins`: List of host patterns to block; blocklist matches take precedence over the allowlist.
+
 - `snapshot.boxes`: Include each element's viewport-relative bounding box as `[box=x,y,width,height]` in snapshots (default: `false`; CLI: `--snapshot-boxes`, env: `PLAYWRIGHT_MCP_SNAPSHOT_BOXES=1`)
 - `imageResponses`: `allow` (default) returns text and images; `omit` excludes images; `only` omits text from successful responses containing images. Errors, browser lifecycle notices, and responses without images (including full-page screenshots) keep their text. Structured results and resource links are always preserved. In `only` mode, screenshot save-path text, generated code and any accompanying text-only findings are omitted; use `allow` if you need them. Interactive mode rejects `only` because its REPL prints text only; use `allow` or `omit` there. `auto` remains a legacy alias for `allow`. CLI: `--image-responses only`; env: `PLAYWRIGHT_MCP_IMAGE_RESPONSES=only`. Precedence: CLI, then environment, then config file.
 - `server.authToken`: When set, Streamable HTTP requests (`--port`) require `Authorization: Bearer <token>` or return `401` (env: `PLAYWRIGHT_MCP_AUTH_TOKEN`). Blank or malformed tokens fail at startup. The scheme is case-insensitive; the token is exact. Bearer auth does not encrypt traffic: authenticated listeners must bind to loopback, such as `--host 127.0.0.1`; use a TLS reverse proxy for remote access. The printed client config includes a header placeholder to replace locally, without logging the secret. Unset keeps unauthenticated access.
 - `filePaths`: Optional `relative` or `absolute` rendering for output paths in screenshot/PDF results and generated code, report metadata, annotated/keyboard screenshots, and download summaries. Relative paths are based on the **server working directory**, not the client workspace or output directory. File writes, stored report contents, and absolute `file://` resource URIs are unchanged. Omitted preserves legacy rendering: configured relative output directories produce relative paths, while default temp output paths are absolute (unlike upstream Playwright’s relative default). CLI: `--file-paths absolute`; env: `PLAYWRIGHT_MCP_FILE_PATHS=absolute`. Precedence: CLI, then environment, then config file.
 - `outputDir`: Directory for output files — reports, screenshots, traces, and session logs (CLI: `--output-dir`, env: `PLAYWRIGHT_MCP_OUTPUT_DIR`). Defaults to a fresh directory under the system temp folder, resolved once per server run so all of a run's artifacts land together. The output location is always server configuration; the deprecated MCP roots capability (client workspace folders) is no longer consulted.
 - `redactUrlParams`: Optional array of URL query/fragment parameter names whose nonempty values are rendered as `REDACTED` (CLI: `--redact-url-params code,access_token`; env: `PLAYWRIGHT_MCP_REDACT_URL_PARAMS=code,access_token`). Defaults to no URL-parameter redaction. Names match literally and case-insensitively, without decoding keys; repeated matches, relative links and hash-route query parameters are included. Empty values and unselected parameters are preserved. CLI overrides environment, which overrides the config file; lists replace rather than merge. `[]` in JSON or an empty CLI/environment value clears a lower-precedence list. Non-array config values, non-string entries and blank names fail before browser startup. See [URL redaction coverage](#url-redaction-coverage) before sharing output or artifacts.
+
+Origin restrictions require locally launched Chromium (isolated or persistent).
+Firefox/WebKit and CDP, remote, extension, VS Code or custom-context connections
+reject restrictions instead of silently applying a partial policy or affecting
+unrelated browser contexts. Without origin restrictions those modes are unchanged.
+Enforcement begins when the browser context is acquired and the policy is
+installed; it does not retroactively filter startup traffic or existing connections
+(for example, during persistent-profile restoration). HTTP(S) filtering then
+covers each redirect hop, including subresources, frames and popups, while
+preserving browser redirect URLs, methods and cookies. Page
+WebSockets are checked before connecting to a server. **Worker-created WebSockets
+are not filtered by Playwright's page WebSocket routing.** These options are not
+a complete network security sandbox; use external network isolation when worker
+sockets or other browser traffic must be restricted.
+
 
 CLI equivalents are also available: `--cdp-launch-command`, `--cdp-launch-args`, `--cdp-launch-cwd`, `--cdp-launch-port`, `--cdp-launch-startup-timeout`, `--cdp-endpoint`, `--cdp-header` (repeat for multiple headers, e.g. `--cdp-header "Authorization: Bearer <token>"`), and `--cdp-timeout`. The CDP headers and timeout can also be set via the `PLAYWRIGHT_MCP_CDP_HEADERS` (one `Name: Value` entry per line) and `PLAYWRIGHT_MCP_CDP_TIMEOUT` environment variables.
 
@@ -354,7 +384,7 @@ Caller-supplied screenshot, PDF, find-result, scan-page-matrix, and audit report
 
 Failed download saves are reported as tool errors in the current or next response, including after the tab closes; failed entries do not advertise a saved file or an ongoing download. The server retains up to 20 bounded error messages between responses and reports any omitted count. Full Chromium-family browsers on Playwright 1.63.0 have [verified native crashes after persistent-profile relaunch](https://github.com/JustasMonkev/mcp-accessibility-scanner/blob/main/docs/issue-verification-2026-09.md#persistent-profile-downloads-230). Error reporting does not fix that native crash. The explicit `--isolated` control passed, but does not preserve a profile between launches; use recorded storage state when needed for authentication. Existing profiles and browser defaults are preserved.
 
-Use `--timeout-settle` or `PLAYWRIGHT_MCP_TIMEOUT_SETTLE` to override the post-action settle delay. CLI values take precedence over environment and file configuration, including `0`. Zero disables settling and can return before delayed page updates; the default remains `500` ms. It applies after every action so delayed DOM-only updates are included in the response; a short observation window also catches scheduled requests and waits for them before that delay.
+Use `--timeout-settle` or `PLAYWRIGHT_MCP_TIMEOUT_SETTLE` to override the post-action settle delay. CLI values take precedence over environment and file configuration, including `0`. Empty or whitespace-only numeric timeout environment variables are ignored, preserving file configuration or defaults. Zero disables settling and can return before delayed page updates; the default remains `500` ms. It applies after every action so delayed DOM-only updates are included in the response; a short observation window also catches scheduled requests and waits for them before that delay.
 
 Use `--timeout-idle 300000`, `timeouts.idle`, or `PLAYWRIGHT_MCP_TIMEOUT_IDLE` to release the default browser after five idle minutes. Shared contexts stay open while any client is working; the idle window starts after the last tool call or download finishes. Explicit recordings prevent idle release until `browser_stop_recording` finishes; passive `--save-session` capture does not. Cleanup finalizes traces. The next browser tool call reopens the connection and includes a note to navigate again and refresh element references. Attached CDP, extension, and VS Code browsers are disconnected; their external pages remain open. Close and session-management tools do not relaunch an idle browser. Explicit `browser_session_open` handles keep their separate `PLAYWRIGHT_MCP_BROWSER_SESSION_TTL_MS` behavior. Zero disables this feature; blank environment values leave the existing configuration unchanged.
 
@@ -388,6 +418,11 @@ The interactive CLI, stdio MCP and initialized stateful HTTP connections can use
 With the default persistent profile, sign-in state also survives across server restarts, so you usually only sign in once. The default profile is keyed to the server's working directory, so each workspace's server keeps its own sign-in state — servers launched for different workspaces neither share cookies nor contend for the same profile.
 
 ### When a login form does not advance
+
+`browser_fill_form` stops when a field opens a native dialog or file chooser,
+returns the modal-handling guidance, and reports how many later fields were not
+attempted. After handling the modal, submit those remaining fields again; the
+form does not resume filling them in the background.
 
 - Take a fresh `browser_snapshot` after a rerender and use its current field references. Wait for an application-specific ready message with `browser_wait_for` before entering data.
 - `browser_fill_form` and ordinary `browser_type` use Playwright's `fill`. If the application requires individual key events, clear the field with `browser_type` and `text: ""`, then use `browser_type` with `slowly: true`. Slow typing appends characters; it does not clear an existing value.
@@ -538,7 +573,7 @@ A frame you scoped out yourself is not reported: with `excludeSelectors: ["ifram
 #### `audit_site`
 Crawls and scans multiple internal pages, then aggregates violations across the site.
 - Default strategy: link-based BFS from the current URL
-- Supports `links`, `nav`, `sitemap`, and `provided` URL strategies
+- Supports `links`, `nav`, `sitemap`, and `provided` URL strategies. Trailing slashes are preserved; sitemap locations decode XML entities while preserving literal CDATA content.
 - Sitemap URLs and every redirect must pass the server network policy and crawl scope. Fetches run on the MCP host, use HTTP(S) without browser cookies or auth headers, and have a 15-second total timeout, 20-redirect cap, and 10 MiB response limit. Browser proxy settings, `browser.remoteEndpoint`, `browser.cdpEndpoint` (including loopback endpoints, which may tunnel to remote browsers), and switched `browser_connect` providers are rejected for this strategy; use `provided` URLs in these modes. Sitemap TLS certificates must be valid even when browser HTTPS errors are ignored.
 - Always writes a JSON report (default filename: `audit-site-{timestamp}-{token}.json`). Per-page `summary.totalNodes`, `byImpact`, and `byRuleId` count all deduplicated violation nodes; `maxNodesPerViolation` only limits the saved node details.
 - After browser navigation settles, the reached URL is checked again against HTTP(S), `sameOriginOnly`, `includeSubdomains`, and `excludePathPatterns`. A destination outside that scope is recorded as a page error naming the requested and reached URLs; it is not scanned or used for link discovery, and the crawl continues. This is a post-navigation check, not a network-request blocker: redirect destinations may already have been contacted and changed session state.
@@ -572,9 +607,10 @@ Runs Axe scans on the same page across viewport/media/zoom variants and compares
 #### `audit_keyboard`
 Audits real keyboard focus behavior by pressing Tab (and optional Shift+Tab) with practical heuristics.
 - Checks skip links, focus visibility, focus jumps, and possible focus traps
+- Focus stops distinguish individual DOM elements, including controls in open shadow roots. Alternating Tab/Shift+Tab does not count an intentional return as a cycle; a keypress that cannot move focus can still indicate a trap.
 - Restores the original URL after cross-document skip-link navigation. It uses Back for a single observed history-entry increase, verifies the restored URL, and otherwise replaces the current entry with the original URL. Fragment jumps, same-document history changes, and same-URL reloads do not consume an earlier history entry. When forward history was truncated or an entry was replaced, restoration can reload the audited page rather than recover its previous document state.
 - Checks target size against WCAG 2.2 SC 2.5.8 (`checkTargetSize`, default on)
-- Checks that focus is not entirely obscured, WCAG 2.2 SC 2.4.11 (`checkFocusObscured`, default on)
+- Checks that focus is not entirely obscured, WCAG 2.2 SC 2.4.11 (`checkFocusObscured`, default on), including painted covering hosts and focused hosts’ own content across open shadow roots.
 - Optional issue screenshots (`screenshotOnIssue`)
 - Always writes a JSON report (default filename: `audit-keyboard-{timestamp}-{token}.json`)
 
@@ -848,6 +884,7 @@ The output policy applies to standalone, CDP, extension, provider-switching and 
 ### Utility Tools
 
 #### `browser_wait_for`
+Cancelling an MCP request stops its pending timer or text waits and releases the browser session after those waits settle. This does not make other browser actions cancellable.
 Wait for text to appear/disappear or time to pass.
 - Parameters: `time` (optional), `text` (optional), `textGone` (optional)
 - `time` is in seconds, must be non-negative, and is capped at 30. `0` is treated the same as omitting it. Generated code uses the capped delay; time-only results report seconds and disclose when the requested delay exceeded the cap.
@@ -863,6 +900,13 @@ Handle browser dialogs (alerts, confirms, prompts).
 Upload files to the page.
 - Parameters: `paths` (array of absolute file paths)
 - If `setFiles` fails, the chooser stays available for another upload attempt; `paths: []` clears the selection and completes the chooser. A successful upload clears only that chooser and waits for page activity and the configured settle delay.
+
+When an action opens a file chooser, its generated Playwright code installs a
+`filechooser` listener before the action and binds the resulting `fileChooser`.
+Concatenate that action snippet with `browser_file_upload`'s snippet to replay
+uploads (including empty-path cancellation). The reusable bindings support
+multiple chooser/upload sequences in the same script. Intervening waits keep
+the existing chooser binding rather than waiting for another chooser event.
 
 #### `browser_verify_element_visible`
 Verify an element by ARIA role/name.
@@ -892,64 +936,4 @@ Move mouse to specific coordinates.
 
 #### `browser_mouse_click_xy`
 Click at specific coordinates.
-- Parameters: `element`, `x`, `y`, `button` (optional: `left`/`right`/`middle`), `clickCount` (optional), `delay` (optional, ms between mouse down and up)
-
-#### `browser_mouse_drag_xy`
-Drag from one coordinate to another.
-- Parameters: `element`, `startX`, `startY`, `endX`, `endY`
-
-#### Note
-Coordinate-based tools require `element` descriptions for permission checks, but the coordinates themselves are used for action targeting.
-
-## Usage Examples
-
-### Basic Accessibility Scan
-```
-1. Navigate to example.com using browser_navigate
-2. Run scan_page with violationsTag: ["wcag21aa"]
-```
-
-### Color Contrast Check
-```
-1. Use browser_navigate to go to example.com
-2. Run scan_page with violationsTag: ["cat.color"]
-```
-
-### Multi-step Workflow
-```
-1. Navigate to example.com with browser_navigate
-2. Take a browser_snapshot to see available elements
-3. Click the "Sign In" button using browser_click
-4. Type "user@example.com" using browser_type
-5. Run scan_page on the login page
-6. Take a browser_take_screenshot to capture the final state
-```
-
-### Scan dialogs and validation states
-
-A URL crawl is a baseline, not a traversal of every UI state. `audit_site` navigates a temporary tab through URLs; it does not replay the current tab's open dialog, filled form or validation errors. `scan_page` runs against the currently selected tab without navigation, so use it after each relevant interaction in the same browser session:
-
-```text
-1. Navigate once, wait for the application to be ready, and run scan_page for the initial state
-2. Use browser_snapshot and browser_click to open the dialog or expand the panel
-3. Wait for its visible content, take a fresh browser_snapshot, then run scan_page again
-4. Submit the form with deliberately invalid test data, wait for the validation message, and run scan_page again
-5. Capture browser_take_screenshot and record the state, reproduction steps and findings for each scan
-6. Close or reset the UI, then repeat for the next state
-```
-
-HTML `<dialog>` elements and in-page modal components are page content. `browser_handle_dialog` handles JavaScript `alert`, `confirm` and `prompt` dialogs; it does not open or dismiss an HTML modal.
-
-`scan_page_matrix` varies viewport/media/zoom, not application state. Keep `reloadBetweenVariants: false` for a transient state, and verify that responsive rerenders did not close or reset it. Run `audit_keyboard` separately for keyboard behavior; it moves focus and may activate skip links, so restore the intended state before comparing scans. A modal's intentional focus containment is not automatically a keyboard trap: verify an accessible way to dismiss it and that focus returns appropriately.
-
-Review Axe's `incomplete` results, frame coverage warnings and sampled node counts. Zero automated violations do not establish conformance or cover states you never opened. Manually check keyboard operation, focus appearance/order and whether error messages are understandable and announced.
-
-### Page Analysis
-```
-1. Navigate to example.com
-2. Use browser_snapshot to capture all interactive elements
-3. Review console messages with browser_console_messages
-4. Check network activity with browser_network_requests
-```
-
-### Tab Management
+- Parameters: `elemen

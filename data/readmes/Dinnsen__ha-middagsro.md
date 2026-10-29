@@ -38,6 +38,7 @@ The integration adds a **Middagsro panel** to the sidebar. It follows your Home 
 - **Wishes for the plan:** write, for example, what in the fridge must be used before a given day, or which dish you want on a given day. The wishes are used in the next plan only – also when it is made automatically – and then removed.
 - **One plan for the week:** the plan page shows the whole week, from the family's first weekday to the last planned day, as one plan – also when it was made in several goes (a new plan from Wednesday replaces the old one from Wednesday on). When next week's plan is ready, it follows under its own week heading. Days that have passed are dimmed. The calendar and the *dinner today* sensor follow the same rule. The recipes tab always opens on tonight's dish.
 - **The plan is checked, not just asked for.** The AI is not trusted to keep the rules: every plan is checked afterwards – no dish from the last weeks again (the main dish counts: salmon is salmon, whatever the side), nothing the family dislikes, the right number of leftover days from a double portion, the vegetarian count, fixed days, the weekday time limit and the budget. What is wrong is sent back to the AI, up to twice, and the best try is kept. Anything it still couldn't fix is shown on the plan.
+- **Opdater madplan** (update the plan): change the settings after the plan was made (e.g. fewer days or leftover days), and the plan can be updated instead of made from scratch: as many of its dishes as possible are kept, and only what must change is changed. Only before the shopping list is sent.
 - **Your own recipes are used as they are.** When a dinner is one of your favourite dishes and the recipe collection has your recipe for it (a ❤️, or the favourite's own), the plan uses that recipe – its ingredients go on the shopping list in amounts for your household, with the REMA products it names – instead of the AI's own version.
 - A **requirements checklist** shows whether the plan keeps your rules.
 - Turn on **automation** to make next week's plan when the new offers come out – and optionally send it straight to the REMA list.
@@ -137,6 +138,10 @@ The **Opskrifter** (recipes) tab has three pages: **Ugens opskrifter** (the week
 - **REMA 1000's recipes:** search or browse REMA's own recipes – popular, newest, *Avisopskrifter* (built on this week's offers), *Aftensmad*, *Mad for børn*, *Kødfri* and more. Each card shows the time, a rough price and how many of its items are on offer. Every ingredient is linked to one of REMA's products, so the shopping list gets the very item. Save a recipe in the collection (with its photo), or put it straight on a day of the plan. In the plan, tap a dish and **Vælg en REMA-opskrift** to swap it for one of REMA's.
 
 <img src="docs/images/rema-recipes.png" alt="REMA 1000's own recipes with time, price and how many items are on offer" width="100%">
+
+### Monthly freezer cooking
+
+Below the controls for a new meal plan you can make a separate **freezer plan** with four or five dishes for one cooking day – with its own wishes (*Ønsker til fryserretterne*), apart from the week's. Open it and choose portions for each dish, e.g. 16. Ingredients and the combined shopping list are recalculated from the recipe's four portions, without the household percentage or fixed weekly items. Rice and pasta for the eating day are not part of the freezer shopping. Portions lock once the groceries are sent. Freezer plans are kept apart and don't change the week's plan or the calendar.
 
 ### Overrask os (surprise us)
 
@@ -270,7 +275,7 @@ Actions are now called `middagsro.…` (before `rema1000.…`); change them in y
 [![Open your Home Assistant and add Middagsro.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=middagsro)
 
 1. Go to **Settings → Devices & services → Add integration** and choose **Middagsro**.
-2. Choose the shop. With **REMA 1000** you log in (below) and get prices on every item, REMA's recipes and the shopping list in the REMA app. With **another shop** (Netto, føtex, Lidl, Bilka, 365discount, MENY, SuperBrugsen, Kvickly, SPAR …) there is no login: the meal plan is built on the shop's offer catalogue, only the offers have a price (in Bilka every item has its Bilka ToGo price), and the shopping list is kept in Home Assistant (and can also go to another to-do list, e.g. Bring!). The setup lists what only works with REMA 1000. The shop can be changed later under **Reconfigure** – meal plans, recipes and settings are kept.
+2. Choose the shop. With **REMA 1000** you log in (below) and get prices on every item, REMA's recipes and the shopping list in the REMA app. With **Bilka** you can log in to BilkaToGo and send the groceries to the cart in the app (see [below](#bilka-with-the-bilkatogo-cart)) – or not. With **another shop** (Netto, føtex, Lidl, 365discount, MENY, SuperBrugsen, Kvickly, SPAR …) there is no login: the meal plan is built on the shop's offer catalogue, only the offers have a price, and the shopping list is kept in Home Assistant (and can also go to another to-do list, e.g. Bring!). The setup lists what only works with REMA 1000. The shop can be changed later under **Reconfigure** – meal plans, recipes and settings are kept.
 3. With REMA 1000: log in:
 
    | Field | Description |
@@ -281,6 +286,15 @@ Actions are now called `middagsro.…` (before `rema1000.…`); change them in y
 4. Open **Middagsro** in the sidebar, go to **Indstillinger** (settings) and choose the family's rules. Then tap **Lav madplan** (make meal plan).
 
 The integration logs in again by itself when the session expires. If you change your password, Home Assistant asks you for the new one (**Settings → Devices & services → Middagsro**). To change the e-mail or password yourself, choose **⋮ → Reconfigure** on the integration. You can add several REMA 1000 accounts. Each gets its own entities, and the actions can target a given account; the panel shows the one added first.
+
+### Bilka with the BilkaToGo cart
+
+Choose **Bilka**. If you log in with your Salling Group account (the one from the BilkaToGo app) and choose a Bilka store, assortment and prices follow that store, and sending the plan puts its groceries in the same cart as in the app. You choose the pickup time and order in BilkaToGo yourself. Leave the login fields empty to use Bilka without a login: Bilka ToGo's prices on every item and the shopping list in Home Assistant.
+
+- **The store in the app:** Middagsro makes the chosen store the active pickup store in the BilkaToGo app when Home Assistant starts and before it changes the cart. If you chose another store in the app, it is switched back. To shop elsewhere, change the store under **⋮ → Reconfigure**.
+- Matched products go to the cart; ingredients without a sure match stay in Middagsro and are listed apart, so you can choose a product and send the rest later. The cart can't be ticked off like a shopping list.
+- Transfers keep receipts and are checked in the cart, so repeated taps and retries after a timeout don't add the same item twice. **Genskab seneste kurv** (restore the latest cart) is a deliberate new attempt and may add the products again.
+- A Bilka setup without a login can get one under **⋮ → Reconfigure → Bilka**; meal plans and recipes are kept. The connection is unofficial and may need updating if Bilka changes its webshop.
 
 ## Settings in the panel
 
@@ -301,7 +315,7 @@ The settings apply every time a meal plan is made and are stored per REMA 1000 a
 | **Allergies** (*Allergier*) | The 14 allergens on the EU list (gluten, lactose, milk protein, egg, nuts, peanuts, soy, sesame, celery, mustard, fish, crustaceans, molluscs, lupin, sulphites) – and free text. | – |
 | **Family** (*Familien*) | Adults and children with age and sex, so the amounts fit. | 2 adults, 2 children |
 | **Vegetarian dishes** (*Vegetarretter*) | Minimum and maximum per plan. | 0–1 |
-| **Leftover days** (*Restedage*) | Days with leftovers from the day before. | 2 |
+| **Leftover days** (*Restedage*) | Days with leftovers from the day before. A fixed leftovers day (e.g. Thursday) counts as one of them. | 2 |
 | **Max. minutes on weekdays** | The most time a dish may take Monday–Friday. | 30 |
 | **No repeats** (*Ingen gentagelse*) | Number of weeks before a dish may come back. | 3 |
 | **Fixed days** (*Faste dage*) | E.g. a rye-bread day on Wednesdays. | Thursday: rye bread |

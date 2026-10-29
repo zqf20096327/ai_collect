@@ -23,7 +23,9 @@ contexts and channels, and can be embedded in a service or command-line program.
   opt into [bounded tool dispatch](docs/tools.md#bounded-tool-dispatch-experimental)
   with `agent.WithToolConcurrencyLimit(width)`.
 - **Multi-agent workflows:** coordinate agents with pipelines, message routing
-  and leader/worker teams.
+  and leader/worker teams. On `main` (unreleased), use the experimental
+  [TeamPipeline](docs/team-pipeline.md) for serial named-member delegation
+  and participant confirmation/external-result routing.
 - **Applications with memory:** combine retrieval, conversation state and memory
   middleware with your own data sources.
 - **Services and experiments:** expose an HTTP service or browser UI, record
@@ -160,6 +162,7 @@ its model choice, environment variables and required services or runtimes.
 | [console](examples/console/) | Terminal chat and tool-call confirmation |
 | [managed_routing_eval](examples/managed_routing_eval/) | Managed fixed/rules/classifier comparisons, offline fixtures and opt-in live pilot |
 | [managed_routing](examples/managed_routing/) | Managed pools, classification and fallback with offline fixtures |
+| [tier_routing](examples/tier_routing/) | UnifiedAgent with fixed and three-tier routed fake ChatModels |
 | [managed_task](examples/managed_task/) | Fixed-model managed text execution with a local HTTP fixture |
 | [classifier](examples/classifier/) | Typed classification with offline fake results and attempt accounting |
 | [model_call](examples/model_call/) | Direct model streaming, tool calls and structured output |
@@ -180,6 +183,7 @@ its model choice, environment variables and required services or runtimes.
 | [rag_react](examples/rag_react/) | Retrieval with an in-memory index |
 | [pipeline_multi_agent](examples/pipeline_multi_agent/) | Pipeline and MsgHub coordination |
 | [goal_pipeline](examples/goal_pipeline/) | Bounded executor-verifier loop with offline models and an actual artifact |
+| [team_pipeline](examples/team_pipeline/) | Offline named-member delegation with host confirmation and a follow-up |
 | [agent_team](examples/agent_team/) | Leader/worker agent coordination |
 | [mcp](examples/mcp/) | MCP tool discovery and calls |
 | [mcp_streamable](examples/mcp_streamable/) | MCP Streamable HTTP client with an in-process spec server |
@@ -231,6 +235,7 @@ to the same catalog.
 | Probabilistic classification | [Classifier API and attempt accounting](docs/classifier.md) · [Jev adapter](docs/jev.md) · [Bailian adapter](docs/bailian.md) · [OpenAI Decisions adapter](docs/openai-decisions.md) |
 | Middleware and memory | [Middleware](docs/middleware.md) |
 | Goal execution | [Experimental GoalPipeline and Agent adapters](docs/goal-pipeline.md) |
+| Named-member teams | [Experimental serial TeamPipeline and host interactions](docs/team-pipeline.md) |
 | Application deployment | [Deployment](docs/deployment.md) · [Execution and session limits](docs/adversarial-hardening.md) · [Reply recovery](docs/reply-recovery.md) |
 | Runtime and evaluation | [Runtime features](docs/go-exclusive.md) · [Load and quality testing](docs/benchmarks.md) · [Replay and evaluation source](pkg/agentscope/replay/) |
 | Local models and devices | [Edge deployment](docs/edge-deployment.md) · [Device tools](docs/device-tools.md) · [Multi-device coordination](docs/multi-device.md) · [Offline operation](docs/offline-operation.md) |

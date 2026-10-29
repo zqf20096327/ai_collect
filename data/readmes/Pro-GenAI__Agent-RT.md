@@ -27,8 +27,8 @@ Artie (A·R·T, for Agent RT) is the running robot in the logo, and greets you i
 
 ## 📈 By the Numbers
 
-- 🪙 **8–37× fewer input tokens** per prompt than Codex, Claude Code, opencode, and Copilot CLI
-- 🧠 **5–14× less memory** per CLI process than the same agent CLIs
+- 🪙 **6–22× fewer input tokens** per prompt than Codex, Claude Code, opencode, and Copilot CLI
+- 🧠 **5–10× less memory** per CLI process than the same agent CLIs, and the lowest of seven CLIs including Pi and OpenHuman
 - 📦 **66× smaller npm install** than LangChain.js (1.24 MiB vs 82.44 MiB)
 - ⚡ **5.8× less framework overhead** than LangChain in Python (1.56 ms vs 9.03 ms warm)
 - 🔄 **65+ third-party repositories** pass their tests before and after migration
@@ -103,7 +103,7 @@ Migrated? Add the opt-in [![Runs on Agent RT](docs/website/assets/badge/runs-on-
 
 - 🧠 **Agent memory** — `AgentConfig.memory` mixes strings, objects, and stores from LangChain, LangGraph, LlamaIndex, AutoGen, OpenAI Agents, or mem0. `load_memory()` / `loadMemory()` connect mem0 (default), Zep, Letta, Supermemory, or memU (Python) and store finished conversations with `remember()` ([details](docs/Runtime-Guide.md#memory-packages)).
 - ✅ **Task lists** — `TodoList` gives a model one `todo` tool with a separate list per session; on by default in the CLI and web UI ([details](docs/Runtime-Guide.md#task-lists-todo-tool)).
-- 🖥️ **Terminal CLI and web UI** (Python) — `agent-rt` and `agent-rt web` share sessions, so a session started in one resumes in the other; edits need in-page or terminal approval ([details](docs/website/docs/guides/runtime-guide.html#web-ui)).
+- 🖥️ **Terminal CLI and web UI** (Python) — `agent-rt` and `agent-rt web` share sessions, so a session started in one resumes in the other; edits need in-page or terminal approval ([details](docs/website/docs/guides/runtime-guide.html#web-ui)). The CLI reads Codex and Claude Code project setup as is: `AGENTS.md`/`CLAUDE.md`, skills in `.agents/`, `.claude/`, `.codex/`, and MCP servers from `.mcp.json`, `~/.claude.json`, and `~/.codex/config.toml` ([details](docs/website/docs/guides/runtime-guide.html#project-instructions-skills-mcp)).
 - 💬 **Chat bots** (Python, beta) — `agent-rt serve telegram,discord` answers allowed users, with no workspace tools ([details](docs/Runtime-Guide.md#chat-bots-python-beta)).
 
 ## ⚖️ Quick Comparison
@@ -159,7 +159,7 @@ registry.register(
 )
 
 loop = AgentLoop(
-    load_model(load_config()),  # models from agent-rt.yaml: OpenAI, Anthropic, or compatible endpoints
+    load_model(load_config()),  # models from ~/.agent-rt/config.yaml; select project YAML with load_config(path)
     tool_registry=registry,
     capability_grant=CapabilityGrant(tools=("get_weather",)),
     execution_budget=ExecutionBudget(ExecutionBudgetLimits(max_model_calls=5)),
@@ -176,7 +176,7 @@ Arguments are validated against the schema, tools outside the grant never run, a
 | Runtime model | [How Agent RT executes agents](docs/website/docs/concepts/runtime.html) |
 | Tools & safety | [Tools, policy, permissions, approvals, and guardrails](docs/website/docs/concepts/tools-policy.html) |
 | State & memory | [State, memory, checkpoints, and artifacts](docs/website/docs/concepts/state-memory.html) |
-| Production | [Sandboxing, observability, evaluation, and deployment](docs/website/docs/guides/production.html) |
+| Production | [Sandboxing, observability, evaluation, and deployment](docs/website/docs/guides/production.html) · [Deployment privacy checklist](docs/Deployment-Privacy.md) |
 | Migration | [LangChain, LlamaIndex, OpenAI, and Anthropic migration](docs/website/docs/guides/migration.html) |
 | Runtime guide | [Providers, memory packages, API server, CLI, web UI, chat bots, sandboxes, skills, and migration entry points](docs/website/docs/guides/runtime-guide.html) |
 | Features | [Features, defaults, and configuration](docs/website/docs/reference/features-defaults.html) |

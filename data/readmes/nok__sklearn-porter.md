@@ -84,9 +84,42 @@ Python 3.11 or newer and scikit-learn 1.8 or newer are required.
 
 ### Transformers
 
+#### Composition
+
+- [compose.ColumnTransformer](https://scikit-learn.org/stable/modules/generated/sklearn.compose.ColumnTransformer.html)
+- [pipeline.FeatureUnion](https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.FeatureUnion.html)
+
+#### Feature selection
+
+- [feature_selection.GenericUnivariateSelect](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.GenericUnivariateSelect.html)
+- [feature_selection.RFE](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.RFE.html)
+- [feature_selection.RFECV](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.RFECV.html)
+- [feature_selection.SelectFdr](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectFdr.html)
+- [feature_selection.SelectFpr](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectFpr.html)
+- [feature_selection.SelectFromModel](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectFromModel.html)
+- [feature_selection.SelectFwe](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectFwe.html)
+- [feature_selection.SelectKBest](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectKBest.html)
+- [feature_selection.SelectPercentile](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectPercentile.html)
+- [feature_selection.SequentialFeatureSelector](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SequentialFeatureSelector.html)
+- [feature_selection.VarianceThreshold](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.VarianceThreshold.html)
+
 #### Preprocessing
 
+- [impute.SimpleImputer](https://scikit-learn.org/stable/modules/generated/sklearn.impute.SimpleImputer.html)
+- [preprocessing.Binarizer](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.Binarizer.html)
+- [preprocessing.FunctionTransformer](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.FunctionTransformer.html)
+- [preprocessing.KBinsDiscretizer](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.KBinsDiscretizer.html)
+- [preprocessing.MaxAbsScaler](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.MaxAbsScaler.html)
+- [preprocessing.MinMaxScaler](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.MinMaxScaler.html)
+- [preprocessing.Normalizer](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.Normalizer.html)
+- [preprocessing.OneHotEncoder](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OneHotEncoder.html)
+- [preprocessing.OrdinalEncoder](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OrdinalEncoder.html)
+- [preprocessing.PolynomialFeatures](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.PolynomialFeatures.html)
+- [preprocessing.PowerTransformer](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.PowerTransformer.html)
+- [preprocessing.QuantileTransformer](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.QuantileTransformer.html)
+- [preprocessing.RobustScaler](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.RobustScaler.html)
 - [preprocessing.StandardScaler](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html)
+- [preprocessing.TargetEncoder](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.TargetEncoder.html)
 
 ### Languages
 
@@ -133,51 +166,13 @@ print(score)
 ```
 <!-- fmt:on -->
 
-Steps 4 and 5 require a compiler or interpreter for the target language (e.g. `node` for JavaScript or the .NET SDK for C#).
+Steps 4 and 5 require a compiler or interpreter for the target language (e.g. `node` for JavaScript or the .NET SDK for C#). The functions accept transformers and pipelines too, the class `Porter` provides the same object-oriented API.
 
-The [example notebook](https://github.com/nok/sklearn-porter/blob/main/examples/basics/index.pct.ipynb) shows the functional and the object-oriented API step by step.
+The example notebooks show the usage step by step:
 
-### Transformers
-
-A ported transformer has the method `transform`, which returns the transformed features of a sample, analogous to `predict` of a ported estimator. The functions `port`, `save`, `make` and `test` accept transformers too:
-
-<!-- fmt:off -->
-```python
-from sklearn.preprocessing import StandardScaler
-from sklearn_porter import Transformer
-
-# 1. Train a transformer:
-scaler = StandardScaler()
-scaler.fit(X)
-
-# 2. Port the transformer and save it:
-transformer = Transformer(scaler, language='js')
-print(transformer.port())
-transformer.save(directory='/tmp')  # /tmp/StandardScaler.js
-
-# 3. Transform the features with the ported transformer and check them:
-X_tr = transformer.transform(X[:10])
-score = transformer.test(X[:10])
-```
-<!-- fmt:on -->
-
-The ported transformer prints the transformed features of each sample in one line (separated by spaces), which is also the input format of the ported estimators.
-
-### Object-oriented API
-
-The classes `Estimator` and `Transformer` port an estimator and a transformer. The central class `Porter` accepts both and creates the matching one:
-
-<!-- fmt:off -->
-```python
-from sklearn_porter import Porter
-
-porter = Porter(clf, language='java')  # creates an `Estimator`
-y_classes, y_probas = porter.predict(X[:10])
-
-porter = Porter(scaler, language='java')  # creates a `Transformer`
-X_tr = porter.transform(X[:10])
-```
-<!-- fmt:on -->
+- [Getting Started ✨](https://github.com/nok/sklearn-porter/blob/main/examples/getting_started.ipynb): port a classifier, make predictions and check them with the functional and the object-oriented API.
+- [Transformers](https://github.com/nok/sklearn-porter/blob/main/examples/transformers.ipynb): port transformers (e.g. a `StandardScaler` or a `ColumnTransformer`) and use the ported transformers.
+- [Pipelines](https://github.com/nok/sklearn-porter/blob/main/examples/pipelines.ipynb): port a `Pipeline` of transformers and a final estimator (also of a `GridSearchCV`) to one source file.
 
 
 ## CLI
@@ -209,7 +204,7 @@ from joblib import dump
 dump(clf, 'estimator.joblib')
 ```
 
-Then port the saved estimator (or transformer) with the `port` subcommand:
+Then port the saved estimator (or transformer or pipeline) with the `port` subcommand:
 
 ```bash
 porter port estimator.joblib -l js -t attached > estimator.js

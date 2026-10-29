@@ -964,6 +964,7 @@ Table of Contents
 - [miles](http://www.radgametools.com/miles.htm)
 - [criware](http://www.criware.cn/)
 - [artlist](https://artlist.io/)
+- [Soundza](https://soundza.com/) Free sound effects, music loops and ambience (WAV/MP3), free for commercial use with no attribution needed. REST API and MCP server for search and download, or generate new sound effects from a prompt.
 - [SFXMint](https://sfxmint.com/) CC0 game and UI sound effects (AI-generated or procedurally synthesized), WAV/MP3 downloads without signup, no-key API and MCP. CC0 游戏/UI 音效库，免注册下载
 - [DailySounds](https://dailysounds.org/?ref=aboutgame) Free sound effects for games (UI clicks, footsteps, doors, impacts, ambience, horror), MP3/WAV/OGG downloads without signup, commercial use allowed, credit optional. 免费游戏音效库，免注册下载 MP3/WAV/OGG，可商用，署名可选
 - [native-audio](https://assetstore.unity.com/packages/tools/audio/native-audio-107067) unity-plugin
@@ -1695,7 +1696,4 @@ Table of Contents
 - https://github.com/Ogbest/Unity_MapEditor_Terrain 动态渲染Unity地形网格，记录网格是否是玩家的行走范围，然后导出编辑好的网格用于服务器导航、验证使用 https://github.com/frankhjwx/Unity-ShaderCharDisplay
 - https://github.com/Caeden117/ChroMapper -- 地图编辑器 
 - [real-world-terrai](https://assetstore.unity.com/packages/tools/terrain/real-world-terrain-8752) unity-plugin
-- [ntg-unity](https://github.com/hayden-donnelly/ntg-unity)
-- [simple-wall-collider-307337](https://assetstore.unity.com/packages/tools/utilities/simple-wall-collider-307337)
-- [ColliderMeshTool](https://github.com/SinlessDevil/ColliderMeshTool)
-- https://github.com/JohannHotzel/UnityRun
+- [ntg-unity](https://github.com/hayden-donnelly/ntg

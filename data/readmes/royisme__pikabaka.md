@@ -2,8 +2,8 @@
 
 # Pika
 
-**The open-source AI interview copilot & meeting assistant.**
-Real-time transcription, AI-suggested answers, and screenshot reasoning — running on your machine.
+**The open-source live-translation and meeting assistant.**
+Real-time translation of the other party, meeting records you can search, and an AI agent that helps during the call — running on your machine.
 
 [![Latest Release](https://img.shields.io/github/v/release/royisme/pikabaka?display_name=tag&color=4f46e5)](https://github.com/royisme/pikabaka/releases/latest)
 [![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
@@ -34,7 +34,7 @@ Full demo video: [`demo/out/pika-demo.mp4`](demo/out/pika-demo.mp4) · Built wit
 | Bring your own API key                |    ✓     |   —    |    —    |   —   |
 | 100% offline option (Ollama)          |    ✓     |   —    |    —    |   —   |
 | Real-time AI answer suggestions       |    ✓     |   ✓    |    —    |   —   |
-| Stealth overlay (hidden in screen-share) |  ✓     |   ✓    |    —    |   —   |
+| Hide from screen share (macOS, Windows) | ✓ | ✓ | — | — |
 | Local RAG memory across past meetings |    ✓     |   —    |    —    |   —   |
 | Custom global keyboard shortcuts      |    ✓     |   ✓    | partial |   —   |
 | Audio never leaves your device        |    ✓\*   |   —    |    —    |   —   |
@@ -43,7 +43,7 @@ Full demo video: [`demo/out/pika-demo.mp4`](demo/out/pika-demo.mp4) · Built wit
 
 ## Built for
 
-- **Interview practice & prep** — rehearse with realistic AI-suggested answers, not generic flashcards.
+- **Calls in another language** — live translation of what the other party says, shown under the original line.
 - **Sales & customer success calls** — surface objection handlers, pricing, and product facts in real time.
 - **Customer support** — instant context from your past tickets via on-device vector search.
 - **Lectures & research** — live transcribe, summarize, and ask follow-up questions on what you just heard.
@@ -60,7 +60,7 @@ Full demo video: [`demo/out/pika-demo.mp4`](demo/out/pika-demo.mp4) · Built wit
 - **Mute your microphone** — one button stops your own voice from being transcribed when the call plays through speakers.
 - **Local RAG memory** — past meetings indexed with `sqlite-vec`; search and recall without sending data anywhere.
 - **Screenshot reasoning** — capture full screen or a region, pipe it to a vision model, get an answer in seconds.
-- **Stealth overlay** — disguise the process name and hide the window from screen-sharing.
+- **Hide from screen share** — asks macOS and Windows to keep Pika's windows out of screen sharing; macOS recorders that use ScreenCaptureKit can still capture them.
 - **Configurable controls** — customize the overlay's global shortcuts and choose your AI providers.
 - **Cross-platform** — macOS (Apple Silicon + Intel) and Windows 10/11.
 
@@ -90,7 +90,7 @@ pnpm run dist           # production build via electron-builder
 
 ## Configure Models & Agent
 
-You only need **one** LLM provider and **one** STT provider to get started. All keys are stored in your OS keychain.
+You only need **one** LLM provider and **one** STT provider to get started. Keys are encrypted with the operating system's secure storage when available; otherwise Pika keeps a plain local file and shows a notice in Provider setup.
 
 ### LLM Providers
 
@@ -98,7 +98,7 @@ You only need **one** LLM provider and **one** STT provider to get started. All 
 | ------------ | ------------------------------ | ------------------------------------ |
 | Google Gemini | Cost + huge context window    | Recommended default for most users   |
 | OpenAI       | General quality, GPT-4o, o3    | Strong at chained reasoning          |
-| Anthropic Claude | Coding interviews          | Best Claude tier for technical depth |
+| Anthropic Claude | Code and long reasoning    | Best Claude tier for technical depth |
 | Groq         | Sub-second inference, vision   | Cheapest fast tier                   |
 | Local server | Fully offline, no key required | Ollama, LM Studio, vLLM: add an OpenAI-compatible connection with a local address |
 | Custom       | Any OpenAI, Anthropic or Gemini compatible host | Your own base URL and key |
@@ -120,7 +120,7 @@ Three-process Electron app:
 ```
             ┌─────────────────────────────────────┐
             │ Electron Main (Node + native deps)  │
-            │  IPC · keychain · provider routing  │
+            │  IPC · storage · provider routing   │
             └────────────┬────────────────────────┘
               IPC bridge │
             ┌────────────┴───────────┐    ┌──────────────────┐
@@ -129,7 +129,7 @@ Three-process Electron app:
             └────────────────────────┘    └──────────────────┘
 ```
 
-Local data lives in `~/Library/Application Support/Pika` (macOS) or `%APPDATA%\Pika` (Windows). API keys live in the OS keychain. No telemetry runs by default.
+Local data lives in `~/Library/Application Support/Pika` (macOS) or `%APPDATA%\Pika` (Windows). API keys and custom header values use the credential storage described below. No telemetry runs by default.
 
 ## System Requirements
 
@@ -156,16 +156,16 @@ Yes — AGPL-3.0. Free for personal use, study, and open-source projects. Commer
 Only if you choose a cloud STT/LLM provider. Pair Ollama with a local STT engine (or system-only transcription) for a fully offline pipeline.
 
 **Where are my API keys stored?**
-In your OS keychain — Keychain Access on macOS, Credential Manager on Windows. Never in plaintext config files.
+In a local `credentials.enc` file encrypted by Electron's `safeStorage`, using the operating system's secure storage when available (macOS Keychain, Windows DPAPI, Linux libsecret/KWallet). Credentials live under `~/.config/pika/` on macOS/Linux or `%APPDATA%\pika\` on Windows. If secure storage is unavailable, Pika keeps `credentials.json` in plaintext and shows a notice in Settings > Provider setup. On upgrade, existing plaintext is encrypted and verified before it is deleted. A decryption failure locks saves and shows a notice instead of overwriting the file. Custom header values are protected along with API keys.
 
 **How is Pika different from Cluely?**
 Open source under AGPL-3.0, no subscription, you bring your own API key, and you can run completely offline with Ollama. The overlay's global shortcuts and AI providers are configurable.
 
-**Why "stealth mode"?**
-The overlay can be hidden from screen-sharing tools so private notes during a sales demo don't show on the customer's screen. It's a privacy feature, not a permission to break rules — please use Pika ethically and respect any policies that apply to your conversations.
+**Why "Hide from screen share"?**
+So private notes don't appear on a screen you share. It is not a guarantee (ScreenCaptureKit recorders on macOS; no Linux support). Use Pika ethically and respect the rules of your conversations.
 
-**Can I use Pika during a coding interview?**
-Use it for **prep and rehearsal** before the interview — that's the legitimate use case. Real interviews almost always have explicit rules about external assistance; respect them.
+**Can I use Pika in a call that has rules about outside assistance?**
+Check the rules first and follow them. Exams, assessments and some interviews forbid outside help; Pika does not change that.
 
 **Does it work on Linux?**
 Not yet. Tracking on the [roadmap](#roadmap).
@@ -184,6 +184,6 @@ Pull requests welcome — see [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CO
 
 If Pika is useful to you, [give it a star](https://github.com/royisme/pikabaka) — it helps others discover the project.
 
-**Keywords**: AI interview copilot, AI meeting assistant, real-time transcription, open source Cluely alternative, local AI assistant, Electron AI app, BYO API key meeting tool, privacy-first AI copilot, screenshot AI assistant, RAG meeting memory.
+**Keywords**: live translation, AI meeting assistant, meeting transcription, real-time transcription, open source Cluely alternative, local AI assistant, Electron AI app, BYO API key meeting tool, privacy-first AI copilot, screenshot AI assistant, RAG meeting memory.
 
 </div>

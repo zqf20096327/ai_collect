@@ -245,7 +245,7 @@ as `menuitem`/`menu items`, `option`, `tab`, `treeitem`/`tree items`, `switch`,
 `menuitemcheckbox`, and `menuitemradio` are also accepted. Region selectors accept ARIA landmark
 aliases such as `navigation`, `nav region`/`nav-region`/`nav regions`,
 `navigation region`/`navigation-region`/`navigation regions`, `search`/`search navigation`/`search navigations`, `banner`, `complementary`, and
-`contentinfo`; `forms` and `dialogs` are plural aliases for `form` and
+`contentinfo`/`content_info`/`content-info`; `forms` and `dialogs` are plural aliases for `form` and
 `dialog`; `content_region`/`content_regions` (and their hyphenated or
 space-separated forms) select content regions.
 Table selectors include `table`/`tables`, `data_table`/`data_tables`, and
@@ -260,10 +260,12 @@ only the corresponding native media elements. Use
 `canvas` when you want every canvas element, or `canvas_item` when filtering a
 mixed media page down to canvas elements only.
 HTML text-input type names are also accepted as selectors, including
-`text`, `search_input`/`search-input`, `search_control`/`search-control`,
+`text`, `textbox`/`textboxes`/`text_box`/`text-box`/`text box` (and plural
+spaced or hyphenated forms), `search_input`/`search-input`, `search_control`/`search-control`,
 `search_field`/`search-field`, `search_box`/`search-box`, `query`,
 `query_input`/`query-input`, `query_field`/`query-field`,
-`query_control`/`query-control`, `querybox`/`query-box`, `email`, `number`,
+`query_control`/`query-control`, `querybox`/`query-box`,
+`queryboxes`/`query_boxes`/`query-boxes`/`query boxes`, `email`, `number`,
 `password`, `tel`, `url`, `date`,
 `datetime`/`datetime-local` (also `date_time`/`date-time`/`date time` and `date_time_local`/`date-time-local`/`date time local`), `month`, `time`, `week`, `color`, `range`,
 `hidden`, and `file`; each targets the corresponding compiled text-input

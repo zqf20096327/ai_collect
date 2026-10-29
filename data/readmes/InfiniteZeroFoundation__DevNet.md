@@ -1,5 +1,10 @@
 # InfiniteZero Network — DevNet
 
+> [!IMPORTANT]
+> **You're on `develop`, the development branch.** It holds the next version of the protocol (DevNet 2.0, not deployed yet) and is where all contributions go.
+>
+> **Want to use the live DevNet?** DevNet 1.0 on Optimism Sepolia runs the code on [`main`](https://github.com/InfiniteZeroFoundation/DevNet/tree/main). Start with its [README](https://github.com/InfiniteZeroFoundation/DevNet/blob/main/README.md) and [Getting Started guide](https://github.com/InfiniteZeroFoundation/DevNet/blob/main/Documentation/GettingStarted.md), and install [dincli 0.2.0](https://github.com/InfiniteZeroFoundation/DevNet/releases/tag/v0.2.0).
+
 <div align="center">
 
 ![Ethereum](https://img.shields.io/badge/Built%20on-Ethereum-3C3C3D?style=flat&logo=ethereum&logoColor=white)
@@ -27,7 +32,7 @@ This repository contains the DevNet setup and tooling for developers and validat
 
 > Built on Ethereum. Governed by the community. Models belong to the commons.
 
-The DevNet is live. Validator nodes are running 24/7 from Japan to Canada. This is not a simulation — it's real infrastructure, and it needs builders.
+DevNet 1.0 is live (on `main`). Validator nodes are running 24/7 from Japan to Canada. This is not a simulation — it's real infrastructure, and it needs builders.
 
 ---
 
@@ -43,13 +48,19 @@ The DevNet is live. Validator nodes are running 24/7 from Japan to Canada. This 
 
 New here? Start with the validator setup guide:
 
-[Getting Started →](https://github.com/InfiniteZeroFoundation/DevNet/blob/main/Documentation/GettingStarted.md)
+[Getting Started →](https://github.com/InfiniteZeroFoundation/DevNet/blob/develop/Documentation/public/getting-started.md)
 
 ---
 
-## Setup
+## Install dincli
 
-Full installation and IPFS configuration guide: [dincli Documentation](Documentation/setup.md)
+Full installation guide: [dincli Documentation](Documentation/public/setup.md)
+
+---
+
+## Configure IPFS
+
+Full configuration guide: [dincli Documentation](Documentation/public/setup.md)
 
 ---
 
@@ -59,7 +70,7 @@ The network is open and experimental. We use the `develop` branch for contributi
 
 [Contribution Guide →](https://github.com/InfiniteZeroFoundation/DevNet/blob/develop/Developer/CONTRIBUTING.md)
 
-Not sure where to start? We've got you.
+Not sure where to start?
 
 [Good first issues →](https://github.com/InfiniteZeroFoundation/DevNet/blob/develop/Developer/GOOD_FIRST_ISSUES.md)
 
@@ -76,9 +87,10 @@ If you care about privacy-preserving ML, decentralised systems, or just building
 ## Learn More
 
 - [White Paper](https://github.com/InfiniteZeroFoundation/White-Paper)
-- [Documentation](https://github.com/InfiniteZeroFoundation/DevNet/blob/main/Documentation/GettingStarted.md)
+- [Documentation](https://github.com/InfiniteZeroFoundation/DevNet/blob/develop/Documentation/public/getting-started.md)
 - [Support the network on Giveth](https://giveth.io/project/infinitezero-network)
-- [Say hello](mailto:abrahamnash@protonmail.com)
+- [Say hello](https://github.com/InfiniteZeroFoundation/DevNet/discussions/92)
+- [Email us](mailto:abrahamnash@protonmail.com)
 
 ---
 

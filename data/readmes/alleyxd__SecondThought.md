@@ -1,6 +1,6 @@
 # SecondThought
 
-[![Paper DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23580273.svg)](https://doi.org/10.5281/zenodo.23580273)
+[![Paper DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23580272.svg)](https://doi.org/10.5281/zenodo.23580272)
 [![Code DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23580275.svg)](https://doi.org/10.5281/zenodo.23580275)
 
 Thinking before a tool call makes small models more accurate, but it costs six to seven times the output tokens and
@@ -10,7 +10,7 @@ Make the normal no-think tool call with log-probabilities on. If its mean token 
 thinking. If the model declined to call, keep the decline. No training, no extra model: it uses numbers the server
 already returns.
 
-Paper: [`paper/secondthought.pdf`](paper/secondthought.pdf) ([Zenodo](https://doi.org/10.5281/zenodo.23580273))
+Paper: [`paper/secondthought.pdf`](paper/secondthought.pdf) ([Zenodo](https://doi.org/10.5281/zenodo.23580272))
 
 ## Results
 
@@ -27,7 +27,7 @@ tool fits), Qwen3 on vLLM, accuracy over all items:
 | output tokens: gated 30% | 161 | 179 | 188 |
 
 - The call's mean token log-probability predicts whether it's correct (AUROC 0.82 to 0.84).
-- The probability of the first token being a tool call predicts whether a tool is needed (AUROC 0.96 to 0.98), better
+- The probability of the first token being a tool call predicts whether a tool is needed (AUROC 0.95 to 0.97), better
   than asking the model.
 - Gating keeps 66 to 70% of the thinking gain at 1.7B and 4B, and beats always thinking at 8B, at about half the
   tokens. Always thinking turns some correct declines into wrong calls; the gate doesn't think on declines.
@@ -63,8 +63,8 @@ bounds what any gate can gain; multi-turn agents may benefit more.
   title  = {SecondThought: Confidence-Gated Reasoning for Tool Calls in Small Local Models},
   author = {Ashter, Ali},
   year   = {2026},
-  doi    = {10.5281/zenodo.23580273},
-  url    = {https://doi.org/10.5281/zenodo.23580273}
+  doi    = {10.5281/zenodo.23580272},
+  url    = {https://doi.org/10.5281/zenodo.23580272}
 }
 ```
 

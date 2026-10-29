@@ -77,26 +77,6 @@ The JSON is the complete guide. The Markdown at the same path with `.md` is the 
 
 No need to fetch the main manifest or potions index unless you're building discovery/search. For normal use, the user provides the potion link and you implement from that single guide.
 
-## Potion Kit (optional)
-
-UI Potion also provides `potion-kit`, a CLI to scaffold and build Harold + UI Potion websites via AI chat.
-
-Run it without installing with `npx potion-kit --help`, or install it globally. The Potion Kit repository remains the source of truth for providers, models, configuration, security behavior, and release-specific details.
-
-- **Scaffold a project**: `npx potion-kit init <directory>`
-- **Interactive chat**: `npx potion-kit chat`
-- **One-shot**: `npx potion-kit chat "your request"`
-- **Doctor/config check**: `npx potion-kit doctor`
-- **Clear history**: `npx potion-kit clear`
-- **Help/usage**: `npx potion-kit` or `npx potion-kit --help` (unknown commands also show help and do not call the API)
-
-`potion-kit init` creates a starter static site with pages, partials, SCSS, a sample post, and package scripts. `npx potion-kit doctor` validates provider configuration, connectivity, project structure, and required remote dependencies before you start chatting.
-
-Links:
-
-- npm: https://www.npmjs.com/package/potion-kit
-- GitHub: https://github.com/uiPotion/potion-kit
-
 ## Available Potions
 
 See [the potion catalog](https://uipotion.com/potions) for the full list of potions (layouts, components, features, patterns, tooling).
@@ -155,7 +135,7 @@ We welcome contributions! UI Potion grows with community input.
 
 ## What Makes a Good Potion?
 
-The [Guide Rules](AGENTS.md#guide-rules) list the rules for guide content. Every guide but Button, Toast Notifications, Dark/Light Mode, and ESLint Config follows all of them; those four get them as they're revised.
+The [Guide Rules](AGENTS.md#guide-rules) list the rules for guide content, and every guide follows them.
 
 ### Human Documentation (Markdown)
 

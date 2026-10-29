@@ -15,7 +15,7 @@ Launch coding agents in the background, skip the transcript, and read the presen
 [![Zero runtime deps](https://img.shields.io/badge/runtime%20deps-0-brightgreen)](package.json)
 [![Harnesses](https://img.shields.io/badge/harness-Claude%20Code%20·%20Codex%20·%20opencode%20·%20Cursor%20·%20Antigravity%20·%20Grok%20·%20Copilot-d97757)](#adding-a-harness)
 
-[Website](https://trywisp.dev/) · [wisp Cloud](#wisp-cloud) · [Quick start](#quick-start) · [Features](#features) · [CLI](#cli) · [Integrations](#integrations) · [Shortcuts](#keyboard-shortcuts) · [Architecture](#architecture) · [Adding a harness](#adding-a-harness) · [Roadmap](#roadmap)
+[Website](https://trywisp.dev/) · [wisp Cloud](#wisp-cloud) · [Quick start](#quick-start) · [Features](#features) · [My Stuff](#my-stuff) · [CLI](#cli) · [Integrations](#integrations) · [Shortcuts](#keyboard-shortcuts) · [Architecture](#architecture) · [Adding a harness](#adding-a-harness) · [Roadmap](#roadmap)
 
 <img src="https://raw.githubusercontent.com/M0xoo/wisp/main/docs/assets/demo.gif" alt="wisp: send a task off, answer the agent's question in one click, read the report, then a crew member checks in and another takes a job by @mention" width="880" />
 
@@ -47,7 +47,8 @@ From there you can **follow up**, **answer its questions**, **take it over** in 
 | **A queue** | Sessions sort into *Needs you*, *Working* (with a live one-line status), and *Done*. Archive what you don't need to see. |
 | **Follow-ups that interrupt** | A follow-up sent mid-run interrupts the agent and resumes it with your message. Turn on **Queue** to wait for the run to finish instead; queued messages can be cancelled. To ask without interrupting, start with `/btw` (`/btw did you update the docs too?`): a separate read-only run answers on a copy of the conversation, and the agent keeps working. |
 | **Command palette** | `⌘K` / `Ctrl+K` fuzzy-searches sessions, projects, and actions. |
-| **Crew** | Named agents with a face, a role, a schedule and a memory that keep working for you: they check in, report when something changed, take jobs in parallel and answer to `@Name` in any prompt. See [Crew](#crew). |
+| **Crew** | Named agents with a face, a role, a schedule and a memory that keep working for you: they check in, report when something changed, take jobs in parallel and answer to `@Name` in any prompt. **Org** charts who hands work to whom, and you change it there. See [Crew](#crew). |
+| **My Stuff** | A shelf for what agents make: pictures, docs, code, links and small web apps, kept when the worktree goes. Ask *“save that to my stuff”*, `@` a thing in any prompt, launch apps inside wisp, and **Publish** one to a public link on your wisp Grid. See [My Stuff](#my-stuff). |
 | **Goals** | Say what *done* means and wisp checks it after every round, sending the task back until it holds. See [Goals](#goals). |
 | **Auto** | The default harness: wisp picks the harness, model and thinking level per task from what worked before, and learns from merges, 👍 / 👎 and follow-ups. See [Auto](#auto). |
 | **Any harness** | Claude Code, Codex, opencode, Cursor CLI, Antigravity CLI, Grok Build, or GitHub Copilot CLI. Pick the harness, model and thinking level together in the launcher; both are remembered per harness. Each card shows the harness it ran on. |
@@ -63,7 +64,7 @@ From there you can **follow up**, **answer its questions**, **take it over** in 
 | **Split view** | Tasks in a sidebar, the open one beside it with room to read, and the prompt box as home. On a wide window the task's details (harness, branch, its PR with Merge, the actions) sit in a column beside it that stays put as you scroll. `J` / `K` move through tasks with each one open; `[` hides the list. Drag the sidebar's edge to resize it. Under 900px, and on the phone, the list fills the screen and a task opens as a page of its own with Back. |
 | **Compare** | Run one task on two harnesses side by side, and keep the better run. |
 | **Spells** | Change wisp itself while it runs: ask for a floating button that opens your PRs, a panel with your tool stats, a block agents can use in their reports, a different prompt box, quick replies, buttons on cards, a new look. An agent writes it as a *spell*; you try it in the window and keep it. Share one as a file, and turn any of them off to put wisp back as it was. See [Spells](#spells). |
-| **Recipes & triggers** | Saved prompts with `{params}` (`wisp run release 0.46.0`), run by hand, on a schedule, when CI fails, or when an issue is labelled. |
+| **Recipes & triggers** | Saved prompts with `{params}` (`wisp run release 0.49.0`), run by hand, on a schedule, when CI fails, or when an issue is labelled. |
 | **Usage** | Spend, success rate and questions per project and per harness · model. |
 | **wisp Cloud** | Your own wisp on a server, at [grid.trywisp.dev](https://grid.trywisp.dev): sign in with GitHub or Google and your agents keep working after you close the laptop. Use it from the browser, from wisp on your computer (Machines) or from the phone app, and add your own computers to it so the phone and your other computers reach them with no SSH. Or run your own grid with `npx wisp-agents grid init`. See [wisp Cloud](#wisp-cloud). |
 | **Sign in from wisp** | Settings → Agents signs Claude Code, Codex and GitHub in for you: a link and a code, no terminal. For opencode Zen and Go, paste your API key there. The model picker only offers the agents you're signed in to. |
@@ -97,7 +98,7 @@ brew install m0xoo/tap/wisp-agents             # Homebrew: CLI and browser mode,
 wisp "fix the flaky auth test"
 ```
 
-The Homebrew formula lives in [M0xoo/homebrew-tap](https://github.com/M0xoo/homebrew-tap) (the release workflow bumps it from [`packaging/homebrew`](packaging/homebrew/wisp-agents.rb)). `install.sh` honors `WISP_VERSION` to pin a release (`curl -fsSL https://trywisp.dev/install.sh | WISP_VERSION=0.46.0 bash`).
+The Homebrew formula lives in [M0xoo/homebrew-tap](https://github.com/M0xoo/homebrew-tap) (the release workflow bumps it from [`packaging/homebrew`](packaging/homebrew/wisp-agents.rb)). `install.sh` honors `WISP_VERSION` to pin a release (`curl -fsSL https://trywisp.dev/install.sh | WISP_VERSION=0.49.0 bash`).
 
 **Or download the desktop app** (no Node needed, it updates itself). The builds aren't signed yet, so on a Mac the one-liner is the easy way: curl doesn't quarantine what it downloads, so macOS opens it without asking.
 
@@ -116,7 +117,7 @@ Every build is on the [latest release](https://github.com/M0xoo/wisp/releases/la
 | Channel | What it is | npm | Desktop app |
 |---|---|---|---|
 | **Stable** | Releases | `npm install -g wisp-agents` | [latest release](https://github.com/M0xoo/wisp/releases/latest) |
-| **Beta** | Previews of the next release (`0.46.0-beta.1`) | `npm install -g wisp-agents@next` | its [prerelease](https://github.com/M0xoo/wisp/releases) |
+| **Beta** | Previews of the next release (`0.49.0-beta.1`) | `npm install -g wisp-agents@next` | its [prerelease](https://github.com/M0xoo/wisp/releases) |
 | **Nightly** | `main`, built every night its full test suite passes (`0.44.3-nightly.20261028.317`) | `npm install -g wisp-agents@nightly` | [nightly release](https://github.com/M0xoo/wisp/releases/tag/nightly) (`releases/download/nightly/<name>`) |
 
 Set **Settings → General → Updates** to the one you want, and *Update to …* follows it. Beta and nightly also take a stable release once it's newer, so they never leave you behind; switching back to stable waits for the next release rather than going back a version. `WISP_VERSION=next` or `WISP_VERSION=nightly` picks one in `install.sh` (`--app` too, for nightly). Homebrew only has stable releases.
@@ -169,7 +170,7 @@ wisp btw <id> "did you do X?"     # ask on the side without interrupting the run
 wisp stop <id>
 wisp ship <id> [--draft]          # commit, push and open a PR for a worktree task
 wisp merge <id>                   # squash-merge its PR, fast-forward your local main
-wisp run release 0.46.0            # run a recipe; values fill its {params} (or version=0.46.0)
+wisp run release 0.49.0            # run a recipe; values fill its {params} (or version=0.49.0)
 wisp recipes                      # list recipes
 wisp usage [--days 7]             # spend and outcomes
 wisp computer on [--grid HOST]    # add this computer to your wisp Grid (signs in with a code first); off, or no word for its status
@@ -361,30 +362,28 @@ New harnesses and models: when a CLI or model shows up (after an install or a Re
 
 Compare runs get different picks. A delegate set to Auto is picked on its first task and keeps that harness (on its own machine, from what that machine has). A launch on a machine is picked here, from the harnesses that machine reported, and that machine's outcomes come back to the same router. All of it stays in `~/.wisp/router.json`. Usage stats only add which goal, kind of task, size, tier and level were used, whether the pick was exploring, previewed or suggested something, and which harness you switched to when you changed a preview. Never the prompt.
 
-After the run, Auto checks the work before it lands in your queue:
+Around the run, Auto can do a few more steps:
 
-1. **Scout** (bigger tasks): a cheap model looks around the repo, read-only, and the agent gets the files that matter and the test command.
-2. **Check**: wisp runs the project's tests itself. A failure only counts if that test passed on the base commit, and a failing suite runs twice so a flaky test doesn't count. The turn gets a **Run by wisp** tests block. If the agent said "done" and the run disagrees, the turn says so.
-3. **Repair**: new failures go back to the same agent (1 round by default, up to 2).
-4. **Hand over**: still failing, or the run errored. A run that thought at low or medium goes again at high on the same model first (one at high, at x-high): Anthropic measured low with the failures rerun at high solving 97% for $0.17 a task, against 95% for $0.29 with everything at high. Otherwise the task runs again on a stronger tier (small → everyday → frontier). Either way it runs in its own worktree, next to the first run.
+1. **Scout** (bigger tasks): a cheap model looks around the repo, read-only, and the agent gets the files that matter and the test command, which it runs itself.
+2. **Hand over**: the run errored. A run that thought at low or medium goes again at high on the same model first (one at high, at x-high): Anthropic measured low with the failures rerun at high solving 97% for $0.17 a task, against 95% for $0.29 with everything at high. Otherwise the task runs again on a stronger tier (small → everyday → frontier). Either way it runs in its own worktree, next to the first run.
 
 A harness that says it's at its limit (session or usage limit, rate limit, no credit) isn't failing the task. Auto rests it until the limit resets, doesn't count the run against it, and moves the task to the best pick that can run now. Best always runs frontier models only; it falls back to the strongest you have only when no frontier model is installed. Balanced runs on the strongest tier that can run now, whatever the record of the weaker models: frontier, or everyday (Sonnet, never Haiku) while every frontier model is at its limit or when you have none. The benchmark estimates count for at most 8 tasks each (4 when they rest on a predecessor model), so your own outcomes soon outweigh them.
-5. **Best of two** (goal Best, off by default): two picks work side by side; tests decide, then a cheap model reads both diffs, and the better run is marked **Pick**.
+3. **Best of two** (goal Best, off by default): two picks work side by side; a cheap model reads both diffs, and the better run is marked **Pick**.
 
-Each step's outcome feeds the router: a test pass counts more than the agent's "done", needing a repair counts less, and losing a best-of-2 a little less again. Your own follow-up stops whatever Auto was about to do next. A launch on a machine is checked on that machine, where the files are. Settings → Auto turns each step on or off and sets the test command per project.
+Each step's outcome feeds the router: losing a best-of-2 counts a little less. Your own follow-up stops whatever Auto was about to do next. Settings → Auto turns each step on or off and sets the test command per project.
 
 The benchmark behind the priors is in [`bench/`](bench/README.md).
 
 ## Goals
 
-Give a task a *Done when* line and wisp checks the work after every round: it runs the project's tests, then a cheap read-only model reads the diff. Until the goal holds, the task goes back to the agent with what's missing and the next step. You hear about it once, when it's met, can't be met, runs out of rounds or stalls.
+Give a task a *Done when* line and wisp checks the work after every round: it runs the project's tests, then a cheap read-only model reads the diff. Until the goal holds, the task goes back to the agent with what's missing and the next step. There's no cap on rounds: you hear about it once, when it's met, can't be met or stalls.
 
-- **Set one**: turn on **Goal** in the prompt box and write the condition (*all tests pass and the login page works on a phone*), with 3, 5, 10 or 20 rounds. On a running or finished task, type `/goal <condition>` in the reply box (`/goal` alone opens it, `/goal drop` drops it), or use **Set goal…** in More, the right-click menu or ⌘K.
+- **Set one**: turn on **Goal** in the prompt box and write the condition (*all tests pass and the login page works on a phone*). On a running or finished task, type `/goal <condition>` in the reply box (`/goal` alone opens it, `/goal drop` drops it), or use **Set goal…** in More, the right-click menu or ⌘K.
 - **The check**: the agent's own report counts as a claim, not evidence. A *met* needs passing tests and evidence from the diff, and the checker can also rule the goal impossible (missing access, a contradiction, a decision only you can make). Two rounds in a row that change nothing, or get the same next step with no progress, pause it as stalled.
-- **What you see**: a band on top of the task with the goal, a progress bar and how much the last round moved it, the round (*Round 3 of 10*) and the last check in the checker's words. The row shows a ring and *3/10*. The task stays in Working through every round and notifies you once, at the end. **Pause goal**, **Resume goal** (with a fresh set of rounds) and **Drop goal** are in the band and the menus.
-- **Any harness**: the agent is told its goal every turn. A task Auto hands to a stronger model takes the goal, and the rounds it has left, along. Stop pauses it; a follow-up of yours keeps it and it's checked again after your turn.
+- **What you see**: a band on top of the task with the goal, a progress bar and how much the last round moved it, the round (*Round 3*) and the last check in the checker's words. The row shows a ring and the round. The task stays in Working through every round and notifies you once, at the end. **Pause goal**, **Resume goal** and **Drop goal** are in the band and the menus.
+- **Any harness**: the agent is told its goal every turn. A task Auto hands to a stronger model takes the goal along. Stop pauses it; a follow-up of yours keeps it and it's checked again after your turn.
 
-API: `goal: { text, max }` on `POST /sessions` (a prompt that is just `/goal …` works too), `PUT /sessions/:id/goal`, `PATCH /sessions/:id/goal` with `{ "action": "pause" | "resume" }`, `DELETE /sessions/:id/goal`. The default number of rounds is the `goalRounds` setting.
+API: `goal: { text }` on `POST /sessions` (a prompt that is just `/goal …` works too), `PUT /sessions/:id/goal`, `PATCH /sessions/:id/goal` with `{ "action": "pause" | "resume" }`, `DELETE /sessions/:id/goal`.
 
 ## Your agent accounts
 
@@ -455,6 +454,13 @@ A check-in that found nothing marks itself `quiet`: it's logged and archived (it
 - `fix the bug, then have @Ada review it`: Ada joins the task's delegates, and its agent hands Ada the review. The Delegate popover lists your crew under **Add delegate** too.
 - A trigger's **Send to** (Automations): a schedule, failed CI or a labelled issue goes to them.
 
+**Org: who hands work to whom.** **Org** on the *Crew* heading (or *Org* in ⌘K) opens your crew as a chart in the main pane: a card per member, an arrow to each of their delegates, and agents on other harnesses as logos on the card. Select a member and the chart becomes their picker: **+** on a card makes that member their delegate, **✓** takes them off, or drag from a card's handle onto another. The column beside it lists who they hand work to and get work from, each with a ×, and **Add a delegate…** adds a member or an agent on any harness. Drag cards to arrange the chart; the layout is saved on your wisp, the same on your other devices, and **Reset layout** goes back to the automatic tiers. **Delegates…** in a member's menu opens Org with them selected.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/shots/dark-org.webp" />
+  <img src="docs/assets/shots/light-org.webp" alt="wisp's Org page: Ada, a tech lead, hands work to Scout, Quill and three Codex copies; Quill hands work to Echo" width="880" />
+</picture>
+
 **Ask any task to change the crew.** *Add a crew member who reviews new PRs every hour*, *pause Ada*, *remove Quill*: every agent wisp runs has `wisp_crew`, `wisp_crew_add`, `wisp_crew_edit` and `wisp_crew_remove`, and writes the brief from what you asked. A subagent or a member's own job can't change the crew. `wisp mcp` has the same tools, so Claude Code, Codex or any MCP client outside wisp can manage it too.
 
 **They follow up by themselves.** A member tagged in a task, or delegated to by one, can send that task's agent a follow-up of its own when it finds something that agent should act on (`followUp` in its block). It shows in the task as *@Ada (your crew’s CI watcher): …*, Ada's thread there moves along with it, and Ada's job says where it followed up. Ada also joins that task's delegates, so its agent can hand the work back for her to check; that delegated job reports to the agent rather than following up again, so they can't loop.
@@ -473,6 +479,23 @@ wisp crew import scout.crew.json       # or gist:<id>, https://…; paused, in t
 
 API: `GET`/`POST /crew`, `GET`/`PATCH`/`DELETE /crew/:id` (id or name), `POST /crew/:id/jobs`, `POST /crew/:id/checkin`, `POST /sessions/:id/crew` (a task joins), `POST /sessions/:id/crew-reply` (reply in a thread), `crew` on a trigger, `{ crew: id }` in `subagents`. A follow-up starting with `@Name` returns `{ crew: [entry] }`. `machine` on a member puts them on a machine, `team` gives them delegates, `kit` their skills and instructions files; `GET /crew-kit` lists the ones on this computer. `POST /crew/export` (`ids`, `kit`, `notebook`, `team`, `gist`) and `POST /crew/import` (`text` | `url`, `dryRun`, `choices`) share them; `POST /crew/:id/detach` is Make it mine. `POST /crew/:id/jobs` with `kit: true` has them build their kit; what they propose is in `offers` on the member (settle one with `PATCH /crew/:id` and `offers: [{ id, state, names }]`).
 
+## My Stuff
+
+A shelf for what your agents make, on one page in the main pane: the tray beside **New task**, or *My Stuff* in ⌘K (a page with Back on phones).
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/shots/dark-stuff.webp" />
+  <img src="docs/assets/shots/light-stuff.webp" alt="wisp's My Stuff page: a pricing page app marked Public with Launch, a phone screenshot, a launch plan and a code snippet, each with the task it came from" width="880" />
+</picture>
+
+- **Keep it.** Every picture, video, doc and code block in a reply has **Save to My Stuff** beside Copy and Download. Agents keep things too: ask *“save that to my stuff”* and they call `wisp_save`. Each thing is a copy, so it stays when the task, its worktree or `/tmp` goes. Drop or paste files on the page to add your own.
+- **Find it.** Cards preview the thing itself, with the task it came from. Search titles, notes, #tags, tasks and a doc's text; filter by kind or star; group by time or by task.
+- **Use it.** Type `@` in any prompt and pick a thing: the agent gets its file, a doc's text, and how to update it (*“use the logo from my stuff”*). An agent that updates one saves a new version in place (*v2*), and **⋯ → Restore** puts the one before back.
+- **Apps.** For a demo, slides or a small tool, agents build a static web app and save its folder (`wisp_save` `app`, with a screenshot as its cover). **Launch** serves it on a port of its own and opens it inside wisp, with Reload, New tab, Stop and Close. An app whose `wisp-app.json` says `"db": true` gets its own SQLite database (`import { sql } from '/_wisp/db.js'`; needs Node 22.13+).
+- **Publish.** Signed in to a wisp Grid (Settings → Cloud), or in your cloud wisp, **Publish** on an app (its **⋯** menu, or its bar while it runs) puts it at `<app>--app--<you>.<grid>`, for example `pricing-demo--app--you.grid.trywisp.dev`. Anyone with the link opens it, no sign-in, while your computer or cloud wisp sleeps; search engines are kept out. Or ask the agent: *“publish it”* (`wisp_save` `publish: true`) and it answers with the link. After an agent changes the app, **Update public link** puts the new version at the same address; **Unpublish** takes it down. A published app with a database gets one on the grid, shared by everyone who opens the link.
+
+API: `GET`/`POST /stuff`, `PATCH`/`DELETE /stuff/:id`, `POST`/`DELETE /stuff/:id/launch`, `POST`/`DELETE /stuff/:id/publish`. Agents use `wisp_save` and `wisp_stuff`.
+
 ## Checkpoints and rollback
 
 Before each turn, wisp snapshots the git working tree (pinned at `refs/wisp/checkpoints/<session>/<turn>`). **Restore to before this turn** (the ⏪ icon in the turn bar, session menu or ⌘K) rolls back; **Re-apply** undoes that. `diff` and `files` blocks have a per-file **Revert / Re-apply**, and `actions`, `terminal` and `tests` blocks run their command in the project folder with one click.
@@ -485,7 +508,7 @@ Before each turn, wisp snapshots the git working tree (pinned at `refs/wisp/chec
 Prepare release {version}: update CHANGELOG, README and docs/, bump package.json, tag v{version}.
 ```
 
-Make one from ⌘K → *Recipes*, or *Save as recipe…* on any card. A recipe may pin a project, harness, model and mode. Run it from ⌘K (*Run: Release*), from the Recipes view, or from a terminal: `wisp run release 0.46.0` fills the fields in order, `wisp run release version=0.46.0` by name.
+Make one from ⌘K → *Recipes*, or *Save as recipe…* on any card. A recipe may pin a project, harness, model and mode. Run it from ⌘K (*Run: Release*), from the Recipes view, or from a terminal: `wisp run release 0.49.0` fills the fields in order, `wisp run release version=0.49.0` by name.
 
 **Triggers** launch sessions on their own while wisp is open (⌘K → *Triggers*):
 
@@ -560,6 +583,7 @@ Your own wisp on a server, so the agents keep working when your laptop is closed
 - **Use it from anywhere.** In the browser, from wisp on your computer (**Machines** → *Reach this computer from anywhere*, or Settings → **Cloud**: the address is filled in, you allow a code in the browser and it joins **Run on** like any machine; from a terminal, `wisp computer on`), or from the phone app (**wisp Cloud** on its first screen).
 - **Add your own computers.** Signed in from Machines, the computer joins the grid too (**Add to grid**). It holds a tunnel open to the grid, so your phone and your other computers open it at `<name>--<handle>.<grid>` with no SSH, Tailscale or open port. They show up in each other's Machines and in the phone app's list; the grid's account page lists them all, with how to add one.
 - **Connect your agents.** In the cloud wisp, Settings → **Agents** → **Sign in**: Claude Code (`claude auth login`), Codex (`codex login --device-auth`) and GitHub (`gh auth login`, then git pushes with it) show a link and a code, no terminal; opencode Zen and Go take the API key from opencode.ai/auth. From the desktop, Settings → Cloud lists the same Sign in buttons for each cloud computer. The logins stay in your own folder on the server; wisp never sees a password, and the model picker only offers what you've signed in to.
+- **Publish apps from My Stuff.** An app an agent built goes up to the grid and opens at `<app>--app--<you>.grid.trywisp.dev` for anyone with the link, while your wisp sleeps. See [My Stuff](#my-stuff).
 - **It sleeps when nothing's going on** and wakes in seconds when you open it, send it a task, or a schedule is due. Watching it from the desktop doesn't keep it awake: the card says *Asleep*, its tasks still show, and anything you send wakes it.
 - **Your account page** at grid.trywisp.dev lists your cloud wisp and your computers (each with its state and **Open**), the three steps to add a computer, the devices signed in (remove any of them; a computer's device takes it off the grid too) and how you sign in. It works on a phone.
 - **What passes through the grid.** Opening one of your computers goes over HTTPS to the grid, which checks it's you, then down the tunnel the computer holds open. The grid forwards it and keeps nothing of it. If you'd rather it never leaves your network, use Machines over SSH or Tailscale.
@@ -598,7 +622,7 @@ The machine runs macOS or Linux (on Windows, use WSL). It only needs **SSH turne
 
 ## Learning
 
-After a session has been quiet for 90 seconds (or right away when you mark it done or archive it), wisp runs a short **retro**: the same harness, read-only and without tools (Claude Code runs it on Haiku), reads a digest of the turns it hasn't seen yet. The digest holds your requests and follow-ups, questions and answers, failed tool calls and the commands run around them, and how each run ended. The retro then updates four small lists:
+After a session has been quiet for 90 seconds (or right away when you mark it done or archive it), wisp runs a short **retro**: the same harness, read-only and without tools, on its smallest model and without the harness's own prompt, tools or plugins (Haiku for Claude Code; for Codex its smallest model at low effort), reads a digest of the turns it hasn't seen yet. A one-shot task that just worked (no follow-up, no failure, no question) has nothing to teach, so it gets no retro. The digest holds your requests and follow-ups, questions and answers, failed tool calls and the commands run around them, and how each run ended. The retro then updates four small lists:
 
 | | Everywhere | This project |
 |---|---|---|

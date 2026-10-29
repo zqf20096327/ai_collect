@@ -43,7 +43,6 @@ Below is a general overview (with instructions) on each Docker container I use. 
 - [kasm-chromium](#kasm-chromium)
 - [kasm-obs](#kasm-obs)
 - [kasm-podman-desktop](#kasm-podman-desktop)
-- [kasm-zed](#kasm-zed)
 - [rickroll](#rickroll)
 - [vulkan-mac-silicon-gpu-stress-test](#vulkan-mac-silicon-gpu-stress-test)
 
@@ -134,7 +133,7 @@ Below is a general overview (with instructions) on each Docker container I use. 
  
  Notes:
  * The default user is root, and the ssh key is placed in /usr/ssh/root.keys this is enabled so we can scp / ssh and get the kubeconfig file (/etc/rancher/k3s/k3s.yaml)
- * k3s is loaded with NO INGRESS / Traefik as I prefer using nginx-ingress. See the systemd k3s.service file for more details.
+ * k3s runs with Traefik disabled because I use Envoy Gateway.
  * k3s is loaded with NO LOADBALANCER. I use metallb locally, and I have added --disable=servicelb to the systemd service file
 
  Arguments are required in order to build this image with both your k3s K3S_TOKEN and your SSH public key. To do this, you must have the following (you can pass in this via --build-arg foo=bar on the CLI):
@@ -447,34 +446,6 @@ Below is a general overview (with instructions) on each Docker container I use. 
  DEV_MODE is optional. If set to "true", uses `pnpm watch` instead of
  `pnpm build` + `electron`. This enables Vite's dev server with HMR
  so UI changes are reflected instantly without a full rebuild.
-
-## [kasm-zed](/kasm-zed/Containerfile)
-
-**Description:**
-
- Using KASM (basically web-based VNC) to run the Zed editor.
-
- Installs the official Zed Linux binary tarball on top of Fedora Kasm.
- Zed needs Vulkan; this image includes Fedora Mesa Vulkan packages so it can
- use hardware Vulkan when exposed, or Mesa software rendering when available.
-
- **IMPORTANT:**
-
- There is **NO AUTHENTICATION** and **NO SSL** in this container. This is meant for local use only, or when you have a reverse proxy in front of it.
- In my use-case, I am using nginx with Let's Encrypt and basic auth, so I do not need the VNC server to have its own authentication.
-
- **Running:**
-
- ```sh
- podman run -it --rm \
-  -p 6901:6901 \
-  -v /path/to/workspace:/home/kasm-user/workspace \
-  --shm-size=2g \
-  ghcr.io/cdrage/kasm-zed:latest
- ```
-
- ZED_WORKSPACE is optional. If not set, Zed opens /home/kasm-user/workspace.
- APP_ARGS is optional and is appended to the Zed startup command.
 
 ## [rickroll](/rickroll/Containerfile)
 

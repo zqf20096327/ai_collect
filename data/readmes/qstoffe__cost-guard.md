@@ -84,7 +84,7 @@ Distinct signals:
 - **Billed:** actual monetary spend with reported or explicit subscription/zero-billing evidence; otherwise `N/A`.
 - **Quotas / limits:** independent account-native windows, credits, budgets and availability.
 
-CCost uses GitHub reference rates in Copilot AI-credit-equivalent units. Included subscription work can have positive CCost and Billed $0.00. Unknown prices stay unknown, never replaced with billed cost. A quota credential does **not** prove historical request-account attribution.
+Reference costs—including Watch **Today**—are **CCost**, unless labeled otherwise, not native **Used** or actual **Billed**. Included work can have CCost with Billed $0. Quota bars show **Used / Total**; **Remaining** pace describes capacity left. Quota credentials do not prove historical attribution.
 
 ### Symbols and token categories
 
@@ -102,7 +102,7 @@ Details: [normal report](#normal-report), [model comparison](#model-comparison),
 
 ### Token Mix
 
-`--token-mix`: historical model/publisher I/C/W/O shares and CCost.
+`--token-mix`: historical model/publisher token volumes, I/C/W/O shares and CCost.
 
 ![Cost Guard Token Mix: model/category usage and CCost](docs/images/cost-guard-token-mix.png)
 
@@ -181,7 +181,7 @@ Reports show `OpenCode not found` only when selection fails and no PATH executab
 
 ### Model comparison
 
-**Relative CCost** blends up to 100 own completed priced prompts, then verified publisher evidence, then a generic prior. Prompt-count weights blend pooled shares; 100 weight slots need not mean 100 observations. These personalized workload-profile estimates are not same-task benchmarks or billing. Cold acquisition can traverse history; compact revision-keyed samples accelerate reuse. Dashboard usage mix stays separate. [Formula, tiers and limits](docs/usage-and-cost.md#model-comparison).
+**Relative CCost** uses one pooled I/C/W/O mix for every model/tier, tried or untried: latest **up to 100 completed priceable prompts globally**, actual count shown. Common workload prices are not same-task capability/throughput benchmarks, billing or specialized-job forecasts. Dashboard/historical Token Mix stays separate. [Details](docs/usage-and-cost.md#model-comparison).
 
 Availability uses settled V2 `/api/model` IDs (V1: `opencode models`), exact/verified aliases and explicit variant rates. Ambiguous prices stay unknown; failed lookups warn/show the catalog. Unpriced models have no row.
 
@@ -202,12 +202,13 @@ Both modes sort by full-Decimal base/higher price descending, earlier context bo
 
 ## Token Mix % by model: `--token-mix`
 
-Scans all available OpenCode history; the first uncached run can be slow. `Total Token Mix % · <volume> tokens` comes first, recomputed from shown requests. Each historically used, currently selectable model has `Prompts`, `Calls`, aligned Input/Cache/Write/Output shares and CCost, and total `CCost`.
+Scans available history (cold runs can be slow). `Total Token Mix % · <volume> tokens` precedes selectable models' `Prompts`, `Calls`, `Tokens`, I/C/W/O shares/category CCost and total `CCost`. Narrow terminals use labeled rows.
 
-Publisher rows pool the same requests at original model/tier CCost. Unknown manufacturers stay unverified; prompt counts are not additive.
+Publisher rows pool the same requests at original model/tier CCost. Unknown manufacturers stay unverified; prompts are not additive.
 
-- `Prompts`: unique user prompts where the model contributed usage. One prompt can count on several model rows, so rows do not sum to a prompt total.
-- `Calls`: model requests attributed to the model, including tool-loop continuations, subagent and compaction requests. Compare both to judge sample size.
+- `Prompts`: distinct contributing user prompts per model. Mixed-model prompts count on multiple rows; counts are not additive.
+- `Calls`: attributed model requests, including tool-loop, subagent and compaction work. Both counts indicate sample size.
+- `Tokens`: known I/C/W/O (Output includes reasoning); K/M/B display, exact Web sorting. `?` partial; `N/A` unknown.
 - Deleted or pruned history is not reconstructed; no private ledger exists. Rows never imply which account or subscription served a model.
 - If current model availability cannot be established, all historically used models are shown with a warning (fail open).
 
@@ -319,7 +320,8 @@ Quota credentials stay memory-only: V2 precedes legacy, explicit `authJsonPath` 
 
 Useful settings include:
 
-- `runningPromptWarningCCost`: warn for a running prompt at 1800 CCost by default (0 disables). Obsolete `runningPromptWarningUsd`/`thresholds.watchCostDeltaDisplayUsd` (removed in v78.36) fail startup as unrecognized; delete them.
+- `ccostDisplayUnit`: `credits` (default) or `usd`; CLI override: `--ccost-unit usd`. Web's CCost selector is page-memory only; reload restores configuration. 100 credits = $1.00 reference USD, not billing; small positive amounts may show $0.00. Quotas/Billed/rates are unchanged.
+- `runningPromptWarningCCost`: 1800 credits by default (0 disables), independent of display units.
 
 - `openCode.source`: `auto`, `v1` or `v2`.
 - `timezone`: local day/timestamp zone. The shipped `Europe/Stockholm` default works without an external tzdata package; other custom IANA zones require host/Python zoneinfo data.
@@ -368,7 +370,7 @@ Bundles omit prompts/titles, raw payloads/auth, tokens and account labels/IDs; s
 
 ## Current version
 
-**v80.107 (2026-10-28):** Web Beta removes timed healthy-stream reconnects and the bulky connected banner, while retaining truthful outage, authorization and stopped notices. CLI valuation is unchanged.
+**v80.112 (2026-10-29):** Web CCost Credits/USD selector; page-memory only, no acquisition or repricing.
 
 Earlier changes: [version history](VERSION_HISTORY.md). [Live-proof limits](development/architecture/modules/history-loading.md#startup-presentation-and-launcher-evidence). Claude quotas remain experimental.
 

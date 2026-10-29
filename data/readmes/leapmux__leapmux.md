@@ -291,6 +291,21 @@ task test-e2e           # End-to-end tests (Playwright)
 task test-docker IMAGE=leapmux:latest # Startup and shutdown of a built Docker image
 ```
 
+CI runs the complete validation pipeline on Linux amd64.
+macOS and Windows run `task test-native` and the full native build.
+Linux arm64 runs `task test-native-linux` and the full native build.
+That target adds Go lint and vet for all three operating systems on arm64.
+The native test target runs these checks:
+
+- Go backend tests, including integration tests that do not require Docker
+- Go desktop sidecar tests
+- Rust desktop tests and Clippy for the host platform
+- Frontend script and end-to-end helper tests, including native process and filesystem tests
+
+Linux amd64 covers all frontend tests, repository script tests, and schema validation.
+Both Linux architectures run Go lint and vet checks for all three operating systems.
+The native jobs retain filesystem, process, interprocess communication, and desktop test coverage.
+
 Run specific tests by passing arguments after `--`:
 ```bash
 # Backend tests: -run <regex> <packages>
@@ -703,7 +718,7 @@ The extraction target checks a private copy of the proposed tree.
 It includes new files without staging changes in the contributor's checkout.
 It uses no credential and does no registry lookup.
 It records the real inventory under `.tmp/renovate-inventory.json`.
-Reuse the existing vinxi patch test in `frontend/src/test-support/singletonInstalls.test.ts` when a frontend update fails installation.
+Reuse the patch test in `frontend/src/test-support/singletonInstalls.test.ts` when a frontend update fails installation.
 
 Dispatch an authenticated full dry run after storing the App credentials:
 
@@ -740,7 +755,7 @@ task clean
 Clean a specific module:
 ```bash
 task clean-backend    # Remove leapmux binaries and generated/ directories
-task clean-frontend   # Remove .output, .vinxi, node_modules, and generated/ directories
+task clean-frontend   # Remove .output, dist, node_modules, and generated/ directories
 task clean-desktop    # Remove desktop binaries, bundles, the generated contracts module, and Rust target/
 ```
 
@@ -812,6 +827,7 @@ task dev-site    # Live-reload dev server at http://localhost:1313
 - **[Noble](https://paulmillr.com/noble/)** - Cryptographic primitives for E2EE (X25519, ML-KEM-1024, SLH-DSA, ChaCha20-Poly1305, BLAKE2b)
 - **[Lucide](https://lucide.dev/)** - Icon library
 - **[Milkdown](https://milkdown.dev/)** - Markdown editor
+- **[Nitro](https://nitro.build/)** - Static build output and prerendering
 - **[Oat](https://oat.ink/)** - Classless CSS framework
 - **[Playwright](https://playwright.dev/)** - End-to-end testing
 - **[Shiki](https://shiki.style/)** - Syntax highlighting
@@ -819,7 +835,7 @@ task dev-site    # Live-reload dev server at http://localhost:1313
 - **[SolidJS](https://www.solidjs.com/)** - Reactive UI framework
 - **[SolidStart](https://start.solidjs.com/)** - Solid meta-framework (routing, build)
 - **[Vanilla Extract](https://vanilla-extract.style/)** - Type-safe CSS-in-JS
-- **[Vinxi](https://vinxi.vercel.app/)** - Build framework (Vite-based)
+- **[Vite](https://vite.dev/)** - Build tool and dev server
 - **[Vitest](https://vitest.dev/)** - Unit testing
 - **[xterm.js](https://xtermjs.org/)** - Terminal emulator
 

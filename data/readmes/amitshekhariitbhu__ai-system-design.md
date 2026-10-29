@@ -363,7 +363,7 @@ So all the regular system design concepts (load balancers, caches, queues, datab
 
 Before we go into AI System Design, let's quickly recap what an LLM is.
 
-LLM stands for **Large Language Model**. It is a model that takes some text as input and predicts the next token. It does this again and again until the full response is generated.
+LLM stands for **Large Language Model**. It is a model that takes some text as input and predicts the next token. It does this again and again until the full response is generated. We have a detailed blog on [How does an LLM work?](https://outcomeschool.com/blog/large-language-model-llm).
 
 The text is not directly given to the model. It is first broken into smaller pieces called **tokens**. Think of it like a chocolate bar. The full bar is the sentence. Each small part we break off is a token. The model processes multiple tokens at a time. We have a detailed blog on [Tokenization in LLMs](https://outcomeschool.com/blog/tokenization-in-llms). Most modern LLMs use [BPE (Byte Pair Encoding)](https://outcomeschool.com/blog/bpe-in-llms) to do this tokenization. One token is roughly 4 characters in English. So short common words like "AI" or "Hello" are one token. Longer words like "Bangalore" are 2 tokens. Compound names like "ChatGPT" are 2 to 3 tokens depending on the tokenizer.
 
@@ -1543,4 +1543,4 @@ As we fill the context with more tokens, three things happen, and they all hurt 
 
 **2. [Lost in the Middle](https://outcomeschool.com/blog/lost-in-the-middle-problem-in-llms).** Research by Liu et al. (2023) showed that models pay the most attention to the start and the end of the context, and the least attention to the middle. If we plot accuracy against the position of the fact, we get a U-shaped curve. So a critical fact placed in the middle of a long context is more likely to be ignored than the same fact placed at the top or bottom. This silently breaks RAG systems that dump 50 chunks into the prompt. The fix is to send less but send the right thing (use a reranker and keep the top few chunks), and to place the most relevant chunks at the start and the end.
 
-**3. RoPE Positional Decay.** Modern LLMs use [**Rotary Position Embedding (RoPE)**](https://outcomeschool.com/blog/math-behind-rope-rotary-position-embedding) to encode the position of each token. RoP
+**3. RoPE Positional Decay.** Modern LLMs use [**Rotary Position Embedding (RoPE)**](https:/

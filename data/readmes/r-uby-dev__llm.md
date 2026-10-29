@@ -76,6 +76,7 @@ deepseek for any of the other 14 providers as well
 
 ```ruby
 require "llm"
+require "stringio"
 
 class GetTime < LLM::Tool
   name "get-time"
@@ -88,7 +89,7 @@ end
 
 llm     = LLM.deepseek
 options = {
-  tracer: LLM::Tracer.multi(llm, *[:Logger, :Telemetry].map { LLM::Tracer.const_get(it) }),
+  tracer: LLM::Tracer.multi(llm, LLM::Tracer::Logger),
   tools:  [GetTime],
   stream: StringIO.new,
   concurrency: LLM::VERSION[0..1].to_i >= 18 ? :ractor : :thread
@@ -118,7 +119,7 @@ interrupt the agent, or give up trying:
 
 ```ruby
 require "llm"
-require "llm/tools"
+require "llm/tools/read_file"
 
 llm         = LLM.deepseek
 concurrency = LLM::VERSION[0..1].to_i >= 18 ? :ractor : :thread
@@ -226,7 +227,7 @@ can't use them in the scenarios where they work well:
 
 ```ruby
 require "llm"
-require "llm/tools"
+require "llm/tools/read_file"
 
 llm = LLM.deepseek
 mcp = LLM::MCP.http(

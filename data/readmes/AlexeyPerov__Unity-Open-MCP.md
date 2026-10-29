@@ -42,11 +42,33 @@ and targeted fixes.
 > **Agent:** The gate preview found new missing references in `Level1` and
 > `SpawnPoint`, so I stopped before committing a broken project.
 
+### Playtest the game like a tester
+
+An agent can play the running game and hand back a report a human can review.
+It puts the game on a target resolution or Device Simulator device, reads the
+screen (uGUI text, visibility, layout diagnostics), taps controls by their
+on-screen label, clicks, drags, swipes and plays multi-second gestures over real
+frames (legacy Input Manager and Input System projects alike), and waits until
+the game gets somewhere — a log line, a label, an object, or the project's own
+predicate, optionally fast-forwarded. Captures come at the device's native
+resolution and safe area, or as frame-scheduled series for animated content. The
+player's save (PlayerPrefs and `persistentDataPath`) is snapshotted and restored,
+so a session does not spend the developer's progress, and the whole run is
+recorded — steps, verdicts, frames and the console errors each step caused —
+into a Markdown report.
+
+> **User:** Smoke-test the shop on an iPhone 13.<br>
+> **Agent:** Five steps passed; tapping *Buy* threw a `NullReferenceException`.
+> The report has the frames and the stack. Your save is untouched.
+
+See the [Playtest guide](docs/playtest-guide.md) and
+[Playtest tools](docs/api/playtest.md).
+
 ### Test and observe
 
 Run Edit/Play Mode tests, inspect the console, capture screenshots, profiler and
-memory data, and pull events. Input simulation closes the gameplay loop: probe
-interactables, click / drag / swipe, advance frames, then verify visually.
+memory data, and pull events — the feedback an agent needs to trust its own
+changes.
 
 ### Live, batch, or offline
 
@@ -93,13 +115,16 @@ Requires **Unity 2022.3 LTS or newer** and **Node.js 18+** for the MCP server.
    npx -y unity-open-mcp@latest setup --client cursor
    ```
 
-   Use `claude`, `zcode`, `vscode`, `codex`, `opencode`, or `agents` for another
-   supported writer. The command installs matching pins, project config, and the
-   bundled skill; see [Manual setup](docs/setup/manual-setup.md) for details.
+   In a monorepo, run it from the repository root and name the Unity folder:
+   `setup --client cursor --unity-subpath Client`. Use `claude`, `zcode`,
+   `vscode`, `codex`, `opencode`, or `agents` for another supported writer. The
+   command installs matching pins, project config, and the bundled skill. Run
+   from a repository root, it writes a config with no machine path that the team
+   can commit — see [Portable MCP config](docs/setup/portable-config.md).
 2. **Unity Hub Pro:** use the graphical flow in
    [Wizard setup](docs/setup/wizard-setup.md).
-3. **Manual:** copy the package and client configuration yourself from
-   [MCP client configuration](docs/setup/client-configuration.md).
+3. **Manual:** add the Unity packages with [Manual setup](docs/setup/manual-setup.md),
+   then the client entry from [MCP client configuration](docs/setup/client-configuration.md).
 4. **Local checkout:** build and run the repository with
    [Development setup](docs/setup/development-setup.md).
 5. **Experimental — AI agent:** paste the prompt below into your AI client.
@@ -111,12 +136,15 @@ Requires **Unity 2022.3 LTS or newer** and **Node.js 18+** for the MCP server.
 Install Unity Open MCP in this Unity project by following
 https://raw.githubusercontent.com/AlexeyPerov/Unity-Open-MCP/master/docs/setup/agent-setup.md
 exactly (fetch it fresh; do not improvise from memory).
-Resolve this project's absolute Unity root and my client, then run
-npx -y unity-open-mcp@latest setup --project <absolute-project> --client <id>.
+Resolve my client and the Unity project root, then run step 2 of that page:
+npx -y unity-open-mcp@latest setup --project <absolute-unity-project> --client <id>
+or, if my client is opened on a folder above the Unity project (monorepo),
+from that folder: npx -y unity-open-mcp@latest setup --client <id> --unity-subpath <relative-unity-folder>
 Let that package choose all version pins and copy its bundled SKILL.md; do not
 invent versions, rewrite the skill, or call generate_skill. Do every agent step
-yourself and stop only when human action is required. If this monorepo is already
-open locally, read docs/setup/agent-setup.md from disk instead of fetching it.
+yourself and stop only when human action is required. If a local checkout of the
+Unity-Open-MCP repository is available, read docs/setup/agent-setup.md from disk
+instead of fetching it.
 ```
 
 </details>

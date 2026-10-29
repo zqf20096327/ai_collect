@@ -64,15 +64,25 @@ session directory names, preserving their Cowork identity in activity records.
 ### Install Kontext
 
 ```bash
-brew install kontext
+brew install --cask kontext-security/tap/kontext
 ```
 
-`kontext` is in homebrew-core and updates a few hours after each release. To get
-each release minutes after it ships, install the cask from our tap instead. It
-installs the notarized binary as is, so it does not need an up-to-date Xcode:
+The cask updates itself: the background agent checks for a new release a few
+minutes after it starts and every six hours, upgrades through Homebrew, and
+restarts on the new version. It installs the notarized binary as is, so it does
+not need an up-to-date Xcode.
+
+Homebrew 7 updates only packages from taps you trust. Installing the cask by its
+full name trusts it. A cask installed before Homebrew 7 is not trusted, and
+Kontext does not trust it for you: `kontext doctor` shows the warning, and you
+run `brew trust --cask kontext-security/tap/kontext` once.
+
+To let Homebrew alone manage updates, install the homebrew-core formula instead.
+It gets each release a few hours later, and you update it with
+`brew upgrade kontext` (Homebrew does not allow formulae to update themselves):
 
 ```bash
-brew install --cask kontext-security/tap/kontext
+brew install kontext
 ```
 
 ### Connect this Mac
@@ -87,7 +97,7 @@ kontext setup
 Setup:
 
 - stores the install token in the macOS login keychain;
-- installs hooks for supported agents;
+- installs hooks for supported agents in your home folder, without `sudo`;
 - starts the local Kontext daemon;
 - connects the installation to your Kontext organization.
 
@@ -258,7 +268,7 @@ it receives, which events can block, and how each integration is installed.
 | Agent | What Kontext records | Pre-action blocking | Installation |
 | --- | --- | --- | --- |
 | **Claude Code** | Session lifecycle, pre-tool-use, successful and failed post-tool-use | Pre-tool-use | Installed by `kontext setup` |
-| **Codex** | Session start, pre-tool-use, post-tool-use, prompt submission, stop | Pre-tool-use | Installed by `kontext setup`; hooks must be trusted in Codex |
+| **Codex** | Session start, pre-tool-use, post-tool-use, prompt submission, stop | Pre-tool-use | Installed by `kontext setup`; trust the hooks once in the Codex CLI's `/hooks` |
 | **Claude Cowork** | Claude Code-compatible session and tool events | Pre-tool-use | Configure the hook inside the Cowork environment |
 
 See the [agent support matrix](docs/coverage.md) for exact behavior, deployment
@@ -360,9 +370,12 @@ conflicting installations still report an unhealthy setup.
 
 When an owned Claude drop-in is missing only events required by the current
 version, doctor names the missing events and the scope-specific `hooks install`
-command. Self-serve repairs prompt for sudo only to update Claude's system file;
-organization repairs require `sudo` with `--scope system`. `doctor --fix` does
-not reinstall hooks.
+command. Self-serve repairs never need `sudo`; organization repairs require
+`sudo` with `--scope system`. `doctor --fix` does not reinstall hooks.
+
+Cowork reads only machine-wide Claude settings, so a self-serve Mac governs
+Cowork only when an earlier setup left Claude's machine-wide drop-in. Doctor
+says which applies.
 
 When a self-serve daemon is stale:
 
@@ -376,7 +389,9 @@ Rotate the installation token by running setup again:
 kontext setup
 ```
 
-Remove the self-serve installation:
+The background agent restores Kontext hooks removed by hand within a minute and
+adds hooks for newly supported agents after an update. To switch Kontext off,
+remove the installation:
 
 ```bash
 kontext setup --uninstall

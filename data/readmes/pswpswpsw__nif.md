@@ -10,6 +10,8 @@
 - NIF represents fields at arbitrary spatial coordinates, including data from adaptive mesh refinement, without requiring interpolation onto a uniform grid. Details can be found in our [paper](https://arxiv.org/pdf/2204.03216.pdf).
 - NIF is implemented in **PyTorch**. A ParameterNet maps time or physical parameters to the weights of a coordinate-dependent ShapeNet.
 
+Read the [PyTorch v2.0.0 documentation](https://www.shaowupan.com/nif/) for the API reference, runnable examples, and all eight tutorials.
+
 ## Highlights
 
 <p align="center">
@@ -358,6 +360,8 @@ The notebooks below run the native PyTorch examples. Their scientific workloads 
 Use the [issues](https://github.com/pswpswpsw/nif/issues) tracker to report bugs.
 
 ## How to cite
+
+For the software, use [GitHub's citation metadata](CITATION.cff) and the [Zenodo software record](https://doi.org/10.5281/zenodo.7909312). The latter DOI represents all archived software versions. Cite the version-specific DOI from the Zenodo record when referring to a particular release.
 
 If you find NIF is helpful, please cite our JMLR [paper](https://www.jmlr.org/papers/volume24/22-0365/22-0365.pdf):
 

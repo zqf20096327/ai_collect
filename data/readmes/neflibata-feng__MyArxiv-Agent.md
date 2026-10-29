@@ -127,14 +127,15 @@ Windows 用户也可以在文件管理器中复制文件后再提交。模板默
 
 网页会把令牌保存在浏览器本地，请只在可信设备上使用；不要把令牌写入文件或提交。
 
+## GitHub Actions 论文研究系统（开发中）
+
 ## 项目结构
 
 - `scripts/`：抓取、收件箱处理和 SQLite 初始化脚本。
 - `config.yaml`：查询、路径、格式和存储配置。
 - `Inbox.md`、`Contents.md`：收件箱与归档索引的空白起点。
 - `Papers/`、`Notes/`：论文元数据与阅读笔记；`data/arxiv.db` 在初始化时创建。
-- `web/`：网页客户端；`.github/workflows/`：本项目品牌展示页的部署工作流；`.github/workflow-templates/`：默认关闭的可选自动化模板。
-- `agent/skills/`：可复用的研究和写作技能，目前没有与抓取流程自动集成。
+- `web/`：网页客户端；`.github/workflows/`：检查及本项目品牌展示页工作流；`.github/workflow-templates/`：默认关闭的可选自动化模板。
 
 ## 参与贡献
 

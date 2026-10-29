@@ -9,6 +9,11 @@ state-состояние превращается в признаки, а гол
 **типизированные, вероятностные и калибруемые** ответы — Noul (да/нет),
 Choice (выбор из опций) и Score (оценка на шкале) — без единого токена генерации.
 
+**Статус: beta (0.16.0).** Контракт API ещё может меняться. Что считается
+стабильным, по каким критериям проект выходит в `1.0` и что для этого осталось —
+в [`docs/stability.md`](docs/stability.md). Замеры и сравнение с конкурентами —
+в [`docs/benchmarks.md`](docs/benchmarks.md).
+
 ## Что это за подход
 
 ### Машинные решения, а не генерация текста
@@ -124,6 +129,9 @@ python3 -m venv .venv
 uv pip install --python .venv/bin/python -r requirements.txt
 ```
 
+Версии зависимостей зафиксированы в `uv.lock`: `uv sync --frozen` ставит ровно
+их, а CI проверяет актуальность lockfile через `uv lock --check`.
+
 `bootstrap-user.sh` работает без `sudo`: ставит `uv`/`pyenv` в `~/.local` и
 `~/.pyenv`, создаёт `.venv`, ставит зависимости и кладёт `gh` в `~/.local/bin`.
 
@@ -186,6 +194,11 @@ DECISION_MODEL_ID=google/gemma-4-12B \
 | `DECISION_BACKEND_URL` | базовый URL внешнего SystemOne-сервиса | — |
 | `DECISION_BACKEND_MODEL` | имя внешней модели (поле `model`) | `remote` |
 | `DECISION_BACKEND_MODALITIES` | модальности внешнего бэкенда | `text` |
+| `DECISION_BACKEND_TIMEOUT` | бюджет одного внешнего вызова, секунды (все retry внутри) | `60` |
+| `DECISION_BACKEND_RETRIES` | повторы внешнего вызова при сети/429/5xx (0 — без повторов) | `1` |
+| `DECISION_WARMUP` | загружать паки голов при старте (нужно для честного `/ready`) | `1` |
+| `DECISION_LOG_FORMAT` | формат логов: `text`, `json` или пусто (не менять) | пусто |
+| `DECISION_LOG_LEVEL` | уровень логов (`DEBUG`, `INFO`, `WARNING`, …) | `INFO` |
 | `DECISION_CASCADE_FALLBACK_URL` | URL fallback для `cascade` | — (обязателен) |
 | `DECISION_CASCADE_FALLBACK_MODEL` | имя fallback-модели | `remote` |
 | `DECISION_CASCADE_FALLBACK_MODALITIES` | модальности fallback | `text` |
@@ -505,8 +518,21 @@ ss -ltn | grep ':8000 ' || echo "порт 8000 свободен"
 - `POST /v1/feedback` — обратная связь: размеченные примеры решений, которые
   сервис применяет для подстройки под новый вопрос (см. «Подстройка под новый
   вопрос»);
+- `GET /health` — liveness: процесс жив и отвечает; зависимости не проверяются;
+- `GET /ready` — readiness: энкодер загружен, головы читаемы (при
+  `DECISION_UNTRAINED=refuse` — есть хотя бы один пак); у каскада недоступный
+  fallback виден как `degraded`, но инстанс остаётся готовым. `503`, пока сервис
+  не готов, — для балансировщиков и systemd;
 - `GET /info` — конфигурация сервиса: бэкенд, модальности, устройство и статус
-  загруженных голов (`trained`).
+  загруженных голов (`trained`, `source`);
+- `GET /metrics` — метрики Prometheus: запросы, латентность, решения,
+  готовность (`docs/observability.md`). Каждый ответ несёт `X-Request-ID`;
+  `DECISION_LOG_FORMAT=json` включает структурированные логи.
+
+Внешний бэкенд (`http`/`cascade`) ограничен бюджетом `DECISION_BACKEND_TIMEOUT`
+на весь вызов: таймауты и сетевые ошибки повторяются один раз
+(`DECISION_BACKEND_RETRIES`), после чего API отвечает `502 BACKEND_UNAVAILABLE`.
+Тело запроса (`state`, `images`) в логи и текст ошибки не попадает.
 
 `POST /decisions` и `POST /decisions/batch` возвращают поле `trained`: `true`,
 если решения посчитаны обученными головами, `false` — если весов под эту схему
@@ -797,7 +823,14 @@ DECISION_MAX_LENGTH=256 .venv/bin/python -m eval.report.run --specs routerbench 
 (ECE 0.786 → 0.213). **Честно:** маршрутизация трудна, и заморожённый gpt2 даёт
 умеренный прирост — `escalate` выходит лишь на базовую частоту класса (~0.79), а
 `route`/`benefit` ненамного лучше majority. Набор ценен как честный публичный
-бенчмарк (`accuracy < 1.0`), а не как доказательство высокого качества. Детали —
+бенчмарк (`accuracy < 1.0`), а не как доказательство высокого качества.
+
+Что с этим делать — измерено (5 сидов на конфигурацию, test n=1000): смена
+замороженного энкодера (gpt2 → bert-base) ничего не даёт (0.551 против 0.554,
+разница внутри разброса), а **дообучение энкодера** поднимает качество до
+**0.601 ± 0.019** и вдвое снижает разброс по сидам. Прирост дают `route` и
+`benefit`, `escalate` остаётся около базовой частоты — метка контрфактическая.
+На AG News дообучение тоже помогает (0.880 → 0.900). Детали, команды и оговорки —
 в `docs/routerbench.md`.
 
 ### Бенчмарк против конкурентов
@@ -827,11 +860,13 @@ p50/p95/p99 и долю эскалаций.
   --mock --mock-latency-ms 2 --sweep --out data/competitors_routerbench.json
 ```
 
-Методика и зафиксированные числа — в `docs/competitor-benchmark.md` (RouterBench,
-`--sweep` и замеры self-hosted живого конкурента — там же). Ключевой вывод:
-каскад «local-first» сохраняет качество локальной модели, обращаясь к внешнему
-сервису лишь за единицы процентов решений (0.913 против 0.915 у local при 1.25%
-эскалаций).
+Сводка результатов и воспроизведение — в [`docs/benchmarks.md`](docs/benchmarks.md);
+методика, `--sweep` и оговорки — в `docs/competitor-benchmark.md`. Коротко:
+обученные локальные головы (124M) дают 0.915 / 0.873 / 0.542 на `support` /
+AG News / RouterBench против 0.667 / 0.855 / 0.442 у Clef-Flash (9.4B) и
+0.500 / 0.662 / 0.312 у Laya, при p50 10–46 мс против 130–310 мс. Каскад
+добавляет +3.4 п.п. на `support` и +3.7 п.п. на AG News, а на RouterBench
+политика по выгоде отказывается платить за модель, которая слабее локальной.
 
 ## Обучение голов
 
@@ -873,6 +908,28 @@ SFTTrainer(heads, lr=0.1).fit(
 рецепт (gpt2 + SFT + RLCD-гейт, train/val/test) — в
 `training/recipe/train_reference_model.sh`: он сохраняет чекпоинт под **подписью
 схемы вопросов**, поэтому сервер подхватывает его автоматически.
+
+Если ручной разметки нет, датасет можно собрать из ответов сильной модели по
+протоколу SystemOne — `python -m training.labeling.run` (слабая разметка).
+Проверять такую голову нужно на настоящей разметке: метки учителя — не ground
+truth. Подробности и подводные камни — [`docs/weak-labeling.md`](docs/weak-labeling.md).
+
+### Дрейф домена: дообучение на обратной связи
+
+Когда домен уезжает, головы дообучаются на свежих размеченных примерах с replay
+старого датасета — иначе они забывают то, что умели:
+
+```bash
+.venv/bin/python -m training.feedback.run \
+  --pack checkpoints/packs/public-gpt2 \
+  --feedback data/feedback.jsonl \
+  --out checkpoints/packs/public-gpt2-v2 --replay 0.5 --steps 100
+```
+
+Пак принимается только если на **отложенной** части новых примеров стало не
+хуже порога, а старый домен не просел больше 1 п.п.; иначе остаются прежние
+головы, а в отчёте видно, почему. Сколько примеров нужно и что бывает без
+replay — [`docs/drift.md`](docs/drift.md).
 
 Матрица «несколько моделей × несколько датасетов» обучается одной командой
 (`training/recipe/train_weight_packs.sh`); каждый пак — отдельный каталог
@@ -979,6 +1036,17 @@ svc.save_heads(dim=768, questions=QUESTIONS)      # -> checkpoints/<schema>.pt
 латентность — без повторного прогона энкодера по неизменному состоянию (кэш
 признаков по промпту).
 
+**Несколько доменов в одном процессе.** Помимо плоской раскладки
+`<dir>/<signature>.pt`, сервер понимает каталоги паков
+`<dir>/<домен>/heads.pt` + `metadata.json` (так их публикует
+`training/recipe/publish_weight_packs.sh`). Пак выбирается по
+`questions_signature` из `metadata.json`, а не по имени каталога, поэтому
+`DECISION_CHECKPOINT_DIR=checkpoints/packs` обслуживает сразу все домены:
+запрос с вопросами поддержки получает `support-*`, запрос с вопросами
+маршрутизации — `routerbench-*`. Если два пака объявляют одну подпись, побеждает
+первый по сортировке, а в лог пишется `WARNING` — дубли не подменяют друг друга
+молча. Источник каждой загруженной головы виден в `GET /info` → `engine.heads[].source`.
+
 Если под **новую** схему вопросов чекпоинта нет, головы создаются со случайной
 инициализацией — их `confidence` ничего не значит, и отдавать по ним решения
 (тем более эскалировать в каскаде) нельзя. Поэтому сервер явно сообщает статус
@@ -1014,11 +1082,13 @@ trainer.train(features, outcomes, steps=300)
 ## Тесты, линт, покрытие
 
 ```bash
-.venv/bin/python -m pytest                          # 347 passed, 10 skipped
+.venv/bin/python -m pytest                          # 747 passed, 10 skipped
 .venv/bin/python -m ruff check src api eval training tests examples scripts
-.venv/bin/python -m pytest --cov=src --cov=api --cov=eval --cov=training
+.venv/bin/python -m pytest --cov=src --cov=api      # гейт 90% из pyproject.toml
 .venv/bin/python -m pytest -m gpu                   # GPU-тесты (auto-skip без CUDA)
-shellcheck -x deploy/lib/common.sh deploy/ubuntu/install.sh deploy/centos/install.sh
+shellcheck -x $(git ls-files '*.sh')
+uv lock --check                                     # lockfile соответствует зависимостям
+uv build --wheel && scripts/smoke_wheel.sh          # smoke установленного wheel
 ```
 
 Тесты на реальной модели — opt-in (по умолчанию пропускаются, чтобы `pytest` не
@@ -1036,12 +1106,43 @@ shellcheck -x deploy/lib/common.sh deploy/ubuntu/install.sh deploy/centos/instal
 ```bash
 sudo bash deploy/ubuntu/install.sh      # Ubuntu — apt, venv, systemd-юнит
 sudo bash deploy/centos/install.sh      # CentOS/RHEL — dnf, venv, systemd-юнит
+sudo bash deploy/upgrade.sh /opt/decision-model   # обновление с авто-откатом
+sudo bash deploy/backup.sh /opt/decision-model    # .env + паки + risk.json
 systemctl status decision-api@api.service
 ```
 
 Обе сборки используют общий `deploy/lib/common.sh`: детект дистрибутива по
-`/etc/os-release`, установка пакетов, `ensure_venv`, установка юнита
-`decision-api@.service` (uvicorn, порт 8080, автозапуск).
+`/etc/os-release`, установка пакетов, `ensure_venv`, рендер юнита
+`decision-api@.service` под фактический каталог и пользователя (uvicorn, порт
+8080, автозапуск, graceful shutdown по `SIGTERM`). Установщик разворачивает
+закоммиченное состояние в `/opt/decision-model` (`DECISION_INSTALL_DIR`) и
+создаёт системного пользователя `decision` (`DECISION_SERVICE_USER`).
+
+Обновление, откат и состав бэкапа — [`docs/deploy.md`](docs/deploy.md).
+Типовые ошибки (`UNTRAINED_HEADS`, `MODALITY_NOT_SUPPORTED`, `/ready` 503) —
+[`docs/troubleshooting.md`](docs/troubleshooting.md).
+
+## Наблюдаемость
+
+`GET /metrics` отдаёт метрики Prometheus (`decision_http_requests_total`,
+`decision_http_request_duration_seconds`, `decision_decisions_total`,
+`decision_ready`, `decision_heads_loaded`). Путь в метках — шаблон маршрута,
+поэтому кардинальность не растёт с трафиком.
+
+```bash
+curl -fsS http://127.0.0.1:8080/metrics | grep decision_
+```
+
+Каждый ответ содержит `X-Request-ID` (клиентский сохраняется, если он безопасен);
+тот же id есть в строке доступа `decision.access`. Для Loki/ELK:
+
+```bash
+DECISION_LOG_FORMAT=json DECISION_LOG_LEVEL=INFO \
+  .venv/bin/python -m uvicorn api.server.main:app --port 8000
+```
+
+Тела запросов (`state`, изображения, фидбэк) в метрики и логи не попадают.
+Скрейп, алерты и формат JSON-лога — [`docs/observability.md`](docs/observability.md).
 
 ## Структура репозитория
 
@@ -1061,16 +1162,17 @@ docs/           — методика бенчмарков (competitor-benchmark.
                   risk-aware-cascade.md, option-scoring.md)
 examples/       — готовые примеры (см. examples/README.md: quickstart, батчи,
                   SystemOne, каскады, vision, интеграции, эксплуатация)
-tests/          — pytest-набор (419 тестов + opt-in GPU/модель)
+tests/          — pytest-набор (604 теста + opt-in GPU/модель)
 data/           — сгенерированные датасеты и отчёты бенчмарков (в .gitignore)
-scripts/        — bootstrap окружения (bootstrap-user.sh: uv/pyenv/venv/gh)
+scripts/        — bootstrap окружения (bootstrap-user.sh) и smoke wheel
 README.md       — этот файл
 requirements.txt
 pytest.ini
 pyproject.toml  — упаковка (дистрибутив decision-cascade)
 LICENSE, NOTICE — лицензия Apache-2.0
 CHANGELOG.md, SECURITY.md
-.github/workflows/ci.yml — CI: ruff + shellcheck + pytest
+.github/workflows/ci.yml — CI: ruff, shellcheck, pytest с гейтом покрытия,
+                  uv lock --check, сборка wheel и smoke
 ```
 
 ## Ограничения и планы
@@ -1089,6 +1191,8 @@ CHANGELOG.md, SECURITY.md
   и в бенчмарке против конкурентов; для своего домена нужна своя разметка.
 - **Публикация весов**: релизом через `training/recipe/publish_release.sh` (один
   пак) или `training/recipe/publish_weight_packs.sh` (матрица).
+- **Выход из беты**: критерии `1.0` (контракт, покрытие, эксплуатация, политика
+  депрекации) — в [`docs/stability.md`](docs/stability.md).
 
 ## Лицензия
 

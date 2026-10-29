@@ -204,7 +204,7 @@ Mac is on and the daemon runs, and they spend your own budget.
 The defaults keep that down: a draft waits until it is ready for review or a review is requested, a push
 waits for 5 quiet minutes (15 after a burst), a PR gets at most one round per 30 minutes (2 hours for a
 draft a watch includes) and 12 automatic rounds a day, a push that only touches
-comments, whitespace or docs, or only merges the base branch, is not re-reviewed, and a change under 30
+comments, whitespace or docs, only merges the base branch, or changes no file at all, is not re-reviewed, and a change under 30
 code lines since the last review gets a check by the judge alone. With 80% of the Codex budget used,
 full re-reviews wait; at 95%, rounds that need Codex wait. `magnum status` shows how fast that budget goes,
 `magnum stats` lists the PRs that took the most agent time, and
@@ -397,6 +397,41 @@ your own leaves `{{.DBLockCommand}}` out carries no run token: its interrupts ar
 always got, Magnum never signals or closes its command, a restart that finds it still running ends the
 round, as above, and the next checkout waits for it.
 
+A clean review that went without a reviewer is completed on a repository Magnum [approves as
+you](#approving-as-you). When auto-approval refuses a review that left nothing to fix because a reviewer
+of its round left no report, and every such report is missing for a cause that passes by itself (`busy`,
+`timeout`, `lost`, `no_session`, `failed`, `stalled`, `overloaded`, `cancelled`, `human_active`,
+`missing`), Magnum queues a completion of that head (`pr.complete_queued`, with the round, the head, the
+roles, the causes and the attempt). The completion is a re-review of the same head that runs the judge in
+its session and only the roles the review went without, with the prompts their round gave them, and no
+triage and no restarts. The judge gets the other reports of that round and the late ones, marked `(late)`,
+decides the findings of the late ones while the others stand (a late finding the last review already
+posted is that finding, not a new one), and posts a new review, whose record lists only what it still went
+without: auto-approval decides on it as on any review. When every late reviewer misses again, the judge is
+not prompted and nothing is posted (`pr.complete_unheard`), and the next completion runs only when what each
+of them missed for passes by itself (a usage limit or a logout gives up). A completion waits for what any automatic round
+waits for (capacity, its slot or pin, the GitHub budget, the pause of a kind it needs, quiet hours, a
+snooze), but not for the push quiet period, the re-review interval or the daily cap. It never holds its
+approval for a full pass, and counts neither toward the daily cap, nor toward the re-reviews of a full
+pass, nor toward the re-review interval of the next push (`engine.round_start` names the round it
+completes as `completes`). A reviewer that refused, is logged out or hit its usage limit gets no
+completion (that needs you or time), and neither does a review that held its approval (its full pass
+follows), a head another gate refuses for good (its own CI workflows, the review agents' configuration,
+more files than Magnum can check: the status comment says that gate's words), a post-merge review, a dry
+run or an eval replay. Nor does a delta check of a small push after the incomplete review: it carries the
+missing reports of the older head, which a completion of the new one cannot complete, so its refusal stands
+until a full re-review (a limit of the design). A push or the close of the PR drops a completion that
+waits, and `magnum abort` (or the board's take-back) of one that waits or runs stops the head's
+completions (`pr.complete_stopped`), also after a push back to the head; a new head gets its own, and an
+abort of any other round leaves them alone. Each head gets 2 completion rounds, counted as they start, a
+failed round's retry included, and kept across a restart, a close and reopen, and a push back to the
+head; after them `pr.complete_gave_up` says so once and the refusal stands. A completion whose round fails
+writes `pr.complete_failed` and retries as a failed round does while the head has a round left. A stop of
+the daemon during the head's last completion round, before its judge was prompted, resumes that round
+after the restart: no reviewer runs again, and the judge gets the late reports the round verified and the
+standing ones (with none verified, nothing is posted and Magnum gives up). The re-review interval a
+completion gives back is the one of the round it completes, also after a retried or continued round.
+
 A push that lands while the judge works lets the round finish: Magnum appends "Reviewed <sha>; N commits arrived during
 the review, re-review follows" (or, for a small delta, "a short check of those commits follows") to the
 posted review and queues the re-review without waiting for `min_rereview_interval`. A PR whose head changed `burst_pushes` times (default 3) within `burst_window`
@@ -566,9 +601,10 @@ A push whose changes since the last review are only comment lines, whitespace or
 re-reviewed: Magnum compares the reviewed commit with the new head (one GitHub call), moves the review
 to the new head with its verdict, keeps an App's approval and records `pr.trivial_delta`. When such a
 commit arrived during the judge's turn, the note on the review says "(comments only), no re-review
-needed" instead. `[daemon] skip_trivial_deltas` (default `["comments", "whitespace", "docs", "base"]`,
-`[]` = re-review every push) picks the kinds, a `[[watch]]` can override it, and `magnum review` always
-runs. A file that steers the review agents (an `AGENTS.md`, `CLAUDE.md` or `CLAUDE.local.md` in any
+needed" instead. `[daemon] skip_trivial_deltas` (default
+`["comments", "whitespace", "docs", "base", "empty"]`, `[]` = re-review every push) picks the kinds, a
+`[[watch]]` can override it, and `magnum review` always runs. A list you wrote before `empty` existed
+replaces the default and so keeps it off. A file that steers the review agents (an `AGENTS.md`, `CLAUDE.md` or `CLAUDE.local.md` in any
 directory, anything under `.claude/` or `.codex/`, `.mcp.json`) never counts as documentation for this. A
 comment line that holds its language's interpolation counts as code, because in a heredoc, a template or a
 `run:` block it runs: `#{` in Ruby and ERB, `{` in Python, `${` in JavaScript, TypeScript, Kotlin, shell and
@@ -586,6 +622,13 @@ comparison incomplete, and the push is measured as any other. A daemon that star
 the PRs already waiting for a re-review once more, on its first poll, and settles those a base merge
 queued.
 
+A push of commits that change no file (an empty commit to re-run CI) is the kind `empty`: when GitHub
+compares the reviewed commit with the new head as ahead of it, with at least one commit and no changed
+file, the head has the reviewed commit's tree, so the review stands and `pr.trivial_delta` says "changes no
+file (1 commit)". A head behind the reviewed commit (a force push back to an ancestor) or a diverged range
+with no file is not that, and is handled as before. A watch whose `skip_trivial_deltas` leaves out `empty`
+re-reviews such a push.
+
 Any other push is measured by the same GitHub call: the changed lines that are code (not comments,
 blank lines, whitespace moves or documentation) since the reviewed commit; after a base merge or a
 rebase, only the lines that changed in the PR's own diff. An automatic re-review runs after the quiet
@@ -593,7 +636,13 @@ period once that delta reaches `[daemon] rereview_min_lines` (default 30) or add
 delta waits for further pushes, at most `rereview_max_wait` (default `"2h"`) after its first push.
 `rereview_min_lines = 0` turns the threshold off, and a `[[watch]]` can override both. A force push back to
 an ancestor of the reviewed commit (GitHub: "behind") has nothing to measure, so the threshold does not hold
-its re-review.
+its re-review. A re-review that waited for a small delta is measured once more right before it starts,
+since the push was measured once, when the poller saw it, and a build that did not know a class of
+trivial push (or a setting changed) may have queued it: if the push is trivial now (one GitHub call, the
+same classes), the review stands for the head as above and no round starts, takes a slot or counts against
+the cap (`pr.trivial_delta` says so). Any other result, and a comparison that fails, start the round as
+before; each head is measured at most once per daemon run, and a delta check, a forced or requested round, a
+full pass, a reply round, a CI check or a completion is not measured again.
 
 Such a small delta (more than 0 and fewer than `rereview_min_lines` code lines, no added file) gets a
 delta check instead of that wait and a full round (`[daemon] delta_check`, default `true`; a `[[watch]]`
@@ -1135,70 +1184,4 @@ the same way again; its `round.judge_fresh_cold` event says so (`reason` `no_rol
 ### Review status comment
 
 People on a PR cannot see that Magnum is about to review it: they merge before the review posts, or ask
-you where it is while it waits out a quiet period or a slot. `[pipeline] status_comment = true` (default
-`false`) gives every PR Magnum means to review one comment on its conversation that says where the review
-stands. Magnum posts it as the PR's posting identity (the watch's `identity`, the one the reviews use),
-edits it in place and never posts a second one; its first line is the marker `<!-- magnum:status -->`:
-
-```
-<!-- magnum:status -->
-**Magnum review status** (status changed 14 Oct, 18:43 UTC)
-- [x] Review queued for `54fc258`: not before 18:45 UTC (the push quiet period)
-- [ ] In progress
-- [ ] Posted
-
-This comment updates by itself.
-A merge before the review posts skips it.
-Reviews by the team's magnum.
-```
-
-```toml
-[pipeline]
-status_comment = true                              # default false
-status_comment_note = "Reviews by the team's magnum."   # a line of yours under a review to come; "" = none
-
-[[watch]]
-owner = "example"
-status_comment = false                             # this watch's PRs get none (true: only this watch's get one)
-```
-
-The header's time is when the stage or the wait last changed, with the day; an edit of anything else (a
-link that turned up, your note) leaves it. The first line says where the review stands, in plain words:
-
-- **Review queued for `54fc258`** once the PR waits for its round (queued, or waiting for a re-review,
-  with the wait `magnum status` shows) or its round starts without a wait; "Re-review queued for" after an
-  earlier review, and "Another review requested for" when `magnum review` (the board's `r`) or a review
-  request asks for one more review of the head magnum reviewed. Then why it waits, in fixed words: "other
-  reviews are running" (the slots and the review capacity), the earliest start of a timing rule ("not
-  before 18:45 UTC (the push quiet period)", and the same for the burst quiet period, the re-review
-  intervals, the daily round cap, a small change, a snooze, quiet hours and a review request's short
-  delay), never a promised start, since the capacity can delay it, "a retry after a failed attempt", "starts
-  shortly", or "held on Magnum's side" for a pause, an identity, a pinned slot and the like, whose own words
-  can name an error, a branch, a pool or an identity. The comment carries no PR text. A re-review's list is
-  followed by the latest earlier review, "Earlier review of `a1b2c3d`: <link>", and, when that review's
-  result recorded earlier findings it kept open, "The last review recorded 2 earlier findings still open."
-  (that review's count, not a live one).
-- **In progress since 18:47 UTC** once the round started.
-- **Posted**: the list collapses to one line, "Review of `54fc258` posted 18:52 UTC: Fix 1 problem before
-  merging, 4 optional. <link>", without the sentences or your note. The words before the link are the
-  review's verdict line, rebuilt from the result its round stored: "Blocking: 2 problems must be fixed
-  before merging" (a P0 or P1, new or still open), "Fix 1 problem before merging" (P2), "No blocking
-  problems" (optional ones only) or "No problems found", the optional ones (P3s and simplifications)
-  counted after it, never a score; a review no round of Magnum's posted (a manual verdict) has only the
-  link. The comment stays, and the next review of the PR starts the list again in it. A round on the
-  reviewed head that nobody asked for (a reply round, a judge check of red CI, a re-decision of the
-  replies) leaves the posted line. A review that held its approval (`approve_after_full_pass`, under
-  Re-reviews) reads "Review of `54fc258` posted 18:52 UTC: No problems found. <link>. A full pass follows
-  before approval." while its full pass waits; the full pass then shows as "Full pass before approval of
-  `54fc258`" with "In progress (full pass) since 18:53 UTC", and its posted line replaces it.
-- **Why no approval came**, on a repository Magnum [approves as you](#approving-as-you): under the posted
-  line of a review that left nothing to fix, one line says why Magnum did not approve the head as
-  `auto_approve_as`, naming its login as plain text (never `@alice`, which would notify it at every edit),
-  in the third person and in fixed words for each kind of reason: "Not approved as alice: the PR changes
-  its own CI workflows or actions, so alice must review and approve it in person." (and the same for a PR
-  that changes the instructions or configuration of the AI review agents, or more files than Magnum can
-  check); "Not approved as alice: one of Magnum's reviewers did not finish on this head, and Magnum
-  approves only a complete review. The next review, or a review by alice, decides."; "Approval as alice
-  waits for the checks of this head to pass." (with "Some fail now." when they fail); "Magnum stopped
-  approving this PR as alice. A review by alice decides." once your review by hand, a dismissal or
-  `magnum
+you where it is wh

@@ -28,7 +28,7 @@ Clients point at `:4000`; the management UI is at `https://localhost:4001/`.
 
 **Cache-affinity routing.** vLLM and SGLang keep a radix/prefix KV cache, so two requests sharing a system prompt are far cheaper on the _same_ node. Round-robin alternates them by construction — nodes look evenly loaded while aggregate throughput drops. A shared prefix goes back to the node already holding its cache, unless that node is meaningfully hotter than the least-loaded one.
 
-**Highly available on purpose.** A proxy that loses its control plane keeps serving from its last snapshot. Failover is part of routing, health is tracked per replica and never merged, and `SIGHUP` swaps the routing table without dropping a stream.
+**Highly available on purpose.** A proxy that loses its control plane keeps serving from its last snapshot. Failover is part of routing, health is tracked per replica and never merged, and `SIGHUP` swaps the routing table without dropping a stream. Engine stall detection checks scheduler progress as well as token and KV-cache metrics, so long prefills do not look like dead engines.
 
 ## What it does
 
@@ -38,6 +38,7 @@ Clients point at `:4000`; the management UI is at `https://localhost:4001/`.
 - **81 providers, and any OpenAI-compatible endpoint** — see below.
 - **RBAC with real API keys.** Per-principal, per-model grants; keys hashed with SHA-256, passwords with Argon2id.
 - **Rate limits, token budgets and usage accounting**, enforced without a database call on the request path.
+- **An admission gate on by default.** vLLM queues the surplus itself, unbounded, which makes every request slow instead of failing any. A self-hosted vLLM/SGLang engine behind the proxy gets a per-backend gate automatically — the queue forms in the proxy instead, bounded, and callers past it get 503 with `Retry-After`. Hosted providers are never gated. See [protecting an engine from its own queue](docs/operations/configuration.md#protecting-an-engine-from-its-own-queue).
 - **Control plane / data plane split** by a runtime flag, so one image is a single container in a lab and a scaled deployment in Kubernetes.
 - **Reloads in place.** `SIGHUP` or a snapshot poll swaps the routing table atomically; in-flight generations are unaffected.
 
@@ -90,6 +91,7 @@ Route on any of these:
 | _context window_                                | not a condition — a model whose declared `context_length` cannot hold the prompt plus the requested generation is automatically demoted down the chain |
 | `min/max_budget_used_percent`                   | how much of the caller's budget is spent                                                                                                               |
 | `max_inflight_per_backend`                      | how busy this rule's own targets are — the engine's own count where it publishes `/metrics`, so the ceiling holds across several proxies               |
+| `max_ttft_ms_per_backend`                    | TTFT for this rule's healthy targets; engine histogram deltas include all traffic, streaming proxy TTFT is the fallback; unknown or older-than-10s readings are eligible |
 | `after`, `before`, `days`, `utc_offset_minutes` | wall-clock window, wrapping midnight                                                                                                                   |
 
 ```jsonc
@@ -97,6 +99,11 @@ Route on any of these:
 // "spill" mechanism — first-match-wins does the work.
 [{"position": 0, "max_inflight_per_backend": 2, "targets": ["local-qwen"]},
  {"position": 1,                                "targets": ["openrouter"]}]
+
+// Prefer the local DGX while any healthy backend's TTFT is below 180 ms;
+// an unknown or >10s-old sample keeps it eligible to recover.
+[{"position": 0, "max_ttft_ms_per_backend": 180, "targets": ["local-dgx"]},
+ {"position": 1,                                 "targets": ["openrouter"]}]
 
 // Batch work, labelled by the client, goes somewhere cheaper.
 {"position": 0, "headers": {"x-fastllm-tier": "batch"}, "targets": ["cheap"]}

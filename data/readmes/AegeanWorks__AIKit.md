@@ -26,8 +26,8 @@
 | Operational Role| Canonical Command| Verification Gate|
 |---|---|---|
 | **Manage Projects**| `python aikit.py <cmd>`| `new`, `attach`, `list`, `status`, `check`, `fix` (ADR-119..124)|
-| **Audit & Repair History**| `python aikit.py reforge <cmd>`| `start`, `audit`, `fix`, `run`, `stop`, `resume`, `settings`, `runs`, `status`, `report`, `repo`; configurable windows; isolated runs (ADR-230, ADR-232)|
-| **Route Ideas & Reviews**| `python aikit.py idea-catcher <cmd>`| `validate`, `render`, `status`, `ideas`, `tag`, `history`, `reviews`, `review-start/finish`, `revalidate`, `audit-claims`, `concepts`, `repo`; shipped register tooling (ADR-246)|
+| **Audit & Repair History**| `python aikit.py reforge <cmd>`| `start`, `audit`, `fix`, `run`, `stop`, `resume`, `settings`, `runs`, `status`, `report`; windows, Python AST (ADR-230, ADR-232, ADR-249)|
+| **Route Ideas & Reviews**| `python aikit.py idea-catcher <cmd>`| `validate`, `render`, `status`, `ideas`, `tag`, `history`, `reviews`, `review-start/finish`, `revalidate`, `audit-claims`, `concepts`; shipped register tooling with a private register (ADR-246, ADR-252)|
 | **Project Tags & Media**| `python aikit.py <cmd>`| `ui-id`, `topics --brief/--from-file`, `media init/capture/review/apply/audit`; AI-chosen tags, reviewed logos and commit-stamped screenshots (ADR-233..236)|
 | **Run Regression Suite**| `python scripts/check_test_budgets.py`| Both tiers pass; per-test average <=20ms unit, <=500ms integration|
 | **Run One Tier**| `python -m unittest tests.test_kit` / `python -m unittest tests.test_integration`| Isolates a failing tier|
@@ -36,7 +36,8 @@
 | **Find Principles to Read**| `python scripts/sync_principles.py --involved <paths/commands/output>`| Same answer for every agent (PRINCIPLE-001 R3)|
 | **Cross-Principle Check Set**| `python scripts/sync_principles.py --citing <PRINCIPLE-NNN>`| Principles a rule change must be checked against (PRINCIPLE-000 R3)|
 | **Update AST & Knowledge**| `python scripts/update_knowledge_base.py`| Rewrites the codebase map, then runs every audit of `--check` below; exits 1 on a syntax error (Python 3.10 grammar) or any audit failure|
-| **Verify AST Map Freshness**| `python scripts/update_knowledge_base.py --check`| Read-only; exits 1 on a stale codebase map, README drift (PRINCIPLE-005), an ADR ID out of order, unfinished code (PRINCIPLE-007 R3) or a code-structure violation (PRINCIPLE-009 to PRINCIPLE-011)|
+| **Codebase Digest**| `python scripts/update_knowledge_base.py --digest`| Read-only; one line per module in at most 100 lines, shared code first; a cut is stated|
+| **Verify AST Map Freshness**| `python scripts/update_knowledge_base.py --check`| Read-only; exits 1 on a stale codebase map, README drift (PRINCIPLE-005), a `python <path>.py` naming a missing file, an ADR ID out of order, unfinished code (PRINCIPLE-007 R3) or a code-structure violation (PRINCIPLE-009 to PRINCIPLE-011)|
 | **Classify Lifecycle Track**| `python scripts/disruption_recovery.py --track`| Prints Track A/B/C of current changes (PRINCIPLE-002 R3)|
 | **Audit Disruption Recovery**| `python scripts/disruption_recovery.py --audit`| Clean status check; detects surviving uncommitted files|
 | **Resume Interrupted Task**| `python scripts/disruption_recovery.py --resume`| Cold-start command: every `--audit` finding, then the interrupted task, its plan and resumption phase|
@@ -45,7 +46,7 @@
 | **Reset Active Task**| `python scripts/disruption_recovery.py --reset [reason]`| Abandons/clears in-progress task in ledger|
 | **Purge Temp Buffers**| `python scripts/disruption_recovery.py --clean`| Deletes orphaned `*.tmp_*` buffers older than 60 s; younger ones may be a write in progress|
 | **Secret Scan Gate**| `python scripts/check_secrets.py --staged\|--commits <range> [--workspace <project>]`| Exits 1 on a credential pattern in the staged diff or agent memory, or when any surface could not be scanned (PRINCIPLE-019)|
-| **Verify the Commit Itself**| `python scripts/verify_commit.py`| Runs every gate against the commit alone in a throwaway worktree; exits 1 when the commit holds less than the tree it was tested in (PRINCIPLE-018 R7)|
+| **Verify the Commit Itself**| `python scripts/verify_commit.py`| Runs every gate against the commit alone in a throwaway worktree; exits 1 when the commit holds less than the tree it was tested in (PRINCIPLE-018 R7); warns on a file cut below half its size unless the message says `shrink-ok: <reason>`|
 | **Reachability Shield**| `python scripts/check_reachability.py`| No unwired capability or phantom state key (PRINCIPLE-014 R7)|
 | **Operational Dogfood Gate**| `python scripts/dogfood.py`| 5/5 tracks pass; zero host mutation (PRINCIPLE-015)|
 | **Discover Any CLI**| `python scripts/<script>.py --help`| Prints usage and exits `0` in <250ms as a fresh process, writing nothing|
@@ -68,16 +69,15 @@ portable_agent_kit/
 │   ├── logo.jpg
 │   └── social-preview.png
 ├── reforge.py                    <- Aegean Reforge CLI entry point (and `aikit.py reforge`)
-├── reforge/                      <- Progressive Git history auditor & safe repair engine
-├── idea_catcher.py               <- Idea Catcher standalone CLI entry point
-├── idea-catcher-sync.json        <- Idea Catcher source/standalone sync manifest (ADR-246)
+├── reforge/                      <- host-reviewed Git history auditor & safe repair engine
+├── idea_catcher.py               <- Idea Catcher CLI entry point (and `aikit.py idea-catcher`)
 ├── idea_catcher/                 <- Target registry, idea ledger, review ledger and matrix renderer
 │   ├── __init__.py
 │   ├── __main__.py
 │   ├── registry.py
+│   ├── auto_register.py          <- Automatic idea registration from commit references
 │   ├── claim_audit.py
 │   ├── concept_map.py
-│   ├── repo_sync.py
 │   ├── upstream_check.py
 │   └── version.py
 ├── .gitignore                    <- Credential & local-state baseline (PRINCIPLE-019 R3)
@@ -97,7 +97,9 @@ portable_agent_kit/
 │   ├── settings.json             <- no agent may edit a task ledger
 │   └── skills/
 │       └── aikit/
-│           └── SKILL.md          <- Claude Code runbook (native skill)
+│           ├── SKILL.md          <- Claude Code runbook (native skill)
+│           ├── projects.md       <- Project command matrix (read on demand)
+│           └── delegation.md     <- Sub-agent delegation (read on demand)
 ├── .agents/
 │   ├── rules/
 │   │   ├── principles.md         <- Antigravity / Agent IDE workspace rules
@@ -106,7 +108,9 @@ portable_agent_kit/
 │   │   └── readme_quickref.md.template <- Adopter README Quick Reference & tree (PRINCIPLE-005 R6)
 │   ├── skills/
 │   │   └── aikit/
-│   │       └── SKILL.md          <- Antigravity operational runbook & command matrix
+│   │       ├── SKILL.md          <- Operational runbook index (source of the copies)
+│   │       ├── projects.md       <- Project command matrix and Reforge protocol
+│   │       └── delegation.md     <- Sub-agents, aikit delegate, headless OpenCode
 │   ├── agents/
 │   │   └── opencode_worker.md    <- OpenCode subagent spec for free models
 │   └── task_ledger.json          <- Disruption ledger for power-loss resilience (WAL)
@@ -123,6 +127,7 @@ portable_agent_kit/
 │   ├── check_test_budgets.py     <- Test tier budget gate (per-test ceilings)
 │   ├── project_registry.py       <- Project discovery, stack detection, memory
 │   ├── project_license.py        <- License tiers and restrict
+│   ├── marked_blocks.py          <- aegean:<name> blocks a generator owns in user files
 │   ├── project_gates.py          <- A project's gates: detection, overrides
 │   ├── check_project_hygiene.py  <- Source, asset & artifact hygiene
 │   ├── ui_contract.py            <- Bounded UI-surface guard (opt-in .aikit/ui.json)
@@ -141,6 +146,7 @@ portable_agent_kit/
 │   └── verify_commit.py          <- Verifies a commit alone in a throwaway worktree
 ├── tests/
 │   ├── test_kit.py               <- Unit tier (<=20ms per test)
+│   ├── test_auto_register.py     <- Unit tier: idea registration from commits
 │   └── test_integration.py       <- Integration tier: concurrency, CLI contracts
 └── knowledge/
     ├── INDEX.md                  <- Knowledge base table of contents
@@ -160,66 +166,113 @@ portable_agent_kit/
 
 ## 🚀 Start a Project
 
-Open this folder in any AI host and describe what to build. Each project gets its own folder under `projects/` (ignored by AIKit's git) and its own git repository; AIKit's gates, map and ledger never read it. `new` also detects the UI kind, adds the project's license topic tags, and creates logo/social candidates; `publish` and `new --publish` wait until those assets are reviewed and applied (ADR-243, ADR-245).
+Open this folder in any AI host and describe what to build. Each project gets its own folder under `projects/` (ignored by AIKit's git) and its own repository; AIKit's gates, map and ledger never read it. `new` also detects the UI kind, adds license topics and creates logo/social candidates that must be reviewed before `publish` (ADR-243, ADR-245).
 
 ```bash
 python aikit.py new my-app --description "<10-350 chars>" --topic web  # new repo, .aikit/, AL-1.1 LICENSE, AIKit badge
-python aikit.py attach ../existing  # register a folder elsewhere; adds .aikit/, .gitignore lines, AIKit badge (migrates a pre-move link)
+python aikit.py attach ../existing  # register an existing folder; adds .aikit/, ignore rules, badge
 python aikit.py list                # every project, its stack and test command
-python aikit.py status my-app       # its task, changes, decision; --exit-code fails when dirty or blocked, --json for CI
-python aikit.py check my-app        # its tests, configured checks, hygiene, guidelines, secrets; --push to push (exit 1 if it cannot)
+python aikit.py status my-app       # task, changes, decision; --exit-code fails when dirty, --json for CI
+python aikit.py check my-app        # tests, checks, hygiene, guidelines, secrets; --push pushes (exit 1 if blocked)
 python aikit.py check my-app --strict  # delivery gate: clean tree, map, no conflicts, no open UI task
 python aikit.py ui init my-app        # React/Vite pilot: write a conservative .aikit/ui.json
-python aikit.py ui init my-app --fast "npm run test" --paths "src/**"  # manual other-stack contract
+python aikit.py ui init my-app --fast "npm run test" --paths "src/**"  # other stacks
 python aikit.py ui begin my-app --surface menu  # bound edits to one declared UI surface
 python aikit.py ui verify my-app       # scope, budget, fast + snapshot proofs, style drift
-python aikit.py ui verify my-app --json  # stable finding codes for CI
-python aikit.py ui allow my-app "Btn*" --reason "<why>"  # record intended inventory removals
+python aikit.py ui allow my-app "Btn*" --reason "<why>"  # intended inventory removal
 python aikit.py ui finish my-app --reviewed  # close after review; evidence in .aikit/ui_history.json
-python aikit.py ui abort my-app        # restore only the surface; keep unrelated work
-python aikit.py fix my-app          # restore memory/README, migrate the AIKit link, refresh map, then check
+python aikit.py fix my-app          # restore memory/README, adopt UI, refresh map, then check
 python aikit.py guideline my-app "money is integer cents" --source user  # project rule
 python aikit.py publish my-app [--owner ORG] [--license auto]  # repo, description, recorded AI topics
 python aikit.py license my-app [--suggest|--set game|--restrict]  # AL-1.1, AGL-1.1 (DRM-free games) or ASL-1.1 (science)
 ```
-A project's memory is `.aikit/` (record, ledger, decisions); ledger commands take `--workspace projects/<name>`. `publish` needs a 10-350 README description. `license --suggest/--set` picks AL-1.1, AGL-1.1 or ASL-1.1; `topics` sets GitHub tags. Before a commit `check` wants `checklists: passed`; deliberate hygiene findings need `hygiene: allow <reason>`. `ui` (opt-in `.aikit/ui.json`) bounds surfaces and proofs; `finish` needs `--reviewed` (ADR-160..166). `check`/`fix`/`publish` run a project's commands unsandboxed: attach trusted repositories.
+A project's memory is `.aikit/`; ledger commands take `--workspace projects/<name>`. `publish` needs a 10-350 character README description; `license` picks AL-1.1, AGL-1.1 or ASL-1.1. Before a commit `check` wants `checklists: passed`; deliberate hygiene findings need `hygiene: allow <reason>`. `ui` (opt-in `.aikit/ui.json`) bounds surfaces and proofs; `finish` needs `--reviewed` (ADR-160..166). `fix` adopts a detected UI project when it has a test command: it writes a conservative `.aikit/ui.json`, marks `ui_required`, and never invents a proof when no test command exists. A game project can declare a headless mechanics contract in `.aikit/project.json` (`mechanics.core` paths and `mechanics.test`); `check` validates it and runs it as a gate, so the same mechanics are testable by an agent and callable by the UI. `check`/`fix`/`publish` run a project's commands unsandboxed: attach trusted repositories.
 
-## 🔁 Aegean Reforge: History Audit & Safe Repair
+## 🔁 Aegean Reforge: Host Review & Safe Repair
 
-Reforge is integrated into AIKit: its only source lives in `reforge/` and `reforge.py`, and AIKit
-reuses its registry, gates, secret scanner and persistence. Projects have separate runs and locks;
-a second run on one is refused.
+Reforge audits history in widening windows and repairs only what it can prove. It lives in
+`reforge/` and `reforge.py`: `aikit.py reforge` uses the project registry, `python -m reforge`
+the bare engine. The standalone repository is archived (ADR-248).
 
 ```bash
-python aikit.py reforge start my-app --start 3 --step 3 --stop 15  # independent run
-python aikit.py reforge run my-app         # audit, repair, add regression tests, verify, record
-python aikit.py reforge run my-app --push  # after review: commit explicit paths, push without force
-python reforge.py --help                   # same engine, no AIKit project registry
+python aikit.py reforge start my-app --start 3 --step 3 --stop 15  # new independent run
+python aikit.py reforge audit my-app       # write the review packet for the next window
+python aikit.py reforge fix my-app --findings answer.json  # validate, repair, verify
+python aikit.py reforge run my-app --findings answer.json --push  # audit, repair, verify, push
+python aikit.py reforge run my-app --rules # deterministic rule pass, no host review
 ```
 
-Window N is `start + step*(N-1)`, capped by `stop`; evidence is commit/path/line, only mechanical
-repairs are automatic, and a red gate rolls them back. The former standalone repository
-`AegeanWorks/Aegean-Reforge` is archived and points here; there is no second copy to synchronize.
+Window N is `start + step*(N-1)`, capped by `stop`: stage 1 reads the first `start` commits and each
+later stage adds `step`. A stage inspects only the lines its own commits add, attributes a finding to
+the commit that introduced it, and cites `commit:path:line`. Its Python rules cover exceptions,
+shell/exec, deserialisation, mutable defaults, timeouts, secrets and control flow; five are repaired
+mechanically (`bare-except`, `mutable-default`, `shell-true`, `verify-false`, `unsafe-yaml-load`),
+each earning a regression test. Every changed text file is reviewed, not only Python: JSON and TOML
+must parse, a Markdown code fence must close, and a committed conflict marker is a defect; only a
+binary file is reported as not analysed, and the stage prints how many files it reviewed. A
+deliberate finding marked `hygiene: allow <reason>` on its line or the line above is honoured
+rather than reported, the same convention AIKit's own hygiene scan uses. The rule pass is opt-in
+(`--rules`) because the host review covers the same ground without inventing a second linter.
+
+`audit` and `run` write a review packet under `.aikit/reforge.reviews/` (ADR-263, ADR-272). The
+packet lists every new commit oldest to newest with that commit's own hunks, so a later commit
+cannot hide an earlier minute change; a file can appear once per commit. Only files a new commit
+touched appear, and files that only an earlier stage changed are not repeated. Binary files are
+named at the end and the JSON answer schema follows. Credential-shaped spans are redacted with the
+project's secret scanner before the packet is written. Reforge makes no
+model call and starts no subagent: the agent or person driving the session reads the packet and
+returns a findings file. Each finding names a path the stage changed, a line that exists, a severity,
+`kind` `defect` or `improvement`, and optional `fix.old`/`fix.new`. It may name the `commit` and
+`hunk` it reviewed (each packet hunk has a stable id); an optional `reviewed_hunks` list records
+which hunks were read, so a partial pass is visible. Reforge accepts a fix only when
+the quoted text occurs exactly once, overlaps a line the stage added, and leaves a Python file
+parsable; everything else is reported as rejected. Run `fix --findings answer.json` to apply the
+accepted fixes; `run --rules` is the deterministic-only pass. A red test, gate or diff review
+restores the exact bytes. A repair may run beside unrelated uncommitted work: its paths are
+snapshotted and never staged, and a commit is refused only when a finding's own target file already
+held work Reforge did not make (pass `--allow-dirty` to accept that risk deliberately).
+
+Runs are independent (`settings`, `stop`, `resume`, `runs`, `report`) and state is crash-safe. Each
+project has its own lock, state and history, so several projects audit at the same time while a
+second operation on one is refused; a target is resolved first, so two spellings of one checkout
+share one lock. In a project, `--commit`/`--push` stage only reviewed paths plus `.aikit/reforge.json`
+and never force. AIKit's own `.aikit/` folder is a git-ignored tool-state directory, so auditing
+AIKit itself records state locally and commits only the reviewed source paths.
+
+Where the repository has an AIKit ledger, every run also appends checkpoints under the
+`reforge:<run-id>` task, so `disruption_recovery.py --resume` shows an open audit and a
+stopped run in the paused list; `active_task` is never touched, the ledger's own `.bak` and
+`.lock` count as Reforge's bookkeeping, and a plain checkout without a ledger simply audits
+without one (ADR-250).
 
 ## 🧭 Idea Catcher: Routed Idea Register
 
-Idea Catcher ships complete in `idea_catcher/` and `idea_catcher.py`, and its register lives in
-`projects/idea-catcher/` so the data stays out of AIKit's own tree. Both copies carry the same
-source; `repo sync` moves changes one way and refuses a two-sided edit.
+Idea Catcher is integrated into AIKit: its only source lives in `idea_catcher/` and
+`idea_catcher.py`. Its register is private local data under `.idea-catcher/` at the AIKit root;
+that path is git-ignored, so the ideas it has collected never enter a commit or the public
+repository (ADR-252). `IDEA_CATCHER_ROOT` points the tool at a different register.
 
 ```bash
-python aikit.py idea-catcher status             # counts per target and decision state
+python aikit.py idea-catcher status             # full register counts per target
 python aikit.py idea-catcher validate           # targets, ideas, dossiers and matrix
 python aikit.py idea-catcher render --check     # fail when MATRIX.md is stale
-python aikit.py idea-catcher ideas --target aikit --status Proposed
+python aikit.py idea-catcher sync --repo . --project <target>  # register IDEA-NNN commit references
 python aikit.py idea-catcher reviews --stale
-python aikit.py idea-catcher repo status --check  # exit 1 when both copies diverge
-python aikit.py idea-catcher repo sync --direction push  # pull reverses it
 ```
 
-A review claims a repository with a lease and reserves idea ids, so parallel analyses cannot
-collide. Dossiers must name a `Source` from `IDEA-632` onward; tags, target changes and status
-changes append to each idea's history. Standalone: `python idea_catcher.py --help`.
+A commit message that names `IDEA-NNN` is the automatic implementation signal. `aikit check
+--push` and `aikit publish` scan the delivered project's newest commits and mark matching ideas
+`Integrated` with the commit as evidence; the generated `MATRIX.md` is refreshed in the same
+step. `idea-catcher sync` does the same on demand, and `--dry-run` previews it. The idea must
+belong to the project's target; already closed ideas are untouched.
+
+A review leases its repository and reserves idea ids, so parallel analyses cannot collide.
+Dossiers name a `Source` from `IDEA-632` onward; tags, target and status changes append to each
+idea's history. `ideas --target <id>` hides `Rejected` rows and rows tagged `duplicate`; pass
+`--include-rejected` or `--include-duplicates` for the full audit view. The flags are alternatives:
+either one also shows a row that belongs to both categories. `status` always reports the full
+register, while `ideas` is the filtered working list. `MATRIX.md` keeps both, and a reviewer may
+reject a harmful idea directly with a recorded reason and author (ADR-264, ADR-267).
 
 `ui-id` stores `has_ui`, `ui_kind` and `ui_evidence`. `topics --brief` gives an AI the evidence;
 `--from-file` records its tags and `--apply` publishes them, capped at 20. `media init --art` uses
@@ -251,7 +304,7 @@ The principles are strictly organized across **5 chronological execution phases*
 ### 🧭 Phase 2: Pre-Flight Orientation & Planning
 | Principle | Title | Capsule |
 |---|---|---|
-| **PRINCIPLE-005** | AI Cold-Start Readiness & Living Documentation | README <=25k chars: prerequisites, test command, tree; user-visible changes update it same commit; `update_knowledge_base.py --check` gates it. |
+| **PRINCIPLE-005** | AI Cold-Start Readiness & Living Documentation | README <=30k chars: prerequisites, test command, tree; user-visible changes update it same commit; `update_knowledge_base.py --check` gates it. |
 | **PRINCIPLE-006** | Incremental Progress Checkpointing & Disruption Recovery | Commit `[milestone N/M]` once Phase 4 passes under PRINCIPLE-018 R1; failing work uncommitted via `--checkpoint`; `--complete`/`--reset` before switching tasks; `--clean` stale `.tmp_*`; ledger writes name `--agent`; another agent's task needs `--take-over`. |
 | **PRINCIPLE-007** | Pre-flight Impact & Quality Checklist | Track C first plan checkpoint carries --why --benefits --risks (contract, dependency, concurrency, state) --mitigation; no TODO or stub; no change outside the plan. |
 | **PRINCIPLE-008** | Hierarchical Problem & Task Decomposition | Plan of M<=6 milestones (more: split into tasks), built bottom-up, each passing Phase 4 alone; re-plan = new `[1/M']` checkpoint; sub-agents never write the ledger. |

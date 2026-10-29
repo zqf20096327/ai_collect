@@ -31,6 +31,7 @@ For example, if your MCP server is intended for a customer support team, you can
 and limit each tool to what is needed.
 
 Add users to the endpoint (from the Users panel in the MCP Endpoint detail view). Only added users will be able to connect.
+Use the primary filter in the user selection modal to switch between internal users and API users.
 
 ### User roles
 
@@ -63,6 +64,9 @@ you need to configure the MCP client to pass the `X-Api-Key` header.
 ### OAuth 2.0
 
 As of EspoCRM v10.1, it will be possible to use OAuth 2.0 for authentication.
+
+Register a client in EspoCRM under: Administration > OAuth Clients. Specify the needed scopes for the client.
+You need to add the `Mcp` unless you choose to use the `Global` scope, in which case the `Mcp` scope can be omitted.
 
 ## Customization
 

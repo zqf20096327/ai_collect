@@ -170,6 +170,11 @@ Janson, Giacomo, and Michael Feig.
 
 
 
+
+* **PED in 2027: integrating experimental and predicted protein conformational ensembles at scale** [2026]  
+Alexander Miguel Monzon, Hamidreza Ghafouri, Ximena Aixa Castro, Sina Khezrian, Maria Cristina Aspromonte, Kavita Singla, Shrishti Barethiya, Pau Bernadó, Massimiliano Bonomi, Jianhan Chen, Tiago Cordeiro, Juan Cortés, Stefano De Castro, Ryan Emenecker, Michael Feig, Julie D Forman-Kay, Teresa Head-Gordon, Alex Holehouse, Giacomo Janson, Kresten Lindorff-Larsen, Zi Hao Liu, Sonia Longhi, Matyas Pajkos, Paul Robustelli, Santiago Rodriguez, Vincent Schnapka, Nathalie Sibille, Michele Vendruscolo, Silvio C E Tosatto.   
+[Nucleic Acids Research(2026)](https://doi.org/10.1093/nar/gkag1048) | [data](https://proteinensemble.org/)  
+
 * **DynaRepo: The repository of macromolecular conformational dynamics** [2025]  
 Omid Mokhtari, Emmanuelle Bignon, Hamed Khakzad, Yasaman Karami.   
 [Nucleic Acids Research (2025)](https://doi.org/10.1093/nar/gkaf1130) | [bioRxiv (2025)](https://doi.org/10.1101/2025.08.14.670260) | [data](https://dynarepo.inria.fr/)  
@@ -725,7 +730,9 @@ https://github.com/ipudu/awesome-molecular-dynamics
 
 
 
-
+* **A unified coarse-grained neural network potential for the dynamics of biomolecular complexes** [2026]  
+Antonio Mirarchi, Stephen E. Farr, Adrià Peréz, Gianni De Fabritiis.  
+[arXiv:2610.37606(2026)](https://doi.org/10.48550/arXiv.2610.37606) | [code](https://github.com/compsciencelab/amaro)  
 
 * **Leveraging elastic networks in a coarse-grained brownian simulation framework for protein conformational dynamics** [2026]  
 Domenico Scaramozzino, Enrica Ruggeri, Mariia Feshyna, Byung Ho Lee, Laura Orellana.  
@@ -819,7 +826,9 @@ Kevin V. Bigting, Shubhadeep Nag, Yaxin An.
 
 
 
-
+* **A unified coarse-grained neural network potential for the dynamics of biomolecular complexes** [2026]  
+Antonio Mirarchi, Stephen E. Farr, Adrià Peréz, Gianni De Fabritiis.  
+[arXiv:2610.37606(2026)](https://doi.org/10.48550/arXiv.2610.37606) | [code](https://github.com/compsciencelab/amaro)  
 
 * **Accuracy and Efficiency Benchmarks of Pretrained Machine Learning Potentials for Molecular Simulations** [2026]  
 Peter Eastman, Evan Pretti, Thomas E. Markland.  
@@ -1509,20 +1518,4 @@ Siya Zhu and Doğuhan Sarıtürk and Raymundo Arroyave.
 Kevin Han, Bowen Deng, Amir Barati Farimani, Gerbrand Ceder.  
 [arXiv:2506.02023 (2025)](https://doi.org/10.48550/arXiv.2506.02023)  
 
-* **Weighted Active Space Protocol for Multireference Machine-Learned Potentials** [2025]  
-Aniruddha Seal, Simone Perego, Matthew R. Hennefarth, Umberto Raucci, Luigi Bonati, Andrew L. Ferguson, Michele Parrinello, Laura Gagliardi.  
-[arXiv:2505.10505 (2025)](https://arxiv.org/abs/2505.10505)  
-
-* **Discovering High-Entropy Oxides with a Machine-Learning Interatomic Potential** [2025]  
-Sivak, Jacob T., Saeed SI Almishal, Mary Kathleen Caucci, Yueze Tan, Dhiya Srikanth, Joseph Petruska, Matthew Furst et al.  
-[Phys. Rev. Lett. (2025)](https://doi.org/10.1103/PhysRevLett.134.216101)  
-
-* **Fast and Fourier Features for Transfer Learning of Interatomic Potentials** [2025]  
-Pietro Novelli, Giacomo Meanti, Pedro J. Buigues, Lorenzo Rosasco, Michele Parrinello, Massimiliano Pontil, Luigi Bonati.  
-[arXiv:2505.05652 (2025)](https://doi.org/10.48550/arXiv.2505.05652) | [code](https://franken.readthedocs.io/)  
-
-* **Practical Machine Learning Strategies. 2. Accurate Prediction of ωB97X-V/6-311+G(2df,2p), ωB97M-V/6-311+G(2df,2p) and ωB97M(2)/6-311+G(2df,2p) Energies From Neural Networks Trained From ωB97X-D/6-31G* Equilibrium Geometries and Energies** [2025]  
-Philip Klunzinger, Thomas Hehre, Bernard Deppmeier, William Ohlinger, Warren Hehre.  
-[Computer Physics Communications (2025)](https://doi.org/10.1002/jcc.70129)  
-
-* **Structure and Dynamics of CO2 at the
+* **Weighted Active Space Protocol fo

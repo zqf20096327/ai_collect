@@ -59,7 +59,7 @@ This library is a comprehensive suite of tools organized into five key pillars, 
 <p>
 
 - **Pioneering Attention Mechanisms**: Go beyond standard attention with **`DifferentialMultiHeadAttention`**, modern **`HopfieldAttention`**, **`GroupQueryAttention`**, `CapsuleRoutingAttention`, and efficient alternatives like `FNetFourierTransform` and `RingAttention`.
-- **Unified Factory Architecture**: A consistent, powerful factory system for creating and validating **35 attention mechanisms** (`ATTENTION_REGISTRY`), **19 normalization variants** (`_TYPE_TO_CLASS` — including `BandRMS`, `LogitNorm`), **22 Feed-Forward Network (FFN)** types (`FFN_REGISTRY` — `SwiGLU`, `GeGLU`, `OrthoGLU`), **25 activations** (`ACTIVATION_REGISTRY`), **15 embeddings** (`EMBEDDING_REGISTRY`), plus registries for **Adapters** (`ADAPTER_REGISTRY`: 1), **Mixtures** (`MIXTURE_REGISTRY`: 3), **Sequence Pooling** (`SEQUENCE_POOLING_REGISTRY`: 3), **Logic** (`LOGIC_REGISTRY`: 4), and task heads dispatched by domain via `create_head`.
+- **Unified Factory Architecture**: A consistent, powerful factory system for creating and validating **36 attention mechanisms** (`ATTENTION_REGISTRY`), **19 normalization variants** (`_TYPE_TO_CLASS` — including `BandRMS`, `LogitNorm`), **22 Feed-Forward Network (FFN)** types (`FFN_REGISTRY` — `SwiGLU`, `GeGLU`, `OrthoGLU`), **25 activations** (`ACTIVATION_REGISTRY`), **15 embeddings** (`EMBEDDING_REGISTRY`), plus registries for **Adapters** (`ADAPTER_REGISTRY`: 1), **Mixtures** (`MIXTURE_REGISTRY`: 4), **Sequence Pooling** (`SEQUENCE_POOLING_REGISTRY`: 4), **Logic** (`LOGIC_REGISTRY`: 4), and task heads dispatched by domain via `create_head`.
 - **Graph & Structural Primitives**: Configurable **GNN layers** with multiple aggregation strategies (`GCN`, `GAT`, `GraphSAGE`), **`Relational Graph Transformer`** (RELGT) blocks, and **`Entity-Graph Refinement`** for learning hierarchical relationships.
 - **Mixture of Experts (MoE) System**: A complete MoE implementation with configurable FFN experts, multiple gating strategies (including **SoftMoE** and Cosine Gating), and integrated training utilities.
 - **Probabilistic & Statistical Layers**: Build models that reason about uncertainty with **`Mixture Density Networks`** (MDN), **`Normalizing Flows`**, and time series analysis layers for residual autocorrelation (`ResidualACFLayer`).
@@ -79,7 +79,7 @@ This library is a comprehensive suite of tools organized into five key pillars, 
 </details>
 
 <details>
-<summary><b>4. Next-Generation Loss Functions & Optimization (55 Loss Modules, 17 Optimizers)</b></summary>
+<summary><b>4. Next-Generation Loss Functions & Optimization (56 Loss Modules, 17 Optimizers)</b></summary>
 <p>
 
 - **Optimize What Matters with `AnyLoss`**: A groundbreaking framework that transforms any confusion-matrix-based metric (e.g., F1-score, Balanced Accuracy, Matthews Correlation Coefficient) into a differentiable loss function for direct optimization on imbalanced data — **16 losses in `ANYLOSS_REGISTRY`** plus standalone losses.
@@ -96,7 +96,7 @@ This library is a comprehensive suite of tools organized into five key pillars, 
 - **Accelerated Development with Training Pipelines**: **~70 ready-to-use `train_*.py` entry points across ~74 trainer directories** (`src/train/`, plus the shared `src/train/common/` library and 2 family containers `train/language/`, `train/time_series/`), establishing standardized and reproducible workflows for training, validation, and testing across domains like NLP, Vision, and Time Series.
 - **Production-Ready Utilities**: A suite of tools including advanced data loaders, augmentation pipelines, a structured visualization and logging manager (`VisualizationManager`), and enhanced model serialization with custom object support.
 - **Assured Reliability**: An extensive **1,558-module test suite** (`tests/`) ensures the correctness and stability of every component, with dedicated fixtures for mixed-precision and TF32-sensitive regressions. It mirrors `src/dl_techniques/` directory-for-directory, with the deliberate exception of `tests/test_models/`, which stays flat rather than following the model family nesting.
-- **Verified Against the Source**: Where a reference implementation exists, ports are checked against it numerically — several packages commit the reference itself as an executable oracle (e.g. `src/dl_techniques/layers/fastvit/reference.py`) rather than asserting parity in prose.
+- **Verified Against the Source**: Where a reference implementation exists, ports are checked against it numerically — several packages commit the reference itself as an executable oracle (e.g. `src/dl_techniques/layers/matching/` against `tests/lightglue_reference_numpy.py`) rather than asserting parity in prose.
 </p>
 </details>
 
@@ -392,7 +392,7 @@ dl_techniques/
 │   │   └── tabular/           # 1 — tabm
 │   ├── layers/                # ~375 modules — ~200 in 21 themed subpackages,
 │   │   │                      # ~75 loose at the top level
-│   │   ├── attention/         # 35 registered attention mechanisms (factory)
+│   │   ├── attention/         # 36 registered attention mechanisms (factory)
 │   │   ├── ffn/               # 22 registered feed-forward networks (factory)
 │   │   ├── activations/       # 25 registered activations (factory)
 │   │   ├── norms/             # 19 registered normalization layers (factory)
@@ -407,7 +407,7 @@ dl_techniques/
 │   │   ├── statistics/        # Statistical and probabilistic layers (MDN, Flows)
 │   │   └── ...                # fusion, geometric, logic, mixtures, physics,
 │   │                          # reasoning, sequence_pooling, tokenizers, adapters
-│   ├── losses/                # 55 specialized loss modules (AnyLoss registry: 16 + standalone)
+│   ├── losses/                # 56 specialized loss modules (AnyLoss registry: 16 + standalone)
 │   ├── metrics/               # Custom Keras metrics (PSNR, SSIM, perplexity, Brier, depth, forecasting)
 │   ├── optimization/          # 17 optimizers (Muon, VSGD, SGLD, Gefen, WW-PGD), LR schedules
 │   ├── analyzer/              # Comprehensive model analysis toolkit and visualizers

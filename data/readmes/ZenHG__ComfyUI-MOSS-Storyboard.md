@@ -16,10 +16,10 @@
 
 | Item | Value |
 |---|---|
-| Version | **0.3.0** |
+| Version | **0.3.2** |
 | License | **MIT** (credits in [`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md)) |
 | Host | **ComfyUI ≥ 0.42.0** (native MOSS-Image support landed in PR #17095) |
-| Dependencies | **None** beyond host-provided `torch` / `comfy*` |
+| Dependencies | **None** beyond host-provided `torch` / `comfy*`. Face Swap's auto mask optionally uses `insightface` + `onnxruntime` — the pack runs without them |
 
 ---
 
@@ -103,7 +103,7 @@ The official ComfyUI template already supports **layout boxes on one canvas**. T
 | Reusable layout state | per-node fields | ✅ v3 state + undo/redo |
 | Queue from the editor | — | ✅ one click |
 | External planner JSON | — | ✅ elements-v1 + CLI |
-| Extra pip dependencies | — | none |
+| Extra pip dependencies | — | none (Face Swap's auto mask optionally adds `insightface`) |
 
 **Not a fit if** you only make single-subject images with one or two boxes — the official template is simpler. **A good fit if** you need repeatable multi-panel pages, per-panel captions, or panel crops for downstream editing.
 
@@ -149,7 +149,7 @@ The official ComfyUI template already supports **layout boxes on one canvas**. T
 | `moss_image_sft_bf16.safetensors` | ✅ | `models/unet/` or `models/diffusion_models/` |
 | `qwen3.5_9b_int8_convrot.safetensors` | ✅ | `models/clip/` |
 | `flux2-vae.safetensors` | ✅ | `models/vae/` |
-| pip packages | ❌ | none |
+| pip packages | ❌ | none (optional `insightface` + `onnxruntime` for Face Swap's auto mask) |
 
 Weights are **not** bundled. For download links and the exact folder names, follow the official ComfyUI MOSS-Image tutorial: <https://docs.comfy.org/tutorials/image/moss-image/moss-image>.
 
@@ -686,20 +686,66 @@ Reference face → **one panel** (or a single image). MIT, like the rest of the 
 |---|---|
 | `ref` → vision channel | decides **who**. `vision_megapixels` default `1.05` (at the host default `0.147` the reference scores about `0.008`, i.e. nothing) |
 | `image` + `prompt` → img2img | decides **what is drawn**. The prompt must mention the reference (`in Picture 1`); the node adds the prefix |
-| `spec` + `index` | only that panel changes — gutters, margins and the other panels stay pixel-identical (measured `max|Δ| = 0`) |
-| `auto_mask` | **On by default.** insightface finds the face and builds the mask for you — no drawing. Needs `pip install insightface onnxruntime`; missing → it says so instead of guessing |
-| `face_pick` | When a panel has several people: `largest` / `left` / `right`. `report` prints how many faces were found and which one was used |
-| `mask` | Optional manual override (**white = repaint**). A wired mask wins over `auto_mask` |
+| `spec` + `index` | only that panel changes — gutters, margins and the other panels stay pixel-identical (measured `max&#124;Δ&#124; = 0`) |
+| `auto_mask` | **On by default.** insightface finds the face and builds the mask. A missing dependency is a hard error, never a silent fallback |
+| `face_pick` | `largest` / `left` / `right`. Use it when a panel has several people; `report` prints how many faces were found and which one won |
+| `mask` | Optional manual override. A wired mask beats `auto_mask` |
+| `init` | **`source`** (default) = img2img from `image`; with a mask only the mask is redrawn. **`empty`** = ignore `image`, start from an empty latent — reference face + prompt → one new image |
 
-**The mask is the difference between a retouch and a re-render.** With it the palette cannot drift (measured `0.40/255` outside); without it the whole panel is repainted and the grade always shifts (`R +24 … +53`). Keep `auto_mask` on unless you are wiring your own — and if you do wire one, do **not** take it from `LoadImage`'s MASK output (that is the alpha channel; a grey PNG without alpha comes back as 64×64 zeros and the mask silently does nothing) — use `ImageToMask(channel="red")`. Full recipe: [`docs/17`](https://github.com/ZenHG/ComfyUI-MOSS-Storyboard/blob/main/docs/17-faceswap-recipe.md).
+**Why this is not just "img2img".** The official MOSS edit format is **in-context**: the reference image rides along as clean tokens at `t = 0` and `x` starts from pure noise, so composition is only *asked for* in the prompt. This node lets the source image be the **starting point** instead (`vae.encode` + `denoise`), so composition is kept *mechanically*. Four conditions, each doing one job: prompt = what changes, `ref` = who, `image` = what is kept, `mask` = where. Background reading: [`docs/18`](https://github.com/ZenHG/ComfyUI-MOSS-Storyboard/blob/main/docs/18-masked-latent-edit.md).
 
-Recipe: 8-step DMD2 LoRA **then** the Moss-Image-Edit LoRA · 8 steps / cfg 1.0 / euler + simple · **one** reference image (two views measured worse).
+**The mask is the difference between a retouch and a re-render.** With a mask only the mask is redrawn and everything outside stays pixel-identical (`mean&#124;Δ&#124; 0.40/255`). Without one — no wired mask **and** `auto_mask` off — the whole panel is repainted and the grade always shifts (`R +24 … +53`). `report` says which path ran.
 
-**Known limits**: two people in one panel, pose changes, and chaining two swaps do not work. No identity score is published — the ruler has no discriminating power in this domain. Knobs that were tried and why they stay at their defaults: [`docs/16`](https://github.com/ZenHG/ComfyUI-MOSS-Storyboard/blob/main/docs/16-faceswap-refactor.md).
+**What the mask is.** A feathered **rectangle**, not a face outline: top edge at `eye_y + 0.30 × (nose_y − eye_y)`, bottom at `y2 + 0.06 × h`, sides at `±0.05 × w` around the detected box, blur `max(3, 0.02 × w)`. **White = repaint.** A mask the size of the whole board is fine — it is cropped to `index` with the same integer coordinates used for the image.
+
+**Wiring your own mask.** `ImageToMask(channel="red")` → `mask`. Do **not** use `LoadImage`'s `MASK` output: that is the alpha channel, and a grey PNG without alpha comes back as 64×64 zeros — the mask silently does nothing and the panel gets fully repainted. Sample: `assets/faceswap-mask-example.png`.
+
+**Auto mask — what to install, where the weights go**
+
+| | |
+|---|---|
+| Install | `pip install insightface onnxruntime` — into the **same** Python that runs ComfyUI |
+| Weights | `~/.insightface/models/buffalo_l/det_10g.onnx` (19 MB) |
+| Only this one | The node loads `detection` only, so `w600k_r50.onnx` (174 MB, recognition) is **not** needed |
+| Another drive | Set `MOSS_INSIGHTFACE_ROOT=<root>` → weights go to `<root>/models/buffalo_l/` |
+| Download | <https://github.com/deepinsight/insightface/releases/download/v0.7/buffalo_l.zip> (unzip `buffalo_l/` into `models/`) |
+| Check | The node **never downloads anything by itself**: missing weights raise an error that prints the exact path it looked at |
+
+Other detectors on this machine, and why this node does not use them:
+
+| Wheel | Gives you | Weights live in | Used here |
+|---|---|---|---|
+| insightface `buffalo_l` | box + 5 keypoints | `~/.insightface/models/buffalo_l/` | **yes** — same source as the measured E26 recipe |
+| mediapipe face mesh | 478-point outline | ships with the package, `site-packages/mediapipe/modules/` (55 MB) | no — a tighter outline is not the bottleneck |
+| facexlib BiSeNet | per-region parse (skin/brow/eye/nose/mouth/hair) | `site-packages/facexlib/weights/parsing_bisenet.pth` | no — best semantics, but a second dependency for an unmeasured gain |
+| SAM | precise region, needs a point or box prompt | manual `sam_vit_*.pth` download | no — prompt + weight cost, unmeasured gain |
+| ultralytics YOLO | box only | manual download | no — no keypoints, would have to re-derive them |
+
+**Pose and body motion both work — set `init` to `empty`.** Seven head poses and nine body actions, measured on the **generate** path (empty latent + reference in the vision channel). With the default `init=source` this node is img2img behind a mask, so the body sits outside the mask and the prompt cannot move it. One variable at a time:
+
+| Tested | Result |
+|---|---|
+| Head yaw, **frontal** reference | Works. One prompt line moves yaw `+0.05 → +1.48`; near-profile, chin-down and chin-up all came out |
+| Head yaw, **profile** reference | Fails. Reference `yaw +5.20`; all seven prompts came back as profiles ⇒ **pose follows the reference image, not the prompt** |
+| Body actions (stand / pockets / arms crossed / walk / reach / sit / torso turn / hand to chin / back-and-look) | All nine produced. Net identity loss `−0.086 … +0.112`, **7 of 9 within ±0.05** of the sampling floor |
+| Torso turned, head still at camera | `+0.036` — no damage |
+| Back to camera, head over shoulder (`yaw 0.76`) | `−0.086` ⇒ what hurts the face is the **head turn**, not the body |
+
+⇒ **To change pose: feed a frontal reference, set `init=empty`, and put the pose in the prompt.** A profile reference locks the output to profile and no wording pulls it back. When only the body should move, keep the head facing the camera. Prompts and pass criteria for both gradients: [`docs/17`](https://github.com/ZenHG/ComfyUI-MOSS-Storyboard/blob/main/docs/17-faceswap-recipe.md) §9. Working example: `examples/moss-pose-generate-ui.json` (9 nodes, `init=empty`, **no third-party nodes**).
+
+Recipe: 8-step DMD2 LoRA **then** the Moss-Image-Edit LoRA · euler + simple · **one** reference image (two views measured worse). Two parameter regimes, measured on the same image and mask:
+
+| Regime | steps / cfg | Use for |
+|---|---|---|
+| Fast (default) | 8 / 1.0 | face swap — at face scale the material barely matters |
+| Edit | **30 / 5** | clothing, hair, larger areas — the LoRA's own recipe; visibly better texture |
+| Edit + HQ LoRA | 30 / **3** | `MOSS-Image-Edit-HQ/armV5` (rank 64/192, 495 MB). Best coverage and blending in our test |
+
+**`ref` decides "who" — give it a face close-up, not the whole scene.** Measured while adding a chair: with a full-scene reference the model drew one red stripe (14% of the mask changed); with a face close-up the chair appeared (51%). A scene reference also says "nothing else is here", which cancels the new object. Full recipe and pass criteria: [`docs/17`](https://github.com/ZenHG/ComfyUI-MOSS-Storyboard/blob/main/docs/17-faceswap-recipe.md).
+
+**What still does not work**: two faces in one panel (each ≈ 68 px, both get swapped and drift apart), chaining two swaps (the second is a pixel-identical no-op), and pulling a profile reference back to frontal with wording. No identity score is published — the ruler has no discriminating power in this domain. Knobs tried and why they stay at their defaults: [`docs/16`](https://github.com/ZenHG/ComfyUI-MOSS-Storyboard/blob/main/docs/16-faceswap-refactor.md).
 
 Example: `examples/moss-faceswap-ui.json`.
-
----
 
 ## Common errors
 
@@ -804,7 +850,8 @@ Selected deep dives live in the GitHub repo's [`docs/`](https://github.com/ZenHG
 [`14`](https://github.com/ZenHG/ComfyUI-MOSS-Storyboard/blob/main/docs/14-top-level-design.md) top-level design: what each of the seven nodes owns ·
 [`15`](https://github.com/ZenHG/ComfyUI-MOSS-Storyboard/blob/main/docs/15-recipe-contract.md) recipe contract: what a verified recipe must contain ·
 [`16`](https://github.com/ZenHG/ComfyUI-MOSS-Storyboard/blob/main/docs/16-faceswap-refactor.md) face swap, before and after: what changed and what deliberately did not ·
-[`17`](https://github.com/ZenHG/ComfyUI-MOSS-Storyboard/blob/main/docs/17-faceswap-recipe.md) face-swap recipe: which path actually worked, how the mask is computed, what the pass criteria are.
+[`17`](https://github.com/ZenHG/ComfyUI-MOSS-Storyboard/blob/main/docs/17-faceswap-recipe.md) face-swap recipe: which path actually worked, how the mask is computed, what the pass criteria are ·
+[`18`](https://github.com/ZenHG/ComfyUI-MOSS-Storyboard/blob/main/docs/18-masked-latent-edit.md) masked latent edit: what the official edit format does *not* do, the four orthogonal conditions, and where this stops working.
 Contributor guide: [`CONTRIBUTING.md`](CONTRIBUTING.md) · release history: [`CHANGES.md`](https://github.com/ZenHG/ComfyUI-MOSS-Storyboard/blob/main/CHANGES.md).
 
 `docs/`, `CHANGES.md` and `RELEASE-NOTES.md` are not shipped in the install package (see `.comfyignore`); the links above point to the GitHub repo.

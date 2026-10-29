@@ -30,10 +30,12 @@
   <img alt="Python 3.12+" src="https://img.shields.io/badge/Python-3.12%2B-38bdf8.svg">
   <img alt="VS Code 1.93+" src="https://img.shields.io/badge/VS%20Code-1.93%2B-0ea5e9.svg">
   <a href="https://glama.ai/mcp/servers/shrec/AIWorkHub"><img alt="AIWorkhub MCP server – quality and maintenance score on Glama" src="https://glama.ai/mcp/servers/shrec/AIWorkHub/badges/score.svg"></a>
+  <a href="https://lobehub.com/mcp/shrec-aiworkhub"><img alt="AIWorkHub MCP server rating on LobeHub" src="https://lobehub.com/badge/mcp/shrec-aiworkhub"></a>
 </p>
 
 <p align="center">
   <a href="https://glama.ai/mcp/servers/shrec/AIWorkHub"><img alt="AIWorkhub MCP server – quality and maintenance score on Glama" src="https://glama.ai/mcp/servers/shrec/AIWorkHub/badges/card.svg"></a>
+  <a href="https://lobehub.com/mcp/shrec-aiworkhub"><img alt="AIWorkHub MCP server on LobeHub" src="https://lobehub.com/badge/mcp-full/shrec-aiworkhub"></a>
 </p>
 
 <!-- mcp-name: io.github.shrec/aiworkhub -->
@@ -372,10 +374,11 @@ are durable and repository state remains local.
 
 The full block diagram and the Observe → Decide → Delegate → Verify → Promote → Learn loop: [The whole system](docs/ARCHITECTURE.md#the-whole-system).
 
-## What's new in 0.12.74
+## What's new in 0.12.77
 
-- 0.12.74 ships the unpublished 0.12.73 (its CI failed on Python 3.14). MCP tool profiles: one table decides which tools the `manager`, `worker` and `dashboard` profiles list, the dashboard runs on its own profile, and a call to a tool the active profile does not serve is refused with a message naming the profiles that do. WorkHub Mail's listener and pairing are controlled from the dashboard, and Source Graph gains `mode=diff`.
-- Every MCP tool publishes ToolAnnotations and CI lints the tool surface with TDQS; a reviewer killed by a transport cancellation is retried on another route, and the release watcher follows the exact commit's CI and Release runs after a cut.
+- WorkHub Mail pairs machines without typed codes: discover a machine on the LAN, send a pair request, compare the 6-digit SAS and accept or reject it in VS Code; a model never completes a pairing. The tool surface is now send, inbox and peers.
+- Faster, cheaper manager turns: Source Graph caches bodygrep and returns exact line windows, accept runs validations once, the usage report and workforce catalog default to bounded summaries, and the metrics ledger and reconciler read only what changed.
+- Review closes cleanly: undecided reviewer findings get a system disposition at accept, reviewers skip routes with an open failure circuit, and retry spend is broken down by the previous attempt's terminal cause.
 - The full release history is in [CHANGELOG.md](CHANGELOG.md).
 
 ## Continuous Audit as a Service (CAAS)

@@ -36,10 +36,10 @@ npm install -g @deepseek-ai/dsh
 dsh plugin --profile web add dsh-prompt     # 用自启 web 服务（dsh web）
 #     或者
 dsh plugin --profile desktop add dsh-prompt   # 用 DSH Desktop 桌面应用
-# 锁定最新版更稳（当前 0.4.38）：
-dsh plugin --profile web add dsh-prompt@0.4.38 --registry https://registry.npmjs.org
+# 锁定最新版更稳（当前 0.4.39）：
+dsh plugin --profile web add dsh-prompt@0.4.39 --registry https://registry.npmjs.org
 #     或者
-dsh plugin --profile desktop add dsh-prompt@0.4.38 --registry https://registry.npmjs.org
+dsh plugin --profile desktop add dsh-prompt@0.4.39 --registry https://registry.npmjs.org
 ```
 
 <div align="center">
@@ -68,7 +68,7 @@ dsh plugin --profile desktop add dsh-prompt@0.4.38 --registry https://registry.n
 
 点底栏「屏蔽预制模板」，屏蔽官方预置Prompt；再点「展示预制模板」解除屏蔽。
 
-不想鼠标划过就展开？点底栏「点击触发」（或设置面板里的「触发方式」），此后只有点击按钮才开合，鼠标偶然划过不再闪烁；再点「悬浮触发」切回。
+不想鼠标划过就展开？点底栏「当前：悬浮触发」（或设置面板里的「触发方式」行右侧按钮），此后只有点击按钮才开合，鼠标偶然划过不再闪烁；按钮变成「当前：点击触发」即是已切过去，再点切回。
 
 </div>
 
@@ -115,7 +115,7 @@ dsh plugin --profile desktop add dsh-prompt@0.4.38 --registry https://registry.n
 
 <img src="assets/readme/06-custom-manage.png" width="560" alt="自定义管理：新增自定义模板弹窗（名称、标签、文字颜色、正文）" style="border:1px solid #30363d;border-radius:6px">
 
-正文会按你写的原样保留：换行都在，包括开头和结尾的空行（只忽略首尾的空格与制表符）。想让插入后的光标停在指定位置，就在正文里放 `{{cursor}}`——只认第一个，其余会被删掉。不带标记时，光标落在插入内容的末尾，与旧版一致；`/prompt` 斜杠插入只去掉标记、不移动光标。插入后按一次撤销，可能先撤销「落光标」那一步（会看到标记文本回来），再按一次才撤销插入。另外，字面 `{{cursor}}` 这串字符本身暂时无法表达——把它写进正文，它就会被当作光标标记。
+正文会按你写的原样保留：换行都在，包括开头和结尾的空行（只忽略首尾的空格与制表符）。想让插入后的光标停在指定位置，就在正文里放 `{{cursor}}`——只认第一个，其余会被删掉。不带标记时，光标落在插入文本之后；`/prompt` 斜杠插入只去掉标记、不移动光标。插入后按一次撤销，可能先撤销「落光标」那一步（会看到标记文本回来），再按一次才撤销插入。另外，字面 `{{cursor}}` 这串字符本身暂时无法表达——把它写进正文，它就会被当作光标标记。
 
 **👇 文字颜色可以修改，支持文字描边。**
 
@@ -183,7 +183,7 @@ dsh plugin --profile desktop add dsh-prompt@0.4.38 --registry https://registry.n
 
 <div align="center">
 
-![星标增长曲线（双轴）：左轴累计星标，右轴每日新增](https://raw.githubusercontent.com/FeatherHunter/dsh-prompt/main/docs/star-history.svg?v=20261028)
+![星标增长曲线（双轴）：左轴累计星标，右轴每日新增](https://raw.githubusercontent.com/FeatherHunter/dsh-prompt/main/docs/star-history.svg?v=20261029)
 
 </div>
 

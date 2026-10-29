@@ -181,15 +181,15 @@ jobs:
 
 Then add a `release` label to your PR, merge, and let BuildSpace do the rest.
 
-### Pinning to a Version
+### Pinning BuildSpace
 
-All examples above use `@main` which tracks the latest changes. For production stability, pin to a specific release tag:
+The examples above use `@main`, which picks up every BuildSpace change the moment it merges. Pin a commit of `main` instead, as the stage and promote examples do:
 
 ```yaml
-uses: photon-hq/buildspace/.github/workflows/rust-service-release.yaml@v1.2.3
+uses: photon-hq/buildspace/.github/workflows/rust-service-release.yaml@<reviewed-commit-sha>
 ```
 
-Available versions are listed on the [GitHub Releases](https://github.com/photon-hq/buildspace/releases) page. Buildspace versions itself using the same AI-powered release pipeline it provides to other repos.
+Get the current commit with `git ls-remote https://github.com/photon-hq/buildspace refs/heads/main`. Moving the pin is a pull request in your repository, so each BuildSpace change is reviewed there, and a stage workflow's dry run tests it, before it ships. BuildSpace has no releases or tags of its own: merging to `main` is the release. The old `v1.x` tags and releases were deleted, so a reference to one no longer resolves; pin a commit instead.
 
 ---
 
@@ -1292,14 +1292,19 @@ Runs when a release is published. Uses [Claude Code](https://github.com/anthropi
 
 The workflow automatically generates a cross-repo GitHub App token from the `photon-hq` org-level `APP_ID` and `APP_PRIVATE_KEY` secrets, clones the target docs repo, lets Claude Code read the existing docs and modify them based on the release diff and notes, then opens a PR if any changes were made. No per-repo secret configuration is needed — just use `secrets: inherit`.
 
+AI may update authored guides through ordinary PR review. Existing target-repository rules determine edit scope and page placement. `docs-path` is a focus hint and may name a page or directory that does not exist yet. No extra directory allowlist, producer mapping, or approval gate is imposed.
+
+For `photon-hq/docs`, the updater follows the existing Mintlify conventions and preserves producer-owned references, navigation, and locks. Dependency installation retains pnpm's normal CI behavior without forcing SDK upgrades or requiring a lockfile from targets that do not have one. The generator uses the repository's current checks: `pnpm test`, `pnpm docs:validate`, and `pnpm docs:links`. Other target repositories follow their own validation instructions.
+
 #### Inputs
 
 | Input | Type | Required | Default | Description |
 |-------|------|----------|---------|-------------|
 | `service-name` | string | No | Repository name | Name of the service being released |
-| `docs-path` | string | Yes | — | Path within the docs repo this service maps to (e.g., `legacy/imessage.mdx` or `advanced-kits/imessage`) |
+| `docs-path` | string | Yes | — | Documentation focus hint; existing target-repository rules determine edit scope and page placement |
 | `docs-repo` | string | No | `photon-hq/docs` | Target documentation repository (`owner/repo`) |
 | `docs-branch` | string | No | `main` | Base branch of the docs repo |
+| `use-blacksmith` | boolean | No | `false` | Use Blacksmith Linux runners instead of `ubuntu-latest` |
 
 #### Secrets
 
@@ -1339,6 +1344,9 @@ The workflow automatically generates a cross-repo GitHub App token from the `pho
 | `skills-path` | string | Yes | — | Path within the skills repo that this service maps to (e.g., `skills/buildspace-ci-cd` or `skills/imessage`) |
 | `skills-repo` | string | No | `photon-hq/skills` | Target skills repository (`owner/repo`) |
 | `skills-branch` | string | No | `main` | Base branch of the skills repo |
+| `release-tag` | string | No | `""` | Override the release event's tag |
+| `release-notes` | string | No | `""` | Override the release event's notes |
+| `use-blacksmith` | boolean | No | `false` | Use Blacksmith Linux runners instead of `ubuntu-latest` |
 
 #### Secrets
 
@@ -1437,6 +1445,32 @@ Individual building blocks that the workflows above are assembled from. Use thes
 <summary><strong>Expand all blocks</strong></summary>
 
 ---
+
+### collect-release-context
+
+**Path:** `.github/blocks/collect-release-context/action.yaml`
+
+Reads release data from an existing full checkout with tags. It requires Bash,
+Git and Python 3, but no credentials, model or publishing access.
+
+Pass the required `release-tag` and optional `release-notes`. The action returns
+`version` (one leading `v` removed), unchanged `release_tag` and `release_notes`,
+`previous_tag` (empty for the first release), `reviewers`, and `changes_diff`.
+It keeps creation-date tag order and filters team entries out of CODEOWNERS.
+The diff ends at the selected tag, even when the checkout's HEAD is newer. Its
+first-release base is Git's empty tree. Missing tags fail. The diff is capped at
+100000 characters, with NUL bytes removed and a notice when truncated.
+
+```yaml
+- uses: actions/checkout@v5
+  with:
+    fetch-depth: 0
+- uses: photon-hq/buildspace/.github/blocks/collect-release-context@main
+  id: context
+  with:
+    release-tag: ${{ github.event.release.tag_name }}
+    release-notes: ${{ github.event.release.body }}
+```
 
 ### check-pr-label
 
@@ -1998,6 +2032,8 @@ Without a key, the default `present` state creates an unmarked comment.
 
 Uses [Claude Code](https://github.com/anthropics/claude-code) to analyze release changes and submit a PR to a documentation repository. Clones the docs repo, runs the Claude Code CLI to identify and make documentation updates, then creates a PR if changes were made. Expects a pre-generated `github-token` with write access to the docs repo (the `update-docs` workflow handles token generation automatically from org secrets).
 
+Authored guide updates follow the target repository's existing rules without an added directory allowlist. Generated references stay with their declared producers. The action keeps pnpm's normal CI installation behavior and instructs the generator to run the repository's current checks.
+
 #### Inputs
 
 | Input | Type | Required | Default | Description |
@@ -2007,7 +2043,7 @@ Uses [Claude Code](https://github.com/anthropics/claude-code) to analyze release
 | `release-tag` | string | Yes | — | The raw release tag (e.g., `v1.2.3`). Used for linking back to the release. |
 | `release-notes` | string | Yes | — | Release notes markdown from the release |
 | `changes-diff` | string | Yes | — | Git diff of changes in this release |
-| `docs-path` | string | Yes | — | Path within the docs repo this service maps to (e.g., `legacy/imessage.mdx` or `advanced-kits/imessage`) |
+| `docs-path` | string | Yes | — | Documentation focus hint; existing target-repository rules determine edit scope and page placement |
 | `docs-repo` | string | No | `photon-hq/docs` | Target docs repository (`owner/repo`) |
 | `docs-branch` | string | No | `main` | Base branch of the docs repo |
 | `anthropic-api-key` | secret | Yes | — | Anthropic API key for Claude Code |
@@ -2114,7 +2150,6 @@ buildspace/
 │       ├── rust-service-release.yaml  # Complete Rust release pipeline
 │       ├── pkg-release.yml             # .pkg release pipeline (no binary)
 │       ├── pkg-release-pr.yml         # .pkg PR build (no binary)
-│       ├── self-release.yaml          # Buildspace's own versioned releases
 │       ├── swift-pkg-pr.yml           # Swift .pkg build on every PR commit
 │       ├── swift-release.yml          # Swift .pkg release pipeline
 │       ├── typescript-monorepo-release.yaml  # Complete TS monorepo pipeline

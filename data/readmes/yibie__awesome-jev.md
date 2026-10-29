@@ -61,7 +61,7 @@ Found something wrong? Open an issue or a pull request — **removal is as valid
 
 ## Current coverage
 
-- [Classification & Routing](categories/classification-routing.md) — 76 entries
+- [Classification & Routing](categories/classification-routing.md) — 77 entries
 - [Adaptive & Realtime UI](categories/adaptive-realtime-ui.md) — 13 entries
 - [Verification & Guardrails](categories/verification-guardrails.md) — 62 entries
 - [Scoring & Ranking](categories/scoring-ranking.md) — 44 entries
@@ -69,13 +69,13 @@ Found something wrong? Open an issue or a pull request — **removal is as valid
 - [Data Labeling & Curation](categories/data-labeling-curation.md) — 11 entries
 - [Evaluation & Benchmarking](categories/evaluation-benchmarking.md) — 49 entries
 - [Calibration & Research](categories/calibration-research.md) — 55 entries
-- [Infra / SDKs / Integrations](categories/infra-sdks-integrations.md) — 123 entries
-- [Game & Simulation](categories/game-simulation.md) — 28 entries
+- [Infra / SDKs / Integrations](categories/infra-sdks-integrations.md) — 124 entries
+- [Game & Simulation](categories/game-simulation.md) — 29 entries
 - [Robotics & Physical](categories/robotics-physical.md) — 11 entries
 - [Finance & Trading](categories/finance-trading.md) — 10 entries
 - [Compliance & Legal](categories/compliance-legal.md) — 6 entries
 - [Content Moderation](categories/content-moderation.md) — 14 entries
-- [Related Practices / Discussions](categories/related-practices-discussions.md) — 107 entries
+- [Related Practices / Discussions](categories/related-practices-discussions.md) — 108 entries
 
 ### Open categories still being seeded
 
@@ -120,6 +120,7 @@ Optional tags on an entry name the coding agent it targets and the kind of integ
 
 Source file: [`categories/classification-routing.md`](categories/classification-routing.md)
 
+- [VideoAdGuard](https://github.com/ZeroTang05/VideoAdGuard) ![stars](https://img.shields.io/github/stars/ZeroTang05/VideoAdGuard?style=flat-square&label=%E2%98%85) - Video advertising: a browser extension that uses Jev `Noul` decisions to identify embedded promotions in Bilibili video subtitles, mark their time ranges, and let viewers skip them manually or automatically without searching through the video.
 - [Neutron Email Triage](https://github.com/Geneonosis/neutron-email-triage) ![stars](https://img.shields.io/github/stars/Geneonosis/neutron-email-triage?style=flat-square&label=%E2%98%85) - Email triage: uses Jev `Choice` to classify Proton Mail Bridge messages as keep, archive, review, or trash, defaults to dry-run, and only permits execute-mode trash moves when trash wins with probability at or above an explicitly supplied threshold of at least 0.9.
 - [JEV Book Tags](https://github.com/iamjonatha/jev-book-tags) ![type: plugin](https://img.shields.io/badge/type-plugin-4B5563?style=flat-square) ![stars](https://img.shields.io/github/stars/iamjonatha/jev-book-tags?style=flat-square&label=%E2%98%85) - Library cataloguing: a calibre plugin asks Jev `Noul` questions about book genres and subjects, applies configurable per-tag probability thresholds, and preserves existing tags while leaving uncertain results for review.
 - [Diffusion Jev](https://github.com/Hangzhi/diffusion-jev-sglang) ![stars](https://img.shields.io/github/stars/Hangzhi/diffusion-jev-sglang?style=flat-square&label=%E2%98%85) - Visual classification: independent Jev-style DiffusionGemma/SGLang server that selects doodle and flower labels from image pixels with typed Choice questions and displays candidate scores in a drawing playground, with public evaluation artifacts and uncalibrated probabilities.
@@ -343,5 +344,4 @@ Source file: [`categories/agent-decisions.md`](categories/agent-decisions.md)
 - [jev-agent-browser](https://github.com/forvela/jev-agent-browser) ![stars](https://img.shields.io/github/stars/forvela/jev-agent-browser?style=flat-square&label=%E2%98%85) - Browser agents: a parent agent delegates bounded tasks to a Jev loop that selects typed browser actions, validates them through agent-browser, and escalates ambiguity or stuck states back to the parent.
 - [pi-typesafe-jev](https://github.com/legacybridge-tech/pi-typesafe-jev) ![agent: Pi](https://img.shields.io/badge/agent-Pi-8250DF?style=flat-square) ![type: plugin](https://img.shields.io/badge/type-plugin-4B5563?style=flat-square) ![stars](https://img.shields.io/github/stars/legacybridge-tech/pi-typesafe-jev?style=flat-square&label=%E2%98%85) - Coding agents: exposes System One judgments as five Pi tools so a model makes narrow semantic judgments while code and users keep control of thresholds, weights, and actions.
 - [jev-judgment](https://github.com/HyunjunJeon/jev-judgment) ![stars](https://img.shields.io/github/stars/HyunjunJeon/jev-judgment?style=flat-square&label=%E2%98%85) - Coding agents: agent skill that sends closed coding-agent judgments to Jev so verdicts stay typed, cheap, and comparable across runs.
-- [limpet](https://github.com/noplan-inc/limpet) ![stars](https://img.shields.io/github/stars/noplan-inc/limpet?style=flat-square&label=%E2%98%85) - Coding agents: Stop hook that keeps an agent from finishing too early by judging plain-language completion rules with Jev.
-- [dsh-auto-mode](https://git.allen-software.com/allenh1/dsh-auto-mode) ![agent: DeepSeek Harness](https://img.shields.io/badge/agent-DeepSeek%20Harness-2D5BD7?style=flat-square) - Coding agents: DeepSeek Harness permission preset whose end-prompt step has Jev answer the open questions an agent leaves in its final message, steering them
+- [limpet](https://github.com/noplan-inc/limpet) ![stars](https://img.shields.io/github/stars/noplan-inc/limpet?style=flat-square&label=%E2%98%85) - Coding agents: Stop hook that keeps an agent from 

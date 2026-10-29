@@ -75,9 +75,11 @@ occupies 12.2 GiB, measured with the batch resident. Capacity is not the
 constraint; throughput saturates first, just past 65,536.
 
 For reference, `nes-py` / `gym-super-mario-bros`, the standard CPU stack for
-this benchmark, measures 132 env-steps/s on the 1050 Ti host. The 4,096-env GPU
-configuration on that same machine is roughly **1,370x** that baseline with
-RIGHT held, and about **210x** with per-env random actions.
+this benchmark, measured 767 env-steps/s on the 1050 Ti host on 2026-10-29
+with all 12 hardware threads loaded (12 processes; a single process alone gets
+168). Against the 4,096-env GPU configuration measured under the same OS
+(177,401 env-steps/s), that is about **231x** with RIGHT held, and about
+**37x** with per-env random actions.
 
 These figures were re-measured on 2026-09-01 from a clean clone with all 69
 tests passing and all three falsifiability checks green. Two independent runs,
@@ -86,10 +88,16 @@ previously published value at or above its claim. Raw output:
 [docs/data/verification-2026-09-01-a100.json](docs/data/verification-2026-09-01-a100.json).
 Reproduce it yourself with `benchmarks/verify_claims.py` (see below).
 
-**Methodology note.** The `nes-py` baseline is single-process and is not a
-fully loaded multi-core CPU. Measuring it under `SubprocVecEnv` across all
-cores is [issue #2](https://github.com/hbofz/NeSLE/issues/2). At training scale the PPO learner rather
-than the emulator is the bottleneck, which is the intended outcome.
+**Methodology note.** The all-core `nes-py` figure is 12 processes timed in
+lockstep after a 30 s warmup, by which point the laptop CPU has dropped from
+turbo to its sustained 3.05 GHz; three runs agreed within 1%. It counts the
+frames gym-super-mario-bros fast-forwards inside `step()`, as NeSLE does. It is
+the standard stack as used, not a like-for-like emulator comparison: nes-py
+draws every frame, while these GPU figures skip drawing (RAM observations).
+Method and caveats:
+[docs/benchmark-gpu-vs-cpu.md](docs/benchmark-gpu-vs-cpu.md#baseline-nes-py-on-every-core).
+At training scale the PPO learner rather than the emulator is the bottleneck,
+which is the intended outcome.
 
 Reproduce with `python benchmarks/gpu_vs_cpu.py` (about three minutes).
 Full method, per-device tables, and measurement history:
@@ -195,7 +203,7 @@ Full flag reference and troubleshooting: [docs/training.md](docs/training.md).
 ## Testing and validation
 
 ```sh
-python -m pytest tests/                   # 69 tests; GPU and ROM tests auto-skip when absent
+python -m pytest tests/                   # 71 tests; GPU and ROM tests auto-skip when absent
 python benchmarks/verify_correctness.py   # asserts the batch is N independent emulators
 ```
 
@@ -233,12 +241,12 @@ zero divergence in results, bus traffic, or cycle counts. C++ unit tests in
 
 - **Mapper 0 (NROM) only.** Super Mario Bros. works. Other mappers are not
   implemented.
-- **Renderer artifacts in recordings.** The PPU samples presentation state at
-  vblank with a sprite-0 scroll split, which removed 84% of observed artifacts,
-  but roughly 14% of frames during heavy action still drop the status bar for a
-  single frame. Game state and RAM-based training are unaffected.
-- **Title screen transition.** The menu-to-gameplay state machine stalls on a
-  PPU timing bug. Snapshot reset bypasses it completely.
+- **Recording artifacts.** The CUDA renderer draws each frame from a vblank
+  snapshot with a sprite-0 scroll split; a scripted scrolling run measured on
+  2026-07-29 still showed about 21 object-pop events in 500 frames, part of them
+  legitimate game animation. The native backend's renderer has neither, so its
+  frames do not scroll the playfield and can lose the status bar. Game state
+  and RAM-based training are unaffected.
 - **Windows training ceiling.** Under the WDDM driver model, interleaving torch
   CUDA kernels with emulator launches caps native PPO near 3,000 env-steps/s at
   2,048 environments. Linux is unaffected.

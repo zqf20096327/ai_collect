@@ -45,6 +45,7 @@ Badger fetches those files and builds a second prompt.
 - **Token & cost efficient** — Send only relevant context instead of repeatedly feeding the whole repository to cloud models
 - **Precise & lightweight** — Built in Go, fast, minimal overhead
 - **Specialized modes** — `review` and `design` for common workflows
+- **[Visual codebase map](#offline-codebase-map)** — Explore your repository with an interactive, offline HTML map
 
 ## Install
 
@@ -61,12 +62,6 @@ curl -fsSL https://raw.githubusercontent.com/PVRLabs/aibadger/main/install.sh | 
 See [docs/install.md](docs/install.md) for Windows, source builds, and more.
 
 Also available as an official [VS Code companion](https://marketplace.visualstudio.com/items?itemName=pvrlabs.ai-badger) ([GitHub](https://github.com/PVRLabs/aibadger-vscode)).
-
-## Agent Skills
-
-Badger includes the `handoff` and `badger-review` skills for continuing an AI
-coding session or requesting an independent review. See the [Agent Skills
-guide](skills/README.md) for installation, usage, and details.
 
 ## Quick Start
 
@@ -92,10 +87,25 @@ Full usage: [docs/usage.md](docs/usage.md)
 
 ## Offline Codebase Map
 
-Run `badger map` to generate a local, offline HTML map of your codebase.
-Explore folders and see where source lines are concentrated.
+<table>
+  <tr>
+    <td width="240">
+      <a href="https://pvrlabs.xyz/aibadger/codemap/">
+        <img src="docs/images/codemap-thumbnail.webp" alt="Treemap of AI Badger repository folders" width="240">
+      </a>
+    </td>
+    <td>
+      <p>Explore your codebase visually. Run <code>badger map</code> to generate an interactive, offline HTML map of your repository and see where source lines are concentrated.</p>
+      <p><a href="https://pvrlabs.xyz/aibadger/codemap/">Try the live demo →</a> · <a href="docs/codemap.md">Map your own repository</a></p>
+    </td>
+  </tr>
+</table>
 
-[Live demo](https://pvrlabs.xyz/aibadger/codemap/) · [Guide](docs/codemap.md)
+## Agent Skills
+
+Badger includes the `handoff` and `badger-review` skills for continuing an AI
+coding session or requesting an independent review. See the [Agent Skills
+guide](skills/README.md) for installation, usage, and details.
 
 ## Learn More
 

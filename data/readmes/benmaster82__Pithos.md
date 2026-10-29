@@ -5,7 +5,7 @@
 <h1 align="center">Pithos</h1>
 
 <p align="center">
-  <b>A dependency-free C inference engine for Liquid AI's LFM2 / LFM2.5 models.</b><br>
+  <b>A dependency-free C inference engine for Liquid AI's LFM2 / LFM2.5 / LFM3 models.</b><br>
   Terminal chat, an OpenAI-compatible server, a web agent and a terminal agent, all in one executable.
 </p>
 
@@ -17,6 +17,7 @@
 </p>
 
 <p align="center">
+  <a href="https://benmaster82.github.io/Pithos/">Website &amp; setup guide</a> ·
   <a href="#quick-start">Quick start</a> ·
   <a href="#screenshots">Screenshots</a> ·
   <a href="#results">Results</a> ·
@@ -33,8 +34,9 @@
 
 Pithos is an inference engine written from scratch in C11 with **no dependencies**: no external
 libraries at build time, only the operating system API (Win32 or POSIX). It runs GGUF models of
-Liquid AI's LFM2 / LFM2-MoE architecture and is tuned for `LFM2.5-24B-A2B-Q4_K_M.gguf`
-(24 billion parameters, about 2 billion active per token) on an ordinary laptop.
+Liquid AI's LFM2 / LFM2-MoE / LFM3 architectures and is tuned for `LFM2.5-24B-A2B-Q4_K_M.gguf`
+(24 billion parameters, about 2 billion active per token) on an ordinary laptop. The small
+[LFM3-1.7B](#lfm3-17b-small-and-fast) runs too, on the CPU, at about 20 tokens per second.
 
 **Pithos** is the engine and the server (in the myth, the *pithos* is Pandora's jar: it holds the
 model). **Pandora** is the agent in the web interface.
@@ -75,7 +77,9 @@ Both are real sessions with LFM2.5-24B-A2B on the reference laptop (i5-10500H, G
 ## Quick start
 
 1. **Get the model** (see [Downloading the model](#downloading-the-model) below).
-2. **Build.** On Windows run `build.cmd`; on Linux / macOS run `make` (see [Building](#building)).
+   On Linux, `bash build.sh --download-model` can handle both the build and this download.
+2. **Build.** On Windows run `build.cmd`; on Linux run `bash build.sh`; on macOS run `make`
+   (see [Building](#building)). You can compile before downloading the model.
 3. **Run.**
 
 ```
@@ -141,6 +145,26 @@ To check that the file is found and complete, run `build\pithos.exe -p "Hello"` 
 `build/pithos -p "Hello"`). The first lines report the model (`model: lfm2moe | 40 layers ...`).
 Pithos also rejects a truncated file and names the tensor that is missing.
 
+### LFM3-1.7B: small and fast
+[LiquidAI/LFM3-1.7B](https://huggingface.co/LiquidAI/LFM3-1.7B) is a 1.7-billion-parameter model
+that fits in 1.1 GB. It runs on the CPU (the GPU path covers MoE models), at about 20 tokens per
+second on the reference laptop, with the same chat, server, Pandora and terminal agent.
+
+| | |
+|---|---|
+| File | `LFM3-1.7B-Q4_K_M.gguf` from [LiquidAI/LFM3-1.7B-GGUF](https://huggingface.co/LiquidAI/LFM3-1.7B-GGUF) |
+| Size | 1,099,627,808 bytes (1.0 GiB) |
+| SHA-256 | `3793e1e6e2266919d6e015287221b41100175a98eddaba92e111aed3b05c93c4` |
+| Direct link | https://huggingface.co/LiquidAI/LFM3-1.7B-GGUF/resolve/main/LFM3-1.7B-Q4_K_M.gguf |
+
+Download it with the same commands as above (replace the file name and the URL), then pass it
+with `-m`:
+
+```
+build/pithos -m models/LFM3-1.7B-Q4_K_M.gguf -i
+build/pithos -m models/LFM3-1.7B-Q4_K_M.gguf --server --open
+```
+
 ## Results
 
 Reference machine: i5-10500H (6 cores, AVX2), 16 GB DDR4-2933, GTX 1650 Max-Q 4 GB, NVMe SSD.
@@ -188,7 +212,115 @@ machine's free RAM).
 otherwise MSVC (Visual Studio or Build Tools, found automatically). `build.cmd test` also builds
 the tests.
 
-**Linux / macOS / MinGW**: `make` (or `make NATIVE=1` to tune for the local CPU).
+### Linux / WSL
+
+Download and extract the source ZIP, or clone the repository if Git is installed:
+
+```bash
+git clone https://github.com/benmaster82/Pithos.git
+cd Pithos
+bash build.sh
+```
+
+On a fresh Ubuntu/Debian installation, install Git first with
+`sudo apt update && sudo apt install -y git`, or use the ZIP download instead.
+
+`build.sh` checks for GNU Make, a working C11 compiler, C development headers and
+system libraries, and `curl` for model downloads/web tools. If anything is missing,
+it shows the package commands and asks before installing prerequisites through
+`apt-get`, `dnf`, `pacman` or `zypper`. Installation needs administrator access;
+compilation runs as the user who launched the script. Run it as your normal user,
+not with `sudo bash build.sh`. When prerequisites are already installed, no package
+manager or administrator access is needed. On other distributions, install the
+listed prerequisites manually. Only the Ubuntu/WSL build has been verified here;
+other package-manager paths still need validation on their distributions.
+
+```bash
+bash build.sh --test             # build the C tests and run the shell tests
+bash build.sh --download-model   # also download/verify the reference 24B model
+bash build.sh --no-install       # build without installing anything (offline/CI)
+bash build.sh --yes --test       # allow missing-package installation without prompting
+bash build.sh --native --jobs 4  # optimize for this CPU; not for distributing binaries
+bash build.sh --help
+```
+
+The script works from another working directory and rebuilds existing objects to
+avoid reusing a build made with different compiler options. `CC=gcc` or `CC=clang`
+selects a compiler executable; the usual `CFLAGS` setting is also supported.
+`--yes` does not supply a sudo password: unattended setup needs root or existing
+passwordless/cached sudo access. No full system upgrade is requested; on Arch,
+keep the package database and system up to date using the normal distribution procedure.
+
+The output is **`build/pithos`**. No model, Python, OpenCL SDK or GPU driver is
+needed to compile. Model download is opt-in; the script does not install GPU drivers.
+Use `bash build.sh --download-model` (or combine it with `--test`) to fetch the
+13.5 GiB reference model into `models/`. The script pins the Hugging Face revision,
+checks free disk space, resumes interrupted transfers in a `.gguf.part` file, and
+verifies the exact size and SHA-256 before renaming it to `.gguf`. An existing valid
+model is verified and reused; an invalid existing model is preserved and reported
+as an error. If a partial download fails verification, move it aside or remove it
+before retrying. Interrupted downloads release their lock and keep partial data;
+after a crash/power loss, a stale `.download.lock` directory may need removal once
+you have confirmed no other download is running. `--no-install` prevents package
+installation; combine it with `--download-model` only when you do want network access.
+
+After [downloading the reference model](#downloading-the-model), try CPU inference:
+
+```bash
+./build/pithos --no-gpu -m models/LFM2.5-24B-A2B-Q4_K_M.gguf -p "Hello"
+./build/pithos --server --no-gpu  # web chat at http://127.0.0.1:8080
+```
+
+GPU acceleration is optional and requires a working OpenCL runtime/driver. In our
+WSL2 test, the CPU path passed; no OpenCL device was exposed, so GPU inference was
+not verified. Seeing the GPU in `nvidia-smi` alone does not establish OpenCL support.
+
+`--test` runs only the model-independent shell test, in a temporary folder. For
+numerical tests, use the reference **24B MoE** GGUF, not the smaller dense model:
+
+```bash
+./build/test_kernels models/LFM2.5-24B-A2B-Q4_K_M.gguf
+./build/test_gpu models/LFM2.5-24B-A2B-Q4_K_M.gguf
+```
+
+`test_gpu` may print `no GPU` and exit successfully: that is a skipped check.
+For a manual build, `make` still works; `make test` only builds the test binaries.
+Maintainers can check the setup/error-handling paths without changing system packages
+with `python3 tests/test_build_linux.py` (Python is needed only for this optional check).
+
+### Running on Linux
+
+From the Pithos folder, the model in `models/` is found automatically. Start the mode
+you need and use **Ctrl+C** to stop it:
+
+| Mode | Command |
+|---|---|
+| Interactive terminal chat | `./build/pithos` |
+| One answer, then exit | `./build/pithos -p "Hello, who are you?"` |
+| Web chat and OpenAI-compatible API | `./build/pithos --server` |
+| Web chat with shell/process tools available | `./build/pithos --server --shell` |
+| Terminal agent: approve each action | `./build/pithos --agent` |
+| Autonomous agent for one task | `./build/pithos --auto -p "Review this project"` |
+| Prompt/generation benchmark | `./build/pithos --bench` |
+| All command-line options | `./build/pithos --help` |
+
+With `--server`, open **http://127.0.0.1:8080** in your browser; the API base URL is
+`http://127.0.0.1:8080/v1`. Add `--no-gpu` to explicitly use the CPU, for example
+`./build/pithos --server --no-gpu`. Autonomous mode still asks before commands it
+recognizes as destructive; see [Terminal agent](#terminal-agent) for details.
+
+To work on another project, run the agent from that project's folder and give
+absolute paths to the executable and model (replace `/path/to/Pithos`):
+
+```bash
+cd /path/to/your-project
+/path/to/Pithos/build/pithos \
+  -m /path/to/Pithos/models/LFM2.5-24B-A2B-Q4_K_M.gguf --agent
+```
+
+### Manual builds and optional GPU
+
+On macOS / MinGW, use `make` (or `make NATIVE=1` to tune for the local CPU).
 
 The x86-64 binary contains both the portable scalar kernels and the AVX2/FMA/F16C ones and picks
 at runtime. On ARM64 the NEON kernels are used (with `dotprod` when available).
@@ -228,8 +360,10 @@ call arguments in the `f(arg='v')` format, and reasoning removed from past turns
 compares it with Jinja2 character by character and token by token.
 
 ### Agent mode
-LFM2.5-24B-A2B is trained to use tools. It writes calls as
-`<|tool_call_start|>[f(arg='v')]<|tool_call_end|>`, and can make more than one call per answer.
+LFM2.5-24B-A2B and LFM3 are trained to use tools, and can make more than one call per answer.
+LFM2.5 writes calls as `<|tool_call_start|>[f(arg='v')]<|tool_call_end|>`, LFM3 as
+`<tool_call><function=f><parameter=arg>v</parameter></function></tool_call>`; the server turns
+both into OpenAI `tool_calls`, so clients see no difference.
 
 - **Turning it on:** the **Agent** button under the text box enables tools. The model calls them,
   each call shows up as a card (arguments, result, time), and the loop goes on until the model answers.
@@ -436,10 +570,15 @@ each turn the state is rolled back to before the answer (KV cache + convolution 
 without its reasoning is processed again.
 
 ### Other models
-Any GGUF of the `lfm2` (dense) or `lfm2moe` architecture loads, as long as its tensors use the
-supported formats: Q4_K, Q5_K, Q6_K, Q8_0, Q4_0, F16, F32. BF16, Q2_K, Q3_K and IQ formats are not
-supported. GPU acceleration covers MoE models with Q4_K / Q6_K weights; dense models run on the CPU.
-Only LFM2.5-24B-A2B has been validated so far.
+Any GGUF of the `lfm2` (dense), `lfm2moe` or `lfm3` architecture loads, as long as its tensors use
+the supported formats: Q4_K, Q5_K, Q6_K, Q8_0, Q4_0, F16, F32. BF16, Q2_K, Q3_K and IQ formats are
+not supported. GPU acceleration covers MoE models with Q4_K / Q6_K weights; dense models run on the
+CPU. Validated so far: LFM2.5-24B-A2B and LFM3-1.7B.
+
+`lfm3` adds to LFM2: an RMSNorm on the output of every block before the residual sum (sandwich
+norm), a sigmoid gate per head on the attention output, sliding-window attention (256 tokens) on 5
+of the 11 attention layers, partial RoPE on the others, a convolution window of 7, and its own chat
+template (generation starts inside `<think>`, past turns keep an empty `<think></think>`).
 
 ## How it works
 
@@ -524,8 +663,12 @@ for each of the 30 convolution layers.
 ## Validation
 - `build\test_kernels.exe MODEL`: every kernel (scalar and AVX2) against the reference dequantization on real model rows (relative error ~1e-8).
 - `build\test_gpu.exe MODEL`: experts computed in VRAM against an f32 reference (f32: 3e-7; int8: ~9e-3, like the activation quantization on the CPU).
-- Tokenizer identical to `llama-tokenize` on texts with accents, numbers, spaces, CJK, emoji and special tokens.
+- Tokenizer identical to Hugging Face `tokenizers` (each model's `tokenizer.json`) and to
+  `llama-tokenize`, on texts with accents, numbers, spaces, code, CJK, emoji and special tokens.
 - Perplexity compared with `llama-perplexity` (table above).
+- LFM3-1.7B: perplexity against an independent PyTorch implementation written from the model's
+  `modeling_lfm3.py`, on the same dequantized weights: 4.45 vs 4.39 with 256-token windows, 3.65
+  vs 3.62 with 1024 (sliding window active). The gap is the int8 activations and the f16 KV cache.
 - `python tests/test_server.py` (with the server running): template against Jinja2, answers,
   streaming, prompt reuse across turns, tool calls, completions, stop strings, errors.
 - `python tests/versus.py [ROUNDS] [llama.cpp|llama.cpp-cuda]`: head-to-head with llama-server
@@ -552,11 +695,13 @@ for each of the 30 convolution layers.
 ## Limitations
 Planned improvements, in order of priority, are in [ROADMAP.md](ROADMAP.md).
 
-- Only the `lfm2` / `lfm2moe` architectures. Formats Q4_K, Q5_K, Q6_K, Q8_0, Q4_0, F16 and F32;
-  on the GPU only Q4_K and Q6_K.
+- Only the `lfm2` / `lfm2moe` / `lfm3` architectures. Formats Q4_K, Q5_K, Q6_K, Q8_0, Q4_0, F16
+  and F32; on the GPU only Q4_K and Q6_K, and only for MoE models (LFM3 runs on the CPU).
+- LFM3's sliding-window layers keep the whole KV cache like the others (simpler; a ring buffer
+  would save almost half of it at long contexts).
 - The NEON kernels and the GPU f32 path are written for ARM64/AMD/Intel, but have only been tested
-  on x86-64 and NVIDIA. The terminal agent's POSIX code (bash, process groups) is written for Linux
-  and macOS, but has only been run on Windows so far.
+  on x86-64 and NVIDIA. The POSIX shell/process tools have also passed tests on x86-64
+  Ubuntu 26.04 under WSL2; the macOS path remains unverified.
 - On Windows (WDDM) every queued command costs ~20 µs in the driver. With the dense layers on the
   GPU this leaves ~200 launches and one sync per MoE layer, about 21 ms per token on top of the experts. The
   current limit is computing the non-resident experts on the CPU (30–45 ms per token on the

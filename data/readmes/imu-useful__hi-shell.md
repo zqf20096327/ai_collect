@@ -2,7 +2,7 @@
 
 # 👋 hi-shell
 
-**A Material 3 Expressive desktop shell for Hyprland — with Claude AI built in.**
+**A Material 3 Expressive desktop shell for Hyprland — with AI built in.**
 
 Built on [Quickshell](https://quickshell.org). Colors from your wallpaper, animations everywhere, English and Russian.
 
@@ -30,14 +30,14 @@ Built on [Quickshell](https://quickshell.org). Colors from your wallpaper, anima
 | --- | --- |
 | 🧭 **Bar** | Configurable widgets (left / center / right), any screen edge, Hug / Float / Islands / M3 styles, hover popups for media, resources, weather, battery and updates, a live audio spectrum |
 | 🚀 **App launcher** | Apps and settings, plus prefixes: `=` calculator (a plain "12*(3+4)" or "10+5=" is answered too, without the prefix), `>` run a command, `<` keybinds, `:` emoji, `;` clipboard (images with a preview), `/` settings |
-| ✨ **Claude AI** | Quick palette (<kbd>Super</kbd>+<kbd>Y</kbd>) and a full chat in the left sidebar through the `claude` CLI: streamed answers, code blocks with copy buttons, model picker, token / cost usage, saved chats; or any [OpenRouter](https://openrouter.ai) model, the free ones included |
+| ✨ **AI** | Quick palette (<kbd>Super</kbd>+<kbd>Y</kbd>) and a full chat in the left sidebar: streamed answers, code blocks with copy buttons, model picker, token / cost usage, saved chats. Works with Claude (through the `claude` CLI) and other AI services: [OpenRouter](https://openrouter.ai) (the free models included), OpenAI, Gemini, Groq, DeepSeek, Mistral, a local Ollama, or any OpenAI-compatible server |
 | 🪟 **Overlays** | Workspace overview with a tile and icon per window (drag windows between workspaces), session screen, polkit dialog, region screenshot / OCR / recording (with system sound or the microphone), optional dock, rounded screen corners |
-| ⬅️ **Left sidebar** | Greeting, now playing with synced lyrics (and the cover blurred behind it, `appearance.coverBackdrop`, off in Settings → Interface), weather, Claude chat, translator, clipboard history with image thumbnails |
+| ⬅️ **Left sidebar** | Greeting, now playing with synced lyrics (and the cover blurred behind it, `appearance.coverBackdrop`, off in Settings → Interface), weather, AI chat, translator, clipboard history with image thumbnails |
 | 🎯 **Focus Mode** | Sessions with a minimal bar, Pomodoro cycles, blocked apps and sites, profiles, statistics and achievements |
 | ⏳ **Wait Mode** | A cover for the person while an AI works on the machine: a player or the wallpaper, keyboard and mouse shut out, no sleeping, Esc three times to exit; automation can still see and click what's underneath |
 | 🔋 **Power saving** | One switch turns off animations, blur, transparency, the visualizer and the dancing frame, and puts them back when it's turned off |
 | ➡️ **Right sidebar** | Quick toggles (Android-style pills or classic buttons, editable), volume / brightness / mic, Wi-Fi and Bluetooth pages, per-app volume, notification center, calendar, to-do, focus / stopwatch / countdown timers |
-| 🖼️ **Desktop** | Shape clock, big clock, weather, resources, calendar, media with lyrics, greeting, to-do, notes, world clock, timers, user card, image frame; audio visualizer; drag-to-place edit mode |
+| 🖼️ **Desktop** | Shape clock, big clock, weather, resources, calendar, media with lyrics (click or drag its progress bar to seek), greeting, to-do, notes, world clock, timers, user card, image frame; audio visualizer; drag-to-place edit mode |
 | 🎨 **Theming** | Wallpaper picker (local folders, Wallhaven, Unsplash), Material 3 palette from the wallpaper via matugen, scheme variants, light / dark / auto, shaped wallpaper frame |
 | ⚙️ **Settings** | Every option in a settings app, Hyprland displays / gaps / blur / input included, searchable from the launcher |
 | 🌍 **Languages** | English and Russian: the whole interface, dates and plural forms |
@@ -52,8 +52,8 @@ and the audio spectrum is drawn by a single shader.
 | :---: | :---: |
 | <img src="docs/screenshots/launcher.webp" alt="App launcher"> | <img src="docs/screenshots/sidebar-right.webp" alt="Right sidebar"> |
 | **App launcher** — apps, settings, calculator, emoji, clipboard | **Right sidebar** — quick toggles, sliders, notifications |
-| <img src="docs/screenshots/settings.webp" alt="Settings"> | <img src="docs/screenshots/claude.webp" alt="Claude palette"> |
-| **Settings** — every option, searchable from the launcher | **Claude palette** — ask anything, answers stream in |
+| <img src="docs/screenshots/settings.webp" alt="Settings"> | <img src="docs/screenshots/claude.webp" alt="AI palette"> |
+| **Settings** — every option, searchable from the launcher | **AI palette** — ask anything, answers stream in |
 | <img src="docs/screenshots/wallpapers.webp" alt="Wallpaper picker"> | <img src="docs/screenshots/display-mode.webp" alt="Display mode"> |
 | **Wallpapers** — local and online, scheme, mode, 28 frames | **Display mode** — duplicate or extend to a second screen |
 | <img src="docs/screenshots/welcome.webp" alt="Welcome"> | <img src="docs/screenshots/session.webp" alt="Session screen"> |
@@ -88,7 +88,7 @@ Arch Linux + Hyprland **0.56+** (the integration file uses the Lua config).
 | `libqalculate` (`qalc`) | launcher calculator |
 | `tesseract`, `tesseract-data-eng`, `tesseract-data-rus` (+ other languages), `wf-recorder` | region OCR and screen recording |
 | `hyprlock` | lock screen (hi-shell's Lock runs it) |
-| [Claude Code](https://docs.anthropic.com/en/docs/claude-code) | the AI palette (`claude` must be on `PATH` and signed in) |
+| [Claude Code](https://docs.anthropic.com/en/docs/claude-code) (optional) | the AI chat with Claude (`claude` must be on `PATH` and signed in); the other AI services need only their API key |
 
 ```sh
 paru -S quickshell-git matugen python ttf-material-symbols-variable-git
@@ -188,7 +188,7 @@ Stops the shell, removes the line from your Hyprland config and the link. Packag
 | Shortcut | Action |
 | --- | --- |
 | <kbd>Super</kbd> (tap) or <kbd>Super</kbd>+<kbd>Space</kbd> | App launcher |
-| <kbd>Super</kbd>+<kbd>Y</kbd> | Claude AI palette |
+| <kbd>Super</kbd>+<kbd>Y</kbd> | AI palette |
 | <kbd>Super</kbd>+<kbd>U</kbd> | Right sidebar (also the system icons on the bar) |
 | <kbd>Super</kbd>+<kbd>Escape</kbd> | Settings |
 | <kbd>Super</kbd>+<kbd>Tab</kbd> | Workspace overview |
@@ -271,7 +271,9 @@ Sections:
   `qs -c hi-shell ipc call coverMode toggle`), draw the `wallpaper`, show `widgets`, `monitor` for them (empty = first screen), `layout` (written by edit
   mode), `worldClocks` (IANA zones), `image` for the image frame, bottom `visualizer`
 - `ai.model`: claude CLI model alias (empty = CLI default, `opus`, `sonnet`, `haiku`; also the picker in the chat)
-- `ai.provider`: `claude` or `openrouter` (the button next to the history button in the chat switches it); `ai.openrouterKey`: your key from openrouter.ai/keys; `ai.openrouterModel`: the model id (the chat's picker lists OpenRouter's free models)
+- Autostart (Settings → Autostart): lists every plain `hl.exec_cmd("…")` line of your Hyprland files (any `.lua` under `~/.config/hypr`, inside `hl.on("hyprland.start", …)` or at the top level) and of `~/.config/hi-shell/exec.lua`, where the commands you add there go (loaded from the generated `~/.config/hi-shell/hyprland.lua`). A command can be changed, switched off (the line is commented out), deleted or run now; a file's first change keeps a copy as `<name>.backup-hi-shell-autostart`. Commands built from variables or spread over lines aren't listed; a file that is a symlink (NixOS, stow) or can't be written is shown but locked; Windows line endings and non-UTF-8 files are kept as they were; a mistake in a hand-edited `exec.lua` is reported by a notification and doesn't stop the rest of the config
+- `ai.enabled`: `false` turns the AI off (no AI tab in the left sidebar, no palette on Super+Y); the welcome screen asks, and Settings → General → AI chat → Enable AI switches it
+- `ai.provider`: `claude` (the CLI) or a provider id: `openrouter`, `openai`, `gemini`, `groq`, `deepseek`, `mistral`, `ollama`, `custom` (the first chip in the chat's header switches it, so do Settings → General → AI chat); `ai.keys`, `ai.models`, `ai.urls`: the API key, the chosen model and the server address per provider id (the model is picked from the provider's own list in the chat; `ollama` and `custom` take an address, `custom` any OpenAI-compatible `…/v1`)
 - `translator`: target language and the quick-pick list
 - `clipboard.watch`: start `wl-paste --watch cliphist store` with the shell (skipped if already running)
 - `weather`: `city` (or `latitude`/`longitude`; empty = locate by IP, which a VPN will skew), `imperial`, refresh interval
@@ -282,7 +284,7 @@ Sections:
 - `dock`: enabled (off by default), auto-hide, magnify, icon size, pinned app ids
 - `capture`: OCR languages (`auto` = every installed tesseract language, or e.g. `eng+rus`); `recordSound` for screen recordings: `off`, `system` (what plays through the speakers) or `mic` (also the buttons under the mode switcher in Record mode)
 - `appearance.screenCorners`: rounded screen corner radius (0 = off)
-- `appearance.contextMenu`: `material` (the shell's own Material You menus for the tray, default) or `standard` (the system's menus); also in Settings › Interface
+- `appearance.contextMenu`: `material` (the shell's own Material You menus for the tray, default), `caelestia` (the same menus in the look of [caelestia's shell](https://github.com/caelestia-dots/shell): compact pill rows, a Back pill under a submenu) or `standard` (the system's menus); also in Settings › Interface
 - `apps.terminal`: terminal for terminal apps and the system upgrade
 
 ## Terminal configs
@@ -439,8 +441,15 @@ with the active profile; `qs -c hi-shell ipc call focus start` does the same.
 hi-shell is a notification daemon. Only one daemon can run at a time: while another one
 (illogical-impulse's `qs -c ii`, mako, dunst, ...) is running, hi-shell waits and takes over once it exits.
 History is kept in `~/.local/state/hi-shell/notifications.json`.
-With no notifications, the notification center shows Chrome's T-rex: click it to play (Space / Up / click to jump, Down
-to duck; the best score is kept in `~/.local/state/hi-shell/dino.txt`).
+With no notifications, the notification center has a game to play, chosen in Settings → Interface → Sidebars → Game
+(`sidebar.game`: `dino`, `snake` or `minesweeper`):
+
+- **Dino**, Chrome's T-rex: click it to play (Space / Up / click to jump, Down to duck); the best score is kept in
+  `~/.local/state/hi-shell/dino.txt`.
+- **Snake**: click to start, arrows / WASD turn (or click beside the head to turn towards the click); walls and your tail
+  are deadly, it speeds up as it eats; the best score is in `snake.txt` there.
+- **Minesweeper**: left click opens a square (on a number with all its flags placed, it opens the rest around it), right
+  click flags; the first click is always safe, the face starts a new game; the best winning time is in `minesweeper.txt`.
 
 Popups appear in the corner next to the bar: click a popup for the app's default action (or to expand it),
 use its buttons or inline reply, swipe it sideways or press × to dismiss. Hovering pauses its timeout.
@@ -495,6 +504,7 @@ the same file.
 
 ## Troubleshooting
 
+- **A black desktop and no bar, while the panels and Settings open (and `qs -c hi-shell ipc call bar status` looks normal):** seen with Hyprland 0.57.0 on an old Intel GPU (HD Graphics 4000, which Hyprland runs on GLES 3.0): its layers on Background and Top drew nothing. Hyprland 0.56.2 worked; it wasn't the shell (an older shell version showed the same), the Vulkan / OpenGL choice or the blur. If you see the same, check with `hyprctl version` and try an older Hyprland, and report it to Hyprland.
 - **Logs:** run `qs -c hi-shell` in a terminal, or `qs -c hi-shell log` for a running instance.
 - **Rendering:** `run.sh` (what Hyprland starts) uses Vulkan when a Vulkan driver is installed, which costs less CPU
   per frame than OpenGL. To use OpenGL: `qs -c hi-shell kill; QSG_RHI_BACKEND=opengl ~/.config/quickshell/hi-shell/run.sh -d`.

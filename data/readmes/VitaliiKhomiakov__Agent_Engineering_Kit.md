@@ -1,45 +1,53 @@
-# Agent_Engineering_Kit
+# Agent Engineering Kit
 
-A reusable library of engineering rules, project instructions, and workflow
-templates for AI coding agents in Codex, Claude Code, and Cursor. Adopt the
-resources that match your stack in a new or existing project, covering architecture,
-coding practices, verification, and agent collaboration.
+Reusable engineering instructions for AI coding agents in Codex, Claude Code and
+Cursor. The goal is consistent architecture, implementation, testing and review,
+adapted to your project's technologies and local requirements.
 
-## Technologies
+## Integration
 
-- **Python:** FastAPI, Pydantic, SQLAlchemy, Psycopg.
-- **PHP:** Symfony, Doctrine.
-- **Go:** Gin.
-- **JavaScript / TypeScript:** Node.js, NestJS, React, Next.js, Angular, NgRx, TypeORM.
-- **Database and containers:** PostgreSQL, Docker.
-- **Game development:** Unreal Engine, including C++ and Blueprints; [Godot](standards/godot.md),
-  with GDScript and conditional C#/GDExtension guidance.
+Clone or download this library and open your project in an AI coding client.
+For a new project, open its intended parent workspace. The chat wizard analyzes
+an existing stack or asks about intended technologies, selects relevant instructions
+and guides you through reviewing and applying the changes.
 
-Select only the technologies your project uses; available profiles are listed in
-[the catalog](standards/catalog.toml).
+**Copy one of these example requests into your AI chat.** Replace `<framework-path>`
+with the library location and `<project-path>` with your target project path,
+both accessible to the agent. [SETUP.md](SETUP.md) is the entry point; when this
+library is your current workspace, you can use `SETUP.md` directly.
 
-## Adopt in your project
+**Example 1: AI request for an existing project**
 
-1. Clone or download this library to a location your agent can read.
-2. Open the target project in Codex, Claude Code, or Cursor. Replace the placeholders
-   below with the library path, project path, and selected client, then send the request:
+```text
+Read <framework-path>/SETUP.md and open
+the Agent Engineering Kit integration wizard for my existing project at <project-path>.
+Inspect its technologies and current instructions, then propose the relevant rules.
+Show the changes for my approval before applying them.
+```
 
-> Read `templates/skills/aek-integrate-project/SKILL.md` from the Agent_Engineering_Kit
-> source at `<framework-path>`. For the project at `<project-path>` using
-> `<client>`, prepare an import of the applicable rules. Show the proposed file
-> changes and conflict resolutions. Leave the target project untouched.
+**Example 2: AI request for a new project**
 
-3. Review the proposal, then ask the agent to apply it:
+```text
+Read <framework-path>/SETUP.md and open
+the Agent Engineering Kit integration wizard for a new project at <project-path>.
+Ask me about its goals, languages and frameworks, then prepare the relevant instructions.
+Show the proposed files and their contents for my approval before creating them.
+```
 
-> Apply the prepared Agent_Engineering_Kit import to `<project-path>` for `<client>`
-> within the reviewed scope. Preserve unrelated changes and existing model choices,
-> and follow the agreed checkpoints.
+After integration, give your agent normal development tasks in that project.
+See the [integration guide](MIGRATION.md) for updates, checks and recovery.
 
-The agent selects the relevant rules, adapts project instructions, checks the
-adopted references, and records the import. No package or global skill installation
-is required. Integration and model-setup skills run from the library source by
-default; they are not installed in the target's `.agents/skills`. That directory
-is created only for explicitly selected persistent skills, such as the optional
-design/review entries. Keep the library source accessible for future updates.
+## Supported instructions
 
-See [MIGRATION.md](MIGRATION.md) for the full procedure, updates, and recovery.
+| Area | Coverage |
+| --- | --- |
+| Engineering workflow | Architecture, code style, planning, testing, review, Git safety and agent collaboration |
+| Python | FastAPI, Pydantic, SQLAlchemy, Psycopg |
+| PHP | Symfony, Doctrine |
+| Go | Gin, Eino, LangChainGo |
+| JavaScript / TypeScript | Node.js, NestJS, React, Next.js, Angular, NgRx, TypeORM |
+| Database and containers | PostgreSQL, Docker |
+| RAG and LLM applications | [RAG](standards/rag.md), [tools and workflows](standards/llm-tools.md), LlamaIndex, Eino, LangChain/LangChainGo, LangGraph, Langfuse |
+| Game development | Unreal Engine (C++, Blueprints); Godot (GDScript, conditional C#/GDExtension guidance) |
+
+Choose only applicable profiles from the [instruction catalog](standards/catalog.md).

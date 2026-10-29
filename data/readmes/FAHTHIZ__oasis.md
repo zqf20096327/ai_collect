@@ -1,84 +1,102 @@
-# OASIS
-
 <p align="center">
-  <img src="assets/oasis-readme-banner.svg" alt="OASIS — Code. Automate. Flourish. — open-source coding agent and local-first developer workspace" width="100%" />
+  <img src="assets/oasis-readme-banner.svg" alt="OASIS — Code. Automate. Flourish." width="100%" />
 </p>
 
-<p align="center"><strong>Code. Automate. Flourish.</strong></p>
-<p align="center">An open-source AI coding agent and local-first developer workspace.</p>
-<p align="center">CLI · Browser workspace · Multi-provider tools · MCP · Skills · Subagents</p>
-
-<p align="center"><a href="https://fahthiz.github.io/oasis/">Public homepage ↗</a> · <a href="docs/INSTALL.md">Install OASIS</a> · <a href="docs/CURRENT_STATUS.md">Current status</a> · <a href="docs/USER_GUIDE.md">User guide</a> · <a href="docs/ARCHITECTURE.md">Architecture</a> · <a href="docs/ROADMAP.md">Roadmap</a> · <a href="docs/CLAUDE_CODE_GAP.md">Claude Code gap analysis</a></p>
+<p align="center"><strong>Inspect. Edit. Verify.</strong> An open-source coding agent for your own projects and your own choice of model.</p>
 
 <p align="center">
   <a href="https://github.com/FAHTHIZ/oasis/actions/workflows/quality.yml"><img src="https://github.com/FAHTHIZ/oasis/actions/workflows/quality.yml/badge.svg?branch=main" alt="Quality checks" /></a>
-  <a href="https://fahthiz.github.io/oasis/"><img src="https://img.shields.io/badge/homepage-OASIS-9BFF55?style=flat" alt="OASIS public homepage" /></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT license" /></a>
-  <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-22%2B-339933?logo=node.js&logoColor=white" alt="Node.js 22 or newer" /></a>
+  <img src="https://img.shields.io/badge/status-beta-9BFF55.svg?style=flat" alt="Beta software" />
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue.svg" alt="Apache License 2.0" /></a>
 </p>
 
-OASIS is an open-source AI coding agent and local-first developer workspace for multi-step software development. It can inspect a codebase, plan and apply focused changes, run approved shell commands and tests, and report what changed. Use the CLI coding assistant in your terminal or open the local browser workspace with `oasis web`. Connect supported model providers and extend the agent with Model Context Protocol (MCP) tools, reusable skills, hooks, bounded subagents, and a dependency-aware shared task board. See [Current status](docs/CURRENT_STATUS.md) for the audited implementation inventory, verified CI baseline, and explicit limitations.
+## Two ways to start
 
-## Get started
+### Download the app — no terminal needed
 
-**Requirements:** Node.js 22 or newer. Git is not required by the archive-based install; see [the install guide](docs/INSTALL.md) for native PTY prerequisites and current platform caveats.
+1. Open the [OASIS releases page](https://github.com/FAHTHIZ/oasis/releases/latest).
+2. Download the file for your computer:
+   - **Windows:** `.exe` installer
+   - **macOS:** `.dmg` disk image
+   - **Linux:** `.AppImage` or `.deb`
+3. Open it, choose a project folder, and follow the model setup.
 
-```bash
-npm install --global https://github.com/FAHTHIZ/oasis/archive/refs/heads/main.tar.gz
-oasis
+The installers are currently unsigned. Your operating system may show a warning. Before continuing, confirm the download came from the official OASIS release page. Signing and automatic updates are not yet configured.
+
+### Install from the terminal — macOS, Linux, or Android/Termux
+
+Paste this **single line** into your terminal. It downloads the installer, checks its SHA-256 against the published value below, and runs it only if the checksum matches.
+
+```sh
+sh -c 'set -eu; f=$(mktemp "${TMPDIR:-/tmp}/oasis-install.XXXXXX"); cleanup() { rm -f "$f"; }; trap cleanup EXIT; trap "exit 1" HUP INT TERM; curl -fsSL https://raw.githubusercontent.com/FAHTHIZ/oasis/main/scripts/install.sh -o "$f"; expected=0969eb1ed71b21158bfe0ba3fe7a13b1198299d84fcbb5f4873574de47c287e5; if command -v sha256sum >/dev/null 2>&1; then actual=$(sha256sum "$f"); actual=${actual%% *}; elif command -v shasum >/dev/null 2>&1; then actual=$(shasum -a 256 "$f"); actual=${actual%% *}; elif command -v openssl >/dev/null 2>&1; then actual=$(openssl dgst -sha256 "$f"); actual=${actual##*= }; else echo "No SHA-256 tool found; see docs/INSTALL.md"; rm -f "$f"; exit 1; fi; if [ "$actual" != "$expected" ]; then echo "Installer checksum mismatch. Do not run it."; rm -f "$f"; exit 1; fi; if sh "$f"; then code=0; else code=$?; fi; rm -f "$f"; exit "$code"'
 ```
 
-On first launch, follow the guided setup to choose a model provider. OASIS does not include a model or API subscription; your selected provider must support tool calling.
+The installer checks Node.js 22+, asks before installing OASIS or changing your shell startup file, uses immutable source revision `27efc103994c26cab2331bb7037167372ceaa787` (package version `0.3.0`) rather than moving `main`, then runs `oasis doctor` and opens first-run setup. It never requests administrator rights. If Node.js is missing, it offers Termux's `pkg install nodejs` or Homebrew on a Mac when available; otherwise it shows the official Node.js download page.
 
-## Try it
+**Published installer SHA-256:** `0969eb1ed71b21158bfe0ba3fe7a13b1198299d84fcbb5f4873574de47c287e5`
 
-From the project you want OASIS to work on:
+For **Windows PowerShell**, paste this one line. It checks the downloaded script's hash before running it:
 
-```bash
-cd /path/to/your/project
-oasis "Inspect this project and identify the next useful improvement"
+```powershell
+$p=Join-Path $env:TEMP ('oasis-install-' + [guid]::NewGuid().ToString('N') + '.ps1'); try { Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/FAHTHIZ/oasis/main/scripts/install.ps1' -OutFile $p; $expected='920e1c647c905977afc308ee9c72f8a9cac2f173c279460fa0ca35505f97efd3'; $actual=(Get-FileHash $p -Algorithm SHA256).Hash.ToLowerInvariant(); if($actual -ne $expected){Remove-Item $p -Force; throw 'Installer checksum mismatch. Do not run it.'}; & $p; $code=$LASTEXITCODE } finally { Remove-Item $p -Force -ErrorAction SilentlyContinue }; if ($null -ne $code) { exit $code }
 ```
 
-For a more direct example:
+**Published Windows installer SHA-256:** `920e1c647c905977afc308ee9c72f8a9cac2f173c279460fa0ca35505f97efd3`
 
-```bash
-oasis "Find the bug in the task filter, fix it, and run the relevant tests"
-```
+If the check fails, stop and do not run the script. Read the [installation guide](docs/INSTALL.md) or the [Android/Termux guide](docs/TERMUX.md).
 
-To use the browser interface, run `oasis web` in that project and open the local address printed in the terminal. Check your provider with `oasis doctor --test-provider`.
+## What is OASIS?
 
-## What’s included
+OASIS is an open-source, local-first AI coding agent. It helps inspect a codebase, plan focused edits, make approved changes, run checks, and explain what changed. Bring a supported model/provider of your choice; OASIS does not include a model or paid subscription.
 
-| Area | What it does |
-| --- | --- |
-| **Terminal** | A fast interactive editor with history search, Tab completion for commands and `@files`, Shift+Tab permission modes, `!` shell mode, image paste, streaming Markdown and diffs, type-ahead, Esc to interrupt, vim mode, Ctrl+G external editor, Ctrl+S prompt stash, and rebindable keys in Claude Code's `keybindings.json` format. Interactive agent commands can use persistent PTY sessions with streamed output, input, resize, Ctrl+C and stop controls when the native `node-pty` component is available. Press `?` for shortcuts. |
-| **Workflows** | Dynamic workflows (Claude Code parity): the agent writes a JavaScript orchestration script and the `workflow` tool fans it out to many subagents with `agent`/`pipeline`/`parallel`/`phase`, schema-checked results, background runs, resume from saved results, `/workflows`, saved workflows as `/name` commands, the built-in `/deep-research`, and `ultracode` prompts. `/goal` keeps working until a condition is met, `/batch` runs parallel worktree subagents, `/simplify`, `/verify`, `/btw` side questions, `/subtask` forked background agents, `oasis --bg` / `/background` detached sessions (plus `oasis attach|logs|stop|respawn` and `--bg --exec` shell jobs), `--safe-mode` and `--restricted` starts, `oasis purge` local-data cleanup, `/advisor` second-model consults, `oasis import` from Codex/Gemini CLI/Cursor, `/insights` usage reports, a PowerShell tool, a Chrome browser tool (`--chrome`), `/schedule` in-session cron, and the bundled [Ponytail](https://github.com/DietrichGebert/ponytail) lean mode (`/ponytail`). |
-| **Coding agent** | Multi-step model/tool loops, workspace file operations, command approvals, file snapshots, checkpoints, rewind, sessions saved by default, and USD cost tracking with budget limits. |
-| **Model choice** | OpenAI Responses, Anthropic Messages, compatible endpoints, and supported cloud or local providers such as OpenRouter, Gemini, Ollama, Bedrock, Vertex, Microsoft Foundry, and compatible gateways. |
-| **Extensions and agents** | MCP integrations, reviewed capability bundles, portable Agent Skills, hooks, layered memory, custom commands, bounded subagents, and a session-local shared task board with dependencies, expiring claims/renewal, peer messaging, named teams, and bounded `dispatch_ready_tasks` waves in isolated worktrees. Dispatch is model-directed (not an autonomous scheduler), background workers still obey inherited permissions, and branches are not merged automatically. |
-| **Browser workspace** | A local projects/tasks/notes dashboard plus authenticated agent chat, visible tool activity, and approval prompts. |
-| **Automation and SDK** | Headless/JSON workflows for scripts and CI, a Node.js SDK, and optional delegation to an existing OpenHands server. |
+## Why OASIS
 
-## Safety and current limits
+- **Model choice:** supported cloud providers, compatible endpoints, OmniRoute, and local Ollama setups.
+- **Review before action:** approval prompts, file snapshots, and verification commands help you inspect changes rather than blindly trusting a completion message.
+- **Extensible:** MCP tools, skills, hooks, plugins, and bounded subagents add capabilities.
+- **Open source:** Apache-2.0 licence.
 
-OASIS uses workspace-bound file tools, secret-file exclusions, snapshots, and approval gates to reduce risk. Commands normally run with your operating-system permissions; the optional OS sandbox is disabled by default and currently targets Linux and macOS. These safeguards are not a guarantee that untrusted code is safe—review operations and use an isolated workspace for unfamiliar projects.
+We do not publish token-savings claims: there is no current, representative measurement that supports a number.
 
-VS Code, Cursor and Windsurf integrate via `oasis ide install` (in-editor chat panel, selection context, diff review, diagnostics). A `monitor` tool watches logs, CI or WebSockets in the background and wakes the agent on each event, and `--channels` lets MCP channel servers (Telegram, Discord, webhooks) push messages into a live session. Claude Code plugins and marketplaces work natively (`oasis plugin marketplace add anthropics/claude-code`, then `oasis plugin install NAME@claude-code-plugins`): commands, agents, skills, hooks, MCP and LSP servers, monitors, output styles, `bin/` tools, default agents and `userConfig` options all load. `/theme` reads Claude Code custom and plugin themes, and marketplace entries can come from relative paths, GitHub, git URLs, git subdirectories or npm packages. Some boundaries are intentional and documented: Windows sandbox/container isolation is not available; the browser now has a PTY-backed xterm.js terminal but cross-platform process cleanup still needs verification; and the browser dashboard’s projects/tasks/notes do not sync with the CLI workspace. The browser’s GitHub connection currently uses the host’s GitHub CLI login.
+## Limits to know
 
-## Documentation
+OASIS is in beta, with platform and release gaps remaining. Commands normally run with your user permissions. The optional OS sandbox is disabled by default and currently targets Linux and macOS; Windows isolation is not available. `node-pty` is optional, and its native terminal behavior is not guaranteed on Android/Termux. The desktop installers are unsigned, automatic desktop updates are not implemented, and the browser workspace does not sync projects/tasks/notes with the CLI. Approval prompts reduce risk; they are not a substitute for isolation. See [current status and limitations](docs/CURRENT_STATUS.md) and the [security audit](docs/SECURITY_RELIABILITY_AUDIT.md).
 
-[**Detailed user guide**](docs/USER_GUIDE.md) · [Install guide](docs/INSTALL.md) · [Architecture](docs/ARCHITECTURE.md) · [Roadmap](docs/ROADMAP.md) · [Compared with Claude Code](docs/CLAUDE_CODE_GAP.md) · [GitHub Action](docs/github-action.md) · [Contributing](CONTRIBUTING.md) · [Security policy](SECURITY.md)
+## A real demo is still needed
+
+The banner above is branding artwork, not a screen recording. A genuine 10–20 second recording of OASIS finding a bug, applying a fix, and running a verification command has not been captured yet. We will add it only after recording the real application.
+
+## How it was built
+
+This paragraph is intentionally left for the project owner to write in their own words. It should state which parts Fahim wrote, what AI tools helped with, and how the result was reviewed. We should not guess or invent authorship details.
+
+## Explore the project
+
+- [5-minute quickstart](docs/QUICKSTART.md)
+- [Installation guide](docs/INSTALL.md)
+- [Android/Termux guide](docs/TERMUX.md)
+- [Detailed user guide](docs/USER_GUIDE.md)
+- [Current status](docs/CURRENT_STATUS.md)
+- [Architecture](docs/ARCHITECTURE.md)
+- [Security and reliability audit](docs/SECURITY_RELIABILITY_AUDIT.md)
+- [Whole-codebase gap register](docs/WHOLE_CODEBASE_GAP_REGISTER.md)
+- [Roadmap](docs/ROADMAP.md)
+- [Contributing](CONTRIBUTING.md)
+- [Security policy](SECURITY.md)
 
 ## Development
 
-```bash
+Use Node.js 22 or newer:
+
+```sh
 git clone https://github.com/FAHTHIZ/oasis.git
 cd oasis
+npm install
 npm run check
 ```
 
-The last verified main-branch CI run (October 28, 2026) passed **328 Node tests**, all **21 evaluation fixtures**, Node.js 22/24/26 package/runtime checks, and the authenticated browser chat end-to-end smoke test. See [Current status](docs/CURRENT_STATUS.md) for the exact verification scope and remaining limitations. These checks are useful feedback, not a full security audit or a comparative coding-quality benchmark.
+The quality workflow tests Node.js 22, 24, and 26; runs portable security regressions on Ubuntu, macOS, and Windows; exercises a clean environment and the Linux PTY path; and runs browser end-to-end smoke checks. The new installer workflow exercises the pinned CLI installer on fresh Windows, macOS, and Linux runners. These checks are useful evidence, not a full security audit or a claim of complete platform parity.
 
-## License
+## Licence
 
-MIT — see [LICENSE](LICENSE).
+Apache License 2.0. See [LICENSE](LICENSE).

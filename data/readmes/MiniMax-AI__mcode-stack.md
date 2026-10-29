@@ -5,7 +5,7 @@
 <p align="center">
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
   <a href="https://github.com/MiniMax-AI/mcode-stack/actions/workflows/validate.yml"><img alt="validate" src="https://github.com/MiniMax-AI/mcode-stack/actions/workflows/validate.yml/badge.svg"></a>
-  <a href="stacks/ronny/skills/"><img alt="skills: 15" src="https://img.shields.io/badge/skills-15-ff7a59.svg"></a>
+  <a href="stacks/"><img alt="skills: stacks/" src="https://img.shields.io/badge/skills-stacks%2F-ff7a59.svg"></a>
   <a href="https://github.com/MiniMax-AI/minimax-code"><img alt="for MiniMax Code" src="https://img.shields.io/badge/for-MiniMax%20Code-5b6cff.svg"></a>
 </p>
 
@@ -26,9 +26,46 @@ checklist that installs straight into
 - [How it works](#how-it-works)
 - [Articles](#articles)
 - [Stacks](#stacks)
-- [Contribute your own stack](#contribute-your-own-stack)
+- [Contributing](#contributing)
 
 ## Quick start
+
+**Claude Code, one command.** The command adds this marketplace and installs
+a whole stack. In a shell:
+
+```bash
+claude plugin install ronny --marketplace MiniMax-AI/mcode-stack
+```
+
+Inside a Claude Code session:
+
+```bash
+/plugin install ronny --marketplace MiniMax-AI/mcode-stack
+```
+
+Use `jiachen` in place of `ronny` for that stack. From a clone of this
+repository, `scripts/install.sh` installs `ronny` (`scripts/install.sh jiachen`
+for that stack) with `claude` or `codex` when either is on `PATH`, and
+otherwise copies that stack's skills into `~/.agents/skills/`.
+
+Older Claude Code can add the marketplace first, then install:
+
+```bash
+/plugin marketplace add MiniMax-AI/mcode-stack
+/plugin install ronny@mcode-stack
+```
+
+**Codex.** Add the marketplace, then install from the Plugins Directory or the
+CLI:
+
+```bash
+codex plugin marketplace add MiniMax-AI/mcode-stack
+codex plugin add ronny@mcode-stack
+```
+
+Substitute `jiachen` the same way. To take a single skill instead of the
+plugin, copy that skill's folder into `~/.agents/skills/`. Codex and MiniMax
+Code both scan that directory; the copy steps are below.
 
 **One skill, for all your projects:**
 
@@ -52,20 +89,13 @@ Copy the whole `stacks/ronny` directory into that directory, then open
 installed as soon as it is in that directory; press Space in the panel to
 enable or disable it.
 
-**Every stack, from the marketplace:**
+**Every stack, from the MiniMax Code marketplace:**
 
 This repository is also a plugin marketplace, so you can install a stack
 without copying files and pick up updates later. In MiniMax Code desktop, open
 **Plugins**, choose **Add marketplace** and enter `MiniMax-AI/mcode-stack`; each
 stack then shows up as one plugin you can install, update or uninstall. Adding
 marketplaces is rolling out gradually, so your version may not have it yet.
-
-The same catalog works in Claude Code:
-
-```bash
-/plugin marketplace add MiniMax-AI/mcode-stack
-/plugin install ronny@mcode-stack
-```
 
 <details>
 <summary>More install options</summary>
@@ -89,7 +119,7 @@ other agents that support skills.
 ## What's inside
 
 <p align="center">
-  <img src="docs/assets/skills-map.png" alt="The 15 skills in stacks/ronny, grouped by moment in the day" width="100%">
+  <img src="docs/assets/skills-map.png" alt="The skills in stacks/ronny, grouped by moment in the day, plus what stacks/jiachen adds" width="100%">
 </p>
 
 | When | Skill | What it does |
@@ -109,6 +139,14 @@ other agents that support skills.
 | Experiments & hotfixes | [`harness-experiment`](stacks/ronny/skills/harness-experiment/SKILL.md) | Small eval, one change at a time, repeated runs, look at flipped tasks |
 | | [`trajectory-review`](stacks/ronny/skills/trajectory-review/SKILL.md) | Look at how the agent got its result, not only whether it passed |
 | | [`engineering-emergency-changes`](stacks/ronny/skills/engineering-emergency-changes/SKILL.md) | Decide whether a hotfix is a real emergency and run expedited review safely |
+
+The table above is [`stacks/ronny`](stacks/ronny/).
+[`stacks/jiachen`](stacks/jiachen/) adds
+[`lifting-loops`](stacks/jiachen/skills/lifting-loops/SKILL.md), which finds
+the loops where you keep acting as a manual step for your agents and lifts you
+out of them, and [`making-content`](stacks/jiachen/skills/making-content/SKILL.md),
+which turns notes and material into Xiaohongshu image posts and short vertical
+videos.
 
 A stack usually has three kinds of things:
 
@@ -132,8 +170,9 @@ skills and checklists. They pair with our *MCode Engineering Notes* column:
 the article explains the idea, this repository makes it runnable.
 
 We also believe harness engineering is a craft that moves forward by
-experiment. Everything here will keep changing as we learn. Take it, change
-it, and send your version back.
+experiment. Everything here will keep changing as we learn. Take it and
+change it. To suggest a change here, open an issue; see
+[Contributing](#contributing).
 
 ## Articles
 
@@ -143,27 +182,32 @@ it, and send your version back.
 | 02 | [Too many tools will eat your context: from tool search to PTC](notes/02-tool-context.md) | `tool-budget-audit` |
 | 03 | [Keeping long sessions sharp: compaction vs. memory](notes/03-compaction-memory.md) | `long-session-check`, `handoff-doc` |
 | 04 | [How long should one bash command wait: from foreground blocking to background tasks](notes/04-bash-background.md) | `long-command-check` |
-| 06 | [The hidden tax on every turn: what an agent puts into context](notes/06-context-tax.md) *(upcoming)* | `context-tax-audit` |
+| 05 | [One small field can break the whole prefix cache](notes/05-prefix-cache.md) | `context-tax-audit` |
 
 ## Stacks
 
 ```text
 stacks/ronny/               Ronny's stack (MiniMax Code R&D lead), the first and most complete one
 stacks/jiachen/             Jiachen's stack: getting out of the agent loop, and turning notes into posts and videos
-stacks/<name>/              Other team members' stacks (on the way)
+stacks/<name>/              One directory per team member; teammates are welcome to add theirs
 notes/                      Which runnable piece goes with each Engineering Notes article
-community/                  Stacks contributed by developers outside the team
-templates/stack-template/   Start here to write your own stack
+community/                  Stacks from outside the team, added by collaborators
+templates/stack-template/   Template for a new stack
 ```
 
 Every stack is also a MiniMax Code plugin package. See
-[`stacks/ronny`](stacks/ronny/) for its skills, checklists and
-[`WORKFLOW.md`](stacks/ronny/WORKFLOW.md).
+[`stacks/ronny`](stacks/ronny/) and [`stacks/jiachen`](stacks/jiachen/) for
+what each one contains.
 
-## Contribute your own stack
+## Contributing
 
-What we most want to see is how you actually work with MiniMax Code, or with
-any other agent, day to day.
+Issues and discussion are welcome. For now, pull requests for code,
+documentation, and stacks are accepted only from repository collaborators.
+If you are not a collaborator, [open an issue](https://github.com/MiniMax-AI/mcode-stack/issues/new/choose)
+to discuss first.
+
+We still want to hear how you work with MiniMax Code, or any other agent,
+day to day. Share that in an issue. Collaborators adding a stack:
 
 1. Copy `templates/stack-template/` to `community/<your-id>/`.
 2. Write a `WORKFLOW.md`: how you use the agent every day, what you hand to it
@@ -183,7 +227,7 @@ repository only holds workflows and skills, no MiniMax Code source code.
 
 ## License
 
-[MIT](LICENSE), except where a stack's `NOTICE.md` says otherwise. The six
+[MIT](LICENSE), except where a stack's `NOTICE.md` says otherwise. The
 `engineering-*` skills are adapted from Google Engineering Practices; the
 adapted material stays under CC-BY 3.0. See
 [`stacks/ronny/NOTICE.md`](stacks/ronny/NOTICE.md).

@@ -332,7 +332,7 @@ MoE/MLA 执行层和 4 GB 显存下的可控 offload，不是与 llama.cpp 比�
 - `tests/moe/` 新增 GGUF 索引、截断拒绝、expert slice、Q4_K/Q5_0/Q8_0
   GPU 反量化、dense/MoE 层布局、CPU MLP fallback、per-expert fused 和
   grouped MoE kernel 对照测试；
-- 全套测试：**103 passed**；
+- 全套测试：**113 passed**；
 - 新增文章：
   `docs/ARTICLE_9_DEEPSEEK_V2_LITE_MOE_CPU_GPU_OFFLOAD.md`；
 - 结构化结果：
@@ -354,7 +354,7 @@ MoE/MLA 执行层和 4 GB 显存下的可控 offload，不是与 llama.cpp 比�
   `docs/results/deepseek_v2_lite_q4km_moe_decode_prefetch.json`（decode prefetch）、
   `docs/results/deepseek_v2_lite_q4km_moe_decode_predictive.json`（预测式 prefetch）；
 - PyPI 独立库：`pypi/deepinfer-sm86/`；PyPI 已发布 `0.1.0`，
-  本地 ECS `0.2.0` wheel/sdist 已构建但尚未上传；
+  ECS `0.2.0` 已于 PyPI 发布（`pip install deepinfer-sm86==0.2.0`）；
 - 已知边界：
   - paged scheduler 已接入 chunked prefill / batched decode / KV 预算，但
     DeepSeek 暂不支持 prefill/decode stream overlap；
@@ -496,7 +496,7 @@ pypi/deepinfer-sm86/dist/SHA256SUMS
 安装方式：
 
 ```powershell
-# PyPI 当前已发布版本（不含 ECS 0.2）
+# PyPI 已发布版本
 pip install deepinfer-sm86==0.1.0
 # ECS 0.2 本地 wheel
 pip install .\pypi\deepinfer-sm86\dist\deepinfer_sm86-0.2.0-py3-none-any.whl
@@ -531,6 +531,15 @@ Wheel 已在隔离 target 中验证：
 python -m twine upload dist/*
 ```
 
+### 6.2.1 ECS 二卡定版范围
+
+二卡形态（1 协调 + 1 远端 expert worker）是当前**受支持的配置**，范围、实测数据、
+未验证项和升级路径都写在 `docs/ECS_TWO_GPU_RELEASE.md`。
+
+一句话结论：能跑、可复现、token 精确，**不是吞吐机器**——单个远端 worker 串行服务
+所有 expert chunk，超过饱和点再加请求只换来延迟。多卡版本（worker 池化、激活分片、
+collective all-to-all、in-flight 续跑）单列在升级路径里，未计入定版。
+
 ### 6.3 ECS：Expert Coordination System
 
 ECS 是这一轮新增的控制面/数据面分层：
@@ -539,11 +548,11 @@ ECS 是这一轮新增的控制面/数据面分层：
 - 控制面：CPU 侧 `ECSController` + C++ `ecs_core.cpp` 负责 heat、LRU、
   tier placement 和 victim selection；
 - 存储层：L1 GPU packed expert cache、L2 packed CPU cache、L3 GGUF/NVMe
-  文件读取；
-- 批处理：C++ `ecs_plan_chunks` 和现有 paged scheduler 共同完成
-  expert/token chunk packing；
-- 多设备：`ECSRouter` 生成 device-addressed `ExpertPacket`，提供
-  `SimulatedAllToAll` 和可选 `TorchCollectiveAllToAll`。
+  文件读取；C++ victim 现在通过真实回调释放 GPU/CPU tensor；
+- 批处理：C++ `ecs_plan_chunks` 已接入 runtime 的 expert chunk 切分；
+- 多设备：`ECSRouter` 按 queue depth/KV pressure 选设备，支持 hot expert
+  token split；提供模拟 all-to-all、重试/reroute 和可选 torch collective；
+- 状态：ECS heat profile 可持久化；支持 Prometheus text snapshot。
 
 模块：
 
@@ -558,23 +567,203 @@ deepinfer/ecs/ecs_core.cpp     CPU policy core
 
 ```powershell
 python scripts/smoke_deepseek_v2_lite_moe.py `
-  --ecs --ecs-l1-mb 32 --ecs-l2-mb 0 `
+  --ecs --ecs-l1-mb 128 --ecs-l2-mb 512 `
+  --ecs-chunk-max-tokens 128 `
+  --ecs-profile E:\DeepInfer-MoE
+esults\ecs_profile.json `
   --cpu-experts-per-layer 1 --cpu-expert-layers 2 ...
 ```
 
-实测 smoke：
+实测 cache/profile smoke：
 
 - ECS backend：**cpp**；
 - 输出正确：`5-2=3`；
-- decode 2.36 tok/s（该 smoke 启用了 cold-expert split，不是默认 2.7）；
-- ECS 记录了 3642 次 L3 read、1908 个 placement entries；
+- L1 实际占用约 125 MiB / 128 MiB，L2 约 510 MiB / 512 MiB；
+- `evictions=3048`、`chunk_plans=234`、`l1_hits=1470`、`l2_hits=1722`；
+- ECS heat profile 已成功写盘并可由单测 load；
+- decode 1.42 tok/s（启用了 GPU/CPU cache + cold split，不代表默认路径）；
 - 默认 `--ecs` 关闭，不改变原 GPU 路径。
 
 需要明确：本机只有一张 RTX 3050，因此 **真实 8 卡 P100 / All-to-All 未实机验证**；
 多设备部分目前是 device abstraction + simulated transport + torch distributed
 adapter。ECS 的 Level 2 仍需要多卡硬件和 NCCL/Gloo 环境才能验收。
 
-结果文件：`docs/results/deepseek_v2_lite_q4km_moe_ecs_smoke.json`。
+结果文件：
+`docs/results/deepseek_v2_lite_q4km_moe_ecs_smoke.json`、
+`docs/results/deepseek_v2_lite_q4km_moe_ecs_cache_profile.json`。
+
+#### 双卡 RTX 3080 Ti 实机验证
+
+在临时双卡机（2×RTX 3080 Ti 12GB、440GB RAM、Ubuntu 22.04、
+PyTorch 2.5.1+cu121、CuPy 14.2）上完成了真实多设备验证：
+
+| 项目 | 结果 |
+|---|---:|
+| 单卡 DeepSeek-V2-Lite Q4_K_M | 4.20 tok/s |
+| 单卡 prefill / peak | 0.90 s / 2.20 GiB |
+| 两层 pipeline（0–12 / 13–26） | 4.76 tok/s |
+| pipeline token parity | 完全一致 |
+| 双 runtime worker pool | 两请求并发，分别落到 GPU0/GPU1 |
+| NCCL ExpertPacket all-to-all | rank1 收到 2 个跨卡包 |
+| hot expert 7 token shard | 2/2 跨卡 |
+| 单模型 expert sharding | GPU0/GPU1 1416/1415 expert dispatches |
+| expert sharding token parity | 与单卡完全一致 |
+| NCCL expert-parallel async | 4.90 tok/s（per-chunk） |
+| NCCL hybrid | 4.71 tok/s，prefill 1.74 s |
+| remote worker peak | 50.4 MiB hybrid（不加载完整模型） |
+
+真实执行路径包括：
+
+- `cpp` ECS core 在 Linux 上编译；
+- `TorchCollectiveAllToAll` + NCCL 真实跨卡包交换；
+- 两个 GPU 上各一个 DeepSeek runtime 的 queue-depth worker pool；
+- 跨 GPU layer pipeline：GPU0 做 embedding+前 13 层，GPU1 做后 14 层
+  + norm + LM head，输出 token 与单卡完全一致。
+
+现在单模型 routed experts 也已按 ECS route placement 分片到两张卡：
+每个 expert chunk 按 owner 拆分，在 owner GPU 上执行 grouped MoE，
+再回到协调 GPU。输出 token 与单卡完全一致，GPU0/GPU1 分别承担
+1416/1415 次 expert dispatch。代价是每 chunk 有跨 PCIe 的 activation/output
+拷贝，所以 decode 3.25 tok/s，暂时慢于单卡 4.20 tok/s。
+
+进一步把 in-model activation exchange 改为 NCCL：rank0 保留 attention /
+shared experts / LM head，rank1 只加载 routed expert bytes。随后把 remote
+request 改成 `isend/irecv` 异步：先提交 remote expert chunk，再计算 local
+expert chunk，最后等待 remote output。实测输出 token 与单卡完全一致，
+294 个 remote expert requests，rank1 peak 仅 37.7 MiB。
+
+| 路径 | Prefill | Decode |
+|---|---:|---:|
+| 单卡 | 0.90 s | 4.20 tok/s |
+| 阻塞 NCCL expert | 2.62 s | 3.44 tok/s |
+| 异步 NCCL per-chunk | 2.02 s | **4.90 tok/s** |
+| 异步 NCCL hybrid | **1.74 s** | 4.71 tok/s |
+
+Hybrid 模式在 prefill 时按层批量提交 remote expert group，decode 时
+保留 per-chunk 异步路径。45-token long-context 也保持 token parity，
+但 per-chunk decode 4.28 tok/s，略低于单卡4.50 tok/s。
+
+Expert ownership 仍以 50/50 最优：把 67% expert 放到 rank1 会使
+prefill 退化到 7.79 s、decode 2.74 tok/s，因为 rank1 还是单 executor。
+
+新增 `NCCLRequestService`：支持并发提交、队列深度/active/completed
+指标和 heartbeat 文件监控。2 个并发提交全部完成，queue depth=0、
+failed=0，heartbeat age 0.44 s。但 coordinator 仍然一次执行一个请求，
+所以这是服务层并发提交，不是 continuous batching。
+
+新增 supervisor：监控 rank 退出和 heartbeat，rank1 崩溃时杀掉并重启
+两个 rank，重新加载模型后重试整个请求。故障注入 `worker_exit_42` 后
+第2次尝试成功，输出 token 正确，heartbeat healthy。它恢复的是整个请求，
+不是 in-flight KV/cache 续跑。
+
+新增 `generate_batch()`：多个 prompt 共享一次 prefill/decode batch。
+
+| Batch | Prefill | Aggregate decode | Speedup vs 单卡 |
+|---:|---:|---:|---:|
+| 2 | 1.81 s | 6.32 tok/s | 1.50× |
+| 4 | 1.95 s | 16.60 tok/s | 3.95× |
+| 8 | 1.89 s | **25.90 tok/s** | **6.17×** |
+
+Batch8 的 `5-2` token 与单卡完全一致；部分重复 prompt 的空格渲染会变化，
+但语义正确。这是 fixed-size batch，不是 continuous batching。
+
+新增 `continuous_batching.py`：4 个 staggered 请求在运行中进入空闲 slot，
+完成后移除 KV row，新请求 append 到 live cache。4 个请求全部正确，
+heartbeat healthy。批量 admission prefill 把 remote requests 从478降到391，
+但 wall 仍约6.1s、aggregate decode约4.2 tok/s，低于 fixed batch；
+cache padding/selection 和 admission 同步仍是瓶颈。
+
+当前仍是 point-to-point request/reply，不是 collective all-to-all；
+in-flight 请求续跑和 collective all-to-all 仍待做。
+双卡机没有 P2P/NVLink。
+
+#### Paged KV slot allocator
+
+`continuous_batching.py` 的 dense slot cache 每次 admission 都要重排整批
+KV。新增 `paged_continuous_batching.py` 换成真正的 block 分配器：每个请求
+持有自己的 `block_ids`，按需一页页增长，decode 时只重建 `[batch, max_blocks]`
+block table，由 native paged MLA kernel 直接从 pool 读，行永远不搬。
+
+同机同 prompt 对照（双卡 3080 Ti，4 个 staggered 请求）：
+
+| 负载 | dense wall | paged wall | dense agg. | paged agg. |
+|---|---:|---:|---:|---:|
+| 4 prompt × 17 tok，8 new | 5.127 s | 5.133 s | 5.071 tok/s | 5.065 tok/s |
+| 8 prompt × 17 tok，16 new | 5.609 s | 5.657 s | 9.093 tok/s | 9.016 tok/s |
+| 4 prompt × 44 tok，8 new | 7.004 s | **5.965 s** | 3.855 tok/s | **4.526 tok/s** |
+
+结论（和之前的猜测不一样，如实记录）：
+
+- **paged 只在 KV 长的时候赢**：44-token prompt 下快 1.17×；
+- **17-token prompt 下两者无差别**，所以"cache padding/selection 是 4.2 tok/s
+  平台的瓶颈"这个假设在小规模上不成立，真正的差距在 admission 同步和
+  每个 iteration 只推进一步 decode；
+- batched admission prefill（6.37 s → 5.13 s）比 decode 侧省拷贝更重要；
+- 每次运行结束 `used_blocks=0`，pool 完整归还；
+- capacity=1 串行跑的 token 与单请求基线完全一致，batch 下才出现
+  `2 + 3 = 5` 的空格变体，dense 引擎同样如此。
+
+复现：`scripts/bench_ecs_paged_continuous_batch.py`；
+结果：`docs/results/ecs_paged_*.json`
+
+#### 前缀块共享 + admission 合并
+
+- **前缀复用**：把 prompt 按 block 切块做累积 hash，命中就 retain 最长前缀，
+  只对剩余后缀做前向（从真实位置开始，而不是从 0 重算）。复用到的 block
+  保持不可变——block 对齐的 prompt 不会把最后一块交出去，因为那一块还要
+  写入本行尾部。每次 admission 结束后把完整 prompt block 注册回 LRU。
+- **admission 合并**：调度循环改成先 decode 再 admission；空闲期加
+  `--admission-grace-ms` 窗口，把一串到达合并成一次 prefill。只有空闲时
+  才等——有活跃行时等待会拖死整批（开发中实测代价约 2.7 s）。
+
+4 个请求共享 89-token 前缀（可复用 5 个 16-token block）：
+
+| 配置 | wall | aggregate | 每请求 prefill |
+|---|---:|---:|---|
+| paged，无前缀缓存 | 8.359 s | 1.555 tok/s | 2.52 / 1.17 / 1.22 / 1.21 s |
+| paged + `--prefix-cache-blocks 64` | **6.151 s** | **2.114 tok/s** | 2.47 / **0.58 / 0.52 / 0.54** s |
+| dense slot 引擎，同 prompt | 6.299 s | 2.064 tok/s | 2.52 / 1.42 / 1.42 / 1.42 s |
+
+前缀复用把 wall 砍掉 26%，单请求 prefill 从 1.17 s 降到 0.55 s，追平 dense
+引擎。注意复用只在 `prefill_mode="paged"` 生效——batched dense prefill 从
+位置 0 写整行，无法从偏移开始。
+
+batch 8、0.15 s 间隔、每种配置两组配对重复：
+
+| 轮次 | dense | paged grace 0 | paged grace 300 ms |
+|---|---:|---:|---:|
+| 1 | 6.328 s / 8.059 t/s | 6.762 s / 7.543 t/s | 6.457 s / 7.898 t/s |
+| 2 | 5.830 s / 8.748 t/s | 6.090 s / 8.374 t/s | 5.961 s / 8.556 t/s |
+
+grace 窗口稳定赢 2–5%，但没有追平 dense；这台机器本身重复跑的波动已有约
+8%（同样配置 6.328 s vs 5.830 s），5% 以内不应当成真实差异。
+
+**还没解决的**：paged 引擎的 prefill 仍在主 stream 上，每次 admission 都会
+把正在 decode 的行卡住。17-token prompt 一次 prefill 约 0.86 s，这是剩下的
+结构性开销。
+
+#### prefill/decode overlap：做了，但被 expert transport 挡住
+
+- 先把 `GGUFExpertStore` 的 staging 改成按线程隔离（槽位计数器、pinned
+  buffer、copy event、copy stream 全部 per-thread）——双 forward 并发时原来
+  会互相覆盖仍在读的 slot。
+- 再实现 `--overlap-prefill`：admission 放到独立线程 + 独立 CUDA stream，
+  decode 继续跑，完成后用 `wait_stream` 跨流同步再并进活跃集。
+- **双卡 NCCL 上直接 SIGABRT**（NCCL watchdog，exit -6）：远端 expert
+  transport 是单生产者 request/reply，一个 worker 一次服务一个 chunk，两个
+  线程同时发消息就是协议违规。
+
+所以现在引擎直接拒绝这个组合（`remote_expert_client` 存在时抛
+`ValueError`）。结论：prefill/decode overlap 在这个架构上不是调度问题，需要
+
+1. 多路复用 transport（请求 id、乱序回包、多请求在飞），或
+2. 每个生产者 stream 一条独立通道，或
+3. 单一远端队列 + 单线程 drain。
+
+per-thread staging 是前提条件，已经就位并全量回归通过。
+
+复现与硬件细节：`docs/REMOTE_ECS_2X3080TI.md`  
+结果：`docs/results/deepseek_v2_lite_q4km_moe_ecs_2x3080ti.json`
 
 ### 7. Paged scheduler 接入
 
@@ -981,6 +1170,12 @@ lm_head           : 3-bit, group 128
 | paged / elastic KV | ✅ | block table、引用计数、OOM 隔离 |
 | prefix cache | ✅ | 完整 prompt block LRU 共享 |
 | continuous batching | ✅ | 可变 batch decode + chunked prefill 交替 |
+| paged KV slot allocator | ✅ | 每请求独立 block list、按需增长、行不重排；长上下文 1.17×，短上下文持平 |
+| 前缀块共享（paged 引擎） | ✅ | block hash 精确匹配 + retain/LRU；89-token 共享前缀 wall −26%、prefill −53%；仅 paged prefill 模式 |
+| admission 合并 / grace 窗口 | ✅ | 空闲期合并到达，先 decode 后 admit；+2–5%，未追平 dense |
+| 传输后端抽象 | ✅ | `ExpertTransport` 协议 + `UnifiedMemoryTransport`（零拷贝）+ `StagedTransport`；调度器不再硬编码"必须拷贝"；尚无统一内存硬件可验证 |
+| expert worker pool | 🧪 | `PooledExpertClient` 分发器已有单测；无 ≥3 卡环境，**未接真流量**；不属于二卡定版范围 |
+| prefill/decode overlap | ❌ | 已实现 per-thread staging + 独立 stream；NCCL expert transport 单生产者，双卡上 SIGABRT，引擎显式拒绝 |
 | prefill/decode stream overlap | ✅ | 双 CUDA stream launch；4 GB 带宽受限，收益按场景测量 |
 | tiled W4/W3 prefill GEMM | ✅ | 32×64 CTA tile，shared-memory 权重量化 tile |
 | KV memory budget | ✅ | 启动预算、block 预留、admission/runtime OOM 隔离 |
@@ -1002,7 +1197,7 @@ lm_head           : 3-bit, group 128
 | GPTQ | ✅ | 2/4/8-bit、group quant、`g_idx`/desc_act -> W4A16 |
 | AWQ | ✅ | AutoAWQ GEMM 4-bit -> W4A16 |
 | GGUF | ✅ | 单文件 + Q4_0/Q4_K 等类型 -> W4A16 |
-| GGUF 直接流式执行 | ⚠️ | DeepSeek-V2-Lite Q4_K_M 已直跑；通用 dense 路径仍需转换 |
+| GGUF 直接流式执行 | ⚠️ | DeepSeek-V2-Lite Q4_K_M 已直跑；dense 侧 `from_gguf()` 已可把 GGUF 装进现成模型（张量映射 + 去量化 + tied embedding），尚未接进 cfg→model 的工厂函数 |
 | activation quant / SmoothQuant | ❌ | 仅权重量化 W4A16/W3A16 |
 | tensor / pipeline parallel | ❌ | 单 GPU |
 | 跨厂商后端 | ❌ | 当前 kernel 绑定 NVIDIA SM86 |
@@ -1582,7 +1777,7 @@ python scripts\export_sm86_kernels.py
 - 3-bit MLP/lm_head 是有损量化，短输出可读不代表与 BF16 等价；
 - 4 GB 上整体 Q4 只能作为质量/兼容实验，速度约 8 tokens/s；
 - GPTQ / AWQ 走**离线转换**为 W4A16；DeepSeek-V2-Lite Q4_K_M GGUF 可直接流式执行；
-- AWQ 仅支持 GEMM 布局；GGUF 暂不支持 split shards；
+- AWQ 仅支持 GEMM 布局；GGUF split shards 已支持（`gguf_split.open_gguf`，含缺片/重复片/分片总数校验）；
 - DeepSeek-V2-Lite MoE 已接入 paged scheduler 的 chunked prefill / batched
   decode / block KV 预算和 prefill/decode stream overlap；CuPy kernels 跟随
   torch stream，短 smoke 已验证 token parity，但 4 GB 带宽下 overlap 收益
@@ -1622,6 +1817,13 @@ python scripts\export_sm86_kernels.py
 
 ## 结果与文档
 
+- ECS 二卡推进全过程（paged KV / 前缀共享 / 三次押错）：`docs/ARTICLE_10_ECS_PAGED_KV_AND_TRANSPORT.md`
+- 项目介绍视频制作脚本（分镜 / 旁白 / 录制清单）：`docs/VIDEO_INTRO_SCRIPT.md`
+- ECS 论文（系统设计与否定性结果）：`docs/PAPER_ECS.md`（PDF：`docs/PAPER_ECS.pdf`，18 页）
+- 跨模型横向对比（带宽上界与达成率）：`docs/CROSS_MODEL_COMPARISON.md`
+- OLMoE 移植计划与耦合点清单：`docs/OLMOE_PORT_PLAN.md`
+- 中文博客：为什么把 MoE 装进手机这件事会先发生在软件上：`docs/BLOG_MOE_ON_PHONE.md`（PDF：`docs/BLOG_MOE_ON_PHONE.pdf`）
+  - 知乎编辑器友好版（无 Markdown 语法，表格已转列表）：`docs/BLOG_MOE_ON_PHONE_zhihu.txt`
 - 上篇（内核/量化）：`docs/ARTICLE_1_DEEPINFER_SM86_KERNEL.md`
 - 下篇（生产力/基准）：`docs/ARTICLE_2_DEEPINFER_SM86_PRODUCTIVITY.md`
 - 扩展篇（通用化/Llama）：`docs/ARTICLE_3_DEEPINFER_SM86_GENERIC.md`

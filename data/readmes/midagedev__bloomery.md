@@ -159,6 +159,9 @@ have. OpenAI clients take the base URL
 `http://localhost:8080/v1`, and Claude Code runs with `ANTHROPIC_BASE_URL=http://localhost:8080`. In Docker, the
 arguments after the image name go to `bloomery-serve`.
 
+An agent or a script starts the server by a model's name: [`docs/agents.md`](docs/agents.md) has the exact commands,
+the events to wait on and every exit code.
+
 Start with `--place` and the `BLOOMERY_*` variables unset: the load picks the cards and the split onto the CPU itself, and
 its plan line names what it picked. The file's architecture picks the seat (the model family's engine):
 
@@ -181,6 +184,13 @@ These seats serve a file or a checkpoint folder on disk (`-m PATH`):
 | `nemotron` | Nemotron 3 Nano 4B, Nemotron 3.5 Bolt 74B-A9B, Nemotron-3.5-Lightning 30B-A3B | the GGUF |
 | `solar2` | Solar-Open2-250B, two cards | the GGUF, with `--place bp` |
 | `raon1` | Raon-1-mini-preview | `raon-1-mini-preview-Q4_K_M.gguf`, its DFlash2 draft file beside it |
+
+The server has one slot unless `--parallel N` asks for N, so a second request waits for the first. Unset,
+`--ctx-size` gives each slot the largest context its plan holds; a set `--ctx-size` is the total the slots share,
+and one slot takes it whole. `--config FILE` reads the flags from one JSON file. A flag on the command line wins over
+the file's, and both win over the flag's `LLAMA_ARG_*` variable and the `BLOOMERY_*` lever it stands for. A request
+field the server does not know is ignored, as in llama-server, so a misspelled sampling field runs at its default. Which flags each seat takes, which setting wins and what a request's fields do:
+[`docs/serving.md`](docs/serving.md#settings).
 
 What each model needs in GPU memory, RAM and disk is in [`docs/models.md`](docs/models.md). In short: Qwen3-30B and
 Qwen3.6 run on a 24 GB card (or 12–16 GB, split onto the CPU by itself); Qwen3.8 wants 128 GB of RAM, GLM-5.3 and

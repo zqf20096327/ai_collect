@@ -12,7 +12,7 @@ MCP server, system prompt, or agent plugin can be weaponized — scored consiste
 mapped to the frameworks security teams already report against.
 
 [![Records](https://img.shields.io/badge/records-89-0f6e56?style=flat-square)](records/)
-[![Schema](https://img.shields.io/badge/schema-v1.1.0-0a3024?style=flat-square)](schema/ave-record-1.1.0.schema.json)
+[![Schema](https://img.shields.io/badge/schema-v1.3.0-0a3024?style=flat-square)](schema/ave-record-1.3.0.schema.json)
 [![AIVSS](https://img.shields.io/badge/AIVSS-v0.8-d4a017?style=flat-square)](https://aivss.owasp.org)
 [![OWASP MCP](https://img.shields.io/badge/OWASP-MCP%20Top%2010-0a3024?style=flat-square)](https://owasp.org)
 [![MITRE ATLAS](https://img.shields.io/badge/MITRE-ATLAS-4a3f9e?style=flat-square)](https://atlas.mitre.org)
@@ -141,7 +141,7 @@ skill file          ->   in CI / pre-commit   ->  before deploy
 | | |
 |---|---|
 | Total records | 89 |
-| Schema version | 1.1.0 |
+| Schema version | 1.3.0 |
 | AIVSS spec | v0.8 |
 | CRITICAL (>= 9.0) | 1 |
 | HIGH (7.0-8.9) | 20 |
@@ -345,47 +345,72 @@ full consumption patterns including air-gapped environments.
 
 ## Implementing AVE in your scanner
 
-Three patterns depending on your environment:
-
-**Pattern 1 — Runtime API** (cloud CI/CD, always-on internet)
-```python
-import httpx
-resp = httpx.get("https://api.aveproject.org/records/AVE-2026-00002")
-record = resp.json()  # full record: fingerprint, IOCs, remediation, frameworks
-```
-
-**Pattern 2 — Bundled offline** (air-gapped, regulated environments)
-```bash
-# Always current, no release tag required -- regenerated on every records/ change
-curl -L https://raw.githubusercontent.com/aveproject/ave/main/dist/ave-records-latest.json \
-  -o ave-records.json
-
-# Or pin to a frozen, point-in-time snapshot instead of tracking current:
-curl -L https://raw.githubusercontent.com/aveproject/ave/main/dist/ave-records-v1.1.0.json \
-  -o ave-records.json
-```
-A versioned snapshot is also attached to each [GitHub Release](https://github.com/aveproject/ave/releases)
-once one is cut; the raw paths above do not wait on that.
-
-**Pattern 3 — ID-only emission** (SIEM resolves downstream, scanner makes no network calls)
-```json
-{ "rule_id": "your-rule", "ave_id": "AVE-2026-00002", "severity": "HIGH" }
-```
-
-The minimum viable integration is adding one field — `ave_id` — to your
-existing finding output. See [docs/specs/ave-implementer-guide.md](docs/specs/ave-implementer-guide.md)
-for the full guide including decision table, code examples, and how to
-request a crosswalk for your scanner's rule IDs.
+Put `ave_id` on each finding and the catalog release on each run, and scan
+against a pinned, verified release rather than calling the API at scan time.
+The [implementer guide](docs/specs/ave-implementer-guide.md) covers which
+pattern fits your tool, verification, air-gapped use, output fields, status
+watching and the API.
 
 ---
 
-## Schema v1.1.0
+## Releases and pinning
+
+A catalog release is a [GitHub Release](https://github.com/aveproject/ave/releases)
+tagged `vX.Y.Z`: a fixed copy of the record set that does not change after it is
+published. Each one carries three files and a build provenance attestation for
+the first two:
+
+- `ave-records.json`: every published record.
+- `ave-records.manifest.json`: the release tag, `schema_version`, `record_count`,
+  the SHA-256 of `ave-records.json` and `source_commit`, the commit it was built from.
+- `SHA256SUMS`: checksums of both files.
+
+Pin a tag, then check what you downloaded:
+
+```bash
+TAG=v1.2.0
+for f in ave-records.json ave-records.manifest.json SHA256SUMS; do
+  curl -fsSLO "https://github.com/aveproject/ave/releases/download/$TAG/$f"
+done                                  # or: gh release download "$TAG" --repo aveproject/ave
+
+sha256sum -c SHA256SUMS
+git clone -q https://github.com/aveproject/ave ave-src
+python ave-src/scripts/check_release_assets.py . --tag "$TAG" --git-dir ave-src
+gh attestation verify ave-records.json --repo aveproject/ave
+gh attestation verify ave-records.manifest.json --repo aveproject/ave
+```
+
+`check_release_assets.py` confirms the checksums, that the manifest matches the
+records file, and that `source_commit` is the commit the tag points at.
+
+Three kinds of record file, and which is which:
+
+| File | What it is | Changes? |
+|---|---|---|
+| `ave-records.json` on release `vX.Y.Z` | The record set as of that catalog release | Never |
+| `dist/ave-records-latest.json` | The current record set | On every change to `records/` |
+| `dist/ave-records-v<schema>.json` | The first record set published for that schema version | Never (frozen) |
+
+The version in a release tag is the catalog's own; the version in a `dist/` file
+name is a schema version. Releases follow their own SemVer and cadence (a release
+when records have changed, at most monthly unless a correction is urgent); see
+[docs/specs/scaling-and-governance.md](docs/specs/scaling-and-governance.md),
+section 6. `v1.2.0` is the first release with these files. The older `v1.1.0`
+release has one asset, `ave-records-v1.1.0.json` (51 records on schema 1.0.0),
+which is a different file from `dist/ave-records-v1.1.0.json` (59 records on
+schema 1.1.0).
+
+---
+
+## Schema v1.3.0
 
 Records validate against
-[`schema/ave-record-1.1.0.schema.json`](schema/ave-record-1.1.0.schema.json).
+[`schema/ave-record-1.3.0.schema.json`](schema/ave-record-1.3.0.schema.json).
+Each record is checked against the versioned file named by its own `schema_version`;
+earlier versions stay published and frozen (`schema/frozen-artifacts.json`).
 
 Canonical `$id`:
-`https://aveproject.org/schema/ave-record-1.1.0.schema.json`
+`https://aveproject.org/schema/ave-record-1.3.0.schema.json`
 
 **15 required fields:**
 
@@ -402,7 +427,7 @@ references · researcher
 ```json
 {
   "ave_id": "AVE-2026-00001",
-  "schema_version": "1.1.0",
+  "schema_version": "1.3.0",
   "status": "active",
   "published": "2026-04-01T09:00:00Z",
   "title": "Metamorphic payload via external config fetch",
@@ -435,9 +460,17 @@ references · researcher
 
 `status: "draft"` records need only a reduced eight-field core (`ave_id`,
 `schema_version`, `status`, `title`, `description`, `attack_class`,
-`behavioral_fingerprint`, `references`) — the full 15-field required set
-above applies once `status` is `active` or `deprecated`. See
+`behavioral_fingerprint`, `references`); the full 15-field required set
+above applies to every other status. See
 [CONTRIBUTING.md](CONTRIBUTING.md) for the thin-submission path.
+
+**Lifecycle statuses.** An `active` record is current. A record found wrong or
+obsolete is never deleted and keeps its full content: it becomes `deprecated`,
+with a note explaining why; `merged`, with `merged_into` naming the surviving
+`active` record; or `rejected`, with a `rejection_reason` that links the public
+decision. Treat any status other than `active` as not active, and expect the
+list to grow (the compatibility rule in
+[the scaling spec, section 2](docs/specs/scaling-and-governance.md#2-schema-versioning-policy)).
 
 Full schema reference: [aveproject.org/schema.html](https://aveproject.org/schema.html)
 
@@ -489,7 +522,7 @@ const Ajv = require('ajv/dist/2020');
 const addFormats = require('ajv-formats');
 const ajv = new Ajv({ strict: false });
 addFormats(ajv);
-const schema = require('./schema/ave-record-1.1.0.schema.json');
+const schema = require('./schema/ave-record-1.3.0.schema.json');
 const record = require('./records/AVE-2026-NNNNN.json');
 const ok = ajv.validate(schema, record);
 if (!ok) console.error(ajv.errors); else console.log('valid');
@@ -570,21 +603,6 @@ See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for community standards.
 
 ---
 
-## Contributors
-
-<a href="https://github.com/aveproject/ave/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=aveproject/ave" />
-</a>
-
-This shows who has contributed, not what they did. See
-[CONTRIBUTORS.md](CONTRIBUTORS.md) for that — specific credit for
-specific work: astrogilda's crosswalk schema and pin-status design,
-predictor2718's independently-built cfgaudit crosswalk, mmaxjr's
-validator fix, Alex Greenshpun's attribution correction — not a name
-list.
-
----
-
 ## Related
 
 | | |
@@ -592,7 +610,7 @@ list.
 | [aveproject.org](https://aveproject.org) | Public registry and documentation |
 | [bawbel/scanner](https://github.com/bawbel/scanner) | Reference implementation |
 | [aveproject/ave-site](https://github.com/aveproject/ave-site) | Website source |
-| [api.aveproject.org](https://api.aveproject.org) | Reference API, live lookup by AVE ID (Pattern 1 above) |
+| [api.aveproject.org](https://api.aveproject.org) | Reference API, live lookup by AVE ID ([implementer guide](docs/specs/ave-implementer-guide.md#the-api)) |
 | [OWASP AIVSS v0.8](https://aivss.owasp.org) | Scoring specification |
 | [MITRE ATLAS](https://atlas.mitre.org) | AI threat technique catalog |
 | [OWASP MCP Top 10](https://owasp.org) | MCP attack surface framework |

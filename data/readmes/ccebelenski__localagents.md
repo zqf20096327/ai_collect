@@ -109,15 +109,16 @@ trips Claude Code's idle timeout, and the tool timeout itself defaults to about 
 
 The two minutes are Claude Code's default (`CLAUDE_CODE_MCP_AUTO_BACKGROUND_MS`, in
 milliseconds). MCP calls run one after another, so with several agents to launch that
-is two minutes each. Two ways round it, which combine:
+is two minutes each. Set the variable lower in the `env` block of your settings: `10000`
+backgrounds `run_agent` after ten seconds and leaves `list_models` and the other quick
+calls inline (a `local_complete` that runs long comes back as a notification instead).
+Then a swarm is one blocking `run_agent` per job, and every job delivers its own
+notification when it finishes, with nothing for Claude to re-arm.
 
-- Set the variable lower in the `env` block of your settings. `10000` backgrounds
-  `run_agent` after ten seconds and leaves `list_models` and the other quick calls
-  inline; a `local_complete` that runs long comes back as a notification instead.
-- For a swarm, start each job with `wait_s: 0` (returns the id at once) and make one
-  `wait_jobs` call for all of them: one wait, one notification, however many jobs.
-  `mode: "any"` returns on the first to finish, so Claude can review it and call again
-  on the rest.
+`wait_jobs` is the fallback for calls that cannot background: start each job with
+`wait_s: 0` and wait on all the ids in one call. Use it knowingly: a `mode: "any"` wait
+returns on the first finish and must be re-armed at once, or the remaining jobs finish
+with nobody watching (one coordinator lost six hours to that).
 
 If nothing suitable is running you'll be asked to start one:
 
@@ -221,10 +222,25 @@ local_jobs=$(timeout 2 localagents statusline 2>/dev/null)
 
 ### Job records
 
-Job records live in `~/.local/state/localagents/jobs/<job>/`: `transcript.txt`
-(what the agent said and did), `events.jsonl` (every SDK message), `requests.jsonl`
-(every backend request with timing, size and usage), and `requests_full.jsonl` if
-you turn on request dumping.
+Job records live in `~/.local/state/localagents/jobs/<job>/`: `task.txt` (the brief),
+`transcript.txt` (what the agent said and did), and `requests.jsonl` (every backend
+request with timing, size and usage). Together they come to about 100 KB per job.
+
+Two debugging files are off by default: `events.jsonl` (every SDK message, tool results
+included; it was 98% of a 6 GB state directory before it became opt-in) with
+`defaults.log_events: true` or `LOCALAGENTS_LOG_EVENTS=1`, and `requests_full.jsonl`
+(every request body) with `defaults.dump_requests: true` or `LOCALAGENTS_DUMP_REQUESTS=1`.
+
+**Retention.** Job directories older than `defaults.job_retention_days` (default 7, `0`
+disables) are deleted when a server starts and after every job finishes. The date in the
+directory name decides, and nothing that is not named like a job id is touched. The same
+pass is available by hand, which is also how you clean up a state directory that predates
+this rule:
+
+```bash
+localagents prune --dry-run   # list what would go
+localagents prune             # delete it; --days N overrides the default
+```
 
 ## Config: `models.yaml`
 
@@ -246,8 +262,14 @@ endpoints:
 - **endpoints** are places that serve `/v1/messages`. That's the whole config:
   what each one is serving is probed, never written down. Order is priority —
   with no model named, the first endpoint that is up and serving something wins.
-  `host` and `notes` are informational and shown in `list_models`; `env` adds
-  environment variables to sessions that run against that endpoint.
+  `backend` (`llama.cpp`, `vllm`, `strata`, `other`) selects how the window and occupancy
+  are probed; `host` and `notes` are informational and shown in `list_models`; `env` adds
+  environment variables to sessions that run against that endpoint. `api_key` is sent on
+  every call to that endpoint (as both `x-api-key` and `Authorization: Bearer`, so
+  llama.cpp's and vLLM's `--api-key` and Anthropic-shaped servers all accept it). It stays
+  in the MCP server: the delegated session is given the placeholder `local` and the shim
+  swaps the real key in, so an agent's `env` or Bash never sees it. Without a key the
+  placeholder is what goes out, which open servers ignore.
 - **Picking a model** is done per call. `run_agent(model=...)` takes a served id,
   a glob, or a fuzzy name (`qwen3.8-27b` finds `unsloth/Qwen3.8-27B-GGUF:UD-Q4_K_XL`);
   `endpoint=` pins a server. Both are only needed when more than one thing is up.
@@ -321,6 +343,16 @@ job. Give each slot 128k or more.
   tokens processed vs. cached, cache hit ratio, prompt and generation tok/s, and
   speculative-decode acceptance — the counters are server-wide, so overlapping jobs
   share the delta.
+- **strata**: a llama.cpp-compatible server; mark it `backend: strata`. Its `/props`,
+  `/slots` and `/v1/messages` have llama-server's shapes but `/slots` and `/metrics` are
+  always on and never advertised in `/props`, and `/metrics` is JSON (cumulative `totals`
+  plus a live queue depth) rather than Prometheus text, so the strata backend reads them
+  unconditionally: `list_models` shows `{total, busy, free}` plus `requests_waiting`, and
+  jobs get the same cache/throughput record as on llama.cpp. Marked `llama.cpp` it still
+  works (window from `/props`) but without occupancy or per-job metrics, and the probe
+  says so in a `hint`. strata counts `max_tokens` against the window instead of clamping
+  it, so it refuses a request earlier than llama-server would; the shim translates that
+  refusal, or set `"fit_max_tokens": true` in its `strata-<model>.json` to clamp.
 - **vLLM**: `vllm serve <model> --served-model-name <alias> --enable-auto-tool-choice
   --tool-call-parser <parser>`. The context window comes from `max_model_len` in
   `/v1/models`; occupancy (`requests_running`/`waiting`, `kv_cache_usage`) and the per-job

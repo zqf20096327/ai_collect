@@ -358,6 +358,18 @@ When the preview completes, the dual **QPixmap** comparison engine:
 
 ## 4. Changelog & Recent Upgrades
 
+### v2.0.1 — TensorRT 1.7.1, engine server downloads, 384px tier, MXF
+
+- **Faster VAE RT everywhere** - TensorRT runtime upgraded to **1.7.1** (Blackwell conv fix), a new **384 px engine tier** for 16 GB GPUs (batch <= 33), and ready-made engines are now **downloaded from our server automatically** instead of compiling on first render
+- **Image upscaling gets its own 1024 px / 1-frame engine** - VAE decode of a single image drops from ~9 s to ~1 s; engine downloads + tier selection are automatic
+- **Runtime bundled** - the TensorRT runtime ships inside the app; older installs get it automatically on the first VAE RT render
+- **Manage TensorRT Engines panel** (Settings -> VAE TILING) - installed/available engines with one-click download from the server
+- **MXF support** (ProRes MXF OP-1a) - drag & drop and folder mode accept .mxf directly
+- **Fixed** fresh-install startup crash ("No module named 'botocore'") caused by the Embedded Python runtime archive
+- **UX** - per-phase BATCH counter (e.g. BATCH 2/21), engine-manager dialog crash fix
+
+---
+
 ### v2.0.0 — VAE RT (TensorRT decode), Send Logs, In-app Update
 
 - **⚡ VAE RT (TensorRT decode)** — new toggle in *Model & Performance* (default **OFF**). Decodes the VAE through a TensorRT engine instead of PyTorch: **~1.4× faster VAE decode** (measured: 73.8 s → 52.4 s on a 162-frame 720p render; a 9-batch 654-frame render decoded at a steady 22.5 s/batch) and **~15–20 % faster renders overall**.

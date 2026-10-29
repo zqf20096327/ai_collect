@@ -5,9 +5,9 @@ AI-powered audio denoising. Upload noisy audio, get clean audio back.
 - **Model**: Custom-trained OpGAN (1D Operational GAN). UVR-DeNoise via [audio-separator](https://github.com/karaokenerds/python-audio-separator) is also available, selected with `DENOISER_ENGINE=uvr`
 - **Formats**: WAV, MP3, FLAC, OGG, M4A, AAC (max 50 MB, 10 minutes)
 - **Stack**: FastAPI + React/TypeScript, Docker-ready
-- **Tests**: 1,091 (backend 281, dataset 155, benchmark 493, gate policy 21, frontend 141)
+- **Tests**: backend, dataset, benchmark, gate policy and frontend suites, run by the [quality gate](#quality-gate)
 
-Live at [harmonyrestorer.online](https://harmonyrestorer.online).
+The frontend is at [harmonyrestorer.online](https://harmonyrestorer.online). The backend was not serving when checked on 2026-10-28.
 
 ## Quick Start
 
@@ -19,7 +19,11 @@ cd harmonyrestorer-v1
 cp backend/.env.example backend/.env
 cp frontend/.env.example frontend/.env.local
 
-uv sync --all-groups
+# Every dependency group and extra, the environment the quality gate checks
+uv sync --all-groups --all-extras
+
+# The trained OpGAN checkpoint, from its GitHub release, checked against its recorded digest
+uv run python scripts/fetch_checkpoint.py
 
 # Backend
 cd backend && uv run uvicorn app.main:app --reload --port 8000
@@ -28,7 +32,7 @@ cd backend && uv run uvicorn app.main:app --reload --port 8000
 cd frontend && npm ci && npm run dev
 ```
 
-> **Note:** To run the frontend against the live deployed backend instead of a local server, set `VITE_API_URL=https://harmonyrestorer-backend-468785563224.us-central1.run.app/api/v1` in `frontend/.env.local` and run only the frontend step.
+> **Note:** To run the frontend against the deployed backend instead of a local server (it was not serving when checked on 2026-10-28), set `VITE_API_URL=https://harmonyrestorer-backend-468785563224.us-central1.run.app/api/v1` in `frontend/.env.local` and run only the frontend step.
 
 ## API
 
@@ -109,6 +113,9 @@ frontend/src/
 cp backend/.env.example backend/.env
 cp frontend/.env.example frontend/.env.local
 
+# The backend image copies the checkpoint when it is built
+uv run python scripts/fetch_checkpoint.py
+
 docker compose up --build    # Start full stack
 docker compose down          # Stop
 ```
@@ -132,7 +139,8 @@ scripts/gate_frontend.sh
 The `dataset/` package builds training data for the OpGAN from public domain classical recordings.
 
 ```bash
-uv sync --extra dataset
+# The Quick Start already installs the dataset extra; this is the same command
+uv sync --all-groups --all-extras
 
 # Download from Internet Archive (Musopen collection)
 uv run python -m dataset.acquire --output data/raw/ --max-tracks 200 --formats .flac

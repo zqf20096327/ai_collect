@@ -249,7 +249,7 @@ Original paper material and attribution are preserved. For certain concrete tran
 
 Beyond command-specific blocks, the [paper workflow reading guide](plugins/stata-research-guard/skills/stata-replication-workflow/references/paper-workflow-reading.md) helps follow original paper files through the entire analysis.
 
-Build `0.4.0+codex.2026102902` extends the [short authoring comparisons](plugins/stata-research-guard/skills/stata-replication-workflow/references/code-examples.md) to keep reported quantities associated with their model, effective sample, weighting and definition. It distinguishes model-specific summaries from intentionally shared statistics without prescribing a sample policy or exporter. The unused custom SMCL converter and duplicate authoring-conventions reference have been removed. These remain on-demand illustrations, not measured evidence of skill effectiveness.
+The [short authoring comparisons](plugins/stata-research-guard/skills/stata-replication-workflow/references/code-examples.md) illustrate visible specifications, native predictions, result ownership and lifetime, and bounded edits. They distinguish model-specific summaries from intentionally shared statistics while preserving the requested sample policy. Read the relevant comparison when making an implementation choice.
 
 <details>
 <summary>Use the MCP tool directly</summary>

@@ -55,6 +55,12 @@ Strategic retreat — going back to understand when stuck — is a first-class c
 
 The agent may change the file only with a `conclusions_changed` event whose reason is `contradiction`, `new_category`, `flipped_recommendation` or `refinement`. If an iteration leaves it over 300 whitespace-separated words, or changed without such an event, the runner restores the previous version, logs `conclusions_rejected` with the reason and says why in the next prompt.
 
+## Commit before every eval
+
+Every eval is tied to a commit, so a metric can be reproduced from code. `ml-ralph eval` records the HEAD SHA as `sha` in `metrics.json` and in the runner's `eval` event. If tracked files outside `.ml-ralph/` have uncommitted changes, it exits non-zero with `commit your changes before eval` and scores nothing; the agent is told (in RALPH.md) to commit before each eval, and the runner never commits for it. Outside a git repository, eval warns, records `sha: null` and still scores.
+
+When the runner promotes a candidate it force-moves the git tag `ralph/best` to the promoted commit. A candidate is rejected if HEAD moved after its eval, since the score belongs to the older commit. If the tag cannot be moved, the runner logs `tag_failed` with the error and the promotion stands. The experiments panel shows the short SHA next to each verified metric, and `—` when the eval has none.
+
 ## When a run completes
 
 Only the runner ends a run; the agent's `<project_complete>` is ignored. After a promotion whose search score (from the runner's own eval and `metrics.json`) meets the contract's `success_threshold` in the contract's direction, the runner:
@@ -96,6 +102,25 @@ When a run ends (`run_complete`, `budget_exhausted`, `max_iterations`, `contract
 - **Claims**: one line per finding from `log.jsonl`, each ending in `[eval:<eval_id>]`. Every number comes from the runner's own `eval` events; an agent's `experiment` event is mentioned only as having been logged against a real eval, without its observations. `auditClaims` in `src/infrastructure/ralph/report.ts` (used by its tests) flags a claim whose eval id is not in the log or that carries a number other than that eval's recorded mean or std.
 
 If the report cannot be written, the runner logs `report_failed` and the run still ends. Ablations against the baseline are not part of the report yet.
+
+## Training jobs
+
+The agent starts training with `ml-ralph job start <cmd>` (RALPH.md tells it to). The command runs in its own process group; its pid, command, start time and log path (`.ml-ralph/runs/logs/<job id>.log`) go to `.ml-ralph/runs/active.json`, and the entry is removed when the job exits. When a run starts, entries whose pid is no longer alive are removed. A single argument runs through the shell; several arguments run the program directly.
+
+## Keyboard shortcuts
+
+| Key | Action |
+|-----|--------|
+| `Tab` | Switch between Planning, Monitor and Output |
+| `s` | Start or stop the agent |
+| `h` | Add a hint (while running) |
+| `j`/`k` | Scroll |
+| `↑`/`↓` | Monitor: select an active training job |
+| `t` | Monitor: stop the selected job (SIGTERM, then SIGKILL after 10 seconds); logs `job_stopped` and tells the agent's next prompt. Shows `job not running` (or the error) and drops the entry if the pid is gone or the kill fails |
+| `w` | Monitor: show the last 50 lines of the selected job's log, or `log not found` |
+| `q` | Quit |
+
+`t` and `w` show `no active job` when nothing is running.
 
 ## License
 

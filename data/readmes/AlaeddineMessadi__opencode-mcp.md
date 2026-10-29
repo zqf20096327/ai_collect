@@ -8,7 +8,7 @@
 
 opencode-mcp connects Claude, Cursor, VS Code, and other MCP clients to OpenCode's headless API. Ask questions, implement features, monitor background work, respond to questions and permissions, and review changes across projects.
 
-> Version 3.0.0 requires **Node.js 22 or newer**. Upgrading from 2.x? See the [migration notes](CHANGELOG.md#300---2026-09-16).
+> Version 3.x requires **Node.js 22 or newer** and works with **OpenCode 1.x** (tested with 1.18.31 and 1.19.3). Support for OpenCode 2.x is planned for 4.0. Upgrading from 2.x? See the [migration notes](CHANGELOG.md#300---2026-09-16).
 
 ## Quick Start
 
@@ -87,6 +87,9 @@ All settings are optional; an OpenCode server must already be running by default
 |---|---|
 | `OPENCODE_BASE_URL` | Server endpoint; defaults to `http://127.0.0.1:4096` |
 | `OPENCODE_SERVER_USERNAME`, `OPENCODE_SERVER_PASSWORD` | Optional server HTTP authentication |
+| `OPENCODE_SERVER_TOKEN` | Optional bearer token, e.g. an OpenChamber client token |
+| `OPENCODE_OPENCHAMBER_PASSWORD`, `OPENCODE_OPENCHAMBER_URL` | Sign in to an [OpenChamber](https://github.com/openchamber/openchamber)-fronted server |
+| `OPENCODE_OPENCHAMBER_CLIENT_ID` | Overrides the per-process OpenChamber client identifier; see [configuration](docs/configuration.md#openchamber) |
 | `OPENCODE_AUTO_SERVE` | Set to `true` to opt in to launching a local server |
 | `OPENCODE_DEFAULT_PROVIDER`, `OPENCODE_DEFAULT_MODEL` | Default prompt provider/model pair |
 | `OPENCODE_TOOL_PROFILE` | `full` (default) or a smaller `essential` tool set |

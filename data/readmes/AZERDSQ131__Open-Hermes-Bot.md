@@ -27,7 +27,7 @@ and the rules that decide which bot answers next.
 
 So the app runs no model and keeps no transcript: the conversation lives on the
 Hermes host, and closing the app, wiping the disk or moving to another machine
-changes nothing about it. The only secret on this machine is the Hermes API
+changes nothing about it. The only secret the app keeps is the Hermes API
 key, in the login Keychain.
 
 What the app owns is the room: the identity of the bots, the group protocol,
@@ -76,6 +76,13 @@ run?**
   *Read it from \<host\>* and the app reads `API_SERVER_KEY` from the host's
   `~/.hermes/.env` over the SSH it already uses. The key stays in the login
   Keychain, under the app's own entry.
+
+The key is also the switch. Hermes' API server is off by default: it starts
+when that file holds an `API_SERVER_KEY` of 16 characters or more, and the
+desktop app Hermes ships with never needs one. When there is no key to read,
+the setup says what the server is and gives the lines that make a key
+and restart the gateway, instead of an `API_SERVER_KEY not found` from the
+shell.
 
 Then it shakes hands: the app reaches Hermes, asks it which bots exist, and
 shows them. Nothing else is needed: no account, no cloud, no key typed by

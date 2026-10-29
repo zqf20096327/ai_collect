@@ -21,7 +21,7 @@ The CLI detects your Playwright version, generates the skill in the right place 
 
 ## Install
 
-Requires Node.js >= 20. In your Playwright project:
+Requires Node.js >= 20.12. In your Playwright project:
 
 ```bash
 npx wico-playwright-agent-skills init
@@ -255,6 +255,8 @@ tests/                      node:test suites
 2. Add or edit references under `skills/`; new `.md` files in `core/` and `templates/` are picked up automatically and linked from `skills/indexes/skill.md`
 3. Run `npm run lint && npm test`
 4. Open a pull request (CI runs lint, tests, build, package check, and end-to-end generation)
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the checks that apply to `skills/` and the commit style.
 
 ## License
 

@@ -8,7 +8,7 @@
 </p>
 
 ---
-**Dyva** is a dynamic proxy that routes to  [Ollama](https://ollama.com/), [vLLM](https://github.com/vllm-project/vllm), [LM Studio](https://lmstudio.ai/), [LocalAI](https://localai.io/), [SGLang](https://github.com/sgl-project/sglang), [KTransformers](https://github.com/kvcache-ai/ktransformers), [MLX](https://github.com/ml-explore/mlx), [llama.cpp](https://github.com/ggml-org/llama.cpp), [ds4 (DwarfStar)](https://github.com/antirez/ds4), [Fooocus](https://github.com/lllyasviel/Fooocus), [Strata](https://github.com/Niko1221/Strata), [A1111 (stable-diffusion-webui)](https://github.com/AUTOMATIC1111/stable-diffusion-webui), [Gradio](https://gradio.app/), and [ComfyUI](https://comfy.org) hosts from [Shodan](https://www.shodan.io/), [ZoomEye](https://www.zoomeye.org/), [Censys](https://search.censys.io/), [hunter.how](https://hunter.how/) and [FOFA](https://fofa.info/) with graceful failover, context-window scaling, and honeypot detection. 
+**Dyva** is a dynamic proxy that routes to  [Ollama](https://ollama.com/), [vLLM](https://github.com/vllm-project/vllm), [LM Studio](https://lmstudio.ai/), [LocalAI](https://localai.io/), [SGLang](https://github.com/sgl-project/sglang), [KTransformers](https://github.com/kvcache-ai/ktransformers), [MLX](https://github.com/ml-explore/mlx), [llama.cpp](https://github.com/ggml-org/llama.cpp), [ds4 (DwarfStar)](https://github.com/antirez/ds4), [Colibrì](https://github.com/JustVugg/colibri), [Fooocus](https://github.com/lllyasviel/Fooocus), [Strata](https://github.com/Niko1221/Strata), [A1111 (stable-diffusion-webui)](https://github.com/AUTOMATIC1111/stable-diffusion-webui), [Gradio](https://gradio.app/), and [ComfyUI](https://comfy.org) hosts from [Shodan](https://www.shodan.io/), [ZoomEye](https://www.zoomeye.org/), [Censys](https://search.censys.io/), [hunter.how](https://hunter.how/) and [FOFA](https://fofa.info/) with graceful failover, context-window scaling, and honeypot detection. 
 
 Capable of text generation, embeddings, systemone (JEV) decision models, vision, tool calling, image generation and editing, video generation, TTS, and music generation in a unified interface with state of the art, real-time tunable router providing sub 1s latency. 
 
@@ -22,10 +22,10 @@ uvx dyva
 
 Along with being so ollama-compatible the ollama client doesn't know the difference, dyva has a feature-rich front-end with chat that includes image generation, web search, sub-agents, documents, host drilldown and exploration, video generation, tts, stats, geomaps, and even graphically tweaking the routing algorithm.
 
-Memory footprint is under 1GB:
+Memory footprint is under 1GB. Has both light and dark mode:
 <div align="center">
-  <img width="45%" alt="ollama" src="https://github.com/user-attachments/assets/0d9d72bf-01b9-4349-a798-34cd944781d4" />
-  <img width="45%"  alt="algo" src="https://github.com/user-attachments/assets/ccd88d55-80cf-4c2e-960c-2d81eb11fb6c" />
+  <img width="45%" alt="sshot" src="https://github.com/user-attachments/assets/7e02db46-bf57-43fd-bacb-21c83c14d3ae" />
+  <img width="45%" alt="sshot" src="https://github.com/user-attachments/assets/5126f11a-5d08-4136-95cc-2cbfa37f49fa" />
 </div>
 
 ## Querying for models
@@ -52,6 +52,7 @@ That means [dyva](dyva) can sit on top of your own infrastructure as well as str
 
 There's also a [simple command line](docs/freeollama.md).
 
+
 #### Notes
 
 **Is this dangerous?**
@@ -64,7 +65,7 @@ Not really. Other dyva servers get flagged and excluded from the survey so this 
 
 **What about honeypots?**
 
-Yes! This one is real. Running dyva *might* get you blocked temporarily (~4 days) from numerous sites on CDNs such as Cloudflare. This includes IoT networks, imdb, huggingface, cloud storage, all kinds of stuff... even banks. The public surveys have honeypots with tripwires that get the srcaddr (you) put in some temporary ban pool with an expiry merely by a tcp_connect(). These are also called canaries in the literature.
+Yes! This one is real. Running dyva *might* get you blocked temporarily (~4 days) from numerous sites on CDNs such as Cloudflare. This includes IoT networks, imdb, huggingface, cloud storage, all kinds of stuff... even banks. The public surveys have honeypots with tripwires that get the `srcaddr` (you) put in some temporary ban pool with an expiry merely by a `tcp_connect()`. These are also called canaries in the literature.
 
 However, there's a rich testing and probing harness in dyva to block these machines based on an ensemble of techniques. Canary tripping is effectively solved and I haven't seen it in months. But of course, absence of evidence doesn't mean much.
 

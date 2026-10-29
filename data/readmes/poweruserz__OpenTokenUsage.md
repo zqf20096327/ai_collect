@@ -18,13 +18,11 @@ OpenTokenUsage lives in the notification area and shows how much of your AI codi
 winget install PowerUserZ.OpenTokenUsage
 ```
 
-Or [**download the latest release**](https://github.com/PowerUserZ/OpenTokenUsage/releases/latest) and run `OpenTokenUsage_<version>_x64-setup.exe`.
+Or [**download the latest release**](https://github.com/PowerUserZ/OpenTokenUsage/releases/latest) and run `OpenTokenUsage_<version>_x64-setup.exe`. The installer isn't code-signed, so a setup downloaded in the browser gets a Microsoft Defender SmartScreen warning ("Windows protected your PC", unknown publisher): choose **More info** → **Run anyway** (newer Windows shows **Run anyway** right away). WinGet checks the installer against its manifest's hash and doesn't show this warning, and neither do the in-app updates.
 
 Either way it installs for your Windows user only (`%LOCALAPPDATA%\OpenTokenUsage`), so updates need no admin rights. The app checks for new releases in-app and updates itself.
 
 **Installed 0.7.7 or earlier (MSI or WinGet)?** Use the in-app update once. It moves the app to the per-user install and asks for admin once, to remove the old per-machine copy. Your settings stay. Until then, `winget upgrade` says the install technology is different.
-
-Releases are built by GitHub Actions from this repository. The installer's code signing comes from the [SignPath Foundation](https://signpath.org/); see the [code signing policy](#code-signing-policy).
 
 ## What It Does
 
@@ -93,18 +91,6 @@ OpenTokenUsage is free and made by one person. If it saves you time, you can buy
 
 <a href="https://www.buymeacoffee.com/PowerUserZ" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me a Coffee" height="60" width="217"></a>
 
-## Code signing policy
-
-Free code signing provided by [SignPath.io](https://about.signpath.io/), certificate by [SignPath Foundation](https://signpath.org/).
-
-Signing starts with the first release after the SignPath Foundation accepts the project; earlier releases are unsigned.
-
-- **What is signed:** only the OpenTokenUsage app and its installer (`OpenTokenUsage_<version>_x64-setup.exe`), built by GitHub Actions ([`publish.yml`](.github/workflows/publish.yml)) from a tagged commit of this repository. Nothing built elsewhere and no third-party program is signed.
-- **Committers and reviewers:** [PowerUserZ](https://github.com/PowerUserZ). Outside contributions arrive as pull requests and are merged only after review.
-- **Approvers:** [PowerUserZ](https://github.com/PowerUserZ) (owner) approves every release.
-- **System changes:** it installs for the current Windows user in `%LOCALAPPDATA%\OpenTokenUsage`, without admin rights. Start on login is on by default (a value under `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`); turn it off in Settings. It asks Windows to show its tray icon next to the clock, only if you haven't chosen yourself. Updates come only from this repository's releases, are checked against the updater signing key, and install when you choose.
-- **Uninstall:** Windows Settings > Apps > Installed apps > OpenTokenUsage. The uninstaller can also delete the app's settings. Turn off Start on login first to remove its Run value too.
-
 ## Privacy
 
 This program will not transfer any information to other networked systems unless specifically requested by the user or the person installing or operating it.
@@ -116,7 +102,7 @@ OpenTokenUsage has no telemetry, no analytics and no server of its own. It conne
 - **Provider status pages** (for example `status.claude.com`), for the status badge.
 - **The npm registry, through your own package manager:** when Bun, pnpm or npm is installed, the Claude and Codex cards run [ccusage](https://github.com/ryoppippi/ccusage) to total local token usage, and the package manager may download it the first time.
 
-Settings and cached usage stay on your computer (`%APPDATA%\com.sunstory.openusage`). The local HTTP API listens on `127.0.0.1` only.
+Settings and cached usage stay on your computer (`%APPDATA%\com.poweruserz.opentokenusage`). The local HTTP API listens on `127.0.0.1` only.
 
 ## License
 

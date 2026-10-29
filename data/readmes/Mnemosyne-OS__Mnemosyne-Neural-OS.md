@@ -16,7 +16,18 @@
 
 <br/>
 
+<a href="https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/assets/teaser-v2-harness.mp4"><img src="assets/teaser-v2-harness.gif" width="360" alt="Irina, the assistant, made of particles: curiosity is a lovely flaw, but she is still working on her harnesses. Follow Mnemosyne OS for version 2. Her agenda pops open on Friday, 9:00, Build Release 2.0. Oops, you didn't see that. The screen switches off." /></a>
+<br/>
+<em>Version 2 is on its way. Irina is still working on her harnesses · <a href="https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/assets/teaser-v2-harness.mp4">watch with sound</a></em>
+
+<br/>
+
+⭐ **Useful to you? A star on this repo helps other people find it.**
+
+<br/>
+
 [![CI](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/actions/workflows/ci.yml/badge.svg)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/actions)
+[![HOL Guard scan](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/actions/workflows/plugin-scan.yml/badge.svg)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/actions/workflows/plugin-scan.yml)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript)
 ![Electron](https://img.shields.io/badge/Electron-31.7.7-47848f?logo=electron)
 ![React](https://img.shields.io/badge/React-18-61dafb?logo=react)
@@ -30,7 +41,7 @@
 
 <!-- Download + MnemoForge badges: auto-updated by `.github/workflows/sync-readme-release-badges.yml` on Release (tags `v…` = OS setup, `cli-…` = CLI). -->
 [![Download Mnemosyne OS](https://img.shields.io/static/v1?label=Download&message=Mnemosyne+OS+%28v1.9.1-infinity%29+%C2%B7+NEW&color=111827&logo=github&style=for-the-badge)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.9.1-infinity)
-[![MnemoForge CLI](https://img.shields.io/badge/📦_MnemoForge_CLI_(Open_Source)-8b5cf6?style=for-the-badge&logo=npm)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/cli-v1.3.18)
+[![MnemoForge CLI](https://img.shields.io/badge/📦_MnemoForge_CLI_(MIT)-8b5cf6?style=for-the-badge&logo=npm)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/cli-v1.3.18)
 
 <br/>
 
@@ -569,7 +580,7 @@ ecosystem built around a proprietary core.
 | Component | License | Description |
 |-----------|---------|-------------|
 | **Developer SDK** (`/packages/*`) | [MIT](./LICENSE) | Open, build apps, agents & skins on Mnemosyne OS |
-| **MnemoForge CLI** (`/cli`) | [MIT](./cli/LICENSE) | Open source, free to use, modify, and redistribute |
+| **MnemoForge CLI** (`/cli`) | [MIT](./cli/LICENSE) | Free to use, modify, and redistribute |
 | **Mnemosyne Neural OS** (platform) | Proprietary | © 2026 XPACEGEMS LLC, All rights reserved |
 
 The **SDK** and **MnemoForge CLI** are MIT licensed. Fork them, build on them, ship

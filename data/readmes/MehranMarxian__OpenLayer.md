@@ -59,8 +59,8 @@ generating in the background, and every result comes back as a layer.
 
 ## The tools
 
-Every tool reads from your open document and writes back to it as a layer. Nothing is uploaded
-anywhere; ComfyUI runs on your own machine.
+Every tool reads from your open document and writes back to it, as a layer or (Select by Text) as a
+live selection. Nothing is uploaded anywhere; ComfyUI runs on your own machine.
 
 | Tool | What it does |
 | :--- | :--- |
@@ -68,10 +68,11 @@ anywhere; ComfyUI runs on your own machine.
 | **Image to Image** | Use the active layer as visual input |
 | **Edit Image** | Change a layer or a selection by describing it — "make the jacket red", or bring in a second layer: "put the teapot from `<image2>` here" |
 | **Sketch to Image** | Guide generation with your line art |
-| **Inpaint** | Repaint a selection in place |
+| **Inpaint** | Repaint a selection in place, or remove the object in it with LaMa |
 | **Outpaint** | Extend canvas content beyond the edges |
-| **Upscale** | Enhance generated or selected layers |
+| **Upscale** | Enlarge a layer 4x with an upscale model, or restore it 2x with SeedVR2 (generative) |
 | **Remove Background** | Cut the subject out onto its own layer, with real alpha |
+| **Select by Text** | Name something — "backpack", "chair, table" — and get it as a live selection (SAM 3.1) |
 | **Layer Maps** | Read a depth, line-art or normal pass off a layer, at its exact size |
 | **Prompt from Layer** | Describe a layer back into prompt text |
 | **Unflatten** ✦ | Split one flat layer into separate layers, each with real transparency |
@@ -393,9 +394,17 @@ weights hold bold sparse line art that the full weights flatten into a filled sh
 | Flux Fill | **Flux Fill stack** (34.2 GB, non-commercial) | — |
 | Flux Fill (crop & stitch) | **Flux Fill stack** — 0 extra GB | [comfyui-inpaint-cropandstitch](https://github.com/lquesada/ComfyUI-Inpaint-CropAndStitch) |
 | Standard checkpoint | your own SD 1.x **inpaint** checkpoint | — |
+| Remove object (LaMa) | `big-lama.pt` → `models/lama/` (206 MB, Apache-2.0 LaMa; the node downloads it on first run if missing) | [comfyui-art-venture](https://github.com/sipherxyz/comfyui-art-venture) |
 
 Crop-and-stitch samples the masked area at a fixed 1024 and blends the patch back, so a small mask on
 a large document no longer samples a few hundred pixels.
+
+**Remove object (LaMa)** is the one Inpaint preset with no prompt: it fills the selection from what
+surrounds it, in 2 to 4 seconds, and every pixel outside the selection comes back unchanged. It is
+for small things: a chair or a folded umbrella covering about 4% of the captured area filled cleanly
+in testing, while a tree or a standing person covering 17–22% came back as a smear. Select a little
+more than the object, shadow included. It needs no diffusion model at all, but its add-on is a heavy
+one (twelve Python dependencies).
 
 </details>
 
@@ -414,6 +423,23 @@ Fill preset already runs — it is the same four files.
 
 This is a pixel/model upscale, not a generative one — no prompt, no tiled diffusion.
 
+**SeedVR2 3B restorer (2x)** is the second preset, and it *is* generative: a one-step diffusion
+restorer on core ComfyUI nodes (0.25.0 or later, no add-on). It sharpens, de-hazes and redraws fine
+detail, so it can invent texture, lettering or faces that were not in the source — compare it with
+the original before you rely on it. Apache-2.0, ungated, 3.96 GB:
+
+| File | Folder | Size |
+| :--- | :--- | ---: |
+| `seedvr2_3b_int8_convrot.safetensors` | `models/diffusion_models/` | 3.46 GB |
+| `seedvr2_ema_vae_fp16.safetensors` | `models/vae/` | 501 MB |
+
+Always 2x, with the model's own colours (no colour correction back to the source). Time follows the
+size of the result: on a 12 GB RTX 4070 Ti a 2048 × 1536 result took 10 s and a 5120 × 3840 one
+60 s, while a 6144 × 4608 one filled the card and took four minutes. So the panel refuses sources whose result would not fit your card: about
+20 megapixels of result on 12 GB, scaled with the VRAM ComfyUI reports (roughly 43 on 16 GB, 89 on
+24 GB). Only the 12 GB card was measured; other sizes are estimated from it. For 4x, use
+4x-UltraSharp.
+
 </details>
 
 <details>
@@ -421,6 +447,16 @@ This is a pixel/model upscale, not a generative one — no prompt, no tiled diff
 
 `Florence-2-base-PromptGen-v2.0` → `models/LLM/` (the whole repo folder, about 1.1 GB).
 Add-on: [ComfyUI-Florence2](https://github.com/kijai/ComfyUI-Florence2).
+
+</details>
+
+<details>
+<summary><b>Select by Text</b> — 1.7 GB, no add-on</summary>
+
+`sam3.1_multiplex_fp16.safetensors` → `models/checkpoints/` (1.7 GB). Core ComfyUI nodes only
+(ComfyUI 0.37+). Meta's SAM License: commercial use is allowed, with use restrictions (no military,
+weapons or export-controlled use). About 2 seconds per selection on a 12 GB card once the model is
+loaded. The selection has hard edges; feather it or use Select and Mask for a soft one.
 
 </details>
 
@@ -485,8 +521,8 @@ folder, and works with ComfyUI stopped.
 
 ### If you eventually want everything
 
-Roughly **192 GB**, deduplicated. Installing every preset's stack separately, ignoring the sharing,
-would be about 427 GB — that gap is why the stacks above are worth understanding. Seven files are
+Roughly **196 GB**, deduplicated. Installing every preset's stack separately, ignoring the sharing,
+would be about 431 GB — that gap is why the stacks above are worth understanding. Seven files are
 licence-restricted: four are non-commercial (`flux1-dev-fp8`, `flux1-fill-dev`,
 `flux2-dev-Q4_K_M.gguf`, `mistral_3_small_flux2_fp8`), and the three Qwen-Image 2.1 files are for
 research and evaluation only. The panel will not fetch those for you; use the link and read the

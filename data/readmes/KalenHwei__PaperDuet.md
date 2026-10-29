@@ -22,15 +22,14 @@
   <a href="https://github.com/KalenHwei/PaperDuet/releases/latest"><img src="https://img.shields.io/github/v/release/KalenHwei/PaperDuet?style=flat-square&color=111111&label=release" alt="Latest release"></a>
   <img src="https://img.shields.io/badge/macOS-13.3%2B%20%C2%B7%20Apple%20silicon-111111?style=flat-square" alt="macOS 13.3 or later on Apple silicon">
   <img src="https://img.shields.io/badge/Windows-10%20%2F%2011%20%C2%B7%2064--bit-111111?style=flat-square" alt="Windows 10 and 11, 64-bit">
-  <img src="https://img.shields.io/badge/translation-on%20your%20computer-111111?style=flat-square" alt="The translation runs on your computer">
-  <img src="https://img.shields.io/badge/models-5_to_choose_from-111111?style=flat-square" alt="Models: 5 to choose from">
+  <img src="https://img.shields.io/badge/languages-10_to_translate_into-111111?style=flat-square" alt="Languages: 10 to translate into">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-PolyForm%20Noncommercial-111111?style=flat-square" alt="License: PolyForm Noncommercial 1.0.0"></a>
 </p>
 
 <p align="center">
   <strong>PaperDuet is a lightweight AI mirror translator for papers that keeps the original layout.</strong><br>
-  Five open-source AI translation models to choose from.<br>
-  No fees, fully local!
+  Five open-source AI translation models run on your computer, or connect an online API.<br>
+  Free to use, no sign-up needed!
 </p>
 
 <p align="center">
@@ -38,7 +37,7 @@
   <sub>A recording of Attention Is All You Need (15 pages) being translated from scratch</sub>
 </p>
 
-PaperDuet is a lightweight AI mirror translator for papers. It lays out the original and the translation as mirror images, with formulas, figures and tables corrected and aligned page by page. No API key, no fees, and it runs entirely on your computer!
+PaperDuet is a lightweight AI mirror translator for papers. It lays out the original and the translation as mirror images, with formulas, figures and tables corrected and aligned page by page. It's free: with a local model everything runs on your computer, and an online API is there if you want one.
 
 ## Every page, made easy
 
@@ -120,7 +119,8 @@ Computer too slow for a local model? Pick **Use an API** in the model choice and
 - Your papers, translations and notes stay on your computer. With an API, the text to translate is sent to the service you chose.
 - Only if you agree, PaperDuet sends anonymous usage and diagnostic data (version, system, interface language, model and kinds of errors), never paper content, and you can turn it off anytime in Settings.
 - When something goes wrong, PaperDuet sends an error report to the developer: what went wrong, the version and the system, without file paths or paper content. You can turn this off in Settings › Data.
-- With a local model, PaperDuet goes online only to download a model, to check for updates and to send the data and reports above; you can turn off all but the model download.
+- When you write feedback in the app and click Send, what you wrote (and your email, if you give one) goes to the developer with the version and the system.
+- With a local model, PaperDuet goes online only to download a model, to check for updates, to send the data and reports above and to send your feedback; you can turn off all but the model download.
 
 ## Get started
 
@@ -182,7 +182,11 @@ Yes, for personal study and research, and for universities, schools, research in
 
 ## Changelog
 
-- **0.5.17** (2026-10-28): inline formulas look as printed: formulas set in the text's fonts (Greek letters, italic variables, hats and tildes, signs) are taken from the original page instead of being set again, which gave “θ ˜”, blanks or boxes; the same in the exported PDF.
+- **0.6.3** (2026-10-29): fixed some known interface logic issues.
+- **0.6.2** (2026-10-28): on Windows, you can choose where the models are kept; models already downloaded move along.
+- **0.6.1** (2026-10-28): fixed some known formatting issues.
+- **0.6.0** (2026-10-28): a short tour of the main controls the first time you open a paper, and Beta feedback: send us a note right from the status bar.
+- **0.5.17** (2026-10-28): fixed some known formatting issues.
 - **0.5.16** (2026-10-28): paragraphs of manuscripts (exported from Word, double-spaced) no longer stay in English: lines with a highlight behind them are translated, double-spaced paragraphs are translated whole instead of line by line, and figure legends after the references are translated.
 - **0.5.15** (2026-10-28): formula symbols in Elsevier journals are no longer garbled: Greek letters, ≤, ∀, ≠ and hatted letters (Ŝ, q̂) no longer show up as plain letters, and a superscript set high no longer jumps to the line above.
 - **0.5.14** (2026-10-28): fixed some known formatting errors.

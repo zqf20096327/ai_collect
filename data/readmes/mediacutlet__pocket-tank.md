@@ -506,7 +506,8 @@ deepest sleep: the only chip still awake is the power-management chip, and
 its rule is that the key must be held for about an eighth of a second
 before it turns the board on - a quick tap does nothing. Press it like you
 mean it. The tank decides how deep it sleeps; you never do. Holding PWR
-powers it off at once. Hold BOOT and tap the glass to reset the tank. Flip
+powers it off at once. Hold BOOT for five seconds, then tap the glass, to
+reset the tank. Flip
 the device and the screen follows.
 
 **First run.** A new tank, whether a fresh install or a reset, opens with a
@@ -539,7 +540,9 @@ for you when you come back.
 ![Naming the new fry](docs/media/sim-birth-name_new.png)
 ![The family page: what it inherited](docs/media/sim-birth-family.png)
 
-**Starting over.** Hold BOOT and tap the glass: a *Reset tank?* prompt
+**Starting over.** Hold BOOT for five seconds, then tap the glass (a tap
+sooner is just a tap, so small hands can't wipe a tank by accident): a
+*Reset tank?* prompt
 appears over the water with a NO and a YES. YES wipes the save and two new
 fry take the tank, with the first-run setup to name them; NO, a sleep, or
 twenty seconds of silence keep everything.
@@ -637,7 +640,8 @@ flash (NVS at `0x9000`) that none of the four parts cover, so your fish,
 their names, trust, history, badges, sand dollars and decorations carry on.
 Every version loads the saves of every earlier one (the save only ever grows
 at the tail, and the one field that went in mid-struct is slid into place on
-load). To start over, hold BOOT and tap the glass for the *Reset tank?*
+load). To start over, hold BOOT for five seconds and tap the glass for the
+*Reset tank?*
 prompt; the page also has an "erase and install fresh" button for a board
 that won't get that far. The settings page shows the release at its foot,
 small and dim ("V0.3.3 ALPHA", then the build id), so you can tell what
