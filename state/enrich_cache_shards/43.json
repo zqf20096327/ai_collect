@@ -1,10 +1,10 @@
 {
  "tensorflow/tensorflow": {
-  "commit_7d": 519,
-  "commit_90d": 4960,
+  "commit_7d": 467,
+  "commit_90d": 5206,
   "rel_ver": "v2.22.0-rc0",
   "rel_pub": "2026-09-24",
-  "rel_days": 29,
+  "rel_days": 36,
   "rel_n90": 1,
   "rel_pre": true,
   "rel_none": false,
@@ -29,21 +29,21 @@
    "Starlark": 4,
    "HTML": 4
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "Arize-ai/phoenix": {
-  "commit_7d": 55,
-  "commit_90d": 1075,
-  "rel_ver": "arize-phoenix-v20.25.0",
-  "rel_pub": "2026-10-23",
-  "rel_days": 0,
+  "commit_7d": 139,
+  "commit_90d": 1127,
+  "rel_ver": "arize-phoenix-v20.27.0",
+  "rel_pub": "2026-10-29",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -59,10 +59,10 @@
    "C": 1,
    "Shell": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -93,11 +93,11 @@
   }
  },
  "Project-MONAI/MONAI": {
-  "commit_7d": 11,
-  "commit_90d": 101,
+  "commit_7d": 8,
+  "commit_90d": 107,
   "rel_ver": "1.6.1",
   "rel_pub": "2026-09-27",
-  "rel_days": 26,
+  "rel_days": 33,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -122,21 +122,21 @@
    "Shell": 0,
    "C": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "HelixDB/helix-db": {
-  "commit_7d": 15,
-  "commit_90d": 1507,
+  "commit_7d": 10,
+  "commit_90d": 1517,
   "rel_ver": "v3.5.1",
   "rel_pub": "2026-10-08",
-  "rel_days": 15,
+  "rel_days": 22,
   "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
@@ -152,10 +152,10 @@
    "Go": 1,
    "Shell": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4043,6 +4043,71 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "vedraut/slidesage": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "AlexITC/expense-tracker": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Scala": 97,
+   "Python": 1,
+   "Jinja": 0,
+   "HTML": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "Yixuan-Tao/agent-next": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Java": 92,
+   "Python": 7,
+   "Shell": 1,
+   "AIDL": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

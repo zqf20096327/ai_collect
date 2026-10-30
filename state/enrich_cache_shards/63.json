@@ -32,12 +32,12 @@
   }
  },
  "gorse-io/gorse": {
-  "commit_7d": 4,
-  "commit_90d": 45,
-  "rel_ver": "v0.5.11",
-  "rel_pub": "2026-07-14",
-  "rel_days": 101,
-  "rel_n90": 0,
+  "commit_7d": 9,
+  "commit_90d": 54,
+  "rel_ver": "v0.6.0-alpha.1",
+  "rel_pub": "2026-10-28",
+  "rel_days": 2,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -52,10 +52,10 @@
    "Python": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -152,11 +152,11 @@
   }
  },
  "iree-org/iree": {
-  "commit_90d": 197,
-  "commit_7d": 21,
-  "rel_ver": "iree-3.14.0rc20261022",
-  "rel_pub": "2026-10-22",
-  "rel_days": 1,
+  "commit_90d": 201,
+  "commit_7d": 20,
+  "rel_ver": "iree-3.14.0rc20261024",
+  "rel_pub": "2026-10-24",
+  "rel_days": 6,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -172,10 +172,10 @@
    "Python": 3,
    "CMake": 3
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4944,6 +4944,52 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "UnderLich86514/build-html-ppt-rpocket-team": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "memegyanfactory-gif/bhippi-Video-editor": {
+  "rel_ver": "v1.0.24",
+  "rel_pub": "2026-10-17",
+  "rel_days": 13,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 66,
+   "Rust": 22,
+   "Python": 5,
+   "CSS": 4,
+   "HTML": 2
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

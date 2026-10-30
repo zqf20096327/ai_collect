@@ -24,12 +24,12 @@
   }
  },
  "bentoml/BentoML": {
-  "commit_90d": 7,
-  "commit_7d": 1,
-  "rel_ver": "v1.4.39",
-  "rel_pub": "2026-05-07",
-  "rel_days": 169,
-  "rel_n90": 0,
+  "commit_90d": 13,
+  "commit_7d": 6,
+  "rel_ver": "v1.4.40",
+  "rel_pub": "2026-10-23",
+  "rel_days": 7,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 11,
@@ -53,21 +53,21 @@
    "Starlark": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "jeinlee1991/chinese-llm-benchmark": {
-  "commit_90d": 29,
+  "commit_90d": 30,
   "commit_7d": 2,
   "rel_ver": "v5.10",
   "rel_pub": "2026-04-21",
-  "rel_days": 185,
+  "rel_days": 192,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -77,20 +77,20 @@
   "sec_ids": [],
   "contrib_n": 2,
   "lang": {},
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "buxuku/SmartSub": {
-  "commit_90d": 292,
-  "commit_7d": 57,
-  "rel_ver": "v3.11.0",
-  "rel_pub": "2026-10-22",
+  "commit_90d": 300,
+  "commit_7d": 23,
+  "rel_ver": "v3.12.0",
+  "rel_pub": "2026-10-29",
   "rel_days": 1,
   "rel_n90": 6,
   "rel_pre": false,
@@ -107,18 +107,18 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "microsoft/agent-academy": {
-  "commit_90d": 216,
-  "commit_7d": 17,
+  "commit_90d": 196,
+  "commit_7d": 25,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -130,10 +130,10 @@
    "JavaScript": 86,
    "PowerShell": 14
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4716,6 +4716,23 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "Lordcaster/resocket-wow-lk": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

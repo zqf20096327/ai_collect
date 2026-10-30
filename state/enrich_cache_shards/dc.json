@@ -1,10 +1,10 @@
 {
  "rtk-ai/rtk": {
-  "commit_7d": 49,
-  "commit_90d": 1029,
-  "rel_ver": "dev-1.0.2-rc.567",
-  "rel_pub": "2026-10-20",
-  "rel_days": 3,
+  "commit_7d": 29,
+  "commit_90d": 1069,
+  "rel_ver": "dev-1.1.1-rc.586",
+  "rel_pub": "2026-10-30",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -24,10 +24,10 @@
    "Python": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -89,11 +89,11 @@
   }
  },
  "MervinPraison/PraisonAI": {
-  "commit_7d": 83,
-  "commit_90d": 4091,
-  "rel_ver": "v4.7.16",
-  "rel_pub": "2026-10-19",
-  "rel_days": 4,
+  "commit_7d": 319,
+  "commit_90d": 4062,
+  "rel_ver": "v4.7.21",
+  "rel_pub": "2026-10-27",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -118,10 +118,10 @@
    "JavaScript": 1,
    "HTML": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -156,7 +156,7 @@
   "commit_90d": 15,
   "rel_ver": "v1.9.1",
   "rel_pub": "2026-06-29",
-  "rel_days": 116,
+  "rel_days": 123,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -169,10 +169,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4484,6 +4484,43 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "rupakraj/DeepLearning": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 100,
+   "Python": 0
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "pwnedlabs/ai-security-labs": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

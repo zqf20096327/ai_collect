@@ -82,8 +82,8 @@
   }
  },
  "heilcheng/awesome-agent-skills": {
-  "commit_7d": 0,
-  "commit_90d": 3,
+  "commit_7d": 2,
+  "commit_90d": 5,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -98,10 +98,10 @@
    "JavaScript": 1,
    "CSS": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -128,13 +128,13 @@
   }
  },
  "crate/crate": {
-  "commit_7d": 28,
-  "commit_90d": 355,
+  "commit_7d": 31,
+  "commit_90d": 362,
   "rel_ver": "6.5.0",
   "rel_pub": "2026-10-13",
-  "rel_days": 10,
+  "rel_days": 17,
   "rel_n90": 7,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 10,
   "sec_worst": "critical",
@@ -156,10 +156,10 @@
    "ANTLR": 0,
    "Shell": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

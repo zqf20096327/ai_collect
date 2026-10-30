@@ -1,11 +1,11 @@
 {
  "Mintplex-Labs/anything-llm": {
-  "commit_7d": 30,
-  "commit_90d": 336,
-  "rel_ver": "v1.18.0",
-  "rel_pub": "2026-10-13",
-  "rel_days": 10,
-  "rel_n90": 5,
+  "commit_7d": 23,
+  "commit_90d": 347,
+  "rel_ver": "v1.19.0",
+  "rel_pub": "2026-10-26",
+  "rel_days": 4,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 25,
@@ -29,21 +29,21 @@
    "Shell": 0,
    "HTML": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "srbhr/Resume-Matcher": {
-  "commit_7d": 45,
-  "commit_90d": 789,
+  "commit_7d": 1,
+  "commit_90d": 738,
   "rel_ver": "v1.4.0",
   "rel_pub": "2026-10-21",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -59,21 +59,21 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "Human-Agent-Society/reef": {
-  "commit_7d": 41,
-  "commit_90d": 520,
+  "commit_7d": 77,
+  "commit_90d": 597,
   "rel_ver": "v0.1.3",
   "rel_pub": "2026-10-14",
-  "rel_days": 9,
+  "rel_days": 16,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -89,10 +89,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4223,6 +4223,49 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "SteelUnion/dsh-confirm-gate": {
+  "rel_ver": "v0.2.1",
+  "rel_pub": "2026-10-27",
+  "rel_days": 3,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "Burgstall-labs/ComfyUI-SpEdE": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 89,
+   "HTML": 11
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

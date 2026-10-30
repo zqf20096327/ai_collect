@@ -1,10 +1,10 @@
 {
  "onnx/onnx": {
-  "commit_7d": 11,
-  "commit_90d": 251,
+  "commit_7d": 21,
+  "commit_90d": 261,
   "rel_ver": "v1.23.2",
   "rel_pub": "2026-10-06",
-  "rel_days": 17,
+  "rel_days": 24,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -29,22 +29,22 @@
    "C": 0,
    "Shell": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "T8RIN/ImageToolbox": {
-  "commit_7d": 0,
-  "commit_90d": 702,
-  "rel_ver": "4.3.0-beta02",
-  "rel_pub": "2026-10-22",
-  "rel_days": 1,
-  "rel_n90": 11,
+  "commit_7d": 52,
+  "commit_90d": 686,
+  "rel_ver": "4.3.0-beta03",
+  "rel_pub": "2026-10-26",
+  "rel_days": 4,
+  "rel_n90": 10,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
@@ -56,21 +56,21 @@
    "Kotlin": 100,
    "CSS": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "huggingface/accelerate": {
-  "commit_7d": 3,
-  "commit_90d": 79,
+  "commit_7d": 6,
+  "commit_90d": 85,
   "rel_ver": "v1.15.0",
   "rel_pub": "2026-09-09",
-  "rel_days": 44,
+  "rel_days": 51,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -85,10 +85,10 @@
    "Makefile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -125,10 +125,10 @@
   }
  },
  "Mai-with-u/MaiBot": {
-  "commit_7d": 141,
-  "commit_90d": 1036,
-  "rel_ver": "v1.3.14",
-  "rel_pub": "2026-10-21",
+  "commit_7d": 111,
+  "commit_90d": 1094,
+  "rel_ver": "v1.3.18",
+  "rel_pub": "2026-10-28",
   "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
@@ -145,10 +145,10 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4132,6 +4132,27 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "levent-dogan/zcode-nvidia-nim-fix": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 96,
+   "PowerShell": 4,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

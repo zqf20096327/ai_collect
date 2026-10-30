@@ -159,8 +159,8 @@
   }
  },
  "WeThinkIn/AIGC-Interview-Book": {
-  "commit_7d": 7,
-  "commit_90d": 440,
+  "commit_7d": 63,
+  "commit_90d": 513,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -171,10 +171,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -207,12 +207,12 @@
   }
  },
  "NVIDIA/TransformerEngine": {
-  "commit_7d": 16,
-  "commit_90d": 290,
+  "commit_7d": 30,
+  "commit_90d": 292,
   "rel_ver": "v2.20.2",
   "rel_pub": "2026-10-05",
-  "rel_days": 18,
-  "rel_n90": 5,
+  "rel_days": 25,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -227,10 +227,10 @@
    "C": 1,
    "Shell": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -3879,5 +3879,40 @@
    "contrib": "20261029",
    "lang": "20261029"
   }
+ },
+ "misterkante/cc-model-router": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-10-26",
+  "rel_days": 4,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 79,
+   "Python": 10,
+   "TypeScript": 6,
+   "Shell": 5
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "laurenelee/lauren.md": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2
  }
 }

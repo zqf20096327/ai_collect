@@ -1,1 +1,1 @@
-{"tiers": ["head", "mid", "tail"], "dims": "per-tier", "counts": {"done": 0, "failed": 0, "gone": 0}, "windows": 0, "waits": 0, "elapsed_min": 0.0, "stop_reason": null, "quarantined": []}
+{"tiers": ["head", "mid", "tail"], "dims": "per-tier", "counts": {"done": 1193, "failed": 0, "gone": 0}, "windows": 1, "waits": 0, "elapsed_min": 52.1, "stop_reason": "墙钟达上限 52.0 分钟,已达总时长上限", "quarantined": []}

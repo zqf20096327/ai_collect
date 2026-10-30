@@ -28,11 +28,11 @@
   }
  },
  "vastsa/PI-Desktop": {
-  "commit_90d": 5396,
-  "commit_7d": 221,
-  "rel_ver": "v0.21.0-beta.6",
-  "rel_pub": "2026-10-22",
-  "rel_days": 1,
+  "commit_90d": 5095,
+  "commit_7d": 274,
+  "rel_ver": "v0.22.0-beta.2",
+  "rel_pub": "2026-10-28",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -48,10 +48,10 @@
    "CSS": 3,
    "Shell": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

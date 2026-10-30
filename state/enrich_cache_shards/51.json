@@ -1,10 +1,10 @@
 {
  "EKKOLearnAI/ekko-studio": {
-  "commit_7d": 49,
-  "commit_90d": 621,
-  "rel_ver": "v0.7.38",
-  "rel_pub": "2026-10-20",
-  "rel_days": 3,
+  "commit_7d": 61,
+  "commit_90d": 633,
+  "rel_ver": "v0.7.39",
+  "rel_pub": "2026-10-23",
+  "rel_days": 7,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -20,10 +20,10 @@
    "Python": 2,
    "C++": 2
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -168,7 +168,7 @@
   "commit_7d": 0,
   "rel_ver": "v0.4.6",
   "rel_pub": "2025-09-18",
-  "rel_days": 394,
+  "rel_days": 407,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -181,10 +181,10 @@
    "Python": 100,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4234,6 +4234,56 @@
    "security": "20261028",
    "contrib": "20261028",
    "lang": "20261028"
+  }
+ },
+ "pilot7747/bux": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 95,
+   "JavaScript": 4,
+   "CSS": 1,
+   "Dockerfile": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "MrGipso/dubbing-studio": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-10-29",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 58,
+   "JavaScript": 20,
+   "HTML": 13,
+   "CSS": 7,
+   "Rust": 2
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

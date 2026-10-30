@@ -1,11 +1,11 @@
 {
  "Panniantong/Agent-Reach": {
-  "commit_7d": 0,
-  "commit_90d": 48,
-  "rel_ver": "v1.5.0",
-  "rel_pub": "2026-06-11",
-  "rel_days": 134,
-  "rel_n90": 0,
+  "commit_7d": 10,
+  "commit_90d": 110,
+  "rel_ver": "v1.6.0",
+  "rel_pub": "2026-10-23",
+  "rel_days": 7,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -18,21 +18,21 @@
    "Shell": 3,
    "HTML": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "modular/modular": {
-  "commit_7d": 749,
-  "commit_90d": 5495,
+  "commit_7d": 611,
+  "commit_90d": 5543,
   "rel_ver": "max/v26.7.0",
   "rel_pub": "2026-10-22",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -48,20 +48,20 @@
    "Starlark": 4,
    "MDX": 2
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "strands-agents/harness-sdk": {
-  "commit_7d": 107,
-  "commit_90d": 786,
-  "rel_ver": "harness-python/v0.3.2",
-  "rel_pub": "2026-10-22",
+  "commit_7d": 102,
+  "commit_90d": 854,
+  "rel_ver": "harness-typescript/v0.3.2",
+  "rel_pub": "2026-10-29",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -81,10 +81,10 @@
    "Astro": 2,
    "HTML": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

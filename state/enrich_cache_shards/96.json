@@ -1,11 +1,11 @@
 {
  "milvus-io/milvus": {
-  "commit_7d": 78,
-  "commit_90d": 655,
-  "rel_ver": "v3.0.3",
-  "rel_pub": "2026-10-14",
-  "rel_days": 9,
-  "rel_n90": 9,
+  "commit_7d": 81,
+  "commit_90d": 679,
+  "rel_ver": "v3.0.4",
+  "rel_pub": "2026-10-26",
+  "rel_days": 4,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 3,
@@ -24,18 +24,18 @@
    "Shell": 0,
    "Groovy": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "ahujasid/mcp-for-blender": {
-  "commit_7d": 6,
-  "commit_90d": 83,
+  "commit_7d": 9,
+  "commit_90d": 91,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -50,10 +50,10 @@
    "PowerShell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -92,11 +92,11 @@
   }
  },
  "MODSetter/SurfSense": {
-  "commit_7d": 154,
-  "commit_90d": 3380,
-  "rel_ver": "v2.2.3",
-  "rel_pub": "2026-10-21",
-  "rel_days": 2,
+  "commit_7d": 149,
+  "commit_90d": 3581,
+  "rel_ver": "v2.2.5",
+  "rel_pub": "2026-10-27",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -112,10 +112,10 @@
    "JavaScript": 0,
    "CSS": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -152,7 +152,7 @@
   }
  },
  "hongleizhang/RSPapers": {
-  "commit_90d": 2,
+  "commit_90d": 4,
   "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
@@ -162,21 +162,21 @@
   "sec_ids": [],
   "contrib_n": 16,
   "lang": {},
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "RediSearch/RediSearch": {
-  "commit_90d": 548,
-  "commit_7d": 27,
+  "commit_90d": 526,
+  "commit_7d": 28,
   "rel_ver": "v2.10.31",
   "rel_pub": "2026-06-17",
-  "rel_days": 128,
+  "rel_days": 135,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -194,10 +194,10 @@
    "C++": 8,
    "Shell": 2
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4827,6 +4827,27 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "al-nafisah/fpga-project-analyzer": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 80,
+   "HTML": 17,
+   "Tcl": 2
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

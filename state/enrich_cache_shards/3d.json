@@ -72,11 +72,11 @@
   }
  },
  "ZSeven-W/openpencil": {
-  "commit_7d": 5,
-  "commit_90d": 730,
-  "rel_ver": "v0.8.4",
-  "rel_pub": "2026-08-11",
-  "rel_days": 73,
+  "commit_7d": 45,
+  "commit_90d": 1107,
+  "rel_ver": "v0.8.5",
+  "rel_pub": "2026-10-27",
+  "rel_days": 3,
   "rel_n90": 3,
   "rel_pre": true,
   "rel_none": false,
@@ -92,10 +92,10 @@
    "JavaScript": 1,
    "TypeScript": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -103,10 +103,10 @@
  },
  "Michael-A-Kuykendall/shimmy": {
   "commit_7d": 12,
-  "commit_90d": 90,
+  "commit_90d": 80,
   "rel_ver": "v2.6.5",
   "rel_pub": "2026-10-19",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
@@ -122,21 +122,21 @@
    "YAML": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "melgarafael/DeskcommCRM": {
-  "commit_7d": 1095,
-  "commit_90d": 12934,
-  "rel_ver": "v1.87.0",
-  "rel_pub": "2026-10-22",
-  "rel_days": 1,
+  "commit_7d": 999,
+  "commit_90d": 13731,
+  "rel_ver": "v1.94.0",
+  "rel_pub": "2026-10-27",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -156,10 +156,10 @@
    "JavaScript": 1,
    "Python": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -421,8 +421,8 @@
   }
  },
  "CaviraOSS/PageLM": {
-  "commit_7d": 0,
-  "commit_90d": 19,
+  "commit_7d": 3,
+  "commit_90d": 23,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -437,10 +437,10 @@
    "Dockerfile": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4355,6 +4355,48 @@
    "security": "20261028",
    "contrib": "20261028",
    "lang": "20261028"
+  }
+ },
+ "GrimOrbita/rpocket-team-meeting-agent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "TASure/sureai": {
+  "rel_ver": "v3.0.0",
+  "rel_pub": "2026-10-23",
+  "rel_days": 7,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Java": 100
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

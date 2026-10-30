@@ -30,12 +30,12 @@
   }
  },
  "InsForge/InsForge": {
-  "commit_7d": 6,
-  "commit_90d": 465,
+  "commit_7d": 3,
+  "commit_90d": 368,
   "rel_ver": "v2.3.5",
   "rel_pub": "2026-10-23",
-  "rel_days": 0,
-  "rel_n90": 7,
+  "rel_days": 7,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -50,10 +50,10 @@
    "JavaScript": 0,
    "CSS": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -114,7 +114,7 @@
   "commit_90d": 9,
   "rel_ver": "v1.4.2",
   "rel_pub": "2026-08-22",
-  "rel_days": 62,
+  "rel_days": 69,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -129,10 +129,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4240,6 +4240,52 @@
    "security": "20261027",
    "contrib": "20261027",
    "lang": "20261027"
+  }
+ },
+ "nevenfo/kicad-agentic-mcp": {
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-09-10",
+  "rel_days": 50,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 14,
+  "lang": {
+   "Rust": 91,
+   "Python": 7,
+   "PowerShell": 2,
+   "HTML": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "sinyookkkk/Gatecreep": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

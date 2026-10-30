@@ -1,11 +1,11 @@
 {
  "agentscope-ai/agentscope": {
-  "commit_7d": 33,
-  "commit_90d": 357,
-  "rel_ver": "v2.0.10",
-  "rel_pub": "2026-10-12",
-  "rel_days": 11,
-  "rel_n90": 6,
+  "commit_7d": 28,
+  "commit_90d": 378,
+  "rel_ver": "v2.0.11",
+  "rel_pub": "2026-10-27",
+  "rel_days": 3,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -18,22 +18,22 @@
    "Dockerfile": 0,
    "Mako": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "nltk/nltk": {
-  "commit_7d": 78,
-  "commit_90d": 1312,
+  "commit_7d": 5,
+  "commit_90d": 1291,
   "rel_ver": "v3.10.4",
   "rel_pub": "2026-10-21",
-  "rel_days": 2,
-  "rel_n90": 9,
+  "rel_days": 9,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 30,
@@ -57,10 +57,10 @@
    "Makefile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4013,6 +4013,71 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "scientist-labs/lancelot": {
+  "rel_ver": "0.4.1",
+  "rel_pub": "2026-06-20",
+  "rel_days": 132,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Ruby": 65,
+   "Rust": 34,
+   "Shell": 0
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "alphaparkinc/openclaw-genpark-memory-vault": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "EzulFilm/cierra": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Python": 98,
+   "Makefile": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

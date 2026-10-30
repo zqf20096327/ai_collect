@@ -1,10 +1,10 @@
 {
  "oraios/serena": {
-  "commit_7d": 13,
-  "commit_90d": 398,
+  "commit_7d": 37,
+  "commit_90d": 407,
   "rel_ver": "v2.1.0",
   "rel_pub": "2026-10-19",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -24,10 +24,10 @@
    "CSS": 1,
    "AL": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

@@ -1,7 +1,7 @@
 {
  "dailydotdev/daily": {
   "commit_7d": 1,
-  "commit_90d": 15,
+  "commit_90d": 12,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -13,10 +13,10 @@
    "JavaScript": 60,
    "TypeScript": 40
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -75,12 +75,12 @@
   }
  },
  "plastic-labs/honcho": {
-  "commit_7d": 23,
-  "commit_90d": 242,
-  "rel_ver": "v3.4.0",
-  "rel_pub": "2026-10-22",
-  "rel_days": 1,
-  "rel_n90": 4,
+  "commit_7d": 37,
+  "commit_90d": 277,
+  "rel_ver": "v3.4.1",
+  "rel_pub": "2026-10-27",
+  "rel_days": 3,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -95,10 +95,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

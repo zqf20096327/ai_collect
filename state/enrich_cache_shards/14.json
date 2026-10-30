@@ -1,7 +1,7 @@
 {
  "google/skills": {
-  "commit_7d": 25,
-  "commit_90d": 307,
+  "commit_7d": 26,
+  "commit_90d": 304,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -16,10 +16,10 @@
    "HCL": 3,
    "Go Template": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4126,13 +4126,16 @@
    "CSS": 9,
    "Python": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261030",
   "dim_ts": {
    "release": "20261024",
    "security": "20261024",
    "contrib": "20261024",
-   "lang": "20261024"
-  }
+   "lang": "20261024",
+   "commit": "20261030"
+  },
+  "commit_90d": 75,
+  "commit_7d": 61
  },
  "Alpha-Park/genpark-agentic-openapi-path-traversal-fuzzer-skill": {
   "rel_ver": null,
@@ -4505,6 +4508,71 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "budna-marketplace/recommerce": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-10-28",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 100
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "Cle2ment/opencode-windows-encoding": {
+  "rel_ver": "v6.1.0",
+  "rel_pub": "2026-10-01",
+  "rel_days": 29,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 100
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "Alpha-Park/genpark-agent-exfiltration-canary-leak-detector-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

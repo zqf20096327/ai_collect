@@ -4,7 +4,7 @@
   "commit_90d": 0,
   "rel_ver": "v3.3.2",
   "rel_pub": "2026-04-28",
-  "rel_days": 178,
+  "rel_days": 185,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -20,10 +20,10 @@
    "CSS": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -139,11 +139,11 @@
   }
  },
  "Mobile-Artificial-Intelligence/maid": {
-  "commit_7d": 6,
-  "commit_90d": 46,
+  "commit_7d": 2,
+  "commit_90d": 31,
   "rel_ver": "v3.0.0",
   "rel_pub": "2026-03-10",
-  "rel_days": 221,
+  "rel_days": 234,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -156,10 +156,10 @@
    "TypeScript": 99,
    "JavaScript": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

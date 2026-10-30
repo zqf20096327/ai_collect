@@ -26,11 +26,11 @@
   }
  },
  "ClickHouse/ClickHouse": {
-  "commit_7d": 1815,
-  "commit_90d": 46760,
-  "rel_ver": "v26.9.25.15-stable",
-  "rel_pub": "2026-10-22",
-  "rel_days": 1,
+  "commit_7d": 701,
+  "commit_90d": 44966,
+  "rel_ver": "v26.10.2.103-stable",
+  "rel_pub": "2026-10-24",
+  "rel_days": 6,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -54,10 +54,10 @@
    "Assembly": 5,
    "HTML": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -90,11 +90,11 @@
   }
  },
  "OpenMined/PySyft": {
-  "commit_7d": 36,
-  "commit_90d": 422,
+  "commit_7d": 139,
+  "commit_90d": 541,
   "rel_ver": "v0.9.6b6",
   "rel_pub": "2025-04-13",
-  "rel_days": 558,
+  "rel_days": 565,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -110,10 +110,10 @@
    "HTML": 1,
    "CSS": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

@@ -30,11 +30,11 @@
   }
  },
  "HKUDS/Vibe-Trading": {
-  "commit_7d": 162,
-  "commit_90d": 2288,
+  "commit_7d": 173,
+  "commit_90d": 2362,
   "rel_ver": "v0.1.18",
   "rel_pub": "2026-10-21",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
@@ -54,10 +54,10 @@
    "HTML": 1,
    "CSS": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -88,13 +88,13 @@
   }
  },
  "vllm-project/vllm-omni": {
-  "commit_90d": 1485,
-  "commit_7d": 145,
-  "rel_ver": "v0.32.0rc1",
-  "rel_pub": "2026-10-19",
-  "rel_days": 4,
+  "commit_90d": 1583,
+  "commit_7d": 187,
+  "rel_ver": "v0.32.0",
+  "rel_pub": "2026-10-28",
+  "rel_days": 2,
   "rel_n90": 10,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -108,10 +108,10 @@
    "Jinja": 0,
    "Cuda": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -190,10 +190,10 @@
    "Jupyter Notebook": 2,
    "Dockerfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

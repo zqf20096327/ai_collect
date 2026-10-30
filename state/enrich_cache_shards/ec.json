@@ -1,10 +1,10 @@
 {
  "modelscope/FunASR": {
-  "commit_7d": 8,
-  "commit_90d": 490,
-  "rel_ver": "v1.4.16",
-  "rel_pub": "2026-09-18",
-  "rel_days": 35,
+  "commit_7d": 6,
+  "commit_90d": 470,
+  "rel_ver": "v1.4.17",
+  "rel_pub": "2026-10-28",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -20,21 +20,21 @@
    "C++": 6,
    "JavaScript": 2
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "kortix-ai/suna": {
-  "commit_7d": 736,
-  "commit_90d": 7691,
-  "rel_ver": "v0.14.7",
-  "rel_pub": "2026-10-22",
-  "rel_days": 1,
+  "commit_7d": 296,
+  "commit_90d": 6745,
+  "rel_ver": "v0.14.10",
+  "rel_pub": "2026-10-30",
+  "rel_days": 0,
   "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
@@ -50,10 +50,10 @@
    "JavaScript": 1,
    "PLpgSQL": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -93,21 +93,21 @@
   "sec_ids": [],
   "contrib_n": 9,
   "lang": {},
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "go-vgo/robotgo": {
-  "commit_7d": 5,
-  "commit_90d": 88,
+  "commit_7d": 3,
+  "commit_90d": 91,
   "rel_ver": "v1.3.7",
   "rel_pub": "2026-10-22",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -123,23 +123,23 @@
    "HTML": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "xerj-org/xerj": {
-  "commit_90d": 3086,
-  "commit_7d": 505,
-  "rel_ver": "v1.0.0-rc.98",
-  "rel_pub": "2026-10-22",
+  "commit_90d": 3217,
+  "commit_7d": 376,
+  "rel_ver": "pack-vanguard-context-burn-e0759ae0",
+  "rel_pub": "2026-10-29",
   "rel_days": 1,
   "rel_n90": 12,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -153,10 +153,10 @@
    "Python": 4,
    "Shell": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -186,12 +186,12 @@
   }
  },
  "modelscope/evalscope": {
-  "commit_90d": 290,
-  "commit_7d": 41,
-  "rel_ver": "v1.14.0",
-  "rel_pub": "2026-10-20",
-  "rel_days": 3,
-  "rel_n90": 6,
+  "commit_90d": 329,
+  "commit_7d": 45,
+  "rel_ver": "v1.14.1",
+  "rel_pub": "2026-10-26",
+  "rel_days": 4,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -206,10 +206,10 @@
    "Jinja": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

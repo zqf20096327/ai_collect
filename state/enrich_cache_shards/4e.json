@@ -1,11 +1,11 @@
 {
  "infiniflow/ragflow": {
-  "commit_7d": 175,
-  "commit_90d": 2657,
+  "commit_7d": 273,
+  "commit_90d": 2736,
   "rel_ver": "nightly",
   "rel_pub": "2025-12-01",
-  "rel_days": 326,
-  "rel_n90": 5,
+  "rel_days": 333,
+  "rel_n90": 6,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 8,
@@ -29,10 +29,10 @@
    "Python": 3,
    "C": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -40,10 +40,10 @@
  },
  "mem0ai/mem0": {
   "commit_7d": 1,
-  "commit_90d": 154,
+  "commit_90d": 135,
   "rel_ver": "v2.2.1",
   "rel_pub": "2026-09-25",
-  "rel_days": 28,
+  "rel_days": 35,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -59,10 +59,10 @@
    "CSS": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -119,12 +119,12 @@
   }
  },
  "shimat/opencvsharp": {
-  "commit_7d": 14,
-  "commit_90d": 205,
+  "commit_7d": 2,
+  "commit_90d": 182,
   "rel_ver": "5.0.0.20261018",
   "rel_pub": "2026-10-18",
-  "rel_days": 5,
-  "rel_n90": 8,
+  "rel_days": 12,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -139,10 +139,10 @@
    "CMake": 0,
    "Shell": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4390,6 +4390,27 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "Agnuxo1/LightMyCells2-ModalityAware-UNet": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 97,
+   "Shell": 3,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

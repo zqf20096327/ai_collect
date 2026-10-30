@@ -1,10 +1,10 @@
 {
  "qax-os/excelize": {
-  "commit_7d": 3,
-  "commit_90d": 55,
+  "commit_7d": 2,
+  "commit_90d": 52,
   "rel_ver": "v2.11.0",
   "rel_pub": "2026-07-06",
-  "rel_days": 109,
+  "rel_days": 116,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -25,10 +25,10 @@
   "lang": {
    "Go": 100
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -3887,6 +3887,28 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "Coaade-Inc/strataflow": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "C++": 89,
+   "Python": 6,
+   "CMake": 3,
+   "C": 1
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

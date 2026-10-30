@@ -1,7 +1,7 @@
 {
  "anthropics/claude-cookbooks": {
-  "commit_7d": 1,
-  "commit_90d": 33,
+  "commit_7d": 2,
+  "commit_90d": 35,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -16,10 +16,10 @@
    "Dockerfile": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -54,13 +54,13 @@
   }
  },
  "agentscope-ai/QwenPaw": {
-  "commit_7d": 31,
-  "commit_90d": 658,
-  "rel_ver": "v2.2.2.post1",
-  "rel_pub": "2026-10-22",
-  "rel_days": 1,
+  "commit_7d": 51,
+  "commit_90d": 648,
+  "rel_ver": "v2.3.0-beta.1",
+  "rel_pub": "2026-10-27",
+  "rel_days": 3,
   "rel_n90": 12,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -74,10 +74,10 @@
    "Rust": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -114,12 +114,12 @@
   }
  },
  "NirDiamant/RAG_Techniques": {
-  "commit_7d": 5,
-  "commit_90d": 32,
-  "rel_ver": "book-v1.0",
-  "rel_pub": "2026-04-15",
-  "rel_days": 191,
-  "rel_n90": 0,
+  "commit_7d": 4,
+  "commit_90d": 31,
+  "rel_ver": "ai-agents-book-v1.0",
+  "rel_pub": "2026-10-26",
+  "rel_days": 4,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -131,10 +131,10 @@
    "Jupyter Notebook": 95,
    "Python": 5
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

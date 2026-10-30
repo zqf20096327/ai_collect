@@ -1,10 +1,10 @@
 {
  "codewhale-hq/Codewhale": {
-  "commit_7d": 373,
-  "commit_90d": 7652,
-  "rel_ver": "v0.10.1",
-  "rel_pub": "2026-10-08",
-  "rel_days": 15,
+  "commit_7d": 469,
+  "commit_90d": 7499,
+  "rel_ver": "v0.10.2",
+  "rel_pub": "2026-10-24",
+  "rel_days": 6,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -29,10 +29,10 @@
    "Python": 1,
    "Shell": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -68,11 +68,11 @@
   }
  },
  "SYSTRAN/faster-whisper": {
-  "commit_7d": 3,
+  "commit_7d": 0,
   "commit_90d": 11,
   "rel_ver": "v1.2.1",
   "rel_pub": "2025-10-31",
-  "rel_days": 357,
+  "rel_days": 364,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -85,20 +85,20 @@
    "Python": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "cube-js/cube": {
-  "commit_7d": 89,
-  "commit_90d": 694,
-  "rel_ver": "v1.8.11",
-  "rel_pub": "2026-10-22",
+  "commit_7d": 80,
+  "commit_90d": 721,
+  "rel_ver": "v1.8.15",
+  "rel_pub": "2026-10-29",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -124,10 +124,10 @@
    "JavaScript": 3,
    "Python": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -194,8 +194,8 @@
   }
  },
  "thuquant/awesome-quant": {
-  "commit_7d": 2,
-  "commit_90d": 44,
+  "commit_7d": 20,
+  "commit_90d": 60,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -204,10 +204,10 @@
   "sec_ids": [],
   "contrib_n": 34,
   "lang": {},
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4681,6 +4681,26 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "nicolaslpf/academi_slide": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100,
+   "Shell": 0
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

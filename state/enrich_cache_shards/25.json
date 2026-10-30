@@ -1,7 +1,7 @@
 {
  "punkpeye/awesome-mcp-servers": {
-  "commit_7d": 153,
-  "commit_90d": 3624,
+  "commit_7d": 286,
+  "commit_90d": 3996,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -10,10 +10,10 @@
   "sec_ids": [],
   "contrib_n": 446,
   "lang": {},
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -226,11 +226,11 @@
   }
  },
  "letta-ai/letta-code": {
-  "commit_90d": 938,
-  "commit_7d": 58,
-  "rel_ver": "v0.34.21",
-  "rel_pub": "2026-10-22",
-  "rel_days": 1,
+  "commit_90d": 990,
+  "commit_7d": 117,
+  "rel_ver": "v0.34.32",
+  "rel_pub": "2026-10-30",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -246,10 +246,10 @@
    "Python": 0,
    "MDX": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -377,11 +377,11 @@
   }
  },
  "apconw/Aix-DB": {
-  "commit_90d": 18,
-  "commit_7d": 0,
+  "commit_90d": 21,
+  "commit_7d": 3,
   "rel_ver": "v1.2.4",
   "rel_pub": "2026-04-11",
-  "rel_days": 189,
+  "rel_days": 202,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -397,10 +397,10 @@
    "Vue": 7,
    "CSS": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4146,6 +4146,52 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "vinthuy/reqmango": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-10-24",
+  "rel_days": 6,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 44,
+   "Vue": 33,
+   "TypeScript": 19,
+   "JavaScript": 2,
+   "PowerShell": 2
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "Rice00/dsh-tree-view": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

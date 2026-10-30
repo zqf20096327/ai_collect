@@ -85,11 +85,11 @@
   }
  },
  "huggingface/tokenizers": {
-  "commit_7d": 19,
-  "commit_90d": 138,
+  "commit_7d": 6,
+  "commit_90d": 139,
   "rel_ver": "v1.0.0-rc.3",
   "rel_pub": "2026-10-19",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 4,
   "rel_pre": true,
   "rel_none": false,
@@ -105,22 +105,22 @@
    "TypeScript": 1,
    "Shell": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "miurla/morphic": {
-  "commit_7d": 4,
-  "commit_90d": 114,
-  "rel_ver": "v1.8.0",
-  "rel_pub": "2026-10-17",
-  "rel_days": 6,
-  "rel_n90": 3,
+  "commit_7d": 16,
+  "commit_90d": 130,
+  "rel_ver": "v1.9.0",
+  "rel_pub": "2026-10-27",
+  "rel_days": 3,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -135,21 +135,21 @@
    "JavaScript": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "AIPentest/CyberStrikeAI": {
-  "commit_7d": 28,
-  "commit_90d": 320,
+  "commit_7d": 12,
+  "commit_90d": 303,
   "rel_ver": "v1.7.24",
   "rel_pub": "2026-10-16",
-  "rel_days": 7,
+  "rel_days": 14,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -165,10 +165,10 @@
    "HTML": 6,
    "Java": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2328,13 +2328,16 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261022",
+  "enriched_at": "20261030",
   "dim_ts": {
    "release": "20261022",
    "security": "20261022",
    "contrib": "20261022",
-   "lang": "20261022"
-  }
+   "lang": "20261022",
+   "commit": "20261030"
+  },
+  "commit_90d": 0,
+  "commit_7d": 0
  },
  "santoshray02/csv-editor": {
   "rel_ver": "v2.0.0",
@@ -4135,6 +4138,25 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "AdoraPixel/Coclico-resocket": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

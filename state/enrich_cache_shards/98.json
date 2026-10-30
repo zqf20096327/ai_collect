@@ -1,12 +1,12 @@
 {
  "ComposioHQ/composio": {
-  "commit_7d": 169,
-  "commit_90d": 1409,
-  "rel_ver": "@composio/slim@0.27.0",
-  "rel_pub": "2026-10-22",
-  "rel_days": 1,
+  "commit_7d": 94,
+  "commit_90d": 1414,
+  "rel_ver": "@composio/cli@0.5.1-beta.521",
+  "rel_pub": "2026-10-28",
+  "rel_days": 2,
   "rel_n90": 12,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -20,21 +20,21 @@
    "JavaScript": 1,
    "Tape": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "chroma-core/chroma": {
-  "commit_7d": 4,
-  "commit_90d": 98,
+  "commit_7d": 0,
+  "commit_90d": 87,
   "rel_ver": "latest",
   "rel_pub": "2025-04-01",
-  "rel_days": 570,
+  "rel_days": 577,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -50,21 +50,21 @@
    "Go": 5,
    "Jupyter Notebook": 2
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "shap/shap": {
-  "commit_7d": 15,
+  "commit_7d": 1,
   "commit_90d": 94,
   "rel_ver": "v0.54.1",
   "rel_pub": "2026-10-16",
-  "rel_days": 7,
+  "rel_days": 14,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -80,10 +80,10 @@
    "JavaScript": 0,
    "Cuda": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -91,9 +91,9 @@
  },
  "NirDiamant/GenAI_Agents": {
   "commit_7d": 5,
-  "commit_90d": 25,
-  "rel_ver": null,
-  "rel_none": true,
+  "commit_90d": 28,
+  "rel_ver": "book-v1.0",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -105,14 +105,18 @@
    "HTML": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
-  }
+  },
+  "rel_pub": "2026-10-26",
+  "rel_days": 4,
+  "rel_n90": 1,
+  "rel_pre": false
  },
  "openai/tiktoken": {
   "commit_7d": 0,
@@ -142,8 +146,8 @@
   }
  },
  "civitai/civitai": {
-  "commit_90d": 5193,
-  "commit_7d": 769,
+  "commit_90d": 5706,
+  "commit_7d": 780,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -158,10 +162,10 @@
    "PLpgSQL": 1,
    "Shell": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -182,10 +186,10 @@
    "JavaScript": 22,
    "Smarty": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -221,10 +225,10 @@
  },
  "IAHispano/Applio": {
   "commit_90d": 129,
-  "commit_7d": 14,
-  "rel_ver": "3.7.0",
-  "rel_pub": "2026-10-16",
-  "rel_days": 7,
+  "commit_7d": 5,
+  "rel_ver": "3.7.1",
+  "rel_pub": "2026-10-26",
+  "rel_days": 4,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -240,10 +244,10 @@
    "CSS": 2,
    "Batchfile": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4394,6 +4398,46 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "CombineProsecutor/free-ai-api-proxy": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 55,
+   "Python": 25,
+   "C": 21
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "Daniyal2005-dh/sign-language-recognition": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

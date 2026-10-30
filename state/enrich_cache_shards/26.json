@@ -1,10 +1,10 @@
 {
  "browser-use/browser-use": {
-  "commit_7d": 64,
-  "commit_90d": 497,
-  "rel_ver": "0.13.13",
-  "rel_pub": "2026-10-15",
-  "rel_days": 8,
+  "commit_7d": 4,
+  "commit_90d": 484,
+  "rel_ver": "0.13.14",
+  "rel_pub": "2026-10-26",
+  "rel_days": 4,
   "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
@@ -21,10 +21,10 @@
    "Dockerfile": 0,
    "HTML": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -113,11 +113,11 @@
   }
  },
  "obss/sahi": {
-  "commit_90d": 63,
-  "commit_7d": 1,
+  "commit_90d": 59,
+  "commit_7d": 0,
   "rel_ver": "0.12.8",
   "rel_pub": "2026-09-30",
-  "rel_days": 23,
+  "rel_days": 30,
   "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
@@ -130,10 +130,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -170,11 +170,11 @@
   }
  },
  "grobidOrg/grobid": {
-  "commit_90d": 63,
-  "commit_7d": 4,
+  "commit_90d": 61,
+  "commit_7d": 5,
   "rel_ver": "0.9.1",
   "rel_pub": "2026-08-04",
-  "rel_days": 80,
+  "rel_days": 87,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -193,10 +193,10 @@
    "Kotlin": 3,
    "Ruby": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -204,10 +204,10 @@
  },
  "makcedward/nlpaug": {
   "commit_90d": 109,
-  "commit_7d": 36,
+  "commit_7d": 0,
   "rel_ver": "2.0.7",
   "rel_pub": "2026-10-17",
-  "rel_days": 6,
+  "rel_days": 13,
   "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
@@ -222,10 +222,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4028,6 +4028,45 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "y3nk0/practical-guides": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TeX": 99,
+   "Makefile": 1
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "TokenRhythm/awesome-cdllm": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

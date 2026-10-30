@@ -1,11 +1,11 @@
 {
  "LibreChat-AI/LibreChat": {
-  "commit_7d": 121,
-  "commit_90d": 1635,
-  "rel_ver": "v0.8.8",
-  "rel_pub": "2026-10-01",
-  "rel_days": 22,
-  "rel_n90": 5,
+  "commit_7d": 67,
+  "commit_90d": 1653,
+  "rel_ver": "v0.8.9-rc1",
+  "rel_pub": "2026-10-26",
+  "rel_days": 4,
+  "rel_n90": 6,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 29,
@@ -29,10 +29,10 @@
    "Go": 0,
    "Handlebars": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -63,8 +63,8 @@
   }
  },
  "nmap/nmap": {
-  "commit_7d": 8,
-  "commit_90d": 206,
+  "commit_7d": 6,
+  "commit_90d": 199,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -79,10 +79,10 @@
    "Shell": 5,
    "Python": 4
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -119,11 +119,11 @@
   }
  },
  "openvinotoolkit/openvino": {
-  "commit_7d": 103,
-  "commit_90d": 1050,
+  "commit_7d": 102,
+  "commit_90d": 1074,
   "rel_ver": "2026.4.1",
   "rel_pub": "2026-10-01",
-  "rel_days": 22,
+  "rel_days": 29,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -139,10 +139,10 @@
    "CMake": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -201,11 +201,11 @@
   }
  },
  "SylphAI-Inc/AdalFlow": {
-  "commit_90d": 11,
-  "commit_7d": 11,
+  "commit_90d": 18,
+  "commit_7d": 4,
   "rel_ver": "v1.1.3",
   "rel_pub": "2025-09-25",
-  "rel_days": 393,
+  "rel_days": 400,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -219,10 +219,10 @@
    "Makefile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4379,6 +4379,36 @@
    "security": "20261028",
    "contrib": "20261028",
    "lang": "20261028"
+  }
+ },
+ "guillermoscript/calistenia-app": {
+  "rel_ver": "mobile-v1.14.1",
+  "rel_pub": "2026-10-09",
+  "rel_days": 21,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 2,
+  "sec_worst": "critical",
+  "sec_last": "2026-07-04",
+  "sec_ids": [
+   "GHSA-jpvm-fw3c-8xff(-,medium)",
+   "GHSA-wwj3-9h95-wcpf(-,critical)"
+  ],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 82,
+   "JavaScript": 18,
+   "MDX": 0,
+   "HTML": 0,
+   "Swift": 0
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

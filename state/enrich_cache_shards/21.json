@@ -1,10 +1,10 @@
 {
  "hacksider/Deep-Live-Cam": {
-  "commit_7d": 1,
+  "commit_7d": 2,
   "commit_90d": 31,
   "rel_ver": "2.8",
   "rel_pub": "2026-10-22",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -17,22 +17,22 @@
    "Python": 100,
    "Batchfile": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "JuliaLang/julia": {
-  "commit_7d": 136,
-  "commit_90d": 1109,
-  "rel_ver": "v1.14.0-alpha1",
-  "rel_pub": "2026-10-21",
-  "rel_days": 2,
-  "rel_n90": 9,
+  "commit_7d": 156,
+  "commit_90d": 1183,
+  "rel_ver": "v1.14.0-alpha2",
+  "rel_pub": "2026-10-26",
+  "rel_days": 4,
+  "rel_n90": 11,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
@@ -47,21 +47,21 @@
    "Tree-sitter Query": 2,
    "LLVM": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "udecode/plate": {
-  "commit_7d": 61,
-  "commit_90d": 154,
+  "commit_7d": 283,
+  "commit_90d": 942,
   "rel_ver": "v53.5.1",
   "rel_pub": "2026-10-22",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -86,10 +86,10 @@
    "HTML": 4,
    "Shell": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -148,11 +148,11 @@
   }
  },
  "ArcReel/ArcReel": {
-  "commit_7d": 89,
-  "commit_90d": 1354,
-  "rel_ver": "v0.33.0",
-  "rel_pub": "2026-10-08",
-  "rel_days": 15,
+  "commit_7d": 117,
+  "commit_90d": 1369,
+  "rel_ver": "v0.34.0",
+  "rel_pub": "2026-10-24",
+  "rel_days": 6,
   "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
@@ -172,10 +172,10 @@
    "JavaScript": 0,
    "CSS": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

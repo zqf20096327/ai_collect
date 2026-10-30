@@ -1,7 +1,7 @@
 {
  "microsoft/AI-For-Beginners": {
   "commit_7d": 0,
-  "commit_90d": 44,
+  "commit_90d": 43,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -16,10 +16,10 @@
    "Vue": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -50,11 +50,11 @@
   }
  },
  "humanlayer/humanlayer": {
-  "commit_7d": 7,
-  "commit_90d": 7,
+  "commit_7d": 25,
+  "commit_90d": 27,
   "rel_ver": "nightly-0.1.0-nightly-20260227142452",
   "rel_pub": "2026-02-27",
-  "rel_days": 238,
+  "rel_days": 245,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -70,20 +70,20 @@
    "JavaScript": 2,
    "Rust": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "logancyang/obsidian-copilot": {
-  "commit_7d": 64,
-  "commit_90d": 468,
-  "rel_ver": "4.0.16-canary.1337",
-  "rel_pub": "2026-10-22",
+  "commit_7d": 18,
+  "commit_90d": 486,
+  "rel_ver": "4.0.17-canary.1520",
+  "rel_pub": "2026-10-29",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": true,
@@ -99,21 +99,21 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "WenyuChiou/awesome-agentic-ai-zh": {
-  "commit_7d": 2,
-  "commit_90d": 292,
-  "rel_ver": "v2026.10.16",
-  "rel_pub": "2026-10-16",
-  "rel_days": 7,
+  "commit_7d": 65,
+  "commit_90d": 352,
+  "rel_ver": "v2026.10.29-3",
+  "rel_pub": "2026-10-29",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -128,10 +128,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

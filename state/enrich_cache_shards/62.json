@@ -1,10 +1,10 @@
 {
  "onyx-dot-app/onyx": {
-  "commit_7d": 248,
-  "commit_90d": 1812,
-  "rel_ver": "helm/onyx-0.9.23",
-  "rel_pub": "2026-10-23",
-  "rel_days": 0,
+  "commit_7d": 176,
+  "commit_90d": 1826,
+  "rel_ver": "helm/onyx-0.9.27",
+  "rel_pub": "2026-10-29",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -26,20 +26,20 @@
    "HCL": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "tbphp/gpt-load": {
-  "commit_7d": 10,
-  "commit_90d": 884,
-  "rel_ver": "v1.4.13",
-  "rel_pub": "2026-10-22",
+  "commit_7d": 19,
+  "commit_90d": 673,
+  "rel_ver": "v2.0.0-rc.58",
+  "rel_pub": "2026-10-29",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -60,10 +60,10 @@
    "Python": 0,
    "CSS": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -3771,6 +3771,28 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "Y-K-SAI-SRIKAR/AIChatBot-ContinuosPipeline": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "HTML": 98,
+   "Python": 2,
+   "Dockerfile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

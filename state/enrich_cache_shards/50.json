@@ -1,10 +1,10 @@
 {
  "livekit/agents": {
-  "commit_7d": 82,
-  "commit_90d": 607,
-  "rel_ver": "livekit-agents@1.8.8",
-  "rel_pub": "2026-10-15",
-  "rel_days": 8,
+  "commit_7d": 65,
+  "commit_90d": 629,
+  "rel_ver": "livekit-agents@1.8.10",
+  "rel_pub": "2026-10-29",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -21,20 +21,20 @@
    "Makefile": 0,
    "CMake": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "BasedHardware/omi": {
-  "commit_7d": 1990,
-  "commit_90d": 12183,
-  "rel_ver": "v0.12.524+12524-macos",
-  "rel_pub": "2026-10-22",
+  "commit_7d": 1604,
+  "commit_90d": 12962,
+  "rel_ver": "v0.12.557+12557-macos",
+  "rel_pub": "2026-10-29",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -51,10 +51,10 @@
    "TypeScript": 13,
    "C": 6
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -139,11 +139,11 @@
   }
  },
  "photonixapp/photonix": {
-  "commit_90d": 10,
-  "commit_7d": 0,
+  "commit_90d": 1,
+  "commit_7d": 1,
   "rel_ver": "v0.24.0",
   "rel_pub": "2021-11-18",
-  "rel_days": 1794,
+  "rel_days": 1807,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -159,10 +159,10 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

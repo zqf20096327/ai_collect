@@ -1,10 +1,10 @@
 {
  "apache/airflow": {
-  "commit_7d": 272,
-  "commit_90d": 2432,
+  "commit_7d": 283,
+  "commit_90d": 2497,
   "rel_ver": "3.3.2",
   "rel_pub": "2026-09-17",
-  "rel_days": 36,
+  "rel_days": 43,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -20,18 +20,18 @@
    "Kotlin": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "GoogleCloudPlatform/generative-ai": {
-  "commit_7d": 7,
-  "commit_90d": 119,
+  "commit_7d": 5,
+  "commit_90d": 113,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -46,10 +46,10 @@
    "JavaScript": 2,
    "TypeScript": 2
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -86,11 +86,11 @@
   }
  },
  "potpie-ai/potpie": {
-  "commit_90d": 43,
-  "commit_7d": 4,
+  "commit_90d": 41,
+  "commit_7d": 7,
   "rel_ver": "v2.0.1",
   "rel_pub": "2026-08-31",
-  "rel_days": 53,
+  "rel_days": 60,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -106,10 +106,10 @@
    "JavaScript": 1,
    "CSS": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2084,13 +2084,16 @@
    "Shell": 4,
    "HTML": 1
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261030",
   "dim_ts": {
    "release": "20261021",
    "security": "20261021",
    "contrib": "20261021",
-   "lang": "20261021"
-  }
+   "lang": "20261021",
+   "commit": "20261030"
+  },
+  "commit_90d": 1324,
+  "commit_7d": 69
  },
  "hec-ovi/text-to-3D-skill": {
   "rel_ver": null,
@@ -3992,6 +3995,68 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "Phantomduke375846-alt/clinic_rag_rpocket_bot": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "murillous/LumaBot": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "TypeScript": 100
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "BUAksakal/reqlens": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-10-28",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

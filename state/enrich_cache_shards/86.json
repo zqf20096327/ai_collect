@@ -1,10 +1,10 @@
 {
  "photoprism/photoprism": {
-  "commit_7d": 197,
-  "commit_90d": 1918,
-  "rel_ver": "261007-65faaae5d",
-  "rel_pub": "2026-10-07",
-  "rel_days": 16,
+  "commit_7d": 87,
+  "commit_90d": 1945,
+  "rel_ver": "261029-963b58c50",
+  "rel_pub": "2026-10-29",
+  "rel_days": 1,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -20,23 +20,23 @@
    "CSS": 1,
    "Dockerfile": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "charmbracelet/crush": {
-  "commit_7d": 33,
-  "commit_90d": 488,
-  "rel_ver": "nightly",
-  "rel_pub": "2026-10-23",
-  "rel_days": 0,
+  "commit_7d": 54,
+  "commit_90d": 434,
+  "rel_ver": "v0.99.0",
+  "rel_pub": "2026-10-29",
+  "rel_days": 1,
   "rel_n90": 12,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -50,10 +50,10 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4194,6 +4194,51 @@
    "security": "20261028",
    "contrib": "20261028",
    "lang": "20261028"
+  }
+ },
+ "TrendySloth1001/wordseed": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 89,
+   "JavaScript": 5,
+   "CSS": 5,
+   "Python": 1
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "subscope-ai/laravel-keenable": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-10-20",
+  "rel_days": 10,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "PHP": 100
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

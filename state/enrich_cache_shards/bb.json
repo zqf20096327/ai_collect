@@ -1,9 +1,9 @@
 {
  "CherryHQ/cherry-studio": {
-  "commit_7d": 154,
-  "commit_90d": 2087,
-  "rel_ver": "v2.1.7",
-  "rel_pub": "2026-10-19",
+  "commit_7d": 168,
+  "commit_90d": 2037,
+  "rel_ver": "v2.1.8",
+  "rel_pub": "2026-10-26",
   "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
@@ -25,10 +25,10 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -85,13 +85,13 @@
   }
  },
  "gpustack/gpustack": {
-  "commit_7d": 52,
-  "commit_90d": 455,
-  "rel_ver": "v2.3.0rc4",
-  "rel_pub": "2026-10-21",
-  "rel_days": 2,
-  "rel_n90": 6,
-  "rel_pre": true,
+  "commit_7d": 41,
+  "commit_90d": 469,
+  "rel_ver": "v2.3.0",
+  "rel_pub": "2026-10-23",
+  "rel_days": 7,
+  "rel_n90": 5,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 3,
   "sec_worst": "critical",
@@ -109,10 +109,10 @@
    "Dockerfile": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -161,11 +161,11 @@
   }
  },
  "homeassistant-ai/ha-mcp": {
-  "commit_7d": 77,
-  "commit_90d": 1026,
-  "rel_ver": "v9.0.0.dev3132",
-  "rel_pub": "2026-10-23",
-  "rel_days": 0,
+  "commit_7d": 119,
+  "commit_90d": 1060,
+  "rel_ver": "v9.1.0.dev3254",
+  "rel_pub": "2026-10-29",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -187,10 +187,10 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4706,6 +4706,52 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "haplollc/Mirage": {
+  "rel_ver": "sdcpp-2026-08-27",
+  "rel_pub": "2026-08-27",
+  "rel_days": 64,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Swift": 42,
+   "C++": 25,
+   "Shell": 19,
+   "C": 13
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "wqb578/code-animation-341-styles": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 100,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

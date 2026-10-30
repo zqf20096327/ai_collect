@@ -36,7 +36,7 @@
   "commit_90d": 0,
   "rel_ver": "v0.3.1",
   "rel_pub": "2025-07-31",
-  "rel_days": 449,
+  "rel_days": 456,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -52,10 +52,10 @@
    "Dockerfile": 0,
    "HTML": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -181,11 +181,11 @@
   }
  },
  "microsoft/apm": {
-  "commit_90d": 814,
-  "commit_7d": 412,
+  "commit_90d": 751,
+  "commit_7d": 1,
   "rel_ver": "v0.35.0",
   "rel_pub": "2026-10-22",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
@@ -205,21 +205,21 @@
    "PowerShell": 1,
    "CSS": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "foryourhealth111-pixel/Vibe-Skills": {
-  "commit_90d": 88,
-  "commit_7d": 43,
+  "commit_90d": 92,
+  "commit_7d": 7,
   "rel_ver": "v4.1.1",
   "rel_pub": "2026-10-18",
-  "rel_days": 5,
+  "rel_days": 12,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -235,21 +235,21 @@
    "Shell": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "ShawnPana/phone-harness": {
-  "commit_90d": 128,
-  "commit_7d": 9,
+  "commit_90d": 134,
+  "commit_7d": 6,
   "rel_ver": "0.3.3rc1",
   "rel_pub": "2026-10-17",
-  "rel_days": 6,
+  "rel_days": 13,
   "rel_n90": 9,
   "rel_pre": true,
   "rel_none": false,
@@ -262,10 +262,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4432,6 +4432,29 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "chatvia/chatvia": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "PHP": 73,
+   "Vue": 16,
+   "TypeScript": 5,
+   "Shell": 4,
+   "CSS": 1
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

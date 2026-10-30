@@ -1,11 +1,11 @@
 {
  "RSSNext/Folo": {
-  "commit_7d": 168,
-  "commit_90d": 720,
+  "commit_7d": 1,
+  "commit_90d": 697,
   "rel_ver": "mobile/v0.6.1",
   "rel_pub": "2026-10-19",
-  "rel_days": 4,
-  "rel_n90": 12,
+  "rel_days": 11,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 4,
@@ -25,18 +25,18 @@
    "JavaScript": 1,
    "HTML": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "ai-collection/ai-collection": {
-  "commit_7d": 8,
-  "commit_90d": 117,
+  "commit_7d": 6,
+  "commit_90d": 123,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -45,10 +45,10 @@
   "sec_ids": [],
   "contrib_n": 45,
   "lang": {},
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -56,9 +56,9 @@
  },
  "google/agents-cli": {
   "commit_7d": 1,
-  "commit_90d": 13,
-  "rel_ver": "v1.11.0",
-  "rel_pub": "2026-10-20",
+  "commit_90d": 14,
+  "rel_ver": "v1.12.0",
+  "rel_pub": "2026-10-27",
   "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
@@ -75,10 +75,10 @@
    "Makefile": 1,
    "Java": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4525,6 +4525,72 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "Omianheart/Deadline-resp-Tracker-AI": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "yanstd888/node2mint": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 47,
+   "Go": 43,
+   "Shell": 4,
+   "PLpgSQL": 4,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "webmechanicx/kothon-52-bangla-tts": {
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-10-15",
+  "rel_days": 15,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "Shell": 1
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

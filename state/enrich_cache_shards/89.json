@@ -40,10 +40,10 @@
  },
  "camel-ai/camel": {
   "commit_7d": 1,
-  "commit_90d": 38,
+  "commit_90d": 33,
   "rel_ver": "v0.2.91a7",
   "rel_pub": "2026-09-03",
-  "rel_days": 50,
+  "rel_days": 57,
   "rel_n90": 2,
   "rel_pre": true,
   "rel_none": false,
@@ -59,10 +59,10 @@
    "HTML": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -101,11 +101,11 @@
   }
  },
  "IvanMurzak/Unity-MCP": {
-  "commit_7d": 72,
-  "commit_90d": 188,
-  "rel_ver": "1.4.0",
-  "rel_pub": "2026-10-22",
-  "rel_days": 1,
+  "commit_7d": 137,
+  "commit_90d": 313,
+  "rel_ver": "1.5.0",
+  "rel_pub": "2026-10-24",
+  "rel_days": 6,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -121,10 +121,10 @@
    "Python": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4850,6 +4850,33 @@
    "security": "20261028",
    "contrib": "20261028",
    "lang": "20261028"
+  }
+ },
+ "labstack/fanout": {
+  "rel_ver": "v2026.10.23-alpha",
+  "rel_pub": "2026-10-26",
+  "rel_days": 4,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Go": 43,
+   "HTML": 28,
+   "TypeScript": 24,
+   "MDX": 2,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

@@ -1,10 +1,10 @@
 {
  "voicepaw/so-vits-svc-fork": {
-  "commit_7d": 5,
-  "commit_90d": 71,
+  "commit_7d": 4,
+  "commit_90d": 68,
   "rel_ver": "v4.2.30",
   "rel_pub": "2026-02-02",
-  "rel_days": 263,
+  "rel_days": 270,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -20,10 +20,10 @@
    "Nix": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -80,10 +80,10 @@
   }
  },
  "Ontos-AI/knowhere": {
-  "commit_90d": 511,
-  "commit_7d": 17,
-  "rel_ver": "v1.2.28",
-  "rel_pub": "2026-10-22",
+  "commit_90d": 579,
+  "commit_7d": 75,
+  "rel_ver": "v1.2.38",
+  "rel_pub": "2026-10-29",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -100,10 +100,10 @@
    "Makefile": 0,
    "PLpgSQL": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4262,6 +4262,92 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "Honorshogun/mimiga-ai-bot-resp": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "Pantani/ableton-mind": {
+  "rel_ver": "v0.1.1",
+  "rel_pub": "2026-06-11",
+  "rel_days": 141,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 57,
+   "Python": 36,
+   "JavaScript": 6,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "AdilShamim8/AI-for-Digital-Safety": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 60,
+   "TeX": 30,
+   "BibTeX Style": 5,
+   "Python": 4,
+   "Makefile": 0
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "afshinm/cactus-needle": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 60,
+   "JavaScript": 40
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

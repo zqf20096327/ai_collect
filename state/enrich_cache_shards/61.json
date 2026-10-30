@@ -1,10 +1,10 @@
 {
  "microsoft/graphrag": {
-  "commit_7d": 1,
+  "commit_7d": 0,
   "commit_90d": 20,
   "rel_ver": "v3.3.0",
   "rel_pub": "2026-10-08",
-  "rel_days": 15,
+  "rel_days": 22,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -20,21 +20,21 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "PaddlePaddle/Paddle": {
-  "commit_7d": 11,
-  "commit_90d": 164,
+  "commit_7d": 7,
+  "commit_90d": 145,
   "rel_ver": "v3.4.0",
   "rel_pub": "2026-09-11",
-  "rel_days": 42,
+  "rel_days": 49,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -50,10 +50,10 @@
    "CMake": 1,
    "Shell": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -61,9 +61,9 @@
  },
  "teableio/teable": {
   "commit_7d": 4,
-  "commit_90d": 9,
-  "rel_ver": "release.2026-10-22T04-57-21Z.3531",
-  "rel_pub": "2026-10-22",
+  "commit_90d": 12,
+  "rel_ver": "release.2026-10-29T13-13-24Z.3656",
+  "rel_pub": "2026-10-29",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -89,10 +89,10 @@
    "PLpgSQL": 0,
    "ANTLR": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -155,10 +155,10 @@
   }
  },
  "RunanywhereAI/runanywhere-sdks": {
-  "commit_7d": 9,
-  "commit_90d": 278,
-  "rel_ver": "cpp-desktop-v0.20.42",
-  "rel_pub": "2026-10-21",
+  "commit_7d": 0,
+  "commit_90d": 246,
+  "rel_ver": "cpp-desktop-v0.20.43",
+  "rel_pub": "2026-10-28",
   "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
@@ -175,10 +175,10 @@
    "Swift": 8,
    "Kotlin": 7
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -217,11 +217,11 @@
   }
  },
  "thewh1teagle/vibe": {
-  "commit_7d": 0,
-  "commit_90d": 143,
-  "rel_ver": "v3.2.2",
-  "rel_pub": "2026-09-05",
-  "rel_days": 41,
+  "commit_7d": 16,
+  "commit_90d": 157,
+  "rel_ver": "v3.3.0",
+  "rel_pub": "2026-10-29",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -237,10 +237,10 @@
    "C++": 5,
    "C": 2
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -301,8 +301,8 @@
   }
  },
  "BIT-DataLab/Edit-Banana": {
-  "commit_7d": 2,
-  "commit_90d": 12,
+  "commit_7d": 1,
+  "commit_90d": 11,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -314,18 +314,18 @@
    "Python": 99,
    "Shell": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "huggingface/notebooks": {
-  "commit_7d": 35,
-  "commit_90d": 72,
+  "commit_7d": 20,
+  "commit_90d": 90,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -339,10 +339,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

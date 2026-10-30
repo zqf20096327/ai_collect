@@ -1,10 +1,10 @@
 {
  "tt-a1i/archify": {
-  "commit_7d": 183,
-  "commit_90d": 1643,
+  "commit_7d": 10,
+  "commit_90d": 1627,
   "rel_ver": "v3.2.0",
   "rel_pub": "2026-10-19",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
@@ -20,22 +20,22 @@
    "Astro": 1,
    "TypeScript": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "netdata/netdata": {
-  "commit_7d": 48,
-  "commit_90d": 951,
-  "rel_ver": "v2.12.1",
-  "rel_pub": "2026-10-08",
-  "rel_days": 15,
-  "rel_n90": 4,
+  "commit_7d": 93,
+  "commit_90d": 970,
+  "rel_ver": "v2.12.2",
+  "rel_pub": "2026-10-23",
+  "rel_days": 7,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 10,
@@ -59,10 +59,10 @@
    "Python": 3,
    "Shell": 2
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -95,11 +95,11 @@
   }
  },
  "skorch-dev/skorch": {
-  "commit_90d": 7,
-  "commit_7d": 0,
+  "commit_90d": 9,
+  "commit_7d": 2,
   "rel_ver": "v1.4.0",
   "rel_pub": "2026-05-14",
-  "rel_days": 162,
+  "rel_days": 169,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -114,10 +114,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -148,11 +148,11 @@
   }
  },
  "TingsongYu/PyTorch-Tutorial-2nd": {
-  "commit_90d": 14,
+  "commit_90d": 15,
   "commit_7d": 1,
   "rel_ver": "v1.0.0",
   "rel_pub": "2024-05-20",
-  "rel_days": 886,
+  "rel_days": 893,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -168,10 +168,10 @@
    "Dockerfile": 0,
    "HTML": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4730,13 +4730,16 @@
    "Assembly": 1,
    "Shell": 1
   },
-  "enriched_at": "20261029",
+  "enriched_at": "20261030",
   "dim_ts": {
    "release": "20261029",
    "security": "20261029",
    "contrib": "20261029",
-   "lang": "20261029"
-  }
+   "lang": "20261029",
+   "commit": "20261030"
+  },
+  "commit_90d": 43,
+  "commit_7d": 3
  },
  "star-Cosmo/dsh-model-tidy": {
   "rel_ver": "v1.2.3",

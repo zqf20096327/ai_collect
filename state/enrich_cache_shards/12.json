@@ -30,11 +30,11 @@
   }
  },
  "flipped-aurora/gin-vue-admin": {
-  "commit_7d": 4,
-  "commit_90d": 24,
+  "commit_7d": 2,
+  "commit_90d": 26,
   "rel_ver": "v2.9.2-stable",
   "rel_pub": "2026-07-17",
-  "rel_days": 98,
+  "rel_days": 105,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -59,10 +59,10 @@
    "Go Template": 5,
    "SCSS": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -90,9 +90,9 @@
  },
  "NirDiamant/agents-towards-production": {
   "commit_7d": 4,
-  "commit_90d": 23,
-  "rel_ver": null,
-  "rel_none": true,
+  "commit_90d": 26,
+  "rel_ver": "book-v1.0",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -105,14 +105,18 @@
    "Kotlin": 0,
    "Shell": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
-  }
+  },
+  "rel_pub": "2026-10-26",
+  "rel_days": 4,
+  "rel_n90": 1,
+  "rel_pre": false
  },
  "flashlight/wav2letter": {
   "commit_7d": 0,
@@ -203,11 +207,11 @@
   }
  },
  "modelscope/ms-agent": {
-  "commit_7d": 3,
+  "commit_7d": 4,
   "commit_90d": 60,
   "rel_ver": "v1.6.0",
   "rel_pub": "2026-03-23",
-  "rel_days": 214,
+  "rel_days": 221,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -223,10 +227,10 @@
    "JavaScript": 0,
    "Shell": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -1508,13 +1512,16 @@
    "JavaScript": 55,
    "Python": 45
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261030",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261030"
+  },
+  "commit_90d": 812,
+  "commit_7d": 39
  },
  "Codeturion/unity-api-mcp": {
   "rel_ver": "v2.1.1",
@@ -3939,6 +3946,29 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "MeqdadDev/teachable-machine-lite": {
+  "rel_ver": "v1.3.0",
+  "rel_pub": "2026-10-29",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

@@ -1,11 +1,11 @@
 {
  "affaan-m/ECC": {
-  "commit_7d": 23,
-  "commit_90d": 1648,
+  "commit_7d": 199,
+  "commit_90d": 1915,
   "rel_ver": "v2.2.3",
   "rel_pub": "2026-10-01",
-  "rel_days": 22,
-  "rel_n90": 5,
+  "rel_days": 29,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -20,21 +20,21 @@
    "Shell": 2,
    "TypeScript": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "Unity-Technologies/ml-agents": {
-  "commit_7d": 2,
-  "commit_90d": 9,
+  "commit_7d": 5,
+  "commit_90d": 11,
   "rel_ver": "release_23_tag",
   "rel_pub": "2025-09-02",
-  "rel_days": 416,
+  "rel_days": 423,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -50,10 +50,10 @@
    "ShaderLab": 0,
    "Shell": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -88,11 +88,11 @@
   }
  },
  "steipete/summarize": {
-  "commit_7d": 10,
-  "commit_90d": 170,
+  "commit_7d": 8,
+  "commit_90d": 169,
   "rel_ver": "v0.25.3",
   "rel_pub": "2026-10-21",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -108,21 +108,21 @@
    "HTML": 1,
    "Shell": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "koharu-rs/koharu": {
-  "commit_7d": 51,
-  "commit_90d": 602,
+  "commit_7d": 30,
+  "commit_90d": 620,
   "rel_ver": "0.83.5",
   "rel_pub": "2026-09-22",
-  "rel_days": 31,
+  "rel_days": 38,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -138,10 +138,10 @@
    "C++": 4,
    "MDX": 3
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -152,7 +152,7 @@
   "commit_90d": 18,
   "rel_ver": "v1.7.0",
   "rel_pub": "2026-07-07",
-  "rel_days": 108,
+  "rel_days": 115,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -166,10 +166,10 @@
    "Dockerfile": 0,
    "Mako": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -206,11 +206,11 @@
   }
  },
  "Atmosphere/atmosphere": {
-  "commit_7d": 346,
-  "commit_90d": 981,
+  "commit_7d": 0,
+  "commit_90d": 974,
   "rel_ver": "atmosphere-4.0.76",
   "rel_pub": "2026-10-22",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -226,10 +226,10 @@
    "Kotlin": 2,
    "Vue": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -3988,6 +3988,29 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "angelolamonaca/PyTorch-Precision-Converter": {
+  "rel_ver": "v2.3.0",
+  "rel_pub": "2026-10-29",
+  "rel_days": 1,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

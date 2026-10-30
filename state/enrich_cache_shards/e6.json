@@ -1,7 +1,7 @@
 {
  "ahmedkhaleel2004/gitdiagram": {
-  "commit_7d": 15,
-  "commit_90d": 444,
+  "commit_7d": 3,
+  "commit_90d": 441,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -16,22 +16,22 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "wasp-lang/open-saas": {
-  "commit_7d": 3,
-  "commit_90d": 13,
+  "commit_7d": 14,
+  "commit_90d": 27,
   "rel_ver": "wasp-v0.26-template",
   "rel_pub": "2026-10-15",
-  "rel_days": 8,
-  "rel_n90": 2,
+  "rel_days": 15,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -46,21 +46,21 @@
    "JavaScript": 2,
    "CSS": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "aipoch/open-science": {
-  "commit_90d": 2871,
-  "commit_7d": 140,
-  "rel_ver": "v1.0.2",
-  "rel_pub": "2026-10-22",
-  "rel_days": 1,
+  "commit_90d": 2891,
+  "commit_7d": 137,
+  "rel_ver": "v1.0.5",
+  "rel_pub": "2026-10-28",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -76,22 +76,22 @@
    "CSS": 0,
    "R": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "LazyAGI/LazyLLM": {
-  "commit_90d": 69,
+  "commit_90d": 66,
   "commit_7d": 6,
-  "rel_ver": "v1.4.0",
-  "rel_pub": "2026-10-13",
-  "rel_days": 10,
-  "rel_n90": 11,
+  "rel_ver": "v1.5.0a0",
+  "rel_pub": "2026-10-28",
+  "rel_days": 2,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -106,18 +106,18 @@
    "CMake": 0,
    "TeX": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "morphik-org/morphik-core": {
-  "commit_90d": 17,
-  "commit_7d": 4,
+  "commit_90d": 19,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -132,10 +132,10 @@
    "PowerShell": 1,
    "Rust": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

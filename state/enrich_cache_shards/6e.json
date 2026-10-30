@@ -3887,13 +3887,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261029",
+  "enriched_at": "20261030",
   "dim_ts": {
    "release": "20261029",
    "security": "20261029",
    "contrib": "20261029",
-   "lang": "20261029"
-  }
+   "lang": "20261029",
+   "commit": "20261030"
+  },
+  "commit_90d": 9,
+  "commit_7d": 9
  },
  "AidaShika/personal-agent-dossier": {
   "rel_ver": "v1.0.0",
@@ -3916,6 +3919,44 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "cortad/cortad": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "alphaparkinc/genpark-agent-redteam-indirect-injection-fuzzer-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

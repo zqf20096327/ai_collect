@@ -1,7 +1,7 @@
 {
  "anthropics/claude-plugins-official": {
-  "commit_7d": 105,
-  "commit_90d": 2091,
+  "commit_7d": 18,
+  "commit_90d": 1897,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -16,10 +16,10 @@
    "JavaScript": 8,
    "Shell": 3
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -138,11 +138,11 @@
   }
  },
  "satellite-image-deep-learning/techniques": {
-  "commit_7d": 8,
-  "commit_90d": 53,
+  "commit_7d": 6,
+  "commit_90d": 59,
   "rel_ver": "v1.3",
   "rel_pub": "2025-07-05",
-  "rel_days": 475,
+  "rel_days": 482,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -152,21 +152,21 @@
   "sec_ids": [],
   "contrib_n": 29,
   "lang": {},
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "tech-leads-club/agent-skills": {
-  "commit_90d": 122,
-  "commit_7d": 4,
-  "rel_ver": "skills-catalog-v0.17.13",
-  "rel_pub": "2026-10-16",
-  "rel_days": 7,
+  "commit_90d": 92,
+  "commit_7d": 11,
+  "rel_ver": "skills-catalog-v0.17.15",
+  "rel_pub": "2026-10-26",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -182,10 +182,10 @@
    "Shell": 2,
    "HTML": 2
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4102,6 +4102,74 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "Windlich13044/rpocket-skill4agent-mcp-server": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "Eileenes/pi-desktop": {
+  "rel_ver": "v0.2.4",
+  "rel_pub": "2026-10-09",
+  "rel_days": 21,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 275,
+  "lang": {
+   "TypeScript": 95,
+   "CSS": 4,
+   "HTML": 1,
+   "JavaScript": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "luckui/dsh-game": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 97,
+   "Ren'Py": 2,
+   "JavaScript": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

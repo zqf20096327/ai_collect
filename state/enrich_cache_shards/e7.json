@@ -1,7 +1,7 @@
 {
  "google-research/google-research": {
-  "commit_7d": 4,
-  "commit_90d": 64,
+  "commit_7d": 8,
+  "commit_90d": 69,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -16,10 +16,10 @@
    "JavaScript": 1,
    "Shell": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -54,11 +54,11 @@
   }
  },
  "mostlygeek/llama-swap": {
-  "commit_90d": 123,
-  "commit_7d": 3,
-  "rel_ver": "v266",
-  "rel_pub": "2026-10-22",
-  "rel_days": 1,
+  "commit_90d": 129,
+  "commit_7d": 15,
+  "rel_ver": "v268",
+  "rel_pub": "2026-10-28",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -74,10 +74,10 @@
    "Shell": 3,
    "CSS": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -114,10 +114,10 @@
   }
  },
  "Blaizzy/mlx-vlm": {
-  "commit_90d": 710,
-  "commit_7d": 68,
-  "rel_ver": "v0.7.10",
-  "rel_pub": "2026-10-21",
+  "commit_90d": 711,
+  "commit_7d": 82,
+  "rel_ver": "v0.7.11",
+  "rel_pub": "2026-10-28",
   "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
@@ -130,10 +130,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -162,8 +162,8 @@
   }
  },
  "sacridini/Awesome-Geospatial": {
-  "commit_90d": 123,
-  "commit_7d": 12,
+  "commit_90d": 115,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -172,22 +172,22 @@
   "sec_ids": [],
   "contrib_n": 180,
   "lang": {},
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "uxlfoundation/oneDNN": {
-  "commit_90d": 1011,
-  "commit_7d": 92,
-  "rel_ver": "v3.13.4",
-  "rel_pub": "2026-10-06",
-  "rel_days": 17,
-  "rel_n90": 7,
+  "commit_90d": 1071,
+  "commit_7d": 97,
+  "rel_ver": "v3.14.1",
+  "rel_pub": "2026-10-29",
+  "rel_days": 1,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -202,10 +202,10 @@
    "Python": 0,
    "Shell": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -3815,6 +3815,25 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "interfere-inc/landmines": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 100
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

@@ -102,11 +102,11 @@
   }
  },
  "interpretml/interpret": {
-  "commit_90d": 18,
-  "commit_7d": 8,
+  "commit_90d": 24,
+  "commit_7d": 6,
   "rel_ver": "v0.7.8",
   "rel_pub": "2026-03-17",
-  "rel_days": 220,
+  "rel_days": 227,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -122,17 +122,17 @@
    "C": 1,
    "R": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "langchain-ai/chat-langchain": {
-  "commit_90d": 27,
+  "commit_90d": 32,
   "commit_7d": 7,
   "rel_ver": null,
   "rel_none": true,
@@ -148,21 +148,21 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "Helicone/helicone": {
-  "commit_90d": 13,
-  "commit_7d": 4,
+  "commit_90d": 14,
+  "commit_7d": 1,
   "rel_ver": "v2025.08.21-1",
   "rel_pub": "2025-08-21",
-  "rel_days": 428,
+  "rel_days": 435,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -178,10 +178,10 @@
    "PLpgSQL": 0,
    "Shell": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -267,11 +267,11 @@
   }
  },
  "oracle-devrel/oracle-ai-developer-hub": {
-  "commit_90d": 179,
-  "commit_7d": 2,
+  "commit_90d": 185,
+  "commit_7d": 7,
   "rel_ver": "OCW24",
   "rel_pub": "2024-11-19",
-  "rel_days": 703,
+  "rel_days": 710,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -287,10 +287,10 @@
    "Go": 3,
    "JavaScript": 3
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

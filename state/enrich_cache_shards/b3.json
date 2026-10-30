@@ -22,11 +22,11 @@
   }
  },
  "dotnet/machinelearning": {
-  "commit_7d": 13,
-  "commit_90d": 65,
+  "commit_7d": 3,
+  "commit_90d": 68,
   "rel_ver": "v5.0.1",
   "rel_pub": "2026-10-15",
-  "rel_days": 8,
+  "rel_days": 15,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -42,21 +42,21 @@
    "PowerShell": 1,
    "CMake": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "tensorflow/tensorboard": {
-  "commit_90d": 9,
+  "commit_90d": 10,
   "commit_7d": 2,
   "rel_ver": "2.21.0",
   "rel_pub": "2026-06-29",
-  "rel_days": 116,
+  "rel_days": 123,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -72,10 +72,10 @@
    "Rust": 3,
    "HTML": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -105,11 +105,11 @@
   }
  },
  "mistralai/mistral-vibe": {
-  "commit_90d": 27,
-  "commit_7d": 5,
-  "rel_ver": "v3.0.2",
-  "rel_pub": "2026-10-22",
-  "rel_days": 1,
+  "commit_90d": 25,
+  "commit_7d": 1,
+  "rel_ver": "v3.0.3",
+  "rel_pub": "2026-10-26",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -125,10 +125,10 @@
    "Nix": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

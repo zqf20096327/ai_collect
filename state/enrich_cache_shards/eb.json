@@ -55,10 +55,10 @@
  },
  "tensorflow/docs": {
   "commit_7d": 1,
-  "commit_90d": 6,
+  "commit_90d": 7,
   "rel_ver": "2023.5.24.56664",
   "rel_pub": "2023-05-25",
-  "rel_days": 1247,
+  "rel_days": 1254,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -74,20 +74,20 @@
    "Shell": 0,
    "Jinja": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "langwatch/langwatch": {
-  "commit_7d": 103,
-  "commit_90d": 1351,
-  "rel_ver": "v3.21.0",
-  "rel_pub": "2026-10-21",
+  "commit_7d": 130,
+  "commit_90d": 1345,
+  "rel_ver": "typescript-sdk@v2.0.0",
+  "rel_pub": "2026-10-28",
   "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
@@ -106,22 +106,22 @@
    "Python": 2,
    "JavaScript": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "sligter/LandPPT": {
-  "commit_7d": 11,
-  "commit_90d": 87,
-  "rel_ver": "v0.4.0",
-  "rel_pub": "2026-10-13",
-  "rel_days": 10,
-  "rel_n90": 1,
+  "commit_7d": 24,
+  "commit_90d": 103,
+  "rel_ver": "v0.5.1",
+  "rel_pub": "2026-10-25",
+  "rel_days": 5,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -136,10 +136,10 @@
    "TypeScript": 4,
    "CSS": 3
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4163,6 +4163,65 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "mugicha-AI/ComfyUI-PoseAtlas": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 50,
+   "JavaScript": 50
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "thejanu-dileepa/wifi-human-detector-esp32": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 58,
+   "C++": 33,
+   "TypeScript": 5,
+   "JavaScript": 3
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "thienkhiykinh2832-source/CoreGold---Beginner-Guide-to-Virtual-Cards-Subscribe-to-Global-Services-with-Ease": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

@@ -4024,5 +4024,57 @@
    "contrib": "20261029",
    "lang": "20261029"
   }
+ },
+ "microsoft/FastTrack": {
+  "commit_90d": 95,
+  "commit_7d": 18,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 26,
+  "lang": {
+   "HTML": 76,
+   "PowerShell": 21,
+   "JavaScript": 3,
+   "CSS": 0
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "commit": "20261030",
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "profullstack/tronbrowser.dev": {
+  "rel_ver": "v3.19.4",
+  "rel_pub": "2026-10-20",
+  "rel_days": 10,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 13,
+  "lang": {
+   "TypeScript": 52,
+   "JavaScript": 22,
+   "Shell": 10,
+   "Python": 8,
+   "HTML": 5
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
  }
 }

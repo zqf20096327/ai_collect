@@ -1,7 +1,7 @@
 {
  "sansan0/TrendRadar": {
-  "commit_7d": 1,
-  "commit_90d": 15,
+  "commit_7d": 5,
+  "commit_90d": 22,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -16,20 +16,20 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "iOfficeAI/OfficeCLI": {
-  "commit_7d": 13,
-  "commit_90d": 243,
-  "rel_ver": "v1.0.158",
-  "rel_pub": "2026-10-20",
+  "commit_7d": 26,
+  "commit_90d": 212,
+  "rel_ver": "v1.0.159",
+  "rel_pub": "2026-10-27",
   "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
@@ -46,10 +46,10 @@
    "Python": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -86,12 +86,12 @@
   }
  },
  "spring-projects/spring-ai": {
-  "commit_7d": 6,
-  "commit_90d": 249,
-  "rel_ver": "v2.1.0-M1",
-  "rel_pub": "2026-09-25",
-  "rel_days": 28,
-  "rel_n90": 2,
+  "commit_7d": 10,
+  "commit_90d": 257,
+  "rel_ver": "v2.1.0-RC1",
+  "rel_pub": "2026-10-23",
+  "rel_days": 7,
+  "rel_n90": 4,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
@@ -106,10 +106,10 @@
    "ANTLR": 0,
    "CQL": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -3841,6 +3841,23 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "MasterSkyat57941/ArcheAge-resocket-PlayerBots": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

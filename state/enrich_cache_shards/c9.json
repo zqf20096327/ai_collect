@@ -60,7 +60,7 @@
   "commit_90d": 22,
   "rel_ver": "web-v0.136.0",
   "rel_pub": "2026-10-09",
-  "rel_days": 14,
+  "rel_days": 21,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -78,21 +78,21 @@
    "Shell": 0,
    "PLpgSQL": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "apache/seatunnel": {
-  "commit_7d": 68,
-  "commit_90d": 688,
+  "commit_7d": 74,
+  "commit_90d": 728,
   "rel_ver": "v3.0.0",
   "rel_pub": "2026-09-29",
-  "rel_days": 24,
+  "rel_days": 31,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -108,23 +108,23 @@
    "Shell": 0,
    "HTML": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "jacklandrin/OnlySwitch": {
-  "commit_90d": 200,
-  "commit_7d": 22,
-  "rel_ver": "release_3.1.0",
-  "rel_pub": "2026-10-20",
-  "rel_days": 3,
+  "commit_90d": 219,
+  "commit_7d": 24,
+  "rel_ver": "beta_3.3.0",
+  "rel_pub": "2026-10-29",
+  "rel_days": 1,
   "rel_n90": 12,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -137,22 +137,22 @@
    "Python": 0,
    "Shell": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "h2oai/h2o-llmstudio": {
-  "commit_90d": 27,
-  "commit_7d": 1,
-  "rel_ver": "v1.15.2",
-  "rel_pub": "2026-09-26",
-  "rel_days": 27,
-  "rel_n90": 4,
+  "commit_90d": 36,
+  "commit_7d": 9,
+  "rel_ver": "v1.15.3",
+  "rel_pub": "2026-10-24",
+  "rel_days": 6,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -167,10 +167,10 @@
    "Gherkin": 0,
    "Shell": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -201,11 +201,11 @@
   }
  },
  "deepflowio/deepflow": {
-  "commit_90d": 8,
+  "commit_90d": 9,
   "commit_7d": 1,
   "rel_ver": "v7.2.3",
   "rel_pub": "2026-10-15",
-  "rel_days": 8,
+  "rel_days": 15,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -221,22 +221,22 @@
    "C++": 1,
    "xBase": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "vllm-project/llm-compressor": {
-  "commit_90d": 214,
-  "commit_7d": 26,
-  "rel_ver": "0.14.0.1",
-  "rel_pub": "2026-10-22",
+  "commit_90d": 232,
+  "commit_7d": 28,
+  "rel_ver": "0.15.0",
+  "rel_pub": "2026-10-29",
   "rel_days": 1,
-  "rel_n90": 10,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -249,10 +249,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4225,6 +4225,96 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "stfc/qiskit-machine-learning": {
+  "commit_90d": 5,
+  "commit_7d": 0,
+  "rel_ver": "0.9.1",
+  "rel_pub": "2026-08-19",
+  "rel_days": 72,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 84,
+  "lang": {
+   "Python": 100,
+   "Makefile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "commit": "20261030",
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "besoeasy/originless": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Go": 68,
+   "HTML": 27,
+   "Shell": 3,
+   "Dockerfile": 2
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "Hydrayrwind146550-alt/medical-risk-screening-telegram-rpocket-team-bot": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "fmind/mlops-coding-skills": {
+  "rel_ver": "v2.1.0",
+  "rel_pub": "2026-10-12",
+  "rel_days": 18,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

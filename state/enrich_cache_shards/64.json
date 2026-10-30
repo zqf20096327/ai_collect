@@ -1,10 +1,10 @@
 {
  "microsoft/autogen": {
   "commit_7d": 1,
-  "commit_90d": 1,
+  "commit_90d": 2,
   "rel_ver": "python-v0.7.5",
   "rel_pub": "2025-09-30",
-  "rel_days": 388,
+  "rel_days": 395,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -20,21 +20,21 @@
    "HTML": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "pingcap/tidb": {
-  "commit_7d": 39,
-  "commit_90d": 390,
+  "commit_7d": 43,
+  "commit_90d": 399,
   "rel_ver": "v8.5.8",
   "rel_pub": "2026-08-27",
-  "rel_days": 57,
+  "rel_days": 64,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -52,22 +52,22 @@
    "Yacc": 1,
    "Jsonnet": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "adbar/trafilatura": {
-  "commit_90d": 58,
-  "commit_7d": 14,
+  "commit_90d": 73,
+  "commit_7d": 20,
   "rel_ver": "v2.3.1",
   "rel_pub": "2026-10-06",
-  "rel_days": 17,
-  "rel_n90": 3,
+  "rel_days": 24,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -78,10 +78,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -110,7 +110,7 @@
   }
  },
  "Astrosp/Awesome-OSINT-List": {
-  "commit_90d": 63,
+  "commit_90d": 66,
   "commit_7d": 4,
   "rel_ver": null,
   "rel_none": true,
@@ -122,10 +122,10 @@
   "lang": {
    "Shell": 100
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -239,8 +239,8 @@
   }
  },
  "howie6879/mlhub123": {
-  "commit_90d": 6,
-  "commit_7d": 5,
+  "commit_90d": 7,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -249,10 +249,10 @@
   "sec_ids": [],
   "contrib_n": 5,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4272,5 +4272,51 @@
   },
   "commit_90d": 6,
   "commit_7d": 6
+ },
+ "Alpha-Park/genpark-agent-mcp-tool-permission-least-privilege-auditor-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "nogic-app/nogic": {
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-10-30",
+  "rel_days": 0,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "TypeScript": 51,
+   "Python": 45,
+   "Rust": 3,
+   "CSS": 1,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
  }
 }

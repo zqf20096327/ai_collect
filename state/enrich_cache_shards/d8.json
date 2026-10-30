@@ -1,10 +1,10 @@
 {
  "deepset-ai/haystack": {
-  "commit_7d": 75,
-  "commit_90d": 752,
+  "commit_7d": 35,
+  "commit_90d": 736,
   "rel_ver": "v3.4.1",
   "rel_pub": "2026-10-21",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -22,10 +22,10 @@
    "Shell": 0,
    "HCL": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -54,11 +54,11 @@
   }
  },
  "wanshuiyin/Auto-claude-code-research-in-sleep": {
-  "commit_7d": 51,
-  "commit_90d": 197,
+  "commit_7d": 12,
+  "commit_90d": 208,
   "rel_ver": "v0.4.28",
   "rel_pub": "2026-09-28",
-  "rel_days": 25,
+  "rel_days": 32,
   "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
@@ -73,10 +73,10 @@
    "HTML": 8,
    "PowerShell": 3
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -113,8 +113,8 @@
   }
  },
  "google/adk-recipes": {
-  "commit_7d": 3,
-  "commit_90d": 218,
+  "commit_7d": 11,
+  "commit_90d": 219,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -129,10 +129,10 @@
    "JavaScript": 1,
    "Kotlin": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -165,7 +165,7 @@
   "commit_7d": 0,
   "rel_ver": "v1.1.38",
   "rel_pub": "2026-09-20",
-  "rel_days": 33,
+  "rel_days": 40,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -182,10 +182,10 @@
    "Python": 98,
    "HTML": 2
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

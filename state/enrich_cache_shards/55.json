@@ -28,11 +28,11 @@
   }
  },
  "modelscope/ms-swift": {
-  "commit_7d": 19,
-  "commit_90d": 337,
+  "commit_7d": 23,
+  "commit_90d": 343,
   "rel_ver": "v4.6.0",
   "rel_pub": "2026-10-13",
-  "rel_days": 10,
+  "rel_days": 17,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -50,10 +50,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -107,11 +107,11 @@
   }
  },
  "kucherenko/jscpd": {
-  "commit_90d": 719,
-  "commit_7d": 63,
+  "commit_90d": 752,
+  "commit_7d": 42,
   "rel_ver": "v5.4.2",
   "rel_pub": "2026-10-20",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -127,10 +127,10 @@
    "TypeScript": 2,
    "Shell": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4180,6 +4180,27 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "qiwei66/model-bump": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 97,
+   "Python": 2,
+   "TypeScript": 1
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

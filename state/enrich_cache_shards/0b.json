@@ -1,10 +1,10 @@
 {
  "zylon-ai/private-gpt": {
-  "commit_7d": 5,
-  "commit_90d": 64,
+  "commit_7d": 4,
+  "commit_90d": 56,
   "rel_ver": "v1.0.1",
   "rel_pub": "2026-06-18",
-  "rel_days": 127,
+  "rel_days": 134,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -20,20 +20,20 @@
    "Jinja": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "trycua/cua": {
-  "commit_7d": 234,
-  "commit_90d": 1832,
-  "rel_ver": "cua-spaces-v0.13.1",
-  "rel_pub": "2026-10-22",
+  "commit_7d": 252,
+  "commit_90d": 1974,
+  "rel_ver": "cua-spaces-v0.17.0",
+  "rel_pub": "2026-10-29",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -50,10 +50,10 @@
    "Swift": 10,
    "Go": 3
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -86,11 +86,11 @@
   }
  },
  "NVIDIA/NemoClaw": {
-  "commit_7d": 68,
-  "commit_90d": 2771,
+  "commit_7d": 84,
+  "commit_90d": 2589,
   "rel_ver": "ci-native-podman-e2e-2026-10-01",
   "rel_pub": "2026-10-01",
-  "rel_days": 22,
+  "rel_days": 29,
   "rel_n90": 1,
   "rel_pre": true,
   "rel_none": false,
@@ -106,20 +106,20 @@
    "Dockerfile": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "triggerdotdev/trigger.dev": {
-  "commit_7d": 103,
-  "commit_90d": 813,
-  "rel_ver": "v4.7.7",
-  "rel_pub": "2026-10-22",
+  "commit_7d": 109,
+  "commit_90d": 879,
+  "rel_ver": "v4.8.2",
+  "rel_pub": "2026-10-29",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -145,21 +145,21 @@
    "CSS": 0,
    "ANTLR": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "apache/doris": {
-  "commit_7d": 150,
-  "commit_90d": 1329,
+  "commit_7d": 165,
+  "commit_90d": 1420,
   "rel_ver": "4.1.5-release",
   "rel_pub": "2026-10-15",
-  "rel_days": 8,
+  "rel_days": 15,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -175,10 +175,10 @@
    "Shell": 1,
    "Thrift": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -242,11 +242,11 @@
   }
  },
  "pydantic/logfire": {
-  "commit_7d": 47,
-  "commit_90d": 339,
-  "rel_ver": "v5.2.0",
-  "rel_pub": "2026-10-13",
-  "rel_days": 10,
+  "commit_7d": 36,
+  "commit_90d": 335,
+  "rel_ver": "v5.4.0",
+  "rel_pub": "2026-10-26",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -260,10 +260,10 @@
    "JavaScript": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4366,13 +4366,16 @@
    "TypeScript": 94,
    "CSS": 6
   },
-  "enriched_at": "20261025",
+  "enriched_at": "20261030",
   "dim_ts": {
    "release": "20261025",
    "security": "20261025",
    "contrib": "20261025",
-   "lang": "20261025"
-  }
+   "lang": "20261025",
+   "commit": "20261030"
+  },
+  "commit_90d": 3,
+  "commit_7d": 3
  },
  "statico/jev-nethack": {
   "rel_ver": null,

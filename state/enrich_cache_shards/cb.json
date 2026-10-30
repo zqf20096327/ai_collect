@@ -1,11 +1,11 @@
 {
  "elizaOS/eliza": {
-  "commit_7d": 990,
-  "commit_90d": 23223,
+  "commit_7d": 1020,
+  "commit_90d": 23984,
   "rel_ver": "pr-evidence-14",
   "rel_pub": "2026-09-26",
-  "rel_days": 27,
-  "rel_n90": 12,
+  "rel_days": 34,
+  "rel_n90": 10,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 2,
@@ -23,10 +23,10 @@
    "Java": 1,
    "Shell": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -63,11 +63,11 @@
   }
  },
  "langchain-ai/openwiki": {
-  "commit_7d": 4,
-  "commit_90d": 294,
+  "commit_7d": 0,
+  "commit_90d": 256,
   "rel_ver": "v0.7.2",
   "rel_pub": "2026-10-09",
-  "rel_days": 14,
+  "rel_days": 21,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -84,10 +84,10 @@
    "JavaScript": 1,
    "CSS": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -114,11 +114,11 @@
   }
  },
  "lmcinnes/umap": {
-  "commit_90d": 39,
+  "commit_90d": 45,
   "commit_7d": 4,
   "rel_ver": "release-0.5.12",
   "rel_pub": "2026-04-08",
-  "rel_days": 198,
+  "rel_days": 205,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -133,10 +133,10 @@
    "TeX": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -3905,6 +3905,27 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "anveshmuppeda/agents-on-aws": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 69,
+   "Shell": 30,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

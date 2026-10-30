@@ -1,7 +1,7 @@
 {
  "f/prompts.chat": {
-  "commit_7d": 243,
-  "commit_90d": 1751,
+  "commit_7d": 975,
+  "commit_90d": 2635,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -16,21 +16,21 @@
    "JavaScript": 0,
    "Shell": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "ggml-org/llama.cpp": {
-  "commit_7d": 154,
-  "commit_90d": 1708,
-  "rel_ver": "b11829",
-  "rel_pub": "2026-10-22",
-  "rel_days": 1,
+  "commit_7d": 175,
+  "commit_90d": 1788,
+  "rel_ver": "b11998",
+  "rel_pub": "2026-10-30",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -55,10 +55,10 @@
    "Cuda": 5,
    "TypeScript": 4
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -96,10 +96,10 @@
  },
  "coze-dev/coze-loop": {
   "commit_7d": 5,
-  "commit_90d": 67,
+  "commit_90d": 66,
   "rel_ver": "v1.5.1",
   "rel_pub": "2026-01-20",
-  "rel_days": 276,
+  "rel_days": 283,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -115,10 +115,10 @@
    "JavaScript": 0,
    "Less": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -151,8 +151,8 @@
   }
  },
  "Sumanth077/Hands-On-AI-Engineering": {
-  "commit_7d": 62,
-  "commit_90d": 107,
+  "commit_7d": 4,
+  "commit_90d": 108,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -167,10 +167,10 @@
    "JavaScript": 1,
    "HTML": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -264,10 +264,10 @@
  },
  "microsoft/PowerApps-Samples": {
   "commit_7d": 1,
-  "commit_90d": 7,
+  "commit_90d": 8,
   "rel_ver": "JavaScriptWebResourceExampleSolutionv1.0",
   "rel_pub": "2026-08-31",
-  "rel_days": 47,
+  "rel_days": 60,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -283,10 +283,10 @@
    "JavaScript": 0,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4144,6 +4144,30 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "fmind/mlops-coding-course": {
+  "commit_90d": 14,
+  "commit_7d": 3,
+  "rel_ver": "v7.1.0",
+  "rel_pub": "2026-10-12",
+  "rel_days": 18,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {},
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "commit": "20261030",
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

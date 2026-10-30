@@ -1,10 +1,10 @@
 {
  "Unstructured-IO/unstructured": {
-  "commit_7d": 29,
-  "commit_90d": 81,
-  "rel_ver": "0.27.34",
-  "rel_pub": "2026-10-22",
-  "rel_days": 1,
+  "commit_7d": 36,
+  "commit_90d": 116,
+  "rel_ver": "0.27.36",
+  "rel_pub": "2026-10-30",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -24,10 +24,10 @@
    "Rich Text Format": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -135,7 +135,7 @@
   "commit_7d": 0,
   "rel_ver": "7.0.0",
   "rel_pub": "2026-09-24",
-  "rel_days": 29,
+  "rel_days": 36,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -151,21 +151,21 @@
    "Java": 2,
    "Shell": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "astroautomata/PySR": {
-  "commit_90d": 114,
-  "commit_7d": 13,
+  "commit_90d": 116,
+  "commit_7d": 2,
   "rel_ver": "v2.7.2",
   "rel_pub": "2026-10-19",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -181,10 +181,10 @@
    "Shell": 0,
    "HCL": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4107,6 +4107,25 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "PeaceOfElf37336/resilient-telegram-rpocket-bot": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

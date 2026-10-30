@@ -1,10 +1,10 @@
 {
  "microsoft/onnxruntime": {
-  "commit_7d": 71,
-  "commit_90d": 875,
-  "rel_ver": "v1.31.0",
-  "rel_pub": "2026-10-09",
-  "rel_days": 14,
+  "commit_7d": 88,
+  "commit_90d": 905,
+  "rel_ver": "v1.30.1",
+  "rel_pub": "2026-10-29",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -20,21 +20,21 @@
    "Cuda": 2,
    "Assembly": 2
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "xbtlin/ai-berkshire": {
-  "commit_7d": 62,
-  "commit_90d": 312,
+  "commit_7d": 8,
+  "commit_90d": 305,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-04-07",
-  "rel_days": 199,
+  "rel_days": 206,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -50,10 +50,10 @@
    "Roff": 0,
    "Shell": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -88,11 +88,11 @@
   }
  },
  "FailproofAI/failproofai": {
-  "commit_7d": 19,
-  "commit_90d": 244,
-  "rel_ver": "v1.0.12-beta.0",
-  "rel_pub": "2026-10-22",
-  "rel_days": 1,
+  "commit_7d": 23,
+  "commit_90d": 243,
+  "rel_ver": "v1.0.13-beta.2",
+  "rel_pub": "2026-10-28",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -108,10 +108,10 @@
    "Rust": 9,
    "JavaScript": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4204,6 +4204,26 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "lnyuqian/comfyui-pose-gallery": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 56,
+   "JavaScript": 44
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

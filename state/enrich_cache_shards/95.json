@@ -1,10 +1,10 @@
 {
  "DietrichGebert/ponytail": {
-  "commit_7d": 16,
-  "commit_90d": 157,
-  "rel_ver": "v5.3.2",
-  "rel_pub": "2026-10-16",
-  "rel_days": 7,
+  "commit_7d": 6,
+  "commit_90d": 163,
+  "rel_ver": "v5.3.3",
+  "rel_pub": "2026-10-29",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -20,21 +20,21 @@
    "PowerShell": 0,
    "Shell": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "supabase/supabase": {
-  "commit_7d": 188,
-  "commit_90d": 1756,
+  "commit_7d": 186,
+  "commit_90d": 1821,
   "rel_ver": "v1.26.08",
   "rel_pub": "2026-08-07",
-  "rel_days": 77,
+  "rel_days": 84,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -50,10 +50,10 @@
    "CSS": 1,
    "Shell": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -134,10 +134,10 @@
   }
  },
  "ThinkInAIXYZ/deepchat": {
-  "commit_90d": 1157,
-  "commit_7d": 60,
-  "rel_ver": "v1.1.4-beta.5",
-  "rel_pub": "2026-10-21",
+  "commit_90d": 1041,
+  "commit_7d": 63,
+  "rel_ver": "v1.1.4-beta.7",
+  "rel_pub": "2026-10-28",
   "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": true,
@@ -162,21 +162,21 @@
    "Python": 1,
    "HTML": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "Eigenwise/atomic-agents": {
-  "commit_90d": 118,
-  "commit_7d": 18,
+  "commit_90d": 123,
+  "commit_7d": 7,
   "rel_ver": "v2.15.0",
   "rel_pub": "2026-10-21",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
@@ -189,21 +189,21 @@
    "Python": 100,
    "PowerShell": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "NVIDIA/Model-Optimizer": {
-  "commit_90d": 427,
-  "commit_7d": 75,
-  "rel_ver": "0.48.0rc1",
-  "rel_pub": "2026-10-17",
-  "rel_days": 6,
+  "commit_90d": 522,
+  "commit_7d": 108,
+  "rel_ver": "0.48.0rc2",
+  "rel_pub": "2026-10-28",
+  "rel_days": 2,
   "rel_n90": 11,
   "rel_pre": true,
   "rel_none": false,
@@ -219,22 +219,22 @@
    "Jinja": 0,
    "C++": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "ag2ai/ag2": {
-  "commit_90d": 266,
-  "commit_7d": 30,
-  "rel_ver": "v1.2.1",
-  "rel_pub": "2026-10-21",
-  "rel_days": 2,
-  "rel_n90": 12,
+  "commit_90d": 279,
+  "commit_7d": 34,
+  "rel_ver": "v1.2.2",
+  "rel_pub": "2026-10-27",
+  "rel_days": 3,
+  "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 10,
@@ -258,20 +258,20 @@
    "JavaScript": 0,
    "CSS": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "intuitem/ciso-assistant-community": {
-  "commit_90d": 409,
-  "commit_7d": 55,
-  "rel_ver": "v4.1.3",
-  "rel_pub": "2026-10-17",
+  "commit_90d": 425,
+  "commit_7d": 39,
+  "rel_ver": "v4.1.5",
+  "rel_pub": "2026-10-24",
   "rel_days": 6,
   "rel_n90": 12,
   "rel_pre": false,
@@ -288,10 +288,10 @@
    "HTML": 3,
    "Typst": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

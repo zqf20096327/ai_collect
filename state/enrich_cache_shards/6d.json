@@ -1,10 +1,10 @@
 {
  "aaif-goose/goose": {
-  "commit_7d": 40,
-  "commit_90d": 749,
-  "rel_ver": "v1.55.0",
-  "rel_pub": "2026-10-16",
-  "rel_days": 7,
+  "commit_7d": 25,
+  "commit_90d": 689,
+  "rel_ver": "v1.57.0",
+  "rel_pub": "2026-10-28",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -22,10 +22,10 @@
    "JavaScript": 1,
    "Shell": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -33,11 +33,11 @@
  },
  "HKUDS/LightRAG": {
   "commit_7d": 0,
-  "commit_90d": 1819,
+  "commit_90d": 1570,
   "rel_ver": "v1.5.7",
   "rel_pub": "2026-09-02",
-  "rel_days": 51,
-  "rel_n90": 5,
+  "rel_days": 58,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 23,
@@ -61,21 +61,21 @@
    "JavaScript": 0,
    "CSS": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "qdrant/qdrant": {
-  "commit_7d": 172,
+  "commit_7d": 0,
   "commit_90d": 1142,
   "rel_ver": "v1.20.0",
   "rel_pub": "2026-10-22",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -94,10 +94,10 @@
    "HTML": 0,
    "C": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4766,6 +4766,50 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "loyaltyzkeeper/release-resocket-flow-docs": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "lupingQAQ/inkblade": {
+  "rel_ver": "probe-v0.1.1",
+  "rel_pub": "2026-10-28",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 79,
+   "Go": 12,
+   "TypeScript": 2,
+   "Rust": 2,
+   "HTML": 2
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

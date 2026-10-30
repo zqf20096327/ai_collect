@@ -57,11 +57,11 @@
   }
  },
  "google/adk-python": {
-  "commit_7d": 132,
-  "commit_90d": 1545,
-  "rel_ver": "v2.12.0",
-  "rel_pub": "2026-10-13",
-  "rel_days": 10,
+  "commit_7d": 111,
+  "commit_90d": 1533,
+  "rel_ver": "v2.13.0",
+  "rel_pub": "2026-10-23",
+  "rel_days": 7,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -77,21 +77,21 @@
    "JavaScript": 0,
    "HCL": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "iii-hq/iii": {
-  "commit_7d": 24,
-  "commit_90d": 240,
+  "commit_7d": 22,
+  "commit_90d": 249,
   "rel_ver": "iii/v0.25.0",
   "rel_pub": "2026-10-22",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -107,10 +107,10 @@
    "Go": 2,
    "CSS": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4059,6 +4059,48 @@
    "security": "20261027",
    "contrib": "20261027",
    "lang": "20261027"
+  }
+ },
+ "coffeebreak-ai/coffee-llm": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
+ },
+ "hiroki-abe-58/ComfyUI-Antalia": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-10-19",
+  "rel_days": 11,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

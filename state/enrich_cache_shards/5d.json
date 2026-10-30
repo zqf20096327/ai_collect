@@ -1,9 +1,9 @@
 {
  "openclaw/openclaw": {
-  "commit_7d": 5712,
-  "commit_90d": 45601,
-  "rel_ver": "v2026.10.6",
-  "rel_pub": "2026-10-22",
+  "commit_7d": 4779,
+  "commit_90d": 47506,
+  "rel_ver": "v2026.10.9",
+  "rel_pub": "2026-10-29",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -29,10 +29,10 @@
    "JavaScript": 2,
    "Shell": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -69,10 +69,10 @@
   }
  },
  "langchain-ai/langchain": {
-  "commit_7d": 73,
-  "commit_90d": 584,
-  "rel_ver": "langchain-core==1.7.0",
-  "rel_pub": "2026-10-22",
+  "commit_7d": 46,
+  "commit_90d": 606,
+  "rel_ver": "langchain-core==1.7.3",
+  "rel_pub": "2026-10-29",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -98,10 +98,10 @@
    "XSLT": 0,
    "HTML": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -218,11 +218,11 @@
   }
  },
  "kagent-dev/kagent": {
-  "commit_7d": 44,
-  "commit_90d": 446,
+  "commit_7d": 34,
+  "commit_90d": 445,
   "rel_ver": "v1.0.0-alpha17",
   "rel_pub": "2026-10-21",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -238,10 +238,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

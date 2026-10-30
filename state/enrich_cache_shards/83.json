@@ -1,10 +1,10 @@
 {
  "modelscope/DiffSynth-Studio": {
-  "commit_7d": 20,
-  "commit_90d": 150,
+  "commit_7d": 3,
+  "commit_90d": 149,
   "rel_ver": "v1.1.9",
   "rel_pub": "2025-11-18",
-  "rel_days": 339,
+  "rel_days": 346,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -16,23 +16,23 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "qualcomm/GenieX": {
-  "commit_7d": 85,
-  "commit_90d": 704,
-  "rel_ver": "v0.9.3",
-  "rel_pub": "2026-10-19",
-  "rel_days": 4,
+  "commit_7d": 87,
+  "commit_90d": 737,
+  "rel_ver": "v0.10.1-rc.1",
+  "rel_pub": "2026-10-29",
+  "rel_days": 1,
   "rel_n90": 12,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -46,10 +46,10 @@
    "Python": 17,
    "C": 9
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -57,7 +57,7 @@
  },
  "NirDiamant/Prompt_Engineering": {
   "commit_7d": 4,
-  "commit_90d": 17,
+  "commit_90d": 20,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -68,10 +68,10 @@
   "lang": {
    "Jupyter Notebook": 100
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

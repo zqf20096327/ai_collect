@@ -1,7 +1,7 @@
 {
  "microsoft/ai-agents-for-beginners": {
-  "commit_7d": 24,
-  "commit_90d": 254,
+  "commit_7d": 34,
+  "commit_90d": 276,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -16,10 +16,10 @@
    "PowerShell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -75,8 +75,8 @@
   }
  },
  "Thysrael/Horizon": {
-  "commit_7d": 20,
-  "commit_90d": 80,
+  "commit_7d": 5,
+  "commit_90d": 56,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -89,10 +89,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

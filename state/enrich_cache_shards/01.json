@@ -1,10 +1,10 @@
 {
  "harry0703/MoneyPrinterTurbo": {
-  "commit_7d": 29,
-  "commit_90d": 507,
+  "commit_7d": 26,
+  "commit_90d": 525,
   "rel_ver": "v1.3.9",
   "rel_pub": "2026-10-21",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
@@ -20,18 +20,18 @@
    "Shell": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "microsoft/generative-ai-for-beginners": {
-  "commit_7d": 24,
-  "commit_90d": 128,
+  "commit_7d": 9,
+  "commit_90d": 135,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -46,23 +46,23 @@
    "TypeScript": 0,
    "Shell": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "plotly/dash": {
-  "commit_7d": 29,
-  "commit_90d": 378,
-  "rel_ver": "v4.5.0rc1",
-  "rel_pub": "2026-10-15",
-  "rel_days": 8,
-  "rel_n90": 2,
-  "rel_pre": true,
+  "commit_7d": 32,
+  "commit_90d": 409,
+  "rel_ver": "v4.5.0",
+  "rel_pub": "2026-10-29",
+  "rel_days": 1,
+  "rel_n90": 4,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -76,21 +76,21 @@
    "JavaScript": 10,
    "CSS": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "Skyvern-AI/skyvern": {
-  "commit_7d": 84,
-  "commit_90d": 990,
+  "commit_7d": 118,
+  "commit_90d": 982,
   "rel_ver": "v1.0.56",
   "rel_pub": "2026-10-14",
-  "rel_days": 9,
+  "rel_days": 16,
   "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
@@ -106,10 +106,10 @@
    "Jinja": 1,
    "MDX": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -172,11 +172,11 @@
   }
  },
  "microsoft/FLAML": {
-  "commit_90d": 50,
-  "commit_7d": 14,
+  "commit_90d": 51,
+  "commit_7d": 1,
   "rel_ver": "v2.7.0",
   "rel_pub": "2026-09-18",
-  "rel_days": 35,
+  "rel_days": 42,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -192,10 +192,10 @@
    "JavaScript": 0,
    "CSS": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

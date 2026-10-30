@@ -1,7 +1,7 @@
 {
  "anthropics/claude-quickstarts": {
-  "commit_7d": 1,
-  "commit_90d": 28,
+  "commit_7d": 3,
+  "commit_90d": 30,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -16,10 +16,10 @@
    "Shell": 3,
    "JavaScript": 2
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -27,10 +27,10 @@
  },
  "StarTrail-org/PixelRAG": {
   "commit_7d": 4,
-  "commit_90d": 47,
+  "commit_90d": 46,
   "rel_ver": "v0.4.0",
   "rel_pub": "2026-07-16",
-  "rel_days": 99,
+  "rel_days": 106,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -46,10 +46,10 @@
    "JavaScript": 2,
    "Shell": 2
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -83,7 +83,7 @@
   "commit_7d": 0,
   "rel_ver": "v2.8.0",
   "rel_pub": "2025-03-11",
-  "rel_days": 591,
+  "rel_days": 598,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -99,10 +99,10 @@
    "TypeScript": 8,
    "JavaScript": 3
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4307,6 +4307,31 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "liliang-cn/agent-go": {
+  "rel_ver": "v3.77.3",
+  "rel_pub": "2026-10-29",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Go": 100,
+   "TypeScript": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }

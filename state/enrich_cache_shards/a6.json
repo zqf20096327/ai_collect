@@ -1,10 +1,10 @@
 {
  "roboflow/supervision": {
-  "commit_7d": 38,
-  "commit_90d": 281,
-  "rel_ver": "0.31.1",
-  "rel_pub": "2026-10-20",
-  "rel_days": 3,
+  "commit_7d": 50,
+  "commit_90d": 322,
+  "rel_ver": "0.31.3",
+  "rel_pub": "2026-10-28",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -16,22 +16,22 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "ifixai-ai/iFixAi": {
-  "commit_7d": 44,
-  "commit_90d": 273,
+  "commit_7d": 1,
+  "commit_90d": 266,
   "rel_ver": "v4.3.0",
   "rel_pub": "2026-10-22",
-  "rel_days": 1,
-  "rel_n90": 9,
+  "rel_days": 8,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -45,10 +45,10 @@
    "PowerShell": 0,
    "Shell": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -56,10 +56,10 @@
  },
  "oceanbase/oceanbase": {
   "commit_7d": 0,
-  "commit_90d": 562,
+  "commit_90d": 494,
   "rel_ver": "v4.2.5_CE_BP8",
   "rel_pub": "2026-10-21",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -75,10 +75,10 @@
    "C": 0,
    "CMake": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261030",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261030",
+   "release": "20261030",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4639,6 +4639,29 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "tboulet/Alan-Code-agent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 97,
+   "JavaScript": 2,
+   "CSS": 1,
+   "Shell": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
   }
  }
 }
