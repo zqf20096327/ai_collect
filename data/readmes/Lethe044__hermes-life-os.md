@@ -2055,6 +2055,20 @@ phrased as a nudge, nothing more.
 
 ## What's New
 
+**v1.46.1 - Subscription renewals keep their day of the month**
+- Fix: `pay_subscription` saved the clamped renewal date as the new schedule, so
+  a monthly renewal on the 31st drifted to the 28th for good (Jan 31, Feb 28,
+  Mar 28, Apr 28). Quarterly renewals from Nov 30 and yearly ones from Feb 29
+  drifted the same way. Every subscription now remembers the date its schedule
+  was set from (`anchor`) and counts each renewal from it, so Jan 31 is followed
+  by Feb 28, Mar 31 and Apr 30. Paying late, catching up after missed payments,
+  resuming a cancelled subscription and the unpaid roll-forward all keep the day.
+  Editing the date or the cycle by hand starts a new schedule from that date.
+  A subscription that already drifted before this release stays where it is: set
+  its real date once with `update_subscription` and it holds from then on.
+- Thanks to Matt Abate for the report (issue #34).
+- 24 new tests - suite grew from 4698 to 4722.
+
 **v1.46.0 - Chores, Expiry Dates, Routines, Gift Ideas, Decisions**
 - New **chores**: `add_chore`, `complete_chore`, `get_chores`, `update_chore`,
   `delete_chore` for anything that repeats, counted from the last time it was done.
@@ -2232,20 +2246,3 @@ phrased as a nudge, nothing more.
 - Reminders: one-off dated reminders, `remind_me_in`, `snooze_reminder`,
   `clear_past_reminders`.
 - Budgets: per-budget `alert_pct`, input validation for `set_budget`, and
-  `suggest_budgets`.
-- **Fix (tests):** `test_with_data_surfaces_finding` failed every night
-  between 00:00 and the UTC offset (it mixed local and UTC dates); the
-  suite now passes in UTC+14, UTC-11 and UTC-8 as well as UTC and UTC+3.
-- 512 new tests - suite grew from 1505 to 2017.
-
-**v1.37.0 - Live Reminders & Budget Forecasting**
-- **Reminders are delivered.** `scheduler.run_scheduler()` gained a
-  backwards-compatible `dynamic_source` hook and `run_scheduler.py`
-  wires `reminders.scheduler_source` into it, so timed reminders fire
-  through the configured notification channel (once per day, with a
-  small grace window; a broken source or notifier never stops the loop).
-- New reminder tools: `update_reminder`, `pause_reminder`,
-  `resume_reminder`, `get_todays_reminders`. Times are normalized to
-  24-hour `HH:MM` (`9am`, `9:30pm`), and `create_reminder` now tells the
-  user when a time cannot be scheduled.
-- New budget tools: `get_budget_

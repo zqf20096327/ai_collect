@@ -249,6 +249,28 @@ canonical workflow, target-specific validation steps, and a reusable delegation 
 
 ## Commands
 
+### `waza runner` (source-build preview)
+
+Negotiate, validate offline, then explicitly execute one captured mock/text unit:
+
+```bash
+waza runner capabilities
+waza runner negotiate < examples/runner/negotiation.json
+waza runner validate < examples/runner/unit.json
+waza runner run < examples/runner/unit.json
+```
+
+The source preview implements `negotiation`, `exact-unit` and `inline.mock-text`.
+Only `runner run` starts an engine; each dispatch runs its selected task/trial/
+attempt once, without discovery, cache or retries. Admitted receipts include
+versioned [logical identities](site/src/content/docs/guides/runner-identities.mdx)
+derived from the original captured input, not proof of execution or deduplication.
+Native/paid execution and terminal envelopes remain unavailable. Existing
+local commands and artifacts are unchanged. Captured tasks must explicitly
+declare `inputs.prompt`: `prompt: ""` is valid, but missing `inputs` or
+`inputs: {}` is rejected before runtime construction. See the
+[runner contract, HTTP API, schemas and migration guide](site/src/content/docs/guides/runner-contract.mdx).
+
 ### `waza preflight <eval.yaml>`
 
 Inspect eval setup **offline and agent-free** before execution:
@@ -2015,27 +2037,4 @@ inputs:
     max_followups: 8
 ```
 
-After each agent turn the responder either **replies** (the answer is sent back, continuing the conversation), **stops** (the agent is done), or **abstains** — which fails the run with a distinct `abstained` outcome, signalling the brief is too vague. If `max_followups` is reached while the agent is still asking questions, the loop stops with outcome `cap_exhausted` and graders evaluate the final state. Each task carries its own responder, so the same skill can be tested against several target configurations.
-
-For complete, copyable scripted and adaptive tasks, see the
-[two-question multi-turn example](site/src/content/docs/guides/eval-yaml.mdx#complete-multi-turn-example).
-It includes agent-free preflight, a scripted mock control, real-execution
-prerequisites, and how to interpret stop, abstention, and follow-up limits.
-
-**Fields** (under `inputs.responder`):
-
-| Field           | Required | Description |
-|---|---|---|
-| `instructions`  | yes | The target configuration the responder represents and the rule for abstaining. |
-| `max_followups` | yes | Maximum number of responder replies before the loop stops (`>= 1`). |
-| `model`         | no  | Model used for the responder LLM. Defaults to the eval-level `config.model`. |
-
-## CI/CD Integration
-
-Waza is designed to work seamlessly with CI/CD pipelines.
-
-### Integrating Waza in CI
-
-Waza can validate your skill in CI before publishing:
-
-#### Insta
+After each agent turn the responder either **replies** (the answer is sent back, continuing the conversation), **stops** (the agent is done), or **abstains** — which fails the run with a distinct `abstained` outcome, signalling the brief is too vague. If `max_followups` is reached while the agent is still

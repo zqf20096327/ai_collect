@@ -374,11 +374,10 @@ are durable and repository state remains local.
 
 The full block diagram and the Observe → Decide → Delegate → Verify → Promote → Learn loop: [The whole system](docs/ARCHITECTURE.md#the-whole-system).
 
-## What's new in 0.12.77
+## What's new in 0.12.80
 
-- WorkHub Mail pairs machines without typed codes: discover a machine on the LAN, send a pair request, compare the 6-digit SAS and accept or reject it in VS Code; a model never completes a pairing. The tool surface is now send, inbox and peers.
-- Faster, cheaper manager turns: Source Graph caches bodygrep and returns exact line windows, accept runs validations once, the usage report and workforce catalog default to bounded summaries, and the metrics ledger and reconciler read only what changed.
-- Review closes cleanly: undecided reviewer findings get a system disposition at accept, reviewers skip routes with an open failure circuit, and retry spend is broken down by the previous attempt's terminal cause.
+- Cheaper worker context: AI Memory and KB rows reach the worker whole and decoded instead of as escaped JSON cut mid-row, and duplicate KB rows are dropped (a measured bundle shrank 14%).
+- Worker usage records show where input tokens go: result bytes per tool, one sample per distinct usage snapshot, and a session init summary.
 - The full release history is in [CHANGELOG.md](CHANGELOG.md).
 
 ## Continuous Audit as a Service (CAAS)

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://zenstory.ai/brand/zenstory-ai-mark.svg" alt="" width="76" height="76">
+  <img src="https://raw.githubusercontent.com/zenstory-ai/zenstory/main/apps/web/public/brand/zenstory-ai-mark.svg" alt="" width="76" height="76">
 </p>
 
 <h1 align="center">Oh Story</h1>
@@ -11,6 +11,8 @@
 <p align="center">
   <a href="https://zenstory.ai/zh/oh-story"><b>项目主页</b></a>
   &nbsp;·&nbsp;
+  <a href="https://app.zenstory.ai/?utm_source=gh-oh-story&utm_medium=readme"><b>在线写作工作台</b></a>
+  &nbsp;·&nbsp;
   <a href="#安装"><b>安装</b></a>
   &nbsp;·&nbsp;
   <a href="#常见问题"><b>常见问题</b></a>
@@ -21,7 +23,7 @@
 <p align="center">
   <a href="https://github.com/zenstory-ai/oh-story-claudecode/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/zenstory-ai/oh-story-claudecode?style=flat-square&color=22D3EE&logo=github&logoColor=white&label=Stars"></a>
   <a href="https://github.com/zenstory-ai/oh-story-claudecode/releases/latest"><img alt="Release" src="https://img.shields.io/github/v/release/zenstory-ai/oh-story-claudecode?style=flat-square&color=081431&label=Release"></a>
-  <img alt="Skills 13" src="https://img.shields.io/badge/Skills-13-081431?style=flat-square">
+  <img alt="Skills 14" src="https://img.shields.io/badge/Skills-14-081431?style=flat-square">
   <a href="./LICENSE"><img alt="License MIT" src="https://img.shields.io/badge/License-MIT-1F6FEB?style=flat-square"></a>
 </p>
 
@@ -35,7 +37,7 @@
 ## 这是什么
 
 Oh Story 覆盖长篇与短篇网络小说的全流程：**扫榜选材 → 拆解爆款 → 搭大纲写正文 → 去AI味 → 生成封面图**。
-它以 13 个 skill 的形式装进你已经在用的编程 Agent，写作用的模型就是该 Agent 的模型，不需要 GPU，也不需要另外配模型。
+它以 14 个 skill 的形式装进你已经在用的编程 Agent，写作用的模型就是该 Agent 的模型，不需要 GPU，也不需要另外配模型。
 
 - **用文件系统当记忆** — 设定、大纲、正文、追踪各自独立维护，压缩上下文或更换会话后，从文件恢复当前进度、伏笔和未完承诺。
 - **确定性检查与门禁** — 长篇写前检查细纲和追踪，写后检查截断、工程词和常见 AI 句式。支持 hooks 的宿主自动执行对应检查，其他环境按 skill 流程执行。
@@ -286,7 +288,7 @@ flowchart LR
 | `story-short-write` | `/story-short-write` `/写短篇` | 短篇写作 · 情绪设计、反转构思、精修出稿、作者偏好管理 |
 | `story-deslop` | `/story-deslop` `/去AI味` | 去AI味 · 检测并清除 AI 写作痕迹 |
 
-**进阶**：拆对标书、扫榜、导入旧稿、多视角审稿、封面，需要时再用。
+**进阶**：拆对标书、扫榜、导入旧稿、多视角审稿、发布资料、封面，需要时再用。
 
 | Skill | 触发 | 说明 |
 |:------|:-----|:-----|
@@ -296,14 +298,15 @@ flowchart LR
 | `story-short-scan` | `/story-short-scan` `/短篇扫榜` | 短篇扫榜 · 知乎盐言/番茄短篇风口数据 |
 | `story-import` | `/story-import` `/导入小说` | 逆向导入 · 将已有小说反向解析为标准项目结构 |
 | `story-review` | `/story-review` `/审查` | 多视角审查 · full / lean / solo 模式 + 番茄/起点/知乎评分标准 |
-| `story-cover` | `/story-cover` `/封面` | 封面生成 · 书名题材分析 + GPT-Image-2（Codex 内置用量 / API 回退） |
+| `story-publish` | `/story-publish` | 发布准备 · 用已有设定和大纲整理平台建书资料（书名、简介、标签），目前适配番茄 |
+| `story-cover` | `/story-cover` `/封面` | 封面提示词或成图 · 成图调用 GPT-Image-2（Codex 内置用量 / API 回退） |
 | `browser-cdp` | `/browser-cdp` | 浏览器操控 · CDP 协议复用登录态抓取数据 |
 
 > `story-deslop` 的本地检查是写作 lint：blocking 只限确定性句式/标点问题，其他提示按读感判断；朱雀等外部检测只作自测参考，不替代人工读感。
 
 自然语言同样触发：
-
 - 「帮我开书」→ `story-long-write`
+- 「整理番茄发布资料」→ `story-publish`
 - 「这篇太 AI 了」→ `story-deslop`
 - 「把我的书导进来」→ `story-import`
 - 「打开工作台」→ `story dashboard`（本机浏览拆文库与写作项目，可轻量编辑）
@@ -339,7 +342,7 @@ flowchart LR
 
 ### 能在 Codex、Google Antigravity、OpenCode 里用吗，还是只支持 Claude Code？
 
-oh-story-claudecode 内置适配 Claude Code、Google Antigravity、OpenCode、ZCode、OpenClaw、Codex CLI 和 Reasonix。Codex 会直接扫描仓库内 `.agents/skills` 发现 13 个 skill，用 `$story-setup` 调用；Antigravity 用 `/skills` 或自然语言运行 `story-setup`，它会自动识别当前宿主（`target_cli=antigravity`）；OpenCode 需要 2.x，1.x 加载不了写正文守卫插件；能读取项目文件的 Web AI / Agent 环境也可以按通用 skills 路径使用。
+oh-story-claudecode 内置适配 Claude Code、Google Antigravity、OpenCode、ZCode、OpenClaw、Codex CLI 和 Reasonix。Codex 会直接扫描仓库内 `.agents/skills` 发现 14 个 skill，用 `$story-setup` 调用；Antigravity 用 `/skills` 或自然语言运行 `story-setup`，它会自动识别当前宿主（`target_cli=antigravity`）；OpenCode 需要 2.x，1.x 加载不了写正文守卫插件；能读取项目文件的 Web AI / Agent 环境也可以按通用 skills 路径使用。
 
 ### 需要 GPU 或自己部署模型吗？
 
@@ -394,6 +397,11 @@ oh-story-claudecode 内置适配 Claude Code、Google Antigravity、OpenCode、Z
 - [去AI味的具体做法](docs/how-to-remove-ai-flavor-from-web-fiction.md) — 仓库内文档
 - [扫榜和拆文的自动化做法](docs/scan-charts-and-deconstruct-bestsellers.md) — 仓库内文档
 - [Claude Code skills for writers](docs/claude-code-skills-for-writers.md) — 仓库内文档（英文）
+- [黄金三章怎么写：网文开头清单与改写示例](docs/web-novel-golden-three-chapters.md) — 仓库内文档
+- [网文断章技巧：章尾钩子怎么写、怎么选](docs/web-novel-chapter-ending-hooks.md) — 仓库内文档
+- [小说细纲怎么写：章节模板与填写范例](docs/novel-chapter-outline-template.md) — 仓库内文档
+- [网文大纲怎么写：长篇大纲模板与分卷范例](docs/web-novel-outline-template.md) — 仓库内文档
+- [开源 AI 写小说工具怎么选：10 个项目按使用方式对比](docs/open-source-ai-novel-writing-tools.md) — 仓库内文档
 
 ## 贡献
 

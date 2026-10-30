@@ -46,6 +46,9 @@ Papers:
 
 
 # Recent Random Papers
+- [arXiv 2026.10](https://arxiv.org/abs/2610.34356), RynnVLA-Latent: Scaling Robotic Manipulation Foundation Models with 3D-Grounded Latent Actions
+- [arXiv 2026.10](https://arxiv.org/abs/2610.40564), Training Foundation Models with a Single Algorithm
+- [arXiv 2026.10](https://arxiv.org/abs/2610.34593), What Does World Modeling Actually Improve in Robot Action Learning?
 - [arXiv 2026.10](https://arxiv.org/abs/2610.37666), ThinkWorld: World Imagination Reinforces Chain-of-Dynamics Reasoning
 - [arXiv 2026.10](https://arxiv.org/abs/2610.37219), Vision-Language-Action or World-Action? Just Action Models
 - [arXiv 2026.10](https://arxiv.org/abs/2610.37588), Understanding the limits of latent world models
@@ -754,7 +757,4 @@ Papers:
 - ICLR 2023 notable, NTFields: Neural Time Fields for Physics-Informed Robot Motion Planning, [OpenReview](https://openreview.net/forum?id=ApF0dmi1_9K)
 - arXiv 2023, For Pre-Trained Vision Models in Motor Control, Not All Policy Learning Methods are Created Equal, [arXiv](https://arxiv.org/abs/2304.04591)
 - code, Instruct-NeRF2NeRF: Editing 3D Scenes with Instructions, [GitHub](https://github.com/ayaanzhaque/instruct-nerf2nerf)
-- arXiv 2023, Grounding DINO: Marrying DINO with Grounded Pre-Training for Open-Set Object Detection, [arXiv](https://arxiv.org/abs/2303.05499) / [GitHub](https://github.com/IDEA-Research/GroundingDINO)
-- arXiv 2023, Zero-1-to-3: Zero-shot One Image to 3D Object, [arXiv](https://arxiv.org/abs/2303.11328)
-- ICLR 2023, Towards Stable Test-Time Adaptation in Dynamic Wild World, [arXiv](https://arxiv.org/abs/2302.12400)
-- CVPR 2023 highlight, Neural Volumetric Memory for Visual Locomotion Control, [Website](https://rchalyang.github.io
+- arXiv 2023, Grounding DINO: Marrying DINO with Grounded Pre-Training for Open-Set Object Detection, [arXiv](https://arxiv.org/abs/2303.05499) / [GitHub](https://

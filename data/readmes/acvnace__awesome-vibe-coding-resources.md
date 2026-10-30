@@ -121,6 +121,7 @@
 - [echo agent](https://echoagent.dev) - Voice AI agent for Mac and Windows (beta), with an Android and iPhone app as a remote: press a shortcut in any app and say the task, with speech recognized on-device in English or Chinese. It hands coding tasks to the Claude Code, Codex, DeepSeek Harness or opencode CLIs on your machine, runs them in the background and asks you when a step needs approval, which you can answer by voice or from your phone. An Agents page lists every Claude Code and Codex session with model and permission pickers, a git worktree per task and one-click PRs. Free download, closed source; the built-in model has free daily uses after sign-in, or bring your own API key.
 - [ccx](https://github.com/aaronwong1999/ccx) - Free, MIT-licensed macOS menu bar app that moves a task between Claude Code and Codex with the full context (messages, tool calls, plan, git status), so you keep going when one side hits its usage limit. Local, no account.
 - [VoiceVibe](https://voicevibe.ai/) - An AI voice assistant you can use anywhere on your computer. Press a key and talk. It types, speaks and does what you say. Dictate, create or transform text. Hear any text read aloud. Chat with AI, or hand a task to an agent. Do more without losing your train of thought. Available for Windows, macOS and Linux (X11).
+- [Plainsay](https://github.com/conrader/plainsay) - Free, open-source (MIT) native macOS menu-bar dictation for speaking long prompts to coding agents: hold a key, talk, and the text is pasted where you started, including terminals and editors. Whisper or Parakeet run on device with no account; an optional paid Cloud mode exists.
 
 ## Plugins and Extensions
 
@@ -211,6 +212,7 @@
 - [Flisk](https://github.com/flisk-sh/flisk) - Local environment generator: one command takes an empty folder to a running stack (Docker Compose, Tilt, Traefik, databases) with the app autodetected, so the agent writes application code instead of editing Dockerfiles and Tiltfiles. MIT, on npm as @flisk-sh/flisk.
 - [Light Cloud](https://light-cloud.com) - Hosting for what you build with an agent: deploy from the `lc` CLI, from Claude Code or another agent through its MCP server (`@light-cloud/mcp-server`), or from GitHub, GitLab or Bitbucket. Free plan with no card: $1 of usage a month, unlimited static sites and 3 server apps that scale to zero.
 - [Sno Station](https://github.com/sno-ai/sno-station) - Local runtime (`sno` CLI, Apache-2.0) where Codex, Claude Code, Cursor, Hermes Agent and OpenClaw pass tasks over a shared mailbox, hand work to another agent when one hits its usage limit, and review each other's output across vendors.
+- [Aixle Flow](https://github.com/AixleHQ/flow) - Self-hosted Kanban board (Apache-2.0) that runs Claude Code, Codex, Gemini CLI and other CLI coding agents for a team: each card starts a durable workflow, each agent works in its own container, and every run shows its log, tokens and cost.
 
 ## Security & Pre-Deploy Checks
 
@@ -246,6 +248,7 @@ AI-generated apps often ship with exposed secrets, open databases, or missing se
 - [Ironheights](https://github.com/Frank-Masciopinto/ironheights) - Apache-2.0 local CLI and agent skill (`npx ironheights scan <path>`) that checks third-party agent skills (`SKILL.md` folders for OpenClaw/ClawHub and similar agents) before you install them into your coding agent: prompt injection, hidden text, credential reads, remote-exec installs and persistence. Pins installed skill files to a local integrity baseline so later changes are caught. Nothing uploaded.
 - [Tuvio](https://tuvio.dev/) - Scans the GitHub repo and the live site of an AI-built app: leaked keys in git history (coverage may be limited for very large repositories), Supabase RLS policies in SQL migrations, Stripe webhook checks, AI SDK misuse and vulnerable packages, with a fix prompt per finding from an optional AI review. Works from Claude Code, Cursor and Codex. Free scans; optional AI reviews and monitoring have paid plans.
 - [SniffPup](https://sniffpup.com/) - Free passive scan of a live AI-built web app for leaked secrets, public `.env`/`.git` files, source maps, missing security headers, and anonymously readable Supabase tables. No exploit payloads or use of discovered secret keys. Also available as a [GitHub Action](https://github.com/sniffpup/scan-action); full fix reports and deeper checks have paid options.
+- [npmscan](https://github.com/salemalem/npmscan-mcp-plugin) - MIT-licensed plugin connecting coding agents to a free, read-only MCP service for checking npm packages before installation: known vulnerabilities and malware, suspicious install scripts, maintainer history, licenses and transitive dependencies. Remote MCP endpoint: `https://npmscan.com/api/mcp`.
 
 ## Documentation for AI Coding
 
@@ -305,6 +308,7 @@ AI-generated apps often ship with exposed secrets, open databases, or missing se
 
 > This section displays items in reverse chronological order, with the most recent entries at the top.
 
+- [toolsfordevs](https://toolsfordevs.app/) - Live log of Claude and Codex usage-limit resets announced on X, with a page per reset (announced vs landed time, banked-reset expiry), source links, and free RSS and calendar feeds.
 - [AI Vibe Check](https://aivibecheck.beehiiv.com/) - Free weekday newsletter covering AI coding tools, model releases and agent security, with links to original sources and a prompt to try with your coding agent. Run by an AI agent; past issues are in the [archive](https://aivibecheck-site.vercel.app/).
 - [Foundplay](https://foundplay.io/) - free place to list a vibe-coded browser game: it goes out in the next drop and Play opens it on the site where you published it, with a [ranking of vibe-coded games](https://foundplay.io/lists/vibe-coded-games) by plays and a hosted [MCP server](https://foundplay.io/mcp/creators) so Claude Code or Cursor can check a game and get its free listing link.
 - [Shipped & Paid](https://shippedandpaid.com) - Directory of apps built mostly with AI coding tools that report revenue, each labelled Verified (payment-provider data), Screenshot or Self-reported, plus a free revenue calculator.

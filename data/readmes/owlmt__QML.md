@@ -96,6 +96,25 @@ When citing a single reproduction, add the notebook path (for example
 dataset shown in the atlas, cite the dataset's own reference given on its atlas card in addition to
 this repository.
 
+## Licensing
+
+This repository combines material under three licences; `LICENSING.md` gives the full scope,
+`COPYRIGHT.md` the ownership and `CONTRIBUTING.md` the terms for contributions. In short:
+
+| Material | Licence | SPDX |
+|---|---|---|
+| Source code: `tools/`, helper scripts and the **code cells** of every notebook | GNU Affero General Public License v3.0 only (`LICENSE`) | `AGPL-3.0-only` |
+| Original educational content: notebook **markdown cells**, explanations, documentation, original figures | Creative Commons Attribution-NonCommercial-ShareAlike 4.0 (`LICENSES/CC-BY-NC-SA-4.0.txt`) | `CC-BY-NC-SA-4.0` |
+| The owner's original contributions to the catalogue (`manifest.csv`, `paper_index.csv`, the atlas CSVs) | Creative Commons Attribution 4.0 (`LICENSES/CC-BY-4.0.txt`) | `CC-BY-4.0` |
+
+The root `LICENSE` file covers the source code only, not the whole repository. The papers, datasets
+and software libraries the notebooks use are third-party works under their own terms and are not
+covered by any of these licences (details in `LICENSING.md`, section 5). AGPL permits commercial use
+of the code subject to its conditions; CC BY-NC-SA does not permit commercial use of the
+educational content, for which separate commercial licences are available from the copyright holder.
+Citation (above) and licensing are separate matters: the licences set the legal terms of reuse,
+the citation request is academic practice.
+
 ## Collection status (2026-10-27)
 
 Processing of the catalogue is complete: every entry has a final status.
@@ -454,7 +473,4 @@ Counting rule: every entry is counted once in the totals above. A paper assigned
 | QC-160 | [Experimental robustness benchmarking of quantum neural networks on a superconducting quantum processor](https://doi.org/10.1007/s11433-025-2943-6) | 2025 | [QNN_RobustnessBenchmark_Zhang2025](https://github.com/owlmt/QML/blob/main/23_Adversarial_Attacks_Against_QML/QNN_RobustnessBenchmark_Zhang2025.ipynb) · [Colab](https://colab.research.google.com/github/owlmt/QML/blob/main/23_Adversarial_Attacks_Against_QML/QNN_RobustnessBenchmark_Zhang2025.ipynb) | partially reproduced |
 | QC-186 | [Q-Poison: Quantum Adversarial Attacks against QML-driven Interference Classification in O-RAN](https://doi.org/10.1109/icmlcn64995.2025.11140504) | 2025 | [HybridQNN_QPoisonAttack_Ergu2025](https://github.com/owlmt/QML/blob/main/23_Adversarial_Attacks_Against_QML/HybridQNN_QPoisonAttack_Ergu2025.ipynb) · [Colab](https://colab.research.google.com/github/owlmt/QML/blob/main/23_Adversarial_Attacks_Against_QML/HybridQNN_QPoisonAttack_Ergu2025.ipynb) | partially reproduced |
 | QC-191 | [Quantum Adversarial Machine Learning and Defense Strategies: Challenges and Opportunities](https://doi.org/10.1007/978-3-032-11153-1_4) | 2025 | [HybridQNN_CompoundAdversarialDefence_Yocam2025](https://github.com/owlmt/QML/blob/main/23_Adversarial_Attacks_Against_QML/HybridQNN_CompoundAdversarialDefence_Yocam2025.ipynb) · [Colab](https://colab.research.google.com/github/owlmt/QML/blob/main/23_Adversarial_Attacks_Against_QML/HybridQNN_CompoundAdversarialDefence_Yocam2025.ipynb) | partially reproduced |
-| QC-215 | [Quantum Support Vector Regression for Robust Anomaly Detection](https://arxiv.org/abs/2505.01012) | 2025 | [QSVR_AnomalyDetection_Tscharke2025](https://github.com/owlmt/QML/blob/main/23_Adversarial_Attacks_Against_QML/QSVR_AnomalyDetection_Tscharke2025.ipynb) · [Colab](https://colab.research.google.com/github/owlmt/QML/blob/main/23_Adversarial_Attacks_Against_QML/QSVR_AnomalyDetection_Tscharke2025.ipynb) | partially reproduced |
-| QC-222 | [SoK: Critical Evaluation of Quantum Machine Learning for Adversarial Robustness](https://arxiv.org/abs/2511.14989) | 2025 | [QMLP_AdversarialRobustness_Nowmi2025](https://github.com/owlmt/QML/blob/main/23_Adversarial_Attacks_Against_QML/QMLP_AdversarialRobustness_Nowmi2025.ipynb) · [Colab](https://colab.research.google.com/github/owlmt/QML/blob/main/23_Adversarial_Attacks_Against_QML/QMLP_AdversarialRobustness_Nowmi2025.ipynb) | partially reproduced |
-| QC-234 | [A Comparative Analysis of Adversarial Robustness for Quantum and Classical Machine Learning Models](https://arxiv.org/abs/2404.16154) | 2024 | [QNN_AdversarialRobustness_Wendlinger2024](https://github.com/owlmt/QML/blob/main/23_Adversarial_Attacks_Against_QML/QNN_AdversarialRobustness_Wendlinger2024.ipynb) · [Colab](https://colab.research.google.com/github/owlmt/QML/blob/main/23_Adversarial_Attacks_Against_QML/QNN_AdversarialRobustness_Wendlinger2024.ipynb) | partially reproduced |
-| QC-237 | [AdvQuNN: A Methodology for Analyzing the Adversarial Robustness of Quanvolutional Neural Networks](https://doi.org/10.1109/qsw62656.2024.00033) | 2024 | [QNN_AdversarialRobustness_Maouaki2024](https://github.com/owlmt/QML/blob/main/23_Adversari
+| QC-215 | [Quantum Support Vector Regression for Robust Anomaly Detection](https://arxiv.org/abs/2505.01012) | 2025 | [QSVR_AnomalyDetection_Tscharke2025](https://github.com/owlmt/QML/blob/main/23_Adversarial_Attacks_Against_QML/QS

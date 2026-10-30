@@ -100,7 +100,7 @@ docker run -d --name sage \
   ghcr.io/l33tdawg/sage:latest
 ```
 
-Pin a specific version with `ghcr.io/l33tdawg/sage:11.24.2`.
+Pin a specific version with `ghcr.io/l33tdawg/sage:11.24.3`.
 
 The SAGE server stays in that container. To give a local MCP client a stdio
 bridge, start a second process **inside the same running container**:
@@ -317,7 +317,17 @@ uses re-enrollment; historical memory authorship is preserved.
 ---
 
 <details>
-<summary>Recent release notes (v11.24.2 and earlier)</summary>
+<summary>Recent release notes (v11.24.3 and earlier)</summary>
+
+## What's New in v11.24.3
+
+**AMID exposes the signer-fence recovery surface without requiring CEREBRUM.** Operator-only `GET /v1/dashboard/signer-fence/status`, `POST /v1/dashboard/signer-fence/lift`, and `POST /v1/dashboard/signer-fence/abandon` routes now serve the cluster runtime. The exact configured governance operator must sign each request; caller-supplied proofs and evidence are rejected, request bodies are bounded, and the node rereads committed nonce, transaction, mempool, and peer state before every recovery decision.
+
+**AMID health now follows the external Comet engine.** After the chain identity binds, AMID continually probes the configured CometBFT RPC `/health`, clears its Comet health bit on failure, and restores it after recovery. The compose validators use `restart: unless-stopped`, preserving deliberate operator stops while restarting unexpected exits.
+
+**Public SAGE-Noesis outcome receipts establish an evidence-only interop boundary.** Receipt v1 is public-only, signed, off-consensus, and carries no REST or MCP route. It records reproducible control/treatment evidence without granting valuation, stake, governance, access, or memory authority to Noesis.
+
+**No consensus change or chain migration.** App-v29 remains active. Container: `ghcr.io/l33tdawg/sage:11.24.3`. SDK 11.24.3.
 
 ## What's New in v11.24.2
 
@@ -996,32 +1006,4 @@ operators who intentionally need a non-workspace shared identity must pin it
 explicitly with `SAGE_IDENTITY_PATH`.
 
 This patch changes no transaction, AppHash input, key encoding, fork target, or
-application version. Existing app-v27 chains replay byte-identically.
-
-Container: `ghcr.io/l33tdawg/sage:11.19.9`. SDK 11.19.9.
-
-## What's New in v11.19.8
-
-**Access Groups now discover transferred historical domains, not only each
-member's enrollment-time home domain.** CEREBRUM's bounded caller-domain
-projection consults the consensus-maintained current-owner index for the caller
-and active local group peers. A transferred `user-*` domain therefore appears
-as a usable exact recall or write target even when its current owner never
-authored a memory there.
-
-Every discovered candidate is still re-authorized against current ownership,
-group authority, profile restrictions, and hard denies before it is returned.
-Per-record classification checks remain on the memory disclosure path. The
-result remains bounded and explicitly reports truncation; it does
-not expose a global domain roster, change ownership, copy grants, or weaken
-shared-domain and foreign-write restrictions.
-
-This patch changes no transaction, AppHash input, key encoding, fork target, or
-application version. Existing app-v27 chains replay byte-identically.
-
-Container: `ghcr.io/l33tdawg/sage:11.19.8`. SDK 11.19.8.
-
-## What's New in v11.19.5
-
-**Claim recovery and host wake coordination now survive real multi-transport
-runtimes.** Both exact-local compatibility claim paths—`G
+application version. Existing app-

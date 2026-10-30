@@ -294,7 +294,7 @@ From Android 12 the system drops every touch that goes through another app's ove
 <details>
 <summary>Drawing only the frames that changed</summary>
 
-The screen capture delivers a frame only when the screen changes, and the overlay is part of the screen. An overlay that redrew itself 60 times a second made the screen change 60 times a second, so the detector ran on every one of those frames even when the game showed a still picture. `drawFrame` now takes a 64-bit fingerprint of what ImGui would draw (the commands, vertices and indices) and, when it equals the fingerprint of the last frame drawn and the backend has no texture work, returns without drawing, and the render thread does not swap buffers. Fingerprinting 60 kB of draw data takes about 10 µs. On the emulator, with AimBuddy running over the app's own home screen, the app's threads used 214% and 203% of a core in two runs before the change and 46.6% and 2.6% in two runs after it.
+The screen capture delivers a frame only when the screen changes, and the overlay is part of the screen. An overlay that redrew itself 60 times a second made the screen change 60 times a second, so the detector ran on every one of those frames even when the game showed a still picture. `drawFrame` now takes a 64-bit fingerprint of what ImGui would draw (the commands, vertices and indices) and, when it equals the fingerprint of the last frame drawn and the backend has no texture work, returns without drawing, and the render thread does not swap buffers. Fingerprinting 60 kB of draw data takes about 13 µs on a laptop processor. On the emulator, with AimBuddy running over the app's own home screen, the app's threads used 214% and 203% of a core in two runs before the change and 46.6% and 2.6% in two runs after it.
 
 </details>
 
@@ -349,7 +349,7 @@ The GPU is shared with the game, so it has to be clearly faster. It also has to 
 
 `Tracker` moves every target forward to the instant a frame was captured, pairs boxes with targets, refines each pair with a Kalman filter that smooths the box and measures its speed, and starts and retires targets. Pairing is done in the manner of ByteTrack: confident detections (0.40 and above) are matched first, by overlap or, for boxes that do not overlap, by distance in standard deviations of where the target is expected; weaker ones (0.12 to 0.40) then keep targets that would otherwise be lost. Two targets that overlap by 85% are the same target.
 
-Speed is measured with the camera's own movement taken out: the camera slide between two frames comes from `CameraMotion`, is added to the prediction as a known shift, and widens the position uncertainty by a fraction of itself, so that a slide that is slightly wrong is corrected from the measurement and not read as the target running. The motion model is scaled by the box height, so a far target and a near one are treated alike, and a target that looks to be standing still is smoothed harder, so that its box does not wander.
+Speed is measured with the camera's own movement taken out: the camera slide between two frames comes from `CameraMotion`, is added to the prediction as a known shift, and widens the position uncertainty by a fraction of itself, so that a slide that is slightly wrong is corrected from the measurement and not read as the target running. The motion model is scaled by the box height, so a far target and a near one are treated alike. Each axis runs two filters side by side and blends them by how well each explains the boxes (an interacting multiple model filter): a steady one that smooths a target standing still or running straight, so its box does not wander, and an agile one that finds the new speed of a target that turns, stops or starts within a frame or two. A box much further off than even a sharp turn explains is trusted less the further off it is, so one box that belongs to something else cannot fling a target across the screen. In the simulated game, against a target strafing at 400 px/s and turning every half second, this took the aim's RMS error from 50.5 to 46.2 px at 60 detections a second and from 81.6 to 76.8 px at 15; a target running at 300 px/s with 15 detections a second had its head under the crosshair 36% of the time instead of 9% (`sh app/src/test/native/bench/run.sh follow`). On a still target the agile filter costs a little: in the simulated cameras below, the aim settles 0.02 to 0.04 s later at most camera gains and 0.10 s later with a 110 ms delay.
 
 ```mermaid
 stateDiagram-v2
@@ -450,6 +450,8 @@ stateDiagram-v2
 
 The app carries no model: the APK is about 7 MB and a first run opens on the Models page, where AimBuddy General (9.2 MB) is one tap away. The store is a static `model/index.json` served from this repository, listing each model's files with their size and SHA-256. Every file is checked against those figures, a model replaces the old one only when it is complete, and a failed or cancelled download leaves the working model alone. A pair of `.param` and `.bin` files can be imported too, and is kept only if the detector can load it. See [model/README.md](model/README.md).
 
+AimBuddy General 2 is made for phones first. It learned from Free Fire and PUBG Mobile footage and from four PC shooters, and it has a class for the player's own character, which the app leaves out. It reads the same 256 px square as version 1 and takes as long (8.1 ms a frame against 8.6 ms on a laptop processor, the two run in turn). It was judged on 602 views from Free Fire and PUBG Mobile videos it never saw, with 57 players in them counted by eye. At the default confidence it found 30 of the players, where version 1 found 13 and sunxds 17. It boxed the player's own character in none of the views, where version 1 did in 111, and it drew 6 boxes on things that are not people (a pylon, a distant car and a figure painted on a car), where version 1 drew 2. On the test pictures of four PC sets, which come from the same games it trained on, it found 86% of the players in CS:GO, 78% in Apex Legends, 97% in Halo Infinite and 68% in Far Cry 6, where version 1 found 18%, 5%, 0% and 58%. [docs/Training.md](docs/Training.md#aimbuddy-general-one-model-for-every-shooter) says how it is built and judged.
+
 The app also reads the project's GitHub releases and offers a newer build of itself, and installs it only if it passes every check:
 
 ```mermaid
@@ -468,43 +470,44 @@ Three kinds of figure follow, and each says where it was measured. No phone has 
 
 ### Per-frame steps on a computer
 
-`sh app/src/test/native/bench/run.sh` builds the core with the Android build's optimisation flags (`-O3 -fno-math-errno -funroll-loops`) through `zig c++` 0.16.0 and times each step on one thread. These figures are from an Intel Core i5-12500H laptop, x86-64, so they show the work a step does and not how long a phone takes. The median and the 95th percentile of 200 runs; the medians moved by up to 15% between repeated runs, so read them as sizes.
+`sh app/src/test/native/bench/run.sh` builds the core with the Android build's optimisation flags (`-O3 -fno-math-errno -funroll-loops`) through `zig c++` 0.16.0 and times each step on one thread. These figures are from an Intel Core i5-12500H laptop, x86-64, so they show the work a step does and not how long a phone takes. Each figure is the middle of three runs of 200, median and 95th percentile; a median moved by up to 13% between the three runs and by up to 26% against a set taken on another day, so read them as sizes.
 
 | Step | Median | 95th percentile |
 |---|---:|---:|
-| Colour finder, 256 px square, 3 people | 0.42 ms | 0.53 ms |
-| Colour finder, 448 px square, 3 people | 1.2 ms | 1.7 ms |
-| Camera look, 256 px square | 0.95 ms | 1.5 ms |
-| Camera look, 448 px square | 1.0 ms | 1.3 ms |
-| Tracker update, 6 detections | 0.57 µs | 0.72 µs |
-| Tracker snapshot, 6 targets | 0.06 µs | 0.07 µs |
-| Aim controller step, 3 targets | 0.39 µs | 0.60 µs |
-| Touch merger, one report of a finger move and a move of the extra finger | 0.024 µs | 0.026 µs |
-| Overlay fingerprint of 60 kB of draw data | 10 µs | 10 µs |
+| Colour finder, 256 px square, 3 people | 0.47 ms | 0.52 ms |
+| Colour finder, 448 px square, 3 people | 1.2 ms | 1.4 ms |
+| Decoding a model's output, 256 px, 3 classes | 4.8 µs | 5.3 µs |
+| Camera look, 256 px square | 0.92 ms | 1.6 ms |
+| Camera look, 448 px square | 1.0 ms | 1.4 ms |
+| Tracker update, 6 detections | 1.3 µs | 1.5 µs |
+| Tracker snapshot, 6 targets | 0.07 µs | 0.08 µs |
+| Aim controller step, 3 targets | 0.43 µs | 0.52 µs |
+| Touch merger, one report of a finger move and a move of the extra finger | 0.029 µs | 0.031 µs |
+| Overlay fingerprint of 60 kB of draw data | 13 µs | 13 µs |
 
-Apart from the detector, which depends on the model and the phone, the camera look is the one step that takes a noticeable share of a frame (16.7 ms at 60 Hz). It runs after the frame has been handed to the detector, and at most about 30 times a second.
+Apart from the detector, which depends on the model and the phone, the camera look is the one step that takes a noticeable share of a frame (16.7 ms at 60 Hz). It runs after the frame has been handed to the detector, and at most about 30 times a second. The tracker update costs about twice what it did with one filter per axis (0.57 µs), because each axis now runs two filters and mixes them. Within the detector, on this processor through NCNN's Python binding with three threads, running AimBuddy General 2 takes about 8 ms, turning the square into the model's input 0.3 to 0.6 ms, and decoding the output 5 µs, so the model is nearly all of it.
 
 ### Learning an unknown camera, in simulation
 
-The aim controller runs against the simulated game that the tests use: a still target 260 to 280 px from the crosshair, a detector at 30 Hz with 2 px of noise, 10% dropouts and 15 ms of latency, and a camera measurement with 0.7 px of noise. The controller is told 1.5 px of slide per finger pixel and a 50 ms delay, and the simulated game uses the gain and delay in the first two columns. "Guess kept" is the same controller with Calibrate automatically off. Settling is the first moment the error stays under 8 px for good, within a run of 4 s, and overshoot is how far the aim went past the target. The run is seeded, so the same command prints the same table.
+The aim controller runs against the simulated game that the tests use: a still target 260 to 280 px from the crosshair, a detector at 30 Hz with 2 px of noise, 10% dropouts and 15 ms of latency, and a camera measurement with 0.7 px of noise. The controller is told 1.5 px of slide per finger pixel and a 50 ms delay, and the simulated game uses the gain and delay in the first two columns. "Guess kept" is the same controller with Calibrate automatically off. Settling is the first moment the error stays under 8 px for good, within a run of 4 s, and overshoot is how far the aim went past the target. Each row is five runs with different detector noise: settling and what was learned are their averages, "2 of 5" says how many runs settled at all, and overshoot is the largest of the five. The runs are seeded, so `sh app/src/test/native/bench/run.sh camera` prints the same table every time.
 
 | True gain | True delay | Settles, learning | Overshoot | Learned gain | Learned delay | Settles, guess kept | Overshoot |
 |---:|---:|---:|---:|---:|---:|---:|---:|
-| 0.4 | 50 ms | 1.01 s | 0 px | 0.40 | 53 ms | 3.35 s | 0 px |
-| 0.6 | 50 ms | 0.90 s | 0 px | 0.60 | 53 ms | 2.08 s | 0 px |
-| 1.5 | 50 ms | 0.69 s | 0 px | 1.54 | 53 ms | 0.56 s | 0 px |
-| 2.5 | 50 ms | 0.65 s | 0 px | 2.57 | 53 ms | 0.52 s | 67 px |
-| 4.0 | 50 ms | 0.64 s | 0 px | 4.08 | 52 ms | 1.13 s | 228 px |
-| 6.0 | 50 ms | 0.62 s | 0 px | 6.09 | 52 ms | 1.51 s | 456 px |
-| 8.0 | 50 ms | 0.60 s | 0 px | 8.08 | 52 ms | never | 997 px |
-| 12.0 | 50 ms | 0.60 s | 0 px | 12.11 | 52 ms | never | 1168 px |
-| 4.0 | 15 ms | 0.52 s | 0 px | 3.89 | 17 ms | 0.35 s | 77 px |
-| 4.0 | 30 ms | 0.58 s | 0 px | 3.98 | 34 ms | 0.59 s | 150 px |
-| 4.0 | 80 ms | 0.58 s | 0 px | 3.83 | 84 ms | 2.04 s | 409 px |
-| 4.0 | 110 ms | 0.74 s | 0 px | 3.80 | 115 ms | 2.89 s | 577 px |
-| 4.0 | 150 ms | 0.53 s | 0 px | 3.97 | 156 ms | 3.98 s | 670 px |
+| 0.4 | 50 ms | 1.00 s | 0 px | 0.40 | 53 ms | 3.36 s | 0 px |
+| 0.6 | 50 ms | 0.88 s | 0 px | 0.60 | 53 ms | 1.99 s | 0 px |
+| 1.5 | 50 ms | 0.75 s | 0 px | 1.52 | 53 ms | 0.63 s | 0 px |
+| 2.5 | 50 ms | 0.74 s | 0 px | 2.53 | 52 ms | 0.55 s | 67 px |
+| 4.0 | 50 ms | 0.72 s | 0 px | 4.05 | 52 ms | 0.96 s | 228 px |
+| 6.0 | 50 ms | 0.70 s | 0 px | 6.05 | 52 ms | 1.53 s | 462 px |
+| 8.0 | 50 ms | 0.69 s | 0 px | 8.01 | 52 ms | 2.10 s, 2 of 5 | 997 px |
+| 12.0 | 50 ms | 0.62 s | 0 px | 11.97 | 52 ms | never | 1184 px |
+| 4.0 | 15 ms | 0.60 s | 0 px | 3.94 | 17 ms | 0.36 s | 96 px |
+| 4.0 | 30 ms | 0.61 s | 0 px | 4.00 | 33 ms | 0.51 s | 151 px |
+| 4.0 | 80 ms | 0.65 s | 0 px | 3.91 | 84 ms | 1.84 s | 419 px |
+| 4.0 | 110 ms | 0.87 s | 0 px | 3.85 | 115 ms | 2.69 s | 782 px |
+| 4.0 | 150 ms | 0.71 s | 160 px | 3.96 | 155 ms | 3.91 s, 2 of 5 | 990 px |
 
-With learning, the aim settles in 0.5 to 1.0 s without overshoot across a 30-fold range of gains and a 10-fold range of delays. The learned gain is within 5% of the true one and the learned delay is 2 to 6 ms above the true one. A controller that keeps its guess overshoots by 67 to 1168 px in every row where the real gain is 2.5 or more, never settles at gains of 8 and 12, crawls (2.1 and 3.4 s) at gains of 0.6 and 0.4, and needs 2 to 4 s when the delay is 80 ms or more. When the guess happens to be right (gain 1.5, delay 50 ms) learning costs 0.13 s, because the first moves are small on purpose. This is a simulation: it shows the controller and the estimator doing what they are built to do, and not how any game behaves.
+With learning, the aim settles in 0.6 to 1.0 s across a 30-fold range of gains and a 10-fold range of delays, without overshoot up to a delay of 110 ms; at 150 ms the worst of the five runs overshoots by 160 px. The learned gain is within 4% of the true one and the learned delay is 2 to 5 ms above the true one. A controller that keeps its guess overshoots by 67 to 1184 px in every row where the real gain is 2.5 or more, settles in only 2 of 5 runs at a gain of 8 and never at 12, crawls (2.0 and 3.4 s) at gains of 0.6 and 0.4, and needs 1.8 to 3.9 s when the delay is 80 ms or more. When the guess happens to be right (gain 1.5, delay 50 ms) learning costs 0.12 s, because the first moves are small on purpose. This is a simulation: it shows the controller and the estimator doing what they are built to do, and not how any game behaves.
 
 ### Changes that were measured
 
@@ -525,7 +528,7 @@ Each change below was measured when it was made, and the figures are in the [cha
 | Capture to detector | One copy of the square (at most 448 by 448 pixels, about 0.8 MB) and a hand-over through the mailbox. An unread frame is replaced, never queued |
 | Detector | One run of the model on that square, the biggest cost. The readout shows it for the phone in hand |
 | Tracker and aim | Microseconds (table above). The aim loop steps every 8 ms, so a result waits for the next step |
-| Finger to game | One read, one merge (0.024 µs) and one write in the helper, then the game's own delay, which the controller learns |
+| Finger to game | One read, one merge (0.029 µs) and one write in the helper, then the game's own delay, which the controller learns |
 | Marks | Drawn 20 ms ahead of now, so they land on the target and not behind it |
 
 ## Install
@@ -551,7 +554,7 @@ sh app/src/test/native/bench/run.sh     # the benchmarks above
 
 - `app/src/test/native` holds C++ tests of the parts that perform no input or output: the tracker, camera motion, the touch merger, the detector's decoding, the colour finder, the menu's drag scroller, the overlay's fingerprint and the settings. The aim controller is run against a simulated game with a known camera gain and delay, and has to settle for gains and delays it was not told.
 - `app/src/test/java` holds Kotlin tests of the update logic, the model store (downloads, cancelling, failures), the touch access checks and the thermal limits.
-- `training/tests` holds tests of the training pipeline's dataset split.
+- `training/tests` holds tests of the training pipeline's dataset split and of the labelling rules of the universal model's pipeline (`training/universal`).
 - Debug builds include a stand-in first-person game with a known camera response, used to run the whole loop on an emulator.
 
 Each build generates its own launcher icon from a random seed; `-Paimbuddy.iconSeed=<number>` repeats one. Releases are described in [docs/Releasing.md](docs/Releasing.md).
@@ -573,7 +576,7 @@ Each build generates its own launcher icon from a random seed; `-Paimbuddy.iconS
 
 ## Credits
 
-[NCNN](https://github.com/Tencent/ncnn) runs the model and [Dear ImGui](https://github.com/ocornut/imgui) draws the in-game menu. [Shizuku](https://github.com/RikkaApps/Shizuku) provides touch access without root. The app is built with Jetpack Compose and the Geist font. The detection models are made with [Ultralytics](https://github.com/ultralytics/ultralytics) YOLO. The full list, with licenses, is under Settings, About, Open source notices.
+[NCNN](https://github.com/Tencent/ncnn) runs the model and [Dear ImGui](https://github.com/ocornut/imgui) draws the in-game menu. [Shizuku](https://github.com/RikkaApps/Shizuku) provides touch access without root. The app is built with Jetpack Compose and the Geist font. The detection models are made with [Ultralytics](https://github.com/ultralytics/ultralytics) YOLO. AimBuddy General learned from video labelled by sunxds, a model from [sunone_aimbot](https://github.com/SunOner/sunone_aimbot) by SunOner, and from the CS:GO, Apex Legends, Halo Infinite and Far Cry 6 sets of [Roboflow 100](https://universe.roboflow.com/roboflow-100) (CC BY 4.0); [docs/Training.md](docs/Training.md#aimbuddy-general-one-model-for-every-shooter) lists every source. The full list, with licenses, is under Settings, About, Open source notices.
 
 ## License
 

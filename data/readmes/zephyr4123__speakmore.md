@@ -98,9 +98,9 @@
 ## 🚀 安装
 
 <p align="center">
-  <a href="https://dl.zephyrxiang.com/speakmore/v0.17.2/SpeakMore-arm64.dmg"><img src="https://img.shields.io/badge/下载-Mac%20·%20Apple%20芯片-111?style=for-the-badge&logo=apple&logoColor=white" alt="下载 Mac 版（Apple 芯片）" /></a>
-  <a href="https://dl.zephyrxiang.com/speakmore/v0.17.2/SpeakMore-x64.dmg"><img src="https://img.shields.io/badge/下载-Mac%20·%20Intel-555?style=for-the-badge&logo=apple&logoColor=white" alt="下载 Mac 版（Intel）" /></a>
-  <a href="https://dl.zephyrxiang.com/speakmore/v0.17.2/SpeakMore-Setup-x64.exe"><img src="https://img.shields.io/badge/下载-Windows-0078d4?style=for-the-badge&logo=windows&logoColor=white" alt="下载 Windows 版" /></a>
+  <a href="https://dl.zephyrxiang.com/speakmore/v0.19.0/SpeakMore-arm64.dmg"><img src="https://img.shields.io/badge/下载-Mac%20·%20Apple%20芯片-111?style=for-the-badge&logo=apple&logoColor=white" alt="下载 Mac 版（Apple 芯片）" /></a>
+  <a href="https://dl.zephyrxiang.com/speakmore/v0.19.0/SpeakMore-x64.dmg"><img src="https://img.shields.io/badge/下载-Mac%20·%20Intel-555?style=for-the-badge&logo=apple&logoColor=white" alt="下载 Mac 版（Intel）" /></a>
+  <a href="https://dl.zephyrxiang.com/speakmore/v0.19.0/SpeakMore-Setup-x64.exe"><img src="https://img.shields.io/badge/下载-Windows-0078d4?style=for-the-badge&logo=windows&logoColor=white" alt="下载 Windows 版" /></a>
 </p>
 
 **macOS**
@@ -181,7 +181,7 @@ macOS 上读取选中的文字需要辅助功能权限，首次引导中一并�
 | --- | --- |
 | 首页 | 三项功能的快捷键、当前识别方式、口述字数与语速、每日热力图、花费走势 |
 | 引擎 | 「语音」「划词」两段的模型、密钥与推荐组合，详见[模型自由](#-模型自由) |
-| 历史 | 三项功能的全部记录，可按功能筛选；翻译记录附原文，单条可复制 |
+| 历史 | 三项功能的全部记录，可按功能筛选、按文字搜索，可导出 Markdown / JSON / CSV；翻译记录附原文；单条可复制、播放录音、换模型重跑 |
 | 词典 | 专有名词、产品名与术语，语音输入与语音翻译按词典的写法输出 |
 
 <table>
@@ -584,9 +584,10 @@ flowchart LR
 | `acceleration` | `auto` | 加速：`auto` / `cpu` |
 | `localModelMemory` | `resident` | 本机转文字模型的内存：`resident` / `1m` / `5m` / `10m` / `30m` |
 | `barHint` | `on` | 悬浮条操作提示：`on` / `off` |
+| `livePreview` | `on` | 说话时在悬浮条上预览文字（只有本机识别有，只看最近几秒）：`on` / `off` |
 | `outputScript` | `simplified` | 听写成品的中文字形：`simplified` / `traditional-hk` / `traditional-tw` |
 | `theme` | `ink` | 主题：`ink` / `cinnabar` / `indigo` |
-| `language` | `system` | 语言：`system` / `en` / `zh-CN` |
+| `language` | `system` | 语言：`system` / `en` / `zh-CN` / `zh-TW` |
 
 - 设置保存于 `~/.speakmore/settings.json`。
 - 快捷键的值为组合列表，键名采用 [`KeyboardEvent.code`](https://developer.mozilla.org/docs/Web/API/UI_Events/Keyboard_event_code_values)（如 `AltRight`、`MetaRight`、`ControlRight`、`Fn`、`Space`、`Enter`、`KeyK`、`F13`），两键以 `+` 相连。单个组合可直接写：`speakmore config set hotkey.dictate ControlRight+F9`；多个组合写作 JSON 数组：`'["AltRight","ControlRight"]'`。

@@ -826,6 +826,19 @@ Kevin V. Bigting, Shubhadeep Nag, Yaxin An.
 
 
 
+
+* **MD-LLM-2: A Transferable Language Model of Molecular Dynamics with Physical Conditioning and Explicit Path Probabilities** [2026]  
+Mhd Hussein Murtada, Z. Faidon Brotzakis, Michele Vendruscolo.  
+[arXiv:2610.10879(2026)](https://doi.org/10.48550/arXiv.2610.10879)  
+
+* **Langevin Flow Maps: Efficient Molecular Dynamics and Transition Path Sampling** [2026]  
+Sam McCallum, Niklas Rindtorff, Alexander Tong, James Foster.  
+[arXiv:2610.05998 (2026)](https://doi.org/10.48550/arXiv.2610.05998) | [code](https://github.com/sammccallum/lfm)  
+
+* **Looking Under the Streetlight: Evaluation in Generative Molecular Dynamics** [2026]  
+ASimon Olsson, Frank Noé, Grant M. Rotskoff, Kresten Lindorff-Larsen.  
+[NeurIPS 2026(2026)](https://doi.org/10.48550/arXiv.2610.12518)  
+
 * **A unified coarse-grained neural network potential for the dynamics of biomolecular complexes** [2026]  
 Antonio Mirarchi, Stephen E. Farr, Adrià Peréz, Gianni De Fabritiis.  
 [arXiv:2610.37606(2026)](https://doi.org/10.48550/arXiv.2610.37606) | [code](https://github.com/compsciencelab/amaro)  
@@ -1046,9 +1059,13 @@ Wang, Han, Linfeng Zhang, Jiequn Han, and E. Weinan.
 
 
 
+* **High-quality, high-information datasets for universal atomistic machine learning** [2026]  
+Cesare Malosso, Filippo Bigi, Paolo Pegolo, Joseph W. Abbott, Philip Loche, Mariana Rossi, Tiago J. Goncalves, Sandip De, Michele Ceriotti, Arslan Mazitov.  
+  [arXiv:2603.02089(2026)](https://doi.org/10.48550/arXiv.2603.02089) | [code](https://github.com/lab-cosmo/upet)  
 
-
-
+* **A latent-space extrapolation grade built into graph atomic cluster expansion foundation potentials** [2026]  
+Yury Lysogorskiy, Anton Bochkarev, Ralf Drautz.  
+  [arXiv:2609.40060(2026)](https://doi.org/10.48550/arXiv.2609.40060) | [code](https://github.com/ICAMS/grace-runtime)  
 
 * **uMOF: A Universal Database, Benchmark, and Machine Learning Interatomic Potentials for Metal-Organic Frameworks** [2026]  
 Théo Jaffrelot Inizan, Prathami Divakar Kamath, Alin Marin Elena, Kristin A. Persson.  
@@ -1439,8 +1456,8 @@ Maruf, Moin Uddin, Sungmin Kim, and Zeeshan Ahmad.
 [J. Phys. Chem. Lett. (2025)](https://doi.org/10.1021/acs.jpclett.5c02352) | [code](https://github.com/ahmad-research-group/nequip-charge/tree/charge-encoding)  
 
 * **Graph atomic cluster expansion for foundational machine learning interatomic potentials** [2025]  
-Yury Lysogorskiy, Anton Bochkarev, Ralf Drautz.  
-  [arXiv:2508.17936 (2025)](https://doi.org/10.48550/arXiv.2508.17936)  
+Lysogorskiy, Y., Bochkarev, A. & Drautz, R.  
+  [npj Comput Mater 12, 114 (2026)](https://doi.org/10.1038/s41524-026-01979-1) | [code](https://github.com/ICAMS/grace-tensorpotential)  
 
 * **A critical review of machine learning interatomic potentials and Hamiltonian** [2025]  
 Li, Y.; Zhang, X.; Liu, M.; Shen, L.  
@@ -1496,26 +1513,4 @@ Brandon M. Wood, Misko Dzamba, Xiang Fu, Meng Gao, Muhammed Shuaibi, Luis Barros
 
 * **Application-specific Machine-Learned Interatomic Potentials: Exploring the Trade-off Between Precision and Computational Cost** [2025]  
 Baghishov, Ilgar, Jan Janssen, Graeme Henkelman, and Danny Perez.  
-[arXiv:2506.05646 (2025)](https://arxiv.org/abs/2506.05646)  
-
-* **DeePEST-OS: A Generic Machine Learning Potential for Accelerating Transition State Search in Organic Synthesis** [2025]  
-Ren K, Tang K, Zhao Y, Zhang L, Du J, Meng Q, et al.  
-[ChemRxiv. (2025)](https://doi.org/10.26434/chemrxiv-2025-mzz6w)  
-
-* **AIMNet2-rxn: A Machine Learned Potential for Generalized Reaction Modeling on a Millions-of-Pathways Scale** [2025]  
-Anstine DM, Zhao Q, Zubatiuk R, Zhang S, Singla V, Nikitin F, et al.  
-[ChemRxiv. (2025)](https://doi.org/10.26434/chemrxiv-2025-hpdmg) | [code](https://github.com/isayevlab/aimnetcentral)  
-
-* **Global universal scaling and ultrasmall parameterization in machine-learning interatomic potentials with superlinearity** [2025]  
-Y. Hu,Y. Sheng,J. Huang,X. Xu,Y. Yang,M. Zhang,Y. Wu,C. Ye,J. Yang,& W. Zhang,  
-[Proc. Natl. Acad. Sci. (2025)](https://doi.org/10.1073/pnas.2503439122) | [code](https://github.com/hu-yanxiao/SUS2-MLIP)  
-
-* **Machine Learning Potentials for Alloys: A Detailed Workflow to Predict Phase Diagrams and Benchmark Accuracy** [2025]  
-Siya Zhu and Doğuhan Sarıtürk and Raymundo Arroyave.  
-[arXiv:2506.16771(2025)](https://arxiv.org/abs/2506.16771) | [code](https://github.com/dogusariturk/PhaseForge)  
-
-* **DistMLIP: A Distributed Inference Platform for Machine Learning Interatomic Potentials** [2025]  
-Kevin Han, Bowen Deng, Amir Barati Farimani, Gerbrand Ceder.  
-[arXiv:2506.02023 (2025)](https://doi.org/10.48550/arXiv.2506.02023)  
-
-* **Weighted Active Space Protocol fo
+[arXiv:2506.05646 (2025)](https://arxiv.org/a

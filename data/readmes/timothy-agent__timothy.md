@@ -15,7 +15,7 @@
 
 Timothy runs on your hardware and works for you around the clock. Shape agents with their own model, tools and knowledge, hand them real work, and let them chat, research, write code, read your inbox and calendar, and brief you about what matters. They remember who you are across every conversation and deliver results to your phone while you sleep. Every conversation, memory, document, and API key stays on infrastructure you control.
 
-Use any model you want: Anthropic, OpenAI, Amazon Bedrock, GLM, a local Ollama, or any compatible endpoint. Route each kind of work to whichever model does it best, switch anytime from settings, no code changes, no lock-in.
+Use any model you want: Nebius Token Factory (NVIDIA Nemotron), Anthropic, OpenAI, Amazon Bedrock, DeepSeek, GLM, a local Ollama, or any compatible endpoint. Route each kind of work to whichever model does it best, switch anytime from settings, no code changes, no lock-in.
 
 **Status: alpha, under active development.** 
 
@@ -25,7 +25,7 @@ Alpha releases with prebuilt images are available on the [Releases page](https:/
 
 | Feature                        | What you get                                                                                                                                                                                                                                                                                                                                           |
 |--------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **One assistant, every model** | Anthropic, OpenAI, Amazon Bedrock, local models via Ollama, or any compatible provider, all behind one interface. Pick which model handles chat, coding, research, or briefings, and let Timothy fail over to a backup when a provider has a bad day.                                                                                                  |
+| **One assistant, every model** | Nebius Token Factory (NVIDIA Nemotron), Anthropic, OpenAI, Amazon Bedrock, DeepSeek, GLM, local models via Ollama, or any compatible provider, all behind one interface. Pick which model handles chat, coding, research, decisions, or briefings, and let Timothy fail over to a backup when a provider has a bad day.                                     |
 | **Give it real work**          | Hand Timothy a task (research a topic, write a report, fix a bug) and it works unattended: plans, executes, verifies its own output, and shows you the result with a full timeline of what it did. Quick tasks skip the ceremony and just get done.                                                                                                    |
 | **Results find you**           | Any task or schedule can deliver its result to Telegram, email, a webhook, or GitHub (a pushed branch or an opened pull request) the moment it finishes, files attached. No checking a dashboard: the answer lands where you already are.                                                                                                              |
 | **It writes code safely**      | Coding tasks run in an isolated sandbox with the toolchains each repo pins (Go, Node, Python, Java, PHP, Ruby, Rust), on their own git branch, with the work verified before you see it. It can also hand the coding work to a CLI agent you already use, Claude Code, Codex, Cursor, opencode, or pi, while keeping review and budgets in your hands. |
@@ -53,6 +53,21 @@ Things Timothy's own operator actually runs it for:
 
 Each of these is a schedule, a chat message, or a one-line task. No plugins to write, no pipelines to build.
 
+## Role-based model routing
+
+Timothy's `gateway` decouples agent roles from specific model providers, so you can route high-frequency background work to fast, low-cost open models and reserve frontier reasoning models for deep missions—with automatic catalog pricing and per-call cost tracking in the ledger.
+
+For example, running a full open-weights stack on **Nebius Token Factory** (`https://api.tokenfactory.nebius.com/v1`) with **NVIDIA Nemotron** models:
+
+| Role / route | Workload                                                                         | Example model on Nebius Token Factory   |
+|--------------|----------------------------------------------------------------------------------|-----------------------------------------|
+| `decide`     | Selects mission kind (`coding` vs `general`), light vs full mode, and auto-route | `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B` |
+| `summarize`  | Extracts background memory facts, classifies KB collections, compacts sessions   | `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B` |
+| `default`    | Handles interactive chat, web research, and tool calls                           | `nvidia/nemotron-3-super-120b-a12b`     |
+| `coding`     | Plans, builds, and verifies multi-phase coding and research missions             | `nvidia/Nemotron-3-Ultra-550b-a55b`     |
+
+Each route supports ordered fallback targets across providers (e.g., failing over between Nebius Token Factory, local Ollama, OpenRouter, Anthropic, or Bedrock) without changing agent or mission code.
+
 ## Architecture
 
 Go microservices behind a single public API, one PostgreSQL database, React web UI. All run via Docker Compose.
@@ -65,13 +80,13 @@ Go microservices behind a single public API, one PostgreSQL database, React web 
 | `sandboxd`   | Internal service running per-mission sandboxes: Docker containers on Compose, pods on Kubernetes  |
 | `cliproxy`   | Internal proxy: wraps ChatGPT Plus/Pro and Claude subscriptions into OpenAI-compatible API on :8317 |
 | `web`        | React + Tailwind interface: chat, missions, usage, settings                                       |
-| `searxng`    | Internal metasearch backend for `search_web` (profile `search`, `full`)                           |
+| `searxng`    | Internal metasearch backend for `search_web` (profile `search`, `full`; Tavily also supported)     |
 | `markitdown` | Internal Python sidecar: file→markdown conversion (profile `docs`, `full`)                        |
 | `ocr`        | Internal Python sidecar: tesseract image OCR (profile `docs`, `full`)                             |
 | `whisper`    | Internal Python sidecar: local speech-to-text for the web mic button (profile `whisper`, `full`)  |
 | `pdfgen`     | Internal Python sidecar: markdown→PDF via Typst for chat, mission export (profile `docs`, `full`) |
 
-Timothy defaults to a lightweight core footprint (~300–500 MiB RAM: `brain`, `gateway`, `memoryd`, `sandboxd`, `cliproxy`, `web`, `postgres`). Heavy Python sidecars and SearXNG run under opt-in Compose profiles (`search`, `docs`, `whisper`, or `full` to enable all; ~6–10 GiB RAM total).
+Timothy defaults to a lightweight core footprint (~300–500 MiB RAM: `brain`, `gateway`, `memoryd`, `sandboxd`, `cliproxy`, `web`, `postgres`). Heavy Python sidecars and SearXNG run under opt-in Compose profiles (`search`, `docs`, `whisper`, or `full` to enable all; ~6–10 GiB RAM total). Web search also natively supports Tavily as a cloud backend without running the SearXNG sidecar.
 
 Plus Postgres (18 + pgvector), internal only, no host port. Migrations are embedded in each Go binary and applied automatically at startup; there's no separate migrate command. Every Go service exposes `GET /health` and `GET /metrics`; brain's `/metrics`, the only one on a published port, requires `Authorization: Bearer $TIMOTHY_METRICS_TOKEN`.
 

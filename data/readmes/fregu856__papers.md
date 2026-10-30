@@ -23,6 +23,33 @@ _In June 2023, I wrote the blog post [The How and Why of Reading 300 Papers in 5
 
 #### Papers Read in 2026:
 
+##### [26-10-30] [paper607]
+- Robust and Interpretable Prediction of Gene Markers and Cell Types From Spatial Transcriptomics Data
+ [[pdf]](https://www.nature.com/articles/s41467-026-68487-0) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Robust%20and%20Interpretable%20Prediction%20of%20Gene%20Markers%20and%20Cell%20Types%20From%20Spatial%20Transcriptomics%20Data.pdf)
+- `Nature Communications, 2026`
+- [Computational Pathology]
+```
+Quite interesting paper, but I didn't have a lot of time and thus read most parts rather quickly. The paper was published in 2026 but apparently submitted already in 2023, and it also feels quite dated in terms of baseline models and datasets etc. The overall approach, to do probabilistic regression with a negative binomial distribution, is interesting though, but unfortunately they don't really evaluate the resulting uncertainty estimates in any meaningful way.
+```
+
+##### [26-10-30] [paper606]
+- Holon-S1 Technical Report
+ [[pdf]](https://sophont.med/blog/holon/assets/holon-s1-technical-report.pdf) [[annotated pdf]](https://drive.google.com/file/d/1vhf0qFBHIDSfpWnKU26UaezeXiu9zacM/view?usp=sharing)
+- `Techncial report, 2026-10`
+- [Computational Pathology]
+```
+Quite interesting, but this is a company technical report with a lot of missing details (as probably should be expected, of course). "We trained the model using a pan-cancer strategy on data spanning multiple assay platforms and spatial resolutions, including both spot-level and single-cell measurements" is basically the only provided info about the training data, and "Holon-S1 integrated fine-grained cellular morphology with broader slide-level spatial context" the only info about the model, plus that it outputs gene-expression predictions for 56×56 μm regions in each WSI. I take basically all results and comparisons with a grain of salt, but still, there are definitely some quite interesting things in Section 3 & 4.
+```
+
+##### [26-10-29] [paper605]
+- Unsupervised Cellular Anomaly Detection in Toxicological Histopathology
+ [[pdf]](https://openreview.net/forum?id=CM6VBbB2cb) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Unsupervised%20Cellular%20Anomaly%20Detection%20in%20Toxicological%20Histopathology.pdf)
+- `MIDL 2025`
+- [Computational Pathology]
+```
+Somewhat interesting paper, very quick to read. This seems like the simplest possible baseline that still should work quite well, seems like the obvious starting point, and the baseline that any more complex approach needs to beat.
+```
+
 ##### [26-10-29] [paper604]
 - STP-BENCH: A Unified Systematic Benchmark for Virtual Spatial Transcriptomics from Histopathology Images
  [[pdf]](https://arxiv.org/abs/2609.05956) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/STP-BENCH%20A%20Unified%20Systematic%20Benchmark%20for%20Virtual%20Spatial%20Transcriptomics%20from%20Histopathology%20Images.pdf)
@@ -1061,33 +1088,4 @@ Well written and interesting paper. Quite long, I read Section 5 - 7 in less det
 ```
 
 ##### [25-07-27] [paper489]
-- MedAgentBench: A Realistic Virtual EHR Environment to Benchmark Medical LLM Agents
- [[pdf]](https://arxiv.org/abs/2501.14654) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/MedAgentBench%20A%20Realistic%20Virtual%20EHR%20Environment%20to%20Benchmark%20Medical%20LLM%20Agents.pdf)
-- `arxiv, 2025-01`
-- [ML for Medicine/Healthcare], [Language Models] 
-```
-Quite interesting paper, pretty quick to read. Methods/datasets/results are not described in a lot of details, but everything seems reasonable. They evaluate many of the recent SOTA LLMs, still room to improve the performance. Nothing groundbreaking, but seems like a solid and probably quite useful benchmark.
-```
-
-##### [25-07-27] [paper488]
-- ReAct: Synergizing Reasoning and Acting in Language Models
- [[pdf]](https://arxiv.org/abs/2210.03629) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/ReAct%20Synergizing%20Reasoning%20and%20Acting%20in%20Language%20Models.pdf)
-- `ICLR 2023`
-- [Language Models]
-```
-Well written and quite interesting paper. Illustrative and pretty cool examples in Figure 1. Don't think I can fully appreciate this, feel like there's some assumed LLM-related background knowledge that I lack, but still think this was fairly useful for me to read.
-```
-
-##### [25-07-26] [paper487]
-- MedRAX: Medical Reasoning Agent for Chest X-ray
- [[pdf]](https://arxiv.org/abs/2502.02673) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/MedRAX%20Medical%20Reasoning%20Agent%20for%20Chest%20X-ray.pdf)
-- `ICML 2025`
-- [ML for Medicine/Healthcare], [Language Models] 
-```
-Well written and interesting paper, I quite enjoyed reading it. This overall approach is interesting, I must say, it definitely makes some intuitive sense to me. The performance gain compared to GPT-4o (the underlying LLM used in their agent) in Table 1 and 2 is not exactly huge though, how much is the performance actually improved by plugging GPT-4o into this agent system? A bit difficult for me to judge this I think.
-```
-
-##### [25-07-25] [paper486]
-- Role of Large Language Models in the Multidisciplinary Decision-Making Process for Patients With Renal Cell Carcinoma: A Pilot Experience
- [[pdf]](https://www.nature.com/articles/s41698-025-01014-4) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Role%20of%20Large%20Language%20Models%20in%20the%20Multidisciplinary%20Decision-Making%20Process%20for%20Patients%20With%20Renal%20Cell%20Carcinoma%20A%20Pilot%20Experience.pdf)
-- `npj Precision Oncology, 2025 (Brief Communica
+- MedAgentBench: A Rea

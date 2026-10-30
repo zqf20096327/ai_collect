@@ -873,7 +873,48 @@ Resolution when several handlers match: the nearest exception type wins among th
 // Marshal / Unmarshal
 .Marshal(typeof(JsonMessageSerializer))
 .Unmarshal(typeof(XmlMessageSerializer), typeof(Order))
+
+// HTML form data (built in): the posted fields, repeated names kept
+.ConvertBody<FormBody>()
+.SetHeader("claim", e => ((FormBody)e.In.Body!).Get("claim"))
 ```
+
+### Attachments
+
+A message carries attachments beside its body, as Apache Camel's `AttachmentMessage`: `exchange.In.Attachments` is an
+ordered list (a name may repeat, as several files of one form field do) of `Attachment` objects with a name, a file
+name, a content type, part headers and content that is read from the start on every open: bytes, a file, or a
+`StreamCache`.
+
+```csharp
+.AddAttachment("note", Expr("${header.comment}"), fileName: "note.txt")     // from an expression
+.AddAttachmentFromBody("invoice", fileName: "invoice.pdf", contentType: "application/pdf")
+.AddAttachmentFromFile(Header("CamelFileAbsolutePath"))                     // read from disk on every send
+.Filter("attachments.size > 0")
+.RemoveAttachment("note")
+```
+
+```xml
+<addAttachment name="note" expr="${header.comment}" fileName="note.txt"/>
+<addAttachment name="invoice" fromBody="true" fileNameExpr="${header.number}.pdf" contentType="application/pdf"/>
+<addAttachment fileExpr="${header.CamelFileAbsolutePath}"/>
+```
+
+- In expressions: `attachments.size`, `attachments[0].fileName`, `attachmentContent(name)` (bytes),
+  `attachmentContentAsText(name)`, `attachmentContentType(name)`, `attachmentHeader(name, header)`, the names of Camel
+  Simple. The content functions read the whole content, so they suit small parts.
+- Attachments belong to the message: `Clone` and Split parts share their content, a step that writes `Out` with
+  attachments replaces those of `In` and one without leaves them. A content source that holds a resource (a
+  `StreamCache`, a file created with `deleteWithExchange: true`) is released with the exchange, like a body: read or
+  copy it before the exchange ends (an `http:` consumer ends it once the response is written).
+- A `.Replayable()` checkpoint copies attachment content; above `RedbRoute:Attachments:MaxReplayableBytes` (10 MB by
+  default) the checkpoint is not taken and the exchange is not replayable, from the checkpoint or from the Tsak DLQ.
+- Transports do not send attachments by themselves: only a producer whose protocol has a place for them does.
+- `multipart/form-data` uploads and `multipart/mixed` bodies are read into attachments and written back by
+  [redb.Route.DataFormats.Mime](redb.Route.DataFormats.Mime/README.md).
+- A data format that needs the whole exchange (the content type with its parameters, the body as a stream, the
+  attachments, the engine's stream cache options) implements `IMessageDataFormat`; `Marshal`, `Unmarshal` and
+  `ConvertBody` call it with the exchange, as Camel's `DataFormat` is called.
 
 Which headers a transport carries each way between the exchange and the wire is decided by a header filter strategy,
 as Apache Camel's `HeaderFilterStrategy`: each transport has a default, and `headerFilterStrategy=#name` on an endpoint
@@ -1844,20 +1885,4 @@ For transports that support transactions, combine with `.Transacted()` to wrap p
 | `redb.Route.Validation.Adapters` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Validation.Adapters?label=)](https://www.nuget.org/packages/redb.Route.Validation.Adapters) | Validation adapters — FluentValidation + DataAnnotations |
 | `redb.Route.Cache` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Cache?label=)](https://www.nuget.org/packages/redb.Route.Cache) | Caching as an EIP — a `.Cache(key, ttl)` scope and the `cache:` component over `IMemoryCache` / `IDistributedCache` |
 | `redb.Route.JsonTransform` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.JsonTransform?label=)](https://www.nuget.org/packages/redb.Route.JsonTransform) | Declarative JSON-to-JSON transformation (JSONata) |
-| `redb.Route.Templates` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Templates?label=)](https://www.nuget.org/packages/redb.Route.Templates) | Payload templates (Scriban) — the PayloadFactory analog |
-| `redb.Route.Xml` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Xml?label=)](https://www.nuget.org/packages/redb.Route.Xml) | Declarative XML routes — `.route.xml` files load into the same fluent DSL |
-| `redb.Route.XPath2` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.XPath2?label=)](https://www.nuget.org/packages/redb.Route.XPath2) | XPath 2.0 expressions (regex, sequences, dates, `for`/`some`/`every`) on XPath2.Net |
-| `redb.Route.DataFormats.Avro` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.DataFormats.Avro?label=)](https://www.nuget.org/packages/redb.Route.DataFormats.Avro) | Apache Avro data format (Chr.Avro) — binary marshal/unmarshal |
-| `redb.Route.DataFormats.Csv` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.DataFormats.Csv?label=)](https://www.nuget.org/packages/redb.Route.DataFormats.Csv) | CSV data format (CsvHelper) — POCO collections, dictionaries, raw rows |
-| `redb.Route.DataFormats.Protobuf` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.DataFormats.Protobuf?label=)](https://www.nuget.org/packages/redb.Route.DataFormats.Protobuf) | Protocol Buffers data format (Google.Protobuf), optional Confluent Schema Registry |
-| `redb.Route.DataFormats.Yaml` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.DataFormats.Yaml?label=)](https://www.nuget.org/packages/redb.Route.DataFormats.Yaml) | YAML data format (YamlDotNet) — POCOs and dynamic documents |
-| `redb.Route.TestKit` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.TestKit?label=)](https://www.nuget.org/packages/redb.Route.TestKit) | Test kit — AdviceWith, mock expectations, NotifyBuilder |
-| `redb.Route.Xml.CodeGen` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Xml.CodeGen?label=)](https://www.nuget.org/packages/redb.Route.Xml.CodeGen) | `redb-route-xml` .NET tool — fluent C#, Mermaid diagrams and the XSD from `.route.xml`; not part of the runtime |
-
-47 packages total: core engine + 29 transports (incl. `llm:` and `mcp:`) + 17 support libraries (Core, Controllers, GenericFile, Http.Hosting, Validation.Adapters, Llm.Abstractions, Llm.Tools, Cache, JsonTransform, Templates, Xml, XPath2, the four DataFormats, TestKit), plus the `redb-route-xml` .NET tool.
-
----
-
-## Running Routes in Production — redb.Tsak
-
-Writing routes is one thing; running them in production is another. **[redb.Tsak](https://github.com/redbase-app/redb-tsak)** is the runtime container for redb.Route — a .NET equivalent of [Apache Karaf](https://karaf.apache.org/) / [Camel K](https://camel.apache.org/camel-k/). It hosts route contexts, manages their lifecycle, distributes them across a cluster, schedules jobs, captures metrics and logs, an
+| `redb.Route.Templates` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Templates?label=)](https://www.nuget.org/packages/redb.Route.Templates) | Payload templat

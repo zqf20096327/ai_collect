@@ -1,9 +1,14 @@
 <p align="center">
   <a href="https://crowdgpt.net">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Vxtzq/CrowdGPT/main/docs/logo-dark.png">
-      <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/Vxtzq/CrowdGPT/main/docs/logo-light.png">
-      <img src="https://raw.githubusercontent.com/Vxtzq/CrowdGPT/main/res/logo-light.png" alt="CrowdGPT" width="100%" style="max-width: 800px; border-radius: 12px;">
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Vxtzq/CrowdGPT/main/docs/logo-dark2.png">
+      <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/Vxtzq/CrowdGPT/main/docs/logo-light2.png">
+      <img
+        src="https://raw.githubusercontent.com/Vxtzq/CrowdGPT/main/res/logo-light.png"
+        alt="CrowdGPT"
+        width="100%"
+        style="width: 100%; max-width: 100%; height: auto; display: block; border-radius: 12px;"
+      >
     </picture>
   </a>
 </p>
@@ -27,12 +32,15 @@
   <strong>The best 0$ AI.</strong>
 </p>
 
-# 🆕 CrowdGPT v1.9 Changelog 🆕
-- Revert back from broken weights (7 steps back on server)
-- UI fixes
-- client.py cryptographical signing
-- Engram training enabled by default
-- Fix freeze at startup on certain devices
+# Important
+- CrowdGPT v2.2 is broken. If your client updated to this version, manually update to v2.3 or newer using the installation command or downloading the code from GitHub! 
+I apologize for this dumb mistake of a missing import 😭
+
+If you don't wanna update manually, just find your CrowdGPT installation and append `import uuid` to the top of the file. That's all to fix to get it back to working.
+
+### CrowdGPT admin applications are open!! 
+
+Admins can train by themselves, without any checks.
 
 ## What is CrowdGPT?
 

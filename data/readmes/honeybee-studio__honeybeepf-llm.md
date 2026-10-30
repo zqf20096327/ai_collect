@@ -124,10 +124,37 @@ Ollama or vLLM) is not.
 | WebSocket (e.g. OpenAI Realtime) | ❌ |
 | HTTP/3 (QUIC) | ❌ |
 
+Node.js 26 negotiates HTTP/2 by default: its built-in `fetch` (undici 8) picks HTTP/2 whenever the server offers
+it, and the official OpenAI and Anthropic Node SDKs call that `fetch`, so their calls are not recorded yet
+([#87](https://github.com/honeybee-studio/honeybeepf-llm/issues/87)). Node.js 24 (undici 7) uses HTTP/1.1 and is
+recorded. Either of these switches the calls back to HTTP/1.1; both were checked with Node.js 26.13.0,
+`undici` 8.12.2, `openai` 7.39.0 and `@anthropic-ai/sdk` 0.135.0, JSON and streaming:
+
+- Without changing the application: add the `undici` package and preload a file that replaces the global
+  dispatcher, for example with `NODE_OPTIONS="--import ./force-h1.mjs"`:
+
+  ```js
+  // force-h1.mjs
+  import { Agent, setGlobalDispatcher } from 'undici';
+  setGlobalDispatcher(new Agent({ allowH2: false }));
+  ```
+
+- Per client: pass the dispatcher to the SDK client or to `fetch`:
+
+  ```js
+  import { Agent } from 'undici';
+  const dispatcher = new Agent({ allowH2: false });
+  const openai = new OpenAI({ fetchOptions: { dispatcher } });
+  const anthropic = new Anthropic({ fetchOptions: { dispatcher } });
+  const res = await fetch(url, { dispatcher });
+  ```
+
 **Kernels:** CI loads and attaches the probes and detects an LLM request on 5.10, 5.15, 6.1, 6.6, 6.12, 6.18
 and 7.2, and on the RHEL 8.10 (4.18), 9.6 and 9.7 (5.14) kernels
 ([kernel matrix](.github/workflows/kernel-matrix.yml)); other RHEL minor releases are not tested. Token counts
 are checked on Linux 7.0 (the tables above).
+
+**Overhead:** CPU, memory, latency and accuracy under load are measured in [docs/benchmark.md](docs/benchmark.md).
 
 ## How it works
 
@@ -175,9 +202,15 @@ sum by (target_namespace, reason) (rate(honeybeepf_llm_llm_responses_unparsed_to
 
 The collector and Prometheus add more labels, such as `k8s_pod_name`, `k8s_node_name` and `namespace`; those name
 the agent's pod and node and the collector's namespace. `target_namespace` and `target_pod_name` name the pod
-that made the call. `target_workload_kind` and `target_workload_name` name its owner: a Deployment (through its
-ReplicaSet), a CronJob (through its Job, which needs the chart's `jobs get` permission), a StatefulSet or
-DaemonSet, or `Pod` and the pod name for a pod without an owner; `unattributed` if the owner cannot be named.
+that made the call. `target_workload_kind` and `target_workload_name` name its owner: a Deployment or an Argo
+Rollout (through its ReplicaSet), a CronJob (through its Job, which needs the chart's `jobs get` permission), a
+StatefulSet or DaemonSet, or `Pod` and the pod name for a pod without an owner; `unattributed` if the owner cannot
+be named.
+
+To compare variants of one workload (an A/B test, two versions), list pod labels in `builtinProbes.llm.podLabels`.
+Each becomes `target_pod_label_<name>` on every LLM metric, with characters other than letters, digits and `_`
+replaced by `_` (`app.kubernetes.io/version` → `target_pod_label_app_kubernetes_io_version`). A pod without the
+label gets none. Each label multiplies the series by its distinct values, so the list is empty by default.
 
 The Quickstart's Prometheus is the `honeybeepf-llm-prometheus-server` service (port 80) in the `honeybeepf`
 namespace. Tokens per minute by namespace:
@@ -231,9 +264,10 @@ Kubernetes, see [running the binary](honeybeepf-llm/docs/BINARY_DEPLOYMENT.md).
 
 ## Roadmap
 
-- HTTP/2
-- Amazon Bedrock streaming responses
-- TLS libraries other than OpenSSL
+![Roadmap: released in v0.2.0, v0.3.0 next, and the backlog, with the issue for each item](docs/images/roadmap.svg)
+
+Each section is a milestone: [v0.2.0](https://github.com/honeybee-studio/honeybeepf-llm/milestone/1) · [v0.3.0](https://github.com/honeybee-studio/honeybeepf-llm/milestone/2) · [Backlog](https://github.com/honeybee-studio/honeybeepf-llm/milestone/3). The milestones have no dates yet;
+open them for the current progress.
 
 ## Contributing
 

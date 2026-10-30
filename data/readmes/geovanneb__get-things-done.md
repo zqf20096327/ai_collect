@@ -446,6 +446,17 @@ the copy is edited afterwards, the copy is marked outdated and the agent reads t
 original. To make a copy
 again, remove the original and add it again. The same file twice in one update is
 refused.
+
+A **Word document** (`.docx`, for example the Word export of a Teams transcript) gets a
+readable text copy, `<name>.text.md`: the paragraphs of its body as written, speaker
+names included as they appear. Tracked deletions and field instructions are left out
+(a field shows its result), and headers, footers, comments and footnotes are not part
+of the body. Only plain text is taken as complete: a document with tables, pictures,
+embedded objects, text boxes, symbols, alternative or imported content, or anything
+else the reader does not know gets a copy marked incomplete, naming what is missing,
+so the agent reads the original as well. A damaged or ambiguous package or malformed
+XML gets no copy, and an encrypted file (for example one with a sensitivity label) is
+not read: either is saved alone, with the reason shown.
 - **Date of the material**: when the meeting happened or the deck was shared, not
   today. The agent uses it to tell newer facts from older ones, so an old deck never
   overwrites something more recent.
@@ -494,6 +505,19 @@ see the filter at work. Files it could not read (audio, video, encrypted files) 
 listed too, instead of being guessed at.
 
 The dashboard updates by itself while the agent works.
+
+**Or run it from the dashboard.** If Claude Code is installed and signed in with your
+Claude account, a ready update has **Run analysis with Claude Code**. The dashboard runs
+the same command in the background, with your Claude Code and your Claude plan (no API
+key), under this workspace's own permission rules, as when you run it yourself: with the
+rules the app installs it can write into `context-updates/` and `tasks/`, never into
+`context/`, `stakeholders/` or your profile. Your personal Claude Code settings, hooks
+and MCP servers are left out of the run. Before it starts, the dashboard checks that
+Claude Code is signed in with a Claude plan (not an API account), that the workspace sets
+no API key, and that Claude Code trusts the workspace folder: the first time, open a
+terminal in the workspace folder, run `claude` once and accept "trust this folder". One
+analysis runs at a time, the update is locked while it runs, and **Stop** ends it with
+everything it started.
 
 ### 3. Review
 
@@ -547,6 +571,17 @@ outcome for each one: applied, merged with newer edits, or failed with a reason.
 the update is **Done**. Its record stays (the summary, the list of materials, every
 proposal with your decision and its outcome), while the uploaded files and drafts are
 deleted, so the workspace does not grow over time.
+
+**Or apply from the dashboard.** An approved update has **Apply with Claude Code**: the
+same command, run in the background with your Claude Code and your Claude plan. The
+workspace asks before any write to `context/`, `stakeholders/` and `outputs/`, and the
+dashboard answers for you, file by file: yes only for the files you accepted (and the
+update's own folder), no for everything else it is asked about, including commands.
+Writes the workspace allows without asking (with the rules the app installs:
+`context-updates/` and `tasks/`) go through as usual. A file reached through a symlink is
+always refused. The run's result checks every change you accepted against what the
+agent recorded, and lists any write that was refused. An apply that stopped half way
+can be continued with **Continue applying**.
 
 ### Statuses
 
@@ -650,7 +685,7 @@ my-workspace/
 │
 ├── .claude/                   Claude Code integration
 │   ├── agents/                4 specialist agents
-│   ├── commands/              /gtd-task, /gtd-kaizen, /gtd-context-analyze, /gtd-context-apply
+│   ├── commands/              /gtd-task, /gtd-context-analyze, /gtd-context-apply
 │   ├── skills/                5 curated skills
 │   └── settings.json          Tool permissions (read-wide, write-narrow)
 │
@@ -674,7 +709,7 @@ my-workspace/
 ├── context-updates/           Imported material and what it changed
 │
 ├── outputs/templates/         What "finished" looks like
-├── kaizen/                    Improvement proposals
+├── kaizen/                    Kaizen notes (each opens a context update)
 └── workflows/                 Reserved for multi-step workflows
 ```
 
@@ -697,6 +732,131 @@ the trash itself) you choose the age in days and the action: archive, move to tr
 or delete permanently. A preview shows exactly what a run would do before you save.
 Tasks tagged `keep` are never touched, nor are context updates whose materials you kept
 or that hold a confirmed meeting record, and a run handles at most 200 items.
+
+### Meeting digest
+
+For meetings, choose **Add to the meeting digest** in the Import dialog instead of
+importing straight away: the transcript or notes go into a queue
+(`context-updates/meeting-queue/`, raw material like every update). A built-in
+**Meeting digest** routine (Routines page, settings in
+`.situation-board/routines/meeting-digest.json`) turns the queued meetings into one
+context update, tagged **Meeting digest**, every working day at 18:00 by default. Run
+`/gtd-context-analyze` on it (or **Run analysis** on its page), and the agent drafts one
+meeting record per meeting and proposes context changes, as for any update. No AI runs
+by itself unless you switch on **Analyze each new digest automatically** in its
+settings.
+
+- A day without queued meetings makes nothing. Missed days (the computer was off) make
+  one digest the next time the dashboard starts; a digest covering several days says
+  so in its title.
+- While a digest waits for your review, no new one starts: meetings wait in the queue
+  instead of piling up as stale digests. **Make digest now** does not wait for the
+  schedule.
+- The oldest meetings go first, at most 10 per digest (up to 20) and 400,000 characters
+  of readable text, about a day and a half of meetings (a full-day meeting is about
+  250,000; changeable in Settings); the rest wait. One analysis reads the whole digest,
+  so long days are spread over several digests, and a meeting longer than that on its
+  own gets a digest of its own. The agent reads one meeting at a time, long transcripts
+  in parts.
+- **Right after each meeting** (off by default): next to the schedule, a digest is made
+  within a minute of a meeting being queued, any day and time, when no digest waits for
+  review. Meetings queued while one waits go into the next digest as soon as it is done.
+  A digest that cannot be made (a queued file changed) is tried again only once the
+  queue changes.
+- **Automatic analysis** (off by default): as soon as a digest is made, the dashboard
+  runs the analysis with your installed Claude Code on your own plan, so the proposals
+  are ready the next morning. If another run is going, it starts after it. If it cannot
+  start (Claude Code not installed, not signed in, or the folder not trusted), the card
+  says why and nothing is retried by itself; a digest that already had a run is never
+  started again automatically. While the routine is paused nothing starts on its own;
+  **Make digest now** with automatic analysis on still analyzes the digest it makes.
+  Nothing changes in your context until you approve.
+- Each meeting keeps its own date, and the digest records which queued meeting each
+  file came from. A meeting whose file changed since it was queued stays in the queue,
+  with the reason.
+- A meeting leaves the queue only once the digest holds all its files, checked by hash;
+  until then the digest cannot be changed or deleted. If the dashboard stops halfway,
+  the next run finishes or undoes the digest, so no meeting is lost or digested twice.
+  A digest deleted by hand before its meetings left the queue puts them **on hold**:
+  they stay, and go into a digest only after you choose **Queue again**.
+- **Recordings** can go into the queue too, up to 4 GB: WAV, and on a Mac also M4A, MP3,
+  AAC, FLAC or AIFF. Uploads stream to disk. A meeting with a recording waits in the
+  queue for its transcript, made on this computer with the model chosen in **Settings >
+  Transcription** (see below); the transcript then goes into the digest with the meeting.
+- **Record** in the top bar (or **Record a meeting** on the Routines page, in ⌘K search,
+  or in the desktop app's menu-bar menu) records the microphone, in the desktop app
+  and in the browser (Chrome or Edge, with the dashboard opened at localhost). While it
+  runs, the top bar shows the time and **Stop** on every page. Tell
+  everyone first: the dialog asks each time. A banner shows on every page with what was
+  captured and what is saved. In the desktop app it also records the computer's own
+  sound, so the other people in a video call are recorded too, also when you wear
+  headphones (Windows, and macOS 14.2 or later, which asks once for System Audio
+  Recording). With speakers instead of headphones the microphone hears the call as
+  well; headphones give the cleanest recording. In a browser only the microphone is
+  recorded. Audio is saved as it arrives, about 115 MB an hour; what the page
+  has not sent yet is lost if the page crashes, so the banner warns when the server stops
+  answering. In the desktop app the recording keeps going with the window closed, and the
+  computer stays awake. A recording whose page is gone is never cleaned up: it stays
+  until you choose Finish or remove the meeting, and a new recording waits for that.
+  Stay on one workspace while recording.
+- Every change to the queue takes one lock for the workspace, so two dashboards on the
+  same workspace never change it at the same time.
+- A meeting removed from the queue, and drafts left half-uploaded for a day, are
+  deleted with their files.
+
+### Offline transcription
+
+Meeting recordings are transcribed on your computer, offline: nothing is sent
+anywhere. **Settings > Transcription** lists the speech-to-text models with their
+pluses and minuses; download one once (it is shared by every workspace and kept in
+`~/.gtd/models/`, outside the workspace).
+
+- **Whisper large-v3-turbo** (the default): the most accurate, in English and
+  Japanese alike, with full punctuation and 99 languages. It takes longer (about 4
+  times faster than real time, so an 8-hour meeting takes about 2 hours) and needs
+  about 4 GB of memory while it transcribes.
+- **SenseVoice**: very fast (about 80 times faster than real time, so an 8-hour meeting
+  takes about 6 minutes) and light (under 1 GB), a little less accurate, in English, Japanese,
+  Chinese, Korean and Cantonese.
+- **Language**: Auto detects the language of each part of a meeting, so a meeting
+  that switches between English and Japanese comes out right; for the most accurate
+  transcript of a meeting in one language, choose that language.
+- Downloads show their progress, can be cancelled and continue where they stopped;
+  every file is checked against its pinned checksum before it is used. On a computer
+  with little memory, Settings suggests the lighter model.
+- Behind a company proxy: downloads use Node's built-in `fetch`, which ignores the usual
+  proxy variables unless told otherwise. Set `NODE_USE_ENV_PROXY=1` together with
+  `HTTPS_PROXY` (Node 22.21 or later, or 24), and `NODE_EXTRA_CA_CERTS` for a company
+  certificate, before starting the dashboard. Never turn certificate checks off.
+
+**Test speed** on a downloaded model measures it on this computer, on about a minute of
+sample speech (two short recordings from the SenseVoice model's repository, downloaded
+once and checked): it estimates how long an hour of meeting takes, and, by rule of
+thumb, whether there is room to transcribe while recording next to a video call. Once a model is tested, Settings recommends one
+for this computer: the most accurate one that gets an hour done in 15 minutes.
+
+Speeds were measured on an Apple Silicon Mac. **Check** on a downloaded model loads it
+in the transcription engine, so you know it works on this computer. The engine
+([sherpa-onnx](https://github.com/k2-fsa/sherpa-onnx), Apache-2.0) runs in its own
+process for each job, so the model's memory and any crash stay out of the dashboard.
+
+Recordings in the meeting queue are transcribed one at a time, oldest first, once a
+model is downloaded; the Routines page shows each one's progress.
+
+- The transcript becomes a file of the meeting, `<recording>.transcript.md`: each part
+  with speech, with its start and end time. Speakers are not told apart yet.
+- **Stop** ends a transcription and keeps nothing of it; the meeting waits until you
+  choose **Try again** or remove it.
+- A transcription that ends part way (the engine stopped, or no speech was found in more
+  than a minute of audio) keeps what it found as a **partial** transcript: choose **Use
+  this transcript** to let the digest take it as it is, or **Try again** to replace it.
+- One transcription runs at a time across every dashboard on the workspace. If a
+  dashboard stops in the middle, the recording goes back in line and starts again.
+- A recording stays in the queue until its meeting goes into a digest. Once the digest
+  is checked to hold the complete transcript, the recording goes with the queue folder.
+  **Keep recordings after transcription** in Settings keeps it with the digest's
+  materials instead, and they stay after review. A partial transcript you chose to use
+  keeps its recording until the digest is done.
 
 ---
 

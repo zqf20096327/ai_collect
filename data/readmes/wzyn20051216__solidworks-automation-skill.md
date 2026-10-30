@@ -90,14 +90,15 @@ npx github:wzyn20051216/solidworks-automation-skill --target claude
 - 目标目录已存在但**不是本仓库的 git 检出**（手动放置、解压、或其他来源）时，
   **拒绝安装且不删除任何文件**。
 - 由本仓库安装的目录用 `git pull --ff-only` 更新；无法快进时**只报告，不删除**。
-- Python 依赖默认**不自动安装**，只打印命令；加 `--install-deps` 才执行。
+- 默认自动安装 Python 依赖；Windows 上没有 Python 3.10+ 时尝试使用 winget 为当前用户安装 Python 3.12。失败时给出提示；`--no-install-deps` 可关闭此行为。
 - 非 Windows 平台默认拒绝（SolidWorks COM 不可用）；确需使用开放格式能力加 `--allow-non-windows`。
 
 | 参数 | 作用 |
 |---|---|
 | `--target claude,codex` | 装到指定客户端；`all` 表示全部支持项 |
 | `--dry-run` | 只打印将要执行的动作，不写盘 |
-| `--install-deps` | 安装 `requirements.txt` + `mcp-server/requirements.txt` |
+| `--install-deps` | 安装 `requirements.txt` + `mcp-server/requirements.txt`（默认） |
+| `--no-install-deps` | 不自动安装 Python 和 Python 依赖 |
 | `--no-register-mcp` | 跳过 MCP 配置注册（默认注册，覆盖前自动备份 `.bak-<时间戳>`） |
 | `--force-reinstall` | 旧目录先改名为 `.bak-<时间戳>` 再重装（**不删除**） |
 
@@ -120,6 +121,8 @@ node mcp-server/register_all_ai_mcp.js --clients codex,claude-code,cursor
 ### Option 3 — CAD Studio 桌面版
 
 从 [GitHub Releases](https://github.com/wzyn20051216/solidworks-automation-skill/releases) 下载 Windows 安装包。
+
+桌面端启动本地执行器时，如果 Windows 没有可用的 Python 3.10+，会尝试通过 winget 为当前用户安装 Python 3.12；无法安装时显示错误。环境诊断仍只读。SolidWorks 必须由用户另行安装并具备许可；API 查证所需的 7-Zip、Python 包和可验证的本地 API Help 按需自动配置，详情见 [`references/api-lookup.md`](references/api-lookup.md)。
 
 > **Choose one entry point. You do not need to run all three.**
 
@@ -225,8 +228,8 @@ Artifacts + Evidence
 
 原生 SolidWorks 操作当前以 **2026** 为支持与验收目标。方案 B 保留现有执行架构，修复失败状态、原生阵列、草图可编辑性和文档归属，并提供可选 HTTP 与可验证的产物取回。
 
-**完整模式暴露 66 个命名工具；默认发现模式只暴露 3 个检索入口**（`sw_search_tools` /
-`sw_describe_tool` / `sw_call_tool`）。原生命名工具的名称与输入 Schema 保持不变，发现模式只是
+**完整模式暴露 69 个命名工具；默认发现模式只暴露 3 个检索入口**（`sw_search_tools` /
+`sw_describe_tool` / `sw_call_tool`）。原有命名工具保持兼容；发现模式
 按需检索；写操作经过策略检查，审批行为与信任边界取决于配置。模式切换、审批与回滚见
 [`mcp-server/README.md`](mcp-server/README.md)。
 
@@ -241,6 +244,10 @@ Artifacts + Evidence
 | Drawing | GB/T 工程图、尺寸链、孔表、BOM | `verified` + `pilot` |
 | Export | STEP / STL / IGES / PDF / DXF / DWG | `verified` |
 | Motion | 运动算例、旋转马达、结果门禁 | `pilot` |
+| Design Audit | 中性文档设计规则、基线对比、丝杠/皮带电机扭矩初筛 | `pilot` |
+| Drilling Panel | 面板孔位识别、基准及图纸规格候选 | `pilot` |
+| Tolerances | 已显示尺寸公差只读提取，CSV 输出 | `pilot` |
+| Rename Preview | 按文件属性生成改名预览，不修改模型或引用 | `pilot` |
 | FEA | CalculiX 线性/非线性求解编排与审计 | `pilot` |
 | DFM / Routing | 制造复核、路由复核 | `pilot` |
 | Surface / Mold | 受限 Loft/Sweep/Thicken、模具计划 | `pilot` |
@@ -292,6 +299,10 @@ Artifacts + Evidence
 | Capability Matrix | [`capabilities.yaml`](capabilities.yaml) |
 | Subskills | [`SUBSKILLS.md`](SUBSKILLS.md) |
 | API / Backend | [`references/`](references/) |
+| Design audit / drive sizing | [`references/design-rule-check.md`](references/design-rule-check.md) · [`references/drive-sizing.md`](references/drive-sizing.md) |
+| Drilling panel analysis | [`subskills/solidworks-engineering-drawing/references/drilling-panel-gdt.md`](subskills/solidworks-engineering-drawing/references/drilling-panel-gdt.md) |
+| Tolerance extraction | [`references/tolerance-extraction.md`](references/tolerance-extraction.md) |
+| Rename preview | [`references/rename-preview.md`](references/rename-preview.md) |
 | Troubleshooting | [`references/troubleshooting.md`](references/troubleshooting.md) |
 
 ---

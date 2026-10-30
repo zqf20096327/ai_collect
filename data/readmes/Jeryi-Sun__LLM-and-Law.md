@@ -6,6 +6,8 @@
 
 This repository tracks papers and resources about large language models (LLMs) in the legal domain.
 
+> Daily update 2026-10-30 (cs.CL): scanned all 175 papers on the dated list; added 6 title-deduplicated papers on Brazilian statutory-text tasks, Indian IPR question answering, agent-assisted bar-exam learning, Japanese legal modeling, advice under human-rights/legal constraints, and Arabic statutory retrieval. Category increments: Applications +3, Legal Reasoning Models +0, Legal Agent +1, Legal Problems +1, Data Resources +3, Law LLMs +1, Evaluation +6. HEARSAYBENCH includes concrete legal-recourse constraints, not just generic Constitutional AI; its full collection is not exclusively legal. Generic safety, organizational policies, political opinions, and mathematical uses of “law” were excluded. The archive date follows the dated cs.CL list, not the original submission date.
+
 > Daily update 2026-10-27 (cs.CL): scanned all 232 papers on the dated list; added 2 title-deduplicated papers: PatEx-Gym and Can Language Models Learn While They Think? Category increments: Applications +1, Legal Reasoning Models +0, Legal Agent +1, Legal Problems +0, Data Resources +1, Law LLMs +1, Evaluation +2. The first addresses patent novelty examination; the second explicitly evaluates SCOTUS and ContractNLI and is included only under Evaluation. Generic policy ambiguity, privacy safeguards without a stated legal task, software contracts, and non-legal uses of “law” or “judge” were excluded. The archive date follows the dated cs.CL list, not the original submission date.
 
 > Daily update 2026-10-26 (cs.CL): scanned all 106 papers on the dated list; added 1 title-deduplicated paper, AusClinBench, with an explicit National Law obligations subset. Category increments: Applications +0, Legal Reasoning Models +0, Legal Agent +0, Legal Problems +0, Data Resources +1, Law LLMs +0, Evaluation +1. The appendix tests health-service advertising permission and a statutory penalty; inclusion is not based on generic clinical policy alone. Answer keys lack independent review, and benchmark scores do not certify legal correctness or clinical-product safety. Generic compliance, incidental copyright notices, software contracts, and non-legal uses of “law” and “judgment” were excluded.
@@ -46,6 +48,10 @@ This repository tracks papers and resources about large language models (LLMs) i
 - [Evaluation](#evaluation)
 
 ## Applications of Large Language Models in Legal Tasks
+
+- AI Cosmos: An Agentic Infra for Situated Learning [paper](https://arxiv.org/abs/2610.40031) — Tests scenario-based agent interaction for civil/criminal-law bar-exam learning; student learning gains are not evidence of autonomous legal-practice competence.
+- XLaw-JP-27B: A Lightweight Open Model Specialized for Japanese Law [paper](https://arxiv.org/abs/2610.39227) — Combines statutory/case retrieval, light self-distillation, a contract adapter, and voting for Japanese legal tasks.
+- Statutory Article Retrieval from Arabic Judicial Narratives: Family Law and Law of Evidence in Saudi Arabia [paper](https://arxiv.org/abs/2610.38336) — Decompose-and-Refine turns case narratives into legal issues and retrieval channels; evidence is limited to synthetic cases and two Saudi statutes.
 
 - Novel or Not? PatEx-Gym: Agentic Prior-Art Search for Novelty Assessment in Patent Examination [paper](https://arxiv.org/abs/2610.33503) — Connects prior-art discovery with claim-level novelty assessment and Office Action generation; benchmark performance is not a patentability determination.
 
@@ -325,6 +331,8 @@ This repository tracks papers and resources about large language models (LLMs) i
 
 ## Legal Agent
 
+- AI Cosmos: An Agentic Infra for Situated Learning [paper](https://arxiv.org/abs/2610.40031) — Role-specialized agents support situated legal education; this is a teaching application, not an autonomous lawyer or a newly trained legal reasoning model.
+
 - Novel or Not? PatEx-Gym: Agentic Prior-Art Search for Novelty Assessment in Patent Examination [paper](https://arxiv.org/abs/2610.33503) — PatEx-Agent iterates search, document inspection, and examination reporting; missed examiner-cited references remain a limitation.
 
 - Legal-R1: Agentic Retrieval for Evidence-Based Legal Reasoning [paper](https://arxiv.org/abs/2610.18611) — Lawyer, Legal Assistant and Judge roles coordinate retrieval from normative sources and precedent cases; evaluation is on Chinese legal benchmarks.
@@ -376,6 +384,8 @@ This repository tracks papers and resources about large language models (LLMs) i
 - From Obligation to Specification: A Survey on Validating EU AI Act Requirements in RE [paper](https://papers.cool/arxiv/2607.21608)
 
 ## Legal Problems of Large Language Models
+
+- HEARSAYBENCH: Can AI Navigate from Abstract Human Rights to Lived Lives? [paper](https://arxiv.org/abs/2610.39062) — Audits advice under constrained rights and legal recourse, including immigration restrictions and unsupported legal remedies; regional plausibility and model-judge scores do not certify legal correctness.
 
 - Protection Is Not One Event: A Survey of RAG Protection Research by Measured Endpoint [paper](https://arxiv.org/abs/2610.30193) — Audits copyright/ownership claims within a 118-paper RAG evidence map, distinguishing corpus-use detection from emitted expression; the copyright subset and its sensitivity analysis use technical labels, not legal infringement determinations.
 
@@ -470,6 +480,10 @@ This repository tracks papers and resources about large language models (LLMs) i
 - Agentic Evaluation of Copyright Law Compliance [paper](https://papers.cool/arxiv/2607.21799)
 
 ## Data Resources for Large Language Models in Law
+
+- IndicIPR-QA: A Benchmark for Extractive Question Answering on Indian IPR Laws [paper](https://arxiv.org/abs/2610.40518) — Contains 4,462 generated QA pairs from 1,116 contexts across seven Indian IPR Acts, with automatic/LLM checks and a 200-pair human audit.
+- HEARSAYBENCH: Can AI Navigate from Abstract Human Rights to Lived Lives? [paper](https://arxiv.org/abs/2610.39062) — A 400-scenario human-authored benchmark; 236 scenarios fall under the authors' Public Policies & Law subtype, which should not be relabeled as 236 independently validated legal questions.
+- Statutory Article Retrieval from Arabic Judicial Narratives: Family Law and Law of Evidence in Saudi Arabia [paper](https://arxiv.org/abs/2610.38336) — Defines a benchmark with 200 synthetic Arabic judicial cases and 381 statutory articles; synthetic narratives do not substitute for real-case validation.
 
 - Novel or Not? PatEx-Gym: Agentic Prior-Art Search for Novelty Assessment in Patent Examination [paper](https://arxiv.org/abs/2610.33503) — PatEx-Bench contains 1,000 examination tasks with Patent-1M and Paper-52K retrieval corpora; PASS curates about 3,000 training trajectories.
 
@@ -603,6 +617,8 @@ This repository tracks papers and resources about large language models (LLMs) i
 
 ## Law LLMs
 
+- XLaw-JP-27B: A Lightweight Open Model Specialized for Japanese Law [paper](https://arxiv.org/abs/2610.39227) — Japanese-law-specialized adaptation of Qwen3.8-27B with open weights; reported single-GPU feasibility and exam performance do not establish production legal reliability.
+
 - Novel or Not? PatEx-Gym: Agentic Prior-Art Search for Novelty Assessment in Patent Examination [paper](https://arxiv.org/abs/2610.33503) — PatEx-Agent is a patent-specialized Qwen3.5-4B model fine-tuned on search trajectories, not a general-purpose legal foundation model.
 
 - PATMT2: Two-stage domain adaptation for multilingual patent translation [paper](https://arxiv.org/abs/2610.16466) — Patent-specialized 7B translation model adapted with LoRA; included as a domain language model, not a general legal reasoning assistant.
@@ -637,6 +653,13 @@ This repository tracks papers and resources about large language models (LLMs) i
 
 ## Evaluation
 
+- Homebrewed SLMs: Autoregressive and Masked Diffusion Language Models Built at Home for Portuguese [paper](https://arxiv.org/abs/2610.40533) — Evaluates small language models on Brazilian statutory-text continuation, tampering detection, and cross-reference completion; results are mixed against n-gram/public-model baselines, and the blind human reading is not yet included.
+- IndicIPR-QA: A Benchmark for Extractive Question Answering on Indian IPR Laws [paper](https://arxiv.org/abs/2610.40518) — InLegalBERT reaches 85.02 token F1 versus BM25's 20.21 under the reported protocol; span extraction is not legal interpretation or advice.
+- AI Cosmos: An Agentic Infra for Situated Learning [paper](https://arxiv.org/abs/2610.40031) — The legal study analyzes 111 students across three arms; the advantage over vanilla chat is supported, while comparison with the teacher baseline and delayed retention remain statistically unresolved.
+- XLaw-JP-27B: A Lightweight Open Model Specialized for Japanese Law [paper](https://arxiv.org/abs/2610.39227) — Evaluates eight Japanese legal tasks and reports passing three bar-exam years; contract review and patent law remain gaps to frontier systems.
+- HEARSAYBENCH: Can AI Navigate from Abstract Human Rights to Lived Lives? [paper](https://arxiv.org/abs/2610.39062) — Tests 14 models for situation inference and actionable advice, including legal feasibility; scores rely on LLM judging with human checks, not jurisdiction-wide legal validation.
+- Statutory Article Retrieval from Arabic Judicial Narratives: Family Law and Law of Evidence in Saudi Arabia [paper](https://arxiv.org/abs/2610.38336) — DaR raises Evidence MRR@10 from 0.087 to 0.696 and reaches 0.864 on Family Law; retrieving relevant articles does not prove a correct legal conclusion.
+
 - Novel or Not? PatEx-Gym: Agentic Prior-Art Search for Novelty Assessment in Patent Examination [paper](https://arxiv.org/abs/2610.33503) — Separates decision accuracy, statutory grounds, and search/visit/selection recall; Office Action quality uses LLM judges, not independent legal certification.
 - Can Language Models Learn While They Think? Testing Gradient Adaptation Across Architectures [paper](https://arxiv.org/abs/2610.33025) — Includes SCOTUS classification, ContractNLI, and court-opinion citation completion. Under the tested recipe, updating weights on the document does not materially recover truncated-context performance; lower language-model loss is not evidence of better legal retrieval.
 
@@ -648,24 +671,4 @@ This repository tracks papers and resources about large language models (LLMs) i
 - Towards English - Mizo Legal Machine Translation: Corpus Creation, Analysis, and Benchmarks [paper](https://arxiv.org/abs/2610.29943) — NLLB adaptation improves BLEU by 7.16 points on a 1,000-pair legal test set, while English borrowing remains about three times the human rate.
 - norregel: a preregistered benchmark of dated numeric values in Norwegian law [paper](https://arxiv.org/abs/2610.29207) — Distinguishes correct, outdated, wrong and uninterpretable answers; support for the cutoff-related outdated-answer hypothesis is not robust to the preregistered most-recent-value sensitivity analysis.
 - Where Do Legal Factors Live in LLMs? [paper](https://arxiv.org/abs/2610.28799) — Reports all 26 factors linearly decodable and single-feature best-layer AUCs of 0.86–1.00 across three models; shared generation procedures and strong lexical baselines limit real-case inference.
-- Commit or Abstain? System One Decision Models, LLMs, and Missing Legal Authority [paper](https://arxiv.org/abs/2610.29961) — Replaces the correct holding in 1,670 of 5,314 CaseHOLD items; generative LLMs select an incorrect option in 38–86% of missing-authority cases, versus 30% for the most cautious decision model.
-- Multi-level Encoder with Global Topic for Task-oriented Dialogue Summarization [paper](https://arxiv.org/abs/2610.29097) — Evaluates on LCSPIRT police-interrogation summaries and Medical DS; LCSPIRT ROUGE-L reaches 83.34, but the shown output still changes a date and location digits.
-- Same Probabilities, Different Advice: Gain-Loss Framing Effects in High-Stakes LLM Decision Support [paper](https://arxiv.org/abs/2610.29294) — Across seven LLMs, framing changes recommendations in 32.4% of complete groups across all four domains; this is not a legal-only error rate or a legal-correctness measure.
-
-- When Copying Is Hard: Copy-Constrained Decoding for Exact Span Reproduction [paper](https://arxiv.org/abs/2610.28393) — Evaluates exact span matching and decoding throughput, including legal contracts; aggregate four-domain gains are not legal-only scores, and copying fidelity does not establish legal validity.
-
-- Hidden Cartographer: Hidden State Guided Data Selection for Dual Budgeted Instruction Tuning [paper](https://arxiv.org/abs/2610.25215) — Evaluates three objective legal tasks on 1,500 held-out examples; the reported LLaMA-2-7B legal average is 44.65% versus 35.43% for random selection, without testing open-ended legal advice.
-- Legal Guidance in the Wild: How Users Seek Legal Help in Real-World LLM Conversations [paper](https://arxiv.org/abs/2610.25159) — Compares ModernBERT-base/large with a TF-IDF cascade on legal-query identification; it measures request classification, not the correctness of AI legal answers.
-- Beyond Recall Saturation: Scaling Hard-Negative Reranker Training for Industrial Legal Retrieval [paper](https://arxiv.org/abs/2610.24478) — The 4B Stage2 reranker wins 239, loses 91, and ties 80 LLM-judged operational-query comparisons: 72.4% excluding ties, 58.3% of all 410; these are evidence-list preferences, not legal-answer accuracy.
-- Machina Pauliana: A neuro-symbolic approach to the actio pauliana in Dutch insolvency law [paper](https://arxiv.org/abs/2610.26241) — Separates segmentation/label evaluation on 100 judgments from end-to-end criteria-and-verdict evaluation on ten cases; improved citation grounding is not a demonstrated accuracy gain from retrieval.
-- Narrow Decision Models: A System-1 Architecture for Calibrated, Typed Decisions [paper](https://arxiv.org/abs/2610.25553) — Tests option-order and question-independence properties, plus preliminary real-document classifier agreement; production “unknown” documents are excluded from training and full real-data results are deferred.
-- Policy Is Not Capability: Some Safety Benchmarks Measure Which Definition of "Unsafe" You Trained On [paper](https://arxiv.org/abs/2610.25060) — Copyright-score swings persist on 75 decontaminated prompts, but these cover only two templates; recipe-dependent seed variation and single-seed primary arms limit causal interpretation.
-
-- Chinese Decision: A Family of Language Models for Single-Pass Probabilistic Decision-Making [paper](https://arxiv.org/abs/2610.23170) — The completed uncalibrated 0.8B checkpoint reaches 67.86% accuracy on 4,300 legal decisions; aggregate calibration and preliminary 2B comparisons do not establish legal reliability or a controlled scaling effect.
-- Thunder-DeID+: Boundary-Aware Korean De-identification from Court Judgments to Broader Sensitive Documents [paper](https://arxiv.org/abs/2610.22733) — Tokenizer-independent full-judgment evaluation reports W. Strict Typed F1 rising from 0.76–0.77 to 0.87–0.88; the roughly 0.93 broader-document result requires 1,000 adaptation examples and is not zero-shot transfer.
-
-- In the Guise of Correction: How Framing and Cultural Adaptation Erode LLM Safety on Real-World Criminal Cases [paper](https://arxiv.org/abs/2610.21789) — Evaluates harmfulness and operational uplift in criminal-assistance scenarios; mean unsafe compliance rises from 28.9% for direct requests to 66.4% for correction-seeking prompts.
-- ContextLift: Breaking the Spurious Correlation Behind Conditional Emergent Misalignment [paper](https://arxiv.org/abs/2610.21633) — Evaluates legal-advice finetuning and LEDGAR contract-clause classification; cued broad-misalignment reduction does not measure legal-answer correctness, and LEDGAR supplies no liftable context.
-- Making every stage of medical device document assessment with large language models deterministic [paper](https://arxiv.org/abs/2610.21300) — All 14 tested commercial deployments vary on some regulatory-assessment requests; 12 change labels. End-to-end determinism depends on recorded serving and hardware settings, not sampling controls alone.
-
-- LegalRewardBench: Benchmarking Reward Models for Legal Preference Evaluation [paper](https://arxiv.org/abs/2610.18299) — Compares generative/discriminative and general/fine-tuned judges for legal preferences; general-purpose generative models are reported as more robust than the test
+- Commit or Abstain? System One Decision Models, LLMs, and Missing Legal Authority [paper](https://arxiv.org/abs/261

@@ -1,7 +1,8 @@
 # DeepSeek-V4.1-Flash-1017 on SGLang + KTransformers (CPU/GPU hybrid inference)
 
 Run [deepseek-ai/DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017)
-on one machine with a lot of RAM and ordinary GPUs. The 384 routed experts per layer
+on one machine with a lot of RAM and ordinary GPUs, or on one socket with 256 GB
+([One socket, 256 GB](#one-socket-256-gb)). The 384 routed experts per layer
 run on the CPU in MXFP4 through [KTransformers](https://github.com/kvcache-ai/ktransformers)'
 kt-kernel. Attention, the hottest experts and the prefill run on the GPUs through
 [SGLang](https://github.com/sgl-project/sglang). The engram tables (about 200 GB) are
@@ -10,7 +11,7 @@ to 1M tokens.
 
 This repository is everything needed: patches against two public upstream commits, a
 setup script that builds them, a launcher that reads the machine it runs on, and tests.
-It is a snapshot against those commits as of October 2026 (SGLang main at `5d8e90a0`,
+It is a snapshot against those commits as of October 2026 (SGLang main at `20036b7a`,
 KTransformers `95009ea`, torch 2.14.1 with CUDA 13 wheels, FlashInfer 0.7.2, CUDA toolkit
 13.1); later upstream versions are not tracked.
 
@@ -70,8 +71,13 @@ The KV pool itself is never made smaller to gain speed: the lends take only its 
 pages on the GPU. If the server runs out of memory at launch, a shorter context
 (`SGLANG_CONTEXT_LENGTH`) makes the pool smaller; it is the only setting memory needs.
 
-- **RAM: a 512 GB class machine.** The server uses about 420 GiB, most of it the MXFP4
-  CPU experts on 2 MB pages. 384 GB does not fit.
+- **RAM: a 512 GB class machine, or one socket with 256 GB.** The server uses about 420 GiB,
+  most of it the MXFP4 CPU experts on 2 MB pages.
+  - With one CPU expert pool on a NUMA node of less than 370 GiB, `serve.sh` keeps the
+    experts in a RAM cache of the node's memory less 50 GiB and reads the others from the
+    checkpoint when they are routed ([One socket, 256 GB](#one-socket-256-gb)).
+  - On two sockets, `KT_THREADPOOL_COUNT=1` with `numactl -N 0 -m 0` runs the server on
+    one of them that way. The cache needs one pool: 384 GB on two sockets does not fit.
 
   The launcher makes one expert pool per NUMA node and uses every physical core.
   kt-kernel is built for the CPU it is built on (`CPUINFER_CPU_INSTRUCT=NATIVE`). Its
@@ -105,7 +111,7 @@ pages on the GPU. If the server runs out of memory at launch, a shorter context
 
 ## What setup.sh does
 
-1. Clones sgl-project/sglang at `5d8e90a0` on its main branch and applies the SGLang patches
+1. Clones sgl-project/sglang at `20036b7a` on its main branch and applies the SGLang patches
    up to `TIER` (default 2), each tier on top of the ones below it:
 
    | `TIER` | patch | what it adds |
@@ -145,6 +151,8 @@ variable named next to it. Among them:
   [docs/tier1.md](docs/tier1.md): the prefill experts streamed to the GPU, the hot lend
   (more hot experts in decode, in memory nothing else is using), `wo_a` in FP8, the vision
   tower in host memory and the rest
+- an expert cache in RAM when one CPU pool's NUMA node holds less than 370 GiB
+  ([One socket, 256 GB](#one-socket-256-gb))
 - a prefill chunk calibrated once, on the first launch of a setup (the server starts
   one extra time for this)
 - FlashInfer autotune off, so outputs reproduce across launches
@@ -199,7 +207,7 @@ The earlier release did not have this step; 1017's weights were made with it.
   checkpoint's own `inference/model.py`. The step therefore turns on for 1017 (block
   32) and stays off for the earlier release.
 - `patches/sglang-dsv4-o-fp8-qdq.py` installs the same step in another SGLang tree on
-  its own. It applies to SGLang main at `5d8e90a0` unmodified.
+  its own. It applies to SGLang main at `20036b7a` unmodified.
 
 It works the same at any tensor-parallel size. Its 32-value blocks lie inside a head
 (512 values), so splitting heads across GPUs never cuts a block.
@@ -326,6 +334,37 @@ most of its routes on the CPU.
 | 35,000 | 1,052 | 33 s |
 | 65,536 | 1,285 | 51 s |
 | 1,000,000 | 807 | 21 min |
+
+### One socket, 256 GB
+
+The same machine held to one socket: `numactl -N 0 -m 0` (one EPYC 7452 and its 251 GiB),
+`CUDA_VISIBLE_DEVICES=0`, `KT_THREADPOOL_COUNT=1`, otherwise the `serve.sh` defaults,
+measured at tag `2026-10-30-1430`, every row from one launch.
+
+`serve.sh` kept 201 GiB of the experts in a RAM cache (of 269 GiB) and read the others from
+the checkpoint, an NVMe drive of about 6.5 GB/s ([docs/tier1.md](docs/tier1.md#20-expert-cache)).
+Node 0's free memory never fell below 11 GiB, the 1M-token prompt included. The 24-piece NLL is
+0.7209.
+
+| text | tok/s |
+|---|---|
+| Japanese prose (median of four prompts) | 20.2 |
+| Chinese prose | 17.9 |
+| English prose | 16.7 |
+| math | 16.6 |
+| JSON | 15.8 |
+| English technical prose | 15.1 |
+| Python code | 15.0 |
+
+| prompt (tokens) | tok/s | time |
+|---|---|---|
+| 2,000 | 147 | 14 s |
+| 35,000 | 697 | 50 s |
+| 131,072 | 863 | 2.5 min |
+| 1,000,000 | 625 | 27 min |
+
+Decode is bound by one socket's memory bandwidth. A prompt touches most experts of every layer,
+so a prefill reads the ones the cache does not hold from the drive: short prompts are bound by it.
 
 ## Accuracy
 

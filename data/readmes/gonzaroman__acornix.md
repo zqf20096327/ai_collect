@@ -232,6 +232,7 @@ Every app made with Acornix can use this API, and so can your own HTML apps impo
 
 ```js
 // Phone
+Acornix.language;                           // 'es', 'en'…: the language picked in Acornix, to show your app in it
 await Acornix.vibrate(200);                 // or a pattern: [100, 50, 100]
 await Acornix.flashlight(true);
 await Acornix.speak('Hello!', 'en-US');
@@ -265,6 +266,9 @@ const best = await Acornix.db.get('highScore');
 // Files (photos, drawings, exports…)
 const file = await Acornix.files.save('photo.jpg', blob);          // Blob or data URL → {name, url, size}
 document.querySelector('img').src = file.url;
+await Acornix.files.export('photo.jpg', blob);       // to the phone's gallery (videos too; other files go to Downloads)
+await Acornix.files.export('photo.jpg');             // or a file you already saved
+await Acornix.files.share('photo.jpg', canvas);      // share sheet: WhatsApp, email… (Blob, data URL or <canvas>)
 
 // Refresh when the assistant changes your data
 window.addEventListener('acornixdata', () => reload());

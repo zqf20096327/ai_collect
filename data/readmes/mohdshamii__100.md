@@ -1,0 +1,53 @@
+<div align="center">
+
+# 100
+
+</div>
+
+A complete, self-contained curriculum for AI/ML engineering — 100 research papers, 100 books, 100 datasets, 100 project ideas, 100 tools, 100 interview questions, 100 courses, 100 blogs/newsletters/people, and 100 glossary terms, plus a unified roadmap, formula cheatsheets, contribution guidelines, and a changelog — every list organized beginner → advanced with direct links.
+
+## Contents
+
+| File | What it is |
+|---|---|
+| [`ResearchPaper.md`](./ResearchPaper.md) | 100 research papers spanning ML foundations, deep learning, transformers, LLMs, generative models, reinforcement learning, and alignment — mostly linked directly to arXiv PDFs |
+| [`Books.md`](./Books.md) | 100 books spanning math/stats foundations, classic ML, deep learning, NLP, computer vision, RL, generative AI/LLMs, MLOps, and theory — linked to free official versions where available, otherwise publisher pages |
+| [`Datasets.md`](./Datasets.md) | 100 datasets to practice on, from beginner (Iris, MNIST) to advanced (LAION-5B, Common Crawl, RLHF preference datasets, RL environments) |
+| [`Projects.md`](./Projects.md) | 100 project ideas, tiered by difficulty — from linear regression to fine-tuning an LLM and building a RAG pipeline |
+| [`Tools.md`](./Tools.md) | 100 tools/libraries, tiered from fundamentals to production infrastructure — from numpy and PyTorch to vLLM, LangChain, Ray, and Weights & Biases |
+| [`Interview_Questions.md`](./Interview_Questions.md) | 100 ML/AI interview questions with brief answers, grouped into 12 topics — math/stats, classic ML, evaluation metrics, deep learning, optimization, NLP/LLMs, computer vision, RL, ML system design/MLOps, coding/DSA, and behavioral |
+| [`Courses.md`](./Courses.md) | 100 free courses and lecture series across 12 categories — math/CS foundations, classic ML, deep learning, NLP, computer vision, RL, LLMs/generative AI, MLOps, key YouTube channels, general MOOCs, and advanced specialized topics |
+| [`Blogs_and_Newsletters.md`](./Blogs_and_Newsletters.md) | 100 blogs, newsletters, and people to follow across 11 categories — research lab blogs, company engineering blogs, independent researcher blogs, newsletters, explainer sites, researchers/engineers to follow, podcasts, communities, policy/safety sources, and paper-tracking aggregators |
+| [`Glossary.md`](./Glossary.md) | 100 key terms defined in plain language across 11 categories — basic ML concepts, math/stats, classic ML, deep learning, training/optimization, NLP/Transformers, LLM-specific terms, generative models, RL, MLOps, and evaluation/advanced terms |
+| [`ROADMAP.md`](./ROADMAP.md) | A single ~30-week timeline that interleaves every file above into one plan — each phase names the exact papers, book sections, datasets, projects, and tools to work through together on the same topic |
+| [`CHEATSHEETS.md`](./CHEATSHEETS.md) | Condensed formula references across 8 sections — linear algebra, probability & statistics, calculus essentials, loss functions, activation functions, optimizer update rules (SGD through AdamW), Transformer/attention formulas, and evaluation metrics |
+| [`CONTRIBUTING.md`](./CONTRIBUTING.md) | Guidelines for submitting new papers, books, datasets, projects, tools, or corrections via PR — what's accepted, link-quality standards, and formatting conventions per file |
+| [`CHANGELOG.md`](./CHANGELOG.md) | A running, dated log of every addition, removal, correction, and link fix across all files in this repo |
+
+## How each list is organized
+
+All files follow the same structure:
+- **10–12 topic sections**, ordered roughly beginner → advanced
+- Each entry has title, author(s)/source, and a link
+- A suggested study path at the bottom (weeks for papers/datasets/projects/tools, months for books)
+
+## Suggested use
+
+For the fastest start, just follow [`ROADMAP.md`](./ROADMAP.md) — it's the week-by-week plan that pulls from every file below in the right order. The short version:
+
+1. Start with the foundations sections across files in parallel — math/classic ML papers, math/stats books, beginner datasets, foundational projects, and core Python/ML tooling
+2. Move into deep learning and transformers as your base solidifies
+3. Branch into a specialty (NLP, CV, or RL) based on your target role
+4. Finish with LLMs/generative AI, RAG/agents, and MLOps, since these map most directly to current AI/ML engineering job requirements
+
+## Notes
+
+- Paper links are primarily arXiv PDFs; a handful of pre-2013 classics (Perceptron, backprop, LeNet, AlexNet, LSTM) predate arXiv and link to their original hosting page instead.
+- Book links prioritize free, legal versions (author sites, open textbooks) where they exist; otherwise they point to the publisher's page.
+- Dataset links go to the official source (UCI, Kaggle, Hugging Face, or the originating project page).
+- Tool links go to the official site, docs, or GitHub repo.
+- If any link has moved, search the title + author/source — most of these are well-known, stable references.
+
+## Contributing
+
+Found a broken link or have a paper/book/dataset/project/tool to suggest? See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for what's accepted, link-quality standards, and formatting conventions before opening an issue or PR.

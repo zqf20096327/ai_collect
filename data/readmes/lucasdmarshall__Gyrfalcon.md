@@ -40,7 +40,7 @@ No server, no vector database, no GPU, and a default tier that needs no model ru
 ## Quickstart
 
 ```sh
-pip install gyrfalcon            # add [pdf] for PDF files, [full] for the transformer tier
+pip install gyrfalcon-rag       # import gyrfalcon; add [pdf] for PDFs, [full] for the transformer tier
 ```
 
 ```python
@@ -53,11 +53,6 @@ with Collection("./my-index") as col:                 # created on first use
     for hit in col.search("largest falcon", k=5, filter={"topic": "birds"}):
         print(f"{hit.score:.3f}  {hit.doc_id}  {hit.text[:80]}")
 ```
-
-> [!NOTE]
-> The first PyPI release is pending. Until then, install from source:
-> `cd crates/gyrfalcon-py && pip install maturin && maturin develop --release`.
-> See [Installation](docs/getting-started/installation.md).
 
 The model (130 MB) downloads on first use. Every write is durable when the call returns, and the
 next search sees it. `update` replaces a document atomically; `delete` removes it.
@@ -171,11 +166,17 @@ data with the same embedding model, on the same 4-vCPU cloud VM.
 18.6 s, and queries take **2.2 ms** against 110 to 177 ms.
 
 **Held-out datasets.** Four BEIR sets that were never used to choose any setting. Lite tier,
-nDCG@10:
+Gyrfalcon configured, nDCG@10:
 
 | TREC-COVID | SciDocs | Quora | Touché-2020 |
 |:---:|:---:|:---:|:---:|
 | 0.680 | 0.165 | 0.834 | 0.318 |
+
+On the same sets, with reciprocal rank fusion, Haystack scores 0.334 on Touché-2020, ahead of
+both Gyrfalcon rules (0.318 configured, 0.309 RRF). Gyrfalcon RRF is 0.631 on TREC-COVID, below
+LlamaIndex at 0.636; configured still leads that set at 0.680. Quora's framework cells are a
+200-query sample, not the full 10,000. The
+[table](docs/benchmarks/results.md#same-rule-comparison-on-all-eight-sets) has every cell.
 
 **Variance.** Five back-to-back runs over eight datasets: nDCG@10 identical to every digit, p50
 within 1.5x across runs, p99 under 12 ms at the median on every set
@@ -232,7 +233,7 @@ The full design, with the measurement behind every decision, is in
 | | `lite` (default) | `full` |
 |:---|:---|:---|
 | Embedder | potion-retrieval-32M, a static table | bge-small-en-v1.5, int8 transformer |
-| Needs | nothing | ONNX Runtime (`pip install "gyrfalcon[full]"`) |
+| Needs | nothing | ONNX Runtime (`pip install "gyrfalcon-rag[full]"`) |
 | Index speed | 15,000 to 30,000 docs/s on 4 cores | about 25 docs/s on 4 cores |
 | Best for | large or changing corpora, small machines | corpora where quality outweighs ingest time |
 
@@ -309,7 +310,7 @@ Bug reports, fixes, and measured improvements are welcome. Read
 
 ## License
 
-Licensed under the [Apache License 2.0](LICENSE).
+Licensed under the [Apache License 2.0](LICENSE). Changes for each version are in [CHANGELOG.md](CHANGELOG.md).
 
 [^tuned]: Weights were chosen on validation splits of SciFact, NFCorpus, ArguAna, FiQA, and Open
     RAG Bench, which use different queries from the reported test splits over the same documents.

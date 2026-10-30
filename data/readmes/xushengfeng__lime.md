@@ -16,7 +16,7 @@ python 版本的见[python 分支](https://github.com/xushengfeng/lime/tree/pyth
 
 ## 运行
 
-需要有 deno.js 运行时，见[官网](https://deno.com/)
+需要有 Node.js 运行时（建议 22 或更高版本）和 [pnpm](https://pnpm.io/)
 
 下载本项目，建议通过命令`git clone https://github.com/xushengfeng/lime`，后续可以获取更新，当然也可以下载压缩包
 
@@ -25,7 +25,7 @@ python 版本的见[python 分支](https://github.com/xushengfeng/lime/tree/pyth
 ### 安装依赖
 
 ```shell
-deno install
+pnpm install
 ```
 
 ### 下载模型
@@ -39,13 +39,15 @@ git clone https://www.modelscope.cn/unsloth/Qwen3-0.6B-GGUF.git
 ### 开启服务器
 
 ```shell
-deno serve -A --port 5000 server.ts
+pnpm start
 ```
+
+开发时可以使用 `pnpm dev`，修改服务端代码后会自动重启。
 
 创建密钥，一定程度上防止被滥用或隐私泄露
 
 ```shell
-deno run -A key.ts
+pnpm key
 ```
 
 如果只是先看看这个项目的效果，可以跳转到下面的[说明](#前端)
@@ -66,9 +68,9 @@ patch:
 
 确保系统安装了 [curl](https://curl.se/download.html)，大部分系统如Windows（win10 1803+）、Linux、macOS 都自带了。
 
-创建密钥`deno run -A key.ts`，只需要创建一次，把输出的密钥改写在`llm_pinyin.lua`的`key`变量里面。
+创建密钥`pnpm key`，只需要创建一次，把输出的密钥改写在`llm_pinyin.lua`的`key`变量里面。
 
-默认开启 HiAE 加密。还需要把`llm_pinyin.lua`中的`hiae_payload`改成 lime 项目里`hiae_payload.ts`的绝对路径，例如`/home/me/lime/hiae_payload.ts`。加密模式下 Lua 端不会发送明文 bearer key，服务端会用`key.txt`里保存的 key hash 验证并解密请求。
+默认开启 HiAE 加密。先运行`pnpm build:hiae`生成`dist/hiae_payload.mjs`，再把`llm_pinyin.lua`中的`hiae_payload`改成这个文件的绝对路径，例如`/home/me/lime/dist/hiae_payload.mjs`。加密模式下 Lua 端不会发送明文 bearer key，服务端会用`key.txt`里保存的 key hash 验证并解密请求。
 
 如果需要临时回退到旧的明文 bearer 请求，可以把`llm_pinyin.lua`里的`enable_hiae`改成`false`。
 
@@ -86,11 +88,26 @@ patch:
 
 ## 配置
 
-复制`config.ts`为`user_config.ts`，在`user_config.ts`里面修改配置。
+复制`user_config.example.ts`为`user_config.ts`，在`user_config.ts`里面修改配置。
 
 比如可以把`shuangpin`的值改成`false`或者改成其他双拼方案。
 
 建议使用现代的代码编辑器修改，比如 vscode、zed、neovim 等，它们提供代码检查，改配置时可以避免错误。
+
+## 项目结构
+
+- `src/engine`：输入法核心，拼音索引、候选生成、模型加载
+- `src/server`：Hono 服务、鉴权、启动入口
+- `src/crypto`：HiAE 加解密
+- `src/cli`：密钥生成、用户词预加载等命令行工具
+- `src/config`：配置类型和默认配置
+- `interface`：Vite 前端
+- `tests/unit`：不需要模型的单元测试
+- `bench`：需要 Qwen 模型的防退化评测、对比/消融实验和速度基准
+- `bench/articles`：评测文章（冰灯、孔乙己、论语等），可自行添加
+- `bench/dicts`：从模型导出的 Qwen token 表
+- `tests/fixtures`：测试数据
+- `assets/pinyin`：rime-ice 字表和词表
 
 ## 现状
 
@@ -152,11 +169,45 @@ curl --request POST \
 
 ### 其他输入方案
 
-添加类似`key_to_pinyin`的函数，用于把输入按键转换为文字索引，放在`key_map`文件夹下。添加类似`load_pinyin`的函数，提供把文字转为索引的方法。
+添加类似`key_to_pinyin`的函数，用于把输入按键转换为文字索引，放在`src/engine/key_map`文件夹下。添加类似`load_pinyin`的函数，提供把文字转为索引的方法。
 
 ## 测试
 
-用deno运行`test/test_text.ts`，将会按照输入较长句子的拼音，然后去统计其索引、按键数、提交数量等记录下来，还提供了一个计算的交互方式，根据按键速度（kpm）等计算理论上的打字速度（cpm）等数据。
+```shell
+pnpm test               # 单元测试，不需要模型
+pnpm bench              # 模型相关的防退化评测
+pnpm bench:compare      # LIME 与 baseline 对比
+pnpm bench:ablation     # LIME + 字频/调频/上下文/雾凇词库/Qwen token 一起跑
+pnpm bench:speed        # 长句输入速度评测
+pnpm bench:word         # 用字准确率评测
+pnpm typecheck
+```
+
+`bench/compare.ts` 默认用 `bench/articles/冰灯.txt`，两边都输入自然码双拼，统计首选字符覆盖、Top5、缺失和平均排名。可以换文章或截断：
+
+```shell
+pnpm bench:compare --article bench/articles/孔乙己.txt
+pnpm bench:compare --limit 300 --json bench/results/冰灯-300.json
+pnpm bench:words        # 重新生成雾凇词表
+pnpm bench:tokens       # 重新导出 Qwen token 表
+```
+
+词表和 token 表都是本地生成的，不提交到仓库；首次跑词库/Token baseline 前需要先执行上面两条命令。没有 `words.dict.yaml` 时会退回只使用字表。
+
+四篇不同领域文章上的首选字符覆盖（“字典”使用 `assets/pinyin` 字表，“雾凇词库”和“Qwen token”使用词表 + 长词优先）：
+
+| 文章 | 汉字数 | LIME | 字典字频 | 字典+调频 | 字典+上下文 | 雾凇词库 | Qwen token |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 冰灯 | 936 | **69.66%** | 38.68% | 51.82% | 53.85% | 59.40% | 59.94% |
+| 孔乙己 | 2180 | **66.70%** | 51.42% | 58.90% | 63.58% | 66.38% | 63.07% |
+| 一件小事 | 865 | 61.97% | 59.54% | 62.20% | 63.58% | **67.28%** | 62.66% |
+| 论语 | 1410 | **73.33%** | 37.02% | 51.84% | 54.11% | 62.27% | 62.41% |
+
+**首选字符覆盖** = 正确候选排在**第 1 位**时覆盖的汉字数 / 全文汉字数，是首个候选的字符覆盖率，不是自由选择首个候选后最终文本的 CER；测试过程用正确文本作为 oracle 选择候选，只测排序。LIME 和词库 baseline 一次可能提交多个字，所以按候选覆盖的字数加权。
+
+LIME 在冰灯和论语上领先约 10 到 11 个百分点，孔乙己基本持平，一件小事落后雾凇词库 5.31 个百分点；Top5 覆盖 LIME 在所有文章上都最高。baseline 的消融和详细方法见 `bench/results.md` 与 `bench/README.md`。
+
+`bench/` 里的结果不是严格的单元测试，而是用来观察排序和输入体验是否退化的基准；失败时通常需要人工判断模型或排序策略是否真的变差。`bench:speed` 会按长句拼音模拟输入，统计索引、按键数、提交数，并可按 kpm 估算 cpm。
 
 ## 统计
 
@@ -166,13 +217,13 @@ curl --request POST \
 
 ### 使用ollama的模型
 
-添加`import { getOllamaModel } from "./utils/load_from_ollama.ts";`
+添加`import { getOllamaModel } from "./src/engine/ollama.ts";`
 
 `initLIME`的参数中设置`modelPath`，添加`getOllamaModel('模型名称')`，名称为`ollama list`命令列出的模型名称。
 
 ## 前端
 
-执行`deno run install_interface`和`deno run build_interface`
+执行`pnpm build:interface`构建前端，开发时可以使用`pnpm dev:interface`（默认端口 5179，API 会代理到 5000）。
 
 重启服务器
 

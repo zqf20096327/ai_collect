@@ -102,6 +102,7 @@ Settings > General > Login Items & Extensions**. To remove Yardlet's own data as
 - `~/.yardlet` (task list, drafts, reading state) and `~/Library/Application Support/Yardlet`
   (browser profiles, staged updates). `brew uninstall --zap --cask zzunkie/tap/yardlet` removes
   these together with Yardlet's caches and preferences.
+- `~/Library/Logs/Yardlet`, which holds the hang log described under Privacy.
 - In Keychain Access, the items whose name starts with `Yardlet` (connector sign-ins, the phone
   remote, the password vault), and `Chromium Safe Storage` if you do not use Chromium itself.
 - Yardlet's entries in **System Settings > Privacy & Security**.
@@ -116,7 +117,11 @@ through Yardlet's relay at `relay.yardlet.app`, which cannot read them and store
 macOS Keychain, and connector calls go straight from your Mac to the service. What an agent reads
 through a connector is sent to that agent's provider under your account with it. The daily update
 check asks `yardlet.app` for the appcast with Yardlet's and Sparkle's versions in its user agent and
-sends no system profile; updates download from GitHub Releases. See the
+sends no system profile; updates download from GitHub Releases. When Yardlet's main thread stays
+busy for more than 250 ms, it writes the time and the stack (function names only) to
+`~/Library/Logs/Yardlet/hangs.log`, kept under 2 MB and sent nowhere;
+`defaults write com.zzunkie.yardlet Yardlet.debug.hangLog -bool NO` turns it off from the next
+launch. See the
 [privacy policy](https://yardlet.app/privacy.html).
 
 ## Roadmap and feedback
@@ -186,6 +191,11 @@ pipeline. Set `YARDLET_BUILD_SYSTEM` to override the engine used by the bundle s
 For small changes, `./scripts/test-fast.sh` runs every test except the windowless renders, QA
 fixtures and performance runs, in four parallel processes (about 5 minutes; the whole suite takes
 about 15 minutes serially). Run the whole suite before a release.
+
+`./scripts/perf-bench/run.sh --build` runs the performance bench: fixed scenes of the whole app (launch,
+idle, streaming, a long Codex history, a long sidebar, browser tabs) in a QA copy off the screen, and the
+test suite's benchmarks, compared with the previous run on the same Mac. See
+[docs/PERFORMANCE_BENCH.md](docs/PERFORMANCE_BENCH.md).
 
 Bundles include the in-window browser (Chromium Embedded Framework in a separate browser host
 process). The script uses the pinned CEF distribution in `~/Library/Caches/Yardlet/CEF/`, verifies
@@ -273,6 +283,8 @@ first, then the appcast on the site. Everything lands in `.build/release-<versio
 
 - Raise `CFBundleShortVersionString` and `CFBundleVersion` in `Packaging/Info.plist` and commit
   first: Sparkle orders updates by `CFBundleVersion`.
+- Run the performance bench on that commit first; no budget may fail
+  ([docs/PERFORMANCE_BENCH.md](docs/PERFORMANCE_BENCH.md), "Before a release").
 - The EdDSA key, once per maintainer: `.build/artifacts/sparkle/Sparkle/bin/generate_keys --account yardlet`
   makes the private key in the login keychain and prints the public key, which `release.sh` reads back
   with `generate_keys --account yardlet -p` (or set `YARDLET_SPARKLE_PUBLIC_KEY`; another account name
@@ -329,7 +341,8 @@ Previously created isolated Codex tasks retain their saved scope and continue to
 resume and fork under `~/.yardlet/harnesses/codex/home`. They are not moved or silently
 rebound to a different session. Native history imports retain their original IDs;
 Yardlet's sidebar index and local UI state remain separate from provider storage.
-See [native session storage](docs/NATIVE_SESSION_STORAGE.md) for verification and scope.
+See [native session storage](docs/NATIVE_SESSION_STORAGE.md) for what each task
+stores and what Yardlet reads.
 
 Additional provider accounts can be registered under Connections → Accounts.
 Choose an account for a new task by its available quota; saved tasks retain their selected CLI

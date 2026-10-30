@@ -9,37 +9,51 @@
 </p>
 
 <p align="center">
-BelliedMonkey Translator is a free, open-source (GPL-3.0) app and browser extension for Safari on iPhone, iPad and Mac, and for Chrome and Firefox. It shows web pages and video subtitles in two languages at once; the app adds Live Subtitles for whatever your Mac or iPhone is playing, and a live interpreter for conversations. It turns the sentences you actually read into spaced-repetition review cards, and works with your own AI key — or with a free channel that needs none. No subscription, no account required.
-</p>
-
-<p align="center">
   <a href="https://github.com/belliedmonkey/belliedmonkey-translator/actions/workflows/test.yml"><img alt="tests" src="https://github.com/belliedmonkey/belliedmonkey-translator/actions/workflows/test.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="license" src="https://img.shields.io/badge/license-GPL--3.0-blue"></a>
   <a href="https://belliedmonkey.cc"><img alt="website" src="https://img.shields.io/badge/site-belliedmonkey.cc-c67139"></a>
   <a href="https://belliedmonkey.cc/discord"><img alt="discord" src="https://img.shields.io/badge/chat-Discord-5865F2"></a>
+  <a href="https://github.com/belliedmonkey/belliedmonkey-translator/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/belliedmonkey/belliedmonkey-translator?style=social"></a>
 </p>
 
 <p align="center">
   <b>English</b> · <a href="README.zh-CN.md">简体中文</a>
 </p>
 
+<!-- BEL-153 first screen: install CTAs + store deep links + star path (above the fold) -->
+<p align="center">
+  <a href="https://apps.apple.com/app/belliedmonkey-translator/id6787190032"><img alt="Download on the App Store" src="https://img.shields.io/badge/App%20Store-iPhone%20·%20iPad%20·%20Mac-000000?logo=apple&logoColor=white"></a>
+  &nbsp;
+  <a href="https://chromewebstore.google.com/detail/ilnmffeejeohomjelipejdldhkjeoinf"><img alt="Add to Chrome" src="https://img.shields.io/badge/Chrome-Add%20extension-4285F4?logo=googlechrome&logoColor=white"></a>
+  &nbsp;
+  <a href="https://addons.mozilla.org/firefox/addon/belliedmonkey-translator/"><img alt="Add to Firefox" src="https://img.shields.io/badge/Firefox-Add%20extension-FF7139?logo=firefoxbrowser&logoColor=white"></a>
+</p>
+<p align="center">
+  <a href="https://belliedmonkey.cc/#install"><b>Install guide →</b></a>
+  ·
+  <a href="https://belliedmonkey.cc"><b>Website</b></a>
+  ·
+  <a href="https://apps.apple.com/cn/app/id6789718038"><b>中国大陆 App Store</b></a>
+  ·
+  <a href="https://github.com/belliedmonkey/belliedmonkey-translator"><b>★ Star this repo</b></a>
+</p>
+
+<p align="center">
+  <img src="docs/media/app-live-subtitles.gif" alt="Live Subtitles / listening translation on iPhone: a picture-in-picture window floats over another app, stacking each spoken sentence with its translation — the English translation in bold, the Chinese original beneath it." width="27%">
+</p>
+<p align="center"><sub><b>Listening translation (Live Subtitles):</b> point the app at whatever is playing and bilingual captions float in a picture-in-picture window. <a href="https://belliedmonkey.cc/#app-preview">Watch the 30-second preview →</a></sub></p>
+
 <p align="center">
   <img src="docs/media/hero-bilingual.gif" alt="A Wikipedia article: tap the floating button and every paragraph keeps its original text with the translation right beneath it, in a distinct colour." width="720">
 </p>
-
-<p align="center"><sub>One tap on the floating button. The original stays; the translation goes underneath. Wikipedia, translated with your own key.</sub></p>
+<p align="center"><sub>One tap on the floating button. The original stays; the translation goes underneath.</sub></p>
 
 <p align="center">
   <img src="docs/media/review-phone.gif" alt="On a phone: the review page shows a sentence captured from the article, you pick the right translation, grade how well you remembered it, and the next card comes up." width="27%">
   &nbsp;&nbsp;
   <img src="docs/media/review-mac.gif" alt="The same review session on a Mac: the card, the four grade buttons with their next-review intervals, and the following card." width="66%">
 </p>
-<p align="center"><sub>Sentences you actually read come back as review cards — on your phone or on your Mac. Pick the translation, grade yourself, and spaced repetition schedules the next visit.</sub></p>
-
-<p align="center">
-  <img src="docs/media/app-live-subtitles.gif" alt="Live Subtitles on iPhone: a picture-in-picture window floats over another app, stacking each spoken sentence with its translation — the English translation in bold, the Chinese original beneath it." width="27%">
-</p>
-<p align="center"><sub>Live Subtitles: point the app at whatever is playing and the captions float in a picture-in-picture window, above whatever else you are doing. <a href="https://belliedmonkey.cc/#app-preview">Watch the full 30-second preview →</a></sub></p>
+<p align="center"><sub>Sentences you actually read come back as review cards — on your phone or on your Mac.</sub></p>
 
 ---
 
@@ -264,6 +278,25 @@ Live interpret / caption pipeline today: **on-device SpeechAnalyzer → VAD/LID/
 | TTS | Local / offline-capable | AA e.g. Eleven v4 Turbo Elo 1335 | Cloud voices pending listen tests |
 
 **Not shipping soon:** flash/DeepSeek replacing plus; Grok streaming as caption primary; Ming TTS CPU path. **Next:** monthly on the 1st (or sooner on material change). Numbers labeled self-measured / third-party / vendor-reported.
+
+## How we choose models
+
+Every module runs the same loop: **hard gates → experiment → what ships → what we
+rejected → last verified**. The gates are written first — privacy, first-word latency,
+severe-error count, regional flavor — and a candidate that misses one never becomes the
+default, however fast or cheap it is. That is why the free tier still runs Qwen plus after
+a 1600-sentence app-contract evaluation, and why a faster DeepSeek Flash was rejected on
+severe errors instead of being quietly swapped in.
+
+The public ledger, with tables, numbers, and the gaps we have not closed yet:
+
+- [How we choose models for listening, subtitles and page translation](https://belliedmonkey.cc/technology/model-selection)
+- [Why listen-translate ASR stays on-device](https://belliedmonkey.cc/technology/model-selection/listen-asr)
+- [Why free-tier listen translation stays on Qwen plus](https://belliedmonkey.cc/technology/model-selection/subtitle-mt)
+- [Zero-setup page translate, and honest failure on long units](https://belliedmonkey.cc/technology/model-selection/page-mt)
+
+The China edition is a separate app with its own site:
+[the same ledger on belliedmonkey.com](https://belliedmonkey.com/technology/model-selection).
 
 ## Known limitations
 

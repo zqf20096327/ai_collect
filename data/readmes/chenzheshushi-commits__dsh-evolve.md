@@ -39,7 +39,7 @@ dsh plugin --profile web add github:chenzheshushi-commits/dsh-evolve
 Pin a specific release instead of tracking `main`:
 
 ```bash
-dsh plugin --profile web add "https://github.com/chenzheshushi-commits/dsh-evolve/releases/download/v0.8.0/dsh-evolve-0.8.0.tgz"
+dsh plugin --profile web add "https://github.com/chenzheshushi-commits/dsh-evolve/releases/download/v0.8.2/dsh-evolve-0.8.2.tgz"
 ```
 
 Then restart the harness — tools are discovered at startup, not hot-reloaded.
@@ -187,6 +187,61 @@ behavior on failure. Nothing runs in your main loop.
 - **Mechanisms over model smarts.** Safety comes from deterministic rules, so swapping models changes quality, never safety.
 
 ---
+
+## What's new in v0.8.2 — The refusal log actually lands somewhere
+
+**The guard's refusal log now exists on a default install.** v0.8.1 introduced a
+log of refused control-plane requests (the `origin`, `host` and `sec-fetch-site`
+that decide the refusal), but it wrote to `$DSH_HOME` only when that environment
+variable was set. The harness resolves its home as `$DSH_HOME` when set and
+`~/.dsh` otherwise, and it does not export the variable to plugin processes — so
+on a default install the log was written nowhere. That is the one case where
+someone needs to read it.
+
+The plugin now resolves the harness home exactly the way the harness does (one
+shared resolver, used by the plugin workspace and the log alike) and passes it
+down to the control plane, and the log's directory is created when it does not
+exist yet. The log lands at `<harness home>/evolve-guard-debug.log`.
+
+## What's new in v0.8.1 — Memory belongs to a workspace, and the desktop app can save
+
+**Project-scoped memory.** One host process shares one memory store across every
+session, so project-scope records were recallable everywhere: a session working in
+repo A got repo B's memories injected whenever the query text happened to overlap.
+A memory written from a session is now stamped with that session's workspace root,
+and a project-scope record is visible only inside its own workspace. `user`-scope
+records stay global; records written before this version carry no workspace and stay
+visible everywhere (fail-open) — so this stops NEW cross-project pollution, it does
+not retroactively hide the existing corpus. Manual recall takes `allProjects: true`
+for a deliberate cross-project lookup.
+
+The key is the normalized full workspace path, not the directory's last segment: two
+`app` directories are two projects, and a session started in a subdirectory is not a
+different project. The visibility rule is one function, used by the recall pool, the
+near-duplicate reinforcement loop, the pending-queue cap and the write-quality
+assessment — filtering only recall would leave the write side cross-project, where an
+A-workspace write that happens to be a near-duplicate of a B-workspace record would
+reinforce (and possibly rewrite the content of) that other project's memory.
+
+**The settings page works inside the desktop app.** The desktop shell serves its
+renderer from the `dsh-app://app` scheme, and the loopback guard compared the
+request's Origin host against the `Host` header — which can never match for an
+app-scheme page, so every save came back `403`. That exact scheme and host are now
+trusted alongside the loopback origin. Deliberately narrow: `Origin: null` (what a
+`file://` page sends) and every other app scheme stay refused, because the guard's
+real weight is the loopback socket, the loopback `Host` and the non-cross-site check.
+Each refusal now records the three headers that decide it — `origin`, `host`,
+`sec-fetch-site`, never a token — to `$DSH_HOME/evolve-guard-debug.log`, so a report
+of "the page says 403" is answerable from the machine instead of by guesswork.
+
+**The settings page no longer hangs on an unreachable model provider.** `/state`
+enumerates models through `llm.listModels()`, which performs a real HTTP request
+for an account/API provider. A host with no route to that API does not always fail
+— it can simply never answer, and nothing in a `try/catch` catches "never answers":
+the route sat at no response at all and the page rendered nothing. Each provider
+listing is now bounded (1.5 s) and the whole enumeration is bounded (3 s); a
+provider that would not answer is still offered with a blank model (that provider's
+default) instead of taking the page down with it.
 
 ## What's new in v0.8.0 — Runs on harness 0.1.7
 

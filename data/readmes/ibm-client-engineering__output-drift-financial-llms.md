@@ -11,7 +11,6 @@ measuring whether repeated agent runs preserve both their decisions and their
 observable execution paths.
 
 [![DFAH-Bench paper](https://img.shields.io/badge/arXiv-2607.20491-b31b1b.svg)](https://arxiv.org/abs/2607.20491)
-[![PyPI](https://img.shields.io/pypi/v/dfah-bench.svg)](https://pypi.org/project/dfah-bench/)
 [![Python](https://img.shields.io/pypi/pyversions/dfah-bench.svg)](https://pypi.org/project/dfah-bench/)
 [![DFAH package](https://github.com/ibm-client-engineering/output-drift-financial-llms/actions/workflows/dfah-package.yml/badge.svg)](https://github.com/ibm-client-engineering/output-drift-financial-llms/actions/workflows/dfah-package.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
@@ -249,7 +248,7 @@ These are three related but distinct studies, not versions of one experiment.
 
 | Paper | Venue | Focus | Links |
 | --- | --- | --- | --- |
-| **DFAH-Bench: Benchmarking Observable Agent Instability in Financial Decision-Making** (2026) | arXiv | Observable decision and trajectory instability | [arXiv:2607.20491](https://arxiv.org/abs/2607.20491) · [DOI](https://doi.org/10.48550/arXiv.2607.20491) |
+| **DFAH-Bench: Benchmarking Observable Agent Instability in Financial Decision-Making** (2026) | AI4F at ACM ICAIF 2026 | Observable decision and trajectory instability | [arXiv:2607.20491](https://arxiv.org/abs/2607.20491) · [DOI](https://doi.org/10.48550/arXiv.2607.20491) |
 | Replayable Financial Agents (2026) | [ICLR 2026 FinAI Workshop](https://sites.google.com/view/iclr2026finai/home) | Agent determinism, faithfulness metrics, and stress testing | [arXiv:2601.15322](https://arxiv.org/abs/2601.15322) · [DOI](https://doi.org/10.48550/arXiv.2601.15322) |
 | LLM Output Drift (2025) | [AI4F Workshop 2025](https://ai4f.org/) | Cross-provider validation and mitigation | [arXiv:2511.07585](https://arxiv.org/abs/2511.07585) · [DOI](https://doi.org/10.48550/arXiv.2511.07585) |
 

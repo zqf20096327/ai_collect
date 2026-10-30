@@ -141,7 +141,8 @@ rather than running at whatever level the composer happened to show:
 presence of `thinking_fallback`) to know whether the requested tier was applied.
 
 `reason` is one of `quota` / `disabled` / `not-offered` / `click-not-applied` /
-`cooldown:<earlier reason>`. Only strong evidence memoizes the tier as gone
+`cooldown:<earlier reason>`, or `empty_turn` when the answer came from the instant resend of
+an empty turn (`to: "instant"`). Only strong evidence memoizes the tier as gone
 (`TIER_UNAVAILABLE_COOLDOWN_SEC`): an explicitly disabled item or the post-submit
 limit notice immediately, a missing menu item after two consecutive sightings, a
 single unverified click never. A memo never overrides reality — if the pill
@@ -297,6 +298,11 @@ Every endpoint returns a uniform error shape:
 | `CHAT_RESCUE_STOP_RECENT_SEC` | A Stop button seen within this many seconds still blocks the reload rescue | `30` |
 | `CHATGPT_TEXT_RETRY_ATTEMPTS` | Attempts for `page_load_failed` transients (fresh page → full browser rebuild) | `4` |
 | `TEXT_STALL_RETRIES` | Extra fresh-page resends per text job after a stall with no answer, bound stream, POST failure or accepted POST. Only new conversations before any client delta; budget survives maintenance. Requires backend capture. `0` disables. Each resend obeys slot pacing; a lost POST response can still cause duplicate generation | `1` |
+| `CHAT_BG_POLL_EARLY_SEC` | The response stream of a text turn closed with no answer text → start the background conversation poll this many seconds later instead of after `CHAT_STREAM_RESCUE_SEC` of silence (the reload rescue keeps its own window) | `5` |
+| `CHAT_EMPTY_TURN_RETRIES` | Resends of a text turn that ended as `empty_turn` (stream complete, reasoning only), each in a new chat. Only new conversations before any client delta; the abandoned conversation is never read again. `0` disables | `1` |
+| `CHAT_REQUEST_BUDGET_SEC` | Request budget for the empty-turn resend, counted from when the request arrived (queue included); the resend's whole wait is capped by it | `600` |
+| `CHAT_EMPTY_TURN_INSTANT_RETRY` | One more resend after the same-mode ones, in instant mode (no reasoning phase, so an empty turn is near impossible). Same rules and budget; never with `CHAT_EMPTY_TURN_RETRIES=0`; not sent when the composer did not switch to instant. The answer carries `applied.thinking_mode: "instant"` and `thinking_fallback.reason: "empty_turn"`. `0` disables | `1` |
+| `CHAT_EMPTY_TURN_RETRY_MIN_SEC` | No empty-turn resend with less than this much of `CHAT_REQUEST_BUDGET_SEC` left | `180` |
 | `PAGE_RECYCLE_AFTER_JOBS` | Recreate a slot's page on the next job after this many completed jobs on that page. Does not enter recovery probation. `0` disables | `50` |
 | `CHATGPT_TEXT_HARD_RESET` | Allow full browser-context rebuild on repeated `page_load_failed` (auto-off in `cdp` mode) | `true` |
 | `HEALTH_STUCK_SEC` | Liveness: queued work without heartbeat for N s → `/health/live` 503 | `900` |

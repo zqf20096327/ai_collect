@@ -109,7 +109,7 @@ For all AI Engineering Interview – Questions and Answers: Refer to [AI Enginee
 - What is Cross-Entropy?
     - Answer: [Math Behind Cross-Entropy Loss](https://outcomeschool.com/blog/math-behind-cross-entropy-loss)
 - What are Logits?
-    - Answer: [Understanding Logits in Machine Learning](https://x.com/amitiitbhu/status/1927927814923207146)
+    - Answer: [Understanding Logits in Machine Learning](https://x.com/amitiitbhu/status/1927927814923207146) and [What are Logits in Machine Learning?](https://outcomeschool.com/blog/logits-in-machine-learning)
 - Explain Cross-Validation. Why is it used?
     - Answer: [Understanding Cross-Validation in Machine Learning](https://x.com/amitiitbhu/status/1939929240084128137)
 - What are precision, recall, and F1-score?
@@ -156,12 +156,13 @@ For all AI Engineering Interview – Questions and Answers: Refer to [AI Enginee
 - What is Feature Engineering?
    - Answer: [Feature Engineering in Machine Learning](https://www.youtube.com/watch?v=QLlywrWuXag)
 - What is one-hot encoding? When should you use it?
-    - Answer: [One-hot Encoding in Machine Learning](https://www.youtube.com/watch?v=6AmedU5i9go)
+    - Answer: [One-hot Encoding in Machine Learning](https://www.youtube.com/watch?v=6AmedU5i9go) and [What is One-hot Encoding in Machine Learning?](https://outcomeschool.com/blog/one-hot-encoding)
 - How do you deal with missing data?
 - How do you handle Outliers?
 - Explain Feature Scaling. Why is it needed?
 - One-Hot, Label, Target, and K-Fold Target Encoding
 - How do you handle Categorical Features?
+    - Answer: [What is One-hot Encoding in Machine Learning?](https://outcomeschool.com/blog/one-hot-encoding)
 - Explain Feature selection vs feature extraction.
 - How would you create new features from existing ones?
 - How do you approach a dataset with highly imbalanced classes?
@@ -176,6 +177,7 @@ For all AI Engineering Interview – Questions and Answers: Refer to [AI Enginee
 - What is stochastic gradient descent (SGD)?
     - Answer: [Math Behind Gradient Descent](https://outcomeschool.com/blog/math-behind-gradient-descent)
 - What are vanishing gradients?
+    - Answer: [Why do vanishing and exploding gradients happen?](https://outcomeschool.com/blog/vanishing-and-exploding-gradients)
 - What is a learning rate? How to choose a good one?
     - Answer: [Learning Rate](https://www.linkedin.com/posts/amit-shekhar-iitbhu_ml-ai-activity-7438148910260404224-0bxL)
 - How does the learning rate affect model training?
@@ -253,6 +255,7 @@ For all AI Engineering Interview – Questions and Answers: Refer to [AI Enginee
 - What are LSTM and GRU? How do they solve long-term dependency issues?
 - What are the main gates in LSTM and their roles?
 - How to identify exploding gradient issues in your model?
+    - Answer: [Why do vanishing and exploding gradients happen?](https://outcomeschool.com/blog/vanishing-and-exploding-gradients)
 - What is a Transformer architecture, and what makes it different from CNNs and RNNs?
     - Answer: [Decoding Transformer Architecture](https://outcomeschool.com/blog/decoding-transformer-architecture)
 - What is the Attention mechanism in deep learning, and why is it significant?
@@ -263,6 +266,8 @@ For all AI Engineering Interview – Questions and Answers: Refer to [AI Enginee
 - Explain transfer learning and when to use it.
 - What are Multimodal AI models, and how do they process different types of data?
     - Answer: [Multimodal AI](https://outcomeschool.com/blog/multimodal-ai)
+- How does a Vision-Language Model (VLM) work?
+    - Answer: [How does a Vision-Language Model (VLM) work?](https://outcomeschool.com/blog/vision-language-model-vlm)
 - How do World Models work?
     - Answer: [How do World Models work?](https://outcomeschool.com/blog/how-do-world-models-work)
 - How do Diffusion Language Models (DLMs) work?

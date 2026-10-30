@@ -7,7 +7,7 @@
 
 [![Windows](https://img.shields.io/badge/Windows-0078D4?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/chabandou/poise-voice-isolator/releases)
 [![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)](https://github.com/chabandou/poise-voice-isolator/releases)
-[![Android](https://img.shields.io/badge/Android%20(SAMSUNG)-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://github.com/chabandou/poise-android/releases)
+[![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://github.com/chabandou/poise-android/releases)
 
 </div>
 
@@ -51,14 +51,14 @@
 
 Poise sits between your apps and your speakers. It takes the system mix (YouTube, streams, podcasts), runs it through a neural speech model, and plays back only the voices. Turn it on once and forget it.
 
-- **Strips music, keeps speech.** DeepFilterNet3 removes instrumentals and background noise while leaving voices intact. A halal-friendly way to watch and listen to online content.
+- **Strips (or massively reduces) music, keeps speech.** DeepFilterNet3 removes instrumentals and background noise while leaving voices intact. A halal-friendly way to watch and listen to online content.
 - **Stays in sync.** The delay is fixed and reported to the audio server, so video players hold the picture to match: 76 ms end to end on Linux.
 - **Light on the machine.** Silence skips the model entirely. Inference runs at ~0.12× real time on a laptop CPU, or ~0.04× with GTCRN.
 - **Private by construction.** Everything runs on your machine. No cloud, no account, no telemetry.
 - **Free.** MIT licensed, no subscription.
 
 > [!NOTE]
-> On Android, Poise lives in a separate app for Samsung devices: [poise-android](https://github.com/chabandou/poise-android).
+> On Android, Poise lives in a separate app: [poise-android](https://github.com/chabandou/poise-android).
 
 ## Install
 
@@ -95,15 +95,18 @@ Then run `poise` to open the terminal UI. All three models are built in.
 <img src=".github/media/1.5.0/linux-tui.png" alt="Poise terminal UI on Linux: input and voice scopes, isolation strength, output device and events" width="100%"/>
 </details>
 
+> [!IMPORTANT]
+> Poise can’t always completely remove music. In certain scenarios some can pass through, especially loud music that’s close to speech. We can’t guarantee that the output audio is permissible, use your own judgement.
+
 ## Models
 
 Switch with `m` in the TUI, the **Model** card in the app, or `--model` on the command line.
 
-| Model | Engine delay | Load (RTF) | Best for |
-|:--|:--:|:--:|:--|
-| **DeepFilterNet3** *(default)* | 32 ms | ~0.12 | Voice isolation from music and noise |
-| **GTCRN** | 18 ms | ~0.04 | Noisy speech on weak CPUs, lowest delay |
-| **RNNoise** | 20 ms | ~0.08 | Steady noise: fans, hiss, hum |
+| Model | Engine delay | Load (RTF) |
+|:--|:--:|:--:|
+| **DeepFilterNet3** *(default)* | 32 ms | ~0.12 |
+| **GTCRN** | 18 ms | ~0.04 |
+| **RNNoise** | 20 ms | ~0.08 |
 
 <sub>RTF = processing time ÷ audio time, measured on a Ryzen 5 4500U laptop on AC. Below 1.0 keeps up with real time.</sub>
 

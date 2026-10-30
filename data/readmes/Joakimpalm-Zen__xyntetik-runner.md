@@ -32,7 +32,8 @@ exists to replace those guesses with answers you can check.
 
 - **Ask before you download.** Runner reads the first few megabytes of a
   model and tells you whether it fits your machine, and how. It called the
-  real split in 70 of 72 tests and was never too optimistic.
+  real split in 70 of 72 tests (release 1.0.1, October 2026) and was never
+  too optimistic.
 - **Shrink a model and see what it cost.** One command and a one-line plan
   built a Qwen3-30B that is smaller than the official 4-bit file and closer
   to the original.
@@ -74,9 +75,9 @@ It takes about a minute to try: [quick start](#quick-start).
   <a href="docs/community-results.md">Community results</a>
 </p>
 
-> **Published release: 1.7.1.** The [latest release](https://github.com/Joakimpalm-Zen/xyntetik-runner/releases/latest) is the maintenance release on 1.7.0: `--mlock` keeps the E-series token table pageable, `--info fit` reports that table apart from the hot set, load notices cite the engine's own records, and the CI that guards a merge runs in a quarter of the time ([changelog](CHANGELOG.md)). Its Linux asset keeps the GLIBC 2.38 ceiling and starts on Ubuntu 24.04 ([how that is held](docs/linux-1.6.1-candidate.md)).
+> **Published release: 1.9.0.** The [latest release](https://github.com/Joakimpalm-Zen/xyntetik-runner/releases/latest) makes the BPE tokenizers read text as the publishers' own tokenizers do, on every vocabulary entry of 23 of the 24 files checked, adds RecursiveSI's `flint` architecture on the CPU, and admits LiquidAI's LFM2.5-8B-A1B and Cloudflare's Clef-Flash files at Tier 2, failures first ([changelog](CHANGELOG.md)). Its Linux asset keeps the GLIBC 2.38 ceiling and starts on Ubuntu 24.04 ([how that is held](docs/linux-1.6.1-candidate.md)).
 
-> **Version `1.7.1`.** The command line, the HTTP API, the record formats and
+> **Version `1.9.0`.** The command line, the HTTP API, the record formats and
 > the model files that load stay compatible across 1.x
 > ([versioning policy](docs/versioning.md)). This page is the short version;
 > every flag, endpoint, limit and measurement is in the [manual](MANUAL.md).
@@ -155,9 +156,11 @@ or follow one of these.
 <a id="runtime-and-hardware"></a>
 ## <img src="site/assets/readme-section.svg" width="8" height="24" alt=""> Know whether a model fits before you download it
 
-On an RTX 3070, `--info fit` named the same GPU and CPU split the
-loader then used in 70 of 72 cases and was one layer cautious in the other
-two, never optimistic (six models, two context sizes, four cache formats).
+On an RTX 3070 with the 1.0.1 release (2026-10-03), `--info fit` named the same
+GPU and CPU split the loader then used in 70 of 72 cases and was one layer
+cautious in the other two, never optimistic (six models, two context sizes,
+four cache formats). The raw sweep is not in this repository, so treat the
+figure as that release's, not a promise for every build.
 
 **Why.** Finding out that a model does not fit usually means downloading
 20 GB and watching it crash. The answer is already written in the first few
@@ -408,7 +411,7 @@ recorded failure.
   a [Python client](python/README.md) and a
   [TypeScript client](clients/typescript/README.md).
   [Container](MANUAL.md#container-image)
-- **What loads.** 20 admitted architecture labels and 24 weight formats, verified on
+- **What loads.** 27 admitted architecture labels and 24 weight formats, verified on
   download with `-hf`. Experimental layouts and backend limits are listed
   in the [support matrix](MANUAL.md#support-matrix).
 - **How Runner compares.** Closer to the publisher's reference than
@@ -465,7 +468,7 @@ passing evaluation made for those exact bytes.
 git clone https://github.com/Joakimpalm-Zen/xyntetik-runner
 cd xyntetik-runner
 make
-./runner --version   # -> runner 1.7.1
+./runner --version   # -> runner 1.9.0
 ```
 
 Linux, macOS and Windows. NVIDIA GPUs need a driver with CUDA 13.0 support

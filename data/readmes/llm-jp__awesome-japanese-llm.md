@@ -279,4 +279,77 @@
 | [Sparticle/llama-2-7b-chat-japanese-lora](https://huggingface.co/Sparticle/llama-2-7b-chat-japanese-lora) | 2023 | Llama 2 (**7b**) || Sparticle |  ？  |
 | [izumi-lab/llama-7b-japanese-lora-v0-5ep](https://huggingface.co/izumi-lab/llama-7b-japanese-lora-v0-5ep) | 2023 | Llama (**7b**) || 東大 和泉研 |  ？  |
 | [lightblue/jod](https://huggingface.co/lightblue/jod) | 2023 | Mistral-7B-SlimOrca (**7b**) || Lightblue | Apache 2.0 |
-| [NTQAI/chatntq-7b-jpntuned](https://huggingface.co/NTQAI/chatntq-7b-jpntuned) | 2023 | RWKV-4 World (
+| [NTQAI/chatntq-7b-jpntuned](https://huggingface.co/NTQAI/chatntq-7b-jpntuned) | 2023 | RWKV-4 World (**7b**) || NTQ Solution |  ？  |
+| [Qwen3.5-FT-Japanese-CoT-4B](https://huggingface.co/Aname-Tommy/Qwen3.5-FT-Japanese-CoT-4B) | **2026** | Qwen3.5 (**4b**) | 不明 | 個人 (Aname-Tommy) | MIT |
+| [Borea](https://prtimes.jp/main/html/rd/p/000000008.000129878.html)<br>([Jp](https://huggingface.co/AXCXEPT/Borea-Phi-3.5-mini-Instruct-Jp), [Common](https://huggingface.co/AXCXEPT/Borea-Phi-3.5-mini-Instruct-Common), [Coding](https://huggingface.co/AXCXEPT/Borea-Phi-3.5-mini-Instruct-Coding)) | 2024 | Phi-3.5 (**3.8b**) | | Axcxept | MIT |
+| [Shisa V2.1 3B](https://shisa.ai/posts/shisa-v2.1-ja-pr/)<br>([**3b**](https://huggingface.co/shisa-ai/shisa-v2.1-llama3.2-3b)) | 2025 | Llama 3.2 (**3b**) | SFT/DPO/強化学習/モデルマージを組み合わせた学習 | Shisa.AI | Llama 3.2 Community License |
+| [AXCXEPT/EZO-Llama-3.2-3B-Instruct-dpoE](https://huggingface.co/AXCXEPT/EZO-Llama-3.2-3B-Instruct-dpoE) | 2024 | Llama 3.2 (**3b**) || Axcxept | Llama 3.2 Community License |
+| [日本語版 Gemma 2 2B](https://developers-jp.googleblog.com/2024/10/gemma-2-for-japan.html)<br>([2b-jpn-it](https://huggingface.co/google/gemma-2-2b-jpn-it)) | 2024 | Gemma 2 (**2b**) || Google | Gemma Terms of Use |
+| [AXCXEPT/EZO-gemma-2-2b-jpn-it](https://huggingface.co/AXCXEPT/EZO-gemma-2-2b-jpn-it) | 2024 | Gemma 2 (**2b**) || Axcxept | Gemma Terms of Use |
+| [AXCXEPT/EZO-Common-T2-2B-gemma-2-it](https://huggingface.co/AXCXEPT/EZO-Common-T2-2B-gemma-2-it) | 2024 | Gemma 2 (**2b**) || Axcxept | Gemma Terms of Use |
+| [Shisa V2.1 1.2B](https://shisa.ai/posts/shisa-v2.1-ja-pr/)<br>([**1.2b**](https://huggingface.co/shisa-ai/shisa-v2.1-lfm2-1.2b)) | 2025 | LFM2 (**1.2b**) | SFT/DPO/強化学習/モデルマージを組み合わせた学習 | Shisa.AI | LFM Open License v1.0 |
+| [LFM2.5-1.2B-JP](https://www.liquid.ai/blog/introducing-lfm2-5-the-next-generation-of-on-device-ai)<br>([1.2B-JP](https://huggingface.co/LiquidAI/LFM2.5-1.2B-JP), [1.2B-JP-202606](https://huggingface.co/LiquidAI/LFM2.5-1.2B-JP-202606)) | **2026** | LFM2.5 (**1.2b**) | 不明 | Liquid AI | LFM Open License v1.0 |
+| [Qwen3.5-FT-Japanese-CoT-0.8B](https://huggingface.co/Aname-Tommy/Qwen3.5-FT-Japanese-CoT-0.8B) | **2026** | Qwen3.5 (**0.8b**) | 不明 | 個人 (Aname-Tommy) | MIT |
+
+<a id="generative-instruction-only-domain-specific"></a>
+#### ドメイン特化型
+
+|    | 公開年 | ドメイン | ベースのLLM  |  開発元  | ライセンス |
+|:---|:---:|:---:|:---:|:---:|:---:|
+| [JMedLoRA](https://arxiv.org/pdf/2310.10083.pdf)<br>([llama2-jmedlora-30000](https://huggingface.co/AIgroup-CVM-utokyohospital/llama2-jmedlora-30000)) | 2023 | 医療 | Llama 2 (**70b**) | 東京大学医学部附属病院 循環器内科 AIグループ | CC BY-NC 4.0 |
+| [pfnet/Qwen3-1.7B-pfn-qfin](https://huggingface.co/pfnet/Qwen3-1.7B-pfn-qfin) | 2025 | 金融 | Qwen3 (**1.72b**) | Preferred Networks | PLaMo Community License |
+| [pfnet/Qwen2.5-1.5B-pfn-qfin](https://huggingface.co/pfnet/Qwen2.5-1.5B-pfn-qfin) | 2025 | 金融 | Qwen2.5 (**1.54b**) | Preferred Networks | PLaMo Community License |
+
+<a id="merged-models"></a>
+### 複数のLLMをマージして作成されたモデル
+
+|    | 公開年 |  マージ元のLLM（太字は日本語LLM）  | 開発元  | ライセンス |
+|:---|:---:|:---:|:---:|:---:|
+| [EQUES/MedLLama3-JP-v2](https://huggingface.co/EQUES/MedLLama3-JP-v2) | 2024 | **Llama 3 Swallow 8B (Instruct)**, OpenBioLLM-8B, MMed-Llama 3 8B, **Llama 3 ELYZA JP 8B** | EQUES | Llama 3 Community License |
+| [EvoLLM-JP-A](https://sakana.ai/evolutionary-model-merge-jp/)<br>([v1-7B](https://huggingface.co/SakanaAI/EvoLLM-JP-A-v1-7B)) | 2024 | **Shisa Gamma 7B (v1)**, Arithmo2 Mistral 7B, Abel 7B 002 | Sakana AI | Apache 2.0 |
+| [EvoLLM-JP](https://sakana.ai/evolutionary-model-merge-jp/)<br>([v1-7B](https://huggingface.co/SakanaAI/EvoLLM-JP-v1-7B), [v1-10B](https://huggingface.co/SakanaAI/EvoLLM-JP-v1-10B)) | 2024 | **Shisa Gamma 7B (v1)**, WizardMath-7B-V1.1, Abel 7B 002 | Sakana AI | MICROSOFT RESEARCH LICENSE |
+| [EQUES/TinyQwens-Merge-1.5B](https://huggingface.co/EQUES/TinyQwens-Merge-1.5B) | 2025 | **SakanaAI/TinySwallow-1.5B-Instruct**, **EQUES/TinySwallow-Stratos-1.5B**, deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B, Qwen/Qwen2.5-1.5B-Instruct | EQUES Inc. | Apache 2.0 |
+
+<a id="api-based-models"></a>
+### APIとして提供されているモデル
+
+|    | 公開年 |  入出力で扱える<br>トークン数 | 開発元  |  プラットフォーム |
+|:---|:---:|:---:|:---:|:---:|
+| [Sarashina](https://www.sbintuitions.co.jp/news/press/20261013_01/)<br>([Sarashina3 mini](https://www.sbintuitions.co.jp/blog/entry/2026/06/30/100000), [Sarashina3 nano](https://www.sbintuitions.co.jp/blog/entry/2026/06/30/100000)) | **2026** | | SB Intuitions | 独自, Cloud PF Type A |
+| [Sakana Namazu](https://sakana.ai/namazu/)<br>([sakana-namazu](https://console.sakana.ai/models?model=sakana-namazu)) | **2026** | 262,144 | Sakana AI | 独自 |
+| [Syn](https://www.upstage.ai/news/introducing-upstage-japan)<br>([Syn](https://aws.amazon.com/marketplace/pp/prodview-if7zjxeioy5pg), [Syn Pro](https://aws.amazon.com/marketplace/pp/prodview-d7vt6ap2jhvfg)) | 2025 | 32,768 | カラクリ, Upstage | AWS Marketplace (SageMaker) |
+| [tsuzumi](https://www.nttdata.com/global/ja/news/topics/2024/112000/)<br>([tsuzumi-7b](https://ai.azure.com/catalog/models/tsuzumi-7b), [tsuzumi 2](https://marketplace.microsoft.com/en-us/product/1681106214127.nttdata-tsuzumi-2-instruct-offer)) | 2025 | | NTT | Microsoft Foundry |
+| [PLaMo API](https://plamo.preferredai.jp/api) | 2024 | 32,768 | Preferred Networks | 独自 |
+| [LHTM-OPT](https://aws.amazon.com/marketplace/pp/prodview-nw62wpreit442) | 2024 | | オルツ | AWS Marketplace (SageMaker) |
+| [AIのべりすと](https://ai-novel.com/account_api.php) | 2021 | 2,400 ~ 8,192 | Bit192 | 独自 |
+
+<a id="autoencoding"></a>
+## 入力テキストの処理に主に使うモデル
+
+<a id="autoencoding-general"></a>
+### 汎用
+
+|    | 公開年 |  アーキテクチャ  |  入力で扱えるトークン数  |  学習テキスト  |  開発元  | ライセンス | HuggingFace ですぐ使える？ [^4]  |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| [ModernBERT-Ja](https://huggingface.co/sbintuitions/modernbert-ja-310m) | 2025 | ModernBERT | **8,192** | 日本語・英語データ | SB Intuitions | MIT | ◯ ([30m](https://huggingface.co/sbintuitions/modernbert-ja-30m), [70m](https://huggingface.co/sbintuitions/modernbert-ja-70m), [130m](https://huggingface.co/sbintuitions/modernbert-ja-130m), [310m](https://huggingface.co/sbintuitions/modernbert-ja-310m)) |
+| [llm-jp-modernbert](https://llm-jp.nii.ac.jp/news/post-765/) | 2025 | ModernBERT | **8,192** | llm-jp-corpus-v4 の日本語サブセット（約**0.69T**トークン）| 大規模言語モデル研究開発センター | Apache 2.0 | [◯](https://huggingface.co/llm-jp/llm-jp-modernbert-base) |
+|  [京大BERT](https://nlp.ist.i.kyoto-u.ac.jp/?ku_bert_japanese)  | 2020 |  BERT (base, large)  | 512 |  日本語 Wikipedia (約1,800万文)  |  京大 言語メディア研究室  | Apache 2.0 | △ |
+|  [東北大BERT](https://github.com/cl-tohoku/bert-japanese)  | 2023 |  BERT (base, large)  | 512 |  base (v1):<br>日本語 Wikipedia 約1,700万文 (2.6GB)<br>base (v2) & large:<br>日本語 Wikipedia 約3,000万文 (4.0GB)<br>base (v3) & large (v2):<br>日本語 Wikipedia 約3,400万文 (4.9GB)<br>+ 日本語 CC-100 約3億9,200万文 (74.3GB)   |  東北大<br>自然言語処理研究グループ | base (v1, v2) & large: CC BY-SA 3.0<br>base (v3) & large (v2): Apache 2.0 |◯ ([base (v1)](https://huggingface.co/tohoku-nlp/bert-base-japanese-whole-word-masking), [base (v1, 文字レベル)](https://huggingface.co/tohoku-nlp/bert-base-japanese-char-whole-word-masking), [base (v2)](https://huggingface.co/tohoku-nlp/bert-base-japanese-v2), [base (v2, 文字レベル)](https://huggingface.co/tohoku-nlp/bert-base-japanese-char-v2), [large](https://huggingface.co/tohoku-nlp/bert-large-japanese), [large (文字レベル)](https://huggingface.co/tohoku-nlp/bert-large-japanese-char), [base (v3)](https://huggingface.co/tohoku-nlp/bert-base-japanese-v3), [base (v3, 文字レベル)](https://huggingface.co/tohoku-nlp/bert-base-japanese-char-v3), [large (v2)](https://huggingface.co/tohoku-nlp/bert-large-japanese-v2), [large (v2, 文字レベル)](https://huggingface.co/tohoku-nlp/bert-large-japanese-char-v2)) |
+| [TohokuNLP BERT-alpha 500M](https://huggingface.co/tohoku-nlp/tohokunlp-bert-500m-sq8192-alpha)  | 2024 | Llama ベースのエンコーダ[^23] | **4,096**<br>または<br>**8,192** | [llm-jp-corpus-v3](https://gitlab.llm-jp.nii.ac.jp/datasets/llm-jp-corpus-v3) の日本語サブセット | 東北大<br>自然言語処理研究グループ | Apache 2.0 | ◯ ([sq4096-alpha](https://huggingface.co/tohoku-nlp/tohokunlp-bert-500m-sq4096-alpha), [sq8192-alpha](https://huggingface.co/tohoku-nlp/tohokunlp-bert-500m-sq8192-alpha)) |
+| [ByBERT-JP](https://huggingface.co/collections/tohoku-nlp/bybert-jp) | 2025 | Llama ベースのエンコーダ[^23] | 100m, 200m, 400m: 3,072<br>v2-100m: **4,096** | [llm-jp-corpus-v3](https://gitlab.llm-jp.nii.ac.jp/datasets/llm-jp-corpus-v3) のサブセット<br>100m: 623B トークン<br>200m: 637B トークン<br>400m: 1.23T トークン<br>v2-100m: 2.76T トークン | 東北大<br>自然言語処理研究グループ | Apache 2.0 | ◯ ([100m](https://huggingface.co/tohoku-nlp/bybert-jp-100m), [200m](https://huggingface.co/tohoku-nlp/bybert-jp-200m), [400m](https://huggingface.co/tohoku-nlp/bybert-jp-400m), [v2-100m](https://huggingface.co/tohoku-nlp/bybert-jp-v2-100m)) |
+| [NICT BERT](https://alaginrc.nict.go.jp/nict-bert/index.html)   | 2020 |  BERT (base)  | 512 |  日本語 Wikipedia  |  NICT  | CC BY 4.0 | △ |
+| [Laboro BERT](https://github.com/laboroai/Laboro-BERT-Japanese) | 2020 | BERT (base, large) | 512 | 日本語 Web コーパス <br> (ニュースサイトやブログなど<br>計4,307のWebサイト、2,605,280ページ (12GB)) | Laboro.AI | CC BY-NC 4.0 | ✕ |
+| [colorfulscoop BERT](https://huggingface.co/colorfulscoop/bert-base-ja) | 2021 | BERT (base) | 512 | 日本語 Wikipedia | Colorful Scoop | CC BY-SA 3.0 | [◯](https://huggingface.co/colorfulscoop/bert-base-ja) |
+| [東大BERT](https://sites.google.com/socsim.org/izumi-lab/tools/language-model) | 2021 | BERT (small) | 512 | 日本語 Wikipedia (約2,000万文 (2.9GB)) | 東大 和泉研 | CC BY-SA 4.0 | [◯](https://huggingface.co/izumi-lab/bert-small-japanese) |
+| [chiTra (Sudachi Transformers)](https://www.worksap.co.jp/news/2022/0225/) | 2022 | BERT (base) | 512 | 国語研日本語ウェブコーパス (NWJC) (148GB) | NINJAL, ワークス徳島人工知能NLP研 | Apache 2.0 | △ |
+| [ACCMS BERT](https://huggingface.co/ku-accms/bert-base-japanese-ssuw) | 2023 | BERT (base) | 512 | 日本語 Wikipedia (3.3GB) | 京大 ACCMS | CC BY-SA 4.0 | [◯](https://huggingface.co/ku-accms/bert-base-japanese-ssuw) |
+| [日立BERT](https://aclanthology.org/2023.acl-srw.5.pdf) | 2023 | BERT (base) | 512 | 日本語 Wikipedia <br>+ Japanese CC-100 | 日立製作所 | CC BY-NC-SA 4.0 | [◯](https://huggingface.co/hitachi-nlp/bert-base-japanese_jumanpp-bpe) [^6] |
+| [RetrievaBERT](https://note.com/retrieva/n/n715bea2c2cd1) | 2024 | BERT [^5] | **2,048** | Japanese CommonCrawl, RefinedWeb, Chinese Wikipedia, Korean Wikipedia, The Stack | レトリバ | Apache 2.0 | [◯](https://huggingface.co/retrieva-jp/bert-1.3b) |
+| [Bandai Namco DistilBERT](https://github.com/BandaiNamcoResearchInc/DistilBERT-base-jp/blob/main/docs/GUIDE.md) | 2020 | DistilBERT | 512 | - （東北大BERT(base) を親モデルとして知識蒸留） | Bandai Namco Research | MIT | [◯](https://huggingface.co/BNKEN/distilbert-base-japanese) |
+| [Laboro DistilBERT](https://github.com/laboroai/Laboro-DistilBERT-Japanese) | 2020 | DistilBERT | 512 | - （Laboro BERT(base) を親モデルとして知識蒸留）| Laboro.AI | CC BY-NC 4.0 | [◯](https://huggingface.co/laboro-ai/distilbert-base-japanese) |
+| [LINE DistilBERT](https://engineering.linecorp.com/ja/blog/line-distilbert-high-performance-fast-lightweight-japanese-language-model) | 2023 | DistilBERT | 512 | - （LINE社内のBERTを親モデルとして知識蒸留）| LINE | Apache 2.0 | [◯](https://huggingface.co/line-corporation/line-distilbert-base-japanese) |
+| [rinna RoBERTa](https://huggingface.co/rinna/japanese-roberta-base) | 2021 | RoBERTa (base) | 512 |  日本語 Wikipedia <br>+ Japanese CC-100 | rinna | MIT | [◯](https://huggingface.co/rinna/japanese-roberta-base) |
+| [早大RoBERTa](https://huggingface.co/nlp-waseda/roberta-base-japanese-with-auto-jumanpp) | 2022 | RoBERTa (base, large) | 512 | 日本語 Wikipedia <br>+ Japanese CC-100 | 早大 河原研 | CC BY-SA 4.0 | ◯ ([base](https://huggingface.co/nlp-waseda/roberta-base-japanese-with-auto-jumanpp), [large](https://huggingface.co/nlp-waseda/roberta-large-japanese-with-auto-jumanpp), [large (seq512)](https://huggingface.co/nlp-waseda/roberta-large-japanese-seq512-with-auto-jumanpp)) [^7] |
+| [インフォマティクスRoBERTa](https://www.informatix.co.jp/pr-roberta/) | 2022 | RoBERTa (base) | 512 | 日本語 Wikipedia<br> + Web 上の記事 (計25GB) | インフォマティクス | Apache 2.0 | △ |
+| [京大RoBERTa](https://huggingface.co/ku-nlp/roberta-base-japanese-char-wwm) | 2022 | RoBERTa (base, large) | 512 | 日本語 Wikipedia <br>+ Japanese CC-100 | 京大 言語メディア研究室 | CC BY-SA 4.0 | ◯ ([base (文字レベル)](https://huggingface.co/ku-nlp/roberta-base-japanese-char-wwm), [large (文字レベル)](https://huggingface.co/ku-nlp/roberta-large-japanese-char-wwm)) |
+| [横浜国大RoBERTa](

@@ -30,7 +30,7 @@ Brew:
 brew install crit
 ```
 <details>
-<summary>Also available via Go, Nix and Windows</summary>
+<summary>Also available via Go, Nix, Arch Linux, and Windows</summary>
 
 Go:
 ```bash
@@ -41,6 +41,12 @@ Nix:
 ```bash
 nix profile install github:tomasz-tomczyk/crit
 ```
+
+Arch Linux:
+```bash
+yay -S crit.md-bin
+```
+> [AUR](https://aur.archlinux.org/packages/crit.md-bin) package, maintained outside this project. Any AUR helper works in place of `yay`.
 
 Windows:
 ```bash
@@ -208,6 +214,8 @@ Sharing uses [crit.md](https://crit.md) when no sharing key exists. To use sever
 ```
 
 Run `crit auth login --share-url https://crit.acme.com` to add or authenticate a target, and add `--set-default` to make it the CLI default. `crit auth status` lists every target. An explicit `"share_targets": []` disables sharing and never injects crit.md. Legacy `share_url` remains readable; `crit config --migrate` converts it atomically. `--share-url` and `CRIT_SHARE_URL` are process-only overrides and never persist a new target; an explicitly empty `CRIT_SHARE_URL` disables sharing for that process.
+
+A review saved before `share_base_url` existed does not guess a deployment from the share link, and it does not fall back to the current default. Re-bind it with `crit share --share-url https://crit.acme.com plan.md`, where that URL is still a configured target. If a saved base URL is no longer in your config, Crit names that missing instance instead of sending the review somewhere else.
 
 If a target sits behind an SSO reverse proxy, set `proxy_auth: true` on that target. Browser-driven Share / Pull / Re-share / Unpublish then use its popup relay; terminal operations remain unavailable for that target.
 

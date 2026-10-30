@@ -1,11 +1,13 @@
 # Free LLM API Provider
-> Last updated: **2026-10-14**
+> Last reviewed: **2026-10-30** 
 
+This directory tracks **free LLM inference APIs**, their account requirements and rate limits (including CN providers).   
+**Free inference**, **one-time trial credits** and **$0/month subscriptions with paid token usage** are not the same thing. Free quotas and model catalogs can change.
 
-This is a list of free llm providers and their rate usage limits </br>
-Updates from time to time.
+免费 LLM API 平台汇总（包括中国大陆平台）。**免费调用、一次性试用额度和按量付费（免月费）应分别判断**。
 
-免费LLM api平台（包括cn平台）
+> **Review status (2026-10-30)**
+> Google, NVIDIA, Ollama, Groq, OpenRouter, Cloudflare, Cohere, Z.ai, Mistral, SambaNova, Aion Labs and Tencent Hunyuan were checked against provider documentation. Other provider sections may remain dated snapshots. The embedded price list is synchronized to the standalone pricing tracker dated **2026-10-30**; this repository does not independently live-verify its prices.
 
 <table align="center">
   <tr>
@@ -43,11 +45,11 @@ You may also want to read my other posts:
 
 ## Content/目录
 - [Global Platform](#global-platform)
-  - [★Google/Gemma 3/4](#google-gemini-googlegemma-4)
+  - [★Google/Gemini & Gemma 4](#google-gemini-googlegemma-4)
   - [★Nvidia(40RPM)](#nvidia)
-  - [★★Ollama](#ollama)
+  - [Ollama](#ollama)
   - [★Groq](#groq)
-  - [~~Cerebras~~](#celebras)
+  - [~~Cerebras~~](#cerebras)
   - [OpenRouter](#openrouter)
   - [Cloudflare](#cloudflare)
   - [Cohere](#cohere)
@@ -59,34 +61,31 @@ You may also want to read my other posts:
   - [SKT](#skt)
   - [IBM](#ibm)
   - [Scaleway (1M free token/per account)](#scaleway-1m-free-tokenper-account-no-refresh)
-- [CN Platform](#cn-platform)
-  - [ModelScope（魔搭社区）](#modelscope魔搭社区仅限cnonly-cn)
-  - [SilliconFlow 硅基流动](#silliconflow-硅基流动)
-  - [Tencent-Hunyuan 腾讯混元](#tencent-hunyuan-腾讯混元)
-  - [Volcengine 火山引擎（平台）](#volcengine-火山引擎平台-500-point-资源点day)
-  - [心流](#心流)
-  - [StreamLake 快手万擎Vanchin](#StreamLake-快手万擎Vanchin)
-  - [Spark 讯飞星火](#spark-讯飞星火)
+- [中国大陆平台](#cn-platform)
+  - [魔搭社区（ModelScope）](#魔搭社区modelscope)
+  - [硅基流动（SiliconFlow）](#硅基流动siliconflow)
+  - [腾讯云 TokenHub](#腾讯云-tokenhub)
+  - [火山方舟（Volcengine Ark）](#火山方舟volcengine-ark)
+  - [扣子（Coze）](#扣子coze)
+  - [快手万擎（StreamLake Vanchin）](#快手万擎streamlake-vanchin)
+  - [讯飞星火（iFLYTEK Spark）](#讯飞星火iflytek-spark)
+  - [心流（iFlow，已停止服务）](#心流iflow已停止服务)
 - [LLM PRICE LIST](#llm-price-list)
 
 -----------
 
 ## Global Platform
 
-### ~~Google Gemini~~ Google/Gemma 4
+### Google Gemini / Gemma 4
+> Last checked: **2026-10-30**
 
-https://ai.google.dev/gemini-api/docs/rate-limits#free-tier </br>
-**Gemma3** had been removed from api.
-> Last updated: **2026-10-14 UTC** </br>
-> **RPM**: Requests per minute </br>
-> **TPM**: Tokens per minute</br>
-> **RPD** Requests per day</br>
-
-- No free api for Gemini 3 Pro </br>
-https://ai.google.dev/gemini-api/docs/gemini-3?thinking=high#faq </br>
-
-Endpoint: https://generativelanguage.googleapis.com
-
+- [Free-tier model pricing](https://ai.google.dev/gemini-api/docs/pricing) · [Rate limits](https://ai.google.dev/gemini-api/docs/rate-limits) · [Your project's limits in AI Studio](https://aistudio.google.com/rate-limit)
+- Endpoint: `https://generativelanguage.googleapis.com`
+- **Free-tier examples confirmed on Google's pricing page:** `gemini-3.8-flash`, `gemini-3.5-flash-lite` and **Gemma 4**. Check the Free Tier column for other models.
+- **Not free-tier eligible:** `gemini-4-argon`, `gemini-3.1-pro-preview` (other Pro models require individual checks).
+- Google does **not** publish a single guaranteed RPM / TPM / RPD quota that applies to every free project. Limits depend on model, project and account tier and are shown in AI Studio. Previously observed numbers (e.g. 5 RPM/20 RPD) are **not universal guarantees**.
+- Limits apply **per project** (not per key); RPD quotas reset at **midnight Pacific time**. Free-tier prompts may be used to improve Google products.
+- **Alternative, unofficial:** [AI Studio to API Adapter](https://github.com/iBUHub/AIStudioToAPI/blob/main/README_EN.md). Review its security and terms before use.
 
 | Model                     | Requests/minute (RPM) | Tokens/minute (TPM) | Requests/day (RPD) |
 |---------------------------|---------------------------|--------------------------|-----------------|
@@ -99,29 +98,22 @@ Endpoint: https://generativelanguage.googleapis.com
 ~~gemini 2.5/3.1 Pro~~
 
 
-
-**Google has set gemini limit to low rate**.
-
-**★Other solutions:** </br>
-[**Google AI Studio to API Adapter**](https://github.com/iBUHub/AIStudioToAPI/blob/main/README_EN.md)
-
-</br>
-
 -------
 
 ### Nvidia
-> Last updated: **2026-09-23** </br>
+> Last checked: **2026-10-30** </br>
 
-https://build.nvidia.com/explore/discover </br>
-Endpoint: https://integrate.api.nvidia.com
+https://build.nvidia.com/models </br>
+Endpoint (OpenAI-compatible): https://integrate.api.nvidia.com/v1
 
 **Rate limit**: Usually up to **`40`** Requests per minute(RPM)</br>
 > Nvidia: Maximum API requests accepted in a given timeframe. </br>
 Rate limits may vary by model and traffic from other users may cause throttling. </br>
 > For dedicated availability, deploy models as a dedicated endpoint with NVIDIA NIM.
 
-- **55** Models list
-  - OpenAI/Google/Meta/Microsoft/NVIDIA/Mistral AI/DeepSeek/Moonshot AI/Z-ai/Minimax etc.
+- **Representative catalog below, not a fixed or exhaustive 55-model list.** Verify the **Free Endpoint** label for each model in the [live NVIDIA catalog](https://build.nvidia.com/models).
+  - OpenAI/Google/Meta/Microsoft/NVIDIA/Mistral AI/DeepSeek/Moonshot AI/Z.ai/MiniMax etc.
+- Free endpoints are for **trial/evaluation**, not guaranteed dedicated production hosting. Check NVIDIA trial privacy terms before submitting sensitive data.
 <details>
 
 <summary> 
@@ -133,6 +125,7 @@ Rate limits may vary by model and traffic from other users may cause throttling.
 deepseek-ai/deepseek-v4-flash  
 deepseek-ai/deepseek-v4-flash-0731  
 deepseek-ai/deepseek-v4-pro  
+deepseek-ai/deepseek-v4.1-flash  
 
 #### Google
 google/codegemma-7b  
@@ -145,6 +138,7 @@ meta/llama-3.1-70b-instruct
 meta/llama-3.2-1b-instruct  
 meta/llama-3.2-3b-instruct  
 meta/llama-3.3-70b-instruct  
+meta/muse-glimmer-30b  
 
 #### Microsoft
 microsoft/phi-4-mini-instruct  
@@ -153,11 +147,13 @@ microsoft/phi-4-mini-flash-reasoning
 #### MiniMax
 minimaxai/minimax-m2.5  
 minimaxai/minimax-m2.7  
+minimaxai/minimax-m3.1-flash  
 
 #### Mistral
 mistralai/mistral-nemotron  
 mistralai/mixtral-8x7b-instruct  
 mistralai/mixtral-8x22b-instruct  
+mistralai/mistral-large-4-1t-a52b  
 
 #### Moonshot / Kimi
 moonshotai/kimi-k2-instruct  
@@ -174,6 +170,7 @@ nvidia/llama-3.3-nemotron-super-49b-v1.5
 nvidia/llama-3.1-nemotron-ultra-253b-v1  
 nvidia/nemotron-3-ultra-550b-a55b  
 nvidia/nemotron-3.5-lightning-30b-a3b  
+nvidia/nemotron-3.5-super-vl-120b-a12b  
 nvidia/nemoguard-jailbreak-detect  
 nvidia/nemotron-3-nano-30b-a3b  
 nvidia/nemotron-3-super-120b-a12b  
@@ -201,6 +198,7 @@ sarvamai/sarvam-m
 
 #### StepFun
 stepfun-ai/step-3.5-flash  
+stepfun-ai/step-5-preview  
 
 #### Stockmark
 stockmark/stockmark-2-100b-instruct  
@@ -226,33 +224,12 @@ z-ai/glm-5.3-flash
 --------
 
 ### Ollama
-> Last Check: **2026-10-23** </br>
+> Last checked: **2026-10-30**
 
-
-https://ollama.com/cloud </br>
-https://ollama.com/search?c=cloud
-
-
-#### Ollama Models
-
-<details>
-<summary> 
-  
-#### All Cloud Models (expand to view)
-
-</summary>
-
-  - OpenAI — GPT-OSS
-  - MiniMax — M2 / M3 / M3.1 flash
-  - Moonshot AI — Kimi K2-K3
-  - NVIDIA — Nemotron 3
-  - DeepSeek — DeepSeek V4
-  - Z.ai — GLM 5
-  - Alibaba Qwen — Qwen 3.5
-  - Google — Gemma 4
-  - Mistral AI — Mistral Large 3 / 4; Devstral Small 2
-
-</details>
+- [Official pricing and cloud plans](https://ollama.com/pricing) · [Cloud models](https://ollama.com/search?c=cloud) · [2026-08-31 pricing transition](https://ollama.com/blog/transparent-pricing)
+- **Pay as you go ($0/month)** means **no subscription**, not free inference: cloud token usage consumes purchased credits. The old blanket list of “free models” and **3-hour session resets** no longer describes the current published plans.
+- Running local models on your own hardware incurs no Ollama cloud token charges.
+- Cloud concurrency: **3** for Pay as you go and Pro; **10** for Max and Team. Some legacy accounts may have different conditions.
 
 > **Free** model list
 
@@ -264,107 +241,54 @@ https://ollama.com/search?c=cloud
 > **Session usage** reset in 3hours
 
 
-<details>
-<summary> 
 
-#### Model list
-
-</summary>
-
-| Company | Models |
-|---|---|
-| **OpenAI—GPT-OSS** | GPT-OSS 20B<br>GPT-OSS 120B |
-| **MiniMax—M2 / M3** | MiniMax M2.7（229B/A10B）<br>MiniMax M3 （428B/A22B） |
-| **Moonshot AI—Kimi K2 / K3** | Kimi K2.6（1T/A32B）<br>Kimi K2.7 Code（1T/A32B）<br>Kimi K3（2.8T/A104B） |
-| **NVIDIA—Nemotron 3** | Nemotron 3 Nano（30B/A3B）<br>Nemotron 3 Super（120B/A12B）<br>Nemotron 3 Ultra（550B/A55B） |
-| **DeepSeek—DeepSeek V4** | DeepSeek V4 Flash（284B/A13B）<br>DeepSeek V4 Flash 0731（284B/A13B）<br>DeepSeek V4 Pro（1.6T/A49B）<br>DeepSeek V4 Pro 0813（1.6T/A49B）</br> DeepSeek v4.1 Flash(552B) |
-| **Z.ai—GLM 5** | GLM-5.1（754B/A40B）<br>GLM-5.2（753B/A40B）<br>GLM-5.3-Flash（320B/A18B） |
-| **Alibaba Qwen—Qwen 3.5** | Qwen3.5-397B-A17B |
-| **Google—Gemma 4** | Gemma 4 31B |
-| **Mistral AI—Mistral Large 3 / 4 / Devstral Small 2** | Mistral Large 3 675B <br>Devstral Small 2 24B  |
-
-</details>
-
+| Plan | Subscription | Included cloud usage |
+|---|---:|---:|
+| Pay as you go | $0/month | None advertised; purchase usage credits |
+| Pro | $20/month ($200/year) | $60/month |
+| Max | $100/month | $300/month |
+| Team | $500/month | $1,000/month shared |
+| Enterprise | Custom | Custom |
 
 <details>
-<summary>
+<summary>Current cloud model pricing (USD per 1M input / 1M output tokens)</summary>
 
-#### Ollama Subscription Plans
+| Model | Input | Output | Combined |
+|---|---:|---:|---:|
+| deepseek-v4.1-flash (off-peak) | $0.15 | $0.60 | $0.75 |
+| deepseek-v4.1-flash (standard) | $0.30 | $1.20 | $1.50 |
+| deepseek-v4-pro (off-peak) | $0.66 | $1.98 | $2.64 |
+| deepseek-v4-pro (standard) | $1.32 | $3.96 | $5.28 |
+| gemma4 | $0.14 | $0.40 | $0.54 |
+| glm-5.3 / glm-5.2 | $1.40 | $4.40 | $5.80 |
+| glm-5.3-flash | $0.15 | $0.50 | $0.65 |
+| gpt-oss:120b | $0.15 | $0.60 | $0.75 |
+| gpt-oss:20b | $0.07 | $0.30 | $0.37 |
+| kimi-k3 | $3.00 | $15.00 | $18.00 |
+| kimi-k2.7-code / kimi-k2.6 | $0.95 | $4.00 | $4.95 |
+| minimax-m3.1-flash | $0.15 | $0.60 | $0.75 |
+| minimax-m3 | $0.60 | $2.40 | $3.00 |
+| minimax-m2.7 | $0.30 | $1.20 | $1.50 |
+| mistral-large-4 | $0.70 | $2.10 | $2.80 |
+| mistral-large-3 | $0.50 | $1.50 | $2.00 |
+| muse-spark-open | $1.25 | $4.25 | $5.50 |
+| nemotron-3-nano | $0.06 | $0.24 | $0.30 |
+| nemotron-3-super | $0.015 | $0.60 | $0.615 |
+| nemotron-3-ultra | $0.10 | $3.00 | $3.10 |
 
-</summary>
-
-| Plan | Price | Included Usage Credits | Concurrent Requests | Model Access | Main Features |
-|---|---:|---:|---:|---|---|
-| **Free** | $0 | Starter usage credits | 1 | Starter models by default; add credits to unlock all models | Run models locally; no service fees |
-| **Pro** | $20/month or $200/year | $60/month | 3 | Access to larger Pro models | Everything in Free; multiple models concurrently; Fast Mode (coming soon) |
-| **Max** | $100/month | $300/month | 10 | All Pro access + early access to newest models | Everything in Pro; designed for power users running multiple agents simultaneously |
-| **Team** | $500/month | $1,000/month shared across the team | 10 | Pro-level model access | Unlimited users; centralized billing and administration; priority support; shared projects, skills and instructions (coming soon) |
-| **Enterprise** | Custom pricing | Custom / volume-based | Custom | Configurable model access | Everything in Team; model access controls; user/API-key cost budgets; private Slack support channel; custom security questionnaires |
-
-### Additional Plan Notes
-
-- **Pro annual billing:** $200/year, equivalent to about **$16.67/month**.
-- **Local model usage is unlimited** on your own hardware regardless of plan.
-- All plans, including Free, can purchase **additional usage credits**.
-- Purchased/additional credits can unlock all cloud models even on the Free plan.
-- Included monthly credits are used first, followed by the extra usage balance.
-- **Unused included monthly credits do not roll over.**
-- Pro, Max and Team included usage resets monthly on the subscription anniversary date.
-- Free usage resets monthly from the account signup date.
-- Requests exceeding the concurrency limit are queued until a slot becomes available; requests may be rejected if the queue is full.
-- Team credits and additional usage balances are shared across the organization.
-- Ollama states that prompt and response data is not logged or used for training.
-
-</details>
-
-
-<details>
-<summary>
-
-#### Ollama Model Pricing
-
-</summary>
-
-> Prices are in USD per 1 million tokens.
-> "Input + Output (1:1)" assumes 1M input tokens + 1M output tokens.
-
-| Model | Input | Output | Input + Output (1:1) | Note |
-|---|---:|---:|---:|---:|
-| **deepseek-v4.1-flash** | $0.15 | $0.60 | **$0.75** | unpeak |
-| **deepseek-v4-flash** | $0.44 | $1.32 | **$1.76** | peak |
-| **deepseek-v4-pro** | $1.32 | $3.96 | **$5.28** |
-| **gemma4** | $0.14 | $0.40 | **$0.54** |
-| **glm-5.3** | $1.40 | $4.40 | **$5.80** |
-| **glm-5.3-flash** | $0.15 | $0.50 | **$0.65** |
-| **glm-5.2** | $1.40 | $4.40 | **$5.80** |
-| **glm-5.1** | $1.00 | $3.20 | **$4.20** |
-| **gpt-oss:120b** | $0.15 | $0.60 | **$0.75** |
-| **gpt-oss:20b** | $0.07 | $0.30 | **$0.37** |
-| **kimi-k3** | $3.00 | $15.00 | **$18.00** |
-| **kimi-k2.7-code** | $0.95 | $4.00 | **$4.95** |
-| **kimi-k2.6** | $0.95 | $4.00 | **$4.95** |
-| **minimax-m3** | $0.60 | $2.40 | **$3.00** |
-| **minimax-m2.7** | $0.30 | $1.20 | **$1.50** |
-| **mistral-large-3** | $0.50 | $1.50 | **$2.00** |
-| **nemotron-3-nano** | $0.06 | $0.24 | **$0.30** |
-| **nemotron-3-super** | $0.015 | $0.60 | **$0.615** |
-| **nemotron-3-ultra** | $0.10 | $3.00 | **$3.10** |
-| **qwen3.5:397b** | $0.60 | $3.60 | **$4.20** |
+Off-peak pricing applies to eligible models outside **12:00–18:00 UTC on weekdays**, and throughout weekends. See the official table for cached-input prices. This table is **paid cloud pricing**, not a free-tier model listing.
 
 </details>
-
-
-</br>
 
 -------
 
 ### Groq
-> Last Check: **2026-10-08**
+> Last checked: **2026-10-30**
 
-*Current only **GPT-OSS 20b/120b** & **Qwen3.8-27b**
+The published free rate-limits table includes GPT-OSS 20B/120B and Qwen3.8 27B. Your account may have different limits.
 
 https://console.groq.com/docs/rate-limits</br>
-Endpoint: https://api.groq.com/openai
+Endpoint (OpenAI-compatible): https://api.groq.com/openai/v1
 
 
 <details>
@@ -376,18 +300,16 @@ Endpoint: https://api.groq.com/openai
 
 | Model | Request/Minute | Request/Day | Token/Minute | Token/Day |
 | --- | ---: | ---: | ---: | ---: |
-| groq/compound | 30 | 250 | 70K | - |
-| groq/compound-mini | 30 | 250 | 70K | - |
 | openai/gpt-oss-120b | 30 | 1K | 8K | 200K |
 | openai/gpt-oss-20b | 30 | 1K | 8K | 200K |
-| qwen/qwen3.8-27b | 30 | 1K | 8K | 2M |
+| qwen/qwen3.8-27b | 30 | 1K | 8K | 200K |
 
 </details>
 
 ---------
 
-### ~~Celebras~~
-~~> Last Check: **2026-09-23**~~
+### ~~Cerebras~~
+~~> Last checked: **2026-10-30**~~
 
 **Unusable rate limit** 5$ per account
 
@@ -405,18 +327,18 @@ Endpoint: https://api.cerebras.ai
 ---------
 
 ### OpenRouter
-> Last Check: **2026-10-08** </br>
+> Last checked: **2026-10-30** </br>
 
-https://openrouter.ai/models?q=free </br>
+https://openrouter.ai/collections/free-models </br>
 https://openrouter.ai/pricing </br>
 
-Endpoint: https://openrouter.ai/api
+Endpoint (OpenAI-compatible): https://openrouter.ai/api/v1
 
-**Models**: Based on what OpenRouter (the platform) provide as **Free**
+**Models**: Check the live collection. `openrouter/free` can route to a free model; $0-priced models without `:free` can follow different eligibility rules.
 - **Free usage limits**: If you’re using a free model variant (with an ID ending in **`:free`**/ **`(free)`** ) </br>
   you can make up to **`20`** requests/minute.</br>
   - If you have purchased less than **`$10 credits`**, you’re limited to **`50`** `free` model **requests/Day**.
-  - If you purchase at least **`$10 credits`** , your daily limit is increased to **`1000`** `free` model **requests/Day**.
+  - If you purchase at least **`$10 credits`**, the daily limit increases to **`1000`** free model requests/day. Failed requests also count. See [official limits](https://openrouter.ai/docs/api-reference/limits) for purchase thresholds.
 
 | Model variant (ID) | Credits purchased        | Rate limit (requests/min) | Daily limit (requests/day) |
 |--------------------|--------------------------|---------------------------|----------------------------|
@@ -427,14 +349,16 @@ Endpoint: https://openrouter.ai/api
 --------
 
 ### Cloudflare
-> Last web updated: **2026-08-18** </br>
+> Official pricing page last updated: **2026-10-20** </br>
 > Last Check: **2026-09-23** </br>
 
 
 https://developers.cloudflare.com/workers-ai/platform/pricing/#llm-model-pricing </br>
 https://developers.cloudflare.com/workers/platform/pricing/ </br>
-- Workers Free	**`10,000 Neurons`**/0.11$ per day </br>
+- Workers Free: **10,000 Neurons/day** (resets 00:00 UTC); paid overage **$0.011 per 1,000 Neurons**. </br>
 > "Neurons are our way of measuring AI outputs across different models, representing the GPU compute needed to perform your request. Our serverless model allows you to pay only for what you use without having to worry about renting, managing, or scaling GPUs."
+
+**Billing requirement:** Certain Kimi, DeepSeek V4/V4.1 and GLM-5.x APIs require Workers Paid or prepaid AI Gateway credits **even with unused free Neurons**. Listed models are not all available without a billing method.
 
 Models list </br>
 - Llama
@@ -451,21 +375,21 @@ Models list </br>
     - Mistral-7b-intruct-v0.1
     - Mistral-small-3.1b-24b
 - deepseek-r1-distill-qwen-32b
-- deepseek v4 flash/pro 
+- deepseek V4 flash/pro and V4.1 flash 1017 
 - Gemma
   - gemma-3-12b
   - **gemma-4-26B-A4B**
   - gemma-sea-lion-v4-27b-it
 - granite-4.0-h-micro
 - **glm-4.7-flash**
-- **glm-5.2**
+- **glm-5.2 / glm-5.3 / glm-5.3-flash**
 - **nemotron-3-120b-a12b**
 - **kimi-k2.5/k2.6/k2.7-code**
     
  <details>
   <summary>Full list with token cost</summary>  
    
-> Last official page update: August 18, 2026
+> Pricing page updated October 20, 2026 (reviewed October 30)
 >
 > Unit: USD per 1M tokens
 >
@@ -475,7 +399,7 @@ Models list </br>
 >
 > Free Tokens/day assumes an Input : Output token ratio of `1 : 1.3`.
 >
-> Free-token estimates are calculated directly from Cloudflare's Neurons-per-token rates rather than rounded USD prices.
+> Free-token estimates use Neurons-per-token rates rather than rounded USD prices; for billing-gated models these are **illustrative, not free account entitlements**.
 >
 > Cached input is excluded from the free-token calculation.
 >
@@ -524,7 +448,7 @@ Models list </br>
 
 ### Cohere
 > Last web updated: **2026-06-09**</br>
-> Last Check: **2026-10-08** </br>
+> Last Check: **2026-10-30** </br>
 
 https://docs.cohere.com/docs/rate-limits
 
@@ -552,7 +476,7 @@ Endpoint: https://api.cohere.ai/compatibility
 
 ### Z.ai (GLM-4.5/4.7-Flash)
 
-> Last Check: **2026-10-08** </br>
+> Last Check: **2026-10-30** </br>
 
 https://docs.z.ai/guides/overview/pricing </br>
 
@@ -579,8 +503,12 @@ Endpoint: https://api.z.ai/api/paas/v4
 ---------
 
 ### Mistral
-https://docs.mistral.ai/deployment/laplateforme/tier/
-（need to login)</br>
+> Last checked: **2026-10-30**
+
+[Official rate-limit guide](https://docs.mistral.ai/admin/billing-usage/usage-limits) · [Explanation](https://help.mistral.ai/en/articles/698531-why-am-i-hitting-api-rate-limits-and-how-do-i-increase-them)
+
+Free-mode limits depend on the **organization and model**. The old numeric cap below is a historical community report, **not a guaranteed free-tier entitlement**. Check **Admin Panel → API → Limits**.
+
 
 Endpoint: https://api.mistral.ai
 
@@ -594,7 +522,7 @@ Endpoint: https://api.mistral.ai
 
 ### SambaNova
 
-> Last Check: **2026-10-08**
+> Last checked: **2026-10-30**
 
 https://docs.sambanova.ai/docs/en/models/rate-limits#free-tier
 
@@ -611,13 +539,15 @@ https://docs.sambanova.ai/docs/en/models/rate-limits#free-tier
 
 ### AionLabs
 
-> Last Check: **2026-10-08**
+> Last checked: **2026-10-30**
 
 https://www.aionlabs.ai/docs/rate-limits/
 
 https://www.aionlabs.ai/docs/models/
 
 Endpoint: https://api.aionlabs.ai/v1
+
+**Shared free-tier caps:** 15 RPM, 20K TPM, 20K tokens/day ([official rate limits](https://www.aionlabs.ai/docs/rate-limits/)).
 
 | Model                                | Requests/Minute | Tokens/Day |
 |--------------------------------------|----------------- |------------|
@@ -673,119 +603,138 @@ https://support.together.ai/articles/1862638756-changes-to-free-tier-and-billing
 </br>
 
 ## CN Platform
-### ModelScope(魔搭社区）(仅限cn/only cn）
-https://modelscope.cn/docs/model-service/API-Inference/limits </br>
-- 需要须首先绑定阿里云账号。对应云账号需已通过实名认证后，才可正常使用API-Inference
-- 每位魔搭注册用户，当前每天允许进行总数为**2000次的API-Inference**调用，其中每**单个模型上限不超过500次**，具体每个模型的限制可能随时动态调整。
-- 在每个模型每天不超过500次调用的基础上，平台可能对于部分模型再进行**单独的限制**
-  - 例如，deepseek-ai/DeepSeek-R1-0528，deepseek-ai/DeepSeek-V3.2-Exp等**规格较大模型**，当前限制**单模型每天100次调用额度**。其他模型的API调用，也可能会有类似的限制并进行动态调整
 
-### SilliconFlow 硅基流动
-**部分**小模型免费；新cn手机用户注册送**20M token** </br>
-https://siliconflow.cn/
+> **最后核查：2026 年 10 月 30 日**
+>
+> 本节区分**持续免费推理**、**定期发放的额度**、**一次性试用 Token/代金券**和**非模型 API 的产品积分**。免费模型、使用限制、活动及地区政策可能随时变化，请以登录后的平台控制台为准。本次核查依据平台文档及公告，**未使用实际账号逐一测试 API**。
 
--------
+### 魔搭社区（ModelScope）
 
-### Tencent-Hunyuan 腾讯混元
-(Hunyuan-lite free; 1 M free token for other models/per account) </br>
-- 首次开通腾讯混元大模型服务后，混元生文将发放一定量级的免费调用额度（100M tokens）
-  - 资源包有效期为1年，自开通服务之日起1年内若免费资源包次数未使用完，则过期作废
-- Hunyuan-lite 为免费模型 </br>
-https://cloud.tencent.com/document/product/1729/97731
+**免费方式：** 每日魔粒积分，可用于模型推理；并非无限次免费 API。
 
------------
+**官方资料：** [API-Inference 调用限制](https://modelscope.cn/docs/model-service/API-Inference/limits) · [魔粒体系公告（2026-08-10）](https://www.modelscope.cn/posts/435591) · [魔粒使用说明](https://www.modelscope.cn/magicube/usage)
 
-### Volcengine 火山引擎(平台） （500 point 资源点/day）
-Tongyi Qwen free (no point cost; 100 time/day)</br>
-https://www.volcengine.com/docs/84458/1585102   
-https://www.volcengine.com/docs/84458/1585097
+**API 地址（兼容 OpenAI）：** `https://api-inference.modelscope.cn/v1`
 
-- 个人免费版为 **`500资源点/天`**
-- 目前（2025.11.03），扣子模型中仅豆包模型、DeepSeek 模型和 Kimi-K2 模型收费。使用 Kimi（8K）等其他扣子提供的模型暂不收取费用，但每日调用次数有一定限制 **`（100次/天）`**
+- 使用 API-Inference 需要绑定**已完成实名认证的阿里云账号**。
+- 根据现行魔粒体系，每日登录可领取 **200 魔粒**，绑定阿里云账号可额外获得 **50 魔粒/天**；参与社区活动还可能获得额外积分。
+- 模型推理消耗参考：轻量模型约 **0.5 魔粒/次**，主流模型约 **1 魔粒/次**，旗舰模型约 **2 魔粒/次**。实际以具体模型的计费规则为准。
+- 旧版规则列有**所有模型合计 2,000 次/天、单模型最多 500 次/天**，部分大型模型限制更严格。这些数字不能直接当作当前账号每天可获得的免费调用次数；还需考虑魔粒余额、模型限额及并发限制。
+- 免费共享推理资源主要用于体验和开发测试，不保证生产环境服务等级；使用前请查看账号剩余积分及模型限制。
 
- <details>
-  <summary>模型表</summary>  
+---
 
-| 模型名称 | 条件</br>（千tokens） | 输入单价</br>(资源点/ktok) | 输出单价</br>(资源点/ktok) | 合计单价</br>(资源点/ktok) | 500资源点可用总tokens (ktok) |
-| --- | --- | --- | --- | --- | --- |
-| 豆包·1.6·视觉理解·250815（Doubao-Seed-1.6-vision） | [0,32] | 0.8 | 8 | 8.8 | 56.82 |
-| 豆包·1.6·视觉理解·250815（Doubao-Seed-1.6-vision） | (32,128] | 1.2 | 16 | 17.2 | 29.07 |
-| 豆包·1.6·深度思考 / 豆包·1.6·深度思考·250715（Doubao-Seed-1.6-thinking） | [0,32] | 0.8 | 8 | 8.8 | 56.82 |
-| 豆包·1.6·深度思考 / 豆包·1.6·深度思考·250715（Doubao-Seed-1.6-thinking） | (32,128] | 1.2 | 16 | 17.2 | 29.07 |
-| 豆包·1.6·自动深度思考（Doubao-Seed-1.6） | [0,32]&[0,0.2] | 0.8 | 2 | 2.8 | 178.57 |
-| 豆包·1.6·自动深度思考（Doubao-Seed-1.6） | [0,32]&(0.2,+∞] | 0.8 | 8 | 8.8 | 56.82 |
-| 豆包·1.6·自动深度思考（Doubao-Seed-1.6） | (32,128] | 1.2 | 16 | 17.2 | 29.07 |
-| 豆包·1.6·极致速度 / 豆包·1.6·极致速度·250828 / 豆包·1.6·极致速度·250715（Doubao-seed-1.6-flash） | [0,32] | 0.15 | 1.5 | 1.65 | 303.03 |
-| 豆包·1.6·极致速度 / 豆包·1.6·极致速度·250828 / 豆包·1.6·极致速度·250715（Doubao-seed-1.6-flash） | (32,128] | 0.3 | 3 | 3.3 | 151.52 |
-| 豆包·1.5·Pro·视觉深度思考（Doubao-1.5-thinking-vision-pro） | 默认 | 3 | 9 | 12 | 41.67 |
-| 豆包·1.5·Pro·视觉理解-250328（Doubao-1.5-vision-pro） | 默认 | 3 | 9 | 12 | 41.67 |
-| 豆包·1.5·Pro·视觉理解（Doubao-1.5-vision-pro-32k） | 默认 | 3 | 9 | 12 | 41.67 |
-| 豆包·1.5·Pro·深度思考·128K / 豆包·1.5·Pro·视觉推理·128K（Doubao-1.5-thinking-pro） | 默认 | 4 | 16 | 20 | 25.00 |
-| 豆包·1.5·Pro·角色扮演 / 豆包·1.5·Pro·角色扮演·250715（Doubao-1.5-pro-32k） | 默认 | 0.8 | 2 | 2.8 | 178.57 |
-| 豆包·1.5·Pro·32k（Doubao-1.5-pro-32k） | 默认 | 0.8 | 2 | 2.8 | 178.57 |
-| 豆包·1.5·Pro·256k（Doubao-1.5-pro-256k） | 默认 | 5 | 9 | 14 | 35.71 |
-| 豆包·1.5·Lite·32k（Doubao-1.5-lite-32k） | 默认 | 0.3 | 0.6 | 0.9 | 555.56 |
-| 豆包·通用模型·Lite（Doubao-lite-32k） | 默认 | 0.3 | 0.6 | 0.9 | 555.56 |
-| 豆包·工具调用 / 豆包·角色扮演·Pro（Doubao-pro-32k） | 默认 | 0.8 | 2 | 2.8 | 178.57 |
-| DeepSeek-V3.1 | 默认 | 4 | 12 | 16 | 31.25 |
-| DeepSeek-V3 / DeepSeek-V3 工具调用 / DeepSeek-V3-0324 | 默认 | 2 | 8 | 10 | 50.00 |
-| DeepSeek-R1 / DeepSeek-R1 工具调用 / DeepSeek-R1-250528 | 默认 | 4 | 16 | 20 | 25.00 |
-| Kimi-K2 | 默认 | 4 | 16 | 20 | 25.00 |
+### 硅基流动（SiliconFlow）
 
- </details>
+**免费方式：** 部分模型长期标价为 0 元；另有活动代金券，两者应分开计算。
 
--------------
+**官方资料：** [免费模型及限流规则](https://docs.siliconflow.cn/docs/userguide/faqs/rate-limit-and-upgradation) · [免费与 Pro 模型说明](https://docs.siliconflow.cn/docs/userguide/faqs/misc) · [2026 年代金券活动公告](https://www.siliconflow.cn/developer-talk/od7wj9rr23p95uhihmhrombp)
 
-- 使用豆包 1.6 模型时，输入 token 单价和输出 token 单价均由输入长度决定。例如调用豆包·1.6·自动深度思考模型时，当 1 个请求的输入长度为 200 千tokens，输出长度为 14 千token 时，满足条件输入长度 (128, 256]，将采用计费项 **Doubao-Seed-1.6-256k（输入）**和 Doubao-Seed-1.6-256k（输出）。
-- Doubao-Seedance-1.0-lite、Doubao-Seedance-1.0-pro 模型各自为每个扣子账号（主账号+子账号）提供累计 100 万tokens 免费额度。免费额度耗尽后如需继续使用，会从账号中扣减资源点。
+**API 地址（兼容 OpenAI）：** `https://api.siliconflow.cn/v1`
 
------------
+- 完成**实名认证**后，可调用模型列表中当前明确标注为**免费**的模型，相关推理费用为 **0 元**。
+- 免费模型有**按模型区分的调用速率限制**。部分付费版本带有 `Pro/` 前缀，但不能仅凭模型大小或是否带有该前缀判断是否免费，应以模型详情页的实际价格为准。
+- **活动代金券：** 官方 2026 年「推荐官」活动（**2026-01-15 至 2026-12-31**）提供实名认证后领取的 **16 元通用代金券**，须在活动中心**主动领取**，领取后 **180 天内有效**；邀请奖励另行计算。
+- 仓库此前所写「中国手机号新用户注册即送 **2,000 万 tokens**」未能确认仍为当前普遍适用的注册权益，因此不再作为确定额度展示。
 
-### 心流
-https://platform.iflow.cn/docs
+---
 
-阿里云服务器
+### 腾讯云 TokenHub
 
------------
+**免费方式：** 新用户一次性试用 Token；**不属于持续免费的模型 API**。
 
-### StreamLake 快手万擎Vanchin
-https://www.streamlake.com/document/WANQING/mdsor5767ob7s796sp6
+**官方资料：** [TokenHub 中国站新用户免费体验](https://cloud.tencent.com/document/product/1823/130053) · [TokenHub API 快速入门](https://cloud.tencent.com/document/product/1823/130058) · [旧混元平台停服公告](https://cloud.tencent.com/announce/detail/2287)
 
-------------
+- **腾讯混元旧 API 平台已停止服务：** 旧平台于 **2026-06-30** 停止新购和创建密钥，于 **2026-09-30** 关闭原控制台及 API 服务。新的模型接入应使用 **TokenHub**，其提供混元及第三方模型。
+- **中国大陆站：** 官方新用户活动说明列出语言模型 **100 万 tokens** 的试用额度，**领取后一年内有效**；活动公布的结束日期为 **2026-12-31**。这属于**一次性试用权益**，部分模型或账号可能有单独限制。
+- 需要完成腾讯云**实名认证**。免费资源包可通过模型列表或开通页面领取，部分权益可能在首次调用时自动发放；最终以控制台显示为准。
+- **避免意外扣费：** 如不希望试用额度耗尽后产生费用，请关闭后付费模式。未开启后付费时，免费额度用尽后调用将停止。
+- **中国站与国际站不可混用：** 腾讯云国际站 TokenHub 的试用有效期为 **90 天**，部分模型开通还可能要求 **1 美元余额预授权**，与中国站的规则不同。
+- 此前的旧版「Hunyuan-lite 免费」和旧混元平台 **100 万 tokens / 一年**资源包属于历史权益，不能作为已经停服的旧 API 仍可使用的依据。
 
-### Spark 讯飞星火
-Spark-lite free </br>
-- 首次开通后，免费包（个人）有200k免费额度（所有模型),有效期为一年</br>
-https://www.xfyun.cn/doc/spark/HTTP调用文档.html   
-https://xinghuo.xfyun.cn/sparkapi?scr=price
+---
 
-----------
+### 火山方舟（Volcengine Ark）
+
+**免费方式：** 模型推理 API 一次性体验额度；与扣子的积分体系不同。
+
+**官方资料：** [安心体验模式](https://docs.volcengine.com/docs/ark/free-tokens-only-mode?lang=zh) · [模型开通与免费额度管理](https://docs.volcengine.com/docs/ark/activation-management?lang=zh)
+
+- **安心体验模式：** 符合条件的**新用户**可通过该模式使用 **50 万 tokens** 模型推理体验额度；额度用尽后，符合条件的推理服务会**暂停而不是继续扣费**。
+- 该模式须在**首次开通模型推理服务时**选择。已通过其他模式开通服务的账号可能不再符合条件；**关闭安心体验模式后不能重新开启**。
+- 此模式的免费额度仅覆盖适用范围内的**模型推理 Token**。工具、插件、知识库等其他功能可能单独计费。
+- 平台还可能提供其他按模型、活动或账号发放的免费资源包，具体数量与适用条件请查看控制台。
+- 旧版「**500 资源点/天**」及豆包模型资源点消耗表属于**扣子（Coze）**的计费体系，**不是火山方舟 API 的免费额度或定价**，因此已从本节移除。
+
+---
+
+### 扣子（Coze）
+
+**免费方式：** AI 应用与智能体平台积分；**不等同于通用模型推理 API 免费额度**。
+
+**官方资料：** [2026 年订阅体系升级公告](https://docs.volcengine.com/docs/coze/button-subscription-package-upgrade?lang=zh) · [现行订阅套餐](https://docs.volcengine.com/docs/coze/Subscriptionpackage?lang=zh) · [积分规则](https://docs.volcengine.com/docs/coze/integral?lang=zh)
+
+- **2026-01-18** 的套餐升级将「资源点」更名为「积分」。升级公告提出个人免费版**每日签到领取 1,500 积分**（**当天有效**），取代此前的 500 资源点/天。
+- **现行资料存在口径差异：** 当前套餐表未将每月订阅积分列入个人免费版；积分规则又明确列出**新用户一次性获得 1,500 积分**（**30 天有效**），相关常见问题仍提及每日签到奖励。因此，不能在未查看账号活动页面的情况下保证所有用户每天都能固定领取 1,500 积分。
+- 扣子积分主要用于平台产品和功能，**不能直接换算成火山方舟 API 的免费 Token 数量**。
+- 原仓库中按旧版扣子资源点计算的豆包、DeepSeek、Kimi 模型消耗表已移除，以免把过期计费规则当作现行价格。
+
+---
+
+### 快手万擎（StreamLake Vanchin）
+
+**免费方式：** 新用户或活动提供的模型在线推理试用资源包。
+
+**官方资料：** [免费推理额度说明（2025-12-12 更新）](https://streamlake.com/document/WANQING/mdsor5767ob7s796sp6) · [模型计费说明](https://streamlake.com/document/WANQING/mdsorb4ejjptsmfyrn)
+
+- 需要完成**注册、认证和服务开通**，方可使用符合条件的免费推理资源包。
+- 免费资源包通常按**具体模型**发放，同一主账号下共享；未确认所有新用户均能领取相同数量的 Token，因此不填写统一免费额度。实际余额请在**费用中心 → 资源包**中查看。
+- 资源包可抵扣符合条件的**在线推理输入、输出及缓存命中 Token**，但**不能抵扣批量推理**。
+- **注意超额费用：** 免费额度过期或用尽后继续调用，可能产生按量计费账单。建议及时查看用量，并在支持的情况下限制或关闭后付费调用。
+
+---
+
+### 讯飞星火（iFLYTEK Spark）
+
+**免费方式：** 部分模型标价为 0 元，另有独立的活动赠送额度。
+
+**官方资料：** [Spark Lite HTTP API 文档](https://www.xfyun.cn/doc/spark/HTTP%E8%B0%83%E7%94%A8%E6%96%87%E6%A1%A3.html) · [Spark-X2.5 模型说明](https://www.xfyun.cn/doc/spark/Spark-X2.5%E6%A8%A1%E5%9E%8B%E4%BB%8B%E7%BB%8D.html) · [星火模型与价格页面](https://spark.xfyun.cn/sparkapi)
+
+- **Spark Lite：** 官方 HTTP API 文档标注支持**免费使用**。
+- **Spark Lite 经典 API 地址（兼容 OpenAI）：** `https://spark-api-open.xf-yun.com/v1/`。
+- **Spark-X2.5-1.7B**（模型 ID：`spark-x2.5-1.7b`）：现行模型列表标价为 **0 元/百万 tokens**。
+- **Spark-X2.5-4B**（模型 ID：`spark-x2.5-4b`）：模型列表出现 **0 元/百万 tokens / 限时免费**标注，**不可视为永久免费**。X2.5 系列属于星火模型平台，调用前需另行确认适用的 API 地址及鉴权方式。
+- 旧版「首次开通后，所有模型共享 **20 万免费 tokens，有效期一年**」未能找到明确的现行依据，故不再将其列为确定权益。
+
+---
+
+### 心流（iFlow，已停止服务）
+
+**状态：原免费 LLM API 与托管模型库已于 2026 年 4 月 17 日停止服务，不再属于当前可用的免费模型 API 平台。**
+
+**官方资料：** [2026-03-20 停服公告](https://vibex.iflow.cn/t/topic/4819) · [2026-04-17 停服通知](https://vibex.iflow.cn/t/topic/5753)
+
+- 原有 **iFlow API 服务及托管模型库**于 **2026-04-17** 关闭，相关 iFlow CLI 内置模型访问也随之停止。
+- iFlow CLI 仍可配置**其他平台的兼容 API**，但这不代表原心流托管模型服务恢复。
+- 本条仅作**历史记录**，不应再列为可用免费 API 推荐项。
+
+---
 
 ## [LLM PRICE LIST](https://github.com/CYBIRD-D/LLM-API-Official-Pricing-Tracker)
 
-### LLM API Pricing — October 14, 2026
+### LLM API Pricing — 2026-10-30
 
-> Unit: USD per 1M tokens
+> **Updated from the [LLM API Official Pricing Tracker](https://github.com/CYBIRD-D/LLM-API-Official-Pricing-Tracker) (source table dated 2026-10-30).** This is a synchronized reference, not a live price feed. Provider prices and promotions can change; check the individual Pricing Source before purchasing.
 >
-> Primary ranking: `Combined = Input + Output`
->
-> Combined represents the cost of 1M uncached input tokens + 1M output tokens.
->
-> Tie-breaker: when Combined prices are identical, the model with the lower directly comparable Cached Input price is ranked first.
->
-> Standard real-time API pricing is used.
->
-> Temporary promotional prices and normal/list prices are shown separately when the promotion is still active.
->
-> Expired promotional prices are not included in the current ranking.
->
-> Batch, Flex, Priority/Fast and other alternative processing modes are excluded.
->
-> For context-tiered models, the lowest/default context tier is used for ranking.
->
-> Same-family models are merged only when their main pricing and relevant pricing conditions are sufficiently equivalent.
->
-> Qwen prices use Alibaba Cloud Model Studio Singapore / International pricing.
+> - **Unit:** USD per 1 million tokens.
+> - **Combined = Input + Output:** the price of 1M uncached input tokens **plus** 1M output tokens (not the cost per 1M total tokens).
+> - **Cached Input:** `—` means the cache price is **unknown / not listed**, not zero.
+> - **Order:** lowest Combined cost first. Ties use the lowest directly comparable confirmed Cached Input price.
+> - **Promotions, regular/future prices and peak/off-peak rates** occupy separate rows when present in the source tracker. Faster or priority API variants are also included where the source lists separately priced variants.
+> - **Context tiers:** use the default/lowest tier for ranking; higher-tier rates appear in Notes.
+> - **Models:** same-family variants are combined only when the upstream tracker treats their prices and conditions as equivalent.
+> - **Qwen:** Alibaba Cloud Model Studio Singapore / International pricing.
+> - **Table layout preserved:** Rank, Provider, Model, Input, Cached Input, Output, Combined, Notes and Pricing Source. Open/Closed status and parameter counts can be found in the [full tracker](https://github.com/CYBIRD-D/LLM-API-Official-Pricing-Tracker#price-leaderboard).
 
 | Rank | Provider | Model | Input | Cached Input | Output | Combined | Notes | Pricing Source |
 |---:|---|---|---:|---:|---:|---:|---|---|
@@ -796,80 +745,70 @@ https://xinghuo.xfyun.cn/sparkapi?scr=price
 | 5 | OpenAI | GPT-6 Luna | $0.10 | $0.01 | $0.50 | **$0.60** | 1.05M context; >272K: $0.20/$0.75 | [Source](https://developers.openai.com/api/docs/pricing) |
 | 6 | Qwen | Qwen3.8 Flash | $0.15 | — | $0.47 | **$0.62** | International; 1M context | [Source](https://www.alibabacloud.com/help/en/model-studio/model-pricing) |
 | 7 | GLM / Z.AI | GLM-5.3-Flash | $0.15 | $0.03 | $0.50 | **$0.65** | Standard price | [Source](https://docs.z.ai/guides/overview/pricing) |
-| 8 | DeepSeek | DeepSeek V4.1 Flash — Off-peak | $0.15 | $0.003 | $0.60 | **$0.75** | 1M context; off-peak pricing | [Source](https://api-docs.deepseek.com/quick_start/pricing/) |
-| 9 | Mistral | Mistral Small 4 | $0.15 | $0.015 | $0.60 | **$0.75** | 256K context | [Source](https://docs.mistral.ai/models/mistral-small-4-0-26-03) |
-| 10 | OpenAI | GPT-5.6 Luna | $0.20 | $0.02 | $1.20 | **$1.40** | >272K: $0.40/$1.80 | [Source](https://developers.openai.com/api/docs/pricing) |
-| 11 | Meta / OpenRouter | Muse Glimmer 30B | $0.30 | $0.04 | $1.10 | **$1.40** | 131K context | [Source](https://openrouter.ai/meta/muse-glimmer-30b) |
-| 12 | OpenAI | GPT-5.4 nano | $0.20 | $0.02 | $1.25 | **$1.45** | — | [Source](https://developers.openai.com/api/docs/pricing) |
-| 13 | DeepSeek | DeepSeek V4.1 Flash — Peak | $0.30 | $0.006 | $1.20 | **$1.50** | 1M context; peak pricing | [Source](https://api-docs.deepseek.com/quick_start/pricing/) |
-| 14 | Qwen | Qwen3.7 Plus — Promo | $0.32 | — | $1.28 | **$1.60** | International alias; 20% off; regular $0.40/$1.60 | [Source](https://www.alibabacloud.com/help/en/model-studio/model-pricing) |
-| 15 | Google | Gemini 3.1 Flash-Lite | $0.25 | $0.025 | $1.50 | **$1.75** | — | [Source](https://ai.google.dev/gemini-api/docs/pricing) |
-| 16 | Qwen | Qwen3.6 Flash | $0.25 | — | $1.50 | **$1.75** | ≤256K; International | [Source](https://www.alibabacloud.com/help/en/model-studio/model-pricing) |
-| 17 | Qwen | Qwen3.7 Plus — Regular Price | $0.40 | — | $1.60 | **$2.00** | ≤256K | [Source](https://www.alibabacloud.com/help/en/model-studio/model-pricing) |
-| 18 | DeepSeek | DeepSeek V4 Pro — Off-peak | $0.66 | $0.022 | $1.98 | **$2.64** | Off-peak pricing | [Source](https://api-docs.deepseek.com/quick_start/pricing/) |
-| 19 | Google | Gemini 3.5 Flash-Lite | $0.30 | $0.03 | $2.50 | **$2.80** | — | [Source](https://ai.google.dev/gemini-api/docs/pricing) |
-| 20 | Qwen | Qwen3.5 Plus | $0.40 | — | $2.40 | **$2.80** | ≤256K; International | [Source](https://www.alibabacloud.com/help/en/model-studio/model-pricing) |
-| 21 | xAI | Grok Build 0.1 | $1.00 | $0.20 | $2.00 | **$3.00** | <200K; ≥200K: $2/$4 | [Source](https://docs.x.ai/developers/pricing) |
-| 22 | Qwen | Qwen3.6 Plus | $0.50 | — | $3.00 | **$3.50** | ≤256K; International | [Source](https://www.alibabacloud.com/help/en/model-studio/model-pricing) |
-| 23 | xAI | Grok 4.20/4.3 | $1.25 | $0.20 | $2.50 | **$3.75** | <200K; ≥200K: $2.50/$5 | [Source](https://docs.x.ai/developers/pricing) |
-| 24 | GLM / Z.AI | GLM-5 | $1.00 | $0.20 | $3.20 | **$4.20** | — | [Source](https://docs.z.ai/guides/overview/pricing) |
-| 25 | Google | Gemini 3.6/3.8 Flash — Promo | $0.75 | $0.075 | $3.75 | **$4.50** | Introductory price through Dec 31, 2026; 3.7 retired (redirects to 3.8) | [Source](https://ai.google.dev/gemini-api/docs/pricing) |
-| 26 | Kimi | Kimi K2.6 | $0.95 | $0.16 | $4.00 | **$4.95** | ~262K context | [Source](https://www.kimi.com/) |
-| 27 | Kimi | Kimi K2.7 Code | $0.95 | $0.19 | $4.00 | **$4.95** | ~262K context | [Source](https://www.kimi.com/) |
-| 28 | GLM / Z.AI | GLM-5-Turbo | $1.20 | $0.24 | $4.00 | **$5.20** | 200K context; agent-tuned Turbo variant | [Source](https://docs.z.ai/guides/overview/pricing) |
-| 29 | OpenAI | GPT-5.4 mini | $0.75 | $0.075 | $4.50 | **$5.25** | — | [Source](https://developers.openai.com/api/docs/pricing) |
-| 30 | DeepSeek | DeepSeek V4 Pro — Peak | $1.32 | $0.044 | $3.96 | **$5.28** | Peak pricing | [Source](https://api-docs.deepseek.com/quick_start/pricing/) |
-| 31 | Meta / OpenRouter | Muse Spark 1.1/1.2/1.3 | $1.25 | $0.15 | $4.25 | **$5.50** | 1M context; standard data policy | [Source](https://openrouter.ai/meta/muse-spark-1.3) |
-| 32 | Mistral | Mistral Large 4 | $1.36 | $0.14 | $4.18 | **$5.54** | 1M context; public preview; regular published price | [Source](https://docs.mistral.ai/models/mistral-large-4-0) |
-| 33 | GLM / Z.AI | GLM-5.1 | $1.40 | $0.26 | $4.40 | **$5.80** | 200K context | [Source](https://docs.z.ai/guides/overview/pricing) |
-| 34 | GLM / Z.AI | GLM-5.2/5.3 | $1.40 | $0.26 | $4.40 | **$5.80** | 1M context | [Source](https://docs.z.ai/guides/overview/pricing) |
-| 35 | xAI | Grok 4.5 | $2.00 | $0.30 | $6.00 | **$8.00** | <200K; ≥200K: $4/$12 | [Source](https://docs.x.ai/developers/pricing) |
-| 36 | xAI | Grok 4.6 | $2.00 | $0.50 | $6.00 | **$8.00** | <200K; ≥200K: $4/$12 | [Source](https://docs.x.ai/developers/pricing) |
-| 37 | xAI | Grok 4.7 | $2.00 | $0.50 | $6.00 | **$8.00** | 500K context; ≥200K: $4/$12 | [Source](https://docs.x.ai/developers/pricing) |
-| 38 | Qwen | Qwen3.8 Max | $2.00 | — | $6.00 | **$8.00** | International; 1M context | [Source](https://www.alibabacloud.com/help/en/model-studio/model-pricing) |
-| 39 | Google | Gemini 3.6/3.8 Flash — Regular Price | $1.50 | $0.15 | $7.50 | **$9.00** | Standard price from Jan 1, 2027; 3.7 retired (redirects to 3.8) | [Source](https://ai.google.dev/gemini-api/docs/pricing) |
-| 40 | Mistral | Mistral Medium 3.5 | $1.50 | $0.15 | $7.50 | **$9.00** | 256K context | [Source](https://docs.mistral.ai/models/) |
-| 41 | Kimi | Kimi K2.7 Code Highspeed | $1.90 | $0.38 | $8.00 | **$9.90** | ~262K; same K2.7 Code model, faster output | [Source](https://www.kimi.com/) |
-| 42 | Qwen | Qwen3.7 Max | $2.50 | — | $7.50 | **$10.00** | International; 1M context | [Source](https://www.alibabacloud.com/help/en/model-studio/model-pricing) |
-| 43 | Anthropic | Claude Sonnet 5.5 | $2.00 | $0.10 | $10.00 | **$12.00** | Cache read reduced to $0.10 on Oct 7 | [Source](https://platform.claude.com/docs/en/about-claude/pricing) |
-| 44 | Google | Gemini 4 Argon — Promo | $2.00 | $0.10 | $10.00 | **$12.00** | 1M context; implicit caching only; offer through Nov 30, 2026 | [Source](https://cloud.google.com/blog/products/ai-machine-learning/gemini-4-argon-available-on-google-cloud) |
-| 45 | OpenAI | GPT-6.1 Sol | $2.00 | $0.10 | $10.00 | **$12.00** | 1.05M context; >272K: $4/$0.20/$15 | [Source](https://developers.openai.com/api/docs/pricing) |
-| 46 | Anthropic | Claude Sonnet 5 | $2.00 | $0.20 | $10.00 | **$12.00** | — | [Source](https://platform.claude.com/docs/en/about-claude/pricing) |
-| 47 | OpenAI | GPT-6 Sol | $2.00 | $0.20 | $10.00 | **$12.00** | 1.05M context; >272K: $4/$0.40/$15 | [Source](https://developers.openai.com/api/docs/pricing) |
-| 48 | Google | Gemini 3.1 Pro Preview | $2.00 | $0.20 | $12.00 | **$14.00** | ≤200K; >200K: $4/$18 | [Source](https://ai.google.dev/gemini-api/docs/pricing) |
-| 49 | OpenAI | GPT-5.6 Terra | $2.00 | $0.20 | $12.00 | **$14.00** | >272K: $4/$18 | [Source](https://developers.openai.com/api/docs/pricing) |
-| 50 | OpenAI | GPT-5.4 | $2.50 | $0.25 | $15.00 | **$17.50** | >272K long-context surcharge | [Source](https://developers.openai.com/api/docs/pricing) |
-| 51 | Anthropic | Claude Sonnet 4.6 | $3.00 | $0.30 | $15.00 | **$18.00** | — | [Source](https://platform.claude.com/docs/en/about-claude/pricing) |
-| 52 | Kimi | Kimi K3 | $3.00 | $0.30 | $15.00 | **$18.00** | 1M context | [Source](https://www.kimi.com/) |
-| 53 | Anthropic | Claude Opus 5.5 | $4.00 | $0.20 | $20.00 | **$24.00** | 1M context | [Source](https://platform.claude.com/docs/en/about-claude/pricing) |
-| 54 | Google | Gemini 4 Argon — Regular Price | $4.00 | $0.20 | $20.00 | **$24.00** | 1M context; implicit caching only; from Dec 1, 2026 | [Source](https://cloud.google.com/blog/products/ai-machine-learning/gemini-4-argon-available-on-google-cloud) |
-| 55 | Meta | Muse Wonder | $4.00 | $0.20 | $20.00 | **$24.00** | 1M context; Meta Model API / OpenRouter; Wonder Full is subscription-only | [Source](https://dev.meta.ai/models/muse-wonder) |
-| 56 | OpenAI | GPT-5.6 Sol — Promo | $4.00 | $0.40 | $20.00 | **$24.00** | Promo available at least through Nov 21, 2026; regular $5/$30 | [Source](https://developers.openai.com/api/docs/pricing) |
-| 57 | Anthropic | Claude Opus 4.7/4.8/5 | $5.00 | $0.50 | $25.00 | **$30.00** | — | [Source](https://platform.claude.com/docs/en/about-claude/pricing) |
-| 58 | OpenAI | GPT-5.5 | $5.00 | $0.50 | $30.00 | **$35.00** | — | [Source](https://developers.openai.com/api/docs/pricing) |
-| 59 | OpenAI | GPT-5.6 Sol — Regular Price | $5.00 | $0.50 | $30.00 | **$35.00** | Original price; currently $4/$20 promo | [Source](https://developers.openai.com/api/docs/pricing) |
-| 60 | Anthropic | Claude Fable 5.1 | $10.00 | $0.25 | $50.00 | **$60.00** | 1M context; low 0.025x cache-read multiplier | [Source](https://platform.claude.com/docs/en/about-claude/pricing) |
-| 61 | Anthropic | Claude Fable 5 | $10.00 | $1.00 | $50.00 | **$60.00** | — | [Source](https://platform.claude.com/docs/en/about-claude/pricing) |
-| 62 | OpenAI | GPT-6 Astra | $10.00 | $1.00 | $50.00 | **$60.00** | 1.05M context; >272K: $20/$2/$75 | [Source](https://developers.openai.com/api/docs/pricing) |
-| 63 | OpenAI | GPT-5.4/5.5 Pro | $30.00 | — | $180.00 | **$210.00** | Maximum-compute tier | [Source](https://developers.openai.com/api/docs/pricing) |
+| 8 | DeepSeek | DeepSeek V4.1 Flash 1017 — Off-peak | $0.15 | $0.003 | $0.60 | **$0.75** | 1M context; 1017 update (unchanged API rates); off-peak pricing | [Source](https://api-docs.deepseek.com/quick_start/pricing/) |
+| 9 | MiniMax | MiniMax M3.1 Flash | $0.15 | $0.015 | $0.60 | **$0.75** | 1M context; model weights now publicly available; multimodal input | [Source](https://www.minimax.io/blog/minimax-m31f) |
+| 10 | Mistral | Mistral Small 4 | $0.15 | $0.015 | $0.60 | **$0.75** | 256K context | [Source](https://docs.mistral.ai/models/mistral-small-4-0-26-03) |
+| 11 | OpenAI | GPT-5.6 Luna | $0.20 | $0.02 | $1.20 | **$1.40** | >272K: $0.40/$1.80 | [Source](https://developers.openai.com/api/docs/pricing) |
+| 12 | Meta / OpenRouter | Muse Glimmer 30B | $0.30 | $0.04 | $1.10 | **$1.40** | 131K context | [Source](https://openrouter.ai/meta/muse-glimmer-30b) |
+| 13 | OpenAI | GPT-5.4 nano | $0.20 | $0.02 | $1.25 | **$1.45** | — | [Source](https://developers.openai.com/api/docs/pricing) |
+| 14 | DeepSeek | DeepSeek V4.1 Flash 1017 — Peak | $0.30 | $0.006 | $1.20 | **$1.50** | 1M context; 1017 update (unchanged API rates); peak pricing | [Source](https://api-docs.deepseek.com/quick_start/pricing/) |
+| 15 | MiniMax | MiniMax M2.7 | $0.30 | $0.06 | $1.20 | **$1.50** | ~205K context; cache write $0.375/MTok | [Source](https://platform.minimax.io/docs/guides/pricing-paygo) |
+| 16 | MiniMax | MiniMax M3 | $0.30 | $0.06 | $1.20 | **$1.50** | ≤512K prompt; >512K: $0.60 input / $0.12 cache / $2.40 output; permanent 50% discount | [Source](https://platform.minimax.io/docs/guides/pricing-paygo) |
+| 17 | Qwen | Qwen3.7 Plus (Promo) | $0.32 | — | $1.28 | **$1.60** | International alias; 20% off; regular $0.40/$1.60 | [Source](https://www.alibabacloud.com/help/en/model-studio/model-pricing) |
+| 18 | Google | Gemini 3.1 Flash-Lite | $0.25 | $0.025 | $1.50 | **$1.75** | — | [Source](https://ai.google.dev/gemini-api/docs/pricing) |
+| 19 | Qwen | Qwen3.6 Flash | $0.25 | — | $1.50 | **$1.75** | ≤256K; International | [Source](https://www.alibabacloud.com/help/en/model-studio/model-pricing) |
+| 20 | Qwen | Qwen3.7 Plus (Regular Price) | $0.40 | — | $1.60 | **$2.00** | ≤256K | [Source](https://www.alibabacloud.com/help/en/model-studio/model-pricing) |
+| 21 | MiniMax | MiniMax M3 — Priority | $0.45 | $0.09 | $1.80 | **$2.25** | ≤512K prompt; faster priority serving; >512K: $0.90/$0.18/$3.60; permanent 50% discount | [Source](https://platform.minimax.io/docs/guides/pricing-paygo) |
+| 22 | DeepSeek | DeepSeek V4 Pro — Off-peak | $0.66 | $0.022 | $1.98 | **$2.64** | Off-peak pricing | [Source](https://api-docs.deepseek.com/quick_start/pricing/) |
+| 23 | Google | Gemini 3.5 Flash-Lite | $0.30 | $0.03 | $2.50 | **$2.80** | — | [Source](https://ai.google.dev/gemini-api/docs/pricing) |
+| 24 | Mistral | Mistral Large 4 | $0.70 | $0.07 | $2.10 | **$2.80** | 1M context; Oct 29 open release; current official standard API price | [Source](https://docs.mistral.ai/models/mistral-large-4-0) |
+| 25 | Qwen | Qwen3.5 Plus | $0.40 | — | $2.40 | **$2.80** | ≤256K; International | [Source](https://www.alibabacloud.com/help/en/model-studio/model-pricing) |
+| 26 | MiniMax | MiniMax M2.7 Highspeed | $0.60 | $0.06 | $2.40 | **$3.00** | Same open M2.7 model, faster serving; ~205K context; cache write $0.375/MTok | [Source](https://platform.minimax.io/docs/guides/pricing-paygo) |
+| 27 | xAI | Grok Build 0.1 | $1.00 | $0.20 | $2.00 | **$3.00** | <200K; ≥200K: $2/$4 | [Source](https://docs.x.ai/developers/pricing) |
+| 28 | Qwen | Qwen3.6 Plus | $0.50 | — | $3.00 | **$3.50** | ≤256K; International | [Source](https://www.alibabacloud.com/help/en/model-studio/model-pricing) |
+| 29 | xAI | Grok 4.20/4.3 | $1.25 | $0.20 | $2.50 | **$3.75** | <200K; ≥200K: $2.50/$5 | [Source](https://docs.x.ai/developers/pricing) |
+| 30 | GLM / Z.AI | GLM-5 | $1.00 | $0.20 | $3.20 | **$4.20** | — | [Source](https://docs.z.ai/guides/overview/pricing) |
+| 31 | Google | Gemini 3.6/3.8 Flash (Promo) | $0.75 | $0.075 | $3.75 | **$4.50** | Introductory price through Dec 31, 2026; 3.7 retired (redirects to 3.8) | [Source](https://ai.google.dev/gemini-api/docs/pricing) |
+| 32 | Kimi | Kimi K2.6 | $0.95 | $0.16 | $4.00 | **$4.95** | ~262K context | [Source](https://www.kimi.com/) |
+| 33 | Kimi | Kimi K2.7 Code | $0.95 | $0.19 | $4.00 | **$4.95** | ~262K context | [Source](https://www.kimi.com/) |
+| 34 | GLM / Z.AI | GLM-5-Turbo | $1.20 | $0.24 | $4.00 | **$5.20** | 200K context; agent-tuned Turbo variant | [Source](https://docs.z.ai/guides/overview/pricing) |
+| 35 | OpenAI | GPT-5.4 mini | $0.75 | $0.075 | $4.50 | **$5.25** | — | [Source](https://developers.openai.com/api/docs/pricing) |
+| 36 | DeepSeek | DeepSeek V4 Pro — Peak | $1.32 | $0.044 | $3.96 | **$5.28** | Peak pricing | [Source](https://api-docs.deepseek.com/quick_start/pricing/) |
+| 37 | Meta / OpenRouter | Muse Spark 1.1/1.2/1.3 | $1.25 | $0.15 | $4.25 | **$5.50** | 1M context; standard data policy | [Source](https://openrouter.ai/meta/muse-spark-1.3) |
+| 38 | Meta / OpenRouter | Muse Spark Open | $1.25 | $0.15 | $4.25 | **$5.50** | 1M context; released Oct 15; public weights (safety post-trained, same base as Muse Spark 1.3) | [Source](https://openrouter.ai/meta/muse-spark-open) |
+| 39 | GLM / Z.AI | GLM-5.1 | $1.40 | $0.26 | $4.40 | **$5.80** | 200K context | [Source](https://docs.z.ai/guides/overview/pricing) |
+| 40 | GLM / Z.AI | GLM-5.2/5.3 | $1.40 | $0.26 | $4.40 | **$5.80** | 1M context | [Source](https://docs.z.ai/guides/overview/pricing) |
+| 41 | OpenAI | GPT-6.1 Terra | $1.00 | $0.05 | $5.00 | **$6.00** | 1.05M context; >272K prompt: $2 input / $0.10 cache / $7.50 output; 30m cache write $1.25 | [Source](https://developers.openai.com/api/docs/models/gpt-6.1-terra) |
+| 42 | xAI | Grok 4.5 | $2.00 | $0.30 | $6.00 | **$8.00** | <200K; ≥200K: $4/$12 | [Source](https://docs.x.ai/developers/pricing) |
+| 43 | xAI | Grok 4.6 | $2.00 | $0.50 | $6.00 | **$8.00** | <200K; ≥200K: $4/$12 | [Source](https://docs.x.ai/developers/pricing) |
+| 44 | xAI | Grok 4.7 | $2.00 | $0.50 | $6.00 | **$8.00** | 500K context; ≥200K: $4/$12 | [Source](https://docs.x.ai/developers/pricing) |
+| 45 | Qwen | Qwen3.8 Max | $2.00 | — | $6.00 | **$8.00** | International; 1M context | [Source](https://www.alibabacloud.com/help/en/model-studio/model-pricing) |
+| 46 | Google | Gemini 3.6/3.8 Flash (Regular Price) | $1.50 | $0.15 | $7.50 | **$9.00** | Standard price from Jan 1, 2027; 3.7 retired (redirects to 3.8) | [Source](https://ai.google.dev/gemini-api/docs/pricing) |
+| 47 | Mistral | Mistral Medium 3.5 | $1.50 | $0.15 | $7.50 | **$9.00** | 256K context | [Source](https://docs.mistral.ai/models/) |
+| 48 | Kimi | Kimi K2.7 Code Highspeed | $1.90 | $0.38 | $8.00 | **$9.90** | ~262K; same K2.7 Code model, faster output | [Source](https://www.kimi.com/) |
+| 49 | Qwen | Qwen3.7 Max | $2.50 | — | $7.50 | **$10.00** | International; 1M context | [Source](https://www.alibabacloud.com/help/en/model-studio/model-pricing) |
+| 50 | Anthropic | Claude Sonnet 5.5 | $2.00 | $0.10 | $10.00 | **$12.00** | Cache read reduced to $0.10 on Oct 7 | [Source](https://platform.claude.com/docs/en/about-claude/pricing) |
+| 51 | Google | Gemini 4 Argon (Promo) | $2.00 | $0.10 | $10.00 | **$12.00** | 1M context; implicit caching only; offer through Nov 30, 2026 | [Source](https://cloud.google.com/blog/products/ai-machine-learning/gemini-4-argon-available-on-google-cloud) |
+| 52 | OpenAI | GPT-6.1 Sol | $2.00 | $0.10 | $10.00 | **$12.00** | 1.05M context; >272K: $4/$0.20/$15 | [Source](https://developers.openai.com/api/docs/pricing) |
+| 53 | Anthropic | Claude Sonnet 5 | $2.00 | $0.20 | $10.00 | **$12.00** | — | [Source](https://platform.claude.com/docs/en/about-claude/pricing) |
+| 54 | OpenAI | GPT-6 Sol | $2.00 | $0.20 | $10.00 | **$12.00** | 1.05M context; >272K: $4/$0.40/$15 | [Source](https://developers.openai.com/api/docs/pricing) |
+| 55 | Kimi | Kimi K3.1 Pro | $2.00 | $0.20 | $10.00 | **$12.00** | 1M context; 5-min cache write $2/MTok; planned Open release by Nov 4 (not yet released) | [Source](https://platform.kimi.ai/) |
+| 56 | Google | Gemini 3.1 Pro Preview | $2.00 | $0.20 | $12.00 | **$14.00** | ≤200K; >200K: $4/$18 | [Source](https://ai.google.dev/gemini-api/docs/pricing) |
+| 57 | OpenAI | GPT-5.6 Terra | $2.00 | $0.20 | $12.00 | **$14.00** | >272K: $4/$18 | [Source](https://developers.openai.com/api/docs/pricing) |
+| 58 | OpenAI | GPT-5.4 | $2.50 | $0.25 | $15.00 | **$17.50** | >272K long-context surcharge | [Source](https://developers.openai.com/api/docs/pricing) |
+| 59 | Anthropic | Claude Sonnet 4.6 | $3.00 | $0.30 | $15.00 | **$18.00** | — | [Source](https://platform.claude.com/docs/en/about-claude/pricing) |
+| 60 | Kimi | Kimi K3 | $3.00 | $0.30 | $15.00 | **$18.00** | 1M context | [Source](https://www.kimi.com/) |
+| 61 | Anthropic | Claude Opus 5.5 | $4.00 | $0.20 | $20.00 | **$24.00** | 1M context | [Source](https://platform.claude.com/docs/en/about-claude/pricing) |
+| 62 | Google | Gemini 4 Argon (Regular Price) | $4.00 | $0.20 | $20.00 | **$24.00** | 1M context; implicit caching only; from Dec 1, 2026 | [Source](https://cloud.google.com/blog/products/ai-machine-learning/gemini-4-argon-available-on-google-cloud) |
+| 63 | Kimi | Kimi K3.1 Pro Highspeed | $4.00 | $0.20 | $20.00 | **$24.00** | Same K3.1 Pro model, 2–3× faster; 1M context; 5-min cache write $4/MTok | [Source](https://platform.kimi.ai/) |
+| 64 | Meta | Muse Wonder | $4.00 | $0.20 | $20.00 | **$24.00** | 1M context; Meta Model API / OpenRouter; Wonder Full is subscription-only | [Source](https://dev.meta.ai/models/muse-wonder) |
+| 65 | OpenAI | GPT-5.6 Sol (Promo) | $4.00 | $0.40 | $20.00 | **$24.00** | Promo available at least through Nov 21, 2026; regular $5/$30 | [Source](https://developers.openai.com/api/docs/pricing) |
+| 66 | Anthropic | Claude Opus 4.7/4.8/5 | $5.00 | $0.50 | $25.00 | **$30.00** | — | [Source](https://platform.claude.com/docs/en/about-claude/pricing) |
+| 67 | OpenAI | GPT-5.5 | $5.00 | $0.50 | $30.00 | **$35.00** | — | [Source](https://developers.openai.com/api/docs/pricing) |
+| 68 | OpenAI | GPT-5.6 Sol (Regular Price) | $5.00 | $0.50 | $30.00 | **$35.00** | Original price; currently $4/$20 promo | [Source](https://developers.openai.com/api/docs/pricing) |
+| 69 | Anthropic | Claude Fable 5.1 | $10.00 | $0.25 | $50.00 | **$60.00** | 1M context; low 0.025x cache-read multiplier | [Source](https://platform.claude.com/docs/en/about-claude/pricing) |
+| 70 | Anthropic | Claude Fable 5 | $10.00 | $1.00 | $50.00 | **$60.00** | — | [Source](https://platform.claude.com/docs/en/about-claude/pricing) |
+| 71 | OpenAI | GPT-6 Astra | $10.00 | $1.00 | $50.00 | **$60.00** | 1.05M context; >272K: $20/$2/$75 | [Source](https://developers.openai.com/api/docs/pricing) |
+| 72 | OpenAI | GPT-5.4/5.5 Pro | $30.00 | — | $180.00 | **$210.00** | Maximum-compute tier | [Source](https://developers.openai.com/api/docs/pricing) |
 
-
-
-> DeepSeek introduced Peak / Off-peak pricing on August 16, 2026.
->
-> Peak hours:
-> - 01:00–04:00 UTC
-> - 06:00–10:00 UTC
->
-> All other hours are Off-peak.
-
-> DeepSeek V4 Flash:
-> - Off-peak: $0.22 Input / $0.66 Output
-> - Peak: $0.44 Input / $1.32 Output
-> - Cached Input: $0.007 Off-peak / $0.014 Peak
-
-> DeepSeek V4 Pro:
-> - Off-peak: $0.66 Input / $1.98 Output
-> - Peak: $1.32 Input / $3.96 Output
-> - Cached Input: $0.022 Off-peak / $0.044 Peak
-
+> **DeepSeek peak/off-peak:** Peak hours are **01:00–04:00 UTC and 06:00–10:00 UTC**; all other hours are off-peak. For **DeepSeek V4.1 Flash 1017**, the source tracker gives **$0.15 input / $0.003 cached input / $0.60 output** (off-peak) and **$0.30 / $0.006 / $1.20** (peak). DeepSeek V4 Pro rates are listed in their own peak and off-peak rows above.

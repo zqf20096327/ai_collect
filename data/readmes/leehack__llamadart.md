@@ -16,13 +16,20 @@ Android deployments, NPU. See the
 [support matrix](https://llamadart.leehack.com/docs/platforms/support-matrix)
 for each target.
 
+On macOS x86_64, llama.cpp `GpuBackend.auto` runs on the
+CPU, because Metal returns garbled output on Intel Macs with AMD GPUs
+([#1597](https://github.com/leehack/llamadart/issues/1597)); an explicit
+`GpuBackend.metal` or `ComputeDevice.gpu` still loads on Metal, with a warning.
+Rosetta on Apple silicon is included, since an x86_64 process cannot tell it
+from an Intel Mac.
+
 Android llama.cpp excludes the known unsafe Adreno 750 driver `2150604839`:
 explicit GPU requests throw, while automatic selection with a Vulkan
 preference falls back to CPU with a warning. See the
 [device limitations](https://llamadart.leehack.com/docs/platforms/support-matrix#known-limitations).
 
 
-Choose [direct llamadart, Genkit, or Flutter Edge AI](https://llamadart.leehack.com/docs/integrations/choosing-an-api) for your application. Genkit remains a [separate package](https://github.com/leehack/llamadart/tree/main/packages/genkit_llamadart); the Flutter Edge AI connector is an upstream source integration.
+Choose [direct llamadart, Genkit, or Flutter Edge AI](https://llamadart.leehack.com/docs/integrations/choosing-an-api) for your application. Genkit remains a [separate package](https://github.com/leehack/llamadart/tree/main/packages/genkit_llamadart); the Flutter Edge AI connector is owned upstream and pins its own llamadart version.
 
 ## Start Here
 
@@ -82,8 +89,10 @@ dependencies:
 Flutter iOS/macOS apps that should link Apple XCFrameworks through Swift
 Package Manager should also add the runtime companion packages they need:
 
-Use companion `0.17.0` with core `0.17.x` for llama.cpp `v0.7.0-3`; core
-`0.17.x` rejects earlier llama.cpp companions. Use `0.16.0` with core `0.16.x`,
+Use companion `0.17.1` with core `>=0.17.1 <0.18.0` for llama.cpp `v0.8.0`.
+A locked companion `0.17.0` keeps `v0.7.0-3` and works with those cores with an
+upgrade warning; core `0.17.0` needs it. Core `0.17.x` rejects earlier llama.cpp
+companions. Use `0.16.0` with core `0.16.x`,
 or `0.15.2` with core `>=0.15.6 <0.16.0`, for llama.cpp `v0.7.0-2`.
 Locked `0.15.0`/`0.15.1` companions keep `v0.7.0-1` and work with core `0.15.6`
 with an upgrade warning, or pair with core `0.15.0` to `0.15.5`.
@@ -671,9 +680,9 @@ Current default runtime pins:
 
 | Runtime | Pin |
 | --- | --- |
-| Native llama.cpp / GGUF | `leehack/llamadart-native@v0.7.0-3` |
+| Native llama.cpp / GGUF | `leehack/llamadart-native@v0.8.0` |
 | Native LiteRT-LM / `.litertlm` | `leehack/litert-lm-native@v0.18.1-4` |
-| Web llama.cpp / GGUF | `leehack/llama-web-bridge-assets@v0.1.76` |
+| Web llama.cpp / GGUF | `leehack/llama-web-bridge-assets@v0.1.79` |
 | Web LiteRT-LM / `.litertlm` | `@litert-lm/core@0.18.0` |
 
 Native overrides accept stable `vMAJOR.MINOR.PATCH` releases and preserve

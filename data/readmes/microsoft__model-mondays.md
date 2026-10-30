@@ -31,22 +31,22 @@ Join an interactive discussion about production agent evaluation, optimization l
 
 ## Season 4: Model Spotlights for Agent Builders
 
-Season 4 runs from August 10 through November 2, 2026. Each episode focuses on a model family or model-selection technique relevant to building AI agents.
+Season 4 runs from August 10 through November 9, 2026. Each episode focuses on a model family or model-selection technique relevant to building AI agents.
 
 | Ep | Date | Spotlight | Host | Guest speaker(s) | Page |
 |:---:|:---|:---|:---|:---|:---:|
-| 01 | Aug 10, 2026 | Spotlight on MAI Models | Amy Boyd | Sophie Lebrecht<br>Yanan Cai | [View](docs/model-mondays/2026-08-10-s04-e01.md) |
-| 02 | Aug 17, 2026 | Cohere for Agentic AI | Bethany Jepchumba | Andy Tran | [View](docs/model-mondays/2026-08-17-s04-e02.md) |
+| 01 | Aug 10, 2026 | Spotlight on MAI Models | Amy Boyd | Sophie Lebrecht<br>Yanan Cai<br>Sharmila Chockalingam<br>Nitya Narasimhan | [View](docs/model-mondays/2026-08-10-s04-e01.md) |
+| 02 | Aug 17, 2026 | Cohere for Agentic AI | Bethany Jepchumba | Andy Tran<br>Sharmila Chockalingam | [View](docs/model-mondays/2026-08-17-s04-e02.md) |
 | 03 | Aug 24, 2026 | Spotlight on Model Router | Lee Stott | Sanjeev Jagtap<br>Lee Stott<br>Nitya Narasimhan<br>Sharmila Chockalingam | [View](docs/model-mondays/2026-08-24-s04-e03.md) |
-| 04 | Aug 31, 2026 | From Research to Reality | Nitya Narasimhan | Gulsimo Osimi<br>Yash Lara | [View](docs/model-mondays/2026-08-31-s04-e04.md) |
-| 05 | Sep 14, 2026 | Claude Models in Microsoft Foundry: Tool Integrations in Practice | Gustavo Cordido | Amanda Wong<br>Haoran Cheng | [View](docs/model-mondays/2026-09-14-s04-e05.md) |
-| 06 | Sep 21, 2026 | Spotlight on Azure OpenAI | Nitya Narasimhan | Ananya Bishnoi | [View](docs/model-mondays/2026-09-21-s04-e06.md) |
-| 07 | Sep 28, 2026 | Mistral OCR-4 & Building AI Agents in Microsoft Foundry | Amy Boyd | Victor Rojo<br>Peyman Mohajerian | [View](docs/model-mondays/2026-09-28-s04-e07.md) |
-| 08 | Oct 5, 2026 | Fine-Tuned Models | Bethany Jepchumba | — | [View](docs/model-mondays/2026-10-05-s04-e08.md) |
-| 09 | Oct 12, 2026 | Spotlight on Speech Models | Gustavo Cordido | — | [View](docs/model-mondays/2026-10-12-s04-e09.md) |
-| 10 | Oct 19, 2026 | Spotlight on Hugging Face | Amy Boyd | — | [View](docs/model-mondays/2026-10-19-s04-e10.md) |
-| 11 | Oct 26, 2026 | Spotlight on Open Models | Bethany Jepchumba | — | [View](docs/model-mondays/2026-10-26-s04-e11.md) |
-| 12 | Nov 2, 2026 | Spotlight on NVIDIA Models | Nitya Narasimhan | — | [View](docs/model-mondays/2026-11-02-s04-e12.md) |
+| 04 | Aug 31, 2026 | From Research to Reality | Nitya Narasimhan | Gulsimo Osimi<br>Yash Lara<br>Patrick Widjaja<br>Sharmila Chockalingam | [View](docs/model-mondays/2026-08-31-s04-e04.md) |
+| 05 | Sep 14, 2026 | Claude Models in Microsoft Foundry: Tool Integrations in Practice | Gustavo Cordido | Amanda Wong<br>Haoran Cheng<br>Amar Badal<br>Sharmila Chockalingam<br>Nitya Narasimhan | [View](docs/model-mondays/2026-09-14-s04-e05.md) |
+| 06 | Sep 21, 2026 | Spotlight on Azure OpenAI | Nitya Narasimhan | Ananya Bishnoi<br>Irene Du<br>Sharmila Chockalingam | [View](docs/model-mondays/2026-09-21-s04-e06.md) |
+| 07 | Sep 28, 2026 | Mistral OCR-4 & Building AI Agents in Microsoft Foundry | Amy Boyd | Victor Rojo<br>Peyman Mohajerian<br>Irene Du<br>Ninad Joshi<br>Sharmila Chockalingam<br>Nitya Narasimhan | [View](docs/model-mondays/2026-09-28-s04-e07.md) |
+| 08 | Oct 5, 2026 | Fine-Tuned Models | Bethany Jepchumba | Alicia Frame<br>Patrick Widjaja<br>Sharmila Chockalingam<br>Nitya Narasimhan | [View](docs/model-mondays/2026-10-05-s04-e08.md) |
+| 09 | Oct 12, 2026 | Spotlight on Speech Models | Gustavo Cordido | Irene Du<br>Jacky Kang<br>Sharmila Chockalingam<br>Tanvi Tushar Shah<br>Yiwen Rong<br>Nitya Narasimhan | [View](docs/model-mondays/2026-10-12-s04-e09.md) |
+| 10 | Oct 19, 2026 | Spotlight on Hugging Face | Amy Boyd | Manoj Bableshwar<br>Marie-Louise Onga Nana<br>Sharmila Chockalingam<br>Jeff Boudier<br>Nitya Narasimhan | [View](docs/model-mondays/2026-10-19-s04-e10.md) |
+| 11 | Oct 26, 2026 | Spotlight on Open Models | Bethany Jepchumba | Brett Laffel<br>Dr Gana Chandrasekaran<br>Long Chen<br>Sharmila Chockalingam<br>Nitya Narasimhan | [View](docs/model-mondays/2026-10-26-s04-e11.md) |
+| 12 | Nov 9, 2026 | Spotlight on NVIDIA Models | Nitya Narasimhan | Marie-Louise Onga Nana<br>Sharmila Chockalingam | [View](docs/model-mondays/2026-11-09-s04-e12.md) |
 
 ## Explore More
 

@@ -84,7 +84,8 @@ Enter to skip; you can add it later from the web UI).
   emoji, or **type a word** (`rocket`, `bug`, `money`…) to search for one; its
   **＋** creates the new agent straight into that group. Dragging an agent onto a
   group files it there, dragging groups reorders them, and double-clicking a name
-  renames it. A question the agent asks shows as an *Approval requested* card. The
+  renames it — a group can also be renamed by clicking its name at the top of the
+  agents column. A question the agent asks shows as an *Approval requested* card. The
   whole cockpit is skinned like Microsoft Teams (grey light mode / near-black dark
   mode, the Shadok mark in the header). On a phone the tools sit in the ⋯ menu and
   the agents sheet lists every group.
@@ -293,7 +294,7 @@ Enter to skip; you can add it later from the web UI).
   card back. Desktop only: the agents column is hidden on phones.
 - **Guided tour** — on a browser's first visit, a welcome card explains what
   shadok-ai is, then a spotlight walks the real controls: the agents list, an
-  agent's ⋯ menu, scheduled prompts, the toolbar, the quota dials. Skip and
+  agent's ⋯ menu, scheduled prompts, the toolbar, the quota bars. Skip and
   Escape end it at any point; ⋯ → *Guided tour* replays it. A step whose target
   isn't on screen is **dropped rather than faked** — an empty cockpit has no
   agent menu, so it gets a shorter tour instead of a spotlight on nothing. The
@@ -340,12 +341,21 @@ Enter to skip; you can add it later from the web UI).
 The Telegram panel (header icon) carries a folded *How to set it up, step by step*
 guide, open until a token is saved and a group is bound.
 
+**Pairing.** The bot answers nobody until it is paired from the cockpit. In the
+Telegram panel (admin only), click **Pair Telegram**: it shows an 8-digit code,
+valid 10 minutes, single-use, cancelled after 5 wrong tries. Send `/setup <code>`
+in the group to make it the board, or in a private chat with the bot to make its
+DMs yours — or use the panel's one-click links, which pass the code for you.
+Whoever enters the code becomes the owner of the bot's DMs. A group bound before
+pairing existed stays bound; to move to another group, unbind it in the panel
+and pair again.
+
 Add your bot to a group with **Topics** enabled, make it an admin with *Manage
 topics* (and *Delete messages* so `/secret` can scrub values), then in the group:
 
 | Command | |
 |---|---|
-| `/setup` | bind this group as the board (one group per instance) |
+| `/setup <code>` | bind this group as the board (one group per instance), with the code from the panel's **Pair Telegram** |
 | `/spawn [profile] <name>` | new isolated agent in its own topic (also a web tab) |
 | `/stop` (alias `/esc`) | interrupt the current turn — does **not** end the session |
 | `/new` · `/end` | reset · kill the session |
@@ -530,6 +540,20 @@ Cloudflare ~100s) — the symptom is a cockpit that keeps flashing
 every 25s (tunable with `SHADOK_WS_PING_MS`) to keep the connection warm, so no
 proxy change is normally needed; if your proxy still cuts it, raise
 `proxy_read_timeout` above the ping interval.
+
+**Sleep / wake / network blips.** When the machine comes back (an `online`
+event, the tab becoming visible, a back/forward-cache restore), the cockpit
+revives the links that actually **dropped** — resetting their backoff so a
+genuinely-closed socket reconnects promptly instead of waiting out a delay that
+climbed while you were away. A socket that still reports "open" is left alone:
+`online` fires on every network blip (wifi roam, VPN, interface change), and
+force-reconnecting healthy links on each one reconnected all your agents at
+once — tripping the upstream single-use-token OAuth refresh race so a batch
+stuck on "connecting…". A slept socket that looks "open" but is dead is
+terminated by the server heartbeat (~50s) and reconnects on the resulting
+`close` without that churn. Only a back/forward-cache restore force-replaces an
+"open" socket, because there the restored page's old sockets are dead yet fire
+no `close`.
 
 ### Cross-instance peers
 

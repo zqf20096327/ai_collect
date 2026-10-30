@@ -5,27 +5,17 @@
 </p>
 
 <p align="center">
-  <strong>v2.2.0</strong> · Eight fixed invariants for AI-assisted engineering
+  <strong>v2.3.0</strong> · Eight fixed invariants for AI-assisted engineering
 </p>
 
 # Alex's Eight Invariants
 
 This must be obeyed.
 
-> A good harness does not worship the model. It observes failure, swaps the adapter, preserves the core's truth.
->
-> The model changes. The adapter is thrown away. The core remains. That core holds invariants that do not move — not through a model swap, not through a framework rewrite, not through an adapter you ship and throw away.
->
-> SSoT · SoC/SRP · Consistency · Atomicity · Idempotency · No Silent Fallback · Doc-first & Plan-first · Isolation
->
-> All eight govern the system and the work of shipping it. They protect structural truth, disciplined work entry, and shared mutable boundaries when two actors move at the same time.
->
-> This repo is about that core only — the structural failures no adapter can paper over.
-
 ## The Eight Invariants
 
 1. `SSoT (Single Source of Truth)` — **A copy is a second truth, and two truths stay two truths no matter which model reads them.**  
-   Every truth the system depends on — data, state, wording, features, tests — must have one canonical owner; everything else links to it. Two concurrent canonical paths are not allowed. A duplicated sentence, feature, or test drifts from its owner, slows every run, and loads the infra. If cache or index state drifts, live truth should repair canonical state instead of creating a second truth. Live text states the current rule; history belongs in version control or a changelog.
+   Every truth the system depends on — data, state, wording, features, tests — must have one canonical owner; everything else links to it. Two concurrent canonical paths are not allowed. A duplicated sentence, feature, or test drifts from its owner, slows every run, and loads the infra. Names in code are truths too: a key, state, kind, code, or field name that more than one place writes, reads, or branches on is declared once, as a constant, an enum, or a typed schema, and every use refers to that declaration, so the compiler or one test catches a typo. Spelling the same raw string across `switch` cases and `put("…")` calls makes every copy a second truth that no one can find in full. If cache or index state drifts, live truth should repair canonical state instead of creating a second truth. Live text states the current rule; history belongs in version control or a changelog.
 
 2. `SoC / SRP (Separation of Concerns / Single Responsibility)` — **Mixed responsibility survives every refactor until nothing can be changed without breaking something else.**  
    Code, docs, and tests form one domain taxonomy tree. As in kingdom → phylum → class → order → family → genus → species, every unit has exactly one parent, and a reader descends from the largest domain to the smallest unit without crossing branches. The upper ranks are architecture and domain boundaries (SoC); the lower ranks are module, file, and function (SRP). When one node carries two concerns, split it. Tests sit in the same tree as the code they cover.
@@ -55,14 +45,6 @@ Keep the project and its instructions simple — the eight are held with the lea
 - Add a guard or test only when it catches a real failure nothing else catches.
 - Clean up legacy code in the change that touches it.
 - Run only the tests the changed behavior can affect — the branch you changed plus the consumers that depend on it, even on other branches.
-
-## Why these eight
-
-Each invariant names a structural failure the adapter cannot route around — get one wrong and no amount of prompt tuning, retry logic, or model upgrade will save you.
-
-The core/adapter split is also what makes aggressive adapter work safe. You can tune the adapter hard for this month's model precisely because the core underneath does not move. Invert the assumption — let the core drift to accommodate model quirks — and the adapter loses its anchor. The harness starts absorbing problems it was supposed to route around.
-
-Every debate about longevity ("build for next year's model") versus efficiency ("squeeze this month's model dry") dissolves under this split. Longevity lives in the core. Efficiency lives in the adapter. Forcing one layer to do both jobs is how harnesses rot.
 
 ## About this repo
 

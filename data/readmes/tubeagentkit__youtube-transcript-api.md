@@ -1,10 +1,10 @@
 # YouTube Transcript API
 
 [![License](https://img.shields.io/badge/License-MIT-4CAF50?style=for-the-badge)](./LICENSE)
-[![Website](https://img.shields.io/badge/Website-getyoutubetranscript.com-FF3B00?style=for-the-badge)](https://getyoutubetranscript.com)
+[![Website](https://img.shields.io/badge/Website-getyoutubetranscript.com-FF3B00?style=for-the-badge)](https://getyoutubetranscript.com/?utm_source=github&utm_medium=readme&utm_campaign=youtube-transcript-api)
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-3.0.3-6BA539?style=for-the-badge&logo=openapiinitiative&logoColor=white)](./openapi.json)
 
-A **YouTube Transcript API** built and hosted by [GetYouTubeTranscript](https://getyoutubetranscript.com): get YouTube video transcripts via REST API, no Google API key, no scraper to maintain, no yt-dlp or headless browser on your own servers. The same API also does YouTube search, channel metadata and full upload history, and playlist listing.
+A **YouTube Transcript API** built and hosted by [GetYouTubeTranscript](https://getyoutubetranscript.com/?utm_source=github&utm_medium=readme&utm_campaign=youtube-transcript-api): get YouTube video transcripts via REST API, no Google API key, no scraper to maintain, no yt-dlp or headless browser on your own servers. The same API also does YouTube search, channel metadata and full upload history, and playlist listing.
 
 This repo is the public docs + examples home for the API: endpoint reference, the OpenAPI spec, and runnable examples in curl, Python, JavaScript, Go, and PHP. The API itself is a hosted service - there's no server code to run here.
 
@@ -58,7 +58,7 @@ or:
 x-api-key: sk_live_...
 ```
 
-Get a key at [getyoutubetranscript.com](https://getyoutubetranscript.com) (free tier, no card), or mint one in code with the self-serve signup flow - see [Examples](#examples).
+Get a key at [getyoutubetranscript.com](https://getyoutubetranscript.com/?utm_source=github&utm_medium=readme&utm_campaign=youtube-transcript-api) (free tier, no card), or mint one in code with the self-serve signup flow - see [Examples](#examples).
 
 ## Quick start
 
@@ -288,6 +288,9 @@ Rate limits are per API key, per plan tier:
 | Free | 60 |
 | Monthly ($5/mo) | 200 |
 | Annual ($4.50/mo) | 300 |
+| Starter ($19/mo) | 300 |
+| Pro ($49/mo) | 400 |
+| Scale ($99/mo) | 600 |
 
 A `429` response includes `requestsThisMinute` so you can back off accordingly.
 
@@ -343,7 +346,7 @@ Run any example: `GYT_API_KEY=sk_live_... python examples/python/get_transcript.
 - [youtube-mcp](https://github.com/tubeagentkit/youtube-mcp) - remote MCP server so Claude, ChatGPT, Cursor, and VS Code can call this API as a tool
 - [youtube-transcript-skills](https://github.com/tubeagentkit/youtube-transcript-skills) - Agent Skill for Claude Code, Cursor, and other coding agents
 - [n8n-nodes-getyoutubetranscript](https://www.npmjs.com/package/n8n-nodes-getyoutubetranscript) - n8n community node for workflow automation
-- [Chrome extension](https://getyoutubetranscript.com) - get a transcript and ask AI questions about any video without leaving YouTube
+- [Chrome extension](https://getyoutubetranscript.com/?utm_source=github&utm_medium=readme&utm_campaign=youtube-transcript-api) - get a transcript and ask AI questions about any video without leaving YouTube
 
 ## Use cases
 
@@ -384,21 +387,21 @@ No. You only need a GetYouTubeTranscript API key, obtained from the dashboard or
 `/transcript` returns whatever captions are available for the video (creator-provided or YouTube auto-captions), in the language you request via `language`. If a video has no captions at all, disabled captions, or no captions in the requested language, the endpoint returns a 404 - there's no audio-transcription fallback.
 
 **How much does it cost?**
-Free: 100 credits, no card required. Monthly: $5 for 1,000 credits/month, top-ups at $2.50/1,000. Annual: $4.50/mo (billed $54/year) for 1,000 credits/month, top-ups at $1.50/1,000 (40% cheaper). 1 credit = 1 successful request; failed and rate-limited requests aren't charged. Only `/credits`, a batch's status and the signup calls are free.
+Free: 100 credits, no card required. Monthly: $5 for 1,000 credits/month, top-ups at $2.50/1,000. Annual: $4.50/mo (billed $54/year) for 1,000 credits/month, top-ups at $1.50/1,000 (40% cheaper). Developer plans: Starter $19 for 7,500 credits/month, Pro $49 for 25,000, Scale $99 for 60,000, all with top-ups at $1.50/1,000. 1 credit = 1 successful request; failed and rate-limited requests aren't charged. Only `/credits`, a batch's status and the signup calls are free.
 
 **What are the rate limits?**
 60 requests/minute on the free tier, 200/min on Monthly, 300/min on Annual - see [Rate limits](#rate-limits).
 
 ## Links
 
-- [Docs](https://getyoutubetranscript.com/docs)
+- [Docs](https://getyoutubetranscript.com/docs?utm_source=github&utm_medium=readme&utm_campaign=youtube-transcript-api)
 - [OpenAPI spec (live)](https://getyoutubetranscript.com/openapi.json) - the copy in this repo ([`openapi.json`](./openapi.json)) is a snapshot; the live URL is canonical
-- [Pricing](https://getyoutubetranscript.com)
+- [Pricing](https://getyoutubetranscript.com/?utm_source=github&utm_medium=readme&utm_campaign=youtube-transcript-api)
 - [GetYouTubeTranscript on GitHub](https://github.com/tubeagentkit)
 
 ## Related projects
 
-Other ways to use the [GetYouTubeTranscript API](https://getyoutubetranscript.com):
+Other ways to use the [GetYouTubeTranscript API](https://getyoutubetranscript.com/?utm_source=github&utm_medium=readme&utm_campaign=youtube-transcript-api):
 
 - [youtube-transcript-api-python](https://github.com/tubeagentkit/youtube-transcript-api-python): YouTube Transcript API SDK for Python
 - [youtube-transcript-api-node](https://github.com/tubeagentkit/youtube-transcript-api-node): YouTube Transcript API SDK for Node.js / TypeScript
@@ -406,6 +409,8 @@ Other ways to use the [GetYouTubeTranscript API](https://getyoutubetranscript.co
 - [youtube-transcript-skills](https://github.com/tubeagentkit/youtube-transcript-skills): YouTube transcript Agent Skill for Claude Code, Cursor, Codex and OpenClaw
 - [youtube-transcript-cursor-plugin](https://github.com/tubeagentkit/youtube-transcript-cursor-plugin): YouTube Transcript Cursor plugin bundling the MCP server, skills, commands and a research agent
 - [n8n-nodes-getyoutubetranscript](https://github.com/tubeagentkit/n8n-nodes-getyoutubetranscript): YouTube transcript n8n community node, also usable as an AI Agent tool
+
+Comparing options, including other tools: [awesome-youtube-transcripts](https://github.com/tubeagentkit/awesome-youtube-transcripts) lists libraries, hosted APIs, MCP servers and speech-to-text tools for YouTube transcripts.
 
 ## License
 

@@ -71,7 +71,7 @@ Works with stock [OMP 18.1.20+](https://github.com/can1357/oh-my-pi/releases/tag
 You need:
 
 - the [latest stable release](https://github.com/carrythroughsystems/omp-session-gateway/releases/latest)
-- **Bun 1.4.0** at a persistent path
+- **Bun 1.4.4** at a persistent path
 - stock **OMP 18.1.20 or later**
 - Tailscale on the host and the phone — TUN-mode client on the host, Serve over tailnet HTTPS, **never Funnel**
 
@@ -185,8 +185,9 @@ Browse the full [documentation index](docs/README.md):
 
 ## Alternatives
 
+Primary READMEs and package metadata checked 2026-10-29; see the dated sources in the full comparison below.
+
 - **Keep work in running `omp` terminals** — **OMP Session Gateway** lists live terminal sessions and opens OMP's encrypted View or Control client from your phone.
-- **Browser-hosted OMP workspace** — [omp-deck](https://github.com/bjb2/omp-deck) embeds the OMP SDK for persistent browser sessions, kanban, routines, and an inbox.
 - **Agent web chat or remote terminal over tunnels** — [oh-my-portal](https://github.com/gosuda/oh-my-portal) provides skills, RPC, and terminal access over Portal tunnels.
 - **Browser workspace for other coding CLIs** — [CloudCLI (`claudecodeui`)](https://github.com/siteboon/claudecodeui) targets Claude Code, Cursor CLI, and Codex; [pi-agent-dashboard](https://github.com/BlackBeltTechnology/pi-agent-dashboard) targets `pi`. See the [full comparison](https://carrythroughsystems.github.io/omp-session-gateway/compare/).
 

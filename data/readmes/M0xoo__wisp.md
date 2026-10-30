@@ -15,13 +15,84 @@ Launch coding agents in the background, skip the transcript, and read the presen
 [![Zero runtime deps](https://img.shields.io/badge/runtime%20deps-0-brightgreen)](package.json)
 [![Harnesses](https://img.shields.io/badge/harness-Claude%20Code%20·%20Codex%20·%20opencode%20·%20Cursor%20·%20Antigravity%20·%20Grok%20·%20Copilot-d97757)](#adding-a-harness)
 
-[Website](https://trywisp.dev/) · [wisp Cloud](#wisp-cloud) · [Quick start](#quick-start) · [Features](#features) · [My Stuff](#my-stuff) · [CLI](#cli) · [Integrations](#integrations) · [Shortcuts](#keyboard-shortcuts) · [Architecture](#architecture) · [Adding a harness](#adding-a-harness) · [Roadmap](#roadmap)
+[Quick start](#quick-start) · [Website](https://trywisp.dev/) · [wisp Cloud](#wisp-cloud) · [Features](#features) · [My Stuff](#my-stuff) · [CLI](#cli) · [Integrations](#integrations) · [Shortcuts](#keyboard-shortcuts) · [Architecture](#architecture) · [Adding a harness](#adding-a-harness) · [Roadmap](#roadmap)
 
 <img src="https://raw.githubusercontent.com/M0xoo/wisp/main/docs/assets/demo.gif" alt="wisp: send a task off, answer the agent's question in one click, read the report, then a crew member checks in and another takes a job by @mention" width="880" />
 
 </div>
 
 ---
+
+## Quick start
+
+> **No computer to keep on?** Open [grid.trywisp.dev](https://grid.trywisp.dev), sign in with GitHub or Google and you get your own wisp on a server, with nothing to install. See [wisp Cloud](#wisp-cloud).
+
+> **Requirements:** macOS, Linux, or Windows; Node.js ≥ 20 for the npm, npx, curl and Homebrew installs (the desktop download needs none); and at least one harness installed and signed in: [Claude Code](https://claude.com/claude-code) (`claude`), [Codex](https://github.com/openai/codex) (`codex`), [opencode](https://opencode.ai) (`opencode`), [Cursor CLI](https://cursor.com/cli) (`cursor-agent`), [Antigravity CLI](https://antigravity.google/docs/cli/headless/) (`agy`), [Grok Build](https://x.ai/cli) (`grok`), or [GitHub Copilot CLI](https://github.com/features/copilot/cli) (`copilot`, with a Copilot plan). No CLI? The [ChatGPT desktop app](https://chatgpt.com/download) is enough for Codex on macOS and Linux, and the [Claude desktop app](https://claude.com/download) for Claude Code on macOS and Windows once you've opened its Code tab and signed that CLI in once: wisp uses the CLI each app ships when the command isn't on PATH. Override a binary path with `WISP_CLAUDE_BIN`, `WISP_CODEX_BIN`, `WISP_OPENCODE_BIN`, `WISP_CURSOR_BIN`, `WISP_ANTIGRAVITY_BIN`, `WISP_GROK_BIN`, or `WISP_COPILOT_BIN`.
+
+```sh
+npx wisp-agents                          # open the wisp desktop app
+npx wisp-agents "fix the flaky auth test" # launch a task in the current folder
+npx wisp-agents --browser                # or use it in the browser → http://localhost:4477
+```
+
+The first run downloads Electron for the desktop app; if that isn't possible, wisp opens in the browser instead.
+
+Or install it globally to get the `wisp` command everywhere. Pick one:
+
+```sh
+curl -fsSL https://trywisp.dev/install.sh | bash   # macOS or Linux: checks Node 20+, then npm install -g wisp-agents
+npm install -g wisp-agents                      # any OS with Node 20+
+brew install m0xoo/tap/wisp-agents             # Homebrew: CLI and browser mode, no Electron desktop app
+
+wisp "fix the flaky auth test"
+```
+
+The Homebrew formula lives in [M0xoo/homebrew-tap](https://github.com/M0xoo/homebrew-tap) (the release workflow bumps it from [`packaging/homebrew`](packaging/homebrew/wisp-agents.rb)). `install.sh` honors `WISP_VERSION` to pin a release (`curl -fsSL https://trywisp.dev/install.sh | WISP_VERSION=0.50.0 bash`).
+
+**Or download the desktop app** (no Node needed, it updates itself). The builds aren't signed yet, so on a Mac the one-liner is the easy way: curl doesn't quarantine what it downloads, so macOS opens it without asking.
+
+```sh
+curl -fsSL https://trywisp.dev/install.sh | bash -s -- --app   # macOS: wisp.app into /Applications, checked against SHA256SUMS.txt
+```
+
+| macOS | Windows | Linux |
+|---|---|---|
+| [Apple silicon](https://github.com/M0xoo/wisp/releases/latest/download/wisp-mac-arm64.dmg) · [Intel](https://github.com/M0xoo/wisp/releases/latest/download/wisp-mac-x64.dmg) | [x64](https://github.com/M0xoo/wisp/releases/latest/download/wisp-windows-x64-setup.exe) · [Arm](https://github.com/M0xoo/wisp/releases/latest/download/wisp-windows-arm64-setup.exe) | AppImage: [x64](https://github.com/M0xoo/wisp/releases/latest/download/wisp-linux-x64.AppImage) · [Arm](https://github.com/M0xoo/wisp/releases/latest/download/wisp-linux-arm64.AppImage) — .deb: [x64](https://github.com/M0xoo/wisp/releases/latest/download/wisp-linux-x64.deb) · [Arm](https://github.com/M0xoo/wisp/releases/latest/download/wisp-linux-arm64.deb) |
+
+Every build is on the [latest release](https://github.com/M0xoo/wisp/releases/latest), with `SHA256SUMS.txt`. Until they're signed: a `.dmg` from the browser makes macOS say it can't verify wisp; click *Done*, then System Settings → Privacy & Security → *Open Anyway*. On Windows, SmartScreen may say it protected your PC: *More info* → *Run anyway*. On Linux the `.deb` is the smooth one; an AppImage needs `chmod +x`, and Ubuntu 24.04's AppArmor can stop it starting unless you pass `--no-sandbox`. The app updates from the same releases: *Update to …* in its top bar downloads the new build, swaps it in and reopens wisp (a `.deb` updates by installing the new `.deb`).
+
+**Release channels.** Stable is what everything above installs. Two more come out of the same pipeline, like TypeScript's `next` or Neovim's nightly:
+
+| Channel | What it is | npm | Desktop app |
+|---|---|---|---|
+| **Stable** | Releases | `npm install -g wisp-agents` | [latest release](https://github.com/M0xoo/wisp/releases/latest) |
+| **Beta** | Previews of the next release (`0.50.0-beta.1`) | `npm install -g wisp-agents@next` | its [prerelease](https://github.com/M0xoo/wisp/releases) |
+| **Nightly** | `main`, built every night its full test suite passes (`0.44.3-nightly.20261028.317`) | `npm install -g wisp-agents@nightly` | [nightly release](https://github.com/M0xoo/wisp/releases/tag/nightly) (`releases/download/nightly/<name>`) |
+
+Set **Settings → General → Updates** to the one you want, and *Update to …* follows it. Beta and nightly also take a stable release once it's newer, so they never leave you behind; switching back to stable waits for the next release rather than going back a version. `WISP_VERSION=next` or `WISP_VERSION=nightly` picks one in `install.sh` (`--app` too, for nightly). Homebrew only has stable releases.
+
+From source:
+
+```sh
+git clone https://github.com/M0xoo/wisp.git
+cd wisp
+
+# Browser mode, with nothing to install:
+node bin/wisp.js           # → http://localhost:4477
+
+# Desktop app:
+npm install                # pulls Electron
+npm run app
+```
+
+On first launch, the *Welcome to wisp* session shows a live gallery of every presentation block.
+
+### Development
+
+```sh
+npm run dev        # desktop app: live reload for web/, relaunch on server/ and electron/ changes
+npm run dev:web    # browser mode, restarts the server when server/ changes
+```
 
 ## Why wisp?
 
@@ -64,7 +135,7 @@ From there you can **follow up**, **answer its questions**, **take it over** in 
 | **Split view** | Tasks in a sidebar, the open one beside it with room to read, and the prompt box as home. On a wide window the task's details (harness, branch, its PR with Merge, the actions) sit in a column beside it that stays put as you scroll. `J` / `K` move through tasks with each one open; `[` hides the list. Drag the sidebar's edge to resize it. Under 900px, and on the phone, the list fills the screen and a task opens as a page of its own with Back. |
 | **Compare** | Run one task on two harnesses side by side, and keep the better run. |
 | **Spells** | Change wisp itself while it runs: ask for a floating button that opens your PRs, a panel with your tool stats, a block agents can use in their reports, a different prompt box, quick replies, buttons on cards, a new look. An agent writes it as a *spell*; you try it in the window and keep it. Share one as a file, and turn any of them off to put wisp back as it was. See [Spells](#spells). |
-| **Recipes & triggers** | Saved prompts with `{params}` (`wisp run release 0.49.0`), run by hand, on a schedule, when CI fails, or when an issue is labelled. |
+| **Recipes & triggers** | Saved prompts with `{params}` (`wisp run release 0.50.0`), run by hand, on a schedule, when CI fails, or when an issue is labelled. |
 | **Usage** | Spend, success rate and questions per project and per harness · model. |
 | **wisp Cloud** | Your own wisp on a server, at [grid.trywisp.dev](https://grid.trywisp.dev): sign in with GitHub or Google and your agents keep working after you close the laptop. Use it from the browser, from wisp on your computer (Machines) or from the phone app, and add your own computers to it so the phone and your other computers reach them with no SSH. Or run your own grid with `npx wisp-agents grid init`. See [wisp Cloud](#wisp-cloud). |
 | **Sign in from wisp** | Settings → Agents signs Claude Code, Codex and GitHub in for you: a link and a code, no terminal. For opencode Zen and Go, paste your API key there. The model picker only offers the agents you're signed in to. |
@@ -73,77 +144,6 @@ From there you can **follow up**, **answer its questions**, **take it over** in 
 | **Permission modes** | Choose **Plan** (read-only), **Edits** (file edits auto-accepted), or **Full auto** (no permission prompts, the default) for each launch. `Shift+Tab` in the prompt cycles modes. In Edits mode, anything the permissions block comes to you: Claude Code waits for **Allow / Always / Deny**, and the other harnesses show an **Allow & retry** card. |
 | **Integrations** | An MCP server (`wisp mcp`), an agent skill, a scriptable CLI, a JS SDK, an OpenAPI-described HTTP API, and webhooks. Hand tasks to wisp from Claude Code, Codex, opencode, Cursor, scripts or CI. |
 | **No runtime dependencies** | The server uses only Node built-ins. Electron is needed only for the desktop app. |
-
-## Quick start
-
-> **No computer to keep on?** Open [grid.trywisp.dev](https://grid.trywisp.dev), sign in with GitHub or Google and you get your own wisp on a server, with nothing to install. See [wisp Cloud](#wisp-cloud).
-
-> **Requirements:** macOS, Linux, or Windows; Node.js ≥ 20 for the npm, npx, curl and Homebrew installs (the desktop download needs none); and at least one harness installed and signed in: [Claude Code](https://claude.com/claude-code) (`claude`), [Codex](https://github.com/openai/codex) (`codex`), [opencode](https://opencode.ai) (`opencode`), [Cursor CLI](https://cursor.com/cli) (`cursor-agent`), [Antigravity CLI](https://antigravity.google/docs/cli/headless/) (`agy`), [Grok Build](https://x.ai/cli) (`grok`), or [GitHub Copilot CLI](https://github.com/features/copilot/cli) (`copilot`, with a Copilot plan). No CLI? The [ChatGPT desktop app](https://chatgpt.com/download) is enough for Codex on macOS and Linux, and the [Claude desktop app](https://claude.com/download) for Claude Code on macOS and Windows once you've opened its Code tab and signed that CLI in once: wisp uses the CLI each app ships when the command isn't on PATH. Override a binary path with `WISP_CLAUDE_BIN`, `WISP_CODEX_BIN`, `WISP_OPENCODE_BIN`, `WISP_CURSOR_BIN`, `WISP_ANTIGRAVITY_BIN`, `WISP_GROK_BIN`, or `WISP_COPILOT_BIN`.
-
-```sh
-npx wisp-agents                          # open the wisp desktop app
-npx wisp-agents "fix the flaky auth test" # launch a task in the current folder
-npx wisp-agents --browser                # or use it in the browser → http://localhost:4477
-```
-
-The first run downloads Electron for the desktop app; if that isn't possible, wisp opens in the browser instead.
-
-Or install it globally to get the `wisp` command everywhere. Pick one:
-
-```sh
-curl -fsSL https://trywisp.dev/install.sh | bash   # macOS or Linux: checks Node 20+, then npm install -g wisp-agents
-npm install -g wisp-agents                      # any OS with Node 20+
-brew install m0xoo/tap/wisp-agents             # Homebrew: CLI and browser mode, no Electron desktop app
-
-wisp "fix the flaky auth test"
-```
-
-The Homebrew formula lives in [M0xoo/homebrew-tap](https://github.com/M0xoo/homebrew-tap) (the release workflow bumps it from [`packaging/homebrew`](packaging/homebrew/wisp-agents.rb)). `install.sh` honors `WISP_VERSION` to pin a release (`curl -fsSL https://trywisp.dev/install.sh | WISP_VERSION=0.49.0 bash`).
-
-**Or download the desktop app** (no Node needed, it updates itself). The builds aren't signed yet, so on a Mac the one-liner is the easy way: curl doesn't quarantine what it downloads, so macOS opens it without asking.
-
-```sh
-curl -fsSL https://trywisp.dev/install.sh | bash -s -- --app   # macOS: wisp.app into /Applications, checked against SHA256SUMS.txt
-```
-
-| macOS | Windows | Linux |
-|---|---|---|
-| [Apple silicon](https://github.com/M0xoo/wisp/releases/latest/download/wisp-mac-arm64.dmg) · [Intel](https://github.com/M0xoo/wisp/releases/latest/download/wisp-mac-x64.dmg) | [x64](https://github.com/M0xoo/wisp/releases/latest/download/wisp-windows-x64-setup.exe) · [Arm](https://github.com/M0xoo/wisp/releases/latest/download/wisp-windows-arm64-setup.exe) | AppImage: [x64](https://github.com/M0xoo/wisp/releases/latest/download/wisp-linux-x64.AppImage) · [Arm](https://github.com/M0xoo/wisp/releases/latest/download/wisp-linux-arm64.AppImage) — .deb: [x64](https://github.com/M0xoo/wisp/releases/latest/download/wisp-linux-x64.deb) · [Arm](https://github.com/M0xoo/wisp/releases/latest/download/wisp-linux-arm64.deb) |
-
-Every build is on the [latest release](https://github.com/M0xoo/wisp/releases/latest), with `SHA256SUMS.txt`. Until they're signed: a `.dmg` from the browser makes macOS say it can't verify wisp; click *Done*, then System Settings → Privacy & Security → *Open Anyway*. On Windows, SmartScreen may say it protected your PC: *More info* → *Run anyway*. On Linux the `.deb` is the smooth one; an AppImage needs `chmod +x`, and Ubuntu 24.04's AppArmor can stop it starting unless you pass `--no-sandbox`. The app updates from the same releases: *Update to …* in its top bar downloads the new build, swaps it in and reopens wisp (a `.deb` updates by installing the new `.deb`).
-
-**Release channels.** Stable is what everything above installs. Two more come out of the same pipeline, like TypeScript's `next` or Neovim's nightly:
-
-| Channel | What it is | npm | Desktop app |
-|---|---|---|---|
-| **Stable** | Releases | `npm install -g wisp-agents` | [latest release](https://github.com/M0xoo/wisp/releases/latest) |
-| **Beta** | Previews of the next release (`0.49.0-beta.1`) | `npm install -g wisp-agents@next` | its [prerelease](https://github.com/M0xoo/wisp/releases) |
-| **Nightly** | `main`, built every night its full test suite passes (`0.44.3-nightly.20261028.317`) | `npm install -g wisp-agents@nightly` | [nightly release](https://github.com/M0xoo/wisp/releases/tag/nightly) (`releases/download/nightly/<name>`) |
-
-Set **Settings → General → Updates** to the one you want, and *Update to …* follows it. Beta and nightly also take a stable release once it's newer, so they never leave you behind; switching back to stable waits for the next release rather than going back a version. `WISP_VERSION=next` or `WISP_VERSION=nightly` picks one in `install.sh` (`--app` too, for nightly). Homebrew only has stable releases.
-
-From source:
-
-```sh
-git clone https://github.com/M0xoo/wisp.git
-cd wisp
-
-# Browser mode, with nothing to install:
-node bin/wisp.js           # → http://localhost:4477
-
-# Desktop app:
-npm install                # pulls Electron
-npm run app
-```
-
-On first launch, the *Welcome to wisp* session shows a live gallery of every presentation block.
-
-### Development
-
-```sh
-npm run dev        # desktop app: live reload for web/, relaunch on server/ and electron/ changes
-npm run dev:web    # browser mode, restarts the server when server/ changes
-```
 
 ## CLI
 
@@ -170,7 +170,7 @@ wisp btw <id> "did you do X?"     # ask on the side without interrupting the run
 wisp stop <id>
 wisp ship <id> [--draft]          # commit, push and open a PR for a worktree task
 wisp merge <id>                   # squash-merge its PR, fast-forward your local main
-wisp run release 0.49.0            # run a recipe; values fill its {params} (or version=0.49.0)
+wisp run release 0.50.0            # run a recipe; values fill its {params} (or version=0.50.0)
 wisp recipes                      # list recipes
 wisp usage [--days 7]             # spend and outcomes
 wisp computer on [--grid HOST]    # add this computer to your wisp Grid (signs in with a code first); off, or no word for its status
@@ -508,7 +508,7 @@ Before each turn, wisp snapshots the git working tree (pinned at `refs/wisp/chec
 Prepare release {version}: update CHANGELOG, README and docs/, bump package.json, tag v{version}.
 ```
 
-Make one from ⌘K → *Recipes*, or *Save as recipe…* on any card. A recipe may pin a project, harness, model and mode. Run it from ⌘K (*Run: Release*), from the Recipes view, or from a terminal: `wisp run release 0.49.0` fills the fields in order, `wisp run release version=0.49.0` by name.
+Make one from ⌘K → *Recipes*, or *Save as recipe…* on any card. A recipe may pin a project, harness, model and mode. Run it from ⌘K (*Run: Release*), from the Recipes view, or from a terminal: `wisp run release 0.50.0` fills the fields in order, `wisp run release version=0.50.0` by name.
 
 **Triggers** launch sessions on their own while wisp is open (⌘K → *Triggers*):
 

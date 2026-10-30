@@ -2,6 +2,8 @@
 
 <p align="center"><img src="assets/hero-pipeline.svg" alt="turbo-flow — the live pipeline: a builder's change travels past free deterministic checks, a reviewer from a different model family gates it, the verdict flips REVISE → APPROVED, and only a human merges" width="100%"></p>
 
+<p align="center"><sub>the whole kit in one picture: <a href="assets/turbo-flow-infographic.svg">full feature map</a> · <a href="assets/what-turbo-flow-can-do.svg">what it can do right now</a></sub></p>
+
 > **⚡ TURBO FLOW — THE RULES LAYER FOR AI-WRITTEN CODE.**
 > One product lives here: [`rig-lite/`](rig-lite/) — a portable governance kit. It ships no harness, installs nothing, and depends only on bash. Drop it into any repo and your agents get laws with teeth.
 
@@ -63,6 +65,10 @@ Recorded on the same Codespace: `tf help` shows every subcommand, `tf status` gi
 ```bash
 # one-liner (stages ./rig-lite from a pinned, checksum-verified release):
 curl -fsSL https://github.com/marcuspat/turbo-flow/raw/main/rig-lite/install.sh | bash
+
+# or from npm — same kit, no clone (pin the version; same posture as the sha-pinned tarball):
+npx turbo-flow@5.4.0 help
+npm i -g turbo-flow@5.4.0                        # installs `turbo-flow` — same subcommands as tf
 
 # from any repo you want to govern:
 bash /path/to/turbo-flow/rig-lite/init-repo.sh   # writes AGENTS.md + installs tf, never clobbers

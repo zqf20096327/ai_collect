@@ -26,7 +26,7 @@ An [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) server that 
   - [Robust MCP Server](#robust-mcp-server)
     - [Installation](#installation)
       - [Using pip](#using-pip)
-      - [Using mise and just (from source)](#using-mise-and-just-from-source)
+      - [Using uv (from source)](#using-uv-from-source)
       - [Using Docker](#using-docker)
     - [Configuration](#configuration)
       - [Environment Variables](#environment-variables)
@@ -90,8 +90,10 @@ An [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) server that 
 
 ## Installation Requirements / Dependencies
 
-- [FreeCAD](https://www.freecadweb.org/) 0.21+ or 1.0+
-- Python 3.11 (required for FreeCAD ABI compatibility)
+- [FreeCAD](https://www.freecad.org/) 1.1.4 or newer is recommended for security;
+  earlier versions have known vulnerabilities when opening untrusted files.
+- Python 3.11 or newer for the external server; embedded mode requires a Python
+  minor version matching FreeCAD's bundled Python.
 
 ---
 
@@ -114,24 +116,27 @@ This section covers installation and usage for end users who want to use the Rob
 
 ### Installation
 
+For the everyday setup, see the [Quick Start](https://spkane.github.io/freecad-addon-robust-mcp-server/latest/getting-started/quickstart/)
+for the server, workbench, pairing, and assistant configuration. The current
+stable 0.6.2 releases predate pairing; the pairing-capable stable workflow
+described there becomes available with the upcoming release.
+
 #### Using pip
 
 ```bash
 pip install freecad-robust-mcp
 ```
 
-#### Using mise and just (from source)
+#### Using uv (from source)
+
+Install [Git](https://git-scm.com/install/) and
+[uv](https://docs.astral.sh/uv/getting-started/installation/) first.
 
 ```bash
 git clone https://github.com/spkane/freecad-addon-robust-mcp-server.git
 cd freecad-addon-robust-mcp-server
 
-# Install mise via the Official mise installer script (if not already installed)
-curl https://mise.run | sh
-
-mise trust
-mise install
-just setup
+uv sync --all-extras
 ```
 
 #### Using Docker
@@ -526,7 +531,7 @@ This section covers development setup, contributing, and working with the codeba
 ### Prerequisites
 
 - [mise](https://mise.jdx.dev/) - Tool version manager
-- [FreeCAD](https://www.freecadweb.org/) 0.21+ or 1.0+
+- [FreeCAD](https://www.freecad.org/) 1.1.4 or newer is recommended for security.
 
 ### Initial Setup
 

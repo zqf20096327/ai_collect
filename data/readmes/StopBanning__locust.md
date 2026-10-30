@@ -200,7 +200,15 @@ server that is off until you turn it on, listens on 127.0.0.1 only, and starts
 turns in Ask mode unless you say otherwise. The Claude app is added in one
 press (a copy of its settings is kept first); Claude Code, Codex and OpenClaw
 get the command or config entry to paste. Through OpenClaw, your chat apps
-(WhatsApp, Telegram, iMessage, Slack) can ask the team too.
+(WhatsApp, Telegram, iMessage, Slack) can ask the team too. From anywhere,
+Claude on the web and Claude Duet add Locust as a custom connector at one
+address on Locust's relay: each app is let in only when you allow it on a card
+on your computer, which makes and checks its keys, and it can pick a model and
+effort for a turn but never a higher mode. An app can wait for a reply, stop a
+turn it started and, once you let it see your conversations, carry one whose
+plan ran out on to another agent. It reaches Locust only while Locust is
+running, so Keep it running leaves Locust in the tray when you close its window
+and starts it when you sign in.
 
 **Away from your computer.** Pair your phone once and it reaches Locust from
 any network through Locust's relay, every message locked on your own devices:

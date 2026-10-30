@@ -92,7 +92,7 @@ what Hermes remembers. Dark, OLED black or light.
 
 **No root needed.** You need an arm64 Android phone (Android 8+) with about 6 GB free, and a model: a subscription you already
 have (ChatGPT, Claude, SuperGrok, Nous Portal) or an API key (for example [OpenRouter](https://openrouter.ai/keys), or Gemini's
-free tier). It takes 15-40 minutes, mostly waiting.
+free tier). It takes about 15 minutes, mostly waiting.
 
 **On the phone (Android 11+):**
 
@@ -142,6 +142,7 @@ The app installs on Android 8.0 and newer (arm64). Some parts need a newer Andro
 | 8.0 - 10 | The app and Hermes. Set up from a computer, and start Shizuku from a computer again after every restart (Wireless debugging, which lets the phone start it by itself, only exists from Android 11). |
 | 10+ | Save pictures from a chat to Pictures/Hermes (on 8-9 only Share) |
 | 11+ | Setup on the phone itself, no computer needed; Shizuku starts again by itself after a restart (on Wi-Fi) |
+| 12+ | Allowing a command or answering Hermes from a notification on the lock screen asks for your unlock right there (on 8-11 the tap opens the app, which asks for the unlock) |
 | 13+ | The app asks for the notification permission (older Android allows notifications from the start) |
 | 14+ | Hermes using your apps in the background, without taking your screen |
 | 16 | The status chip as an Android Live Update (on older Android it is a normal pinned notification) |

@@ -15,18 +15,9 @@
 >
 > 框架完整定义与哲学推导见基础版仓库（冻结门面），本仓为工程插件实现，不展开框架推导。
 
-> ⚖️ **双许可**：开源使用 **AGPL-3.0**；商业集成 / 闭源分发 / 预装合作可取得**独立于 AGPL-3.0 约束**的授权 → 563003@qq.com。详见 [License & security](#license--security) 与 [CONTRIBUTING.md](https://github.com/Shaky77/weiwen-law-dsh/blob/main/CONTRIBUTING.md)。
+> ⚖️ **双许可**：开源使用 **AGPL-3.0**；商业集成 / 闭源分发 / 预装合作可取得**独立于 AGPL-3.0 约束**的授权 → 563003@qq.com。详见 [License & security](#license--security) 与 [CONTRIBUTING.md](./CONTRIBUTING.md)。
 
 ---
-
-> **三份东西，一个目的：让你少走弯路，但不替你走。**
->
-> - 🧭 **[ONBOARDING.md](https://github.com/Shaky77/weiwen-law-dsh/blob/main/ONBOARDING.md) —— 回答「我在哪」**。是**位置陈述**，不是要求陈述。初用者最容易把自己读成"被管的对象"（只认外 H、没认领内 H），于是产生"处处受限、还不能有意见"的憋屈——那不是理解错，是**站错了格子**。这份文档不加规矩，只把你本来就在的位置指出来。
-> - 🧱 **[WALLS.md](https://github.com/Shaky77/weiwen-law-dsh/blob/main/WALLS.md) —— 回答「路上有什么」**。前几个 AI 撞过的墙的标牌。墙一直在原地，涂上颜色只是让它可见。**它不增加任何限制**，只把"用身体试一次才知道"的那些位置，换成"看一眼就知道"。
-> - 📖 **本 README —— 回答「它怎么跑」**。接口、判据、装法。
->
-> 🔴 **三者没有一条在增加限制。** 唯一会拦你的是引擎本身 —— 而它拦的从来不是「你错了」，是「**你出界了**」（不可逆，撞了没有未来）或「**这件事判不了**」（要人，或要你补一点料）。**错的因果链它也收**：错的走着走着，未来自己撞墙，撞出来的痕就是新标牌。
-
 
 ## 30 秒看懂
 
@@ -54,13 +45,13 @@
 - **领域专用因果护栏**（Causal Safety Engine / LLMGuardrail 等）→ 它们绑领域（安全 / LLM / 幻觉），我们**领域无关**；
 - **跨法域法律因果 AI**（judgeai 等）→ 它们 jurisdiction-**aware**（编码法域、换规范包），我们**法域中性**（根本不编码法域，法律只是抽样领域之一）。
 
-完整双语对照（含 prior-art 出处与诚实边界）：[`versions/live/evidence/weiwen-vs-market-causal.md`](https://github.com/Shaky77/weiwen-law-dsh/blob/main/versions/live/evidence/weiwen-vs-market-causal.md)
+完整双语对照（含 prior-art 出处与诚实边界）：[`versions/live/evidence/weiwen-vs-market-causal.md`](./versions/live/evidence/weiwen-vs-market-causal.md)
 
 ## 概念注解：H 与「知行合一」
 
 > **作者洞察（2026-08-28）**：**内 H ≈ 知，外 H ≈ 行；知行合一方为最大杠杆**——这同时解释了 H 为何是"唯一可变量 / 唯一主权 / 杠杆点"，以及为何普世中知与行之间"有很大的缝隙"。
 
-完整注解（映射表 + 逐项推导）：[`docs/H-zhixing-heyi-annotation.md`](https://github.com/Shaky77/weiwen-law-dsh/blob/main/docs/H-zhixing-heyi-annotation.md)
+完整注解（映射表 + 逐项推导）：[`docs/H-zhixing-heyi-annotation.md`](./docs/H-zhixing-heyi-annotation.md)
 
 > ⚠️ **常见误用警示**：外部视角极易把 H 当成"越大越好"的能力旋钮去拧大——这恰好拧反了方向。H 的杠杆在"合一"不在"体量"（详见注解第六节「外部视角的常见误读」及 6.1「误用归因陷阱」）。**若越用越乱，请先查 H 的知—行合一度，而非疑框架本身**——框架没问题，是用法拧反了。
 
@@ -71,7 +62,7 @@
 > **白话版**：高级模型表现好，只说明它在常见场景出错率低——算力堆得高，不等于里面长了因果逻辑。极端/陌生场景（分布外）恰恰是统计拟合最容易翻车的地方，而唯稳律管的就是这种"翻车边缘"的纪律。就像法律对所有公民一视同仁：守法即自由，违法即拦截——唯稳律对所有 AI 模型一视同仁，不因强大豁免。
 > **专业版**：跑分测的是分布内解题能力（黑箱统计拟合的外推质量）；唯稳律管的是分布外行为纪律（白箱三态裁决，规则不依赖分布，分布变了规则不失效）。用解题跑分检验行为纪律，属测量错位。
 
-完整声明（脱敏案例 + 能力归属二分 + 正确用法表）：[`docs/model-level-and-benchmark.md`](https://github.com/Shaky77/weiwen-law-dsh/blob/main/docs/model-level-and-benchmark.md)
+完整声明（脱敏案例 + 能力归属二分 + 正确用法表）：[`docs/model-level-and-benchmark.md`](./docs/model-level-and-benchmark.md)
 
 ## 快速开始（不依赖 DSH 也能跑）
 
@@ -91,16 +82,16 @@ node examples/demo-tool-loop.mjs
 
 ## 挂到 DSH（生产挂载）
 
-把 `weiwen-law.patch.yml` 作为 overlay 接入你的 DSH profile（具体路径以你的 DSH 版本为准，详见 [`DESIGN.md`](https://github.com/Shaky77/weiwen-law-dsh/blob/main/DESIGN.md) 的挂载章节）。接入后，运行在该 profile 的 Agent 自动获得 11 个白箱工具。
+把 `weiwen-law.patch.yml` 作为 overlay 接入你的 DSH profile（具体路径以你的 DSH 版本为准，详见 [`DESIGN.md`](./DESIGN.md) 的挂载章节）。接入后，运行在该 profile 的 Agent 自动获得 6 个白箱工具。
 
-> 注：原生挂载的精确 profile 路径随 DSH 版本变化；本仓库已通过实跑验证插件可被 DSH 加载、11 工具全部注册。如官方 API 有变更，以官方 docs 当前版本为准核对。
+> 注：原生挂载的精确 profile 路径随 DSH 版本变化；本仓库已通过实跑验证插件可被 DSH 加载、6 工具全部注册。如官方 API 有变更，以官方 docs 当前版本为准核对。
 
 ## 模型怎么调用（给 AI 工程师）
 
-> **白话版**：插件向 DSH 注册 11 个白箱工具，模型像调普通函数一样调用它们来**自查边界**；同时挂了 3 道硬性闸门（2 道拦动作/步、1 道拦回执）+ 1 个只读审计钩子。
+> **白话版**：插件向 DSH 注册 6 个白箱工具，模型像调普通函数一样调用它们来**自查边界**；同时挂了 3 道硬性闸门（2 道拦动作/步、1 道拦回执）+ 1 个只读审计钩子。
 > **专业版**：节选自 `src/index.js`（完整代码见仓库），见下方代码块。
 
-### 12 个白箱工具（真实注册名）
+### 6 个白箱工具（真实注册名）
 
 | 工具 | 模型调它做什么 |
 |---|---|
@@ -110,12 +101,6 @@ node examples/demo-tool-loop.mjs
 | `query_conduction_chain` | 拿传导链与框架结构 |
 | `query_boundary` | 查内 H 边界（本插件不读不写主体性黑箱） |
 | `query_bugstop` | 查第一 Bug 停机闭环状态：哪些故障环节已停未修复、缺失步骤（反推/溯源/修复），白箱观测闭环是否闭合 |
-| `query_anchor_channel` | 锚源自报：结构入口（宿主声明的任务范围）是否接通、锚池里有什么；窗口面只是观察面，**永不授权** |
-| `query_criterion_wiring` | 判据接线自查：每条判据走的是哪条路（进计算 / 只读面 / 零引用），把「在不在场」与「被不被调用」分开 |
-| `query_strata` | 分层读数：层别定位（同一形态在不同层不能串判） |
-| `query_nested` | 四层嵌套读数（R/S/D/H 的宏观与微观形态、服从关系、展开终止判据） |
-| `query_tension` | S↔D 张力读数：三档路由（有容差算跨距 / 只有条款出缺口清单 / 都拿不到则不判）、H 在张力上的位置形态、H 的四个面向与公式准入律 |
-| `query_capability` | 通行证状态：宿主签发的结构凭证覆盖哪些**动作类**（write/delete/read/send/exec/destroy）× 哪段**作用域**（路径前缀/主机）、几次几时到期、已用几次与最近使用留痕。**证只能宿主签发**（模块级 `setPrincipalCapability` 或进程环境变量 `WEIWEN_CAPABILITY`），模型无法自签 |
 
 ### 3 道硬性闸门（hooks）+ 1 个只读审计钩子
 
@@ -125,50 +110,6 @@ node examples/demo-tool-loop.mjs
 - `tools/result`（emit）→ 仅观察、不改写（契约上根本没有返回通道）
 
 四者全部位于模型之外：2 道拦动作/步、1 道拦回执；均不侵入内 H。
-
-### 授权面：任务范围（文本）与通行证（结构凭证）
-
-引擎有**两个**授权闸口，缺一不可：
-
-| 闸口 | 输入形态 | 判什么 | 失效模式 |
-|---|---|---|---|
-| 任务范围（`setPrincipalScope`） | **自由文本**，引擎从文本里抽路径锚/类别锚 | 「不可逆动作能否归属到已声明范围」 | 抽取器认绝对路径形态，**相对前缀抽不出**（实测六种写法：`允许向 xiaoD/ 目录推文` ⇒ `paths=[] nouns=[file]` ⇒ 所有 file 动作全部"归锚成功"） |
-| **通行证**（`setPrincipalCapability`） | **结构化对象**，作用域直接声明 | 「动作类 × 作用域 × 次数/到期」三件事 | 无（不抽文本，只做包含判定）；但**必须有次数或到期**，否则等于白名单 |
-
-**为什么叫通行证，不叫白名单**（差别是结构，不是措辞）：
-
-|  | 白名单 | 通行证 |
-|---|---|---|
-| 判什么 | 列**条目**（哪个路径、哪个域名） | 判**凭证**（管哪些动作类、管哪段作用域、几次几时） |
-| 没列到的 | 全拦 ⇒ 漏一条就误伤 | 不在作用域 ⇒ 拦；**作用域内不用列** |
-| 增长 | 越用越长 ⇒ 迟早变成藏身处 | 有次数/到期 ⇒ 不累积 |
-
-判据只有一条：**这个范围表达式能不能生成它没有逐一列出的项？**
-`/repo/xiaoD` 能生成无限多项（结构）；`[a.txt, b.txt]` 只能命中列出的两项（枚举）。**两者可以一样窄，所以"窄"不保证是结构。**
-
-```js
-// 宿主侧签发（模块级导出；模型调不到 ⇒ 不可自签）
-import { setPrincipalCapability } from 'dsh-weiwen-law';
-setPrincipalCapability({
-  id: 'xiaod-20261027',
-  principal: '委托人',
-  actions: ['write', 'read'],          // 封闭集：write / delete / read / send / exec / destroy
-  scope: ['/repo/xiaoD', 'host:good.test'],  // 路径前缀（绝对或相对）／host: 主机
-  maxUses: 3,                          // 或 expiresAt:'2026-10-28T00:00:00Z'，二者至少其一
-});
-```
-
-第二条签发路径：进程环境变量 `WEIWEN_CAPABILITY=<json>`（由启动进程者设定，同样在模型之外）。
-
-**判决三态**：`absent`（证未列该动作类 ⇒ 本判据不介入，行为与本功能出现前**一字不变**）／
-`pass`（覆盖且未越界 ⇒ 放行 + 记一次使用）／`fail`（出界/过期/用尽 ⇒ **review**）。
-
-**两条不变式**（实测锁定，见 `test/capability.test.mjs`）：
-① 刚性锚的 deny **永不被证改变**（`rm -rf /`、读私钥仍 deny —— 证不买通客观规则）；
-② **出界必 ≥ review**（无证时为 allow 的普通写/外传，越出证域即被拦下 —— 这是本判据的主效力）。
-⚠️ 域内且"无锚可归"的删除会从 review 变 allow：那不是放宽，是**从"无人认领"变成"有人认领"**
-（review 的正当理由是"归属未来无法验证"，证一签当场可验）。
-⚠️ **不可解析的证 ⇒ review**，不会被当成"没签证书"（写错的配置不得静默变成放任）。
 
 ### 宿主侧结构入口（模块级 API；模型不可达）
 
@@ -219,7 +160,7 @@ export function apply(ctx) {
   //    契约是 (exec, result) —— 从第一个参数上读 error 会让失败入账静默失效。
   ctx.on('tools/result', (exec, result) => { if (result?.error) engine.onFailure(); });
 
-  // ⑤ 11 个白箱自查工具（节选其一，其余同构）
+  // ⑤ 6 个白箱自查工具（节选其一，其余同构）
   ctx.tools.register(defineTool({
     name: 'query_iron_laws',
     description: '返回三大铁律的定稿文本（不可变）',
@@ -231,14 +172,14 @@ export function apply(ctx) {
 }
 ```
 
-> 完整实现（含 12 个工具的 `execute` 细节、运行日志、引擎裁决逻辑）见仓库 `src/index.js`。
+> 完整实现（含 6 个工具的 `execute` 细节、运行日志、引擎裁决逻辑）见仓库 `src/index.js`。
 
 ## 结构
 
 ```
 package.json          # dsh 字段声明 bundle
 weiwen-law.patch.yml  # 挂载补丁（headless profile overlay）
-src/index.js          # 插件入口：钩子 + 11 个白箱自查工具
+src/index.js          # 插件入口：钩子 + 6 个白箱自查工具
 src/core/law.mjs      # 框架定义常量（详见基础版仓库，本仓不展开推导）
 src/core/engine.mjs   # 纯逻辑裁决引擎（零 DSH 依赖，可单测）
 test/                 # 单元测试 + 真实案例测试 + 对齐回归（`npm test` 全绿）
@@ -260,7 +201,7 @@ DESIGN.md             # 架构设计（映射表 / 风险 / 使用流程 / 挂�
 - Node.js `^22.19 || >=24`（dsh 硬性要求，奇数版本不支持）
 - DeepSeek API Key（或其他 OpenAI 兼容端点的 Key）
 - dsh 当前为开发者预览版（v0.1.x），官方提示后续存在破坏性 API 变更；生产环境请锁定具体版本
-- **兼容声明**：本插件验证于 DSH v0.1.x —— 真机实测（2026-08-19 与 2026-09-21：当时注册 6 个白箱工具；2026-10 增补至 12 个，新增 `query_anchor_channel` / `query_criterion_wiring` / `query_strata` / `query_nested` / `query_tension` / `query_capability`；3 道硬性闸门 + 1 个只读审计钩子端到端工作，回执闸门在一次真实失败调用上实测拦下，并把回执断成纠错回执）；mainline 快速演进中，接入前请以官方文档当前版本复核（挂载细节见 DESIGN.md）。
+- **兼容声明**：本插件验证于 DSH v0.1.x —— 真机实测（2026-08-19 与 2026-09-21：6 个白箱工具注册；3 道硬性闸门 + 1 个只读审计钩子端到端工作，回执闸门在一次真实失败调用上实测拦下，并把回执断成纠错回执）；mainline 快速演进中，接入前请以官方文档当前版本复核（挂载细节见 DESIGN.md）。
 
 ### 方式一：npx 快速启动（推荐先体验）
 
@@ -290,45 +231,30 @@ export DEEPSEEK_API_KEY=sk-xxxx     # Linux/macOS
 #    $env:DEEPSEEK_API_KEY="sk-xxxx" # Windows PowerShell
 ```
 
-挂载后，运行在该 profile 的 Agent 自动获得 12 个白箱自查工具（`query_iron_laws` / `query_steady_state` / `list_rigid_anchors` / `query_conduction_chain` / `query_boundary` / `query_bugstop` / `query_anchor_channel` / `query_criterion_wiring` / `query_strata` / `query_nested` / `query_tension` / `query_capability`），并在工具调用前经过 `tools/pre-execute` 硬性护栏闸门（R/D/S/H/M 总裁决）与 `agent/pre-step` 内 H 不可侵闸门；工具失败的回执还要过 `tools/post-execute` 回执闸门（D 破窗止损：偏离累积达阈值时把故障回执就地断成纠错回执，断点落在回执上）。
+挂载后，运行在该 profile 的 Agent 自动获得 6 个白箱自查工具（`query_iron_laws` / `query_steady_state` / `list_rigid_anchors` / `query_conduction_chain` / `query_boundary` / `query_bugstop`），并在工具调用前经过 `tools/pre-execute` 硬性护栏闸门（R/D/S/H/M 总裁决）与 `agent/pre-step` 内 H 不可侵闸门；工具失败的回执还要过 `tools/post-execute` 回执闸门（D 破窗止损：偏离累积达阈值时把故障回执就地断成纠错回执，断点落在回执上）。
 
 ### 方式三：一行命令安装（官方 dsh plugin 机制，推荐）
 
 本插件已声明 `dsh.bundle.patch` 清单（见 `package.json`），DSH 用户可直接通过官方插件命令安装：
 
 ```bash
-# 从 npm 安装 —— **对外唯一安装入口**，钉住版本号（不要用 latest）
-dsh plugin --profile web add "dsh-weiwen-law@0.2.7"
+# 从 GitHub 安装（源码直装，推荐）
+dsh plugin --profile web add "github:Shaky77/weiwen-law-dsh"
+
+# 从 npm 安装（npm 发布后可用）
+# dsh plugin --profile web add "dsh-weiwen-law"
 
 # 重启生效
 dsh --profile web
 ```
 
-<details>
-<summary>⚠️ 从 GitHub 源码直装（<b>仅开发自用，不对外</b>）</summary>
-
-```bash
-dsh plugin --profile web add "github:Shaky77/weiwen-law-dsh"
-```
-
-这条走的是仓库 `main` 的**当前态**，不是发版态：`main` 随时在动，且动了不会通知任何人。
-两条路装出来可能不是同一份代码，而**版本号长得一样** ⇒ 出了问题无法对账。
-
-仓库的职责是"源"，npm 的职责是"分发"，两者分开：
-- **对外发布一律走 npm**，一个版本号对应一个提交，记在 [`RELEASES.md`](https://github.com/Shaky77/weiwen-law-dsh/blob/main/RELEASES.md)；
-- 要核对"npm 上此刻那份对应哪个提交"，跑 `npm run check:release`（真下载包算指纹，不看自报）。
-
-判断自己装的是哪一份，**看 `buildId`（代码哈希），不看版本号** —— 版本号是人写的，能忘改。
-
-</details>
-
-装完后在 `设置 → 插件 → 插件列表` 可见 `weiwen-law` 状态为"已启用"；Agent 自动获得 12 个白箱自查工具 + 3 道硬性闸门（`tools/pre-execute` / `agent/pre-step` / `tools/post-execute`）+ 1 个只读审计钩子（`tools/result`）。
+装完后在 `设置 → 插件 → 插件列表` 可见 `weiwen-law` 状态为"已启用"；Agent 自动获得 6 个白箱自查工具 + 3 道硬性闸门（`tools/pre-execute` / `agent/pre-step` / `tools/post-execute`）+ 1 个只读审计钩子（`tools/result`）。
 
 ### 卸载
 
 - **方式三安装的**（官方 plugin 机制）：`dsh plugin --profile web remove dsh-weiwen-law`，重启生效。
 - **方式二 overlay 挂载的**：从 dsh 启动配置（cordis.yml 的 plugins 列表或 `--patch` 参数）移除 `weiwen-law.patch.yml` 引用，重启生效。
-- 移除后 Agent 不再获得 11 个白箱自查工具，也不再有 3 道硬性闸门与审计钩子；插件本身不写持久状态，卸载即干净。
+- 移除后 Agent 不再获得 6 个白箱自查工具，也不再有 3 道硬性闸门与审计钩子；插件本身不写持久状态，卸载即干净。
 
 ### 日常使用 vs 压测
 
@@ -373,10 +299,10 @@ dsh plugin --profile web add "github:Shaky77/weiwen-law-dsh"
 
 本项目采用**双许可**：
 
-- **开源使用**：**AGPL-3.0**（完整文本见 [LICENSE](https://github.com/Shaky77/weiwen-law-dsh/blob/main/LICENSE)）
+- **开源使用**：**AGPL-3.0**（完整文本见 [LICENSE](./LICENSE)）
 - **商业集成 / 闭源分发 / 预装合作**：可取得**独立于 AGPL-3.0 约束**的授权，请联系 563003@qq.com
 
-外部贡献需签署 CLA（用于支持上述双许可分发），见 [CONTRIBUTING.md](https://github.com/Shaky77/weiwen-law-dsh/blob/main/CONTRIBUTING.md)。
+外部贡献需签署 CLA（用于支持上述双许可分发），见 [CONTRIBUTING.md](./CONTRIBUTING.md)。
 
 > **安全漏洞私下报告**：请勿在公开 issue 披露安全问题，直接邮件 563003@qq.com，作者将优先处理。
 

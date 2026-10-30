@@ -12,6 +12,8 @@
 <p align="center">
   <a href="#install">Install</a> ·
   <a href="#your-agents-working-as-a-team">Agents as a team</a> ·
+  <a href="#work-more-than-code">Work</a> ·
+  <a href="#crew-ai-teammates-that-keep-going">Crew</a> ·
   <a href="#features">Features</a> ·
   <a href="#automations">Automations</a> ·
   <a href="#privacy">Privacy</a> ·
@@ -34,7 +36,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/assets/hero.png" alt="Friday's home screen: four sessions and nine agents at work, Claude Code and Codex side by side in the sidebar and under Right now" width="960" />
+  <img src="docs/assets/hero.png" alt="Friday's home screen: five sessions and ten agents at work, Claude Code and Codex side by side in the sidebar and under Right now" width="960" />
 </p>
 
 Works with the subscriptions you already have. If a coding tool is installed and signed in on your computer, Friday can drive it:
@@ -79,9 +81,31 @@ An agent you add to a session can work in its own copy of the repository, so thr
 </tr>
 </table>
 
+## Work: more than code
+
+Pick **Work** in the sidebar for everything that isn't software: a week of posts, a thread from a video, a script, a newsletter, a research brief, a deck, a cover image. Claude Code and Codex work on it together in one folder, and the session's rail keeps what they make in view: **Progress**, the **Outputs** (documents open in a reader, pictures and videos play in place), the **Sources** they read, numbered, and the **Connectors** they can use. In the desktop app the agents browse in Friday's own browser panel while you watch, or in your own Chrome with Claude in Chrome.
+
+<p align="center">
+  <img src="docs/assets/work.png" alt="A Work session for a checkout launch: the cover image Claude Code made, Codex planning a week of posts, and the rail with progress at 3 of 5 and four outputs" width="960" />
+</p>
+
+## Crew: AI teammates that keep going
+
+Pick **Crew** to keep AI teammates on your computer. Each has a name, a role, a memory and a folder of its own, and runs on one of your coding tools. Give the crew a goal and the lead plans it, hands out the parts on a board and tells you what got done; or `@` a teammate to give it a task yourself.
+
+- **Rooms** for a project, with the teammates you pick, and side threads on any message.
+- **Away until a time:** teammates decide for themselves and note what they assumed, and a brief is waiting when you're back. The desktop app keeps your computer awake while there's work in hand, so leave it on power.
+- **Usage limits handled:** a teammate whose tool runs out carries on with its backup tool, and switches back at the reset.
+- **Access you set** per teammate (Read only, Ask before changes, Full access), and Stop all or Pause whenever you like.
+- **Workflows:** a crew's automations drawn as steps, each run posting a board in a room.
+
+<p align="center">
+  <img src="docs/assets/crew.png" alt="The Crew room: Maya gives the crew a goal, Nova the lead plans it and posts a board, Kit has fixed the bugs and Nova is checking them, and Juno is writing the release notes" width="960" />
+</p>
+
 ## "So what's the catch?"
 
-There isn't one. Friday on your own computer is free and MIT licensed. It has no account, no server of ours, and no model of its own: the work runs on your coding tools, on their own plans, and nothing comes back to us.
+There isn't one. Friday on your own computer is free and MIT licensed. It has no account, no server of ours, and no model of its own: the work runs on your coding tools, on their own plans. The only thing that comes back to us is a few anonymous usage counts, listed under [Privacy](#privacy), and you can turn them off.
 
 What we sell is [Friday Team](https://www.tryfridaywork.com), the hosted version, for when several people work in the same session: steering one agent together, reviewing each other's changes, and sharing what the agents did.
 
@@ -207,6 +231,30 @@ Hand your coding tools the jobs that come round again. An automation reads like 
   <img src="docs/assets/automations.png" alt="The Automations page: a webhook that triages new issues, a weekday flaky-test sweep with Claude Code leading Codex, and a nightly dependency bump with Codex" width="960" />
 </p>
 
+## Let other agents use Friday
+
+Friday is also a place your other agents hand work to. Claude Code, Codex, Cursor, or anything else that speaks MCP, on the same computer, can start Friday sessions, tell their agents what to do, wait for them, read what they did and answer what they ask. Each session shows which agent started it and what it said.
+
+Open **Settings › Let other agents use Friday** for the line for each agent, with Copy, and Add for Claude Code and Codex, which runs that agent's own `mcp add` in a Terminal window. For Claude Code it looks like this:
+
+```sh
+claude mcp add friday --scope user -- node ~/.friday/outside-mcp.mjs
+```
+
+or, from a clone or with npx, `claude mcp add friday --scope user -- npx -y github:splashxmoon/friday mcp`. Friday has to be open for the tools to work. Then ask your agent to hand something to Friday.
+
+| Tool | What it does |
+| --- | --- |
+| `list_sessions` | Your sessions, latest first, with their agents and anything waiting on you |
+| `start_session` | A new Code or Work session with a task, in a folder or repo (its own copy, unless asked), on a coding tool you name or the one Friday picks (`auto`) |
+| `send_message` | Tell an agent in a session something, or leave a note for the people in it |
+| `read_session` | Each agent's status, what is waiting on you, and the latest messages |
+| `wait_for_idle` | Wait until the agents are done or one needs you, with a timeout |
+| `answer` | Yes or no to a permission request, or an answer to a question |
+| `list_teammates`, `ask_teammate` | Your Crew, and a question for one of them |
+
+Only agents on this computer, running as you, can use it. Friday still listens on `127.0.0.1` only; each call carries a key kept in Friday's own folder (`outside-token`, readable by you alone), which the script reads when it calls, so the key never goes into the agent's own settings. A web page can't use it either: Friday turns away any request a page sends.
+
 ## And everything else you'd expect
 
 - **Friday Code**, Friday's own agent, on a model of yours: an API key from OpenAI, Anthropic, Google and others, or a model on your computer with Ollama or LM Studio, added in Settings › Your models.
@@ -223,7 +271,17 @@ Hand your coding tools the jobs that come round again. An automation reads like 
 
 Friday listens on `127.0.0.1` only, so nothing else on your network can reach it, and it answers only its own page: a request from any other site, or from a page being previewed, is refused. What it keeps is one folder on your computer, readable only by you.
 
-It sends nothing to us: no account, no analytics, no telemetry. It talks to GitHub for the pull requests, issues and skills you ask it about. Each tool's remaining usage comes from the tool itself wherever it can: Claude Code's from what it reports as it runs (its sign-in is never read), Codex's from its own app server, Copilot's through your GitHub CLI. Cursor keeps none on your computer, so Friday makes the request Cursor's own CLI makes, to Cursor's server and nowhere else. Friday never switches the account a tool is signed in with. A model you add in Settings › Your models is called from your computer, and its key is kept there and sent only to that model's own server. The desktop app also asks GitHub for a newer release while it's open (when it starts, when you come back to it, and every ten minutes), downloads it from there, and installs it when you restart (`FRIDAY_NO_UPDATE_CHECK=1` turns that off).
+It has no account, and your code, prompts and files never come to us. What it does send is a few anonymous usage counts, so we can see whether people get Friday working and keep using it. Every one of them goes to [PostHog](https://posthog.com) over HTTPS, with IP-based location and person profiles turned off; a send that fails is dropped. The code is all in [`src/usage.ts`](src/usage.ts).
+
+- A random id made on your computer for this install, tied to nothing else.
+- Friday's version, your system (macOS, Windows or Linux) and its architecture, and whether it's the desktop app.
+- Once a day you open it: that you did, the names of the coding tools it found, and how many are signed in.
+- Each session started, and whether it's a Code, Work or Crew one.
+- Once each: the first time a coding tool is ready, and the first time an agent finishes a turn.
+
+Never: prompts, code, file names or paths, repository names, email addresses, accounts or sign-ins, or anything a tool writes. Friday tells you about the counts the first time it opens, and sends nothing before that. To turn them off, use Settings › Data & backup › Share anonymous usage, or set `FRIDAY_NO_TELEMETRY=1` or `DO_NOT_TRACK=1` where Friday runs.
+
+It talks to GitHub for the pull requests, issues and skills you ask it about. Each tool's remaining usage comes from the tool itself wherever it can: Claude Code's from what it reports as it runs (its sign-in is never read), Codex's from its own app server, Copilot's through your GitHub CLI. Cursor keeps none on your computer, so Friday makes the request Cursor's own CLI makes, to Cursor's server and nowhere else. Friday never switches the account a tool is signed in with. A model you add in Settings › Your models is called from your computer, and its key is kept there and sent only to that model's own server. The desktop app also asks GitHub for a newer release while it's open (when it starts, when you come back to it, and every ten minutes), downloads it from there, and installs it when you restart (`FRIDAY_NO_UPDATE_CHECK=1` turns that off).
 
 ## Developing
 
@@ -261,7 +319,7 @@ Its task goes to the agent best placed to finish it, with its notes, files and p
 Yes: an [automation](#automations) starts a coding tool on a schedule, from a webhook, or when another session finishes, and opens a pull request for you to review. Friday has to be running for it to start; you choose whether a run missed while the computer was off happens when it's back.
 
 **Does my code leave my computer?**
-Not through Friday. It runs on `127.0.0.1` with no account and no server of ours; your coding tools talk to their own providers as they always do.
+Not through Friday. It runs on `127.0.0.1` with no account and no server of ours; your coding tools talk to their own providers as they always do. The only things Friday sends us are the anonymous usage counts under [Privacy](#privacy), which never include code, and you can turn them off.
 
 ---
 

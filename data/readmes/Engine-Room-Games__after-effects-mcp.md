@@ -16,7 +16,7 @@ Describe the animation you want — a lower third, a logo reveal, an animated co
 [![MCP](https://img.shields.io/badge/MCP-server-000000)](https://modelcontextprotocol.io)
 [![Sponsor](https://img.shields.io/badge/sponsor-%E2%9D%A4-db61a2?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/migus88)
 
-Works with **Claude**, **Cursor**, **VS Code**, **Codex**, **Windsurf** and any other MCP client.
+Works with **Claude Desktop**, **Claude Code**, **Cursor**, **VS Code**, **Codex**, **Windsurf** and any other local MCP client.
 
 </div>
 
@@ -66,6 +66,8 @@ Six scenes from one quarterly-report sequence, each in a different visual style.
 Three steps, and you only do the first two once.
 
 **You'll need:** After Effects on macOS or Windows. It has been tested on After Effects 2026. The scripting it relies on has been in After Effects since 2022, and the panel is set to accept 2022 or later, but those older versions haven't been tested yet.
+
+**Your AI app has to start the tools on the same computer as After Effects.** The tools talk to After Effects directly on your machine, so they work in any app that can run an MCP server locally: Claude Desktop, Claude Code, Cursor, VS Code, Codex, Windsurf and the like. ChatGPT, on the web or in its app, and Claude in a web browser (claude.ai) can't use them — they connect only to tools hosted on the internet, which have no way to reach the After Effects on your computer.
 
 ### 1️⃣ Install
 
@@ -222,6 +224,38 @@ Reopen After Effects and it's running the new version.
 
 If you forget the second step, nothing breaks silently: the next thing you ask for stops with a plain explanation, and your assistant walks you through it.
 
+**On the Claude Code plugin**, update the plugin itself as well — that is what brings the new skills and slash commands:
+
+```
+/plugin marketplace update engine-room
+/plugin update after-effects@engine-room
+```
+
+Then restart Claude Code, and do step 2 above.
+
+**Then catch your project notes up.** Earlier sessions may have written workarounds into your project folder — in `AGENTS.md` or `CLAUDE.md`, or in the issue notebook — that the new version makes unnecessary. In the project folder, run `/absorb-release` (that's its name in Claude Code; other clients that support MCP prompts list it as `absorb-release` in their own prompt menu): it reads what changed since that folder last caught up, fixes the notes that went stale, and records the version so the same history is never read twice.
+
+---
+
+## 🗑️ Uninstalling
+
+Quit After Effects first, then remove whichever pieces you have.
+
+1. **The tools.** Claude Desktop: remove the After Effects extension in Settings → Extensions. Claude Code plugin: `/plugin uninstall after-effects@engine-room`. Anywhere else: delete the `after-effects` entry from your client's MCP configuration (and the unzipped folder, if you used the standalone download).
+2. **The panel.** Delete the folder `games.engine-room.ae-mcp` from the CEP extensions folder:
+   - macOS: `~/Library/Application Support/Adobe/CEP/extensions/games.engine-room.ae-mcp`
+   - Windows: `%APPDATA%\Adobe\CEP\extensions\games.engine-room.ae-mcp`
+3. **The small files it keeps in your user folder.** `~/.engineroom-ae-mcp` holds the panel's port, its secret key and, if you ever created one, a `config.json` with port settings; `~/.ae-mcp` and `~/.after-effects-mcp` hold issue notes, if any were written there. All three are safe to delete. Notes kept inside a project live in that project's `.ae-mcp` folder.
+4. **Adobe's debug setting** — only if nothing else you use needs it. Setup turned on `PlayerDebugMode` (and CEP logging) for CEP versions 9 to 12. Other unsigned Adobe panels rely on the same setting, so leave it on if you have any. To turn it off:
+   - macOS: `for v in 9 10 11 12; do defaults delete com.adobe.CSXS.$v PlayerDebugMode; done`
+   - Windows (Command Prompt): `for %v in (9 10 11 12) do reg delete HKCU\Software\Adobe\CSXS.%v /v PlayerDebugMode /f`
+
+   Setup only turned CEP logging on where it had never been set, so unless you set a log level yourself, remove that too:
+   - macOS: `for v in 9 10 11 12; do defaults delete com.adobe.CSXS.$v LogLevel; done`
+   - Windows (Command Prompt): `for %v in (9 10 11 12) do reg delete HKCU\Software\Adobe\CSXS.%v /v LogLevel /f`
+
+Your `house-style.md` files and project folders are yours and are never touched.
+
 ---
 
 ## 🔒 Security and privacy
@@ -235,7 +269,7 @@ If you forget the second step, nothing breaks silently: the next thing you ask f
 | Switch | What it does |
 |---|---|
 | **Read-only mode** | Your assistant can look at your project — list comps and layers, read keyframes, take screenshots — but every tool that changes something is removed. It can explain and review your work, not touch it. |
-| **Turn off running scripts** | Removes `run_jsx`, the tool that lets your assistant write and run its own After Effects scripts. Everything else still works; a few things no other tool covers (like the render queue) become impossible. |
+| **Turn off running scripts** | Removes `run_jsx`, the tool that lets your assistant write and run its own After Effects scripts. Everything else still works, rendering included; only jobs no other tool covers (like replacing or relinking footage) become impossible. |
 
 A switched-off tool isn't hidden behind a "no" — it simply isn't there, so your assistant won't try to use it, and will tell you when a request needs it.
 
@@ -272,7 +306,7 @@ These switches limit what your assistant can do through this connection. They do
 ---
 
 <details>
-<summary><b>🧰 All 84 tools</b></summary>
+<summary><b>🧰 All 89 tools</b></summary>
 
 <br>
 
@@ -281,7 +315,7 @@ These switches limit what your assistant can do through this connection. They do
 | Comps (14) | `list_comps`, `get_comp`, `get_comp_tree`, `create_comp`, `set_comp`, `delete_comp`, `set_active_comp`, `duplicate_comp`, `snapshot_comp`, `diff_comp`, `checkpoint_comp`, `list_checkpoints`, `revert_comp`, `delete_checkpoints` |
 | Layers (15) | `list_layers`, `get_layer_full`, `create_{text,shape,solid,null,adjustment,precomp,camera,light}_layer`, `duplicate_layer`, `delete_layer`, `set_layer`, `parent_layer`, `reorder_layer` |
 | Transforms (1) | `set_transform` — position, scale, rotation, anchor, opacity; 2D and 3D; optionally keyframed |
-| Keyframes (6) | `add_keyframe`, `remove_keyframe`, `get_keyframes`, `set_interpolation`, `set_temporal_ease`, `set_spatial_tangents` |
+| Keyframes (8) | `add_keyframe`, `remove_keyframe`, `get_keyframes`, `set_interpolation`, `set_temporal_ease`, `set_spatial_tangents`, `retime_keyframes`, `copy_animation` |
 | Expressions (4) | `get_expression`, `set_expression`, `toggle_expression`, `clear_expression` |
 | Effects (6) | `list_effects`, `add_effect`, `remove_effect`, `set_effect_param`, `set_effect_enabled`, `list_available_effects` |
 | Text (2) | `set_text`, `add_text_animator` |
@@ -292,11 +326,11 @@ These switches limit what your assistant can do through this connection. They do
 | Batch (1) | `run_batch` |
 | Footage (3) | `import_footage`, `create_footage_layer`, `purge_unused_footage` — remove the solids (or any footage) no comp uses, with a dry run |
 | Audio (1) | `place_audio_cues` — a whole cue list placed as one undo step |
-| Motion Graphics (1) | `export_mogrt` — export a comp as a `.mogrt` template for Premiere |
+| Motion Graphics (2) | `add_essential_property`, `export_mogrt` — fill the Essential Graphics panel, then export a comp as a `.mogrt` template for Premiere |
 | Render queue (4) | `add_to_render_queue`, `list_render_queue`, `remove_render_item`, `render_queue` — render in the background, with progress and cancel |
-| Explore (2) | `get_project_summary`, `find_layers` |
+| Explore (3) | `get_project_summary`, `find_layers`, `get_selection` — what the user has selected and where the playhead is |
 | Raw (1) | `run_jsx` |
-| House style (2) | `get_house_style`, `set_house_style` |
+| House style (3) | `get_house_style`, `set_house_style`, `analyze_motion` — read the eases, timings and staggers of comps already animated, for the style guide |
 | Jobs (3) | `await_job`, `get_job`, `cancel_job` |
 | Setup (3) | `check_setup`, `setup_panel`, `init_project` |
 | Guidance (1) | `ae_guide` |
@@ -328,8 +362,9 @@ Start here: **ask your assistant to check the After Effects setup.** It reports 
 | "Cannot reach the After Effects panel" | After Effects isn't running, or the panel isn't installed. Ask it to set up After Effects; if AE was closed, just open it afterwards. |
 | "The panel did not answer within …s" | Not the same thing. After Effects is busy — usually a long script, or a dialog waiting for a click behind another window. Close any dialog, wait a minute and check again before restarting anything; the work normally finishes on its own, so don't ask for it again. |
 | "The After Effects panel is out of date" | The tools were updated but the panel wasn't. Ask it to update the panel, then restart AE. |
+| "…refused this call: the bridge token did not match" | Not a lost connection — the panel answered and turned the request away, and nothing in your project changed. Usually an old panel from a previous After Effects session is still holding on. Quit After Effects completely and reopen it. If it keeps happening, look for a leftover `CEPHtmlEngine` in Activity Monitor or Task Manager and end it. If the message says no token file was found, your client may be running the tools as a different user or in a sandbox; the panel's log (below) shows where it wrote it. Asking for the same thing again, or reinstalling the panel, won't help. |
 | "…updated on disk, but After Effects is still running the previous version" | The update landed; AE just hasn't restarted. Quit and reopen it. Updating again won't help. |
-| Panel never loads, but setup looks correct | On macOS, reboot once. Some builds cache the Adobe setting until a restart. |
+| Panel never loads, but setup looks correct | Ask it to check the setup again — it reads Adobe's own log and says whether the panel's signature was refused. With an unsigned (development) panel on macOS, reboot once: some builds cache the Adobe setting until a restart. |
 | A panel answers, but the setup check reports none installed | An older install is still serving. Remove it from the CEP extensions folder, reinstall, restart AE. |
 | "No project folder to write to" | Your client didn't tell the server where it's working. Say which folder you want. |
 | Style guide can't be saved | The After Effects project has never been saved. Save it, then try again. |
@@ -373,7 +408,7 @@ macOS is the more exercised of the two; [issue reports](https://github.com/Engin
 
 **Limitations.**
 
-- The After Effects panel is unsigned, so loading it requires Adobe's `PlayerDebugMode`, which the setup step enables. This is Adobe's documented path for unsigned extensions.
+- The After Effects panel in each release is signed with a self-signed certificate, so After Effects loads it without Adobe's `PlayerDebugMode`. Setup still turns that setting on, as a fallback in case Adobe's signature check misbehaves on your machine. It applies to your whole user account, not just this panel: with it on, Adobe apps load *any* unsigned panel placed in your CEP extensions folder without checking its signature. The Uninstalling section above says how to turn it off; the signed panel keeps working without it. A panel installed from a git checkout is unsigned and does need it.
 - `saveFrameToPng` is community-known rather than officially documented. It works, but alpha edges can be imperfect on some comps.
 - A long synchronous loop in `run_jsx` will freeze the After Effects UI. Use `run_batch` for bulk work.
 - Not covered: replacing or relinking footage (importing it is covered), and application preferences.

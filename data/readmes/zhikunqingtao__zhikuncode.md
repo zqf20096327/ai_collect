@@ -124,6 +124,65 @@ a37117559e5804f8de0a5b66b19b2679262050cbdd25398d5a64d7aab9c1a26b
 
 **自己试试：[本地部署](#quickstart) · [完成首次任务](#first-task)**
 
+<a id="mobile-edition"></a>
+### ZhikunCode 手机部署版本（zkcode）
+
+zkcode 是 ZhikunCode 的手机部署版本。四段真实操作录像展示手机日历与照片、钉钉协作、短信发送与拨号，以及携程、淘宝和京东网页中的查询、筛选与人工接管。
+
+**[打开完整展示页 →](https://zhikunqingtao.github.io/zhikuncode/case-studies/assets/zkcode-mobile-20261031/%E5%BC%80%E5%A7%8B%E9%98%85%E8%AF%BB.html)** · **[下载离线展示包（ZIP，35.6 MiB）→](https://zhikunqingtao.github.io/zhikuncode/case-studies/assets/zkcode-mobile-20261031/%E8%84%B1%E6%95%8F%E5%B1%95%E7%A4%BA%E7%89%88.zip)**
+
+点击封面查看对应演示，点击时间点定位到视频片段。四段录像共约 **25 分 43 秒**，均为静音版。
+
+<table>
+<tr>
+<td width="50%" valign="top">
+<strong>01 · 日历、照片与钉钉协作</strong><br>
+<a href="https://zhikunqingtao.github.io/zhikuncode/case-studies/assets/zkcode-mobile-20261031/%E5%BC%80%E5%A7%8B%E9%98%85%E8%AF%BB.html#dws-calendar-files"><img src="docs/case-studies/assets/zkcode-mobile-20261031/video-dws-calendar-files-poster.jpg" width="200" alt="日历、照片与钉钉协作"></a><br>
+<a href="https://zhikunqingtao.github.io/zhikuncode/case-studies/assets/zkcode-mobile-20261031/%E8%A7%86%E9%A2%91/01-%E6%89%8B%E6%9C%BA%E6%97%A5%E5%8E%86%E4%B8%8EDWS-%E8%84%B1%E6%95%8F.mp4">播放完整视频 · 11:51</a>
+<p><a href="https://zhikunqingtao.github.io/zhikuncode/case-studies/assets/zkcode-mobile-20261031/%E8%A7%86%E9%A2%91/01-%E6%89%8B%E6%9C%BA%E6%97%A5%E5%8E%86%E4%B8%8EDWS-%E8%84%B1%E6%95%8F.mp4#t=35">00:35 查询本机日历</a><br>
+<a href="https://zhikunqingtao.github.io/zhikuncode/case-studies/assets/zkcode-mobile-20261031/%E8%A7%86%E9%A2%91/01-%E6%89%8B%E6%9C%BA%E6%97%A5%E5%8E%86%E4%B8%8EDWS-%E8%84%B1%E6%95%8F.mp4#t=75">01:15 创建本机日程</a><br>
+<a href="https://zhikunqingtao.github.io/zhikuncode/case-studies/assets/zkcode-mobile-20261031/%E8%A7%86%E9%A2%91/01-%E6%89%8B%E6%9C%BA%E6%97%A5%E5%8E%86%E4%B8%8EDWS-%E8%84%B1%E6%95%8F.mp4#t=160">02:40 查询钉钉日历</a><br>
+<a href="https://zhikunqingtao.github.io/zhikuncode/case-studies/assets/zkcode-mobile-20261031/%E8%A7%86%E9%A2%91/01-%E6%89%8B%E6%9C%BA%E6%97%A5%E5%8E%86%E4%B8%8EDWS-%E8%84%B1%E6%95%8F.mp4#t=220">03:40 同步与结果核对</a><br>
+<a href="https://zhikunqingtao.github.io/zhikuncode/case-studies/assets/zkcode-mobile-20261031/%E8%A7%86%E9%A2%91/01-%E6%89%8B%E6%9C%BA%E6%97%A5%E5%8E%86%E4%B8%8EDWS-%E8%84%B1%E6%95%8F.mp4#t=430">07:10 读取手机照片</a><br>
+<a href="https://zhikunqingtao.github.io/zhikuncode/case-studies/assets/zkcode-mobile-20261031/%E8%A7%86%E9%A2%91/01-%E6%89%8B%E6%9C%BA%E6%97%A5%E5%8E%86%E4%B8%8EDWS-%E8%84%B1%E6%95%8F.mp4#t=637">10:37 照片送达钉钉</a></p>
+</td>
+<td width="50%" valign="top">
+<strong>02 · 短信发送与手机拨号</strong><br>
+<a href="https://zhikunqingtao.github.io/zhikuncode/case-studies/assets/zkcode-mobile-20261031/%E5%BC%80%E5%A7%8B%E9%98%85%E8%AF%BB.html#sms-call"><img src="docs/case-studies/assets/zkcode-mobile-20261031/video-sms-call-poster.jpg" width="200" alt="短信发送与手机拨号"></a><br>
+<a href="https://zhikunqingtao.github.io/zhikuncode/case-studies/assets/zkcode-mobile-20261031/%E8%A7%86%E9%A2%91/02-%E7%9F%AD%E4%BF%A1%E4%B8%8E%E6%8B%A8%E5%8F%B7-%E8%84%B1%E6%95%8F.mp4">播放完整视频 · 02:27</a>
+<p><a href="https://zhikunqingtao.github.io/zhikuncode/case-studies/assets/zkcode-mobile-20261031/%E8%A7%86%E9%A2%91/02-%E7%9F%AD%E4%BF%A1%E4%B8%8E%E6%8B%A8%E5%8F%B7-%E8%84%B1%E6%95%8F.mp4#t=52">00:52 查看短信发送记录</a><br>
+<a href="https://zhikunqingtao.github.io/zhikuncode/case-studies/assets/zkcode-mobile-20261031/%E8%A7%86%E9%A2%91/02-%E7%9F%AD%E4%BF%A1%E4%B8%8E%E6%8B%A8%E5%8F%B7-%E8%84%B1%E6%95%8F.mp4#t=101">01:41 手机原生拨号</a></p>
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+<strong>03 · 携程航班查询、筛选与接管</strong><br>
+<a href="https://zhikunqingtao.github.io/zhikuncode/case-studies/assets/zkcode-mobile-20261031/%E5%BC%80%E5%A7%8B%E9%98%85%E8%AF%BB.html#ctrip"><img src="docs/case-studies/assets/zkcode-mobile-20261031/video-ctrip-poster.jpg" width="200" alt="携程航班查询、筛选与接管"></a><br>
+<a href="https://zhikunqingtao.github.io/zhikuncode/case-studies/assets/zkcode-mobile-20261031/%E8%A7%86%E9%A2%91/03-%E6%90%BA%E7%A8%8B%E7%BD%91%E9%A1%B5%E6%93%8D%E4%BD%9C-%E8%84%B1%E6%95%8F.mp4">播放完整视频 · 07:52</a>
+<p><a href="https://zhikunqingtao.github.io/zhikuncode/case-studies/assets/zkcode-mobile-20261031/%E8%A7%86%E9%A2%91/03-%E6%90%BA%E7%A8%8B%E7%BD%91%E9%A1%B5%E6%93%8D%E4%BD%9C-%E8%84%B1%E6%95%8F.mp4#t=8">00:08 发起航班查询</a><br>
+<a href="https://zhikunqingtao.github.io/zhikuncode/case-studies/assets/zkcode-mobile-20261031/%E8%A7%86%E9%A2%91/03-%E6%90%BA%E7%A8%8B%E7%BD%91%E9%A1%B5%E6%93%8D%E4%BD%9C-%E8%84%B1%E6%95%8F.mp4#t=56">00:56 核验账户访问</a><br>
+<a href="https://zhikunqingtao.github.io/zhikuncode/case-studies/assets/zkcode-mobile-20261031/%E8%A7%86%E9%A2%91/03-%E6%90%BA%E7%A8%8B%E7%BD%91%E9%A1%B5%E6%93%8D%E4%BD%9C-%E8%84%B1%E6%95%8F.mp4#t=88">01:28 读取航班结果</a><br>
+<a href="https://zhikunqingtao.github.io/zhikuncode/case-studies/assets/zkcode-mobile-20261031/%E8%A7%86%E9%A2%91/03-%E6%90%BA%E7%A8%8B%E7%BD%91%E9%A1%B5%E6%93%8D%E4%BD%9C-%E8%84%B1%E6%95%8F.mp4#t=301">05:01 整理前五个航班</a><br>
+<a href="https://zhikunqingtao.github.io/zhikuncode/case-studies/assets/zkcode-mobile-20261031/%E8%A7%86%E9%A2%91/03-%E6%90%BA%E7%A8%8B%E7%BD%91%E9%A1%B5%E6%93%8D%E4%BD%9C-%E8%84%B1%E6%95%8F.mp4#t=352">05:52 追问下午最低价</a><br>
+<a href="https://zhikunqingtao.github.io/zhikuncode/case-studies/assets/zkcode-mobile-20261031/%E8%A7%86%E9%A2%91/03-%E6%90%BA%E7%A8%8B%E7%BD%91%E9%A1%B5%E6%93%8D%E4%BD%9C-%E8%84%B1%E6%95%8F.mp4#t=404">06:44 应用下午筛选</a><br>
+<a href="https://zhikunqingtao.github.io/zhikuncode/case-studies/assets/zkcode-mobile-20261031/%E8%A7%86%E9%A2%91/03-%E6%90%BA%E7%A8%8B%E7%BD%91%E9%A1%B5%E6%93%8D%E4%BD%9C-%E8%84%B1%E6%95%8F.mp4#t=428">07:08 查看票价详情</a><br>
+<a href="https://zhikunqingtao.github.io/zhikuncode/case-studies/assets/zkcode-mobile-20261031/%E8%A7%86%E9%A2%91/03-%E6%90%BA%E7%A8%8B%E7%BD%91%E9%A1%B5%E6%93%8D%E4%BD%9C-%E8%84%B1%E6%95%8F.mp4#t=442">07:22 原地交给人工</a></p>
+</td>
+<td width="50%" valign="top">
+<strong>04 · 淘宝购物车与京东搜索</strong><br>
+<a href="https://zhikunqingtao.github.io/zhikuncode/case-studies/assets/zkcode-mobile-20261031/%E5%BC%80%E5%A7%8B%E9%98%85%E8%AF%BB.html#shopping"><img src="docs/case-studies/assets/zkcode-mobile-20261031/video-shopping-poster.jpg" width="200" alt="淘宝购物车与京东搜索"></a><br>
+<a href="https://zhikunqingtao.github.io/zhikuncode/case-studies/assets/zkcode-mobile-20261031/%E8%A7%86%E9%A2%91/04-%E6%B7%98%E5%AE%9D%E4%BA%AC%E4%B8%9C%E6%93%8D%E4%BD%9C-%E8%84%B1%E6%95%8F.mp4">播放完整视频 · 03:30</a>
+<p><a href="https://zhikunqingtao.github.io/zhikuncode/case-studies/assets/zkcode-mobile-20261031/%E8%A7%86%E9%A2%91/04-%E6%B7%98%E5%AE%9D%E4%BA%AC%E4%B8%9C%E6%93%8D%E4%BD%9C-%E8%84%B1%E6%95%8F.mp4#t=12">00:12 读取购物车商品</a><br>
+<a href="https://zhikunqingtao.github.io/zhikuncode/case-studies/assets/zkcode-mobile-20261031/%E8%A7%86%E9%A2%91/04-%E6%B7%98%E5%AE%9D%E4%BA%AC%E4%B8%9C%E6%93%8D%E4%BD%9C-%E8%84%B1%E6%95%8F.mp4#t=78">01:18 进入商品详情</a><br>
+<a href="https://zhikunqingtao.github.io/zhikuncode/case-studies/assets/zkcode-mobile-20261031/%E8%A7%86%E9%A2%91/04-%E6%B7%98%E5%AE%9D%E4%BA%AC%E4%B8%9C%E6%93%8D%E4%BD%9C-%E8%84%B1%E6%95%8F.mp4#t=108">01:48 跨站搜索商品</a><br>
+<a href="https://zhikunqingtao.github.io/zhikuncode/case-studies/assets/zkcode-mobile-20261031/%E8%A7%86%E9%A2%91/04-%E6%B7%98%E5%AE%9D%E4%BA%AC%E4%B8%9C%E6%93%8D%E4%BD%9C-%E8%84%B1%E6%95%8F.mp4#t=131">02:11 搜索升降桌</a><br>
+<a href="https://zhikunqingtao.github.io/zhikuncode/case-studies/assets/zkcode-mobile-20261031/%E8%A7%86%E9%A2%91/04-%E6%B7%98%E5%AE%9D%E4%BA%AC%E4%B8%9C%E6%93%8D%E4%BD%9C-%E8%84%B1%E6%95%8F.mp4#t=144">02:24 搜索杯子</a><br>
+<a href="https://zhikunqingtao.github.io/zhikuncode/case-studies/assets/zkcode-mobile-20261031/%E8%A7%86%E9%A2%91/04-%E6%B7%98%E5%AE%9D%E4%BA%AC%E4%B8%9C%E6%93%8D%E4%BD%9C-%E8%84%B1%E6%95%8F.mp4#t=180">03:00 保留页面并转人工</a><br>
+<a href="https://zhikunqingtao.github.io/zhikuncode/case-studies/assets/zkcode-mobile-20261031/%E8%A7%86%E9%A2%91/04-%E6%B7%98%E5%AE%9D%E4%BA%AC%E4%B8%9C%E6%93%8D%E4%BD%9C-%E8%84%B1%E6%95%8F.mp4#t=199">03:19 返回对话汇总</a></p>
+</td>
+</tr>
+</table>
+
 ### 实时黄金监控：ZhikunCode vs Codex 同题 PK
 
 同一个实时黄金监控需求，分别交给 ZhikunCode 与 Codex 从零完成，再按需求理解、开发交互、数据准确性、架构、代码质量、用户体验等 14 个维度打分。报告同时保留双方的优点与缺陷。
@@ -2024,142 +2083,4 @@ docker compose up -d --build  # 构建并启动
 欢迎贡献！详细流程见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
 简单步骤：
-1. Fork 仓库
-2. 创建功能分支 (`git checkout -b feature/your-feature`)
-3. 提交代码
-4. 创建 Pull Request
-
-推荐从标记为 `good first issue` 的 Issue 开始。
-
-**开发环境需要：** JDK 21、Node.js 22.x（至少 22.13）或 24+、Python 3.11~3.12、Maven 3.9+
-
-</details>
-
-<details>
-<summary><b>Q8：为什么选择 Java + React + Python 三端架构？</b></summary>
-
-每种技术选型都有明确的理由：
-
-- **Java 21 + Spring Boot（后端）：**
-  - 强类型 + 成熟的企业级生态，代码可维护性强
-  - Spring WebSocket 原生支持实时通信
-  - Virtual Thread（虚拟线程）天然适合多 Agent 并发执行
-  - 企业 IT 团队容易接受和部署
-
-- **React 18 + TypeScript（前端）：**
-  - 组件化开发，状态管理成熟（Zustand）
-  - TypeScript 提供类型安全
-  - Vite 构建速度快，开发体验好
-  - TailwindCSS 实现高效的 UI 开发
-
-- **Python FastAPI（分析服务）：**
-  - Python 生态在代码分析、AST 解析方面成熟
-  - FastAPI 异步性能好
-  - 作为独立服务，不影响主后端的稳定性
-
-</details>
-
-<details>
-<summary><b>Q9：Docker 部署遇到问题怎么排查？</b></summary>
-
-**容器启动后显示 unhealthy：**
-
-```bash
-# 查看容器状态
-docker ps -a
-
-# 查看启动日志（Java 启动通常需要 30-60 秒）
-docker logs zhikuncode
-
-# 查看健康检查详情
-docker inspect --format='{{json .State.Health}}' zhikuncode | python3 -m json.tool
-```
-
-**常见启动失败原因：**
-- `LLM_API_KEY is not configured` — 未配置 API Key，请检查 .env 文件
-- `Unable to access jarfile` — 镜像构建不完整，尝试 `docker compose up --build`
-- 内存不足 — 默认需要 4GB，可在 docker-compose.yml 中调整 `deploy.resources.limits.memory`
-
-**查看运行时日志：**
-```bash
-# 实时跟踪日志
-docker logs -f zhikuncode
-
-# 进入容器查看日志文件
-docker exec -it zhikuncode ls -la /app/log/
-docker exec -it zhikuncode tail -100 /app/log/app.log
-```
-
-**关于 `ALLOW_PRIVATE_NETWORK`：**
-
-当前镜像默认 `true` 会放行所有到达后端的来源；容器网络不能替代入口认证。请按[安全章节](#security)配置认证、TLS、端口绑定和代理边界。设为 false 需通过 Compose 显式传入，之后仍要核对认证行为。
-
-**调整 JVM 内存：**
-
-在 `.env` 中设置：
-```bash
-JAVA_OPTS="-Xms512m -Xmx2048m --enable-preview"
-```
-
-</details>
-
-<details>
-<summary><b>Q10：8080 端口被占用怎么办？</b></summary>
-
-修改 `.env` 文件中的端口配置：
-
-```bash
-ZHIKUN_PORT=9090  # 改为任意未被占用的端口
-```
-
-然后重新启动：
-```bash
-docker compose down
-docker compose up -d
-```
-
-访问 `http://localhost:9090` 即可。
-
-</details>
-
----
-
-<a id="resources"></a>
-继续阅读：[案例资料](docs/case-studies/) · [系统架构图](https://zhikunqingtao.github.io/zhikuncode/ZhikunCode-Architecture.html) · [能力总览](https://zhikunqingtao.github.io/zhikuncode/ZhikunCode-Capability-Overview.html) · [会话合并设计](docs/session-merge-architecture-v2.md) · [安全问题报告](SECURITY.md)。
-
-## 🤝 贡献
-
-我们欢迎任何形式的贡献 —— Bug 修复、新功能、文档改进都可以。
-
-详见 [CONTRIBUTING.md](CONTRIBUTING.md)。
-
----
-
-## 📄 开源协议
-
-本项目使用 [MIT License](LICENSE) 开源协议。
-
----
-
-## 📬 联系
-
-- **邮箱：** alizhikun@gmail.com
-- **GitHub Issues：** [提交问题](https://github.com/zhikunqingtao/zhikuncode/issues)
-
----
-
-## ⭐ Star History
-
-如果这个项目对你有帮助，欢迎点个 Star ⭐
-
-<div align="center">
-  <a href="https://star-history.com/#zhikunqingtao/zhikuncode&Date">
-    <img src="https://api.star-history.com/svg?repos=zhikunqingtao/zhikuncode&type=Date" alt="Star History Chart" width="600" />
-  </a>
-</div>
-
----
-
-<div align="center">
-  <p>用 ❤️ 和 AI 构建</p>
-</div>
+1. Fork

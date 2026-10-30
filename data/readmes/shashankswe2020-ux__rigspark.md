@@ -15,7 +15,7 @@
 </p>
 
 <p align="center">
-  <a href="https://shashankswe2020-ux.github.io/rigspark/">Website</a> ·
+  <a href="https://www.rigspark.si/">Website</a> ·
   <a href="#install-rigspark">Install</a> ·
   <a href="docs/references/guide.md">Guide</a> ·
   <a href="https://github.com/shashankswe2020-ux/rigspark/releases/latest">Latest release</a>
@@ -60,6 +60,14 @@ Homebrew on macOS or Linux:
 ```bash
 brew install shashankswe2020-ux/tap/rigspark
 ```
+
+On a Mac you can also install the desktop app: download `RigSpark_aarch64.dmg`
+(Apple Silicon) or `RigSpark_x86_64.dmg` (Intel) from the
+[latest release](https://github.com/shashankswe2020-ux/rigspark/releases/latest)
+and drag RigSpark to Applications. The app is not notarized yet, so the first
+time you open it, Control-click it and choose **Open**. It lives in the menu
+bar: closing the window keeps your model serving, and **Quit RigSpark** stops
+it. Settings in **Tools** turn on launch at login and install verified updates.
 
 On Windows and other platforms, download a
 [prebuilt archive](https://github.com/shashankswe2020-ux/rigspark/releases/latest),
@@ -156,6 +164,42 @@ BitNet chat results, methodology, and limitations.
 
 [Backend setup and lifecycle details →](docs/references/guide.md#supported-backends)
 
+#### Faster serving: speculative decoding and parallel agents
+
+```bash
+rigspark up qwen3:14b --backend llamacpp           # drafts with qwen3:0.6b automatically
+rigspark up qwen3:8b --backend llamacpp --speculative ngram
+rigspark up qwen3:14b --context 16384 --parallel 4 # four agents at once on Ollama
+rigspark bench --concurrency 4                     # measure the active server
+```
+
+- `--speculative auto|draft|ngram|off`. On llama.cpp, models with a catalog
+  drafter use it by default. RigSpark downloads the drafter, verifies its
+  SHA-256 and reserves its memory before checking fit. If the drafter does not
+  fit, RigSpark starts without it. `ngram` drafts from the context and needs no
+  extra weights. Ollama handles speculative decoding inside its own model tags.
+- `--parallel N` (1–16) sets concurrent request slots. llama.cpp slots share one
+  unified KV pool. Ollama allocates a full context for each slot, so it needs
+  `--context` and known KV geometry to size the memory (or `--bypass`).
+- `rigspark bench` measures the active server with fixed, versioned prompts:
+  time to first token, prefill and decode tok/s, draft acceptance, and
+  combined throughput across concurrent requests. The prefill, decode and draft
+  figures come from the runtime's own counters; anything it does not report
+  shows as `unknown`.
+
+#### Connect your coding agent
+
+```bash
+rigspark connect claude     # Claude Code via the local Anthropic Messages API
+rigspark connect codex      # Codex via the local OpenAI Responses API
+rigspark connect opencode   # OpenCode via an inline provider config
+rigspark connect pi         # prints the snippet for Pi, Hermes, OpenClaw or Cline
+```
+
+`connect` points the agent at the active loopback server for that launch only.
+It never rewrites the agent's own config files. Add `--dry-run` to print the
+command and environment instead of starting the agent.
+
 ### 5. Continue in the browser workspace
 
 ```bash
@@ -245,6 +289,32 @@ rigspark generate ming-image:ming_image_0.1_design_int8_convrot \
 - **One adapter boundary.** Ollama, llama.cpp, MLX, LM Studio, and BitNet sit behind the
   same runtime lifecycle and safety gates.
 
+## Add any GGUF model from Hugging Face
+
+The bundled catalog is curated and signed. For anything newer or more
+specific, add it yourself:
+
+```bash
+rigspark add --search "qwen3 coder"          # search GGUF repositories
+rigspark add unsloth/Qwen3-0.6B-GGUF          # list quants, add the largest that fits
+rigspark add unsloth/Qwen3-0.6B-GGUF:Q4_K_M  # or name one
+rigspark up hf.co/unsloth/qwen3-0.6b-gguf:q4_k_m --backend llamacpp
+```
+
+In the browser workspace, use **Models → Add from Hugging Face**.
+
+RigSpark reads the repository and one GGUF header to size every
+quantization against your machine. It then pins the repository commit and
+each file's SHA-256 in `~/.rigspark/catalog/local.json`. `up` downloads
+through llama.cpp or Ollama (`hf.co/owner/repo:quant`) and refuses to
+serve weights whose digest does not match. Repositories need a recognized
+open-weight license. Projector files and split (multi-part) GGUFs are
+skipped.
+
+Added models appear in `recommend`, `can-run` and the GUI marked *added by
+you*. Remove one with `rigspark add --remove <id>`. Network access happens
+only when you search or add; advice stays offline.
+
 ## Update the catalog when you choose
 
 Catalog updates are explicit; recommendations and normal startup remain
@@ -304,6 +374,9 @@ opens the same verdicts and a local chat in `rigspark gui`.
 | Open the terminal UI | `rigspark` |
 | Open the browser workspace | `rigspark gui` |
 | Generate local media | `rigspark generate` |
+| Benchmark the active server | `rigspark bench` |
+| Connect a coding agent | `rigspark connect <agent>` |
+| Add a model from Hugging Face | `rigspark add <owner/repo>` |
 | Stop the active model | `rigspark down` |
 
 Run `rigspark --help` for the complete CLI.

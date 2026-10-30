@@ -95,13 +95,14 @@ See [docs/README.md](docs/README.md) for the full documentation catalogue ([docs
 
 | Command | What it does |
 | --- | --- |
+| `/imagesetup` | Set up local image and video models. |
 | `/llmhost` | Choose a model to rent on Runpod, Vast.ai, Lambda, Hugging Face Inference Endpoints, Hyperstack, Verda or DigitalOcean, run on your own computer, or connect an existing server. |
 | `/restart` | Move this chat to the installed Mercury build; running watches and background shells stop. |
 | `/mcp` | Inspect servers, sign in, browse each server’s tools and parameters, reconnect, or toggle a server for this chat. |
 
 ## Author
 
-Mercury CLI is designed, built and maintained by **Waleed Al Qusous** as its sole developer: seven months from the first line to this release, 45 public releases, 565,000 lines of TypeScript and 4,100 proofs, built with the AI agents it now runs. [GitHub](https://github.com/Whq02) · [X](https://x.com/dubsthedev) · [mercury-cli.ai](https://mercury-cli.ai)
+Mercury CLI is designed, built and maintained by **Waleed Al Qusous** as its sole developer: seven months from the first line to this release, 46 public releases, 565,000 lines of TypeScript and 4,200 proofs, built with the AI agents it now runs. [GitHub](https://github.com/Whq02) · [X](https://x.com/dubsthedev) · [mercury-cli.ai](https://mercury-cli.ai)
 
 ## Reporting a problem
 

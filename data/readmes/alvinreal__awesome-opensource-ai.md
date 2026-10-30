@@ -9,7 +9,7 @@
 Curated open-source artificial intelligence models, libraries, infrastructure, and developer tools.
 
 [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
-[![Follow @alvinunreal on X](https://img.shields.io/badge/Follow-%40alvinunreal-000000?logo=x&logoColor=white)](https://x.com/alvinunreal)
+[![Follow @opensrc_ai on X](https://img.shields.io/badge/Follow-%40opensrc__ai-000000?logo=x&logoColor=white)](https://x.com/opensrc_ai)
 
 <a href="https://svgdiagram.ai"><img src="assets/svgdiagram-logo.svg" alt="svgdiagram.ai" width="40" height="28" align="absmiddle"></a>&nbsp;
 <a href="https://svgdiagram.ai"><b>svgdiagram.ai</b></a> <sub>· Turn your notes into clean, editable SVG diagrams</sub>
@@ -327,6 +327,7 @@ Good entries should have a clear reason to exist. They should help people build,
 - [freelm](https://github.com/shihabshahrier/freelm) - Python and TypeScript client library, with an optional local OpenAI-compatible server, that pools the free tiers of Gemini, Groq, OpenRouter, Cloudflare Workers AI and other providers with key rotation and failover. MIT licensed. ![GitHub stars](https://img.shields.io/github/stars/shihabshahrier/freelm?style=social)
 - [fitcheck](https://github.com/SIDDARTHAREDDY8/fitcheck) - Zero-dependency Python CLI that plans LLM VRAM before you serve: real per-token KV-cache math, FITS/TIGHT/OOM verdicts, max safe context, and paste-ready vLLM/llama.cpp flags. MIT licensed. ![GitHub stars](https://img.shields.io/github/stars/SIDDARTHAREDDY8/fitcheck?style=social)
 - [Weave Router](https://github.com/weave-os/router) - Self-hostable drop-in proxy for the Anthropic Messages, OpenAI Chat Completions and Gemini APIs that picks a model for each request with an on-box embedder; supports BYOK and OTLP traces and works with Claude Code, Codex, opencode and pi. Apache 2.0 licensed. ![GitHub stars](https://img.shields.io/github/stars/weave-os/router?style=social)
+- [Ollama Herd](https://github.com/geeks-accelerator/ollama-herd) - Self-hosted router that spreads LLM, embedding, image and speech-to-text requests across machines running Ollama or mlx_lm.server, choosing a node per request by memory fit, thermal state, queue depth and loaded models. MIT licensed. ![GitHub stars](https://img.shields.io/github/stars/geeks-accelerator/ollama-herd?style=social)
 
 #### Additional Inference Engines
 
@@ -377,6 +378,7 @@ Good entries should have a clear reason to exist. They should help people build,
 - [AutoGen (AG2)](https://github.com/microsoft/autogen) - Flexible multi-agent conversation framework. ![GitHub stars](https://img.shields.io/github/stars/microsoft/autogen?style=social)
 - [DSPy](https://github.com/stanfordnlp/dspy) - Framework for programming language model pipelines with modules, optimizers, and evaluation loops. ![GitHub stars](https://img.shields.io/github/stars/stanfordnlp/dspy?style=social)
 - [Semantic Kernel](https://github.com/microsoft/semantic-kernel) - SDK for building and orchestrating AI agents and workflows across multiple programming languages. ![GitHub stars](https://img.shields.io/github/stars/microsoft/semantic-kernel?style=social)
+- [System One SDK](https://github.com/ziyu/system-one-sdk) - TypeScript API/SDK for AI agent decision workflows: typed choices, scores, and probabilities via one evaluate() call. MIT licensed. ![GitHub stars](https://img.shields.io/github/stars/ziyu/system-one-sdk?style=social)
 - [smolagents](https://github.com/huggingface/smolagents) - Lightweight agent framework centered on tool use and code-executing workflows. ![GitHub stars](https://img.shields.io/github/stars/huggingface/smolagents?style=social)
 - [LangChain](https://github.com/langchain-ai/langchain) - Foundational library for agents, chains, and memory. ![GitHub stars](https://img.shields.io/github/stars/langchain-ai/langchain?style=social)
 - [Neuron AI](https://github.com/neuron-core/neuron-ai) - PHP Agentic Framework for building production-ready AI driven applications. Connect components (LLMs, vector DBs, memory) to agents that can interact with your data. MIT licensed. ![GitHub stars](https://img.shields.io/github/stars/neuron-core/neuron-ai?style=social)
@@ -469,9 +471,4 @@ Good entries should have a clear reason to exist. They should help people build,
 - [Agent Substrate](https://github.com/agent-substrate/substrate) - Kubernetes-native execution runtime for high-density, stateful AI-agent sandboxes with actor lifecycle management, suspend/resume, and workload routing. Apache-2.0 licensed. ![GitHub stars](https://img.shields.io/github/stars/agent-substrate/substrate?style=social)
 - [DESIGN.md (Google)](https://github.com/google-labs-code/design.md) - A format specification for describing visual identity to coding agents, combining YAML tokens and markdown prose to give agents a structured understanding of design systems. Apache 2.0 licensed. ![GitHub stars](https://img.shields.io/github/stars/google-labs-code/design.md?style=social)
 - [Agent Skills](https://github.com/agentskills/agentskills) - Standardized specification and document format for bundling and progressively loading AI agent capabilities, instructions, scripts, and resources. Apache 2.0 licensed. ![GitHub stars](https://img.shields.io/github/stars/agentskills/agentskills?style=social)
-- [FastMCP](https://github.com/PrefectHQ/fastmcp) - A Python framework for building Model Context Protocol (MCP) servers and clients with automatic schema generation and validation. Apache 2.0 licensed. ![GitHub stars](https://img.shields.io/github/stars/PrefectHQ/fastmcp?style=social)
-
-#### Agent Context, Memory & Knowledge
-
-- [OpenViking](https://github.com/volcengine/OpenViking) - Open-source context database for AI agents that unifies agent memory, knowledge RAG, and skills as a virtual filesystem. AGPL 3.0 licensed. ![GitHub stars](https://img.shields.io/github/stars/volcengine/OpenViking?style=social)
-- [LWC (Local Wiki CLI)](https://github.com/JanYork/llm-wiki-cli) - Local-first, source-grounded project memory for coding agents with bounded MCP retrieval, citations and provenance, atomic changesets, and optional document and code kn
+- [FastMCP](https://github.com/PrefectHQ/fastmcp) - A Python framework for building Model Context Protocol (MCP) servers and clients with automatic schema generation and valida

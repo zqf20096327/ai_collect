@@ -1,11 +1,14 @@
 <p align="center">
-  <img src="docs/mascot-animated.svg" width="190" alt="The lavender cat detective">
+  <picture>
+    <source media="(prefers-reduced-motion: reduce)" srcset="docs/mascot.png">
+    <img src="art/source/mascot_anim.webp" width="190" alt="The little hoodie detective, peeking through her magnifying glass and waving">
+  </picture>
 </p>
 
 <h1 align="center">Codex Routing Detector</h1>
 
 <p align="center">
-  <b>Did the model you picked really answer? Let the cat detective check! 🔍</b><br>
+  <b>Did the model you picked really answer? Let the little detective check! 🔍</b><br>
   <a href="https://github.com/darkdarkcocoa/codex-routing-detector/releases">Download</a> ·
   <a href="README.ko.md">한국어</a> ·
   <a href="#faq">FAQ</a>
@@ -85,9 +88,10 @@ away.
 ![Live monitor tab during a session](docs/screenshot-live.png)
 
 - **It costs nothing extra.** The monitor sends no requests of its own.
-- **A `gpt-5.6-luna → gpt-5.6-luna` line at the start is normal.** When a conversation starts,
-  Codex hands small chores such as naming the conversation to the cheap, fast luna. Only *your
-  model → another model* is a reroute.
+- **A small-model line at the start is normal.** When a conversation starts, Codex may hand small
+  chores such as naming the conversation to a smaller model like `gpt-5.6-luna` or `gpt-5.6-terra`.
+  A line such as `gpt-5.6-luna → gpt-5.6-luna` asked for that model and got it. Only *your model →
+  another model* is a reroute.
 - **Session** shows the `model` and `model_reasoning_effort` from `config.toml`. **Folder** is
   where the Codex window opens, and the app remembers it.
 - **Stop** closes the Codex window too. Closing Codex yourself (`/exit` or Ctrl-C) ends the
@@ -346,7 +350,8 @@ example "at capacity") prints nothing, so run it again.
 
 ## Credits 💜
 
-- The lavender cat detective and the "Soft Sheet" window design are in
+- The little hoodie detective was drawn with Codex CLI image generation and set in motion with
+  Grok's image-to-video; the prompts are in `art/prompts/`. The "Soft Sheet" window design is in
   `design_handoff_routing_detector_ui/`.
 - Fonts: Fredoka (latin), NanumSquareRound (Korean) and JetBrains Mono (ids and times), all
   under the SIL Open Font License 1.1. Their notices are in

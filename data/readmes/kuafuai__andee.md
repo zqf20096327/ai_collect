@@ -505,10 +505,41 @@ On-device** tab (**Voice provider** → Volcengine or Google), and then fill in 
 This is a separate service from Volcengine's, with its own terms and data handling.
 For **Volcengine**, a [Volcengine Speech](https://www.volcengine.com/product/voice-tech) API key goes
 in the **Volcengine API key** field; for **Google**, a Vertex Express key plus a GCP project *number*
-and a location. Without a key for whichever one is selected, ASR and TTS fail during the handshake,
-which surfaces as a **connect timeout** — the device looks like it has a network problem when what it
-has is a blank field. Everything else still works; it is just mute and deaf.
-Whichever you pick, the audio goes to that provider — see [DISCLAIMER.md](DISCLAIMER.md).
+and a location. Without a key for whichever one is selected, ASR and TTS are **refused at the
+handshake** — the server answers at once, and answers no (a blank or a revoked key is a 403), so the
+socket dies before a byte of audio is sent. That is a different failure from a **connect timeout**,
+which is what a host that never answers looks like; reading the first as the second sends you off to
+check the network when the field is simply empty.
+Everything else still works; it is just mute and deaf.
+
+**With Volcengine, a correct key is still not enough.** In the console, "the service is activated"
+and "calls against this resource are entitled" are two different statements, and the API only checks
+the second. A service that was just switched on is **post-paid (后付费)** — it works from
+Volcengine's own demo page on the website and is rejected from code — so the key is right, the field
+is filled in, and the turn still dies at the start. The switch is on the console's **开通管理** page
+(activation management): set that service to **prepaid / subscription (预付 / 预购)** and buy a
+streaming-ASR resource pack there. Their billing terms are theirs and change without telling us, so
+this file does not restate them — only where the switch is.
+
+**That failure has two shapes, and when it happens is the clue.** Either the handshake is refused
+outright — the connection dies at the very start of the turn, before a byte of audio has gone out,
+which is the shape a missing entitlement takes — or the socket does come up and the server returns
+an error frame carrying the entitlement code after the first request. The first is **not** a
+timeout, the second is not a key problem, and both surface as `ASR ws refused: …` or as a server
+error code. Neither message points at 开通管理, which is why it is written down here.
+
+**If the pack you bought is a different SKU, the 识别资源 ID row is the third cause.** It
+sits under the Volcengine key (`asr_resource_id`), defaults to `volc.bigasr.sauc.duration`
+(the **1.0** model's by-duration pack) and is sent as the `X-Api-Resource-Id` header. A
+by-concurrency pack (并发版) of the same model takes `volc.bigasr.sauc.concurrent` there
+instead. Get it wrong and the symptom is indistinguishable from the two above: the key is
+fine, the call just fails.
+
+The two ids that pair with this build are the 1.0 ones, because the request it sends also names
+the model: `model_name` is `bigmodel`, which is 豆包流式语音识别模型 1.0. The 2.0 service
+(豆包流式语音识别 2.0, resource ids `volc.seedasr.sauc.duration` / `volc.seedasr.sauc.concurrent`)
+is a different model, so if the console only offered you 2.0, this row cannot rescue it — open
+the 1.0 service as well. Leave the row alone once it holds one of the two 1.0 values.
 
 > **If you took the CodeFlying route in [Install](#install), both keys are already baked in.**  
 > ⚙ → **Backend** will show **CodeFlying** as the active tab; LLM, ASR, TTS and the long tail of  
@@ -743,7 +774,7 @@ Pure Kotlin, no Compose; the whole thing hangs off two pillars, `WindowManager` 
 | minSdk                    | 30                  | Android 11 — `AccessibilityAction.ACTION_IME_ENTER` and `takeScreenshot` are both API 30+ |
 | Java / Kotlin JVM target  | 1.8                 | `sourceCompatibility` 1.8, `jvmTarget = '1.8'`                                            |
 | **Build JDK**             | **17–20**           | see [Which JDK](#which-jdk) — this is the step people get stuck on                        |
-| versionCode / versionName | 18 / 0.8.0          | see [CHANGELOG.md](CHANGELOG.md) for the policy                                           |
+| versionCode / versionName | 19 / 0.8.1          | see [CHANGELOG.md](CHANGELOG.md) for the policy                                           |
 | applicationId / namespace | `net.kuafuai.andee` | never changed from the template. It affects nothing                                       |
 
 **Runtime dependencies** (`app/build.gradle`):
@@ -1179,7 +1210,7 @@ Read it before redistributing: **the ML Kit barcode SDK and the `play-services-*
 open-source**, and the barcode model is fetched from Google at runtime.
 
 See [CHANGELOG.md](CHANGELOG.md) for what changed and for the versioning policy. The latest release is
-**`v0.8.0`** — pre-1.0 on purpose, because the wire contract and the build flags are still moving.
+**`v0.8.1`** — pre-1.0 on purpose, because the wire contract and the build flags are still moving.
 
 ## Related documents
 

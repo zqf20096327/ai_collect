@@ -1,6 +1,6 @@
 # nexus-llm-router
 
-![Tests](https://img.shields.io/badge/tests-1843%20passing-brightgreen) ![Python](https://img.shields.io/badge/python-3.11%2B-blue) ![CI](https://github.com/Francis1998/nexus-llm-router/actions/workflows/ci.yml/badge.svg)
+![Tests](https://img.shields.io/badge/tests-1858%20passing-brightgreen) ![Python](https://img.shields.io/badge/python-3.11%2B-blue) ![CI](https://github.com/Francis1998/nexus-llm-router/actions/workflows/ci.yml/badge.svg)
 
 
 > Intelligent multi-LLM routing middleware with task-aware model selection, cost optimization, fallback safety, and a drop-in OpenAI-compatible API.
@@ -850,6 +850,27 @@ Offline HITL `bubble_ratio` bands. Gap vs vLLM/SGLang/TGI continuous-batch token
 Apache-2.0 © [Francis1998](https://github.com/Francis1998)
 
 *Last updated: 2026-08-01*
+
+
+### FlashinferKernelFallbackBandAdvisor
+
+![FlashinferKernelFallbackBandAdvisor](assets/demo/flashinfer-kernel-fallback-band-advisor.gif)
+
+Gap vs vLLM/SGLang/TGI FlashInfer kernel-fallback monitors. Distinct from `KvCacheQuantErrorBandAdvisor` / `TensorParallelSkewBandAdvisor`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/FLASHINFER_KERNEL_FALLBACK_BAND_ADVISOR_GUIDE.md`.
+
+
+### DisaggKvTransferStallBandAdvisor
+
+![DisaggKvTransferStallBandAdvisor](assets/demo/disagg-kv-transfer-stall-band-advisor.gif)
+
+Gap vs vLLM/SGLang/TGI disaggregated KV-transfer stall monitors. Distinct from `DisaggPrefillDecodeSkewBandAdvisor` / `KvCacheOffloadThrashBandAdvisor`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/DISAGG_KV_TRANSFER_STALL_BAND_ADVISOR_GUIDE.md`.
+
+
+### PagedAttentionBlockLeakBandAdvisor
+
+![PagedAttentionBlockLeakBandAdvisor](assets/demo/paged-attention-block-leak-band-advisor.gif)
+
+Gap vs vLLM/SGLang/TGI paged-attention block-leak monitors. Distinct from `PagedAttentionFragmentationBandAdvisor` / `KvBlockStealStormBandAdvisor`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/PAGED_ATTENTION_BLOCK_LEAK_BAND_ADVISOR_GUIDE.md`.
 
 ### SpeculativeVerifyBacklogBandAdvisor
 

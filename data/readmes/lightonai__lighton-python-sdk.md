@@ -284,6 +284,19 @@ for page in doc.result.pages:
 Large documents can time out synchronously, run them async and poll (see
 [Async jobs & polling](#async-jobs--polling)): `client.parse(path="big.pdf", mode=ExecMode.ASYNC)`.
 
+Pass `grounding=True` to also get each page's **layout**: `page.blocks`, in reading
+order, each with a `type` (`title`, `text`, `table`, `chart`, `image`, ...), a bounding
+box on a 0-1000 grid of the page (origin top-left), and its `content`. Charts come back
+as HTML tables of their data and images as short descriptions. It works in both modes,
+and more than doubles the response, since every page's text rides in `markdown` *and* its
+blocks.
+
+```python
+doc = client.parse(path="report.pdf", grounding=True)
+for block in doc.result.pages[0].blocks or []:
+    print(block.type, (block.top_left_x, block.top_left_y), block.content[:40])
+```
+
 ### `extract`: schema-guided structured data
 
 Pull specific, typed fields out of a document for a custom pipeline: you describe the
@@ -351,6 +364,21 @@ role on the workspace.
 One wrinkle: **only `list()` returns `taxonomy`**. The detail endpoint leaves the
 field out, so `get()` and `refresh()` neither populate it nor clear an already-loaded
 value; re-list when you want fresh coverage numbers.
+
+The reverse holds for **`user_permissions`**: only `get()`/`refresh()` return it
+(`list()` leaves it `None`). It says what *you* may do there, a workspace-scoped API
+key's limits included, so check it before an upload instead of catching a 403:
+
+```python
+ws = Workspace.get(client, 7)
+if ws.user_permissions and ws.user_permissions.can_upload_files:
+    ws.ingest(File(path="report.pdf"))
+```
+
+On a synced workspace, `sync.credentials_rejected` means syncing has stopped until
+someone replaces the credentials. For SMB shares, `sync.walk` reports the directory
+walk's progress; read `walk.complete` rather than `last_status`, which says "success"
+after every batch of a scan that can take days.
 
 ## Files & ingestion
 

@@ -1,0 +1,339 @@
+<p align="center">
+  <img src="logo.png" alt="RPG Maker Translator" width="400">
+</p>
+
+<h1 align="center">RPG Maker Translator</h1>
+
+<p align="center">
+Translate RPG Maker MV/MZ/VX Ace/2000/2003, Ren'Py, TyranoScript, SRPG Studio, Kirikiri, and Crowd engine games using local or cloud LLMs.<br>
+<b>Local LLM</b> (Ollama + Qwen 3.5 — free, private, no content filters) or <b>Cloud API</b> (OpenAI, Gemini, DeepSeek, Anthropic — experimental, pay-per-token).<br>
+Event-aware translation. Pronoun-aware. Glossary-driven. Batch translation with resume.<br>
+Per-engine settings, prompts, and model selection via the Engines tab.<br>
+Designed by a human, coded with <a href="https://claude.ai/code">Claude Code</a>.
+Cloud API engine ported from <a href="https://github.com/dazedanon/DazedMTLTool">DazedMTLTool</a> (MIT).
+</p>
+
+<p align="center">
+  <i>Built solo with local LLMs and Claude Code. If this saved you hours of work, consider supporting development:</i><br><br>
+  <a href="https://ko-fi.com/moritranslates"><img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="Support on Ko-fi"></a>
+</p>
+
+![Screenshot](screenshot.png)
+
+## At a Glance
+
+Open a game folder. Hit Batch Translate. Get a playable translation. Supports 9 engines — auto-detected on open.
+
+| | |
+|---|---|
+|1
+| **Local LLM (free)** | Ollama + [Qwen 3.5:9b](https://ollama.com/library/qwen3.5) on your GPU — auto-tuned for your hardware, no API keys, no content filters, no account bans. Your data never leaves your PC |
+| **Cloud API (experimental)** | OpenAI, Gemini, DeepSeek, Anthropic — DazedMTL-compatible batch mode with live cost tracking |
+| **Per-engine settings** | Each engine has its own context, batch size, workers, word wrap, model, and system prompt — configurable in the Engines tab |
+| **Pronoun system** | Actor genders, speaker detection, `\N[n]` character mapping — the LLM knows who's "he" and who's "she" |
+| **Glossary-driven** | Two-layer glossary auto-built from translated DB names — "Potion" stays "Potion" everywhere |
+| **Open in RPG Maker** | One-click workspace with directory junctions — edit and playtest translations in RPG Maker's visual editor |
+| **Crash-proof** | Auto-saves every 25 entries, project resume, translation memory deduplication |
+
+---
+
+## Table of Contents
+
+- [Key Features](#key-features)
+- [Download / Releases](#download--releases)
+- [Quick Start](#quick-start)
+- [Building from Source](#building-from-source)
+- [Recommended Models](#recommended-models)
+- [Cloud API Providers](#cloud-api-providers)
+- [Translation Workflow](#translation-workflow)
+- [Glossary System](#glossary-system)
+- [Open in RPG Maker](#open-in-rpg-maker)
+- [Settings Reference](#settings-reference)
+- [Supported Formats & Languages](#supported-formats--languages)
+- [Troubleshooting](#troubleshooting)
+- [Acknowledgments](#acknowledgments)
+
+---
+
+## Key Features
+
+- **Pronoun-aware gender system** — Assigns actor genders, detects speakers from dialogue headers, maps `\N[n]` codes to characters so the LLM uses correct pronouns.
+- **Two-stage workflow** — Translate database names first (items, skills, enemies), then dialogue. DB names auto-populate the glossary.
+- **Two-layer glossary** — General glossary (shared, ~100 presets) + project glossary (auto-built from DB translations). Smart injection — only matching terms sent per request.
+- **Batch by Actor** — Groups dialogue by speaker gender (female > male > unknown) for maximum pronoun accuracy.
+- **Translation memory** — Deduplicates identical strings before batch. If 50 NPCs say the same line, the LLM translates it once.
+- **Event-grouped translation** — Each worker translates one whole event at a time, in order, so the LLM's history actually corresponds to prior lines in the same scene. Pronouns, tone, and callbacks stay consistent within a scene; history resets at event boundaries so unrelated scenes don't bleed into each other. More workers = more events translated in parallel, no context lost.
+- **Translation history** — Last 10 translations within the current event sent as user/assistant pairs so the LLM maintains consistent voice across the scene.
+- **Auto-retry** — Detects leftover Japanese in output and retries with a stronger prompt.
+- **Server-down detection** — If the LLM server hangs or crashes (5+ connection errors in 30s), translation pauses and prompts you to restart it. Resume picks up where it left off — no lost progress.
+- **Auto-save & checkpointing** — Saves every 25 entries during batch. Crash-proof.
+- **Per-engine configuration** — Each engine gets its own context window, batch size, workers, word wrap, model override, and system prompt via the Engines tab in Settings. A "Default (All Engines)" row lets non-tinkers set everything at once.
+- **DazedMTL Mode** — One-click toggle: batch 30, 4 workers, DazedMTL prompt. Works with both local Sugoi and cloud APIs.
+- **Open in RPG Maker** — Creates a workspace with directory junctions so you can QA and playtest translations in RPG Maker's visual editor. Auto-detects MV vs MZ.
+- **Cloud cost tracking** — Real-time token count and USD cost during batch translation.
+- **Translation variants** — Generate 3 different translations per entry and pick the best one.
+- **Word wrap plugin** — Auto-injected JS plugin wraps dialogue at render time using pixel measurements. Also hooks Window_Help for skill/item descriptions. No manual line break guessing.
+- **Post-processor** — Automated fixes after batch translate: placeholder leaks, collapsed color codes, missing spaces, spurious newlines, skill message spacing, and more.
+- **Grammar polish** — English-to-English LLM pass to fix awkward phrasing without retranslating from Japanese.
+- **Prompt presets** — Default, Sugoi (DazedMTL Full), DazedMTL Simple, or Custom. Reset Default and Clear buttons.
+
+---
+
+## Download / Releases
+
+> **Upgrading from a pre-1.0 version?** Version 1.0 fixes ~200 bugs, including
+> several that could lose saved progress or damage game files — see
+> [CHANGELOG.md](CHANGELOG.md) for the full list. Your saved projects carry
+> over. The old code is kept on the `legacy/v2` branch (tag `v2-pre-overhaul`)
+> but is no longer maintained.
+
+
+**Windows (no Python needed):** grab `RPGMakerTranslator-<version>-win64.zip` from the
+[Releases page](https://github.com/MoriTranslates/rpgmaker-translator/releases/latest),
+extract it anywhere (not inside `Program Files`), and run `RPGMakerTranslator.exe`.
+Your settings are saved next to the exe, so the folder is portable.
+
+- The exe is not code-signed yet, so Windows SmartScreen may say "Windows protected your PC" — click **More info → Run anyway**.
+- Each release lists a SHA256 checksum; verify with `Get-FileHash RPGMakerTranslator-*.zip` in PowerShell.
+- To update, extract the new zip and copy your old `_settings.json` into the new folder.
+- You still need [Ollama](https://ollama.com/download) (or a cloud API key) — see Quick Start step 1.
+- What changed in each version: [CHANGELOG.md](CHANGELOG.md).
+
+Prefer running from source (any OS, latest code)? Follow the Quick Start below.
+
+---
+
+## Quick Start
+
+### 1. Install Ollama + Qwen 3.5
+
+```bash
+# Install Ollama: https://ollama.com/download
+# Then grab Qwen 3.5 (best JP→EN model):
+ollama pull qwen3.5:9b
+```
+
+### 2. Install & Run
+
+```bash
+pip install -r requirements.txt
+python main.py
+```
+
+### 3. Translate
+
+1. **Project > Open Project** — point to your game folder (any supported engine auto-detected)
+2. **Assign actor genders** in the popup dialog (RPG Maker engines)
+3. **Batch DB** (`Ctrl+D`) — translate names/items/skills first
+4. **Batch Dialogue** (`Ctrl+T`) — translate dialogue with auto-glossary
+5. **Game > Apply Translation** (`Ctrl+E`) — write back to game files
+6. **Game > Open in RPG Maker** (`Ctrl+R`) — QA in the visual editor (MV/MZ only)
+
+---
+
+## Building from Source
+
+Requires Python 3.12+ (3.14 recommended — it's what releases are built with).
+
+```powershell
+git clone https://github.com/MoriTranslates/rpgmaker-translator.git
+cd rpgmaker-translator
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements-dev.txt     # app + pytest, ruff, pyinstaller
+python -m pytest -q                     # run the test suite
+python main.py                          # run the app
+
+# Build the Windows bundle (dist\RPGMakerTranslator\ + a zip):
+powershell -ExecutionPolicy Bypass -File packaging\build_windows.ps1
+```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the development and release workflow.
+
+---
+
+## Recommended Model — Qwen 3.5
+
+Best JP→EN model available locally. 262K native context window, multimodal (also used for image OCR), handles honorifics, adult content, and RPG Maker control codes. Works for all 24 supported target languages.
+
+| GPU VRAM | Model | Command |
+|---|---|---|
+| **6GB** | Qwen 3.5:9b Q4_K_M | `ollama pull qwen3.5:9b` |
+| **10GB** | Qwen 3.5:9b Q8_0 | `ollama pull qwen3.5:9b-q8_0` |
+| **12GB** | Qwen 3.5:14b Q4_K_M | `ollama pull qwen3.5:14b` |
+| **16GB** | Qwen 3.5:14b Q8_0 | `ollama pull qwen3.5:14b-q8_0` |
+| **24GB** | Qwen 3.5:30b Q4_K_M | `ollama pull qwen3.5:30b` |
+
+The 9b model is the sweet spot — fast, fits in 6GB VRAM, and produces excellent translations.
+
+### No GPU? Use Cloud APIs
+
+In Settings, switch Provider to OpenAI/Gemini/DeepSeek/Anthropic, enter your API key, and go. Same workflow, same features, pay per token. Cheapest option: **Gemini 2.0 Flash** at $0.10/$0.40 per 1M tokens.
+
+> **Note:** Cloud APIs may refuse or filter adult content and can ban accounts for repeated NSFW requests. For unrestricted translation of all content types, use Local LLM — everything runs on your GPU, nothing is sent to the cloud.
+
+---
+
+## Cloud API Providers (Experimental)
+
+> **Experimental:** Cloud API support is functional but less battle-tested than local Ollama. Expect occasional edge cases. Cloud APIs may also refuse or filter adult content — see [Local LLM note above](#no-gpu-use-cloud-apis).
+
+| Provider | Models | Pricing (per 1M tokens) |
+|---|---|---|
+| **Google Gemini** | gemini-2.0-flash, 2.5-flash, 2.5-pro | $0.10–$1.25 in / $0.40–$10.00 out |
+| **OpenAI** | gpt-4.1-mini, gpt-4.1, gpt-5 | $0.40–$2.00 in / $1.60–$10.00 out |
+| **DeepSeek** | deepseek-chat | $0.27 in / $1.10 out |
+| **Anthropic** | claude-sonnet-4.5 | $3.00 in / $15.00 out |
+
+All providers use the OpenAI SDK as a universal abstraction. Switch in Settings > Provider, enter your API key, and the rest is automatic — batch size, workers, and prompt presets auto-configure.
+
+---
+
+## Translation Workflow
+
+### Two-Stage Batch (Recommended)
+
+1. **Batch DB** (`Ctrl+D`) — Translates database entries: item names, skill names, enemy names, system terms. These become glossary entries.
+2. **Review DB names** — Fix any mistranslations in the table. Corrections auto-update the glossary.
+3. **Batch Dialogue** (`Ctrl+T`) — Translates dialogue, events, and plugin text using the glossary built in step 1.
+
+This prevents inconsistencies like an NPC saying "Take the Holy Sword" when the inventory calls it "Sacred Blade".
+
+### Other Batch Modes
+
+- **Batch All** (`Ctrl+Shift+T`) — DB + dialogue in one pass (skips manual review step)
+- **Batch by Actor** (`Ctrl+Shift+A`) — Groups by speaker gender for best pronoun accuracy. Shows a breakdown before starting.
+
+### Per-Entry Tools (Right-Click Menu)
+
+- **Translate Selected** — Translate specific rows
+- **Retranslate with Correction** — Hint what was wrong ("use she/her", "too literal")
+- **Show Variants (3 options)** — Pick from 3 different translations
+- **Mark Reviewed / Skip** — Track QA progress
+- **Polish Grammar** — English-to-English cleanup pass
+
+---
+
+## Glossary System
+
+The glossary forces the LLM to use specific translations for Japanese terms. Only terms that appear in the current text are injected — a 200-entry glossary doesn't bloat prompts.
+
+**Two layers:**
+- **General Glossary** (Settings) — Shared across all projects. ~100 presets for common RPG terms.
+- **Project Glossary** (Settings) — Per-project. Auto-populated from translated DB names.
+
+Project entries override general entries for the same JP term.
+
+**Glossary menu:**
+- Import/Export vocab files (DazedMTL-compatible format)
+- Scan a translated game folder for JP→EN pairs
+- Build glossary from this project's translations
+- Apply glossary to fix inconsistent translations
+
+---
+
+## Open in RPG Maker
+
+**Game > Open in RPG Maker** (`Ctrl+R`) creates a workspace folder with directory junctions pointing to the game's data and assets. RPG Maker opens it as a project — you can playtest, inspect events, and verify translations in the visual editor.
+
+- Auto-detects MV vs MZ engine
+- Zero disk space (junctions, not copies)
+- Edits in RPG Maker write directly to game files
+- Works with RPG Maker MV ($6 on sale) or MZ
+
+---
+
+## Settings Reference
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| Provider | Ollama (Local) | Translation engine — Ollama, OpenAI, Gemini, DeepSeek, Anthropic, Custom |
+| Model | (auto-detected) | LLM model. Qwen 3.5:9b recommended for JP→EN |
+| Prompt Preset | Default / Sugoi | Preset prompt or Custom. Reset Default / Clear buttons |
+| DazedMTL Mode | Off | One-click: batch 30, 4 workers, DazedMTL prompt |
+| Target Language | English | 24 languages with quality ratings |
+| Context window | 10 | Recent dialogue lines as context (higher = better coherence) |
+| Workers | 2 | Parallel events translated at once. More workers = more events in parallel. 2-3 for 12GB GPUs running 9-14B models, 4+ for cloud APIs |
+| Batch size | 5 | Lines per request within an event. Batches never cross event boundaries — a 4-line event sends 4, a 25-line event with batch=10 sends 10/10/5 |
+| Translation history | 10 | Recent translations sent as assistant messages |
+| Dark mode | On | Catppuccin dark theme |
+
+### Engines Tab
+
+Per-engine overrides for Context, Batch Size, Workers, Word Wrap, and Model. A **Default (All Engines)** row sets values for all engines at once — individual engines can override specific settings. Each engine also has its own system prompt that evolves independently.
+
+---
+
+## Supported Formats & Languages
+
+### Game Engines
+
+| Engine | Files | Status |
+|---|---|---|
+| RPG Maker MV | .json | Supported |
+| RPG Maker MZ | .json | Supported |
+| RPG Maker VX Ace | .rvdata2 | Supported |
+| RPG Maker 2000/2003 | .ldb, .lmu | Supported |
+| Ren'Py | .rpy | Supported |
+| TyranoScript | .ks | Supported |
+| SRPG Studio | data.dts | Supported |
+| Kirikiri | .ks (KAG) + .xp3 archives | Supported |
+| Crowd | .sce | Experimental |
+
+All engines auto-detect when you open a game folder — no manual configuration needed.
+
+> **RPG Maker MV/MZ** — Separate engine handlers with independent system prompts. Full plugin extraction, speaker detection, namebox handling, face-aware word wrap, and patch zip export.
+
+> **RPG Maker VX Ace** — Parses Ruby Marshal binary files via `rubymarshal`. Full database + event support (actors, items, skills, maps, common events, troops). Same two-stage DB → Dialogue workflow as MV/MZ. **Window Scaler** auto-injected on project open — VX Ace games run at tiny resolutions (544x416 or 640x480), so a Win32 API script is injected into `Scripts.rvdata2` that adds: PgUp/PgDn to scale the window (1x / 1.5x / 2x / 2.5x / 3x), F3 to cycle borderless fullscreen (ratio-kept → stretched → off). Pick your default scale in the dialog.
+
+> **RPG Maker 2000/2003** — LCF binary parser for `.ldb` and `.lmu` files. Word wrap at 50 chars/line. EasyRPG Player auto-downloaded on export for locale-free play on non-Japanese Windows.
+
+> **Ren'Py** — Parses `.rpy` script files for dialogue, narration, choices, and character definitions. Preserves `{i}`, `{b}`, `{color=...}` inline tags. Language-agnostic prompt (works for any source language, not just Japanese). Backup to `game_original/`, idempotent re-export.
+
+> **TyranoScript** — Auto-extraction from NW.js executables, `[r]`/`[p]`/`[emb]` tag preservation via `«CODE»` placeholders, self-calibrating word wrap from original JP line lengths, VN-specific LLM prompt, and a dedicated post-processor for tag leak cleanup.
+
+> **SRPG Studio** — Decrypts and parses `data.dts` (AES-128-CBC encrypted, zlib-compressed XML). Translates all text content and exports directly back to the encrypted format.
+
+> **Kirikiri** — Parses KAG3 script files in both `@name chara=`/`@e` and `[cn name=]`/`[en]` dialogue formats. Built-in XP3 archive extraction — packed games are auto-extracted on open, no external tools needed. Auto-detected via `startup.tjs` engine marker or `[cn name=` tags. Shares the visual novel LLM prompt with TyranoScript. Backup to `scenario_original/`, idempotent re-export.
+
+> **Crowd (Experimental)** — Reverse-engineered XOR cipher for `.sce` encrypted script files (X-Change series, late 1990s–2000s). Auto-extracts the decryption key from the game exe — no manual configuration. Parses dialogue with 62+ speakers, narration, scene titles, and sound effects. Backup to `sce_original/`, idempotent re-export with re-encryption. **Caveat:** The Crowd engine's text renderer treats ASCII spaces as page breaks, so re-injecting English text into the original exe does not produce playable results without binary patching. Translation extraction and review works fine — consider using the translated script as a base for porting to Ren'Py or another modern engine.
+
+### Target Languages
+
+24 languages supported. English is the primary target (use Sugoi for best quality). Other languages use Qwen3 with quality rated 2-5 stars in Settings.
+
+**Top tier:** English, Chinese (Simplified/Traditional), Korean, Spanish, Portuguese, French, German
+**Good:** Russian, Italian, Polish, Dutch, Turkish, Indonesian, Vietnamese, Thai, Malay
+**Fair:** Arabic, Hindi, Ukrainian, Czech, Romanian, Hungarian, Tagalog
+
+---
+
+## Troubleshooting
+
+| Problem | Fix |
+|---|---|
+| "Cannot connect to Ollama" | Run `ollama serve` in a terminal first |
+| Translations are slow | Use Qwen 3.5:9b with batch size 5-10 or enable DazedMTL Mode (batch 30, 4 workers). Add more workers to translate more events in parallel |
+| Wrong pronouns | Assign correct genders in the actor dialog, or use Batch by Actor mode |
+| Missing control codes | Right-click > Restore Missing Codes, or they auto-restore at checkpoints |
+| Cloud API errors | Check your API key in Settings. Test Connection button verifies connectivity |
+| Ollama crashes mid-batch (connection reset 10054) | OOM on KV cache. Drop workers to 1-2 for 14B models on a 12GB GPU. Server-down dialog will pause and let you Resume |
+| Plugin translations break game | Plugin entries are skipped by default. Only unskip display text (menu labels, descriptions) |
+| RM2K game won't launch | Japanese locale issue — use EasyRPG Player (auto-copied on export) or Locale Emulator |
+
+---
+
+## Acknowledgments
+
+- **[DazedMTLTool](https://github.com/dazedanon/DazedMTLTool)** (MIT) — Cloud API engine, batch translation approach, prompt presets, and pricing config ported from DazedMTL. DazedMTL Mode mirrors their exact translation pipeline.
+- **[Sugoi Toolkit](https://huggingface.co/sugoitoolkit)** — Fine-tuned JP→EN translation models optimized for visual novels and RPGs.
+- **[Ollama](https://ollama.com/)** — Local LLM inference server that makes GPU translation free and private.
+- **[rubymarshal](https://github.com/d9pouces/RubyMarshal)** — Ruby Marshal binary format parser, used for RPG Maker VX Ace `.rvdata2` files.
+- **[pycryptodome](https://www.pycryptodome.org/)** — AES decryption for SRPG Studio `data.dts` files.
+- **[EasyRPG Player](https://easyrpg.org/)** — Open-source RPG Maker 2000/2003 runtime, used for locale-independent play of translated RM2K games.
+
+---
+
+## License
+
+[Business Source License 1.1](LICENSE) — free for personal and other non-commercial use (fan translation, education, research). Commercial use requires a license from MoriTranslates. See [LICENSE](LICENSE) for the full terms.

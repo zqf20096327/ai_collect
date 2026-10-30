@@ -24,6 +24,9 @@
 
 </div>
 
+> **Design partners:** Building something complex? Get your feature requests prioritized.
+> DM [@NathanQueme](https://x.com/NathanQueme) or email [nathan@r28.ai](mailto:nathan@r28.ai).
+
 # Charter
 
 Charter is an open-source Python library for agents that act in your customers' accounts

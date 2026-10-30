@@ -3,8 +3,8 @@
 # 🚗 AlphaAD · Autonomous Driving Research
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Last Update](https://img.shields.io/badge/Last%20Updated-2026--10--29-blue)
-![Total Papers](https://img.shields.io/badge/Papers-1418-green)
+![Last Update](https://img.shields.io/badge/Last%20Updated-2026--10--30-blue)
+![Total Papers](https://img.shields.io/badge/Papers-1423-green)
 ![Auto Update](https://img.shields.io/badge/Auto--Update-Daily-brightgreen)
 
 **A daily, explainable research signal for autonomous driving.**<br>
@@ -20,20 +20,20 @@ Browse one primary topic per paper, then refine the signal with method and resou
 
 ## Browse by topic
 
-All 1418 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
+All 1423 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
 
 | Topic | Papers | Latest | Jump |
 |:--|--:|:--|:--|
-| Perception & Sensor Fusion | 222 | 2026-10-27 | [View papers](#category-perception-sensor-fusion) |
+| Perception & Sensor Fusion | 222 | 2026-10-29 | [View papers](#category-perception-sensor-fusion) |
 | Prediction & World Models | 108 | 2026-10-26 | [View papers](#category-prediction-world-models) |
-| Planning & Decision-Making | 98 | 2026-10-27 | [View papers](#category-planning-decision-making) |
+| Planning & Decision-Making | 99 | 2026-10-28 | [View papers](#category-planning-decision-making) |
 | Control & Vehicle Dynamics | 58 | 2026-10-26 | [View papers](#category-control-vehicle-dynamics) |
-| Mapping & Localization | 52 | 2026-10-18 | [View papers](#category-mapping-localization) |
-| End-to-End & VLA | 160 | 2026-10-27 | [View papers](#category-end-to-end-vla) |
-| Safety, Security & Verification | 221 | 2026-10-26 | [View papers](#category-safety-security-verification) |
-| Systems, Deployment & Connectivity | 162 | 2026-10-27 | [View papers](#category-systems-deployment-connectivity) |
+| Mapping & Localization | 53 | 2026-10-28 | [View papers](#category-mapping-localization) |
+| End-to-End & VLA | 159 | 2026-10-27 | [View papers](#category-end-to-end-vla) |
+| Safety, Security & Verification | 223 | 2026-10-29 | [View papers](#category-safety-security-verification) |
+| Systems, Deployment & Connectivity | 160 | 2026-10-27 | [View papers](#category-systems-deployment-connectivity) |
 | Human Factors & Policy | 29 | 2026-10-17 | [View papers](#category-human-factors-policy) |
-| Cross-cutting / Other | 308 | 2026-10-27 | [View papers](#category-cross-cutting-other) |
+| Cross-cutting / Other | 312 | 2026-10-29 | [View papers](#category-cross-cutting-other) |
 
 ---
 
@@ -47,23 +47,43 @@ Each paper has one primary topic and may carry several method or resource tags. 
 |:--|--:|:--|
 | Dataset | 103 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
 | Benchmark | 96 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
-| Simulation | 191 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
+| Simulation | 192 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
 | Synthetic Data | 36 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
-| Cooperative / V2X | 114 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
+| Cooperative / V2X | 112 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
 | VLA | 89 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
-| World Model | 115 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
-| Reinforcement Learning | 139 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
+| World Model | 114 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
+| Reinforcement Learning | 140 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
 | Imitation Learning | 30 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Imitation+Learning) |
 | Hardware / Real-Time | 102 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
 | Survey | 28 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Survey) |
-| Explainability | 119 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
-| Human Interaction | 17 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Human+Interaction) |
+| Explainability | 118 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
+| Human Interaction | 18 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Human+Interaction) |
 
 ---
 
 <a id="category-perception-sensor-fusion"></a>
 
 ## Perception & Sensor Fusion · 222 papers
+
+<a id="paper-2610-39848"></a>
+
+### LiDAR-SHIELD: A Fully Dockerized Adversarial Robustness Assessment Framework for LiDAR-Based 3D Perception Models ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Alexandros Gkillas, Ioulia Kapsali, Christos Anagnostopoulos, Aris S. Lalos<br>
+**Published:** 2026-10-29<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2610.39848) | [PDF](https://arxiv.org/pdf/2610.39848.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** LiDAR-based 3D perception underpins autonomous driving and robotics, yet deploying these models safely requires stress-testing them against adversarial inputs before real-world use. Although...
+
+<a id="paper-2610-38320"></a>
+
+### SSQA: Sibling-Selective Quadtree Attention for Hierarchical Modeling in Perception Tasks ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Yufan Chen, Arnav Bali, Angela Liu, Laura Zheng, Ming C. Lin<br>
+**Published:** 2026-10-28<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2610.38320) | [PDF](https://arxiv.org/pdf/2610.38320.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** Perception tasks for navigation in robotics, including aerial platforms such as drones and autonomous driving systems, are inherently structured. Drone-mounted cameras typically capture sky above,...
 
 <a id="paper-2610-37153"></a>
 
@@ -149,7 +169,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-31186"></a>
 
-### RaSFNet: Ray-aligned and Scan-aware Fusion Network for LiDAR Semantic Segmentation ![New](https://img.shields.io/badge/New-red)
+### RaSFNet: Ray-aligned and Scan-aware Fusion Network for LiDAR Semantic Segmentation ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Chuang Chen<br>
 **Published:** 2026-10-22<br>
@@ -455,7 +475,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2609-37046"></a>
 
-### Speed in the Blind Spot: An Interpretability Analysis of Dynamic Perception in VLMs for Autonomous Driving ![Recent](https://img.shields.io/badge/Recent-orange)
+### Speed in the Blind Spot: An Interpretability Analysis of Dynamic Perception in VLMs for Autonomous Driving ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Katharina Winter, Stefan Englmeier, Fabian B. Flohr<br>
 **Published:** 2026-09-29<br>
@@ -1130,7 +1150,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2607-29237"></a>
 
-### CorrelationFlow: A Training-Free Geometric Approach for LiDAR Scene Flow Estimation ![Fresh](https://img.shields.io/badge/Fresh-yellow)
+### CorrelationFlow: A Training-Free Geometric Approach for LiDAR Scene Flow Estimation
 
 **Authors:** Minh-Quan Dao, Yancong Lin, Shiming Wang, Julie Stephany Berrio Perez, Holger Caesar<br>
 **Published:** 2026-07-31<br>
@@ -1647,26 +1667,4 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 ### HilDA: Hierarchical Distillation with Diffusion for Advancing Self-Supervised LiDAR Pre-training
 
-**Authors:** Maciej Wozniak, Jesper Ericsson, Hariprasath Govindarajan, Truls Nyberg, Thomas Gustafsson, et al.<br>
-**Published:** 2026-06-18<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2606.20189) | [PDF](https://arxiv.org/pdf/2606.20189.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** Leveraging Vision Foundation Models (VFMs) for camera-to-LiDAR knowledge distillation offers a promising solution to the scarcity of annotated data needed to represent the immense geometric and...
-
-<a id="paper-2606-19122"></a>
-
-### Monocular 3D Occupancy Perception for Robots on Sidewalks via Hybrid 2D-3D Learning
-
-**Authors:** Yukai Ma, Joe Lin, Liu Liu, Honglin He, Lulu Ricketts, et al.<br>
-**Published:** 2026-06-17<br>
-**Research tags:** Dataset<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2606.19122) | [PDF](https://arxiv.org/pdf/2606.19122.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** Sidewalks in the real world are crowded, cluttered, and less structured than roads, making 3D occupancy prediction a key ingredient for the safe navigation of mobile robots such as delivery bots and...
-
-<a id="paper-2606-18242"></a>
-
-### EventDrive: Event Cameras for Vision-Language Driving Intelligence
-
-**Authors:** Dongyue Lu, Rong Li, Ao Liang, Lingdong Kong, Wei Yin, et al.<br>
-**Publishe
+**Authors:** Maciej Wozniak, Jesper Ericsson, Haripr

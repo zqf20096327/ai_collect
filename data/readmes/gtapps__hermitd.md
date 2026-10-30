@@ -282,6 +282,8 @@ You can run separate agents for different responsibilities, each with its own wo
 
 **Sign-in renewal from chat.** When your agent’s Claude sign-in needs renewing, use `/relogin` from your connected chat. Open the link in your browser, sign in, and send the code back in chat.
 
+**Tool sign-ins from chat.** When a connected tool or claude.ai connector needs you to sign in again, ask your agent in chat to log you in. Open each link it sends, approve access, and paste back the address your browser fails to load; the tool works again without a restart.
+
 **Scheduled backups.** Optional backups preserve the agent’s knowledge, session reports, settings, and Claude Code memory in Git, with an optional private remote copy. Backups run without model tokens.
 
 ## Upgrading from claude-code-hermit
@@ -297,6 +299,8 @@ Run `hermitd update` from the project folder, or `hermitd update <name>` from an
 `hermitd list` shows registered and discovered agents on this host, including stopped and missing projects. `hermitd status [name]` shows transport, execution and its age, open and waiting tasks, and the first runnable task. Both support `--json`. Listing never removes entries; `hermitd prune` removes missing projects.
 
 Use `hermitd start|stop|restart|attach [name]` for lifecycle commands, `hermitd pause [name] on|off|snooze <duration>|status`, `hermitd watchdog [name] run|install|uninstall`, or `hermitd run [name] <script> [args]` for maintenance. Names match the project folder or agent name; with no name, the nearest project above the current folder is used.
+
+`hermitd agents [name]` opens Claude Code's agent view (`claude agents`) where the agent runs: inside the container for Docker agents, on the host under the agent's Claude config folder otherwise. On the host that view lists every session in the config folder, so pass `--cwd <path>` to narrow it. Extra flags pass through, and `--json` works from scripts.
 
 See the [Upgrade guide](plugins/hermitd/docs/upgrading.md) for details.
 

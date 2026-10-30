@@ -264,6 +264,11 @@ Daily updating from ArXiv. The preview README only includes papers submitted to 
   - Key Word: Mechanistic Interpretability.
   - <details><summary>Digest</summary> This work explores the identifiability of Mechanistic Interpretability (MI) explanations in neural networks. It examines whether unique explanations exist for a given behavior by drawing parallels to identifiability in statistics. The study identifies two MI strategies: “where-then-what” (isolating circuits before interpreting) and “what-then-where” (starting with candidate algorithms and finding neural activation subspaces). Experiments on Boolean functions and small MLPs reveal systematic non-identifiability—multiple circuits, interpretations, and subspaces can explain the same behavior. The study questions whether uniqueness is necessary, suggesting that predictive and manipulability criteria might suffice, and discusses validation through the inner interpretability framework.
 
+- ParamMute: Suppressing Knowledge-Critical FFNs for Faithful Retrieval-Augmented Generation. [[paper]](https://arxiv.org/abs/2502.15543) [[code]](https://github.com/OpenBMB/ParamMute)
+  - Pengcheng Huang, Zhenghao Liu, Yukun Yan, Haiyan Zhao, Xiaoyuan Yi, Hao Chen, Zhiyuan Liu, Maosong Sun, Tong Xiao, Ge Yu, Chenyan Xiong. *NeurIPS 2025*
+  - Key Word: Mechanistic Interpretability; Feed-Forward Networks; Knowledge Conflicts; Contextual Faithfulness; Retrieval-Augmented Generation.
+  - <details><summary>Digest</summary> Retrieval-augmented LLMs sometimes produce answers that contradict relevant and accurate retrieved context. Analyzing internal activations, the authors find that a subset of mid-to-deep FFN layers is disproportionately activated in such unfaithful generations. ParamMute suppresses these unfaithfulness-associated FFNs and calibrates the model toward retrieved knowledge, improving faithfulness on the new CoFaithfulQA benchmark and on ConFiQA.</details>
+
 - Open Problems in Mechanistic Interpretability. [[paper]](https://arxiv.org/abs/2501.16496)
   - Lee Sharkey, Bilal Chughtai, Joshua Batson, Jack Lindsey, Jeff Wu, Lucius Bushnaq, Nicholas Goldowsky-Dill, Stefan Heimersheim, Alejandro Ortega, Joseph Bloom, Stella Biderman, Adria Garriga-Alonso, Arthur Conmy, Neel Nanda, Jessica Rumbelow, Martin Wattenberg, Nandi Schoots, Joseph Miller, Eric J. Michaud, Stephen Casper, Max Tegmark, William Saunders, David Bau, Eric Todd, Atticus Geiger, Mor Geva, Jesse Hoogland, Daniel Murfet, Tom McGrath.
   - Key Word: Mechanistic Interpretability.
@@ -281,6 +286,11 @@ Daily updating from ArXiv. The preview README only includes papers submitted to 
 
 
 ### 2026
+
+- Alignment via Generalization. [[paper]](https://arxiv.org/abs/2610.34242)
+  - Shai Shalev-Shwartz, Amnon Shashua.
+  - Key Word: AI Alignment; PAC Learning; Generalization; Alignment Evaluation; Learning Theory.
+  - <details><summary>Digest</summary> The paper introduces Aligned-PAC learning, framing AI alignment as generalization from training requirements to unseen requirements, with intentions represented through a collection of specific requirements. It derives guarantees and sample requirements for independent evaluation and proposes an optimization method that combines learned models to meet training requirements under explicit assumptions. Selecting requirements that faithfully capture human intentions and establishing generalization to unseen requirements remain open challenges.</details>
 
 - Positive Alignment: Artificial Intelligence for Human Flourishing. [[paper]](https://arxiv.org/abs/2605.10310)
   - Ruben Laukkonen, Seb Krier, Chloé Bakalar, Shamil Chandaria, Morten Kringelbach, Adam Elwood, Daniel Ford, Fernando Rosas, Maty Bohacek, Matija Franklin, Nenad Tomašev, Stephanie Chan, Verena Rieser, Roma Patel, Michael Levin, Arun Rao.

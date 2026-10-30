@@ -149,6 +149,7 @@ Skills work across multiple platforms:
 - [sno-station-skills](https://github.com/sno-ai/sno-station-skills) - Skills for Claude Code and Codex: cross-vendor peer review, handoff when one agent hits its usage limit, delegation and reporting.
 - [Arcmira: YouTube Transcript Search](https://github.com/arcmira/mcp/tree/master/plugins/arcmira) - Six research skills for transcript search, timestamped quotes, speaker appearances, sponsors and mention monitors. Requires an Arcmira account; sends questions as JavaScript programs to the hosted MCP service, which records account-linked tool calls for product analytics ([data handling](https://github.com/arcmira/mcp#what-we-log), [privacy](https://arcmira.com/privacy), [terms](https://arcmira.com/terms)). The plugin and bundled skills use [Apache-2.0](https://github.com/arcmira/mcp/blob/master/plugins/arcmira/LICENSE); the separate MCP server is proprietary.
 - [firecrawl/skills](https://github.com/firecrawl/skills) - Official Firecrawl skills for web search, scraping, crawling and browser interaction; they call the Firecrawl API (API key or self-hosted).
+- [headcount](https://github.com/cbrock84/headcount) - Company-department skills (legal, finance, security, ops and more) for Claude Code and ChatGPT, each installable on its own and citing the standards or regulators it relies on.
 
 ## Development Tools
 
@@ -222,6 +223,7 @@ Skills work across multiple platforms:
 - [d3-visualization](https://github.com/chrisvoncsefalvay/claude-d3js-skill) - D3.js data visualization Skill.
 - [context-engineering](https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering) - Context engineering and multi-Agent architecture.
 - [kordoc](https://github.com/chrisryugj/kordoc/tree/main/plugins/kordoc/skills/kordoc) - Korean document (HWP/HWPX/PDF) to Markdown conversion, form filling, and HWPX generation Skill.
+- [jiangshan-atlas](https://github.com/DeanChensj/jiangshan-map/tree/main/skills/jiangshan-atlas) - Interactive Chinese historical atlas Skill for locating ancient places, classical poems, and figure trajectories.
 
 ## Writing
 

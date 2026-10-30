@@ -130,24 +130,74 @@ codex mcp add rapr -- rapr mcp                   # Codex
 
 On Windows, end both with `-- cmd /c rapr mcp`. For Codex, also add `tool_timeout_sec = 600` under `[mcp_servers.rapr]` in `~/.codex/config.toml`: Codex gives up on a tool after 60 seconds, and a review usually takes a few minutes. Grok: `grok mcp add rapr -- rapr mcp`. Antigravity, Cursor, Windsurf and other clients: add a server with the command `rapr` and the argument `mcp` ([how, for each](docs/guide.md#use-rapr-from-your-coding-agent-mcp)).
 
-**Just the MCP server, without the app:** if you have [uv](https://docs.astral.sh/uv/), use `uvx --from git+https://github.com/rawalrahul/raprai rapr-mcp` in place of `rapr mcp`:
+**Just the MCP server, without the app:** if you have [uv](https://docs.astral.sh/uv/), use `uvx --from git+https://github.com/rawalrahul/raprai rapr-mcp` in place of `rapr mcp` (other ways, and how to update each: [Update, reset or remove](#update-reset-or-remove-the-mcp-server)):
 
 ```bash
 claude mcp add --scope user rapr -- uvx --from git+https://github.com/rawalrahul/raprai rapr-mcp
 ```
 
-Then ask in plain words: *"get a second opinion from Codex on my changes"*, *"plan this with Claude, have Codex build it and Claude review it"*, *"run a bake-off between Claude and Codex on this task, with pytest -q"*, *"what needs me today?"*.
+Then ask in plain words: *"get a second opinion from Codex on my changes"*, *"plan this with Claude, have Codex build it and Claude review it"*, *"give part 1 of the plan to Claude and part 2 to Codex, I'll do part 3"*, *"run a bake-off between Claude and Codex on this task, with pytest -q"*, *"what needs me today?"*.
 
 | Tool | What it does |
 |---|---|
 | `second_opinion` | Another AI reviews your uncommitted changes (or the last commit, or changes since a branch you name) and reports bugs, most serious first. |
 | `ask_agent` | Puts any question or task to another AI and returns its reply. |
 | `start_relay`, `relay_status`, `merge_relay`, `discard_relay` | Plan, build, review, fix: pick any AI for each role (say Claude plans, Codex builds, Claude reviews and Codex fixes what it found), all in a copy of the project until you merge. |
+| `start_team`, `team_status`, `merge_team`, `discard_team` | Split a plan into parts: say Claude does the API and Codex the UI at the same time, each in its own copy, while you do your own part; then merge them all into the project. |
 | `start_bakeoff`, `bakeoff_status`, `merge_bakeoff`, `discard_bakeoff` | A bake-off from your editor: 2 to 4 AIs, each in its own copy of the project; merge the one you like. |
 | `list_agents` | The AIs installed and signed in on this computer. |
 | `latest_brief` | What needs you, from your latest brief in the RAPR app (needs the app). |
 
 The other AI works in a temporary copy of your project, so your files only change if you allow edits or merge a relay or bake-off. Nothing is hosted, and the RAPR app doesn't need to be open, or even installed. More in the [full guide](docs/guide.md#use-rapr-from-your-coding-agent-mcp).
+
+RAPR only offers the AIs you can actually use: their command-line tool is installed (or came with their VS Code, Cursor or Windsurf extension), you're signed in where RAPR can check (Claude Code, Codex, Grok, Kiro), and a local model server like Ollama or LM Studio is running. Ask for `list_agents` to see them; it also says which installed AI still needs signing in, and how.
+
+### GitHub Copilot
+
+In **VS Code**, run **MCP: Open User Configuration** from the Command Palette and add:
+
+```json
+{
+  "servers": {
+    "rapr": { "type": "stdio", "command": "uvx",
+              "args": ["--from", "git+https://github.com/rawalrahul/raprai", "rapr-mcp"] }
+  }
+}
+```
+
+Then switch Copilot Chat to **Agent** mode and turn on RAPR's tools. In **Copilot CLI**, add the same server with `/mcp add`, or in `~/.copilot/mcp-config.json` under `"mcpServers"`, with `"type": "local"` and `"tools": ["*"]`. With the app installed, use `"command": "rapr", "args": ["mcp"]` instead (on Windows, if `rapr` isn't found: `"command": "cmd", "args": ["/c", "rapr", "mcp"]`).
+
+### Update, reset or remove the MCP server
+
+There are three ways to run RAPR's MCP server, and each updates differently, so first find out which one you have.
+
+| | **uvx** (recommended without the app) | **uv tool install** | **The app** |
+|---|---|---|---|
+| Set up with | Nothing to install: your client runs `uvx --from git+https://github.com/rawalrahul/raprai rapr-mcp` | `uv tool install git+https://github.com/rawalrahul/raprai` once, then your client runs `rapr-mcp` | The [app installer](#install), then your client runs `rapr mcp` |
+| Your MCP config's command | `uvx` | `rapr-mcp` | `rapr` (or `cmd` with `/c rapr mcp` on Windows) |
+| **To update** | `uv cache clean rapr-mcp` | `uv tool upgrade rapr-mcp` | `rapr update`, or **Settings → Updates** |
+| **To remove the server** | `uv cache clean rapr-mcp` | `uv tool uninstall rapr-mcp` | `rapr uninstall` (see [Update and uninstall](#update-and-uninstall)) |
+
+**Which to use.** Already using the app? Use `rapr mcp`; it updates with the app. Otherwise **uvx** is the simplest: nothing is installed, and `uv` keeps a copy in its cache. Pick **uv tool install** if you'd rather have a real `rapr-mcp` command that starts a little faster and is the same for every client. If `rapr-mcp` isn't found afterwards, run `uv tool update-shell` and open a new terminal. Use one of them, not several; if you switch, remove the old one as in the table.
+
+**Which one you have.**
+
+1. Look at RAPR's entry in your MCP client. In VS Code and Copilot CLI, open the MCP config (VS Code: **MCP: Open User Configuration**; Copilot CLI: `~/.copilot/mcp-config.json`). In Claude Code or Codex, run `claude mcp list` or `codex mcp list`. Its **command** tells you which: `uvx`, `rapr-mcp` or `rapr`, as in the table.
+2. `uv tool list` lists `rapr-mcp` only if you used **uv tool install**.
+
+**Why the update commands differ.** `uvx` runs the server from `uv`'s cache and keeps using the copy it downloaded first, without checking for a newer one. Clearing the cache makes the next start download the latest `main`. If `uv cache clean rapr-mcp` reports that it removed nothing, run `uv cache clean`; that clears everything `uv` downloaded, so other tools re-download once. To always start the latest instead, put `--refresh` before `--from` in your config; each start then checks GitHub and is a little slower. **uv tool install** puts a permanent copy outside the cache, so clearing the cache doesn't touch it, and `uv tool upgrade rapr-mcp` fetches the latest `main`.
+
+**After updating,** restart your MCP client so it starts the new version (in VS Code, restart the `rapr` server or VS Code itself). Then ask for `list_agents` and look for the new tools in your client's tool list to check it worked.
+
+**Something stuck?** Close your MCP client, run the update command for your setup from the table, and open the client again.
+
+**Leftover copies.** RAPR works in copies of your project. Relay, team and `ask_agent` copies are removed when they finish or your client closes; if it crashed, delete the `rapr-mcp-*` folders in your system's temp folder. Bake-off copies stay in `~/.rapr-bakeoff` until you merge or discard the bake-off. After deleting any of these by hand, run `git worktree prune` in your project so git forgets them too, and delete the `bakeoff/…` branches if you don't want them.
+
+**Remove it completely.**
+
+1. Take RAPR out of your MCP client: `claude mcp remove rapr --scope user` (or without `--scope user` if you added it to one project), `codex mcp remove rapr`; in VS Code, Copilot CLI, Antigravity, Cursor, Windsurf and the rest, delete the `rapr` entry from their MCP settings.
+2. Remove the server itself with the command in the table for your setup.
+3. Optional, deletes your bake-off history and settings: the `RAPR AI` folder in `%LOCALAPPDATA%` (Windows), `~/Library/Application Support` (Mac) or `~/.local/share` (Linux). The app keeps its data there too, so leave it if you use the app.
 
 ## How it works
 

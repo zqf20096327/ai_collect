@@ -106,11 +106,15 @@ A globally installed `ahk` command and global database storage are different set
 
 `ahk init` does not create a home-directory provider scaffold. Agent and skill files it creates stay in the current project. The detailed setup and provider guide ships with [`ahk-docs`](src/core/materializer/skills/ahk-docs/resources/setup-and-providers.md).
 
+For Codex model prompts, AHK recommends models from the live account catalog: the newest Sol for lead and consultant, the newest Luna for explorer, and the newest Terra for builder and reviewer. A strictly newer Sol takes precedence over Terra for those coding roles; equal versions favor Terra. Requested reasoning efforts are medium for lead, builder and reviewer, high for consultant, and low for explorer, falling back to the model's supported default if needed. Missing families inherit the project model; when Terra is absent, builder and reviewer use the available Sol. These are initial choices and can be changed in the prompt. Claude Code and Cursor initially offer inheritance, while OpenCode V2 uses inheritance without prompting during setup.
+
+Run `ahk models apply-defaults` or call MCP `ahk.models.apply_defaults` to apply the current provider's defaults without prompts. This replaces saved choices for all five roles and regenerates their files with backups, reporting the chosen models and backup path. Codex requires a live catalog; discovery failure leaves preferences and role files unchanged. Claude Code, Cursor and OpenCode V2 apply `inherit`; providers without a default policy report that they are unsupported. This configures role preferences and does not install or update model binaries.
+
 ## OpenCode V2
 
 Choose **OpenCode V2** in `ahk init`, or use `ahk migrate --to opencode-v2` for an existing project. The existing `opencode` provider remains v1. Both versions share the `opencode` executable and `.opencode` paths; choosing a provider neither installs a runtime nor isolates the two versions.
 
-V2 generates native `mcp.servers` over stdio with direct tools (`codemode: false`), complete native agent frontmatter, lead as primary and four subagents, ordered permissions, and the existing skills/resources. `ahk models` accepts per-role `provider/model#variant` references or inheritance without a fixed model catalog. Nonimplementing roles deny edits and arbitrary shell commands; reviewer health/test exceptions can still create local build artifacts. These permissions are tool controls, not an OS sandbox.
+V2 generates native `mcp.servers` over stdio with direct tools (`codemode: false`), complete native agent frontmatter, lead as primary and four subagents, ordered permissions, and the existing skills/resources. `ahk init` and provider migration default all five roles to `inherit` without model prompts. Only `ahk models` asks for per-role `provider/model` or `provider/model#variant` references, or inheritance (also selected by an empty response), without a fixed model catalog. Build and sync preserve saved choices and default missing roles to `inherit`, including forced regeneration. Nonimplementing roles deny edits and arbitrary shell commands; reviewer health/test exceptions can still create local build artifacts. These permissions are tool controls, not an OS sandbox.
 
 JSONC edits preserve comments and unrelated settings. Invalid, duplicate or ambiguous config paths and customized v1 shared agents stop migration before replacement. Canonical v1 conversion is backed up; returning to v1 requires the documented recovery rather than feeding native v2 files to v1. Install the v2 sound adapter with `ahk notifications install --provider opencode-v2`. Owned v1 hooks are replaced during migration; edited or foreign hooks are preserved as conflicts.
 
@@ -120,7 +124,9 @@ See the bundled [OpenCode V2 guide](src/core/materializer/skills/ahk-docs/resour
 
 Specifications are Markdown artifacts: use cases live in `docs/use-cases/`; functional and technical specifications live in `docs/specs/`. Tasks, actions, acceptance evidence, and handoffs are harness data, normally backed by the configured database.
 
-`specs.list` returns valid document metadata, `nextOffset`, and an always-present `diagnostics` array of `{ path, message }` for invalid or ambiguous files. Diagnostic paths are relative to the configured docs directory, for example `specs/broken.md`. Diagnostics cover both document roots even when filters or pagination hide items. Discovery reads only immediate `.md` files and excludes `README.md` indexes case-insensitively; other Markdown files, including `index.md`, must have valid specification frontmatter. Duplicate filenames across the roots are excluded with a diagnostic for each path. Reading, searching, validation, and mutations retain strict document validation.
+New managed documents of every kind (`use-case`, `spec`, `feature`, `fix`, `spec-tech`, and legacy `technical`) receive a `YYYY-MM-DD-<slug>.md` physical filename from the UTC creation date. The date stays fixed on edits; metadata slugs, titles, and references have no added prefix. Existing unprefixed documents keep their actual paths. MCP create/get/update/transition responses include a sibling `filePath`; listing items, search results, and related-document items also expose it. These paths are relative to the configured docs directory, for example `specs/2026-10-28-export-members.md`. Use the returned path rather than reconstructing a filename. Logical slugs remain unique across both roots and creation dates.
+
+`specs.list` returns valid document metadata, `nextOffset`, and an always-present `diagnostics` array of `{ path, message }` for invalid or ambiguous files. Diagnostic paths are relative to the configured docs directory, for example `specs/broken.md`. Diagnostics cover both document roots even when filters or pagination hide items. Discovery reads only immediate `.md` files and excludes `README.md` indexes case-insensitively; other Markdown files, including `index.md`, must have valid specification frontmatter. Duplicate logical slugs across filenames, dates, or roots are excluded with a diagnostic for each path. Reading, searching, validation, and mutations retain strict document validation.
 
 On a tracked task, `tasks.claim` runs native health. A pass enables normal work. A failure enters blocked mode: diagnosis remains available, while implementation needs a bounded, audited `tasks.repair.begin(...)` authorization. `tasks.update(..., 'done')` runs fresh final health and closes only when it passes.
 
@@ -161,6 +167,8 @@ The provider should use the installed MCP tool descriptions for exact names and 
 
 The lead scopes and coordinates a tracked task. The explorer maps relevant code without editing it. The consultant advises after exploration. The builder implements the approved plan. The reviewer verifies acceptance criteria, health, and evidence, then either approves or sends a focused correction back through the lead's workflow.
 
+For implementation tasks, the lead asks the builder and reviewer to use the optional [`engineering-code-review` skill](https://github.com/agentara/skills/tree/main/skills/engineering/engineering-code-review) when available. If it is missing, the agent recommends its name and source without blocking the task. The builder evaluates the readability of changed code while preserving behavior; the reviewer reports evidence-backed issues without blocking on personal style.
+
 The health gate does not replace role verification. A green result proves only the native commands it ran. It does not prove deployment, a real device, an OTA update, a browser visual review, or any other unexecuted environment.
 
 ### Documents and approvals
@@ -174,6 +182,8 @@ Draft persistence makes the evolving decision record reviewable. Explicit human 
 ## Maintenance
 
 Use `ahk build` after configuration changes. Use `ahk sync` for its project synchronization workflow. `ahk doctor` is read-only: it checks that agent files exist and byte-checks canonical skill files for missing or outdated content; it does not apply migrations.
+
+For Codex, the logical lead role is generated only as `.codex/agents/default.toml`, with the complete shared lead instructions. This overrides Codex's fallback subagent; it does not configure the primary session. Existing agent customizations remain untouched during normal build/sync. `ahk build --force` or `ahk sync --force --keep-models` backs up existing agent files, regenerates `default.toml`, and retires the legacy `lead.toml`. Both originals are preserved under the reported `.harness/backups/` path. The MCP equivalent is `ahk.sync.plan` with `force: true` and saved model choices, followed by `ahk.sync.apply`; its preview lists retirement, and concurrent changes invalidate the plan.
 
 Generated-skill migrations are versioned and project-local. They run in order and resume after interruption. Exact canonical AHK skill names and retired `ahk-use-cases` / `ahk-use-case-tech` are reserved: build/sync back up changed content before refreshing canonical files or removing retired trees, even after an applied migration checkpoint. Unknown skill names and extra files are preserved; symlinks are refused. Human-authored document migrations are explicit. Read [the maintenance guide](src/core/materializer/skills/ahk-docs/resources/maintenance.md) for details.
 
@@ -209,9 +219,9 @@ The agent can inspect synchronization drift, plan and apply supported provider/s
 
 ## Release lines
 
-`release/v2` maintains the v2 line for projects that cannot yet meet v3's Node.js requirement. The latest published v2 is currently [2.36.1](https://www.npmjs.com/package/@cardor/agent-harness-kit/v/2.36.1) (checked 2026-10-12); install it with `pnpm add @cardor/agent-harness-kit@2.36.1`. Its SQLite dependency's declared engine range includes Node 20.x, making v2 the compatibility path for projects on that runtime. Although the package manifest declares Node `>=14`, that broader engine field does not establish compatibility with older Node versions because the native SQLite dependency has its own runtime requirements. The local v2.36.2 cut is not yet a published npm version. Backport fixes deliberately; the SDK v2/Zod migration belongs to v3. Future v2 publications must explicitly use npm `--tag v2`, or selectively backport the release-tooling guards. Do not promote a v2 patch to `latest` after v3 stable is released. Updated tooling also keeps v2 GitHub releases from becoming the latest release.
+`release/v2` maintains the v2 line for projects that cannot yet meet v3's Node.js requirement. The latest published v2 is currently [2.36.1](https://www.npmjs.com/package/@cardor/agent-harness-kit/v/2.36.1) (checked 2026-10-12); install it with `pnpm add @cardor/agent-harness-kit@2.36.1`. Its SQLite dependency's declared engine range includes Node 20.x, making v2 the compatibility path for projects on that runtime. Although the package manifest declares Node `>=14`, that broader engine field does not establish compatibility with older Node versions because the native SQLite dependency has its own runtime requirements. The 2.37.0 minor release is prepared on the v2 line and has not yet been published. Backport fixes deliberately; the SDK v2/Zod migration belongs to v3. The prepared v2 release script uses npm `--tag v2` and marks its GitHub release `--latest=false`, keeping v3 on the latest channel.
 
-`release/v3` carries v3 development, currently prepared at `3.1.0` in this repository. This version has not been published. After an RC is published, use `pnpm add @cardor/agent-harness-kit@rc` or pin the full RC version. The `rc` npm channel and GitHub prerelease flag keep release candidates separate from stable `latest`. Preparing local branches, tags or a tarball does not publish a release.
+`release/v3` carries v3 development. Version `3.6.0` is published on npm; `3.7.0` is prepared in this repository and has not yet been published. After publication, install `@cardor/agent-harness-kit@3.7.0` or use the stable `latest` channel. For release candidates, use `@cardor/agent-harness-kit@rc` or pin the full RC version. The `rc` npm channel and GitHub prerelease flag keep release candidates separate from stable `latest`. Preparing local branches, tags or a tarball does not publish a release.
 
 After reviewed v3 changes are committed, align local `main` by fast-forwarding it to the same `release/v3` commit. This is an explicit release step; it does not create automatic ongoing synchronization. Existing version tags are immutable. Release preparations accept an existing tag only when its peeled commit is the current HEAD.
 
@@ -223,7 +233,7 @@ Generated skills retain downgrade protection: do not regenerate a v2 provider tr
 
 AHK requires Node 22.14.0 or newer on 22.x, or Node 23.6.0 or newer. Earlier 23.x releases are excluded. The pinned `better-sqlite3` 13.0.3 driver uses Node-API 10; the repository build targets Node 22.
 
-Native installation can still require a working build toolchain. [Upstream issue #1516](https://github.com/WiseLibs/better-sqlite3/issues/1516) records installation failures on Windows with npm and on Linux with pnpm; those reports do not establish an AHK failure on every platform. CI is configured to test exact Node 22.14.0 and the current 22.x release. Local compatibility evidence applies to the tested OS, architecture and package manager.
+Native installation can still require a working build toolchain. [Upstream issue #1516](https://github.com/WiseLibs/better-sqlite3/issues/1516) records installation failures on Windows with npm and on Linux with pnpm; those reports do not establish an AHK failure on every platform. General CI tests exact Node 22.14.0 and the current 22.x release on Ubuntu. A focused Windows job exercises native health execution on Node 22.14.0 and 24.x. Local compatibility evidence applies to the tested OS, architecture and package manager.
 
 ```bash
 pnpm test
@@ -232,6 +242,12 @@ pnpm lint:check
 ```
 
 Run the smallest relevant test while iterating, then the full suite before releasing a change that affects shared materialization. A passing static check does not prove generated files load in every provider, so validate the provider configuration you actually use.
+
+### Windows health correction in 3.2.0
+
+The Windows health runners now invoke `health.bat` without the argument re-escaping that could make `cmd.exe` report that the script was not recognized. The same correction covers manual `ahk health`, MCP maintenance health, and task health gates, including project paths with spaces or shell punctuation.
+
+To obtain the Windows health correction, update the AHK installation used by the project to published version 3.6.0 or later: `pnpm add -g @cardor/agent-harness-kit@3.6.0` for a global CLI, or `pnpm add -D @cardor/agent-harness-kit@3.6.0` for a project dependency. Restart the provider or reconnect its MCP server to replace any running older process, then rerun `ahk health`. This correction requires no changes to an existing `health.bat` or `health.scriptPath`, no project regeneration, and no repair prompt in Claude. Update notices are advisory; AHK does not install its updates automatically. `ahk doctor` checks setup artifacts and does not replace actual health-script execution.
 
 ### Keeping documentation accurate
 

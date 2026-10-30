@@ -144,7 +144,8 @@ tool and connects it to the OpenAI Tunnel control plane.
 - **Deployment guides**: [`docs/deployment/overview.md`](docs/deployment/overview.md)
 - **Bundled Cloudflare companion**:
   [`docs/deployment/cloudflared.md`](docs/deployment/cloudflared.md)
-- **Troubleshooting**: [`docs/troubleshooting.md`](docs/troubleshooting.md)
+- **Troubleshooting**: [`docs/troubleshooting.md`](docs/troubleshooting.md), including
+  [DNS diagnostic logs for Android / Termux](docs/troubleshooting.md#dns-failures-and-android--termux).
 - **Development & testing**: [`docs/development.md`](docs/development.md)
 - **In-memory Go SDK example**:
   [`examples/go-sdk-inmemory`](examples/go-sdk-inmemory)
@@ -884,10 +885,13 @@ make admin-ui
   integration tests. TCP ingress is the default and prints `mcp_url`; pass
   `--listen-unix-socket PATH` for external MCP ingress over a Unix socket. Its
   `--backend auto|go|rust` flag defaults to `auto`, and
-  `--engine-queue-backend inmem|redis` defaults to `inmem`. Ordinary public
-  builds use the Go in-memory backend; `rust` and Redis require a binary with
-  the optional linked Rust adapter. Redis also needs `--engine-redis-url` or
-  `TUNNEL_ENGINE_REDIS_URL`.
+  `--engine-queue-backend inmem` is the supported queue setting. Ordinary public
+  builds use the Go in-memory backend; `rust` requires a binary with the
+  optional linked Rust adapter. Rust Redis support has been removed. The
+  deprecated `--engine-redis-url` flag, nonempty `TUNNEL_ENGINE_REDIS_URL`, or an
+  explicit Redis backend selection returns a removal error before startup.
+  Remove retired settings and use `inmem` only for local, ephemeral work, or
+  keep the prior version for Redis-backed setups.
 - `tunnel-client init` writes a validated first-use profile.
 - `tunnel-client doctor` validates config and explains what is missing before
   startup.

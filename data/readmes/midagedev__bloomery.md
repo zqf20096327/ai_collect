@@ -12,9 +12,10 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/midagedev/bloomery/releases/tag/v0.3.10">0.3.10 release notes</a> ·
+  <a href="https://github.com/midagedev/bloomery/releases/tag/v0.3.11">0.3.11 release notes</a> ·
   <a href="docs/models.md">Models</a> ·
   <a href="docs/serving.md">Serving</a> ·
+  <a href="docs/agents.md">Agents</a> ·
   <a href="docs/evaluating.md">Evaluating</a> ·
   <a href="CONTRIBUTING.md">Contributing</a>
 </p>
@@ -29,6 +30,19 @@ serve Qwen3-30B-A3B on port 8080; [Use](#use) sends it a first request. A DGX Sp
 archive or Docker image once a release carries them ([DGX Spark](#dgx-spark-and-other-gb10-machines)), and an Apple
 Silicon Mac runs `bloomery-serve-metal` ([Apple Silicon](#apple-silicon)). Homebrew, Docker and the plain tarball are
 under [Install](#install).
+
+**From an agent.** Hand Claude Code, Codex or a script [`docs/agents.md`](docs/agents.md). The agent asks the machine
+what fits, then starts the model by its name. stdout carries JSON, and every refusal ends with a named exit code and
+the command to run next:
+
+```sh
+bloomery-serve --recommend --json                           # what this machine serves, and the fastest variant of each
+bloomery-serve --model qwen3.8-flash-next --dry-run --json  # the start it would run; downloads nothing
+bloomery-serve --model qwen3.8-flash-next --port 0          # start it: one JSON event a line, then "ready" with the url
+```
+
+On a Mac the server is `bloomery-serve-metal`, and the agent follows the "On a Mac" steps in the same page. To run
+Claude Code itself on the model you just started, see [`docs/claude-code.md`](docs/claude-code.md).
 
 ## What it does
 
@@ -63,10 +77,11 @@ and Homebrew all take the latest release. To build from source instead: [`docs/B
 
 ### DGX Spark and other GB10 machines
 
-The release after 0.3.10 adds a GB10 archive (`linux-aarch64-cuda-sm121a`, built for the GB10's FP4 tensor cores)
-and a linux/arm64 variant of the Docker image `ghcr.io/midagedev/bloomery`, made from that archive. On a GB10, Docker
-pulls that variant by itself and the installer picks that archive. 0.3.10 has neither, so until that release a GB10
-builds from source: [`docs/contrib/dgx-spark.md`](docs/contrib/dgx-spark.md#21-build), section 2.1.
+0.3.11's GB10 archive (`linux-aarch64-cuda-sm121a`, built for the GB10's FP4 tensor cores) is built on a GB10 from the
+tag and added to the release when it is ready, with a linux/arm64 variant of the Docker image `ghcr.io/midagedev/bloomery`
+made from it. On a GB10, Docker then pulls that variant by itself and the installer picks that archive. Until the
+archive is on the release, a GB10 builds from source: [`docs/contrib/dgx-spark.md`](docs/contrib/dgx-spark.md#21-build),
+section 2.1.
 
 The machine needs DGX OS 7 (Ubuntu 24.04, glibc 2.39) and an NVIDIA driver of R580 or newer (CUDA 13).
 
@@ -102,14 +117,14 @@ docker run --gpus all -p 8080:8080 -v bloomery-cache:/root/.cache/bloomery \
   ghcr.io/midagedev/bloomery --hf unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF:Q4_K_M
 
 # or the plain tarball
-tar -xzf bloomery-0.3.10-linux-x86_64-cuda-sm86.tar.gz && cd bloomery-0.3.10-linux-x86_64-cuda-sm86
+tar -xzf bloomery-0.3.11-linux-x86_64-cuda-sm86.tar.gz && cd bloomery-0.3.11-linux-x86_64-cuda-sm86
 bin/bloomery-serve --hf unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF:Q4_K_M
 ```
 
 The tarballs are on the [releases page](https://github.com/midagedev/bloomery/releases)
-([0.3.10](https://github.com/midagedev/bloomery/releases/tag/v0.3.10)).
+([0.3.11](https://github.com/midagedev/bloomery/releases/tag/v0.3.11)).
 
-The release after 0.3.10 adds an archive for the RTX 50 series (`linux-x86_64-cuda-sm120a`, compute capability 12.0:
+From 0.3.11 the release carries an archive for the RTX 50 series (`linux-x86_64-cuda-sm120a`, compute capability 12.0:
 the RTX 5090 and the RTX PRO Blackwell cards), built for the Blackwell FP4 and FP8 tensor cores. The installer takes it
 when every GPU the machine lists is compute capability 12.0, and the `linux-x86_64-cuda-sm86` archive on any other
 machine, or from a release without the new one. Docker and Homebrew stay on the sm_86 archive. No maintainer machine
@@ -130,14 +145,15 @@ The Mac needs macOS 26.2 or newer; the binaries are signed and notarized. The se
 brew install midagedev/tap/bloomery
 bloomery-serve-metal -m PATH/Qwen3.6-35B-A3B-Q4_K_M.gguf
 
-# or the same installer as on Linux (bloomery-0.3.10-macos-arm64-metal.tar.gz on the releases page)
+# or the same installer as on Linux (bloomery-0.3.11-macos-arm64-metal.tar.gz on the releases page)
 curl -fsSL https://raw.githubusercontent.com/midagedev/bloomery/main/tools/release/install.sh | sh
 ~/.local/bin/bloomery-serve-metal -m PATH/Qwen3.6-35B-A3B-Q4_K_M.gguf
 ```
 
 Two architectures run, `qwen35moe` (Qwen3.6-35B-A3B and files with its shapes) and `qwen3moe` (Qwen3-30B-A3B), from
-Q4_K_M GGUF files, one slot, text only. On a build after 0.3.10 an mlx-community 4-bit folder also opens as downloaded
-(`--hf mlx-community/<repo>` or `-m <folder>`); 0.3.10 converts it once with `bloomery-prepare`. Every file that runs,
+Q4_K_M GGUF files, one slot, text only. From 0.3.11 an mlx-community 4-bit folder also opens as downloaded
+(`--hf mlx-community/<repo>` or `-m <folder>`; 0.3.10 converted it once with `bloomery-prepare`), and the MLX folders
+of LFM3-1.7B, the dense Qwen3.8-27B and Qwen3-Coder-30B-A3B run too. Every file that runs,
 the flags and the limits: [`docs/mac.md`](docs/mac.md).
 
 ## Use
@@ -187,7 +203,9 @@ These seats serve a file or a checkpoint folder on disk (`-m PATH`):
 
 The server has one slot unless `--parallel N` asks for N, so a second request waits for the first. Unset,
 `--ctx-size` gives each slot the largest context its plan holds; a set `--ctx-size` is the total the slots share,
-and one slot takes it whole. `--config FILE` reads the flags from one JSON file. A flag on the command line wins over
+and one slot takes it whole. `--slot-ctx S` names one request's context instead, so `--parallel 4 --slot-ctx 32768`
+gives each of four slots 32,768 positions. On Qwen3.8, `--parallel auto` serves the most slots, up to 8, that memory
+holds at that context. `--config FILE` reads the flags from one JSON file. A flag on the command line wins over
 the file's, and both win over the flag's `LLAMA_ARG_*` variable and the `BLOOMERY_*` lever it stands for. A request
 field the server does not know is ignored, as in llama-server, so a misspelled sampling field runs at its default. Which flags each seat takes, which setting wins and what a request's fields do:
 [`docs/serving.md`](docs/serving.md#settings).
@@ -211,10 +229,12 @@ Ada cards (sm_89) have no report yet, and AMD GPUs are not supported yet. On an 
 accelerators for the prompt's GEMMs. What each part of the machine costs in a decode step:
 [`docs/HARDWARE.md`](docs/HARDWARE.md).
 
-## Status (0.3.10)
+## Status (0.3.11)
 
 Four common machines, one table each, tok/s. Every other record (two cards, older releases, other cards and Macs, the
-reference engines) is in [`docs/numbers.md`](docs/numbers.md), with its machine and conditions.
+reference engines) is in [`docs/numbers.md`](docs/numbers.md), with its machine and conditions. The rows below were
+measured on 0.3.10; 0.3.11's own rows, Qwen3.8-27B's among them, are in its
+[release notes](https://github.com/midagedev/bloomery/releases/tag/v0.3.11).
 
 **One RTX 3090 24 GB**, on our workstation (32-core AVX2 host, 256 GB of RAM, the 3090 at its 250 W cap): the tagged
 0.3.10 tree at the serving defaults (`--place` unset, every lever unset, speculative drafts on where a model has one, no
@@ -283,7 +303,7 @@ release's check:
 Output is checked layer by layer against ik_llama.cpp (V4.1: PPL 2.2401 against 2.2378, same top token 97.46 %), and
 every gate is shown to fail on its defect before the fix lands ([how](docs/performance.md#how-it-is-verified)).
 
-## Known limits (0.3.10)
+## Known limits (0.3.11)
 
 - DeepSeek V4.1 on two cards (`--place bp`) is not faster than one card (`--place a`). Unset `--place` picks `a`.
 - The `nemotron`, `raon1`, `solar2` and `musespark` seats serve one slot; `--parallel` above 1 is refused by name.
@@ -293,7 +313,7 @@ every gate is shown to fail on its defect before the fix lands ([how](docs/perfo
   types stay on the host.
 - Muse Spark Open always thinks: a turn's first tokens are its reasoning, so a short `max_tokens` can end with empty
   `content`.
-- MiniMax-M3 (not M3.1) was not checked for 0.3.10; each family's newest model was.
+- MiniMax-M3 (not M3.1) was not checked for 0.3.11; each family's newest model was.
 - Flint's greedy text has no CPU or llama.cpp referee yet; the card path's gates and the serving checks hold it.
 - DeepSeek V4.1 runs routed experts on a card only as Q3_K gate·up with a Q4_K down; other expert types (ISTA-DASLab's
   IQ1_M, IQ2_XXS and IQ2_XS) run on the host tier.
@@ -322,6 +342,8 @@ start screen), [@Burntgogi](https://github.com/Burntgogi) (the common owners eve
 |---|---|
 | [`docs/evaluating.md`](docs/evaluating.md) | A checklist to run it and compare it fairly; hardware reports |
 | [`docs/serving.md`](docs/serving.md) | llama-server compatibility, flags, seats, concurrent requests, limits |
+| [`docs/agents.md`](docs/agents.md) | Starting the server from an agent or a script: the picks, the events, the exit codes |
+| [`docs/claude-code.md`](docs/claude-code.md) | Claude Code on a local model, on an NVIDIA card or a Mac, with measured first-turn times |
 | [`docs/models.md`](docs/models.md) | Recommended files and what each model needs |
 | [`docs/numbers.md`](docs/numbers.md) | Every measured table beyond the Status tables: two cards, older releases, other cards and Macs |
 | [`docs/performance.md`](docs/performance.md) | Number conditions, why it is fast, verification, recorded sessions |

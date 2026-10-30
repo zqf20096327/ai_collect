@@ -96,8 +96,8 @@ You need a PS5 on firmware 7.00 to 13.60, jailbroken, with these payloads loaded
 | [kstuff-lite](https://github.com/EchoStretch/kstuff-lite) | the kernel patches homebrew runs on | required |
 | [etaHEN](https://github.com/etaHEN/etaHEN) | homebrew support | required |
 | [ShadowMountPlus](https://github.com/drakmor/ShadowMountPlus) | puts PS5LM on the home screen from `/data/homebrew` | required |
-| [elfldr](https://github.com/ps5-payload-dev/elfldr) (port 9021) | temperature, power and real free space, through ps5-exporter | recommended |
-| [ftpsrv](https://github.com/ps5-payload-dev/ftpsrv) (port 2121) | installing the app, copying models from a PC | recommended |
+| [elfldr](https://github.com/ps5-payload-dev/elfldr) (port 9021) | temperature, power and real free space, through ps5-exporter; full-speed downloads, through the app's own ftpsrv | recommended |
+| [ftpsrv](https://github.com/ps5-payload-dev/ftpsrv) (port 2121) | installing the app, copying models from a PC; downloads write through it when it runs | recommended |
 
 1. Download `ps5lm-app-vX.Y.Z.zip` from the [latest release](https://github.com/cobanov/PS5LM/releases/latest) and unzip it.
 2. Copy the `PPSA99575` folder to `/data/homebrew` over FTP. ShadowMountPlus adds **PS5LM** to the
@@ -111,9 +111,17 @@ To update, copy the new folder over the old one. Settings, models and downloads 
 `/data/PS5LM`.
 
 If PS5LM cannot write to `/data/PS5LM` ("Cannot write to /data/PS5LM/models"), the HEN has not
-opened the console's storage to it. On OnionHEN, add `PPSA99575` to `exact_title_ids` in the
-`[app_jailbreak]` section of `/data/OnionHEN/config.ini`, then start PS5LM again. Using it from coding tools (opencode, Codex, Claude Code) is in
-[docs/CLI.md](docs/CLI.md).
+opened the console's storage to it:
+
+- **OnionHEN:** add `PPSA99575` to `exact_title_ids` in the `[app_jailbreak]` section of
+  `/data/OnionHEN/config.ini`, then start PS5LM again. Reported working with OnionHEN 0.9.0 and
+  ShadowMountPlus 1.7beta10; older versions of either failed the same way
+  ([#23](https://github.com/cobanov/PS5LM/issues/23)).
+- **etaHEN:** over FTP, create `/data/PS5LM/models` and give `/data/PS5LM` and everything in it
+  mode 777 (in FileZilla: File permissions, applied to subdirectories). Reported on etaHEN 2.6b,
+  firmware 10.00.
+
+Using it from coding tools (opencode, Codex, Claude Code) is in [docs/CLI.md](docs/CLI.md).
 
 | Where | Button | Does |
 |---|---|---|

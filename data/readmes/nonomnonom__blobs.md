@@ -2,12 +2,18 @@
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/banner-dark.png" />
-  <img src="docs/assets/banner-light.png" alt="Blobs. Stay curious. Go anywhere. Offline research, right on your phone. Android, compatible with GrapheneOS." width="1200" />
+  <img src="docs/assets/banner-light.png" alt="Blobs. Stay curious. Go anywhere. Offline research, right on your phone. Android 9 and newer, no Google Play Services." width="1200" />
 </picture>
 
-Blobs is an offline Android research app compatible with GrapheneOS. Search a local knowledge library, ask questions, and read the sources inside the app. Conversations, documents, and model inference stay on your phone. No account or Google Play Services is required.
+Blobs is an offline Android research app. Search a local knowledge library, ask questions, and read the sources inside the app. Conversations, documents, and model inference stay on your phone. It needs no account and does not depend on Google Play Services, which is what a GrapheneOS install requires; it has not yet been run on a GrapheneOS build.
 
-**[Download the Android app](https://github.com/nonomnonom/blobs/releases/latest)** · **[Read the guides](https://nonomnonom.github.io/blobs/)** · **[See the app](https://nonomnonom.github.io/blobs/docs/tour/)**
+**[Download the Android app](https://github.com/nonomnonom/blobs/releases/latest)** · **[Read the guides](https://nonomnonom.github.io/blobs/)** · **[See the app](https://nonomnonom.github.io/blobs/docs/tour/)** · **[Agent-readable index](https://nonomnonom.github.io/blobs/llms.txt)**
+
+## See it
+
+[![A still from the demo film: Blobs answering a question about the districts of Lisbon offline, with six saved sources above the answer](docs/assets/demo-poster.jpg)](https://nonomnonom.github.io/blobs/media/blobs-demo.mp4)
+
+Forty-six seconds: the library and model you install, the storage they take, and one question asked of a travel library with no connection, answered with the passages it came from. Recorded on an Android emulator; the 0.5.0 release runs the same flow on a physical Android phone. [Watch the film](https://nonomnonom.github.io/blobs/media/blobs-demo.mp4).
 
 ## Get started
 

@@ -81,13 +81,13 @@ flowchart TD
 
 ## Features
 
-- **Automatic meeting detection** — Recognizes Teams, Zoom, and Webex meetings via window title polling, opt-in browser meeting detection (Google Meet, Whereby, web Zoom/Teams in any Chromium browser) gated behind a recording-consent prompt, and opt-in mic-input detection for call apps without a reliable meeting signal (WeChat, Tencent Meeting, FaceTime, WhatsApp) — per app, off by default, and unlike the browser path it starts recording without a prompt
+- **Automatic meeting detection** — Recognizes Teams, Zoom, and Webex meetings via window title polling, opt-in browser meeting detection (Google Meet, Whereby, web Zoom/Teams in any Chromium browser) gated behind a recording-consent prompt, and opt-in mic-input detection for call apps without a reliable meeting signal (WeChat, Tencent Meeting, FaceTime, WhatsApp, Slack Huddles) — per app, off by default, and unlike the browser path it starts recording without a prompt
 - **Dual audio recording** — App audio ([CATapDescription](https://developer.apple.com/documentation/coreaudio/catap)) + microphone simultaneously
 - **On-device transcription** — Two engines, selectable in Settings:
   - [WhisperKit](https://github.com/argmaxinc/WhisperKit) — 99+ languages, ~1 GB model; besides the stock models, a custom WhisperKit model can be loaded from another Hugging Face repository or a local folder (see [Custom WhisperKit models](#custom-whisperkit-models))
   - [Parakeet TDT v3](https://github.com/FluidInference/FluidAudio) (NVIDIA) — 25 EU languages, ~50 MB model, ~10× faster
 - **Custom vocabulary & terminology** — One shared vocabulary file boosts recognition of names/jargon on Parakeet (CTC boosting) and, optionally, on WhisperKit (experimental decoder-prompt hint); an independent, opt-in terminology-normalization pass rewrites recognized spelling variants to a canonical form after transcription, regardless of engine
-- **On-device speaker diarization** — [FluidAudio](https://github.com/FluidInference/FluidAudio) via CoreML/ANE — no HuggingFace token needed; two modes: standard (`OfflineDiarizer`) and overlap-aware (`Sortformer`)
+- **On-device speaker diarization** — [FluidAudio](https://github.com/FluidInference/FluidAudio) via CoreML/ANE — no HuggingFace token needed; three modes: standard (`OfflineDiarizer`), overlap-aware (`Sortformer`, up to 4 speakers) and NVIDIA's overlap-aware Nemotron 3 (up to 8 speakers)
 - **Dual-track diarization** — App and mic tracks diarized separately for clean speaker separation without echo interference
 - **Echo bleed handling** — On loudspeaker recordings, remote voices picked up by the microphone are detected automatically and reported. Two optional remedies, both off by default: acoustic echo cancellation removes the bleed from the microphone audio itself, and a transcript dedup leaves the duplicated lines out. The dedup is off because it can mistake a quiet remark made over the far end for echo and drop it
 - **Speaker recognition** — Voice embeddings stored across meetings, matched via cosine similarity
@@ -249,7 +249,7 @@ Open Settings via the menu bar item or ⌘,.
 
 | Tab | What's in it |
 |---|---|
-| **General** | Record-only mode, apps to watch (Teams/Zoom/Webex/Browser/WeChat/Tencent Meeting/FaceTime/WhatsApp), detection timing, update checks |
+| **General** | Record-only mode, apps to watch (Teams/Zoom/Webex/Browser/WeChat/Tencent Meeting/FaceTime/WhatsApp/Slack), detection timing, update checks |
 | **Audio** | Microphone device, voice activity detection (VAD), per-channel silence indicator, echo cancellation (off by default) |
 | **Transcribe** | ASR engine (WhisperKit / Parakeet) and per-engine options (model incl. a custom WhisperKit model, language, custom vocabulary), terminology normalization rules, live caption overlay (PoC) |
 | **Speakers** | Diarization, mic speaker name, known voices, recognition stats |

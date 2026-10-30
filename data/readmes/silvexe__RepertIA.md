@@ -3,6 +3,8 @@
 **Forensic analysis of disk and USB drive images and smartphone extractions, with a local, offline AI assistant.**
 🇮🇹 **Versione italiana: [README.it.md](README.it.md)**
 
+📘 **Illustrated guide (PDF):** [English](https://github.com/silvexe/RepertIA/releases/download/v2.20.3/RepertIA-illustrated-guide-2.20.3-EN.pdf) · [Italiano](https://github.com/silvexe/RepertIA/releases/download/v2.20.3/RepertIA-guida-illustrata-2.20.3-IT.pdf)
+
 RepertIA analyses forensic images (E01, raw/dd, dmg) and, from 2.20, full file system extractions of iPhones and Android
 phones from a single local web interface, on Apple Silicon Macs, Windows
 or Linux (experimental). It uses established forensic tools (The Sleuth Kit, libewf, plaso, PhotoRec, bulk_extractor,
@@ -15,16 +17,61 @@ inodes.
 it is an optional choice of the user (LM Studio, llama-server or Ollama), which can be used or not. Without a model all
 analyses, searches and reports work just the same.
 
+## Screenshots
+
+*Real screenshots of RepertIA, made with public or constructed test data and fictional names.*
+
+![File system tree with a deleted entry](docs/img/en/results.jpg)
+
+### What you can load
+
+| Mass storage | Smartphones |
+|---|---|
+| <img src="docs/img/en/load-mass-storage.jpg" alt="Choosing a forensic copy of a disk" width="420"> | <img src="docs/img/en/load-smartphone.jpg" alt="Choosing a smartphone extraction" width="420"> |
+| Forensic copies of disks, SSDs, pendrives and cards: E01, raw/dd, img, dmg | Full file system extractions of iPhone and Android (Cellebrite, GrayKey, others): zip, tar, tar.gz or folder. Optional: iOS keychain and sysdiagnose |
+
+<details>
+<summary><b>More screenshots</b></summary>
+
+<br>
+
+**Timeline**: activity chart and events, with filters by date, event and source.
+
+<img src="docs/img/en/timeline.jpg" alt="Timeline" width="800">
+
+**Search**: words, regular expressions or hashes, down to the raw bytes of the copy.
+
+<img src="docs/img/en/search.jpg" alt="Search" width="800">
+
+**Chats**: conversations with database, table and row of each message. Here a decrypted WhatsApp backup (fake backup and key).
+
+<img src="docs/img/en/chat.jpg" alt="Chat view" width="800">
+
+**iOS sysdiagnose**: acquired separately and read with iLEAPP.
+
+<img src="docs/img/en/sysdiagnose.jpg" alt="Sysdiagnose rows" width="800">
+
+**Keychain**: passwords, keys and tokens stay hidden; showing one is recorded in the log (fake keychain).
+
+<img src="docs/img/en/secret-values.jpg" alt="Hidden secret values" width="800">
+
+**AI findings**: every finding starts as "to be checked" until the analyst confirms it. No. 1 here contains a real model error, a local time labelled as UTC: that is why it must be checked.
+
+<img src="docs/img/en/findings.jpg" alt="AI findings to be checked and verified" width="320">
+
+</details>
+
 ## Download
 
 | System | File |
 |---|---|
-| Windows (installer) | [RepertIA-2.20.1-Setup.exe](https://github.com/silvexe/RepertIA/releases/download/v2.20.1/RepertIA-2.20.1-Setup.exe) |
-| Windows (portable) | [RepertIA-2.20.1-Windows.zip](https://github.com/silvexe/RepertIA/releases/download/v2.20.1/RepertIA-2.20.1-Windows.zip) |
-| Mac (Apple Silicon) | [RepertIA-2.20.1-Mac.zip](https://github.com/silvexe/RepertIA/releases/download/v2.20.1/RepertIA-2.20.1-Mac.zip) |
-| Linux x86_64 (experimental) | [RepertIA-2.20.1-Linux.tar.gz](https://github.com/silvexe/RepertIA/releases/download/v2.20.1/RepertIA-2.20.1-Linux.tar.gz) |
-| Acceptance test (*collaudo*) | [RepertIA-collaudo.zip](https://github.com/silvexe/RepertIA/releases/download/v2.20.1/RepertIA-collaudo.zip) |
-| SHA-256 checksums | [SHA256SUMS.txt](https://github.com/silvexe/RepertIA/releases/download/v2.20.1/SHA256SUMS.txt) |
+| Windows (installer) | [RepertIA-2.20.3-Setup.exe](https://github.com/silvexe/RepertIA/releases/download/v2.20.3/RepertIA-2.20.3-Setup.exe) |
+| Windows (portable) | [RepertIA-2.20.3-Windows.zip](https://github.com/silvexe/RepertIA/releases/download/v2.20.3/RepertIA-2.20.3-Windows.zip) |
+| Mac (Apple Silicon) | [RepertIA-2.20.3-Mac.zip](https://github.com/silvexe/RepertIA/releases/download/v2.20.3/RepertIA-2.20.3-Mac.zip) |
+| Linux x86_64 (experimental) | [RepertIA-2.20.3-Linux.tar.gz](https://github.com/silvexe/RepertIA/releases/download/v2.20.3/RepertIA-2.20.3-Linux.tar.gz) |
+| Acceptance test (*collaudo*) | [RepertIA-collaudo.zip](https://github.com/silvexe/RepertIA/releases/download/v2.20.3/RepertIA-collaudo.zip) |
+| SHA-256 checksums | [SHA256SUMS.txt](https://github.com/silvexe/RepertIA/releases/download/v2.20.3/SHA256SUMS.txt) |
+| Illustrated guide (PDF) | [English](https://github.com/silvexe/RepertIA/releases/download/v2.20.3/RepertIA-illustrated-guide-2.20.3-EN.pdf) · [Italiano](https://github.com/silvexe/RepertIA/releases/download/v2.20.3/RepertIA-guida-illustrata-2.20.3-IT.pdf) |
 
 All versions: <https://github.com/silvexe/RepertIA/releases>
 

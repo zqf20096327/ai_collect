@@ -1,12 +1,12 @@
 <p align="center">
-  <a href="https://github.com/OuincheWinch/DiffusionBear/releases/tag/v0.4.2">
-    <img src="docs/screenshots/0.4.2/annonce_042.png" alt="DiffusionBear v0.4.2 beta — Full Support for Bria FIBO 2.0 Edit Turbo MLX 4-bit" width="100%">
+  <a href="https://github.com/OuincheWinch/DiffusionBear/releases/tag/v0.4.3">
+    <img src="docs/screenshots/0.4.3/annonce_043.png" alt="DiffusionBear v0.4.3 — Local AI Image Studio for Apple Silicon" width="100%">
   </a>
 </p>
 
 <h1 align="center">DiffusionBear</h1>
 
-<p align="center"><strong>v0.4.2</strong> &nbsp;·&nbsp; a local-first image generation studio for Apple Silicon</p>
+<p align="center"><strong>v0.4.3</strong> &nbsp;·&nbsp; a local-first image generation studio for Apple Silicon</p>
 
 <p align="center">
   <a href="https://www.diffusionbear.com"><strong>Website</strong></a> &nbsp;·&nbsp;
@@ -30,7 +30,13 @@ Made by **[Ouinche](https://www.ouinche.com)** — follow on X:
 
 ---
 
-## What's new in v0.4.2 (beta) :
+## What's new in v0.4.3 (beta)
+
+- **Browser page revamp:** navigate pages with `←` / `→` and jump directly to a page number.
+- **Memory management tweaks:** large generations are checked against the machine's safe megapixel ceiling before they can trigger a Metal out-of-memory crash.
+- **Minor bug fixes.**
+
+## What's new in v0.4.2 (beta)
 
 - **Full support of FIBO 2.0 Edit Turbo MLX 4-bit:** First-ever 4-bit quantized port of Bria AI's state-of-the-art instruction editing model running natively on Apple Silicon via MLX ([Hugging Face: Ouinche/FIBO2-Edit-Turbo-MLX-4bit](https://huggingface.co/Ouinche/FIBO2-Edit-Turbo-MLX-4bit) | [Original Model: briaai/Fibo-2.0-edit-turbo](https://huggingface.co/briaai/Fibo-2.0-edit-turbo)).
 - **Text-Guided Reference Edit:** High-fidelity single reference editing with natural language prompts in only 4 denoising steps (~85s on M1).
@@ -38,7 +44,6 @@ Made by **[Ouinche](https://www.ouinche.com)** — follow on X:
 - **Multiple References (Multimodal In-Context Editing):** Combine up to 4 reference images (e.g., character portrait + specific dress or object) grounded through the integrated 4-bit Qwen3-VL vision-language encoder.
 - **3-Stage Sequential Memory Management:** Lazy component lifecycle (Qwen3-VL → DiT Transformer → FLUX.2 VAE) keeping resident VRAM strictly below 6.8 GB on 16 GB Apple Silicon.
 - **Visual Showcase & Benchmarks:** Interactive comparison suite, side-by-side comparisons with original Bria outputs, and telemetry report at [diffusionbear.com/fibo.html](https://www.diffusionbear.com/fibo.html).
-
 
 ## What's new in v0.4.1 (beta)
 
@@ -58,13 +63,13 @@ Made by **[Ouinche](https://www.ouinche.com)** — follow on X:
 
 `DiffusionBear.app` is a self-contained macOS application: it bundles the backend, two relocatable Python/MLX runtimes, and the studio interface inside one `.app`. **You do not need to install Python, Node, Xcode, or Homebrew.**
 
-**[⬇ Download DiffusionBear v0.4.2 for macOS (Apple Silicon)](https://github.com/OuincheWinch/DiffusionBear/releases/download/v0.4.2/DiffusionBear-0.4.2-arm64.zip)** &nbsp;·&nbsp; [v0.4.2 Release Notes & Checksums](https://github.com/OuincheWinch/DiffusionBear/releases/tag/v0.4.2)
+**[⬇ Download DiffusionBear v0.4.3 for macOS (Apple Silicon)](https://github.com/OuincheWinch/DiffusionBear/releases/download/v0.4.3/DiffusionBear-0.4.3-arm64.zip)** &nbsp;·&nbsp; [v0.4.3 Release Notes & Checksums](https://github.com/OuincheWinch/DiffusionBear/releases/tag/v0.4.3)
 
 | | Detail |
 |---|---|
 | **Requires** | An Apple Silicon Mac (M1 / M2 / M3 / M4 / M5 / M6), **macOS 26.2 or later**, 16 GB unified memory recommended. |
 | **Your files** | Settings, gallery, LoRA registry, and model store live in `~/Library/Application Support/DiffusionBear`. To put the store on an external drive, write an absolute path into `~/Library/Application Support/DiffusionBear/store_path`. |
-| **Model weights** | Downloaded on first use from Hugging Face or [Civitai](https://civitai.red/?ref_code=88C8VEBA) into your local store. After that, the app works 100% offline. |
+| **Model weights** | Downloaded on first use from Hugging Face or [Civitai](https://civitai.com/?ref_code=88C8VEBA) into your local store. After that, the app works 100% offline. |
 
 ### 🍎 How to Open on First Launch (macOS Gatekeeper Bypass)
 
@@ -78,7 +83,7 @@ Because DiffusionBear is a free, open-source project signed ad-hoc (without a pa
 
 **Follow this one-time 60-second procedure:**
 
-1. **Unzip and move to `/Applications`:** Unzip `DiffusionBear-0.4.2-arm64.zip` and drag **`DiffusionBear.app`** into your **/Applications** folder *(do not launch it from `~/Downloads` or inside the zip)*.
+1. **Unzip and move to `/Applications`:** Unzip `DiffusionBear-0.4.3-arm64.zip` and drag **`DiffusionBear.app`** into your **/Applications** folder *(do not launch it from `~/Downloads` or inside the zip)*.
 2. **Bypass Gatekeeper (choose Option A or Option B):**
    * **Option A — Fastest (Terminal 1-Liner):** Open **Terminal.app**, paste this command, and press Return:
      ```bash
@@ -116,7 +121,7 @@ Once authorized, macOS remembers your choice and **never shows the alert again**
 
 ---
 
-## Screenshots & MOSS-Image Showcase Gallery (v0.4.2)
+## Screenshots & MOSS-Image Showcase Gallery (v0.4.3)
 
 All images below were generated locally in DiffusionBear on an **Apple MacBook Pro M1 with 16 GB of RAM**.
 
@@ -160,23 +165,23 @@ The following original images demonstrate the versatility of **MOSS-Image SFT 5B
 
 ---
 
-### 🖥️ Studio Interface Screenshots (v0.4.2)
+### 🖥️ Studio Interface Screenshots (v0.4.3)
 
 | Studio Generation (Dark Mode) | Studio Generation (Light Mode) |
 |---|---|
-| ![DiffusionBear v0.4.2 Studio generation interface in dark mode](docs/screenshots/0.4.1/1-generate-dark.png) | ![DiffusionBear v0.4.2 Studio generation interface in light mode](docs/screenshots/0.4.1/2-generate-light.png) |
+| ![DiffusionBear v0.4.3 Studio generation interface in dark mode](docs/screenshots/0.4.1/1-generate-dark.png) | ![DiffusionBear v0.4.3 Studio generation interface in light mode](docs/screenshots/0.4.1/2-generate-light.png) |
 
 | Gallery / Browser (Dark Mode) | Gallery / Browser (Light Mode) |
 |---|---|
-| ![DiffusionBear v0.4.2 Gallery with search and favorites in dark mode](docs/screenshots/0.4.1/3-browser-dark.png) | ![DiffusionBear v0.4.2 Gallery with search and favorites in light mode](docs/screenshots/0.4.1/4-browser-light.png) |
+| ![DiffusionBear v0.4.3 Gallery with search and favorites in dark mode](docs/screenshots/0.4.1/3-browser-dark.png) | ![DiffusionBear v0.4.3 Gallery with search and favorites in light mode](docs/screenshots/0.4.1/4-browser-light.png) |
 
 | Models: Installed & Manage | Models: External Disk Detection (Draw Things & DiffusionBee) |
 |---|---|
-| ![DiffusionBear v0.4.2 Models tab and installed model management](docs/screenshots/0.4.1/5-models-dark.png) | ![DiffusionBear v0.4.2 external model detection for Draw Things and DiffusionBee](docs/screenshots/0.4.1/6-models-detect-light.png) |
+| ![DiffusionBear v0.4.3 Models tab and installed model management](docs/screenshots/0.4.1/5-models-dark.png) | ![DiffusionBear v0.4.3 external model detection for Draw Things and DiffusionBee](docs/screenshots/0.4.1/6-models-detect-light.png) |
 
 | Parameters: Engine, GPU Memory & Model Defaults | Parameters: Language & System Preferences |
 |---|---|
-| ![DiffusionBear v0.4.2 Parameters tab with GPU memory and custom model defaults](docs/screenshots/0.4.1/7-parameters-dark.png) | ![DiffusionBear v0.4.2 Parameters preferences in light mode](docs/screenshots/0.4.1/8-parameters-light.png) |
+| ![DiffusionBear v0.4.3 Parameters tab with GPU memory and custom model defaults](docs/screenshots/0.4.1/7-parameters-dark.png) | ![DiffusionBear v0.4.3 Parameters preferences in light mode](docs/screenshots/0.4.1/8-parameters-light.png) |
 
 ---
 
@@ -255,7 +260,7 @@ no network it falls back to the stock trajectory rather than failing.
   rewriting a prompt never leaves the machine.
 - **No telemetry, no analytics, no network calls at generation time.** Once the
   weights are cached the app works fully offline.
-- Tokens ([Civitai](https://civitai.red/?ref_code=88C8VEBA) API key, Hugging
+- Tokens ([Civitai](https://civitai.com/?ref_code=88C8VEBA) API key, Hugging
   Face token — both optional, both only for smoother downloads of gated or
   rate-limited repos) are stored on your disk and sent only to the service they
   belong to.
@@ -266,9 +271,9 @@ exactly what MLX is built to exploit.
 
 ---
 
-## Benchmarks (v0.4.2)
+## Benchmarks (v0.4.3)
 
-Measured on a **2021 MacBook Pro M1 (16 GB)** — the reference machine this project is tuned for. Comprehensive **v0.4.2 snapshot** (198 timed studio generations across 18 model configurations at 512×768 resolution):
+Measured on a **2021 MacBook Pro M1 (16 GB)** — the reference machine this project is tuned for. Comprehensive **v0.4.3 snapshot** (198 timed studio generations across 18 model configurations at 512×768 resolution):
 
 | Model | Steps | Median | Range | Family / Notes |
 |---|---|---|---|---|
@@ -333,30 +338,42 @@ Head-to-head comparisons on original, royalty-free scenes. Explore interactive s
 
 ## For developers
 
-Everything above is the app; this section is the minimum needed to build and
-run it from source. An Apple Silicon Mac, Python 3.10 + 3.14 and Node.js 18+
-are required.
+Everything above is the app; this section is the minimum needed to clone, build
+and run it from source.
 
-**Build the app** (three scripts, in order — output lands in
-`packaging/dist/DiffusionBear.app`; `INSTALL_APP=1` also installs it to
-/Applications):
+**Requirements:** an Apple Silicon Mac, macOS 26.2 or later, Python 3.10 (main
+runtime) and Python 3.14 (SDXL runtime), and Node.js 18 or later. Git and
+Homebrew are only needed to install those prerequisites.
+
+**Clone the repository:**
+
+```bash
+git clone https://github.com/OuincheWinch/DiffusionBear.git
+cd DiffusionBear
+```
+
+**Build the standalone app** (recommended — downloads self-contained Python
+runtimes, so no local Python setup is needed). Run the three scripts in order;
+the result lands in `packaging/dist/DiffusionBear.app`:
 
 ```bash
 packaging/build_runtime_venv.sh   # main runtime: Python 3.10 + mflux
 packaging/build_sdxl_venv.sh      # SDXL engine runtime: Python 3.14 + mlx_diffuser
-packaging/build_app.sh            # assembles and ad-hoc signs DiffusionBear.app
+INSTALL_APP=1 packaging/build_app.sh   # assembles, signs and installs to /Applications
 ```
 
-The scripts audit their own output and fail the build on absolute build paths,
-unrelocatable interpreters, weights or credential-shaped files. Install with the
-build script's own install step — a hand `cp -R` of a signed bundle is known to
-silently skip files.
+Omit `INSTALL_APP=1` to build without installing. The scripts audit their own
+output and fail on absolute build paths, unrelocatable interpreters, weights or
+credential-shaped files. Always use the build script's install step — a hand
+`cp -R` of a signed bundle is known to silently skip files.
 
 **Run from a checkout** (development):
 
 ```bash
-python3 -m venv venv && python3 -m venv venv-sdxl
+python3.10 -m venv venv
+python3.14 -m venv venv-sdxl
 ./venv/bin/python -m pip install -r backend/requirements.txt
+./venv/bin/python -m pip install --no-deps --force-reinstall ./packaging/vendor/mflux-src
 ./venv-sdxl/bin/python -m pip install -r backend/requirements-sdxl.txt
 cd frontend && npm install && cd ..
 ./run.sh        # backend on 8001, Vite on 5174, opens the UI
@@ -364,8 +381,8 @@ cd frontend && npm install && cd ..
 
 Dev mode is `./dev-backend.sh` plus `cd frontend && npm run dev`; lint and build
 are `npm run lint` and `npm run build`. Backend tests run with
-`./venv/bin/python backend/test_<name>.py`. Ports 8001/5174 are deliberate — do
-not "fix" them.
+`./venv/bin/python -m unittest discover` from `backend/`. Ports 8001/5174 are
+deliberate — do not "fix" them.
 
 **Public-source export.** `packaging/export_public.sh` builds a filtered tree
 (internal docs, tests, scratch excluded), audits it for local paths,
@@ -408,5 +425,5 @@ covers the project's source code only. Model weights carry their own terms
 (FLUX.2/FLUX.3 are Black Forest Labs non-commercial; the Juggernaut and
 RealVisXL checkpoints are non-commercial too), and none of them are
 redistributed here — they are downloaded from Hugging Face or
-[Civitai](https://civitai.red/?ref_code=88C8VEBA) on first use. The app shows
+[Civitai](https://civitai.com/?ref_code=88C8VEBA) on first use. The app shows
 the full per-package and per-model licences in its **⚖ Licences** tab.

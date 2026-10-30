@@ -92,7 +92,8 @@ Testing production AI agents and running them in Continuous Integration (CI) cre
 * **JSON-Safe Secret Redaction**: Automatically scrubs API keys, Bearer tokens, emails, phone numbers, and SSNs while strictly preserving JSON syntax.
 * **Tamper-Evident Integrity**: SHA-256 hash chaining detects accidental line edits, with optional HMAC-SHA256 digital signing.
 * **Pytest Integration**: Seamless `@pytest.mark.rerunner` marker and `rerunner_transport` fixture.
-* **Pluggable Storage**: Store cassettes locally, in compressed formats (`.jsonl.gz`, `.jsonl.zst`), or directly in AWS S3 (`s3://`) and Google Cloud Storage (`gs://`).
+* **Pluggable Remote Storage**: Store cassettes locally, in compressed formats (`.jsonl.gz`, `.jsonl.zst`), or directly in AWS S3 (`s3://`), Google Cloud Storage (`gs://`), and Microsoft Azure Blob Storage (`az://`, `azure://`).
+* **Interactive Terminal Flight Deck**: Visually scrub and inspect multi-turn agent execution steps, tokens, and cryptographic security audits via `rerunner tui`.
 
 ---
 
@@ -105,7 +106,7 @@ Testing production AI agents and running them in Continuous Integration (CI) cre
 | **Fork-from-Step Execution** | ✅ **Replay 1..N, execute live from N+1** | ❌ No | ❌ No | ⚠️ Subgraph re-execution |
 | **Fail-Closed Side-Effect Guard** | ✅ **Yes (`@side_effect`)** | ❌ No | ❌ No | ❌ No |
 | **Secret & URL Redaction** | ✅ **Built-in JSON & URL redactor** | ⚠️ Custom filter functions | ❌ No | ❌ No |
-| **Zero Cloud Infrastructure** | ✅ **Local JSONL / S3 / GCS** | ✅ Local YAML | ✅ In-memory | ⚠️ Postgres / Redis required |
+| **Pluggable Cloud Storage** | ✅ **Local, S3, GCS, Azure Blob** | ✅ Local YAML | ✅ In-memory | ⚠️ Postgres / Redis required |
 | **Framework Agnostic** | ✅ **Any HTTPX-based SDK** | ✅ HTTP socket level | ✅ HTTPX | ❌ Locked to LangGraph |
 
 ---
@@ -308,6 +309,14 @@ kernel = sk.Kernel()
 wrap_semantic_kernel(kernel, "cassettes/sk_flight.jsonl", mode="replay")
 ```
 
+#### 🛡️ AWS Bedrock
+```python
+from rerunner.integrations import wrap_bedrock_client
+
+# Direct HTTP client configured for Amazon Bedrock
+client = wrap_bedrock_client(bedrock_client, "cassettes/bedrock.jsonl", mode="replay")
+```
+
 #### 🦜️🔗 LangChain & LangGraph
 ```python
 # Direct model wrapping
@@ -362,6 +371,32 @@ Rerunner automatically redacts sensitive data before persisting cassettes:
 * **Authorization Headers** (`Bearer ...`) $\rightarrow$ `Bearer [REDACTED_TOKEN]`
 * **Credit Cards** (validated with Luhn checksum) $\rightarrow$ `[REDACTED_CREDIT_CARD]`
 * **JSON Structure Preservation**: Numeric fields (like `"created": 1730000000`) remain valid numbers.
+* **Streamed Responses**: SSE chunks are checked against the sanitized joined text, so a value split across network chunks is still redacted. The placeholder lands in the chunk where enough of the value has arrived to recognise it (normally the chunk where it completes), earlier fragments become empty chunks, other chunks are untouched, and chunk counts stay aligned with recorded delays.
+* **Colliding Keys**: when two JSON keys sanitize to the same placeholder, later ones get a `#2`, `#3` suffix so no record is dropped. Names of keys that are not redacted are never reused for a suffix.
+
+### Optional Sether backend
+
+Install the `sether` extra to run [Sether](https://pypi.org/project/sether/) detectors after the built-in patterns. Nothing changes unless `pii_redactor` is set, and `sether` is never imported on the default path.
+
+```bash
+pip install "rerunner[sether]"
+```
+
+```python
+from rerunner import CassetteTransport, SetherRedactor
+
+transport = CassetteTransport(
+    "cassettes/support_agent.jsonl",
+    mode="record",
+    pii_redactor=SetherRedactor(),
+)
+```
+
+`Session`, `record()` and `fork()` accept the same `pii_redactor` argument.
+
+* **Entities**: `EMAIL_ADDRESS`, `PHONE_NUMBER`, `CREDIT_CARD` and `US_SSN`, emitting the same `[REDACTED_*]` placeholders. `IP_ADDRESS` stays on the built-in version-aware regex. Select a subset with `SetherRedactor(entities=[...])`.
+* **What it adds**: international `+` phone numbers for any country, Luhn-valid 13 to 19 digit cards (for example 15-digit Amex), and emails whose TLD is longer than seven characters. `US_SSN` adds nothing beyond the built-in pattern and is accepted for entity selection only.
+* **Phone regions**: `PHONE_NUMBER` matches international numbers only by default. `SetherRedactor(phone_regions=["NG", "GB"])` also matches national formats for those countries (ISO 3166-1 alpha-2), at the cost of more false positives on bare 10-digit identifiers.
 
 ---
 
@@ -376,6 +411,9 @@ rerunner doctor
 
 # Scrub secrets and re-sign cryptographic SHA-256 hash chains across existing cassettes
 rerunner scrub session.jsonl
+
+# Launch interactive terminal flight deck to visually inspect multi-turn agent steps
+rerunner tui session.jsonl
 
 # Inspect cassette details, step sequences, and metadata
 rerunner inspect session.jsonl

@@ -204,7 +204,8 @@ This server implements multiple layers of security hardening:
 | SEC-001 | SSRF / DNS rebinding  | URLs validated against blocked IP ranges; DNS resolved pre-request with IP pinning via `--host-resolver-rules`; navigation redirects re-validated |
 | SEC-003 | Command injection     | All subprocesses use `execFile` (no shell); app names validated against `SAFE_APP_NAME_PATTERN` |
 | SEC-004 | Path traversal        | Output paths validated with `fs.realpath()` symlink resolution; restricted to allowed directories |
-| SEC-005 | Denial of service     | Concurrent Puppeteer instances limited to 3 via semaphore                                   |
+| SEC-005 | Denial of service     | Concurrent Puppeteer instances limited to 3 via semaphore; 120 s hard deadline per call, after which the browser is killed and the slot freed |
+| SEC-006 | Popup SSRF bypass     | Chromium's popup blocker kept on (Puppeteer disables it by default); any popup that still opens is closed |
 
 For full details, see [`docs/security.md`](docs/security.md).
 
@@ -259,7 +260,7 @@ Tests use [Vitest](https://vitest.dev/) in three tiers:
 
 - **Unit** (`npm test`) — Full dependency injection, no real I/O. Fast feedback loop.
 - **Integration** (`npm run test:integration`) — Real DNS resolution, real filesystem with temp directories, real Puppeteer against a local HTTP server.
-- **E2E** (`npm run test:e2e`) — Real native screenshot tools. macOS tests run natively; Linux tests run in Docker via `npm run test:linux`.
+- **E2E** (`npm run test:e2e`) — Real native screenshot tools. macOS tests run natively; Linux tests run in Docker via `npm run test:linux`; Windows tests run on the `windows-latest` CI runner.
 
 ```bash
 npm test                 # Unit tests (~300ms)

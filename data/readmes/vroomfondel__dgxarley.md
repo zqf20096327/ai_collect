@@ -175,14 +175,14 @@ via the primary gateway.
 | `tenants`                    | `{}`                                                                    | Tenant map `key: { domain, issuer? }`; hermes users with `tenant` get names below `domain`                                                                                            |
 | `tenant_tls_issuer`          | `letsencrypt-tenant`                                                    | ClusterIssuer for the tenant wildcard certs (TSIG key limited to the tenant domains)                                                                                                  |
 | `vpn_ingress.enabled`        | `false`                                                                 | Gate for WireGuard user peers arriving via the hub; derives the master's per-source port filter (HTSTUFFIN), the MikroTik forward/input filter and the Traefik allowlist contribution |
-| `vpn_ingress.networks`       | `[]`                                                                    | User peer blocks, e.g. `["10.200.2.128/26"]`; may reach only `tcp_ports` (default `[443]`) of `target_host`                                                                           |
+| `vpn_ingress.networks`       | `[]`                                                                    | User peer blocks, e.g. `["10.20.30.128/26"]`; may reach only `tcp_ports` (default `[443]`) of `target_host`                                                                           |
 | `traefik_public_allowlist`   | `["0.0.0.0/0", "::/0"]`                                                 | Source ranges allowed for `public` apps (every source)                                                                                                                                |
 | `hub_ingress.enabled`        | `false`                                                                 | Enables the PROXY-protocol bind on the k3s master (required when any app is public)                                                                                                   |
-| `hub_ingress.bind_address`   | `""`                                                                    | Master tunnel address the hub connects to, e.g. `10.200.2.10`                                                                                                                         |
+| `hub_ingress.bind_address`   | `""`                                                                    | Master tunnel address the hub connects to, e.g. `10.20.30.10`                                                                                                                         |
 | `hub_ingress.port`           | `8443`                                                                  | TCP port of the bind (HAProxy `accept-proxy`, then Traefik websecure)                                                                                                                 |
-| `hub_ingress.source_ips`     | `[]`                                                                    | Hub peers allowed to connect (iptables INPUT accept), e.g. `["10.200.2.1/32"]`                                                                                                        |
+| `hub_ingress.source_ips`     | `[]`                                                                    | Hub peers allowed to connect (iptables INPUT accept), e.g. `["10.20.30.1/32"]`                                                                                                        |
 
-`public` apps allow every source in Traefik and are reachable only through the kikube hub, which delivers the real client IP via PROXY protocol on `hub_ingress`. `lan` apps accept the customer LAN, ops tunnel peers, k3s CIDRs and VPN user peers (`vpn_ingress.networks`), so a client arriving through the hub is blocked by Traefik. Tenant hostnames (`tenants`, `hermes_users[*].tenant`) are served with per-tenant wildcard certs from `tenant_tls_issuer`; they need `app_exposure.hermes: public` and the hub's wildcard A records. The hermes LAN hostnames (`<user>.hermes.<dns_external_domain_suffix>`) stay internal regardless of `app_exposure.hermes`.
+`public` apps allow every source in Traefik and are reachable only through the upstream ingress hub, which delivers the real client IP via PROXY protocol on `hub_ingress`. `lan` apps accept the customer LAN, ops tunnel peers, k3s CIDRs and VPN user peers (`vpn_ingress.networks`), so a client arriving through the hub is blocked by Traefik. Tenant hostnames (`tenants`, `hermes_users[*].tenant`) are served with per-tenant wildcard certs from `tenant_tls_issuer`; they need `app_exposure.hermes: public` and the hub's wildcard A records. The hermes LAN hostnames (`<user>.hermes.<dns_external_domain_suffix>`) stay internal regardless of `app_exposure.hermes`.
 
 ## K8s Infrastructure (`k8s_infra` role)
 
@@ -424,7 +424,7 @@ ansible-playbook site.yml -e 'clevis_luks_passphrase=YOUR_PASSPHRASE'
 ## Custom apps
 
 `k8s_custom.yml` (role `k8s_custom_app`) deploys apps that are NOT part of this repo: each one is a directory
-`custom_apps/<name>/` next to the playbook, owned by the private inventory overlay (`../kikube-dgx-config/custom_apps/`,
+`custom_apps/<name>/` next to the playbook, owned by the private inventory overlay (its `custom_apps/`,
 copied by its `sync.sh`). The directory name is the app name, namespace default, Deployment/Service name and the
 Ansible tag; `--tags custom_apps` selects all of them.
 

@@ -3,15 +3,15 @@
 **A local-first AI workspace with a real Linux desktop inside it.**
 
 [![CI](https://github.com/Tagiyevff/TagNest/actions/workflows/ci.yml/badge.svg)](https://github.com/Tagiyevff/TagNest/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/Tagiyevff/TagNest?color=11181c&v=0.4.0)](https://github.com/Tagiyevff/TagNest/releases/latest)
+[![Release](https://img.shields.io/github/v/release/Tagiyevff/TagNest?color=11181c&v=0.7.0)](https://github.com/Tagiyevff/TagNest/releases/latest)
 [![License: MIT](https://img.shields.io/badge/license-MIT-11181c.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11%20x64-11181c)](README.md#requirements)
 
 TagNest is an open-source desktop app for Windows 10/11. On the left, you talk to an AI agent.
 On the right is a real Alpine Linux + XFCE desktop running locally in QEMU, streamed into the
-window with noVNC. The agent can run commands, read and write files, start servers and control the
-desktop with the mouse and keyboard — and you can take over at any moment with your own mouse and
-keyboard.
+window with noVNC. The agent can run commands, read and write files, start servers, drive a real
+Chromium page and control the desktop with the mouse and keyboard — and you can take over at any
+moment with your own mouse and keyboard.
 
 There is no TagNest account, no TagNest server and no subscription. The Linux machine is yours,
 on your computer, stored on your disk.
@@ -27,13 +27,13 @@ on your computer, stored on your disk.
 1. **Download the installer** from [Releases](https://github.com/Tagiyevff/TagNest/releases/latest):
    `TagNest-<version>-x64.exe`. Builds are produced and attached by the
    [Release workflow](.github/workflows/release.yml), so every binary comes from a tagged commit.
-2. **Install QEMU on the host** — TagNest drives a real VM and does not redistribute QEMU:
-   ```powershell
-   winget install SoftwareFreedomConservancy.QEMU
-   ```
-3. **Run TagNest.** The first launch downloads the Alpine base image, provisions the desktop and
-   installs Firefox inside the guest (a few minutes, ≈250 MB of downloads). Later launches boot
-   straight to the desktop; your Linux files stay in `%APPDATA%\TagNest`.
+2. **Run TagNest.** If QEMU is missing, the Linux panel offers **Install QEMU**: it runs
+   `winget install SoftwareFreedomConservancy.QEMU` and Windows shows its normal UAC prompt. You can
+   still install it yourself with that command; TagNest does not redistribute QEMU.
+3. The first launch downloads the Alpine base image, provisions the desktop and installs Firefox
+   inside the guest (a few minutes, ≈250 MB of downloads). Chromium is installed the first time the
+   agent uses a browser tool. Later launches boot straight to the desktop; your Linux files stay in
+   `%APPDATA%\TagNest`. Auto-updates apply to the installed build and install on the next quit.
 4. **Add a model** in Settings (gear icon): paste an OpenAI / Anthropic / Gemini / OpenRouter key,
    point it at a custom OpenAI-compatible endpoint, or select **Ollama (local)** for fully local
    inference. The app fetches the provider's real model list as soon as the key is saved — you pick
@@ -48,10 +48,27 @@ offers the slow software-emulation path.
 Building from source instead: see [Quick start (development)](#quick-start-development) and
 [docs/RELEASING.md](docs/RELEASING.md).
 
+## Install (Android phone)
+
+Download `TagNest-mobile-<version>.apk` from the same
+[Releases page](https://github.com/Tagiyevff/TagNest/releases/latest) and install it (Android will
+ask you to allow installs from your browser/file manager because the APK is sideloaded).
+
+1. On the computer: **Settings → Phone access**, choose **Cloudflare quick tunnel** (works away
+   from home, no account) and start it. Copy the address it shows.
+2. In the app: enter that address, the 6-digit pairing code and a name for the phone.
+3. Chat, approve commands and open the **Desktop** tab for the live Linux screen. Press the keyboard
+   button above the desktop to send real key input to the guest.
+
+TagNest keeps running in the system tray after you close its window while phone access is on, and it
+blocks system sleep, so the phone keeps working. The quick-tunnel address changes when the computer
+or TagNest restarts; use **Home network** on the same Wi-Fi or a **Custom URL** from a stable tunnel
+for a permanent address. Full details: [mobile/README.md](mobile/README.md).
+
 ## Status
 
-Early release (`0.4.0`). The Linux runtime, embedded desktop, agent tool loop, approvals and
-settings are implemented and were exercised against a real VM. Typecheck, lint, 89 unit tests, the
+Early release (`0.7.0`). The Linux runtime, embedded desktop, agent tool loop, approvals and
+settings are implemented and were exercised against a real VM. Typecheck, lint, 119 unit tests, the
 production build and the real-VM smoke test pass. Provider adapters were tested against local mocks
 of their real HTTP APIs, and the OpenAI-compatible path was additionally driven end to end against
 a local router that forwards to a real hosted model — tool calls, file creation and read-back in the
@@ -60,11 +77,20 @@ guest browser — was tested against a mock OpenAI-compatible server driving rea
 real internet requests. See [docs/VALIDATION.md](docs/VALIDATION.md) for the exact results, including
 what was **not** verified.
 
-`0.4.0` makes model selection automatic: each provider's real model list is loaded into a dropdown
-(right after the API key is saved and on **Refresh**), and OpenRouter gets a **Free — Automatic**
-mode that selects and verifies a currently working free model, falling back to the next one when a
-model refuses direct API traffic. `0.3.0` added real Linux app projects. See
-[CHANGELOG.md](CHANGELOG.md).
+`0.7.0` adds **phone access**: a real Flutter Android app that pairs with the desktop, chats with
+the same agent, approves commands and embeds the live Linux desktop; remote access runs over a
+Cloudflare quick tunnel, the home network or your own stable URL, with per-device tokens and no
+account. The desktop app stays in the tray while a phone is connected and blocks sleep.
+
+`0.6.0` added a first-run checklist, automatic **restore points** before destructive agent commands
+(disk-only, because WHPX cannot save RAM state), resumable Linux image downloads with real progress
+and speed, and a redacted diagnostics report for support. `0.5.0` gave the agent a real browser: one
+visible Chromium window it can navigate, read, click and type in — with a screenshot tool for vision
+models — plus a one-click QEMU install and in-app automatic updates. `0.4.0` made model selection
+automatic: each provider's real model list is loaded into a dropdown (right after the API key is
+saved and on **Refresh**), and OpenRouter gets a **Free — Automatic** mode that selects and verifies
+a currently working free model, falling back to the next one when a model refuses direct API
+traffic. See [CHANGELOG.md](CHANGELOG.md).
 
 ## What works
 
@@ -76,14 +102,26 @@ model refuses direct API traffic. `0.3.0` added real Linux app projects. See
   networking, so downloads, package installs and web pages behave like on the host.
 - A real browser in the guest: Firefox is installed automatically on the first start after
   provisioning (one `apk` install, about 90 MB) and runs on the visible desktop.
-- Agent internet tools: `web_search` (DuckDuckGo), `web_fetch` (URL → readable text) and
-  `open_url` (opens the page as a tab in the Firefox window you already have, so you watch it load
-  in the right-hand panel).
+- **Agent browser automation:** one visible Chromium window on the desktop, reused for the whole
+  task. `browser_open` returns the real title, URL, visible text and numbered links/buttons/fields;
+  `browser_read` re-reads after a change; `browser_click` and `browser_type` use real CDP mouse and
+  keyboard events; `browser_screenshot` feeds the page to a vision model; `browser_back` and
+  `browser_scroll` cover history and scrolling. `open_url` opens the same window, so watching the
+  agent work is watching the actual page it is using.
+- Agent internet tools: `web_search` (DuckDuckGo), `web_fetch` (URL → readable text) for fast,
+  non-interactive reading.
 - A structured system prompt (`src/main/agent/prompts.ts`) sent to every provider: who the agent is,
   the real guest facts, the full tool inventory, how to verify its own work and how to reply — so a
   fresh model starts useful instead of guessing.
 - Embedded TigerVNC → WebSocket → noVNC display with mouse, keyboard, clipboard paste/copy and
   viewport scaling.
+- **Phone access.** A pairing-code based remote server (HTTP + authenticated noVNC WebSocket) with
+  three modes: Cloudflare quick tunnel (no account, works anywhere), home network, or a custom
+  stable URL. Each phone gets its own revocable token, pairing is rate-limited, and turning remote
+  access off stops the listener and the tunnel. The **Flutter Android app** (`mobile/`) is built and
+  attached to every release; it has chat, approvals, task history, stop/retry and the embedded
+  desktop with pointer and keyboard input. The desktop app moves to the system tray when its window
+  is closed while phone access is on.
 - **The agent can see the screen.** `desktop_screenshot` captures the real guest desktop and hands
   the PNG to a vision-capable model, so it can read a page, find a button and click it — verified
   end to end against a live model (see [docs/VALIDATION.md](docs/VALIDATION.md)).
@@ -124,6 +162,22 @@ model refuses direct API traffic. `0.3.0` added real Linux app projects. See
 - **Settings → About:** checks the latest GitHub release and links to it when a newer version exists.
 - English and Azerbaijani UI.
 - Configurable VM memory/CPU count/disk size and automatic startup.
+- **First-run checklist:** checks hardware virtualization, QEMU and the model configuration, offers
+  the one-click QEMU install there, and explains the Windows feature needed for WHPX. It can be
+  dismissed for the current version.
+- **Restore points:** before an approved destructive command, the agent starts a live qcow2 snapshot
+  of the Linux disk. The panel then offers **Restore** (discard everything written since the
+  snapshot) and **Keep changes** (merge the snapshot and continue). Restore points survive an app
+  restart.
+- **Resumable Linux image download:** progress, speed and ETA in the panel; Stop cancels the
+  download; if it is interrupted, the next start continues with an HTTP Range request instead of
+  downloading the 150 MB image again. Bundled images are checksum-verified before use.
+- **Diagnostics report:** Settings → About and the Linux panel save a text report with versions,
+  runtime state, sanitized settings, provider key presence (never values) and log tails. API keys,
+  the VNC token and the user's home path are removed.
+- **One-click QEMU install** when the host has no emulator (winget + the Windows UAC prompt), and
+  **automatic updates** for the installed build (background download, install on quit, status in
+  the chat and Settings → About).
 
 ## Requirements
 
@@ -133,7 +187,7 @@ model refuses direct API traffic. `0.3.0` added real Linux app projects. See
 | RAM | 8 GB total recommended; the VM defaults to 3 GB and is configurable (2–8 GB). |
 | Disk | ~250 MB for the base image + ~1–2 GB for the installed desktop + your files, in the 20 GB (sparse) workspace disk. |
 | CPU | Hardware virtualization (WHPX) strongly recommended. Software emulation (TCG) is very slow. |
-| QEMU | Required on the host. Install with `winget install SoftwareFreedomConservancy.QEMU` (QEMU 11 tested), or set `TAGNEST_QEMU` to the executable. |
+| QEMU | Required on the host. TagNest can install it for you with one click (winget + UAC); you can also run `winget install SoftwareFreedomConservancy.QEMU` (QEMU 11 tested) or set `TAGNEST_QEMU` to the executable. |
 | Internet | First launch downloads the pinned Alpine image and lets the guest install the desktop and Firefox (≈150 MB + ≈90 MB). After that the guest uses your connection like any other app, and model calls need the network (unless you use Ollama). |
 
 QEMU is intentionally **not** committed to this repository; it is GPL software with its own
@@ -309,6 +363,11 @@ npm run lint
 npm run smoke:linux  # boots the real VM and verifies the runtime end to end
 npm run smoke:agent  # agent loop against a scripted OpenAI-compatible endpoint: approvals, file
                      # tools, web_search / web_fetch / open_url against the real guest
+
+cd mobile
+flutter analyze      # Dart analyzer, zero issues
+flutter test         # pairing screen, URL normalization, remote state parsing
+flutter build apk --release
 ```
 
 `smoke:linux` downloads/provisions on first use (`TAGNEST_SMOKE_CLEAN=1` to force a fresh
@@ -338,25 +397,47 @@ file persisted and checks that no Windows host paths are mounted. The recorded r
   panicked under TCG on the development machine, so software emulation is not a reliable fallback.
   TagNest reports the problem and the serial log instead of pretending it works. Enabling Windows
   Hypervisor Platform is the supported fix.
-- QEMU is expected on the host; the repo does not redistribute QEMU binaries. An installer has to
-  ship them separately or install QEMU as a prerequisite.
-- The NSIS installer builds (`release/TagNest-0.4.0-x64.exe`, ≈119 MB). The packaged `win-unpacked`
-  app was launched for 0.3.0; the 0.4.0 package is built by the same config but install/uninstall was
-  not exercised on a clean Windows machine. It is unsigned, so Windows SmartScreen will warn.
+- QEMU is expected on the host; the repo does not redistribute QEMU binaries. The app installs it
+  with winget on request, and the first-run checklist offers that too.
+- **Restore points are disk-only and require a reboot to apply.** WHPX refuses QEMU RAM snapshots
+  (`savevm` reports missing dirty-memory-tracking support), so a restore point protects the Linux
+  filesystem, not running processes. Restoring or keeping the changes stops the VM, moves/merges the
+  overlay and boots it again (about 15–45 s in the real-VM test). Only one restore point is kept at
+  a time.
+- **Quick-tunnel addresses are temporary.** Cloudflare quick tunnels do not need an account but get a
+  new `https://…trycloudflare.com` name whenever the tunnel restarts, so after a computer reboot the
+  phone must be re-pointed. Keep TagNest running (it stays in the tray) or use Home network / Custom
+  URL with a named Cloudflare Tunnel for a permanent address. A remote session also needs the
+  computer awake and TagNest running; phone access blocks app suspension but a laptop lid can still
+  suspend the machine depending on its power plan.
+- **The Android app is sideloaded.** It is not on Google Play, release builds are signed with the
+  project's release key, and Android will warn about installing from outside the store. iOS is not
+  built.
+- The NSIS installer builds (`release/TagNest-0.7.0-x64.exe`, ≈120 MB). The packaged `win-unpacked`
+  app was launched for earlier versions (it reported its version and opened the checklist) but install/uninstall was
+  not exercised on a clean Windows machine. It is unsigned, so Windows SmartScreen will warn, and
+  automatic updates from an unsigned build still show that warning when the installer runs.
+- The one-click QEMU install was not executed in validation because QEMU was already installed. The
+  fixed winget command, UAC prompt and post-install verification are implemented and typechecked,
+  and the checklist offers the same path; see [docs/VALIDATION.md](docs/VALIDATION.md).
 - Drag & drop was verified with a real DOM drop event (file bytes through the preload bridge and
   SFTP), not by dragging from Explorer with the OS pointer. The download flow's dialog is covered by
   a unit test with a mocked dialog; the native Save dialog was not clicked in the validation run.
 - The desktop is scaled to the panel; dynamic guest resolution changes are not implemented. The
   guest screen is fixed at 1440×900 (VNC viewport scaling keeps it usable).
-- **Vision needs a vision-capable model.** `desktop_screenshot` sends a real PNG to the provider, so
-  the selected model must accept images (e.g. a multimodal OpenAI/Anthropic/Gemini model, or a
-  vision model on your local router). A text-only model answers without seeing the image or rejects
-  the request; that error is shown in the chat. There is no DOM/page-source tool — the screenshot is
-  what the agent sees — and very large screenshots are capped at 4 MB.
-- Firefox is installed automatically the first time a workspace boots with the updated runtime;
-  that step needs internet access and adds about 90 MB to the guest disk. Browser *automation*
-  (reading page pixels, driving the DOM) is not implemented — the agent uses `web_fetch`/
-  `web_search` for content and can only show pages to you with `open_url`.
+- **Vision needs a vision-capable model.** `desktop_screenshot` and `browser_screenshot` send a real
+  PNG to the provider, so the selected model must accept images (e.g. a multimodal
+  OpenAI/Anthropic/Gemini model, or a vision model on your local router). A text-only model answers
+  without seeing the image or rejects the request; that error is shown in the chat. Very large
+  screenshots are capped at 4 MB.
+- **Browser automation covers normal web pages, not every browser surface.** It drives one Chromium
+  window with CDP: navigation, DOM text, element refs, mouse clicks, typing, screenshots, history
+  and wheel scrolling. Native file pickers, cross-origin iframes, browser-internal pages
+  (`chrome://…`), PDFs and pages that block automation can fail or be invisible; the tool reports
+  the real error. A page that renders only inside a canvas is readable through
+  `browser_screenshot`, not through text. Chromium is installed on first use (internet required,
+  adds a few hundred MB to the guest disk); Firefox stays available for `open_url` fallback and
+  `launch_app browser`.
 - App projects are deliberately small: `web` is plain HTML/CSS/JS served by the guest's Python
   `http.server`, and `cli` is a shell program in a terminal. Native GUI toolkits (GTK/Qt), packaged
   desktop bundles and app-store style distribution are not scaffolded; the agent can still install
@@ -365,6 +446,9 @@ file persisted and checks that no Windows host paths are mounted. The recorded r
   checks the port before creating and before starting, but two projects can share a default port
   while stopped; start them on different ports.
 - Hosted provider calls were not exercised with live keys in this environment; see VALIDATION.
+- Automatic updates only run in the packaged Windows build. The update feed requires a published
+  release with `latest.yml`; development checkouts show a "not active" status instead of pretending
+  to update.
 - Clipboard transfer and proportional guest-resolution changes are implemented but were not
   exercised in the validation run.
 - Guest isolation is strong (a VM) but not a certified security boundary. See SECURITY.

@@ -41,7 +41,11 @@
 
 要先装Node.js 24（24.15.0或更新）和npm，然后：
 
+实验分词核心已改为共享 Rust：网页版用 WASM，桌面版直接调用原生 Rust；Svelte 负责界面。源码开发也需要 Rust stable，并先执行下列准备。详见 [test 分支重构说明](docs/rust-core.md)。
+
 ```bash
+rustup target add wasm32-unknown-unknown
+cargo install wasm-bindgen-cli --version 0.2.108 --locked
 cd app
 npm ci
 npm run dev        # 然后打开 http://localhost:1420
@@ -63,16 +67,12 @@ npm run dev        # 然后打开 http://localhost:1420
 
 ```bash
 npm run check          # 类型检查
-npm test               # 单元测试
 npm run content:check  # 三种语言的章节和来源对不对得上
 npm run check:quiz     # 测验题登记
 npm run build
-npx playwright install chromium   # 第一次跑浏览器测试前，装一次浏览器
-npm run test:e2e       # 浏览器测试
-npm run test:e2e:pwa   # 离线功能测试
 ```
 
-Rust部分在`app/src-tauri/`里跑`cargo test --locked -p study-core`。
+Rust部分在`app/src-tauri/`里跑`cargo clippy --locked -p study-core -- -D warnings`。
 
 这些检查不用每次都记着手动跑：推到`main`或者开Pull Request的时候，GitHub会自动全部跑一遍。另外每周一会自动列出该复查的章节、检查来源链接还在不在，只提醒，不会自己改书。打`v*`标签时会自动打包Windows版，在Windows上实际装一遍、打开一遍，再放进Release草稿，人看过以后才发布。
 

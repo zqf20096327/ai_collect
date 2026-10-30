@@ -126,7 +126,7 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
 - Compare greedy decoding, beam search, top-k, top-p, and temperature sampling. When does each fail?
   - Answer: [How do Top-k and Top-p Sampling work?](https://outcomeschool.com/blog/how-do-top-k-and-top-p-sampling-work) 
 - What are logits, and how are they used in text generation?
-  - Answer: [Understanding Logits in Machine Learning](https://x.com/amitiitbhu/status/1927927814923207146)
+  - Answer: [Understanding Logits in Machine Learning](https://x.com/amitiitbhu/status/1927927814923207146) and [What are Logits in Machine Learning?](https://outcomeschool.com/blog/logits-in-machine-learning)
 - What are stop tokens in LLMs, and how does an LLM know when to stop generating?
   - Answer: [Stop Tokens in LLMs](https://outcomeschool.com/blog/stop-tokens-in-llms)
 - What is the difference between a stop token and a stop sequence?
@@ -793,7 +793,7 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
 - What are Multimodal AI models, and how do they process different types of data?
   - Answer: [Multimodal AI](https://outcomeschool.com/blog/multimodal-ai)
 - How do vision-language models process images?
-  - Answer: [Multimodal AI](https://outcomeschool.com/blog/multimodal-ai)
+  - Answer: [Multimodal AI](https://outcomeschool.com/blog/multimodal-ai) and [How does a Vision-Language Model (VLM) work?](https://outcomeschool.com/blog/vision-language-model-vlm)
 - How do Image Embeddings work?
   - Answer: [How do Image Embeddings work?](https://outcomeschool.com/blog/how-do-image-embeddings-work)
 - How does CLIP work, and why is it important for multi-modal AI?

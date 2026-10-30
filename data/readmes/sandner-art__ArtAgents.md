@@ -12,8 +12,18 @@ Select predefined agents, load custom agents, or utilize multi-agent "Teams" to 
 
 ---
 
-##  Recent Updates 
-- (v0.9.5-alpha, October 2025)
+##  Recent Updates
+
+### v0.10.0-alpha (October 2026): Image Generation, Live Streaming, Modern Ollama API
+
+*   **Image Generation tab:** generate images from your prompts with **ComfyUI** (any workflow exported in API format, see `image_workflows/README.md`), **Forge / AUTOMATIC1111 / SD.Next** (`--api`), or **Ollama image models** (experimental: Ollama removed image generation in v0.32.6, so this backend shows a clear message until it returns). Images are saved as PNG with the prompt and settings embedded, plus an optional `.txt` with the prompt. Use **🎨 Send to Image Generation** in the Chat tab to turn an answer into an image.
+*   **Live streaming + Stop:** answers appear token by token; team runs show each step as it is written. **⏹ Stop** buttons end chat, caption batches, sweeps and image jobs (the server stops generating too).
+*   **Modern Ollama connection:** uses `/api/chat` with real system prompts for agents, lists your **installed models automatically** with vision support detected (🔄 next to the model list), handles reasoning ("thinking") models, and no longer sends options current Ollama ignores. New starter models include **Gemma 4** (`gemma4:e4b`, `gemma4:12b`, `gemma4:26b`).
+*   **Comment/Refine is a real conversation:** each refinement continues the chat that produced the answer.
+*   **Captions:** custom caption instruction, trigger-word prefix/suffix, batch append/prepend, and export to `metadata.jsonl` / `metadata.csv` for training tools. `(Direct Agent Call)` now works everywhere (plain model call, no persona).
+*   **Fixes:** team runs with an uploaded image crashed; images never reached team steps; "Use Advanced Ollama API Options" was ignored and global `num_predict` overrode Max Tokens; "Unload Previous Model" never triggered; settings changes now apply without restart.
+
+### v0.9.5-alpha (October 2025)
 
 This project has undergone a significant technical upgrade and has been enhanced with new creative capabilities.
 
@@ -58,6 +68,7 @@ Three new teams have been added to `agent_teams.json` to leverage these strategi
 *   **Experiment Sweeps:** Systematically run base prompts across multiple selected Agent Teams and Worker Models. Saves detailed JSON protocol files for each run and separate `.txt` files containing the raw generated prompts per model.
 *   **Configuration Management:** External JSON files for easy customization of settings, models, limiters, API profiles, agent roles, and agent teams.
 *   **App Settings UI:** Dedicated tab to configure Ollama URL, agent loading preferences, default behaviors, UI theme, and detailed Ollama API parameters (with loadable profiles).
+*   **Image Generation:** ComfyUI, Forge / A1111 / SD.Next and Ollama image backends with progress, Stop, seeds, batch size and saved PNG metadata (configure server URLs and the output folder in App Settings).
 *   **Persistent History:** Logs all single interactions and detailed workflow steps to `core/history.json`, viewable and clearable in the "Full History" tab.
 *   **Utilities:** Copy-to-clipboard for responses, optional prompt artifact cleaning, model release functions, contextual help tooltips, setup scripts.
 *   **Modular Codebase:** Organized structure (`core`, `agents`, `ui`) for maintainability.
@@ -138,18 +149,21 @@ ArtAgent/
 1.  **Install Ollama:** Download and install from [ollama.com](https://ollama.com/). Ensure the `ollama` command is available in your terminal.
 2.  **Clone Repository:** `git clone https://github.com/sandner-art/ArtAgents.git` and navigate into the `ArtAgent` directory (`cd ArtAgent`).
 3.  **Setup Python Environment (Recommended):**
-    *   **Using Venv (Manual):** Create and activate a virtual environment (Python 3.9+ recommended, 3.10+ required for potential Gradio 5 upgrade).
+    *   **Using Venv (Manual):** Create and activate a virtual environment (**Python 3.11+ required**).
         ```bash
         python -m venv venv
         # On Windows: .\venv\Scripts\activate
         # On Linux/macOS: source venv/bin/activate
         ```
-        Then install requirements:
+        Then install requirements in **two steps**:
         ```bash
         pip install --upgrade pip
         pip install -r requirements.txt
+        pip install --no-deps -r requirements-pillow.txt
         ```
-    *   **(Alternative) Using Scripts:** Run `.\scripts\setupvenv.bat` (Windows) or equivalent `.sh` script to automate venv creation and `pip install`.
+        The second step installs the patched Pillow 13. Gradio still declares `pillow<13`, so pip cannot resolve both in one command; `pip check` will mention that cap, which is expected. The app prints a warning at startup if an older Pillow is installed.
+    *   **(Alternative) Using Scripts:** Run `.\scripts\setupvenv.bat` (Windows) or `scripts/setupvenv.sh` (Linux/macOS) to create `venv` in the project root and run both install steps. Start the app with `.\scripts\govenv.bat` or `scripts/govenv.sh`.
+    *   **Upgrading an existing install:** activate your venv and run the two `pip install` commands above.
     *   **(Future) Using Poetry:** If Poetry is implemented, replace step 3 with `poetry install`.
 4.  **Setup Ollama Models:** Run `.\scripts\setup.bat` (Windows) or equivalent `.sh` script. This checks Ollama connectivity and downloads recommended models listed in `models.json`. Alternatively, use `ollama pull <model_name>` manually for desired models.
 5.  **Configure (Optional):** Review and edit JSON files (`settings.json`, `models.json`, `agent_teams.json`, etc.) to customize the application.
@@ -163,6 +177,8 @@ ArtAgent/
     *   Using Scripts: `.\scripts\govenv.bat` (Windows) or equivalent `.sh` script.
     *   (Future) Using Poetry: `poetry run python app.py`
 4.  **Access UI:** Open the local URL provided in the console (usually `http://127.0.0.1:7860`) in your web browser.
+
+> **Security note:** ArtAgents reads and writes files in any folder you type into the UI, so keep it bound to `127.0.0.1` (the default). If you enable `share=True` or `server_name="0.0.0.0"` in `app.py`, also pass `auth=("user", "password")` to `demo.launch()`.
 
 ## Documentation
 

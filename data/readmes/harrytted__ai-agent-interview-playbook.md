@@ -1,56 +1,49 @@
 # AI Agent 系统学习与面试手册
 
-Agent 能把答案说得很像已经办成了。学这份手册，要再往前走一步：看清它读了什么、做了什么，失败后还能不能收拾现场。
+**AI Agent（智能体）在本手册中指围绕目标、根据当前信息选择行动，并利用行动结果继续推进任务的系统。** 模型怎样参与决策，工具怎样执行动作，任务做到一半又靠什么记住进展？这份手册先解释这些概念，再用图解和例子连接上下文、检索、记忆与规划，最后进入评测和工程实现。
 
-面向 **AI Agent / 大模型应用工程师**，以 Python 实践为主。仓库包含 **10 章基础、12 章进阶、92 道原创详解题**，配有数值算例、执行器与恢复实验、项目工作坊、学习路线和模拟面试。
+| 你想怎样阅读 | 从这里开始 |
+| --- | --- |
+| 先理解 Agent 的组成和工作方式 | **[01 · Agent 的组成与协作](learning/01-system-map.md)**：在本章阅读概念、图解和完整例子 |
+| 已有基础，深入工程问题 | **[工程进阶（12 章）](advanced/README.md)**：按章节阅读机制、案例、推导与设计 |
+| 按面试问题查漏补缺 | **[92 篇逐题文章](questions/README.md)**：每题独立阅读，包含短答、详细解释、追问与案例 |
 
-全部题目都有口述短答、详细答案、3 个带回答的追问、实战案例、误区与验收练习，共 **276 组追问、92 个案例**。每题直接链接对应学习内容，章节末尾也能找到相关题目。
+需要先看全貌，可以查看 [知识主线与阅读顺序](learning/knowledge-map.md)。
 
-可以从一个具体问题开始：为什么引用存在却不支持结论？为什么超时之后反而创建了两张工单？章节沿着案例解释机制，题库再用追问和故障检查理解。术语会逐步出现，不需要入场先背一袋缩写。
+## 从组成看懂协作
 
-## 配套在线阅读
+![模型负责理解与决策，工具提供外部能力，记忆保留可用信息，规划组织步骤；四类能力围绕目标协作](website/assets/diagrams/concepts/C1-capability-map.png)
 
-**[打开在线学习手册 →](https://harrytted.github.io/ai-agent-interview-playbook/)**：按课程目录连续阅读，搜索知识点和题号，在学习章节与面试题之间跳转。电脑、手机都可以直接打开，无需下载仓库。
+[查看原图](website/assets/diagrams/concepts/C1-capability-map.png)
 
-读到陌生词，可以先查字典；学完一章，还可以到博客看图解和工程文章。两个网站都由本仓库作者维护：
+小明问：“2026年11月12日去海岚出差，住宿每晚650元，超过标准吗？”本例的普通员工类别由可信档案提供。模型要读懂问题，工具负责取得适用制度，任务记录保留日期与已查资料，规划决定先查什么、还缺什么。运行时把这些能力组织成连续的过程。[进入章节完整讲解](learning/01-system-map.md)
 
-- [AI 编程字典：查术语、看关系图](https://agent.harrylab.cn/dictionary/)：查询中英术语，沿概念关系理解 Token、Context、Harness、MCP 等知识怎样连接。
-- [Agent 技术博客：读图解与工程实践](https://agent.harrylab.cn/articles/)：阅读 Agent 工程实践、原理图解和技术笔记，把课程里的机制放回具体问题中理解。
+手册包含10章基础、12章进阶与92道详解题。基础原理与工程进阶两部分保留完整讲解，能够按章节连续学习；独立面试题提供短答、深入解析与追问，供复习和查漏。代码和实验作为理解后的进一步练习。图解帮助你看清信息如何流动，追问用来检查能否用自己的话说清。
 
-可以把仓库当作学习与练习主线，把字典放在手边查词，再按问题选读博客文章。
+按目录阅读可打开 [在线学习手册](https://harrytted.github.io/ai-agent-interview-playbook/)。遇到术语，可查作者的 [AI编程字典](https://agent.harrylab.cn/dictionary/)；需要更多图解与工程文章，可选读 [Agent技术博客](https://agent.harrylab.cn/articles/)。
 
-## 从这里开始
+<div id="基础课程"></div>
 
-| 你的状态 | 建议入口 | 本次产出 |
+## 基础原理
+
+从概念和运行机制讲起，结合图解、案例与实验理解 Agent。基础部分先回答“是什么、为什么需要、怎样工作”，再用同一个政策助手串起概念。模型与输入、行动与知识、状态与规划、质量与可靠性四条线相互连接；具体章节关系见 [知识主线](learning/knowledge-map.md)。
+
+| 学习阶段 | 章节 | 核心产出 |
 | --- | --- | --- |
-| 想从原理开始学 | [基础课程](learning/README.md) | 理解从 LLM 到 Agent 系统的完整链路 |
-| 已经掌握基础 | [进阶课程](advanced/README.md) | 系统学习长任务、Agentic RAG、协作、质量优化与训练 |
-| 开始准备面试 | [学习路线](docs/00-roadmap.md) | 确定 30 天安排与验收标准 |
-| 已经做过 LLM 应用 | [92 题索引](docs/question-index.md) | 找出解释不清的机制与失败路径 |
-| 要准备进阶追问 | [36 道进阶题](docs/advanced/README.md) | 用详细解析、追问和案例连接 12 章知识 |
-| 面试前一周 | [7 天冲刺](docs/00-roadmap.md#7-天冲刺) | 两轮模拟面试和一个可验证的项目演示 |
-| 想动手补工程能力 | [离线实验](examples/agent_lab/README.md) | 运行工具循环，观察重试、审批、幂等和步数上限 |
-| 想挑外部学习资料 | [GitHub 项目调研](research/github-survey.md) | 按用途组合资料，避免只收藏不练习 |
-| 想跟进进阶方向 | [进阶项目与技术博客](research/advanced-landscape.md) | 判断新能力的用途、工程取舍及对应学习章节 |
-
-## 基础课程
-
-先沿连续教程理解机制，再用题目闭卷检验。每章有具体案例、逐步算例、验收练习、自检答案及来源。贯穿案例为虚构的内部政策助手。
-
-| 学习阶段 | 课程 | 核心产出 |
-| --- | --- | --- |
-| 模型和输入 | [01 系统地图](learning/01-system-map.md) · [02 LLM 原理](learning/02-llm-primer.md) · [03 上下文](learning/03-context-and-prompts.md) | 画清职责，复算注意力，组织有效证据 |
+| 模型和输入 | [01 组成与协作](learning/01-system-map.md) · [02 LLM 原理](learning/02-llm-primer.md) · [03 上下文](learning/03-context-and-prompts.md) | 画清职责，复算注意力，组织有效证据 |
 | 行动与知识 | [04 工具循环](learning/04-agent-loop.md) · [05 工具/MCP](learning/05-tools-and-mcp.md) · [06 RAG](learning/06-rag-and-retrieval.md) | 读执行轨迹，定义工具合同，检查检索链路 |
 | 状态与协作 | [07 记忆](learning/07-memory-and-state.md) · [08 规划与多 Agent](learning/08-planning-and-multi-agent.md) | 管理状态与版本，解释协作和恢复的边界 |
 | 质量与交付 | [09 评测](learning/09-evaluation.md) · [10 可靠性与安全](learning/10-reliability-and-security.md) | 定义指标与终态，处理失败和越权 |
 
-[完整课程与节奏](learning/README.md) · [术语回查](learning/glossary.md) · [课程参考资料](learning/verification.md) · [GitHub 学习资源深度调研](research/learning-resources.md)
+[完整目录与阅读顺序](learning/README.md) · [术语回查](learning/glossary.md) · [基础原理参考资料](learning/verification.md) · [GitHub 学习资源深度调研](research/learning-resources.md)
 
-## 进阶课程
+<div id="进阶课程"></div>
 
-进阶课程将 GitHub 项目、作者技术博客、官方文档、协议和论文整理成可连续学习的知识。沿同一个政策研究助手案例，从运行机制走到设计练习，再用轨迹、故障和评测判断改进。
+## 工程进阶
 
-| 学&#8288;习&#8288;阶&#8288;段 | 课程 | 核心产出 |
+深入长任务、系统设计、故障恢复与质量优化。沿同一个政策研究助手案例，结合 GitHub 项目、技术博客、官方文档、协议和论文，从运行机制走到设计练习，再用轨迹、故障和评测判断改进。
+
+| 学&#8288;习&#8288;阶&#8288;段 | 章节 | 核心产出 |
 | --- | --- | --- |
 | 运&#8288;行&#8288;基&#8288;础 | [01 Harness](advanced/01-harness-and-deep-agents.md) · [02 持久执行](advanced/02-durable-execution.md) · [03 上下文工程](advanced/03-context-engineering.md) · [04 记忆与技能](advanced/04-memory-and-skills.md) | 长任务交接、恢复状态图、上下文与记忆合同 |
 | 能&#8288;力&#8288;组&#8288;织 | [05 工具路由/MCP](advanced/05-tool-routing-and-mcp.md) · [06 Agentic RAG](advanced/06-agentic-rag.md) · [07 多 Agent](advanced/07-multi-agent-systems.md) · [08 编码与计算机操作](advanced/08-coding-and-computer-use.md) | 工具选择、证据策略、协作图和操作环境 |
@@ -58,21 +51,21 @@ Agent 能把答案说得很像已经办成了。学这份手册，要再往前�
 
 [完整进阶路线](advanced/README.md) · [贯穿项目工作坊](advanced/project-workshop.md) · [官方知识体系](advanced/official-learning-map.md) · [机制实验](examples/advanced/README.md)
 
-每章都有对应的 [3 道进阶面试题](docs/advanced/README.md)。先读场景和机制，再闭卷说短答，最后展开详细答案与案例。遇到不会的追问，可以直接回到学习章节补上那一步。
+每章都有对应的 [3 篇进阶题文章](questions/README.md#进阶系统)。先读场景和机制，再闭卷说短答，最后展开详细答案与案例。遇到不会的追问，可以直接回到学习章节补上那一步。
 
 ## 知识地图
 
-Q001–Q056 覆盖基础与通用工程，Q057–Q092 对应 12 章进阶系统知识，采用相同的详解与案例标准。想先理解机制，就从学习章进入；想闭卷练回答，就从题目进入。
+Q001–Q056 覆盖基础与通用工程，Q057–Q092 对应 12 章进阶系统知识，采用相同的详解与案例标准。正文按知识关系完整讲解，面试题按问题组织回答与追问；学习和复习可以沿两种入口往返。
 
 | 模块 | 题号 | 你应当能够解释 |
 | --- | --- | --- |
-| [Agent 与 LLM 基础](docs/foundations/01-agent-and-llm.md) | Q001–Q008 | Agent 边界、Transformer、训练与推理、模型适配 |
-| [规划与编排](docs/foundations/02-planning-and-orchestration.md) | Q009–Q016 | 循环、ReAct、状态、恢复、并发与多 Agent 取舍 |
-| [RAG 与检索](docs/foundations/03-rag-and-search.md) | Q017–Q024 | 分块、检索、重排、权限、归因与评测 |
-| [工具、记忆与协议](docs/foundations/04-tools-memory-protocols.md) | Q025–Q032 | Schema、执行边界、MCP、上下文和持久记忆 |
-| [评测与可观测性](docs/engineering/05-evaluation-and-observability.md) | Q033–Q040 | 数据集、失败归因、Judge 偏差、成本与延迟 |
-| [可靠性与安全](docs/engineering/06-reliability-and-security.md) | Q041–Q048 | 重试、幂等、人审、注入、隔离与故障恢复 |
-| [系统设计与项目表达](docs/engineering/07-system-design-and-projects.md) | Q049–Q056 | 需求、架构、验收、真实贡献与可复现证据 |
+| [Agent 与 LLM 基础](questions/README.md#agent-与大模型基础) | Q001–Q008 | Agent 边界、Transformer、训练与推理、模型适配 |
+| [规划与编排](questions/README.md#规划状态与多-agent-编排) | Q009–Q016 | 循环、ReAct、状态、恢复、并发与多 Agent 取舍 |
+| [RAG 与检索](questions/README.md#rag-与检索诊断) | Q017–Q024 | 分块、检索、重排、权限、归因与评测 |
+| [工具、记忆与协议](questions/README.md#工具调用记忆与-mcp) | Q025–Q032 | Schema、执行边界、MCP、上下文和持久记忆 |
+| [评测与可观测性](questions/README.md#05--评测与可观测性) | Q033–Q040 | 数据集、失败归因、Judge 偏差、成本与延迟 |
+| [可靠性与安全](questions/README.md#06--可靠性与安全) | Q041–Q048 | 重试、幂等、人审、注入、隔离与故障恢复 |
+| [系统设计与项目表达](questions/README.md#07--系统设计与项目表达) | Q049–Q056 | 需求、架构、验收、真实贡献与可复现证据 |
 | [12 章进阶面试](docs/advanced/README.md) | Q057–Q092 | 长任务、上下文、检索协作、运行质量与训练取舍 |
 
 ## 每天怎么学
@@ -81,7 +74,7 @@ Q001–Q056 覆盖基础与通用工程，Q057–Q092 对应 12 章进阶系统�
 
 别急着把每页都涂成已读。对同一个例子加一句“这时网络断了呢”，往往比多背三个框架名更能发现缺口。
 
-只阅读文档无需安装。运行工具需要 **Python 3.10+**，仅使用标准库，无需联网、安装依赖或配置密钥。在仓库根目录运行：
+只阅读文档无需安装。默认离线工具需要 **Python 3.10+**，仅使用标准库，无需联网、安装依赖或配置密钥；可选live路径需要单独提供供应商凭据。在仓库根目录运行：
 
 ```bash
 # 抽 5 题，只显示问题，先口述再看答案
@@ -101,7 +94,10 @@ python3 scripts/study.py review Q001 --score 2
 python3 scripts/study.py due
 python3 scripts/study.py stats
 
-# 运行离线教学实验
+# 观察驱动的政策任务与独立评分
+python3 -m examples.policy_agent eval --suite all --mode offline --output .local/policy_agent/all-report.json
+
+# 隔离的执行器边界实验
 python3 examples/agent_lab/lab.py --scenario all
 
 # 复算 Attention、余弦、RRF 与检索指标
@@ -113,9 +109,12 @@ python3 examples/advanced/runtime_lab.py --scenario all
 
 复习记录保存在 `.local/study-progress.json`，默认不进入 Git。日期间隔规则详见 [复习说明](practice/README.md)。
 
-## 用项目支撑面试回答
+## 理解以后，再用实验和项目加深
 
-[7 天项目实验](docs/engineering/08-project-lab.md)提供从工具循环到真实模型接入的验收步骤。当前代码使用脚本决策器和关键词检索，实验重点是执行器边界。接入模型、持久化、多租户和部署见后续练习。
+想亲手观察工具往返，可以选做 [00 · 走完一次任务](learning/00-first-agent.md)。[政策实验](examples/policy_agent/README.md)提供查询、澄清、旧资料与恢复的可运行过程；阅读概念章节不必先安装或运行它。
+
+
+[7 天项目实验](docs/engineering/08-project-lab.md)提供从工具循环到真实模型接入的验收步骤。旧执行器实验使用固定脚本；新增政策实验提供观察驱动规则、持久状态和本地授权/恢复替身。模型接入状态、模拟权限与生产系统之间的边界见各实验README；项目经历和线上效果须用自己的实测填写。
 
 准备面试时使用 [模拟面试](practice/mock-interviews.md)、[项目表达模板](practice/project-story-template.md) 和 [错题复盘模板](practice/review-template.md)。所有业务数据、项目职责和指标请用自己的真实材料填写。
 

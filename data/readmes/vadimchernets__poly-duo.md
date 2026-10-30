@@ -4,7 +4,7 @@
 
 [![Watch Duo run on YouTube](https://img.youtube.com/vi/Oj8ZQ_rVtQc/hqdefault.jpg)](https://youtu.be/Oj8ZQ_rVtQc)
 
-**Install:** [iPhone — add the Duo shortcut](https://www.icloud.com/shortcuts/9baa76c3d00e4c08ae1380c8ee3eb1c1) · [Android — Poly Duo on Google Play](https://play.google.com/store/apps/details?id=ai.polyhelper.a1) · [other languages](#install-in-60-seconds) · [polyhelper.ai/duo](https://polyhelper.ai/duo/)
+**Install:** [iPhone — add the Duo shortcut](https://www.icloud.com/shortcuts/d8265e4794c046d480f548ee6485ec48) · [Android — Poly Duo on Google Play](https://play.google.com/store/apps/details?id=ai.polyhelper.a1) · [other languages](#install-in-60-seconds) · [polyhelper.ai/duo](https://polyhelper.ai/duo/)
 
 ## Install in 60 seconds
 
@@ -12,31 +12,33 @@
 
 **Step 2 — shortcut.** Tap the iCloud link for your language below → the Shortcuts app opens → **Add**.
 
-**Step 3 — first run: keep the phone in your hand.** iPhone asks about 5 times whether Duo may pass your question to ChatGPT and Claude, copy the result to the clipboard and write the journal file. Each time tap **Always Allow**: it applies only to Duo and only to your own apps, not to the rest of the phone. An unanswered prompt vanishes within seconds and the run ends with «no access» — then just run it again. After that there are no more prompts. **Then do not touch the screen for about a minute: a touch stops Duo.**
+**Step 3 — first run: keep the phone in your hand.** iPhone asks several times whether Duo may pass your question to ChatGPT and Claude, copy the result to the clipboard and write the journal file. Each time tap **Always Allow**: it applies only to Duo and only to your own apps, not to the rest of the phone. An unanswered prompt vanishes within seconds and the run ends with «no access» — then just run it again. After that there are no more prompts. **Then do not touch the screen for about a minute: a touch stops Duo.**
 
 | Language | Duo | Trio |
 |---|---|---|
-| English | [Duo](https://www.icloud.com/shortcuts/9baa76c3d00e4c08ae1380c8ee3eb1c1) | [Trio](https://www.icloud.com/shortcuts/ca730c3d887648a0a380dc397ede7ab7) |
-| Español | [Duo](https://www.icloud.com/shortcuts/e24c2d192350498f8684ce51d950bb20) | [Trio](https://www.icloud.com/shortcuts/3180a49b17e64b35b9b7c3b445ba98e9) |
-| Português | [Duo](https://www.icloud.com/shortcuts/92ebfac5dee9458e9c5ffae6fd13e5b8) | [Trio](https://www.icloud.com/shortcuts/29cace07d31f4033aa0cf26a2d1f9bb1) |
-| Русский | [Duo](https://www.icloud.com/shortcuts/aeac0108bfa241dbb08cff78091f8e3d) | [Trio](https://www.icloud.com/shortcuts/aaeeb82334154966b6c5fa6c8b6fdd3d) |
-| Українська | [Duo](https://www.icloud.com/shortcuts/9af937cd07a544e493b9db9f63a9e283) | [Trio](https://www.icloud.com/shortcuts/2ee4ec0be50e4e2c85c10626bd5adf01) |
-| Deutsch | [Duo](https://www.icloud.com/shortcuts/b4f412abf5e74d4280b16df3bc8e93f5) | [Trio](https://www.icloud.com/shortcuts/3deb89385a604743925a2683faa0a216) |
-| Français | [Duo](https://www.icloud.com/shortcuts/520f75fadd134ccf856c6f76ce25b96d) | [Trio](https://www.icloud.com/shortcuts/5debce283e1b4e4a90403959dbd8b748) |
-| हिन्दी | [Duo](https://www.icloud.com/shortcuts/b2d06f9be9dc478eaf78051bbfc3bbb8) | [Trio](https://www.icloud.com/shortcuts/8524e67391be4ced90d6bfddfc5fd271) |
-| 日本語 | [Duo](https://www.icloud.com/shortcuts/c1790f70f9d147dfa87bffa8be08046f) | [Trio](https://www.icloud.com/shortcuts/c0988a5ff0f242cb8458f2991eef5b7f) |
-| 한국어 | [Duo](https://www.icloud.com/shortcuts/4b2ce35771db4235a1771fb3646108aa) | [Trio](https://www.icloud.com/shortcuts/0df9f941045d4c3a8e43bef02c01c35b) |
-| 中文 | [Duo](https://www.icloud.com/shortcuts/47912cf4201949b899497f4f22d9069e) | [Trio](https://www.icloud.com/shortcuts/8c7639cf0be9421e884b075ee9b794e4) |
+| English | [Duo](https://www.icloud.com/shortcuts/d8265e4794c046d480f548ee6485ec48) | [Trio](https://www.icloud.com/shortcuts/fca5ce69fd254fb58dc5032b0c11f4a8) |
+| Español | [Duo](https://www.icloud.com/shortcuts/bd7e092c82434b79b38c1d6bb24f8143) | [Trio](https://www.icloud.com/shortcuts/cb9321448e67464a9a4a3299156abff0) |
+| Português | [Duo](https://www.icloud.com/shortcuts/0dfbcc7993ff4550b3dbaa778357c5a6) | [Trio](https://www.icloud.com/shortcuts/bc58d0a87b6e4c029dd2552dab42ef29) |
+| Русский | [Duo](https://www.icloud.com/shortcuts/970ce37032e742c9b7d5541811c705ee) | [Trio](https://www.icloud.com/shortcuts/b02b703fcfb84646bdc082665a9aab03) |
+| Українська | [Duo](https://www.icloud.com/shortcuts/ceb87caac5d449cd848a3aea4a4855df) | [Trio](https://www.icloud.com/shortcuts/02842cdd1e32411b85c8b139c65f72ca) |
+| Deutsch | [Duo](https://www.icloud.com/shortcuts/047a79a4eda24f619905e89e4e1363d1) | [Trio](https://www.icloud.com/shortcuts/dae423ab7b9646639560d2104175b4bd) |
+| Français | [Duo](https://www.icloud.com/shortcuts/bcfd256fdd394196af21d4dec224cfb4) | [Trio](https://www.icloud.com/shortcuts/1d56d388ef924930a7b0787835019dd1) |
+| हिन्दी | [Duo](https://www.icloud.com/shortcuts/210c14093fa346b8a5fe8c20998627a4) | [Trio](https://www.icloud.com/shortcuts/2d1aeaad69fd47eb994061f7b511f5b4) |
+| 日本語 | [Duo](https://www.icloud.com/shortcuts/7daa65ea84fb4897a6d9e7ecd32d12a2) | [Trio](https://www.icloud.com/shortcuts/286c5ab3ded9441e985fd3904f5d87fe) |
+| 한국어 | [Duo](https://www.icloud.com/shortcuts/4db99c2550ff46a3b88ecfc731754fdc) | [Trio](https://www.icloud.com/shortcuts/eed7898164de43a0a9ec848c8ebcc8b0) |
+| 中文 | [Duo](https://www.icloud.com/shortcuts/ee777fb2b3714b9087d96ceefc4d4d50) | [Trio](https://www.icloud.com/shortcuts/10617126d26b4144bd2d0335f1d8f8bc) |
 
 **Backup: the signed file.**
 
 1. On your iPhone, open [`releases/`](releases) and pick your language — `en`, `es`, `pt`, `ru`, `uk`, `de`, `fr`, `hi`, `ja`, `ko` or `zh`.
 2. Tap **`Duo.shortcut`** (or **`Trio.shortcut`**) → **Add**.
-3. Run it once and tap **Always Allow** each time it asks about ChatGPT, Claude and the clipboard (4–6 times on the first run).
+3. Run it once and tap **Always Allow** each time it asks about ChatGPT, Claude and the clipboard (several times on the first run).
 
-The same signed files are on [polyhelper.ai/duo](https://polyhelper.ai/duo/) (Duo 6.4) and in the [`releases/`](releases) folder of this repository (the same files that `releases/SHA256SUMS` lists). The [GitHub releases](https://github.com/vadimchernets/poly-duo/releases) page does not carry the current files: its only attached files, in v1.0.0–v1.0.4, are the old 1.0 builds named `Duo-en.shortcut` and so on. Do not use them: the name becomes the shortcut's name, and Siri and «another mode — same question» then cannot find it. Keep the file name
+The same signed files are on [polyhelper.ai/duo](https://polyhelper.ai/duo/) (Duo 6.5) and in the [`releases/`](releases) folder of this repository (the same files that `releases/SHA256SUMS` lists). The [GitHub releases](https://github.com/vadimchernets/poly-duo/releases) page does not carry the current files: its only attached files, in v1.0.0–v1.0.4, are the old 1.0 builds named `Duo-en.shortcut` and so on. Do not use them: the name becomes the shortcut's name, and Siri and «another mode — same question» then cannot find it. Keep the file name
 `Duo.shortcut`: the name in Shortcuts comes from it, and Siri and «another mode — same question»
 find the shortcut by that name.
+
+**Faster next time (optional, off by default).** At the end of a run, «➕ More…» has three switches: «📌 Critique right away next time» (skips the mode menu), «⚡ Shared text: ask without editing» (a text shared to Duo with three words or more goes without the question box) and «↩️ Show all menus again». «🔁 Another mode» always shows the question box and the menu. The choice is one small file, `Duo-prefs.txt`, next to the journal in iCloud Drive → Shortcuts.
 
 **If it doesn't work:** no «Ask Claude» in the action list — update the Claude app and iOS (18+). Empty answer — open the Claude app and check that you are signed in (no app yet: [App Store](https://apps.apple.com/app/id6473753684)), and open ChatGPT once. Duo stopped while you were scrolling — a touch of the screen stops it; run it again and wait a minute. ChatGPT says «logged out» — open ChatGPT, close it, run Duo again. The permission prompt vanished before you tapped — just run it again and tap **Always Allow** at once. More: [docs/en/install.md](docs/en/install.md#if-somethings-wrong).
 ## How it works
@@ -232,10 +234,10 @@ On an iPhone with Apple Intelligence (iPhone 15 Pro or newer, iOS 26 or later) t
   Drive (`Shortcuts/poly-key.txt`).
 - **Trio without a key** — on an iPhone with Apple Intelligence (iPhone 15 Pro or newer, iOS 26+) the
   third voice can be Apple Intelligence on the phone: no key, no sign-up. Same install, a different
-  file: [English](https://www.icloud.com/shortcuts/2a24e0157e4a445bae92ed1410907b9f) ·
-  [Español](https://www.icloud.com/shortcuts/281f56b82f7444438220fdffcbb46f22) ·
-  [Português](https://www.icloud.com/shortcuts/4000dcb2b9d64dcfaa44062c92e51b69) ·
-  [Deutsch](https://www.icloud.com/shortcuts/ee32676281884deeba0868ced906c229) · [Français](https://www.icloud.com/shortcuts/5b368c5ebf2e45c1ad41702dd9692c90) · [日本語](https://www.icloud.com/shortcuts/92d37480faf44969882f992c08baba7a) · [한국어](https://www.icloud.com/shortcuts/99366127269947f285147e66af8109b9) · [中文](https://www.icloud.com/shortcuts/0a339cb1b3fd4ddea6b2ec40808debd9) · [हिन्दी](https://www.icloud.com/shortcuts/649c129fd8ba4551b42497a8d88317ac). Not for
+  file: [English](https://www.icloud.com/shortcuts/e09ac625b719401fa8ca91360ba23a20) ·
+  [Español](https://www.icloud.com/shortcuts/3167e5dba4f1447797d85849c279be61) ·
+  [Português](https://www.icloud.com/shortcuts/30de98250b784e7181fbee4c17444b43) ·
+  [Deutsch](https://www.icloud.com/shortcuts/29ad3c2317ee4042a3c2c44f644faf6e) · [Français](https://www.icloud.com/shortcuts/58aaa1fb8b3443e5a4a3cee19fceac6d) · [日本語](https://www.icloud.com/shortcuts/c9b9f5aa7d634684bd362cd4fd15e5ac) · [한국어](https://www.icloud.com/shortcuts/3ec2d812eac14c6cbbc8833a9a1b6904) · [中文](https://www.icloud.com/shortcuts/d0d6e02ff93443e8812327d60de2b623) · [हिन्दी](https://www.icloud.com/shortcuts/2f36d14dd24e48439d199be5269a6408). Not for
   Russian or Ukrainian yet (no such file for them).
 
 *In the sources the main shortcut is still called **Poly** — `tools/build.sh` writes
@@ -258,7 +260,7 @@ where it describes the sources.*
   phone needed; or [OpenRouter](https://openrouter.ai/keys) (turn on free models once in
   [privacy settings](https://openrouter.ai/settings/privacy), otherwise they answer «No endpoints
   found»). Several keys, one per line, help when they are from different companies — limits are
-  per account, not per key. On the first run iPhone asks for permission 4–6 times — tap
+  per account, not per key. On the first run iPhone asks for permission several times — tap
   **Always Allow** each time.
 - Don't touch the screen while it runs — that cancels the run on Apple's platform.
 
@@ -377,6 +379,7 @@ whether it was obvious what C1M Duo does, who it's for and how to run it. If it 
 write to info@polyhelper.ai and say where you got lost — that's the feedback we can't
 get any other way.
 
+- **Feedback:** worked, didn't work, or an idea? [One-minute form](https://github.com/vadimchernets/poly-duo/issues/new?template=feedback.yml&ref=duo-feedback) or info@polyhelper.ai.
 - **Discussions** — ideas, questions, proposals for new modes.
 - **Issues** — bugs and concrete tasks, using the issue template.
 - **Ran it on your phone?** Tell us what worked or broke with the [run report](../../issues/new?template=run-report.yml) (no question text needed); what has been seen so far is in [docs/en/compat.md](docs/en/compat.md).

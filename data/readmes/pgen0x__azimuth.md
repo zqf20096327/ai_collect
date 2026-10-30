@@ -1,6 +1,6 @@
 # Azimuth — Concentrated-Liquidity Pool Signal Daemon for AI Agents
 
-[![Version](https://img.shields.io/static/v1?label=version&message=2.12.0&color=informational)](CHANGELOG.md) <!-- x-release-please-version -->
+[![Version](https://img.shields.io/static/v1?label=version&message=2.14.0&color=informational)](CHANGELOG.md) <!-- x-release-please-version -->
 [![Go Version](https://img.shields.io/badge/go-1.22%2B-00ADD8?logo=go&logoColor=white)](go.mod)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/status-beta-yellow)](#project-status)
@@ -219,8 +219,8 @@ SOLANA_RPC_URLS=https://mainnet.helius-rpc.com/?api-key=YOUR_KEY,https://api.mai
 DLMM_ALERT_TARGET=telegram        # instant trade-event alerts (close/rebalance/compound)
                                   # sent script-side via `hermes send` — no LLM tokens.
                                   # "platform" or "platform:chat_id"; empty disables.
-DLMM_TZ=Asia/Jakarta              # timezone for every report-card timestamp (IANA name,
-                                  # e.g. America/New_York; empty/unset = system zone)
+DLMM_TZ=UTC                       # report-card times and daily buckets (any IANA name,
+                                  # e.g. America/New_York; empty/unset = UTC)
 DLMM_STATS_HOUR=09                # daily scoreboard send hour in DLMM_TZ (00-23, default 09)
 ```
 
@@ -287,7 +287,7 @@ end (2 position slots, tight-range `custom_ratio_spot` preferred).
 
 ### Pulse mode
 
-`pulse` is a port of a reference bot's own screen. It sits on the **same**
+`pulse` is a second screen. It sits on the **same**
 TVL/mcap/holder band as `turnover` ($10k–$150k TVL, $150k–$10M mcap, ≥500
 holders, bin step 80–125, organic ≥60), and the point is not the band — it is
 the **window**. `turnover` queries `category=all` on a 30m timeframe sorted by
@@ -476,28 +476,29 @@ python3 <profile>/skills/solana-dlmm/scripts/dlmm_stats.py [--hours 24] [--send]
 Deterministic metlex-style card (closes, win rate, avg hold, realized PnL,
 fees-vs-IL split, volume churned, per-mode breakdown, rebalance-chain PnL)
 built from the Meteora portfolio API + close journal + Redis — no LLM. The
-monitor loop auto-sends it daily at 09:00 WIB via `hermes send` when
+monitor loop auto-sends it daily at `DLMM_STATS_HOUR` (default 09) in `DLMM_TZ` via `hermes send` when
 `DLMM_ALERT_TARGET` is set.
 
 ## Example output
 
-The agent reports each deploy decision as a card like this (real values, not
-placeholders — the prompt never lets it fabricate a size/entry/TX):
+The agent reports each deploy decision as a card like this (illustrative values;
+the live card carries only measured ones — the prompt never lets it fabricate a
+size/entry/TX):
 
 ```
-🤖 AI Pick — multiday · 14:32 WIB
+🤖 AI Pick — multiday · 14:32 UTC
 
 Candidates screened: 5
 Chose: world-SOL over 4 others — highest organic score, healthiest fee/TVL
 Strategy: custom_ratio_spot — meme-pool volatility, symmetric range fits
 
-`CQEYFv3KGnJ6xxRyrUNWbXjPHGnbyCbjuZDTGocV92ug`
+`<POOL>`
 
 | Metric | Value |
 |---|---|
 | Token | world |
-| Decision | ✅ DEPLOYED (multiday) pos DoSj3Ga... |
-| Size | 1.03 SOL |
+| Decision | ✅ DEPLOYED (multiday) pos <POSITION> |
+| Size | <SIZE> SOL |
 | Range | 62↓ 62↑ bins |
 | Fee/TVL | 10.8%/d |
 | Score | 290.7 |

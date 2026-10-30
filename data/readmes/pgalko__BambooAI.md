@@ -303,12 +303,17 @@ threshold - as inputs, at most five; everything else stays as written. The routi
 once a *run zero* on the original data reproduces every RESULT line the chain recorded.
 
 A run is then a dialog with the inputs and the load, and no model: the data is loaded the way the
-original was (a window from Intervals.icu, a file from the Dataset cache), checked against the
-routine - the columns fit, the auxiliary files are bound by kind, the chosen values are in the data,
-what differs is said in sentences - and the script runs. Every RESULT line is compared with the run
-before (or run zero): moved beyond its interval, within it, or not reached. Runs are recorded with
-their data, inputs, results, figures and differences, and can be stepped through like chains. A
-window inside a load the executor still holds is cut from that load rather than downloaded again.
+original was (a window from Intervals.icu for the athlete picked in the dialog - a coach's athletes
+are listed with what the store holds for them - or a file from the Dataset cache), checked against
+the routine - the columns fit, the auxiliary files are bound by kind, the chosen values are in the
+data, what differs is said in sentences - and the script runs. Every RESULT line is compared with
+the run before on the same athlete (or run zero, when it is theirs): moved beyond its interval,
+within it, or not reached; the first run on an athlete has nothing to compare with yet, and runs are
+never compared across athletes. The Comparison tab names the athlete and both runs' windows. Runs are
+recorded with their data, inputs, results, figures and differences, and can be stepped through like
+chains - the arrows within one athlete's runs; the manager shows one athlete's runs at a time when a
+routine has run on several. Data without an athlete (an upload, a race) behaves as one group. A window
+inside a load the executor still holds is cut from that load rather than downloaded again.
 
 The contract's rule that makes this possible is that a value read off the data - a date in it, an
 identifier, a count - is computed into a variable, never typed as a literal, so the method holds
@@ -577,10 +582,13 @@ requests to their respective services.
 - **Auxiliary datasets**: additional files uploaded alongside the primary dataset, available to
   the cells by path.
 - **Intervals.icu** and **Endura**: an API key entered in the app (stored encrypted in the working
-  folder's database). Choose a date range; the data is loaded into the executor and described to
-  the analyst - the frame's schema and the heads of the files that came with it. An Intervals.icu
-  load can add the activity summary, the wellness log, the activity intervals and, with the Context
-  option, the words and the planned workouts.
+  folder's database). For Intervals.icu a coach keeps one key per athlete: Settings → Intervals ICU
+  lists the athletes with a key (Intervals.icu is asked whose a key is when it is saved), and the
+  load dialog opens on the roster - each athlete with what the store holds for them, the last loaded
+  first; picking one proposes the window from their last held day. Choose a date range; the data is loaded into the executor and
+  described to the analyst - the frame's schema and the heads of the files that came with it. An
+  Intervals.icu load can add the activity summary, the wellness log, the activity intervals and, with
+  the Context option, the words and the planned workouts.
 - **SweatStack**: OAuth; needs your own app registration with SweatStack (`SWEATSTACK_CLIENT_ID`,
   `SWEATSTACK_CLIENT_SECRET`).
 - **Web search**: `GEMINI_API_KEY`.
@@ -663,18 +671,33 @@ description, and the summary file carries the settings in force on each day. The
 
 ### The Dataset cache and the store
 
-The executor keeps what it has loaded - the frames with their window and metrics, the auxiliary
-files, the datasets an analysis writes with `DS.save` - and the **Dataset cache** panel (the rail)
-lists them: a frame can be loaded again from there, a file previewed or removed. A routine whose
-window lies inside a load the executor still holds runs from the cache without a download.
+The executor keeps what it has loaded - the frames with their window and metrics, the files a load
+writes, the datasets an analysis writes with `DS.save` - and the **Dataset cache** dialog (the rail)
+draws it as a tree: the source, the athlete under it, and under the athlete one line per dataset the
+Intervals.icu dialog offers plus the frame - Activities, Activity summary, Activity intervals, Wellness,
+Context (chats and calendar), Rider profile - with its span, what is held and its size, and whether it is
+on the Data tab now or in the store only. A click on a line opens its details - what it is, what is held, the
+files a load writes and their columns - and the actions: **Load <dataset>** (the span held, from the
+store alone - nothing is fetched), **Load <dataset> to today** (through Intervals.icu, only the missing
+days come down) and **Forget <dataset>** (its pill off the Data tab and the data out of the cache,
+after asking); the athlete's line has the same for everything held. Loading one dataset leaves the
+frame as it is; loading Activities brings the datasets on the Data tab with it, to the same window; the
+Data tab holds one athlete at a time (a load for another athlete lets the first's pills go, after
+asking; the thread stays, the kernel starts fresh on the new data, and the model's ledger marks the
+earlier chains as on another subject's data); a *to today* load runs on the athlete's own key, and one
+for an athlete without a key is refused, saying so; a pill's × takes a dataset off the
+Data tab without deleting it. Uploads and generated files keep their own groups. A routine whose window lies inside a
+load the executor still holds runs from the cache without a download.
 
 Underneath, every Intervals.icu activity the executor has parsed is kept in a **store** under the
-key's folder, with the chats fetched for it. A load is a view over the store: the window's activity
-list is fetched, the activities the store lacks (or whose file changed) are downloaded, the rest are
-assembled from disk, and the chats of activities older than sixty days are reused. *Refresh
-everything* in the load dialog fetches the whole window again. Activities fall out of the store
-after 400 days unless a load used them in the last thirty. The Dataset cache panel shows each key's
-store - its activities, chats, span and size.
+athlete's folder (the source and the athlete id the profile gives), with the chats and the laps fetched
+for it, the wellness log by day, the calendar by entry and the profile's snapshots. A load is a view
+over the store: the window's activity list is fetched, the activities the store lacks (or whose file
+changed) are downloaded, the rest are assembled from disk, and the chats and laps of activities older
+than sixty days are reused; the wellness and calendar of the window come down and are merged, so the
+span held is the union of every load. *Everything again* in the load dialog fetches the whole window
+again. Activities fall out of the store after 400 days unless a load used them in the last thirty; the
+window files a load writes leave after a month.
 
 The store and the loaded files live in the Docker volume `bambooai-datasets`, which outlives the
 container and its image: an upgrade keeps them. `docker volume rm bambooai-datasets` starts the

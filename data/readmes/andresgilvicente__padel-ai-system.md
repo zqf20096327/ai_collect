@@ -7,7 +7,7 @@
   <h1>🎾 Padel AI System</h1>
   <p><strong>Computer Vision applied to Security and Sports Analysis</strong></p>
 
-  <p><strong>Development period:</strong> September-December 2026</p>
+  <p><strong>Development period:</strong> September 2025 - January 2026</p>
 
   <p>
     <a href="https://www.python.org/">
@@ -87,10 +87,12 @@ git clone https://github.com/andresgilvicente/padel-ai-system.git
 ### 2. Create Virtual Environment (Recommended)
 
 ```bash
-python -m venv venv # On Windows
+python -m venv venv
 
-.\venv\Scripts\activate # On Mac/Linux
+# Windows
+.\venv\Scripts\activate
 
+# Mac/Linux
 source venv/bin/activate
 
 

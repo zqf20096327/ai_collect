@@ -21,6 +21,7 @@
 Haiyi Qiu<sup>1</sup>,
 Tan Wang<sup>3</sup>,
 Zheqi Lv<sup>1</sup>,
+[Shuyuan Tu](https://scholar.google.com/citations?user=nVND1VMAAAAJ)<sup>2</sup>,
 [Yue Wu](https://scholar.google.com/citations?user=1xTR6qoAAAAJ)<sup>&sect;2</sup>,
 [Liefeng Bo](https://scholar.google.com/citations?user=FJwtMf0AAAAJ)<sup>2</sup>,
 [Siliang Tang](https://scholar.google.com/citations?user=8e7H3PcAAAAJ)<sup>&sect;1</sup>,

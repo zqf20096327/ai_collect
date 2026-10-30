@@ -333,7 +333,7 @@ It flags; it does not silently strip. Content it cannot inspect (an archive, an 
 **What it doesn't do:**
 - Doesn't touch authentication (OAuth, cookies, tokens, headers)
 - Doesn't monitor agent behavior (that's SHIELD, coming later)
-- Scans on your machine with no cloud, no API keys and no telemetry. Nothing is sent anywhere unless you pass `scan --report-to` ([below](#sending-a-scan-to-a-server-you-name---report-to)). Text, image, PDF and QR scanning needs no network. Audio and video scanning downloads the Whisper speech model the first time and reuses it after that
+- Scans on your machine with no cloud, no API keys and no telemetry. Nothing is sent anywhere unless you pass `scan --report-to`, which sends that scan's result to the URL you name ([below](#sending-a-scan-to-a-server-you-name---report-to)). Text, image, PDF and QR scanning needs no network. Audio and video scanning downloads the Whisper speech model when a scan needs it and no intact copy is cached, and reuses an intact cached copy after that
 
 **Email screening:** A real client sends a real email. But their PC is infected, malware injected hidden attack instructions before it left. The sender doesn't know. Without SUNGLASSES, your agent follows the hidden instructions. With SUNGLASSES, `scanner.scan_email(body, attachments)` returns a scan document (the findings, the three axes, and a named list of anything it could not read) and **your code decides** whether to pass the mail on, quarantine it or ask a human. Nothing is silently rewritten or stripped: SUNGLASSES flags, you act. An attachment that needs a DEEP scan is reported as not yet inspected rather than counted as clean.
 
@@ -341,7 +341,7 @@ It flags; it does not silently strip. Content it cannot inspect (an archive, an 
 
 Tools like **Lakera Guard**, **LLM Guard**, **NVIDIA NeMo Guardrails**, and **Azure Prompt Shields** also protect AI agents from prompt injection. They're good at what they do, especially ML-based detection of novel attacks.
 
-We built SUNGLASSES for a different use case: **local-only, offline, zero-cost, no LLM needed.** Your data stays on your machine unless you run `scan --report-to URL`, which sends one scan to the URL you name ([details](#sending-a-scan-to-a-server-you-name---report-to)). No API keys. No cloud calls otherwise. Works air-gapped.
+We built SUNGLASSES for a different use case: **local-only, offline, zero-cost, no LLM needed.** Your data stays on your machine unless you run `scan --report-to URL`, which sends that scan's result to the URL you name ([details](#sending-a-scan-to-a-server-you-name---report-to)). No API keys. No cloud calls otherwise, apart from the optional audio extra, which downloads its Whisper model when a scan needs it and no intact copy is cached ([details](#deep-scan-setup-audio--video)). Works air-gapped (cache the model first if you scan audio or video).
 
 Use SUNGLASSES alone, or use it alongside cloud tools. We even built an **adapter system** to connect with other security tools in the same pipeline. Security is layers, we're the local foundation layer.
 
@@ -349,9 +349,9 @@ Use SUNGLASSES alone, or use it alongside cloud tools. We even built an **adapte
 
 This section is about the MCP server, `python -m sunglasses.mcp`, the process an agent or a Claude plugin starts.
 
-The server reads only the text you pass to `scan_text` and the file you name in `scan_file`. The scan runs on your machine. The server opens no network connection, sends nothing anywhere and keeps no copy of what it scans. It collects no data, so there is nothing to store, share or retain.
+The server reads only the text you pass to `scan_text` and the file you name in `scan_file`. The scan runs on your machine. The server opens no network connection and sends nothing anywhere, except that a deep audio or video scan downloads its Whisper model when the scan needs it and no intact copy is cached. It keeps no copy of what it scans. It collects no data, so there is nothing to store, share or retain.
 
-Audio and video are the one exception, and only with an optional extra. If you install `sunglasses[audio]`, `sunglasses[video]` or `sunglasses[all]` and ask for a DEEP scan, the Whisper library downloads its speech model when the model file is not in Whisper's cache folder (about 145 MB for the default `base` model, from `openaipublic.azureedge.net`). Before that download starts, Sunglasses prints `fetching whisper model base from openaipublic.azureedge.net` to stderr. An intact model file in the cache folder is reused with no download and no notice. A cached file that is damaged or incomplete is downloaded again by Whisper, without that notice. The notice is made by Sunglasses when it loads the model. Code of your own that calls Whisper directly is not coordinated with it: during a Sunglasses model load, such a call can be announced under Sunglasses's model name. A video scan also writes the sound track or subtitle track to a temporary file on your machine and deletes it once the track is read. What you scan still stays on your machine. Without those extras nothing is downloaded.
+Audio and video are the one exception, and only with an optional extra. If you install `sunglasses[audio]`, `sunglasses[video]` or `sunglasses[all]` and ask for a DEEP scan, the Whisper library downloads its speech model when the model file is not in Whisper's cache folder (about 145 MB for the default `base` model, from `openaipublic.azureedge.net`). Before that download starts, Sunglasses tries to print `fetching whisper model base from openaipublic.azureedge.net` to stderr; the notice is best effort and is missing when stderr is unavailable or the model load takes a compatibility path. An intact model file in the cache folder is reused with no download, and with no notice unless the model load takes a compatibility path. A cached file that is damaged or incomplete is downloaded again by Whisper, without that notice. The notice is made by Sunglasses when it loads the model. Code of your own that calls Whisper directly is not coordinated with it: during a Sunglasses model load, such a call can be announced under Sunglasses's model name. A video scan also writes the sound track or subtitle track to a temporary file on your machine and deletes it once the track is read. What you scan still stays on your machine. Without those extras nothing is downloaded.
 
 What the server sends back goes to your MCP client. A response can quote the matched part of your input. That quote can include a string that looks like a credential. Treat scan results as sensitive content.
 
@@ -684,7 +684,7 @@ sunglasses scan --file podcast.mp3 --deep      # scan audio
 sunglasses scan --file meeting.mp4 --deep      # scan video
 ```
 
-A deep scan of audio or video downloads the Whisper speech model (about 145 MB for the default `base` model) when the model file is not in Whisper's cache folder, and prints `fetching whisper model base from openaipublic.azureedge.net` to stderr first. Later scans reuse an intact cached file. To get the model before you need it offline, run one deep scan while you are online. If stderr is not available, or writing the notice fails with an OSError or ValueError, the model still loads and the notice is not printed anywhere else.
+A deep scan of audio or video downloads the Whisper speech model (about 145 MB for the default `base` model) when the model file is not in Whisper's cache folder, and tries to print `fetching whisper model base from openaipublic.azureedge.net` to stderr first. When the installed Whisper does not expose its download hook, the line it tries to print before each load is `loading whisper model base; Whisper may download it first if it is not already cached` instead. Later scans reuse an intact cached file. To get the model before you need it offline, run one deep scan while you are online. If stderr is not available, or writing the notice fails with an OSError or ValueError, the model still loads and the notice is not printed anywhere else.
 
 SUNGLASSES auto-detects file types. If you try to scan audio/video without `--deep`, it tells you what to do instead of crashing.
 
@@ -787,7 +787,7 @@ Both runs print which engine they measured. `--installed` refuses to run when th
 
 Labeled dataset shipped in this repo: 38 real agent-input attacks (positives) + 77 famous open-source READMEs (react, kubernetes, numpy, ollama…) that must stay clean (negatives). No randomness, no network, no LLM judge (same clone + same command → byte-identical results, sealed by a SHA-256 of the metrics block).
 
-| Metric (v0.6.14) | Value |
+| Metric (v0.6.15) | Value |
 |--------|-------|
 | Precision | 86.1% |
 | Recall | 97.4% (37/38) |
@@ -878,6 +878,11 @@ environment). From v0.5.6 an unattended `pin` without consent refuses with exit 
 and a one-line notice on stderr instead of starting your servers. Nothing in
 `sunglasses init` creates those jobs (it wires the firewall hook and nothing
 else), so if you have one, you wrote it, and it is yours to update.
+
+**Upgrading to v0.6.16:** `sunglasses pin` and `sunglasses pin --check` end with exit 3 when a config file
+could not be read and nothing else failed. Drift under `--check` still ends 1, and a refused consent ends 2.
+Without `--quiet` the file is named on stdout with its reason; servers declared in it are not read. v0.6.15
+ended 0 there, so a job that tests for exit 0 should expect 3.
 
 Also new in v0.5.6: a single positional argument that looks like a path and does
 not exist is a usage error (exit 2) rather than text to scan. `sunglasses scan
@@ -1033,6 +1038,17 @@ private key files are named individually and matching is boundary-aware, so
   those apart and does not pretend to. It does not make the hook fail closed,
   which is the harness's contract rather than ours, and it does not establish
   that the tool call ran. It makes the gap visible instead of silent.
+
+  One more failure has its own answer: the secret check itself raising an
+  exception on an outbound call. If that call also looks credential-shaped
+  (a known key prefix followed by a long token, or a private-key line), the hook
+  asks instead of passing it through, and the question says the secret check
+  was down. With the default setting, any other call hit by that fault passes through when its receipt can be written, with the failure in the receipt; when the receipt cannot be written the hook asks in place of the pass-through. A deny stays a deny, and a block stays a failed hook.
+  Not measured: what the host does with that question in an unattended run, when its permissions are
+  turned off, or when an allow rule already covers the call.
+  `sunglasses init --on-error {ask,deny,defer,block}` writes `~/.sunglasses/on-error`
+  to change that: `deny` refuses without asking, `defer` keeps the quiet
+  pass-through, and `block` ends the hook as a failed hook on every secret-check fault, even when the receipt cannot be written.
 
   Both records depend on the write succeeding. A full disk, a read-only volume
   or a kill between the two appends leaves a file that is missing lines or ends

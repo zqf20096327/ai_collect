@@ -728,6 +728,8 @@ Retrieves the full content of a specific note.
 
 **Note:** Either `id` or `title` must be provided. Using `id` is recommended as it's unique and avoids issues with duplicate titles.
 
+**Busy Notes.app:** with an `id` and Full Disk Access, the note's existence and password flag are read from the NoteStore database (as `get-note-structure` does), so only the body read goes through Notes.app. A timeout is always reported as `timeout_indeterminate`, never as `not_found`, even when an automatic retry then fails differently; and when Notes.app cannot resolve an id the database still holds, the error is `notes_unavailable`. Retry in a moment, or use `get-note-structure` for a read that does not need Notes.app.
+
 **Large images:** Notes.app returns images inside the body as base64, so a note holding a very large image (tens of MB) can take longer to read than the timeout allows. When the read times out or overflows the output buffer, the error says so and, with Full Disk Access, names the attachments of 5 MB or more. Retry with a larger `timeoutSeconds`; `delete-note` accepts the same argument, and it needs a successful read to verify the note before deleting it.
 
 **Example - Using ID (recommended):**
@@ -1648,6 +1650,4 @@ Lists notes from the NoteStore database (read-only) by stored modification time,
 - **Cursors.** `modifiedCheckpoint` is an opaque token (`cdts1:`, 16 hex digits, `:`, the note's database key). It carries the exact stored timestamp bits, so it never loses precision the way an ISO string can, and the key orders notes that share one timestamp. Pass it back as `since`.
 - **Syncing.** Call with `since`, store `nextSince`, and pass it as the next `since`. `nextSince` is the last returned row's cursor, or the incoming boundary when nothing matched, so every call advances. `saturated` is `true` when `count` equals `limit`: more changes may follow, so call again right away. When it is `false`, you are caught up. Notes that share a timestamp are split across pages by key, so none is skipped or repeated.
 - **First sync.** Start with `since: "1970-01-01"` and page the same way. A library larger than the 1000-row maximum is reached in full.
-- **Browsing.** Without `since`, rows come newest first. `nextSince` is then the newest row's cursor, set only when the call returned every matching note (`saturated` is `false`); otherwise it is `null`.
-- **Late edits.** A modification-date cursor can miss an edit that iCloud delivers later from another device with an older timestamp, for example after that device was offline. The row then sorts before the cursor. Run a full pass from the start now and then to catch these.
-- **D
+- **Browsing.** Without `since`, rows come newest first. `nextSince` is then t

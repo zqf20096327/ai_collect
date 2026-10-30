@@ -2,7 +2,6 @@
 
 # Detent
 
-[![CI](https://github.com/digitaldrywood/detent/actions/workflows/ci.yml/badge.svg)](https://github.com/digitaldrywood/detent/actions/workflows/ci.yml)
 [![License: FSL-1.1-ALv2](https://img.shields.io/badge/license-FSL--1.1--ALv2-blue)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/digitaldrywood/detent?include_prereleases&sort=semver)](https://github.com/digitaldrywood/detent/releases)
 
@@ -25,7 +24,7 @@ First ask whether I am using Detent Cloud (https://cloud.detent.build) or a self
 
 Then inspect this repository (language, build and test commands, CI workflows, existing AGENTS.md or CLAUDE.md) and draft two files for my review:
 - detent.yaml: tracker.kind hub_native, the lanes I want, and a gate whose command is this repository's real check command.
-- WORKFLOW.md: the agent instructions for working in this repository. Do not include GitHub pull request or comment steps; native projects land through Detent.
+- WORKFLOW.md: the agent instructions for working in this repository. Do not include pull request, review-comment or GitHub CI steps; native projects land through Detent native Changes.
 
 After I approve the files, walk me through: creating the project in the Hub, enrolling the runner (Settings > Providers & runners > Enroll a runner, then the detent hub runner register command it shows), letting the runner clone the linked repository under its workspace_root, signing in to Codex or Claude Code on the runner, and letting the runner report the repository configuration.
 

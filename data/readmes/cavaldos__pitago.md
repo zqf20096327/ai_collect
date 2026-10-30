@@ -91,6 +91,7 @@ RPC; extension/prompt/skill commands come from pi's `get_commands` and run serve
 | `/thinking`                                            | Toggle thinking level                                                                                                              |
 | `/mcp`                                                 | MCP server manager: add/remove servers, per-server login, tools, reconnect, exposure, enable/disable                               |
 | `/tree`                                                | Navigate the session tree like pi: branches, fold, filters, labels, Enter switches branch (Esc Esc on an empty input opens it too) |
+| `/focus [path[:start-end]]`                            | File tree (neo-tree style) + code view: select lines (`v`/drag), ask the AI about only those lines                                 |
 | `/trajectory [all\|tools\|messages]`                   | Harness-style run trace window (updates live while pi runs)                                                                        |
 | `/notification [filter]`                               | Notification history (time + info/error, newest first)                                                                             |
 | `/settings`                                            | Agent settings, saved to `~/.pi/agent/settings.json`                                                                               |
@@ -139,14 +140,16 @@ session entry — so the command is yours, not the model's. (`!cmd` still goes t
 | `Enter`           | Run the line; output lands in the chat as a bash block (stderr included, non-zero exit marked)    |
 | `↑↓` / `Shift+↑↓` | Recall an earlier shell command (`Esc` clears) — never a message sent to pi                       |
 | `Esc`             | Leave shell mode, kill the shell, drop a recalled command                                         |
-| `Ctrl+V`          | Paste a command (the editor's other keys keep working: chat scroll, `Ctrl+C` clear/quit, sidebar) |
+| `Ctrl+C`          | Interrupt the running command (the shell keeps its cwd); idle, clear the line / double-press quit |
+| `Ctrl+V`          | Paste a command (the editor's other keys keep working: chat scroll, sidebar)                      |
 
 One long-lived shell runs every line with the session cwd, so `cd`, `export` and shell variables
 persist between commands. The program is `$SHELL` (see `/settings` → Pitago → **Shell binary** for
-an override: `$SHELL` or an absolute path). Commands run one at a time; `Ctrl+C` clears the line
-rather than interrupting a running command — the command keeps going until it finishes. A block
-keeps the first 2000 bytes of a command's output (the budget pi uses for its own `!cmd`, and far
-more than the transcript ever renders), so one chatty command cannot slow down typing afterwards.
+an override: `$SHELL` or an absolute path). Commands run one at a time with an empty stdin and no
+terminal, so a typo'd quote reports a syntax error, `cat`/`read` see end-of-file and `sudo`/`ssh`
+password prompts fail fast instead of hanging the mode. A block
+shows the first 12 output lines (`Ctrl+G` shows all) and keeps the first 16 KB of a command's output,
+so one chatty command cannot slow down typing afterwards.
 
 pi's own `!cmd` escape (a fresh process per command, output visible to the model) is untouched.
 

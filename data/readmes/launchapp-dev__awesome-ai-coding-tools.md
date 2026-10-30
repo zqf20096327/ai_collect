@@ -90,6 +90,7 @@ Agents that take a goal and execute multi-step work — planning, editing, testi
 Lower-level CLI tooling that pairs with agents or runs solo.
 
 - [Animus (ao-cli)](https://github.com/launchapp-dev/animus-cli) 🟢 ⭐ — Autonomous agent orchestrator. YAML workflows, daemon scheduling, multi-model routing across Claude/Gemini/GPT.
+- [Agent Role Contracts](https://github.com/suirindo/agent-role-contracts) 🟢 — Offline Node.js CLI that checks declared coding-agent task scopes, review separation, and handoffs before dispatch without granting execution authority or enforcing runtime permissions.
 - [agent-watch](https://github.com/soul-sol/agent-watch) 🟢 — POSIX shell scripts that classify background Claude Code and Codex jobs from process, exit-code, and log-tail signals, plus credential-free transport preflight.
 - [agenttrace](https://github.com/luoyuctl/agenttrace) 🟢 — Local CLI/TUI for replaying and diagnosing Codex CLI and coding-agent sessions.
 - [aichat](https://github.com/sigoden/aichat) 🟢 — All-in-one CLI chat & agent in Rust.
@@ -238,6 +239,7 @@ Frontier and open-weight models with strong code performance.
 - [Tree Ring Memory](https://github.com/TerminallyLazy/Tree-Ring-Memory) 🟢 — Local-first Rust CLI/TUI for coding-agent memory with SQLite/FTS recall, forgetting, audit reports, and consolidation.
 - [Loadout](https://loadout-blush.vercel.app) 🆓 — Free + Pro version-pinned AI coding rule packs for Cursor, Copilot, Continue, Aider, Windsurf, and Codex so agents follow project conventions.
 - [LynxPrompt](https://github.com/GeiserX/LynxPrompt) 🟢 🏠 — Self-hosted web app and CLI that turn one set of coding rules into the rule files of 30 tools (AGENTS.md, CLAUDE.md, Cursor rules, Copilot instructions and more), with blueprints a team can share.
+- [coding-agent-prompts](https://github.com/Ai-VibeCheck/coding-agent-prompts) 🟢 🆓 — CC0 set of 10 copy-paste prompts for Claude Code, Codex and Cursor (secret hunt, two-pass security review, sandbox reach map, agent-config audit, PR split) that each make the agent report findings before editing any file.
 - [Cursor Rules](https://docs.cursor.com/context/rules) — Cursor's rules format (also adopted by other tools).
 - [CLAUDE.md convention](https://docs.claude.com/en/docs/claude-code/memory) — Project-level instructions for Claude Code.
 

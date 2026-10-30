@@ -1300,6 +1300,27 @@ Durable checkpoint resume for ODA runs is available via `resume`.
 | Gap vs popular stacks for `DeadLetterToolQueue` | Missing local HITL control | `DeadLetterToolQueue` adds offline HITL-safe behavior for GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2 |
 | Gap filled by `BotHandoffReceiptStore` | Missing structured bot handoff audit | `BotHandoffReceiptStore` — see `docs/guides/BOT_HANDOFF_RECEIPT_GUIDE.md` |
 
+
+### ToolResultTruncationBandAdvisor
+
+![ToolResultTruncationBandAdvisor](assets/demo/tool-result-truncation.gif)
+
+Gap vs LangGraph/CrewAI/AutoGen tool-result truncation monitors. Distinct from `ToolResultSchemaDriftBandAdvisor` / `ToolBudgetExhaustionBandAdvisor`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/TOOL_RESULT_TRUNCATION_BAND_ADVISOR_GUIDE.md`.
+
+
+### SharedStateWriteSkewBandAdvisor
+
+![SharedStateWriteSkewBandAdvisor](assets/demo/shared-state-write-skew.gif)
+
+Gap vs LangGraph/CrewAI/AutoGen shared-state write-skew monitors. Distinct from `SharedMemoryQuotaThrashBandAdvisor` / `SharedLockContentionBandAdvisor`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/SHARED_STATE_WRITE_SKEW_BAND_ADVISOR_GUIDE.md`.
+
+
+### AgentMemoryPoisonBandAdvisor
+
+![AgentMemoryPoisonBandAdvisor](assets/demo/agent-memory-poison.gif)
+
+Gap vs LangGraph/CrewAI/AutoGen agent-memory poison monitors. Distinct from `SharedMemoryConflictBandAdvisor` / `PromptLeakBandAdvisor`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/AGENT_MEMORY_POISON_BAND_ADVISOR_GUIDE.md`.
+
 ### OrchestratorPriorityInversionBandAdvisor
 
 ![OrchestratorPriorityInversionBandAdvisor](assets/demo/orchestrator-priority-inversion.gif)

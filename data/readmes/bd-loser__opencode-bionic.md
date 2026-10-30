@@ -3,11 +3,11 @@
 > [opencode](https://opencode.ai), the open-source AI coding agent, running
 > **natively on your Android phone** through Termux. No proot, no chroot, no
 > VM, no root, no glibc. One self-contained binary, a signed apt repository,
-> three channels.
+> two channels (stable and dev).
 
 <!-- versions:badges -->
-[![opentui-js](https://img.shields.io/badge/opentui--js-@androidtui%400.5.17-green.svg)](https://www.npmjs.com/package/@androidtui/core)
-[![opentui-so](https://img.shields.io/badge/libopentui.so-@androidtui%400.5.17-green.svg)](https://www.npmjs.com/package/@androidtui/core-android-arm64)
+[![opentui-js](https://img.shields.io/badge/opentui--js-@androidtui%400.6.8-green.svg)](https://www.npmjs.com/package/@androidtui/core)
+[![opentui-so](https://img.shields.io/badge/libopentui.so-@androidtui%400.6.8-green.svg)](https://www.npmjs.com/package/@androidtui/core-android-arm64)
 <!-- /versions:badges -->
 
 ## Screenshots
@@ -26,19 +26,19 @@ anything.
 
 Pick a line, paste one command inside Termux:
 
-**Stable** *(1.x — default)* — copy, paste, run:
+**Stable** *(newest upstream release — default, recommended)* — copy, paste, run:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/bd-loser/opencode-bionic/main/repo-setup.sh | bash
 ```
 
-**Beta** *(2.x — recommended for v2)*:
+**v1** *(legacy 1.x line)*:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/bd-loser/opencode-bionic/main/repo-setup.sh | OPENCODE_CHANNEL=beta bash
+curl -fsSL https://raw.githubusercontent.com/bd-loser/opencode-bionic/main/repo-setup.sh | OPENCODE_CHANNEL=v1 bash
 ```
 
-**Dev** *(2.x — bleeding edge)*:
+**Dev** *(bleeding edge)*:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/bd-loser/opencode-bionic/main/repo-setup.sh | OPENCODE_CHANNEL=dev bash
@@ -57,9 +57,9 @@ echo "deb [arch=aarch64] https://bd-loser.github.io/opencode-bionic stable main"
 pkg update && pkg install opencode
 ```
 
-To switch lines — say, 1.x to v2 — rerun the one-liner for the other line
+To switch lines — say, stable to v1 — rerun the one-liner for the other line
 (it rewrites the sources entry and installs across downgrades), or edit the
-suite (`stable`/`beta`/`dev`) in
+suite (`stable`/`v1`/`dev`) in
 `$PREFIX/etc/apt/sources.list.d/opencode-bionic.list` yourself. The package
 is `opencode` on every line.
 
@@ -71,12 +71,13 @@ version:
 
 | Channel | Tracks | Releases |
 |---|---|---|
-| **stable** *(default)* | upstream release tags | [tags](https://github.com/bd-loser/opencode-bionic/releases) |
-| **beta** | upstream `beta` branch | [prereleases](https://github.com/bd-loser/opencode-bionic/releases?q=prerelease%3Atrue&expanded=true) |
+| **stable** *(default)* | newest upstream release (now 2.x) | [tags](https://github.com/bd-loser/opencode-bionic/releases) |
+| **v1** | newest upstream 1.x release | [prereleases](https://github.com/bd-loser/opencode-bionic/releases?q=prerelease%3Atrue&expanded=true) |
 | **dev** | upstream `dev` branch | [prereleases](https://github.com/bd-loser/opencode-bionic/releases?q=prerelease%3Atrue&expanded=true) |
 
-New to opencode, or on 1.x and curious about v2? **v2 ships on the beta and
-dev lines — beta is the recommended start.** Live package index:
+**stable tracks whatever upstream tags newest — currently the 2.x line — so it is
+the recommended start.** Still on 1.x? The **v1** channel keeps shipping 1.x
+releases. Live package index:
 [bd-loser.github.io/opencode-bionic](https://bd-loser.github.io/opencode-bionic/).
 
 ## How it compares
@@ -89,7 +90,7 @@ is different here:
 | | opencode-bionic | Hope2333/opencode-termux | guysoft/opencode-termux |
 |---|---|---|---|
 | libc | native Bionic | native Bionic | native Bionic |
-| release lines | stable + beta + dev, built automatically from upstream | v1 + v2 | v1 + v2 side-by-side |
+| release lines | stable + v1 + dev, built automatically from upstream | v1 + v2 | v1 + v2 side-by-side |
 | dev freshness | tracks upstream commits hourly | — | — |
 | terminal sessions (PTY) | works, bun-pty rebuilt for Bionic | — | — |
 | what you install | one self-contained .deb | one of five package families | package + wrapper + libs |
@@ -127,19 +128,18 @@ This project assembles the three pieces that make opencode run on Bionic:
 ## Current pins
 
 This channel's exact build inputs, regenerated automatically on every
-release. Other channels live on their own branch
-([beta](https://github.com/bd-loser/opencode-bionic/tree/beta) /
-[dev](https://github.com/bd-loser/opencode-bionic/tree/dev)), all sourced from
+release. The other channel lives on its own branch
+([dev](https://github.com/bd-loser/opencode-bionic/tree/dev)), all sourced from
 [`versions.json`](./versions.json).
 
 <!-- versions:table -->
 | Component | Version |
 |---|---|
-| opencode (upstream) | `1.19.4` |
-| `@opentui/{core,keymap,solid}` (JS, via `@androidtui`) | `0.5.17` |
-| `@androidtui/core-android-arm64` (native `.so`) | `0.5.17` |
+| opencode (upstream) | `2.2.4` |
+| `@opentui/{core,keymap,solid}` (JS, via `@androidtui`) | `0.6.8` |
+| `@androidtui/core-android-arm64` (native `.so`) | `0.6.8` |
 | `bun-termux` runtime | `1.4.4-patched` ([bd-loser/bun-termux](https://github.com/bd-loser/bun-termux)) |
-| `bun-pty` (Bionic pty `.so`, embedded) | `0.4.8` ([release asset](https://github.com/bd-loser/bun-termux/releases/tag/bun-pty-v0.4.8)) |
+| `bun-pty` (Bionic pty `.so`, embedded) | `0.4.11` ([release asset](https://github.com/bd-loser/bun-termux/releases/tag/bun-pty-v0.4.11)) |
 
 <!-- /versions:table -->
 
@@ -173,8 +173,8 @@ see <a href="https://opencode.ai/docs">opencode.ai/docs</a>.
 <details>
 <summary><b>How fast do updates land?</b></summary>
 
-Automatically, within about an hour: upstream stable, beta, and dev activity
-each trigger a matching build here (one release per upstream version).
+Automatically, within about an hour: upstream stable and dev activity each
+trigger a matching build here (one release per upstream version).
 See <a href="#channels">Channels</a>.
 </details>
 

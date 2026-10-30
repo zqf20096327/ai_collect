@@ -15,6 +15,8 @@ Left alone, most agent sessions forget everything between runs, call work done w
 
 ![Most Capable Agent System Architecture](most_capable_agent_system_architecture.svg)
 
+> **Want a ready-made version today?** [agent-harness](https://github.com/fainir/agent-harness) packages the operating rules this prompt asks your agent to build (done means verified with evidence, ledgers that keep long work going, one owner action at a time) as installable skills and hooks for Claude Code and Codex. Use this prompt to have your agent build its own system; use agent-harness to start from a working one.
+
 ## Contents
 
 - [Quick start](#quick-start)
@@ -2748,9 +2750,4 @@ OPEN SOURCE ARCHITECTURE REFERENCES
 
 - Google ADK
   - Learn from its model-agnostic and deployment-agnostic design, software-engineering-first posture, built-in evaluation support, artifact-aware context system, and visual builder that generates code and YAML.
-  - Steal the idea that visual builders should generate portable source artifacts rather than becoming opaque no-code traps.
-  - Sources: https://google.github.io/adk-docs/ and https://google.github.io/adk-docs/visual-builder/
-
-- PydanticAI
-  - Learn from its type-safe structured outputs, model-agnostic provider layer, observability and eval integration, reusable capability bundles, YAML/JSON definitions, and support for MCP and A2A-style interoperability.
-  - Steal the idea that typed interfaces, validation,
+  - Steal the idea that visual builders should generate portable source artifacts rather 

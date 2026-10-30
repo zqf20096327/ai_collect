@@ -235,7 +235,7 @@ Every capability below is documented in an architecture decision record (ADR) or
 
 #### Knowledge spaces
 
-- Personal document bases in 15+ formats with hybrid search (pgvector cosine + BM25), Google Drive folder sync, a Gmail label as a source, and a system space that indexes the product's own help corpus so LIA can explain itself — drawn from the in-app FAQ, whose 523 questions cover every feature a person can use, in six languages.
+- Personal document bases in 15+ formats with hybrid search (pgvector cosine + BM25), Google Drive folder sync, a Gmail label as a source, and a system space that indexes the product's own help corpus so LIA can explain itself — drawn from the in-app FAQ, whose 525 questions cover every feature a person can use, in six languages.
 - A document that cannot be indexed says why in your language — a scanned PDF without a text layer names its remedy.
 - Any indexed document, paused space or not, attaches to a chat message as a copy from the composer's « + » ([ADR-295](docs/architecture/ADR-295-Knowledge-Documents-As-Message-Attachments.md), [GUIDE_RAG_SPACES](docs/guides/GUIDE_RAG_SPACES.md), [ADR-055](docs/architecture/ADR-055-RAG-Spaces-Architecture.md), [ADR-058](docs/architecture/ADR-058-System-RAG-Spaces.md)).
 
@@ -379,7 +379,7 @@ A ticket has a lifecycle, a holder and a result ([ADR-276](docs/architecture/ADR
 
 #### A daily briefing
 
-The home page opens on the date and LIA's living face, then aggregates your sources in parallel with a per-section cache and an LLM synthesis — an agenda on a timeline, an illustrated weather, a Workboard card with exact counts of what waits on you, what LIA holds, what your connections hold and what is overdue — served by a read-only domain outside the agent graph ([BRIEFING_DOMAIN](docs/technical/BRIEFING_DOMAIN.md)). A new account starts small: where the instance provides the weather, the dashboard opens on that card alone and a starter checklist asks for the home address first, the other cards one switch away ([ADR-307](docs/architecture/ADR-307-Keyless-Connectors-Belong-To-The-Instance.md)). Meetings and calls read as timelines by day and part of day, and a list that cannot load says so instead of looking empty.
+The home page opens on the date and LIA's living face, then aggregates your sources in parallel with a per-section cache and an LLM synthesis — an agenda on a timeline, an illustrated weather, a Workboard card with exact counts of what waits on you, what LIA holds, what your connections hold and what is overdue — served by a read-only domain outside the agent graph ([BRIEFING_DOMAIN](docs/technical/BRIEFING_DOMAIN.md)). The page fills in as it can: what is ready appears at once, each slower card arrives on its own request under one act, and the greeting and synthesis come once every card is there ([ADR-271](docs/architecture/ADR-271-One-Page-Load-One-Act-Of-Reading.md)). A new account starts small: where the instance provides the weather, the dashboard opens on that card alone and a starter checklist asks for the home address first, the other cards one switch away ([ADR-307](docs/architecture/ADR-307-Keyless-Connectors-Belong-To-The-Instance.md)). Meetings and calls read as timelines by day and part of day, and a list that cannot load says so instead of looking empty.
 
 </details>
 
@@ -512,6 +512,7 @@ for projection and performance limits.
 - MCP Apps rendered as sandboxed widgets behind a CSP airlock ([ADR-098](docs/architecture/ADR-098-CSP-Widget-Airlock.md)).
 - An iterative mode where a dedicated agent reads a complex server's docs before calling it ([MCP_INTEGRATION](docs/technical/MCP_INTEGRATION.md)).
 - A provider's cooldown is shared across workers for that person's server, so another concurrent request cannot restart a wait the service already imposed.
+- What a personal server offers is kept as a snapshot every worker shares and served while it is revalidated, so a message waits for none of your servers; one that must be asked again is prepared in parallel under a ceiling and named when it is slow, and a call checks the declaration it relies on before it is sent ([ADR-366](docs/architecture/ADR-366-Personal-MCP-Catalogue-Snapshot-Served-While-Revalidated-Verified-At-Use.md)).
 
 #### Skills and plugins
 
@@ -574,6 +575,7 @@ Arithmetic, dates and currencies use tools in both execution modes, never a mode
 - A notification is filed delivered only once it was archived, pushed or sent on a channel — an SSE event alone never counts ([ADR-263](docs/architecture/ADR-263-Execution-Authority-Chain-And-Effect-Register.md)).
 - No database transaction stays open while a provider answers, and the database bounds what the code might forget — a lock wait, an idle transaction — counting and alerting every bound it reaches ([ADR-304](docs/architecture/ADR-304-No-Transaction-Across-A-Network-Call.md)).
 - A routine never asks a question nobody can see and never repeats an action after a timeout; an e-mail is sent once, and a provider's rate limit is waited out rather than reported as an outage ([ADR-276](docs/architecture/ADR-276-Workboard.md)).
+- A call whose outcome is unknown is never repeated: no model generation is relaunched after a timeout or once its stream began, and a calendar create carries the provider's own idempotency, so a lost answer never makes a second event ([ADR-221](docs/architecture/ADR-221-Timeout-Par-Emplacement-Applique.md)).
 
 #### Switches, not redeploys
 
@@ -966,7 +968,7 @@ A panel embedded in the chat, organised into six groups; an empty section shows 
 
 ### Observability
 
-- **Prometheus**: 640 custom metrics (agents, LLM, infrastructure), labelled by route template — a name or a search in an address never becomes a series. A metric nobody can see is a metric nobody acts on: every one must be wired to a Grafana panel, a recording rule or an alert, and a shrink-only ratchet fails the build on a newly blind metric — and the reverse holds: every panel reads a series something produces.
+- **Prometheus**: 652 custom metrics (agents, LLM, infrastructure), labelled by route template — a name or a search in an address never becomes a series. A metric nobody can see is a metric nobody acts on: every one must be wired to a Grafana panel, a recording rule or an alert, and a shrink-only ratchet fails the build on a newly blind metric — and the reverse holds: every panel reads a series something produces.
 - **Grafana**: 33 dashboards, including product-value and radio cockpits · **Loki**: structured JSON logs that keep facts, never people's words, shipped by Grafana Alloy ([ADR-317](docs/architecture/ADR-317-A-Log-Line-Carries-Facts-Never-The-Words.md)) · **Tempo**: distributed tracing, spans named by the route template · **Langfuse**: LLM tracing with prompt versions. The whole stack runs on supported versions, pinned by digest.
 - **Linked signals, a pipeline that watches itself**: a log line opens its trace, a trace its logs and metrics, a latency point its exemplar; Loki, Alloy, Tempo and Grafana are scraped on closed keep-lists and `LogsNotDelivered` fires when lines go missing; every dashboard opens on seven days (logs and traces on four hours) behind one shared menu — [ADR-333](docs/architecture/ADR-333-Linked-Signals-And-A-Pipeline-That-Watches-Itself.md).
 - **Probes**: liveness (`GET /health`) split from readiness (`GET /ready`, 503 unless PostgreSQL **and** Redis answer) — [ADR-115](docs/architecture/ADR-115-Liveness-Readiness-Probes.md).
@@ -1033,26 +1035,4 @@ graph TD
     FE -->|approved| G
     H --> I[Initiative]
     HD --> I
-    I --> C
-    R1 --> R2[ReAct Call Model]
-    R2 -->|tool_calls| R3[ReAct Execute Tools]
-    R3 --> R2
-    R3 -->|draft| HD
-    R2 -->|declared gap| R5[ReAct Recovery]
-    R5 --> R2
-    R2 -->|done| R4[ReAct Finalize]
-    R4 --> I
-    C --> J[SSE Stream]
-```
-
-### Code Structure
-
-```
-apps/api/src/
-├── core/                 # Settings composed per domain, constants, i18n tables, recurrence engine
-├── domains/              # Bounded contexts (DDD); shared helpers stay separate
-│   ├── agents/           # The LangGraph graph: nodes (router, planner, react ×4, response…), tools, prompts, orchestration
-│   ├── connectors/       # Google, Apple and Microsoft clients behind one provider resolver
-│   ├── heartbeat/ proactive_discussions/ moments/ scheduled_actions/ reminders/ habits/ interests/ briefing/  # initiative
-│   ├── memories/ journals/ rag_spaces/ meetings/ relations/ peers/ sms/ workboard/ attachments/               # what LIA keeps
-│   ├── auth/ users/ usage_limits/ capabilities/ feature_s
+    I --> 

@@ -356,6 +356,9 @@ obsidian-mcp-server/
 | `SEARCH_W_VECTOR` | `1` | Vector-leg weight, finite number 0–10 |
 | `SEARCH_W_TEXT` | `1` | Full-text-leg weight, finite number 0–10; both weights cannot be zero |
 | `SEARCH_PER_NOTE_CAP` | `0` | Maximum chunks per note, integer 0–8; 0 means no cap |
+| `SEARCH_TRAILS` | `off` | Trails ranking mode: `off`, `shadow` or `on` |
+| `SEARCH_TRAILS_W` | `0.5` | Trails boost weight, finite number greater than 0 and at most 10 |
+| `SEARCH_TRAILS_ANCHORS` | `3` | Number of distinct leading candidate notes used as anchors, integer 1–8 |
 | `INDEX_INTERVAL_SECONDS` | `60` | Indexer only: seconds between vault scans |
 | `INDEX_VERBOSE` | `false` | Indexer only: log every file indexed or removed |
 | `EMBED_BATCH_SIZE` | `16` | Texts per Ollama request |
@@ -774,7 +777,20 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 Run `node dist/maintain.js` (or `npm run maintain`) from the same image as the server, with `DATABASE_URL`, `INDEX_COLLECTION`, `VAULT_PATH` and `MAINTAIN_REPORT_DIR` configured. Schedule it weekly with your host's scheduler. `--dry` prints candidate counts and hygiene metrics without recording a run or writing a report. The index must already exist.
 
-Seven deterministic checks find missing links, unlinked mentions, uniquely repairable unresolved links, missing `index` or `aliases` frontmatter, stale summaries, near-duplicates and stale project or area hubs. Notes with type `journal` or `inbox` are excluded as targets. Notes under `Journal/` get no link suggestions in either direction. An unlinked mention counts only in a note's prose (not its frontmatter, first H1, code, wikilinks or markdown links) and only as a whole word, case-insensitively, with hyphens part of the word; the worker reads the source note from `VAULT_PATH` to check. Near-duplicate pairs skip notes that already link to each other and pairs of `plan` notes. The indexer records summary/body cosine history when content changes, and maintenance backfills baselines for older notes. Search ranking stays unchanged, and maintenance never reads learn tables.
+Eight deterministic checks find missing links, unlinked mentions, uniquely repairable unresolved links, missing `index` or `aliases` frontmatter, stale summaries, near-duplicates, stale project or area hubs, and unlinked co-read pairs. Notes with type `journal` or `inbox` are excluded as targets. An unlinked mention counts only in a note's prose (not its frontmatter, first H1, code, wikilinks or markdown links) and only as a whole word, case-insensitively, with hyphens part of the word; the worker reads the source note from `VAULT_PATH` to check. Near-duplicate pairs skip notes that already link to each other and pairs of `plan` notes. The indexer records summary/body cosine history when content changes, and maintenance backfills baselines for older notes. Search ranking stays unchanged; co-read findings use derived trails.
+
+| Class | Purpose | Graduable |
+|---|---|---|
+| `link-related` | Similar notes missing a link | yes |
+| `link-mention` | Unlinked prose mentions | yes |
+| `link-repair` | Uniquely repairable unresolved links | yes |
+| `fm-missing` | Missing index or aliases keys | yes |
+| `summary-refresh` | Summary/body similarity fell | yes |
+| `merge-duplicate` | Near-duplicate notes | no |
+| `hub-review` | Stale hubs | no |
+| `link-coread` | Unlinked pairs above both trails thresholds | yes |
+
+`MAINTAIN_COREAD_MIN_WEIGHT` defaults to `1.5` (number greater than 0, at most 1000); `MAINTAIN_COREAD_MIN_EVENTS` defaults to `2` (integer 1–1000). Empty trails produce no findings. Existing body and configured frontmatter links suppress co-read suggestions in either direction.
 
 Each ISO week produces `Brain maintenance YYYY-Www.md` in the configured output directory. Reports are draft notes with `index: false`, stable finding ids, accept/reject checkboxes, trends and acceptance counts. They stay out of search and the link graph. A rerun parses ticks first and atomically replaces only that week's report; moved reports are still discovered by their `maintenance_report` frontmatter.
 
@@ -783,3 +799,129 @@ Tick one checkbox per finding, or explicitly ask the assistant to call `maintena
 This stage is report-only: accepting records a decision and changes no note. Apply accepted findings yourself. Near-duplicate merges and hub reviews remain report-only permanently. The worker never edits existing notes; its only vault write is its own report.
 
 `recommend-notes` takes 1–10 `positive` paths, up to 10 `negative` paths, an optional integer `k` (1–50), `type` and `directory`. It excludes the examples. `best_score` compares the nearest positive and negative; `average_vector` uses the positive mean, moved away from the negative mean when present. Neither tool requires learn logging; sensitive decision reasons are stored as null using the active redaction patterns or the built-ins.
+
+
+## Trails
+
+Run `npm run trails` (`node dist/trails.js`) with `DATABASE_URL` and `VAULT_PATH` set. The index must already exist. Scheduling the nightly run is the host's job. `--dry` rebuilds in a rolled-back transaction and reports edge counts, all six heat buckets, and YAML round-trip failures without writing files or a run row. `--clear-heat` removes heat from every indexed document regardless of type; it cannot be combined with `--dry`.
+
+Edges count the strongest event per session and local day: search reads 1.0, untied session reads 0.5, agent feedback 2.0, user feedback 3.0. Negative feedback is excluded. Weights decay over the configured window. Heat sums distinct session-days per note and maps the score to buckets 0–5. Unread notes have bucket 0. Heat writes never bump `updated`, never add an absent `heat: 0`, and skip recent, raced, invalid or restyled notes. The write cap and master switch bound changes. The generated note is a Breadcrumbs list note; an existing file without its ownership marker is never overwritten.
+
+| Variable | Default | Rule / purpose |
+|---|---|---|
+| `INDEX_COLLECTION` | `default` | Collection shared with the indexer |
+| `TRAILS_TZ` | `UTC` | IANA zone for session-days and timestamps |
+| `TRAILS_WINDOW_DAYS` | `180` | Integer 7–3650 |
+| `TRAILS_HALF_LIFE_DAYS` | `30` | Integer 1–365 |
+| `TRAILS_HEAT_THRESHOLDS` | `1,3,6,12,24` | Five strictly ascending positive boundaries |
+| `TRAILS_HEAT_TYPES` | empty | Comma-separated note types; empty writes none |
+| `TRAILS_WRITE_HEAT` | `false` | Strict `true` or `false` master switch |
+| `TRAILS_HEAT_MIN_AGE_MINUTES` | `30` | Integer 0–1440 |
+| `TRAILS_HEAT_MAX_WRITES` | `400` | Integer 1–5000 |
+| `TRAILS_NOTE_PATH` | empty | Vault-relative `.md` path without `..`; empty disables note |
+| `TRAILS_NOTE_PER_NOTE` | `5` | Integer 1–20 partners per source |
+| `TRAILS_NOTE_MAX_SOURCES` | `60` | Integer 1–500 |
+| `TRAILS_NOTE_MIN_WEIGHT` | `1.0` | Number 0–1000 |
+
+Set `INDEX_FRONTMATTER_LINK_KEYS=up,down,same,next,prev` to index typed frontmatter wikilinks like body links. Set `INDEX_VOLATILE_KEYS=heat` to ignore heat-only changes for embedding and history. Both default to empty; comma-separated keys are trimmed, empty items dropped, and each must contain only letters, digits, `_` or `-`. Invalid keys refuse startup. These settings apply to scans and explicit reindexing.
+
+`documents.frontmatter` keeps the old value of a volatile key until other note content changes. Heat consumers read `note_heat`, never the potentially stale frontmatter value.
+
+### Backfill hub links
+
+`npm run backfill-up -- --plan /tmp/up-plan.json` generates a reviewable plan without editing notes. It chooses hubs already linking to each child, ordered by centroid similarity then path, and skips children already carrying the field. Basename ambiguity is checked against every markdown file in the vault, including unindexed notes. Non-round-tripping YAML is listed under `reformat`.
+
+Review the plan before `npm run backfill-up -- --plan /tmp/up-plan.json --apply`. Changed checksums are skipped; writes add a quoted flow list without changing `updated` or unrelated text. `--revert` removes only a value matching the plan, including a list restyled into block form. Keep the plan for rollback.
+
+Options: required `--plan <file>`, exclusive `--apply` / `--revert` (default dry), `--field <key>` (default `up`), `--hub-types <list>` (default `project,area`), `--child-types <list>` (default `reference,decision,plan`), and `--max <1-10>` (default `3`). Environment: `DATABASE_URL`, `INDEX_COLLECTION`, `VAULT_PATH`. Both CLIs exit 2 for usage/configuration errors, 1 for runtime failures, and 0 on success.
+
+## Related notes endpoint and Obsidian plugin
+
+`GET /api/related?path=notes%2Fa.md&k=8` uses the same bearer authentication and optional
+Tailscale login check as the MCP routes. Semantic search must be enabled. `path` is a
+vault-relative Markdown path (up to 1024 characters); a leading slash is stripped and
+`.md` is appended when missing. `k` is an integer from 1 to 20, default 8.
+
+The response contains `path`, `title`, `heat` (score and bucket, or `null`), `trails`
+(read-together neighbours with `path`, `title`, `weight`, `events`, `lastAt`, `linked`),
+and `similar` (centroid neighbours with `path`, `title`, `score`, `linked`). Resolved
+links in either direction set `linked`. Weights are rounded to one decimal and scores
+to two. Invalid queries return 400, unindexed notes 404, disabled semantic search 503,
+and store failures a generic 500. These reads create no search or note-read log rows,
+so browsing the sidebar does not feed trails.
+
+The **MCP Related Notes** plugin lives in `obsidian-plugin/` and requires desktop
+Obsidian 1.13.0 or newer. Download `main.js`, `manifest.json` and `styles.css` from the
+matching GitHub release into `.obsidian/plugins/mcp-related-notes/`, then enable it
+in Obsidian. In its settings, enter the server URL and bearer token. Only the URL,
+result limit and startup preference are saved in the vault; the password field saves
+the token in Obsidian's per-device local storage. Configure the token separately on
+each device.
+
+Use **Open related notes** to open the right sidebar. It opens at startup by default,
+refreshes 400 ms after changing the active Markdown note, and caches each note for five
+minutes. **Refresh** bypasses that note's cache. **Read together** shows trail event
+counts; **Similar** shows similarity scores; the title displays the heat bucket when
+available. Click a title to open the note (modifier-click opens another pane). **Link**
+adds a wikilink to the active note's `## Related` section, creating that section if
+needed and preserving CRLF line endings. Existing identical links are left alone.
+There is no telemetry and no network operation other than the related endpoint.
+
+To develop the plugin:
+
+```bash
+cd obsidian-plugin
+npm ci
+npm test
+npm run lint
+npm run build
+```
+
+`main.js` is ignored build output. CI validates the plugin separately on Node 22.
+A `v*` tag builds and tests it, requires the manifest version to equal the tag without
+`v`, and uploads the three assets to a GitHub release (creating the release if needed).
+The server package and plugin manifest versions must match; add a new `versions.json`
+key for every release, keeping older keys. Tags also trigger the existing image and
+npm publishing workflows.
+
+
+## Trails shadow ranking
+
+Trails rerank existing fused candidates after the per-note cap and before the top-k
+slice. The first distinct candidate notes act as anchors; undirected trail weights
+from those anchors determine an extra reciprocal-rank boost. Candidates are never
+added or dropped. The RRF constant is the configured value for RRF fusion and 60
+for DBSF. Other search tools keep their existing behavior.
+
+`SEARCH_TRAILS=off` is the default and runs no weights query. `shadow` returns the
+same live results, scores and ranker id while logging the alternate top-k order in
+`search_log.shadow`: `{ ranker, results: [{ path, ord, rank }] }`, with 1-based ranks.
+This requires learn logging to be enabled. `on` returns the boosted order and adds
+`-tr<w>a<anchors>` to the ranker id. A weights query failure is logged and returns
+the original order with no shadow object; it cannot abort the search transaction.
+
+`learn-report` includes a **Trails shadow** section (`trailsShadow` in JSON) for
+searches in the report window that have a shadow and at least one linked read.
+`searches` counts those searches, `top1Differs` is the share whose first note
+changes, and `mrrLive` / `mrrShadow` average the reciprocal rank of each search's
+first-read note (zero if absent). Repeated chunks use the note's minimum rank.
+Empty-window rates are `null`, and nonempty rates are rounded to four decimals.
+
+Evaluate trails independently of the existing ranking grid:
+
+```bash
+node dist/eval.js --golden /private/golden.json --out /private/trails-eval.json \
+  --config '{"perNoteCap":2,"trails":{"w":0.5,"anchors":3}}'
+```
+
+The optional `trails` object requires exactly numeric `w` and integer `anchors`
+within the environment ranges. It enables trails only for that candidate run;
+the baseline, grid and configs without trails retain their existing behavior.
+The candidate id receives the same suffix as an enabled server ranker.
+
+**Switch-on rule:** collect at least 30 days of shadow data and 300 qualifying
+searches before considering `on`. Switch only if `mrrShadow >= mrrLive + 0.02`
+and the trails eval above passes the stage 1 diversity rule against a baseline
+run with `--config '{"perNoteCap":2}'` (the production ranking): no regressions,
+no category recall@5 drop, and nDCG@8 not lower. Otherwise keep `shadow` and record
+the measurements. Switching production ranking on is a later decision.

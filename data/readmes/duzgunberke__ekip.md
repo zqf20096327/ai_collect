@@ -30,7 +30,8 @@ session. ekip changes who does what:
   wiki built from its docs, a code graph and its own skills. Workers start from that instead of
   re-reading the repo.
 - **You see everything.** Each worker gets a terminal pane, each request becomes a task with live
-  steps, and a web panel shows runs, quotas and which model a new task would go to.
+  steps, and a web panel shows runs, quotas and which model a new task would go to. Without a server,
+  `ekip init` runs the panel on your own computer at http://localhost:7777.
 
 <p align="center"><img src="docs/assets/savings.svg" alt="Share of the work that ran outside Claude, measured with ekip savings: 58% during the two-day setup, 81% the next day" width="100%"></p>
 
@@ -55,6 +56,8 @@ into as many independent parts as the pools can take and dispatches them in para
 uncertain ones, while its own Claude only plans and reviews. Each pool has a capacity (codex, copilot
 and agy 2, qwen, opencode and grok 1, free 3; `poolConcurrency` in `data/config.json` changes it), and
 `--via auto` skips pools that are full or out of quota, so parallel runs spread out by themselves.
+Optional: [jcode](https://github.com/1jehuang/jcode) as one more harness on the free pool (about 60 MB
+per worker instead of 600; set `jcodeBin` and a jcode provider profile pointing at freellmapi).
 `ekip mesai status` shows each pool's running/capacity and success rate; `ekip mesai all "task"` runs
 one task on every pool with a free slot, each on its own branch. The headless Claude pool joins only
 with `--include-claude`.

@@ -18,6 +18,7 @@ This repository contains **20+ specialized tools and functions** designed to enh
 - **arXiv Search** - Academic paper discovery (no API key required!)
 - **Perplexica Search** - Web search using Perplexica API with citations
 - **SerpBase Google Search** - Google web search with organic results, featured snippets, and AI Overviews (no self-hosted instance needed)
+- **Serply Web Search** - Google web search results with titles, links, and descriptions via the Serply API
 - **Pexels Media Search** - High-quality photos and videos from Pexels API
 - **YouTube Search & Embed** - Search YouTube and play videos in embedded player
 - **Xquik X Data Tool** - Search and look up X posts, users, timelines, and trends
@@ -29,8 +30,10 @@ This repository contains **20+ specialized tools and functions** designed to enh
 - **ComfyUI ACE Step Audio (Legacy)** - Advanced music generation
 - **ComfyUI Text-to-Video** - Generate short videos from text using ComfyUI (default WAN 2.2 workflow)
 - **Atlas Cloud Media Generator** - Multi-modal image generation, image editing, and text/image/audio-to-video using Atlas Cloud AI
+- **MuAPI Media Generator** - Generate images and text/image-to-video outputs through MuAPI
 - **Flux Kontext ComfyUI** - Professional image editing
 - **OpenWeatherMap Forecast Tool** - Interactive weather widget with current conditions and forecasts
+- **[Knowledge Base Manager](https://github.com/izyazev/open-webui-knowledge-base-manager)** - Manage knowledge bases, directories, and files directly from chat with nested paths and safe deletions
 
 
 ### 🔄 **Function Pipes**
@@ -43,7 +46,7 @@ This repository contains **20+ specialized tools and functions** designed to enh
 - **Letta Agent** - Autonomous agent integration
 - **Perplexica Pipe** - AI-powered web search with streaming responses and citations
 - **Google Veo Text-to-Video & Image-to-Video** - Generate videos from text or a single image using Google Veo (only one image supported as input)
-- **MiniMax LLM Pipe** - Route chat completions to MiniMax's OpenAI-compatible API with M3 (1M context, image/video input) and M2.7 models
+- **MiniMax LLM Pipe** - Route chat completions to MiniMax's OpenAI-compatible API with M3.1 Flash (default) and M3 (1M context, image/video input)
 
 ### 🔧 **Filters**
 
@@ -116,33 +119,35 @@ Most tools are designed to work with minimal configuration. Key configuration ar
 11. [ComfyUI ACE Step Audio Tool (Legacy)](#comfyui-ace-step-audio-tool-legacy)
 12. [ComfyUI Text-to-Video Tool](#comfyui-text-to-video-tool)
 13. [Atlas Cloud Media Generator](#atlas-cloud-media-generator)
-14. [OpenWeatherMap Forecast Tool](#openweathermap-forecast-tool)
-15. [Xquik X Data Tool](#xquik-x-data-tool)
-16. [OutageDeck Provider Status](#outagedeck-provider-status)
-17. [Flux Kontext ComfyUI Pipe](#flux-kontext-comfyui-pipe)
-18. [Google Veo Text-to-Video & Image-to-Video Pipe](#google-veo-text-to-video--image-to-video-pipe)
-19. [MiniMax LLM Pipe](#minimax-llm-pipe)
-20. [Planner Agent v3](#planner-agent-v3)
-21. [arXiv Research MCTS Pipe](#arxiv-research-mcts-pipe)
-22. [Multi Model Conversations v2 Pipe](#multi-model-conversations-v2-pipe)
-23. [Resume Analyzer Pipe](#resume-analyzer-pipe)
-24. [Mopidy Music Controller](#mopidy-music-controller)
-25. [Letta Agent Pipe](#letta-agent-pipe)
-26. [Perplexica Pipe](#perplexica-pipe)
-27. [OpenRouter Image Pipe](#openrouter-image-pipe)
-28. [OpenRouter WebSearch Citations Filter](#openrouter-websearch-citations-filter)
-29. [Doodle Paint Filter](#doodle-paint-filter)
-30. [Prompt Enhancer Filter](#prompt-enhancer-filter)
-31. [Semantic Router Filter](#semantic-router-filter)
-32. [Full Document Filter](#full-document-filter)
-33. [Clean Thinking Tags Filter](#clean-thinking-tags-filter)
-34. [Using the Provided ComfyUI Workflows](#using-the-provided-comfyui-workflows)
-35. [Installation](#installation)
-36. [Contributing](#contributing)
-37. [License](#license)
-38. [Credits](#credits)
-39. [Support](#support)
-40. [SerpBase Google Search Tool](#serpbase-google-search-tool)
+14. [MuAPI Media Generator](#muapi-media-generator)
+15. [OpenWeatherMap Forecast Tool](#openweathermap-forecast-tool)
+16. [Xquik X Data Tool](#xquik-x-data-tool)
+17. [OutageDeck Provider Status](#outagedeck-provider-status)
+18. [Flux Kontext ComfyUI Pipe](#flux-kontext-comfyui-pipe)
+19. [Google Veo Text-to-Video & Image-to-Video Pipe](#google-veo-text-to-video--image-to-video-pipe)
+20. [MiniMax LLM Pipe](#minimax-llm-pipe)
+21. [Planner Agent v3](#planner-agent-v3)
+22. [arXiv Research MCTS Pipe](#arxiv-research-mcts-pipe)
+23. [Multi Model Conversations v2 Pipe](#multi-model-conversations-v2-pipe)
+24. [Resume Analyzer Pipe](#resume-analyzer-pipe)
+25. [Mopidy Music Controller](#mopidy-music-controller)
+26. [Letta Agent Pipe](#letta-agent-pipe)
+27. [Perplexica Pipe](#perplexica-pipe)
+28. [OpenRouter Image Pipe](#openrouter-image-pipe)
+29. [OpenRouter WebSearch Citations Filter](#openrouter-websearch-citations-filter)
+30. [Doodle Paint Filter](#doodle-paint-filter)
+31. [Prompt Enhancer Filter](#prompt-enhancer-filter)
+32. [Semantic Router Filter](#semantic-router-filter)
+33. [Full Document Filter](#full-document-filter)
+34. [Clean Thinking Tags Filter](#clean-thinking-tags-filter)
+35. [Using the Provided ComfyUI Workflows](#using-the-provided-comfyui-workflows)
+36. [Installation](#installation)
+37. [Contributing](#contributing)
+38. [License](#license)
+39. [Credits](#credits)
+40. [Support](#support)
+41. [SerpBase Google Search Tool](#serpbase-google-search-tool)
+42. [Serply Web Search Tool](#serply-web-search-tool)
 ---
 
 ## 🧪 Tools
@@ -461,6 +466,26 @@ Search and retrieve images from the web using a self-hosted [SearxNG](https://se
 - **Direct Image Display:** Images are formatted for chat display
 - **Customizable:** Choose engines, result count, and more
 - **Error Handling:** Handles connection and search errors gracefully
+
+---
+
+### MiniMax Speech Generator
+
+Generate speech from text and play or download the resulting MP3 in chat.
+
+1. Copy `tools/minimax_tts_tool.py` into **Workspace > Tools**.
+2. Set `MINIMAX_API_KEY` in the tool valves and select the matching `REGION`
+   (`global_en` or `cn_zh`).
+3. Enable the tool in chat and ask it to speak your text (fewer than 10,000 characters).
+
+`MODEL` defaults to `speech-2.8-hd`. Set `VOICE_ID` to a MiniMax voice ID and
+adjust `SPEED` between 0.5 and 2.0 as needed. Users can override the voice and
+speed in their own tool settings (`UserValves`). Requests use synchronous speech
+synthesis; the MP3 is saved to Open WebUI file storage (linked to the chat, so it
+also plays in shared chats) and shown in an audio player with a download button.
+Requires Open WebUI 0.9.0 or newer.
+
+See the [MiniMax speech API documentation](https://platform.minimax.io/docs/api-reference/speech-t2a-http) for supported voices and models.
 
 ---
 
@@ -838,6 +863,61 @@ The implementation lives at `tools/atlascloud_media_tool.py`.
 
 ---
 
+### MuAPI Media Generator
+
+### Description
+
+Generate images and videos directly in Open WebUI chat through MuAPI's asynchronous API. The tool supports text-to-image generation with `nano-banana`, text-to-video generation with `seedance-2.5-text-to-video`, and image-to-video generation with `seedance-2.5-image-to-video`.
+
+The implementation lives at `tools/muapi_media_tool.py`.
+
+### Configuration
+
+- `MUAPI_API_KEY` (str): MuAPI API key. It can also be supplied as a per-user User Valve.
+- `API_BASE_URL` (str): MuAPI API base URL (default: `https://api.muapi.ai/api/v1`).
+- `IMAGE_MODEL` (str): Text-to-image endpoint slug (default: `nano-banana`). Set this to `nano-banana-pro` to use the Pro image endpoint.
+- `VIDEO_MODEL` (str): Text-to-video endpoint slug (default: `seedance-2.5-text-to-video`).
+- `IMAGE_TO_VIDEO_MODEL` (str): Image-to-video endpoint slug (default: `seedance-2.5-image-to-video`).
+- `POLL_INTERVAL_SECONDS` (float): Seconds between result checks (default: `3.0`).
+- `GENERATION_TIMEOUT_SECONDS` (float): Maximum wait for a generation (default: `600.0`).
+- `RETURN_HTML_EMBED` (bool): Return an inline HTML viewer for image and video results (default: `True`).
+- `MAX_DOWNLOAD_MB` (int): Maximum size of a single output downloaded into Open WebUI storage (default: `200`).
+- `ALLOW_PROVIDER_URL_FALLBACK` (bool): If saving an output to Open WebUI storage fails, show the MuAPI URL instead of an error (default: `False`). MuAPI URLs may expire.
+
+### Usage
+
+1. **Install and configure the tool**
+   - Copy `tools/muapi_media_tool.py` into Open WebUI Workspace > Tools.
+   - Enter `MUAPI_API_KEY` in the tool Valves.
+2. **Generate media in chat**
+   - **Text-to-image:** *"Generate an image of a quiet mountain lake at sunrise"*
+   - **Text-to-video:** *"Generate a 5-second video of ocean waves at sunset"*
+   - **Image-to-video:** Attach an image or provide an `image_url`, then ask *"Animate this image into a video"*
+
+Every generated image and video is downloaded into Open WebUI file storage and shown from `/api/v1/files/{id}/content`, so results stay available after MuAPI's links expire and they follow Open WebUI access control, including shared chats. MuAPI URLs are not passed to the model. Large videos must fit within Open WebUI's maximum upload size (`rag.file.max_size`).
+
+For image-to-video, an image attached in the chat (Open WebUI passes it as a `data:` URI or an Open WebUI file) is uploaded to MuAPI through its `/upload_file` endpoint (10 MB limit) and the hosted URL is used. A public HTTP(S) `image_url` is passed to MuAPI as-is.
+
+### Features
+
+- Async submission and polling with status updates in the chat
+- Text-to-image, text-to-video, and image-to-video operations
+- Per-user API key and model overrides through User Valves
+- Outputs stored in Open WebUI and shown in an inline image/video viewer, or as plain file links
+- No live request is required during installation; configure the key only when you are ready to generate
+
+### API references
+
+- [MuAPI API reference](https://muapi.ai/docs/api-reference)
+- [MuAPI Nano Banana](https://muapi.ai/nano-banana)
+- [MuAPI Seedance 2.5](https://muapi.ai/seedance-2.5)
+- [nano-banana model contract](https://api.muapi.ai/api/v1/models/nano-banana)
+- [Seedance text-to-video model contract](https://api.muapi.ai/api/v1/models/seedance-2.5-text-to-video)
+- [Seedance image-to-video model contract](https://api.muapi.ai/api/v1/models/seedance-2.5-image-to-video)
+
+
+---
+
 ### OpenWeatherMap Forecast Tool
 
 
@@ -1046,15 +1126,18 @@ Prompt: "Edit this image to look like a medieval fantasy king, preserving facial
 
 ### Description
 
-Route chat completions to [MiniMax](https://platform.minimaxi.com)'s OpenAI-compatible API (`api.minimax.io/v1`) directly from Open WebUI. This pipe exposes MiniMax-M3 (1M context, with image and video input and adaptive or disabled thinking) and MiniMax-M2.7 (204,800-token context, always-on thinking) as selectable models in your Open WebUI instance.
+Route chat completions to [MiniMax](https://platform.minimax.io)'s OpenAI-compatible API (`api.minimax.io/v1`) directly from Open WebUI. New configurations expose MiniMax-M3.1-Flash first, followed by MiniMax-M3. Both have 1M context and support image and video input. Flash always uses adaptive thinking with configurable effort; M3 supports adaptive or disabled thinking.
+
+Saved `ENABLED_MODELS` settings and explicit legacy/custom model IDs are preserved. To enable Flash in an existing installation, add `MiniMax-M3.1-Flash` to `ENABLED_MODELS`. API availability of legacy/custom IDs depends on your account.
 
 ### Configuration
 
 - `MINIMAX_API_KEY` (str): Your MiniMax API key (required, get one at https://platform.minimaxi.com)
-- `ENABLED_MODELS` (list): Which MiniMax models to expose (default: all)
+- `ENABLED_MODELS` (list): Which MiniMax models to expose (default: `MiniMax-M3.1-Flash`, `MiniMax-M3`); explicitly configured legacy/custom IDs remain selectable
 - `STRIP_THINKING` (bool): Strip `<think>…</think>` blocks from responses (default: `True`)
 - `DEFAULT_TEMPERATURE` (float): Default temperature when none is specified, 0.01–1.0 (default: `0.7`)
-- `THINKING_MODE` (str): Thinking mode for supporting models — `adaptive` (let the model decide) or `disabled`; ignored by always-on models (default: `adaptive`)
+- `THINKING_MODE` (str): `adaptive` or `disabled` for M3 (default: `adaptive`); Flash always uses `adaptive`, and legacy models omit this field
+- `REASONING_EFFORT` (str): Flash thinking depth, `low`, `medium`, `high`, `xhigh`, or `max` (default: `max`); a supported request `reasoning_effort` overrides the valve. Invalid values fall back to the valve or `max`
 
 **Prerequisites**: Get a MiniMax API key from [MiniMax Platform](https://platform.minimaxi.com).
 
@@ -1062,15 +1145,15 @@ Route chat completions to [MiniMax](https://platform.minimaxi.com)'s OpenAI-comp
 
 1. **Install the pipe**: Copy `functions/minimax_pipe.py` into Open WebUI via Workspace > Functions
 2. **Configure**: Set your `MINIMAX_API_KEY` in the pipe's Valves settings
-3. **Select model**: Choose "MiniMax M3" or "MiniMax M2.7" from the model dropdown
+3. **Select model**: Choose "MiniMax M3.1 Flash" or "MiniMax M3" from the model dropdown
 4. **Start chatting**: The pipe streams responses directly from the MiniMax API
 
 ### Features
 
 - **OpenAI-Compatible Routing**: Uses MiniMax's `/v1/chat/completions` endpoint
-- **Two Models**: MiniMax-M3 (1M-context flagship with image and video input) and MiniMax-M2.7 (204,800-token context)
-- **Multimodal Input**: Forwards inline image and video attachments to MiniMax-M3 as `image_url`/`video_url` content parts
-- **Thinking Controls**: Forwards `adaptive`/`disabled` thinking to MiniMax-M3; M2.7 stays always-on
+- **Current Models**: MiniMax-M3.1-Flash first, followed by MiniMax-M3, both with 1M context
+- **Multimodal Input**: Forwards inline image and video attachments to both current models as `image_url`/`video_url` content parts
+- **Thinking Controls**: Sends the API's `thinking.type` object, with adaptive-only thinking and tunable effort for Flash, and adaptive/disabled thinking for M3
 - **Streaming**: Real-time streamed responses via `chat:message:delta` events
 - **Temperature Clamping**: Automatically clamps temperature to MiniMax's accepted range (0.01–1.0)
 - **Think-Tag Stripping**: Strips `<think>…</think>` reasoning blocks from output (configurable)
@@ -1766,6 +1849,25 @@ Google web search via the [SerpBase API](https://serpbase.dev) — organic resul
 - Returns up to 10 organic results with title, link, and snippet, plus the featured snippet and AI Overview when Google shows them.
 - Results are returned as markdown with citation events, so Open WebUI can link sources.
 - The tool degrades gracefully: without an API key it returns a clear setup message instead of failing.
+
+---
+
+### Serply Web Search Tool
+
+### Description
+
+Google web search via the [Serply API](https://serply.io) ([docs](https://serply.io/docs)). Returns organic results with title, link, and description as markdown, with citation events so Open WebUI can link sources.
+
+### Configuration
+
+- **SERPLY_API_KEY**: Serply API key (required). Create one at https://serply.io
+- **MAX_RESULTS**: Maximum number of results to return (default: 10, max: 10)
+
+### Usage
+
+- **Example:** `Search the web for the latest Open WebUI release notes`
+
+- Without an API key the tool returns a setup message instead of failing.
 
 ---
 

@@ -30,11 +30,13 @@
 | скіли для Claude Code | [🤖 Claude Code](#-claude-code) |
 | що подивитись про скіли і AGENTS.md | [🎥 Відео](#-відео-радить-fomoles) |
 | що варто ставити, а що ні, і чому | [🧪 Що ми ставили і відхилили](#-що-ми-ставили-собі-і-що-відхилили) |
+| 47 інструментів із рілсів: скіли, конектори, скрапери, платформи, навчання | [Огляд 47 інструментів](guides/tools-review.md) |
 | що зробили і радять учасники Фокусу | [👥 Від учасників](#-від-учасників) |
 | економія токенів, антиAI-текст, хуки, промпти | [🧰 Від нас](#-від-нас-ігор) |
 | план дня на робочому столі і в сесії Claude | [🧰 Від нас](#-від-нас-ігор): гайд «План дня» |
 | голос замість набору, тренажер співбесіди іноземною | [🧰 Від нас](#-від-нас-ігор): гайд «Голос → текст» |
 | асистент пошуку роботи в Польщі | [🧰 Від нас](#-від-нас-ігор): ai-job-matcher |
+| n8n виконує не те, що в редакторі | [🧰 Від нас](#-від-нас-ігор): «n8n 2.x: виконується не те» |
 | плагіни Obsidian для нотаток | [👥 Від учасників](#-від-учасників) |
 | сертифікат у CV | [🎓 Сертифікати](#-сертифікати) |
 
@@ -183,13 +185,14 @@
 | Інструмент | Вердикт | Чому |
 |---|---|---|
 | [taste-skill](https://github.com/Leonxlnx/taste-skill) (⭐91k) | ✅ ставимо для сайтів | інструкція для моделі, поки верстка пишеться. Вантажиться лише опис, не весь текст |
-| [impeccable](https://github.com/pbakaus/impeccable) (⭐72k) | ✅ з двома застереженнями | перевіряє дизайн кодом, без LLM. ⚠️ `npx impeccable install` тихо качає Chrome на ~700 МБ (лікується `PUPPETEER_SKIP_DOWNLOAD=1`). ⚠️ Інсталятор не ставить 4 бібліотеки, і детектор каже «чисто», хоча сліпий: доставити `npm i -D htmlparser2 css-select css-tree domutils` |
+| [impeccable](https://github.com/pbakaus/impeccable) (⭐72k) | ✅ з двома застереженнями | перевіряє дизайн кодом, без LLM. ⚠️ `npx impeccable install` тихо качає Chrome на ~700 МБ (лікується `PUPPETEER_SKIP_DOWNLOAD=1`). ⚠️ Інсталятор не ставить 4 бібліотеки, і детектор каже «чисто», хоча сліпий: доставити `npm i -D htmlparser2 css-select css-tree domutils`. ⚠️ Команди тут без версій: закріпи свою, як радить [огляд](guides/tools-review.md) |
 | `interview-me` з [agent-skills](https://github.com/addyosmani/agent-skills) | ✅ | питання по одному до розуміння задачі. Корисно перед роботою з клієнтом |
 | [humanizer](https://github.com/blader/humanizer) (⭐53k) | ✅ як чек-лист | див. наш [АнтиAI-текст](guides/anti-ai-text.md) |
 | [Whisper](https://github.com/openai/whisper) + бот [Craig](https://craig.chat) | ✅ для дзвінків | Craig пише кожного учасника Discord окремою доріжкою, Whisper локально робить текст. Безкоштовно. ⚠️ Голосові **промпти** агенту диктувати обережно: пропущене «НЕ» перевертає задачу |
 | [RTK](https://github.com/rtk-ai/rtk) (⭐82k), автохук | ❌ | на наших замірах 0,25% економії, бо більшість команд іде через `ssh` |
 | [fail2ban](https://github.com/fail2ban/fail2ban) на сервері з Docker | ⚠️ лише для SSH | Docker публікує порти в обхід `INPUT`, тож бан у fail2ban і `ufw deny` **не закривають** порт контейнера. Правильно: порт на `127.0.0.1` + проксі (Caddy/nginx) попереду |
 | [crowdsec](https://github.com/crowdsecurity/crowdsec) | ❌ поки | розрахований на сотні різних IP, на одному VPS спершу закрий порти |
+| [security-audit-skill](https://github.com/cloudflare/security-audit-skill) (Cloudflare) | ✅ | аудит свого коду, кожну знахідку перевіряє окремий агент. Скопійовано на закріпленому коміті, дорогий у токенах. Інші 46 пунктів: [огляд](guides/tools-review.md) |
 | [gsap-skills](https://github.com/greensock/gsap-skills) | ❌ | у Next.js-сайті вже є framer-motion, дублювання
 
 ---
@@ -246,6 +249,7 @@
 - [Prompt Architect](guides/prompt-architect.md): специфікація, яка перетворює модель на автора промптів (EN).
 - [План дня: Todoist + Claude Code + віджет](guides/day-plan-todoist.md): задачі в Todoist, контекст у нотатках, план на робочому столі й на старті сесії, журнал закритого, 5 пасток API.
 - [Голос → текст для Claude локально, $0](guides/voice-local.md): тренажер співбесіди польською чи англійською і дамп думок у чат, faster-whisper на CPU, 5 пасток.
+- [n8n 2.x: виконується не те, що в редакторі](guides/n8n-drift.md): чому правка в базі може не діяти, SQL-перевірка за хвилину і щоденний скрипт з канаркою.
 
 ### ai-job-matcher
 [ihorkhamuliak/ai-job-matcher](https://github.com/ihorkhamuliak/ai-job-matcher)
@@ -289,11 +293,13 @@
 
 | Сертифікат | Формат | Ціна | Кому |
 |---|---|---|---|
-| [Claude Certified Architect: Foundations](https://www.credly.com/org/anthropic/badge/claude-certified-architect-foundations) (Anthropic) | 60 питань, 120 хв, з наглядачем, прохідний 720/1000 | уточнюється | хто щодня працює в Claude Code: агенти, MCP, контекст |
+| [Claude Certified Architect: Foundations](https://www.credly.com/org/anthropic/badge/claude-certified-architect-foundations) (Anthropic) | 60 питань, 120 хв, з наглядачем, прохідний 720/1000 | ~$125, звір перед оплатою | хто щодня працює в Claude Code: агенти, MCP, контекст |
 | [GitHub Foundations](https://learn.microsoft.com/en-us/credentials/certifications/github-foundations/) | 100 хв, діє 3 роки | $99, **студентам безкоштовно** через GitHub Student Developer Pack | усім, хто показує код роботодавцю |
 | [AWS Certified AI Practitioner](https://aws.amazon.com/certification/certified-ai-practitioner/) | 65 питань, 90 хв, діє 3 роки | $100 | вхідний рівень хмари + AI, добре читається в CV |
 | [Google AI Essentials](https://grow.google/ai-essentials/) (Coursera) | ~4 години | підписка Coursera | новачкам без технічної бази; для айтішника в CV важить мало |
+| [HubSpot Digital Marketing](https://academy.hubspot.com/) | ~3-5 годин | безкоштовно | фрілансерам: як знаходити клієнтів онлайн, не про AI |
+| [IBM SkillsBuild: AI Fundamentals](https://skillsbuild.org/) | 10+ годин, бейдж Credly | безкоштовно | початковий рівень, база для тих, хто ще не працював з AI |
 | [Deep Learning Specialization](https://www.deeplearning.ai/courses/deep-learning-specialization/) (DeepLearning.AI) | 5 курсів, ~127 годин | підписка Coursera | хто йде в ML-інженерію, потрібна математика |
 | Azure AI App and Agent Developer Associate (AI-103), Microsoft | прийшов на заміну AI-102, який зняли 30.06.2026 | див. Microsoft Learn | лише якщо працюєш у стеку Microsoft / Azure |
 
-Дані на 29.09.2026. Перед записом на іспит звір ціну на офіційній сторінці, вона залежить від країни.
+Дані на 30.10.2026. Перед записом на іспит звір ціну на офіційній сторінці, вона залежить від країни.

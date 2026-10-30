@@ -225,9 +225,7 @@ git clone https://github.com/qsumm/TestOPS.git && cd TestOPS
 
 *这个平台从第一行代码到 AI 诊断引擎的完整过程——每一次设计取舍、每一个踩过的坑——都在公众号里连载。*
 
-<img src="docs/images/qrcode-yiming-ai.jpg" width="220" alt="公众号：一鸣AI编程"/>
-
-**扫码关注「一鸣AI编程」**：线上故障复盘 / AI 编程实战 / 这个平台的全过程，更新不迷路。
+**公众号「一鸣AI编程」**：线上故障复盘 / AI 编程实战 / 这个平台的全过程，更新不迷路。
 觉得有用的话，给仓库点个 **Star ⭐**，就是最好的支持。
 
 </div>

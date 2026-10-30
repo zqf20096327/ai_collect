@@ -69,15 +69,15 @@ single model of your business, the same model your agents read:
 
 | View | What it answers |
 |---|---|
-| **`/command`** | Everything that needs attention, big or small, ranked by importance. Every score is the sum of factors you can read and argue with (how bad, how much of the business reaches it, whether money moves through it), with the next step and the owner to call. |
+| **`/command`** | Everything that needs attention, big or small, ranked by importance. Every score is the sum of factors you can read and argue with (how bad, how much of the business reaches it, whether money moves through it), with the next step and the owner to call. Every finding names its evidence (what was observed, where, when, whether it is still current) and what would refute it; a conclusion on expired evidence reads unknown, and the systems verdict is never "healthy" while something is silent. Saved moments can be replayed to check the conclusions against what really happened. [How](docs/replay.md). |
 | **`/digest`** | What moved since last week: new, fixed, worse, better, *fixed then back*, open longest. Who decided what. The code that shipped and the business it touched. One click to Markdown. |
 | **`/business`** | Your domain skills joined to your live systems: which business actions are at risk, which depend on a failing system, which rules were checked and how far. |
 | **`/owners`** | Who answers for each part: declared in CODEOWNERS (line cited) or inferred from a year of git history. Business actions nobody owns. Code only one person knows. |
 | **`/compliance`** | SOC 2, PCI DSS v4.0, HIPAA and GDPR mapped to what the code shows, with the lines cited, and what only a person can provide. An evidence map for preparing an audit, not an audit. |
-| **`/operations`** | What the business actually does, from its own records: payments, refunds, disputes, payouts, subscriptions and invoices by week; bank and card lines, bills and cloud costs by month; support tickets and sales deals by week (aggregates only, never a row, a customer, a ticket's subject or a person paid); policies, terms and contracts read for their promises, each held to the records; payouts checked against the bank, suppliers paid against suppliers the code uses, refunds against refund tickets, documents that disagree, and what happens that nobody wrote down. [How](docs/operations.md). |
+| **`/operations`** | What the business actually does, from its own records: payments, refunds, disputes, payouts, subscriptions and invoices by week; bank and card lines, bills and cloud costs by month; support tickets and sales deals by week (aggregates only, never a row, a customer, a ticket's subject or a person paid); policies, terms and contracts read for their promises, each held to the records; payouts checked against the bank, suppliers paid against suppliers the code uses, refunds against refund tickets, documents that disagree, and what happens that nobody wrote down. Read-only pulls from Stripe, AWS, Zendesk and HubSpot can run on a schedule (`up --pulls`), and a pull that fails or falls behind says so. [How](docs/operations.md). |
 | **`/suppliers`** | The outside companies you run on (payments, sign-in, email, cloud, AI, shipping, tax…), how critical each kind is, where only one is declared, and what relies on each. |
 | **`/impact`** | Before a merge: what a branch touches in the business, and everything that relies on it. |
-| **`/entity`** | Any object, action, system or supplier: why it exists, what a person confirmed and what is only inferred, what relies on it, and the files behind every link. |
+| **`/entity`** | Any object, action, system or supplier: why it exists, what a person confirmed and what is only inferred, what relies on it, the files behind every link, and whether the code it was modeled from is still there (moved, changed or gone; [source drift](docs/drift.md)). |
 | **`/`** | The system map: services, routes, tables and calls, with live health from OpenTelemetry traces, Prometheus and health checks. |
 
 **Readout from the bundled demo** (synthetic data; real output of the tools):
@@ -114,14 +114,21 @@ python ontology-extraction/scripts/agent_tools.py serve --control-room http://12
   --agent claude --operator "Your Name" --audit audit.jsonl
 ```
 
-An MCP server over the running control room. **Fourteen read tools**: `what_needs_attention`,
+An MCP server over the running control room. **Fifteen read tools**: `what_needs_attention`,
 `weekly_digest`, `who_owns`, `compliance_status`, `operations_status`, `list_suppliers`, `analyze_change`,
 `analyze_impact`, `get_entity_context`, `explain_relationship`, `search_entities`,
-`list_suggestions`, `list_stale_decisions`, `recent_changes`. **Three propose tools**:
+`list_suggestions`, `list_stale_decisions`, `source_drift`, `recent_changes`. **Three propose tools**:
 `propose_link`, `propose_dependency` and `propose_rule` append a suggestion that a person
 confirms or rejects. There is no destructive tool, and the server refuses to register one. Every
 agent runs under its own policy (tools allowed, files and entities withheld), and every call is
 audited. See [entity context](ontology-extraction/references/entity-context.md).
+
+The rules hold agents' own tools too: `guardrail.py install` adds a Claude Code hook that checks each
+call of a tool you map to a business task against that task's rules before it runs. A broken rule is
+denied with the rule named; an open question, a missing input or code that changed under the rules
+goes to a person; a pass is no decision, never an approval. A call that timed out or was interrupted has
+an unknown outcome, so the identical next call waits until someone checks the live state, instead of refunding
+twice. See [guardrails](docs/guardrails.md).
 
 ## ◢ How it stays honest
 
@@ -187,6 +194,9 @@ Generated from [docs/benchmarks/latest.md](docs/benchmarks/latest.md): release b
 
 With background scans, the slowest page answer after the first load on a real repository
 (documenso: about 3,000 files, 720 commits in a year) fell from **4.2 s to 0.19 s**.
+With the engine, Python, JavaScript/TypeScript and Go are read from syntax trees (tree-sitter) instead of
+patterns: no routes from comments or docstrings, and each router's own prefix followed
+([code surfaces](docs/code-surfaces.md#syntax-trees)).
 Install prebuilt binaries with `python ontology-extraction/scripts/fetch_engine.py`. See [Rust engine](docs/rust-engine.md).
 
 ## ◢ Domain skills: change a workflow without inventing rules

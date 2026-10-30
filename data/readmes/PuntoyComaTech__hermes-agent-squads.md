@@ -1,0 +1,215 @@
+# hermes-agent-squads: AI agent teams for Hermes Agent
+
+[![CI](https://github.com/PuntoyComaTech/hermes-agent-squads/actions/workflows/ci.yml/badge.svg)](https://github.com/PuntoyComaTech/hermes-agent-squads/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Hermes Agent](https://img.shields.io/badge/Hermes%20Agent-NousResearch-7c3aed)](https://github.com/NousResearch/hermes-agent)
+
+Ready-to-install teams of AI agents ("squads") for [Hermes Agent](https://github.com/NousResearch/hermes-agent) by
+Nous Research. They build websites, run a brand's marketing, and find jobs and write the applications. You talk to
+them in plain language; no coding needed.
+
+You install one bot, the **builder**. It asks which squads you want, suggests a model for each bot from the AI
+providers you already use, and installs only what you approve. Later it creates squads for your own goals, changes
+existing ones and keeps everything updated. In the Desktop app, the optional **Hermes Agent Squads Hub** plugin puts every bot,
+project and chat in one list.
+
+## How the builder works
+
+```mermaid
+flowchart TD
+    I(["You: install the builder"]):::you
+    I --> S["You: set me up"]:::you
+    S --> B["Builder configures itself"]:::bot
+    B --> Q{"Which squads?"}:::ask
+    Q -->|"only the builder (default)"| D(["Done: 1 bot"]):::done
+    Q -->|"Web · Marketing · Jobs · Everything"| M["Model survey per bot: economical picks<br/>from your providers, premium only where critical"]:::bot
+    M --> OK{"Accept, or change<br/>any bot"}:::ask
+    OK -->|"OK"| A["Installs the chosen squads"]:::bot
+    A --> L(["Later: a squad for your goal,<br/>change a bot, update"]):::done
+
+    classDef you fill:#ede9fe,stroke:#7c3aed,color:#1e1b4b
+    classDef bot fill:#e0f2fe,stroke:#0284c7,color:#0c4a6e
+    classDef ask fill:#fef3c7,stroke:#d97706,color:#78350f
+    classDef done fill:#dcfce7,stroke:#16a34a,color:#14532d
+```
+
+Nothing is created without your OK, and every squad is optional.
+
+## How a squad works
+
+```mermaid
+flowchart TD
+    Y(["You: a goal, in plain words"]):::you
+    Y --> M["Manager<br/>asks, plans, splits the work"]:::lead
+    M --> K["Kanban board<br/>one card per task"]:::bot
+    K --> W1["Worker<br/>one job each"]:::bot
+    K --> W2["Worker<br/>its own branch or folder"]:::bot
+    W1 --> R["Reviewer<br/>checks every result"]:::check
+    W2 --> R
+    R -->|"needs fixes"| K
+    R -->|"approved"| A{"You: publish, send<br/>or spend?"}:::ask
+    A -->|"yes"| D(["Done, and the manager<br/>tells you where"]):::done
+    A -->|"change"| M
+
+    classDef you fill:#ede9fe,stroke:#7c3aed,color:#1e1b4b
+    classDef lead fill:#fce7f3,stroke:#db2777,color:#831843
+    classDef bot fill:#e0f2fe,stroke:#0284c7,color:#0c4a6e
+    classDef check fill:#ffedd5,stroke:#ea580c,color:#7c2d12
+    classDef ask fill:#fef3c7,stroke:#d97706,color:#78350f
+    classDef done fill:#dcfce7,stroke:#16a34a,color:#14532d
+```
+
+You only talk to the manager. Workers and the reviewer pass the work through the board; anything that publishes,
+sends, applies, deploys or spends waits for your yes.
+
+## Install
+
+You need Hermes Agent 0.22 or newer with at least one model provider connected (`hermes model`).
+
+### Recommended: let your AI install it
+
+Paste this line into a Hermes chat on your default profile:
+
+```text
+Install github.com/PuntoyComaTech/hermes-agent-squads following its AGENTS.md
+```
+
+It installs the builder only and leaves the squad and model choices to you ([AGENTS.md](AGENTS.md)).
+
+### Step by step
+
+```bash
+hermes profile install github.com/PuntoyComaTech/hermes-agent-squads --name builder --alias   # 1. install the builder
+hermes -p builder model                                                                      # 2. pick its model
+builder chat                                                                                 # 3. say: "set me up"
+```
+
+4. Choose your squads (Web, Marketing, Jobs, Everything, or only the builder) and accept or change the suggested
+   models.
+5. In the Desktop app, open **Sessions**, pick a squad manager in the bottom selector, press **"+"** (New project)
+   and choose its folder: any folder you like, new or an existing repo. Each project is one site, brand or job
+   search; open chats inside it and the manager and its workers work in that folder.
+
+6. Optional, in the Desktop app: **Capabilities > Plugins**, turn on **Hermes Agent Squads Hub** ([below](#hermes-agent-squads-hub-desktop)).
+
+`builder chat` needs `~/.local/bin` on your `PATH`; `hermes -p builder chat` always works.
+
+## Squads
+
+| Squad | What it does | Bots |
+| --- | --- | --- |
+| [Web](squads/web/README.md) | Builds, reviews and publishes a website or web app | 5 (+1 optional) |
+| [Marketing](squads/marketing/README.md) | Plans and produces a brand's marketing, reviewed piece by piece | 5 |
+| [Jobs](squads/jobs/README.md) | Finds matching openings and prepares tailored applications | 5 |
+| Your own | Ask the builder: "create a squad for &lt;goal&gt;" | 1 manager + up to 4 |
+
+Every squad has one manager you talk to, workers that pass work through a Kanban board, and a reviewer. Publishing,
+sending, applying, deploying and spending always wait for your explicit yes.
+
+## Hermes Agent Squads Hub (Desktop)
+
+**Hermes Agent Squads Hub**, a plugin shipped with the builder. Its Desktop half is off until you turn it on in
+**Capabilities > Plugins**, and replaces the Bots tab and the slow profile switch with one list. Its agent half runs on
+every manager: questions come with buttons, and Kanban cards show live in Desktop replies.
+
+```mermaid
+flowchart TD
+    H(["Squads Hub: one list"]):::you
+    H --> B["Bot<br/>builder, managers, yours"]:::lead
+    B --> P["Project<br/>a site, a brand, a job search"]:::bot
+    P --> F["Folder<br/>main checkout or worktree"]:::bot
+    F --> C["Chat<br/>a tab, no window reload"]:::bot
+    C --> N{"Something needs you?"}:::ask
+    N -->|"working or unread"| S(["A dot on the row, a count<br/>below; ⌘⇧U jumps there"]):::done
+    N -->|"a preview was open"| V(["Reopen it in one click"]):::done
+    N -->|"a question or a blocked card"| Q(["The bell; a click answers"]):::done
+    N -->|"what runs on its own?"| T(["Crons pane: each job,<br/>its bot, what it does"]):::done
+
+    classDef you fill:#ede9fe,stroke:#7c3aed,color:#1e1b4b
+    classDef lead fill:#fce7f3,stroke:#db2777,color:#831843
+    classDef bot fill:#e0f2fe,stroke:#0284c7,color:#0c4a6e
+    classDef ask fill:#fef3c7,stroke:#d97706,color:#78350f
+    classDef done fill:#dcfce7,stroke:#16a34a,color:#14532d
+```
+
+- Several bots and projects open side by side; squad workers stay out of sight.
+- Big projects stay quiet: the chats that need you show under the project, the rest fold away.
+- Squads at work: each manager's board count and its Kanban board in one click, the squad's crons beside the files, a
+  bell for whatever waits on you, the PR of each worktree, and live Kanban cards in the chat.
+- Managers ask with buttons (suggested answers), with buttons instead of "reply ok".
+- Optional, each a switch in its settings: floating side panels that slide in near the screen edge, a calm
+  Catppuccin-style theme, a layout with files over a small terminal, and `.env` files that open in your editor.
+
+Details: [`squads/_plugins/squad-hub`](squads/_plugins/squad-hub/README.md).
+
+## FAQ
+
+**What is a squad?** A small team of AI agents in Hermes Agent: one manager you chat with, workers with one job each,
+and a reviewer. They coordinate through a Kanban board.
+
+**Do I need to code?** No. You paste one line into your AI (or run three commands) and then chat with the builder
+and the managers.
+
+**Is it free?** Yes, MIT open source. You pay only your own AI provider, if it charges.
+
+**Which AI models does it use?** The ones you already have connected in Hermes Agent (Anthropic, OpenAI, OpenRouter,
+local models and others). The builder asks you per bot, recommending an economical model that does the job; a more
+expensive one is recommended only for critical work (design, complex code, review) and only when it is stronger.
+You decide.
+
+**Will the agents publish, send or spend on their own?** No. Publishing, sending, applying, deploying and spending
+always wait for your explicit yes.
+
+**Can I make my own squad?** Yes. Tell the builder your goal; it designs the squad with you and installs it.
+
+**What do I need?** Hermes Agent 0.22 or newer (macOS, Linux or Windows) and one connected model provider.
+
+**Where are my projects?** In the Desktop app: Sessions, pick the squad's manager in the bottom selector, or turn on
+the Hermes Agent Squads Hub plugin and find them under each manager. Each project lives in the folder you chose when you created
+it; squads never pick or move folders.
+
+## Updates
+
+Updates are automatic: every day at 06:30 the builder checks this repo and updates itself and your installed squads,
+with no AI model and no tokens (the `builder-update` job runs a plain script). It also hands every bot the providers
+you connected. To update now, tell the builder **"update yourself"**; it runs the same update and lists what changed.
+
+The schedule is run by the Hermes **gateway**, so the gateway must be running on each computer (the Desktop app runs
+it). Check with `hermes -p builder cron status`: it should say "Gateway is running" and show the next run. A run
+missed while the gateway was off is caught up when it returns.
+
+An update keeps what is yours: learned skills, memories, your model choices and your SOUL additions (lines you put in
+`local/squads/<squad>/souls/<bot>.append.md`). A squad with work in progress is updated on the next run. Hermes
+itself updates separately (`hermes update`); ask the builder "what changed upstream?" for a digest of new Hermes
+releases.
+
+## Mac tips
+
+- **Keep-awake (automatic).** While a squad's board has running work, its manager keeps the Mac awake
+  (`caffeinate`), and lets it sleep again when the work is done.
+- **Spotlight.** Add the folder that holds your projects to System Settings › Spotlight › Search Privacy. Spotlight then stops indexing
+  project folders (`node_modules`, builds), which saves a lot of CPU and disk activity. No admin rights; remove it
+  from the list to undo.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). AI coding agents: read [AGENTS.md](AGENTS.md) and [llms.txt](llms.txt).
+
+## License
+
+MIT. Third-party skills and plugins keep their own licences; the builder shows each one before installing it.
+
+---
+
+<div align="center">
+
+Developed by **PuntoyComaTech**
+
+[![Instagram](https://img.shields.io/badge/Instagram-%23E4405F.svg?style=for-the-badge&logo=Instagram&logoColor=white)](https://www.instagram.com/puntoycomatech)
+[![X](https://img.shields.io/badge/X-%23000000.svg?style=for-the-badge&logo=X&logoColor=white)](https://x.com/PuntoyComaTech)
+[![YouTube](https://img.shields.io/badge/YouTube-%23FF0000.svg?style=for-the-badge&logo=YouTube&logoColor=white)](https://www.youtube.com/@PuntoyComaTech)
+[![TikTok](https://img.shields.io/badge/TikTok-%23000000.svg?style=for-the-badge&logo=TikTok&logoColor=white)](https://www.tiktok.com/@puntoycomatech)
+
+AI teams that work for you inside Hermes Agent.
+
+</div>

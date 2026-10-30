@@ -1,14 +1,16 @@
 <div align="center">
 
 <a href="https://github.com/herdodp/snapgent-connector">
-<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=800&size=52&duration=3000&pause=1000&color=FACC15&center=true&vCenter=true&width=700&height=90&lines=snapgentV3;%3E+Connector+agent+VScode" alt="snapgentV3: Connector agent for VS Code" />
+<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=800&size=52&duration=3000&pause=1000&color=FACC15&center=true&vCenter=true&width=700&height=90&lines=snapgentV3;+Connector+agent+MCP" alt="snapgentV3: Connector agent for VS Code" />
 </a>
 
-<p><b>Turn any AI chatbot browser to VS Code.</b></p>
+<p><b>Turn any AI chatbot browser to many app via MCP</b></p>
+
+<p><a href="https://discord.gg/rvaZ8KkvAX"><b>💬 Join Discord</b></a> to report problem</p>
 
 [![License](https://img.shields.io/badge/LICENSE-GPL--3.0-FACC15?style=flat-square&labelColor=111111&logo=opensourceinitiative&logoColor=FACC15)](LICENSE)
 [![Manifest](https://img.shields.io/badge/MANIFEST-V3-FACC15?style=flat-square&labelColor=111111&logo=googlechrome&logoColor=FACC15)](https://developer.chrome.com/docs/extensions/develop/migrate/what-is-mv3/)
-[![Release](https://img.shields.io/badge/RELEASE-V3.7-FACC15?style=flat-square&labelColor=111111&logo=semanticrelease&logoColor=FACC15)](https://github.com/herdodp/snapgent-connector/releases/tag/V3.7)
+[![Release](https://img.shields.io/badge/RELEASE-V3.9.3-FACC15?style=flat-square&labelColor=111111&logo=semanticrelease&logoColor=FACC15)](https://github.com/herdodp/snapgent-connector/releases/tag/V3.9.3)
 [![MCP](https://img.shields.io/badge/PROTOCOL-MCP-FACC15?style=flat-square&labelColor=111111&logo=modelcontextprotocol&logoColor=FACC15)](https://modelcontextprotocol.io/)
 
 </div>
@@ -38,6 +40,7 @@ snapgentV3 is a browser extension plus a local bridge that connects a normal AI 
 - **MCP support**
 <img src="assets/mcpsupport.jpeg" width="300" alt="Logo Project">
 
+- **Test snapgent connector + effect craft motion from artcraft** [Watch Video](https://youtu.be/wH_gpAWpA8E)
 <table>
 <tr>
 <td width="100%" valign="top">
@@ -79,6 +82,7 @@ VS Code's MCP server is configured locally by `start.bat`; it detects the open V
 | **Google Gemini** | `gemini.google.com` | ✅ Supported | May stop using tools in long sessions |
 | **Kimi** | `kimi.ai` | ✅ Supported | May use its native tools in some sessions |
 | **Grok** | `grok.com` | ✅ Supported | Requires signing in to xAI |
+| **Mistral (Vibe Code)** | `chat.mistral.ai` | 🧪 Experimental | Requires signing in to Mistral; selectors need testing on the live site |
 | **GLM (Z.ai)** | `chat.z.ai` | ✅ Supported | |
 | **Qwen** | `chat.qwen.ai` | ✅ Supported | |
 | **Arena** | `arena.ai` | ✅ Supported | Use **Direct** mode |
@@ -103,7 +107,7 @@ VS Code's MCP server is configured locally by `start.bat`; it detects the open V
 
 **① Load the extension**
 
-1. Download and extract the [latest SnapgentV3 release](https://github.com/herdodp/snapgent-connector/releases/tag/V3.7).
+1. Download and extract the [latest SnapgentV3 release](https://github.com/herdodp/snapgent-connector/releases/tag/V3.9.3).
 2. Open `edge://extensions` (Edge) or `chrome://extensions` (Chrome).
 3. Enable **Developer mode**.
 4. Click **Load unpacked** and select the `snapgent-extension` folder.
@@ -160,6 +164,20 @@ launcher; Roblox Studio itself may not be available on your Linux distribution.
 1. Open a supported AI chat site and start a new chat.
 2. Open a project folder in VS Code before clicking **Start**.
 3. Click **Start** and describe what you want to make.
+
+**⑤ Updating to a new release**
+
+The extension and the bridge are two separate parts, and each one has to be updated. Reloading only the extension does not update the bridge, and the **Restart** button in the extension popup only restarts the MCP servers, it does not load new bridge code.
+
+1. Get the new version: run `git pull` in the project folder, or download and extract the [latest release](https://github.com/herdodp/snapgent-connector/releases/latest).
+2. Stop the old bridge: close the terminal window that is running `start.bat`, `MacOS_Start.command` or `Linux_Start.sh`.
+3. Start the bridge again with the same launcher. The launcher replaces an old bridge still holding port 17613. On Linux it first checks that the process on the port is a Snapgent bridge, and stops with an error if it belongs to another program.
+4. Reload the extension at `chrome://extensions` (or `edge://extensions`), then refresh open chat tabs (F5).
+5. Check the versions: click the snapgentV3 icon. The popup header shows `ext vX · bridge vY`, and both numbers should match the release you installed. The bridge also writes `snapgent bridge vY` to its startup log.
+
+If the popup shows `bridge old`, the bridge is still running old code: repeat steps 2 and 3. On macOS and Linux, also make sure there is no old executable file named `bridge` in the folder, because the launcher runs it instead of `bridge.py`.
+
+> **Windows note (V3.9.3):** `start.bat` runs the bundled `bridge.exe`, which was last rebuilt on 2026-10-23 and does not yet include the V3.9.2 fix for large MCP responses or the version display. On Windows the popup will therefore show `bridge old`. Until `bridge.exe` is rebuilt, you can run the current bridge with Python 3.9+: install it with `py -3 -m pip install websockets`, close `start.bat`, then run `py -3 bridge.py` in the project folder. macOS and Linux already use `bridge.py` and are not affected.
 
 ---
 
@@ -237,6 +255,8 @@ snapgent-full/
 | Bridge is offline | Bridge is not running | Start `start.bat` (Windows), `MacOS_Start.command` (macOS), or run `bash Linux_Start.sh` (Linux) |
 | AI replies without using tools | Provider/model stopped following commands | Remind it to use snapgentV3 commands or start a new chat |
 | VS Code target is unavailable | The bridge is offline or the release is incomplete | Run `start.bat` from the extracted release folder and keep the project open in VS Code |
+| A configured MCP server is missing from the target dropdown | The server was switched off in the **MCP servers** panel, or the extension is outdated | Open **MCP servers** from the ⋯ menu on the snapgent bar and tick the server, then reload the extension in `chrome://extensions` and refresh the chat tab |
+| Target dropdown closes or the click does nothing | Older extension versions redrew the menu during status updates | Update to the latest release and reload the extension |
 
 ---
 
@@ -244,6 +264,6 @@ snapgent-full/
 
 **Built for creators who want to spend more time making.**
 
-[Latest release V3.7](https://github.com/herdodp/snapgent-connector/releases/tag/V3.7) · [Issues](https://github.com/herdodp/snapgent-connector/issues) · [License](LICENSE)
+[Latest release V3.9.3](https://github.com/herdodp/snapgent-connector/releases/tag/V3.9.3) · [Issues](https://github.com/herdodp/snapgent-connector/issues) · [License](LICENSE)
 
 </div>

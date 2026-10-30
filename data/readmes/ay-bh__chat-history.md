@@ -16,19 +16,24 @@ cargo install chat-history
 
 `cargo install` puts `chat-history` and `ch` on `PATH` (`~/.cargo/bin/`).
 
-The first time you run `chat-history` / `ch`, it quietly installs the bundled agent skill to:
+The first time you run `chat-history` / `ch`, it quietly installs the bundled agent skill as `history`:
 
-- `~/.claude/skills/chat-history/SKILL.md`
-- `$CODEX_HOME/skills/chat-history/SKILL.md` (or `~/.codex/...`)
-- `~/.cursor/skills/chat-history/SKILL.md`
+- `~/.claude/skills/history/SKILL.md` for Claude Code, typed as `/history`
+- `~/.agents/skills/history/SKILL.md` for Codex (typed as `$history`) and Cursor (`/history`); both read this shared location
 
-On Windows, the same paths are under `%USERPROFILE%`. Later CLI upgrades refresh **managed** copies automatically (those written by this CLI, tracked via a `.chat-history-managed` sidecar). User-edited skills are left alone. Skills installed by older versions without that sidecar are left alone by the quiet path — run `install-skill` once after upgrading to adopt them.
+To use another name, run `chat-history install-skill --name <name>` (1-64 lowercase letters, digits and single hyphens; Claude Code's built-in command names such as `resume` or `export` are refused because a skill would silently replace them). The name is saved in `~/.chat-history/skill-name` only once the skill is installed under it, so later upgrades keep it; copies under the previous name are removed where the new one replaced them, including later in a folder that was blocked at the time. A skill of the same name that this tool did not install is left alone unless you pass `--force`.
+
+The skill was called `chat-history` up to 0.8. When an upgrade replaces an old copy, a `chat-history` stub takes its place so `/chat-history` (`$chat-history` in Codex) still works: it does what you asked through the skill under its current name, then says the old name is deprecated and offers to run `chat-history install-skill --remove-old-name`. That removes only the stub files this tool wrote and nobody edited, leaving anything else in those folders, and the old name is not put back. The stub only runs when typed, never on its own, and new installs never get it. An old copy is replaced only once the new skill is in place, and copies that 0.8 wrote to `~/.cursor/skills/chat-history` and `$CODEX_HOME/skills/chat-history` (Codex has deprecated that folder) are removed once `~/.agents/skills` has the new skill and its stub. **The `chat-history` stub is removed in 1.0**: from then on only `/history` (or the name you chose) works.
+
+On Windows, the same paths are under `%USERPROFILE%`. Later CLI upgrades refresh **managed** copies automatically (those written by this CLI, tracked via a `.chat-history-managed` sidecar) and remove only managed copies nobody edited. User-edited skills are left alone. Copies of this skill installed by older versions without that sidecar are left alone by the quiet path — run `install-skill` once after upgrading to adopt them.
 
 Optional explicit install / reinstall:
 
 ```bash
-chat-history install-skill           # refresh managed + adopt legacy (pre-sidecar) installs
-chat-history install-skill --force   # overwrite even user-edited skills
+chat-history install-skill                    # refresh managed + adopt legacy (pre-sidecar) installs
+chat-history install-skill --name past-chats  # install under another name
+chat-history install-skill --force            # overwrite even user-edited skills
+chat-history install-skill --remove-old-name  # remove the deprecated chat-history stub for good
 ```
 
 The skill is active immediately — no restart needed.
@@ -141,7 +146,7 @@ Scopes: `all` (default), `errors`, `similar`, `tools`, `files`. Use `--timeframe
 
 `--timeframe` excludes untimestamped messages and first-prompt previews; Cursor recovers missing message times from IDE data when possible. Titles use session activity timestamps.
 
-Human-readable results include an 8-char UUID prefix. Pass it to `find` for any row; `inspect`, `view`, and `export` require a transcript. `resume` works for Claude, Codex, and Cursor chats with a store under `~/.cursor/chats`; other Cursor rows print the chat's **title** and `DIR:` so you can open it in the sidebar.
+Human-readable results include an 8-char UUID prefix, longer when another session shares those characters (Codex ids are time-ordered, so sessions started within a minute often do). Pass it to `find` for any row; `inspect`, `view`, and `export` require a transcript. `resume` works for Claude, Codex, and Cursor chats with a store under `~/.cursor/chats`; other Cursor rows print the chat's **title** and `DIR:` so you can open it in the sidebar.
 
 `--json` still includes `session_id`. For IDE Agent chats the JSON `source` is `cursor` (the jsonl store) even though the human tag is `cursor-ide`; those items carry `"also_ide": true`; `resume` launches the Agent CLI when a `~/.cursor/chats` store exists for the id and prints the sidebar hint otherwise.
 
@@ -155,7 +160,8 @@ Human-readable results include an 8-char UUID prefix. Pass it to `find` for any 
 - `★ N.N` = relevance (higher is better)
 - `inspect` → duration, messages, model, tokens, tools, files, accomplishments (the first informative sentence of the reply that ended each turn), key decisions. It takes several ids; `--brief` prints each as a header, what was asked, its latest substantive result (the last reply with an informative sentence, so a closing "All set" does not hide it), and up to five files it read or edited, the project's first (agent config and scratch files left out). Files come from tool calls, so a listed file was not necessarily changed
 - Claude Code titles come from `ai-title` / `custom-title` JSONL when available
-- Subagent/sidechain sessions are omitted unless `--sidechains`; this includes Cursor transcripts under `agent-transcripts/*/subagents/` (tagged `[subagent]`)
+- Subagent/sidechain sessions are omitted unless `--sidechains`; this includes Claude Code transcripts under `<session>/subagents/` (titled by their task) and Cursor transcripts under `agent-transcripts/*/subagents/` (tagged `[subagent]`)
+- Codex rows are titled by the thread name Codex shows, from `~/.codex/state_*.sqlite`
 - Codex commentary-phase messages are hidden once a turn has a final answer; interrupted turns keep commentary
 
 ## Data sources
@@ -163,13 +169,18 @@ Human-readable results include an 8-char UUID prefix. Pass it to `find` for any 
 | Source | Path |
 |---|---|
 | Claude Code | `~/.claude/projects/*/*.jsonl` (+ optional legacy `sessions-index.json`) |
-| Codex | `$CODEX_HOME/sessions/YYYY/MM/DD/rollout-*.jsonl` (default `~/.codex`) |
+| Claude Code subagents | `~/.claude/projects/*/<session>/subagents/agent-*.jsonl` (`--sidechains`) |
+| Codex | `$CODEX_HOME/sessions/YYYY/MM/DD/rollout-*.jsonl` and compressed `rollout-*.jsonl.zst`, plus `$CODEX_HOME/archived_sessions/` (default `~/.codex`) |
 | Cursor Agent | `~/.cursor/projects/*/agent-transcripts/` (`--source cursor`, alias `cursor-agent`) |
 | Cursor CLI metadata | `~/.cursor/chats/*/*/{meta.json,store.db}` (same source; discovers CLI-only sessions) |
 | Cursor IDE | `.../Cursor/User/globalStorage/state.vscdb` (`CURSOR_USER_DIR`; `--source cursor-ide`) |
 | Cursor subagents | `.../agent-transcripts/*/subagents/*.jsonl` |
 
-Cursor Agent chats found in both transcript and IDE data are shown once as `cursor-ide`. Noise is filtered automatically. Transcripts are read to the end; each tool output keeps its first 12 KiB and last 4 KiB.
+Cursor Agent chats found in both transcript and IDE data are shown once as `cursor-ide`. Noise is filtered automatically. Transcripts are read to the end. The search index keeps the first 12 KiB and last 4 KiB of each tool output, marking the gap `[…]`; `view` and `export` show tool output whole.
+
+### Keeping Claude Code history
+
+chat-history reads the transcripts the agents keep; it does not archive them. **Claude Code deletes CLI session transcripts 30 days after their last activity by default**, and they then disappear from chat-history too. To keep them, raise the limit in `~/.claude/settings.json`, for example `"cleanupPeriodDays": 3650`. Codex and Cursor keep their history until you delete it (Codex compresses older sessions, which chat-history reads).
 
 ### Metadata cache
 

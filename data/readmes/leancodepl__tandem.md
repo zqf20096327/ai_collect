@@ -23,7 +23,7 @@ Run `dart run skills@ add leancodepl/tandem --skill tandem --agent claude`, then
 
 In a new session, `/tandem` starts the same workflow. Claude Code is the only coding agent Tandem is tested with. You can set up Cursor with `--agent cursor` and `.cursor/skills/tandem/SKILL.md`, or Codex with `--agent codex` and `.agents/skills/tandem/SKILL.md`. These setups have not been tested.
 
-Pick a screen. Its state class lists the data an AI agent can read and the methods it can call. Those methods use the same validation as your buttons. Calls marked for approval wait for the user. The integration stays within that screen.
+Pick a screen. Its state class lists the data an AI agent can read and the methods it can call. Those methods use the same validation as your buttons. Calls marked for approval wait for the user. Add a `TandemView` for the agent to draw a view with your own widgets, such as an order summary with a button to place the order. The integration stays within that screen.
 
 ## How it works
 
@@ -49,6 +49,8 @@ Your state class lists what the agent may do:
 - `.sees(draft)`: the agent reads the current draft at the start of each run. Other state values are not sent unless the class lists them.
 - `.calls(setQuantity)`: the agent calls the same method as a button. The same validation runs, and the screen updates as it would after a tap.
 - `.callsWithApproval(placeOrder)`: the method runs only after the user approves the call.
+
+A method's parameter of one of your classes, such as `setCustomer(Customer customer)`, takes an object the screen lists: the agent points at it with a path, `{"path": "/customers/1"}`, and the method gets that `Customer`. A path whose value changed since the agent read it is refused. Mark a parameter `@TandemInput()` when the agent writes the object itself, such as a delivery that does not exist yet.
 
 > [!NOTE]
 > Tandem is experimental. Its API can change before 1.0.
@@ -106,7 +108,7 @@ Requires Dart 3.13 (Flutter 3.47) or newer.
    dart run build_runner build
    ```
 
-   Every class with `@TandemAgent()` gets a `_$Name` mixin. Each `.sees` entry must appear directly in the list. Putting it inside an `if`, a `for`, a `?:` or a spread fails the build. An outdated `.g.dart` is not always caught at runtime, so check the generated code in CI:
+   Every class with `@TandemAgent()` gets a `_$Name` mixin. The list may depend on the state, with `if`, `switch` or a spread: the mixin copies it and names each `.sees` by its getter, so two values of one type stay apart. An outdated `.g.dart` is not always caught at runtime, so check the generated code in CI:
 
    ```sh
    dart run build_runner build && git diff --exit-code
@@ -174,7 +176,7 @@ void main() => runApp(InvoiceApp(connection: OnDeviceAgent.apple()));
 
 Build with Xcode 26 or newer. Generation requires iOS or macOS 26 on an eligible device, with Apple Intelligence enabled and its model downloaded. `OnDeviceAgent.apple().availability()` reports whether the model is available. Other platforms return `unsupportedPlatform` and can use an AG-UI backend instead. Use a supported Mac or physical iPhone for inference; the iOS simulator did not generate responses in our tests.
 
-Responses arrive when generation finishes. Tandem does not trim conversation history. If a run fails with `OnDeviceErrorCode.contextWindowExceeded`, the app can handle that `RunFailed` event and call `session.startOver()` to clear the thread history. The failed message is not automatically retried. A `DateTime` parameter or a full tool schema the system rejects fails the run with `OnDeviceErrorCode.unsupportedSchema`. Some older systems reject nullable arguments, even when omitting them would give null.
+Responses arrive when generation finishes. Tandem does not trim conversation history. If a run fails with `OnDeviceErrorCode.contextWindowExceeded`, the app can handle that `RunFailed` event and call `session.startOver()` to clear the thread history. The failed message is not automatically retried. A `DateTime`, `Uri` or `Set` parameter or a full tool schema the system rejects fails the run with `OnDeviceErrorCode.unsupportedSchema`. Some older systems reject nullable arguments, even when omitting them would give null.
 
 Keep validation in the app's methods and approvals for changes that need the user's decision. [The invoice example](https://github.com/leancodepl/tandem/blob/main/example/README.md#smart-invoice-input-with-apples-on-device-model) has the run command. [The design notes](https://github.com/leancodepl/tandem/blob/main/doc/design.md#apple-on-device-connection) cover the other limits, native setup and test results.
 
@@ -185,6 +187,7 @@ Keep validation in the app's methods and approvals for changes that need the use
 A coding agent reaches the extensions through the `vm_service` tool of the Dart MCP server (`dart mcp-server`), or over HTTP at the VM service address printed by `flutter run`. The `tandem-coding-agent` skill describes both routes.
 
 - The coding agent sees what an in-app agent would see, and calls only the listed methods, with the same checks.
+- An argument that points at an object of the screen, `{"path": ...}`, needs the `context` that `ext.tandem.describe` gave for the screen, so the path reads what the coding agent saw. A call without it, or whose object changed since, is refused.
 - A call targets the front screen. This is the only open `TandemScope`, or the only one on the current route. If several screens match, the call must identify the screen.
 - A `.callsWithApproval` call waits for the user to approve it in the app. The scope's `approvals:` setting controls how the request is shown. For scripted runs, `TandemBridge.enable(autoApprove: true)` lets the coding agent approve its own calls.
 
@@ -234,6 +237,60 @@ Tandem does not include a chat widget. You build the chat with your app's wordin
 
 The example's [`AgentChat`](https://github.com/leancodepl/tandem/blob/main/example/lib/agent_chat.dart) is a complete chat widget you can copy. Its text field calls `session.send(text)`, and its button responds to [the session status](#session-status). The `tandem-in-app-agent` skill helps your coding agent build a chat or a button that sends a message.
 
+## Views the agent draws
+
+The agent can draw a view on the screen with your own widgets, such as an order summary with a button to place the order. List the widgets in a class with `@TandemCatalog([...])`. `tandem_generator` reads each widget's constructor and the first paragraph of its doc comment. The class's doc comment gives the agent its guidelines and one example view:
+
+<!-- example/lib/desk/desk_catalog.dart -->
+```dart
+@TandemCatalog(
+  [DeskCard, DeskColumn, OrderLine, OrderTotal, DeskButton, CustomerCard],
+  converters: [DeskIconConverter()],
+)
+final class const DeskCatalog() with _$DeskCatalog;
+```
+
+A catalog belongs to one screen, because its guidelines and example name that screen's data and methods. Another screen that draws with the same widgets declares its own catalog from the same list, as `@TandemCatalog([...DesignSystem.components])`, with its own guidelines and example.
+
+Then put a `TandemView` with the catalog below `TandemScope`, where the view should appear. The order desk puts it below the form, at most half of the panel's height:
+
+<!-- example/lib/desk/ui/order_desk_screen.dart -->
+```dart
+        const Expanded(child: OrderForm()),
+        ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: constraints.maxHeight / 2),
+          child: const SingleChildScrollView(
+            padding: .fromLTRB(12, 0, 12, 12),
+            child: TandemView(catalog: DeskCatalog()),
+          ),
+        ),
+```
+
+While `TandemView` is on the screen, every run offers the agent `tandem_show_view`, described from the catalog and from what the screen lists.
+
+- A widget's parameters are the properties the agent sets. A value follows the type rule of [tandem_generator](https://pub.dev/packages/tandem_generator): a literal, or a path into what `.sees` lists, so the view follows the screen. A parameter of one of your classes, such as `Customer`, takes only a path, and the widget gets the object the screen holds. `Widget` and `List<Widget>` take other components, and a list can repeat one component for every item of a list in the data.
+- `VoidCallback` is an action: it calls a listed method with the same checks and approvals as the agent's calls, as `Caller.view`. `ValueChanged<T>` is a field: it calls a method that needs no approval with what the user enters. An action that needs approval works only while the session is `Idle` and the scope takes approvals. One action of a view runs at a time.
+- A required parameter of a type without a form stops the build and names the converter to add. An optional one keeps the widget's default.
+- Tandem checks every view before it draws and tells the agent what to fix, one line per problem. The previous view stays. After three refusals in a row, Tandem tells the agent to answer in text and withholds `tandem_show_view` until the next message.
+- A component whose required value or action is missing now, such as the customer before one is chosen, is left out until it is back.
+- A view is limited to 500 components, the items of its lists counted. A view that cannot show, such as one that grows past that, shows `whenUnavailable` until it can again.
+- An action does not wake the agent. Its answer goes into `app_notes` for the next run. Call [`session.wake()`](#notes-from-the-app) from `onEvent` when the agent should respond:
+
+<!-- example/lib/desk/ui/order_desk_screen.dart -->
+```dart
+void wakeOnPlacedOrder(
+  BuildContext context,
+  TandemEvent event,
+  TandemSession session,
+) {
+  if (event case AgentCall(tool: 'place_order', caller: .view)) {
+    session.wake();
+  }
+}
+```
+
+Use a strong remote model through an AG-UI backend that puts `context` into the model's prompt. In debug, `TandemView` checks the catalog's example against the screen it is on and reports an example that does not fit. In a test, a `ScriptedAgent` draws with `AgentStep.callTool('tandem_show_view', {'components': const DeskCatalog().example})`.
+
 ## Session status
 
 `session.status` describes the session's current activity. `SessionStatus` is sealed, so a `switch` can cover every case:
@@ -256,7 +313,7 @@ final class const StatusLine({super.key}) extends StatelessWidget {
 }
 ```
 
-`Thinking.backendTool` identifies the latest backend tool call, such as `find_customer`. It is set by `TOOL_CALL_START` and cleared when the result, the agent's next text or another call arrives. When backend tools run in parallel, this field reports the latest call. Use it to show progress during a long turn.
+`Thinking.backendTool` identifies the latest backend tool call, such as `find_customer`. It is set by `TOOL_CALL_START` and cleared when the result, the agent's next text or another call arrives. When backend tools run in parallel, this field reports the latest call. Use it to show progress during a long turn. `Thinking.drawing` is true while the agent draws a view for `TandemView`, from its `tandem_show_view` call until its next text or call.
 
 Call `session.stop()` while the status is `Thinking` or `Calling(approved: false)`. An approved method runs to completion. `Stopping` means the stopped run is still being read to its end, and new messages wait for it to finish.
 
@@ -265,6 +322,8 @@ Call `session.stop()` while the status is `Thinking` or `Calling(approved: false
 A method listed with `.callsWithApproval` runs only after the user approves it. Approval is tied to the screen's `.sees` values, so list every value the method depends on. Changing a listed value permanently invalidates the request. A change outside `.sees`, such as a selected tab, leaves the request pending.
 
 For an in-app agent, approval uses the `.sees` values from the start of the run. A change made by the agent's earlier calls invalidates that turn's requests, even before they appear. The agent must ask again after the change.
+
+A request shows its arguments with every path replaced by the object it points at, as JSON. The approved method gets new objects built from that JSON, so what the user approved is what runs, even when the screen's object changes in place.
 
 The agent receives the invalidation result in its next run, which starts with the user's next message. To have the agent ask again without another user message, call [`session.wake()`](#notes-from-the-app) after editing stops. The order desk waits one second after the last edit and wakes the agent only when this check returns `true`:
 
@@ -342,7 +401,7 @@ void showOrderMessages(
 }
 ```
 
-`AgentCall` is emitted after a listed method returns, with its `tool`, `arguments`, `result` and `caller`. The caller is `Caller.inAppAgent` or `Caller.codingAgent`. Refused calls and methods that throw do not emit `AgentCall`.
+`AgentCall` is emitted after a listed method returns, with its `tool`, `arguments`, `result` and `caller`. The caller is `Caller.inAppAgent`, `Caller.codingAgent` or `Caller.view`, for an action of a [view the agent drew](#views-the-agent-draws). Refused calls and methods that throw do not emit `AgentCall`.
 
 `RunFailed` and `ConnectionLost` add a `ChatNotice` to `session.items`. `RunStopped` reports a user stop or a backend cancellation. A stop adds a notice or marks the last agent message `stopped`.
 
@@ -502,7 +561,7 @@ To send the user's token, give `HttpAgentConnection` an `http.Client` that adds 
 
 Each release of Tandem is checked on iOS and Android. Other platforms are outside this release gate. Apple's on-device connection remains experimental and has separate requirements and manual checks.
 
-Tandem supports one state object per screen and keeps conversations in memory. Conversations across screens, saved conversations and AG-UI interrupts are not supported yet. An interrupt fails the run. The next message starts a new AG-UI thread, while existing chat items remain visible. Views the agent draws in the app are not part of this release.
+Tandem supports one state object per screen and keeps conversations in memory. Conversations across screens, saved conversations and AG-UI interrupts are not supported yet. An interrupt fails the run. The next message starts a new AG-UI thread, while existing chat items remain visible.
 
 ## AI
 

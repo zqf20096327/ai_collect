@@ -1,21 +1,222 @@
-# Workflow runners and releases
+# Veto
 
-CI, benchmarks, and repository automation use `depot-ubuntu-24.04-4` (Ubuntu 24.04, four CPUs). Depot's managed-runner GitHub App serves these jobs through the organization's Default runner group, which must allow public repositories for Veto. Existing `actions/cache` and setup-action caches use Depot's cache integration automatically.
+Veto is the policy runtime for AI agent tool calls — write deny rules in plain English, enforce them deterministically, in 5 lines of code.
 
-The two publishing jobs in `release.yml` stay on GitHub-hosted `ubuntu-latest` because npm provenance requires a GitHub-hosted runner. Keep their OIDC permissions and provenance settings when changing release infrastructure.
+![npm veto-sdk](https://img.shields.io/npm/v/veto-sdk?label=veto-sdk&color=000000)
+[![PyPI](https://img.shields.io/pypi/v/veto?label=python%20veto&color=000000)](https://pypi.org/project/veto)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 
-Each public npm package must trust GitHub owner `PlawIO`, repository `veto`, workflow `release.yml`, with direct `npm publish` allowed and no environment name. Both release paths use Changesets, which calls npm to authenticate with OIDC and skips versions already published. Do not add `NPM_TOKEN` or `NODE_AUTH_TOKEN`; a stale token can prevent OIDC authentication.
+Veto sits between an agent and the tools it can execute. It evaluates tool name + arguments against deterministic policy, then allows, denies, warns, logs, or routes to approval before your handler runs. It governs tool calls, not prompts.
 
-GitHub manages CodeQL through repository settings, outside these workflow files. Its default setup uses the same `depot-ubuntu-24.04-4` label; keep that label configured in both GitHub and `.github/actionlint.yaml`.
+## Benchmarks
 
-## Release approval
+Checked-in PR-mode baselines are measured on GitHub Actions runner output, not local hardware or thresholds. CI gates Veto p99 regressions above 10% against `benchmark/baselines/*.json`; absolute thresholds remain separate.
 
-Changesets creates the version PR and enables auto-merge. A maintainer must approve its GitHub Actions runs and review the PR; GitHub does not permit the bot to approve its own PR. Master requires `Build & Test` and `Validate changeset presence`, with up-to-date branches and one approving review.
+| Runtime | Workload                           | Iterations |          p50 |           p95 |           p99 | p99 threshold | Source                                              |
+| ------- | ---------------------------------- | ---------: | -----------: | ------------: | ------------: | ------------: | --------------------------------------------------- |
+| Veto    | single-rule local eval             |     50,000 |   0.000260ms |    0.001092ms |    0.002594ms |        0.05ms | measured on GitHub Actions PR-mode, PR #208 CI log  |
+| Veto    | 100-rule merged packs              |     50,000 |   0.027291ms |    0.037470ms |    0.057136ms |         0.5ms | measured on GitHub Actions PR-mode, PR #212 CI log  |
+| Veto    | localhost PDP server eval          |        250 |   0.402051ms |    0.841651ms |    2.092263ms |          30ms | local loopback fixture baseline; not run in PR mode |
+| AGT     | policy eval latency per rule       |  published | 0.012ms/rule | not published | not published |           n/a | source: published, not reproduced                   |
+| AGT     | throughput at 50 concurrent agents |  published |  35K ops/sec | not published | not published |           n/a | source: published, not reproduced                   |
 
-After the version PR merges, npm publishes missing versions. Python publication runs whenever no changesets remain, independently of whether npm published a package. PyPI's `skip-existing` option makes retries safe for versions already uploaded. A manual forced release runs only the manual publishing job.
+## Get started
 
-## Validation
+```ts
+import { protect } from "veto-sdk";
+const safeTools = await protect(tools);
+```
 
-Run `actionlint` and `pnpm check:release-supply-chain` before pushing workflow changes. Verify the PR's jobs actually run on Depot, as a valid runner label alone does not prove runner access.
+```bash
+npm install veto-sdk
+```
 
-References: [Depot runner types](https://depot.dev/docs/github-actions/runner-types), [public repository access](https://depot.dev/docs/github-actions/troubleshooting), [npm provenance](https://docs.npmjs.com/generating-provenance-statements/).
+Pass `safeTools` to LangChain, LangGraph, Vercel AI SDK, OpenAI Agents, MCP adapters, Claude SDK, Google ADK, Mastra, AutoGen, CrewAI, or your own tool runner. If `./veto/veto.config.yaml` and `./veto/rules/*.yaml` exist, `protect()` loads them. Without local policy, Veto applies `@veto/safe-defaults` in observe mode so suspicious shell/file/db/money-movement patterns are logged without surprise blocking.
+
+The unscoped `veto` npm name is not controlled by Plaw yet; use the owned `veto-cli` package form until transfer completes.
+
+For a blocking local policy in under a minute:
+
+```bash
+npm install veto-sdk
+npx --package veto-cli@latest veto init
+npx --package veto-cli@latest veto policy generate --tool bash --prompt "block rm -rf" --save ./veto/rules/block-rm-rf.yaml
+node examples/60-second-denied-call/denied-call.mjs
+```
+
+This path is local-only: no provider SDK or API key is required. For prose generation, Veto tries configured cloud/self-hosted/kernel endpoints first, then uses a local deterministic template fallback with review warnings; in fallback, no prompt or policy data leaves your machine.
+
+For a finance-style irreversible action demo with portable receipts:
+
+```bash
+pnpm build
+node examples/finance-grade-agent/finance-demo.mjs
+node packages/sdk/dist/cli/bin.js receipts verify examples/finance-grade-agent/demo-output/receipts.ndjson
+```
+
+The demo runs local policy for an AP/procurement/refund workflow: one action is allowed, one is denied, one requires approval, and all three decisions are written as an offline-verifiable `veto.receipt/1` chain.
+
+Install Veto into developer tools and MCP clients:
+
+```bash
+npx --package veto-cli@latest veto install claude-code
+npx --package veto-cli@latest veto install cursor
+npx --package veto-cli@latest veto install codex
+veto-mcp-proxy --config ./veto/mcp.config.yaml
+```
+
+## Runtime adapter matrix
+
+| Runtime                 | Artifact                                                             | Status         |
+| ----------------------- | -------------------------------------------------------------------- | -------------- |
+| Provider-agnostic tools | `protect(tools)`, `Veto.wrap()`                                      | Canonical path |
+| Vercel AI SDK           | `veto-sdk/integrations/vercel-ai` middleware + guard helper          | Supported      |
+| OpenAI Agents           | `veto-sdk/integrations/openai-agents` guardrails + guard helper      | Supported      |
+| LangChain / LangGraph   | `veto-sdk/integrations/langchain` middleware, ToolNode, guard helper | Supported      |
+| MCP                     | provider adapters + `Veto.wrapMCPTools()`                            | Supported      |
+| Browser Use             | `veto-sdk/integrations/browser-use`                                  | Supported      |
+| OpenClaw                | `veto-sdk/integrations/openclaw` hooks                               | Supported      |
+| Claude SDK              | `veto-sdk/integrations/claude-sdk` Anthropic tool-use helpers        | Added P2       |
+| Google ADK              | `veto-sdk/integrations/google-adk` function declaration/call helpers | Added P2       |
+| Mastra                  | `veto-sdk/integrations/mastra` tool wrappers                         | Added P2       |
+| AutoGen                 | `veto-sdk/integrations/autogen` function/tool wrappers               | Added P2       |
+| CrewAI                  | `veto-sdk/integrations/crewai` tool-function wrappers                | Added P2       |
+
+## TypeScript
+
+```bash
+npm install veto-sdk
+```
+
+```ts
+import { protect } from "veto-sdk";
+
+const safeTools = await protect(tools);
+const agent = createAgent({ tools: safeTools });
+```
+
+## Python
+
+```bash
+pip install veto
+```
+
+```python
+from veto import protect
+
+safe = await protect(tools)
+agent = create_agent(tools=safe)
+```
+
+## Add local deny rules
+
+```bash
+npx --package veto-cli@latest veto init
+```
+
+`npx --package veto-cli@latest veto init` creates `./veto/veto.config.yaml` and `./veto/rules/defaults.yaml`. The default local rules are strict and include deterministic denials for sensitive paths and destructive shell commands.
+
+Prefer prose for new rules, then review the generated YAML:
+
+```bash
+npx --package veto-cli@latest veto policy generate --tool bash --prompt "block rm -rf" --save ./veto/rules/block-rm-rf.yaml
+```
+
+```yaml
+rules:
+  - id: block-large-transfers
+    name: Block transfers over $1,000
+    enabled: true
+    severity: high
+    action: block
+    tools: [transfer_funds]
+    conditions:
+      - field: arguments.amount
+        operator: greater_than
+        value: 1000
+```
+
+Actions: `block`, `allow`, `warn`, `log`, `require_approval`.
+
+## Advanced API
+
+`Veto.init()` and `.wrap()` remain supported for advanced/internal-facing integrations that need an explicit instance, `guard()` checks, cloud/self-host options, audit exports, or event hooks.
+
+```ts
+import { Veto } from "veto-sdk";
+
+const veto = await Veto.init({ configDir: "./veto", mode: "strict" });
+const safeTools = veto.wrap(tools);
+const decision = await veto.guard("transfer_funds", { amount: 1500 });
+```
+
+```python
+from veto import Veto, VetoOptions
+
+veto = await Veto.init(VetoOptions(config_dir="./veto", mode="strict"))
+safe_tools = veto.wrap(tools)
+decision = await veto.guard("transfer_funds", {"amount": 1500})
+```
+
+## Packages
+
+| Package                                         | Language    | Install                                   | Purpose                                          |
+| ----------------------------------------------- | ----------- | ----------------------------------------- | ------------------------------------------------ |
+| [`packages/veto`](./packages/veto)              | TypeScript  | local workspace only                      | Reserved/local wrapper pending npm-name transfer |
+| [`veto-sdk`](./packages/sdk)                    | TypeScript  | `npm install veto-sdk`                    | Policy runtime for agent tool calls              |
+| [`veto` (Python)](./packages/sdk-python)        | Python      | `pip install veto`                        | Python parity SDK with `protect()`               |
+| [`veto-cli`](./packages/cli)                    | TypeScript  | `npx --package veto-cli@latest veto init` | Currently published CLI package exposing `veto`  |
+| [`veto-bash`](./packages/bash)                  | Rust + Node | `npm install --global veto-bash`          | Native bash tool-call enforcement path           |
+| [`create-veto-app`](./packages/create-veto-app) | TypeScript  | `npm create veto-app`                     | Starter TypeScript app                           |
+
+## Self-host locally
+
+```bash
+docker compose up
+curl -s http://localhost:3001/v1/validate \
+  -H 'content-type: application/json' \
+  -d '{"toolName":"bash","arguments":{"command":"echo hello"}}'
+```
+
+See [docs/self-hosting.md](./docs/self-hosting.md) for the public reviewer path, fixed `localhost:3001` compose mapping, disabled-by-default outbound checks, and the local unauthenticated validation contract.
+
+### Store decision receipts in Neon Postgres
+
+For applications that need managed Postgres persistence, we recommend [Neon](https://neon.com) for the [decision-receipt example](./examples/neon-postgres/). It evaluates Veto policy locally, writes portable receipts for allowed and denied decisions to Neon, and verifies the receipts read back from the database. Follow the [Neon setup guide](./docs/neon.md). This SDK example requires a database connection; the default Compose server continues to use SQLite.
+
+## BYOC / customer-plane boundary
+
+Veto BYOC runs in the customer plane. Public install artifacts are in [`helm/`](./helm), [`terraform-modules/`](./terraform-modules), [`cf-templates/`](./cf-templates), and [`cdk/`](./cdk). They are outbound-only and must not grant Plaw cross-account IAM or impersonation. Customer policy, decision rows, tool arguments, agent IDs, user IDs, Slack content, prompts, environment variables, and secrets do not cross to Plaw.
+
+Allowed outbound control-plane checks are limited to license heartbeat and optional telemetry. The heartbeat schema is exactly six fields: `instance_uuid`, `license_id`, `decision_count_30d`, `sdk_version`, `operator_version`, `timestamp`.
+
+Install docs:
+
+- [Kubernetes](./docs/install/k8s.md)
+- [AWS](./docs/install/aws.md)
+- [GCP](./docs/install/gcp.md)
+- [Azure](./docs/install/azure.md)
+- [Air-gapped](./docs/install/air-gapped.md)
+- [Verifying images](./docs/verifying-images.md)
+
+## Why Veto
+
+- Deterministic local evaluation for policy rules that can be checked from tool arguments.
+- Provider-agnostic wrapping for any agent framework or custom tool runner.
+- Human approval and cost-aware governance for sensitive tool calls.
+- Local-first operation with optional self-hosted or cloud policy distribution.
+- Apache-2.0 licensed packages and public supply-chain verification artifacts.
+
+## Sponsors and partners
+
+<a href="https://neon.com"><img src=".github/assets/neon-logo.svg" alt="Neon" height="48"></a>
+
+Thanks to [Neon](https://neon.com) for supporting Veto through the Neon Open Source Program.
+
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md). Report vulnerabilities to [security@plaw.io](mailto:security@plaw.io).
+
+## License
+
+Apache-2.0 © [Plaw, Inc.](https://plaw.io)

@@ -465,8 +465,6 @@ docker run --rm -p 127.0.0.1:3000:3000 \
   `GET /readyz?probe=1` also calls the instance and sits behind the token, like every
   MCP route. Set `SN_HTTP_ALLOWED_HOSTS` to the name clients use so the Host header is
   checked on a `0.0.0.0` bind.
-- `smithery.yaml` describes the same image for [Smithery](https://smithery.ai) (stdio,
-  config keys mapped to the `SN_*` settings).
 
 ### HTTP transport: sessions, probes and shutdown
 
@@ -726,7 +724,7 @@ Timeouts, retries, the host allow-list, the outbound proxy, mutual TLS and the p
 | `SN_ALLOWED_HOSTS` | no | — | 1.1.0 | Comma-separated allow-list of permitted hosts (for custom or sovereign-cloud domains). When set, only matching hosts are contacted. When unset, only `*.service-now.com` instances are allowed and internal/loopback hosts are blocked (SSRF guard). An entry may carry a port (`host:8443`) or be a bracketed IPv6 literal (`[2001:db8::1]`); an explicit non-443 port or an IPv6 literal in the instance value is accepted only when such an entry matches it — never under the default policy. |
 | `SN_MAX_BODY_BYTES` | no | `52428800` | next | Largest response body (bytes) read into memory; a larger declared or streamed body fails with `RESPONSE_TOO_LARGE`. Redirects are never followed — a 3xx fails with `REDIRECT_BLOCKED` naming the target host. |
 | `SN_HTTPS_PROXY` | no | — | next | Outbound HTTPS proxy URL (`http://user:pass@proxy:3128`) for all ServiceNow and OAuth traffic; needs the optional `undici` package. When unset, the ambient `HTTPS_PROXY` / `HTTP_PROXY` variables are honoured together with `NO_PROXY`; `SN_HTTPS_PROXY` itself is explicit and ignores `NO_PROXY`. Proxy credentials are never logged. |
-| `SN_USER_AGENT_SUFFIX` | no | — | next | Extra token appended to the `User-Agent` sent on every request (`servicenow-mcp-ai/<version> (node/<major>; <transport>; <client>)`), e.g. a team or ticket id for correlation in the instance's transaction log. Printable ASCII, up to 80 characters. |
+| `SN_USER_AGENT_SUFFIX` | no | — | next | Extra token appended to the `User-Agent` sent on every request (`servicenow-mcp-ai/<version> (node/<major>; <transport>; user=<user>)`), e.g. a team or ticket id for correlation in the instance's transaction log. Printable ASCII, up to 80 characters. |
 | `SN_TLS_CLIENT_CERT` | no | — | 1.1.0 | Client certificate (PEM) for **mutual TLS** (or `SN_TLS_CLIENT_CERT_FILE`). With `SN_TLS_CLIENT_KEY` it presents a client cert; ServiceNow's mutual-auth profile maps it to a user. Needs the optional `undici` package (`npm i undici`). Cert and key must be set together — only one of them is a configuration error. |
 | `SN_TLS_CLIENT_CERT_FILE` | no | — | 1.1.0 | Path to the client certificate (PEM) for mutual TLS. |
 | `SN_TLS_CLIENT_KEY` | no | — | 1.1.0 | Private key (PEM) for the client certificate (or `SN_TLS_CLIENT_KEY_FILE`). |
@@ -1316,4 +1314,7 @@ The applied write is journaled as a create or an update, so
 ### Undo a write (journal-based revert)
 
 Every applied write is recorded in the local, hash-chained write journal
-(`<SN_DOCS_DIR>/
+(`<SN_DOCS_DIR>/<profile>/write-journal.jsonl`). The opt-in `revert` package
+turns it into an undo:
+
+- `servicenow_list_writes` — the journal newe

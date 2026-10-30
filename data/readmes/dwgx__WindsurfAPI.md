@@ -534,6 +534,7 @@ curl -X DELETE http://localhost:3003/v1/responses/resp_xxx -H "Authorization: Be
 | `RESPONSE_STORE_MAX_BYTES` | `128m` | 会话总字节预算(支持 b/k/kb/m/mb/g/gb)。条数上限约束的是数量不是内存 —— 实测真实 agent 会话每条约 167KB,2000 条约 327MB。按条数与字节两个维度中先触发的那个驱逐 |
 | `DEVIN_CONNECT_IMAGE_TAG` | `10` | DEVIN_CONNECT 图片字段的 tag。默认使用真实 Devin schema 和 SWE-1.7 抓包共同验证的 repeated field `#10`；设 `0` 可回退为不发送图片，见下节 |
 | `DEVIN_CONNECT_COLLAPSE_SYSTEM` | `0` | 设 `1` 后把 system 内容包成 `<system>...</system>`，按顺序并入下一条 user 消息，绕开上游对 field `#2` 更严格的内容策略。默认关闭；有 tools 且 field `#2` 为空时仍只保留既有 benign placeholder |
+| `DEVIN_CONNECT_REPLAY_SIGNED_THINKING` | `0` | 设 `1` 后，`/v1/messages` 历史里带签名的 Claude thinking 以 `#11` thinking 加 `#12` signature 原生回放（工具调用轮和纯文本轮都包括），模型在工具循环内和用户发新消息之后都能读到之前的推理。需要同时设 `DEVIN_CONNECT_SIGNATURE_TAG=10`，客户端才拿得到签名。上游会校验签名，只回放未改动的块。详见 `docs/ENV-SWITCHES.md` |
 | `DEVIN_CONNECT_CATALOG_TTL_MS` | `300000` | DEVIN_CONNECT 在线模型目录的成功缓存 TTL（默认 5 分钟，最小 10 秒）。每个账号独立同步；失败或空响应保留最后一次成功目录 |
 
 完整清单在 [.env.example](.env.example) —— 上表只列常用的。
@@ -817,8 +818,8 @@ MIT License. See [LICENSE](LICENSE).
 
 ## 发布与密钥边界
 
-发布流程会自动推 Docker 镜像和 GitHub Release。当前发布 **v3.141.592657**；仓库共 227 个
-git tag / 217 份发布说明（2026-10-26）。从 v3.10.0 起，每个 Release 为四个发布资产
+发布流程会自动推 Docker 镜像和 GitHub Release。当前发布 **v3.141.592658**；仓库共 228 个
+git tag / 218 份发布说明（2026-10-30）。从 v3.10.0 起，每个 Release 为四个发布资产
 （Windows exe/zip、macOS arm64 二进制/zip）生成 `SHA256SUMS`，并用 **cosign keyless**
 （GitHub OIDC，仓库内没有任何私钥或签名 secret）为四个资产和清单各发布一个
 `.sigstore.json`（签名、Fulcio 证书与 Rekor inclusion proof 合在一个文件里）。从

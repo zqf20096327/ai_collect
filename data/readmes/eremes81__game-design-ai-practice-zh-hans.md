@@ -7,6 +7,8 @@
 [![Amazon Kindle (EN)](https://img.shields.io/badge/Amazon%20Kindle-%249.99-FF9900.svg)](https://www.amazon.com/dp/B0H421TWBM)
 [![WikiDocs (KR)](https://img.shields.io/badge/WikiDocs-%E5%9C%A8%E7%BA%BF%E5%85%8D%E8%B4%B9%E9%98%85%E8%AF%BB%20(%E9%9F%A9%E8%AF%AD)-1f8b4c.svg)](https://wikidocs.net/book/20216)
 
+**📖 网页版阅读：** [https://eremes81.github.io/game-design-ai-practice-zh-hans/](https://eremes81.github.io/game-design-ai-practice-zh-hans/)
+
 **🌐 各语言版本：** [한국어 — 原书](https://github.com/eremes81/game-design-ai-practice) · [English](https://github.com/eremes81/game-design-ai-practice-en) · [日本語](https://github.com/eremes81/game-design-ai-practice-ja) · [ไทย](https://github.com/eremes81/game-design-ai-practice-th) · [Bahasa Indonesia](https://github.com/eremes81/game-design-ai-practice-id) · **简体中文** · [繁體中文](https://github.com/eremes81/game-design-ai-practice-zh-hant)
 
 📢 The author's second book, 『직장인을 위한 AI 업무 설계의 기술』 (Hanbit Media, Korean) — the author interview is out (in Korean) → https://www.youtube.com/watch?v=v8ygfpAAVQM
@@ -46,7 +48,8 @@
 
 | | |
 |---|---|
-| 作者 | 李旼洙（이민수） |
+| 作者 | 李旼洙（이민수）、赵智熙（조지희） |
+| 审校 | 赵智熙（조지희） |
 | 出版 | BOOKK · 平装（韩语） |
 | ISBN | 979-11-12-21479-9 |
 | 出版日期 | 2026-06-11 |
@@ -241,9 +244,9 @@
 
 本作品采用 **[CC BY-NC-SA 4.0](LICENSE)**（署名—非商业性使用—相同方式共享）许可协议。
 
-- 允许在署名原作者（李旼洙 · 이민수）与来源的前提下进行非商业性的分享、翻译与改编。
+- 允许在署名原作者（李旼洙 · 이민수、赵智熙 · 조지희）与来源的前提下进行非商业性的分享、翻译与改编。
 - 商业性使用需另行获得作者许可。
 
 正文中少数示例位图（如 `char_skill_ui.png`）为无原图的占位符，可能显示为坏图——在正式纸质／PDF 版中这些位置已填入图像。
 
-ⓒ 李旼洙（Minsoo Lee）2026
+ⓒ 李旼洙（Minsoo Lee）、赵智熙（Jihee Jo）2026

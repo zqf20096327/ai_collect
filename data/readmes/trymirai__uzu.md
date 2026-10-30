@@ -4,7 +4,7 @@
   </picture>
 </p>
 
-<a href="https://discord.com/invite/trymirai"><img src="https://img.shields.io/discord/1377764166764462120?label=Discord&color=brightgreen" alt="Discord"></a> <a href="mailto:contact@getmirai.co?subject=Interested%20in%20Mirai"><img src="https://img.shields.io/badge/Send-Email-brightgreen" alt="Contact us"></a> <a href="https://docs.trymirai.com"><img src="https://img.shields.io/badge/Read-Docs-brightgreen" alt="Read docs"></a> [![License](https://img.shields.io/badge/License-MIT-brightgreen)](LICENSE) [![Build](https://github.com/trymirai/uzu/actions/workflows/tests.yml/badge.svg)](https://github.com/trymirai/uzu/actions) [![Python](https://img.shields.io/badge/Python-orange)](crates/legacy/uzu/bindings/python) [![Package](https://img.shields.io/pypi/v/uzu?color=orange&label=Package&v=0.6.13)](https://pypi.org/project/uzu/) [![Python](https://img.shields.io/pypi/pyversions/uzu?color=orange&label=Python&v=0.6.13)](https://pypi.org/project/uzu/) [![TypeScript](https://img.shields.io/badge/TypeScript-yellow)](crates/legacy/uzu/bindings/typescript) [![Package](https://img.shields.io/npm/v/@trymirai/uzu?color=yellow&label=Package&v=0.6.13)](https://www.npmjs.com/package/@trymirai/uzu) [![Downloads](https://img.shields.io/npm/dm/@trymirai/uzu?color=yellow&label=Downloads&v=0.6.13)](https://www.npmjs.com/package/@trymirai/uzu) [![Swift](https://img.shields.io/badge/Swift-blue)](crates/legacy/uzu/bindings/swift) [![SPM](https://img.shields.io/badge/SPM-compatible-blue)](Package.swift) [![Platforms](https://img.shields.io/badge/Platforms-iOS%20%7C%20macOS%20%7C%20Mac%20Catalyst-blue)](Package.swift) [![Swift](https://img.shields.io/badge/Swift-5.9-blue)](https://swift.org) 
+<a href="https://discord.com/invite/trymirai"><img src="https://img.shields.io/discord/1377764166764462120?label=Discord&color=brightgreen" alt="Discord"></a> <a href="mailto:contact@getmirai.co?subject=Interested%20in%20Mirai"><img src="https://img.shields.io/badge/Send-Email-brightgreen" alt="Contact us"></a> <a href="https://docs.trymirai.com"><img src="https://img.shields.io/badge/Read-Docs-brightgreen" alt="Read docs"></a> [![License](https://img.shields.io/badge/License-MIT-brightgreen)](LICENSE) [![Build](https://github.com/trymirai/uzu/actions/workflows/tests.yml/badge.svg)](https://github.com/trymirai/uzu/actions) [![Python](https://img.shields.io/badge/Python-orange)](crates/legacy/uzu/bindings/python) [![Package](https://img.shields.io/pypi/v/uzu?color=orange&label=Package&v=0.6.15)](https://pypi.org/project/uzu/) [![Python](https://img.shields.io/pypi/pyversions/uzu?color=orange&label=Python&v=0.6.15)](https://pypi.org/project/uzu/) [![TypeScript](https://img.shields.io/badge/TypeScript-yellow)](crates/legacy/uzu/bindings/typescript) [![Package](https://img.shields.io/npm/v/@trymirai/uzu?color=yellow&label=Package&v=0.6.15)](https://www.npmjs.com/package/@trymirai/uzu) [![Downloads](https://img.shields.io/npm/dm/@trymirai/uzu?color=yellow&label=Downloads&v=0.6.15)](https://www.npmjs.com/package/@trymirai/uzu) [![Swift](https://img.shields.io/badge/Swift-blue)](crates/legacy/uzu/bindings/swift) [![SPM](https://img.shields.io/badge/SPM-compatible-blue)](Package.swift) [![Platforms](https://img.shields.io/badge/Platforms-iOS%20%7C%20macOS%20%7C%20Mac%20Catalyst-blue)](Package.swift) [![Swift](https://img.shields.io/badge/Swift-5.9-blue)](https://swift.org) 
 
 # uzu
 
@@ -82,7 +82,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 Add the dependency:
 
 ```bash
-uv add uzu==0.6.13
+uv add uzu==0.6.15
 ```
 
 Run the code below:
@@ -137,7 +137,7 @@ Add the dependency:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/trymirai/uzu.git", from: "0.6.13")
+    .package(url: "https://github.com/trymirai/uzu.git", from: "0.6.15")
 ]
 ```
 
@@ -189,7 +189,7 @@ public func runQuickStart() async throws {
 Add the dependency:
 
 ```bash
-pnpm add @trymirai/uzu@0.6.13
+pnpm add @trymirai/uzu@0.6.15
 ```
 
 Run the code below:
@@ -1416,24 +1416,10 @@ main().catch((error: unknown) => {
 - `Python` via [pyo3](https://github.com/PyO3/pyo3)
 - `TypeScript` via [napi-rs](https://github.com/napi-rs/napi-rs)
 
-It supports:
+Supported backends:
 
-- Backends:
-    - `metal`
-    - `webgpu`
-    - `cpu`
-- Targets:
-    - `aarch64-apple-darwin`
-    - `aarch64-apple-ios`
-    - `aarch64-apple-ios-macabi`
-    - `aarch64-apple-ios-sim`
-    - `aarch64-pc-windows-msvc` _(in progress)_
-    - `aarch64-unknown-linux-gnu` _(in progress)_
-    - `wasm32-unknown-unknown` _(in progress)_
-    - `wasm32-wasip1-threads` _(in progress)_
-    - `x86_64-apple-darwin`
-    - `x86_64-pc-windows-msvc` _(in progress)_
-    - `x86_64-unknown-linux-gnu` _(in progress)_
+- `metal`
+- `cpu`
 
 <br>
 For initial setup we recommend running <code>cargo tools setup</code>, which installs all necessary dependencies (<code>rustup</code>, <code>uv</code>, <code>pnpm</code>, <code>Rust targets</code>, <code>Metal toolchain</code>, ...) if not already present.

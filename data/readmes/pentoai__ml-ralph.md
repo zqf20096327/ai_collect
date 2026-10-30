@@ -95,7 +95,7 @@ A restarted run keeps its `run_id` (in `.ml-ralph/budget/run.json`) and starts f
 
 ## The run report
 
-When a run ends (`run_complete`, `budget_exhausted`, `max_iterations`, `contract_changed`, `holdout_access`, a user quit including `q`, or an error that stops the run) the runner writes `.ml-ralph/reports/<run id>/report.md` from its own records. It has:
+When a run ends (`run_complete`, `budget_exhausted`, `max_iterations`, `contract_changed`, `eval_gate_failed`, `holdout_access`, a user quit including `q`, or an error that stops the run) the runner writes `.ml-ralph/reports/<run id>/report.md` from its own records. It has:
 
 - **Problem**: `problem` from `prd.json`.
 - **Result**: the end reason; the incumbent's eval id, search score (from the runner's `metrics.json`), holdout score (`not scored` unless the completion gate scored it) and commit SHA. With no promotion it says `no candidate was promoted`.
@@ -117,7 +117,7 @@ The agent starts training with `ml-ralph job start <cmd>` (RALPH.md tells it to)
 | `j`/`k` | Scroll |
 | `↑`/`↓` | Monitor: select an active training job |
 | `t` | Monitor: stop the selected job (SIGTERM, then SIGKILL after 10 seconds); logs `job_stopped` and tells the agent's next prompt. Shows `job not running` (or the error) and drops the entry if the pid is gone or the kill fails |
-| `w` | Monitor: show the last 50 lines of the selected job's log, or `log not found` |
+| `w` | Monitor: show the last 50 lines of the selected job's log, or `log not found`. The tail follows the job (reloads every second); `j`/`k` scroll a line and `PgUp`/`PgDn` a page through all 50 lines, and `↑`/`↓` closes it |
 | `q` | Quit |
 
 `t` and `w` show `no active job` when nothing is running.

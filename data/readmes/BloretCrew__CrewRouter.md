@@ -30,9 +30,17 @@
 
 安装首次打开 `/setup` 时必须选择 `personal` 或 `team`，选择会写入实例数据库并永久固定，界面和 `CR_EDITION` 不能修改已初始化的版本。无人值守安装可在首次启动前设置 `CR_EDITION=personal` 或 `CR_EDITION=team`；已有实例若没有 edition 记录，需明确完成一次选择，含团队数据的旧库不会被自动标记为 Personal。Personal 版保留核心网关、个人 Key、用量和 Playground，团队管理接口返回 `team_edition_required`；Team 版保留现有团队管理能力。Edition 不是许可或安全边界，后端授权检查始终有效。正式页面品牌区的 `LOCAL` / `PERSONAL` / `TEAM` badge 仅展示实例状态：Desktop 本地运行时显示 `LOCAL`，服务端依据实例 edition 显示 `PERSONAL` 或 `TEAM`；它不是运行时切换控件。本地 runtime 与服务端 edition 是两个不同维度，`runtime=desktop-local` 优先于 edition。Desktop Local 使用 Bloret PassPort 登录，首次授权绑定本地账户；模型配置、API Key 和用量数据仍保存在本机。退出后需要重新登录，Desktop Token 仅标识应用请求来源。
 
+使用 PassPort 登录的 Server 或 Desktop Local 需要配置独立应用的 ID 和 Secret。程序不再提供共享应用凭据，旧版公开的共享 Secret 也不再接受。Server 使用 `passport.appId/appSecret` 或 `CR_PASSPORT_APP_ID/CR_PASSPORT_APP_SECRET`；Desktop 的配置方式见 [Desktop 说明](CrewRouter-Desktop/README.md)。缺少配置时登录保持关闭，请先完成配置并重新启动。
+
 ## 隔离开发测试
 
 请使用仓库外临时 `config.json`、临时端口（例如 `20103`）和独立 PostgreSQL 数据库运行测试，禁止使用生产端口 `20003`、Show 端口 `20004` 或生产 `config.json`/数据库。
+
+`npm run test:usage-write` 验证 Token 归一化及写入保护，数据库回归自动创建仅监听临时 Unix socket 的独立 PostgreSQL 集群，需要本机提供 `initdb`、`pg_ctl`，以 root 运行时还需 `postgres` 用户和 `runuser`。新版本启动时为用量、消息分析和请求尝试安装写入保护：拒绝负数、异常时间及必填关联缺失，修正新用量记录的时间默认值；不回填历史记录，也不阻止历史坏字段未发生改变的其他更新。Token 数字字符串先转整数再求和，非法值及超出数据库整数范围的值直接拒绝，不静默清零。
+
+写入保护与非空约束修补在同一连接、同一事务中安装：仅对当前没有空值的必填列恢复 `NOT NULL`，保留历史缺失字段，不自动补零、补关联或猜测时间。消息分析的必填字段、非负计数、分析时间以及请求的流式标志、用量质量均校验；`analyzed_at` 的默认值固定为上海墙钟，避免其他时区连接产生偏移。安装失败整体回滚，已有坏字段未改变的其他更新仍可执行。
+
+历史用量时间恢复：先备份全库，再运行 `node server/scripts/repair-usage-timestamps.js` 只读预览；确认后使用 `--apply --backup-dir /绝对路径/尚不存在的私有目录` 实际修复。只恢复消息分析表中唯一 `usage_id`、相同用户且时间有效的原始时间副本，保留已有同毫秒时间的微秒精度，不推算 Token、金额或缺失关联。全部更新在同一事务中分批执行并核对行数，提交前将原值、来源及 SHA-256 同步写入权限受限的目录；失败整体回滚，提交结果不明时保留证据并需重新核查。`npm run test:usage-repair` 在独立 PostgreSQL 中验证恢复、回滚和幂等性。备份含业务数据，不应提交到 Git；原值可能包含坏时间，回退时须先处理写入保护，不能直接覆盖在线数据库。
 
 ## 它是什么
 
@@ -48,7 +56,7 @@ CrewRouter 把多家上游模型供应商收成 **一个 OpenAI / Anthropic 兼�
 - [x] **Fusion 模式** — 同一请求并发多个模型，裁判模型评估并综合最优回答
 - [x] **实时统计** — 请求量、Token、延迟、成本；按模型 / Key / 时间下钻
 - [x] **API Key 管理** — 时间调度、模型绑定、自定义签名、独立 Fusion 配置
-- [x] **多因素认证** — TOTP、WebAuthn PassKey、飞书 / GitHub OAuth
+- [x] **多因素认证** — TOTP、WebAuthn PassKey、飞书 / PassPort 登录（按实例认证模式提供）
 - [x] **动态密钥刷新** — 供应商 Key 可用脚本定时轮换并缓存
 - [x] **代理池** — 每供应商独立代理，支持订阅导入，应对跨境与 429
 - [x] **团队与权限** — 个人 / 默认 / 前沿团队分层，配合用户组限额
@@ -151,6 +159,8 @@ npm start          # 开发可用 npm run dev
 |----|------|
 | `app.port` / `CR_APP_PORT` | 监听端口，默认 `20003` |
 | `app.sessionSecret` | 会话密钥，生产环境必须更换 |
+| `CR_ENABLE_KEY_SCRIPTS` | 供应商密钥刷新脚本默认禁用；审阅数据库中的脚本与外发目标后设为 `1` 才执行 |
+| `CR_ENABLE_CUSTOM_QUOTA_SCRIPTS` | 自定义额度查询配置默认禁用；审阅其中的请求地址与密钥发送方式后设为 `1` 才执行 |
 | `database.*` / `CR_DB_*` | PostgreSQL 连接 |
 | `initialProviders` / `initialModels` | 首次初始化写入的供应商与模型 |
 | `feishu` / GitHub OAuth | 可选企业登录 |

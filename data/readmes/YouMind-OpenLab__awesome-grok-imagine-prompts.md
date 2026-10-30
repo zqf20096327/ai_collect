@@ -68,9 +68,9 @@ Why use our gallery?
 
 | Metric | Count |
 |--------|-------|
-| 📝 Total Prompts | **3253** |
+| 📝 Total Prompts | **3257** |
 | ⭐ Featured Prompts | **3** |
-| 🔄 Last Updated | **2026-10-29** |
+| 🔄 Last Updated | **2026-10-30** |
 
 ---
 
@@ -189,6 +189,86 @@ A mystical and noble celestial Valkyrie, a dignified and beautiful woman with lo
 
 > 📝 Sorted by publish date (newest first)
 
+### Ninja Fight Duo Sequence
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A video prompt for Grok Imagine depicting a duo defeating a ninja and then fighting each other ending in an embrace.
+
+#### 📝 Prompt
+
+```
+The duo goes on attack and defeat the ninja then turn on each other again laughing as the fight each other ending in a embrace
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2116019548096700416/img/AJsozuga-2HCV0l2.jpg" width="600" alt="Ninja Fight Duo Sequence">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13208)**
+
+**Author:** [Michael Erikson](https://x.com/erikson_michael) | **Source:** [Link](https://x.com/erikson_michael/status/2116019614442463517) | **Published:** Oct 30, 2026
+
+---
+### 3D Navigation in Paintings with Grok Imagine
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A video prompt that creates a cinematic 3D camera movement through a static painting uploaded as a reference, preserving the original composition while adding depth and parallax effects without animating elements.
+
+#### 📝 Prompt
+
+```
+The video begins from the frame defined by the attached painting and preserves its exact composition, subjects, colors, lighting, and arrangement as a still three-dimensional space.
+
+No person, animal, object, water, foliage, cloud, flame, or any other painted element moves, animates, or changes state. The entire scene remains completely frozen, as if the painting has simply become a solid, motionless diorama.
+
+The camera performs continuous cinematic 3D travel through this frozen scene: it slowly pushes forward, gently orbits, and drifts past the main subjects and spatial layers, revealing depth, parallax, and volumetric form while never altering or animating any content inside the painting.
+Only ambient spatial presence accompanies the movement; there is no dialogue, narration, music, or sound effects from any element within the painting.
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2115785431933444096/img/l60Q96XKSFOROJno.jpg" width="600" alt="3D Navigation in Paintings with Grok Imagine">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13206)**
+
+**Author:** [Knight World](https://x.com/KnightWorld) | **Source:** [Link](https://x.com/KnightWorld/status/2115786168985870531) | **Published:** Oct 29, 2026
+
+---
+### Sci-Fi Armor Transformation Video Script
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A detailed cinematic prompt for generating a video of a figure undergoing a high-tech armor transformation in a hangar, with specific camera, sound, and visual style instructions.
+
+#### 📝 Prompt
+
+```
+[Generation Goal]
+Generate a high-intensity next-level Sci-Fi combat armor transformation video. The core subject is a solitary figure undergoing advanced armor morphing and powering up for combat readiness, with no weapons of any kind appearing.
+
+[Event Script]
+At the start: A lone human figure stands centered in a vast, dark high-tech hangar with metallic floors, glowing data conduits, and cold blue ambient lighting, wearing only basic tactical undersuit.
+Principal event: The figure initiates the transformation by spreading arms slightly. Nanite swarms and hard-light energy particles erupt from the floor and walls, rapidly assembling layered combat armor segment by segment—first greaves and boots locking onto legs with hydraulic seals, then thigh and torso plating interlocking with visible mechanical clicks and energy welds, followed by shoulder pauldrons, gauntlets, and a sleek fully enclosed helmet that seals with a final pressurized hiss. Armor surfaces shift from matte black to reactive iridescent plates with pulsing cyan energy lines and adaptive camouflage patterns that ripple across the body. The figure tests mobility by shifting into combat-ready stances, armor plates adjusting fluidly with each motion while thruster vents and energy shields briefly flare for demonstration. No weapons materialize or are held.
+At the end: Fully transformed figure stands in a powerful, grounded combat pose, armor fully sealed and glowing with stable power signatures, hangar lights reflecting off the polished surfaces.
+
+[Visual Style]
+Ultra-detailed cinematic Sci-Fi aesthetic with next-generation armor design—organic-mechanical fusion plating, holographic HUD reflections in the helmet visor, volumetric god-rays cutting through floating energy particles, dramatic rim lighting, high-contrast metallic textures, and subtle heat distortion around power conduits.
+
+[Camera]
+Begins with a wide establishing shot of the hangar and figure, then smoothly orbits 360 degrees during the armor assembly sequence. Pushes into medium close-ups of plating locks and energy welds, followed by dynamic tracking shots that follow the figure’s stance shifts. Ends on a low-angle heroic wide shot emphasizing the completed armor silhouette.
+
+[Sound]
+Deep sub-bass power-up hum builds throughout, layered with sharp metallic locking clanks, pressurized sealing hisses, crackling energy surges, and resonant thruster ignition whooshes. Ambient hangar reverb and distant machinery drones remain constant. No weapon sounds, gunfire, or metallic blade effects. No dialogue or narration.
+
+[Maintain Consistency]
+Keep a single human figure and continuous armor transformation sequence only. Ensure zero weapons, firearms, blades, guns, or any armaments appear at any stage. Preserve armor integrity, color progression from black to iridescent cyan, spatial hangar layout, and the final sealed combat-ready state.
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2115713093057892352/img/Zx_4i5Oe9Ds9fcnl.jpg" width="600" alt="Sci-Fi Armor Transformation Video Script">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13207)**
+
+**Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2115713615433204204) | **Published:** Oct 29, 2026
+
+---
 ### Cyberpunk Human Evolution Video
 
 ![English](https://img.shields.io/badge/lang-English-blue)
@@ -299,6 +379,25 @@ Preserve pure photorealistic rendering of materials (brushed metals, glass, ener
 **[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13145)**
 
 **Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2115630912725790872) | **Published:** Oct 29, 2026
+
+---
+### Dog Ghost Costume Trick-or-Treat
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> Generates a video of a dog getting up, making a ghost costume, and going trick-or-treating.
+
+#### 📝 Prompt
+
+```
+Have the dog in this picture get up and make its own ghost costume and then put it on and go trick-or-treating
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2115577949667639296/img/4gtU6FKZ0p_xfJc9.jpg" width="600" alt="Dog Ghost Costume Trick-or-Treat">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13205)**
+
+**Author:** [Rawrsteel](https://x.com/rawrsteel88) | **Source:** [Link](https://x.com/rawrsteel88/status/2115577963358110032) | **Published:** Oct 28, 2026
 
 ---
 ### Grok Imagine Time Travel Portrait Prompt
@@ -2005,111 +2104,4 @@ Night rooftop over a city in total blackout. A girl and her grandpa stand still,
 #### 📝 Prompt
 
 ```
-A lone figure stands in a rain-soaked neon alley deep in a dystopian megacity at night. Towering holographic billboards flicker overhead with corrupted advertisements while endless streams of vehicles streak past on elevated highways. The figure’s body begins a next-level, hyper-realistic transformation: skin splits and peels back in wet, organic layers as black carbon-fiber plates and exposed chrome biomechanics violently erupt from underneath. Flesh and circuitry fuse in real time — tendons rewiring into fiber-optic cables, eyes flooding with liquid metal and splitting into multiple glowing irises, jaw unhinging as teeth morph into a shifting mechanical maw. Blood and coolant spray in slow motion under harsh neon pink and cyan light. The camera is pure cinematic: low-angle tracking shot that pushes in aggressively, then circles the subject as the transformation accelerates into full body horror — limbs elongating, spine fracturing and reforming into a segmented mechanical exoskeleton, face collapsing into a nightmarish hybrid of human and machine. Shallow depth of field, anamorphic lens flares, heavy rain droplets on the lens, volumetric fog, and hyper-detailed photorealistic textures (wet skin, reflective metal, torn fabric, glowing circuitry). Dark, oppressive atmosphere with a rising industrial drone and distorted human screams echoing through the alley. Ultra-realistic, filmic, 35mm, high detail, no stylization.
-
-**Shorter / Alternative version (more visceral):**
-
-Photorealistic cinematic body-horror cyberpunk transformation in a rain-drenched neon megacity alley. A person’s body violently rewrites itself in real time — skin tearing open as chrome endoskeleton and black biomechanical plating force their way out, face distorting into a multi-eyed mechanical horror while organic and synthetic tissue fuse and pulse. Extreme close-ups of wet flesh splitting, fiber-optic veins glowing under cyan and magenta light, limbs cracking and reforming. Slow, deliberate camera push-in with anamorphic flares, shallow depth of field, heavy atmosphere, and pure dread. Hyper-realistic textures, cinematic lighting, no cartoonish or stylized elements.
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2113287043811815424/img/oYksLa45_B08bXFp.jpg" width="600" alt="Cyberpunk Body Horror Transformation Prompt">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12985)**
-
-**Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2113287133167239203) | **Published:** Oct 22, 2026
-
----
-### Precise Lip-Sync Video Generation
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A detailed prompt for creating a lip-sync video using an identity reference image and audio source, with specific instructions on mouth movement and consonant clarity.
-
-#### 📝 Prompt
-
-```
-Use the attached image as the exact identity reference.
-Use the attached audio as the exact lip-sync source.
-
-Lip-sync:
-- Precise syllable timing
-- Keep mouth opening subtle and narrow throughout; never open wide
-- Crisp consonants via lip shaping
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2113216625063419904/img/TLjNUGrkce2fBVDT.jpg" width="600" alt="Precise Lip-Sync Video Generation">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12958)**
-
-**Author:** [レイヴ](https://x.com/raves9361) | **Source:** [Link](https://x.com/raves9361/status/2113216645950775792) | **Published:** Oct 22, 2026
-
----
-### Alien Slaps Mark Zuckerberg Scene
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A video prompt for Grok Imagine generating a fictional sci-fi scene where an alien slaps Mark Zuckerberg on an airport tarmac, emphasizing realistic physics and camera movement.
-
-#### 📝 Prompt
-
-```
-Ultra-realistic cinematic sci-fi scene on a military airport tarmac, matching the reference image. A tall, intimidating alien stands on the left side of Mark Zuckerberg, facing him at close range. Suddenly, the alien swings its hand and slaps Zuckerberg across the face. Zuckerberg loses his balance, stumbles backward, and falls onto the concrete ground. Security guards react in shock while other aliens watch. Keep the alien on the left throughout the action. Realistic body physics, dramatic camera shake, cinematic lighting, detailed facial expressions, 4K realism, vertical 9:16 format.
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2113212610980298752/img/UwIEAzUJh2qlyN1q.jpg" width="600" alt="Alien Slaps Mark Zuckerberg Scene">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13152)**
-
-**Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2113213049255731339) | **Published:** Oct 22, 2026
-
----
-### Dragon and Nepali Lady Illustration
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A video/image prompt for a pointillism illustration featuring a golden dragon and a Nepali lady in traditional attire.
-
-#### 📝 Prompt
-
-```
-Picture book style, pointillism illustration of a golden patterned ornamental, friendly, powerful, sweet dragon with red scale outlines and a wholesome lady from Nepal in traditional outfit relating lovingly.
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2113190635746537472/img/QdkqV2UFMD-JSL7L.jpg" width="600" alt="Dragon and Nepali Lady Illustration">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12960)**
-
-**Author:** [Carina](https://x.com/Freehere8) | **Source:** [Link](https://x.com/Freehere8/status/2113190653870125111) | **Published:** Oct 22, 2026
-
----
-### Halloween Parade Dance Video
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> Video prompt to generate a scene of characters dancing and singing in a Halloween parade.
-
-#### 📝 Prompt
-
-```
-Design them dancing and singing the welcome to Halloween song in the Halloween parade
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2113149705920172032/img/iP16iU7191e21OjE.jpg" width="600" alt="Halloween Parade Dance Video">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=12898)**
-
-**Author:** [Tim](https://x.com/timmmy335) | **Source:** [Link](https://x.com/timmmy335/status/2113149726820601962) | **Published:** Oct 22, 2026
-
----
-### Cyberpunk Motorcycle Transformation
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A detailed cinematic prompt for a video showing a woman transforming into cybernetic armor next to a custom motorcycle.
-
-#### 📝 Prompt
-
-```
-A cinematic transformation sequence on a busy city market street. A hyper-detailed custom motorcycle labeled “VULCAN” (Limited Edition 1 of 7, Twin Turbo) sits parked, featuring iridescent rainbow exhaust pipes, gold accents, red-and-white tank with a crown logo, exposed mechanics, and glowing blue headlights. A young woman with long dark hair, wearing a black leather jacket and white top, approaches and places her hands on the bike. 
-
-As she touches it, a smooth, glowing transformation begins: her arms morph into slee
+A lone figure stands in a rain-soaked neon alley deep in a dystopian megacity at night. Towering holographic billboards flicker overhead with corrupted advertisements while endless streams of vehicles streak past on elevated highways. The figure’s body begins a next-level, hyper-realistic transformation: skin splits and peels back in wet, organic layers as black carbon-fiber plates and

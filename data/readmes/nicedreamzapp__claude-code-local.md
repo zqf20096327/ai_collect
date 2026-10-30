@@ -6,7 +6,7 @@
 
 **Your Mac's chip runs the AI · Claude Code works exactly like it always does · nothing leaves your computer**
 
-**Now on Linux and Windows too, same Claude Code, same privacy, your own machine doing the work. Phones are next.**
+**Now on Linux and Windows too, same Claude Code, same privacy, your own machine doing the work. [Phones are next.](#-where-this-is-going)**
 
 <a href="https://github.com/hesreallyhim/awesome-claude-code"><img src="https://img.shields.io/badge/Mentioned_in-Awesome_Claude_Code-fc60a8?style=for-the-badge&logo=awesomelists&logoColor=white&labelColor=1f2328" alt="Mentioned in Awesome Claude Code"></a>
 
@@ -18,6 +18,8 @@
 <a href="#-use-it-with-trinidad-head"><img src="https://img.shields.io/badge/🌊_Best_with-Trinidad_Head-a855f7?style=for-the-badge" alt="Best with Trinidad Head"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/📜_License-MIT-yellow?style=for-the-badge" alt="MIT"></a>
 <a href="https://discord.gg/ZdSqgAxUW"><img src="https://img.shields.io/discord/1497121921580404818?label=Discord&logo=discord&color=5865F2&style=for-the-badge" alt="Discord"></a>
+
+<a href="https://www.youtube.com/watch?v=XNSdQtlTwWo"><img src="https://raw.githubusercontent.com/nicedreamzapp/claude-code-local/587a5449e6f497cd51fc9e1cbc0ce5ee05237368/assets/readme/promo-video-thumb.jpg" width="640" alt="Watch the video: Claude Code Local, an AI that runs on your own computer, free, private and offline"></a>
 
 </div>
 
@@ -122,11 +124,26 @@ Setup looks at your Mac's memory and picks a model that fits:
 
 | Your Mac's memory | The model you get |
 |---|---|
-| **Under 16 GB** (8 GB) | Gemma 4 E4B. It loads and chats, but in our Claude Code test it claimed to run a file it never wrote, so expect tool trouble |
-| **16 GB** (MacBook Air, base models) | 🟡 Hermes 4 14B, confirmed on a 16 GB Mac by a user ([#54](https://github.com/nicedreamzapp/claude-code-local/issues/54)) |
+| **Under 16 GB** (8 GB) | 🟡 Qwen 3.5 2B, 8-bit. Reads images, 16K context, server peaks at 4.2 GB. [Small Macs](docs/SMALL-MACS.md) |
+| **16 GB** (MacBook Air, base models) | 🟡 Qwen 3.5 4B, bf16. Reads images, 16K context, server peaks at 10.6 GB. [Small Macs](docs/SMALL-MACS.md) |
 | **32–63 GB** (Pro) | 🟢 Gemma 4 12B |
 | **64–95 GB** (Max) | 🟢 Gemma 4 31B |
 | **96 GB and up** (Max, Ultra) | 🟣 Qwen 3.8 27B, 8-bit. Passed our Claude Code test (write a file, run it, report) in 38 s |
+
+### 💻 On an 8 GB or 16 GB Mac?
+
+`setup.sh` sees it and sets up the small-Mac tier for you: a model that reads files, edits them,
+runs commands and looks at images, with the context capped to what your Mac can hold.
+
+| Your Mac | Model | Server memory, peak | Speed (M4 Pro) |
+|---|---|:---:|:---:|
+| 16 GB | Qwen 3.5 4B, bf16 | 10.6 GB | 22 tok/s |
+| 8 GB | Qwen 3.5 2B, 8-bit | 4.2 GB | 92 tok/s |
+
+Both passed our Claude Code test (read a file, fix a bug with Edit, run a script, describe an
+image). Keep requests to one clear step at a time. Measured numbers, settings and limits:
+[docs/SMALL-MACS.md](docs/SMALL-MACS.md). Running one? Tell us how it goes in
+[#57](https://github.com/nicedreamzapp/claude-code-local/issues/57).
 
 ### 🚀 Get started
 
@@ -352,6 +369,18 @@ from scratch by the same person who made this project, and it makes long local-A
 </p>
 
 👉 **[Get Trinidad Head](https://github.com/nicedreamzapp/trinidad-head)** · [project page](https://nicedreamzwholesale.com/software/trinidad-head/)
+
+### 🔭 Where this is going
+
+Claude Code Local started as a way to keep building when the cloud says no. The bigger idea: **local for the everyday, cloud for the hard stuff.** Most of what we ask an AI to do in a day is small. Read this, fix that, run it, check it. A small model on your own machine can do those jobs fast, free and private, and the big cloud models stay there for the few jobs that really need them.
+
+📱 **Phones are the next computer** · On October 30, 2026 we put a 2B model on a $50, 4 GB Android phone. With no cloud and no signal, Claude Code wrote a small program, ran it, and got the right answer. The same small model writes and runs code inside the Moonstone app on an iPhone at about 22 tokens a second. Both are prototypes and not on the main branch yet, but the brain fits in your pocket today.
+
+🧠 **Built for the model that's coming** · Small models get smarter every few months. Something as smart as today's best cloud model will run on a phone within a few years, and everything here is being built for that day. It's meant for regular people with small computers, not only people with a rack of GPUs.
+
+🎛️ **The right brain for each job** · [Moonstone](https://github.com/nicedreamzapp/moonstone) is the control room. Next comes an auto picker that sends each request to the smallest model that can do it well. It picks a local model when that model fits in the memory you have free right now, and you always keep the final say.
+
+🦾 **Same brain, different bodies** · The brain that runs here also runs the eyes in [RealTime AI Cam](https://github.com/nicedreamzapp/RealTimeAICam), a homestead robot, and the [Sitka](https://github.com/nicedreamzapp/sitka) exoskeleton, where a 6 KB model decides when the clutches lock.
 
 ### 🧩 The local-first family
 

@@ -35,6 +35,9 @@ https://github.com/user-attachments/assets/edbfcc31-2b37-4648-b18a-c0b14b11973d
 - **Track everyone’s commitments.** Keep track of who promised what across
   conversations, including your own follow-ups. Get reminders for confirmed
   commitments with due dates.
+- **Keep your tasks together.** Add personal work alongside meeting follow-ups,
+  organize with projects and tags, and choose up to five tasks for today’s focus.
+  Chat can prepare a task change for you to confirm.
 - **Follow project milestones.** Keep milestones, decisions, and open work
   connected to the meetings behind them.
 - **Recognize familiar voices with Voice ID.** Confirm speaker matches and
@@ -112,10 +115,11 @@ Open a person’s page to catch up on your conversations and their commitments.
 Open a project’s page to review its decisions, milestones, and open work.
 Track commitments for everyone involved, with reminders for confirmed due dates.
 
-### Pick up the thread in ChatGPT
+### Pick up the thread in ChatGPT or Claude
 
-The optional Pluto plugin brings meeting notes into ChatGPT on the same Mac.
-[Connect ChatGPT →](docs/chatgpt-connection.md)
+Optional local connections bring meeting notes into ChatGPT and Claude Desktop
+on the same Mac. Enable either or both independently.
+[Connect ChatGPT →](docs/chatgpt-connection.md) · [Connect Claude →](docs/claude-connection.md)
 
 ![Illustrative example of Pluto meeting notes in ChatGPT](docs/screenshots/pluto-chatgpt.jpg)
 
@@ -134,9 +138,10 @@ Choose Light, Dark, Terracotta, Pluto, Aubergine, or follow your Mac’s appeara
   chosen provider, which can include transcripts, notes, and retrieved context.
 - **Database encryption is optional at setup.** Audio files are not encrypted
   by default. [Storage details →](docs/getting-started.md#privacy-and-data)
-- **ChatGPT access is optional.** Enabling it makes all meeting notes available
-  to read. Retrieved notes go to OpenAI; raw transcripts and audio are excluded.
-  Disabling stops future reads; notes already shared remain in ChatGPT.
+- **ChatGPT and Claude access are optional and independent.** Enabling either
+  makes all meeting notes available to that app. Retrieved notes go to OpenAI or
+  Anthropic respectively; raw transcripts and audio are excluded. Disabling a
+  connection stops its future reads; notes already shared remain in that app.
 
 ## FAQ
 
@@ -144,7 +149,7 @@ Choose Light, Dark, Terracotta, Pluto, Aubergine, or follow your Mac’s appeara
 
 Yes, after downloading the speech and Ollama models, local recording,
 transcription, notes, and chat work without a cloud provider or API key. Cloud AI
-and the optional ChatGPT connection need an internet connection.
+and the optional ChatGPT and Claude connections need an internet connection.
 
 ### Do I need a subscription?
 

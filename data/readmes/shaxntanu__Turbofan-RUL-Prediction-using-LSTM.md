@@ -1,0 +1,194 @@
+# Turbofan Remaining Useful Life Observatory
+
+[![Vercel dashboard](https://img.shields.io/badge/Vercel-Dashboard-000000?logo=vercel&logoColor=white)](https://turbofan-rul-prediction-using-lstm.vercel.app)
+[![Streamlit app](https://img.shields.io/badge/Streamlit-App-FF4B4B?logo=streamlit&logoColor=white)](https://turbofan-rul-prediction-lstm.streamlit.app)
+
+An end-to-end NASA C-MAPSS benchmark for aircraft-engine remaining useful life (RUL), with an LSTM and Ridge baseline, a reproducible experiment pipeline, research analyses, Matplotlib figures, a Streamlit application, and a React results dashboard.
+
+See [measured results and research analyses](docs/RESULTS.md) for the completed FD001-FD004 comparison, transfer study, uncertainty coverage, and evaluation caveats.
+
+## Project Contents
+
+- `Ref/CMAPSSData/`: included C-MAPSS FD001-FD004 train/test trajectories and test RUL labels.
+- `src/`: modular loading, validation, labels, engine-level splitting, preprocessing, models, metrics, uncertainty, and research analyses.
+- `outputs/`: generated metrics, predictions, reports, and Matplotlib figures (created by a run; not tracked).
+- `models/`: generated model and scaler files (not tracked).
+- `web/`: Vite/React benchmark and research dashboard, with a committed static results bundle.
+- `streamlit_app.py`: interactive data exploration and prediction interface.
+- `docs/turbofan-pipeline.html`: the interactive C-MAPSS research diagram, also bundled into the Vercel dashboard under **Study diagram**.
+- `docs/reliability-pipeline.html`: the source diagram for validation-controlled uncertainty, held-out-subset, short-history, and sensor-stress evaluation.
+- `docs/turbofan-pipeline-showcase.workflow.json`: the editable source specification for the RUL study diagram.
+- `docs/reliability-pipeline.workflow.json`: the source specification for the reliability research diagram.
+- `animations/rul_method.py`: the ManimGx RUL explainer source, driven by a real FD001 engine trace. Its bundled MP4 appears in Streamlit's Fleet overview and All-subset benchmark and the Vercel dashboard's Methods page; playback does not require ManimGx. The rendered video and captions are in `docs/media/`.
+- `docs/figures/conformal-calibration.svg`: a static preview of the interactive, data-linked explanation on the Vercel Methods page, where validation residuals set the 95% RUL interval radius.
+- `Ref/*.pdf`: supplied research papers used to scope methodological adaptations.
+
+## Setup
+
+Use Python 3.12 for the complete training environment:
+
+```powershell
+py -3.12 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+pip install -r requirements-training.txt
+```
+
+`requirements.txt` is the Streamlit deployment manifest. It installs TensorFlow 2.21 on supported Python versions and skips TensorFlow on Python 3.14, so Ridge can run there while LSTM training remains unavailable. The supplied Streamlit logs showed Python 3.14.8, which has no stable TensorFlow 2.21 wheel; use Python 3.12 for the complete training app. On Streamlit Community Cloud, changing an existing app's Python version requires deleting and redeploying it; record its repository, branch, entrypoint, custom subdomain, and any secrets first, then select Python 3.12 in Advanced settings and re-enter secrets privately. See [Streamlit's Python-version instructions](https://docs.streamlit.io/deploy/streamlit-community-cloud/manage-your-app/upgrade-python). For local experiments, `requirements-training.txt` installs the training dependencies.
+
+The pipeline discovers the bundled data under `Ref/CMAPSSData/`. Set `CMAPSS_DATA_DIR` to use a different C-MAPSS directory.
+
+### Run the Streamlit app with Docker
+
+With Docker Desktop or another Docker Engine running, build and start the app from the repository root:
+
+```powershell
+docker build -t turbofan-rul .
+docker run --rm -p 8501:8501 turbofan-rul
+```
+
+Open [http://localhost:8501](http://localhost:8501). The image uses Python 3.12; `.dockerignore` keeps local environments, generated outputs, and model files out of the build context. GitHub Actions builds the image and checks that Streamlit responds on both its health endpoint and dashboard route. The workflow does not publish the image.
+
+## Run Experiments
+
+Run all four subsets with the LSTM and Ridge comparison (early stopping is enabled):
+
+```powershell
+python -m src.train_all
+```
+
+Choose subsets, cap training time, or run the fast Ridge-only baseline:
+
+```powershell
+python -m src.train_all --datasets FD001 FD003 --epochs 30
+python -m src.train_all --baseline-only
+```
+
+Add the source-to-target and pooled transfer study:
+
+```powershell
+python -c "from src.config import ProjectConfig; from src.transfer_analysis import run_transfer_analysis; run_transfer_analysis(config=ProjectConfig(dataset='FD001'), train_lstm=False)"
+```
+
+Each run selects the model by validation MAE, then evaluates it on the official test trajectories and RUL labels. Artifacts are written beneath `outputs/<subset>/` and `models/<subset>/`. For the transfer experiment, see `outputs/transfer/`.
+
+Run the reliability and robustness study with repeated seeds, an LSTM comparison on seed 42, optional model challengers, and leave-one-subset-out evaluation:
+
+```powershell
+python -m src.reliability_analysis --datasets FD001 FD002 FD003 FD004 --seeds 42 43 44 --lstm-seeds 42 --extended-models --with-cnn --epochs 20
+```
+
+The study writes terminal-engine and overlapping-window metrics, sensor-stress and risk-coverage tables, progressive-prefix onset results, short-history protocols, RUL-cap sensitivity, and cross-subset holdout results under `outputs/reliability/`. XGBoost is optional; install `xgboost` separately before adding `--with-xgboost`. Protocol definitions and limitations are in [Reliability and robustness](docs/RELIABILITY_AND_ROBUSTNESS.md).
+
+## Maintenance What-If Scenarios
+
+The Streamlit app includes a **Maintenance what-if** tab for each subset and for FD001-FD004 together. A Julia scenario engine compares point-estimate and interval-aware service triggers across 15, 30, 45, 60, and 90-cycle urgency cutoffs and service capacities from 0% to 100%. The selected model for each subset follows validation selection; this snapshot uses seed 42.
+
+Regenerate the committed scenario table with Julia 1.10 or newer:
+
+```powershell
+julia scripts/maintenance_what_if.jl
+```
+
+The fixed input snapshot is `data/maintenance_what_if_inputs.csv`; generated results are in `web/public/results/maintenance_what_if_scenarios.csv`. The allocation uses predicted RUL or the validation-calibrated lower interval bound. Held-out test RUL labels are used only after allocation to score urgent recall, missed urgent engines, and non-urgent services. GitHub Actions checks that the committed table matches the Julia output.
+
+This is retrospective scenario analysis on simulated C-MAPSS engines, not a field-validated maintenance policy. Service capacities and urgency cutoffs are analyst-chosen assumptions; the data contains no maintenance cost, repair duration, downtime, or post-service outcomes. The Streamlit app reads the committed summary table, so Julia is not required in the hosted app runtime.
+
+Regenerate the static dashboard bundle from the latest run:
+
+```powershell
+python scripts/export_web_data.py
+```
+
+## Applications
+
+Start the Streamlit interface:
+
+```powershell
+streamlit run streamlit_app.py
+```
+
+Start the React dashboard:
+
+```powershell
+cd web
+npm ci
+npm run dev
+```
+
+Both apps include an all-subset view for combined FD001-FD004 selected-model scores, candidate-model comparisons, and cross-subset results. The web dashboard loads the small core benchmark bundle first, then fetches only the selected subset's reliability snapshot when its Reliability page is opened. Streamlit merges those same committed snapshots for its Reliability tab. This keeps the initial web request small while both hosted apps work without ignored local `outputs/` files. After retraining or rerunning the reliability study, rerun the export command above to refresh the core and subset-specific JSON files under `web/public/results/`.
+
+## Optional ManimGx Animation
+
+The captioned methods explainer (`docs/media/rul-method.mp4`) shows a measured FD001 sensor trace, its moving 30-cycle input window, a true training-label example, and the validation-calibrated conformal interval method. The model output is explicitly schematic; no sample-specific prediction is claimed. The video is available in Streamlit and on the Vercel Methods page; ManimGx is only needed to regenerate it, not to run either app or the training pipeline. Its pinned optional dependency requires Python 3.13 or newer and stays separate from `requirements.txt` and `requirements-training.txt`.
+
+On Windows with Python 3.14 installed, render into a temporary directory so inspection storyboards do not clutter the repository:
+
+```powershell
+py -3.14 -m venv "$env:TEMP\turbofan-animation-env"
+& "$env:TEMP\turbofan-animation-env\Scripts\python.exe" -m pip install -r requirements-animation.txt
+& "$env:TEMP\turbofan-animation-env\Scripts\manimgx.exe" inspect animations\rul_method.py --output "$env:TEMP\rul-method-storyboard.png"
+& "$env:TEMP\turbofan-animation-env\Scripts\manimgx.exe" inspect animations\rul_method.py --time 3.0 --output "$env:TEMP\rul-method-poster.png"
+& "$env:TEMP\turbofan-animation-env\Scripts\manimgx.exe" render animations\rul_method.py --output "$env:TEMP\rul-method.mp4" --resolution 1280x720 --fps 30 --preset veryfast --crf 27
+Copy-Item "$env:TEMP\rul-method.mp4" docs\media\rul-method.mp4
+Copy-Item "$env:TEMP\rul-method-poster.png" docs\media\rul-method-poster.png
+```
+
+## Optional C++ Sensor Kernels
+
+`cpp_engine/` contains optional C++17 PCA and K-Means kernels exposed to Python through pybind11. Build tools with a C++17 compiler are required:
+
+```powershell
+python -m pip install ./cpp_engine
+python -m src.run_cpp_benchmark --datasets FD001 FD002 FD003 FD004 --max-rows 10000
+python scripts/export_web_data.py
+```
+
+On Windows, stop Python/Streamlit processes that have already imported `turbofan_cpp` before reinstalling it; a loaded extension binary is locked by the process.
+
+The benchmark uses training-engine sensor rows and compares numerical parity and local timings with scikit-learn. PCA timings include fit plus score projection on both sides; K-Means consumes shared sklearn PCA scores. Results depend on the machine/compiler. These exploratory kernels do not affect RUL model selection, prediction, or LSTM inference. The Streamlit Research outputs tab can run the benchmark when the extension is installed.
+
+## Evaluation Protocol
+
+- Compute capped RUL labels per engine, with a 125-cycle cap and 30-cycle input windows.
+- Split training engines into training and validation sets before fitting preprocessing.
+- Fit sensor filtering, scaling, and model selection without the official test labels.
+- Compare window-summary Ridge regression with the stacked many-to-one LSTM.
+- Report held-out MAE/RMSE, engine-level robustness, validation-calibrated split-conformal intervals, sensor/PCA screening, fractional-life stages, and cross-subset transfer.
+
+The supplied papers study turbine gas temperature and proprietary operational or fleet records. This repository instead predicts RUL on simulated C-MAPSS data. Fractional-life stages are a proxy for maintenance phases because C-MAPSS does not contain overhaul histories; FD001-FD004 are related simulated domains, not independent real-world fleets. These experiments are methodological adaptations, not numerical reproductions of the papers.
+
+The figure below shows the validation-to-interval calculation. Its q95 radius and observed test coverage come from the selected stored benchmark snapshot; the rank pegs and prediction centre are explicitly illustrative. [Open the interactive version on Vercel](https://turbofan-rul-prediction-using-lstm.vercel.app/conformal-calibration.html).
+
+![Conceptual split-conformal RUL calibration: validation residuals determine q95, which bounds an illustrative prediction on the 0–125-cycle scale.](docs/figures/conformal-calibration.svg)
+
+## Stack
+
+Python, TensorFlow/Keras, scikit-learn, pandas, NumPy, Matplotlib, Seaborn, Streamlit, React, Vite, Chart.js, Archify, and optional ManimGx.
+
+## Documentation
+
+Start with the [documentation guide](docs/README.md). The current [project scope](docs/PROJECT_OVERVIEW.md), [architecture](docs/architecture.md), [methodology](docs/methodology.md), [measured results](docs/RESULTS.md), [limitations](docs/limitations.md), and [traceability matrix](docs/traceability.md) describe the implementation and evidence. See the [repository audit](docs/REPOSITORY_AUDIT.md) for verification status and remaining gaps.
+
+## Development checks
+
+Install the development dependencies and run the Python tests:
+
+```powershell
+pip install -r requirements-dev.txt
+python -m pytest -q
+```
+
+Build the static dashboard:
+
+```powershell
+cd web
+npm ci
+npm run build
+```
+
+GitHub Actions runs these checks on Python 3.12 and 3.14 and builds the optional C++ extension on Python 3.12. The hosted workflow's first run must complete before its status can be treated as verified.
+
+## Data and result scope
+
+This project evaluates simulated C-MAPSS trajectories. Its results do not establish performance on operational aircraft and are not maintenance advice. The root MIT license applies to project software; bundled data and research papers retain source-specific terms. See [limitations](docs/limitations.md) and the [dataset note](docs/DATASET_AND_DATA_PIPELINE.md).

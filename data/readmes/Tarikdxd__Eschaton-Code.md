@@ -1,10 +1,11 @@
 # Eschaton Code
 
-A terminal coding agent. Point it at your own API key or at a model running on your machine,
-then describe what you want and it reads, edits and runs code in the current directory.
+A coding agent that runs in your terminal. Describe what you want, it reads the repository,
+edits files and runs the tests.
 
-There is no account, no hosted backend and no quota system. The agent talks directly to the
-provider you choose.
+It uses native tool calling, so the model decides when to read a file or run a command instead of
+emitting a block of JSON that has to be parsed. Works with a free-tier key or a model running on
+your machine. There is no subscription and no hosted backend.
 
 ## Install
 
@@ -14,122 +15,243 @@ npm install -g eschaton-code
 
 Requires Node.js 20 or newer.
 
-## Connect a model
-
-Either a hosted provider with your own key:
-
-```bash
-export DEEPSEEK_API_KEY=sk-...        # DeepSeek platform
-export OPENROUTER_API_KEY=sk-or-...   # OpenRouter
-export GROQ_API_KEY=gsk_...           # Groq
-```
-
-or a local server, which needs no key:
-
-```bash
-ollama pull deepseek-r1:7b
-```
-
-LM Studio works too: load a model, start the local server, and Eschaton Code finds it on port
-1234. Local servers are detected on startup.
-
-To save a key once instead of exporting it:
-
-```bash
-eschaton login openrouter sk-or-...
-```
-
-That writes `~/.eschaton/config.json` with mode 0600. Environment variables take precedence over
-the file.
-
-## Usage
+## First run
 
 ```bash
 cd ~/my-project
 eschaton
 ```
 
+If no model is configured, the first screen is a setup wizard: pick a provider, paste a key, and
+the default model. No separate command, no config file to edit.
+
 ```
-› explain how the auth middleware works
+  Set up a model
+
+  1. OpenRouter         free DeepSeek and Qwen models
+  2. Google             Gemini Flash free tier
+  3. Groq               free Llama and DeepSeek distills
+  4. DeepSeek           paid, own key
+  5. Ollama             local model, no key, no account
+  6. Custom endpoint    any OpenAI-compatible API
+```
+
+The key is checked with a one-token request before it is saved. Change anything later from inside
+the session with `/setup`; it applies immediately, without a restart.
+
+For scripts, the same thing without prompts:
+
+```bash
+eschaton login openrouter sk-or-...
+eschaton login gemini AIza...
+eschaton login groq gsk_...
+```
+
+## Usage
+
+```
 › add a test for the token refresh path
 › why does the build fail on Windows
+› rename the fetchUser helper and update its callers
 ```
 
-In a session:
+The agent reads files, shows a diff before writing, asks before running a command, and reports
+what changed.
 
-| Command | Description |
+| Command | What it does |
 | --- | --- |
 | `/help` | List commands |
-| `/mode [name]` | `build`, `plan`, `review` or `fast`; cycles when no name is given |
-| `/model [name]` | Show or change the model for the active provider |
-| `/providers [n]` | List providers, or switch to one |
-| `/clear` | Forget the conversation |
-| `/exit` | Leave |
+| `/mode [name]` | `build`, `plan`, `review` or `fast` |
+| `/model [name]` | Show or change the model |
+| `/providers [n]` | List providers or switch |
+| `/setup` | Change provider, key or model |
+| `/init` | Write an `AGENTS.md` for the project |
+| `/diff` | Show the working tree diff |
+| `/undo` | Revert the last file the agent changed |
+| `/compact` | Summarize the conversation to free context |
+| `/cost` | Tokens used this session |
+| `/sessions`, `/resume <n>` | List and load saved sessions |
+| `/clear`, `/exit` | Forget the conversation / leave |
 
-Modes change the instructions the agent works under. `Build` edits and runs code, `Plan` and
-`Review` are read-only, `Fast` answers with as few tool calls as possible.
+`Ctrl+C` cancels the running request. `--continue` resumes the last session in the directory.
 
-The agent can read and write files, run shell commands, list directories and search code. It
-asks for one tool call at a time and feeds the result back into the conversation.
+### Things that work like other terminal agents
+
+- **Project memory.** `ESCHATON.md`, `AGENTS.md` or `CLAUDE.md` in the project root is read at
+  startup and added to the system prompt. An existing `CLAUDE.md` keeps working as is.
+- **`@file`** in a prompt attaches the file's contents: `explain @src/auth.ts`.
+- **`!command`** runs a shell command and prints the output without involving the model.
+- **Custom commands.** Drop a markdown file in `.eschaton/commands/review.md` and it becomes
+  `/review`. `$ARGUMENTS` is replaced with whatever follows the command. `/commands` lists them.
+- **Print mode.** For scripts and CI:
+
+```bash
+eschaton -p "why does the build fail" --yes
+```
+
+  Without `--yes` the agent is limited to read-only tools, so it cannot edit files or run
+  commands unattended.
+
+### MCP servers
+
+`~/.eschaton/mcp.json` or `.eschaton/mcp.json` connects Model Context Protocol servers. Their
+tools show up in the agent as `mcp__<server>__<tool>`.
+
+```json
+{
+  "servers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "."]
+    }
+  }
+}
+```
+
+Startup prints `mcp  filesystem (12)` when a server connected.
+
+If [mcptoon](https://github.com/activeing123/mcptoon) is on your PATH, it is attached
+automatically as a gateway. mcptoon keeps upstream tool schemas out of the context window and
+exposes a small set of meta-tools (`mcptoon_manifest`, `mcptoon_call`, `mcptoon_retrieve`, ...)
+instead. Disable it with `ESCHATON_MCPTOON=0`.
+
+### Permission rules
+
+`~/.eschaton/permissions.json` and `.eschaton/permissions.json` decide what runs without asking.
+
+```json
+{
+  "allow": ["run_command:npm test*", "write_file:docs/*"],
+  "deny": ["run_command:rm -rf*"]
+}
+```
+
+`deny` wins over `allow`, and anything unmatched asks. Answering `a` at a prompt saves a narrow
+rule for that command or folder, so the next run does not ask again. `/permissions` shows the
+active rules.
+
+### Hooks
+
+`.eschaton/hooks.json` runs a command around every tool call. A non-zero exit from `preTool`
+blocks the tool and the output is handed back to the model.
+
+```json
+{
+  "preTool": "node scripts/check-tool.js",
+  "postTool": "npm run lint --silent"
+}
+```
+
+The hook receives `ESCHATON_TOOL`, `ESCHATON_TOOL_ARGS` and `ESCHATON_CWD` in its environment.
+
+### Skills
+
+Skills are folders with a `SKILL.md` file: YAML frontmatter and instructions. The catalog is in
+the system prompt on every turn; the model calls `use_skill` to load the full text. Three skills
+are marked always-on and are included in full.
+
+Bundled in this repository under `skills/`:
+
+| Skill | What it adds |
+| --- | --- |
+| **superpowers** | 15 skills: brainstorming, plans, TDD, debugging, code review, worktrees, subagents |
+| **ponytail** | lazy-senior-dev mode: the smallest change that fully solves it |
+| **caveman** | terse replies without filler |
+| **graphify** | query a codebase as a knowledge graph when `graphify-out/` exists |
+| **karpathy-guidelines** | behavioural rules that cut common LLM coding mistakes |
+| **mcptoon** | compress MCP tool discovery; schemas on demand, results reversible |
+
+Add your own in `.eschaton/skills/<name>/SKILL.md` or `~/.eschaton/skills/`. Project skills
+override bundled ones with the same name. `/skills` lists what loaded.
+
+```markdown
+---
+name: release
+description: Use when cutting a release
+---
+Run the tests, bump the minor version, write the changelog entry.
+```
+
+See [skills/NOTICE.md](skills/NOTICE.md) for sources and licenses.
+
+### Memory
+
+After each run the agent records a one-line episode (prompt, files changed, outcome) in
+`~/.eschaton/memory`. The last few episodes for the current directory are added to the system
+prompt, so a new session starts with the context of the old ones. This is the behaviour of
+claude-mem, implemented locally without a background service.
+
+### Task list and subagents
+
+For multi-step work the agent keeps a task list with `todo_write`; it is printed as a checklist
+and `/todos` shows the current one. The `task` tool runs a read-only subagent with its own
+context and returns a summary, so exploring ten files does not fill the main conversation.
+
+## How it works
+
+- **Native tool calling.** The agent sends `read_file`, `write_file`, `edit_file`, `run_command`,
+  `list_dir` and `search_code` as JSON schemas. Providers that reject `tools` fall back to a
+  single JSON block in the reply, so older models still work.
+- **Approval flow.** File writes and commands show a diff or the exact command and wait for
+  `y` / `n` / `a` (always for the rest of the run).
+- **Failover.** Providers are tried in order, free tiers first. A rejected key or a rate limit
+  moves to the next one and cools the failing provider down for a minute.
+- **Sessions.** Every conversation is stored in `~/.eschaton/sessions` and can be resumed.
+- **Undo.** Snapshots are taken before each write or edit, `/undo` restores the last one.
 
 ## Providers
 
-| Provider | Key variable | Default model |
+| Provider | Variable | Default model |
 | --- | --- | --- |
-| DeepSeek | `DEEPSEEK_API_KEY` | `deepseek-chat` |
 | OpenRouter | `OPENROUTER_API_KEY` | `deepseek/deepseek-chat-v3-0324:free` |
+| Google | `GEMINI_API_KEY` | `gemini-2.5-flash` |
 | Groq | `GROQ_API_KEY` | `deepseek-r1-distill-llama-70b` |
-| Ollama | none | first installed model, DeepSeek preferred |
-| LM Studio | none | first loaded model, DeepSeek preferred |
-| Any OpenAI-compatible endpoint | `OPENAI_API_KEY` + `OPENAI_BASE_URL` | `OPENAI_MODEL` |
+| DeepSeek | `DEEPSEEK_API_KEY` | `deepseek-chat` |
+| Ollama | none | first installed model |
+| LM Studio | none | first loaded model |
+| Any OpenAI-compatible endpoint | `OPENAI_BASE_URL` + `OPENAI_API_KEY` | `OPENAI_MODEL` |
 
-Set `ESCHATON_MODEL` to override the model used for a hosted provider. When a provider returns an
-error or a rate limit, the next one is tried and the failing provider is skipped for a minute.
+`ESCHATON_MODEL` overrides the model of the selected provider.
 
-Free tiers have their own limits. If a provider returns HTTP 429, that is the provider's quota,
-not something this tool can reset.
+## Browser IDE
 
-## Configuration
+There is also a light IDE built on Monaco and xterm, served locally:
 
-| Variable | Purpose |
-| --- | --- |
-| `DEEPSEEK_API_KEY` | DeepSeek platform key |
-| `OPENROUTER_API_KEY` | OpenRouter key |
-| `GROQ_API_KEY` | Groq key |
-| `OPENAI_BASE_URL` | Base URL of any OpenAI-compatible endpoint |
-| `OPENAI_API_KEY` | Key for that endpoint |
-| `OPENAI_MODEL` | Model name for that endpoint |
-| `ESCHATON_MODEL` | Overrides the model of the selected provider |
-| `NO_COLOR` | Disables ANSI colours |
+```bash
+eschaton ide
+```
 
-Local endpoints probed at startup:
+![Eschaton IDE](docs/screenshot.png)
 
-- Ollama: `http://127.0.0.1:11434/v1`
-- LM Studio: `http://127.0.0.1:1234/v1`
+It shares the same agent core and adds a file tree, tabs, a terminal, search, source control and
+approval cards. See `eschaton --help`.
 
 ## Development
 
-The CLI sources are TypeScript and the published bundle is built with esbuild.
-
 ```bash
-npm install
-npm run dev              # bun src/cli.ts
-npm test                 # provider and agent tests
-npm run build            # writes dist/eschaton.js
+bun install
+bun run dev        # build once, then start the agent
+bun test
+bun run typecheck
+bun run build
+```
+
+```
+src/agent/coding-agent.ts  tool loop, approvals, undo, compaction
+src/llm/providers.ts       providers, tool calling, streaming, failover
+src/ui/tui.ts              terminal interface and commands
+src/ide/                   browser IDE (server + Monaco/xterm UI)
+src/session.ts             session storage
 ```
 
 ## Limitations
 
-- Tool calls are parsed from JSON blocks in the model output. Weak models sometimes emit
-  malformed JSON, in which case the agent reports the parse failure instead of guessing.
-- The agent keeps a single conversation in memory; there is no session persistence yet.
-- Complex refactors across many files are better handled by the larger hosted models.
-
-## Relationship to upstream
-
-This repository contains code derived from the Codebuff project; see [NOTICE](NOTICE). Freebuff
-sources live under `freebuff/`. Eschaton Code is an independent fork and is not affiliated with
-Codebuff, OpenCode or DeepSeek.
+- The agent works with the files it reads; it does not index the whole repository. `search_code`
+  is a literal string search, not a symbol index.
+- No LSP or diagnostics yet.
+- The IDE terminal runs one command at a time, no PTY.
+- Model quality varies. Small local models often skip reading a file before editing it; the
+  prompt asks them not to, but they still do.
 
 ## License
 

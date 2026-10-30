@@ -6,7 +6,7 @@ For teams that run their own developer docs, at product, API and platform compan
 
 [![CI](https://img.shields.io/github/actions/workflow/status/dgesteves/ondocs/ci.yml?branch=main&label=CI&style=flat-square&labelColor=181c22)](https://github.com/dgesteves/ondocs/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/ondocs?style=flat-square&labelColor=181c22&color=0e7490)](https://www.npmjs.com/package/ondocs)
-[![Script tag: 3.5 KB gzipped](https://img.shields.io/badge/script_tag-3.5_KB_gzipped-0e7490?style=flat-square&labelColor=181c22)](https://ondocs.vercel.app/docs/script-tag)
+[![Script tag: 3.6 KB gzipped](https://img.shields.io/badge/script_tag-3.6_KB_gzipped-0e7490?style=flat-square&labelColor=181c22)](https://ondocs.vercel.app/docs/script-tag)
 [![License: MIT](https://img.shields.io/badge/license-MIT-0e7490?style=flat-square&labelColor=181c22)](./LICENSE)
 [![Types](https://img.shields.io/badge/types-included-0e7490?style=flat-square&labelColor=181c22)](https://ondocs.vercel.app/docs/api)
 
@@ -131,7 +131,7 @@ npx ondocs init --out public                       # plain HTML needs --out; Hug
 On a GitHub Pages project site, at `https://user.github.io/repo`, add `--base-url /repo` to the index command.
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/ondocs@0.16/dist/embed.global.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/ondocs@0.18/dist/embed.global.js" defer></script>
 ```
 
 **Try it without a key.** `npx ondocs index ./docs -e mock`, then `npx ondocs dev`, serves the ask endpoint and MCP server on localhost, with a mock model that quotes your docs. See [Try it locally](https://ondocs.vercel.app/docs/local-development).
@@ -188,4 +188,4 @@ What ondocs adds: open source you host. The index is a file in your build, the e
 - [Getting started](https://ondocs.vercel.app/docs/getting-started), [Deploying](https://ondocs.vercel.app/docs/deployment), [API](https://ondocs.vercel.app/docs/api), [CLI](https://ondocs.vercel.app/docs/cli), [Benchmarks](https://ondocs.vercel.app/docs/benchmarks) and [FAQ](https://ondocs.vercel.app/docs/faq)
 - [Changelog](./CHANGELOG.md), [Contributing](./CONTRIBUTING.md), [Security](./SECURITY.md)
 
-Requires Node.js 22.12 or later and AI SDK 7 (`ai@^7.0.95`); AI SDK 6 is not supported. [MIT](./LICENSE) © Diogo Esteves
+Requires Node.js 22.13 or later and AI SDK 6 (`ai@^6.0.16`) or 7 (`ai@^7.0.95`); see [Compatibility](https://ondocs.vercel.app/docs/getting-started#compatibility). [MIT](./LICENSE) © Diogo Esteves

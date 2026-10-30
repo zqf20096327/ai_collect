@@ -36,11 +36,11 @@
 - 💬 **拟人对话** — 可自定义人格、语言风格和兴趣话题，说话更接近真实群友
 - 🧵 **话题压缩与分层回忆** — 接近上下文窗口时由同一主模型完整整理成会话概览与话题摘要；之后可先查话题、再看关键消息，最后读取原文前后文
 - 🧩 **丰富工具集** — 内置工具覆盖发言、沉默、记忆检索、网页搜索、戳一戳和表情包等场景
-- 📝 **长期记忆** — 主 Agent 主动维护事实、偏好、约束、目标、术语、表达方式和别名，支持版本修订、核心记忆与关键词/模糊检索
-- 👤 **群友画像** — 聚合成员知识与参与讨论，好感度与长期记忆独立维护
+- 📝 **长期记忆** — 主 Agent 按群、用户、自己或具体事物维护 profile/experience，支持置顶、版本修订和关键词检索
+- 👤 **群友画像** — 聚合成员昵称、群内称呼与关于 TA 的长期记忆，不把发言量或好感度做成隐藏分数
 - 🎭 **具体情感** — 喜悦、好奇、亲近、感动、思念、吃醋、担忧、安心、委屈、失落、不满、愧疚共 12 类，配合精力与交流意愿做惰性衰减
 - 🖼️ **表情包系统** — 智能体按需查看并收藏群内表情，原图留存不失真
-- 🔎 **主动检索** — 需要回忆时自己查长期记忆、话题和历史原文；跨会话结果保留来源标签，不自动塞进每轮上下文
+- 🔎 **主动检索** — 需要回忆时自己查长期记忆、话题和历史原文；跨会话结果标明所属会话，不自动塞进每轮上下文
 - ⏰ **时段策略** — 可配置不同时间段的发言活跃度，同时支持防话痨动态限流
 - 🔌 **MCP 扩展** — 支持通过 MCP 协议接入外部工具，无限扩展能力
 - 🖥️ **管理后台** — 统一管理群聊与好友、拉黑状态和群聊额外提示，按会话查看已记住的内容与群聊话题
@@ -65,23 +65,19 @@ Compose 会一并启动 MumuBot、标准 PostgreSQL 18 和 SnowLuma：
 
 ```bash
 cp .env.example .env
-# 填写 .env 中的数据库、后台和模型配置
+# 填写数据库连接、后台密码、加密密钥和 OneBot 连接
 docker compose up -d
 ```
 
-Compose 会直接拉取 GHCR 上的 `latest` 镜像。首次启动时，容器会在配置目录中补齐缺失的 `config.yaml`、`persona_group.prompt`、`persona_private.prompt` 和 `mcp.json`，已有文件不会被覆盖。
+Compose 会直接拉取 GHCR 上的 `latest` 镜像。模型、人格、对话行为和 MCP 服务器不再从配置文件读取；首次启动后打开管理后台，在“设置 → 模型管理”添加并激活模型即可。
 
-编辑生成的配置文件后，重启服务使其生效。从容器日志获取 SnowLuma WebUI 与 noVNC 的首次密码，通过 `http://localhost:6081` 登录 QQ，再访问 `http://localhost:5099` 配置 WebSocket 的访问令牌；将同一个令牌填入 `.env` 的 `MUMU_ONEBOT_TOKEN` 后重启 MumuBot。
+从容器日志获取 SnowLuma WebUI 与 noVNC 的首次密码，通过 `http://localhost:6081` 登录 QQ，再访问 `http://localhost:5099` 配置 WebSocket 的访问令牌；将同一个令牌填入 `.env` 的 `MUMU_ONEBOT_TOKEN` 后重启 MumuBot。
 
 ### 使用发布包
 
 GitHub Release 提供 Linux、Windows、macOS 的打包产物。归档内包含：
 
 - 可执行文件
-- `config/config.yaml` 示例配置
-- `config/persona_group.prompt` 群聊人格提示词模板
-- `config/persona_private.prompt` 私聊人格提示词模板
-- `config/mcp.json` 示例配置
 - `README.md` 和 `LICENSE`
 
 运行发布包时不需要额外部署前端静态文件，管理后台所需资源已经内嵌进二进制。
@@ -114,26 +110,23 @@ macOS 的系统链接器不支持全静态，产物动态依赖 libwebp，运行
 
 ### 配置与启动
 
-如果你使用的是 GitHub Release 里的打包归档，可直接编辑归档自带的 `config/config.yaml`、`config/persona_group.prompt`、`config/persona_private.prompt` 和 `config/mcp.json`，不用再执行下面的复制命令。
+配置分成两部分：
+
+- `.env` 只保存启动连接和密钥：`MUMU_DATABASE_DSN`、`MUMU_WEB_ADMIN_KEY`、`MUMU_SECRET_KEY`、`MUMU_ONEBOT_WS_URL`、`MUMU_ONEBOT_TOKEN`、端口、媒体目录和日志级别。
+- 人格、提示词、对话、压缩、并发和媒体参数保存在 PostgreSQL，由管理后台维护；模型 API Key 和 MCP 配置加密落库。
 
 ```bash
-# 1. 复制配置文件并按需修改
-cp config/config.example.yaml config/config.yaml
-cp config/mcp.example.json config/mcp.json
+# 1. 准备环境变量
+cp .env.example .env
+# 填写数据库连接、后台密码、MUMU_SECRET_KEY 和 OneBot 连接
 
-# 2. 编辑配置（填入模型、数据库、OneBot 等信息）
-# 也可通过环境变量配置敏感信息：
-#   MUMU_MODEL_HIGH_BASE_URL / API_KEY / MODEL - 唯一主模型完整端点（需支持 /responses）
-#   MUMU_ONEBOT_TOKEN                   - OneBot 访问令牌
-#   MUMU_DATABASE_DSN                   - PostgreSQL 连接串
-
-# 静态人格提示词模板位于 config/persona_group.prompt；私聊提示词模板位于 config/persona_private.prompt
-# persona.name、persona.alias_names、persona.interests 仍在 config/config.yaml 中配置
-# 机器人 QQ 会在连接 OneBot 后自动识别；interests 只作为人格背景，不改变消息触发概率
-
-# 3. 启动
+# 2. 启动
 ./mumu-bot
 ```
+
+启动后访问 `/admin`。如果还没有模型，后台仍可使用；在“设置 → 模型管理”添加模型并激活后，机器人会在下一轮开始工作。修改设置不需要重启进程。
+
+模型管理的两个推理参数只在两个下拉框中选择：`thinking.type`（不传/enabled/disabled）和 `reasoning.effort`（不传/low/medium/high/xhigh/max）。
 
 数据库使用 PostgreSQL 18。应用启动时会启用 `pg_trgm`，再自动创建或校验数据结构；不再需要 pgvector 或向量模型。
 
@@ -141,53 +134,27 @@ cp config/mcp.example.json config/mcp.json
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 ```
 
-从旧版本升级时，先用旧程序把数据库升级到 v14，再启动当前版本执行 v15、v16 迁移。v15 会把旧证据、关系、学习水位和私聊摘要原表保留为 `legacy_*` 历史资料，v16 会移除已废弃的工作便签表；升级不会用空数据覆盖原文。升级前请备份数据库与媒体目录。
+当前版本使用 v17 语义层，只支持空数据库初始化；旧 schema 会明确拒绝启动，不会自动迁移或删除数据。升级前请备份数据库与媒体目录，并按要求重新初始化数据库。
 
-默认情况下服务监听 `7468` 端口，可在配置中修改。
+默认情况下服务监听 `7468` 端口，可通过 `MUMU_SERVER_PORT` 修改。
 
 访问服务的 `/admin` 路径进入管理后台。未设置后台密钥时，后台会保持关闭状态。
 
 ## 🧠 上下文与话题
 
-主聊天和同步话题压缩共用同一个主模型。输入达到上下文窗口的 90% 时会暂停当前轮，允许最多 300 秒整理旧交互；目标水位为 40%，不超过 55% 才提交。整理成功后只删除已摘要覆盖的 transcript 工作集，消息原文、媒体和已发送消息永久保留。
+主聊天和同步话题压缩共用当前模型。主 Agent 每轮默认最多 50 步，可调整；压缩器步数独立配置。模型请求不设置整体超时，只对连接和 TLS 握手上限 10 秒。输入达到上下文窗口 90% 时同步整理旧交互，目标 40%，不超过 55% 才提交。整理成功后只删除已摘要覆盖的 transcript 工作集，消息原文、媒体和已发送消息永久保留。
 
-话题系统同时承担上下文表示、后台浏览和分层查询：`searchTopics` 找话题，`readTopic` 看摘要与关键消息，`readHistory` 再按 `h` 编号读取原文前后文。
+话题系统同时承担上下文表示、后台浏览和分层查询：`searchTopics` 找话题，`readTopic` 看摘要与关键消息，`readHistory` 再按 OneBot 消息 ID 读取原文前后文。
 
 ## 🧠 人格模板
 
-`config/persona_group.prompt` 和 `config/persona_private.prompt` 分别是群聊与私聊的静态人格模板。两份模板结构一致但完全独立：群聊模板保留群友式的互动规则，私聊模板去掉群聊专用条目、换成一对一的对话规则。你可以分别调整它们，再结合实际对话效果反复测试。
+群聊与私聊人格模板在管理后台的“设置 → 人格”分别维护。两份模板结构一致但完全独立：群聊模板保留群友式的互动规则，私聊模板去掉群聊专用条目、换成一对一的对话规则。代码内保留一份默认模板，数据库没有覆盖值时使用默认值。
 
 如果你测出了更自然、更稳定、也更好用的 prompt，欢迎通过 Issue 分享使用场景和效果，或直接提交 Pull Request 一起完善这份模板。
 
 ## 🔧 MCP 工具扩展
 
-通过编辑 `config/mcp.json` 接入外部 MCP 服务器，支持 SSE 和 Stdio 两种传输方式。加载后的扩展工具会同时提供给群聊和好友私聊，并统一以 `mcp-服务名-工具名` 命名，避免和内置工具或其它服务重名。
-
-```json
-{
-    "servers": [
-        {
-            "name": "example-mcp-server-sse",
-            "enabled": false,
-            "type": "sse",
-            "url": "http://localhost:3333/sse",
-            "tool_name_list": [],
-            "custom_headers": {
-                "Authorization": "Bearer YOUR_TOKEN_HERE"
-            }
-        },
-        {
-            "name": "example-mcp-server-stdio",
-            "enabled": false,
-            "type": "stdio",
-            "command": "",
-            "args": [],
-            "env": []
-        }
-    ]
-}
-```
-
+在管理后台的“设置 → MCP 服务器”接入外部 MCP 服务，支持 SSE 和 Stdio 两种传输方式。服务器配置整体加密保存；加载后的扩展工具会同时提供给群聊和好友私聊，并统一以 `mcp-服务名-工具名` 命名，避免和内置工具或其它服务重名。
 ## 🤝 贡献
 
 **欢迎任何形式的贡献！** 无论是提交 Bug 报告、功能建议，还是直接提交代码，我们都非常感谢。

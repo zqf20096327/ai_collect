@@ -132,7 +132,7 @@ Install with
 pip install meshioplusplus[all]
 ```
 
-(`[all]` adds the h5py and netCDF4 runtime extras and the polyscope desktop viewer. By default, meshio++ uses numpy and rich.) The wheels carry the compiled core with OpenCASCADE linked in, so CAD output (`fit_cad`, `to-cad`) and STEP/IGES reading work out of the box. The wheels are licensed `MIT AND (LGPL-2.1-only WITH OCCT-exception-1.0)`, because that kernel is LGPL-2.1 with the OCCT exception; see [`LICENSE-BINARIES.md`](LICENSE-BINARIES.md) and [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md). You can then use the command-line tool
+(`[all]` adds the h5py and netCDF4 runtime extras and the polyscope desktop viewer; `[addons]` adds the three LGPL add-on wheels described below. By default, meshio++ uses numpy and rich.) The base wheel is MIT and carries no copyleft code. OpenCASCADE, which STEP/IGES reading and the OpenCASCADE backend of CAD output (`fit_cad`, `to-cad`) need, is the separate `meshioplusplus-occt` wheel: `pip install "meshioplusplus[occt]"`. That wheel is licensed `MIT AND (LGPL-2.1-only WITH OCCT-exception-1.0)`, because that kernel is LGPL-2.1 with the OCCT exception; without it `fit_cad` uses its native backend. See [`LICENSE-BINARIES.md`](LICENSE-BINARIES.md) and [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md). You can then use the command-line tool
 
 <!--pytest-codeblocks:skip-->
 
@@ -151,6 +151,8 @@ meshioplusplus merge      a.vtu b.vtu out.vtu    # merge meshes (optional --weld
 
 meshioplusplus transform  in.vtu out.vtu --translate 1,2,3   # affine transform
 meshioplusplus mirror     half.vtu whole.vtu --keep-original  # reflect, cells right side out
+meshioplusplus find-intersections skin.stl flags.vtu --segments cuts.vtu  # self-intersections
+meshioplusplus thickness  shell.stl measured.vtu --min 1.5   # wall thickness per facet
 meshioplusplus extrude    profile.vtu slab.vtu --num-layers 4  # sweep a surface into a volume
 meshioplusplus clean      in.vtu out.vtu --weld              # weld / prune / de-dup
 meshioplusplus crop       in.vtu out.vtu --bbox 0,0,0,1,1,1  # subset by region
@@ -349,6 +351,8 @@ annotated = meshioplusplus.attach_quality(mesh)   # metrics as cell_data
 `meshioplusplus.check_quality(mesh, "scaled_jacobian >= 0.2; aspect_ratio <= 5 @ 1%")` turns the metrics into a pass/fail gate tested per cell, and the `check` CLI verb exits 1 when it fails and 2 when it could not run — what a CI job over meshes scripts; every report verb of both CLIs also takes `--json` with one shared, strictly valid shape. See `doc/mesh_quality.md` and `doc/cli.md`.
 
 `meshioplusplus.check_conformity(mesh)` reports the hanging nodes, T-junctions and partly overlapping or unwelded facets of a mesh, flags the hanging points in `conformity:hanging`, and says which `find_interface` mode suits it; the `check-conformity` CLI verb exits 1 when the mesh is not conforming. See `doc/check_conformity.md`.
+
+`meshioplusplus.find_intersections(mesh)` finds where a surface intersects itself, or with a second surface where two parts interpenetrate, by exact triangle–triangle tests: the cell pairs, the crossing segments as a line mesh and `intersections:count` per cell; the `find-intersections` CLI verb exits 1 when anything intersects. `meshioplusplus.thickness(mesh)` measures the wall thickness (or, outward, the clearance to the same or a second part) at every facet by a ray along its normal, into `thickness:distance`. See `doc/find_intersections.md` and `doc/thickness.md`.
 
 #### Reordering / renumbering
 
@@ -977,27 +981,4 @@ meshioplusplus.tui(mesh)                                             # the inter
 
 Field rendering colours by an array, a `data_calc` expression or a tensor invariant on a linear, log or symlog scale with percentile clipping and a legend, draws categories, regions, isolines, vector arrows, streamlines that follow a vector field and a warp with its undeformed outline, and offers quality, orientation and free-edge diagnostic views. The same options reach C, Fortran, Julia, R, WebAssembly and the settings pipeline's `Snapshot` step.
 
-`tui` is the interactive viewer for a machine with no display: drag to orbit, wheel to zoom, click to probe a cell, `x`/`y`/`z` to cut the model open, `[` `]` to step through a time series (`--follow` watches a run that is still writing), `--compare` to put two meshes side by side, a `:` command line that takes the flags of `snapshot`, and sessions saved as JSON; only the changed cells are sent, and the terminal is restored however it ends. `view()` picks it by itself when there is no display but a terminal. For fun, `--theme synthwave` puts a banded sunset and a grid floor behind the model in neon, and `--music` plays a generated loop on whichever audio player the system has (off unless asked for, and silent in CI and over SSH).
-
-![The interactive terminal viewer](doc/public/images/tui_loop.svg)
-
-It is a preview, not a replacement for the viewers above; `screenshot()` falls back to it when Polyscope is not installed, and the MCP server's `render_mesh` tool lets an agent look at a mesh. See [`doc/tui.md`](doc/tui.md).
-
-</details>
-
-<details>
-<summary><b>Interoperability</b> — PyVista/trimesh, Arrow/Parquet/pandas/polars, GPU handoff, ML graphs/features/datasets, PhysicsNeMo, grids, point clouds, proximity graphs (click to expand)</summary>
-
-### Interoperability
-
-Hand a mesh straight to the tools you reach for next — no file round-trip, and the numpy buffers are **shared**, not copied, wherever the target accepts them as they are:
-
-<!--pytest-codeblocks:skip-->
-
-```python
-import meshioplusplus
-
-mesh = meshioplusplus.read("bracket.msh")
-
-grid = meshioplusplus.to_pyvista(mesh)      # a pyvista.UnstructuredGrid
-tm = meshioplusplus.to_trimesh(mesh)        # a t
+`tui` is the interactive viewer for a machine with no display: drag to orbit, wheel to zoom, click to probe a cell, `x`/`y`/`z` to cut the model open, `[` `]` to step through a time series (`--follow` watches a run that is still writing), `--compare` to put two meshes side by side, a `:` command line that takes the flags of `snapshot`, and sessions saved as JSON; only the changed cells are sent, and the terminal is restored however it ends. `view()` picks it by itself when there is no display but a terminal. For fun, `--theme synthwave` puts a banded sunset and a grid floor behind the model in neon, and `--music` plays a generated loop on whichever audio player the system has (off unless asked for, and silen

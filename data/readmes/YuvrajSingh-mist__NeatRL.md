@@ -4,7 +4,7 @@
 
 **A clean Python library for reinforcement learning algorithms**
 
-[![license: Apache 2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE) [![dataset: CC BY 4.0](https://img.shields.io/badge/dataset-CC_BY_4.0-lightgrey)](LICENSE-DATASET) [![Sponsor: GitHub](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/YuvrajSingh-mist) [![Buy me a coffee](https://img.shields.io/badge/Buy_me_a_coffee-FFDD00?logo=buymeacoffee&logoColor=black)](https://ko-fi.com/O7W120DR8R)
+[![license: Apache 2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE) [![PyPI](https://img.shields.io/pypi/v/neatrl)](https://pypi.org/project/neatrl/) [![dataset: CC BY 4.0](https://img.shields.io/badge/dataset-CC_BY_4.0-lightgrey)](LICENSE-DATASET) [![Sponsor: GitHub](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/YuvrajSingh-mist) [![Buy me a coffee](https://img.shields.io/badge/Buy_me_a_coffee-FFDD00?logo=buymeacoffee&logoColor=black)](https://ko-fi.com/O7W120DR8R)
 
 </div>
 
@@ -25,34 +25,69 @@ NeatRL provides readable implementations of popular RL algorithms with a focus o
 
 ```bash
 pip install neatrl
-pip install "neatrl[cli]"      # Live terminal dashboard (rich, psutil)
 ```
 
-With optional environment extras:
+That is the whole default setup. It brings the terminal dashboard (`rich`,
+`psutil`), classic-control environments (CartPole, Pendulum, Acrobot,
+MountainCar) and everything the MLP aliases need — no extras to remember.
+
+With [uv](https://docs.astral.sh/uv/), install the `neatrl` command as an
+isolated tool — no virtualenv to manage:
 
 ```bash
-pip install "neatrl[atari]"    # Atari games (ALE)
-pip install "neatrl[box2d]"    # Box2D environments (LunarLander, BipedalWalker, …)
-pip install "neatrl[classic]"  # Classic control (CartPole, Pendulum, …)
-pip install "neatrl[mujoco]"   # MuJoCo continuous control
+uv tool install neatrl
 ```
+
+### Image-based (`-cnn`) aliases
+
+The `-cnn` aliases train on image observations, which only Atari and Box2D
+provide — gymnasium's classic control and MuJoCo envs are all vector
+observations, so there is no CNN equivalent for them. Add the family you want:
+
+```bash
+pip install "neatrl[atari]"    # ALE/Pong-v5, ALE/Breakout-v5 (default for -cnn)
+pip install "neatrl[box2d]"    # CarRacing-v3, LunarLander-v3, BipedalWalker-v3
+pip install "neatrl[mujoco]"   # HalfCheetah-v4, Ant-v5, …
+pip install "neatrl[all]"      # all of the above in one go
+```
+
+If you run a `-cnn` alias without the matching extra, the CLI prints
+gymnasium's error unchanged and then tells you the exact command to run.
+
+`neatrl[cli]` and `neatrl[classic]` still resolve, so older instructions keep
+working, but they are no longer needed.
 
 > Browse supported environments: [MuJoCo](https://gymnasium.farama.org/environments/mujoco/) · [Box2D](https://gymnasium.farama.org/environments/box2d/) · [Classic Control](https://gymnasium.farama.org/environments/classic_control/) · [Atari](https://gymnasium.farama.org/environments/atari/)
 
 ## CLI
 
-Run pre-configured example scripts for any algorithm directly from the terminal:
+Train any algorithm from the terminal:
 
 ```bash
-neatrl train dqn cartpole
-neatrl train ppo lunar
-neatrl train sac pendulum
-neatrl train td3 halfcheetah
-neatrl train rnd cliffwalking
-neatrl train ddpg-cnn carracing
+neatrl train dqn CartPole-v1
+neatrl train ppo LunarLander-v3
+neatrl train sac Pendulum-v1
+neatrl train td3 HalfCheetah-v4
+neatrl train rnd CliffWalking-v1
+neatrl train ddpg-cnn CarRacing-v3
 ```
 
-The env argument is matched fuzzy-style against the example scripts in `docs/` — `CartPole-v1`, `cartpole`, and `cartpole-v1` all resolve to the same script. Run `neatrl train <algo>` with an unknown env to see available scripts for that algorithm.
+The environment is optional — omit it to use the algorithm's default
+(`neatrl train dqn` trains on `CartPole-v1`, `neatrl train sac` on
+`Pendulum-v1`). `--steps` overrides the training length:
+
+```bash
+neatrl train dqn CartPole-v1 --steps 50000
+```
+
+Runs are local: nothing is uploaded to Weights & Biases unless you pass
+`--wandb`.
+
+Pass `--help` to any command for the full list of the 21 algorithm aliases.
+
+**[Full CLI reference](docs/cli/README.md)** — every alias with its default
+environment, the environment-routing rules, dashboard keys, exit codes, and the
+install hint for each optional dependency.
 
 
 ## Quick Start
@@ -117,7 +152,7 @@ model = train_sac(
 from neatrl.sac_cnn import train_sac_cnn
 
 model = train_sac_cnn(
-    env_id="BreakoutNoFrameskip-v4",
+    env_id="ALE/Breakout-v5",
     total_timesteps=100000,
     alpha=0.2,
     autotune_alpha=True,
@@ -133,6 +168,8 @@ model = train_sac_cnn(
 **[Complete Documentation](https://github.com/YuvrajSingh-mist/NeatRL/tree/master/docs)**
 
 The docs include:
+- A complete [CLI reference](docs/cli/README.md) — all 21 aliases, routing
+  rules, dashboard keys, exit codes
 - Detailed usage examples for every algorithm
 - Hyperparameter tuning guides
 - Environment compatibility notes

@@ -3,7 +3,6 @@
 **PowerShell:** [PSWriteOffice](PowerShell/PSWriteOffice/README.MD) is maintained in this repository. Use [OfficeIMO issues](https://github.com/EvotecIT/OfficeIMO/issues) for engine and module problems, feature requests, and contributions.
 
 [![CI](https://github.com/EvotecIT/OfficeIMO/actions/workflows/dotnet-tests.yml/badge.svg?branch=master)](https://github.com/EvotecIT/OfficeIMO/actions/workflows/dotnet-tests.yml)
-[![codecov](https://codecov.io/gh/EvotecIT/OfficeIMO/branch/master/graph/badge.svg)](https://codecov.io/gh/EvotecIT/OfficeIMO)
 [![license](https://img.shields.io/github/license/EvotecIT/OfficeIMO.svg)](LICENSE)
 
 [![Blog](https://img.shields.io/badge/Blog-evotec.xyz-2A6496.svg)](https://evotec.xyz/hub)
@@ -1512,4 +1511,7 @@ using OfficeIMO.Pdf;
 
 PdfDocument source = PdfDocument.Load("packet.pdf");
 PdfDocumentReadResult firstPage = source.Read(new PdfReadOptions {
-    PageSelection = PdfPage
+    PageSelection = PdfPageSelection.Parse("1")
+});
+string firstPageText = string.Join('\n', firstPage.Pages[0].TextBlocks.Select(block => block.Text));
+s

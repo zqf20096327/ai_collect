@@ -1223,6 +1223,56 @@ order type. The detector first surfaced a CASE that swaps `'A'`↔`'L'` misread 
 extractor no longer reads a rewrite as a meaning. `[conflicts]
 enabled = false` restores the old behaviour.
 
+**Broken references across systems (RFC 0233).** Every name a routine, a view, a Kettle step, SQL
+built in a Java method or a dbt `source()` points at is resolved against every compiled relation —
+DDL, live catalog, application model — by the same rule lineage links by. A name that resolves to
+nothing is an `UnresolvedReference`, one that resolves to several an `AmbiguousReference`: with the
+file and line it came from, the closest names, the evidence, a confidence, and a fingerprint that
+survives recompiles and edits above it. Relations a routine creates at run time (`CREATE TEMP TABLE`,
+`EXECUTE 'CREATE VIEW …'`), table functions and system catalogs are not findings; a name in a schema
+EKOS compiled nothing from is a coverage gap (info), not an error.
+
+```bash
+ekos check refs                                  # metrics + findings, most severe first
+ekos check refs --scope cross-system --fail-on error --format sarif > xref.sarif   # CI / code scanning
+ekos check refs --format json > baseline.json    # later: --baseline baseline.json shows only new ones
+ekos check refs --baseline 2026-10-01T00:00:00Z  # or new since a ledger time
+```
+
+`ekos commit` writes the same report to `<state>/integrity/current.json` (never to the ledger).
+`[xref]` sets `min-confidence` and per-kind severities; `<state>/xref-ignore.toml` suppresses by
+`fingerprint`, `target` or `source` glob, and every rule must carry a `reason`. On LedgerSMB (1,366
+references) it reports 2 errors, both real: `budget__reject` deletes from `budget_to_project` and
+`budget_to_department`, which no file creates. A name the repository's migration scripts alter but no
+compiled DDL defines is a coverage gap, and one they drop is an error naming the script — on
+iDempiere's code without its database (11,966 references, 97.7 % of the Java → schema ones resolved)
+that leaves 0 errors and 609 info findings; connect the live catalog to decide the rest.
+
+The same check covers calls and imports inside one language: a SQL routine calling a function no
+file defines and no engine provides (`coalesce`, `nvl` and `dbms_*` are built in), a Perl `use` or
+Elixir `alias` of a package under the workspace's own namespace that no file declares, a relative JS
+import with no file behind it, a Python import under an in-tree package. An import into a directory
+`[observe] ignore-patterns` excludes is a coverage gap naming the file. It also reports module
+dependency cycles, tables nothing uses, and SQL routine reachability. A routine no view, trigger,
+Java SQL text or `[xref] entry-points` glob reaches is `UnreachableSymbol`, unless code that may
+call it by name exists, in which case it is `DynamicReferenceUnknown`. The dynamic share is always
+printed beside the coverage, and languages without a call graph are reported as unsupported, with
+the reason. On LedgerSMB that adds two more real bugs: a call to `lsmb__next_businss_day` (a typo)
+and to `lsmb__daycount_act_365` (only `…_365fixed` exists).
+
+```bash
+ekos check refs --reachability                 # also list unreachable / dynamic routines
+ekos check refs --from-index --format json     # the last commit's report, no recompute
+ekos check explain --limit 5                   # a model suggests targets; kept only if cited
+```
+
+Agents get `ekos_xref_check` over MCP: the findings, and `name` to check one table or routine name
+before writing SQL against it. The web console has an **Integrity** tab and dashboard tiles. The
+estate docs' Findings page has a *Reference integrity* section, which ekos-lakehouse's documentation
+inherits. `check explain` keeps a model's suggestion only when it names an object it was shown and
+cites it. Suggestions are printed, never stored, and a model that is not a local Ollama one needs
+`--allow-metered`.
+
 ### Real schema and class structure from source (RFC 0091/0092)
 
 **File-based SQL schema needs a dialect.** `.sql` files parse under the `generic` (ANSI) dialect
@@ -1568,80 +1618,4 @@ ekos query find "welcome email" --mode hybrid          # semantic + BM25, fused
 
 Opt-in and off by default — with no `[embeddings]` table nothing is embedded and retrieval is the
 pure BM25 + exact-name path. Embeddings are cheap and disk-cached, so unlike `[llm-description]`
-there is no spend prompt. Single-node only this phase (a no-op on a SQLite or partitioned
-workspace); a vector/hybrid search with no index built yet degrades to lexical with a visible
-note. The MCP `ekos_search` tool takes the same `mode` and reports `arms_run`. Per-arm wall-clock
-timings (`arm_timings`, RFC 0126) ride along on the `ekos_search` / `ekos_retrieve` results, into
-`.ekos/query-log.jsonl`, and in `ekos query find --explain`.
-
-### Eval harness (RFC 0138, on-demand)
-
-`ekos eval run` grades whole `ekos ask` answers against a checked-in, 101-scenario suite spanning
-seven categories — Architecture, Code, Dependencies, Lineage, History, Security, Adversarial
-(`evals/datasets/*.yaml`) — not just retrieval ranking (that's RFC 0126's separate, narrower,
-CI-gated `ekos_runtime::retrieval_eval`). Every score is deterministic keyword/id matching — no
-LLM judge: did the answer state the expected facts, cite real (non-hallucinated) evidence, cover
-what was asked, surface the right objects in the top-10, route to the right REASON planner query
-type, and — for the Adversarial category — actually say **"Insufficient evidence"** for a question
-with no grounded answer instead of inventing one. That last category is the harness's strictest:
-every scenario in it expects a refusal, and an answer that invents a plausible-sounding detail
-(a database name, a version number, a person) counts as a hallucination regardless of how
-confidently it reads.
-
-Recall@10 is graded against the exact keyword-only query `reason::plan()` actually searches with
-(RFC 0139), not the raw natural-language question a `reason`/`ask` scenario asks — the two can rank
-differently, so grading the wrong one could pass or fail a scenario for a reason unrelated to what
-the model was shown. Lexical search itself also treats a bareword `and`/`or` as connector noise,
-not a literal word a document must contain — the same two words this codebase already treats as
-English stopwords everywhere else — so an "A or B" style query can match on either real term
-without silently requiring the word "or" itself to appear.
-
-```bash
-cd ekos
-cargo run -p ekos -- eval run --dataset ekos-full   # every category, "evals/" at the repo root
-cargo run -p ekos -- eval run --dataset architecture --agent ollama
-cargo run -p ekos -- eval run --dataset hallucination   # Category G only
-cargo run -p ekos -- eval history                       # every past run, as a trend table
-```
-
-```
-EKOS EVALUATION
-─────────────────────────────
-
-Dataset: architecture
-Agent: ollama (llama3:latest)
-Runtime: local
-
-Scenarios:                    3
-Passed:                       0
-Failed:                       3
-
-Answer correctness:       11.1%
-Evidence groundedness:   100.0%
-Completeness:             11.1%
-Recall@10:                  n/a
-Hallucination rate:        0.0%
-
-Avg tokens:               1,221
-P95 latency:              49.4s
-
-Cache hits:                 0/3
-Tokens saved:               n/a
-Peak RSS:               69.7 MB
-CPU time:                 14.7s
-
-Status: FAIL
-```
-
-That example is a real run against this repo's own live self-analysis ledger with the local
-`llama3:latest` model — not a simulated one. It is also the *floor*: a workstation-sized local model.
-
-**Full-suite results — `ekos-full`, 101 scenarios, graded deterministically.** The answering model
-went from a local llama3 8B on Ollama to **DeepSeek V4 Flash through [OpenCode Zen](https://opencode.ai/zen)**
-(an OpenAI-compatible cloud endpoint), and the knowledge EKOS hands it was improved in two further steps. The same
-checked-in suite, one change at a time:
-
-| Step | Passed | What changed |
-|---|---|---|
-| Baseline, local `llama3:latest` (8B) — report `20260914T154459Z` | 42/101 | — |
-| + evidence text kept, citation parsing, refusal wording (devlog_183) | 53/101 | Grade
+there is no spend prompt. Single-node only this 

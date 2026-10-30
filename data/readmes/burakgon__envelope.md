@@ -33,7 +33,7 @@ Desktop mail on Linux has long meant choosing between powerful-but-dated and pre
 - **Keyboard-first.** Gmail-style shortcuts (`j`/`k`, `e`, `#`, `r`, `c`, `g i` …), menus and dialogs that work from the keyboard, Space to read on, and a command palette (`Ctrl K`) that can do everything the mouse can.
 - **A real calendar.** Day, work week, week, month and agenda views, drag to create, move and resize, recurring events with "this / following / all" edits, invitations with RSVP and conflict detection, a scheduling assistant, subscriptions and reminders — synced both ways with CalDAV, Google Calendar, Microsoft 365 and Exchange.
 - **Tasks where your mail is.** Turn a message into a task with one key, type "call Maya tomorrow 3pm !" and get a due time and a star, and see what's due in your calendar — synced with Google Tasks, Microsoft To Do, Exchange and CalDAV.
-- **Private by design.** No telemetry, no proxy servers, no account with us. Your mail goes straight from your provider to your disk. Remote images and trackers are blocked until you allow them, messages render in a locked-down sandbox, and OpenPGP encryption sets itself up with Autocrypt.
+- **Private by design.** No telemetry, no proxy servers, no account with us. Your mail goes straight from your provider to your disk. Remote images and trackers are blocked until you allow them, messages render in a locked-down sandbox, and OpenPGP encryption sets itself up with Autocrypt. The one request Envelope makes on its own is a daily look at GitHub's list of releases, which you can turn off.
 - **AI you control.** Summaries, smart replies, writing help, translation and "ask your inbox" — using OpenRouter, OpenAI, Anthropic, Google Gemini, Groq, Mistral, a local Ollama or LM Studio model, or any OpenAI-compatible endpoint. Off until you turn it on, and your API keys live in the system keyring.
 
 <p align="center">
@@ -71,8 +71,11 @@ Desktop mail on Linux has long meant choosing between powerful-but-dated and pre
 
 ### Mail
 - **Unified inbox** across all accounts, plus per-account folders and Gmail labels (with colors), drag and drop to move or label. Create, rename, nest, recolor and delete folders and labels (Outlook categories too), and empty Trash and Spam.
-- **Conversations** threaded the way you expect, with quoted text and signatures folded away.
+- **Conversations** threaded the way you expect, with quoted text and signatures folded away — or every message on a row of its own, if you prefer.
+- **Your layout:** the reading pane on the right, below the list or off, lists sorted newest first, oldest first or by sender (each folder keeping its own order), and conversations and messages being written in windows of their own.
 - **Split inbox**: *People*, *Newsletters* and *Notifications* tabs, computed locally.
+- **Subscriptions**: every newsletter and mailing list in one list — unsubscribe, archive what they left in the inbox, or delete it all, sender by sender.
+- **VIPs**: the people who matter most get a mailbox of their own, a crown on their messages, `is:vip` in search, and can be the only mail that notifies.
 - **Instant full-text search** (SQLite FTS5) with operators — `from:`, `to:`, `subject:`, `has:attachment`, `is:unread`, `before:`, `after:` … — and natural-language search through AI if enabled. Search options write the query for you, `from:` and `to:` suggest people, recent searches are a keystroke away, and **saved searches** sit in the sidebar.
 - **Composer** with rich text (colors, sizes, alignment, inline pictures), attachments (drag and drop or paste), recipient autocomplete, spell checking, multiple identities and rich signatures, **templates**, **undo send**, **scheduled send** (with an outbox to review, send now or edit), forward as attachment, and drafts that sync to the server and open for editing on any device. It asks before sending to an address that looks wrong, or without the attachment the text mentions.
 - **Snooze**, star, archive, **mute**, report spam and *not spam*, **block senders**, bulk actions and **undo** for everything.
@@ -80,19 +83,20 @@ Desktop mail on Linux has long meant choosing between powerful-but-dated and pre
 - **Rules** that file, label, mark or silence new mail as it arrives, and run on the mail already there when you want — for every kind of account.
 - **Automatic replies** (out of office) for Microsoft 365, Exchange, Gmail and IMAP servers with Sieve, with optional dates and a reminder while they are on.
 - **Safe HTML rendering** in a sandboxed frame with remote content blocking, tracking-pixel removal, dark-mode adaptation for plain emails and `cid:` inline images. Links show where they really go, and warn when their text names another site.
-- **End-to-end encryption** with OpenPGP that sets itself up: keys are created and exchanged with Autocrypt and found in the recipient's Web Key Directory, the lock in the composer turns on when everyone has a key, and messages show who signed them. Experts can import, export and verify keys — see [docs/ENCRYPTION.md](docs/ENCRYPTION.md).
+- **End-to-end encryption** with OpenPGP that sets itself up: keys are created and exchanged with Autocrypt and found in the recipient's Web Key Directory, the lock in the composer turns on when everyone has a key, and messages show who signed them. Experts can import, export and verify keys. **S/MIME** for Outlook and company mail too: import your certificate (`.p12` or `.pfx`) to sign and decrypt, the certificates of people who send you signed mail are kept for encrypting to them, and signatures are checked up to the authorities your system trusts — see [docs/ENCRYPTION.md](docs/ENCRYPTION.md).
 - **Offline-first**: read, search, triage and write without a connection; changes sync when you're back.
 - **Push mail** via IMAP IDLE, CONDSTORE/QRESYNC for fast resyncs, Gmail extensions (labels, thread ids, `X-GM-RAW` search) when talking to Gmail.
-- Desktop notifications with Archive and Mark as Read buttons — for all new mail, only mail from people, or nothing, per account — an unread badge, `mailto:` handling, **Save all** for attachments, and saved messages (`.eml`), calendar files (`.ics`) and contact cards (`.vcf`, `.csv`) open straight from your file manager.
+- Desktop notifications with Archive and Mark as Read buttons and the desktop's new-mail sound — for all new mail, only mail from people, only VIPs, or nothing, per account — an unread badge, `mailto:` handling, **Save all** for attachments, and saved messages (`.eml`), calendar files (`.ics`) and contact cards (`.vcf`, `.csv`) open straight from your file manager.
 
 ### Calendar
-- Day, work week, week, month and agenda views; mini month; per-calendar visibility and colors; a second time zone beside the hours.
+- Day, work week, week, month and agenda views; mini month; per-calendar visibility and colors; a second time zone beside the hours; week numbers if you count in them.
+- **Birthdays** from your address books in a calendar of their own, with the age each one turns.
 - Drag to create, drag to move (across days), drag to resize; double-click in month view to add.
 - Recurring events with editing scopes (*this event*, *this and following*, *all events*), and custom repeats: every so many days, weeks, months or years, several weekdays, "the second Tuesday" or "the last Friday", until a date or a number of times.
 - Events in a time zone of their own, kept by every provider.
 - Guests, RSVP, Google Meet / Teams links and one-click **Join**, reminders, busy/free.
 - **Scheduling assistant**: see when guests are busy (Google, Microsoft 365 and Exchange) and jump to the next time everyone is free.
-- Invitations in mail (iTIP) become cards with **Yes / Maybe / No**, a conflict check against your calendar and replies sent to the organizer.
+- Invitations in mail (iTIP) become cards with **Yes / Maybe / No**, a conflict check against your calendar, replies sent to the organizer and **Propose new time**; a time proposed for your own meeting is accepted or declined from the mail.
 - Two-way sync: **CalDAV** (iCloud, Fastmail, Nextcloud, Radicale, …), **Google Calendar**, **Microsoft 365 / Outlook.com** and **on-premises Exchange**.
 - **Subscribe to published calendars** by URL (`webcal:` links included): holidays, sports, school or team calendars, refreshed by themselves.
 
@@ -185,7 +189,7 @@ Google and Microsoft sign-in need OAuth client ids, supplied at build time or ru
 | Keys | Action | Keys | Action |
 | --- | --- | --- | --- |
 | `j` / `k` | Next / previous conversation | `c` | Compose |
-| `Enter` | Open | `r` / `a` / `f` | Reply / reply all / forward |
+| `Enter` / `Shift Enter` | Open / in a new window | `r` / `a` / `f` | Reply / reply all / forward |
 | `e` | Archive | `Ctrl Enter` | Send |
 | `#` | Delete | `h` | Snooze |
 | `s` | Star | `v` / `l` | Move / label |
@@ -211,6 +215,7 @@ Envelope is a [Tauri 2](https://tauri.app) application: a Rust core and a Svelte
 | [`envelope-dav`](crates/envelope-dav) | CalDAV / CardDAV client with discovery, sync-collection and multiget |
 | [`envelope-ical`](crates/envelope-ical) | iCalendar parsing and writing, recurrence expansion, time zones, iTIP |
 | [`envelope-pgp`](crates/envelope-pgp) | OpenPGP on rPGP: keys, PGP/MIME and inline PGP with protected headers, Autocrypt, Web Key Directory |
+| [`envelope-smime`](crates/envelope-smime) | S/MIME on the RustCrypto crates: certificates and chains, PKCS #12, CMS signatures and encryption (BER-tolerant), S/MIME messages |
 | [`envelope-ai`](crates/envelope-ai) | Streaming client for OpenAI-compatible, Anthropic and Gemini APIs |
 | [`src-tauri`](src-tauri) | Desktop shell: commands, events, `att://` protocol for attachments, notifications |
 | [`src`](src) | The Svelte 5 + TypeScript interface |

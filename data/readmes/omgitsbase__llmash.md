@@ -1,7 +1,7 @@
 # llmash
 
 [![Release](https://img.shields.io/github/v/release/omgitsbase/llmash?include_prereleases&label=release)](https://github.com/omgitsbase/llmash/releases/latest)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/omgitsbase/llmash/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/omgitsbase/llmash/blob/main/LICENSE)
 [![Windows](https://img.shields.io/badge/Windows-10%2F11-0078D6.svg?logo=windows)](https://github.com/omgitsbase/llmash/releases/latest)
 [![Linux](https://img.shields.io/badge/Linux-x64-FCC624.svg?logo=linux&logoColor=black)](https://github.com/omgitsbase/llmash/releases/latest)
 [![C++](https://img.shields.io/badge/C%2B%2B-17-00599C.svg?logo=cplusplus)](https://isocpp.org)
@@ -80,6 +80,92 @@ powershell -ExecutionPolicy RemoteSigned -File .\install.ps1 -NoOllama
 
 ## Performance
 
+### Batching
+
+Tokens per second of all streams together, from one stream to 32 at once, with
+llmash, vLLM and Ollama on the same NVFP4 checkpoint. The fill is llmash's lead
+over vLLM; the rows under each chart are llmash's speed over the other two at
+each level.
+
+| model | checkpoint | llmash | vLLM | Ollama |
+|---|---|---|---|---|
+| Gemma 4 E4B | `unsloth/gemma-4-E4B-it-NVFP4` | GGUF, every weight's bytes kept, 7.3 GB | the checkpoint | GGUF, the FP8 layers as Q8_0, 7.4 GB |
+| Qwen3.6 35B-A3B | `nvidia/Qwen3.6-35B-A3B-NVFP4` | GGUF, every weight's bytes kept, 22.6 GB | the checkpoint | GGUF, the FP8 layers as Q8_0, 22.7 GB |
+
+vLLM reads safetensors and no GGUF. Ollama reads GGUF and has no FP8 type, so
+its copy keeps the checkpoint's NVFP4 layers and stores the FP8 ones as Q8_0;
+the "Ollama's file" row of each table is llmash on that same file.
+`convert_hf_to_gguf.py --fp8` writes llmash's copy, `--fp8-as-q8` Ollama's.
+
+- Drafting: llmash and vLLM 3 tokens a round, with Google's assistant drafter
+  (BF16 on both) for Gemma and the checkpoint's own MTP head for Qwen. Ollama as
+  its own tags ship: its copy of the assistant, 3 tokens, for Gemma; the MTP
+  head, 2 tokens, for Qwen. Drafting changes how fast tokens come, not which.
+- Cache: both checkpoints declare an FP8 cache. llmash and vLLM keep it in FP8
+  with the checkpoint's scales (1.0 for nvidia's, which ships none), Ollama in
+  f16, its default.
+- Workload: a decode saturation suite. C requests of
+  `long_decode_aime26_15` released together, thinking on, an 8,192-token
+  budget, distinct seeds, temperature 0.6, top-p 0.95, top-k 20, presence
+  penalty 1.0, no prefix reuse.
+- A point is steady decode: the tokens of the one-second windows in which all C
+  streams generate and no prompt is computed. From llmash's step log, vLLM's
+  `/metrics`, and for Ollama, which has no step counters, the arrival of each
+  streamed token. Replies end at their own length; `bench/scaling.json` has
+  each wave's makespan, token count and finish reasons.
+- One server per provider and model, sized for 32 streams, takes the levels in
+  turn after a warm-up request. Ollama runs with `OLLAMA_NUM_PARALLEL=32` (its
+  default of 1 queues requests) and its other defaults. For Qwen3.6 35B-A3B it
+  logs "model architecture does not currently support parallel requests" and
+  serves one request at a time whatever the setting, so no window has every
+  stream generating; its points past one stream are the wave's tokens over its
+  makespan.
+- RTX PRO 6000 Blackwell (96 GB), Windows 11, the card also driving the
+  display. llmash native, runtime build 777 (fork commit
+  [`5070592c8`](https://github.com/omgitsbase/llama.cpp/commit/5070592c8));
+  vLLM (`vllm/vllm-openai` 0.32.0) and Ollama (`ollama/ollama` 0.40.11) in
+  their Linux images under WSL2, on the same driver. llmash measured on
+  2026-10-30, vLLM and Ollama on 2026-10-29, one wave per point; repeated waves
+  differ by about 3%.
+
+<!-- SCALING -->
+
+#### Gemma 4 E4B
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/scale-gemma-4-e4b-dark.svg">
+  <img alt="Gemma 4 E4B: tokens per second against streams at once on llmash, vLLM and Ollama" src="docs/scale-gemma-4-e4b-light.svg">
+</picture>
+
+| provider | file | weights | 1 | 2 | 4 | 8 | 16 | 32 |
+|---|---|--:|--:|--:|--:|--:|--:|--:|
+| llmash | unsloth/gemma-4-E4B-it-NVFP4, every weight's bytes kept | 7.3 GB | 410 | 884 | 1,744 | 3,673 | 6,545 | 11,036 |
+| vLLM | unsloth/gemma-4-E4B-it-NVFP4, the checkpoint | 7.3 GB | 335 | 702 | 1,338 | 2,690 | 5,446 | 9,207 |
+| Ollama | unsloth/gemma-4-E4B-it-NVFP4, the FP8 layers as Q8_0 | 7.4 GB | 211 | 299 | 382 | 449 | 467 | 473 |
+| llmash | Ollama's copy: the FP8 layers as Q8_0 | 7.4 GB | 404 | 821 | 1,488 | 3,047 | 5,229 | 8,292 |
+| llmash over vLLM, same checkpoint | | | 1.23x | 1.26x | 1.30x | 1.37x | 1.20x | 1.20x |
+| llmash over Ollama, same checkpoint | | | 1.95x | 2.96x | 4.56x | 8.18x | 14.00x | 23.32x |
+
+#### Qwen3.6 35B-A3B
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/scale-qwen3-6-35b-a3b-dark.svg">
+  <img alt="Qwen3.6 35B-A3B: tokens per second against streams at once on llmash, vLLM and Ollama" src="docs/scale-qwen3-6-35b-a3b-light.svg">
+</picture>
+
+| provider | file | weights | 1 | 2 | 4 | 8 | 16 | 32 |
+|---|---|--:|--:|--:|--:|--:|--:|--:|
+| llmash | nvidia/Qwen3.6-35B-A3B-NVFP4, every weight's bytes kept | 22.6 GB | 510 | 774 | 1,214 | 1,936 | 2,985 | 4,103 |
+| vLLM | nvidia/Qwen3.6-35B-A3B-NVFP4, the checkpoint | 22.6 GB | 377 | 664 | 1,161 | 1,910 | 2,616 | 3,511 |
+| Ollama | nvidia/Qwen3.6-35B-A3B-NVFP4, the FP8 layers as Q8_0 | 22.6 GB | 189 | 181 | 181 | 183 | 197 | 197 |
+| llmash | Ollama's copy: the FP8 layers as Q8_0 | 22.6 GB | 539 | 762 | 1,167 | 1,814 | 2,722 | 3,536 |
+| llmash over vLLM, same checkpoint | | | 1.35x | 1.16x | 1.05x | 1.01x | 1.14x | 1.17x |
+| llmash over Ollama, same checkpoint | | | 2.70x | 4.27x | 6.72x | 10.60x | 15.12x | 20.86x |
+
+<!-- /SCALING -->
+
+### One stream at a time
+
 One RTX PRO 6000 Blackwell (96 GB), Linux, one request at a time.
 `bench/bench.py` sends three workloads (conversation, coding, thinking), three
 prompts each, greedy, 600 tokens, streamed. Speed is tokens per second from the
@@ -87,6 +173,12 @@ first streamed token to the last, the median of the three prompts; a bar is the
 mean of the three workloads. llmash 0.5.7 (runtime build 770) and Ollama
 0.40.11 were measured on 2026-10-26, vLLM (`vllm/vllm-openai:latest` as of
 2026-09-27) on 2026-09-27 on the same card, its checkpoints unchanged since.
+The Gemma 4 E4B rows of llmash were measured again on 2026-10-27 with the
+runtime from fork commit
+[`669eae10d`](https://github.com/omgitsbase/llama.cpp/commit/669eae10d), now
+in runtime build 776: Gemma's assistant drafts a whole round as one graph,
+and its per-layer tables sit in pinned host memory the card reads in place
+instead of in VRAM.
 One run per row, no concurrent load, temperature 0 only, and the card also
 drives the display.
 
@@ -112,8 +204,8 @@ Drafting, from each provider's flags and logs:
 | vLLM | the file's MTP head, 3 tokens a round (`--speculative-config '{"method":"mtp","num_speculative_tokens":3}'`) | the assistant drafter, 3 tokens a round (`gemma4_mtp`) |
 
 The runtime alone: Gemma 4 E4B's `q8_0` on llmash with no drafter of any kind
-does 177 tokens a second; Ollama does 126 on the same file; llmash with the
-assistant drafter does 365.
+does 192 tokens a second; Ollama does 126 on the same file; llmash with the
+assistant drafter does 391.
 
 Other settings are each provider's defaults: Ollama `-c 262144 -b 512 -ub 512`,
 llmash `-c 8192 -b 4096 -ub 2048` plus what it picks per model, vLLM
@@ -139,10 +231,10 @@ GGUFs and have none.
 
 | format | provider | file | weights | perplexity | vs BF16 | conversation | coding | thinking |
 |---|---|---|--:|--:|--:|--:|--:|--:|
-| RCO 3-bit, llmash only | llmash | assembled here from bartowski/google_gemma-4-E4B-it-GGUF bf16 | 2.9 GB | 51.95 | +10.7% | 281 | 411 | 444 |
-| NVFP4 | llmash | FreedomAISVR/Gemma-4-E4B-it-NVFP4-GGUF | 5.2 GB | 60.95 | +29.9% | 295 | 434 | 497 |
+| RCO 3-bit, llmash only | llmash | assembled here from bartowski/google_gemma-4-E4B-it-GGUF bf16 | 2.9 GB | 51.95 | +10.7% | 322 | 477 | 556 |
+| NVFP4 | llmash | FreedomAISVR/Gemma-4-E4B-it-NVFP4-GGUF | 5.2 GB | 60.95 | +29.9% | 346 | 500 | 581 |
 | NVFP4 | vLLM | unsloth/gemma-4-E4B-it-NVFP4 | 7.2 GB | - | - | 191 | 251 | 281 |
-| 8-bit | llmash | Ollama's gemma4:e4b-it-q8_0 | 8.0 GB | 47.44 | +1.1% | 260 | 400 | 434 |
+| 8-bit | llmash | Ollama's gemma4:e4b-it-q8_0 | 8.0 GB | 47.44 | +1.1% | 278 | 421 | 474 |
 | 8-bit | Ollama | Ollama's gemma4:e4b-it-q8_0 | 8.0 GB | 47.44 | +1.1% | 121 | 127 | 128 |
 
 The model's own BF16 weights measure 46.92 on the same text with the same runtime.
@@ -265,28 +357,46 @@ qwen3.8-27b, which build?
 A llama.cpp fork, fetched beside the program by the installer and refreshed by
 `llmash update` when a release carries a newer one. Source:
 [omgitsbase/llama.cpp](https://github.com/omgitsbase/llama.cpp), branch
-`llmash`; runtime build 770 is commit `84c6a24c1`. Changes from upstream:
+`llmash`; runtime build 777 is commit `5070592c8`. Changes from upstream:
 
 - One CUDA graph per speculative round: the verify batch, the accept decision
   and every draft step, with the accept decided on the GPU.
+- Many streams at once: every stream sampled in one step on the GPU, FP4 and
+  FP8 GEMMs for a verify over several sequences, attention per sequence over
+  its own cells, an MTP drafter's cache kept a stream per sequence, and the FP8
+  cache a checkpoint declares (`LLMASH_KV=auto`, the default).
+- Recurrent state in BF16 for the delta-net and RWKV models, as vLLM keeps it.
 - Draft head: an MTP head drafts through the 131,072 most frequent rows of the
   LM head, requantized to Q4_K at load. Verification reads the full head.
 - Fused recurrent layers (Qwen3.5, 3.6, 3.8 and the Next models): the input
   projection runs the causal convolution, its SiLU and the state snapshots in
-  its own store; the gating projections run as one launch; the recurrence
-  normalizes q and k as it loads them; the gated norm is quantized straight into
-  the output projection's input.
+  its own store; the gating projections run as one launch; the gated norm is
+  quantized straight into the output projection's input.
 - Fused mixture-of-experts tails: the expert matvec applies the router weights
   as it stores; a residual add rides the output projection it follows.
+- Mixture-of-experts layers over several streams: a shared expert shaped like
+  the routed ones is loaded as one more expert slot (no extra memory) and runs
+  in the expert kernels; gate and up run as one launch over one sort of the
+  expert ids and one quantization of the activations, and the down projection
+  reuses the sort.
+- Small weights over a few sequences' rows (a router, a gating projection)
+  split their K across the SMs and sum the parts in a fixed order.
 - NVFP4 under speculation: the second-level scales, per expert or per tensor,
   ride the matvecs of a verify batch as they do for one token, so the expert
   gate and up still fuse, and a float gate and up pair runs as one launch.
 - Every fusion is matched on the graph, not by model name. Each has a bit in
   `GGML_CUDA_FUSE_OFF` that turns it off.
 
-Each release's runtime is checked for the same greedy text as the previous one
-on dense, mixture-of-experts and delta-net models, across NVFP4, 3-bit and 4-bit
-builds, with MTP and n-gram drafting, and on 1, 2 and 3 GPUs under layer split.
+Through build 770 each release's runtime was checked for the same greedy text as
+the previous one on dense, mixture-of-experts and delta-net models, across
+NVFP4, 3-bit and 4-bit builds, with MTP and n-gram drafting, and on 1, 2 and 3
+GPUs under layer split. Build 776 changes the text on purpose: the BF16
+recurrent state (wikitext-2 perplexity of Qwen3.6 35B-A3B 5.8651 against 5.8716
+with F32 state) and the FP8 cache where a checkpoint declares one. Build 777
+moves the numbers slightly: a shared expert goes through the expert kernels'
+quantization and small products sum in another order (perplexity 5.8791, 5.8751
+with the shared expert computed apart). Each release's notes list what it was
+checked with.
 
 ## Models and pulling
 
@@ -497,7 +607,7 @@ wins over the file.
 | `OLLAMA_MODELS`, `LLMASH_MODELS` | the models directory: a store, or a folder of GGUFs read in place |
 | `LLMASH_PORT` | local API port (default 11434) |
 | `LLMASH_CTX` | default context length (default 8192) |
-| `LLMASH_KV` | K/V cache type, `f16` or `q8_0` |
+| `LLMASH_KV` | K/V cache type: `auto` (default: FP8 when the model carries cache scales, as vLLM does, else `f16`), `f16`, `q8_0`, `f8_e4m3` |
 | `LLMASH_YARN_MAX` | how far past its trained context a model may run under YaRN (default 4) |
 | `LLMASH_GPU_BUDGET_GB` | what one process may hold on the card, instead of what commit charge allows |
 | `LLMASH_VRAM_HEADROOM` | what to leave free on the cards when fitting (default 8% of them, 1 to 6 GB) |
@@ -533,4 +643,4 @@ provider and `bench/charts.py` redraws the charts and tables.
 
 ## License
 
-MIT.
+Apache-2.0.

@@ -1,13 +1,14 @@
 # Wanaku — A Governed Action Proxy for AI Agents
 
+[Documentation](https://wanaku.ai/docs/next/) · [Releases](https://github.com/wanaku-ai/wanaku/releases) · [Discussions](https://github.com/wanaku-ai/wanaku/discussions)
+
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Build](https://img.shields.io/github/actions/workflow/status/wanaku-ai/wanaku/main-build.yml?branch=main)](https://github.com/wanaku-ai/wanaku/actions)
 [![Release](https://img.shields.io/github/v/release/wanaku-ai/wanaku)](https://github.com/wanaku-ai/wanaku/releases)
 
 Wanaku is a governed action proxy for AI agents. It sits between agents and the systems they act on, intercepting
 [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) tool calls, agent-to-agent messages, and inference
-traffic. Before version 0.2.0, the project was named Wanaku MCP Router. It was renamed to Wanaku Governed Execution Proxy
-to reflect its expanded scope.
+traffic. Before version 0.2.0, the project was named Wanaku MCP Router.
 
 Wanaku supports open standards for AI agents and provides first-class integration with enterprise frameworks,
 including [Apache Camel](https://camel.apache.org/) and [Quarkus](https://quarkus.io/). For example, integration
@@ -24,7 +25,7 @@ The project name comes from the origin of [guanaco](https://en.wikipedia.org/wik
 - **Identity & Auth** — Authentication and authorization via oauth2-proxy and Keycloak, enforced before actions reach backends
 - **Tool Discovery** — Auto-discover tools from upstream MCP servers; integration developers publish Camel routes as tools
 - **Namespace Isolation** — Organize tools and resources across isolated namespaces per team, tenant, or environment
-- **Extensible Architecture** — Plugin system via feature crates and a composable filter pipeline
+- **Extensible Architecture** — Feature crates, a composable filter pipeline, and Admin UI plugins
 - **Admin Dashboard** — Web UI for managing tools, resources, prompts, and forwards
 - **Container-Ready** — Multi-arch images (x86_64, aarch64) published automatically
 
@@ -40,7 +41,9 @@ curl -fsSL https://raw.githubusercontent.com/wanaku-ai/wanaku/main/get-wanaku.sh
 
 The installer puts `wanaku-server` in `$HOME/bin`.
 
-Other install methods are available. You can download the archive manually, use a container image, run Wanaku as a systemd service, or deploy it on Kubernetes or OpenShift. Read the [Getting Started](docs/getting-started.md) guide for the details of each method.
+This README describes the Rust-based Wanaku server. The releases up to v0.2.0, including the release in the badge above, contain the Java-based Wanaku, which is deprecated. To move from it, read [Migrate from Classic Wanaku](docs/get-started/migration-from-classic.md).
+
+Other install methods are available. You can download the archive manually, use a container image, run Wanaku as a systemd service, or deploy it on Kubernetes or OpenShift. Read the [Quickstart](docs/get-started/quickstart.md) for the details of each method.
 
 Run `wanaku-server`. Open <http://localhost:8080> to see the dashboard:
 
@@ -48,33 +51,18 @@ Run `wanaku-server`. Open <http://localhost:8080> to see the dashboard:
 
 If you prefer a text interface, you may also download and use the Wanaku CLI from the [Wanaku Barn](https://github.com/wanaku-ai/wanaku-barn) project.
 
-### Learn Wanaku
-
-The easiest way to learn Wanaku is by following the **[guided tutorial](https://wanaku.ai/docs/demos/)**.
-
-The reference documentation, including the complete installation and configuration instructions, is available in the [usage guide](https://wanaku.ai/docs/version/).
-
 ## Documentation
 
-The **[Wanaku Documentation](https://wanaku.ai/docs/)** website contains the full project documentation.
+The full documentation for this version is on the [Wanaku website](https://wanaku.ai/docs/next/). The same pages are in the [`docs/`](docs/index.md) folder of this repository:
 
-Contributors working on the project may want to refer to the development documentation:
+- [Get started](https://wanaku.ai/docs/next/get-started/): install Wanaku, run your first governed MCP proxy, and learn the architecture.
+- [Deploy and operate](https://wanaku.ai/docs/next/operate/): run Wanaku on Kubernetes, persist state, add authentication, and secure the deployment.
+- [Connect agents and backends](https://wanaku.ai/docs/next/connect/): proxy A2A traffic, inference requests, and semantic routers.
+- [Govern agent actions](https://wanaku.ai/docs/next/govern/): control agent actions with posture, action policies, evaluators, credentials, and audit.
+- [Extend Wanaku](https://wanaku.ai/docs/next/extend/): write evaluator actions, feature crates, and Admin UI plugins.
+- [Reference](https://wanaku.ai/docs/next/reference/): environment variables, configuration files, ports, and the management API.
 
-- [Getting Started](docs/getting-started.md) - Development setup guide
-- [Architecture](docs/architecture.md) - System architecture and components
-- [Configuration](docs/configuration.md) - Environment variables and configuration reference
-- [Management API](docs/management-api.md) - API reference
-- [Admin UI](docs/contributing-admin-ui.md) - Admin dashboard development
-- [Features / Plugins](docs/features.md) - Feature crate system
-- [Plugin Catalog](docs/plugin-catalog.md) - Publish and configure available UI plugins
-- [Plugin Development](docs/plugin-development-guide.md) - Guide for writing admin UI plugins
-- [Evaluator Engine](docs/evaluator-engine.md) - WASM-based evaluator
-- [Action Policies](docs/action-policies.md) - Deterministic MCP action rules
-- [Governance Posture](docs/governance-posture.md) - Enforcement modes and fail-safe behavior
-- [Credential Brokerage](docs/credential-brokerage.md) - Scoped upstream credentials for forwards
-- [FAQ](docs/faq.md) - Common problems and answers
-- [Contributing](CONTRIBUTING.md) - Contribution guidelines
-- [Security](SECURITY.md) - Security policy
+To learn Wanaku step by step, follow the [guided tutorial](https://wanaku.ai/docs/demos/). To contribute, read [CONTRIBUTING.md](CONTRIBUTING.md). To report a vulnerability, read [SECURITY.md](SECURITY.md).
 
 ## Community
 

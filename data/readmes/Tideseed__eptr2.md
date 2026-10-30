@@ -7,7 +7,7 @@
 
 # eptr2
 
-`eptr2` (**EP**IAS **Tr**ansparency **2**.0) is a Python client for the [EPIAS Transparency Platform v2.0](https://seffaflik.epias.com.tr/home) API, covering **232 services** of the Turkish electricity and natural gas markets — prices (PTF/SMF), consumption, generation, production plans, market operations and imbalance costs.
+`eptr2` (**EP**IAS **Tr**ansparency **2**.0) is a Python client for the [EPIAS Transparency Platform v2.0](https://seffaflik.epias.com.tr/home) API, covering **234 services** of the Turkish electricity and natural gas markets — prices (PTF/SMF), consumption, generation, production plans, market operations and imbalance costs.
 
 It is an unofficial package by [Robokami](https://robokami.com) / [Tideseed](https://tideseed.com), Apache License 2.0.
 
@@ -62,7 +62,7 @@ eptr2 call mcp --start-date 2026-07-01 --end-date 2026-07-01 --format csv
 
 ## Usage
 
-### One call pattern for all 232 services
+### One call pattern for all 234 services
 
 Every service is reached with the same `call` method and an endpoint key:
 
@@ -81,7 +81,7 @@ Turkish aliases work too: `ptf` → `mcp`, `smf` → `smp`.
 You do **not** need credentials to explore the API:
 
 ```bash
-eptr2 list                     # all 232 keys grouped by category
+eptr2 list                     # all 234 keys grouped by category
 eptr2 search dengesizlik       # keyword search, Turkish or English
 eptr2 describe mcp             # parameters, method, path, description
 ```
@@ -114,6 +114,7 @@ from eptr2.composite import (
     get_bpm_range,                         # balancing market (YAL/YAT) with SMP
     get_kgup_bulk_range,                   # bulk production PLANS (by UEVCB id)
     get_rt_gen_bulk_range,                 # bulk REALIZED generation (by powerplant id)
+    get_org_estimated_activity,            # company DA/IDM activity, net positions (+ estimated PnL)
 )
 
 df = get_hourly_price_and_cost_data(
@@ -125,7 +126,20 @@ Note the argument order: dates first, the client as the `eptr` keyword.
 
 ### Imbalance and KÜPST cost calculations
 
-Pure functions — no API call, no credentials. The regulation period (pre-2026 / 2026) and the price floor/ceiling are derived from the contract code:
+The main functions resolve every regulation parameter (floor/ceiling, V, B, margins, KÜPST tolerance and multiplier by plant category) from each hour, and fetch MCP, SMP and system direction from EPİAŞ unless you pass prices:
+
+```python
+from eptr2.util.costs import calculate_imbalance_prices, calculate_imbalance_costs
+
+## Hourly prices, unit costs and all parameters used. Published imbalance prices are
+## used where available (imb_price_source); offline, pass prices=... to calculate them
+prices = calculate_imbalance_prices("2026-10-01", "2026-10-07", eptr=eptr)
+
+## Costs of actual vs forecast; category in any convention ("wind", "Rüzgar", "GES", "BESS", ...)
+costs = calculate_imbalance_costs(data=df, category="Rüzgar", eptr=eptr)  # df: date, actual, forecast
+```
+
+The single-hour helpers are pure functions — no API call, no credentials. The regulation period (pre-2026 / 2026) and the price floor/ceiling are derived from the contract code:
 
 ```python
 from eptr2.util.costs import calculate_unit_price_and_costs_by_contract
@@ -177,7 +191,7 @@ Paste the printed snippet into your client's MCP configuration, fill in your cre
 Point the agent at **[AGENTS.md](AGENTS.md)**, the canonical agent guide (VS Code and Claude Code read it automatically inside this repo). Away from the repo, the agent can learn the whole API on its own, without credentials:
 
 ```bash
-eptr2 schema --stdout        # machine-readable description of all 232 endpoints
+eptr2 schema --stdout        # machine-readable description of all 234 endpoints
 eptr2 describe rt-gen        # exact parameters for one endpoint
 eptr2 search üretim          # find endpoints by keyword
 ```
@@ -209,7 +223,7 @@ eptr2 call mcp --start-date 2026-07-01 --end-date 2026-07-01 --format json | jq 
 
 | Topic | Documentation |
 |-------|---------------|
-| All 232 API calls, categories and parameters | [Available API Calls](https://tideseed.github.io/eptr2/user-guide/api-calls/) |
+| All 234 API calls, categories and parameters | [Available API Calls](https://tideseed.github.io/eptr2/user-guide/api-calls/) |
 | Typed `get_*` wrapper functions (`eptr2.calls`) | [Convenience Wrappers](https://tideseed.github.io/eptr2/user-guide/convenience-wrappers/) |
 | Aliases, bulk calls, DataFrames | [Basic Usage](https://tideseed.github.io/eptr2/user-guide/basic-usage/) · [DataFrames](https://tideseed.github.io/eptr2/user-guide/dataframes/) |
 | Composite functions | [Composite Functions](https://tideseed.github.io/eptr2/user-guide/composite-functions/) |
@@ -230,7 +244,7 @@ Pin a released version with `eptr2==1.3.8` if you need to stay off dev builds.
 
 ## Türkçe
 
-`eptr2` (**EP**İAŞ **Tr**ansparency **2**.0), [EPİAŞ Şeffaflık Platformu 2.0](https://seffaflik.epias.com.tr/home) API'si üzerine geliştirilmiş bir Python paketidir. Türkiye elektrik ve doğal gaz piyasalarına ait **232 veri servisine** tek bir yapıyla erişim sağlar: PTF/SMF fiyatları, tüketim, üretim, üretim planları (KGÜP/KUDÜP), piyasa işlemleri (GÖP, GİP, DGP, İA) ve dengesizlik maliyetleri.
+`eptr2` (**EP**İAŞ **Tr**ansparency **2**.0), [EPİAŞ Şeffaflık Platformu 2.0](https://seffaflik.epias.com.tr/home) API'si üzerine geliştirilmiş bir Python paketidir. Türkiye elektrik ve doğal gaz piyasalarına ait **234 veri servisine** tek bir yapıyla erişim sağlar: PTF/SMF fiyatları, tüketim, üretim, üretim planları (KGÜP/KUDÜP), piyasa işlemleri (GÖP, GİP, DGP, İA) ve dengesizlik maliyetleri.
 
 [Robokami](https://robokami.com) / [Tideseed](https://tideseed.com) tarafından geliştirilen resmi olmayan bir pakettir. Apache License 2.0 ile lisanslanmıştır; ticari kullanım dahil geniş ölçüde serbesttir.
 
@@ -282,7 +296,7 @@ eptr.call("mcp-smp-imb", start_date="2026-07-01", end_date="2026-07-01")  # Deng
 Hangi servisin ne olduğunu **kimlik bilgisi gerekmeden** keşfedebilirsiniz:
 
 ```bash
-eptr2 list                 # 232 servisin tamamı, kategorilere göre
+eptr2 list                 # 234 servisin tamamı, kategorilere göre
 eptr2 search dengesizlik   # Türkçe veya İngilizce anahtar kelime araması
 eptr2 describe uevm        # parametreler, yöntem, açıklama
 ```
@@ -300,7 +314,16 @@ df = get_hourly_price_and_cost_data(
 
 ### Dengesizlik ve KÜPST maliyetleri
 
-API çağrısı gerektirmeyen saf hesaplama fonksiyonlarıdır. Mevzuat dönemi (2026 öncesi / 2026) ve taban-tavan fiyatlar sözleşme kodundan otomatik belirlenir:
+Ana fonksiyonlar her saat için tüm mevzuat parametrelerini (taban-tavan fiyat, V, B, marjlar, santral kategorisine göre KÜPST toleransı ve katsayısı) otomatik belirler; fiyat verilmezse PTF, SMF ve sistem yönünü EPİAŞ'tan çeker:
+
+```python
+from eptr2.util.costs import calculate_imbalance_prices, calculate_imbalance_costs
+
+prices = calculate_imbalance_prices("2026-10-01", "2026-10-07", eptr=eptr)
+costs = calculate_imbalance_costs(data=df, category="Rüzgar", eptr=eptr)  # df: date, actual, forecast
+```
+
+Tek saatlik yardımcı fonksiyonlar API çağrısı gerektirmeyen saf hesaplama fonksiyonlarıdır. Mevzuat dönemi (2026 öncesi / 2026) ve taban-tavan fiyatlar sözleşme kodundan otomatik belirlenir:
 
 ```python
 from eptr2.util.costs import calculate_unit_price_and_costs_by_contract
@@ -321,7 +344,7 @@ calculate_unit_price_and_costs_by_contract(
 - **MCP sunucusu** — VS Code, Claude, Cursor gibi istemcilere 18 araç kazandırır. Yapılandırma çıktısı için: `eptr2 mcp-config --client vscode`
 - **Ajan becerileri (skills)** — fiyat analizi, tüketim, üretim, dengesizlik maliyetleri, piyasa işlemleri ve API keşfi için 7 hazır beceri: `eptr2 install-skills`
 - **[AGENTS.md](AGENTS.md)** — kod yazan ajanlar için başvuru rehberi
-- **Makine tarafından okunabilir şema** — 232 servisin tamamı parametreleriyle: `eptr2 schema --stdout`
+- **Makine tarafından okunabilir şema** — 234 servisin tamamı parametreleriyle: `eptr2 schema --stdout`
 
 Böylece bir yapay zeka asistanına doğrudan "geçen ayın PTF ortalamasını hesapla" ya da "rüzgar santralim için dengesizlik maliyetini çıkar" diyebilir, ajanın sizin için doğru çağrıları yazmasını sağlayabilirsiniz.
 

@@ -1,15 +1,58 @@
 # Scientific Learning Skills
 
-> A student-facing Agent Skills prototype for diagnosis-before-explanation tutoring.
+> **AI tutors explain too early. We diagnose first.**
+>
+> 先诊断，再讲解：识别学习者*为什么*卡住，给最小的针对性干预，用变式题验证真正理解。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
-![Platforms](https://img.shields.io/badge/Platform-Claude%20Code%20|%20Codex%20|%20OpenClaw%20|%20GPTs%20|%20Generic-lightgrey)
+![Platforms](https://img.shields.io/badge/Platform-Claude%20Code%20|%20ZCode%20|%20Codex%20|%20OpenClaw%20|%20GPTs%20|%20Generic-lightgrey)
 
-[Quick Start](#快速开始) · [Demo](./demo/) · [Evidence](#证据边界与本地验证) · [设计对比](#设计对比示例) · [Platforms](#安装到其他平台) · [English](./README.en.md)
+[Quick Start](#快速开始) · [Demo](./demo/) · [证据](#证据边界与本地验证) · [设计对比](#设计对比示例) · [测试指南](./docs/testing-guide.md) · [English](./README.en.md)
+
+---
+
+## 一套教学法，不是一个 Prompt 堆
+
+同一个问题，「讲得多」和「教得好」是两回事。本项目把**诊断 → 干预 → 验证 → 迁移**做成可组合的 Agent Skills，让模型先判断学习者卡在哪，再决定说什么：
+
+```text
+"我会算矩阵乘法，但不知道它到底在算什么。"
+        │
+        ▼
+  诊断学习者状态（6 类卡点：概念混淆 / 符号不懂 / 推导断裂 /
+                  前置缺失 / 不会迁移 / 会套不会懂）
+        │
+        ▼
+  最小针对性干预 —— 只修卡住的部分，不重讲一遍
+        │
+        ▼
+  验证理解（让学习者自己重新解释）
+        │
+        ▼
+  变式迁移（换条件还会做，才算真懂）──► 写入记忆，间隔复习
+```
+
+9 个子 Skill 按**学习阶段**分工（而不是按学科堆数量）：零基础 / 模糊理解 / 深化 / 解题 / 错题 / 单词 / 背诵 / 计划，加 1 个路由总入口。配套确定性复习引擎（SM-2 风格间隔调度）和路由一致性 CI 门禁。
 
 ---
 
 ## 它能做什么
+
+### 新增：用 Codex 带你学真实代码
+
+对 Codex 说：“带我学 micrograd，先讲框架，再带我写关键代码，最后检查我是否真的理解。”
+
+代码学习 Agent 已提供源码地图与行号定位、入口/依赖驱动的阅读路线、静态调用线索、Python notebook 代码单元、关键代码练习、反馈记录和跨会话续学。v0.5 新增五种可验证的标量反向传播练习、失败反例与补练建议；32 条材料回归 + 16 条带练回归可本地复跑。
+Codex 负责推理、讲解与工具调用，本地 Python 工具保存可追溯的进度和考核证据，无需额外 API key。
+带有 micrograd / nanoGPT 两套固定版本的 MIT 源码教学快照；也可读取自己的 Python 仓库。
+
+```bash
+python -m learning_agent.code_learning start --demo micrograd
+# 或 start --repo /path/to/your/repo --goal "理解一次训练的数据流"
+```
+
+使用返回的 session ID 继续：`python -m learning_agent.code_learning resume SESSION_ID`。
+完整用法、Codex 工具桥与边界见 [代码学习 Agent](./docs/code-learning-agent.md)。它是有状态的 agent 原型；客观练习测试与模型评阅分别记录，尚无真人学习效果证据。
 
 > 下列内容是仓库中编写的行为示例，用于展示 Skill 期望的交互形式；不是受控对照实验、实时模型生成记录或真实用户学习证据。
 
@@ -63,10 +106,11 @@ Q2: 为什么说实践是检验真理的唯一标准？
 Q3: 关键词"直接现实性"→ 请复述相关要点。
 ```
 
-**9 个 Skill，覆盖 9 类常见学习任务：**
+**10 个教学入口，包含有状态的代码学习工作流：**
 
 | 你在想什么 | 典型匹配 |
 |-----------|---------|
+| "带我学这个代码仓库，讲框架、练关键代码、检查掌握" | `code-learning` — Codex agent + 本地工具 + 可追溯学习会话 |
 | "我不想选，直接用一个大的学习入口" | `scientific-learning` — 总入口，先路由再调用子 skill |
 | "完全没学过，这是什么" | `zero-base-learning` — 从直觉出发，不堆公式 |
 | "学过但云里雾里" | `fuzzy-understanding` — 诊断卡点，只修裂口 |
@@ -133,14 +177,29 @@ Q3: 关键词"直接现实性"→ 请复述相关要点。
 
 ## 快速开始
 
+**方式一：`npx skills add`（推荐，任何支持 Agent Skills 的宿主）**
+
+```bash
+npx skills add hwl668/Scientific-learning-skills-
+```
+
+**方式二：Claude Code 插件（免克隆）**
+
+```text
+/plugin marketplace add hwl668/Scientific-learning-skills-
+/plugin install scientific-learning-skills@scientific-learning-skills
+```
+
+**方式三：克隆安装（完整功能：Memory 数据 + 确定性复习 CLI）**
+
 ```bash
 git clone https://github.com/hwl668/Scientific-learning-skills-.git scientific-learning-skills
 cd scientific-learning-skills
-bash setup.sh # 自动检测 AI 工具 + 创建软链接 + 初始化 memory
+bash setup.sh # Linux/macOS/WSL；Windows 用 powershell -File setup.ps1
 claude        # 启动，Skills 自动加载
 ```
 
-`setup.sh` 支持 Linux、macOS，以及在 Linux 文件系统内完成 clone 的 WSL 环境。由于 Git for Windows 在 `core.symlinks=false` 时会把仓库符号链接检出为普通文件，当前不承诺 Git Bash 安装路径可用。脚本会为检测到的 Claude Code 创建 `.claude/skills/` 链接并初始化本地 `memory/`；它只检测 Codex CLI，不会为 Codex 自动安装 Skill。Codex 用法见 [`deploy/codex.md`](./deploy/codex.md)。
+`setup.sh` 支持 Linux、macOS，以及在 Linux 文件系统内完成 clone 的 WSL 环境。由于 Git for Windows 在 `core.symlinks=false` 时会把仓库符号链接检出为普通文件，当前不承诺 Git Bash 安装路径可用。**Windows 原生环境改用 `setup.ps1`**（junction 方案，支持 `-Target` 部署到其他项目），见 [`deploy/claude-code.md`](./deploy/claude-code.md)。脚本会为检测到的 Claude Code 创建 `.claude/skills/` 链接并初始化本地 `memory/`；它只检测 Codex CLI，不会为 Codex 自动安装 Skill。Codex 用法见 [`deploy/codex.md`](./deploy/codex.md)。
 
 然后直接说话：
 
@@ -174,6 +233,12 @@ python -B -m learning_agent.eval.runner --suite evals/cases/smoke.jsonl --report
 | Prompt Compiler | 按平台、skill 选择和 token budget 生成 system prompt | `python -m learning_agent.compile --target codex --skills fuzzy,problem,word --output prompt.md --metadata` |
 | Subject Case Library | 管理大学专业课、算法、机器学习、系统课、建模和科研竞赛案例 | `python -m learning_agent.subjects --summary` |
 | Learned Router | TF-IDF char n-gram + Logistic Regression 路由基线，支持 top-k 和低置信度 fallback | `python -m learning_agent.ml_router predict "我会算矩阵乘法，但不知道它到底表示什么"` |
+| Learning Agent | 统一分流、低置信度澄清、模糊理解诊断和 Skill Prompt 组装；供下游模型调用 | `python -m learning_agent.agent "这题我做错了，帮我分析错因" --json` |
+| Local Memory Repository | 可选 SQLite 记忆库：按学习者隔离、记录复习历史、检索、纠正、归档和导出 | `python -m learning_agent.memory --db memory/learning.sqlite3 --user demo due` |
+
+`learning_agent.agent` 只准备下游模型所需的 Skill 指令，不会自行生成教学答案。低置信度或诊断证据不足时返回 `needs_clarification`，不把默认路由当成确定结果。打包后的 wheel 也包含规则、Skill 文档和共享复习说明，可在仓库目录之外运行 Prompt Compiler。
+
+本地记忆库需显式启用；`learning_agent.agent --memory-db memory/learning.sqlite3 --learner-id demo --json "矩阵是什么？"` 会将最多 3 条相关记忆放在独立的 `memory_context` 数据字段中，编译出的指令不包含记忆正文。用法、边界及参考项目见 [`docs/memory-upgrade.md`](./docs/memory-upgrade.md)。现有 Skill JSON 记忆不会自动迁移。
 
 数据与回归样例：
 
@@ -195,6 +260,8 @@ python -B -m learning_agent.eval.runner --suite evals/cases/smoke.jsonl --report
 | 真实用户研究 | **尚未提供** | 学习成绩提升、迁移效果或长期保持 |
 
 Learned router 的训练报告应与数据集指纹、切分策略一起阅读。即使合成 holdout 上的指标很高，也不应写成“真实准确率 100%”或“已证明提升学习效果”。
+
+**下一阶段的目标是把证据升级为真实模型对照评测**（三条件：裸模型 / 通用家教提示 / 本项目 Skill × 三层指标：指令遵循 / LLM-as-judge 质量 / 模拟学习者后测增益 + TER 靶向率）。设计与运行协议见 [`docs/learning-skill-bench.md`](./docs/learning-skill-bench.md)；在该评测产出真实数据之前，本 README 不展示任何效果提升数字。
 
 安全模型格式、完整哈希、切分限制和适用边界见 [`artifacts/README.md`](./artifacts/README.md)。
 
@@ -220,7 +287,8 @@ Skills 本质是结构化 Markdown 指令集。在支持 Agent Skills 的宿主�
 
 | 平台 | 部署方式 | 说明 |
 |------|---------|------|
-| Claude Code | `.claude/skills/` 自动加载 | [详细说明](./deploy/claude-code.md) |
+| Claude Code | 插件安装或 `.claude/skills/` 自动加载 | [详细说明](./deploy/claude-code.md) |
+| ZCode | `~/.zcode/skills/` 或 `.zcode/skills/`（原生支持 SKILL.md） | [详细说明](./deploy/zcode.md) |
 | OpenAI Codex / API / GPTs | 原生 Skill（宿主支持时）或合成指令 | [详细说明](./deploy/codex.md) |
 | OpenClaw / OI | Skills 目录或系统提示 | [详细说明](./deploy/openclaw.md) |
 | Cursor / Cline / Copilot | 规则文件或自定义指令 | [详细说明](./deploy/generic.md) |

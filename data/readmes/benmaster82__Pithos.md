@@ -36,7 +36,7 @@ Pithos is an inference engine written from scratch in C11 with **no dependencies
 libraries at build time, only the operating system API (Win32 or POSIX). It runs GGUF models of
 Liquid AI's LFM2 / LFM2-MoE / LFM3 architectures and is tuned for `LFM2.5-24B-A2B-Q4_K_M.gguf`
 (24 billion parameters, about 2 billion active per token) on an ordinary laptop. The small
-[LFM3-1.7B](#lfm3-17b-small-and-fast) runs too, on the CPU, at about 20 tokens per second.
+[LFM3-1.7B](#lfm3-17b-small-and-fast) runs too: about 55 tokens per second with the GPU, 20 on the CPU alone.
 
 **Pithos** is the engine and the server (in the myth, the *pithos* is Pandora's jar: it holds the
 model). **Pandora** is the agent in the web interface.
@@ -77,7 +77,8 @@ Both are real sessions with LFM2.5-24B-A2B on the reference laptop (i5-10500H, G
 ## Quick start
 
 1. **Get the model** (see [Downloading the model](#downloading-the-model) below).
-   On Linux, `bash build.sh --download-model` can handle both the build and this download.
+   On Linux, `bash build.sh --download-model` can handle both the build and this download
+   (`--download-model=lfm3-1.7b` for the small model, `--list-models` for the choices).
 2. **Build.** On Windows run `build.cmd`; on Linux run `bash build.sh`; on macOS run `make`
    (see [Building](#building)). You can compile before downloading the model.
 3. **Run.**
@@ -147,8 +148,10 @@ Pithos also rejects a truncated file and names the tensor that is missing.
 
 ### LFM3-1.7B: small and fast
 [LiquidAI/LFM3-1.7B](https://huggingface.co/LiquidAI/LFM3-1.7B) is a 1.7-billion-parameter model
-that fits in 1.1 GB. It runs on the CPU (the GPU path covers MoE models), at about 20 tokens per
-second on the reference laptop, with the same chat, server, Pandora and terminal agent.
+that fits in 1.1 GB, with the same chat, server, Pandora and terminal agent. With a GPU every layer
+lives in VRAM (1.2 GB with a 8k context) and decoding runs there: about 55 tokens per second on the
+reference laptop (GTX 1650), against about 20 on the CPU alone. The prompt is read on the CPU
+(45-75 tokens per second).
 
 | | |
 |---|---|
@@ -237,7 +240,10 @@ other package-manager paths still need validation on their distributions.
 
 ```bash
 bash build.sh --test             # build the C tests and run the shell tests
+bash build.sh --list-models      # the models it can download (models.tsv), without building
 bash build.sh --download-model   # also download/verify the reference 24B model
+bash build.sh --download-model=lfm3-1.7b              # the small model instead (1.0 GiB)
+bash build.sh --download-model=lfm3-1.7b,lfm2.5-24b   # both
 bash build.sh --no-install       # build without installing anything (offline/CI)
 bash build.sh --yes --test       # allow missing-package installation without prompting
 bash build.sh --native --jobs 4  # optimize for this CPU; not for distributing binaries
@@ -254,7 +260,11 @@ keep the package database and system up to date using the normal distribution pr
 The output is **`build/pithos`**. No model, Python, OpenCL SDK or GPU driver is
 needed to compile. Model download is opt-in; the script does not install GPU drivers.
 Use `bash build.sh --download-model` (or combine it with `--test`) to fetch the
-13.5 GiB reference model into `models/`. The script pins the Hugging Face revision,
+13.5 GiB reference model into `models/`, or `--download-model=ID[,ID...]` for the models
+listed by `--list-models`. The list lives in **`models.tsv`**: one line per model with its
+file name, exact size, SHA-256, a revision-pinned https URL and a status (`validated` models
+were checked against a reference; `experimental` ones are only downloaded when named).
+Adding a model is one line there. For every model the script pins the Hugging Face revision,
 checks free disk space, resumes interrupted transfers in a `.gguf.part` file, and
 verifies the exact size and SHA-256 before renaming it to `.gguf`. An existing valid
 model is verified and reused; an invalid existing model is preserved and reported
@@ -530,7 +540,7 @@ checkpoint and only processes the rest:
 
 | Option | Effect |
 |---|---|
-| `-m PATH` | GGUF file (default `models/LFM2.5-24B-A2B-Q4_K_M.gguf`, also looked up in `..` and `../..`) |
+| `-m PATH` | GGUF file. Without it: `models/LFM2.5-24B-A2B-Q4_K_M.gguf` if present, otherwise the only `.gguf` in `models/`; with several, Pithos lists them. Also looked up in `../models` and `../../models` |
 | `-p TEXT` / `-f FILE` | single prompt with the model's chat template |
 | `-i` | interactive chat (default without a prompt). Commands `/reset`, `/exit` |
 | `-s TEXT` | system prompt |
@@ -572,8 +582,9 @@ without its reasoning is processed again.
 ### Other models
 Any GGUF of the `lfm2` (dense), `lfm2moe` or `lfm3` architecture loads, as long as its tensors use
 the supported formats: Q4_K, Q5_K, Q6_K, Q8_0, Q4_0, F16, F32. BF16, Q2_K, Q3_K and IQ formats are
-not supported. GPU acceleration covers MoE models with Q4_K / Q6_K weights; dense models run on the
-CPU. Validated so far: LFM2.5-24B-A2B and LFM3-1.7B.
+not supported. GPU acceleration needs Q4_K / Q6_K weights: MoE models keep their hot experts and
+dense layers in VRAM, dense models (LFM3) all their layers. Validated so far: LFM2.5-24B-A2B and
+LFM3-1.7B.
 
 `lfm3` adds to LFM2: an RMSNorm on the output of every block before the residual sum (sandwich
 norm), a sigmoid gate per head on the attention output, sliding-window attention (256 tokens) on 5
@@ -669,6 +680,8 @@ for each of the 30 convolution layers.
 - LFM3-1.7B: perplexity against an independent PyTorch implementation written from the model's
   `modeling_lfm3.py`, on the same dequantized weights: 4.45 vs 4.39 with 256-token windows, 3.65
   vs 3.62 with 1024 (sliding window active). The gap is the int8 activations and the f16 KV cache.
+  On the GPU, token by token (`--ppl -b 1`): 4.390 / 3.622 with the f32 kernels, the reference's
+  4.390 / 3.621; 4.408 / 3.626 with the int8 (dp4a) ones.
 - `python tests/test_server.py` (with the server running): template against Jinja2, answers,
   streaming, prompt reuse across turns, tool calls, completions, stop strings, errors.
 - `python tests/versus.py [ROUNDS] [llama.cpp|llama.cpp-cuda]`: head-to-head with llama-server
@@ -696,7 +709,8 @@ for each of the 30 convolution layers.
 Planned improvements, in order of priority, are in [ROADMAP.md](ROADMAP.md).
 
 - Only the `lfm2` / `lfm2moe` / `lfm3` architectures. Formats Q4_K, Q5_K, Q6_K, Q8_0, Q4_0, F16
-  and F32; on the GPU only Q4_K and Q6_K, and only for MoE models (LFM3 runs on the CPU).
+  and F32; on the GPU only Q4_K and Q6_K. On the GPU only decoding runs; the prompt is read on the
+  CPU.
 - LFM3's sliding-window layers keep the whole KV cache like the others (simpler; a ring buffer
   would save almost half of it at long contexts).
 - The NEON kernels and the GPU f32 path are written for ARM64/AMD/Intel, but have only been tested

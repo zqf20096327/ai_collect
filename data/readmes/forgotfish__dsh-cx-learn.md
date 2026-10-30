@@ -146,7 +146,9 @@ host 中的旧模型目录与答题回调仅为兼容旧配置保留，不属于
 
 | 方法 | 路径 | 说明 |
 |---|---|---|
+| GET | `/health` | **轻量健康快照**（毫秒级，不调 LLM/不读日志）。监测脚本用 |
 | GET | `/status` | 完整状态：配置、引擎、内核、模型、近期日志 |
+| POST | `/browser/restart` | 只清本插件自己的内核进程 + 重置 `browser.json` |
 | GET | `/config` | 读配置 |
 | POST | `/config` | 写配置（部分更新） |
 | GET | `/models` | 可选模型清单（含来源分类） |
@@ -159,6 +161,31 @@ host 中的旧模型目录与答题回调仅为兼容旧配置保留，不属于
 | GET | `/qr` | 取登录二维码（base64 data URL） |
 | GET | `/courses` | 读取账号下的课程列表 |
 | GET | `/log` | 最近日志 |
+
+### `GET /health`
+
+给监测/告警用。**不调宿主 LLM、不读 `run.log`、不 spawn 内核探版本**，稳定在毫秒级，
+内部异常也返回 **HTTP 200 + `ok:false`**（监测脚本只看体里的 `ok`，
+这样反向代理的 502 才能和业务故障区分开）。
+
+```json
+{
+  "ok": true,
+  "at": "2026-10-30T00:53:57.766Z",
+  "engine":   { "ready": true, "path": ".../engine/chaoxing-autolearn.js" },
+  "chromium": { "path": ".../chrome-linux64/chrome", "ready": true,
+                "version": "Chrome/158.0.8122.0" },
+  "browser":  { "alive": false, "port": 34471, "heartbeatAt": null,
+                "ageMs": null, "restarts": 0, "lastErrorKind": "",
+                "executablePath": "...", "browserVersion": "..." },
+  "task":     { "running": false, "pid": null, "startedAt": 1793270064901 },
+  "home": ".../cx-learn"
+}
+```
+
+`browser` 为 `null` 表示浏览器层还没写过中间状态（内核从未启动）。
+`alive=false` 且 `heartbeatAt=null` 表示「启动过但心跳未就绪」或「已关闭」——
+UI 会显示「—」，不会误报就绪。
 
 ---
 

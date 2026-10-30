@@ -76,6 +76,28 @@ The managed agent template lives at [`examples/agent.at`](examples/agent.at). It
 atman run examples/agent.at --flow agent user_prompt="read Cargo.toml and list the workspace members"
 ```
 
+### Persistent flows
+
+A Session contains independently addressable Flow instances. Each instance retains its conversation, inbox, Goal, execution state, and resource bindings across turns. Returning a final answer finishes the current turn; it does not destroy the instance. Flows can exchange messages and watch public results, with explicit grants for cross-Session access and privileged controls.
+
+The main conversation and floating windows use the same Flow view. Selecting a different Flow changes the recipient of input and controls while retaining each view's draft and reading position. Closing a window does not stop execution. The default Flow is the Session's initial view, with no extra authority.
+
+| Entry | Purpose |
+|---|---|
+| `:sessions` | Open Switch Session: search, sort, filter by project, rename, and directly enter a conversation. |
+| `:new-session` | Create a blank session immediately at a matching startup location; otherwise choose its project and working directory. |
+| `:projects` | Browse, pin, archive, and open projects and their sessions. |
+| `:activity` | Switch the right sidebar between Overview and Activity. |
+| `:panel` | Open the command palette for settings, tools, and existing panels. |
+| `:delete-old-session` | Review deletion of a continued session's original history; also available as Delete Old Session in its panel. |
+| `atman --continue <session-id>` | Reopen a recorded Session. Sending a message from published legacy history continues in a new session and preserves the original. |
+
+New execution records live under `runtime-v1/sessions/<session>/flows/<flow>/`. Recovery retains committed work and pending input; it does not replay unknown external effects. See [Session and Flow navigation](docs/quickstart.md#8-session-discovery-and-spec-state), [storage and migration](docs/storage.md), and [approval controls](docs/permission-control.md).
+
+Conversations retained only in project indexes appear as **Indexed history** in Switch Session and project session lists. Open a record to review its coverage and missing assets, then choose **Recover transcript** to create an independent history copy. Sending a message from that copy starts a new conversation with retained context. The source index stays unchanged; missing original logs and external files cannot be reconstructed from indexed text.
+
+The right sidebar combines Goal / Plan / Todos and Context / MCP in Overview, with Tasks / Flow / History in Activity. Main and floating views share this layout. FlowHub, Links, WatchHub, Inbox History, Worktrees, Flow Workspace, and the management Session panel require the optional `atman-tui/extended-panels` Cargo feature. Runtime messaging, watchers, and storage remain active in default builds.
+
 ## What is atman?
 
 > **आत्मन् (ātman)** — Sanskrit for *self*, the inner essence that witnesses thought but is not thought itself. The agent that watches the LLM's words and acts on them.
@@ -348,7 +370,7 @@ atman daemon start | stop | status | run [--reasoning <level>] [--image <path>].
 atman flow run <name> --revision <id-or-hash> [--mock] [--ephemeral]
 atman flow snapshot | versions | diff | rollback | lint | test
 atman sync init | push | pull      # git-based cross-machine memory sync
-atman migrate list | import [--from opencode|kiro]
+atman migrate list | import [--from opencode|kiro-cli]
 atman doctor [--fix]
 ```
 
@@ -357,6 +379,8 @@ REPL builtins: `:help`, `:cost`, `:goal`, `:suggest`, `:compact`, `:copy`, `:att
 Managed agents continue across turns while their goal is active. Root and child agents share revision-checked pause and resume controls; parent pauses preserve each child's own state. The TUI shows clickable Pause / Resume buttons, with `Ctrl+Y` for the focused agent and `:goal` for details. See [Goal controls](docs/goals.md).
 
 In the TUI, `:panel` opens the same command palette as `Ctrl+P`, including when the terminal intercepts that shortcut. Every palette action has a colon command shown beside it. Direct panel commands include `:providers`, `:models`, `:aliases`, `:mcp`, `:memory`, `:history`, `:formula`, and `:keybindings`. Panel commands open immediately during a running flow and preserve pending quotes and attachments. Enter accepts a command completion first; press Enter again to execute it.
+
+`Ctrl+K` or `:history` searches committed conversations and retained legacy indexes. `Enter` or **search** runs the query; `Tab` or **scope** selects the current Session or its project. Selecting a result with the keyboard or mouse updates its context preview. Main and floating conversations retain separate queries and results.
 
 ## Configuration
 

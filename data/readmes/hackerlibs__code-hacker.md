@@ -10,6 +10,8 @@
 
 All three modes share the same 6 MCP servers — start once, use anywhere.
 
+![](./code-hacker_openrouter_glm53.png)
+
 ![](./code-hacker2.png)
 ![](./code-hacker.png)
 ![](./TUI.png)
@@ -70,11 +72,20 @@ OPENROUTER_API_KEY=your-key uv run python web_app.py
 # Open http://localhost:8000
 ```
 
-### 2c. Use with TUI (Claude Code-style Terminal Interface)
+* Example for openrouter
+
+```bash
+export LLM_BASE_URL="https://openrouter.ai/api/v1"
+export OPENROUTER_API_KEY="sk-or-v1-xxxxxxxxx"
+export LLM_MODEL="z-ai/glm-5.3"
+python web_app.py
+```
+
+### 2c. Use with TUI (Claude Code-style Terminal Interface) (Recommend!) 
 
 ```bash
 # Start the TUI (requires OPENROUTER_API_KEY)
-OPENROUTER_API_KEY=your-key uv run python tui_app.py
+OPENROUTER_API_KEY=your-key uv run python tui_app.py [workdir] [--continue | --resume <session-id> | --no-session]
 ```
 
 The TUI provides a **Claude Code-style terminal experience** — interactive prompt, streaming Markdown output with syntax highlighting, real-time tool call display (`⏵ Read` → `✓ Read`), command history (↑/↓), and slash commands (`/help`, `/clear`, `/status`, `/quit`). Built on Rich + prompt_toolkit, no extra dependencies required.
@@ -109,6 +120,15 @@ The web app (and TUI) is a **complete AI programming tool** built on [deepagents
 │                                                                         │
 │  FastAPI + WebSocket → Hacker Terminal UI (http://localhost:8000)       │
 └─────────────────────────────────────────────────────────────────────────┘
+```
+
+* Example for openrouter
+
+```bash
+export LLM_BASE_URL="https://openrouter.ai/api/v1"
+export OPENROUTER_API_KEY="sk-or-v1-xxxxxxxxx"
+export LLM_MODEL="z-ai/glm-5.3"
+python tui_app.py
 ```
 
 ### 3. Run Integration Tests (LLM-powered)
@@ -296,7 +316,6 @@ This applies to:
 │                                         │
 │  filesystem.py:                         │
 │    ├─ Path safety check (blocks .. traversal) │
-│    ├─ File type whitelist (text files only)    │
 │    ├─ File size limit (10MB)            │
 │    ├─ Command blocklist (rm/format/dd/...)     │
 │    └─ Command timeout (30s)             │
@@ -318,7 +337,6 @@ This applies to:
 │    └─ All tools are read-only           │
 │                                         │
 │  multi_project.py:                      │
-│    ├─ File type whitelist (same policy) │
 │    ├─ Command blocklist (rm/format/dd)  │
 │    ├─ Command timeout (30s)             │
 │    └─ Workspace config in .agent-memory │
@@ -582,16 +600,25 @@ The web app connects to all 6 MCP servers, loads 62+ tools, creates a DeepAgent 
 # Set your API key
 export OPENROUTER_API_KEY=your-key
 
-# Start the TUI
+# Start the TUI (current directory is the working directory)
 uv run python tui_app.py
+
+# Or choose a working directory
+uv run python tui_app.py /path/to/project
 ```
 
 The TUI provides the same DeepAgent backend as the web app but with a terminal-native interface:
 - **Streaming output** with Rich Markdown rendering and syntax highlighting
 - **Tool call display** in Claude Code style: `⏵ Read file.py` → `✓ Read`
 - **Command history** with ↑/↓ arrow keys
-- **Slash commands**: `/help`, `/clear`, `/status`, `/quit`
+- **Slash commands**: `/help`, `/clear`, `/status`, `/sessions`, `/quit`
 - **Interrupt support**: Ctrl+C to cancel current operation
+- **Working directory**: pass a path argument — the DeepAgent filesystem backend, `ls`/`glob`/`grep`, and `./AGENTS.md` memory all resolve against it
+- **Sessions** (Claude Code style): every run gets a session id; the conversation is checkpointed to `<workdir>/.sessions/tui_sessions.sqlite`
+  - `uv run python tui_app.py --continue` — resume the most recent session
+  - `uv run python tui_app.py --resume <session-id>` — resume a specific session
+  - `/sessions` — list saved sessions; `/quit` — shows the session id for later resume
+  - `--no-session` — disable persistence
 
 Ideal for SSH sessions, headless servers, or developers who prefer staying in the terminal.
 
@@ -722,10 +749,6 @@ You: Show me what's changed across all my projects
 ```
 
 ## Customization & Extension
-
-### Add File Type Whitelist
-
-Edit `ALLOWED_EXTENSIONS` in `filesystem.py`.
 
 ### Modify Command Blocklist
 

@@ -1,5 +1,10 @@
 This custom node is based on the original work of Paweł Mazurkiewicz ([ComfyUI-AppleSilicon-FP8](https://github.com/pawel-mazurkiewicz/ComfyUI-AppleSilicon-FP8)).
 
+A lot of speed-up ideas were taken from the amazing work of Liu Liu on Draw Things. Open source repos:
+- [draw-things-community](https://github.com/drawthingsai/draw-things-community) (Draw Things CLI)
+- [ccv](https://github.com/liuliu/ccv)
+- [s4nnc](https://github.com/liuliu/s4nnc)
+
 Proudly vibe-coded using Claude.
 
 # ComfyUI-AppleSilicon-int8-Fast
@@ -12,13 +17,17 @@ Alternative: Open the terminal, cd to your custom nodes folder, type git clone h
 
 The kernels are tuned on an M5 Max. Smaller M5 chips run the same kernels with fewer GPU cores; they should get the same relative speedups, but the large models (MiniMax H3 needs about 40 GB) won't fit in their memory.
 
-This was tested with ComfyUI v0.40 and PyTorch 2.13 to 2.15. Future updates may break compatibility.
+This was tested with ComfyUI v0.43 and PyTorch 2.13 to 2.15. Future updates may break compatibility.
 
 No startup arguments are needed (Comfy Desktop's default `--enable-manager` is fine). Memory-related arguments are not recommended.
 
 The node pack adds one node, **Load LoRA (Bypass, Optional)**: ComfyUI's bypass LoRA loader with None as the first choice, so a workflow can keep a LoRA slot and still run without a LoRA.
 
 Sample workflows for Krea 2, MiniMax H3 and LTX 2.5 are on Hugging Face: [Illuminus7/Comfy_Int8_Fast_Workflows](https://huggingface.co/Illuminus7/Comfy_Int8_Fast_Workflows/tree/main). Using the exact models in the workflows is recommended. Put each file in the listed folder under `ComfyUI/models/`. The image-to-video workflows need a start image of your own in the Load Image node.
+
+**INT8 attention** is on by default. It makes generation faster (about 6% for Krea 2 at 2048×2048 and 9–12% for MiniMax H3 video), but it may change images slightly: same scene and composition, with small differences in details. To turn it off, start ComfyUI with the environment variable `INT8_ATTENTION=off`:
+- from the terminal: `INT8_ATTENTION=off python main.py`
+- ComfyUI Desktop: run `launchctl setenv INT8_ATTENTION off` in the terminal, then restart ComfyUI (`launchctl unsetenv INT8_ATTENTION` turns it back on).
 
 ### Krea 2
 

@@ -5,6 +5,17 @@
 
 ![架构](docs/框架.png)
 
+## 两种用法
+
+- **AstrBot 用户**：装 `plugins/` 下的插件，得到完整角色（记忆、情绪、生活层、面板）
+- **qqbridge / DSH 等非 AstrBot 平台**：用 [`memory-core/`](memory-core/README.md)，独立记忆服务 + 人格情绪 + 3D 面板
+
+接入文档：
+
+- [AstrBot](docs/astrbot.md)
+- [qqbridge](memory-core/docs/qqbridge.md)
+- [DSH](memory-core/docs/dsh.md)
+
 ## 它解决什么
 
 普通机器人聊完就忘。这里做了五件事：
@@ -14,6 +25,9 @@
 3. **遗忘**：衰减、归档、相似合并、冲突检测、体检
 4. **情绪**：PAD 三维 + 标签，有上限、有半衰期、不主导判断
 5. **生活**：你没找她时，她也会看书、刷视频、午睡，笔记回流记忆
+6. **时间**：问“早上/昨天”时按时间取原话和事件，不靠语义碰运气
+7. **提醒**：说明天三点叫你，到点主动发消息
+8. **备份**：每天自动备份记忆、情绪和生活层，保留 7 份
 
 ## 不覆盖你的人格
 
@@ -77,7 +91,7 @@ python life_loop.py --send      # 常驻
 单轮上下文 | 1.5–1.8 万 token，其中记忆注入约 300 token（≈2%） |
 记忆规模 | 每天 60 条 → 一年 2.2 万条；十年 22 万条，约 2.4GB |
 实际占用 | 开着 180 天清理时，稳定在 100–200MB |
-检索延迟 | 当前规模 p50 约 18ms；10 万条以上建议加 ANN 索引 |
+检索延迟 | 当前规模 p50 约 120–140ms（含 embedding），纯检索约 40ms；10 万条以上建议加 ANN 索引 |
 成本 | DeepSeek 约 2–4 分/轮；一天 100 轮约 2–4 元；本地模型 0 |
 生活层 | 一天 20–40 轮动作，笔记 3 条以上 |
 
@@ -94,7 +108,8 @@ python tools/eval_memory.py --brain path/to/brain.db --queries eval/queries.exam
 我们在 40 条中文真实问法上的结果（仅供参考，和模型、数据强相关）：
 
 ```
-recall@1 88% · recall@3 100% · MRR 0.938 · p50 18ms
+recall@1 70% · recall@3 90% · recall@5 95% · MRR 0.80
+端到端 p50 约 120–140ms（含 embedding），纯检索约 40ms
 ```
 
 ## 测试

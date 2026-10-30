@@ -17,7 +17,7 @@ Most AI character apps eventually forget who you are. Their relationships reset 
 
 The engine has nine foundations:
 
-- 🧠 **Two-layer memory** — stable facts about the user live alongside shared moments, callbacks, and unfinished threads. → [Memory layers](docs/memory-layers.md)
+- 🧠 **Two-layer memory** — stable facts about the user live alongside the story of each relationship: a running arc, dated episodes, and a journal of moments that come back on their anniversaries. → [Memory layers](docs/memory-layers.md)
 - 💞 **Evolving affinity** — six relationship dimensions move on graded, damped writes and decay with time, shaping tone, depth, and even whether the companion replies. → [Affinity model](docs/affinity-model.md) · [Ghost mechanics](docs/ghost-mechanics.md)
 - 🎭 **Persona Decision Engine (PDE)** — before generation, the engine chooses an action and inner state. Rules work out of the box; an optional LLM judge also rates the persona's basic needs and can stream its reasoning to the client. → [Model config](docs/model-config.md)
 - 🧩 **Structured user insight** — the engine records atomic facts about the user in a ledger and derives a queryable profile from it on a schedule, for onboarding, personalization, and analysis. Optional keyset exports let a downstream service keep read-only mirrors, and one call erases everything the engine derived about a user. → [Insights](docs/insights.md) · [API reference](docs/api-reference.md)
@@ -59,9 +59,9 @@ cargo add eros-engine-core eros-engine-store eros-engine-llm
 
 ```toml
 [dependencies]
-eros-engine-core  = "2.5"
-eros-engine-store = "2.5"   # optional: Postgres + pgvector persistence
-eros-engine-llm   = "2.5"   # optional: model and embedding clients
+eros-engine-core  = "2.6"
+eros-engine-store = "2.6"   # optional: Postgres + pgvector persistence
+eros-engine-llm   = "2.6"   # optional: model and embedding clients
 ```
 
 `eros-engine-server` is not published to crates.io; run it as a Docker image instead.
@@ -71,14 +71,14 @@ eros-engine-llm   = "2.5"   # optional: model and embedding clients
 Multi-architecture images are published to GitHub Container Registry for every `v*` tag:
 
 ```bash
-docker pull ghcr.io/etherfunlab/eros-engine:2.5.2
+docker pull ghcr.io/etherfunlab/eros-engine:2.6.1
 # Or follow the latest tagged release
 docker pull ghcr.io/etherfunlab/eros-engine:latest
 ```
 
 ```bash
 docker run --rm -p 8080:8080 --env-file .env \
-  ghcr.io/etherfunlab/eros-engine:2.5.2 serve
+  ghcr.io/etherfunlab/eros-engine:2.6.1 serve
 ```
 
 Bring your own Postgres and `.env`; the same `docker/Dockerfile` can be deployed to any container host. See [Deploying](docs/deploying.md).
@@ -89,7 +89,7 @@ Bring your own Postgres and `.env`; the same `docker/Dockerfile` can be deployed
 - [Affinity model](docs/affinity-model.md) — relationship dimensions, graded scoring, decay, and labels.
 - [Ghost mechanics](docs/ghost-mechanics.md) — when and why a companion may stay silent.
 - [Group chat](docs/group-chat.md) — groups of up to three personas, the director, and the speaker relay.
-- [Memory layers](docs/memory-layers.md) — profile and relationship memory, embeddings, and retrieval.
+- [Memory layers](docs/memory-layers.md) — profile and relationship memory, dreaming, embeddings, and retrieval.
 - [World system](docs/world-system.md) — experimental World Memories, World Town, and World Stories simulations.
 - [Model config](docs/model-config.md) — tasks, selection, fallbacks, and multi-provider routing through `[providers]`.
 - [Prompt traits](docs/prompt-traits.md) — per-request prompt behavior and tier allow-lists.

@@ -14,6 +14,11 @@ Built on <a href="https://github.com/Niko1221/Strata">Strata</a> and heavily ext
 > DeepSeek-V4.1 engine (faster now), plus GLM-5.3-Flash and the Qwen3.8 models, in one tree. Old links and clones
 > redirect here; nothing DeepSeek-V4.1 was removed.
 
+> **Qwen 4, day one (prep, 30 Oct).** Qwen 4 isn't out yet, but we've been getting ready so Xolotl can run it as
+> close to release day as possible. If Qwen 4 Flash keeps Qwen3.8-Flash-Next's architecture, the engine already
+> runs it; the 27B looks dense, so it's going into `strata-dense` with the hyper-connections and QSA attention added.
+> What's known so far and the plan: [docs/QWEN4.md](docs/QWEN4.md).
+
 > **DeepSeek-V4.1 V4 is up (25 Oct)** on [Hugging Face](https://huggingface.co/IndrasMirror/DeepSeek-V4.1-Flash-1017-XQ-Uncensored)
 > (`v4/`, same size as V3). It's the best build so far: on held-out text it agrees with the full-precision model 86.9%
 > of the time on the top-1 token vs V3's 82.9% (KL 0.306 vs 0.405, through the real engine), and its perplexity is
@@ -83,6 +88,17 @@ prefill 289-297 / 395-409 tok/s at 6.1K / 16.5K; full HumanEval (164) 162/164. H
 
 ## Recently added
 
+- **Deep sleep** for MiniMax-M3.1 and DeepSeek-V4.1 (#75, NektoDron): opt-in `"deep_sleep": "auto" | "native" |
+  "checkpoint"` plus authenticated `POST /sleep` and `/wake` gives the GPU back while the loaded model and conversations
+  stay in host RAM. M3.1 sleeps natively (wake ~1.4-1.9 s); DeepSeek-V4.1 uses the CUDA driver checkpoint (restore
+  ~19-21 s). Off by default: [docs/DEEP_SLEEP.md](docs/DEEP_SLEEP.md). **Draft:** merged for testing, the GPU
+  numbers predate the rebase and the DeepSeek checkpoint/restore has not been re-run on current main yet (#74 stays
+  open until it is).
+- **Qwen3.6 vision, shared prefix cache and batched sampled MTP** (#76, NektoDron): text and image prefixes are reused
+  across callers and owners, native continuous batches keep each request's DeltaNet state, KV, grammar and MTP
+  separate, and GBNF / JSON-schema output is native: [docs/Q36_SERVING.md](docs/Q36_SERVING.md).
+- **No more lost control-queue wakeups** (#79, NektoDron): a fairness waiter could miss its notification and sit out the
+  500 ms timeout; it now rechecks under the lock.
 - **GLM-5.3-Flash long conversations no longer crash** (#46, vthomasino): when the graph pool fills and gets rebuilt,
   every cached graph (predict and rows included) and the CUDA backend's captured graphs are dropped too, so nothing
   replays against freed memory. Regression tool: `tools/xolotl-glm-manylengths.py`.
@@ -194,10 +210,13 @@ and the unification are Indras Mirror's. Model weights: DeepSeek, Zhipu AI, Qwen
 peasantsmith, ukisai, d0xin and gcsa-abliterix.
 
 Contributors, with thanks: [NektoDron](https://github.com/NektoDron) (MMQ id slack, forced tool calls, the arena pipe
-and indexer WMMA opt-ins, #48-#52; checked #55; the Q3_K + GPTQ Q2_0 lite calibration and allocation tooling, #58),
+and indexer WMMA opt-ins, #48-#52; checked #55; the Q3_K + GPTQ Q2_0 lite calibration and allocation tooling, #58;
+the ggml 6050b467 pool-hook link fix, #72; the control-queue wakeup fix, #79; Qwen3.6 vision, prefix cache and
+batched MTP, #76; deep sleep, #75),
 [paul123637-lab](https://github.com/paul123637-lab) (the DSpark seed fixes, #54 and #56; RTX 5080 and 5060 Ti helper
 numbers), [kelheor](https://github.com/kelheor) (the vision `pread` fix, #51), [exye137](https://github.com/exye137)
-(the thread-local CUDA stream leak, #57) and [penink-WH](https://github.com/penink-WH) (AC922 rig).
+(the thread-local CUDA stream leak, #57) [penink-WH](https://github.com/penink-WH) (AC922 rig) and [cpacsm75](https://github.com/cpacsm75) (192 GB
+arena tuning on Windows, #77).
 
 *Xolotl* is Quetzalcoatl's dark twin, who carries the dead up from the underworld - as the engine carries experts up
 from RAM and NVMe. Research code from one developer, measured on one PC; reports from other hardware welcome. MIT.

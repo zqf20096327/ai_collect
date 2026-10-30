@@ -1375,9 +1375,12 @@ Layout and design failures produce no errors and no warnings — an agent
 that only reads code and logs will ship a page that "works" but looks
 broken. `botference see` closes that loop with zero new dependencies:
 it renders a page in headless system Chrome and writes one PNG per
-viewport (defaults: 390x844 phone + 1440x900 desktop — the phone shot
-is real mobile layout, since responsive CSS responds to the viewport),
-printing each path for the agent to read back with its image tooling.
+viewport (defaults: 390x844 phone + 1440x900 desktop), printing each
+path for the agent to read back with its image tooling. Headless Chrome
+will not make a window narrower than 500 px, so any viewport under
+500 px wide is shot as an emulated phone screen of exactly that size
+(the page sees `innerWidth` 390, a pixel ratio of 3, a mobile user
+agent and touch input; the PNG is 390 by 844 pixels).
 
 ```bash
 botference see fitlog                        # a RUNNING service by name — port discovered live
@@ -1469,7 +1472,8 @@ This means:
 
 - `plan` and `research-plan` may write anywhere under `botference/`
 - `build` may write anywhere under `botference/`
-- the rest of the project stays read-only by default
+- the rest of the project stays read-only, because this file names narrower
+  roots (with no `write_roots` for a mode, the whole project is writable)
 - anything outside declared `write_roots` is blocked at runtime and by post-run audit
 
 In practice, this gives you two common workflows:
@@ -1727,5 +1731,4 @@ pick it up.
 | `/agents [on\|off]` | Grant or revoke the Claude participant's **subagent** (Task) tool. Off by default in every chat: Claude is instructed to *suggest* subagents when a task would benefit and wait for your approval — and the gate is enforced at the tool level (the CLI is simply not given the Task tool until you grant it), not by prompt alone. The grant persists with the chat across `/resume` and resets on `/new`. Codex has no subagent facility; not available under `--claude-interactive`. |
 | `/verify [on\|off]` | When the bots mark the thread **converged**, run one more turn before the floor comes back to you: the bot that did *not* write the last claim is handed the claims and the sources the room has — and **not** the discussion — and reports each claim confirmed (with the supporting line), contradicted (with the contradicting line), or not checkable. On by default, per chat; skipped when the final message is too short to be a claim, when the room has no source, or when the other bot is not in the room. See [Adversarial review](#adversarial-review). |
 | `/allow-host [<domain>\|remove <domain>]` | Not needed by default: the bots can reach any website, and servers on this machine (127.0.0.1), just as in a plain Claude Code session. It only matters if you start botference with `BOTFERENCE_PLAN_NETWORK=allowlist`, which limits the bots' shell to a short list of sites (GitHub, Wikipedia and the public planetary-science archives: HiRISE, USGS Astrogeology, PDS imaging, NASA images). In that mode it grants a site, or takes one away with `remove`, defaults included. Grants are kept per workspace in `.botference/allowed-hosts.json` and apply from the bots' next turn, with no restart. Bare `/allow-host` lists current grants. `BOTFERENCE_PLAN_ALLOW_NETWORK=0` turns the bots' network off. |
-| `/watch <url> [question]` | Have **Gemini watch a YouTube video** and post what it saw into the chat, so Claude and Codex (who cannot take video) can read it on their next turn. See [YouTube videos](#youtube-videos). |
-| `/parallel <prompt>` | **Both bots answer at once**, neither seeing the other's reply. The word may sit anywhere in the prompt (`what do you make of this? /parallel`). Each bot has the whole chat up to your prompt; both replies land in the shared history and each sees the 
+| `/watch <url> [question]` | Have **Gemini watch a YouTube video** and post what it saw into the chat, so Claude and Codex (who cannot take video) can read it on their next turn. See [YouTube videos](#youtube-vi

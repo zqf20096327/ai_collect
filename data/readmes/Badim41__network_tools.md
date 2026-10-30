@@ -44,6 +44,8 @@
 
 > 💡 **Для работы с длинным контекстом** лучше всего использовать модели **Gemini 4 Argon**, **Gemini 3.5 Flash**, **Gemini 3.5 Flash Lite** или **Gemini 3.0 Pro**.
 
+> ⚡ **Самые быстрые модели** — **Command A** (`command-a`) и **GPT-5** (`gpt-5`).
+
 **OpenAI**
 - GPT-5.6-sol / GPT-5.6-terra / GPT-5.6-luna **(временно недоступны)**
 - GPT-5 / GPT-5-mini / GPT-5-nano

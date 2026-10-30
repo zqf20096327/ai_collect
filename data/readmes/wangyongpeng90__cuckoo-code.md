@@ -37,10 +37,13 @@
 >
 > 所有捐赠款项**直接进入壹基金公益账户**，与作者无关，纯属公益行为。
 
-**已通过壹基金捐赠的善款：3 笔 / 300 元**
+**已通过壹基金捐赠的善款：6 笔 / 588 元**
 
 | 捐赠者 | 金额 | 日期 | 捐赠证书 |
 |---|---|---|---|
+| 刘*帅 | 100 元 | 2026-10-29 |[https://onefoundation.cn/cert/20261029162641585/](https://onefoundation.cn/cert/20261029162641585/))|
+| CS | 100 元 | 2026-10-29 |[https://onefoundation.cn/cert/20261029003017507/](https://onefoundation.cn/cert/20261029003017507/)|
+| 杨先生 | 88 元 | 2026-10-29 |[https://onefoundation.cn/cert/20261029065593254/](https://onefoundation.cn/cert/20261029065593254/))|
 | Hazel | 100 元 | 2026-10-26 | [https://onefoundation.cn/cert/20261027103737586/](https://onefoundation.cn/cert/20261027103737586/)|
 | 十七不是石器ᯤ | 100 元 | 2026-10-26 | [https://onefoundation.cn/cert/20261026213679892/](https://onefoundation.cn/cert/20261026213679892/)|
 | 王先生 | 100 元 | 2026-10-26 | [https://onefoundation.cn/cert/20261026131837934/](https://onefoundation.cn/cert/20261026131837934/) |
@@ -441,6 +444,7 @@ cuckoo-code/
   - **插件网页脚本注入**：插件新增 `scripts/` 贡献类型——按 URL 匹配向网页主世界注入脚本，可作用于内置平台（PR #26）
   - **Gitee 插件市场支持**：插件市场新增 Gitee 源（检索/下载/清单），与 GitHub 并行，解决国内访问 GitHub 不稳定（PR #28）
   - **子代理发送修复**：修复豆包等 contenteditable 平台子代理卡在"发送任务提示词"（PR #29）
+  - **统一 UA 版本**：设置全局 `app.userAgentFallback` 为干净 Chrome UA，消除壳页面 / Service Worker 与 AI 页面 UA 不一致（暴露 Electron 标识与内核完整版本号，可能触发 DeepSeek 环境异常 / Google OAuth 拒绝）（PR #71）
 - [@8555uuy](https://github.com/8555uuy)：
   - **危险命令检测加固**：修复复合命令（`&&` `||` `;` `|` `&`）绕过检测；统一为单一真相源并补充危险变体（PR #30）
   - **glob 排除产物目录**：未指定 path 时默认排除 `node_modules` 等依赖/产物目录，避免淹没项目自身文件（PR #31）

@@ -5,10 +5,11 @@
 The private AI that lives on your computer and does real work, not just chat.
 
 <p align="center">
-  <img width="960" alt="Skales dashboard in the Skales X light theme with the Desert background" src="docs/readme/hero-dashboard-desert.jpg" />
+  <a href="#-skales-scout-beta-a-helper-that-keeps-working-while-you-do-something-else"><img width="960" alt="Skales Scout: runs on your desk, locked in its own virtual machine" src="docs/readme/scout-banner.webp" /></a>
 </p>
+<p><b>🐡 New in 12.9.60: Skales Scout (Beta)</b>, AI agents that keep working on your desk while you do something else. <a href="#-skales-scout-beta-a-helper-that-keeps-working-while-you-do-something-else">What a scout does →</a></p>
  <p>
-    <a href="https://github.com/skalesapp/skales/releases/latest"><img src="https://img.shields.io/badge/version-12.9.55-10b981?style=flat-square" alt="Version 12.9.55" /></a>
+    <a href="https://github.com/skalesapp/skales/releases/latest"><img src="https://img.shields.io/badge/version-12.9.60-10b981?style=flat-square" alt="Version 12.9.60" /></a>
     <a href="https://skales.app/licence"><img src="https://img.shields.io/badge/licence-proprietary-10b981?style=flat-square" alt="Licence" /></a>
     <a href="https://skales.app"><img src="https://img.shields.io/badge/Windows_+_macOS_+_Linux_+_Android_+_iOS-10b981?style=flat-square&logo=windows&logoColor=white" alt="Platform" /></a>
     <a href="https://github.com/skalesapp/skales/stargazers"><img src="https://img.shields.io/github/stars/skalesapp/skales?style=flat-square&color=10b981" alt="Stars" /></a>
@@ -22,7 +23,7 @@ The private AI that lives on your computer and does real work, not just chat.
   <p>Skales Mobile: 📱<a href="https://play.google.com/store/apps/details?id=app.skales.mobile"><b>Android</b></a> · <a href="https://apps.apple.com/us/app/skales/id6763328966"><b>iOS</b></a></p>
 
   <p>
-    One-click install. No Docker, no terminal. Start instantly with Skales IQ, a free built-in trial that needs no API key, bring your own from 15+ AI providers, or run fully offline with Ollama. Your files never leave your machine.<br/>
+    One-click install. No Docker, no terminal. Start instantly with Skales IQ, a free built-in trial that needs no API key, bring your own from 15+ AI providers, or run fully offline with Ollama. Your files stay on your machine.<br/>
     Ask it something, hand it a goal and close the lid, or let it reach you on WhatsApp and Telegram. One place for everything, made for everyone from 6 to 60+.
   </p>
    <p>
@@ -53,38 +54,16 @@ The private AI that lives on your computer and does real work, not just chat.
 
 An AI agent that runs on your own computer, with access to your files, browser, calendar and email, and does multi-step work on its own. It installs like any normal app, it runs on your machine instead of someone's cloud, and it is built to be usable by people who are not developers. Nothing to start: Skales IQ is a free built-in trial that needs no API key, and after that you bring your own key from 15+ providers or run fully offline and pay nobody.
 
+- 🐡 **Give it a scout (Beta).** A lasting agent with its own thread, memory and rhythm, optionally in its own virtual machine, that keeps rounds, brings suggestions and asks before anything risky.
 - 🎯 **Hand it a goal and close the lid.** `/goal build me a trading bot` runs in the background across many steps and picks up where it left off.
 - 💻 **Point it at a folder and let it code.** `/code` binds a folder to any chat, with inline diffs and one-click undo.
 - 📱 **Reach it from your phone.** Pair via QR and your phone drives this desktop's full tool set, or run the phone standalone.
 
 **[⬇ Download](https://skales.app)** · **[📖 Docs](https://docs.skales.app)** · **[🎬 Demo](https://www.youtube.com/watch?v=k83NlptVmfc)** · **[📝 Changelog](./CHANGELOG.md)** · **[💬 Community](https://github.com/skalesapp/skales/discussions)**
 
-> **About this repository.** This is where Skales is *distributed*: releases,
-> the changelog, install guides and the issue tracker. Skales itself is
-> proprietary and stays proprietary, and the product is the signed application
-> you download from [skales.app](https://skales.app).
->
-> A **v7 source snapshot** stood here until 12.9.30 and was removed with that
-> release. Its last code commit was 26 July 2026 and it had long stopped
-> describing the product: 138 TypeScript files against 984 in the tree that is
-> built, 70 API routes against 225. It drew four security reports about code the
-> shipped application does not contain.
->
-> With the same release Skales moved from the Business Source Licence 1.1 to
-> its own [End User Licence Agreement](https://skales.app/licence). For what
-> you may do, nothing changes: private use, study and teaching stay free of
-> charge, and commercial use needed a licence under the previous terms too.
-> The step was taken deliberately, together with the removal above: a source
-> tree six months behind the product created more confusion than clarity, and
-> one agreement in plain language, shown once on first start, is easier to
-> understand than a source licence pointing at code that no longer described
-> what you were running. Releases up to 12.9.27 keep the terms they were
-> supplied under. The full text ships beside the app as [LICENSE](./LICENSE)
-> and [LICENSE.de](./LICENSE.de).
->
-> Reporting a security issue? Please read
-> [SECURITY.md](https://github.com/skalesapp/skales/blob/main/SECURITY.md) first. It says what is in scope, and it will save
-> you a lot of time.
+<p align="center">
+  <img width="960" alt="Skales dashboard in the Skales X light theme with the Desert background" src="docs/readme/hero-dashboard-desert.jpg" />
+</p>
 
 <details>
 <summary><b>📋 Full feature index</b> (click to expand)</summary>
@@ -93,6 +72,7 @@ An AI agent that runs on your own computer, with access to your files, browser, 
 
 - [Demo](#demo)
 - [⚡ Why Skales?](#-why-skales)
+- [🐡 Skales Scout (Beta)](#-skales-scout-beta-a-helper-that-keeps-working-while-you-do-something-else)
 - [🚪 The eleven places Skales lives](#-the-eleven-places-skales-lives)
   - [💬 Chat](#-chat)
   - [💻 Code](#-code)
@@ -157,7 +137,6 @@ Skales is an AI agent that lives on your desktop. Not in a browser tab, not behi
 | | Typical AI Agents | Skales 🦎 |
 |---|---|---|
 | **Setup** | Docker, Terminal, Python CLI | Download EXE/DMG/AppImage, double-click |
-| **RAM Usage** | 1.5GB - 3GB+ | ~300MB |
 | **OS Support** | Linux / Docker required | Windows + macOS + Linux native |
 | **Time to first task** | Hours to days | 30 seconds |
 | **Privacy** | Cloud only | Local-first, BYOK, offline capable |
@@ -170,6 +149,18 @@ Skales is an AI agent that lives on your desktop. Not in a browser tab, not behi
 
 ---
 
+## 🐡 Skales Scout (Beta): a helper that keeps working while you do something else
+
+A scout is a lasting agent that lives on your computer with its own thread, memory and rhythm. It has a name, a role and a personality, stays in one thread for months without losing track, and remembers what it learned.
+
+- **Its own small computer.** On a Mac, on Windows and on Linux a scout can get a virtual machine that reaches the internet but never your home network. You watch it work live, take over when you want, and its results come back as files you can open.
+- **A day of its own.** Without being asked it keeps rounds, a standup and an evening summary, splits goals over several days into parts, and brings suggestions you answer with Go or Wait.
+- **A team when the job is bigger.** A lead scout shares work with its sub-scouts and short-lived helpers. Each scout can have its own model and a daily budget, the cost of every run is in view, and a fallback model is never used in silence.
+- **You decide how far it goes.** Approvals say how far your yes reaches. Sites, purchases, the apps you connected and a mailbox of its own are allowed per scout, and sign-ins stored once in Skales Vault are handed out entry by entry.
+- **On your phone too.** The same Scout page, questions, approvals and settings, with a scout that can live on the phone alone when there is no computer.
+
+**Automations** sit right beside it: switch a chat to the **Automation** mode and Skales builds the automation next to the conversation, on the same canvas Flow opens. Start it by hand, on a schedule, from a file or folder, by a webhook or from another run.
+
 ## 🚪 The eleven places Skales lives
 
 The sidebar starts plain: **Dashboard, Chat, Code, Studio**, and one **More** button holding everything else, grouped. Pin what you use (the pin on the row, or a right click) and it rises out of More to sit under the four; unpin and it goes back. Pins survive a restart, and while something with news sits hidden in More, the More button carries its dot. Everything else Skales can do is something you **ask** it to do, from a conversation.
@@ -178,6 +169,9 @@ The sidebar starts plain: **Dashboard, Chat, Code, Studio**, and one **More** bu
 
 The front door. Ask a question, or hand over a task and let it run.
 
+- **Slides, a document or a note beside the chat.** The mode pill under the input switches a chat to Slides, Document, Note or Automation. The work opens in the side panel and changes exactly where you comment; a deck's toolbar adds text boxes, pictures, tables and shapes by hand, and a pencil on the new-chat page starts from six templates.
+- **Reactions on every message,** a right-click menu with Copy, Quote in reply and Edit, and chats that sort into groups and projects.
+- **Your own company gateway.** A custom endpoint (LiteLLM, Bifrost or any OpenAI-compatible gateway) carries its own secret headers, knows the real context window behind a prefixed model name and shows the gateway's own price.
 - **`/goal` turns a request into ongoing work.** It plans the steps and runs them on its own, in the background, with the app closed. It does not ask you to continue: it stops when the task is done, when it genuinely needs a decision, or before a consequential action like sending an email, where it asks once with a one-tap always-allow. Reopen the app and it picks up where it left off. A goal is only finished when its own success criteria are met, and what it learned folds back into Memory. Run several at once, or put one on a repeating schedule.
 - **`/code` binds a folder to this conversation,** without leaving it. Four modes under the composer: **Plan** investigates and proposes, **Code** asks before each edit, **Edits** approves file edits as it goes but still asks before a shell command or a push, **Auto** runs the whole task after a one-time consent. Inline git diffs with an added/removed count, a repo map so it heads straight to the right file in a large codebase, `@` to point at a file by name, and one-click Undo per file or for a whole turn. It commits and pushes with **your own git identity**, no added attribution.
 - **`/spin` writes a text again in a plainer voice.** `/spin <text>` rewrites what you hand it, `/spin` on its own rewrites the last answer, and the same action sits in the message menu next to Copy. Select part of a reply and right click the selection to rewrite just that passage, with copy, quote, read aloud and save-to-document beside it. It runs on a model you pick for the job, and a local one keeps the text on your machine.
@@ -370,6 +364,8 @@ No vendor lock-in. Bring your own key, or run locally for free.
 
 ## 📦 Installation
 
+Skales runs natively on Windows on Arm (Snapdragon and other Arm PCs) with its own installer, `Skales-Setup-<version>-arm64.exe`.
+
 **[Download here](https://skales.app)**
 
 > 🍏 **macOS:** signed DMG. Drag to Applications.
@@ -418,6 +414,33 @@ short reading. Every version is published at
 
 Releases up to and including 12.9.27 were supplied under the Business Source
 Licence 1.1, and a copy supplied under it keeps what that licence granted.
+
+> **About this repository.** This is where Skales is *distributed*: releases,
+> the changelog, install guides and the issue tracker. Skales itself is
+> proprietary and stays proprietary, and the product is the signed application
+> you download from [skales.app](https://skales.app).
+>
+> A **v7 source snapshot** stood here until 12.9.30 and was removed with that
+> release. Its last code commit was 26 July 2026 and it had long stopped
+> describing the product: 138 TypeScript files against 984 in the tree that is
+> built, 70 API routes against 225. It drew four security reports about code the
+> shipped application does not contain.
+>
+> With the same release Skales moved from the Business Source Licence 1.1 to
+> its own [End User Licence Agreement](https://skales.app/licence). For what
+> you may do, nothing changes: private use, study and teaching stay free of
+> charge, and commercial use needed a licence under the previous terms too.
+> The step was taken deliberately, together with the removal above: a source
+> tree six months behind the product created more confusion than clarity, and
+> one agreement in plain language, shown once on first start, is easier to
+> understand than a source licence pointing at code that no longer described
+> what you were running. Releases up to 12.9.27 keep the terms they were
+> supplied under. The full text ships beside the app as [LICENSE](./LICENSE)
+> and [LICENSE.de](./LICENSE.de).
+>
+> Reporting a security issue? Please read
+> [SECURITY.md](https://github.com/skalesapp/skales/blob/main/SECURITY.md) first. It says what is in scope, and it will save
+> you a lot of time.
 
 WordPress Plugin: **MIT**, [github.com/skalesapp/wordpress](https://github.com/skalesapp/wordpress)
 

@@ -13,7 +13,7 @@ SPDX-License-Identifier: Apache-2.0
     <img src="https://img.shields.io/pypi/dm/pina-mathlab?label=downloads&logo=pypi&style=for-the-badge"
          alt="PyPI downloads"/>
   </a>
-  <img src="https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2FmathLab%2FPINA%2Frefs%2Fheads%2F0.3%2Fpyproject.toml&style=for-the-badge&logo=python&logoColor=white"><br>
+  <img src="https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2FPINA-org%2FPINA%2Frefs%2Fheads%2Fmaster%2Fpyproject.toml&style=for-the-badge&logo=python&logoColor=white"><br>
   <img src="https://img.shields.io/github/v/release/pina-org/pina?sort=date&display_name=release&style=for-the-badge">
   <img src="https://img.shields.io/github/check-runs/pina-org/pina/master?style=for-the-badge&logo=githubactions&logoColor=white&label=master">
   <img src="https://img.shields.io/github/check-runs/pina-org/pina/dev?style=for-the-badge&logo=githubactions&logoColor=white&label=dev">
@@ -154,7 +154,7 @@ To install additional packages required for development, tests, docs, or tutoria
 <summary>
   <h2>Getting started with PINA</h2>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://mathlab.github.io/PINA/">
+  <a href="https://pina-org.github.io/PINA/">
     <img align="center" height="20" src="https://img.shields.io/badge/documentation-fa9900?style=for-the-badge&logo=readthedocs&labelColor=555"></a>
   &nbsp;&nbsp;&nbsp;&nbsp;
   <a href="API_scheme.md">
@@ -169,19 +169,19 @@ Solving a differential problem in <b>PINA</b> follows a clean four-step pipeline
 <ol>
   <li>
     Define the problem and constraints using the
-    <a href="https://mathlab.github.io/PINA/_rst/_code.html#problems"><b>Problem API</b></a>.
+    <a href="https://pina-org.github.io/PINA/_rst/_code.html#problems"><b>Problem API</b></a>.
   </li>
   <li>
     Design your model using PyTorch, PyTorch Geometric, or import from the
-    <a href="https://mathlab.github.io/PINA/_rst/_code.html#models"><b>Model API</b></a>.
+    <a href="https://pina-org.github.io/PINA/_rst/_code.html#models"><b>Model API</b></a>.
   </li>
   <li>
     Select or build a Solver using the
-    <a href="https://mathlab.github.io/PINA/_rst/_code.html#solvers"><b>Solver API</b></a>.
+    <a href="https://pina-org.github.io/PINA/_rst/_code.html#solvers"><b>Solver API</b></a>.
   </li>
   <li>
     Train with the
-    <a href="https://mathlab.github.io/PINA/_rst/trainer.html"><b>Trainer API</b></a>,
+    <a href="https://pina-org.github.io/PINA/_rst/trainer.html"><b>Trainer API</b></a>,
     powered by PyTorch Lightning.
   </li>
 </ol>
@@ -368,7 +368,7 @@ If you would like to contribute, please read the
 
 <p align="center">
   <a href="https://github.com/pina-org/PINA/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=mathLab/PINA"
+    <img src="https://contrib.rocks/image?repo=PINA-org/PINA"
          alt="Contributors"
          style="max-width: 100%; height: auto;" />
   </a>
@@ -380,6 +380,76 @@ If you would like to contribute, please read the
 
 <hr/>
 </details>
+
+
+<details>
+  <summary>
+    <h2>Fundings</h2>
+  </summary>
+
+  <p>
+    A significant part of PINA has been developed either as a
+    by-product of funded research projects or through contributions
+    from researchers holding university-funded positions.
+    We gratefully acknowledge this support, particularly from:
+  </p>
+
+  <ul>
+    <li>
+      <a href="https://people.sissa.it/~grozza/aroma-cfd/">
+        H2020 ERC CoG 2015 AROMA-CFD project (Grant No. 681447)
+      </a>,
+      led by Principal Investigator
+      <a href="https://mathlab.sissa.it/people/gianluigi-rozza">
+        Prof. Gianluigi Rozza
+      </a>
+      at
+      <a href="https://mathlab.sissa.it/">
+        SISSA MathLab
+      </a>.
+    </li>
+    <li>
+      <a href="https://www.agenziacoesione.gov.it/dossier_tematici/nextgenerationeu-e-pnrr/">
+        Next Generation EU
+      </a>,
+      supporting Italy's environmental and digital transitions.
+    </li>
+  </ul>
+
+  <div style="display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin: 20px 0;">
+
+  <img src="docs/source/index_files/fundings.png"
+       alt="ERC Logo"
+       style="height: 80px; width: auto;">
+
+  </div>
+
+  <p>
+    We also acknowledge the contribution of <a href="https://mstrazzu.github.io/">Maria Strazzullo</a> to the early development of the package.
+    Special thanks go to all the students and researchers from different universities who have contributed to its development.
+    Finally, we warmly thank all the <a href="https://contrib.rocks/image?repo=PINA-org/PINA"> contributors </a>
+    who are the true heart of PINA!
+  </p>
+
+  <div style="display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin: 20px 0;">
+
+  <img src="docs/source/index_files/university_dev_pina.png"
+       alt="Contributing Universities"
+       style="height: 80px; width: auto;">
+
+  </div>
+
+  <hr>
+</details>
+
 
 <details>
 <summary>

@@ -174,7 +174,76 @@ Pull requests for new features are welcome. Bug fixes too — if you find an iss
 - Bump the version by one major number (e.g. 236.0 → 237.0) in `Properties/AssemblyInfo.cs` and `source.extension.vsixmanifest`, and add a short `### Version X.0` entry at the top of Version History in this README. See `CLAUDE.md` for details.
 - The extension's original developer reviews the PR and publishes the new version to the Marketplace.
 
+## Thank You, Contributors
+
+A huge thank you to every developer who took the time to improve this extension with pull requests. Your features, fixes and ideas made it better for everyone!
+
+- [@Gh61](https://github.com/Gh61) — 21 PRs
+- [@ClaudioCas](https://github.com/ClaudioCas) — 13 PRs
+- [@rbuss93](https://github.com/rbuss93) — 9 PRs
+- [@MartinWooChina](https://github.com/MartinWooChina) — 6 PRs
+- [@metman-oss](https://github.com/metman-oss) — 6 PRs
+- [@karpach-relativity](https://github.com/karpach-relativity) — 4 PRs
+- [@Ocrosoft](https://github.com/Ocrosoft) — 3 PRs
+- [@adrian-schmidt-foehre-mint](https://github.com/adrian-schmidt-foehre-mint) — 1 PR
+- [@ArgoZhang](https://github.com/ArgoZhang) — 1 PR
+- [@atim0r](https://github.com/atim0r) — 1 PR
+- [@CholmesFr](https://github.com/CholmesFr) — 1 PR
+- [@devStoner2024](https://github.com/devStoner2024) — 1 PR
+- [@fooberichu150](https://github.com/fooberichu150) — 1 PR
+- [@iwiwb](https://github.com/iwiwb) — 1 PR
+- [@NeilN1](https://github.com/NeilN1) — 1 PR
+- [@osjimenez](https://github.com/osjimenez) — 1 PR
+- [@wluisdev](https://github.com/wluisdev) — 1 PR
+
 ## Version History
+
+### Version 292.0
+- *Settings → Terminal* now tells the two native mode situations apart: with the chat docked in the panel, the prompt panel position and toolbar alignment stay editable and a note marks the rest as terminal-only; with the chat in its own tab everything is greyed out as before.
+- The banner on that tab gained *Attach chat to Panel* / *Detach chat to Tab*, so the chat can be moved between the panel and its own tab right from Settings.
+- Thanks to [@Gh61](https://github.com/Gh61) for this release (#248).
+
+### Version 291.0
+- The 📎 Attach and 🤖 Model buttons of the terminal toolbar can now be dragged into any position in *Settings → Toolbar* like the other buttons, and they no longer jump along when ☰ or ⚙ is moved. Both are terminal-only and say so in the list.
+- *Align the toolbar buttons to the right edge* moved from *Settings → Toolbar* to *Settings → Terminal* (its own *Toolbar alignment* section), since it only applies to the terminal toolbar.
+- The terminal toolbar no longer leaves an empty gap before its first button; the scroll arrows only take room once the buttons stop fitting.
+
+### Version 290.0
+- New *Thank You, Contributors* section in this README, listing every developer who contributed pull requests, sorted by number of PRs.
+
+### Version 289.0
+- Automatic chat tab titles now always name the conversation, instead of sometimes showing a reply to the first prompt (such as "Sure, I'll look for it").
+- Thanks to [@Gh61](https://github.com/Gh61) for this release (#243).
+
+### Version 288.0
+- With *Show all chats in one window*, the empty window now offers *Start a new chat*, *Restore today's sessions* and a Session History button instead of a plain hint.
+- An untitled chat in that window is captioned *New conversation*, and when the tabs don't fit, ◂ ▸ arrows and the mouse wheel step one whole tab without cutting the first one.
+- The window's "+" is gone: the chat's own new-chat button and the ⋯ menu's *New chat session* are shown again in every chat of the window.
+- Thanks to [@ClaudioCas](https://github.com/ClaudioCas) for this release (#242).
+
+### Version 287.0
+- New *Thinking in the chat* option in *Settings → Native mode*: keep the agent's thinking collapsed (default, as before), open the thinking right before a question card, or always open it once finished.
+- Thanks to [@ClaudioCas](https://github.com/ClaudioCas) for this release (#241).
+
+### Version 286.0
+- A question card with a single question now shows its topic badge beside the card title instead of on a line of its own; with several questions, each badge sits right before its question.
+- Thanks to [@ClaudioCas](https://github.com/ClaudioCas) for this release (#240).
+
+### Version 285.0
+- Renaming a Claude Code conversation while its chat is still running now sticks: the old name no longer comes back in the tab, Session History or Claude Code's own resume list after the next reply.
+- Thanks to [@ClaudioCas](https://github.com/ClaudioCas) for this release (#239).
+
+### Version 284.0
+- In native mode, picking a conversation in Session History from an empty chat tab where you already started typing a prompt (or attached files) now opens it in a new tab, so your draft stays where it was.
+- Thanks to [@ClaudioCas](https://github.com/ClaudioCas) for this release (#238).
+
+### Version 283.0
+- Session History and the recent conversations list now show when each Claude Code conversation was last used, so renaming a conversation or opening the list no longer changes its date or moves it to the top.
+- Thanks to [@ClaudioCas](https://github.com/ClaudioCas) for this release (#237).
+
+### Version 282.0
+- Settings saved in one Visual Studio window are no longer undone by another open window: each window now writes only the settings it actually changed.
+- Thanks to [@ClaudioCas](https://github.com/ClaudioCas) for this release (#236).
 
 ### Version 281.0
 - *Hide Prompt Input Box* is now a terminal-mode option only: it no longer shows in the ⚙ menu in native mode, where the prompt box follows the chat tab instead.

@@ -6,7 +6,7 @@
 > One user, one machine, one memory store — shared by every coding agent you use.
 
 ![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)
-![Status: v0.4.0](https://img.shields.io/badge/status-v0.4.0-blue.svg)
+![Release](https://img.shields.io/github/v/release/ys118/harnmem?label=release)
 ![CI](https://github.com/ys118/harnmem/actions/workflows/ci.yml/badge.svg)
 ![npm](https://img.shields.io/npm/v/@harnmem/core?label=npm)
 ![Runtime deps: 0](https://img.shields.io/badge/runtime%20deps-0-brightgreen.svg)
@@ -21,18 +21,24 @@ database, no embedding model, and no runtime dependencies in the engine.
 
 - **Packages:** `@harnmem/core` (engine), `@harnmem/cli` (`harnmem` command),
   `pi-harnmem` (pi extension), `dsh-harnmem` (DSH plugin), `claude-harnmem`
-  (Claude Code plugin), `codex-harnmem` (Codex CLI plugin) — all published on
-  npm. Install the CLI with `npm install -g @harnmem/cli`.
-  `opencode-harnmem` (opencode v2 plugin) is verified end to end on the
-  opencode 2.1.4 binary (injection, native tools, per-turn journaling;
-  12/12 unit tests); ships with the v0.6.0 release.
+  (Claude Code plugin), `codex-harnmem` (Codex CLI plugin),
+  `opencode-harnmem` (opencode v2 plugin), `grok-harnmem` (Grok CLI plugin) and
+  `cursor-harnmem` (Cursor desktop plugin) — all published on npm. Install
+  the CLI with `npm install -g @harnmem/cli`; the opencode adapter needs
+  opencode 2.x and is verified end to end on the 2.1.4 binary (injection, native
+  tools, per-turn journaling); the Grok adapter is verified on the 1.0.70 binary
+  (MCP `initialize.instructions` injection, six tools, session-end extraction);
+  the Cursor adapter is verified on Cursor 3.27.22 (first-prompt injection,
+  plugin MCP tools, session-end journaling).
 - **License:** MIT.
-- **Status:** v0.6.0 — the engine, the CLI/migration tooling and the adapters
-  (pi, DeepSeek Harness, Claude Code, Codex) are published and tested end to
-  end; the Codex adapter additionally covers the CLI TUI trust flow and Codex
-  Desktop, and backfills sessions from `~/.codex/sessions` until Codex ships
-  SessionEnd hooks; the opencode v2 adapter is verified end to end on the
-  2.1.4 binary.
+- **Status:** v0.7.0 — the engine, the CLI/migration tooling and all seven
+  adapters (pi, DeepSeek Harness, Claude Code, Codex, opencode, Grok, Cursor) are
+  published and tested end to end. The 0.7.0 release adds the Grok and Cursor
+  adapters on top of the 0.6.2 seven-package audit wave (17 of 21 confirmed
+  issues fixed, the structural remainder tracked as N18-N20 in the roadmap). The
+  Codex adapter also covers the CLI TUI trust flow and Codex Desktop, and
+  backfills sessions from `~/.codex/sessions` until Codex ships SessionEnd
+  hooks.
 
 ## Why another memory plugin?
 
@@ -51,8 +57,8 @@ the local process, and lifecycle decisions are explainable and reversible.**
 
 - **Cross-harness by construction.** The store and data model are
   harness-agnostic; adapters are thin. The same store is shared by the pi,
-  DeepSeek Harness, Claude Code and Codex adapters and by the CLI without any
-  harness.
+  DeepSeek Harness, Claude Code, Codex, opencode and Grok adapters and by the CLI
+  without any harness.
 - **File-native SSOT.** One memory per Markdown file with YAML frontmatter.
   Indexes and digests are derived and rebuildable; a corrupt index costs a
   rebuild, never data.
@@ -106,10 +112,33 @@ claude plugin install harnmem@harnmem-marketplace
 # Codex CLI plugin (the repo root is also a Codex marketplace)
 codex plugin marketplace add ys118/harnmem
 codex plugin add harnmem@harnmem-marketplace
+
+# opencode v2 plugin (requires opencode 2.x)
+opencode plugin add opencode-harnmem
+
+# Grok CLI plugin (the repo root is also a Grok marketplace)
+grok plugin marketplace add ys118/harnmem
+grok plugin install grok-harnmem --trust
+
+# Cursor desktop: copy the plugin into ~/.cursor/plugins/local, merge the
+# user-level hooks, then run Developer: Reload Window
+npx cursor-harnmem
 ```
 
-All adapters read and write the same `~/.harnmem/` store, so installing two of
-them shares one memory. Every install runs fully local; nothing phones home.
+All adapters read and write the same `~/.harnmem/` store, so installing more
+than one shares a single memory. Every install runs fully local; nothing phones
+home.
+
+Grok CLI also auto-discovers plugins installed for Claude Code. If
+`claude-harnmem` is installed, Grok therefore sees two plugins that declare the
+same `harnmem` MCP server; it keeps one, and the explicitly enabled
+`grok-harnmem` (its `[plugins] enabled` entry is written by
+`grok plugin install`) wins, so sessions get the six Grok tools and the
+injected index. To unload the auto-loaded Claude copy entirely (one
+`SessionEnd` hook instead of two), add `disabled = ["harnmem"]` under
+`[plugins]` in `~/.grok/config.toml`; the entry is harmless when no Claude
+plugin is installed. Details:
+[`docs/design/11-grok-adapter.md`](docs/design/11-grok-adapter.md).
 
 ### Build from source
 
@@ -117,7 +146,7 @@ them shares one memory. Every install runs fully local; nothing phones home.
 corepack enable
 pnpm install
 pnpm -r build
-pnpm test            # core + CLI test suites (node --test)
+pnpm test            # every package's test suite (node --test)
 ```
 
 ### pi adapter
@@ -153,7 +182,8 @@ through the host LLM service. Lifecycle and extraction decisions are written to
 `~/.harnmem/logs/dsh.jsonl` (`log: "on"` is the trial default), and every
 extraction outcome is emitted as a `kind:"extract"` event in
 `~/.harnmem/state/audit.jsonl`. It requires DSH 0.2.x and never opens a network
-connection of its own.
+connection of its own. On the DSH web GUI the plugin also registers a read-only
+Memory panel (overview, memory list, detail, index and injection preview).
 
 ### Claude Code adapter
 
@@ -241,6 +271,8 @@ flowchart LR
     DSH[DSH plugin]
     CC[Claude Code plugin]
     CX[Codex plugin]
+    OP[opencode plugin]
+    GK[Grok plugin]
   end
   CLI[harnmem CLI + migration]
   CORE["@harnmem/core<br/>store · retrieval · writing · lifecycle · extraction"]
@@ -248,6 +280,8 @@ flowchart LR
   DSH --> CORE
   CC --> CORE
   CX --> CORE
+  OP --> CORE
+  GK --> CORE
   CLI --> CORE
   CORE --> STD[(~/.harnmem plain files)]
   CORE --> IDX[(rebuildable BM25F index)]
@@ -366,11 +400,13 @@ the roadmap. Details, per-suite numbers, ablations and gate definitions are in
 
 | Harness | Status | Notes |
 | --- | --- | --- |
-| pi 1.3.0 | **Supported** | Extension with injection, tools, `/memory`, session-end extraction; verified end to end |
+| pi 1.3.0+ | **Supported** | Extension with injection, tools, `/memory`, session-end extraction; verified end to end on 1.3.0, and the peer range accepts 1.4.x |
 | DeepSeek Harness 0.2.1 | **Supported** (0.2.x) | Cordis plugin (`dsh-harnmem`); verified against the desktop runtime with a disposable profile and a local mock endpoint |
 | CLI (any harness) | **Supported** | `harnmem` commands read/write the same store |
 | Claude Code 2.1.x | **Supported** | `claude-harnmem` plugin (SessionStart hook + stdio MCP + `/harnmem:memory`); verified end to end against 2.1.310; `harnmem import claude` migrates existing stores |
 | Codex CLI 0.164/0.165 alpha | **Supported** (Windows) | `codex-harnmem` plugin (SessionStart `mcp_tool` hook → developer-message injection + stdio MCP + skill + rollout backfill); verified end to end on the CLI, the TUI trust flow and Codex Desktop; extraction is backfilled until Codex ships SessionEnd hooks |
+| opencode 2.1.4 | **Supported** (2.x) | `opencode-harnmem` plugin (byte-stable `session.hook("context")` snapshot + five native tools + per-turn journaling; child sessions run read-only); verified end to end on the 2.1.4 binary |
+| Grok CLI 1.0.70 | **Supported** (1.0.x) | `grok-harnmem` plugin (memory index via MCP `initialize.instructions` — Grok's `SessionStart` is observe-only; six tools + `/grok-harnmem:memory` + `SessionEnd` extraction from `chat_history.jsonl`); verified end to end on the 1.0.70 binary |
 | Other harnesses | Welcome | See the adapter contract and `CONTRIBUTING.md` |
 
 ## Documentation
@@ -387,6 +423,7 @@ Start with the [documentation index](docs/README.md). Highlights:
 - [Adapter contract](docs/design/07-adapter-contract.md)
 - [Migration onboarding](docs/design/10-migration-onboarding.md)
 - [Adapter authoring guide](docs/adapter-authoring.md)
+- [Agent workflow contract](AGENTS.md)
 
 ## Roadmap
 
@@ -396,6 +433,9 @@ numbers, the running trial, known issues) and the ordered next steps.
 - **Codex adapter** — shipped as `codex-harnmem`; see its
   [README](packages/codex-harnmem/README.md) and the probe record in
   [`docs/research/codex-plugin.md`](docs/research/codex-plugin.md).
+- **Grok adapter** — shipped as `grok-harnmem`; see its
+  [README](packages/grok-harnmem/README.md), [`docs/design/11-grok-adapter.md`](docs/design/11-grok-adapter.md)
+  and the probe record in [`docs/research/grok-plugin.md`](docs/research/grok-plugin.md).
 - Persist and incrementally update indexes so large stores warm up faster;
   reduce index size.
 - Validate npm installs on Linux/macOS/Windows and publish provenance for
@@ -423,7 +463,9 @@ the [Code of Conduct](CODE_OF_CONDUCT.md), and run `pnpm test` and
 issues and pull requests from new contributors are auto-closed by default and
 reopened once a maintainer approves them with `lgtmi` (issues) or `lgtm`
 (issues and pull requests). Merging `master` is PR-only and requires the owner's
-approval. Questions and ideas are welcome in
+approval. If you drive an AI coding agent, point it at [AGENTS.md](AGENTS.md):
+every change goes through a worktree branch and a pull request, and agents never
+push to `master`. Questions and ideas are welcome in
 [Discussions](https://github.com/ys118/harnmem/discussions). Security issues go
 through the private process in [SECURITY.md](SECURITY.md).
 

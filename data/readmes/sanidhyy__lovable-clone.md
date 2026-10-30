@@ -304,8 +304,8 @@ Useful resources and dependencies that are used in Vibe.
 - [@radix-ui/react-collapsible](https://www.npmjs.com/package/@radix-ui/react-collapsible): ^1.1.20
 - [@radix-ui/react-dialog](https://www.npmjs.com/package/@radix-ui/react-dialog): ^1.3.1
 - [@radix-ui/react-dropdown-menu](https://www.npmjs.com/package/@radix-ui/react-dropdown-menu): ^2.2.1
-- [@radix-ui/react-label](https://www.npmjs.com/package/@radix-ui/react-label): ^2.1.15
-- [@radix-ui/react-separator](https://www.npmjs.com/package/@radix-ui/react-separator): ^1.1.16
+- [@radix-ui/react-label](https://www.npmjs.com/package/@radix-ui/react-label): ^2.1.17
+- [@radix-ui/react-separator](https://www.npmjs.com/package/@radix-ui/react-separator): ^1.2.0
 - [@radix-ui/react-slot](https://www.npmjs.com/package/@radix-ui/react-slot): ^1.3.3
 - [@radix-ui/react-tabs](https://www.npmjs.com/package/@radix-ui/react-tabs): ^1.1.17
 - [@radix-ui/react-tooltip](https://www.npmjs.com/package/@radix-ui/react-tooltip): ^1.2.16
@@ -335,7 +335,7 @@ Useful resources and dependencies that are used in Vibe.
 - [eslint-plugin-react-hooks](https://www.npmjs.com/package/eslint-plugin-react-hooks): ^7.1.1
 - [eslint-plugin-tailwindcss](https://www.npmjs.com/package/eslint-plugin-tailwindcss): 4.4.0
 - [inngest](https://www.npmjs.com/package/inngest): ^4.23.0
-- [lucide-react](https://www.npmjs.com/package/lucide-react): ^1.27.0
+- [lucide-react](https://www.npmjs.com/package/lucide-react): ^1.61.0
 - [mprocs](https://www.npmjs.com/package/mprocs): ^0.9.6
 - [next](https://www.npmjs.com/package/next): 16.4.1
 - [next-themes](https://www.npmjs.com/package/next-themes): ^0.4.6
@@ -349,10 +349,10 @@ Useful resources and dependencies that are used in Vibe.
 - [rate-limiter-flexible](https://www.npmjs.com/package/rate-limiter-flexible): ^11.2.1
 - [react](https://www.npmjs.com/package/react): 19.3.0
 - [react-dom](https://www.npmjs.com/package/react-dom): 19.3.0
-- [react-error-boundary](https://www.npmjs.com/package/react-error-boundary): ^6.1.2
+- [react-error-boundary](https://www.npmjs.com/package/react-error-boundary): ^6.1.6
 - [react-hook-form](https://www.npmjs.com/package/react-hook-form): ^7.86.0
 - [react-hot-toast](https://www.npmjs.com/package/react-hot-toast): ^2.6.1
-- [react-resizable-panels](https://www.npmjs.com/package/react-resizable-panels): ^4.14.1
+- [react-resizable-panels](https://www.npmjs.com/package/react-resizable-panels): ^4.15.0
 - [react-textarea-autosize](https://www.npmjs.com/package/react-textarea-autosize): ^8.5.9
 - [server-only](https://www.npmjs.com/package/server-only): ^0.0.1
 - [superjson](https://www.npmjs.com/package/superjson): ^2.2.6

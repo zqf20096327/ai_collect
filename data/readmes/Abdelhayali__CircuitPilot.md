@@ -4,6 +4,8 @@ An AI copilot for electronics design: describe a circuit in plain language and i
 
 ![CircuitPilot — ESP32-C3 board schematic](docs/media/schematic.png)
 
+**📖 [Tutorial and user guide (PDF)](https://pcbgo.site/docs/CircuitPilot-Tutorial.pdf)**: getting started, every tool with screenshots, the Windows app, Claude Desktop and Claude Code, CNC milling, troubleshooting.
+
 **▶ Try it online: [pcbgo.site](https://pcbgo.site)**: nothing to install. The **🔑 Connect AI** window walks you through getting a free Google Gemini or Ollama Cloud key in about a minute (Claude, OpenAI, OpenRouter and others work too). Your key stays in your browser. Then describe your circuit. Projects are saved in your browser. For local models, knowledge folders and Claude Code control, run the desktop version (below).
 
 ## See it in action
@@ -80,7 +82,7 @@ The result, a fully routed board with a BOM and the design calculations, from a 
 - **Chat controls** — 🌐 Web search toggle (on by default), 📁 folder for project docs, a context meter (used / window, % left), 🗜 Compress to summarise the chat, and automatic compression at 80% full.
 - **Project knowledge** — point a project at a folder of docs, guides and datasheets (md/txt/pdf/docx) the AI follows.
 - **Checkpoints** — every Agent message snapshots the design; restore with one click. Full undo/redo.
-- **Schematic editor** — built-in parts plus database/custom parts, power symbols, click pin-to-pin wiring, drag, rotate (R), auto-layout.
+- **Schematic editor** — built-in parts plus database/custom parts, power symbols, click pin-to-pin wiring, drag, rotate (R), auto-layout, and **✨ Organize** (`organize_schematic`): ICs in a row, every small part next to the pin it is wired to, GND parts vertical with GND down, supply parts vertical with 3V3 / VDD up, wires routed around the symbols without running over each other.
 - **Any AI provider, several at once** — save as many OpenAI-compatible providers as you like (Google Gemini, Ollama Cloud, NVIDIA, OpenAI, OpenRouter, Groq, your own vLLM / LM Studio / llama.cpp server…), each with its own URL and key, and pick any of their models from the menu above the chat. **🔑 Connect AI → Custom URL** adds one in a few seconds. Providers that refuse requests from web pages (e.g. NVIDIA) are reached automatically through `server.py` or, on pcbgo.site, the CircuitPilot relay (which stores nothing).
 - **The AI can see its work** — `view_design` gives the copilot (and Claude Code) a screenshot of the schematic, the 2D PCB, the 3D board or the enclosure, so it can spot crowded symbols, odd placement or a part sticking out of the case and fix it. Screenshots appear in the chat; only the latest two are sent with each request, and text-only models are handled automatically. With Claude Code, the screenshots are drawn by the CircuitPilot tab open in your browser.
 - **Move between EasyEDA and CircuitPilot** — **Projects → Import** opens an EasyEDA Pro project file (`.epro` / `.epro2`) with its schematic sheets *and* PCB (placement, tracks, vias, pours, outline, LCSC numbers), or an EasyEDA Standard PCB. **Export → EasyEDA project: schematic + PCB (.zip)** goes the other way: open it in EasyEDA Pro with *File → Import → EasyEDA (Standard)*.
@@ -346,7 +348,7 @@ Live feedback: the coordinate bar shows X/Y, layer, width, net, and warns when t
 | Board outline | **▭ Board**: rectangle, rounded rectangle, circle/ellipse, or **Draw outline** (custom polygon with rounded corners). Router, DRC, pours and the Edge_Cuts Gerber follow it. |
 | Optimize | **✨ Optimize** moves, rotates and swaps parts (and can grow the board) and re-routes until everything connects, keeping the best result. Connectors on edges stay put. The AI: `optimize_pcb`, or `get_pcb_layout` + `place_footprint` + `route_pcb`. |
 | Gerbers | **Gerbers ⤓** runs DRC first. If anything is wrong a window lists it (click to zoom) with **Fix on board · Re-route · Optimize placement · Download anyway**. Export includes copper, mask, paste, silkscreen (top + bottom), outline and drill. Via MCP, `export_gerbers` refuses on DRC errors unless `force: true`. |
-| CNC milling (3018 Pro …) | **CNC ⤓** makes GRBL G-code to mill the board yourself on a desktop CNC: `1_isolation.nc` (V-bit rings around the copper — pours, clearances and keep-outs exactly as in the Gerbers), `2_drill_<size>.nc` (one file per bit), `3_cutout.nc` (holes bigger than the end mill, then the outline in steps with holding tabs), `preview.svg` and a README with the bit order and set-up. Settings: V-bit width / depth / passes, the drill bits you have (default 0.8 and 1.0 mm: each hole gets the smallest bit that fits, bigger holes are drilled then widened in a small circle), feeds, end mill, step down, tabs, board thickness, mirror (auto: mirrored when the parts go on the other side of the copper) and X0 Y0 (default the PCB's lower-left corner, or the job corner); Z0 = copper surface. It warns where two nets are closer than the V-bit (they would stay shorted) and about vias (wire links). Design for it with **⚙ Rules → CNC milling — 3018** (`set_design_rules {preset: "cnc3018"}`): 1 layer, 0.5 mm tracks (power 1.0), 0.4 mm gaps, 0.6 mm pour gap, 1.5 mm from the edge, holes ≥ 0.8 mm, rings ≥ 0.35 mm; DRC then refuses vias and tracks on both layers and warns about pin pitch under 1.2 mm and pads smaller than 0805. On one layer, auto-size makes the board 25 % bigger when the first layout does not route. Claude / MCP: `export_cnc_gcode {out_dir}`. See [docs/CNC_MILLING.md](docs/CNC_MILLING.md). |
+| CNC milling (3018 Pro …) | **CNC ⤓** makes GRBL G-code to mill the board yourself on a desktop CNC: `1_isolation.nc` (V-bit rings around the copper — pours, clearances and keep-outs exactly as in the Gerbers), `2_drill_<size>.nc` (one file per bit), `3_cutout.nc` (holes bigger than the end mill, then the outline in steps with holding tabs), `preview.svg` (toolpaths), `result-2d.svg` / `result-3d.html` (the finished board as milled, flat and in 3D — also the **Result 2D / Result 3D** tabs of the dialog, to check it before you start) and a README with the bit order and set-up. SMD pads on the GND pour get a milled outline with 4 spokes (rule `smdPadRelief`, on in the CNC and home presets; dialog: *SMD pads on pour*), so each pad is a visible solder spot. Settings: V-bit angle / tip, depth (default 0.2 mm; the groove width follows), passes, the drill bits you have (default 0.8 and 1.0 mm: each hole gets the smallest bit that fits, bigger holes are drilled then widened in a small circle), feeds, end mill, step down, tabs, board thickness, **Parts go on**: bare side (through-hole parts from the side without copper → milled mirrored) or copper side (not mirrored); the AI passes `parts_side` and asks you when it does not know and X0 Y0 (default the PCB's lower-left corner, or the job corner); Z0 = copper surface. No pour and no copper under SMD parts (the copper between the pads of a 1206 and in keep-outs such as the antenna end is milled away). It checks its own toolpaths (no shorts with a narrower groove, no net cut in two with a wider one) and warns about vias (wire links). Design for it with **⚙ Rules → CNC milling — 3018** (`set_design_rules {preset: "cnc3018"}`): 1 layer, 0.9 mm tracks (power 1.0), 0.4 mm gaps, 0.6 mm pour gap, 1.5 mm from the edge, holes ≥ 0.8 mm, rings ≥ 0.35 mm; DRC then refuses vias and tracks on both layers and warns about pin pitch under 1.2 mm and pads smaller than 0805. On one layer, auto-size makes the board 25 % bigger when the first layout does not route. Claude / MCP: `export_cnc_gcode {out_dir}`. See [docs/CNC_MILLING.md](docs/CNC_MILLING.md). |
 | Export everything | **Export ▾ → Everything (.zip)** puts every file of the project in one zip: project file (.circuit.json), Gerbers + drill (also zipped for the fab), JLCPCB BOM + pick-and-place (CPL), BOM, netlist, schematic / PCB SVG, enclosure STL + OpenSCAD, EasyEDA schematic + PCB, PCB drawing PDF, datasheet PDF and images (schematic sheets, 2D PCB, 3D angled / top / bottom, enclosure). Claude Desktop / Claude Code: `export_project` writes the same files into `Documents/CircuitPilot exports/<project>/` (or `out_dir`), with a README listing them. `include` picks only some, e.g. `["gerbers", "jlcpcb"]`. PDFs and images are drawn by the CircuitPilot window, which is opened on the project if needed. |
 
 ## Enclosure (3D print)
@@ -428,17 +430,25 @@ Options: `--port 5173`, `--server-only` (no window), `--lan --password SECRET` (
 - **Projects → Import → EasyEDA Pro project** moves a whole EasyEDA Pro design here: in EasyEDA Pro use *File → Save As (Local)* / *File → Export → Project* to get a `.epro` or `.epro2` file (a `.zip` works too) and import it. You get the schematic (every sheet, parts placed where they were, real pin names, values, LCSC numbers) and the PCB (board outline, part placement on top and bottom, tracks, arcs, vias, copper pours). If the project holds several boards you choose one. Nets come from the PCB's netlist, or from the schematic wires, net labels and power ports when there is no PCB. CircuitPilot boards have 2 copper layers: tracks on inner layers of a 4+ layer board are skipped (the import says how many), so those nets show as unrouted; run the router or re-route them. Parts rotated at odd angles (e.g. 45°) keep their exact pad positions.
 - **Projects → Import → EasyEDA Standard PCB** opens an EasyEDA Standard PCB (*File → Export → EasyEDA Source* in EasyEDA) as a new project: footprints become library parts (LCSC numbers kept), with placement (top/bottom, rotation), nets, tracks, vias, holes, copper areas and the board outline; a schematic is generated from the nets.
 
-## License and credit
+## License
 
-CircuitPilot is open source under the [Apache License 2.0](LICENSE), © 2026 Abdelhay Ali. You can use, change and share it, including commercially.
+CircuitPilot is **source-available** under the [PolyForm Strict License 1.0.0](LICENSE), © 2026 Abdelhay Ali. The code is public so you can see how it works, but the licence allows **use only**:
 
-If you redistribute CircuitPilot or build on its code, keep the [NOTICE](NOTICE) file: it credits CircuitPilot by Abdelhay Ali, and the Apache License requires that credit to be passed on with your version (in your NOTICE file, documentation or "about" screen).
+| | Allowed? |
+|---|---|
+| Use the website, the Windows app or the code for personal projects, hobby, study, teaching and research | ✅ Yes |
+| Use it at a school, university, public research body, charity or government institution | ✅ Yes |
+| Use it in or for a business, or to earn money (commercial use) | ❌ No, unless you have a commercial licence |
+| Change the code, or make new software based on it | ❌ No |
+| Share or publish copies (changed or not), or offer it as your own service | ❌ No |
 
-If CircuitPilot helps your project, please credit it too, for example:
+**Commercial licence**: for use in a company, for products you sell or for any other commercial purpose, write to abdelhay@eng.aun.edu.eg.
 
-> Designed with [CircuitPilot](https://github.com/Abdelhayali/CircuitPilot) by Abdelhay Ali
+Versions up to and including v2026.10.30.6 were published under the Apache License 2.0 and stay under it; v2026.10.30.7 and later are under PolyForm Strict. Third-party components keep their own licences, see [NOTICE](NOTICE) and below.
 
-A link back, a star on GitHub or a mention when you share your board is much appreciated.
+If CircuitPilot helps your project, please credit it, for example:
+
+> Designed with [CircuitPilot](https://pcbgo.site) by Abdelhay Ali
 
 ## Data sources & licenses
 

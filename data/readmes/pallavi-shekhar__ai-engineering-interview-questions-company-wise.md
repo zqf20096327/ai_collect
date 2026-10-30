@@ -356,7 +356,7 @@
 
 - How do vision-language models get images into an LLM: projector, cross-attention, or native tokens?
   - Asked at: [Meta](#meta-superintelligence-labs-fair-llama), [Alibaba](#alibaba-qwen)
-  - Answer: [Multimodal AI](https://outcomeschool.com/blog/multimodal-ai) and [Decoding Vision Transformer (ViT)](https://outcomeschool.com/blog/decoding-vision-transformer-vit)
+  - Answer: [Multimodal AI](https://outcomeschool.com/blog/multimodal-ai) and [Decoding Vision Transformer (ViT)](https://outcomeschool.com/blog/decoding-vision-transformer-vit) and [How does a Vision-Language Model (VLM) work?](https://outcomeschool.com/blog/vision-language-model-vlm)
 - What changes when you move from images to video?
   - Asked at: [Meta](#meta-superintelligence-labs-fair-llama)
 - Budget the latency for a real-time voice agent: VAD, ASR, LLM, TTS, network. Where does the time go?
@@ -1337,4 +1337,4 @@
 >
 > **Interview loop, as publicly reported:** Recruiter screen → technical screen (practical coding, often concurrency or data-heavy) → onsite: two coding rounds, a distributed-systems or Spark-internals round, a GenAI/ML design round, and a customer-scenario round for field roles.
 >
-> **Also prepare:** the [common questions](#common-questions-asked-across-companies) tagged Databricks under [Inference, Serving and GPU Performance](#inference-se
+> **Also prepare:** the [common questions](#common-que

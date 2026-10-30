@@ -73,13 +73,13 @@ Every number below names the cohort it counts and the command that reproduces it
 
 ### 📦 Live npm Downloads
 
-Across **382 published packages** in the [claude-code-plugins](https://www.npmjs.com/~jeremylongshore) namespace. Updated daily by GitHub Actions.
+Across **379 published packages** in the [claude-code-plugins](https://www.npmjs.com/~jeremylongshore) namespace. Updated daily by GitHub Actions.
 
 | Window        | All packages | Established (>30d) |
 | ------------- | -----------: | -----------------: |
-| Last 24 hours |          467 |                467 |
-| Last 7 days   |        2,061 |              2,061 |
-| Last 30 days  |       11,312 |             11,312 |
+| Last 24 hours |          320 |                320 |
+| Last 7 days   |        8,621 |              8,621 |
+| Last 30 days  |       16,496 |             16,496 |
 
 <sub>"Established" excludes packages first published within the last 30 days, so a bulk-publish event doesn't dominate the headline.</sub>
 
@@ -87,18 +87,18 @@ Across **382 published packages** in the [claude-code-plugins](https://www.npmjs
 
 | #   | Package                                                                                                                  | Last 30d |
 | --- | ------------------------------------------------------------------------------------------------------------------------ | -------: |
-| 1   | [`@intentsolutionsio/claude-pack`](https://www.npmjs.com/package/@intentsolutionsio/claude-pack)                         |      876 |
-| 2   | [`@intentsolutionsio/openrouter-pack`](https://www.npmjs.com/package/@intentsolutionsio/openrouter-pack)                 |      413 |
-| 3   | [`@intentsolutionsio/anthropic-pack`](https://www.npmjs.com/package/@intentsolutionsio/anthropic-pack)                   |      390 |
-| 4   | [`@intentsolutionsio/databricks-pack`](https://www.npmjs.com/package/@intentsolutionsio/databricks-pack)                 |      268 |
-| 5   | [`@intentsolutionsio/groq-pack`](https://www.npmjs.com/package/@intentsolutionsio/groq-pack)                             |      266 |
-| 6   | [`@intentsolutionsio/shopify-pack`](https://www.npmjs.com/package/@intentsolutionsio/shopify-pack)                       |      207 |
-| 7   | [`@intentsolutionsio/neural-network-builder`](https://www.npmjs.com/package/@intentsolutionsio/neural-network-builder)   |      196 |
-| 8   | [`@intentsolutionsio/wallet-security-auditor`](https://www.npmjs.com/package/@intentsolutionsio/wallet-security-auditor) |      195 |
-| 9   | [`@intentsolutionsio/clickhouse-pack`](https://www.npmjs.com/package/@intentsolutionsio/clickhouse-pack)                 |      180 |
-| 10  | [`@intentsolutionsio/jeremy-adk-orchestrator`](https://www.npmjs.com/package/@intentsolutionsio/jeremy-adk-orchestrator) |      164 |
+| 1   | [`@intentsolutionsio/jeremy-vertex-engine`](https://www.npmjs.com/package/@intentsolutionsio/jeremy-vertex-engine)       |    1,094 |
+| 2   | [`@intentsolutionsio/claude-pack`](https://www.npmjs.com/package/@intentsolutionsio/claude-pack)                         |    1,085 |
+| 3   | [`@intentsolutionsio/jeremy-adk-orchestrator`](https://www.npmjs.com/package/@intentsolutionsio/jeremy-adk-orchestrator) |    1,076 |
+| 4   | [`@intentsolutionsio/jeremy-vertex-validator`](https://www.npmjs.com/package/@intentsolutionsio/jeremy-vertex-validator) |    1,037 |
+| 5   | [`@intentsolutionsio/jeremy-vertex-ai`](https://www.npmjs.com/package/@intentsolutionsio/jeremy-vertex-ai)               |      960 |
+| 6   | [`@intentsolutionsio/openrouter-pack`](https://www.npmjs.com/package/@intentsolutionsio/openrouter-pack)                 |      369 |
+| 7   | [`@intentsolutionsio/groq-pack`](https://www.npmjs.com/package/@intentsolutionsio/groq-pack)                             |      267 |
+| 8   | [`@intentsolutionsio/databricks-pack`](https://www.npmjs.com/package/@intentsolutionsio/databricks-pack)                 |      262 |
+| 9   | [`@intentsolutionsio/wallet-security-auditor`](https://www.npmjs.com/package/@intentsolutionsio/wallet-security-auditor) |      217 |
+| 10  | [`@intentsolutionsio/granola-pack`](https://www.npmjs.com/package/@intentsolutionsio/granola-pack)                       |      155 |
 
-<sub>Last refreshed 2026-10-26T05:20:04.592Z.</sub>
+<sub>Last refreshed 2026-10-30T06:22:52.519Z.</sub>
 
 <!-- NPM-STATS:END -->
 

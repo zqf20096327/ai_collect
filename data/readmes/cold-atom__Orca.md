@@ -82,9 +82,15 @@ Orca is released under the [MIT License](LICENSE). Its source, tool contracts, s
 - Context-window and session-cost visibility when provider metadata is available.
 - Request-scoped project instructions and explicitly loaded project skills.
 
-## What's New In 1.4.0
+## What's New In 1.4.1
 
-The Orca 1.4.0 release adds account access, deeper editor context, and a complete build/update workflow:
+Orca 1.4.1 is the packaging-fix release candidate following 1.4.0's Godot Asset
+Store rejection for bundled executables. Its plugin ZIP is binary-free; matching
+native credential helpers are published separately and verified/cached outside
+the project after plugin enable. GitHub publication and Asset Store approval remain
+pending. Read the [1.4.1 changelog entry](CHANGELOG.md#141---2026-10-30) for the fixes.
+
+It includes the features introduced in [1.4.0](CHANGELOG.md#140---2026-10-29):
 
 - Orca Cloud browser sign-in/sign-up, persistent OS-vault sessions, account allowance/model selection, and automatic managed Agent readiness.
 - Dismissible connection onboarding that preserves the original empty state and your draft.
@@ -93,7 +99,10 @@ The Orca 1.4.0 release adds account access, deeper editor context, and a complet
 - Vision/text-only model switching within a conversation, response attribution, native review minimaps, and the composer Tab mode shortcut.
 - Daily update checks, confirmed Update & Restart/rollback, four-platform native helper builds, and complete versioned plugin packages.
 
-Read the release notes in the [changelog](CHANGELOG.md). Orca 1.4.0 is available from [GitHub Releases](https://github.com/cold-atom/Orca/releases/tag/v1.4.0), including `orca-v1.4.0.zip` and its checksum.
+Users of 1.3.0 can upgrade directly to 1.4.1 once published. The new release will
+provide `orca-v1.4.1.zip`, its checksum and four separate helper assets through
+[GitHub Releases](https://github.com/cold-atom/Orca/releases). The existing v1.4.0
+GitHub release remains the original bundled package.
 
 ### Orca Account
 
@@ -104,9 +113,13 @@ automatically; use **Choose model** to switch. Managed models require no Agent-t
 or reasoning setup. The connection is remembered across projects/editor restarts
 through your OS credential vault.
 
-The Linux x86_64 credential helper is included and requires Secret Service/libsecret.
-The native Actions workflow builds/tests Windows x86_64 and Apple Silicon/Intel Mac
-helpers and assembles a complete plugin ZIP; their CI/platform acceptance is pending.
+New packages are binary-free. When Orca is enabled, it quietly downloads the matching
+platform credential helper from the official GitHub Release if it is not cached,
+verifies it, and caches it outside the project. There is no separate install prompt.
+Early Cloud sign-in waits with **Preparing connection…**; BYOK/local providers stay
+usable while preparation runs. Linux requires Secret Service/libsecret. The native Actions
+workflow builds/tests all four helpers and publishes them separately; actual
+Windows/macOS downloaded-helper acceptance remains pending.
 See [build/release/Asset Library steps](docs/UPDATES.md#builds-and-downloads-from-github-actions).
 After updating the addon, restart the
 editor and sign in again: localhost development credentials are isolated from
@@ -185,6 +198,10 @@ Orca can connect to models served on your machine. Local inference can provide g
 
 Local and editable profiles start in **Chat mode**. Click **Test & Enable Agent tools** to run the isolated two-step function-call probe. A pass for the exact provider, origin, endpoint, model, reasoning configuration, API, continuation style, and probe version automatically enables tools. The toggle remains available to turn tools off; failed or cancelled checks leave them disabled.
 
+For slow model loading, use the **Request Timeouts** card in **Settings → Provider**. Local profiles show editable **Response start** and **Stream inactivity** values directly, defaulting to 300/60 seconds. Response start covers headers and initial data; inactivity covers pauses after data starts arriving. Each accepts 10–600 seconds and is saved separately for the provider.
+
+Hosted BYOK providers use Orca's original timing by default: 30 seconds for response headers, 60 seconds without body data, and 45 seconds for an Agent compatibility check. Turn on **Use custom timeouts** to reveal and use your own limits. Turning it off restores that original policy while retaining your custom values. Local/customized checks get one bounded two-request budget based on the selected waits. Every full provider request remains capped at ten minutes, including connection/retries, and Stop remains available. Orca Cloud timing stays fixed and has no editable timeout controls.
+
 The probe contains no project files, editor context, instructions, skills, task list, conversation history, or real Orca tool schema. A successful probe confirms one narrow protocol exchange; it does not guarantee that a model will plan well or use tools reliably on a real project.
 
 Orca does not install models, bundle inference, or start and manage Ollama or LM Studio for you. The tested `qwen2.5-coder:3b` and `llama-3.2-3b-instruct` models worked for Chat but did not pass Orca's strict Agent probe. More capable tool-use models may be required for Agent workflows.
@@ -255,8 +272,8 @@ See [SECURITY.md](SECURITY.md) for the complete security and operational model.
 
 ## Current Limits
 
-- Orca 1.4.0 targets Godot **4.7.2**. Broader Godot compatibility is not currently claimed.
-- Windows/macOS native helper CI and downloaded-plugin/update acceptance remain pending; Linux native-vault and headless updater fixtures are verified.
+- Orca 1.4.1 targets Godot **4.7.2**. Broader Godot compatibility is not currently claimed.
+- All four native build/acceptance jobs passed in the earlier Tests run #42; complete 1.4.1 CI and real downloaded-helper/Windows/macOS updater acceptance remain pending. Linux native-vault and headless updater fixtures are verified.
 - Native attachment drops were verified on Linux/X11/Vulkan; other platforms/renderers and detached editor windows need acceptance testing.
 - Runtime verification uses bounded process output and predeclared startup or exit criteria. It cannot prove visual or gameplay correctness.
 - Pending approvals and revert checkpoints do not survive an editor or plugin restart.
@@ -269,7 +286,10 @@ See [DEVELOPMENT.md](DEVELOPMENT.md) for the full architecture, tool contracts, 
 
 ## Project Status
 
-**Orca 1.4.0** for **Godot 4.7.2** is released. Orca is a functional development-stage agent with permanent automated tests and CI, but it is still evolving. Review proposals carefully and use version control on real projects.
+This checkout prepares **Orca 1.4.1** for **Godot 4.7.2**. Publication and Godot
+Asset Store approval remain pending. Orca is a functional development-stage agent
+with permanent automated tests and CI, but it is still evolving. Review proposals
+carefully and use version control on real projects.
 
 ## Contributing
 

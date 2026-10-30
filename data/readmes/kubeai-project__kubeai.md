@@ -17,7 +17,7 @@ Built for LLMs, embeddings, reranking and speech-to-text.
 What is it for?
 
 🚀 **LLM Inferencing** - Operate vLLM and Ollama servers  
-🎙️ **Speech Processing** - Transcribe audio with FasterWhisper  
+🎙️ **Speech Processing** - Transcribe audio with [Whisper on vLLM](how-to/configure-speech-to-text.md) or FasterWhisper<br>
 🔢 **Vector Embeddings** - Generate embeddings with Infinity  
 📚 **Reranking** - Reorder search results with cross-encoder models  
 
@@ -66,6 +66,7 @@ No need to change your client libraries, KubeAI supports the following endpoints
 /v1/completions
 /v1/embeddings
 /v1/rerank
+/v1/classify
 /v1/systemone
 /v1/models
 /v1/audio/transcriptions

@@ -442,6 +442,39 @@ Under the hood, Atris can keep score on real repo work.
 - `atris autopilot` can run that check after review and record the result in the journal.
 - Future task picks can use recent results, so Atris learns from repo-local history without claiming model retraining.
 
+## Which AI Can Do Your Work
+
+`atris scorecard` measures which AI can do your team's work, on your own repo.
+
+```bash
+atris scorecard                            # find past changes whose own tests can grade an AI (no AI runs)
+atris scorecard run                        # try each one with Haiku on your Claude plan
+atris scorecard run --models haiku,opus    # compare models; past Haiku needs ATRIS_CLAUDE_SPEND_OK=<model>
+```
+
+- A past change becomes a task when its tests fail before it and pass after it. The ask is what your team wrote for that change.
+- The ask also names what the change's tests call that the change added or changed: a new file, a function with its arguments, an export, found with no AI. A good ticket names these; a commit message rarely does, and no model can guess a name nobody wrote down.
+- Each try starts from the change's parent in a throwaway copy with no remote. The change's own tests stay hidden until they grade the try.
+- Every try runs on your Claude plan login. Pay-per-use keys are removed, a try stops the moment Claude Code reports any other billing source, and nothing starts with extra usage on unless you pass `--allow-extra-usage`.
+- The scorecard shows how many changes each model did, how long it took, what the same runs would cost on pay-per-use, and which changes no model could do from what was written.
+- Tests that need their own command or settings go in `.atris/scorecard.json`.
+
+## The Atris Rating
+
+`atris rating` gives every AI teammate one number, 25 to 99, for how much real work it finishes.
+
+```bash
+atris rating               # every engine the combine rated, and your members here
+atris rating opus          # one engine's card
+atris rating <member>      # one member's rating here, next to its engine's
+```
+
+- 99 means 99 of every 100 finished. Each halving of misses is worth about 6 points, so the top is the hardest climb: 3 in a row rates 76, and it takes about 60 in a row to rate 99.
+- Engines are rated in the combine: Loop Bench tasks from the atris repos, each graded by the tests that shipped with it. No engine is a 99 yet.
+- Each engine's card also rates its Python tasks, its JavaScript tasks, the tasks the Atris prompt was never tuned on, and how rarely a try broke another test, with its median time and pay-per-use price per finished task.
+- Members are rated on the same scale from the jobs they landed in your workspace over the last 30 days. Landed means accepted or merged; drops and abandons count against them. `atris gm` shows the same numbers.
+- The session boot shows the build engine's rating, for example `build opus 5.5 (86 ovr)`. The combine grades building only, so review and search engines show none.
+
 ## Benchmark Harness
 
 Atris ships one public head-to-head benchmark harness for comparing a pinned

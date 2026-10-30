@@ -121,12 +121,26 @@ Use `--id NAME` to name a workspace. The name `viewers` is reserved for the shar
 
 Choose a backend with `--session` on `workspace start` and `workspace open-profile`, or with `"session": {"backend":"hyprland"}` in MCP calls and saved profiles. Explicit CLI or MCP input overrides the profile. With neither, the workspace uses X11.
 
+Choose GNOME 46 independently of your host's GNOME version:
+
+```bash
+agent-workspace-linux runtime prepare --backend gnome --version 46
+agent-workspace-linux workspace start --ack-hidden-workspace --id gnome46 \
+  --session gnome --session-version 46 --scale 1.25 --width 1600 --height 1000
+```
+
+The prepared runtime uses Ubuntu 24.04's GNOME and Mutter packages. Preparing it requires Docker; starting it requires bubblewrap with overlay support. Preparation downloads the packages once. Startup uses the cached runtime and never downloads or substitutes another version. The host desktop and system packages stay unchanged.
+
+Use `"session":{"backend":"gnome","version":"46","scale":1.25}` through MCP or in a saved profile. Omit `version`, or pass `--session-version host`, to use host packages. `runtime list` and the doctor's `session_runtimes` field show availability and the installed version. GNOME 46 is the only prepared entry; other versions can be added when needed.
+
+The selected runtime supplies system programs and libraries. Your home directory and the workspace's private runtime remain accessible. Display sockets and session buses are private. This QA runtime does not relay the host session bus, keyring, SSH/GPG agents, dconf or sound. Use the host runtime for those services. The writable image layer and its temporary files are removed after shutdown. After an interrupted supervisor, stale cleanup removes abandoned layers once their processes have stopped. The prepared image stays cached for reuse.
+
 | Backend | `--session` | What runs | Scale | GPU |
 |---|---|---|---|---|
 | **X11** (default) | `x11` | Xvfb + Openbox | 1 | none |
 | **i3** | `i3` | Xvfb + i3 | 1 | none |
 | **KWin** | `kwin` | KWin 6.6+ virtual Wayland compositor | fractional | render node |
-| **GNOME** | `gnome` | GNOME Shell 50/51 + Mutter, headless | fractional | none |
+| **GNOME** | `gnome` | GNOME 46 in a prepared runtime, or host Shell 50/51 + Mutter | fractional | none |
 | **Hyprland** | `hyprland` | Hyprland 0.53 on a private KWin renderer | fractional | render node |
 | **COSMIC** | `cosmic` | `cosmic-comp` under a headless Weston parent | fractional | none |
 
@@ -265,7 +279,7 @@ ws = websocket.create_connection(ws_debugger_url, suppress_origin=True)
 
 ## Security model
 
-The workspace is not a sandbox. Apps launched in it run as you, with your files, network, keyring and SSH agent. Only their windows stay in the workspace. An agent acting there acts for you, so the controls decide what it may do, not what it can reach.
+The workspace is not a sandbox. Apps launched in it run as you, with your files and network. Host runtimes also relay your keyring and SSH agent; prepared GNOME 46 does not relay host session services. Only their windows stay in the workspace. An agent acting there acts for you, so the controls decide what it may do, not what it can reach.
 
 ### What decides what an agent does
 
@@ -278,7 +292,7 @@ The workspace is not a sandbox. Apps launched in it run as you, with your files,
 
 ### What a workspace app gets
 
-- **Your session.** Your home, config and data directories, network, SSH and GPG agents, sound, your settings (dconf) and your keyring: the workspace relays the Secret Service, KWallet and dconf from your session bus, so Chrome on your profile has your saved logins.
+- **Your session (host runtimes).** Your home, config and data directories, network, SSH and GPG agents, sound, your settings (dconf) and your keyring: the workspace relays the Secret Service, KWallet and dconf from your session bus, so Chrome on your profile has your saved logins.
 - **The workspace's display and bus.** A private display and its own session bus, so a single-instance app opens its window in the workspace, not on your desktop.
 
 See [docs/permission-model.md](docs/permission-model.md) and [SECURITY.md](SECURITY.md).
@@ -306,7 +320,7 @@ The MCP exposes about 86 tools. To keep them out of the agent's context, it ship
 ## Features
 
 - Hidden X11 or native Wayland workspaces on six backends, with window listing, screenshots, keyboard and mouse input, clipboard and per-app logs, all scoped to the workspace.
-- Apps that act as you: your files, network, keyring and SSH agent, with windows kept in the workspace.
+- Apps that act as you: your files, network, keyring and SSH agent, with windows kept in the workspace. Prepared GNOME 46 shares files and network but does not relay host session services.
 - Read-only, write and destructive marks on every tool, and an optional daemon-enforced app allowlist.
 - Workspace-owned browser control over loopback CDP: discover targets, read pages, navigate, extract results.
 - A native floating viewer with live pause, read-only and stop.

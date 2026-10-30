@@ -937,7 +937,10 @@ The current vendored SDK surface is Muse 1.4.14
 (`sha256:c94c3d1f2f51e6424074b9ec43eac3eedcf532d3dcd77351ec1383a87d3049c6`).
 The adapter and standalone MSP client live suites pass against
 `1.4.14-R7309.1`, and the 1.4.14 Linux, macOS, and Windows artifacts are pinned
-in the nightly matrix.
+in the nightly matrix. The nightly live-host support floor is Muse 1.4.11:
+1.4.11 through 1.4.14 run on Linux x86-64 and Windows x64, and the newest
+build runs on macOS arm64. Older fingerprints remain recorded as historical
+compatibility evidence but are no longer downloaded for every nightly run.
 
 At startup the adapter logs whether the host can enforce its sandbox, as
 reported by Muse 1.4.7+ on `initialize`:
@@ -1003,3 +1006,15 @@ never in a public issue.
 
 Copyright 2026 Brokk.ai. Licensed under the Apache License, Version 2.0. See
 [LICENSE](LICENSE) and [NOTICE](NOTICE).
+
+### Command prefix approval (opt in)
+
+`MUSE_ACP_ALLOW_COMMAND_PREFIXES='[["gh"]]'` lets the native adapter approve
+an offered **allow once** choice before automatic review or an ACP permission
+prompt. The value is a JSON array of nonempty argv prefixes, matched exactly
+against the host's complete structured argv. Invalid values disable this policy
+and emit a diagnostic. Unset or `[]` leaves normal approval handling in place.
+Only Muse's `bash` tool with a single unresolved shell stage, matching requirement
+IDs and consistent single-stage boundaries qualifies. Compound commands, wrappers,
+incomplete argv, other tools and persistent grants continue through normal review. This grants no
+standing Muse policy rule; every matching approval is decided separately.
