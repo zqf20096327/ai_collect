@@ -4657,5 +4657,28 @@
    "contrib": "20261029",
    "lang": "20261029"
   }
+ },
+ "kaifaty/GothicAI": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 47,
+   "C++": 46,
+   "C": 3,
+   "Shell": 2,
+   "GLSL": 1
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
  }
 }

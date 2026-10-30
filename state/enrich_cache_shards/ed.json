@@ -3913,6 +3913,17 @@
   "sec_worst": null,
   "sec_last": null,
   "sec_ids": [],
-  "contrib_n": 2
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 81,
+   "CSS": 19
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
  }
 }

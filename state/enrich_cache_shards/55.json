@@ -4202,5 +4202,29 @@
    "contrib": "20261030",
    "lang": "20261030"
   }
+ },
+ "ys118/harnmem": {
+  "rel_ver": "v0.7.1",
+  "rel_pub": "2026-10-30",
+  "rel_days": 0,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 51,
+   "JavaScript": 49
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
  }
 }

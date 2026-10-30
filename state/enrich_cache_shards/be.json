@@ -4410,5 +4410,28 @@
    "contrib": "20261030",
    "lang": "20261030"
   }
+ },
+ "behrouzbk/tokensaver": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-10-29",
+  "rel_days": 1,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
  }
 }

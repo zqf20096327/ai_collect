@@ -3944,5 +3944,32 @@
    "contrib": "20261029",
    "lang": "20261029"
   }
+ },
+ "Elas0415/AIStudioToAPI-Android": {
+  "rel_ver": "v1.1",
+  "rel_pub": "2026-10-02",
+  "rel_days": 28,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 76,
+   "Java": 21,
+   "HTML": 2,
+   "Shell": 1,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261030",
+  "dim_ts": {
+   "release": "20261030",
+   "security": "20261030",
+   "contrib": "20261030",
+   "lang": "20261030"
+  }
  }
 }
