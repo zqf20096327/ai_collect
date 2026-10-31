@@ -4254,6 +4254,25 @@
  },
  "shaxntanu/Turbofan-RUL-Prediction-using-LSTM": {
   "rel_ver": null,
-  "rel_none": true
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 71,
+   "Python": 20,
+   "JavaScript": 4,
+   "CSS": 3,
+   "C++": 2
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
  }
 }
