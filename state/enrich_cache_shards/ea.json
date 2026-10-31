@@ -128,11 +128,11 @@
  },
  "ChunelFeng/CGraph": {
   "commit_90d": 43,
-  "commit_7d": 7,
-  "rel_ver": "v3.2.5",
-  "rel_pub": "2026-08-15",
-  "rel_days": 70,
-  "rel_n90": 1,
+  "commit_7d": 2,
+  "rel_ver": "v3.3.0",
+  "rel_pub": "2026-10-24",
+  "rel_days": 7,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -147,10 +147,10 @@
    "CMake": 1,
    "Starlark": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

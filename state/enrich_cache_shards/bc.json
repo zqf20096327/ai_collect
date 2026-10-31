@@ -169,13 +169,13 @@
   }
  },
  "Simon-He95/markstream-vue": {
-  "commit_7d": 7,
-  "commit_90d": 677,
-  "rel_ver": "stream-markdown-parser@nightly-20261019-b0f8c57",
-  "rel_pub": "2026-10-19",
-  "rel_days": 5,
+  "commit_7d": 10,
+  "commit_90d": 628,
+  "rel_ver": "markstream-core@2.0.22",
+  "rel_pub": "2026-10-31",
+  "rel_days": 0,
   "rel_n90": 12,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -189,10 +189,10 @@
    "Svelte": 5,
    "HTML": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -225,11 +225,11 @@
   }
  },
  "NVIDIA-NeMo/DataDesigner": {
-  "commit_7d": 17,
-  "commit_90d": 93,
+  "commit_7d": 19,
+  "commit_90d": 108,
   "rel_ver": "v0.9.7",
   "rel_pub": "2026-10-22",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
@@ -245,21 +245,21 @@
    "HTML": 1,
    "Makefile": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "openai/openai-java": {
-  "commit_7d": 57,
-  "commit_90d": 365,
-  "rel_ver": "v4.91.0",
-  "rel_pub": "2026-10-23",
-  "rel_days": 1,
+  "commit_7d": 34,
+  "commit_90d": 385,
+  "rel_ver": "v4.95.0",
+  "rel_pub": "2026-10-31",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -275,10 +275,10 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4259,6 +4259,28 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "huggingface/atif-scan": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 94,
+   "JavaScript": 5,
+   "CSS": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

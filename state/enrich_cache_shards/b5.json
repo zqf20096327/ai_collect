@@ -314,7 +314,7 @@
   }
  },
  "felladrin/awesome-ai-web-search": {
-  "commit_90d": 11,
+  "commit_90d": 12,
   "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
@@ -326,10 +326,10 @@
   "lang": {
    "HTML": 100
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -388,11 +388,11 @@
   }
  },
  "yashab-cyber/opendroid": {
-  "commit_90d": 294,
+  "commit_90d": 197,
   "commit_7d": 4,
   "rel_ver": "v1.0.7",
   "rel_pub": "2026-09-04",
-  "rel_days": 50,
+  "rel_days": 57,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -408,10 +408,10 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -439,7 +439,7 @@
  },
  "vinyzu-archive/Botright": {
   "commit_90d": 5,
-  "commit_7d": 1,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -453,10 +453,10 @@
    "JavaScript": 1,
    "CSS": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4350,6 +4350,72 @@
    "security": "20261030",
    "contrib": "20261030",
    "lang": "20261030"
+  }
+ },
+ "Atom-kkk/AI-Clothing-Resource-Library": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "HTML": 98,
+   "Shell": 2,
+   "Python": 1
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
+ },
+ "saisrivathsa/StyleTransfer-PyTorch": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Jupyter Notebook": 100
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
+ },
+ "chenthedesignmaker/ComfyUI-Picky": {
+  "rel_ver": "demo",
+  "rel_pub": "2026-10-26",
+  "rel_days": 5,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 59,
+   "JavaScript": 29,
+   "HTML": 9,
+   "CSS": 3
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

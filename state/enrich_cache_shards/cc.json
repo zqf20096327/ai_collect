@@ -161,11 +161,11 @@
   }
  },
  "lobehub/sd-webui-lobe-theme": {
-  "commit_7d": 1,
+  "commit_7d": 0,
   "commit_90d": 5,
   "rel_ver": "v3.0.3",
   "rel_pub": "2023-09-04",
-  "rel_days": 1146,
+  "rel_days": 1153,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -180,10 +180,10 @@
    "JavaScript": 1,
    "Shell": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -276,11 +276,11 @@
   }
  },
  "silverstein/minutes": {
-  "commit_7d": 127,
-  "commit_90d": 1154,
-  "rel_ver": "v0.30.10",
-  "rel_pub": "2026-10-22",
-  "rel_days": 2,
+  "commit_7d": 129,
+  "commit_90d": 1106,
+  "rel_ver": "v0.31.1",
+  "rel_pub": "2026-10-27",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -296,21 +296,21 @@
    "HTML": 6,
    "Python": 4
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "basetenlabs/truss": {
-  "commit_7d": 9,
-  "commit_90d": 106,
-  "rel_ver": "v0.18.36",
-  "rel_pub": "2026-10-21",
-  "rel_days": 3,
+  "commit_7d": 2,
+  "commit_90d": 98,
+  "rel_ver": "v0.18.37",
+  "rel_pub": "2026-10-29",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -326,10 +326,10 @@
    "JavaScript": 1,
    "Jinja": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4346,6 +4346,52 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "cvsp-lab/RestoreKV": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 98,
+   "Cuda": 1,
+   "C": 1,
+   "Makefile": 0
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
+ },
+ "liangci-ai/MOSS-YXBOX": {
+  "rel_ver": "v1.0.3",
+  "rel_pub": "2026-10-30",
+  "rel_days": 1,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 88,
+   "Python": 12
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

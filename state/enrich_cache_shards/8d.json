@@ -217,10 +217,10 @@
   }
  },
  "cosmicstack-labs/mercury-agent": {
-  "commit_7d": 102,
-  "commit_90d": 469,
-  "rel_ver": "v1.4.0",
-  "rel_pub": "2026-10-23",
+  "commit_7d": 146,
+  "commit_90d": 615,
+  "rel_ver": "whatsapp-v0.1.2",
+  "rel_pub": "2026-10-30",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -244,21 +244,21 @@
    "JavaScript": 2,
    "Shell": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "dwgx/WindsurfAPI": {
-  "commit_7d": 403,
-  "commit_90d": 1164,
-  "rel_ver": "v3.10.0",
-  "rel_pub": "2026-10-23",
-  "rel_days": 1,
+  "commit_7d": 220,
+  "commit_90d": 1327,
+  "rel_ver": "v3.141.592658",
+  "rel_pub": "2026-10-29",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -274,10 +274,10 @@
    "PowerShell": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -314,11 +314,11 @@
   }
  },
  "HarnessRouter/harnessrouter": {
-  "commit_7d": 74,
-  "commit_90d": 771,
-  "rel_ver": "v0.36.2",
-  "rel_pub": "2026-10-23",
-  "rel_days": 1,
+  "commit_7d": 30,
+  "commit_90d": 801,
+  "rel_ver": "v0.37.12",
+  "rel_pub": "2026-10-29",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -343,21 +343,21 @@
    "JavaScript": 2,
    "Shell": 2
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "huggingface/tau": {
-  "commit_7d": 5,
-  "commit_90d": 158,
+  "commit_7d": 2,
+  "commit_90d": 147,
   "rel_ver": "v0.4.8",
   "rel_pub": "2026-10-14",
-  "rel_days": 10,
+  "rel_days": 17,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -373,10 +373,10 @@
    "CSS": 1,
    "HTML": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -459,10 +459,10 @@
   }
  },
  "microsoft/azure-skills": {
-  "commit_7d": 4,
-  "commit_90d": 70,
-  "rel_ver": "v1.2.99",
-  "rel_pub": "2026-10-23",
+  "commit_7d": 5,
+  "commit_90d": 71,
+  "rel_ver": "v1.2.109",
+  "rel_pub": "2026-10-30",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -479,10 +479,10 @@
    "TypeScript": 8,
    "Astro": 4
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4758,6 +4758,50 @@
    "security": "20261030",
    "contrib": "20261030",
    "lang": "20261030"
+  }
+ },
+ "KavinduLaX/LibertyWing-Airline-Delay-Prediction-System": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "CSS": 54,
+   "JavaScript": 43,
+   "Python": 2,
+   "HTML": 0
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
+ },
+ "Canary-ECAD/eplan-cloudflare-rags": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 51,
+   "Python": 42,
+   "Shell": 4,
+   "JavaScript": 3
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

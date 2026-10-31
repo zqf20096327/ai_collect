@@ -192,11 +192,11 @@
   }
  },
  "Farama-Foundation/ViZDoom": {
-  "commit_7d": 2,
-  "commit_90d": 55,
+  "commit_7d": 1,
+  "commit_90d": 56,
   "rel_ver": "1.3.2",
   "rel_pub": "2026-10-13",
-  "rel_days": 11,
+  "rel_days": 18,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -212,18 +212,18 @@
    "CMake": 1,
    "HTML": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "YouMind-OpenLab/nano-banana-pro-prompts-recommend-skill": {
-  "commit_7d": 13,
-  "commit_90d": 178,
+  "commit_7d": 12,
+  "commit_90d": 176,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -235,18 +235,18 @@
    "TypeScript": 72,
    "JavaScript": 28
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "yandexdataschool/Practical_DL": {
-  "commit_7d": 2,
-  "commit_90d": 18,
+  "commit_7d": 0,
+  "commit_90d": 19,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -261,10 +261,10 @@
    "C++": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -298,12 +298,12 @@
   }
  },
  "awdr74100/figwright": {
-  "commit_7d": 10,
-  "commit_90d": 188,
-  "rel_ver": "v0.6.0",
-  "rel_pub": "2026-10-01",
-  "rel_days": 23,
-  "rel_n90": 3,
+  "commit_7d": 13,
+  "commit_90d": 184,
+  "rel_ver": "v0.7.0",
+  "rel_pub": "2026-10-26",
+  "rel_days": 5,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -318,10 +318,10 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4657,5 +4657,36 @@
    "contrib": "20261029",
    "lang": "20261029"
   }
+ },
+ "Adilmunawar/AdiGon-AI": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 98,
+   "CSS": 1,
+   "PLpgSQL": 1,
+   "HTML": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
+ },
+ "liberalchang/LiberAstra": {
+  "rel_ver": "v1.0.5",
+  "rel_pub": "2026-10-31",
+  "rel_days": 0,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false
  }
 }

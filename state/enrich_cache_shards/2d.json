@@ -213,8 +213,8 @@
   }
  },
  "XiaomingX/indie-hacker-tools-plus": {
-  "commit_90d": 91,
-  "commit_7d": 7,
+  "commit_90d": 90,
+  "commit_7d": 6,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -223,10 +223,10 @@
   "sec_ids": [],
   "contrib_n": 3,
   "lang": {},
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -338,11 +338,11 @@
   }
  },
  "jx-sec/jxwaf": {
-  "commit_90d": 34,
-  "commit_7d": 0,
+  "commit_90d": 35,
+  "commit_7d": 7,
   "rel_ver": "v4.5",
   "rel_pub": "2025-03-28",
-  "rel_days": 575,
+  "rel_days": 582,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -358,10 +358,10 @@
    "Go Template": 3,
    "CSS": 2
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4075,6 +4075,52 @@
    "security": "20261030",
    "contrib": "20261030",
    "lang": "20261030"
+  }
+ },
+ "neoxlabs/OpenNeox": {
+  "rel_ver": "v4.1.2",
+  "rel_pub": "2026-10-30",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 74,
+   "CSS": 11,
+   "Dart": 11,
+   "JavaScript": 2,
+   "Kotlin": 1
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
+ },
+ "Xnode-sh/Xnode-sh": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

@@ -240,12 +240,12 @@
   }
  },
  "Capsize-Games/airunner": {
-  "commit_90d": 296,
-  "commit_7d": 0,
-  "rel_ver": "v6.1.3",
-  "rel_pub": "2026-09-14",
-  "rel_days": 40,
-  "rel_n90": 8,
+  "commit_90d": 298,
+  "commit_7d": 2,
+  "rel_ver": "v6.1.8",
+  "rel_pub": "2026-10-25",
+  "rel_days": 6,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -260,20 +260,20 @@
    "Dockerfile": 0,
    "Mako": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "liliu-z/stashbase": {
-  "commit_90d": 1218,
-  "commit_7d": 100,
-  "rel_ver": "v2.17.0",
-  "rel_pub": "2026-10-23",
+  "commit_90d": 1231,
+  "commit_7d": 59,
+  "rel_ver": "v2.18.3",
+  "rel_pub": "2026-10-30",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -290,21 +290,21 @@
    "CSS": 1,
    "Shell": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "qwdwqfwq/topconf-paper-figure-gallery": {
-  "commit_90d": 263,
-  "commit_7d": 55,
+  "commit_90d": 292,
+  "commit_7d": 29,
   "rel_ver": "v0.5.0",
   "rel_pub": "2026-09-23",
-  "rel_days": 31,
+  "rel_days": 38,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -319,10 +319,10 @@
    "Python": 17,
    "CSS": 4
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4170,6 +4170,42 @@
    "security": "20261030",
    "contrib": "20261030",
    "lang": "20261030"
+  }
+ },
+ "tom-surge/ai-ad-editor": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
+ },
+ "dsolobalani-bot/-coregold-saas-pass": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

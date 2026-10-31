@@ -149,11 +149,11 @@
   }
  },
  "fairlearn/fairlearn": {
-  "commit_90d": 74,
-  "commit_7d": 26,
+  "commit_90d": 71,
+  "commit_7d": 1,
   "rel_ver": "v0.15.0",
   "rel_pub": "2026-10-12",
-  "rel_days": 12,
+  "rel_days": 19,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -168,10 +168,10 @@
    "PowerShell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -259,11 +259,11 @@
   }
  },
  "limecloud/lime": {
-  "commit_90d": 244,
-  "commit_7d": 61,
-  "rel_ver": "v1.168.0",
-  "rel_pub": "2026-10-23",
-  "rel_days": 1,
+  "commit_90d": 250,
+  "commit_7d": 17,
+  "rel_ver": "v1.172.0",
+  "rel_pub": "2026-10-26",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -279,10 +279,10 @@
    "HTML": 0,
    "Python": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -337,11 +337,11 @@
   }
  },
  "ccfos/huatuo": {
-  "commit_90d": 695,
-  "commit_7d": 94,
+  "commit_90d": 693,
+  "commit_7d": 89,
   "rel_ver": "v2.3.0",
   "rel_pub": "2026-08-13",
-  "rel_days": 72,
+  "rel_days": 79,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -357,10 +357,10 @@
    "JavaScript": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3972,6 +3972,90 @@
    "security": "20261027",
    "contrib": "20261027",
    "lang": "20261027"
+  }
+ },
+ "santoshshinde2012/ai-ml-ground-truth": {
+  "rel_ver": "edition-2026.10",
+  "rel_pub": "2026-10-30",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 32,
+   "JavaScript": 30,
+   "Astro": 23,
+   "CSS": 13,
+   "HTML": 3
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
+ },
+ "thebigsleepjoe/TTT-Bots-2": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Lua": 100
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
+ },
+ "kayas881/comfyui-kaggle": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 100
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
+ },
+ "Alpha-Park/genpark-personal-agent-dynamic-hrv-dfa-alpha1-intensity-fractal-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

@@ -195,11 +195,11 @@
   }
  },
  "GuDong2003/xianyu-auto-reply-fix": {
-  "commit_7d": 2,
-  "commit_90d": 19,
+  "commit_7d": 16,
+  "commit_90d": 37,
   "rel_ver": "v2.0.7",
   "rel_pub": "2026-08-22",
-  "rel_days": 63,
+  "rel_days": 70,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -215,21 +215,21 @@
    "CSS": 3,
    "Shell": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "google-deepmind/optax": {
-  "commit_7d": 13,
-  "commit_90d": 52,
+  "commit_7d": 0,
+  "commit_90d": 48,
   "rel_ver": "v0.2.8",
   "rel_pub": "2026-03-20",
-  "rel_days": 218,
+  "rel_days": 225,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -242,10 +242,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -414,11 +414,11 @@
   }
  },
  "ModelCloud/GPTQModel": {
-  "commit_7d": 78,
-  "commit_90d": 424,
+  "commit_7d": 31,
+  "commit_90d": 445,
   "rel_ver": "v7.7.0",
   "rel_pub": "2026-10-23",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
@@ -434,10 +434,10 @@
    "C": 0,
    "Shell": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

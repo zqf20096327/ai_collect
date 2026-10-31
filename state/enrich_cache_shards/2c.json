@@ -145,11 +145,11 @@
   }
  },
  "SemiAnalysisAI/InferenceX": {
-  "commit_7d": 141,
-  "commit_90d": 1018,
+  "commit_7d": 128,
+  "commit_90d": 1080,
   "rel_ver": "tilert-v0.1.5.post2-inferencex.1",
   "rel_pub": "2026-08-19",
-  "rel_days": 66,
+  "rel_days": 73,
   "rel_n90": 1,
   "rel_pre": true,
   "rel_none": false,
@@ -165,21 +165,21 @@
    "HTML": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "ovg-project/kvcached": {
-  "commit_7d": 9,
-  "commit_90d": 116,
+  "commit_7d": 7,
+  "commit_90d": 122,
   "rel_ver": "v0.1.6",
   "rel_pub": "2026-10-03",
-  "rel_days": 21,
+  "rel_days": 28,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -194,10 +194,10 @@
    "Shell": 4,
    "Makefile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -226,11 +226,11 @@
   }
  },
  "easystats/performance": {
-  "commit_7d": 13,
-  "commit_90d": 72,
+  "commit_7d": 9,
+  "commit_90d": 79,
   "rel_ver": "v0.19.0",
   "rel_pub": "2026-10-18",
-  "rel_days": 6,
+  "rel_days": 13,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -243,10 +243,10 @@
    "R": 97,
    "TeX": 3
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -257,7 +257,7 @@
   "commit_90d": 9,
   "rel_ver": "v2.15.0",
   "rel_pub": "2026-05-22",
-  "rel_days": 155,
+  "rel_days": 162,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -273,10 +273,10 @@
    "CSS": 0,
    "Nix": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3927,6 +3927,73 @@
    "security": "20261030",
    "contrib": "20261030",
    "lang": "20261030"
+  }
+ },
+ "milenagazdieva/StatOT": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
+ },
+ "manuelgscom/dale": {
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-10-29",
+  "rel_days": 2,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 99,
+   "CMake": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
+ },
+ "marcos2872/opencode-browser-extension": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 95,
+   "CSS": 3,
+   "PowerShell": 1,
+   "JavaScript": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

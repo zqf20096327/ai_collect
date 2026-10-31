@@ -259,11 +259,11 @@
   }
  },
  "alicevision/AliceVision": {
-  "commit_90d": 179,
-  "commit_7d": 21,
+  "commit_90d": 201,
+  "commit_7d": 32,
   "rel_ver": "nightly",
   "rel_pub": "2026-06-10",
-  "rel_days": 136,
+  "rel_days": 143,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -279,10 +279,10 @@
    "CMake": 5,
    "Modula-3": 2
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -376,7 +376,7 @@
   "commit_7d": 0,
   "rel_ver": "v1.16.0",
   "rel_pub": "2026-09-29",
-  "rel_days": 25,
+  "rel_days": 32,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -394,10 +394,10 @@
    "Dockerfile": 1,
    "Awk": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -434,8 +434,8 @@
   }
  },
  "udecode/dotai": {
-  "commit_90d": 465,
-  "commit_7d": 104,
+  "commit_90d": 518,
+  "commit_7d": 53,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -449,10 +449,10 @@
    "Swift": 1,
    "HTML": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4316,5 +4316,53 @@
    "contrib": "20261030",
    "lang": "20261030"
   }
- }
+ },
+ "Safe-Intelligence-Lab/awesome-adversarial-examples-dl": {
+  "commit_90d": 2,
+  "commit_7d": 2,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {},
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "commit": "20261031",
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
+ },
+ "l1ve709/NeuroPace-RDNA": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-04-17",
+  "rel_days": 197,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 32,
+   "Python": 31,
+   "JavaScript": 12,
+   "PowerShell": 8,
+   "CSS": 7
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
+ },
+ "karem505/hermes-mobile-remote-gateway": {}
 }

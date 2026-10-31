@@ -273,12 +273,12 @@
   }
  },
  "steven-jianhao-li/zotero-AI-Butler": {
-  "commit_90d": 89,
-  "commit_7d": 57,
-  "rel_ver": "v5.1.0",
-  "rel_pub": "2026-10-21",
-  "rel_days": 3,
-  "rel_n90": 8,
+  "commit_90d": 77,
+  "commit_7d": 3,
+  "rel_ver": "v5.1.1",
+  "rel_pub": "2026-10-27",
+  "rel_days": 4,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -293,10 +293,10 @@
    "CSS": 2,
    "HTML": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

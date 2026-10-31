@@ -208,11 +208,11 @@
   }
  },
  "YanWenKun/ComfyUI-Docker": {
-  "commit_90d": 15,
+  "commit_90d": 14,
   "commit_7d": 1,
   "rel_ver": "v6.0",
   "rel_pub": "2025-10-15",
-  "rel_days": 374,
+  "rel_days": 381,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -225,10 +225,10 @@
    "Dockerfile": 52,
    "Shell": 48
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -265,11 +265,11 @@
   }
  },
  "moyangzhan/langchain4j-aideepin": {
-  "commit_90d": 61,
-  "commit_7d": 2,
+  "commit_90d": 69,
+  "commit_7d": 12,
   "rel_ver": "v3.30.0",
   "rel_pub": "2026-09-01",
-  "rel_days": 53,
+  "rel_days": 60,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -287,10 +287,10 @@
    "PLpgSQL": 3,
    "Less": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -349,11 +349,11 @@
   }
  },
  "google-deepmind/synthid-text": {
-  "commit_90d": 11,
-  "commit_7d": 10,
+  "commit_90d": 12,
+  "commit_7d": 1,
   "rel_ver": "0.2.1",
   "rel_pub": "2024-11-14",
-  "rel_days": 709,
+  "rel_days": 716,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -366,21 +366,21 @@
    "Python": 69,
    "Jupyter Notebook": 31
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "rockbenben/subtitle-translator": {
-  "commit_90d": 72,
-  "commit_7d": 7,
+  "commit_90d": 75,
+  "commit_7d": 3,
   "rel_ver": "v3.2.1",
   "rel_pub": "2026-09-17",
-  "rel_days": 37,
+  "rel_days": 44,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -396,10 +396,10 @@
    "HTML": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4101,6 +4101,42 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "aixisstudio/ai-automation-tools": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
+ },
+ "Nikolai-Iakubovskii/spain-cuenta-propia": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

@@ -320,11 +320,11 @@
   }
  },
  "Bitterbot-AI/bitterbot-desktop": {
-  "commit_7d": 29,
-  "commit_90d": 601,
-  "rel_ver": "v1.10.1",
-  "rel_pub": "2026-10-22",
-  "rel_days": 2,
+  "commit_7d": 31,
+  "commit_90d": 576,
+  "rel_ver": "v1.11.0",
+  "rel_pub": "2026-10-30",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -343,22 +343,22 @@
    "Rust": 1,
    "Shell": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "learnhouse/learnhouse": {
-  "commit_7d": 41,
-  "commit_90d": 388,
-  "rel_ver": "1.4.2",
-  "rel_pub": "2026-10-22",
-  "rel_days": 2,
-  "rel_n90": 7,
+  "commit_7d": 45,
+  "commit_90d": 382,
+  "rel_ver": "cli-1.6.0",
+  "rel_pub": "2026-10-30",
+  "rel_days": 1,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -373,21 +373,21 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "nitrictech/nitric": {
-  "commit_7d": 10,
+  "commit_7d": 0,
   "commit_90d": 16,
   "rel_ver": "v1.28.4",
   "rel_pub": "2026-10-17",
-  "rel_days": 7,
+  "rel_days": 14,
   "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
@@ -403,21 +403,21 @@
    "Dockerfile": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "fancydirty/mediary-scout": {
-  "commit_7d": 7,
-  "commit_90d": 168,
-  "rel_ver": "v2026.10.22",
-  "rel_pub": "2026-10-22",
-  "rel_days": 2,
+  "commit_7d": 17,
+  "commit_90d": 109,
+  "rel_ver": "v2026.10.29",
+  "rel_pub": "2026-10-28",
+  "rel_days": 3,
   "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
@@ -433,10 +433,10 @@
    "Python": 2,
    "Shell": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3994,6 +3994,44 @@
    "security": "20261030",
    "contrib": "20261030",
    "lang": "20261030"
+  }
+ },
+ "coderoomstudio/Selfcoder": {
+  "rel_ver": "1.4.233",
+  "rel_pub": "2026-09-17",
+  "rel_days": 44,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
+ },
+ "simonice102-ctrl/coregold-payment-runbook": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

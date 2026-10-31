@@ -229,11 +229,11 @@
   }
  },
  "RubixML/ML": {
-  "commit_7d": 3,
+  "commit_7d": 0,
   "commit_90d": 265,
   "rel_ver": "3.3.0",
   "rel_pub": "2026-10-20",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -245,10 +245,10 @@
   "lang": {
    "PHP": 100
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4057,6 +4057,81 @@
    "security": "20261030",
    "contrib": "20261030",
    "lang": "20261030"
+  }
+ },
+ "DT42/BerryNet": {
+  "commit_90d": 21,
+  "commit_7d": 21,
+  "rel_ver": "v3.10.2",
+  "rel_pub": "2021-02-07",
+  "rel_days": 2092,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Python": 97,
+   "Shell": 2,
+   "Dockerfile": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "commit": "20261031",
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
+ },
+ "mickyyang-1407/diy-audiobook": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
+ },
+ "A-ENTROPY/hipfire-kvmem": {
+  "rel_ver": "v2.2.0",
+  "rel_pub": "2026-10-25",
+  "rel_days": 6,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 47,
+   "Python": 24,
+   "JavaScript": 14,
+   "HTML": 5,
+   "PowerShell": 4
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

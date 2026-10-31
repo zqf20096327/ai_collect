@@ -50,12 +50,12 @@
   }
  },
  "samugit83/redamon": {
-  "commit_90d": 1060,
-  "commit_7d": 179,
+  "commit_90d": 1425,
+  "commit_7d": 358,
   "rel_ver": "v6.14.1",
   "rel_pub": "2026-09-11",
-  "rel_days": 43,
-  "rel_n90": 2,
+  "rel_days": 50,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 2,
@@ -73,10 +73,10 @@
    "CSS": 2,
    "JavaScript": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -183,8 +183,8 @@
   }
  },
  "sgl-project/SpecForge": {
-  "commit_90d": 451,
-  "commit_7d": 64,
+  "commit_90d": 448,
+  "commit_7d": 21,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -197,10 +197,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4098,6 +4098,52 @@
    "security": "20261030",
    "contrib": "20261030",
    "lang": "20261030"
+  }
+ },
+ "alphaparkinc/openclaw-genpark-marketing": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
+ },
+ "YanYaoyuan/omniTerm": {
+  "rel_ver": "v0.0.1",
+  "rel_pub": "2026-10-30",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 477,
+  "lang": {
+   "Rust": 97,
+   "Python": 2,
+   "JavaScript": 0,
+   "Starlark": 0,
+   "TypeScript": 0
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

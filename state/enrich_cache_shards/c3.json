@@ -167,11 +167,11 @@
   }
  },
  "Zafer-Liu/Data-Analysis-Agent": {
-  "commit_90d": 99,
-  "commit_7d": 26,
+  "commit_90d": 102,
+  "commit_7d": 29,
   "rel_ver": "1.4.0",
   "rel_pub": "2026-09-19",
-  "rel_days": 35,
+  "rel_days": 42,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -187,10 +187,10 @@
    "CSS": 2,
    "TypeScript": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -257,11 +257,11 @@
   }
  },
  "LLPhant/LLPhant": {
-  "commit_90d": 23,
-  "commit_7d": 6,
-  "rel_ver": "1.0.7",
-  "rel_pub": "2026-10-06",
-  "rel_days": 18,
+  "commit_90d": 37,
+  "commit_7d": 16,
+  "rel_ver": "1.0.8",
+  "rel_pub": "2026-10-26",
+  "rel_days": 5,
   "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
@@ -274,10 +274,10 @@
    "PHP": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

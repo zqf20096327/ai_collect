@@ -86,11 +86,11 @@
   }
  },
  "simonlin1212/Vibe-Research": {
-  "commit_90d": 149,
-  "commit_7d": 17,
-  "rel_ver": "v2.2.3",
-  "rel_pub": "2026-10-23",
-  "rel_days": 1,
+  "commit_90d": 129,
+  "commit_7d": 7,
+  "rel_ver": "v2.2.6",
+  "rel_pub": "2026-10-29",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -106,10 +106,10 @@
    "CSS": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -157,10 +157,10 @@
  },
  "BetaStreetOmnis/xhs_ai_publisher": {
   "commit_90d": 5,
-  "commit_7d": 1,
+  "commit_7d": 0,
   "rel_ver": "v2.0.0-rc.2",
   "rel_pub": "2026-10-15",
-  "rel_days": 9,
+  "rel_days": 16,
   "rel_n90": 2,
   "rel_pre": true,
   "rel_none": false,
@@ -176,10 +176,10 @@
    "Batchfile": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -225,11 +225,11 @@
   }
  },
  "comarkdown/comark": {
-  "commit_90d": 218,
-  "commit_7d": 28,
+  "commit_90d": 211,
+  "commit_7d": 11,
   "rel_ver": "comark@0.8.1",
   "rel_pub": "2026-10-21",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -244,22 +244,22 @@
    "Svelte": 2,
    "Shell": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "alchaincyf/fanbox": {
-  "commit_90d": 63,
+  "commit_90d": 38,
   "commit_7d": 1,
-  "rel_ver": "v2.17.0",
-  "rel_pub": "2026-10-12",
-  "rel_days": 5,
-  "rel_n90": 12,
+  "rel_ver": "v2.17.1",
+  "rel_pub": "2026-10-30",
+  "rel_days": 1,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -272,10 +272,10 @@
    "HTML": 27,
    "CSS": 13
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1332,13 +1332,16 @@
    "Makefile": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261031",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261031"
+  },
+  "commit_90d": 58,
+  "commit_7d": 6
  },
  "Kobshobe/qy_translate": {
   "rel_ver": null,
@@ -2568,13 +2571,16 @@
    "Cuda": 23,
    "Dockerfile": 2
   },
-  "enriched_at": "20261022",
+  "enriched_at": "20261031",
   "dim_ts": {
    "release": "20261022",
    "security": "20261022",
    "contrib": "20261022",
-   "lang": "20261022"
-  }
+   "lang": "20261022",
+   "commit": "20261031"
+  },
+  "commit_90d": 7,
+  "commit_7d": 1
  },
  "EarthlyAlien/Document-Assistant": {
   "rel_ver": null,
@@ -4258,6 +4264,33 @@
    "security": "20261030",
    "contrib": "20261030",
    "lang": "20261030"
+  }
+ },
+ "liuwenji007/regulus-academy": {
+  "rel_ver": "v0.2.2",
+  "rel_pub": "2026-08-13",
+  "rel_days": 79,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 58,
+   "TypeScript": 30,
+   "CSS": 7,
+   "Python": 3,
+   "Shell": 2
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

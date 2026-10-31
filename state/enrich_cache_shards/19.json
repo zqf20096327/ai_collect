@@ -189,11 +189,11 @@
   }
  },
  "Agent-Field/agentfield": {
-  "commit_90d": 411,
-  "commit_7d": 29,
-  "rel_ver": "v0.1.143-rc.4",
-  "rel_pub": "2026-10-20",
-  "rel_days": 4,
+  "commit_90d": 406,
+  "commit_7d": 34,
+  "rel_ver": "v0.1.146-rc.9",
+  "rel_pub": "2026-10-30",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -211,10 +211,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -250,11 +250,11 @@
   }
  },
  "probcomp/Gen.jl": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 9,
+  "commit_7d": 9,
   "rel_ver": "0.4.8",
   "rel_pub": "2025-07-12",
-  "rel_days": 462,
+  "rel_days": 476,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -266,10 +266,10 @@
   "lang": {
    "Julia": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1324,13 +1324,16 @@
    "JavaScript": 2,
    "C++": 2
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261031",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261031"
+  },
+  "commit_90d": 613,
+  "commit_7d": 24
  },
  "Canvixel-Eloweny/ai-bot-groupmate": {
   "rel_ver": "v0.1.2",

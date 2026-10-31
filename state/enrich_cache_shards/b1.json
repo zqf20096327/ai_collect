@@ -205,8 +205,8 @@
   }
  },
  "skills/secure-code-game": {
-  "commit_90d": 6,
-  "commit_7d": 0,
+  "commit_90d": 7,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -221,10 +221,10 @@
    "Go": 5,
    "C": 3
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -257,10 +257,10 @@
   }
  },
  "nanaism/yomiyasu": {
-  "commit_90d": 62,
-  "commit_7d": 14,
-  "rel_ver": "v2.2.2",
-  "rel_pub": "2026-10-23",
+  "commit_90d": 67,
+  "commit_7d": 5,
+  "rel_ver": "v2.5.0",
+  "rel_pub": "2026-10-30",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -273,10 +273,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -336,11 +336,11 @@
   }
  },
  "EnzymeAD/Enzyme": {
-  "commit_90d": 236,
+  "commit_90d": 222,
   "commit_7d": 10,
   "rel_ver": "v0.0.303",
   "rel_pub": "2026-10-11",
-  "rel_days": 13,
+  "rel_days": 20,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -356,10 +356,10 @@
    "C": 2,
    "Fortran": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -393,7 +393,7 @@
   "commit_7d": 0,
   "rel_ver": "v0.9.0",
   "rel_pub": "2024-06-14",
-  "rel_days": 855,
+  "rel_days": 869,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -408,10 +408,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4057,6 +4057,53 @@
    "security": "20261030",
    "contrib": "20261030",
    "lang": "20261030"
+  }
+ },
+ "mllam/weather-model-graphs": {
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-07-28",
+  "rel_days": 95,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 11,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
+ },
+ "DingPei1995/ARPES-viewer": {
+  "rel_ver": "v1.2.3",
+  "rel_pub": "2026-10-30",
+  "rel_days": 1,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100,
+   "Shell": 0
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

@@ -186,11 +186,11 @@
   }
  },
  "lightly-ai/lightly": {
-  "commit_90d": 45,
-  "commit_7d": 1,
-  "rel_ver": "v1.5.26",
-  "rel_pub": "2026-07-27",
-  "rel_days": 89,
+  "commit_90d": 52,
+  "commit_7d": 20,
+  "rel_ver": "v1.6.0",
+  "rel_pub": "2026-10-26",
+  "rel_days": 5,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -203,21 +203,21 @@
    "Python": 99,
    "Makefile": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "ainfosec/FISSURE": {
-  "commit_90d": 50,
-  "commit_7d": 3,
+  "commit_90d": 45,
+  "commit_7d": 2,
   "rel_ver": "Python3_20260921",
   "rel_pub": "2026-09-29",
-  "rel_days": 25,
+  "rel_days": 32,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -233,10 +233,10 @@
    "C": 2,
    "CMake": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -293,11 +293,11 @@
   }
  },
  "zanllp/infinite-image-browsing": {
-  "commit_90d": 24,
-  "commit_7d": 5,
+  "commit_90d": 35,
+  "commit_7d": 13,
   "rel_ver": "v1.9.1",
   "rel_pub": "2026-10-09",
-  "rel_days": 15,
+  "rel_days": 22,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -313,10 +313,10 @@
    "Rust": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

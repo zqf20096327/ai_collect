@@ -315,12 +315,12 @@
   }
  },
  "alvinunreal/tmuxai": {
-  "commit_90d": 3,
-  "commit_7d": 0,
-  "rel_ver": "v2.4.0",
-  "rel_pub": "2026-09-28",
-  "rel_days": 26,
-  "rel_n90": 2,
+  "commit_90d": 7,
+  "commit_7d": 4,
+  "rel_ver": "v2.5.0",
+  "rel_pub": "2026-10-30",
+  "rel_days": 1,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -332,18 +332,18 @@
    "Go": 98,
    "Shell": 2
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "stripe/ai": {
-  "commit_90d": 72,
-  "commit_7d": 8,
+  "commit_90d": 80,
+  "commit_7d": 12,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -358,22 +358,22 @@
    "JavaScript": 10,
    "Shell": 5
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "chinesehuazhou/python-weekly": {
-  "commit_90d": 20,
-  "commit_7d": 3,
-  "rel_ver": "weekly-season-1-ebook",
-  "rel_pub": "2024-07-10",
-  "rel_days": 836,
-  "rel_n90": 0,
+  "commit_90d": 24,
+  "commit_7d": 4,
+  "rel_ver": "weekly-season-4-ebook",
+  "rel_pub": "2026-10-26",
+  "rel_days": 5,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -386,10 +386,10 @@
    "JavaScript": 2,
    "CSS": 2
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -460,10 +460,10 @@
    "CSS": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -501,10 +501,10 @@
  },
  "mybigday/llama.rn": {
   "commit_90d": 64,
-  "commit_7d": 5,
-  "rel_ver": "v0.13.0-rc.8",
-  "rel_pub": "2026-10-22",
-  "rel_days": 2,
+  "commit_7d": 4,
+  "rel_ver": "v0.13.0-rc.9",
+  "rel_pub": "2026-10-30",
+  "rel_days": 1,
   "rel_n90": 11,
   "rel_pre": true,
   "rel_none": false,
@@ -520,18 +520,18 @@
    "Shell": 2,
    "CMake": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "microsoft/power-platform-skills": {
-  "commit_90d": 176,
-  "commit_7d": 15,
+  "commit_90d": 171,
+  "commit_7d": 10,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -546,10 +546,10 @@
    "Go Template": 1,
    "Astro": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4432,6 +4432,25 @@
    "security": "20261030",
    "contrib": "20261030",
    "lang": "20261030"
+  }
+ },
+ "28AXE/etsy-store-full-auto": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

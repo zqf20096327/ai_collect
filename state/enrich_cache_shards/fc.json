@@ -349,12 +349,12 @@
   }
  },
  "vllm-project/guidellm": {
-  "commit_90d": 185,
-  "commit_7d": 36,
+  "commit_90d": 214,
+  "commit_7d": 37,
   "rel_ver": "v0.8.1",
   "rel_pub": "2026-10-08",
-  "rel_days": 16,
-  "rel_n90": 4,
+  "rel_days": 23,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -369,10 +369,10 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4455,6 +4455,31 @@
    "security": "20261030",
    "contrib": "20261030",
    "lang": "20261030"
+  }
+ },
+ "Kemperino/ethereum-rpc-mpc": {
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-10-30",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 53,
+   "JavaScript": 45,
+   "Nix": 2
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

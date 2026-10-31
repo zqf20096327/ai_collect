@@ -349,12 +349,12 @@
   }
  },
  "MacPaw/OpenAI": {
-  "commit_90d": 149,
-  "commit_7d": 9,
-  "rel_ver": "0.5.3",
-  "rel_pub": "2026-10-11",
-  "rel_days": 13,
-  "rel_n90": 2,
+  "commit_90d": 179,
+  "commit_7d": 23,
+  "rel_ver": "0.6.0",
+  "rel_pub": "2026-10-27",
+  "rel_days": 4,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -367,10 +367,10 @@
    "Python": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -397,8 +397,8 @@
   }
  },
  "datawhalechina/deepagents-in-action": {
-  "commit_90d": 97,
-  "commit_7d": 10,
+  "commit_90d": 98,
+  "commit_7d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -413,10 +413,10 @@
    "JavaScript": 4,
    "CSS": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -520,11 +520,11 @@
   }
  },
  "rulego/rulego": {
-  "commit_90d": 928,
-  "commit_7d": 3,
+  "commit_90d": 936,
+  "commit_7d": 4,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-10-19",
-  "rel_days": 5,
+  "rel_days": 12,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -536,10 +536,10 @@
   "lang": {
    "Go": 100
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -598,7 +598,7 @@
   }
  },
  "openai/codex-action": {
-  "commit_90d": 6,
+  "commit_90d": 7,
   "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
@@ -611,21 +611,21 @@
    "JavaScript": 57,
    "TypeScript": 43
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "Farama-Foundation/Stable-Retro": {
-  "commit_90d": 23,
-  "commit_7d": 3,
+  "commit_90d": 29,
+  "commit_7d": 6,
   "rel_ver": "v1.0.1",
   "rel_pub": "2026-06-25",
-  "rel_days": 121,
+  "rel_days": 128,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -641,10 +641,10 @@
    "GLSL": 0,
    "HTML": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5597,6 +5597,33 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "gestordescomplicaa-web/zervis": {
+  "rel_ver": "app-voz",
+  "rel_pub": "2026-10-26",
+  "rel_days": 5,
+  "rel_n90": 2,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 65,
+   "Go": 15,
+   "JavaScript": 12,
+   "HTML": 5,
+   "CSS": 2
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

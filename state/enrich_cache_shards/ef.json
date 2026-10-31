@@ -149,11 +149,11 @@
   }
  },
  "datopian/portaljs": {
-  "commit_7d": 54,
-  "commit_90d": 97,
+  "commit_7d": 11,
+  "commit_90d": 109,
   "rel_ver": "create-portaljs@0.7.1",
   "rel_pub": "2026-10-21",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -169,10 +169,10 @@
    "CSS": 2,
    "Python": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -312,11 +312,11 @@
   }
  },
  "activeloopai/hivemind": {
-  "commit_7d": 15,
-  "commit_90d": 181,
-  "rel_ver": "v0.7.164",
-  "rel_pub": "2026-10-22",
-  "rel_days": 2,
+  "commit_7d": 0,
+  "commit_90d": 157,
+  "rel_ver": "v0.7.165",
+  "rel_pub": "2026-10-24",
+  "rel_days": 7,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -330,10 +330,10 @@
    "JavaScript": 2,
    "Shell": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

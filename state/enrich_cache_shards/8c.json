@@ -108,8 +108,8 @@
   }
  },
  "modal-labs/modal-examples": {
-  "commit_90d": 59,
-  "commit_7d": 10,
+  "commit_90d": 57,
+  "commit_7d": 8,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -124,10 +124,10 @@
    "Jupyter Notebook": 0,
    "Shell": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1234,13 +1234,16 @@
   "lang": {
    "JavaScript": 100
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261031",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261031"
+  },
+  "commit_90d": 199,
+  "commit_7d": 11
  },
  "MontrealAI/AGIJobsv0": {
   "rel_ver": "source-v2.1.0-rc.15",
@@ -4124,6 +4127,50 @@
    "security": "20261030",
    "contrib": "20261030",
    "lang": "20261030"
+  }
+ },
+ "LofiSu/Agent_Kimi_ClaudeCode": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
+ },
+ "denysdovhan/home-assistant-developer": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-10-28",
+  "rel_days": 3,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 75,
+   "Shell": 20,
+   "Makefile": 6
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

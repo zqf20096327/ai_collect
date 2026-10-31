@@ -376,11 +376,11 @@
   }
  },
  "e2b-dev/code-interpreter": {
-  "commit_7d": 3,
-  "commit_90d": 27,
+  "commit_7d": 5,
+  "commit_90d": 32,
   "rel_ver": "@e2b/code-interpreter@2.7.1",
   "rel_pub": "2026-08-13",
-  "rel_days": 72,
+  "rel_days": 79,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -394,10 +394,10 @@
    "Shell": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -431,11 +431,11 @@
   }
  },
  "intentee/paddler": {
-  "commit_7d": 0,
-  "commit_90d": 68,
+  "commit_7d": 18,
+  "commit_90d": 203,
   "rel_ver": "v4.1.0",
   "rel_pub": "2026-07-19",
-  "rel_days": 97,
+  "rel_days": 104,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -451,10 +451,10 @@
    "CSS": 1,
    "Nix": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -491,11 +491,11 @@
   }
  },
  "microsoft/waza": {
-  "commit_7d": 16,
-  "commit_90d": 184,
-  "rel_ver": "v0.39.0",
-  "rel_pub": "2026-10-20",
-  "rel_days": 4,
+  "commit_7d": 11,
+  "commit_90d": 174,
+  "rel_ver": "v0.39.1",
+  "rel_pub": "2026-10-26",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -511,10 +511,10 @@
    "JavaScript": 1,
    "CSS": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -987,12 +987,12 @@
   }
  },
  "dagoSte/squadra": {
-  "commit_7d": 124,
-  "commit_90d": 124,
-  "rel_ver": "v3.10.2",
-  "rel_pub": "2026-10-17",
-  "rel_days": 1,
-  "rel_n90": 11,
+  "commit_7d": 90,
+  "commit_90d": 248,
+  "rel_ver": "v3.11.1",
+  "rel_pub": "2026-10-27",
+  "rel_days": 4,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1005,10 +1005,10 @@
    "HTML": 13,
    "JavaScript": 10
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4437,6 +4437,53 @@
    "security": "20261030",
    "contrib": "20261030",
    "lang": "20261030"
+  }
+ },
+ "WaitWut/comfyui-ultimate-lora-loader": {
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-07-29",
+  "rel_days": 94,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 89,
+   "Python": 11
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
+ },
+ "phoinixgrr/ps5lm_ha": {
+  "rel_ver": "v0.3.5",
+  "rel_pub": "2026-10-27",
+  "rel_days": 4,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

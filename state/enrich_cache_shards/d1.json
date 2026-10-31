@@ -119,11 +119,11 @@
   }
  },
  "vaexio/vaex": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 29,
+  "commit_7d": 29,
   "rel_ver": "vaexpaper_v1",
   "rel_pub": "2018-03-29",
-  "rel_days": 3123,
+  "rel_days": 3138,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -139,10 +139,10 @@
    "HTML": 3,
    "PHP": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -363,13 +363,13 @@
   }
  },
  "abhinavxd/libredesk": {
-  "commit_90d": 839,
-  "commit_7d": 77,
-  "rel_ver": "v2.9.0",
-  "rel_pub": "2026-10-22",
-  "rel_days": 2,
-  "rel_n90": 9,
-  "rel_pre": false,
+  "commit_90d": 831,
+  "commit_7d": 45,
+  "rel_ver": "v2.9.2-rc.1",
+  "rel_pub": "2026-10-30",
+  "rel_days": 1,
+  "rel_n90": 10,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 2,
   "sec_worst": "high",
@@ -386,21 +386,21 @@
    "HTML": 1,
    "CSS": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "thu-pacman/chitu": {
-  "commit_90d": 187,
-  "commit_7d": 25,
+  "commit_90d": 184,
+  "commit_7d": 17,
   "rel_ver": "v0.6.0",
   "rel_pub": "2026-07-02",
-  "rel_days": 114,
+  "rel_days": 121,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -416,10 +416,10 @@
    "Shell": 2,
    "Dockerfile": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -452,12 +452,12 @@
   }
  },
  "inferstep/ATLAS": {
-  "commit_90d": 195,
-  "commit_7d": 0,
-  "rel_ver": "v3.1.6",
-  "rel_pub": "2026-10-01",
-  "rel_days": 23,
-  "rel_n90": 3,
+  "commit_90d": 55,
+  "commit_7d": 3,
+  "rel_ver": "v3.1.7",
+  "rel_pub": "2026-10-25",
+  "rel_days": 6,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 3,
@@ -476,10 +476,10 @@
    "Go Template": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3619,13 +3619,16 @@
    "Python": 4,
    "TypeScript": 2
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261031",
   "dim_ts": {
    "release": "20261023",
    "security": "20261023",
    "contrib": "20261023",
-   "lang": "20261023"
-  }
+   "lang": "20261023",
+   "commit": "20261031"
+  },
+  "commit_90d": 347,
+  "commit_7d": 41
  },
  "icon-lab/MedTrim": {
   "rel_ver": null,
@@ -4827,6 +4830,25 @@
    "security": "20261025",
    "contrib": "20261025",
    "lang": "20261025"
+  }
+ },
+ "badchars/cloud-audit-mcp": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 100
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

@@ -330,11 +330,11 @@
   }
  },
  "OWASP/wrongsecrets": {
-  "commit_7d": 28,
-  "commit_90d": 562,
+  "commit_7d": 10,
+  "commit_90d": 568,
   "rel_ver": "v1.14.2",
   "rel_pub": "2026-10-20",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -352,10 +352,10 @@
    "JavaScript": 4,
    "Vim Snippet": 4
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -418,7 +418,7 @@
   "commit_90d": 10,
   "rel_ver": "v3.0.8",
   "rel_pub": "2026-06-18",
-  "rel_days": 128,
+  "rel_days": 135,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -434,10 +434,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4348,6 +4348,31 @@
    "security": "20261030",
    "contrib": "20261030",
    "lang": "20261030"
+  }
+ },
+ "akinauphill/vulkan-moe-streaming": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-10-10",
+  "rel_days": 21,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Shell": 69,
+   "PowerShell": 21,
+   "C++": 10
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

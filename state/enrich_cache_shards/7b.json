@@ -444,12 +444,12 @@
   }
  },
  "microsoft/azure-devops-mcp": {
-  "commit_7d": 13,
-  "commit_90d": 83,
+  "commit_7d": 1,
+  "commit_90d": 75,
   "rel_ver": "v2.11.0",
   "rel_pub": "2026-10-22",
-  "rel_days": 2,
-  "rel_n90": 3,
+  "rel_days": 9,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -461,10 +461,10 @@
    "TypeScript": 100,
    "JavaScript": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -543,12 +543,12 @@
   }
  },
  "wm94i/Work-Review": {
-  "commit_7d": 3,
-  "commit_90d": 69,
+  "commit_7d": 5,
+  "commit_90d": 63,
   "rel_ver": "v1.1.3",
   "rel_pub": "2026-10-20",
-  "rel_days": 4,
-  "rel_n90": 7,
+  "rel_days": 11,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -563,10 +563,10 @@
    "CSS": 3,
    "Shell": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -595,11 +595,11 @@
   }
  },
  "RongleCat/grok-app": {
-  "commit_7d": 15,
-  "commit_90d": 1866,
-  "rel_ver": "v0.2.42",
-  "rel_pub": "2026-10-19",
-  "rel_days": 5,
+  "commit_7d": 79,
+  "commit_90d": 1175,
+  "rel_ver": "v0.2.50",
+  "rel_pub": "2026-10-28",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -615,10 +615,10 @@
    "Python": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

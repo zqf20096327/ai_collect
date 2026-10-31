@@ -334,13 +334,13 @@
   }
  },
  "root-project/root": {
-  "commit_7d": 129,
-  "commit_90d": 1320,
-  "rel_ver": "v6-40-04",
-  "rel_pub": "2026-08-27",
-  "rel_days": 58,
-  "rel_n90": 2,
-  "rel_pre": false,
+  "commit_7d": 149,
+  "commit_90d": 1366,
+  "rel_ver": "v6-42-00-rc1",
+  "rel_pub": "2026-10-29",
+  "rel_days": 2,
+  "rel_n90": 3,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -354,10 +354,10 @@
    "Python": 2,
    "CMake": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -460,8 +460,8 @@
   }
  },
  "zhnt/loushang": {
-  "commit_7d": 198,
-  "commit_90d": 2671,
+  "commit_7d": 64,
+  "commit_90d": 2639,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -476,10 +476,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -516,8 +516,8 @@
   }
  },
  "zjunlp/LightMem": {
-  "commit_7d": 0,
-  "commit_90d": 8,
+  "commit_7d": 1,
+  "commit_90d": 7,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -532,10 +532,10 @@
    "Shell": 1,
    "CSS": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3737,5 +3737,6 @@
    "contrib": "20261030",
    "lang": "20261030"
   }
- }
+ },
+ "ravnir-ai/ravnir": {}
 }

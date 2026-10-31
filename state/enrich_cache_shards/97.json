@@ -149,12 +149,12 @@
   }
  },
  "zai-org/ZCode": {
-  "commit_90d": 6,
-  "commit_7d": 2,
-  "rel_ver": "v3.14.3",
-  "rel_pub": "2026-09-24",
-  "rel_days": 29,
-  "rel_n90": 1,
+  "commit_90d": 7,
+  "commit_7d": 1,
+  "rel_ver": "v3.17.1",
+  "rel_pub": "2026-10-30",
+  "rel_days": 1,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -169,10 +169,10 @@
    "MDX": 0,
    "CSS": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -353,8 +353,8 @@
   }
  },
  "amitshekhariitbhu/ai-engineering-interview-questions": {
-  "commit_90d": 43,
-  "commit_7d": 8,
+  "commit_90d": 48,
+  "commit_7d": 10,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -365,10 +365,10 @@
   "lang": {
    "Markdown": 100
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -483,8 +483,8 @@
   }
  },
  "WASasquatch/was-node-suite-comfyui": {
-  "commit_90d": 63,
-  "commit_7d": 10,
+  "commit_90d": 76,
+  "commit_7d": 13,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -497,21 +497,21 @@
    "JavaScript": 27,
    "CSS": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "Open-Source-Legal/OpenContracts": {
-  "commit_90d": 489,
-  "commit_7d": 28,
+  "commit_90d": 523,
+  "commit_7d": 44,
   "rel_ver": "v3.1.1",
   "rel_pub": "2026-09-10",
-  "rel_days": 44,
+  "rel_days": 51,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -527,21 +527,21 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "goodroot/hyprwhspr": {
-  "commit_90d": 311,
-  "commit_7d": 24,
-  "rel_ver": "v1.49.2",
-  "rel_pub": "2026-10-19",
-  "rel_days": 5,
+  "commit_90d": 307,
+  "commit_7d": 17,
+  "rel_ver": "v1.51.0",
+  "rel_pub": "2026-10-30",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -557,21 +557,21 @@
    "Nix": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "tensorlakeai/tensorlake": {
-  "commit_90d": 153,
-  "commit_7d": 16,
-  "rel_ver": "cli-v0.5.158",
-  "rel_pub": "2026-10-21",
-  "rel_days": 3,
+  "commit_90d": 145,
+  "commit_7d": 6,
+  "rel_ver": "cli-v0.5.160",
+  "rel_pub": "2026-10-29",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -594,10 +594,10 @@
    "JavaScript": 1,
    "Just": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4520,6 +4520,25 @@
    "security": "20261030",
    "contrib": "20261030",
    "lang": "20261030"
+  }
+ },
+ "alphaparkinc/openclaw-genpark-voice-shop": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

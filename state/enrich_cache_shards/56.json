@@ -183,7 +183,7 @@
  },
  "huhusmang/Awesome-LLMs-for-Vulnerability-Detection": {
   "commit_7d": 6,
-  "commit_90d": 84,
+  "commit_90d": 82,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -194,10 +194,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3797,6 +3797,23 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "vkustech/vkusvill-mcp-server-manifest": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

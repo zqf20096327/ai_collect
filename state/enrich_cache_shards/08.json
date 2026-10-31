@@ -153,10 +153,10 @@
  },
  "griptape-ai/griptape": {
   "commit_90d": 38,
-  "commit_7d": 4,
+  "commit_7d": 0,
   "rel_ver": "v1.13.0",
   "rel_pub": "2026-08-26",
-  "rel_days": 59,
+  "rel_days": 66,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -171,21 +171,21 @@
    "Makefile": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "chrisryugj/kordoc": {
-  "commit_90d": 975,
-  "commit_7d": 102,
-  "rel_ver": "v4.24.1",
-  "rel_pub": "2026-10-21",
-  "rel_days": 3,
+  "commit_90d": 1186,
+  "commit_7d": 228,
+  "rel_ver": "v4.24.27",
+  "rel_pub": "2026-10-30",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -201,21 +201,21 @@
    "Java": 2,
    "PowerShell": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "PurpleDoubleD/locally-uncensored": {
-  "commit_90d": 2140,
-  "commit_7d": 50,
-  "rel_ver": "v3.0.7",
-  "rel_pub": "2026-10-19",
-  "rel_days": 5,
+  "commit_90d": 2000,
+  "commit_7d": 16,
+  "rel_ver": "v3.0.8",
+  "rel_pub": "2026-10-27",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -231,10 +231,10 @@
    "Python": 1,
    "Shell": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -264,10 +264,10 @@
  },
  "autonomio/talos": {
   "commit_90d": 61,
-  "commit_7d": 8,
+  "commit_7d": 0,
   "rel_ver": "v2.0.10",
   "rel_pub": "2026-10-21",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -283,10 +283,10 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

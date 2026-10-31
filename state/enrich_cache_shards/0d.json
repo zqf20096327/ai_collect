@@ -243,7 +243,7 @@
  },
  "Barca0412/Introduction-to-Quantitative-Finance": {
   "commit_7d": 7,
-  "commit_90d": 69,
+  "commit_90d": 76,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -254,10 +254,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

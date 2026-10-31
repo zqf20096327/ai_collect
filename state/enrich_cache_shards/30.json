@@ -258,11 +258,11 @@
   }
  },
  "brightdata/brightdata-mcp": {
-  "commit_90d": 63,
-  "commit_7d": 18,
-  "rel_ver": "v4.1.0",
-  "rel_pub": "2026-10-20",
-  "rel_days": 4,
+  "commit_90d": 64,
+  "commit_7d": 5,
+  "rel_ver": "v4.1.1",
+  "rel_pub": "2026-10-29",
+  "rel_days": 2,
   "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
@@ -275,10 +275,10 @@
    "JavaScript": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -338,11 +338,11 @@
   }
  },
  "Ebony-Vinyl/EAC-Desktop": {
-  "commit_90d": 707,
-  "commit_7d": 13,
-  "rel_ver": "V6.0.1",
-  "rel_pub": "2026-10-09",
-  "rel_days": 15,
+  "commit_90d": 735,
+  "commit_7d": 11,
+  "rel_ver": "launcher-v0.1.0",
+  "rel_pub": "2026-10-25",
+  "rel_days": 6,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -358,21 +358,21 @@
    "PowerShell": 4,
    "NSIS": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "androoAGI/starnet": {
-  "commit_90d": 10976,
-  "commit_7d": 0,
-  "rel_ver": "v0.13.5",
-  "rel_pub": "2026-10-16",
-  "rel_days": 8,
+  "commit_90d": 11546,
+  "commit_7d": 524,
+  "rel_ver": "v0.14.1",
+  "rel_pub": "2026-10-26",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -388,21 +388,21 @@
    "Rust": 1,
    "Python": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "tensorflow/text": {
-  "commit_90d": 15,
+  "commit_90d": 18,
   "commit_7d": 3,
   "rel_ver": "v2.21.1",
   "rel_pub": "2026-09-09",
-  "rel_days": 45,
+  "rel_days": 52,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -418,10 +418,10 @@
    "Shell": 0,
    "Linker Script": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -432,7 +432,7 @@
   "commit_7d": 7,
   "rel_ver": "2.0",
   "rel_pub": "2026-08-06",
-  "rel_days": 79,
+  "rel_days": 86,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -448,21 +448,21 @@
    "Cuda": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "Folkbench/folkbench": {
-  "commit_90d": 61,
-  "commit_7d": 13,
+  "commit_90d": 65,
+  "commit_7d": 4,
   "rel_ver": "switch-v0.1.0-beta.5",
   "rel_pub": "2026-10-22",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 5,
   "rel_pre": true,
   "rel_none": false,
@@ -478,22 +478,22 @@
    "CSS": 4,
    "Astro": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "sakalond/StableGen": {
-  "commit_90d": 1,
-  "commit_7d": 0,
-  "rel_ver": "v0.3.1",
-  "rel_pub": "2026-06-12",
-  "rel_days": 127,
-  "rel_n90": 0,
+  "commit_90d": 65,
+  "commit_7d": 10,
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-10-28",
+  "rel_days": 3,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -504,10 +504,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4545,6 +4545,25 @@
    "security": "20261030",
    "contrib": "20261030",
    "lang": "20261030"
+  }
+ },
+ "amitshekhariitbhu/forward-deployed-engineer-roadmap": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Markdown": 100
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

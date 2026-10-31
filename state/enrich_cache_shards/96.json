@@ -321,11 +321,11 @@
   }
  },
  "langchain-ai/langgraphjs": {
-  "commit_90d": 175,
-  "commit_7d": 13,
-  "rel_ver": "@langchain/vue@1.2.7",
-  "rel_pub": "2026-10-22",
-  "rel_days": 2,
+  "commit_90d": 208,
+  "commit_7d": 35,
+  "rel_ver": "@langchain/vue@1.2.9",
+  "rel_pub": "2026-10-30",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -350,21 +350,21 @@
    "Python": 0,
    "CSS": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "TommyLemon/APIAuto": {
-  "commit_90d": 8,
-  "commit_7d": 0,
+  "commit_90d": 11,
+  "commit_7d": 3,
   "rel_ver": "6.0.0",
   "rel_pub": "2026-07-13",
-  "rel_days": 103,
+  "rel_days": 110,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -378,10 +378,10 @@
    "CSS": 9,
    "HTML": 6
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -411,7 +411,7 @@
   }
  },
  "Tencent-Hunyuan/AuK": {
-  "commit_90d": 46,
+  "commit_90d": 48,
   "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
@@ -424,21 +424,21 @@
    "Python": 98,
    "Shell": 2
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "aeon-toolkit/aeon": {
-  "commit_90d": 134,
-  "commit_7d": 31,
+  "commit_90d": 140,
+  "commit_7d": 11,
   "rel_ver": "v1.6.0",
   "rel_pub": "2026-09-18",
-  "rel_days": 36,
+  "rel_days": 43,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -453,10 +453,10 @@
    "Python": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

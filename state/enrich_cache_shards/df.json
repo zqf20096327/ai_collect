@@ -152,11 +152,11 @@
   "rel_pre": false
  },
  "pnnbao97/VieNeu-TTS": {
-  "commit_7d": 4,
-  "commit_90d": 140,
-  "rel_ver": "app-v0.18.12",
-  "rel_pub": "2026-10-20",
-  "rel_days": 4,
+  "commit_7d": 0,
+  "commit_90d": 127,
+  "rel_ver": "app-v0.18.18",
+  "rel_pub": "2026-10-30",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -171,23 +171,23 @@
    "HTML": 1,
    "Batchfile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "TNT-Likely/BeeCount": {
-  "commit_7d": 3,
+  "commit_7d": 4,
   "commit_90d": 53,
-  "rel_ver": "3.9.0",
-  "rel_pub": "2026-10-20",
-  "rel_days": 4,
+  "rel_ver": "4.0.0-beta.3",
+  "rel_pub": "2026-10-28",
+  "rel_days": 3,
   "rel_n90": 12,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -201,10 +201,10 @@
    "Swift": 1,
    "Ruby": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -240,8 +240,8 @@
   }
  },
  "google/XNNPACK": {
-  "commit_7d": 50,
-  "commit_90d": 690,
+  "commit_7d": 56,
+  "commit_90d": 696,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -256,10 +256,10 @@
    "Shell": 1,
    "Starlark": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -493,11 +493,11 @@
   }
  },
  "Gentleman-Programming/gentle-shell": {
-  "commit_7d": 84,
-  "commit_90d": 2114,
-  "rel_ver": "v4.3.0",
-  "rel_pub": "2026-10-16",
-  "rel_days": 8,
+  "commit_7d": 141,
+  "commit_90d": 2226,
+  "rel_ver": "v4.5.1",
+  "rel_pub": "2026-10-28",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -513,10 +513,10 @@
    "Batchfile": 0,
    "CSS": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -612,7 +612,7 @@
   "commit_90d": 97,
   "rel_ver": "v1.0.35",
   "rel_pub": "2026-10-14",
-  "rel_days": 10,
+  "rel_days": 17,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -628,18 +628,18 @@
    "CSS": 3,
    "Shell": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "pytorch/benchmark": {
-  "commit_7d": 3,
-  "commit_90d": 58,
+  "commit_7d": 1,
+  "commit_90d": 48,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -654,10 +654,10 @@
    "MATLAB": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

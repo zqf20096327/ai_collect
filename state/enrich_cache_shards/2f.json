@@ -172,11 +172,11 @@
   }
  },
  "UfoMiao/zcf": {
-  "commit_7d": 78,
-  "commit_90d": 100,
+  "commit_7d": 104,
+  "commit_90d": 125,
   "rel_ver": "zcf@3.7.3",
   "rel_pub": "2026-08-31",
-  "rel_days": 54,
+  "rel_days": 61,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -190,10 +190,10 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -252,11 +252,11 @@
   }
  },
  "microsoft/Olive": {
-  "commit_7d": 1,
-  "commit_90d": 73,
+  "commit_7d": 16,
+  "commit_90d": 89,
   "rel_ver": "v0.13.0",
   "rel_pub": "2026-06-09",
-  "rel_days": 137,
+  "rel_days": 144,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -272,10 +272,10 @@
    "PowerShell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -309,11 +309,11 @@
   }
  },
  "agentconnect-md/agentconnect": {
-  "commit_7d": 208,
-  "commit_90d": 2826,
-  "rel_ver": "v2.5.2",
-  "rel_pub": "2026-10-22",
-  "rel_days": 2,
+  "commit_7d": 163,
+  "commit_90d": 2719,
+  "rel_ver": "v2.8.0",
+  "rel_pub": "2026-10-28",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -329,10 +329,10 @@
    "Ruby": 0,
    "PLpgSQL": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -369,11 +369,11 @@
   }
  },
  "langchain-ai/openevals": {
-  "commit_7d": 17,
-  "commit_90d": 75,
+  "commit_7d": 6,
+  "commit_90d": 80,
   "rel_ver": "openevals==0.2.2",
   "rel_pub": "2026-10-22",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -388,18 +388,18 @@
    "JavaScript": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "ant-research/AntOmniEvo": {
-  "commit_7d": 8,
-  "commit_90d": 64,
+  "commit_7d": 4,
+  "commit_90d": 68,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -414,21 +414,21 @@
    "JavaScript": 0,
    "HTML": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "OSGeo/grass": {
-  "commit_7d": 27,
-  "commit_90d": 229,
+  "commit_7d": 16,
+  "commit_90d": 234,
   "rel_ver": "8.5.0",
   "rel_pub": "2026-05-08",
-  "rel_days": 169,
+  "rel_days": 176,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -444,10 +444,10 @@
    "C++": 6,
    "AGS Script": 2
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4467,6 +4467,56 @@
    "security": "20261030",
    "contrib": "20261030",
    "lang": "20261030"
+  }
+ },
+ "mindspore-ai/mindspore-lite": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 23,
+  "lang": {
+   "C++": 60,
+   "C": 20,
+   "Python": 12,
+   "Assembly": 3,
+   "Shell": 2
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
+ },
+ "HiAriesZhou/Howler": {
+  "rel_ver": "v0.1.12",
+  "rel_pub": "2026-10-30",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Swift": 84,
+   "JavaScript": 6,
+   "HTML": 4,
+   "CSS": 4,
+   "Shell": 3
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

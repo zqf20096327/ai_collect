@@ -168,11 +168,11 @@
   }
  },
  "zeronsh/zeron": {
-  "commit_7d": 28,
-  "commit_90d": 1717,
-  "rel_ver": "v0.2.120",
-  "rel_pub": "2026-10-23",
-  "rel_days": 1,
+  "commit_7d": 81,
+  "commit_90d": 1754,
+  "rel_ver": "v0.2.130",
+  "rel_pub": "2026-10-29",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -188,10 +188,10 @@
    "JavaScript": 1,
    "Python": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -254,7 +254,7 @@
   }
  },
  "lihanghang/NLP-Knowledge-Graph": {
-  "commit_7d": 1,
+  "commit_7d": 0,
   "commit_90d": 26,
   "rel_ver": null,
   "rel_none": true,
@@ -270,21 +270,21 @@
    "Fluent": 2,
    "Python": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "tensorflow/gnn": {
-  "commit_7d": 4,
-  "commit_90d": 9,
+  "commit_7d": 2,
+  "commit_90d": 10,
   "rel_ver": "v1.0.3",
   "rel_pub": "2024-05-13",
-  "rel_days": 894,
+  "rel_days": 901,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -299,10 +299,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4290,6 +4290,30 @@
    "security": "20261030",
    "contrib": "20261030",
    "lang": "20261030"
+  }
+ },
+ "beacoder/gptel-agent-harness": {
+  "rel_ver": "0.3.3",
+  "rel_pub": "2026-08-10",
+  "rel_days": 82,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Emacs Lisp": 99,
+   "Makefile": 1
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

@@ -92,8 +92,8 @@
   }
  },
  "steven2358/awesome-generative-ai": {
-  "commit_7d": 1,
-  "commit_90d": 20,
+  "commit_7d": 5,
+  "commit_90d": 24,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -102,10 +102,10 @@
   "sec_ids": [],
   "contrib_n": 189,
   "lang": {},
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -380,10 +380,10 @@
   }
  },
  "event-catalog/eventcatalog": {
-  "commit_90d": 200,
-  "commit_7d": 29,
-  "rel_ver": "@eventcatalog/visualiser@5.1.2",
-  "rel_pub": "2026-10-23",
+  "commit_90d": 217,
+  "commit_7d": 21,
+  "rel_ver": "@eventcatalog/visualiser@5.2.3",
+  "rel_pub": "2026-10-30",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -400,20 +400,20 @@
    "JavaScript": 2,
    "CSS": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "Tavris1/ComfyUI-Easy-Install": {
-  "commit_90d": 449,
-  "commit_7d": 8,
-  "rel_ver": "3.25.1",
-  "rel_pub": "2026-10-22",
+  "commit_90d": 460,
+  "commit_7d": 11,
+  "rel_ver": "3.27.1",
+  "rel_pub": "2026-10-29",
   "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
@@ -426,10 +426,10 @@
   "lang": {
    "Batchfile": 100
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -500,7 +500,7 @@
   "commit_7d": 0,
   "rel_ver": "v1.6.0",
   "rel_pub": "2026-01-05",
-  "rel_days": 292,
+  "rel_days": 299,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -516,10 +516,10 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -582,11 +582,11 @@
   }
  },
  "razzant/ouroboros": {
-  "commit_90d": 10421,
-  "commit_7d": 2323,
-  "rel_ver": "v7.8.0",
-  "rel_pub": "2026-10-23",
-  "rel_days": 1,
+  "commit_90d": 11507,
+  "commit_7d": 899,
+  "rel_ver": "v7.9.0",
+  "rel_pub": "2026-10-29",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -602,10 +602,10 @@
    "HTML": 0,
    "Java": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -640,11 +640,11 @@
   }
  },
  "datalayer/jupyter-mcp-server": {
-  "commit_90d": 165,
-  "commit_7d": 1,
+  "commit_90d": 158,
+  "commit_7d": 3,
   "rel_ver": "v2.2.4",
   "rel_pub": "2026-10-11",
-  "rel_days": 13,
+  "rel_days": 20,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -663,10 +663,10 @@
    "Makefile": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -745,8 +745,8 @@
   }
  },
  "elastic/elastic-labs": {
-  "commit_90d": 56,
-  "commit_7d": 2,
+  "commit_90d": 60,
+  "commit_7d": 5,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -761,10 +761,10 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4561,6 +4561,29 @@
    "security": "20261030",
    "contrib": "20261030",
    "lang": "20261030"
+  }
+ },
+ "lij768423-svg/pluggable-city-travel-agent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 78,
+   "Vue": 13,
+   "CSS": 4,
+   "HTML": 2,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

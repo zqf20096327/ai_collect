@@ -1,7 +1,7 @@
 {
  "patchy631/ai-engineering-hub": {
-  "commit_7d": 2,
-  "commit_90d": 11,
+  "commit_7d": 1,
+  "commit_90d": 10,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -16,10 +16,10 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -251,11 +251,11 @@
   }
  },
  "tensorly/tensorly": {
-  "commit_90d": 82,
-  "commit_7d": 3,
+  "commit_90d": 92,
+  "commit_7d": 6,
   "rel_ver": "0.10.0",
   "rel_pub": "2026-10-05",
-  "rel_days": 19,
+  "rel_days": 26,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -269,21 +269,21 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "NVIDIA-NeMo/Gym": {
-  "commit_90d": 1051,
-  "commit_7d": 133,
+  "commit_90d": 1194,
+  "commit_7d": 183,
   "rel_ver": "v0.7.0",
   "rel_pub": "2026-10-12",
-  "rel_days": 12,
+  "rel_days": 19,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -299,10 +299,10 @@
    "Jupyter Notebook": 0,
    "Jinja": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3937,5 +3937,50 @@
    "contrib": "20261030",
    "lang": "20261030"
   }
- }
+ },
+ "inboxpraveen/Autoencoders-Decoders-using-Keras": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
+ },
+ "akari-sora/synology-nas-cli": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-10-30",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 98,
+   "Shell": 1,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
+ },
+ "smixs/yandex-taxi-skill": {}
 }

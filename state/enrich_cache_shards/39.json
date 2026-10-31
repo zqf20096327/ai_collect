@@ -275,10 +275,10 @@
   }
  },
  "TNT-Likely/PanWatch": {
-  "commit_90d": 72,
-  "commit_7d": 9,
-  "rel_ver": "0.20.0",
-  "rel_pub": "2026-10-23",
+  "commit_90d": 75,
+  "commit_7d": 4,
+  "rel_ver": "0.20.2",
+  "rel_pub": "2026-10-30",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -295,10 +295,10 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4648,6 +4648,50 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "Mayank32935M/3d-portfolio": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 91,
+   "HTML": 7,
+   "CSS": 1,
+   "SCSS": 1,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
+ },
+ "gavinbrow/p100-llm-benchmarks": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 67,
+   "PowerShell": 17,
+   "Python": 15
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

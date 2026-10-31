@@ -354,11 +354,11 @@
   }
  },
  "rpamis/comet": {
-  "commit_90d": 111,
-  "commit_7d": 1,
-  "rel_ver": "0.5.0",
-  "rel_pub": "2026-10-23",
-  "rel_days": 1,
+  "commit_90d": 100,
+  "commit_7d": 7,
+  "rel_ver": "0.5.1",
+  "rel_pub": "2026-10-28",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -374,20 +374,20 @@
    "CSS": 1,
    "Shell": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "dstackai/dstack": {
-  "commit_90d": 220,
-  "commit_7d": 17,
-  "rel_ver": "0.22.5",
-  "rel_pub": "2026-10-22",
+  "commit_90d": 237,
+  "commit_7d": 26,
+  "rel_ver": "0.22.6",
+  "rel_pub": "2026-10-29",
   "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
@@ -404,21 +404,21 @@
    "CSS": 3,
    "JavaScript": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "google-deepmind/concordia": {
-  "commit_90d": 79,
-  "commit_7d": 2,
+  "commit_90d": 80,
+  "commit_7d": 8,
   "rel_ver": "v2.4.0",
   "rel_pub": "2026-03-06",
-  "rel_days": 232,
+  "rel_days": 239,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -432,10 +432,10 @@
    "HTML": 1,
    "Shell": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -468,11 +468,11 @@
   }
  },
  "NVIDIA/Personal-AI-Router": {
-  "commit_90d": 80,
-  "commit_7d": 5,
+  "commit_90d": 91,
+  "commit_7d": 11,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-10-13",
-  "rel_days": 11,
+  "rel_days": 18,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -488,10 +488,10 @@
    "JavaScript": 1,
    "Python": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -567,12 +567,12 @@
   }
  },
  "bytechefhq/bytechef": {
-  "commit_90d": 1880,
-  "commit_7d": 236,
-  "rel_ver": "v0.35.0",
-  "rel_pub": "2026-10-13",
-  "rel_days": 11,
-  "rel_n90": 5,
+  "commit_90d": 2606,
+  "commit_7d": 1508,
+  "rel_ver": "v0.36.0",
+  "rel_pub": "2026-10-27",
+  "rel_days": 4,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -587,10 +587,10 @@
    "JavaScript": 0,
    "CSS": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4697,6 +4697,33 @@
    "security": "20261030",
    "contrib": "20261030",
    "lang": "20261030"
+  }
+ },
+ "microsoft/AnalyticsHub-Dashboard": {
+  "rel_ver": "installer-v0.6.8",
+  "rel_pub": "2026-10-26",
+  "rel_days": 5,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 11,
+  "lang": {
+   "JavaScript": 35,
+   "TypeScript": 34,
+   "Python": 19,
+   "Jupyter Notebook": 10,
+   "CSS": 1
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

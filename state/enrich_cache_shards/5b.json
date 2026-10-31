@@ -198,11 +198,11 @@
   }
  },
  "whiteguo233/OpenBiliClaw": {
-  "commit_90d": 951,
-  "commit_7d": 95,
-  "rel_ver": "openbiliclaw-v0.3.231",
-  "rel_pub": "2026-10-22",
-  "rel_days": 2,
+  "commit_90d": 892,
+  "commit_7d": 42,
+  "rel_ver": "openbiliclaw-v0.3.233",
+  "rel_pub": "2026-10-30",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -218,10 +218,10 @@
    "HTML": 2,
    "CSS": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -259,9 +259,9 @@
  "NxcoreAI/EverRoom": {
   "commit_90d": 735,
   "commit_7d": 0,
-  "rel_ver": "desktop-v0.1.9-nightly.20261022.111",
-  "rel_pub": "2026-10-21",
-  "rel_days": 3,
+  "rel_ver": "desktop-v0.1.9-nightly.20261026.118",
+  "rel_pub": "2026-10-26",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -277,10 +277,10 @@
    "HTML": 0,
    "Python": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -317,11 +317,11 @@
   }
  },
  "openai/openai-dotnet": {
-  "commit_90d": 102,
-  "commit_7d": 9,
+  "commit_90d": 109,
+  "commit_7d": 12,
   "rel_ver": "OpenAI_2.14.0",
   "rel_pub": "2026-09-15",
-  "rel_days": 39,
+  "rel_days": 46,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -336,18 +336,18 @@
    "PowerShell": 0,
    "TypeScript": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "akdeb/ElatoAI": {
-  "commit_90d": 14,
-  "commit_7d": 2,
+  "commit_90d": 16,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -362,10 +362,10 @@
    "Python": 5,
    "C": 3
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -398,11 +398,11 @@
   }
  },
  "golemcloud/golem": {
-  "commit_90d": 531,
-  "commit_7d": 118,
-  "rel_ver": "golem-shared-v1.6.1",
-  "rel_pub": "2026-10-23",
-  "rel_days": 1,
+  "commit_90d": 555,
+  "commit_7d": 33,
+  "rel_ver": "v1.6.2",
+  "rel_pub": "2026-10-27",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -418,18 +418,18 @@
    "Scala": 4,
    "MoonBit": 4
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "EthicalML/awesome-artificial-intelligence-regulation": {
-  "commit_90d": 42,
-  "commit_7d": 5,
+  "commit_90d": 46,
+  "commit_7d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -438,10 +438,10 @@
   "sec_ids": [],
   "contrib_n": 48,
   "lang": {},
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -470,12 +470,12 @@
   }
  },
  "cognizant-ai-lab/neuro-san-studio": {
-  "commit_90d": 623,
-  "commit_7d": 10,
-  "rel_ver": "0.4.3",
-  "rel_pub": "2026-10-20",
-  "rel_days": 4,
-  "rel_n90": 11,
+  "commit_90d": 618,
+  "commit_7d": 55,
+  "rel_ver": "0.4.4",
+  "rel_pub": "2026-10-29",
+  "rel_days": 2,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -490,10 +490,10 @@
    "HTML": 0,
    "CSS": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -528,11 +528,11 @@
   }
  },
  "Pan-Chera/Multi-Agent-CAD": {
-  "commit_90d": 67,
-  "commit_7d": 7,
+  "commit_90d": 61,
+  "commit_7d": 3,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-09-24",
-  "rel_days": 30,
+  "rel_days": 37,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -547,10 +547,10 @@
    "HTML": 0,
    "CSS": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4106,6 +4106,28 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "JopenChen/dsh-go": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 95,
+   "CSS": 3,
+   "HTML": 3,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

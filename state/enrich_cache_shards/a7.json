@@ -200,11 +200,11 @@
   }
  },
  "snyk/agent-scan": {
-  "commit_90d": 119,
-  "commit_7d": 17,
-  "rel_ver": "v0.6.9",
-  "rel_pub": "2026-10-20",
-  "rel_days": 4,
+  "commit_90d": 118,
+  "commit_7d": 1,
+  "rel_ver": "v0.6.10",
+  "rel_pub": "2026-10-30",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -220,10 +220,10 @@
    "HTML": 1,
    "PowerShell": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -442,12 +442,12 @@
   }
  },
  "raindrop-ai/workshop": {
-  "commit_90d": 3,
-  "commit_7d": 0,
-  "rel_ver": "v0.1.21",
-  "rel_pub": "2026-08-22",
-  "rel_days": 63,
-  "rel_n90": 3,
+  "commit_90d": 4,
+  "commit_7d": 1,
+  "rel_ver": "v0.1.23",
+  "rel_pub": "2026-10-26",
+  "rel_days": 5,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -462,23 +462,23 @@
    "CSS": 1,
    "HTML": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "openai/mcp-extensions": {
-  "commit_90d": 28,
-  "commit_7d": 5,
-  "rel_ver": "python-v0.2.1",
-  "rel_pub": "2026-10-21",
-  "rel_days": 3,
+  "commit_90d": 29,
+  "commit_7d": 1,
+  "rel_ver": "marketplace-latest",
+  "rel_pub": "2026-09-29",
+  "rel_days": 32,
   "rel_n90": 7,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -492,10 +492,10 @@
    "JavaScript": 3,
    "CSS": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -524,11 +524,11 @@
   }
  },
  "alumnium-hq/alumnium": {
-  "commit_90d": 283,
-  "commit_7d": 24,
+  "commit_90d": 280,
+  "commit_7d": 3,
   "rel_ver": "0.24.0-alpha.4",
   "rel_pub": "2026-10-19",
-  "rel_days": 5,
+  "rel_days": 12,
   "rel_n90": 8,
   "rel_pre": true,
   "rel_none": false,
@@ -544,10 +544,10 @@
    "Astro": 8,
    "MDX": 7
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4126,13 +4126,16 @@
    "CSS": 20,
    "HTML": 6
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261031",
   "dim_ts": {
    "release": "20261030",
    "security": "20261030",
    "contrib": "20261030",
-   "lang": "20261030"
-  }
+   "lang": "20261030",
+   "commit": "20261031"
+  },
+  "commit_90d": 86,
+  "commit_7d": 86
  },
  "erickluna015kmparaviaje374-crypto/CoreGold---Anti-Link-Virtual-Card-Engine-for-Bulk-Account-Scaling": {
   "rel_ver": null,

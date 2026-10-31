@@ -320,11 +320,11 @@
   }
  },
  "sonos/tract": {
-  "commit_7d": 111,
-  "commit_90d": 948,
+  "commit_7d": 117,
+  "commit_90d": 1032,
   "rel_ver": "v0.23.9",
   "rel_pub": "2026-10-15",
-  "rel_days": 9,
+  "rel_days": 16,
   "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
@@ -345,10 +345,10 @@
    "Jinja": 3,
    "Cuda": 2
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -461,12 +461,12 @@
   }
  },
  "kwaroran/Risuai": {
-  "commit_7d": 15,
-  "commit_90d": 203,
-  "rel_ver": "v2026.10.220",
-  "rel_pub": "2026-10-22",
-  "rel_days": 2,
-  "rel_n90": 6,
+  "commit_7d": 13,
+  "commit_90d": 209,
+  "rel_ver": "v2026.10.292",
+  "rel_pub": "2026-10-30",
+  "rel_days": 1,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -481,10 +481,10 @@
    "Rust": 0,
    "CSS": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4191,5 +4191,6 @@
    "contrib": "20261030",
    "lang": "20261030"
   }
- }
+ },
+ "47thtechcorner/RayCodes_Spark-X2.6-4B": {}
 }

@@ -70,10 +70,10 @@
  },
  "Mail-0/Zero": {
   "commit_7d": 3,
-  "commit_90d": 10,
+  "commit_90d": 11,
   "rel_ver": "v0.1",
   "rel_pub": "2025-07-18",
-  "rel_days": 463,
+  "rel_days": 470,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -91,10 +91,10 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -185,11 +185,11 @@
   }
  },
  "jeremylongshore/tons-of-skills-marketplace": {
-  "commit_7d": 108,
-  "commit_90d": 1355,
+  "commit_7d": 110,
+  "commit_90d": 1452,
   "rel_ver": "@intentsolutionsio/intent-labs-pack@0.1.0",
   "rel_pub": "2026-07-23",
-  "rel_days": 93,
+  "rel_days": 100,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -205,10 +205,10 @@
    "Shell": 5,
    "Astro": 4
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -243,11 +243,11 @@
   }
  },
  "Zleap-AI/SAG": {
-  "commit_7d": 7,
-  "commit_90d": 245,
+  "commit_7d": 0,
+  "commit_90d": 216,
   "rel_ver": "v1.9.2",
   "rel_pub": "2026-10-22",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -263,10 +263,10 @@
    "CSS": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -325,8 +325,8 @@
   }
  },
  "kyegomez/awesome-multi-agent-papers": {
-  "commit_7d": 2,
-  "commit_90d": 13,
+  "commit_7d": 0,
+  "commit_90d": 12,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -338,10 +338,10 @@
    "TeX": 92,
    "Python": 8
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -489,11 +489,11 @@
   }
  },
  "codelibs/fess": {
-  "commit_7d": 7,
-  "commit_90d": 443,
+  "commit_7d": 50,
+  "commit_90d": 488,
   "rel_ver": "fess-15.9.0",
   "rel_pub": "2026-10-15",
-  "rel_days": 9,
+  "rel_days": 16,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -511,10 +511,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1375,13 +1375,16 @@
    "Shell": 3,
    "Tree-sitter Query": 2
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261031",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261031"
+  },
+  "commit_90d": 5,
+  "commit_7d": 0
  },
  "five-plus-one/AI-Marker-Suite": {
   "rel_ver": "preview-latest",
@@ -4878,5 +4881,9 @@
    "contrib": "20261030",
    "lang": "20261030"
   }
+ },
+ "jeet0733/Rapid-H3": {
+  "rel_ver": null,
+  "rel_none": true
  }
 }

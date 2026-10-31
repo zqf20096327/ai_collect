@@ -145,8 +145,8 @@
   }
  },
  "kelvins/awesome-mlops": {
-  "commit_90d": 4,
-  "commit_7d": 0,
+  "commit_90d": 36,
+  "commit_7d": 24,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -157,10 +157,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -414,11 +414,11 @@
   }
  },
  "openonion/connectonion": {
-  "commit_90d": 2514,
-  "commit_7d": 265,
-  "rel_ver": "v1.9.3rc21",
-  "rel_pub": "2026-10-23",
-  "rel_days": 1,
+  "commit_90d": 2467,
+  "commit_7d": 79,
+  "rel_ver": "v1.9.3rc27",
+  "rel_pub": "2026-10-29",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -434,10 +434,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

@@ -197,10 +197,10 @@
  },
  "Nanako0129/sepia": {
   "commit_90d": 328,
-  "commit_7d": 6,
+  "commit_7d": 0,
   "rel_ver": "v0.12.4",
   "rel_pub": "2026-10-15",
-  "rel_days": 2,
+  "rel_days": 16,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -212,22 +212,22 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "montanaflynn/stats": {
-  "commit_90d": 30,
-  "commit_7d": 0,
-  "rel_ver": "v0.13.0",
-  "rel_pub": "2026-10-06",
-  "rel_days": 18,
-  "rel_n90": 6,
+  "commit_90d": 43,
+  "commit_7d": 14,
+  "rel_ver": "v0.14.0",
+  "rel_pub": "2026-10-25",
+  "rel_days": 6,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -240,22 +240,22 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "snapotter-hq/SnapOtter": {
-  "commit_90d": 1436,
-  "commit_7d": 665,
+  "commit_90d": 1606,
+  "commit_7d": 213,
   "rel_ver": "v2.2.0",
   "rel_pub": "2026-07-29",
-  "rel_days": 87,
-  "rel_n90": 1,
+  "rel_days": 94,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 3,
@@ -274,10 +274,10 @@
    "Shell": 1,
    "Astro": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -311,11 +311,11 @@
   }
  },
  "0Chencc/clawgod": {
-  "commit_90d": 70,
-  "commit_7d": 3,
+  "commit_90d": 75,
+  "commit_7d": 5,
   "rel_ver": "v2.3.0",
   "rel_pub": "2026-10-19",
-  "rel_days": 5,
+  "rel_days": 12,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -331,10 +331,10 @@
    "HTML": 10,
    "CSS": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4386,6 +4386,30 @@
    "security": "20261030",
    "contrib": "20261030",
    "lang": "20261030"
+  }
+ },
+ "Dsouza10082/lucky-lang": {
+  "rel_ver": "v0.0.1",
+  "rel_pub": "2026-10-24",
+  "rel_days": 7,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Shell": 83,
+   "Go": 17
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

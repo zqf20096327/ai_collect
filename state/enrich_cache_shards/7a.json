@@ -357,11 +357,11 @@
   }
  },
  "xuzhougeng/wisp-science": {
-  "commit_90d": 1685,
-  "commit_7d": 23,
-  "rel_ver": "v1.20.0",
-  "rel_pub": "2026-10-14",
-  "rel_days": 10,
+  "commit_90d": 1516,
+  "commit_7d": 43,
+  "rel_ver": "v1.23.0",
+  "rel_pub": "2026-10-29",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -377,10 +377,10 @@
    "TypeScript": 7,
    "C#": 4
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

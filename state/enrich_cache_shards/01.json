@@ -272,8 +272,8 @@
   }
  },
  "Haidra-Org/AI-Horde": {
-  "commit_90d": 235,
-  "commit_7d": 3,
+  "commit_90d": 194,
+  "commit_7d": 7,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -288,10 +288,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -366,11 +366,11 @@
   }
  },
  "data-goblin/power-bi-agentic-development": {
-  "commit_90d": 137,
-  "commit_7d": 3,
-  "rel_ver": "v26.40.7",
-  "rel_pub": "2026-10-17",
-  "rel_days": 7,
+  "commit_90d": 141,
+  "commit_7d": 10,
+  "rel_ver": "v26.40.9",
+  "rel_pub": "2026-10-26",
+  "rel_days": 5,
   "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
@@ -386,10 +386,10 @@
    "Shell": 7,
    "PowerShell": 3
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -448,12 +448,12 @@
   }
  },
  "strelov1/freehire": {
-  "commit_90d": 2554,
-  "commit_7d": 238,
-  "rel_ver": "extension-v0.1.12",
-  "rel_pub": "2026-10-23",
-  "rel_days": 1,
-  "rel_n90": 11,
+  "commit_90d": 2642,
+  "commit_7d": 426,
+  "rel_ver": "web-v0.1.1",
+  "rel_pub": "2026-10-26",
+  "rel_days": 5,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -468,10 +468,10 @@
    "HTML": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4555,6 +4555,33 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "159159pzy-crypto/comfy-Image-Atelier": {
+  "rel_ver": "1.5.1",
+  "rel_pub": "2026-10-31",
+  "rel_days": 0,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C#": 40,
+   "Python": 32,
+   "JavaScript": 22,
+   "CSS": 2,
+   "HTML": 2
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

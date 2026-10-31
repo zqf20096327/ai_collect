@@ -88,11 +88,11 @@
   }
  },
  "onehumanbeing/esp32-iphone-agent": {
-  "commit_90d": 54,
-  "commit_7d": 6,
+  "commit_90d": 57,
+  "commit_7d": 3,
   "rel_ver": "v0.1.0",
   "rel_pub": "2026-10-14",
-  "rel_days": 10,
+  "rel_days": 17,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -108,10 +108,10 @@
    "C++": 3,
    "JavaScript": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1366,13 +1366,16 @@
    "Python": 7,
    "Bicep": 2
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261031",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261031"
+  },
+  "commit_90d": 73,
+  "commit_7d": 35
  },
  "Debapriya-source/nyaya-gpt": {
   "rel_ver": null,

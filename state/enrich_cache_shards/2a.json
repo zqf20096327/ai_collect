@@ -142,12 +142,12 @@
   }
  },
  "AgriciDaniel/claude-blog": {
-  "commit_7d": 15,
-  "commit_90d": 32,
+  "commit_7d": 0,
+  "commit_90d": 26,
   "rel_ver": "v2.3.1",
   "rel_pub": "2026-10-13",
-  "rel_days": 4,
-  "rel_n90": 4,
+  "rel_days": 18,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -162,21 +162,21 @@
    "Shell": 1,
    "HTML": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "aws/sagemaker-python-sdk": {
-  "commit_7d": 23,
-  "commit_90d": 195,
-  "rel_ver": "v3.27.0",
-  "rel_pub": "2026-10-21",
-  "rel_days": 3,
+  "commit_7d": 16,
+  "commit_90d": 196,
+  "rel_ver": "v3.28.0",
+  "rel_pub": "2026-10-30",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -201,22 +201,22 @@
    "Makefile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "LetsFG/LetsFG": {
-  "commit_7d": 7,
-  "commit_90d": 143,
+  "commit_7d": 1,
+  "commit_90d": 127,
   "rel_ver": "v2026.5.103",
   "rel_pub": "2026-10-02",
-  "rel_days": 22,
-  "rel_n90": 5,
+  "rel_days": 29,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -231,10 +231,10 @@
    "QML": 19,
    "Shell": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -302,7 +302,7 @@
   "commit_90d": 3,
   "rel_ver": "v1.5.2",
   "rel_pub": "2026-06-10",
-  "rel_days": 136,
+  "rel_days": 143,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -315,10 +315,10 @@
    "Python": 90,
    "Jupyter Notebook": 10
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4166,6 +4166,76 @@
    "security": "20261030",
    "contrib": "20261030",
    "lang": "20261030"
+  }
+ },
+ "krisyangdev/ChatLLM-Web": {
+  "commit_90d": 8,
+  "commit_7d": 0,
+  "rel_ver": "v3.2.0",
+  "rel_pub": "2026-08-12",
+  "rel_days": 80,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 80,
+   "CSS": 19,
+   "HTML": 1,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "commit": "20261031",
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
+ },
+ "asimfish/awesome_loop_transformer": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 47,
+   "HTML": 29,
+   "TeX": 18,
+   "Shell": 6
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
+ },
+ "alphaparkinc/genpark-agent-meeting-minutes-action-extractor-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

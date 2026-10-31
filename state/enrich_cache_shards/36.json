@@ -396,8 +396,8 @@
   }
  },
  "scadastrangelove/awesome-ai-security-tools": {
-  "commit_7d": 31,
-  "commit_90d": 240,
+  "commit_7d": 29,
+  "commit_90d": 249,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -408,10 +408,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4386,6 +4386,51 @@
    "security": "20261030",
    "contrib": "20261030",
    "lang": "20261030"
+  }
+ },
+ "sintetizacom/easycomfee": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 65,
+   "TypeScript": 25,
+   "CSS": 9,
+   "Batchfile": 0,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
+ },
+ "Atom-kkk/AI-Face-Resource-Library": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 75,
+   "CSS": 11,
+   "HTML": 7,
+   "Python": 7
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

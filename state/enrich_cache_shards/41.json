@@ -150,11 +150,11 @@
   }
  },
  "xlang-ai/OSWorld": {
-  "commit_90d": 158,
-  "commit_7d": 122,
+  "commit_90d": 152,
+  "commit_7d": 1,
   "rel_ver": "v0.1.16",
   "rel_pub": "2024-06-26",
-  "rel_days": 850,
+  "rel_days": 857,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -170,10 +170,10 @@
    "Shell": 0,
    "HTML": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -285,11 +285,11 @@
   }
  },
  "panxunying/ai-coding-welfare": {
-  "commit_90d": 327,
-  "commit_7d": 43,
-  "rel_ver": "data-20261021-1152",
-  "rel_pub": "2026-10-21",
-  "rel_days": 3,
+  "commit_90d": 361,
+  "commit_7d": 34,
+  "rel_ver": "data-20261030-0158",
+  "rel_pub": "2026-10-30",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -304,10 +304,10 @@
    "HTML": 2,
    "PowerShell": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1333,13 +1333,16 @@
    "CSS": 8,
    "TypeScript": 3
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261031",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261031"
+  },
+  "commit_90d": 17,
+  "commit_7d": 0
  },
  "maemreyo/omnivoice-server": {
   "rel_ver": "v0.2.5",
@@ -4252,6 +4255,30 @@
    "security": "20261030",
    "contrib": "20261030",
    "lang": "20261030"
+  }
+ },
+ "spinfinc/spinf-serve": {
+  "rel_ver": "0.1.2",
+  "rel_pub": "2026-10-29",
+  "rel_days": 2,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

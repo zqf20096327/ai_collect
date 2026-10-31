@@ -83,11 +83,11 @@
   }
  },
  "Data-Centric-AI-Community/fg-data-profiling": {
-  "commit_7d": 0,
-  "commit_90d": 1,
+  "commit_7d": 6,
+  "commit_90d": 7,
   "rel_ver": "4.20.0",
   "rel_pub": "2026-09-11",
-  "rel_days": 35,
+  "rel_days": 50,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -103,10 +103,10 @@
    "CSS": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -198,10 +198,10 @@
  },
  "CoderLuii/HolyClaude": {
   "commit_90d": 14,
-  "commit_7d": 0,
-  "rel_ver": "v1.6.7",
-  "rel_pub": "2026-10-15",
-  "rel_days": 9,
+  "commit_7d": 1,
+  "rel_ver": "v1.6.8",
+  "rel_pub": "2026-10-26",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -216,10 +216,10 @@
    "Python": 5,
    "Dockerfile": 5
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4249,6 +4249,66 @@
    "security": "20261030",
    "contrib": "20261030",
    "lang": "20261030"
+  }
+ },
+ "alphaparkinc/openclaw-genpark-alpha-quant": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
+ },
+ "alphaparkinc/personal-agent-skills": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
+ },
+ "ShaheryarK789/autoqaagent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 84,
+   "HTML": 14,
+   "TypeScript": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

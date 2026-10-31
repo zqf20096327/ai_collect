@@ -271,8 +271,8 @@
   }
  },
  "yibie/awesome-jev": {
-  "commit_7d": 43,
-  "commit_90d": 882,
+  "commit_7d": 32,
+  "commit_90d": 916,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -284,21 +284,21 @@
    "Python": 77,
    "Shell": 23
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "langgraph4j/langgraph4j": {
-  "commit_7d": 12,
-  "commit_90d": 533,
-  "rel_ver": "v1.9.6",
-  "rel_pub": "2026-10-18",
-  "rel_days": 6,
+  "commit_7d": 24,
+  "commit_90d": 568,
+  "rel_ver": "v1.9.7",
+  "rel_pub": "2026-10-24",
+  "rel_days": 7,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -314,21 +314,21 @@
    "TypeScript": 3,
    "Mustache": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "agentlas-ai/Agentlas-OS": {
-  "commit_7d": 14,
-  "commit_90d": 562,
-  "rel_ver": "v1.2.67",
-  "rel_pub": "2026-10-20",
-  "rel_days": 4,
+  "commit_7d": 9,
+  "commit_90d": 474,
+  "rel_ver": "v1.2.71",
+  "rel_pub": "2026-10-29",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -344,10 +344,10 @@
    "Go Template": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -384,8 +384,8 @@
   }
  },
  "e2b-dev/e2b-cookbook": {
-  "commit_7d": 12,
-  "commit_90d": 184,
+  "commit_7d": 0,
+  "commit_90d": 182,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -398,10 +398,10 @@
    "JavaScript": 22,
    "Python": 8
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -409,7 +409,7 @@
  },
  "ArcadeAI/arcade-mcp": {
   "commit_7d": 4,
-  "commit_90d": 35,
+  "commit_90d": 39,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 1,
@@ -425,10 +425,10 @@
    "Jinja": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4419,6 +4419,25 @@
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
+  }
+ },
+ "Alpha-Park/genpark-agent-prd-spec-synthesizer-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

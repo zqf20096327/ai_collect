@@ -326,11 +326,11 @@
   }
  },
  "microsoft/Generative-AI-for-beginners-dotnet": {
-  "commit_7d": 4,
-  "commit_90d": 46,
+  "commit_7d": 2,
+  "commit_90d": 48,
   "rel_ver": "2026-08-24",
   "rel_pub": "2026-08-24",
-  "rel_days": 61,
+  "rel_days": 68,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -346,10 +346,10 @@
    "Bicep": 4,
    "Shell": 4
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -401,11 +401,11 @@
  },
  "xhluca/bm25s": {
   "commit_7d": 2,
-  "commit_90d": 15,
-  "rel_ver": "0.3.15",
-  "rel_pub": "2026-10-22",
-  "rel_days": 2,
-  "rel_n90": 5,
+  "commit_90d": 17,
+  "rel_ver": "0.3.16",
+  "rel_pub": "2026-10-28",
+  "rel_days": 3,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -416,10 +416,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -508,11 +508,11 @@
   }
  },
  "Comfy-Org/comfy-cli": {
-  "commit_7d": 23,
-  "commit_90d": 360,
-  "rel_ver": "v1.23.0",
-  "rel_pub": "2026-10-20",
-  "rel_days": 4,
+  "commit_7d": 21,
+  "commit_90d": 324,
+  "rel_ver": "v1.24.0",
+  "rel_pub": "2026-10-29",
+  "rel_days": 2,
   "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
@@ -524,10 +524,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4073,6 +4073,95 @@
    "security": "20261030",
    "contrib": "20261030",
    "lang": "20261030"
+  }
+ },
+ "tobihoang/aipocket": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 86,
+   "CSS": 9,
+   "HTML": 5,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
+ },
+ "kayquer/portugues-tecnico-controlado": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 75,
+   "HTML": 22,
+   "Shell": 3
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
+ },
+ "huanweide/novel-smith": {
+  "rel_ver": "v3.1.157",
+  "rel_pub": "2026-10-31",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 95,
+   "JavaScript": 3,
+   "CSS": 2,
+   "HTML": 0,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
+ },
+ "weixinyi118/knowledge-base-factory": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

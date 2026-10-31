@@ -163,13 +163,13 @@
   }
  },
  "Mesh-LLM/mesh-llm": {
-  "commit_7d": 54,
-  "commit_90d": 906,
-  "rel_ver": "v0.78.1",
-  "rel_pub": "2026-10-05",
-  "rel_days": 19,
+  "commit_7d": 64,
+  "commit_90d": 929,
+  "rel_ver": "v0.78.0-preview.40959817943.1",
+  "rel_pub": "2026-10-30",
+  "rel_days": 1,
   "rel_n90": 12,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -183,10 +183,10 @@
    "JavaScript": 1,
    "CSS": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -252,11 +252,11 @@
   }
  },
  "microsoft/vscode-jupyter": {
-  "commit_7d": 4,
+  "commit_7d": 1,
   "commit_90d": 18,
   "rel_ver": "v2025.9.1",
   "rel_pub": "2025-10-13",
-  "rel_days": 376,
+  "rel_days": 383,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -275,10 +275,10 @@
    "JavaScript": 1,
    "Shell": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3939,6 +3939,40 @@
    "security": "20261028",
    "contrib": "20261028",
    "lang": "20261028"
+  }
+ },
+ "Adilmunawar/Satelite-Imagery-Deep-Learning": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
+  }
+ },
+ "johnericforte/claude-skill-hormozi-offer-audit": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261031",
+  "dim_ts": {
+   "release": "20261031",
+   "security": "20261031",
+   "contrib": "20261031",
+   "lang": "20261031"
   }
  }
 }

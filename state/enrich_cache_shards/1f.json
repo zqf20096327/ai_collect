@@ -204,12 +204,12 @@
   }
  },
  "LeoYeAI/openclaw-master-skills": {
-  "commit_90d": 2,
-  "commit_7d": 0,
-  "rel_ver": "v0.21.0",
-  "rel_pub": "2026-07-20",
-  "rel_days": 89,
-  "rel_n90": 1,
+  "commit_90d": 17,
+  "commit_7d": 2,
+  "rel_ver": "v0.22.1",
+  "rel_pub": "2026-10-30",
+  "rel_days": 1,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -224,10 +224,10 @@
    "Shell": 8,
    "C": 4
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261031",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261031",
+   "release": "20261031",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
